@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: PlantGL
+Version: 2.0.0
+Summary: PlantGL package for OpenAlea.
+Home-page: http://openalea.gforge.inria.fr/dokuwiki/doku.php?id=packages:visualization:plantgl:plantgl
+Author: Frederic Boudon, Christophe Pradal
+Author-email: frederic.boudon@cirad.fr, christophe.pradal@cirad.fr
+License: Cecill-C
+Description: 
+        
+Platform: UNKNOWN

@@ -1,0 +1,10 @@
+Authors:
+Frédéric Boudon
+Christophe Pradal
+Christophe Nouguier
+
+Contributors:
+Christophe Godin
+Nicolas Dones
+Boris Adam
+Pierre Barbier de Reuille
