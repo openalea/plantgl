@@ -1,0 +1,323 @@
+<!DOCTYPE UI><UI>
+<class>RotCenterEdit</class>
+<widget>
+    <class>QWidget</class>
+    <property stdset="1">
+        <name>name</name>
+        <cstring>RotCenterEdit</cstring>
+    </property>
+    <property stdset="1">
+        <name>geometry</name>
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>630</width>
+            <height>161</height>
+        </rect>
+    </property>
+    <property stdset="1">
+        <name>caption</name>
+        <string>Form1</string>
+    </property>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>XLabel</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>590</x>
+                <y>10</y>
+                <width>20</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>font</name>
+            <font>
+                <family>adobe-helvetica</family>
+                <pointsize>10</pointsize>
+                <bold>1</bold>
+            </font>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>X</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>ZLabel</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>590</x>
+                <y>90</y>
+                <width>20</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>font</name>
+            <font>
+                <family>adobe-helvetica</family>
+                <pointsize>10</pointsize>
+                <bold>1</bold>
+            </font>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Z</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>YLabel</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>590</x>
+                <y>50</y>
+                <width>20</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>font</name>
+            <font>
+                <family>adobe-helvetica</family>
+                <pointsize>10</pointsize>
+                <bold>1</bold>
+            </font>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Y</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QPushButton</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>CancelButton</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>380</x>
+                <y>120</y>
+                <width>104</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>&amp;Cancel</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QPushButton</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>OkButton</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>500</x>
+                <y>120</y>
+                <width>104</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>&amp;Ok</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QPushButton</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>ClearButton</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>260</x>
+                <y>120</y>
+                <width>104</width>
+                <height>28</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Cle&amp;ar</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QSlider</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>XSlider</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>30</x>
+                <y>10</y>
+                <width>450</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>minValue</name>
+            <number>-150</number>
+        </property>
+        <property stdset="1">
+            <name>maxValue</name>
+            <number>150</number>
+        </property>
+        <property stdset="1">
+            <name>orientation</name>
+            <enum>Horizontal</enum>
+        </property>
+        <property stdset="1">
+            <name>tickmarks</name>
+            <enum>NoMarks</enum>
+        </property>
+    </widget>
+    <widget>
+        <class>QSlider</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>YSlider</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>30</x>
+                <y>50</y>
+                <width>450</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>minValue</name>
+            <number>-150</number>
+        </property>
+        <property stdset="1">
+            <name>orientation</name>
+            <enum>Horizontal</enum>
+        </property>
+        <property stdset="1">
+            <name>tickmarks</name>
+            <enum>NoMarks</enum>
+        </property>
+    </widget>
+    <widget>
+        <class>QSlider</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>ZSlider</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>30</x>
+                <y>90</y>
+                <width>450</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>minValue</name>
+            <number>-150</number>
+        </property>
+        <property stdset="1">
+            <name>maxValue</name>
+            <number>150</number>
+        </property>
+        <property stdset="1">
+            <name>pageStep</name>
+            <number>10</number>
+        </property>
+        <property stdset="1">
+            <name>orientation</name>
+            <enum>Horizontal</enum>
+        </property>
+        <property stdset="1">
+            <name>tickmarks</name>
+            <enum>NoMarks</enum>
+        </property>
+    </widget>
+    <widget>
+        <class>QLineEdit</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>YEdit</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>500</x>
+                <y>50</y>
+                <width>80</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>cursor</name>
+            <cursor>4</cursor>
+        </property>
+    </widget>
+    <widget>
+        <class>QLineEdit</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>XEdit</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>500</x>
+                <y>10</y>
+                <width>80</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>cursor</name>
+            <cursor>4</cursor>
+        </property>
+    </widget>
+    <widget>
+        <class>QLineEdit</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>ZEdit</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>500</x>
+                <y>90</y>
+                <width>80</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>cursor</name>
+            <cursor>4</cursor>
+        </property>
+    </widget>
+</widget>
+</UI>
