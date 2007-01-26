@@ -47,7 +47,7 @@
 #include <ctype.h>
 #include <string>
 #include <sstream>
-#include "tools_namespace.h"
+#include "tools_config.h"
 
 TOOLS_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ TOOLS_BEGIN_NAMESPACE
 
 
 /// Transform a number into a string
-inline std::string number( long int i) {
+inline std::string number(long int i) {
   NUMBER(i)
 /*
   char * tmp = new char[64];

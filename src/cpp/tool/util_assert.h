@@ -42,7 +42,7 @@
     \brief Definition of the assert depending on debug mode is or off.
 */
 
-#include "config.h"
+#include "tools_config.h"
 #include <assert.h>
 
 /* --------------------------------------------------------------------------

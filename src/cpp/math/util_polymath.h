@@ -43,8 +43,8 @@
 */
 
 #include <vector>
-#include "util_types.h"
-#include "tools_namespace.h"
+#include "math_config.h"
+#include "tool/util_types.h"
 
 TOOLS_BEGIN_NAMESPACE
 
@@ -54,7 +54,7 @@ TOOLS_BEGIN_NAMESPACE
    (see the Nurbs Book p21)
    usefull for Bezier Curve calcul.
 */
-GEOM_API extern std::vector<real_t> all_bernstein( uint32_t n, const real_t& u );
+PGLMATH_API extern std::vector<real_t> all_bernstein( uint32_t n, const real_t& u );
 
 
 /*! \fn real_t bernstein( uint32_t i, uint32_t n, const real_t& u );
@@ -62,7 +62,7 @@ GEOM_API extern std::vector<real_t> all_bernstein( uint32_t n, const real_t& u )
    (see the Nurbs Book p20)
    usefull for Bezier Curve calcul.
 */
-GEOM_API extern real_t bernstein( uint32_t i, uint32_t n, const real_t& u );
+PGLMATH_API extern real_t bernstein( uint32_t i, uint32_t n, const real_t& u );
 
 
 
@@ -73,7 +73,7 @@ GEOM_API extern real_t bernstein( uint32_t i, uint32_t n, const real_t& u );
    \pre
    - \e a must be different from 0.
 */
-GEOM_API extern bool solve( const real_t& a, 
+PGLMATH_API extern bool solve( const real_t& a, 
 		   const real_t& b, 
 		   const real_t& c, 
 		   real_t& x1, 

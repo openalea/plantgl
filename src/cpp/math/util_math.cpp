@@ -39,7 +39,7 @@
 
 #include "util_polymath.h"
 #include "util_vector.h"
-#include "util_assert.h"
+#include "tool/util_assert.h"
 #include <cmath>
 using namespace std;
 

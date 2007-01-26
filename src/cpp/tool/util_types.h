@@ -48,8 +48,7 @@
     \brief File that contains some utility about type. define the type real_t.
 */
 
-#include "config.h"
-#include "tools_namespace.h"
+#include "tools_config.h"
 
 /* -------------------------------------------------------------------------- 
  * PRECISION OPTIONS

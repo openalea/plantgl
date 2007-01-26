@@ -62,7 +62,7 @@ class Matrix4;
 */
 
 
-class GEOM_API Matrix2
+class PGLMATH_API Matrix2
 {
 
   friend class Matrix3;
@@ -166,31 +166,31 @@ public:
   Matrix2 operator*( const Matrix2& m ) const;
 
   /// Returns the result of the multiplication of \e m by the vector \e v.
-  friend GEOM_API Vector2 operator*( const Matrix2& m, const Vector2& v );
+  friend PGLMATH_API Vector2 operator*( const Matrix2& m, const Vector2& v );
 
   /// Returns the result of the multiplication of \e m by the scalar \e s.
-  friend GEOM_API Matrix2 operator*( const Matrix2& m, const real_t& s );
+  friend PGLMATH_API Matrix2 operator*( const Matrix2& m, const real_t& s );
 
   /// Returns the result of the division of \e m by the scalar \e s.
-  friend GEOM_API Matrix2 operator/( const Matrix2& m, const real_t& s ) ;
+  friend PGLMATH_API Matrix2 operator/( const Matrix2& m, const real_t& s ) ;
 
   /// Returns the adjoint matrix of \e m.
-  friend GEOM_API Matrix2 adjoint( const Matrix2& m );
+  friend PGLMATH_API Matrix2 adjoint( const Matrix2& m );
 
   /// Returns the determinant of \e m.
-  friend GEOM_API real_t det( const Matrix2& m );
+  friend PGLMATH_API real_t det( const Matrix2& m );
 
   /// Returns the det and the inverse of \e m.
-  friend GEOM_API Matrix2 inverse( const Matrix2& m ) ;
+  friend PGLMATH_API Matrix2 inverse( const Matrix2& m ) ;
 
   /// Returns the trace of \e m.
-  friend GEOM_API real_t trace( const Matrix2& m );
+  friend PGLMATH_API real_t trace( const Matrix2& m );
 
   /// Returns the transpose of \e m.
-  friend GEOM_API Matrix2 transpose( const Matrix2& m );
+  friend PGLMATH_API Matrix2 transpose( const Matrix2& m );
 
   /// Prints \e m to the output stream \e stream.
-  friend GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
+  friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
 
 protected:
 
@@ -199,15 +199,15 @@ protected:
 
 }; // Matrix2
 
-GEOM_API Vector2 operator*( const Matrix2& m, const Vector2& v );
-GEOM_API Matrix2 operator*( const Matrix2& m, const real_t& s );
-GEOM_API Matrix2 operator/( const Matrix2& m, const real_t& s ) ;
-GEOM_API Matrix2 adjoint( const Matrix2& m );
-GEOM_API real_t det( const Matrix2& m );
-GEOM_API Matrix2 inverse( const Matrix2& m ) ;
-GEOM_API real_t trace( const Matrix2& m );
-GEOM_API Matrix2 transpose( const Matrix2& m );
-GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
+PGLMATH_API Vector2 operator*( const Matrix2& m, const Vector2& v );
+PGLMATH_API Matrix2 operator*( const Matrix2& m, const real_t& s );
+PGLMATH_API Matrix2 operator/( const Matrix2& m, const real_t& s ) ;
+PGLMATH_API Matrix2 adjoint( const Matrix2& m );
+PGLMATH_API real_t det( const Matrix2& m );
+PGLMATH_API Matrix2 inverse( const Matrix2& m ) ;
+PGLMATH_API real_t trace( const Matrix2& m );
+PGLMATH_API Matrix2 transpose( const Matrix2& m );
+PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
 
 
 /*  --------------------------------------------------------------------- */
@@ -220,7 +220,7 @@ GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
 
 class Matrix4;
 
-class GEOM_API Matrix3
+class PGLMATH_API Matrix3
 {
 
   friend class Matrix4;
@@ -324,28 +324,28 @@ public:
   Matrix3 transpose( ) const ;
 
   /// Returns the result of the multiplication of \e m by the vector \e v.
-  friend GEOM_API Vector3 operator*( const Matrix3& m, const Vector3& v );
+  friend PGLMATH_API Vector3 operator*( const Matrix3& m, const Vector3& v );
 
   /// Returns the result of the multiplication of \e m by the scalar \e s.
-  friend GEOM_API Matrix3 operator*( const Matrix3& m, const real_t& s ) ;
+  friend PGLMATH_API Matrix3 operator*( const Matrix3& m, const real_t& s ) ;
 
   /// Returns the result of the division of \e m by the scalar \e s.
-  friend GEOM_API Matrix3 operator/( const Matrix3& m, const real_t& s );
+  friend PGLMATH_API Matrix3 operator/( const Matrix3& m, const real_t& s );
 
   /// Returns the adjoint matrix of \e m.
-  friend GEOM_API Matrix3 adjoint( const Matrix3& m );
+  friend PGLMATH_API Matrix3 adjoint( const Matrix3& m );
 
   /// Returns the det of \e m.
-  friend GEOM_API real_t det( const Matrix3& m );
+  friend PGLMATH_API real_t det( const Matrix3& m );
 
   /// Returns the det and the inverse of \e m.
-  friend GEOM_API Matrix3 inverse( const Matrix3& m );
+  friend PGLMATH_API Matrix3 inverse( const Matrix3& m );
 
   /// Returns the transpose of \e m.
-  friend GEOM_API Matrix3 transpose( const Matrix3& m ) ;
+  friend PGLMATH_API Matrix3 transpose( const Matrix3& m ) ;
 
   /// Prints \e m to the output stream \e stream.
-  friend GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix3& m );
+  friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix3& m );
 
 
   /// Returns a const pointer to the datas of \e self.
@@ -390,7 +390,7 @@ public:
   void setColumn( uchar_t i, const Vector3& v );
 
   /// Returns the trace of \e m.
-  friend GEOM_API real_t trace( const Matrix3& m ) ;
+  friend PGLMATH_API real_t trace( const Matrix3& m ) ;
 
   /** Computes a decomposition of the matrix into the product of 3 matrices
       Rz(a)Ry(b)Rx(c) in this order,
@@ -442,15 +442,15 @@ protected:
 
 }; // Matrix3
 
-GEOM_API Vector3 operator*( const Matrix3& m, const Vector3& v );
-GEOM_API Matrix3 operator*( const Matrix3& m, const real_t& s ) ;
-GEOM_API Matrix3 operator/( const Matrix3& m, const real_t& s );
-GEOM_API Matrix3 adjoint( const Matrix3& m );
-GEOM_API real_t det( const Matrix3& m );
-GEOM_API Matrix3 inverse( const Matrix3& m );
-GEOM_API Matrix3 transpose( const Matrix3& m ) ;
-GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix3& m );
-GEOM_API real_t trace( const Matrix3& m ) ;
+PGLMATH_API Vector3 operator*( const Matrix3& m, const Vector3& v );
+PGLMATH_API Matrix3 operator*( const Matrix3& m, const real_t& s ) ;
+PGLMATH_API Matrix3 operator/( const Matrix3& m, const real_t& s );
+PGLMATH_API Matrix3 adjoint( const Matrix3& m );
+PGLMATH_API real_t det( const Matrix3& m );
+PGLMATH_API Matrix3 inverse( const Matrix3& m );
+PGLMATH_API Matrix3 transpose( const Matrix3& m ) ;
+PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix3& m );
+PGLMATH_API real_t trace( const Matrix3& m ) ;
 
 /*  --------------------------------------------------------------------- */
 
@@ -463,7 +463,7 @@ GEOM_API real_t trace( const Matrix3& m ) ;
 
 */
 
-class GEOM_API Matrix4
+class PGLMATH_API Matrix4
 {
 
 public:
@@ -554,29 +554,29 @@ public:
   Matrix4 operator*( const Matrix4& m ) const;
 
   /// Returns the result of the multiplication of \e m  by the vector \e v.
-  friend GEOM_API Vector4 operator*( const Matrix4& m, const Vector4& v );
+  friend PGLMATH_API Vector4 operator*( const Matrix4& m, const Vector4& v );
 
   /// Returns the result of the multiplication of \e m  by the point \e v.
-  friend GEOM_API Vector3 operator*( const Matrix4& m, const Vector3& v );
+  friend PGLMATH_API Vector3 operator*( const Matrix4& m, const Vector3& v );
 
   /// Returns the result of the multiplication of \e m by the scalar \e s.
-  friend GEOM_API Matrix4 operator*( const Matrix4& m, const real_t& s );
+  friend PGLMATH_API Matrix4 operator*( const Matrix4& m, const real_t& s );
 
   /// Returns the result of the division of \e m by the scalar \e s.
-  friend GEOM_API Matrix4 operator/( const Matrix4& m, const real_t& s );
+  friend PGLMATH_API Matrix4 operator/( const Matrix4& m, const real_t& s );
 
   /** Returns the adjoint matrix of \e m.
       \pre
       - \e m must be valid. */
-  friend GEOM_API Matrix4 adjoint( const Matrix4& m );
+  friend PGLMATH_API Matrix4 adjoint( const Matrix4& m );
 
   /** Returns the det of \e m.
       \pre
       - \e m must be valid. */
-  friend GEOM_API real_t det( const Matrix4& m ) ;
+  friend PGLMATH_API real_t det( const Matrix4& m ) ;
 
   /// Prints \e m to the output stream \e stream.
-  friend GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix4& m );
+  friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix4& m );
 
   /** Returns a const pointer to the datas of \e self.
       \pre
@@ -606,7 +606,7 @@ public:
   /** Returns the det and the inverse of \e m.
       \pre
       - \e m must be valid. */
-  friend GEOM_API Matrix4 inverse( const Matrix4& m );
+  friend PGLMATH_API Matrix4 inverse( const Matrix4& m );
 
   /** Returns whether \e self is orthogonal.
       \pre
@@ -632,7 +632,7 @@ public:
   /** Returns the trace of \e m.
       \pre
       - \e m must be valid. */
-  friend GEOM_API real_t trace( const Matrix4& m );
+  friend PGLMATH_API real_t trace( const Matrix4& m );
 
   /** Returns the translation matrix corresponding to the translation of
       vector \e v.
@@ -643,7 +643,7 @@ public:
   /** Returns the transpose of \e m.
       \pre
       - \e m must be valid. */
-  friend GEOM_API Matrix4 transpose( const Matrix4& m );
+  friend PGLMATH_API Matrix4 transpose( const Matrix4& m );
 
   /** Set *this= R(angle) * S(scale) + T(translate) where
       R( angle=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
@@ -699,16 +699,16 @@ protected:
 
 }; // Matrix4
 
-GEOM_API Vector4 operator*( const Matrix4& m, const Vector4& v );
-GEOM_API Vector3 operator*( const Matrix4& m, const Vector3& v );
-GEOM_API Matrix4 operator*( const Matrix4& m, const real_t& s );
-GEOM_API Matrix4 operator/( const Matrix4& m, const real_t& s );
-GEOM_API Matrix4 adjoint( const Matrix4& m );
-GEOM_API real_t det( const Matrix4& m ) ;
-GEOM_API std::ostream& operator<<( std::ostream& stream, const Matrix4& m );
-GEOM_API Matrix4 inverse( const Matrix4& m );
-GEOM_API real_t trace( const Matrix4& m );
-GEOM_API Matrix4 transpose( const Matrix4& m );
+PGLMATH_API Vector4 operator*( const Matrix4& m, const Vector4& v );
+PGLMATH_API Vector3 operator*( const Matrix4& m, const Vector3& v );
+PGLMATH_API Matrix4 operator*( const Matrix4& m, const real_t& s );
+PGLMATH_API Matrix4 operator/( const Matrix4& m, const real_t& s );
+PGLMATH_API Matrix4 adjoint( const Matrix4& m );
+PGLMATH_API real_t det( const Matrix4& m ) ;
+PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix4& m );
+PGLMATH_API Matrix4 inverse( const Matrix4& m );
+PGLMATH_API real_t trace( const Matrix4& m );
+PGLMATH_API Matrix4 transpose( const Matrix4& m );
 
 /*  --------------------------------------------------------------------- */
 

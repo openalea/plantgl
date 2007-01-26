@@ -46,7 +46,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "tools_namespace.h"
+#include "tools_config.h"
 #include "util_assert.h" // For #include <assert.h>
 #include "util_types.h"  // For #include <stddef.h> and typedef long int32_t;
 
@@ -76,7 +76,7 @@ TOOLS_BEGIN_NAMESPACE
    declare the virtual destructor. You need then to implement it.
 */
 
-class GEOM_API RefCountObject
+class TOOLS_API RefCountObject
 {
 
 public:

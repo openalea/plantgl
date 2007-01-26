@@ -44,7 +44,7 @@
 #ifndef __std_h__
 #define __std_h__
 
-#include "config.h"
+#include "tools_config.h"
 
 // Basic stl support
 #include <functional>

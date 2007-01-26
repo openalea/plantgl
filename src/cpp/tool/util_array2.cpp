@@ -35,7 +35,7 @@
  */
 
 #include "util_array2.h"
-GEOM_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 
 RealArray2::RealArray2( uint32_t row , uint32_t col ) :

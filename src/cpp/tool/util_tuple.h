@@ -47,7 +47,6 @@
 
 #include "util_types.h"
 #include "util_assert.h"
-#include "tools_namespace.h"
 
 #ifdef _WIN32
 #include <iostream>

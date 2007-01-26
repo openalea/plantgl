@@ -39,7 +39,7 @@
 
 #include "util_vector.h"
 #include "util_math.h"
-#include "util_assert.h"
+#include "tool/util_assert.h"
 #include <iostream>
 using namespace std;
 

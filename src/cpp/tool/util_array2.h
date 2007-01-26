@@ -44,19 +44,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/std.h"
-//#include <vector>
-//#include <algorithm>
-//#include <iostream>
-//using namespace std;
-
-#include "Tools/rcobject.h"
-#include "Tools/config.h"
-#include "geom_namespace.h"
+#include "std.h"
+#include "rcobject.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 template <class T>
-class Array2 : public TOOLS(RefCountObject)
+class Array2 : public RefCountObject
 {
 
 public:
@@ -693,7 +686,7 @@ typedef RCPtr<FloatArray2> FloatArray2Ptr;
    \brief A bi dimnensionnal array of real of non fixed size.
 */
 
-class GEOM_API RealArray2 : public NumericArray2<real_t>
+class TOOLS_API RealArray2 : public NumericArray2<real_t>
 {
 
 public:
@@ -723,11 +716,11 @@ typedef RCPtr<RealArray2> RealArray2Ptr;
 // __util_array2_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+TOOLS_END_NAMESPACE
 
 /// Write Array2 \b a on \b stream
   template< class T >
-  std::ostream& operator<<(std::ostream& stream, const GEOM(Array2<T>) a){
+  std::ostream& operator<<(std::ostream& stream, const TOOLS(Array2<T>) a){
       return a.print(stream);
   }
 

@@ -178,7 +178,7 @@
 
 #include <iostream>
 #include <string>
-#include "Tools/config.h"
+#include "tools_config.h"
 
 /// Test of a condition
 #define FAILS(x)          !(x)
@@ -474,10 +474,10 @@ extern const char* common_err_messages[];
 
 
 /// Obj that contains the error parameters
-class GEOM_API ErrorObj {
+class TOOLS_API ErrorObj {
 
         /// print an error message.
-        friend GEOM_API std::ostream& operator<<(std::ostream&, const ErrorObj&);
+        friend TOOLS_API std::ostream& operator<<(std::ostream&, const ErrorObj&);
 
 protected:
 
@@ -555,7 +555,7 @@ std::ostream& operator<<(std::ostream& o, const ErrorObj& i);
    \b genMessage(WARNINGMSG(i), \b p1, \b p2, \b p3); \n
 */
 
-extern void GEOM_API genMessage(const char* file,
+extern void TOOLS_API genMessage(const char* file,
                        int line,
                        const char* module_name,
                        ErrorType type,

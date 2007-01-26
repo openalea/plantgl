@@ -46,14 +46,15 @@
     \brief Definition of Vector2, Vector3, Vector4.
 */
 
-#include "util_tuple.h"
+#include "math_config.h"
+#include "tool/util_tuple.h"
 
 TOOLS_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
-#ifdef GEOM_DLL
-template class GEOM_API Tuple2<real_t>;
+#ifdef PGLMATH_DLL
+template class PGLMATH_API Tuple2<real_t>;
 #endif
 
 /**
@@ -62,7 +63,7 @@ template class GEOM_API Tuple2<real_t>;
    \c y.
 */
 
-class GEOM_API Vector2 : public Tuple2<real_t>
+class PGLMATH_API Vector2 : public Tuple2<real_t>
 {
 
  public:
@@ -81,7 +82,7 @@ class GEOM_API Vector2 : public Tuple2<real_t>
      \class Polar
      \brief A doublet representing polar coordinates \c radius and \c theta.
   */
-  struct GEOM_API Polar {
+  struct PGLMATH_API Polar {
 
     /// The \c radius coordinate
     real_t radius;
@@ -198,87 +199,87 @@ class GEOM_API Vector2 : public Tuple2<real_t>
   bool isValid( ) const;
 
   /// Returns a vector with the absolute values of \e v.
-  friend GEOM_API Vector2 abs( const Vector2& v ) ;
+  friend PGLMATH_API Vector2 abs( const Vector2& v ) ;
 
   /** Returns the direction of \e v.
       The resulting Vector2 is normalized. */
-  friend GEOM_API Vector2 direction( const Vector2& v );
+  friend PGLMATH_API Vector2 direction( const Vector2& v );
 
   /// Returns the norm of \e v.
-  friend GEOM_API real_t norm( const Vector2& v );
+  friend PGLMATH_API real_t norm( const Vector2& v );
 
   /// Returns the L1 (Manhattan) norm of \e v.
-  friend GEOM_API real_t normL1( const Vector2& v );
+  friend PGLMATH_API real_t normL1( const Vector2& v );
 
   /// Returns the L-infinite norm of \e v.
-  friend GEOM_API real_t normLinf( const Vector2& v );
+  friend PGLMATH_API real_t normLinf( const Vector2& v );
 
   /// Returns the square of the norm of \e v.
-  friend GEOM_API real_t normSquared( const Vector2& v );
+  friend PGLMATH_API real_t normSquared( const Vector2& v );
 
   /// Returns the sum of all the values of \e self.
-  friend GEOM_API real_t sum( const Vector2& v );
+  friend PGLMATH_API real_t sum( const Vector2& v );
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
-  friend GEOM_API Vector2 operator*( const Vector2& v, const real_t& s );
-  friend GEOM_API Vector2 operator*( const real_t& s, const Vector2& v );
+  friend PGLMATH_API Vector2 operator*( const Vector2& v, const real_t& s );
+  friend PGLMATH_API Vector2 operator*( const real_t& s, const Vector2& v );
 
   /** Returns the result of the division of \e v by the scalar \e s.
       \warning
       - \e s must be different from 0. */
-  friend GEOM_API Vector2 operator/( const Vector2& v, const real_t& s );
+  friend PGLMATH_API Vector2 operator/( const Vector2& v, const real_t& s );
 
   // Return the result of the cross product of \e this and \e v.
-  friend GEOM_API real_t cross( const Vector2& v1, const Vector2& v2);
-  friend GEOM_API real_t operator^( const Vector2& v1, const Vector2& v2);
+  friend PGLMATH_API real_t cross( const Vector2& v1, const Vector2& v2);
+  friend PGLMATH_API real_t operator^( const Vector2& v1, const Vector2& v2);
 
   /// Returns the dot product between \e v1 and \e v2.
-  friend GEOM_API real_t dot( const Vector2& v1, const Vector2& v2 );
-  friend GEOM_API real_t operator*( const Vector2& v1, const Vector2& v2 );
+  friend PGLMATH_API real_t dot( const Vector2& v1, const Vector2& v2 );
+  friend PGLMATH_API real_t operator*( const Vector2& v1, const Vector2& v2 );
 
   /// Returns the vector with the maximum values between \e v1 and \e v2.
-  friend GEOM_API Vector2 Max( const Vector2& v1, const Vector2& v2 );
+  friend PGLMATH_API Vector2 Max( const Vector2& v1, const Vector2& v2 );
 
   /// Returns the vector with the minimum values between \e v1 and \e v2.
-  friend GEOM_API Vector2 Min( const Vector2& v1, const Vector2& v2 );
+  friend PGLMATH_API Vector2 Min( const Vector2& v1, const Vector2& v2 );
 
   /// Returns the value of the angle ni radian between \e v1 and \e v2.
-  friend GEOM_API real_t angle( const Vector2& v1, const Vector2& v2 );
+  friend PGLMATH_API real_t angle( const Vector2& v1, const Vector2& v2 );
 
   /// Prints \e v to the output stream \e stream.
-  friend GEOM_API std::ostream& operator<<( std::ostream& stream, const Vector2& v );
+  friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector2& v );
 
   /// Defines an order relation in order to use this class in a sorted container
-  friend GEOM_API bool operator<(const Vector2& v1, const Vector2& v2);
+  friend PGLMATH_API bool operator<(const Vector2& v1, const Vector2& v2);
 
 }; // Vector2
 
-GEOM_API Vector2 abs( const Vector2& v ) ;
-GEOM_API Vector2 direction( const Vector2& v );
-GEOM_API real_t norm( const Vector2& v );
-GEOM_API real_t normL1( const Vector2& v );
-GEOM_API real_t normLinf( const Vector2& v );
-GEOM_API real_t normSquared( const Vector2& v );
-GEOM_API real_t sum( const Vector2& v );
-GEOM_API Vector2 operator*( const Vector2& v, const real_t& s );
-GEOM_API Vector2 operator*( const real_t& s, const Vector2& v );
-GEOM_API Vector2 operator/( const Vector2& v, const real_t& s );
-GEOM_API real_t cross( const Vector2& v1, const Vector2& v2);
-GEOM_API real_t operator^( const Vector2& v1, const Vector2& v2);
-GEOM_API real_t dot( const Vector2& v1, const Vector2& v2 );
-GEOM_API real_t operator*( const Vector2& v1, const Vector2& v2 );
-GEOM_API Vector2 Max( const Vector2& v1, const Vector2& v2 );
-GEOM_API Vector2 Min( const Vector2& v1, const Vector2& v2 );
-GEOM_API real_t angle( const Vector2& v1, const Vector2& v2 );
-GEOM_API std::ostream& operator<<( std::ostream& stream, const Vector2& v );
-GEOM_API bool operator<(const Vector2& v1, const Vector2& v2);
+PGLMATH_API Vector2 abs( const Vector2& v ) ;
+PGLMATH_API Vector2 direction( const Vector2& v );
+PGLMATH_API real_t norm( const Vector2& v );
+PGLMATH_API real_t normL1( const Vector2& v );
+PGLMATH_API real_t normLinf( const Vector2& v );
+PGLMATH_API real_t normSquared( const Vector2& v );
+PGLMATH_API real_t sum( const Vector2& v );
+PGLMATH_API Vector2 operator*( const Vector2& v, const real_t& s );
+PGLMATH_API Vector2 operator*( const real_t& s, const Vector2& v );
+PGLMATH_API Vector2 operator/( const Vector2& v, const real_t& s );
+PGLMATH_API real_t cross( const Vector2& v1, const Vector2& v2);
+PGLMATH_API real_t operator^( const Vector2& v1, const Vector2& v2);
+PGLMATH_API real_t dot( const Vector2& v1, const Vector2& v2 );
+PGLMATH_API real_t operator*( const Vector2& v1, const Vector2& v2 );
+PGLMATH_API Vector2 Max( const Vector2& v1, const Vector2& v2 );
+PGLMATH_API Vector2 Min( const Vector2& v1, const Vector2& v2 );
+PGLMATH_API real_t angle( const Vector2& v1, const Vector2& v2 );
+PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector2& v );
+PGLMATH_API bool operator<(const Vector2& v1, const Vector2& v2);
 
 
 /*  --------------------------------------------------------------------- */
 
 
-#ifdef GEOM_DLL
-template class GEOM_API Tuple3<real_t>;
+#ifdef PGLMATH_DLL
+template class PGLMATH_API Tuple3<real_t>;
 #endif
 
 /**
@@ -287,7 +288,7 @@ template class GEOM_API Tuple3<real_t>;
    and \c z.
 */
 
-class GEOM_API Vector3 : public Tuple3<real_t>
+class PGLMATH_API Vector3 : public Tuple3<real_t>
 {
 
  public:
@@ -310,7 +311,7 @@ class GEOM_API Vector3 : public Tuple3<real_t>
      \brief A triplet representing cylindrical coordinates \c radius,
      \c theta and \c z coordinate.
   */
-  struct GEOM_API Cylindrical {
+  struct PGLMATH_API Cylindrical {
 
     /// The \c radius coordinate
     real_t radius;
@@ -343,7 +344,7 @@ class GEOM_API Vector3 : public Tuple3<real_t>
      \brief A triplet representing cylindrical coordinates \c radius,
      \c theta and \c phi coordinate.
   */
-  struct GEOM_API Spherical {
+  struct PGLMATH_API Spherical {
 
     /// The \c radius coordinate
     real_t radius;
@@ -496,89 +497,89 @@ class GEOM_API Vector3 : public Tuple3<real_t>
   bool isValid( ) const ;
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
-  friend GEOM_API Vector3 operator*( const Vector3& v, const real_t& s );
-  friend GEOM_API Vector3 operator*( const real_t& s, const Vector3& v );
+  friend PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
+  friend PGLMATH_API Vector3 operator*( const real_t& s, const Vector3& v );
 
   /** Returns the result of the division of \e v by the scalar \e s.
       \warning
       - \e s must be different from 0. */
-  friend GEOM_API Vector3 operator/( const Vector3& v, const real_t& s );
+  friend PGLMATH_API Vector3 operator/( const Vector3& v, const real_t& s );
 
   /** Returns the direction of \e v.
       The resulting Vector3 is normalized. */
-  friend GEOM_API Vector3 direction( const Vector3& v );
+  friend PGLMATH_API Vector3 direction( const Vector3& v );
 
   /// Returns the abs value of \e v.
-  friend GEOM_API Vector3 abs( const Vector3& v );
+  friend PGLMATH_API Vector3 abs( const Vector3& v );
 
   /// Returns the norm of \e v.
-  friend GEOM_API real_t norm( const Vector3& v );
+  friend PGLMATH_API real_t norm( const Vector3& v );
 
   /// Returns the L1 (Manhattan) norm of \e v.
-  friend GEOM_API real_t normL1( const Vector3& v );
+  friend PGLMATH_API real_t normL1( const Vector3& v );
 
   /// Returns the L-infinite norm of \e v.
-  friend GEOM_API real_t normLinf( const Vector3& v );
+  friend PGLMATH_API real_t normLinf( const Vector3& v );
 
   /// Returns the square of the norm of \e v.
-  friend GEOM_API real_t normSquared( const Vector3& v );
+  friend PGLMATH_API real_t normSquared( const Vector3& v );
 
   /// Returns the sum of all the values of \e self.
-  friend GEOM_API real_t sum( const Vector3& v );
+  friend PGLMATH_API real_t sum( const Vector3& v );
 
   ///  Returns the result of the cross product between \e v1 and \e v2.
-  friend GEOM_API Vector3 cross( const Vector3& v1, const Vector3& v2 );
-  friend GEOM_API Vector3 operator^( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API Vector3 cross( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API Vector3 operator^( const Vector3& v1, const Vector3& v2 );
 
   /// Returns the dot product between \e v1 and \e v2.
-  friend GEOM_API real_t dot( const Vector3& v1, const Vector3& v2 );
-  friend GEOM_API real_t operator*( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API real_t dot( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API real_t operator*( const Vector3& v1, const Vector3& v2 );
 
   /// Returns the vector with the maximum values between \e v1 and \e v2.
-  friend GEOM_API Vector3 Max( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API Vector3 Max( const Vector3& v1, const Vector3& v2 );
 
   /// Returns the vector with the minimum values between \e v1 and \e v2.
-  friend GEOM_API Vector3 Min( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API Vector3 Min( const Vector3& v1, const Vector3& v2 );
 
   /// Returns the value of the angle between \e v1 and \e v2.
-  friend GEOM_API real_t angle( const Vector3& v1, const Vector3& v2 );
-  friend GEOM_API real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis );
+  friend PGLMATH_API real_t angle( const Vector3& v1, const Vector3& v2 );
+  friend PGLMATH_API real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis );
 
   /// Prints \e v to the output stream \e stream.
-  friend GEOM_API std::ostream& operator<<( std::ostream& stream, const Vector3& v );
+  friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector3& v );
 
   /// Defines an order relation in order to use this class in a sorted container
-  friend GEOM_API bool operator<(const Vector3& v1, const Vector3& v2);
+  friend PGLMATH_API bool operator<(const Vector3& v1, const Vector3& v2);
 
 }; // Vector3
 
-GEOM_API Vector3 operator*( const Vector3& v, const real_t& s );
-GEOM_API Vector3 operator*( const real_t& s, const Vector3& v );
-GEOM_API Vector3 operator/( const Vector3& v, const real_t& s );
-GEOM_API Vector3 direction( const Vector3& v );
-GEOM_API Vector3 abs( const Vector3& v );
-GEOM_API real_t norm( const Vector3& v );
-GEOM_API real_t normL1( const Vector3& v );
-GEOM_API real_t normLinf( const Vector3& v );
-GEOM_API real_t normSquared( const Vector3& v );
-GEOM_API real_t sum( const Vector3& v );
-GEOM_API Vector3 cross( const Vector3& v1, const Vector3& v2 );
-GEOM_API Vector3 operator^( const Vector3& v1, const Vector3& v2 );
-GEOM_API real_t dot( const Vector3& v1, const Vector3& v2 );
-GEOM_API real_t operator*( const Vector3& v1, const Vector3& v2 );
-GEOM_API Vector3 Max( const Vector3& v1, const Vector3& v2 );
-GEOM_API Vector3 Min( const Vector3& v1, const Vector3& v2 );
-GEOM_API real_t angle( const Vector3& v1, const Vector3& v2 );
-GEOM_API real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis );
-GEOM_API std::ostream& operator<<( std::ostream& stream, const Vector3& v );
-GEOM_API bool operator<(const Vector3& v1, const Vector3& v2);
+PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
+PGLMATH_API Vector3 operator*( const real_t& s, const Vector3& v );
+PGLMATH_API Vector3 operator/( const Vector3& v, const real_t& s );
+PGLMATH_API Vector3 direction( const Vector3& v );
+PGLMATH_API Vector3 abs( const Vector3& v );
+PGLMATH_API real_t norm( const Vector3& v );
+PGLMATH_API real_t normL1( const Vector3& v );
+PGLMATH_API real_t normLinf( const Vector3& v );
+PGLMATH_API real_t normSquared( const Vector3& v );
+PGLMATH_API real_t sum( const Vector3& v );
+PGLMATH_API Vector3 cross( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API Vector3 operator^( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API real_t dot( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API real_t operator*( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API Vector3 Max( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API Vector3 Min( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API real_t angle( const Vector3& v1, const Vector3& v2 );
+PGLMATH_API real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis );
+PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector3& v );
+PGLMATH_API bool operator<(const Vector3& v1, const Vector3& v2);
 
 
 
 /*  --------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class GEOM_API Tuple4<real_t>;
+template class PGLMATH_API Tuple4<real_t>;
 #endif
 
 /**
@@ -587,7 +588,7 @@ template class GEOM_API Tuple4<real_t>;
    \e z and \c w.
 */
 
-class GEOM_API Vector4 : public Tuple4<real_t>
+class PGLMATH_API Vector4 : public Tuple4<real_t>
 {
 
  public:
@@ -695,15 +696,15 @@ class GEOM_API Vector4 : public Tuple4<real_t>
   Vector4 operator-( const Vector4& v ) const;
 
   /// Returns the abs value of \e v.
-  friend GEOM_API Vector4 abs( const Vector4& v );
+  friend PGLMATH_API Vector4 abs( const Vector4& v );
 
   /** Returns the direction of \e v.
       The resulting Vector4 is normalized. */
-  friend GEOM_API Vector4 direction( const Vector4& v );
+  friend PGLMATH_API Vector4 direction( const Vector4& v );
 
   /// Returns the dot product between \e v1 and \e v2.
-  friend GEOM_API real_t dot( const Vector4& v1, const Vector4& v2 );
-  friend GEOM_API real_t operator*( const Vector4& v1, const Vector4& v2 );
+  friend PGLMATH_API real_t dot( const Vector4& v1, const Vector4& v2 );
+  friend PGLMATH_API real_t operator*( const Vector4& v1, const Vector4& v2 );
 
   /// Returns whether \e self is normalized.
   bool isNormalized( ) const;
@@ -723,60 +724,60 @@ class GEOM_API Vector4 : public Tuple4<real_t>
   Vector3 project( ) const;
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
-  friend GEOM_API Vector4 operator*( const Vector4& v, const real_t& s );
-  friend GEOM_API Vector4 operator*( const real_t& s, const Vector4& v );
+  friend PGLMATH_API Vector4 operator*( const Vector4& v, const real_t& s );
+  friend PGLMATH_API Vector4 operator*( const real_t& s, const Vector4& v );
 
   /** Returns the result of the division of \e v by the scalar \e s.
       \warning
       - \e s must be different from 0. */
-  friend GEOM_API Vector4 operator/( const Vector4& v, const real_t& s );
+  friend PGLMATH_API Vector4 operator/( const Vector4& v, const real_t& s );
 
   /// Returns the vector with the maximum values between \e v1 and \e v2.
-  friend GEOM_API Vector4 Max( const Vector4& v1, const Vector4& v2 ) ;
+  friend PGLMATH_API Vector4 Max( const Vector4& v1, const Vector4& v2 ) ;
 
   /// Returns the vector with the minimum values between \e v1 and \e v2.
-  friend GEOM_API Vector4 Min( const Vector4& v1, const Vector4& v2 );
+  friend PGLMATH_API Vector4 Min( const Vector4& v1, const Vector4& v2 );
 
   /// Returns the norm of \e v.
-  friend GEOM_API real_t norm( const Vector4& v );
+  friend PGLMATH_API real_t norm( const Vector4& v );
 
   /// Returns the L1 (Manhattan) norm of \e v.
-  friend GEOM_API real_t normL1( const Vector4& v );
+  friend PGLMATH_API real_t normL1( const Vector4& v );
 
   /// Returns the L-infinite norm of \e v.
-  friend GEOM_API real_t normLinf( const Vector4& v );
+  friend PGLMATH_API real_t normLinf( const Vector4& v );
 
   /// Returns the square of the norm of \e v.
-  friend GEOM_API real_t normSquared( const Vector4& v ) ;
+  friend PGLMATH_API real_t normSquared( const Vector4& v ) ;
 
   /// Returns the sum of all the values of \e self.
-  friend GEOM_API real_t sum( const Vector4& v );
+  friend PGLMATH_API real_t sum( const Vector4& v );
 
     /// Prints \e v to the output stream \e stream.
-  friend GEOM_API std::ostream& operator<<( std::ostream& stream, const Vector4& v );
+  friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector4& v );
 
   /// Defines an order relation in order to use this class in a sorted container
-  friend GEOM_API bool operator<(const Vector4& v1, const Vector4& v2);
+  friend PGLMATH_API bool operator<(const Vector4& v1, const Vector4& v2);
 
 }; // Vector4
 
 
-GEOM_API Vector4 abs( const Vector4& v );
-GEOM_API Vector4 direction( const Vector4& v );
-GEOM_API real_t dot( const Vector4& v1, const Vector4& v2 );
-GEOM_API real_t operator*( const Vector4& v1, const Vector4& v2 );
-GEOM_API Vector4 operator*( const Vector4& v, const real_t& s );
-GEOM_API Vector4 operator*( const real_t& s, const Vector4& v );
-GEOM_API Vector4 operator/( const Vector4& v, const real_t& s );
-GEOM_API Vector4 Max( const Vector4& v1, const Vector4& v2 ) ;
-GEOM_API Vector4 Min( const Vector4& v1, const Vector4& v2 );
-GEOM_API real_t norm( const Vector4& v );
-GEOM_API real_t normL1( const Vector4& v );
-GEOM_API real_t normLinf( const Vector4& v );
-GEOM_API real_t normSquared( const Vector4& v ) ;
-GEOM_API real_t sum( const Vector4& v );
-GEOM_API std::ostream& operator<<( std::ostream& stream, const Vector4& v );
-GEOM_API bool operator<(const Vector4& v1, const Vector4& v2);
+PGLMATH_API Vector4 abs( const Vector4& v );
+PGLMATH_API Vector4 direction( const Vector4& v );
+PGLMATH_API real_t dot( const Vector4& v1, const Vector4& v2 );
+PGLMATH_API real_t operator*( const Vector4& v1, const Vector4& v2 );
+PGLMATH_API Vector4 operator*( const Vector4& v, const real_t& s );
+PGLMATH_API Vector4 operator*( const real_t& s, const Vector4& v );
+PGLMATH_API Vector4 operator/( const Vector4& v, const real_t& s );
+PGLMATH_API Vector4 Max( const Vector4& v1, const Vector4& v2 ) ;
+PGLMATH_API Vector4 Min( const Vector4& v1, const Vector4& v2 );
+PGLMATH_API real_t norm( const Vector4& v );
+PGLMATH_API real_t normL1( const Vector4& v );
+PGLMATH_API real_t normLinf( const Vector4& v );
+PGLMATH_API real_t normSquared( const Vector4& v ) ;
+PGLMATH_API real_t sum( const Vector4& v );
+PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector4& v );
+PGLMATH_API bool operator<(const Vector4& v1, const Vector4& v2);
 
 
 /*  --------------------------------------------------------------------- */

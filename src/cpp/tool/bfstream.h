@@ -112,7 +112,7 @@ inline void flipBytes( const char * src, char * dest, size_t n )
     \brief bofstream specializes the \c ofstream class to store variables
     in binary format. */
 
-class GEOM_API bofstream
+class TOOLS_API bofstream
 {
 
 public:
@@ -299,7 +299,7 @@ protected:
     \brief bifstream specializes the \c ifstream class to restore variables
     in binary format. */
 
-class GEOM_API bifstream
+class TOOLS_API bifstream
 {
 
 public:
@@ -563,7 +563,7 @@ private:
     \brief beofstream specializes the \c bofstream class to store variables
     in big endian format. */
 
-class GEOM_API beofstream : public bofstream
+class TOOLS_API beofstream : public bofstream
 {
 
 public:
@@ -610,7 +610,7 @@ private:
     \brief beifstream specializes the \c bifstream class to restore variables
     in big endian format. */
 
-class GEOM_API beifstream : public bifstream
+class TOOLS_API beifstream : public bifstream
 {
 
 public:

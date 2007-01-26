@@ -42,13 +42,14 @@
 #ifndef __util_matrixmat_h__
 #define __util_matrixmat_h__
 
-#include "util_array.h"
-#include "util_array2.h"
-#include "Tools/util_math.h"
+#include "math_config.h"
+#include "tool/util_array.h"
+#include "tool/util_array2.h"
+#include "util_math.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -1144,7 +1145,7 @@ NumericArray2<T> inverse(const NumericArray2<T>&A){
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

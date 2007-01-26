@@ -342,7 +342,7 @@ typedef RCPtr<Uint32Array1> Uint32Array1Ptr;
    \class RealArray
    \brief A mono dimensional array of real of non fixed size.
 */
-class GEOM_API RealArray : public Array1<real_t>
+class TOOLS_API RealArray : public Array1<real_t>
 {
 
 public:
