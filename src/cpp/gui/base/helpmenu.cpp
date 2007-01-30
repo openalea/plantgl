@@ -45,7 +45,7 @@
 #include <qtextview.h>
 #include <qfile.h>
 #include <qtextstream.h>
-#include "Tools/util_enviro.h"
+#include <tool/util_enviro.h>
 
 /*  ------------------------------------------------------------------------ */
 
@@ -73,21 +73,22 @@
 
 /*  ------------------------------------------------------------------------ */
 
-#include "view_icons.h"
+#include "icons.h"
 
-#include "view_helpmenu.h"
-#include "view_info.h"
-#include "view_qobjectbrowser.h"
-#include "all_viewer.h"
+#include "helpmenu.h"
+#include "info.h"
+#include "qobjectbrowser.h"
+// #include "pgl_viewer.h"
 
-#include "scne_scanner.h"
-#include "geom_version.h"
-#include "view_geomscenegl.h"
 
-#include "Tools/util_enviro.h"
-#include "actn_binaryprinter.h"
+#include <scenegraph/pgl_version.h>
 
-GEOM_USING_NAMESPACE
+#include <algo/codec/scne_scanner.h>
+#include <algo/codec/binaryprinter.h>
+#include <gui/viewer/geomscenegl.h>
+#include <tool/util_enviro.h>
+
+PGL_USING_NAMESPACE
 using namespace std;
 
 

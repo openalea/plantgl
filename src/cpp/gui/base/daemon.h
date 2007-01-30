@@ -53,7 +53,7 @@ class QSocket;
 #include <qserversocket.h>
 #include <qnetworkprotocol.h>
 #include <qdialog.h>
-#include "geom_namespace.h"
+#include "../gui_config.h"
 /* ----------------------------------------------------------------------- */
 
 
@@ -114,7 +114,7 @@ protected slots:
 /* ----------------------------------------------------------------------- */
 
 
-class GEOM_API ViewClientObj : public QObject
+class VIEW_API ViewClientObj : public QObject
 {
     Q_OBJECT
 public:

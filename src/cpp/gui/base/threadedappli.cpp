@@ -39,10 +39,10 @@
 #ifdef QT_THREAD_SUPPORT
 
 #include <qapplication.h>
-#include "view_threadedappli.h"
-#include "view_viewer.h"
-#include "view_event.h"
-#include "Tools/dirnames.h"
+#include "threadedappli.h"
+#include "viewer.h"
+#include "event.h"
+#include <tool/dirnames.h>
 
 TOOLS_USING_NAMESPACE
 
@@ -128,8 +128,7 @@ ViewerThreadedAppli::init(){
     char ** argv = NULL;
     if(!__appli)  __appli.set(new QApplication(argc,argv));
     if(!__viewer) {
-	   __viewer.set(new Viewer(argc,argv));
-       __appli.get()->setMainWidget(__viewer);
+	   __viewer.set(build());
     }
 }
 

@@ -54,7 +54,7 @@ class QMainWindow;
 /* ----------------------------------------------------------------------- */
 
 /*
-class GEOM_API ViewComboBox : public QComboBox
+class VIEW_API ViewComboBox : public QComboBox
 {
   Q_OBJECT
 

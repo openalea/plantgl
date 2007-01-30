@@ -37,12 +37,12 @@
  */				
 
 
-#include "Tools/dirnames.h"
-#include "Tools/util_enviro.h"
-#include "view_filemanager.h"
-#include "view_icons.h"
-#include "view_properties.h"
-#include "view_glframe.h"
+#include <tool/dirnames.h>
+#include <tool/util_enviro.h>
+#include "filemanager.h"
+#include "icons.h"
+#include "properties.h"
+#include "glframe.h"
 
 #include <sstream>
 
@@ -68,22 +68,22 @@
 #include <qobjectlist.h>
 #include <qregexp.h>
 
-#include "view_grid.h"
-#include "view_camera.h"
-#include "view_controlpanel.h"
-#include "view_scenegl.h"
-#include "view_locationbar.h"
-#include "view_helpmenu.h"
-#include "view_errordialog.h"
+#include "grid.h"
+#include "camera.h"
+#include "controlpanel.h"
+#include "scenegl.h"
+#include "locationbar.h"
+#include "helpmenu.h"
+#include "errordialog.h"
 #include "util_qwidget.h"
 
 #if QT_VERSION < 300
 #ifndef QT_NO_NETWORKPROTOCOL_HTTP
-#include "view_http.h"
+#include "http.h"
 #endif
 #endif
 
-// #include "view_cropimages.h"
+// #include "cropimages.h"
 
 TOOLS_USING_NAMESPACE
 

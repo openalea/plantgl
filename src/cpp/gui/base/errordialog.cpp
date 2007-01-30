@@ -39,8 +39,8 @@
 #error Debug Mode
 #endif
 
-#include "view_errordialog.h"
-#include "view_messagedisplayer.h"
+#include "errordialog.h"
+#include "interface/messagedisplayer.h"
 #include <qevent.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>

@@ -43,7 +43,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/config.h"
+#include "../gui_config.h"
 
 #include <qvariant.h>
 #include <qdialog.h>
@@ -70,7 +70,7 @@ class QListViewItem;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewSysInfo : public QDialog
+class VIEW_API ViewSysInfo : public QDialog
 { 
   Q_OBJECT
 

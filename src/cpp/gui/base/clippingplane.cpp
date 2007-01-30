@@ -41,9 +41,9 @@
 #include <qpushbutton.h>
 #include <qgl.h>
    
-#include "view_clippingplane.h"
-#include "view_clippingplanewidget.h"
-#include "view_icons.h"
+#include "clippingplane.h"
+#include "interface/clippingplanewidget.h"
+#include "icons.h"
 #include "util_qwidget.h"
 #include "GL/gl.h"
 

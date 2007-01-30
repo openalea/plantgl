@@ -35,10 +35,10 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "view_modalscenegl.h"
-#include "view_modalwidget.h"
+#include "modalscenegl.h"
+#include "modalwidget.h"
 #include "util_qwidget.h"
-#include "view_icons.h"
+#include "icons.h"
 
 #include <qtoolbutton.h>
 #include <qvariant.h>

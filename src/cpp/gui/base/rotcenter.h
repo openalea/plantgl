@@ -44,11 +44,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/util_gl.h"
+#include "object.h"
+
+#include <algo/opengl/util_gl.h>
+#include <math/util_vector.h>
+
 #include <qpopupmenu.h>
 
-#include "view_object.h"
-#include "Tools/util_vector.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,7 +70,7 @@ class ViewDialog;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewRotCenterGL  : public ViewRelativeObjectGL
+class VIEW_API ViewRotCenterGL  : public ViewRelativeObjectGL
 {
   Q_OBJECT
   Q_PROPERTY(int X READ x WRITE setX );
@@ -224,7 +226,7 @@ protected :
    \brief A Menu to control a RotCenterGL
 
 */
-class GEOM_API ViewRotCenterMenu : public QPopupMenu {
+class VIEW_API ViewRotCenterMenu : public QPopupMenu {
    Q_OBJECT
  
 public :

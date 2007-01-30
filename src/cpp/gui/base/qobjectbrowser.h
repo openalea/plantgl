@@ -57,7 +57,7 @@ class QBrowser;
    \brief The Browser of the QObject of the viewer
 */
 
-class GEOM_API ViewQObjectBrowser : public ViewDialog
+class VIEW_API ViewQObjectBrowser : public ViewDialog
 {
     Q_OBJECT
 	public:

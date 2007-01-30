@@ -35,10 +35,11 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "Tools/util_gl.h"
-#include "Tools/util_glut.h"
-#include "Tools/util_math.h"
-#include "util_qstring.h"
+#include <algo/opengl/util_gl.h>
+#include <algo/opengl/util_glut.h>
+#include <math/util_math.h>
+#include <gui/viewer/util_qstring.h>
+
 #include <qtextstream.h>
 #include <qtabwidget.h>
 #include <qlineedit.h>
@@ -52,17 +53,17 @@
 #include <qmessagebox.h>
 #include <qbitmap.h>
 
-#include "view_filemanager.h"
-#include "view_camera.h"
-#include "view_cameraqt.h"
-#include "view_cameraqt2.h"
-#include "view_icons.h"
-#include "view_glframe.h"
-#include "view_event.h"
+#include "filemanager.h"
+#include "camera.h"
+#include "interface/cameraqt.h"
+#include "interface/cameraqt2.h"
+#include "icons.h"
+#include "glframe.h"
+#include "event.h"
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

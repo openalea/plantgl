@@ -45,9 +45,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "scne_scene.h"
-#include "geom_geometry.h"
-#include "Tools/util_vector.h"
+#include "../gui_config.h"
+#include <math/util_vector.h>
+#include <vector>
+#include <string>
 
 /* ----------------------------------------------------------------------- */
 
@@ -62,8 +63,11 @@
 
 class ViewRayBuffer;
 class ViewZBuffer;
+class QCustomEvent;
+class ViewerBuilder;
 
-class GEOM_API ViewerApplication {
+
+class VIEW_API ViewerApplication {
 
 public :
 
@@ -81,11 +85,6 @@ public :
 
   static void setBashMode(bool);
 
-  /// Display the scene _scene.
-  static void display(const GEOM(ScenePtr)& s);
-  static void display(const GEOM(GeometryPtr)& g);
-  static void add(const GEOM(ScenePtr)& s);
-  static void add(const GEOM(GeometryPtr)& g);
   static void update();
 
   static void saveImage( const std::string& filename, 
@@ -163,15 +162,15 @@ public :
   static void setGeometry(int,int,int,int);
 
   static double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL); 
-  static std::vector<std::pair<uint32_t,double> > getProjectionSizes(const GEOM(ScenePtr)& sc); 
 
   static void setPerspectiveCamera(); 
   static void setOrthographicCamera(); 
 
-// protected :
+protected :
 
-  /// use thread or not.
-  //bool __useThread;
+	static void _sendAnEvent(QCustomEvent *);
+	static void _setViewerBuilder(ViewerBuilder * builder);
+
 };
 
 /* ----------------------------------------------------------------------- */

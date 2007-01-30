@@ -35,8 +35,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_simpleappli.h"
-#include "view_viewer.h"
+#include "simpleappli.h"
+#include "viewer.h"
 #include <qapplication.h>
 
 ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppli(), __viewer(0),__appli(0), __ownappli(false) { launch(); }
@@ -93,7 +93,7 @@ ViewerSimpleAppli::launch(){
 	if(qApp != NULL){
 		__appli = qApp;
 		__ownappli = false;
-		__viewer = new Viewer();
+		__viewer = build();
 		if(__appli->mainWidget() == NULL)
 			__appli->setMainWidget(__viewer);
 		__viewer->show();
@@ -102,7 +102,7 @@ ViewerSimpleAppli::launch(){
 		int argc = 0;
 		__appli = new QApplication(argc,NULL);
 		__ownappli = true;
-		__viewer = new Viewer();
+		__viewer = build();
         __appli->setMainWidget(__viewer);
 		__viewer->show();
 		__appli->exec();

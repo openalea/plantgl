@@ -59,30 +59,28 @@
 #include <qclipboard.h>
 #include <qinputdialog.h>
 
-#include "view_viewer.h"
-#include "view_event.h"
-#include "view_scenegl.h"
-#include "view_camera.h"
-#include "view_glframe.h"
-#include "view_controlpanel.h"
-#include "view_helpmenu.h"
-#include "view_icons.h"
-#include "view_errordialog.h"
-#include "view_filemanager.h"
-#include "view_browser.h"
-#include "view_geomevent.h"
-#include "view_translator.h"
-#include "view_daemon.h"
+#include "viewer.h"
+#include "event.h"
+#include "scenegl.h"
+#include "camera.h"
+#include "glframe.h"
+#include "controlpanel.h"
+#include "helpmenu.h"
+#include "icons.h"
+#include "errordialog.h"
+#include "filemanager.h"
+#include "browser.h"
+#include "event.h"
+#include "translator.h"
+#include "daemon.h"
 #include "util_qwidget.h"
-#if QT_VERSION >= 300
-#include "view_frameglsizedialog.h"
-#endif
+#include "interface/frameglsizedialog.h"
 
 #ifdef Q_WS_WIN
 #include "third_party/Qt/trayicon.h"
 #endif
 
-#include "Tools/util_enviro.h"
+#include <tool/util_enviro.h>
 
 #include <iostream>
 
@@ -586,17 +584,6 @@ Viewer::keyPressEvent ( QKeyEvent * e)
   }
 }
 
-void Viewer::changeScene( const GEOM::ScenePtr& s )
-{
-  GeomSceneChangeEvent k( s );
-  __GLFrame->getSceneRenderer()->sceneChangeEvent( &k );
-  /*
-  if(!isHidden()){
-    if(!isActiveWindow())
-      setActiveWindow();
-  }
-  */
-}
 
 void Viewer::openFile(const QString& filename)
 {

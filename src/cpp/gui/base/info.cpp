@@ -35,8 +35,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_info.h"
-#include "Tools/util_types.h"
+#include "info.h"
+#include <tool/util_types.h>
 
 #include <qheader.h>
 #include <qlabel.h>
@@ -81,7 +81,7 @@
 #include <winbase.h>
 #endif
 
-#include "Tools/util_glut.h"
+#include <algo/opengl/util_glut.h>
 
 #ifdef __GNUC__
 

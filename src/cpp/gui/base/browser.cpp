@@ -36,9 +36,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_browser.h"
-#include "view_scenegl.h"
-#include "view_qbrowser.h"
+#include "browser.h"
+#include "scenegl.h"
+#include "interface/qbrowser.h"
 
 #include <qlistview.h>
 #include <qpushbutton.h>

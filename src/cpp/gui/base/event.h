@@ -48,8 +48,8 @@
 #include <qcolor.h>
 #include <qstringlist.h>
 #include <vector>
-#include "Tools/config.h"
-#include "Tools/util_vector.h"
+#include "../gui_config.h"
+#include <math/util_vector.h>
 
 #ifdef QT_THREAD_SUPPORT
 #include <qthread.h>
@@ -59,7 +59,7 @@ TOOLS_USING(Vector3)
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewEvent : public QCustomEvent {
+class VIEW_API ViewEvent : public QCustomEvent {
 public:
 
   ViewEvent(int type):
@@ -79,7 +79,7 @@ public:
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewSceneChangeEvent : public ViewEvent {
+class VIEW_API ViewSceneChangeEvent : public ViewEvent {
 
   public :
 
@@ -104,7 +104,7 @@ private:
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewFileChangeEvent : public ViewEvent {
+class VIEW_API ViewFileChangeEvent : public ViewEvent {
 
   public :
 
@@ -121,7 +121,7 @@ class GEOM_API ViewFileChangeEvent : public ViewEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewImageSaveEvent : public ViewEvent {
+class VIEW_API ViewImageSaveEvent : public ViewEvent {
 
   public :
 
@@ -138,7 +138,7 @@ class GEOM_API ViewImageSaveEvent : public ViewEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewRefreshEvent : public ViewEvent {
+class VIEW_API ViewRefreshEvent : public ViewEvent {
 
   public :
 

@@ -44,7 +44,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_scenegl.h"
+#include "scenegl.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -56,7 +56,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewModalRendererGL  : public ViewSceneRendererGL
+class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
 {
   Q_OBJECT
   Q_PROPERTY( int RenderingMode READ getRenderingMode)

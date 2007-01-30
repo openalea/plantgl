@@ -44,9 +44,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_object.h"
-#include "view_glframe.h"
-#include "Tools/util_types.h"
+#include "object.h"
+#include "glframe.h"
+#include <tool/util_types.h>
 #include <qdatetime.h>
 /* ----------------------------------------------------------------------- */
 
@@ -79,7 +79,7 @@ class ViewSceneChangeEvent;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewRendererGL  : public ViewObjectGL
+class VIEW_API ViewRendererGL  : public ViewObjectGL
 {
   Q_OBJECT
   Q_PROPERTY( QString Filename READ getFilename WRITE openFile )
@@ -234,7 +234,7 @@ private:
       \brief An abstract class for Display Manager of GL Scene.
       
 */
-class GEOM_API ViewSceneRendererGL  : public ViewRendererGL
+class VIEW_API ViewSceneRendererGL  : public ViewRendererGL
 {
   Q_OBJECT
   Q_PROPERTY( bool LightEnable READ isLightEnable )

@@ -36,9 +36,9 @@
 *  ----------------------------------------------------------------------------
 */
 
-#include "view_qobjectbrowser.h"
-#include "view_qbrowser.h"
-#include "view_icons.h"
+#include "qobjectbrowser.h"
+#include "interface/qbrowser.h"
+#include "icons.h"
 
 #include <qlistview.h>
 #include <qpushbutton.h>

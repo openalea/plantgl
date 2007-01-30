@@ -35,14 +35,14 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "view_object.h"
+#include "object.h"
 
 #include <qpoint.h>
 #include <qmessagebox.h>
 #include <qgl.h>
 
-#include "view_camera.h"
-#include "view_errordialog.h"
+#include "camera.h"
+#include "errordialog.h"
 #include <stdlib.h>
 
 /* ----------------------------------------------------------------------- */

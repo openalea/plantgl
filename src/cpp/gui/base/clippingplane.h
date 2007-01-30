@@ -47,7 +47,7 @@
 
 #include <qstring.h>
 #include <qpopupmenu.h>   
-#include "view_object.h"
+#include "object.h"
 class ClippingPlaneWidget;
 class ViewDialog;
 
@@ -61,7 +61,7 @@ class ViewDialog;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewClippingPlaneGL  : public ViewObjectGL
+class VIEW_API ViewClippingPlaneGL  : public ViewObjectGL
 {
   Q_OBJECT
 
@@ -163,7 +163,7 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 /// Menu to control a ViewClippingPlaneGL
-class GEOM_API ViewCPlaneMenu : public QPopupMenu {
+class VIEW_API ViewCPlaneMenu : public QPopupMenu {
    Q_OBJECT
  
 public :

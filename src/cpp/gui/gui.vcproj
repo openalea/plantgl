@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="libGui"
+	ProjectGUID="{30373852-CE1B-4BAC-A9FB-A3395AAC1BB4}"
+	RootNamespace="libGui">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				PreprocessorDefinitions="VIEW_MAKEDLL;PGL_DEBUG"
+				RuntimeLibrary="3"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
+				OutputFile="../../../bin/libGui-d.dll"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				GenerateDebugInformation="TRUE"
+				ImportLibrary="../../../lib/$(TargetName).lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR"
+				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				PreprocessorDefinitions="VIEW_MAKEDLL"
+				RuntimeLibrary="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
+				OutputFile="../../../bin/libGui.dll"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				ImportLibrary="../../../lib/$(TargetName).lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Base"
+			Filter="">
+			<File
+				RelativePath=".\base\browser.cpp">
+			</File>
+			<File
+				RelativePath=".\base\browser.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\configuration.cpp">
+			</File>
+			<File
+				RelativePath=".\base\configuration.h">
+			</File>
+			<File
+				RelativePath=".\base\controlpanel.cpp">
+			</File>
+			<File
+				RelativePath=".\base\controlpanel.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\daemon.cpp">
+			</File>
+			<File
+				RelativePath=".\base\daemon.h">
+			</File>
+			<File
+				RelativePath=".\base\errordialog.cpp">
+			</File>
+			<File
+				RelativePath=".\base\errordialog.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\event.cpp">
+			</File>
+			<File
+				RelativePath=".\base\event.h">
+			</File>
+			<File
+				RelativePath=".\base\filemanager.cpp">
+			</File>
+			<File
+				RelativePath=".\base\filemanager.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\frameglsizedialog.h">
+			</File>
+			<File
+				RelativePath=".\base\glframe.cpp">
+			</File>
+			<File
+				RelativePath=".\base\glframe.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\gloptions.h">
+			</File>
+			<File
+				RelativePath=".\base\guicon.cpp">
+			</File>
+			<File
+				RelativePath=".\base\guicon.h">
+			</File>
+			<File
+				RelativePath=".\base\helpmenu.cpp">
+			</File>
+			<File
+				RelativePath=".\base\helpmenu.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\icons.cpp">
+			</File>
+			<File
+				RelativePath=".\base\icons.h">
+			</File>
+			<File
+				RelativePath=".\base\info.cpp">
+			</File>
+			<File
+				RelativePath=".\base\info.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\locationbar.cpp">
+			</File>
+			<File
+				RelativePath=".\base\locationbar.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\properties.cpp">
+			</File>
+			<File
+				RelativePath=".\base\properties.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\qbrowser.h">
+			</File>
+			<File
+				RelativePath=".\base\qobjectbrowser.cpp">
+			</File>
+			<File
+				RelativePath=".\base\qobjectbrowser.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\translator.cpp">
+			</File>
+			<File
+				RelativePath=".\base\translator.h">
+			</File>
+			<File
+				RelativePath=".\base\util_qwidget.cpp">
+			</File>
+			<File
+				RelativePath=".\base\util_qwidget.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\util_serializedobj.h">
+			</File>
+			<File
+				RelativePath=".\base\viewer.cpp">
+			</File>
+			<File
+				RelativePath=".\base\viewer.h">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h..."
+						CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+						AdditionalDependencies="%QTDIR%\bin\moc.exe "
+						Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\base\zbuffer.cpp">
+			</File>
+			<File
+				RelativePath=".\base\zbuffer.h">
+			</File>
+			<Filter
+				Name="Interface"
+				Filter="">
+				<File
+					RelativePath=".\base\interface\cameraqt.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\cameraqt2.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\clippingplanewidget.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\fogwidget.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\frameglsizedialog.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\messagedisplayer.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\qbrowser.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\interface\rotcenteredit.ui">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\uic.exe"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
+					</FileConfiguration>
+				</File>
+				<Filter
+					Name="Generated Files"
+					Filter="">
+					<File
+						RelativePath=".\base\interface\cameraqt.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\cameraqt2.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\clippingplanewidget.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\controlpanelwidget.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\fogwidget.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\frameglsizedialog.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\gloptions.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\messagedisplayer.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\qbrowser.h">
+					</File>
+					<File
+						RelativePath=".\base\interface\rotcenteredit.h">
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="ViewObjectGL">
+				<File
+					RelativePath=".\base\camera.cpp">
+				</File>
+				<File
+					RelativePath=".\base\camera.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\cameraqt.h">
+				</File>
+				<File
+					RelativePath=".\base\cameraqt2.h">
+				</File>
+				<File
+					RelativePath=".\base\clippingplane.cpp">
+				</File>
+				<File
+					RelativePath=".\base\clippingplane.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\clippingplanewidget.h">
+				</File>
+				<File
+					RelativePath=".\base\fog.cpp">
+				</File>
+				<File
+					RelativePath=".\base\fog.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\fogwidget.h">
+				</File>
+				<File
+					RelativePath=".\base\grid.cpp">
+				</File>
+				<File
+					RelativePath=".\base\grid.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\light.cpp">
+				</File>
+				<File
+					RelativePath=".\base\light.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\modalscenegl.cpp">
+				</File>
+				<File
+					RelativePath=".\base\modalscenegl.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\modalwidget.cpp">
+				</File>
+				<File
+					RelativePath=".\base\modalwidget.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\object.cpp">
+				</File>
+				<File
+					RelativePath=".\base\object.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\rotcenter.cpp">
+				</File>
+				<File
+					RelativePath=".\base\rotcenter.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\base\rotcenteredit.h">
+				</File>
+				<File
+					RelativePath=".\base\scenegl.cpp">
+				</File>
+				<File
+					RelativePath=".\base\scenegl.h">
+					<FileConfiguration
+						Name="Debug|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h..."
+							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;
+"
+							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							Outputs="&quot;$(InputDir)/Moc/moc_$(InputName).cpp&quot;"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="Applications">
+				<File
+					RelativePath=".\base\appbuilder.h">
+				</File>
+				<File
+					RelativePath=".\base\appli.cpp">
+				</File>
+				<File
+					RelativePath=".\base\appli.h">
+				</File>
+				<File
+					RelativePath=".\base\application.cpp">
+				</File>
+				<File
+					RelativePath=".\base\application.h">
+				</File>
+				<File
+					RelativePath=".\base\simpleappli.cpp">
+				</File>
+				<File
+					RelativePath=".\base\simpleappli.h">
+				</File>
+				<File
+					RelativePath=".\base\threadedappli.cpp">
+				</File>
+				<File
+					RelativePath=".\base\threadedappli.h">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Viewer"
+			Filter="">
+			<Filter
+				Name="Interface"
+				Filter="">
+			</Filter>
+		</Filter>
+		<File
+			RelativePath=".\gui_config.h">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

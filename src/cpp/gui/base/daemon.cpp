@@ -39,7 +39,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_daemon.h"
+#include "daemon.h"
 #include <qtextstream.h>
 #include <qurloperator.h>
 #include <qnetwork.h>

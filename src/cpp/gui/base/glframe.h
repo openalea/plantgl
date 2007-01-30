@@ -63,7 +63,7 @@ class QTabWidget;
 #warning Qt compiled without openGL support
 #endif
 
-#include "Tools/util_types.h"
+#include <tool/util_types.h>
 #include <vector>
 
 /* ----------------------------------------------------------------------- */
@@ -79,10 +79,10 @@ class ViewErrorDialog;
 class ViewGridEvent;
 class ViewCameraEvent;
 #include "util_qwidget.h"
-// #include "view_zbuffer.h"
+// #include "zbuffer.h"
 class ViewRayBuffer;
 class ViewZBuffer;
-#include "Tools/util_vector.h"
+#include <math/util_vector.h>
 
 TOOLS_USING(Vector3)
 
@@ -96,7 +96,7 @@ TOOLS_USING(Vector3)
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewGLFrame : public QGLWidget
+class VIEW_API ViewGLFrame : public QGLWidget
 {
   Q_OBJECT
   Q_PROPERTY( QColor BgColor READ getBackGroundColor WRITE setBackGroundColor )
@@ -384,7 +384,7 @@ signals:
 
 };
 
-class GEOM_API ViewDoubleToolButton : public QToolButton {
+class VIEW_API ViewDoubleToolButton : public QToolButton {
   Q_OBJECT
 
 public :

@@ -51,12 +51,12 @@
 #include <qlayout.h>
 #include <qmainwindow.h>
 
-#include "view_controlpanel.h"
-#include "view_glframe.h"
-#include "view_camera.h"
-#include "view_light.h"
-#include "view_grid.h"
-#include "view_scenegl.h"
+#include "controlpanel.h"
+#include "glframe.h"
+#include "camera.h"
+#include "light.h"
+#include "grid.h"
+#include "scenegl.h"
 
 
 /* ----------------------------------------------------------------------- */

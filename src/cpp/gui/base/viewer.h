@@ -48,9 +48,9 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qmainwindow.h>
-#include "Tools/util_types.h"
+#include <tool/util_types.h>
 #include <vector>
-#include "scne_scene.h"
+
 #ifdef QT_THREAD_SUPPORT
 #include <qwaitcondition.h>
 #if QT_VERSION >= 300
@@ -89,7 +89,7 @@ class TrayIcon;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Viewer : public QMainWindow
+class VIEW_API Viewer : public QMainWindow
 {
   Q_OBJECT
 public:
@@ -111,9 +111,6 @@ public:
   ViewRendererGL * getSceneRenderer() const;
   
   void setSceneRenderer(ViewRendererGL * s);
-
-  // Update the scene
-  void changeScene( const GEOM::ScenePtr& e );
 
   // Save the view as a bitmap
   void saveImage( QString _filename, const char* _format, bool withAlpha = false );

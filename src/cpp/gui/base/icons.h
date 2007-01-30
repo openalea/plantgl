@@ -46,7 +46,7 @@
 #ifndef __view_icons_h__
 #define __view_icons_h__
 
-#include "Tools/config.h"
+#include "../gui_config.h"
 
 class QPixmap;
 
@@ -59,7 +59,7 @@ class QPixmap;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewerIcon 
+class VIEW_API ViewerIcon 
 {
 
     public :

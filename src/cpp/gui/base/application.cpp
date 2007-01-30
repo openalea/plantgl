@@ -39,19 +39,15 @@
 
 #include <qapplication.h>
 #include <qcolor.h>
-#include "Tools/dirnames.h"
-#include "view_application.h"
-#include "view_simpleappli.h"
-#include "view_viewer.h"
-#include "view_geomevent.h"
-#include "view_object.h"
-#include "util_geomgl.h"
+#include <tool/dirnames.h>
+#include "application.h"
+#include "simpleappli.h"
+#include "viewer.h"
+#include "event.h"
+#include "object.h"
 #include "util_serializedobj.h"
-#include "appe_material.h"
-#include "scne_shape.h"
 
 
-GEOM_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 
@@ -59,7 +55,7 @@ using namespace std;
 #ifdef QT_THREAD_SUPPORT
 
 #include <qthread.h>
-#include "view_threadedappli.h"
+#include "threadedappli.h"
 
 #endif
 
@@ -130,31 +126,6 @@ ViewerApplication::setBashMode(bool m){
 	ViewObjectGL::BASHMODE = m;
 }
 
-void
-ViewerApplication::display(const GeometryPtr& g){
-  ScenePtr scene(new Scene());
-  scene->add(GeomShape(g,Material::DEFAULT_MATERIAL));
-  ViewerApplication::display(scene);
-}
-
-void
-ViewerApplication::add(const GeometryPtr& g){
-  ScenePtr scene(new Scene());
-  scene->add(GeomShape(g,Material::DEFAULT_MATERIAL));
-  ViewerApplication::add(scene);
-}
-
-void
-ViewerApplication::display(const ScenePtr& s){
-	initViewerAppli();
-	if(VIEWER_APPLI)VIEWER_APPLI->display(s);
-}
-
-void
-ViewerApplication::add(const ScenePtr& s){
-	initViewerAppli();
-	if(VIEWER_APPLI)VIEWER_APPLI->add(s);
-}
 
 const vector<uint32_t>
 ViewerApplication::getSelection() {
@@ -267,9 +238,13 @@ ViewerApplication::exit() {
     if(VIEWER_APPLI) { VIEWER_APPLI->exit();  delete VIEWER_APPLI; VIEWER_APPLI = NULL; DestroyedAppli = true; }
 }
 
-void _sendAnEvent(QCustomEvent *e){
+void ViewerApplication::_sendAnEvent(QCustomEvent *e){
   initViewerAppli();
   if(VIEWER_APPLI)VIEWER_APPLI->sendAnEvent(e);
+}
+
+void ViewerApplication::_setViewerBuilder(ViewerBuilder * builder){
+	ViewerAppli::setBuilder(builder);
 }
 
 void
@@ -381,12 +356,6 @@ ViewerApplication::getProjectionSize(int* nbpixel, double* pixelwidth){
   return res;
 }
 
-std::vector<std::pair<uint32_t,double> > 
-ViewerApplication::getProjectionSizes(const GEOM(ScenePtr)& sc){
-  std::vector<std::pair<uint32_t,double> > res;
-  _sendAnEvent(new GeomProjListEvent(sc,&res));
-  return res;
-}
 
 void ViewerApplication::setPerspectiveCamera(){
   _sendAnEvent(new ViewCameraProjEvent(true));

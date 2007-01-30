@@ -35,16 +35,16 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "view_rotcenter.h"
-#include "view_rotcenteredit.h"
-#include "view_icons.h"
-#include "view_glframe.h"
-#include "view_geomscenegl.h"
-
-#include "geom_boundingbox.h"
-
+#include "rotcenter.h"
+#include "interface/rotcenteredit.h"
+#include "icons.h"
+#include "glframe.h"
+#include "scenegl.h"
 #include "util_qwidget.h"
-#include "Tools/util_math.h"
+
+#include <scenegraph/geometry/boundingbox.h>
+#include <math/util_math.h>
+
 #include <qlineedit.h>
 #include <qslider.h>
 #include <qpushbutton.h>
@@ -52,10 +52,10 @@
 #include <qtoolbar.h>
 #include <qfile.h>
 #include <qgl.h>
-#include "Tools/util_glut.h"
+#include <algo/opengl/util_glut.h>
 
 TOOLS_USING_NAMESPACE
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -233,15 +233,15 @@ void ViewRotCenterGL::center()
 	if(__frame){
 		ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
 		if(f){
-			ViewGeomSceneGL * sc = dynamic_cast<ViewGeomSceneGL *>(f->getSceneRenderer());
-			if(sc){
-				BoundingBoxPtr bbx = sc->getGlobalBoundingBox();
+			// ViewGeomSceneGL * sc = dynamic_cast<ViewGeomSceneGL *>(f->getSceneRenderer());
+			// if(sc){
+				BoundingBoxPtr bbx = f->getSceneRenderer()->getGlobalBoundingBox();
 				Vector3 center = bbx->getCenter();
 				// center.z() = bbx->getLowerLeftCorner().z();
 				__position = center;
 				if(!__active)activate();
 			    else emit valueChanged();
-			}
+			// }
 		}
 	}
 }

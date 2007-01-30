@@ -42,11 +42,11 @@
 #include <qlineedit.h>
 #include <qcolordialog.h>
 #include <qgl.h>
-#include "util_appegl.h"
-#include "view_fog.h"
-#include "view_icons.h"
+#include <algo/opengl/util_appegl.h>
+#include "fog.h"
+#include "icons.h"
 #include "util_qwidget.h"
-#include "view_fogwidget.h"
+#include "interface/fogwidget.h"
 #include <assert.h>
 #include <iostream>
 

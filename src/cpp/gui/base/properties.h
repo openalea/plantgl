@@ -43,7 +43,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_glframe.h"
+#include "glframe.h"
 #include <qvariant.h>
 #include <qdialog.h>
 
@@ -69,7 +69,7 @@ class ViewControlPanel;
 /* ----------------------------------------------------------------------- */
 
 /// Dialog to display properties of the file, the scene, the camera, ...
-class GEOM_API ViewProperties : public QDialog
+class VIEW_API ViewProperties : public QDialog
 { 
     Q_OBJECT
 

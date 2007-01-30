@@ -34,8 +34,8 @@
  *
  *  ----------------------------------------------------------------------------
  */				
-#include "view_locationbar.h"
-#include "view_icons.h"
+#include "locationbar.h"
+#include "icons.h"
 
 #include <qcombobox.h>
 #include <qlabel.h>

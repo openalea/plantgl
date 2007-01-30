@@ -41,7 +41,7 @@
 #ifndef __view_appbuilder_h__
 #define __view_appbuilder_h__
 
-#include "view_config.h"
+#include "../gui_config.h"
 
 class Viewer;
 

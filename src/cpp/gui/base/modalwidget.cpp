@@ -36,9 +36,9 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "view_modalwidget.h"
-#include "view_modalscenegl.h"
-#include "view_icons.h"
+#include "modalwidget.h"
+#include "modalscenegl.h"
+#include "icons.h"
 
 ViewRenderingModeMenu::ViewRenderingModeMenu(ViewModalRendererGL * renderer, QWidget * parent, const char * name):
   QPopupMenu(parent,name)

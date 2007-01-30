@@ -46,7 +46,7 @@
 #include <qtoolbar.h>
 #include <qdialog.h>
 #include <qstatusbar.h>
-#include "Tools/config.h"
+#include "../gui_config.h"
 class QToolButton;
 class QPopupMenu;
 class QProgressBar;
@@ -62,7 +62,7 @@ class QProgressBar;
 
 
 
-class GEOM_API ViewToolBar : public QToolBar {
+class VIEW_API ViewToolBar : public QToolBar {
   Q_OBJECT
   
   public :
@@ -114,7 +114,7 @@ class GEOM_API ViewToolBar : public QToolBar {
    \class ViewExclusiveButtonSet
    \brief A Set of Exclusive QToolButton.
 */
-class GEOM_API ViewExclusiveButtonSet :  public QObject {
+class VIEW_API ViewExclusiveButtonSet :  public QObject {
   Q_OBJECT
 
 public :
@@ -149,7 +149,7 @@ protected:
    \class ViewDialog
    \brief A QDialog that emit a signal when its visibility changed.
 */
-class GEOM_API ViewDialog : public QDialog {
+class VIEW_API ViewDialog : public QDialog {
   Q_OBJECT
 
 public:
@@ -211,7 +211,7 @@ protected :
    \class ViewPopupButton
    \brief A PopupButton that can be checked using slots check.
 */
-class GEOM_API ViewPopupButton : public QObject {
+class VIEW_API ViewPopupButton : public QObject {
   Q_OBJECT
 
 public :
@@ -254,7 +254,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_API void drawArrow(const QPixmap *,int s=1);
+VIEW_API void drawArrow(const QPixmap *,int s=1);
 
 /* ----------------------------------------------------------------------- */
 #endif

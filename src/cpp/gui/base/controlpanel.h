@@ -48,7 +48,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "util_qwidget.h"
-#include "view_icons.h"
+#include "icons.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,7 +73,7 @@ class ViewGLFrame;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewControlPanel : public ViewToolBar
+class VIEW_API ViewControlPanel : public ViewToolBar
 {
   Q_OBJECT
 public:

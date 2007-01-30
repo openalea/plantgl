@@ -34,14 +34,14 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_properties.h"
-#include "view_scenegl.h"
-#include "view_camera.h"
-#include "view_glframe.h"
-#include "view_filemanager.h"
-#include "view_controlpanel.h"
-#include "view_translator.h"
-#include "Tools/util_enviro.h"
+#include "properties.h"
+#include "scenegl.h"
+#include "camera.h"
+#include "glframe.h"
+#include "filemanager.h"
+#include "controlpanel.h"
+#include "translator.h"
+#include <tool/util_enviro.h>
 
 #include <qframe.h>
 #include <qlabel.h>
@@ -65,7 +65,7 @@
 #define XBEG_2 XBEG_1+WIDTH_1+10
 #define WIDTH_2 260
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /*
  *  Constructs a Properties which is a child of 'parent', with the

@@ -14,7 +14,7 @@
 #define __GUICON_H__
 
 /// Create a console and redirect io on it.
-void GEOM_API RedirectIOToConsole();
+void VIEW_API RedirectIOToConsole();
 
 #endif
 

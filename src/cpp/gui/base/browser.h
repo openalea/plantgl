@@ -60,7 +60,7 @@ class ViewRendererGL;
    \brief The Browser of the viewer
 */
 
-class GEOM_API ViewBrowser : public ViewDialog
+class VIEW_API ViewBrowser : public ViewDialog
 {
     Q_OBJECT
 	public:

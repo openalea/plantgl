@@ -37,7 +37,7 @@
  */
 
 #include <iomanip>
-#include "Tools/config.h"
+#include "../gui_config.h"
 #ifdef STL_EXTENSION
 	#include <sstream>
 #else
@@ -68,24 +68,25 @@
 #include <qtabwidget.h>
 #include <qvariant.h>
 
-#include "view_glframe.h"
-#include "view_icons.h"
-#include "view_camera.h"
-#include "view_light.h"
-#include "view_grid.h"
-#include "view_rotcenter.h"
-#include "view_clippingplane.h"
-#include "view_fog.h"
-#include "view_errordialog.h"
+#include "glframe.h"
+#include "icons.h"
+#include "camera.h"
+#include "light.h"
+#include "grid.h"
+#include "rotcenter.h"
+#include "clippingplane.h"
+#include "fog.h"
+#include "errordialog.h"
 #include "util_qwidget.h"
 
-#include "view_event.h"
-#include "view_editgeomscenegl.h"
-#include "view_zbuffer.h"
+#include "event.h"
+// #include "editgeomscenegl.h"
+#include "scenegl.h"
+#include "zbuffer.h"
 
-#include "Tools/util_glut.h"
+#include <algo/opengl/util_glut.h>
 
-// GEOM_USING_NAMESPACE
+// PGL_USING_NAMESPACE
 
 using namespace std;
 using namespace STDEXT;
@@ -109,11 +110,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __rotCenter(0),
   __clippingPlane(0),
   __fog(0),
-#ifdef MS_EDITION
-  __scene((r==NULL?new ViewMultiscaleEditGeomSceneGL(NULL,NULL,NULL,"Scene"):r)),
-#else
-  __scene((r==NULL?new ViewEditGeomSceneGL(NULL,NULL,NULL,"Scene"):r)),
-#endif
+  __scene(r),
   __BgColor(170,170,170),
   __linewidth(1),
   __mode(Rotation),

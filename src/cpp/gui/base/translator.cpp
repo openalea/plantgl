@@ -34,7 +34,7 @@
  *  ----------------------------------------------------------------------------
  */	
 			
-#include "view_translator.h"
+#include "translator.h"
 
 #ifndef SYSTEM_IS__CYGWIN
 

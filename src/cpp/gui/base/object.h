@@ -46,7 +46,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qobject.h>
-#include "Tools/config.h"
+#include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -70,7 +70,7 @@ class ViewStatusBar;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewObjectGL  : public QObject
+class VIEW_API ViewObjectGL  : public QObject
 {
   Q_OBJECT
 
@@ -188,7 +188,7 @@ class ViewCameraGL;
    This object have a relative representation.
 
 */
-class GEOM_API ViewRelativeObjectGL  : public ViewObjectGL
+class VIEW_API ViewRelativeObjectGL  : public ViewObjectGL
 {
   Q_OBJECT
 

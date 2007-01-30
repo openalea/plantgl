@@ -50,13 +50,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/config.h"
-#include "Tools/util_vector.h"
-#include "util_array2.h"
+#include "../gui_config.h"
+#include <math/util_vector.h>
+#include <tool/util_array2.h>
+#include <scenegraph/appearance/color.h>
 
-#include "appe_color.h"
-
-struct GEOM_API RayIntersection {
+struct VIEW_API RayIntersection {
 public:
 	RayIntersection (size_t _id,real_t _zmin,real_t _zmax):id(_id),zmin(_zmin),zmax(_zmax){}
 
@@ -74,32 +73,32 @@ public:
 
 typedef std::vector<RayIntersection > RayIntersections;
 
-class GEOM_API ViewRayBuffer : public GEOM(Array2)<RayIntersections>
+class VIEW_API ViewRayBuffer : public TOOLS(Array2)<RayIntersections>
 {
 public:
-	ViewRayBuffer(size_t w, size_t h): GEOM(Array2)<RayIntersections>(w,h){}
+	ViewRayBuffer(size_t w, size_t h): TOOLS(Array2)<RayIntersections>(w,h){}
 
 	void setAt(size_t i, size_t j, void * buffer, size_t size,const TOOLS(Vector3)& position) ;
 };
 
-struct GEOM_API ZBufferUnit {
+struct VIEW_API ZBufferUnit {
 public:
 	ZBufferUnit(TOOLS(Vector3) _pos = TOOLS(Vector3::ORIGIN), 
-			    GEOM(Color4) _color = GEOM(Color4::BLACK),
+			    PGL(Color4) _color = PGL(Color4::BLACK),
 				float _depth = 1.0):pos(_pos),color(_color),depth(_depth){}
 
 	inline bool operator==(const ZBufferUnit & pValue) const
 	{ return pValue.pos == pos && pValue.color == color && pValue.depth == depth; }
 
 	TOOLS(Vector3) pos;
-	GEOM(Color4) color;
+	PGL(Color4) color;
 	float depth;
 };
 
-class GEOM_API ViewZBuffer : public GEOM(Array2)<ZBufferUnit>
+class VIEW_API ViewZBuffer : public TOOLS(Array2)<ZBufferUnit>
 {
 public:
-	ViewZBuffer(size_t w, size_t h): GEOM(Array2)<ZBufferUnit>(w,h){}
+	ViewZBuffer(size_t w, size_t h): TOOLS(Array2)<ZBufferUnit>(w,h){}
 
 	static ViewZBuffer* importglZBuffer();
 };

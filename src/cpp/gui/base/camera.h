@@ -47,12 +47,12 @@
 #include <qstring.h>
 #include <qpopupmenu.h>
 
-#include "GEOM/geom_boundingbox.h"
-#include "view_object.h"
+#include <scenegraph/geometry/boundingbox.h>
+#include "object.h"
 
 TOOLS_USING(Vector3)
 TOOLS_USING(Matrix4)
-GEOM_USING(BoundingBoxPtr)
+PGL_USING(BoundingBoxPtr)
 /* ----------------------------------------------------------------------- */
 
 class QTabWidget;
@@ -60,7 +60,7 @@ class ViewCameraGL;
 class ViewCameraEvent;
 
 /// Menu to control a ViewCameraGL
-class GEOM_API ViewCameraMenu : public QPopupMenu {
+class VIEW_API ViewCameraMenu : public QPopupMenu {
    Q_OBJECT
  
 public :
@@ -98,7 +98,7 @@ protected :
    \brief A ViewCameraGL for GL Display
 
 */
-class GEOM_API ViewCameraGL  : public ViewObjectGL
+class VIEW_API ViewCameraGL  : public ViewObjectGL
 {
   Q_OBJECT
   Q_PROPERTY(double Azimuth READ getAzimuth WRITE setAzimuth );
@@ -357,7 +357,7 @@ signals:
 
 protected :
   /// Initialize the camera
-  void initialize(const GEOM(BoundingBoxPtr)& bbox);
+  void initialize(const PGL(BoundingBoxPtr)& bbox);
   /// Initialize the camera
   void initialize(const double& _radius,const Vector3& center);
 

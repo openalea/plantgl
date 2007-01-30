@@ -44,8 +44,8 @@
 
 #include <qstring.h>
 #include <qcolor.h>
-#include "view_object.h"
-#include "Tools/util_types.h"
+#include "object.h"
+#include <tool/util_types.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ class ViewDialog;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewFogGL  : public ViewRelativeObjectGL
+class VIEW_API ViewFogGL  : public ViewRelativeObjectGL
 {
   Q_OBJECT
   Q_PROPERTY(bool Enable READ enable WRITE setEnable );

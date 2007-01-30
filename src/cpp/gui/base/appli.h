@@ -38,19 +38,27 @@
 #ifndef __view_appli_h__
 #define __view_appli_h__
 
-#include "Tools/config.h"
-#include "Tools/util_vector.h"
+#include "../gui_config.h"
+#include <math/util_vector.h>
 
 #include <string>
 #include <vector>
-#include "scne_scene.h"
 
 class ViewRayBuffer;
 class ViewZBuffer;
 class QCustomEvent;
+class ViewerBuilder;
+class Viewer;
 
 class ViewerAppli {
-	public:
+
+protected:
+	static ViewerBuilder * VIEWERBUILDER;
+	Viewer * build();
+
+public:
+	static void setBuilder(ViewerBuilder * builder);
+
 	ViewerAppli();
 	virtual ~ViewerAppli();
 
@@ -63,8 +71,6 @@ class ViewerAppli {
     virtual bool isRunning() = 0;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) = 0;
 
-	virtual void display(const GEOM(ScenePtr)& s);
-	virtual void add(const GEOM(ScenePtr)& s);
 	virtual const std::vector<uint32_t> getSelection();
 
 	virtual int question(const std::string& caption,

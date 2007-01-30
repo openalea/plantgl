@@ -46,14 +46,14 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qpopupmenu.h>
-#include "Tools/config.h"
+#include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */
 
 class ViewModalRendererGL;
 
 /// Menu to control ViewModalRendererGL
-class GEOM_API ViewRenderingModeMenu : public QPopupMenu {
+class VIEW_API ViewRenderingModeMenu : public QPopupMenu {
    Q_OBJECT
  
 public :

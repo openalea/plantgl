@@ -43,10 +43,10 @@
 #include <qfileinfo.h>
 #include <qfile.h>
 
-#include "view_icons.h"
-#include "Tools/util_types.h"
-#include "Tools/util_enviro.h"
-#include "Tools/util_hashmap.h"
+#include "icons.h"
+#include <tool/util_types.h>
+#include <tool/util_enviro.h>
+#include <tool/util_hashmap.h>
 
 using namespace std;
 STDEXT_USING_NAMESPACE

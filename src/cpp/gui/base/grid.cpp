@@ -36,15 +36,15 @@
  */				
 
 
-#include "view_grid.h"
-#include "view_event.h"
+#include "grid.h"
+#include "event.h"
 #include <GL/glu.h>
 #include <assert.h>
 #include <iostream>
 #include <qtoolbar.h>
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>
-#include "view_icons.h"
+#include "icons.h"
 
 /* ----------------------------------------------------------------------- */
 

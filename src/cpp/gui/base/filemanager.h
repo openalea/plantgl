@@ -52,7 +52,7 @@
 #include <qurloperator.h>
 
 #include <deque>
-#include "Tools/config.h"
+#include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -77,7 +77,7 @@ class ViewControlPanel;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewFileManager : public QPopupMenu 
+class VIEW_API ViewFileManager : public QPopupMenu 
 {
   Q_OBJECT
 

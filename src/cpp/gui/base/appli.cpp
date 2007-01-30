@@ -35,26 +35,18 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_appli.h"
-#include "view_geomevent.h"
-#include "view_object.h"
+#include "appli.h"
+#include "appbuilder.h"
+#include "event.h"
+#include "object.h"
 
-GEOM_USING_NAMESPACE
+ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
+Viewer * ViewerAppli::build() { return (VIEWERBUILDER?VIEWERBUILDER->build():NULL); }
+void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
 
 ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }
 ViewerAppli::~ViewerAppli(){  }
 
-void
-ViewerAppli::display(const ScenePtr& s){
-	if(!isRunning())startSession();
-    sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,false));
-}
-
-void
-ViewerAppli::add(const ScenePtr& s){
-	if(!isRunning())startSession();
-    sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,true));
-}
 
 const std::vector<uint32_t>
 ViewerAppli::getSelection() {

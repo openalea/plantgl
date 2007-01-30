@@ -62,7 +62,7 @@ class MessageDisplayer;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewErrorDialog : public ViewDialog
+class VIEW_API ViewErrorDialog : public ViewDialog
 {
   Q_OBJECT 
 

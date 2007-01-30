@@ -39,7 +39,7 @@
 #define __view_simpleappli_h__
 
 
-#include "view_appli.h"
+#include "appli.h"
 
 class QApplication;
 class Viewer;

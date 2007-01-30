@@ -37,11 +37,11 @@
  */
 
 
-#include "Tools/util_gl.h"
-#include "view_zbuffer.h"
+#include <algo/opengl/util_gl.h>
+#include "zbuffer.h"
 
 TOOLS_USING_NAMESPACE
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const Vector3& position) { 
 	RayIntersections& res = getAt(i,j) ;

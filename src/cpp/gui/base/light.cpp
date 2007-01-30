@@ -35,12 +35,12 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "view_light.h"
-#include "view_icons.h"
-#include "Tools/util_vector.h"
-#include "Tools/util_math.h"
-#include "Tools/util_glut.h"
-#include "util_appegl.h"
+#include "light.h"
+#include "icons.h"
+#include <math/util_vector.h>
+#include <math/util_math.h>
+#include <algo/opengl/util_glut.h>
+#include <algo/opengl/util_appegl.h>
 #include <qfile.h>
 #include <qstring.h>
 

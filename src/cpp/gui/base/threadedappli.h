@@ -40,7 +40,7 @@
 
 #ifdef QT_THREAD_SUPPORT
 
-#include "view_appli.h"
+#include "appli.h"
 #include "util_serializedobj.h"
 #include <qthread.h>
 #include <qwaitcondition.h>

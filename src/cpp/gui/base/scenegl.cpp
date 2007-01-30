@@ -35,11 +35,11 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "view_scenegl.h"
-#include "view_camera.h"
-#include "view_light.h"
-#include "view_filemanager.h"
-#include "view_event.h"
+#include "scenegl.h"
+#include "camera.h"
+#include "light.h"
+#include "filemanager.h"
+#include "event.h"
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qgl.h>

@@ -46,8 +46,8 @@
 
 #include <qcolor.h>
 #include <qpopupmenu.h>
-#include "GEOM/geom_boundingbox.h"
-#include "view_object.h"
+#include <scenegraph/geometry/boundingbox.h>
+#include "object.h"
 
 TOOLS_USING_NAMESPACE
 
@@ -59,7 +59,7 @@ class ViewLightGL;
 /* ----------------------------------------------------------------------- */
 
 /// Menu to control a ViewLightGL.
-class GEOM_API ViewLightMenu : public QPopupMenu {
+class VIEW_API ViewLightMenu : public QPopupMenu {
    Q_OBJECT
  
 public :
@@ -86,7 +86,7 @@ protected :
    \brief A ViewLightGL for GL Display
 
 */
-class GEOM_API ViewLightGL  : public ViewRelativeObjectGL
+class VIEW_API ViewLightGL  : public ViewRelativeObjectGL
 {
   Q_OBJECT
   Q_PROPERTY(double Azimuth READ getAzimuth WRITE setAzimuth );

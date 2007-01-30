@@ -38,35 +38,35 @@
     \brief File that convert GEOM Basic type in QString .
 */
 
-#include "Tools/util_vector.h"
-#include "geom_indexarray.h"
-#include "appe_color.h"
+#include <math/util_vector.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/appearance/color.h>
 #include <qstring.h>
 
 /// Transform a Color3 to QString
-inline QString toQString(const GEOM(Color3)& a){
-  if(a == GEOM(Color3)::BLACK)  return QString("Black");
-  if(a == GEOM(Color3)::BLUE)   return QString("Blue");
-  if(a == GEOM(Color3)::CYAN)   return QString("Cyan");
-  if(a == GEOM(Color3)::GREEN)  return QString("Green");
-  if(a == GEOM(Color3)::MAGENTA)return QString("Magenta");
-  if(a == GEOM(Color3)::RED)    return QString("Red");
-  if(a == GEOM(Color3)::WHITE)  return QString("White");
-  if(a == GEOM(Color3)::YELLOW) return QString("Yellow");
+inline QString toQString(const PGL(Color3)& a){
+  if(a == PGL(Color3)::BLACK)  return QString("Black");
+  if(a == PGL(Color3)::BLUE)   return QString("Blue");
+  if(a == PGL(Color3)::CYAN)   return QString("Cyan");
+  if(a == PGL(Color3)::GREEN)  return QString("Green");
+  if(a == PGL(Color3)::MAGENTA)return QString("Magenta");
+  if(a == PGL(Color3)::RED)    return QString("Red");
+  if(a == PGL(Color3)::WHITE)  return QString("White");
+  if(a == PGL(Color3)::YELLOW) return QString("Yellow");
   return'<'+QString::number(int(a.getRed()))+
     ','+QString::number(int(a.getGreen()))+
     ','+QString::number(int(a.getBlue()))+'>';
 }
 
-inline QString toQString(const GEOM(Color4)& a){
-  if(a == GEOM(Color4)::BLACK)  return QString("Black");
-  if(a == GEOM(Color4)::BLUE)   return QString("Blue");
-  if(a == GEOM(Color4)::CYAN)   return QString("Cyan");
-  if(a == GEOM(Color4)::GREEN)  return QString("Green");
-  if(a == GEOM(Color4)::MAGENTA)return QString("Magenta");
-  if(a == GEOM(Color4)::RED)    return QString("Red");
-  if(a == GEOM(Color4)::WHITE)  return QString("White");
-  if(a == GEOM(Color4)::YELLOW) return QString("Yellow");
+inline QString toQString(const PGL(Color4)& a){
+  if(a == PGL(Color4)::BLACK)  return QString("Black");
+  if(a == PGL(Color4)::BLUE)   return QString("Blue");
+  if(a == PGL(Color4)::CYAN)   return QString("Cyan");
+  if(a == PGL(Color4)::GREEN)  return QString("Green");
+  if(a == PGL(Color4)::MAGENTA)return QString("Magenta");
+  if(a == PGL(Color4)::RED)    return QString("Red");
+  if(a == PGL(Color4)::WHITE)  return QString("White");
+  if(a == PGL(Color4)::YELLOW) return QString("Yellow");
   return'<'+QString::number(int(a.getRed()))+
     ','+QString::number(int(a.getGreen()))+
     ','+QString::number(int(a.getBlue()))+
@@ -101,14 +101,14 @@ inline QString toQString(bool a){
 
 
 /// Transform an Index3 to QString
-inline QString toQString(const GEOM(Index3)& a){
+inline QString toQString(const PGL(Index3)& a){
   return'['+QString::number(a.getAt(0))+
     ','+QString::number(a.getAt(1))+
     ','+QString::number(a.getAt(2))+']';
 }
 
 /// Transform an Index4 to QString
-inline QString toQString(const GEOM(Index4)& a){
+inline QString toQString(const PGL(Index4)& a){
   return'<'+QString::number(a.getAt(0))+
     ','+QString::number(a.getAt(1))+
     ','+QString::number(a.getAt(2))+
@@ -116,7 +116,7 @@ inline QString toQString(const GEOM(Index4)& a){
 }
 
 /// Transform an Index3 to QString
-inline QString toQString(const GEOM(Index)& a){
+inline QString toQString(const PGL(Index)& a){
 	QString res = "<";
 	for(uint32_t i = 0 ; i < a.getSize()-1 ; i++)
 		res += QString::number(a.getAt(i))+',';

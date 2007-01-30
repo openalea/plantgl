@@ -49,8 +49,8 @@
 
 #include <qstring.h>
 #include <qpopupmenu.h>
-#include "view_object.h"
-#include "Tools/util_gl.h"
+#include "object.h"
+#include <algo/opengl/util_gl.h>
 
 class ViewGridEvent;
 
@@ -65,7 +65,7 @@ class ViewGridEvent;
 /* ----------------------------------------------------------------------- */
 
 
-class GEOM_API ViewGridGL  : public ViewRelativeObjectGL
+class VIEW_API ViewGridGL  : public ViewRelativeObjectGL
 {
   Q_OBJECT
   Q_PROPERTY(bool Axis READ getAxis WRITE showAxis );

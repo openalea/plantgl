@@ -45,7 +45,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/config.h"
+#include "../gui_config.h"
 #include <qpopupmenu.h>
 #include <qdialog.h>
 #include <qtimer.h>
@@ -64,7 +64,7 @@ class QLabel;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewHelpMenu : public QPopupMenu 
+class VIEW_API ViewHelpMenu : public QPopupMenu 
 {
   Q_OBJECT
   Q_PROPERTY(int AppStyle READ getStyle WRITE setStyle );
