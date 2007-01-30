@@ -22,6 +22,7 @@
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -63,7 +64,8 @@
 				AdditionalOptions="/GR"
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="ALGO_MAKEDLL"
-				RuntimeLibrary="2"/>
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -301,7 +303,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Bison on $(InputName).y ..."
-								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;"
+								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;
+"
 								AdditionalDependencies="C:\Tools\bin\bison.exe"
 								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"/>
 						</FileConfiguration>
@@ -310,7 +313,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Bison on $(InputName).y ..."
-								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;"
+								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;
+"
 								AdditionalDependencies="C:\Tools\bin\bison.exe"
 								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"/>
 						</FileConfiguration>
@@ -322,7 +326,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;"
+								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;
+"
 								AdditionalDependencies="C:\Tools\bin\flex.exe"
 								Outputs="$(InputDir)/$(InputName).cpp"/>
 						</FileConfiguration>
@@ -331,7 +336,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;"
+								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;
+"
 								AdditionalDependencies="C:\Tools\bin\flex.exe"
 								Outputs="$(InputDir)/$(InputName).cpp"/>
 						</FileConfiguration>

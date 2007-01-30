@@ -46,10 +46,21 @@
 
 PGL_USING_NAMESPACE
 
+class CodecInstaller {
+public:
+	CodecInstaller() { installCodecs(); }
+};
+
+static CodecInstaller MyCodecInstaller;
+
 void installCodecs(){
-	SceneFactory::get().registerCodec(new GeomCodec());
-	SceneFactory::get().registerCodec(new VgStarCodec());
-	SceneFactory::get().registerCodec(new PovCodec());
+	static bool installed = false;
+	if(!installed){
+		installed = true;
+		SceneFactory::get().registerCodec(new GeomCodec());
+		SceneFactory::get().registerCodec(new VgStarCodec());
+		SceneFactory::get().registerCodec(new PovCodec());
+	}
 }
 
 

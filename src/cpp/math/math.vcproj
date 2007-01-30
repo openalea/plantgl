@@ -21,6 +21,7 @@
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="PGLMATH_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -60,7 +61,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="PGLMATH_MAKEDLL"
-				RuntimeLibrary="2"/>
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool

@@ -22,6 +22,7 @@
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="VIEW_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -63,7 +64,8 @@
 				AdditionalOptions="/GR"
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="VIEW_MAKEDLL"
-				RuntimeLibrary="2"/>
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -116,7 +118,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -129,7 +131,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -145,7 +147,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -158,7 +160,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -174,7 +176,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -187,7 +189,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -203,7 +205,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -216,7 +218,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -232,7 +234,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -245,7 +247,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -261,7 +263,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -274,7 +276,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -290,7 +292,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -303,7 +305,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -319,7 +321,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -332,7 +334,7 @@
 
 "
 							AdditionalDependencies=""
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<Filter
@@ -1247,7 +1249,7 @@
 
 "
 							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -1260,7 +1262,7 @@
 
 "
 							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<File
@@ -1276,7 +1278,7 @@
 
 "
 							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32">
@@ -1289,7 +1291,7 @@
 
 "
 							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
-							Outputs="&quot;$(InputDir)/$(InputName).h&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;;&quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;"/>
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"/>
 					</FileConfiguration>
 				</File>
 				<Filter

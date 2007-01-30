@@ -44,8 +44,8 @@
 #include <qpixmap.h>
 
 // #define GEOM_DLL
-#include "view_viewer.h"
-#include "view_daemon.h"
+#include "../viewer/pglviewer.h"
+#include "../base/daemon.h"
 
 int main( int argc, char **argv )
 {
@@ -56,7 +56,7 @@ int main( int argc, char **argv )
   }
   
   if(!ViewClientObj().request(argc, argv)){
-	Viewer m_viewer(argc, argv) ;
+	PGLViewer m_viewer(argc, argv) ;
 	m_viewer.startDaemon();
 	m_viewer.displayTrayIcon(true);
 	a.setMainWidget(&m_viewer);
