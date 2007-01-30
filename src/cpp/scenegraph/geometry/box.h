@@ -67,7 +67,7 @@ class SG_API Box : public ParametricModel
 public:
 
   /// A structure which helps to build a Box when parsing. 
-  struct Builder : public ParametricModel::Builder {
+  struct SG_API Builder : public ParametricModel::Builder {
 
     /// A pointer to the \b Size field.
     TOOLS(Vector3) * Size;

@@ -86,7 +86,7 @@ public:
 
 
   /// A structure which helps to build an object of type of Mesh.
-  struct Builder : public ExplicitModel::Builder {
+  struct SG_API Builder : public ExplicitModel::Builder {
 
     /// A pointer to the \b CCW field.
     bool * CCW;

@@ -98,7 +98,7 @@ class SG_API Transform4 : public Matrix4Transformation
 public:
 
   /// A structure which helps to build a Transform4Ptr when parsing.
-  struct Builder
+  struct SG_API Builder
     {
 
     /// A pointer to the \b Translation field.
@@ -181,7 +181,7 @@ class SG_API MatrixTransformed : public Transformed
 public:
 
   /// A structure which helps to build an object of type of Transformed.
-  struct Builder : public Transformed::Builder {
+  struct SG_API Builder : public Transformed::Builder {
 
     /// A pointer to the \b Geometry field.
     GeometryPtr * Geometry;

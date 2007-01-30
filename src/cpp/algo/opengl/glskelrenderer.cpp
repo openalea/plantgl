@@ -37,12 +37,14 @@
 
 
 
-#include "actn_glskelrenderer.h"
-#include "actn_skelcomputer.h"
-#include "all_geometry.h"
-#include "geom_pointarray.h"
+#include "glskelrenderer.h"
 
-GEOM_USING_NAMESPACE
+#include <algo/base/skelcomputer.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/pointarray.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -63,7 +65,7 @@ TOOLS_USING_NAMESPACE
 #define GEOM_GLSKELRENDERER_GEOM(geom){ \
   GEOM_ASSERT(geom); \
   if(!(geom->apply(__skelComputer)))return false; \
-  GeomPolylinePtr _skel = __skelComputer.getSkeleton(); \
+  PolylinePtr _skel = __skelComputer.getSkeleton(); \
   if (_skel){ \
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel); \
   } \
@@ -88,7 +90,7 @@ GLSkelRenderer::GLSkelRenderer( SkelComputer& skelComputer ) :
 bool GLSkelRenderer::process( AmapSymbol * amapSymbol ) {
   GEOM_GLSKELRENDERER_GEOM(amapSymbol);
 
-  GeomPolylinePtr _skel = amapSymbol->getSkeleton();
+  PolylinePtr _skel = amapSymbol->getSkeleton();
   if (_skel){
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel);
   }
@@ -185,7 +187,7 @@ bool GLSkelRenderer::process( ExtrudedHull * extrudedHull ) {
 bool GLSkelRenderer::process( FaceSet * faceSet ) {
   GEOM_GLSKELRENDERER_GEOM(faceSet);
 
-  GeomPolylinePtr _skel = faceSet->getSkeleton();
+  PolylinePtr _skel = faceSet->getSkeleton();
   if (_skel){
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel);
   }
@@ -210,7 +212,7 @@ bool GLSkelRenderer::process( Frustum * frustum ) {
 bool GLSkelRenderer::process( Group * group ) {
   GEOM_ASSERT(group);
 
-  GeomPolylinePtr _skel = group->getSkeleton();
+  PolylinePtr _skel = group->getSkeleton();
   if (_skel){
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel);
   }
@@ -278,7 +280,7 @@ bool GLSkelRenderer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GLSkelRenderer::process( GeomPolyline * polyline ) {
+bool GLSkelRenderer::process( PGL(Polyline) * polyline ) {
   GEOM_ASSERT(polyline);
 
   GEOM_GLSKELRENDERER_DRAW_SKEL(polyline);
@@ -294,7 +296,7 @@ bool GLSkelRenderer::process( GeomPolyline * polyline ) {
 bool GLSkelRenderer::process( QuadSet * quadSet ) {
   GEOM_ASSERT(quadSet);
 
-  GeomPolylinePtr _skel = quadSet->getSkeleton();
+  PolylinePtr _skel = quadSet->getSkeleton();
   if (_skel){
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel);
   }
@@ -360,7 +362,7 @@ bool GLSkelRenderer::process( Translated * translated ) {
 bool GLSkelRenderer::process( TriangleSet * triangleSet ) {
   GEOM_ASSERT(triangleSet);
 
-  GeomPolylinePtr _skel = triangleSet->getSkeleton();
+  PolylinePtr _skel = triangleSet->getSkeleton();
   if (_skel){
       GEOM_GLSKELRENDERER_DRAW_SKEL(_skel);
   }
@@ -407,7 +409,7 @@ bool GLSkelRenderer::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GLSkelRenderer::process( GeomPolyline2D * polyline ) {
+bool GLSkelRenderer::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
 
   glBegin(GL_LINE_STRIP);

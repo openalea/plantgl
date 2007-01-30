@@ -81,7 +81,7 @@ public:
 
 
   /// A structure which helps to build a Group when parsing.
-  struct Builder : public Geometry::Builder {
+  struct SG_API Builder : public Geometry::Builder {
 
     /// A pointer to the \b GeometryList field.
     GeometryArrayPtr * GeometryList;

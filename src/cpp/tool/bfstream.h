@@ -112,7 +112,7 @@ inline void flipBytes( const char * src, char * dest, size_t n )
     \brief bofstream specializes the \c ofstream class to store variables
     in binary format. */
 
-class bofstream
+class TOOLS_API bofstream
 {
 
 public:
@@ -469,7 +469,7 @@ protected:
     \brief leofstream specializes the \c bofstream class to store variables
     in little endian format. */
 
-class leofstream : public bofstream
+class TOOLS_API leofstream : public bofstream
 {
 
 public:
@@ -514,7 +514,7 @@ private:
     \brief bifstream specializes the \c bifstream class to restore variables
     in little endian format. */
 
-class leifstream : public bifstream
+class TOOLS_API leifstream : public bifstream
 {
 
 public:

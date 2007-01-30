@@ -72,7 +72,7 @@
 #include "scenegraph/geometry/interpol.h"
 #include "scenegraph/geometry/boundingbox.h"
 #include "scenegraph/geometry/boundingsphere.h"
-#include "scenegraph/scene/group.h"
+#include "scenegraph/geometry/group.h"
 
 // __geometry_h__
 #endif

@@ -73,7 +73,7 @@ public:
 
 
   /// A structure which helps to build a Paraboloid when parsing.
-  struct Builder : public Cone::Builder {
+  struct SG_API Builder : public Cone::Builder {
 
     /// A pointer to the \b Shape field.
     real_t * Shape;

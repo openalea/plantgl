@@ -65,7 +65,7 @@ class SG_API Font : public SceneObject
 {
   public:
   /// A structure which helps to build a Text when parsing. 
-  struct Builder : public SceneObject::Builder {
+  struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b String field.
 	std::string * Family;
@@ -167,7 +167,7 @@ public:
   static TOOLS(Vector3) DEFAULT_POSITION;
 
   /// A structure which helps to build a Text when parsing. 
-  struct Builder : public Geometry::Builder {
+  struct SG_API Builder : public Geometry::Builder {
 
     /// A pointer to the \b String field.
 	std::string * String;

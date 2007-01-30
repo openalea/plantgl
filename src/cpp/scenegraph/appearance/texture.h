@@ -67,7 +67,7 @@ class SG_API ImageTexture : public Material
 public:
 
   /// A structure which helps to build a Material when parsing.
-  struct Builder : public Material::Builder {
+  struct SG_API Builder : public Material::Builder {
 
     /// A pointer to the \b Ambient field.
 	std::string * FileName;

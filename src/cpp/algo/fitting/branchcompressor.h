@@ -54,7 +54,7 @@
 
 PGL_BEGIN_NAMESPACE
 
-struct BranchInput {
+struct ALGO_API BranchInput {
   Point3ArrayPtr points;
   Point2ArrayPtr radius;
   AppearancePtr appearance;
@@ -114,13 +114,13 @@ private :
 
 /* ----------------------------------------------------------------------- */
 
-Point3ArrayPtr  
+ALGO_API Point3ArrayPtr  
 discretizeWithCurvature(NurbsCurvePtr C,int NumberOfPoint);
 
-Point3ArrayPtr  
+ALGO_API Point3ArrayPtr  
 compressPolyline(Point3ArrayPtr C,int NumberOfPoint);
 
-NurbsCurvePtr
+ALGO_API NurbsCurvePtr
 fitt(const Point3ArrayPtr&  MyVector, 
 	 int deg, int CPbegin, int nbPtCtrlMax, 
 	 real_t ErreurBound, int &  Nbloop, real_t & SommeEk);

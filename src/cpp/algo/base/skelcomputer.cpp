@@ -37,13 +37,14 @@
 
 
 
-#include "actn_skelcomputer.h"
-#include "actn_discretizer.h"
-#include "all_geometry.h"
-#include "geom_pointarray.h"
-#include "geom_geometryarray2.h"
+#include "skelcomputer.h"
+#include "discretizer.h"
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/geometryarray2.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -53,7 +54,7 @@ using namespace std;
 
 #define GEOM_SKELCOMPUTER_CHECK_CACHE(geom) \
   if (geom->isNamed()) { \
-    Cache<GeomPolylinePtr>::Iterator _it = __cache.find(geom->getId()); \
+    Cache<PolylinePtr>::Iterator _it = __cache.find(geom->getId()); \
     if (! (_it == __cache.end())) { \
        __skeleton = _it->second; \
       return true; \
@@ -81,7 +82,7 @@ SkelComputer::~SkelComputer( ) {
 
 void SkelComputer::clear( ) {
   __cache.clear();
-//  __skeleton = GeomPolylinePtr();
+//  __skeleton = PolylinePtr();
 }
 
 Discretizer&
@@ -89,7 +90,7 @@ SkelComputer::getDiscretizer( ) {
   return __discretizer;
 }
 
-GeomPolylinePtr
+PolylinePtr
 SkelComputer::getSkeleton( ) const {
   return __skeleton;
 }
@@ -101,7 +102,7 @@ bool SkelComputer::process( AmapSymbol * amapSymbol ) {
   __skeleton = amapSymbol->getSkeleton();
   if(__skeleton) return true;
   else{
-    __skeleton = GeomPolylinePtr();
+    __skeleton = PolylinePtr();
     return false;
   }
 }
@@ -110,7 +111,7 @@ bool SkelComputer::process( AmapSymbol * amapSymbol ) {
 
 bool SkelComputer::process( AsymmetricHull * asymmetricHull ) {
   GEOM_ASSERT(asymmetricHull);
-  __skeleton = GeomPolylinePtr(new GeomPolyline(asymmetricHull->getBottom(),
+  __skeleton = PolylinePtr(new Polyline(asymmetricHull->getBottom(),
                                         asymmetricHull->getTop()));
   return true;
 }
@@ -140,9 +141,9 @@ bool SkelComputer::process( AxisRotated * axisRotated ) {
 bool SkelComputer::process( BezierCurve * bezierCurve ) {
     GEOM_ASSERT(bezierCurve);
 	if(bezierCurve->apply(__discretizer))
-	  __skeleton = GeomPolylinePtr::Cast(__discretizer.getDiscretization());
+	  __skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
 	else
-    __skeleton = new GeomPolyline(
+    __skeleton = new Polyline(
         bezierCurve->getPointAt(0),
         bezierCurve->getPointAt(1));
 
@@ -155,7 +156,7 @@ bool SkelComputer::process( BezierCurve * bezierCurve ) {
 bool SkelComputer::process( BezierPatch * bezierPatch ) {
     GEOM_ASSERT(bezierPatch);
 
-    __skeleton = new GeomPolyline(bezierPatch->getPointAt(0.0,0.0),
+    __skeleton = new Polyline(bezierPatch->getPointAt(0.0,0.0),
                               bezierPatch->getPointAt(1.0,1.0));
     return true;
 }
@@ -166,7 +167,7 @@ bool SkelComputer::process( BezierPatch * bezierPatch ) {
 bool SkelComputer::process( Box * box ) {
   GEOM_ASSERT(box);
   const real_t& _z = box->getSize().z();
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3(0,0,-_z),Vector3(0,0,_z)));
+  __skeleton = PolylinePtr(new Polyline(Vector3(0,0,-_z),Vector3(0,0,_z)));
   return true;
 }
 
@@ -174,7 +175,7 @@ bool SkelComputer::process( Box * box ) {
 
 bool SkelComputer::process( Cone * cone ) {
   GEOM_ASSERT(cone);
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3::ORIGIN,
+  __skeleton = PolylinePtr(new Polyline(Vector3::ORIGIN,
                                         Vector3(0,0,cone->getHeight())));
   return true;
 }
@@ -183,8 +184,8 @@ bool SkelComputer::process( Cone * cone ) {
 
 bool SkelComputer::process( Cylinder * cylinder ) {
   GEOM_ASSERT(cylinder);
-  __skeleton = GeomPolylinePtr
-    (new GeomPolyline(Vector3::ORIGIN,
+  __skeleton = PolylinePtr
+    (new Polyline(Vector3::ORIGIN,
                   Vector3(0,0,cylinder->getHeight())));
   return true;
 }
@@ -235,7 +236,7 @@ bool SkelComputer::process( ExtrudedHull * extrudedHull ) {
 
   pair<Point3Array::const_iterator,Point3Array::const_iterator>
     _minAndMax = __discretizer.getDiscretization()->getPointList()->getYMinAndMax();
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3(_minAndMax.first->x(),
+  __skeleton = PolylinePtr(new Polyline(Vector3(_minAndMax.first->x(),
                                                 0,
                                                 _minAndMax.first->y()),
                                         Vector3(_minAndMax.second->x(),
@@ -272,7 +273,7 @@ bool SkelComputer::process( FaceSet * faceSet ) {
 
 bool SkelComputer::process( Frustum * frustum ) {
   GEOM_ASSERT(frustum);
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3::ORIGIN,
+  __skeleton = PolylinePtr(new Polyline(Vector3::ORIGIN,
                                         Vector3(0,0,frustum->getHeight())));
   return true;
 }
@@ -293,9 +294,9 @@ bool SkelComputer::process( NurbsCurve * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
   
   if(nurbsCurve->apply(__discretizer))
-	__skeleton = GeomPolylinePtr::Cast(__discretizer.getDiscretization());
+	__skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
   else
-	__skeleton = new GeomPolyline(
+	__skeleton = new Polyline(
 	nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),
 	nurbsCurve->getPointAt(nurbsCurve->getLastKnot()));
   
@@ -308,7 +309,7 @@ bool SkelComputer::process( NurbsCurve * nurbsCurve ) {
 bool SkelComputer::process( NurbsPatch * nurbsPatch ) {
   GEOM_ASSERT(nurbsPatch);
 
-  __skeleton = new GeomPolyline
+  __skeleton = new Polyline
      (nurbsPatch->getPointAt(nurbsPatch->getFirstUKnot(),
                              nurbsPatch->getFirstVKnot()),
       nurbsPatch->getPointAt(nurbsPatch->getLastUKnot(),
@@ -330,7 +331,7 @@ bool SkelComputer::process( Revolution * revolution ) {
     _minMax = __discretizer.getDiscretization()->getPointList()->getYMinAndMax();
 
   __skeleton =
-    GeomPolylinePtr(new GeomPolyline(Vector3(0,0,_minMax.first->y()),
+    PolylinePtr(new Polyline(Vector3(0,0,_minMax.first->y()),
                              Vector3(0,0,_minMax.second->y())));
 
   GEOM_SKELCOMPUTER_UPDATE_CACHE(revolution);
@@ -367,7 +368,7 @@ bool SkelComputer::process( Swung * swung )
   real_t zMax= ptEnd.y() / real_t(size);
 
   __skeleton =
-    GeomPolylinePtr(new GeomPolyline(Vector3(0,0,zMin),
+    PolylinePtr(new Polyline(Vector3(0,0,zMin),
                              Vector3(0,0,zMax)));
 
   GEOM_SKELCOMPUTER_UPDATE_CACHE(swung);
@@ -398,8 +399,8 @@ bool SkelComputer::process( Oriented * oriented ) {
 
 bool SkelComputer::process( Paraboloid * paraboloid ) {
   GEOM_ASSERT(paraboloid);
-  __skeleton = GeomPolylinePtr
-    (new GeomPolyline(Vector3::ORIGIN,
+  __skeleton = PolylinePtr
+    (new Polyline(Vector3::ORIGIN,
                   Vector3(0,0,paraboloid->getHeight())));
   return true;
 }
@@ -408,15 +409,15 @@ bool SkelComputer::process( Paraboloid * paraboloid ) {
 
 bool SkelComputer::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
 /* ----------------------------------------------------------------------- */
 
-bool SkelComputer::process( GeomPolyline * polyline ) {
+bool SkelComputer::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
-  __skeleton = GeomPolylinePtr(polyline);
+  __skeleton = PolylinePtr(polyline);
   return true;
 }
 
@@ -451,7 +452,7 @@ bool SkelComputer::process( Scaled * scaled ) {
 bool SkelComputer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
   real_t _r = sphere->getRadius();
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3(0,0,-_r),Vector3(0,0,_r)));
+  __skeleton = PolylinePtr(new Polyline(Vector3(0,0,-_r),Vector3(0,0,_r)));
   return true;
 }
 
@@ -529,9 +530,9 @@ bool SkelComputer::process( BezierCurve2D * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
 
 	if(bezierCurve->apply(__discretizer))
-	  __skeleton = GeomPolylinePtr::Cast(__discretizer.getDiscretization());
+	  __skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
 	else
-    __skeleton = GeomPolylinePtr(new GeomPolyline(
+    __skeleton = PolylinePtr(new Polyline(
       Vector3(bezierCurve->getPointAt(0),0),
       Vector3(bezierCurve->getPointAt(1),0)));
 
@@ -542,7 +543,7 @@ bool SkelComputer::process( BezierCurve2D * bezierCurve ) {
 
 bool SkelComputer::process( Disc * disc ) {
     GEOM_ASSERT(disc);
-    __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3::ORIGIN,Vector3::ORIGIN));
+    __skeleton = PolylinePtr(new Polyline(Vector3::ORIGIN,Vector3::ORIGIN));
     return true;
   }
 
@@ -553,9 +554,9 @@ bool SkelComputer::process( NurbsCurve2D * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
 
 	if(nurbsCurve->apply(__discretizer))
-	  __skeleton = GeomPolylinePtr::Cast(__discretizer.getDiscretization());
+	  __skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
 	else
-	  __skeleton = GeomPolylinePtr(new GeomPolyline(
+	  __skeleton = PolylinePtr(new Polyline(
       Vector3(nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),0),
       Vector3(nurbsCurve->getPointAt(nurbsCurve->getLastKnot()),0)));
 
@@ -566,15 +567,15 @@ bool SkelComputer::process( NurbsCurve2D * nurbsCurve ) {
 
 bool SkelComputer::process( PointSet2D * pointSet ){
   GEOM_ASSERT(pointSet);
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
 /* ----------------------------------------------------------------------- */
 
-bool SkelComputer::process( GeomPolyline2D * polyline ){
+bool SkelComputer::process( Polyline2D * polyline ){
   GEOM_ASSERT(polyline);
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Point3ArrayPtr(new Point3Array(polyline->getPointList(),0))));
+  __skeleton = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(polyline->getPointList(),0))));
   return true;
 }
 
@@ -583,28 +584,28 @@ bool SkelComputer::process( GeomPolyline2D * polyline ){
 bool SkelComputer::process( Material * material ) {
   GEOM_ASSERT(material);
   // nothing to do
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
 bool SkelComputer::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
   // nothing to do
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
 bool SkelComputer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   // nothing to do
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
 bool SkelComputer::process( MultiSpectral * multiSpectral ) {
   GEOM_ASSERT(multiSpectral);
   // nothing to do
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
@@ -613,14 +614,14 @@ bool SkelComputer::process( MultiSpectral * multiSpectral ) {
 bool SkelComputer::process( Text * text ) {
   GEOM_ASSERT(text);
   // nothing to do
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 
 bool SkelComputer::process( Font * font ) {
   GEOM_ASSERT(font);
   // nothing to do
-  __skeleton = GeomPolylinePtr();
+  __skeleton = PolylinePtr();
   return false;
 }
 

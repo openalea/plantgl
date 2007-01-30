@@ -34,35 +34,38 @@
  *  ----------------------------------------------------------------------------
  */
 
-extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
-#include "qhull3.0/src/qhull_a.h"
-
-
 #include "fit.h"
 
-#include "GEOM/actn_printer.h"
-#include "GEOM/actn_discretizer.h"
+#include <algo/codec/printer.h>
+#include <algo/base/discretizer.h>
 
 #include <scenegraph/transformation/scaled.h>
 #include <scenegraph/transformation/translated.h>
 #include <scenegraph/transformation/oriented.h>
 #include <scenegraph/geometry/cylinder.h>
-#include "GEOM/geom_sphere.h"
-#include "GEOM/geom_triangleset.h"
-#include "GEOM/geom_extrudedhull.h"
-#include "GEOM/geom_asymmetrichull.h"
-#include "GEOM/geom_cone.h"
-#include "GEOM/geom_box.h"
+#include <scenegraph/geometry/sphere.h>
+#include <scenegraph/geometry/triangleset.h>
+#include <scenegraph/geometry/extrudedhull.h>
+#include <scenegraph/geometry/asymmetrichull.h>
+#include <scenegraph/geometry/cone.h>
+#include <scenegraph/geometry/box.h>
 #include <scenegraph/geometry/frustum.h>
 #include <scenegraph/geometry/extrusion.h>
 #include <scenegraph/geometry/nurbscurve.h>
 #include <scenegraph/container/indexarray.h>
-#include "util_propervector.h"
 #include <tool/util_string.h>
 #include <tool/dirnames.h>
-#include "GEOM/util_matrixmath.h"
 
-#include "miniball/miniball.H"
+#include "math/util_matrixmath.h"
+#include "miniball.h"
+#include "propervector.h"
+
+#define WITHOUT_QHULL
+
+#ifndef WITHOUT_QHULL
+extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
+#include "qhull3.0/src/qhull_a.h"
+#endif
 
 #define GEOM_DEBUG
 
@@ -98,9 +101,12 @@ Fit::Fit(const Point3ArrayPtr& _pointstofit ):
 GeometryPtr Fit::use(const string& classname){
     if(! __pointstofit )return GeometryPtr(0);
 	string cl = toUpper(classname);
+#ifndef WITHOUT_QHULL
     if(cl =="CONVEXHULL")
 	return convexHull();
-    else if(cl =="EXTRUDEDHULL")
+	else 
+#endif
+	if(cl =="EXTRUDEDHULL")
 	return extrudedHull();
     else if(cl =="ASYMMETRICHULL")
 	return asymmetricHull();
@@ -143,7 +149,9 @@ GeometryPtr Fit::use(const string& classname){
 
 vector<string> Fit::getVolumeClassNames(){
     vector<string> classname;
+#ifndef WITHOUT_QHULL
 	classname.push_back(string("CONVEXHULL"));
+#endif
 	classname.push_back(string("ASYMMETRICHULL"));
 	classname.push_back(string("EXTRUDEDHULL"));
 	classname.push_back(string("SPHERE"));
@@ -1461,6 +1469,9 @@ GeometryPtr Fit::extrudedHull(){
 
 GeometryPtr
 Fit::convexHull(){
+#ifdef WITHOUT_QHULL
+	return GeometryPtr(0);
+#else
   if(! __pointstofit )return GeometryPtr(0);
 
   /// Transform Point3Array in qhull format.
@@ -1592,12 +1603,15 @@ Fit::convexHull(){
       return GeometryPtr(new Polyline(__pointstofit));
   }
   else return GeometryPtr(0);
-
+#endif
 }
 /* ----------------------------------------------------------------------- */
 
 
 Point2ArrayPtr Fit::convexBalancedPolyline(const Point2ArrayPtr& _points){
+#ifdef WITHOUT_QHULL
+	return Point2ArrayPtr(0);
+#else
 
     /* dimension of points */
     int dim=2;
@@ -1784,11 +1798,14 @@ Point2ArrayPtr Fit::convexBalancedPolyline(const Point2ArrayPtr& _points){
     }
     fclose(errfile);
     return _result;
+#endif
 }
 
 /* ----------------------------------------------------------------------- */
 Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
-
+#ifdef WITHOUT_QHULL
+	return Point2ArrayPtr(0);
+#else
     /* dimension of points */
     int dim=2;
 
@@ -1871,6 +1888,7 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
     }
     fclose(errfile);
     return _result;
+#endif
 }
 
 /* ----------------------------------------------------------------------- */

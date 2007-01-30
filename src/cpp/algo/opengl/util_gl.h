@@ -44,12 +44,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "config.h"
+#include "../algo_config.h"
 #ifdef _WIN32
 #ifndef WINGDIAPI
 #include <qgl.h>
 #ifdef QT_NO_OPENGL
-#warning Qt compiled without openGL support
+#pragma message "Qt compiled without openGL support"
 #endif
 #endif
 #endif
@@ -60,10 +60,10 @@
 #include <qpoint.h>
 #include <qrect.h>
 
-#include "util_math.h"
-#include "util_vector.h"
-#include "util_matrix.h"
-#include "util_assert.h"
+#include <math/util_math.h>
+#include <math/util_vector.h>
+#include <math/util_matrix.h>
+#include <tool/util_assert.h>
 
 /* ----------------------------------------------------------------------- */
 

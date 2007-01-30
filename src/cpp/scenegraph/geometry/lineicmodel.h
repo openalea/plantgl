@@ -111,13 +111,16 @@ public:
   
 };
 
+/* ----------------------------------------------------------------------- */
+
 /// LineicModel Pointer
 typedef RCPtr<LineicModel> LineicModelPtr;
  
-real_t closestPointToSegment(TOOLS(Vector3)& p, 
+/* ----------------------------------------------------------------------- */
+
+SG_API real_t closestPointToSegment(TOOLS(Vector3)& p, 
 						   const TOOLS(Vector3)& segA,
 						   const TOOLS(Vector3)& segB);
-/* ----------------------------------------------------------------------- */
 
 /* ----------------------------------------------------------------------- */
 

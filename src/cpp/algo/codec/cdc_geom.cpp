@@ -39,23 +39,23 @@
 #include "cdc_geom.h"
 
 #include "scne_binaryparser.h"
-#include "actn_binaryprinter.h"
-#include "actn_printer.h"
+#include "binaryprinter.h"
+#include "printer.h"
 
-#include <Tools/dirnames.h>
-#include <Tools/util_string.h>
-#include <Tools/timer.h>
+#include <tool/dirnames.h>
+#include <tool/util_string.h>
+#include <tool/timer.h>
 
-#include <SceneGraph/Core/scne_sceneobject.h>
-#include <SceneGraph/Core/scne_smbtable.h>
-#include <SceneGraph/Core/pgl_messages.h>
+#include <scenegraph/core/sceneobject.h>
+#include <scenegraph/core/smbtable.h>
+#include <scenegraph/core/pgl_messages.h>
 
 #include <pgl_scene.h>
 #include <pgl_appearance.h>
 #include <pgl_geometry.h>
-#include <pgl_transformed.h>
+#include <pgl_transformation.h>
 
-#include <SceneGraph/Container/geom_pointmatrix.h>
+#include <scenegraph/container/pointmatrix.h>
 
 #include <list>
 #include <fstream>
@@ -75,11 +75,11 @@ TOOLS_USING_NAMESPACE
 #include "scne_scanner.h"   /// Initialisation des noms des classes de scanner
                             /// [ par redefinition de yyFlexLexer et GENERIC_LEXER ]
 
-#include <Tools/gparser.h>  /// Instanciation des classes de scans.
+#include <tool/gparser.h>  /// Instanciation des classes de scans.
                                /// et instanciation de la classe template de parser.
 
 #include "scne_binaryparser.h"
-#include <Tools/readline.h>
+#include <tool/readline.h>
 
 using namespace std;
 
@@ -150,7 +150,7 @@ void GeomCodec::write(const std::string& fname,const ScenePtr&	scene)
 		std::ofstream stream(fname.c_str());
 		if(stream){
 			Printer p(stream,stream,stream);
-			scene->applyToAll(p);
+			scene->apply(p);
 		}
 	}
 }

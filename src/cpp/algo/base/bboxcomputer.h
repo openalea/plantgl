@@ -44,6 +44,7 @@
 #ifndef __actn_bboxcomputer_h__
 #define __actn_bboxcomputer_h__
 
+#include "../algo_config.h"
 #include <scenegraph/core/action.h>
 #include <tool/rcobject.h>
 #include <tool/util_cache.h>
@@ -96,15 +97,15 @@ public:
   Discretizer& getDiscretizer( ) ;
 
 
-  /** Applies \e self to an object of type of GeomShape.
+  /** Applies \e self to an object of type of Shape.
       \warning
-      - \e geomShape must be non null and valid. */
-  virtual bool process(GeomShape * geomshape);
+      - \e Shape must be non null and valid. */
+  virtual bool process(Shape * Shape);
 
- /** Applies \e self to an object of type of GeomInline.
+ /** Applies \e self to an object of type of Inline.
       \warning
       - \e inline must be non null and valid. */
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   /// @name Geom3D
   //@{
@@ -152,7 +153,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -195,7 +196,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -211,7 +212,7 @@ public:
 protected:
 
   /// The cache storing the already computed bounding boxes.
-  Cache<BoundingBoxPtr> __cache;
+  TOOLS(Cache)<BoundingBoxPtr> __cache;
 
   /// The resulting bounding box.
   BoundingBoxPtr __bbox;

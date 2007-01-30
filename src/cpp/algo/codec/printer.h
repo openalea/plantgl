@@ -44,18 +44,18 @@
 #ifndef __actn_printer_h__
 #define __actn_printer_h__
 
-
-#include "Tools/util_types.h"
-#include "Tools/rcobject.h"
-#include "Tools/util_hashmap.h"
-#include "actn_action.h"
+#include "codec_config.h"
+#include <tool/util_types.h>
+#include <tool/rcobject.h>
+#include <tool/util_hashmap.h>
+#include <scenegraph/core/action.h>
 
 #include <string>
 #include <iostream>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class SceneObject;
 typedef RCPtr<SceneObject> SceneObjectPtr;
@@ -70,7 +70,7 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 */
 
 
-class GEOM_API Printer : public Action
+class CODEC_API Printer : public Action
 {
 
 public:
@@ -104,11 +104,11 @@ public:
   virtual bool header(std::ostream & _ostream,const char * filename = NULL,const char * comment = NULL);
 
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   //@}
 
@@ -170,7 +170,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -200,7 +200,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -211,7 +211,7 @@ public:
 
 protected:
 
-  /// The output stream for the objects of type of GeomShape.
+  /// The output stream for the objects of type of Shape.
   std::ostream& __shapeStream;
 
   /// The output stream for the objects of type of Geometry.
@@ -238,7 +238,7 @@ protected:
 // __actn_printer_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

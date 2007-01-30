@@ -38,23 +38,24 @@
 
 
 
-#include "actn_printer.h"
+#include "printer.h"
 
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
-#include "Tools/util_enviro.h"
-#include "Tools/dirnames.h"
+#include <tool/util_string.h>
+#include <math/util_math.h>
+#include <tool/util_enviro.h>
+#include <tool/dirnames.h>
 #include <time.h>
 #include <iostream>
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "all_scene.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_scene.h>
+#include <pgl_container.h>
+#include <scenegraph/geometry/profile.h>
 
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -356,17 +357,17 @@ bool Printer::isPrinted(SceneObjectPtr obj){
 }
 
 /* ----------------------------------------------------------------------- */
-bool Printer::process(GeomInline * geomInline){
+bool Printer::process(Inline * geomInline){
     GEOM_ASSERT(geomInline);
     __shapeStream << __indent;
     GEOM_PRINT_BEGIN(__shapeStream,"Inline",geomInline);
     GEOM_PRINT_FIELD(__shapeStream,geomInline,Scene,SCENE);
 
-    if(!geomInline->isBBoxCenterToDefault())
-       GEOM_PRINT_FIELD(__shapeStream,geomInline,BBoxCenter,VECTOR3);
+    if(!geomInline->isTranslationToDefault())
+       GEOM_PRINT_FIELD(__shapeStream,geomInline,Translation,VECTOR3);
 
-    if(!geomInline->isBBoxSizeToDefault())
-       GEOM_PRINT_FIELD(__shapeStream,geomInline,BBoxSize,VECTOR3);
+    if(!geomInline->isScaleToDefault())
+       GEOM_PRINT_FIELD(__shapeStream,geomInline,Scale,VECTOR3);
 
     GEOM_PRINT_END(__shapeStream);
      __shapeStream << endl;
@@ -376,41 +377,41 @@ bool Printer::process(GeomInline * geomInline){
 /* ----------------------------------------------------------------------- */
 
 
-bool Printer::process(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
+bool Printer::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
 
-    if ( (__cache.find(geomShape->geometry->getId())) == (__cache.end())) {
-	  if(!geomShape->geometry->isNamed()){
-		geomShape->geometry->setName("Geometry_"+number(geomShape->geometry->getId()));
+    if ( (__cache.find(Shape->geometry->getId())) == (__cache.end())) {
+	  if(!Shape->geometry->isNamed()){
+		Shape->geometry->setName("Geometry_"+number(Shape->geometry->getId()));
 	  }
         __geomStream << __indent;
-        geomShape->geometry->apply(*this);
+        Shape->geometry->apply(*this);
         __geomStream << endl;
         __geomStream << endl;
     }
 
-    if(geomShape->appearance){
-      if ( (__cache.find(geomShape->appearance->getId())) == (__cache.end())) {
-	  if(!geomShape->appearance->isNamed()){
-		geomShape->geometry->setName("Appearance_"+number(geomShape->appearance->getId()));
+    if(Shape->appearance){
+      if ( (__cache.find(Shape->appearance->getId())) == (__cache.end())) {
+	  if(!Shape->appearance->isNamed()){
+		Shape->geometry->setName("Appearance_"+number(Shape->appearance->getId()));
 	  }
         __matStream << __indent;
-        geomShape->appearance->apply(*this);
+        Shape->appearance->apply(*this);
         __matStream << endl;
         __matStream << endl;
       }
     }
     __shapeStream << __indent << "Shape ";
-    if(geomShape->isNamed())__shapeStream << geomShape->getName().c_str();
+    if(Shape->isNamed())__shapeStream << Shape->getName().c_str();
     __shapeStream << " { " << endl;
     GEOM_PRINT_INCREMENT_INDENT;
-    if(geomShape->id)
-        __shapeStream << __indent << "Id  " << (geomShape->id) << endl;
+    if(Shape->id)
+        __shapeStream << __indent << "Id  " << (Shape->id) << endl;
     __shapeStream << __indent << "Geometry  " <<
-        (geomShape->geometry->getName().c_str()) << endl;
-    if(geomShape->appearance)
+        (Shape->geometry->getName().c_str()) << endl;
+    if(Shape->appearance)
         __shapeStream << __indent << "Appearance  " <<
-            (geomShape->appearance->getName().c_str()) << endl;
+            (Shape->appearance->getName().c_str()) << endl;
     GEOM_PRINT_END(__shapeStream);
      __shapeStream << endl;
      __shapeStream << endl;
@@ -1078,7 +1079,7 @@ bool Printer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool Printer::process( GeomPolyline * polyline ) {
+bool Printer::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_PRINT_BEGIN(__geomStream,"Polyline",polyline);
 
@@ -1388,7 +1389,7 @@ bool Printer::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool Printer::process( GeomPolyline2D * polyline ) {
+bool Printer::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_PRINT_BEGIN(__geomStream,"Polyline2D",polyline);
 

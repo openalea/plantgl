@@ -37,16 +37,18 @@
 #ifndef __vgs_importer_h__
 #define __vgs_importer_h__
 
-#include "Tools/util_vector.h"
-#include "GEOM/appe_color.h"
-#include "GEOM/scne_shape.h"
-#include "GEOM/scne_scene.h"
+#include "codec_config.h"
+
+#include <math/util_vector.h>
+#include <scenegraph/appearance/color.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/scene/scene.h>
 
 // #include <list>
 #include <vector>
-#include "Tools/util_hashmap.h"
+#include <tool/util_hashmap.h>
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 typedef STDEXT::hash_map<uint32_t,AppearancePtr> VGStarColorMap;
 
@@ -54,7 +56,7 @@ typedef STDEXT::hash_map<uint32_t,AppearancePtr> VGStarColorMap;
 
 class VegeStarFile;
 
-class VegeStarLine {
+class CODEC_API VegeStarLine {
 public :
         friend class VegeStarFile;
         VegeStarLine():shapeid(-1){}
@@ -62,7 +64,7 @@ public :
 
         bool isValid() const { return shapeid != -1; }
 
-        GeomShapePtr build(VGStarColorMap&) const ;
+        ShapePtr build(VGStarColorMap&) const ;
 
 protected:
         GeometryPtr transform(GeometryPtr geom) const;
@@ -74,7 +76,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-class VegeStarFile {
+class CODEC_API VegeStarFile {
 public :
 
         // Predefined Polygonal Shape
@@ -142,6 +144,6 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif

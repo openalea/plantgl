@@ -42,21 +42,21 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/rcobject.h"
+#include <tool/rcobject.h>
 #include <vector>
 #include <string>
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_namespace.h"
-GEOM_BEGIN_NAMESPACE
+#include "codec_config.h"
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 class Scene;
 typedef RCPtr<Scene> ScenePtr;
-class GeomShape;
-typedef RCPtr<GeomShape> GeomShapePtr;
+class Shape;
+typedef RCPtr<Shape> ShapePtr;
 class Material;
 typedef RCPtr<Material> MaterialPtr;
 class AmapSymbol;
@@ -71,7 +71,7 @@ typedef RCPtr<AmapSymbol> AmapSymbolPtr;
    \brief A Dta File
 */
 
-class GEOM_API Dtafile
+class CODEC_API Dtafile
 {
 
 public:
@@ -101,8 +101,8 @@ public:
   /// Get the Material associate to the identifier id.
   virtual MaterialPtr getMaterial(uint32_t id) const ;
 
-  /// Get the Dta Info associate to the identifier id encapsulate in a GeomShape.
-  virtual const GeomShapePtr getdtainfo(uint32_t id) const ;
+  /// Get the Dta Info associate to the identifier id encapsulate in a Shape.
+  virtual const ShapePtr getdtainfo(uint32_t id) const ;
 
   /// Test object validity.
   virtual bool isValid( ) const;
@@ -147,7 +147,7 @@ public:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __dtafile_h__

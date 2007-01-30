@@ -67,7 +67,7 @@ class SG_API PlanarModel : public ParametricModel
 public:
 
   /// A structure which helps to build an object of type of PlanarModel.
-  struct Builder : public ParametricModel::Builder {
+  struct SG_API Builder : public ParametricModel::Builder {
 
     /// Constructor.
     Builder( );

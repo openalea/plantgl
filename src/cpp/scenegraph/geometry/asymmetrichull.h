@@ -109,7 +109,7 @@ public:
 
 
   /// A structure which helps to build a AsymmetricHull when parsing. 
-  struct Builder : public Hull::Builder { 
+  struct SG_API Builder : public Hull::Builder { 
 
     /// A pointer to the \b NegXHeight field.
     real_t * NegXHeight;

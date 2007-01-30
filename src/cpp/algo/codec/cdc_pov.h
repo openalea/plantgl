@@ -45,7 +45,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "codec_config.h"
-#include <SceneGraph/Scene/scne_factory.h>
+#include <scenegraph/scene/factory.h>
 
 /* ----------------------------------------------------------------------- */
 

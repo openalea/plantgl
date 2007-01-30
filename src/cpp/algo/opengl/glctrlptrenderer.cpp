@@ -37,32 +37,32 @@
 
 
 
-#include "actn_glctrlptrenderer.h"
-#include "actn_discretizer.h"
+#include "glctrlptrenderer.h"
+#include <algo/base/discretizer.h>
 
-#include "appe_material.h"
-#include "geom_axisrotated.h"
-#include "geom_beziercurve.h"
-#include "geom_bezierpatch.h"
-#include "geom_elevationgrid.h"
-#include "geom_eulerrotated.h"
-#include "geom_extrudedhull.h"
-#include "geom_extrusion.h"
-#include "geom_oriented.h"
-#include "geom_polyline.h"
-#include "geom_nurbscurve.h"
-#include "geom_nurbspatch.h"
-#include "geom_revolution.h"
-#include "geom_scaled.h"
-#include "geom_sphere.h"
-#include "geom_tapered.h"
-#include "geom_translated.h"
-#include "scne_shape.h"
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/transformation/axisrotated.h>
+#include <scenegraph/transformation/eulerrotated.h>
+#include <scenegraph/transformation/oriented.h>
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/tapered.h>
+#include <scenegraph/transformation/translated.h>
+#include <scenegraph/geometry/beziercurve.h>
+#include <scenegraph/geometry/bezierpatch.h>
+#include <scenegraph/geometry/elevationgrid.h>
+#include <scenegraph/geometry/extrudedhull.h>
+#include <scenegraph/geometry/extrusion.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/nurbscurve.h>
+#include <scenegraph/geometry/nurbspatch.h>
+#include <scenegraph/geometry/revolution.h>
+#include <scenegraph/geometry/sphere.h>
+#include <scenegraph/scene/shape.h>
 
-#include "geom_pointarray.h"
-#include "geom_pointmatrix.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointmatrix.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -167,8 +167,8 @@ bool GLCtrlPointRenderer::beginProcess(){
 }
 
 /* ----------------------------------------------------------------------- */
-bool GLCtrlPointRenderer::processAppereance(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
+bool GLCtrlPointRenderer::processAppereance(Shape * Shape){
+    GEOM_ASSERT(Shape);
     return true;
 }
 
@@ -200,7 +200,7 @@ bool GLCtrlPointRenderer::process( ExtrudedHull * extrudedHull ) {
   GEOM_ASSERT(extrudedHull);
 
   if(extrudedHull->getHorizontal()->apply(__discretizer)){
-    GeomPolylinePtr p;
+    PolylinePtr p;
     p.cast(__discretizer.getDiscretization());
     if(p){
       GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(p->getPointList());
@@ -208,7 +208,7 @@ bool GLCtrlPointRenderer::process( ExtrudedHull * extrudedHull ) {
   }
 
   if(extrudedHull->getVertical()->apply(__discretizer)){
-    GeomPolylinePtr p;
+    PolylinePtr p;
     p.cast(__discretizer.getDiscretization());
     if(p){
       GEOM_GLCTRLPOINTRENDERER_DRAW_VERTLINE2D(p->getPointList());
@@ -279,14 +279,14 @@ bool GLCtrlPointRenderer::process( Tapered * tapered ) {
         ExtrudedHullPtr extrudedHull;
         if(extrudedHull.cast(tapered->getPrimitive())){
           if(extrudedHull->getHorizontal()->apply(__discretizer)){
-	    GeomPolylinePtr p;
+	    PolylinePtr p;
             if(p.cast(__discretizer.getDiscretization())){
               GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(p->getPointList());
             }
           }
 
           if(extrudedHull->getVertical()->apply(__discretizer)){
-            GeomPolylinePtr p;
+            PolylinePtr p;
 	    p.cast(__discretizer.getDiscretization());
             Point3ArrayPtr points(new Point3Array(*(p->getPointList())));
             points->pushBack(points->getAt(0));

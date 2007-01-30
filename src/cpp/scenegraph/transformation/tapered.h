@@ -133,7 +133,7 @@ public:
 
 
   /// A structure which helps to build a Translated when parsing. 
-  struct Builder : public Deformed::Builder {  
+  struct SG_API Builder : public Deformed::Builder {  
 
     /// A pointer to the \b BaseRadius field.
     real_t * BaseRadius;

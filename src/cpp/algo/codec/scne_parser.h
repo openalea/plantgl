@@ -43,18 +43,18 @@
 #ifndef __scne_parser_h__
 #define __scne_parser_h__
 
-#include "Tools/config.h"
+#include "codec_config.h"
 
 /*  ---------------------------------------------------------------------- */
 
 /// function generate by bison to parse a GEOM file
-extern int GEOM_API scne_yyparse(void*);
+extern int CODEC_API scne_yyparse(void*);
 
 /// function to put parser on verbose mode.
-extern void GEOM_API parserVerbose(bool b);
+extern void CODEC_API parserVerbose(bool b);
 
 /// function to test parser verbose mode.
-extern bool GEOM_API isParserVerbose();
+extern bool CODEC_API isParserVerbose();
 
 /*  ---------------------------------------------------------------------- */
 

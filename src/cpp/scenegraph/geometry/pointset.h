@@ -75,7 +75,7 @@ public:
 
 
   /// A structure which helps to build a PointSet when parsing. 
-  struct Builder : public ExplicitModel::Builder { 
+  struct SG_API Builder : public ExplicitModel::Builder { 
 
     /// Constructor.
     Builder( );
@@ -163,7 +163,7 @@ public:
 
 
   /// A structure which helps to build a PointSet when parsing. 
-  struct Builder : public PlanarModel::Builder { 
+  struct SG_API Builder : public PlanarModel::Builder { 
 
     /// A pointer to the \b PointList field.
     Point2ArrayPtr * PointList;

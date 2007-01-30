@@ -46,13 +46,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "actn_action.h"
-#include "Tools/util_matrix.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <math/util_matrix.h>
 #include <stack>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,7 +67,7 @@ class MatrixTransformed;
    \brief An action to compute the matrix4 representing the affine transformations in a branch of the scene.
 */
 
-class GEOM_API MatrixComputer : public Action
+class ALGO_API MatrixComputer : public Action
 {
 
 public:
@@ -140,7 +141,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -178,7 +179,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -264,7 +265,7 @@ private:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 

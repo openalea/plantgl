@@ -42,13 +42,13 @@
 #define __actn_polygoncomputer_h__
 
 
-#include "actn_action.h"
-#include "Tools/config.h"
-#include "Tools/rcobject.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,7 +64,7 @@ typedef RCPtr<Scene> ScenePtr;
 */
 
 
-class GEOM_API PolygonComputer : public Action
+class ALGO_API PolygonComputer : public Action
 {
 public:
 
@@ -80,9 +80,9 @@ public:
   /// Get the number of polygon of the last object processed.
   virtual const uint32_t getPolygonNb() const;
 
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   virtual bool process( Material * material );
 
@@ -134,7 +134,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -160,7 +160,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   virtual bool process( Text * text );
 
@@ -178,11 +178,11 @@ public:
 };
 
 /// Compute the number of polygon in the scene \e _scene
-const real_t GEOM_API polygonNumber(ScenePtr _scene);
+const real_t ALGO_API polygonNumber(ScenePtr _scene);
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

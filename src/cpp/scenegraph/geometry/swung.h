@@ -88,7 +88,7 @@ public:
   static const uint32_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a Swung when parsing.
-  struct Builder : public SOR::Builder
+  struct SG_API Builder : public SOR::Builder
     {
     /// A pointer to the \b CCW field.
     bool * CCW;

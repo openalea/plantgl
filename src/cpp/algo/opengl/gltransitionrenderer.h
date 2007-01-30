@@ -45,11 +45,11 @@
 #define __actn_gltransitionrenderer_h__
 
 
-#include "actn_glrenderer.h"
+#include "glrenderer.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ typedef RCPtr<Scene> ScenePtr;
 */
 
 
-class GEOM_API GLTransitionRenderer : public GLRenderer
+class ALGO_API GLTransitionRenderer : public GLRenderer
 {
 
 public:
@@ -138,7 +138,7 @@ typedef RCPtr<GLTransitionRenderer> GLTransitionRendererPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
   

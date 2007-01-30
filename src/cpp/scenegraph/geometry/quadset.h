@@ -69,7 +69,7 @@ class SG_API QuadSet : public Mesh
 public:
 
   /// A structure which helps to build a QuadSet when parsing. 
-  struct Builder : public Mesh::Builder {
+  struct SG_API Builder : public Mesh::Builder {
 
     /// A pointer to the IndexList field.
     Index4ArrayPtr * IndexList;

@@ -35,11 +35,11 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "algo_merge.h"
-#include "geom_pointarray.h"
-#include "geom_indexarray.h"
+#include "merge.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /////////////////////////////////////////////////////////////////////////////
 Merge::Merge( Discretizer& discretizer,
@@ -112,7 +112,7 @@ Merge::MODEL_TYPE Merge::getType( const ExplicitModelPtr& model )
     type= POINT_SET;
   else
     {
-    GeomPolylinePtr polyline;
+    PolylinePtr polyline;
     if( polyline.cast(model) )
       type= POLYLINE;
     else
@@ -210,7 +210,7 @@ GEOM_TRACE("apply ExplicitModelPtr");
       }
     case POLYLINE:
       {
-      GeomPolylinePtr polyline = GeomPolylinePtr::Cast(geom);
+      PolylinePtr polyline = PolylinePtr::Cast(geom);
       GEOM_ASSERT(polyline);
       return apply(*polyline);
       }
@@ -257,7 +257,7 @@ GEOM_TRACE("apply PointSet");
 }
 
 /////////////////////////////////////////////////////////////////////////////
-bool Merge::apply( GeomPolyline& geom )
+bool Merge::apply( Polyline& geom )
 /////////////////////////////////////////////////////////////////////////////
 {
 #ifdef __GNUC__

@@ -43,12 +43,12 @@
 #ifndef __actn_bspherecomputer_h__
 #define __actn_bspherecomputer_h__
 
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <scenegraph/geometry/boundingsphere.h>
+#include <tool/util_cache.h>
 
-#include "actn_action.h"
-#include "geom_boundingsphere.h"
-#include "util_cache.h"
-
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class Discretizer;
 
@@ -61,7 +61,7 @@ class Discretizer;
 */
 
 
-class GEOM_API BSphereComputer : public Action
+class ALGO_API BSphereComputer : public Action
 {
 
 public :
@@ -90,18 +90,18 @@ public :
 
   //@}
 
-  /// @name GeomShape  
+  /// @name Shape  
   //@{
 
-  /** Applies \e self to an object of type of GeomShape.
+  /** Applies \e self to an object of type of Shape.
     \warning
-      - \e geomShape must be non null and valid. */
-  virtual bool process( GeomShape * geomShape );
+      - \e Shape must be non null and valid. */
+  virtual bool process( Shape * Shape );
 
-  /** Applies \e self to an object of type of GeomInline.
+  /** Applies \e self to an object of type of Inline.
     \warning
       - \e geominline must be non null and valid. */
-  virtual bool process( GeomInline * geominline );
+  virtual bool process( Inline * geominline );
 
   //@}
 
@@ -235,10 +235,10 @@ public :
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet * pointSet );
 
-  /** Applies \e self to an object of type of GeomPolyline.
+  /** Applies \e self to an object of type of Polyline.
     \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   /** Applies \e self to an object of type of QuadSet.
     \warning
@@ -305,10 +305,10 @@ public :
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet2D * pointSet );
 
-  /** Applies \e self to an object of type of GeomPolyline2D.
+  /** Applies \e self to an object of type of Polyline2D.
     \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -320,7 +320,7 @@ public :
 protected : 
 
 	/// The cache storing the already computed bounding sphere.
-    Cache<BoundingSpherePtr> __cache;
+    TOOLS(Cache)<BoundingSpherePtr> __cache;
 
     /// The resulting bounding box.
 	BoundingSpherePtr __result;
@@ -334,7 +334,7 @@ protected :
 };
 
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

@@ -66,7 +66,7 @@ class SG_API ParametricModel : public virtual Primitive
 public:
 
   /// A structure which helps to build an object of type of ParametricModel.
-  struct Builder : public Primitive::Builder {
+  struct SG_API Builder : public Primitive::Builder {
 
     /// Constructor.
     Builder( );

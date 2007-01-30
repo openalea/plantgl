@@ -159,7 +159,7 @@ class SG_API Transformed : public Geometry
 public:
 
    /// A structure which helps to build an object of type of Transformed.
-  struct Builder : public Geometry::Builder {
+  struct SG_API Builder : public Geometry::Builder {
 
     /// Constructor.
     Builder( );

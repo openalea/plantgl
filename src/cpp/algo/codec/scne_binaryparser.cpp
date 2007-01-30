@@ -36,25 +36,25 @@
 
 
 #include "scne_binaryparser.h"
-#include "actn_binaryprinter.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "scne_shape.h"
-#include "scne_scene.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include "binaryprinter.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_container.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/scene/scene.h>
 
-#include "util_messages.h"
-#include "Tools/timer.h"
-#include "Tools/bfstream.h"
-#include "Tools/dirnames.h"
-#include "Tools/util_enviro.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/timer.h>
+#include <tool/bfstream.h>
+#include <tool/dirnames.h>
+#include <tool/util_enviro.h>
 
 #include "scne_parser.h"
 
 #include <iostream>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -267,7 +267,7 @@ BinaryParser::~BinaryParser( ) {
 #ifdef MEMORY_MANAGEMENT
   uint32_t _reservedsize(0);
 #endif
-  GEOM_CLEAN_MEM(0,GeomShape,_reservedsize);
+  GEOM_CLEAN_MEM(0,Shape,_reservedsize);
   GEOM_CLEAN_MEM(1,Material,_reservedsize);  GEOM_CLEAN_MEM(2,MonoSpectral,_reservedsize);
   GEOM_CLEAN_MEM(3,MultiSpectral,_reservedsize);  GEOM_CLEAN_MEM(4,AmapSymbol,_reservedsize);
   GEOM_CLEAN_MEM(5,AsymmetricHull,_reservedsize);  GEOM_CLEAN_MEM(6,AxisRotated,_reservedsize);
@@ -279,13 +279,13 @@ BinaryParser::~BinaryParser( ) {
   GEOM_CLEAN_MEM(17,Extrusion,_reservedsize);  GEOM_CLEAN_MEM(18,Group,_reservedsize);
   GEOM_CLEAN_MEM(19,NurbsCurve,_reservedsize);  GEOM_CLEAN_MEM(20,NurbsPatch,_reservedsize);
   GEOM_CLEAN_MEM(21,Oriented,_reservedsize);  GEOM_CLEAN_MEM(22,Paraboloid,_reservedsize);
-  GEOM_CLEAN_MEM(23,PointSet,_reservedsize);  GEOM_CLEAN_MEM(24,GeomPolyline,_reservedsize);
+  GEOM_CLEAN_MEM(23,PointSet,_reservedsize);  GEOM_CLEAN_MEM(24,Polyline,_reservedsize);
   GEOM_CLEAN_MEM(25,QuadSet,_reservedsize);  GEOM_CLEAN_MEM(26,Revolution,_reservedsize);
   GEOM_CLEAN_MEM(27,Scaled,_reservedsize);  GEOM_CLEAN_MEM(28,Sphere,_reservedsize);
   GEOM_CLEAN_MEM(29,Tapered,_reservedsize);  GEOM_CLEAN_MEM(30,Translated,_reservedsize);
   GEOM_CLEAN_MEM(31,TriangleSet,_reservedsize);  GEOM_CLEAN_MEM(32,BezierCurve2D,_reservedsize);
   GEOM_CLEAN_MEM(33,Disc,_reservedsize);  GEOM_CLEAN_MEM(34,NurbsCurve2D,_reservedsize);
-  GEOM_CLEAN_MEM(35,PointSet2D,_reservedsize);  GEOM_CLEAN_MEM(36,GeomPolyline2D,_reservedsize);
+  GEOM_CLEAN_MEM(35,PointSet2D,_reservedsize);  GEOM_CLEAN_MEM(36,Polyline2D,_reservedsize);
   GEOM_CLEAN_MEM(37,Swung,_reservedsize); GEOM_CLEAN_MEM(38,IFS,_reservedsize);
   GEOM_CLEAN_MEM(39,TextureImage,_reservedsize);GEOM_CLEAN_MEM(40,Text,_reservedsize);
   GEOM_CLEAN_MEM(41,Font,_reservedsize);
@@ -537,7 +537,7 @@ bool BinaryParser::readHeader(){
   uint32_t _reservedsize(0);
   __outputStream << "Initialisation of memory management ... " << flush;
 #endif
-  GEOM_INIT_MEM(0,GeomShape,_reservedsize);
+  GEOM_INIT_MEM(0,Shape,_reservedsize);
   GEOM_INIT_MEM(1,Material,_reservedsize);
   GEOM_INIT_MEM(2,MonoSpectral,_reservedsize);
   GEOM_INIT_MEM(3,MultiSpectral,_reservedsize);  GEOM_INIT_MEM(4,AmapSymbol,_reservedsize);
@@ -550,13 +550,13 @@ bool BinaryParser::readHeader(){
   GEOM_INIT_MEM(17,Extrusion,_reservedsize);  GEOM_INIT_MEM(18,Group,_reservedsize);
   GEOM_INIT_MEM(19,NurbsCurve,_reservedsize);  GEOM_INIT_MEM(20,NurbsPatch,_reservedsize);
   GEOM_INIT_MEM(21,Oriented,_reservedsize);  GEOM_INIT_MEM(22,Paraboloid,_reservedsize);
-  GEOM_INIT_MEM(23,PointSet,_reservedsize);  GEOM_INIT_MEM(24,GeomPolyline,_reservedsize);
+  GEOM_INIT_MEM(23,PointSet,_reservedsize);  GEOM_INIT_MEM(24,Polyline,_reservedsize);
   GEOM_INIT_MEM(25,QuadSet,_reservedsize);  GEOM_INIT_MEM(26,Revolution,_reservedsize);
   GEOM_INIT_MEM(27,Scaled,_reservedsize);  GEOM_INIT_MEM(28,Sphere,_reservedsize);
   GEOM_INIT_MEM(29,Tapered,_reservedsize);  GEOM_INIT_MEM(30,Translated,_reservedsize);
   GEOM_INIT_MEM(31,TriangleSet,_reservedsize);  GEOM_INIT_MEM(32,BezierCurve2D,_reservedsize);
   GEOM_INIT_MEM(33,Disc,_reservedsize);  GEOM_INIT_MEM(34,NurbsCurve2D,_reservedsize);
-  GEOM_INIT_MEM(35,PointSet2D,_reservedsize);  GEOM_INIT_MEM(36,GeomPolyline2D,_reservedsize);
+  GEOM_INIT_MEM(35,PointSet2D,_reservedsize);  GEOM_INIT_MEM(36,Polyline2D,_reservedsize);
   GEOM_INIT_MEM(37,Swung,_reservedsize); GEOM_INIT_MEM(38,IFS,_reservedsize);
   GEOM_INIT_MEM(39,TextureImage,_reservedsize);GEOM_INIT_MEM(40,Text,_reservedsize);
   GEOM_INIT_MEM(41,Font,_reservedsize);
@@ -619,7 +619,7 @@ bool BinaryParser::readNext(){
   cerr << "Found " << _classname << " at pos : " << pos << std::endl;
   __outputStream << "Found " << _classname << " at pos : " << pos << std::endl;
 #endif
-  if(_classname == "Shape")                   return readGeomShape ();
+  if(_classname == "Shape")                   return readShape ();
   else if(_classname == "Material")           return readMaterial  ();
   else if(_classname == "ImageTexture")       return readImageTexture ();
   else if(_classname == "MonoSpectral")       return readMonoSpectral ();
@@ -645,7 +645,7 @@ bool BinaryParser::readNext(){
   else if(_classname == "Oriented")           return readOriented();
   else if(_classname == "Paraboloid")         return readParaboloid();
   else if(_classname == "PointSet")           return readPointSet();
-  else if(_classname == "Polyline")           return readGeomPolyline();
+  else if(_classname == "Polyline")           return readPolyline();
   else if(_classname == "QuadSet")            return readQuadSet();
   else if(_classname == "Revolution")         return readRevolution();
   else if(_classname == "Swung")              return readSwung();
@@ -658,7 +658,7 @@ bool BinaryParser::readNext(){
   else if(_classname == "Disc")               return readDisc();
   else if(_classname == "NurbsCurve2D")       return readNurbsCurve2D();
   else if(_classname == "PointSet2D")         return readPointSet2D();
-  else if(_classname == "Polyline2D")         return readGeomPolyline2D();
+  else if(_classname == "Polyline2D")         return readPolyline2D();
   else if(_classname == "Text")				  return readText();
   else if(_classname == "Font")				  return readFont();
   else if(_classname == "Reference"){
@@ -704,8 +704,8 @@ bool BinaryParser::readNext(){
 /* ----------------------------------------------------------------------- */
 
 
-bool BinaryParser::readGeomShape(){
-    GEOM_INIT_OBJ(a, 0, GeomShape);
+bool BinaryParser::readShape(){
+    GEOM_INIT_OBJ(a, 0, Shape);
 
     string _name = readString();
     GEOM_READ_FIELD(a,Id,Uint32);
@@ -717,7 +717,7 @@ bool BinaryParser::readGeomShape(){
     if((a->getGeometry().isValid()) && (a->getAppearance().isValid())){
         if(!_name.empty())a->setName(_name);
         __result = a;
-        GeomShape3DPtr sh;
+        Shape3DPtr sh;
         sh.cast(__result);
         if(!sh) cerr << "Shape not valid" << endl;
         else {
@@ -791,7 +791,7 @@ bool BinaryParser::readImageTexture() {
     string FileName = readFile();
 	cerr << "Filename : " << FileName << endl;
     if(!FileName.empty()&&exists(FileName.c_str())) {
-			FileName = expand_dirname(FileName);
+			FileName = absolute_dirname(FileName);
 			mat->getFilename() = FileName;
 	}
 
@@ -875,7 +875,7 @@ bool BinaryParser::readAmapSymbol() {
 
     string FileName = readFile();
     if(!FileName.empty()&&exists(FileName.c_str())) {
-			FileName = expand_dirname(FileName);
+			FileName = absolute_dirname(FileName);
 			obj->readFile(FileName);
 	}
 	Point3ArrayPtr points;
@@ -906,7 +906,7 @@ bool BinaryParser::readAmapSymbol() {
 	return false;
       }
       else {
-	  FileName = expand_dirname(FileName);
+	  FileName = absolute_dirname(FileName);
 	  obj->readFile(FileName);
 	  obj->getFileName() = FileName;
       }
@@ -918,7 +918,7 @@ bool BinaryParser::readAmapSymbol() {
       obj->getIndexList() = indices;
       obj->getCCW() = false;
       real_t _maxZ = points->getZMax()->z();
-      obj->getSkeleton() = GeomPolylinePtr(new GeomPolyline(Vector3::ORIGIN,Vector3(0,0,_maxZ)));
+      obj->getSkeleton() = PolylinePtr(new Polyline(Vector3::ORIGIN,Vector3(0,0,_maxZ)));
       if (!FileName.empty() && exists(FileName.c_str())) {
 	  obj->getFileName() = FileName;
       }
@@ -1444,7 +1444,7 @@ bool BinaryParser::readGroup() {
         }
     }
     if(err >= _sizej-1){
-      obj->getSkeleton() = GeomPolylinePtr(0);
+      obj->getSkeleton() = PolylinePtr(0);
       obj->getGeometryList()= GeometryArrayPtr(0);
       GEOM_DEL_OBJ(obj,18) ;
       return false;
@@ -1663,9 +1663,9 @@ bool BinaryParser::readPointSet() {
 /* ----------------------------------------------------------------------- */
 
 
-bool BinaryParser::readGeomPolyline() {
+bool BinaryParser::readPolyline() {
     GEOM_BEGIN(_name,_ident);
-    GEOM_INIT_OBJ(obj, 24,GeomPolyline );
+    GEOM_INIT_OBJ(obj, 24,Polyline );
 
     GEOM_READ_ARRAY(obj->getPointList(),Point3Array,Vector3);
 
@@ -1674,7 +1674,7 @@ bool BinaryParser::readGeomPolyline() {
 		GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
 	}
 
-    GEOM_PARSER_SETNAME(_name,_ident,obj,GeomPolyline);
+    GEOM_PARSER_SETNAME(_name,_ident,obj,Polyline);
     return true;
 }
 
@@ -2133,13 +2133,13 @@ bool BinaryParser::readPointSet2D() {
 /* ----------------------------------------------------------------------- */
 
 
-bool BinaryParser::readGeomPolyline2D() {
+bool BinaryParser::readPolyline2D() {
     GEOM_BEGIN(_name,_ident);
-    GEOM_INIT_OBJ(obj, 36,GeomPolyline2D);
+    GEOM_INIT_OBJ(obj, 36,Polyline2D);
 
     GEOM_READ_ARRAY(obj->getPointList(),Point2Array,Vector2);
 
-    GEOM_PARSER_SETNAME(_name,_ident,obj,GeomPolyline2D);
+    GEOM_PARSER_SETNAME(_name,_ident,obj,Polyline2D);
     return true;
 }
 

@@ -35,30 +35,33 @@
  */
 
 #include "vgsfile.h"
-#include "Tools/rw_tokenizer.h"
-#include "Tools/util_math.h"
-#include "Tools/util_string.h"
-#include "Tools/dirnames.h"
-#include "GEOM/all_geometry.h"
-#include "GEOM/geom_pointarray.h"
-#include "GEOM/geom_indexarray.h"
-#include "GEOM/appe_material.h"
+#include <math/util_math.h>
+#include <tool/util_string.h>
+#include <tool/dirnames.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/appearance/material.h>
 
 
 #include <fstream>
+#include <qstring.h>
+#include <qstringlist.h>
+#include <qregexp.h>
 
 /* ----------------------------------------------------------------------- */
 
 TOOLS_USING_NAMESPACE
 using namespace std;
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GeomShapePtr 
+ShapePtr 
 VegeStarLine::build(VGStarColorMap& colormap) const {
-	if(!isValid())return GeomShapePtr(0);
+	if(!isValid())return ShapePtr(0);
 	uint32_t c = color.getRed() + 256*color.getGreen() + 256*256*color.getBlue();
 	AppearancePtr mat;
 	VGStarColorMap::const_iterator _it = colormap.find(c);
@@ -75,40 +78,40 @@ VegeStarLine::build(VGStarColorMap& colormap) const {
 		points->pushBack(point3);
 		Index3ArrayPtr indices(new Index3Array);
 		indices->pushBack(Index3(0,1,2));
-		GeometryPtr t(new TriangleSet(points,indices,true,true,false,GeomPolylinePtr(0)));
-		return GeomShapePtr(new GeomShape(t,mat));
+		GeometryPtr t(new TriangleSet(points,indices,true,true,false,PolylinePtr(0)));
+		return ShapePtr(new Shape(t,mat));
 			}
 		break;
 	case 11:{
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_11),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_11),mat ));
 			}
 		break;
 	case 12:{
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_12),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_12),mat ));
 			}
 		break;
 	case 13:{
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_13),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_13),mat ));
 			}
 		break;
 	case 21: {
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_21),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_21),mat ));
 			}
 		break;
 	case 22: {
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_22),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_22),mat ));
 			}
 		break;
 	case 23: {
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_23),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_23),mat ));
 			}
 		break;
 	case 24: {
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_24),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_24),mat ));
 			}
 		break;
 	case 31:{
-		return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_31),mat ));
+		return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_31),mat ));
 			}
 		break;
 	case 32:{
@@ -122,10 +125,10 @@ VegeStarLine::build(VGStarColorMap& colormap) const {
 												 t));
 			if(translation != Vector3::ORIGIN)
 				t = GeometryPtr(new Translated(translation,t));
-			return GeomShapePtr(new GeomShape(t,mat ));
+			return ShapePtr(new Shape(t,mat ));
 		}
 		else {
-			return GeomShapePtr(new GeomShape(transform(VegeStarFile::SHAPE_32),mat ));
+			return ShapePtr(new Shape(transform(VegeStarFile::SHAPE_32),mat ));
 		}
 			}
 		break;
@@ -139,20 +142,20 @@ VegeStarLine::build(VGStarColorMap& colormap) const {
 											 t));
 		if(translation != Vector3::ORIGIN)
 			t = GeometryPtr(new Translated(translation,t));
-		return GeomShapePtr(new GeomShape(t,mat));
+		return ShapePtr(new Shape(t,mat));
 			}
 		break;
 	case 40: {
 		Point3ArrayPtr points(new Point3Array);
 		points->pushBack(point1);
 		GeometryPtr t(new PointSet(points));
-		return GeomShapePtr(new GeomShape(t,mat));
+		return ShapePtr(new Shape(t,mat));
 			}
 		break;
 	default:
-		return GeomShapePtr(0);
+		return ShapePtr(0);
 	}
-	return GeomShapePtr(0);
+	return ShapePtr(0);
 }
 
 GeometryPtr VegeStarLine::transform(GeometryPtr geom) const {
@@ -212,14 +215,23 @@ VegeStarFile::parse(std::istream& stream)
 
 #define MAXLINELENGTH 500
 
+inline QStringList splitString(const QString& t){
+#if QT_VERSION >= 0x040000
+	return t.split(QRegExp("[ \t\n;,]"));
+#else
+	return QStringList::split(QRegExp("[ \t\n;,]"),t);
+#endif
+}
+
 bool 
 VegeStarFile::parseHeader(std::istream& stream)
 {
 	char line[MAXLINELENGTH]; 
 	stream.getline(line,MAXLINELENGTH);
-	Tokenizer t(line);
-	string token = t(" \t\n;,");
-	while(!token.empty()){
+	QString t(line);
+	QStringList tokens = splitString(t);
+	for(int it = 0; it < tokens.size(); ++it){
+		QString token = tokens[it];
 		if(token == "Obj")attlist.push_back(obj);
 		else if(token == "EchX")attlist.push_back(EchX);
 		else if(token == "EchY")attlist.push_back(EchY);
@@ -255,7 +267,6 @@ VegeStarFile::parseHeader(std::istream& stream)
 			attlist.push_back(Error);
 			*SceneObject::errorStream << "Unrecognized header token : '" << token << '\'' << endl;
 		}
-		token = t(" \t\n;,");
 	}
 	return true;
 }
@@ -267,12 +278,12 @@ VegeStarFile::parseLine(std::istream& stream)
 	real_t val = 0;
 	char line[MAXLINELENGTH]; 
 	stream.getline(line,MAXLINELENGTH);
-	Tokenizer t(line);
-	string token = t(" \t\n;,");
 
-	for(size_t i = 0; i < attlist.size() && !token.empty(); i++){
-		stringstream s(token);
-		s >> val;
+	QString t(line);
+	QStringList tokens = splitString(t);
+
+	for(size_t i = 0; i < attlist.size() && i < tokens.size(); i++){
+		val = tokens[i].toDouble();
 		VgstarItem item = attlist[i];
 		if(stream.eof())return false;
 		switch(item){
@@ -300,7 +311,6 @@ VegeStarFile::parseLine(std::istream& stream)
 		case Z3 : {l.point3.z() = val;}break;
 		default : break;
 		}
-		token = t(" \t\n;,");
 	}
 	if(l.isValid())objlist.push_back(l);
 	return true;
@@ -314,7 +324,7 @@ VegeStarFile::build() const
 	int i = 2;
 	for(std::vector<VegeStarLine>::const_iterator it = objlist.begin();
 		it != objlist.end(); it++){
-		GeomShapePtr shape = it->build(colormap);
+		ShapePtr shape = it->build(colormap);
 		if(shape && shape.isValid()){
 			shape->getId() = i;
 			shape->setName("SHAPE_"+number(i));
@@ -370,15 +380,15 @@ VegeStarFile::initShape(){
 		indices->pushBack(Index3(0,6,5));
 		indices->pushBack(Index3(0,1,6));
 		if(!SHAPE_11){
-			SHAPE_11 = GeometryPtr(new TriangleSet(points,indices,true,true,false,GeomPolylinePtr(0)));
+			SHAPE_11 = GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr(0)));
 			SHAPE_11->setName("VGX_SHAPE_11");
 		}
 		if(!SHAPE_12){
-			SHAPE_12 = GeometryPtr(new TriangleSet(points,indices,true,true,false,GeomPolylinePtr(0)));
+			SHAPE_12 = GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr(0)));
 			SHAPE_12->setName("VGX_SHAPE_12");
 		}
 		if(!SHAPE_13){
-			SHAPE_13 = GeometryPtr(new TriangleSet(points,indices,true,true,false,GeomPolylinePtr(0)));
+			SHAPE_13 = GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr(0)));
 			SHAPE_13->setName("VGX_SHAPE_13");
 		}
 	}
@@ -396,7 +406,7 @@ VegeStarFile::initShape(){
 		Index4ArrayPtr indices4(new Index4Array);
 		indices4->pushBack(Index4(0,1,2,3));
 		SHAPE_22 = GeometryPtr(new Translated(Vector3(0.5,0,0),
-			GeometryPtr(new QuadSet(points,indices4,true,true,false,GeomPolylinePtr(0)))));
+			GeometryPtr(new QuadSet(points,indices4,true,true,false,PolylinePtr(0)))));
 		SHAPE_22->setName("VGX_SHAPE_22");
 	}
 	
@@ -411,7 +421,7 @@ VegeStarFile::initShape(){
 		for(int j = 0; j < slices; j++)
 			indices->pushBack(Index3(j,j+1,slices+1));
 		SHAPE_23 = GeometryPtr(new Translated(Vector3(0.5,0,0),
-			GeometryPtr(new TriangleSet(points,indices,true,true,false,GeomPolylinePtr(0)))));
+			GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr(0)))));
 		SHAPE_23->setName("VGX_SHAPE_23");
 	}
 	
@@ -422,7 +432,7 @@ VegeStarFile::initShape(){
 		points->pushBack(Vector3::OX);
 		Index3ArrayPtr indices(new Index3Array);
 		indices->pushBack(Index3(0,1,2));
-		SHAPE_24 = GeometryPtr(new TriangleSet(points,indices,true,true,false,GeomPolylinePtr(0)));
+		SHAPE_24 = GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr(0)));
 		SHAPE_24->setName("VGX_SHAPE_24");
 	}
 
@@ -516,8 +526,8 @@ VegeStarFile::importPolygonFile(const string& filename, ostream& error){
 			}
 		  }
 		  if(!err){
-			  result = GeometryPtr(new FaceSet(points,indices,true,true,false,GeomPolylinePtr(0)));
-			  string n = get_notdirname(filename);
+			  result = GeometryPtr(new FaceSet(points,indices,true,true,false,PolylinePtr(0)));
+			  string n = get_filename(filename);
 			  size_t pos = n.find_last_of('.');
 			  if(pos != string::npos){
 				  n.erase(n.begin()+pos,n.end());
@@ -536,4 +546,4 @@ VegeStarFile::importPolygonFile(const string& filename, ostream& error){
 }
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE

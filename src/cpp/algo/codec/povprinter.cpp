@@ -37,19 +37,20 @@
 
 
 #include <iomanip>
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
-#include "actn_povprinter.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "all_scene.h"
+#include "povprinter.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_scene.h>
 
-#include "geom_geometryarray2.h"
-#include "actn_tesselator.h"
-#include "geom_boundingbox.h"
-#include "geom_pointarray.h"
+#include <scenegraph/container/geometryarray2.h>
+#include <algo/base/tesselator.h>
+#include <scenegraph/geometry/boundingbox.h>
+#include <scenegraph/container/pointarray.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -318,13 +319,13 @@ bool PovPrinter::setBackGround(const Color3& color){
 /* ----------------------------------------------------------------------- */
 
 
-bool PovPrinter::process(GeomShape * geomShape) {
-  GEOM_ASSERT(geomShape);
-  bool b=geomShape->appearance->apply(*this);
-  return ( b && (geomShape->geometry->apply(*this)));
+bool PovPrinter::process(Shape * Shape) {
+  GEOM_ASSERT(Shape);
+  bool b=Shape->appearance->apply(*this);
+  return ( b && (Shape->geometry->apply(*this)));
 }
 
-bool PovPrinter::process( GeomInline * geomInline ) {
+bool PovPrinter::process( Inline * geomInline ) {
   GEOM_ASSERT(geomInline);
   if(geomInline->getScene() && geomInline->getScene()->getSize()>1){
 	GEOM_POVPRINT_BEG_(__geomStream,"union");
@@ -798,7 +799,7 @@ bool PovPrinter::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool PovPrinter::process( GeomPolyline * polyline ) {
+bool PovPrinter::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
 
   if(!__linecache){
@@ -1131,7 +1132,7 @@ bool PovPrinter::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool PovPrinter::process( GeomPolyline2D * polyline ) {
+bool PovPrinter::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do
   return true;

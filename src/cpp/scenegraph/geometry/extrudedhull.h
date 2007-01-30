@@ -72,7 +72,7 @@ public:
   static const bool DEFAULT_CCW;
 
   /// A structure which helps to build a ExtrudedHull when parsing. 
-  struct Builder : public Hull::Builder { 
+  struct SG_API Builder : public Hull::Builder { 
 
     /// A pointer to the \b CCW field.
     bool * CCW;

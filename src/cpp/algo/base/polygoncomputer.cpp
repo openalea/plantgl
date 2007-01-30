@@ -34,16 +34,16 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "actn_polygoncomputer.h"
+#include "polygoncomputer.h"
 
-#include "all_geometry.h"
-#include "all_scene.h"
-#include "geom_pointarray.h"
-#include "geom_geometryarray2.h"
-#include "geom_profile.h"
-#include "Tools/util_math.h"
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_scene.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/geometryarray2.h>
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -76,11 +76,11 @@ PolygonComputer::getPolygonNb() const{
 /* ----------------------------------------------------------------------- */
 
 
-bool PolygonComputer::process(GeomShape * geomShape){
-  return geomShape->getGeometry()->apply(*this);
+bool PolygonComputer::process(Shape * Shape){
+  return Shape->getGeometry()->apply(*this);
 }
 
-bool PolygonComputer::process(GeomInline * geomInline){
+bool PolygonComputer::process(Inline * geomInline){
   return process(geomInline->getScene());
 }
 
@@ -302,7 +302,7 @@ bool PolygonComputer::process( ScenePtr _scene) {
 
 /* ----------------------------------------------------------------------- */
 
-const real_t GEOM(polygonNumber)(ScenePtr _scene){
+const real_t PGL(polygonNumber)(ScenePtr _scene){
   PolygonComputer p;
   if(p.process(_scene))return p.getPolygonNb();
   else return 0;
@@ -337,7 +337,7 @@ bool PolygonComputer::process( PointSet * pointSet ){
   __polygon = 0;
   return false;
 }
-bool PolygonComputer::process( GeomPolyline * polyline ){
+bool PolygonComputer::process( Polyline * polyline ){
   __polygon = 0;
   return false;
 }
@@ -357,7 +357,7 @@ bool PolygonComputer::process( PointSet2D * pointSet ){
   return false;
 }
 
-bool PolygonComputer::process( GeomPolyline2D * polyline ){
+bool PolygonComputer::process( Polyline2D * polyline ){
   __polygon = 0;
   return false;
 }

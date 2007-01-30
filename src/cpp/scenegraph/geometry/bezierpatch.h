@@ -73,7 +73,7 @@ public:
   static const uint32_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a BezierPatch when parsing. 
-  struct Builder : public Patch::Builder { 
+  struct SG_API Builder : public Patch::Builder { 
 
     /// A pointer to the \b CtrlPointList field.
     Point4MatrixPtr * CtrlPointMatrix;

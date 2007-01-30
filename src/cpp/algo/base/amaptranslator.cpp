@@ -39,18 +39,20 @@
 
 
 
-#include "actn_amaptranslator.h"
-#include "actn_discretizer.h"
-#include "Tools/util_math.h"
+#include "amaptranslator.h"
+#include "discretizer.h"
+#include "bboxcomputer.h"
 
-#include "GEOM/all_appearance.h"
-#include "GEOM/all_geometry.h"
-#include "scne_shape.h"
-#include "geom_boundingbox.h"
-#include "geom_indexarray.h"
-#include "actn_bboxcomputer.h"
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/geometry/boundingbox.h>
+#include <scenegraph/container/indexarray.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -99,9 +101,9 @@ AmapTranslator::isNormalized(){
 /* ----------------------------------------------------------------------- */
 
 
-bool AmapTranslator::process(GeomShape * geomShape) {
-  GEOM_ASSERT(geomShape);
-  return geomShape->geometry->apply(*this);
+bool AmapTranslator::process(Shape * Shape) {
+  GEOM_ASSERT(Shape);
+  return Shape->geometry->apply(*this);
 }
 
 
@@ -366,7 +368,7 @@ bool AmapTranslator::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool AmapTranslator::process( GeomPolyline * polyline ) {
+bool AmapTranslator::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do
   __symbol = AmapSymbolPtr(0);
@@ -503,7 +505,7 @@ bool AmapTranslator::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool AmapTranslator::process( GeomPolyline2D * polyline ) {
+bool AmapTranslator::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do
   __symbol = AmapSymbolPtr(0);

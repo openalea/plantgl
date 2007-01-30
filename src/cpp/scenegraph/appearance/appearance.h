@@ -73,7 +73,7 @@ class SG_API Appearance : public SceneObject
 public:
 
   /// A structure which helps to build a Appearance when parsing.
-  struct Builder : public SceneObject::Builder {
+  struct SG_API Builder : public SceneObject::Builder {
 
     /// A constructor. It inits all the pointers to null.
     Builder( );

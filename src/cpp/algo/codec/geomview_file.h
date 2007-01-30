@@ -9,21 +9,22 @@
 #include <iostream>
 #include <stack>
 
-#include "Tools/util_vector.h"
-#include "Tools/util_hashmap.h"
-#include "appe_color.h"
-#include "geom_geometry.h"
-#include "scne_scene.h"
-#include "geom_indexarray.h"
+#include "codec_config.h"
+#include <math/util_vector.h>
+#include <tool/util_hashmap.h>
+#include <scenegraph/appearance/color.h>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GeomViewBuilder  {
+class CODEC_API GeomViewBuilder  {
 
 public :
 	GeomViewBuilder(std::istream& input,std::ostream& output);
@@ -73,7 +74,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class GenericBuilder {
+class CODEC_API GenericBuilder {
 public :
 	GenericBuilder(GeomViewBuilder& d) :
 	   __data(d){}
@@ -89,7 +90,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class GenericPointBuilder : public GenericBuilder {
+class CODEC_API GenericPointBuilder : public GenericBuilder {
 public :
 
 	GenericPointBuilder(GeomViewBuilder& d) :
@@ -120,7 +121,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class BezBuilder : public GenericPointBuilder {
+class CODEC_API BezBuilder : public GenericPointBuilder {
 
 public :
 	BezBuilder(GeomViewBuilder&);
@@ -138,7 +139,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class OffBuilder : public GenericPointBuilder {
+class CODEC_API OffBuilder : public GenericPointBuilder {
 
 public :
 	OffBuilder(GeomViewBuilder&);
@@ -153,7 +154,7 @@ protected :
 };
 /* ----------------------------------------------------------------------- */
 
-class GVMeshBuilder : public GenericPointBuilder {
+class CODEC_API GVMeshBuilder : public GenericPointBuilder {
 
 public :
 	GVMeshBuilder(GeomViewBuilder&);
@@ -172,7 +173,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class QuadBuilder : public GenericPointBuilder {
+class CODEC_API QuadBuilder : public GenericPointBuilder {
 
 public :
 	QuadBuilder(GeomViewBuilder&);
@@ -185,7 +186,7 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class VectBuilder : public GenericBuilder {
+class CODEC_API VectBuilder : public GenericBuilder {
 
 public :
 	VectBuilder(GeomViewBuilder&);
@@ -207,7 +208,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class GVSphereBuilder : public GenericBuilder {
+class CODEC_API GVSphereBuilder : public GenericBuilder {
 
 public :
 	GVSphereBuilder(GeomViewBuilder&);
@@ -224,6 +225,6 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif

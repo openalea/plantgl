@@ -45,18 +45,19 @@
 #ifndef __actn_linetreeprinter_h__
 #define __actn_linetreeprinter_h__
 
-#include "actn_matrixcomputer.h"
-#include "actn_amaptranslator.h"
-#include "appe_material.h"
-#include "geom_amapsymbol.h"
-#include "Tools/bfstream.h"
+#include "codec_config.h"
+#include <algo/base/matrixcomputer.h>
+#include <algo/base/amaptranslator.h>
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/geometry/amapsymbol.h>
+#include <tool/bfstream.h>
 
-#include "Tools/util_hashmap.h"
+#include <tool/util_hashmap.h>
 #include <vector>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -74,7 +75,7 @@ typedef RCPtr<Geometry> GeometryPtr;
 /* ----------------------------------------------------------------------- */
 
 
-class GEOM_API LinetreePrinter : public MatrixComputer
+class CODEC_API LinetreePrinter : public MatrixComputer
 {
 
 public:
@@ -115,9 +116,9 @@ public:
                              const std::string& ligne ,
                                  const std::string& smb ,
                                  std::string& cfg) const;
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
   //@}
 
@@ -172,7 +173,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -198,7 +199,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -232,7 +233,7 @@ protected:
 
 /* ------------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __actn_vgstarprinter_h__

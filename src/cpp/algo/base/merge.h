@@ -42,17 +42,17 @@
 #ifndef __algo_merge_h__
 #define __algo_merge_h__
 
-#include "geom_triangleset.h"
-#include "geom_faceset.h"
-#include "geom_quadset.h"
-#include "geom_polyline.h"
-#include "geom_pointset.h"
-#include "actn_discretizer.h"
+#include <scenegraph/geometry/triangleset.h>
+#include <scenegraph/geometry/faceset.h>
+#include <scenegraph/geometry/quadset.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/pointset.h>
+#include "discretizer.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -63,7 +63,7 @@ GEOM_BEGIN_NAMESPACE
 */
 
 
-class GEOM_API Merge
+class ALGO_API Merge
 {
 
 public:
@@ -133,7 +133,7 @@ public:
     virtual bool apply( PointSet& geom);
 
     /// Merge with the polyline \e geom
-    virtual bool apply( GeomPolyline& geom );
+    virtual bool apply( Polyline& geom );
 
     /// Merge with the QuadSet \e geom
     virtual bool apply( QuadSet& geom );
@@ -173,7 +173,7 @@ private:
 // __algo_merge_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -66,7 +66,7 @@ class SG_API Primitive : public virtual Geometry
 public:
 
   /// A structure which helps to build a Primitive when parsing. 
-  struct Builder : public Geometry::Builder {
+  struct SG_API Builder : public Geometry::Builder {
     
     /// Constructor.
     Builder( );

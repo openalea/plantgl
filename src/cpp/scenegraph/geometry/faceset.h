@@ -70,7 +70,7 @@ class SG_API FaceSet : public Mesh
 public:
 
   /// A structure which helps to build a FaceSet when parsing. 
-  struct Builder : public Mesh::Builder {
+  struct SG_API Builder : public Mesh::Builder {
 
     /// A pointer to the IndexList field.
     IndexArrayPtr * IndexList;

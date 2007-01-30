@@ -36,9 +36,9 @@
     #include <list>
 #endif
 
-    #include "GEOM/geom_pointarray.h"
+    #include <scenegraph/container/pointarray.h>
 	TOOLS_USING_NAMESPACE
-	GEOM_USING_NAMESPACE
+	PGL_USING_NAMESPACE
 
 
     // Basis
@@ -135,5 +135,5 @@
     
     
 
-    #include "miniball.C"
+   //  #include "miniball.C"
 

@@ -36,18 +36,19 @@
  */
 
 
-#include "Tools/util_math.h"
-#include "actn_bspherecomputer.h"
+#include <math/util_math.h>
+#include "bspherecomputer.h"
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "all_scene.h"
-#include "geom_pointarray.h"
-#include "geom_geometryarray2.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_scene.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/geometryarray2.h>
 
-#include "actn_discretizer.h"
+#include "discretizer.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -171,7 +172,7 @@ BSphereComputer::endProcess()
 
 
 bool
-BSphereComputer::process( GeomInline * geominline )
+BSphereComputer::process( Inline * geominline )
 {
   GEOM_ASSERT( geominline );
   return true;
@@ -182,11 +183,11 @@ BSphereComputer::process( GeomInline * geominline )
 
 
 bool
-BSphereComputer::process( GeomShape * geomShape )
+BSphereComputer::process( Shape * Shape )
 {
-  GEOM_ASSERT( geomShape );
-  if(! geomShape->geometry)return false;
-  return geomShape->geometry->apply(*this);
+  GEOM_ASSERT( Shape );
+  if(! Shape->geometry)return false;
+  return Shape->geometry->apply(*this);
 }
 
 
@@ -502,7 +503,7 @@ BSphereComputer::process( PointSet * pointSet )
 
 
 bool
-BSphereComputer::process( GeomPolyline * polyline )
+BSphereComputer::process( Polyline * polyline )
 {
   GEOM_BSPHERECOMPUTER_EXPLICIT( polyline )
 }
@@ -640,7 +641,7 @@ BSphereComputer::process( PointSet2D * pointSet )
 
 
 bool
-BSphereComputer::process( GeomPolyline2D * polyline )
+BSphereComputer::process( Polyline2D * polyline )
 {
   GEOM_BSPHERECOMPUTER_EXPLICIT2D( polyline )
 }

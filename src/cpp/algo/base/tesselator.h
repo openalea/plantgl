@@ -42,12 +42,12 @@
 #define __actn_tesselator_h__
 
 
-#include "actn_discretizer.h"
-#include "Tools/rcobject.h"
+#include "discretizer.h"
+#include <tool/rcobject.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,7 +64,7 @@ typedef RCPtr<TriangleSet> TriangleSetPtr;
 */
 
 
-class GEOM_API Tesselator : public Discretizer
+class ALGO_API Tesselator : public Discretizer
 {
 
 public:
@@ -109,7 +109,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -124,7 +124,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -136,7 +136,7 @@ public:
 // __actn_tesselator_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

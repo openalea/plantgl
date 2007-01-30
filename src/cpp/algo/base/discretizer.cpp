@@ -38,22 +38,21 @@
 
 
 
-#include "actn_discretizer.h"
-// #include "algo_fusion.h"
-#include "algo_merge.h"
+#include "discretizer.h"
+#include "merge.h"
 
-#include "all_geometry.h"
-#include "scne_shape.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_container.h>
+#include <scenegraph/scene/shape.h>
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
 #ifdef GEOM_DEBUG
-#include "Tools/timer.h"
+#include <tool/timer.h>
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -126,9 +125,9 @@ const ExplicitModelPtr& Discretizer::getDiscretization( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-bool Discretizer::process(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
-    return (geomShape->geometry->apply(*this));
+bool Discretizer::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
+    return (Shape->geometry->apply(*this));
 }
 
 
@@ -184,7 +183,7 @@ bool Discretizer::process( PointSet * pointSet ) {
   return true;
 }
 
-bool Discretizer::process( GeomPolyline * polyline ) {
+bool Discretizer::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do as quadSet is already an ExplicitModel
   __discretization = ExplicitModelPtr(polyline);
@@ -372,7 +371,7 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
   GEOM_ASSERT(_pointCount == _pointList->getSize());
   GEOM_ASSERT(_indexCount == _indexList->getSize());
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(_botPoint,_topPoint));
+  PolylinePtr _skeleton(new Polyline(_botPoint,_topPoint));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
                                            _indexList,
@@ -414,7 +413,7 @@ bool Discretizer::process( BezierCurve * bezierCurve ) {
     _start += _step;
   };
 
-  __discretization = ExplicitModelPtr(new GeomPolyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(bezierCurve);
   return true;
@@ -473,7 +472,7 @@ bool Discretizer::process( BezierPatch * bezierPatch ) {
 
   _pointList->setAt(_pointCount,bezierPatch->getPointAt(1.0,1.0));
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
   QuadSet * q  = new QuadSet(_pointList,
@@ -524,7 +523,7 @@ bool Discretizer::process( Box * box ) {
   _indexList->setAt(5,Index4(4,7,6,5));
 
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,-_size.z()),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,-_size.z()),
                                      Vector3(0,0,_size.z())));
 
   __discretization = ExplicitModelPtr(new QuadSet(_pointList,
@@ -583,7 +582,7 @@ bool Discretizer::process( Cone * cone ) {
     _next = (_next + 1 ) % _slices;
   }
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(Vector3::ORIGIN),
+  PolylinePtr _skeleton(new Polyline(Vector3(Vector3::ORIGIN),
                                      Vector3(0,0,_height)));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -660,7 +659,7 @@ bool Discretizer::process( Cylinder * cylinder ) {
     _next = (_next + 2 ) % (2 * _slices);
   }
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
 
@@ -727,7 +726,7 @@ bool Discretizer::process( ElevationGrid * elevationGrid ) {
 
   };
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
   TriangleSet * t = new TriangleSet(_pointList, _indexList, true, elevationGrid->getCCW(), // CCW
@@ -969,7 +968,7 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
   GEOM_ASSERT(_pointCount == _pointList->getSize());
   GEOM_ASSERT(_indexCount == _indexList->getSize());
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3::ORIGIN,
+  PolylinePtr _skeleton(new Polyline(Vector3::ORIGIN,
                                      Vector3::ORIGIN));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -1049,7 +1048,7 @@ bool Discretizer::process( Frustum * frustum ) {
     _next = (_next + 2 ) % (2 * _slices);
   }
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
   if (_solid)
@@ -1203,7 +1202,7 @@ bool Discretizer::process( Extrusion * extrusion ){
         _pointList->setAt(_j,((*_it)+_center));
 		if(__computeTexCoord)_texList->setAt(_j,Vector2(_start,_idPoint/(_nbPoints-1)));
     }
-    GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+    PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
 	Mesh * m;
@@ -1364,7 +1363,7 @@ bool Discretizer::process( NurbsCurve * nurbsCurve ) {
 
   _pointList->setAt(_size, nurbsCurve->getPointAt(nurbsCurve->getLastKnot()));
 
-  __discretization = ExplicitModelPtr(new GeomPolyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(nurbsCurve);
   return true;
@@ -1433,7 +1432,7 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   _pointList->setAt(_pointCount,nurbsPatch->getPointAt(_ulast,_vlast));
 
  
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
   QuadSet * q = new QuadSet(_pointList,_indexList,true, nurbsPatch->getCCW(), false,_skeleton);
@@ -1536,7 +1535,7 @@ bool Discretizer::process( Paraboloid * paraboloid ) {
   GEOM_ASSERT(_pointCount == _pointList->getSize());
   GEOM_ASSERT(_indexCount == _indexList->getSize());
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(_pointList->getAt(_bot),
+  PolylinePtr _skeleton(new Polyline(_pointList->getAt(_bot),
                                      _pointList->getAt(_top)));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -1612,7 +1611,7 @@ bool Discretizer::process( Revolution * revolution ) {
 
   };
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,1)));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -1732,7 +1731,7 @@ if( i != slices-1 )
 
     }
 
-  GeomPolylinePtr skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr skeleton(new Polyline(Vector3(0,0,0),
                                     Vector3(0,0,1)));
 
   // to do: gerer la fermeture (solid, volume)
@@ -1831,7 +1830,7 @@ bool Discretizer::process( Sphere * sphere ) {
   GEOM_ASSERT(_pointCount == _pointList->getSize());
   GEOM_ASSERT(_indexCount == _indexList->getSize());
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(_pointList->getAt(_bot)),
+  PolylinePtr _skeleton(new Polyline(Vector3(_pointList->getAt(_bot)),
                                      Vector3(_pointList->getAt(_top))));
 
   TriangleSet * t = new TriangleSet(_pointList, _indexList, 0, 0 , 0, 0, /*_texList, _texIndexList,*/0,0, true, true,true,true,_skeleton);
@@ -1926,7 +1925,7 @@ bool Discretizer::process( BezierCurve2D * bezierCurve ) {
     _start += _step;
   };
 
-  __discretization = ExplicitModelPtr(new GeomPolyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(bezierCurve);
   return true;
@@ -1976,7 +1975,7 @@ bool Discretizer::process( Disc * disc ) {
   if(__computeTexCoord)
 	  _texList->setAt(_pointsCount,Vector2(0.5,0.5));
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
   TriangleSet * t = new TriangleSet(_pointList, _indexList, true, true,  false, _skeleton);
@@ -2010,7 +2009,7 @@ bool Discretizer::process( NurbsCurve2D * nurbsCurve ) {
 
   _pointList->setAt(_size, Vector3(nurbsCurve->getPointAt(nurbsCurve->getLastKnot()),0));
 
-  __discretization = ExplicitModelPtr(new GeomPolyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(nurbsCurve);
   return true;
@@ -2030,13 +2029,13 @@ bool Discretizer::process( PointSet2D * pointSet ){
 
 /* ----------------------------------------------------------------------- */
 
-bool Discretizer::process( GeomPolyline2D * polyline ){
+bool Discretizer::process( Polyline2D * polyline ){
   GEOM_ASSERT( polyline );
 
 
   GEOM_DISCRETIZER_CHECK_CACHE( polyline );
   Point3ArrayPtr a (new Point3Array(polyline->getPointList(),0));
-  __discretization = ExplicitModelPtr(new GeomPolyline(a));
+  __discretization = ExplicitModelPtr(new Polyline(a));
   GEOM_DISCRETIZER_UPDATE_CACHE(polyline);
   return true;
 }

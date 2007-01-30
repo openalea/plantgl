@@ -37,16 +37,17 @@
 
 
 
-#include "actn_xmlprinter.h"
+#include "xmlprinter.h"
 #include <qtextstream.h>
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "geom_indexarray.h"
-#include "geom_pointarray.h"
+#include <pgl_scene.h>
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/pointarray.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -215,7 +216,7 @@ XMLPrinter::endProcess()
 
 
 bool
-XMLPrinter::process( GeomInline * geominline )
+XMLPrinter::process( Inline * geominline )
 {
   GEOM_ASSERT( geominline );
   cerr << "Not Yet Implemented" << endl;
@@ -227,11 +228,11 @@ XMLPrinter::process( GeomInline * geominline )
 
 
 bool
-XMLPrinter::process( GeomShape * geomShape )
+XMLPrinter::process( Shape * Shape )
 {
-  GEOM_ASSERT( geomShape );
-  geomShape->appearance->apply(*this);
-  return (geomShape->geometry->apply(*this));
+  GEOM_ASSERT( Shape );
+  Shape->appearance->apply(*this);
+  return (Shape->geometry->apply(*this));
 }
 
 
@@ -608,7 +609,7 @@ XMLPrinter::process( PointSet * pointSet )
 
 
 bool
-XMLPrinter::process( GeomPolyline * polyline )
+XMLPrinter::process( Polyline * polyline )
 {
   GEOM_ASSERT( polyline );
   GEOM_XMLPRINT_BEGINOBJ("Polyline",polyline,finish);
@@ -778,7 +779,7 @@ XMLPrinter::process( PointSet2D * pointSet )
 
 
 bool
-XMLPrinter::process( GeomPolyline2D * polyline )
+XMLPrinter::process( Polyline2D * polyline )
 {
   GEOM_ASSERT( polyline );
   GEOM_XMLPRINT_BEGINOBJ("Polyline2D",polyline,finish);

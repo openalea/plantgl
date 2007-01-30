@@ -45,16 +45,16 @@
 #ifndef __actn_vgstarprinter_h__
 #define __actn_vgstarprinter_h__
 
-#include "actn_matrixcomputer.h"
-// #include "actn_printer.h"
-#include "actn_tesselator.h"
-#include "appe_color.h"
-#include "geom_boundingbox.h"
+#include "codec_config.h"
+#include <algo/base/matrixcomputer.h>
+#include <algo/base/tesselator.h>
+#include <scenegraph/appearance/color.h>
+#include <scenegraph/geometry/boundingbox.h>
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -70,7 +70,7 @@ class Geometry;
 /* ----------------------------------------------------------------------- */
 
 
-class GEOM_API VgstarPrinter : public MatrixComputer
+class CODEC_API VgstarPrinter : public MatrixComputer
 {
   /*! \enum VGSTAR_TYPE
   VGSTAR constants for the different types of primitives.
@@ -120,9 +120,9 @@ public:
 
   void printNullTriangle();
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
   //@}
 
@@ -177,7 +177,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -203,7 +203,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -227,7 +227,7 @@ protected:
 
 /* ------------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __actn_vgstarprinter_h__

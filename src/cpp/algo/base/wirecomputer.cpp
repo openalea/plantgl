@@ -36,21 +36,21 @@
 
 
 
-#include "actn_discretizer.h"
-#include "actn_wirecomputer.h"
+#include "discretizer.h"
+#include "wirecomputer.h"
 
-#include "all_geometry.h"
-#include "scne_shape.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_container.h>
+#include <scenegraph/scene/shape.h>
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
 #ifdef GEOM_DEBUG
-#include "Tools/timer.h"
+#include <tool/timer.h>
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -115,9 +115,9 @@ const GeometryPtr& WireComputer::getWire( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-bool WireComputer::process(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
-    return (geomShape->geometry->apply(*this));
+bool WireComputer::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
+    return (Shape->geometry->apply(*this));
 }
 
 
@@ -163,7 +163,7 @@ bool WireComputer::process( AmapSymbol * amapSymbol ) {
 	  points->pushBack(amapSymbol->getPointList()->getAt(*_i));
 	}
 	points->pushBack(amapSymbol->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new GeomPolyline(points)));
+	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
   if(polys->isEmpty())__wire = GeometryPtr(0);
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
@@ -182,7 +182,7 @@ bool WireComputer::process( FaceSet * faceSet ) {
 	  points->pushBack(faceSet->getPointList()->getAt(*_i));
 	}
 	points->pushBack(faceSet->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new GeomPolyline(points)));
+	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
   if(polys->isEmpty())__wire = GeometryPtr(0);
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
@@ -197,7 +197,7 @@ bool WireComputer::process( PointSet * pointSet ) {
   return true;
 }
 
-bool WireComputer::process( GeomPolyline * polyline ) {
+bool WireComputer::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do as quadSet is already an ExplicitModel
   __wire = GeometryPtr(polyline);
@@ -215,7 +215,7 @@ bool WireComputer::process( QuadSet * quadSet ) {
 	  points->pushBack(quadSet->getPointList()->getAt(*_i));
 	}
 	points->pushBack(quadSet->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new GeomPolyline(points)));
+	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
   if(polys->isEmpty())__wire = GeometryPtr(0);
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
@@ -233,7 +233,7 @@ bool WireComputer::process( TriangleSet * triangleSet ) {
 	  points->pushBack(triangleSet->getPointList()->getAt(*_i));
 	}
 	points->pushBack(triangleSet->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new GeomPolyline(points)));
+	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
   if(polys->isEmpty())__wire = GeometryPtr(0);
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
@@ -462,12 +462,12 @@ bool WireComputer::process( PointSet2D * pointSet ){
 
 /* ----------------------------------------------------------------------- */
 
-bool WireComputer::process( GeomPolyline2D * polyline ){
+bool WireComputer::process( Polyline2D * polyline ){
   GEOM_ASSERT( polyline );
 
   GEOM_WireComputer_CHECK_CACHE( polyline );
   Point3ArrayPtr a (new Point3Array(polyline->getPointList(),0));
-  __wire = GeometryPtr(new GeomPolyline(a));
+  __wire = GeometryPtr(new Polyline(a));
   GEOM_WireComputer_UPDATE_CACHE(polyline);
   return true;
 }

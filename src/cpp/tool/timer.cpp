@@ -1,21 +1,21 @@
-/* -*-c++-*-
+/* -*-c++-*- 
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       AMAPmod: Exploring and Modeling Plant Architecture 
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
+ *       File author(s): Ch. Nouguier (christophe.nouguier@cirad.fr) 
  *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/scne_scene.h,v $
- *       $Id: scne_scene.h,v 1.39 2006/06/16 13:04:46 fboudon Exp $
+ *       $Source$
+ *       $Id: timer.h 2554 2007-01-30 10:05:06Z boudon $
  *
- *       Development site : https://gforge.inria.fr/projects/openalea/
- *
+ *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *               
  *  ----------------------------------------------------------------------------
- *
+ * 
  *                      GNU General Public Licence
- *
+ *           
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -32,24 +32,20 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */
+ */				
+
+
+#include "timer.h"
 
 /* ----------------------------------------------------------------------- */
 
-#include "codecs.h"
-#include "cdc_geom.h"
-#include "cdc_vgstar.h"
-#include "cdc_pov.h"
-#include <scenegraph/scene/factory.h>
+TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-PGL_USING_NAMESPACE
+Timer::~Timer( ) { }
 
-void installCodecs(){
-	SceneFactory::get().registerCodec(new GeomCodec());
-	SceneFactory::get().registerCodec(new VgStarCodec());
-	SceneFactory::get().registerCodec(new PovCodec());
-}
+/* ----------------------------------------------------------------------- */
+
 
 

@@ -50,7 +50,7 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
     \brief File that contains some usefull glut command to avoid to use the entire glut lib.
 */
 
-#include "config.h"
+#include "../algo_config.h"
 
 #ifndef WITH_GLUT
 #ifndef WITHOUT_GLUT
@@ -71,19 +71,19 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 #endif
 
 
-#include "Tools/util_gl.h"
+#include "util_gl.h"
 
 /// equivalent to glutWireSphere()
-void GEOM_API geomWireSphere(GLdouble radius, GLint slices, GLint stacks);
+void ALGO_API geomWireSphere(GLdouble radius, GLint slices, GLint stacks);
 
 /// equivalent to glutSolidSphere()
-void GEOM_API geomSolidSphere(GLdouble radius, GLint slices, GLint stacks);
+void ALGO_API geomSolidSphere(GLdouble radius, GLint slices, GLint stacks);
 
 /// equivalent to glutWireCube()
-void GEOM_API geomWireCube(GLdouble size);
+void ALGO_API geomWireCube(GLdouble size);
 
 /// equivalent to glutSolidCube()
-void GEOM_API geomSolidCube(GLdouble size);
+void ALGO_API geomSolidCube(GLdouble size);
 
 #ifndef WITHOUT_GLUT
 #include <GL/glut.h>

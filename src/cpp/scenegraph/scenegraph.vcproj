@@ -566,7 +566,7 @@
 				RelativePath="..\pgl_scenegraph.h">
 			</File>
 			<File
-				RelativePath="..\pgl_transformed.h">
+				RelativePath="..\pgl_transformation.h">
 			</File>
 		</Filter>
 		<File

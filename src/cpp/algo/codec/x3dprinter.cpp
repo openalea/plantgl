@@ -37,16 +37,17 @@
 
 
 
-#include "actn_x3dprinter.h"
+#include "x3dprinter.h"
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "geom_indexarray.h"
-#include "geom_pointarray.h"
-#include "Tools/util_math.h"
+#include <pgl_scene.h>
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/pointarray.h>
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -205,7 +206,7 @@ X3DPrinter::endProcess()
 
 
 bool
-X3DPrinter::process( GeomInline * geominline )
+X3DPrinter::process( Inline * geominline )
 {
   GEOM_ASSERT( geominline );
   cerr << "Not Yet Implemented" << endl;
@@ -217,11 +218,11 @@ X3DPrinter::process( GeomInline * geominline )
 
 
 bool
-X3DPrinter::process( GeomShape * geomShape )
+X3DPrinter::process( Shape * Shape )
 {
-  GEOM_ASSERT( geomShape );
-  __app = geomShape->appearance;
-  return (geomShape->geometry->apply(*this));
+  GEOM_ASSERT( Shape );
+  __app = Shape->appearance;
+  return (Shape->geometry->apply(*this));
 }
 
 
@@ -618,7 +619,7 @@ X3DPrinter::process( PointSet * pointSet )
 
 
 bool
-X3DPrinter::process( GeomPolyline * polyline )
+X3DPrinter::process( Polyline * polyline )
 {
   GEOM_ASSERT( polyline );
   cerr << "Not Yet Implemented" << endl;
@@ -758,7 +759,7 @@ X3DPrinter::process( PointSet2D * pointSet )
 
 
 bool
-X3DPrinter::process( GeomPolyline2D * polyline )
+X3DPrinter::process( Polyline2D * polyline )
 {
   GEOM_ASSERT( polyline );
   cerr << "Not Yet Implemented" << endl;

@@ -44,10 +44,10 @@
 #ifndef __actn_binaryprinter_h__
 #define __actn_binaryprinter_h__
 
-#include "actn_printer.h"
-#include "Tools/rcobject.h"
+#include "printer.h"
+#include <tool/rcobject.h>
 
-#include "Tools/util_hashmap.h"
+#include <tool/util_hashmap.h>
 
 TOOLS_BEGIN_NAMESPACE
 class leifstream;
@@ -56,7 +56,7 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,7 +73,7 @@ typedef RCPtr<Scene> ScenePtr;
    \class TokenCode
    \brief A class which print and read the binary token.
 */
-class GEOM_API TokenCode  {
+class CODEC_API TokenCode  {
 
 public:
 
@@ -100,7 +100,7 @@ public:
   bool initTokens(TOOLS(leifstream)& stream,std::ostream & output);
 
   /// print the local Token.
-  friend GEOM_API TOOLS(leofstream)& operator<<( TOOLS(leofstream)& stream, TokenCode& c );
+  friend CODEC_API TOOLS(leofstream)& operator<<( TOOLS(leofstream)& stream, TokenCode& c );
 
   /// get the number of element of each class.
   std::vector<uint32_t> getCounts();
@@ -130,7 +130,7 @@ public:
 */
 
 
-class GEOM_API BinaryPrinter : public Printer
+class CODEC_API BinaryPrinter : public Printer
 {
 public:
 
@@ -159,11 +159,11 @@ public:
   virtual bool endProcess();
   //@}
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   //@}
 
@@ -225,7 +225,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -255,7 +255,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -310,7 +310,7 @@ public:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 

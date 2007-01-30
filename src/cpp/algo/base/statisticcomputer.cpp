@@ -38,15 +38,15 @@
 
 
 
-#include "actn_statisticcomputer.h"
+#include "statisticcomputer.h"
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "scne_shape.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_container.h>
+#include <scenegraph/scene/shape.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -111,10 +111,10 @@ StatisticComputer::getElements() const{
 /* ----------------------------------------------------------------------- */
 
 
-bool StatisticComputer::process(GeomShape * geomShape){
-    GEOM_COMPUTE(geomShape,0);
-    GEOM_APPLY(geomShape,Geometry);
-    GEOM_APPLY(geomShape,Appearance);
+bool StatisticComputer::process(Shape * Shape){
+    GEOM_COMPUTE(Shape,0);
+    GEOM_APPLY(Shape,Geometry);
+    GEOM_APPLY(Shape,Appearance);
     return true;
 }
 
@@ -411,7 +411,7 @@ bool StatisticComputer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool StatisticComputer::process( GeomPolyline * polyline ) {
+bool StatisticComputer::process( Polyline * polyline ) {
   GEOM_COMPUTE(polyline,24);
 
   __memsize += sizeof(*(polyline->getPointList()));
@@ -556,7 +556,7 @@ bool StatisticComputer::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool StatisticComputer::process( GeomPolyline2D * polyline ) {
+bool StatisticComputer::process( Polyline2D * polyline ) {
   GEOM_COMPUTE(polyline,36);
 
   __memsize += sizeof(*(polyline->getPointList()));
@@ -721,7 +721,7 @@ const uint32_t StatisticComputer::getPointSet() const {
   return __shape[23];
 }
 
-const uint32_t StatisticComputer::getGeomPolyline() const {
+const uint32_t StatisticComputer::getPolyline() const {
   return __shape[24];
 }
 
@@ -769,7 +769,7 @@ const uint32_t StatisticComputer::getPointSet2D() const {
   return __shape[35];
 }
 
-const uint32_t StatisticComputer::getGeomPolyline2D() const {
+const uint32_t StatisticComputer::getPolyline2D() const {
   return __shape[36];
 }
 

@@ -42,14 +42,14 @@
 #define __actn_vrmlprinter_h__
 
 
-#include "actn_printer.h"
-#include "Tools/rcobject.h"
-#include "Tools/util_vector.h"
-#include "Tools/util_hashmap.h"
+#include "printer.h"
+#include <tool/rcobject.h>
+#include <math/util_vector.h>
+#include <tool/util_hashmap.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -130,7 +130,7 @@ typedef STDEXT::hash_set<std::pair< uint32_t, uint32_t>, hash_comp_pair<uint32_t
 
 */
 
-class GEOM_API VrmlPrinter : public Printer
+class CODEC_API VrmlPrinter : public Printer
 {
 
 public:
@@ -161,9 +161,9 @@ public:
                                                 const Color3& diffuse,
                                                 const real_t& radius = REAL_MAX);
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
   //@}
 
@@ -226,7 +226,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -256,7 +256,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -283,7 +283,7 @@ protected:
 // __actn_vrmlprinter_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

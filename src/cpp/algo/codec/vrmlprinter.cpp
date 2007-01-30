@@ -38,21 +38,22 @@
 
 
 
-#include "actn_vrmlprinter.h"
-#include "actn_discretizer.h"
+#include "vrmlprinter.h"
+#include <algo/base/discretizer.h>
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "scne_shape.h"
-#include "geom_pointarray.h"
-#include "util_array2.h"
-#include "geom_indexarray.h"
-#include "geom_geometryarray2.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/scene/shape.h>
 
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/geometryarray2.h>
+#include <tool/util_array2.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -507,10 +508,10 @@ bool VrmlPrinter::setLight(const TOOLS(Vector3)& location,
 /* ----------------------------------------------------------------------- */
 
 
-bool VrmlPrinter::process(GeomShape * geomShape) {
-  GEOM_ASSERT(geomShape);
-  __app = geomShape->appearance;
-  return (geomShape->geometry->apply(*this));
+bool VrmlPrinter::process(Shape * Shape) {
+  GEOM_ASSERT(Shape);
+  __app = Shape->appearance;
+  return (Shape->geometry->apply(*this));
 }
 
 
@@ -935,7 +936,7 @@ bool VrmlPrinter::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool VrmlPrinter::process( GeomPolyline * polyline ) {
+bool VrmlPrinter::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_VRMLPRINT_BEGINSHAPE(polyline);
   GEOM_VRMLPRINT_BEGINOBJ("IndexedLineSet",polyline);
@@ -1102,7 +1103,7 @@ bool VrmlPrinter::process( PointSet2D * pointSet ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool VrmlPrinter::process( GeomPolyline2D * polyline ) {
+bool VrmlPrinter::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_VRMLDISCRETIZE(polyline);
 }

@@ -81,6 +81,8 @@ class TOOLS_API Timer
   {
   }
 
+  // Destructor
+  ~Timer() ; 
 
   /*!
     Returns the number of seconds elpased since \e this timer is 

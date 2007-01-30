@@ -38,25 +38,25 @@
 
 
 
-#include "actn_glrenderer.h"
-#include "actn_discretizer.h"
+#include "glrenderer.h"
+#include <algo/base/discretizer.h>
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "all_scene.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_scene.h>
 
-#include "geom_indexarray.h"
+#include <scenegraph/container/indexarray.h>
 #include "util_appegl.h"
-#include "geom_pointarray.h"
-#include "geom_geometryarray2.h"
-#include "Tools/util_math.h"
-#include "view_object.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/geometryarray2.h>
+#include <math/util_math.h>
 
 #include <qgl.h>
 #include <qimage.h>
 #include <qfont.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 // #define GEOM_DLDEBUG
@@ -334,53 +334,53 @@ bool GLRenderer::endProcess(){
 }
 
 /* ----------------------------------------------------------------------- */
-bool GLRenderer::process(GeomShape * geomShape)
+bool GLRenderer::process(Shape * geomshape)
 {
-  GEOM_ASSERT(geomShape);
-  processAppereance(geomShape);
-  return processGeometry(geomShape);
+  GEOM_ASSERT(geomshape);
+  processAppereance(geomshape);
+  return processGeometry(geomshape);
 }
 
-bool GLRenderer::processAppereance(GeomShape * geomShape){
-  GEOM_ASSERT(geomShape);
-  if(geomShape->appearance){
-    return geomShape->appearance->apply(*this);
+bool GLRenderer::processAppereance(Shape * geomshape){
+  GEOM_ASSERT(geomshape);
+  if(geomshape->appearance){
+    return geomshape->appearance->apply(*this);
   }
   else return Material::DEFAULT_MATERIAL->apply(*this);
 }
 
-bool GLRenderer::processGeometry(GeomShape * geomShape){
-  GEOM_ASSERT(geomShape);
-  if(__Mode == Dynamic)return geomShape->geometry->apply(*this);
+bool GLRenderer::processGeometry(Shape * geomshape){
+  GEOM_ASSERT(geomshape);
+  if(__Mode == Dynamic)return geomshape->geometry->apply(*this);
 
   if(__Mode == Selection){
-    if(__selectMode == ShapeId && geomShape->getId()!=0){
-      glPushName(GLuint(geomShape->getId()));
+    if(__selectMode == ShapeId && geomshape->getId()!=0){
+      glPushName(GLuint(geomshape->getId()));
     }
     else {
-      glPushName(GLuint(geomShape->SceneObject::getId()));
+      glPushName(GLuint(geomshape->SceneObject::getId()));
     }
   }
 
-  // if(__compil == 0) return geomShape->geometry->apply(*this);
+  // if(__compil == 0) return Shape->geometry->apply(*this);
 
   assert( glGetError() == GL_NO_ERROR);
 
 /*  GLuint _displayList = 0;
   if(__compil == 1){
-	if(check(geomShape->SceneObject::getId(),_displayList)){
+	if(check(Shape->SceneObject::getId(),_displayList)){
       if(__Mode == Selection)glPopName();
 	  return true;
 	}
 	else {*/
-      geomShape->geometry->apply(*this);
-	  //update(geomShape->SceneObject::getId(),_displayList);
+      geomshape->geometry->apply(*this);
+	  //update(Shape->SceneObject::getId(),_displayList);
       if(__Mode == Selection)glPopName();
 	  return true;
 /*	}
   }
   else {
-	if(!call(geomShape->SceneObject::getId()))geomShape->geometry->apply(*this);
+	if(!call(Shape->SceneObject::getId()))Shape->geometry->apply(*this);
     if(__Mode == Selection)glPopName();
 	return true;
   }*/
@@ -388,13 +388,13 @@ bool GLRenderer::processGeometry(GeomShape * geomShape){
 
 /* ----------------------------------------------------------------------- */
 
-bool GLRenderer::process(GeomInline * geomInline) {
+bool GLRenderer::process(Inline * geomInline) {
     GEOM_ASSERT(geomInline);
     if(geomInline->getScene()){
 		if(__Mode == Selection){
 			glPushName(GLuint(geomInline->getId()));
 		}
-        if(!geomInline->isBBoxCenterToDefault() || !geomInline->isBBoxSizeToDefault()){
+        if(!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()){
             glPushMatrix();
             const Vector3 _trans =geomInline->getTranslation();
             glGeomTranslate(_trans);
@@ -407,7 +407,7 @@ bool GLRenderer::process(GeomInline * geomInline) {
              _i++) {
             if (! (*_i)->applyAppearanceFirst(*this)) _result = false;
         };
-        if(!geomInline->isBBoxCenterToDefault() || !geomInline->isBBoxSizeToDefault()){
+        if(!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()){
             glPopMatrix();
         }
         if(__Mode == Selection)glPopName();
@@ -1105,7 +1105,7 @@ bool GLRenderer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GLRenderer::process( GeomPolyline * polyline ) {
+bool GLRenderer::process( PGL(Polyline) * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_GLRENDERER_CHECK_CACHE(polyline);
 
@@ -1513,7 +1513,7 @@ bool GLRenderer::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GLRenderer::process( GeomPolyline2D * polyline ) {
+bool GLRenderer::process( Polyline2D * polyline ) {
   GEOM_GLRENDERER_DISCRETIZE_RENDER(polyline);
 }
 

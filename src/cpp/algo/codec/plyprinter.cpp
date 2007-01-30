@@ -36,20 +36,21 @@
  */
 
 
-#include "Tools/bfstream.h"
-#include "Tools/util_string.h"
+#include <tool/bfstream.h>
+#include <tool/util_string.h>
 
-#include "actn_plyprinter.h"
-#include "actn_discretizer.h"
+#include "plyprinter.h"
+#include <algo/base/discretizer.h>
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
+#include <pgl_scene.h>
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
 
-#include "geom_pointarray.h"
-#include "geom_indexarray.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -171,7 +172,7 @@ PlyPrinter::header( const char * comment ){
 
 
 bool
-PlyPrinter::process( GeomInline * geominline )
+PlyPrinter::process( Inline * geominline )
 {
   GEOM_ASSERT( geominline );
   return geominline->getScene()->apply(*this);
@@ -182,17 +183,17 @@ PlyPrinter::process( GeomInline * geominline )
 
 
 bool
-PlyPrinter::process( GeomShape * geomShape )
+PlyPrinter::process( Shape * Shape )
 {
-  GEOM_ASSERT( geomShape );
+  GEOM_ASSERT( Shape );
   if( __pass == 2 ){
-    geomShape->getAppearance()->apply(*this);
-    if(geomShape->getGeometry()->apply(__discretizer))
+    Shape->getAppearance()->apply(*this);
+    if(Shape->getGeometry()->apply(__discretizer))
       return __discretizer.getDiscretization()->apply(*this);
     else return false;
   }
   else if( __pass == 1 || __pass == 3 ){
-    if(geomShape->getGeometry()->apply(__discretizer))
+    if(Shape->getGeometry()->apply(__discretizer))
       return __discretizer.getDiscretization()->apply(*this);
     else return false;
   }
@@ -479,7 +480,7 @@ PlyPrinter::process( PointSet * pointSet )
 
 
 bool
-PlyPrinter::process( GeomPolyline * polyline )
+PlyPrinter::process( Polyline * polyline )
 {
   GEOM_ASSERT( polyline );
   return false;
@@ -611,7 +612,7 @@ PlyPrinter::process( PointSet2D * pointSet )
 
 
 bool
-PlyPrinter::process( GeomPolyline2D * polyline )
+PlyPrinter::process( Polyline2D * polyline )
 {
   GEOM_ASSERT( polyline );
   return false;

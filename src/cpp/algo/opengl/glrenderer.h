@@ -46,12 +46,12 @@
 
 
 
-#include "Tools/util_gl.h"
+#include "util_gl.h"
 
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "util_cache.h"
-#include "appe_appearance.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
+#include <tool/util_cache.h>
+#include <scenegraph/appearance/appearance.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -59,7 +59,7 @@ class QGLWidget;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -74,7 +74,7 @@ class Discretizer;
 */
 
 
-class GEOM_API GLRenderer : public Action
+class ALGO_API GLRenderer : public Action
 {
 
 public:
@@ -152,10 +152,10 @@ public:
 
   //@}
 
-  /** Applies \e self to an object of type of GeomInline .
+  /** Applies \e self to an object of type of Inline .
       \warning
       - \e geomInline must be non null and valid. */
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   /// @name Material
   //@{
@@ -169,11 +169,11 @@ public:
   virtual bool process( ImageTexture * texture );
 
   //@}
-  virtual bool process(GeomShape *  geomshape );
+  virtual bool process(Shape *  Shape );
 
-  virtual bool processAppereance(GeomShape *  geomshape );
+  virtual bool processAppereance(Shape *  Shape );
 
-  virtual bool processGeometry(GeomShape *  geomshape );
+  virtual bool processGeometry(Shape *  Shape );
 
   /// @name Geom3D
   //@{
@@ -220,7 +220,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -251,7 +251,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -268,10 +268,10 @@ public:
 protected:
 
   /// A cache used to store display list.
-  Cache<GLuint> __cache;
+  TOOLS(Cache)<GLuint> __cache;
 
   /// A cache used to store texture.
-  Cache<GLuint> __cachetexture;
+  TOOLS(Cache)<GLuint> __cachetexture;
 
   /// A cache used to store display list of all scene.
   GLuint __scenecache;
@@ -298,7 +298,7 @@ private:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

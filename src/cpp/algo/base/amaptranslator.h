@@ -43,13 +43,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "Tools/util_vector.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +66,7 @@ typedef RCPtr<AmapSymbol> AmapSymbolPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API AmapTranslator : public Action {
+class ALGO_API AmapTranslator : public Action {
 
   public:
 
@@ -93,9 +94,9 @@ class GEOM_API AmapTranslator : public Action {
           return __translation;
   }
 
-    /// @name GeomShape
+    /// @name Shape
     //@{
-    virtual bool process(GeomShape * geomShape);
+    virtual bool process(Shape * Shape);
 
     //@}
 
@@ -157,7 +158,7 @@ class GEOM_API AmapTranslator : public Action {
 
     virtual bool process( PointSet * pointSet );
 
-    virtual bool process( GeomPolyline * polyline );
+    virtual bool process( Polyline * polyline );
 
     virtual bool process( QuadSet * quadSet );
 
@@ -187,7 +188,7 @@ class GEOM_API AmapTranslator : public Action {
 
     virtual bool process( PointSet2D * pointSet );
 
-    virtual bool process( GeomPolyline2D * polyline );
+    virtual bool process( Polyline2D * polyline );
 
 
     //@}
@@ -217,7 +218,7 @@ class GEOM_API AmapTranslator : public Action {
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

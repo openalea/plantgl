@@ -42,20 +42,20 @@
 #ifndef __actn_statisticcomputer_h__
 #define __actn_statisticcomputer_h__
 
-
-#include "GEOM/actn_action.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
 
 #ifndef _WIN32
 #include <features.h>
 #endif
 
 #include <vector>
-#include "Tools/util_types.h"
-#include "Tools/util_hashmap.h"
+#include <tool/util_types.h>
+#include <tool/util_hashmap.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,7 +66,7 @@ GEOM_BEGIN_NAMESPACE
 
 
 
-class GEOM_API StatisticComputer : public Action
+class ALGO_API StatisticComputer : public Action
 {
 public:
 
@@ -91,9 +91,9 @@ public:
 
 
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
   /// Get the number of shape.
   const uint32_t getShape() const ;
@@ -225,10 +225,10 @@ public:
   /// Get the number of PointSet.
   const uint32_t getPointSet() const;
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
-  /// Get the number of GeomPolyline.
-  const uint32_t getGeomPolyline() const;
+  /// Get the number of Polyline.
+  const uint32_t getPolyline() const;
 
   virtual bool process( QuadSet * quadSet );
 
@@ -289,10 +289,10 @@ public:
   /// Get the number of PointSet2D.
   const uint32_t getPointSet2D() const ;
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
-  /// Get the number of GeomPolyline2D.
-  const uint32_t getGeomPolyline2D() const;
+  /// Get the number of Polyline2D.
+  const uint32_t getPolyline2D() const;
 
   virtual bool process( Swung * revolution );
 
@@ -342,7 +342,7 @@ public:
 // __actn_statisticcomputer_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

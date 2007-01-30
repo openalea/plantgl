@@ -86,7 +86,7 @@ public:
 
 
   /// A structure which helps to build a MultiSpectral when parsing. 
-  struct Builder : public Spectrum::Builder {
+  struct SG_API Builder : public Spectrum::Builder {
 
     /// A pointer to the \b Reflectance field.
     TOOLS(RealArrayPtr) * Reflectance;

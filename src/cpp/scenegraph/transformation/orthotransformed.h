@@ -73,7 +73,7 @@ class SG_API OrthonormalBasis3D : public Matrix4Transformation
 public:
 
   /// A structure which helps to build an OrthonormalBasis3D when parsing.
-  struct Builder
+  struct SG_API Builder
     {
     /// Constructor.
       Builder( );
@@ -140,7 +140,7 @@ class SG_API OrthoTransformed : public MatrixTransformed
 public:
 
   /// A structure which helps to build a OrthoTransformed when parsing.
-  struct Builder : public MatrixTransformed::Builder {
+  struct SG_API Builder : public MatrixTransformed::Builder {
 
     /// Constructor.
     Builder( );

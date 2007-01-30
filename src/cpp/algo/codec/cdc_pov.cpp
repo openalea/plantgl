@@ -38,9 +38,9 @@
 
 #include "cdc_pov.h"
 
-#include "actn_povprinter.h"
+#include "povprinter.h"
 #include <fstream>
-#include <Actions/actn_tesselator.h>
+#include <algo/base/tesselator.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

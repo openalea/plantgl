@@ -74,7 +74,7 @@ public:
       Fields are normally allocated while parsing and are free when the
       object is contructed using the member \c destroy. */
 
-    struct Builder : public SceneObject::Builder {
+    struct SG_API Builder : public SceneObject::Builder {
 
             /// A constructor. It inits all the pointers to null.
             Builder( );
@@ -141,7 +141,7 @@ public:
       Fields are normally allocated while parsing and are free when the
       object is contructed using the member \c destroy. */
 
-    struct Builder : public Shape3D::Builder {
+    struct SG_API Builder : public Shape3D::Builder {
 
             /// A constructor. It inits all the pointers to null.
             Builder( );

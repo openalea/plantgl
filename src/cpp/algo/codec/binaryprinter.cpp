@@ -35,24 +35,23 @@
  */
 
 
-#include "Tools/dirnames.h"
-#include "Tools/bfstream.h"
-#include "Tools/util_enviro.h"
+#include <tool/dirnames.h>
+#include <tool/bfstream.h>
+#include <tool/util_enviro.h>
 
 
-#include "actn_binaryprinter.h"
+#include "binaryprinter.h"
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
+#include <pgl_scene.h>
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
 
-#include "all_container.h"
+#include <pgl_container.h>
 
-#include "geom_profile.h"
+#include <algo/base/statisticcomputer.h>
 
-#include "actn_statisticcomputer.h"
-
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -620,22 +619,22 @@ BinaryPrinter::printFile(const std::string& FileName){
 
 /* ----------------------------------------------------------------------- */
 
-bool BinaryPrinter::process(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
+bool BinaryPrinter::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
 
 
-    DEBUG_INFO("Shape",geomShape->getName(),geomShape->SceneObject::getId());
+    DEBUG_INFO("Shape",Shape->getName(),Shape->SceneObject::getId());
     printType("Shape");
-    writeString(geomShape->getName());
-    writeUint32(geomShape->id);
-    geomShape->geometry->apply(*this);
-    geomShape->appearance->apply(*this);
+    writeString(Shape->getName());
+    writeUint32(Shape->id);
+    Shape->geometry->apply(*this);
+    Shape->appearance->apply(*this);
 
     return true;
 }
 
 
-bool BinaryPrinter::process(GeomInline * geomInline){
+bool BinaryPrinter::process(Inline * geomInline){
     GEOM_ASSERT(geomInline);
 
     Vector3 _trans = geomInline->getTranslation();
@@ -663,16 +662,16 @@ bool BinaryPrinter::process(GeomInline * geomInline){
       }
 
       for(Scene::iterator _it = geomInline->getScene()->getBegin();_it != geomInline->getScene()->getEnd();_it++ ){
-        GeomShapePtr geomShape;
-                geomShape.cast(*_it);
-        if(geomShape){
-	  DEBUG_INFO("Shape",geomShape->getName(),geomShape->SceneObject::getId());
+        ShapePtr Shape;
+                Shape.cast(*_it);
+        if(Shape){
+	  DEBUG_INFO("Shape",Shape->getName(),Shape->SceneObject::getId());
           printType("Shape");
-          writeString(geomShape->getName());
-		  writeUint32(geomShape->id);
-          _s->getGeometry() = geomShape->getGeometry();
+          writeString(Shape->getName());
+		  writeUint32(Shape->id);
+          _s->getGeometry() = Shape->getGeometry();
           _transf->apply(*this);
-          geomShape->appearance->apply(*this);
+          Shape->appearance->apply(*this);
         }
         else {
 
@@ -1573,7 +1572,7 @@ bool BinaryPrinter::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool BinaryPrinter::process( GeomPolyline * polyline ) {
+bool BinaryPrinter::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_PRINT_BEGIN(Polyline,polyline);
 
@@ -2038,7 +2037,7 @@ bool BinaryPrinter::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool BinaryPrinter::process( GeomPolyline2D * polyline ) {
+bool BinaryPrinter::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_PRINT_BEGIN(Polyline2D,polyline);
 

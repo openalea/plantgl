@@ -145,6 +145,9 @@
 				RelativePath=".\std.h">
 			</File>
 			<File
+				RelativePath=".\timer.cpp">
+			</File>
+			<File
 				RelativePath=".\timer.h">
 			</File>
 			<File

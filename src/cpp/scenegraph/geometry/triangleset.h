@@ -68,7 +68,7 @@ class SG_API TriangleSet : public Mesh
 public:
 
   /// A structure which helps to build a TriangleSet when parsing. 
-  struct Builder : Mesh::Builder {
+  struct SG_API Builder : Mesh::Builder {
 
     /// A pointer to the IndexList field.
     Index3ArrayPtr * IndexList;

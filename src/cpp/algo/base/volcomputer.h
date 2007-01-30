@@ -42,11 +42,11 @@
 #define __actn_volcomputer_h__
 
 
-#include "actn_surfcomputer.h"
+#include "surfcomputer.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -56,7 +56,7 @@ GEOM_BEGIN_NAMESPACE
 */
 
 
-class GEOM_API VolComputer : public SurfComputer
+class ALGO_API VolComputer : public SurfComputer
 {
 
 public:
@@ -70,11 +70,11 @@ public:
   /// Returns the resulting volume when applying \e self for the last time.
   real_t getVolume( ) ;
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   //@}
 
@@ -163,16 +163,16 @@ public:
 };
 
 /// Compute the volume of the objects in the scene \e _scene
-const real_t GEOM_API sceneVolume(const ScenePtr scene);
+const real_t ALGO_API sceneVolume(const ScenePtr scene);
 
-const real_t GEOM_API sceneVolume(const Scene& scene);
+const real_t ALGO_API sceneVolume(const Scene& scene);
 
 /* ------------------------------------------------------------------------- */
 
 // __actn_surfcomputer_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -43,8 +43,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/rcobject.h"
-#include "Tools/util_vector.h"
+#include <tool/rcobject.h>
+#include <math/util_vector.h>
 #include <string>
 #include <vector>
 
@@ -57,8 +57,9 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_namespace.h"
-GEOM_BEGIN_NAMESPACE
+#include "codec_config.h"
+
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -78,7 +79,7 @@ class Discretizer;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API LigRecord {
+class CODEC_API LigRecord {
 
     public :
 
@@ -114,10 +115,10 @@ class GEOM_API LigRecord {
     bool read( TOOLS(bifstream)& stream);
 
     /// Read \e l in the input stream \e stream.
-    friend GEOM_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
+    friend CODEC_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
 
     /// Prints \e l to the output stream \e stream.
-    friend GEOM_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
+    friend CODEC_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
 
 //    protected :
 
@@ -138,7 +139,7 @@ class GEOM_API LigRecord {
    \class Ligfile
    \brief A File contening Linetree Information in the AMAP format.
 */
-class GEOM_API Ligfile {
+class CODEC_API Ligfile {
 
 public:
 
@@ -184,12 +185,12 @@ public:
 /* ----------------------------------------------------------------------- */
 
 /// Read a Linetree from files \e ligFile, \e dtaFile and \e smbpath. Error output will be made on \e output.
-ScenePtr GEOM_API readLineTree(std::string ligFile, std::string dtaFile, std::string smbpath, bool bigendian = true,std::ostream& output = std::cerr);
+ScenePtr CODEC_API readLineTree(std::string ligFile, std::string dtaFile, std::string smbpath, bool bigendian = true,std::ostream& output = std::cerr);
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

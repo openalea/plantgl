@@ -82,7 +82,7 @@ public:
 
 
   /// A structure which helps to build a NurbsCurve when parsing. 
-  struct Builder : public BezierCurve::Builder { 
+  struct SG_API Builder : public BezierCurve::Builder { 
 
     /// A pointer to the \b KnotsList field.
     TOOLS(RealArrayPtr) * KnotList;
@@ -252,7 +252,7 @@ class SG_API NurbsCurve2D : public BezierCurve2D
 public:
 
   /// A structure which helps to build a NurbsCurve2D when parsing. 
-  struct Builder : public BezierCurve2D::Builder { 
+  struct SG_API Builder : public BezierCurve2D::Builder { 
 
     /// A pointer to the \b KnotsList field.
     TOOLS(RealArrayPtr) * KnotList;

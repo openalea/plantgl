@@ -73,7 +73,7 @@ public:
   static const bool DEFAULT_CCW;
 
   /// A structure which helps to build an object of type of Patch.
-  struct Builder : public ParametricModel::Builder {
+  struct SG_API Builder : public ParametricModel::Builder {
 
     /// A pointer to the \b CCW field.
     bool * CCW;

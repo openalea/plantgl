@@ -70,7 +70,7 @@ class SG_API EulerRotation : public OrthonormalBasis3D
 public:
 
   /// A structure which helps to build an EulerRotation when parsing.
-  struct Builder : public OrthonormalBasis3D::Builder
+  struct SG_API Builder : public OrthonormalBasis3D::Builder
     {
     /// A pointer to the \b Azimuth field.
     real_t * Azimuth;
@@ -144,7 +144,7 @@ public:
 
 
   /// A structure which helps to build a Rotated when parsing.
-  struct Builder : public OrthoTransformed::Builder {
+  struct SG_API Builder : public OrthoTransformed::Builder {
 
     /// A pointer to the \b Azimuth field.
     real_t * Azimuth;

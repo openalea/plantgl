@@ -74,7 +74,7 @@ public:
 
 
   /// A structure which helps to build a Cone when parsing. 
-  struct Builder : public SOR::Builder {
+  struct SG_API Builder : public SOR::Builder {
 
     /// A pointer to the \b Height field.
     real_t * Height;

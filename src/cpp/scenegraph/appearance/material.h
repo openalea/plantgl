@@ -88,7 +88,7 @@ public:
   static const AppearancePtr DEFAULT_MATERIAL;
 
   /// A structure which helps to build a Material when parsing.
-  struct Builder : public Appearance::Builder {
+  struct SG_API Builder : public Appearance::Builder {
 
     /// A pointer to the \b Ambient field.
     Color3 * Ambient;

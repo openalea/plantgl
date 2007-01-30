@@ -1,33 +1,33 @@
 #include <sstream>
 
-#include "Tools/dirnames.h"
+#include <tool/dirnames.h>
 
 #include "geomview_file.h"
-#include "geom_geometryarray2.h"
-#include "geom_pointmatrix.h"
-#include "geom_pointarray.h"
-#include "geom_pointarray.h"
-#include "util_array2.h"
+#include <scenegraph/container/geometryarray2.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointarray.h>
+#include <tool/util_array2.h>
 
-#include "geom_group.h"
-#include "geom_bezierpatch.h"
-#include "geom_faceset.h"
-#include "geom_triangleset.h"
-#include "geom_quadset.h"
-#include "geom_polyline.h"
-#include "geom_pointset.h"
-#include "geom_elevationgrid.h"
-#include "geom_sphere.h"
-#include "geom_translated.h"
+#include <scenegraph/geometry/group.h>
+#include <scenegraph/geometry/bezierpatch.h>
+#include <scenegraph/geometry/faceset.h>
+#include <scenegraph/geometry/triangleset.h>
+#include <scenegraph/geometry/quadset.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/pointset.h>
+#include <scenegraph/geometry/elevationgrid.h>
+#include <scenegraph/geometry/sphere.h>
+#include <scenegraph/transformation/translated.h>
 
-#include "scne_shape.h"
-#include "appe_material.h"
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/appearance/material.h>
 
 /* ----------------------------------------------------------------------- */
 
 using namespace std;
 TOOLS_USING_NAMESPACE
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 #define COMMENT_OUTPUT
 // #define COMMENT_PARSE_OUTPUT
@@ -78,7 +78,7 @@ ScenePtr GeomViewBuilder::parse()
 	while(!endFile()){
 		GeometryPtr geom = parseGeometry();
 		if(geom){
-			scene->add(GeomShape(geom,Material::DEFAULT_MATERIAL));
+			scene->add(Shape(geom,Material::DEFAULT_MATERIAL));
 		}
 	}
 	return scene;
@@ -1182,7 +1182,7 @@ VectBuilder::parse(){
 			else if(nbp > 1){
 				Point3ArrayPtr lpoints(new Point3Array(it,it+nbp));
 				if(closed)lpoints->pushBack(*it);
-				group->pushBack(new GeomPolyline(lpoints));
+				group->pushBack(new Polyline(lpoints));
 				it = it+nbp;
 			}
 		}
@@ -1225,4 +1225,4 @@ GVSphereBuilder::parse(){
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE

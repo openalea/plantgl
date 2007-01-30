@@ -70,7 +70,7 @@ class SG_API AmapSymbol : public FaceSet
 public:
 
   /// A structure which helps to build a AmapSymbol when parsing.
-  struct Builder : public FaceSet::Builder {
+  struct SG_API Builder : public FaceSet::Builder {
 
     /// A pointer to the \b FileName field.
     std::string * FileName;

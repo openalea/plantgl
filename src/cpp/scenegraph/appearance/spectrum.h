@@ -65,7 +65,7 @@ class SG_API Spectrum : public Appearance
 public:
 
   /// A structure which helps to build a Spectrum when parsing. 
-  struct Builder : public Appearance::Builder {
+  struct SG_API Builder : public Appearance::Builder {
 
     /// A constructor. It inits all the pointers to null.
     Builder( );

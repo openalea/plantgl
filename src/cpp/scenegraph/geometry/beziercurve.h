@@ -77,7 +77,7 @@ public:
   static const uint32_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a BezierCurve when parsing. 
-  struct Builder : public ParametricModel::Builder { 
+  struct SG_API Builder : public ParametricModel::Builder { 
 
     /// A pointer to the \b CtrlPointList field.
     Point4ArrayPtr * CtrlPointList;
@@ -201,7 +201,7 @@ public:
 
 
   /// A structure which helps to build a BezierCurve when parsing. 
-  struct Builder : public Curve2D::Builder { 
+  struct SG_API Builder : public Curve2D::Builder { 
 
     /// A pointer to the \b CtrlPointList field.
     Point3ArrayPtr * CtrlPointList;

@@ -36,6 +36,8 @@
    #include<cassert>
 #endif
 
+	#include "miniball.h"
+
    // Miniball
    // --------
    

@@ -80,7 +80,7 @@ public:
 
 
   /// A structure which helps to build a ElevationGrid when parsing. 
-  struct Builder : public Patch::Builder {
+  struct SG_API Builder : public Patch::Builder {
 
 
     /// A pointer to the HeightList field.

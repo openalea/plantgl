@@ -44,18 +44,18 @@
 #ifndef __actn_wirecomputer_h__
 #define __actn_wirecomputer_h__
 
-
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "util_cache.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
+#include <tool/util_cache.h>
 #ifndef GEOM_FWDEF
 #include "geom_explicitmodel.h"
-#include "actn_discretizer.h"
+#include "discretizer.h"
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,7 +73,7 @@ class Discretizer;
 */
 
 
-class GEOM_API WireComputer : public Action
+class ALGO_API WireComputer : public Action
 {
 
 public:
@@ -90,10 +90,10 @@ public:
   /// Returns the last computed discretized  geomety when applying \e self.
   const GeometryPtr& getWire( ) const;
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
 
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
   //@}
 
@@ -162,7 +162,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -194,7 +194,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -206,7 +206,7 @@ public:
 protected:
 
   /// The cache storing the already discretized geometries.
-  Cache<GeometryPtr> __cache;
+  TOOLS(Cache)<GeometryPtr> __cache;
 
   /// The last computed discretized geometry.
   GeometryPtr __wire;
@@ -217,7 +217,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------*/
 

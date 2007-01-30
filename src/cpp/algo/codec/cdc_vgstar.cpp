@@ -39,8 +39,9 @@
 #include "cdc_vgstar.h"
 
 #include "vgsfile.h"
-#include <Actions/actn_tesselator.h>
-#include "actn_vgstarprinter.h"
+#include <algo/base/tesselator.h>
+#include "vgstarprinter.h"
+#include <fstream>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

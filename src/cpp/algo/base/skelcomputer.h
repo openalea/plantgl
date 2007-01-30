@@ -41,23 +41,23 @@
 #ifndef __actn_skelcomputer_h__
 #define __actn_skelcomputer_h__
 
-
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "util_cache.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
+#include <tool/util_cache.h>
 #ifndef GEOM_FWDEF
-#include "geom_polyline.h"
+#include <scenegraph/geometry/polyline.h>
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 
 class Discretizer;
-typedef RCPtr<GeomPolyline> GeomPolylinePtr;
+typedef RCPtr<Polyline> PolylinePtr;
 
 
 /* ----------------------------------------------------------------------- */
@@ -69,7 +69,7 @@ typedef RCPtr<GeomPolyline> GeomPolylinePtr;
 */
 
 
-class GEOM_API SkelComputer : public Action
+class ALGO_API SkelComputer : public Action
 {
 
 public:
@@ -89,7 +89,7 @@ public:
   /** Returns the skeleton that \e self has computed when performing the
       member \c process for the last time. Note that the result could be
       null. */
-  GeomPolylinePtr getSkeleton( ) const;
+  PolylinePtr getSkeleton( ) const;
 
   /// @name Appearance
   //@{
@@ -148,7 +148,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -179,7 +179,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
   
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
   
 
   //@}
@@ -192,10 +192,10 @@ protected:
 
   /** The cache storing computed skeletons. It is designed to store
       only skeletons for named objects. */
-  Cache<GeomPolylinePtr> __cache;
+  TOOLS(Cache)<PolylinePtr> __cache;
 
   /// The resulting skeleton.
-  GeomPolylinePtr __skeleton;
+  PolylinePtr __skeleton;
 
   /// The discretizer used to compute skeletons of objects of type of Curve.
   Discretizer& __discretizer;
@@ -208,7 +208,7 @@ protected:
 // __actn_skelcomputer_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

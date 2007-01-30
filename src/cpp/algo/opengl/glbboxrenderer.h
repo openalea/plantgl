@@ -45,12 +45,12 @@
 #define __actn_glbboxrenderer_h__
 
 
-#include "actn_glrenderer.h"
+#include "glrenderer.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ class BBoxComputer;
 */
 
 
-class GEOM_API GLBBoxRenderer : public GLRenderer
+class ALGO_API GLBBoxRenderer : public GLRenderer
 {
 
 public:
@@ -127,7 +127,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -157,7 +157,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -175,7 +175,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 

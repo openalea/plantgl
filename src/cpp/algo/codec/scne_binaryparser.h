@@ -49,13 +49,13 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "Tools/config.h"
-#include "Tools/rcobject.h"
-#include "Tools/util_math.h"
-#include "Tools/util_vector.h"
-#include "util_cache.h"
-#include "GEOM/appe_color.h"
-#include "GEOM/geom_indexarray.h"
+#include "codec_config.h"
+#include <tool/rcobject.h>
+#include <math/util_math.h>
+#include <math/util_vector.h>
+#include <tool/util_cache.h>
+#include <scenegraph/appearance/color.h>
+#include <scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -96,7 +96,7 @@ inline bool getBit( T tab , uchar_t num){
 */
 
 
-class GEOM_API BinaryParser
+class CODEC_API BinaryParser
 {
 public:
 
@@ -131,9 +131,9 @@ public:
 
 
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool readGeomShape();
+  virtual bool readShape();
 
   //@}
 
@@ -219,8 +219,8 @@ public:
   /// Read a PointSet object
   virtual bool readPointSet();
 
-  /// Read a GeomPolyline object
-  virtual bool readGeomPolyline();
+  /// Read a Polyline object
+  virtual bool readPolyline();
 
   /// Read a QuadSet object
   virtual bool readQuadSet();
@@ -262,8 +262,8 @@ public:
   /// Read a PointSet2D object
   virtual bool readPointSet2D();
 
-  /// Read a GeomPolyline2D object
-  virtual bool readGeomPolyline2D();
+  /// Read a Polyline2D object
+  virtual bool readPolyline2D();
 
 
   //@}
@@ -306,10 +306,10 @@ public:
   std::string readFile();
 
   /// read a Color3 value from stream
-  GEOM(Color3) readColor3();
+  PGL(Color3) readColor3();
 
   /// read a Color4 value from stream
-  GEOM(Color4) readColor4();
+  PGL(Color4) readColor4();
 
   /// read a Vector2 value from stream
   TOOLS(Vector2) readVector2();
@@ -321,13 +321,13 @@ public:
   TOOLS(Vector4) readVector4();
 
   /// read a Index3 value from stream
-  GEOM(Index3) readIndex3();
+  PGL(Index3) readIndex3();
 
   /// read a Index4 value from stream
-  GEOM(Index4) readIndex4();
+  PGL(Index4) readIndex4();
 
   /// read a Index value from stream
-  GEOM(Index) readIndex();
+  PGL(Index) readIndex();
 
   /// The resulting scene.
   ScenePtr __scene;
@@ -336,7 +336,7 @@ public:
   uint32_t __roots;
 
   /// The reference table
-  Cache<SceneObjectPtr > __referencetable;
+  TOOLS(Cache)<SceneObjectPtr > __referencetable;
 
   /// Output stream.
   std::ostream& __outputStream;
@@ -383,7 +383,7 @@ public:
 // __actn_binaryparser_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

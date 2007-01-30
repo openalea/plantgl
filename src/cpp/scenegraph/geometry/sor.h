@@ -70,7 +70,7 @@ public:
   static const uchar_t DEFAULT_SLICES;
 
   /// A structure which helps to build an object of type of SOR.
-  struct Builder : public ParametricModel::Builder {
+  struct SG_API Builder : public ParametricModel::Builder {
 
     /// A pointer to the \b Slices field.
     uchar_t * Slices;

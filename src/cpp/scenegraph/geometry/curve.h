@@ -115,7 +115,7 @@ class SG_API Curve2D : public PlanarModel
 public:
 
   /// A structure which helps to build an object of type of Curve.
-  struct Builder : public PlanarModel::Builder {
+  struct SG_API Builder : public PlanarModel::Builder {
 
     /// Constructor.
     Builder( );

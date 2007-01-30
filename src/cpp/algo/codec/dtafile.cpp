@@ -39,15 +39,15 @@
 
 
 #include "dtafile.h"
-#include "scne_scene.h"
-#include "scne_shape.h"
-#include "appe_material.h"
-#include "geom_amapsymbol.h"
-#include "util_messages.h"
-#include "Tools/util_math.h"
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/geometry/amapsymbol.h>
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
 #include <fstream>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -86,12 +86,12 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 	    b.FileName = &file;
 	    if (b.isValid()){
 			GeometryPtr s(new AmapSymbol(file));
-			result->add(GeomShape(s,AppearancePtr(0),id));
+			result->add(Shape(s,AppearancePtr(0),id));
 	    }
 		else { 		
 		  (*SceneObject::warningStream) << "*** Warning : Cannot find symbol " << name << " in " << file << endl;
 		  (*SceneObject::warningStream) << "*** Warning : Default Geometry will be used."<< endl;
-			result->add(GeomShape(GeometryPtr(0),AppearancePtr(0),id));
+			result->add(Shape(GeometryPtr(0),AppearancePtr(0),id));
 		}
 
 	}
@@ -210,9 +210,9 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 	    if(app->isValid()){
 		Scene::iterator _it=result->getBegin();
 		bool ok = false;
-		GeomShapePtr * pt;
+		ShapePtr * pt;
 		while(_it!=result->getEnd() && !ok){
-		    pt = (GeomShapePtr *)&(*(_it));
+		    pt = (ShapePtr *)&(*(_it));
 		    if((*pt)->getId() == (uint32_t)id){
 			(*pt)->appearance = app;
 			ok = true;
@@ -264,7 +264,7 @@ Dtafile::Dtafile( const string& fileName,  const string& __symbol_path ) :
         _parser.parse(&_dta2geomLexer,cerr);
         for( SceneObjectSymbolTable::iterator _it = table->begin();
              _it!=table->end();_it++){
-            GeomShapePtr s = GeomShapePtr(_it->second);
+            ShapePtr s = ShapePtr(_it->second);
             if(s){
                 _scene->add(*s);
             }
@@ -297,7 +297,7 @@ const unsigned int  Dtafile::getSize() const {
 AmapSymbolPtr Dtafile::getSymbol( const uint32_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
-    GeomShapePtr shape;
+    ShapePtr shape;
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){
@@ -310,7 +310,7 @@ AmapSymbolPtr Dtafile::getSymbol( const uint32_t id) const {
 MaterialPtr Dtafile::getMaterial( const uint32_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
-    GeomShapePtr shape;
+    ShapePtr shape;
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){
@@ -320,17 +320,17 @@ MaterialPtr Dtafile::getMaterial( const uint32_t id) const {
     return MaterialPtr(0);
 };
 
-const GeomShapePtr Dtafile::getdtainfo( const uint32_t id) const {
+const ShapePtr Dtafile::getdtainfo( const uint32_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
-    GeomShapePtr shape;
+    ShapePtr shape;
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){
       if(shape.cast(*_it).isValid() && (int)shape->getId() == Id)
         return shape;
     }
-    return GeomShapePtr(0);
+    return ShapePtr(0);
 };
 
 
@@ -501,7 +501,7 @@ ostream& Dtafile::writeAMLCode(ostream& stream){
     stream << "#  Array of symbol num." << endl;
     stream << " num_symb_array = [ \\" << endl;
     int nb = 0,itf = _scene->getSize();
-    GeomShapePtr shape;
+    ShapePtr shape;
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){

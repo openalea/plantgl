@@ -36,17 +36,18 @@
 
 
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
-#include "actn_surfcomputer.h"
-#include "actn_discretizer.h"
+#include "surfcomputer.h"
+#include "discretizer.h"
 
-#include "all_scene.h"
-#include "all_geometry.h"
-#include "geom_indexarray.h"
-#include "geom_geometryarray2.h"
+#include <pgl_scene.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/geometryarray2.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -125,15 +126,15 @@ SurfComputer::getDiscretizer( ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool SurfComputer::process(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
-    GEOM_SURFCOMPUTER_CHECK_CACHE(geomShape);
-    bool b = geomShape->getGeometry()->apply(*this);
-    GEOM_SURFCOMPUTER_UPDATE_CACHE(geomShape);
+bool SurfComputer::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
+    GEOM_SURFCOMPUTER_CHECK_CACHE(Shape);
+    bool b = Shape->getGeometry()->apply(*this);
+    GEOM_SURFCOMPUTER_UPDATE_CACHE(Shape);
     return b;
 }
 
-bool SurfComputer::process(GeomInline * geomInline){
+bool SurfComputer::process(Inline * geomInline){
     GEOM_ASSERT(geomInline);
     return process(geomInline->getScene());
 }
@@ -623,7 +624,7 @@ bool SurfComputer::process(const Scene& scene){
 
 /* ----------------------------------------------------------------------- */
 
-const real_t GEOM(sceneSurface)(const ScenePtr scene){
+const real_t PGL(sceneSurface)(const ScenePtr scene){
   Discretizer dis;
   SurfComputer _sfc(dis);
   if(_sfc.process(scene))
@@ -631,7 +632,7 @@ const real_t GEOM(sceneSurface)(const ScenePtr scene){
   else return 0;
 }
 
-const real_t GEOM(sceneSurface)(const Scene& scene){
+const real_t PGL(sceneSurface)(const Scene& scene){
   Discretizer dis;
   SurfComputer _sfc(dis);
   if(_sfc.process(scene))
@@ -690,7 +691,7 @@ bool SurfComputer::process( PointSet * pointSet ) {
   return true;
 }
 
-bool SurfComputer::process( GeomPolyline * polyline ) {
+bool SurfComputer::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do
   __result = 0;
@@ -718,7 +719,7 @@ bool SurfComputer::process( PointSet2D * pointSet ){
   return true;
 }
 
-bool SurfComputer::process( GeomPolyline2D * polyline ){
+bool SurfComputer::process( Polyline2D * polyline ){
   GEOM_ASSERT(polyline);
   // nothing to do
   __result = 0;

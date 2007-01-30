@@ -45,8 +45,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "actn_printer.h"
-#include "Tools/rcobject.h"
+#include "printer.h"
+#include <tool/rcobject.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -56,7 +56,7 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,7 +73,7 @@ typedef RCPtr<Scene> ScenePtr;
 */
 
 
-class GEOM_API PlyPrinter : public Printer
+class CODEC_API PlyPrinter : public Printer
 {
 
 public :
@@ -131,18 +131,18 @@ public :
 
   //@}
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
 
-  /** Applies \e self to an object of type of GeomShape.
+  /** Applies \e self to an object of type of Shape.
     \warning
-      - \e geomShape must be non null and valid. */
-  virtual bool process( GeomShape * geomShape );
+      - \e Shape must be non null and valid. */
+  virtual bool process( Shape * Shape );
 
-  /** Applies \e self to an object of type of GeomInline.
+  /** Applies \e self to an object of type of Inline.
     \warning
       - \e geominline must be non null and valid. */
-  virtual bool process( GeomInline * geominline );
+  virtual bool process( Inline * geominline );
 
   //@}
 
@@ -271,10 +271,10 @@ public :
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet * pointSet );
 
-  /** Applies \e self to an object of type of GeomPolyline.
+  /** Applies \e self to an object of type of Polyline.
     \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   /** Applies \e self to an object of type of QuadSet.
     \warning
@@ -336,10 +336,10 @@ public :
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet2D * pointSet );
 
-  /** Applies \e self to an object of type of GeomPolyline2D.
+  /** Applies \e self to an object of type of Polyline2D.
     \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -396,7 +396,7 @@ protected :
   \brief An action to write GEOM object in Ply Binary Format.
 */
 
-class GEOM_API PlyBinaryPrinter : public PlyPrinter
+class CODEC_API PlyBinaryPrinter : public PlyPrinter
 {
 
 public :
@@ -472,7 +472,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __actn_plyprinter_h__

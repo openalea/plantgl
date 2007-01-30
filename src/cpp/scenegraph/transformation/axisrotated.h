@@ -64,7 +64,7 @@ class SG_API AxisRotation : public OrthonormalBasis3D
 public:
 
   /// A structure which helps to build an AxisRotation when parsing.
-  struct Builder : public OrthonormalBasis3D::Builder
+  struct SG_API Builder : public OrthonormalBasis3D::Builder
     {
 
     /// A pointer to the \b Axis field.
@@ -129,7 +129,7 @@ public:
   static const real_t DEFAULT_ANGLE;
 
   /// A structure which helps to build a Translated when parsing.
-  struct Builder : public OrthoTransformed::Builder {
+  struct SG_API Builder : public OrthoTransformed::Builder {
 
     /// A pointer to the \b Axis field.
     TOOLS(Vector3) * Axis;

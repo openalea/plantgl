@@ -81,7 +81,7 @@ class SG_API ExplicitModel : public virtual Primitive
 public:
 
   /// A structure which helps to build an object of type of ExplicitModel.
-  struct Builder : public Primitive::Builder {
+  struct SG_API Builder : public Primitive::Builder {
 
     /// A pointer to the \b PointList field.
     Point3ArrayPtr * PointList;

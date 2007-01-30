@@ -45,23 +45,23 @@
 #define __actn_discretizer_h__
 
 
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "util_cache.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <scenegraph/geometry/explicitmodel.h>
+#include <tool/rcobject.h>
+#include <tool/util_cache.h>
+
 #ifndef GEOM_FWDEF
-#include "geom_explicitmodel.h"
-#include "geom_pointarray.h"
+#include <scenegraph/container/pointarray.h>
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_FWDEF
-class ExplicitModel;
-typedef RCPtr<ExplicitModel> ExplicitModelPtr;
 class Point2Array;
 typedef RCPtr<Point2Array> Point2ArrayPtr;
 class Point3Array;
@@ -76,7 +76,7 @@ typedef RCPtr<Point3Array> Point3ArrayPtr;
 */
 
 
-class GEOM_API Discretizer : public Action
+class ALGO_API Discretizer : public Action
 {
 
 public:
@@ -93,10 +93,10 @@ public:
   /// Returns the last computed discretized  geomety when applying \e self.
   const ExplicitModelPtr& getDiscretization( ) const;
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
 
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
   //@}
 
@@ -164,7 +164,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -196,7 +196,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -214,7 +214,7 @@ public:
 protected:
 
   /// The cache storing the already discretized geometries.
-  Cache<ExplicitModelPtr> __cache;
+  TOOLS(Cache)<ExplicitModelPtr> __cache;
 
   /// The last computed discretized geometry.
   ExplicitModelPtr __discretization;
@@ -226,7 +226,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------*/
 

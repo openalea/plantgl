@@ -120,7 +120,7 @@ public:
 
 
   /// A structure which helps to build a Translated when parsing.
-  struct Builder : public MatrixTransformed::Builder {
+  struct SG_API Builder : public MatrixTransformed::Builder {
 
     /// A pointer to the \b Translation field.
     TOOLS(Vector3) * Translation;

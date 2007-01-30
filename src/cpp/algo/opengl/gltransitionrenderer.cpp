@@ -38,11 +38,11 @@
 
 
 
-#include "actn_gltransitionrenderer.h"
-#include "all_appearance.h"
-#include "scne_scene.h"
+#include "gltransitionrenderer.h"
+#include "pgl_appearance.h"
+#include <scenegraph/scene/scene.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

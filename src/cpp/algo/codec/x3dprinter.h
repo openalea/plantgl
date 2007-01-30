@@ -44,12 +44,12 @@
 #define __actn_x3dprinter_h__
 
 
-#include "actn_vrmlprinter.h"
+#include "vrmlprinter.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 
 
-class GEOM_API X3DPrinter : public VrmlPrinter
+class CODEC_API X3DPrinter : public VrmlPrinter
 {
 
 public :
@@ -88,18 +88,18 @@ public :
 
   //@}
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
 
-  /** Applies \e self to an object of type of GeomShape.
+  /** Applies \e self to an object of type of Shape.
     \warning
-      - \e geomShape must be non null and valid. */
-  virtual bool process( GeomShape * geomShape );
+      - \e Shape must be non null and valid. */
+  virtual bool process( Shape * Shape );
 
-  /** Applies \e self to an object of type of GeomInline.
+  /** Applies \e self to an object of type of Inline.
     \warning
       - \e geominline must be non null and valid. */
-  virtual bool process( GeomInline * geominline );
+  virtual bool process( Inline * geominline );
 
   //@}
 
@@ -228,10 +228,10 @@ public :
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet * pointSet );
 
-  /** Applies \e self to an object of type of GeomPolyline.
+  /** Applies \e self to an object of type of Polyline.
     \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   /** Applies \e self to an object of type of QuadSet.
     \warning
@@ -293,10 +293,10 @@ public :
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet2D * pointSet );
 
-  /** Applies \e self to an object of type of GeomPolyline2D.
+  /** Applies \e self to an object of type of Polyline2D.
     \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   //@}
 
@@ -313,7 +313,7 @@ public :
 // __actn_x3dprinter_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

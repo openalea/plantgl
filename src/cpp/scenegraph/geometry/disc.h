@@ -70,7 +70,7 @@ public:
 
 
   /// A structure which helps to build a Disc when parsing. 
-  struct Builder : public SOR2D::Builder {
+  struct SG_API Builder : public SOR2D::Builder {
 
     /// A pointer to the \b Radius field.
     real_t * Radius;

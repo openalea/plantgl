@@ -38,43 +38,12 @@
 
 
 
-#include "actn_matrixcomputer.h"
-#include "geom_amapsymbol.h"
-#include "geom_asymmetrichull.h"
-#include "geom_axisrotated.h"
-#include "geom_beziercurve.h"
-#include "geom_bezierpatch.h"
-#include "geom_box.h"
-#include "geom_cone.h"
-#include "geom_cylinder.h"
-#include "geom_disc.h"
-#include "geom_elevationgrid.h"
-#include "geom_eulerrotated.h"
-#include "geom_extrudedhull.h"
-#include "geom_faceset.h"
-#include "geom_frustum.h"
-#include "geom_extrusion.h"
-#include "geom_group.h"
-#include "geom_ifs.h"
-#include "geom_nurbscurve.h"
-#include "geom_nurbspatch.h"
-#include "geom_oriented.h"
-#include "geom_paraboloid.h"
-#include "geom_pointset.h"
-#include "geom_polyline.h"
-#include "geom_quadset.h"
-#include "geom_revolution.h"
-#include "geom_swung.h"
-#include "geom_scaled.h"
-#include "geom_sphere.h"
-#include "geom_tapered.h"
-#include "geom_translated.h"
-#include "geom_triangleset.h"
-#include "geom_text.h"
+#include "matrixcomputer.h"
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <math/util_math.h>
 
-#include "Tools/util_math.h"
-
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -286,7 +255,7 @@ bool MatrixComputer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool MatrixComputer::process( GeomPolyline * polyline ) {
+bool MatrixComputer::process( Polyline * polyline ) {
   return default_process(polyline);
 }
 
@@ -391,7 +360,7 @@ bool MatrixComputer::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool MatrixComputer::process( GeomPolyline2D * polyline ) {
+bool MatrixComputer::process( Polyline2D * polyline ) {
   return default_process(polyline);
 }
 

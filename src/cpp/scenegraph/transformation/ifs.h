@@ -130,7 +130,7 @@ public:
   static const uchar_t DEFAULT_DEPTH;
 
   /// A structure which helps to build a IFS when parsing.
-  struct Builder : public Transformed::Builder
+  struct SG_API Builder : public Transformed::Builder
     {
     /// A pointer to the \b Depth field.
     uchar_t * Depth;

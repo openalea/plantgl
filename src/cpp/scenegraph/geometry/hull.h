@@ -64,7 +64,7 @@ class SG_API Hull : public ParametricModel
 public:
 
   /// A structure which helps to build an object of type of Hull.
-  struct Builder : public ParametricModel::Builder {
+  struct SG_API Builder : public ParametricModel::Builder {
 
     /// Constructor.
     Builder( );

@@ -42,15 +42,15 @@
 #define __actn_surfcomputer_h__
 
 
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "Tools/config.h"
-#include "Tools/util_vector.h"
-#include "util_cache.h"
+#include "../algo_config.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
+#include <math/util_vector.h>
+#include <tool/util_cache.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ typedef RCPtr<Scene> ScenePtr;
    \brief An action which computes surface of objects of type of Geometry.
 */
 
-class GEOM_API SurfComputer : public Action
+class ALGO_API SurfComputer : public Action
 {
 
 public:
@@ -85,11 +85,11 @@ public:
   /// Returns the Discretizer attached to \e self.
   Discretizer& getDiscretizer( );
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   //@}
 
@@ -151,7 +151,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -182,7 +182,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -199,7 +199,7 @@ public:
 protected:
 
   /// The cache storing the already computed bounding boxes.
-  Cache<real_t> __cache;
+  TOOLS(Cache)<real_t> __cache;
 
   /// The resulting surface.
   real_t __result;
@@ -216,15 +216,15 @@ static inline real_t surface(const TOOLS(Vector3)& i, const TOOLS(Vector3)& j, c
 { return 0.5f * TOOLS(norm)( TOOLS(cross)(j-i,k-i)); }
 
 /// Compute the surface of the objects in the scene \e _scene
-const real_t GEOM_API sceneSurface(const ScenePtr scene);
-const real_t GEOM_API sceneSurface(const Scene& scene);
+const real_t ALGO_API sceneSurface(const ScenePtr scene);
+const real_t ALGO_API sceneSurface(const Scene& scene);
 
 /* ------------------------------------------------------------------------- */
 
 // __actn_surfcomputer_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

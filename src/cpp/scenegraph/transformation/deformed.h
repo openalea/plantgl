@@ -95,7 +95,7 @@ class SG_API Deformed : public Transformed
 public: 
 
    /// A structure which helps to build an object of type of Transformed.
-  struct Builder : public Transformed::Builder {
+  struct SG_API Builder : public Transformed::Builder {
 
     /// Constructor
     Builder( );

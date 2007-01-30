@@ -45,9 +45,9 @@
 #define __actn_povprinter_h__
 
 
-#include "Tools/rcobject.h"
-#include "actn_printer.h"
-#include "appe_color.h"
+#include <tool/rcobject.h>
+#include "printer.h"
+#include <scenegraph/appearance/color.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -57,7 +57,7 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -77,7 +77,7 @@ typedef RCPtr<BoundingBox> BoundingBoxPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API PovPrinter : public Printer
+class CODEC_API PovPrinter : public Printer
 {
 
 public:
@@ -127,11 +127,11 @@ public:
   /// Set the background.
   virtual bool setBackGround(const Color3& color);
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
-  virtual bool process(GeomShape * geomShape);
+  virtual bool process(Shape * Shape);
 
-  virtual bool process(GeomInline * geomInline);
+  virtual bool process(Inline * geomInline);
 
   //@}
 
@@ -194,7 +194,7 @@ public:
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -224,7 +224,7 @@ public:
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
 
   //@}
@@ -254,7 +254,7 @@ protected:
 // __actn_povprinter_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

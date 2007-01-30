@@ -68,25 +68,26 @@
 //                      yytname[YYTRANSLATE((yychar >= 0 ? yychar : -yychar))]))) YYABORT;
 #endif
 
-#include "util_messages.h"
+#include <scenegraph/core/pgl_messages.h>
 #include "scne_scanner.h"
-#include "Tools/gparser.h"
-#include "scne_smbtable.h"
+#include <tool/gparser.h>
+#include <scenegraph/core/smbtable.h>
 #include "scne_binaryparser.h"
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "all_container.h"
+#include <pgl_scene.h>
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <pgl_container.h>
 
-#include "actn_printer.h"
-#include "Tools/util_math.h"
-#include "Tools/util_enviro.h"
-#include "Tools/readline.h"
-#include "Tools/dirnames.h"
+#include "printer.h"
+#include <math/util_math.h>
+#include <tool/util_enviro.h>
+#include <tool/readline.h>
+#include <tool/dirnames.h>
 
 TOOLS_USING_NAMESPACE
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 #include <list>
 #include <typeinfo>
@@ -409,8 +410,8 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
   SceneObjectPtr *             sceneobject_o;
   ScenePtr *                   scene_o;
   // Shape Builder
-  GeomShape::Builder *         geomshape_b;
-  GeomInline::Builder *        inline_b;
+  Shape::Builder *         Shape_b;
+  Inline::Builder *        inline_b;
   // Appearance objects
   AppearancePtr *              appearance_o;
   // Appearance builders
@@ -422,7 +423,7 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
   GeometryPtr *                geometry_o;
   GeometryArrayPtr *           geometry_a;
   std::list<GeometryPtr> *     geometry_l;
-  GeomPolylinePtr *            polyline_o;
+  PolylinePtr *            polyline_o;
   PrimitivePtr *               primitive_o;
   LineicModelPtr *             curve_o;
   Curve2DPtr *                 curve2D_o;
@@ -456,8 +457,8 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
   Paraboloid::Builder *        paraboloid_b;
   PointSet::Builder *          pointSet_b;
   PointSet2D::Builder *        pointSet2D_b;
-  GeomPolyline::Builder *      polyline_b;
-  GeomPolyline2D::Builder *    polyline2D_b;
+  Polyline::Builder *      polyline_b;
+  Polyline2D::Builder *    polyline2D_b;
   QuadSet::Builder *           quadSet_b;
   Revolution::Builder *        revolution_b;
   Swung::Builder *             swung_b;
@@ -736,8 +737,8 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 %type <font_o>				FontObj
 
 /* Shape builder */
-%type <geomshape_b>         ShapeFieldList
-%type <geomshape_b>         ShapeShortFieldList
+%type <Shape_b>         ShapeFieldList
+%type <Shape_b>         ShapeShortFieldList
 %type <inline_b>            InlineFieldList
 
 /* Appearance builders */
@@ -1058,12 +1059,6 @@ InlineFieldList:
       $$=$1;
 //     GEOM_PARSER_SET_FIELD($1,Scene,$3);
    }
- | InlineFieldList TokBBoxCenter Vector3 {
-     GEOM_PARSER_SET_FIELD($1,BBoxCenter,$3); $$=$1;
-   }
- | InlineFieldList TokBBoxSize Vector3 {
-     GEOM_PARSER_SET_FIELD($1,BBoxSize,$3); $$=$1;
-   }
  | InlineFieldList TokTranslation Vector3 {
      GEOM_PARSER_SET_FIELD($1,Translation,$3); $$=$1;
    }
@@ -1071,7 +1066,7 @@ InlineFieldList:
      GEOM_PARSER_SET_FIELD($1,Scale,$3); $$=$1;
    }
  | {
-   $$ = new GeomInline::Builder;
+   $$ = new Inline::Builder;
 #ifdef __GNUC__
    lexer(l);
    if(l.useReadline())setKeyword(inline_att_keyword);
@@ -1089,7 +1084,7 @@ ShapeFieldList:
  | ShapeFieldList TokAppearance AppearanceObj {
      GEOM_PARSER_SET_FIELD($1,Appearance,$3); $$=$1;
    }
- | { $$ = new GeomShape::Builder;
+ | { $$ = new Shape::Builder;
 #ifdef __GNUC__
     lexer(l);
    if(l.useReadline())setKeyword(shape_att_keyword);
@@ -1099,12 +1094,12 @@ ShapeFieldList:
 
 ShapeShortFieldList:
    GeometryRef ',' AppearanceRef {
-       $$ = new GeomShape::Builder;
+       $$ = new Shape::Builder;
        GEOM_PARSER_SET_FIELD($$,Geometry,$1);
        GEOM_PARSER_SET_FIELD($$,Appearance,$3);
    }
 |  GeometryRef {
-       $$ = new GeomShape::Builder;
+       $$ = new Shape::Builder;
        GEOM_PARSER_SET_FIELD($$,Geometry,$1);
 }
 ;
@@ -1223,7 +1218,7 @@ Curve2DObj:
  | Polyline2DObj      { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
  | GeometryRef        { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
  | Point2Array {
-      GeomPolyline2D::Builder * builder = new GeomPolyline2D::Builder;
+      Polyline2D::Builder * builder = new Polyline2D::Builder;
       GEOM_PARSER_SET_FIELD(builder,PointList,$1);
       std::string * name = NULL;
       SceneObjectPtr * obj = NULL;
@@ -1244,7 +1239,7 @@ CurveObj:
  | GeometryRef        { if($1) {$$ = new LineicModelPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
  | PolylineObj        { if($1) {$$ = new LineicModelPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
  | Point3Array {
-      GeomPolyline::Builder * builder = new GeomPolyline::Builder;
+      Polyline::Builder * builder = new Polyline::Builder;
       GEOM_PARSER_SET_FIELD(builder,PointList,$1);
       std::string * name = NULL;
       SceneObjectPtr * obj = NULL;
@@ -1965,13 +1960,13 @@ PolylineFieldList:
  | PolylineFieldList TokColorList Color4Array {
      GEOM_PARSER_SET_FIELD($1,ColorList,$3);  $$=$1;
    }
- | { $$ = new GeomPolyline::Builder; };
+ | { $$ = new Polyline::Builder; };
 
 Polyline2DFieldList:
    Polyline2DFieldList TokPointList Point2Array {
      GEOM_PARSER_SET_FIELD($1,PointList,$3);  $$=$1;
    }
- | { $$ = new GeomPolyline2D::Builder; };
+ | { $$ = new Polyline2D::Builder; };
 
 QuadSetFieldList:
    QuadSetFieldList TokPointList Point3Array {
@@ -2192,7 +2187,7 @@ MaterialFieldList:
 
 ImageTextureFieldList:
    ImageTextureFieldList TokFileName Filename {
-     if($3)*$3 = TOOLS(expand_dirname)(*$3);
+     if($3)*$3 = TOOLS(absolute_dirname)(*$3);
      GEOM_PARSER_SET_FIELD($1,FileName,$3); $$=$1;
    }
  | ImageTextureFieldList TokAmbient Color3 {
@@ -2779,8 +2774,8 @@ Uint32List:
    };
 
 Skeleton:
-   GeometryRef { if($1) { $$ = new GeomPolylinePtr; $$->cast(*$1); delete $1; } else $$ = NULL; }
- | PolylineObj { if($1) { $$ = new GeomPolylinePtr; $$->cast(*$1); delete $1; } else $$ = NULL; };
+   GeometryRef { if($1) { $$ = new PolylinePtr; $$->cast(*$1); delete $1; } else $$ = NULL; }
+ | PolylineObj { if($1) { $$ = new PolylinePtr; $$->cast(*$1); delete $1; } else $$ = NULL; };
 
 Vector2:
    Vector2Atom  {$$ = $1;}

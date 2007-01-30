@@ -71,7 +71,7 @@ class SG_API Polyline : public  ExplicitModel, public LineicModel
 public:
 
   /// A structure which helps to build a Polyline when parsing.
-  struct Builder : public ExplicitModel::Builder {
+  struct SG_API Builder : public ExplicitModel::Builder {
 
     /// Constructor.
     Builder( );
@@ -158,7 +158,7 @@ class SG_API Polyline2D : public Curve2D
 public:
 
   /// A structure which helps to build a Polyline when parsing.
-  struct Builder : public Curve2D::Builder {
+  struct SG_API Builder : public Curve2D::Builder {
 
     /// A pointer to the \b PointList field.
     Point2ArrayPtr * PointList;

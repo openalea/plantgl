@@ -38,18 +38,19 @@
 
 // #define LEXDEBUG
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
+#include <pgl_scene.h>
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
 
-#include "geom_pointmatrix.h"
+#include <scenegraph/container/pointmatrix.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 #include <list>
 #include <fstream>
-#include "Tools/config.h"
+#include "codec_config.h"
 #ifdef STL_EXTENSION
 	#include <sstream>
 #else
@@ -65,9 +66,9 @@ TOOLS_USING_NAMESPACE
 #endif
 
 #include "scne_scanner.h"
-#include "Tools/gscanner_imp.h"
-#include "Tools/util_string.h"
-#include "Tools/util_hashmap.h"
+#include <tool/gscanner_imp.h>
+#include <tool/util_string.h>
+#include <tool/util_hashmap.h>
 
 #include "scne_binaryparser.h"
 

@@ -37,22 +37,23 @@
 
 
 
-#include "Tools/util_matrix.h"
+#include <math/util_matrix.h>
 
-#include "actn_bboxcomputer.h"
-#include "actn_discretizer.h"
-#include "geom_boundingbox.h"
-#include "all_scene.h"
-#include "all_geometry.h"
+#include "bboxcomputer.h"
+#include "discretizer.h"
+#include <scenegraph/geometry/boundingbox.h>
+#include <pgl_scene.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
 
-#include "geom_pointarray.h"
-#include "geom_pointmatrix.h"
-#include "geom_geometryarray2.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/container/geometryarray2.h>
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
 TOOLS_USING_NAMESPACE
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -113,17 +114,30 @@ BBoxComputer::getDiscretizer( ) {
 }
 
 /* ----------------------------------------------------------------------- */
-bool BBoxComputer::process(GeomShape * geomshape){
-    GEOM_ASSERT(geomshape);
-    GEOM_BBOXCOMPUTER_CHECK_CACHE(geomshape);
-    return geomshape->geometry->apply(*this);
-    GEOM_BBOXCOMPUTER_UPDATE_CACHE(geomshape);
+bool BBoxComputer::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
+    GEOM_BBOXCOMPUTER_CHECK_CACHE(Shape);
+    return Shape->geometry->apply(*this);
+    GEOM_BBOXCOMPUTER_UPDATE_CACHE(Shape);
 }
 
-bool BBoxComputer::process(GeomInline * geomInline){
+bool BBoxComputer::process(Inline * geomInline){
     GEOM_ASSERT(geomInline);
-    __bbox = BoundingBoxPtr(new BoundingBox((geomInline->getBBoxCenter()-geomInline->getBBoxSize()/2),
-                                            geomInline->getBBoxCenter()+geomInline->getBBoxSize()/2));
+    GEOM_BBOXCOMPUTER_CHECK_CACHE(geomInline);
+	geomInline->getScene()->apply(*this);
+	if(!__bbox) return false;
+
+	Matrix3 _matrix = Matrix3::scaling(geomInline->getScale());
+    GEOM_BBOXCOMPUTER_TRANSFORM_BBOX(_matrix);
+
+	const Vector3& _ll = __bbox->getLowerLeftCorner();
+	const Vector3& _ur = __bbox->getUpperRightCorner();
+	const Vector3& _t = geomInline->getTranslation();
+
+	__bbox = BoundingBoxPtr(new BoundingBox(_ll + _t, _ur + _t));
+
+
+    GEOM_BBOXCOMPUTER_UPDATE_CACHE(geomInline);
     return true;
 }
 
@@ -642,7 +656,7 @@ bool BBoxComputer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool BBoxComputer::process( GeomPolyline * polyline ) {
+bool BBoxComputer::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
 
   GEOM_BBOXCOMPUTER_CHECK_CACHE(polyline);
@@ -959,7 +973,7 @@ bool BBoxComputer::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool BBoxComputer::process( GeomPolyline2D * polyline ) {
+bool BBoxComputer::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
 
   GEOM_BBOXCOMPUTER_CHECK_CACHE(polyline);

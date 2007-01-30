@@ -45,6 +45,7 @@
 
 /* ----------------------------------------------------------------------- */
 
+#include "../algo_config.h"
 #include <scenegraph/geometry/geometry.h>
 #include <scenegraph/container/pointarray.h>
 #include <scenegraph/geometry/polyline.h>

@@ -35,28 +35,28 @@
  */
 
 #include "ligfile.h"
-#include "appe_material.h"
-#include "geom_pointarray.h"
-#include "geom_polyline.h"
-#include "geom_pointset.h"
-#include "geom_frustum.h"
-#include "geom_cylinder.h"
-#include "geom_disc.h"
-#include "geom_oriented.h"
-#include "geom_translated.h"
-#include "geom_axisrotated.h"
-#include "geom_scaled.h"
-#include "geom_tapered.h"
-#include "scne_shape.h"
-#include "scne_scene.h"
-#include "actn_discretizer.h"
-#include "geom_explicitmodel.h"
-#include "Tools/bfstream.h"
-#include "Tools/dirnames.h"
 #include "dtafile.h"
-#include "Tools/util_math.h"
 
-GEOM_USING_NAMESPACE
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/pointset.h>
+#include <scenegraph/geometry/frustum.h>
+#include <scenegraph/geometry/cylinder.h>
+#include <scenegraph/geometry/disc.h>
+#include <scenegraph/transformation/oriented.h>
+#include <scenegraph/transformation/translated.h>
+#include <scenegraph/transformation/axisrotated.h>
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/tapered.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/scene/scene.h>
+#include <algo/base/discretizer.h>
+#include <tool/bfstream.h>
+#include <tool/dirnames.h>
+#include <math/util_math.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -152,7 +152,7 @@ LigRecord::getTransformed(GeometryPtr primitive,
 	  if(!(fabs(s1) > GEOM_EPSILON && fabs(s2) > GEOM_EPSILON)){
 		Point3ArrayPtr pts = new Point3Array(2,origin);
 		pts->setAt(1,origin+dirp*length);
-		return GeometryPtr(new GeomPolyline(pts));
+		return GeometryPtr(new Polyline(pts));
 	  }
 	  else if(fabs(sommit_dia) < GEOM_EPSILON){
 		if(fabs(base_dia) > GEOM_EPSILON){
@@ -162,13 +162,13 @@ LigRecord::getTransformed(GeometryPtr primitive,
 		  else {
 			Point3ArrayPtr pts = new Point3Array(2,origin);
 			pts->setAt(1,origin+dirp*length);
-			return GeometryPtr(new GeomPolyline(pts));
+			return GeometryPtr(new Polyline(pts));
 		  }
 		}
 		else {
 		  Point3ArrayPtr pts = new Point3Array(2,origin);
 		  pts->setAt(1,origin+dirp*length);
-		  return GeometryPtr(new GeomPolyline(pts));
+		  return GeometryPtr(new Polyline(pts));
 		}
 	  }
 	  else if(fabs(base_dia) < GEOM_EPSILON){
@@ -181,7 +181,7 @@ LigRecord::getTransformed(GeometryPtr primitive,
 		else {
 		  Point3ArrayPtr pts = new Point3Array(2,origin);
 		  pts->setAt(1,origin+dirp*length);
-		  return GeometryPtr(new GeomPolyline(pts));
+		  return GeometryPtr(new Polyline(pts));
 		}
 	  }
 	  else if(fabs( ratio - 1 ) > GEOM_EPSILON)
@@ -427,17 +427,17 @@ ScenePtr Ligfile::computeScene(const Dtafile& _dtafile) const{
     for(vector< LigRecord >::iterator _it=recordTable->begin();
         _it!=recordTable->end();
         _it++){
-        GeomShapePtr a = _dtafile.getdtainfo((unsigned int)_it->getSymbolNumber());
+        ShapePtr a = _dtafile.getdtainfo((unsigned int)_it->getSymbolNumber());
         if(a){
             GeometryPtr b = _it->getTransformed(a->getGeometry());
             if(!a->getAppearance())(*SceneObject::errorStream) << "The Dta object " << _it->getSymbolNumber() << " don't have valid Appearance" << endl;
-            if(b)result->add(GeomShape(b,AppearancePtr(a->getAppearance()),_it->getEntityNumber()));
+            if(b)result->add(Shape(b,AppearancePtr(a->getAppearance()),_it->getEntityNumber()));
             else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
         }
         else {
                 (*SceneObject::warningStream) << "*** Warning : Cannot find symbol in Dta file for object " << distance(recordTable->begin(),_it) << ". Default geometry used." << endl;
             GeometryPtr b = _it->getTransformed(GeometryPtr(0));
-            if(b)result->add(GeomShape(b,_default,_it->getEntityNumber()));
+            if(b)result->add(Shape(b,_default,_it->getEntityNumber()));
             else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
         }
         id++;
@@ -470,7 +470,7 @@ bool Ligfile::isBigEndian( const std::string& fileName ){
 
 /* ----------------------------------------------------------------------- */
 
-ScenePtr GEOM(readLineTree)(string ligFile, 
+ScenePtr PGL(readLineTree)(string ligFile, 
 							string dtaFile, 
 							string smbpath,
 							bool bigendian,

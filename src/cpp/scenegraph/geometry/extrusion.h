@@ -107,7 +107,7 @@ class SG_API Extrusion : public ParametricModel
   static const bool DEFAULT_SOLID;
 
     /// A structure which helps to build a Extrusion when parsing.
-    struct Builder : public ParametricModel::Builder { 
+    struct SG_API Builder : public ParametricModel::Builder { 
 
 	    /// A pointee to a curve.
 	    LineicModelPtr *  Axis;

@@ -37,27 +37,27 @@
 
 
 
-#include "actn_tesselator.h"
+#include "tesselator.h"
 
-#include "geom_amapsymbol.h"
-#include "geom_faceset.h"
-#include "geom_quadset.h"
-#include "geom_triangleset.h"
-#include "geom_bezierpatch.h"
-#include "geom_box.h"
-#include "geom_cylinder.h"
-#include "geom_extrusion.h"
-#include "geom_frustum.h"
-#include "geom_nurbspatch.h"
-#include "geom_polyline.h"
+#include <scenegraph/geometry/amapsymbol.h>
+#include <scenegraph/geometry/faceset.h>
+#include <scenegraph/geometry/quadset.h>
+#include <scenegraph/geometry/triangleset.h>
+#include <scenegraph/geometry/bezierpatch.h>
+#include <scenegraph/geometry/box.h>
+#include <scenegraph/geometry/cylinder.h>
+#include <scenegraph/geometry/extrusion.h>
+#include <scenegraph/geometry/frustum.h>
+#include <scenegraph/geometry/nurbspatch.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/profile.h>
 
-#include "geom_orthotransformed.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include <scenegraph/transformation/orthotransformed.h>
+#include <pgl_container.h>
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -159,7 +159,7 @@ bool Tesselator::process( Box * box ) {
   _indexList->setAt(11,Index3(4,6,5));
 
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,-_size.z()),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,-_size.z()),
                                      Vector3(0,0,_size.z())));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -228,7 +228,7 @@ bool Tesselator::process( BezierPatch * bezierPatch ) {
 
   _pointList->setAt(_pointCount,bezierPatch->getPointAt(1.0,1.0));
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
   TriangleSet * t = new TriangleSet(_pointList, _indexList, true, bezierPatch->getCCW(), // CCW
@@ -289,7 +289,7 @@ bool Tesselator::process( Cylinder * cylinder ) {
     _next = (_next + 2 ) % (2 * _slices);
   }
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -437,7 +437,7 @@ bool Tesselator::process( Frustum * frustum ) {
     _next = (_next + 2 ) % (2 * _slices);
   }
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
   __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
@@ -577,7 +577,7 @@ bool Tesselator::process( NurbsPatch * nurbsPatch ) {
 
   _pointList->setAt(_pointCount,nurbsPatch->getPointAt(_ulast,_vlast));
 
-  GeomPolylinePtr _skeleton(new GeomPolyline(Vector3(0,0,0),
+  PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
   TriangleSet * t = new TriangleSet(_pointList,_indexList, true, nurbsPatch->getCCW(), // CCW
@@ -599,7 +599,7 @@ bool Tesselator::process( PointSet * pointSet ) {
   return false;
 }
 
-bool Tesselator::process( GeomPolyline * polyline ) {
+bool Tesselator::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do as it cannot be transformed into a TriangleSet.
   __discretization = ExplicitModelPtr();
@@ -627,7 +627,7 @@ bool Tesselator::process( PointSet2D * pointSet ){
   return false;
 }
 
-bool Tesselator::process( GeomPolyline2D * polyline ){
+bool Tesselator::process( Polyline2D * polyline ){
   GEOM_ASSERT(polyline);
   // nothing to do as it cannot be transformed into a TriangleSet.
   __discretization = ExplicitModelPtr();

@@ -37,20 +37,21 @@
 
 
 
-#include "actn_volcomputer.h"
-#include "actn_discretizer.h"
+#include "volcomputer.h"
+#include "discretizer.h"
 
-#include "all_scene.h"
-#include "all_geometry.h"
-#include "geom_pointarray.h"
-#include "geom_indexarray.h"
-#include "geom_geometryarray2.h"
+#include <pgl_scene.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/geometryarray2.h>
 
-#include "Tools/util_math.h"
+#include <math/util_math.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 #define GEOM_NOT_CACHE
@@ -104,13 +105,13 @@ real_t VolComputer::getVolume( ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool VolComputer::process(GeomShape * geomShape){
+bool VolComputer::process(Shape * Shape){
   __result = 0;
-  GEOM_ASSERT(geomShape);
-  return geomShape->getGeometry()->apply(*this);
+  GEOM_ASSERT(Shape);
+  return Shape->getGeometry()->apply(*this);
 }
 
-bool VolComputer::process(GeomInline * geomInline){
+bool VolComputer::process(Inline * geomInline){
     __result = 0;
   GEOM_ASSERT(geomInline);
     return process(geomInline->getScene());
@@ -592,7 +593,7 @@ bool VolComputer::process(const Scene& scene){
 
 /* ----------------------------------------------------------------------- */
 
-const real_t GEOM(sceneVolume)(const ScenePtr scene){
+const real_t PGL(sceneVolume)(const ScenePtr scene){
   Discretizer dis;
   VolComputer _sfc(dis);
   if(_sfc.process(scene))
@@ -600,7 +601,7 @@ const real_t GEOM(sceneVolume)(const ScenePtr scene){
   else return 0;
 }
 
-const real_t GEOM(sceneVolume)(const Scene& scene){
+const real_t PGL(sceneVolume)(const Scene& scene){
   Discretizer dis;
   VolComputer _sfc(dis);
   if(_sfc.process(scene))

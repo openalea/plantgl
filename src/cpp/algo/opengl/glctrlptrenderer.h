@@ -45,11 +45,11 @@
 #define __actn_glctrlpointrenderer_h__
 
 
-#include "actn_glrenderer.h"
+#include "glrenderer.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -59,7 +59,7 @@ GEOM_BEGIN_NAMESPACE
 */
 
 
-class GEOM_API GLCtrlPointRenderer : public GLRenderer
+class ALGO_API GLCtrlPointRenderer : public GLRenderer
 {
 
 
@@ -76,7 +76,7 @@ public:
 
   virtual bool beginProcess();
 
-  virtual bool processAppereance(GeomShape * geomShape);
+  virtual bool processAppereance(Shape * Shape);
 
   /// @name Geom3D
   //@{
@@ -134,7 +134,7 @@ public:
     return true;
   };
 
-  virtual bool process( GeomPolyline * ){
+  virtual bool process( Polyline * ){
     return true;
   };
 
@@ -178,7 +178,7 @@ public:
     return true;
   };
 
-  virtual bool process( GeomPolyline2D * ){
+  virtual bool process( Polyline2D * ){
     return true;
   };
 
@@ -197,7 +197,7 @@ public:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 

@@ -38,16 +38,17 @@
 
 
 
-#include "actn_glbboxrenderer.h"
-#include "actn_bboxcomputer.h"
+#include "glbboxrenderer.h"
+#include <algo/base/bboxcomputer.h>
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "geom_boundingbox.h"
+#include <pgl_appearance.h>
+#include <pgl_geometry.h>
+#include <pgl_transformation.h>
+#include <scenegraph/geometry/boundingbox.h>
 
-#include "Tools/util_glut.h"
+#include "util_glut.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -335,7 +336,7 @@ bool GLBBoxRenderer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GLBBoxRenderer::process( GeomPolyline * polyline ) {
+bool GLBBoxRenderer::process( PGL(Polyline) * polyline ) {
   GEOM_GLBBOXRENDERER(polyline);
 }
 
@@ -444,7 +445,7 @@ bool GLBBoxRenderer::process( PointSet2D * pointSet   ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool GLBBoxRenderer::process( GeomPolyline2D * polyline  ) {
+bool GLBBoxRenderer::process( Polyline2D * polyline  ) {
   GEOM_GLBBOXRENDERER(polyline);
 }
 

@@ -72,7 +72,7 @@ public:
   static const real_t DEFAULT_RADIUS;
 
   /// A structure which helps to build a Sphere when parsing. 
-  struct Builder : public SOR::Builder {
+  struct SG_API Builder : public SOR::Builder {
     
     /// A pointer to the Stacks field.
     uchar_t * Stacks;

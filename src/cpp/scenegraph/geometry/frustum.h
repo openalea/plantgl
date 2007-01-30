@@ -71,7 +71,7 @@ public:
 
 
   /// A structure which helps to build a Frustum when parsing.
-  struct Builder : public Cone::Builder {
+  struct SG_API Builder : public Cone::Builder {
 
     /// A pointer to the \b Taper field.
     real_t * Taper;

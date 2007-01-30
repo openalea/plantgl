@@ -75,7 +75,7 @@ public:
   static const uint32_t DEFAULT_NURBS_DEGREE;
 
   /// A structure which helps to build a NurbsPatch when parsing. 
-  struct Builder : public BezierPatch::Builder { 
+  struct SG_API Builder : public BezierPatch::Builder { 
 
     /// A pointer to the \b UKnotList field.
     TOOLS(RealArrayPtr) * UKnotList;

@@ -38,67 +38,15 @@
 #ifndef __codec_config_h__
 #define __codec_config_h__
 
-#include "../pgl_namespace.h"
+#include "../algo_config.h"
 
 /* ----------------------------------------------------------------------- */
 
-
-/*! \def CODEC_NODLL
-    \brief Not creating dll
-
-    Uncomment to use this functionnality
-        Do nothing on other platform than windows
-*/
-/*! \def CODEC_DLL
-    \brief Using lib ACTN as a dll
-
-    Uncomment to use this functionnality
-        Do nothing on other platform than windows
-*/
-/*! \def CODEC_MAKEDLL
-    \brief Creating ACTN dll
-
-    Uncomment to use this functionnality
-        Do nothing on other platform than windows
-*/
-#if defined(_WIN32)
-#if defined(CODEC_NODLL)
-#undef CODEC_MAKEDLL
-#undef CODEC_DLL
-#else
-#ifndef CODEC_DLL
-#define CODEC_DLL
-#endif
-#endif
-
-#if defined(CODEC_MAKEDLL)
-#ifndef CODEC_DLL
-#define CODEC_DLL
-#endif
-#endif
-
-#ifdef CODEC_DLL
-
-#ifdef CODEC_MAKEDLL             /* create a ACTN DLL library */
-#define CODEC_API  __declspec(dllexport)
-#undef CODEC_FWDEF
-#else                                                   /* use a ACTN DLL library */
-#define CODEC_API  __declspec(dllimport)
-#endif
-
-#define CODEC_TEMPLATE_API(T) template class CODEC_API T;
-#endif
-
-#else // OS != _WIN32
-
-#undef CODEC_MAKEDLL             /* ignore these for other platforms */
-#undef CODEC_DLL
-
-#endif
-
 #ifndef CODEC_API
-#define CODEC_API
-#define CODEC_TEMPLATE_API(T) 
+
+#define CODEC_API ALGO_API
+#define CODEC_TEMPLATE_API(T) ALGO_TEMPLATE_API(T) 
+
 #endif
 
 
