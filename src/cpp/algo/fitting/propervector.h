@@ -45,12 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/util_vector.h"
-#include "GEOM/geom_pointarray.h"
+#include "../algo_config.h"
+#include <math/util_vector.h>
+#include <scenegraph/container/pointarray.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,18 +59,18 @@ const double VZero=0.000001;
 const double VInfini=99999999999.;
 
 
-void GEOM_API Laxi_VectNorm (double valprop,double vectprop[3]);
+void ALGO_API Laxi_VectNorm (double valprop,double vectprop[3]);
 
 /*! polynome caracteristique : \n
   P(t) = determinant(I*t-mat3x3) \n
   P(t) = pc[3]*t3 + pc[2]*t2 + pc[1]*t + pc[0] \n
 */
-extern void GEOM_API Laxi_Polynom (const double mat3x3[3][3],double pc[4]);
+extern void ALGO_API Laxi_Polynom (const double mat3x3[3][3],double pc[4]);
 
 
 /*! estimation P(x) = pc[3]*x3 + pc[2]*x2 + pc[1]*x + pc[0]
 */
-extern double GEOM_API Laxi_PolyValue(double pc[4],double x);
+extern double ALGO_API Laxi_PolyValue(double pc[4],double x);
 
 
 /*! etude de la courbe C definie par l'equation P(x) : \n
@@ -79,7 +80,7 @@ extern double GEOM_API Laxi_PolyValue(double pc[4],double x);
   -------------------------------------------------------------------- \n
 */
 
-extern void GEOM_API Laxi_CurveStudy (double pc[4],double *z1,double *z2,int *n);
+extern void ALGO_API Laxi_CurveStudy (double pc[4],double *z1,double *z2,int *n);
 
 /*! Recherche Valeurs Propres sur un intervalle donne : \n
 on cherche la racine r de l'intervalle [a_int,b_int] / \n
@@ -88,12 +89,12 @@ on cherche la racine r de l'intervalle [a_int,b_int] / \n
 reduction de l'intervalle de recherche des racines du polynome \n
 -------------------------------------------------------------------- \n
 */
-extern void GEOM_API Laxi_FindInterval (double pc[4],double a_int,double b_int,double *a,double *b);
+extern void ALGO_API Laxi_FindInterval (double pc[4],double a_int,double b_int,double *a,double *b);
 
 
 /*! calcul racine
 */
-extern void GEOM_API Laxi_FindRoots (double pc[4],double a_int,double b_int,double *t);
+extern void ALGO_API Laxi_FindRoots (double pc[4],double a_int,double b_int,double *t);
 
 /*!
 Recherche Vecteurs Propres Associes aux Valeurs Propres du polynome \n
@@ -105,35 +106,35 @@ vecteur propre calcule est strictement different du vecteur nul) \n
 recherche vecteur propre associe a une valeur propre SIMPLE \n
 -------------------------------------------------------------------- \n
 */
-extern void GEOM_API Laxi_FindSingleVP (double MemGauche[3][3],double MemDroit[3],double Solution[3]);
+extern void ALGO_API Laxi_FindSingleVP (double MemGauche[3][3],double MemDroit[3],double Solution[3]);
 
 
 /*-------------------------------------------------------------------*/
-extern void GEOM_API Laxi_VecteurPropre_1 (double mat3x3[3][3],double valprop,double vectprop[3]);
+extern void ALGO_API Laxi_VecteurPropre_1 (double mat3x3[3][3],double valprop,double vectprop[3]);
 
 
 /*! recherche vecteur propre associe a une valeur propre DOUBLE
 */
-extern void GEOM_API Laxi_FindDoubleVP (double MemGauche[3][3],double MemDroit[3],double Solution1[3],double Solution2[3]);
+extern void ALGO_API Laxi_FindDoubleVP (double MemGauche[3][3],double MemDroit[3],double Solution1[3],double Solution2[3]);
 
 /*-------------------------------------------------------------------*/
-extern void GEOM_API Laxi_VecteurPropre_2(double mat3x3[3][3],double valprop, double vectprop1[3],double vectprop2[3]);
+extern void ALGO_API Laxi_VecteurPropre_2(double mat3x3[3][3],double valprop, double vectprop1[3],double vectprop2[3]);
 
 
 /*!
 recherche vecteur propre associe a une valeur propre TRIPLE
 */
-extern void GEOM_API Laxi_FindTripleVP (double MemGauche[3][3],double MemDroit[3],double Solution1[3],double Solution2[3],double Solution3[3]);
+extern void ALGO_API Laxi_FindTripleVP (double MemGauche[3][3],double MemDroit[3],double Solution1[3],double Solution2[3],double Solution3[3]);
 
 
 /*-------------------------------------------------------------------*/
-extern void GEOM_API Laxi_VecteurPropre_3 (double mat3x3[3][3],double valprop,double vectprop1[3],double vectprop2[3],double vectprop3[3]);
+extern void ALGO_API Laxi_VecteurPropre_3 (double mat3x3[3][3],double valprop,double vectprop1[3],double vectprop2[3],double vectprop3[3]);
 
 
 /* !
 calcul vecteurs propres
 */
-extern void GEOM_API Laxi_VecteursPropres (double mat3x3[3][3],double pc[4],double val[3],double vect[3][3]);
+extern void ALGO_API Laxi_VecteursPropres (double mat3x3[3][3],double pc[4],double val[3],double vect[3][3]);
 
 
 /*! vecteurs propres : \n
@@ -143,7 +144,7 @@ extern void GEOM_API Laxi_VecteursPropres (double mat3x3[3][3],double pc[4],doub
 	vect	: vecteurs propres associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
-extern void GEOM_API Laxi_ValproVecpro (double mat3x3[3][3],double val[3],double vect[3][3]);
+extern void ALGO_API Laxi_ValproVecpro (double mat3x3[3][3],double val[3],double vect[3][3]);
 
 
 /*! vecteurs propres distincts : \n
@@ -153,7 +154,7 @@ extern void GEOM_API Laxi_ValproVecpro (double mat3x3[3][3],double val[3],double
 	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
-extern void GEOM_API Laxi_Vecpro (double mat3x3[3][3],double vect[3][3],short *marqueur);
+extern void ALGO_API Laxi_Vecpro (double mat3x3[3][3],double vect[3][3],short *marqueur);
 
 
 /*! vecteurs propres distincts : \n
@@ -163,20 +164,20 @@ extern void GEOM_API Laxi_Vecpro (double mat3x3[3][3],double vect[3][3],short *m
 	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
-extern void GEOM_API Laxi_ComputeVecpro (double vpmat[3][3],float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);
+extern void ALGO_API Laxi_ComputeVecpro (double vpmat[3][3],float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);
 
 /*! Calcul de la matrice d'inertie */
-extern real_t GEOM_API Laxi_ComputeInertiaM (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
+extern real_t ALGO_API Laxi_ComputeInertiaM (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
 			    float vpang[3][3],short vpok[3],float fvpmat[3][3]);
 
 
-extern void GEOM_API Laxi_ComputeInertia (Point3ArrayPtr pts,float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);
+extern void ALGO_API Laxi_ComputeInertia (Point3ArrayPtr pts,float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);
 
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

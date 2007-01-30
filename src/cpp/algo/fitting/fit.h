@@ -45,13 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "GEOM/geom_geometry.h"
-#include "GEOM/geom_pointarray.h"
-#include "GEOM/geom_polyline.h"
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/geometry/polyline.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
    \brief An action which fit a pointSet with a \e Geometry objects.
 */
 
-class GEOM_API Fit
+class ALGO_API Fit
 {
 
   public:
@@ -303,7 +303,7 @@ class GEOM_API Fit
       \author    Philippe Lavoie
       \date 24 January, 1997
     */
-    static RealArrayPtr chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength);
+    static TOOLS(RealArrayPtr) chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength);
 
     /*!
       \brief  A least squares curve approximation
@@ -341,7 +341,7 @@ class GEOM_API Fit
       \date 24 January 1997
     */
     static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const RealArrayPtr& ub);
+			       int degC, int n, const TOOLS(RealArrayPtr)& ub);
 
     /*!
       \brief  A least squares curve approximation
@@ -383,8 +383,8 @@ class GEOM_API Fit
       \date 24 January 1997
     */
     static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const RealArrayPtr& ub,
-			       const RealArrayPtr& knot);
+			       int degC, int n, const TOOLS(RealArrayPtr)& ub,
+			       const TOOLS(RealArrayPtr)& knot);
 
 /* ----------------------------------------------------------------------- */
 
@@ -431,7 +431,7 @@ double findfactor(double x, double r, double y, double h);
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

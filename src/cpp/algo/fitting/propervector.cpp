@@ -40,13 +40,13 @@
 
 
 
-#include "util_propervector.h"
-#include "Tools/util_math.h"
+#include "propervector.h"
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
-void GEOM(Laxi_VectNorm) (double valprop,double vectprop[3])
+void PGL(Laxi_VectNorm) (double valprop,double vectprop[3])
    {
    double vno, vp;
 
@@ -75,7 +75,7 @@ polynome caracteristique :
 	P(t) = pc[3]*t3 + pc[2]*t2 + pc[1]*t + pc[0]
 */
 
-void GEOM(Laxi_Polynom) (const double mat3x3[3][3],double pc[4])
+void PGL(Laxi_Polynom) (const double mat3x3[3][3],double pc[4])
    {
    double	a,b,c,d,e,f,g,h,i ;
 //   double  pc[4];
@@ -104,7 +104,7 @@ void GEOM(Laxi_Polynom) (const double mat3x3[3][3],double pc[4])
 /*
 estimation P(x) = pc[3]*x3 + pc[2]*x2 + pc[1]*x + pc[0]
 */
-double GEOM(Laxi_PolyValue)(double pc[4],double x)
+double PGL(Laxi_PolyValue)(double pc[4],double x)
    {
    double	y ;
    int	i ;
@@ -126,7 +126,7 @@ allure de la courbe
 --------------------------------------------------------------------
 */
 
-void GEOM(Laxi_CurveStudy) (double pc[4],double *z1,double *z2,int *n)
+void PGL(Laxi_CurveStudy) (double pc[4],double *z1,double *z2,int *n)
    {
    double a,b,c,d,delta,r1,r2 ;
 
@@ -186,7 +186,7 @@ on cherche la racine r de l'intervalle [a_int,b_int] /
 reduction de l'intervalle de recherche des racines du polynome
 --------------------------------------------------------------------
 */
-void GEOM(Laxi_FindInterval) (double pc[4],double a_int,double b_int,double *a,double *b)
+void PGL(Laxi_FindInterval) (double pc[4],double a_int,double b_int,double *a,double *b)
    {
    double	aa,bb,cc,poly_aa,poly_bb,poly_cc ;
    int	non_stop ;
@@ -237,7 +237,7 @@ void GEOM(Laxi_FindInterval) (double pc[4],double a_int,double b_int,double *a,d
 calcul racine
 --------------------------------------------------------------------
 */
-void GEOM(Laxi_FindRoots) (double pc[4],double a_int,double b_int,double *t)
+void PGL(Laxi_FindRoots) (double pc[4],double a_int,double b_int,double *t)
    {
    double	a,b,c,poly_a,poly_b,poly_c ;
    int	non_stop ;
@@ -321,7 +321,7 @@ recherche vecteur propre associe a une valeur propre SIMPLE
 --------------------------------------------------------------------
 */
 
-void GEOM(Laxi_FindSingleVP) (double MemGauche[3][3],double MemDroit[3],double Solution[3])
+void PGL(Laxi_FindSingleVP) (double MemGauche[3][3],double MemDroit[3],double Solution[3])
    {
    double a[3][4],b[3][4],pivot,quot,tempo,s,solution[3] ;
    int	 i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
@@ -516,7 +516,7 @@ printf("\n\n") ;
 
 
 /*-------------------------------------------------------------------*/
-void GEOM(Laxi_VecteurPropre_1) (double mat3x3[3][3],double valprop,double vectprop[3])
+void PGL(Laxi_VecteurPropre_1) (double mat3x3[3][3],double valprop,double vectprop[3])
    {
    double 	MemGauche[3][3],MemDroit[3] ;
    int	i,j ;
@@ -543,7 +543,7 @@ void GEOM(Laxi_VecteurPropre_1) (double mat3x3[3][3],double valprop,double vectp
 recherche vecteur propre associe a une valeur propre DOUBLE
 --------------------------------------------------------------------
 */
-void GEOM(Laxi_FindDoubleVP) (double MemGauche[3][3],double MemDroit[3],
+void PGL(Laxi_FindDoubleVP) (double MemGauche[3][3],double MemDroit[3],
 								double Solution1[3],double Solution2[3])
    {
    double a[3][4],b[3][4],pivot,quot,tempo,s1,s2,solution1[3],solution2[3] ;
@@ -775,7 +775,7 @@ printf("\n\n") ;
 
 /*-------------------------------------------------------------------*/
 
-void GEOM(Laxi_VecteurPropre_2)(double mat3x3[3][3],double valprop,
+void PGL(Laxi_VecteurPropre_2)(double mat3x3[3][3],double valprop,
 								  double vectprop1[3],double vectprop2[3])
    {
    double MemGauche[3][3],MemDroit[3] ;
@@ -805,7 +805,7 @@ recherche vecteur propre associe a une valeur propre TRIPLE
 --------------------------------------------------------------------
 */
 
-void GEOM(Laxi_FindTripleVP) (double MemGauche[3][3],double MemDroit[3],double Solution1[3],
+void PGL(Laxi_FindTripleVP) (double MemGauche[3][3],double MemDroit[3],double Solution1[3],
 								double Solution2[3],double Solution3[3])
    {
    double a[3][4],b[3][4],pivot,quot,tempo,s1,s2,s3,solution1[3],solution2[3],solution3[3] ;
@@ -1073,7 +1073,7 @@ printf("\n\n") ;
 
 /*-------------------------------------------------------------------*/
 
-void GEOM(Laxi_VecteurPropre_3) (double mat3x3[3][3],double valprop,double vectprop1[3],
+void PGL(Laxi_VecteurPropre_3) (double mat3x3[3][3],double valprop,double vectprop1[3],
 									double vectprop2[3],double vectprop3[3])
    {
    double 	MemGauche[3][3], MemDroit[3] ;
@@ -1102,7 +1102,7 @@ calcul vecteurs propres
 --------------------------------------------------------------------
 */
 
-void GEOM(Laxi_VecteursPropres) (double mat3x3[3][3],double pc[4],double val[3],double vect[3][3])
+void PGL(Laxi_VecteursPropres) (double mat3x3[3][3],double pc[4],double val[3],double vect[3][3])
    {
    double	z1,z2,a_int,b_int,t0,t1,t2 ;
    int	n ;
@@ -1263,7 +1263,7 @@ vecteurs propres :
                   si pas de solution, vect = (VInfini,VInfini,VInfini)
 --------------------------------------------------------------------
 */
-void GEOM(Laxi_ValproVecpro) (double mat3x3[3][3],double val[3],double vect[3][3])
+void PGL(Laxi_ValproVecpro) (double mat3x3[3][3],double val[3],double vect[3][3])
    {
    double	pc[4] ;
 
@@ -1290,7 +1290,7 @@ vecteurs propres distincts :
                   si pas de solution, vect = (VInfini,VInfini,VInfini)
 --------------------------------------------------------------------
 */
-void GEOM(Laxi_Vecpro) (double mat3x3[3][3],double vect[3][3],short *marqueur)
+void PGL(Laxi_Vecpro) (double mat3x3[3][3],double vect[3][3],short *marqueur)
    {
    double	pc[4], val[3];
 
@@ -1350,7 +1350,7 @@ vecteurs propres distincts :
                   si pas de solution, vect = (VInfini,VInfini,VInfini)
 --------------------------------------------------------------------
 */
-void GEOM(Laxi_ComputeVecpro) (double vpmat[3][3],float vpvec[3][3],float vpint[3],
+void PGL(Laxi_ComputeVecpro) (double vpmat[3][3],float vpvec[3][3],float vpint[3],
 								 float vpang[3][3],short vpok[3])
    {
    double vect[3][3], vint;
@@ -1402,7 +1402,7 @@ void GEOM(Laxi_ComputeVecpro) (double vpmat[3][3],float vpvec[3][3],float vpint[
 
 
 
-real_t GEOM(Laxi_ComputeInertiaM) (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
+real_t PGL(Laxi_ComputeInertiaM) (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
 								  float vpang[3][3],short vpok[3],float fvpmat[3][3])
    {
    double vpmat[3][3];
@@ -1488,7 +1488,7 @@ real_t GEOM(Laxi_ComputeInertiaM) (float *pts, float * ponderation, int nbp,floa
    }
 
 
-void GEOM(Laxi_ComputeInertia) (Point3ArrayPtr pts,float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3])
+void PGL(Laxi_ComputeInertia) (Point3ArrayPtr pts,float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3])
    {
 
 

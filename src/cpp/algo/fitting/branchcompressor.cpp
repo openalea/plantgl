@@ -34,25 +34,25 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "Geomext/branchcompressor.h"
+#include "branchcompressor.h"
 
-#include "GEOM/scne_shape.h"
-#include "GEOM/geom_pointset.h"
-#include "GEOM/geom_extrusion.h"
-#include "GEOM/geom_polyline.h"
-#include "GEOM/geom_disc.h"
-#include "GEOM/geom_frustum.h"
-#include "GEOM/geom_cylinder.h"
-#include "GEOM/geom_scaled.h"
-#include "GEOM/geom_oriented.h"
-#include "GEOM/geom_translated.h"
-#include "GEOM/geom_group.h"
-#include "GEOM/geom_geometryarray2.h"
-#include "Geomext/actn_fit.h"
-#include "Tools/timer.h"
-#include "Tools/util_math.h"
-#include "Tools/dirnames.h"
-#include "Tools/util_hashmap.h"
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/geometry/pointset.h>
+#include <scenegraph/geometry/extrusion.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/disc.h>
+#include <scenegraph/geometry/frustum.h>
+#include <scenegraph/geometry/cylinder.h>
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/oriented.h>
+#include <scenegraph/transformation/translated.h>
+#include <scenegraph/geometry/group.h>
+#include <scenegraph/container/geometryarray2.h>
+#include "fit.h"
+#include <tool/timer.h>
+#include <math/util_math.h>
+#include <tool/dirnames.h>
+#include <tool/util_hashmap.h>
 
 #include <stdio.h>  
 #include <fstream>
@@ -60,7 +60,7 @@
 #include <stack>
 
 TOOLS_USING_NAMESPACE
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 using namespace std;
 STDEXT_USING_NAMESPACE
 
@@ -72,7 +72,7 @@ STDEXT_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 Point3ArrayPtr  
-GEOM(discretizeWithCurvature)(NurbsCurvePtr C,int NumberOfPoint){
+PGL(discretizeWithCurvature)(NurbsCurvePtr C,int NumberOfPoint){
   if(!C)return Point3ArrayPtr();
   Point3ArrayPtr theVector(new Point3Array(NumberOfPoint));
   theVector->setAt(0,C->getPointAt(C->getFirstKnot()));
@@ -132,7 +132,7 @@ GEOM(discretizeWithCurvature)(NurbsCurvePtr C,int NumberOfPoint){
 		  theVector->setAt(index,C->getPointAt(i));
 #ifdef GEOM_DEBUG
 		  if(theVector->getAt(index)==Zero)
-			printf("Point Calcul error ! (%s:%s)\n",get_notdirname(__FILE__).c_str(),__LINE__);
+			printf("Point Calcul error ! (%s:%s)\n",get_filename(__FILE__).c_str(),__LINE__);
 		  printf("Find the %d (of %d) interior point  at u=%f: %f - %f -> <%f,%f,%f>\n",
 			index,(NumberOfPoint),i,courbureSomme*0.001,courbureA*0.001,
 			theVector->getAt(index).x(),theVector->getAt(index).y(),theVector->getAt(index).z());
@@ -152,7 +152,7 @@ GEOM(discretizeWithCurvature)(NurbsCurvePtr C,int NumberOfPoint){
 }
 										       
 Point3ArrayPtr  
-GEOM(compressPolyline)(Point3ArrayPtr C,int NumberOfPoint){
+PGL(compressPolyline)(Point3ArrayPtr C,int NumberOfPoint){
   if(!C)return Point3ArrayPtr();
   if(C->getSize() <= NumberOfPoint) return C;
   Point3ArrayPtr theVector(new Point3Array(NumberOfPoint));
@@ -180,7 +180,7 @@ GEOM(compressPolyline)(Point3ArrayPtr C,int NumberOfPoint){
 /* ----------------------------------------------------------------------- */
 /*
 NurbsCurvePtr 
-GEOM(fitt)(const Point3ArrayPtr&  MyVector, 
+PGL(fitt)(const Point3ArrayPtr&  MyVector, 
 				   int deg, 
 				   int CPbegin, 
 				   int nbPtCtrlMax, 
@@ -213,7 +213,7 @@ GEOM(fitt)(const Point3ArrayPtr&  MyVector,
       if(!C){
 		NoErr=0;
 		printf("%s:%d:Error with least Squares Function when n=%d at %d loop.\n",
-		  get_notdirname(__FILE__).c_str(),__LINE__,CPbegin,nbtour);
+		  get_filename(__FILE__).c_str(),__LINE__,CPbegin,nbtour);
 		if(nbtour==0){
 		  if(CPbegin>deg+1 && Cold.isValid()){
 			C = Cold;
@@ -276,7 +276,7 @@ GEOM(fitt)(const Point3ArrayPtr&  MyVector,
 /* ----------------------------------------------------------------------- */
 
 NurbsCurvePtr 
-GEOM(fitt)(const Point3ArrayPtr&  MyVector, 
+PGL(fitt)(const Point3ArrayPtr&  MyVector, 
 				   int deg, 
 				   int CPbegin, 
 				   int nbPtCtrlMax, 
@@ -308,7 +308,7 @@ GEOM(fitt)(const Point3ArrayPtr&  MyVector,
     if(!C){
 		NoErr=0;
 		printf("%s:%d:Error with least Squares Function when n=%d.\n",
-		  get_notdirname(__FILE__).c_str(),__LINE__,CPbegin);
+		  get_filename(__FILE__).c_str(),__LINE__,CPbegin);
 		  if(CPbegin>deg+1 && Cold.isValid())C = Cold;
 		  CPbegin++;
     }
@@ -366,7 +366,7 @@ BranchCompressor::BranchCompressor():__verbose(false),__roots(-1){
 	for(int i = 0; i <= slices; i++){
 	  pts->setAt(i,Vector2::Polar(1,GEOM_TWO_PI*i/slices));
 	}
-	DEFAULT_CROSS_SECTION = new GeomPolyline2D(pts);
+	DEFAULT_CROSS_SECTION = new Polyline2D(pts);
 	DEFAULT_CROSS_SECTION->setName("BrCompressorCrossSection");
   }
 };
@@ -560,7 +560,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,
 	  Point3ArrayPtr pts(new Point3Array(1,p1));
 	  geom = GeometryPtr(new PointSet(pts));
 	}
-	GeomShape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
+	Shape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
 	assert(a.isValid());
 	scene->add(a);
   }
@@ -589,7 +589,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,
 	}
 	if(p1 != Vector3::ORIGIN)
 	  geom = GeometryPtr(new Translated(p1,geom));
-	GeomShape sh(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
+	Shape sh(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
 	assert(sh.isValid());
 	scene->add(sh);
   }
@@ -617,7 +617,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) con
 	  else geom = GeometryPtr(new Extrusion(axis,DEFAULT_CROSS_SECTION,
 									   ub,radius));
 	}
-	GeomShape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
+	Shape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
 	assert(a.isValid());
 	scene->add(a);
   }
@@ -626,7 +626,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) con
 void 
 BranchCompressor::addScene(ScenePtr scene, int c_branch,GeometryPtr geom) const{
   if(geom.isValid()&&geom->isValid()){
-	GeomShape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
+	Shape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
 	assert(a.isValid());
 	scene->add(a);
   }
@@ -643,7 +643,7 @@ BranchCompressor::inputScene() const{
 	  addScene(scene, i,GeometryPtr(new PointSet(_it->points)));
 	else if(_it->points->getSize() == 2)
 	  addScene(scene,i,_it->points->getAt(0),_it->points->getAt(1));
-	else addScene(scene,i,LineicModelPtr(new GeomPolyline(_it->points)));
+	else addScene(scene,i,LineicModelPtr(new Polyline(_it->points)));
 	i++;
   }
   return scene;
@@ -842,7 +842,7 @@ BranchCompressor::compress(real_t taux,
 			if(pts->getSize() == 2)
 			  addScene(scene, currentBranch,
 			  pts->getAt(0),pts->getAt(1));
-			else addScene(scene, currentBranch,LineicModelPtr(new GeomPolyline(pts)));
+			else addScene(scene, currentBranch,LineicModelPtr(new Polyline(pts)));
 			DataOut+=(3*pts->getSize()*sizeof(real_t));
 			DataRemind-=3*pts->getSize()*sizeof(real_t);
 			PR("Compressed at %d %\n\n",(100-(pts->getSize()*100/k)));
@@ -863,8 +863,8 @@ BranchCompressor::compress(real_t taux,
 		  if(MyVector->getSize() == 2)
 			addScene(scene, currentBranch,
 			MyVector->getAt(0),MyVector->getAt(1));
-		  else addScene(scene, currentBranch,LineicModelPtr(new GeomPolyline(MyVector)));
-		  // scene->pushBack(GeometryPtr(new GeomPolyline(MyVector)));
+		  else addScene(scene, currentBranch,LineicModelPtr(new Polyline(MyVector)));
+		  // scene->pushBack(GeometryPtr(new Polyline(MyVector)));
 		  DataOut+=(6*sizeof(real_t));
 		  DataRemind-=(6*sizeof(real_t));
 		}
@@ -994,12 +994,12 @@ BranchCompressor::interConnection(ScenePtr& scene){
     while(father > 0 && scene->getShapeId(father).isNull())
 		  father = graph[father];
 	if(father > 0){
-	  GeomShapePtr sh = GeomShapePtr::Cast(scene->getShapeId(id));
+	  ShapePtr sh = ShapePtr::Cast(scene->getShapeId(id));
 	  if(sh){
 		ExtrusionPtr ex = ExtrusionPtr::Cast(sh->getGeometry());
 		if(ex){
 		  if(ex->getAxis()->isExplicit()){
-			GeomPolylinePtr pol = GeomPolylinePtr::Cast(ex->getAxis());
+			PolylinePtr pol = PolylinePtr::Cast(ex->getAxis());
 			if(pol)pol->getPointList()->setAt(0,
 			  connectionTo(pol->getPointList()->getAt(0),scene,father));
 		  }
@@ -1075,7 +1075,7 @@ BranchCompressor::connectionTo(const Vector3& p,
   if(fid <= 0 ||scene.isNull()){
 	return p;
   }
-  GeomShapePtr sh = GeomShapePtr::Cast(scene->getShapeId(fid));
+  ShapePtr sh = ShapePtr::Cast(scene->getShapeId(fid));
   if(!sh) {
 	return p;
   }

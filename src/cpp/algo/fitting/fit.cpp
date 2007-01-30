@@ -38,28 +38,28 @@ extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
 #include "qhull3.0/src/qhull_a.h"
 
 
-#include "actn_fit.h"
+#include "fit.h"
 
 #include "GEOM/actn_printer.h"
 #include "GEOM/actn_discretizer.h"
 
-#include "GEOM/geom_scaled.h"
-#include "GEOM/geom_translated.h"
-#include "GEOM/geom_oriented.h"
-#include "GEOM/geom_cylinder.h"
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/translated.h>
+#include <scenegraph/transformation/oriented.h>
+#include <scenegraph/geometry/cylinder.h>
 #include "GEOM/geom_sphere.h"
 #include "GEOM/geom_triangleset.h"
 #include "GEOM/geom_extrudedhull.h"
 #include "GEOM/geom_asymmetrichull.h"
 #include "GEOM/geom_cone.h"
 #include "GEOM/geom_box.h"
-#include "GEOM/geom_frustum.h"
-#include "GEOM/geom_extrusion.h"
-#include "GEOM/geom_nurbscurve.h"
-#include "GEOM/geom_indexarray.h"
+#include <scenegraph/geometry/frustum.h>
+#include <scenegraph/geometry/extrusion.h>
+#include <scenegraph/geometry/nurbscurve.h>
+#include <scenegraph/container/indexarray.h>
 #include "util_propervector.h"
-#include "Tools/util_string.h"
-#include "Tools/dirnames.h"
+#include <tool/util_string.h>
+#include <tool/dirnames.h>
 #include "GEOM/util_matrixmath.h"
 
 #include "miniball/miniball.H"
@@ -69,7 +69,7 @@ extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
@@ -884,7 +884,7 @@ GeometryPtr Fit::frustum(){
 	}
 	else {
 	  if(__radius->getAt(0) == Vector2::ORIGIN && __radius->getAt(1) == Vector2::ORIGIN){
-		return GeometryPtr(new GeomPolyline(__pointstofit));
+		return GeometryPtr(new Polyline(__pointstofit));
 	  }
 	  else if (__radius->getAt(0) == Vector2::ORIGIN) {
 		if(v == Vector3::OX && w == Vector3::OY)
@@ -1000,10 +1000,10 @@ GeometryPtr Fit::frustum(){
 		  _crossSection->setAt(6,Vector2(6.55671e-08,-0.5));
 		  _crossSection->setAt(7,Vector2(0.353553,-0.353553));
 		  _crossSection->setAt(8,Vector2(0.5,0));
-		  __default_crossSection = Curve2DPtr(new GeomPolyline2D(_crossSection));
+		  __default_crossSection = Curve2DPtr(new Polyline2D(_crossSection));
 		  __default_crossSection->setName(string("Default_CrossSection"));
 		}
-		return GeometryPtr(new Extrusion(LineicModelPtr(new GeomPolyline(__pointstofit)),
+		return GeometryPtr(new Extrusion(LineicModelPtr(new Polyline(__pointstofit)),
 		  __default_crossSection,
 		  __radius));
 	  }
@@ -1157,7 +1157,7 @@ GeometryPtr Fit::asymmetricHull(){
 }
 
 
-double GEOM(findfactor)(double x, double r, double y, double h){
+double PGL(findfactor)(double x, double r, double y, double h){
     assert(r !=0 && h != 0);
 	if(x == 0 || y == 0)return 0;
 	if(x >= r || y >= h) return 0;
@@ -1231,13 +1231,13 @@ GeometryPtr Fit::extrudedHull(){
 
 	if(!vertical_profile||!horizontal_profile){
 	    if(vertical_profile) return GeometryPtr(new Oriented(Vector3::OX,Vector3::OZ,
-								 GeometryPtr(new GeomPolyline2D(vertical_profile))));
-	    else if(horizontal_profile) return GeometryPtr(new GeomPolyline2D(horizontal_profile));
+								 GeometryPtr(new Polyline2D(vertical_profile))));
+	    else if(horizontal_profile) return GeometryPtr(new Polyline2D(horizontal_profile));
 	    else return GeometryPtr(0);
 	}
 
-/*	return GeometryPtr(new ExtrudedHull(Curve2DPtr(new GeomPolyline2D(vertical_profile)),
-						Curve2DPtr(new GeomPolyline2D(horizontal_profile)),
+/*	return GeometryPtr(new ExtrudedHull(Curve2DPtr(new Polyline2D(vertical_profile)),
+						Curve2DPtr(new Polyline2D(horizontal_profile)),
 						ExtrudedHull::DEFAULT_CCW));
 */
 	    
@@ -1433,12 +1433,12 @@ GeometryPtr Fit::extrudedHull(){
 	}
 
 	if(_translation.x() < GEOM_EPSILON && _translation.y() < GEOM_EPSILON && _translation.z() < GEOM_EPSILON )
-	    return GeometryPtr(new ExtrudedHull(Curve2DPtr(new GeomPolyline2D(vertical_profile)),
-						Curve2DPtr(new GeomPolyline2D(horizontal_profile)),
+	    return GeometryPtr(new ExtrudedHull(Curve2DPtr(new Polyline2D(vertical_profile)),
+						Curve2DPtr(new Polyline2D(horizontal_profile)),
 						ExtrudedHull::DEFAULT_CCW));
 	else
-	    return GeometryPtr(new Translated(_translation,GeometryPtr(new ExtrudedHull(Curve2DPtr(new GeomPolyline2D(vertical_profile)),
-											Curve2DPtr(new GeomPolyline2D(horizontal_profile)),
+	    return GeometryPtr(new Translated(_translation,GeometryPtr(new ExtrudedHull(Curve2DPtr(new Polyline2D(vertical_profile)),
+											Curve2DPtr(new Polyline2D(horizontal_profile)),
 											ExtrudedHull::DEFAULT_CCW))));
 	
     }
@@ -1447,11 +1447,11 @@ GeometryPtr Fit::extrudedHull(){
 	topo->pushBack(Index3(0,1,2));
 	return GeometryPtr(new TriangleSet(__pointstofit,topo,true,
 					   true,true,
-					   GeomPolylinePtr(new GeomPolyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
+					   PolylinePtr(new Polyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
 	
     }
     else if(numpoints==2){
-	return GeometryPtr(new GeomPolyline(__pointstofit));
+	return GeometryPtr(new Polyline(__pointstofit));
     }
     else return GeometryPtr(0);
     
@@ -1578,18 +1578,18 @@ Fit::convexHull(){
   if(p_count==0)return GeometryPtr(0);
   pair<Point3Array::const_iterator,Point3Array::const_iterator> _skel = resulting_points->getZMinAndMax();
   return GeometryPtr(new TriangleSet(resulting_points,resulting_topo,true,true,true,
-                                     GeomPolylinePtr(new GeomPolyline(*(_skel.first),*(_skel.second)))));
+                                     PolylinePtr(new Polyline(*(_skel.first),*(_skel.second)))));
 
   }
   else if(numpoints==3){
       Index3ArrayPtr topo(new Index3Array());
       topo->pushBack(Index3(0,1,2));
       return GeometryPtr(new TriangleSet(__pointstofit,topo, true,true, true,
-                                         GeomPolylinePtr(new GeomPolyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
+                                         PolylinePtr(new Polyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
 
   }
   else if(numpoints==2){
-      return GeometryPtr(new GeomPolyline(__pointstofit));
+      return GeometryPtr(new Polyline(__pointstofit));
   }
   else return GeometryPtr(0);
 
@@ -1892,7 +1892,7 @@ GeometryPtr Fit::extrusion(){
 	_crossSection->setAt(6,Vector2(6.55671e-08,-0.5));
 	_crossSection->setAt(7,Vector2(0.353553,-0.353553));
 	_crossSection->setAt(8,Vector2(0.5,0));
-	__default_crossSection = Curve2DPtr(new GeomPolyline2D(_crossSection));
+	__default_crossSection = Curve2DPtr(new Polyline2D(_crossSection));
 	__default_crossSection->setName(string("Default_CrossSection"));
     }
     if(__pointstofit->getSize() < 2) return GeometryPtr(0);
@@ -1981,17 +1981,17 @@ GeometryPtr Fit::extrusion(){
 LineicModelPtr 
 Fit::nurbsCurve(){
   if(!__pointstofit){
-    cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
+    cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
     return LineicModelPtr(0);
   }
   if(__pointstofit->getSize()<6)
-    return LineicModelPtr(new GeomPolyline(__pointstofit));
+    return LineicModelPtr(new Polyline(__pointstofit));
   else {
 	LineicModelPtr line = leastSquares(__pointstofit,3,
 					 max(uint32_t(4),min(__pointstofit->getSize()/3,uint32_t(10))));
 	if(!line){
-	  cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : Error with leastSquares computation." << endl;
-	  return LineicModelPtr(new GeomPolyline(__pointstofit));
+	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : Error with leastSquares computation." << endl;
+	  return LineicModelPtr(new Polyline(__pointstofit));
 	}
 	NurbsCurvePtr nurbs;
 	if(nurbs.cast(line)){
@@ -2001,7 +2001,7 @@ Fit::nurbsCurve(){
 	  else return line;
 	}
 	else {
-	  cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : Error with computed object." << endl;
+	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : Error with computed object." << endl;
 	  return line;
 	}
   }
@@ -2009,17 +2009,17 @@ Fit::nurbsCurve(){
 
 LineicModelPtr Fit::nurbsCurve(const Point3ArrayPtr & Q, int degC, int n){
   if(!Q  || Q->getSize() < n ){
-	  cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Not enougth points (" << (Q?Q->getSize():0) << ") to fit with a Nurbs Curve." << endl;
+	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Not enougth points (" << (Q?Q->getSize():0) << ") to fit with a Nurbs Curve." << endl;
     return LineicModelPtr(0);
   }
   if(degC > n - 1 ){
-    cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Not enougth control points to fit a Nurbs Curve." << endl;
+    cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Not enougth control points to fit a Nurbs Curve." << endl;
     return LineicModelPtr(0);
   }
   LineicModelPtr line = leastSquares(Q,degC,n);
 	if(!line){
-	  cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : Error with leastSquares computation." << endl;
-	  return LineicModelPtr(new GeomPolyline(Q));
+	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : Error with leastSquares computation." << endl;
+	  return LineicModelPtr(new Polyline(Q));
 	}
 	NurbsCurvePtr nurbs;
 	if(nurbs.cast(line)){
@@ -2029,14 +2029,14 @@ LineicModelPtr Fit::nurbsCurve(const Point3ArrayPtr & Q, int degC, int n){
 	  else return line;
 	}
 	else {
-	  cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : Error with computed object." << endl;
+	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : Error with computed object." << endl;
 	  return line;
 	}
 }
 
 LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q, int degC, int n){
     if(!Q){
-      cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
+      cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
       return LineicModelPtr(0);
     }
 	real_t totalLength;
@@ -2073,7 +2073,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     int i,j;
     real_t d,a ;
     if(ub->getSize() != Q->getSize()){
-	cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate  Knot Vector." << endl;
+	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate  Knot Vector." << endl;
 	return LineicModelPtr(0);
     }
     RealArrayPtr U(new RealArray(n+degC+1,1.0));
@@ -2109,11 +2109,11 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     const uint32_t& m=Q->getSize() ;
 
     if(ub->getSize() != Q->getSize()){
-	cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate Knot Vector." << endl;
+	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate Knot Vector." << endl;
 	return LineicModelPtr(0);
     }
     if(knot->getSize() != (uint32_t)n+degC+1){
-	cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Knot Vector." << endl;
+	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Knot Vector." << endl;
 	return LineicModelPtr(0);
     }
 
@@ -2155,7 +2155,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 			a.x()*a.x()<GEOM_EPSILON && 
 			a.y()*a.y()<GEOM_EPSILON &&
 			a.z()*a.z()<GEOM_EPSILON){
-			cerr << "\x0d" <<get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Precision Error(" << GEOM_EPSILON << ") : " << a << endl;
+			cerr << "\x0d" <<get_filename(__FILE__) << ":" << __LINE__ << " : " << "Precision Error(" << GEOM_EPSILON << ") : " << a << endl;
 		return LineicModelPtr(0) ;
 		}
     }
@@ -2176,7 +2176,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 	}
 	DoubleArray2 Ns = N.get(1,1,m-2,n-2);
 	if(Ns.getSize() == 0){
-	    cerr << get_notdirname(__FILE__) << ":" << __LINE__ << " : " << "Error in getting sub-matrix." << endl;
+	    cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Error in getting sub-matrix." << endl;
 	    return LineicModelPtr(0);
 	}
 //	cerr << "Ns " << Ns.getRowsNb() <<"x" << Ns.getColsNb() <<" : " << Ns << endl;

@@ -45,13 +45,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "GEOM/geom_nurbscurve.h"
-#include "GEOM/appe_appearance.h"
-#include "GEOM/geom_pointarray.h" 
-#include "GEOM/scne_scene.h"
+#include "../algo_config.h"
+#include <scenegraph/geometry/nurbscurve.h>
+#include <scenegraph/appearance/appearance.h>
+#include <scenegraph/container/pointarray.h> 
+#include <scenegraph/scene/scene.h>
 #include <vector>
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 struct BranchInput {
   Point3ArrayPtr points;
@@ -61,7 +62,7 @@ struct BranchInput {
   int father;
 };
 
-class GEOM_API BranchCompressor {
+class ALGO_API BranchCompressor {
 public :
     static Curve2DPtr DEFAULT_CROSS_SECTION;
 	BranchCompressor();
@@ -107,8 +108,8 @@ private :
   void addScene(ScenePtr scene, int c_branch,
 				const TOOLS(Vector3)& p1,const TOOLS(Vector3)& p2) const;
 
-  void removeDouble(Point2ArrayPtr&,RealArrayPtr&) const;
-  bool isDefault(RealArrayPtr&) const;
+  void removeDouble(Point2ArrayPtr&,TOOLS(RealArrayPtr)&) const;
+  bool isDefault(TOOLS(RealArrayPtr)&) const;
 };
 
 /* ----------------------------------------------------------------------- */
@@ -126,6 +127,6 @@ fitt(const Point3ArrayPtr&  MyVector,
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif
