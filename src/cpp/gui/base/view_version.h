@@ -42,7 +42,7 @@
 #ifndef __view_version_h__
 #define __view_version_h__
 
-#include "view_config.h"
+#include "../gui_config.h"
 
 /// Viewer Version macro
 #define VIEWER_VERSION 2.0

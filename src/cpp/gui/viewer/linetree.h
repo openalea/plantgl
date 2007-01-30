@@ -45,7 +45,7 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
-#include "Tools/config.h"
+#include "../gui_config.h"
 
 class QVBoxLayout; 
 class QHBoxLayout; 
@@ -59,7 +59,7 @@ class QCheckBox;
 /* ----------------------------------------------------------------------- */
 
 /// A dialog widget to choose the files of a Linetree.
-class GEOM_API ViewReadLinetree : public QDialog
+class VIEW_API ViewReadLinetree : public QDialog
 { 
     Q_OBJECT
 	Q_PROPERTY(QString LigFile READ getLigFile WRITE setLigFile );

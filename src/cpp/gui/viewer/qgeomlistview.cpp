@@ -18,20 +18,16 @@
 #include <qpainter.h>
 #include <qlistview.h>
 
-#include "actn_qgeomlistview.h"
+#include "qgeomlistview.h"
 
-#include "all_appearance.h"
-#include "all_geometry.h"
-#include "all_scene.h"
-#include "all_container.h"
-#include "geom_profile.h"
+#include <pgl_scenegraph.h>
 
-#include <Tools/util_math.h>
-#include "view_icons.h"
+#include <math/util_math.h>
+#include "../base/icons.h"
 
 #include "util_qstring.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -376,9 +372,9 @@ void GeomListViewBuilder::addAttrNode(const QString& name,
 
 /* ----------------------------------------------------------------------- */
 
-bool GeomListViewBuilder::process(GeomShape * geomShape){
+bool GeomListViewBuilder::process(Shape * geomShape){
    addNode(geomShape,"Shape",1);
-   if(geomShape->getId() == GeomShape::NOID)addAttr("Id","None","");
+   if(geomShape->getId() == Shape::NOID)addAttr("Id","None","");
    else addAttr("Id",geomShape->getId());
    addAttrNode("Geometry",SceneObjectPtr(geomShape->geometry),"GeometryPtr");
    addAttrNode("Appearance",SceneObjectPtr(geomShape->appearance),"AppearancePtr");
@@ -781,7 +777,7 @@ bool GeomListViewBuilder::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( GeomPolyline * polyline ) {
+bool GeomListViewBuilder::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
 
   addNode(polyline,"Polyline");
@@ -982,7 +978,7 @@ bool GeomListViewBuilder::process( PointSet2D *  pointSet ) {
 
 
 
-bool GeomListViewBuilder::process( GeomPolyline2D * polyline  ) {
+bool GeomListViewBuilder::process( Polyline2D * polyline  ) {
   GEOM_ASSERT(polyline);
 
   addNode(polyline,"Polyline2D");

@@ -38,7 +38,15 @@
 #ifndef __view_threadedappli_h__
 #define __view_threadedappli_h__
 
-#ifdef QT_THREAD_SUPPORT
+#include "../gui_config.h"
+
+#ifndef QT_THREAD_SUPPORT
+#ifdef __GNUC__
+#warning "Qt compiled without openGL support"
+#else
+#pragma message "Qt compiled without openGL support"
+#endif
+#else
 
 #include "appli.h"
 #include "util_serializedobj.h"

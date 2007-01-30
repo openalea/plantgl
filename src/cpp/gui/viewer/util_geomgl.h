@@ -40,17 +40,17 @@
 #ifndef _util_geomgl_h_
 #define _util_geomgl_h_
 
-#include "view_glframe.h"
-#include "view_viewer.h"
-#include "scne_scene.h"
+#include "../base/glframe.h"
+#include "../base/viewer.h"
+#include <scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 
 /// Give the Scene \e scene to display at the ViewGLFrame \e frame
-GEOM_API const ViewGLFrame& operator<<(const ViewGLFrame& frame, const GEOM(ScenePtr) scene);
+VIEW_API const ViewGLFrame& operator<<(const ViewGLFrame& frame, const PGL(ScenePtr) scene);
 
 /// Give the Scene \e scene to display at the Viewer \e viewer
-GEOM_API const Viewer& operator<<(const Viewer& viewer, const GEOM(ScenePtr) scene);
+VIEW_API const Viewer& operator<<(const Viewer& viewer, const PGL(ScenePtr) scene);
 
 /* ----------------------------------------------------------------------- */
 

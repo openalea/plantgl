@@ -44,11 +44,21 @@
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef QT_THREAD_SUPPORT
+#include "../gui_config.h"
+
+#include "../gui_config.h"
+
+#ifndef QT_THREAD_SUPPORT
+#ifdef __GNUC__
+#warning "Qt compiled without openGL support"
+#else
+#pragma message "Qt compiled without openGL support"
+#endif
+#else
 
 #include <qthread.h>
 #include <qstring.h>
-#include "scne_scene.h"
+#include <scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -63,7 +73,7 @@ class ViewGeomSceneGL;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewGeomReader : public QThread
+class VIEW_API ViewGeomReader : public QThread
 {
 
     public :
@@ -106,7 +116,8 @@ class GEOM_API ViewGeomReader : public QThread
    \brief Create a new thread to read a geom stream
 
 */
-class GEOM_API ViewGeomStreamReader : public ViewGeomReader
+/*
+class VIEW_API ViewGeomStreamReader : public ViewGeomReader
 {
 
     public :
@@ -126,14 +137,14 @@ class GEOM_API ViewGeomStreamReader : public ViewGeomReader
     std::istream * __stream;
 };
 
-
+*/
 /* ----------------------------------------------------------------------- */
 /**
    \class ViewMultiGeomReader
    \brief Create a new thread to read a geom stream
 
 */
-class GEOM_API ViewMultiGeomReader : public ViewGeomReader
+class VIEW_API ViewMultiGeomReader : public ViewGeomReader
 {
 
     public :
@@ -167,7 +178,7 @@ class GEOM_API ViewMultiGeomReader : public ViewGeomReader
    \brief Create a new thread to read a linetree file
 
 */
-class GEOM_API ViewLinetreeReader : public  ViewGeomReader {
+class VIEW_API ViewLinetreeReader : public  ViewGeomReader {
     public :
 
       ViewLinetreeReader(const QString& ligFile,

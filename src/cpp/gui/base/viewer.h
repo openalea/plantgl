@@ -108,9 +108,11 @@ public:
   ~Viewer();
   
   /// Get the SceneRenderer.
-  ViewRendererGL * getSceneRenderer() const;
-  
+  ViewRendererGL * getSceneRenderer() const;  
   void setSceneRenderer(ViewRendererGL * s);
+
+  // Get the GL Frame
+  ViewGLFrame * getFrameGL() const { return __GLFrame; }
 
   // Save the view as a bitmap
   void saveImage( QString _filename, const char* _format, bool withAlpha = false );

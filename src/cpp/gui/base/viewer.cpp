@@ -77,7 +77,7 @@
 #include "interface/frameglsizedialog.h"
 
 #ifdef Q_WS_WIN
-#include "third_party/Qt/trayicon.h"
+#include "trayicon.h"
 #endif
 
 #include <tool/util_enviro.h>

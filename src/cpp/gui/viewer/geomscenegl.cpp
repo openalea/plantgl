@@ -35,23 +35,24 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_geomscenegl.h"
+#include "geomscenegl.h"
 
 /// Tools
-#include "Tools/util_string.h"
-#include "util_appegl.h"
+#include <tool/util_string.h>
+#include <algo/opengl/util_appegl.h>
 
 /// GEOM
-#include "scne_shape.h"
-#include "appe_appearance.h"
-#include "geom_explicitmodel.h"
-#include "actn_wirecomputer.h"
-#include "actn_tesselator.h"
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/appearance/appearance.h>
+#include <scenegraph/geometry/explicitmodel.h>
+#include <algo/base/wirecomputer.h>
+#include <algo/base/tesselator.h>
 
 /// Viewer
-#include "view_light.h"
-#include "view_camera.h"
-#include "view_geomevent.h"
+#include "../base/light.h"
+#include "../base/camera.h"
+
+#include "geomevent.h"
 
 /// Qt
 #include <qslider.h>
@@ -61,7 +62,7 @@
 #include <qclipboard.h>
 #include <qgl.h>
 
-#include "scne_parser.h"
+#include <algo/codec/scne_parser.h>
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef _DEBUG
@@ -69,7 +70,7 @@
 #endif
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
@@ -181,7 +182,7 @@ std::vector<uint32_t>
 ViewGeomSceneGL::getSelectionIds() const
 {
   std::vector<uint32_t> res;
-  for(hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  res.push_back(_it->second->getId());
   return res;
@@ -190,7 +191,7 @@ ViewGeomSceneGL::getSelectionIds() const
 uint32_t
 ViewGeomSceneGL::translateId(uint32_t id) const
 {
-    GeomShape3DPtr ptr;
+    Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->getBegin();
         _it != __scene->getEnd(); _it++){
       if( ptr.cast(*_it).isValid() && (ptr->SceneObject::getId() == id))
@@ -204,7 +205,7 @@ ScenePtr
 ViewGeomSceneGL::getSelection( ) const
 {
   ScenePtr scene(new Scene);
-  for(hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  scene->add(_it->second);
   return scene;
@@ -233,7 +234,7 @@ const BoundingBoxPtr
 ViewGeomSceneGL::getSelectionBoundingBox() 
 {
   BoundingBoxPtr bbox;
-  for(hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(__bboxComputer)){
 		if(bbox)bbox->extend(__bboxComputer.getBoundingBox());
@@ -471,7 +472,7 @@ ViewGeomSceneGL::paintGL()
       glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	  glGeomColor(Color3(64,64,64));
-      for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+      for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
           _it !=__selectedShapes.end(); _it++)
         _it->second->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
@@ -496,9 +497,9 @@ ViewGeomSceneGL::selectGL()
 void
 ViewGeomSceneGL::selectionEvent(uint32_t id)
 {
-  hash_map<uint32_t,GeomShape3DPtr>::iterator _it =__selectedShapes.find(id);
+  hash_map<uint32_t,Shape3DPtr>::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
-    GeomShape3DPtr ptr = _it->second;
+    Shape3DPtr ptr = _it->second;
 	__selectedShapes.erase(_it);
 	uint32_t _id = (ptr->getId() == 0?id:ptr->getId());
 	info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
@@ -507,7 +508,7 @@ ViewGeomSceneGL::selectionEvent(uint32_t id)
 	  + ") "+tr("unselected")+".",20000);
   }
   else {
-    GeomShape3DPtr ptr;
+    Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->getBegin();
         _it != __scene->getEnd(); _it++){
       if(ptr.cast(*_it).isValid() && 
@@ -528,7 +529,7 @@ ViewGeomSceneGL::selectionEvent(uint32_t id)
 void
 ViewGeomSceneGL::selectionEvent(const vector<uint32_t>& id)
 {
-  hash_map<uint32_t,GeomShape3DPtr>::iterator _it;
+  hash_map<uint32_t,Shape3DPtr>::iterator _it;
   uint32_t selected = 0;
   uint32_t unselected = 0;
   for(vector<uint32_t>::const_iterator _id = id.begin();_id != id.end();_id++){
@@ -538,7 +539,7 @@ ViewGeomSceneGL::selectionEvent(const vector<uint32_t>& id)
 	  unselected++;
 	}
 	else {
-	  GeomShape3DPtr ptr;
+	  Shape3DPtr ptr;
 	  for(Scene::iterator _it = __scene->getBegin();
 	  _it != __scene->getEnd(); _it++){
 		if(ptr.cast(*_it).isValid() && ptr->SceneObject::getId() == *_id){
@@ -579,7 +580,7 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint32_t>& id)
 	  for(Scene::const_iterator _it = __scene->getBegin() ; 
 					  _it != __scene->getEnd(); 
 					  _it++){
-		GeomShapePtr ptr = GeomShapePtr::Cast(*_it);
+		ShapePtr ptr = ShapePtr::Cast(*_it);
 		if(ptr.isValid() && ptr->getId() == *_id){
 		  __selectedShapes[ptr->SceneObject::getId()]=ptr;
 		  selected++;
@@ -615,7 +616,7 @@ ViewGeomSceneGL::selectionEvent(QListViewItem * item)
 		if((*_it)->getId() == 0){
 		  id = (*_it)->SceneObject::getId();
 		}
-		hash_map<uint32_t,GeomShape3DPtr>::iterator _it2 
+		hash_map<uint32_t,Shape3DPtr>::iterator _it2 
 		  =__selectedShapes.find(id);
 		if(_it2!=__selectedShapes.end()){
 		  __selectedShapes.erase(_it2);
@@ -669,7 +670,7 @@ ViewGeomSceneGL::keepSelectionOnly()
 	return;
   }
   GeomSceneChangeEvent * e = new GeomSceneChangeEvent(getSelection(),NULL,NULL);
-  hash_map<uint32_t,GeomShape3DPtr> selection = __selectedShapes;
+  hash_map<uint32_t,Shape3DPtr> selection = __selectedShapes;
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
@@ -684,10 +685,10 @@ ViewGeomSceneGL::wireSelection()
   }
   ScenePtr scene = getNotSelection();
   WireComputer wire(__discretizer);
-  hash_map<uint32_t,GeomShape3DPtr> selection;
-  for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+  hash_map<uint32_t,Shape3DPtr> selection;
+  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	GeomShapePtr sh = GeomShapePtr::Cast(_it->second);
+	ShapePtr sh = ShapePtr::Cast(_it->second);
 	if(sh){
 	  if(sh->apply(wire)){
 		sh->geometry = wire.getWire();
@@ -713,10 +714,10 @@ ViewGeomSceneGL::discretizeSelection()
 	return;
   }
   ScenePtr scene = getNotSelection();
-  hash_map<uint32_t,GeomShape3DPtr> selection;
-  for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+  hash_map<uint32_t,Shape3DPtr> selection;
+  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	GeomShapePtr sh = GeomShapePtr::Cast(_it->second);
+	ShapePtr sh = ShapePtr::Cast(_it->second);
 	if(sh){
 	  if(sh->apply(__discretizer)){
 		sh->geometry = GeometryPtr(__discretizer.getDiscretization());
@@ -743,10 +744,10 @@ ViewGeomSceneGL::triangulateSelection()
 	return;
   }
   ScenePtr scene = getNotSelection();
-  hash_map<uint32_t,GeomShape3DPtr> selection;
-  for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+  hash_map<uint32_t,Shape3DPtr> selection;
+  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	GeomShapePtr sh = GeomShapePtr::Cast(_it->second);
+	ShapePtr sh = ShapePtr::Cast(_it->second);
 	Tesselator t;
 	if(sh){
 	  if(sh->apply(t)){
@@ -886,7 +887,7 @@ ViewMultiGeomSceneGL::paintGL()
         __light->disable();
         glBlendFunc(GL_ONE,GL_ZERO);
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-        for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+        for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
             _it !=__selectedShapes.end(); _it++)
           _it->second->apply(__bboxRenderer);
       }

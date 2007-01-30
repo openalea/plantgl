@@ -37,14 +37,14 @@
  */
 
 
-#include <SceneGraph/Appearance/appe_material.h>
-#include <SceneGraph/Scene/scne_shape.h>
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/scene/shape.h>
 
-#include <Viewer/view_appbuilder.h>
+#include "../base/appbuilder.h"
 
-#include "view_pglapplication.h"
-#include "view_pglviewer.h"
-#include "view_geomevent.h"
+#include "pglapplication.h"
+#include "pglviewer.h"
+#include "geomevent.h"
 
 
 PGL_USING_NAMESPACE
@@ -59,14 +59,14 @@ PGLViewerApplication::~PGLViewerApplication(){}
 void
 PGLViewerApplication::display(const GeometryPtr& g){
   ScenePtr scene(new Scene());
-  scene->add(new Shape(g));
+  scene->add(Shape3DPtr(new Shape(g)));
   PGLViewerApplication::display(scene);
 }
 
 void
 PGLViewerApplication::add(const GeometryPtr& g){
   ScenePtr scene(new Scene());
-  scene->add(new Shape(g));
+  scene->add(Shape3DPtr(new Shape(g)));
   PGLViewerApplication::add(scene);
 }
 

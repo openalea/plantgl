@@ -24,10 +24,10 @@
 #define __actn_geomlistviewbuilder_h__
 
 
-#include "actn_action.h"
-#include "scne_sceneobject.h"
-// #include <Tools/util_vector.h>
-#include "geom_indexarray.h"
+#include "../gui_config.h"
+#include <scenegraph/core/action.h>
+#include <scenegraph/core/sceneobject.h>
+#include <scenegraph/container/indexarray.h>
 
 #include <qpixmap.h>
 #include <qstack.h>
@@ -50,7 +50,7 @@ class Vector4;
 
 TOOLS_END_NAMESPACE
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class Transform4;
 typedef RCPtr<Transform4> Transform4Ptr;
@@ -65,7 +65,7 @@ class Color4;
 */
 
 
-class GEOM_API GeomListViewBuilder : public Action
+class VIEW_API GeomListViewBuilder : public Action
 {
 
   public:
@@ -94,7 +94,7 @@ class GEOM_API GeomListViewBuilder : public Action
   
   /// @name Shape
   //@{
- virtual bool process(GeomShape * geomShape);
+ virtual bool process(Shape * geomShape);
 
   //@}
 
@@ -157,7 +157,7 @@ class GEOM_API GeomListViewBuilder : public Action
 
   virtual bool process( PointSet * pointSet );
 
-  virtual bool process( GeomPolyline * polyline );
+  virtual bool process( Polyline * polyline );
 
   virtual bool process( QuadSet * quadSet );
 
@@ -188,7 +188,7 @@ class GEOM_API GeomListViewBuilder : public Action
 
   virtual bool process( PointSet2D * pointSet );
 
-  virtual bool process( GeomPolyline2D * polyline );
+  virtual bool process( Polyline2D * polyline );
 
   virtual bool process( Text * text );
 
@@ -224,7 +224,7 @@ class GEOM_API GeomListViewBuilder : public Action
   void addAttr(const QString& name, const Transform4Ptr& value);
   void addAttrNode(const QString& name,const SceneObjectPtr& object,const QString& type );
   void addAttrPtr(const QString& name, const QString& value,const QString& type );
-  void addArrayAngle(const QString& name, const RealArrayPtr& _array);
+  void addArrayAngle(const QString& name, const TOOLS(RealArrayPtr)& _array);
   template <class T>
   void addArray(const QString& name, const T& _array, const QString& type);
   template <class T>
@@ -267,7 +267,7 @@ class GEOM_API GeomListViewBuilder : public Action
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __actn_geomlistviewbuilder_h__

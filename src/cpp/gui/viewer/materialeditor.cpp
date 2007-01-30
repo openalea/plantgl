@@ -40,7 +40,7 @@
  */
 
 
-#include "view_materialeditor.h"
+#include "materialeditor.h"
 
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -53,7 +53,7 @@
 #include <qfont.h>
 #include <qcolordialog.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
@@ -290,7 +290,7 @@ void ColorEditSlider::valueChangedEvent(int i){
  */
 
 MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, WFlags fl )
-    : GeomModuleEditor( parent, name, fl )
+    : GeomModuleEditor( parent,  fl )
 {
     if ( !name )
         setName( "MaterialEditor" );

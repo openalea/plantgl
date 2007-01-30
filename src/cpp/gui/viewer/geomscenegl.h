@@ -44,17 +44,18 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_modalscenegl.h"
-#include "scne_scene.h"
-#include "actn_discretizer.h"
-#include "actn_skelcomputer.h"
-#include "actn_bboxcomputer.h"
-#include "actn_glbboxrenderer.h"
-#include "actn_glrenderer.h"
-#include "actn_gltransitionrenderer.h"
-#include "actn_glskelrenderer.h"
-#include "actn_glctrlptrenderer.h"
-#include "Tools/util_hashmap.h"
+#include "../base/modalscenegl.h"
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/geometry/polyline.h>
+#include <algo/base/discretizer.h>
+#include <algo/base/skelcomputer.h>
+#include <algo/base/bboxcomputer.h>
+#include <algo/opengl/glbboxrenderer.h>
+#include <algo/opengl/glrenderer.h>
+#include <algo/opengl/gltransitionrenderer.h>
+#include <algo/opengl/glskelrenderer.h>
+#include <algo/opengl/glctrlptrenderer.h>
+#include <tool/util_hashmap.h>
 #include <vector>
 
 /* ----------------------------------------------------------------------- */
@@ -66,7 +67,7 @@ class QToolBar;
 /* ----------------------------------------------------------------------- */
 
 class ViewGeomReader;
-#include "util_qwidget.h"
+#include "../base/util_qwidget.h"
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -77,7 +78,7 @@ class ViewGeomReader;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ViewGeomSceneGL  : public ViewModalRendererGL
+class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
 {
   Q_OBJECT
 
@@ -124,29 +125,29 @@ class GEOM_API ViewGeomSceneGL  : public ViewModalRendererGL
   virtual void clearCache();
 
   /// Set the scene \b _scene to the frame and display.
-  int addScene( const GEOM(ScenePtr)& scene );
+  int addScene( const PGL(ScenePtr)& scene );
 
   /// Set the scene \b _scene to the frame and display.
-  int setScene( const GEOM(ScenePtr)& scene );
+  int setScene( const PGL(ScenePtr)& scene );
 
   /// Get the scene.
-  GEOM(ScenePtr) getScene( ) const;
+  PGL(ScenePtr) getScene( ) const;
 
   /// Get the scene. 
-  GEOM(ScenePtr) getSelection( ) const;
+  PGL(ScenePtr) getSelection( ) const;
 
   /// Get the scene. 
-  GEOM(ScenePtr) getNotSelection( ) const;
+  PGL(ScenePtr) getNotSelection( ) const;
 
   virtual std::vector<uint32_t> getSelectionIds() const;
   virtual uint32_t translateId(uint32_t) const;
 
   /// Get the global Bounding Box.
-  const GEOM(BoundingBoxPtr) getGlobalBoundingBox() const;
+  const PGL(BoundingBoxPtr) getGlobalBoundingBox() const;
 
-  const GEOM(BoundingBoxPtr) getSelectionBoundingBox() ;
+  const PGL(BoundingBoxPtr) getSelectionBoundingBox() ;
 
-  std::vector<std::pair<uint32_t,double> > getProjectionSizes(const GEOM(ScenePtr)&);
+  std::vector<std::pair<uint32_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
 
   /// Get the surface of the scene.
   real_t getSceneSurface();
@@ -193,7 +194,7 @@ class GEOM_API ViewGeomSceneGL  : public ViewModalRendererGL
   virtual bool open(const QString& filename);
 
   /// Try to open stream. Return true if ok.
-  virtual bool openStream(std::istream& stream);
+  // virtual bool openStream(std::istream& stream);
 
   /// Load the symbol of the file \b _filename.
   bool openAmapSymbol(const QString& filename,bool add=false);
@@ -225,7 +226,7 @@ class GEOM_API ViewGeomSceneGL  : public ViewModalRendererGL
   bool saveScene(const QString& shape,
 				 const QString& geom,
 				 const QString& mat,
-				 GEOM(ScenePtr) scene);
+				 PGL(ScenePtr) scene);
 
   /// Connect this to a GL Widget.
   virtual void connectTo(QGLWidget *);
@@ -324,34 +325,34 @@ protected :
   virtual void customEvent(QCustomEvent *); 
 
   /// The scene object (which contains all the geometric shape and appereance to display).
-  GEOM(ScenePtr) __scene;
+  PGL(ScenePtr) __scene;
 
   /// The Discretizer.
-  GEOM(Discretizer) __discretizer;
+  PGL(Discretizer) __discretizer;
 
   /// The Selection Renderer.
-  GEOM(GLRenderer) __renderer;
+  PGL(GLRenderer) __renderer;
 
   /// The Skeleton Computer.
-  GEOM(SkelComputer) __skelComputer;
+  PGL(SkelComputer) __skelComputer;
 
   /// The Bounding Box Computer.
-  GEOM(BBoxComputer) __bboxComputer;
+  PGL(BBoxComputer) __bboxComputer;
 
   /// The Skeleton Renderer.
-  GEOM(GLSkelRenderer) __skelRenderer;
+  PGL(GLSkelRenderer) __skelRenderer;
 
   /// The Bounding Box Renderer.
-  GEOM(GLBBoxRenderer) __bboxRenderer;
+  PGL(GLBBoxRenderer) __bboxRenderer;
 
   /// The Control Points Renderer.
-  GEOM(GLCtrlPointRenderer) __ctrlPtRenderer;
+  PGL(GLCtrlPointRenderer) __ctrlPtRenderer;
 
   /// The global Bounding Box.
-  GEOM(BoundingBoxPtr) __bbox;
+  PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
-  STDEXT::hash_map<uint32_t,GEOM(GeomShape3DPtr)> __selectedShapes;
+ STDEXT::hash_map<uint32_t,PGL(Shape3DPtr)> __selectedShapes;
 
 #ifdef QT_THREAD_SUPPORT
   /// Reader.
@@ -370,7 +371,7 @@ protected :
    \brief A GL Display Manager for Multiple Geom Scene.
 
 */
-class GEOM_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
+class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
 {
   Q_OBJECT
 
@@ -393,8 +394,8 @@ class GEOM_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
   virtual void clear();
 
   /// Set the scene \b _scene to the frame and display.
-  int setScene( const GEOM(ScenePtr)& scene1,
-                const GEOM(ScenePtr)& scene2 );
+  int setScene( const PGL(ScenePtr)& scene1,
+                const PGL(ScenePtr)& scene2 );
 
   /// Load the geom objects of the file \b _filename.
   bool openGeomFiles(const QString& filename1,
@@ -430,7 +431,7 @@ public slots:
 protected :
 
   /// The Transition Renderer.
-  GEOM(GLTransitionRenderer) __transitionRenderer;
+  PGL(GLTransitionRenderer) __transitionRenderer;
 
   /// Rendering a simple scene.
   bool __simpleScene;

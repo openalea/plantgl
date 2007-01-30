@@ -45,8 +45,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_event.h"
-#include "scne_scene.h"
+#include "../base/event.h"
+#include <scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -57,12 +57,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
+class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
   
   public :
     
   /// Constructor.
-  GeomSceneChangeEvent(GEOM(ScenePtr) scene, 
+  GeomSceneChangeEvent(PGL(ScenePtr) scene, 
 		       const QString& = QString::null, 
 		       const QString& _file = QString::null,
 			   bool add = false);
@@ -74,7 +74,7 @@ class GEOM_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
   virtual ViewSceneChangeEvent * copy();
 
   /// The scene to display.
-  GEOM(ScenePtr) scene;
+  PGL(ScenePtr) scene;
       
   /// The error message to display.
   QString error;
@@ -90,13 +90,13 @@ class GEOM_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
     \class GeomMultiSceneChangeEvent
     \brief Event for GEOM Scene Change using multiple scene.
 */
-class GEOM_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
+class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
   
   public :
     
   /// Constructor.
-  GeomMultiSceneChangeEvent(GEOM(ScenePtr) scene1, 
-			    GEOM(ScenePtr) scene2,
+  GeomMultiSceneChangeEvent(PGL(ScenePtr) scene1, 
+			    PGL(ScenePtr) scene2,
 			    const QString& errlog = QString::null, 
 			    const QString& file1 = QString::null,
 			    const QString& file2 = QString::null);
@@ -108,7 +108,7 @@ class GEOM_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
   virtual ViewSceneChangeEvent * copy();
 
   /// The scene to display.
-  GEOM(ScenePtr) scene2;
+  PGL(ScenePtr) scene2;
       
   /// File.
   QString file2;
@@ -122,13 +122,13 @@ class GeomProjListEvent : public ViewEvent {
 public :
 
   /// Constructor.
-	GeomProjListEvent(const GEOM(ScenePtr)& sc, std::vector<std::pair<uint32_t,double> > * res);
+	GeomProjListEvent(const PGL(ScenePtr)& sc, std::vector<std::pair<uint32_t,double> > * res);
 
   /// Destructor.
   ~GeomProjListEvent();
 
   std::vector<std::pair<uint32_t,double> > *  res;
-  GEOM(ScenePtr) objlist;
+  PGL(ScenePtr) objlist;
 };
 
 /* ----------------------------------------------------------------------- */

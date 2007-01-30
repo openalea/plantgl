@@ -35,25 +35,25 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_geomscenegl.h"
+#include "geomscenegl.h"
 
 
 /// GEOM
-#include "scne_shape.h"
-#include "geom_boundingbox.h"
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/geometry/boundingbox.h>
 
 /// Action
-#include "actn_surfcomputer.h"
-#include "actn_volcomputer.h"
-#include "actn_statisticcomputer.h"
-#include "actn_polygoncomputer.h"
-#include "actn_qgeomlistview.h"
+#include <algo/base/surfcomputer.h>
+#include <algo/base/volcomputer.h>
+#include <algo/base/statisticcomputer.h>
+#include <algo/base/polygoncomputer.h>
+#include "qgeomlistview.h"
 
 /// Viewer
 #include "util_qstring.h"
-#include "util_qwidget.h"
+#include "../base/util_qwidget.h"
 
-#include "Tools/util_string.h"
+#include <tool/util_string.h>
 
 /// Qt
 #include <qpopupmenu.h>
@@ -74,7 +74,7 @@
 #endif
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
@@ -108,7 +108,7 @@ ViewGeomSceneGL::getSelectionSurface()
   if(!__scene)return 0;
   SurfComputer _sfc(__discretizer);
   real_t surface = 0;
-  for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(_sfc))
 		surface += _sfc.getSurface();
@@ -120,7 +120,7 @@ real_t ViewGeomSceneGL::getSelectionVolume()
   if(!__scene)return 0;
   VolComputer _vfc(__discretizer);
   real_t volume = 0;
-  for(hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(_vfc))
 		volume += _vfc.getVolume();
@@ -321,7 +321,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
-	  hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+	  hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
 	  QString listid = QString::number(_it->second->getId()==0?_it->first:_it->second->getId());
 	  for(_it++;_it != __selectedShapes.end();_it++)
 			listid += ','+QString::number(_it->second->getId()==0?_it->first:_it->second->getId());

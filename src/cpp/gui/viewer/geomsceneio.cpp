@@ -35,37 +35,38 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_geomscenegl.h"
+#include "geomscenegl.h"
 
 /// Tools
-#include "Tools/util_string.h"
-#include "Tools/bfstream.h"
+#include <tool/util_string.h>
+#include <tool/bfstream.h>
 
 /// GEOM
-#include "scne_shape.h"
-#include "geom_amapsymbol.h"
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/geometry/amapsymbol.h>
 
 /// Action
-#include "actn_povprinter.h"
-#include "actn_plyprinter.h"
-#include "actn_vrmlprinter.h"
-#include "actn_vgstarprinter.h"
-#include "actn_binaryprinter.h"
-#include "actn_polygoncomputer.h"
-#include "actn_linetreeprinter.h"
-#include "ligfile.h"
-#include "vgsfile.h"
-#include "geomview_file.h"
+#include <algo/base/polygoncomputer.h>
+#include <algo/codec/povprinter.h>
+#include <algo/codec/plyprinter.h>
+#include <algo/codec/vrmlprinter.h>
+#include <algo/codec/vgstarprinter.h>
+#include <algo/codec/binaryprinter.h>
+#include <algo/codec/linetreeprinter.h>
+#include <algo/codec/ligfile.h>
+#include <algo/codec/vgsfile.h>
+#include <algo/codec/geomview_file.h>
 
 /// Viewer
-#include "view_light.h"
-#include "view_camera.h"
-#include "view_icons.h"
-#include "view_linetree.h"
-#include "view_filemanager.h"
-#include "view_reader.h"
-#include "view_glframe.h"
-#include "view_importselection.h"
+#include "../base/light.h"
+#include "../base/camera.h"
+#include "../base/icons.h"
+#include "../base/glframe.h"
+#include "../base/filemanager.h"
+
+#include "linetree.h"
+#include "reader.h"
+#include "interface/importselection.h"
 
 /// Qt
 #include <qlabel.h>
@@ -85,7 +86,7 @@
 #endif
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 /* ----------------------------------------------------------------------- */
@@ -260,7 +261,7 @@ ViewGeomSceneGL::open(const QString& filename)
           return false;
   }
 }
-
+/*
 bool
 ViewGeomSceneGL::openStream(std::istream& stream)
 {
@@ -291,7 +292,7 @@ ViewGeomSceneGL::openStream(std::istream& stream)
     return true;
 #endif
   return false;
-}
+}*/
 
 /* ----------------------------------------------------------------------- */
 
@@ -371,7 +372,7 @@ ViewGeomSceneGL::openVegeStarSymbol1(const QString& filename,bool add)
     if (_symbol->isValid()) {
 	  VegeStarFile::setShape11(_symbol);
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
 	  if(add){
 		addScene(scene);
 		return true;
@@ -403,7 +404,7 @@ ViewGeomSceneGL::openVegeStarSymbol2()
     if (_symbol->isValid()) {
 	  VegeStarFile::setShape12(_symbol);
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -426,7 +427,7 @@ ViewGeomSceneGL::openVegeStarSymbol3()
     if (_symbol->isValid()) {
 	  VegeStarFile::setShape13(_symbol);
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -439,7 +440,7 @@ void
 ViewGeomSceneGL::showVegeStarSymbol1(){
 	  GeometryPtr _symbol = VegeStarFile::getShape11();
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -450,7 +451,7 @@ ViewGeomSceneGL::showVegeStarSymbol1(){
 void
 ViewGeomSceneGL::setSelectionVegeStarSymbol1(){
   if(!__selectedShapes.empty()){
-	GeomShapePtr sh = GeomShapePtr::Cast(__selectedShapes.begin()->second);
+	ShapePtr sh = ShapePtr::Cast(__selectedShapes.begin()->second);
 	if(sh.isValid()&&sh->getGeometry().isValid())
 	  VegeStarFile::setShape11(sh->getGeometry());
   }
@@ -459,7 +460,7 @@ ViewGeomSceneGL::setSelectionVegeStarSymbol1(){
 void
 ViewGeomSceneGL::setSelectionVegeStarSymbol2(){
   if(!__selectedShapes.empty()){
-	GeomShapePtr sh = GeomShapePtr::Cast(__selectedShapes.begin()->second);
+	ShapePtr sh = ShapePtr::Cast(__selectedShapes.begin()->second);
 	if(sh.isValid()&&sh->getGeometry().isValid())
 	  VegeStarFile::setShape12(sh->getGeometry());
   }
@@ -468,7 +469,7 @@ ViewGeomSceneGL::setSelectionVegeStarSymbol2(){
 void
 ViewGeomSceneGL::setSelectionVegeStarSymbol3(){
   if(!__selectedShapes.empty()){
-	GeomShapePtr sh = GeomShapePtr::Cast(__selectedShapes.begin()->second);
+	ShapePtr sh = ShapePtr::Cast(__selectedShapes.begin()->second);
 	if(sh.isValid()&&sh->getGeometry().isValid())
 	  VegeStarFile::setShape13(sh->getGeometry());
   }
@@ -478,7 +479,7 @@ void
 ViewGeomSceneGL::showVegeStarSymbol2(){
 	  GeometryPtr _symbol = VegeStarFile::getShape12();
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -490,7 +491,7 @@ void
 ViewGeomSceneGL::showVegeStarSymbol3(){
 	  GeometryPtr _symbol = VegeStarFile::getShape13();
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -592,7 +593,7 @@ ViewGeomSceneGL::openAmapSymbol(const QString& filename,bool add)
     if (_symbol->isValid()) {
 
       ScenePtr scene(new Scene());
-      scene->add(GeomShape(_symbol,_material,0));
+      scene->add(Shape(_symbol,_material,0));
 	  if(add){
 		addScene(scene);
 		return true;
@@ -938,7 +939,7 @@ bool
 ViewGeomSceneGL::saveScene(const QString& shape,
 						   const QString& geom,
 						   const QString& mat,
-						   GEOM(ScenePtr) scene){
+						   PGL(ScenePtr) scene){
   if(shape.isEmpty())return false;
   QString extension=shape.right(shape.length()-shape.findRev('.')-1);
   extension= extension.upper();
@@ -1108,7 +1109,7 @@ ViewGeomSceneGL::saveAsVegeStar(const QString& filename)
 bool
 ViewGeomSceneGL::saveAsAmapSymbol(const QString& filename)
 {
-  GeomShape3DPtr shape = __scene->getAt(0);
+  Shape3DPtr shape = __scene->getAt(0);
   AmapTranslator translator(__discretizer);
   shape->apply(translator);
   AmapSymbolPtr result = translator.getSymbol();
@@ -1326,7 +1327,7 @@ ViewGeomSceneGL::exportFred()
 bool
 ViewGeomSceneGL::exportFred(const QString& filename)
 {
-/*  AsymmetricHullPtr asymmetricHull = AsymmetricHullPtr::Cast(GeomShapePtr::Cast(__scene->getAt(0))->getGeometry());
+/*  AsymmetricHullPtr asymmetricHull = AsymmetricHullPtr::Cast(ShapePtr::Cast(__scene->getAt(0))->getGeometry());
   if(!asymmetricHull)return false;
   const Vector3& _botPoint = asymmetricHull->getBottom();
   const Vector3& _topPoint = asymmetricHull->getTop();
@@ -1461,7 +1462,7 @@ ViewGeomSceneGL::exportFred(const QString& filename)
   AppearancePtr mat(new Material(Color3::BLACK));
   { 
 	for(uint32_t i = 0 ; i < _totalSlices + 1; i++){
-	  scene->add(GeomShape(new GeomPolyline(pointSet[i]),mat));
+	  scene->add(Shape(new Polyline(pointSet[i]),mat));
 	}
   }
   delete [] pointSet;

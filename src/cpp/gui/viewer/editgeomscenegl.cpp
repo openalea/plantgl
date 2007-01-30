@@ -35,31 +35,31 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_editgeomscenegl.h"
+#include "editgeomscenegl.h"
 
 
 /// GEOM
-#include "scne_shape.h"
-#include "scne_inline.h"
-#include "geom_boundingbox.h"
-#include "appe_material.h"
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/scene/inline.h>
+#include <scenegraph/geometry/boundingbox.h>
+#include <scenegraph/appearance/material.h>
 
 /// Action
-#include "actn_surfcomputer.h"
-#include "actn_volcomputer.h"
-#include "actn_statisticcomputer.h"
-#include "actn_polygoncomputer.h"
-#include "actn_qgeomlistview.h"
+#include <algo/base/surfcomputer.h>
+#include <algo/base/volcomputer.h>
+#include <algo/base/statisticcomputer.h>
+#include <algo/base/polygoncomputer.h>
+#include <algo/fitting/fit.h>
+#include "qgeomlistview.h"
 
 /// Viewer
+#include "../base/util_qwidget.h"
+#include "interface/approximation.h"
 #include "util_qstring.h"
-#include "util_qwidget.h"
-#include "Geomext/view_materialeditor.h"
-#include "Geomext/actn_fit.h"
-#include "view_approximation.h"
-#include "view_geomevent.h"
+#include "geomevent.h"
+#include "materialeditor.h"
 
-#include "Tools/util_string.h"
+#include <tool/util_string.h>
 
 /// Qt
 #include <qpopupmenu.h>
@@ -80,7 +80,7 @@
 #endif
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
@@ -115,7 +115,7 @@ ViewEditMatDialog::ViewEditMatDialog(QWidget * parent,
 }
 
 void 
-ViewEditMatDialog::setMaterial(GEOM(MaterialPtr) appe)
+ViewEditMatDialog::setMaterial(PGL(MaterialPtr) appe)
 {
   __appe = appe;
   __default = new Material(*appe);
@@ -123,7 +123,7 @@ ViewEditMatDialog::setMaterial(GEOM(MaterialPtr) appe)
 }
 
 void 
-ViewEditMatDialog::setClipboardMaterial(GEOM(AppearancePtr)* clipboard)
+ViewEditMatDialog::setClipboardMaterial(PGL(AppearancePtr)* clipboard)
 {
 	__clipboard = clipboard;
 }
@@ -265,12 +265,12 @@ ViewEditGeomSceneGL::dissociateMaterial()
   }
   mat = MaterialPtr(new Material(*(mat)));
   mat->setName("APP_"+number(mat->getId()));
-  for( STDEXT::hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for( STDEXT::hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
 	   _it !=__selectedShapes.end(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(_it->second);
+	ShapePtr shape = ShapePtr::Cast(_it->second);
 	if(shape)shape->getAppearance() = mat;
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(_it->second);
+	  InlinePtr in = InlinePtr::Cast(_it->second);
 	  if(in){
 		setAppearance(in->getScene(),AppearancePtr(mat));
 	  }
@@ -284,10 +284,10 @@ void ViewEditGeomSceneGL::setAppearance(ScenePtr scene,AppearancePtr appe) const
 {
   if(!scene)return;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(*_it);
+	ShapePtr shape = ShapePtr::Cast(*_it);
 	if(shape) shape->appearance = appe;
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(*_it);
+	  InlinePtr in = InlinePtr::Cast(*_it);
 	  if(in)setAppearance(in->getScene(),appe);
 	}
   }
@@ -298,12 +298,12 @@ ViewEditGeomSceneGL::hasSameMaterial(ScenePtr scene,AppearancePtr appe) const
 {
   if(scene.isNull() ||appe.isNull())return true;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(*_it);
+	ShapePtr shape = ShapePtr::Cast(*_it);
 	if(shape.isValid()){
 	  if(shape->getAppearance() != appe)return false;
 	}
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(*_it);
+	  InlinePtr in = InlinePtr::Cast(*_it);
 	  if(in){
 		if(!hasSameMaterial(in->getScene(),appe))return false;
 	  }
@@ -318,14 +318,14 @@ ViewEditGeomSceneGL::hasSameMaterial() const
 {
   AppearancePtr mat = getSelectedAppearance();
   if(!mat)return false;
-  for(STDEXT::hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(STDEXT::hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(_it->second);
+	ShapePtr shape = ShapePtr::Cast(_it->second);
 	if(shape.isValid()){
 	  if(shape->getAppearance() != mat)return false;
 	}
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(_it->second);
+	  InlinePtr in = InlinePtr::Cast(_it->second);
 	  if(in){
 		if(!hasSameMaterial(in->getScene(),mat))return false;
 	  }
@@ -342,14 +342,14 @@ ViewEditGeomSceneGL::getSelectedAppearance() const
 	if (__scene->getSize() == 1) return getSelectedAppearance(__scene);
 	return NULL;
   }
-  for(STDEXT::hash_map<uint32_t,GeomShape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(STDEXT::hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
     _it !=__selectedShapes.end(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(_it->second);
+	ShapePtr shape = ShapePtr::Cast(_it->second);
 	if(shape) {
 	  if(shape->getAppearance())return shape->getAppearance();
 	}
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(_it->second);
+	  InlinePtr in = InlinePtr::Cast(_it->second);
 	  if(in){
 		AppearancePtr appe = getSelectedAppearance(in->getScene());
 		if(appe)return appe;
@@ -364,12 +364,12 @@ ViewEditGeomSceneGL::getSelectedAppearance(ScenePtr scene) const
 {
   if(scene.isNull() || scene->isEmpty()) return NULL;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(*_it);
+	ShapePtr shape = ShapePtr::Cast(*_it);
 	if(shape) {
 	  if(shape->getAppearance())return shape->getAppearance();
 	}
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(*_it);
+	  InlinePtr in = InlinePtr::Cast(*_it);
 	  if(in){
 		AppearancePtr appe = getSelectedAppearance(in->getScene());
 		if(appe)return appe;
@@ -405,12 +405,12 @@ ViewEditGeomSceneGL::pasteMaterial(){
 	  tr("At least one shape must be selected to paste material."),1,0,0);
   }
   
-  for( hash_map<uint32_t,GeomShape3DPtr>::iterator _it = __selectedShapes.begin();
+  for( hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
-	GeomShapePtr shape = GeomShapePtr::Cast(_it->second);
+	ShapePtr shape = ShapePtr::Cast(_it->second);
 	if(shape)shape->getAppearance() = __appeclipboard;
 	else {
-	  GeomInlinePtr in = GeomInlinePtr::Cast(_it->second);
+	  InlinePtr in = InlinePtr::Cast(_it->second);
 	  setAppearance(in->getScene(),__appeclipboard);
 	}
   }
@@ -530,7 +530,7 @@ ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
 	  else newscene->merge(getSelection());
 	}
   }
-  newscene->add(GeomShape(result,AppearancePtr(new Material(*__matmacro))));
+  newscene->add(Shape(result,AppearancePtr(new Material(*__matmacro))));
   GeomSceneChangeEvent * e = new GeomSceneChangeEvent(newscene,NULL,NULL);
   QApplication::postEvent(this,e);
 

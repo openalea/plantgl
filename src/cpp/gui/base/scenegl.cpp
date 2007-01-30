@@ -326,6 +326,13 @@ ViewRendererGL::clear()
   }
 }
 
+/// Get the global Bounding Box.
+const PGL(BoundingBoxPtr) 
+ViewRendererGL::getGlobalBoundingBox() const
+{
+	return new PGL(BoundingBox)(Vector3(-1,-1,-1),Vector3(1,1,1));
+}
+
 
 /* ----------------------------------------------------------------------- */
 

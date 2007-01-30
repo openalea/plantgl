@@ -45,7 +45,7 @@
 
 
 #include "pgl_geometry.h"
-#include "pgl_transformed.h"
+#include "pgl_transformation.h"
 #include "pgl_appearance.h"
 #include "pgl_container.h"
 #include "pgl_scene.h"

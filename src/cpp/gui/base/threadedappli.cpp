@@ -36,10 +36,12 @@
  */
 
 
+
+#include "threadedappli.h"
+
 #ifdef QT_THREAD_SUPPORT
 
 #include <qapplication.h>
-#include "threadedappli.h"
 #include "viewer.h"
 #include "event.h"
 #include <tool/dirnames.h>

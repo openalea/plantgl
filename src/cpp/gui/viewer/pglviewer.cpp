@@ -43,16 +43,16 @@
 
 
 
-#include "view_pglviewer.h"
-#include "view_editgeomscenegl.h"
-#include "view_geomevent.h"
+#include "pglviewer.h"
+#include "editgeomscenegl.h"
+#include "geomevent.h"
 
 /* ----------------------------------------------------------------------- */
 
 
   /// Constructor.
-PGLViewer::PGLViewer(  QWidget * parent, Qt::WindowFlags f ):
-	Viewer(parent,new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
+PGLViewer::PGLViewer(  QWidget * parent, WFlags f ):
+	Viewer(parent,"",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
 {
 }
 
@@ -70,7 +70,7 @@ PGLViewer::~PGLViewer()
 void PGLViewer::changeScene( const PGL(ScenePtr)& s )
 {
   GeomSceneChangeEvent k( s );
-  __GLFrame->getSceneRenderer()->sceneChangeEvent( &k );
+  getSceneRenderer()->sceneChangeEvent( &k );
 }
 
 

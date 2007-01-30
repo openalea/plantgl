@@ -36,10 +36,10 @@
 
 #include "util_geomgl.h"
 #include <qapplication.h>
-#include "view_geomevent.h"
-#include "view_scenegl.h"
+#include "geomevent.h"
+#include "../base/scenegl.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 const ViewGLFrame& operator<<(const ViewGLFrame& frame, const ScenePtr scene)
 {

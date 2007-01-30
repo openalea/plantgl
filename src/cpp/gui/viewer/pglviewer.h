@@ -47,9 +47,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "viewpgl_config.h"
-#include <Viewer/view_viewer.h>
-#include <SceneGraph/Scene/scne_scene.h>
+#include "../gui_config.h"
+#include "../base/viewer.h"
+#include <scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,12 +60,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-class VIEWPGL_API PGLViewer : public Viewer
+class VIEW_API PGLViewer : public Viewer
 {
 public:
    
   /// Constructor.
-  PGLViewer(  QWidget * parent = 0, Qt::WindowFlags f = 0 );
+  PGLViewer(  QWidget * parent = 0, WFlags f = 0 );
 
   /// Constructor.
   PGLViewer( int argc, char ** argv );

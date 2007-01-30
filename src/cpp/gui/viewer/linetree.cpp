@@ -34,10 +34,10 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "view_linetree.h"
-#include "actn_linetreeprinter.h"
-#include "ligfile.h"
-#include "Tools/util_enviro.h"
+#include "linetree.h"
+#include <algo/codec/linetreeprinter.h>
+#include <algo/codec/ligfile.h>
+#include <tool/util_enviro.h>
 
 #include <qfiledialog.h>
 #include <qlabel.h>
@@ -164,7 +164,7 @@ ViewReadLinetree::ViewReadLinetree( bool open,
     pal.setDisabled( cg );
     editKey->setProperty( "palette", pal );
     editKey->setEchoMode(QLineEdit::Password);
-    if(!open)editKey->setText(GEOM(LinetreePrinter)::PROTECTION.c_str());
+    if(!open)editKey->setText(PGL(LinetreePrinter)::PROTECTION.c_str());
     QObject::connect( editKey,SIGNAL(textChanged(const QString&)),this,SLOT(checkKey(const QString&)));
 	DblClickEater * dblCkEater = new DblClickEater(editKey);
     labelKey->installEventFilter( dblCkEater );
@@ -248,7 +248,7 @@ QString ViewReadLinetree::getKey() const{
 
 void ViewReadLinetree::resetKey(){
         labelKey->setText("Key : [AMAPmod]");
-        editKey->setText(GEOM(LinetreePrinter)::PROTECTION.c_str());
+        editKey->setText(PGL(LinetreePrinter)::PROTECTION.c_str());
 }
 
 void ViewReadLinetree::checkKey(const QString&){
@@ -268,7 +268,7 @@ void ViewReadLinetree::checkKey(){
 		t[80] = '\0';
 		QString key = t;
 		editKey->setText( key );
-		if(key == GEOM(LinetreePrinter)::PROTECTION.c_str()){
+		if(key == PGL(LinetreePrinter)::PROTECTION.c_str()){
 		  labelKey->setText("Key : [AMAPmod]");
 		}
 		else {
@@ -283,7 +283,7 @@ void ViewReadLinetree::checkKey(){
 	}
   }
   else {
-	if(editKey->text() == GEOM(LinetreePrinter)::PROTECTION.c_str()){
+	if(editKey->text() == PGL(LinetreePrinter)::PROTECTION.c_str()){
 	  labelKey->setText("Key : [AMAPmod]");
 	}
 	else {
@@ -417,7 +417,7 @@ void ViewReadLinetree::SelectSMBPath(){
 void ViewReadLinetree::testEndianess(){
 	bool bigendian = true;
 	if(!editLig->text().isEmpty()){
-		if(!GEOM(Ligfile::isBigEndian(editLig->text().latin1())))
+		if(!PGL(Ligfile::isBigEndian(editLig->text().latin1())))
 			bigendian = false;
 	}
 	qWarning(QString("Endianess : ")+(bigendian?"Big Endian":"Little Endian"));

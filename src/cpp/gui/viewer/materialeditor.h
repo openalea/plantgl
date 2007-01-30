@@ -47,11 +47,11 @@
 #ifndef MATERIALEDITOR_H
 #define MATERIALEDITOR_H
 
-#include "GEOM/appe_material.h"
-#include "GEOM/appe_appearance.h"
-#include "GEOM/actn_discretizer.h"
-#include "GEOM/actn_glrenderer.h"
-#include "view_editor.h"
+#include <scenegraph/appearance/material.h>
+#include <algo/base/discretizer.h>
+#include <algo/opengl/glrenderer.h>
+#include "moduleeditor.h"
+
 #include <qvariant.h>
 #include <qwidget.h>
 #include <qpushbutton.h>
@@ -66,7 +66,7 @@ class QLineEdit;
 
 /*----------------------------------------------------------------------------*/
 
-class GEOM_API ViewColorGL : public QGLWidget
+class VIEW_API ViewColorGL : public QGLWidget
 { 
     Q_OBJECT
 
@@ -74,7 +74,7 @@ public:
 
   ViewColorGL( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, WFlags f=0 );
   virtual ~ViewColorGL();
-  void setAppearance(const GEOM(AppearancePtr)& mat);
+  void setAppearance(const PGL(AppearancePtr)& mat);
   
   
 protected:
@@ -96,14 +96,14 @@ protected:
   GLfloat __lightpos[4];
   GLfloat __lightmodel[4];
   GLfloat __xmin,__xmax,__ymin,__ymax;
-  GEOM(AppearancePtr) __M;
-  GEOM(Discretizer) __d;
-  GEOM(GLRenderer) __r;
+  PGL(AppearancePtr) __M;
+  PGL(Discretizer) __d;
+  PGL(GLRenderer) __r;
 };
 
 /*----------------------------------------------------------------------------*/
 
-class GEOM_API ColorButton : public QPushButton
+class VIEW_API ColorButton : public QPushButton
 { 
     Q_OBJECT
 
@@ -120,7 +120,7 @@ public slots :
   QColor __color;
 };
 
-class GEOM_API ColorEditButton : public ColorButton
+class VIEW_API ColorEditButton : public ColorButton
 { 
     Q_OBJECT
 
@@ -138,7 +138,7 @@ signals:
 
 /*----------------------------------------------------------------------------*/
 
-class GEOM_API ColorEditSlider : public QSlider
+class VIEW_API ColorEditSlider : public QSlider
 { 
     Q_OBJECT
 
@@ -164,7 +164,7 @@ protected:
 
 /*----------------------------------------------------------------------------*/
 
-class GEOM_API MaterialEditor : public GeomModuleEditor
+class VIEW_API MaterialEditor : public GeomModuleEditor
 { 
     Q_OBJECT
 
@@ -188,21 +188,21 @@ public:
      Must return true if \e this can manage the edition, else false.
      Must recopy the object.
   */
-  virtual bool setGeomObject(GEOM(SceneObjectPtr) obj);
+  virtual bool setGeomObject(PGL(SceneObjectPtr) obj);
 
   /// Edit a new object.
   virtual void newObj();
 
   /// Ask object before saving.
-  virtual GEOM(SceneObjectPtr) getGeomObject();
+  virtual PGL(SceneObjectPtr) getGeomObject();
 
     /// Get the Material
-    const GEOM(MaterialPtr) & getMaterial() const{
+    const PGL(MaterialPtr) & getMaterial() const{
       return __material;
     }
     
     /// Set the Material
-    void setMaterial(const GEOM(MaterialPtr)& );
+    void setMaterial(const PGL(MaterialPtr)& );
       
     QLabel* LabelAmbient;
     QLabel* LabelDiffuse;
@@ -248,7 +248,7 @@ public slots:
 protected:
   bool event( QEvent* );
   
-  GEOM(MaterialPtr) __material;
+  PGL(MaterialPtr) __material;
   int __diffuse;
 };
 

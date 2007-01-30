@@ -78,10 +78,10 @@
 #include "helpmenu.h"
 #include "info.h"
 #include "qobjectbrowser.h"
-// #include "pgl_viewer.h"
 
-
+#include "view_version.h"
 #include <scenegraph/pgl_version.h>
+#include <tool/tools_version.h>
 
 #include <algo/codec/scne_scanner.h>
 #include <algo/codec/binaryprinter.h>
@@ -294,7 +294,7 @@ ViewHelpMenu::generalInfo()
   QListViewItem * itemF = a.addItem(tr("Geom Library"));
   QListViewItem *item = new QListViewItem( itemF );
   item->setText( 0, tr( "Version" ) );
-  text2 = getGeomVersionString();
+  text2 = getPGLVersionString();
   item->setText( 1, QString(text2.c_str()) );
   item = new QListViewItem( itemF, item );
   item->setText( 0, tr( "Binary Format Version" ) );
@@ -415,7 +415,7 @@ QDialog ( parent, name, modal,
     "Y. Caraglio, F. Danjon";
   if(__style)setInfo(message,QRect(240,190,180,height()-210),7); 
   
-  QString message2 =  "Version "+QString(getGeomVersionString().c_str())+
+  QString message2 =  "Version "+QString(getPGLVersionString().c_str())+
     "\nDate : " __DATE__;
   if(__style)setInfo(message2, QRect(20,220,95,40),7);
   else setInfo(message2, QRect(5,height()-45,80,40),6);

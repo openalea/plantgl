@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "viewpgl_config.h"
-#include <Viewer/view_application.h>
-#include <SceneGraph/Scene/scne_scene.h>
-#include <SceneGraph/Geometry/geom_geometry.h>
-#include <Tools/util_vector.h>
+#include "../gui_config.h"
+#include "../base/application.h"
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/geometry/geometry.h>
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -62,7 +62,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-class VIEWPGL_API PGLViewerApplication : public ViewerApplication {
+class VIEW_API PGLViewerApplication : public ViewerApplication {
 
 public :
 

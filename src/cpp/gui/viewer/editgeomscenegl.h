@@ -44,14 +44,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "view_geomscenegl.h"
-#include "util_qwidget.h"
-#include "appe_material.h"
+#include "geomscenegl.h"
+#include "../base/util_qwidget.h"
+#include <scenegraph/appearance/material.h>
 
 
 class MaterialEditor;
 
-class GEOM_API  ViewEditMatDialog : public ViewDialog {
+class VIEW_API  ViewEditMatDialog : public ViewDialog {
   Q_OBJECT
 
 public :
@@ -61,9 +61,9 @@ public :
 					WFlags f=0);
   ~ViewEditMatDialog(){};
 
-  void setMaterial(GEOM(MaterialPtr) appe);
-  void setClipboardMaterial(GEOM(AppearancePtr)* clipboard);
-  const GEOM(MaterialPtr)& getMaterial() const
+  void setMaterial(PGL(MaterialPtr) appe);
+  void setClipboardMaterial(PGL(AppearancePtr)* clipboard);
+  const PGL(MaterialPtr)& getMaterial() const
   { return __appe; }
 
 signals:
@@ -80,9 +80,9 @@ public slots:
 protected:
 
   MaterialEditor * __matedit;
-  GEOM(MaterialPtr) __appe;
-  GEOM(MaterialPtr) __default;
-  GEOM(AppearancePtr)* __clipboard;
+  PGL(MaterialPtr) __appe;
+  PGL(MaterialPtr) __default;
+  PGL(AppearancePtr)* __clipboard;
 };
 
 
@@ -93,7 +93,7 @@ protected:
    \brief A GL Display Manager for Geom Scene that can edit material.
 
 */
-class GEOM_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
+class VIEW_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
 {
   Q_OBJECT
 
@@ -114,12 +114,12 @@ class GEOM_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
   virtual void clear();
 
   bool hasSameMaterial() const;
-  bool hasSameMaterial(GEOM(ScenePtr),GEOM(AppearancePtr)) const;
-  GEOM(AppearancePtr) getSelectedAppearance() const;
-  GEOM(AppearancePtr) getSelectedAppearance(GEOM(ScenePtr)) const;
+  bool hasSameMaterial(PGL(ScenePtr),PGL(AppearancePtr)) const;
+  PGL(AppearancePtr) getSelectedAppearance() const;
+  PGL(AppearancePtr) getSelectedAppearance(PGL(ScenePtr)) const;
   /// Add Edit Entries
   virtual bool addEditEntries(QPopupMenu * menu);
-  void setAppearance(GEOM(ScenePtr) scene,GEOM(AppearancePtr) appe) const;
+  void setAppearance(PGL(ScenePtr) scene,PGL(AppearancePtr) appe) const;
 
 public slots:
   void editMaterial();
@@ -132,7 +132,7 @@ public slots:
 protected:
 
   /// The clipboard for appearance.
-  GEOM(AppearancePtr) __appeclipboard;
+  PGL(AppearancePtr) __appeclipboard;
   ViewEditMatDialog * __mateditor;
 
 };
@@ -140,7 +140,7 @@ protected:
 /* ----------------------------------------------------------------------- */
 class ViewApproximationForm;
 
-class GEOM_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
+class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
 {
   Q_OBJECT
 
@@ -172,7 +172,7 @@ protected:
   ViewApproximationForm * __appform;
 
   /// The clipboard for appearance.
-  GEOM(MaterialPtr) __matmacro;
+  PGL(MaterialPtr) __matmacro;
 };
 
 /* ----------------------------------------------------------------------- */

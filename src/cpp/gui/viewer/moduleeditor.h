@@ -1,8 +1,8 @@
 #ifndef _GEOM_MODULEEDITOR_H_
 #define _GEOM_MODULEEDITOR_H_
 
-#include "viewpgl_config.h"
-#include <SceneGraph/Core/scne_sceneobject.h>
+#include "../gui_config.h"
+#include <scenegraph/core/sceneobject.h>
 #include <qwidget.h>
 
 class QMenuBar;
@@ -14,15 +14,15 @@ class QMainWindow;
     \brief Abstract Class for Module Edition.
 */
 
-class VIEWPGL_API GeomModuleEditor : public QWidget
+class VIEW_API GeomModuleEditor : public QWidget
 {
 
   Q_OBJECT
 
 public:
   /// Constructor.
-	GeomModuleEditor( QWidget* parent = 0, Qt::WindowFlags fl = 0 ) :
-    QWidget( parent , fl ){
+	GeomModuleEditor( QWidget* parent = 0, WFlags f = 0 ) :
+    QWidget( parent , "" , f ){
   }
 
   /// Destructor.

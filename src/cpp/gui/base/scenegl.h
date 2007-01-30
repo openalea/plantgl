@@ -47,7 +47,9 @@
 #include "object.h"
 #include "glframe.h"
 #include <tool/util_types.h>
+#include <scenegraph/geometry/boundingbox.h>
 #include <qdatetime.h>
+
 /* ----------------------------------------------------------------------- */
 
 #include <iostream>
@@ -170,6 +172,9 @@ public :
   virtual std::vector<uint32_t> getSelectionIds() const;
 
   virtual uint32_t translateId(uint32_t) const;
+
+  /// Get the global Bounding Box.
+  virtual const PGL::BoundingBoxPtr getGlobalBoundingBox() const;
 
 public slots:
 
