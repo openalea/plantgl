@@ -45,31 +45,40 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/rcobject.h"
-#include "geom_namespace.h"
+#include <tool/rcobject.h>
+
+#include "../sg_config.h"
+#include <scenegraph/container/geometryarray2.h>
+
 #ifndef GEOM_FWDEF
-#include "geom_geometryarray2.h"
-#include "geom_pointarray.h"
-#include "geom_transformed.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/transformation/transformed.h>
 #endif
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
+
+#ifdef GEOM_FWDEF
+class RealArray;
+typedef RCPtr<RealArray> RealArrayPtr;
+#endif
+
+TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+PGL_BEGIN_NAMESPACE
+
 #ifdef GEOM_FWDEF
-class Curve2DArray;
-class CurveArray;
+// class Curve2DArray;
+// class CurveArray;
 class Point2Array;
 class Point3Array;
-class RealArray;
 class Transformation2D;
-typedef RCPtr<Curve2DArray> Curve2DArrayPtr;
-typedef RCPtr<CurveArray> CurveArrayPtr;
+// typedef RCPtr<Curve2DArray> Curve2DArrayPtr;
+// typedef RCPtr<CurveArray> CurveArrayPtr;
 typedef RCPtr<Point2Array> Point2ArrayPtr;
 typedef RCPtr<Point3Array> Point3ArrayPtr;
-typedef RCPtr<RealArray> RealArrayPtr;
 typedef RCPtr<Transformation2D> Transformation2DPtr;
 #endif
 
@@ -82,7 +91,7 @@ typedef RCPtr<Transformation2D> Transformation2DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ProfileTransformation : public TOOLS(RefCountObject) {
+class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
 
     public :
 
@@ -90,19 +99,19 @@ class GEOM_API ProfileTransformation : public TOOLS(RefCountObject) {
   static const Point2ArrayPtr DEFAULT_SCALE_LIST;
 
   /// The Default OrientationList Field Value.
-  static const RealArrayPtr DEFAULT_ORIENTATION_LIST;
+  static const TOOLS(RealArrayPtr) DEFAULT_ORIENTATION_LIST;
 
     /// Constructs a ProfileScaling with default value.
     ProfileTransformation();
 
     /// Constructs a ProfileScaling.
     ProfileTransformation(Point2ArrayPtr _scalingList,
-                          RealArrayPtr _orientationList,
-                          RealArrayPtr _knotList );
+                          TOOLS(RealArrayPtr) _orientationList,
+                          TOOLS(RealArrayPtr) _knotList );
 
     /// Constructs a ProfileScaling.
     ProfileTransformation(Point2ArrayPtr _scalingList,
-                          RealArrayPtr _orientationList);
+                          TOOLS(RealArrayPtr) _orientationList);
 
     /// Destructor
     virtual ~ProfileTransformation( ) ;
@@ -120,19 +129,19 @@ class GEOM_API ProfileTransformation : public TOOLS(RefCountObject) {
     const Point2ArrayPtr& getScale() const;
 
     /// Return the Orientation Factor List value.
-    const RealArrayPtr& getOrientation() const;
+    const TOOLS(RealArrayPtr)& getOrientation() const;
 
     /// Return the Scaling Factor List field.
     Point2ArrayPtr& getScale();
 
     /// Return the Orientation Factor List field.
-    RealArrayPtr& getOrientation();
+    TOOLS(RealArrayPtr)& getOrientation();
 
     /// Return the KnotList Factor List value.
-    const RealArrayPtr getKnotList() const;
+    const TOOLS(RealArrayPtr) getKnotList() const;
 
     /// Return the KnotList Factor List field.
-    RealArrayPtr& getKnotList();
+    TOOLS(RealArrayPtr)& getKnotList();
 
     /// return whether KnotList is set to its default value.
     const bool isKnotListToDefault() const;
@@ -146,10 +155,10 @@ class GEOM_API ProfileTransformation : public TOOLS(RefCountObject) {
     Point2ArrayPtr __scalingList;
 
     /// A pointee to the \b Orientation \b List field.
-    RealArrayPtr  __orientationList;
+    TOOLS(RealArrayPtr)  __orientationList;
 
     /// The \b knotsList field.
-    RealArrayPtr __knotList;
+    TOOLS(RealArrayPtr) __knotList;
 
 };
 
@@ -171,7 +180,7 @@ typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ProfileInterpolation : public TOOLS(RefCountObject)
+class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
 {
   public :
 
@@ -189,7 +198,7 @@ class GEOM_API ProfileInterpolation : public TOOLS(RefCountObject)
     Curve2DArrayPtr* ProfileList;
 
     /// The \b knotsList field.
-    RealArrayPtr* KnotList;
+    TOOLS(RealArrayPtr)* KnotList;
 
     /// The \b degree field
     uint32_t* Degree;
@@ -216,7 +225,7 @@ class GEOM_API ProfileInterpolation : public TOOLS(RefCountObject)
 
   /// Constructs Profiles Interpolant.
   ProfileInterpolation( Curve2DArrayPtr _profileList,
-                        RealArrayPtr _knotList,
+                        TOOLS(RealArrayPtr) _knotList,
                         uint32_t _degree= DEFAULT_DEGREE,
                         uint32_t _stride= DEFAULT_STRIDE );
 
@@ -240,10 +249,10 @@ class GEOM_API ProfileInterpolation : public TOOLS(RefCountObject)
   virtual Curve2DArrayPtr& getProfileList( );
 
   /// Return the Knot List value.
-  virtual const RealArrayPtr& getKnotList() const;
+  virtual const TOOLS(RealArrayPtr)& getKnotList() const;
 
   /// Return the KnotList field.
-  RealArrayPtr& getKnotList();
+  TOOLS(RealArrayPtr)& getKnotList();
 
   /// Return whether KnotList is set to its default value.
   virtual bool isKnotListToDefault() const;
@@ -281,7 +290,7 @@ class GEOM_API ProfileInterpolation : public TOOLS(RefCountObject)
   Curve2DArrayPtr __profileList;
 
   /// The \b knotsList field.
-  RealArrayPtr __knotList;
+  TOOLS(RealArrayPtr) __knotList;
 
   /// The stride field
   uint32_t __stride;
@@ -309,7 +318,7 @@ typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 // __geom_profile_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

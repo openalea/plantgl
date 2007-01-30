@@ -38,12 +38,12 @@
 
 
 
-#include "actn_action.h"
-#include "all_scene.h"
-#include "geom_geometry.h"
-#include "appe_appearance.h"
+#include "action.h"
+#include "pgl_scene.h"
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/appearance/appearance.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,16 +67,16 @@ bool Action::endProcess(){
 
 /* ----------------------------------------------------------------------- */
 
-bool Action::process(GeomShape * geomShape){
-    GEOM_ASSERT(geomShape);
-    bool b=geomShape->geometry->apply(*this);
-    return ( b && (geomShape->appearance->apply(*this)));
+bool Action::process(Shape * Shape){
+    GEOM_ASSERT(Shape);
+    bool b=Shape->geometry->apply(*this);
+    return ( b && (Shape->appearance->apply(*this)));
 }
 
-bool Action::process(GeomInline * geomInline){
-    GEOM_ASSERT(geomInline);
-    if(geomInline->getScene())
-	return geomInline->getScene()->applyGeometryFirst(*this);
+bool Action::process(Inline * Inline){
+    GEOM_ASSERT(Inline);
+    if(Inline->getScene())
+	return Inline->getScene()->applyGeometryFirst(*this);
     return false;
 }
 

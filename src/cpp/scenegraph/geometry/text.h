@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_geometry.h"
-#include "Tools/util_vector.h"
+#include "geometry.h"
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Font : public SceneObject
+class SG_API Font : public SceneObject
 {
   public:
   /// A structure which helps to build a Text when parsing. 
@@ -157,7 +157,7 @@ typedef RCPtr<Font> FontPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Text : public Geometry
+class SG_API Text : public Geometry
 {
 
 public:
@@ -267,7 +267,7 @@ typedef RCPtr<Text> TextPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif // __geom_text_h__

@@ -36,7 +36,7 @@
 
 
 /*! \file scne_shape.h
-    \brief Definition of the scene class GeomShape3D and GeomShape.
+    \brief Definition of the scene class Shape3D and Shape.
 */
 
 
@@ -45,29 +45,20 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "scne_sceneobject.h"
+#include <scenegraph/core/sceneobject.h>
 
-#ifndef GEOM_FWDEF
-#include "geom_geometry.h"
-#endif
-#include "appe_material.h"
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/appearance/material.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-
-#ifdef GEOM_FWDEF
-class Geometry;
-typedef RCPtr<Geometry> GeometryPtr;
-#endif
-
-/* ------------------------------------------------------------------------- */
 
 /**
-    \class GeomShape3D
-    \brief A GeomShape is composed of a Geometry object and an Appearance object.
+    \class Shape3D
+    \brief A Shape is composed of a Geometry object and an Appearance object.
       There is an optional id to identy the shape. We use it when
       building a Scene from AMAPmod to store the id of the corresponding
       Vertex.
@@ -75,11 +66,11 @@ typedef RCPtr<Geometry> GeometryPtr;
 
 /* ------------------------------------------------------------------------- */
 
-class GEOM_API GeomShape3D : public SceneObject
+class SG_API Shape3D : public SceneObject
 {
 public:
 
-  /** A structure which helps to build a GeomShape3D when parsing.
+  /** A structure which helps to build a Shape3D when parsing.
       Fields are normally allocated while parsing and are free when the
       object is contructed using the member \c destroy. */
 
@@ -98,10 +89,10 @@ public:
     };
 
   /// Default constructor.
-  GeomShape3D( ) ;
+  Shape3D( ) ;
 
   /// Destructor
-  virtual ~GeomShape3D() ;
+  virtual ~Shape3D() ;
 
 
   /** Applies the action \e action to \e self.
@@ -125,23 +116,23 @@ public:
     virtual bool applyAppearanceOnly( Action& action ) = 0;
 
     /// Prints \e s to the output stream \e stream.
-//    friend ostream& operator<<( ostream& stream, GeomShape3D& s );
+//    friend ostream& operator<<( ostream& stream, Shape3D& s );
 
 }; // class Shape3D
 
-/// GeomShape3D Pointer
-typedef RCPtr<GeomShape3D> GeomShape3DPtr;
+/// Shape3D Pointer
+typedef RCPtr<Shape3D> Shape3DPtr;
 
 /* ------------------------------------------------------------------------- */
 
 /**
-    \class GeomShape
-    \brief A GeomShape is composed of a Geometry object and an Appearance object.
+    \class Shape
+    \brief A Shape is composed of a Geometry object and an Appearance object.
       There is an optional id to identy the shape. We use it when
       building a Scene from AMAPmod to store the id of the corresponding
       Vertex.
 */
-class GEOM_API GeomShape : public GeomShape3D
+class SG_API Shape : public Shape3D
 {
 
 public:
@@ -150,7 +141,7 @@ public:
       Fields are normally allocated while parsing and are free when the
       object is contructed using the member \c destroy. */
 
-    struct Builder : public GeomShape3D::Builder {
+    struct Builder : public Shape3D::Builder {
 
             /// A constructor. It inits all the pointers to null.
             Builder( );
@@ -183,23 +174,23 @@ public:
   static const uint32_t NOID;
 
   /// Default constructor.
-  GeomShape( );
+  Shape( );
 
   /** Constructs a Shape with the Geometry \e _geom, the Appearance
       \e _app and the id \e _id. */
-  GeomShape( const GeometryPtr& _geom,
+  Shape( const GeometryPtr& _geom,
              const AppearancePtr& _app = Material::DEFAULT_MATERIAL,
              uint32_t _id=NOID);
 
   /** Constructs a Shape with the Geometry \e _geom, the Appearance
       \e _app and the id \e _id. */
-  GeomShape( const std::string&   name,
+  Shape( const std::string&   name,
 		 const GeometryPtr&   geom,
 	     const AppearancePtr& app = Material::DEFAULT_MATERIAL,
          uint32_t id = NOID );
 
   /// Destructor
-  virtual ~GeomShape();
+  virtual ~Shape();
 
   /// Set computed names to \e self , geometry and apperance.
   void setComputedName();
@@ -248,10 +239,10 @@ public:
   /// The identification id of \e self.
   uint32_t id;
 
-}; // class GeomShape
+}; // class Shape
 
-/// GeomShape Pointer
-typedef RCPtr<GeomShape> GeomShapePtr;
+/// Shape Pointer
+typedef RCPtr<Shape> ShapePtr;
 
 
 /* ------------------------------------------------------------------------- */
@@ -259,10 +250,7 @@ typedef RCPtr<GeomShape> GeomShapePtr;
 // __geom_geometry_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
-
-/// Write the GeomShape3D \b s in \b stream.
-GEOM_API std::ostream& operator<<( std::ostream& stream, GEOM(GeomShape3D&) s );
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

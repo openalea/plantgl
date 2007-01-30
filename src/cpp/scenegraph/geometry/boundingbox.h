@@ -45,9 +45,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/util_vector.h"
-#include "Tools/rcobject.h"
-#include "geom_namespace.h"
+#include <math/util_vector.h>
+#include <tool/rcobject.h>
+#include "../sg_config.h"
 #include <iostream>
 
 /* ----------------------------------------------------------------------- */
@@ -59,7 +59,7 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,7 +73,7 @@ typedef RCPtr<BoundingBox> BoundingBoxPtr;
     \brief An axis aligned box represented by 2 opposing corners.
 */
 
-class GEOM_API BoundingBox : public TOOLS(RefCountObject)
+class SG_API BoundingBox : public TOOLS(RefCountObject)
 {
 
 public:
@@ -280,25 +280,25 @@ public:
   void scale(const TOOLS(Vector3)& t);
 
   /// Returns the addition of \e b1 and \e b2.
-  friend GEOM_API BoundingBox operator+( const BoundingBox& b1, const BoundingBox& b2);
+  friend SG_API BoundingBox operator+( const BoundingBox& b1, const BoundingBox& b2);
 
   /// Returns the addition of \e b1 and \e v2.
-  friend GEOM_API BoundingBox operator+( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+  friend SG_API BoundingBox operator+( const BoundingBox& b1, const TOOLS(Vector3)& v2);
 
   /// Returns the addition of \e b1 and \e b2.
-  friend GEOM_API BoundingBox operator|( const BoundingBox& b1, const BoundingBox& b2);
+  friend SG_API BoundingBox operator|( const BoundingBox& b1, const BoundingBox& b2);
 
   /// Returns the addition of \e b1 and \e v2.
-  friend GEOM_API BoundingBox operator|( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+  friend SG_API BoundingBox operator|( const BoundingBox& b1, const TOOLS(Vector3)& v2);
 
   /// Returns the intersection of \e b1 and \e b2.
-  friend GEOM_API BoundingBox operator&( const BoundingBox& b1, const BoundingBox& b2);
+  friend SG_API BoundingBox operator&( const BoundingBox& b1, const BoundingBox& b2);
 
   /// Returns whether \e b1 intersect \e b2.
-  friend GEOM_API bool intersection( const BoundingBox& b1, const BoundingBox& b2) ;
+  friend SG_API bool intersection( const BoundingBox& b1, const BoundingBox& b2) ;
 
   /// Returns whether \e b1 intersect \e v2.
-  friend GEOM_API bool intersection( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+  friend SG_API bool intersection( const BoundingBox& b1, const TOOLS(Vector3)& v2);
 
 protected:
 
@@ -316,10 +316,10 @@ typedef RCPtr<BoundingBox> BoundingBoxPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write BoundingBox \b b to \b stream.
-GEOM_API std::ostream& operator<<( std::ostream& stream, GEOM(BoundingBox&) b );
+SG_API std::ostream& operator<<( std::ostream& stream, PGL(BoundingBox&) b );
 
 /* ----------------------------------------------------------------------- */
 // __geom_bbox_h__

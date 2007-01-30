@@ -38,18 +38,18 @@
 
 
 
-#include "geom_group.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "geom_geometryarray2.h"
-#include "geom_polyline.h"
-GEOM_USING_NAMESPACE
+#include "group.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <scenegraph/container/geometryarray2.h>
+#include "polyline.h"
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 
-const GeomPolylinePtr Group::DEFAULT_SKELETON;
+const PolylinePtr Group::DEFAULT_SKELETON;
 
 
 /* ----------------------------------------------------------------------- */
@@ -121,7 +121,7 @@ Group::Group() :
 }
 
 Group::Group( const GeometryArrayPtr& geometryList,
-              const GeomPolylinePtr& skeleton ) :
+              const PolylinePtr& skeleton ) :
   Geometry(),
   __geometryList(geometryList),
   __skeleton(skeleton) {
@@ -165,12 +165,12 @@ Group::getGeometryListSize( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-const GeomPolylinePtr& 
+const PolylinePtr& 
 Group::getSkeleton( ) const {
   return __skeleton;
 }
 
-GeomPolylinePtr& 
+PolylinePtr& 
 Group::getSkeleton( ){
   return __skeleton;
 }
@@ -222,7 +222,7 @@ bool Group::isExplicit( ) const {
 bool Group::isValid( ) const {
   Builder _builder;
   _builder.GeometryList = const_cast<GeometryArrayPtr *>(&__geometryList);
-  _builder.Skeleton = const_cast<GeomPolylinePtr *>(&__skeleton);
+  _builder.Skeleton = const_cast<PolylinePtr *>(&__skeleton);
   if(!_builder.isValid())return false;
   uint32_t _size = __geometryList->getSize();
   for (uint32_t _i = 0; _i < _size ; _i++) {

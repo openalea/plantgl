@@ -45,11 +45,11 @@
 
 /* ------------------------------------------------------------------------- */
 
-#include "geom_primitive.h"
+#include "primitive.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 
@@ -60,7 +60,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API ParametricModel : public virtual Primitive
+class SG_API ParametricModel : public virtual Primitive
 {
 
 public:
@@ -96,7 +96,7 @@ typedef RCPtr<ParametricModel> ParametricModelPtr;
 // __geom_parametricmodel_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -46,9 +46,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_namespace.h"
+#include "../sg_config.h"
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,8 +58,8 @@ GEOM_BEGIN_NAMESPACE
 
 // Shape
 
-class GeomShape;
-class GeomInline;
+class Shape;
+class Inline;
 
 // Material
 class Material;
@@ -89,7 +89,7 @@ class NurbsPatch;
 class Oriented;
 class Paraboloid;
 class PointSet;
-class GeomPolyline;
+class Polyline;
 class QuadSet;
 class Revolution;
 class Swung;
@@ -104,7 +104,7 @@ class BezierCurve2D;
 class Disc;
 class NurbsCurve2D;
 class PointSet2D;
-class GeomPolyline2D;
+class Polyline2D;
 
 
 // Text
@@ -119,7 +119,7 @@ class Text;
    \brief A action which can be applied on \e SceneObject objects.
 */
 
-class GEOM_API Action
+class SG_API Action
 {
 
 public:
@@ -141,18 +141,18 @@ public:
 
   //@}
 
-  /// @name GeomShape
+  /// @name Shape
   //@{
 
-  /** Applies \e self to an object of type of GeomShape.
+  /** Applies \e self to an object of type of Shape.
       \warning
-      - \e geomShape must be non null and valid. */
-  virtual bool process(GeomShape * geomShape);
+      - \e Shape must be non null and valid. */
+  virtual bool process(Shape * Shape);
 
-  /** Applies \e self to an object of type of GeomInline .
+  /** Applies \e self to an object of type of Inline .
       \warning
-      - \e geomInline must be non null and valid. */
-  virtual bool process(GeomInline * geomInline);
+      - \e Inline must be non null and valid. */
+  virtual bool process(Inline * Inline);
 
   //@}
 
@@ -290,10 +290,10 @@ public:
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet * pointSet ) = 0;
 
-  /** Applies \e self to an object of type GeomPolyline.
+  /** Applies \e self to an object of type Polyline.
       \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline * polyline ) = 0;
+  virtual bool process( Polyline * polyline ) = 0;
 
   /** Applies \e self to an object of type QuadSet.
       \warning
@@ -360,10 +360,10 @@ public:
       - \e pointSet must be non null and valid. */
   virtual bool process( PointSet2D * pointSet ) = 0;
 
-  /** Applies \e self to an object of type GeomPolyline2D.
+  /** Applies \e self to an object of type Polyline2D.
       \warning
       - \e polyline must be non null and valid. */
-  virtual bool process( GeomPolyline2D * polyline ) = 0;
+  virtual bool process( Polyline2D * polyline ) = 0;
   //@}
 
   /** Applies \e self to an object of type Text.
@@ -383,7 +383,7 @@ public:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __action_h__

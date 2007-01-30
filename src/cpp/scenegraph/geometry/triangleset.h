@@ -45,19 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_mesh.h"
-#include "Tools/util_vector.h"
-#include "geom_indexarray.h"
+#include "mesh.h"
+#include <math/util_vector.h>
+#include <scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-/*typedef TOOLS(Uint32_tTuple3) Index3;
-class Index3Array;
-typedef RCPtr<Index3Array> Index3ArrayPtr;*/
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,7 +62,7 @@ typedef RCPtr<Index3Array> Index3ArrayPtr;*/
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API TriangleSet : public Mesh
+class SG_API TriangleSet : public Mesh
 {
 
 public:
@@ -121,7 +115,7 @@ public:
 			   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
 			   bool ccw = DEFAULT_CCW,
 			   bool solid = DEFAULT_SOLID,
-			   const GeomPolylinePtr& skeleton = DEFAULT_SKELETON );
+			   const PolylinePtr& skeleton = DEFAULT_SKELETON );
 
 
   /** Constructs a TriangleSet with the points \e points, the triangles 
@@ -149,7 +143,7 @@ public:
 			   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
 			   bool CCW = DEFAULT_CCW,
 			   bool solid = DEFAULT_SOLID,
-			   const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+			   const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
   /// Destructor
   virtual ~TriangleSet( );
@@ -335,7 +329,7 @@ typedef RCPtr<TriangleSet> TriangleSetPtr;
 // __geom_triangleset_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

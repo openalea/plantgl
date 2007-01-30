@@ -44,13 +44,13 @@
 #define __appe_material_h__
 
 
-#include "appe_appearance.h"
-#include "appe_color.h"
+#include "appearance.h"
+#include "color.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 
 
-class GEOM_API Material : public Appearance
+class SG_API Material : public Appearance
 {
 
 public:
@@ -240,7 +240,7 @@ typedef RCPtr<Material> MaterialPtr;
 // __appe_material_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

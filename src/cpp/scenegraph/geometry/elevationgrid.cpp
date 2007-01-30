@@ -38,13 +38,13 @@
 
 
 
-#include "geom_elevationgrid.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
-#include "geom_pointmatrix.h"
-#include "util_array2.h"
-GEOM_USING_NAMESPACE
+#include "elevationgrid.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <tool/util_array2.h>
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 

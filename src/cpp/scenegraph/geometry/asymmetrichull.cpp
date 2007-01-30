@@ -37,11 +37,11 @@
 
 
 
-#include "geom_asymmetrichull.h"
-#include "util_messages.h"
-#include "Tools/util_math.h"
+#include "asymmetrichull.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

@@ -37,8 +37,9 @@
 
 
 
-#include "geom_indexarray.h"
-GEOM_USING_NAMESPACE
+#include "indexarray.h"
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

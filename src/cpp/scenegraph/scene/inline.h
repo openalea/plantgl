@@ -36,7 +36,7 @@
 
 
 /*! \file scne_inline.h
-    \brief Definition of the scene class GeomInline.
+    \brief Definition of the scene class Inline.
 */
 
 
@@ -45,15 +45,16 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "scne_shape.h"
-#include "Tools/util_vector.h"
+#include "shape.h"
+#include <math/util_vector.h>
+#include <string>
+
 #ifndef GEOM_FWDEF
-#include "scne_scene.h"
-#include "geom_boundingbox.h"
+#include "scene.h"
 #endif
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,28 +62,32 @@ GEOM_BEGIN_NAMESPACE
 #ifdef GEOM_FWDEF
 class Scene;
 typedef RCPtr<Scene> ScenePtr;
-class BoundingBox;
-typedef RCPtr<BoundingBox> BoundingBoxPtr;
 #endif
 
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class GeomInline
+   \class Inline
    \brief A 3D Scene represented by a list of objects
    of type of Shape which are positionned and .
 */
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API GeomInline : public GeomShape3D{
+class SG_API Inline : public Shape3D {
 
 public:
 
-  /** A structure which helps to build a GeomInline when parsing.
+	// The default translation value
+	static const TOOLS(Vector3) DEFAULT_TRANSLATION;
+
+	// The default scaling value
+	static const TOOLS(Vector3) DEFAULT_SCALE;
+
+  /** A structure which helps to build a Inline when parsing.
       Fields are normally allocated while parsing and are free when the
       object is contructed using the member \c destroy. */
-    struct Builder : public GeomShape3D::Builder {
+    struct Builder : public Shape3D::Builder {
 
             /// A constructor. It inits all the pointers to null.
             Builder( );
@@ -107,43 +112,20 @@ public:
 	    /// A pointer to the \b Scene field.
 	    ScenePtr * Scene;
 	    
-	    /// A pointer to the \b BBoxCenter field.
-	    TOOLS(Vector3) * BBoxCenter;
+	    /// A pointer to the \b Translation field.
 	    TOOLS(Vector3) * Translation;
 	    
-	    /// A pointer to the \b BBoxSize field.
-	    TOOLS(Vector3) * BBoxSize;
+	    /// A pointer to the \b Scale field.
 	    TOOLS(Vector3) * Scale;
     };
 
-  /// Default constructor.
-  GeomInline(const std::string& filename);
-
   /// Constructor.
-  GeomInline(const std::string& filename, const TOOLS(Vector3)& bboxCenter);
-
-
-  /// Constructor.
-  GeomInline(const TOOLS(Vector3)& bboxSize, const std::string& filename);
-
-  /// Constructor.
-  GeomInline(const std::string& filename, const TOOLS(Vector3)& bboxCenter, const TOOLS(Vector3)& bboxSize);
-
-  /// Constructor.
-  GeomInline(const ScenePtr& scene);
-
-  /// Constructor.
-  GeomInline(const ScenePtr& scene, const TOOLS(Vector3)& bboxCenter);
-
-
-  /// Constructor.
-  GeomInline(const TOOLS(Vector3)& bboxSize, const ScenePtr& scene);
-
-  /// Constructor.
-  GeomInline(const ScenePtr& scene, const TOOLS(Vector3)& bboxCenter, const TOOLS(Vector3)& bboxSize);
+  Inline(const std::string& filename, 
+		 const TOOLS(Vector3)& translation = DEFAULT_TRANSLATION, 
+		 const TOOLS(Vector3)& size = DEFAULT_SCALE);
 
   /// Destructor.
-  virtual ~GeomInline();
+  virtual ~Inline();
 
   /// Returns whether \e self is valid.
   virtual bool isValid( ) const;
@@ -165,69 +147,52 @@ public:
   /// Return FileName value.
   const std::string& getFileName() const;
 
-  /// Return BBox Center value.
-  const TOOLS(Vector3) getBBoxCenter() const;
-
-  /// Return whether BBox Center has default value.
-  bool isBBoxCenterToDefault() const;
-
-  /// Return BBox Size value.
-  const TOOLS(Vector3) getBBoxSize() const;
-
-    /// Return whether BBox Size has default value.
-  bool isBBoxSizeToDefault() const ;
-
   /// Return Sub Scene value.
-  const ScenePtr& getScene() const;
-
-  /// Initialize Bounding Box value if none is specified.
-  void initBBox();
-
-
-  /// Return the Real Bouding Box of the Scene.
-  const BoundingBoxPtr& getRealBBox() const;
+  inline const ScenePtr& getScene() const { return __scene; }
 
   /// Return the translation value.
-  TOOLS(Vector3) getTranslation() const;
+  inline const TOOLS(Vector3)& getTranslation() const { return __translation; }
 
   /// Return the Scale value.
-  TOOLS(Vector3) getScale() const;
+  inline const TOOLS(Vector3)& getScale() const { return __scale; }
     
-  /// set the translation value.
-  void setTranslation(const TOOLS(Vector3)&) ;
-  
-  /// set the Scale value.
-  void setScale(const TOOLS(Vector3)&) ;
+  /// Return the translation value.
+  inline TOOLS(Vector3)& getTranslation() { return __translation; }
+
+  /// Return the Scale value.
+  inline TOOLS(Vector3)& getScale() { return __scale; }
     
+  /// Tell whether Translation value is to default
+  inline bool isTranslationToDefault() const { return __translation == DEFAULT_TRANSLATION; }
+
+  /// Tell whether Scale value is to default
+  inline bool isScaleToDefault() const { return __scale == DEFAULT_SCALE; }
+
+  /// set a default name to \e this
+  void setDefaultName();
+
 protected :
 
   /// The file name
   std::string __filename;
 
-  /// The center of the bouding box
-  TOOLS(Vector3) __bboxCenter;
+  /// The translation
+  TOOLS(Vector3) __translation;
 
-  /// The size of the bouding box
-  TOOLS(Vector3) __bboxSize;
-
-  /// If bounding box info are filled
-  uchar_t __filled;
+  /// The scale
+  TOOLS(Vector3) __scale;
 
   /// The subscene.
   ScenePtr __scene;
 
-  /// The BoundingBox if the subscene.
-  BoundingBoxPtr __bbox;
-
-
 };
 
-/// GeomInline Pointer
-typedef RCPtr<GeomInline> GeomInlinePtr;
+/// Inline Pointer
+typedef RCPtr<Inline> InlinePtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

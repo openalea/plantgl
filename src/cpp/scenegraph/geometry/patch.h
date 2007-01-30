@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_parametricmodel.h"
+#include "parametricmodel.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Patch : public ParametricModel
+class SG_API Patch : public ParametricModel
 {
 
 public:
@@ -128,7 +128,7 @@ typedef RCPtr<Patch> PatchPtr;
 // __geom_patch_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

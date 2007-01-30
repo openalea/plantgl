@@ -46,13 +46,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_explicitmodel.h"
-#include "geom_planarmodel.h"
-#include "Tools/util_vector.h"
+#include "explicitmodel.h"
+#include "planarmodel.h"
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,7 +68,7 @@ typedef RCPtr<Point2Array> Point2ArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API PointSet : public ExplicitModel
+class SG_API PointSet : public ExplicitModel
 {
 
 public:
@@ -156,7 +156,7 @@ typedef RCPtr<PointSet> PointSetPtr;
 */
 
 
-class GEOM_API PointSet2D : public PlanarModel
+class SG_API PointSet2D : public PlanarModel
 {
 
 public:
@@ -256,7 +256,7 @@ typedef RCPtr<PointSet2D> PointSet2DPtr;
 // __geom_pointset_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

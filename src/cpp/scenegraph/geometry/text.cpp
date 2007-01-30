@@ -34,12 +34,12 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include "geom_text.h"
-#include "util_messages.h"
+#include "text.h"
+#include <scenegraph/core/pgl_messages.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

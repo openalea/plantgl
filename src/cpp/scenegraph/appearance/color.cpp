@@ -37,10 +37,10 @@
 
 
 
-#include "appe_color.h"
+#include "color.h"
 #include <iostream>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
@@ -136,7 +136,7 @@ real_t Color3::getAverageClamped() const {
     return (real_t)(__RED + __GREEN +__BLUE)/(real_t)765;
 }
 
-std::ostream& GEOM(operator<<( std::ostream& stream, const Color3& c )) {
+std::ostream& PGL(operator<<( std::ostream& stream, const Color3& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," << (uint16_t)c.getBlue() << ">";
 }
 
@@ -211,7 +211,7 @@ uchar_t& Color4::getRed( ) { return __RED;}
 
 real_t Color4::getRedClamped( ) const { return (real_t)__RED / 255;}
 
-std::ostream& GEOM(operator<<( std::ostream& stream, const Color4& c )) {
+std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," 
 		<< (uint16_t)c.getBlue() << "," << (uint16_t)c.getAlpha() << ">";
 } 

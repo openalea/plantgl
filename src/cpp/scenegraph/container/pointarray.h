@@ -45,12 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "util_array.h"
-#include "Tools/util_vector.h"
+#include "../sg_config.h"
+#include <tool/util_array.h>
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +62,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Point2Array : public Array1<TOOLS(Vector2)>
+class SG_API Point2Array : public TOOLS(Array1)<TOOLS(Vector2)>
 {
 
 public:
@@ -86,7 +87,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point2Array( InIterator first, InIterator last ) :
-    Array1<TOOLS(Vector2)>(first,last) {
+    TOOLS(Array1)<TOOLS(Vector2)>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -150,7 +151,7 @@ typedef RCPtr<Point2Array> Point2ArrayPtr;
 */
 
 
-class GEOM_API Point3Array : public Array1<TOOLS(Vector3)>
+class SG_API Point3Array : public TOOLS(Array1)<TOOLS(Vector3)>
 {
 
 public:
@@ -175,7 +176,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point3Array( InIterator first, InIterator last ) :
-    Array1<TOOLS(Vector3)>(first,last) {
+    TOOLS(Array1)<TOOLS(Vector3)>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -263,7 +264,7 @@ typedef RCPtr<Point3Array> Point3ArrayPtr;
 */
 
 
-class GEOM_API Point4Array : public Array1<TOOLS(Vector4)>
+class SG_API Point4Array : public TOOLS(Array1)<TOOLS(Vector4)>
 {
 
 public:
@@ -278,7 +279,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point4Array( InIterator first, InIterator last ) :
-    Array1<TOOLS(Vector4)>(first,last) {
+    TOOLS(Array1)<TOOLS(Vector4)>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -374,7 +375,7 @@ typedef RCPtr<Point4Array> Point4ArrayPtr;
 // __geom_pointarray.h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -38,11 +38,12 @@
 
 
  
-#include "geom_deformed.h"
-#include "util_messages.h"
-#include "geom_primitive.h"
+#include "deformed.h"
+#include <scenegraph/geometry/primitive.h>
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

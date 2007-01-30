@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_orthotransformed.h"
+#include "orthotransformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API BaseOrientation : public OrthonormalBasis3D
+class SG_API BaseOrientation : public OrthonormalBasis3D
 {
 
 public:
@@ -123,7 +123,7 @@ typedef RCPtr<BaseOrientation> BaseOrientationPtr;
 */
 
 
-class GEOM_API Oriented : public OrthoTransformed
+class SG_API Oriented : public OrthoTransformed
 {
 
 public:
@@ -225,7 +225,7 @@ typedef RCPtr<Oriented> OrientedPtr;
 // __geom_oriented_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -47,11 +47,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_deformed.h"
+#include "deformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,7 +64,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Taper : public Deformation
+class SG_API Taper : public Deformation
 {
 
 public:
@@ -120,7 +120,7 @@ typedef RCPtr<Taper> TaperPtr;
 */
 
 
-class GEOM_API Tapered : public Deformed
+class SG_API Tapered : public Deformed
 {
 
 public:
@@ -212,7 +212,7 @@ typedef RCPtr<Tapered> TaperedPtr;
 // __geom_tapered_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

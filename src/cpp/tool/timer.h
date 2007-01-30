@@ -48,7 +48,7 @@
 
 
 #include <ctime>
-#include "tools_namespace.h"
+#include "tools_config.h"
 #include "util_assert.h"
 
 /* ----------------------------------------------------------------------- */
@@ -132,7 +132,7 @@ class TOOLS_API Timer
     \par Preconditions
     - \e sec must be positive.
   */
-  inline static void wait( double sec );
+  inline static void wait( double sec )
   {
 	// preconditions
 	assert(0 < sec);

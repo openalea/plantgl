@@ -38,9 +38,9 @@
 
 
 
-#include "geom_planarmodel.h"
+#include "planarmodel.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

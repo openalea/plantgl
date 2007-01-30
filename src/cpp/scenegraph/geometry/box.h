@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_parametricmodel.h"
-#include "Tools/util_vector.h"
+#include "parametricmodel.h"
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Box : public ParametricModel
+class SG_API Box : public ParametricModel
 {
 
 public:
@@ -177,7 +177,7 @@ typedef RCPtr<Box> BoxPtr;
 // __geom_box_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

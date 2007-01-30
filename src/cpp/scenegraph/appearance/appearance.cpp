@@ -38,11 +38,10 @@
 
 
 
-#include "appe_appearance.h"
-#include "scne_smbtable.h"
-#include "actn_printer.h"
+#include "appearance.h"
+#include <scenegraph/core/smbtable.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 
@@ -67,61 +66,7 @@ Appearance::~Appearance( ) {
 }
 
 /* ----------------------------------------------------------------------- */
-ostream& operator<<( ostream& stream, Appearance& a ){
-    Printer p(cout,cout,stream);
-    a.apply(p);
-    return stream;
-}
 
-/* ----------------------------------------------------------------------- */
-
-
-bool Appearance::parse( istream& input,
-                        ostream& output,
-                        AppearanceSymbolTable& table,
-                        int max_errors ) {
-/*  GenericParser<AppearancePtr> _parser(appe_yyparse,&table,max_errors);
-  AppearanceRecursiveLexer _appeLexer(&input,&output);
-  return _parser.parse(&_appeLexer,output);*/
-
-  SceneObjectSymbolTable t;
-  if(!SceneObject::parse(input,output,t,max_errors ))return false;
-  AppearancePtr _app;
-  for(SceneObjectSymbolTable::iterator _it = t.begin();
-      _it != t.end() ;
-      _it++){
-    if(_app.cast(_it->second))
-      table[_it->first] = _app;
-  }
-  return true;
-}
-
-
-bool Appearance::parse( const string& filename,
-                        ostream& output,
-                        AppearanceSymbolTable& table,
-                        int max_errors ) {
-/*  ifstream _file(filename.c_str());
-  if (! (_file)) {
-    genMessage(ERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
-    return false;
-  };
-  GenericParser<AppearancePtr> _parser(appe_yyparse,&table,max_errors);
-  AppearanceRecursiveLexer _appeLexer(&_file,&output,filename.c_str());
-  return _parser.parse(&_appeLexer,output);*/
-
-
-    SceneObjectSymbolTable t;
-    if(!SceneObject::parse(filename,output,t,max_errors ))return false;
-    AppearancePtr _app;
-    for(SceneObjectSymbolTable::iterator _it = t.begin();
-        _it != t.end() ;
-        _it++){
-        if(_app.cast(_it->second))
-            table[_it->first] = _app;
-    }
-    return true;
-}
 
 bool Appearance::isTexture() const {
   return false;

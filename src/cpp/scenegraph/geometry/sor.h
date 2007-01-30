@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_parametricmodel.h"
-#include "geom_planarmodel.h"
+#include "parametricmodel.h"
+#include "planarmodel.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API SOR : public ParametricModel
+class SG_API SOR : public ParametricModel
 {
 
 public:
@@ -130,7 +130,7 @@ typedef RCPtr<SOR> SORPtr;
     \brief Abstract base class for 2D objects of type of surface of revolution.
 */
 
-class GEOM_API SOR2D : public PlanarModel
+class SG_API SOR2D : public PlanarModel
 {
 
 public:
@@ -194,7 +194,7 @@ typedef RCPtr<SOR2D> SOR2DPtr;
 // __geom_sor_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

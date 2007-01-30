@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_orthotransformed.h"
+#include "orthotransformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,7 +58,7 @@ GEOM_BEGIN_NAMESPACE
     \brief A Rotation by an angle around an arbitrary axis
 */
 
-class GEOM_API AxisRotation : public OrthonormalBasis3D
+class SG_API AxisRotation : public OrthonormalBasis3D
 {
 
 public:
@@ -117,7 +117,7 @@ typedef RCPtr<AxisRotation> AxisRotationPtr;
 */
 
 
-class GEOM_API AxisRotated : public OrthoTransformed
+class SG_API AxisRotated : public OrthoTransformed
 {
 
 public:
@@ -210,7 +210,7 @@ typedef RCPtr<AxisRotated> AxisRotatedPtr;
 // __geom_axisrotated_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

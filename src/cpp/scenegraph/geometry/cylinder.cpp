@@ -38,10 +38,10 @@
 
 
 
-#include "geom_cylinder.h"
-#include "util_messages.h"
-#include "geom_disc.h"
-GEOM_USING_NAMESPACE
+#include "cylinder.h"
+#include <scenegraph/core/pgl_messages.h>
+#include "disc.h"
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

@@ -45,22 +45,31 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_parametricmodel.h"
+#include "parametricmodel.h"
 
 #ifndef GEOM_FWDEF
 
-#include "geom_curve.h"
-#include "geom_lineicmodel.h"
-#include "geom_pointarray.h"
-#include "geom_profile.h"
+#include "curve.h"
+#include "lineicmodel.h"
+#include "pointarray.h"
+#include "profile.h"
 
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
+
+#ifdef GEOM_FWDEF
+class RealArray;
+typedef RCPtr<RealArray> RealArrayPtr;
+#endif
+
+TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
+
+PGL_BEGIN_NAMESPACE
 
 #ifdef GEOM_FWDEF
 
@@ -68,13 +77,11 @@ class Curve2D;
 class LineicModel;
 class ProfileTransformation;
 class Point2Array;
-class RealArray;
 
 typedef RCPtr<Curve2D> Curve2DPtr;
 typedef RCPtr<LineicModel> LineicModelPtr;
 typedef RCPtr<ProfileTransformation> ProfileTransformationPtr;
 typedef RCPtr<Point2Array> Point2ArrayPtr;
-typedef RCPtr<RealArray> RealArrayPtr;
 
 #endif
 
@@ -86,12 +93,12 @@ typedef RCPtr<RealArray> RealArrayPtr;
 */
 
 
-class GEOM_API Extrusion : public ParametricModel
+class SG_API Extrusion : public ParametricModel
 {
 
   public:
   
-  static const RealArrayPtr DEFAULT_ORIENTATION_LIST;
+  static const TOOLS(RealArrayPtr) DEFAULT_ORIENTATION_LIST;
 
   static const Point2ArrayPtr DEFAULT_SCALE_LIST;
 
@@ -112,10 +119,10 @@ class GEOM_API Extrusion : public ParametricModel
 	    Point2ArrayPtr * Scale;
 	    
 	    /// A pointee to the \b Orientation \b List field.
-	    RealArrayPtr * Orientation;
+	    TOOLS(RealArrayPtr) * Orientation;
 	    
 	    /// A pointee to the \b KnotsList field.
-	    RealArrayPtr * KnotList;
+	    TOOLS(RealArrayPtr) * KnotList;
 	    
 	    /// A pointee to the \b Solid field.
 	    bool * Solid;
@@ -156,9 +163,9 @@ class GEOM_API Extrusion : public ParametricModel
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
-	    const RealArrayPtr& _knot,
+	    const TOOLS(RealArrayPtr)& _knot,
 	    const Point2ArrayPtr& _scale,
-	    const RealArrayPtr& _orientation = DEFAULT_ORIENTATION_LIST,
+	    const TOOLS(RealArrayPtr)& _orientation = DEFAULT_ORIENTATION_LIST,
 	    const bool _solid = DEFAULT_SOLID,
 	    const bool _ccw = DEFAULT_CCW);
     
@@ -166,22 +173,22 @@ class GEOM_API Extrusion : public ParametricModel
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
 	    const Point2ArrayPtr& _scale,
-	    const RealArrayPtr& _orientation = DEFAULT_ORIENTATION_LIST,
+	    const TOOLS(RealArrayPtr)& _orientation = DEFAULT_ORIENTATION_LIST,
 	    const bool _solid = DEFAULT_SOLID,
 	    const bool _ccw = DEFAULT_CCW);
     
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
-	    const RealArrayPtr& _orientation,
+	    const TOOLS(RealArrayPtr)& _orientation,
 	    const bool _solid = DEFAULT_SOLID,
 	    const bool _ccw = DEFAULT_CCW);
     
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
-	    const RealArrayPtr& _knot,
-	    const RealArrayPtr& _orientation,
+	    const TOOLS(RealArrayPtr)& _knot,
+	    const TOOLS(RealArrayPtr)& _orientation,
 	    const bool _solid = DEFAULT_SOLID,
 	    const bool _ccw = DEFAULT_CCW);
     
@@ -276,7 +283,7 @@ typedef RCPtr<Extrusion> ExtrusionPtr;
 // __geom_extrusion_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

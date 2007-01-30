@@ -44,16 +44,16 @@
 #ifndef __actn_bboxcomputer_h__
 #define __actn_bboxcomputer_h__
 
-#include "actn_action.h"
-#include "Tools/rcobject.h"
-#include "util_cache.h"
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
+#include <tool/util_cache.h>
 #ifndef GEOM_FWDEF
-#include "scne_scene.h"
-#include "geom_boundingbox.h"
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/geometry/boundingbox.h>
 #endif
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -74,7 +74,7 @@ typedef RCPtr<BoundingBox> BoundingBoxPtr;
 */
 
 
-class GEOM_API BBoxComputer : public Action
+class ALGO_API BBoxComputer : public Action
 {
 
 public:
@@ -226,7 +226,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 

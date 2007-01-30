@@ -35,8 +35,8 @@
  */				
 
 
-#include "geom_lineicmodel.h"
-GEOM_USING_NAMESPACE
+#include "lineicmodel.h"
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -101,7 +101,7 @@ LineicModel::findClosest(const Vector3& p) const{
 }
 
 real_t 
-GEOM(closestPointToSegment)(Vector3& p, 
+PGL(closestPointToSegment)(Vector3& p, 
 					  const Vector3& segA,
 					  const Vector3& segB)
 {

@@ -38,11 +38,12 @@
 
 
 
-#include "geom_geometry.h"
-#include "geom_lineicmodel.h"
-#include "geom_curve.h"
-#include "geom_geometryarray2.h"
-GEOM_USING_NAMESPACE
+#include "geometryarray2.h"
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/geometry/lineicmodel.h>
+#include <scenegraph/geometry/curve.h>
+
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

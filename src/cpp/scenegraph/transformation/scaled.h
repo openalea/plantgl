@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_mattransformed.h"
+#include "mattransformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Scaling : public Matrix4Transformation
+class SG_API Scaling : public Matrix4Transformation
 {
 
 public:
@@ -114,7 +114,7 @@ typedef RCPtr<Scaling> ScalingPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Scaled : public MatrixTransformed
+class SG_API Scaled : public MatrixTransformed
 {
 
 public:
@@ -197,7 +197,7 @@ typedef RCPtr<Scaled> ScaledPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Scaling2D : public Matrix3Transformation
+class SG_API Scaling2D : public Matrix3Transformation
 {
 
 public:
@@ -244,7 +244,7 @@ typedef RCPtr<Scaling2D> Scaling2DPtr;
 // __geom_scaled_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

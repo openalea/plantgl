@@ -43,23 +43,21 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/rcobject.h"
-#include "Tools/gsmbtable.h"
-#include "geom_namespace.h"
-#ifndef GEOM_FWDEF
-#include "geom_geometry.h"
-#include "appe_appearance.h"
-#endif
-/* ----------------------------------------------------------------------- */
+#include <tool/rcobject.h>
+#include <tool/gsmbtable.h>
+#include "../sg_config.h"
 
-GEOM_BEGIN_NAMESPACE
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/appearance/appearance.h>
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef GEOM_FWDEF
+PGL_BEGIN_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+
 class SceneObject;
 typedef RCPtr<SceneObject> SceneObjectPtr;
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -69,14 +67,12 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 */
 
 /* ----------------------------------------------------------------------- */
-class GEOM_API SceneObjectSymbolTable : public SymbolTable<SceneObjectPtr> {};
+class SG_API SceneObjectSymbolTable : public SymbolTable<SceneObjectPtr> {};
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef GEOM_FWDEF
 class Geometry;
 typedef RCPtr<Geometry> GeometryPtr;
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -87,14 +83,12 @@ typedef RCPtr<Geometry> GeometryPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API GeometrySymbolTable : public SymbolTable<GeometryPtr> {};
+class SG_API GeometrySymbolTable : public SymbolTable<GeometryPtr> {};
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef GEOM_FWDEF
 class Appearance;
 typedef RCPtr<Appearance> AppearancePtr;
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -105,11 +99,21 @@ typedef RCPtr<Appearance> AppearancePtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API AppearanceSymbolTable : public SymbolTable<AppearancePtr> {};
+class SG_API AppearanceSymbolTable : public SymbolTable<AppearancePtr> {};
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+template<class T,class U>
+void convertTable(const SymbolTable<U>& intable, SymbolTable<T>& outtable)
+{
+  T tobject;
+  for(SymbolTable<class U>::const_iterator _it = intable.begin();
+      _it != intable.end() ; ++_it){
+      if(tobject.cast(_it->second)) outtable[_it->first] = tobject;
+  }
+}
+
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

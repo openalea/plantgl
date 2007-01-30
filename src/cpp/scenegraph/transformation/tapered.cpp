@@ -38,14 +38,14 @@
 
 
 
-#include "geom_tapered.h"
-#include "util_messages.h"
-#include "geom_pointarray.h"
-#include "geom_pointmatrix.h"
-#include "geom_primitive.h"
-#include "Tools/util_math.h"
+#include "tapered.h"
+#include <scenegraph/geometry/primitive.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <math/util_math.h>
+#include <scenegraph/core/pgl_messages.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;

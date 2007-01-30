@@ -541,7 +541,7 @@ public:
 };
 
 /// print an error message.
-std::ostream& operator<<(std::ostream& o, const ErrorObj& i);
+TOOLS_API std::ostream& operator<<(std::ostream& o, const ErrorObj& i);
 
 
 /** this function creates an ErrorObj with the desired error message
@@ -640,7 +640,7 @@ std::ostream& operator<<(std::ostream& o, const ErrorList& l);
 #define  COMMON_ERR_OFFSET      1000
 
 /// General Aml messages that can be used by different modules
-extern const char* common_err_msgs_aml[];
+extern TOOLS_API const char* common_err_msgs_aml[];
 
   /*! \enum COMON_ERRORLABEL
   General Error Message Label Identifiant.

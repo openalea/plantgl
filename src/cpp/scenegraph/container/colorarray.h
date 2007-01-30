@@ -41,12 +41,12 @@
 #ifndef UTIL_COLORARRAY_H
 #define UTIL_COLORARRAY_H
 
-#include "util_array.h"
-#include "appe_color.h"
+#include <tool/util_array.h>
+#include <scenegraph/appearance/color.h>
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
-class Color3Array : public Array1<Color3>
+class Color3Array : public TOOLS(Array1)<Color3>
 {
 
 public:
@@ -54,18 +54,18 @@ public:
 
   /// Constructs an Array1 of size \e size
   Color3Array( uint32_t size = 0 ) :
-    Array1<Color3>(size) {
+    TOOLS(Array1)<Color3>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
   Color3Array( uint32_t size, const Color3& t ) :
-    Array1<Color3>(size,t) {
+    TOOLS(Array1)<Color3>(size,t) {
   }
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
   Color3Array( InIterator begin, InIterator end ) :
-    Array1<Color3>(begin,end) {
+    TOOLS(Array1)<Color3>(begin,end) {
   }
 
   /// Destructor
@@ -87,7 +87,7 @@ public:
 
 typedef RCPtr<Color3Array> Color3ArrayPtr;
 
-class Color4Array : public Array1<Color4>
+class Color4Array : public TOOLS(Array1)<Color4>
 {
 
 public:
@@ -95,18 +95,18 @@ public:
 
   /// Constructs an Array1 of size \e size
   Color4Array( uint32_t size = 0 ) :
-    Array1<Color4>(size) {
+    TOOLS(Array1)<Color4>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
   Color4Array( uint32_t size, const Color4& t ) :
-    Array1<Color4>(size,t) {
+    TOOLS(Array1)<Color4>(size,t) {
   }
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
   Color4Array( InIterator begin, InIterator end ) :
-    Array1<Color4>(begin,end) {
+    TOOLS(Array1)<Color4>(begin,end) {
   }
 
   /// Destructor
@@ -129,7 +129,7 @@ public:
 
 typedef RCPtr<Color4Array> Color4ArrayPtr;
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif // UTIL_COLORARRAY_H
 

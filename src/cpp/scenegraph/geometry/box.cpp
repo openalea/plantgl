@@ -38,9 +38,9 @@
 
 
 
-#include "geom_box.h"
-#include "util_messages.h"
-GEOM_USING_NAMESPACE
+#include "box.h"
+#include <scenegraph/core/pgl_messages.h>
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 

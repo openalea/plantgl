@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_hull.h"
+#include "hull.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -63,7 +63,7 @@ typedef RCPtr<Curve2D>  Curve2DPtr;
    \brief A hull extruded by a vertical and an horizontal profiles.
 */
 
-class GEOM_API ExtrudedHull : public Hull
+class SG_API ExtrudedHull : public Hull
 {
 
 public:
@@ -167,7 +167,7 @@ typedef RCPtr<ExtrudedHull> ExtrudedHullPtr;
 // __geom_extrudedhull_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -38,13 +38,14 @@
 
  
 
-#include "geom_mesh.h"
-#include "util_messages.h"
-#include "geom_polyline.h"
-#include "geom_pointarray.h"
-#include "geom_colorarray.h"
-#include "Tools/util_string.h"
-GEOM_USING_NAMESPACE
+#include "mesh.h"
+#include <scenegraph/core/pgl_messages.h>
+#include "polyline.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/colorarray.h>
+#include <tool/util_string.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -55,7 +56,7 @@ const bool Mesh::DEFAULT_SOLID(false);
 const bool Mesh::DEFAULT_NORMALPERVERTEX(true);
 const bool Mesh::DEFAULT_COLORPERVERTEX(true);
 
-const GeomPolylinePtr Mesh::DEFAULT_SKELETON(0);
+const PolylinePtr Mesh::DEFAULT_SKELETON(0);
 
 
 /* ----------------------------------------------------------------------- */
@@ -165,7 +166,7 @@ Mesh::Mesh( const Point3ArrayPtr& points,
 		   bool normalPerVertex,
 		   bool ccw,
 		   bool solid,
-		   const GeomPolylinePtr& skeleton ) :
+		   const PolylinePtr& skeleton ) :
   ExplicitModel(points),
   __ccw(ccw),
   __solid(solid),
@@ -185,7 +186,7 @@ Mesh::Mesh( const Point3ArrayPtr& points,
 			bool colorPerVertex,
 			bool ccw,
 			bool solid ,
-			const GeomPolylinePtr& skeleton ) :
+			const PolylinePtr& skeleton ) :
     ExplicitModel(points, colors),
     __ccw(ccw),
     __solid(solid),
@@ -231,12 +232,12 @@ Mesh::getTexCoordList( ) const {
 }
 
 
-const GeomPolylinePtr& 
+const PolylinePtr& 
 Mesh::getSkeleton( ) const {
   return __skeleton;
 }
 
-GeomPolylinePtr& 
+PolylinePtr& 
 Mesh::getSkeleton( ) {
   return __skeleton;
 }

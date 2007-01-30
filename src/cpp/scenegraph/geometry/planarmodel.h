@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_parametricmodel.h"
+#include "parametricmodel.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API PlanarModel : public ParametricModel
+class SG_API PlanarModel : public ParametricModel
 {
 
 public:
@@ -102,7 +102,7 @@ typedef RCPtr<PlanarModel> PlanarModelPtr;
 // __geom_planarmodel_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -46,11 +46,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "util_array.h"
+#include <tool/util_array.h>
+#include "../sg_config.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,17 +61,17 @@ GEOM_BEGIN_NAMESPACE
 */
 
 template <class T>
-class ObjectArray : public Array1<T>
+class ObjectArray : public TOOLS(Array1<T>)
 {
 
 public:
 
-  typedef typename Array1<T>::const_iterator const_iterator;
+  typedef typename TOOLS(Array1)<T>::const_iterator const_iterator;
   /** Constructs an ObjectArray of size of \e size.
       \post
       - \e self is valid. */
   ObjectArray( uint32_t size = 0 ) :
-    Array1<T>( size)
+    TOOLS(Array1)<T>( size)
      { }
 
 
@@ -79,7 +80,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   ObjectArray( InIterator first, InIterator last ) :
-    Array1<T>(first,last) {
+    TOOLS(Array1)<T>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -109,7 +110,7 @@ public:
 // __geom_geometryarray_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

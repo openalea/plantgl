@@ -39,7 +39,7 @@
 #ifndef __SMBTABLE_HEADER
 #define __SMBTABLE_HEADER
 
-#include "config.h"
+#include "tools_config.h"
 #include "util_hashmap.h"
 
 /*! \file gsmbtable.h

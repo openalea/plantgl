@@ -38,13 +38,13 @@
 
 
 
-#include "appe_multispectral.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "util_array.h"
+#include "multispectral.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <tool/util_array.h>
 
-GEOM_USING_NAMESPACE
-
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 using namespace std;
 
 /* ----------------------------------------------------------------------- */

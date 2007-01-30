@@ -38,10 +38,10 @@
 
 
 
-#include "geom_patch.h"
-#include "geom_mesh.h"
+#include "patch.h"
+#include "mesh.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

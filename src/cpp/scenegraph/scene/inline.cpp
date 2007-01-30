@@ -34,116 +34,65 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "scne_inline.h"
-#include "scne_scene.h"
-#include "geom_boundingbox.h"
-#include "geom_translated.h"
+#include "inline.h"
+#include "scene.h"
+#include <scenegraph/transformation/translated.h>
 
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/dirnames.h"
-
-#include "actn_bboxcomputer.h"
-#include "actn_discretizer.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <tool/dirnames.h>
 
 #include <fstream>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
-
 using namespace std;
-//Inline::DEFAULT_BBoxSize
+
 
 /* ----------------------------------------------------------------------- */
 
-GeomInline::Builder::Builder( ) :
-    GeomShape3D::Builder(),
+// The default translation value
+const Vector3 Inline::DEFAULT_TRANSLATION(0,0,0);
+
+// The default scaling value
+const Vector3 Inline::DEFAULT_SCALE(1,1,1);
+
+/* ----------------------------------------------------------------------- */
+
+Inline::Builder::Builder( ) :
+    Shape3D::Builder(),
     FileName(0),
     Scene(0),
-    BBoxCenter(0),
     Translation(0),
-    BBoxSize(0),
     Scale(0){
 }
 
-GeomInline::Builder::~Builder( ){
+Inline::Builder::~Builder( ){
 }
 
 SceneObjectPtr
-GeomInline::Builder::build( ){
+Inline::Builder::build( ){
   if (isValid()){
 	if(FileName){
-	  if(!BBoxSize){
-	    if(!BBoxCenter){
-	      GeomInline * g = new GeomInline(expand_dirname(*FileName));  
-	      if(Scale)g->setScale(*Scale);
-	      if(Translation)g->setTranslation(*Translation);
-	      return SceneObjectPtr(g);
-	    }
-	    else {
-	      GeomInline * g = new GeomInline(expand_dirname(*FileName),
-					      *BBoxCenter);
-	      if(Scale)g->setScale(*Scale);
-	      return SceneObjectPtr(g);
-	    }
-	  }
-	  else {
-	    if(!BBoxCenter){
-	      GeomInline * g = new GeomInline(*BBoxSize,
-					      expand_dirname(*FileName));
-	      if(Translation)g->setTranslation(*Translation);
-	      return SceneObjectPtr(g);
-	    }
-	    else {
-	      GeomInline * g = 
-		new GeomInline(expand_dirname(*FileName),
-			       *BBoxCenter,*BBoxSize);
-	      return SceneObjectPtr(g);
-	    }
-	  }
-	}
-	else{
-	  if(!BBoxSize){
-	    if(!BBoxCenter){
-	      GeomInline * g = new GeomInline(*Scene);
-	      if(Scale)g->setScale(*Scale);
-	      if(Translation)g->setTranslation(*Translation);
-	      return SceneObjectPtr(g);
-	    }
-	    else {
-	      GeomInline * g = new GeomInline(*Scene,*BBoxCenter);
-	      if(Scale)g->setScale(*Scale);
-	      return SceneObjectPtr(g);
-	    }
-	  }
-	  else {
-	    if(!BBoxCenter){
-	      GeomInline * g = new GeomInline(*BBoxSize,*Scene);
-	      if(Translation)g->setTranslation(*Translation);
-	      return SceneObjectPtr(g);						   
-	    }
-	    else {
-	      GeomInline * g = new GeomInline(*Scene,*BBoxCenter,*BBoxSize);
-	      return SceneObjectPtr(g);
-	    }
-	  }
-	}
+		Inline * g = new Inline(absolute_filename(*FileName),
+								(Translation?*Translation:DEFAULT_TRANSLATION),
+								(Scale?*Scale:DEFAULT_SCALE));  
+      return SceneObjectPtr(g);
+    }
   }
   return SceneObjectPtr();   
 }
 
 void
-GeomInline::Builder::destroy( ){
+Inline::Builder::destroy( ){
     if(FileName) delete FileName;
     if(Scene) delete Scene;
-    if(BBoxCenter) delete BBoxCenter;
-    if(BBoxSize) delete BBoxSize;
     if(Translation) delete Translation;
     if(Scale) delete Scale;
 }
 
 
-bool GeomInline::Builder::isValid( ) const {
+bool Inline::Builder::isValid( ) const {
   if (! FileName && ! Scene) {
     genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Inline","FileName");
     return false;
@@ -162,31 +111,11 @@ bool GeomInline::Builder::isValid( ) const {
       return false;      
   }
 
-  if(BBoxCenter && Translation){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","BBoxCenter","Translation and BBoxCenter defined");
-      return false;      
-  }
-
-  if(BBoxCenter && !BBoxCenter->isValid()){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","BBoxCenter","Not Valid");
-      return false;      
-  }
-
   if(Translation && !Translation->isValid()){
       genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Translation","Not Valid");
       return false;      
   }
 
-  if(BBoxSize && Scale){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","BBoxSize","Scale and BBoxSize defined");
-      return false;      
-  }
-
-  if(BBoxSize && !BBoxSize->isValid()){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","BBoxSize","Not Valid");
-      return false;
-  }
-      
   if(Scale && !Scale->isValid()){
       genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scale","Not Valid");
       return false;
@@ -197,254 +126,70 @@ bool GeomInline::Builder::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-/// Default constructor.
-GeomInline::GeomInline(const string& filename) :
-    GeomShape3D(),
+/// Constructor.
+Inline::Inline(const string& filename, const Vector3& translation, const Vector3& scale) :
+    Shape3D(),
     __filename(filename),
-    __filled(0),
-    __scene(0),
-    __bbox(0){
-    __scene = ScenePtr(new Scene(filename, *errorStream));
-    initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
+    __translation(translation),
+    __scale(scale),
+    __scene(new Scene(filename, "", *errorStream)){
+    if ( __name.empty() ) setDefaultName();
 }
 
-/// Constructor.
-GeomInline::GeomInline(const string& filename, const Vector3& bboxCenter) :
-    GeomShape3D(),
-    __filename(filename),
-    __bboxCenter(bboxCenter),
-    __filled(1),
-    __scene(0),
-    __bbox(0){
-  __scene = ScenePtr(new Scene(filename, *errorStream));
-  initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-/// Constructor.
-GeomInline::GeomInline(const Vector3& bboxSize, const string& filename) :
-    GeomShape3D(),
-    __filename(filename),
-    __bboxSize(bboxSize),
-    __filled(2),
-    __scene(0),
-    __bbox(0){
-    __scene = ScenePtr(new Scene(filename, *errorStream));
-    initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-/// Constructor.
-GeomInline::GeomInline(const string& filename, const Vector3& bboxCenter, const Vector3& bboxSize) :
-    GeomShape3D(),
-    __filename(filename),
-    __bboxCenter(bboxCenter),
-    __bboxSize(bboxSize),
-    __filled(3),
-    __scene(0),
-    __bbox(0){
-    __scene = ScenePtr(new Scene(filename, *errorStream));
-    initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-/// Constructor.
-GeomInline::GeomInline(const ScenePtr& scene) :
-    GeomShape3D(),
-    __filename(""),
-    __filled(0),
-    __scene(scene),
-    __bbox(0){
-    initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-/// Constructor.
-GeomInline::GeomInline(const ScenePtr& scene, const Vector3& bboxCenter) :
-    GeomShape3D(),
-    __filename(""),
-    __bboxCenter(bboxCenter),
-    __filled(1),
-    __scene(scene),
-    __bbox(0){
-  initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-/// Constructor.
-GeomInline::GeomInline(const Vector3& bboxSize,const ScenePtr& scene) :
-    GeomShape3D(),
-    __filename(""),
-    __bboxSize(bboxSize),
-    __filled(2),
-    __scene(scene),
-    __bbox(0){
-    initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-/// Constructor.
-GeomInline::GeomInline(const ScenePtr& scene, const Vector3& bboxCenter, const Vector3& bboxSize) :
-    GeomShape3D(),
-    __filename(""),
-    __bboxCenter(bboxCenter),
-    __bboxSize(bboxSize),
-    __filled(3),
-    __scene(scene),
-    __bbox(0){
-    initBBox();
-    if ( __name.empty() )
-        __name = "INLINE_"+number(getId());
-}
-
-GeomInline::~GeomInline()
+Inline::~Inline()
 {
 }
 
-bool GeomInline::apply( Action& action ){
+/// set a default name to \e this
+void Inline::setDefaultName()
+{
+	__name = "INLINE_"+number(getId());
+}
+
+bool Inline::apply( Action& action ){
   return action.process(this);
 }
 
-void GeomInline::initBBox(){
-    Discretizer d;
-    BBoxComputer b(d);
-    if (__scene.isValid() && (! __scene->isEmpty())) {
-        Scene::iterator _i = __scene->getBegin();
-        while ((_i != __scene->getEnd())&&(!((*(_i++))->applyGeometryOnly(b))));
-        if(b.getBoundingBox()){
-            __bbox = BoundingBoxPtr(b.getBoundingBox());
-        }
-        else {
-            __bbox = BoundingBoxPtr(new BoundingBox(Vector3(-1,-1,-1),
-                                                   Vector3(1,1,1)));
-        }
-        while (_i != __scene->getEnd()) {
-            if((*(_i++))->applyGeometryOnly(b)){
-                __bbox->extend(b.getBoundingBox());
-            }
-        }
-    }
- }
-
 const string&
-GeomInline::getFileName() const {
+Inline::getFileName() const {
   return __filename;
 }
 
-const BoundingBoxPtr&
-GeomInline::getRealBBox() const{
-  return __bbox;
-}
-
-bool GeomInline::isValid( ) const{
+bool Inline::isValid( ) const{
     if(!__scene) return false;
     else return __scene->isValid();
 }
 
-const Vector3 GeomInline::getBBoxCenter() const {
-    if(__filled == 1 || __filled == 3)
-        return __bboxCenter;
-    else if(__bbox) return __bbox->getCenter();
-    else return Vector3(0,0,0);
-}
-
-const Vector3 GeomInline::getBBoxSize() const{
-    if(__filled == 2 || __filled == 3)
-        return __bboxSize;
-    else if(__bbox) return __bbox->getSize();
-    else return Vector3(1,1,1);
-}
-
-Vector3 GeomInline::getTranslation() const{
-    if(__bbox.isValid() && !isBBoxCenterToDefault()){
-        Vector3 scale = getScale();
-        Vector3 center = Vector3(__bbox->getCenter().x()*scale.x(),
-                                __bbox->getCenter().y()*scale.y(),
-                                __bbox->getCenter().z()*scale.z());
-        return (__bboxCenter - center);
-    }
-    else return Vector3(0,0,0);
-}
-
-void GeomInline::setTranslation(const Vector3& t) {
-    if(__bbox.isValid()){
-	  Vector3 scale = getScale();
-	  Vector3 center = Vector3(__bbox->getCenter().x()*scale.x(),
-							   __bbox->getCenter().y()*scale.y(),
-							   __bbox->getCenter().z()*scale.z());
-	  __bboxCenter =  center + t;
-    }
-    else __bboxCenter = t;
-    if(isBBoxCenterToDefault())__filled +=1;
-}
-
-Vector3 GeomInline::getScale() const {
-    if(__bbox.isValid() && !isBBoxSizeToDefault())
-        return ( Vector3((!__bbox->getSize().x() ? 1 : __bboxSize.x() / (__bbox->getSize().x())),
-                         (!__bbox->getSize().y() ? 1 : __bboxSize.y() / (__bbox->getSize().y())),
-                         (!__bbox->getSize().z() ? 1 : __bboxSize.z() / (__bbox->getSize().z()))));
-    else return Vector3(1,1,1);
-}
-
-void GeomInline::setScale(const Vector3& s)  {
-  if(__bbox.isValid()) {
-    __bboxSize = Vector3(__bbox->getSize().x()*s.x(),__bbox->getSize().y()*s.y(),__bbox->getSize().z()*s.z());
-  }
-  else __bboxSize = s;
-  if(isBBoxSizeToDefault())__filled+=2;
-}
-
-bool GeomInline::isBBoxCenterToDefault() const {
-  return (__filled != 1 && __filled != 3);
-}
-
-bool GeomInline::isBBoxSizeToDefault() const {
-  return (__filled != 2 && __filled != 3);
-}
-
-const ScenePtr& GeomInline::getScene() const {
-  return __scene;
-}
-
-SceneObjectPtr GeomInline::copy() const
+SceneObjectPtr Inline::copy() const
 {
-  GeomInline * ptr = new GeomInline(*this);
-  if(__bbox)ptr->__bbox = BoundingBoxPtr(new BoundingBox(*__bbox));
+  Inline * ptr = new Inline(*this);
   if(__scene)ptr->__scene = __scene->copy();
   return SceneObjectPtr(ptr);
 }
 
 bool
-GeomInline::applyGeometryFirst( Action& action )
+Inline::applyGeometryFirst( Action& action )
 {
   if(__scene) return __scene->applyGeometryFirst(action );
   return false;
 }
 
 bool
-GeomInline::applyGeometryOnly( Action& action )
+Inline::applyGeometryOnly( Action& action )
 {
   if(__scene) return __scene->applyGeometryOnly(action );
   return false;
 }
 
 bool
-GeomInline::applyAppearanceFirst( Action& action )
+Inline::applyAppearanceFirst( Action& action )
 {
   if(__scene) return __scene->applyAppearanceFirst(action );
   return false;
 }
 
 bool
-GeomInline::applyAppearanceOnly( Action& action )
+Inline::applyAppearanceOnly( Action& action )
 {
   if(__scene) return __scene->applyAppearanceOnly(action );
   return false;

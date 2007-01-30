@@ -45,23 +45,27 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "appe_spectrum.h"
-#include "Tools/util_tuple.h"
+#include "spectrum.h"
+#include <tool/util_tuple.h>
 #ifndef GEOM_FWDEF
-#include "util_array.h"
+#include <tool/util_array.h>
 #endif
-
-/* ----------------------------------------------------------------------- */
-
-GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 
 #ifdef GEOM_FWDEF
+TOOLS_BEGIN_NAMESPACE
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
+TOOLS_END_NAMESPACE
 #endif
+
+
+/* ----------------------------------------------------------------------- */
+
+PGL_BEGIN_NAMESPACE
+
 typedef TOOLS(Uint32Tuple3) Index3;
 
 /* ----------------------------------------------------------------------- */
@@ -72,7 +76,7 @@ typedef TOOLS(Uint32Tuple3) Index3;
 */
 
 
-class GEOM_API MultiSpectral : public Spectrum
+class SG_API MultiSpectral : public Spectrum
 {
  
 public:
@@ -85,10 +89,10 @@ public:
   struct Builder : public Spectrum::Builder {
 
     /// A pointer to the \b Reflectance field.
-    RealArrayPtr * Reflectance;
+    TOOLS(RealArrayPtr) * Reflectance;
 
     /// A pointer to the \b Transmittance field.
-    RealArrayPtr * Transmittance;
+    TOOLS(RealArrayPtr) * Transmittance;
 
     /// A pointer to the \b Filter field.
     Index3 * Filter;
@@ -111,8 +115,8 @@ public:
   MultiSpectral();
 
   /// Constructor.
-  MultiSpectral( const RealArrayPtr& reflectance,
-		 const RealArrayPtr& transmittance,
+  MultiSpectral( const TOOLS(RealArrayPtr)& reflectance,
+		 const TOOLS(RealArrayPtr)& transmittance,
 		 const Index3& rgbIndex = DEFAULT_RGB_INDEX );
 
   /// Destructor.
@@ -124,10 +128,10 @@ public:
   virtual SceneObjectPtr copy() const ;
 
   /// Returns \b Reflectance values.
-  const RealArrayPtr& getReflectance( ) const ;
+  const TOOLS(RealArrayPtr)& getReflectance( ) const ;
 
   /// Returns \b Reflectance field.
-  RealArrayPtr& getReflectance( );
+  TOOLS(RealArrayPtr)& getReflectance( );
 
   /** Returns the \e i-th value of \b Reflectance.
       \pre
@@ -154,10 +158,10 @@ public:
   uint32_t getReflectanceSize( ) const ;
 
   /// Returns \b Transmittance values.
-  const RealArrayPtr& getTransmittance( ) const ;
+  const TOOLS(RealArrayPtr)& getTransmittance( ) const ;
 
   /// Returns \b Transmittance field.
-  RealArrayPtr& getTransmittance( );
+  TOOLS(RealArrayPtr)& getTransmittance( );
 
   /** Returns the \e i-th value of \b Transmittance.
       \pre
@@ -197,10 +201,10 @@ public:
 protected:
 
   /// The \b Reflectance field.
-  RealArrayPtr __reflectance;
+  TOOLS(RealArrayPtr) __reflectance;
 
   /// The \b Transmittance field.
-  RealArrayPtr __transmittance;
+  TOOLS(RealArrayPtr) __transmittance;
 
   /// The \b rgbIndex field.
   Index3 __filter;
@@ -216,7 +220,7 @@ typedef RCPtr<MultiSpectral> MultiSpectralPtr;
 // __appe_multispectral_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

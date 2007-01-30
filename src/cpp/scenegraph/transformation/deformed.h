@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_transformed.h"
+#include "transformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -63,7 +63,7 @@ typedef RCPtr<Primitive> PrimitivePtr;
     \brief Abstract base class for axial deformations.
 */
 
-class GEOM_API Deformation : public Transformation3D
+class SG_API Deformation : public Transformation3D
 {
 
 public:
@@ -89,7 +89,7 @@ typedef RCPtr<Deformation> DeformationPtr;
 */
 
 
-class GEOM_API Deformed : public Transformed
+class SG_API Deformed : public Transformed
 {
 
 public: 
@@ -154,7 +154,7 @@ typedef RCPtr<Deformed> DeformedPtr;
 // __geom_deformed_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

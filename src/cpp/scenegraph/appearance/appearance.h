@@ -44,11 +44,11 @@
 #define __appe_appearance_h__
 
 
-#include "scne_sceneobject.h"
+#include <scenegraph/core/sceneobject.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,7 +67,7 @@ class AppearanceSymbolTable;
 */
 
 
-class GEOM_API Appearance : public SceneObject
+class SG_API Appearance : public SceneObject
 {
 
 public:
@@ -95,29 +95,6 @@ public:
   /// Destructor
   virtual ~Appearance( );
 
-  /// Prints \e a to the output stream \e stream.
-//  friend ostream& operator<<( ostream& stream, Appearance& a );
-
-  /** Parses the input stream \e inputStream and returns the corresponding
-      symbol table \e symbolTable.
-     \pre
-      - \e input must be valid;
-      - \e output must be valid. */
-  static bool parse( std::istream& inputStream,
-                     std::ostream& outputStream,
-                     AppearanceSymbolTable& symboltTable,
-                     int max_errors = -1 );
-
-  /** Parses the file named \e filename and returns the corresponding symbol
-      table \e symbolTable.
-     \pre
-      - \e fileName must exist;
-      - \e outputStream must be valid. */
-  static bool parse( const std::string& fileName,
-                     std::ostream& outputStream,
-                     AppearanceSymbolTable& symbolTable,
-                     int max_errors = -1 );
-
   virtual bool isTexture() const;
 
 }; // class Appearance
@@ -131,10 +108,10 @@ typedef RCPtr<Appearance> AppearancePtr;
 // __appe_appearance_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write Appearance \b a in \b stream
-GEOM_API std::ostream& operator<<( std::ostream& stream, GEOM(Appearance&) a );
+SG_API std::ostream& operator<<( std::ostream& stream, PGL(Appearance&) a );
 
 /* ----------------------------------------------------------------------- */
 #endif

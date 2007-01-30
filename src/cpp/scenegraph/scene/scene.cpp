@@ -37,21 +37,16 @@
 
 
 
-#include "scne_scene.h"
-#include "scne_shape.h"
-#include "scne_binaryparser.h"
-#include "actn_binaryprinter.h"
-#include "actn_vgstarprinter.h"
-#include "actn_povprinter.h"
-#include "actn_vrmlprinter.h"
-#include "actn_discretizer.h"
-#include "appe_material.h"
-#include "geom_geometry.h"
-#include "scne_smbtable.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/bfstream.h"
-#include "Tools/dirnames.h"
+#include "scene.h"
+#include "shape.h"
+#include "factory.h"
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/core/smbtable.h>
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <tool/bfstream.h>
+#include <tool/dirnames.h>
 
 #include <qglobal.h>
 
@@ -62,9 +57,8 @@
 #endif
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
-
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
@@ -80,7 +74,7 @@ using namespace std;
 
 Scene::Scene(unsigned int size ) :
   RefCountObject(),
-  __shapeList(size,GeomShape3DPtr(0))
+  __shapeList(size,Shape3DPtr(0))
 #ifdef QT_THREAD_SUPPORT
   ,  __mutex(new QMutex())
 #endif
@@ -95,7 +89,7 @@ Scene::Scene(const Scene& scene) :
 #endif
 {
   scene.lock();
-  __shapeList = std::vector<GeomShape3DPtr>(scene.__shapeList);
+  __shapeList = std::vector<Shape3DPtr>(scene.__shapeList);
   scene.unlock();
   GEOM_ASSERT(isValid());
 }
@@ -103,32 +97,21 @@ Scene::Scene(const Scene& scene) :
 Scene& Scene::operator=( const Scene& scene){
   lock();
   scene.lock();
-  __shapeList = std::vector<GeomShape3DPtr>(scene.__shapeList);
+  __shapeList = std::vector<Shape3DPtr>(scene.__shapeList);
   scene.unlock();
   unlock();
   return *this;
 }
 
-Scene::Scene(const string& filename, ostream& errlog, int max_error ) :
+Scene::Scene(const string& filename, const std::string& format, ostream& errlog, int max_error ) :
   RefCountObject(),
   __shapeList()
 #ifdef QT_THREAD_SUPPORT
   ,  __mutex(new QMutex())
 #endif
 {
-	read(filename,errlog,max_error);
+	read(filename,format,errlog,max_error);
 	GEOM_ASSERT(isValid());
-}
-
-Scene::Scene(istream& input, ostream& errlog, int max_error ) :
-  RefCountObject(),
-  __shapeList()
-#ifdef QT_THREAD_SUPPORT
-  ,  __mutex(new QMutex())
-#endif
-{
-  read(input,errlog,max_error);
-  GEOM_ASSERT(isValid());
 }
 
 Scene::Scene(const SceneObjectSymbolTable& table) :
@@ -138,34 +121,38 @@ Scene::Scene(const SceneObjectSymbolTable& table) :
   , __mutex(new QMutex())
 #endif
 {
-  add(table);
+  convert(table);
   GEOM_ASSERT(isValid());
 }
 
-void Scene::read( const std::string& filename , std::ostream& errlog, int max_error ){
-    if(BinaryParser::isAGeomBinaryFile(filename)){
-        BinaryParser _parser(errlog,max_error);
-        _parser.parse(filename);
-		lock();
-        __shapeList = _parser.getScene()->__shapeList;
-		unlock();
-    }
-    else {
-		SceneObjectSymbolTable table;
-		SceneObject::parse(filename,errlog,table,max_error);
-		add(table);
-	}
+void Scene::read( const std::string& filename,
+				  const std::string& format,
+				  std::ostream& errlog, 
+				  int max_error ){
+	ostream * _errlog  = SceneObject::errorStream;
+	ostream * _warlog  = SceneObject::warningStream;
+	ostream * _infolog = SceneObject::commentStream;
+	SceneObject::commentStream = &errlog;
+	SceneObject::warningStream = &errlog;
+	SceneObject::errorStream   = &errlog;
+	ScenePtr scne;
+	if(format.empty())scne = SceneFactory::get().read(filename);
+	else scne = SceneFactory::get().read(filename,format);
+	if(scne)merge(scne);
+	SceneObject::commentStream = _infolog;
+	SceneObject::warningStream = _warlog;
+	SceneObject::errorStream   = _errlog;
 }
 
-void Scene::read( std::istream& input, std::ostream& errlog, int max_error  ){
-  SceneObjectSymbolTable table;
-  SceneObject::parse(input,errlog,table,max_error);
-  add(table);
+
+void Scene::save( const std::string& fname, const std::string& format)  {
+	if(format.empty())SceneFactory::get().write(fname,this);
+	else SceneFactory::get().write(fname,this,format);
 }
 
-void Scene::add( const SceneObjectSymbolTable& table ){
-  GeomShape3DPtr shape;
-  GeomShapePtr _shape;
+void Scene::convert( const SceneObjectSymbolTable& table ){
+  Shape3DPtr shape;
+  ShapePtr _shape;
   bool added = false;
   for (SceneObjectSymbolTable::const_iterator _it = table.begin();
        _it != table.end();
@@ -186,7 +173,7 @@ void Scene::add( const SceneObjectSymbolTable& table ){
          _it != table.end();
          _it++){
       if(_geom.cast(_it->second)){
-        add(GeomShape3DPtr(new GeomShape(_geom,Material::DEFAULT_MATERIAL,0)));
+        add(Shape3DPtr(new Shape(_geom,Material::DEFAULT_MATERIAL,0)));
       }
     }
   }
@@ -221,24 +208,43 @@ void Scene::clear( ){
   unlock();
 }
 
-void Scene::add( const GeomShape& shape ) {
+void Scene::add( const Shape& shape ) {
   GEOM_ASSERT(shape.isValid());
   lock();
-  __shapeList.insert(__shapeList.end(),GeomShape3DPtr(new GeomShape(shape)));
+  __shapeList.insert(__shapeList.end(),Shape3DPtr(new Shape(shape)));
   unlock();
 }
 
-void Scene::add( const GeomShapePtr& shape ) {
+void Scene::add( const ShapePtr& shape ) {
   GEOM_ASSERT(shape.isValid());
   lock();
-  __shapeList.insert(__shapeList.end(),GeomShape3DPtr(shape));
+  __shapeList.insert(__shapeList.end(),Shape3DPtr(shape));
   unlock();
 }
 
-void Scene::add( const GeomShape3DPtr& shape ) {
+void Scene::add( const Shape3DPtr& shape ) {
   GEOM_ASSERT(shape.isValid());
   lock();
   __shapeList.insert(__shapeList.end(),shape);
+  unlock();
+}
+
+  /** Remove a shape to the \e self
+      \pre
+      - shape must be non null and valid. */
+void Scene::remove( const Shape3DPtr& shape )
+{
+	Scene::iterator it = getBegin();
+    lock();
+	while(it != getEnd() && *it != shape)++it;
+    unlock();
+	if(it != getEnd())remove(it);
+}
+
+void Scene::remove( Scene::iterator& it )
+{
+  lock();
+  __shapeList.erase(it);
   unlock();
 }
 
@@ -248,7 +254,7 @@ bool Scene::apply( Action& action ) {
   bool _result;
   if( ! (_result = action.beginProcess()))return false;
   lock();
-  for (vector<GeomShape3DPtr>::iterator _i = __shapeList.begin();
+  for (vector<Shape3DPtr>::iterator _i = __shapeList.begin();
        _i != __shapeList.end();
        _i++) {
     if (! (*_i)->apply(action)) _result = false;
@@ -262,7 +268,7 @@ bool Scene::applyGeometryFirst( Action& action ) {
   bool _result;
   if( ! (_result = action.beginProcess()))return false;
   lock();
-  for (vector<GeomShape3DPtr>::iterator _i = __shapeList.begin();
+  for (vector<Shape3DPtr>::iterator _i = __shapeList.begin();
        _i != __shapeList.end();
        _i++) {
 
@@ -277,7 +283,7 @@ bool Scene::applyGeometryOnly( Action& action ) {
   bool _result;
   if( ! (_result = action.beginProcess()))return false;
   lock();
-  for (vector<GeomShape3DPtr>::iterator _i = __shapeList.begin();
+  for (vector<Shape3DPtr>::iterator _i = __shapeList.begin();
        _i != __shapeList.end();
        _i++)
     if (! (*_i)->applyGeometryOnly(action)) _result = false;
@@ -290,7 +296,7 @@ bool Scene::applyAppearanceFirst( Action& action ) {
   bool _result;
   if( ! (_result = action.beginProcess()))return false;
   lock();
-  for (vector<GeomShape3DPtr>::iterator _i = __shapeList.begin();
+  for (vector<Shape3DPtr>::iterator _i = __shapeList.begin();
        _i != __shapeList.end();
        _i++) {
     if (! (*_i)->applyAppearanceFirst(action)) _result = false;
@@ -304,7 +310,7 @@ bool Scene::applyAppearanceOnly( Action& action ) {
   bool _result;
   if( ! (_result = action.beginProcess()))return false;
   lock();
-  for (vector<GeomShape3DPtr>::iterator _i = __shapeList.begin();
+  for (vector<Shape3DPtr>::iterator _i = __shapeList.begin();
        _i != __shapeList.end();
        _i++)
     if (! (*_i)->applyAppearanceOnly(action)) _result = false;
@@ -354,27 +360,27 @@ bool Scene::isEmpty( ) const {
   return b;
 }
 
-const GeomShape3DPtr Scene::getAt(uint32_t i ) const {
+const Shape3DPtr Scene::getAt(uint32_t i ) const {
   lock();
-  GeomShape3DPtr ptr = __shapeList[i];
+  Shape3DPtr ptr = __shapeList[i];
   unlock();
   return ptr;
 }
 
-void Scene::setAt(uint32_t i, const GeomShape3DPtr& ptr) {
+void Scene::setAt(uint32_t i, const Shape3DPtr& ptr) {
   lock();
   __shapeList[i] = ptr;
   unlock();
 }
 
-const GeomShapePtr 
+const ShapePtr 
 Scene::getShapeId(uint32_t id ) const {
   lock();
   for(Scene::const_iterator _it = __shapeList.begin() ; 
 					  _it != __shapeList.end(); 
 					  _it++)
 	{
-	  GeomShapePtr ptr = GeomShapePtr::Cast(*_it);
+	  ShapePtr ptr = ShapePtr::Cast(*_it);
 	  if(ptr.isValid() && ptr->getId() == id){
 		  unlock();
 		  return ptr;
@@ -397,7 +403,7 @@ ScenePtr Scene::copy() const {
 
 bool Scene::isValid( ) const {
   lock();
-  for (vector<GeomShape3DPtr>::const_iterator _i = __shapeList.begin();
+  for (vector<Shape3DPtr>::const_iterator _i = __shapeList.begin();
   _i != __shapeList.end();
   _i++){
     if (! (*_i) ) {
@@ -454,44 +460,6 @@ void Scene::merge( const ScenePtr& scene ) {
   unlock();
 }
 
-void Scene::save( const std::string& fname ) {
-	string ext = get_extension(fname);
-	ext = toUpper(ext);
-	std::cerr << "Extension = " << ext << std::endl;
-	if(ext == "BGEOM"){
-		BinaryPrinter::print(this,fname,"File Generated with PlantGL.");
-	}
-	else if(ext == "POV"){
-		ofstream stream(fname.c_str());
-		Tesselator t;
-		PovPrinter p(stream,t);
-		apply(p);
-	}
-	else if(ext == "WRL"){
-		ofstream stream(fname.c_str());
-		Discretizer d;
-		VrmlPrinter p(stream,d);
-		apply(p);
-	}
-	else if(ext == "VGX"||ext == "VGS"){
-		ofstream stream(fname.c_str());
-		Tesselator t;
-		VgstarPrinter p(stream,t);
-		apply(p);
-	}
-	else {
-		ofstream stream(fname.c_str());
-		Printer p(stream,stream,stream);
-		apply(p);
-	}
-}
-
-
-ostream& operator<<( ostream& stream, Scene& s ){
-    Printer p(stream,stream,stream);
-    s.apply(p);
-    return stream;
-}
 
 
 /* ----------------------------------------------------------------------- */

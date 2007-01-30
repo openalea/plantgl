@@ -37,7 +37,7 @@
 
 
 
-#include "util_messages.h"
+#include <scenegraph/core/pgl_messages.h>
 
 
 /* ----------------------------------------------------------------------- */

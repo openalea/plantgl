@@ -43,18 +43,18 @@
 #ifndef __matl_color_h__
 #define __matl_color_h__
 
-#include "Tools/util_tuple.h"
+#include <tool/util_tuple.h>
 #include <iostream>
-#include "geom_namespace.h"
+#include "../sg_config.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class GEOM_API TOOLS(Tuple3)<uchar_t>;
+template class SG_API TOOLS(Tuple3)<uchar_t>;
 #endif
 
 /**
@@ -63,7 +63,7 @@ template class GEOM_API TOOLS(Tuple3)<uchar_t>;
 */
 
 
-class GEOM_API Color3 : public TOOLS(Tuple3)<uchar_t>
+class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
 {
 
   friend class Color4;
@@ -151,7 +151,7 @@ public:
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class GEOM_API TOOLS(Tuple4)<uchar_t>;
+template class SG_API TOOLS(Tuple4)<uchar_t>;
 #endif
 
 /**
@@ -160,7 +160,7 @@ template class GEOM_API TOOLS(Tuple4)<uchar_t>;
    and \c alpha.
 */
 
-class GEOM_API Color4 : public TOOLS(Tuple4)<uchar_t>
+class SG_API Color4 : public TOOLS(Tuple4)<uchar_t>
 {
 public:
 
@@ -251,10 +251,10 @@ public:
 /* ----------------------------------------------------------------------- */
 
 /// Write Color3 \b c in \b stream.
-GEOM_API std::ostream& operator<<( std::ostream& stream, const GEOM(Color3&) c );
-GEOM_API std::ostream& operator<<( std::ostream& stream, const GEOM(Color4&) c );
+SG_API std::ostream& operator<<( std::ostream& stream, const PGL(Color3&) c );
+SG_API std::ostream& operator<<( std::ostream& stream, const PGL(Color4&) c );
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __matl_color_h__

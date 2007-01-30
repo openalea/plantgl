@@ -38,13 +38,15 @@
 
 
 
-#include "geom_mattransformed.h"
-#include "util_messages.h"
-#include "geom_orthotransformed.h"
-#include "geom_pointarray.h"
-#include "geom_pointmatrix.h"
-#include "Tools/util_math.h"
-GEOM_USING_NAMESPACE
+#include "mattransformed.h"
+#include "orthotransformed.h"
+
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

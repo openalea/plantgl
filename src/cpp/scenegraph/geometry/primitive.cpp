@@ -38,8 +38,8 @@
 
 
 
-#include "geom_primitive.h"
-GEOM_USING_NAMESPACE
+#include "primitive.h"
+PGL_USING_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 

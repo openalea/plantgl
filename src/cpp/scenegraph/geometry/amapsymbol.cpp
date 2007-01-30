@@ -38,15 +38,15 @@
 
 
 
-#include "Tools/bfstream.h"
-#include "geom_amapsymbol.h"
-#include "util_messages.h"
-#include "geom_pointarray.h"
-#include "geom_indexarray.h"
-#include "geom_polyline.h"
-GEOM_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
+#include <tool/bfstream.h>
+#include "amapsymbol.h"
+#include "polyline.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
 
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
@@ -225,7 +225,7 @@ beifstream& AmapSymbol::read( beifstream& stream ){
   __normalList = _normalList;
   __indexList = _indexList;
   __texCoord3List = _texCoordList;
-  __skeleton = GeomPolylinePtr(new GeomPolyline(Vector3::ORIGIN,Vector3(0,0,_maxZ)));
+  __skeleton = PolylinePtr(new Polyline(Vector3::ORIGIN,Vector3(0,0,_maxZ)));
 
   GEOM_ASSERT(isValid());
   return stream;

@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_geometry.h"
+#include "geometry.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,7 +60,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Primitive : public virtual Geometry
+class SG_API Primitive : public virtual Geometry
 {
  
 public:
@@ -94,7 +94,7 @@ typedef RCPtr<Primitive> PrimitivePtr;
 // __geom_primitive_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

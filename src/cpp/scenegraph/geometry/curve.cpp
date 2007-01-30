@@ -38,8 +38,8 @@
 
 
 
-#include "geom_curve.h"
-GEOM_USING_NAMESPACE
+#include "curve.h"
+PGL_USING_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */

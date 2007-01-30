@@ -46,18 +46,21 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_sor.h"
+#include "sor.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
+class RealArray;
+typedef RCPtr<RealArray> RealArrayPtr;
+TOOLS_END_NAMESPACE
+
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 class Curve2DArray;
 typedef RCPtr<Curve2DArray> Curve2DArrayPtr;
-class RealArray;
-typedef RCPtr<RealArray> RealArrayPtr;
 class ProfileInterpolation;
 typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 
@@ -70,7 +73,7 @@ typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Swung : public SOR
+class SG_API Swung : public SOR
 {
 
 public:
@@ -94,7 +97,7 @@ public:
     Curve2DArrayPtr * ProfileList;
 
     /// A pointer to the \b Angle List field. An angle is associated to each Profile.
-    RealArrayPtr * AngleList;
+    TOOLS(RealArrayPtr) * AngleList;
 
     /// A pointer to the \b Degree field.
     uint32_t * Degree;
@@ -138,7 +141,7 @@ public:
       \post
       - \e self is valid. */
   Swung( const Curve2DArrayPtr& profileList,
-         const RealArrayPtr& angleList,
+         const TOOLS(RealArrayPtr)& angleList,
          uchar_t slices = DEFAULT_SLICES,
          bool ccw = DEFAULT_CCW,
          uint32_t degree = DEFAULT_DEGREE,
@@ -171,10 +174,10 @@ public:
   Curve2DArrayPtr& getProfileList( );
 
   /// Returns \b Angle List value.
-  const RealArrayPtr& getAngleList( ) const;
+  const TOOLS(RealArrayPtr)& getAngleList( ) const;
 
   /// Returns \b Angle List field.
-  RealArrayPtr& getAngleList( );
+  TOOLS(RealArrayPtr)& getAngleList( );
 
   /// Returns \b Degree value.
   const uint32_t& getDegree() const;
@@ -228,7 +231,7 @@ typedef RCPtr<Swung> SwungPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

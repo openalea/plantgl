@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_planarmodel.h"
-#include "Tools/util_vector.h"
+#include "planarmodel.h"
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -109,7 +109,7 @@ typedef RCPtr<Curve> CurvePtr;
 */
 
 
-class GEOM_API Curve2D : public PlanarModel
+class SG_API Curve2D : public PlanarModel
 {
 
 public:
@@ -163,7 +163,7 @@ typedef RCPtr<Curve2D> Curve2DPtr;
 // __geom_curve_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

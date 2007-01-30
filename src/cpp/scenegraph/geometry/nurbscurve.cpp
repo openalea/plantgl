@@ -38,19 +38,19 @@
 
  
 
-#include "geom_nurbscurve.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
-#include "geom_pointarray.h"
-#include "util_array2.h"
-#include "util_array.h"
+#include "nurbscurve.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
+#include <scenegraph/container/pointarray.h>
+#include <tool/util_array2.h>
+#include <tool/util_array.h>
 #ifdef _WIN32
 #include <malloc.h>
 #define alloca _alloca
 #endif
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -649,7 +649,7 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
 
 
 uint32_t 
-GEOM(findSpan)(real_t u,  
+PGL(findSpan)(real_t u,  
 	 uint32_t _degree, 
 	 const RealArrayPtr& _knotList ){
     uint32_t n = _knotList->getSize()-_degree -1;
@@ -674,7 +674,7 @@ GEOM(findSpan)(real_t u,
 }
 
 RealArrayPtr
-GEOM(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPtr& _knotList) {
+PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPtr& _knotList) {
   RealArrayPtr BasisFunctions(new RealArray(_degree + 1));
   if( span >= _knotList->getSize()-_degree - 1){ // for clamped vector only
     for(uint32_t _i = 0 ; _i <_degree ; _i ++)
@@ -710,7 +710,7 @@ GEOM(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayP
 
 /* Algo A2.3 p72 Nurbs Book */
 RealArray2Ptr
-GEOM(derivatesBasisFunctions)(int n,real_t u, int span,  uint32_t _degree, const RealArrayPtr& _knotList ){
+PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint32_t _degree, const RealArrayPtr& _knotList ){
   real_t * left = (real_t *) alloca(2*(_degree+1)*sizeof(real_t)) ;
   real_t * right = &left[_degree+1] ;
 

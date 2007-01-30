@@ -37,10 +37,10 @@
 
 
 
-#include "geom_extrudedhull.h"
-#include "util_messages.h"
-#include "geom_curve.h"
-GEOM_USING_NAMESPACE
+#include "extrudedhull.h"
+#include <scenegraph/core/pgl_messages.h>
+#include "curve.h"
+PGL_USING_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */

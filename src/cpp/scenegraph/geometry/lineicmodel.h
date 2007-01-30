@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_primitive.h"
-#include "../Tools/util_vector.h"
+#include "primitive.h"
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -62,7 +62,7 @@ GEOM_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-class GEOM_API LineicModel :  public virtual Primitive {
+class SG_API LineicModel :  public virtual Primitive {
 
 public:
 
@@ -121,7 +121,7 @@ real_t closestPointToSegment(TOOLS(Vector3)& p,
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

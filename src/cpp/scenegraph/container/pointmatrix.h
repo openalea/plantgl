@@ -44,13 +44,13 @@
 #define __geom_pointmatrix_h__
 
 /* ----------------------------------------------------------------------- */
-
-#include "util_array2.h"
-#include "Tools/util_vector.h"
+#include "../sg_config.h"
+#include <tool/util_array2.h>
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Point2Matrix : public Array2<TOOLS(Vector2)>
+class SG_API Point2Matrix : public TOOLS(Array2)<TOOLS(Vector2)>
 {
 
 public:
@@ -76,7 +76,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
       Point2Matrix( InIterator first, InIterator last, uint32_t rows ) :
-    Array2<TOOLS(Vector2)>(first,last,rows) {
+    TOOLS(Array2)<TOOLS(Vector2)>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -138,7 +138,7 @@ typedef RCPtr<Point2Matrix> Point2MatrixPtr;
 */
 
 
-class GEOM_API Point3Matrix : public Array2<TOOLS(Vector3)>
+class SG_API Point3Matrix : public TOOLS(Array2)<TOOLS(Vector3)>
 {
 
 public:
@@ -153,7 +153,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point3Matrix( InIterator first, InIterator last, uint32_t rows ) :
-    Array2<TOOLS(Vector3)>(first,last,rows) {
+    TOOLS(Array2)<TOOLS(Vector3)>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -235,7 +235,7 @@ typedef RCPtr<Point3Matrix> Point3MatrixPtr;
 */
 
 
-class GEOM_API Point4Matrix : public Array2<TOOLS(Vector4)>
+class SG_API Point4Matrix : public TOOLS(Array2)<TOOLS(Vector4)>
 {
 
 public:
@@ -250,7 +250,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point4Matrix( InIterator first, InIterator last ,uint32_t rows) :
-    Array2<TOOLS(Vector4)>(first,last,rows) {
+    TOOLS(Array2)<TOOLS(Vector4)>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -344,7 +344,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 // __geom_pointmatrix.h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

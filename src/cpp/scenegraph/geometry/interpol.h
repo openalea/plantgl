@@ -44,20 +44,25 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "Tools/rcobject.h"
-#include "Tools/util_vector.h"
-#include "geom_namespace.h"
+#include <tool/rcobject.h>
+#include <math/util_vector.h>
+#include "../sg_config.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
+
+class RealArray;
+typedef RCPtr<RealArray> RealArrayPtr;
+
+TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
+
+PGL_BEGIN_NAMESPACE
 
 class Point3Array;
 typedef RCPtr<Point3Array> Point3ArrayPtr;
-class RealArray;
-typedef RCPtr<RealArray> RealArrayPtr;
 class NurbsCurve;
 typedef RCPtr<NurbsCurve> NurbsCurvePtr;
 class NurbsCurve2D;
@@ -72,7 +77,7 @@ typedef RCPtr<NurbsCurve2D> NurbsCurve2DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Interpol
+class SG_API Interpol
 {
 public:
 
@@ -85,7 +90,7 @@ public:
   // With 2D points, 3rd coordinate must be constant
 
   Interpol( const Point3ArrayPtr& _points,
-            const RealArrayPtr&   _params,
+            const TOOLS(RealArrayPtr)&   _params,
             uint32_t _degree,
             bool _closed );
 
@@ -99,10 +104,10 @@ public:
   virtual Point3ArrayPtr& getPoints( );
 
   /// Return the Parameter List value
-  virtual const RealArrayPtr& getParameters( ) const;
+  virtual const TOOLS(RealArrayPtr)& getParameters( ) const;
 
   /// Return the Parameter List field
-  virtual RealArrayPtr& getParameters( );
+  virtual TOOLS(RealArrayPtr)& getParameters( );
 
   /// Return the Interpolate Degree value
   virtual uint32_t getDegree( ) const;
@@ -137,7 +142,7 @@ protected:
   Point3ArrayPtr points;
 
   /// Parameter at the points
-  RealArrayPtr knots;
+  TOOLS(RealArrayPtr) knots;
 
   /// Interpolation degree
   uint32_t degree;
@@ -151,7 +156,7 @@ private:
   Point3ArrayPtr CP;
 
   /// List of limit arcs parameters
-  RealArrayPtr params;
+  TOOLS(RealArrayPtr) params;
 
   /// Tangents
   Point3ArrayPtr T;
@@ -162,7 +167,7 @@ private:
   virtual bool initTangent();
 
   /// Compute a trivial knot vector
-  virtual RealArrayPtr bezierKV( const RealArrayPtr& _knots ) const;
+  virtual TOOLS(RealArrayPtr) bezierKV( const TOOLS(RealArrayPtr)& _knots ) const;
 
   /// check the continuity of the result curve
   virtual uint32_t checkContinuity() const;
@@ -183,7 +188,7 @@ private:
 // __util_interpol_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

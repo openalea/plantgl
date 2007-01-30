@@ -49,14 +49,13 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-//using namespace std;
-#include "Tools/rcobject.h"
-#include "Tools/config.h"
-#include "geom_namespace.h"
+
+#include "rcobject.h"
+#include "tools_config.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+TOOLS_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,7 +67,7 @@ GEOM_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 template <class T>
-class Array1 : public TOOLS(RefCountObject)
+class Array1 : public RefCountObject
 {
 
 public:
@@ -348,14 +347,10 @@ class TOOLS_API RealArray : public Array1<real_t>
 public:
 
   /// Constructs an Array1 of size \e size
-  RealArray( uint32_t size = 0 ) :
-    Array1<real_t>( size ) {
-  }
+  RealArray( uint32_t size = 0 ) ;
 
   /// Constructs an Array1 with \e size copies of \e t.
-  RealArray(uint32_t size, const real_t& t ) :
-    Array1<real_t>( size, t ){
-  }
+  RealArray(uint32_t size, const real_t& t  ) ;
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
@@ -364,8 +359,8 @@ public:
   }
 
   /// Destructor
-  virtual ~RealArray( ) {
-  }
+  virtual ~RealArray( ); 
+
 };
 
 /// Real Array Pointer
@@ -376,11 +371,11 @@ typedef RCPtr<RealArray> RealArrayPtr;
 // __util_array_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+TOOLS_END_NAMESPACE
 
 /// Write Array \b a in \b stream.
   template <class T>
-  std::ostream& operator<<(std::ostream& stream, const GEOM(Array1<T>) a){
+  std::ostream& operator<<(std::ostream& stream, const TOOLS(Array1<T>) a){
       return a.print(stream);
   }
 

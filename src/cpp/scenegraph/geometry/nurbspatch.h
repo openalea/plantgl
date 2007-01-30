@@ -45,17 +45,20 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_bezierpatch.h"
+#include "bezierpatch.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
+TOOLS_BEGIN_NAMESPACE
 
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 
+TOOLS_END_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,7 +67,7 @@ typedef RCPtr<RealArray> RealArrayPtr;
    \brief A Nurbs Patch represented by 2 degrees, a matrix of control Points, 2 lists of knots and 2 stride values.
 */
 
-class GEOM_API NurbsPatch : public BezierPatch {
+class SG_API NurbsPatch : public BezierPatch {
 
 public:
 
@@ -75,10 +78,10 @@ public:
   struct Builder : public BezierPatch::Builder { 
 
     /// A pointer to the \b UKnotList field.
-    RealArrayPtr * UKnotList;
+    TOOLS(RealArrayPtr) * UKnotList;
 
     /// A pointer to the \b VKnotList field.
-    RealArrayPtr * VKnotList;
+    TOOLS(RealArrayPtr) * VKnotList;
 
 
     /// Constructor.
@@ -107,8 +110,8 @@ public:
       \post
       - \e self is valid. */
   NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      const RealArrayPtr& uKnotList, 
-	      const RealArrayPtr& vKnotList, 
+	      const TOOLS(RealArrayPtr)& uKnotList, 
+	      const TOOLS(RealArrayPtr)& vKnotList, 
 	      uint32_t uDegree = DEFAULT_NURBS_DEGREE, 
 	      uint32_t vDegree = DEFAULT_NURBS_DEGREE, 
 	      uint32_t ustride = DEFAULT_STRIDE, 
@@ -142,10 +145,10 @@ public:
   virtual uint32_t isVDegreeToDefault( ) const ;
 
   /// Returns \e uknotsList value.
-  virtual const RealArrayPtr& getUKnotList( ) const;
+  virtual const TOOLS(RealArrayPtr)& getUKnotList( ) const;
 
   /// Returns \e uknotsList field.
-  RealArrayPtr& getUKnotList( );
+  TOOLS(RealArrayPtr)& getUKnotList( );
 
   /// Returns the \e fist uknots value.
   virtual const real_t getFirstUKnot( ) const ;
@@ -165,10 +168,10 @@ public:
   bool isUKnotListToDefault( ) const;
 
   /// Returns \e knotsList value.
-  virtual const RealArrayPtr& getVKnotList( ) const ;
+  virtual const TOOLS(RealArrayPtr)& getVKnotList( ) const ;
 
   /// Returns \e knotsList field.
-  RealArrayPtr& getVKnotList( );
+  TOOLS(RealArrayPtr)& getVKnotList( );
 
   /// Returns the \e fist knots value.
   virtual real_t getFirstVKnot( ) const ;
@@ -200,7 +203,7 @@ public:
     Determine the knot Span index.
     From the Nurbs Book : A2.1 p68
   */
-  uint32_t findSpan(uint32_t deg, const RealArrayPtr& U,  real_t u) const;  
+  uint32_t findSpan(uint32_t deg, const TOOLS(RealArrayPtr)& U,  real_t u) const;  
 
   /*!
     Compute the Basis Functions Values 
@@ -214,10 +217,10 @@ public:
 protected:
 
   /// The \b uKnotList field.
-  RealArrayPtr __uKnotList;
+  TOOLS(RealArrayPtr) __uKnotList;
 
   /// The \b vKnotList field.
-  RealArrayPtr __vKnotList;
+  TOOLS(RealArrayPtr) __vKnotList;
 
   /// The \b udegree field.
   uint32_t __udegree;
@@ -236,7 +239,7 @@ typedef RCPtr<NurbsPatch> NurbsPatchPtr;
 // __geom_nurbspatch_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

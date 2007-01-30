@@ -34,13 +34,13 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "geom_bezierpatch.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
-#include "geom_pointmatrix.h"
+#include "bezierpatch.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
+#include <scenegraph/container/pointmatrix.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 

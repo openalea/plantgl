@@ -37,8 +37,8 @@
 
 
 
-#include "geom_pointarray.h"
-GEOM_USING_NAMESPACE
+#include "pointarray.h"
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;

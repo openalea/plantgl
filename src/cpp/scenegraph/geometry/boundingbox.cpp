@@ -38,11 +38,11 @@
 
 
 
-#include "geom_boundingbox.h"
-#include "Tools/util_matrix.h"
-#include "Tools/util_math.h"
+#include "boundingbox.h"
+#include <math/util_matrix.h>
+#include <math/util_math.h>
 using namespace std;
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -430,31 +430,31 @@ BoundingBox::getZMax() const { return __ur.z(); }
 
 /* ----------------------------------------------------------------------- */
 
-BoundingBox GEOM(operator+)( const BoundingBox& b1, const BoundingBox& b2) {
+BoundingBox PGL(operator+)( const BoundingBox& b1, const BoundingBox& b2) {
   return BoundingBox(b1).extend(b2);
 }
 
-BoundingBox GEOM(operator|)( const BoundingBox& b1, const BoundingBox& b2) {
+BoundingBox PGL(operator|)( const BoundingBox& b1, const BoundingBox& b2) {
   return BoundingBox(b1).extend(b2);
 }
 
-BoundingBox GEOM(operator&)( const BoundingBox& b1, const BoundingBox& b2) {
+BoundingBox PGL(operator&)( const BoundingBox& b1, const BoundingBox& b2) {
   return (BoundingBox(b1) &= (b2));
 }
 
-BoundingBox GEOM(operator+)( const BoundingBox& b1, const Vector3& v2) {
+BoundingBox PGL(operator+)( const BoundingBox& b1, const Vector3& v2) {
   return BoundingBox(b1).extend(v2);
 }
 
-BoundingBox GEOM(operator|)( const BoundingBox& b1, const Vector3& v2) {
+BoundingBox PGL(operator|)( const BoundingBox& b1, const Vector3& v2) {
   return BoundingBox(b1).extend(v2);
 }
 
-bool GEOM(intersection)( const BoundingBox& b1, const BoundingBox& b2) {
+bool PGL(intersection)( const BoundingBox& b1, const BoundingBox& b2) {
   return b1.intersect(b2);
 }
 
-bool GEOM(intersection)( const BoundingBox& b1, const Vector3& v2) {
+bool PGL(intersection)( const BoundingBox& b1, const Vector3& v2) {
   return b1.intersect(v2);
 }
 

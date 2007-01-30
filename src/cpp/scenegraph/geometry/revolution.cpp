@@ -38,13 +38,14 @@
 
  
 
-#include "geom_revolution.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
-#include "geom_curve.h"
+#include "revolution.h"
+#include "curve.h"
 
-GEOM_USING_NAMESPACE
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
+
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

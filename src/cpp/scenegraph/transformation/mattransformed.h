@@ -46,12 +46,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_transformed.h"
-#include "Tools/util_matrix.h"
+#include "transformed.h"
+#include <math/util_matrix.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,7 +60,7 @@ GEOM_BEGIN_NAMESPACE
     \brief Abstract base class for 4x4 matrix algebraic transformations.
 */
 
-class GEOM_API Matrix4Transformation : public Transformation3D
+class SG_API Matrix4Transformation : public Transformation3D
 {
 
 public:
@@ -92,7 +92,7 @@ typedef RCPtr<Transform4> Transform4Ptr;
 class OrthonormalBasis3D;
 typedef RCPtr<OrthonormalBasis3D> OrthonormalBasis3DPtr;
 
-class GEOM_API Transform4 : public Matrix4Transformation
+class SG_API Transform4 : public Matrix4Transformation
 {
 
 public:
@@ -175,7 +175,7 @@ typedef RCPtr<Transform4> Transform4Ptr;
 */
 
 
-class GEOM_API MatrixTransformed : public Transformed
+class SG_API MatrixTransformed : public Transformed
 {
 
 public:
@@ -244,7 +244,7 @@ typedef RCPtr<MatrixTransformed> MatrixTransformedPtr;
     \brief Abstract base class for 3x3 matrix algebraic transformations.
 */
 
-class GEOM_API Matrix3Transformation : public Transformation2D
+class SG_API Matrix3Transformation : public Transformation2D
 {
 
 public:
@@ -271,7 +271,7 @@ typedef RCPtr<Matrix3Transformation> Matrix3TransformationPtr;
     \brief class for all 3x3 matrix algebraic transformations.
 */
 
-class GEOM_API GeneralMatrix3Transformation : public Matrix3Transformation
+class SG_API GeneralMatrix3Transformation : public Matrix3Transformation
 {
 
 public:
@@ -310,7 +310,7 @@ typedef RCPtr<GeneralMatrix3Transformation> GeneralMatrix3TransformationPtr;
 // __geom_matrixtransformed_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

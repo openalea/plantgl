@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_patch.h"
-#include "Tools/util_vector.h"
+#include "patch.h"
+#include <math/util_vector.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,7 +64,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
    \brief A Bezier Patch represented by 2 stride values  and a matrix of control Points.
 */
 
-class GEOM_API BezierPatch : public Patch {
+class SG_API BezierPatch : public Patch {
 
 public:
 
@@ -202,7 +202,7 @@ typedef RCPtr<BezierPatch> BezierPatchPtr;
 // __geom_bezierpatch_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

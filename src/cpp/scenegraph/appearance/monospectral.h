@@ -42,12 +42,12 @@
 #define __appe_monospectral_h__
 
 
-#include "appe_spectrum.h"
+#include "spectrum.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,7 +58,7 @@ GEOM_BEGIN_NAMESPACE
 
 
 
-class GEOM_API MonoSpectral : public Spectrum
+class SG_API MonoSpectral : public Spectrum
 {
  
 public:
@@ -146,7 +146,7 @@ typedef RCPtr<MonoSpectral> MonoSpectralPtr;
 // __appe_monospectral_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

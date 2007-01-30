@@ -46,13 +46,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_mesh.h"
-#include "Tools/util_vector.h"
-#include "geom_indexarray.h"
+#include "mesh.h"
+#include <math/util_vector.h>
+#include <scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class TriangleSet;
 class QuadSet;
@@ -64,7 +64,7 @@ class QuadSet;
    \brief A faceset
 */
 
-class GEOM_API FaceSet : public Mesh
+class SG_API FaceSet : public Mesh
 {
 
 public:
@@ -122,7 +122,7 @@ public:
 		   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
 		   bool ccw = DEFAULT_CCW,
 		   bool solid = DEFAULT_SOLID,
-		   const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+		   const PolylinePtr& skeleton = DEFAULT_SKELETON);
   
   
   /** Constructs a FaceSet with the points \e points, the faces indices 
@@ -150,7 +150,7 @@ public:
 		   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
 		   bool CCW = DEFAULT_CCW,
 		   bool solid = DEFAULT_SOLID,
-		   const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+		   const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
   /** Constructs a FaceSet from a TriangleSet.  */
   FaceSet(const TriangleSet&);
@@ -341,7 +341,7 @@ typedef RCPtr<FaceSet> FaceSetPtr;
 // __geom_faceset_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

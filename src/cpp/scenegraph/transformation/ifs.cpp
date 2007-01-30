@@ -36,14 +36,15 @@
 
 
 
-#include "geom_curve.h"
-#include "geom_ifs.h"
-#include "util_messages.h"
-#include "geom_pointarray.h"
-#include "geom_pointmatrix.h"
-#include "geom_mattransformed.h"
-#include "Tools/util_math.h"
-GEOM_USING_NAMESPACE
+#include "ifs.h"
+#include "mattransformed.h"
+#include <scenegraph/geometry/curve.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

@@ -38,12 +38,13 @@
 
 
 
-#include "geom_sphere.h"
-#include "util_messages.h"
-#include "geom_disc.h"
-#include "Tools/util_math.h"
+#include "sphere.h"
+#include "disc.h"
 
-GEOM_USING_NAMESPACE
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
+
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

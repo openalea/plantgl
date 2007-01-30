@@ -45,13 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_hull.h"
-#include "../Tools/util_vector.h"
+#include "hull.h"
+#include <math/util_vector.h>
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,7 +60,7 @@ GEOM_BEGIN_NAMESPACE
    \brief An asymmetric hull defined by 6 morphological points.
 */
 
-class GEOM_API AsymmetricHull : public Hull
+class SG_API AsymmetricHull : public Hull
 {
 
 public:
@@ -403,7 +403,7 @@ typedef RCPtr<AsymmetricHull> AsymmetricHullPtr;
 // __geom_asymmetrichull_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

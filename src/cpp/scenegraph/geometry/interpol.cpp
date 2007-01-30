@@ -36,12 +36,12 @@
  */
 
 
-#include "util_interpol.h"
-#include "geom_pointarray.h"
-#include "geom_nurbscurve.h"
-#include "Tools/util_polymath.h"
+#include "interpol.h"
+#include "nurbscurve.h"
+#include <scenegraph/container/pointarray.h>
+#include <math/util_polymath.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;

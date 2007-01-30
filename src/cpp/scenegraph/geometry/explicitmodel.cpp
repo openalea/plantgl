@@ -38,12 +38,12 @@
 
 
 
-#include "geom_explicitmodel.h"
-#include "util_messages.h"
-#include "geom_pointarray.h"
-#include "Tools/util_string.h"
+#include "explicitmodel.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <scenegraph/container/pointarray.h>
+#include <tool/util_string.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;

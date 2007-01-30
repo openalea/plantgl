@@ -38,16 +38,16 @@
 
 
 
-#include "geom_nurbspatch.h"
-#include "geom_nurbscurve.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/util_math.h"
-#include "geom_pointmatrix.h"
-#include "geom_pointarray.h"
-#include "util_array.h"
+#include "nurbspatch.h"
+#include "nurbscurve.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
+#include <tool/util_array.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/container/pointarray.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;

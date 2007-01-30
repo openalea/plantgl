@@ -38,10 +38,10 @@
 
 
 
-#include "geom_transformed.h"
-#include "util_messages.h"
+#include "transformed.h"
+#include "../core/pgl_messages.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

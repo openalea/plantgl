@@ -59,11 +59,15 @@ std::string TOOLS_API get_dirname(const std::string& filename);
     the filename might be "../../fruit.drf" or fruit.drf for example.
     get_notdirname returns fruit.drf in both cases.
 */
-std::string TOOLS_API get_notdirname(const std::string& filename);
+std::string TOOLS_API get_filename(const std::string& filename);
 
 /*! Expands the forms ./../ in a filename and resolves the symbolic links.
  */
-std::string TOOLS_API expand_dirname(const std::string& filename);
+std::string TOOLS_API absolute_dirname(const std::string& filename);
+
+/*! Expands the forms ./../ in a filename and resolves the symbolic links.
+ */
+std::string TOOLS_API absolute_filename(const std::string& filename);
 
 
 /*! Expands filename in a short name on win32 else do nothing.
@@ -80,12 +84,6 @@ std::string TOOLS_API get_cwd();
  */
 bool TOOLS_API chg_dir(const std::string& newdir);
 
-/*! adds a suffix to filename. Returns true if the suffix is actually added
-    and false if the suffix was already present at the end of the filname
-    (and therefore was not added)
-*/
-std::string TOOLS_API append_suffix(const std::string& filename, const std::string& suffix);
-
 
 /*! cat a dirname and a filename to make up a complete filename
     ex: cat_dir_file("../foodir", "name1") -> "../foodir/name1"
@@ -96,12 +94,12 @@ std::string TOOLS_API cat_dir_file(const std::string &filename, const std::strin
 /*!
  Return the extension of filename. If none exist, return empty string.
 */
-std::string TOOLS_API get_extension(const std::string& filename);
+std::string TOOLS_API get_suffix(const std::string& filename);
 
 /*!
   Change the current extension of the filename by \e ext.
 */
-std::string TOOLS_API change_extension(const std::string& filename,const std::string& ext);
+std::string TOOLS_API set_suffix(const std::string& filename,const std::string& ext);
 
 /*!
   Return whether the file already exists.

@@ -43,30 +43,15 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_geometryarray.h"
+#include "geometryarray.h"
+#include <scenegraph/geometry/lineicmodel.h>
+#include <scenegraph/geometry/curve.h>
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef _WIN32
 
-#include "geom_curve.h"
-#include "geom_lineicmodel.h"
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
-#else
-
-GEOM_BEGIN_NAMESPACE
-class Geometry;
-class Curve2D;
-class LineicModel;
-
-#endif
-
-/* ----------------------------------------------------------------------- */
-
-typedef RCPtr<Geometry> GeometryPtr;
-typedef RCPtr<Curve2D> Curve2DPtr;
-typedef RCPtr<LineicModel> LineicModelPtr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -75,7 +60,7 @@ typedef RCPtr<LineicModel> LineicModelPtr;
    \brief An array of geometry object
 */
 
-class GEOM_API GeometryArray : public GeomArray<GeometryPtr> {
+class SG_API GeometryArray : public GeomArray<GeometryPtr> {
 public :
   GeometryArray (uint32_t size = 0 );
 
@@ -91,7 +76,7 @@ public :
    \brief An array of curve 2D object
 */
 
-class GEOM_API Curve2DArray : public GeomArray<Curve2DPtr> {
+class SG_API Curve2DArray : public GeomArray<Curve2DPtr> {
 public :
   Curve2DArray (uint32_t size = 0 );
   template <class InIterator>
@@ -104,7 +89,7 @@ public :
    \class CurveArray 
    \brief An array of curve object
 */
-class GEOM_API CurveArray : public GeomArray<LineicModelPtr> {
+class SG_API CurveArray : public GeomArray<LineicModelPtr> {
 public :
   CurveArray (uint32_t size = 0 );
   template <class InIterator>
@@ -131,7 +116,7 @@ typedef RCPtr<CurveArray> CurveArrayPtr;
 // __geom_geometryarray_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

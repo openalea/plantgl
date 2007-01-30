@@ -38,16 +38,16 @@
 
 
 
-#include "geom_triangleset.h"
-#include "util_messages.h"
-#include "Tools/util_string.h"
-#include "Tools/bfstream.h"
-#include "geom_pointarray.h"
-#include "geom_polyline.h"
-#include "geom_transformed.h"
-#include "geom_indexarray.h"
+#include "triangleset.h"
+#include "polyline.h"
+#include <tool/util_string.h>
+#include <tool/bfstream.h>
+#include <scenegraph/core/pgl_messages.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/transformation/transformed.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
@@ -288,7 +288,7 @@ TriangleSet::TriangleSet( const Point3ArrayPtr& points,
 						  bool normalPerVertex,
                           bool ccw,
                           bool solid,
-                          const GeomPolylinePtr& skeleton ) :
+                          const PolylinePtr& skeleton ) :
     Mesh(points,normalPerVertex,ccw,solid,skeleton),
     __indexList(indices),
 	__normalIndexList(0),
@@ -309,7 +309,7 @@ TriangleSet::TriangleSet( const Point3ArrayPtr& points,
 						  bool colorPerVertex,
 						  bool ccw,
 						  bool solid,
-						  const GeomPolylinePtr& skeleton) :
+						  const PolylinePtr& skeleton) :
     Mesh(points,normals,colors,texCoord,normalPerVertex,colorPerVertex,ccw,solid,skeleton),
     __indexList(indices),
 	__normalIndexList(nomalIndices),
@@ -373,7 +373,7 @@ bool TriangleSet::isValid( ) const {
   _builder.ColorPerVertex = const_cast<bool *>(&__colorPerVertex);
   _builder.PointList = const_cast<Point3ArrayPtr *>(&__pointList);
   _builder.IndexList = const_cast<Index3ArrayPtr *>(&__indexList);
-  if(__skeleton)_builder.Skeleton = const_cast<GeomPolylinePtr *>(&__skeleton);
+  if(__skeleton)_builder.Skeleton = const_cast<PolylinePtr *>(&__skeleton);
   if(__normalList)_builder.NormalList = const_cast<Point3ArrayPtr *>(&__normalList);
   if(__texCoordList)_builder.TexCoordList = const_cast<Point2ArrayPtr *>(&__texCoordList);
   if(__colorList)_builder.ColorList = const_cast<Color4ArrayPtr *>(&__colorList);
@@ -388,7 +388,7 @@ ExplicitModelPtr
 TriangleSet::transform( const Transformation3DPtr& transformation ) const {
   GEOM_ASSERT(transformation);
 
-  GeomPolylinePtr _tSkeleton = __skeleton;
+  PolylinePtr _tSkeleton = __skeleton;
   if (_tSkeleton)
     _tSkeleton.cast(__skeleton->transform(transformation));
 

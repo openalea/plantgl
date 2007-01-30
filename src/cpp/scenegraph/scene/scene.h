@@ -1,4 +1,3 @@
-
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
@@ -6,7 +5,7 @@
  *
  *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
+ *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr)
  *
  *       $Source$
  *       $Id$
@@ -46,35 +45,31 @@
 /* ----------------------------------------------------------------------- */
 
 #include <vector>
-#include "scne_sceneobject.h"
-#ifndef GEOM_FWDEF
-#include "scne_shape.h"
-#endif
-
-// #include <qthread.h>
-// qthread.h contains QT_THREAD_SUPPORT definition.
+#include <scenegraph/core/sceneobject.h>
+#include "shape.h"
 
 #ifdef QT_THREAD_SUPPORT
 // forward declaration of QMutex
 class QMutex;
+#else
+#ifndef QT_NO_THREAD_SUPPORT
+#ifdef _MSC_VER
+#pragma message("QT_THREAD_SUPPORT macro not defined. Don't you Forget?")
+#else
+#warning "QT_THREAD_SUPPORT macro not defined. Don't you Forget?"
+#endif
+#endif
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 class Scene;
 
 typedef RCPtr<Scene> ScenePtr;
-
-#ifdef GEOM_FWDEF
-class GeomShape3D;
-class GeomShape;
-typedef RCPtr<GeomShape3D> GeomShape3DPtr;
-typedef RCPtr<GeomShape> GeomShapePtr;
-#endif
 
 
 /* ----------------------------------------------------------------------- */
@@ -86,17 +81,17 @@ typedef RCPtr<GeomShape> GeomShapePtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Scene : public TOOLS(RefCountObject)
+class SG_API Scene : public TOOLS(RefCountObject)
 {
 
 public:
 
 
   /// An iterator used to iterate through a Scene.
-  typedef std::vector<GeomShape3DPtr>::iterator iterator;
+  typedef std::vector<Shape3DPtr>::iterator iterator;
 
   /// A const iterator used to iterate through a Scene.
-  typedef std::vector<GeomShape3DPtr>::const_iterator const_iterator;
+  typedef std::vector<Shape3DPtr>::const_iterator const_iterator;
 
   /// Constructs an empty Scene.
   Scene(unsigned int size=0);
@@ -104,35 +99,45 @@ public:
   Scene(const Scene&);
 
   /// Constructs a Scene with object describe in \e filename. Write error on \e _errlog.
-  Scene(const std::string& filename, std::ostream& errlog=std::cerr, int max_error = -1);
+  Scene(const std::string& filename,
+	    const std::string& format = "",
+	    std::ostream& errlog=std::cerr, 
+		int max_error = -1);
 
   /// Constructs a Scene with objects describe in \e table.
   Scene(const SceneObjectSymbolTable& table);
-
-  /// Constructs a Scene with object describe in \e input. Write error on \e _errlog.
-  Scene(std::istream& input, std::ostream& errlog=std::cerr, int max_error = -1);
 
   /// Destructs a Scene.
   virtual ~Scene( );
 
   Scene& operator=( const Scene& );
 
-  void read( const std::string& fname , std::ostream& errlog=std::cerr, int max_error = -1);
-  void read( std::istream& input, std::ostream& errlog=std::cerr, int max_error = -1 );
+  void save( const std::string& fname , const std::string& format = "" );
+
+  void read( const std::string& fname,
+			 const std::string& format = "",
+			 std::ostream& errlog=std::cerr, 
+			 int max_error = -1 );
   
   /** Adds objects describe in table  */
-  void add( const SceneObjectSymbolTable& table );
+  void convert( const SceneObjectSymbolTable& table );
 
   /** Adds a shape to the \e self
       \pre
       - shape must be non null and valid. */
-  void add( const GeomShape& shape );
-  void add( const GeomShapePtr& shape );
+  void add( const Shape& shape );
+  void add( const ShapePtr& shape );
 
   /** Adds a shape to the \e self
       \pre
       - shape must be non null and valid. */
-  void add( const GeomShape3DPtr& shape );
+  void add( const Shape3DPtr& shape );
+
+  /** Remove a shape to the \e self
+      \pre
+      - shape must be non null and valid. */
+  void remove( const Shape3DPtr& shape );
+  void remove( Scene::iterator& it );
 
   /// Deep copy of \e this.
   virtual ScenePtr copy() const ;
@@ -177,13 +182,13 @@ public:
   iterator getEnd( );
 
   /// Returns the \e i-th element of \e self.
-  const GeomShape3DPtr getAt(uint32_t i ) const ;
+  const Shape3DPtr getAt(uint32_t i ) const ;
 
   /// Returns the \e i-th element of \e self.
-  void setAt(uint32_t i, const GeomShape3DPtr& );
+  void setAt(uint32_t i, const Shape3DPtr& );
 
   /// Returns the \e i-th element of \e self.
-  const GeomShapePtr getShapeId(uint32_t id ) const ;
+  const ShapePtr getShapeId(uint32_t id ) const ;
 
   /// Returns the size of \e self.
   uint32_t getSize( ) const ;
@@ -208,18 +213,13 @@ public:
       - \e subScene must be valid. */
   void merge( const ScenePtr& subScene );
 
-  void save( const std::string& fname );
-
-  /// Prints \e s to the output stream \e stream.
-//  friend ostream& operator<<( ostream& stream, Scene& s );
-
   void lock() const ;
   void unlock() const;
 
 protected:
 
   /// The list of shapes constituting the subScene.
-  std::vector<GeomShape3DPtr> __shapeList;
+  std::vector<Shape3DPtr> __shapeList;
 
 #ifdef QT_THREAD_SUPPORT
   QMutex* __mutex;
@@ -236,10 +236,10 @@ typedef RCPtr<Scene> ScenePtr;
 // __scne_scene_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write Scene \b s in \b stream.
-GEOM_API std::ostream& operator<<( std::ostream& stream, GEOM(Scene&) s );
+SG_API std::ostream& operator<<( std::ostream& stream, PGL(Scene&) s );
 
 /* ----------------------------------------------------------------------- */
 #endif

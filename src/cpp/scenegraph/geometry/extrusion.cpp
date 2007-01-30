@@ -35,18 +35,21 @@
  */				
 
 
-#include "geom_extrusion.h"
-#include "util_messages.h"
-#include "geom_scaled.h"
-#include "geom_mattransformed.h"
-#include "geom_orthotransformed.h"
-#include "geom_lineicmodel.h"
-#include "geom_curve.h"
-#include "geom_profile.h"
-#include "geom_mesh.h"
-#include "util_array.h"
-#include "geom_pointarray.h"
-GEOM_USING_NAMESPACE
+#include "extrusion.h"
+#include <scenegraph/core/pgl_messages.h>
+
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/mattransformed.h>
+#include <scenegraph/transformation/orthotransformed.h>
+#include "lineicmodel.h"
+#include "curve.h"
+#include "profile.h"
+#include "mesh.h"
+#include <tool/util_array.h>
+#include <scenegraph/container/pointarray.h>
+
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

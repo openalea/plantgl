@@ -34,9 +34,29 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include "util_array.h"
 #include "util_array2.h"
+
+/* ----------------------------------------------------------------------- */
+
 TOOLS_USING_NAMESPACE
 
+/* ----------------------------------------------------------------------- */
+
+/// Constructs an Array1 of size \e size
+RealArray::RealArray( uint32_t size  ) :
+    Array1<real_t>( size ) {
+}
+
+/// Constructs an Array1 with \e size copies of \e t.
+RealArray::RealArray(uint32_t size, const real_t& t ) :
+    Array1<real_t>( size, t ){
+}
+
+/// Destructor
+RealArray::~RealArray( ) { }
+
+/* ----------------------------------------------------------------------- */
 
 RealArray2::RealArray2( uint32_t row , uint32_t col ) :
     NumericArray2<real_t>( row, col ) {
@@ -49,3 +69,4 @@ RealArray2::RealArray2( uint32_t row, uint32_t col, const real_t& t ) :
 RealArray2::~RealArray2( ) {
 }
 
+/* ----------------------------------------------------------------------- */

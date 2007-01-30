@@ -43,12 +43,12 @@
 #define __appe_spectrum_h__
 
 
-#include "appe_appearance.h"
+#include "appearance.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -59,7 +59,7 @@ GEOM_BEGIN_NAMESPACE
 
 
 
-class GEOM_API Spectrum : public Appearance
+class SG_API Spectrum : public Appearance
 {
 
 public:
@@ -93,7 +93,7 @@ typedef RCPtr<Spectrum> SpectrumPtr;
 // __appe_spectrum_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

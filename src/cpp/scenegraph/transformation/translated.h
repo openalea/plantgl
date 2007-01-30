@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_mattransformed.h"
+#include "mattransformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Translation : public Matrix4Transformation
+class SG_API Translation : public Matrix4Transformation
 {
 
 public:
@@ -110,7 +110,7 @@ typedef RCPtr<Translation> TranslationPtr;
 */
 
 
-class GEOM_API Translated : public MatrixTransformed
+class SG_API Translated : public MatrixTransformed
 {
 
 public:
@@ -189,7 +189,7 @@ typedef RCPtr<Translated> TranslatedPtr;
     \brief A 2D Translation of a vector.
 */
 
-class GEOM_API Translation2D : public Matrix3Transformation
+class SG_API Translation2D : public Matrix3Transformation
 {
 
 public:
@@ -235,7 +235,7 @@ typedef RCPtr<Translation2D> Translation2DPtr;
 // __geom_translated_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

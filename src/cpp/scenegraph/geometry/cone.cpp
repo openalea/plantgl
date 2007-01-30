@@ -38,11 +38,12 @@
 
 
 
-#include "geom_cone.h"
-#include "geom_disc.h"
-#include "util_messages.h"
-#include "Tools/util_math.h"
-GEOM_USING_NAMESPACE
+#include "cone.h"
+#include "disc.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <math/util_math.h>
+#include <math/util_vector.h>
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

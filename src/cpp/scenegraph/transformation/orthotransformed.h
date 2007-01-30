@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_mattransformed.h"
+#include "mattransformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,7 +67,7 @@ typedef RCPtr<OrthonormalBasis3D> OrthonormalBasis3DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API OrthonormalBasis3D : public Matrix4Transformation
+class SG_API OrthonormalBasis3D : public Matrix4Transformation
 {
 
 public:
@@ -134,7 +134,7 @@ typedef RCPtr<OrthonormalBasis3D> OrthonormalBasis3DPtr;
 */
 
 
-class GEOM_API OrthoTransformed : public MatrixTransformed
+class SG_API OrthoTransformed : public MatrixTransformed
 {
 
 public:
@@ -176,7 +176,7 @@ typedef RCPtr<OrthoTransformed> OrthoTransformedPtr;
     \brief A Transformation represented by an orthogonal 2x2 matrix.
 */
 
-class GEOM_API OrthonormalBasis2D : public Matrix3Transformation
+class SG_API OrthonormalBasis2D : public Matrix3Transformation
 {
 
 public:
@@ -219,7 +219,7 @@ typedef RCPtr<OrthonormalBasis2D> OrthonormalBasis2DPtr;
 // __geom_orthotransformed_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -38,14 +38,15 @@
 
 
 
-#include "geom_swung.h"
-#include "util_messages.h"
-#include "geom_curve.h"
-#include "geom_profile.h"
-#include "geom_geometryarray2.h"
-#include "geom_pointarray.h"
+#include "swung.h"
+#include <scenegraph/core/pgl_messages.h>
+#include "curve.h"
+#include "profile.h"
+#include <scenegraph/container/geometryarray2.h>
+#include <scenegraph/container/pointarray.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

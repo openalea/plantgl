@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_parametricmodel.h"
+#include "parametricmodel.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,7 +58,7 @@ GEOM_BEGIN_NAMESPACE
     \brief Abstract base class for objects of type of 3D envelop.
 */
 
-class GEOM_API Hull : public ParametricModel
+class SG_API Hull : public ParametricModel
 {
 
 public:
@@ -98,7 +98,7 @@ typedef RCPtr<Hull> HullPtr;
 // __geom_hull_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

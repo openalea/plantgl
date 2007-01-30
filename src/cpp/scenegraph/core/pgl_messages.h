@@ -44,8 +44,8 @@
 #define __util_messages_h__
 
 
-#include "Tools/errormsg.h"
-#include "scne_sceneobject.h"
+#include <tool/errormsg.h>
+#include "sceneobject.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -133,7 +133,7 @@ enum  GEOM_MESSAGE_LABELS  {
 
 
 /// Geom Error Message Array
-GEOM_API extern const char * GEOM_MESSAGES[];
+SG_API extern const char * GEOM_MESSAGES[];
 
 
 /* ----------------------------------------------------------------------- */

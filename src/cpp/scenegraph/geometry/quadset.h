@@ -46,19 +46,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_mesh.h"
-#include "Tools/util_vector.h"
-#include "geom_indexarray.h"
+#include "mesh.h"
+#include <math/util_vector.h>
+#include <scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-typedef TOOLS(Uint32Tuple4) Index4;
-class Index4Array;
-typedef RCPtr<Index4Array> Index4ArrayPtr;
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -69,7 +63,7 @@ typedef RCPtr<Index4Array> Index4ArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API QuadSet : public Mesh
+class SG_API QuadSet : public Mesh
 {
 
 public:
@@ -121,7 +115,7 @@ public:
 	   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
 	   bool ccw = DEFAULT_CCW,
 	   bool solid = DEFAULT_SOLID,
-	   const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+	   const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
  
   /** Constructs a QuadSet with the points \e points, the quadrilaterals 
@@ -148,7 +142,7 @@ public:
 		   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
 		   bool ccw = DEFAULT_CCW,
 		   bool solid = DEFAULT_SOLID,
-		   const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+		   const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
   /// Destructor
   virtual ~QuadSet( );
@@ -333,7 +327,7 @@ typedef RCPtr<QuadSet> QuadSetPtr;
 // __geom_quadset_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

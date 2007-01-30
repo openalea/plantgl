@@ -36,7 +36,7 @@
 
 
 /*! \file geom_polyline.h
-    \brief Definition of the geometry class GeomPolyline and GeomPolyline2D.
+    \brief Definition of the geometry class Polyline and Polyline2D.
 */
 
 
@@ -45,13 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_explicitmodel.h"
-#include "geom_lineicmodel.h"
-#include "geom_curve.h"
+#include "explicitmodel.h"
+#include "lineicmodel.h"
+#include "curve.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,16 +61,16 @@ typedef RCPtr<Point2Array> Point2ArrayPtr;
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class GeomPolyline
+   \class Polyline
    \brief A polyline represented by an array of points 3D.
 */
 
-class GEOM_API GeomPolyline : public  ExplicitModel, public LineicModel
+class SG_API Polyline : public  ExplicitModel, public LineicModel
 {
 
 public:
 
-  /// A structure which helps to build a GeomPolyline when parsing.
+  /// A structure which helps to build a Polyline when parsing.
   struct Builder : public ExplicitModel::Builder {
 
     /// Constructor.
@@ -88,23 +88,23 @@ public:
   };
 
   /// Default Constructor. Build object is invalid.
-  GeomPolyline();
+  Polyline();
 
-  /** Constructs a GeomPolyline with the segment defined by \e point1 and
+  /** Constructs a Polyline with the segment defined by \e point1 and
      \e point2.
      \post
      - \e self is valid. */
-  GeomPolyline( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 );
+  Polyline( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 );
 
-  /** Constructs a GeomPolyline with the points \e points.
+  /** Constructs a Polyline with the points \e points.
       \pre
       - \e points must contain at least 2 points.
       \post
       - \e self is valid. */
-  GeomPolyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = 0 );
+  Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = 0 );
 
   /// Destructor
-  virtual ~GeomPolyline( );
+  virtual ~Polyline( );
 
   virtual bool apply( Action& action );
 
@@ -138,26 +138,26 @@ public:
   virtual ExplicitModelPtr
   transform( const Transformation3DPtr& transformation ) const;
 
-}; // GeomPolyline
+}; // Polyline
 
-/// GeomPolyline Pointer
-typedef RCPtr<GeomPolyline> GeomPolylinePtr;
+/// Polyline Pointer
+typedef RCPtr<Polyline> PolylinePtr;
 
 
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class GeomPolyline2D
+   \class Polyline2D
    \brief A polyline represented by an array of 2D points.
 */
 
 
-class GEOM_API GeomPolyline2D : public Curve2D
+class SG_API Polyline2D : public Curve2D
 {
 
 public:
 
-  /// A structure which helps to build a GeomPolyline when parsing.
+  /// A structure which helps to build a Polyline when parsing.
   struct Builder : public Curve2D::Builder {
 
     /// A pointer to the \b PointList field.
@@ -178,23 +178,23 @@ public:
   };
 
   /// Default Constructor. Build object is invalid.
-  GeomPolyline2D( );
+  Polyline2D( );
 
-  /** Constructs a GeomPolyline2D with the segment defined by \e point1 and
+  /** Constructs a Polyline2D with the segment defined by \e point1 and
      \e point2.
      \post
      - \e self is valid. */
-  GeomPolyline2D( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2 );
+  Polyline2D( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2 );
 
-  /** Constructs a GeomPolyline2D with the points \e points.
+  /** Constructs a Polyline2D with the points \e points.
       \pre
       - \e points must contain at least 2 points.
       \post
       - \e self is valid. */
-  GeomPolyline2D( const Point2ArrayPtr& points );
+  Polyline2D( const Point2ArrayPtr& points );
 
   /// Destructor
-  virtual ~GeomPolyline2D( );
+  virtual ~Polyline2D( );
 
   virtual bool apply( Action& action );
 
@@ -250,10 +250,10 @@ protected:
   /// The \b PointList field.
   Point2ArrayPtr __pointList;
 
-}; // GeomPolyline2D
+}; // Polyline2D
 
-/// GeomPolyline2D Pointer
-typedef RCPtr<GeomPolyline2D> GeomPolyline2DPtr;
+/// Polyline2D Pointer
+typedef RCPtr<Polyline2D> Polyline2DPtr;
 
 
 /* ----------------------------------------------------------------------- */
@@ -261,7 +261,7 @@ typedef RCPtr<GeomPolyline2D> GeomPolyline2DPtr;
 // __geom_polyline_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

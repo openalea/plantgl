@@ -34,16 +34,12 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "scne_shape.h"
-#include "geom_geometry.h"
-#include "appe_appearance.h"
+#include "shape.h"
+#include <scenegraph/core/pgl_messages.h>
 
-#include "actn_printer.h"
-#include "util_messages.h"
+#include <tool/util_string.h>
 
-#include "Tools/util_string.h"
-
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace std;
@@ -51,55 +47,55 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 /// The undef value for the Id field.
-const uint32_t GeomShape::NOID = 0;
+const uint32_t Shape::NOID = 0;
 
 /* ----------------------------------------------------------------------- */
 
-GeomShape3D::Builder::Builder( ) :
+Shape3D::Builder::Builder( ) :
     SceneObject::Builder(){
 };
 
-GeomShape3D::Builder::~Builder( ){
+Shape3D::Builder::~Builder( ){
 }
 
 /* ----------------------------------------------------------------------- */
 
-GeomShape3D::GeomShape3D( ) :
+Shape3D::Shape3D( ) :
   SceneObject(){
 }
 
-GeomShape3D::~GeomShape3D() {
+Shape3D::~Shape3D() {
 }
 
 /* ----------------------------------------------------------------------- */
 
-GeomShape::Builder::Builder( ) :
-    GeomShape3D::Builder(),
+Shape::Builder::Builder( ) :
+    Shape3D::Builder(),
     Appearance(0),
     Geometry(0),
     Id(0){
 }
 
 
-GeomShape::Builder::~Builder( ) {
+Shape::Builder::~Builder( ) {
   /// Nothng To do.
 }
 
-SceneObjectPtr GeomShape::Builder::build( ) {
+SceneObjectPtr Shape::Builder::build( ) {
   if (isValid())
     return SceneObjectPtr
-      (new GeomShape(*Geometry,(Appearance ? *Appearance : AppearancePtr()),
+      (new Shape(*Geometry,(Appearance ? *Appearance : AppearancePtr()),
                      Id ? *Id : NOID));
   return SceneObjectPtr();
 }
 
-void GeomShape::Builder::destroy() {
+void Shape::Builder::destroy() {
   if (Appearance) delete Appearance;
   if (Geometry) delete Geometry;
   if (Id) delete Id;
 }
 
-bool GeomShape::Builder::isValid( ) const{
+bool Shape::Builder::isValid( ) const{
   if (! (Geometry)){
     genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
@@ -113,47 +109,47 @@ bool GeomShape::Builder::isValid( ) const{
 
 /* ----------------------------------------------------------------------- */
 
-GeomShape::GeomShape( ) :
-    GeomShape3D(),
+Shape::Shape( ) :
+    Shape3D(),
     appearance(0),
     geometry(0),
     id(NOID){
 }
 
-GeomShape::GeomShape( const GeometryPtr& _geom,
+Shape::Shape( const GeometryPtr& _geom,
                       const AppearancePtr& _app,
                       uint32_t _id) :
-    GeomShape3D(),
+    Shape3D(),
     appearance(_app),
     geometry(_geom),
     id(_id) {
     setComputedName();
 }
 
-GeomShape::GeomShape( const string& name,
+Shape::Shape( const string& name,
 					  const GeometryPtr& _geom,
                       const AppearancePtr& _app,
                       uint32_t _id) :
-    GeomShape3D(),
+    Shape3D(),
     appearance(_app),
     geometry(_geom),
     id(_id) {
     setName(name);
 }
 
-GeomShape::~GeomShape() {
+Shape::~Shape() {
 #ifdef GEOM_DEBUG
-    cerr <<"GeomShape " <<  __name << " destroyed" << endl;
+    cerr <<"Shape " <<  __name << " destroyed" << endl;
 #endif
 }
 
-bool GeomShape::apply( Action& action ){
+bool Shape::apply( Action& action ){
   return action.process(this);
 }
 
 /* ----------------------------------------------------------------------- */
 
-void GeomShape::setComputedName(){
+void Shape::setComputedName(){
     // Sets the label to the Geometry object
     if (geometry)
         if (! geometry->isNamed()) {
@@ -187,9 +183,9 @@ void GeomShape::setComputedName(){
     };
 }
 
-SceneObjectPtr GeomShape::copy() const
+SceneObjectPtr Shape::copy() const
 {
-  GeomShape * ptr = new GeomShape(*this);
+  Shape * ptr = new Shape(*this);
   if(geometry)ptr->getGeometry().cast(geometry->copy());
   if(appearance)ptr->getAppearance().cast(appearance->copy());
   return SceneObjectPtr(ptr);
@@ -197,17 +193,17 @@ SceneObjectPtr GeomShape::copy() const
 
 
 /* ----------------------------------------------------------------------- */
-bool GeomShape::applyGeometryFirst( Action& action ){
+bool Shape::applyGeometryFirst( Action& action ){
   if(!geometry->apply(action )) return false;
   else if(appearance)return appearance->apply(action );
   else return false;
 }
 
-bool GeomShape::applyGeometryOnly( Action& action ){
+bool Shape::applyGeometryOnly( Action& action ){
   return geometry->apply(action );
 }
 
-bool GeomShape::applyAppearanceFirst( Action& action ){
+bool Shape::applyAppearanceFirst( Action& action ){
   if(appearance){
     if(!appearance->apply(action )) return false;
     else return geometry->apply(action );
@@ -215,46 +211,38 @@ bool GeomShape::applyAppearanceFirst( Action& action ){
   else return geometry->apply(action );
 }
 
-bool GeomShape::applyAppearanceOnly( Action& action ){
+bool Shape::applyAppearanceOnly( Action& action ){
   if(appearance)return appearance->apply(action );
   else return false;
 }
 
-const GeometryPtr& GeomShape::getGeometry() const{
+const GeometryPtr& Shape::getGeometry() const{
   return geometry;
 }
 
-GeometryPtr& GeomShape::getGeometry(){
+GeometryPtr& Shape::getGeometry(){
   return geometry;
 }
 
-const AppearancePtr& GeomShape::getAppearance() const{
+const AppearancePtr& Shape::getAppearance() const{
   return appearance;
 }
 
-AppearancePtr& GeomShape::getAppearance(){
+AppearancePtr& Shape::getAppearance(){
   return appearance;
 }
 
-uint32_t GeomShape::getId() const {
+uint32_t Shape::getId() const {
   return id;
 }
 
-uint32_t& GeomShape::getId(){
+uint32_t& Shape::getId(){
   return id;
 }
 
 /* ----------------------------------------------------------------------- */
 
-ostream& operator<<( ostream& stream, GeomShape3D& s ){
-    Printer p(stream,stream,stream);
-    s.apply(p);
-    return stream;
-}
-
-/* ----------------------------------------------------------------------- */
-
-bool GeomShape::isValid( ) const {
+bool Shape::isValid( ) const {
   if (! (geometry)){
     genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;

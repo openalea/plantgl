@@ -38,10 +38,10 @@
 
 
 
-#include "geom_frustum.h"
-#include "util_messages.h"
+#include "frustum.h"
+#include <scenegraph/core/pgl_messages.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

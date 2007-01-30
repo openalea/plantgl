@@ -45,11 +45,11 @@
 
 /* ------------------------------------------------------------------------- */
 
-#include "scne_sceneobject.h"
+#include <scenegraph/core/sceneobject.h>
 
 /* ------------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 
@@ -64,7 +64,7 @@ class GeometrySymbolTable;
     \brief Abstract base class for all 3D geometric geometry models.
 */
 
-class GEOM_API Geometry : public virtual SceneObject
+class SG_API Geometry : public virtual SceneObject
 {
 
 public:
@@ -107,29 +107,6 @@ public:
   /// Returns whether \e self is explicit.
   virtual bool isExplicit( ) const = 0;
 
-  /// Prints \e g to the output stream \e stream.
-//  friend ostream& operator<<( ostream& stream, Geometry& g );
-
-  /** Parses the input stream \e inputStream and returns the corresponding
-      symbol table \e symbolTable
-      \pre
-      - \e inputStream must be valid;
-      - \e outputStream must be valid. */
-  static bool parse( std::istream& inputStream,
-                     std::ostream& outputStream,
-                     GeometrySymbolTable& symbolTable,
-                     int max_errors = -1 );
-
-  /** Parses the file \e fileName and returns the corresponding symbol table
-      \e symbolTable.
-      \pre
-      - \e fileName must exist;
-      - \e outputStream must be valid. */
-  static bool parse( const std::string& fileName,
-                     std::ostream& outputStream,
-                     GeometrySymbolTable& symbolTable,
-                     int max_errors = -1 );
-
 }; // class Geometry
 
 /// Geometry Pointer
@@ -140,10 +117,7 @@ typedef RCPtr<Geometry> GeometryPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
-
-/// Write Geometry in \b stream
-GEOM_API std::ostream& operator<<( std::ostream& stream, GEOM(Geometry&) g );
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

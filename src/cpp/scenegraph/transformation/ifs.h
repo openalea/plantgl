@@ -44,18 +44,18 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "util_array.h"
-#include "Tools/util_matrix.h"
-#include "geom_geometryarray.h"
-#include "geom_transformed.h"
+#include <tool/util_array.h>
+#include <math/util_matrix.h>
+#include <scenegraph/container/geometryarray.h>
+#include "transformed.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-typedef Array1<TOOLS(Matrix4)> Matrix4Array;
+typedef TOOLS(Array1)<TOOLS(Matrix4)> Matrix4Array;
 typedef RCPtr<Matrix4Array> Matrix4ArrayPtr;
 
 class Transform4;
@@ -70,7 +70,7 @@ typedef RCPtr<Transform4Array> Transform4ArrayPtr;
     \brief IT : IterativeTransformation. (n ** depth) transformations ( n: size of TransfoList )
 */
 
-class GEOM_API IT : public Transformation3D
+class SG_API IT : public Transformation3D
 {
 
 public:
@@ -121,7 +121,7 @@ typedef RCPtr<IT> ITPtr;
    \brief IFS: Iterated Function System. Transform iteratively a geometry by a set of 3D transformations
 */
 
-class GEOM_API IFS : public Transformed
+class SG_API IFS : public Transformed
 {
 
 public:
@@ -241,7 +241,7 @@ typedef RCPtr<IFS> IFSPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

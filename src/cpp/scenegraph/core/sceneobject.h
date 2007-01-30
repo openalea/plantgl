@@ -43,16 +43,17 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "actn_action.h"
-#include "../Tools/rcobject.h"
+#include "../sg_config.h"
+
+#include <scenegraph/core/action.h>
+#include <tool/rcobject.h>
 #include <string>
 #include <iostream>
 
-#include "geom_namespace.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -72,7 +73,7 @@ class SceneObjectSymbolTable;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API SceneObject : public virtual TOOLS(RefCountObject)
+class SG_API SceneObject : public virtual TOOLS(RefCountObject)
 {
 
 public:
@@ -172,32 +173,6 @@ public:
   /// Deep copy of \e this.
   virtual SceneObjectPtr copy() const = 0 ;
 
-  /** Parses the input stream \e cin/readline and returns the corresponding
-      symbol table \e symbolTable */
-  static bool parse(SceneObjectSymbolTable& symbolTable,
-                    int max_errors = -1 );
-
-  /** Parses the input stream \e inputStream and returns the corresponding
-      symbol table \e symbolTable
-      \pre
-      - \e inputStream must be valid;
-      - \e outputStream must be valid. */
-  static bool parse( std::istream& inputStream,
-                     std::ostream& outputStream,
-                     SceneObjectSymbolTable& symbolTable,
-                     int max_errors = -1 );
-
-  /** Parses the file \e fileName and returns the corresponding symbol table
-      \e symbolTable.
-      \pre
-      - \e fileName must exist;
-      - \e outputStream must be valid. */
-  static bool parse( const std::string& fileName,
-                     std::ostream& outputStream,
-                     SceneObjectSymbolTable& symbolTable,
-                     int max_errors = -1 );
-
-
 protected:
 
   /// Self's name
@@ -214,7 +189,7 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 
 /* ------------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE;
+PGL_END_NAMESPACE;
 
 /* ------------------------------------------------------------------------- */
 

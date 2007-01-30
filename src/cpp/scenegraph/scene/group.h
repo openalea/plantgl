@@ -45,21 +45,21 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_geometry.h"
+#include <scenegraph/geometry/geometry.h>
 #ifndef GEOM_FWDEF
-#include "geom_polyline.h"
-#include "geom_geometryarray2.h"
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/container/geometryarray2.h>
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_FWDEF
-class GeomPolyline;
-typedef RCPtr<GeomPolyline> GeomPolylinePtr;
+class Polyline;
+typedef RCPtr<Polyline> PolylinePtr;
 class GeometryArray;
 typedef RCPtr<GeometryArray> GeometryArrayPtr;
 #endif
@@ -71,13 +71,13 @@ typedef RCPtr<GeometryArray> GeometryArrayPtr;
     \brief A object group
 */
 
-class GEOM_API Group : public Geometry
+class SG_API Group : public Geometry
 {
 
 public:
 
   /// The \b Skeleton field default value.
-  static const GeomPolylinePtr DEFAULT_SKELETON;
+  static const PolylinePtr DEFAULT_SKELETON;
 
 
   /// A structure which helps to build a Group when parsing.
@@ -87,7 +87,7 @@ public:
     GeometryArrayPtr * GeometryList;
 
     /// A pointer to the \b Skeleton field.
-    GeomPolylinePtr * Skeleton;
+    PolylinePtr * Skeleton;
 
     /// Constructor.
     Builder( );
@@ -111,7 +111,7 @@ public:
       - \e geometries must contain at leat one non null and valid element;
       - \e skeleton must be valid if non null. */
   Group( const GeometryArrayPtr& geometries,
-         const GeomPolylinePtr& skeleton = DEFAULT_SKELETON );
+         const PolylinePtr& skeleton = DEFAULT_SKELETON );
 
   /// Destructor
   virtual ~Group( ) ;
@@ -141,10 +141,10 @@ public:
   uint32_t getGeometryListSize( ) const;
 
   /// Returns \b Skeleton value.
-  virtual const GeomPolylinePtr& getSkeleton( ) const ;
+  virtual const PolylinePtr& getSkeleton( ) const ;
 
   /// Returns \b Skeleton field.
-  GeomPolylinePtr& getSkeleton( );
+  PolylinePtr& getSkeleton( );
 
   /// Returns whether \b Skeleton is set to its default value.
   bool isSkeletonToDefault( ) const ;
@@ -165,7 +165,7 @@ protected:
   GeometryArrayPtr __geometryList;
 
   /// The \b Skeleton field.
-  GeomPolylinePtr __skeleton; 
+  PolylinePtr __skeleton; 
 
 };
 
@@ -178,7 +178,7 @@ typedef RCPtr<Group> GroupPtr;
 // __geom_group_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

@@ -38,12 +38,12 @@
 
 
 
-#include "geom_translated.h"
-#include "util_messages.h"
-#include "geom_pointarray.h"
-#include "geom_pointmatrix.h"
+#include "translated.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/core/pgl_messages.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

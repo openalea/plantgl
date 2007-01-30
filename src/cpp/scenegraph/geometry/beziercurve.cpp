@@ -38,14 +38,14 @@
 
 
 
-#include "geom_beziercurve.h"
-#include "util_messages.h"
-#include "Tools/util_polymath.h"
-#include "Tools/util_string.h"
-#include "geom_pointarray.h"
-#include "Tools/util_math.h"
+#include "beziercurve.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <scenegraph/container/pointarray.h>
+#include <math/util_polymath.h>
+#include <tool/util_string.h>
+#include <math/util_math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 

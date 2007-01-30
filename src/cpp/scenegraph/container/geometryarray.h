@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_objectarray.h"
+#include "objectarray.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -89,7 +89,7 @@ public:
 
   /// Applies the action to each Geometry object contained within \e self.
   bool apply( Action& action ) {
-      for (typename Array1<T>::iterator _i = this->getBegin(); _i != this->getEnd(); _i++)
+	  for (iterator _i = this->getBegin(); _i != this->getEnd(); _i++)
           (*_i)->apply(action);
       return true;
   }
@@ -102,7 +102,7 @@ public:
 // __geom_geometryarray_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

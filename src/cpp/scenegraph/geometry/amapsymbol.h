@@ -45,7 +45,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_faceset.h"
+#include "faceset.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -55,7 +55,7 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,7 +64,7 @@ GEOM_BEGIN_NAMESPACE
    \brief An Amap Symbol
 */
 
-class GEOM_API AmapSymbol : public FaceSet
+class SG_API AmapSymbol : public FaceSet
 {
 
 public:
@@ -161,7 +161,7 @@ typedef RCPtr<AmapSymbol> AmapSymbolPtr;
 // __geom_amapsymbol_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

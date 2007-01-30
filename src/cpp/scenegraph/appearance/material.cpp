@@ -37,11 +37,11 @@
 
 
 
-#include "appe_material.h"
-#include "util_messages.h"
+#include "material.h"
+#include <scenegraph/core/pgl_messages.h>
 #include <math.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 using namespace std;
 

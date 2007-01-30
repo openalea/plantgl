@@ -37,12 +37,14 @@
 
 
 
-#include "geom_pointset.h"
-#include "util_messages.h"
-#include "geom_pointarray.h"
-#include "geom_transformed.h"
-GEOM_USING_NAMESPACE
+#include "pointset.h"
+#include <scenegraph/core/pgl_messages.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/transformation/transformed.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
+
 /* ----------------------------------------------------------------------- */
 
 

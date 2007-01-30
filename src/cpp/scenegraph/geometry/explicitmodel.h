@@ -45,27 +45,29 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_primitive.h"
+#include "primitive.h"
+
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/colorarray.h>
+
 #ifndef GEOM_FWDEF
-#include "geom_pointarray.h"
-#include "geom_transformed.h"
+#include <scenegraph/transformation/transformed.h>
 #endif
-#include "geom_colorarray.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 class ExplicitModel;
 typedef RCPtr<ExplicitModel> ExplicitModelPtr;
+
 #ifdef GEOM_FWDEF
 class Transformation3D;
 typedef RCPtr<Transformation3D> Transformation3DPtr;
-class Point3Array;
-typedef RCPtr<Point3Array> Point3ArrayPtr;
 #endif
+
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -73,7 +75,7 @@ typedef RCPtr<Point3Array> Point3ArrayPtr;
    \brief A set of 3D points.
 */
 
-class GEOM_API ExplicitModel : public virtual Primitive
+class SG_API ExplicitModel : public virtual Primitive
 {
 
 public:
@@ -160,7 +162,7 @@ typedef RCPtr<ExplicitModel> ExplicitModelPtr;
 // __geom_explicitmodel_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

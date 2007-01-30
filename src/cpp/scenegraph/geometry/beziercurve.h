@@ -45,12 +45,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_curve.h"
-#include "geom_lineicmodel.h"
+#include "curve.h"
+#include "lineicmodel.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,7 +67,7 @@ typedef RCPtr<Point3Array> Point3ArrayPtr;
 */
 
 
-class GEOM_API BezierCurve : public  ParametricModel, public LineicModel
+class SG_API BezierCurve : public  ParametricModel, public LineicModel
 {
 
 public:
@@ -182,7 +182,7 @@ protected:
 }; // BezierCurve
 
 /// BezierCurve Pointer
-GEOM_API typedef RCPtr<BezierCurve> BezierCurvePtr;
+SG_API typedef RCPtr<BezierCurve> BezierCurvePtr;
 
 
 /* ----------------------------------------------------------------------- */
@@ -194,7 +194,7 @@ GEOM_API typedef RCPtr<BezierCurve> BezierCurvePtr;
 */
 
 
-class GEOM_API BezierCurve2D : public Curve2D
+class SG_API BezierCurve2D : public Curve2D
 {
 
 public:
@@ -309,7 +309,7 @@ typedef RCPtr<BezierCurve2D> BezierCurve2DPtr;
 // __geom_beziercurve_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

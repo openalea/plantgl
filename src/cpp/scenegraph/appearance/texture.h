@@ -44,13 +44,13 @@
 #define __appe_imagetexture_h__
 
 
-#include "appe_material.h"
-#include "appe_color.h"
+#include "material.h"
+#include "color.h"
 
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ GEOM_BEGIN_NAMESPACE
 
 
 
-class GEOM_API ImageTexture : public Material
+class SG_API ImageTexture : public Material
 {
 
 public:
@@ -142,7 +142,7 @@ typedef RCPtr<ImageTexture> ImageTexturePtr;
 // __appe_texture_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

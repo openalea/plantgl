@@ -45,12 +45,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "util_array.h"
-#include "Tools/util_tuple.h"
+#include "../sg_config.h"
+#include <tool/util_array.h>
+#include <tool/util_tuple.h>
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,7 +67,7 @@ typedef TOOLS(Uint32Tuple3) Index3;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Index3Array : public Array1<Index3>
+class SG_API Index3Array : public TOOLS(Array1)<Index3>
 {
 
 public:
@@ -81,7 +82,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Index3Array( InIterator first, InIterator last ) :
-    Array1<Index3>(first,last) {
+    TOOLS(Array1)<Index3>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -114,7 +115,7 @@ typedef TOOLS(Uint32Tuple4) Index4;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Index4Array : public Array1<Index4>
+class SG_API Index4Array : public TOOLS(Array1)<Index4>
 {
 
 public:
@@ -129,7 +130,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Index4Array( InIterator first, InIterator last ) :
-    Array1<Index4>(first,last) {
+    TOOLS(Array1)<Index4>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -155,7 +156,7 @@ typedef RCPtr<Index4Array> Index4ArrayPtr;
 /* ----------------------------------------------------------------------- */
 
 /// Index of non fixed size
-typedef Uint32Array1 Index;
+typedef TOOLS(Uint32Array1) Index;
 
 /* ----------------------------------------------------------------------- */
 
@@ -166,7 +167,7 @@ typedef Uint32Array1 Index;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API IndexArray : public Array1<Index>
+class SG_API IndexArray : public TOOLS(Array1)<Index>
 {
 
 public:
@@ -191,7 +192,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   IndexArray( InIterator first, InIterator last ) :
-    Array1<Index>(first,last) {
+    TOOLS(Array1)<Index>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -226,7 +227,7 @@ typedef RCPtr<IndexArray> IndexArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 // __util_indexarray_h__

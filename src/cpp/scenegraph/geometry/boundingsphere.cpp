@@ -38,12 +38,12 @@
 
 
 
-#include "geom_boundingsphere.h"
-#include "Tools/util_matrix.h"
-#include "Tools/util_math.h"
-#include "Tools/util_polymath.h"
+#include "boundingsphere.h"
+#include <math/util_matrix.h>
+#include <math/util_math.h>
+#include <math/util_polymath.h>
 using namespace std;
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

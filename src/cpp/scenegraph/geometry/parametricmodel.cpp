@@ -38,9 +38,9 @@
 
  
 
-#include "geom_parametricmodel.h"
+#include "parametricmodel.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

@@ -44,10 +44,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_explicitmodel.h"
-#ifndef GEOM_FWDEF
-#include "geom_polyline.h"
-#endif
+#include "explicitmodel.h"
+#include "polyline.h"
 /* ----------------------------------------------------------------------- */
 
 TOOLS_BEGIN_NAMESPACE
@@ -56,15 +54,8 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
-/* ----------------------------------------------------------------------- */
-#ifdef GEOM_FWDEF
-class GeomPolyline;
-typedef RCPtr<GeomPolyline> GeomPolylinePtr;
-class Point2Array;
-typedef RCPtr<Point2Array> Point2ArrayPtr;
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,7 +64,7 @@ typedef RCPtr<Point2Array> Point2ArrayPtr;
    \brief Abstract base class for objects of type of \b Mesh.
 */
 
-class GEOM_API Mesh : public ExplicitModel
+class SG_API Mesh : public ExplicitModel
 {
 
 public:
@@ -91,7 +82,7 @@ public:
   static const bool DEFAULT_COLORPERVERTEX;
 
   /// The default \b Skeleton field value.
-  static const GeomPolylinePtr DEFAULT_SKELETON;
+  static const PolylinePtr DEFAULT_SKELETON;
 
 
   /// A structure which helps to build an object of type of Mesh.
@@ -116,7 +107,7 @@ public:
     Point2ArrayPtr * TexCoordList;
 
     /// A pointer to the \b Skeleton field.
-    GeomPolylinePtr * Skeleton;
+    PolylinePtr * Skeleton;
 
     /// Constructor.
     Builder( );
@@ -142,7 +133,7 @@ public:
         bool NormalPerVertex = DEFAULT_NORMALPERVERTEX,
         bool CCW = DEFAULT_CCW,
         bool solid = DEFAULT_SOLID,
-        const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+        const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
 
   /// Constructor.
@@ -154,7 +145,7 @@ public:
         bool colorPerVertex = DEFAULT_COLORPERVERTEX,
         bool CCW = DEFAULT_CCW,
         bool solid = DEFAULT_SOLID,
-        const GeomPolylinePtr& skeleton = DEFAULT_SKELETON);
+        const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
   /// Destructor
   virtual ~Mesh( );
@@ -179,10 +170,10 @@ public:
   const Point2ArrayPtr& getTexCoordList( ) const ;
 
   /// Returns \b Skeleton value.
-  const GeomPolylinePtr& getSkeleton( ) const;
+  const PolylinePtr& getSkeleton( ) const;
 
   /// Returns \b Skeleton field.
-  GeomPolylinePtr& getSkeleton( );
+  PolylinePtr& getSkeleton( );
 
   /// Returns \b Solid value.
   const bool getSolid( ) const;
@@ -270,7 +261,7 @@ public:
   Point2ArrayPtr __texCoordList;
 
   /// The Skeleton field.
-  GeomPolylinePtr __skeleton;
+  PolylinePtr __skeleton;
 
 }; // Mesh
 
@@ -284,7 +275,7 @@ typedef RCPtr<Mesh> MeshPtr;
 // __geom_mesh_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

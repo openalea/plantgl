@@ -36,24 +36,24 @@
  */
 
 
-#include "geom_profile.h"
-#include "util_messages.h"
-#include "util_interpol.h"
-#include "geom_scaled.h"
-#include "geom_mattransformed.h"
-#include "geom_orthotransformed.h"
-#include "geom_polyline.h"
+#include "profile.h"
+#include <scenegraph/core/pgl_messages.h>
 
-#include "geom_pointarray.h"
-#include "geom_geometryarray2.h"
-#include "geom_transformed.h"
-#include "geom_nurbscurve.h"
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/mattransformed.h>
+#include <scenegraph/transformation/orthotransformed.h>
 
-#include "Tools/util_math.h"
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/container/geometryarray2.h>
 
-GEOM_USING_NAMESPACE
+#include "interpol.h"
+#include "polyline.h"
+#include "nurbscurve.h"
+
+#include <math/util_math.h>
+
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
-
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
@@ -711,7 +711,7 @@ cout<<"Stride: "<<__stride<<endl;
     {
     __is2D= true;
     Curve2DPtr p = __profileList->getAt(0);
-    GeomPolyline2DPtr poly2D= GeomPolyline2DPtr::Cast( p );
+    Polyline2DPtr poly2D= Polyline2DPtr::Cast( p );
 
     if( poly2D )
       {

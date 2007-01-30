@@ -37,8 +37,9 @@
 
 
 
-#include "appe_spectrum.h"
-GEOM_USING_NAMESPACE
+#include "spectrum.h"
+
+PGL_USING_NAMESPACE
 
 
 /* ------------------------------------------------------------------------- */

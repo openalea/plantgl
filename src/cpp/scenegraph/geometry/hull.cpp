@@ -38,8 +38,8 @@
 
 
 
-#include "geom_hull.h"
-GEOM_USING_NAMESPACE
+#include "hull.h"
+PGL_USING_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */

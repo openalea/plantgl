@@ -46,18 +46,18 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_geometry.h"
+#include <scenegraph/geometry/geometry.h>
 
 #ifndef GEOM_FWDEF
 
-#include "geom_pointmatrix.h"
-#include "geom_pointarray.h"
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/container/pointarray.h>
 
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -89,7 +89,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Transformation : public TOOLS(RefCountObject)
+class SG_API Transformation : public TOOLS(RefCountObject)
 {
 
 public:
@@ -116,7 +116,7 @@ typedef RCPtr<Transformation> TransformationPtr;
     \brief Abstract base class for 3D affine transformations.
 */
 
-class GEOM_API Transformation3D : public Transformation
+class SG_API Transformation3D : public Transformation
 {
 
 public:
@@ -153,7 +153,7 @@ typedef RCPtr<Transformation3D> Transformation3DPtr;
 */
 
 
-class GEOM_API Transformed : public Geometry
+class SG_API Transformed : public Geometry
 {
 
 public:
@@ -192,7 +192,7 @@ typedef RCPtr<Transformed> TransformedPtr;
     \brief Abstract base class for 2D affine transformations.
 */
 
-class GEOM_API Transformation2D : public Transformation
+class SG_API Transformation2D : public Transformation
 {
 
 public:
@@ -226,7 +226,7 @@ typedef RCPtr<Transformation2D> Transformation2DPtr;
 // __geom_transformed_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

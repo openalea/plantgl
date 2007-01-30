@@ -112,7 +112,7 @@ inline void flipBytes( const char * src, char * dest, size_t n )
     \brief bofstream specializes the \c ofstream class to store variables
     in binary format. */
 
-class TOOLS_API bofstream
+class bofstream
 {
 
 public:
@@ -138,8 +138,7 @@ public:
   //@{
 
   /// Destructor.
-  virtual ~bofstream(){
-  }
+  virtual ~bofstream();
 
   //@}
 
@@ -325,8 +324,7 @@ public:
   //@{
 
   /// Destructor.
-  virtual ~bifstream(){
-  }
+  virtual ~bifstream();
 
   //@}
 
@@ -491,8 +489,7 @@ public:
   {
   }
 
-  virtual ~leofstream(){
-  }
+  virtual ~leofstream();
 
   //@}
 
@@ -537,8 +534,7 @@ public:
   {
   }
 
-  virtual ~leifstream(){
-  }
+  virtual ~leifstream();
 
   //@}
 
@@ -585,8 +581,7 @@ public:
   {
   }
 
-  virtual ~beofstream(){
-  }
+  virtual ~beofstream();
 
   //@}
 private:
@@ -630,8 +625,7 @@ public:
   {
   }
 
-  virtual ~beifstream(){
-  }
+  virtual ~beifstream();
 
   //@}
 

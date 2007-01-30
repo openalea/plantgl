@@ -45,11 +45,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "geom_sor.h"
+#include "sor.h"
 
 /* ----------------------------------------------------------------------- */
 
-GEOM_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -65,7 +65,7 @@ typedef RCPtr<Curve2D> Curve2DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class GEOM_API Revolution : public SOR
+class SG_API Revolution : public SOR
 {
 
 public:
@@ -131,7 +131,7 @@ typedef RCPtr<Revolution> RevolutionPtr;
 // __geom_revolution_h__
 /* ----------------------------------------------------------------------- */
 
-GEOM_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
