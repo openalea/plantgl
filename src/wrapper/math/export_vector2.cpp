@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -34,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "vector.h"
+
 #include "exception.hh"
 
 #include <boost/python.hpp>
@@ -276,12 +271,3 @@ void class_Vector2()
 
 }
 
-
-void class_Vector()
-{
-#ifndef DONT_WANT_VECTOR
-  class_Vector2();
-  class_Vector3();
-#endif
-  class_Vector4();
-}

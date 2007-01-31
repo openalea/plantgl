@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -34,17 +29,14 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "matrix.h"
+#include "export_matrix.h"
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <util_matrix.h>
-#include <iostream>
+#include <math/util_matrix.h>
 #include <string>
 #include <sstream>
-
-#include "exception.hh"
 
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
@@ -52,16 +44,6 @@ using namespace std;
 
 GET_ELT(Matrix4)
 SET_ELT(Matrix4)
-/*
-string m4_str( const Matrix4& m )
-{
-  stringstream ss;
-  ss << "[ " << m(0,0) << " " << m(0,1) << " " << m(0,2) << " " << m(0,3) << " ]"<<endl;
-  ss << "[ " << m(1,0) << " " << m(1,1) << " " << m(1,2) << " " << m(1,3) << " ]"<<endl;
-  ss << "[ " << m(2,0) << " " << m(2,1) << " " << m(2,2) << " " << m(2,3) << " ]"<<endl;
-  ss << "[ " << m(3,0) << " " << m(3,1) << " " << m(3,2) << " " << m(3,3) << " ]";
-  return ss.str();
-}*/
 
 string m4_repr( const Matrix4& m )
 {
