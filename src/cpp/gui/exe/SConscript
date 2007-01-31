@@ -1,0 +1,10 @@
+# -*-python-*-
+
+import os
+pj= os.path.join
+
+Import( "env" )
+
+source= ["mainviewer.cpp"]
+env.ALEAProgram( "viewer", source )
+

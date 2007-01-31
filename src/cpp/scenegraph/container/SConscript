@@ -1,0 +1,23 @@
+# -*-python-*-
+import os, re
+from glob import glob
+
+pj= os.path.join
+
+Import( "env" )
+
+# 1. Select and install the headers
+
+local_dir = str( env.Dir( "." ).srcnode() )
+h_files = pj( local_dir, '*.h' )
+includes = glob( h_files )
+
+cpp_files = pj( local_dir,'*.cpp' )
+sources = glob( cpp_files )
+
+# 2. Call other SConscript files in sub directories
+
+env.ALEAIncludes( "plantgl/scenegraph/container", includes )
+
+Return( 'sources' )
+
