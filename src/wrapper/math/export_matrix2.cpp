@@ -30,6 +30,7 @@
  */
 
 #include "export_matrix.h"
+#include "../util/exception.h"
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
@@ -45,23 +46,13 @@ using namespace std;
 
 
 GET_ELT(Matrix2)
-GET_ELT(Matrix3)
 SET_ELT(Matrix2)
-SET_ELT(Matrix3)
-
-string m2_str( const Matrix2& m )
-{
-  stringstream ss;
-  ss << "[ " << m(0,0) << " " << m(0,1) << " ]"<<endl;
-  ss << "[ " << m(1,0) << " " << m(1,1) << " ]";
-  return ss.str();
-}
 
 string m2_repr( const Matrix2& m )
 {
   stringstream ss;
-  ss << "Matrix2[[ " << m(0,0) << " " << m(0,1) << " ],"<<endl;
-  ss << "        [ " << m(1,0) << " " << m(1,1) << " ]]";
+  ss << "Matrix2( " << m(0,0) << ", " << m(0,1) << " ," <<endl;
+  ss << "         " << m(1,0) << ", " << m(1,1) << " )";
   return ss.str();
 }
 
@@ -90,7 +81,7 @@ void class_Matrix2()
   .def( "adjoint", (Matrix2 (*) ( const Matrix2& )) adjoint )
   .def( "__getitem__", Matrix2_getElt )
   .def( "__setitem__", Matrix2_setElt )
-  .def( "__str__", m2_str )
+  .def( "__str__", m2_repr )
   .def( "__repr__", m2_repr )
   ;
 }

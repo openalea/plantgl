@@ -524,7 +524,7 @@ ViewGeomSceneGL::openGeomFile(const QString& filename)
     }
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene = ScenePtr(new Scene(filename.latin1(),_errlog));
+    ScenePtr scene = ScenePtr(new Scene(filename.latin1(),"",_errlog));
     setScene(scene);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
@@ -554,7 +554,7 @@ ViewGeomSceneGL::addGeomFile(const QString& filename)
 	return true;
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene = ScenePtr(new Scene(filename.latin1(),_errlog));
+    ScenePtr scene = ScenePtr(new Scene(filename.latin1(),"",_errlog));
     addScene(scene);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
@@ -1259,11 +1259,8 @@ ViewMultiGeomSceneGL::openGeomFiles(const QString& filename,const QString& filen
     }
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene1 = ScenePtr(new Scene(filename.latin1(),
-                                         _errlog));
-    ScenePtr scene2 = ScenePtr(new Scene(filename2.
-                                         latin1(),
-                                         _errlog));
+    ScenePtr scene1 = ScenePtr(new Scene(filename.latin1(),"",_errlog));
+    ScenePtr scene2 = ScenePtr(new Scene(filename2.latin1(),"",_errlog));
     setScene(scene1,scene2);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());

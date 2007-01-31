@@ -33,6 +33,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Viewer", "gui\exe\viewer.vc
 		{30373852-CE1B-4BAC-A9FB-A3395AAC1BB4} = {30373852-CE1B-4BAC-A9FB-A3395AAC1BB4}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wrapMath", "..\wrapper\math\wrap_math.vcproj", "{0F5CB473-0099-404D-BC85-44F425DB5279}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C0E9458D-0972-4195-87A7-54FDCB1E5FB5} = {C0E9458D-0972-4195-87A7-54FDCB1E5FB5}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -65,6 +70,10 @@ Global
 		{E581F732-6BB5-412E-AE68-7540FCF63F43}.Debug.Build.0 = Debug|Win32
 		{E581F732-6BB5-412E-AE68-7540FCF63F43}.Release.ActiveCfg = Release|Win32
 		{E581F732-6BB5-412E-AE68-7540FCF63F43}.Release.Build.0 = Release|Win32
+		{0F5CB473-0099-404D-BC85-44F425DB5279}.Debug.ActiveCfg = Debug|Win32
+		{0F5CB473-0099-404D-BC85-44F425DB5279}.Debug.Build.0 = Debug|Win32
+		{0F5CB473-0099-404D-BC85-44F425DB5279}.Release.ActiveCfg = Release|Win32
+		{0F5CB473-0099-404D-BC85-44F425DB5279}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

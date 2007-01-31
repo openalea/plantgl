@@ -30,13 +30,11 @@
  */
 
 
-#include "exception.hh"
-
+#include "../util/exception.h"
 #include <boost/python.hpp>
 
-#include <util_vector.h>
-#include <util_math.h>
-#include <iostream>
+#include <math/util_vector.h>
+#include <math/util_math.h>
 #include <string>
 #include <sstream>
 

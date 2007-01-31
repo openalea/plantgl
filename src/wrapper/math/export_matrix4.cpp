@@ -30,6 +30,7 @@
  */
 
 #include "export_matrix.h"
+#include "../util/exception.h"
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
@@ -169,13 +170,6 @@ void class_Matrix4()
 
   def("translation",&Matrix4::translation);
 
-}
-
-void class_Matrix()
-{
-  class_Matrix2();
-  class_Matrix3();
-  class_Matrix4();
 }
 
 
