@@ -1,7 +1,7 @@
 # -*-python-*-
 import os, re
 from glob import glob
-
+from openalea.sconsx.config import BisonFlex
 pj= os.path.join
 
 Import( "env" )
@@ -15,6 +15,12 @@ includes= glob(h_files)
 
 cpp_files= pj(local_dir,'*.cpp')
 sources= glob(cpp_files)
+
+sources+= BisonFlex( env, "scne_parser.y", "scne_scanner.l", "scne_yy" )
+if env[ 'BISON_HPP' ]:
+  includes.append( 'scne_parser.hpp' )
+else:
+  includes.append( 'scne_parser.cpp.h' )
 
 # 2. Build and install the library/headers
 

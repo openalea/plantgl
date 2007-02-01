@@ -20,12 +20,12 @@ lib_env.ALEAIncludes( "plantgl/scenegraph", includes )
 
 #dirs = [d for d in glob('*') if os.path.isdir(d)]
 sub_dirs= glob(include_dir+'/*')
-dirs = [ pj ( os.path.basename(d),'Sconscript' )
+dirs = [ pj ( os.path.basename(d),'SConscript' )
          for d in sub_dirs if os.path.isdir(d) ]
 
 sources= []
 for d in dirs:
-    src= lib_env.SConscript( d, exports = { "env" : lib_env } )
+    src= SConscript( d, exports = { "env" : lib_env } )
     if src: sources+= src
 
 # Add defines to export symbols on Windows

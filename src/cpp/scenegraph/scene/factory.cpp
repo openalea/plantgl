@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <tool/dirnames.h>
 #include <tool/util_string.h>
-#include <SceneGraph/Core/pgl_messages.h>
+#include <scenegraph/core/pgl_messages.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

@@ -17,8 +17,7 @@ env.ALEAIncludes( "plantgl", includes )
 
 # 2. Call other SConscript files in sub directories
 sub_dirs= glob(include_dir+'/*')
-dirs = [ pj ( os.path.basename(d),'Sconscript' )
+dirs = [ pj ( os.path.basename(d), 'SConscript' )
          for d in sub_dirs if os.path.isdir(d) ]
-
-env.SConscript( dirs, exports= { 'env' : env } )
+SConscript( dirs, exports= { 'env' : env } )
 

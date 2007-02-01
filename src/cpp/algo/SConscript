@@ -20,7 +20,7 @@ lib_env.ALEAIncludes( "plantgl/algo", includes )
 
 # dirs = [d for d in glob('*') if os.path.isdir(d)]
 sub_dirs= glob(include_dir+'/*')
-dirs = [ pj ( os.path.basename(d),'Sconscript' )
+dirs = [ pj ( os.path.basename(d),'SConscript' )
          for d in sub_dirs if os.path.isdir(d) ]
 
 sources= []

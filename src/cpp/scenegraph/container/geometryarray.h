@@ -89,8 +89,9 @@ public:
 
   /// Applies the action to each Geometry object contained within \e self.
   bool apply( Action& action ) {
-	  for (iterator _i = this->getBegin(); _i != this->getEnd(); _i++)
-          (*_i)->apply(action);
+      typedef typename ObjectArray< T >::const_iterator const_iterator;
+      for (const_iterator _i = this->getBegin(); _i != this->getEnd(); _i++)
+	  (*_i)->apply(action);
       return true;
   }
 

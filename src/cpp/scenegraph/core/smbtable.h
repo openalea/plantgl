@@ -107,7 +107,8 @@ template<class T,class U>
 void convertTable(const SymbolTable<U>& intable, SymbolTable<T>& outtable)
 {
   T tobject;
-  for(SymbolTable<class U>::const_iterator _it = intable.begin();
+  typedef typename SymbolTable< U >::const_iterator const_iterator;
+  for( const_iterator _it = intable.begin();
       _it != intable.end() ; ++_it){
       if(tobject.cast(_it->second)) outtable[_it->first] = tobject;
   }
