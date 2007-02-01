@@ -1,20 +1,14 @@
 # -*-python-*-
-import os, re
-from glob import glob
-
+import os
 pj= os.path.join
 
 Import( "env" )
 
 # 1. Select the headers and sources
 
-local_dir = str(env.Dir( "." ).srcnode())
-
-h_files = pj( local_dir, '*.h' )
-includes = glob( h_files )
-
-cpp_files = pj( local_dir,'*.cpp' )
-sources = glob( h_files )
+includes= env.ALEAGlob('*.h')
+sources= env.ALEAGlob('*.cpp')
+sources= map( lambda x: pj('fitting',x), sources )
 
 # 2. Build and install the library/headers
 

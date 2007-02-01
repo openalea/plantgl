@@ -81,6 +81,10 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 
 #ifdef __GNUC__
 #include <stdint.h>
+#if defined( __MINGW32__ )
+#define __int8_t_defined
+#define __uint32_t_defined
+#endif // __MINGW32__
 #endif
 
 #include <climits>

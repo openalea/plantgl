@@ -1,22 +1,22 @@
 # -*-python-*-
-import os, re
-from glob import glob
 from openalea.sconsx.config import BisonFlex
+import os
 pj= os.path.join
 
 Import( "env" )
 
 # 1. Select the headers and sources
 
-local_dir = str(env.Dir( "." ).srcnode())
+includes= env.ALEAGlob('*.h')
+sources= env.ALEAGlob('*.cpp')
 
-h_files= pj(local_dir,'*.h')
-includes= glob(h_files)
+src= BisonFlex( env, "scne_parser.y", "scne_scanner.l", "scne_yy" )
+for el in src:
+    if isinstance(el,(list,tuple)):
+        sources.extend(map(str,el))
+    else:
+        sources.append(str(el))
 
-cpp_files= pj(local_dir,'*.cpp')
-sources= glob(cpp_files)
-
-sources+= BisonFlex( env, "scne_parser.y", "scne_scanner.l", "scne_yy" )
 if env[ 'BISON_HPP' ]:
   includes.append( 'scne_parser.hpp' )
 else:
@@ -25,6 +25,8 @@ else:
 # 2. Build and install the library/headers
 
 inc= env.ALEAIncludes( "plantgl/algo/codec", includes )
+
+sources= map(lambda x: pj( 'codec',x),sources)
 
 Return('sources')
 

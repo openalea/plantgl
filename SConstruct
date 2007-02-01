@@ -1,7 +1,7 @@
 # -*-python-*-
 
 from openalea.sconsx import config, environ
-import os
+import os, fnmatch
 
 Config= config.Config
 ALEAConfig= config.ALEAConfig
@@ -38,7 +38,8 @@ cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 ## wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
 
 # Build stage
-SConscript( pj(prefix,"src/cpp/SConscript"),exports={"env":cpp_env})
+SConscript( pj(prefix,"src/cpp/SConscript"),
+            exports={"env":cpp_env} )
 
 ## SConscript( pj(prefix,"src/wrapper/SConscript"),
 ##             exports={"env":wrapper_env} )
