@@ -30,6 +30,16 @@ for d in dirs:
     src= lib_env.SConscript( d, exports = { "env" : lib_env } )
     if src: sources+= src
 
-lib_env.ALEALibrary("pglgui",sources)
+# Add defines to export symbols on Windows
+DEFINES= list(lib_env['CPPDEFINES'])
+DEFINES.append('VIEW_MAKEDLL')
 
+# Link with the following libraries
+LIBRARIES = list( lib_env['LIBS'] )
+LIBRARIES.extend( ['pgltool','pglmath','pglsg','pglalgo'] )
+
+lib_env.ALEALibrary( "pglgui",
+                     sources, 
+                     CPPDEFINES = DEFINES, 
+                     LIBS = LIBRARIES )
 

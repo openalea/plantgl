@@ -19,5 +19,13 @@ sources= glob(cpp_files)
 # 2. Build and install the library/headers
 
 lib_env = env.Copy()
+
+# Add defines to export symbols on Windows
+DEFINES= list(lib_env['CPPDEFINES'])
+DEFINES.append('TOOLS_MAKEDLL')
+
 inc= lib_env.ALEAIncludes( "plantgl/tool", includes )
-lib = lib_env.ALEALibrary( "pgltool", sources )
+
+lib = lib_env.ALEALibrary( "pgltool", 
+                           sources, 
+                           CPPDEFINES = DEFINES )

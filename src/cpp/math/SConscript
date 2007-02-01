@@ -18,6 +18,14 @@ sources= glob(cpp_files)
 # 2. Build PlantGL math library
 
 lib_env = env.Copy()
+
+# Add defines to export symbols on Windows
+DEFINES= list(lib_env['CPPDEFINES'])
+DEFINES.append('PGLMATH_MAKEDLL')
+
 inc= lib_env.ALEAIncludes( "plantgl/math", includes )
-lib = lib_env.ALEALibrary( "pglmath", sources )
+
+lib = lib_env.ALEALibrary( "pglmath", 
+                           sources,
+                           CPPDEFINES = DEFINES )
 

@@ -25,7 +25,20 @@ dirs = [ pj ( os.path.basename(d),'Sconscript' )
 
 sources= []
 for d in dirs:
-    sources+= lib_env.SConscript( dirs, exports = { "env" : lib_env } )
+    src= lib_env.SConscript( d, exports = { "env" : lib_env } )
+    if src: sources+= src
 
-lib_env.ALEALibrary("pglalgo",sources)
+# Add defines to export symbols on Windows
+DEFINES= list(lib_env['CPPDEFINES'])
+DEFINES.append('ALGO_MAKEDLL')
+
+# Link with the following libraries
+LIBRARIES = list( lib_env['LIBS'] )
+LIBRARIES.extend( ['pgltool','pglmath','pglsg'] )
+
+lib_env.ALEALibrary( "pglalgo",
+                     sources, 
+                     CPPDEFINES = DEFINES, 
+                     LIBS = LIBRARIES )
+
 
