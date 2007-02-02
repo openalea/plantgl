@@ -5,11 +5,13 @@ pj= os.path.join
 
 Import( "env" )
 
+exe_env= env.Copy()
+
 source= ["mainviewer.cpp"]
 
-LIBRARIES = list( env['LIBS'] )
+LIBRARIES = list( exe_env['LIBS'] )
 LIBRARIES.extend( ['pglgui'] )
 
-env.ALEAProgram( "viewer", source, LIBS = LIBRARIES )
+exe_env.ALEAProgram( "viewer", source, LIBS = LIBRARIES )
 
 

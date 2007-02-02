@@ -8,9 +8,14 @@ Import( "env" )
 # 1. Select the headers and sources
 
 includes= env.ALEAGlob('*.h')
-sources= env.ALEAGlob('*.cpp')
 
-src= BisonFlex( env, "scne_parser.y", "scne_scanner.l", "scne_yy" )
+src= BisonFlex( env, 
+                "scne_parser.y", 
+                "scne_scanner.l", 
+                "scne_yy" )
+
+# simple flatten implementation
+sources= []
 for el in src:
     if isinstance(el,(list,tuple)):
         sources.extend(map(str,el))

@@ -1,18 +1,8 @@
 # -*-python-*-
-import os
-pj= os.path.join
-
 Import( "env" )
 
 # 1. Select the headers and sources
 
 includes= env.ALEAGlob('*.h')
-sources= env.ALEAGlob('*.cpp')
-sources= map( lambda x: pj('base',x), sources )
-
-# 2. Build and install the library/headers
-
 inc= env.ALEAIncludes( "plantgl/algo/base", includes )
-
-Return('sources')
 

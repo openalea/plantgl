@@ -10,17 +10,13 @@ lib_env.ALEAIncludes( "plantgl/gui", includes )
 # install headers
 
 SConscript( 'base/SConscript', exports = { "env" : lib_env } )
+SConscript( 'viewer/SConscript', exports = { "env" : lib_env } )
 
 # Select recursively the sources
-sources= lib_env.ALEAGlob('*.cpp','*')
-ui_sources= lib_env.ALEAGlob('*.ui','*/interface')
-sources+= ui_sources
-
-for d in dirs:
-    src= lib_env.SConscript( d, exports = { "env" : lib_env } )
-    if src: 
-        d=d.replace('SConscript','')
-        sources.extend( map( lambda x: d+x, src ) )
+sources= []
+for d in ['base','viewer']:
+    sources+= lib_env.ALEAGlob('*.cpp', dir= d)
+    sources+= lib_env.ALEAGlob('*.ui',dir=d+'/interface')
 
 # Add defines to export symbols on Windows
 DEFINES= list(lib_env['CPPDEFINES'])
@@ -34,4 +30,7 @@ lib_env.ALEALibrary( "pglgui",
                      sources, 
                      CPPDEFINES = DEFINES, 
                      LIBS = LIBRARIES )
+
+# Build the viewer program
+SConscript( 'exe/SConscript', exports = { "env" : lib_env } )
 
