@@ -128,7 +128,7 @@ inline double sq( const double& v ) {
   return v * v;
 }
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 
 /// On win32, redirect finite on _finite.
 #define finite _finite

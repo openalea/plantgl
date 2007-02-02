@@ -183,6 +183,13 @@ bool similar_dir(const std::string& filename,const std::string& filename2){
 
 }
 
+#if defined(__GNUC__) 
+#ifndef __MINGW32__
+#define LINKCOPY
+#endif
+#endif
+
+
 bool copy(const std::string& src,const std::string& dest){
         if(!exists(src))return false;
 #if QT_VERSION >= 0x040000
@@ -191,7 +198,7 @@ bool copy(const std::string& src,const std::string& dest){
         else return false;
 #else
 
-#ifdef __GNUC__
+#ifdef LINKCOPY 
         return link(src.c_str(),dest.c_str());
 #else
         QFile f( src.c_str() );

@@ -2600,7 +2600,8 @@ Name:
 
 Filename :
  TokFile { $$ = $1;}
-| TokName { if(*$1 == "AMAPMOD_DIR")$$ = new std::string(TOOLS(getAMAPmodDir()));
+| TokName { if(*$1 == "AMAPMOD_DIR" || *$1 == "OPENALEA_DIR")$$ = new std::string(TOOLS(getOpenAleaDir()));
+            else if(*$1 == "PLANTGL_DIR")$$ = new std::string(TOOLS(getPlantGLDir()));
             else if($1 &&!$1->empty()&&(*$1)[0]=='%'){
 				 std::string env($1->begin()+1,$1->end());
 				 if(!env.empty()){

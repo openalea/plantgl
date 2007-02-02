@@ -139,7 +139,7 @@ ViewReadLinetree::ViewReadLinetree( bool open,
     editSmb = new QLineEdit( this, "editSmb" );
     editSmb->setGeometry( QRect( 100, 110, 350, 22 ) );
 	if(SMB_PATH.isEmpty())    {
-	  SMB_PATH = TOOLS(getSymbolDir()).c_str() ;
+	  SMB_PATH = (TOOLS(getPlantGLDir())+"share/plantgl/SMBFiles").c_str() ;
 	}
     if(!SMB_PATH.isEmpty())editSmb->setText( tr( SMB_PATH ) );
 
@@ -217,9 +217,9 @@ ViewReadLinetree::~ViewReadLinetree()
 void ViewReadLinetree::ok()
 {
   if(!getSMBPath().isEmpty() && getSMBPath()!=SMB_PATH)SMB_PATH = getSMBPath();
-  if(SMB_PATH != TOOLS(getSymbolDir()).c_str()){
-       TOOLS(setSymbolDir(SMB_PATH.latin1()));
-  }
+//  if(SMB_PATH != TOOLS(getSymbolDir()).c_str()){
+//       TOOLS(setSymbolDir(SMB_PATH.latin1()));
+//  }
   LIG_FILENAME = getLigFile();
   DTA_FILENAME = getDtaFile();
   accept();

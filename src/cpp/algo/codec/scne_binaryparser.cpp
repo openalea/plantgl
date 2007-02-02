@@ -366,9 +366,11 @@ inline std::string BinaryParser::readFile()
    } \
    c[i] = '\0'; 
    if(i!=0) val = c; 
-   if(val.size() > 11 && string(val.begin(),val.begin()+11) == "AMAPMOD_DIR"){ 
-    string suffix(val.begin()+11,val.end()); 
-        val = getAMAPmodDir(); 
+   if(val.size() > 11 && 
+	  (string(val.begin(),val.begin()+11) == "AMAPMOD_DIR" || 
+	   string(val.begin(),val.begin()+11) == "PLANTGL_DIR")){ 
+		string suffix(val.begin()+11,val.end()); 
+        val = getPlantGLDir(); 
         if(suffix[0] != '\\' && suffix[0] != '/')val += '/'; 
         val += suffix; 
    } 

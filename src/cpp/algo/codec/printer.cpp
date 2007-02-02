@@ -520,13 +520,13 @@ bool Printer::process( AmapSymbol * amapSymbol ) {
   GEOM_ASSERT(amapSymbol);
   GEOM_PRINT_BEGIN(__geomStream,"AmapSymbol",amapSymbol);
 
-  string amapmod_dir = getAMAPmodDir();
+  string plantgl_dir = getPlantGLDir();
   string f = amapSymbol->getFileName();
   string pref = short_dirname(get_dirname(f));
-  if(pref.size() > amapmod_dir.size())
-    pref = string(pref.begin(),pref.begin()+amapmod_dir.size());
+  if(pref.size() > plantgl_dir.size())
+    pref = string(pref.begin(),pref.begin()+plantgl_dir.size());
 
-  if(similar_dir(pref,amapmod_dir)){
+  if(similar_dir(pref,plantgl_dir)){
         int count = 0;
         for(string::const_iterator _i = pref.begin();
                 _i != pref.end(); _i++)if(*_i == '\\' || *_i == '/')count++;
@@ -536,7 +536,7 @@ bool Printer::process( AmapSymbol * amapSymbol ) {
                 while(*_j != '\\' && *_j != '/')_j++;
         }
         f = string(_j,f.end());
-        __geomStream << __indent << "FileName AMAPMOD_DIR+\"";
+        __geomStream << __indent << "FileName PLANTGL_DIR+\"";
         __geomStream << f << '"' << endl;
   }
   else GEOM_PRINT_FIELD(__geomStream,amapSymbol,FileName,STRING);

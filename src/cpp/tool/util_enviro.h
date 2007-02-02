@@ -50,20 +50,20 @@ TOOLS_BEGIN_NAMESPACE
 /// Get the Home directory.
 TOOLS_API std::string getHome();
 
-/// Get the Current Working directory.
-TOOLS_API std::string getCwd();
+/// Get OpenAlea directory.
+TOOLS_API std::string getOpenAleaDir();
 
-/// Get AMAPmod directory.
-TOOLS_API std::string getAMAPmodDir();
+/// Get OpenAlea directory.
+TOOLS_API std::string getPlantGLDir();
+
+/// Set PlantGL directory.
+TOOLS_API void setPlantGLDir(const std::string&);
 
 /// Get Symbol directory.
-TOOLS_API std::string getSymbolDir();
-
-/// Set AMAPmod directory.
-TOOLS_API void setAMAPmodDir(const std::string&);
+// TOOLS_API std::string getSymbolDir();
 
 /// Set Symbol directory.
-TOOLS_API void setSymbolDir(const std::string&);
+// TOOLS_API void setSymbolDir(const std::string&);
 
 /// Get User name
 TOOLS_API std::string getUserName();

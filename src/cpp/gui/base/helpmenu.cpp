@@ -245,7 +245,7 @@ void ViewHelpMenu::showLicense()
   c.setColor(QColorGroup::Background,QColor(255,255,255));
   pal.setActive(c);
   lictext->setPalette(pal);
-  QFile copyright((TOOLS(getAMAPmodDir())+"/etc/geomviewer.lic").c_str());
+  QFile copyright((TOOLS(getPlantGLDir())+"/share/plantGL/LICENSE").c_str());
   if(copyright.exists() && copyright.open(IO_ReadOnly)){
 	QTextStream s(&copyright);
 	lictext->setText(s.read());
@@ -331,7 +331,7 @@ ViewHelpMenu::generalInfo()
   item->setText( 1, tr( text ) );
 #ifdef _WIN32
   item = new QListViewItem( itemF, item );
-  item->setText( 0, tr( "Geom DLL" ) );
+  item->setText( 0, tr( "PGL DLL" ) );
 #ifdef GEOM_DLL
   text = "True";
 #else
@@ -367,13 +367,10 @@ ViewHelpMenu::generalInfo()
   text = "True";
 #endif
   item->setText( 1, tr( text ) );
-  itemF = a.addItem(tr("Amapmod"));
+  itemF = a.addItem(tr("PlantGL"));
   item = new QListViewItem( itemF );
   item->setText( 0, tr( "Install Path" ) );
-  item->setText( 1, QString(TOOLS(getAMAPmodDir()).c_str()) );
-  item = new QListViewItem( itemF, item );
-  item->setText( 0, tr( "Symbol Path" ) );
-  string p = TOOLS(getSymbolDir());
+  string p = TOOLS(getPlantGLDir());
   if(!p.empty())item->setText( 1, QString(p.c_str()) );
   itemF = a.addItem(tr("Flex"));
   item = new QListViewItem( itemF );

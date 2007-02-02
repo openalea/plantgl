@@ -566,7 +566,7 @@ BinaryPrinter::printFile(const std::string& FileName){
 	writeFile("");
 	return;
   }
-  string amapmod_dir = getAMAPmodDir();
+  string plantgl_dir = getPlantGLDir();
   string f = FileName;
   string pref = short_dirname(get_dirname(f));
   if(pref.empty() || pref[0] == '.'){
@@ -596,10 +596,10 @@ BinaryPrinter::printFile(const std::string& FileName){
 	  GEOM_PRINT_FILE(suffix);	
   }
   else  {
-	if(pref.size() > amapmod_dir.size())
-	  pref = string(pref.begin(),pref.begin()+amapmod_dir.size());
+	if(pref.size() > plantgl_dir.size())
+	  pref = string(pref.begin(),pref.begin()+plantgl_dir.size());
 	
-	if(similar_dir(pref,amapmod_dir)){
+	if(similar_dir(pref,plantgl_dir)){
 	  int count = 0;
 	  for(string::const_iterator _i = pref.begin();
 	  _i != pref.end(); _i++)if(*_i == '\\' || *_i == '/')count++;
@@ -610,7 +610,7 @@ BinaryPrinter::printFile(const std::string& FileName){
 	  }
 	  string suffix = string(_j,f.end());
 	  //      f.reserve(suffix.size()+15);
-	  f = "AMAPMOD_DIR"+suffix;
+	  f = "PLANTGL_DIR"+suffix;
 	  GEOM_PRINT_FILE(f);
 	}
 	else  GEOM_PRINT_FILE(FileName);

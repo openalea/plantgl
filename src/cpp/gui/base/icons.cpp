@@ -74,7 +74,7 @@ QPixmap ViewerIcon::getPixmap(const char * file){
   if(!QPixmapCache::find(file,pix)){
 	QString filename(file);
 	if(QFileInfo(filename).isRelative()){
-	  filename = TOOLS(getAMAPmodDir()).c_str() + QString("/etc/Icons/") + filename;
+	  filename = TOOLS(getPlantGLDir()).c_str() + QString("/share/plantgl/pixmap/") + filename;
 	}
 	if(QFile::exists(filename)){
 	  pix = QPixmap(filename);
