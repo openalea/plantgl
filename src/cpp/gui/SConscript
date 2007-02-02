@@ -1,4 +1,6 @@
 # -*-python-*-
+from openalea.sconsx.config import platform
+
 Import( "env" )
 
 # 1. Call other SConscript files in sub directories
@@ -9,13 +11,18 @@ lib_env.ALEAIncludes( "plantgl/gui", includes )
 
 # install headers
 
-SConscript( 'base/SConscript', exports = { "env" : lib_env } )
+SConscript( 'base/SConscript', exports = { "env" : lib_env, 
+                                           "platform" : platform } )
 SConscript( 'viewer/SConscript', exports = { "env" : lib_env } )
 
 # Select recursively the sources
 sources= []
+
 for d in ['base','viewer']:
     sources+= lib_env.ALEAGlob('*.cpp', dir= d)
+    if d == 'base' and platform.name != 'win32':
+        sources= filter( lambda x: 'trayicon' not in x, sources )
+
     sources+= lib_env.ALEAGlob('*.ui',dir=d+'/interface')
 
 # Add defines to export symbols on Windows
