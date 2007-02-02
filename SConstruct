@@ -32,7 +32,6 @@ Help(options.GenerateHelpText(opt_env))
 prefix= opt_env['build_prefix']
 BuildDir( prefix, '.' )
 
-
 cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
 cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 ## wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )

@@ -1,18 +1,7 @@
 # -*-python-*-
-import os
-pj= os.path.join
-
 Import( "env" )
 
 # 1. Select and install the headers
-
 includes= env.ALEAGlob('*.h')
-sources= env.ALEAGlob('*.cpp')
-sources= map( lambda x: pj('transformation',x), sources )
-
-# 2. Call other SConscript files in sub directories
-
 env.ALEAIncludes( "plantgl/scenegraph/transformation", includes )
-
-Return( 'sources' )
 

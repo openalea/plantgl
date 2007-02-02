@@ -1,8 +1,6 @@
 # -*-python-*-
 Import( "env" )
 
-# 1. Select the headers and sources
-
 lib_env = env.Copy()
 
 includes= lib_env.ALEAGlob('*.h')

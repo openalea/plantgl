@@ -1,12 +1,6 @@
 # -*-python-*-
-import os
-from glob import glob
-
-pj= os.path.join
 
 Import( "env" )
-
-# 2. Build PlantGL math library
 
 lib_env = env.Copy()
 

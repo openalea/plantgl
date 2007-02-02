@@ -11,15 +11,22 @@ lib_env= env.Copy()
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/algo", includes )
 
-# dirs = [d for d in glob('*') if os.path.isdir(d)]
-sub_dirs= lib_env.ALEAGlob('*')
-dirs = [ pj ( os.path.basename(d),'SConscript' )
-         for d in sub_dirs if os.path.isdir(d) ]
+dirs= Split("""
+base
+fitting
+opengl
+""")
 
-sources= []
-for d in dirs:
-    src= lib_env.SConscript( d, exports = { "env" : lib_env } )
-    if src: sources+= src
+# install headers
+#lib_env.SConscript( dirs, exports = { "env" : lib_env } )
+
+# sources
+sources= lib_env.ALEAGlob('*.cpp', dir = '*')
+print sources
+#sources= []
+#for d in dirs:
+#    src= lib_env.SConscript( d, exports = { "env" : lib_env } )
+#    if src: sources+= src
 
 # print sources
 # Add defines to export symbols on Windows

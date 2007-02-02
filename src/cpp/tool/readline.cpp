@@ -36,7 +36,7 @@
 
 
 
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && ! defined(  __MINGW32__ )
 
 #include <iostream>
 #include <stdlib.h>
@@ -128,14 +128,14 @@ char **keyword_completion(char* text, int start, int end) {
 
 void setKeyword(char ** keyword)
 {
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && ! defined(  __MINGW32__ )
   key_word = keyword;
 #endif
 }
 
 void gnu_init_readline()
 {
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && ! defined(  __MINGW32__ )
   using_history();
 #if defined (_RL_FUNCTION_TYPEDEF)
   rl_attempted_completion_function =  (rl_completion_func_t*) keyword_completion;
@@ -148,7 +148,7 @@ void gnu_init_readline()
 
 
 int readline_input(char* buff, const char* prompt) {
-#ifdef __GNUC__
+#if defined( __GNUC__ ) && ! defined(  __MINGW32__ )
 
   static char *ligne=(char *)NULL;
   int done=0;

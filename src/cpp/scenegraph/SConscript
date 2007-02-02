@@ -1,9 +1,4 @@
 # -*-python-*-
-import os
-from glob import glob
-
-pj= os.path.join
-
 Import( "env" )
 
 lib_env= env.Copy()
@@ -11,15 +6,13 @@ lib_env= env.Copy()
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/scenegraph", includes )
 
-#dirs = [d for d in glob('*') if os.path.isdir(d)]
-sub_dirs=lib_env.ALEAGlob('*') 
-dirs = [ pj ( os.path.basename(d),'SConscript' )
-         for d in sub_dirs if os.path.isdir(d) ]
+dirs=lib_env.ALEAGlob('SConscript','*') 
 
-sources= []
-for d in dirs:
-    src= SConscript( d, exports = { "env" : lib_env } )
-    if src: sources+= src
+# Install headers
+SConscript( dirs, exports = { "env" : lib_env } )
+
+# Select recursively the sources
+sources= lib_env.ALEAGlob('*.cpp','*')
 
 # Add defines to export symbols on Windows
 DEFINES= list(lib_env['CPPDEFINES'])
