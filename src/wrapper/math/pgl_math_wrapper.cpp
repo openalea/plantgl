@@ -52,10 +52,11 @@ void module_math()
 
 
 #ifdef PGL_DEBUG
-BOOST_PYTHON_MODULE(pglmath-d)
+BOOST_PYTHON_MODULE(_pglmath_d)
 #else
-BOOST_PYTHON_MODULE(pglmath)
+BOOST_PYTHON_MODULE(_pglmath)
 #endif
 {
   module_math();
 };
+

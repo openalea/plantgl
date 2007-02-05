@@ -35,7 +35,7 @@ See http://openalea.gforge.inria.fr
 # Setup script
 
 # Package name
-name= 'PlantGL'
+name= 'plantgl'
 
 #openalea namespace
 namespace=config.namespace 
@@ -100,19 +100,17 @@ setup(
     
 
     # pure python  packages
-    packages= [ pkg_name ],
+    packages= [ pkg_name, pj(pkg_name,'math') ],
     # python packages directory
-    package_dir= { pkg_name : pj('src',name)},
-
+    package_dir= { pkg_name : pj('src',name),
+                   pj( pkg_name,'math' ):pj( 'src', name, 'math' )},
     # add package platform libraries if any
-    package_data= { pkg_name : ['*.so', '*.dll', '*.pyd']},
+    package_data= { pj( pkg_name,'math' ) : ['*.so', '*.dll', '*.pyd']},
                      
 
     # copy shared data in default OpenAlea directory
     # map of 'destination subdirectory' : 'source subdirectory'
-    external_data={pj('doc', name) : 'doc',
-                   'share' : 'share' ,
-                   pj('test', name) : 'test',
+    external_data={'share' : 'share' ,
                    pj('include', name) : pj(build_prefix, 'include', name),
                    pj('lib'):  pj(build_prefix,'lib'),
                    pj('bin'):  pj(build_prefix,'bin'),
