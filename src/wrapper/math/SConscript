@@ -1,0 +1,15 @@
+# -*-python-*-
+
+Import( "env" )
+
+py_dir = '../../plantgl/math'
+
+# Build wrappers as shared libraries
+lib_env=env.Copy()
+
+sources= lib_env.ALEAGlob( '*.cpp' )
+target= "pglmath"
+
+lib_env.AppendUnique(LIBS= ['pglmath'])
+lib_env.ALEAWrapper( py_dir, target, sources )
+

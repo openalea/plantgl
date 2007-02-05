@@ -1,0 +1,7 @@
+# -*-python-*-
+
+Import( "env" )
+
+dirs= env.ALEAGlob( 'SConscript', '*' )
+SConscript( dirs, exports= { 'env' : env } )
+
