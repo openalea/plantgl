@@ -85,3 +85,4 @@ void class_Matrix2()
   .def( "__repr__", m2_repr )
   ;
 }
+

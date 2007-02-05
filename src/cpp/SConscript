@@ -1,9 +1,4 @@
 # -*-python-*-
-import os, re
-from glob import glob
-
-pj= os.path.join
-
 Import( "env" )
 
 # 1. Select and install the headers

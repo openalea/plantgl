@@ -34,14 +34,15 @@ BuildDir( prefix, '.' )
 
 cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
 cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
-## wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
+wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
+wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 
 # Build stage
 SConscript( pj(prefix,"src/cpp/SConscript"),
             exports={"env":cpp_env} )
 
-## SConscript( pj(prefix,"src/wrapper/SConscript"),
-##             exports={"env":wrapper_env} )
+SConscript( pj(prefix,"src/wrapper/SConscript"),
+            exports={"env":wrapper_env} )
 
 
 Default("build")
