@@ -111,10 +111,11 @@ setup(
     # copy shared data in default OpenAlea directory
     # map of 'destination subdirectory' : 'source subdirectory'
     external_data={pj('doc', name) : 'doc',
-                   pj('examples', name) : 'examples' ,
+                   'share' : 'share' ,
                    pj('test', name) : 'test',
                    pj('include', name) : pj(build_prefix, 'include', name),
                    pj('lib'):  pj(build_prefix,'lib'),
+                   pj('bin'):  pj(build_prefix,'bin'),
                    },
 
     
