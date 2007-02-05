@@ -15,12 +15,7 @@ src= BisonFlex( env,
                 "scne_yy" )
 
 # simple flatten implementation
-sources= []
-for el in src:
-    if isinstance(el,(list,tuple)):
-        sources.extend(map(str,el))
-    else:
-        sources.append(str(el))
+sources= [str( src[ 0 ] ),str( src[ 1 ][ 0 ] )]
 
 if env[ 'BISON_HPP' ]:
   includes.append( 'scne_parser.hpp' )
@@ -31,7 +26,7 @@ else:
 
 inc= env.ALEAIncludes( "plantgl/algo/codec", includes )
 
-sources= map(lambda x: pj( 'codec',x),sources)
+sources= map(lambda x: pj('codec',x),sources)
 
 Return('sources')
 

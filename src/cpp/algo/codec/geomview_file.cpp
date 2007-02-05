@@ -1,4 +1,5 @@
 #include <sstream>
+#include <fstream>
 
 #include <tool/dirnames.h>
 

@@ -13,6 +13,7 @@ SConscript( dirs, exports = { "env" : lib_env } )
 
 # Select recursively the sources
 sources= lib_env.ALEAGlob('*.cpp','*')
+sources+= lib_env.ALEAGlob('*.cpp')
 
 # Add defines to export symbols on Windows
 DEFINES= list(lib_env['CPPDEFINES'])

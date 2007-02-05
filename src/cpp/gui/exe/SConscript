@@ -9,9 +9,11 @@ exe_env= env.Copy()
 
 source= ["mainviewer.cpp"]
 
-LIBRARIES = list( exe_env['LIBS'] )
-LIBRARIES.extend( ['pglgui'] )
+LIBRARIES= ['qhull']
+LIBRARIES += list( exe_env['LIBS'] )
+LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 
+#RPATH= list(  exe_env['RPATH']
 exe_env.ALEAProgram( "viewer", source, LIBS = LIBRARIES )
 
 

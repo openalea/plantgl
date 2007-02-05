@@ -314,7 +314,7 @@ public:
     typename std::vector<T>::const_iterator _first = __A.begin();
     typename std::vector<T>::const_iterator _last = __A.end() - 1;
     while (_first != _last) {
-      if (std::find(_first + 1,__A.end(),*_first) != __A.end()) return false;
+      if (find(_first + 1,__A.end(),*_first) != __A.end()) return false;
       _first++;
     };
     return true;

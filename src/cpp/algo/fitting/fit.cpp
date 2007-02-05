@@ -60,11 +60,11 @@
 #include "miniball.h"
 #include "propervector.h"
 
-#define WITHOUT_QHULL
+// #define WITHOUT_QHULL
 
 #ifndef WITHOUT_QHULL
-extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
-#include "qhull3.0/src/qhull_a.h"
+//extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
+#include <qhull/qhull_a.h>
 #endif
 
 #define GEOM_DEBUG
