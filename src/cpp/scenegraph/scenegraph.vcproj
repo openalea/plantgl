@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8,00"
 	Name="libSceneGraph"
 	ProjectGUID="{B89C61AF-BA60-4A6E-9D5A-D20D0285A5D9}"
-	RootNamespace="libSceneGraph">
+	RootNamespace="libSceneGraph"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2">
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
@@ -22,78 +43,121 @@
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="SG_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="TRUE"
-				DebugInformationFormat="4"/>
+				RuntimeTypeInfo="true"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib"
 				OutputFile="../../../bin/libSceneGraph-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
-				GenerateDebugInformation="TRUE"
-				ImportLibrary="../../../lib/$(TargetName).lib"/>
+				GenerateDebugInformation="true"
+				ImportLibrary="../../../lib/$(TargetName).lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2">
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				AdditionalIncludeDirectories="$(QTDIR)\include,.."
 				PreprocessorDefinitions="SG_MAKEDLL"
 				RuntimeLibrary="2"
-				RuntimeTypeInfo="TRUE"/>
+				RuntimeTypeInfo="true"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib"
 				OutputFile="../../../bin/libSceneGraph.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
-				ImportLibrary="../../../lib/$(TargetName).lib"/>
+				ImportLibrary="../../../lib/$(TargetName).lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -101,484 +165,635 @@
 	<Files>
 		<Filter
 			Name="Core"
-			Filter="">
+			>
 			<File
-				RelativePath=".\core\action.cpp">
+				RelativePath=".\core\action.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\core\action.h">
+				RelativePath=".\core\action.h"
+				>
 			</File>
 			<File
-				RelativePath=".\core\pgl_messages.cpp">
+				RelativePath=".\core\pgl_messages.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\core\pgl_messages.h">
+				RelativePath=".\core\pgl_messages.h"
+				>
 			</File>
 			<File
-				RelativePath=".\core\sceneobject.cpp">
+				RelativePath=".\core\sceneobject.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\core\sceneobject.h">
+				RelativePath=".\core\sceneobject.h"
+				>
 			</File>
 			<File
-				RelativePath=".\core\smbtable.h">
+				RelativePath=".\core\smbtable.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Appearance"
-			Filter="">
+			>
 			<File
-				RelativePath=".\appearance\appearance.cpp">
+				RelativePath=".\appearance\appearance.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\appearance.h">
+				RelativePath=".\appearance\appearance.h"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\color.cpp">
+				RelativePath=".\appearance\color.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\color.h">
+				RelativePath=".\appearance\color.h"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\material.cpp">
+				RelativePath=".\appearance\material.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\material.h">
+				RelativePath=".\appearance\material.h"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\monospectral.cpp">
+				RelativePath=".\appearance\monospectral.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\monospectral.h">
+				RelativePath=".\appearance\monospectral.h"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\multispectral.cpp">
+				RelativePath=".\appearance\multispectral.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\multispectral.h">
+				RelativePath=".\appearance\multispectral.h"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\spectrum.cpp">
+				RelativePath=".\appearance\spectrum.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\spectrum.h">
+				RelativePath=".\appearance\spectrum.h"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\texture.cpp">
+				RelativePath=".\appearance\texture.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\appearance\texture.h">
+				RelativePath=".\appearance\texture.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Container"
-			Filter="">
+			>
 			<File
-				RelativePath=".\container\colorarray.h">
+				RelativePath=".\container\colorarray.h"
+				>
 			</File>
 			<File
-				RelativePath=".\container\geometryarray.cpp">
+				RelativePath=".\container\geometryarray.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\container\geometryarray.h">
+				RelativePath=".\container\geometryarray.h"
+				>
 			</File>
 			<File
-				RelativePath=".\container\geometryarray2.h">
+				RelativePath=".\container\geometryarray2.h"
+				>
 			</File>
 			<File
-				RelativePath=".\container\indexarray.cpp">
+				RelativePath=".\container\indexarray.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\container\indexarray.h">
+				RelativePath=".\container\indexarray.h"
+				>
 			</File>
 			<File
-				RelativePath=".\container\objectarray.h">
+				RelativePath=".\container\objectarray.h"
+				>
 			</File>
 			<File
-				RelativePath=".\container\pointarray.cpp">
+				RelativePath=".\container\pointarray.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\container\pointarray.h">
+				RelativePath=".\container\pointarray.h"
+				>
 			</File>
 			<File
-				RelativePath=".\container\pointmatrix.cpp">
+				RelativePath=".\container\pointmatrix.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\container\pointmatrix.h">
+				RelativePath=".\container\pointmatrix.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Geometry"
-			Filter="">
+			>
 			<File
-				RelativePath=".\geometry\amapsymbol.cpp">
+				RelativePath=".\geometry\amapsymbol.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\amapsymbol.h">
+				RelativePath=".\geometry\amapsymbol.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\asymmetrichull.cpp">
+				RelativePath=".\geometry\asymmetrichull.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\asymmetrichull.h">
+				RelativePath=".\geometry\asymmetrichull.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\beziercurve.cpp">
+				RelativePath=".\geometry\beziercurve.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\beziercurve.h">
+				RelativePath=".\geometry\beziercurve.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\bezierpatch.cpp">
+				RelativePath=".\geometry\bezierpatch.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\bezierpatch.h">
+				RelativePath=".\geometry\bezierpatch.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\boundingbox.cpp">
+				RelativePath=".\geometry\boundingbox.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\boundingbox.h">
+				RelativePath=".\geometry\boundingbox.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\boundingsphere.cpp">
+				RelativePath=".\geometry\boundingsphere.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\boundingsphere.h">
+				RelativePath=".\geometry\boundingsphere.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\box.cpp">
+				RelativePath=".\geometry\box.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\box.h">
+				RelativePath=".\geometry\box.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\cone.cpp">
+				RelativePath=".\geometry\cone.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\cone.h">
+				RelativePath=".\geometry\cone.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\curve.cpp">
+				RelativePath=".\geometry\curve.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\curve.h">
+				RelativePath=".\geometry\curve.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\cylinder.cpp">
+				RelativePath=".\geometry\cylinder.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\cylinder.h">
+				RelativePath=".\geometry\cylinder.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\disc.cpp">
+				RelativePath=".\geometry\disc.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\disc.h">
+				RelativePath=".\geometry\disc.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\elevationgrid.cpp">
+				RelativePath=".\geometry\elevationgrid.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\elevationgrid.h">
+				RelativePath=".\geometry\elevationgrid.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\explicitmodel.cpp">
+				RelativePath=".\geometry\explicitmodel.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\explicitmodel.h">
+				RelativePath=".\geometry\explicitmodel.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\extrudedhull.cpp">
+				RelativePath=".\geometry\extrudedhull.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\extrudedhull.h">
+				RelativePath=".\geometry\extrudedhull.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\extrusion.cpp">
+				RelativePath=".\geometry\extrusion.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\extrusion.h">
+				RelativePath=".\geometry\extrusion.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\faceset.cpp">
+				RelativePath=".\geometry\faceset.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\faceset.h">
+				RelativePath=".\geometry\faceset.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\frustum.cpp">
+				RelativePath=".\geometry\frustum.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\frustum.h">
+				RelativePath=".\geometry\frustum.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\geometry.cpp">
+				RelativePath=".\geometry\geometry.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\geometry.h">
+				RelativePath=".\geometry\geometry.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\group.cpp">
+				RelativePath=".\geometry\group.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\group.h">
+				RelativePath=".\geometry\group.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\hull.cpp">
+				RelativePath=".\geometry\hull.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\hull.h">
+				RelativePath=".\geometry\hull.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\interpol.cpp">
+				RelativePath=".\geometry\interpol.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\interpol.h">
+				RelativePath=".\geometry\interpol.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\lineicmodel.cpp">
+				RelativePath=".\geometry\lineicmodel.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\lineicmodel.h">
+				RelativePath=".\geometry\lineicmodel.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\mesh.cpp">
+				RelativePath=".\geometry\mesh.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\mesh.h">
+				RelativePath=".\geometry\mesh.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\nurbscurve.cpp">
+				RelativePath=".\geometry\nurbscurve.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\nurbscurve.h">
+				RelativePath=".\geometry\nurbscurve.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\nurbspatch.cpp">
+				RelativePath=".\geometry\nurbspatch.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\nurbspatch.h">
+				RelativePath=".\geometry\nurbspatch.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\paraboloid.cpp">
+				RelativePath=".\geometry\paraboloid.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\paraboloid.h">
+				RelativePath=".\geometry\paraboloid.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\parametricmodel.cpp">
+				RelativePath=".\geometry\parametricmodel.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\parametricmodel.h">
+				RelativePath=".\geometry\parametricmodel.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\patch.cpp">
+				RelativePath=".\geometry\patch.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\patch.h">
+				RelativePath=".\geometry\patch.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\planarmodel.cpp">
+				RelativePath=".\geometry\planarmodel.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\planarmodel.h">
+				RelativePath=".\geometry\planarmodel.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\pointset.cpp">
+				RelativePath=".\geometry\pointset.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\pointset.h">
+				RelativePath=".\geometry\pointset.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\polyline.cpp">
+				RelativePath=".\geometry\polyline.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\polyline.h">
+				RelativePath=".\geometry\polyline.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\primitive.cpp">
+				RelativePath=".\geometry\primitive.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\primitive.h">
+				RelativePath=".\geometry\primitive.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\profile.cpp">
+				RelativePath=".\geometry\profile.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\profile.h">
+				RelativePath=".\geometry\profile.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\quadset.cpp">
+				RelativePath=".\geometry\quadset.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\quadset.h">
+				RelativePath=".\geometry\quadset.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\revolution.cpp">
+				RelativePath=".\geometry\revolution.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\revolution.h">
+				RelativePath=".\geometry\revolution.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\sor.cpp">
+				RelativePath=".\geometry\sor.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\sor.h">
+				RelativePath=".\geometry\sor.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\sphere.cpp">
+				RelativePath=".\geometry\sphere.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\sphere.h">
+				RelativePath=".\geometry\sphere.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\swung.cpp">
+				RelativePath=".\geometry\swung.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\swung.h">
+				RelativePath=".\geometry\swung.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\text.cpp">
+				RelativePath=".\geometry\text.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\text.h">
+				RelativePath=".\geometry\text.h"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\triangleset.cpp">
+				RelativePath=".\geometry\triangleset.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\geometry\triangleset.h">
+				RelativePath=".\geometry\triangleset.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Scene"
-			Filter="">
+			>
 			<File
-				RelativePath=".\scene\factory.cpp">
+				RelativePath=".\scene\factory.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\factory.h">
+				RelativePath=".\scene\factory.h"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\inline.cpp">
+				RelativePath=".\scene\inline.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\inline.h">
+				RelativePath=".\scene\inline.h"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\scene.cpp">
+				RelativePath=".\scene\scene.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\scene.h">
+				RelativePath=".\scene\scene.h"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\shape.cpp">
+				RelativePath=".\scene\shape.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\scene\shape.h">
+				RelativePath=".\scene\shape.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Transformation"
-			Filter="">
+			>
 			<File
-				RelativePath=".\transformation\axisrotated.cpp">
+				RelativePath=".\transformation\axisrotated.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\axisrotated.h">
+				RelativePath=".\transformation\axisrotated.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\deformed.cpp">
+				RelativePath=".\transformation\deformed.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\deformed.h">
+				RelativePath=".\transformation\deformed.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\eulerrotated.cpp">
+				RelativePath=".\transformation\eulerrotated.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\eulerrotated.h">
+				RelativePath=".\transformation\eulerrotated.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\ifs.cpp">
+				RelativePath=".\transformation\ifs.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\ifs.h">
+				RelativePath=".\transformation\ifs.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\mattransformed.cpp">
+				RelativePath=".\transformation\mattransformed.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\mattransformed.h">
+				RelativePath=".\transformation\mattransformed.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\oriented.cpp">
+				RelativePath=".\transformation\oriented.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\oriented.h">
+				RelativePath=".\transformation\oriented.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\orthotransformed.cpp">
+				RelativePath=".\transformation\orthotransformed.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\orthotransformed.h">
+				RelativePath=".\transformation\orthotransformed.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\scaled.cpp">
+				RelativePath=".\transformation\scaled.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\scaled.h">
+				RelativePath=".\transformation\scaled.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\tapered.cpp">
+				RelativePath=".\transformation\tapered.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\tapered.h">
+				RelativePath=".\transformation\tapered.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\transformed.cpp">
+				RelativePath=".\transformation\transformed.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\transformed.h">
+				RelativePath=".\transformation\transformed.h"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\translated.cpp">
+				RelativePath=".\transformation\translated.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\transformation\translated.h">
+				RelativePath=".\transformation\translated.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="include"
-			Filter="">
+			>
 			<File
-				RelativePath="..\pgl_appearance.h">
+				RelativePath="..\pgl_appearance.h"
+				>
 			</File>
 			<File
-				RelativePath="..\pgl_container.h">
+				RelativePath="..\pgl_container.h"
+				>
 			</File>
 			<File
-				RelativePath="..\pgl_geometry.h">
+				RelativePath="..\pgl_geometry.h"
+				>
 			</File>
 			<File
-				RelativePath="..\pgl_scene.h">
+				RelativePath="..\pgl_scene.h"
+				>
 			</File>
 			<File
-				RelativePath="..\pgl_scenegraph.h">
+				RelativePath="..\pgl_scenegraph.h"
+				>
 			</File>
 			<File
-				RelativePath="..\pgl_transformation.h">
+				RelativePath="..\pgl_transformation.h"
+				>
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\pgl_version.cpp">
+			RelativePath=".\pgl_version.cpp"
+			>
 		</File>
 		<File
-			RelativePath=".\pgl_version.h">
+			RelativePath=".\pgl_version.h"
+			>
 		</File>
 		<File
-			RelativePath=".\sg_config.h">
+			RelativePath=".\sg_config.h"
+			>
 		</File>
 	</Files>
 	<Globals>

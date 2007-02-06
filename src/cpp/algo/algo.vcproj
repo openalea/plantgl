@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8,00"
 	Name="libAlgo"
 	ProjectGUID="{C5FB2683-C861-4FB0-90AA-47D4656CEF42}"
-	RootNamespace="libAlgo">
+	RootNamespace="libAlgo"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2">
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
@@ -22,78 +43,121 @@
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;..;C:\openalea\include"
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="TRUE"
-				DebugInformationFormat="4"/>
+				RuntimeTypeInfo="true"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib  qhull-vc80.lib"
 				OutputFile="../../../bin/libAlgo-d.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
-				GenerateDebugInformation="TRUE"
-				ImportLibrary="../../../lib/$(TargetName).lib"/>
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\openalea\lib"
+				GenerateDebugInformation="true"
+				ImportLibrary="../../../lib/$(TargetName).lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2">
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;..;C:\openalea\include"
 				PreprocessorDefinitions="ALGO_MAKEDLL"
 				RuntimeLibrary="2"
-				RuntimeTypeInfo="TRUE"/>
+				RuntimeTypeInfo="true"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib qhull-vc80.lib"
 				OutputFile="../../../bin/libAlgo.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
-				ImportLibrary="../../../lib/$(TargetName).lib"/>
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\openalea\lib"
+				ImportLibrary="../../../lib/$(TargetName).lib"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -101,364 +165,463 @@
 	<Files>
 		<Filter
 			Name="Base"
-			Filter="">
+			>
 			<File
-				RelativePath=".\base\amaptranslator.cpp">
+				RelativePath=".\base\amaptranslator.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\amaptranslator.h">
+				RelativePath=".\base\amaptranslator.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\bboxcomputer.cpp">
+				RelativePath=".\base\bboxcomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\bboxcomputer.h">
+				RelativePath=".\base\bboxcomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\bspherecomputer.cpp">
+				RelativePath=".\base\bspherecomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\bspherecomputer.h">
+				RelativePath=".\base\bspherecomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\discretizer.cpp">
+				RelativePath=".\base\discretizer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\discretizer.h">
+				RelativePath=".\base\discretizer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\matrixcomputer.cpp">
+				RelativePath=".\base\matrixcomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\matrixcomputer.h">
+				RelativePath=".\base\matrixcomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\merge.cpp">
+				RelativePath=".\base\merge.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\merge.h">
+				RelativePath=".\base\merge.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\polygoncomputer.cpp">
+				RelativePath=".\base\polygoncomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\polygoncomputer.h">
+				RelativePath=".\base\polygoncomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\skelcomputer.cpp">
+				RelativePath=".\base\skelcomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\skelcomputer.h">
+				RelativePath=".\base\skelcomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\statisticcomputer.cpp">
+				RelativePath=".\base\statisticcomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\statisticcomputer.h">
+				RelativePath=".\base\statisticcomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\surfcomputer.cpp">
+				RelativePath=".\base\surfcomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\surfcomputer.h">
+				RelativePath=".\base\surfcomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\tesselator.cpp">
+				RelativePath=".\base\tesselator.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\tesselator.h">
+				RelativePath=".\base\tesselator.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\volcomputer.cpp">
+				RelativePath=".\base\volcomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\volcomputer.h">
+				RelativePath=".\base\volcomputer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\base\wirecomputer.cpp">
+				RelativePath=".\base\wirecomputer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\base\wirecomputer.h">
+				RelativePath=".\base\wirecomputer.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Codec"
-			Filter="">
+			>
 			<File
-				RelativePath=".\codec\codec_config.h">
+				RelativePath=".\codec\codec_config.h"
+				>
 			</File>
 			<Filter
 				Name="Coder"
-				Filter="">
+				>
 				<File
-					RelativePath=".\codec\binaryprinter.cpp">
+					RelativePath=".\codec\binaryprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\binaryprinter.h">
+					RelativePath=".\codec\binaryprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\linetreeprinter.cpp">
+					RelativePath=".\codec\linetreeprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\linetreeprinter.h">
+					RelativePath=".\codec\linetreeprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\plyprinter.cpp">
+					RelativePath=".\codec\plyprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\plyprinter.h">
+					RelativePath=".\codec\plyprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\povprinter.cpp">
+					RelativePath=".\codec\povprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\povprinter.h">
+					RelativePath=".\codec\povprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\printer.cpp">
+					RelativePath=".\codec\printer.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\printer.h">
+					RelativePath=".\codec\printer.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\vgstarprinter.cpp">
+					RelativePath=".\codec\vgstarprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\vgstarprinter.h">
+					RelativePath=".\codec\vgstarprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\vrmlprinter.cpp">
+					RelativePath=".\codec\vrmlprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\vrmlprinter.h">
+					RelativePath=".\codec\vrmlprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\x3dprinter.cpp">
+					RelativePath=".\codec\x3dprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\x3dprinter.h">
+					RelativePath=".\codec\x3dprinter.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\xmlprinter.cpp">
+					RelativePath=".\codec\xmlprinter.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\xmlprinter.h">
+					RelativePath=".\codec\xmlprinter.h"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="Decoder"
-				Filter="">
+				>
 				<File
-					RelativePath=".\codec\dtafile.cpp">
+					RelativePath=".\codec\dtafile.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\dtafile.h">
+					RelativePath=".\codec\dtafile.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\geomview_file.cpp">
+					RelativePath=".\codec\geomview_file.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\geomview_file.h">
+					RelativePath=".\codec\geomview_file.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\ligfile.cpp">
+					RelativePath=".\codec\ligfile.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\ligfile.h">
+					RelativePath=".\codec\ligfile.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_binaryparser.cpp">
+					RelativePath=".\codec\scne_binaryparser.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_binaryparser.h">
+					RelativePath=".\codec\scne_binaryparser.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_parser.cpp">
+					RelativePath=".\codec\scne_parser.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_parser.h">
+					RelativePath=".\codec\scne_parser.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_parser.hpp">
+					RelativePath=".\codec\scne_parser.hpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_scanner.cpp">
+					RelativePath=".\codec\scne_scanner.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\scne_scanner.h">
+					RelativePath=".\codec\scne_scanner.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\vgsfile.cpp">
+					RelativePath=".\codec\vgsfile.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\vgsfile.h">
+					RelativePath=".\codec\vgsfile.h"
+					>
 				</File>
 				<Filter
 					Name="Resources"
-					Filter="">
+					>
 					<File
-						RelativePath=".\codec\scne_parser.y">
+						RelativePath=".\codec\scne_parser.y"
+						>
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Win32"
+							>
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Bison on $(InputName).y ..."
-								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;
-"
+								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;"
 								AdditionalDependencies="C:\Tools\bin\bison.exe"
-								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"/>
+								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"
+							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Win32"
+							>
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Bison on $(InputName).y ..."
-								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;
-"
+								CommandLine="C:\Tools\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;"
 								AdditionalDependencies="C:\Tools\bin\bison.exe"
-								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"/>
+								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"
+							/>
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath=".\codec\scne_scanner.l">
+						RelativePath=".\codec\scne_scanner.l"
+						>
 						<FileConfiguration
-							Name="Debug|Win32">
+							Name="Debug|Win32"
+							>
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;
-"
+								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 								AdditionalDependencies="C:\Tools\bin\flex.exe"
-								Outputs="$(InputDir)/$(InputName).cpp"/>
+								Outputs="$(InputDir)/$(InputName).cpp"
+							/>
 						</FileConfiguration>
 						<FileConfiguration
-							Name="Release|Win32">
+							Name="Release|Win32"
+							>
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;
-"
+								CommandLine="C:\Tools\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 								AdditionalDependencies="C:\Tools\bin\flex.exe"
-								Outputs="$(InputDir)/$(InputName).cpp"/>
+								Outputs="$(InputDir)/$(InputName).cpp"
+							/>
 						</FileConfiguration>
 					</File>
 				</Filter>
 			</Filter>
 			<Filter
 				Name="Codec"
-				Filter="">
+				>
 				<File
-					RelativePath=".\codec\cdc_geom.cpp">
+					RelativePath=".\codec\cdc_geom.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\cdc_geom.h">
+					RelativePath=".\codec\cdc_geom.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\cdc_pov.cpp">
+					RelativePath=".\codec\cdc_pov.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\cdc_pov.h">
+					RelativePath=".\codec\cdc_pov.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\cdc_vgstar.cpp">
+					RelativePath=".\codec\cdc_vgstar.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\cdc_vgstar.h">
+					RelativePath=".\codec\cdc_vgstar.h"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\codecs.cpp">
+					RelativePath=".\codec\codecs.cpp"
+					>
 				</File>
 				<File
-					RelativePath=".\codec\codecs.h">
+					RelativePath=".\codec\codecs.h"
+					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Fitting"
-			Filter="">
+			>
 			<File
-				RelativePath=".\fitting\branchcompressor.cpp">
+				RelativePath=".\fitting\branchcompressor.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\branchcompressor.h">
+				RelativePath=".\fitting\branchcompressor.h"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\fit.cpp">
+				RelativePath=".\fitting\fit.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\fit.h">
+				RelativePath=".\fitting\fit.h"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\miniball.cpp">
+				RelativePath=".\fitting\miniball.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\miniball.h">
+				RelativePath=".\fitting\miniball.h"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\miniball_config.h">
+				RelativePath=".\fitting\miniball_config.h"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\propervector.cpp">
+				RelativePath=".\fitting\propervector.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\fitting\propervector.h">
+				RelativePath=".\fitting\propervector.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="OpenGL"
-			Filter="">
+			>
 			<File
-				RelativePath=".\opengl\glbboxrenderer.cpp">
+				RelativePath=".\opengl\glbboxrenderer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glbboxrenderer.h">
+				RelativePath=".\opengl\glbboxrenderer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glctrlptrenderer.cpp">
+				RelativePath=".\opengl\glctrlptrenderer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glctrlptrenderer.h">
+				RelativePath=".\opengl\glctrlptrenderer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glrenderer.cpp">
+				RelativePath=".\opengl\glrenderer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glrenderer.h">
+				RelativePath=".\opengl\glrenderer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glskelrenderer.cpp">
+				RelativePath=".\opengl\glskelrenderer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\glskelrenderer.h">
+				RelativePath=".\opengl\glskelrenderer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\gltransitionrenderer.cpp">
+				RelativePath=".\opengl\gltransitionrenderer.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\gltransitionrenderer.h">
+				RelativePath=".\opengl\gltransitionrenderer.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\util_appegl.h">
+				RelativePath=".\opengl\util_appegl.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\util_gl.h">
+				RelativePath=".\opengl\util_gl.h"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\util_glut.cpp">
+				RelativePath=".\opengl\util_glut.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\opengl\util_glut.h">
+				RelativePath=".\opengl\util_glut.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="RayCasting"
-			Filter="">
+			>
 		</Filter>
 		<File
-			RelativePath=".\algo_config.h">
+			RelativePath=".\algo_config.h"
+			>
 		</File>
 		<File
-			RelativePath="..\pgl_algo.h">
+			RelativePath="..\pgl_algo.h"
+			>
 		</File>
 	</Files>
 	<Globals>
