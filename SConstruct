@@ -16,8 +16,8 @@ SConsignFile()
 options = Options( 'options.py', ARGUMENTS )
 
 wrapper_conf= ALEAConfig(name,['boost_python', 'alea'])
-cpp_conf= ALEAConfig(name, ['qt', 'flex', 'bison','opengl','readline'])
-opt_conf= ALEAConfig(name, ['boost_python', 'alea', 'qt', 'flex', 'bison','opengl','readline'])
+cpp_conf= ALEAConfig(name, ['alea','qt', 'flex', 'bison','opengl','readline','qhull'])
+opt_conf= ALEAConfig(name, ['boost_python', 'alea', 'qt', 'flex', 'bison','opengl','readline','qhull'])
 
 # Set all the common options for the package
 opt_conf.UpdateOptions( options )
