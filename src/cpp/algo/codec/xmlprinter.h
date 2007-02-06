@@ -46,7 +46,7 @@
 #include "codec_config.h"
 #include <scenegraph/core/action.h>
 #include <tool/util_types.h>
-#include <tool/util_hashmap.h>
+#include <tool/util_hashset.h>
 #include <qstring.h>
 
 class QTextStream;
@@ -324,7 +324,7 @@ public :
 protected:
 
   /// The cache where to store the already printed objects
-  STDEXT::hash_set<uint32_t> __cache;
+  hash_set_uint32 __cache;
 
 
   /// The output stream.

@@ -19,7 +19,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;..;C:\openalea\include"
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;..;C:\openalea\include"
 				PreprocessorDefinitions="ALGO_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"/>
@@ -70,7 +70,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib qhull-vc80.lib"
 				OutputFile="../../../bin/libAlgo.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../lib/$(TargetName).lib"/>

@@ -63,7 +63,6 @@
 // #define WITHOUT_QHULL
 
 #ifndef WITHOUT_QHULL
-//extern "C" { char qh_version[]= "version 3.0 2001/02/11"; }
 extern "C" {
 #include <qhull/qhull_a.h>
 }

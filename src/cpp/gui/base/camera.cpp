@@ -604,7 +604,7 @@ ViewCameraGL::beginSelectGL(const QRect& region)
 
   glGetIntegerv(GL_VIEWPORT, viewport);
   gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y,
-#ifdef _WIN32
+#ifdef _MSC_VER
 				(GLdouble)max(region.width(),2),
 				(GLdouble)max(region.height(),2),viewport);
 #else

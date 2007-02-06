@@ -51,7 +51,7 @@
 
 #include <vector>
 #include <tool/util_types.h>
-#include <tool/util_hashmap.h>
+#include <tool/util_hashset.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -316,11 +316,7 @@ public:
   protected:
 
   /// The cache where to store the already printed objects
-#ifndef WIN32_STL_EXTENSION
-  STDEXT::hash_set<uint32_t,STDEXT::hash<uint32_t>,std::equal_to<uint32_t> > __cache;
-#else
-  STDEXT::hash_set<uint32_t> __cache;
-#endif
+  hash_set_uint32 __cache;
 
   /// nb element.
   uint32_t __element;

@@ -90,37 +90,37 @@ string absolute_filename(const string & filename) {
 #ifdef UNICODE
 string short_dirnameU(const string& filename){
 #ifdef _WIN32
-        LPTSTR lpszShortPath = new WORD[MAXPATHLEN];
-    DWORD cchBuffer(MAXPATHLEN);
-        LPTSTR lpszLongPath  = new WORD[filename.length()+1];
-        for(uint32_t i = 0; i < filename.length(); i++)
-                lpszLongPath[i] = filename[i];
-        lpszLongPath[filename.length()] = '\0';
+	LPTSTR lpszShortPath = new TCHAR[MAXPATHLEN];
+	DWORD cchBuffer(MAXPATHLEN);
+	LPTSTR lpszLongPath  = new TCHAR[filename.length()+1];
+	for(uint32_t i = 0; i < filename.length(); i++)
+		lpszLongPath[i] = filename[i];
+	lpszLongPath[filename.length()] = '\0';
 
-    cchBuffer = GetShortPathName(lpszLongPath,lpszShortPath, cchBuffer);
-        string result;
-    for(DWORD j = 0 ; j < cchBuffer; j++){
-      char c = lpszShortPath[j];
-      result += c;
-    }
-    return result;
+	cchBuffer = GetShortPathName(lpszLongPath,lpszShortPath, cchBuffer);
+	string result;
+	for(DWORD j = 0 ; j < cchBuffer; j++){
+		char c = lpszShortPath[j];
+		result += c;
+	}
+	return result;
 #else
-        return filename;
+	return filename;
 #endif
 }
 #endif
 
 string short_dirname(const string& filename){
 #ifdef _WIN32
-        char * lpszShortPath = new char[MAXPATHLEN];
+    char * lpszShortPath = new char[MAXPATHLEN];
     DWORD cchBuffer(MAXPATHLEN);
 
     cchBuffer = GetShortPathNameA(filename.c_str(),lpszShortPath, cchBuffer);
-        lpszShortPath[cchBuffer] ='\0';
-        string result(lpszShortPath);
+    lpszShortPath[cchBuffer] ='\0';
+    string result(lpszShortPath);
     return result;
 #else
-        return filename;
+    return filename;
 #endif
 }
 

@@ -39,7 +39,7 @@
 #ifndef __util_hashmap_h__
 #define __util_hashmap_h__
 
-#include "tools_config.h"
+#include "util_hash.h"
 
 /*! \file util_hashmap.h
     \brief Utility for hashmap with std::string.
@@ -47,46 +47,15 @@
 
 #ifdef GNU_STL_EXTENSION
 	#include <ext/hash_map>
-	#include <ext/hash_set>
 #else
 	#if defined(__GNUC__)
 		#warning GNU STL Extension not activated ! Old GCC version used ?
 	#endif
-	#include <hash_set>
 	#include <hash_map>
 #endif
 
-#include <string>
 
 #ifndef WIN32_STL_EXTENSION
-
-/**
-   \strust eqstr
-   \brief Comparison between 2 string.
-*/
-
-struct eqstr
-{
-  /// Compare the 2 string.
-  bool operator() (const std::string& s1, const std::string& s2) const
-    { return s1 == s2; }
-};
-
-
-/**
-   \strust hashstr
-   \brief Find using a hasher a place for the string.
-*/
-struct hashstr
-{
-  /// hash of the string.
-  size_t operator() (const std::string& s1) const
-    {
-    STDEXT::hash<const char*> my_hasher;
-    return my_hasher(s1.c_str());
-    }
-};
-
 
 /**
    \class hash_map_string
@@ -97,16 +66,10 @@ template <class T>
 struct hash_map_string : public STDEXT::hash_map<std::string, T, hashstr, eqstr>
 {};
 
-struct hash_set_string : public STDEXT::hash_set<std::string, hashstr, eqstr>
-{};
-
 #else
 
 template <class T>
 struct hash_map_string : public STDEXT::hash_map<std::string, T >
-{};
-
-struct hash_set_string : public STDEXT::hash_set<std::string>
 {};
 
 #endif

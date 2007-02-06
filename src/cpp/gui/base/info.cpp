@@ -63,27 +63,24 @@
 
 #ifdef _WIN32
 #include <process.h>
-#endif
-
-#ifdef __GNUC__
+#elif __GNUC__
 #include <sys/utsname.h>
 #include <unistd.h>
 #endif
+
 #include <qgl.h>
 #include <GL/gl.h>
-
-#ifdef __GNUC__
-#include <GL/glx.h>
-#endif
 
 #ifdef _WIN32
 #include <wingdi.h>
 #include <winbase.h>
+#else
+#include <GL/glx.h>
 #endif
 
 #include <algo/opengl/util_glut.h>
 
-#ifdef __GNUC__
+#ifndef _WIN32
 
 #include <stdio.h>
 extern "C" {
@@ -496,18 +493,6 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
         QString sys_release;
         int num_proc = 0;
 
-#ifdef __GNUC__
-
-    struct utsname buf;
-    uname(&buf);
-    proc = QString(buf.machine);
-    machine_name = QString(buf.nodename);
-    sys_version = QString(buf.version);
-    sys_release = QString(buf.release);
-    sys_name = QString(buf.sysname);
-
-#endif
-
 #ifdef _WIN32
         LPSYSTEM_INFO lpSystemInfo = new SYSTEM_INFO;
         GetSystemInfo(lpSystemInfo);
@@ -599,7 +584,18 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
         }
         else sys_name = "Windows";
 
+#elif __GNUC__
+
+    struct utsname buf;
+    uname(&buf);
+    proc = QString(buf.machine);
+    machine_name = QString(buf.nodename);
+    sys_version = QString(buf.version);
+    sys_release = QString(buf.release);
+    sys_name = QString(buf.sysname);
+
 #endif
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -771,7 +767,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     item->setText( 0, tr( "Version" ) );
     item->setText( 1,  c_version  );
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     item = new QListViewItem( item2bis, item );
     item->setText( 0, tr( "Run-Time Type Information" ) );
 #ifdef _CPPRTTI
@@ -1112,7 +1108,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     QListViewItem * item8 = new QListViewItem( RootItem, LastItem );
     item8->setText( 0, tr( "OpenGL Windows Extension (WGL)" ) );
     item8->setPixmap( 0, opengl_pix );
@@ -1144,11 +1140,13 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     else item8bis->setText( 1, tr( "None" ) );
 
     LastItem = item8;
-#endif
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef __GNUC__
+#endif
+#ifndef __MINGW32__
+#if __GNUC__
+
   Display * dpy = this->x11Display();
 
   if(dpy != NULL){
@@ -1392,6 +1390,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
   LastItem = item10;
 
 /* ----------------------------------------------------------------------- */
+#endif
 #endif
 
   AttView->setGeometry( QRect( 80, 70, 460, 370 ) );

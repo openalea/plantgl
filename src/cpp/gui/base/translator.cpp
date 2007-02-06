@@ -50,6 +50,9 @@ removeTranslator(){
 
 void setFrenchTranslator()
 {
+#ifdef __MINGW32__
+# warning Translation message not set because of excessive computation time
+#else
   if(!fr){
   fr = new QTranslator(NULL,"French");
   
@@ -644,6 +647,7 @@ void setFrenchTranslator()
 
   qApp->installTranslator( fr );
  // qWarning("French Translator installed");
+#endif
 }
 
 QStringList 

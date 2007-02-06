@@ -40,7 +40,6 @@
 
 
 #include "geometry.h"
-#include <scenegraph/core/smbtable.h>
 
 PGL_USING_NAMESPACE
 using namespace std;

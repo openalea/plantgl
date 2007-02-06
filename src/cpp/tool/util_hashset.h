@@ -36,85 +36,43 @@
 
 
 
-#ifndef __util_hashmap_h__
-#define __util_hashmap_h__
+#ifndef __util_hashset_h__
+#define __util_hashset_h__
 
-#include "config.h"
+#include "util_hash.h"
 
-/*! \file util_hashmap.h
-    \brief Utility for hashmap with std::string.
+/*! \file util_hashset.h
+    \brief Utility for hashset with std::string.
 */
 
-#ifdef STL_EXTENSION
-	#ifdef GNU_STL_EXTENSION
-        #include <ext/hash_set>
-        #define STDEXT __gnu_cxx
-	#else
-        #include <hash_set>
-		#ifdef WIN32_STL_EXTENSION
-			#define STDEXT stdext
-		#else
-			#define STDEXT std
-		#endif
-	#endif
-	#define USING_STDEXT using namespace STDEXT
+#ifdef GNU_STL_EXTENSION
+	#include <ext/hash_set>
 #else
-	#define USING_STDEXT
+	#if defined(__GNUC__)
+		#warning GNU STL Extension not activated ! Old GCC version used ?
+	#endif
+	#include <hash_set>
 #endif
 
-
-#include <string>
 
 #ifndef WIN32_STL_EXTENSION
 
 /**
-   \strust eqstr
-   \brief Comparison between 2 string.
+   \class hash_set_string
+   \brief Class for using hash_set with string.
 */
 
-struct eqstr
-{
-  /// Compare the 2 string.
-  bool operator() (const std::string& s1, const std::string& s2) const
-    { return s1 == s2; }
-};
+typedef STDEXT::hash_set<std::string, hashstr, eqstr> hash_set_string;
 
-
-/**
-   \strust hashstr
-   \brief Find using a hasher a place for the string.
-*/
-struct hashstr
-{
-  /// hash of the string.
-  size_t operator() (const std::string& s1) const
-    {
-    STDEXT::hash<const char*> my_hasher;
-    return my_hasher(s1.c_str());
-    }
-};
-
-
-/**
-   \class hash_map_string
-   \brief Class used for parsing a stream.
-*/
-
-template <class T>
-struct hash_map_string : public STDEXT::hash_map<std::string, T, hashstr, eqstr>
-{};
-
-struct hash_set_string : public STDEXT::hash_set<std::string, hashstr, eqstr>
-{};
+typedef STDEXT::hash_set<uint32_t,STDEXT::hash<uint32_t>,std::equal_to<uint32_t> > hash_set_uint32;
 
 #else
 
-template <class T>
-struct hash_map_string : public STDEXT::hash_map<std::string, T >
-{};
+typedef STDEXT::hash_set<std::string> hash_set_string ;
 
-struct hash_set_string : public STDEXT::hash_set<std::string>
-{};
+typedef STDEXT::hash_set<uint32_t> hash_set_uint32;
+
+
 
 #endif
 

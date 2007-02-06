@@ -245,7 +245,7 @@ void ViewHelpMenu::showLicense()
   c.setColor(QColorGroup::Background,QColor(255,255,255));
   pal.setActive(c);
   lictext->setPalette(pal);
-  QFile copyright((TOOLS(getPlantGLDir())+"/share/plantGL/LICENSE").c_str());
+  QFile copyright((TOOLS(getPlantGLDir())+"/share/plantgl/LICENSE").c_str());
   if(copyright.exists() && copyright.open(IO_ReadOnly)){
 	QTextStream s(&copyright);
 	lictext->setText(s.read());
@@ -354,14 +354,6 @@ ViewHelpMenu::generalInfo()
   item = new QListViewItem( itemF, item );
   item->setText( 0, tr( "Tools Namespace" ) );
 #ifndef TOOLS_NAMESPACE_NAME
-  text = "False";
-#else
-  text = "True";
-#endif
-  item->setText( 1, tr( text ) );
-  item = new QListViewItem( itemF, item );
-  item->setText( 0, tr( "Using RogueWave" ) );
-#ifdef RWOUT
   text = "False";
 #else
   text = "True";

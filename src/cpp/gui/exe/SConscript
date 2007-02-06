@@ -9,8 +9,7 @@ exe_env= env.Copy()
 
 source= ["mainviewer.cpp"]
 
-LIBRARIES= ['qhull']
-LIBRARIES += list( exe_env['LIBS'] )
+LIBRARIES = list( exe_env['LIBS'] )
 LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 
 #RPATH= list(  exe_env['RPATH']

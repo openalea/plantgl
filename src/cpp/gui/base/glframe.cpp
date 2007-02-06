@@ -89,7 +89,7 @@
 // PGL_USING_NAMESPACE
 
 using namespace std;
-using namespace STDEXT;
+// using namespace STDEXT;
 
 #define MS_EDITION
 #define GL_ERROR glError(__FILE__,__LINE__)

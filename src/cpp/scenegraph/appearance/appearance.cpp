@@ -39,7 +39,6 @@
 
 
 #include "appearance.h"
-#include <scenegraph/core/smbtable.h>
 
 PGL_USING_NAMESPACE
 

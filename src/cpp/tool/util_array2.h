@@ -46,6 +46,7 @@
 
 #include "rcobject.h"
 #include <vector>
+#include <algorithm>
 
 /* ----------------------------------------------------------------------- */
 
@@ -119,7 +120,7 @@ public:
 
   /// Returns whether \e self contain \e t.
   inline bool contain( const T& t ) const {
-    return find(__A.begin(),__A.end(),t) != __A.end();
+	  return std::find(__A.begin(),__A.end(),t) != __A.end();
   }
 
   /** Returns the value of the \e c-th element of \e r row of \e self
@@ -457,12 +458,12 @@ public:
 
   /// Returns an iterator at the maximum value of \e self.
   inline const_iterator getMax( ) const {
-    return max_element(this->__A.begin(),this->__A.end());
+	  return std::max_element(this->__A.begin(),this->__A.end());
   }
 
   /// Returns an iterator at the minimum value of \e self.
   inline const_iterator getMin( ) const {
-    return min_element(this->__A.begin(),this->__A.end());
+    return std::min_element(this->__A.begin(),this->__A.end());
   }
 
   /** Returns an iterator first at the minimum value, second at the

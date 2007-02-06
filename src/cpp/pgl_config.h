@@ -180,22 +180,25 @@
     \brief Include hash ccontainer as extension of STL
 */
 
+
+
 #if defined(__GNUC__)
+#ifndef GNU_STL_EXTENSION
+
 #ifndef __MINGW32__
 #include <features.h>
 #endif
+
 #if defined __GNUC_PREREQ
 #if __GNUC_PREREQ(3,0)
-#ifndef GNU_STL_EXTENSION
 #define GNU_STL_EXTENSION
 #endif
-#endif
-#else 
-#if defined (SYSTEM_IS__CYGWIN)
-#ifndef GNU_STL_EXTENSION
+#elif defined (__MINGW32__)
+#define GNU_STL_EXTENSION
+#elif defined (SYSTEM_IS__CYGWIN)
 #define GNU_STL_EXTENSION
 #endif
-#endif
+
 #endif
 #endif
 
