@@ -3,25 +3,25 @@ import sys
 
 exists = os.path.exists
 
-def addbinpath(dir):
-	if not exists(dir):
-		raise "'"+dir+"' does not exist."
-	dir = os.path.abspath(dir)
-	os.environ['PATH'] += ';'+dir
+def addbinpath(dir_name):
+	if not exists(dir_name):
+		raise "'"+dir_name+"' does not exist."
+	dir_name = os.path.abspath(dir_name)
+	os.environ['PATH'] += ';'+dir_name
 
-def addpybinpath(dir):
-	if not exists(dir):
-		raise "'"+dir+"' does not exist."
-	dir = os.path.abspath(dir)
-	sys.path.append(dir)
+def addpybinpath(dir_name):
+	if not exists(dir_name):
+		raise "'"+dir_name+"' does not exist."
+	dir_name = os.path.abspath(dir_name)
+	sys.path.insert(0,dir_name)
 
 if exists('../bin'):
 	"Visual 8 Binary path added"
 	addbinpath('../bin')
 else:
 	"'build_scons' Binary path added"
-	addbinpath('../build_scons/bin')
-	addbinpath('../build_scons/lib')
+	addbinpath('../build-scons/bin')
+	addbinpath('../build-scons/lib')
 
 addpybinpath('../src')
 

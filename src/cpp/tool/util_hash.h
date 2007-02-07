@@ -48,6 +48,7 @@
 #include <string>
 
 #ifndef WIN32_STL_EXTENSION
+#include <ext/hash_map>
 
 /**
    \strust eqstr
