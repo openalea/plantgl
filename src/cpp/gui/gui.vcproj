@@ -58,7 +58,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
-				OutputFile="../../../bin/libGui-d.dll"
+				OutputFile="../../../bin/pglgui-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
@@ -130,7 +130,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
-				OutputFile="../../../bin/libGui.dll"
+				OutputFile="../../../bin/pglgui.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>

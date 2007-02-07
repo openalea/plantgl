@@ -57,7 +57,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib"
-				OutputFile="../../../bin/libTools-d.dll"
+				OutputFile="../../../bin/pgltools-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib"
-				OutputFile="../../../bin/libTools.dll"
+				OutputFile="../../../bin/pgltools.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>

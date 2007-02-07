@@ -34,15 +34,14 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "viewer.h"
+#include "export_viewer.h"
 
 #include <boost/python.hpp>
 
-#include <view_application.h>
-#include <view_zbuffer.h>
-// #include <Tools/dirnames.h>
+#include <gui/viewer/pglapplication.h>
+#include <gui/base/zbuffer.h>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
@@ -265,7 +264,7 @@ boost::python::object getProjectionSize(){
 }
 
 boost::python::object getProjectionSizes(const ScenePtr& sc){
-  std::vector<std::pair<uint32_t,double> > res = ViewerApplication::getProjectionSizes(sc);
+  std::vector<std::pair<uint32_t,double> > res = PGLViewerApplication::getProjectionSizes(sc);
   if(res.empty()) return object();
   else {
 	boost::python::list bres;
@@ -317,16 +316,9 @@ public :
 	PyViewWidgetGeometry();
 };
 
-void class_ViewerApplication()
+void class_viewer()
 {
-  scope viewer = class_< ViewerApplication >("Viewer", no_init )
-    // .def(init< const ViewerApplication & >())
-
-	// .def("getSelection", &selection)
-    // .staticmethod("getSelection")
-	// .def("setSelection",&setSelection)
-    // .def("setSelection",&setMSelection)
-    // .staticmethod("setSelection")
+  scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
 	.add_static_property("selection",&selection,&setMSelection)
 	.add_static_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
 
@@ -343,11 +335,11 @@ void class_ViewerApplication()
     .staticmethod("start")
     .def("exit", &ViewerApplication::exit,"Exit from Viewer Application. Cannot be restarted after.")
     .staticmethod("exit")
-	.def("display",(void (*)(const ScenePtr&))&ViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
-    .def("display",(void (*)(const GeometryPtr&))&ViewerApplication::display,"display(Geometry geom) : display a particular geometry.",args("geom"))
+	.def("display",(void (*)(const ScenePtr&))&PGLViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
+    .def("display",(void (*)(const GeometryPtr&))&PGLViewerApplication::display,"display(Geometry geom) : display a particular geometry.",args("geom"))
     .staticmethod("display")
-    .def("add",(void (*)(const ScenePtr&))&ViewerApplication::add,"add(Scene scene) : add a scene to the current displayed scene.",args("scene"))
-    .def("add",(void (*)(const GeometryPtr&))&ViewerApplication::add,"add(Geometry geom) : add a particular geometry to the current displayed scene.",args("geom"))
+    .def("add",(void (*)(const ScenePtr&))&PGLViewerApplication::add,"add(Scene scene) : add a scene to the current displayed scene.",args("scene"))
+    .def("add",(void (*)(const GeometryPtr&))&PGLViewerApplication::add,"add(Geometry geom) : add a particular geometry to the current displayed scene.",args("geom"))
     .staticmethod("add")
 	.def("update",&ViewerApplication::update,"update() : update the current visualization.")
     .staticmethod("update")
@@ -355,7 +347,9 @@ void class_ViewerApplication()
     .def("animation",&animation0)
     .staticmethod("animation") 
     ;
+}
 
+void class_camera(){
 	class_<PyViewCamera >("camera", no_init )
 		.def("setPerspective",&ViewerApplication::setPerspectiveCamera,"setPerspective() : Set Camera in Perspective mode.")
     .staticmethod("setPerspective")
@@ -369,7 +363,9 @@ void class_ViewerApplication()
     .def("lookAt",(void(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 pos, Vector3 target)",args("pos","target"))
     .staticmethod("lookAt")
 	;
-	
+}
+
+void class_grids(){
 	class_<PyViewGrids >("grids", no_init )
     .def("setXYPlane",&ViewerApplication::setXYGrid,"setXYPlane(bool enable)",args("enable") )
     .staticmethod("setXYPlane")
@@ -386,8 +382,8 @@ void class_ViewerApplication()
     .def("set",&ViewerApplication::setGrid,"set(bool xy, bool xz, bool yz, bool axis)",args("xy","xz","yz","axis"))
     .staticmethod("set")
 	;
-
-
+}
+void class_dialog(){
 	class_<PyViewDialog> ("dialog", no_init )
     .def("question",&question0,"question(str caption, str text)",args("caption","text"))
     .def("question",&question1,"question(str caption, str text, str button1)",args("caption","text","button1"))
@@ -412,7 +408,8 @@ void class_ViewerApplication()
     .def("getDirectory",&ViewerApplication::getDirectory,"getDirectory(str caption = \"\", str startPath = \"\")",args("caption","startPath"))
     .staticmethod("getDirectory")
 	;
-
+}
+void class_framegl(){
 	class_<PyViewFrameGL> ("frameGL", no_init )
     .def("saveImage",&saveImage1)
     .def("saveImage",&saveImage2)
@@ -436,7 +433,9 @@ void class_ViewerApplication()
 	.def("getProjectionSizes",&getProjectionSizes,"getProjectionSizes(Scene objects) : individual projected sizes of a set of elements.",args("objects"))
     .staticmethod("getProjectionSizes")
 	;
+}
 
+void class_widgetgeometry(){
 	class_<PyViewWidgetGeometry> ("widgetGeometry", no_init )
     .def("setFullScreen",&fullScreen0)
     .def("setFullScreen",&fullScreen1,"setFullScreen(bool enable)",args("enable"))
@@ -448,7 +447,11 @@ void class_ViewerApplication()
     .def("set",&ViewerApplication::setGeometry,"set(int x, int y, int width, int height)",args("x","y","width","height"))
     .staticmethod("set")
 	;
+}
 
+void initViewer()
+{
+	PGLViewerApplication::init();
 }
 
 void cleanViewer() 
@@ -461,9 +464,17 @@ void cleanViewer()
   }
 }
 
-void module_viewer()
+void module_gui()
 {
-  class_ViewerApplication();
+  initViewer();
+
+  class_viewer();
+  class_camera();
+  class_grids();
+  class_dialog();
+  class_framegl();
+  class_widgetgeometry();
+
   cleanViewer();
 }
 

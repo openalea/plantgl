@@ -56,7 +56,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../../bin/libMath-d.dll"
+				OutputFile="../../../bin/pglmath-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
@@ -126,7 +126,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../../bin/libMath.dll"
+				OutputFile="../../../bin/pglmath.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>

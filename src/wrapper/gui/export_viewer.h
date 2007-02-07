@@ -34,11 +34,20 @@
  *  ----------------------------------------------------------------------------
  */
 
-#ifndef __WRAP_VIEWER_H_
-#define __WRAP_VIEWER_H_
+#ifndef __export_viewer_h__
+#define __export_viewer_h__
 
-void class_ViewerApplication();
+void class_viewer();
+void class_camera();
+void class_grids();
+void class_dialog();
+void class_framegl();
+void class_widgetgeometry();
 
-void module_viewer();
+void initViewer();
+void cleanViewer();
+
+
+void module_gui();
 
 #endif

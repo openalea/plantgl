@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="wrapMath"
-	ProjectGUID="{0F5CB473-0099-404D-BC85-44F425DB5279}"
-	RootNamespace="wrapMath"
+	Name="wrapGui"
+	ProjectGUID="{4E64F6F6-E87D-4C1E-8270-C918F690776F}"
+	RootNamespace="wrapGui"
 	>
 	<Platforms>
 		<Platform
@@ -57,7 +57,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl/math/_pglmath-d.dll"
+				OutputFile="../../plantgl/gui/_pglgui-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl/math/_pglmath.dll"
+				OutputFile="../../plantgl/gui/_pglgui.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>
@@ -167,40 +167,16 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\export_math.h"
+				RelativePath=".\export_viewer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\export_matrix.h"
-				>
-			</File>
-			<File
-				RelativePath=".\export_matrix2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\export_matrix3.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\export_matrix4.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\export_vector2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\export_vector3.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\export_vector4.cpp"
+				RelativePath=".\export_viewer.h"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\pgl_math_wrapper.cpp"
+			RelativePath=".\pgl_gui_wrapper.cpp"
 			>
 		</File>
 	</Files>
