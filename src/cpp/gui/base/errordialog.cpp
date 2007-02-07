@@ -116,6 +116,12 @@ ViewErrorDialog::~ViewErrorDialog()
 	unregisterForQtMessage();
 }
 
+void ViewErrorDialog::registerQtMsg(bool reg)
+{
+	if(reg)registerForQtMessage(this);
+	else unregisterForQtMessage();
+}
+
 void ViewErrorDialog::setVerbose(bool b){
 	if(__verbose != b){
 		__verbose = b;

@@ -118,6 +118,8 @@ public slots:
 
   QString& highligthText(QString&);
 
+  void registerQtMsg(bool reg);
+
 protected:
 
   /// This event handler is called when a key is pressed for this widget. 

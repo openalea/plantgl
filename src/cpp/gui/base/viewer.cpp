@@ -765,7 +765,13 @@ void Viewer::closeEvent ( QCloseEvent * e)
   if(ViewerMessageBox&&ViewerMessageBox->isVisible())ViewerMessageBox->close();
   __FileMenu->saveConfigBeforeQuit();
   __GLFrame->getSceneRenderer()->endEvent();
+  __ErrorDialog->registerQtMsg(false);
   e->accept();
+}
+
+void Viewer::showEvent ( QShowEvent * e)
+{
+  __ErrorDialog->registerQtMsg(true);
 }
 
 void Viewer::polish (){

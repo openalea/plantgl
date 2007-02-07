@@ -12,7 +12,9 @@ source= ["mainviewer.cpp"]
 LIBRARIES = list( exe_env['LIBS'] )
 LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 
-#RPATH= list(  exe_env['RPATH']
-exe_env.ALEAProgram( "viewer", source, LIBS = LIBRARIES )
+exe_env.Append( CPPPATH = '#/share/plantgl/pixmap')
+res=exe_env.RES('icon.rc')
+source.append(res)
+exe_env.ALEAProgram( "pglviewer", source, LIBS = LIBRARIES )
 
 

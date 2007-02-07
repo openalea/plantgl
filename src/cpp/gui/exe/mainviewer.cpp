@@ -43,12 +43,13 @@
 #include <qgl.h>
 #include <qpixmap.h>
 
-// #define GEOM_DLL
+
 #include "../viewer/pglviewer.h"
 #include "../base/daemon.h"
 
 int main( int argc, char **argv )
 {
+
   QApplication a( argc, argv );
   if ( !QGLFormat::hasOpenGL() ) {
 	qWarning( "This system has no OpenGL support. Exiting." );
@@ -66,3 +67,19 @@ int main( int argc, char **argv )
 
   return 0;
 }
+
+/*
+#include "../viewer/pglapplication.h"
+
+int main( int argc, char **argv )
+{
+
+	PGLViewerApplication::init();
+	PGLViewerApplication::start();
+	PGLViewerApplication::wait(10000);
+	PGLViewerApplication::exit();
+
+  return 0;
+}
+
+*/

@@ -232,6 +232,9 @@ protected:
   /// This event handler is called when \e this must be close.
   virtual void closeEvent ( QCloseEvent * );
 
+  /// This event handler is called when \e this must be shown.
+  virtual void showEvent ( QShowEvent * );
+
 protected slots:
 
   /// Initializer.
