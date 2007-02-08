@@ -423,3 +423,4 @@ void ViewReadLinetree::testEndianess(){
 	qWarning(QString("Endianess : ")+(bigendian?"Big Endian":"Little Endian"));
 	setEndianess(bigendian);
 }
+

@@ -30,7 +30,7 @@
 #include <scenegraph/container/indexarray.h>
 
 #include <qpixmap.h>
-#include <qstack.h>
+#include <qptrstack.h>
 #include <qpair.h>
 
 /* ----------------------------------------------------------------------- */

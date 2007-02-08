@@ -108,8 +108,10 @@ setup(
                    pj( pkg_name,'algo' ):pj( 'src', name, 'algo' ),
                    pj( pkg_name,'gui' ):pj( 'src', name, 'gui' )},
     # add package platform libraries if any
-    package_data= { pj( pkg_name,'math' ) : ['*.so', '*.dll', '*.pyd'],pj( pkg_name,'scenegraph' ) : ['*.so', '*.dll', '*.pyd'],pj( pkg_name,'algo' ) : ['*.so', '*.dll', '*.pyd'],pj( pkg_name,'gui' ) : ['*.so', '*.dll', '*.pyd']},
-                     
+    package_data= { pj( pkg_name,'math' ) : ['*.so', '*.dll', '*.pyd'],
+                    pj( pkg_name,'scenegraph' ) : ['*.so', '*.dll', '*.pyd'],
+                    pj( pkg_name,'algo' ) : ['*.so', '*.dll', '*.pyd'],
+                    pj( pkg_name,'gui' ) : ['*.so', '*.dll', '*.pyd'] },
 
     # copy shared data in default OpenAlea directory
     # map of 'destination subdirectory' : 'source subdirectory'
