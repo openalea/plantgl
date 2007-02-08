@@ -5,12 +5,8 @@
  *
  *       Copyright 1995-2003 UMR AMAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
+ *       File author(s): F. Boudon
  *
- *       $Source$
- *       $Id: scene_wrapper.cpp 1845 2006-06-16 09:19:30Z barbier $
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
  *
  *  ----------------------------------------------------------------------------
  *

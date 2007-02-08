@@ -33,13 +33,13 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
+/*
 #include "intersect.h"
-#include "macro_property.h"
+#include "../util/property.h"
 
 #include "../MSVoxel/actn_rayintersection.h"
 #include "../MSVoxel/beam_ray.h"
-#include "actn_discretizer.h"
+#include <algo/base/discretizer.h>
 #include "geom_geometry.h"
 #include "geom_pointarray.h"
 
@@ -48,7 +48,7 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
@@ -81,4 +81,4 @@ void class_RayIntersection()
 	 "run(geom) - Compute intersections between a ray and the geometry.")
     ;
 }
-
+*/

@@ -10,6 +10,6 @@ lib_env=env.Copy()
 sources= lib_env.ALEAGlob( '*.cpp' )
 target= "_pglalgo"
 
-lib_env.AppendUnique(LIBS= ['pglmath','pglalgo'])
+lib_env.AppendUnique(LIBS= ['pglmath','pgltool','pglsg','pglalgo'])
 lib_env.ALEAWrapper( py_dir, target, sources )
 

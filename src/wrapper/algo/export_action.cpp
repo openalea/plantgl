@@ -34,27 +34,14 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "action.h"
-#include "discretizer.h"
-#include "bboxcomputer.h"
-#include "printer.h"
-#include "computer.h"
-#include "bounding.h"
-#include "fit.h"
-#include "intersect.h"
-#include "merge.h"
-
 #include <boost/python.hpp>
 
-#include "all_scene.h"
-#include "all_appearance.h"
-#include "all_geometry.h"
-
+#include <pgl_scenegraph.h>
 #include <string>
 
-#include "macro_refptr.h"
+#include "../util/export_refcountptr.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
@@ -64,8 +51,8 @@ using namespace std;
 
 #define DEF_PROCESS( OBJECT ) .def("process",p_##OBJECT, "Process object of type " #OBJECT, args("object"))
 
-OVERLOADING_PROCESS(GeomShape)
-OVERLOADING_PROCESS(GeomInline)
+OVERLOADING_PROCESS(Shape)
+OVERLOADING_PROCESS(Inline)
 OVERLOADING_PROCESS(Material)
 OVERLOADING_PROCESS(MonoSpectral)
 OVERLOADING_PROCESS(MultiSpectral)
@@ -91,7 +78,7 @@ OVERLOADING_PROCESS(NurbsPatch)
 OVERLOADING_PROCESS(Oriented)
 OVERLOADING_PROCESS(Paraboloid)
 OVERLOADING_PROCESS(PointSet)
-OVERLOADING_PROCESS(GeomPolyline)
+OVERLOADING_PROCESS(Polyline)
 OVERLOADING_PROCESS(QuadSet)
 OVERLOADING_PROCESS(Revolution)
 OVERLOADING_PROCESS(Swung)
@@ -104,15 +91,15 @@ OVERLOADING_PROCESS(BezierCurve2D)
 OVERLOADING_PROCESS(Disc)
 OVERLOADING_PROCESS(NurbsCurve2D)
 OVERLOADING_PROCESS(PointSet2D)
-OVERLOADING_PROCESS(GeomPolyline2D)
+OVERLOADING_PROCESS(Polyline2D)
 
 void class_Action()
 {
   class_< Action, boost::noncopyable >("Action", no_init)
     .def("beginProcess",&Action::beginProcess, "Called at the begining of the processing of a scene")
     .def("endProcess",&Action::endProcess, "Called at the begining of the processing of a scene")
-    DEF_PROCESS(GeomShape)
-    DEF_PROCESS(GeomInline)
+    DEF_PROCESS(Shape)
+    DEF_PROCESS(Inline)
     DEF_PROCESS(Material)
     DEF_PROCESS(MonoSpectral)
     DEF_PROCESS(MultiSpectral)
@@ -138,7 +125,7 @@ void class_Action()
     DEF_PROCESS(Oriented)
     DEF_PROCESS(Paraboloid)
     DEF_PROCESS(PointSet)
-    DEF_PROCESS(GeomPolyline)
+    DEF_PROCESS(Polyline)
     DEF_PROCESS(QuadSet)
     DEF_PROCESS(Revolution)
     DEF_PROCESS(Swung)
@@ -151,29 +138,9 @@ void class_Action()
     DEF_PROCESS(Disc)
     DEF_PROCESS(NurbsCurve2D)
     DEF_PROCESS(PointSet2D)
-    DEF_PROCESS(GeomPolyline2D)
+    DEF_PROCESS(Polyline2D)
     ;
 }
 
-void module_action()
-{
-  class_Action();
-  
-  // Discretizer
-  class_Discretizer();
-  class_Tesselator();
 
-  // Printer
-  module_printer();
-
-  // Computer
-  module_computer();
-  module_bounding();
-
-  class_Fit();
-  class_RayIntersection();
-
-  // Merge
-  class_Merge();
-}
 

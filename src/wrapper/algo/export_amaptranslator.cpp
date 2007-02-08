@@ -34,15 +34,14 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "amaptranslator.h"
-
-#include "actn_amaptranslator.h"
-#include "actn_discretizer.h"
+#include <scenegraph/geometry/amapsymbol.h>
+#include <algo/base/amaptranslator.h>
+#include <algo/base/discretizer.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
@@ -63,5 +62,6 @@ void class_AmapTranslator()
     .def("__init__",make_constructor(at_make) , ( const char* )"AmapTranslator(Discretizer d) -> Translate a Geom object to an Amap Symbol.")
     .def("setNormalized",&AmapTranslator::setNormalized)
     .def("isNormalized",&AmapTranslator::isNormalized)
+	.add_property("symbol",&AmapTranslator::getSymbol)
     ;
 }

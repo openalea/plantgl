@@ -34,20 +34,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "bboxcomputer.h"
-
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include "actn_bboxcomputer.h"
-#include "actn_discretizer.h"
-#include "geom_boundingbox.h"
-#include "scne_scene.h"
+#include <algo/base/bboxcomputer.h>
+#include <algo/base/discretizer.h>
+#include <scenegraph/geometry/boundingbox.h>
+#include <scenegraph/scene/scene.h>
 
-#include "macro_refptr.h"
-#include "macro_property.h"
+#include "../util/export_property.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
@@ -65,12 +62,8 @@ void class_BBoxComputer()
   class_< BBoxComputer,bases< Action >,boost::noncopyable >
     ("BBoxComputer", init<Discretizer&>("BBoxComputer() -> Compute the objects bounding box" ))
     .def("clear",&BBoxComputer::clear)
-    .def("getBoundingBox",d_getBBox,"Return the last computed Bounding Box.")
+    .add_property("boundingbox",d_getBBox,"Return the last computed Bounding Box.")
     .def("process",&p_scene)
 	 
     ;
-}
-
-void module_BBox(){
-	class_BBoxComputer();
 }

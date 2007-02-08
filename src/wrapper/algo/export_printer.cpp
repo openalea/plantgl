@@ -34,61 +34,99 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "printer.h"
-#include "matrixcomputer.h"
-#include "pystream.h"
+#include <algo/codec/printer.h>
+#include <algo/codec/binaryprinter.h>
+#include <algo/codec/plyprinter.h>
+#include <algo/codec/vrmlprinter.h>
+#include <algo/codec/povprinter.h>
+#include <algo/codec/x3dprinter.h>
+//#include <algo/codec/xmlprinter.h>
+#include <algo/base/amaptranslator.h>
+#include <algo/base/discretizer.h>
+#include <algo/base/tesselator.h>
 
-#include "actn_printer.h"
-#include "actn_binaryprinter.h"
-#include "actn_plyprinter.h"
-#include "actn_vrmlprinter.h"
-#include "actn_povprinter.h"
-#include "actn_x3dprinter.h"
-//#include "actn_xmlprinter.h"
-#include "actn_amaptranslator.h"
-#include "actn_discretizer.h"
-#include "actn_tesselator.h"
-
-#include "appe_appearance.h"
-#include "scne_scene.h"
+#include <scenegraph/appearance/appearance.h>
+#include <scenegraph/scene/scene.h>
 
 #include <string>
-#include "bfstream.h"
+#include <tool/bfstream.h>
 
 #include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-Printer* ap_fromfile( object file )
+
+class PyStrPrinter {
+	public:
+		PyStrPrinter() { }
+		~PyStrPrinter(){}
+
+		std::stringstream _mystream;
+		std::string str() { return _mystream.str(); }
+		void clear() { return _mystream.clear(); }
+};
+
+void class_StrPrinter()
 {
-  pyostream pyos( file );
-  return new Printer(pyos);
+  class_< PyStrPrinter, boost::noncopyable > ("StrPrinter", no_init  )
+	.def("str",    &PyStrPrinter::str,  "str() : return string")
+	.def("__str__",&PyStrPrinter::str,  "__str__() : return string")
+	.def("clear",  &PyStrPrinter::clear,  "clear() : clear the buffer")
+    ;
 }
+
+class PyFilePrinter {
+	public:
+		PyFilePrinter(const std::string& fname) : _mystream(fname.c_str()) { }
+		~PyFilePrinter(){}
+		std::ofstream _mystream;
+};
+
+void class_FilePrinter()
+{
+	class_< PyFilePrinter, boost::noncopyable > 
+		("FilePrinter", no_init )
+    ;
+}
+class PyStrPGLPrinter : public PyStrPrinter, public Printer { 
+public:
+	PyStrPGLPrinter() :  Printer(_mystream,_mystream,_mystream) {}     
+};
+
+class PyFilePGLPrinter : public PyFilePrinter, public Printer { 
+public:
+	PyFilePGLPrinter(const std::string& fname) : PyFilePrinter(fname), Printer(_mystream,_mystream,_mystream) {}   
+};  
 
 bool (Printer::*pr_header)(const char*)= &Printer::header;
 
 void class_Printer()
 {
-  class_< Printer, bases< Action > > ("Printer",no_init)
-    .def( "__init__", make_constructor( ap_fromfile ) ) 
+ class_< Printer, bases< Action >, boost::noncopyable > ( "PglPrinter" , no_init )
     .def("clear",&Printer::clear)
     .def("addIndent",&Printer::addIndent)
     .def("isPrinted",&Printer::isPrinted)
-    .def("header",pr_header)
+    .def("header",&pr_header)
+    ;
+
+/*  class_< PyStrPGLPrinter , bases< Printer, PyStrPrinter > , boost::noncopyable> 
+	  ("StrPglPrinter",init<>("String Pgl Printer" ));
+  class_< PyFilePGLPrinter , bases< Printer, PyFilePrinter > , boost::noncopyable> 
+	  ("StrPglPrinter",init<const std::string&>("File Pgl Printer",args("filename")) );*/
     ;
 }
+/*
 
+class PyFileBinaryPrinter : public BinaryPrinter {
+	public:
+		PyFileBinaryPrinter(const std::string& fname) : BinaryPrinter(_mystream), _mystream(fname.c_str())  { }
+		~PyFileBinaryPrinter(){}
+		leofstream _mystream;
+};
 
-BinaryPrinter* abp_fromfilename( boost::python::str file )
-{
-  std::string fn= extract<std::string>(file);
-  leofstream pyos( fn );
-  return new BinaryPrinter(pyos);
-}
 bool abp_print(BinaryPrinter* printer, ScenePtr scene)
 { 
   return printer->print(scene);
@@ -96,28 +134,15 @@ bool abp_print(BinaryPrinter* printer, ScenePtr scene)
 
 void class_BinaryPrinter()
 {
-  class_< BinaryPrinter, bases< Printer > > ("BinaryPrinter",no_init)
-    .def("__init__",make_constructor( abp_fromfilename ))
+  class_< PyFileBinaryPrinter, bases< Printer > > ("PglBinaryPrinter",init<const std::string&>("Binary Pgl Printer",args("filename")))
     .def("print",abp_print)
     ;
-}
+}*/
 
-
-class PyStrPovPrinter : public PovPrinter {
+class PyStrPovPrinter : public PyStrPrinter, public PovPrinter {
 	public:
 		PyStrPovPrinter(Tesselator& t) : PovPrinter(_mystream,t) { }
 		~PyStrPovPrinter(){}
-
-		std::stringstream _mystream;
-		std::string str() { return _mystream.str(); }
-		void clear() { return _mystream.clear(); }
-};
-
-class PyFilePrinter {
-	public:
-		PyFilePrinter(const std::string& fname) : _mystream(fname.c_str()) { }
-		~PyFilePrinter(){}
-		std::ofstream _mystream;
 };
 
 class PyFilePovPrinter : public PyFilePrinter, public PovPrinter {
@@ -133,107 +158,82 @@ void class_PovPrinter()
     .def("setLight",&PovPrinter::setLight,           "setLight(Vector3 position, Color3 color)", args("position","color") )
     .def("setBackground",&PovPrinter::setBackGround, "setBackGround(Color3 color)",args("color"))
     ;
-}
 
-void class_StrPovPrinter()
-{
-  class_< PyStrPovPrinter, bases< PovPrinter >, boost::noncopyable > ("StrPovPrinter", init<Tesselator&>("Create a StrPovPrinter", args("t")) )
-	.def("str",    &PyStrPovPrinter::str,  "str() : return string")
-	.def("__str__",&PyStrPovPrinter::str,  "__str__() : return string")
-	.def("clear",  &PyStrPovPrinter::clear,  "clear() : clear buffer")
+  class_< PyStrPovPrinter, bases< PovPrinter, PyStrPrinter >, boost::noncopyable > 
+	  ("StrPovPrinter", init<Tesselator&>("Create a StrPovPrinter", args("t")) )
     ;
-}
 
-void class_FilePovPrinter()
-{
-	class_< PyFilePovPrinter, bases< PovPrinter >, boost::noncopyable > ("FilePovPrinter", init<const std::string&,Tesselator&>("Create a FilePovPrinter", args("fname","t")) )
+  class_< PyFilePovPrinter, bases< PovPrinter, PyFilePrinter >, boost::noncopyable > 
+		("FilePovPrinter", init<const std::string&,Tesselator&>("Create a FilePovPrinter", args("fname","t")) )
     ;
 }
 
 
-VrmlPrinter* make_vrml(object file)
-{
-  pyostream pyos(file);
-  Discretizer d;
-  return new VrmlPrinter(pyos,d);
-}
+class PyStrVrmlPrinter : public PyStrPrinter, public VrmlPrinter {
+	public:
+		PyStrVrmlPrinter(Discretizer& t) : VrmlPrinter(_mystream,t) { }
+		~PyStrVrmlPrinter(){}
+};
+
+class PyFileVrmlPrinter : public PyFilePrinter, public VrmlPrinter {
+	public:
+		PyFileVrmlPrinter(const std::string& fname,Discretizer& t) : 
+		  PyFilePrinter(fname), VrmlPrinter(_mystream,t) { }
+		~PyFileVrmlPrinter(){}
+};
 
 void class_VrmlPrinter()
 { 
   class_<VrmlPrinter,bases < Printer > > ("VrmlPrinter",no_init)
-    .def("__init__",make_constructor( make_vrml ), ( const char* )"VrmlPrinter(file): file need to be open ")
     .def("setLight",&VrmlPrinter::setLight,( const char* )"setLight( position: Vector3, ambient: Color3, diffuse: Color3)")
     .def("setBackground",&VrmlPrinter::setBackGround,( const char* )"setBackGround( Color3)")
     .def("setCamera",&VrmlPrinter::setCamera,( const char* )"setCamera (Vector3 position, real_t az, real_t el, name)")
     ;
+
+  class_< PyStrVrmlPrinter, bases< VrmlPrinter, PyStrPrinter >, boost::noncopyable > 
+	  ("StrVrmlPrinter", init<Discretizer&>("Create a StrVrmlPrinter", args("t")) )
+    ;
+
+  class_< PyFileVrmlPrinter, bases< VrmlPrinter, PyFilePrinter >, boost::noncopyable > 
+		("FileVrmlPrinter", init<const std::string&,Discretizer&>("Create a FileVrmlPrinter", args("fname","t")) )
+    ;
+
 }
 
-X3DPrinter* make_x3d(object file)
+/*
+LinetreePrinter* alp_make( boost::python::str lig_fn, object dta_file, 
+	  boost::python::str smbpath )
 {
+
+  std::string lig= extract<std::string>(lig_fn);
+  pyostream dtastream(dta_file);
+  std::string smbstr= extract<std::string>(smbpath);
+  Discretizer d;
+  AmapTranslator a(d);
+  beofstream pyos(lig );
+  return new LinetreePrinter(pyos, dtastream, smbstr,a );
+
+}
+
+void class_LinetreePrinter()
+{
+  class_< LinetreePrinter, bases< MatrixComputer > > 
+    ("LinetreePrinter",no_init)
+    .def("__init__",make_constructor( alp_make ))
+    ;
+}
+
+VgstarPrinter* make_vg( object file )
+{
+  Tesselator t;
   pyostream pyos(file);
-  Discretizer d;
-  return new X3DPrinter(pyos, d);
+  return new VgstarPrinter(pyos, t);
 }
 
-void class_X3DPrinter()
+void class_VgstarPrinter()
 {
-  class_< X3DPrinter, bases< VrmlPrinter > > ("X3DPrinter",no_init)
-    .def("__init__",make_constructor( make_x3d ), ( const char* )"X3DPrinter(file): file need to be open ")
-    .def("header",&X3DPrinter::header)
+  class_< VgstarPrinter, bases< MatrixComputer > > ("VgstarPrinter",no_init)
+    .def("__init__",make_constructor( make_vg ), ( const char* )"VgstarPrinter(file): file need to be open ")
     ;
-}
-
-PlyPrinter* make_ply( object file )
-{
-  pyostream pyos(file);
-  Discretizer d;
-  return new PlyPrinter(pyos, d);
-}
-
-void class_PlyPrinter() 
-{
-  class_<PlyPrinter , bases< Printer > > ("PlyPrinter",no_init)
-    .def("__init__",make_constructor( make_ply ), ( const char* )"PlyPrinter(file): file need to be open ")
-    .def("header",&PlyPrinter::header)
-    ;
-}
-
-PlyBinaryPrinter* make_plyb( boost::python::str fn )
-{ 
-  std::string name= extract< std::string >(fn);
-  bofstream pyos(name);
-  Discretizer d;
-  return new PlyBinaryPrinter(pyos, d);
-}
-
-void class_PlyBinaryPrinter() 
-{
-  class_<PlyBinaryPrinter , bases< PlyPrinter > > ("PlyBinaryPrinter",no_init)
-    .def("__init__",make_constructor( make_plyb ), ( const char* )"PlyBinaryPrinter(file): file need to be open ")
-    .def("isBinary",&PlyBinaryPrinter::isBinary)
-    .def("isAscii",&PlyBinaryPrinter::isAscii)
-    .def("isLittleEndian",&PlyBinaryPrinter::isLittleEndian)
-    .def("isBigEndian",&PlyBinaryPrinter::isBigEndian)
-    ;
-}
-
-void class_XMLPrinter(){ }
-
-void module_printer()
-{
-  class_Printer();
-  class_BinaryPrinter();
-  class_PlyPrinter();
-  class_PlyBinaryPrinter();
-  class_PovPrinter();
-  class_StrPovPrinter();
-  class_FilePovPrinter();
-  class_VrmlPrinter();
-  class_X3DPrinter();
-  class_XMLPrinter();
-
-  class_MatrixComputer();
-  class_LinetreePrinter();
-  class_VgstarPrinter();
-
-}
+ }
+ */

@@ -34,18 +34,15 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "fit.h"
-#include "macro_property.h"
+#include "../util/export_property.h"
 
-#include "../Geomext/actn_fit.h"
-#include "actn_discretizer.h"
-
-#include <string>
+#include <algo/fitting/fit.h>
+#include <algo/base/discretizer.h>
 
 #include <boost/python.hpp>
 // #include <boost/python/make_constructor.hpp>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;

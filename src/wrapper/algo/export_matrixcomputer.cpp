@@ -34,26 +34,22 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "matrixcomputer.h"
-#include "pystream.h"
+#include <algo/codec/printer.h>
+#include <algo/base/matrixcomputer.h>
+#include <algo/codec/linetreeprinter.h>
+#include <algo/codec/vgstarprinter.h>
+#include <algo/base/amaptranslator.h>
+#include <algo/base/discretizer.h>
 
-#include "actn_printer.h"
-#include "actn_matrixcomputer.h"
-#include "actn_linetreeprinter.h"
-#include "actn_vgstarprinter.h"
-#include "actn_amaptranslator.h"
-#include "actn_discretizer.h"
-
-#include "util_matrix.h"
-
-#include "scne_scene.h"
+#include <math/util_matrix.h>
+#include <scenegraph/scene/scene.h>
 
 #include <string>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
@@ -81,39 +77,4 @@ void class_MatrixComputer()
 }
 
 
-LinetreePrinter* alp_make( boost::python::str lig_fn, object dta_file, 
-	  boost::python::str smbpath )
-{
-
-  std::string lig= extract<std::string>(lig_fn);
-  pyostream dtastream(dta_file);
-  std::string smbstr= extract<std::string>(smbpath);
-  Discretizer d;
-  AmapTranslator a(d);
-  beofstream pyos(lig );
-  return new LinetreePrinter(pyos, dtastream, smbstr,a );
-
-}
-
-void class_LinetreePrinter()
-{
-  class_< LinetreePrinter, bases< MatrixComputer > > 
-    ("LinetreePrinter",no_init)
-    .def("__init__",make_constructor( alp_make ))
-    ;
-}
-
-VgstarPrinter* make_vg( object file )
-{
-  Tesselator t;
-  pyostream pyos(file);
-  return new VgstarPrinter(pyos, t);
-}
-
-void class_VgstarPrinter()
-{
-  class_< VgstarPrinter, bases< MatrixComputer > > ("VgstarPrinter",no_init)
-    .def("__init__",make_constructor( make_vg ), ( const char* )"VgstarPrinter(file): file need to be open ")
-    ;
- }
 

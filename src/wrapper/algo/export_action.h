@@ -39,7 +39,6 @@
 
 void class_Action();
 
-void module_action();
 
 
 #endif

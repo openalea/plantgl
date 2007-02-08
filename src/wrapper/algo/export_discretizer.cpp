@@ -34,19 +34,16 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "discretizer.h"
-
 #include <boost/python.hpp>
 
-#include "actn_discretizer.h"
-#include "actn_tesselator.h"
-#include "geom_explicitmodel.h"
-#include "geom_triangleset.h"
+#include <algo/base/discretizer.h>
+#include <algo/base/tesselator.h>
+#include <scenegraph/geometry/explicitmodel.h>
+#include <scenegraph/geometry/triangleset.h>
 
-#include "macro_refptr.h"
-#include "macro_property.h"
+#include "../util/export_property.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
