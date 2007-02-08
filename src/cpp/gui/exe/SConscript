@@ -1,6 +1,8 @@
 # -*-python-*-
 
 import os
+from openalea.sconsx.config import *
+
 pj= os.path.join
 
 Import( "env" )
@@ -13,8 +15,11 @@ LIBRARIES = list( exe_env['LIBS'] )
 LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 
 exe_env.Append( CPPPATH = '#/share/plantgl/pixmap')
-#res=exe_env.RES('icon.rc')
-#source.append(res)
+
+if isinstance( platform, Win32 ):
+    res=exe_env.RES('icon.rc')
+    source.append(res)
+
 exe_env.ALEAProgram( "pglviewer", source, LIBS = LIBRARIES )
 
 
