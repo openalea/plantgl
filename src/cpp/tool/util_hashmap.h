@@ -39,8 +39,6 @@
 #ifndef __util_hashmap_h__
 #define __util_hashmap_h__
 
-#include "util_hash.h"
-
 /*! \file util_hashmap.h
     \brief Utility for hashmap with std::string.
 */

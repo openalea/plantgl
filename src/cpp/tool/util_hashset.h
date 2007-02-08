@@ -39,8 +39,6 @@
 #ifndef __util_hashset_h__
 #define __util_hashset_h__
 
-#include "util_hash.h"
-
 /*! \file util_hashset.h
     \brief Utility for hashset with std::string.
 */
