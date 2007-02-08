@@ -1,9 +1,7 @@
-#include "pointset.h"
-
-#include <geom_pointset.h>
-#include <geom_pointarray.h>
-#include <geom_transformed.h>
-#include <geom_mesh.h>
+#include <scenegraph/geometry/pointset.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/transformation/transformed.h>
+#include <scenegraph/geometry/mesh.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
@@ -73,7 +71,7 @@ Point3ArrayPtr gps_getPointList( PointSet* pl )
   return pl->getPointList();
 }
 
-void class_PointSet()
+void export_PointSet()
 {
   class_< PointSet, PointSetPtr, bases<ExplicitModel>, boost::noncopyable>( "PointSet", 
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("PointSet(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
@@ -143,7 +141,7 @@ Point2ArrayPtr gps2d_getPointList( PointSet2D* pl )
   return pl->getPointList();
 }
 
-void class_PointSet2D()
+void export_PointSet2D()
 {
   class_< PointSet2D, PointSet2DPtr, bases<PlanarModel>, boost::noncopyable>( "PointSet2D", init<Point2ArrayPtr>() )
     .def( "__init__", make_constructor( gps_fromlist ) ) 

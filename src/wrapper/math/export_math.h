@@ -32,14 +32,14 @@
 #ifndef __export_math_h__
 #define __export_math_h__
 
-void class_Vector2();
-void class_Vector3();
-void class_Vector4();
+void export_Vector2();
+void export_Vector3();
+void export_Vector4();
 
 
-void class_Matrix2();
-void class_Matrix3();
-void class_Matrix4();
-void class_Matrix();
+void export_Matrix2();
+void export_Matrix3();
+void export_Matrix4();
+void export_Matrix();
 
 #endif

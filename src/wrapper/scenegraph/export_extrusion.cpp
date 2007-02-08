@@ -1,10 +1,8 @@
-#include "extrusion.h"
-
-#include <geom_extrusion.h>
-#include <geom_lineicmodel.h>
-#include <geom_pointarray.h>
-#include <geom_profile.h>
-#include <geom_curve.h>
+#include <scenegraph/geometry/extrusion.h>
+#include <scenegraph/geometry/lineicmodel.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/geometry/profile.h>
+#include <scenegraph/geometry/curve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -39,7 +37,7 @@ SETGET2(Extrusion,Orientation,RealArrayPtr);
 SETGET2(Extrusion,KnotList,RealArrayPtr);
 
 
-void class_Extrusion()
+void export_Extrusion()
 {
   class_<Extrusion, ExtrusionPtr, bases<ParametricModel>, boost::noncopyable>
 	( "Extrusion", init<LineicModelPtr,Curve2DPtr,optional<Point2ArrayPtr> >

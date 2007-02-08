@@ -114,7 +114,7 @@ struct v4_pickle_suite : boost::python::pickle_suite
 	}
 };
 
-void class_Vector4()
+void export_Vector4()
 {
   class_< Vector4 >("Vector4", init< const Vector4 & >("Vector4(Vector4 v)",args("v")))
     .def(init< optional< real_t, real_t, real_t, real_t > >("Vector4(real_t x, real_t y, real_t z, real_t w)",args("x","y","z","w")))

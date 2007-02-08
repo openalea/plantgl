@@ -1,7 +1,5 @@
-#include "elevationgrid.h"
-
-#include <geom_elevationgrid.h>
-#include <util_array2.h>
+#include <scenegraph/geometry/elevationgrid.h>
+#include <tool/util_array2.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
@@ -9,8 +7,7 @@
 #include <sstream>
 
 #include "../util/export_refcountptr.h"
-
-#include "exception.hh"
+#include "../util/exception.h"
 
 using namespace boost::python;
 
@@ -52,7 +49,7 @@ RealArray2Ptr geg_getHeightList( ElevationGrid* pl )
   return pl->getHeightList();
 }
 
-void class_ElevationGrid()
+void export_ElevationGrid()
 {
   class_< ElevationGrid, ElevationGridPtr, bases< Patch >,boost::noncopyable >
     ("ElevationGrid",init<RealArray2Ptr, optional<real_t,real_t,bool> >

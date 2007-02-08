@@ -34,19 +34,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "transformation.h"
-
 #include <boost/python.hpp>
 
-#include <geom_transformed.h>
-#include <geom_mattransformed.h>
-#include <geom_tapered.h>
-#include <geom_axisrotated.h>
-#include <geom_eulerrotated.h>
-#include <geom_oriented.h>
-#include <geom_translated.h>
-#include <geom_scaled.h>
-#include <geom_pointarray.h>
+#include <scenegraph/transformation/transformed.h>
+#include <scenegraph/transformation/mattransformed.h>
+#include <scenegraph/transformation/tapered.h>
+#include <scenegraph/transformation/axisrotated.h>
+#include <scenegraph/transformation/eulerrotated.h>
+#include <scenegraph/transformation/oriented.h>
+#include <scenegraph/transformation/translated.h>
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/container/pointarray.h>
 #include <boost/python/make_constructor.hpp>
 
 #include "../util/export_refcountptr.h"
@@ -73,7 +71,7 @@ DEF_POINTEE(EulerRotation)
 DEF_POINTEE(BaseOrientation)
 DEF_POINTEE(Transform4)
 
-void class_PureTransformation()
+void export_Transformation()
 {
   class_< Transformation, TransformationPtr, boost::noncopyable >("Transformation", no_init);
 
@@ -96,7 +94,7 @@ void class_PureTransformation()
 
 }
 
-void class_Taper()
+void export_Taper()
 {
   class_< Taper, bases< Deformation > , TaperPtr, boost::noncopyable >
     ("Taper", init< const real_t&, const real_t&>() )
@@ -107,7 +105,7 @@ void class_Taper()
 }
 
 
-void class_Scaling()
+void export_Scaling()
 {
   class_< Scaling, bases< Matrix4Transformation > , ScalingPtr, boost::noncopyable >
     ("Scaling", init< const Vector3& >() );
@@ -115,7 +113,7 @@ void class_Scaling()
   implicitly_convertible<ScalingPtr, Matrix4TransformationPtr>();
 }
 
-void class_Translation()
+void export_Translation()
 {
   class_< Translation, bases< Matrix4Transformation > , TranslationPtr, boost::noncopyable >
     ("Translation", init< const Vector3& >() );
@@ -124,7 +122,7 @@ void class_Translation()
 }
 
 
-void class_OrthonormalBasis3D()
+void export_OrthonormalBasis3D()
 {
   class_< OrthonormalBasis3D, bases< Matrix4Transformation > , OrthonormalBasis3DPtr, boost::noncopyable >
     ob ("OrthonormalBasis3D", init< const Matrix3& >() );
@@ -134,7 +132,7 @@ void class_OrthonormalBasis3D()
   implicitly_convertible<OrthonormalBasis3DPtr, Matrix4TransformationPtr>();
 }
 
-void class_AxisRotation()
+void export_AxisRotation()
 {
   class_< AxisRotation, bases< OrthonormalBasis3D > , AxisRotationPtr, boost::noncopyable >
     ("AxisRotation", init< const Vector3&, const real_t&>() );
@@ -142,7 +140,7 @@ void class_AxisRotation()
   implicitly_convertible<AxisRotationPtr, OrthonormalBasis3DPtr>();
 }
 
-void class_EulerRotation()
+void export_EulerRotation()
 {
   class_< EulerRotation, bases< OrthonormalBasis3D > , EulerRotationPtr, boost::noncopyable >
     ("EulerRotation", init< const real_t&, const real_t&, const real_t&>() );
@@ -150,7 +148,7 @@ void class_EulerRotation()
   implicitly_convertible<EulerRotationPtr, OrthonormalBasis3DPtr>();
 }
 
-void class_BaseOrientation()
+void export_BaseOrientation()
 {
   class_< BaseOrientation, bases< OrthonormalBasis3D > , BaseOrientationPtr, boost::noncopyable >
     ("BaseOrientation", init< const Vector3&, const Vector3&>() );
@@ -196,7 +194,7 @@ tuple t4_getTransformation(Transform4 * t)
 	return make_tuple(scale,rotate,translate);
 }
 
-void class_Transform4()
+void export_Transform4()
 {
   class_< Transform4, Transform4Ptr, bases< Matrix4Transformation > , boost::noncopyable > 
     m2("Transform4", init<const Matrix4&>() );
@@ -215,16 +213,3 @@ void class_Transform4()
 
 }
 
-void class_Transformation()
-{
-  class_PureTransformation();
-  class_Taper();
-  class_Scaling();
-  class_Translation();
-  class_OrthonormalBasis3D();
-  class_AxisRotation();
-  class_EulerRotation();
-  class_BaseOrientation();
-  class_Transform4();
-
-}

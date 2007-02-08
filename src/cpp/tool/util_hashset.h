@@ -54,6 +54,7 @@
 	#include <hash_set>
 #endif
 
+#include "util_hash.h"
 
 #ifndef WIN32_STL_EXTENSION
 

@@ -34,18 +34,16 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "group.h"
-
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <geom_geometry.h>
-#include <geom_group.h>
-#include <geom_geometryarray2.h>
-#include <geom_polyline.h>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/geometry/group.h>
+#include <scenegraph/container/geometryarray2.h>
+#include <scenegraph/geometry/polyline.h>
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
-#include "exception.hh"
+#include "../util/exception.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -88,9 +86,9 @@ void gg_setitem( Group * array, size_t i, GeometryPtr v )
 size_t gg_len( Group * a )
 {  return a->getGeometryListSize();}
 
-SETGET(Group,Skeleton,GeomPolylinePtr);
+SETGET(Group,Skeleton,PolylinePtr);
 
-void class_Group()
+void export_Group()
 {
   
   class_< Group, GroupPtr, bases< Geometry >,boost::noncopyable >
@@ -99,7 +97,7 @@ void class_Group()
     .def( "__getitem__", gg_getitem /*, return_internal_reference<1>()*/ )
     .def( "__setitem__", gg_setitem )
     .def( "__len__", gg_len )
-	.DEC_SETGET_WD(skeleton,Group,Skeleton,GeomPolylinePtr);
+	.DEC_SETGET_WD(skeleton,Group,Skeleton,PolylinePtr);
     ;
 
   implicitly_convertible< GroupPtr, GeometryPtr >();

@@ -316,7 +316,7 @@ public :
 	PyViewWidgetGeometry();
 };
 
-void class_viewer()
+void export_viewer()
 {
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
 	.add_static_property("selection",&selection,&setMSelection)
@@ -349,7 +349,7 @@ void class_viewer()
     ;
 }
 
-void class_camera(){
+void export_camera(){
 	class_<PyViewCamera >("camera", no_init )
 		.def("setPerspective",&ViewerApplication::setPerspectiveCamera,"setPerspective() : Set Camera in Perspective mode.")
     .staticmethod("setPerspective")
@@ -365,7 +365,7 @@ void class_camera(){
 	;
 }
 
-void class_grids(){
+void export_grids(){
 	class_<PyViewGrids >("grids", no_init )
     .def("setXYPlane",&ViewerApplication::setXYGrid,"setXYPlane(bool enable)",args("enable") )
     .staticmethod("setXYPlane")
@@ -383,7 +383,7 @@ void class_grids(){
     .staticmethod("set")
 	;
 }
-void class_dialog(){
+void export_dialog(){
 	class_<PyViewDialog> ("dialog", no_init )
     .def("question",&question0,"question(str caption, str text)",args("caption","text"))
     .def("question",&question1,"question(str caption, str text, str button1)",args("caption","text","button1"))
@@ -409,7 +409,7 @@ void class_dialog(){
     .staticmethod("getDirectory")
 	;
 }
-void class_framegl(){
+void export_framegl(){
 	class_<PyViewFrameGL> ("frameGL", no_init )
     .def("saveImage",&saveImage1)
     .def("saveImage",&saveImage2)
@@ -435,7 +435,7 @@ void class_framegl(){
 	;
 }
 
-void class_widgetgeometry(){
+void export_widgetgeometry(){
 	class_<PyViewWidgetGeometry> ("widgetGeometry", no_init )
     .def("setFullScreen",&fullScreen0)
     .def("setFullScreen",&fullScreen1,"setFullScreen(bool enable)",args("enable"))
@@ -473,12 +473,12 @@ void module_gui()
 {
   initViewer();
 
-  class_viewer();
-  class_camera();
-  class_grids();
-  class_dialog();
-  class_framegl();
-  class_widgetgeometry();
+  export_viewer();
+  export_camera();
+  export_grids();
+  export_dialog();
+  export_framegl();
+  export_widgetgeometry();
 
   cleanViewer();
 }

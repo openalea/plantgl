@@ -34,21 +34,15 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "swung.h"
-
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
-
-#include <util_vector.h>
-
-#include <geom_sor.h>
-#include <geom_swung.h>
-#include <geom_curve.h>
-#include <geom_profile.h>
-#include <geom_geometryarray2.h>
+#include <math/util_vector.h>
+#include <scenegraph/geometry/sor.h>
+#include <scenegraph/geometry/swung.h>
+#include <scenegraph/geometry/curve.h>
+#include <scenegraph/geometry/profile.h>
+#include <scenegraph/container/geometryarray2.h>
 
 #include "../util/export_refcountptr.h"
 
@@ -79,7 +73,7 @@ SwungPtr make_swung( object l, RealArrayPtr a,
   return new Swung(array, a, slices, ccw, degree, stride);
 }
 
-void class_Swung()
+void export_Swung()
 {
   
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >

@@ -56,7 +56,7 @@ string m2_repr( const Matrix2& m )
   return ss.str();
 }
 
-void class_Matrix2()
+void export_Matrix2()
 {
   class_< Matrix2 >( "Matrix2", init< optional<real_t,real_t,real_t,real_t> >("Matrix2(f,f,f,f)") )
   .def(init<const Vector2&, const Vector2&>())

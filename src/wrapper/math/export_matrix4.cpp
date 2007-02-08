@@ -124,7 +124,7 @@ tuple mat4_getTransformation2(Matrix4 * t)
 	return make_tuple(scale,rotate,translate);
 }
 
-void class_Matrix4()
+void export_Matrix4()
 {
   class_< Matrix4 > m2( "Matrix4");
   m2.def("__init__", make_constructor(m4_init));

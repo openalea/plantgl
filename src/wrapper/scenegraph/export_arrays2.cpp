@@ -20,9 +20,8 @@ EXPORT_FUNCTION( p3m, Vector3, Point3Matrix )
 EXPORT_FUNCTION( p4m, Vector4, Point4Matrix )
 //EXPORT_FUNCTION( ra, real_t, RealArray2 )
 
-void class_arrays2()
+void export_arrays2()
 {
-  define_stl_exceptions();
 
   EXPORT_ARRAY( p2m, Point2Matrix, "Point2Matrix(rows,cols)" )
   EXPORT_ARRAY( p3m, Point3Matrix, "Point3Matrix(rows,cols)" )

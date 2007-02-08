@@ -34,19 +34,16 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "patch.h"
-#include "elevationgrid.h"
-
 #include <boost/python.hpp>
 
 #include <tool/util_array.h>
-#include <util_array2.h>
+#include <tool/util_array2.h>
 
-#include <geom_parametricmodel.h>
-#include <geom_pointmatrix.h>
-#include <geom_patch.h>
-#include <geom_bezierpatch.h>
-#include <geom_nurbspatch.h>
+#include <scenegraph/geometry/parametricmodel.h>
+#include <scenegraph/container/pointmatrix.h>
+#include <scenegraph/geometry/patch.h>
+#include <scenegraph/geometry/bezierpatch.h>
+#include <scenegraph/geometry/nurbspatch.h>
 
 #include "../util/export_refcountptr.h"
 
@@ -59,7 +56,7 @@ DEF_POINTEE(Patch)
 DEF_POINTEE(BezierPatch)
 DEF_POINTEE(NurbsPatch)
 
-void class_PurePatch()
+void export_Patch()
 {
   class_< Patch, PatchPtr, bases< ParametricModel >,boost::noncopyable >
     ("Patch",no_init);
@@ -67,7 +64,7 @@ void class_PurePatch()
   implicitly_convertible< PatchPtr,ParametricModelPtr >();
 }
 
-void class_BezierPatch()
+void export_BezierPatch()
 {
   class_< BezierPatch, BezierPatchPtr, bases< Patch >,boost::noncopyable >
     ("BezierPatch",init<Point4MatrixPtr, optional<uint32_t,uint32_t,bool> >
@@ -76,7 +73,7 @@ void class_BezierPatch()
   implicitly_convertible< BezierPatchPtr,PatchPtr >();
 }
 
-void class_NurbsPatch()
+void export_NurbsPatch()
 {
   class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
     ("NurbsPatch",init<Point4MatrixPtr, RealArrayPtr, RealArrayPtr, 
@@ -88,10 +85,3 @@ void class_NurbsPatch()
 }
 
 
-void class_Patch()
-{
-  class_PurePatch();
-  class_BezierPatch();
-  class_NurbsPatch();
-  class_ElevationGrid();
-}

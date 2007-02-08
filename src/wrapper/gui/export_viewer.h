@@ -37,12 +37,12 @@
 #ifndef __export_viewer_h__
 #define __export_viewer_h__
 
-void class_viewer();
-void class_camera();
-void class_grids();
-void class_dialog();
-void class_framegl();
-void class_widgetgeometry();
+void export_viewer();
+void export_camera();
+void export_grids();
+void export_dialog();
+void export_framegl();
+void export_widgetgeometry();
 
 void initViewer();
 void cleanViewer();

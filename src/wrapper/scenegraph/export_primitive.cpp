@@ -34,26 +34,13 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "primitive.h"
-#include "mesh.h"
-#include "lineicmodel.h"
-
-#include "extrusion.h"
-#include "patch.h"
-#include "hull.h"
-#include "revolution.h"
-#include "hull.h"
-
 #include <boost/python.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
+#include <math/util_vector.h>
 
-#include <util_vector.h>
-
-#include <geom_primitive.h>
-#include <geom_parametricmodel.h>
-#include <geom_box.h>
+#include <scenegraph/geometry/primitive.h>
+#include <scenegraph/geometry/parametricmodel.h>
+#include <scenegraph/geometry/box.h>
 
 
 #include "../util/export_refcountptr.h"
@@ -68,7 +55,7 @@ DEF_POINTEE(Primitive)
 DEF_POINTEE(ParametricModel)
 DEF_POINTEE(Geometry)
 
-void class_PurePrimitive()
+void export_Primitive()
 {
   
   class_< Primitive, PrimitivePtr, bases< Geometry >,boost::noncopyable >("Primitive",no_init);
@@ -78,7 +65,7 @@ void class_PurePrimitive()
   implicitly_convertible< ParametricModelPtr,PrimitivePtr >();
 }
 
-void class_Box()
+void export_Box()
 {
   class_< Box, BoxPtr, bases< ParametricModel > , boost::noncopyable >
     ("Box", init< const Vector3& >("Box(Vector3(x,y,z))") );
@@ -87,17 +74,3 @@ void class_Box()
 }
 
 
-void class_Primitive()
-{
-  class_PurePrimitive();
-  class_ExplicitModel();
-  class_LineicModel();
-  class_PlanarModel();
-
-  class_Box();
-
-  class_Revolution();
-  class_Hull();
-  class_Extrusion();
-  class_Patch();
-}

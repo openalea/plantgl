@@ -34,20 +34,15 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "transformed.h"
-
 #include <boost/python.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
+#include <scenegraph/transformation/eulerrotated.h>
+#include <scenegraph/transformation/axisrotated.h>
+#include <scenegraph/transformation/oriented.h>
+#include <scenegraph/transformation/tapered.h>
+#include <scenegraph/geometry/primitive.h>
 
-#include <geom_eulerrotated.h>
-#include <geom_axisrotated.h>
-#include <geom_oriented.h>
-#include <geom_tapered.h>
-#include <geom_primitive.h>
-
-#include <util_vector.h>
+#include <math/util_vector.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -69,7 +64,7 @@ SETGET_ANGLE(EulerRotated,Azimuth)
 SETGET_ANGLE(EulerRotated,Elevation)
 SETGET_ANGLE(EulerRotated,Roll)
 
-void class_EulerRotated()
+void export_EulerRotated()
 {
   class_< EulerRotated, EulerRotatedPtr, bases< OrthoTransformed > , boost::noncopyable >
     ("EulerRotated", init< const real_t&,const real_t&,const real_t&, const GeometryPtr& >
@@ -86,7 +81,7 @@ void class_EulerRotated()
 SETGET(AxisRotated,Axis,Vector3)
 SETGET_ANGLE(AxisRotated,Angle)
 
-void class_AxisRotated()
+void export_AxisRotated()
 {
   class_< AxisRotated, AxisRotatedPtr, bases< OrthoTransformed > , boost::noncopyable >
     ("AxisRotated", init< const Vector3&, const real_t&, const GeometryPtr& >
@@ -102,7 +97,7 @@ void class_AxisRotated()
 SETGET(Oriented,Primary,Vector3)
 SETGET(Oriented,Secondary,Vector3)
 
-void class_Oriented()
+void export_Oriented()
 {
   class_< Oriented, OrientedPtr, bases< OrthoTransformed > , boost::noncopyable >
     ("Oriented", init< const Vector3&,const Vector3&,const GeometryPtr& >
@@ -122,7 +117,7 @@ SETGET(Tapered,TopRadius,real_t)
 SETGET(Tapered,BaseRadius,real_t)
 SETGET(Tapered,Primitive,PrimitivePtr)
 
-void class_Tapered()
+void export_Tapered()
 {
   class_< Tapered, TaperedPtr, bases< Transformed > , boost::noncopyable >
     ("Tapered", init< real_t,real_t,const PrimitivePtr & >

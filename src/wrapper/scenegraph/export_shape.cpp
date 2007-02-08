@@ -34,15 +34,12 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "shape.h"
-
 #include <boost/python.hpp>
 
-#include <scne_scene.h>
-#include <scne_shape.h>
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
-#include <appe_appearance.h>
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/appearance/appearance.h>
 #include <string>
 
 #include "../util/export_refcountptr.h"
@@ -52,48 +49,48 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-DEF_POINTEE(GeomShape)
-DEF_POINTEE(GeomShape3D)
+DEF_POINTEE(Shape)
+DEF_POINTEE(Shape3D)
 
-void class_GeomShape3D()
+void export_Shape3D()
 {
-  class_< GeomShape3D, GeomShape3DPtr, bases< SceneObject >, boost::noncopyable >("GeomShape3D", no_init);
+  class_< Shape3D, Shape3DPtr, bases< SceneObject >, boost::noncopyable >("Shape3D", no_init);
 }
 
-void gs_setGeometry(GeomShape* shape, GeometryPtr geom )
+void gs_setGeometry(Shape* shape, GeometryPtr geom )
 { shape->getGeometry()= geom; }
 
-GeometryPtr gs_getGeometry(GeomShape* shape)
+GeometryPtr gs_getGeometry(Shape* shape)
 { return shape->getGeometry(); }
 
-void gs_setAppearance(GeomShape* shape, AppearancePtr app )
+void gs_setAppearance(Shape* shape, AppearancePtr app )
 { shape->getAppearance()= app; }
 
-AppearancePtr gs_getAppearance(GeomShape* shape)
+AppearancePtr gs_getAppearance(Shape* shape)
 { return shape->getAppearance(); }
 
 
 struct sh_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(GeomShape const& sh)
+	static tuple getinitargs(Shape const& sh)
 	{
 		return make_tuple(sh.getGeometry(),sh.getAppearance(),sh.getId());
 	}
 };
 
-void class_GeomShape()
+void export_Shape()
 {
-  class_< GeomShape,GeomShapePtr, bases< GeomShape3D > , boost::noncopyable >("Shape", init<>())
+  class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape", init<>())
     .def( init< const RefCountPtr<Geometry> &, 
 	          optional< const RefCountPtr<Appearance> &,
 	                     long unsigned int > >("Shape( geometry, material, id )") )
     .add_property("appearance", gs_getAppearance, gs_setAppearance)
     .add_property("geometry", gs_getGeometry, gs_setGeometry)
-    .def_readwrite("id", &GeomShape::id)
-    .def("setComputedName", &GeomShape::setComputedName)
+    .def_readwrite("id", &Shape::id)
+    .def("setComputedName", &Shape::setComputedName)
 	.def_pickle(sh_pickle_suite());
     ;
 
-  implicitly_convertible<GeomShapePtr, GeomShape3DPtr >();
+  implicitly_convertible<ShapePtr, Shape3DPtr >();
   
 }

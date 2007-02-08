@@ -1,10 +1,8 @@
-#include "nurbscurve.h"
-
-#include <geom_nurbscurve.h>
-#include <geom_polyline.h>
-#include <geom_pointarray.h>
-#include <geom_mesh.h>
-#include <../Geomext/actn_fit.h>
+#include <scenegraph/geometry/nurbscurve.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/geometry/mesh.h>
+#include <algo/fitting/fit.h>
 
 #include <boost/python.hpp>
 #include <string>
@@ -82,18 +80,18 @@ object nurbs_fit2(Point3ArrayPtr pts){
 	}
 }
 
-object nurbs_fit3(GeomPolyline * pts, int degree, int nbctrlpoints){
+object nurbs_fit3(Polyline * pts, int degree, int nbctrlpoints){
 	return nurbs_fit1(pts->getPointList(),degree,nbctrlpoints);
 }
 
 
-object nurbs_fit4(GeomPolyline * pts){
+object nurbs_fit4(Polyline * pts){
 	return nurbs_fit2(pts->getPointList());
 }
 
 
 
-void class_NurbsCurve()
+void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
     ( "NurbsCurve", init<Point4ArrayPtr, optional< RealArrayPtr, uint32_t, uint32_t > >(args("ctrlPointList","knotList","degree","strides")) )
@@ -177,7 +175,7 @@ object convert_lc(const LineicModelPtr& res)
 					return object(bc2);
 			}
 			else {
-				GeomPolylinePtr pc;
+				PolylinePtr pc;
 				if(pc.cast(res)){
 					Point2ArrayPtr cpts(new Point2Array(pc->getPointList()->getSize()));
 					Point2Array::iterator _it = cpts->getBegin();
@@ -186,7 +184,7 @@ object convert_lc(const LineicModelPtr& res)
 							*_it = Vector2(_it2->x(),_it2->y());
 							_it++;
 						}
-						GeomPolyline2DPtr pc2(new GeomPolyline2D(cpts));
+						Polyline2DPtr pc2(new Polyline2D(cpts));
 						return object(pc2);
 
 				}
@@ -206,15 +204,15 @@ object nurbs2_fit2(Point2ArrayPtr pts,int degree, int nbCtrlPoint){
 	return convert_lc(res);
 }
 
-object nurbs2_fit3(GeomPolyline2D * pts){
+object nurbs2_fit3(Polyline2D * pts){
 	return nurbs2_fit1(pts->getPointList());
 }
 
-object nurbs2_fit4(GeomPolyline2D * pts,int degree, int nbCtrlPoint){
+object nurbs2_fit4(Polyline2D * pts,int degree, int nbCtrlPoint){
 	return nurbs2_fit2(pts->getPointList(),degree,nbCtrlPoint);
 }
 
-void class_NurbsCurve2D()
+void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
      ( "NurbsCurve2D", init<Point3ArrayPtr,  optional<RealArrayPtr, uint32_t, uint32_t > >( args("ctrlPointList","knotList","degree","strides") ) )

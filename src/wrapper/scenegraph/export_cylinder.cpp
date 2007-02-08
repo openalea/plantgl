@@ -34,20 +34,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "revolution.h"
-
 #include <boost/python.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
+#include <scenegraph/geometry/geometry.h>
 
-#include <util_vector.h>
+#include <math/util_vector.h>
 
-#include <geom_parametricmodel.h>
-#include <geom_sor.h>
-#include <geom_cylinder.h>
-#include <geom_frustum.h>
-#include <geom_paraboloid.h>
+#include <scenegraph/geometry/parametricmodel.h>
+#include <scenegraph/geometry/sor.h>
+#include <scenegraph/geometry/cylinder.h>
+#include <scenegraph/geometry/frustum.h>
+#include <scenegraph/geometry/paraboloid.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -63,7 +60,7 @@ DEF_POINTEE(Paraboloid)
 
 
 
-void class_Cylinder()
+void export_Cylinder()
 {
   class_< Cylinder, CylinderPtr, bases< Cone > , boost::noncopyable >
     ("Cylinder", init< optional<const real_t&,const real_t&,bool,uchar_t> >
@@ -75,7 +72,7 @@ void class_Cylinder()
 
 SETGET(Frustum,Taper,real_t);
 
-void class_Frustum()
+void export_Frustum()
 {
   class_< Frustum, FrustumPtr, bases< Cone > , boost::noncopyable >
     ("Frustum", init< optional<const real_t&,const real_t&,const real_t&, bool,uchar_t> >
@@ -89,7 +86,7 @@ void class_Frustum()
 SETGET(Paraboloid,Shape,real_t);
 SETGET(Paraboloid,Stacks,uchar_t);
 
-void class_Paraboloid()
+void export_Paraboloid()
 {
   class_< Paraboloid, ParaboloidPtr, bases< Cone > , boost::noncopyable >
     ("Paraboloid", 

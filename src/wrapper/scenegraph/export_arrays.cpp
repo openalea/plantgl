@@ -28,10 +28,8 @@ EXPORT_NUMPY( i4a, Index4, Index4Array, 0, 4, uint32_t )
 EXPORT_NUMPY( inda, Index, IndexArray, 0, 0, uint32_t )
 EXPORT_NUMPY_1DIM( ra, real_t, RealArray, 0, real_t )
 
-void class_arrays()
+void export_arrays()
 {
-  define_stl_exceptions();
-
   EXPORT_ARRAY( c3a, Color3Array, "Color3Array([Index3(i,j,k),...])" )
     DEFINE_NUMPY( c3a );
   EXPORT_ARRAY( c4a, Color4Array, "Color4Array([Index4(i,j,k,l),...])" )

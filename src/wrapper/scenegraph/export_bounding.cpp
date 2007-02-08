@@ -34,16 +34,13 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "bounding.h"
-#include "bboxcomputer.h"
+#include <math/util_matrix.h>
+#include <scenegraph/geometry/boundingbox.h>
 
-#include "Tools/util_matrix.h"
-#include "geom_boundingbox.h"
-
-#include "actn_discretizer.h"
-#include "actn_bboxcomputer.h"
-#include "geom_geometry.h"
-#include "scne_scene.h"
+#include <algo/base/discretizer.h>
+#include <algo/base/bboxcomputer.h>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/scene/scene.h>
 
 #include <string>
 
@@ -99,7 +96,7 @@ BoundingBoxPtr  bbx_fromobj( boost::python::object o )
 }
 
 
-void class_BoundingBox()
+void export_BoundingBox()
 {
   class_< BoundingBox, BoundingBoxPtr /*, boost::noncopyable*/ >
     ("BoundingBox", init< const Vector3&, optional < const Vector3& > > 
@@ -138,12 +135,6 @@ void class_BoundingBox()
 	.def("contains",&contains_v3)	 
 	 ;
 
-}
-
-void module_bounding()
-{
-class_BoundingBox();
-class_BBoxComputer();
 }
 
 

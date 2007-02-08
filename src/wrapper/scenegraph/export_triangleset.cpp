@@ -1,12 +1,10 @@
-#include "triangleset.h"
-
-#include <geom_triangleset.h>
-#include <geom_quadset.h>
-#include <geom_indexarray.h>
-#include <geom_pointarray.h>
-#include <geom_polyline.h>
-#include <geom_faceset.h>
-#include <geom_amapsymbol.h>
+#include <scenegraph/geometry/triangleset.h>
+#include <scenegraph/geometry/quadset.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/geometry/faceset.h>
+#include <scenegraph/geometry/amapsymbol.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/pointarray.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -85,22 +83,22 @@ struct tr_pickle_suite : boost::python::pickle_suite
 		if (_default & 1 << 5) tr.getColorIndexList() = extract<Index3ArrayPtr>(state[index++])();
 		if (_default & 1 << 6) tr.getTexCoordList() = extract<Point2ArrayPtr>(state[index++])();
 		if (_default & 1 << 7) tr.getTexCoordIndexList() = extract<Index3ArrayPtr>(state[index++])();
-		if (_default & 1 << 8) tr.getSkeleton() = extract<GeomPolylinePtr>(state[index++])();
+		if (_default & 1 << 8) tr.getSkeleton() = extract<PolylinePtr>(state[index++])();
 	}
 };*/
 
 
-void class_TriangleSet()
+void export_TriangleSet()
 {
   class_<TriangleSet, TriangleSetPtr, bases<Mesh>, boost::noncopyable>
 	( "TriangleSet", init<>("TriangleSet()") )
-    .def( init<Point3ArrayPtr,Index3ArrayPtr,optional<bool,bool,bool,GeomPolylinePtr> >
+    .def( init<Point3ArrayPtr,Index3ArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "TriangleSet(Point3Array points, Index3Array indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
     .def( init<Point3ArrayPtr, Index3ArrayPtr, Point3ArrayPtr,
 	           optional<Index3ArrayPtr,Color4ArrayPtr,Index3ArrayPtr,
 			            Point2ArrayPtr,Index3ArrayPtr,
-						bool, bool, bool, bool, GeomPolylinePtr> >
+						bool, bool, bool, bool, PolylinePtr> >
 			("TriangleSet(Point3Array points, Index3Array indices, Point3Array normal[, Index3Array nomalIndices, "
 			 "Color4Array colors, Index3Array colorIndices, Point2Array texCoord, Index3Array texCoordIndices, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
@@ -139,16 +137,16 @@ SETGET(QuadSet,NormalIndexList,  Index4ArrayPtr)
 SETGET(QuadSet,ColorIndexList,   Index4ArrayPtr)
 SETGET(QuadSet,TexCoordIndexList,Index4ArrayPtr)
 
-void class_QuadSet()
+void export_QuadSet()
 {
   class_<QuadSet, QuadSetPtr, bases<Mesh>, boost::noncopyable> ( "QuadSet", init<> ( "QuadSet()"))
-    .def( init<Point3ArrayPtr,Index4ArrayPtr,optional<bool,bool,bool,GeomPolylinePtr> >
+    .def( init<Point3ArrayPtr,Index4ArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "QuadSet(Point3Array points, Index4Array indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
     .def( init<Point3ArrayPtr, Index4ArrayPtr, Point3ArrayPtr,
 	           optional<Index4ArrayPtr,Color4ArrayPtr,Index4ArrayPtr,
 			            Point2ArrayPtr,Index4ArrayPtr,
-						bool, bool, bool, bool, GeomPolylinePtr> >
+						bool, bool, bool, bool, PolylinePtr> >
 			("QuadSet(Point3Array points, Index4Array indices, Point3Array normal[, Index4Array nomalIndices, "
 			 "Color4Array colors, Index4Array colorIndices, Point2Array texCoord, Index4Array texCoordIndices, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
@@ -187,17 +185,17 @@ SETGET(FaceSet,NormalIndexList,  IndexArrayPtr)
 SETGET(FaceSet,ColorIndexList,   IndexArrayPtr)
 SETGET(FaceSet,TexCoordIndexList,IndexArrayPtr)
 
-void class_FaceSet()
+void export_FaceSet()
 {
   class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
 	( "FaceSet", init<> ( "FaceSet()"))
-    .def( init<Point3ArrayPtr,IndexArrayPtr,optional<bool,bool,bool,GeomPolylinePtr> >
+    .def( init<Point3ArrayPtr,IndexArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "FaceSet(Point3Array points, IndexArray indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
     .def( init<Point3ArrayPtr, IndexArrayPtr, Point3ArrayPtr,
 	           optional<IndexArrayPtr,Color4ArrayPtr,IndexArrayPtr,
 			            Point2ArrayPtr,IndexArrayPtr,
-						bool, bool, bool, bool, GeomPolylinePtr> >
+						bool, bool, bool, bool, PolylinePtr> >
 			("FaceSet (Point3Array points, IndexArray indices, Point3Array normal[, IndexArray nomalIndices, "
 			 "Color4Array colors, IndexArray colorIndices, Point2Array texCoord, IndexArray texCoordIndices, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
@@ -230,7 +228,7 @@ void class_FaceSet()
 
 SETGET(AmapSymbol,FileName,std::string)
 
-void class_AmapSymbol()
+void export_AmapSymbol()
 {
   class_<AmapSymbol, AmapSymbolPtr, bases<FaceSet> >
     ( "AmapSymbol", init< optional<std::string,bool> >("AmapSymbol(filename)"))

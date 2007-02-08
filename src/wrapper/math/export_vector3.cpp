@@ -161,7 +161,7 @@ struct v3sph_pickle_suite : boost::python::pickle_suite
 	}
 };
 
-void class_Vector3()
+void export_Vector3()
 {
   {
   scope v3 = class_< Vector3 >("Vector3", init< const Vector3 & >("Vector3(Vector3 v)",args("v")))

@@ -1,7 +1,7 @@
-#include "tuple.h"
 #include <string>
 #include <sstream>
-#include "exception.hh"
+#include <scenegraph/container/indexarray.h>
+#include "../util/exception.h"
 
 #include <boost/python.hpp>
 
@@ -64,7 +64,7 @@ std::string i4_repr( Index4* i )
   return ss.str();
 }
 
-void class_tuple()
+void export_index()
 {
   class_<Index3>( "Index3", init<optional<size_t,size_t,size_t> >() )
     .def( "__str__", i3_repr )

@@ -29,6 +29,8 @@ import plantgl as pgl
 
 v = pgl.math.Vector3.ORIGIN
 print('Vector3 : '+str(v))
+c = pgl.scenegraph.Cylinder()
+print(c)
 pgl.gui.Viewer.start()
 
 

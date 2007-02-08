@@ -1,0 +1,15 @@
+# -*-python-*-
+
+Import( "env" )
+
+py_dir = '../../plantgl/scenegraph'
+
+# Build wrappers as shared libraries
+lib_env=env.Copy()
+
+sources= lib_env.ALEAGlob( '*.cpp' )
+target= "_pglsg"
+
+lib_env.AppendUnique(LIBS= ['pglmath','pglsg','pglalgo','pgltool'])
+lib_env.ALEAWrapper( py_dir, target, sources )
+

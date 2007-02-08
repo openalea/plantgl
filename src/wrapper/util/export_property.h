@@ -33,7 +33,7 @@
  *
  *  ----------------------------------------------------------------------------
  */
-#include <Tools/util_math.h>
+#include <math/util_math.h>
 
 #define SETGET(_CLASS,PROP,TYPE)\
 TYPE get_##_CLASS##_##PROP(_CLASS * obj){ \

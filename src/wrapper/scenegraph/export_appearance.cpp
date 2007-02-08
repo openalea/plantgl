@@ -57,13 +57,13 @@ DEF_POINTEE(Spectrum)
 DEF_POINTEE(MonoSpectral)
 DEF_POINTEE(MultiSpectral)
 
-void class_PureAppearance()
+void export_Appearance()
 {
   class_< Appearance, AppearancePtr, bases< SceneObject >,  boost::noncopyable >
     ("Appearance", no_init);
 }
 
-void class_Spectrum()
+void export_Spectrum()
 {
   class_< Spectrum, SpectrumPtr, bases< Appearance >,  boost::noncopyable >
     ("Spectrum", no_init);
@@ -90,7 +90,7 @@ real_t ms_tget(MonoSpectral*s)
   return s->getTransmittance();
 }
 
-void class_MonoSpectral()
+void export_MonoSpectral()
 {
   class_< MonoSpectral, MonoSpectralPtr, bases< Spectrum >,  boost::noncopyable >
     ("MonoSpectral", init< optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
@@ -100,7 +100,7 @@ void class_MonoSpectral()
 
   implicitly_convertible< MonoSpectralPtr, SpectrumPtr >();
 }
-void class_MultiSpectral()
+void export_MultiSpectral()
 {
   class_< MultiSpectral, MultiSpectralPtr, bases< Spectrum >,  boost::noncopyable >
     ("MultiSpectral", init< RealArrayPtr, RealArrayPtr, optional < const Index3& > >

@@ -34,20 +34,15 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "hull.h"
-
 #include <boost/python.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
 
-#include <util_vector.h>
-
-#include <geom_parametricmodel.h>
-#include <geom_hull.h>
-#include <geom_asymmetrichull.h>
-#include <geom_extrudedhull.h>
-#include <geom_curve.h>
+#include <math/util_vector.h>
+#include <scenegraph/geometry/parametricmodel.h>
+#include <scenegraph/geometry/hull.h>
+#include <scenegraph/geometry/asymmetrichull.h>
+#include <scenegraph/geometry/extrudedhull.h>
+#include <scenegraph/geometry/curve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -77,7 +72,7 @@ SETGET(AsymmetricHull,TopShape,float);
 SETGET(AsymmetricHull,Slices,uchar_t);
 SETGET(AsymmetricHull,Stacks,uchar_t);
 
-void class_AsymmetricHull()
+void export_AsymmetricHull()
 {
   class_< AsymmetricHull, AsymmetricHullPtr, bases< Hull >,boost::noncopyable >
     ("AsymmetricHull", init< optional < const real_t&, const real_t&, const real_t&,
@@ -113,7 +108,7 @@ SETGET(ExtrudedHull,Horizontal,Curve2DPtr);
 SETGET(ExtrudedHull,Vertical,Curve2DPtr);
 SETGET(ExtrudedHull,CCW,bool);
 
-void class_ExtrudedHull()
+void export_ExtrudedHull()
 {
   class_< ExtrudedHull, ExtrudedHullPtr,  bases< Hull >,boost::noncopyable > 
     ("ExtrudedHull",init <Curve2DPtr, Curve2DPtr, optional< bool > >
@@ -127,12 +122,9 @@ void class_ExtrudedHull()
 
 }
 
-void class_Hull()
+void export_Hull()
 {
   class_< Hull, HullPtr, bases< ParametricModel >,boost::noncopyable >("Hull",no_init);
   implicitly_convertible< HullPtr, ParametricModelPtr >();
-
-  class_AsymmetricHull();
-  class_ExtrudedHull();
 }
 

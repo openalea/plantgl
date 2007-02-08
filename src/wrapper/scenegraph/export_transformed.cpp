@@ -34,22 +34,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "transformed.h"
-
 #include <boost/python.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
+#include <scenegraph/transformation/transformed.h>
+#include <scenegraph/transformation/mattransformed.h>
+#include <scenegraph/transformation/translated.h>
+#include <scenegraph/transformation/scaled.h>
+#include <scenegraph/transformation/orthotransformed.h>
+#include <scenegraph/transformation/ifs.h>
+#include <scenegraph/geometry/primitive.h>
 
-#include <geom_transformed.h>
-#include <geom_mattransformed.h>
-#include <geom_translated.h>
-#include <geom_scaled.h>
-#include <geom_orthotransformed.h>
-#include <geom_ifs.h>
-#include <geom_primitive.h>
-
-#include <util_vector.h>
+#include <math/util_vector.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -69,7 +64,7 @@ DEF_POINTEE(MatrixTransformed)
 DEF_POINTEE(OrthoTransformed)
 DEF_POINTEE(IFS)
 
-void class_PureTransformed()
+void export_Transformed()
 {
   class_< Transformed, TransformedPtr, bases< Geometry >, boost::noncopyable >("Transformation", no_init)
 		.def("transformation",&Transformed::getTransformation);
@@ -88,7 +83,7 @@ void class_PureTransformed()
 
 SETGET(Scaled,Scale,Vector3)
 
-void class_Scaled()
+void export_Scaled()
 {
   class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(vector3,geometry)") )
@@ -101,7 +96,7 @@ void class_Scaled()
 
 SETGET(Translated,Translation,Vector3)
 
-void class_Translated()
+void export_Translated()
 {
   class_< Translated, TranslatedPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Translated", init< const Vector3&, const GeometryPtr& >
@@ -127,7 +122,7 @@ Matrix4ArrayPtr ifs_getAllTransformations(IFS * ifs)
   return matrixList;
 }
 
-void class_IFS()
+void export_IFS()
 {
   class_< IFS, IFSPtr, bases< Transformed > , boost::noncopyable >
     ("IFS", init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
@@ -140,18 +135,5 @@ void class_IFS()
     ;
 
   implicitly_convertible< IFSPtr, TransformedPtr >();
-}
-
-
-void class_Transformed()
-{
-  class_PureTransformed();
-  class_Scaled();
-  class_Translated();
-  class_EulerRotated();
-  class_AxisRotated();
-  class_Oriented();
-  class_IFS();
-  class_Tapered();
 }
 

@@ -1,6 +1,4 @@
-#include "text.h"
-
-#include <geom_text.h>
+#include <scenegraph/geometry/text.h>
 
 #include <boost/python.hpp>
 #include <string>
@@ -21,7 +19,7 @@ SETGET(Font,Size,uint32_t);
 SETGET(Font,Bold,bool);
 SETGET(Font,Italic,bool);
 
-void class_Font()
+void export_Font()
 {
   class_< Font, FontPtr, bases< SceneObject >,boost::noncopyable >
     ("Font",init<optional<std::string,int,bool,bool> >
@@ -46,7 +44,7 @@ SETGET(Text,FontStyle,FontPtr);
 SETGET(Text,Position,Vector3);
 SETGET(Text,ScreenCoordinates,bool);
 
-void class_Text()
+void export_Text()
 {
   class_< Text, TextPtr, bases< Geometry >,boost::noncopyable >
     ("Text",init<std::string,optional<const TOOLS(Vector3)&,bool, const FontPtr&> >
@@ -62,5 +60,4 @@ void class_Text()
 
   implicitly_convertible< TextPtr,GeometryPtr >();
   
-  class_Font();
 }

@@ -34,25 +34,21 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "scene.h"
-#include "shape.h"
-
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <scne_scene.h>
-#include <scne_shape.h>
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
-#include <appe_appearance.h>
-#include <actn_action.h>
-#include <appe_material.h>
+#include <scenegraph/scene/scene.h>
+#include <scenegraph/scene/shape.h>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/appearance/appearance.h>
+#include <scenegraph/core/action.h>
+#include <scenegraph/appearance/material.h>
 
 #include <string>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
-#include "exception.hh"
+#include "../util/exception.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -65,7 +61,7 @@ DEF_POINTEE(SceneObject)
 std::string get_sco_name(SceneObject * obj){ return obj->getName(); } 
 void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
 
-void class_SceneObject()
+void export_SceneObject()
 {
   class_< SceneObject,SceneObjectPtr, boost::noncopyable >("SceneObject", no_init)
     .def("getName", &SceneObject::getName, return_value_policy< copy_const_reference >())
@@ -94,31 +90,31 @@ ScenePtr sc_fromlist( boost::python::list l )
 		boost::python::extract<GeometryPtr> geom( obj );
 		if(geom.check()){
 			GeometryPtr g = geom();
-			scene->add(GeomShape(g,Material::DEFAULT_MATERIAL));
+			scene->add(Shape(g,Material::DEFAULT_MATERIAL));
 		}
 		else {
-			GeomShape3DPtr val = boost::python::extract<GeomShape3DPtr>( obj );
+			Shape3DPtr val = boost::python::extract<Shape3DPtr>( obj );
 			scene->add( val );
 		}
   }
   return scene;
 }
 
-GeomShape3DPtr sc_getitem( Scene* s, size_t pos )
+Shape3DPtr sc_getitem( Scene* s, size_t pos )
 {
   if( pos < 0 && pos > -s->getSize() ) return s->getAt( s->getSize() + pos );
   if (pos < s->getSize()) return s->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
-GeomShapePtr sc_find( Scene* s, size_t id )
+ShapePtr sc_find( Scene* s, size_t id )
 {
-  GeomShapePtr res = s->getShapeId( id );
+  ShapePtr res = s->getShapeId( id );
   if (res) return res;
   else throw PythonExc_IndexError();
 }
 
-void sc_setitem( Scene* s, size_t pos, GeomShape3DPtr v )
+void sc_setitem( Scene* s, size_t pos, Shape3DPtr v )
 {
   if( pos < 0 && pos > -s->getSize() ) return s->setAt( s->getSize() + pos, v );
   if (pos < s->getSize()) s->setAt( pos ,v );
@@ -133,12 +129,12 @@ void sc_delitem( Scene* s, size_t pos )
   else throw PythonExc_IndexError();
 }
 
-ScenePtr sc_iadd(Scene* s ,GeomShape sh){
+ScenePtr sc_iadd(Scene* s ,Shape sh){
   s->add(sh);
   return s;
 }
 
-ScenePtr sc_iadd2(Scene* s ,GeomShape3DPtr sh){
+ScenePtr sc_iadd2(Scene* s ,Shape3DPtr sh){
   s->add(sh);
   return s;
 }
@@ -149,7 +145,7 @@ ScenePtr sc_iadd3(Scene* s ,Scene* s2){
 }
 
 ScenePtr sc_iadd4(Scene* s ,GeometryPtr sh){
-	s->add(GeomShape(sh,Material::DEFAULT_MATERIAL));
+	s->add(Shape(sh,Material::DEFAULT_MATERIAL));
 	return s;
 }
 
@@ -167,20 +163,19 @@ void sc_save(Scene* s ,const std::string& fname){
 }
 
 
-void class_Scene()
+void export_Scene()
 {
   class_<Scene,ScenePtr, boost::noncopyable>("Scene",init<const std::string&>("Scene() -> Create an empty scene"))
     .def(init< optional< unsigned int > >())
     .def(init< const Scene& >())
-    .def(init<std::istream&>())
     .def( "__init__", make_constructor( sc_fromlist ) ) 
 	.def("__iadd__", &sc_iadd)
 	.def("__iadd__", &sc_iadd2)
 	.def("__iadd__", &sc_iadd3)
 	.def("__iadd__", &sc_iadd4)
 	.def("__add__", &sc_add)
-    .def("add", (void (Scene::*)(const GeomShape &) ) &Scene::add )
-    .def("add", (void (Scene::*)(const RefCountPtr<GeomShape3D> &) )&Scene::add)
+    .def("add", (void (Scene::*)(const Shape &) ) &Scene::add )
+    .def("add", (void (Scene::*)(const RefCountPtr<Shape3D> &) )&Scene::add)
     .def("add", &Scene::merge)
     .def("merge", &Scene::merge)
     .def("__len__", &Scene::getSize)
@@ -204,11 +199,4 @@ void class_Scene()
 
 }
 
-void module_scene()
-{
-  class_SceneObject();
-  class_Scene();
-  class_GeomShape3D();
-  class_GeomShape();
-}
 

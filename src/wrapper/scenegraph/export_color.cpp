@@ -34,13 +34,10 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "color.h"
-
 #include <boost/python.hpp>
 
-#include <appe_color.h>
+#include <scenegraph/appearance/color.h>
 
-//#include "../util/export_refcountptr.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -116,7 +113,7 @@ struct col4_pickle_suite : boost::python::pickle_suite
 	}
 };
 
-void class_Color3()
+void export_Color3()
 {
   class_< Color3 >("Color3", init< const Color3 & >())
     .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)"))
@@ -139,7 +136,7 @@ void class_Color3()
     ;
 }
 
-void class_Color4()
+void export_Color4()
 {
   class_< Color4 >("Color4", init< const Color4 & >())
     .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)"))

@@ -34,14 +34,12 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "material.h"
-
 #include <boost/python.hpp>
 
-#include <appe_color.h>
-#include <appe_appearance.h>
-#include <appe_material.h>
-#include <appe_texture.h>
+#include <scenegraph/appearance/color.h>
+#include <scenegraph/appearance/appearance.h>
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/appearance/texture.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -89,7 +87,7 @@ struct mat_pickle_suite : boost::python::pickle_suite
 };
 
 
-void class_Material()
+void export_Material()
 {
   class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > ("Material", init< const Material & >())
     .def(init< optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
@@ -131,7 +129,7 @@ void it_set( ImageTexture* it, const std::string& fn )
 std::string it_get( ImageTexture* it )
 { return it->getFilename(); }
 
-void class_ImageTexture()
+void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  Material >, boost::noncopyable >
     ( "ImageTexture", init< const ImageTexture & >())

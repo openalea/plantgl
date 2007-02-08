@@ -57,7 +57,7 @@ string m3_repr( const Matrix3& m )
   return ss.str();
 }
 
-void class_Matrix3()
+void export_Matrix3()
 {
   class_< Matrix3 >( "Matrix3", init< optional< real_t,real_t,real_t,
 			                        real_t,real_t, real_t,

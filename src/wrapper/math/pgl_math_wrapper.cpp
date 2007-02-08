@@ -42,12 +42,12 @@ using namespace boost::python;
 void module_math()
 {
 
-  class_Vector2();
-  class_Vector3();
-  class_Vector4();
-  class_Matrix2();
-  class_Matrix3();
-  class_Matrix4();
+  export_Vector2();
+  export_Vector3();
+  export_Vector4();
+  export_Matrix2();
+  export_Matrix3();
+  export_Matrix4();
 };
 
 

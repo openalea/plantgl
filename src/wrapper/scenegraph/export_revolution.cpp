@@ -34,22 +34,18 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "revolution.h"
-#include "swung.h"
-
 #include <boost/python.hpp>
 
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
+#include <scenegraph/geometry/geometry.h>
 
-#include <util_vector.h>
+#include <math/util_vector.h>
 
-#include <geom_parametricmodel.h>
-#include <geom_sor.h>
-#include <geom_sphere.h>
-#include <geom_cone.h>
-#include <geom_revolution.h>
-#include <geom_curve.h>
+#include <scenegraph/geometry/parametricmodel.h>
+#include <scenegraph/geometry/sor.h>
+#include <scenegraph/geometry/sphere.h>
+#include <scenegraph/geometry/cone.h>
+#include <scenegraph/geometry/revolution.h>
+#include <scenegraph/geometry/curve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -67,7 +63,7 @@ DEF_POINTEE(Revolution)
 
 SETGET(SOR,Slices,uchar_t);
 
-void class_SOR()
+void export_SOR()
 {
   class_< SOR, SORPtr, bases< ParametricModel >,boost::noncopyable >("SOR",no_init)
   .DEC_SETGET_WD(slices,SOR,Slices,uchar_t);
@@ -77,7 +73,7 @@ void class_SOR()
 SETGET(Sphere,Stacks,uchar_t);
 SETGET(Sphere,Radius,real_t);
 
-void class_Sphere()
+void export_Sphere()
 {
   class_< Sphere, SpherePtr, bases< SOR > , boost::noncopyable >
     ("Sphere", init< optional<const real_t&, uchar_t, uchar_t > >
@@ -94,7 +90,7 @@ SETGET(Cone,Radius,real_t);
 SETGET(Cone,Height,real_t);
 SETGET(Cone,Solid,bool);
 
-void class_Cone()
+void export_Cone()
 {
   class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
     ("Cone", init< optional<const real_t&,const real_t&, bool,uchar_t > >
@@ -108,16 +104,8 @@ void class_Cone()
 }
 
 
-void class_Revolution()
+void export_Revolution()
 {
-  class_SOR();
-  class_Sphere();
-  class_Cone();
-  class_Cylinder();
-  class_Frustum();
-  class_Paraboloid();
-  class_Swung();
-
   class_< Revolution, RevolutionPtr, bases< SOR > , boost::noncopyable >
     ("Revolution", init< Curve2DPtr, optional< uchar_t > >
                (args("profile","slices"),

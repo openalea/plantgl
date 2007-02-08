@@ -1,8 +1,6 @@
-#include "polyline.h"
-
-#include <geom_polyline.h>
-#include <geom_pointarray.h>
-#include <geom_mesh.h>
+#include <scenegraph/geometry/polyline.h>
+#include <scenegraph/container/pointarray.h>
+#include <scenegraph/geometry/mesh.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
@@ -11,16 +9,16 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
-#include "exception.hh"
+#include "../util/exception.h"
 
 using namespace boost::python;
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
-DEF_POINTEE( GeomPolyline )
+DEF_POINTEE( Polyline )
 
-GeomPolylinePtr gpl_fromlist( boost::python::object l ) 
+PolylinePtr gpl_fromlist( boost::python::object l ) 
 { 
   Point3Array * array = new Point3Array();
   object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
@@ -33,29 +31,29 @@ GeomPolylinePtr gpl_fromlist( boost::python::object l )
         Vector3 val = boost::python::extract<Vector3>( obj );
         array->pushBack( val );
   }
-  return GeomPolylinePtr(new GeomPolyline(array));
+  return PolylinePtr(new Polyline(array));
 }
 
-Vector3 gpl_getitem( GeomPolyline* p, size_t pos )
+Vector3 gpl_getitem( Polyline* p, size_t pos )
 {
   if (p->getPointList() && pos < p->getPointList()->getSize())
 	return p->getPointListAt( pos );
   else throw PythonExc_IndexError();
 }
 
-void gpl_setitem( GeomPolyline* p, size_t pos, Vector3* v )
+void gpl_setitem( Polyline* p, size_t pos, Vector3* v )
 {
   if (p->getPointList() && pos < p->getPointList()->getSize())
 	p->getPointListAt( pos ) = *v;
   else throw PythonExc_IndexError();
 }
 
-size_t gpl_size( GeomPolyline* pl )
+size_t gpl_size( Polyline* pl )
 {
   return (pl->getPointList()?pl->getPointList()->getSize():0);
 }
 
-std::string gpl_repr( GeomPolyline* p )
+std::string gpl_repr( Polyline* p )
 {
   std::stringstream ss;
   if( p->getPointListSize() == 0 )
@@ -76,24 +74,24 @@ std::string gpl_repr( GeomPolyline* p )
 }
 
 
-void class_Polyline()
+void export_Polyline()
 {
-  class_<GeomPolyline, GeomPolylinePtr, bases<ExplicitModel, LineicModel>, boost::noncopyable>( "Polyline", 
+  class_<Polyline, PolylinePtr, bases<ExplicitModel, LineicModel>, boost::noncopyable>( "Polyline", 
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("Polyline(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
     .def( "__init__", make_constructor( gpl_fromlist ) ) 
-    .def( "copy", &GeomPolyline::copy )
+    .def( "copy", &Polyline::copy )
     .def( "__getitem__", gpl_getitem /*, return_internal_reference<1>() */)
     .def( "__setitem__", gpl_setitem )
     .def( "__len__", gpl_size )
     .def( "__repr__", gpl_repr )
     ;
-  implicitly_convertible<GeomPolylinePtr, ExplicitModelPtr>();
-  implicitly_convertible<GeomPolylinePtr, LineicModelPtr>();
+  implicitly_convertible<PolylinePtr, ExplicitModelPtr>();
+  implicitly_convertible<PolylinePtr, LineicModelPtr>();
 }
 
-DEF_POINTEE( GeomPolyline2D )
+DEF_POINTEE( Polyline2D )
 
-GeomPolyline2DPtr gpl2_fromlist( boost::python::object l ) 
+Polyline2DPtr gpl2_fromlist( boost::python::object l ) 
 { 
   Point2Array * array = new Point2Array();
   object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
@@ -107,17 +105,17 @@ GeomPolyline2DPtr gpl2_fromlist( boost::python::object l )
         Vector2 val = boost::python::extract<Vector2>( obj );
         array->pushBack( val );
   }
-  return GeomPolyline2DPtr(new GeomPolyline2D(array));
+  return Polyline2DPtr(new Polyline2D(array));
 }
 
-Vector2 gpl2_getitem( GeomPolyline2D* p, size_t pos )
+Vector2 gpl2_getitem( Polyline2D* p, size_t pos )
 {
   if (p->getPointList() && pos < p->getPointList()->getSize())
 	return p->getPointListAt( pos );
   else throw PythonExc_IndexError();
 }
 
-void gpl2_setitem( GeomPolyline2D* p, size_t pos, Vector2* v )
+void gpl2_setitem( Polyline2D* p, size_t pos, Vector2* v )
 {
   if (p->getPointList() && pos < p->getPointList()->getSize())
 	p->getPointListAt( pos ) = *v;
@@ -125,12 +123,12 @@ void gpl2_setitem( GeomPolyline2D* p, size_t pos, Vector2* v )
 }
 
 
-size_t gpl2_size( GeomPolyline2D* pl )
+size_t gpl2_size( Polyline2D* pl )
 {
   return (pl->getPointList()?pl->getPointList()->getSize():0);
 }
 
-std::string gpl2_repr( GeomPolyline2D* p )
+std::string gpl2_repr( Polyline2D* p )
 {
   std::stringstream ss;
   if( p->getPointListSize() == 0 )
@@ -149,20 +147,20 @@ std::string gpl2_repr( GeomPolyline2D* p )
   return ss.str();
 }
 
-SETGET(GeomPolyline2D,PointList,Point2ArrayPtr);
+SETGET(Polyline2D,PointList,Point2ArrayPtr);
 
 
-void class_Polyline2D()
+void export_Polyline2D()
 {
-  class_<GeomPolyline2D, GeomPolyline2DPtr, bases<Curve2D>, boost::noncopyable>( "Polyline2D", init<Point2ArrayPtr>() )
+  class_<Polyline2D, Polyline2DPtr, bases<Curve2D>, boost::noncopyable>( "Polyline2D", init<Point2ArrayPtr>() )
     .def( "__init__", make_constructor( gpl2_fromlist ) ) 
-    .def( "copy", &GeomPolyline2D::copy )
+    .def( "copy", &Polyline2D::copy )
     .def( "__getitem__", gpl2_getitem /*, return_internal_reference<1>()*/ )
     .def( "__setitem__", gpl2_setitem )
     .def( "__len__", gpl2_size )
     .def( "__repr__", gpl2_repr )
-	.DEC_SETGET(pointList,GeomPolyline2D,PointList,Point2ArrayPtr)
+	.DEC_SETGET(pointList,Polyline2D,PointList,Point2ArrayPtr)
     ;
-  implicitly_convertible<GeomPolyline2DPtr, Curve2DPtr>();
+  implicitly_convertible<Polyline2DPtr, Curve2DPtr>();
 }
 

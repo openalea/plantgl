@@ -34,17 +34,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "geometry.h"
-#include "transformed.h"
-#include "primitive.h"
-#include "group.h"
-#include "text.h"
-
 #include <boost/python.hpp>
-
-#include <scne_sceneobject.h>
-#include <geom_geometry.h>
-
+#include <scenegraph/geometry/geometry.h>
 #include "../util/export_refcountptr.h"
 
 PGL_USING_NAMESPACE
@@ -54,7 +45,7 @@ using namespace std;
 
 DEF_POINTEE(Geometry)
 
-void class_Geometry()
+void export_Geometry()
 {
 
    class_< Geometry,GeometryPtr, bases< SceneObject >, boost::noncopyable > 
@@ -70,11 +61,3 @@ void class_Geometry()
 }
 
 
-void module_geometry()
-{
-  class_Geometry();
-  class_Transformed();
-  class_Primitive();
-  class_Group();
-  class_Text();
-}
