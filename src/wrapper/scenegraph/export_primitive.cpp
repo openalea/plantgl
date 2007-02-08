@@ -56,9 +56,9 @@
 #include <geom_box.h>
 
 
-#include "macro_refptr.h"
+#include "../util/export_refcountptr.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;

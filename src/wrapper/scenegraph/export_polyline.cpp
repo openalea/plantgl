@@ -9,13 +9,13 @@
 #include <string>
 #include <sstream>
 
-#include "macro_refptr.h"
-#include "macro_property.h"
+#include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 #include "exception.hh"
 
 using namespace boost::python;
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 DEF_POINTEE( GeomPolyline )

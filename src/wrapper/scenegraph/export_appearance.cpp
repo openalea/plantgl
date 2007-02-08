@@ -36,21 +36,18 @@
 
 #include <boost/python.hpp>
 
-#include "macro_refptr.h"
-#include "appearance.h"
-#include "material.h"
+#include "../util/export_refcountptr.h"
 
+#include <scenegraph/appearance/color.h>
+#include <scenegraph/appearance/appearance.h>
+#include <scenegraph/appearance/material.h>
+#include <scenegraph/appearance/spectrum.h>
+#include <scenegraph/appearance/monospectral.h>
+#include <scenegraph/appearance/multispectral.h>
+#include <tool/util_tuple.h>
+#include <tool/util_array.h>
 
-#include <appe_color.h>
-#include <appe_appearance.h>
-#include <appe_material.h>
-#include <appe_spectrum.h>
-#include <appe_monospectral.h>
-#include <appe_multispectral.h>
-#include <util_tuple.h>
-#include <util_array.h>
-
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
@@ -110,14 +107,4 @@ void class_MultiSpectral()
      ("MultiSpectral(reflectance= RealArray, transmittance= RealArray [, filter= index3])"));
 
   implicitly_convertible< MultiSpectralPtr, SpectrumPtr >();
-}
-
-void module_appearance()
-{
-  class_PureAppearance();
-  class_Material();
-  class_ImageTexture();
-  class_Spectrum();
-  class_MonoSpectral();
-  class_MultiSpectral();
 }

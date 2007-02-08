@@ -39,7 +39,7 @@
 
 #include <boost/python.hpp>
 
-#include <util_array.h>
+#include <tool/util_array.h>
 #include <util_array2.h>
 
 #include <geom_parametricmodel.h>
@@ -48,9 +48,9 @@
 #include <geom_bezierpatch.h>
 #include <geom_nurbspatch.h>
 
-#include "macro_refptr.h"
+#include "../util/export_refcountptr.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;

@@ -1,30 +1,19 @@
-#include "arrays2.h"
-#include "tuple.h"
-#include "macro_refptr.h"
-#include "vector.h"
+#include "../util/export_refcountptr.h"
+#include "../util/exception.h"
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <iterator>
-#include <algorithm>
-
-#include <util_array2.h>
-#include <util_vector.h>
-#include <geom_pointmatrix.h>
+#include <tool/util_array2.h>
+#include <math/util_vector.h>
+#include <scenegraph/container/pointmatrix.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include "exception.hh"
+#include "arrays2_macro.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
 
-// Index3Array
-
-#include "arrays2_macro.h"
 
 EXPORT_FUNCTION( p2m, Vector2, Point2Matrix )
 EXPORT_FUNCTION( p3m, Vector3, Point3Matrix )

@@ -6,14 +6,14 @@
 #include <geom_profile.h>
 #include <geom_curve.h>
 
-#include "macro_refptr.h"
-#include "macro_property.h"
+#include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 
 #include <boost/python.hpp>
 #include <string>
 #include <sstream>
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;

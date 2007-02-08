@@ -44,6 +44,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wrapGui", "..\wrapper\gui\w
 		{C0E9458D-0972-4195-87A7-54FDCB1E5FB5} = {C0E9458D-0972-4195-87A7-54FDCB1E5FB5}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wrapSceneGraph", "..\wrapper\scenegraph\wrap_sg.vcproj", "{5B10C38E-6F13-4D27-B7F7-05D4151DCED3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -82,6 +84,10 @@ Global
 		{4E64F6F6-E87D-4C1E-8270-C918F690776F}.Debug|Win32.Build.0 = Debug|Win32
 		{4E64F6F6-E87D-4C1E-8270-C918F690776F}.Release|Win32.ActiveCfg = Release|Win32
 		{4E64F6F6-E87D-4C1E-8270-C918F690776F}.Release|Win32.Build.0 = Release|Win32
+		{5B10C38E-6F13-4D27-B7F7-05D4151DCED3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5B10C38E-6F13-4D27-B7F7-05D4151DCED3}.Debug|Win32.Build.0 = Debug|Win32
+		{5B10C38E-6F13-4D27-B7F7-05D4151DCED3}.Release|Win32.ActiveCfg = Release|Win32
+		{5B10C38E-6F13-4D27-B7F7-05D4151DCED3}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

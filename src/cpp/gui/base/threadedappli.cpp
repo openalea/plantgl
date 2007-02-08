@@ -131,6 +131,7 @@ ViewerThreadedAppli::init(){
     if(!__appli)  __appli.set(new QApplication(argc,argv));
     if(!__viewer) {
 	   __viewer.set(build());
+       __appli.get()->setMainWidget(__viewer);
     }
 }
 

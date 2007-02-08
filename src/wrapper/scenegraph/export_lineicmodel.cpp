@@ -1,5 +1,5 @@
 #include "lineicmodel.h"
-#include "macro_refptr.h"
+#include "../util/export_refcountptr.h"
 #include "polyline.h"
 #include "beziercurve.h"
 #include "nurbscurve.h"
@@ -14,7 +14,7 @@
 
 using namespace boost::python;
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 DEF_POINTEE( LineicModel )
 DEF_POINTEE( PlanarModel )

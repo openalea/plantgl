@@ -1,30 +1,18 @@
-#include "arrays.h"
-#include "tuple.h"
-#include "macro_refptr.h"
-
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <iterator>
-#include <algorithm>
-
-#include <util_array.h>
-#include <util_tuple.h>
-#include <geom_indexarray.h>
-#include <geom_colorarray.h>
+#include <tool/util_array.h>
+#include <tool/util_tuple.h>
+#include <scenegraph/container/indexarray.h>
+#include <scenegraph/container/colorarray.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include "exception.wcc"
+#include "../util/exception.h"
+#include "../util/export_refcountptr.h"
+#include "arrays_macro.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
-
-// Index3Array
-
-#include "arrays_macro.h"
 
 EXPORT_FUNCTION( c3a, Color3, Color3Array )
 EXPORT_FUNCTION( c4a, Color4, Color4Array )

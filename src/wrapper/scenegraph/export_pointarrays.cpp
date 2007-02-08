@@ -1,5 +1,5 @@
 #include "pointarrays.h"
-#include "macro_refptr.h"
+#include "../util/export_refcountptr.h"
 #include "vector.h"
 
 #include <iostream>
@@ -8,8 +8,8 @@
 #include <iterator>
 #include <algorithm>
 
-#include <util_array.h>
-#include <util_tuple.h>
+#include <tool/util_array.h>
+#include <tool/util_tuple.h>
 #include <geom_pointarray.h>
 #include <geom_ifs.h>
 #include <geom_mattransformed.h>
@@ -18,7 +18,7 @@
 
 #include "exception.hh"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;

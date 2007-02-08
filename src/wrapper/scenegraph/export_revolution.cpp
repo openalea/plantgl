@@ -51,10 +51,10 @@
 #include <geom_revolution.h>
 #include <geom_curve.h>
 
-#include "macro_refptr.h"
-#include "macro_property.h"
+#include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;

@@ -8,7 +8,7 @@
 using namespace boost::python;
 
 TOOLS_USING_NAMESPACE
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 #include "arrays_macro.h"
 

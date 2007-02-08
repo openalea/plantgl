@@ -1,7 +1,7 @@
 #include "mesh.h"
 #include "triangleset.h"
 #include "pointset.h"
-#include "macro_property.h"
+#include "../util/export_property.h"
 
 #include <boost/python.hpp>
 #include <geom_mesh.h>
@@ -9,11 +9,11 @@
 #include <geom_transformed.h>
 #include <geom_pointarray.h>
 
-#include "macro_refptr.h"
+#include "../util/export_refcountptr.h"
 
 using namespace boost::python;
 
-GEOM_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 DEF_POINTEE( ExplicitModel )
 DEF_POINTEE( Mesh )
