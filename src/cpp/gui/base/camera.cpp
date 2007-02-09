@@ -269,6 +269,13 @@ void ViewCameraGL::nextView()
   emit elevationChanged(__elevation);
   emit valueChanged();
 }
+
+void ViewCameraGL::setAngles(double azimuth, double elevation)
+{
+	__azimuth = azimuth;
+	__elevation = elevation;
+}
+
 void
 ViewCameraGL::setAzimuth(double azimuth)
 {

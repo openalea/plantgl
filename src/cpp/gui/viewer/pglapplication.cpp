@@ -80,11 +80,27 @@ PGLViewerApplication::add(const ScenePtr& s){
   ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,true));
 }
 
+ScenePtr PGLViewerApplication::getCurrentScene()
+{
+	ScenePtr sc;
+	ViewerApplication::_sendAnEvent(new GeomGetSceneEvent(&sc));
+	return sc;
+}
+
 std::vector<std::pair<uint32_t,double> > 
 PGLViewerApplication::getProjectionSizes(const PGL(ScenePtr)& sc){
   std::vector<std::pair<uint32_t,double> > res;
   ViewerApplication::_sendAnEvent(new GeomProjListEvent(sc,&res));
   return res;
+}
+
+ViewRayPointHitBuffer * 
+PGLViewerApplication::castRays2(const PGL(ScenePtr)& sc, bool back_test )
+{
+	ViewRayPointHitBuffer * res = NULL ;
+	ViewRayBuff2Event * myevent = new ViewRayBuff2Event(sc,back_test,&res);
+	ViewerApplication::_sendAnEvent(myevent);
+	return res;
 }
 
 void

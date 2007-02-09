@@ -186,13 +186,7 @@ void SceneFactory::unregisterCodec(const SceneCodecPtr& codec)
 
 bool SceneFactory::installDefaultLib()
 {
-		std::string codeclibname = 
-#ifndef PGL_DEBUG
-		"libCodecs";
-#else
-		"libCodecs-d";
-#endif
-		return __factory->installLib(codeclibname);
+	return false;
 }
 
 typedef void (*installFunc)();

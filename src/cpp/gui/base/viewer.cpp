@@ -714,7 +714,7 @@ void  Viewer::customEvent(QCustomEvent *e){
     ViewCameraProjEvent * k = ( ViewCameraProjEvent * )e;
 	__GLFrame->getCamera()->setProjectionMode(k->mode);
   }
-  else if(e->type() == 12365){
+  else if(e->type() >= 12365 && e->type() <= 12367){
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
   }
   else {

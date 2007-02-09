@@ -117,6 +117,23 @@ class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
 
 /* ----------------------------------------------------------------------- */
 
+class VIEW_API GeomGetSceneEvent : public ViewEvent {
+  
+  public :
+    
+  /// Constructor.
+  GeomGetSceneEvent(PGL(ScenePtr)* scene);
+  
+  /// Destructor.
+  ~GeomGetSceneEvent();
+    
+  /// The scene to display.
+  PGL(ScenePtr)* scene;
+      
+};
+
+/* ----------------------------------------------------------------------- */
+
 class GeomProjListEvent : public ViewEvent {
 
 public :
@@ -127,10 +144,32 @@ public :
   /// Destructor.
   ~GeomProjListEvent();
 
-  std::vector<std::pair<uint32_t,double> > *  res;
+  std::vector<std::pair<uint32_t,double> > *  result;
   PGL(ScenePtr) objlist;
 };
 
 /* ----------------------------------------------------------------------- */
+class ViewRayPointHitBuffer;
+
+class ViewRayBuff2Event : public ViewEvent {
+
+public :
+
+  /// Constructor.
+	ViewRayBuff2Event(const PGL(ScenePtr)& sc, 
+					  bool back_test = true,
+					  ViewRayPointHitBuffer ** res = NULL);
+	
+	/// Destructor.
+	~ViewRayBuff2Event();
+	
+	ViewRayPointHitBuffer **  result;
+    PGL(ScenePtr) objlist;
+	bool back_test;
+
+};
+
+/* ----------------------------------------------------------------------- */
+
 #endif
 

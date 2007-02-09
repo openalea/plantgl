@@ -51,6 +51,7 @@
 /// Viewer
 #include "../base/light.h"
 #include "../base/camera.h"
+#include "../base/zbuffer.h"
 
 #include "geomevent.h"
 
@@ -375,7 +376,7 @@ void
 ViewGeomSceneGL::paintGL()
 {
 
-        if (__scene && !__scene->isEmpty()){
+    if (__scene && !__scene->isEmpty()){
 
     switch (__renderingMode) {
     case 1:
@@ -794,13 +795,80 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 	return res;
 }
 
+ViewRayPointHitBuffer *
+ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
+	ViewGLFrame * frame = dynamic_cast<ViewGLFrame *>(__frame);
+	if (!frame) return NULL;
+	int w = frame->width();
+	int h = frame->height();
+	ViewRayPointHitBuffer * res = new ViewRayPointHitBuffer(w,h);
+	double az = frame->getCamera()->getAzimuth();
+	double el = frame->getCamera()->getElevation();
+	double b_az = az + 180;
+	if(b_az >= 180) b_az -= 360;
+    if(b_az <= -180) b_az += 360;
+	double b_el = -el;
+
+	ScenePtr nsc(new Scene());
+	size_t tot = sc->getSize();
+	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
+	size_t cur = 0;
+	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
+		nsc->clear();
+		nsc->add(*it);
+		uint32_t id = (*it)->getId();
+		setScene(nsc);
+		ViewZBuffer * cbuff = frame->grabDepthBuffer(false);
+		if(! back_test) {
+			for(int c = 0;  c < w; ++c){
+				for(int r = 0;  r < h; ++r){
+					if (cbuff->getAt(r,c).depth < 1){
+						const Vector3& pos = cbuff->getAt(r,c).pos;
+						res->getAt(r,c).push_back(RayPointHit(id,pos,pos));
+					}
+				}
+			}
+		}
+		else {
+			frame->getCamera()->setAngles(b_az,b_el);
+			emit valueChanged();
+			ViewZBuffer * cbackbuff = frame->grabDepthBuffer(false);
+			for(int c = 0;  c < w; ++c){
+				for(int r = 0;  r < h; ++r){
+					if (cbuff->getAt(r,c).depth < 1){
+						res->getAt(r,c).push_back(RayPointHit(id,cbuff->getAt(r,c).pos,cbackbuff->getAt(r,w-1-c).pos));
+					}
+				}
+			}
+			delete cbackbuff;
+			frame->getCamera()->setAngles(az,el);
+		}
+		delete cbuff;
+		cur++;
+		if(cur % per == 0)
+			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
+
+	}
+	std::cerr << "\x0d Projections 100% done.\n";
+	setScene(sc);
+	return res;
+}
+
 /* ----------------------------------------------------------------------- */
 
 void 
 ViewGeomSceneGL::customEvent(QCustomEvent * e) {
 	if(e->type() == 12365){
-		GeomProjListEvent * event = (GeomProjListEvent *)e;
-		*(event->res) = getProjectionSizes(event->objlist);
+		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
+		*(myevent->result) = getProjectionSizes(myevent->objlist);
+	}
+	else if (e->type() == 12367){
+		ViewRayBuff2Event * myevent = (ViewRayBuff2Event *)e;
+		*(myevent->result) = castRays(myevent->objlist,myevent->back_test);
+	}
+	else if (e->type() == 12368){
+		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
+		*(myevent->scene) = __scene;
 	}
 }
 

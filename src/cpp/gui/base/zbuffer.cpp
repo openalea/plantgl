@@ -44,7 +44,7 @@ TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const Vector3& position) { 
-	RayIntersections& res = getAt(i,j) ;
+	RayHitList& res = getAt(i,j) ;
 	GLuint names, *ptr;
 	ptr = (GLuint *) buffer;
 	GLuint id;
@@ -75,14 +75,14 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 				gluUnProject(winx,winy, zmax2, modelMatrix, projMatrix, viewport,
 				&objx2,&objy2, &objzmax) == GL_TRUE  ){
 				
-				res.push_back(RayIntersection(id,norm(Vector3(objx,objy,objzmin)-position),norm(Vector3(objx2,objy2,objzmax)-position)));
+				res.push_back(RayHit(id,norm(Vector3(objx,objy,objzmin)-position),norm(Vector3(objx2,objy2,objzmax)-position)));
 			}
 			for(unsigned int j = 0 ; j < names ; j++)ptr++;
 		}
 	}
 }
 
-ViewZBuffer* ViewZBuffer::importglZBuffer()
+ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 {	
 	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT,viewport);
@@ -92,32 +92,41 @@ ViewZBuffer* ViewZBuffer::importglZBuffer()
 
 	
 	float  * zvalues = new float[width*height];
-	std::cerr << "Read Depth Buffer ... ";
+	// std::cerr << "Read Depth Buffer ... ";
 	glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,width,height,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
-	std::cerr << "done." << std::endl;
+	// std::cerr << "done." << std::endl;
 	GLdouble modelMatrix[16], projMatrix[16];
 	glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
 	glGetDoublev(GL_PROJECTION_MATRIX,projMatrix);
 	GLdouble objx, objy, objz;
 	float  * iterzvalues = zvalues;
-	std::cerr << "Unproject Depth Buffer ... ";
+	// std::cerr << "Unproject Depth Buffer ... ";
 	for(int i = 0; i < height; ++i){
 		for (int j = 0; j < width; ++j){
 			buffer->getAt(i,j).depth = *iterzvalues ;
-			if( gluUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) == GL_TRUE ){
-				buffer->getAt(i,j).pos = Vector3(objx,objy,objz);
+			if( alldepth ||( 0 < *iterzvalues && *iterzvalues < 1) ){
+				if( gluUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) == GL_TRUE ){
+					buffer->getAt(i,j).pos = Vector3(objx,objy,objz);
+				}
 			}
 			++iterzvalues;
 		}
 	}
-	std::cerr << "done." << std::endl;
+	// std::cerr << "done." << std::endl;
 	delete [] zvalues;
+	return buffer;
+}
 
+ViewZBuffer* ViewZBuffer::importglZBuffer(bool alldepth)
+{	
+	ViewZBuffer * buffer = importglDepthBuffer(alldepth);
+	int width = buffer->getRowsSize();
+	int height = buffer->getColsSize();
 	uchar  * colvalues = new uchar[4*width*height];
-	std::cerr << "Read Color Buffer ... ";
+	// std::cerr << "Read Color Buffer ... ";
 	glReadPixels(0,0,width,height,GL_RGBA, GL_UNSIGNED_BYTE, colvalues);
-	std::cerr << "done." << std::endl;
+	// std::cerr << "done." << std::endl;
 	uchar  * itercolvalues = colvalues;
 	for(int i = 0; i < height; ++i){
 		for (int j = 0; j < width; ++j){

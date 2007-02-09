@@ -163,15 +163,11 @@ class VIEW_API ViewGLFrame : public QGLWidget
   void saveImage(QString _filename,const char * _format, bool withAlpha = false );
   // copy the current image to the global clipboard
 
-#if QT_VERSION < 300
-  /*!
-    Returns an image of the frame buffer. If \a withAlpha is TRUE the
-    alpha channel is included.
-  */
-  QImage grabFrameBuffer( bool withAlpha = false);
-#endif
+  /// Grab depth and color buffer
+  ViewZBuffer * grabZBuffer( bool all_values = true ) ;
 
-  ViewZBuffer * grabZBuffer( ) ;
+  /// Grab depth buffer
+  ViewZBuffer * grabDepthBuffer( bool all_values = true  ) ;
 
   ViewRayBuffer * castRays( const Vector3& position, 
 						     const Vector3& direction, 

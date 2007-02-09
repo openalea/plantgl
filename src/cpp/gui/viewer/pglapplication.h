@@ -53,6 +53,10 @@
 
 /* ----------------------------------------------------------------------- */
 
+class ViewRayPointHitBuffer;
+
+
+/* ----------------------------------------------------------------------- */
 
 /**
       \class PGLPGLViewerApplication
@@ -78,7 +82,12 @@ public :
   static void add(const PGL(ScenePtr)& s);
   static void add(const PGL(GeometryPtr)& g);
 
+  static PGL(ScenePtr) getCurrentScene();
+
   static std::vector<std::pair<uint32_t,double> > getProjectionSizes(const PGL(ScenePtr)& sc); 
+
+  static ViewRayPointHitBuffer * castRays2(const PGL(ScenePtr)& sc, bool back_test = false );
+
 
   static void init();
 };

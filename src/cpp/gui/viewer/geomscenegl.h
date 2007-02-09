@@ -67,7 +67,9 @@ class QToolBar;
 /* ----------------------------------------------------------------------- */
 
 class ViewGeomReader;
+class ViewRayPointHitBuffer;
 #include "../base/util_qwidget.h"
+
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -148,6 +150,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   const PGL(BoundingBoxPtr) getSelectionBoundingBox() ;
 
   std::vector<std::pair<uint32_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
+  ViewRayPointHitBuffer * castRays(const PGL(ScenePtr)& sc, bool back_test);
 
   /// Get the surface of the scene.
   real_t getSceneSurface();

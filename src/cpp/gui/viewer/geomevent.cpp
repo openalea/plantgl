@@ -67,6 +67,15 @@ GeomSceneChangeEvent::copy()
 
 /* ----------------------------------------------------------------------- */
 
+/// Constructor.
+GeomGetSceneEvent::GeomGetSceneEvent(PGL(ScenePtr)* _scene) : ViewEvent(12368),scene(_scene) { }
+  
+  /// Destructor.
+GeomGetSceneEvent::~GeomGetSceneEvent() {}
+
+
+/* ----------------------------------------------------------------------- */
+
 GeomMultiSceneChangeEvent::GeomMultiSceneChangeEvent(ScenePtr _scene1, 
 						     ScenePtr _scene2,
 						     const QString& _errlog , 
@@ -94,10 +103,21 @@ GeomMultiSceneChangeEvent::copy()
 
 
 GeomProjListEvent::GeomProjListEvent(const ScenePtr& sc, std::vector<std::pair<uint32_t,double> > * _res):
-ViewEvent(12365),objlist(sc),res(_res){}
+ViewEvent(12365),objlist(sc),result(_res){}
 
   
 GeomProjListEvent::~GeomProjListEvent(){}
 
 
 /* ----------------------------------------------------------------------- */
+
+/// Constructor.
+ViewRayBuff2Event::ViewRayBuff2Event(const PGL(ScenePtr)& sc, bool _back_test ,
+								   ViewRayPointHitBuffer ** res ):
+ViewEvent(12367),objlist(sc),back_test(_back_test),result(res){}
+
+
+ViewRayBuff2Event::~ViewRayBuff2Event() {}
+
+/* ----------------------------------------------------------------------- */
+

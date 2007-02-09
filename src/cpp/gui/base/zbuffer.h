@@ -55,30 +55,49 @@
 #include <tool/util_array2.h>
 #include <scenegraph/appearance/color.h>
 
-struct VIEW_API RayIntersection {
+struct VIEW_API RayHit {
 public:
-	RayIntersection (size_t _id,real_t _zmin,real_t _zmax):id(_id),zmin(_zmin),zmax(_zmax){}
+	RayHit (size_t _id,real_t _zmin,real_t _zmax):id(_id),zmin(_zmin),zmax(_zmax){}
 
-	inline bool operator==(const RayIntersection & pIntersection) const
-	{ 
-		return pIntersection.id == id && 
-			   pIntersection.zmin == zmin && 
-			   pIntersection.zmax == zmax;
-	}
+	inline bool operator==(const RayHit& phit) const
+	{  return phit.id == id &&  phit.zmin == zmin && phit.zmax == zmax; }
 
 	size_t id;
 	real_t zmin;
 	real_t zmax;
 };
 
-typedef std::vector<RayIntersection > RayIntersections;
+typedef std::vector<RayHit > RayHitList;
 
-class VIEW_API ViewRayBuffer : public TOOLS(Array2)<RayIntersections>
+class VIEW_API ViewRayBuffer : public TOOLS(Array2)<RayHitList>
 {
 public:
-	ViewRayBuffer(size_t w, size_t h): TOOLS(Array2)<RayIntersections>(w,h){}
+	ViewRayBuffer(size_t w, size_t h): TOOLS(Array2)<RayHitList>(w,h){}
 
 	void setAt(size_t i, size_t j, void * buffer, size_t size,const TOOLS(Vector3)& position) ;
+};
+
+struct VIEW_API RayPointHit {
+public:
+	RayPointHit (size_t _id,
+				 const TOOLS(Vector3)& _zmin,
+				 const TOOLS(Vector3)& _zmax):
+		id(_id),zmin(_zmin),zmax(_zmax){}
+
+	inline bool operator==(const RayPointHit& phit) const
+	{  return phit.id == id &&  phit.zmin == zmin && phit.zmax == zmax; }
+
+	size_t id;
+	TOOLS(Vector3) zmin;
+	TOOLS(Vector3) zmax;
+};
+
+typedef std::vector<RayPointHit > RayPointHitList;
+
+class VIEW_API ViewRayPointHitBuffer : public TOOLS(Array2)<RayPointHitList>
+{
+public:
+	ViewRayPointHitBuffer(size_t w, size_t h): TOOLS(Array2)<RayPointHitList>(w,h){}
 };
 
 struct VIEW_API ZBufferUnit {
@@ -100,7 +119,11 @@ class VIEW_API ViewZBuffer : public TOOLS(Array2)<ZBufferUnit>
 public:
 	ViewZBuffer(size_t w, size_t h): TOOLS(Array2)<ZBufferUnit>(w,h){}
 
-	static ViewZBuffer* importglZBuffer();
+	/// import depth and color buffer
+	static ViewZBuffer* importglZBuffer(bool alldepth = true);
+
+	/// import depth buffer
+	static ViewZBuffer* importglDepthBuffer(bool alldepth = true);
 };
 
 

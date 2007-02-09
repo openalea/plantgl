@@ -766,8 +766,8 @@ ViewGLFrame::castRays( const Vector3& position,
 			if(hits > 0){
 				res->setAt(i,j,selectBuf,hits,position+delta);
 				GL_ERROR;
-				RayIntersections& l = res->getAt(i,j);
-				for(RayIntersections::iterator _it = l.begin();_it != l.end(); _it++)
+				RayHitList& l = res->getAt(i,j);
+				for(RayHitList::iterator _it = l.begin();_it != l.end(); _it++)
 					_it->id = __scene->translateId(_it->id);
 			}
 			size_t numray = i*sy+j;
@@ -785,10 +785,17 @@ ViewGLFrame::castRays( const Vector3& position,
 }
 
 ViewZBuffer * 
-ViewGLFrame::grabZBuffer( )
+ViewGLFrame::grabZBuffer( bool all_values  )
 {
     makeCurrent();
-	return ViewZBuffer::importglZBuffer();
+	return ViewZBuffer::importglZBuffer(all_values);
+}
+
+ViewZBuffer * 
+ViewGLFrame::grabDepthBuffer( bool all_values )
+{
+    makeCurrent();
+	return ViewZBuffer::importglDepthBuffer(all_values);
 }
 
 double ViewGLFrame::getPixelWidth(){
@@ -818,12 +825,21 @@ int ViewGLFrame::getProjectionPixel(){
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
 	else if(gridstate != 0)updateGL();
-	QImage img = grabFrameBuffer(true);
+
+	int w = width();
+	int h = height();
+
+	int nbpix = w*h;
+	float  * zvalues = new float[nbpix];
+	glReadBuffer(GL_FRONT);
+	glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
+
 	uint32_t projpix = 0;
-	for(uint32_t x = 0; x < img.width(); x++)
-		for(uint32_t y = 0; y < img.height(); y++){
-			if(qAlpha(img.pixel(x,y)) >= 250) projpix++;
-		}
+	for(uint32_t i = 0; i < nbpix; ++i)
+		if(0 < zvalues[i] && zvalues[i] < 1) projpix++;
+
+	delete [] zvalues;
+
 	__grid->setState(gridstate);
 	if(mode)__camera->setProjectionMode(mode);
 	else if(gridstate != 0)updateGL();
@@ -1221,73 +1237,6 @@ void ViewGLFrame::printImage(){
   }
 }
 
-
-#if QT_VERSION < 300
-/*!
-    Returns an image of the frame buffer. If \a withAlpha is TRUE the
-    alpha channel is included.
-*/
-QImage ViewGLFrame::grabFrameBuffer( bool withAlpha )
-{
-#if defined( Q_WS_MAC ) && defined( QMAC_OPENGL_DOUBLEBUFFER )
-    if(gl_pix) //why not optimize?
-		return ((QPixmap*)gl_pix)->convertToImage();
-#endif
-    int w = width();
-    int h = height();
-#if defined (Q_WS_WIN)
-//	repaint(0,0,w,h);
-#endif
-    makeCurrent();
-    QImage res;
-    if ( format().rgba() ) {
-		res = QImage( w, h, 32 );
-		glReadPixels( 0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, res.bits() );
-		if ( QImage::systemByteOrder() == QImage::BigEndian ) {
-			// OpenGL gives RGBA; Qt wants ARGB
-			uint *p = (uint*)res.bits();
-			uint *end = p + w*h;
-			if ( withAlpha && format().alpha() ) {
-				while ( p < end ) {
-					uint a = *p << 24;
-					*p = (*p >> 8) | a;
-					p++;
-				}
-			}
-			else {
-				while ( p < end )
-					*p++ >>= 8;
-			}
-		}
-		else {
-			// OpenGL gives ABGR (i.e. RGBA backwards); Qt wants ARGB
-			res = res.swapRGB();
-		}
-		res.setAlphaBuffer( withAlpha && format().alpha() );
-    }
-    else {
-#if defined (Q_WS_WIN)
-		res = QImage( w, h, 8 );
-		glReadPixels( 0, 0, w, h, GL_COLOR_INDEX, GL_UNSIGNED_BYTE,
-		res.bits() );
-
-/*		int palSize = 0;
-		const QRgb* pal = QColor::palette( &palSize );
-
-		int palSize = 0;
-		const QRgb* pal = QColor::palette( &palSize );
-
-		if ( pal && palSize ) {
-			res.setNumColors( palSize );
-			for ( int i = 0; i < palSize; i++ )
-			res.setColor( i, pal[i] );
-		}*/
-		
-#endif
-    }
-    return res.mirror().copy(visibleRect());
-}
-#endif
 
 QPopupMenu *
 ViewGLFrame::createEditMenu(QWidget * parent)

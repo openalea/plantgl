@@ -208,10 +208,8 @@ boost::python::object raybuf_to_python(ViewRayBuffer * buf) {
 		for(size_t j = 0; j < buf->getRowsSize();j++){
 			boost::python::list zlist;
 			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
-				RayIntersection& inter = buf->getAt(i,j)[k];
-				if(std::fabs(inter.zmax-inter.zmin)<GEOM_EPSILON)
-					zlist.append(make_tuple(inter.id,inter.zmax));
-				else zlist.append(make_tuple(inter.id,inter.zmax,inter.zmin));
+				const RayHit& inter = buf->getAt(i,j)[k];
+				zlist.append(make_tuple(inter.id,inter.zmax,inter.zmin));
 			}
 			row.append(zlist);
 		}
@@ -236,7 +234,7 @@ boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
 	for(size_t i = 0; i < buf->getColsSize();i++){
 		boost::python::list row;
 		for(size_t j = 0; j < buf->getRowsSize();j++){
-			ZBufferUnit& unit = buf->getAt(i,j);
+			const ZBufferUnit& unit = buf->getAt(i,j);
 			if (allvalues || (0.0 < unit.depth && unit.depth < 1.0))
 				row.append(make_tuple(unit.pos,unit.color,unit.depth));
 			else row.append(object());
@@ -274,6 +272,37 @@ boost::python::object getProjectionSizes(const ScenePtr& sc){
 	}
 	return bres;
   }
+}
+
+boost::python::object raypointhitbuf_to_python(ViewRayPointHitBuffer * buf) {
+	boost::python::list res;
+	for(size_t i = 0; i < buf->getColsSize();i++){
+		boost::python::list row;
+		for(size_t j = 0; j < buf->getRowsSize();j++){
+			boost::python::list zlist;
+			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
+				const RayPointHit& inter = buf->getAt(i,j)[k];
+				zlist.append(make_tuple(inter.id,inter.zmax,inter.zmin));
+			}
+			row.append(zlist);
+		}
+		res.append(row);
+	}
+	return res;
+}
+
+boost::python::object castRays2(const ScenePtr& sc, bool back_test){
+	ViewRayPointHitBuffer * buf = PGLViewerApplication::castRays2(sc,back_test);
+	boost::python::object res = raypointhitbuf_to_python(buf);
+	delete buf;
+	return res;
+}
+
+boost::python::object castRays2_1(const ScenePtr& sc){
+	ViewRayPointHitBuffer * buf = PGLViewerApplication::castRays2(sc,true);
+	boost::python::object res = raypointhitbuf_to_python(buf);
+	delete buf;
+	return res;
 }
 
 void saveImage1(const std::string& fname)
@@ -341,12 +370,21 @@ void export_viewer()
     .def("add",(void (*)(const ScenePtr&))&PGLViewerApplication::add,"add(Scene scene) : add a scene to the current displayed scene.",args("scene"))
     .def("add",(void (*)(const GeometryPtr&))&PGLViewerApplication::add,"add(Geometry geom) : add a particular geometry to the current displayed scene.",args("geom"))
     .staticmethod("add")
+    .def("getCurrentScene",&PGLViewerApplication::getCurrentScene,"getCurrentScene() : get the current displayed scene")
+    .staticmethod("getCurrentScene")
 	.def("update",&ViewerApplication::update,"update() : update the current visualization.")
     .staticmethod("update")
 	.def("animation",&animation1,"animation(bool enable = True) : Set viewer in animation mode [No display list, No camera adjutement]",args("enable"))
     .def("animation",&animation0)
     .staticmethod("animation") 
     ;
+
+  export_camera();
+  export_grids();
+  export_dialog();
+  export_framegl();
+  export_widgetgeometry();
+
 }
 
 void export_camera(){
@@ -425,6 +463,9 @@ void export_framegl(){
     .staticmethod("maximize")
     .def("castRays",&castRays,"castRays(Vector3 pos, Vector3 dir, Vector3 dx, Vector3 dy, float sx, float sy)",args("pos","dir","dx","dy","sx","sy") /*,return_value_policy<manage_new_object>()*/)
     .staticmethod("castRays")
+    .def("castRays2",&castRays2,"castRays2(Scene scene [, bool back_test = True])",args("scene","back_test"))
+    .def("castRays2",&castRays2_1)
+    .staticmethod("castRays2")
     .def("grabZBuffer",&grabZBuffer0 )
     .def("grabZBuffer",&grabZBuffer  ,"grabZBuffer(allvalues = False)", args("allvalues") )
     .staticmethod("grabZBuffer")
@@ -474,11 +515,6 @@ void module_gui()
   initViewer();
 
   export_viewer();
-  export_camera();
-  export_grids();
-  export_dialog();
-  export_framegl();
-  export_widgetgeometry();
 
   cleanViewer();
 }

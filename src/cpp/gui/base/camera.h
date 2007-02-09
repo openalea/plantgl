@@ -211,6 +211,8 @@ public:
 
   virtual void cameraEvent(ViewCameraEvent *);
 
+  void setAngles(double azimuth, double elevation);
+
 public slots:
 
   /// Set Camera to Home Position.
