@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -41,15 +36,19 @@
 #include <scenegraph/geometry/explicitmodel.h>
 #include <scenegraph/geometry/triangleset.h>
 
-#include "../util/export_property.h"
+/* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+/* ----------------------------------------------------------------------- */
+
 ExplicitModelPtr d_getDiscretization( Discretizer* d )
 { return d->getDiscretization(); }
+
+/* ----------------------------------------------------------------------- */
 
 bool get_Dis_texCoord(Discretizer * obj){ 
   return obj->texCoordComputed(); 
@@ -58,27 +57,35 @@ void set_Dis_texCoord(Discretizer * obj, bool v){
   obj->computeTexCoord(v); 
 } 
 
-void class_Discretizer()
+/* ----------------------------------------------------------------------- */
+
+void export_Discretizer()
 {
   class_< Discretizer,bases< Action >,boost::noncopyable >
     ("Discretizer", init<>("Discretizer() -> Compute the objects discretization" ))
     .def("clear",&Discretizer::clear)
-    .def("getDiscretization",d_getDiscretization,
-	 "Return the last computed discretization.")
-	 .add_property("texCoord",get_Dis_texCoord,set_Dis_texCoord)
+    .add_property("discretization",d_getDiscretization, "Return the last computed discretization.")
+	.add_property("texCoord",get_Dis_texCoord,set_Dis_texCoord)
+    .add_property("result",d_getDiscretization)
     ;
 }
+
+/* ----------------------------------------------------------------------- */
 
 TriangleSetPtr 	t_getTriangulation ( Tesselator* t )
 { return t->getTriangulation(); }
 
-void class_Tesselator()
+/* ----------------------------------------------------------------------- */
+
+void export_Tesselator()
 {
   class_< Tesselator,bases< Discretizer >,boost::noncopyable >
     ("Tesselator", init<>("Tesselator() -> Compute tobjects triangulation. " ))
-    .def("getTriangulation",t_getTriangulation,
-	 "Return the last computed triangulation.")
+    .add_property("triangulation",t_getTriangulation,"Return the last computed triangulation.")
+    .add_property("result",t_getTriangulation)
     ;
 
 }
+
+/* ----------------------------------------------------------------------- */
 

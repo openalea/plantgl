@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -33,22 +28,22 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
+ 
 #include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
 #include <algo/base/bboxcomputer.h>
 #include <algo/base/discretizer.h>
 #include <scenegraph/geometry/boundingbox.h>
 #include <scenegraph/scene/scene.h>
 
-#include "../util/export_property.h"
+/* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+/* ----------------------------------------------------------------------- */
 
 BoundingBoxPtr d_getBBox( BBoxComputer* b )
 { return b->getBoundingBox(); }
@@ -57,13 +52,17 @@ bool p_scene( BBoxComputer * b, ScenePtr s){
 	return b->process(s);
 }
 
-void class_BBoxComputer()
+/* ----------------------------------------------------------------------- */
+
+void export_BBoxComputer()
 {
   class_< BBoxComputer,bases< Action >,boost::noncopyable >
     ("BBoxComputer", init<Discretizer&>("BBoxComputer() -> Compute the objects bounding box" ))
     .def("clear",&BBoxComputer::clear)
-    .add_property("boundingbox",d_getBBox,"Return the last computed Bounding Box.")
     .def("process",&p_scene)
-	 
+    .add_property("boundingbox",d_getBBox,"Return the last computed Bounding Box.")
+    .add_property("result",d_getBBox)
     ;
 }
+
+/* ----------------------------------------------------------------------- */

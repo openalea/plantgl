@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -34,26 +29,16 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <algo/codec/printer.h>
+#include "../util/export_property.h"
 #include <algo/base/matrixcomputer.h>
-#include <algo/codec/linetreeprinter.h>
-#include <algo/codec/vgstarprinter.h>
-#include <algo/base/amaptranslator.h>
-#include <algo/base/discretizer.h>
-
 #include <math/util_matrix.h>
-#include <scenegraph/scene/scene.h>
-
-#include <string>
-
 #include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
-using namespace std;
 
+/* ----------------------------------------------------------------------- */
 
 Matrix4 mc_getMatrix(MatrixComputer* mc)
 {
@@ -65,16 +50,22 @@ void mc_setMatrix(MatrixComputer* mc, const Matrix4& m4)
   mc->getMatrix()= m4;
 }
 
-void class_MatrixComputer()
+SETGET(MatrixComputer,Matrix,Matrix4)
+
+/* ----------------------------------------------------------------------- */
+
+void export_MatrixComputer()
 {
   class_< MatrixComputer, bases < Action > > 
     ("MatrixComputer", init<>
      ( ( const char* )"MatrixComputer()" 
        "Compute the matrix4 representing the affine transformations. " ))
     .def("clear",&MatrixComputer::clear)
-    .add_property("matrix",mc_getMatrix, mc_setMatrix)
+	.DEC_SETGET(matrix,MatrixComputer,Matrix,Matrix4)
+    .add_property("result",&get_MatrixComputer_Matrix)
     ;
 }
 
+/* ----------------------------------------------------------------------- */
 
 

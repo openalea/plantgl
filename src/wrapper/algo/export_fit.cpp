@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -35,18 +30,17 @@
  */
 
 #include "../util/export_property.h"
-
 #include <algo/fitting/fit.h>
 #include <algo/base/discretizer.h>
-
 #include <boost/python.hpp>
-// #include <boost/python/make_constructor.hpp>
+
+/* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
-using namespace std;
 
+/* ----------------------------------------------------------------------- */
 
 boost::python::list to_pylist(const std::vector<std::string>& l){
 	boost::python::list res;
@@ -78,9 +72,11 @@ boost::python::object inertiaAxis(Point3Array * points){
 	else return make_tuple(u,v,w,s);
 }
 
-void class_Fit()
+/* ----------------------------------------------------------------------- */
+
+void export_Fit()
 {
-  class_< Fit, bases < Action > > ("Fit", init<>
+  class_< Fit > ("Fit", init<>
      ( "Fit()" "fitting algorithms." ))
     .def("use",&Fit::use)
     .def("__call__",&Fit::use)
@@ -126,3 +122,4 @@ void class_Fit()
   def("inertiaAxis",inertiaAxis,args("points"));
 }
 
+/* ----------------------------------------------------------------------- */

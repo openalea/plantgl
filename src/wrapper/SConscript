@@ -3,6 +3,5 @@
 Import( "env" )
 
 dirs= env.ALEAGlob( 'SConscript', '*' )
-dirs= ['math/SConscript','gui/SConscript','scenegraph/SConscript']
 SConscript( dirs, exports= { 'env' : env } )
 

@@ -31,6 +31,8 @@ v = pgl.math.Vector3.ORIGIN
 print('Vector3 : '+str(v))
 c = pgl.scenegraph.Cylinder()
 print(c)
+d = pgl.algo.Discretizer()
+print(d)
 pgl.gui.Viewer.start()
 
 

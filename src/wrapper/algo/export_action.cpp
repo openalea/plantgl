@@ -33,23 +33,24 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
+  
+#include "../util/export_refcountptr.h"
+#include <pgl_scenegraph.h>
 #include <boost/python.hpp>
 
-#include <pgl_scenegraph.h>
-#include <string>
-
-#include "../util/export_refcountptr.h"
+/* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
-using namespace std;
+
+/* ----------------------------------------------------------------------- */
 
 #define OVERLOADING_PROCESS( OBJECT )\
   bool (Action::*p_##OBJECT)( OBJECT *)= &Action::process;
 
 #define DEF_PROCESS( OBJECT ) .def("process",p_##OBJECT, "Process object of type " #OBJECT, args("object"))
+
+/* ----------------------------------------------------------------------- */
 
 OVERLOADING_PROCESS(Shape)
 OVERLOADING_PROCESS(Inline)
@@ -93,7 +94,9 @@ OVERLOADING_PROCESS(NurbsCurve2D)
 OVERLOADING_PROCESS(PointSet2D)
 OVERLOADING_PROCESS(Polyline2D)
 
-void class_Action()
+/* ----------------------------------------------------------------------- */
+
+void export_action()
 {
   class_< Action, boost::noncopyable >("Action", no_init)
     .def("beginProcess",&Action::beginProcess, "Called at the begining of the processing of a scene")
@@ -142,5 +145,6 @@ void class_Action()
     ;
 }
 
+/* ----------------------------------------------------------------------- */
 
 

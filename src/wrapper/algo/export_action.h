@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -34,11 +29,37 @@
  *  ----------------------------------------------------------------------------
  */
  
-#ifndef __WRAP_ACTION_H_
-#define __WRAP_ACTION_H_
+#ifndef __export_action_h__
+#define __export_action_h__
 
-void class_Action();
+/* ----------------------------------------------------------------------- */
 
+// abstract action class export
+void export_action();
 
+// basic action export
+void export_Discretizer();
+void export_Tesselator();
+void export_BBoxComputer();
+void export_AmapTranslator();
+void export_MatrixComputer();
+
+// custom algo
+void export_Merge();
+void export_Fit();
+
+/* ----------------------------------------------------------------------- */
+// abstract printer export
+void export_StrPrinter();
+void export_FilePrinter();
+
+// printer export
+void export_PglPrinter();
+void export_PglBinaryPrinter();
+void export_PovPrinter();
+void export_VrmlPrinter();
+void export_VgstarPrinter();
+
+/* ----------------------------------------------------------------------- */
 
 #endif

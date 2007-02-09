@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2004 UMR AMAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -33,7 +28,7 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
+  
 #include <scenegraph/geometry/amapsymbol.h>
 #include <algo/base/amaptranslator.h>
 #include <algo/base/discretizer.h>
@@ -41,27 +36,22 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
+/* ----------------------------------------------------------------------- */
+
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
-
 using namespace boost::python;
-using namespace std;
 
-/*
-AmapSymbolPtr at_getSymbol( AmapTranslator* d )
-{ return d->getSymbol(); }
-*/
-AmapTranslator* at_make(Discretizer* d)
-{
-  return new AmapTranslator(*d);
-}
-void class_AmapTranslator()
+/* ----------------------------------------------------------------------- */
+
+void export_AmapTranslator()
 {
   class_< AmapTranslator,bases< Action >,boost::noncopyable >
-    ( "AmapTranslator", no_init )
-    .def("__init__",make_constructor(at_make) , ( const char* )"AmapTranslator(Discretizer d) -> Translate a Geom object to an Amap Symbol.")
+    ( "AmapTranslator", init<Discretizer&>("AmapTranslator(Discretizer d) -> Translate a Geom object to an Amap Symbol."))
     .def("setNormalized",&AmapTranslator::setNormalized)
     .def("isNormalized",&AmapTranslator::isNormalized)
 	.add_property("symbol",&AmapTranslator::getSymbol)
+	.add_property("result",&AmapTranslator::getSymbol)
     ;
 }
+
+/* ----------------------------------------------------------------------- */
