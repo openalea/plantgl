@@ -98,10 +98,10 @@ void export_PglPrinter()
     ;
 
   class_< PyStrPGLPrinter , bases< Printer, PyStrPrinter > , boost::noncopyable> 
-	  ("StrPglPrinter",init<>("String Pgl Printer" ));
+	  ("PglStrPrinter",init<>("String Printer in PGL format" ));
 
   class_< PyFilePGLPrinter , bases< Printer, PyFilePrinter > , boost::noncopyable> 
-	  ("StrPglPrinter",init<const std::string&>("File Pgl Printer",args("filename")) );
+	  ("PglFilePrinter",init<const std::string&>("File Printer in PGL format",args("filename")) );
     ;
 }
 
