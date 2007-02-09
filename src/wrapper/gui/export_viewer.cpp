@@ -456,7 +456,7 @@ void initViewer()
 
 void endViewer()
 {
-	PGLViewerApplication::exit();
+	ViewerApplication::exit();
 }
 
 void cleanViewer() 

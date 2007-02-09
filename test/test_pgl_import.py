@@ -7,7 +7,7 @@ def addbinpath(dir_name):
 	if not exists(dir_name):
 		raise "'"+dir_name+"' does not exist."
 	dir_name = os.path.abspath(dir_name)
-	os.environ['PATH'] += ';'+dir_name
+	os.environ['PATH'] = dir_name+';'+os.environ['PATH']
 
 def addpybinpath(dir_name):
 	if not exists(dir_name):

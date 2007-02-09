@@ -40,8 +40,15 @@
 #include "event.h"
 #include "object.h"
 
+#include "../viewer/pglviewer.h"
+
 ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
-Viewer * ViewerAppli::build() { return (VIEWERBUILDER?VIEWERBUILDER->build():NULL); }
+
+Viewer * ViewerAppli::build() {
+	if(VIEWERBUILDER) return VIEWERBUILDER->build();
+	else return new PGLViewer();
+}
+
 void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
 
 ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }

@@ -73,7 +73,7 @@ static ViewerAppli * VIEWER_APPLI = NULL;
 class EndViewer {
 public :
   EndViewer(){ }
-  ~EndViewer(){ if(VIEWER_APPLI) delete VIEWER_APPLI;  }
+  ~EndViewer(){ if(VIEWER_APPLI) { VIEWER_APPLI->exit(); delete VIEWER_APPLI; VIEWER_APPLI = NULL;} }
 };
 
 /// To destroy and stop all at end of process.
@@ -235,7 +235,12 @@ ViewerApplication::start() {
 
 void
 ViewerApplication::exit() {
-    if(VIEWER_APPLI) { VIEWER_APPLI->exit();  delete VIEWER_APPLI; VIEWER_APPLI = NULL; DestroyedAppli = true; }
+    if(VIEWER_APPLI) { 
+		VIEWER_APPLI->exit();  
+		delete VIEWER_APPLI; 
+		VIEWER_APPLI = NULL; 
+		DestroyedAppli = true; 
+	}
 }
 
 void ViewerApplication::_sendAnEvent(QCustomEvent *e){

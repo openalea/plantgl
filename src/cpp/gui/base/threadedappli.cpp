@@ -78,12 +78,12 @@ ViewerThreadedAppli::exit() {
 	  startSync();
 	  __continue.unlock();
 	  if(!__running.locked())contcond.wakeAll();
-	  else sendAnEvent(new ViewEndEvent());
+	  else  sendAnEvent(new ViewEndEvent());
 	  sync();
 	  terminate();
       return true;
     }
-    else return false;
+	else return false;
 }
 
 void 
