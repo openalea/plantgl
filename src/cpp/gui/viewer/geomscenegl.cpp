@@ -806,7 +806,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	double el = frame->getCamera()->getElevation();
 	double b_az = az + 180;
 	if(b_az >= 180) b_az -= 360;
-    if(b_az <= -180) b_az += 360;
+        if(b_az <= -180) b_az += 360;
 	double b_el = -el;
 
 	ScenePtr nsc(new Scene());

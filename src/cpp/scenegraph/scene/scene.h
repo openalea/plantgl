@@ -45,7 +45,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <vector>
-#include <scenegraph/core/sceneobject.h>
+#include "scenegraph/core/sceneobject.h"
 #include "shape.h"
 
 #ifdef QT_THREAD_SUPPORT

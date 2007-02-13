@@ -98,6 +98,8 @@ class VIEW_API ViewRayPointHitBuffer : public TOOLS(Array2)<RayPointHitList>
 {
 public:
 	ViewRayPointHitBuffer(size_t w, size_t h): TOOLS(Array2)<RayPointHitList>(w,h){}
+        void operator+=(const ViewRayPointHitBuffer&);
+        ViewRayPointHitBuffer * operator+(const ViewRayPointHitBuffer&)const;
 };
 
 struct VIEW_API ZBufferUnit {

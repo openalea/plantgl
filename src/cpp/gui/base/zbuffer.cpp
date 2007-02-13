@@ -82,6 +82,42 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 	}
 }
 
+void ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBuffer& buff)
+{//arrays must have identical size
+  int w = getRowsSize();
+  int h = getColsSize();
+  if(buff.getRowsSize() == w && buff.getColsSize() == h)
+  {
+    RayPointHitList hitList;
+    for(int r=0; r<h; ++r)
+    {
+      for(int c=0; c<w; ++c)
+      {
+        hitList = buff.getAt(r,c);
+        if(!hitList.empty())
+        {
+          for(int rph=0; rph<hitList.size(); ++rph)
+          {
+            getAt(r,c).push_back(hitList[rph]);
+          }
+        }
+      }
+    }
+  }
+  else
+    std::cerr<<"size must be identical otherwise use + operator";
+}
+
+ViewRayPointHitBuffer * ViewRayPointHitBuffer::operator+(const ViewRayPointHitBuffer& buff)const
+{//arrays must have identical size
+  int w = getRowsSize();
+  int h = getColsSize();
+  ViewRayPointHitBuffer * res = new ViewRayPointHitBuffer(w,h);
+  *res += *this;
+  *res += buff;
+}
+
+
 ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 {	
 	GLint viewport[4];
