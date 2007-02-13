@@ -126,7 +126,6 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				ShowProgress="true"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"

@@ -38,6 +38,7 @@
 
 
 #include <algo/opengl/util_gl.h>
+#include <tool/util_assert.h>
 #include "zbuffer.h"
 
 TOOLS_USING_NAMESPACE
@@ -82,39 +83,32 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 	}
 }
 
-void ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBuffer& buff)
-{//arrays must have identical size
+ViewRayPointHitBuffer& ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBuffer& buff)
+{
+  //arrays must have identical size
   int w = getRowsSize();
   int h = getColsSize();
-  if(buff.getRowsSize() == w && buff.getColsSize() == h)
+  assert(buff.getRowsSize() == w && buff.getColsSize() == h && "Size of self and buff must be identical.");
+  for(int r=0; r<h; ++r)
   {
-    RayPointHitList hitList;
-    for(int r=0; r<h; ++r)
-    {
       for(int c=0; c<w; ++c)
       {
-        hitList = buff.getAt(r,c);
+        const RayPointHitList& hitList = buff.getAt(r,c);
         if(!hitList.empty())
         {
-          for(int rph=0; rph<hitList.size(); ++rph)
-          {
-            getAt(r,c).push_back(hitList[rph]);
-          }
+		  RayPointHitList& myhitList = getAt(r,c);
+		  myhitList.insert(myhitList.end(),hitList.begin(),hitList.end());
         }
       }
-    }
   }
-  else
-    std::cerr<<"size must be identical otherwise use + operator";
+  return *this;
 }
 
-ViewRayPointHitBuffer * ViewRayPointHitBuffer::operator+(const ViewRayPointHitBuffer& buff)const
+ViewRayPointHitBuffer ViewRayPointHitBuffer::operator+(const ViewRayPointHitBuffer& buff)const
 {//arrays must have identical size
-  int w = getRowsSize();
-  int h = getColsSize();
-  ViewRayPointHitBuffer * res = new ViewRayPointHitBuffer(w,h);
-  *res += *this;
-  *res += buff;
+  ViewRayPointHitBuffer res (*this);
+  res += buff;
+  return res;
 }
 
 
