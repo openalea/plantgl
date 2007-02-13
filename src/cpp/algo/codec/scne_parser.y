@@ -47,16 +47,6 @@
 #undef yyFlexLexer
 #define yyFlexLexer scne_yyFlexLexer
 
-#ifdef SYSTEM_IS__CYGWIN
-#define scne_yyerror(_msg) {			\
-        yyerrok; \
-        yyclearin; \
-        parser(p); \
-        if (!(p.handleError(std::string(_msg), \
-                      yychar, \
-			    ""))) YYABORT;\
-	postream(p)<<std::endl;}
-#else
 #define scne_yyerror(_msg) {			\
         yyerrok; \
         yyclearin; \
@@ -66,7 +56,6 @@
 			    ""))) YYABORT;\
 	postream(p)<<std::endl;}
 //                      yytname[YYTRANSLATE((yychar >= 0 ? yychar : -yychar))]))) YYABORT;
-#endif
 
 #ifdef __GNUC__
 // #define USING_READLINE
@@ -78,17 +67,15 @@
 #include <scenegraph/core/smbtable.h>
 #include "scne_binaryparser.h"
 
-#include <pgl_scene.h>
-#include <pgl_appearance.h>
-#include <pgl_geometry.h>
-#include <pgl_transformation.h>
-#include <pgl_container.h>
+#include <pgl_scenegraph.h>
 
 #include "printer.h"
 #include <math/util_math.h>
 #include <tool/util_enviro.h>
-#include <tool/readline.h>
 #include <tool/dirnames.h>
+#ifdef USING_READLINE
+#  include <tool/readline.h>
+#endif
 
 TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
@@ -99,6 +86,8 @@ PGL_USING_NAMESPACE
 #define SMB_TABLE_TYPE SceneObjectPtr
 
 /*  ---------------------------------------------------------------------- */
+
+#ifdef USING_READLINE
 
 static char * sh_keyword[] = {
     ":Echo",
@@ -159,6 +148,8 @@ static char * sh_keyword[] = {
                                         "Top","Topshape",
                                         "Slices","Stacks",
                                         (char *)NULL };
+
+#endif
 
 /*  ---------------------------------------------------------------------- */
 
@@ -879,7 +870,7 @@ SceneObjList :
    SceneObjList SceneObj{
     if ($2) {
       if ((*$2)->isNamed()) {
-#ifdef GEOM_DEBUG
+#ifdef PGL_DEBUG
         parser(p); \
         Printer printer(postream(p),postream(p));
         (*$2)->apply(printer);
@@ -926,7 +917,7 @@ SceneObjects :
  SceneObjects SceneObj {
     if ($2) {
       if ((*$2)->isNamed()) {
-#ifdef GEOM_DEBUG
+#ifdef PGL_DEBUG
         parser(p);
         Printer printer(postream(p),postream(p));
         (*$2)->apply(printer);
