@@ -25,8 +25,8 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  ****************************************************************************/
-#ifndef EXCEPTION_HH
-#define EXCEPTION_HH
+#ifndef __py_exception_h__
+#define __py_exception_h__
 
 #include <string>
 #include <sstream>
@@ -37,30 +37,18 @@ struct PythonExc
   const char* error_str;
 };
 
-struct PythonExc_IndexError : public PythonExc
-{ };
+struct PythonExc_IndexError : public PythonExc { };
 
-struct PythonExc_ValueError : public PythonExc
-{ };
+struct PythonExc_ValueError : public PythonExc { };
 
-struct PythonExc_TypeError : public PythonExc
-{ };
+struct PythonExc_TypeError : public PythonExc { };
 
-struct PythonExc_KeyError : public PythonExc
-{ };
+struct PythonExc_KeyError : public PythonExc { };
 
-struct PythonExc_StopIteration : public PythonExc
-{ };
+struct PythonExc_StopIteration : public PythonExc { };
 
 void define_stl_exceptions();
 
-template <class InExport>
-std::string get_string( const InExport& l )
-{
-  std::stringstream s;
-  s << l;
-  return s.str();
-}
 
-#endif // EXCEPTION_HH
+#endif // __py_exception_h__
 

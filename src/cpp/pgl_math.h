@@ -29,22 +29,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file pgl_scenegraph.h
-    \brief File that include all the scene graph files.
+/*! \file pgl_math.h
+    \brief File that include all the math files.
 */
 
+#ifndef __pgl_math_h__
+#define __pgl_math_h__
 
-#ifndef __pgl_scenegraph_h__
-#define __pgl_scenegraph_h__
+#include "math/util_math.h"
+#include "math/util_polymath.h"
+#include "math/util_vector.h"
+#include "math/util_matrix.h"
+#include "math/util_matrixmath.h"
 
-
-#include "scenegraph/pgl_version.h"
-#include "pgl_geometry.h"
-#include "pgl_transformation.h"
-#include "pgl_appearance.h"
-#include "pgl_container.h"
-#include "pgl_scene.h"
-
-// __scenegraph_h__
 #endif
-

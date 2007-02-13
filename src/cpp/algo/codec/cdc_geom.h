@@ -46,10 +46,15 @@
 
 #include "codec_config.h"
 #include <scenegraph/scene/factory.h>
+#include <iostream>
 
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+
+CODEC_API bool geom_read(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname = "");
 
 /* ----------------------------------------------------------------------- */
 

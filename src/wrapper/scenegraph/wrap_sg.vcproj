@@ -299,6 +299,26 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Utils"
+			>
+			<File
+				RelativePath="..\util\exception.h"
+				>
+			</File>
+			<File
+				RelativePath="..\util\exception_core.h"
+				>
+			</File>
+			<File
+				RelativePath="..\util\export_property.h"
+				>
+			</File>
+			<File
+				RelativePath="..\util\export_refcountptr.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\export_scenegraph.h"
 			>

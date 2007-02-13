@@ -29,22 +29,31 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file pgl_scenegraph.h
-    \brief File that include all the scene graph files.
+/*! \file pgl_tool.h
+    \brief File that include all the tool files.
 */
 
+#ifndef __pgl_tool_h__
+#define __pgl_tool_h__
 
-#ifndef __pgl_scenegraph_h__
-#define __pgl_scenegraph_h__
+#include "tool/tools_version.h"
 
+#include "tool/bfstream.h"
+#include "tool/dirnames.h"
+#include "tool/errormsg.h"
+#include "tool/gsmbtable.h"
+#include "tool/rcobject.h"
+#include "tool/readline.h"
+#include "tool/timer.h"
+#include "tool/util_array.h"
+#include "tool/util_array2.h"
+#include "tool/util_assert.h"
+#include "tool/util_cache.h"
+#include "tool/util_enviro.h"
+#include "tool/util_hash_map.h"
+#include "tool/util_hash_set.h"
+#include "tool/util_string.h"
+#include "tool/util_tuple.h"
+#include "tool/util_types.h"
 
-#include "scenegraph/pgl_version.h"
-#include "pgl_geometry.h"
-#include "pgl_transformation.h"
-#include "pgl_appearance.h"
-#include "pgl_container.h"
-#include "pgl_scene.h"
-
-// __scenegraph_h__
 #endif
-

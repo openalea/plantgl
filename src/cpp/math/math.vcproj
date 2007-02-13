@@ -201,6 +201,10 @@
 			RelativePath=".\math_config.h"
 			>
 		</File>
+		<File
+			RelativePath="..\pgl_math.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

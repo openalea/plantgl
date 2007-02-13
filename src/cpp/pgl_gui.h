@@ -29,22 +29,25 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file pgl_scenegraph.h
-    \brief File that include all the scene graph files.
+/*! \file pgl_gui.h
+    \brief File that include all the math files.
 */
 
+#ifndef __pgl_gui_h__
+#define __pgl_gui_h__
 
-#ifndef __pgl_scenegraph_h__
-#define __pgl_scenegraph_h__
+#include "gui/base/viewer.h"
+#include "gui/base/zbuffer.h"
+#include "gui/base/view_version.h"
+#include "gui/base/util_qwidget.h"
+#include "gui/base/scenegl.h"
+#include "gui/base/icons.h"
+#include "gui/base/daemon.h"
+#include "gui/base/application.h"
 
+#include "gui/viewer/pglapplication.h"
+#include "gui/viewer/pglviewer.h"
+#include "gui/viewer/util_geomgl.h"
+#include "gui/viewer/util_qstring.h"
 
-#include "scenegraph/pgl_version.h"
-#include "pgl_geometry.h"
-#include "pgl_transformation.h"
-#include "pgl_appearance.h"
-#include "pgl_container.h"
-#include "pgl_scene.h"
-
-// __scenegraph_h__
 #endif
-

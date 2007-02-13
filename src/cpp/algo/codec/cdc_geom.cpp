@@ -90,6 +90,20 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname)
+{
+    GenericParser<SceneObjectPtr> _parser(scne_yyparse,&table);
+    SceneObjectRecursiveLexer _sceneLexer(&stream,SceneObject::errorStream,fname.c_str());
+    Timer t;
+    t.start();
+    bool b =_parser.parse(&_sceneLexer,*SceneObject::errorStream,scene.toPtr());
+    t.stop();
+    if(isParserVerbose())cerr << "Parse file " << fname.c_str() << " in " << t.elapsedTime() << " sec. " << endl;
+	return b;
+}
+
+/* ----------------------------------------------------------------------- */
+
 GeomCodec::GeomCodec() : 
 	SceneCodec("GEOM", ReadWrite ) 
 	{}
@@ -122,14 +136,8 @@ ScenePtr GeomCodec::read(const std::string& fname)
   else {
     ifstream _file(fname.c_str());
 	SceneObjectSymbolTable table;
-    GenericParser<SceneObjectPtr> _parser(scne_yyparse,&table);
-    SceneObjectRecursiveLexer _sceneLexer(&_file,SceneObject::errorStream,fname.c_str());
-    Timer t;
 	ScenePtr scene(new Scene());
-    t.start();
-    bool b =_parser.parse(&_sceneLexer,*SceneObject::errorStream,scene.toPtr());
-    t.stop();
-    if(isParserVerbose())cerr << "Parse file " << fname.c_str() << " in " << t.elapsedTime() << " sec. " << endl;
+	bool b = geom_read(_file,table,scene,fname);
     if(!b) return ScenePtr(0);
 	else {
 		if(scene && !scene->isEmpty()) return scene;

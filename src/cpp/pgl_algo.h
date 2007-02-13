@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr)
- *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/all_action.h,v $
- *       $Id: all_action.h,v 1.3 2003/08/21 13:22:36 pradal Exp $
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -43,37 +38,57 @@
 #define __action_h__
 
 /// Discretization
-#include "actn_discretizer.h"
-#include "actn_tesselator.h"
+#include "algo/base/discretizer.h"
+#include "algo/base/tesselator.h"
+#include "algo/base/merge.h"
 
 
 /// Printer
-#include "actn_printer.h"
-#include "actn_binaryprinter.h"
-#include "actn_plyprinter.h"
-#include "actn_binaryprinter.h"
-#include "actn_vrmlprinter.h"
-#include "actn_povprinter.h"
+#include "algo/codec/printer.h"
+#include "algo/codec/binaryprinter.h"
+#include "algo/codec/plyprinter.h"
+#include "algo/codec/binaryprinter.h"
+#include "algo/codec/vrmlprinter.h"
+#include "algo/codec/povprinter.h"
+#include "algo/codec/linetreeprinter.h"
+#include "algo/codec/vgstarprinter.h"
 
+/// Reader
+#include "algo/codec/dtafile.h"
+#include "algo/codec/ligfile.h"
+#include "algo/codec/vgsfile.h"
+#include "algo/codec/scne_binaryparser.h"
+#include "algo/codec/scne_scanner.h"
+#include "algo/codec/scne_parser.h"
+
+/// Codec
+#include "algo/codec/codecs.h"
+#include "algo/codec/cdc_geom.h"
+#include "algo/codec/cdc_pov.h"
+#include "algo/codec/cdc_vgstar.h"
 
 /// GL Renderer
-#include "actn_glrenderer.h"
-#include "actn_glbboxrenderer.h"
-#include "actn_glctrlptrenderer.h"
-#include "actn_glskelrenderer.h"
-#include "actn_gltransitionrenderer.h"
+#include "algo/opengl/glrenderer.h"
+#include "algo/opengl/glbboxrenderer.h"
+#include "algo/opengl/glctrlptrenderer.h"
+#include "algo/opengl/glskelrenderer.h"
+#include "algo/opengl/gltransitionrenderer.h"
 
 
 /// Various computation
-#include "actn_bboxcomputer.h"
-#include "actn_skelcomputer.h"
-#include "actn_surfcomputer.h"
-#include "actn_polygoncomputer.h"
-#include "actn_statisticcomputer.h"
+#include "algo/base/bboxcomputer.h"
+#include "algo/base/bspherecomputer.h"
+#include "algo/base/skelcomputer.h"
+#include "algo/base/surfcomputer.h"
+#include "algo/base/volcomputer.h"
+#include "algo/base/polygoncomputer.h"
+#include "algo/base/wirecomputer.h"
+#include "algo/base/statisticcomputer.h"
+#include "algo/base/matrixcomputer.h"
 
 /// Extension
-#include "Geomext/actn_fit.h"
-#include "actn_amaptranslator.h"
+#include "algo/fitting/fit.h"
+#include "algo/base/amaptranslator.h"
 
 // __action_h__
 #endif

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
  *       File author(s): F. Boudon et al.
  *
@@ -29,22 +29,18 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file pgl_scenegraph.h
-    \brief File that include all the scene graph files.
+
+/*! \file plantgl.h
+    \brief Include of all plangl.
 */
 
+#ifndef __plantgl_h__
+#define __plantgl_h__
 
-#ifndef __pgl_scenegraph_h__
-#define __pgl_scenegraph_h__
+#include "pgl_tool.h"
+#include "pgl_math.h"
+#include "pgl_scenegraph.h"
+#include "pgl_gui.h"
 
-
-#include "scenegraph/pgl_version.h"
-#include "pgl_geometry.h"
-#include "pgl_transformation.h"
-#include "pgl_appearance.h"
-#include "pgl_container.h"
-#include "pgl_scene.h"
-
-// __scenegraph_h__
+// __plantgl_h__
 #endif
-

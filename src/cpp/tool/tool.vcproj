@@ -288,6 +288,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath="..\pgl_tool.h"
+			>
+		</File>
+		<File
 			RelativePath=".\tools_config.h"
 			>
 		</File>
