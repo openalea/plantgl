@@ -68,6 +68,10 @@
 //                      yytname[YYTRANSLATE((yychar >= 0 ? yychar : -yychar))]))) YYABORT;
 #endif
 
+#ifdef __GNUC__
+// #define USING_READLINE
+#endif
+
 #include <scenegraph/core/pgl_messages.h>
 #include "scne_scanner.h"
 #include <tool/gparser.h>
@@ -570,7 +574,6 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 %token TokColorPerVertex
 %token TokDegree
 %token TokDepth
-%token TokGeometry
 %token TokGeometryList
 %token TokElevation
 %token TokFamily
@@ -890,7 +893,7 @@ SceneObjList :
       };
       delete $2;
     }
-#ifdef __GNUC__
+#ifdef USING_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -900,7 +903,7 @@ SceneObjList :
     parser(p);
     smbtable(p,t);
     symbolstack.push_back(&t);
-#ifdef __GNUC__
+#ifdef USING_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -942,7 +945,7 @@ SceneObjects :
     shape_nb = 0;
     SymbolTable<SMB_TABLE_TYPE> * t = new SymbolTable<SMB_TABLE_TYPE>;
     symbolstack.push_back(t);
-#ifdef __GNUC__
+#ifdef USING_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -1067,7 +1070,7 @@ InlineFieldList:
    }
  | {
    $$ = new Inline::Builder;
-#ifdef __GNUC__
+#ifdef USING_READLINE
    lexer(l);
    if(l.useReadline())setKeyword(inline_att_keyword);
 #endif
@@ -1085,7 +1088,7 @@ ShapeFieldList:
      GEOM_PARSER_SET_FIELD($1,Appearance,$3); $$=$1;
    }
  | { $$ = new Shape::Builder;
-#ifdef __GNUC__
+#ifdef USING_READLINE
     lexer(l);
    if(l.useReadline())setKeyword(shape_att_keyword);
 #endif
@@ -1586,7 +1589,7 @@ AsymmetricHullFieldList:
      GEOM_PARSER_SET_FIELD($1,Stacks,$3); $$=$1;
    }
  | { $$ = new AsymmetricHull::Builder;
-#ifdef __GNUC__
+#ifdef USING_READLINE
  lexer(l);
  if(l.useReadline())setKeyword(ashull_att_keyword);
 #endif
@@ -1670,7 +1673,7 @@ ConeFieldList:
    }
  | {
    $$ = new Cone::Builder;
-#ifdef __GNUC__
+#ifdef USING_READLINE
    lexer(l);
    if(l.useReadline()) setKeyword(cone_att_keyword);
 #endif

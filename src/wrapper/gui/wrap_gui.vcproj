@@ -57,7 +57,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl/gui/_pglgui-d.dll"
+				OutputFile="../../plantgl_d/gui/_pglgui_d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
