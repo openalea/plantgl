@@ -42,6 +42,7 @@
 /*! \file util_hashset.h
     \brief Utility for hashset with std::string.
 */
+#include "tools_config.h"
 
 #ifdef GNU_STL_EXTENSION
 	#include <ext/hash_set>
