@@ -1,0 +1,6 @@
+# -*-python-*-
+Import( "env" )
+
+includes= env.ALEAGlob('*.h')
+env.ALEAIncludes( "plantgl/gui/viewer", includes )
+

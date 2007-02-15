@@ -1,0 +1,11 @@
+# -*-python-*-
+Import( "env" )
+Import( "platform" )
+
+includes= env.ALEAGlob('*.h')
+
+if platform.name != 'win32':
+    includes= filter( lambda x: 'trayicon' not in x, includes )
+
+env.ALEAIncludes( "plantgl/gui/base", includes )
+
