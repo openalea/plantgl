@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_object.h
-    \brief Definition of the viewer class ViewObjectGL.
+    \brief Definition of the viewer class ViewObjectGL3.
 */
 
 
@@ -46,7 +46,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qobject.h>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -57,33 +57,33 @@ class QPoint;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewErrorDialog;
-class ViewStatusBar;
+class ViewErrorDialog3;
+class ViewStatusBar3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewObjectGL
+   \class ViewObjectGL3
    \brief Abstact class of object for GL Display
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewObjectGL  : public QObject
+class VIEW3_API ViewObjectGL3  : public QObject
 {
   Q_OBJECT
 
 public:
   
   /// Constructor.
-  ViewObjectGL(QObject * parent=0, const char * name=0);
+  ViewObjectGL3(QObject * parent=0, const char * name=0);
 
   /// Constructor. Connect GL Frame to \e this.
-  ViewObjectGL(QGLWidget * parent, const char * name=0);
+  ViewObjectGL3(QGLWidget * parent, const char * name=0);
 
   /// Destructor.
-  virtual ~ViewObjectGL();
+  virtual ~ViewObjectGL3();
 
   /// Create a Popup menu that reflect the functionality of this.
   virtual QPopupMenu * createToolsMenu(QWidget * parent);
@@ -92,13 +92,13 @@ public:
   virtual void fillToolBar(QToolBar * toolBar);
 
   /// Connect this to a statusbar.
-  virtual void connectTo(ViewStatusBar *);
+  virtual void connectTo(ViewStatusBar3 *);
 
   /// Connect this to a GL Widget.
   virtual void connectTo(QGLWidget *);
 
   /// Connect this to a error dialog.
-  virtual void connectTo(ViewErrorDialog *);
+  virtual void connectTo(ViewErrorDialog3 *);
 
   /// Display error message.
   void error(const QString&);
@@ -173,37 +173,37 @@ protected:
 /* ----------------------------------------------------------------------- */
 
   /// Test if there is any gl error.
-#define GEOM_GL_ERROR_FROM(widget) ViewObjectGL::glError(widget,__FILE__,__LINE__)
+#define GEOM_GL_ERROR_FROM(widget) ViewObjectGL3::glError(widget,__FILE__,__LINE__)
 
-  /// Test if there is any gl error for ViewObjectGL
+  /// Test if there is any gl error for ViewObjectGL3
 #define GEOM_GL_ERROR glError(__FILE__,__LINE__)
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCameraGL;
+class ViewCameraGL3;
 
 /**   
-   \class ViewRelativeObjectGL
+   \class ViewRelativeObjectGL3
    \brief Abstact class of object for GL Display connected to the step of the camera.
    This object have a relative representation.
 
 */
-class VIEW_API ViewRelativeObjectGL  : public ViewObjectGL
+class VIEW3_API ViewRelativeObjectGL3  : public ViewObjectGL3
 {
   Q_OBJECT
 
 public:
   
   /// Constructor. 
-  ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent=0, const char * name=0);
+  ViewRelativeObjectGL3(ViewCameraGL3 *camera, QObject * parent=0, const char * name=0);
 
   /// Constructor.
-  ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * parent, const char * name=0);
+  ViewRelativeObjectGL3(ViewCameraGL3 *camera, QGLWidget * parent, const char * name=0);
 
   
 
   /// Destructor.
-  virtual ~ViewRelativeObjectGL();
+  virtual ~ViewRelativeObjectGL3();
 
   virtual void changeStepEvent(const int newStep, const int oldStep);
 
@@ -214,16 +214,16 @@ public:
   const int getStep() const;
 
   /// Connect this to a statusbar.
-  virtual void connectTo(ViewStatusBar *);
+  virtual void connectTo(ViewStatusBar3 *);
 
   /// Connect this to a GL Widget.
   virtual void connectTo(QGLWidget *);
 
   /// Connect this to a error dialog.
-  virtual void connectTo(ViewErrorDialog *);
+  virtual void connectTo(ViewErrorDialog3 *);
 
   /// Connect this to a camera.
-  virtual void connectTo(ViewCameraGL *);
+  virtual void connectTo(ViewCameraGL3 *);
 
 private slots:
 

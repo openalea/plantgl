@@ -47,31 +47,31 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include "../base/viewer.h"
 #include <scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class PGLViewer
+   \class PGLViewer3
    \brief The Main Window of the viewer
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API PGLViewer : public Viewer
+class VIEW3_API PGLViewer3 : public Viewer3
 {
 public:
    
   /// Constructor.
-  PGLViewer(  QWidget * parent = 0, WFlags f = 0 );
+  PGLViewer3(  QWidget * parent = 0, WFlags f = 0 );
 
   /// Constructor.
-  PGLViewer( int argc, char ** argv );
+  PGLViewer3( int argc, char ** argv );
 
   /// Destructor.
-  virtual ~PGLViewer();
+  virtual ~PGLViewer3();
   
   void changeScene( const PGL(ScenePtr)& s );
 

@@ -45,44 +45,42 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qpopupmenu.h>
+#include <qaction.h>
 #include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */
 
+class QMenu;
+class QToolBar;
 class ViewModalRendererGL;
 
 /// Menu to control ViewModalRendererGL
-class VIEW_API ViewRenderingModeMenu : public QPopupMenu {
+class VIEW_API ViewRenderingModeActions : public QObject {
    Q_OBJECT
  
 public :
   
-     ViewRenderingModeMenu(ViewModalRendererGL * renderer, 
-		      QWidget * parent=0, 
-		      const char * name=0);
+   ViewRenderingModeActions(ViewModalRendererGL * renderer, const char * name=0);
    
-   ~ViewRenderingModeMenu();
-  
+   ~ViewRenderingModeActions();
+
+   void fill(QMenu * menu) const;
+   void fill(QToolBar * menu) const;
+
 public slots:
 
   /// Set Rendering Mode.
   void setRenderingMode(const int);
-  /// Set the CtrlPoint Rendering Mode.
-  void setRenderCtrlPoint(bool);
-  /// Set the Light Enable Rendering Mode.
-  void setLightEnable(bool);
-  /// Set the BBox  Rendering Mode.
-  void setRenderBBox(bool);
 
 protected :
-  int idVolume;
-  int idWire;
-  int idSkeleton;
-  int idVolWire;
-  int idCtrlPoints;
-  int idBBox;
-  int idLight;
+  QAction * idVolume;
+  QAction * idWire;
+  QAction * idSkeleton;
+  QAction * idVolWire;
+
+  QAction * idCtrlPoints;
+  QAction * idBBox;
+  QAction * idLight;
 };
 
 /* ----------------------------------------------------------------------- */

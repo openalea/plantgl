@@ -57,34 +57,33 @@
 #include "light.h"
 #include "grid.h"
 #include "scenegl.h"
-
+#include "icons.h"
+#include "interface/controlpanelwidget.h"
 
 /* ----------------------------------------------------------------------- */
 
 
 ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,  
 			    const QString & label, 
-			    QMainWindow * mw, 
-#if QT_VERSION >= 300
-			    ToolBarDock dock,
-#else
-			    QMainWindow::ToolBarDock dock, 
-#endif
-			    bool newLine , 
-			    const char * name )
-    : ViewToolBar( label, mw, dock, newLine, name ),
+			    QMainWindow * mw )
+    : QDockWidget( label, mw ),
 	__useSpinBox(true)
 {
+	setObjectName("ControlPanel");
+	// setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Preferred);	
+	QWidget * mwidget =  new QWidget(this);
 
-  	setOrientation(Qt::Vertical);
+	__panel = new Ui::ViewControlPanelWidget();
+	__panel->setupUi(mwidget);
+	setWidget(mwidget);
+	// qDebug((QString::number(mwidget->size().width())+" x "+QString::number(mwidget->size().height())).toAscii().data());
+	// qDebug((QString::number(size().width())+" x "+QString::number(height())).toAscii().data());
 
-	QObject::connect(this,SIGNAL(orientationChanged( Orientation )),
-			this,SLOT(orientationChangedEvent( Orientation )) );
-	QPixmap logo(ViewerIcon::getPixmap(ViewerIcon::icon_logobar));
-	QToolButton * bt = new QToolButton(logo,
-			"","",mw,SLOT(displayAbout()),this);
-	bt->setUsesBigPixmap(true);
-	
+	QPixmap logo(ViewerIcon::getPixmap(ViewerIcon::logobar));
+	__panel->mLogoButton->setIcon(QIcon(logo));
+	__panel->mLogoButton->setIconSize(logo.size());
+	QObject::connect(__panel->mLogoButton,SIGNAL(clicked(bool)),mw,SLOT(displayAbout()));
+
 
 	ViewRendererGL * sc = _glframe->getSceneRenderer();
 	ViewSceneRendererGL * sc2 = dynamic_cast<ViewSceneRendererGL *>(sc);
@@ -94,238 +93,116 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 			   this,SLOT(setLightEnable(bool)) );
 	}
 
-	// Scene Position : valeur de rotation de la GL	
-
-	__sceneGroupBox = new QGroupBox(tr("Camera"),this,"Scene Position Group Box");
-//	__sceneGroupBox->setMaximumHeight(145);
-	QLabel * _lblElevation=new QLabel(tr("Elevation"),__sceneGroupBox);
-	_lblElevation->setGeometry(80,20,44,30);
-	QLabel * _lblAzimuth=new QLabel(tr("Azimuth"),__sceneGroupBox);
-	_lblAzimuth->setGeometry(80,65,40,30);
-	QLabel * _lblZoom=new QLabel(tr("Zoom"),__sceneGroupBox);
-	_lblZoom->setGeometry(80,105,30,30);
-	QLabel* _StepMoveLabel = new QLabel(tr("Move"),__sceneGroupBox);
-	_StepMoveLabel->setGeometry(80,150,30,20);
 	ViewCameraGL * camera = _glframe->getCamera();
-
-    QPixmap unlinked(ViewerIcon::getPixmap(ViewerIcon::icon_unlinked));
-    __linkedZoom = new QPushButton("",__sceneGroupBox);
-	__linkedZoom->setGeometry(1,105,15,30);
+	QObject::connect (__panel->__linkedZoom,SIGNAL(clicked()), camera,SLOT(lockDim()) ); 	
+	QObject::connect (camera,SIGNAL(lockDimChanged(bool)), 	this,SLOT(setLinked(bool)) ); 	
 	setLinked(camera->isDimLock());
-	__linkedZoom->setFlat(true);
 
-	QObject::connect (__linkedZoom,SIGNAL(clicked()), 	
-			camera,SLOT(lockDim()) ); 	
-	QObject::connect (camera,SIGNAL(lockDimChanged(bool)), 	
-			this,SLOT(setLinked(bool)) ); 	
+	__panel->__zoomSpin->setRange(-DBL_MAX,DBL_MAX);
+	__panel->__zoomSpin->setValue(camera->getZoom());
 
-	__elevation=new QDial(-179,180,1,
-			      (int)camera->getElevation(),
-			      __sceneGroupBox,"Elevation");
-	__elevation->setGeometry(20,15,40,40);
-	__elevation->setLineStep(5);
-	__elevation->setWrapping(true);
-	__elevation->setNotchesVisible(true);
-	__elevation->hide();
+	__panel->__StepMove->setRange(0.01,DBL_MAX);
+	__panel->__StepMove->setValue(camera->getStepMove());
 
-	__elevationSpin=new QSpinBox(-179,180,1,__sceneGroupBox,"ElevationSpin");
-	__elevationSpin->setValue((int)camera->getElevation());
-	__elevationSpin->setGeometry(15,25,65,30);
+	QObject::connect (camera,SIGNAL(elevationChanged(double)), 	
+			__panel->__elevationSpin,SLOT(setValue(double)) ); 	
+	QObject::connect (camera,SIGNAL(azimuthChanged(double)), 	
+			__panel->__azimuthSpin,SLOT(setValue(double)) ); 	
+	QObject::connect (camera,SIGNAL(zoomChanged(double)), 	
+			__panel->__zoomSpin,SLOT(setValue(double)) ); 	
 
-	__azimuth=new QDial(-179,180,1,
-			    (int)camera->getAzimuth(),
-			    __sceneGroupBox,"Azimuth");
-	__azimuth->setGeometry(20,60,40,40);
-	__azimuth->setLineStep(5);
-	__azimuth->setWrapping(true);
-	__azimuth->setNotchesVisible(true);
-	__azimuth->hide();
+	QObject::connect (__panel->__elevationSpin,SIGNAL(valueChanged(double)),
+			  camera,SLOT(setElevation(double)) );
+	QObject::connect (__panel->__azimuthSpin,SIGNAL(valueChanged(double)),
+			  camera,SLOT(setAzimuth(double)) );
+	QObject::connect (__panel->__zoomSpin,SIGNAL(valueChanged(double)),
+			  camera,SLOT(setZoom(double)) );
 
-	__azimuthSpin=new QSpinBox(-179,180,1,__sceneGroupBox,"AzimuthSpin");
-	__azimuthSpin->setValue((int)camera->getAzimuth());
-	__azimuthSpin->setGeometry(15,65,65,30);
-
-	__zoom=new QSpinBox(INT_MIN,INT_MAX,1,__sceneGroupBox,"Zoom");
-	__zoom->setGeometry(15,105,65,30);
-	__zoom->setValue((int)camera->getZoom());
-
-	QSpinBox* _StepMove=new QSpinBox(1,INT_MAX,1,__sceneGroupBox,"StepMove");
-	_StepMove->setGeometry(15,145,65,30);
-	_StepMove->setValue(camera->getStepMove());
-
-	QObject::connect (camera,SIGNAL(elevationChanged(int)), 	
-			__elevation,SLOT(setValue(int)) ); 	
-	QObject::connect (camera,SIGNAL(azimuthChanged(int)), 	
-			__azimuth,SLOT(setValue(int)) ); 	
-	QObject::connect (camera,SIGNAL(elevationChanged(int)), 	
-			__elevationSpin,SLOT(setValue(int)) ); 	
-	QObject::connect (camera,SIGNAL(azimuthChanged(int)), 	
-			__azimuthSpin,SLOT(setValue(int)) ); 	
-	QObject::connect (camera,SIGNAL(zoomChanged(int)), 	
-			__zoom,SLOT(setValue(int)) ); 	
-
-	QObject::connect (__elevation,SIGNAL(valueChanged(int)),
-			  camera,SLOT(setElevation(int)) );
-	QObject::connect (__azimuth,SIGNAL(valueChanged(int)),
-			  camera,SLOT(setAzimuth(int)) );
-	QObject::connect (__elevationSpin,SIGNAL(valueChanged(int)),
-			  camera,SLOT(setElevation(int)) );
-	QObject::connect (__azimuthSpin,SIGNAL(valueChanged(int)),
-			  camera,SLOT(setAzimuth(int)) );
-	QObject::connect (__zoom,SIGNAL(valueChanged(int)),
-			  camera,SLOT(setZoom(int)) );
-
-	QObject::connect (camera,SIGNAL(stepMoveChanged(int)),
-			  _StepMove,SLOT(setValue(int)) ); 	
-	QObject::connect (_StepMove,SIGNAL(valueChanged(int)),
-			  camera,SLOT(setStepMove(int)) );
+	QObject::connect (camera,SIGNAL(stepMoveChanged(double)),
+			  __panel->__StepMove,SLOT(setValue(double)) ); 	
+	QObject::connect (__panel->__StepMove,SIGNAL(valueChanged(double)),
+			  camera,SLOT(setStepMove(double)) );
 
 	//Light azimuth & elevation
 	ViewLightGL * light = _glframe->getLight();
 	
 
-	__lightPosGroupBox = new QGroupBox(tr("Light Position"),this,"Light Position Group Box");
-	QLabel* _lblLightElevation = new QLabel(tr("Elevation"),__lightPosGroupBox);
-	_lblLightElevation->setGeometry(80,20,44,30);
-	QLabel* _lblLightAzimuth = new QLabel(tr("Azimuth"),__lightPosGroupBox);
-	_lblLightAzimuth->setGeometry(80,65,40,30);
-	QLabel* _lblLightDistance = new QLabel(tr("Distance"),__lightPosGroupBox);
-	_lblLightDistance->setGeometry(80,105,44,30);
+
+	__panel->__lightElevationSpin->setValue(light->getElevation());
+	__panel->__lightAzimuthSpin->setValue(light->getAzimuth());
+	__panel->__LightDistance->setRange(-DBL_MAX,DBL_MAX);
+	__panel->__LightDistance->setValue(light->getDistance());
+
+	QObject::connect (light,SIGNAL(elevationChanged(double)),
+			  __panel->__lightElevationSpin,SLOT(setValue(double)) );
+	QObject::connect (light,SIGNAL(azimuthChanged(double)),
+			  __panel->__lightAzimuthSpin,SLOT(setValue(double)) );
+	QObject::connect (light,SIGNAL(distanceChanged(double)),
+			  __panel->__LightDistance,SLOT(setValue(double)) );
+
+	QObject::connect (__panel->__lightElevationSpin,SIGNAL(valueChanged(double)),
+			  light,SLOT(setElevation(double)) );
+	QObject::connect (__panel->__lightAzimuthSpin,SIGNAL(valueChanged(double)),
+			  light,SLOT(setAzimuth(double)) );
+	QObject::connect (__panel->__LightDistance,SIGNAL(valueChanged(double)),
+			  light,SLOT(setDistance(double)) );
 
 
-	__lightElevation=new QDial(-179,180,1,
-				   (int)light->getElevation(),
-				   __lightPosGroupBox,"LightElevation");
-	__lightElevation->setGeometry(15,15,40,40);
-	__lightElevation->setLineStep(5);
-	__lightElevation->setWrapping(true);
-	__lightElevation->setNotchesVisible(true);
-	__lightElevation->hide();
-
-	__lightElevationSpin=new QSpinBox(-179,180,1,__lightPosGroupBox,"ligthElevationSpin");
-	__lightElevationSpin->setValue((int)light->getElevation());
-	__lightElevationSpin->setGeometry(10,25,65,30);
-
-	__lightAzimuth=new QDial(-179,180,1,
-				 (int)light->getAzimuth(),
-				 __lightPosGroupBox,"LightAzimuth");
-	__lightAzimuth->setGeometry(15,60,40,40);
-	__lightAzimuth->setLineStep(5);
-	__lightAzimuth->setWrapping(true);
-	__lightAzimuth->setNotchesVisible(true);
-	__lightAzimuth->hide();
-
-	__lightAzimuthSpin=new QSpinBox(-179,180,1,__lightPosGroupBox,"ligthAzimuthSpin");
-	__lightAzimuthSpin->setValue((int)light->getAzimuth());
-	__lightAzimuthSpin->setGeometry(10,65,65,30);
-
-	QSpinBox * __LightDistance= new QSpinBox(INT_MIN,INT_MAX,1,__lightPosGroupBox,"LightDistance");
-	__LightDistance->setGeometry(10,105,65,30);
-	__LightDistance->setValue((int)light->getDistance());
-
-	QObject::connect (light,SIGNAL(elevationChanged(int)),
-			  __lightElevation,SLOT(setValue(int)) );
-	QObject::connect (light,SIGNAL(azimuthChanged(int)),
-			  __lightAzimuth,SLOT(setValue(int)) );
-	QObject::connect (light,SIGNAL(elevationChanged(int)),
-			  __lightElevationSpin,SLOT(setValue(int)) );
-	QObject::connect (light,SIGNAL(azimuthChanged(int)),
-			  __lightAzimuthSpin,SLOT(setValue(int)) );
-	QObject::connect (light,SIGNAL(distanceChanged(int)),
-			  __LightDistance,SLOT(setValue(int)) );
-
-	QObject::connect (__lightElevation,SIGNAL(valueChanged(int)),
-			  light,SLOT(setElevation(int)) );
-	QObject::connect (__lightAzimuth,SIGNAL(valueChanged(int)),
-			  light,SLOT(setAzimuth(int)) );
-	QObject::connect (__lightElevationSpin,SIGNAL(valueChanged(int)),
-			  light,SLOT(setElevation(int)) );
-	QObject::connect (__lightAzimuthSpin,SIGNAL(valueChanged(int)),
-			  light,SLOT(setAzimuth(int)) );
-	QObject::connect (__LightDistance,SIGNAL(valueChanged(int)),
-			  light,SLOT(setDistance(int)) );
-
-	__lightColGroupBox = new QGroupBox(tr("Light Material"),this,"Light Color Group Box");
-
-	QLabel* __lblLightAmbient = new QLabel(tr("Ambient"),__lightColGroupBox);
-	__lblLightAmbient->setGeometry(80,20,40,30);
-	QLabel* __lblLightDiffuse = new QLabel(tr("Diffuse"),__lightColGroupBox);
-	__lblLightDiffuse->setGeometry(80,50,40,30);
-	QLabel* __lblLightSpecular = new QLabel(tr("Specular"),__lightColGroupBox);
-	__lblLightSpecular->setGeometry(80,80,44,30);
-
-	__LightAmbientButton=new QPushButton(__lightColGroupBox,"LightAmbient");
-	__LightAmbientButton->setGeometry(10,20,40,30);
-	QPixmap col(40,30);
+	QPixmap col(__panel->__LightAmbientButton->size().width()-20,
+				__panel->__LightAmbientButton->iconSize().height());
 	__LightAmbient = light->getAmbient();
 	col.fill(__LightAmbient);
-	__LightAmbientButton->setPixmap(col);
+	__panel->__LightAmbientButton->setIcon(QIcon(col));
+	__panel->__LightAmbientButton->setIconSize(col.size());
 
-	__LightDiffuseButton=new QPushButton(__lightColGroupBox,"LightDiffuse");
-	__LightDiffuseButton->setGeometry(10,50,40,30);
 	__LightDiffuse = light->getDiffuse();
 	col.fill(__LightDiffuse);
-	__LightDiffuseButton->setPixmap(col);
+	__panel->__LightDiffuseButton->setIcon(QIcon(col));
+	__panel->__LightDiffuseButton->setIconSize(col.size());
 
-	__LightSpecularButton=new QPushButton(__lightColGroupBox,"LightSpecular");
-	__LightSpecularButton->setGeometry(10,80,40,30);
 	__LightSpecular = light->getSpecular();
 	col.fill(__LightSpecular);
-	__LightSpecularButton->setPixmap(col);
+	__panel->__LightSpecularButton->setIcon(QIcon(col));
+	__panel->__LightSpecularButton->setIconSize(col.size());
 
 	QObject::connect (light,SIGNAL(ambientChanged(const QColor&)), 	
 			  this,SLOT(setLightAmbient(const QColor&)) );
 	QObject::connect (this,SIGNAL(lightAmbientChanged(const QColor&)),
 			  light,SLOT(setAmbient(const QColor&)) );
-	QObject::connect (__LightAmbientButton,SIGNAL(clicked()),
+	QObject::connect (__panel->__LightAmbientButton,SIGNAL(clicked()),
 			  this,SLOT(selectLightAmbient()) );
 
 	QObject::connect (light,SIGNAL(diffuseChanged(const QColor&)), 	
 			  this,SLOT(setLightDiffuse(const QColor&)) );
 	QObject::connect (this,SIGNAL(lightDiffuseChanged(const QColor&)),
 			  light,SLOT(setDiffuse(const QColor&)) );
-	QObject::connect (__LightDiffuseButton,SIGNAL(clicked()),
+	QObject::connect (__panel->__LightDiffuseButton,SIGNAL(clicked()),
 			  this,SLOT(selectLightDiffuse()) );
 
 	QObject::connect (light,SIGNAL(specularChanged(const QColor&)), 	
 			  this,SLOT(setLightSpecular(const QColor&)) );
 	QObject::connect (this,SIGNAL(lightSpecularChanged(const QColor&)),
 			  light,SLOT(setSpecular(const QColor&)) );
-	QObject::connect (__LightSpecularButton,SIGNAL(clicked()),
+	QObject::connect (__panel->__LightSpecularButton,SIGNAL(clicked()),
 			  this,SLOT(selectLightSpecular()) );
 
-
-
-	//grid control
-
-	__gridGroupBox = new QGroupBox(tr("Grids"),this,"Grid Group Box");
 
 
 	//step for the grid
 	ViewGridGL * grid = _glframe->getGrid();
 
-	QSpinBox* __unitGrid= new QSpinBox(1,INT_MAX,1,__gridGroupBox,"SizeGrid");
-	__unitGrid->setValue(grid->getGridUnit());
-	__unitGrid->setGeometry(10,20,65,30);
-	QObject::connect (grid,SIGNAL(GridUnitChanged(int)),
-			  __unitGrid,SLOT(setValue(int)) ); 	
-	QObject::connect (__unitGrid,SIGNAL(valueChanged(int)),
-			  grid,SLOT(setGridUnit(int)) );
+    __panel->__unitGrid->setRange(0.01,DBL_MAX);
+	__panel->__unitGrid->setValue(grid->getGridUnit());
+	QObject::connect (grid,SIGNAL(GridUnitChanged(double)),
+			  __panel->__unitGrid,SLOT(setValue(double)) ); 	
+	QObject::connect (__panel->__unitGrid,SIGNAL(valueChanged(double)),
+			  grid,SLOT(setGridUnit(double)) );
 
-	QSpinBox* __sizeGrid= new QSpinBox(1,INT_MAX,1,__gridGroupBox,"StepUnit");
-	__sizeGrid->setValue(grid->getGridSize());
-	__sizeGrid->setGeometry(10,50,65,30);
+    __panel->__sizeGrid->setRange(1,INT_MAX);
+	__panel->__sizeGrid->setValue(grid->getGridSize());
 
-	QObject::connect (grid,SIGNAL(GridSizeChanged(int)),
-			  __sizeGrid,SLOT(setValue(int)) ); 	
-	QObject::connect (__sizeGrid,SIGNAL(valueChanged(int)),
-			  grid,SLOT(setGridSize(int)) );
-
-	QLabel* m_lblStepGrid = new QLabel(tr("Unit"),__gridGroupBox);
-	m_lblStepGrid->setGeometry(80,20,30,30);
-
-	m_lblStepGrid = new QLabel(tr("Size"),__gridGroupBox);
-	m_lblStepGrid->setGeometry(80,50,30,30);
+	QObject::connect (grid,SIGNAL(GridSizeChanged(int)),__panel->__sizeGrid,SLOT(setValue(int)) ); 	
+	QObject::connect (__panel->__sizeGrid,SIGNAL(valueChanged(int)),grid,SLOT(setGridSize(int)) );
 
 }
 
@@ -338,12 +215,12 @@ void
 ViewControlPanel::setLinked(bool b)
 {
   if(!b){
-   QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::icon_linked));
-   __linkedZoom->setPixmap(linked);
+   QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::linked));
+   __panel->__linkedZoom->setIcon(QIcon(linked));
   }
   else {
-   QPixmap unlinked(ViewerIcon::getPixmap(ViewerIcon::icon_unlinked));
-   __linkedZoom->setPixmap(unlinked);
+   QPixmap unlinked(ViewerIcon::getPixmap(ViewerIcon::unlinked));
+   __panel->__linkedZoom->setIcon(QIcon(unlinked));
   }
 }
 
@@ -351,38 +228,21 @@ void
 ViewControlPanel::setLightEnable(bool a)
 {
   if(!a){
-    __lightPosGroupBox->hide();
-    __lightColGroupBox->hide();
+    __panel->mLightPage->hide();
   }
   else {
-    __lightColGroupBox->show();
-    __lightPosGroupBox->show();
+    __panel->mLightPage->show();
   }
 }
 
-void 
-ViewControlPanel::moveEvent ( QMoveEvent * event)
-{
-}
-
-void 
-ViewControlPanel::orientationChangedEvent( Orientation orientation )
-{
-}
-
-
-void 
-ViewControlPanel::resizeEvent( QResizeEvent * event)
-{ 
-}
 
 void 
 ViewControlPanel::setLightAmbient(const QColor& color)
 {
   __LightAmbient = color;
-  QPixmap col(40,30);
+  QPixmap col(60,30);
   col.fill(color);
-  __LightAmbientButton->setPixmap(col);
+  __panel->__LightAmbientButton->setIcon(QIcon(col));
 }
 
 void 
@@ -392,9 +252,9 @@ ViewControlPanel::selectLightAmbient()
   QColor LightAmbient = QColorDialog::getColor(__LightAmbient,this);
   if(LightAmbient.isValid()){
     __LightAmbient = LightAmbient;
-    QPixmap col(40,30);
+    QPixmap col(__panel->__LightAmbientButton->iconSize());
     col.fill(LightAmbient);
-    __LightAmbientButton->setPixmap(col);
+    __panel->__LightAmbientButton->setIcon(QIcon(col));
     emit lightAmbientChanged(__LightAmbient);
   }
 }
@@ -403,9 +263,9 @@ void
 ViewControlPanel::setLightDiffuse(const QColor& color)
 {
   __LightDiffuse = color;
-  QPixmap col(40,30);
+  QPixmap col(__panel->__LightAmbientButton->iconSize());
   col.fill(color);
-  __LightDiffuseButton->setPixmap(col);
+  __panel->__LightDiffuseButton->setIcon(QIcon(col));
 }
 
 void 
@@ -415,9 +275,9 @@ ViewControlPanel::selectLightDiffuse()
   QColor LightDiffuse = QColorDialog::getColor(__LightDiffuse,this);
   if(LightDiffuse.isValid()){
     __LightDiffuse = LightDiffuse;
-    QPixmap col(40,30);
+    QPixmap col(__panel->__LightAmbientButton->iconSize());
     col.fill(LightDiffuse);
-    __LightDiffuseButton->setPixmap(col);
+    __panel->__LightDiffuseButton->setIcon(QIcon(col));
     emit lightDiffuseChanged(__LightDiffuse);
   }
 }
@@ -426,9 +286,9 @@ void
 ViewControlPanel::setLightSpecular(const QColor& color)
 {
   __LightSpecular = color;
-  QPixmap col(40,30);
+  QPixmap col(__panel->__LightAmbientButton->iconSize());
   col.fill(color);
-  __LightSpecularButton->setPixmap(col);
+  __panel->__LightSpecularButton->setIcon(QIcon(col));
 }
 
 void 
@@ -438,16 +298,16 @@ ViewControlPanel::selectLightSpecular()
   QColor LightSpecular = QColorDialog::getColor(__LightSpecular,this);
   if(LightSpecular.isValid()){
     __LightSpecular = LightSpecular;
-    QPixmap col(40,30);
+    QPixmap col(__panel->__LightAmbientButton->iconSize());
     col.fill(LightSpecular);
-    __LightSpecularButton->setPixmap(col);
+    __panel->__LightSpecularButton->setIcon(QIcon(col));
     emit lightSpecularChanged(__LightSpecular);
   }
 }
 
 void
 ViewControlPanel::useSpinBox(bool b){
-  if(__useSpinBox != b){
+/*  if(__useSpinBox != b){
 	__useSpinBox = b;
 	if(__useSpinBox){
 	  __elevation->hide();
@@ -469,7 +329,7 @@ ViewControlPanel::useSpinBox(bool b){
 	  __lightElevationSpin->hide();
 	  __lightAzimuthSpin->hide();
 	}
-  }
+  }*/
 }
 
 bool

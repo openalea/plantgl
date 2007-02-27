@@ -59,15 +59,15 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
+ViewRotCenterGL3::ViewRotCenterGL3(ViewCameraGL3 *camera,
 				 QGLWidget * parent, 
 				 const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+  ViewRelativeObjectGL3(camera,parent,name),
   __active(false),
   __visible(false),
   __position(0,0,0),
   __displayList(0){
-  __sliders= new ViewDialog(parent,tr("Rotating Center"),false);
+  __sliders= new ViewDialog3(parent,tr("Rotating Center"),false);
   __sliders->setCaption("Rotating Center Coordinates");
   __editor = new RotCenterEdit(__sliders,"Rotating Center Coordinates");
   __sliders->setFixedSize(__editor->size());
@@ -93,14 +93,14 @@ ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
 }
 
 
-ViewRotCenterGL::~ViewRotCenterGL()
+ViewRotCenterGL3::~ViewRotCenterGL3()
 {
   if(__displayList)glDeleteLists(__displayList,1);
 }
 
 
 void 
-ViewRotCenterGL::setSliderStep(const int step)
+ViewRotCenterGL3::setSliderStep(const int step)
 {
   __editor->XSlider->setMaxValue(150*step);
   __editor->YSlider->setMaxValue(150*step);
@@ -122,37 +122,37 @@ ViewRotCenterGL::setSliderStep(const int step)
 /* ----------------------------------------------------------------------- */
 
 bool
-ViewRotCenterGL::isVisible() const
+ViewRotCenterGL3::isVisible() const
 {
   return __visible;
 }
 
 bool
-ViewRotCenterGL::isActive() const
+ViewRotCenterGL3::isActive() const
 {
   return __active;
 }
 
 int 
-ViewRotCenterGL::x() const
+ViewRotCenterGL3::x() const
 {
   return int(__position.x());
 }
 
 int 
-ViewRotCenterGL::y() const
+ViewRotCenterGL3::y() const
 {
   return int(__position.y());
 }
 
 int 
-ViewRotCenterGL::z() const
+ViewRotCenterGL3::z() const
 {
   return int(__position.z());
 }
 
-ViewDialog * 
-ViewRotCenterGL::getSliders() const
+ViewDialog3 * 
+ViewRotCenterGL3::getSliders() const
 {
   return __sliders;
 }
@@ -160,7 +160,7 @@ ViewRotCenterGL::getSliders() const
 /* ----------------------------------------------------------------------- */
 
 void 
-ViewRotCenterGL::init()
+ViewRotCenterGL3::init()
 {
   if(__position != Vector3::ORIGIN){
     __position = Vector3::ORIGIN;
@@ -175,7 +175,7 @@ ViewRotCenterGL::init()
 }
 
 void 
-ViewRotCenterGL::show()
+ViewRotCenterGL3::show()
 {
   if(!__visible){
     if(!__sliders->isVisible())__sliders->show();
@@ -186,7 +186,7 @@ ViewRotCenterGL::show()
 }
 
 void 
-ViewRotCenterGL::hide()
+ViewRotCenterGL3::hide()
 {
   if(__visible){
     if(__sliders->isVisible())__sliders->hide();
@@ -197,7 +197,7 @@ ViewRotCenterGL::hide()
 }
 
 void 
-ViewRotCenterGL::changeVisibility()
+ViewRotCenterGL3::changeVisibility()
 {
   __visible = ! __visible;
   if(__visible  && !__sliders->isVisible())__sliders->show();
@@ -207,7 +207,7 @@ ViewRotCenterGL::changeVisibility()
 }
 
 void 
-ViewRotCenterGL::changeVisibility(bool b)
+ViewRotCenterGL3::changeVisibility(bool b)
 {
   if(__visible != b){
     __visible = b;
@@ -219,7 +219,7 @@ ViewRotCenterGL::changeVisibility(bool b)
 }
 
 void 
-ViewRotCenterGL::activate()
+ViewRotCenterGL3::activate()
 {
   if(!__active){
     __active = true;
@@ -228,12 +228,12 @@ ViewRotCenterGL::activate()
   }
 }
 
-void ViewRotCenterGL::center()
+void ViewRotCenterGL3::center()
 {
 	if(__frame){
-		ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
+		ViewGLFrame3 * f = dynamic_cast<ViewGLFrame3 *>(__frame);
 		if(f){
-			// ViewGeomSceneGL * sc = dynamic_cast<ViewGeomSceneGL *>(f->getSceneRenderer());
+			// ViewGeomSceneGL3 * sc = dynamic_cast<ViewGeomSceneGL3 *>(f->getSceneRenderer());
 			// if(sc){
 				BoundingBoxPtr bbx = f->getSceneRenderer()->getGlobalBoundingBox();
 				Vector3 center = bbx->getCenter();
@@ -247,7 +247,7 @@ void ViewRotCenterGL::center()
 }
 
 void 
-ViewRotCenterGL::desactivate()
+ViewRotCenterGL3::desactivate()
 {
   if(__active){
     __active = false;
@@ -257,7 +257,7 @@ ViewRotCenterGL::desactivate()
 }
 
 void 
-ViewRotCenterGL::changeActivation()
+ViewRotCenterGL3::changeActivation()
 {
   __active = ! __active;
   emit activationChanged(__active);
@@ -265,7 +265,7 @@ ViewRotCenterGL::changeActivation()
 }
 
 void 
-ViewRotCenterGL::changeActivation(bool b)
+ViewRotCenterGL3::changeActivation(bool b)
 {
   if(__active != b){
     __active = b;
@@ -275,7 +275,7 @@ ViewRotCenterGL::changeActivation(bool b)
 }
 
 void 
-ViewRotCenterGL::setX(int x)
+ViewRotCenterGL3::setX(int x)
 {
   __position.x() = x;
   emit XvalueChanged(QString::number(x/getStep()));
@@ -283,7 +283,7 @@ ViewRotCenterGL::setX(int x)
 }
 
 void 
-ViewRotCenterGL::setY(int y)
+ViewRotCenterGL3::setY(int y)
 {
   __position.y() = y;
   emit YvalueChanged(QString::number(y/getStep()));
@@ -291,7 +291,7 @@ ViewRotCenterGL::setY(int y)
 }
 
 void 
-ViewRotCenterGL::setZ(int z)
+ViewRotCenterGL3::setZ(int z)
 {
   __position.z() = z;
   emit ZvalueChanged(QString::number(z/getStep()));
@@ -299,7 +299,7 @@ ViewRotCenterGL::setZ(int z)
 }
 
 void 
-ViewRotCenterGL::setX(const QString& x)
+ViewRotCenterGL3::setX(const QString& x)
 {
   __position.x() = real_t(x.toInt());
   emit XvalueChanged(int(__position.x()));
@@ -308,7 +308,7 @@ ViewRotCenterGL::setX(const QString& x)
 }
 
 void 
-ViewRotCenterGL::setY(const QString& y)
+ViewRotCenterGL3::setY(const QString& y)
 {
   __position.y() = real_t(y.toInt());
   emit YvalueChanged(int(__position.y()));
@@ -316,7 +316,7 @@ ViewRotCenterGL::setY(const QString& y)
   
 }
 void 
-ViewRotCenterGL::setZ(const QString& z)
+ViewRotCenterGL3::setZ(const QString& z)
 {
   __position.z() = real_t(z.toInt());
   emit ZvalueChanged(int(__position.z()));
@@ -324,7 +324,7 @@ ViewRotCenterGL::setZ(const QString& z)
 }
 
 void 
-ViewRotCenterGL::initializeGL()
+ViewRotCenterGL3::initializeGL()
 {
   if (__displayList) {
     glDeleteLists(__displayList,1);
@@ -355,7 +355,7 @@ ViewRotCenterGL::initializeGL()
 }
 
 void 
-ViewRotCenterGL::paintGL()
+ViewRotCenterGL3::paintGL()
 {
   if(__active)
     glTranslatef(-__position.x(),-__position.y(),-__position.z());
@@ -370,7 +370,7 @@ ViewRotCenterGL::paintGL()
 }
 
 void 
-ViewRotCenterGL::changeStepEvent(const int newStep, const int oldStep)
+ViewRotCenterGL3::changeStepEvent(const int newStep, const int oldStep)
 {
   real_t r = real_t(newStep)/real_t(oldStep);
   if(fabs(r)>GEOM_EPSILON)
@@ -379,17 +379,17 @@ ViewRotCenterGL::changeStepEvent(const int newStep, const int oldStep)
 }
 
 QPopupMenu * 
-ViewRotCenterGL::createToolsMenu(QWidget * parent)
+ViewRotCenterGL3::createToolsMenu(QWidget * parent)
 {
-  return new ViewRotCenterMenu(this,parent,"Rotating Center Menu");
+  return new ViewRotCenterMenu3(this,parent,"Rotating Center Menu");
 }
 
 void 
-ViewRotCenterGL::fillToolBar(QToolBar * toolBar)
+ViewRotCenterGL3::fillToolBar(QToolBar * toolBar)
 {
-  QPixmap visible(ViewerIcon::icon_rcvisible);
-  QPixmap active(ViewerIcon:: icon_rcactive);
-  QPixmap centered(ViewerIcon::icon_rccentered);
+  QPixmap visible(ViewerIcon3::icon_rcvisible);
+  QPixmap active(ViewerIcon3:: icon_rcactive);
+  QPixmap centered(ViewerIcon3::icon_rccentered);
   QToolButton * __Visible = new QToolButton(visible, 
 					    tr("Visible Rotating Center"), 
 					    tr("Visible Rotating Center"),
@@ -414,19 +414,19 @@ ViewRotCenterGL::fillToolBar(QToolBar * toolBar)
 
 /* ----------------------------------------------------------------------- */
 
-ViewRotCenterMenu::ViewRotCenterMenu(ViewRotCenterGL * center, 
+ViewRotCenterMenu3::ViewRotCenterMenu3(ViewRotCenterGL3 * center, 
 				       QWidget * parent, 
 				       const char * name):
   QPopupMenu(parent,name)
 {
   if(center){
-    QPixmap wheel(ViewerIcon::icon_wheel);
-    QPixmap home(ViewerIcon::icon_home);
+    QPixmap wheel(ViewerIcon3::icon_wheel);
+    QPixmap home(ViewerIcon3::icon_home);
     insertItem(home,tr("&Home"),center,SLOT(init()));
     insertSeparator();
-    QPixmap visible(ViewerIcon::icon_rcvisible);
-    QPixmap active(ViewerIcon::icon_rcactive);
-    QPixmap centered(ViewerIcon::icon_rccentered);
+    QPixmap visible(ViewerIcon3::icon_rcvisible);
+    QPixmap active(ViewerIcon3::icon_rcactive);
+    QPixmap centered(ViewerIcon3::icon_rccentered);
     idVisible = insertItem(visible,tr("&Visible"),center,SLOT(changeVisibility()));
     idActive  = insertItem(active,tr("&Enable"),center,SLOT(changeActivation()));
     insertItem(centered,tr("&Center"),center,SLOT(center()));
@@ -442,24 +442,24 @@ ViewRotCenterMenu::ViewRotCenterMenu(ViewRotCenterGL * center,
   }
 }
 
-ViewRotCenterMenu::~ViewRotCenterMenu()
+ViewRotCenterMenu3::~ViewRotCenterMenu3()
 {
 }
 
 void 
-ViewRotCenterMenu::setVisible(bool b)
+ViewRotCenterMenu3::setVisible(bool b)
 {
    setItemChecked(idVisible,b);
 }
 
 void 
-ViewRotCenterMenu::setActive(bool b)
+ViewRotCenterMenu3::setActive(bool b)
 {
    setItemChecked(idActive,b);
 }
 
 void 
-ViewRotCenterMenu::setControl(bool b)
+ViewRotCenterMenu3::setControl(bool b)
 {
    setItemChecked(idControl,b);
 }

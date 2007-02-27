@@ -16,7 +16,7 @@
  */
 
 #include <qpainter.h>
-#include <qlistview.h>
+#include <q3listview.h>
 
 #include "qgeomlistview.h"
 
@@ -55,14 +55,14 @@ TOOLS_USING_NAMESPACE
 GeomListViewBuilder::GeomListViewBuilder(QWidget * parent, char * name ) :
   Action(),
   __fullmode(true),
-  __pixgeom(ViewerIcon::getPixmap(ViewerIcon::icon_geometry)),
-  __pixappe(ViewerIcon::getPixmap(ViewerIcon::icon_appearance)),
-  __pixshape(ViewerIcon::getPixmap(ViewerIcon::icon_shape)),
-  __pixtransf(ViewerIcon::getPixmap(ViewerIcon::icon_transformed)),
-  __pixatt(ViewerIcon::getPixmap(ViewerIcon::icon_attribut)),
-  __pixattptr(ViewerIcon::getPixmap(ViewerIcon::icon_attributptr))
+  __pixgeom(ViewerIcon::getPixmap(ViewerIcon::geometry)),
+  __pixappe(ViewerIcon::getPixmap(ViewerIcon::appearance)),
+  __pixshape(ViewerIcon::getPixmap(ViewerIcon::shape)),
+  __pixtransf(ViewerIcon::getPixmap(ViewerIcon::transformed)),
+  __pixatt(ViewerIcon::getPixmap(ViewerIcon::attribut)),
+  __pixattptr(ViewerIcon::getPixmap(ViewerIcon::attributptr))
 {
-  __qListView = new QListView(parent,name);
+  __qListView = new Q3ListView(parent,name);
   __qListView->addColumn( "Name" );
   __qListView->addColumn( "Value" );
   __qListView->addColumn( "Type" );
@@ -72,16 +72,16 @@ GeomListViewBuilder::GeomListViewBuilder(QWidget * parent, char * name ) :
   init();
 }
 
-GeomListViewBuilder::GeomListViewBuilder( QListView * l ) :
+GeomListViewBuilder::GeomListViewBuilder( Q3ListView * l ) :
   Action(),
   __fullmode(true),
   __qListView(l),
-  __pixgeom(ViewerIcon::getPixmap(ViewerIcon::icon_geometry)),
-  __pixappe(ViewerIcon::getPixmap(ViewerIcon::icon_appearance)),
-  __pixshape(ViewerIcon::getPixmap(ViewerIcon::icon_shape)),
-  __pixtransf(ViewerIcon::getPixmap(ViewerIcon::icon_transformed)),
-  __pixatt(ViewerIcon::getPixmap(ViewerIcon::icon_attribut)),
-  __pixattptr(ViewerIcon::getPixmap(ViewerIcon::icon_attributptr)){
+  __pixgeom(ViewerIcon::getPixmap(ViewerIcon::geometry)),
+  __pixappe(ViewerIcon::getPixmap(ViewerIcon::appearance)),
+  __pixshape(ViewerIcon::getPixmap(ViewerIcon::shape)),
+  __pixtransf(ViewerIcon::getPixmap(ViewerIcon::transformed)),
+  __pixatt(ViewerIcon::getPixmap(ViewerIcon::attribut)),
+  __pixattptr(ViewerIcon::getPixmap(ViewerIcon::attributptr)){
   __qListView->addColumn( "Name" );
   __qListView->addColumn( "Value" );
   __qListView->addColumn( "Type" );
@@ -101,15 +101,15 @@ void GeomListViewBuilder::clear( ){
 
 }
 
-QListView * 
-GeomListViewBuilder::getQListView(){
+Q3ListView * 
+GeomListViewBuilder::getQ3ListView(){
   return __qListView;
 }
 
 /* ----------------------------------------------------------------------- */
 
 void GeomListViewBuilder::init( ){
-   __rootItem = new QListViewItem(__qListView,"Global Scene","Root","Scene","The Global Scene");
+   __rootItem = new Q3ListViewItem(__qListView,"Global Scene","Root","Scene","The Global Scene");
    __rootItem->setPixmap(0,__pixgeom);
    __rootItem->setOpen(TRUE);
    __currentNodeItem     = __rootItem;
@@ -124,11 +124,10 @@ void GeomListViewBuilder::addNode(const SceneObjectPtr& node,
 								  const QString& type,
 								  int pixmaptouse){
 
-// QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getId(),8,16,QChar('0'));
-   QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getId());
+   QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getId(),8,16,QChar('0'));
    QString name = QString(node->getName().c_str());
-   if (name.isEmpty()) name = type.lower(); //+"_"+QString::number(node->getId());
-   QListViewItem * item = new QListViewItem(__currentNodeItem,__currentSiblingItem,name,ptrid,type);
+   if (name.isEmpty()) name = type.toLower()+"_"+QString::number(node->getId());
+   Q3ListViewItem * item = new Q3ListViewItem(__currentNodeItem,__currentSiblingItem,name,ptrid,type);
    switch (pixmaptouse){
 	default:
 	case 0:
@@ -161,16 +160,14 @@ void GeomListViewBuilder::endNode(){
 
 void GeomListViewBuilder::pushItems()
 {
-	QPair<QListViewItem *,QListViewItem *> * items = new QPair<QListViewItem *,QListViewItem *>(__currentNodeItem,__currentAttrItem);
-	__stackItem.push(items);
+	__stackItem.push(qMakePair(__currentNodeItem,__currentAttrItem));
 }
 
 void GeomListViewBuilder::popItems()
 {
-  QPair<QListViewItem *,QListViewItem *> * items = __stackItem.pop();
-  __currentNodeItem = items->first;
-  __currentAttrItem = items->second;
-  delete items;
+  QPair<Q3ListViewItem *,Q3ListViewItem *> items = __stackItem.pop();
+  __currentNodeItem = items.first;
+  __currentAttrItem = items.second;
 }
 
 void GeomListViewBuilder::addAttr(const QString& name, bool value){
@@ -232,7 +229,7 @@ void GeomListViewBuilder::addAttr(const QString& name, const Index4& value){
 void GeomListViewBuilder::addAttr(const QString& name,
 								  const QString& value,
 								  const QString& type ){
-   QListViewItem * item = new QListViewItem(__currentNodeItem,__currentAttrItem,name,value,type);
+   Q3ListViewItem * item = new Q3ListViewItem(__currentNodeItem,__currentAttrItem,name,value,type);
    item->setPixmap(0,__pixatt);
    __currentNodeItem->insertItem(item);
    __currentAttrItem = item;
@@ -243,8 +240,8 @@ void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& valu
 	pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
-    // QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32(),8,16,QChar('0')):"NULL");
-    QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32()):"NULL");
+    QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32(),8,16,QChar('0')):"NULL");
+    // QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32()):"NULL");
 	addAttrPtr(name, val,"Transform4");
 
 	if(value){
@@ -262,7 +259,7 @@ void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& valu
 void GeomListViewBuilder::addAttrPtr(const QString& name,
 								     const QString& value,
 									 const QString& type ){
-   QListViewItem * item = new QListViewItem(__currentNodeItem,
+   Q3ListViewItem * item = new Q3ListViewItem(__currentNodeItem,
 											  __currentAttrItem,
 											  name,value,type);
    item->setPixmap(0,__pixattptr);
@@ -274,8 +271,8 @@ template <class T>
 void GeomListViewBuilder::addArray(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
-//			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
-			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32()):"NULL"),
+			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
+//			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32()):"NULL"),
 			 "Array<"+type+">["+QString::number(_array?_array->getSize():0)+']');
 
   if(__fullmode && _array.isValid()){ 
@@ -293,8 +290,8 @@ void GeomListViewBuilder::addArray(const QString& name, const T& _array, const Q
 void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr& _array)
 {
   addAttrPtr(name,
-//			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32(),8,16,QChar('0')):"ptr=NULL"),
-			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32()):"ptr=NULL"),
+			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32(),8,16,QChar('0')):"ptr=NULL"),
+//			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32()):"ptr=NULL"),
 			 "Array<Angle>["+QString::number(_array?_array->getSize():0)+']');
 
   if(__fullmode && _array.isValid()){ 
@@ -313,8 +310,8 @@ template <class T>
 void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
-//			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
-			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32()):"NULL"),
+			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
+//			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32()):"NULL"),
 			 "Array<"+type+">["+QString::number(_array?_array->getSize():0)+']');
 
   if( _array.isValid()){ 
@@ -334,8 +331,8 @@ template <class T>
 void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const QString& type)
 {
   addAttrPtr(name,
-//			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32(),8,16,QChar('0')):"NULL"),
-			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32()):"NULL"),
+			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32(),8,16,QChar('0')):"NULL"),
+//			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32()):"NULL"),
 			 "Matrix<"+type+">["+QString::number(_matrix?_matrix->getColsSize():0)+','+
 			 QString::number(_matrix?_matrix->getRowsSize():0)+']');
 
@@ -358,8 +355,8 @@ void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const
 void GeomListViewBuilder::addAttrNode(const QString& name,
 								     const SceneObjectPtr& obj,
 									 const QString& type ){
-//   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32(),8,16,QChar('0')):"NULL");
-   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32()):"NULL");
+   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32(),8,16,QChar('0')):"NULL");
+//   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32()):"NULL");
    pushItems();
    addAttrPtr(name,value,type);
    __currentNodeItem = __currentAttrItem;

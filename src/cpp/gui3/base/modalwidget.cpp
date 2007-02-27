@@ -40,17 +40,17 @@
 #include "modalscenegl.h"
 #include "icons.h"
 
-ViewRenderingModeMenu::ViewRenderingModeMenu(ViewModalRendererGL * renderer, QWidget * parent, const char * name):
+ViewRenderingModeMenu3::ViewRenderingModeMenu3(ViewModalRendererGL3 * renderer, QWidget * parent, const char * name):
   QPopupMenu(parent,name)
 {
 
   if(renderer){
-    QPixmap volume(ViewerIcon::icon_solid);
-    QPixmap wire(ViewerIcon::icon_wire);
-    QPixmap skeleton(ViewerIcon::icon_skeleton);
-    QPixmap ctrlpoint(ViewerIcon::icon_ctrlpoint);
-    QPixmap bbox(ViewerIcon::icon_bbox);
-    QPixmap light(ViewerIcon::icon_light);
+    QPixmap volume(ViewerIcon3::icon_solid);
+    QPixmap wire(ViewerIcon3::icon_wire);
+    QPixmap skeleton(ViewerIcon3::icon_skeleton);
+    QPixmap ctrlpoint(ViewerIcon3::icon_ctrlpoint);
+    QPixmap bbox(ViewerIcon3::icon_bbox);
+    QPixmap light(ViewerIcon3::icon_light);
     idVolume  = insertItem(volume,  tr("&Volume"),     renderer, SLOT(setRenderVolume()), CTRL+Key_M);
     idWire    = insertItem(wire,    tr("&Wire"),       renderer, SLOT(setRenderWire()), CTRL+Key_W);
     idSkeleton= insertItem(skeleton,tr("S&keleton"),   renderer, SLOT(setRenderSkeleton()), CTRL+Key_K);
@@ -74,13 +74,13 @@ ViewRenderingModeMenu::ViewRenderingModeMenu(ViewModalRendererGL * renderer, QWi
   }
 }
 
-ViewRenderingModeMenu::~ViewRenderingModeMenu()
+ViewRenderingModeMenu3::~ViewRenderingModeMenu3()
 {
 }
 
 
 void 
-ViewRenderingModeMenu::setRenderingMode(const int i)
+ViewRenderingModeMenu3::setRenderingMode(const int i)
 {
   if(i == 2){
     setItemChecked(idVolume,false);
@@ -109,19 +109,19 @@ ViewRenderingModeMenu::setRenderingMode(const int i)
 }
 
 void
-ViewRenderingModeMenu::setRenderCtrlPoint(const bool b)
+ViewRenderingModeMenu3::setRenderCtrlPoint(const bool b)
 {
   setItemChecked(idCtrlPoints,b);
 }
 
 void 
-ViewRenderingModeMenu::setLightEnable(const bool b)
+ViewRenderingModeMenu3::setLightEnable(const bool b)
 {
   setItemChecked(idLight,b);
 }
 
 void 
-ViewRenderingModeMenu::setRenderBBox(const bool b)
+ViewRenderingModeMenu3::setRenderBBox(const bool b)
 {
   setItemChecked(idBBox,b);
 }

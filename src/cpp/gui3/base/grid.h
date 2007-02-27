@@ -38,7 +38,7 @@
 
 
 /*! \file view_grid.h
-    \brief Definition of the viewer class ViewGridGL.
+    \brief Definition of the viewer class ViewGridGL3.
 */
 
 
@@ -52,20 +52,20 @@
 #include "object.h"
 #include <algo/opengl/util_gl.h>
 
-class ViewGridEvent;
+class ViewGridEvent3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewGridGL
-   \brief A ViewGridGL for GL Display
+   \class ViewGridGL3
+   \brief A ViewGridGL3 for GL Display
 
 */
 
 /* ----------------------------------------------------------------------- */
 
 
-class VIEW_API ViewGridGL  : public ViewRelativeObjectGL
+class VIEW3_API ViewGridGL3  : public ViewRelativeObjectGL3
 {
   Q_OBJECT
   Q_PROPERTY(bool Axis READ getAxis WRITE showAxis );
@@ -78,10 +78,10 @@ class VIEW_API ViewGridGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewGridGL(ViewCameraGL *camera,QGLWidget * parent=0, const char * name=0);
+  ViewGridGL3(ViewCameraGL3 *camera,QGLWidget * parent=0, const char * name=0);
 
   /// Destructor.
-  virtual ~ViewGridGL();
+  virtual ~ViewGridGL3();
   
   /// Get Axis Display.
   const bool getAxis() const{
@@ -126,7 +126,7 @@ public:
   /// Fill a toolBar that reflect the functionality of this.
   virtual void fillToolBar(QToolBar * toolBar);
 
-  virtual void gridEvent(ViewGridEvent *);
+  virtual void gridEvent(ViewGridEvent3 *);
 
 public slots:
 
@@ -219,15 +219,15 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-/// Menu to control a ViewGridGL
-class ViewGridMenu : public QPopupMenu {
+/// Menu to control a ViewGridGL3
+class ViewGridMenu3 : public QPopupMenu {
    Q_OBJECT
  
 public :
   
-  ViewGridMenu(ViewGridGL * grid, QWidget * parent=0, const char * name=0);
+  ViewGridMenu3(ViewGridGL3 * grid, QWidget * parent=0, const char * name=0);
   
-  ~ViewGridMenu();
+  ~ViewGridMenu3();
   
 public slots :
 

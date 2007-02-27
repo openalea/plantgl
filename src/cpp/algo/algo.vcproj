@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;..;C:\openalea\include"
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..,C:\openalea\include"
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib  qhull-vc80.lib"
+				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib QtCored4.lib QtGuid4.lib opengl32.lib glu32.lib  qhull-vc80.lib"
 				OutputFile="../../../bin/pglalgo-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\openalea\lib"
 				GenerateDebugInformation="true"
@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;..;C:\openalea\include"
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..,C:\openalea\include"
 				PreprocessorDefinitions="ALGO_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -129,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib qhull-vc80.lib"
+				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  opengl32.lib glu32.lib qhull-vc80.lib"
 				OutputFile="../../../bin/pglalgo.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\openalea\lib"
 				ImportLibrary="../../../lib/$(TargetName).lib"

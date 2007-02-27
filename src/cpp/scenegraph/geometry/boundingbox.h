@@ -319,7 +319,7 @@ typedef RCPtr<BoundingBox> BoundingBoxPtr;
 PGL_END_NAMESPACE
 
 /// Write BoundingBox \b b to \b stream.
-SG_API std::ostream& operator<<( std::ostream& stream, PGL(BoundingBox&) b );
+// SG_API std::ostream& operator<<( std::ostream& stream, PGL(BoundingBox&) b );
 
 /* ----------------------------------------------------------------------- */
 // __geom_bbox_h__

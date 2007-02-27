@@ -58,7 +58,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-static ViewErrorDialog * QT_ERROR_MESSAGE_DISPLAY = NULL;
+static ViewErrorDialog3 * QT_ERROR_MESSAGE_DISPLAY = NULL;
 
 void handleQtMessage(QtMsgType type, const char *msg){
 	if(QT_ERROR_MESSAGE_DISPLAY)
@@ -66,7 +66,7 @@ void handleQtMessage(QtMsgType type, const char *msg){
 	else std::cerr << msg << std::endl;
 }
 
-void registerForQtMessage(ViewErrorDialog * display){
+void registerForQtMessage(ViewErrorDialog3 * display){
   QT_ERROR_MESSAGE_DISPLAY = display;
   qInstallMsgHandler(handleQtMessage);
 }
@@ -76,8 +76,8 @@ void unregisterForQtMessage(){
 	QT_ERROR_MESSAGE_DISPLAY = NULL;
 }
 
-ViewErrorDialog::ViewErrorDialog( QWidget * parent, const char * name, bool modal) 
-    : ViewDialog(parent,name, modal),
+ViewErrorDialog3::ViewErrorDialog3( QWidget * parent, const char * name, bool modal) 
+    : ViewDialog3(parent,name, modal),
 	 __verbose(
 // #ifdef DEBUG
 // 	 true
@@ -111,18 +111,18 @@ ViewErrorDialog::ViewErrorDialog( QWidget * parent, const char * name, bool moda
 }
 
 
-ViewErrorDialog::~ViewErrorDialog()
+ViewErrorDialog3::~ViewErrorDialog3()
 {
 	unregisterForQtMessage();
 }
 
-void ViewErrorDialog::registerQtMsg(bool reg)
+void ViewErrorDialog3::registerQtMsg(bool reg)
 {
 	if(reg)registerForQtMessage(this);
 	else unregisterForQtMessage();
 }
 
-void ViewErrorDialog::setVerbose(bool b){
+void ViewErrorDialog3::setVerbose(bool b){
 	if(__verbose != b){
 		__verbose = b;
 		if(__verbose)
@@ -135,7 +135,7 @@ void ViewErrorDialog::setVerbose(bool b){
 }
 
 void 
-ViewErrorDialog::__setText(const QString& t){
+ViewErrorDialog3::__setText(const QString& t){
   if(__isLocked()){
 #ifdef _DEBUG
 //   if(__verbose)__listmessage.append(t);
@@ -157,7 +157,7 @@ ViewErrorDialog::__setText(const QString& t){
 }
 
 void 
-ViewErrorDialog::__append(const QString& t){
+ViewErrorDialog3::__append(const QString& t){
   if(__isLocked()){
 #ifdef _DEBUG
 //   if(__verbose)__listmessage.append(t);
@@ -179,7 +179,7 @@ ViewErrorDialog::__append(const QString& t){
 }
 
 void 
-ViewErrorDialog::__lock(){
+ViewErrorDialog3::__lock(){
 #ifdef QT_THREAD_SUPPORT
   __mutexlock.lock();
 #endif
@@ -190,7 +190,7 @@ ViewErrorDialog::__lock(){
 }
 
 void 
-ViewErrorDialog::__unlock()
+ViewErrorDialog3::__unlock()
 {
 #ifdef QT_THREAD_SUPPORT
   __mutexlock.lock();
@@ -202,7 +202,7 @@ ViewErrorDialog::__unlock()
 }
 
 bool
-ViewErrorDialog::__isLocked()
+ViewErrorDialog3::__isLocked()
 {
 #ifdef QT_THREAD_SUPPORT
   bool displaylock;
@@ -215,11 +215,11 @@ ViewErrorDialog::__isLocked()
 #endif
 }
 
-void ViewErrorDialog::clear(){
+void ViewErrorDialog3::clear(){
     __display->__text->setText(QString::null);
 }
 
-void ViewErrorDialog::setText(char * &_text ){
+void ViewErrorDialog3::setText(char * &_text ){
   QString t(_text);
   if(t.length() < 5000){
 	__setText(highligthText(t));
@@ -228,7 +228,7 @@ void ViewErrorDialog::setText(char * &_text ){
   if(__display->__popupButton->isChecked())show();   
 }
 
-void ViewErrorDialog::setText(const QString &_text ){
+void ViewErrorDialog3::setText(const QString &_text ){
   if(_text.length() < 5000){
 	QString t = _text;
 	__setText(highligthText(t));
@@ -237,7 +237,7 @@ void ViewErrorDialog::setText(const QString &_text ){
   if(__display->__popupButton->isChecked())show();   
 }
 
-void ViewErrorDialog::setWarning(const QString &_text ){
+void ViewErrorDialog3::setWarning(const QString &_text ){
   if(_text.length() < 5000){
 	QString t = _text;
 	__setText(highligthText(t));
@@ -245,7 +245,7 @@ void ViewErrorDialog::setWarning(const QString &_text ){
   else __setText(_text);
 }
 
-void ViewErrorDialog::setInfo(const QString &_text ){
+void ViewErrorDialog3::setInfo(const QString &_text ){
   if(_text.length() < 5000){
 	QString t = _text;
 	__setText(highligthText(t));
@@ -253,7 +253,7 @@ void ViewErrorDialog::setInfo(const QString &_text ){
   else __setText(_text);
 }
 
-void ViewErrorDialog::setError(const QString &_text ){
+void ViewErrorDialog3::setError(const QString &_text ){
   if(__display->__popupButton->isChecked())show();
   if(_text.length() < 5000){
 	QString t = _text;
@@ -262,7 +262,7 @@ void ViewErrorDialog::setError(const QString &_text ){
   else __setText(_text);
 }
 
-void ViewErrorDialog::appendText(char * &_text ){
+void ViewErrorDialog3::appendText(char * &_text ){
 	if(__display->__popupButton->isChecked())show();
     QString t(_text);
  	if(t.length() < 5000){
@@ -271,7 +271,7 @@ void ViewErrorDialog::appendText(char * &_text ){
 	else __append(t);
 }
 
-void ViewErrorDialog::appendText(const QString &_text ){
+void ViewErrorDialog3::appendText(const QString &_text ){
   if(__display->__popupButton->isChecked())show();
   if(_text.length() < 5000){
 	QString t = _text;
@@ -280,7 +280,7 @@ void ViewErrorDialog::appendText(const QString &_text ){
   else __append(_text);
 }
 
-void ViewErrorDialog::appendError(const QString &_text ){
+void ViewErrorDialog3::appendError(const QString &_text ){
   if(__display->__popupButton->isChecked())show();
   if(_text.length() < 5000){
 	QString t = _text;
@@ -289,7 +289,7 @@ void ViewErrorDialog::appendError(const QString &_text ){
   else __append(_text);
 }
 
-void ViewErrorDialog::appendWarning(const QString &_text ){
+void ViewErrorDialog3::appendWarning(const QString &_text ){
   if(_text.length() < 5000){
 	QString t = _text;
 	__append(highligthText(t));
@@ -297,7 +297,7 @@ void ViewErrorDialog::appendWarning(const QString &_text ){
   else __append(_text);
 }
 
-void ViewErrorDialog::appendInfo(const QString &_text ){
+void ViewErrorDialog3::appendInfo(const QString &_text ){
   if(_text.length() < 5000){
 	QString t = _text;
 	__append(highligthText(t));
@@ -306,7 +306,7 @@ void ViewErrorDialog::appendInfo(const QString &_text ){
 }
 
 
-void ViewErrorDialog::resizeEvent( QResizeEvent * event){
+void ViewErrorDialog3::resizeEvent( QResizeEvent * event){
   if(isVisible()){
     int x = event->size().width() - event->oldSize().width();
     int y = event->size().height() - event->oldSize().height();
@@ -319,13 +319,13 @@ void ViewErrorDialog::resizeEvent( QResizeEvent * event){
 }
 
 
-void ViewErrorDialog::keyPressEvent ( QKeyEvent * e){
+void ViewErrorDialog3::keyPressEvent ( QKeyEvent * e){
   if( e->key() == Key_F3 || 
       e->key() == Key_Escape || 
       e->key() == Key_Home) hide();
 }
 
-void ViewErrorDialog::clipboardInfo()
+void ViewErrorDialog3::clipboardInfo()
 {
 	QStringList formats;
 	QString text;
@@ -369,7 +369,7 @@ void ViewErrorDialog::clipboardInfo()
 		+text+"\n");
 }
 
-void ViewErrorDialog::qtMessage(QtMsgType type, const char *msg )
+void ViewErrorDialog3::qtMessage(QtMsgType type, const char *msg )
 {
 	switch ( type ) {
 	case QtDebugMsg:
@@ -397,7 +397,7 @@ void ViewErrorDialog::qtMessage(QtMsgType type, const char *msg )
 	}
 }
 
-QString& ViewErrorDialog::highligthText(QString&t){
+QString& ViewErrorDialog3::highligthText(QString&t){
 	t.replace(QRegExp("<"),"&lt;");
 	t.replace(QRegExp(">"),"&gt;");
 	t.replace(QRegExp("\\*\\*\\*[ \\t]*[Ww][Aa][Rr][Nn][Ii][Nn][Gg][ \\t]*:"),

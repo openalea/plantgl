@@ -58,7 +58,7 @@ public :
   ViewEditMatDialog(QWidget * parent=0, 
 					const char * name=0, 
 					bool modal=FALSE, 
-					WFlags f=0);
+					Qt::WindowFlags f=0);
   ~ViewEditMatDialog(){};
 
   void setMaterial(PGL(MaterialPtr) appe);
@@ -118,7 +118,7 @@ class VIEW_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
   PGL(AppearancePtr) getSelectedAppearance() const;
   PGL(AppearancePtr) getSelectedAppearance(PGL(ScenePtr)) const;
   /// Add Edit Entries
-  virtual bool addEditEntries(QPopupMenu * menu);
+  virtual bool addEditEntries(QMenu * menu);
   void setAppearance(PGL(ScenePtr) scene,PGL(AppearancePtr) appe) const;
 
 public slots:
@@ -138,7 +138,9 @@ protected:
 };
 
 /* ----------------------------------------------------------------------- */
+namespace Ui {
 class ViewApproximationForm;
+}
 
 class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
 {
@@ -157,7 +159,7 @@ class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
   virtual ~ViewMultiscaleEditGeomSceneGL();
 
   /// Add Edit Entries
-  virtual bool addEditEntries(QPopupMenu * menu);
+  virtual bool addEditEntries(QMenu * menu);
 
 public slots:
 
@@ -169,7 +171,8 @@ public slots:
 
 protected:
 
-  ViewApproximationForm * __appform;
+  QDialog * __appdialog;
+  Ui::ViewApproximationForm * __appform;
 
   /// The clipboard for appearance.
   PGL(MaterialPtr) __matmacro;

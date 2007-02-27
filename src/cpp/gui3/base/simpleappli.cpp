@@ -39,57 +39,57 @@
 #include "viewer.h"
 #include <qapplication.h>
 
-ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppli(), __viewer(0),__appli(0), __ownappli(false) { launch(); }
+ViewerSimpleAppli3::ViewerSimpleAppli3():ViewerAppli3(), __viewer(0),__appli(0), __ownappli(false) { launch(); }
 
-ViewerSimpleAppli::~ViewerSimpleAppli(){
+ViewerSimpleAppli3::~ViewerSimpleAppli3(){
 	if(isRunning()) exit();
 	if(__appli && __ownappli)delete __appli;
 	if(__viewer) delete __viewer;
 }
 
 void 
-ViewerSimpleAppli::startSession()
+ViewerSimpleAppli3::startSession()
 { if(!isRunning()) __viewer->show(); }
 
 bool 
-ViewerSimpleAppli::stopSession()
+ViewerSimpleAppli3::stopSession()
 { if(isRunning()) { __viewer->hide(); return true; } else return false; }
 
 bool 
-ViewerSimpleAppli::exit()
+ViewerSimpleAppli3::exit()
 { 
 	if(__appli && __ownappli) { __appli->quit(); return true; }
 	else return false;
 }
 
 void 
-ViewerSimpleAppli::sendAnEvent(QCustomEvent *e)
+ViewerSimpleAppli3::sendAnEvent(QCustomEvent *e)
 { QApplication::sendEvent(__viewer,e); delete e; }
 
 void 
-ViewerSimpleAppli::postAnEvent(QCustomEvent *e)
+ViewerSimpleAppli3::postAnEvent(QCustomEvent *e)
 { QApplication::postEvent(__viewer,e); }
 
 bool 
-ViewerSimpleAppli::isRunning() 
+ViewerSimpleAppli3::isRunning() 
 { return __viewer != NULL && __viewer->isShown(); }
 
 bool 
-ViewerSimpleAppli::Wait ( unsigned long time  )
+ViewerSimpleAppli3::Wait ( unsigned long time  )
 { return false; }
 
 const std::vector<uint32_t> 
-ViewerSimpleAppli::getSelection(){
+ViewerSimpleAppli3::getSelection(){
 	if(__viewer)return __viewer->getSelection();
 	else return std::vector<uint32_t>();
 }
 
 QApplication * 
-ViewerSimpleAppli::getApplication()
+ViewerSimpleAppli3::getApplication()
 { return __appli; }
 
 void
-ViewerSimpleAppli::launch(){
+ViewerSimpleAppli3::launch(){
 	if(qApp != NULL){
 		__appli = qApp;
 		__ownappli = false;

@@ -62,7 +62,7 @@
 #include <tool/util_string.h>
 
 /// Qt
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <qframe.h>
 #include <qlineedit.h>
 #include <qlabel.h>
@@ -88,28 +88,29 @@ using namespace STDEXT;
 ViewEditMatDialog::ViewEditMatDialog(QWidget * parent, 
 	      const char * name, 
 	      bool modal, 
-	      WFlags f) : 
+	      Qt::WindowFlags f) : 
   ViewDialog(parent,name,modal,f),
   __matedit(NULL),
   __appe(0){
   __matedit = new MaterialEditor(this);
   QVBoxLayout * l1 = new QVBoxLayout(this);
   l1->addWidget(__matedit);
-  QHBoxLayout * l = new QHBoxLayout(l1);
+  QHBoxLayout * l = new QHBoxLayout(this);
+  l1->addLayout(l);
   l->addSpacing(__matedit->width()/3);
-  QPushButton * b = new QPushButton(tr("&Import Clipboard"),this,"ImportMatButton");
+  QPushButton * b = new QPushButton(tr("&Import Clipboard"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(importClipboard()));
   l->addWidget(b);
-  b = new QPushButton(tr("&Apply"),this,"ApplyButton");
+  b = new QPushButton(tr("&Apply"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(apply()));
   l->addWidget(b);
-  b = new QPushButton(tr("&Reset"),this,"ResetButton");
+  b = new QPushButton(tr("&Reset"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(reset()));
   l->addWidget(b);
-  b = new QPushButton(tr("&Ok"),this,"OkButton");
+  b = new QPushButton(tr("&Ok"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(ok()));
   l->addWidget(b);
-  b = new QPushButton(tr("&Cancel"),this,"CancelButton");
+  b = new QPushButton(tr("&Cancel"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(cancel()));
   l->addWidget(b);
 }
@@ -189,18 +190,14 @@ ViewEditGeomSceneGL::clear(){
 /* ----------------------------------------------------------------------- */
 
 bool
-ViewEditGeomSceneGL::addEditEntries(QPopupMenu * menu)
+ViewEditGeomSceneGL::addEditEntries(QMenu * menu)
 {
-  menu->insertItem( tr("Edit Material"),
-                    this,SLOT(editMaterial()));
-  menu->insertItem( tr("Dissociate Material"),
-                    this,SLOT(dissociateMaterial()));
-  menu->insertSeparator();
-  menu->insertItem( tr("Copy Material"),
-                    this,SLOT(copyMaterial()));
-  menu->insertItem( tr("Paste Material"),
-                    this,SLOT(pasteMaterial()),CTRL+Key_V);
-  menu->insertSeparator();
+  menu->addAction( tr("Edit Material"),this,SLOT(editMaterial()));
+  menu->addAction( tr("Dissociate Material"),this,SLOT(dissociateMaterial()));
+  menu->addSeparator();
+  menu->addAction( tr("Copy Material"),this,SLOT(copyMaterial()));
+  menu->addAction( tr("Paste Material"),this,SLOT(pasteMaterial()),Qt::CTRL+Qt::Key_V);
+  menu->addSeparator();
   ViewMultiGeomSceneGL::addEditEntries(menu);
   return true;
 }
@@ -425,22 +422,21 @@ ViewMultiscaleEditGeomSceneGL::ViewMultiscaleEditGeomSceneGL(ViewCameraGL * came
 										 QGLWidget * parent, 
 										 const char * name):
 ViewEditGeomSceneGL(camera,light,parent,name),
+__appdialog(0),
 __appform(0),
 __matmacro(new Material(*MaterialPtr::Cast(Material::DEFAULT_MATERIAL))){
   __matmacro->setName("");
-  __matmacro->getTransparency() = 0.6;
-  
+  __matmacro->getTransparency() = 0.6;  
 }
 
 ViewMultiscaleEditGeomSceneGL::~ViewMultiscaleEditGeomSceneGL(){
 }
 
 bool 
-ViewMultiscaleEditGeomSceneGL::addEditEntries(QPopupMenu * menu)
+ViewMultiscaleEditGeomSceneGL::addEditEntries(QMenu * menu)
 {
-  menu->insertItem( tr("Fit Geometry"),
-                    this,SLOT(editMultiScaleGeometry()));
-  menu->insertSeparator();
+  menu->addAction( tr("Fit Geometry"), this,SLOT(editMultiScaleGeometry()));
+  menu->addSeparator();
   ViewEditGeomSceneGL::addEditEntries(menu);
   return true;
 
@@ -455,16 +451,19 @@ ViewMultiscaleEditGeomSceneGL::editMultiScaleGeometry(){
 	return;
   }
   if(!__appform){
-	__appform = new ViewApproximationForm(__frame,"ApproximationForm",false);
+	__appdialog = new QDialog(__frame);
+	__appdialog->setModal(false);
+	__appform = new Ui::ViewApproximationForm();
+	__appform->setupUi(__appdialog);
 	vector<string> algos = Fit::getClassNames();
 	QStringList listalgos;
 	for(vector<string>::iterator _it = algos.begin(); _it != algos.end(); _it++)
 	  listalgos.append(_it->c_str());
-	__appform->AlgorithmBox->insertStringList(listalgos);
+	__appform->AlgorithmBox->addItems(listalgos);
 	QObject::connect(__appform->OkButton,SIGNAL(clicked()),
 					 this,SLOT(computeMultiScaleGeometry()));
 	QObject::connect(__appform->CancelButton,SIGNAL(clicked()),
-					 __appform,SLOT(reject()));
+					 __appdialog,SLOT(reject()));
 	QObject::connect(__appform->MaterialButton,SIGNAL(clicked()),
 					 this,SLOT(editMacroMaterial()));
 	QObject::connect(__appform->SceneButton,SIGNAL(toggled(bool)),
@@ -483,13 +482,13 @@ ViewMultiscaleEditGeomSceneGL::editMultiScaleGeometry(){
 	__appform->ExeptButton->setEnabled(true);
 	__appform->Rest->setEnabled(true);
   }
-  __appform->show();
+  __appdialog->show();
 }
 
 void
 ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
   if(!__appform)return;
-  __appform->hide();
+  __appdialog->hide();
   ScenePtr scene;
   if(__appform->SceneButton->isChecked())scene = __scene;
   else if (__appform->SelectionButton->isChecked())scene = getSelection();
@@ -511,7 +510,7 @@ ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
 	return;
   }
   Fit approx(points);
-  GeometryPtr result = approx.use(std::string(__appform->AlgorithmBox->currentText().latin1()));
+  GeometryPtr result = approx.use(std::string(__appform->AlgorithmBox->currentText().toAscii().constData()));
   if(!result){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("Error during Fit computation."),1,0,0);
@@ -552,12 +551,15 @@ ViewMultiscaleEditGeomSceneGL::editMacroMaterial(){
 void
 ViewMultiscaleEditGeomSceneGL::updateMaterial(const QColor& col){
   if(!__appform)return;
-  QPalette pal = __appform->MaterialButton->palette();
+  QPixmap colpic(40,30);
+  colpic.fill(col);
+  __appform->MaterialButton->setIcon(QIcon(colpic));
+  /*QPalette pal = __appform->MaterialButton->palette();
   QColorGroup c = pal.active();
   c.setColor(QColorGroup::Button,col);
   pal.setActive(c);
   __appform->MaterialButton->setPalette(pal);
-  __appform->MaterialButton->update();
+  __appform->MaterialButton->update();*/
 }
 
 #define GCOL2QCOL(col) QColor(col.getRed(),col.getGreen(),col.getBlue())

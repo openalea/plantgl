@@ -42,11 +42,11 @@ PGL_USING_NAMESPACE
 
 /*  ------------------------------------------------------------------------ */
 
-GeomSceneChangeEvent::GeomSceneChangeEvent(ScenePtr _scene, 
+GeomSceneChangeEvent3::GeomSceneChangeEvent3(ScenePtr _scene, 
 					   const QString& errlog, 
 					   const QString& _file,
 					   bool add) :
-  ViewSceneChangeEvent(1),
+  ViewSceneChangeEvent3(1),
   scene(_scene),
   error(errlog),
   file(_file),
@@ -54,70 +54,70 @@ GeomSceneChangeEvent::GeomSceneChangeEvent(ScenePtr _scene,
 {
 }
 
-GeomSceneChangeEvent::~GeomSceneChangeEvent(){
+GeomSceneChangeEvent3::~GeomSceneChangeEvent3(){
   // Nothing to do.
 }
 
-ViewSceneChangeEvent *
-GeomSceneChangeEvent::copy()
+ViewSceneChangeEvent3 *
+GeomSceneChangeEvent3::copy()
 {
-  return new GeomSceneChangeEvent(scene,error,file,addition);
+  return new GeomSceneChangeEvent3(scene,error,file,addition);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 /// Constructor.
-GeomGetSceneEvent::GeomGetSceneEvent(PGL(ScenePtr)* _scene) : ViewEvent(12368),scene(_scene) { }
+GeomGetSceneEvent3::GeomGetSceneEvent3(PGL(ScenePtr)* _scene) : ViewEvent3(12368),scene(_scene) { }
   
   /// Destructor.
-GeomGetSceneEvent::~GeomGetSceneEvent() {}
+GeomGetSceneEvent3::~GeomGetSceneEvent3() {}
 
 
 /* ----------------------------------------------------------------------- */
 
-GeomMultiSceneChangeEvent::GeomMultiSceneChangeEvent(ScenePtr _scene1, 
+GeomMultiSceneChangeEvent3::GeomMultiSceneChangeEvent3(ScenePtr _scene1, 
 						     ScenePtr _scene2,
 						     const QString& _errlog , 
 						     const QString& _file1 ,
 						     const QString& _file2 ):
   
-  GeomSceneChangeEvent(_scene1, _errlog, _file1),
+  GeomSceneChangeEvent3(_scene1, _errlog, _file1),
     scene2(_scene2),
     file2(_file2)
 {
   setSceneType(2);
 }
 
-GeomMultiSceneChangeEvent::~GeomMultiSceneChangeEvent()
+GeomMultiSceneChangeEvent3::~GeomMultiSceneChangeEvent3()
 {
 }
 
-ViewSceneChangeEvent * 
-GeomMultiSceneChangeEvent::copy()
+ViewSceneChangeEvent3 * 
+GeomMultiSceneChangeEvent3::copy()
 {
-  return new GeomMultiSceneChangeEvent(scene,scene2,error,file,file2);
+  return new GeomMultiSceneChangeEvent3(scene,scene2,error,file,file2);
 }
 
 /* ----------------------------------------------------------------------- */
 
 
-GeomProjListEvent::GeomProjListEvent(const ScenePtr& sc, std::vector<std::pair<uint32_t,double> > * _res):
-ViewEvent(12365),objlist(sc),result(_res){}
+GeomProjListEvent3::GeomProjListEvent3(const ScenePtr& sc, std::vector<std::pair<uint32_t,double> > * _res):
+ViewEvent3(12365),objlist(sc),result(_res){}
 
   
-GeomProjListEvent::~GeomProjListEvent(){}
+GeomProjListEvent3::~GeomProjListEvent3(){}
 
 
 /* ----------------------------------------------------------------------- */
 
 /// Constructor.
-ViewRayBuff2Event::ViewRayBuff2Event(const PGL(ScenePtr)& sc, bool _back_test ,
-								   ViewRayPointHitBuffer ** res ):
-ViewEvent(12367),objlist(sc),back_test(_back_test),result(res){}
+ViewRayBuff2Event3::ViewRayBuff2Event3(const PGL(ScenePtr)& sc, bool _back_test ,
+								   ViewRayPointHitBuffer3 ** res ):
+ViewEvent3(12367),objlist(sc),back_test(_back_test),result(res){}
 
 
-ViewRayBuff2Event::~ViewRayBuff2Event() {}
+ViewRayBuff2Event3::~ViewRayBuff2Event3() {}
 
 /* ----------------------------------------------------------------------- */
 

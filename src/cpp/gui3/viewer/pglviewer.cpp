@@ -51,25 +51,25 @@
 
 
   /// Constructor.
-PGLViewer::PGLViewer(  QWidget * parent, WFlags f ):
-	Viewer(parent,"",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
+PGLViewer3::PGLViewer3(  QWidget * parent, WFlags f ):
+	Viewer3(parent,"",new ViewMultiscaleEditGeomSceneGL3(NULL,NULL), f)
 {
 }
 
   /// Constructor.
-PGLViewer::PGLViewer( int argc, char ** argv ):
-	Viewer(argc, argv,new ViewMultiscaleEditGeomSceneGL(NULL,NULL))
+PGLViewer3::PGLViewer3( int argc, char ** argv ):
+	Viewer3(argc, argv,new ViewMultiscaleEditGeomSceneGL3(NULL,NULL))
 {
 }
 
 /// Destructor.
-PGLViewer::~PGLViewer()
+PGLViewer3::~PGLViewer3()
 {
 }
   
-void PGLViewer::changeScene( const PGL(ScenePtr)& s )
+void PGLViewer3::changeScene( const PGL(ScenePtr)& s )
 {
-  GeomSceneChangeEvent k( s );
+  GeomSceneChangeEvent3 k( s );
   getSceneRenderer()->sceneChangeEvent( &k );
 }
 

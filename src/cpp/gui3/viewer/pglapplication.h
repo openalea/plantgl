@@ -37,7 +37,7 @@
  */
 
 /*! \file view_application.h
-    \brief Definition of the viewer class PGLViewerApplication.
+    \brief Definition of the viewer class PGLViewerApplication3.
 */
 
 #ifndef __view_pglapplication_h__
@@ -45,7 +45,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include "../base/application.h"
 #include <scenegraph/scene/scene.h>
 #include <scenegraph/geometry/geometry.h>
@@ -53,28 +53,28 @@
 
 /* ----------------------------------------------------------------------- */
 
-class ViewRayPointHitBuffer;
+class ViewRayPointHitBuffer3;
 
 
 /* ----------------------------------------------------------------------- */
 
 /**
-      \class PGLPGLViewerApplication
+      \class PGLPGLViewerApplication3
       \brief This class manage thread or not application for the viewer
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API PGLViewerApplication : public ViewerApplication {
+class VIEW3_API PGLViewerApplication3 : public ViewerApplication3 {
 
 public :
 
   /// Constructor.
-  PGLViewerApplication();
+  PGLViewerApplication3();
 
   /// Destructor.
-  virtual ~PGLViewerApplication();
+  virtual ~PGLViewerApplication3();
 
   /// Display the scene _scene.
   static void display(const PGL(ScenePtr)& s);
@@ -86,7 +86,7 @@ public :
 
   static std::vector<std::pair<uint32_t,double> > getProjectionSizes(const PGL(ScenePtr)& sc); 
 
-  static ViewRayPointHitBuffer * castRays2(const PGL(ScenePtr)& sc, bool back_test = false );
+  static ViewRayPointHitBuffer3 * castRays2(const PGL(ScenePtr)& sc, bool back_test = false );
 
 
   static void init();

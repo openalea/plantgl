@@ -38,38 +38,25 @@
 
 #include <qstring.h>
 #include <qmessagebox.h>
-#include <qlistview.h> 
 #include <qapplication.h> 
+#include <qdesktopwidget.h> 
 #include <qlabel.h>
-#include <qtimer.h>
-#include <qtextview.h>
+#include <qpainter.h>
+#include <q3listview.h> 
+#include <q3textbrowser.h>
 #include <qfile.h>
+#include <qfileinfo.h>
 #include <qtextstream.h>
+#include <qurl.h>
+#include <qevent.h>
 #include <tool/util_enviro.h>
 
 /*  ------------------------------------------------------------------------ */
 
-#if QT_VERSION < 300
-
-#include <qplatinumstyle.h>
-#include <qmotifplusstyle.h> 
-#include <qsgistyle.h> 
-#include <qcdestyle.h>
-
-#define STYLE_MACRO(macro) \
-	macro(Windows) \
-	macro(Platinum) \
-	macro(Motif) \
-	macro(MotifPlus) \
-	macro(CDE) \
-	macro(SGI)
-
-#else
 
 #include <qstyle.h>
 #include <qstylefactory.h>
 
-#endif
 
 /*  ------------------------------------------------------------------------ */
 
@@ -93,53 +80,46 @@ using namespace std;
 
 
 
-#if QT_VERSION < 300
-#define CONSTRUCT_MENU(style) \
-	__ids.push_back( __style->insertItem(#style,this,SLOT(setStyle(int))));
-#endif
-
 static QString default_style_name;
 
-ViewHelpMenu::ViewHelpMenu(QWidget * parent,
-                   QGLWidget * glwidget,
-                   const char * name) :
-  QPopupMenu(parent,name),
+ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * name) :
+  QMenu(parent),
   __glwidget(glwidget)
 {
-	__about = new ViewAboutDialog(this,"General Information",false);
-#ifndef _DEBUG
-//	if(__about->useNewStyle())__about->display(1000);
-#endif
+	if(name) setObjectName(name);
+	__about = new ViewAboutDialog(this,false);
 	QObject::connect(__about,SIGNAL(licenseView()),this,SLOT(showLicense()));
-	insertItem( tr("What's &This?"), parent->parent() , SLOT(whatsThis()), Key_F1);
-    insertItem(QPixmap(ViewSysInfo::tools_logo),tr("&Help"),this,SLOT(showHelp()),SHIFT+Key_F1);
-    insertSeparator();
-    insertItem(ViewerIcon::getPixmap(ViewerIcon::icon_flower),tr("&About Viewer"),this,SLOT(showAbout()), CTRL+Key_F1);
-    insertItem(tr("&License"),this,SLOT(showLicense()));
-    insertItem(QPixmap(ViewSysInfo::qt_logo),tr("About &Qt"),this,SLOT(aboutQt()));
-    insertSeparator();
-    insertItem(QPixmap(ViewSysInfo::info_logo),tr("Technical Characteristics"),this,SLOT(generalInfo()));
-    insertItem(QPixmap(ViewSysInfo::qt_logo),tr("Qt Hierarchy"),this,SLOT(qtbrowse()));
-    insertSeparator();
-    __style = new QPopupMenu(this,"Style");
-#if QT_VERSION < 300
-	STYLE_MACRO(CONSTRUCT_MENU);
-#else
-	__ids.push_back( __style->insertItem("Default",this,SLOT(setStyle(int))));
+	addAction( tr("What's &This?"), parent->parent() , SLOT(whatsThis()), Qt::Key_F1);
+    addAction(QPixmap(ViewSysInfo::tools_logo),tr("&Help"),this,SLOT(showHelp()),Qt::SHIFT+Qt::Key_F1);
+    addSeparator();
+    addAction(QPixmap(ViewerIcon::getPixmap(ViewerIcon::flower)),tr("&About Viewer"),this,SLOT(showAbout()), Qt::CTRL+Qt::Key_F1);
+    addAction(tr("&License"),this,SLOT(showLicense()));
+    addAction(QPixmap(ViewSysInfo::qt_logo),tr("About &Qt"),this,SLOT(aboutQt()));
+    // addAction(QPixmap(ViewSysInfo::qt_logo),tr("About &QGLViewer"),glwidget,SLOT(aboutQGLViewer()));
+    addSeparator();
+    addAction(QPixmap(ViewSysInfo::info_logo),tr("Technical Characteristics"),this,SLOT(generalInfo()));
+    addAction(QPixmap(ViewSysInfo::qt_logo),tr("Qt Hierarchy"),this,SLOT(qtbrowse()));
+    addSeparator();
+    __style = new QMenu(this);
+	__style->setTitle(tr("Style"));
+	addMenu(__style);
 	QStringList styles = QStyleFactory::keys();
-	for(uint k = 0 ; k < styles.size(); k++)
-	  __ids.push_back( __style->insertItem(*(styles.at(k)),this,SLOT(setStyle(int))));
-#endif
-	for(uint i = 0 ; i < __ids.size(); i++)
-		__style->setItemParameter( __ids[i],  i  );
-    __style->setCheckable(true);
-    insertItem(tr("Style"),__style);
-	default_style_name = QApplication::style().className();
-    checkItem(0);
+	QActionGroup * actiongroup = new QActionGroup(__style);
+	actiongroup->setExclusive(true);
+	for(uint k = 0 ; k < styles.size(); k++){
+	  QAction * action = __style->addAction(styles[k]);
+	  action->setCheckable(true);
+	  actiongroup->addAction(action);
+	  __ids.push_back( action );
+	}
+	default_style_name = QApplication::style()->metaObject()->className();
+    checkItem(getStyle());
+	QObject::connect(__style,SIGNAL(triggered(QAction *)),this,SLOT(setStyleCorrespondingTo(QAction*)));
 }
 
+
 ViewHelpMenu::~ViewHelpMenu(){
-#ifdef  GEOM_DEBUG
+#ifdef  PGL_DEBUG
   cout << "Help Menu deleted" << endl;
 #endif
 }
@@ -151,55 +131,39 @@ ViewHelpMenu::setGLWidget(QGLWidget * glwidget)
 }
 
 int ViewHelpMenu::getStyle() const {
-    QStyle& style = QApplication::style();
-    QString classname = style.className();
-	if (classname == default_style_name) return 0;
+    QStyle * style = QApplication::style();
+    const QMetaObject * mo = style->metaObject();
 	for(uint i = 0 ; i < __ids.size() ; i++){
-#if QT_VERSION < 300
-		if('Q'+__style->text(__ids[i])+"Style" == classname)
+		if((QStyleFactory::create(__ids[i]->text()))->metaObject() == mo)
 			return i;
-#else		
-		if(__style->text(__ids[i]) == classname)
-			return i;
-#endif
 	}
 	return -1;
 }
 
-#if QT_VERSION < 300
-#define APPLY_STYLE(stylename) \
-	if(__style->text(__ids[i])==#stylename){ \
-		QApplication::setStyle( new Q##stylename##Style ); \
-	    qDebug((QString("Application.setStyle(") + #stylename +')').latin1() ); } \
-	 else
-#endif
+void  
+ViewHelpMenu::setStyleCorrespondingTo(QAction * action )
+{
+	setStyle(QStyleFactory::keys().indexOf(action->text()));
+}
 
 void  
 ViewHelpMenu::setStyle(int i)
 {
 	if(i < 0 && i >=__ids.size())return;
-#if QT_VERSION < 300
-    STYLE_MACRO(APPLY_STYLE)
-		return;
-#else
-	QString stylename = ( i == 0 ? default_style_name : *(QStyleFactory::keys().at(i-1)));
-    QApplication::setStyle( QStyleFactory::create(stylename)); 
-    qDebug((QString("Application.setStyle(") + stylename +')').latin1() ); 
-#endif
+    QApplication::setStyle( QStyleFactory::create(QStyleFactory::keys()[i])); 
+    qDebug((QString("Application.setStyle(") + (QStyleFactory::keys()[i]) +')').toAscii().data() ); 
 	if(i>= 0 && i<__ids.size())checkItem(i);
 }
 
 void  
 ViewHelpMenu::checkItem(int i)
 {
-  for(uint j = 0; j < __ids.size() ; j++)
-    __style->setItemChecked(__ids[j],false);
-  if(i>=0 && i < __ids.size())__style->setItemChecked(__ids[i],true);
+  __ids[i]->setChecked(true);
 }
 
 void ViewHelpMenu::showHelp()
 {
-  QString message ="<h3>How to use Viewer</h3><br>"
+  const char* message ="<h3>How to use Viewer</h3><br>"
     "<p><b>Left button       :</b> Rotation <br>"
     "<b>Right button      :</b> Translation <br>"
     "<b>Middle button     :</b> Zoom <br>"
@@ -226,37 +190,33 @@ void ViewHelpMenu::showInit()
 
 void ViewHelpMenu::showLicense()
 {  
-  QDialog b(this,"License",true,
-	WStyle_Customize | WStyle_DialogBorder | WStyle_Tool | WStyle_SysMenu);
+  QDialog b(this,Qt::Tool);
+  b.setModal(true);
   QPixmap logo = ViewerIcon::getPixmap( "gnu.png");
-  QLabel * llogo = new QLabel(&b,"licenselogo");
+  QLabel * llogo = new QLabel(&b);
   llogo->setGeometry(QRect(QPoint(0,0),logo.size()));
   llogo->setPixmap(logo);
   b.setMinimumSize(QSize(logo.width()*4,logo.height()));
-  b.setCaption("License");
-  QTextView * lictext = new QTextView(&b,"License Text");
+  b.setWindowTitle("License");
+  Q3TextBrowser * lictext = new Q3TextBrowser(&b);
   QFont f("Courrier", 8);
   lictext->setFont( f );
   lictext->setGeometry(QRect(logo.width(),0,logo.width()*3,logo.height()));
-  lictext->setHScrollBarMode(QScrollView::AlwaysOff);
+  // lictext->setHScrollBarMode(QScrollView::AlwaysOff);
   lictext->setLineWidth(0);
-  QPalette pal = lictext->palette();
+  /* QPalette pal = lictext->palette();
   QColorGroup c = pal.active();
   c.setColor(QColorGroup::Background,QColor(255,255,255));
   pal.setActive(c);
-  lictext->setPalette(pal);
-  QFile copyright((TOOLS(getPlantGLDir())+"/share/plantgl/LICENSE").c_str());
-  if(copyright.exists() && copyright.open(IO_ReadOnly)){
-	QTextStream s(&copyright);
-	lictext->setText(s.read());
-	copyright.close();
-  }
+  lictext->setPalette(pal);*/
+  QString copyright((TOOLS(getPlantGLDir())+"/share/plantgl/LICENSE").c_str());
+  if(QFileInfo(copyright).exists() ) 
+	  lictext->setSource(copyright);
   QSize s = qApp->desktop()->size();
   s = s - b.size();
   s /= 2;
   b.move(s.width(),s.height()); 
   b.exec();
-
 }
 
 void 
@@ -281,8 +241,8 @@ ViewHelpMenu::aboutQt()
 void
 ViewHelpMenu::qtbrowse()
 {
-        ViewQObjectBrowser a(this,"qtbrowse",TRUE);
-        a.exec();
+  ViewQObjectBrowser a(this,"qtbrowse",TRUE);
+  a.exec();
 }
 
 void
@@ -290,82 +250,82 @@ ViewHelpMenu::generalInfo()
 {
   std::string text2 = getViewerVersionString();
   QString text;
-  ViewSysInfo a(this,__glwidget,tr("PlantGL Viewer")+" "+QString(text2.c_str()),TRUE);
-  QListViewItem * itemF = a.addItem(tr("Geom Library"));
-  QListViewItem *item = new QListViewItem( itemF );
+  ViewSysInfo a (this,__glwidget,(tr("PlantGL Viewer")+" "+QString(text2.c_str())).toAscii(),true);
+  Q3ListViewItem * itemF = a.addItem(tr("Geom Library"));
+  Q3ListViewItem *item = new Q3ListViewItem( itemF );
   item->setText( 0, tr( "Version" ) );
   text2 = getPGLVersionString();
   item->setText( 1, QString(text2.c_str()) );
-  item = new QListViewItem( itemF, item );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Binary Format Version" ) );
   item->setText( 1, QString::number(BinaryPrinter::BINARY_FORMAT_VERSION) );
-  item = new QListViewItem( itemF, item );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Real Type Precision" ) );
-#ifdef GEOM_USE_DOUBLE
+#ifdef PGL_USE_DOUBLE
   text = "Double";
 #else
   text = "Simple";
 #endif
-  item->setText( 1, tr( text ) );
-  item = new QListViewItem( itemF, item );
+  item->setText( 1, text  );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Using Threads" ) );
   if(ViewGeomSceneGL::useThread()) text = "True";
   else text = "False";
-  item->setText( 1, tr( text ) );
+  item->setText( 1, tr( text.toAscii() ) );
 
-  item = new QListViewItem( itemF, item );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Geom Namespace" ) );
-#ifndef GEOM_NAMESPACE_NAME
+#ifndef PGL_NAMESPACE_NAME
   text = "False";
 #else
   text = "True";
 #endif
-  item->setText( 1, tr( text ) );
-  item = new QListViewItem( itemF, item );
+  item->setText( 1, tr( text.toAscii() ) );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Geom Debug" ) );
-#ifdef GEOM_DEBUG
+#ifdef PGL_DEBUG
   text = "True";
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( text ) );
+  item->setText( 1, tr( text.toAscii() ) );
 #ifdef _WIN32
-  item = new QListViewItem( itemF, item );
-  item->setText( 0, tr( "PGL DLL" ) );
-#ifdef GEOM_DLL
+  item = new Q3ListViewItem( itemF, item );
+  item->setText( 0, tr( "PGL DLLs" ) );
+#ifdef VIEW_DLL
   text = "True";
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( text ) );
+  item->setText( 1, tr( text.toAscii() ) );
 #endif
-  item = new QListViewItem( itemF, item );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Using Glut" ) );
 #ifdef WITH_GLUT
   text = "True";
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( text ) );
+  item->setText( 1, tr( text.toAscii() ) );
   itemF = a.addItem(tr("Tools Library"));
-  item = new QListViewItem( itemF );
+  item = new Q3ListViewItem( itemF );
   item->setText( 0, tr( "Version" ) );
   item->setText( 1, QString(getToolsVersionString().c_str()) );
-  item = new QListViewItem( itemF, item );
+  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Tools Namespace" ) );
 #ifndef TOOLS_NAMESPACE_NAME
   text = "False";
 #else
   text = "True";
 #endif
-  item->setText( 1, tr( text ) );
+  item->setText( 1, tr( text.toAscii() ) );
   itemF = a.addItem(tr("PlantGL"));
-  item = new QListViewItem( itemF );
+  item = new Q3ListViewItem( itemF );
   item->setText( 0, tr( "Install Path" ) );
   string p = TOOLS(getPlantGLDir());
   if(!p.empty())item->setText( 1, QString(p.c_str()) );
   itemF = a.addItem(tr("Flex"));
-  item = new QListViewItem( itemF );
+  item = new Q3ListViewItem( itemF );
   item->setText( 0, tr( "Version" ) );
   item->setText( 1, QString(lexerVersion().c_str())  );
   a.exec();
@@ -379,15 +339,16 @@ ViewAboutDialog::ViewAboutDialog ( QWidget * parent,
 								  const char * name, 
 								  int timeout,
 								  bool modal):
-QDialog ( parent, name, modal, 
-		 WStyle_Customize | WStyle_NoBorderEx | WStyle_StaysOnTop  ),
+QDialog ( parent, Qt::Tool ), 
 		__text(NULL),
 	    __style(true),
 		__license(false){
+  if(name)setObjectName(name); 
+  setModal(modal);
   __logo = ViewerIcon::getPixmap( "geomviewer.png");
   if(__logo.isNull()) {
     __style = false;
-    __logo = ViewerIcon::getPixmap( ViewerIcon::icon_plantlogo);
+    __logo = ViewerIcon::getPixmap( ViewerIcon::plantlogo);
   }
   else {
     __logo2 = ViewerIcon::getPixmap( "geomviewer2.png");
@@ -414,11 +375,13 @@ QDialog ( parent, name, modal,
     QFont f("Courrier", 7);
     __text->setFont( f );
     __text->setGeometry(QRect(240,height()-25,260,15));
-    QPalette pal = __text->palette();
+
+ /*   QPalette pal = __text->palette();
     QColorGroup c = pal.active();
     c.setColor(QColorGroup::Background,QColor(255,255,255));
     pal.setActive(c);
-    __text->setPalette(pal);
+    __text->setPalette(pal); */
+
     __text->installEventFilter(this);
     QObject::connect(&__timer,SIGNAL(timeout()),__text,SLOT(clear()));
     setText("Initialization ...",800);
@@ -436,7 +399,9 @@ void ViewAboutDialog::display(int timeout){
 
 
 void ViewAboutDialog::setIconPixmap( const QPixmap & icon){
-  setBackgroundPixmap ( icon ) ;
+  QPalette palette;
+  palette.setBrush(backgroundRole(), QBrush(icon));
+  setPalette(palette);
   setMinimumSize(icon.size());
   setMaximumSize(icon.size());
   QSize s = qApp->desktop()->size();
@@ -450,11 +415,13 @@ void ViewAboutDialog::setInfo(const QString& text, QRect r,int s){
   QFont f("Courrier", s);
   _text->setFont( f );
   _text->setGeometry(r);
-  QPalette pal = _text->palette();
+
+  /* QPalette pal = _text->palette();
   QColorGroup c = pal.active();
   c.setColor(QColorGroup::Background,QColor(255,255,255));
   pal.setActive(c);
-  _text->setPalette(pal);
+  _text->setPalette(pal); */
+
   _text->setText(text);
   _text->installEventFilter(this);
 }
@@ -463,7 +430,7 @@ void ViewAboutDialog::mousePressEvent ( QMouseEvent * e) {
   QPoint p = e->pos();
   if(__style && __licenseRect.contains(p))
 	emit licenseView();
-  else	if (e->button() ==  LeftButton) accept();
+  else	if (e->button() ==  Qt::LeftButton) accept();
 }
 
 bool ViewAboutDialog::eventFilter( QObject *o, QEvent *e )
@@ -519,7 +486,7 @@ ViewAboutDialog::hideEvent ( QHideEvent * )
 void
 ViewAboutDialog::mouseMoveEvent ( QMouseEvent * e )
 {
-	if (e->state() == NoButton) changeLogo(e->pos());
+	if (e->button() == Qt::NoButton) changeLogo(e->pos());
 	else move(e->globalPos());
 }
 
@@ -530,11 +497,15 @@ ViewAboutDialog::changeLogo(const QPoint& p)
 //	qDebug("Point = ("+QString::number(p.x())+','+QString::number(p.x())+')');
 	if(__license && !__licenseRect.contains(p)){
 	  __license = false;
-	  setBackgroundPixmap ( __logo ) ;
+	  QPalette palette;
+	  palette.setBrush(backgroundRole(), QBrush(__logo));
+	  setPalette(palette);
 	}
 	else if(!__license && __licenseRect.contains(p)){
 	  __license = true;
-	  setBackgroundPixmap ( __logo2 ) ;
+	  QPalette palette;
+	  palette.setBrush(backgroundRole(), QBrush(__logo2));
+	  setPalette(palette);
 	}
   }
 }

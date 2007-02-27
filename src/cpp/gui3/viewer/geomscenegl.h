@@ -36,7 +36,7 @@
  */
 
 /*! \file view_geomscenegl.h
-    \brief Definition of the viewer class ViewGeomSceneGL and ViewMultiGeomSceneGL.
+    \brief Definition of the viewer class ViewGeomSceneGL3 and ViewMultiGeomSceneGL3.
 */
 
 #ifndef __view_geomscenegl_h__
@@ -66,39 +66,39 @@ class QToolBar;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewGeomReader;
-class ViewRayPointHitBuffer;
+class ViewGeomReader3;
+class ViewRayPointHitBuffer3;
 #include "../base/util_qwidget.h"
 
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewGeomSceneGL
+   \class ViewGeomSceneGL3
    \brief A GL Display Manager for Geom Scene.
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
+class VIEW3_API ViewGeomSceneGL3  : public ViewModalRendererGL3
 {
   Q_OBJECT
 
     public :
 
   /// Constructor.
-  ViewGeomSceneGL(ViewCameraGL * camera=0,
-                  ViewLightGL * light=0,
+  ViewGeomSceneGL3(ViewCameraGL3 * camera=0,
+                  ViewLightGL3 * light=0,
                   QGLWidget * parent=0,
                   const char * name=0);
 
   /// Destructor.
-  virtual ~ViewGeomSceneGL();
+  virtual ~ViewGeomSceneGL3();
 
   virtual void selectGL();
 
   /// Scene change Event.
-  virtual bool sceneChangeEvent(ViewSceneChangeEvent *);
+  virtual bool sceneChangeEvent(ViewSceneChangeEvent3 *);
 
   virtual void paintGL();
 
@@ -150,7 +150,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   const PGL(BoundingBoxPtr) getSelectionBoundingBox() ;
 
   std::vector<std::pair<uint32_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
-  ViewRayPointHitBuffer * castRays(const PGL(ScenePtr)& sc, bool back_test);
+  ViewRayPointHitBuffer3 * castRays(const PGL(ScenePtr)& sc, bool back_test);
 
   /// Get the surface of the scene.
   real_t getSceneSurface();
@@ -359,7 +359,7 @@ protected :
 
 #ifdef QT_THREAD_SUPPORT
   /// Reader.
-  ViewGeomReader * __reader;
+  ViewGeomReader3 * __reader;
 
 #endif
 
@@ -370,11 +370,11 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewMultiGeomSceneGL
+   \class ViewMultiGeomSceneGL3
    \brief A GL Display Manager for Multiple Geom Scene.
 
 */
-class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
+class VIEW3_API ViewMultiGeomSceneGL3  : public ViewGeomSceneGL3
 {
   Q_OBJECT
 
@@ -382,13 +382,13 @@ class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
 
 
   /// Constructor.
-  ViewMultiGeomSceneGL(ViewCameraGL * camera=0,
-                       ViewLightGL * light=0,
+  ViewMultiGeomSceneGL3(ViewCameraGL3 * camera=0,
+                       ViewLightGL3 * light=0,
                        QGLWidget * parent=0,
                        const char * name=0);
 
   /// Destructor.
-  virtual ~ViewMultiGeomSceneGL();
+  virtual ~ViewMultiGeomSceneGL3();
 
   virtual void paintGL();
 
@@ -405,7 +405,7 @@ class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
                      const QString& filename2);
 
   /// Scene change Event.
-  virtual bool sceneChangeEvent(ViewSceneChangeEvent *);
+  virtual bool sceneChangeEvent(ViewSceneChangeEvent3 *);
 
   virtual void fillToolBar(QToolBar * toolBar);
 
@@ -444,7 +444,7 @@ protected :
 
   /// Transition dialog slider
   QSlider * __transSlider;
-  ViewToolBar * __transitionBar;
+  ViewToolBar3 * __transitionBar;
 };
 
 /* ----------------------------------------------------------------------- */

@@ -36,34 +36,30 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include <qpainter.h>
+#include <q3listview.h>
+#include <qpushbutton.h>
+#include <qcheckbox.h>
+#include <qevent.h>
+
 #include "browser.h"
 #include "scenegl.h"
 #include "interface/qbrowser.h"
-
-#include <qlistview.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
 
 /* ----------------------------------------------------------------------- */
 
 
 
-ViewBrowser::ViewBrowser(QWidget * parent,
-             const char * name,
-             bool modal)
-  : ViewDialog(parent,name, modal),
+ViewBrowser::ViewBrowser(QWidget * parent, const QString& title)
+  : QDockWidget(title,parent),
     __scene(NULL),
     __empty(true)
 {
-  setCaption(tr("Browser"));
-#if QT_VERSION >= 220
-//  setSizeGripEnabled(TRUE);
-#endif
-  __browser = new QBrowser(this,"Object List");
-  resize(__browser->size());
-  QObject::connect(__browser->OkButton,SIGNAL(clicked()),this,SLOT(hide()));
-  QObject::connect(__browser->CancelButton,SIGNAL(clicked()),this,SLOT(hide()));
-  QObject::connect(this,SIGNAL(visibilityChanged(bool)),this,SLOT(refresh(bool)));
+  setWindowTitle(title);
+  QWidget * mwidget = new QWidget(this);
+  setWidget(mwidget);
+  __browser = new Ui::QBrowser();
+  __browser->setupUi(mwidget);
   QObject::connect(__browser->__FullMode,SIGNAL(clicked()),this,SLOT(clear()));
 }
 
@@ -75,16 +71,16 @@ void
 ViewBrowser::setRenderer(ViewRendererGL * r)
 {
   if(__scene!=NULL){
-    QObject::disconnect(__browser->__list,SIGNAL(doubleClicked(QListViewItem *)),
-                        __scene,SLOT(selectionEvent(QListViewItem *)));
+    QObject::disconnect(__browser->__list,SIGNAL(doubleClicked(Q3ListViewItem *)),
+                        __scene,SLOT(selectionEvent(Q3ListViewItem *)));
     QObject::disconnect(__scene,SIGNAL(selectionChanged(const QString&)),
                         this,SLOT(setSelection(const QString&)));
   }
   __scene = r;
   if(__scene){
     QObject::connect(__scene,SIGNAL(sceneChanged()),this,SLOT(clear()));
-    QObject::connect(__browser->__list,SIGNAL(doubleClicked(QListViewItem *)),
-            __scene,SLOT(selectionEvent(QListViewItem *)));
+    QObject::connect(__browser->__list,SIGNAL(doubleClicked(Q3ListViewItem *)),
+            __scene,SLOT(selectionEvent(Q3ListViewItem *)));
     QObject::connect(__scene,SIGNAL(selectionChanged(const QString&)),
                         this,SLOT(setSelection(const QString&)));
   }
@@ -92,7 +88,7 @@ ViewBrowser::setRenderer(ViewRendererGL * r)
 
 void
 ViewBrowser::setSelection(const QString& name){
-  QListViewItem * i = __browser->__list->firstChild();
+  Q3ListViewItem * i = __browser->__list->firstChild();
   if(i){
     i = i->firstChild();
     if(i){
@@ -134,23 +130,16 @@ ViewBrowser::refresh(bool b)
 }
 
 void
-ViewBrowser::resizeEvent( QResizeEvent * event)
+ViewBrowser::showEvent( QShowEvent * myevent)
 {
-  if(isVisible()){
-    int x = event->size().width() - event->oldSize().width();
-    int y = event->size().height() - event->oldSize().height();
-    __browser->resize( event->size().width(),event->size().height()  );
-    __browser->__list->resize(   __browser->__list->size() + QSize(x,y) );
-    __browser->OkButton->move(__browser->OkButton->pos()+QPoint(x,y));
-    __browser->CancelButton->move(__browser->CancelButton->pos()+QPoint(x,y));
-  }
+	refresh(true);
 }
 
 void
 ViewBrowser::keyPressEvent ( QKeyEvent * e)
 {
-  if( e->key() == Key_F2 ||
-      e->key() == Key_Escape ||
-      e->key() == Key_Home) hide();
+	if( e->key() == Qt::Key_F2 ||
+      e->key() == Qt::Key_Escape ||
+      e->key() == Qt::Key_Home) hide();
 }
 

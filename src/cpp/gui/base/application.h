@@ -63,7 +63,7 @@
 
 class ViewRayBuffer;
 class ViewZBuffer;
-class QCustomEvent;
+class QEvent;
 class ViewerBuilder;
 
 
@@ -168,7 +168,7 @@ public :
 
 protected :
 
-	static void _sendAnEvent(QCustomEvent *);
+	static void _sendAnEvent(QEvent *);
 	static void _setViewerBuilder(ViewerBuilder * builder);
 
 };

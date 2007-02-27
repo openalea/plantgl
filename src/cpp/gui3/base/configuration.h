@@ -37,14 +37,14 @@
 #define __view_configuration_h__
 
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <qstringlist.h>
 #include <qsettings.h>
 
 
 /*--------------------------------------------------------------*/
 
-class VIEW_API ViewerSettings : public QSettings {
+class VIEW3_API ViewerSettings3 : public QSettings {
 	static QStringList args;
 	static QString appliname;
 	static QString applidir;
@@ -57,7 +57,7 @@ public:
 	static const QString& getAppliName() { return appliname; }
 	static const QString& getAppliDir() { return applidir; }
 
-	ViewerSettings();
+	ViewerSettings3();
 	
 
 };

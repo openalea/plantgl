@@ -239,7 +239,7 @@ typedef RCPtr<Scene> ScenePtr;
 PGL_END_NAMESPACE
 
 /// Write Scene \b s in \b stream.
-SG_API std::ostream& operator<<( std::ostream& stream, PGL(Scene&) s );
+// SG_API std::ostream& operator<<( std::ostream& stream, PGL(Scene&) s );
 
 /* ----------------------------------------------------------------------- */
 #endif

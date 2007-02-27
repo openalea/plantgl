@@ -38,7 +38,7 @@
 
 
 /*! \file view_zbuffer.h
-    \brief Definition of the viewer class ViewGLFrame.
+    \brief Definition of the viewer class ViewGLFrame3.
 */
 
 
@@ -50,16 +50,16 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <math/util_vector.h>
 #include <tool/util_array2.h>
 #include <scenegraph/appearance/color.h>
 
-struct VIEW_API RayHit {
+struct VIEW3_API RayHit3 {
 public:
-	RayHit (size_t _id,real_t _zmin,real_t _zmax):id(_id),zmin(_zmin),zmax(_zmax){}
+	RayHit3 (size_t _id,real_t _zmin,real_t _zmax):id(_id),zmin(_zmin),zmax(_zmax){}
 
-	inline bool operator==(const RayHit& phit) const
+	inline bool operator==(const RayHit3& phit) const
 	{  return phit.id == id &&  phit.zmin == zmin && phit.zmax == zmax; }
 
 	size_t id;
@@ -67,24 +67,24 @@ public:
 	real_t zmax;
 };
 
-typedef std::vector<RayHit > RayHitList;
+typedef std::vector<RayHit3 > RayHitList3;
 
-class VIEW_API ViewRayBuffer : public TOOLS(Array2)<RayHitList>
+class VIEW3_API ViewRayBuffer3 : public TOOLS(Array2)<RayHitList3>
 {
 public:
-	ViewRayBuffer(size_t w, size_t h): TOOLS(Array2)<RayHitList>(w,h){}
+	ViewRayBuffer3(size_t w, size_t h): TOOLS(Array2)<RayHitList3>(w,h){}
 
 	void setAt(size_t i, size_t j, void * buffer, size_t size,const TOOLS(Vector3)& position) ;
 };
 
-struct VIEW_API RayPointHit {
+struct VIEW3_API RayPointHit3 {
 public:
-	RayPointHit (size_t _id,
+	RayPointHit3 (size_t _id,
 				 const TOOLS(Vector3)& _zmin,
 				 const TOOLS(Vector3)& _zmax):
 		id(_id),zmin(_zmin),zmax(_zmax){}
 
-	inline bool operator==(const RayPointHit& phit) const
+	inline bool operator==(const RayPointHit3& phit) const
 	{  return phit.id == id &&  phit.zmin == zmin && phit.zmax == zmax; }
 
 	size_t id;
@@ -92,31 +92,31 @@ public:
 	TOOLS(Vector3) zmax;
 };
 
-typedef std::vector<RayPointHit > RayPointHitList;
+typedef std::vector<RayPointHit3 > RayPointHitList3;
 
-class VIEW_API ViewRayPointHitBuffer : public TOOLS(Array2)<RayPointHitList>
+class VIEW3_API ViewRayPointHitBuffer3 : public TOOLS(Array2)<RayPointHitList3>
 {
 public:
-	ViewRayPointHitBuffer(size_t w, size_t h): TOOLS(Array2)<RayPointHitList>(w,h){}
+	ViewRayPointHitBuffer3(size_t w, size_t h): TOOLS(Array2)<RayPointHitList3>(w,h){}
 
 	/** \brief Add pBuff to \e self.
       \pre
       - \e pBuff and self must have the same size. */
-    ViewRayPointHitBuffer& operator+=(const ViewRayPointHitBuffer& pBuff);
+    ViewRayPointHitBuffer3& operator+=(const ViewRayPointHitBuffer3& pBuff);
 
 	/** \brief Add pBuff to \e self.
       \pre
       - \e pBuff and self must have the same size. */
-    ViewRayPointHitBuffer operator+(const ViewRayPointHitBuffer& pBuff)const;
+    ViewRayPointHitBuffer3 operator+(const ViewRayPointHitBuffer3& pBuff)const;
 };
 
-struct VIEW_API ZBufferUnit {
+struct VIEW3_API ZBufferUnit3 {
 public:
-	ZBufferUnit(TOOLS(Vector3) _pos = TOOLS(Vector3::ORIGIN), 
+	ZBufferUnit3(TOOLS(Vector3) _pos = TOOLS(Vector3::ORIGIN), 
 			    PGL(Color4) _color = PGL(Color4::BLACK),
 				float _depth = 1.0):pos(_pos),color(_color),depth(_depth){}
 
-	inline bool operator==(const ZBufferUnit & pValue) const
+	inline bool operator==(const ZBufferUnit3 & pValue) const
 	{ return pValue.pos == pos && pValue.color == color && pValue.depth == depth; }
 
 	TOOLS(Vector3) pos;
@@ -124,16 +124,16 @@ public:
 	float depth;
 };
 
-class VIEW_API ViewZBuffer : public TOOLS(Array2)<ZBufferUnit>
+class VIEW3_API ViewZBuffer3 : public TOOLS(Array2)<ZBufferUnit3>
 {
 public:
-	ViewZBuffer(size_t w, size_t h): TOOLS(Array2)<ZBufferUnit>(w,h){}
+	ViewZBuffer3(size_t w, size_t h): TOOLS(Array2)<ZBufferUnit3>(w,h){}
 
 	/// import depth and color buffer
-	static ViewZBuffer* importglZBuffer(bool alldepth = true);
+	static ViewZBuffer3* importglZBuffer(bool alldepth = true);
 
 	/// import depth buffer
-	static ViewZBuffer* importglDepthBuffer(bool alldepth = true);
+	static ViewZBuffer3* importglDepthBuffer(bool alldepth = true);
 };
 
 

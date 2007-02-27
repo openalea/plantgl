@@ -50,14 +50,16 @@ class QLabel;
 class QTextView;
 class QPushButton;
 class QSocket;
-#include <qserversocket.h>
-#include <qnetworkprotocol.h>
+#include <qtcpserver.h>
+#include <qhttp.h>
 #include <qdialog.h>
 #include "../gui_config.h"
 /* ----------------------------------------------------------------------- */
 
+// #define VIEW_NETWORK_SUPPORT
 
-class ViewerDaemon : public QServerSocket
+
+class VIEW_API ViewerDaemon : public QTcpServer
 {
     Q_OBJECT
 public:
@@ -78,12 +80,19 @@ signals:
 private slots:
     void readClient();
     void discardClient();
+    void processNextConnection();
+
+protected:
+	QTcpSocket * currentSocket;
 
 };
 
 /* ----------------------------------------------------------------------- */
 
-class ViewClient : public QNetworkProtocol
+#ifdef VIEW_NETWORK_SUPPORT
+
+
+class VIEW_API ViewClient : public QHttp
 {
     Q_OBJECT
 
@@ -159,5 +168,7 @@ protected:
 };
 
 /* ----------------------------------------------------------------------- */
+
+#endif
 
 #endif

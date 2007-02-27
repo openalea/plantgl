@@ -1,338 +1,255 @@
-<!DOCTYPE UI><UI>
-<class>ViewApproximationForm</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
-        <cstring>ViewApproximationForm</cstring>
+<ui version="4.0" >
+ <class>ViewApproximationForm</class>
+ <widget class="QDialog" name="ViewApproximationForm" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>344</width>
+    <height>228</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Approximation</string>
+  </property>
+  <widget class="QLabel" name="Title" >
+   <property name="geometry" >
+    <rect>
+     <x>20</x>
+     <y>0</y>
+     <width>150</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Comic Sans MS</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Approximation</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="Q3GroupBox" name="Material" >
+   <property name="geometry" >
+    <rect>
+     <x>200</x>
+     <y>80</y>
+     <width>140</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Material</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+   <widget class="QPushButton" name="MaterialButton" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>120</width>
+      <height>26</height>
+     </rect>
     </property>
-    <property>
-        <name>geometry</name>
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>344</width>
-            <height>228</height>
-        </rect>
+    <property name="text" >
+     <string>Edit</string>
     </property>
-    <property>
-        <name>caption</name>
-        <string>Approximation</string>
+   </widget>
+  </widget>
+  <widget class="Q3GroupBox" name="Algorithm" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>190</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Algorithm</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+   <widget class="QComboBox" name="AlgorithmBox" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>170</width>
+      <height>22</height>
+     </rect>
     </property>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Title</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>20</x>
-                <y>0</y>
-                <width>150</width>
-                <height>30</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Comic Sans MS</family>
-                <pointsize>12</pointsize>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>Approximation</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QGroupBox</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Material</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>200</x>
-                <y>80</y>
-                <width>140</width>
-                <height>50</height>
-            </rect>
-        </property>
-        <property>
-            <name>title</name>
-            <string>Material</string>
-        </property>
-        <widget>
-            <class>QPushButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>MaterialButton</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>120</width>
-                    <height>26</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>Edit</string>
-            </property>
-        </widget>
-    </widget>
-    <widget>
-        <class>QGroupBox</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Algorithm</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>80</y>
-                <width>190</width>
-                <height>50</height>
-            </rect>
-        </property>
-        <property>
-            <name>title</name>
-            <string>Algorithm</string>
-        </property>
-        <widget>
-            <class>QComboBox</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>AlgorithmBox</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>170</width>
-                    <height>22</height>
-                </rect>
-            </property>
-        </widget>
-    </widget>
-    <widget>
-        <class>QGroupBox</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Output</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>130</y>
-                <width>330</width>
-                <height>70</height>
-            </rect>
-        </property>
-        <property>
-            <name>title</name>
-            <string>Output Geometry</string>
-        </property>
-        <widget>
-            <class>QRadioButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Approximation</cstring>
-            </property>
-            <property>
-                <name>enabled</name>
-                <bool>true</bool>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>100</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>&amp;Approximation</string>
-            </property>
-            <property>
-                <name>checked</name>
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget>
-            <class>QRadioButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>InputGeometry</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>120</x>
-                    <y>20</y>
-                    <width>170</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>&amp;Input Geometry</string>
-            </property>
-        </widget>
-        <widget>
-            <class>QRadioButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>Rest</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>120</x>
-                    <y>40</y>
-                    <width>180</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>Geometry &amp;not approximated</string>
-            </property>
-        </widget>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>OkButton</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>250</x>
-                <y>200</y>
-                <width>90</width>
-                <height>26</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>&amp;Ok</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>CancelButton</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>160</x>
-                <y>200</y>
-                <width>90</width>
-                <height>26</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>&amp;Cancel</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QButtonGroup</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Input</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>330</width>
-                <height>50</height>
-            </rect>
-        </property>
-        <property>
-            <name>title</name>
-            <string>Input Geometry</string>
-        </property>
-        <widget>
-            <class>QRadioButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>SceneButton</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>10</x>
-                    <y>20</y>
-                    <width>100</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>&amp;Whole Scene</string>
-            </property>
-        </widget>
-        <widget>
-            <class>QRadioButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>SelectionButton</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>120</x>
-                    <y>20</y>
-                    <width>70</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>&amp;Selection</string>
-            </property>
-            <property>
-                <name>checked</name>
-                <bool>true</bool>
-            </property>
-        </widget>
-        <widget>
-            <class>QRadioButton</class>
-            <property stdset="1">
-                <name>name</name>
-                <cstring>ExeptButton</cstring>
-            </property>
-            <property>
-                <name>geometry</name>
-                <rect>
-                    <x>200</x>
-                    <y>20</y>
-                    <width>120</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property>
-                <name>text</name>
-                <string>&amp;All except Selection</string>
-            </property>
-        </widget>
-    </widget>
-</widget>
-</UI>
+   </widget>
+  </widget>
+  <widget class="Q3GroupBox" name="Output" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>330</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Output Geometry</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+   <widget class="QRadioButton" name="Approximation" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Approximation</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="InputGeometry" >
+    <property name="geometry" >
+     <rect>
+      <x>120</x>
+      <y>20</y>
+      <width>170</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Input Geometry</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="Rest" >
+    <property name="geometry" >
+     <rect>
+      <x>120</x>
+      <y>40</y>
+      <width>180</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Geometry &amp;not approximated</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="OkButton" >
+   <property name="geometry" >
+    <rect>
+     <x>250</x>
+     <y>200</y>
+     <width>90</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Ok</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="CancelButton" >
+   <property name="geometry" >
+    <rect>
+     <x>160</x>
+     <y>200</y>
+     <width>90</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="Q3ButtonGroup" name="Input" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>330</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Input Geometry</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+   <widget class="QRadioButton" name="SceneButton" >
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Whole Scene</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="SelectionButton" >
+    <property name="geometry" >
+     <rect>
+      <x>120</x>
+      <y>20</y>
+      <width>70</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Selection</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="ExeptButton" >
+    <property name="geometry" >
+     <rect>
+      <x>200</x>
+      <y>20</y>
+      <width>120</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;All except Selection</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3ButtonGroup</class>
+   <extends>Q3GroupBox</extends>
+   <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

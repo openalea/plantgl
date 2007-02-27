@@ -54,8 +54,8 @@ using namespace STDEXT;
 
 /* ----------------------------------------------------------------------- */
 
-ViewGeomReader::ViewGeomReader(const QString& f,
-                               ViewGeomSceneGL * g,
+ViewGeomReader3::ViewGeomReader3(const QString& f,
+                               ViewGeomSceneGL3 * g,
                                int i,
                                    bool add):
   QThread(),
@@ -66,29 +66,29 @@ ViewGeomReader::ViewGeomReader(const QString& f,
 {
 }
 
-ViewGeomReader::~ViewGeomReader()
+ViewGeomReader3::~ViewGeomReader3()
 {
 }
 
 void
-ViewGeomReader::setFilename(const QString& f)
+ViewGeomReader3::setFilename(const QString& f)
 {
   _filename = f;
 }
 
 const QString&
-ViewGeomReader::getFilename() const
+ViewGeomReader3::getFilename() const
 {
   return _filename;
 }
 
 void
-ViewGeomReader::setMaxError(int i)
+ViewGeomReader3::setMaxError(int i)
 {
   maxerror = i;
 }
 
-void ViewGeomReader::run()
+void ViewGeomReader3::run()
 {
 
     if(! _filename.isEmpty()) {
@@ -97,7 +97,7 @@ void ViewGeomReader::run()
                                           maxerror));
       _errlog << std::ends;
       string _msg = _errlog.str();
-      GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),_filename,addition);
+      GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(scene,_msg.c_str(),_filename,addition);
       QThread::postEvent(_g,e);
     }
 }
@@ -106,9 +106,9 @@ void ViewGeomReader::run()
 /* ----------------------------------------------------------------------- */
 /*
 ViewGeomStreamReader::ViewGeomStreamReader(istream *stream,
-                                           ViewGeomSceneGL * g,
+                                           ViewGeomSceneGL3 * g,
                                            int i) :
-  ViewGeomReader("istream",g,i),
+  ViewGeomReader3("istream",g,i),
   __stream(stream)
 {
 }
@@ -131,7 +131,7 @@ void ViewGeomStreamReader::run()
                                         maxerror));
     _errlog << ends;
     string _msg = _errlog.str();
-    GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),QString::null);
+    GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(scene,_msg.c_str(),QString::null);
     QThread::postEvent(_g,e);
   }
 }
@@ -140,32 +140,32 @@ void ViewGeomStreamReader::run()
 
 /* ----------------------------------------------------------------------- */
 
-ViewMultiGeomReader::ViewMultiGeomReader(const QString& f1,
+ViewMultiGeomReader3::ViewMultiGeomReader3(const QString& f1,
                                          const QString& f2,
-                                         ViewGeomSceneGL * g,
+                                         ViewGeomSceneGL3 * g,
                                          int i) :
-  ViewGeomReader(f1,g,i),
+  ViewGeomReader3(f1,g,i),
   __second(f2)
 {
 }
 
-ViewMultiGeomReader::~ViewMultiGeomReader()
+ViewMultiGeomReader3::~ViewMultiGeomReader3()
 {
 }
 
 void
-ViewMultiGeomReader::setSecond(const QString& f)
+ViewMultiGeomReader3::setSecond(const QString& f)
 {
   __second = f;
 }
 
 const QString&
-ViewMultiGeomReader::getSecond() const
+ViewMultiGeomReader3::getSecond() const
 {
   return __second;
 }
 
-void ViewMultiGeomReader::run()
+void ViewMultiGeomReader3::run()
 {
   if(! _filename.isEmpty() && ! __second.isEmpty()) {
     stringstream _errlog(ios::out) ;
@@ -175,7 +175,7 @@ void ViewMultiGeomReader::run()
                                         maxerror));
     _errlog << ends;
     string _msg = _errlog.str();
-    GeomMultiSceneChangeEvent * e = new GeomMultiSceneChangeEvent(scene1,
+    GeomMultiSceneChangeEvent3 * e = new GeomMultiSceneChangeEvent3(scene1,
                                                                   scene2,
                                                                   _msg.c_str(),
                                                                   _filename,
@@ -187,59 +187,59 @@ void ViewMultiGeomReader::run()
 
 
 /* ----------------------------------------------------------------------- */
-ViewLinetreeReader::ViewLinetreeReader(const QString& ligFile,
+ViewLinetreeReader3::ViewLinetreeReader3(const QString& ligFile,
                                const QString& dtaFile,
                                const QString& smbPath,
-                               ViewGeomSceneGL * g,
+                               ViewGeomSceneGL3 * g,
 							   bool bigendian,
                                bool add) :
-  ViewGeomReader(ligFile,g,-1,add) ,
+  ViewGeomReader3(ligFile,g,-1,add) ,
   _dtaFile(dtaFile),
   _smbPath(smbPath),
   _bigendian(bigendian){
 }
 
 const QString&
-ViewLinetreeReader::getLigFile() const
+ViewLinetreeReader3::getLigFile() const
 {
   return _filename;
 }
 
 void
-ViewLinetreeReader::setLigFile(const QString& f)
+ViewLinetreeReader3::setLigFile(const QString& f)
 {
   _filename = f;
 }
 
 const QString&
-ViewLinetreeReader::getDtaFile() const
+ViewLinetreeReader3::getDtaFile() const
 {
   return _dtaFile;
 }
 
 void
-ViewLinetreeReader::setDtaFile(const QString& f)
+ViewLinetreeReader3::setDtaFile(const QString& f)
 {
   _dtaFile = f;
 }
 
 const QString&
-ViewLinetreeReader::getSmbPath() const
+ViewLinetreeReader3::getSmbPath() const
 {
   return _smbPath;
 }
 
 void
-ViewLinetreeReader::setSmbPath(const QString& f)
+ViewLinetreeReader3::setSmbPath(const QString& f)
 {
   _smbPath = f;
 }
 
-ViewLinetreeReader::~ViewLinetreeReader()
+ViewLinetreeReader3::~ViewLinetreeReader3()
 {
 }
 
-void ViewLinetreeReader::run(){
+void ViewLinetreeReader3::run(){
 
     if(! _filename.isEmpty()) {
       stringstream _errlog(ios::out) ;
@@ -251,7 +251,7 @@ void ViewLinetreeReader::run(){
       _errlog << ends;
       string _msg = _errlog.str();
       if(!scene) scene = ScenePtr(new Scene());
-      GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),_filename,addition);
+      GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(scene,_msg.c_str(),_filename,addition);
       QThread::postEvent(_g,e);
     }
 }

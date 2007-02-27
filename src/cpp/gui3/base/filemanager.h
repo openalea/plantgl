@@ -37,7 +37,7 @@
  */				
 
 /*! \file view_filemanager.h
-    \brief Definition of the viewer class ViewFileManager.
+    \brief Definition of the viewer class ViewFileManager3.
 */
 
 #ifndef __view_filemanager_h__
@@ -52,7 +52,7 @@
 #include <qurloperator.h>
 
 #include <deque>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,24 +60,24 @@ class QComboBox;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewGLFrame;
-class ViewLocationBar;
-class ViewHelpMenu;
-class ViewErrorDialog;
-class ViewControlPanel;
+class ViewGLFrame3;
+class ViewLocationBar3;
+class ViewHelpMenu3;
+class ViewErrorDialog3;
+class ViewControlPanel3;
 #include "util_qwidget.h"
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewFileManager
+   \class ViewFileManager3
    \brief A Class who control Popup Menu and Tool Bar relative to file.
    Allow other class to choose file.
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewFileManager : public QPopupMenu 
+class VIEW3_API ViewFileManager3 : public QPopupMenu 
 {
   Q_OBJECT
 
@@ -90,14 +90,14 @@ class VIEW_API ViewFileManager : public QPopupMenu
   static float CONFIG_VERSION;
 
   /// Constructor
-  ViewFileManager( QMainWindow * parent=0, 
+  ViewFileManager3( QMainWindow * parent=0, 
 	       const char * name=0, 
-	       ViewGLFrame * frame=0,
-		   ViewHelpMenu * helpmenu=0,
-		   ViewControlPanel * controlpanel=0);
+	       ViewGLFrame3 * frame=0,
+		   ViewHelpMenu3 * helpmenu=0,
+		   ViewControlPanel3 * controlpanel=0);
     
   /// Destructor
-  ~ViewFileManager();
+  ~ViewFileManager3();
   
   static QString getSaveFileName ( const QString& initial, 
 				   const QString& ext, 
@@ -121,7 +121,7 @@ class VIEW_API ViewFileManager : public QPopupMenu
   void fillToolBar(QToolBar *);
 
   /// Get the Location toolBar
-  ViewToolBar * getLocationBar();
+  ViewToolBar3 * getLocationBar();
 
   QString getInitFilename();
 
@@ -149,9 +149,9 @@ public slots:
   /// Draw The Location Bar.
   void drawLocationBar(bool b = false);
 
-  /// Find a correct file name and correct extension and ask ViewGLFrame to save current scene as bitmap.
+  /// Find a correct file name and correct extension and ask ViewGLFrame3 to save current scene as bitmap.
   void saveImage();
-  /// Find a correct file name and correct extension and ask ViewGLFrame to save current scene as bitmap.
+  /// Find a correct file name and correct extension and ask ViewGLFrame3 to save current scene as bitmap.
   void saveImageWithAlpha();
 
   /// Find an existant geom or smb file name.
@@ -200,7 +200,7 @@ public slots:
   void status(const QString&,int);
 
   void connectTo(QStatusBar *);
-  void connectTo(ViewErrorDialog *);
+  void connectTo(ViewErrorDialog3 *);
 
   void saveToolbarState(bool);
   bool getToolbarStateSave() const;
@@ -263,12 +263,12 @@ signals:
   /// is a file as been open in this session.
   bool __hasOpenFile;
     
-  /// A pointer to the ViewGLFrame.
-  ViewGLFrame * __GLFrame;
-  ViewControlPanel * __controlPanel;
+  /// A pointer to the ViewGLFrame3.
+  ViewGLFrame3 * __GLFrame;
+  ViewControlPanel3 * __controlPanel;
 
-  ViewLocationBar * __locatToolBar;
-  ViewHelpMenu * __helpmenu;
+  ViewLocationBar3 * __locatToolBar;
+  ViewHelpMenu3 * __helpmenu;
   QString __pictureDir;
   QUrlOperator __url;
   QString __downloadingfile;

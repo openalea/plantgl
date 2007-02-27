@@ -85,14 +85,14 @@ TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
 
-ViewEditMatDialog::ViewEditMatDialog(QWidget * parent, 
+ViewEditMatDialog3::ViewEditMatDialog3(QWidget * parent, 
 	      const char * name, 
 	      bool modal, 
 	      WFlags f) : 
-  ViewDialog(parent,name,modal,f),
+  ViewDialog3(parent,name,modal,f),
   __matedit(NULL),
   __appe(0){
-  __matedit = new MaterialEditor(this);
+  __matedit = new MaterialEditor3(this);
   QVBoxLayout * l1 = new QVBoxLayout(this);
   l1->addWidget(__matedit);
   QHBoxLayout * l = new QHBoxLayout(l1);
@@ -115,7 +115,7 @@ ViewEditMatDialog::ViewEditMatDialog(QWidget * parent,
 }
 
 void 
-ViewEditMatDialog::setMaterial(PGL(MaterialPtr) appe)
+ViewEditMatDialog3::setMaterial(PGL(MaterialPtr) appe)
 {
   __appe = appe;
   __default = new Material(*appe);
@@ -123,37 +123,37 @@ ViewEditMatDialog::setMaterial(PGL(MaterialPtr) appe)
 }
 
 void 
-ViewEditMatDialog::setClipboardMaterial(PGL(AppearancePtr)* clipboard)
+ViewEditMatDialog3::setClipboardMaterial(PGL(AppearancePtr)* clipboard)
 {
 	__clipboard = clipboard;
 }
 
 void
-ViewEditMatDialog::apply(){
+ViewEditMatDialog3::apply(){
   (*__appe) = *(__matedit->getMaterial());
   emit valueChanged();
 }
 
 void
-ViewEditMatDialog::reset(){
+ViewEditMatDialog3::reset(){
   __matedit->setMaterial(new Material(*__default));
   emit valueChanged();
 }
 
 void
-ViewEditMatDialog::ok(){
+ViewEditMatDialog3::ok(){
   apply();
   __appe = 0;
   accept();
 }
 
 void
-ViewEditMatDialog::cancel(){
+ViewEditMatDialog3::cancel(){
   __appe = 0;
   reject();
 }
 
-void ViewEditMatDialog::importClipboard()
+void ViewEditMatDialog3::importClipboard()
 {
 	if(__clipboard && __clipboard->isValid())
 	{
@@ -167,29 +167,29 @@ void ViewEditMatDialog::importClipboard()
 
 /* ----------------------------------------------------------------------- */
 
-ViewEditGeomSceneGL::ViewEditGeomSceneGL(ViewCameraGL * camera,
-										 ViewLightGL * light,
+ViewEditGeomSceneGL3::ViewEditGeomSceneGL3(ViewCameraGL3 * camera,
+										 ViewLightGL3 * light,
 										 QGLWidget * parent, 
 										 const char * name):
-ViewMultiGeomSceneGL(camera,light,parent,name),
+ViewMultiGeomSceneGL3(camera,light,parent,name),
 __appeclipboard(0),
 __mateditor(0){
 }
 
-ViewEditGeomSceneGL::~ViewEditGeomSceneGL(){
+ViewEditGeomSceneGL3::~ViewEditGeomSceneGL3(){
 }
 
 void
-ViewEditGeomSceneGL::clear(){
+ViewEditGeomSceneGL3::clear(){
   __appeclipboard = 0;
-  ViewMultiGeomSceneGL::clear();
+  ViewMultiGeomSceneGL3::clear();
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 bool
-ViewEditGeomSceneGL::addEditEntries(QPopupMenu * menu)
+ViewEditGeomSceneGL3::addEditEntries(QPopupMenu * menu)
 {
   menu->insertItem( tr("Edit Material"),
                     this,SLOT(editMaterial()));
@@ -201,13 +201,13 @@ ViewEditGeomSceneGL::addEditEntries(QPopupMenu * menu)
   menu->insertItem( tr("Paste Material"),
                     this,SLOT(pasteMaterial()),CTRL+Key_V);
   menu->insertSeparator();
-  ViewMultiGeomSceneGL::addEditEntries(menu);
+  ViewMultiGeomSceneGL3::addEditEntries(menu);
   return true;
 }
 
 
 void 
-ViewEditGeomSceneGL::editMaterial()
+ViewEditGeomSceneGL3::editMaterial()
 {
   if(__scene->getSize() != 1){
 	if(__selectedShapes.empty()){
@@ -225,7 +225,7 @@ ViewEditGeomSceneGL::editMaterial()
   MaterialPtr mat;
   if(mat.cast(appe)){
 	if(!__mateditor){
-	  __mateditor = new ViewEditMatDialog(__frame,"Material Editor");
+	  __mateditor = new ViewEditMatDialog3(__frame,"Material Editor");
 	  __mateditor->setClipboardMaterial(&__appeclipboard);
 	  QObject::connect(__mateditor,SIGNAL(valueChanged()),this,SLOT(applyEdition()));
 	}
@@ -236,13 +236,13 @@ ViewEditGeomSceneGL::editMaterial()
 }
 
 void
-ViewEditGeomSceneGL::applyEdition(){
+ViewEditGeomSceneGL3::applyEdition(){
   __renderer.clearSceneList();
   emit valueChanged();
 }
 
 void 
-ViewEditGeomSceneGL::dissociateMaterial()
+ViewEditGeomSceneGL3::dissociateMaterial()
 {
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
@@ -280,7 +280,7 @@ ViewEditGeomSceneGL::dissociateMaterial()
   valueChanged();
 }
 
-void ViewEditGeomSceneGL::setAppearance(ScenePtr scene,AppearancePtr appe) const
+void ViewEditGeomSceneGL3::setAppearance(ScenePtr scene,AppearancePtr appe) const
 {
   if(!scene)return;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
@@ -294,7 +294,7 @@ void ViewEditGeomSceneGL::setAppearance(ScenePtr scene,AppearancePtr appe) const
 }
 
 bool 
-ViewEditGeomSceneGL::hasSameMaterial(ScenePtr scene,AppearancePtr appe) const
+ViewEditGeomSceneGL3::hasSameMaterial(ScenePtr scene,AppearancePtr appe) const
 {
   if(scene.isNull() ||appe.isNull())return true;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
@@ -314,7 +314,7 @@ ViewEditGeomSceneGL::hasSameMaterial(ScenePtr scene,AppearancePtr appe) const
 }
 
 bool 
-ViewEditGeomSceneGL::hasSameMaterial() const
+ViewEditGeomSceneGL3::hasSameMaterial() const
 {
   AppearancePtr mat = getSelectedAppearance();
   if(!mat)return false;
@@ -336,7 +336,7 @@ ViewEditGeomSceneGL::hasSameMaterial() const
 }
 
 AppearancePtr
-ViewEditGeomSceneGL::getSelectedAppearance() const
+ViewEditGeomSceneGL3::getSelectedAppearance() const
 {
   if(__selectedShapes.empty()) {
 	if (__scene->getSize() == 1) return getSelectedAppearance(__scene);
@@ -360,7 +360,7 @@ ViewEditGeomSceneGL::getSelectedAppearance() const
 }
 
 AppearancePtr 
-ViewEditGeomSceneGL::getSelectedAppearance(ScenePtr scene) const
+ViewEditGeomSceneGL3::getSelectedAppearance(ScenePtr scene) const
 {
   if(scene.isNull() || scene->isEmpty()) return NULL;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
@@ -380,7 +380,7 @@ ViewEditGeomSceneGL::getSelectedAppearance(ScenePtr scene) const
 }
 
 void
-ViewEditGeomSceneGL::copyMaterial(){
+ViewEditGeomSceneGL3::copyMaterial(){
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("One shape must be selected to copy material."),1,0,0);
@@ -395,7 +395,7 @@ ViewEditGeomSceneGL::copyMaterial(){
 }
 
 void
-ViewEditGeomSceneGL::pasteMaterial(){
+ViewEditGeomSceneGL3::pasteMaterial(){
   if(!__appeclipboard){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No material available."),1,0,0);
@@ -420,11 +420,11 @@ ViewEditGeomSceneGL::pasteMaterial(){
 
 /* ----------------------------------------------------------------------- */
 
-ViewMultiscaleEditGeomSceneGL::ViewMultiscaleEditGeomSceneGL(ViewCameraGL * camera,
-										 ViewLightGL * light,
+ViewMultiscaleEditGeomSceneGL3::ViewMultiscaleEditGeomSceneGL3(ViewCameraGL3 * camera,
+										 ViewLightGL3 * light,
 										 QGLWidget * parent, 
 										 const char * name):
-ViewEditGeomSceneGL(camera,light,parent,name),
+ViewEditGeomSceneGL3(camera,light,parent,name),
 __appform(0),
 __matmacro(new Material(*MaterialPtr::Cast(Material::DEFAULT_MATERIAL))){
   __matmacro->setName("");
@@ -432,23 +432,23 @@ __matmacro(new Material(*MaterialPtr::Cast(Material::DEFAULT_MATERIAL))){
   
 }
 
-ViewMultiscaleEditGeomSceneGL::~ViewMultiscaleEditGeomSceneGL(){
+ViewMultiscaleEditGeomSceneGL3::~ViewMultiscaleEditGeomSceneGL3(){
 }
 
 bool 
-ViewMultiscaleEditGeomSceneGL::addEditEntries(QPopupMenu * menu)
+ViewMultiscaleEditGeomSceneGL3::addEditEntries(QPopupMenu * menu)
 {
   menu->insertItem( tr("Fit Geometry"),
                     this,SLOT(editMultiScaleGeometry()));
   menu->insertSeparator();
-  ViewEditGeomSceneGL::addEditEntries(menu);
+  ViewEditGeomSceneGL3::addEditEntries(menu);
   return true;
 
 }
 
 
 void
-ViewMultiscaleEditGeomSceneGL::editMultiScaleGeometry(){
+ViewMultiscaleEditGeomSceneGL3::editMultiScaleGeometry(){
   if(__scene.isNull() || __scene->isEmpty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No Geometry to Fit."),1,0,0);
@@ -487,7 +487,7 @@ ViewMultiscaleEditGeomSceneGL::editMultiScaleGeometry(){
 }
 
 void
-ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
+ViewMultiscaleEditGeomSceneGL3::computeMultiScaleGeometry(){
   if(!__appform)return;
   __appform->hide();
   ScenePtr scene;
@@ -531,15 +531,15 @@ ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
 	}
   }
   newscene->add(Shape(result,AppearancePtr(new Material(*__matmacro))));
-  GeomSceneChangeEvent * e = new GeomSceneChangeEvent(newscene,NULL,NULL);
+  GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(newscene,NULL,NULL);
   QApplication::postEvent(this,e);
 
 }
 
 void 
-ViewMultiscaleEditGeomSceneGL::editMacroMaterial(){
+ViewMultiscaleEditGeomSceneGL3::editMacroMaterial(){
   if(!__mateditor){
-	__mateditor = new ViewEditMatDialog(__frame,"Material Editor");
+	__mateditor = new ViewEditMatDialog3(__frame,"Material Editor");
     __mateditor->setClipboardMaterial(&__appeclipboard);
 	QObject::connect(__mateditor,SIGNAL(valueChanged()),this,SLOT(applyEdition()));
   }
@@ -550,7 +550,7 @@ ViewMultiscaleEditGeomSceneGL::editMacroMaterial(){
 
 
 void
-ViewMultiscaleEditGeomSceneGL::updateMaterial(const QColor& col){
+ViewMultiscaleEditGeomSceneGL3::updateMaterial(const QColor& col){
   if(!__appform)return;
   QPalette pal = __appform->MaterialButton->palette();
   QColorGroup c = pal.active();
@@ -563,11 +563,11 @@ ViewMultiscaleEditGeomSceneGL::updateMaterial(const QColor& col){
 #define GCOL2QCOL(col) QColor(col.getRed(),col.getGreen(),col.getBlue())
 
 void
-ViewMultiscaleEditGeomSceneGL::applyEdition(){
+ViewMultiscaleEditGeomSceneGL3::applyEdition(){
   if(__mateditor && __mateditor->getMaterial().equal(__matmacro)){
 	updateMaterial(GCOL2QCOL(__matmacro->getDiffuseColor()));
   }
   else {
-	ViewEditGeomSceneGL::applyEdition();
+	ViewEditGeomSceneGL3::applyEdition();
   }
 }

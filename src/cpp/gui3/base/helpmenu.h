@@ -37,7 +37,7 @@
  */				
 
 /*! \file view_helpmenu.h
-    \brief Definition of the viewer class ViewHelpMenu.
+    \brief Definition of the viewer class ViewHelpMenu3.
 */
 
 #ifndef __view_helpmenu_h__
@@ -45,26 +45,26 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <qpopupmenu.h>
 #include <qdialog.h>
 #include <qtimer.h>
 #include <vector>
 class QGLWidget;
-class ViewAboutDialog;
+class ViewAboutDialog3;
 class QLabel;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewHelpMenu
+   \class ViewHelpMenu3
    \brief A Class who control Popup Menu relative to Help.
    Display Help Information.
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewHelpMenu : public QPopupMenu 
+class VIEW3_API ViewHelpMenu3 : public QPopupMenu 
 {
   Q_OBJECT
   Q_PROPERTY(int AppStyle READ getStyle WRITE setStyle );
@@ -73,12 +73,12 @@ class VIEW_API ViewHelpMenu : public QPopupMenu
 
 
   /// Constructor
-  ViewHelpMenu(QWidget * parent=0,
+  ViewHelpMenu3(QWidget * parent=0,
 	   QGLWidget * glwidget = 0,
 	   const char * name=0);
   
   /// Destructor
-  ~ViewHelpMenu();
+  ~ViewHelpMenu3();
   
   int getStyle() const;
 
@@ -121,19 +121,19 @@ protected :
   std::vector<int>  __ids;
 
   QGLWidget * __glwidget;
-  ViewAboutDialog * __about;
+  ViewAboutDialog3 * __about;
 
 };
 
-class ViewAboutDialog : public QDialog {
+class ViewAboutDialog3 : public QDialog {
   Q_OBJECT
 public :
-  ViewAboutDialog ( QWidget * parent=0, 
+  ViewAboutDialog3 ( QWidget * parent=0, 
 					const char * name=0, 
 					int timeout=-1,
 					bool modal=FALSE);
 
-	 ~ViewAboutDialog();
+	 ~ViewAboutDialog3();
 
 	 void display(int timeout);
 	 bool useNewStyle() const { return __style; }

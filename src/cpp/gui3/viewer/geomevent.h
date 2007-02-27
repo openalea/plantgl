@@ -51,27 +51,27 @@
 /* ----------------------------------------------------------------------- */
 
 /** 
-    \class GeomSceneChangeEvent
+    \class GeomSceneChangeEvent3
     \brief Event for GEOM Scene Change.
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
+class VIEW3_API GeomSceneChangeEvent3 : public ViewSceneChangeEvent3 {
   
   public :
     
   /// Constructor.
-  GeomSceneChangeEvent(PGL(ScenePtr) scene, 
+  GeomSceneChangeEvent3(PGL(ScenePtr) scene, 
 		       const QString& = QString::null, 
 		       const QString& _file = QString::null,
 			   bool add = false);
   
   /// Destructor.
-  ~GeomSceneChangeEvent();
+  ~GeomSceneChangeEvent3();
     
   /// copy object.
-  virtual ViewSceneChangeEvent * copy();
+  virtual ViewSceneChangeEvent3 * copy();
 
   /// The scene to display.
   PGL(ScenePtr) scene;
@@ -87,25 +87,25 @@ class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
 };
 
 /** 
-    \class GeomMultiSceneChangeEvent
+    \class GeomMultiSceneChangeEvent3
     \brief Event for GEOM Scene Change using multiple scene.
 */
-class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
+class VIEW3_API GeomMultiSceneChangeEvent3 : public GeomSceneChangeEvent3 {
   
   public :
     
   /// Constructor.
-  GeomMultiSceneChangeEvent(PGL(ScenePtr) scene1, 
+  GeomMultiSceneChangeEvent3(PGL(ScenePtr) scene1, 
 			    PGL(ScenePtr) scene2,
 			    const QString& errlog = QString::null, 
 			    const QString& file1 = QString::null,
 			    const QString& file2 = QString::null);
   
   /// Destructor.
-  ~GeomMultiSceneChangeEvent();
+  ~GeomMultiSceneChangeEvent3();
     
   /// copy object.
-  virtual ViewSceneChangeEvent * copy();
+  virtual ViewSceneChangeEvent3 * copy();
 
   /// The scene to display.
   PGL(ScenePtr) scene2;
@@ -117,15 +117,15 @@ class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API GeomGetSceneEvent : public ViewEvent {
+class VIEW3_API GeomGetSceneEvent3 : public ViewEvent3 {
   
   public :
     
   /// Constructor.
-  GeomGetSceneEvent(PGL(ScenePtr)* scene);
+  GeomGetSceneEvent3(PGL(ScenePtr)* scene);
   
   /// Destructor.
-  ~GeomGetSceneEvent();
+  ~GeomGetSceneEvent3();
     
   /// The scene to display.
   PGL(ScenePtr)* scene;
@@ -134,36 +134,36 @@ class VIEW_API GeomGetSceneEvent : public ViewEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class GeomProjListEvent : public ViewEvent {
+class GeomProjListEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-	GeomProjListEvent(const PGL(ScenePtr)& sc, std::vector<std::pair<uint32_t,double> > * res);
+	GeomProjListEvent3(const PGL(ScenePtr)& sc, std::vector<std::pair<uint32_t,double> > * res);
 
   /// Destructor.
-  ~GeomProjListEvent();
+  ~GeomProjListEvent3();
 
   std::vector<std::pair<uint32_t,double> > *  result;
   PGL(ScenePtr) objlist;
 };
 
 /* ----------------------------------------------------------------------- */
-class ViewRayPointHitBuffer;
+class ViewRayPointHitBuffer3;
 
-class ViewRayBuff2Event : public ViewEvent {
+class ViewRayBuff2Event3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-	ViewRayBuff2Event(const PGL(ScenePtr)& sc, 
+	ViewRayBuff2Event3(const PGL(ScenePtr)& sc, 
 					  bool back_test = true,
-					  ViewRayPointHitBuffer ** res = NULL);
+					  ViewRayPointHitBuffer3 ** res = NULL);
 	
 	/// Destructor.
-	~ViewRayBuff2Event();
+	~ViewRayBuff2Event3();
 	
-	ViewRayPointHitBuffer **  result;
+	ViewRayPointHitBuffer3 **  result;
     PGL(ScenePtr) objlist;
 	bool back_test;
 

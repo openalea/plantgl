@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_modalscenegl.h
-    \brief Definition of the viewer class ViewModalRendererGL.
+    \brief Definition of the viewer class ViewModalRendererGL3.
 */
 
 #ifndef __view_modalscenegl_h__
@@ -49,14 +49,14 @@
 /* ----------------------------------------------------------------------- */
 
 /**   
-      \class ViewModalRendererGL
+      \class ViewModalRendererGL3
       \brief A GL Display Manager for Scene with 3 Rendering mode : Normal, Wire, Skeleton
       and 2 options : Bounding Box and Control Points.      
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
+class VIEW3_API ViewModalRendererGL3  : public ViewSceneRendererGL3
 {
   Q_OBJECT
   Q_PROPERTY( int RenderingMode READ getRenderingMode)
@@ -66,13 +66,13 @@ class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
     public :
   
   /// Constructor.
-    ViewModalRendererGL(ViewCameraGL * camera=0,
-			ViewLightGL * light=0,
+    ViewModalRendererGL3(ViewCameraGL3 * camera=0,
+			ViewLightGL3 * light=0,
 			QGLWidget * parent=0, 
 			const char * name=0);
   
   /// Destructor.
-  virtual ~ViewModalRendererGL();
+  virtual ~ViewModalRendererGL3();
 
     /// Get the Rendering Mode
   int getRenderingMode() const;

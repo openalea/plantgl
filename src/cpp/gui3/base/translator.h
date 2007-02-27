@@ -46,9 +46,9 @@
 #include <qstringlist.h>
 /* ----------------------------------------------------------------------- */
 
-void removeTranslator();
-void setFrenchTranslator();
-QStringList getAvailableLanguage();
+void removeTranslator3();
+void setFrenchTranslator3();
+QStringList getAvailableLanguage3();
 
 #endif
 

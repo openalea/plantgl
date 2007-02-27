@@ -67,16 +67,16 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const char * name):
+ViewCameraMenu3::ViewCameraMenu3(ViewCameraGL3 * camera,QWidget * parent, const char * name):
   QPopupMenu(parent,name)
 {
-  QPixmap home(ViewerIcon::getPixmap(ViewerIcon::icon_home));
-  QPixmap read(ViewerIcon::getPixmap(ViewerIcon::icon_fileopen));
-  QPixmap save(ViewerIcon::getPixmap(ViewerIcon::icon_filefloppy));
-  QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::icon_perspective));
-  QPixmap ortho(ViewerIcon::getPixmap(ViewerIcon::icon_orthographic));
-  QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::icon_linked));
-  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::icon_eyef));
+  QPixmap home(ViewerIcon3::getPixmap(ViewerIcon3::icon_home));
+  QPixmap read(ViewerIcon3::getPixmap(ViewerIcon3::icon_fileopen));
+  QPixmap save(ViewerIcon3::getPixmap(ViewerIcon3::icon_filefloppy));
+  QPixmap persp(ViewerIcon3::getPixmap(ViewerIcon3::icon_perspective));
+  QPixmap ortho(ViewerIcon3::getPixmap(ViewerIcon3::icon_orthographic));
+  QPixmap linked(ViewerIcon3::getPixmap(ViewerIcon3::icon_linked));
+  QPixmap eyef(ViewerIcon3::getPixmap(ViewerIcon3::icon_eyef));
 
   insertItem(home,tr("&Home"),       camera,SLOT(home()),CTRL+Key_H);
   insertItem(tr("&Front View (YZ)"),camera,SLOT(YZView()));
@@ -110,12 +110,12 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   insertItem(eyef,tr("&Fit to Window"),       camera,SLOT(reDim()));
 }
 
-ViewCameraMenu::~ViewCameraMenu()
+ViewCameraMenu3::~ViewCameraMenu3()
 {
 }
 
 void
-ViewCameraMenu::setProjectionMode(bool b)
+ViewCameraMenu3::setProjectionMode(bool b)
 {
   __projectionMenu->setItemChecked(idPerspective,b );
   __projectionMenu->setItemChecked(idOrtho,!b);
@@ -123,7 +123,7 @@ ViewCameraMenu::setProjectionMode(bool b)
 }
 
 void
-ViewCameraMenu::setCoordSys(int b)
+ViewCameraMenu3::setCoordSys(int b)
 {
   __coordMenu->setItemChecked(idGEOMcoord,(b ==1));
   __coordMenu->setItemChecked(idGLcoord,(b ==0));
@@ -131,7 +131,7 @@ ViewCameraMenu::setCoordSys(int b)
 }
 
 void 
-ViewCameraMenu::setLock(bool b)
+ViewCameraMenu3::setLock(bool b)
 {
   if(isItemChecked(idLock) == b)
   setItemChecked(idLock,!b );
@@ -140,8 +140,8 @@ ViewCameraMenu::setLock(bool b)
 /* ----------------------------------------------------------------------- */
 
 
-ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
-  ViewObjectGL(parent,name),
+ViewCameraGL3::ViewCameraGL3(QGLWidget * parent, const char * name) :
+  ViewObjectGL3(parent,name),
   __azimuth(0),
   __elevation(0),
   __stepMove(1),
@@ -161,8 +161,8 @@ ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
 {
 }
 
-ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
-  ViewObjectGL(parent,name),
+ViewCameraGL3::ViewCameraGL3(QObject * parent, const char * name) :
+  ViewObjectGL3(parent,name),
   __azimuth(0),
   __elevation(0),
   __stepMove(1),
@@ -181,11 +181,11 @@ ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
 {
 }
 
-ViewCameraGL::~ViewCameraGL()
+ViewCameraGL3::~ViewCameraGL3()
 {
 }
 
-void ViewCameraGL::home()
+void ViewCameraGL3::home()
 {
   __azimuth = 0;
   __elevation = 0;
@@ -200,7 +200,7 @@ void ViewCameraGL::home()
   emit valueChanged();
 }
 
-void ViewCameraGL::XYView()
+void ViewCameraGL3::XYView()
 {
   __azimuth = 0;
   __elevation = 90;
@@ -211,7 +211,7 @@ void ViewCameraGL::XYView()
   emit valueChanged();
 }
 
-void ViewCameraGL::XZView()
+void ViewCameraGL3::XZView()
 {
   __azimuth = 90;
   __elevation = 0;
@@ -222,7 +222,7 @@ void ViewCameraGL::XZView()
   emit valueChanged();
 }
 
-void ViewCameraGL::YZView()
+void ViewCameraGL3::YZView()
 {
   __azimuth = 0;
   __elevation = 0;
@@ -234,7 +234,7 @@ void ViewCameraGL::YZView()
 }
 
 
-void ViewCameraGL::nextView()
+void ViewCameraGL3::nextView()
 {
   switch((int)__azimuth){
   case 90:
@@ -270,14 +270,14 @@ void ViewCameraGL::nextView()
   emit valueChanged();
 }
 
-void ViewCameraGL::setAngles(double azimuth, double elevation)
+void ViewCameraGL3::setAngles(double azimuth, double elevation)
 {
 	__azimuth = azimuth;
 	__elevation = elevation;
 }
 
 void
-ViewCameraGL::setAzimuth(double azimuth)
+ViewCameraGL3::setAzimuth(double azimuth)
 {
   if(__azimuth != azimuth){
 	__azimuth = azimuth;
@@ -288,7 +288,7 @@ ViewCameraGL::setAzimuth(double azimuth)
 }
 
 void
-ViewCameraGL::setElevation(double elevation)
+ViewCameraGL3::setElevation(double elevation)
 {
   if(__elevation != elevation){
 	__elevation = elevation;
@@ -299,7 +299,7 @@ ViewCameraGL::setElevation(double elevation)
 }
 
 void
-ViewCameraGL::setZoom(double zoom)
+ViewCameraGL3::setZoom(double zoom)
 {
   if(__translation.x() != zoom){
 	__translation.x() = zoom;
@@ -310,7 +310,7 @@ ViewCameraGL::setZoom(double zoom)
 
 
 void
-ViewCameraGL::setAzimuth(int azimuth)
+ViewCameraGL3::setAzimuth(int azimuth)
 {
   if(__azimuth != azimuth){
 	__azimuth = azimuth;
@@ -321,7 +321,7 @@ ViewCameraGL::setAzimuth(int azimuth)
 }
 
 void
-ViewCameraGL::setElevation(int elevation)
+ViewCameraGL3::setElevation(int elevation)
 {
   if(__elevation != elevation){
 	__elevation = elevation;
@@ -332,7 +332,7 @@ ViewCameraGL::setElevation(int elevation)
 }
 
 void
-ViewCameraGL::setZoom(int zoom)
+ViewCameraGL3::setZoom(int zoom)
 {
   if(__translation.x() != zoom){
 	__translation.x() = zoom;
@@ -343,45 +343,45 @@ ViewCameraGL::setZoom(int zoom)
 
 /*
 void
-ViewCameraGL::setAzimuth(const QString& azimuth)
+ViewCameraGL3::setAzimuth(const QString& azimuth)
 {
   setAzimuth(double(azimuth.toInt()));
 }
 
 void
-ViewCameraGL::setElevation(const QString& elevation)
+ViewCameraGL3::setElevation(const QString& elevation)
 {
   setElevation(double(elevation.toInt()));
 }
 
 void
-ViewCameraGL::setZoom(const QString& zoom)
+ViewCameraGL3::setZoom(const QString& zoom)
 {
   __translation.x() = zoom.toInt();
 }
 */
 void
-ViewCameraGL::setViewAngle(const QString& angle)
+ViewCameraGL3::setViewAngle(const QString& angle)
 {
   __default_view_angle = (double)angle.toInt();
 }
 
 void
-ViewCameraGL::setFarPlane(const QString& plane)
+ViewCameraGL3::setFarPlane(const QString& plane)
 {
   __far_plane = (double)plane.toFloat();
   emit farPlaneChanged(QString::number(__far_plane));
 }
 
 void
-ViewCameraGL::setNearPlane(const QString& plane)
+ViewCameraGL3::setNearPlane(const QString& plane)
 {
   __near_plane = (double)plane.toFloat();
   emit nearPlaneChanged(QString::number(__near_plane));
 }
 
 void
-ViewCameraGL::validViewAngle()
+ViewCameraGL3::validViewAngle()
 {
   initialize(__radius,__center);
   glInitProjectionMatrix();
@@ -391,40 +391,40 @@ ViewCameraGL::validViewAngle()
 }
 
 void
-ViewCameraGL::validValue(){
+ViewCameraGL3::validValue(){
   glInitProjectionMatrix();
   emit valueChanged();
 }
 
 void
-ViewCameraGL::setStepMove(const QString& step)
+ViewCameraGL3::setStepMove(const QString& step)
 {
 
   setStepMove(step.toInt());
 }
 
 void
-ViewCameraGL::setStepMove(int step)
+ViewCameraGL3::setStepMove(int step)
 {
   __stepMove = step;
 }
 
 void
-ViewCameraGL::setDistanceX(const double& dist)
+ViewCameraGL3::setDistanceX(const double& dist)
 {
   __translation.y() = dist;
   emit valueChanged();
 }
 
 void
-ViewCameraGL::setDistanceY(const double& dist)
+ViewCameraGL3::setDistanceY(const double& dist)
 {
   __translation.z() = dist;
   emit valueChanged();
 }
 
 void
-ViewCameraGL::setCenter(const Vector3& center)
+ViewCameraGL3::setCenter(const Vector3& center)
 {
   __center = center;
   emit valueChanged();
@@ -432,7 +432,7 @@ ViewCameraGL::setCenter(const Vector3& center)
 
 
 void
-ViewCameraGL::moving(int dx, int dy)
+ViewCameraGL3::moving(int dx, int dy)
 {
   double ratio = 0.05;
   __translation.y() -= ratio *__stepMove*dx;
@@ -440,7 +440,7 @@ ViewCameraGL::moving(int dx, int dy)
 }
 
 void
-ViewCameraGL::zooming(int dx, int dy)
+ViewCameraGL3::zooming(int dx, int dy)
 {
   __translation.x() += dy*__stepMove;
   glInitProjectionMatrix();
@@ -450,7 +450,7 @@ ViewCameraGL::zooming(int dx, int dy)
 
 
 void
-ViewCameraGL::rotating(int dx, int dy)
+ViewCameraGL3::rotating(int dx, int dy)
 {
   __azimuth +=(float)dx; // /4.0f;
   if(__azimuth >= 180)
@@ -469,7 +469,7 @@ ViewCameraGL::rotating(int dx, int dy)
 }
 
 void
-ViewCameraGL::setViewAngle(double angle)
+ViewCameraGL3::setViewAngle(double angle)
 {
   __default_view_angle = angle;
   initialize(__radius,__center);
@@ -481,7 +481,7 @@ ViewCameraGL::setViewAngle(double angle)
 
 
 void
-ViewCameraGL::initializeGL()
+ViewCameraGL3::initializeGL()
 {
   BoundingBoxPtr bbox(0);
   initialize(bbox);
@@ -489,7 +489,7 @@ ViewCameraGL::initializeGL()
 
 static bool first = true;
 void
-ViewCameraGL::buildCamera(const BoundingBoxPtr& bbox, bool force)
+ViewCameraGL3::buildCamera(const BoundingBoxPtr& bbox, bool force)
 {
    if(!__lockdim || force || first){
 	initialize(bbox);
@@ -501,7 +501,7 @@ ViewCameraGL::buildCamera(const BoundingBoxPtr& bbox, bool force)
 
 
 void
-ViewCameraGL::initialize(const BoundingBoxPtr& bbox)
+ViewCameraGL3::initialize(const BoundingBoxPtr& bbox)
 {
   double radius = 2;
   Vector3 center(0,0,0);
@@ -514,7 +514,7 @@ ViewCameraGL::initialize(const BoundingBoxPtr& bbox)
 }
 
 void
-ViewCameraGL::initialize(const double& _radius,const Vector3& center)
+ViewCameraGL3::initialize(const double& _radius,const Vector3& center)
 {
 
   double _default_far_plane = 200;
@@ -554,7 +554,7 @@ ViewCameraGL::initialize(const double& _radius,const Vector3& center)
 }
 
 void
-ViewCameraGL::resizeGL(int w, int h)
+ViewCameraGL3::resizeGL(int w, int h)
 {
   __width = w;
   __height = h;
@@ -571,13 +571,13 @@ ViewCameraGL::resizeGL(int w, int h)
 }
 
 void
-ViewCameraGL::beginSelectGL(const QPoint& point)
+ViewCameraGL3::beginSelectGL(const QPoint& point)
 {
   beginSelectGL(point.x(),point.y());
 }
 
 void
-ViewCameraGL::beginSelectGL(int x, int y)
+ViewCameraGL3::beginSelectGL(int x, int y)
 {
   GEOM_GL_ERROR;
 
@@ -598,7 +598,7 @@ ViewCameraGL::beginSelectGL(int x, int y)
 }
 
 void 
-ViewCameraGL::beginSelectGL(const QRect& region)
+ViewCameraGL3::beginSelectGL(const QRect& region)
 {
   GEOM_GL_ERROR;
 
@@ -627,7 +627,7 @@ ViewCameraGL::beginSelectGL(const QRect& region)
 }
 
 void
-ViewCameraGL::endSelectGL()
+ViewCameraGL3::endSelectGL()
 {
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
@@ -635,14 +635,14 @@ ViewCameraGL::endSelectGL()
 
 
 void
-ViewCameraGL::paintGL()
+ViewCameraGL3::paintGL()
 {
         glInitProjectionMatrix();
         glInitModelViewMatrix();
 }
 
 void
-ViewCameraGL::glInitModelViewMatrix()
+ViewCameraGL3::glInitModelViewMatrix()
 {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -650,7 +650,7 @@ ViewCameraGL::glInitModelViewMatrix()
 }
 
 void
-ViewCameraGL::glPushModelViewMatrix()
+ViewCameraGL3::glPushModelViewMatrix()
 {
   if( __geomsys){ /// Geom Sys Coordinates
                 glGeomTranslate(__translation);
@@ -666,7 +666,7 @@ ViewCameraGL::glPushModelViewMatrix()
 }
 
 void
-ViewCameraGL::glInitProjectionMatrix()
+ViewCameraGL3::glInitProjectionMatrix()
 {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -674,7 +674,7 @@ ViewCameraGL::glInitProjectionMatrix()
 }
 
 void
-ViewCameraGL::glPushProjectionMatrix()
+ViewCameraGL3::glPushProjectionMatrix()
 {
   double dep(0);
   if(__translation.x() < -((__far_plane-__near_plane)/2))
@@ -709,7 +709,7 @@ ViewCameraGL::glPushProjectionMatrix()
 
 
 void
-ViewCameraGL::setPerspectiveMode()
+ViewCameraGL3::setPerspectiveMode()
 {
   if(!__projectionmode){
     status(tr("Perspective Camera"),5000);
@@ -721,7 +721,7 @@ ViewCameraGL::setPerspectiveMode()
 }
 
 void
-ViewCameraGL::setOrthographicMode()
+ViewCameraGL3::setOrthographicMode()
 {
   if(__projectionmode){
     status(tr("Orthographic Camera"),5000);
@@ -733,7 +733,7 @@ ViewCameraGL::setOrthographicMode()
 }
 
 void
-ViewCameraGL::changeCameraMode()
+ViewCameraGL3::changeCameraMode()
 {
   __projectionmode = ! __projectionmode;
   if( __projectionmode)status(tr("Perspective Camera"),5000);
@@ -744,12 +744,12 @@ ViewCameraGL::changeCameraMode()
 }
 
 void
-ViewCameraGL::setProjectionMode(int i){
+ViewCameraGL3::setProjectionMode(int i){
         setProjectionMode(i != 0);
 }
 
 void
-ViewCameraGL::setProjectionMode(bool b)
+ViewCameraGL3::setProjectionMode(bool b)
 {
   if(__projectionmode != b){
     __projectionmode = b;
@@ -762,7 +762,7 @@ ViewCameraGL::setProjectionMode(bool b)
 }
 
 void
-ViewCameraGL::changeCoordSys()
+ViewCameraGL3::changeCoordSys()
 {
   __geomsys = ! __geomsys;
   if( __geomsys)status(tr("GEOM Coordinates System"),5000);
@@ -773,12 +773,12 @@ ViewCameraGL::changeCoordSys()
 }
 
 void
-ViewCameraGL::setCoordSys(int i ){
+ViewCameraGL3::setCoordSys(int i ){
         setCoordSys(i != 0);
 }
 
 void
-ViewCameraGL::setCoordSys(bool b)
+ViewCameraGL3::setCoordSys(bool b)
 {
   if( __geomsys != b){
     __geomsys = b;
@@ -790,14 +790,14 @@ ViewCameraGL::setCoordSys(bool b)
   }
 }
 
-void ViewCameraGL::lockDim(int i)
+void ViewCameraGL3::lockDim(int i)
 {
   lockDim(i != 0);
   emit lockDimChanged(__lockdim);
   if(!__lockdim)reDim();
 }
 
-void ViewCameraGL::lockDim(bool b)
+void ViewCameraGL3::lockDim(bool b)
 {
   if(__lockdim != b){
 	__lockdim = b;
@@ -806,21 +806,21 @@ void ViewCameraGL::lockDim(bool b)
   }
 }
 
-void ViewCameraGL::lockDim()
+void ViewCameraGL3::lockDim()
 {
   __lockdim = ! __lockdim;
   emit lockDimChanged(__lockdim);
   if(!__lockdim)reDim();
 }
 
-void ViewCameraGL::reDim()
+void ViewCameraGL3::reDim()
 {
   emit needReDim();
   emit valueChanged();
 }
 
 void
-ViewCameraGL::setGEOMCoordSys()
+ViewCameraGL3::setGEOMCoordSys()
 {
   if(!__geomsys){
     __geomsys =  true;
@@ -832,7 +832,7 @@ ViewCameraGL::setGEOMCoordSys()
 }
 
 void
-ViewCameraGL::setGLCoordSys()
+ViewCameraGL3::setGLCoordSys()
 {
   if(__geomsys){
     __geomsys =  false;
@@ -844,7 +844,7 @@ ViewCameraGL::setGLCoordSys()
 }
 #define QSV(v) "&lt; "+QString::number(v.x())+" , "+QString::number(v.y())+" , "+QString::number(v.z())+" &gt;"
 
-Vector3 ViewCameraGL::getPosition(){
+Vector3 ViewCameraGL3::getPosition(){
         Vector3 pos = __eye - __translation;
         pos = Matrix3::axisRotation(Vector3::OY,-__elevation * GEOM_RAD ) * pos;
         pos = Matrix3::axisRotation(Vector3::OZ,__azimuth  * GEOM_RAD ) * pos;
@@ -853,14 +853,14 @@ Vector3 ViewCameraGL::getPosition(){
 }
 
 void 
-ViewCameraGL::setPosition(const QString& position){
+ViewCameraGL3::setPosition(const QString& position){
   QStringList l = QStringList::split(',',position);
   setPosition(Vector3(l[0].toFloat(),l[1].toFloat(),l[2].toFloat()),
 	l[3].toFloat(),l[4].toFloat());
 }
 
 void 
-ViewCameraGL::setPosition(const Vector3& position){
+ViewCameraGL3::setPosition(const Vector3& position){
   Vector3::Spherical tr(position);
   __azimuth = tr.theta* GEOM_DEG;
   __elevation = tr.phi* GEOM_DEG;
@@ -874,7 +874,7 @@ ViewCameraGL::setPosition(const Vector3& position){
 }
 
 void 
-ViewCameraGL::setPosition(const Vector3& position, double az, double el){
+ViewCameraGL3::setPosition(const Vector3& position, double az, double el){
 
   Matrix3 m = Matrix3::eulerRotationZYX(Vector3(az* GEOM_RAD,el* GEOM_RAD,0));
   m = m.inverse();
@@ -891,7 +891,7 @@ ViewCameraGL::setPosition(const Vector3& position, double az, double el){
 }
 
 void 
-ViewCameraGL::lookAt(const Vector3& pos,const Vector3& target){
+ViewCameraGL3::lookAt(const Vector3& pos,const Vector3& target){
 //  qWarning(QString("**>")+QSV(pos)+' - '+QSV(dir));
   Vector3 p = pos - target  ;
   Vector3::Spherical tr(p);
@@ -900,7 +900,7 @@ ViewCameraGL::lookAt(const Vector3& pos,const Vector3& target){
 }
 
 void 
-ViewCameraGL::lookIn(const Vector3& position,const Vector3& dir){
+ViewCameraGL3::lookIn(const Vector3& position,const Vector3& dir){
   Vector3::Spherical tr(-dir);
   double az = tr.theta* GEOM_DEG;
   double el = (tr.phi* GEOM_DEG)-90;
@@ -913,7 +913,7 @@ ViewCameraGL::lookIn(const Vector3& position,const Vector3& dir){
 }
 
 void 
-ViewCameraGL::cameraEvent(ViewCameraEvent * e){
+ViewCameraGL3::cameraEvent(ViewCameraEvent3 * e){
   switch(e->def){
   case 0:
 	setPosition(e->pos);
@@ -930,7 +930,7 @@ ViewCameraGL::cameraEvent(ViewCameraEvent * e){
   }
 }
 
-Vector3 ViewCameraGL::getDirection(){
+Vector3 ViewCameraGL3::getDirection(){
         Vector3 dir = __center - __eye;
         dir.normalize();
         dir = Matrix3::axisRotation(Vector3::OY,-__elevation * GEOM_RAD ) * dir;
@@ -940,7 +940,7 @@ Vector3 ViewCameraGL::getDirection(){
         return dir;
 }
 
-Vector3 ViewCameraGL::getUp(){
+Vector3 ViewCameraGL3::getUp(){
         Vector3 up   (Vector3::OZ);
         up = Matrix3::axisRotation(Vector3::OY,-__elevation * GEOM_RAD ) * up;
         up = Matrix3::axisRotation(Vector3::OZ,__azimuth  * GEOM_RAD ) * up;
@@ -949,7 +949,7 @@ Vector3 ViewCameraGL::getUp(){
         return up;
 }
 
-Vector3 ViewCameraGL::getRight(){
+Vector3 ViewCameraGL3::getRight(){
         Vector3 dir = __center - __eye;
         dir.normalize();
         Vector3 right = cross(dir,Vector3::OZ);
@@ -962,7 +962,7 @@ Vector3 ViewCameraGL::getRight(){
         return right;
 }
 
-Matrix4 ViewCameraGL::getMatrix(){
+Matrix4 ViewCameraGL3::getMatrix(){
         if( __geomsys){ /// Geom Sys Coordinates
 
                 Vector3 up   (Vector3::OZ);
@@ -1013,15 +1013,15 @@ Matrix4 ViewCameraGL::getMatrix(){
 
 
 QPopupMenu *
-ViewCameraGL::createToolsMenu(QWidget * parent)
+ViewCameraGL3::createToolsMenu(QWidget * parent)
 {
-  ViewCameraMenu * __CameraMenu = new ViewCameraMenu(this,parent);
+  ViewCameraMenu3 * __CameraMenu = new ViewCameraMenu3(this,parent);
   return __CameraMenu;
 }
 
 
 void
-ViewCameraGL::addProperties(QTabWidget * tab)
+ViewCameraGL3::addProperties(QTabWidget * tab)
 {
   CameraProperties * tab2 = new CameraProperties( tab, "Camera Prop" );
   tab2->ZoomEdit->setText(QString::number(__translation.x()));
@@ -1159,14 +1159,14 @@ ViewCameraGL::addProperties(QTabWidget * tab)
 }
 
 void
-ViewCameraGL::fillToolBar(QToolBar * toolBar)
+ViewCameraGL3::fillToolBar(QToolBar * toolBar)
 {
-  QPixmap home(ViewerIcon::getPixmap(ViewerIcon::icon_home));
-  QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::icon_perspective));
-  QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::icon_eye));
-  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::icon_eyef));
-  drawArrow(&eye,2);
-  drawArrow(eye.mask(),2);
+  QPixmap home(ViewerIcon3::getPixmap(ViewerIcon3::icon_home));
+  QPixmap persp(ViewerIcon3::getPixmap(ViewerIcon3::icon_perspective));
+  QPixmap eye(ViewerIcon3::getPixmap(ViewerIcon3::icon_eye));
+  QPixmap eyef(ViewerIcon3::getPixmap(ViewerIcon3::icon_eyef));
+  drawArrow3(&eye,2);
+  drawArrow3(eye.mask(),2);
   QToolButton * bt = new QToolButton(home,
                          tr("Home Position"),
                          tr("Home Position"),
@@ -1211,16 +1211,16 @@ ViewCameraGL::fillToolBar(QToolBar * toolBar)
    toolBar->addSeparator();
 }
 
-void ViewCameraGL::save() const
+void ViewCameraGL3::save() const
 {
-  QString filename = ViewFileManager::getSaveFileName("","","",__frame);
+  QString filename = ViewFileManager3::getSaveFileName("","","",__frame);
   if(!filename.isEmpty()){
     save(filename);
   }
 }
 
 void
-ViewCameraGL::read()
+ViewCameraGL3::read()
 {
   QString filename = QFileDialog::getOpenFileName("","",__frame);
   if(!filename.isEmpty()){
@@ -1230,7 +1230,7 @@ ViewCameraGL::read()
 
 #define OV(s,v) s << " " << v.x() << " " << v.y() << " " << v.z()
 
-void ViewCameraGL::save(const QString& filename) const
+void ViewCameraGL3::save(const QString& filename) const
 {
     QFile file(filename);
     if(file.open( IO_WriteOnly )) {
@@ -1252,7 +1252,7 @@ void ViewCameraGL::save(const QString& filename) const
 
 #define IV(s,v) s >> v.x() >> v.y() >> v.z()
 
-void ViewCameraGL::read(const QString& filename)
+void ViewCameraGL3::read(const QString& filename)
 {
     QFile file(filename);
     if(file.exists() && file.open( IO_ReadOnly )) {

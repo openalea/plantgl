@@ -36,6 +36,9 @@
 *  ----------------------------------------------------------------------------
 */
 
+
+#include <qpainter.h>
+
 #include "qobjectbrowser.h"
 #include "interface/qbrowser.h"
 #include "icons.h"
@@ -44,16 +47,12 @@
 #include <qpushbutton.h>
 #include <qcheckbox.h>
 #include <qpixmap.h>
-#include <qwidgetlist.h>
-#include <qwidgetintdict.h>
-#include <qobjectlist.h>
-#include <qobjectdict.h>
 
 #include <qapplication.h>
 #include <qmetaobject.h>
-#include <qstrlist.h>
 #include <qbitmap.h>
 #include <qcursor.h>
+#include <qevent.h>
 
 
 /* ----------------------------------------------------------------------- */
@@ -61,30 +60,30 @@
 class QObjectListBuilder {
   
 public :
-  QObjectListBuilder (QListView * qListView): __current(NULL),
-	__pixgeom(ViewerIcon::icon_geometry),
-	__pixappe(ViewerIcon::icon_appearance),
-	__pixshape(ViewerIcon::icon_shape),
-	__pixtransf(ViewerIcon::icon_transformed),
-	__pixatt(ViewerIcon::icon_attribut),
-	__pixattptr(ViewerIcon::icon_attributptr){
+  QObjectListBuilder (Q3ListView * qListView): __current(NULL),
+	__pixgeom(ViewerIcon::getPixmap(ViewerIcon::geometry)),
+	__pixappe(ViewerIcon::getPixmap(ViewerIcon::appearance)),
+	__pixshape(ViewerIcon::getPixmap(ViewerIcon::shape)),
+	__pixtransf(ViewerIcon::getPixmap(ViewerIcon::transformed)),
+	__pixatt(ViewerIcon::getPixmap(ViewerIcon::attribut)),
+	__pixattptr(ViewerIcon::getPixmap(ViewerIcon::attributptr)){
 	qListView->addColumn( "Name" );
 	qListView->addColumn( "Value" );
 	qListView->addColumn( "Type" );
 	qListView->setTreeStepSize( 20 );
 	qListView->setSorting(-1,TRUE);
-	__current = new QListViewItem(qListView,"Root","Qt Workspace");
+	__current = new Q3ListViewItem(qListView,"Root","Qt Workspace");
 	__current->setPixmap(0,__pixgeom);
 	__current->setOpen(TRUE);
   }
   
   void build(){
-	//           QListViewItem * cur = __current;
-	QListViewItem * qt_list = new QListViewItem(__current,"Basic Qt Object");
+	//           Q3ListViewItem * cur = __current;
+	Q3ListViewItem * qt_list = new Q3ListViewItem(__current,"Basic Qt Object");
 	qt_list->setPixmap(0,__pixattptr);
-	QListViewItem * other_list = new QListViewItem(__current,"Custom Qt Object");
+	Q3ListViewItem * other_list = new Q3ListViewItem(__current,"Custom Qt Object");
 	other_list->setPixmap(0,__pixattptr);
-	const QObjectList * roots = QObject::objectTrees();
+	/*const QObjectList * roots = QObject::objectTrees();
 	if(roots != NULL){
 	  uint size = roots->count();
 	  __current->setText(2,"List<QObject>["+QString::number(size)+"]");
@@ -98,94 +97,82 @@ public :
 		  process(obj);
 		}
 	  }
-	}
+	}*/
   }
   
   void process(const QObject * obj){
 	if(obj != NULL){
-	  QListViewItem * buf = __current;
-	  __current = new QListViewItem(__current,obj->className(),QString(obj->name()));
+	  Q3ListViewItem * buf = __current;
+	  const QMetaObject* _m = obj->metaObject();
+	  __current = new Q3ListViewItem(__current,_m->className(),QString(obj->objectName()));
 	  __current->setPixmap(0,__pixgeom);
-	  QMetaObject* _m = obj->metaObject();
-	  QListViewItem * att = NULL;
+	  Q3ListViewItem * att = NULL;
 	  if(_m != NULL){
-		QString _superclass(_m->superClassName());
-		if(!_superclass.isEmpty()){
-		  att = new QListViewItem(__current,"Inherit",_superclass);
+	    const QMetaObject* _meta = _m->superClass();
+		if(_meta != NULL){
+		  QString _superclass(_meta->className());
+		  att = new Q3ListViewItem(__current,"Inherit",_superclass);
 		  att->setPixmap(0,__pixattptr);
-		  QMetaObject* _meta = _m->superClass();
-		  QListViewItem * att4 = NULL;
+		  Q3ListViewItem * att4 = NULL;
 		  while((_meta = _meta->superClass())!= NULL){
-			att4 = new QListViewItem(att,att4,QString(_meta->className()));
+			att4 = new Q3ListViewItem(att,att4,QString(_meta->className()));
 			att4->setPixmap(0,__pixatt);
 		  }
 		}
-		att = new QListViewItem(__current,att,"Priority",(obj->highPriority()?"High":"Normal"));
+		att = new Q3ListViewItem(__current,att,"Widget",(obj->isWidgetType()?"True":"False"));
 		att->setPixmap(0,__pixatt);
-		att = new QListViewItem(__current,att,"Widget",(obj->isWidgetType()?"True":"False"));
-		att->setPixmap(0,__pixatt);
-		QStrList _slots = _m->slotNames(true);
+/*		QStringList _slots = _m->slotNames(true);
 		if(!_slots.isEmpty()){
-		  att = new QListViewItem(__current,att,"Slots");
+		  att = new Q3ListViewItem(__current,att,"Slots");
 		  att->setPixmap(0,__pixtransf);
 		  uint sl_size = _slots.count();
-		  QListViewItem * att2 = NULL;
+		  Q3ListViewItem * att2 = NULL;
 		  for(uint j = 0; j < sl_size; j++ ){
-			att2 = new QListViewItem(att,att2,_slots.at(j));
+			att2 = new Q3ListViewItem(att,att2,_slots.at(j));
 			att2->setPixmap(0,__pixatt);
 		  }
 		}
 		QStrList _signals = _m->signalNames(true);
 		if(!_signals.isEmpty()){
-		  att = new QListViewItem(__current,att,"Signals");
+		  att = new Q3ListViewItem(__current,att,"Signals");
 		  att->setPixmap(0,__pixtransf);
 		  uint si_size = _signals.count();
-		  QListViewItem * att2 = NULL;
+		  Q3ListViewItem * att2 = NULL;
 		  for(uint j = 0; j < si_size; j++ ){
-			att2 = new QListViewItem(att,att2,_signals.at(j));
+			att2 = new Q3ListViewItem(att,att2,_signals.at(j));
 			att2->setPixmap(0,__pixatt);
 		  }
 		}
 		int numCInfo = _m->numClassInfo(true);
 		if(numCInfo !=0){
-		  att = new QListViewItem(__current,att,"ClassInfo","List<Info>["+QString::number(numCInfo)+']');
+		  att = new Q3ListViewItem(__current,att,"ClassInfo","List<Info>["+QString::number(numCInfo)+']');
 		  att->setPixmap(0,__pixtransf);
-		  QListViewItem * att2 = NULL;
+		  Q3ListViewItem * att2 = NULL;
 		  for(int j = 0; j < numCInfo; j++ ){
 			const QClassInfo * _inf = _m->classInfo(j);
 			if(_inf != NULL){
-			  att2 = new QListViewItem(att,att2,QString(_inf->name),QString(_inf->value));
+			  att2 = new Q3ListViewItem(att,att2,QString(_inf->name),QString(_inf->value));
 			  att2->setPixmap(0,__pixatt);
 			}
 		  }
 		}
 		QStrList _props = _m->propertyNames(true);
 		if(!_props.isEmpty()){
-		  att = new QListViewItem(__current,att,"Properties");
+		  att = new Q3ListViewItem(__current,att,"Properties");
 		  att->setPixmap(0,__pixtransf);
 		  uint p_size = _props.count();
-		  QListViewItem * att2 = NULL;
+		  Q3ListViewItem * att2 = NULL;
 		  for(uint j = 0; j < p_size; j++ ){
-			att2 = new QListViewItem(att,att2,_props.at(j));
+			att2 = new Q3ListViewItem(att,att2,_props.at(j));
 			att2->setPixmap(0,__pixatt);
 			
 			QVariant val;
 			QString propname(_props.at(j));
-#if QT_VERSION >= 300
 			const QMetaProperty*  prop = _m->property (j,true);
-#else
-			const QMetaProperty*  prop = _m->property (propname,true);
-#endif
 			QString proptype;
 			if(prop){
 			  proptype = prop->type();
 			  att2->setText(2,proptype);
-			  /*
-			  QListViewItem * att3 = new QListViewItem(att2,"Writable",(prop->writable()?"True":"False"));
-			  att3->setPixmap(0,__pixatt);
-			  att3 = new QListViewItem(att2,att3,"Designable",(prop->designable()?"True":"False"));
-			  att3->setPixmap(0,__pixatt);
-			  */
 			}
 			
 			val = obj->property(propname);
@@ -278,21 +265,18 @@ public :
 			  else att2->setText(1,QString::number(cur.shape()));
 			}
 		  }
-		}
+		}*/
        }
 
-	   const QObjectList * roots = obj->children();
-	   if(roots != NULL){
-		 __current = new QListViewItem(__current,att,"children","ptr="+QString::number((unsigned long)roots),
-		   "List<QObject>["+QString::number(roots->count())+"]");
+	   const QObjectList& roots = obj->children();
+	   if(!roots.empty()){
+		 uint size = roots.count();
+		 __current = new Q3ListViewItem(__current,att,"children","", "List<QObject>["+QString::number(size)+"]");
 		 __current->setPixmap(0,__pixappe);
-		 QObjectList r(*roots);
-		 uint size = r.count();
 		 for(uint i = 0; i < size; i++ ){
-		   QObject * _obj = r.at(i);
+		   QObject * _obj = roots[i];
 		   process(_obj);
-		 }
-		 
+		 }		 
 	   }
 	   __current = buf;
        }
@@ -300,7 +284,7 @@ public :
 		
 protected :
   
-  QListViewItem * __current;
+  Q3ListViewItem * __current;
   QPixmap __pixgeom;
   QPixmap __pixappe;
   QPixmap __pixshape;
@@ -318,14 +302,10 @@ ViewQObjectBrowser::ViewQObjectBrowser(QWidget * parent,
 									   bool modal)
 									   : ViewDialog(parent,name, modal)
 {
-  setCaption("QObject Browser");
-#if QT_VERSION >= 220
+  setWindowTitle("QObject Browser");
   setSizeGripEnabled(TRUE);
-#endif
-  __browser = new QBrowser(this,"QObject List");
-  resize(__browser->size());
-  QObject::connect(__browser->OkButton,SIGNAL(clicked()),this,SLOT(hide()));
-  QObject::connect(__browser->CancelButton,SIGNAL(clicked()),this,SLOT(hide()));
+  Ui::QBrowser * __browser = new Ui::QBrowser();
+  __browser->setupUi(this);
   __browser->__FullMode->hide();
   QObjectListBuilder b(__browser->__list);
   b.build();
@@ -336,23 +316,11 @@ ViewQObjectBrowser::ViewQObjectBrowser(QWidget * parent,
 ViewQObjectBrowser::~ViewQObjectBrowser(){
 }
 
-void
-ViewQObjectBrowser::resizeEvent( QResizeEvent * event)
-{
-  if(isVisible()){
-    int x = event->size().width() - event->oldSize().width();
-    int y = event->size().height() - event->oldSize().height();
-    __browser->resize( event->size().width(),event->size().height()  );
-    __browser->__list->resize(   __browser->__list->size() + QSize(x,y) );
-    __browser->OkButton->move(__browser->OkButton->pos()+QPoint(x,y));
-    __browser->CancelButton->move(__browser->CancelButton->pos()+QPoint(x,y));
-  }
-}
 
 void
 ViewQObjectBrowser::keyPressEvent ( QKeyEvent * e)
 {
-  if( e->key() == Key_Escape ||
-	e->key() == Key_Home) hide();
+	if( e->key() == Qt::Key_Escape ||
+	e->key() == Qt::Key_Home) hide();
 }
 

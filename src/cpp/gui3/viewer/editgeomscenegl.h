@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_editgeomscenegl.h
-    \brief Definition of the viewer class ViewEditGeomSceneGL and ViewMultiGeomSceneGL.
+    \brief Definition of the viewer class ViewEditGeomSceneGL3 and ViewMultiGeomSceneGL3.
 */
 
 #ifndef __view_editgeomscenegl_h__
@@ -49,17 +49,17 @@
 #include <scenegraph/appearance/material.h>
 
 
-class MaterialEditor;
+class MaterialEditor3;
 
-class VIEW_API  ViewEditMatDialog : public ViewDialog {
+class VIEW3_API  ViewEditMatDialog3 : public ViewDialog3 {
   Q_OBJECT
 
 public :
-  ViewEditMatDialog(QWidget * parent=0, 
+  ViewEditMatDialog3(QWidget * parent=0, 
 					const char * name=0, 
 					bool modal=FALSE, 
 					WFlags f=0);
-  ~ViewEditMatDialog(){};
+  ~ViewEditMatDialog3(){};
 
   void setMaterial(PGL(MaterialPtr) appe);
   void setClipboardMaterial(PGL(AppearancePtr)* clipboard);
@@ -79,7 +79,7 @@ public slots:
 
 protected:
 
-  MaterialEditor * __matedit;
+  MaterialEditor3 * __matedit;
   PGL(MaterialPtr) __appe;
   PGL(MaterialPtr) __default;
   PGL(AppearancePtr)* __clipboard;
@@ -89,27 +89,27 @@ protected:
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewMultiGeomSceneGL
+   \class ViewMultiGeomSceneGL3
    \brief A GL Display Manager for Geom Scene that can edit material.
 
 */
-class VIEW_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
+class VIEW3_API  ViewEditGeomSceneGL3 : public ViewMultiGeomSceneGL3
 {
   Q_OBJECT
 
-  friend class ViewEditMatDialog;
+  friend class ViewEditMatDialog3;
 
   public :
 
   
   /// Constructor.
-  ViewEditGeomSceneGL(ViewCameraGL * camera=0,
-		       ViewLightGL * light=0,
+  ViewEditGeomSceneGL3(ViewCameraGL3 * camera=0,
+		       ViewLightGL3 * light=0,
 		       QGLWidget * parent=0, 
 		       const char * name=0);
 
   /// Destructor.
-  virtual ~ViewEditGeomSceneGL();
+  virtual ~ViewEditGeomSceneGL3();
 
   virtual void clear();
 
@@ -133,14 +133,14 @@ protected:
 
   /// The clipboard for appearance.
   PGL(AppearancePtr) __appeclipboard;
-  ViewEditMatDialog * __mateditor;
+  ViewEditMatDialog3 * __mateditor;
 
 };
 
 /* ----------------------------------------------------------------------- */
 class ViewApproximationForm;
 
-class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
+class VIEW3_API  ViewMultiscaleEditGeomSceneGL3 : public ViewEditGeomSceneGL3
 {
   Q_OBJECT
 
@@ -148,13 +148,13 @@ class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
 
   
   /// Constructor.
-  ViewMultiscaleEditGeomSceneGL(ViewCameraGL * camera=0,
-		       ViewLightGL * light=0,
+  ViewMultiscaleEditGeomSceneGL3(ViewCameraGL3 * camera=0,
+		       ViewLightGL3 * light=0,
 		       QGLWidget * parent=0, 
 		       const char * name=0);
 
   /// Destructor.
-  virtual ~ViewMultiscaleEditGeomSceneGL();
+  virtual ~ViewMultiscaleEditGeomSceneGL3();
 
   /// Add Edit Entries
   virtual bool addEditEntries(QPopupMenu * menu);

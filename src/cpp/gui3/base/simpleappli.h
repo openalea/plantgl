@@ -44,10 +44,10 @@
 class QApplication;
 class Viewer;
 
-class ViewerSimpleAppli : public ViewerAppli {
+class ViewerSimpleAppli3 : public ViewerAppli3 {
 public:
-	ViewerSimpleAppli();
-	virtual ~ViewerSimpleAppli();
+	ViewerSimpleAppli3();
+	virtual ~ViewerSimpleAppli3();
 
 	virtual void startSession();
 	virtual bool stopSession();
@@ -66,7 +66,7 @@ protected:
 
 	void launch();
 
-	Viewer * __viewer;
+	Viewer3 * __viewer;
 	QApplication * __appli;
 	bool __ownappli;
 };

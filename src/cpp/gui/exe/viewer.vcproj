@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,..\.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\.."
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib $(QTDIR)\lib\qtmain.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib qtmaind.lib QtCored4.lib QtGuid4.lib opengl32.lib glu32.lib"
 				OutputFile="../../../../bin/PlantGLViewer-d.exe"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
@@ -117,7 +117,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="$(QTDIR)\include,..\.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\.."
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 			/>
@@ -132,7 +132,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib $(QTDIR)\lib\qtmain.lib opengl32.lib glu32.lib"
+				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  qtmain.lib opengl32.lib glu32.lib"
 				OutputFile="../../../../bin/PlantGLViewer.exe"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				IgnoreDefaultLibraryNames=""

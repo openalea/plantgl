@@ -35,7 +35,7 @@
  *  ----------------------------------------------------------------------------
  */				
 /*! \file view_info.h
-    \brief Definition of the viewer class ViewSysInfo.
+    \brief Definition of the viewer class ViewSysInfo3.
 */
 
 #ifndef __view_info_h__
@@ -43,7 +43,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 #include <qvariant.h>
 #include <qdialog.h>
@@ -63,27 +63,27 @@ class QListViewItem;
 /* ----------------------------------------------------------------------- */
 
 /** 
-    \class ViewSysInfo
+    \class ViewSysInfo3
     \brief A Dialog to display information of the system such as driver use by openGL.
     Must be build with a QGLWidget to obtain all the information.
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewSysInfo : public QDialog
+class VIEW3_API ViewSysInfo3 : public QDialog
 { 
   Q_OBJECT
 
 public:
 
   /*! Constructor 
-   *  Constructs a ViewSysInfo which is a child of 'parent', with the 
+   *  Constructs a ViewSysInfo3 which is a child of 'parent', with the 
    *  name 'name' and widget flags set to 'f' 
    *
    *  The dialog will by default be modeless, unless you set 'modal' to
    *  TRUE to construct a modal dialog.
    */
-  ViewSysInfo( QWidget* parent = 0,
+  ViewSysInfo3( QWidget* parent = 0,
 		     QGLWidget * FrameGL = 0,
 		     const char* name = 0,	      
 		     bool modal = FALSE, 
@@ -92,7 +92,7 @@ public:
   /*!  Destructor.
    *  Destroys the object and frees any allocated resources
    */
-  ~ViewSysInfo();
+  ~ViewSysInfo3();
 
   QListViewItem* addItem(const QString& name = QString::null, const QString& val = QString::null);
 

@@ -45,8 +45,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "util_qwidget.h"
-class QBrowser;
+#include "../gui_config.h"
+#include <qdockwidget.h>
+namespace Ui {  class QBrowser; }
 
 /* ----------------------------------------------------------------------- */
 
@@ -60,15 +61,13 @@ class ViewRendererGL;
    \brief The Browser of the viewer
 */
 
-class VIEW_API ViewBrowser : public ViewDialog
+class VIEW_API ViewBrowser : public QDockWidget
 {
     Q_OBJECT
 	public:
     
     /// Constructor
-    ViewBrowser(  QWidget * parent=0, 
-		  const char * name=0, 
-		  bool modal=FALSE);
+    ViewBrowser(  QWidget * parent=0, const QString& title = "");
 
     /// Destructor
     ~ViewBrowser();
@@ -88,8 +87,8 @@ class VIEW_API ViewBrowser : public ViewDialog
 
 protected:
   
-  /// Function called when the widget is resized.
-  virtual void resizeEvent( QResizeEvent * event); 
+  /// Function called when the widget is shown.
+  virtual void showEvent ( QShowEvent * event );
   
   /// This event handler is called when a key is pressed for this widget. 
   virtual void keyPressEvent (QKeyEvent * e);
@@ -98,7 +97,7 @@ private:
   
 
   /// The GeomListViewBuilder Object
-  QBrowser * __browser;
+  Ui::QBrowser * __browser;
   
   /// A Pointee to the Scene.
   ViewRendererGL  * __scene;

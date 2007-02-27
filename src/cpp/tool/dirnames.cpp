@@ -163,8 +163,11 @@ string get_suffix(const string & filename){
 
 string set_suffix(const string & filename,const string & extension){
 	QFileInfo fi(filename.c_str());
+#if QT_VERSION >= 0x040000
+	QString nname = fi.path()+'/'+fi.baseName()+'.'+QString(extension.c_str());
+#else
 	QString nname = fi.dirPath()+'/'+fi.baseName()+'.'+QString(extension.c_str());
-	//                .path
+#endif
 	return QString2StdString(nname);
 }
 

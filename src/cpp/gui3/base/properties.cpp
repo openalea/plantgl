@@ -74,9 +74,9 @@ PGL_USING_NAMESPACE
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-ViewProperties::ViewProperties(  ViewGLFrame *g,
-             ViewFileManager* parent,
-             ViewControlPanel * controlpanel,
+ViewProperties3::ViewProperties3(  ViewGLFrame3 *g,
+             ViewFileManager3* parent,
+             ViewControlPanel3 * controlpanel,
              bool config,
              const char* name,
              bool modal,
@@ -106,7 +106,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
     QTabWidget *TabWidget = new QTabWidget( this );
     TabWidget->setGeometry( QRect( 10, 10, 400, 450 ) );
 
-    ViewRendererGL * scene = g->getSceneRenderer();
+    ViewRendererGL3 * scene = g->getSceneRenderer();
     const QString filename = scene->getFilename();
 
     if(!filename.isEmpty() && QFile::exists(filename) ){
@@ -194,7 +194,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
 
     QGroupBox * SaveGroup = new QGroupBox( tab, "SaveGroup" );
     SaveGroup->setProperty( "geometry", QRect( 30, 20, 320, 190 ) );
-    SaveGroup->setProperty( "title", tr( "Saved Options")+" - v"+QString::number(ViewFileManager::CONFIG_VERSION) );
+    SaveGroup->setProperty( "title", tr( "Saved Options")+" - v"+QString::number(ViewFileManager3::CONFIG_VERSION) );
 
     QCheckBox * Box = new QCheckBox( SaveGroup, "WinBox" );
     Box->setProperty( "geometry", QRect( 10, 20, 270, 20 ) );
@@ -282,18 +282,18 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
 /*
  *  Destroys the object and frees any allocated resources
  */
-ViewProperties::~ViewProperties()
+ViewProperties3::~ViewProperties3()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
 void
-ViewProperties::apply(){
+ViewProperties3::apply(){
   QString langname = lang->currentText();
   if(TOOLS(getLanguage()).c_str() != langname){
     TOOLS(setLanguage(langname.latin1()));
-    if(langname == "English")removeTranslator();
-    else if(langname == "French")setFrenchTranslator();
+    if(langname == "English")removeTranslator3();
+    else if(langname == "French")setFrenchTranslator3();
   }
   accept();
 }

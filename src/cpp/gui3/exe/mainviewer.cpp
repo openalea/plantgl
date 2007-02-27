@@ -56,8 +56,8 @@ int main( int argc, char **argv )
 	return -1;
   }
   
-  if(!ViewClientObj().request(argc, argv)){
-	PGLViewer m_viewer(argc, argv) ;
+  if(!ViewClientObj3().request(argc, argv)){
+	PGLViewer3 m_viewer(argc, argv) ;
 	m_viewer.startDaemon();
 	m_viewer.displayTrayIcon(true);
 	a.setMainWidget(&m_viewer);
@@ -74,10 +74,10 @@ int main( int argc, char **argv )
 int main( int argc, char **argv )
 {
 
-	PGLViewerApplication::init();
-	PGLViewerApplication::start();
-	PGLViewerApplication::wait(10000);
-	PGLViewerApplication::exit();
+	PGLViewerApplication3::init();
+	PGLViewerApplication3::start();
+	PGLViewerApplication3::wait(10000);
+	PGLViewerApplication3::exit();
 
   return 0;
 }

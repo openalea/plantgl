@@ -60,8 +60,8 @@ class QTabWidget;
 class QPopupmenu;
 class QMenuBar;
 class QMainWindow;
-class QListView;
-class QListViewItem;
+class Q3ListView;
+class Q3ListViewItem;
 class QGLWidget;
 class QEvent;
 
@@ -119,19 +119,19 @@ public :
   virtual bool sceneChangeEvent(ViewSceneChangeEvent *);
 
   /// Add Open Entries
-  virtual bool addOpenEntries(QPopupMenu * menu);
+  virtual bool addOpenEntries(QMenu * menu);
   
   /// Add Import Entries
-  virtual bool addImportEntries(QPopupMenu * menu);
+  virtual bool addImportEntries(QMenu * menu);
 
   /// Add Save Entries
-  virtual bool addSaveEntries(QPopupMenu * menu);
+  virtual bool addSaveEntries(QMenu * menu);
 
   /// Add Export Entries
-  virtual bool addExportEntries(QPopupMenu * menu);
+  virtual bool addExportEntries(QMenu * menu);
   
   /// Add Edit Entries
-  virtual bool addEditEntries(QPopupMenu * menu);
+  virtual bool addEditEntries(QMenu * menu);
   
   /// Add properties info in the \e tab
   virtual bool addProperties(QTabWidget * tab);
@@ -143,7 +143,7 @@ public :
   virtual bool addOtherToolBar(QMainWindow * menu);
 
   /// Fill the list for browsing.
-  virtual bool browse(QListView *,bool);
+  virtual bool browse(Q3ListView *,bool);
 
   /// Try to open file. Return true if ok.
   virtual bool open(const QString& filename);
@@ -203,7 +203,7 @@ public slots:
   virtual void selectionEvent(uint32_t);
   virtual void selectionEvent(const std::vector<uint32_t>&);
   virtual void selectionIdEvent(const std::vector<uint32_t>&);
-  virtual void selectionEvent(QListViewItem *);
+  virtual void selectionEvent(Q3ListViewItem *);
 
   virtual void checkFileModification();
 

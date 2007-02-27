@@ -48,10 +48,10 @@
 
 
 
-ViewBrowser::ViewBrowser(QWidget * parent,
+ViewBrowser3::ViewBrowser3(QWidget * parent,
              const char * name,
              bool modal)
-  : ViewDialog(parent,name, modal),
+  : ViewDialog3(parent,name, modal),
     __scene(NULL),
     __empty(true)
 {
@@ -68,11 +68,11 @@ ViewBrowser::ViewBrowser(QWidget * parent,
 }
 
 
-ViewBrowser::~ViewBrowser(){
+ViewBrowser3::~ViewBrowser3(){
 }
 
 void
-ViewBrowser::setRenderer(ViewRendererGL * r)
+ViewBrowser3::setRenderer(ViewRendererGL3 * r)
 {
   if(__scene!=NULL){
     QObject::disconnect(__browser->__list,SIGNAL(doubleClicked(QListViewItem *)),
@@ -91,7 +91,7 @@ ViewBrowser::setRenderer(ViewRendererGL * r)
 }
 
 void
-ViewBrowser::setSelection(const QString& name){
+ViewBrowser3::setSelection(const QString& name){
   QListViewItem * i = __browser->__list->firstChild();
   if(i){
     i = i->firstChild();
@@ -114,7 +114,7 @@ ViewBrowser::setSelection(const QString& name){
 }
 
 void
-ViewBrowser::clear()
+ViewBrowser3::clear()
 {
   __browser->__list->clear();
   for(int i = __browser->__list->columns()-1; i >= 0 ; i--){
@@ -125,7 +125,7 @@ ViewBrowser::clear()
 }
 
 void
-ViewBrowser::refresh(bool b)
+ViewBrowser3::refresh(bool b)
 {
   if(__empty && b){
     if(__scene)__scene->browse(__browser->__list,__browser->__FullMode->isChecked() );
@@ -134,7 +134,7 @@ ViewBrowser::refresh(bool b)
 }
 
 void
-ViewBrowser::resizeEvent( QResizeEvent * event)
+ViewBrowser3::resizeEvent( QResizeEvent * event)
 {
   if(isVisible()){
     int x = event->size().width() - event->oldSize().width();
@@ -147,7 +147,7 @@ ViewBrowser::resizeEvent( QResizeEvent * event)
 }
 
 void
-ViewBrowser::keyPressEvent ( QKeyEvent * e)
+ViewBrowser3::keyPressEvent ( QKeyEvent * e)
 {
   if( e->key() == Key_F2 ||
       e->key() == Key_Escape ||

@@ -58,7 +58,7 @@ ViewerAppli::~ViewerAppli(){  }
 const std::vector<uint32_t>
 ViewerAppli::getSelection() {
 	std::vector<uint32_t> res;
-    if(isRunning()){
+    if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
       sendAnEvent(event);
     }
@@ -97,7 +97,7 @@ ViewerAppli::itemSelection(const std::string& caption,
     ViewItemSelectionEvent * event = new ViewItemSelectionEvent(
 	  caption.c_str(), text.c_str(), l, editable,&res,&ok);
 	sendAnEvent(event);
-	return std::string(res.latin1());
+	return std::string(res.toAscii().constData());
 }
 
 std::string 
@@ -114,7 +114,7 @@ ViewerAppli::getFile(const std::string& caption,
 	  existing,
 	  dir, &res);
 	sendAnEvent(event);
-	return (res.isEmpty()?std::string():std::string(res.latin1()));
+	return (res.isEmpty()?std::string():std::string(res.toAscii().constData()));
   }
 
 ViewRayBuffer * 

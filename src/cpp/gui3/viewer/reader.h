@@ -36,7 +36,7 @@
  */
 
 /*! \file view_reader.h
-    \brief Definition of the viewer classes ViewGeomReader, ViewGeomStreamReader, ViewMultiGeomReader and ViewLinetreeReader.
+    \brief Definition of the viewer classes ViewGeomReader3, ViewGeomStreamReader, ViewMultiGeomReader3 and ViewLinetreeReader3.
 */
 
 #ifndef __view_reader_h__
@@ -44,9 +44,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 #ifndef QT_THREAD_SUPPORT
 #ifdef __GNUC__
@@ -62,29 +62,29 @@
 
 /* ----------------------------------------------------------------------- */
 
-class ViewGeomSceneGL;
+class ViewGeomSceneGL3;
 
 /* ----------------------------------------------------------------------- */
 /**
-   \class ViewGeomReader
+   \class ViewGeomReader3
    \brief Create a new thread to read a geom file
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewGeomReader : public QThread
+class VIEW3_API ViewGeomReader3 : public QThread
 {
 
     public :
 
 
-      ViewGeomReader(const QString& f,
-                     ViewGeomSceneGL * g,
+      ViewGeomReader3(const QString& f,
+                     ViewGeomSceneGL3 * g,
                      int i = -1,
                          bool add = false);
 
-    ~ViewGeomReader();
+    ~ViewGeomReader3();
 
     virtual void setFilename(const QString& f);
 
@@ -100,7 +100,7 @@ class VIEW_API ViewGeomReader : public QThread
     QString _filename;
 
     /// The frame for given result.
-    ViewGeomSceneGL * _g;
+    ViewGeomSceneGL3 * _g;
 
     /// Nb d'erreur max.
     int maxerror;
@@ -117,13 +117,13 @@ class VIEW_API ViewGeomReader : public QThread
 
 */
 /*
-class VIEW_API ViewGeomStreamReader : public ViewGeomReader
+class VIEW3_API ViewGeomStreamReader : public ViewGeomReader3
 {
 
     public :
 
 
-      ViewGeomStreamReader(std::istream *stream,ViewGeomSceneGL * g,int i = -1) ;
+      ViewGeomStreamReader(std::istream *stream,ViewGeomSceneGL3 * g,int i = -1) ;
 
     ~ViewGeomStreamReader();
 
@@ -140,22 +140,22 @@ class VIEW_API ViewGeomStreamReader : public ViewGeomReader
 */
 /* ----------------------------------------------------------------------- */
 /**
-   \class ViewMultiGeomReader
+   \class ViewMultiGeomReader3
    \brief Create a new thread to read a geom stream
 
 */
-class VIEW_API ViewMultiGeomReader : public ViewGeomReader
+class VIEW3_API ViewMultiGeomReader3 : public ViewGeomReader3
 {
 
     public :
 
 
-      ViewMultiGeomReader(const QString& f1,
+      ViewMultiGeomReader3(const QString& f1,
                           const QString& f2,
-                          ViewGeomSceneGL * g,
+                          ViewGeomSceneGL3 * g,
                           int i = -1) ;
 
-    ~ViewMultiGeomReader();
+    ~ViewMultiGeomReader3();
 
     virtual void setSecond(const QString&);
 
@@ -174,21 +174,21 @@ class VIEW_API ViewMultiGeomReader : public ViewGeomReader
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewLinetreeReader
+   \class ViewLinetreeReader3
    \brief Create a new thread to read a linetree file
 
 */
-class VIEW_API ViewLinetreeReader : public  ViewGeomReader {
+class VIEW3_API ViewLinetreeReader3 : public  ViewGeomReader3 {
     public :
 
-      ViewLinetreeReader(const QString& ligFile,
+      ViewLinetreeReader3(const QString& ligFile,
                      const QString& dtaFile,
                      const QString& smbPath,
-                     ViewGeomSceneGL * g,
+                     ViewGeomSceneGL3 * g,
 					 bool bigendian = true,
                      bool add = false);
 
-    ~ViewLinetreeReader();
+    ~ViewLinetreeReader3();
 
     const QString& getLigFile() const;
 

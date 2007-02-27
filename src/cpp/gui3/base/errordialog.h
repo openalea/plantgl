@@ -37,7 +37,7 @@
  */
 
 /*! \file view_errordialog.h
-    \brief Definition of the viewer class ViewErrorDialog.
+    \brief Definition of the viewer class ViewErrorDialog3.
 */
 
 #ifndef __view_errordialog_h__
@@ -56,25 +56,25 @@ class MessageDisplayer;
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewErrorDialog
+   \class ViewErrorDialog3
    \brief The Error Dialog of the Viewer.
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewErrorDialog : public ViewDialog
+class VIEW3_API ViewErrorDialog3 : public ViewDialog3
 {
   Q_OBJECT 
 
 public:
 
   /// Constructor
-  ViewErrorDialog (QWidget * parent = 0, 
+  ViewErrorDialog3 (QWidget * parent = 0, 
 	       const char *name = 0, 
 	       bool modal = FALSE);
 
   /// Destructor
-  ~ViewErrorDialog ();
+  ~ViewErrorDialog3 ();
 
 public slots:
 

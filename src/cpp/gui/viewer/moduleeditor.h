@@ -21,8 +21,8 @@ class VIEW_API GeomModuleEditor : public QWidget
 
 public:
   /// Constructor.
-	GeomModuleEditor( QWidget* parent = 0, WFlags f = 0 ) :
-    QWidget( parent , "" , f ){
+	GeomModuleEditor( QWidget* parent = 0, Qt::WindowFlags f = 0 ) :
+    QWidget( parent ,  f ){
   }
 
   /// Destructor.

@@ -48,7 +48,7 @@
 #include <qcolor.h>
 #include <qstringlist.h>
 #include <vector>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <math/util_vector.h>
 
 #ifdef QT_THREAD_SUPPORT
@@ -59,38 +59,38 @@ TOOLS_USING(Vector3)
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewEvent : public QCustomEvent {
+class VIEW3_API ViewEvent3 : public QCustomEvent {
 public:
 
-  ViewEvent(int type):
+  ViewEvent3(int type):
 	QCustomEvent(type),
 	sent_event(false){}
 
-  virtual ~ViewEvent(){}
+  virtual ~ViewEvent3(){}
 
   bool sent_event;
 
 };
 /**
-   \class ViewSceneChangeEvent
+   \class ViewSceneChangeEvent3
    \brief An event to pass to glframe for changing scene.
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewSceneChangeEvent : public ViewEvent {
+class VIEW3_API ViewSceneChangeEvent3 : public ViewEvent3 {
 
   public :
 
   /// Constructor.
-  ViewSceneChangeEvent(int type = 0);
+  ViewSceneChangeEvent3(int type = 0);
 
   /// Destructor.
-  ~ViewSceneChangeEvent();
+  ~ViewSceneChangeEvent3();
 
   /// copy object.
-  virtual ViewSceneChangeEvent * copy();
+  virtual ViewSceneChangeEvent3 * copy();
 
   const int& getSceneType() const;
 
@@ -104,15 +104,15 @@ private:
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewFileChangeEvent : public ViewEvent {
+class VIEW3_API ViewFileChangeEvent3 : public ViewEvent3 {
 
   public :
 
   /// Constructor.
-  ViewFileChangeEvent(const QString& file);
+  ViewFileChangeEvent3(const QString& file);
 
   /// Destructor.
-  ~ViewFileChangeEvent();
+  ~ViewFileChangeEvent3();
 
   /// new file to parse.
   QString filename;
@@ -121,15 +121,15 @@ class VIEW_API ViewFileChangeEvent : public ViewEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewImageSaveEvent : public ViewEvent {
+class VIEW3_API ViewImageSaveEvent3 : public ViewEvent3 {
 
   public :
 
   /// Constructor.
-  ViewImageSaveEvent(const QString& file,const QString& format, bool withAlpha);
+  ViewImageSaveEvent3(const QString& file,const QString& format, bool withAlpha);
 
   /// Destructor.
-  ~ViewImageSaveEvent();
+  ~ViewImageSaveEvent3();
 
   QString filename;
   QString format;
@@ -138,15 +138,15 @@ class VIEW_API ViewImageSaveEvent : public ViewEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewRefreshEvent : public ViewEvent {
+class VIEW3_API ViewRefreshEvent3 : public ViewEvent3 {
 
   public :
 
   /// Constructor.
-  ViewRefreshEvent();
+  ViewRefreshEvent3();
 
   /// Destructor.
-  ~ViewRefreshEvent();
+  ~ViewRefreshEvent3();
 
 };
 
@@ -155,21 +155,21 @@ class VIEW_API ViewRefreshEvent : public ViewEvent {
 
 
 /**
-   \class ViewSelectRecoverEvent
+   \class ViewSelectRecoverEvent3
    \brief An event to get selection from the viewer. Usefull for inter thread communication.
 */
-class ViewSelectRecoverEvent : public ViewEvent {
+class ViewSelectRecoverEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewSelectRecoverEvent();
+  ViewSelectRecoverEvent3();
 
   /// Constructor.
-  ViewSelectRecoverEvent(std::vector<uint32_t> * e);
+  ViewSelectRecoverEvent3(std::vector<uint32_t> * e);
 
 /// Destructor.
-  ~ViewSelectRecoverEvent();
+  ~ViewSelectRecoverEvent3();
 
   /// set the selection (for the viewer).
   void setSelection(const std::vector<uint32_t>& a);
@@ -181,15 +181,15 @@ public :
 
 };
 
-class ViewSelectionSet : public ViewEvent {
+class ViewSelectionSet3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewSelectionSet(const std::vector<uint32_t>&);
+  ViewSelectionSet3(const std::vector<uint32_t>&);
 
   /// Destructor.
-  ~ViewSelectionSet();
+  ~ViewSelectionSet3();
 
   /// set the selection (for the viewer).
   const std::vector<uint32_t>& getSelection() const;
@@ -204,38 +204,38 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewEndEvent
+   \class ViewEndEvent3
    \brief An event to end the viewer. Usefull for inter thread communication.
 
 */
-class ViewEndEvent : public ViewEvent {
+class ViewEndEvent3 : public ViewEvent3 {
 
     public :
 
   /// Constructor.
-  ViewEndEvent();
+  ViewEndEvent3();
 
   /// Destructor.
-  ~ViewEndEvent();
+  ~ViewEndEvent3();
 
 };
 
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewFullScreenEvent
+   \class ViewFullScreenEvent3
    \brief An event to set the viewer full screen. Usefull for inter thread communication.
 
 */
-class ViewFullScreenEvent : public ViewEvent {
+class ViewFullScreenEvent3 : public ViewEvent3 {
 
     public :
 
   /// Constructor.
-  ViewFullScreenEvent(bool b = true);
+  ViewFullScreenEvent3(bool b = true);
 
   /// Destructor.
-  ~ViewFullScreenEvent();
+  ~ViewFullScreenEvent3();
 
   bool value;
 };
@@ -243,19 +243,19 @@ class ViewFullScreenEvent : public ViewEvent {
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewGLFrameOnlyEvent
+   \class ViewGLFrameOnlyEvent3
    \brief An event to display GL Frame Only. Usefull for inter thread communication.
 
 */
-class ViewGLFrameOnlyEvent : public ViewEvent {
+class ViewGLFrameOnlyEvent3 : public ViewEvent3 {
 
     public :
 
   /// Constructor.
-  ViewGLFrameOnlyEvent(bool b = true);
+  ViewGLFrameOnlyEvent3(bool b = true);
 
   /// Destructor.
-  ~ViewGLFrameOnlyEvent();
+  ~ViewGLFrameOnlyEvent3();
 
   bool value;
 };
@@ -264,17 +264,17 @@ class ViewGLFrameOnlyEvent : public ViewEvent {
 
 
 /**
-   \class ViewQuestionEvent
+   \class ViewQuestionEvent3
    \brief An event to end the viewer. Usefull for inter thread communication.
 
 */
-class ViewQuestionEvent : public ViewEvent {
+class ViewQuestionEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewQuestionEvent();
-  ViewQuestionEvent(const QString& _caption,
+  ViewQuestionEvent3();
+  ViewQuestionEvent3(const QString& _caption,
 				 const QString& _text,
 				 const QString& _but0txt = QString::null,
 				 const QString& _but1txt = QString::null,
@@ -282,7 +282,7 @@ public :
 				 int * result = NULL);
 
   /// Destructor.
-  ~ViewQuestionEvent();
+  ~ViewQuestionEvent3();
 
   int * result;
 
@@ -298,16 +298,16 @@ public :
 
 
 /**
-   \class ViewQuestionEvent
+   \class ViewQuestionEvent3
    \brief An event to end the viewer. Usefull for inter thread communication.
 
 */
-class ViewItemSelectionEvent : public ViewEvent {
+class ViewItemSelectionEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewItemSelectionEvent(const QString& _caption,
+  ViewItemSelectionEvent3(const QString& _caption,
 				 const QString& _text,
 				 const QStringList& _values,
 				 bool _editable = false,
@@ -315,7 +315,7 @@ public :
 				 bool * ok = NULL);
 
   /// Destructor.
-  ~ViewItemSelectionEvent();
+  ~ViewItemSelectionEvent3();
 
   QString * result;
   bool * ok;
@@ -329,46 +329,46 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewAnimationEvent : public ViewEvent {
+class ViewAnimationEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewAnimationEvent(bool a);
+  ViewAnimationEvent3(bool a);
 
   /// Destructor.
-  ~ViewAnimationEvent();
+  ~ViewAnimationEvent3();
 
   bool mode;
 };
 
 /* ----------------------------------------------------------------------- */
 
-class ViewBgColorEvent : public ViewEvent {
+class ViewBgColorEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewBgColorEvent(const QColor& c);
+  ViewBgColorEvent3(const QColor& c);
 
   /// Destructor.
-  ~ViewBgColorEvent();
+  ~ViewBgColorEvent3();
 
   QColor color;
 };
 
 /* ----------------------------------------------------------------------- */
 
-class ViewGridEvent : public ViewEvent {
+class ViewGridEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewGridEvent(bool _xy, bool _yz, bool _xz, 
+  ViewGridEvent3(bool _xy, bool _yz, bool _xz, 
 				bool _axis, int _size, int _unit, int _def);
 
   /// Destructor.
-  ~ViewGridEvent();
+  ~ViewGridEvent3();
 
   bool xy;
   bool yz;
@@ -381,16 +381,16 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCameraEvent : public ViewEvent {
+class ViewCameraEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewCameraEvent(const Vector3& pos, const Vector3& target,
+  ViewCameraEvent3(const Vector3& pos, const Vector3& target,
 			      float azimuth, float elevation, int def);
 
   /// Destructor.
-  ~ViewCameraEvent();
+  ~ViewCameraEvent3();
 
   Vector3 pos;
   Vector3 target;
@@ -401,15 +401,15 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewPosEvent : public ViewEvent {
+class ViewPosEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewPosEvent(int _x, int _y, int _w, int _h, int _def);
+  ViewPosEvent3(int _x, int _y, int _w, int _h, int _def);
 
   /// Destructor.
-  ~ViewPosEvent();
+  ~ViewPosEvent3();
 
   int x;
   int y;
@@ -420,12 +420,12 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewFileSelEvent : public ViewEvent {
+class ViewFileSelEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewFileSelEvent(const QString& caption,
+  ViewFileSelEvent3(const QString& caption,
 				   const QString& startPath,
 				   const QString& filter = QString::null,
 				   bool existing = true, 
@@ -433,7 +433,7 @@ public :
 				   QString * res = NULL);
 
   /// Destructor.
-  ~ViewFileSelEvent();
+  ~ViewFileSelEvent3();
 
   QString *  result;
   QString caption;
@@ -444,24 +444,24 @@ public :
 };
 
 /* ----------------------------------------------------------------------- */
-class ViewRayBuffer;
+class ViewRayBuffer3;
 
-class ViewRayBuffEvent : public ViewEvent {
+class ViewRayBuffEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-	ViewRayBuffEvent(const TOOLS(Vector3)& pos,
+	ViewRayBuffEvent3(const TOOLS(Vector3)& pos,
 				   const TOOLS(Vector3)& dir,
 		           const TOOLS(Vector3)& dx, 
 		           const TOOLS(Vector3)& dy,
 		           int sx, int sy,
-				   ViewRayBuffer ** res = NULL);
+				   ViewRayBuffer3 ** res = NULL);
 	
 	/// Destructor.
-	~ViewRayBuffEvent();
+	~ViewRayBuffEvent3();
 	
-	ViewRayBuffer **  result;
+	ViewRayBuffer3 **  result;
 	const TOOLS(Vector3) pos;
 	const TOOLS(Vector3) dir;
 	const TOOLS(Vector3) dx; 
@@ -471,32 +471,32 @@ public :
 };
 
 /* ----------------------------------------------------------------------- */
-class ViewZBuffer;
+class ViewZBuffer3;
 
-class ViewZBuffEvent : public ViewEvent {
+class ViewZBuffEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-	ViewZBuffEvent(ViewZBuffer ** res = NULL);
+	ViewZBuffEvent3(ViewZBuffer3 ** res = NULL);
 	
 	/// Destructor.
-	~ViewZBuffEvent();
+	~ViewZBuffEvent3();
 	
-	ViewZBuffer **  result;
+	ViewZBuffer3 **  result;
 };
 
 /* ----------------------------------------------------------------------- */
 
-class ViewProjSizeEvent : public ViewEvent {
+class ViewProjSizeEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-	ViewProjSizeEvent (double * _size = NULL, int * _nbpix = NULL, double * _pixwidth = NULL);
+	ViewProjSizeEvent3 (double * _size = NULL, int * _nbpix = NULL, double * _pixwidth = NULL);
 	
 	/// Destructor.
-	~ViewProjSizeEvent();
+	~ViewProjSizeEvent3();
 	
     int * nbpixel;
 	double * pixelwidth;
@@ -505,15 +505,15 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCameraProjEvent : public ViewEvent {
+class ViewCameraProjEvent3 : public ViewEvent3 {
 
 public :
 
   /// Constructor.
-  ViewCameraProjEvent(bool _mode);
+  ViewCameraProjEvent3(bool _mode);
 
   /// Destructor.
-  ~ViewCameraProjEvent();
+  ~ViewCameraProjEvent3();
 
   bool mode;
 };

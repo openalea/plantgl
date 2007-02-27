@@ -85,7 +85,7 @@
 
 #include <algo/codec/scne_scanner.h>
 #include <algo/codec/binaryprinter.h>
-#include <gui/viewer/geomscenegl.h>
+#include <gui3/viewer/geomscenegl.h>
 #include <tool/util_enviro.h>
 
 PGL_USING_NAMESPACE
@@ -100,26 +100,26 @@ using namespace std;
 
 static QString default_style_name;
 
-ViewHelpMenu::ViewHelpMenu(QWidget * parent,
+ViewHelpMenu3::ViewHelpMenu3(QWidget * parent,
                    QGLWidget * glwidget,
                    const char * name) :
   QPopupMenu(parent,name),
   __glwidget(glwidget)
 {
-	__about = new ViewAboutDialog(this,"General Information",false);
+	__about = new ViewAboutDialog3(this,"General Information",false);
 #ifndef _DEBUG
 //	if(__about->useNewStyle())__about->display(1000);
 #endif
 	QObject::connect(__about,SIGNAL(licenseView()),this,SLOT(showLicense()));
 	insertItem( tr("What's &This?"), parent->parent() , SLOT(whatsThis()), Key_F1);
-    insertItem(QPixmap(ViewSysInfo::tools_logo),tr("&Help"),this,SLOT(showHelp()),SHIFT+Key_F1);
+    insertItem(QPixmap(ViewSysInfo3::tools_logo),tr("&Help"),this,SLOT(showHelp()),SHIFT+Key_F1);
     insertSeparator();
-    insertItem(ViewerIcon::getPixmap(ViewerIcon::icon_flower),tr("&About Viewer"),this,SLOT(showAbout()), CTRL+Key_F1);
+    insertItem(ViewerIcon3::getPixmap(ViewerIcon3::icon_flower),tr("&About Viewer"),this,SLOT(showAbout()), CTRL+Key_F1);
     insertItem(tr("&License"),this,SLOT(showLicense()));
-    insertItem(QPixmap(ViewSysInfo::qt_logo),tr("About &Qt"),this,SLOT(aboutQt()));
+    insertItem(QPixmap(ViewSysInfo3::qt_logo),tr("About &Qt"),this,SLOT(aboutQt()));
     insertSeparator();
-    insertItem(QPixmap(ViewSysInfo::info_logo),tr("Technical Characteristics"),this,SLOT(generalInfo()));
-    insertItem(QPixmap(ViewSysInfo::qt_logo),tr("Qt Hierarchy"),this,SLOT(qtbrowse()));
+    insertItem(QPixmap(ViewSysInfo3::info_logo),tr("Technical Characteristics"),this,SLOT(generalInfo()));
+    insertItem(QPixmap(ViewSysInfo3::qt_logo),tr("Qt Hierarchy"),this,SLOT(qtbrowse()));
     insertSeparator();
     __style = new QPopupMenu(this,"Style");
 #if QT_VERSION < 300
@@ -138,19 +138,19 @@ ViewHelpMenu::ViewHelpMenu(QWidget * parent,
     checkItem(0);
 }
 
-ViewHelpMenu::~ViewHelpMenu(){
+ViewHelpMenu3::~ViewHelpMenu3(){
 #ifdef  GEOM_DEBUG
   cout << "Help Menu deleted" << endl;
 #endif
 }
 
 void 
-ViewHelpMenu::setGLWidget(QGLWidget * glwidget)
+ViewHelpMenu3::setGLWidget(QGLWidget * glwidget)
 {
   __glwidget = glwidget;
 }
 
-int ViewHelpMenu::getStyle() const {
+int ViewHelpMenu3::getStyle() const {
     QStyle& style = QApplication::style();
     QString classname = style.className();
 	if (classname == default_style_name) return 0;
@@ -175,7 +175,7 @@ int ViewHelpMenu::getStyle() const {
 #endif
 
 void  
-ViewHelpMenu::setStyle(int i)
+ViewHelpMenu3::setStyle(int i)
 {
 	if(i < 0 && i >=__ids.size())return;
 #if QT_VERSION < 300
@@ -190,14 +190,14 @@ ViewHelpMenu::setStyle(int i)
 }
 
 void  
-ViewHelpMenu::checkItem(int i)
+ViewHelpMenu3::checkItem(int i)
 {
   for(uint j = 0; j < __ids.size() ; j++)
     __style->setItemChecked(__ids[j],false);
   if(i>=0 && i < __ids.size())__style->setItemChecked(__ids[i],true);
 }
 
-void ViewHelpMenu::showHelp()
+void ViewHelpMenu3::showHelp()
 {
   QString message ="<h3>How to use Viewer</h3><br>"
     "<p><b>Left button       :</b> Rotation <br>"
@@ -212,23 +212,23 @@ void ViewHelpMenu::showHelp()
 }
 
 
-void ViewHelpMenu::showAbout()
+void ViewHelpMenu3::showAbout()
 {  
-  if(!__about)__about = new ViewAboutDialog(this,"About",false);
+  if(!__about)__about = new ViewAboutDialog3(this,"About",false);
   __about->display(-1);
 }
 
-void ViewHelpMenu::showInit()
+void ViewHelpMenu3::showInit()
 {  
-  if(!__about)__about = new ViewAboutDialog(this,"About",false);
+  if(!__about)__about = new ViewAboutDialog3(this,"About",false);
   __about->display(2000);
 }
 
-void ViewHelpMenu::showLicense()
+void ViewHelpMenu3::showLicense()
 {  
   QDialog b(this,"License",true,
 	WStyle_Customize | WStyle_DialogBorder | WStyle_Tool | WStyle_SysMenu);
-  QPixmap logo = ViewerIcon::getPixmap( "gnu.png");
+  QPixmap logo = ViewerIcon3::getPixmap( "gnu.png");
   QLabel * llogo = new QLabel(&b,"licenselogo");
   llogo->setGeometry(QRect(QPoint(0,0),logo.size()));
   llogo->setPixmap(logo);
@@ -260,37 +260,37 @@ void ViewHelpMenu::showLicense()
 }
 
 void 
-ViewHelpMenu::setInitText(const QString&t){
-  if(!__about)__about = new ViewAboutDialog(this,"About",false);
+ViewHelpMenu3::setInitText(const QString&t){
+  if(!__about)__about = new ViewAboutDialog3(this,"About",false);
   __about->setText(t);
 }
 void 
-ViewHelpMenu::setInitText(const QString&t,int timeout)
+ViewHelpMenu3::setInitText(const QString&t,int timeout)
 {
-  if(!__about)__about = new ViewAboutDialog(this,"About",false);
+  if(!__about)__about = new ViewAboutDialog3(this,"About",false);
   __about->setText(t,timeout);
 }
 
 
 void
-ViewHelpMenu::aboutQt()
+ViewHelpMenu3::aboutQt()
 {
  QMessageBox::aboutQt( this, tr("About Qt") );
 }
 
 void
-ViewHelpMenu::qtbrowse()
+ViewHelpMenu3::qtbrowse()
 {
-        ViewQObjectBrowser a(this,"qtbrowse",TRUE);
+        ViewQObjectBrowser3 a(this,"qtbrowse",TRUE);
         a.exec();
 }
 
 void
-ViewHelpMenu::generalInfo()
+ViewHelpMenu3::generalInfo()
 {
-  std::string text2 = getViewerVersionString();
+  std::string text2 = getViewer3VersionString();
   QString text;
-  ViewSysInfo a(this,__glwidget,tr("PlantGL Viewer")+" "+QString(text2.c_str()),TRUE);
+  ViewSysInfo3 a(this,__glwidget,tr("PlantGL Viewer")+" "+QString(text2.c_str()),TRUE);
   QListViewItem * itemF = a.addItem(tr("Geom Library"));
   QListViewItem *item = new QListViewItem( itemF );
   item->setText( 0, tr( "Version" ) );
@@ -309,7 +309,7 @@ ViewHelpMenu::generalInfo()
   item->setText( 1, tr( text ) );
   item = new QListViewItem( itemF, item );
   item->setText( 0, tr( "Using Threads" ) );
-  if(ViewGeomSceneGL::useThread()) text = "True";
+  if(ViewGeomSceneGL3::useThread()) text = "True";
   else text = "False";
   item->setText( 1, tr( text ) );
 
@@ -375,7 +375,7 @@ ViewHelpMenu::generalInfo()
 
 
 
-ViewAboutDialog::ViewAboutDialog ( QWidget * parent, 
+ViewAboutDialog3::ViewAboutDialog3 ( QWidget * parent, 
 								  const char * name, 
 								  int timeout,
 								  bool modal):
@@ -384,13 +384,13 @@ QDialog ( parent, name, modal,
 		__text(NULL),
 	    __style(true),
 		__license(false){
-  __logo = ViewerIcon::getPixmap( "geomviewer.png");
+  __logo = ViewerIcon3::getPixmap( "geomviewer.png");
   if(__logo.isNull()) {
     __style = false;
-    __logo = ViewerIcon::getPixmap( ViewerIcon::icon_plantlogo);
+    __logo = ViewerIcon3::getPixmap( ViewerIcon3::icon_plantlogo);
   }
   else {
-    __logo2 = ViewerIcon::getPixmap( "geomviewer2.png");
+    __logo2 = ViewerIcon3::getPixmap( "geomviewer2.png");
   }
   setIconPixmap(__logo);
   __licenseRect = QRect(140,180,62,110);
@@ -425,17 +425,17 @@ QDialog ( parent, name, modal,
   }
 };
 
-ViewAboutDialog::~ViewAboutDialog(){}
+ViewAboutDialog3::~ViewAboutDialog3(){}
 
 
-void ViewAboutDialog::display(int timeout){
+void ViewAboutDialog3::display(int timeout){
   if(timeout != -1)
 	QTimer::singleShot(timeout,this,SLOT(hide()));
   show();
 }
 
 
-void ViewAboutDialog::setIconPixmap( const QPixmap & icon){
+void ViewAboutDialog3::setIconPixmap( const QPixmap & icon){
   setBackgroundPixmap ( icon ) ;
   setMinimumSize(icon.size());
   setMaximumSize(icon.size());
@@ -445,7 +445,7 @@ void ViewAboutDialog::setIconPixmap( const QPixmap & icon){
   move(s.width(),s.height()); 
 }
 
-void ViewAboutDialog::setInfo(const QString& text, QRect r,int s){
+void ViewAboutDialog3::setInfo(const QString& text, QRect r,int s){
   QLabel * _text = new QLabel(this);
   QFont f("Courrier", s);
   _text->setFont( f );
@@ -459,14 +459,14 @@ void ViewAboutDialog::setInfo(const QString& text, QRect r,int s){
   _text->installEventFilter(this);
 }
 
-void ViewAboutDialog::mousePressEvent ( QMouseEvent * e) {
+void ViewAboutDialog3::mousePressEvent ( QMouseEvent * e) {
   QPoint p = e->pos();
   if(__style && __licenseRect.contains(p))
 	emit licenseView();
   else	if (e->button() ==  LeftButton) accept();
 }
 
-bool ViewAboutDialog::eventFilter( QObject *o, QEvent *e )
+bool ViewAboutDialog3::eventFilter( QObject *o, QEvent *e )
 {
   if ( e->type() == QEvent::MouseButtonPress ) {
 	accept();
@@ -480,7 +480,7 @@ bool ViewAboutDialog::eventFilter( QObject *o, QEvent *e )
 }
 
 void 
-ViewAboutDialog::setText(const QString& t){
+ViewAboutDialog3::setText(const QString& t){
   if(__text){
    if(__timer.isActive())__timer.stop();
 	__text->setText(t);
@@ -488,7 +488,7 @@ ViewAboutDialog::setText(const QString& t){
 }
 
 void 
-ViewAboutDialog::setText(const QString& t,int timeout){
+ViewAboutDialog3::setText(const QString& t,int timeout){
   if(__text){
    if(__timer.isActive())__timer.stop();
 	__text->setText(t);
@@ -497,7 +497,7 @@ ViewAboutDialog::setText(const QString& t,int timeout){
 }
 
 void 
-ViewAboutDialog::clear(){
+ViewAboutDialog3::clear(){
   if(__text){
    if(__timer.isActive())__timer.stop();
 	__text->clear();
@@ -505,26 +505,26 @@ ViewAboutDialog::clear(){
 }
 
 void 
-ViewAboutDialog::showEvent ( QShowEvent * )
+ViewAboutDialog3::showEvent ( QShowEvent * )
 {
   setMouseTracking(true);
 }
 
 void
-ViewAboutDialog::hideEvent ( QHideEvent * )
+ViewAboutDialog3::hideEvent ( QHideEvent * )
 {
   setMouseTracking(false);
 }
 
 void
-ViewAboutDialog::mouseMoveEvent ( QMouseEvent * e )
+ViewAboutDialog3::mouseMoveEvent ( QMouseEvent * e )
 {
 	if (e->state() == NoButton) changeLogo(e->pos());
 	else move(e->globalPos());
 }
 
 void
-ViewAboutDialog::changeLogo(const QPoint& p)
+ViewAboutDialog3::changeLogo(const QPoint& p)
 {
   if(__style && !__logo2.isNull()){
 //	qDebug("Point = ("+QString::number(p.x())+','+QString::number(p.x())+')');

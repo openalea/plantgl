@@ -46,6 +46,8 @@
 
 #include "scenegl.h"
 
+class ViewRenderingModeActions;
+
 /* ----------------------------------------------------------------------- */
 
 /**   
@@ -84,7 +86,7 @@ class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
   bool isCtrlPointRenderingEnable() const;
 
   /// Create a Popup menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   /// Fill the tool Bar.
   void fillToolBar(QToolBar * toolBar);
@@ -123,6 +125,7 @@ protected :
   /// Rendering Option : [0] : BoundingBox  -  [1] : Control Point.
   bool __renderingOption[2];
 
+  ViewRenderingModeActions * __actions;
 
 };
 

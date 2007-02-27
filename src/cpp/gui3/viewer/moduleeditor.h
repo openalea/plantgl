@@ -1,7 +1,7 @@
 #ifndef _GEOM_MODULEEDITOR_H_
 #define _GEOM_MODULEEDITOR_H_
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <scenegraph/core/sceneobject.h>
 #include <qwidget.h>
 
@@ -10,23 +10,23 @@ class QToolBar;
 class QMainWindow;
 
 /**
-    \class GeomModuleEditor
+    \class GeomModuleEditor3
     \brief Abstract Class for Module Edition.
 */
 
-class VIEW_API GeomModuleEditor : public QWidget
+class VIEW3_API GeomModuleEditor3 : public QWidget
 {
 
   Q_OBJECT
 
 public:
   /// Constructor.
-	GeomModuleEditor( QWidget* parent = 0, WFlags f = 0 ) :
+	GeomModuleEditor3( QWidget* parent = 0, WFlags f = 0 ) :
     QWidget( parent , "" , f ){
   }
 
   /// Destructor.
-  virtual ~GeomModuleEditor(){
+  virtual ~GeomModuleEditor3(){
   }
 
   /// Add a menu to the main menu bar when show.

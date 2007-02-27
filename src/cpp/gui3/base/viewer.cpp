@@ -94,7 +94,7 @@ using namespace std;
 
 QMessageBox * ViewerMessageBox = 0;
 
-Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , WFlags f )
+Viewer3::Viewer3( QWidget * parent, const char * name, ViewRendererGL3 * r , WFlags f )
     : QMainWindow( parent , name, f ),
       __GLFrame(0),
       __EditMenu(0),
@@ -108,19 +108,19 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , WFlags
   // if(QMessageBox::information(this,"Language","Select Language","English","French")==1)
 #ifdef _WIN32
   if(TOOLS(getLanguage()) == "French")
-    setFrenchTranslator();
+    setFrenchTranslator3();
 #else
   #warning No translation on Linux
 #endif
 
   // Preparation de la boite de dialog ErrorDialog
-  __ErrorDialog= new ViewErrorDialog(this, "Viewer Error Dialog");
+  __ErrorDialog= new ViewErrorDialog3(this, "Viewer Error Dialog");
 
-  __GLFrame = new ViewGLFrame(this,"FrameGL",r);
+  __GLFrame = new ViewGLFrame3(this,"FrameGL",r);
   initialize();
 }
 
-Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
+Viewer3::Viewer3( int argc, char ** argv, ViewRendererGL3 * r)
   : QMainWindow( 0 , "Geom 3D Viewer" , WType_TopLevel),
       __GLFrame(0),
       __EditMenu(0),
@@ -134,20 +134,20 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
   // if(QMessageBox::information(this,"Language","Select Language","English","French")==1)
 #ifdef _WIN32
   if(TOOLS(getLanguage()) == "French")
-    setFrenchTranslator();
+    setFrenchTranslator3();
 #else
   #warning No translation on Linux
 #endif
 
   // Preparation de la boite de dialog ErrorDialog
-  __ErrorDialog= new ViewErrorDialog(this, "Viewer Error Dialog");
+  __ErrorDialog= new ViewErrorDialog3(this, "Viewer Error Dialog");
 
   if(argv!=NULL){
     QFileInfo f(argv[0]);
-    ViewFileManager::FILE_CONFIG = f.baseName();
+    ViewFileManager3::FILE_CONFIG = f.baseName();
   }
 
-    __GLFrame = new ViewGLFrame(this,"FrameGL",r);
+    __GLFrame = new ViewGLFrame3(this,"FrameGL",r);
     initialize();
     bool stdinput = false;
 
@@ -241,9 +241,9 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
 }
 
 
-void Viewer::initialize()
+void Viewer3::initialize()
 {
-  setIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::icon_flower)));
+  setIcon(QPixmap(ViewerIcon3::getPixmap(ViewerIcon3::icon_flower)));
 
   QWhatsThis::add(this,tr("<b>The PlantGL 3D Viewer</b><br><br>"
     "A Viewer for 3D scene.<br><br>"));
@@ -268,28 +268,28 @@ void Viewer::initialize()
   //menubar
   __MainMenu = new QMenuBar( this ,"Viewer MenuBar");
 
-  __HelpMenu = new ViewHelpMenu(__MainMenu,__GLFrame,"Help Menu");
+  __HelpMenu = new ViewHelpMenu3(__MainMenu,__GLFrame,"Help Menu");
   QObject::connect(__GLFrame,SIGNAL(initMessage(const QString&)),
            __HelpMenu,SLOT(setInitText(const QString&)) );
   __GLFrame->rendererStatus();
 
 
   // Control Group Box.
-  __controlPanel = new ViewControlPanel(__GLFrame,"Control Panel",this,QMainWindow::Right,TRUE,"Control Panel");
+  __controlPanel = new ViewControlPanel3(__GLFrame,"Control Panel",this,QMainWindow::Right,TRUE,"Control Panel");
 //  __controlPanel->hide();
   QWhatsThis::add(__controlPanel,tr("<b>The Control Panel</b><br><br>"
     "This panel shows you parameters from the <i>ligth source</i>, its position and its material.<br><br>"
     "It shows also parameters from the position of the <i>camera</i> "
     "and the size of an <i>unitary move</i> and of the <i>unit of the grid</i>"));
 
-  __FileMenu = new ViewFileManager(this,
+  __FileMenu = new ViewFileManager3(this,
                    "File Operation",
                    __GLFrame,
                    __HelpMenu,
                    __controlPanel);
 
   /// ToolBar
-  __ToolBar = new ViewToolBar("Viewer ToolBar",this,QMainWindow::Top, TRUE);
+  __ToolBar = new ViewToolBar3("Viewer ToolBar",this,QMainWindow::Top, TRUE);
   __ToolBar->setHorizontalStretchable (false);
 
 
@@ -300,7 +300,7 @@ void Viewer::initialize()
 
 
   // Preparation de la boite de dialog Object Browser
-  __Browser= new ViewBrowser(this, "Viewer Object Browser");
+  __Browser= new ViewBrowser3(this, "Viewer Object Browser");
   QWhatsThis::add(__Browser,tr("<b>Viewer Object Browser</b><br><br>"
     "This frame displays the structure and the parameters of the 3D scenes.<br><br>"
     "Double clicking on one of the shape will select it"
@@ -338,7 +338,7 @@ void Viewer::initialize()
   __ViewMenu->insertSeparator();
 
   // - Browser
-  __idViewBrowser = __ViewMenu->insertItem(tr("&Object Browser"),__Browser,SLOT(show()),Key_F2);
+  __idViewBrowser3 = __ViewMenu->insertItem(tr("&Object Browser"),__Browser,SLOT(show()),Key_F2);
   __idErrorDialog = __ViewMenu->insertItem(tr("&Error Log"),__ErrorDialog,SLOT(show()),Key_F3);
 
   __ViewMenu->insertSeparator();
@@ -358,20 +358,20 @@ void Viewer::initialize()
   QObject::connect(__ErrorDialog,SIGNAL(visibilityChanged(bool)),
                    this,SLOT(checkErrorDialogItem(bool)) );
   QObject::connect(__Browser,SIGNAL(visibilityChanged(bool)),
-                   this,SLOT(checkViewBrowserItem(bool)) );
+                   this,SLOT(checkViewBrowser3Item(bool)) );
 
   __ViewMenu->insertSeparator();
 
 
   __ViewMenu->insertItem(tr("GL Frame only"),this,SLOT(displayGLWidgetOnly()), Key_F10);
-  QPixmap _fulls(ViewerIcon::fullscreen);
+  QPixmap _fulls(ViewerIcon3::fullscreen);
   __idFullScreen = __ViewMenu->insertItem(_fulls,tr("Full Screen"),this,SLOT(displayFullScreen()), Key_F11);
 
   //menubar
 //  __MainMenu->setFrameStyle(  QFrame::NoFrame );
 
   // The Status Bar.
-  __statusBar= new ViewStatusBar(this,"Viewer Status Bar");
+  __statusBar= new ViewStatusBar3(this,"Viewer Status Bar");
   __statusBar->message(tr("Ready"));
 
   QWhatsThis::add(__statusBar,tr("<b>The Status Bar</b>"));
@@ -381,7 +381,7 @@ void Viewer::initialize()
   setCaption(tr("PlantGL 3D Viewer"));
 
 #ifdef Q_WS_WIN
-  __trayIcon = new TrayIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::icon_flower)),
+  __trayIcon = new TrayIcon3(QPixmap(ViewerIcon3::getPixmap(ViewerIcon3::icon_flower)),
 								 "PlantGL Viewer",0,this,"PlantGL Viewer Tray Icon");
   __trayIcon->setToolTip("PlantGL Viewer");
   QPopupMenu * trayMenu = new QPopupMenu(this,"Tray Menu");
@@ -409,7 +409,7 @@ void Viewer::initialize()
 }
 
 void 
-Viewer::displayTrayIcon(bool s){
+Viewer3::displayTrayIcon(bool s){
 #ifdef Q_WS_WIN
 	if(__trayIcon)
 		if(s)__trayIcon->show();
@@ -418,9 +418,9 @@ Viewer::displayTrayIcon(bool s){
 }
 
 void
-Viewer::startDaemon(){
+Viewer3::startDaemon(){
   if(__service == NULL){
-    __service = new ViewerDaemon(this);
+    __service = new ViewerDaemon3(this);
     if(__service->ok()){
       qDebug("Viewer Daemon Binding : Ok.");
       QObject::connect(__service,SIGNAL(requestReadFile(const QString&)),
@@ -442,7 +442,7 @@ Viewer::startDaemon(){
   }
 }
 
-void Viewer::stopDaemon(){
+void Viewer3::stopDaemon(){
   if(__service){
     QObject::disconnect(__service,SIGNAL(requestReadFile(const QString&)),
       this,SLOT(openFile(const QString&)) );
@@ -461,10 +461,10 @@ void Viewer::stopDaemon(){
   __service = NULL;
 }
 
-void Viewer::initializeRenderer()
+void Viewer3::initializeRenderer()
 {
 
-  ViewRendererGL * renderer = __GLFrame->getSceneRenderer();
+  ViewRendererGL3 * renderer = __GLFrame->getSceneRenderer();
   renderer->connectTo(__statusBar);
   renderer->connectTo(__ErrorDialog);
   __Browser->setRenderer(renderer);
@@ -496,32 +496,32 @@ void Viewer::initializeRenderer()
   renderer->addOtherToolBar(this);
 }
 
-Viewer::~Viewer()
+Viewer3::~Viewer3()
 {
 }
 
 
-void Viewer::bye()
+void Viewer3::bye()
 {
   // emit 
 	close();
 }
 
-ViewRendererGL *
-Viewer::getSceneRenderer() const
+ViewRendererGL3 *
+Viewer3::getSceneRenderer() const
 {
   return __GLFrame->getSceneRenderer();
 }
 
 void
-Viewer::setSceneRenderer(ViewRendererGL * s)
+Viewer3::setSceneRenderer(ViewRendererGL3 * s)
 {
   __GLFrame->setSceneRenderer(s);
 }
 
 
 std::vector<uint32_t>
-Viewer::getSelection() const
+Viewer3::getSelection() const
 {
   if(__GLFrame->getSceneRenderer() == NULL) return std::vector<uint32_t>(0);
   return __GLFrame->getSceneRenderer()->getSelectionIds();
@@ -530,27 +530,27 @@ Viewer::getSelection() const
 
 
 void
-Viewer::resizeEvent( QResizeEvent * event){
+Viewer3::resizeEvent( QResizeEvent * event){
 }
 
 void
-Viewer::mousePressEvent( QMouseEvent* event)
+Viewer3::mousePressEvent( QMouseEvent* event)
 {
 }
 
 void
-Viewer::mouseMoveEvent( QMouseEvent* event)
+Viewer3::mouseMoveEvent( QMouseEvent* event)
 {
 }
 
 void
-Viewer::dragEnterEvent(QDragEnterEvent* event)
+Viewer3::dragEnterEvent(QDragEnterEvent* event)
 {
   event->accept(QTextDrag::canDecode(event));
 }
 
 void
-Viewer::dropEvent(QDropEvent* event)
+Viewer3::dropEvent(QDropEvent* event)
 {
   QString text;
   if ( QTextDrag::decode(event, text) && text.contains("file:"))
@@ -560,7 +560,7 @@ Viewer::dropEvent(QDropEvent* event)
 
 
 void
-Viewer::keyPressEvent ( QKeyEvent * e)
+Viewer3::keyPressEvent ( QKeyEvent * e)
 {
   if( e->key() == (SHIFT+Key_F1))       __HelpMenu->showHelp();
   else if( e->key() == Key_F1)  __HelpMenu->showAbout();
@@ -585,7 +585,7 @@ Viewer::keyPressEvent ( QKeyEvent * e)
 }
 
 
-void Viewer::openFile(const QString& filename)
+void Viewer3::openFile(const QString& filename)
 {
   QString f = filename.right(filename.length() - filename.findRev('/') -1);
 #ifdef Q_WS_WIN
@@ -595,7 +595,7 @@ void Viewer::openFile(const QString& filename)
   appear();
 }
 
-void Viewer::addFile(const QString& filename)
+void Viewer3::addFile(const QString& filename)
 {
   QString f = filename.right(filename.length() - filename.findRev('/') -1);
 #ifdef Q_WS_WIN
@@ -605,12 +605,12 @@ void Viewer::addFile(const QString& filename)
   appear();
 }
 
-void  Viewer::customEvent(QCustomEvent *e){
+void  Viewer3::customEvent(QCustomEvent *e){
 #ifdef QT_THREAD_SUPPORT
   bool release_mutex = true;
 #endif
   if(e->type() == 12345){
-	ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
+	ViewSceneChangeEvent3 * k = ( ViewSceneChangeEvent3 * )e;
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),k->copy());
       if(!isHidden()){
         if(!isActiveWindow())
@@ -622,19 +622,19 @@ void  Viewer::customEvent(QCustomEvent *e){
     bye();
   }
   else if(e->type() == 12347){
-    ViewSelectRecoverEvent * k = ( ViewSelectRecoverEvent * )e;
+    ViewSelectRecoverEvent3 * k = ( ViewSelectRecoverEvent3 * )e;
     k->setSelection(getSelection());
   }
   else if(e->type() == 12355){
-    ViewSelectionSet * k = ( ViewSelectionSet * )e;
+    ViewSelectionSet3 * k = ( ViewSelectionSet3 * )e;
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->getSelection());
   }
   else if(e->type() == 12350){
-    ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
+    ViewImageSaveEvent3 * k = ( ViewImageSaveEvent3 * )e;
 	saveImage(k->filename,k->format.latin1(),k->withAlpha);
   }
   else if(e->type() == 12351){
-    ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
+    ViewQuestionEvent3 * k = ( ViewQuestionEvent3 * )e;
 	question(k->caption,k->text,
 			 k->but0txt,k->but1txt,
 			 k->but2txt,
@@ -644,38 +644,38 @@ void  Viewer::customEvent(QCustomEvent *e){
 #endif
   }
   else if(e->type() == 12352){
-    ViewFullScreenEvent * k = ( ViewFullScreenEvent * )e;
+    ViewFullScreenEvent3 * k = ( ViewFullScreenEvent3 * )e;
 	if(__isFullScreen != k->value)displayFullScreen();
   }
   else if(e->type() == 12353){
-    ViewGLFrameOnlyEvent * k = ( ViewGLFrameOnlyEvent * )e;
+    ViewGLFrameOnlyEvent3 * k = ( ViewGLFrameOnlyEvent3 * )e;
 	if((__toolbarsvisibility == 0) == k->value)displayGLWidgetOnly();
   }
   else if(e->type() == 12354){
-    ViewItemSelectionEvent * k = ( ViewItemSelectionEvent * )e;
+    ViewItemSelectionEvent3 * k = ( ViewItemSelectionEvent3 * )e;
 	itemSelection(k->caption,k->text,
 			 k->values,k->editable,
 			 k->result,
 			 k->ok);
   }
   else if(e->type() == 12356){
-    ViewAnimationEvent * k = ( ViewAnimationEvent * )e;
+    ViewAnimationEvent3 * k = ( ViewAnimationEvent3 * )e;
 	__GLFrame->animation(k->mode);
   }
   else if(e->type() == 12357){
-    ViewBgColorEvent * k = ( ViewBgColorEvent * )e;
+    ViewBgColorEvent3 * k = ( ViewBgColorEvent3 * )e;
 	__GLFrame->setBackGroundColor(k->color);
   }
   else if(e->type() == 12358){
-    ViewGridEvent * k = ( ViewGridEvent * )e;
+    ViewGridEvent3 * k = ( ViewGridEvent3 * )e;
 	__GLFrame->gridEvent(k);
   }
   else if(e->type() == 12359){
-    ViewCameraEvent * k = ( ViewCameraEvent * )e;
+    ViewCameraEvent3 * k = ( ViewCameraEvent3 * )e;
 	__GLFrame->cameraEvent(k);
   }
   else if(e->type() == 12360){
-    ViewPosEvent * k = ( ViewPosEvent * )e;
+    ViewPosEvent3 * k = ( ViewPosEvent3 * )e;
 	switch(k->def){
 	case 0:
 	  setFrameGLSize(k->w,k->h);
@@ -692,26 +692,26 @@ void  Viewer::customEvent(QCustomEvent *e){
 	}
   }
   else if(e->type() == 12361){
-    ViewFileSelEvent * k = ( ViewFileSelEvent * )e;
+    ViewFileSelEvent3 * k = ( ViewFileSelEvent3 * )e;
 	if(k->dir)
 	  dirSelection(k->caption,k->startPath,k->result);
 	else
 	  fileSelection(k->caption,k->filter,k->startPath,k->existing,k->result);
   }
   else if(e->type() == 12362){
-    ViewRayBuffEvent * k = ( ViewRayBuffEvent * )e;
+    ViewRayBuffEvent3 * k = ( ViewRayBuffEvent3 * )e;
 	*(k->result) = __GLFrame->castRays(k->pos,k->dir,k->dx,k->dy,k->sx,k->sy);
   }
   else if(e->type() == 12366){
-    ViewZBuffEvent * k = ( ViewZBuffEvent * )e;
+    ViewZBuffEvent3 * k = ( ViewZBuffEvent3 * )e;
 	*(k->result) = __GLFrame->grabZBuffer();
   }
   else if(e->type() == 12363){
-    ViewProjSizeEvent * k = ( ViewProjSizeEvent * )e;
+    ViewProjSizeEvent3 * k = ( ViewProjSizeEvent3 * )e;
 	*(k->size) = __GLFrame->getProjectionSize(k->nbpixel,k->pixelwidth);
   }
   else if(e->type() == 12364){
-    ViewCameraProjEvent * k = ( ViewCameraProjEvent * )e;
+    ViewCameraProjEvent3 * k = ( ViewCameraProjEvent3 * )e;
 	__GLFrame->getCamera()->setProjectionMode(k->mode);
   }
   else if(e->type() >= 12365 && e->type() <= 12367){
@@ -722,7 +722,7 @@ void  Viewer::customEvent(QCustomEvent *e){
   }
 #ifdef QT_THREAD_SUPPORT
   if(release_mutex){
-	ViewEvent * k = dynamic_cast<ViewEvent *>(e);
+	ViewEvent3 * k = dynamic_cast<ViewEvent3 *>(e);
 	if(k->sent_event){
 		while(!send_lock_mutex.tryLock());
 		send_lock_mutex.unlock();
@@ -734,10 +734,10 @@ void  Viewer::customEvent(QCustomEvent *e){
 
 
 
-void Viewer::send(QCustomEvent * e) {
+void Viewer3::send(QCustomEvent * e) {
 #ifdef QT_THREAD_SUPPORT
     send_event_mutex.lock();
-	ViewEvent * b = dynamic_cast<ViewEvent *>(e);
+	ViewEvent3 * b = dynamic_cast<ViewEvent3 *>(e);
 	if(b)b->sent_event = true;
 	send_lock_mutex.lock();
 #endif
@@ -749,7 +749,7 @@ void Viewer::send(QCustomEvent * e) {
 #endif
 }
 
-void Viewer::post(QCustomEvent * e) {
+void Viewer3::post(QCustomEvent * e) {
 #ifdef QT_THREAD_SUPPORT
     send_event_mutex.lock();
 #endif
@@ -760,7 +760,7 @@ void Viewer::post(QCustomEvent * e) {
 }
 
 
-void Viewer::closeEvent ( QCloseEvent * e)
+void Viewer3::closeEvent ( QCloseEvent * e)
 {
   if(ViewerMessageBox&&ViewerMessageBox->isVisible())ViewerMessageBox->close();
   __FileMenu->saveConfigBeforeQuit();
@@ -769,62 +769,62 @@ void Viewer::closeEvent ( QCloseEvent * e)
   e->accept();
 }
 
-void Viewer::showEvent ( QShowEvent * e)
+void Viewer3::showEvent ( QShowEvent * e)
 {
   __ErrorDialog->registerQtMsg(true);
 }
 
-void Viewer::polish (){
+void Viewer3::polish (){
   QMainWindow::polish();
   __FileMenu->loadConfig();
   setStatusBar(tr("Ready"));
 }
 
 void
-Viewer::displayHelp() const
+Viewer3::displayHelp() const
 {
   __HelpMenu->showHelp();
 }
 
 void
-Viewer::displayAbout() const
+Viewer3::displayAbout() const
 {
   __HelpMenu->showAbout();
 }
 
 void 
-Viewer::saveConfig() const
+Viewer3::saveConfig() const
 {
   __FileMenu->saveConfig();
 }
 
-void Viewer::checkFileToolBarItem(bool b){
+void Viewer3::checkFileToolBarItem(bool b){
     __ViewMenu->setItemChecked(__idFileToolBar,b);
 }
 
-void Viewer::checkViewBrowserItem(bool visibility){
-    __ViewMenu->setItemChecked(__idViewBrowser,visibility);
+void Viewer3::checkViewBrowser3Item(bool visibility){
+    __ViewMenu->setItemChecked(__idViewBrowser3,visibility);
 }
 
-void Viewer::checkErrorDialogItem(bool visibility){
+void Viewer3::checkErrorDialogItem(bool visibility){
     __ViewMenu->setItemChecked(__idErrorDialog,visibility);
 }
 
-void Viewer::checkControlPanelItem(bool visibility){
+void Viewer3::checkControlPanelItem(bool visibility){
     __ViewMenu->setItemChecked(__idControlPanel,visibility);
 }
 
-void Viewer::checkLocationBarItem(bool visibility){
+void Viewer3::checkLocationBarItem(bool visibility){
     __ViewMenu->setItemChecked(__idLocationToolBar,visibility);
 }
 
-void Viewer::debugLog(){
+void Viewer3::debugLog(){
 #ifdef _WIN32
-    RedirectIOToConsole();
+    RedirectIOToConsole3();
 #endif
 }
 
-void Viewer::displayMenuBar(){
+void Viewer3::displayMenuBar(){
   if(!__MainMenu->isVisible()){
     __MainMenu->show();
     __statusBar->show();
@@ -836,7 +836,7 @@ void Viewer::displayMenuBar(){
 }
 
 void 
-Viewer::displayFullScreen(){
+Viewer3::displayFullScreen(){
   if(!__isFullScreen){
     showFullScreen();
     __ViewMenu->setItemChecked(__idFullScreen,TRUE);
@@ -848,7 +848,7 @@ Viewer::displayFullScreen(){
   __isFullScreen = !__isFullScreen;
 }
 
-void Viewer::displayGLWidgetOnly(){
+void Viewer3::displayGLWidgetOnly(){
 
   if( __MainMenu->isVisible()||
 	  __controlPanel->isVisible() ||
@@ -889,35 +889,35 @@ void Viewer::displayGLWidgetOnly(){
  }
 }
 
-void Viewer::setStatusBar(QString _msg){
+void Viewer3::setStatusBar(QString _msg){
     __statusBar->message(_msg,10000);
 }
 
 void
-Viewer::receiveRequest(const QString& s){
+Viewer3::receiveRequest(const QString& s){
   appear();
   qWarning("Net Request : '"+s+"'");
 }
 
 void
-Viewer::appear(){
+Viewer3::appear(){
   if(isMinimized())showNormal();
   setActiveWindow();
 }
 
-void Viewer::saveImage( QString _filename, const char* _format, bool withAlpha )
+void Viewer3::saveImage( QString _filename, const char* _format, bool withAlpha )
 {
   setActiveWindow();
   __GLFrame->repaint(true);
   __GLFrame->saveImage( _filename, _format );
 }
 
-void Viewer::set800x600FrameGL(){ setFrameGLSize(800,600); }
-void Viewer::set640x480FrameGL(){ setFrameGLSize(640,480); }
-void Viewer::set512x384FrameGL(){ setFrameGLSize(512,384); }
-void Viewer::set320x240FrameGL(){ setFrameGLSize(320,240); }
+void Viewer3::set800x600FrameGL(){ setFrameGLSize(800,600); }
+void Viewer3::set640x480FrameGL(){ setFrameGLSize(640,480); }
+void Viewer3::set512x384FrameGL(){ setFrameGLSize(512,384); }
+void Viewer3::set320x240FrameGL(){ setFrameGLSize(320,240); }
 
-void Viewer::setCustomFrameGLSize() { 
+void Viewer3::setCustomFrameGLSize() { 
 #if QT_VERSION >= 300
   FrameGLDialog g(this,"FrameGL Size",true);
 
@@ -936,7 +936,7 @@ void Viewer::setCustomFrameGLSize() {
 #endif
 }
 
-void Viewer::setFrameGLSize(int width, int height){
+void Viewer3::setFrameGLSize(int width, int height){
   QSize s1 = size();
   QSize s2 = __GLFrame->size();
   int w = width - s2.width();
@@ -999,7 +999,7 @@ public:
 };
 
 void 
-Viewer::question(const QString& caption, const QString& text,
+Viewer3::question(const QString& caption, const QString& text,
 			    const QString& but0txt, const QString& but1txt,
 			    const QString& but2txt, int * result){
   ViewerMessageBox = new ViewMessageBox(this,caption,text,
@@ -1014,7 +1014,7 @@ Viewer::question(const QString& caption, const QString& text,
 }
 
 void 
-Viewer::itemSelection(const QString& caption, const QString& text,
+Viewer3::itemSelection(const QString& caption, const QString& text,
 					  const QStringList& values, bool editable,
 					  QString* result, bool * ok){
   setActiveWindow();
@@ -1022,7 +1022,7 @@ Viewer::itemSelection(const QString& caption, const QString& text,
 }
 
 void 
-Viewer::fileSelection(const QString& caption, 
+Viewer3::fileSelection(const QString& caption, 
 					  const QString& filter,
 					  const QString& startPath,
 					  bool existing,
@@ -1035,7 +1035,7 @@ Viewer::fileSelection(const QString& caption,
 }
 
 void 
-Viewer::dirSelection(const QString& caption, 
+Viewer3::dirSelection(const QString& caption, 
 					 const QString& startPath,
 					 QString* result){
   setActiveWindow();
@@ -1043,6 +1043,6 @@ Viewer::dirSelection(const QString& caption,
 }
 
 void
-Viewer::animation(bool b){
+Viewer3::animation(bool b){
   __GLFrame->animation(b);
 }

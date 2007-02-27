@@ -48,12 +48,12 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-ViewLightMenu::ViewLightMenu(ViewLightGL * light,QWidget * parent, const char * name):
+ViewLightMenu3::ViewLightMenu3(ViewLightGL3 * light,QWidget * parent, const char * name):
   QPopupMenu(parent,name)
 {
   if(light){
-    QPixmap home(ViewerIcon::icon_home);
-    QPixmap _light(ViewerIcon::icon_light);
+    QPixmap home(ViewerIcon3::icon_home);
+    QPixmap _light(ViewerIcon3::icon_light);
     insertItem(home,tr("&Home"),light,SLOT(home()),CTRL+SHIFT+Key_H);
     insertItem(tr("on X axis"),light,SLOT(XAxis()),CTRL+SHIFT+Key_X);
     insertItem(tr("on Y axis"),light,SLOT(YAxis()),CTRL+SHIFT+Key_Y);
@@ -66,12 +66,12 @@ ViewLightMenu::ViewLightMenu(ViewLightGL * light,QWidget * parent, const char * 
   }
 }
 
-ViewLightMenu::~ViewLightMenu()
+ViewLightMenu3::~ViewLightMenu3()
 {
 }
 
 void 
-ViewLightMenu::setVisibility(const bool b)
+ViewLightMenu3::setVisibility(const bool b)
 {
   setItemChecked(idVisibility,b);
   
@@ -79,8 +79,8 @@ ViewLightMenu::setVisibility(const bool b)
 
 /* ----------------------------------------------------------------------- */
 
-ViewLightGL::ViewLightGL(ViewCameraGL *camera,QGLWidget * parent, const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+ViewLightGL3::ViewLightGL3(ViewCameraGL3 *camera,QGLWidget * parent, const char * name):
+  ViewRelativeObjectGL3(camera,parent,name),
   __azimuth(0),
   __elevation(45),
   __distance(15),
@@ -92,14 +92,14 @@ ViewLightGL::ViewLightGL(ViewCameraGL *camera,QGLWidget * parent, const char * n
 }
 
 
-ViewLightGL::~ViewLightGL()
+ViewLightGL3::~ViewLightGL3()
 {
 }
 
 /* ----------------------------------------------------------------------- */
 
 void 
-ViewLightGL::home()
+ViewLightGL3::home()
 {
   __azimuth = 0;
   __elevation = 45;
@@ -109,7 +109,7 @@ ViewLightGL::home()
 }
 
 void 
-ViewLightGL::XAxis()
+ViewLightGL3::XAxis()
 {
   __azimuth = 0;
   __elevation = 0;
@@ -119,7 +119,7 @@ ViewLightGL::XAxis()
 }
 
 void 
-ViewLightGL::YAxis()
+ViewLightGL3::YAxis()
 {
   __azimuth = 90;
   __elevation = 0;
@@ -129,7 +129,7 @@ ViewLightGL::YAxis()
 }
 
 void 
-ViewLightGL::ZAxis()
+ViewLightGL3::ZAxis()
 {
   __azimuth = 0;
   __elevation = 90;
@@ -139,7 +139,7 @@ ViewLightGL::ZAxis()
 }
 
 void 
-ViewLightGL::changeVisibility()
+ViewLightGL3::changeVisibility()
 {
   __show = ! __show;  
   emit visibilityChanged(__show);
@@ -149,7 +149,7 @@ ViewLightGL::changeVisibility()
 }
 
 void 
-ViewLightGL::show()
+ViewLightGL3::show()
 {
   __show = true;
   emit visibilityChanged(__show);
@@ -158,7 +158,7 @@ ViewLightGL::show()
 }
 
 void 
-ViewLightGL::show(bool b)
+ViewLightGL3::show(bool b)
 {
   if(__show != b){
     __show = b;
@@ -170,7 +170,7 @@ ViewLightGL::show(bool b)
 }
 
 void 
-ViewLightGL::hide()
+ViewLightGL3::hide()
 {
   __show = false;
   emit visibilityChanged(__show);
@@ -180,7 +180,7 @@ ViewLightGL::hide()
 
 
 void 
-ViewLightGL::setAzimuth(double azimuth)
+ViewLightGL3::setAzimuth(double azimuth)
 {
   if(__azimuth != azimuth){
 	__azimuth = azimuth;
@@ -190,7 +190,7 @@ ViewLightGL::setAzimuth(double azimuth)
 }
 
 void 
-ViewLightGL::setElevation(double elevation)
+ViewLightGL3::setElevation(double elevation)
 {
   if(__elevation != elevation){
 	__elevation = elevation;
@@ -200,7 +200,7 @@ ViewLightGL::setElevation(double elevation)
 }
 
 void 
-ViewLightGL::setDistance(double distance)
+ViewLightGL3::setDistance(double distance)
 {
   if(__distance != distance){
 	__distance = distance;
@@ -210,25 +210,25 @@ ViewLightGL::setDistance(double distance)
 }
 
 void 
-ViewLightGL::setAzimuth(int azimuth)
+ViewLightGL3::setAzimuth(int azimuth)
 {
   setAzimuth(double(azimuth));
 }
 
 void 
-ViewLightGL::setElevation(int elevation)
+ViewLightGL3::setElevation(int elevation)
 {
   setElevation(double(elevation));
 }
 
 void 
-ViewLightGL::setDistance(int distance)
+ViewLightGL3::setDistance(int distance)
 {
   setDistance(double(distance));
 }
 
 void 
-ViewLightGL::setAmbient(const QColor& color)
+ViewLightGL3::setAmbient(const QColor& color)
 {
   __ambient = color;
   gllightMaterial();
@@ -236,7 +236,7 @@ ViewLightGL::setAmbient(const QColor& color)
 }
 
 void 
-ViewLightGL::setDiffuse(const QColor& color)
+ViewLightGL3::setDiffuse(const QColor& color)
 {
   __diffuse = color;
   gllightMaterial();
@@ -244,7 +244,7 @@ ViewLightGL::setDiffuse(const QColor& color)
 }
 
 void 
-ViewLightGL::setSpecular(const QColor& color)
+ViewLightGL3::setSpecular(const QColor& color)
 {
   __specular = color;
   gllightMaterial();
@@ -252,7 +252,7 @@ ViewLightGL::setSpecular(const QColor& color)
 }
 
 void 
-ViewLightGL::moving(int dx, int dy)
+ViewLightGL3::moving(int dx, int dy)
 {
   int r = __ambient.red()+dy;
   int g = __ambient.green()+dy;
@@ -263,14 +263,14 @@ ViewLightGL::moving(int dx, int dy)
 }
 
 void 
-ViewLightGL::zooming(int dx, int dy)
+ViewLightGL3::zooming(int dx, int dy)
 {
   __distance += dy*getStep();
   emit distanceChanged(__distance);
 }
 
 void 
-ViewLightGL::rotating(int dx, int dy)
+ViewLightGL3::rotating(int dx, int dy)
 {
   __azimuth -=dx;
   if(__azimuth >= 180)
@@ -287,7 +287,7 @@ ViewLightGL::rotating(int dx, int dy)
 }
 
 void 
-ViewLightGL::initializeGL()
+ViewLightGL3::initializeGL()
 {
   gllightMaterial();
   Vector3 pos(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
@@ -304,7 +304,7 @@ ViewLightGL::initializeGL()
 
 
 void 
-ViewLightGL::changeStepEvent(const int newStep, const int oldStep)
+ViewLightGL3::changeStepEvent(const int newStep, const int oldStep)
 {
   __distance *= float(newStep)/float(oldStep);
   emit distanceChanged(__distance);
@@ -312,7 +312,7 @@ ViewLightGL::changeStepEvent(const int newStep, const int oldStep)
 
 
 void 
-ViewLightGL::paintGL()
+ViewLightGL3::paintGL()
 {
   Vector3 pos(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
   if(fabs(pos.x()) < GEOM_EPSILON && fabs(pos.y()) < GEOM_EPSILON && fabs(pos.z()) < GEOM_EPSILON){
@@ -337,25 +337,25 @@ ViewLightGL::paintGL()
 }
 
 Vector3 
-ViewLightGL::getPosition() const{
+ViewLightGL3::getPosition() const{
   return Vector3(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
 }
 
 void 
-ViewLightGL::enable()
+ViewLightGL3::enable()
 {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);  
 }
 
 void 
-ViewLightGL::disable()
+ViewLightGL3::disable()
 {
   glDisable(GL_LIGHTING);
 }
 
 void 
-ViewLightGL::gllightMaterial()
+ViewLightGL3::gllightMaterial()
 {
   glGeomLightMaterial(GL_LIGHT0, GL_AMBIENT,  __ambient);
   glGeomLightMaterial(GL_LIGHT0, GL_DIFFUSE,  __diffuse);
@@ -363,7 +363,7 @@ ViewLightGL::gllightMaterial()
 }
 
 QPopupMenu *
-ViewLightGL::createToolsMenu(QWidget * parent)
+ViewLightGL3::createToolsMenu(QWidget * parent)
 {
-  return new ViewLightMenu(this,parent);
+  return new ViewLightMenu3(this,parent);
 }

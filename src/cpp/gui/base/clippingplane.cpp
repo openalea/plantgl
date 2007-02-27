@@ -52,122 +52,103 @@
 ViewClippingPlaneGL::ViewClippingPlaneGL(QGLWidget * parent, const char * name):
   ViewObjectGL(parent,name)
 {
-  for(int i = 0; i < 6 ; i++)
-    __enable[i] = false;
-  for(int j = 0; j < 6 ; j++)
-    __A[j] = 0;
-  for(int k = 0; k < 6 ; k++)
-    __B[k] = 0;
-  for(int l = 0; l < 6 ; l++)
-    __C[l] = 0;
-  for(int m = 0; m < 6 ; m++)
-    __D[m] = 0;
-  __A[0] = -1;
-  __A[1] = 1;
-  __B[2] = -1;
-  __B[3] = 1;
-  __C[4] = -1;
-  __C[5] = 1;
-
   __control = new ViewDialog(parent,"Clipping Planes Control");
-  __control->setCaption(tr("Clipping Planes Control"));
-  __cpw = new ClippingPlaneWidget(__control,"CP Widget", false);
+  __control->setWindowTitle(tr("Clipping Planes Control"));
+  Ui::ClippingPlaneWidget * __cpw = new Ui::ClippingPlaneWidget();
+  __cpw->setupUi(__control);
+  __cpw->A1->setValue(__A[0]);
+  __cpw->A2->setValue(__A[1]);
+  __cpw->A3->setValue(__A[2]);
+  __cpw->A4->setValue(__A[3]);
+  __cpw->A5->setValue(__A[4]);
+  __cpw->A6->setValue(__A[5]);
+  __cpw->B1->setValue(__B[0]);
+  __cpw->B2->setValue(__B[1]);
+  __cpw->B3->setValue(__B[2]);
+  __cpw->B4->setValue(__B[3]);
+  __cpw->B5->setValue(__B[4]);
+  __cpw->B6->setValue(__B[5]);
+  __cpw->C1->setValue(__C[0]);
+  __cpw->C2->setValue(__C[1]);
+  __cpw->C3->setValue(__C[2]);
+  __cpw->C4->setValue(__C[3]);
+  __cpw->C5->setValue(__C[4]);
+  __cpw->C6->setValue(__C[5]);
+  __cpw->D1->setValue(__D[0]);
+  __cpw->D2->setValue(__D[1]);
+  __cpw->D3->setValue(__D[2]);
+  __cpw->D4->setValue(__D[3]);
+  __cpw->D5->setValue(__D[4]);
+  __cpw->D6->setValue(__D[5]);
   QObject::connect(__cpw->OkButton,SIGNAL(clicked()),__control,SLOT(hide()));
-  QObject::connect(__cpw->Enable1,SIGNAL(toggled(bool)),this,SLOT(setPlane1Enable(bool)));
-  QObject::connect(__cpw->Enable2,SIGNAL(toggled(bool)),this,SLOT(setPlane2Enable(bool)));
-  QObject::connect(__cpw->Enable3,SIGNAL(toggled(bool)),this,SLOT(setPlane3Enable(bool)));
-  QObject::connect(__cpw->Enable4,SIGNAL(toggled(bool)),this,SLOT(setPlane4Enable(bool)));
-  QObject::connect(__cpw->Enable5,SIGNAL(toggled(bool)),this,SLOT(setPlane5Enable(bool)));
-  QObject::connect(__cpw->Enable6,SIGNAL(toggled(bool)),this,SLOT(setPlane6Enable(bool)));
-/*  QObject::connect(this,SIGNAL(plane1Enabled(bool)),__cpw->Enable1,SLOT(setChecked(bool)));
+  QObject::connect(__cpw->Enable1,SIGNAL(clicked(bool)),this,SLOT(setPlane1Enable(bool)));
+  QObject::connect(__cpw->Enable2,SIGNAL(clicked(bool)),this,SLOT(setPlane2Enable(bool)));
+  QObject::connect(__cpw->Enable3,SIGNAL(clicked(bool)),this,SLOT(setPlane3Enable(bool)));
+  QObject::connect(__cpw->Enable4,SIGNAL(clicked(bool)),this,SLOT(setPlane4Enable(bool)));
+  QObject::connect(__cpw->Enable5,SIGNAL(clicked(bool)),this,SLOT(setPlane5Enable(bool)));
+  QObject::connect(__cpw->Enable6,SIGNAL(clicked(bool)),this,SLOT(setPlane6Enable(bool)));
+  QObject::connect(this,SIGNAL(plane1Enabled(bool)),__cpw->Enable1,SLOT(setChecked(bool)));
   QObject::connect(this,SIGNAL(plane2Enabled(bool)),__cpw->Enable2,SLOT(setChecked(bool)));
   QObject::connect(this,SIGNAL(plane3Enabled(bool)),__cpw->Enable3,SLOT(setChecked(bool)));
   QObject::connect(this,SIGNAL(plane4Enabled(bool)),__cpw->Enable4,SLOT(setChecked(bool)));
   QObject::connect(this,SIGNAL(plane5Enabled(bool)),__cpw->Enable5,SLOT(setChecked(bool)));
-  QObject::connect(this,SIGNAL(plane6Enabled(bool)),__cpw->Enable6,SLOT(setChecked(bool))); */
-  QObject::connect(__cpw->A1,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane1A(const QString&)));
-  QObject::connect(__cpw->A1,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->A2,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane2A(const QString&)));
-  QObject::connect(__cpw->A2,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->A3,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane3A(const QString&)));
-  QObject::connect(__cpw->A3,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->A4,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane4A(const QString&)));
-  QObject::connect(__cpw->A4,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->A5,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane5A(const QString&)));
-  QObject::connect(__cpw->A5,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->A6,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane6A(const QString&)));
-  QObject::connect(__cpw->A6,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->B1,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane1B(const QString&)));
-  QObject::connect(__cpw->B1,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->B2,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane2B(const QString&)));
-  QObject::connect(__cpw->B2,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->B3,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane3B(const QString&)));
-  QObject::connect(__cpw->B3,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->B4,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane4B(const QString&)));
-  QObject::connect(__cpw->B4,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->B5,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane5B(const QString&)));
-  QObject::connect(__cpw->B5,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->B6,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane6B(const QString&)));
-  QObject::connect(__cpw->B6,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->C1,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane1C(const QString&)));
-  QObject::connect(__cpw->C1,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->C2,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane2C(const QString&)));
-  QObject::connect(__cpw->C2,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->C3,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane3C(const QString&)));
-  QObject::connect(__cpw->C3,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->C4,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane4C(const QString&)));
-  QObject::connect(__cpw->C4,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->C5,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane5C(const QString&)));
-  QObject::connect(__cpw->C5,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->C6,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane6C(const QString&)));
-  QObject::connect(__cpw->C6,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->D1,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane1D(const QString&)));
-  QObject::connect(__cpw->D1,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->D2,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane2D(const QString&)));
-  QObject::connect(__cpw->D2,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->D3,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane3D(const QString&)));
-  QObject::connect(__cpw->D3,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->D4,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane4D(const QString&)));
-  QObject::connect(__cpw->D4,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->D5,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane5D(const QString&)));
-  QObject::connect(__cpw->D5,SIGNAL(returnPressed()),this,SLOT(validValue()));
-  QObject::connect(__cpw->D6,SIGNAL(textChanged(const QString&)),this,SLOT(setPlane6D(const QString&)));
-  QObject::connect(__cpw->D6,SIGNAL(returnPressed()),this,SLOT(validValue()));  
-  __cpw->A1->setText(QString::number(__A[0]));
-  __cpw->A2->setText(QString::number(__A[1]));
-  __cpw->A3->setText(QString::number(__A[2]));
-  __cpw->A4->setText(QString::number(__A[3]));
-  __cpw->A5->setText(QString::number(__A[4]));
-  __cpw->A6->setText(QString::number(__A[5]));
-  __cpw->B1->setText(QString::number(__B[0]));
-  __cpw->B2->setText(QString::number(__B[1]));
-  __cpw->B3->setText(QString::number(__B[2]));
-  __cpw->B4->setText(QString::number(__B[3]));
-  __cpw->B5->setText(QString::number(__B[4]));
-  __cpw->B6->setText(QString::number(__B[5]));
-  __cpw->C1->setText(QString::number(__C[0]));
-  __cpw->C2->setText(QString::number(__C[1]));
-  __cpw->C3->setText(QString::number(__C[2]));
-  __cpw->C4->setText(QString::number(__C[3]));
-  __cpw->C5->setText(QString::number(__C[4]));
-  __cpw->C6->setText(QString::number(__C[5]));
-  __cpw->D1->setText(QString::number(__D[0]));
-  __cpw->D2->setText(QString::number(__D[1]));
-  __cpw->D3->setText(QString::number(__D[2]));
-  __cpw->D4->setText(QString::number(__D[3]));
-  __cpw->D5->setText(QString::number(__D[4]));
-  __cpw->D6->setText(QString::number(__D[5]));
-
+  QObject::connect(this,SIGNAL(plane6Enabled(bool)),__cpw->Enable6,SLOT(setChecked(bool))); 
+  QObject::connect(__cpw->A1,SIGNAL(valueChanged(double)),this,SLOT(setPlane1A(double)));
+  QObject::connect(__cpw->A2,SIGNAL(valueChanged(double)),this,SLOT(setPlane2A(double)));
+  QObject::connect(__cpw->A3,SIGNAL(valueChanged(double)),this,SLOT(setPlane3A(double)));
+  QObject::connect(__cpw->A4,SIGNAL(valueChanged(double)),this,SLOT(setPlane4A(double)));
+  QObject::connect(__cpw->A5,SIGNAL(valueChanged(double)),this,SLOT(setPlane5A(double)));
+  QObject::connect(__cpw->A6,SIGNAL(valueChanged(double)),this,SLOT(setPlane6A(double)));
+  QObject::connect(__cpw->B1,SIGNAL(valueChanged(double)),this,SLOT(setPlane1B(double)));
+  QObject::connect(__cpw->B2,SIGNAL(valueChanged(double)),this,SLOT(setPlane2B(double)));
+  QObject::connect(__cpw->B3,SIGNAL(valueChanged(double)),this,SLOT(setPlane3B(double)));
+  QObject::connect(__cpw->B4,SIGNAL(valueChanged(double)),this,SLOT(setPlane4B(double)));
+  QObject::connect(__cpw->B5,SIGNAL(valueChanged(double)),this,SLOT(setPlane5B(double)));
+  QObject::connect(__cpw->B6,SIGNAL(valueChanged(double)),this,SLOT(setPlane6B(double)));
+  QObject::connect(__cpw->C1,SIGNAL(valueChanged(double)),this,SLOT(setPlane1C(double)));
+  QObject::connect(__cpw->C2,SIGNAL(valueChanged(double)),this,SLOT(setPlane2C(double)));
+  QObject::connect(__cpw->C3,SIGNAL(valueChanged(double)),this,SLOT(setPlane3C(double)));
+  QObject::connect(__cpw->C4,SIGNAL(valueChanged(double)),this,SLOT(setPlane4C(double)));
+  QObject::connect(__cpw->C5,SIGNAL(valueChanged(double)),this,SLOT(setPlane5C(double)));
+  QObject::connect(__cpw->C6,SIGNAL(valueChanged(double)),this,SLOT(setPlane6C(double)));
+  QObject::connect(__cpw->D1,SIGNAL(valueChanged(double)),this,SLOT(setPlane1D(double)));
+  QObject::connect(__cpw->D2,SIGNAL(valueChanged(double)),this,SLOT(setPlane2D(double)));
+  QObject::connect(__cpw->D3,SIGNAL(valueChanged(double)),this,SLOT(setPlane3D(double)));
+  QObject::connect(__cpw->D4,SIGNAL(valueChanged(double)),this,SLOT(setPlane4D(double)));
+  QObject::connect(__cpw->D5,SIGNAL(valueChanged(double)),this,SLOT(setPlane5D(double)));
+  QObject::connect(__cpw->D6,SIGNAL(valueChanged(double)),this,SLOT(setPlane6D(double)));
 }
   
 ViewClippingPlaneGL::~ViewClippingPlaneGL()
 {
 }
 
-QPopupMenu * 
+#define PLANEMENUICON(num) \
+    planeAction = menu->addAction(tr("Plane")+" " #num,this,SLOT(setPlane##num##Enable())); \
+	planeAction->setCheckable( TRUE ); \
+	planeAction->setChecked( isPlaneEnable(num) ); \
+	QObject::connect(this,SIGNAL(plane##num##Enabled(bool)),planeAction,SLOT(setChecked(bool))); \
+
+QMenu * 
 ViewClippingPlaneGL::createToolsMenu(QWidget * parent)
 {
-  return new ViewCPlaneMenu(this,parent,"Clipping Plane Menu");
+	QMenu * menu = new QMenu(parent);
+    QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
+    QAction * ctrl = menu->addAction(wheel,tr("Control"),getControl(),SLOT(show()));
+    ctrl->setCheckable(true);
+    ctrl->setChecked(getControl()->isVisible());
+    QObject::connect(getControl(),SIGNAL(visibilityChanged(bool)),ctrl,SLOT(setChecked(bool)));
+    menu->addSeparator();
+
+	QAction * planeAction = NULL;
+	PLANEMENUICON(1);
+	PLANEMENUICON(2);
+	PLANEMENUICON(3);
+	PLANEMENUICON(4);
+	PLANEMENUICON(5);
+	PLANEMENUICON(6);
+
+  return menu;
 }
 
 bool ViewClippingPlaneGL::isPlaneEnable(int i)
@@ -217,7 +198,6 @@ ViewClippingPlaneGL::setPlane1Enable(bool b)
     __enable[0] = b;
     emit valueChanged();
     emit plane1Enabled(__enable[0]);
-    __cpw->Enable1->setChecked(__enable[0]);
   }
 }
 
@@ -228,7 +208,6 @@ ViewClippingPlaneGL::setPlane2Enable(bool b)
     __enable[1] = b;
     emit valueChanged();
     emit plane2Enabled(__enable[1]);  
-    __cpw->Enable2->setChecked(__enable[1]);
   }
 }
 
@@ -239,7 +218,6 @@ ViewClippingPlaneGL::setPlane3Enable(bool b)
     __enable[2] = b;
     emit valueChanged();
     emit plane3Enabled(__enable[2]);
-    __cpw->Enable3->setChecked(__enable[2]); 
   }
 }
 
@@ -250,7 +228,6 @@ ViewClippingPlaneGL::setPlane4Enable(bool b)
     __enable[3] = b;
     emit valueChanged();
     emit plane4Enabled(__enable[3]);
-    __cpw->Enable4->setChecked(__enable[3]); 
   }
 }
 
@@ -261,7 +238,6 @@ ViewClippingPlaneGL::setPlane5Enable(bool b)
     __enable[4] = b;
     emit valueChanged();
     emit plane5Enabled(__enable[4]);
-    __cpw->Enable5->setChecked(__enable[4]); 
   }
 }
 
@@ -272,7 +248,6 @@ ViewClippingPlaneGL::setPlane6Enable(bool b)
     __enable[5] = b;
     emit valueChanged();
     emit plane6Enabled(__enable[5]);
-    __cpw->Enable6->setChecked(__enable[5]);
   }
 }
 
@@ -282,7 +257,6 @@ ViewClippingPlaneGL::setPlane1Enable()
   __enable[0] = ! __enable[0];
   emit valueChanged();
   emit plane1Enabled(__enable[0]);  
-  __cpw->Enable1->setChecked(__enable[0]);
 }
 
 void 
@@ -291,7 +265,6 @@ ViewClippingPlaneGL::setPlane2Enable()
   __enable[1] = ! __enable[1];
   emit valueChanged();
   emit plane2Enabled(__enable[1]);  
-  __cpw->Enable2->setChecked(__enable[1]);
 }
 
 void 
@@ -300,7 +273,6 @@ ViewClippingPlaneGL::setPlane3Enable()
   __enable[2] = ! __enable[2];
   emit valueChanged();
   emit plane3Enabled(__enable[2]);
-  __cpw->Enable3->setChecked(__enable[2]); 
 }
 
 void 
@@ -309,7 +281,6 @@ ViewClippingPlaneGL::setPlane4Enable()
   __enable[3] = ! __enable[3];
   emit valueChanged();
   emit plane4Enabled(__enable[3]);
-  __cpw->Enable4->setChecked(__enable[3]);
 }
 
 void 
@@ -318,7 +289,6 @@ ViewClippingPlaneGL::setPlane5Enable()
   __enable[4] = ! __enable[4];
   emit valueChanged();
   emit plane5Enabled(__enable[4]);
-  __cpw->Enable5->setChecked(__enable[4]);
 }
 
 void 
@@ -327,159 +297,177 @@ ViewClippingPlaneGL::setPlane6Enable()
   __enable[5] = ! __enable[5];
   emit valueChanged();
   emit plane6Enabled(__enable[5]);
-  __cpw->Enable6->setChecked(__enable[5]);
 }
 
 void 
-ViewClippingPlaneGL::setPlane1A(const QString& s)
+ViewClippingPlaneGL::setPlane1A(double s)
 {
-  __A[0] = s.toDouble();
-}
- 
-void 
-ViewClippingPlaneGL::setPlane2A(const QString& s)
-{
-  __A[1] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane3A(const QString& s)
-{
-  __A[2] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane4A(const QString& s)
-{
-  __A[3] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane5A(const QString& s)
-{
-  __A[4] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane6A(const QString& s)
-{
-  __A[5] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane1B(const QString& s)
-{
-  __B[0] = s.toDouble();
-}
- 
-void 
-ViewClippingPlaneGL::setPlane2B(const QString& s)
-{
-  __B[1] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane3B(const QString& s)
-{
-  __B[2] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane4B(const QString& s)
-{
-  __B[3] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane5B(const QString& s)
-{
-  __B[4] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane6B(const QString& s)
-{
-  __B[5] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane1C(const QString& s)
-{
-  __C[0] = s.toDouble();
-}
- 
-void 
-ViewClippingPlaneGL::setPlane2C(const QString& s)
-{
-  __C[1] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane3C(const QString& s)
-{
-  __C[2] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane4C(const QString& s)
-{
-  __C[3] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane5C(const QString& s)
-{
-  __C[4] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane6C(const QString& s)
-{
-  __C[5] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane1D(const QString& s)
-{
-  __D[0] = s.toDouble();
-}
- 
-void 
-ViewClippingPlaneGL::setPlane2D(const QString& s)
-{
-  __D[1] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane3D(const QString& s)
-{
-  __D[2] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane4D(const QString& s)
-{
-  __D[3] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane5D(const QString& s)
-{
-  __D[4] = s.toDouble();
-}
-
-void 
-ViewClippingPlaneGL::setPlane6D(const QString& s)
-{
-  __D[5] = s.toDouble();
-}
-
-
-void 
-ViewClippingPlaneGL::validValue()
-{
+  __A[0] = s;
   emit valueChanged();
 }
+ 
+void 
+ViewClippingPlaneGL::setPlane2A(double s)
+{
+  __A[1] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane3A(double s)
+{
+  __A[2] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane4A(double s)
+{
+  __A[3] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane5A(double s)
+{
+  __A[4] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane6A(double s)
+{
+  __A[5] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane1B(double s)
+{
+  __B[0] = s;
+  emit valueChanged();
+}
+ 
+void 
+ViewClippingPlaneGL::setPlane2B(double s)
+{
+  __B[1] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane3B(double s)
+{
+  __B[2] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane4B(double s)
+{
+  __B[3] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane5B(double s)
+{
+  __B[4] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane6B(double s)
+{
+  __B[5] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane1C(double s)
+{
+  __C[0] = s;
+  emit valueChanged();
+}
+ 
+void 
+ViewClippingPlaneGL::setPlane2C(double s)
+{
+  __C[1] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane3C(double s)
+{
+  __C[2] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane4C(double s)
+{
+  __C[3] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane5C(double s)
+{
+  __C[4] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane6C(double s)
+{
+  __C[5] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane1D(double s)
+{
+  __D[0] = s;
+  emit valueChanged();
+}
+ 
+void 
+ViewClippingPlaneGL::setPlane2D(double s)
+{
+  __D[1] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane3D(double s)
+{
+  __D[2] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane4D(double s)
+{
+  __D[3] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane5D(double s)
+{
+  __D[4] = s;
+  emit valueChanged();
+}
+
+void 
+ViewClippingPlaneGL::setPlane6D(double s)
+{
+  __D[5] = s;
+  emit valueChanged();
+}
+
+
 
 void 
 ViewClippingPlaneGL::initializeGL()
@@ -566,80 +554,3 @@ ViewClippingPlaneGL::paintGL()
 }
 
 /* ----------------------------------------------------------------------- */
-
-ViewCPlaneMenu::ViewCPlaneMenu(ViewClippingPlaneGL * cp, QWidget * parent, const char * name):
-  QPopupMenu(parent,name)
-{
-  if(cp){
-    QPixmap wheel(ViewerIcon::icon_wheel);
-    ctrl = insertItem(wheel,tr("Control"),cp->getControl(),SLOT(show()));
-    insertSeparator();
-    idP1 = insertItem(tr("Plane")+" 1",cp,SLOT(setPlane1Enable()));
-    idP2 = insertItem(tr("Plane")+" 2",cp,SLOT(setPlane2Enable()));
-    idP3 = insertItem(tr("Plane")+" 3",cp,SLOT(setPlane3Enable()));
-    idP4 = insertItem(tr("Plane")+" 4",cp,SLOT(setPlane4Enable()));
-    idP5 = insertItem(tr("Plane")+" 5",cp,SLOT(setPlane5Enable()));
-    idP6 = insertItem(tr("Plane")+" 6",cp,SLOT(setPlane6Enable()));
-    setCheckable( TRUE );
-    setItemChecked(idP1,cp->isPlaneEnable(1));
-    setItemChecked(idP2,cp->isPlaneEnable(2));
-    setItemChecked(idP3,cp->isPlaneEnable(3));
-    setItemChecked(idP4,cp->isPlaneEnable(4));
-    setItemChecked(idP5,cp->isPlaneEnable(5));
-    setItemChecked(idP6,cp->isPlaneEnable(6));
-    setItemChecked(ctrl,cp->getControl()->isVisible());
-    QObject::connect(cp->getControl(),SIGNAL(visibilityChanged(bool)),this,SLOT(controlVisibility(bool)));
-    QObject::connect(cp,SIGNAL(plane1Enabled(bool)),this,SLOT(setPlane1Enable(bool)));
-    QObject::connect(cp,SIGNAL(plane2Enabled(bool)),this,SLOT(setPlane2Enable(bool)));
-    QObject::connect(cp,SIGNAL(plane3Enabled(bool)),this,SLOT(setPlane3Enable(bool)));
-    QObject::connect(cp,SIGNAL(plane4Enabled(bool)),this,SLOT(setPlane4Enable(bool)));
-    QObject::connect(cp,SIGNAL(plane5Enabled(bool)),this,SLOT(setPlane5Enable(bool)));
-    QObject::connect(cp,SIGNAL(plane6Enabled(bool)),this,SLOT(setPlane6Enable(bool)));
-  }
-}
-
-ViewCPlaneMenu::~ViewCPlaneMenu()
-{
-}
-
-
-void 
-ViewCPlaneMenu::setPlane1Enable(bool b)
-{
-  setItemChecked(idP1,b);
-}
-
-void 
-ViewCPlaneMenu::setPlane2Enable(bool b)
-{
-  setItemChecked(idP2,b);
-}
-
-void 
-ViewCPlaneMenu::setPlane3Enable(bool b)
-{
-  setItemChecked(idP3,b);
-}
-void 
-ViewCPlaneMenu::setPlane4Enable(bool b)
-{
-  setItemChecked(idP4,b);
-}
-
-void
-ViewCPlaneMenu::setPlane5Enable(bool b)
-{
-  setItemChecked(idP5,b);
-}
-
-void 
-ViewCPlaneMenu::setPlane6Enable(bool b)
-{
-  setItemChecked(idP6,b);
-}
-
-void 
-ViewCPlaneMenu::controlVisibility(bool b)
-{
-  setItemChecked(ctrl,b);
-}

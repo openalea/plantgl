@@ -53,8 +53,8 @@
 /* ----------------------------------------------------------------------- */
 
 
-ViewFogGL::ViewFogGL(ViewCameraGL *camera,QGLWidget * parent, const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+ViewFogGL3::ViewFogGL3(ViewCameraGL3 *camera,QGLWidget * parent, const char * name):
+  ViewRelativeObjectGL3(camera,parent,name),
   __enable(false),
   __mode(0),
   __hintmode(0),
@@ -62,7 +62,7 @@ ViewFogGL::ViewFogGL(ViewCameraGL *camera,QGLWidget * parent, const char * name)
   __density(0.5),
   __start(0),
   __end(10),
-  __control(new ViewDialog(parent,"Fog Control",false)),
+  __control(new ViewDialog3(parent,"Fog Control",false)),
   __fogw(new FogWidget(__control,"Fog Control Widget"))
 {
   __control->setCaption(tr("Fog Control"));
@@ -83,28 +83,28 @@ ViewFogGL::ViewFogGL(ViewCameraGL *camera,QGLWidget * parent, const char * name)
   QObject::connect(__fogw->EndEdit,SIGNAL(returnPressed()),this,SLOT(validValue()));
 }
 
-ViewFogGL::~ViewFogGL()
+ViewFogGL3::~ViewFogGL3()
 {
 }
 
 QPopupMenu * 
-ViewFogGL::createToolsMenu(QWidget * parent)
+ViewFogGL3::createToolsMenu(QWidget * parent)
 {
-  QPixmap wheel(ViewerIcon::icon_wheel);
+  QPixmap wheel(ViewerIcon3::icon_wheel);
   QPopupMenu * menu = new QPopupMenu(parent,"Fog Menu");
   int id = menu->insertItem(wheel,tr("Control"),__control, SLOT(show()));
-  ViewPopupButton * bt = new ViewPopupButton(menu,id,"Control Fog");
+  ViewPopupButton3 * bt = new ViewPopupButton3(menu,id,"Control Fog");
   QObject::connect(__control,SIGNAL(visibilityChanged(bool)),bt,SLOT(check(bool)));
   menu->insertSeparator();
   id = menu->insertItem(tr("Enable"),this, SLOT(setEnable()));
-  bt = new ViewPopupButton(menu,id,"Enable Fog");
+  bt = new ViewPopupButton3(menu,id,"Enable Fog");
   QObject::connect(this,SIGNAL(enabled(bool)),bt,SLOT(check(bool)));
   return menu;
 }
 
 
 void 
-ViewFogGL::changeStepEvent(const int newStep, const int oldStep)
+ViewFogGL3::changeStepEvent(const int newStep, const int oldStep)
 {
   real_t r = real_t(newStep)/real_t(oldStep);
   __start *= r;
@@ -115,49 +115,49 @@ ViewFogGL::changeStepEvent(const int newStep, const int oldStep)
 }
 
 bool 
-ViewFogGL::enable() const
+ViewFogGL3::enable() const
 {
   return __enable;
 }
 
 int 
-ViewFogGL::getMode() const
+ViewFogGL3::getMode() const
 {
   return __mode;
 }
 
 int 
-ViewFogGL::getHintMode() const
+ViewFogGL3::getHintMode() const
 {
   return __hintmode;
 }
 
 const QColor& 
-ViewFogGL::getColor() const
+ViewFogGL3::getColor() const
 {
   return __color;
 }
 
 double 
-ViewFogGL::getDensity() const
+ViewFogGL3::getDensity() const
 {
   return __density;
 }
 
 double 
-ViewFogGL::getStart() const
+ViewFogGL3::getStart() const
 {
   return __start;
 }
 
 double 
-ViewFogGL::getEnd() const
+ViewFogGL3::getEnd() const
 {
   return __end;
 }
 
 void 
-ViewFogGL::setEnable(bool b)
+ViewFogGL3::setEnable(bool b)
 {
   if(__enable != b){
     __enable = b;
@@ -167,7 +167,7 @@ ViewFogGL::setEnable(bool b)
 }
 
 void 
-ViewFogGL::setEnable()
+ViewFogGL3::setEnable()
 {
   __enable = ! __enable;
   emit enabled(__enable);
@@ -175,7 +175,7 @@ ViewFogGL::setEnable()
 }
 
 void 
-ViewFogGL::setMode(int i)
+ViewFogGL3::setMode(int i)
 {
   if(__mode != i){
     __mode = i;
@@ -185,7 +185,7 @@ ViewFogGL::setMode(int i)
 }
 
 void 
-ViewFogGL::setHints(int i)
+ViewFogGL3::setHints(int i)
 {
   if(__hintmode != i){
     __hintmode = i;
@@ -195,7 +195,7 @@ ViewFogGL::setHints(int i)
 }
 
 void 
-ViewFogGL::changeColor()
+ViewFogGL3::changeColor()
 {
   QColor m = QColorDialog::getColor(__color,__control);
   setColor(m);
@@ -203,7 +203,7 @@ ViewFogGL::changeColor()
 }
 
 void 
-ViewFogGL::setColor(const QColor& m){
+ViewFogGL3::setColor(const QColor& m){
   if(m.isValid()){
     __color=m;
     QPixmap col(__fogw->ColorButton->size());
@@ -214,58 +214,58 @@ ViewFogGL::setColor(const QColor& m){
 }
 
 void 
-ViewFogGL::setDensity(int i)
+ViewFogGL3::setDensity(int i)
 {
   __density = float(i)/(100.0*getStep());
   emit valueChanged();
 }
 
 void 
-ViewFogGL::setDensity(const double& d)
+ViewFogGL3::setDensity(const double& d)
 {
   __density = d;
   emit valueChanged();
 }
 
 void 
-ViewFogGL::setStart(const QString& s)
+ViewFogGL3::setStart(const QString& s)
 {
   __start = s.toDouble();
 }
 
 void 
-ViewFogGL::setStart(const double& s)
+ViewFogGL3::setStart(const double& s)
 {
   __start = s;
 }
 
 void 
-ViewFogGL::setEnd(const QString& e)
+ViewFogGL3::setEnd(const QString& e)
 {
   __end = e.toDouble();
 }
 
 
 void 
-ViewFogGL::setEnd(const double& e)
+ViewFogGL3::setEnd(const double& e)
 {
   __end = e;
 }
 
 
 void 
-ViewFogGL::validValue()
+ViewFogGL3::validValue()
 {
   emit valueChanged();
 }
 
 void 
-ViewFogGL::initializeGL()
+ViewFogGL3::initializeGL()
 {
 }
 
 void 
-ViewFogGL::paintGL()
+ViewFogGL3::paintGL()
 {
   if(__enable){
     glEnable(GL_FOG);

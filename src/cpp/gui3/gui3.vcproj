@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="libGui"
-	ProjectGUID="{30373852-CE1B-4BAC-A9FB-A3395AAC1BB4}"
-	RootNamespace="libGui"
+	Name="libGui3"
+	ProjectGUID="{3FEF70E7-57FE-4BF8-82C7-A6A8413820A4}"
+	RootNamespace="libGui3"
 	>
 	<Platforms>
 		<Platform
@@ -40,8 +40,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
-				PreprocessorDefinitions="VIEW_MAKEDLL;PGL_DEBUG"
+				AdditionalIncludeDirectories="$(QT3DIR)\include,.."
+				PreprocessorDefinitions="VIEW3_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
 				DebugInformationFormat="4"
@@ -57,9 +57,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
-				OutputFile="../../../bin/pglgui-d.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				AdditionalDependencies="$(QT3DIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
+				OutputFile="../../../bin/pglgui3-d.dll"
+				AdditionalLibraryDirectories="&quot;$(QT3DIR)/lib/&quot;"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>
@@ -113,8 +113,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
-				PreprocessorDefinitions="VIEW_MAKEDLL"
+				AdditionalIncludeDirectories="$(QT3DIR)\include,.."
+				PreprocessorDefinitions="VIEW3_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 			/>
@@ -129,9 +129,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
-				OutputFile="../../../bin/pglgui.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				AdditionalDependencies="$(QT3DIR)\lib\qt-mtnc321.lib opengl32.lib glu32.lib"
+				OutputFile="../../../bin/pglgui3.dll"
+				AdditionalLibraryDirectories="&quot;$(QT3DIR)/lib/&quot;"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>
 			<Tool
@@ -178,7 +178,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -189,7 +189,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -204,7 +204,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -215,7 +215,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -230,7 +230,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -241,7 +241,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -256,7 +256,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -267,7 +267,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -282,7 +282,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -293,7 +293,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -308,7 +308,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -319,7 +319,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -334,7 +334,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -345,7 +345,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -360,7 +360,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -371,7 +371,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
 							AdditionalDependencies=""
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
@@ -470,8 +470,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -481,19 +481,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\cameraqt.h"
-					>
-				</File>
-				<File
-					RelativePath=".\base\cameraqt2.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\clippingplane.cpp"
@@ -508,8 +500,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -519,15 +511,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\clippingplanewidget.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\fog.cpp"
@@ -542,8 +530,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -553,15 +541,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\fogwidget.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\grid.cpp"
@@ -576,8 +560,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -587,8 +571,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -606,8 +590,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -617,8 +601,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -636,8 +620,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -647,8 +631,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -666,8 +650,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -677,8 +661,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -696,8 +680,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -707,8 +691,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -726,8 +710,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -737,15 +721,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\rotcenteredit.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\scenegl.cpp"
@@ -760,8 +740,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -771,8 +751,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -834,8 +814,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -845,8 +825,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -872,8 +852,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -883,8 +863,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -902,8 +882,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -913,8 +893,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -932,8 +912,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -943,8 +923,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -970,8 +950,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -981,15 +961,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\frameglsizedialog.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\glframe.cpp"
@@ -1004,8 +980,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1015,15 +991,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\gloptions.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\guicon.cpp"
@@ -1046,8 +1018,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1057,8 +1029,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1084,8 +1056,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1095,8 +1067,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1114,8 +1086,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1125,8 +1097,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1144,8 +1116,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1155,15 +1127,11 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\base\qbrowser.h"
-					>
 				</File>
 				<File
 					RelativePath=".\base\qobjectbrowser.cpp"
@@ -1178,8 +1146,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1189,8 +1157,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1216,8 +1184,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1227,8 +1195,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1250,8 +1218,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1261,8 +1229,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1292,8 +1260,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1303,8 +1271,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1466,8 +1434,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\uic.exe; %QT3DIR%\bin\moc.exe"
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
 					</FileConfiguration>
@@ -1477,8 +1445,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\uic.exe; %QT3DIR%\bin\moc.exe"
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
 					</FileConfiguration>
@@ -1492,8 +1460,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\uic.exe; %QT3DIR%\bin\moc.exe"
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
 					</FileConfiguration>
@@ -1503,8 +1471,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QTDIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\uic.exe; %QTDIR%\bin\moc.exe"
+							CommandLine="%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;%QT3DIR%\bin\uic.exe &quot;$(InputPath)&quot; -i &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;%QT3DIR%\bin\moc.exe &quot;$(InputDir)/$(InputName).h&quot; -o &quot;$(InputDir)/../moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\uic.exe; %QT3DIR%\bin\moc.exe"
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
 					</FileConfiguration>
@@ -1546,8 +1514,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1557,8 +1525,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1572,8 +1540,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1583,8 +1551,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1618,8 +1586,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1629,8 +1597,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1656,8 +1624,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1667,8 +1635,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1694,8 +1662,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1705,8 +1673,8 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h..."
-							CommandLine="%QTDIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-							AdditionalDependencies="%QTDIR%\bin\moc.exe "
+							CommandLine="%QT3DIR%\bin\moc.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							AdditionalDependencies="%QT3DIR%\bin\moc.exe "
 							Outputs="&quot;$(InputDir)/moc/moc_$(InputName).cpp&quot;"
 						/>
 					</FileConfiguration>
@@ -1782,7 +1750,7 @@
 			</Filter>
 		</Filter>
 		<File
-			RelativePath=".\gui_config.h"
+			RelativePath=".\gui3_config.h"
 			>
 		</File>
 	</Files>

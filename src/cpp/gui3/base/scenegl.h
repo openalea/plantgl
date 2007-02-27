@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_scenegl.h
-    \brief Definition of the viewer classes ViewRendererGL and ViewSceneRendererGL.
+    \brief Definition of the viewer classes ViewRendererGL3 and ViewSceneRendererGL3.
 */
 
 #ifndef __view_scenegl_h__
@@ -67,21 +67,21 @@ class QEvent;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCameraGL;
-class ViewLightGL;
-class ViewSceneChangeEvent;
+class ViewCameraGL3;
+class ViewLightGL3;
+class ViewSceneChangeEvent3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewRendererGL
+   \class ViewRendererGL3
    \brief An abstract class for Display Manager.
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewRendererGL  : public ViewObjectGL
+class VIEW3_API ViewRendererGL3  : public ViewObjectGL3
 {
   Q_OBJECT
   Q_PROPERTY( QString Filename READ getFilename WRITE openFile )
@@ -89,22 +89,22 @@ class VIEW_API ViewRendererGL  : public ViewObjectGL
 public :
   
   /// Constructor
-  ViewRendererGL(QGLWidget * parent=0, const char * name=0);
+  ViewRendererGL3(QGLWidget * parent=0, const char * name=0);
   
   /// Destructor.
-  virtual ~ViewRendererGL();
+  virtual ~ViewRendererGL3();
 
   /// Connect this to a statusbar.
-  virtual void connectTo(ViewStatusBar *);
+  virtual void connectTo(ViewStatusBar3 *);
 
   /// Connect this to a GL Widget.
   virtual void connectTo(QGLWidget *);
 
   /// Connect this to a error dialog.
-  virtual void connectTo(ViewErrorDialog *);
+  virtual void connectTo(ViewErrorDialog3 *);
 
   /// Called when the qglwidget enter in this mode.
-  virtual void changeModeEvent(ViewGLFrame::Mode m);
+  virtual void changeModeEvent(ViewGLFrame3::Mode m);
 
   /// Paint scene for Selection.
   virtual void selectGL();
@@ -116,7 +116,7 @@ public :
   virtual void endEvent();
 
   /// Scene change Event.
-  virtual bool sceneChangeEvent(ViewSceneChangeEvent *);
+  virtual bool sceneChangeEvent(ViewSceneChangeEvent3 *);
 
   /// Add Open Entries
   virtual bool addOpenEntries(QPopupMenu * menu);
@@ -216,7 +216,7 @@ signals:
   void sceneChanged();
 
   /// Signal emit when the renderer ask to change of mode.
-  void changeMode(ViewGLFrame::Mode);
+  void changeMode(ViewGLFrame3::Mode);
 
   void selectionChanged(const QString&);
 
@@ -235,11 +235,11 @@ private:
 };
 
 /**   
-      \class ViewSceneRendererGL
+      \class ViewSceneRendererGL3
       \brief An abstract class for Display Manager of GL Scene.
       
 */
-class VIEW_API ViewSceneRendererGL  : public ViewRendererGL
+class VIEW3_API ViewSceneRendererGL3  : public ViewRendererGL3
 {
   Q_OBJECT
   Q_PROPERTY( bool LightEnable READ isLightEnable )
@@ -247,25 +247,25 @@ class VIEW_API ViewSceneRendererGL  : public ViewRendererGL
 public :
   
   /// Constructor.
-  ViewSceneRendererGL(ViewCameraGL * camera=0,
-		      ViewLightGL * light=0,
+  ViewSceneRendererGL3(ViewCameraGL3 * camera=0,
+		      ViewLightGL3 * light=0,
 		      QGLWidget * parent=0, 
 		      const char * name=0);
 
   /// Destructor.
-  virtual ~ViewSceneRendererGL();
+  virtual ~ViewSceneRendererGL3();
 
   /// Get the camera.
-  ViewCameraGL *getCamera() const;
+  ViewCameraGL3 *getCamera() const;
 
   /// Get the light.
-  ViewLightGL *getLight() const; 
+  ViewLightGL3 *getLight() const; 
 
   /// Set the camera.
-  void setCamera(ViewCameraGL *);
+  void setCamera(ViewCameraGL3 *);
 
   /// Set the light.
-  void setLight(ViewLightGL *); 
+  void setLight(ViewLightGL3 *); 
 
   /// Return whether Rendering with light is enable.
   bool isLightEnable() const;
@@ -287,10 +287,10 @@ signals:
 protected :
 
   /// The camera.
-  ViewCameraGL * __camera;
+  ViewCameraGL3 * __camera;
 
   /// The light.
-  ViewLightGL * __light;
+  ViewLightGL3 * __light;
 
   /// Light Enable.
   bool __lightEnable;

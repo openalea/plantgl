@@ -42,37 +42,37 @@
 
 #include "../viewer/pglviewer.h"
 
-ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
+ViewerBuilder3 * ViewerAppli3::VIEWERBUILDER(0);
 
-Viewer * ViewerAppli::build() {
+Viewer3 * ViewerAppli3::build() {
 	if(VIEWERBUILDER) return VIEWERBUILDER->build();
-	else return new PGLViewer();
+	else return new PGLViewer3();
 }
 
-void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
+void ViewerAppli3::setBuilder(ViewerBuilder3 * builder) { VIEWERBUILDER = builder; }
 
-ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }
-ViewerAppli::~ViewerAppli(){  }
+ViewerAppli3::ViewerAppli3(){ ViewObjectGL3::BASHMODE = true; }
+ViewerAppli3::~ViewerAppli3(){  }
 
 
 const std::vector<uint32_t>
-ViewerAppli::getSelection() {
+ViewerAppli3::getSelection() {
 	std::vector<uint32_t> res;
     if(isRunning()){
-      ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
+      ViewSelectRecoverEvent3 * event = new ViewSelectRecoverEvent3(&res) ;
       sendAnEvent(event);
     }
     return res;
 }
 
 int 
-ViewerAppli::question(const std::string& caption,
+ViewerAppli3::question(const std::string& caption,
 			   const std::string& text,
 			   const std::string& but0txt,
 			   const std::string& but1txt,
 			   const std::string& but2txt) {
 	int res = -1;
-    ViewQuestionEvent * event = new ViewQuestionEvent(
+    ViewQuestionEvent3 * event = new ViewQuestionEvent3(
 	  caption.c_str(),
 	  text.c_str(),
 	  (but0txt.empty()?QString::null:QString( but0txt.c_str() )),
@@ -84,7 +84,7 @@ ViewerAppli::question(const std::string& caption,
 }
 
 std::string 
-ViewerAppli::itemSelection(const std::string& caption,
+ViewerAppli3::itemSelection(const std::string& caption,
 					   const std::string& text,
 					   const std::vector<std::string> & values,
 					   bool& ok,
@@ -94,20 +94,20 @@ ViewerAppli::itemSelection(const std::string& caption,
 	for(std::vector<std::string>::const_iterator _it = values.begin();
 		_it != values.end(); _it++)
 		  if(!_it->empty())l.append(QString(_it->c_str()));
-    ViewItemSelectionEvent * event = new ViewItemSelectionEvent(
+    ViewItemSelectionEvent3 * event = new ViewItemSelectionEvent3(
 	  caption.c_str(), text.c_str(), l, editable,&res,&ok);
 	sendAnEvent(event);
 	return std::string(res.latin1());
 }
 
 std::string 
-ViewerAppli::getFile(const std::string& caption,
+ViewerAppli3::getFile(const std::string& caption,
 					  const std::string& startPath,
 				      const std::string& filter,
 					  bool existing,bool dir){
 
 	QString res;
-    ViewFileSelEvent * event = new ViewFileSelEvent(
+    ViewFileSelEvent3 * event = new ViewFileSelEvent3(
 	  (caption.empty()?"Choose File":caption.c_str()),
 	  (startPath.empty()?QString::null:QString( startPath.c_str() )),
 	  (filter.empty()?QString::null:QString( filter.c_str() )),
@@ -117,22 +117,22 @@ ViewerAppli::getFile(const std::string& caption,
 	return (res.isEmpty()?std::string():std::string(res.latin1()));
   }
 
-ViewRayBuffer * 
-ViewerAppli::castRays(const TOOLS(Vector3)& pos, 
+ViewRayBuffer3 * 
+ViewerAppli3::castRays(const TOOLS(Vector3)& pos, 
 	                     const TOOLS(Vector3)& dir,
 						 const TOOLS(Vector3)& dx, 
 						 const TOOLS(Vector3)& dy,
 						 int sx, int sy){
-	ViewRayBuffer * res = NULL ;
-	ViewRayBuffEvent * event = new ViewRayBuffEvent(pos,dir,dx,dy,sx,sy,&res);
+	ViewRayBuffer3 * res = NULL ;
+	ViewRayBuffEvent3 * event = new ViewRayBuffEvent3(pos,dir,dx,dy,sx,sy,&res);
 	sendAnEvent(event);
 	return res;
 }
 
-ViewZBuffer * 
-ViewerAppli::grabZBuffer(){
-	ViewZBuffer * res = NULL ;
-	ViewZBuffEvent * event = new ViewZBuffEvent(&res);
+ViewZBuffer3 * 
+ViewerAppli3::grabZBuffer(){
+	ViewZBuffer3 * res = NULL ;
+	ViewZBuffEvent3 * event = new ViewZBuffEvent3(&res);
 	sendAnEvent(event);
 	return res;
 }

@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,.."
 				PreprocessorDefinitions="SG_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib"
+				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib QtCored4.lib QtGuid4.lib"
 				OutputFile="../../../bin/pglsg-d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,.."
 				PreprocessorDefinitions="SG_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -129,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QTDIR)\lib\qt-mtnc321.lib"
+				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib"
 				OutputFile="../../../bin/pglsg.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../lib/$(TargetName).lib"

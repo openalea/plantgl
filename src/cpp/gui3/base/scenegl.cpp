@@ -47,68 +47,68 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewRendererGL::ViewRendererGL(QGLWidget * parent, 
+ViewRendererGL3::ViewRendererGL3(QGLWidget * parent, 
 			       const char * name):
-  ViewObjectGL(parent,name),
+  ViewObjectGL3(parent,name),
 	__readTime(QDateTime::currentDateTime()) 
 {
 }
 
-ViewRendererGL::~ViewRendererGL()
+ViewRendererGL3::~ViewRendererGL3()
 {
 }
 
 
 void 
-ViewRendererGL::connectTo(QGLWidget *g)
+ViewRendererGL3::connectTo(QGLWidget *g)
 {
-  ViewObjectGL::connectTo(g);
+  ViewObjectGL3::connectTo(g);
   __frame = g;
 }
 
 void 
-ViewRendererGL::connectTo(ViewStatusBar * s)
+ViewRendererGL3::connectTo(ViewStatusBar3 * s)
 {
-  ViewObjectGL::connectTo(s);
+  ViewObjectGL3::connectTo(s);
 }
 
 void 
-ViewRendererGL::connectTo(ViewErrorDialog *e)
+ViewRendererGL3::connectTo(ViewErrorDialog3 *e)
 {
-  ViewObjectGL::connectTo(e);
+  ViewObjectGL3::connectTo(e);
 }
 
 
 void 
-ViewRendererGL::changeModeEvent(ViewGLFrame::Mode m)
+ViewRendererGL3::changeModeEvent(ViewGLFrame3::Mode m)
 {
 }
 
 void 
-ViewRendererGL::setRotationMode()
+ViewRendererGL3::setRotationMode()
 {
-  emit changeMode(ViewGLFrame::Rotation);
+  emit changeMode(ViewGLFrame3::Rotation);
 }
 
 void
-ViewRendererGL::setSelectionMode()
+ViewRendererGL3::setSelectionMode()
 {
-  emit changeMode(ViewGLFrame::Selection);
+  emit changeMode(ViewGLFrame3::Selection);
 }
 
 void
-ViewRendererGL::selectGL()
+ViewRendererGL3::selectGL()
 {
 }
 
 void
-ViewRendererGL::selectionEvent(uint32_t i)
+ViewRendererGL3::selectionEvent(uint32_t i)
 {
   qDebug("selectionEvent(uint32_t) not implemented in current Renderer");
 }
 
 void
-ViewRendererGL::selectionEvent(const std::vector<uint32_t>& i)
+ViewRendererGL3::selectionEvent(const std::vector<uint32_t>& i)
 {
   for(std::vector<uint32_t>::const_iterator _it = i.begin();
 	  _it != i.end(); _it++)
@@ -116,7 +116,7 @@ ViewRendererGL::selectionEvent(const std::vector<uint32_t>& i)
 }
 
 void
-ViewRendererGL::selectionIdEvent(const std::vector<uint32_t>& i)
+ViewRendererGL3::selectionIdEvent(const std::vector<uint32_t>& i)
 {
   for(std::vector<uint32_t>::const_iterator _it = i.begin();
 	  _it != i.end(); _it++)
@@ -124,132 +124,132 @@ ViewRendererGL::selectionIdEvent(const std::vector<uint32_t>& i)
 }
 
 void
-ViewRendererGL::selectionEvent(QListViewItem *)
+ViewRendererGL3::selectionEvent(QListViewItem *)
 {
   qDebug("selectionEvent(QListViewItem *) not implemented in current Renderer");
 }
 
 std::vector<uint32_t> 
-ViewRendererGL::getSelectionIds() const
+ViewRendererGL3::getSelectionIds() const
 {
   qDebug("std::vector<uint32_t> getSelectionIds() const not implemented in current Renderer");
   return std::vector<uint32_t>(0);
 }
 
 uint32_t 
-ViewRendererGL::translateId(uint32_t id) const
+ViewRendererGL3::translateId(uint32_t id) const
 {
 	return id;
 }
 
 bool
-ViewRendererGL::endSelect()
+ViewRendererGL3::endSelect()
 {
 	return false;
 }
 
 void 
-ViewRendererGL::endEvent()
+ViewRendererGL3::endEvent()
 {
 }
 
 void
-ViewRendererGL::clearSelectionEvent()
+ViewRendererGL3::clearSelectionEvent()
 {
 }
 
 bool
-ViewRendererGL::addOpenEntries(QPopupMenu * menu)
+ViewRendererGL3::addOpenEntries(QPopupMenu * menu)
 {
   return false;
 }
 
 bool 
-ViewRendererGL::addImportEntries(QPopupMenu * menu)
+ViewRendererGL3::addImportEntries(QPopupMenu * menu)
 {
   return false;
 }
 
 bool
-ViewRendererGL::addSaveEntries(QPopupMenu * menu)
+ViewRendererGL3::addSaveEntries(QPopupMenu * menu)
 {
   return false;
 }
 
 bool
-ViewRendererGL::addExportEntries(QPopupMenu * menu)
+ViewRendererGL3::addExportEntries(QPopupMenu * menu)
 {
   return false;
 }
   
 bool
-ViewRendererGL::addProperties(QTabWidget * tab)
+ViewRendererGL3::addProperties(QTabWidget * tab)
 {
   return false;
 }
 
 bool 
-ViewRendererGL::addOtherMenu(QMenuBar * menu)
+ViewRendererGL3::addOtherMenu(QMenuBar * menu)
 {
   return false;
 }
 
 bool 
-ViewRendererGL::addEditEntries(QPopupMenu * menu)
+ViewRendererGL3::addEditEntries(QPopupMenu * menu)
 {
 	return false;
 }
 
 bool 
-ViewRendererGL::addOtherToolBar(QMainWindow * menu)
+ViewRendererGL3::addOtherToolBar(QMainWindow * menu)
 {
   return false;
 }
 
-bool ViewRendererGL::browse(QListView *,bool)
-{
-  return false;
-}
-
-bool 
-ViewRendererGL::open(const QString& filename)
+bool ViewRendererGL3::browse(QListView *,bool)
 {
   return false;
 }
 
 bool 
-ViewRendererGL::openStream(std::istream& stream)
+ViewRendererGL3::open(const QString& filename)
+{
+  return false;
+}
+
+bool 
+ViewRendererGL3::openStream(std::istream& stream)
 {
   return false;
 }
 
 bool
-ViewRendererGL::saveAs(const QString& filename)
+ViewRendererGL3::saveAs(const QString& filename)
 {
   return false;
 }
 
 void
-ViewRendererGL::openFile(const QString& filename)
+ViewRendererGL3::openFile(const QString& filename)
 {
   if(open(filename))
     emit filenameChanged(__filename);
 }
 
 void
-ViewRendererGL::addFile(const QString& filename)
+ViewRendererGL3::addFile(const QString& filename)
 {
 }
 
 void 
-ViewRendererGL::save()
+ViewRendererGL3::save()
 {
   saveAs(__filename);
   __readTime = QDateTime::currentDateTime();
 }
 
 void 
-ViewRendererGL::refresh()
+ViewRendererGL3::refresh()
 {
   if(__filename){
 	openFile(__filename);
@@ -258,21 +258,21 @@ ViewRendererGL::refresh()
 }
 
 void 
-ViewRendererGL::refreshDisplay()
+ViewRendererGL3::refreshDisplay()
 {
 }
 
 void 
-ViewRendererGL::close()
+ViewRendererGL3::close()
 {
   clear();
   emit valueChanged();
 }
 
 void 
-ViewRendererGL::saveAs()
+ViewRendererGL3::saveAs()
 {
-  QString filename = ViewFileManager::getSaveFileName(__filename,"","All Files (*.*)",__frame,"SaveAs");
+  QString filename = ViewFileManager3::getSaveFileName(__filename,"","All Files (*.*)",__frame,"SaveAs");
   if(!filename.isEmpty()){
     if(saveAs(filename)){
       __filename = filename;
@@ -283,13 +283,13 @@ ViewRendererGL::saveAs()
 }
 
 const QString&
-ViewRendererGL::getFilename() const
+ViewRendererGL3::getFilename() const
 {
   return __filename;
 }
 
 void
-ViewRendererGL::setFilename(const QString& file)
+ViewRendererGL3::setFilename(const QString& file)
 {
   bool t = (file != __filename);
   if(t) __filename = file;
@@ -298,7 +298,7 @@ ViewRendererGL::setFilename(const QString& file)
 }
 
 void
-ViewRendererGL::checkFileModification()
+ViewRendererGL3::checkFileModification()
 {
   if(!__filename.isEmpty()){
 	if(QFileInfo(__filename).lastModified() > __readTime){
@@ -318,7 +318,7 @@ ViewRendererGL::checkFileModification()
 }
 
 void 
-ViewRendererGL::clear()
+ViewRendererGL3::clear()
 {
   if(__filename != QString::null){
 	__filename = QString::null;
@@ -328,7 +328,7 @@ ViewRendererGL::clear()
 
 /// Get the global Bounding Box.
 const PGL(BoundingBoxPtr) 
-ViewRendererGL::getGlobalBoundingBox() const
+ViewRendererGL3::getGlobalBoundingBox() const
 {
 	return new PGL(BoundingBox)(Vector3(-1,-1,-1),Vector3(1,1,1));
 }
@@ -336,11 +336,11 @@ ViewRendererGL::getGlobalBoundingBox() const
 
 /* ----------------------------------------------------------------------- */
 
-ViewSceneRendererGL::ViewSceneRendererGL(ViewCameraGL * camera,
-					 ViewLightGL * light,
+ViewSceneRendererGL3::ViewSceneRendererGL3(ViewCameraGL3 * camera,
+					 ViewLightGL3 * light,
 					 QGLWidget * parent, 
 					 const char * name):
-  ViewRendererGL(parent,name),
+  ViewRendererGL3(parent,name),
   __camera(camera),
   __light(light),
   __lightEnable(true)
@@ -349,24 +349,24 @@ ViewSceneRendererGL::ViewSceneRendererGL(ViewCameraGL * camera,
 	QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));  
 }
 
-ViewSceneRendererGL::~ViewSceneRendererGL()
+ViewSceneRendererGL3::~ViewSceneRendererGL3()
 {
 }
 
-ViewCameraGL *
-ViewSceneRendererGL::getCamera() const
+ViewCameraGL3 *
+ViewSceneRendererGL3::getCamera() const
 {
   return __camera;
 }
 
-ViewLightGL *
-ViewSceneRendererGL::getLight() const
+ViewLightGL3 *
+ViewSceneRendererGL3::getLight() const
 {
   return __light;
 }
 
 void
-ViewSceneRendererGL::setCamera(ViewCameraGL * camera)
+ViewSceneRendererGL3::setCamera(ViewCameraGL3 * camera)
 {
   __camera = camera;
   if(camera)
@@ -374,20 +374,20 @@ ViewSceneRendererGL::setCamera(ViewCameraGL * camera)
 }
 
 void 
-ViewSceneRendererGL::setLight(ViewLightGL * light)
+ViewSceneRendererGL3::setLight(ViewLightGL3 * light)
 {
   __light = light;
 }
 
 
 bool 
-ViewSceneRendererGL::isLightEnable() const
+ViewSceneRendererGL3::isLightEnable() const
 {
   return __lightEnable;
 }
 
 void 
-ViewSceneRendererGL::setLightEnable()
+ViewSceneRendererGL3::setLightEnable()
 {
   __lightEnable=!__lightEnable;
   emit lightEnableChanged(__lightEnable);
@@ -397,38 +397,38 @@ ViewSceneRendererGL::setLightEnable()
 }
 
 void  
-ViewSceneRendererGL::computeCamera()
+ViewSceneRendererGL3::computeCamera()
 {
 }
 
 void 
-ViewSceneRendererGL::useDisplayList(bool)
+ViewSceneRendererGL3::useDisplayList(bool)
 {
 }
 
 
 /* ----------------------------------------------------------------------- */
 
-bool ViewRendererGL::event(QEvent * e)
+bool ViewRendererGL3::event(QEvent * e)
 {
   if(e->type() == 12345){
-    ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
+    ViewSceneChangeEvent3 * k = ( ViewSceneChangeEvent3 * )e;
     return sceneChangeEvent(k);
   }
   else if(e->type() == 12348){
-    ViewFileChangeEvent * k = ( ViewFileChangeEvent * )e;
+    ViewFileChangeEvent3 * k = ( ViewFileChangeEvent3 * )e;
 	openFile(k->filename);
     return true;
   }
   else if(e->type() == 12349){
-    // ViewRefreshEvent * k = ( ViewRefreshEvent * )e;
+    // ViewRefreshEvent3 * k = ( ViewRefreshEvent3 * )e;
 	refresh();
     return true;
   }
   else return(QObject::event(e));
 }
 
-bool ViewRendererGL::sceneChangeEvent( ViewSceneChangeEvent * )
+bool ViewRendererGL3::sceneChangeEvent( ViewSceneChangeEvent3 * )
 {
   return false;
 }

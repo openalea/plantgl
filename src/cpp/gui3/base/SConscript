@@ -7,5 +7,5 @@ includes= env.ALEAGlob('*.h')
 if platform.name != 'win32':
     includes= filter( lambda x: 'trayicon' not in x, includes )
 
-env.ALEAIncludes( "plantgl/gui/base", includes )
+env.ALEAIncludes( "plantgl/gui3/base", includes )
 

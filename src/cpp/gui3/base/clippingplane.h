@@ -37,7 +37,7 @@
 
 
 /*! \file view_clippingplane.h
-    \brief Definition of the viewer class ViewClippingPlaneGL.
+    \brief Definition of the viewer class ViewClippingPlaneGL3.
 */
 
 #ifndef __view_clippingplane_h__
@@ -49,29 +49,29 @@
 #include <qpopupmenu.h>   
 #include "object.h"
 class ClippingPlaneWidget;
-class ViewDialog;
+class ViewDialog3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewClippingPlaneGL
+   \class ViewClippingPlaneGL3
    \brief Some Clipping Planes for GL Display
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewClippingPlaneGL  : public ViewObjectGL
+class VIEW3_API ViewClippingPlaneGL3  : public ViewObjectGL3
 {
   Q_OBJECT
 
 public:
 
   /// Constructor.
-  ViewClippingPlaneGL(QGLWidget * parent=0, const char * name=0);
+  ViewClippingPlaneGL3(QGLWidget * parent=0, const char * name=0);
 
   /// Destructor.
-  virtual ~ViewClippingPlaneGL();
+  virtual ~ViewClippingPlaneGL3();
   
   virtual QPopupMenu * createToolsMenu(QWidget * parent);
 
@@ -81,7 +81,7 @@ public:
   double valC(int);
   double valD(int);
 
-  ViewDialog * getControl() const;
+  ViewDialog3 * getControl() const;
 
 public slots:
 
@@ -156,21 +156,21 @@ protected :
 
   double __D[6];
 
-  ViewDialog * __control;
+  ViewDialog3 * __control;
   ClippingPlaneWidget * __cpw;
 };
 
 /* ----------------------------------------------------------------------- */
 
-/// Menu to control a ViewClippingPlaneGL
-class VIEW_API ViewCPlaneMenu : public QPopupMenu {
+/// Menu to control a ViewClippingPlaneGL3
+class VIEW3_API ViewCPlaneMenu3 : public QPopupMenu {
    Q_OBJECT
  
 public :
   
-  ViewCPlaneMenu(ViewClippingPlaneGL * cp, QWidget * parent=0, const char * name=0);
+  ViewCPlaneMenu3(ViewClippingPlaneGL3 * cp, QWidget * parent=0, const char * name=0);
   
-  ~ViewCPlaneMenu();
+  ~ViewCPlaneMenu3();
   
 public slots :
 

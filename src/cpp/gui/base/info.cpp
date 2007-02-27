@@ -38,9 +38,9 @@
 #include "info.h"
 #include <tool/util_types.h>
 
-#include <qheader.h>
 #include <qlabel.h>
-#include <qlistview.h>
+#include <qpainter.h>
+#include <q3listview.h>
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qvariant.h>
@@ -52,8 +52,9 @@
 #include <qtextstream.h>
 #include <qfiledialog.h>
 #include <qapplication.h>
-#include <qwidgetlist.h>
+#include <QtCore/QSysInfo>
 #include <qtextcodec.h>
+#include <qevent.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -63,24 +64,27 @@
 
 #ifdef _WIN32
 #include <process.h>
-#elif __GNUC__
+#endif
+
+#ifdef __GNUC__
 #include <sys/utsname.h>
 #include <unistd.h>
 #endif
-
 #include <qgl.h>
 #include <GL/gl.h>
+
+#ifdef __GNUC__
+#include <GL/glx.h>
+#endif
 
 #ifdef _WIN32
 #include <wingdi.h>
 #include <winbase.h>
-#else
-#include <GL/glx.h>
 #endif
 
 #include <algo/opengl/util_glut.h>
 
-#ifndef _WIN32
+#ifdef __GNUC__
 
 #include <stdio.h>
 extern "C" {
@@ -414,74 +418,61 @@ static char * wheel_logo[] = {
     item->setText( 1, QString::number(sizeof(type)*8 )+" bits" );  \
 
 #define TYPEITEM(item, itemfather, type) \
-    item = new QListViewItem( itemfather , item); \
+    item = new Q3ListViewItem( itemfather , item); \
 	TYPEITEMINFO(item, type)
 
 
 /* ----------------------------------------------------------------------- */
 
-
-
-ViewSysInfo::ViewSysInfo( QWidget* parent,
-                                      QGLWidget * FrameGL,
-                                      const char* name,
-                                      bool modal, WFlags fl )
-  : QDialog( parent, name, modal, fl )
+ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name, bool modal, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
 /* ----------------------------------------------------------------------- */
-
+	if(name)setObjectName(name);
+	setModal(modal);
     QPixmap image0( ( const char** ) info_logo );
-    if ( !name )
-        setName( "Technical Characteristics" );
     resize( 563, 503 );
-    setCaption( tr( "Technical Characteristics" ) );
-    setIcon( image0 );
-    setIconText( tr( "Technical Characteristics" ) );
+    setWindowTitle( tr( "Technical Characteristics" ) );
+    setWindowIcon( image0 );
+    // setIconText( tr( "Technical Characteristics" ) );
 
-    QPushButton * SaveButton = new QPushButton( this, "SaveButton" );
+    QPushButton * SaveButton = new QPushButton( this );
     SaveButton->setGeometry( QRect( 200, 460, 104, 28 ) );
     SaveButton->setText( tr( "&Save" ) );
     QObject::connect(SaveButton ,SIGNAL(clicked()),this,SLOT(saveAsFile()));
 
-    CancelButton = new QPushButton( this, "CancelButton" );
+    CancelButton = new QPushButton( this );
     CancelButton->setGeometry( QRect( 440, 460, 104, 28 ) );
     CancelButton->setText( tr( "&Cancel" ) );
     QObject::connect(CancelButton ,SIGNAL(clicked()),this,SLOT(reject()));
 
-    OkButton = new QPushButton( this, "OkButton" );
+    OkButton = new QPushButton( this );
     OkButton->setGeometry( QRect( 320, 460, 104, 28 ) );
     OkButton->setText( tr( "&Ok" ) );
     QObject::connect(OkButton ,SIGNAL(clicked()),this,SLOT(accept()));
 
-        Title = new QLabel( this, "Title" );
+        Title = new QLabel( this );
         Title->setGeometry( QRect( 80, 20, 200, 40 ) );
-#if QT_VERSION >= 230
-        Title->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)1,
-                                                                (QSizePolicy::SizeType)1,
-                                                                                Title->sizePolicy().hasHeightForWidth() ) );
-#endif
         QFont font1(  Title->font() );
         font1.setFamily( "adobe-helvetica" );
         font1.setPointSize( 15 );
         font1.setBold( TRUE );
         Title->setFont( font1 );
-        Title->setText( tr( ( name == NULL ? "PlantGL Viewer" : name ) ) );
+		Title->setText( (name ? name : tr( "PlantGL Viewer" ) ) );
 
-        Icon = new QLabel( this, "Icons" );
+        Icon = new QLabel( this );
         Icon->setGeometry( QRect( 10, 10, 60, 60 ) );
         Icon->setPixmap( QPixmap(icon_memory) );
-#if QT_VERSION >= 230
         Icon->setScaledContents( TRUE );
-#endif
 
 /* ----------------------------------------------------------------------- */
 
-    AttView = new QListView( this, "AttView" );
+    AttView = new Q3ListView( this );
     AttView->addColumn( tr( "Information" ) );
     AttView->addColumn( tr( "Values" ) );
 
-    RootItem = new QListViewItem( AttView, 0 );
-    RootItem->setText( 0, tr( ( name == NULL ? "PlantGL Viewer" : name ) ) );
+    RootItem = new Q3ListViewItem( AttView, 0 );
+    RootItem->setText( 0, (name ? name : tr( "PlantGL Viewer" ) ) );
     RootItem->setOpen( TRUE );
 
 /* ----------------------------------------------------------------------- */
@@ -492,6 +483,18 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
         QString sys_version;
         QString sys_release;
         int num_proc = 0;
+
+#ifdef __GNUC__
+
+    struct utsname buf;
+    uname(&buf);
+    proc = QString(buf.machine);
+    machine_name = QString(buf.nodename);
+    sys_version = QString(buf.version);
+    sys_release = QString(buf.release);
+    sys_name = QString(buf.sysname);
+
+#endif
 
 #ifdef _WIN32
         LPSYSTEM_INFO lpSystemInfo = new SYSTEM_INFO;
@@ -584,40 +587,29 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
         }
         else sys_name = "Windows";
 
-#elif __GNUC__
-
-    struct utsname buf;
-    uname(&buf);
-    proc = QString(buf.machine);
-    machine_name = QString(buf.nodename);
-    sys_version = QString(buf.version);
-    sys_release = QString(buf.release);
-    sys_name = QString(buf.sysname);
-
 #endif
-
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item0 = new QListViewItem( RootItem, RootItem );
+    Q3ListViewItem * item0 = new Q3ListViewItem( RootItem, RootItem );
     item0->setText( 0, tr( "Machine" ) );
     item0->setText( 1,  machine_name  );
     item0->setPixmap( 0, image0 );
     item0->setOpen( FALSE );
 
-    QListViewItem * item = new QListViewItem( item0 );
+    Q3ListViewItem * item = new Q3ListViewItem( item0 );
     item->setText( 0, tr( "Processor" ) );
     item->setText( 1, proc );
 
     if(num_proc>0){
-     item = new QListViewItem( item0, item );
+     item = new Q3ListViewItem( item0, item );
      item->setText( 0, tr( "Number of processor" ) );
      item->setText( 1, QString::number(num_proc) );
     }
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item1 = new QListViewItem( RootItem, item0 );
+    Q3ListViewItem * item1 = new Q3ListViewItem( RootItem, item0 );
     item1->setText( 0, tr( "System" ) );
     item1->setText( 1, sys_name);
     item1->setOpen( FALSE );
@@ -630,11 +622,11 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     else item1->setPixmap( 0, wheel_pix );
 
 
-    item = new QListViewItem( item1 );
+    item = new Q3ListViewItem( item1 );
     item->setText( 0, tr( "Release" ) );
     item->setText( 1, sys_release );
 
-    item = new QListViewItem( item1, item );
+    item = new Q3ListViewItem( item1, item );
     item->setText( 0, tr( "Version" ) );
     item->setText( 1, sys_version );
 
@@ -651,65 +643,47 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     lang += lpLCData;
     lang +=']';
     delete [] lpLCData;
-    item = new QListViewItem( item1, item );
+    item = new Q3ListViewItem( item1, item );
     item->setText( 0, tr( "Language" ) );
     item->setText( 1, lang );
 //    item->setText( 1, QString(QTextCodec::codecForLocale()->name() ) );
 #endif
 
-    int * ws = new int(0);
-    bool * ord = new bool(true);
-    qSysInfo(ws,ord);
-    if(ws){
-      item = new QListViewItem( item1, item );
-      item->setText( 0, tr( "Word Size" ) );
-      item->setText( 1, QString::number(*ws)+" "+tr( "bits" ) );
-    }
+   item = new Q3ListViewItem( item1, item );
+   item->setText( 0, tr( "Word Size" ) );
+   item->setText( 1, QString::number(QSysInfo::WordSize)+" "+tr( "bits" ) );
 
-    if(ord){
-      item = new QListViewItem( item1, item );
-      item->setText( 0, tr( "Byte Order" ) );
-      item->setText( 1, tr( (*ord? "Big Endian" : "Little Endian") ) );
-    }
+   item = new Q3ListViewItem( item1, item );
+   item->setText( 0, tr( "Byte Order" ) );
+   item->setText( 1, tr( (QSysInfo::ByteOrder? "Big Endian" : "Little Endian") ) );
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item1b = new QListViewItem( RootItem, item1 );
+    Q3ListViewItem * item1b = new Q3ListViewItem( RootItem, item1 );
     item1b->setText( 0, tr( "Process" ) );
     item1b->setPixmap( 0, wheel_pix );
     item1b->setOpen( FALSE );
 
-    item = new QListViewItem( item1b );
+    item = new Q3ListViewItem( item1b );
     item->setOpen( FALSE );
     item->setText( 0, tr( "Id" ) );
     item->setText( 1, QString::number(getpid()) );
 
- /*   QWidgetList  *list = QApplication::topLevelWidgets();
-    QWidgetListIt it( *list );  // iterate over the widgets
-    QWidget * w;
-    while ( (w=it.current()) != 0 ) {   // for each top level widget...
-        ++it;
-        item = new QListViewItem( item1b, item );
-        item->setOpen( FALSE );
-        item->setText( 0, tr( "Windows "+QString(w->name())+" Id" ) );
-        item->setText( 1, QString::number((int)w->winId()) );
-    }
-    delete list;                // delete the list, not the widgets */
 
 /* ----------------------------------------------------------------------- */
 
     const char* c_date =  __DATE__ ;
     const char* c_time = __TIME__ ;
 
-    QListViewItem * item2 = new QListViewItem( RootItem, item1b );
+    Q3ListViewItem * item2 = new Q3ListViewItem( RootItem, item1b );
     item2->setText( 0, tr( "Compilation" ) );
     item2->setPixmap( 0, wheel_pix );
     item2->setOpen( FALSE );
 
-    item = new QListViewItem( item2 );
+    item = new Q3ListViewItem( item2 );
     item->setOpen( FALSE );
     item->setText( 0, tr( "Date" ) );
-    item->setText( 1, tr( QString(c_date) + " "+tr("at")+" " +  QString(c_time) ) );
+    item->setText( 1, tr(( QString(c_date) + " "+tr("at")+" " +  QString(c_time) ).toAscii().data()) );
 
 /* ----------------------------------------------------------------------- */
 
@@ -723,7 +697,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 #endif
 
 #ifdef _WIN32
-    item = new QListViewItem( item2, item );
+    item = new Q3ListViewItem( item2, item );
     item->setText( 0, tr( "Build Mode" ) );
 #ifdef _DEBUG
     item->setText( 1, tr( "Debug"  ) );
@@ -758,37 +732,37 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
 #endif
 
-    QListViewItem * item2bis = new QListViewItem( item2, item);
+    Q3ListViewItem * item2bis = new Q3ListViewItem( item2, item);
     item2bis->setText( 0, tr( "C++ Compiler" ) );
-    item2bis->setText( 1, tr( c_name ) );
+    item2bis->setText( 1, c_name);
     item2bis->setOpen( FALSE );
 
-    item = new QListViewItem( item2bis);
+    item = new Q3ListViewItem( item2bis);
     item->setText( 0, tr( "Version" ) );
     item->setText( 1,  c_version  );
 
-#ifdef _MSC_VER
-    item = new QListViewItem( item2bis, item );
+#ifdef _WIN32
+    item = new Q3ListViewItem( item2bis, item );
     item->setText( 0, tr( "Run-Time Type Information" ) );
 #ifdef _CPPRTTI
     item->setText( 1, tr( "Enable"  ) );
 #else
     item->setText( 1, tr( "Disable"  ) );
 #endif
-    item = new QListViewItem( item2bis, item );
+    item = new Q3ListViewItem( item2bis, item );
     item->setText( 0, tr( "Exception Handling" ) );
 #ifdef _CPPUNWIND
     item->setText( 1, tr( "Enable"  ) );
 #else
     item->setText( 1, tr( "Disable"  ) );
 #endif
-    item = new QListViewItem( item2bis, item );
+    item = new Q3ListViewItem( item2bis, item );
     item->setText( 0, tr( "Compiled on" ) );
     item->setText( 1, architect  );
 
 #endif
 #ifdef __GNUC__
-    item = new QListViewItem( item2bis, item );
+    item = new Q3ListViewItem( item2bis, item );
     item->setText( 0, tr( "Compilation Optimization" ) );
 #ifdef __OPTIMIZE__
     item->setText( 1, tr( "Enable"  ) );
@@ -799,18 +773,18 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
 #ifdef __cplusplus
 #if __cplusplus != 1
-    item = new QListViewItem( item2bis, item );
+    item = new Q3ListViewItem( item2bis, item );
     item->setText( 0, tr( "C++ Standard's Version" ) );
-	item->setText( 1, tr( QString::number(__cplusplus) ) );
+	item->setText( 1, QString::number(__cplusplus) );
 #endif
 #endif
 
-    QListViewItem * item2tris = new QListViewItem( item2bis, item );
+    Q3ListViewItem * item2tris = new Q3ListViewItem( item2bis, item );
     item2tris->setText( 0, tr( "Types Size" ) );
 
-    QListViewItem * item2tris1 = new QListViewItem( item2tris );
+    Q3ListViewItem * item2tris1 = new Q3ListViewItem( item2tris );
     item2tris1->setText( 0, tr( "Basic Types" ) );
-    item = new QListViewItem( item2tris1);
+    item = new Q3ListViewItem( item2tris1);
 	TYPEITEMINFO(item,  char)
 	TYPEITEM(item, item2tris1, int)
 	TYPEITEM(item, item2tris1, short int)
@@ -819,9 +793,9 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 	TYPEITEM(item, item2tris1, double)
 	TYPEITEM(item, item2tris1, size_t)
 
-    QListViewItem * item2tris2 = new QListViewItem( item2tris, item2tris1 );
+    Q3ListViewItem * item2tris2 = new Q3ListViewItem( item2tris, item2tris1 );
     item2tris2->setText( 0, tr( "Custom Types" ) );
-    item = new QListViewItem( item2tris2);
+    item = new Q3ListViewItem( item2tris2);
 	TYPEITEMINFO(item, uchar_t)
 	TYPEITEM(item, item2tris2, int16_t)
 	TYPEITEM(item, item2tris2, uint16_t)
@@ -833,15 +807,15 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
     QPixmap qt_pix( ( const char** ) qt_logo );
 
-    QListViewItem * item3 = new QListViewItem( RootItem, item2 );
+    Q3ListViewItem * item3 = new Q3ListViewItem( RootItem, item2 );
     item3->setPixmap( 0, qt_pix );
     item3->setText( 0, tr( "Qt Library" ) );
     item3->setOpen( FALSE );
 
-    item = new QListViewItem( item3 );
+    item = new Q3ListViewItem( item3 );
     item->setText( 0, tr( "Version" ) );
     item->setText( 1, tr( qVersion() ) );
-    item = new QListViewItem( item3, item );
+    item = new Q3ListViewItem( item3, item );
     item->setText( 0, tr( "Thread Support" ) );
 #ifdef QT_THREAD_SUPPORT
     item->setText( 1, tr( "Enable" ) );
@@ -849,7 +823,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     item->setText( 1, tr( "Disable" ) );
 #endif
 #ifdef _WIN32
-    item = new QListViewItem( item3, item );
+    item = new Q3ListViewItem( item3, item );
     item->setText( 0, tr( "Qt DLL" ) );
 #ifdef QT_DLL
     item->setText( 1, tr( "Yes" ) );
@@ -857,17 +831,17 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     item->setText( 1, tr( "No" ) );
 #endif
 #endif
-    QListViewItem * item3font = new QListViewItem( item3, item );
+    Q3ListViewItem * item3font = new Q3ListViewItem( item3, item );
     item3font->setText( 0, tr( "Default Font" ) );
-    item = new QListViewItem( item3font);
+    item = new Q3ListViewItem( item3font);
 #if QT_VERSION < 300
     item->setText( 0, tr( "Charset" ) );
     item->setText( 1, QFont::encodingName(QApplication::font().charSet()));
-    item = new QListViewItem( item3font,item);
+    item = new Q3ListViewItem( item3font,item);
 #endif
     item->setText( 0, tr( "Family" ) );
     item->setText( 1, QApplication::font().family());
-    item = new QListViewItem( item3font,item);
+    item = new Q3ListViewItem( item3font,item);
     item->setText( 0, tr( "Size" ) );
     item->setText( 1, QString::number(QApplication::font().pointSize()));
 
@@ -877,29 +851,28 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
     const QGLContext * context = NULL;
     bool _defaultgl = false;
-    if(FrameGL != NULL){
-                context = FrameGL->context();
+    if(frameGL != NULL){
+                context = frameGL->context();
     }
     if(context == NULL){
                 context = QGLContext::currentContext();
                 if(context == 0){
                         _defaultgl = true;
-                        FrameGL = new QGLWidget(this,"Default");
-                        FrameGL->setGeometry(0,0,0,0);
-                        FrameGL->makeCurrent();
+                        frameGL = new QGLWidget(this);
+                        frameGL->setGeometry(0,0,0,0);
+                        frameGL->makeCurrent();
                         context = QGLContext::currentContext();
                 }
     }
 
-    QListViewItem * item4 = new QListViewItem( RootItem, item3 );
+    Q3ListViewItem * item4 = new Q3ListViewItem( RootItem, item3 );
     item4->setPixmap( 0, opengl_pix );
 
-    if( FrameGL != NULL){
-                QString _clname = FrameGL->className();
+    if( frameGL != NULL){
+                QString _clname = frameGL->metaObject()->className();
                 if(_clname != "QGLWidget" )
-                        item4->setText( 0, tr( "GL Widget")+" (" + QString(FrameGL->className())+')'   );
+                        item4->setText( 0, tr( "GL Widget")+" (" + _clname +')'   );
                 else item4->setText( 0, tr( "GL Widget" ) );
-                item4->setText( 1, tr( FrameGL->name("") ) );
     }
     else {
                 item4->setText( 0, tr( "GL Widget"  ) );
@@ -907,15 +880,15 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * itemfgl1 = new QListViewItem( item4, item );
+    Q3ListViewItem * itemfgl1 = new Q3ListViewItem( item4, item );
     itemfgl1->setText( 0, tr( "GL Context" ) );
     if(_defaultgl)itemfgl1->setText( 1, tr( "Default" ) );
 
-    item = new QListViewItem( itemfgl1 );
+    item = new Q3ListViewItem( itemfgl1 );
     item->setText( 0, tr( "Valid" ) );
     item->setText( 1, tr( (context->isValid() ? "Yes" : "No" ) ));
 
-    item = new QListViewItem( itemfgl1, item );
+    item = new Q3ListViewItem( itemfgl1, item );
     item->setText( 0, tr( "Shared" ) );
     item->setText( 1, tr( (context->isSharing() ? "Yes" : "No" ) ));
 
@@ -925,51 +898,51 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     if(context != NULL) _glformat = context->format();
     else _glformat = QGLFormat::defaultFormat();
 
-    QListViewItem * itemfgl2 = new QListViewItem( item4, itemfgl1 );
+    Q3ListViewItem * itemfgl2 = new Q3ListViewItem( item4, itemfgl1 );
     itemfgl2->setText( 0, tr( "GL Format" ) );
     if(_defaultgl)itemfgl2->setText( 1, tr( "Default" ) );
 
-    item = new QListViewItem( itemfgl2 );
+    item = new Q3ListViewItem( itemfgl2 );
     item->setText( 0, tr( "Direct Rendering" ) );
     item->setText( 1, tr( (_glformat.directRendering() ? "Enable" : "Disable" ) ));
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Double Buffer" ) );
     item->setText( 1, tr( (_glformat.doubleBuffer() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Depth Buffer" ) );
     item->setText( 1, tr( (_glformat.depth() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Alpha channel" ) );
     item->setText( 1, tr( (_glformat.alpha() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Accumulation buffer" ) );
     item->setText( 1, tr( (_glformat.accum() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Stencil buffer" ) );
     item->setText( 1, tr( (_glformat.stencil() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Stereo buffering" ) );
     item->setText( 1, tr( (_glformat.stereo() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Overlay Plane" ) );
     item->setText( 1, tr( (_glformat.hasOverlay() ? "Enable" : "Disable" )  ) );
-    item = new QListViewItem( itemfgl2, item );
+    item = new Q3ListViewItem( itemfgl2, item );
     item->setText( 0, tr( "Plane" ) );
     item->setText( 1, QString::number(_glformat.plane() ) );
 
 /* ----------------------------------------------------------------------- */
 
-    if( FrameGL !=0 ){
-                const QGLContext * ocontext = FrameGL->overlayContext();
-                QListViewItem * itemfgl3 = new QListViewItem( item4, itemfgl2 );
+    if( frameGL !=0 ){
+                const QGLContext * ocontext = frameGL->overlayContext();
+                Q3ListViewItem * itemfgl3 = new Q3ListViewItem( item4, itemfgl2 );
                 itemfgl3->setText( 0, tr( "Overlay GL Context" ) );
                 if(ocontext == NULL) itemfgl3->setText( 1, tr( "None" ) );
                 else {
                         if(_defaultgl)itemfgl3->setText( 1, tr( "Default" ) );
-                        item = new QListViewItem( itemfgl3 );
+                        item = new Q3ListViewItem( itemfgl3 );
                         item->setText( 0, tr( "Valid" ) );
                         item->setText( 1, tr( (context->isValid() ? "Yes" : "No" ) ));
-                        item = new QListViewItem( itemfgl3, item );
+                        item = new Q3ListViewItem( itemfgl3, item );
                         item->setText( 0, tr( "Shared" ) );
                         item->setText( 1, tr( (context->isSharing() ? "Yes" : "No" ) ));
 
@@ -977,63 +950,63 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
                         QGLFormat _oglformat = ocontext->format();
 
-                        QListViewItem * itemfgl4 = new QListViewItem( item4, itemfgl3 );
+                        Q3ListViewItem * itemfgl4 = new Q3ListViewItem( item4, itemfgl3 );
                         itemfgl4->setText( 0, tr( "Overlay GL Format" ) );
                         if(_defaultgl)itemfgl4->setText( 1, tr( "Default" ) );
-                        item = new QListViewItem( itemfgl4 );
+                        item = new Q3ListViewItem( itemfgl4 );
                         item->setText( 0, tr( "Direct Rendering" ) );
                         item->setText( 1, tr( (_oglformat.directRendering() ? "Enable" : "Disable" ) ));
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Double Buffer" ) );
                         item->setText( 1, tr( (_oglformat.doubleBuffer() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Depth Buffer" ) );
                         item->setText( 1, tr( (_oglformat.depth() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Alpha channel" ) );
                         item->setText( 1, tr( (_oglformat.alpha() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Accumulation buffer" ) );
                         item->setText( 1, tr( (_oglformat.accum() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Stencil buffer" ) );
                         item->setText( 1, tr( (_oglformat.stencil() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Stereo buffering" ) );
                         item->setText( 1, tr( (_oglformat.stereo() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Overlay Plane" ) );
                         item->setText( 1, tr( (_oglformat.hasOverlay() ? "Enable" : "Disable" )  ) );
-                        item = new QListViewItem( itemfgl4, item );
+                        item = new Q3ListViewItem( itemfgl4, item );
                         item->setText( 0, tr( "Plane" ) );
-                        item->setText( 1, tr( QString::number(_oglformat.plane() )  ) );
+                        item->setText( 1, QString::number(_oglformat.plane() )   );
                 }
     }
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item5 = new QListViewItem( RootItem, item4 );
+    Q3ListViewItem * item5 = new Q3ListViewItem( RootItem, item4 );
     item5->setPixmap( 0, opengl_pix );
     item5->setText( 0, tr( "OpenGL" ) );
     item5->setOpen( FALSE );
 
-    item = new QListViewItem( item5 );
+    item = new Q3ListViewItem( item5 );
     item->setText( 0, tr( "Version" ) );
     item->setText( 1, QString((char*)glGetString(GL_VERSION)) ) ;
      fprintf( stderr, "Version OpenGL: %s\n", glGetString( GL_VERSION ) );
-    item = new QListViewItem( item5, item );
+    item = new Q3ListViewItem( item5, item );
     item->setText( 0, tr( "Vendor" ) );
     item->setText( 1, QString((char*)glGetString(GL_VENDOR)) );
     fprintf( stderr, "Vendor OpenGL: %s\n", glGetString( GL_VENDOR ) );
-    item = new QListViewItem( item5, item );
+    item = new Q3ListViewItem( item5, item );
     item->setText( 0, tr( "Renderer" ) );
     item->setText( 1, QString((char*)glGetString(GL_RENDERER) ) );
 	
 	
-    QStringList ext = QStringList::split ( ' ',QString((char*)glGetString(GL_EXTENSIONS)));
+    QStringList ext = QString((char*)glGetString(GL_EXTENSIONS)).split ( ' ');
 
 	if(ext.contains("GL_ARB_shading_language_100")){
-		item = new QListViewItem( item5, item );
+		item = new Q3ListViewItem( item5, item );
 		item->setText( 0, tr( "Shading Language" ) );
 		QString shading((char*)glGetString(GL_SHADING_LANGUAGE_VERSION_ARB));
 		if(glGetError() == GL_NO_ERROR)
@@ -1042,42 +1015,42 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 			item->setText( 1, "1.051" );
 	}
 
-    QListViewItem * item5bis = new QListViewItem( item5, item );
+    Q3ListViewItem * item5bis = new Q3ListViewItem( item5, item );
     item5bis->setText( 0, tr( "Extension(s)" ) );
         item5bis->setOpen( FALSE );
 
     if(!ext.isEmpty()){
-                item = new QListViewItem( item5bis );
-                item->setText( 0, tr( ext[0] ) );
+                item = new Q3ListViewItem( item5bis );
+                item->setText( 0,  ext[0]  );
                 for(uint i = 1 ; i < ext.count() ; i++){
-                        item = new QListViewItem( item5bis, item );
-                        item->setText( 0, tr( ext[i] ) );
+                        item = new Q3ListViewItem( item5bis, item );
+                        item->setText( 0, ext[i]  );
                 }
     }
     else item5bis->setText( 0, tr( "None" ) );
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item6 = new QListViewItem( RootItem, item5 );
+    Q3ListViewItem * item6 = new Q3ListViewItem( RootItem, item5 );
     item6->setText( 0, tr( "OpenGL Utility Library (GLU)" ) );
     item6->setPixmap( 0, opengl_pix );
     item6->setOpen( FALSE );
 
-    item = new QListViewItem( item6 );
+    item = new Q3ListViewItem( item6 );
     item->setText( 0, tr( "Version" ) );
     item->setText( 1,  QString((char*)gluGetString(GLU_VERSION))  );
 
-    QListViewItem * item6bis = new QListViewItem( item6, item );
+    Q3ListViewItem * item6bis = new Q3ListViewItem( item6, item );
     item6bis->setText( 0, tr( "Extension(s)" ) );
     item6bis->setOpen( FALSE );
 
-    ext = QStringList::split ( ' ',QString((char*)gluGetString(GLU_EXTENSIONS)));
+    ext = QString((char*)gluGetString(GLU_EXTENSIONS)).split ( ' ');
     if(!ext.isEmpty()){
-                item = new QListViewItem( item6bis );
-                item->setText( 0, tr( ext[0] ) );
+                item = new Q3ListViewItem( item6bis );
+                item->setText( 0,  ext[0]  );
                 for(uint i = 1 ; i < ext.count() ; i++){
-                        item = new QListViewItem( item6bis, item );
-                        item->setText( 0, tr( ext[i] ) );
+                        item = new Q3ListViewItem( item6bis, item );
+                        item->setText( 0, ext[i]  );
                 }
     }
     else item6bis->setText( 1, tr( "None" ) );
@@ -1088,18 +1061,18 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
 #ifdef GLUT_API_VERSION
 
-    QListViewItem * item7 = new QListViewItem( RootItem, item6 );
+    Q3ListViewItem * item7 = new Q3ListViewItem( RootItem, item6 );
     item7->setText( 0, tr( "OpenGL Utility Toolkit Library (Glut)" ) );
     item7->setPixmap( 0, opengl_pix );
     item7->setOpen( FALSE );
 
-    item = new QListViewItem( item7 );
+    item = new Q3ListViewItem( item7 );
     item->setText( 0, tr( "Version" ) );
-    item->setText( 1, tr( QString::number(GLUT_API_VERSION) ) );
+    item->setText( 1, QString::number(GLUT_API_VERSION)  );
 #ifdef GLUT_XLIB_IMPLEMENTATION
-    item = new QListViewItem( item7, item );
+    item = new Q3ListViewItem( item7, item );
     item->setText( 0, tr( "X Lib Implementation" ) );
-    item->setText( 1, tr( QString::number(GLUT_XLIB_IMPLEMENTATION) ) );
+    item->setText( 1, QString::number(GLUT_XLIB_IMPLEMENTATION)  );
 #endif
 
     LastItem = item7;
@@ -1108,12 +1081,12 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef _MSC_VER
-    QListViewItem * item8 = new QListViewItem( RootItem, LastItem );
+#ifdef _WIN32
+    Q3ListViewItem * item8 = new Q3ListViewItem( RootItem, LastItem );
     item8->setText( 0, tr( "OpenGL Windows Extension (WGL)" ) );
     item8->setPixmap( 0, opengl_pix );
     item8->setOpen( FALSE );
-    QListViewItem * item8bis = new QListViewItem( item8 );
+    Q3ListViewItem * item8bis = new Q3ListViewItem( item8 );
     item8bis->setOpen( FALSE );
     item8bis->setText( 0, tr( "Extension(s)" ) );
 
@@ -1124,12 +1097,12 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
         if(wglGetExtensionsString != NULL){
 
             const char * msg = (*wglGetExtensionsString)();
-            QStringList ext = QStringList::split ( ' ',QString(msg));
+            QStringList ext = QString(msg).split ( ' ' );
             if(!ext.isEmpty()){
-                item = new QListViewItem( item8bis );
+                item = new Q3ListViewItem( item8bis );
                 item->setText( 0, ext[0] );
                 for(uint i = 1 ; i < ext.count() ; i++){
-                    item = new QListViewItem( item8bis, item );
+                    item = new Q3ListViewItem( item8bis, item );
                     item->setText( 0, ext[i] );
                 }
             }
@@ -1140,94 +1113,92 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     else item8bis->setText( 1, tr( "None" ) );
 
     LastItem = item8;
+#endif
 
 /* ----------------------------------------------------------------------- */
 
-#endif
-#ifndef __MINGW32__
-#if __GNUC__
-
+#ifdef __GNUC__
   Display * dpy = this->x11Display();
 
   if(dpy != NULL){
-    QListViewItem * item8 = new QListViewItem( RootItem, LastItem );
+    Q3ListViewItem * item8 = new Q3ListViewItem( RootItem, LastItem );
     item8->setText( 0, tr( "OpenGL X Extension (GLX)" ) );
     item8->setPixmap( 0, opengl_pix );
     item8->setOpen( FALSE );
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item81 = new QListViewItem( item8 );
+    Q3ListViewItem * item81 = new Q3ListViewItem( item8 );
     item81->setText( 0, tr( "Client" ) );
     item81->setOpen( FALSE );
 
 
     const char * msg = glXGetClientString(dpy,GLX_VERSION);
-    item = new QListViewItem( item81 );
+    item = new Q3ListViewItem( item81 );
     item->setText( 0, tr( "Version" ) );
-    item->setText( 1, tr( msg ) );
+    item->setText( 1, msg );
 
     msg = glXGetClientString(dpy,GLX_VENDOR);
-    item = new QListViewItem( item81, item );
+    item = new Q3ListViewItem( item81, item );
     item->setText( 0, tr( "Vendor" ) );
-    item->setText( 1, tr( msg ) );
+    item->setText( 1, msg  );
 
 
-    QListViewItem * item81bis = new QListViewItem( item81, item );
+    Q3ListViewItem * item81bis = new Q3ListViewItem( item81, item );
     item81bis->setText( 0, tr( "Extension(s)" ) );
         item81bis->setOpen( FALSE );
 
     msg = glXGetClientString(dpy,GLX_EXTENSIONS);
-    ext = QStringList::split ( ' ',msg);
+    ext = QString(msg).split ( ' ' );
     if(!ext.isEmpty()){
-                item = new QListViewItem( item81bis );
-                item->setText( 0, tr( ext[0] ) );
+                item = new Q3ListViewItem( item81bis );
+                item->setText( 0, ext[0] );
                 for(uint i = 1 ; i < ext.count() ; i++){
-                        item = new QListViewItem( item81bis, item );
-                        item->setText( 0, tr( ext[i] ) );
+                        item = new Q3ListViewItem( item81bis, item );
+                        item->setText( 0, ext[i] );
                 }
     }
     else item81bis->setText( 1, tr( "None" ) );
 
 /* ----------------------------------------------------------------------- */
 
-    QListViewItem * item82 = new QListViewItem( item8, item81 );
+    Q3ListViewItem * item82 = new Q3ListViewItem( item8, item81 );
     item82->setText( 0, tr( "Server" ) );
     item82->setOpen( FALSE );
 
 
-    QListViewItem * itemscreen = item82;
+    Q3ListViewItem * itemscreen = item82;
 
     int smax = ScreenCount(dpy);
     for(int screennumber = 0 ; screennumber < smax ; screennumber++){
 
-                QListViewItem * itemscreen = new QListViewItem( item82, itemscreen );
+                Q3ListViewItem * itemscreen = new Q3ListViewItem( item82, itemscreen );
                 itemscreen->setText( 0, tr( "Screen") +" " + QString::number(screennumber));
-                itemscreen->setText( 1, tr(( screennumber == DefaultScreen(dpy) ? "Default" : "") ));
+                itemscreen->setText( 1, ( screennumber == DefaultScreen(dpy) ? tr("Default") : "") );
                 itemscreen->setOpen( FALSE );
 
                 msg = glXQueryServerString(dpy,screennumber,GLX_VERSION);
-                item = new QListViewItem( itemscreen );
+                item = new Q3ListViewItem( itemscreen );
                 item->setText( 0, tr( "Version" ) );
-                item->setText( 1, tr( msg ) );
+                item->setText( 1, msg  );
 
                 msg = glXQueryServerString(dpy,screennumber,GLX_VENDOR);
-                item = new QListViewItem( itemscreen, item );
+                item = new Q3ListViewItem( itemscreen, item );
                 item->setText( 0, tr( "Vendor" ) );
-                item->setText( 1, tr( msg ) );
+                item->setText( 1,  msg  );
 
                 msg = glXQueryServerString(dpy,screennumber,GLX_EXTENSIONS);
-                QListViewItem * itemscreenbis = new QListViewItem( itemscreen, item );
+                Q3ListViewItem * itemscreenbis = new Q3ListViewItem( itemscreen, item );
                 itemscreenbis->setText( 0, tr( "Extension(s)" ) );
                 itemscreenbis->setOpen( FALSE );
 
-                ext = QStringList::split ( ' ',msg);
+                ext = QString(msg).split ( ' ' );
                 if(!ext.isEmpty()){
-                        item = new QListViewItem( itemscreenbis );
-                        item->setText( 0, tr( ext[0] ) );
+                        item = new Q3ListViewItem( itemscreenbis );
+                        item->setText( 0,  ext[0] );
                         for(uint i = 1 ; i < ext.count() ; i++){
-                                item = new QListViewItem( itemscreenbis, item );
-                                item->setText( 0, tr( ext[i] ) );
+                                item = new Q3ListViewItem( itemscreenbis, item );
+                                item->setText( 0,  ext[i] );
                         }
                 }
                 else itemscreenbis->setText( 1, tr( "None" ) );
@@ -1239,62 +1210,62 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 /* ----------------------------------------------------------------------- */
 
     QPixmap x_pix( ( const char** ) x_logo );
-    QListViewItem * item9 = new QListViewItem( RootItem, item8 );
+    Q3ListViewItem * item9 = new Q3ListViewItem( RootItem, item8 );
     item9->setPixmap( 0, x_pix );
     item9->setText( 0, tr( "Server" ) );
     item9->setOpen( FALSE );
 
-    item = new QListViewItem( item9 );
+    item = new Q3ListViewItem( item9 );
     item->setText( 0, tr( "Display Name" ) );
     item->setText( 1, QString(DisplayString(dpy))  );
 
-    item = new QListViewItem( item9, item );
+    item = new Q3ListViewItem( item9, item );
     item->setText( 0, tr( "Vendor" ) );
     item->setText( 1, QString(ServerVendor(dpy)) );
 
-    item = new QListViewItem( item9, item );
+    item = new Q3ListViewItem( item9, item );
     item->setText( 0, tr( "Version" ) );
     item->setText( 1, QString::number(VendorRelease(dpy)) );
 
-    QListViewItem * item91 = new QListViewItem( item9, item );
+    Q3ListViewItem * item91 = new Q3ListViewItem( item9, item );
     item91->setText( 0, tr( "Protocol" ) );
     item91->setText( 1, QString::number(ProtocolVersion(dpy))+ '.' +
                                                         QString::number(ProtocolRevision(dpy)) ) ;
     item91->setOpen( FALSE );
 
-    item = new QListViewItem( item91 );
+    item = new Q3ListViewItem( item91 );
     item->setText( 0, tr( "Version" ) );
     item->setText( 1, QString::number(ProtocolVersion(dpy)) );
-    item = new QListViewItem( item91, item );
+    item = new Q3ListViewItem( item91, item );
     item->setText( 0, tr( "Revision" ) );
     item->setText( 1, QString::number(ProtocolRevision(dpy)) );
 
-    item = new QListViewItem( item9, item91 );
+    item = new Q3ListViewItem( item9, item91 );
     item->setText( 0, tr( "Number of Screen" ) );
     item->setText( 1, QString::number(smax) );
 
-    QListViewItem * item92 = new QListViewItem( item9, item );
+    Q3ListViewItem * item92 = new Q3ListViewItem( item9, item );
     item92->setText( 0, tr( "Screens" ) );
     item92->setOpen( FALSE );
 
     itemscreen =  NULL ;
 
     for(int sn = 0 ; sn < smax ; sn++){
-                if(itemscreen) itemscreen =  new QListViewItem( item92 , itemscreen ) ;
-                else itemscreen =  new QListViewItem( item92 ) ;
+                if(itemscreen) itemscreen =  new Q3ListViewItem( item92 , itemscreen ) ;
+                else itemscreen =  new Q3ListViewItem( item92 ) ;
                 itemscreen->setText( 0, tr( "Screen")+ " "+ QString::number(sn)+
                                                                         ( sn == DefaultScreen(dpy) ? " ("+tr("Default")+")" : "") );
 
-                item = new QListViewItem( itemscreen );
+                item = new Q3ListViewItem( itemscreen );
                 item->setText( 0, tr( "Resolution") ) ;
                 item->setText( 1, tr( QString::number(DisplayWidth(dpy,sn)) +" x "  +
                                                           QString::number(DisplayHeight(dpy,sn))+ " pixels ("+
                                                           QString::number(DisplayWidthMM(dpy,sn)) +" x "  +
                                                           QString::number(DisplayHeightMM(dpy,sn))+ " mm)") );
-                item = new QListViewItem( itemscreen, item );
+                item = new Q3ListViewItem( itemscreen, item );
                 item->setText( 0, tr( "Default Depth" ) );
                 item->setText( 1, QString::number(DefaultDepth(dpy,sn)) );
-                item = new QListViewItem( itemscreen, item );
+                item = new Q3ListViewItem( itemscreen, item );
                 item->setText( 0, tr( "Number of Entries in Default Colormap" ) );
                 item->setText( 1, QString::number(DisplayCells(dpy,sn)) );
                 Screen * _screen = ScreenOfDisplay(dpy,sn );
@@ -1304,42 +1275,42 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
                         if(i == 0)msg = "When Mapped";
                         else if(i == 1) msg = "Not Useful";
                         else msg = "Always";
-                        item = new QListViewItem( itemscreen, item );
+                        item = new Q3ListViewItem( itemscreen, item );
                         item->setText( 0, tr( "Backing Store" ) );
                         item->setText( 1, tr( msg) ) ;
-                        item = new QListViewItem( itemscreen, item );
+                        item = new Q3ListViewItem( itemscreen, item );
                         item->setText( 0, tr( "Save Unders" ) );
                         item->setText( 1, tr( (DoesSaveUnders(_screen)? "Supported" : "Not Supported") ) );
                 }
     }
 
-    QListViewItem * item93 = new QListViewItem( item9, item92 );
+    Q3ListViewItem * item93 = new Q3ListViewItem( item9, item92 );
     item93->setText( 0, tr( "Connection Number" ) );
     item93->setText( 1, QString::number(ConnectionNumber(dpy)) );
 
     int * count_return = new int(0);
     XPixmapFormatValues * formatlist = XListPixmapFormats(dpy, count_return);
     if(*count_return!=0){
-                item93 = new QListViewItem( item9, item93 );
+                item93 = new Q3ListViewItem( item9, item93 );
                 item93->setText( 0, tr( "Pixmap Format" ) );
                 item93->setText( 1, QString::number(*count_return) );
                 item93->setOpen( FALSE );
 
-                QListViewItem * item931 = NULL;
+                Q3ListViewItem * item931 = NULL;
                 for(int u = 0 ; u < *count_return ; u++ ){
-                        if(item931)item931 = new QListViewItem( item93 , item931);
-                        else item931 = new QListViewItem( item93);
+                        if(item931)item931 = new Q3ListViewItem( item93 , item931);
+                        else item931 = new Q3ListViewItem( item93);
 
                         item931->setText( 0, tr( "Format")+ " " + QString::number(u) );
                         item931->setOpen( FALSE );
 
-                        item = new QListViewItem( item931 );
+                        item = new Q3ListViewItem( item931 );
                         item->setText( 0, tr( "Depth" ) );
                         item->setText( 1,  QString::number(formatlist[u].depth) );
-                        item = new QListViewItem( item931 , item );
+                        item = new Q3ListViewItem( item931 , item );
                         item->setText( 0, tr( "Bits per pixel" ) );
                         item->setText( 1, QString::number(formatlist[u].bits_per_pixel) ) ;
-                        item = new QListViewItem( item931 , item );
+                        item = new Q3ListViewItem( item931 , item );
                         item->setText( 0, tr( "Scanline Pad" ) );
                         item->setText( 1, QString::number(formatlist[u].scanline_pad)  );
 
@@ -1348,25 +1319,25 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
     }
     delete count_return;
 
-    item = new QListViewItem( item9, item93 );
+    item = new Q3ListViewItem( item9, item93 );
     item->setText( 0, tr( "Max Request Size" ) );
     item->setText( 1, tr( QString::number(XMaxRequestSize(dpy))+" bytes of 4" ) );
-    item = new QListViewItem( item9, item );
+    item = new Q3ListViewItem( item9, item );
     item->setText( 0, tr( "Image Byte Order" ) );
     item->setText( 1, tr( (ImageByteOrder(dpy) == 0 ?  "Least-Significant Bit First ("
                 : "Most-Significant Bit First (")+QString::number(ImageByteOrder(dpy))+")" ) );
 
-    QListViewItem * item94 = new QListViewItem( item9, item );
+    Q3ListViewItem * item94 = new Q3ListViewItem( item9, item );
     item94->setText( 0, tr( "Bitmap" ) );
 
-    item = new QListViewItem( item94 );
+    item = new Q3ListViewItem( item94 );
     item->setText( 0, tr( "Unit" ) );
     item->setText( 1, tr( QString::number(BitmapUnit(dpy)) ) );
-    item = new QListViewItem( item94, item);
+    item = new Q3ListViewItem( item94, item);
     item->setText( 0, tr( "Bit Order" ) );
     item->setText( 1, tr( (BitmapBitOrder(dpy) == 0 ?  "Least-Significant Bit First ("
                              : "Most-Significant Bit First (")+QString::number(ImageByteOrder(dpy))+")" ) );
-    item = new QListViewItem( item94 , item);
+    item = new Q3ListViewItem( item94 , item);
     item->setText( 0, tr( "Pad" ) );
     item->setText( 1, tr( QString::number(BitmapPad(dpy)) ) );
 
@@ -1378,19 +1349,18 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 
   QPixmap tools_pix( ( const char** ) tools_logo );
 
-  QListViewItem * item10 = new QListViewItem( RootItem, LastItem );
+  Q3ListViewItem * item10 = new Q3ListViewItem( RootItem, LastItem );
   item10->setText( 0, tr( "Readline" ) );
   item10->setPixmap( 0, tools_pix );
   item10->setOpen( FALSE );
 
-  item = new QListViewItem( item10 );
+  item = new Q3ListViewItem( item10 );
   item->setText( 0, tr( "Version" ) );
   item->setText( 1, tr( QString(rl_library_version) ) );
 
   LastItem = item10;
 
 /* ----------------------------------------------------------------------- */
-#endif
 #endif
 
   AttView->setGeometry( QRect( 80, 70, 460, 370 ) );
@@ -1448,11 +1418,11 @@ void ViewSysInfo::resizeEvent(QResizeEvent*e){
 
 /* ----------------------------------------------------------------------- */
 
-QListViewItem*
+Q3ListViewItem*
 ViewSysInfo::addItem(const QString& name, const QString& val){
-  QListViewItem * itemN = new QListViewItem( RootItem,LastItem );
-  itemN->setText( 0, tr( name ) );
-  itemN->setText( 1, tr( val ) );
+  Q3ListViewItem * itemN = new Q3ListViewItem( RootItem,LastItem );
+  itemN->setText( 0, name  );
+  itemN->setText( 1, val  );
   QPixmap tools_pix( ( const char** ) tools_logo );
   itemN->setPixmap( 0, tools_pix );
   itemN->setOpen( FALSE );
@@ -1460,13 +1430,13 @@ ViewSysInfo::addItem(const QString& name, const QString& val){
   return itemN;
 }
 
-QListViewItem*
+Q3ListViewItem*
 ViewSysInfo::addItem(const QPixmap& pix,
-                           const QString& name,
-                           const QString& val){
-  QListViewItem * itemN = new QListViewItem( RootItem,LastItem );
-  itemN->setText( 0, tr( name ) );
-  itemN->setText( 1, tr( val ) );
+                     const QString& name,
+                     const QString& val){
+  Q3ListViewItem * itemN = new Q3ListViewItem( RootItem,LastItem );
+  itemN->setText( 0, name );
+  itemN->setText( 1, val );
   itemN->setPixmap( 0, pix );
   itemN->setOpen( FALSE );
   LastItem = itemN;
@@ -1475,20 +1445,17 @@ ViewSysInfo::addItem(const QPixmap& pix,
 
 void
 ViewSysInfo::saveAsFile()  {
-        QString file = QFileDialog::getSaveFileName ( QString::null ,
-                                                                                                  QString::null ,
-                                                                                                  this ,
-                                                                                                  "Save");
+   QString file = QFileDialog::getSaveFileName ( this , "Save");
    if(!file.isEmpty())saveAsFile(file);
 }
 
 void
 ViewSysInfo::saveAsFile(const QString& file) const {
         QFile f(file);
-        if(f.open(IO_WriteOnly)){
+		if(f.open(QIODevice::WriteOnly)){
                 QTextStream stream(&f);
                 QString indent;
-                QListViewItem* current = RootItem;
+                Q3ListViewItem* current = RootItem;
                 while(current != NULL){
                         stream << indent << current->text(0) << '\t' << current->text(1);
 #ifdef _WIN32

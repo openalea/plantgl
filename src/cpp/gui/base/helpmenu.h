@@ -46,7 +46,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <qdialog.h>
 #include <qtimer.h>
 #include <vector>
@@ -64,7 +64,7 @@ class QLabel;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewHelpMenu : public QPopupMenu 
+class VIEW_API ViewHelpMenu : public QMenu 
 {
   Q_OBJECT
   Q_PROPERTY(int AppStyle READ getStyle WRITE setStyle );
@@ -112,13 +112,15 @@ public slots:
   void setInitText(const QString&);
   void setInitText(const QString&,int timeout);
 
+protected slots:
+  void setStyleCorrespondingTo(QAction *);
 
 protected :
   
   void checkItem(int i);
   
-  QPopupMenu * __style;
-  std::vector<int>  __ids;
+  QMenu * __style;
+  std::vector<QAction *>  __ids;
 
   QGLWidget * __glwidget;
   ViewAboutDialog * __about;

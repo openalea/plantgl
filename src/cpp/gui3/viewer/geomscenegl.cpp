@@ -77,11 +77,11 @@ using namespace std;
 using namespace STDEXT;
 /* ----------------------------------------------------------------------- */
 
-ViewGeomSceneGL::ViewGeomSceneGL(ViewCameraGL * camera,
-                                 ViewLightGL * light,
+ViewGeomSceneGL3::ViewGeomSceneGL3(ViewCameraGL3 * camera,
+                                 ViewLightGL3 * light,
                                  QGLWidget * parent,
                                  const char * name) :
-  ViewModalRendererGL(camera,light,parent,name),
+  ViewModalRendererGL3(camera,light,parent,name),
   __scene(0),
   __discretizer(),
   __renderer(__discretizer,parent),
@@ -107,11 +107,11 @@ ViewGeomSceneGL::ViewGeomSceneGL(ViewCameraGL * camera,
 
 }
 
-ViewGeomSceneGL::~ViewGeomSceneGL()
+ViewGeomSceneGL3::~ViewGeomSceneGL3()
 {
 }
 bool 
-ViewGeomSceneGL::useThread()
+ViewGeomSceneGL3::useThread()
 {
 #ifdef GEOM_THREAD
 	return true;
@@ -121,19 +121,19 @@ ViewGeomSceneGL::useThread()
 }
 
 /// Connect this to a GL Widget.
-void ViewGeomSceneGL::connectTo(QGLWidget * glw)
+void ViewGeomSceneGL3::connectTo(QGLWidget * glw)
 {
-	ViewRendererGL::connectTo(glw);
+	ViewRendererGL3::connectTo(glw);
 	__renderer.setGLFrame(glw);
 }
 
 /* ----------------------------------------------------------------------- */
 
 bool
-ViewGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
+ViewGeomSceneGL3::sceneChangeEvent( ViewSceneChangeEvent3 * k)
 {
   if(k->getSceneType() == 1){
-    GeomSceneChangeEvent * event = ( GeomSceneChangeEvent * )k;
+    GeomSceneChangeEvent3 * event = ( GeomSceneChangeEvent3 * )k;
     if(event->addition)addScene(ScenePtr(event->scene));
         else setScene(event->scene);
     if(!event->error.isEmpty()){
@@ -146,7 +146,7 @@ ViewGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
 }
 
 void
-ViewGeomSceneGL::clear()
+ViewGeomSceneGL3::clear()
 {
   __scene = ScenePtr(0);
   __bbox= BoundingBoxPtr(new BoundingBox(Vector3(-1,-1,-1),Vector3(1,1,1)));
@@ -155,7 +155,7 @@ ViewGeomSceneGL::clear()
 }
 
 void
-ViewGeomSceneGL::clearCache()
+ViewGeomSceneGL3::clearCache()
 {
   __discretizer.clear();
   __selectedShapes.clear();
@@ -163,7 +163,7 @@ ViewGeomSceneGL::clearCache()
 }
 
 void
-ViewGeomSceneGL::clearDisplayList()
+ViewGeomSceneGL3::clearDisplayList()
 {
   __renderer.clear();
   __skelComputer.clear();
@@ -174,13 +174,13 @@ ViewGeomSceneGL::clearDisplayList()
 }
 
 ScenePtr
-ViewGeomSceneGL::getScene( ) const
+ViewGeomSceneGL3::getScene( ) const
 {
   return __scene;
 }
 
 std::vector<uint32_t>
-ViewGeomSceneGL::getSelectionIds() const
+ViewGeomSceneGL3::getSelectionIds() const
 {
   std::vector<uint32_t> res;
   for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
@@ -190,7 +190,7 @@ ViewGeomSceneGL::getSelectionIds() const
 }
 
 uint32_t
-ViewGeomSceneGL::translateId(uint32_t id) const
+ViewGeomSceneGL3::translateId(uint32_t id) const
 {
     Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->getBegin();
@@ -203,7 +203,7 @@ ViewGeomSceneGL::translateId(uint32_t id) const
 
 
 ScenePtr 
-ViewGeomSceneGL::getSelection( ) const
+ViewGeomSceneGL3::getSelection( ) const
 {
   ScenePtr scene(new Scene);
   for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
@@ -213,7 +213,7 @@ ViewGeomSceneGL::getSelection( ) const
 }
 
 ScenePtr 
-ViewGeomSceneGL::getNotSelection( ) const
+ViewGeomSceneGL3::getNotSelection( ) const
 {
   ScenePtr scene(new Scene);
   uint32_t id;
@@ -226,13 +226,13 @@ ViewGeomSceneGL::getNotSelection( ) const
 }
 
 const BoundingBoxPtr
-ViewGeomSceneGL::getGlobalBoundingBox() const
+ViewGeomSceneGL3::getGlobalBoundingBox() const
 {
   return __bbox;
 }
 
 const BoundingBoxPtr
-ViewGeomSceneGL::getSelectionBoundingBox() 
+ViewGeomSceneGL3::getSelectionBoundingBox() 
 {
   BoundingBoxPtr bbox;
   for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
@@ -247,7 +247,7 @@ ViewGeomSceneGL::getSelectionBoundingBox()
 
 /* ----------------------------------------------------------------------- */
 void
-ViewGeomSceneGL::changeDisplayListUse(){
+ViewGeomSceneGL3::changeDisplayListUse(){
   if(__renderer.getRenderingMode() == GLRenderer::Dynamic){
 	__renderer.setRenderingMode(GLRenderer::Normal);
 	emit displayList(true);
@@ -259,25 +259,25 @@ ViewGeomSceneGL::changeDisplayListUse(){
 }
 
 void
-ViewGeomSceneGL::useDisplayList(bool b){
+ViewGeomSceneGL3::useDisplayList(bool b){
   if( getDisplayListUse() != b){
 	changeDisplayListUse();
   }
 }
 
 bool 
-ViewGeomSceneGL::getDisplayListUse() const {
+ViewGeomSceneGL3::getDisplayListUse() const {
   return __renderer.getRenderingMode() != GLRenderer::Dynamic;
 }
 
 void 
-ViewGeomSceneGL::refreshDisplay() {
+ViewGeomSceneGL3::refreshDisplay() {
   if(__scene)setScene(ScenePtr(__scene));
 }
 
 /* ----------------------------------------------------------------------- */
 int
-ViewGeomSceneGL::addScene( const ScenePtr& scene )
+ViewGeomSceneGL3::addScene( const ScenePtr& scene )
 {
   if (!scene){
     QString _mess = "<b>[GeomSceneGL] "+tr("GEOM Error")+" !!</b><br>"+tr("Empty Scene to Add")+"<br>";
@@ -292,7 +292,7 @@ ViewGeomSceneGL::addScene( const ScenePtr& scene )
 }
 
 int
-ViewGeomSceneGL::setScene( const ScenePtr& scene )
+ViewGeomSceneGL3::setScene( const ScenePtr& scene )
 {
   if (!scene){
 	  QString _mess = "<b>[GeomSceneGL] "+tr("GEOM Error")+" !!</b><br>"+tr("Empty Scene")+"<br>";
@@ -354,7 +354,7 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
 }
 
 void  
-ViewGeomSceneGL::computeCamera()
+ViewGeomSceneGL3::computeCamera()
 {
   __camera->buildCamera(__bbox, true);
 }
@@ -362,7 +362,7 @@ ViewGeomSceneGL::computeCamera()
 /* ----------------------------------------------------------------------- */
 
 void
-ViewGeomSceneGL::initializeGL()
+ViewGeomSceneGL3::initializeGL()
 {
 	glTexGenf(GL_S,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);
 	GLfloat f[] = { 0.,1.,0.,0.};
@@ -373,7 +373,7 @@ ViewGeomSceneGL::initializeGL()
 }
 
 void
-ViewGeomSceneGL::paintGL()
+ViewGeomSceneGL3::paintGL()
 {
 
     if (__scene && !__scene->isEmpty()){
@@ -482,7 +482,7 @@ ViewGeomSceneGL::paintGL()
 }
 
 void
-ViewGeomSceneGL::selectGL()
+ViewGeomSceneGL3::selectGL()
 {
   if (__scene){
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -496,7 +496,7 @@ ViewGeomSceneGL::selectGL()
 }
 
 void
-ViewGeomSceneGL::selectionEvent(uint32_t id)
+ViewGeomSceneGL3::selectionEvent(uint32_t id)
 {
   hash_map<uint32_t,Shape3DPtr>::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
@@ -528,7 +528,7 @@ ViewGeomSceneGL::selectionEvent(uint32_t id)
 }
 
 void
-ViewGeomSceneGL::selectionEvent(const vector<uint32_t>& id)
+ViewGeomSceneGL3::selectionEvent(const vector<uint32_t>& id)
 {
   hash_map<uint32_t,Shape3DPtr>::iterator _it;
   uint32_t selected = 0;
@@ -572,7 +572,7 @@ ViewGeomSceneGL::selectionEvent(const vector<uint32_t>& id)
 }
 
 void
-ViewGeomSceneGL::selectionIdEvent(const vector<uint32_t>& id)
+ViewGeomSceneGL3::selectionIdEvent(const vector<uint32_t>& id)
 {
   __selectedShapes.clear();
   uint32_t selected = 0;
@@ -605,7 +605,7 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint32_t>& id)
 
 
 void
-ViewGeomSceneGL::selectionEvent(QListViewItem * item)
+ViewGeomSceneGL3::selectionEvent(QListViewItem * item)
 {
   if(item && item->text(2) == "Shape"){
 	string name = item->text(0).latin1();
@@ -641,14 +641,14 @@ ViewGeomSceneGL::selectionEvent(QListViewItem * item)
 }
 
 void
-ViewGeomSceneGL::clearSelectionEvent()
+ViewGeomSceneGL3::clearSelectionEvent()
 {
   __selectedShapes.clear();
   emit valueChanged();
 }
 
 void
-ViewGeomSceneGL::removeSelection()
+ViewGeomSceneGL3::removeSelection()
 {
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
@@ -658,26 +658,26 @@ ViewGeomSceneGL::removeSelection()
   if(QMessageBox::warning(__frame,tr("Confirmation"),
 				tr("Remove Selection?"),tr("Ok"),tr("Cancel")) != 0)
 	return;
-  GeomSceneChangeEvent * e = new GeomSceneChangeEvent(getNotSelection(),NULL,NULL);
+  GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(getNotSelection(),NULL,NULL);
   QApplication::postEvent(this,e);
 }
 
 void
-ViewGeomSceneGL::keepSelectionOnly()
+ViewGeomSceneGL3::keepSelectionOnly()
 {
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("Empty Selection. Cannot Remove!"),1,0,0);
 	return;
   }
-  GeomSceneChangeEvent * e = new GeomSceneChangeEvent(getSelection(),NULL,NULL);
+  GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(getSelection(),NULL,NULL);
   hash_map<uint32_t,Shape3DPtr> selection = __selectedShapes;
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
 
 void
-ViewGeomSceneGL::wireSelection()
+ViewGeomSceneGL3::wireSelection()
 {
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
@@ -702,12 +702,12 @@ ViewGeomSceneGL::wireSelection()
 	}
   }		
 
-  GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,NULL,NULL);
+  GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(scene,NULL,NULL);
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
 void
-ViewGeomSceneGL::discretizeSelection()
+ViewGeomSceneGL3::discretizeSelection()
 {
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
@@ -731,13 +731,13 @@ ViewGeomSceneGL::discretizeSelection()
 	}
   }		
 
-  GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,NULL,NULL);
+  GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(scene,NULL,NULL);
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
 
 void
-ViewGeomSceneGL::triangulateSelection()
+ViewGeomSceneGL3::triangulateSelection()
 {
   if(__selectedShapes.empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
@@ -762,7 +762,7 @@ ViewGeomSceneGL::triangulateSelection()
 	}
   }		
 
-  GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,NULL,NULL);
+  GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(scene,NULL,NULL);
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
@@ -770,9 +770,9 @@ ViewGeomSceneGL::triangulateSelection()
 /* ----------------------------------------------------------------------- */
 
 vector<pair<uint32_t,double> > 
-ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
+ViewGeomSceneGL3::getProjectionSizes(const ScenePtr& sc){
 	vector<pair<uint32_t,double> > res;
-	ViewGLFrame * frame = dynamic_cast<ViewGLFrame *>(__frame);
+	ViewGLFrame3 * frame = dynamic_cast<ViewGLFrame3 *>(__frame);
 	if (!frame) return res;
 	bool mode = frame->getCamera()->getProjectionMode();
 	if(mode)frame->getCamera()->setOrthographicMode();
@@ -795,13 +795,13 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 	return res;
 }
 
-ViewRayPointHitBuffer *
-ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
-	ViewGLFrame * frame = dynamic_cast<ViewGLFrame *>(__frame);
+ViewRayPointHitBuffer3 *
+ViewGeomSceneGL3::castRays(const ScenePtr& sc, bool back_test){
+	ViewGLFrame3 * frame = dynamic_cast<ViewGLFrame3 *>(__frame);
 	if (!frame) return NULL;
 	int w = frame->width();
 	int h = frame->height();
-	ViewRayPointHitBuffer * res = new ViewRayPointHitBuffer(w,h);
+	ViewRayPointHitBuffer3 * res = new ViewRayPointHitBuffer3(w,h);
 	double az = frame->getCamera()->getAzimuth();
 	double el = frame->getCamera()->getElevation();
 	double b_az = az + 180;
@@ -818,13 +818,13 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		nsc->add(*it);
 		uint32_t id = (*it)->getId();
 		setScene(nsc);
-		ViewZBuffer * cbuff = frame->grabDepthBuffer(false);
+		ViewZBuffer3 * cbuff = frame->grabDepthBuffer(false);
 		if(! back_test) {
 			for(int c = 0;  c < w; ++c){
 				for(int r = 0;  r < h; ++r){
 					if (cbuff->getAt(r,c).depth < 1){
 						const Vector3& pos = cbuff->getAt(r,c).pos;
-						res->getAt(r,c).push_back(RayPointHit(id,pos,pos));
+						res->getAt(r,c).push_back(RayPointHit3(id,pos,pos));
 					}
 				}
 			}
@@ -832,11 +832,11 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		else {
 			frame->getCamera()->setAngles(b_az,b_el);
 			emit valueChanged();
-			ViewZBuffer * cbackbuff = frame->grabDepthBuffer(false);
+			ViewZBuffer3 * cbackbuff = frame->grabDepthBuffer(false);
 			for(int c = 0;  c < w; ++c){
 				for(int r = 0;  r < h; ++r){
 					if (cbuff->getAt(r,c).depth < 1){
-						res->getAt(r,c).push_back(RayPointHit(id,cbuff->getAt(r,c).pos,cbackbuff->getAt(r,w-1-c).pos));
+						res->getAt(r,c).push_back(RayPointHit3(id,cbuff->getAt(r,c).pos,cbackbuff->getAt(r,w-1-c).pos));
 					}
 				}
 			}
@@ -857,17 +857,17 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 /* ----------------------------------------------------------------------- */
 
 void 
-ViewGeomSceneGL::customEvent(QCustomEvent * e) {
+ViewGeomSceneGL3::customEvent(QCustomEvent * e) {
 	if(e->type() == 12365){
-		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
+		GeomProjListEvent3 * myevent = (GeomProjListEvent3 *)e;
 		*(myevent->result) = getProjectionSizes(myevent->objlist);
 	}
 	else if (e->type() == 12367){
-		ViewRayBuff2Event * myevent = (ViewRayBuff2Event *)e;
+		ViewRayBuff2Event3 * myevent = (ViewRayBuff2Event3 *)e;
 		*(myevent->result) = castRays(myevent->objlist,myevent->back_test);
 	}
 	else if (e->type() == 12368){
-		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
+		GeomGetSceneEvent3 * myevent = (GeomGetSceneEvent3 *)e;
 		*(myevent->scene) = __scene;
 	}
 }
@@ -875,11 +875,11 @@ ViewGeomSceneGL::customEvent(QCustomEvent * e) {
 
 /* ----------------------------------------------------------------------- */
 
-ViewMultiGeomSceneGL::ViewMultiGeomSceneGL(ViewCameraGL * camera,
-                                           ViewLightGL * light,
+ViewMultiGeomSceneGL3::ViewMultiGeomSceneGL3(ViewCameraGL3 * camera,
+                                           ViewLightGL3 * light,
                                            QGLWidget * parent,
                                            const char * name):
-  ViewGeomSceneGL(camera,light,parent,name),
+  ViewGeomSceneGL3(camera,light,parent,name),
   __transitionRenderer(__discretizer),
   __simpleScene(true),
   __renderingStep(0),
@@ -889,14 +889,14 @@ ViewMultiGeomSceneGL::ViewMultiGeomSceneGL(ViewCameraGL * camera,
 }
 
 
-ViewMultiGeomSceneGL::~ViewMultiGeomSceneGL()
+ViewMultiGeomSceneGL3::~ViewMultiGeomSceneGL3()
 {
 }
 
 void
-ViewMultiGeomSceneGL::clear()
+ViewMultiGeomSceneGL3::clear()
 {
-  ViewGeomSceneGL::clear();
+  ViewGeomSceneGL3::clear();
   __transitionRenderer.clear();
   __simpleScene = true;
   __renderingStep = 0;
@@ -905,9 +905,9 @@ ViewMultiGeomSceneGL::clear()
 /* ----------------------------------------------------------------------- */
 
 void
-ViewMultiGeomSceneGL::paintGL()
+ViewMultiGeomSceneGL3::paintGL()
 {
-  if(__simpleScene)ViewGeomSceneGL::paintGL();
+  if(__simpleScene)ViewGeomSceneGL3::paintGL();
   else {
     if (__scene){
       switch (__renderingMode) {
@@ -966,13 +966,13 @@ ViewMultiGeomSceneGL::paintGL()
 /* ----------------------------------------------------------------------- */
 
 int
-ViewMultiGeomSceneGL::setScene(const ScenePtr& scene1,const ScenePtr& scene2)
+ViewMultiGeomSceneGL3::setScene(const ScenePtr& scene1,const ScenePtr& scene2)
 {
   __transSlider->setValue(0);
   if(__transSlider)__transSlider->show();
   ScenePtr scene(new Scene(*scene1));
   scene->merge(scene2);
-  int a = ViewGeomSceneGL::setScene(scene);
+  int a = ViewGeomSceneGL3::setScene(scene);
   __simpleScene = false;
   __transitionRenderer.setScene(scene1,scene2);
   emit valueChanged();
@@ -982,7 +982,7 @@ ViewMultiGeomSceneGL::setScene(const ScenePtr& scene1,const ScenePtr& scene2)
 /* ----------------------------------------------------------------------- */
 
 void
-ViewMultiGeomSceneGL::setRenderingStep(int i)
+ViewMultiGeomSceneGL3::setRenderingStep(int i)
 {
   __renderingStep = i;
   emit valueChanged();
@@ -992,12 +992,12 @@ ViewMultiGeomSceneGL::setRenderingStep(int i)
 
 
 bool 
-ViewMultiGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
+ViewMultiGeomSceneGL3::sceneChangeEvent( ViewSceneChangeEvent3 * k)
 {
   if(k->getSceneType() == 1)
-    return ViewGeomSceneGL::sceneChangeEvent(k);
+    return ViewGeomSceneGL3::sceneChangeEvent(k);
   else if(k->getSceneType() == 2){
-    GeomMultiSceneChangeEvent * event = ( GeomMultiSceneChangeEvent * )k;
+    GeomMultiSceneChangeEvent3 * event = ( GeomMultiSceneChangeEvent3 * )k;
     setScene(event->scene,event->scene2);
     if(!event->error.isEmpty()){
       error(event->error);

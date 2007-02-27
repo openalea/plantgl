@@ -33,7 +33,7 @@ DEFINES.append('VIEW_MAKEDLL')
 LIBRARIES = list( lib_env['LIBS'] )
 LIBRARIES.extend( ['pgltool','pglmath','pglsg','pglalgo'] )
 
-lib_env.ALEALibrary( "pglgui",
+lib_env.ALEALibrary( "pglgui3",
                      sources, 
                      CPPDEFINES = DEFINES, 
                      LIBS = LIBRARIES )

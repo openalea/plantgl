@@ -168,6 +168,9 @@
 #define QT_THREAD_SUPPORT
 #endif
 
+#ifndef QT3_SUPPORT
+// #define QT3_SUPPORT
+#endif
 /*! \def GEOM_FWDEF
     \brief Use forward definition
 

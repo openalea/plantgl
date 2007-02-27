@@ -90,17 +90,17 @@ TOOLS_USING_NAMESPACE
 /*------------------------------------------------------------------------------------*/
 
 
-const uint ViewFileManager::REVIEW_SIZE(50);
-QString ViewFileManager::FILE_CONFIG("geomviewer");
+const uint ViewFileManager3::REVIEW_SIZE(50);
+QString ViewFileManager3::FILE_CONFIG("geomviewer");
 
 /*------------------------------------------------------------------------------------*/
 
 
-ViewFileManager::ViewFileManager(QMainWindow * parent, 
+ViewFileManager3::ViewFileManager3(QMainWindow * parent, 
 								 const char * name, 
-								 ViewGLFrame * frame,
-								 ViewHelpMenu * helpmenu,
-								 ViewControlPanel * controlpanel)
+								 ViewGLFrame3 * frame,
+								 ViewHelpMenu3 * helpmenu,
+								 ViewControlPanel3 * controlpanel)
     : QPopupMenu( parent, name ),     
       __hasOpenFile(false),
       __GLFrame(frame),
@@ -111,7 +111,7 @@ ViewFileManager::ViewFileManager(QMainWindow * parent,
 
     QObject::connect(__GLFrame,SIGNAL(rendererChanged()),
 		     this,SLOT(initialize()));
-    __locatToolBar = new ViewLocationBar(QString("Location ToolBar"),
+    __locatToolBar = new ViewLocationBar3(QString("Location ToolBar"),
 				     parent,
 				     QMainWindow::Top, 
 				     TRUE);
@@ -140,22 +140,22 @@ ViewFileManager::ViewFileManager(QMainWindow * parent,
 }
 
 void
-ViewFileManager::initialize(){
+ViewFileManager3::initialize(){
   clear();
-  ViewRendererGL * scene = __GLFrame->getSceneRenderer();
+  ViewRendererGL3 * scene = __GLFrame->getSceneRenderer();
   QObject::connect(scene,SIGNAL(filenameChanged(const QString&)),
 		   this,SLOT(addOpenFile(const QString&)));
   
   // *  The popup menu *
   
-  QPixmap doc(ViewerIcon::getPixmap(ViewerIcon::icon_document));
-  QPixmap openIcon(ViewerIcon::getPixmap(ViewerIcon::icon_fileopen) );
-  QPixmap refreshIcon( ViewerIcon::getPixmap(ViewerIcon::reload) );
-  QPixmap exitIcon( ViewerIcon::getPixmap(ViewerIcon::icon_exit) );
-  QPixmap saveIcon( ViewerIcon::getPixmap(ViewerIcon::icon_filefloppy) );
-  QPixmap savePicIcon( ViewerIcon::getPixmap(ViewerIcon::icon_camerafile) );
-  QPixmap copyPicIcon( ViewerIcon::getPixmap(ViewerIcon::icon_camera) );
-  QPixmap printIcon(ViewerIcon::getPixmap(ViewerIcon::icon_fileprint) );
+  QPixmap doc(ViewerIcon3::getPixmap(ViewerIcon3::icon_document));
+  QPixmap openIcon(ViewerIcon3::getPixmap(ViewerIcon3::icon_fileopen) );
+  QPixmap refreshIcon( ViewerIcon3::getPixmap(ViewerIcon3::reload) );
+  QPixmap exitIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_exit) );
+  QPixmap saveIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_filefloppy) );
+  QPixmap savePicIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_camerafile) );
+  QPixmap copyPicIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_camera) );
+  QPixmap printIcon(ViewerIcon3::getPixmap(ViewerIcon3::icon_fileprint) );
   
   
   // Open File Menu
@@ -246,7 +246,7 @@ ViewFileManager::initialize(){
   insertSeparator();
   
   // Close  icon
-  QPixmap _close(ViewerIcon::getPixmap(ViewerIcon::icon_fileclose));
+  QPixmap _close(ViewerIcon3::getPixmap(ViewerIcon3::icon_fileclose));
   id = insertItem( _close,tr("&Close"),scene,SLOT(close()));
   setWhatsThis(id,"<b>Close</b><br><br>Close the current scene.<br>");
   insertSeparator();
@@ -277,7 +277,7 @@ ViewFileManager::initialize(){
 
 }
 
-ViewFileManager::~ViewFileManager(){
+ViewFileManager3::~ViewFileManager3(){
 #ifdef  GEOM_DEBUG
     cout << "File Manager deleted" << endl;
 #endif
@@ -285,29 +285,29 @@ ViewFileManager::~ViewFileManager(){
 
 
 const QString& 
-ViewFileManager::getLastOpenFiles(int i) const{
+ViewFileManager3::getLastOpenFiles(int i) const{
   return __lastOpenFiles[i];
 }
 
 const QString 
-ViewFileManager::getLastOpenFile() const {
+ViewFileManager3::getLastOpenFile() const {
   if( !__lastOpenFiles.empty()) return (__lastOpenFiles[__lastOpenFiles.size()-1]);
   else  return QString::null;
 }
 
 const bool 
-ViewFileManager::hasOpenFile() const {
+ViewFileManager3::hasOpenFile() const {
   return  __hasOpenFile;
 }
 
-ViewToolBar * 
-ViewFileManager::getLocationBar()
+ViewToolBar3 * 
+ViewFileManager3::getLocationBar()
 {
   return __locatToolBar;
 }
 
 bool 
-ViewFileManager::clearReview() {
+ViewFileManager3::clearReview() {
   __hasOpenFile = false;
   __lastOpenFiles.clear();
   clearTmpFiles();
@@ -336,7 +336,7 @@ void deleteInsideDir(QDir& dir){
 }
 
 bool 
-ViewFileManager::clearTmpFiles() {
+ViewFileManager3::clearTmpFiles() {
 	QString tmp_path;
 #ifdef _WIN32
 	tmp_path = "C:/TEMP/GeomViewer/";
@@ -349,7 +349,7 @@ ViewFileManager::clearTmpFiles() {
 }
 
 QString
-ViewFileManager::getSaveFileName( const QString& initial, 
+ViewFileManager3::getSaveFileName( const QString& initial, 
 			      const QString& ext, 
 			      const QString& filter,
 			      QWidget* parent,
@@ -389,12 +389,12 @@ ViewFileManager::getSaveFileName( const QString& initial,
   }
 }
 
-void ViewFileManager::drawRecentFilesMenu()
+void ViewFileManager3::drawRecentFilesMenu()
 {
-  QPixmap doc(ViewerIcon::getPixmap(ViewerIcon::icon_document));
+  QPixmap doc(ViewerIcon3::getPixmap(ViewerIcon3::icon_document));
   __RecentFilesMenu->clear();
   int idClear;
-  QPixmap _close(ViewerIcon::getPixmap(ViewerIcon::icon_fileclose));
+  QPixmap _close(ViewerIcon3::getPixmap(ViewerIcon3::icon_fileclose));
   idClear =__RecentFilesMenu->insertItem(_close,tr("Clear"),this,SLOT(clearReview()));
   __RecentFilesMenu->setWhatsThis(idClear ,"<b>Clear History</b>");
   if(__lastOpenFiles.empty())__RecentFilesMenu->setItemEnabled(idClear,false);
@@ -421,9 +421,9 @@ void ViewFileManager::drawRecentFilesMenu()
 #endif
 }
 
-void ViewFileManager::drawLocationBar(bool b)
+void ViewFileManager3::drawLocationBar(bool b)
 {
-  QPixmap doc(ViewerIcon::getPixmap(ViewerIcon::icon_document));
+  QPixmap doc(ViewerIcon3::getPixmap(ViewerIcon3::icon_document));
   __locatToolBar->__Location->clear();
   if(b)__locatToolBar->__Location->insertItem(doc,"");
   for ( int i = __lastOpenFiles.size() - 1 ; i >=0 ; i-- ) {
@@ -432,15 +432,15 @@ void ViewFileManager::drawLocationBar(bool b)
   __locatToolBar->__Location->clearFocus();
 }
 
-void ViewFileManager::fillToolBar(QToolBar * __fileTools){
-  ViewRendererGL * scene = __GLFrame->getSceneRenderer();
-  QPixmap doc(ViewerIcon::getPixmap(ViewerIcon::icon_document));
-  QPixmap openIcon(ViewerIcon::getPixmap(ViewerIcon::icon_fileopen) );
-  QPixmap refreshIcon( ViewerIcon::getPixmap(ViewerIcon::reload) );
-  QPixmap exitIcon( ViewerIcon::getPixmap(ViewerIcon::icon_exit ));
-  QPixmap saveIcon( ViewerIcon::getPixmap(ViewerIcon::icon_filefloppy) );
-  QPixmap savePicIcon( ViewerIcon::getPixmap(ViewerIcon::icon_camerafile) );
-  QPixmap copyPicIcon( ViewerIcon::getPixmap(ViewerIcon::icon_camera) );
+void ViewFileManager3::fillToolBar(QToolBar * __fileTools){
+  ViewRendererGL3 * scene = __GLFrame->getSceneRenderer();
+  QPixmap doc(ViewerIcon3::getPixmap(ViewerIcon3::icon_document));
+  QPixmap openIcon(ViewerIcon3::getPixmap(ViewerIcon3::icon_fileopen) );
+  QPixmap refreshIcon( ViewerIcon3::getPixmap(ViewerIcon3::reload) );
+  QPixmap exitIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_exit ));
+  QPixmap saveIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_filefloppy) );
+  QPixmap savePicIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_camerafile) );
+  QPixmap copyPicIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_camera) );
 
   QString opentext = "<b>Open File</b><br><br>"
 	"Load 3D scene from a file.<br><br>"
@@ -494,7 +494,7 @@ void ViewFileManager::fillToolBar(QToolBar * __fileTools){
   QWhatsThis::add(newButton,tr(exittext));
 }
 
-void ViewFileManager::addOpenFile(const QString& _name){
+void ViewFileManager3::addOpenFile(const QString& _name){
   if(!_name.isEmpty()){
 	QString name = _name;
 	QString tmp_path;
@@ -524,7 +524,7 @@ void ViewFileManager::addOpenFile(const QString& _name){
 }
 
 
-void ViewFileManager::removeOpenFile(const QString& _name){
+void ViewFileManager3::removeOpenFile(const QString& _name){
   if(!__lastOpenFiles.empty() && !_name.isEmpty()){
 	QString name = _name;
 	QString tmp_path;
@@ -548,17 +548,17 @@ void ViewFileManager::removeOpenFile(const QString& _name){
   }
 }
 
-void ViewFileManager::saveImage()
+void ViewFileManager3::saveImage()
 {
 	saveImage(false);
 }
 
-void ViewFileManager::saveImageWithAlpha()
+void ViewFileManager3::saveImageWithAlpha()
 {
 	saveImage(true);
 }
 
-void ViewFileManager::saveImage(bool withAlpha)
+void ViewFileManager3::saveImage(bool withAlpha)
 {
     QStrList _formatList=QImageIO::outputFormats();
     QString first_format=_formatList.at(0);
@@ -579,7 +579,7 @@ void ViewFileManager::saveImage(bool withAlpha)
 		}
     }
 
-    QPixmap icon(ViewerIcon::getPixmap(ViewerIcon::icon_filefloppy));
+    QPixmap icon(ViewerIcon3::getPixmap(ViewerIcon3::icon_filefloppy));
     QFileDialog _fileDialog(this,"Save Image",true);
 	_fileDialog.setMode(QFileDialog::AnyFile);
     _fileDialog.setIcon(icon);
@@ -632,7 +632,7 @@ void ViewFileManager::saveImage(bool withAlpha)
 
 
 
-void ViewFileManager::openFile()
+void ViewFileManager3::openFile()
 {
   QString file =  QFileDialog::getOpenFileName ( getLastOpenFile(),tr("All Files")+" (*.*)" ,
 				    this, tr("Open"), tr("Open") );
@@ -640,13 +640,13 @@ void ViewFileManager::openFile()
 }
  
  
-void ViewFileManager::reOpenFile()
+void ViewFileManager3::reOpenFile()
 {
     reOpenFile( __lastOpenFiles.size() - 1);
 }
 
 
-void ViewFileManager::reOpenFile( int i )
+void ViewFileManager3::reOpenFile( int i )
 {
     if(  i >= 0 &&  __lastOpenFiles.size() > (uint)i ){
 	QString toOpen=__lastOpenFiles[i];
@@ -659,12 +659,12 @@ void ViewFileManager::reOpenFile( int i )
 //    drawRecentFilesMenu();
 }
 
-void ViewFileManager::openFile(const QString& file){
+void ViewFileManager3::openFile(const QString& file){
   if(!file.isEmpty()){
 	QUrl url = file;
 	if(url.isLocalFile()){
 	  if(QFile::exists(file)){
-		ViewRendererGL * scene = __GLFrame->getSceneRenderer();
+		ViewRendererGL3 * scene = __GLFrame->getSceneRenderer();
 		scene->openFile(file);
 	  }
 	  else {
@@ -705,7 +705,7 @@ void ViewFileManager::openFile(const QString& file){
 
 /* ---------------------------------------------------------------------------*/
 
-void ViewFileManager::downloaded( const QByteArray & ba,
+void ViewFileManager3::downloaded( const QByteArray & ba,
 								 QNetworkOperation * op ){
 #if QT_VERSION < 300
   if(__url.protocol() == "http")
@@ -770,13 +770,13 @@ void ViewFileManager::downloaded( const QByteArray & ba,
 }
 
 void 
-ViewFileManager::connectionStatus ( int i, const QString & msg )
+ViewFileManager3::connectionStatus ( int i, const QString & msg )
 {
   status(msg,10000);
 }
 
 void 
-ViewFileManager::net( QNetworkOperation * op )
+ViewFileManager3::net( QNetworkOperation * op )
 {
   if(op->state() == QNetworkProtocol::StFailed){
 	QMessageBox::warning(this,tr("File Download Failed"),
@@ -810,7 +810,7 @@ ViewFileManager::net( QNetworkOperation * op )
 		  return;
 		}
 	  }
-	  ViewRendererGL * scene = __GLFrame->getSceneRenderer();
+	  ViewRendererGL3 * scene = __GLFrame->getSceneRenderer();
 	  scene->open(file);
 	}
 	else 
@@ -819,7 +819,7 @@ ViewFileManager::net( QNetworkOperation * op )
 }
 
 void
-ViewFileManager::transferProgress ( int i, int j, QNetworkOperation * ) 
+ViewFileManager3::transferProgress ( int i, int j, QNetworkOperation * ) 
 {
   status(tr("Transfert progress")+" :"+QString::number((100*i)/j)+"%.",5000);
 }
@@ -827,37 +827,37 @@ ViewFileManager::transferProgress ( int i, int j, QNetworkOperation * )
 
 /* ---------------------------------------------------------------------------*/
 void 
-ViewFileManager::error(const QString& s)
+ViewFileManager3::error(const QString& s)
 {
   emit errorMessage(s);
 }
 
 void 
-ViewFileManager::warning(const QString& s)
+ViewFileManager3::warning(const QString& s)
 {
   emit warningMessage(s);
 }
 
 void 
-ViewFileManager::info(const QString& s)
+ViewFileManager3::info(const QString& s)
 {
   emit infoMessage(s);
 }
 
 void 
-ViewFileManager::status(const QString& s)
+ViewFileManager3::status(const QString& s)
 {
   emit statusMessage(s);
 }
 
 void 
-ViewFileManager::status(const QString& s,int t)
+ViewFileManager3::status(const QString& s,int t)
 {
   emit statusMessage(s,t);
 }
 
 void 
-ViewFileManager::connectTo(QStatusBar *s)
+ViewFileManager3::connectTo(QStatusBar *s)
 {
 	if(s){
 		QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),
@@ -868,7 +868,7 @@ ViewFileManager::connectTo(QStatusBar *s)
 }
 
 void 
-ViewFileManager::connectTo(ViewErrorDialog *e)
+ViewFileManager3::connectTo(ViewErrorDialog3 *e)
 {
   if(e){
     QObject::connect(this,SIGNAL(errorMessage(const QString&)),
@@ -882,23 +882,23 @@ ViewFileManager::connectTo(ViewErrorDialog *e)
 /* ---------------------------------------------------------------------------*/
 
 void 
-ViewFileManager::properties()
+ViewFileManager3::properties()
 { 
-  ViewProperties mb(__GLFrame ,this,__controlPanel,false,tr("Properties"),true);
-  mb.setIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::icon_document)));
+  ViewProperties3 mb(__GLFrame ,this,__controlPanel,false,tr("Properties"),true);
+  mb.setIcon(QPixmap(ViewerIcon3::getPixmap(ViewerIcon3::icon_document)));
   mb.exec();
 }
 
 void 
-ViewFileManager::configuration()
+ViewFileManager3::configuration()
 { 
-  ViewProperties mb(__GLFrame ,this,__controlPanel,true,tr("Properties"),true);
-  mb.setIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::icon_document)));
+  ViewProperties3 mb(__GLFrame ,this,__controlPanel,true,tr("Properties"),true);
+  mb.setIcon(QPixmap(ViewerIcon3::getPixmap(ViewerIcon3::icon_document)));
   mb.exec();
 }
 
 void
-ViewFileManager::refresh()
+ViewFileManager3::refresh()
 {
   __GLFrame->getSceneRenderer()->refresh();
   // if(__hasOpenFile)
@@ -906,84 +906,84 @@ ViewFileManager::refresh()
 }
 
 void
-ViewFileManager::saveToolbarState(bool b){ saveOption(0,b); }
+ViewFileManager3::saveToolbarState(bool b){ saveOption(0,b); }
 
 void
-ViewFileManager::saveWinPos(bool b){ saveOption(1,b); }
+ViewFileManager3::saveWinPos(bool b){ saveOption(1,b); }
 
 void
-ViewFileManager::saveStyle(bool b){ saveOption(2,b); }
+ViewFileManager3::saveStyle(bool b){ saveOption(2,b); }
 
 void
-ViewFileManager::saveHistory(bool b){ saveOption(3,b); }
+ViewFileManager3::saveHistory(bool b){ saveOption(3,b); }
 
 void
-ViewFileManager::saveBgColor(bool b){ saveOption(4,b); }
+ViewFileManager3::saveBgColor(bool b){ saveOption(4,b); }
 
 void
-ViewFileManager::saveGridVisibility(bool b){ saveOption(5,b); }
+ViewFileManager3::saveGridVisibility(bool b){ saveOption(5,b); }
 
 void
-ViewFileManager::saveCameraReDim(bool b){ saveOption(6,b); }
+ViewFileManager3::saveCameraReDim(bool b){ saveOption(6,b); }
 
 void
-ViewFileManager::saveUseSpinBox(bool b){ saveOption(7,b); }
+ViewFileManager3::saveUseSpinBox(bool b){ saveOption(7,b); }
 
 bool 
-ViewFileManager::getToolbarStateSave() const 
+ViewFileManager3::getToolbarStateSave() const 
 { return getSaveOption(0);}
 
 bool 
-ViewFileManager::getSaveWinPos() const 
+ViewFileManager3::getSaveWinPos() const 
 { return getSaveOption(1);}
 
 bool 
-ViewFileManager::getSaveStyle() const 
+ViewFileManager3::getSaveStyle() const 
 { return getSaveOption(2);}
 
 bool 
-ViewFileManager::getSaveHistory() const 
+ViewFileManager3::getSaveHistory() const 
 { return getSaveOption(3);}
 
 bool 
-ViewFileManager::getSaveBgColor() const 
+ViewFileManager3::getSaveBgColor() const 
 { return getSaveOption(4);}
 
 bool 
-ViewFileManager::getSaveGridVisibility() const 
+ViewFileManager3::getSaveGridVisibility() const 
 { return getSaveOption(5);}
 
 bool 
-ViewFileManager::getSaveCameraReDim() const 
+ViewFileManager3::getSaveCameraReDim() const 
 { return getSaveOption(6);}
 
 bool 
-ViewFileManager::getSaveUseSpinBox() const 
+ViewFileManager3::getSaveUseSpinBox() const 
 { return getSaveOption(7);}
 
 bool 
-ViewFileManager::getSaveOption(int i) const 
+ViewFileManager3::getSaveOption(int i) const 
 { return ((__saveoptions & (1 << i)) != 0); }
 
 void
-ViewFileManager::saveOption(int i, bool b){
+ViewFileManager3::saveOption(int i, bool b){
   if(b)__saveoptions |= (1 << i);
   else if(getSaveOption(i))__saveoptions ^= (1 << i);
 }
 
 void
-ViewFileManager::showInit(bool b){ saveOption(8,b); }
+ViewFileManager3::showInit(bool b){ saveOption(8,b); }
 
 bool
-ViewFileManager::getShowInit() const
+ViewFileManager3::getShowInit() const
 { return getSaveOption(8);}
 
 /* ---------------------------------------------------------------------------*/
 
-float ViewFileManager::CONFIG_VERSION(1.16f);
+float ViewFileManager3::CONFIG_VERSION(1.16f);
 
 QString 
-ViewFileManager::getInitFilename(){
+ViewFileManager3::getInitFilename(){
   QString filename=FILE_CONFIG;
 #ifndef _WIN32
   QDir _dir(QDir::homeDirPath()+QString("/.kde/share/config/"));
@@ -1001,7 +1001,7 @@ ViewFileManager::getInitFilename(){
   return filename;
 }
 
-void ViewFileManager::loadConfig()
+void ViewFileManager3::loadConfig()
 {
   QString filename = getInitFilename();
   //read init file
@@ -1110,7 +1110,7 @@ void ViewFileManager::loadConfig()
 		for(int i=0;i<4;i++)
 		  tabGrid[i]=(tabGridtemp[i]==1);
 		if(__GLFrame){
-		  ViewGridGL * grid = __GLFrame->getGrid();
+		  ViewGridGL3 * grid = __GLFrame->getGrid();
 		  if(grid){
 			grid->showXYGrid(tabGrid[0]);
 			grid->showYZGrid(tabGrid[1]);
@@ -1138,7 +1138,7 @@ void ViewFileManager::loadConfig()
 		}
 	  }
 	  if(getSaveCameraReDim()){
-		ViewCameraGL * camera = __GLFrame->getCamera();
+		ViewCameraGL3 * camera = __GLFrame->getCamera();
 		if(camera)camera->lockDim(camReDim);
 	  }
 	  if(getSaveUseSpinBox() && __controlPanel) {
@@ -1197,7 +1197,7 @@ void ViewFileManager::loadConfig()
 }
 
 
-void ViewFileManager::saveConfig()
+void ViewFileManager3::saveConfig()
 {
   QString filename = getInitFilename();
   QFile _fileConfig(filename.latin1());
@@ -1205,8 +1205,8 @@ void ViewFileManager::saveConfig()
 	QColor _Color = __GLFrame->getBackGroundColor();
 	// m_fileConfig.writeBlock("grilleXY grilleYZ grilleXZ axes red green blue\n",32);
 	QTextStream f_fileConfig( &  _fileConfig );
-	const ViewGridGL * grid = __GLFrame->getGrid();
-	const ViewCameraGL * camera = __GLFrame->getCamera();
+	const ViewGridGL3 * grid = __GLFrame->getGrid();
+	const ViewCameraGL3 * camera = __GLFrame->getCamera();
 	int style = (__helpmenu?__helpmenu->getStyle():-1);
 	int w = 0, h = 0;
 	int x = 0, y = 0;
@@ -1293,7 +1293,7 @@ void ViewFileManager::saveConfig()
 }
 
 
-void ViewFileManager::saveConfigBeforeQuit()
+void ViewFileManager3::saveConfigBeforeQuit()
  {
   saveConfig();
   return;
@@ -1326,7 +1326,7 @@ void ViewFileManager::saveConfigBeforeQuit()
    }*/
 
     if(overwrite) {
-		const ViewGridGL * grid = __GLFrame->getGrid();
+		const ViewGridGL3 * grid = __GLFrame->getGrid();
 		if(grid != NULL){
 			tabGrid[0] = grid->getXYGrid();
 			tabGrid[1] = grid->getYZGrid();
@@ -1363,7 +1363,7 @@ void ViewFileManager::saveConfigBeforeQuit()
 
 
 /* 
-void ViewFileManager::crop(){
+void ViewFileManager3::crop(){
 	CropImages n(this,"",true);
 	n.exec();
 }

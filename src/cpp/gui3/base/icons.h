@@ -39,27 +39,27 @@
 
 
 /*! \file view_icons.h
-    \brief Definition of the viewer class ViewerIcon.
+    \brief Definition of the viewer class ViewerIcon3.
 */
 
 
 #ifndef __view_icons_h__
 #define __view_icons_h__
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 class QPixmap;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewerIcon
+   \class ViewerIcon3
    \brief A virtual class who contains all the icons used for the viewer.
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewerIcon 
+class VIEW3_API ViewerIcon3 
 {
 
     public :
@@ -229,11 +229,11 @@ class VIEW_API ViewerIcon
 	static void clearCache();
 
 	/// Constructor.
-	ViewerIcon(){
+	ViewerIcon3(){
 	};
 	
 	/// Destructor.
-	virtual ~ViewerIcon(){
+	virtual ~ViewerIcon3(){
 	};
     
 	

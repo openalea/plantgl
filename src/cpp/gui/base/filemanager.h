@@ -46,12 +46,11 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qmainwindow.h>
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <qtoolbar.h>
 #include <qstring.h>
-#include <qurloperator.h>
+#include <qstringlist.h>
 
-#include <deque>
 #include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */
@@ -77,9 +76,11 @@ class ViewControlPanel;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewFileManager : public QPopupMenu 
+class VIEW_API ViewFileManager : public QMenu 
 {
   Q_OBJECT
+  Q_PROPERTY(QStringList RecentFiles READ getRecentFiles WRITE setRecentFiles );
+
 
       public:
 
@@ -113,9 +114,11 @@ class VIEW_API ViewFileManager : public QPopupMenu
   
   /// return whether a file has been open or not in this session.
   const bool hasOpenFile() const;
-  /// Add a preambule to automatically generate file.
-//  static void preambule(ostream & _ostream, const char * filename = 0, 
-//			const char * begcomment = "(#" , const char * endcomment = "#)" );
+
+  /// set/get the history of open files.
+  const QStringList& getRecentFiles() const;
+  void setRecentFiles(const QStringList&);
+
 
   /// Fill the Tool Bar.
   void fillToolBar(QToolBar *);
@@ -161,6 +164,9 @@ public slots:
   void reOpenFile();
 
   /// Open the i-th file of the review.
+  void reOpenFile( QAction * action );
+
+  /// Open the i-th file of the review.
   void reOpenFile( int i );
 
   /// Find the format of the file \b _filename.
@@ -179,14 +185,6 @@ public slots:
   /// Save current viewer configuration.
   void saveConfig();
 
-  /// Save configuration and review in viewer configuration file.    
-  void saveConfigBeforeQuit();
-
-  void downloaded( const QByteArray &, QNetworkOperation * op  );
-  void connectionStatus ( int , const QString & );
-  void net( QNetworkOperation *  );
-  void transferProgress ( int, int, QNetworkOperation * );
-//  void crop();
 
   /// Display error message.
   void error(const QString&);
@@ -243,22 +241,22 @@ signals:
   private:
 
   /// Open File Sub Menu.
-  QPopupMenu * __OpenFileMenu;
+  QMenu * __OpenFileMenu;
   
   /// Import File Sub Menu.
-  QPopupMenu * __ImportFileMenu;
+  QMenu * __ImportFileMenu;
   
   /// Save File Sub Menu.
-  QPopupMenu * __SaveFileMenu;
+  QMenu * __SaveFileMenu;
   
   /// Export File Sub Menu.
-  QPopupMenu * __ExportFileMenu;
+  QMenu * __ExportFileMenu;
   
   /// Recent File Sub Menu.
-  QPopupMenu * __RecentFilesMenu;
+  QMenu * __RecentFilesMenu;
   
   /// last open files Review.
-  std::deque<QString> __lastOpenFiles;
+  QStringList __lastOpenFiles;
 
   /// is a file as been open in this session.
   bool __hasOpenFile;
@@ -270,8 +268,6 @@ signals:
   ViewLocationBar * __locatToolBar;
   ViewHelpMenu * __helpmenu;
   QString __pictureDir;
-  QUrlOperator __url;
-  QString __downloadingfile;
 
   int __saveoptions;
 };

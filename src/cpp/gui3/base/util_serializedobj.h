@@ -44,14 +44,14 @@
 #include <qmutex.h>
 
 template <class T>
-class SerializedObject {
+class ViewSerializedObject3 {
 
 public:
-  SerializedObject(T val):
+  ViewSerializedObject3(T val):
 	  __val(val){
 	}
 
-  SerializedObject operator = (T val) {
+  ViewSerializedObject3 operator = (T val) {
 	set(val);
 	return *this;
   }

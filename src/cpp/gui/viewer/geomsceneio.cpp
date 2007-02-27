@@ -92,86 +92,87 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 bool
-ViewGeomSceneGL::addOpenEntries(QPopupMenu * menu)
+ViewGeomSceneGL::addOpenEntries(QMenu * menu)
 {
-  QPixmap openIcon(ViewerIcon::icon_fileopen );
-  menu->insertItem( openIcon, tr("Open &Geom File"),
-                       this,SLOT(openGeomFile()),CTRL+Key_G);
-  menu->insertItem( openIcon, tr("&Add Geom File"),
+  QPixmap openIcon( ViewerIcon::getPixmap(ViewerIcon::fileopen ));
+  menu->addAction( openIcon, tr("Open &Geom File"),
+                       this,SLOT(openGeomFile()),Qt::CTRL+Qt::Key_G);
+  menu->addAction( openIcon, tr("&Add Geom File"),
                        this,SLOT(addGeomFile()));
   return true;
 }
 
 bool
-ViewGeomSceneGL::addSaveEntries(QPopupMenu * menu)
+ViewGeomSceneGL::addSaveEntries(QMenu * menu)
 {
-  QPixmap saveIcon(ViewerIcon::icon_filefloppy );
-  menu->insertItem( saveIcon, tr("Save As &Geom"),
+  QPixmap saveIcon(ViewerIcon::getPixmap(ViewerIcon::filefloppy ));
+  menu->addAction( saveIcon, tr("Save As &Geom"),
                        this,SLOT(saveAsGeom()));
-  menu->insertItem( saveIcon, tr("Save &Selection"),
+  menu->addAction( saveIcon, tr("Save &Selection"),
                        this,SLOT(saveSelection()));
-  menu->insertItem( saveIcon, tr("Save &Not Selection"),
+  menu->addAction( saveIcon, tr("Save &Not Selection"),
                        this,SLOT(saveNotSelection()));
   return true;
 }
 
 bool
-ViewGeomSceneGL::addImportEntries(QPopupMenu * menu)
+ViewGeomSceneGL::addImportEntries(QMenu * menu)
 {
-  QPixmap openIcon(ViewerIcon::icon_fileopen );
-  menu->insertItem( openIcon , tr("Import &AmapSymbol"),
-                    this,SLOT(openAmapSymbol()),CTRL+Key_A);
-  menu->insertItem( openIcon, tr("Import &Linetree Files"),
-                       this,SLOT(openLinetree()),CTRL+Key_L);
-  menu->insertItem( openIcon, tr("Import &GeomView Files"),
+  QPixmap openIcon(ViewerIcon::getPixmap(ViewerIcon::fileopen ));
+  menu->addAction( openIcon , tr("Import &AmapSymbol"),
+                    this,SLOT(openAmapSymbol()),Qt::CTRL+Qt::Key_A);
+  menu->addAction( openIcon, tr("Import &Linetree Files"),
+                       this,SLOT(openLinetree()),Qt::CTRL+Qt::Key_L);
+  menu->addAction( openIcon, tr("Import &GeomView Files"),
                        this,SLOT(openGeomViewFile()));
-  menu->insertItem( openIcon, tr("Import &VegeStar Files"),
+  menu->addAction( openIcon, tr("Import &VegeStar Files"),
                        this,SLOT(openVegeStar()));
-  QPopupMenu * submenu = new QPopupMenu(menu,"VGStar Symbol");
-  submenu->insertItem( openIcon , tr("Import Symbol")+" 11",
+  QMenu * submenu = new QMenu(menu);
+  submenu->addAction( openIcon , tr("Import Symbol")+" 11",
                     this,SLOT(openVegeStarSymbol1()));
-  submenu->insertItem( openIcon , tr("Import Symbol")+" 12",
+  submenu->addAction( openIcon , tr("Import Symbol")+" 12",
                     this,SLOT(openVegeStarSymbol2()));
-  submenu->insertItem( openIcon , tr("Import Symbol")+" 13",
+  submenu->addAction( openIcon , tr("Import Symbol")+" 13",
                     this,SLOT(openVegeStarSymbol3()));
-  submenu->insertSeparator();
-  submenu->insertItem( openIcon , tr("Show Symbol")+" 11",
+  submenu->addSeparator();
+  submenu->addAction( openIcon , tr("Show Symbol")+" 11",
                     this,SLOT(showVegeStarSymbol1()));
-  submenu->insertItem( openIcon , tr("Show Symbol")+" 12",
+  submenu->addAction( openIcon , tr("Show Symbol")+" 12",
                     this,SLOT(showVegeStarSymbol2()));
-  submenu->insertItem( openIcon , tr("Show Symbol")+" 13",
+  submenu->addAction( openIcon , tr("Show Symbol")+" 13",
                     this,SLOT(showVegeStarSymbol3()));
-  submenu->insertSeparator();
-  submenu->insertItem( openIcon , tr("Set Selection as Symbol")+" 11",
+  submenu->addSeparator();
+  submenu->addAction( openIcon , tr("Set Selection as Symbol")+" 11",
                     this,SLOT(setSelectionVegeStarSymbol1()));
-  submenu->insertItem( openIcon , tr("Set Selection as Symbol")+" 12",
+  submenu->addAction( openIcon , tr("Set Selection as Symbol")+" 12",
                     this,SLOT(setSelectionVegeStarSymbol1()));
-  submenu->insertItem( openIcon , tr("Set Selection as Symbol")+" 13",
+  submenu->addAction( openIcon , tr("Set Selection as Symbol")+" 13",
                     this,SLOT(setSelectionVegeStarSymbol1()));
-  menu->insertItem(tr("Import VegeStar Symbol"),submenu);
+  submenu->setTitle(tr("Import VegeStar Symbol"));
+  menu->addMenu(submenu);
   return true;
 }
 
 bool
-ViewGeomSceneGL::addExportEntries(QPopupMenu * menu)
+ViewGeomSceneGL::addExportEntries(QMenu * menu)
 {
-  QPixmap saveIcon( ViewerIcon::icon_filefloppy );
-  QPixmap savePovIcon( ViewerIcon::icon_pov );
-  QPixmap saveVrmlIcon( ViewerIcon::icon_vrml );
-  menu->insertItem( saveIcon , tr("Export as &AmapSymbol"),
+  QPixmap saveIcon( ViewerIcon::getPixmap(ViewerIcon::filefloppy) );
+  QPixmap savePovIcon( ViewerIcon::getPixmap( ViewerIcon::pov) );
+  QPixmap saveVrmlIcon( ViewerIcon::getPixmap(ViewerIcon::vrml) );
+  menu->addAction( saveIcon , tr("Export as &AmapSymbol"),
                     this,SLOT(saveAsAmapSymbol()));
-  menu->insertItem( saveIcon , tr("Export as &Linetree"),
+  menu->addAction( saveIcon , tr("Export as &Linetree"),
                     this,SLOT(saveAsLinetree()));
-  menu->insertItem( savePovIcon , tr("Export as Pov&Ray"),
-                    this,SLOT(saveAsPovRay()),CTRL+Key_R);
-  menu->insertItem( saveVrmlIcon , tr("Export as Vr&ml"),
-                    this,SLOT(saveAsVrml()),CTRL+Key_M);
-  menu->insertItem( saveIcon , tr("Export as Ply"),
+  menu->addAction( savePovIcon , tr("Export as Pov&Ray"),
+                    this,SLOT(saveAsPovRay()),Qt::CTRL+Qt::Key_R);
+  menu->addAction( saveVrmlIcon , tr("Export as Vr&ml"),
+                    this,SLOT(saveAsVrml()),Qt::CTRL+Qt::Key_M);
+  menu->addAction( saveIcon , tr("Export as Ply"),
                     this,SLOT(saveAsPly()));
-  menu->insertItem( saveIcon , tr("Export as V&egeStar"),
-                    this,SLOT(saveAsVegeStar()),CTRL+Key_E);
- // menu->insertItem( saveIcon , "&Fred Export",
- //                   this,SLOT(exportFred()),CTRL+Key_E);
+  menu->addAction( saveIcon , tr("Export as V&egeStar"),
+                    this,SLOT(saveAsVegeStar()),Qt::CTRL+Qt::Key_E);
+ // menu->addAction( saveIcon , "&Fred Export",
+ //                   this,SLOT(exportFred()),Qt::CTRL+Qt::Key_E);
   return true;
 }
 
@@ -180,8 +181,8 @@ void
 ViewGeomSceneGL::addFile(const QString& filename)
 {
   if(!filename.isEmpty()){
-    QString ext = QFileInfo(filename).extension();
-    ext = ext.upper();
+    QString ext = QFileInfo(filename).suffix();
+    ext = ext.toUpper();
     if(ext == "SMB"){
       openAmapSymbol(filename,true);
     }
@@ -207,8 +208,8 @@ bool
 ViewGeomSceneGL::open(const QString& filename)
 {
   if(!filename.isEmpty()){
-    QString ext = QFileInfo(filename).extension();
-    ext = ext.upper();
+    QString ext = QFileInfo(filename).suffix();
+    ext = ext.toUpper();
     if(ext == "SMB"){
       openAmapSymbol(filename);
       return true;
@@ -230,19 +231,18 @@ ViewGeomSceneGL::open(const QString& filename)
     }
     else {
 			static int selection = 5;
-//            QMessageBox::warning(__frame,"File Format Not Supported",						 	
-//                         filename+"\nFile Format '"+ext+"' Not Supported",1,0,0);
-			ViewImporterSelection dialog(__frame,"ImporterSelection",true);
-			QObject::connect(dialog.OkButton,SIGNAL(pressed()),
-							 &dialog,SLOT(accept()));
-			QObject::connect(dialog.CancelButton,SIGNAL(pressed()),
-							 &dialog,SLOT(reject()));
-			dialog.Type->setText(ext);
-			dialog.File->setText(QFileInfo(filename).fileName());
-			dialog.ImporterCombo->setCurrentItem(selection);
+			QDialog dialog(__frame);
+			dialog.setModal(true);
+			Ui::ViewImporterSelection importer;
+			importer.setupUi(&dialog);
+			QObject::connect(importer.OkButton,SIGNAL(pressed()),&dialog,SLOT(accept()));
+			QObject::connect(importer.CancelButton,SIGNAL(pressed()),&dialog,SLOT(reject()));
+			importer.Type->setText(ext);
+			importer.File->setText(QFileInfo(filename).fileName());
+			importer.ImporterCombo->setCurrentIndex(selection);
 			if(dialog.exec() == QDialog::Rejected)return false;
 			else {
-				selection = dialog.ImporterCombo->currentItem();
+				selection = importer.ImporterCombo->currentIndex();
 				switch(selection){
 				case 0 :return openGeomFile(filename);break;
 				case 1 :return openAmapSymbol(filename);break;
@@ -266,7 +266,7 @@ bool
 ViewGeomSceneGL::openStream(std::istream& stream)
 {
 #ifdef GEOM_THREAD
-  if(__reader && __reader->running()){
+  if(__reader && __reader->isRunning()){
     QMessageBox::warning(__frame,tr("Already Reading File"),
                          QString(tr("Currently Reading File")+" %1").
                          arg(__reader->getFilename()),1,0,0);
@@ -299,7 +299,7 @@ ViewGeomSceneGL::openStream(std::istream& stream)
 void
 ViewGeomSceneGL::openGeomFile()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("Geom File")+" (*.geom;*.bgeom)",__frame,"Open Geom",tr("Open GEOM File"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
   if(!filename.isEmpty())
      openGeomFile(filename);
 }
@@ -307,7 +307,7 @@ ViewGeomSceneGL::openGeomFile()
 void
 ViewGeomSceneGL::addGeomFile()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("Geom File")+" (*.geom;*.bgeom)",__frame,"Open Geom",tr("Add GEOM File"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
   if(!filename.isEmpty())
      addGeomFile(filename);
 }
@@ -317,7 +317,7 @@ ViewGeomSceneGL::addGeomFile()
 void
 ViewGeomSceneGL::openAmapSymbol()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("Amap Symbol")+" (*.smb)",__frame,"Open Symbol",tr("Open Amap Symbol"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("Amap Symbol")+" (*.smb)");
   if(!filename.isEmpty()){
     openAmapSymbol(filename);
   }
@@ -328,7 +328,7 @@ ViewGeomSceneGL::openAmapSymbol()
 void
 ViewGeomSceneGL::openGeomViewFile()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),"",__frame,"Open GeomView File","Import GeomView File");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open GeomView File",getFilename(),"");
   if(!filename.isEmpty())
      openGeomViewFile(filename);
 }
@@ -343,7 +343,7 @@ ViewGeomSceneGL::openLinetree()
 void
 ViewGeomSceneGL::openVegeStar()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("VegeStar File")+" (*.vgx;*.vgs)",__frame,"Open VegeStar File",tr("Open VegeStar File"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open VegeStar File",getFilename(),tr("VegeStar File")+" (*.vgx;*.vgs)");
   if(!filename.isEmpty()){
     openVegeStar(filename);
   }
@@ -352,11 +352,9 @@ ViewGeomSceneGL::openVegeStar()
 void
 ViewGeomSceneGL::openVegeStarSymbol1()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("VegeStar Symbol")+" (*.pol)",__frame,"Open Symbol",tr("Open VegeStar Symbol"));
-  qWarning("VGStar Symbol :"+filename);
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol)");
   if(!filename.isEmpty()){
 	openVegeStarSymbol1(filename);
-	qWarning("VGStar Symbol '"+filename+"' loaded.");
   }
 }
 
@@ -365,7 +363,7 @@ ViewGeomSceneGL::openVegeStarSymbol1(const QString& filename,bool add)
 {
   if(!filename.isEmpty()){
     stringstream _errlog(ios::out) ;
-    GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.data(),_errlog);
+    GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.toStdString(),_errlog);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
 
@@ -394,10 +392,10 @@ ViewGeomSceneGL::openVegeStarSymbol1(const QString& filename,bool add)
 void
 ViewGeomSceneGL::openVegeStarSymbol2()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("VegeStar Symbol")+" (*.pol)",__frame,"Open Symbol",tr("Open VegeStar Symbol"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol)");
   if(!filename.isEmpty()){
     stringstream _errlog(ios::out) ;
-    GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.data(),_errlog);
+    GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.toStdString(),_errlog);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
  
@@ -417,10 +415,10 @@ ViewGeomSceneGL::openVegeStarSymbol2()
 void
 ViewGeomSceneGL::openVegeStarSymbol3()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("VegeStar Symbol")+" (*.pol)",__frame,"Open Symbol",tr("Open VegeStar Symbol"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol)");
   if(!filename.isEmpty()){
     stringstream _errlog(ios::out) ;
-    GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.data(),_errlog);
+    GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.toStdString(),_errlog);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
  
@@ -506,7 +504,7 @@ ViewGeomSceneGL::openGeomFile(const QString& filename)
 {
   if(!filename.isEmpty()){
 #ifdef GEOM_THREAD
-    if(__reader && __reader->running()){
+    if(__reader && __reader->isRunning()){
       QMessageBox::warning(__frame,tr("Already Reading File"),
                            QString(tr("Currently Reading File")+" %1").
                            arg(__reader->getFilename()),1,0,0);
@@ -524,7 +522,7 @@ ViewGeomSceneGL::openGeomFile(const QString& filename)
     }
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene = ScenePtr(new Scene(filename.latin1(),"",_errlog));
+    ScenePtr scene = ScenePtr(new Scene(filename.toAscii().constData(),"",_errlog));
     setScene(scene);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
@@ -541,7 +539,7 @@ ViewGeomSceneGL::addGeomFile(const QString& filename)
 {
   if(!filename.isEmpty()){
 #ifdef GEOM_THREAD
-    if(__reader && __reader->running()){
+    if(__reader && __reader->isRunning()){
 	  __reader->wait();
     }
 	if(__reader) {
@@ -554,7 +552,7 @@ ViewGeomSceneGL::addGeomFile(const QString& filename)
 	return true;
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene = ScenePtr(new Scene(filename.latin1(),"",_errlog));
+    ScenePtr scene = ScenePtr(new Scene(filename.toAscii().constData(),"",_errlog));
     addScene(scene);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
@@ -582,7 +580,7 @@ ViewGeomSceneGL::openAmapSymbol(const QString& filename,bool add)
 	SceneObject::warningStream = & _errlog;
 	SceneObject::commentStream = & _errlog;
 
-    GeometryPtr _symbol(new AmapSymbol(filename.data(),
+    GeometryPtr _symbol(new AmapSymbol(filename.toStdString(),
                                        AmapSymbol::DEFAULT_SOLID));
 	SceneObject::errorStream = s1;
 	SceneObject::warningStream = s2;
@@ -619,7 +617,7 @@ ViewGeomSceneGL::openGeomViewFile(const QString& filename,bool add)
 {
   if(!filename.isEmpty()){
     stringstream _errlog(ios::out) ;
-    ScenePtr scene = GeomViewBuilder::Parse(filename.latin1(),_errlog);
+    ScenePtr scene = GeomViewBuilder::Parse(filename.toAscii().constData(),_errlog);
     if(add)addScene(scene);
     else {
 	  setScene(scene);
@@ -641,7 +639,7 @@ ViewGeomSceneGL::openLinetree(const QString& filename,bool add)
   if(!filename.isEmpty())__linetreeDialog.setLigFile(filename);
   if(__linetreeDialog.exec()){
 #ifdef GEOM_THREAD
-    if(__reader && __reader->running()){
+    if(__reader && __reader->isRunning()){
 	  if(!add){
       QMessageBox::warning(__frame,tr("Already Reading File"),
                            QString(tr("Currently Reading File")+" %1").
@@ -664,9 +662,9 @@ ViewGeomSceneGL::openLinetree(const QString& filename,bool add)
       return true;
     }
 #else
-    ScenePtr scene = readLineTree(string(__linetreeDialog.getLigFile().data()),
-                                  string(__linetreeDialog.getDtaFile().data()),
-                                  string(__linetreeDialog.getSMBPath().data()),
+    ScenePtr scene = readLineTree(string(__linetreeDialog.getLigFile().toStdString()),
+                                  string(__linetreeDialog.getDtaFile().toStdString()),
+                                  string(__linetreeDialog.getSMBPath().toStdString()),
 								  __linetreeDialog.bigEndian(),cerr);
 	if(add){
 	  addScene(scene);
@@ -690,7 +688,7 @@ ViewGeomSceneGL::openVegeStar(const QString& filename,bool add)
 {
   if(!filename.isEmpty()){
 /*#ifndef QT_THREAD_SUPPORT
-    if(__reader && __reader->running()){
+    if(__reader && __reader->isRunning()){
       QMessageBox::warning(__frame,"Already Reading File",
                            QString("Reading Yet File %1").
                            arg(__reader->getFilename()),1,0,0);
@@ -708,7 +706,7 @@ ViewGeomSceneGL::openVegeStar(const QString& filename,bool add)
     }
 #else*/
     stringstream _errlog(ios::out) ;
-    ScenePtr scene = VegeStarFile::read(filename.latin1(),_errlog);
+    ScenePtr scene = VegeStarFile::read(filename.toStdString(),_errlog);
 	if(add)addScene(scene);
 	else {
 	  setScene(scene);
@@ -729,8 +727,8 @@ ViewGeomSceneGL::save()
 {
   if(getFilename().isEmpty()){
 	saveAs();return; }
-  QString extension=getFilename().right(getFilename().length()-getFilename().findRev('.')-1);
-  extension= extension.upper();
+  QString extension=QFileInfo(getFilename()).suffix();
+  extension= extension.toUpper();
   if(extension.isEmpty())saveAs();
   else if(extension == "GEOM" || extension == "BGEOM" )
     saveAsGeom(getFilename());
@@ -746,10 +744,11 @@ void
 ViewGeomSceneGL::saveAs()
 {
   QString initial = getFilename();
-  QString extension=getFilename().right(getFilename().length()-getFilename().findRev('.')-1);
-  extension= extension.upper();
+  QFileInfo fileinfo(initial);
+  QString extension=fileinfo.suffix();
+  extension= extension.toUpper();
   if(!extension.isEmpty() && extension != "GEOM" && extension != "BGEOM" ){
-    initial = getFilename().left(getFilename().findRev('.')+1);
+	initial = initial.left(initial.lastIndexOf('.')+1);
     initial += "geom";
   }
   QString filename = ViewFileManager::getSaveFileName(initial,"",tr("Geom File")+" (*.geom;*.bgeom)",__frame);
@@ -827,7 +826,7 @@ ViewGeomSceneGL::saveAs(const QString& filename){
     fmat << " # -Appearance File-\n";
     Printer _printer(fgeom,fgeom,fmat);
     _printer.header(fgeom,_geomFilename,"File Generated with Geom 3D Viewer");
-    fgeom  << ":include " << _matFilename.latin1() << "\n\n\n";
+    fgeom  << ":include " << _matFilename.toAscii().constData() << "\n\n\n";
     _printer.header(fmat,_matFilename,"File Generated with Geom 3D Viewer");
     return __scene->apply(_printer);
   }
@@ -844,13 +843,13 @@ public :
 			  QWidget * parent=0,
 			  const char * name = 0, 
 			  bool modal = true ) :
-  QFileDialog ( !initial.isEmpty()?QFileInfo(initial).filePath():"", filter , parent, name , modal  ) {
-	setSelection(initial);
-	setMode(QFileDialog::AnyFile);
-	QGroupBox * box = new QGroupBox(2,Qt::Vertical,qApp->translate("ViewGeomSceneGL","Separated File for"),this);
+  QFileDialog ( parent, name, !initial.isEmpty()?QFileInfo(initial).filePath():"", filter   ) {
+	// setSelection(initial);
+	setFileMode(QFileDialog::AnyFile);
+	QGroupBox * box = new QGroupBox(qApp->translate("ViewGeomSceneGL","Separated File for"),this);
 	__geometry = new QRadioButton(qApp->translate("ViewGeomSceneGL","Geometry"),box);
 	__appearance = new QRadioButton(qApp->translate("ViewGeomSceneGL","Appearance"),box);
-	addRightWidget(box);
+	setExtension(box);
   }
 
   bool geometrySeparated() const {return __geometry->isChecked();}
@@ -867,34 +866,34 @@ ViewGeomSceneGL::getGeomFilenames(QString& shape,QString& geom, QString& mat)
 {
   shape = QString::null;
   QString initial = getFilename();
-  QString extension=getFilename().right(getFilename().length()-getFilename().findRev('.')-1);
-  extension= extension.upper();
+  QString extension=getFilename().right(getFilename().length()-getFilename().lastIndexOf('.')-1);
+  extension= extension.toUpper();
   if(!extension.isEmpty() && extension != "GEOM" && extension != "BGEOM" ){
-    initial = getFilename().left(getFilename().findRev('.')+1);
+    initial = getFilename().left(getFilename().lastIndexOf('.')+1);
     initial += "geom";
   }
   
-  GeomDialog dialog( initial, tr("Geom File")+" (*.geom;*.bgeom)", __frame,tr("Save"));
-  if(dialog.exec() != QFileDialog::Rejected) shape = dialog.selectedFile();
+  GeomDialog dialog( initial, tr("Geom File")+" (*.geom;*.bgeom)", __frame,tr("Save").toAscii().data());
+  if(dialog.exec() != QFileDialog::Rejected) shape = dialog.selectedFiles()[0];
   
   if(shape.isEmpty())return false;
   else {
-	QString extension=shape.right(shape.length()-shape.findRev('.')-1);
-	extension= extension.upper();
+	QString extension=shape.right(shape.length()-shape.lastIndexOf('.')-1);
+	extension= extension.toUpper();
 	if (extension != "GEOM" && extension != "BGEOM" ) {
-	  shape = shape.left(shape.findRev('.')+1);
+	  shape = shape.left(shape.lastIndexOf('.')+1);
 	  shape += "GEOM";
 	}
   }
-  extension=shape.right(shape.length()-shape.findRev('.')-1);
-  extension= extension.upper();
+  extension=shape.right(shape.length()-shape.lastIndexOf('.')-1);
+  extension= extension.toUpper();
 
   if(extension != "BGEOM" &&dialog.geometrySeparated()){
-	geom = shape.left(shape.findRev('.')-1);
+	geom = shape.left(shape.lastIndexOf('.')-1);
 	geom += "_geom.geom";
   }
   if(extension != "BGEOM" &&dialog.appearanceSeparated()){
-	mat = shape.left(shape.findRev('.')+1);
+	mat = shape.left(shape.lastIndexOf('.')+1);
 	mat += "mat";
   }
   if(QFile::exists(shape)){
@@ -941,16 +940,16 @@ ViewGeomSceneGL::saveScene(const QString& shape,
 						   const QString& mat,
 						   PGL(ScenePtr) scene){
   if(shape.isEmpty())return false;
-  QString extension=shape.right(shape.length()-shape.findRev('.')-1);
-  extension= extension.upper();
+  QString extension=shape.right(shape.length()-shape.lastIndexOf('.')-1);
+  extension= extension.toUpper();
   if(extension == "GEOM" ){
-    ofstream fshape(shape);
+	  ofstream fshape(shape.toAscii().data());
 	if(!fshape)return false;
 	fshape << " # -Geom File-\n";
 	ofstream * fgeom;
 	bool separatedgeom = false;
 	if(!geom.isEmpty()){
-	  fgeom = new ofstream(geom);
+	  fgeom = new ofstream(geom.toAscii().data());
 	  if(!*fgeom)fgeom = &fshape;
 	  else {
 		*fgeom << " # -Geom File-\n";
@@ -962,7 +961,7 @@ ViewGeomSceneGL::saveScene(const QString& shape,
 	ofstream * fmat;
 	bool separatedmat = false;
 	if(!mat.isEmpty()){
-	  fmat = new ofstream(mat);
+	  fmat = new ofstream(mat.toAscii().data());
 	  if(!*fmat)fmat = &fshape;
 	  else {
         *fmat << " # -Appearance File-\n";
@@ -972,19 +971,19 @@ ViewGeomSceneGL::saveScene(const QString& shape,
 	else fmat = &fshape;
 
     Printer _printer(fshape,*fgeom,*fmat);
-    _printer.header(fshape,shape,tr("File Generated with PlantGL 3D Viewer").latin1());
+	_printer.header(fshape,shape.toAscii().data(),tr("File Generated with PlantGL 3D Viewer").toAscii().data());
     if(separatedgeom){
-      _printer.header(*fgeom,geom,tr("File Generated with PlantGL 3D Viewer").latin1());
-	  fshape  << ":include " << geom.latin1() << "\n\n\n";
+      _printer.header(*fgeom,geom.toAscii().data(),tr("File Generated with PlantGL 3D Viewer").toAscii().data());
+	  fshape  << ":include " << geom.toStdString() << "\n\n\n";
 	}
     if(separatedmat){
-      _printer.header(*fmat,mat,tr("File Generated with PlantGL 3D Viewer").latin1());
-	  fshape  << ":include " << mat.latin1() << "\n\n\n";
+      _printer.header(*fmat,mat.toAscii().data(),tr("File Generated with PlantGL 3D Viewer").toAscii().data());
+	  fshape  << ":include " << mat.toStdString() << "\n\n\n";
 	}
     return scene->apply(_printer);
   }
   else if(extension == "BGEOM" ){
-    return BinaryPrinter::print(__scene,string(shape.data()),tr("File Generated with PlantGL 3D Viewer").latin1());
+	  return BinaryPrinter::print(__scene,shape.toStdString(),tr("File Generated with PlantGL 3D Viewer").toAscii().data());
   }
   else return false;
 }
@@ -1023,10 +1022,10 @@ ViewGeomSceneGL::saveAsLinetree(){
   QString filename = getFilename();
   if(filename.isEmpty())saveAsLinetree(QString(""));
   else {
-	  QString extension=filename.right(filename.length()-filename.findRev('.')-1);
-	  extension= extension.upper();    
+	  QString extension=QFileInfo(filename).suffix();
+	  extension= extension.toUpper();    
 	  if (extension != "LIG") {
-		  filename = filename.left(filename.findRev('.')+1);
+		  filename = filename.left(filename.lastIndexOf('.')+1);
 		  filename += "lig";
 	  }
 	  saveAsLinetree(filename);
@@ -1052,11 +1051,11 @@ ViewGeomSceneGL::saveAsLinetree(const QString& filename){
 bool
 ViewGeomSceneGL::saveAsPovRay(const QString& filename)
 {
-  ofstream _stream(filename);
+  ofstream _stream(filename.toAscii().data());
   if(_stream){
     Tesselator _tess;
     PovPrinter _printer(_stream,_tess);
-    _printer.header(tr("File Generated with PlantGL 3D Viewer").latin1());
+    _printer.header(tr("File Generated with PlantGL 3D Viewer").toAscii().constData());
 	_printer.beginHeader();
 	_printer.setCamera(__camera->getEye(),__camera->getTranslation(),__camera->getViewAngle(),__camera->getAzimuth(),__camera->getElevation());
 	const QColor& col = __light->getDiffuse();
@@ -1093,11 +1092,11 @@ ViewGeomSceneGL::saveAsPovRay(const QString& filename)
 bool
 ViewGeomSceneGL::saveAsVegeStar(const QString& filename)
 {
-  ofstream _stream(filename);
+  ofstream _stream(filename.toAscii().data());
   if(_stream){
     Tesselator _tess;
     VgstarPrinter _printer(_stream,_tess);
-    _printer.header(tr("File Generated with PlantGL 3D Viewer").latin1());
+    _printer.header(tr("File Generated with PlantGL 3D Viewer").toAscii().constData());
     __scene->apply(_printer);
     setFilename(filename);
     return true;
@@ -1115,7 +1114,7 @@ ViewGeomSceneGL::saveAsAmapSymbol(const QString& filename)
   AmapSymbolPtr result = translator.getSymbol();
 
   if(result) {
-	  beofstream _stream(filename.latin1());
+	  beofstream _stream(filename.toAscii().constData());
 	  if(_stream){
 		  result->write(_stream);
 		  setFilename(filename);
@@ -1134,27 +1133,27 @@ ViewGeomSceneGL::saveAsLinetree(const QString& lig,
 								const QString& key,
 								bool bigendian){
 	bofstream * ligstream;
-	if (bigendian) ligstream = new beofstream(lig.data());
-	else ligstream = new leofstream(lig.data());
+	if (bigendian) ligstream = new beofstream(lig.toAscii().data());
+	else ligstream = new leofstream(lig.toAscii().data());
 	if(!*ligstream) return false;
-	ofstream dtastream(dta.data());
+	ofstream dtastream(dta.toAscii().data());
 	if(!dtastream) return false;
 	AmapTranslator t(__discretizer);
-	LinetreePrinter printer(*ligstream,dtastream,smb.data(),t);
-	printer.header(key.data());
+	LinetreePrinter printer(*ligstream,dtastream,smb.toAscii().data(),t);
+	printer.header(key.toAscii().data());
 	if(__scene->apply(printer)){
 		setFilename(lig);
-		QString inf = lig.left(lig.findRev('.')+1);
+		QString inf = lig.left(lig.lastIndexOf('.')+1);
 		inf += "inf";
-		ofstream infstream(inf.data());
+		ofstream infstream(inf.toAscii().data());
 		if(infstream){
 			printer.printInf(infstream,
 							 __bbox->getUpperRightCorner(),
 							 __bbox->getLowerLeftCorner());
 		}
-		QString cfg = QFileInfo(lig).dirPath(true);
+		QString cfg = QFileInfo(lig).dir().path();
 		string _cfg;
-		if(!printer.printCfg(cfg.data(),".",smb.data(),_cfg)){
+		if(!printer.printCfg(cfg.toAscii().data(),".",smb.toAscii().data(),_cfg)){
 			QMessageBox::warning(__frame,tr("Cfg File"),
 			tr("Cannot write file")+" '"+QString(_cfg.c_str())+"'",
             "Ok");
@@ -1174,10 +1173,10 @@ void
 ViewGeomSceneGL::saveAsVrml()
 {
   QString filename = ViewFileManager::getSaveFileName(getFilename(),"wrl",tr("Vrml File")+" (*.wrl)",__frame);
-  ofstream _stream(filename);
+  ofstream _stream(filename.toAscii().data());
   if(_stream){
     VrmlPrinter _printer(_stream,__discretizer);
-    _printer.header(tr("File Generated with PlantGL 3D Viewer").latin1());
+    _printer.header(tr("File Generated with PlantGL 3D Viewer").toAscii().constData());
 	if(fabs(__camera->getAzimuth()) > GEOM_EPSILON   || 
 	   fabs(__camera->getElevation()) > GEOM_EPSILON ||
 	   __camera->getTranslation() != Vector3::ORIGIN)
@@ -1225,8 +1224,8 @@ ViewGeomSceneGL::saveAsPly()
       break;
     }
     Tesselator t;
-    PlyPrinter::print(__scene,t,string(filename.data()),
-	  tr("File Generated with PlantGL 3D Viewer").latin1(),_format);
+    PlyPrinter::print(__scene,t,string(filename.toAscii().data()),
+	  tr("File Generated with PlantGL 3D Viewer").toAscii().constData(),_format);
   }
 }
 
@@ -1240,7 +1239,7 @@ ViewMultiGeomSceneGL::openGeomFiles(const QString& filename,const QString& filen
 {
   if(!filename.isEmpty() && !filename2.isEmpty()){
 #ifdef GEOM_THREAD
-    if(__reader && __reader->running()){
+    if(__reader && __reader->isRunning()){
       QMessageBox::warning(__frame,tr("Already Reading File"),
                            QString(tr("Currently Reading File")+" %1").
                            arg(__reader->getFilename()),1,0,0);
@@ -1259,8 +1258,8 @@ ViewMultiGeomSceneGL::openGeomFiles(const QString& filename,const QString& filen
     }
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene1 = ScenePtr(new Scene(filename.latin1(),"",_errlog));
-    ScenePtr scene2 = ScenePtr(new Scene(filename2.latin1(),"",_errlog));
+    ScenePtr scene1 = ScenePtr(new Scene(filename.toAscii().constData(),"",_errlog));
+    ScenePtr scene2 = ScenePtr(new Scene(filename2.toAscii().constData(),"",_errlog));
     setScene(scene1,scene2);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
@@ -1276,11 +1275,9 @@ ViewMultiGeomSceneGL::openGeomFiles(const QString& filename,const QString& filen
 void
 ViewMultiGeomSceneGL::openGeomFiles()
 {
-  QString filename = QFileDialog::getOpenFileName(getFilename(),tr("Geom File")+" (*.geom;*.bgeom)",
-                                                  __frame,"Open Geom",tr("Open GEOM File"));
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
   if(!filename.isEmpty()){
-    QString filename2 = QFileDialog::getOpenFileName(getFilename(),tr("Geom File")+" (*.geom;*.bgeom)",
-                                                     __frame,"Open Geom",tr("Open GEOM File"));
+    QString filename2 = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
     if(!filename.isEmpty()){
       openGeomFiles(filename,filename2);
     }
@@ -1289,184 +1286,13 @@ ViewMultiGeomSceneGL::openGeomFiles()
 
 
 bool
-ViewMultiGeomSceneGL::addOpenEntries(QPopupMenu * menu)
+ViewMultiGeomSceneGL::addOpenEntries(QMenu * menu)
 {
-  QPixmap openIcon(ViewerIcon::icon_fileopen );
-  menu->insertItem( openIcon, tr("Open &Geom File"),
-                       this,SLOT(openGeomFile()),CTRL+Key_G);
-  menu->insertItem( openIcon, tr("&Add Geom File"),
-                       this,SLOT(addGeomFile()));
-  menu->insertItem( openIcon, tr("Open &2 Geom File"),
-                    this,SLOT(openGeomFiles()));
+  QPixmap openIcon( ViewerIcon::getPixmap(ViewerIcon::fileopen) );
+  menu->addAction( openIcon, tr("Open &Geom File"),  this,SLOT(openGeomFile()),Qt::CTRL+Qt::Key_G);
+  menu->addAction( openIcon, tr("&Add Geom File"),   this,SLOT(addGeomFile()));
+  menu->addAction( openIcon, tr("Open &2 Geom File"),this,SLOT(openGeomFiles()));
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
-
-void
-ViewGeomSceneGL::exportFred()
-{
-/*  QString initial = getFilename();
-  QString extension=getFilename().right(getFilename().length()-getFilename().findRev('.')-1);
-  extension= extension.upper();
-  if(extension != "GEOM" ){
-    initial = getFilename().left(getFilename().findRev('.')+1);
-    initial += "geom";
-  }
-  QString filename = ViewFileManager::getSaveFileName(initial,"","Geom Files (*.geom;*.bgeom)",__frame);
-  if(!filename.isEmpty()){
-    exportFred(filename);
-  }*/
-}
-
-// #include "geom_asymmetrichull.h"
-
-bool
-ViewGeomSceneGL::exportFred(const QString& filename)
-{
-/*  AsymmetricHullPtr asymmetricHull = AsymmetricHullPtr::Cast(ShapePtr::Cast(__scene->getAt(0))->getGeometry());
-  if(!asymmetricHull)return false;
-  const Vector3& _botPoint = asymmetricHull->getBottom();
-  const Vector3& _topPoint = asymmetricHull->getTop();
-  const real_t& _shapeBot = asymmetricHull->getBottomShape();
-  const real_t& _shapeTop = asymmetricHull->getTopShape();
-  uint32_t _slices = asymmetricHull->getSlices();
-  uint32_t _stacks = asymmetricHull->getStacks();
-
-  uint32_t _totalSlices = _slices * 4;
-  uint32_t _totalStacks = _stacks * 2;
-
-  uint32_t _ringCount = _totalStacks - 1;     // number of rings of points
-  uint32_t _bot = _totalSlices * _ringCount;  // index of the lower point
-  uint32_t _top = _bot + 1;                   // index of the upper point
-
-  Point3ArrayPtr * pointSet = new Point3ArrayPtr[_totalSlices + 1];
-  {
-	for(uint32_t i = 0 ; i < _totalSlices ; i++){
-	  pointSet[i] = Point3ArrayPtr(new Point3Array(_totalStacks));
-	  pointSet[i]->setAt(0,_botPoint);
-	  pointSet[i]->setAt(_totalStacks-1,_topPoint);
-	}
-  }
-  pointSet[_totalSlices] = Point3ArrayPtr(new Point3Array(_totalSlices+1));
-
-  uint32_t _cur = 0;
-  uint32_t _next = _ringCount;
-
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
-
-  real_t _azStep = real_t(GEOM_TWO_PI) / _totalSlices;
-  real_t _azIter = 0;
-
-  real_t _radius1;
-  real_t _radius2;
-  real_t _deltaZ;
-  real_t _zStep;
-  real_t _zIter;
-
-
-  // Constructs quadrats by quadrats
-  for (uint32_t _q = 0; _q < 4; _q++) {
-
-    switch(_q) {
-    case 0:
-      _radius1 = asymmetricHull->getPosXRadius();
-      _radius2 = asymmetricHull->getPosYRadius();
-      _zIter = asymmetricHull->getPosXHeight();
-      _deltaZ = asymmetricHull->getPosYHeight() - _zIter;
-      _zStep = _deltaZ / _slices;
-      break;
-    case 1:
-      _radius1 = asymmetricHull->getNegXRadius();
-      _radius2 = asymmetricHull->getPosYRadius();
-      _zIter = asymmetricHull->getPosYHeight();
-      _deltaZ = asymmetricHull->getNegXHeight() - _zIter;
-      _zStep = _deltaZ / _slices;
-      break;
-    case 2:
-      _radius1 = asymmetricHull->getNegXRadius();
-      _radius2 = asymmetricHull->getNegYRadius();
-      _zIter = asymmetricHull->getNegXHeight();
-      _deltaZ = asymmetricHull->getNegYHeight() - _zIter;
-      _zStep = _deltaZ / _slices;
-      break;
-    default:
-      _radius1 = asymmetricHull->getPosXRadius();
-      _radius2 = asymmetricHull->getNegYRadius();
-      _zIter = asymmetricHull->getNegYHeight();
-      _deltaZ = asymmetricHull->getPosXHeight() - _zIter;
-      _zStep = _deltaZ / _slices;
-    };
-
-    for (uint32_t _i = 0; _i < _slices; _i++) {
-
-      // Computes the peripheral point
-      real_t _cosAz = cos(_azIter);
-      real_t _sinAz = sin(_azIter);
-      Vector3 _Pi(_cosAz * _radius1,_sinAz * _radius2,_zIter);
-
-      // Constructs the Lower part
-
-      Vector3::Cylindrical _PiBot(_botPoint - _Pi);
-      real_t _rStepBot = _PiBot.radius / _stacks;
-      real_t _rIterBot = 0;
-
-      for (uint32_t _j = 0; _j < _stacks - 1; _j++) {
-        _rIterBot += _rStepBot;
-
-        Vector3::Cylindrical _PijBot(_rIterBot,
-                                     _PiBot.theta,
-                                     _PiBot.z * pow(_rIterBot / _PiBot.radius,
-                                                    _shapeBot));
-
-        Vector3 _Pij(_botPoint - Vector3(_PijBot));
-
-        pointSet[_slices*_q+_i]->setAt(_j+1,_Pij);
-
-      };
-
-      // Adds the peripheral point
-      pointSet[_slices*_q+_i]->setAt(_stacks-1,_Pi);
-      pointSet[_totalSlices]->setAt(_slices*_q+_i,_Pi);
-
-      // Constructs the upper part
-      Vector3::Cylindrical _PiTop(_topPoint - _Pi);
-      real_t _rStepTop = _PiTop.radius / _stacks;
-      real_t _rIterTop = _PiTop.radius;
-
-      for (uint32_t _j2 = 0; _j2 < _stacks - 1; _j2++) {
-        _rIterTop -= _rStepTop;
-
-        Vector3::Cylindrical _PijTop(_rIterTop,
-                                     _PiTop.theta,
-                                     _PiTop.z * pow(_rIterTop / _PiTop.radius,
-                                                    _shapeTop));
-        Vector3 _Pij(_topPoint - Vector3(_PijTop));
-
-        pointSet[_slices*_q+_i]->setAt(_stacks+_j2,_Pij);
-
-      };
-      _azIter += _azStep;
-      _zIter += _zStep;
-    };
-
-  };
-
-  pointSet[_totalSlices]->setAt(_totalSlices,pointSet[_totalSlices]->getAt(0));
-
-  ScenePtr scene(new Scene());
-  AppearancePtr mat(new Material(Color3::BLACK));
-  { 
-	for(uint32_t i = 0 ; i < _totalSlices + 1; i++){
-	  scene->add(Shape(new Polyline(pointSet[i]),mat));
-	}
-  }
-  delete [] pointSet;
-
-  ofstream fgeom(filename.latin1());
-  Printer _printer(fgeom,fgeom,fgeom);
-  _printer.header(fgeom,filename,"File Generated with Geom 3D Viewer");
-  return scene->apply(_printer);*/
-	return false;
-}

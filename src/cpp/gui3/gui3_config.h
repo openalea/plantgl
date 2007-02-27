@@ -43,62 +43,62 @@
 /* ----------------------------------------------------------------------- */
 
 
-/*! \def VIEW_NODLL
+/*! \def VIEW3_NODLL
     \brief Not creating dll
 
     Uncomment to use this functionnality
         Do nothing on other platform than windows
 */
-/*! \def VIEW_DLL
+/*! \def VIEW3_DLL
     \brief Using lib SceneGraph as a dll
 
     Uncomment to use this functionnality
         Do nothing on other platform than windows
 */
-/*! \def VIEW_MAKEDLL
+/*! \def VIEW3_MAKEDLL
     \brief Creating SceneGraph dll
 
     Uncomment to use this functionnality
         Do nothing on other platform than windows
 */
 #if defined(_WIN32)
-#if defined(VIEW_NODLL)
-#undef VIEW_MAKEDLL
-#undef VIEW_DLL
+#if defined(VIEW3_NODLL)
+#undef VIEW3_MAKEDLL
+#undef VIEW3_DLL
 #else
-#ifndef VIEW_DLL
-#define VIEW_DLL
+#ifndef VIEW3_DLL
+#define VIEW3_DLL
 #endif
 #endif
 
-#if defined(VIEW_MAKEDLL)
-#ifndef VIEW_DLL
-#define VIEW_DLL
+#if defined(VIEW3_MAKEDLL)
+#ifndef VIEW3_DLL
+#define VIEW3_DLL
 #endif
 #endif
 
-#ifdef VIEW_DLL
+#ifdef VIEW3_DLL
 
-#ifdef VIEW_MAKEDLL             /* create a Geom DLL library */
-#define VIEW_API  __declspec(dllexport)
-#undef VIEW_FWDEF
+#ifdef VIEW3_MAKEDLL             /* create a Geom DLL library */
+#define VIEW3_API  __declspec(dllexport)
+#undef VIEW3_FWDEF
 #else                                                   /* use a Geom DLL library */
-#define VIEW_API  __declspec(dllimport)
+#define VIEW3_API  __declspec(dllimport)
 #endif
 
-#define VIEW_TEMPLATE_API(T) template class VIEW_API T;
+#define VIEW3_TEMPLATE_API(T) template class VIEW3_API T;
 #endif
 
 #else // OS != _WIN32
 
-#undef VIEW_MAKEDLL             /* ignore these for other platforms */
-#undef VIEW_DLL
+#undef VIEW3_MAKEDLL             /* ignore these for other platforms */
+#undef VIEW3_DLL
 
 #endif
 
-#ifndef VIEW_API
-#define VIEW_API
-#define VIEW_TEMPLATE_API(T) 
+#ifndef VIEW3_API
+#define VIEW3_API
+#define VIEW3_TEMPLATE_API(T) 
 #endif
 
 

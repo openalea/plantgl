@@ -48,14 +48,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewGridMenu::ViewGridMenu(ViewGridGL * grid, QWidget * parent, const char * name) :
+ViewGridMenu3::ViewGridMenu3(ViewGridGL3 * grid, QWidget * parent, const char * name) :
   QPopupMenu(parent,name)
 {
   if(grid){
-    QPixmap _gridXY(ViewerIcon::getPixmap(ViewerIcon::icon_gridXY));
-    QPixmap _gridXZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridXZ));
-    QPixmap _gridYZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridYZ));
-    QPixmap _axis(ViewerIcon::getPixmap(ViewerIcon::icon_axis));
+    QPixmap _gridXY(ViewerIcon3::getPixmap(ViewerIcon3::icon_gridXY));
+    QPixmap _gridXZ(ViewerIcon3::getPixmap(ViewerIcon3::icon_gridXZ));
+    QPixmap _gridYZ(ViewerIcon3::getPixmap(ViewerIcon3::icon_gridYZ));
+    QPixmap _axis(ViewerIcon3::getPixmap(ViewerIcon3::icon_axis));
     idXYGrid = insertItem(_gridXY,tr("XY Plane"),grid,SLOT(changeXYGridDisplayMode()));
     idXZGrid = insertItem(_gridXZ,tr("XZ Plane"),grid,SLOT(changeXZGridDisplayMode()));
     idYZGrid = insertItem(_gridYZ,tr("YZ Plane"),grid,SLOT(changeYZGridDisplayMode()));
@@ -73,40 +73,40 @@ ViewGridMenu::ViewGridMenu(ViewGridGL * grid, QWidget * parent, const char * nam
   }
 }
 
-ViewGridMenu::~ViewGridMenu()
+ViewGridMenu3::~ViewGridMenu3()
 {
 }
 
 void
-ViewGridMenu::setXYGrid(bool b)
+ViewGridMenu3::setXYGrid(bool b)
 {
   setItemChecked(idXYGrid,b);
 }
 
 void
-ViewGridMenu::setXZGrid(bool b)
+ViewGridMenu3::setXZGrid(bool b)
 {
   setItemChecked(idXZGrid,b);
 }
 
 void
-ViewGridMenu::setYZGrid(bool b)
+ViewGridMenu3::setYZGrid(bool b)
 {
   setItemChecked(idYZGrid,b);
 }
 
 void
-ViewGridMenu::setAxis(bool b)
+ViewGridMenu3::setAxis(bool b)
 {
   setItemChecked(idAxis,b);
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewGridGL::ViewGridGL(ViewCameraGL *camera,
+ViewGridGL3::ViewGridGL3(ViewCameraGL3 *camera,
 		       QGLWidget * parent, 
 		       const char * name):
-  ViewRelativeObjectGL(camera,parent,name),
+  ViewRelativeObjectGL3(camera,parent,name),
   __gridUnit(1),
   __gridSize(15),
   __gridList(0),
@@ -119,7 +119,7 @@ ViewGridGL::ViewGridGL(ViewCameraGL *camera,
 }
 
 
-ViewGridGL::~ViewGridGL()
+ViewGridGL3::~ViewGridGL3()
 {
   if (__gridList) glDeleteLists(__gridList,1);
   if (__axisList) glDeleteLists(__axisList,1); 
@@ -127,12 +127,12 @@ ViewGridGL::~ViewGridGL()
 
 
 int
-ViewGridGL::getState() const{
+ViewGridGL3::getState() const{
 	return (__Axis) + (__XYGrid? 1 << 1: 0) + (__XZGrid? 1 << 2: 0) + (__YZGrid? 1 << 3: 0);
 }
 
 void
-ViewGridGL::setState(int s) {
+ViewGridGL3::setState(int s) {
 	__Axis = s & 1;
 	__XYGrid = s & (1 << 1);
 	__XZGrid = s & (1 << 2);
@@ -141,7 +141,7 @@ ViewGridGL::setState(int s) {
 
 
 void 
-ViewGridGL::changeAxisDisplayMode()
+ViewGridGL3::changeAxisDisplayMode()
 {
   __Axis = ! __Axis;
   emit AxisDisplayChanged(__Axis);
@@ -149,7 +149,7 @@ ViewGridGL::changeAxisDisplayMode()
 }
 
 void 
-ViewGridGL::showAxis(bool b)
+ViewGridGL3::showAxis(bool b)
 {
   __Axis = b;
   emit AxisDisplayChanged(__Axis);
@@ -157,7 +157,7 @@ ViewGridGL::showAxis(bool b)
 }
 
 void 
-ViewGridGL::changeXYGridDisplayMode()
+ViewGridGL3::changeXYGridDisplayMode()
 {
   __XYGrid = ! __XYGrid;
   emit XYGridDisplayChanged(__XYGrid);
@@ -165,7 +165,7 @@ ViewGridGL::changeXYGridDisplayMode()
 }
 
 void 
-ViewGridGL::showXYGrid(bool b)
+ViewGridGL3::showXYGrid(bool b)
 {
    __XYGrid = b;
   emit XYGridDisplayChanged(__XYGrid);
@@ -173,7 +173,7 @@ ViewGridGL::showXYGrid(bool b)
 }
 
 void 
-ViewGridGL::changeXZGridDisplayMode()
+ViewGridGL3::changeXZGridDisplayMode()
 {
   __XZGrid = ! __XZGrid;
   emit XZGridDisplayChanged(__XZGrid);
@@ -181,7 +181,7 @@ ViewGridGL::changeXZGridDisplayMode()
 }
 
 void 
-ViewGridGL::showXZGrid(bool b)
+ViewGridGL3::showXZGrid(bool b)
 {
    __XZGrid = b;
   emit XZGridDisplayChanged(__XZGrid);
@@ -189,7 +189,7 @@ ViewGridGL::showXZGrid(bool b)
 }
 
 void 
-ViewGridGL::changeYZGridDisplayMode()
+ViewGridGL3::changeYZGridDisplayMode()
 {
   __YZGrid = ! __YZGrid;
   emit YZGridDisplayChanged(__YZGrid);
@@ -197,7 +197,7 @@ ViewGridGL::changeYZGridDisplayMode()
 }
 
 void 
-ViewGridGL::showYZGrid(bool b)
+ViewGridGL3::showYZGrid(bool b)
 {
    __YZGrid = b;
   emit YZGridDisplayChanged(__YZGrid);
@@ -205,7 +205,7 @@ ViewGridGL::showYZGrid(bool b)
 }
 
 void 
-ViewGridGL::setGridUnit(int unit)
+ViewGridGL3::setGridUnit(int unit)
 {
   if(__gridUnit != unit){
 	__gridUnit = unit;
@@ -215,13 +215,13 @@ ViewGridGL::setGridUnit(int unit)
 }
 
 void 
-ViewGridGL::setGridUnit(const QString& unit)
+ViewGridGL3::setGridUnit(const QString& unit)
 {
   __gridUnit = unit.toInt();
 }
 
 void 
-ViewGridGL::setGridSize(int size)
+ViewGridGL3::setGridSize(int size)
 {
   if(__gridSize != size){
 	__gridSize = size;
@@ -233,7 +233,7 @@ ViewGridGL::setGridSize(int size)
 }
 
 void 
-ViewGridGL::setGridSize(const QString& size)
+ViewGridGL3::setGridSize(const QString& size)
 {
   __gridSize = size.toInt();
   if (__gridList) {
@@ -241,7 +241,7 @@ ViewGridGL::setGridSize(const QString& size)
 }
 
 void 
-ViewGridGL::initializeGL()
+ViewGridGL3::initializeGL()
 {
   int k;
   int min,max;
@@ -365,7 +365,7 @@ ViewGridGL::initializeGL()
 }
 
 void 
-ViewGridGL::paintGL()
+ViewGridGL3::paintGL()
 {
 
   glPushAttrib(GL_CURRENT_BIT);
@@ -435,7 +435,7 @@ ViewGridGL::paintGL()
 }
 
 void 
-ViewGridGL::changeStepEvent(const int newStep, const int oldStep)
+ViewGridGL3::changeStepEvent(const int newStep, const int oldStep)
 {
   __gridUnit = int(float(newStep*__gridUnit)/float(oldStep));
   if(__gridUnit == 0)__gridUnit = 1;
@@ -443,18 +443,18 @@ ViewGridGL::changeStepEvent(const int newStep, const int oldStep)
 }
 
 QPopupMenu *
-ViewGridGL::createToolsMenu(QWidget * parent)
+ViewGridGL3::createToolsMenu(QWidget * parent)
 {
-  ViewGridMenu * __GridMenu = new ViewGridMenu(this,parent);  
+  ViewGridMenu3 * __GridMenu = new ViewGridMenu3(this,parent);  
   return __GridMenu;
 }
 
-void ViewGridGL::fillToolBar(QToolBar * toolBar)
+void ViewGridGL3::fillToolBar(QToolBar * toolBar)
 {
-    QPixmap _gridXY(ViewerIcon::getPixmap(ViewerIcon::icon_gridXY));
-    QPixmap _gridXZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridXZ));
-    QPixmap _gridYZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridYZ));
-    QPixmap _axis(ViewerIcon::getPixmap(ViewerIcon::icon_axis));
+    QPixmap _gridXY(ViewerIcon3::getPixmap(ViewerIcon3::icon_gridXY));
+    QPixmap _gridXZ(ViewerIcon3::getPixmap(ViewerIcon3::icon_gridXZ));
+    QPixmap _gridYZ(ViewerIcon3::getPixmap(ViewerIcon3::icon_gridYZ));
+    QPixmap _axis(ViewerIcon3::getPixmap(ViewerIcon3::icon_axis));
     QToolButton * b = new QToolButton(_axis,tr("Axis"),tr("Axis"),
                          this, SLOT(changeAxisDisplayMode()), toolBar);
 	QWhatsThis::add(b,tr("<b>Axis Visibility</b><br><br>"
@@ -501,7 +501,7 @@ void ViewGridGL::fillToolBar(QToolBar * toolBar)
 
 
 void 
-ViewGridGL::geomCoordSys()
+ViewGridGL3::geomCoordSys()
 {
   bool a = __XYGrid;
   bool b = __XZGrid;
@@ -521,7 +521,7 @@ ViewGridGL::geomCoordSys()
 }
 
 void 
-ViewGridGL::glCoordSys()
+ViewGridGL3::glCoordSys()
 {
   bool a = __XYGrid;
   bool b = __XZGrid;
@@ -540,7 +540,7 @@ ViewGridGL::glCoordSys()
   }
 }
 
-void ViewGridGL::gridEvent(ViewGridEvent * e){
+void ViewGridGL3::gridEvent(ViewGridEvent3 * e){
   bool c = false;
   if((e->def & 1) && (__XYGrid != e->xy)){
 	__XYGrid = e->xy;

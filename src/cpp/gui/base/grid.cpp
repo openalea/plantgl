@@ -48,61 +48,6 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewGridMenu::ViewGridMenu(ViewGridGL * grid, QWidget * parent, const char * name) :
-  QPopupMenu(parent,name)
-{
-  if(grid){
-    QPixmap _gridXY(ViewerIcon::getPixmap(ViewerIcon::icon_gridXY));
-    QPixmap _gridXZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridXZ));
-    QPixmap _gridYZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridYZ));
-    QPixmap _axis(ViewerIcon::getPixmap(ViewerIcon::icon_axis));
-    idXYGrid = insertItem(_gridXY,tr("XY Plane"),grid,SLOT(changeXYGridDisplayMode()));
-    idXZGrid = insertItem(_gridXZ,tr("XZ Plane"),grid,SLOT(changeXZGridDisplayMode()));
-    idYZGrid = insertItem(_gridYZ,tr("YZ Plane"),grid,SLOT(changeYZGridDisplayMode()));
-    insertSeparator();
-    idAxis = insertItem(_axis,tr("Axis"),grid,SLOT(changeAxisDisplayMode()));
-    setCheckable( TRUE );
-    setItemChecked(idXYGrid,grid->getXYGrid());
-    setItemChecked(idYZGrid,grid->getYZGrid());
-    setItemChecked(idXZGrid,grid->getXZGrid());
-    setItemChecked(idAxis,grid->getAxis());
-    QObject::connect(grid,SIGNAL(AxisDisplayChanged(bool)),this,SLOT(setAxis(bool)));
-    QObject::connect(grid,SIGNAL(XYGridDisplayChanged(bool)),this,SLOT(setXYGrid(bool)));
-    QObject::connect(grid,SIGNAL(XZGridDisplayChanged(bool)),this,SLOT(setXZGrid(bool)));
-    QObject::connect(grid,SIGNAL(YZGridDisplayChanged(bool)),this,SLOT(setYZGrid(bool)));
-  }
-}
-
-ViewGridMenu::~ViewGridMenu()
-{
-}
-
-void
-ViewGridMenu::setXYGrid(bool b)
-{
-  setItemChecked(idXYGrid,b);
-}
-
-void
-ViewGridMenu::setXZGrid(bool b)
-{
-  setItemChecked(idXZGrid,b);
-}
-
-void
-ViewGridMenu::setYZGrid(bool b)
-{
-  setItemChecked(idYZGrid,b);
-}
-
-void
-ViewGridMenu::setAxis(bool b)
-{
-  setItemChecked(idAxis,b);
-}
-
-/* ----------------------------------------------------------------------- */
-
 ViewGridGL::ViewGridGL(ViewCameraGL *camera,
 		       QGLWidget * parent, 
 		       const char * name):
@@ -205,7 +150,7 @@ ViewGridGL::showYZGrid(bool b)
 }
 
 void 
-ViewGridGL::setGridUnit(int unit)
+ViewGridGL::setGridUnit(double unit)
 {
   if(__gridUnit != unit){
 	__gridUnit = unit;
@@ -217,7 +162,7 @@ ViewGridGL::setGridUnit(int unit)
 void 
 ViewGridGL::setGridUnit(const QString& unit)
 {
-  __gridUnit = unit.toInt();
+  __gridUnit = unit.toDouble();
 }
 
 void 
@@ -435,66 +380,85 @@ ViewGridGL::paintGL()
 }
 
 void 
-ViewGridGL::changeStepEvent(const int newStep, const int oldStep)
+ViewGridGL::changeStepEvent(double newStep, double oldStep)
 {
   __gridUnit = int(float(newStep*__gridUnit)/float(oldStep));
   if(__gridUnit == 0)__gridUnit = 1;
   emit GridUnitChanged(__gridUnit);
 }
 
-QPopupMenu *
+QMenu *
 ViewGridGL::createToolsMenu(QWidget * parent)
 {
-  ViewGridMenu * __GridMenu = new ViewGridMenu(this,parent);  
-  return __GridMenu;
+	QMenu * menu = new QMenu(parent);
+
+    QPixmap _gridXY(ViewerIcon::getPixmap(ViewerIcon::gridXY));
+    QPixmap _gridXZ(ViewerIcon::getPixmap(ViewerIcon::gridXZ));
+    QPixmap _gridYZ(ViewerIcon::getPixmap(ViewerIcon::gridYZ));
+    QPixmap _axis(ViewerIcon::getPixmap(ViewerIcon::axis));
+
+    QAction * idXYGrid = menu->addAction(_gridXY,tr("XY Plane"),this,SLOT(changeXYGridDisplayMode()));
+    QAction * idXZGrid = menu->addAction(_gridXZ,tr("XZ Plane"),this,SLOT(changeXZGridDisplayMode()));
+    QAction * idYZGrid = menu->addAction(_gridYZ,tr("YZ Plane"),this,SLOT(changeYZGridDisplayMode()));
+    menu->addSeparator();
+    QAction * idAxis = menu->addAction(_axis,tr("Axis"),this,SLOT(changeAxisDisplayMode()));
+
+	idXYGrid->setCheckable( TRUE );
+    idXZGrid->setCheckable( TRUE );
+    idYZGrid->setCheckable( TRUE );
+    idAxis->setCheckable( TRUE );
+
+	idXYGrid->setChecked( this->getXYGrid() );
+    idXZGrid->setChecked( this->getYZGrid() );
+    idYZGrid->setChecked( this->getXZGrid() );
+    idAxis->setChecked( this->getAxis() );
+
+    QObject::connect(this,SIGNAL(AxisDisplayChanged(bool)),idAxis,SLOT(setChecked(bool)));
+    QObject::connect(this,SIGNAL(XYGridDisplayChanged(bool)),idXYGrid,SLOT(setChecked(bool)));
+    QObject::connect(this,SIGNAL(XZGridDisplayChanged(bool)),idXZGrid,SLOT(setChecked(bool)));
+    QObject::connect(this,SIGNAL(YZGridDisplayChanged(bool)),idYZGrid,SLOT(setChecked(bool)));
+
+  return menu;
 }
 
 void ViewGridGL::fillToolBar(QToolBar * toolBar)
 {
-    QPixmap _gridXY(ViewerIcon::getPixmap(ViewerIcon::icon_gridXY));
-    QPixmap _gridXZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridXZ));
-    QPixmap _gridYZ(ViewerIcon::getPixmap(ViewerIcon::icon_gridYZ));
-    QPixmap _axis(ViewerIcon::getPixmap(ViewerIcon::icon_axis));
-    QToolButton * b = new QToolButton(_axis,tr("Axis"),tr("Axis"),
-                         this, SLOT(changeAxisDisplayMode()), toolBar);
-	QWhatsThis::add(b,tr("<b>Axis Visibility</b><br><br>"
+    QPixmap _gridXY(ViewerIcon::getPixmap(ViewerIcon::gridXY));
+    QPixmap _gridXZ(ViewerIcon::getPixmap(ViewerIcon::gridXZ));
+    QPixmap _gridYZ(ViewerIcon::getPixmap(ViewerIcon::gridYZ));
+    QPixmap _axis(ViewerIcon::getPixmap(ViewerIcon::axis));
+	QAction * b = toolBar->addAction(_axis,tr("Axis"),this, SLOT(changeAxisDisplayMode()));
+	b->setWhatsThis(tr("<b>Axis Visibility</b><br><br>"
 	"Change the visibility of the Axis.<br><br>"
 	"You can also use Menu <br><b>Tools > Grid > Axis</b><br>"));
-	b->setToggleButton(true) ;
-	b->setOn(__Axis);
-    QObject::connect(this,SIGNAL(AxisDisplayChanged(bool)),
-					 b,SLOT(setOn(bool)));
+	b->setCheckable(true) ;
+	b->setChecked(__Axis);
+    QObject::connect(this,SIGNAL(AxisDisplayChanged(bool)), b,SLOT(setChecked(bool)));
 
 
-    b = new QToolButton(_gridXY,tr("XY Plane"),tr("XY Plane"),
-                         this, SLOT(changeXYGridDisplayMode()), toolBar);
-	QWhatsThis::add(b,tr("<b>XY Plane Visibility</b><br><br>"
+    b = toolBar->addAction(_gridXY,tr("XY Plane"),this, SLOT(changeXYGridDisplayMode()));
+	b->setWhatsThis(tr("<b>XY Plane Visibility</b><br><br>"
 	"Change the visibility of the XY Grid.<br><br>"
 	"You can also use Menu <br><b>Tools > Grid > XY Plane</b><br>"));
-	b->setToggleButton(true) ;
-	b->setOn(__XYGrid);
-    QObject::connect(this,SIGNAL(XYGridDisplayChanged(bool)),
-					 b,SLOT(setOn(bool)));
+	b->setCheckable(true) ;
+	b->setChecked(__XYGrid);
+    QObject::connect(this,SIGNAL(XYGridDisplayChanged(bool)),b,SLOT(setChecked(bool)));
 
-    b = new QToolButton(_gridXZ,tr("XZ Plane"),tr("XZ Plane"),
-                         this, SLOT(changeXZGridDisplayMode()), toolBar);
-	QWhatsThis::add(b,tr("<b>XZ Plane Visibility</b><br><br>"
+    b = toolBar->addAction(_gridXZ,tr("XZ Plane"),this, SLOT(changeXZGridDisplayMode()));
+	b->setWhatsThis(tr("<b>XZ Plane Visibility</b><br><br>"
 	"Change the visibility of the XZ Grid.<br><br>"
 	"You can also use Menu <br><b>Tools > Grid > XZ Plane</b><br>"));
-	b->setToggleButton(true) ;
-	b->setOn(__XZGrid);
-    QObject::connect(this,SIGNAL(XZGridDisplayChanged(bool)),
-					 b,SLOT(setOn(bool)));
+	b->setCheckable(true) ;
+	b->setChecked(__XZGrid);
+    QObject::connect(this,SIGNAL(XZGridDisplayChanged(bool)),b,SLOT(setChecked(bool)));
 
-    b = new QToolButton(_gridYZ,tr("YZ Plane"),tr("YZ Plane"),
-                         this, SLOT(changeYZGridDisplayMode()), toolBar);
-	QWhatsThis::add(b,tr("<b>YZ Plane Visibility</b><br><br>"
+    b = toolBar->addAction(_gridYZ,tr("YZ Plane"),this, SLOT(changeYZGridDisplayMode()));
+	b->setWhatsThis(tr("<b>YZ Plane Visibility</b><br><br>"
 	"Change the visibility of the YZ Grid.<br><br>"
 	"You can also use Menu <br><b>Tools > Grid > YZ Plane</b><br>"));
-	b->setToggleButton(true) ;
-	b->setOn(__YZGrid);
-    QObject::connect(this,SIGNAL(YZGridDisplayChanged(bool)),
-					 b,SLOT(setOn(bool)));
+	b->setCheckable(true) ;
+	b->setChecked(__YZGrid);
+    QObject::connect(this,SIGNAL(YZGridDisplayChanged(bool)),b,SLOT(setChecked(bool)));
 
 	toolBar->addSeparator();
 }

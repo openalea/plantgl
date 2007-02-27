@@ -1,274 +1,219 @@
-<!DOCTYPE UI><UI>
-<class>ViewImporterSelection</class>
-<widget>
-    <class>QDialog</class>
-    <property stdset="1">
-        <name>name</name>
-        <cstring>ViewImporterSelection</cstring>
+<ui version="4.0" >
+ <class>ViewImporterSelection</class>
+ <widget class="QDialog" name="ViewImporterSelection" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>360</width>
+    <height>160</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Importer Selection</string>
+  </property>
+  <widget class="QLabel" name="FileMsg" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>30</y>
+     <width>53</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Arial</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>File :</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="TypeMsg" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>50</y>
+     <width>53</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Arial</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Type :</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="Type" >
+   <property name="geometry" >
+    <rect>
+     <x>140</x>
+     <y>50</y>
+     <width>140</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>GEOM</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ImporterMsg" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>70</y>
+     <width>200</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Arial</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Choose Importer :</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="File" >
+   <property name="geometry" >
+    <rect>
+     <x>140</x>
+     <y>30</y>
+     <width>140</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>file.geom</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="OkButton" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>120</y>
+     <width>126</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Ok</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="CancelButton" >
+   <property name="geometry" >
+    <rect>
+     <x>210</x>
+     <y>120</y>
+     <width>126</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ImporterCombo" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>90</y>
+     <width>200</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <item>
+    <property name="text" >
+     <string>GEOM</string>
     </property>
-    <property>
-        <name>geometry</name>
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>360</width>
-            <height>160</height>
-        </rect>
+   </item>
+   <item>
+    <property name="text" >
+     <string>Amap Symbol</string>
     </property>
-    <property>
-        <name>caption</name>
-        <string>Importer Selection</string>
+   </item>
+   <item>
+    <property name="text" >
+     <string>Linetree</string>
     </property>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>FileMsg</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>80</x>
-                <y>30</y>
-                <width>53</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-                <bold>1</bold>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>File :</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TypeMsg</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>80</x>
-                <y>50</y>
-                <width>53</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-                <bold>1</bold>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>Type :</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>Type</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>140</x>
-                <y>50</y>
-                <width>140</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>GEOM</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>ImporterMsg</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>80</x>
-                <y>70</y>
-                <width>200</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-                <bold>1</bold>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>Choose Importer :</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>File</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>140</x>
-                <y>30</y>
-                <width>140</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>file.geom</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>OkButton</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>80</x>
-                <y>120</y>
-                <width>126</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>&amp;Ok</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>CancelButton</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>210</x>
-                <y>120</y>
-                <width>126</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>&amp;Cancel</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QComboBox</class>
-        <item>
-            <property>
-                <name>text</name>
-                <string>GEOM</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>Amap Symbol</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>Linetree</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>VegeStar</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>VegeStar Symbol</string>
-            </property>
-        </item>
-        <item>
-            <property>
-                <name>text</name>
-                <string>GeomView</string>
-            </property>
-        </item>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>ImporterCombo</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>80</x>
-                <y>90</y>
-                <width>200</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-            </font>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>GeneralMsg</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>80</x>
-                <y>10</y>
-                <width>220</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-                <bold>1</bold>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>File Format not recognized !</string>
-        </property>
-    </widget>
-</widget>
-</UI>
+   </item>
+   <item>
+    <property name="text" >
+     <string>VegeStar</string>
+    </property>
+   </item>
+   <item>
+    <property name="text" >
+     <string>VegeStar Symbol</string>
+    </property>
+   </item>
+   <item>
+    <property name="text" >
+     <string>GeomView</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="GeneralMsg" >
+   <property name="geometry" >
+    <rect>
+     <x>80</x>
+     <y>10</y>
+     <width>220</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Arial</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text" >
+    <string>File Format not recognized !</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <resources/>
+ <connections/>
+</ui>

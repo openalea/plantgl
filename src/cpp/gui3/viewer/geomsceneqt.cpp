@@ -82,7 +82,7 @@ using namespace STDEXT;
 /* ----------------------------------------------------------------------- */
 
 real_t
-ViewGeomSceneGL::getSceneSurface()
+ViewGeomSceneGL3::getSceneSurface()
 {
   if(!__scene)return 0;
   SurfComputer _sfc(__discretizer);
@@ -92,7 +92,7 @@ ViewGeomSceneGL::getSceneSurface()
   return surface;
 }
 
-real_t ViewGeomSceneGL::getSceneVolume()
+real_t ViewGeomSceneGL3::getSceneVolume()
 {
   if(!__scene)return 0;
   VolComputer _vfc(__discretizer);
@@ -103,7 +103,7 @@ real_t ViewGeomSceneGL::getSceneVolume()
 }
 
 real_t
-ViewGeomSceneGL::getSelectionSurface()
+ViewGeomSceneGL3::getSelectionSurface()
 {
   if(!__scene)return 0;
   SurfComputer _sfc(__discretizer);
@@ -115,7 +115,7 @@ ViewGeomSceneGL::getSelectionSurface()
   return surface;
 }
 
-real_t ViewGeomSceneGL::getSelectionVolume()
+real_t ViewGeomSceneGL3::getSelectionVolume()
 {
   if(!__scene)return 0;
   VolComputer _vfc(__discretizer);
@@ -131,7 +131,7 @@ real_t ViewGeomSceneGL::getSelectionVolume()
 
 
 bool
-ViewGeomSceneGL::addEditEntries(QPopupMenu * menu)
+ViewGeomSceneGL3::addEditEntries(QPopupMenu * menu)
 {
   menu->insertItem( tr("Remove Selection"),
                     this,SLOT(removeSelection()),Key_Delete);
@@ -147,12 +147,12 @@ ViewGeomSceneGL::addEditEntries(QPopupMenu * menu)
   sub->insertItem( tr("Triangulation"),
                     this,SLOT(triangulateSelection()));
   menu->insertSeparator();
-  ViewModalRendererGL::addEditEntries(menu);
+  ViewModalRendererGL3::addEditEntries(menu);
   return true;
 }
 
 bool
-ViewGeomSceneGL::addProperties(QTabWidget * tab)
+ViewGeomSceneGL3::addProperties(QTabWidget * tab)
 {
   QWidget * tab2 = new QWidget( tab, "Scene Prop" );
   if(__scene.isValid() && !__scene->isEmpty()){
@@ -452,24 +452,24 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 }
 
 bool
-ViewGeomSceneGL::browse(QListView * l,bool b)
+ViewGeomSceneGL3::browse(QListView * l,bool b)
 {
   if(!__scene)return false;
-  GeomListViewBuilder builder(l);
+  GeomListViewBuilder3 builder(l);
   builder.setFullMode(b);
   __scene->apply(builder);
   return true;
 }
 
 QPopupMenu *
-ViewGeomSceneGL::createToolsMenu(QWidget * parent)
+ViewGeomSceneGL3::createToolsMenu(QWidget * parent)
 {
-  QPopupMenu * menu = ViewModalRendererGL::createToolsMenu(parent);
+  QPopupMenu * menu = ViewModalRendererGL3::createToolsMenu(parent);
   menu->insertSeparator();
   QPopupMenu * __displayMenu = new QPopupMenu(menu);
   __displayMenu->setCheckable(true);
   int id = __displayMenu->insertItem(tr("Enable"),    this,SLOT(changeDisplayListUse()));
-  ViewPopupButton * b = new ViewPopupButton(__displayMenu,id);
+  ViewPopupButton3 * b = new ViewPopupButton3(__displayMenu,id);
   QObject::connect(this,SIGNAL(displayList(bool)),b,SLOT(check(bool)));
   b->check(getDisplayListUse());
   __displayMenu->insertSeparator();
@@ -480,7 +480,7 @@ ViewGeomSceneGL::createToolsMenu(QWidget * parent)
 }
 
 void 
-ViewGeomSceneGL::clipboard(){
+ViewGeomSceneGL3::clipboard(){
 	QClipboard * clipboard = QApplication::clipboard();
 	if(clipboard ){
 		QMimeSource* data = clipboard->data();
@@ -504,16 +504,16 @@ ViewGeomSceneGL::clipboard(){
 /* ----------------------------------------------------------------------- */
 
 void
-ViewMultiGeomSceneGL::fillToolBar(QToolBar * toolBar)
+ViewMultiGeomSceneGL3::fillToolBar(QToolBar * toolBar)
 {
-  ViewGeomSceneGL::fillToolBar(toolBar);
+  ViewGeomSceneGL3::fillToolBar(toolBar);
 }
 
   /// Add other toolbar.
 bool
-ViewMultiGeomSceneGL::addOtherToolBar(QMainWindow * menu)
+ViewMultiGeomSceneGL3::addOtherToolBar(QMainWindow * menu)
 {
-  __transitionBar = new ViewToolBar(menu,"Transition Bar");
+  __transitionBar = new ViewToolBar3(menu,"Transition Bar");
   QLabel * Label = new QLabel(__transitionBar, "TransitionLabel" );
   Label->setText( " "+tr( "Transition" ) +" ");
    __transSlider =  new QSlider ( 0 , __transitionRenderer.getTotalStep() ,
@@ -530,18 +530,18 @@ ViewMultiGeomSceneGL::addOtherToolBar(QMainWindow * menu)
 
 
 QPopupMenu *
-ViewMultiGeomSceneGL::createToolsMenu(QWidget * parent)
+ViewMultiGeomSceneGL3::createToolsMenu(QWidget * parent)
 {
-  QPopupMenu * __menu = ViewGeomSceneGL::createToolsMenu(parent);
+  QPopupMenu * __menu = ViewGeomSceneGL3::createToolsMenu(parent);
   __menu->insertSeparator();
   int id = __menu->insertItem(tr("Transition Slider"),this,SLOT(changeSliderVisibility()));
-  ViewPopupButton * bt = new ViewPopupButton(__menu,id,"Transition Slider");
+  ViewPopupButton3 * bt = new ViewPopupButton3(__menu,id,"Transition Slider");
   QObject::connect(this,SIGNAL(sliderVisibilityChanged(bool)),bt,SLOT(check(bool)));
   return __menu;
 }
 
 void
-ViewMultiGeomSceneGL::changeSliderVisibility()
+ViewMultiGeomSceneGL3::changeSliderVisibility()
 {
   if( __transitionBar){
     if( __transitionBar->isVisible()){

@@ -57,7 +57,8 @@
 
 /// Qt
 #include <qslider.h>
-#include <qlistview.h>
+#include <qpainter.h>
+#include <q3listview.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qclipboard.h>
@@ -318,7 +319,7 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
 			  if(!res2){
 				  QString _mess3 = _mess1 + "<b>"+tr("File")+" :</b> " + QString(__FILE__) + "<br>";
 				  _mess3 += "<b>"+tr("Line")+" :</b> " + QString::number(__LINE__) + "<br>";
-				  res = QMessageBox::critical(__frame,tr("GEOM Error"),tr(_mess3),tr("Abort"),tr("Continue"));
+				  res = QMessageBox::critical(__frame,tr("GEOM Error"),_mess3,tr("Abort"),tr("Continue"));
 				  if(res == 0 || res == -1)return -1;
 			  }
 		  }
@@ -557,14 +558,14 @@ ViewGeomSceneGL::selectionEvent(const vector<uint32_t>& id)
 	mess = "shape";
 	if(selected != 1)mess +='s';
 	mess +=" "+tr("selected");
-	mess = QString::number(selected) + " "+ tr(mess);
+	mess = QString::number(selected) + " "+ mess;
   }
   if(selected > 0 && unselected > 0)mess += " "+tr("and")+" ";
   if(unselected > 0){
 	QString mess2 = "shape";
 	if(unselected != 1)mess2 +='s';
 	mess2 +=" unselected";
-	mess += mess + QString::number(unselected)+ " " + tr(mess2);
+	mess += mess + QString::number(unselected)+ " " + mess2;
   }
   mess +='.';
   info("*** Comment : " +mess);
@@ -595,7 +596,7 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint32_t>& id)
 	mess = "shape";
 	if(selected != 1)mess +='s';
 	mess +=" "+tr("selected");
-	mess = QString::number(selected) + " "+ tr(mess);
+	mess = QString::number(selected) + " "+ mess;
   }
   mess +='.';
   info("*** Comment : " +mess);
@@ -605,10 +606,10 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint32_t>& id)
 
 
 void
-ViewGeomSceneGL::selectionEvent(QListViewItem * item)
+ViewGeomSceneGL::selectionEvent(Q3ListViewItem * item)
 {
   if(item && item->text(2) == "Shape"){
-	string name = item->text(0).latin1();
+	string name = item->text(0).toAscii().constData();
 	bool found = false;
     for(Scene::iterator _it = __scene->getBegin();
 	!found && _it != __scene->getEnd(); _it++){
@@ -698,7 +699,7 @@ ViewGeomSceneGL::wireSelection()
 	  }
 	}
 	else {
-	  qWarning(QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Wire Transformation not yet implemented on Inline."));
+	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Wire Transformation not yet implemented on Inline.")).toAscii().constData());
 	}
   }		
 
@@ -727,7 +728,7 @@ ViewGeomSceneGL::discretizeSelection()
 	  }
 	}
 	else {
-	  qWarning(QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Discretize Transformation not yet implemented on Inline."));
+	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Discretize Transformation not yet implemented on Inline.")).toAscii().constData());
 	}
   }		
 
@@ -758,7 +759,7 @@ ViewGeomSceneGL::triangulateSelection()
 	  }
 	}
 	else {
-	  qWarning(QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Triangulation Transformation not yet implemented on Inline."));
+	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Triangulation Transformation not yet implemented on Inline.")).toAscii().constData());
 	}
   }		
 
@@ -857,7 +858,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 /* ----------------------------------------------------------------------- */
 
 void 
-ViewGeomSceneGL::customEvent(QCustomEvent * e) {
+ViewGeomSceneGL::customEvent(QEvent * e) {
 	if(e->type() == 12365){
 		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
 		*(myevent->result) = getProjectionSizes(myevent->objlist);

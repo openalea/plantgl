@@ -38,7 +38,7 @@
 #ifndef __view_threadedappli_h__
 #define __view_threadedappli_h__
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 #ifndef QT_THREAD_SUPPORT
 #ifdef __GNUC__
@@ -54,12 +54,12 @@
 #include <qwaitcondition.h>
 
 // class QApplication;
-class Viewer;
+class Viewer3;
 
-class ViewerThreadedAppli : public ViewerAppli, public QThread {
+class ViewerThreadedAppli3 : public ViewerAppli3, public QThread {
 	public:
-	ViewerThreadedAppli();
-	virtual ~ViewerThreadedAppli();
+	ViewerThreadedAppli3();
+	virtual ~ViewerThreadedAppli3();
 
 	virtual void startSession();
 	virtual bool stopSession() ;
@@ -96,10 +96,10 @@ private :
 	QWaitCondition session;
 
 	/// The application.
-	SerializedObject<QApplication *> __appli;
+	ViewSerializedObject3<QApplication *> __appli;
 
 	/// The viewer.
-	SerializedObject<Viewer *> __viewer;
+	ViewSerializedObject3<Viewer3 *> __viewer;
 
 	QMutex         __continue;
 	QMutex         __running;

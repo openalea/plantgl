@@ -8,7 +8,7 @@
 
 class QPopupMenu;
 
-class TrayIcon : public QObject
+class TrayIcon3 : public QObject
 {
     Q_OBJECT
 
@@ -16,9 +16,9 @@ class TrayIcon : public QObject
     Q_PROPERTY( QPixmap icon READ icon WRITE setIcon )
 
 public:
-    TrayIcon( QObject *parent = 0, const char *name = 0 );
-    TrayIcon( const QPixmap &, const QString &, QPopupMenu *popup = 0, QObject *parent = 0, const char *name = 0 );
-    ~TrayIcon();
+    TrayIcon3( QObject *parent = 0, const char *name = 0 );
+    TrayIcon3( const QPixmap &, const QString &, QPopupMenu *popup = 0, QObject *parent = 0, const char *name = 0 );
+    ~TrayIcon3();
 
     // Set a popup menu to handle RMB
     void		setPopup( QPopupMenu * );
@@ -57,8 +57,8 @@ private:
     QString tip;
 
     // system-dependant part
-    class TrayIconPrivate;
-    TrayIconPrivate *d;
+    class TrayIcon3Private;
+    TrayIcon3Private *d;
     void sysInstall();
     void sysRemove();
     void sysUpdateIcon();

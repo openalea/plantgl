@@ -35,7 +35,7 @@
  */				
 
 /*! \file view_linetree.h
-    \brief Definition of the viewer class ViewReadLinetree.
+    \brief Definition of the viewer class ViewReadLinetree3.
 */
 
 #ifndef __view_linetree_h__
@@ -45,7 +45,7 @@
 
 #include <qvariant.h>
 #include <qdialog.h>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 class QVBoxLayout; 
 class QHBoxLayout; 
@@ -59,7 +59,7 @@ class QCheckBox;
 /* ----------------------------------------------------------------------- */
 
 /// A dialog widget to choose the files of a Linetree.
-class VIEW_API ViewReadLinetree : public QDialog
+class VIEW3_API ViewReadLinetree3 : public QDialog
 { 
     Q_OBJECT
 	Q_PROPERTY(QString LigFile READ getLigFile WRITE setLigFile );
@@ -68,8 +68,8 @@ class VIEW_API ViewReadLinetree : public QDialog
 	Q_PROPERTY(bool bigEndian  READ bigEndian  WRITE setEndianess );
 
 public:
-    ViewReadLinetree( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = TRUE, WFlags fl = 0 );
-    ~ViewReadLinetree();
+    ViewReadLinetree3( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = TRUE, WFlags fl = 0 );
+    ~ViewReadLinetree3();
 
     /// Get the Lig File
     QString getLigFile() const ;

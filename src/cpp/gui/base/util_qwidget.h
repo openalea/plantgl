@@ -48,7 +48,7 @@
 #include <qstatusbar.h>
 #include "../gui_config.h"
 class QToolButton;
-class QPopupMenu;
+class QMenu;
 class QProgressBar;
 
 
@@ -68,26 +68,11 @@ class VIEW_API ViewToolBar : public QToolBar {
   public :
     
   /// Constructor
-  ViewToolBar( const QString & label, 
-		QMainWindow * mw, 
-#if QT_VERSION >= 300
-		ToolBarDock = DockTop,
-#else
-		QMainWindow::ToolBarDock tbd = QMainWindow::Top,
-#endif
-		bool newLine = FALSE, 
-		const char * name = 0 );
+  ViewToolBar( const QString & title, 
+			   QWidget * mw, 
+			   const char* name = NULL );
   
-  /// Constructor
-  ViewToolBar ( const QString & label, 
-		QMainWindow *mw, 
-		QWidget * w, 
-		bool newLine = FALSE, 
-		const char * name = 0, 
-		WFlags f = 0 );
-  
-  /// Constructor
-  ViewToolBar ( QMainWindow * parent = 0, const char * name = 0 );
+
   virtual ~ViewToolBar();
 
  signals: 
@@ -113,35 +98,10 @@ class VIEW_API ViewToolBar : public QToolBar {
 /**   
    \class ViewExclusiveButtonSet
    \brief A Set of Exclusive QToolButton.
+
+   ViewExclusiveButtonSet --> See QActionGroup
+
 */
-class VIEW_API ViewExclusiveButtonSet :  public QObject {
-  Q_OBJECT
-
-public :
-
-  /// Constructor.
-  ViewExclusiveButtonSet(unsigned int size,
-		      QToolBar * toolbar,
-		      const char * name=0);
-
-  /// Destructor.
-  ~ViewExclusiveButtonSet();
-  
-  /// Add a ToolButton.
-  void add(QToolButton *);
-  
-public slots:
-
-  /// Selection Button i
-  void setSelection(const int i);
-  
-protected:
-  
-  QToolButton ** __buttonSet;
-  unsigned int __i;
-  unsigned int __size;
-
-};
 
 /* ----------------------------------------------------------------------- */
 
@@ -158,7 +118,7 @@ public:
   ViewDialog( QWidget * parent=0, 
 	      const char * name=0, 
 	      bool modal=FALSE, 
-	      WFlags f=0 );
+	      Qt::WindowFlags f=0 );
   
   /// Destructor.
   ~ViewDialog();
@@ -192,7 +152,7 @@ public:
   ViewMainDialog( QWidget * parent=0,			  
 				  const char * name=0, 
 				  bool modal=FALSE, 
-				  WFlags f=0 );
+				  Qt::WindowFlags f=0 );
   
   /// Destructor.
   ~ViewMainDialog();
@@ -210,30 +170,8 @@ protected :
 /**   
    \class ViewPopupButton
    \brief A PopupButton that can be checked using slots check.
+   ViewPopupButton --> See QAction
 */
-class VIEW_API ViewPopupButton : public QObject {
-  Q_OBJECT
-
-public :
-
-  /// Constructor
-  ViewPopupButton(QPopupMenu * parent, int id, char * name = NULL);
-
-  /// Destructor
-  ~ViewPopupButton();
-
- public slots:
-
- /// (un)check the button
- void check(bool);
-
-protected :
-  
-  int __id;
-
-  QPopupMenu * __menu;
-
-};
 
 /* ----------------------------------------------------------------------- */
 
@@ -254,7 +192,11 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-VIEW_API void drawArrow(const QPixmap *,int s=1);
+PGL_BEGIN_NAMESPACE
+
+VIEW_API void drawArrow(QPixmap *,int s=1);
+
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif

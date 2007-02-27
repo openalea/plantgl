@@ -872,7 +872,7 @@ SceneObjList :
       if ((*$2)->isNamed()) {
 #ifdef PGL_DEBUG
         parser(p); \
-        Printer printer(postream(p),postream(p));
+        Printer printer(postream(p));
         (*$2)->apply(printer);
         postream(p) << std::endl;
 #endif
@@ -919,7 +919,7 @@ SceneObjects :
       if ((*$2)->isNamed()) {
 #ifdef PGL_DEBUG
         parser(p);
-        Printer printer(postream(p),postream(p));
+        Printer printer(postream(p));
         (*$2)->apply(printer);
         postream(p) << std::endl;
 #endif

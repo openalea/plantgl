@@ -40,67 +40,73 @@
 /* ----------------------------------------------------------------------- */
 
 #include "daemon.h"
+#include <qhostaddress.h>
 #include <qtextstream.h>
-#include <qurloperator.h>
-#include <qnetwork.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qapplication.h>
-#include <qtextview.h>
-#include <qsocket.h>
+// #include <qtextview.h>
+#include <qtcpsocket.h>
 #include <qfileinfo.h>
 #include <qregexp.h>
 #include <qtimer.h>
+#include <qurl.h>
+
 
 /* ----------------------------------------------------------------------- */
 
+
 ViewerDaemon::ViewerDaemon( QObject* parent ) :
-QServerSocket(7777,1,parent)
+QTcpServer(parent),
+currentSocket(NULL)
 {
-  if ( !ok() ) {
-	qWarning("Failed to bind to port 7777");
-  }
+	QObject::connect(this,SIGNAL(newConnection()),this,SLOT(processNextConnection()));
+	listen(QHostAddress::LocalHost,7777);
+	setMaxPendingConnections(1);
+	if ( !isListening() ) {
+		qWarning("Failed to bind to port 7777");
+	}
 }
 
 void 
-ViewerDaemon::newConnection( int socket )
+ViewerDaemon::processNextConnection( )
 {
   // When a new client connects, the server constructs a QSocket and all
   // communication with the client is done over this QSocket. QSocket
   // works asynchronouslyl, this means that all the communication is done
   // in the two slots readClient() and discardClient().
-  QSocket* s = new QSocket( this );
-  connect( s, SIGNAL(readyRead()), this, SLOT(readClient()) );
-  connect( s, SIGNAL(delayedCloseFinished()), this, SLOT(discardClient()) );
-  s->setSocket( socket );
+  currentSocket = nextPendingConnection();
+  connect( currentSocket, SIGNAL(readyRead()), this, SLOT(readClient()) );
+  connect( currentSocket, SIGNAL(disconnected()), this, SLOT(discardClient()) );
   emit newConnect();
 }
 
 void ViewerDaemon::readClient()
 {
-  QSocket* socket = (QSocket*)sender();
+  if(currentSocket == NULL) return;
+  QTcpSocket* socket = currentSocket;
   if ( socket->canReadLine() ) {
 	QString line = socket->readLine();
 	emit receiveRequest(line);
-	QStringList tokens = QStringList::split( QRegExp("[ \r\n][ \r\n]*"), line );
+	QStringList tokens = line.split( QRegExp("[ \r\n][ \r\n]*") );
 	if ( tokens[0] == "GET" ) {
 		QTextStream os( socket );
-		os.setEncoding( QTextStream::UnicodeUTF8 );
+		os.setAutoDetectUnicode (true);
 		os << "Accepted\r\n";
 		socket->close();
 		emit wroteToClient();
 
 
-		tokens.remove(tokens.first());
+		tokens.erase(tokens.begin());
 		QString file = tokens.join(" ");
 
 		if(file[0]=='/')file = file.right(file.length()-1);
-		QUrl::decode(file);
-		QStringList tokens = QStringList::split( QRegExp(" "), file );
+		file = QUrl::fromPercentEncoding(file.toLatin1());
+		QStringList tokens = file.split( QRegExp(" ") );
 		QString code = tokens[0];
 		if(code == "SHOW")emit requestShow();
 		else {
-			tokens.remove(tokens.first());
+			tokens.erase(tokens.begin());
 			file = tokens.join(" ");
 			if(code == "READ")
 				emit requestReadFile(file);
@@ -114,7 +120,7 @@ void ViewerDaemon::readClient()
 	}
 	else {
 		QTextStream os( socket );
-		os.setEncoding( QTextStream::UnicodeUTF8 );
+		os.setAutoDetectUnicode( true );
 		os << "Rejected\r\n";
 		socket->close();
 		emit wroteToClient();
@@ -124,10 +130,12 @@ void ViewerDaemon::readClient()
 
 void ViewerDaemon::discardClient()
 {
-  QSocket* socket = (QSocket*)sender();
-  delete socket;
+  delete currentSocket;
+  currentSocket = NULL;
   emit endConnect();
 }
+
+#ifdef VIEW_NETWORK_SUPPORT
 
 /* ----------------------------------------------------------------------- */
 ViewClient::ViewClient()
@@ -162,7 +170,7 @@ void ViewClient::operationPut( QNetworkOperation * n)
 //    cmd += url()->encodedPathAndQuery();
 	// cmd.replace(cmd.find("/",1," "));
     cmd += "\r\n";
-    commandSocket->writeBlock( cmd.latin1(), cmd.length() );
+    commandSocket->writeBlock( cmd.toAscii().constData(), cmd.length() );
 }
 
 void ViewClient::operationGet( QNetworkOperation * )
@@ -170,7 +178,7 @@ void ViewClient::operationGet( QNetworkOperation * )
     QString cmd = "GET ";
     cmd += url()->encodedPathAndQuery();
     cmd += "\r\n";
-    commandSocket->writeBlock( cmd.latin1(), cmd.length() );
+    commandSocket->writeBlock( cmd.toAscii().constData(), cmd.length() );
 }
 
 bool ViewClient::checkConnection( QNetworkOperation * )
@@ -468,3 +476,5 @@ bool request(int argc, char ** argv)
   return false;
 }*/
 /* ----------------------------------------------------------------------- */
+
+#endif

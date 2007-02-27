@@ -51,10 +51,10 @@
 /*----------------------------------------------------------------------------*/
 
 /* 
- *  Constructs a ViewLocationBar which is a child of 'parent', with the 
+ *  Constructs a ViewLocationBar3 which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-ViewLocationBar::ViewLocationBar(const QString &label, 
+ViewLocationBar3::ViewLocationBar3(const QString &label, 
 				 QMainWindow *mw, 
 #if QT_VERSION >= 300
 				 ToolBarDock tbd,
@@ -63,14 +63,14 @@ ViewLocationBar::ViewLocationBar(const QString &label,
 #endif
 				 bool newLine, 
 				 const char *name)
-  : ViewToolBar( label,mw,tbd,newLine, name  )
+  : ViewToolBar3( label,mw,tbd,newLine, name  )
 {
     if ( !name )
 	setName( "LocationBar" );
 	setHorizontalStretchable (true);
 
     QToolButton * bt = NULL;
-    QPixmap erase(ViewerIcon::getPixmap(ViewerIcon::icon_locerase));
+    QPixmap erase(ViewerIcon3::getPixmap(ViewerIcon3::icon_locerase));
     bt =  new QToolButton(this,"Erase Location");
     bt->setPixmap(erase);
 	bt->setFixedSize(QSize(25,25));
@@ -95,7 +95,7 @@ ViewLocationBar::ViewLocationBar(const QString &label,
 /*  
  *  Destroys the object and frees any allocated resources
  */
-ViewLocationBar::~ViewLocationBar()
+ViewLocationBar3::~ViewLocationBar3()
 {
     // no need to delete child widgets, Qt does it all for us
 }

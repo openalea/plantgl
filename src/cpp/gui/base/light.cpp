@@ -48,37 +48,6 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-ViewLightMenu::ViewLightMenu(ViewLightGL * light,QWidget * parent, const char * name):
-  QPopupMenu(parent,name)
-{
-  if(light){
-    QPixmap home(ViewerIcon::icon_home);
-    QPixmap _light(ViewerIcon::icon_light);
-    insertItem(home,tr("&Home"),light,SLOT(home()),CTRL+SHIFT+Key_H);
-    insertItem(tr("on X axis"),light,SLOT(XAxis()),CTRL+SHIFT+Key_X);
-    insertItem(tr("on Y axis"),light,SLOT(YAxis()),CTRL+SHIFT+Key_Y);
-    insertItem(tr("on Z axis"),light,SLOT(ZAxis()),CTRL+SHIFT+Key_Z);
-    insertSeparator();
-    idVisibility = insertItem(_light,tr("Visible"),light,SLOT(changeVisibility()),CTRL+SHIFT+Key_S);
-    setCheckable( TRUE );
-    setItemChecked(idVisibility,light->isVisible());
-    QObject::connect(light,SIGNAL(visibilityChanged(const bool)),this,SLOT(setVisibility(const bool)));
-  }
-}
-
-ViewLightMenu::~ViewLightMenu()
-{
-}
-
-void 
-ViewLightMenu::setVisibility(const bool b)
-{
-  setItemChecked(idVisibility,b);
-  
-}
-
-/* ----------------------------------------------------------------------- */
-
 ViewLightGL::ViewLightGL(ViewCameraGL *camera,QGLWidget * parent, const char * name):
   ViewRelativeObjectGL(camera,parent,name),
   __azimuth(0),
@@ -298,13 +267,11 @@ ViewLightGL::initializeGL()
   glGeomLightDirection(GL_LIGHT0,pos);
 */
   
-
-  
 }
 
 
 void 
-ViewLightGL::changeStepEvent(const int newStep, const int oldStep)
+ViewLightGL::changeStepEvent(double newStep, double oldStep)
 {
   __distance *= float(newStep)/float(oldStep);
   emit distanceChanged(__distance);
@@ -362,8 +329,20 @@ ViewLightGL::gllightMaterial()
   glGeomLightMaterial(GL_LIGHT0, GL_SPECULAR, __specular);
 }
 
-QPopupMenu *
+QMenu *
 ViewLightGL::createToolsMenu(QWidget * parent)
 {
-  return new ViewLightMenu(this,parent);
+	QMenu * menu = new QMenu(parent);
+    QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
+    QPixmap _light(ViewerIcon::getPixmap(ViewerIcon::light));
+	menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL+Qt::SHIFT+Qt::Key_H);
+    menu->addAction(tr("on X axis"),this,SLOT(XAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_X);
+    menu->addAction(tr("on Y axis"),this,SLOT(YAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Y);
+    menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
+    menu->addSeparator();
+    QAction * idVisibility = menu->addAction(_light,tr("Visible"),this,SLOT(changeVisibility()),Qt::CTRL+Qt::SHIFT+Qt::Key_S);
+    idVisibility->setCheckable( TRUE );
+    idVisibility->setChecked( isVisible() );
+    QObject::connect(this,SIGNAL(visibilityChanged( bool)),idVisibility,SLOT(setChecked(bool)));
+	return menu;
 }

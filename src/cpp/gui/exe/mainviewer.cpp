@@ -56,14 +56,13 @@ int main( int argc, char **argv )
 	return -1;
   }
   
-  if(!ViewClientObj().request(argc, argv)){
+  // if(!ViewClientObj().request(argc, argv)){
 	PGLViewer m_viewer(argc, argv) ;
 	m_viewer.startDaemon();
 	m_viewer.displayTrayIcon(true);
-	a.setMainWidget(&m_viewer);
 	m_viewer.show();
 	return a.exec();
-  }
+  // }
 
   return 0;
 }

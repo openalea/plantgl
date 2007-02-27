@@ -47,13 +47,13 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewObjectGL::ViewObjectGL(QObject * parent, const char * name) :
+ViewObjectGL3::ViewObjectGL3(QObject * parent, const char * name) :
   QObject(parent,name),
   __frame(NULL)
 {
 }
 
-ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
+ViewObjectGL3::ViewObjectGL3(QGLWidget * parent, const char * name) :
   QObject(parent,name),
   __frame(parent)
 {
@@ -62,65 +62,65 @@ ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
 		      parent,SLOT(updateGL()) ); 	
 }
 
-ViewObjectGL::~ViewObjectGL()
+ViewObjectGL3::~ViewObjectGL3()
 {
 }
 
 void 
-ViewObjectGL::move(QPoint p)
+ViewObjectGL3::move(QPoint p)
 {
   moving(p.x(),p.y());
 }
 
 void 
-ViewObjectGL::moving(int dx, int dy)
+ViewObjectGL3::moving(int dx, int dy)
 {
 }
 
 void 
-ViewObjectGL::zoom(QPoint p)
+ViewObjectGL3::zoom(QPoint p)
 {
   zooming(p.x(),p.y());
 }
 
 void 
-ViewObjectGL::zooming(int dx, int dy)
+ViewObjectGL3::zooming(int dx, int dy)
 {
 }
 
 void 
-ViewObjectGL::rotate(QPoint p)
+ViewObjectGL3::rotate(QPoint p)
 {
   rotating(p.x(),p.y());
 }
 
 void 
-ViewObjectGL::rotating(int dx, int dy)
+ViewObjectGL3::rotating(int dx, int dy)
 {
 }
 
 void 
-ViewObjectGL::initializeGL()
+ViewObjectGL3::initializeGL()
 {
 }
 
 void 
-ViewObjectGL::resizeGL(int w, int h)
+ViewObjectGL3::resizeGL(int w, int h)
 {
 }
 
 QPopupMenu * 
-ViewObjectGL::createToolsMenu(QWidget * parent)
+ViewObjectGL3::createToolsMenu(QWidget * parent)
 {
   return NULL;
 }
 
-void ViewObjectGL::fillToolBar(QToolBar * toolBar)
+void ViewObjectGL3::fillToolBar(QToolBar * toolBar)
 {
 }
 
 void 
-ViewObjectGL::connectTo(ViewStatusBar * s)
+ViewObjectGL3::connectTo(ViewStatusBar3 * s)
 {
   if(s){
     QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),
@@ -133,7 +133,7 @@ ViewObjectGL::connectTo(ViewStatusBar * s)
 }
 
 void 
-ViewObjectGL::connectTo(QGLWidget *g)
+ViewObjectGL3::connectTo(QGLWidget *g)
 {
   if(g){
     QObject::connect (this,SIGNAL(valueChanged()),
@@ -143,7 +143,7 @@ ViewObjectGL::connectTo(QGLWidget *g)
 }
 
 void 
-ViewObjectGL::connectTo(ViewErrorDialog *e)
+ViewObjectGL3::connectTo(ViewErrorDialog3 *e)
 {
   if(e){
     QObject::connect(this,SIGNAL(errorMessage(const QString&)),
@@ -157,52 +157,52 @@ ViewObjectGL::connectTo(ViewErrorDialog *e)
 
 
 void 
-ViewObjectGL::error(const QString& s)
+ViewObjectGL3::error(const QString& s)
 {
   emit errorMessage(s);
 }
 
 void 
-ViewObjectGL::warning(const QString& s)
+ViewObjectGL3::warning(const QString& s)
 {
   emit warningMessage(s);
 }
 
 void 
-ViewObjectGL::info(const QString& s)
+ViewObjectGL3::info(const QString& s)
 {
   emit infoMessage(s);
 }
 
 void 
-ViewObjectGL::status(const QString& s)
+ViewObjectGL3::status(const QString& s)
 {
   emit statusMessage(s);
 }
 
 void 
-ViewObjectGL::status(const QString& s,int t)
+ViewObjectGL3::status(const QString& s,int t)
 {
   emit statusMessage(s,t);
 }
 
 void 
-ViewObjectGL::progress(int p,int t)
+ViewObjectGL3::progress(int p,int t)
 {
   emit progressMessage(p,t);
 }
 
 bool
-ViewObjectGL::glError(const char * file, int line) const
+ViewObjectGL3::glError(const char * file, int line) const
 {
   return glError(__frame, file, line);
 }
 
 static bool lock = false;
-bool ViewObjectGL::BASHMODE = false;
+bool ViewObjectGL3::BASHMODE = false;
 
 bool
-ViewObjectGL::glError(QWidget * widget, const char * file, int line)
+ViewObjectGL3::glError(QWidget * widget, const char * file, int line)
 {
   GLenum _glerror;
   
@@ -239,8 +239,8 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 
 /* ----------------------------------------------------------------------- */
 
-ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent, const char * name):
-  ViewObjectGL(parent,name),
+ViewRelativeObjectGL3::ViewRelativeObjectGL3(ViewCameraGL3 *camera, QObject * parent, const char * name):
+  ViewObjectGL3(parent,name),
   __step(1){
   if(camera){
     QObject::connect(camera,SIGNAL(stepMoveChanged(int)),this,SLOT(setStep(int)));
@@ -248,8 +248,8 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * paren
   }
 }
 
-ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * parent, const char * name):
-  ViewObjectGL(parent,name),
+ViewRelativeObjectGL3::ViewRelativeObjectGL3(ViewCameraGL3 *camera, QGLWidget * parent, const char * name):
+  ViewObjectGL3(parent,name),
   __step(1){
   if(camera){
     QObject::connect(camera,SIGNAL(stepMoveChanged(int)),this,SLOT(setStep(int)));  
@@ -258,66 +258,66 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * par
 }
 
 void 
-ViewRelativeObjectGL::connectTo(ViewCameraGL *camera)
+ViewRelativeObjectGL3::connectTo(ViewCameraGL3 *camera)
 {
   if(camera)
 	QObject::connect(camera,SIGNAL(stepMoveChanged(int)),this,SLOT(setStep(int)));  
 }
 
 void 
-ViewRelativeObjectGL::connectTo(ViewStatusBar * s)
+ViewRelativeObjectGL3::connectTo(ViewStatusBar3 * s)
 {
-  ViewObjectGL::connectTo(s);
+  ViewObjectGL3::connectTo(s);
 }
 
 void 
-ViewRelativeObjectGL::connectTo(QGLWidget *g)
+ViewRelativeObjectGL3::connectTo(QGLWidget *g)
 {
-  ViewObjectGL::connectTo(g);
+  ViewObjectGL3::connectTo(g);
 }
 
 void 
-ViewRelativeObjectGL::connectTo(ViewErrorDialog *e)
+ViewRelativeObjectGL3::connectTo(ViewErrorDialog3 *e)
 {
-  ViewObjectGL::connectTo(e);
+  ViewObjectGL3::connectTo(e);
 }
 
 
-ViewRelativeObjectGL::~ViewRelativeObjectGL()
+ViewRelativeObjectGL3::~ViewRelativeObjectGL3()
 {
 }
 
 void
-ViewRelativeObjectGL::setStep(const int step)
+ViewRelativeObjectGL3::setStep(const int step)
 {
   changeStepEvent(step,__step);
   __step = step;
 }
 
 void
-ViewRelativeObjectGL::changeStepEvent(const int newStep, const int oldStep)
+ViewRelativeObjectGL3::changeStepEvent(const int newStep, const int oldStep)
 {
 }
 
 const int 
-ViewRelativeObjectGL::getStep() const
+ViewRelativeObjectGL3::getStep() const
 {
   return __step;
 }
 
 void 
-ViewRelativeObjectGL::coordSys(int i)
+ViewRelativeObjectGL3::coordSys(int i)
 {
   if(i == 1)geomCoordSys();
   else if(i == 0)glCoordSys();
 }
 
 void 
-ViewRelativeObjectGL::geomCoordSys()
+ViewRelativeObjectGL3::geomCoordSys()
 {
 }
 
 void 
-ViewRelativeObjectGL::glCoordSys()
+ViewRelativeObjectGL3::glCoordSys()
 {
 }

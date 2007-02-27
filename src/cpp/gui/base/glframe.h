@@ -51,7 +51,7 @@
 #include <qtoolbutton.h>
 class QToolBar;
 class ViewStatusBar;
-class QPopupMenu;
+class QMenu;
 class QSlider;
 class QMainWindow;
 class QTabWidget;
@@ -107,7 +107,6 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   /// Last GL Frame created.
   static ViewGLFrame * LAST_GL_FRAME;
-  static ViewGLFrame * CURRENT_GL_FRAME;
 
   /// Constructor
   ViewGLFrame( QWidget* parent,
@@ -147,10 +146,10 @@ class VIEW_API ViewGLFrame : public QGLWidget
   real_t getLineWidth() const { return __linewidth; }
 
   /// Create Edit menu that reflect the functionality of this.
-  QPopupMenu * createEditMenu(QWidget * parent);
+  QMenu * createEditMenu(QWidget * parent);
 
   /// Create Tools menu that reflect the functionality of this.
-  QPopupMenu * createToolsMenu(QWidget * parent);
+  QMenu * createToolsMenu(QWidget * parent);
 
   /// Fill toolBar to reflect the functionality of this.
   void fillToolBar(QToolBar * toolBar);
@@ -322,7 +321,7 @@ signals:
   virtual void keyReleaseEvent ( QKeyEvent * e);
 
   /// This event handler is called when a new scene is asked to be shown.
-  virtual void customEvent(QCustomEvent *e);
+  virtual void customEvent(QEvent *e);
 
   virtual void wheelEvent ( QWheelEvent * );
   virtual void focusInEvent ( QFocusEvent * ) ;
@@ -389,11 +388,9 @@ public :
 			( const QPixmap & pm,
 			  const QPixmap & pm2,
 			  const QString & textLabel, 
-			  const QString & grouptext, 
 			  QObject * receiver, 
 			  const char * slot, 
-			  QToolBar * parent, 
-  			  const char * name = 0 );
+			  QToolBar * parent);
 
 public slots:
 

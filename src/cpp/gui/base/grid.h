@@ -48,7 +48,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qstring.h>
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include "object.h"
 #include <algo/opengl/util_gl.h>
 
@@ -72,7 +72,7 @@ class VIEW_API ViewGridGL  : public ViewRelativeObjectGL
   Q_PROPERTY(bool XYGrid READ getXYGrid WRITE showXYGrid );
   Q_PROPERTY(bool XZGrid READ getXZGrid WRITE showXZGrid );
   Q_PROPERTY(bool YZGrid READ getYZGrid WRITE showYZGrid );
-  Q_PROPERTY(int Unit READ getGridUnit WRITE setGridUnit );
+  Q_PROPERTY(double Unit READ getGridUnit WRITE setGridUnit );
   Q_PROPERTY(int Size READ getGridSize WRITE setGridSize );
 
 public:
@@ -107,7 +107,7 @@ public:
   void setState(int);
 
   /// Get Grid Unit.
-  const int getGridUnit() const{
+  const double getGridUnit() const{
     return __gridUnit;
   }
 
@@ -121,7 +121,7 @@ public:
   virtual void glCoordSys();
 
   /// Create a Popup menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   /// Fill a toolBar that reflect the functionality of this.
   virtual void fillToolBar(QToolBar * toolBar);
@@ -151,7 +151,7 @@ public slots:
   void showYZGrid(bool);
   
   /// Set Grid Unit value to \e unit.
-  void setGridUnit(int unit);
+  void setGridUnit(double unit);
 
   /// Set Grid Unit value to \e unit.
   void setGridUnit(const QString& unit);
@@ -182,17 +182,17 @@ signals:
   void YZGridDisplayChanged(bool);
 
   /// Emit when the Grid Unit changed
-  void GridUnitChanged(int);
+  void GridUnitChanged(double);
 
   /// Emit when the Grid Size changed
   void GridSizeChanged(int);
 
 protected :
 
-  virtual void changeStepEvent(const int newStep, const int oldStep);
+  virtual void changeStepEvent(double newStep, double oldStep);
 
   ///  unit of the Grid (multiplicative factor for zoom and translation)
-  int __gridUnit;
+  double __gridUnit;
 
   ///  size of the Grid (multiplicative factor for zoom and translation)
   int __gridSize;
@@ -216,41 +216,6 @@ protected :
   bool __YZGrid;
   
 };
-
-/* ----------------------------------------------------------------------- */
-
-/// Menu to control a ViewGridGL
-class ViewGridMenu : public QPopupMenu {
-   Q_OBJECT
- 
-public :
-  
-  ViewGridMenu(ViewGridGL * grid, QWidget * parent=0, const char * name=0);
-  
-  ~ViewGridMenu();
-  
-public slots :
-
-  /// Check the menu entry XY Grid.
-  void setXYGrid(bool);
-
-  /// Check the menu entry YZ Grid.
-  void setYZGrid(bool);
-
-  /// Check the menu entry XZ Grid.
-  void setXZGrid(bool);
-
-  /// Check the menu entry Axes.
-  void setAxis(bool);
-  
-protected :    
-  
-  int idAxis;
-  int idXYGrid;
-  int idXZGrid;
-  int idYZGrid;
-};
-
 
 /* ----------------------------------------------------------------------- */
 #endif

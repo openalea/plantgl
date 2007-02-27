@@ -67,16 +67,16 @@ class QMenuBar;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewErrorDialog;
-class ViewFileManager;
-class ViewHelpMenu;
-class ViewBrowser;
-class ViewGLFrame;
-class ViewControlPanel;
-class ViewRendererGL;
-class ViewerDaemon;
-class ViewStatusBar;
-class TrayIcon;
+class ViewErrorDialog3;
+class ViewFileManager3;
+class ViewHelpMenu3;
+class ViewBrowser3;
+class ViewGLFrame3;
+class ViewControlPanel3;
+class ViewRendererGL3;
+class ViewerDaemon3;
+class ViewStatusBar3;
+class TrayIcon3;
 
 #include "util_qwidget.h"
 
@@ -89,30 +89,30 @@ class TrayIcon;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API Viewer : public QMainWindow
+class VIEW3_API Viewer3 : public QMainWindow
 {
   Q_OBJECT
 public:
     
 
   /// Constructor.
-  Viewer(  QWidget * parent = 0, 
+  Viewer3(  QWidget * parent = 0, 
 		   const char * name = 0, 
-		   ViewRendererGL * r = 0 ,
+		   ViewRendererGL3 * r = 0 ,
 		   WFlags f = WType_TopLevel|WStyle_ContextHelp );
 
   /// Constructor.
-  Viewer( int argc, char ** argv, ViewRendererGL * r = 0 );
+  Viewer3( int argc, char ** argv, ViewRendererGL3 * r = 0 );
 
   /// Destructor.
-  ~Viewer();
+  ~Viewer3();
   
   /// Get the SceneRenderer.
-  ViewRendererGL * getSceneRenderer() const;  
-  void setSceneRenderer(ViewRendererGL * s);
+  ViewRendererGL3 * getSceneRenderer() const;  
+  void setSceneRenderer(ViewRendererGL3 * s);
 
   // Get the GL Frame
-  ViewGLFrame * getFrameGL() const { return __GLFrame; }
+  ViewGLFrame3 * getFrameGL() const { return __GLFrame; }
 
   // Save the view as a bitmap
   void saveImage( QString _filename, const char* _format, bool withAlpha = false );
@@ -156,7 +156,7 @@ public slots:
   void displayMenuBar();
 
   /// (un)chek the View Browser Visibility Item.
-  void checkViewBrowserItem(bool visibility);
+  void checkViewBrowser3Item(bool visibility);
 
   /// (un)Chek the Error Dialog Visibility Item.
   void checkErrorDialogItem(bool visibility);
@@ -251,10 +251,10 @@ private:
   void initialize();
 
   /// The Open GL Frame : To display 3D Object.
-  ViewGLFrame * __GLFrame;
+  ViewGLFrame3 * __GLFrame;
  
   /// The File Manager : For Menu, Toolbar.
-  ViewFileManager * __FileMenu;
+  ViewFileManager3 * __FileMenu;
 
   /// Menu View.
   QPopupMenu *      __EditMenu;
@@ -266,20 +266,20 @@ private:
   QPopupMenu *      __ToolsMenu;
 
   /// Menu Help
-  ViewHelpMenu *    __HelpMenu;
+  ViewHelpMenu3 *    __HelpMenu;
 
   /// Menu Bar.
   QMenuBar *        __MainMenu;
   
   /// Tool Bar
-  ViewToolBar * __ToolBar;
+  ViewToolBar3 * __ToolBar;
   
   /// Control Panel.
-  ViewControlPanel * __controlPanel;
+  ViewControlPanel3 * __controlPanel;
 
 #ifdef Q_WS_WIN
   /// Tray Icon
-  TrayIcon * __trayIcon;
+  TrayIcon3 * __trayIcon;
 #endif
 
   /// id of the Entry Menu : View ->Control Panel.
@@ -292,19 +292,19 @@ private:
   int __idLocationToolBar;
 
   /// The Browser Dialog.
-  ViewBrowser * __Browser;
+  ViewBrowser3 * __Browser;
 
   /// id of the Entry Menu : View ->Browse.
-  int __idViewBrowser;
+  int __idViewBrowser3;
 
   /// The Error Dialog.
-  ViewErrorDialog * __ErrorDialog;
+  ViewErrorDialog3 * __ErrorDialog;
   
   /// id of the Entry Menu : View ->Error Log.
   int __idErrorDialog;
 
   /// The Status Bar.
-  ViewStatusBar * __statusBar;
+  ViewStatusBar3 * __statusBar;
 
   /// Is this widget full_screen or not.
   bool __isFullScreen;
@@ -314,7 +314,7 @@ private:
 
   int __toolbarsvisibility;
 
-  ViewerDaemon * __service;
+  ViewerDaemon3 * __service;
 
 
 #ifdef QT_THREAD_SUPPORT

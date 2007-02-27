@@ -45,7 +45,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qcolor.h>
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <scenegraph/geometry/boundingbox.h>
 #include "object.h"
 
@@ -54,29 +54,6 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 class QString;
-class ViewLightGL;
-
-/* ----------------------------------------------------------------------- */
-
-/// Menu to control a ViewLightGL.
-class VIEW_API ViewLightMenu : public QPopupMenu {
-   Q_OBJECT
- 
-public :
-  
-  ViewLightMenu(ViewLightGL * light, QWidget * parent=0, const char * name=0);
-  
-  ~ViewLightMenu();
-
-public slots :
-
-  void setVisibility(const bool);
-
-protected :
-
-  int idVisibility;
-
-};
 
 /* ----------------------------------------------------------------------- */
 
@@ -138,7 +115,7 @@ public:
   Vector3 getPosition() const;
 
   /// Create a Popup menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
 public slots:
 
@@ -198,11 +175,11 @@ public slots:
 signals:
 
   /// azimuth changed signal.
-  void azimuthChanged(int);
+  void azimuthChanged(double);
   /// elevation changed signal.
-  void elevationChanged(int);
+  void elevationChanged(double);
   /// distance changed.
-  void distanceChanged(int);
+  void distanceChanged(double);
   /// Ambient color changed.
   void ambientChanged(const QColor&);
   /// Diffuse color changed.
@@ -216,7 +193,7 @@ protected :
   /// Paint Light material.
   void gllightMaterial();
 
-  virtual void changeStepEvent(const int newStep, const int oldStep);
+  virtual void changeStepEvent(double newStep, double oldStep);
 
   double __azimuth;
   double __elevation;

@@ -35,7 +35,7 @@
  */	
 			
 /*! \file view_properties.h
-    \brief Definition of the viewer class ViewProperties.
+    \brief Definition of the viewer class ViewProperties3.
 */
 
 #ifndef __view_properties_h__
@@ -62,27 +62,27 @@ class QComboBox;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewGLFrame;
-class ViewFileManager;
-class ViewControlPanel;
+class ViewGLFrame3;
+class ViewFileManager3;
+class ViewControlPanel3;
 
 /* ----------------------------------------------------------------------- */
 
 /// Dialog to display properties of the file, the scene, the camera, ...
-class VIEW_API ViewProperties : public QDialog
+class VIEW3_API ViewProperties3 : public QDialog
 { 
     Q_OBJECT
 
 public:
-    ViewProperties( ViewGLFrame *g, 
-		ViewFileManager* parent = 0,
-		ViewControlPanel * controlpanel=0,
+    ViewProperties3( ViewGLFrame3 *g, 
+		ViewFileManager3* parent = 0,
+		ViewControlPanel3 * controlpanel=0,
 		bool config = false,
 		const char* name = 0,
 		bool modal = FALSE, 
 		WFlags fl = 0 );
 
-  ~ViewProperties();
+  ~ViewProperties3();
 
 protected slots:
 

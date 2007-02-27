@@ -49,8 +49,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewClippingPlaneGL::ViewClippingPlaneGL(QGLWidget * parent, const char * name):
-  ViewObjectGL(parent,name)
+ViewClippingPlaneGL3::ViewClippingPlaneGL3(QGLWidget * parent, const char * name):
+  ViewObjectGL3(parent,name)
 {
   for(int i = 0; i < 6 ; i++)
     __enable[i] = false;
@@ -69,7 +69,7 @@ ViewClippingPlaneGL::ViewClippingPlaneGL(QGLWidget * parent, const char * name):
   __C[4] = -1;
   __C[5] = 1;
 
-  __control = new ViewDialog(parent,"Clipping Planes Control");
+  __control = new ViewDialog3(parent,"Clipping Planes Control");
   __control->setCaption(tr("Clipping Planes Control"));
   __cpw = new ClippingPlaneWidget(__control,"CP Widget", false);
   QObject::connect(__cpw->OkButton,SIGNAL(clicked()),__control,SLOT(hide()));
@@ -160,58 +160,58 @@ ViewClippingPlaneGL::ViewClippingPlaneGL(QGLWidget * parent, const char * name):
 
 }
   
-ViewClippingPlaneGL::~ViewClippingPlaneGL()
+ViewClippingPlaneGL3::~ViewClippingPlaneGL3()
 {
 }
 
 QPopupMenu * 
-ViewClippingPlaneGL::createToolsMenu(QWidget * parent)
+ViewClippingPlaneGL3::createToolsMenu(QWidget * parent)
 {
-  return new ViewCPlaneMenu(this,parent,"Clipping Plane Menu");
+  return new ViewCPlaneMenu3(this,parent,"Clipping Plane Menu");
 }
 
-bool ViewClippingPlaneGL::isPlaneEnable(int i)
+bool ViewClippingPlaneGL3::isPlaneEnable(int i)
 {
   if(i < 1 || i > 6 )return false;
   else return __enable[i-1];
 }
 
 double 
-ViewClippingPlaneGL::valA(int i)
+ViewClippingPlaneGL3::valA(int i)
 {
   if(i < 1 || i > 6 )return 0;
   else return __A[i-1];  
 }
 
 double  
-ViewClippingPlaneGL::valB(int i)
+ViewClippingPlaneGL3::valB(int i)
 {
   if(i < 1 || i > 6 )return 0;
   else return __B[i-1];  
 }
 
 double 
-ViewClippingPlaneGL::valC(int i)
+ViewClippingPlaneGL3::valC(int i)
 {
   if(i < 1 || i > 6 )return 0;
   else return __C[i-1];  
 }
 
 double 
-ViewClippingPlaneGL::valD(int i)
+ViewClippingPlaneGL3::valD(int i)
 {
   if(i < 1 || i > 6 )return 0;
   else return __D[i-1];  
 }
 
-ViewDialog * 
-ViewClippingPlaneGL::getControl() const
+ViewDialog3 * 
+ViewClippingPlaneGL3::getControl() const
 {
   return __control;
 }
 
 void 
-ViewClippingPlaneGL::setPlane1Enable(bool b)
+ViewClippingPlaneGL3::setPlane1Enable(bool b)
 {
   if(__enable[0] != b){
     __enable[0] = b;
@@ -222,7 +222,7 @@ ViewClippingPlaneGL::setPlane1Enable(bool b)
 }
 
 void 
-ViewClippingPlaneGL::setPlane2Enable(bool b)
+ViewClippingPlaneGL3::setPlane2Enable(bool b)
 {
   if(__enable[1] != b){
     __enable[1] = b;
@@ -233,7 +233,7 @@ ViewClippingPlaneGL::setPlane2Enable(bool b)
 }
 
 void 
-ViewClippingPlaneGL::setPlane3Enable(bool b)
+ViewClippingPlaneGL3::setPlane3Enable(bool b)
 {
   if(__enable[2] != b){
     __enable[2] = b;
@@ -244,7 +244,7 @@ ViewClippingPlaneGL::setPlane3Enable(bool b)
 }
 
 void 
-ViewClippingPlaneGL::setPlane4Enable(bool b)
+ViewClippingPlaneGL3::setPlane4Enable(bool b)
 {
   if(__enable[3] != b){
     __enable[3] = b;
@@ -255,7 +255,7 @@ ViewClippingPlaneGL::setPlane4Enable(bool b)
 }
 
 void 
-ViewClippingPlaneGL::setPlane5Enable(bool b)
+ViewClippingPlaneGL3::setPlane5Enable(bool b)
 {
   if(__enable[4] != b){
     __enable[4] = b;
@@ -266,7 +266,7 @@ ViewClippingPlaneGL::setPlane5Enable(bool b)
 }
 
 void 
-ViewClippingPlaneGL::setPlane6Enable(bool b)
+ViewClippingPlaneGL3::setPlane6Enable(bool b)
 {
   if(__enable[5] != b){
     __enable[5] = b;
@@ -277,7 +277,7 @@ ViewClippingPlaneGL::setPlane6Enable(bool b)
 }
 
 void 
-ViewClippingPlaneGL::setPlane1Enable()
+ViewClippingPlaneGL3::setPlane1Enable()
 {
   __enable[0] = ! __enable[0];
   emit valueChanged();
@@ -286,7 +286,7 @@ ViewClippingPlaneGL::setPlane1Enable()
 }
 
 void 
-ViewClippingPlaneGL::setPlane2Enable()
+ViewClippingPlaneGL3::setPlane2Enable()
 {
   __enable[1] = ! __enable[1];
   emit valueChanged();
@@ -295,7 +295,7 @@ ViewClippingPlaneGL::setPlane2Enable()
 }
 
 void 
-ViewClippingPlaneGL::setPlane3Enable()
+ViewClippingPlaneGL3::setPlane3Enable()
 {
   __enable[2] = ! __enable[2];
   emit valueChanged();
@@ -304,7 +304,7 @@ ViewClippingPlaneGL::setPlane3Enable()
 }
 
 void 
-ViewClippingPlaneGL::setPlane4Enable()
+ViewClippingPlaneGL3::setPlane4Enable()
 {
   __enable[3] = ! __enable[3];
   emit valueChanged();
@@ -313,7 +313,7 @@ ViewClippingPlaneGL::setPlane4Enable()
 }
 
 void 
-ViewClippingPlaneGL::setPlane5Enable()
+ViewClippingPlaneGL3::setPlane5Enable()
 {
   __enable[4] = ! __enable[4];
   emit valueChanged();
@@ -322,7 +322,7 @@ ViewClippingPlaneGL::setPlane5Enable()
 }
 
 void 
-ViewClippingPlaneGL::setPlane6Enable()
+ViewClippingPlaneGL3::setPlane6Enable()
 {
   __enable[5] = ! __enable[5];
   emit valueChanged();
@@ -331,163 +331,163 @@ ViewClippingPlaneGL::setPlane6Enable()
 }
 
 void 
-ViewClippingPlaneGL::setPlane1A(const QString& s)
+ViewClippingPlaneGL3::setPlane1A(const QString& s)
 {
   __A[0] = s.toDouble();
 }
  
 void 
-ViewClippingPlaneGL::setPlane2A(const QString& s)
+ViewClippingPlaneGL3::setPlane2A(const QString& s)
 {
   __A[1] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane3A(const QString& s)
+ViewClippingPlaneGL3::setPlane3A(const QString& s)
 {
   __A[2] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane4A(const QString& s)
+ViewClippingPlaneGL3::setPlane4A(const QString& s)
 {
   __A[3] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane5A(const QString& s)
+ViewClippingPlaneGL3::setPlane5A(const QString& s)
 {
   __A[4] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane6A(const QString& s)
+ViewClippingPlaneGL3::setPlane6A(const QString& s)
 {
   __A[5] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane1B(const QString& s)
+ViewClippingPlaneGL3::setPlane1B(const QString& s)
 {
   __B[0] = s.toDouble();
 }
  
 void 
-ViewClippingPlaneGL::setPlane2B(const QString& s)
+ViewClippingPlaneGL3::setPlane2B(const QString& s)
 {
   __B[1] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane3B(const QString& s)
+ViewClippingPlaneGL3::setPlane3B(const QString& s)
 {
   __B[2] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane4B(const QString& s)
+ViewClippingPlaneGL3::setPlane4B(const QString& s)
 {
   __B[3] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane5B(const QString& s)
+ViewClippingPlaneGL3::setPlane5B(const QString& s)
 {
   __B[4] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane6B(const QString& s)
+ViewClippingPlaneGL3::setPlane6B(const QString& s)
 {
   __B[5] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane1C(const QString& s)
+ViewClippingPlaneGL3::setPlane1C(const QString& s)
 {
   __C[0] = s.toDouble();
 }
  
 void 
-ViewClippingPlaneGL::setPlane2C(const QString& s)
+ViewClippingPlaneGL3::setPlane2C(const QString& s)
 {
   __C[1] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane3C(const QString& s)
+ViewClippingPlaneGL3::setPlane3C(const QString& s)
 {
   __C[2] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane4C(const QString& s)
+ViewClippingPlaneGL3::setPlane4C(const QString& s)
 {
   __C[3] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane5C(const QString& s)
+ViewClippingPlaneGL3::setPlane5C(const QString& s)
 {
   __C[4] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane6C(const QString& s)
+ViewClippingPlaneGL3::setPlane6C(const QString& s)
 {
   __C[5] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane1D(const QString& s)
+ViewClippingPlaneGL3::setPlane1D(const QString& s)
 {
   __D[0] = s.toDouble();
 }
  
 void 
-ViewClippingPlaneGL::setPlane2D(const QString& s)
+ViewClippingPlaneGL3::setPlane2D(const QString& s)
 {
   __D[1] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane3D(const QString& s)
+ViewClippingPlaneGL3::setPlane3D(const QString& s)
 {
   __D[2] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane4D(const QString& s)
+ViewClippingPlaneGL3::setPlane4D(const QString& s)
 {
   __D[3] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane5D(const QString& s)
+ViewClippingPlaneGL3::setPlane5D(const QString& s)
 {
   __D[4] = s.toDouble();
 }
 
 void 
-ViewClippingPlaneGL::setPlane6D(const QString& s)
+ViewClippingPlaneGL3::setPlane6D(const QString& s)
 {
   __D[5] = s.toDouble();
 }
 
 
 void 
-ViewClippingPlaneGL::validValue()
+ViewClippingPlaneGL3::validValue()
 {
   emit valueChanged();
 }
 
 void 
-ViewClippingPlaneGL::initializeGL()
+ViewClippingPlaneGL3::initializeGL()
 {
 }
 
 void 
-ViewClippingPlaneGL::paintGL()
+ViewClippingPlaneGL3::paintGL()
 {
   if(__enable[0]){
     GLdouble eq[4];
@@ -567,11 +567,11 @@ ViewClippingPlaneGL::paintGL()
 
 /* ----------------------------------------------------------------------- */
 
-ViewCPlaneMenu::ViewCPlaneMenu(ViewClippingPlaneGL * cp, QWidget * parent, const char * name):
+ViewCPlaneMenu3::ViewCPlaneMenu3(ViewClippingPlaneGL3 * cp, QWidget * parent, const char * name):
   QPopupMenu(parent,name)
 {
   if(cp){
-    QPixmap wheel(ViewerIcon::icon_wheel);
+    QPixmap wheel(ViewerIcon3::icon_wheel);
     ctrl = insertItem(wheel,tr("Control"),cp->getControl(),SLOT(show()));
     insertSeparator();
     idP1 = insertItem(tr("Plane")+" 1",cp,SLOT(setPlane1Enable()));
@@ -598,48 +598,48 @@ ViewCPlaneMenu::ViewCPlaneMenu(ViewClippingPlaneGL * cp, QWidget * parent, const
   }
 }
 
-ViewCPlaneMenu::~ViewCPlaneMenu()
+ViewCPlaneMenu3::~ViewCPlaneMenu3()
 {
 }
 
 
 void 
-ViewCPlaneMenu::setPlane1Enable(bool b)
+ViewCPlaneMenu3::setPlane1Enable(bool b)
 {
   setItemChecked(idP1,b);
 }
 
 void 
-ViewCPlaneMenu::setPlane2Enable(bool b)
+ViewCPlaneMenu3::setPlane2Enable(bool b)
 {
   setItemChecked(idP2,b);
 }
 
 void 
-ViewCPlaneMenu::setPlane3Enable(bool b)
+ViewCPlaneMenu3::setPlane3Enable(bool b)
 {
   setItemChecked(idP3,b);
 }
 void 
-ViewCPlaneMenu::setPlane4Enable(bool b)
+ViewCPlaneMenu3::setPlane4Enable(bool b)
 {
   setItemChecked(idP4,b);
 }
 
 void
-ViewCPlaneMenu::setPlane5Enable(bool b)
+ViewCPlaneMenu3::setPlane5Enable(bool b)
 {
   setItemChecked(idP5,b);
 }
 
 void 
-ViewCPlaneMenu::setPlane6Enable(bool b)
+ViewCPlaneMenu3::setPlane6Enable(bool b)
 {
   setItemChecked(idP6,b);
 }
 
 void 
-ViewCPlaneMenu::controlVisibility(bool b)
+ViewCPlaneMenu3::controlVisibility(bool b)
 {
   setItemChecked(ctrl,b);
 }

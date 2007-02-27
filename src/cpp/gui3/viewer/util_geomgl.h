@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-/// Give the Scene \e scene to display at the ViewGLFrame \e frame
-VIEW_API const ViewGLFrame& operator<<(const ViewGLFrame& frame, const PGL(ScenePtr) scene);
+/// Give the Scene \e scene to display at the ViewGLFrame3 \e frame
+VIEW3_API const ViewGLFrame3& operator<<(const ViewGLFrame3& frame, const PGL(ScenePtr) scene);
 
 /// Give the Scene \e scene to display at the Viewer \e viewer
-VIEW_API const Viewer& operator<<(const Viewer& viewer, const PGL(ScenePtr) scene);
+VIEW3_API const Viewer3& operator<<(const Viewer3& viewer, const PGL(ScenePtr) scene);
 
 /* ----------------------------------------------------------------------- */
 

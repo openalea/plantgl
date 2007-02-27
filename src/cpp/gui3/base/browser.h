@@ -37,7 +37,7 @@
  */				
 
 /*! \file view_browser.h
-    \brief Definition of the viewer class ViewBrowser.
+    \brief Definition of the viewer class ViewBrowser3.
 */
 
 #ifndef __view_browser_h__
@@ -50,31 +50,31 @@ class QBrowser;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewRendererGL;
+class ViewRendererGL3;
 
 /* ----------------------------------------------------------------------- */
 
 
 /**   
-   \class ViewBrowser
+   \class ViewBrowser3
    \brief The Browser of the viewer
 */
 
-class VIEW_API ViewBrowser : public ViewDialog
+class VIEW3_API ViewBrowser3 : public ViewDialog3
 {
     Q_OBJECT
 	public:
     
     /// Constructor
-    ViewBrowser(  QWidget * parent=0, 
+    ViewBrowser3(  QWidget * parent=0, 
 		  const char * name=0, 
 		  bool modal=FALSE);
 
     /// Destructor
-    ~ViewBrowser();
+    ~ViewBrowser3();
 
 
-  void setRenderer(ViewRendererGL *);
+  void setRenderer(ViewRendererGL3 *);
 
  public slots:
 
@@ -97,11 +97,11 @@ protected:
 private:
   
 
-  /// The GeomListViewBuilder Object
+  /// The GeomListViewBuilder3 Object
   QBrowser * __browser;
   
   /// A Pointee to the Scene.
-  ViewRendererGL  * __scene;
+  ViewRendererGL3  * __scene;
   
   /// Scene empty.
   bool __empty;

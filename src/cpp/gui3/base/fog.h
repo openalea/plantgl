@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_fog.h
-    \brief Definition of the viewer class ViewFogGL.
+    \brief Definition of the viewer class ViewFogGL3.
 */
 
 #ifndef __view_fog_h__
@@ -53,19 +53,19 @@ class FogWidget;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewDialog;
+class ViewDialog3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewFogGL
-   \brief A ViewFogGL for GL Display
+   \class ViewFogGL3
+   \brief A ViewFogGL3 for GL Display
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewFogGL  : public ViewRelativeObjectGL
+class VIEW3_API ViewFogGL3  : public ViewRelativeObjectGL3
 {
   Q_OBJECT
   Q_PROPERTY(bool Enable READ enable WRITE setEnable );
@@ -78,10 +78,10 @@ class VIEW_API ViewFogGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewFogGL(ViewCameraGL *camera,QGLWidget * parent=0, const char * name=0);
+  ViewFogGL3(ViewCameraGL3 *camera,QGLWidget * parent=0, const char * name=0);
 
   /// Destructor.
-  virtual ~ViewFogGL();
+  virtual ~ViewFogGL3();
   
   virtual QPopupMenu * createToolsMenu(QWidget * parent);
 
@@ -153,7 +153,7 @@ public slots:
 
   double __end;
 
-  ViewDialog * __control;
+  ViewDialog3 * __control;
   FogWidget * __fogw;
 };
 

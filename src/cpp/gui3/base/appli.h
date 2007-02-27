@@ -38,29 +38,29 @@
 #ifndef __view_appli_h__
 #define __view_appli_h__
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <math/util_vector.h>
 
 #include <string>
 #include <vector>
 
-class ViewRayBuffer;
-class ViewZBuffer;
+class ViewRayBuffer3;
+class ViewZBuffer3;
 class QCustomEvent;
-class ViewerBuilder;
-class Viewer;
+class ViewerBuilder3;
+class Viewer3;
 
-class ViewerAppli {
+class ViewerAppli3 {
 
 protected:
-	static ViewerBuilder * VIEWERBUILDER;
-	Viewer * build();
+	static ViewerBuilder3 * VIEWERBUILDER;
+	Viewer3 * build();
 
 public:
-	static void setBuilder(ViewerBuilder * builder);
+	static void setBuilder(ViewerBuilder3 * builder);
 
-	ViewerAppli();
-	virtual ~ViewerAppli();
+	ViewerAppli3();
+	virtual ~ViewerAppli3();
 
 	virtual void startSession()= 0;
 	virtual bool stopSession() = 0;
@@ -91,12 +91,12 @@ public:
 					            bool existing,
 								bool dir);
 
-	virtual ViewRayBuffer * castRays(const TOOLS(Vector3)& pos, 
+	virtual ViewRayBuffer3 * castRays(const TOOLS(Vector3)& pos, 
 									  const TOOLS(Vector3)& dir,
 									  const TOOLS(Vector3)& dx, 
 									  const TOOLS(Vector3)& dy,
 									  int sx, int sy);
-	virtual ViewZBuffer * grabZBuffer();
+	virtual ViewZBuffer3 * grabZBuffer();
 
 };
 

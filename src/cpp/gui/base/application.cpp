@@ -216,7 +216,7 @@ bool ViewerApplication::wait( unsigned long time ){
 }
 
 bool ViewerApplication::running(){
-  if(VIEWER_APPLI) return VIEWER_APPLI->isRunning();
+  if(VIEWER_APPLI) return VIEWER_APPLI->running();
   else return false;
 }
 
@@ -243,7 +243,7 @@ ViewerApplication::exit() {
 	}
 }
 
-void ViewerApplication::_sendAnEvent(QCustomEvent *e){
+void ViewerApplication::_sendAnEvent(QEvent *e){
   initViewerAppli();
   if(VIEWER_APPLI)VIEWER_APPLI->sendAnEvent(e);
 }

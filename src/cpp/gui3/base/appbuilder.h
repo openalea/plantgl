@@ -41,24 +41,24 @@
 #ifndef __view_appbuilder_h__
 #define __view_appbuilder_h__
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
-class Viewer;
+class Viewer3;
 
-class VIEW_API ViewerBuilder {
+class VIEW3_API ViewerBuilder3 {
 public:
-	ViewerBuilder(){}
-	virtual ~ViewerBuilder(){}
-	virtual Viewer * build() = 0;
+	ViewerBuilder3(){}
+	virtual ~ViewerBuilder3(){}
+	virtual Viewer3 * build() = 0;
 };
 
 template<class T>
-struct ViewerTBuilder : public ViewerBuilder {
+struct ViewerTBuilder3 : public ViewerBuilder3 {
 public:
-	ViewerTBuilder() {}
-	virtual ~ViewerTBuilder() {}
+	ViewerTBuilder3() {}
+	virtual ~ViewerTBuilder3() {}
 	typedef T ViewerType;
-	virtual Viewer * build() { return new T(); }
+	virtual Viewer3 * build() { return new T(); }
 };
 
 #endif

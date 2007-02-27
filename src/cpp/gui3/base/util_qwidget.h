@@ -46,7 +46,7 @@
 #include <qtoolbar.h>
 #include <qdialog.h>
 #include <qstatusbar.h>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 class QToolButton;
 class QPopupMenu;
 class QProgressBar;
@@ -55,20 +55,20 @@ class QProgressBar;
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewToolBar
+   \class ViewToolBar3
    \brief A QToolBar that emit a signal when its visibility changed.
 */
 /* ----------------------------------------------------------------------- */
 
 
 
-class VIEW_API ViewToolBar : public QToolBar {
+class VIEW3_API ViewToolBar3 : public QToolBar {
   Q_OBJECT
   
   public :
     
   /// Constructor
-  ViewToolBar( const QString & label, 
+  ViewToolBar3( const QString & label, 
 		QMainWindow * mw, 
 #if QT_VERSION >= 300
 		ToolBarDock = DockTop,
@@ -79,7 +79,7 @@ class VIEW_API ViewToolBar : public QToolBar {
 		const char * name = 0 );
   
   /// Constructor
-  ViewToolBar ( const QString & label, 
+  ViewToolBar3 ( const QString & label, 
 		QMainWindow *mw, 
 		QWidget * w, 
 		bool newLine = FALSE, 
@@ -87,8 +87,8 @@ class VIEW_API ViewToolBar : public QToolBar {
 		WFlags f = 0 );
   
   /// Constructor
-  ViewToolBar ( QMainWindow * parent = 0, const char * name = 0 );
-  virtual ~ViewToolBar();
+  ViewToolBar3 ( QMainWindow * parent = 0, const char * name = 0 );
+  virtual ~ViewToolBar3();
 
  signals: 
   /// Signal emit when visibility changed.
@@ -111,21 +111,21 @@ class VIEW_API ViewToolBar : public QToolBar {
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewExclusiveButtonSet
+   \class ViewExclusiveButtonSet3
    \brief A Set of Exclusive QToolButton.
 */
-class VIEW_API ViewExclusiveButtonSet :  public QObject {
+class VIEW3_API ViewExclusiveButtonSet3 :  public QObject {
   Q_OBJECT
 
 public :
 
   /// Constructor.
-  ViewExclusiveButtonSet(unsigned int size,
+  ViewExclusiveButtonSet3(unsigned int size,
 		      QToolBar * toolbar,
 		      const char * name=0);
 
   /// Destructor.
-  ~ViewExclusiveButtonSet();
+  ~ViewExclusiveButtonSet3();
   
   /// Add a ToolButton.
   void add(QToolButton *);
@@ -146,22 +146,22 @@ protected:
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewDialog
+   \class ViewDialog3
    \brief A QDialog that emit a signal when its visibility changed.
 */
-class VIEW_API ViewDialog : public QDialog {
+class VIEW3_API ViewDialog3 : public QDialog {
   Q_OBJECT
 
 public:
 
   /// Constructor.
-  ViewDialog( QWidget * parent=0, 
+  ViewDialog3( QWidget * parent=0, 
 	      const char * name=0, 
 	      bool modal=FALSE, 
 	      WFlags f=0 );
   
   /// Destructor.
-  ~ViewDialog();
+  ~ViewDialog3();
 
 public slots:
 
@@ -184,18 +184,18 @@ protected:
   
 };
 
-class ViewMainDialog : public ViewDialog {
+class ViewMainDialog3 : public ViewDialog3 {
 
 public:
 
   /// Constructor.
-  ViewMainDialog( QWidget * parent=0,			  
+  ViewMainDialog3( QWidget * parent=0,			  
 				  const char * name=0, 
 				  bool modal=FALSE, 
 				  WFlags f=0 );
   
   /// Destructor.
-  ~ViewMainDialog();
+  ~ViewMainDialog3();
 
   void setMainWidget(QWidget * mainwidget);
   
@@ -208,19 +208,19 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewPopupButton
+   \class ViewPopupButton3
    \brief A PopupButton that can be checked using slots check.
 */
-class VIEW_API ViewPopupButton : public QObject {
+class VIEW3_API ViewPopupButton3 : public QObject {
   Q_OBJECT
 
 public :
 
   /// Constructor
-  ViewPopupButton(QPopupMenu * parent, int id, char * name = NULL);
+  ViewPopupButton3(QPopupMenu * parent, int id, char * name = NULL);
 
   /// Destructor
-  ~ViewPopupButton();
+  ~ViewPopupButton3();
 
  public slots:
 
@@ -237,11 +237,11 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewStatusBar : public QStatusBar {
+class ViewStatusBar3 : public QStatusBar {
 	Q_OBJECT
 public:
-	ViewStatusBar(QWidget * parent = 0, const char * name = 0 );
-	virtual ~ViewStatusBar();
+	ViewStatusBar3(QWidget * parent = 0, const char * name = 0 );
+	virtual ~ViewStatusBar3();
 	QProgressBar * progressBar();
 public slots:
 	void setProgress(int progress,int total);
@@ -254,7 +254,7 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-VIEW_API void drawArrow(const QPixmap *,int s=1);
+VIEW3_API void drawArrow3(const QPixmap *,int s=1);
 
 /* ----------------------------------------------------------------------- */
 #endif

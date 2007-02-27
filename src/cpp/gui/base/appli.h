@@ -46,7 +46,7 @@
 
 class ViewRayBuffer;
 class ViewZBuffer;
-class QCustomEvent;
+class QEvent;
 class ViewerBuilder;
 class Viewer;
 
@@ -65,10 +65,10 @@ public:
 	virtual void startSession()= 0;
 	virtual bool stopSession() = 0;
 	virtual bool exit() = 0;
-	virtual void sendAnEvent(QCustomEvent *e) = 0;
-	virtual void postAnEvent(QCustomEvent *e) = 0;
+	virtual void sendAnEvent(QEvent *e) = 0;
+	virtual void postAnEvent(QEvent *e) = 0;
 
-    virtual bool isRunning() = 0;
+    virtual bool running() = 0;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) = 0;
 
 	virtual const std::vector<uint32_t> getSelection();

@@ -47,8 +47,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "util_qwidget.h"
-#include "icons.h"
+#include "../gui_config.h"
+#include <qdockwidget.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -63,6 +63,7 @@ class QSpinBox;
 /* ----------------------------------------------------------------------- */
 
 class ViewGLFrame;
+namespace Ui { class ViewControlPanelWidget; }
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,22 +74,13 @@ class ViewGLFrame;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewControlPanel : public ViewToolBar
+class VIEW_API ViewControlPanel : public QDockWidget
 {
   Q_OBJECT
 public:
     
   /// Constructor.
-  ViewControlPanel( ViewGLFrame * _glframe, 
-		const QString & label, 
-		QMainWindow * mw, 
-#if QT_VERSION >= 300
-		ToolBarDock = DockTop,
-#else
-		QMainWindow::ToolBarDock dock = QMainWindow::Right, 
-#endif
-		bool newLine = TRUE, 
-		const char * name = 0 );
+  ViewControlPanel( ViewGLFrame * _glframe, const QString & label, QMainWindow * mw );
 
   /// Destructor.
   ~ViewControlPanel();
@@ -96,9 +88,6 @@ public:
   bool spinBoxUsed() const;
     
 public slots:
-
-  /// This event handler is called when the orientation of the widget is changed.
-  virtual void orientationChangedEvent( Orientation orientation );
 
  /// Change the Light Mode.
   void setLightEnable(bool b);
@@ -133,57 +122,19 @@ public slots:
   /// Emit when user has select a new color for light.
   void lightSpecularChanged(const QColor&);
 
-protected:
-
-  /// Function called when the widget is moved.
-  virtual void moveEvent ( QMoveEvent * event);
-
-  /// Function called when the widget is resized.
-  virtual void resizeEvent( QResizeEvent * event); 
 
 
 private:
 
 
-  /// Scene Position Group Box.
-  QGroupBox * __sceneGroupBox;
-
-  /// LineEdit for Scene Elevation.
-  // QLineEdit* __elevation;
-  QDial* __elevation;
-  QSpinBox * __elevationSpin;
-  /// LineEdit for Scene Azimuth.
-  //QLineEdit* __azimuth;
-  QDial* __azimuth;
-  QSpinBox * __azimuthSpin;
-  /// LineEdit for Scene Zoom.
-  QSpinBox* __zoom;
-  QPushButton * __linkedZoom;
-
-  /// Light Position Group Box.
-  QGroupBox * __lightPosGroupBox;
-
-  /// Light Position Group Box.
-  QGroupBox * __lightColGroupBox;
-
-  QDial * __lightElevation;
-  QSpinBox * __lightElevationSpin;
-  QDial * __lightAzimuth;
-  QSpinBox * __lightAzimuthSpin;
-
   /// Light Ambient Color.
-  QPushButton* __LightAmbientButton;
   QColor __LightAmbient;
   /// Light Diffuse Color.
-  QPushButton* __LightDiffuseButton;
   QColor __LightDiffuse;
   /// Light Specular Color.
-  QPushButton* __LightSpecularButton;
   QColor __LightSpecular;
 
-  /// Step Position Group Box.
-  QGroupBox * __gridGroupBox;
-
+  Ui::ViewControlPanelWidget * __panel;
   bool __useSpinBox;
 };
 

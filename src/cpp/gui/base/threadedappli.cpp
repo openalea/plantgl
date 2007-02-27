@@ -59,13 +59,13 @@ ViewerThreadedAppli::~ViewerThreadedAppli(){
 
 void 
 ViewerThreadedAppli::startSession(){
-    if(!running())   launch();
-	else if(!isRunning()) contcond.wakeAll();
+    if(!isRunning())   launch();
+	else if(!running()) contcond.wakeAll();
 }
 
 bool 
 ViewerThreadedAppli::stopSession(){
-    if(isRunning()){
+    if(running()){
 	   sendAnEvent(new ViewEndEvent());
        return true;
     }
@@ -74,11 +74,11 @@ ViewerThreadedAppli::stopSession(){
 
 bool 
 ViewerThreadedAppli::exit() {
-    if(running()){
+    if(isRunning()){
 	  startSync();
 	  __continue.unlock();
-	  if(!__running.locked())contcond.wakeAll();
-	  else  sendAnEvent(new ViewEndEvent());
+	  if(running())sendAnEvent(new ViewEndEvent());
+	  else  contcond.wakeAll();
 	  sync();
 	  terminate();
       return true;
@@ -87,30 +87,35 @@ ViewerThreadedAppli::exit() {
 }
 
 void 
-ViewerThreadedAppli::sendAnEvent(QCustomEvent *e) {
+ViewerThreadedAppli::sendAnEvent(QEvent *e) {
 	startSession();
 	__viewer.get()->send(e);
 }
 
 void 
-ViewerThreadedAppli::postAnEvent(QCustomEvent *e) {
+ViewerThreadedAppli::postAnEvent(QEvent *e) {
 	startSession();
 	__viewer.get()->post(e);
 }
 
 bool 
-ViewerThreadedAppli::isRunning() {
-   return running() && __running.locked(); 
+ViewerThreadedAppli::running() {
+   if (!isRunning()) return false;
+   else if (__running.tryLock()) { __running.unlock(); return false; }
+   else return true;
 }
 
 bool 
 ViewerThreadedAppli::Wait ( unsigned long time ) {
-   return session.wait(time);
+   sessionmutex.lock();
+   bool b = session.wait(&sessionmutex,time);
+   sessionmutex.unlock();
+   return b;
 }
 
 void 
 ViewerThreadedAppli::launch(){ 	
-	if(!__continue.locked())__continue.lock(); 
+	__continue.tryLock(); 
 	startSync(); start(); sync(); 
 }
 
@@ -121,7 +126,7 @@ void
 ViewerThreadedAppli::sync() { synccond.wait(&syncmutex); syncmutex.unlock(); }
 
 void 
-ViewerThreadedAppli::join() { while(syncmutex.locked()); synccond.wakeAll(); }
+ViewerThreadedAppli::join() { while(!syncmutex.tryLock()); syncmutex.unlock(); synccond.wakeAll(); }
 
 
 void 
@@ -131,7 +136,6 @@ ViewerThreadedAppli::init(){
     if(!__appli)  __appli.set(new QApplication(argc,argv));
     if(!__viewer) {
 	   __viewer.set(build());
-       __appli.get()->setMainWidget(__viewer);
     }
 }
 
@@ -158,13 +162,13 @@ ViewerThreadedAppli::run(){
 	std::string p = get_cwd();
     __running.lock();
 	join();
-	while(__continue.locked()){
+	while(!__continue.tryLock()){
 	  exec();
 	  session.wakeAll();
-	  if(__continue.locked())
-		  contcond.wait(&__running);
+	  if(__continue.tryLock()) __continue.unlock();
+	  else { contcond.wait(&__running); }
 	}
-    __running.unlock();
+	__continue.unlock();
 	chg_dir(p);
 	cleanup();
 	join();
@@ -173,7 +177,7 @@ ViewerThreadedAppli::run(){
 const std::vector<uint32_t>
 ViewerThreadedAppli::getSelection() {
 	std::vector<uint32_t> res;
-    if(isRunning()){
+    if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
       sendAnEvent(event);
     }

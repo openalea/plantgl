@@ -16,7 +16,7 @@ static const WORD MAX_CONSOLE_LINES = 1000;
 static bool isrunning = false;
 #endif
 
-void RedirectIOToConsole()
+void RedirectIOToConsole3()
 
 {
 #ifdef _WIN32

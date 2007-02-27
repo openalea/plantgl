@@ -20,6 +20,6 @@ if isinstance( platform, Win32 ):
     res=exe_env.RES('icon.rc')
     source.append(res)
 
-exe_env.ALEAProgram( "pglviewer", source, LIBS = LIBRARIES )
+exe_env.ALEAProgram( "pglviewer-qt3", source, LIBS = LIBRARIES )
 
 

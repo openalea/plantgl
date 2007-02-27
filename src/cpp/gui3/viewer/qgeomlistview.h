@@ -16,7 +16,7 @@
  */
 
 /*! \file actn_qgeomlistview.h
-    \brief Definition of the action class GeomListViewBuilder.
+    \brief Definition of the action class GeomListViewBuilder3.
 */
 
 
@@ -24,7 +24,7 @@
 #define __actn_geomlistviewbuilder_h__
 
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <scenegraph/core/action.h>
 #include <scenegraph/core/sceneobject.h>
 #include <scenegraph/container/indexarray.h>
@@ -60,24 +60,24 @@ class Color4;
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class GeomListViewBuilder
+   \class GeomListViewBuilder3
    \brief An action which create a QListView with  objects of the scene.
 */
 
 
-class VIEW_API GeomListViewBuilder : public Action
+class VIEW3_API GeomListViewBuilder3 : public Action
 {
 
   public:
 
-  /** Constructs a GeomListViewBuilder with the parent widget \e parent and the name \e name */
-  GeomListViewBuilder( QWidget * parent = 0 , char * name = 0 );
+  /** Constructs a GeomListViewBuilder3 with the parent widget \e parent and the name \e name */
+  GeomListViewBuilder3( QWidget * parent = 0 , char * name = 0 );
 
-  /** Constructs a GeomListViewBuilder with the parent widget \e parent and the name \e name */
-  GeomListViewBuilder( QListView * list );
+  /** Constructs a GeomListViewBuilder3 with the parent widget \e parent and the name \e name */
+  GeomListViewBuilder3( QListView * list );
 
   /// Destructor
-  virtual ~GeomListViewBuilder( );
+  virtual ~GeomListViewBuilder3( );
 
   /// Clears \e self.
   void clear( );

@@ -46,9 +46,8 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qstring.h>
-#include <qpopupmenu.h>   
+#include <qmenu.h>   
 #include "object.h"
-class ClippingPlaneWidget;
 class ViewDialog;
 
 /* ----------------------------------------------------------------------- */
@@ -73,7 +72,7 @@ public:
   /// Destructor.
   virtual ~ViewClippingPlaneGL();
   
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   bool isPlaneEnable(int);
   double valA(int);
@@ -82,6 +81,12 @@ public:
   double valD(int);
 
   ViewDialog * getControl() const;
+
+  /// Initialize
+  virtual void initializeGL();
+
+  /// GL command.
+  virtual void paintGL(); 
 
 public slots:
 
@@ -99,41 +104,34 @@ public slots:
   void setPlane5Enable();
   void setPlane6Enable();
 
-  void setPlane1A(const QString&);
-  void setPlane2A(const QString&);
-  void setPlane3A(const QString&);
-  void setPlane4A(const QString&);
-  void setPlane5A(const QString&);
-  void setPlane6A(const QString&);
+  void setPlane1A(double);
+  void setPlane2A(double);
+  void setPlane3A(double);
+  void setPlane4A(double);
+  void setPlane5A(double);
+  void setPlane6A(double);
 
-  void setPlane1B(const QString&);
-  void setPlane2B(const QString&);
-  void setPlane3B(const QString&);
-  void setPlane4B(const QString&);
-  void setPlane5B(const QString&);
-  void setPlane6B(const QString&);
+  void setPlane1B(double);
+  void setPlane2B(double);
+  void setPlane3B(double);
+  void setPlane4B(double);
+  void setPlane5B(double);
+  void setPlane6B(double);
 
-  void setPlane1C(const QString&);
-  void setPlane2C(const QString&);
-  void setPlane3C(const QString&);
-  void setPlane4C(const QString&);
-  void setPlane5C(const QString&);
-  void setPlane6C(const QString&);
+  void setPlane1C(double);
+  void setPlane2C(double);
+  void setPlane3C(double);
+  void setPlane4C(double);
+  void setPlane5C(double);
+  void setPlane6C(double);
 
-  void setPlane1D(const QString&);
-  void setPlane2D(const QString&);
-  void setPlane3D(const QString&);
-  void setPlane4D(const QString&);
-  void setPlane5D(const QString&);
-  void setPlane6D(const QString&);
+  void setPlane1D(double);
+  void setPlane2D(double);
+  void setPlane3D(double);
+  void setPlane4D(double);
+  void setPlane5D(double);
+  void setPlane6D(double);
 
-  void validValue();
-
-  /// Initialize
-  virtual void initializeGL();
-
-  /// GL command.
-  virtual void paintGL(); 
 
 signals:
 
@@ -157,42 +155,7 @@ protected :
   double __D[6];
 
   ViewDialog * __control;
-  ClippingPlaneWidget * __cpw;
 };
-
-/* ----------------------------------------------------------------------- */
-
-/// Menu to control a ViewClippingPlaneGL
-class VIEW_API ViewCPlaneMenu : public QPopupMenu {
-   Q_OBJECT
- 
-public :
-  
-  ViewCPlaneMenu(ViewClippingPlaneGL * cp, QWidget * parent=0, const char * name=0);
-  
-  ~ViewCPlaneMenu();
-  
-public slots :
-
-  void setPlane1Enable(bool);
-  void setPlane2Enable(bool);
-  void setPlane3Enable(bool);
-  void setPlane4Enable(bool);
-  void setPlane5Enable(bool);
-  void setPlane6Enable(bool);
-  void controlVisibility(bool);
-  
-protected :    
-  
-  int idP1;
-  int idP2;
-  int idP3;
-  int idP4;
-  int idP5;
-  int idP6;
-  int ctrl;
-};
-
 
 /* ----------------------------------------------------------------------- */
 #endif

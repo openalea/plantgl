@@ -62,7 +62,7 @@
 /* ----------------------------------------------------------------------- */
 
 
-ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,  
+ViewControlPanel3::ViewControlPanel3( ViewGLFrame3 * _glframe,  
 			    const QString & label, 
 			    QMainWindow * mw, 
 #if QT_VERSION >= 300
@@ -72,7 +72,7 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 #endif
 			    bool newLine , 
 			    const char * name )
-    : ViewToolBar( label, mw, dock, newLine, name ),
+    : ViewToolBar3( label, mw, dock, newLine, name ),
 	__useSpinBox(true)
 {
 
@@ -80,14 +80,14 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 
 	QObject::connect(this,SIGNAL(orientationChanged( Orientation )),
 			this,SLOT(orientationChangedEvent( Orientation )) );
-	QPixmap logo(ViewerIcon::getPixmap(ViewerIcon::icon_logobar));
+	QPixmap logo(ViewerIcon3::getPixmap(ViewerIcon3::icon_logobar));
 	QToolButton * bt = new QToolButton(logo,
 			"","",mw,SLOT(displayAbout()),this);
 	bt->setUsesBigPixmap(true);
 	
 
-	ViewRendererGL * sc = _glframe->getSceneRenderer();
-	ViewSceneRendererGL * sc2 = dynamic_cast<ViewSceneRendererGL *>(sc);
+	ViewRendererGL3 * sc = _glframe->getSceneRenderer();
+	ViewSceneRendererGL3 * sc2 = dynamic_cast<ViewSceneRendererGL3 *>(sc);
 
 	if(sc2){
 	  QObject::connect(sc2,SIGNAL(lightEnableChanged(bool)),
@@ -106,9 +106,9 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 	_lblZoom->setGeometry(80,105,30,30);
 	QLabel* _StepMoveLabel = new QLabel(tr("Move"),__sceneGroupBox);
 	_StepMoveLabel->setGeometry(80,150,30,20);
-	ViewCameraGL * camera = _glframe->getCamera();
+	ViewCameraGL3 * camera = _glframe->getCamera();
 
-    QPixmap unlinked(ViewerIcon::getPixmap(ViewerIcon::icon_unlinked));
+    QPixmap unlinked(ViewerIcon3::getPixmap(ViewerIcon3::icon_unlinked));
     __linkedZoom = new QPushButton("",__sceneGroupBox);
 	__linkedZoom->setGeometry(1,105,15,30);
 	setLinked(camera->isDimLock());
@@ -181,7 +181,7 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 			  camera,SLOT(setStepMove(int)) );
 
 	//Light azimuth & elevation
-	ViewLightGL * light = _glframe->getLight();
+	ViewLightGL3 * light = _glframe->getLight();
 	
 
 	__lightPosGroupBox = new QGroupBox(tr("Light Position"),this,"Light Position Group Box");
@@ -302,7 +302,7 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 
 
 	//step for the grid
-	ViewGridGL * grid = _glframe->getGrid();
+	ViewGridGL3 * grid = _glframe->getGrid();
 
 	QSpinBox* __unitGrid= new QSpinBox(1,INT_MAX,1,__gridGroupBox,"SizeGrid");
 	__unitGrid->setValue(grid->getGridUnit());
@@ -330,25 +330,25 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 }
 
 
-ViewControlPanel::~ViewControlPanel()
+ViewControlPanel3::~ViewControlPanel3()
 {
 }
 
 void
-ViewControlPanel::setLinked(bool b)
+ViewControlPanel3::setLinked(bool b)
 {
   if(!b){
-   QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::icon_linked));
+   QPixmap linked(ViewerIcon3::getPixmap(ViewerIcon3::icon_linked));
    __linkedZoom->setPixmap(linked);
   }
   else {
-   QPixmap unlinked(ViewerIcon::getPixmap(ViewerIcon::icon_unlinked));
+   QPixmap unlinked(ViewerIcon3::getPixmap(ViewerIcon3::icon_unlinked));
    __linkedZoom->setPixmap(unlinked);
   }
 }
 
 void
-ViewControlPanel::setLightEnable(bool a)
+ViewControlPanel3::setLightEnable(bool a)
 {
   if(!a){
     __lightPosGroupBox->hide();
@@ -361,23 +361,23 @@ ViewControlPanel::setLightEnable(bool a)
 }
 
 void 
-ViewControlPanel::moveEvent ( QMoveEvent * event)
+ViewControlPanel3::moveEvent ( QMoveEvent * event)
 {
 }
 
 void 
-ViewControlPanel::orientationChangedEvent( Orientation orientation )
+ViewControlPanel3::orientationChangedEvent( Orientation orientation )
 {
 }
 
 
 void 
-ViewControlPanel::resizeEvent( QResizeEvent * event)
+ViewControlPanel3::resizeEvent( QResizeEvent * event)
 { 
 }
 
 void 
-ViewControlPanel::setLightAmbient(const QColor& color)
+ViewControlPanel3::setLightAmbient(const QColor& color)
 {
   __LightAmbient = color;
   QPixmap col(40,30);
@@ -386,7 +386,7 @@ ViewControlPanel::setLightAmbient(const QColor& color)
 }
 
 void 
-ViewControlPanel::selectLightAmbient()
+ViewControlPanel3::selectLightAmbient()
 {
 
   QColor LightAmbient = QColorDialog::getColor(__LightAmbient,this);
@@ -400,7 +400,7 @@ ViewControlPanel::selectLightAmbient()
 }
 
 void 
-ViewControlPanel::setLightDiffuse(const QColor& color)
+ViewControlPanel3::setLightDiffuse(const QColor& color)
 {
   __LightDiffuse = color;
   QPixmap col(40,30);
@@ -409,7 +409,7 @@ ViewControlPanel::setLightDiffuse(const QColor& color)
 }
 
 void 
-ViewControlPanel::selectLightDiffuse()
+ViewControlPanel3::selectLightDiffuse()
 {
 
   QColor LightDiffuse = QColorDialog::getColor(__LightDiffuse,this);
@@ -423,7 +423,7 @@ ViewControlPanel::selectLightDiffuse()
 }
 
 void 
-ViewControlPanel::setLightSpecular(const QColor& color)
+ViewControlPanel3::setLightSpecular(const QColor& color)
 {
   __LightSpecular = color;
   QPixmap col(40,30);
@@ -432,7 +432,7 @@ ViewControlPanel::setLightSpecular(const QColor& color)
 }
 
 void 
-ViewControlPanel::selectLightSpecular()
+ViewControlPanel3::selectLightSpecular()
 {
 
   QColor LightSpecular = QColorDialog::getColor(__LightSpecular,this);
@@ -446,7 +446,7 @@ ViewControlPanel::selectLightSpecular()
 }
 
 void
-ViewControlPanel::useSpinBox(bool b){
+ViewControlPanel3::useSpinBox(bool b){
   if(__useSpinBox != b){
 	__useSpinBox = b;
 	if(__useSpinBox){
@@ -473,6 +473,6 @@ ViewControlPanel::useSpinBox(bool b){
 }
 
 bool
-ViewControlPanel::spinBoxUsed() const{
+ViewControlPanel3::spinBoxUsed() const{
   return __useSpinBox;
 }

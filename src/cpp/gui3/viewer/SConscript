@@ -2,5 +2,5 @@
 Import( "env" )
 
 includes= env.ALEAGlob('*.h')
-env.ALEAIncludes( "plantgl/gui/viewer", includes )
+env.ALEAIncludes( "plantgl/gui3/viewer", includes )
 

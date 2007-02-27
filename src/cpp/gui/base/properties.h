@@ -80,7 +80,7 @@ public:
 		bool config = false,
 		const char* name = 0,
 		bool modal = FALSE, 
-		WFlags fl = 0 );
+		Qt::WindowFlags fl = 0 );
 
   ~ViewProperties();
 

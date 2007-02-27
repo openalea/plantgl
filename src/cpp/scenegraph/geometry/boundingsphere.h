@@ -234,7 +234,7 @@ typedef RCPtr<BoundingSphere> BoundingSpherePtr;
 PGL_END_NAMESPACE
 
 /// Write BoundingSphere \b in \b stream.
-SG_API std::ostream& operator<<( std::ostream& stream, PGL(BoundingSphere&) b );
+// SG_API std::ostream& operator<<( std::ostream& stream, PGL(BoundingSphere&) b );
 
 /* ----------------------------------------------------------------------- */
 // __geom_boundingsphere_h__

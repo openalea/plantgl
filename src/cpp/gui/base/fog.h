@@ -49,7 +49,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-class FogWidget;
+namespace Ui { class FogWidget; }
 
 /* ----------------------------------------------------------------------- */
 
@@ -83,7 +83,7 @@ public:
   /// Destructor.
   virtual ~ViewFogGL();
   
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   bool enable() const;
 
@@ -129,7 +129,7 @@ public slots:
   /// GL command for Grid.
   virtual void paintGL(); 
   
-  virtual void changeStepEvent(const int newStep, const int oldStep);
+  virtual void changeStepEvent(double newStep,double oldStep);
 
  signals:
 
@@ -154,7 +154,7 @@ public slots:
   double __end;
 
   ViewDialog * __control;
-  FogWidget * __fogw;
+  Ui::FogWidget * __fogw;
 };
 
 /* ----------------------------------------------------------------------- */

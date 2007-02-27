@@ -40,44 +40,44 @@
 
 /*  ------------------------------------------------------------------------ */
 
-ViewSceneChangeEvent::ViewSceneChangeEvent(int type) :
-  ViewEvent(12345),
+ViewSceneChangeEvent3::ViewSceneChangeEvent3(int type) :
+  ViewEvent3(12345),
   scene_type(type)
 {
 }
 
-ViewSceneChangeEvent::~ViewSceneChangeEvent()
+ViewSceneChangeEvent3::~ViewSceneChangeEvent3()
 {
   // Nothing to do.
 }
 
-ViewSceneChangeEvent *
-ViewSceneChangeEvent::copy()
+ViewSceneChangeEvent3 *
+ViewSceneChangeEvent3::copy()
 {
-  return new ViewSceneChangeEvent(scene_type);
+  return new ViewSceneChangeEvent3(scene_type);
 }
 
 const int&
-ViewSceneChangeEvent::getSceneType() const
+ViewSceneChangeEvent3::getSceneType() const
 {
   return scene_type;
 }
 
 void 
-ViewSceneChangeEvent::setSceneType(const int& i)
+ViewSceneChangeEvent3::setSceneType(const int& i)
 {
   scene_type =i;
 }
 
 /*  ------------------------------------------------------------------------ */
 
-ViewFileChangeEvent::ViewFileChangeEvent(const QString& file) :
-  ViewEvent(12348),
+ViewFileChangeEvent3::ViewFileChangeEvent3(const QString& file) :
+  ViewEvent3(12348),
   filename(file)
 {
 }
 
-ViewFileChangeEvent::~ViewFileChangeEvent()
+ViewFileChangeEvent3::~ViewFileChangeEvent3()
 {
   // Nothing to do.
 }
@@ -85,15 +85,15 @@ ViewFileChangeEvent::~ViewFileChangeEvent()
 
 /* ----------------------------------------------------------------------- */
 
-ViewImageSaveEvent::ViewImageSaveEvent(const QString& file,const QString& form,bool _withAlpha) :
-  ViewEvent(12350),
+ViewImageSaveEvent3::ViewImageSaveEvent3(const QString& file,const QString& form,bool _withAlpha) :
+  ViewEvent3(12350),
   filename(file),
   format(form),
   withAlpha(_withAlpha)
 {
 }
 
-ViewImageSaveEvent::~ViewImageSaveEvent()
+ViewImageSaveEvent3::~ViewImageSaveEvent3()
 {
   // Nothing to do.
 }
@@ -101,12 +101,12 @@ ViewImageSaveEvent::~ViewImageSaveEvent()
 
 /* ----------------------------------------------------------------------- */
 
-ViewRefreshEvent::ViewRefreshEvent() :
-  ViewEvent(12349)
+ViewRefreshEvent3::ViewRefreshEvent3() :
+  ViewEvent3(12349)
 {
 }
 
-ViewRefreshEvent::~ViewRefreshEvent()
+ViewRefreshEvent3::~ViewRefreshEvent3()
 {
   // Nothing to do.
 }
@@ -116,23 +116,23 @@ ViewRefreshEvent::~ViewRefreshEvent()
 
 
 
-ViewSelectRecoverEvent::ViewSelectRecoverEvent() :
-  ViewEvent(12347),
+ViewSelectRecoverEvent3::ViewSelectRecoverEvent3() :
+  ViewEvent3(12347),
   __exchange(0){
   __exchange =new std::vector<uint32_t>();
 }
 
-ViewSelectRecoverEvent::ViewSelectRecoverEvent(std::vector<uint32_t> * e) :
-  ViewEvent(12347),
+ViewSelectRecoverEvent3::ViewSelectRecoverEvent3(std::vector<uint32_t> * e) :
+  ViewEvent3(12347),
   __exchange(e){
 }
 
-ViewSelectRecoverEvent::~ViewSelectRecoverEvent(){
+ViewSelectRecoverEvent3::~ViewSelectRecoverEvent3(){
   // Nothing to do.
 }
 
 void
-ViewSelectRecoverEvent::setSelection(const std::vector<uint32_t>& a){
+ViewSelectRecoverEvent3::setSelection(const std::vector<uint32_t>& a){
   *__exchange = a;
 }
 
@@ -140,66 +140,66 @@ ViewSelectRecoverEvent::setSelection(const std::vector<uint32_t>& a){
 
 /* ----------------------------------------------------------------------- */
 
-ViewSelectionSet::ViewSelectionSet(const std::vector<uint32_t>& d) :
-  ViewEvent(12355),
+ViewSelectionSet3::ViewSelectionSet3(const std::vector<uint32_t>& d) :
+  ViewEvent3(12355),
   __data(d){
 }
 
-ViewSelectionSet::~ViewSelectionSet(){
+ViewSelectionSet3::~ViewSelectionSet3(){
   // Nothing to do.
 }
 
 const std::vector<uint32_t>& 
-ViewSelectionSet::getSelection() const{
+ViewSelectionSet3::getSelection() const{
   return __data;
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewEndEvent::ViewEndEvent() :
-  ViewEvent(12346){
+ViewEndEvent3::ViewEndEvent3() :
+  ViewEvent3(12346){
 }
 
-ViewEndEvent::~ViewEndEvent(){
+ViewEndEvent3::~ViewEndEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewFullScreenEvent::ViewFullScreenEvent(bool b) :
-  ViewEvent(12352),
+ViewFullScreenEvent3::ViewFullScreenEvent3(bool b) :
+  ViewEvent3(12352),
   value(b){
 }
 
-ViewFullScreenEvent::~ViewFullScreenEvent(){
+ViewFullScreenEvent3::~ViewFullScreenEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewGLFrameOnlyEvent::ViewGLFrameOnlyEvent(bool b) :
-  ViewEvent(12353),
+ViewGLFrameOnlyEvent3::ViewGLFrameOnlyEvent3(bool b) :
+  ViewEvent3(12353),
   value(b){
 }
 
-ViewGLFrameOnlyEvent::~ViewGLFrameOnlyEvent(){
+ViewGLFrameOnlyEvent3::~ViewGLFrameOnlyEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewQuestionEvent::ViewQuestionEvent() :
-  ViewEvent(12351),
+ViewQuestionEvent3::ViewQuestionEvent3() :
+  ViewEvent3(12351),
   result(new int(-1)){
 }
 
-ViewQuestionEvent::ViewQuestionEvent(const QString& _caption,
+ViewQuestionEvent3::ViewQuestionEvent3(const QString& _caption,
 				 const QString& _text,
 				 const QString& _but0txt,
 				 const QString& _but1txt,
 				 const QString& _but2txt,
 				 int * _result) :
-  ViewEvent(12351),
+  ViewEvent3(12351),
   result((_result?_result:new int(-1))),
   caption(_caption),
   text(_text),
@@ -208,19 +208,19 @@ ViewQuestionEvent::ViewQuestionEvent(const QString& _caption,
   but2txt(_but2txt){
 }
 
-ViewQuestionEvent::~ViewQuestionEvent(){
+ViewQuestionEvent3::~ViewQuestionEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewItemSelectionEvent::ViewItemSelectionEvent(const QString& _caption,
+ViewItemSelectionEvent3::ViewItemSelectionEvent3(const QString& _caption,
 				 const QString& _text,
 				 const QStringList& _values,
 				 bool _editable,
 				 QString * res,
 				 bool * _ok) :
-  ViewEvent(12354),
+  ViewEvent3(12354),
 	result((res?res:new QString())),
 	ok((_ok?_ok:new bool(false))),
 	caption(_caption),
@@ -229,84 +229,84 @@ ViewItemSelectionEvent::ViewItemSelectionEvent(const QString& _caption,
 	editable(_editable){
 }
 
-ViewItemSelectionEvent::~ViewItemSelectionEvent(){
+ViewItemSelectionEvent3::~ViewItemSelectionEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewAnimationEvent::ViewAnimationEvent(bool m) :
-  ViewEvent(12356),
+ViewAnimationEvent3::ViewAnimationEvent3(bool m) :
+  ViewEvent3(12356),
   mode(m){
 }
 
-ViewAnimationEvent::~ViewAnimationEvent(){
+ViewAnimationEvent3::~ViewAnimationEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewBgColorEvent::ViewBgColorEvent(const QColor& c) :
-  ViewEvent(12357),
+ViewBgColorEvent3::ViewBgColorEvent3(const QColor& c) :
+  ViewEvent3(12357),
   color(c){
 }
 
-ViewBgColorEvent::~ViewBgColorEvent(){
+ViewBgColorEvent3::~ViewBgColorEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewGridEvent::ViewGridEvent(bool _xy, 
+ViewGridEvent3::ViewGridEvent3(bool _xy, 
 							 bool _yz, 
 							 bool _xz, 
 							 bool _axis, 
 							 int _size, 
 							 int _unit, 
 							 int _def) :
-  ViewEvent(12358),
+  ViewEvent3(12358),
   xy(_xy),yz(_yz),xz(_xz),axis(_axis),size(_size),unit(_unit),def(_def){
 }
 
-ViewGridEvent::~ViewGridEvent(){
+ViewGridEvent3::~ViewGridEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewCameraEvent::ViewCameraEvent(const Vector3& _pos, 
+ViewCameraEvent3::ViewCameraEvent3(const Vector3& _pos, 
 								 const Vector3& _target,
 								 float _azimuth, 
 								 float _elevation, 
 								 int _def):
-  ViewEvent(12359),
+  ViewEvent3(12359),
   pos(_pos),target(_target),azimuth(_azimuth),elevation(_elevation),def(_def){
 }
 
-ViewCameraEvent::~ViewCameraEvent(){
+ViewCameraEvent3::~ViewCameraEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewPosEvent::ViewPosEvent(int _x, int _y, int _w, int _h, int _def):
-  ViewEvent(12360),
+ViewPosEvent3::ViewPosEvent3(int _x, int _y, int _w, int _h, int _def):
+  ViewEvent3(12360),
   x(_x),y(_y),w(_w),h(_h),def(_def){
 }
 
-ViewPosEvent::~ViewPosEvent(){
+ViewPosEvent3::~ViewPosEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewFileSelEvent::ViewFileSelEvent(const QString& _caption,
+ViewFileSelEvent3::ViewFileSelEvent3(const QString& _caption,
 				   const QString& _startPath,
 				   const QString& _filter,
 				   bool _existing, 
 				   bool _dir,
 				   QString * res) :
-  ViewEvent(12361),
+  ViewEvent3(12361),
 	  result((res?res:new QString())),
 	caption(_caption),
 	startPath(_startPath),
@@ -315,19 +315,19 @@ ViewFileSelEvent::ViewFileSelEvent(const QString& _caption,
 	existing(_existing){
 }
 
-ViewFileSelEvent::~ViewFileSelEvent(){
+ViewFileSelEvent3::~ViewFileSelEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewRayBuffEvent::ViewRayBuffEvent(const TOOLS(Vector3)& _pos,
+ViewRayBuffEvent3::ViewRayBuffEvent3(const TOOLS(Vector3)& _pos,
 				   const TOOLS(Vector3)& _dir,
 		           const TOOLS(Vector3)& _dx, 
 		           const TOOLS(Vector3)& _dy,
 		           int _sx, int _sy,
-				   ViewRayBuffer ** res) :
-  ViewEvent(12362),
+				   ViewRayBuffer3 ** res) :
+  ViewEvent3(12362),
 	result((res?res:NULL)),
 	pos(_pos),
 	dir(_dir),
@@ -335,53 +335,53 @@ ViewRayBuffEvent::ViewRayBuffEvent(const TOOLS(Vector3)& _pos,
 	dy(_dy),
 	sx(_sx),
 	sy(_sy){
-	if(!result)result = new  ViewRayBuffer *;
+	if(!result)result = new  ViewRayBuffer3 *;
   }
 
-ViewRayBuffEvent::~ViewRayBuffEvent(){
+ViewRayBuffEvent3::~ViewRayBuffEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewZBuffEvent::ViewZBuffEvent(ViewZBuffer ** res) :
-  ViewEvent(12366),
+ViewZBuffEvent3::ViewZBuffEvent3(ViewZBuffer3 ** res) :
+  ViewEvent3(12366),
 	result((res?res:NULL)){
-	if(!result)result = new  ViewZBuffer *;
+	if(!result)result = new  ViewZBuffer3 *;
   }
 
-ViewZBuffEvent::~ViewZBuffEvent(){
+ViewZBuffEvent3::~ViewZBuffEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewProjSizeEvent::ViewProjSizeEvent(double * _size, int * _nbpix, double * _pixwidth) :
-  ViewEvent(12363),
+ViewProjSizeEvent3::ViewProjSizeEvent3(double * _size, int * _nbpix, double * _pixwidth) :
+  ViewEvent3(12363),
     nbpixel(_nbpix),
 	pixelwidth(_pixwidth),
 	size((_size?_size:new double(0.0)))
 {
 }
 
-ViewProjSizeEvent::~ViewProjSizeEvent(){
+ViewProjSizeEvent3::~ViewProjSizeEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
 
-ViewCameraProjEvent::ViewCameraProjEvent(bool _mode) :
-  ViewEvent(12364),
+ViewCameraProjEvent3::ViewCameraProjEvent3(bool _mode) :
+  ViewEvent3(12364),
     mode(_mode)
 {
 }
 
-ViewCameraProjEvent::~ViewCameraProjEvent(){
+ViewCameraProjEvent3::~ViewCameraProjEvent3(){
   // Nothing to do.
 }
 
 /* ----------------------------------------------------------------------- */
 
 /// 12365 used in view_geomevent
-/// 12366 used in ViewZBuffEvent
+/// 12366 used in ViewZBuffEvent3

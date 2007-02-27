@@ -59,11 +59,11 @@ TOOLS_USING(Vector3)
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewEvent : public QCustomEvent {
+class VIEW_API ViewEvent : public QEvent {
 public:
 
   ViewEvent(int type):
-	QCustomEvent(type),
+	QEvent(QEvent::Type(type)),
 	sent_event(false){}
 
   virtual ~ViewEvent(){}

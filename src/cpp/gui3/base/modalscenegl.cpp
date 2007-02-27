@@ -46,11 +46,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewModalRendererGL::ViewModalRendererGL(ViewCameraGL * camera,
-					 ViewLightGL * light,
+ViewModalRendererGL3::ViewModalRendererGL3(ViewCameraGL3 * camera,
+					 ViewLightGL3 * light,
 					 QGLWidget * parent, 
 					 const char * name) :
-  ViewSceneRendererGL(camera,light,parent,name),
+  ViewSceneRendererGL3(camera,light,parent,name),
   __renderingMode(1)
 {
   __renderingOption[0] = false;
@@ -58,26 +58,26 @@ ViewModalRendererGL::ViewModalRendererGL(ViewCameraGL * camera,
 }
 
 
-ViewModalRendererGL::~ViewModalRendererGL()
+ViewModalRendererGL3::~ViewModalRendererGL3()
 {
 }
 
 /* ----------------------------------------------------------------------- */
 
 int 
-ViewModalRendererGL::getRenderingMode() const 
+ViewModalRendererGL3::getRenderingMode() const 
 {
   return __renderingMode;
 }
 
 bool 
-ViewModalRendererGL::isBBoxRenderingEnable() const 
+ViewModalRendererGL3::isBBoxRenderingEnable() const 
 {
   return __renderingOption[0];
 }
 
 bool 
-ViewModalRendererGL::isCtrlPointRenderingEnable() const
+ViewModalRendererGL3::isCtrlPointRenderingEnable() const
 {
   return __renderingOption[1];
 }
@@ -85,7 +85,7 @@ ViewModalRendererGL::isCtrlPointRenderingEnable() const
 /* ----------------------------------------------------------------------- */
 
 void 
-ViewModalRendererGL::setRenderVolume()
+ViewModalRendererGL3::setRenderVolume()
 {
   __renderingMode=1;
   emit renderingModeChanged(__renderingMode);
@@ -94,7 +94,7 @@ ViewModalRendererGL::setRenderVolume()
 }
 
 void 
-ViewModalRendererGL::setRenderVolumenWire()
+ViewModalRendererGL3::setRenderVolumenWire()
 {
   __renderingMode=4;
   emit renderingModeChanged(__renderingMode);
@@ -103,7 +103,7 @@ ViewModalRendererGL::setRenderVolumenWire()
 }
 
 void 
-ViewModalRendererGL::setRenderWire()
+ViewModalRendererGL3::setRenderWire()
 {
   __renderingMode=2;
   emit renderingModeChanged(__renderingMode);
@@ -112,7 +112,7 @@ ViewModalRendererGL::setRenderWire()
 }
 
 void 
-ViewModalRendererGL::setRenderSkeleton()
+ViewModalRendererGL3::setRenderSkeleton()
 {
   __renderingMode=3;
   emit renderingModeChanged(__renderingMode);
@@ -121,7 +121,7 @@ ViewModalRendererGL::setRenderSkeleton()
 }
 
 void 
-ViewModalRendererGL::setRenderCtrlPoint()
+ViewModalRendererGL3::setRenderCtrlPoint()
 {
   __renderingOption[1]=!__renderingOption[1];
   emit ctrlPointsRenderingChanged(__renderingOption[1]);
@@ -131,7 +131,7 @@ ViewModalRendererGL::setRenderCtrlPoint()
 }
 
 void 
-ViewModalRendererGL::setRenderBBox()
+ViewModalRendererGL3::setRenderBBox()
 {
   __renderingOption[0]=!__renderingOption[0];
   emit bboxRenderingChanged(__renderingOption[0]);
@@ -143,21 +143,21 @@ ViewModalRendererGL::setRenderBBox()
 /* ----------------------------------------------------------------------- */
 
 QPopupMenu * 
-ViewModalRendererGL::createToolsMenu(QWidget * parent)
+ViewModalRendererGL3::createToolsMenu(QWidget * parent)
 {
-  return new ViewRenderingModeMenu(this,parent);
+  return new ViewRenderingModeMenu3(this,parent);
 }
 
 void 
-ViewModalRendererGL::fillToolBar(QToolBar * toolBar)
+ViewModalRendererGL3::fillToolBar(QToolBar * toolBar)
 {
-  ViewExclusiveButtonSet * bset = new ViewExclusiveButtonSet(4,toolBar);
-  QPixmap volume(ViewerIcon::icon_solid);
-  QPixmap wire(ViewerIcon::icon_wire);
-  QPixmap skeleton(ViewerIcon::icon_skeleton);
-  QPixmap ctrlpoint(ViewerIcon::icon_ctrlpoint);
-  QPixmap bbox(ViewerIcon::icon_bbox);
-  QPixmap light(ViewerIcon::icon_light);
+  ViewExclusiveButtonSet3 * bset = new ViewExclusiveButtonSet3(4,toolBar);
+  QPixmap volume(ViewerIcon3::icon_solid);
+  QPixmap wire(ViewerIcon3::icon_wire);
+  QPixmap skeleton(ViewerIcon3::icon_skeleton);
+  QPixmap ctrlpoint(ViewerIcon3::icon_ctrlpoint);
+  QPixmap bbox(ViewerIcon3::icon_bbox);
+  QPixmap light(ViewerIcon3::icon_light);
 
     
   QToolButton * bt = new QToolButton(volume,  tr("Volume Rendering"), tr("Volume"),

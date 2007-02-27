@@ -46,7 +46,6 @@
 /* ----------------------------------------------------------------------- */
 
 #include "util_qwidget.h"
-class QBrowser;
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,19 +72,10 @@ class VIEW_API ViewQObjectBrowser : public ViewDialog
 
 
 protected:
-  
-  /// Function called when the widget is resized.
-  virtual void resizeEvent( QResizeEvent * event); 
-  
+    
   /// This event handler is called when a key is pressed for this widget. 
   virtual void keyPressEvent (QKeyEvent * e);
-  
-private:
-  
-
-  /// The GeomListViewBuilder Object
-  QBrowser * __browser;
-  
+   
    
 };
 

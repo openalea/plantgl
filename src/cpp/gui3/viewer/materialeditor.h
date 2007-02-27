@@ -40,7 +40,7 @@
  */
 
  /*! \file view_materialeditor.h
-    \brief Geometry Edition module : MaterialEditor.
+    \brief Geometry Edition module : MaterialEditor3.
 */
 
 
@@ -66,14 +66,14 @@ class QLineEdit;
 
 /*----------------------------------------------------------------------------*/
 
-class VIEW_API ViewColorGL : public QGLWidget
+class VIEW3_API ViewColorGL3 : public QGLWidget
 { 
     Q_OBJECT
 
 public:
 
-  ViewColorGL( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, WFlags f=0 );
-  virtual ~ViewColorGL();
+  ViewColorGL3( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, WFlags f=0 );
+  virtual ~ViewColorGL3();
   void setAppearance(const PGL(AppearancePtr)& mat);
   
   
@@ -103,13 +103,13 @@ protected:
 
 /*----------------------------------------------------------------------------*/
 
-class VIEW_API ColorButton : public QPushButton
+class VIEW3_API ViewColorButton3 : public QPushButton
 { 
     Q_OBJECT
 
 public:
-    ColorButton ( QWidget * parent, const char * name = 0 );
-    ~ColorButton();
+    ViewColorButton3 ( QWidget * parent, const char * name = 0 );
+    ~ViewColorButton3();
     const QColor& getColor() const;
 
 public slots :
@@ -120,13 +120,13 @@ public slots :
   QColor __color;
 };
 
-class VIEW_API ColorEditButton : public ColorButton
+class VIEW3_API ViewColorEditButton3 : public ViewColorButton3
 { 
     Q_OBJECT
 
 public:
-    ColorEditButton ( QWidget * parent, const char * name = 0 );
-    ~ColorEditButton();
+    ViewColorEditButton3 ( QWidget * parent, const char * name = 0 );
+    ~ViewColorEditButton3();
 
 public slots :
   void selectColor();
@@ -138,7 +138,7 @@ signals:
 
 /*----------------------------------------------------------------------------*/
 
-class VIEW_API ColorEditSlider : public QSlider
+class VIEW3_API ColorEditSlider : public QSlider
 { 
     Q_OBJECT
 
@@ -164,13 +164,13 @@ protected:
 
 /*----------------------------------------------------------------------------*/
 
-class VIEW_API MaterialEditor : public GeomModuleEditor
+class VIEW3_API MaterialEditor3 : public GeomModuleEditor3
 { 
     Q_OBJECT
 
 public:
-    MaterialEditor( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-    ~MaterialEditor();
+    MaterialEditor3( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    ~MaterialEditor3();
 
   /// Add a menu to the main menu bar when show.
   virtual void addMenu(QMenuBar * menubar) ;
@@ -212,10 +212,10 @@ public:
     QLabel* LabelTransparency;
     QLabel* LabelName;
     QLineEdit* EditName;
-    ColorEditButton* ButtonAmbient;
-    ColorButton* ButtonDiffuse;
-    ColorEditButton* ButtonSpecular;
-    ColorEditButton* ButtonEmission;
+    ViewColorEditButton3* ButtonAmbient;
+    ViewColorButton3* ButtonDiffuse;
+    ViewColorEditButton3* ButtonSpecular;
+    ViewColorEditButton3* ButtonEmission;
 
     ColorEditSlider* SliderAmbient;
     ColorEditSlider* SliderSpecular;
@@ -224,7 +224,7 @@ public:
     QSlider* SliderShininess;
     QSlider* SliderTransparency;
 
-    ViewColorGL* FrameGL;
+    ViewColorGL3* FrameGL;
 
 public slots:
 	virtual void clear();

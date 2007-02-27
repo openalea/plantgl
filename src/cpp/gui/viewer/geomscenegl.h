@@ -104,23 +104,23 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
 
   virtual void initializeGL();
 
-  virtual bool addOpenEntries(QPopupMenu * menu);
+  virtual bool addOpenEntries(QMenu * menu);
 
-  virtual bool addSaveEntries(QPopupMenu * menu);
+  virtual bool addSaveEntries(QMenu * menu);
 
-  virtual bool addImportEntries(QPopupMenu * menu);
+  virtual bool addImportEntries(QMenu * menu);
 
-  virtual bool addExportEntries(QPopupMenu * menu);  
+  virtual bool addExportEntries(QMenu * menu);  
   
   /// Add Edit Entries
-  virtual bool addEditEntries(QPopupMenu * menu);
+  virtual bool addEditEntries(QMenu * menu);
 
   virtual bool addProperties(QTabWidget * tab);
 
-  virtual bool browse(QListView *,bool);
+  virtual bool browse(Q3ListView *,bool);
 
   /// Create a Popup menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   virtual void clear();
 
@@ -218,7 +218,6 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   bool openVegeStar(const QString& filename,bool add=false);
   bool openVegeStarSymbol1(const QString& filename,bool add=false);
 
-  bool exportFred(const QString& filename);
   bool hasSameMaterial() const;
 
   bool getGeomFilenames(QString& shape,
@@ -294,8 +293,6 @@ public slots:
   void setSelectionVegeStarSymbol2();
   void setSelectionVegeStarSymbol3();
 
-  void exportFred();
-
   void changeDisplayListUse();
   virtual void useDisplayList(bool);
 
@@ -307,7 +304,7 @@ public slots:
   virtual void selectionEvent(uint32_t);
   virtual void selectionEvent(const std::vector<uint32_t>&);
   virtual void selectionIdEvent(const std::vector<uint32_t>&);
-  virtual void selectionEvent(QListViewItem *);
+  virtual void selectionEvent(Q3ListViewItem *);
 
   void removeSelection();
   void keepSelectionOnly();
@@ -325,7 +322,7 @@ signals:
 
 protected :
 
-  virtual void customEvent(QCustomEvent *); 
+  virtual void customEvent(QEvent *); 
 
   /// The scene object (which contains all the geometric shape and appereance to display).
   PGL(ScenePtr) __scene;
@@ -392,7 +389,7 @@ class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
 
   virtual void paintGL();
 
-  virtual bool addOpenEntries(QPopupMenu * menu);
+  virtual bool addOpenEntries(QMenu * menu);
 
   virtual void clear();
 
@@ -412,7 +409,7 @@ class VIEW_API ViewMultiGeomSceneGL  : public ViewGeomSceneGL
   /// Add other toolbar.
   virtual bool addOtherToolBar(QMainWindow * menu);
 
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
 public slots:
 

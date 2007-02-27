@@ -36,7 +36,7 @@
  */	
 
  /*! \file view_modalwidget.h
-    \brief Definition of the viewer class ViewRenderingModeMenu .
+    \brief Definition of the viewer class ViewRenderingModeMenu3 .
 */
 			
 #ifndef __view_modalwidget_h__
@@ -46,23 +46,23 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qpopupmenu.h>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 /* ----------------------------------------------------------------------- */
 
-class ViewModalRendererGL;
+class ViewModalRendererGL3;
 
-/// Menu to control ViewModalRendererGL
-class VIEW_API ViewRenderingModeMenu : public QPopupMenu {
+/// Menu to control ViewModalRendererGL3
+class VIEW3_API ViewRenderingModeMenu3 : public QPopupMenu {
    Q_OBJECT
  
 public :
   
-     ViewRenderingModeMenu(ViewModalRendererGL * renderer, 
+     ViewRenderingModeMenu3(ViewModalRendererGL3 * renderer, 
 		      QWidget * parent=0, 
 		      const char * name=0);
    
-   ~ViewRenderingModeMenu();
+   ~ViewRenderingModeMenu3();
   
 public slots:
 

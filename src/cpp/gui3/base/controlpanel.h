@@ -38,7 +38,7 @@
 
 
 /*! \file view_controlpanel.h
-    \brief Definition of the viewer class ViewControlPanel.
+    \brief Definition of the viewer class ViewControlPanel3.
 */
 
 
@@ -62,24 +62,24 @@ class QDial;
 class QSpinBox;
 /* ----------------------------------------------------------------------- */
 
-class ViewGLFrame;
+class ViewGLFrame3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewControlPanel
+   \class ViewControlPanel3
    \brief The Control Panel of the viewer
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewControlPanel : public ViewToolBar
+class VIEW3_API ViewControlPanel3 : public ViewToolBar3
 {
   Q_OBJECT
 public:
     
   /// Constructor.
-  ViewControlPanel( ViewGLFrame * _glframe, 
+  ViewControlPanel3( ViewGLFrame3 * _glframe, 
 		const QString & label, 
 		QMainWindow * mw, 
 #if QT_VERSION >= 300
@@ -91,7 +91,7 @@ public:
 		const char * name = 0 );
 
   /// Destructor.
-  ~ViewControlPanel();
+  ~ViewControlPanel3();
   
   bool spinBoxUsed() const;
     

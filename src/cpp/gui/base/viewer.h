@@ -62,7 +62,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-class QPopupMenu;
+class QMenu;
 class QMenuBar;
 
 /* ----------------------------------------------------------------------- */
@@ -76,7 +76,7 @@ class ViewControlPanel;
 class ViewRendererGL;
 class ViewerDaemon;
 class ViewStatusBar;
-class TrayIcon;
+class QSystemTrayIcon;
 
 #include "util_qwidget.h"
 
@@ -99,7 +99,7 @@ public:
   Viewer(  QWidget * parent = 0, 
 		   const char * name = 0, 
 		   ViewRendererGL * r = 0 ,
-		   WFlags f = WType_TopLevel|WStyle_ContextHelp );
+		   Qt::WindowFlags f = 0 );
 
   /// Constructor.
   Viewer( int argc, char ** argv, ViewRendererGL * r = 0 );
@@ -122,8 +122,8 @@ public:
 
   void setFrameGLSize(int width, int height);
 
-  void post(QCustomEvent * e) ;
-  void send(QCustomEvent * e) ;
+  void post(QEvent * e) ;
+  void send(QEvent * e) ;
 
   void question(const QString& caption, const QString& text,
 			    const QString& but0txt = QString::null, 
@@ -148,24 +148,9 @@ public:
   void animation(bool);
 
 public slots:
-
-  /// (Un)chek the File Manager ToolBar Visibility Item.
-  void checkFileToolBarItem(bool b) ;
  
   /// (Un)Display Menu Bar.
   void displayMenuBar();
-
-  /// (un)chek the View Browser Visibility Item.
-  void checkViewBrowserItem(bool visibility);
-
-  /// (un)Chek the Error Dialog Visibility Item.
-  void checkErrorDialogItem(bool visibility);
-
-  /// (un)Chek the Error Dialog Visibility Item.
-  void checkControlPanelItem(bool visibility);
-
-  /// (un)Chek the LocationBar Visibility Item.
-  void checkLocationBarItem(bool visibility);
 
   /// On Windows, display a Debug Console.
   void debugLog();
@@ -177,7 +162,7 @@ public slots:
   void displayGLWidgetOnly();
 
    /// set \e _msg to status bar. 
-  void setStatusBar(QString _msg);
+  void setStatusBarMsg(QString _msg);
 
   virtual void polish (); 
 
@@ -205,20 +190,8 @@ public slots:
 
 protected:
 
-  /// Function called when the widget is resized.
-  virtual void resizeEvent( QResizeEvent * event); 
-
-  /// This event handler is called when a mouse press event is in progress for this widget.
-  virtual void mousePressEvent( QMouseEvent*);
-
-  /// This event handler is called when a mouse move event is in progress for this widget.
-  virtual void mouseMoveEvent( QMouseEvent*);   
-
   /// This event handler is called when a key is pressed for this widget. 
   virtual void keyPressEvent ( QKeyEvent * e);
-  
-  /// This event handler is called when a key is pressed for this widget. 
-  //virtual void keyReleaseEvent ( QKeyEvent * e);
   
   /// This event handler is called when a drag is in progress and the mouse enters this widget.
   virtual void dragEnterEvent(QDragEnterEvent* event);
@@ -227,7 +200,7 @@ protected:
   virtual void dropEvent(QDropEvent* event);
 
   /// This event handler is called when a new scene is asked to be shown. 
-  virtual void customEvent(QCustomEvent *e);
+  virtual void customEvent(QEvent *e);
 
   /// This event handler is called when \e this must be close.
   virtual void closeEvent ( QCloseEvent * );
@@ -239,6 +212,8 @@ protected slots:
 
   /// Initializer.
   virtual void initializeRenderer();
+
+  void whatsThis();
 
 private slots:
 
@@ -257,13 +232,13 @@ private:
   ViewFileManager * __FileMenu;
 
   /// Menu View.
-  QPopupMenu *      __EditMenu;
+  QMenu *      __EditMenu;
 
   /// Menu View.
-  QPopupMenu *      __ViewMenu;
+  QMenu *      __ViewMenu;
 
   /// Menu Tools
-  QPopupMenu *      __ToolsMenu;
+  QMenu *      __ToolsMenu;
 
   /// Menu Help
   ViewHelpMenu *    __HelpMenu;
@@ -277,32 +252,15 @@ private:
   /// Control Panel.
   ViewControlPanel * __controlPanel;
 
-#ifdef Q_WS_WIN
   /// Tray Icon
-  TrayIcon * __trayIcon;
-#endif
-
-  /// id of the Entry Menu : View ->Control Panel.
-  int __idControlPanel;
-
-  /// id of the Entry Menu : View ->File ToolBar.
-  int __idFileToolBar;
-
-  /// id of the Entry Menu : View ->Location.
-  int __idLocationToolBar;
+  QSystemTrayIcon * __trayIcon;
 
   /// The Browser Dialog.
   ViewBrowser * __Browser;
 
-  /// id of the Entry Menu : View ->Browse.
-  int __idViewBrowser;
-
   /// The Error Dialog.
   ViewErrorDialog * __ErrorDialog;
   
-  /// id of the Entry Menu : View ->Error Log.
-  int __idErrorDialog;
-
   /// The Status Bar.
   ViewStatusBar * __statusBar;
 
@@ -310,7 +268,7 @@ private:
   bool __isFullScreen;
 
   /// id of the Entry Menu : View ->Full Screen.
-  int __idFullScreen;
+  QAction * __actFullScreen;
 
   int __toolbarsvisibility;
 

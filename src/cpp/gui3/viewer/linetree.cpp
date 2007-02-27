@@ -61,7 +61,7 @@ static QString SMB_PATH;
 
 
 /*
- *  Constructs a ViewReadLinetree which is a child of 'parent', with the
+ *  Constructs a ViewReadLinetree3 which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
@@ -88,7 +88,7 @@ static QString SMB_PATH;
     };
 
 
-ViewReadLinetree::ViewReadLinetree( bool open,
+ViewReadLinetree3::ViewReadLinetree3( bool open,
                                                                         QWidget* parent,
                                                                     const char* name,
                                                                         bool modal,
@@ -97,7 +97,7 @@ ViewReadLinetree::ViewReadLinetree( bool open,
         __open(open)
 {
     if ( !name )
-        setName( "ViewReadLinetree" );
+        setName( "ViewReadLinetree3" );
     resize( 500, 250 );
     if(open)setCaption( tr( "Read Linetree" ) );
         else setCaption( tr( "Save Linetree" ) );
@@ -209,12 +209,12 @@ ViewReadLinetree::ViewReadLinetree( bool open,
 /*
  *  Destroys the object and frees any allocated resources
  */
-ViewReadLinetree::~ViewReadLinetree()
+ViewReadLinetree3::~ViewReadLinetree3()
 {
     // no need to delete child widgets, Qt does it all for us
 }
 
-void ViewReadLinetree::ok()
+void ViewReadLinetree3::ok()
 {
   if(!getSMBPath().isEmpty() && getSMBPath()!=SMB_PATH)SMB_PATH = getSMBPath();
 //  if(SMB_PATH != TOOLS(getSymbolDir()).c_str()){
@@ -225,37 +225,37 @@ void ViewReadLinetree::ok()
   accept();
 }
 
-QString ViewReadLinetree::getLigFile() const{
+QString ViewReadLinetree3::getLigFile() const{
     return editLig->text();
 }
 
-QString ViewReadLinetree::getDtaFile() const{
+QString ViewReadLinetree3::getDtaFile() const{
     return editDta->text();
 }
 
-QString ViewReadLinetree::getSMBPath() const{
+QString ViewReadLinetree3::getSMBPath() const{
     return editSmb->text();
 }
 
-bool ViewReadLinetree::bigEndian() const {
+bool ViewReadLinetree3::bigEndian() const {
     return endianBox->isChecked();
 }
 
 
-QString ViewReadLinetree::getKey() const{
+QString ViewReadLinetree3::getKey() const{
     return editKey->text();
 }
 
-void ViewReadLinetree::resetKey(){
+void ViewReadLinetree3::resetKey(){
         labelKey->setText("Key : [AMAPmod]");
         editKey->setText(PGL(LinetreePrinter)::PROTECTION.c_str());
 }
 
-void ViewReadLinetree::checkKey(const QString&){
+void ViewReadLinetree3::checkKey(const QString&){
         checkKey();
 }
 
-void ViewReadLinetree::checkKey(){
+void ViewReadLinetree3::checkKey(){
   if(__open){
 	if(!getLigFile().isEmpty() && QFile::exists(getLigFile())){
 	  QFile f (getLigFile());
@@ -292,7 +292,7 @@ void ViewReadLinetree::checkKey(){
   }
 }
 
-void ViewReadLinetree::checkCfg(const QString& path){
+void ViewReadLinetree3::checkCfg(const QString& path){
   if(path.isEmpty())return;
   QString cfg = path;
   if(cfg[-1] != '/' && cfg[-1] != '\\' )cfg += '/';
@@ -327,7 +327,7 @@ void ViewReadLinetree::checkCfg(const QString& path){
   }
 }
 
-void ViewReadLinetree::setLigFile( const QString& f ){
+void ViewReadLinetree3::setLigFile( const QString& f ){
   editLig->setText(f);
   if(__open){
     QString dta = f;
@@ -353,21 +353,21 @@ void ViewReadLinetree::setLigFile( const QString& f ){
   checkCfg(QFileInfo(f).dirPath());
 }
 
-void ViewReadLinetree::setDtaFile( const QString& f ){
+void ViewReadLinetree3::setDtaFile( const QString& f ){
     editDta->setText(f);
 }
 
-void ViewReadLinetree::setSMBPath( const QString& f ){
+void ViewReadLinetree3::setSMBPath( const QString& f ){
     SMB_PATH = f;
     editSmb->setText(f);
 }
 
-void ViewReadLinetree::setEndianess( bool bigEndian ){
+void ViewReadLinetree3::setEndianess( bool bigEndian ){
    endianBox->setChecked(bigEndian);
    checkKey();
 }
 
-void ViewReadLinetree::SelectLigFile(){
+void ViewReadLinetree3::SelectLigFile(){
   
   QString initial;
   if(!editLig->text().isEmpty())initial = editLig->text();
@@ -383,7 +383,7 @@ void ViewReadLinetree::SelectLigFile(){
 	setLigFile(_filename);
 }
 
-void ViewReadLinetree::SelectDtaFile(){
+void ViewReadLinetree3::SelectDtaFile(){
   QString initial;
   if(!editDta->text().isEmpty())initial = editDta->text();
   else if(!editLig->text().isEmpty())initial = editLig->text();
@@ -398,7 +398,7 @@ void ViewReadLinetree::SelectDtaFile(){
 	setDtaFile(_filename);
 }
 
-void ViewReadLinetree::SelectSMBPath(){
+void ViewReadLinetree3::SelectSMBPath(){
   QString dir;
   if(!editSmb->text().isEmpty())dir = editSmb->text();
   else if(!editLig->text().isEmpty())dir = (editLig->text().left(editDta->text().findRev('/')));
@@ -414,7 +414,7 @@ void ViewReadLinetree::SelectSMBPath(){
 	setSMBPath(path);
 }
 
-void ViewReadLinetree::testEndianess(){
+void ViewReadLinetree3::testEndianess(){
 	bool bigendian = true;
 	if(!editLig->text().isEmpty()){
 		if(!PGL(Ligfile::isBigEndian(editLig->text().latin1())))

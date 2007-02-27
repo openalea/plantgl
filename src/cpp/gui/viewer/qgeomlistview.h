@@ -30,15 +30,15 @@
 #include <scenegraph/container/indexarray.h>
 
 #include <qpixmap.h>
-#include <qptrstack.h>
+#include <qstack.h>
 #include <qpair.h>
 
 /* ----------------------------------------------------------------------- */
 
 
 class QWidget;
-class QListView;
-class QListViewItem;
+class Q3ListView;
+class Q3ListViewItem;
 class QString;
 
 /* ----------------------------------------------------------------------- */
@@ -61,7 +61,7 @@ class Color4;
 
 /**
    \class GeomListViewBuilder
-   \brief An action which create a QListView with  objects of the scene.
+   \brief An action which create a Q3ListView with  objects of the scene.
 */
 
 
@@ -74,7 +74,7 @@ class VIEW_API GeomListViewBuilder : public Action
   GeomListViewBuilder( QWidget * parent = 0 , char * name = 0 );
 
   /** Constructs a GeomListViewBuilder with the parent widget \e parent and the name \e name */
-  GeomListViewBuilder( QListView * list );
+  GeomListViewBuilder( Q3ListView * list );
 
   /// Destructor
   virtual ~GeomListViewBuilder( );
@@ -82,11 +82,11 @@ class VIEW_API GeomListViewBuilder : public Action
   /// Clears \e self.
   void clear( );
 
-  /// Add A Node To the QListView.
+  /// Add A Node To the Q3ListView.
   void addNode(const QString& name, const QString& type = QString::null, const QString& id = QString::null);
 
-  /// Returns the resulting QListView when applying \e self for the last time.
-  QListView * getQListView();
+  /// Returns the resulting Q3ListView when applying \e self for the last time.
+  Q3ListView * getQ3ListView();
 
   void setFullMode(bool b){
 	__fullmode = b;
@@ -198,7 +198,7 @@ class VIEW_API GeomListViewBuilder : public Action
 
   private:
 
-  /// Initialize the QListView.
+  /// Initialize the Q3ListView.
   void init();
 
   protected:
@@ -240,20 +240,20 @@ class VIEW_API GeomListViewBuilder : public Action
   /// Full mode flag
   bool __fullmode;
 
-  /// The QListView to Create
-  QListView * __qListView;
+  /// The Q3ListView to Create
+  Q3ListView * __qListView;
 
-  /// The QListViewItem at the root of the scene tree.
-  QListViewItem * __rootItem;
+  /// The Q3ListViewItem at the root of the scene tree.
+  Q3ListViewItem * __rootItem;
 
-  /// The current QListViewItem node in the Schape List for the build of the list.
-  QListViewItem * __currentNodeItem;
-  QListViewItem * __currentSiblingItem;
+  /// The current Q3ListViewItem node in the Schape List for the build of the list.
+  Q3ListViewItem * __currentNodeItem;
+  Q3ListViewItem * __currentSiblingItem;
 
-  /// The current Attribute QListViewItem in the build of the list.
-  QListViewItem * __currentAttrItem;
+  /// The current Attribute Q3ListViewItem in the build of the list.
+  Q3ListViewItem * __currentAttrItem;
 
-  QStack<QPair<QListViewItem *,QListViewItem *> > __stackItem;
+  QStack<QPair<Q3ListViewItem *,Q3ListViewItem *> > __stackItem;
 
   QPixmap __pixgeom;
   QPixmap __pixappe;

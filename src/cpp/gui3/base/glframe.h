@@ -38,7 +38,7 @@
 
 
 /*! \file view_glframe.h
-    \brief Definition of the viewer class ViewGLFrame.
+    \brief Definition of the viewer class ViewGLFrame3.
 */
 
 
@@ -50,7 +50,7 @@
 
 #include <qtoolbutton.h>
 class QToolBar;
-class ViewStatusBar;
+class ViewStatusBar3;
 class QPopupMenu;
 class QSlider;
 class QMainWindow;
@@ -68,20 +68,20 @@ class QTabWidget;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCameraGL;
-class ViewLightGL;
-class ViewGridGL;
-class ViewRotCenterGL;
-class ViewClippingPlaneGL;
-class ViewFogGL;
-class ViewRendererGL;
-class ViewErrorDialog;
-class ViewGridEvent;
-class ViewCameraEvent;
+class ViewCameraGL3;
+class ViewLightGL3;
+class ViewGridGL3;
+class ViewRotCenterGL3;
+class ViewClippingPlaneGL3;
+class ViewFogGL3;
+class ViewRendererGL3;
+class ViewErrorDialog3;
+class ViewGridEvent3;
+class ViewCameraEvent3;
 #include "util_qwidget.h"
 // #include "zbuffer.h"
-class ViewRayBuffer;
-class ViewZBuffer;
+class ViewRayBuffer3;
+class ViewZBuffer3;
 #include <math/util_vector.h>
 
 TOOLS_USING(Vector3)
@@ -89,14 +89,14 @@ TOOLS_USING(Vector3)
 /* ----------------------------------------------------------------------- */
 
 /**
-   \class ViewGLFrame
+   \class ViewGLFrame3
    \brief An OpenGL Frame
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewGLFrame : public QGLWidget
+class VIEW3_API ViewGLFrame3 : public QGLWidget
 {
   Q_OBJECT
   Q_PROPERTY( QColor BgColor READ getBackGroundColor WRITE setBackGroundColor )
@@ -106,41 +106,41 @@ class VIEW_API ViewGLFrame : public QGLWidget
 	  enum Mode { Rotation, Selection, MultipleSelection };
 
   /// Last GL Frame created.
-  static ViewGLFrame * LAST_GL_FRAME;
-  static ViewGLFrame * CURRENT_GL_FRAME;
+  static ViewGLFrame3 * LAST_GL_FRAME;
+  static ViewGLFrame3 * CURRENT_GL_FRAME;
 
   /// Constructor
-  ViewGLFrame( QWidget* parent,
+  ViewGLFrame3( QWidget* parent,
            const char* name = NULL,
-           ViewRendererGL * r = 0,
+           ViewRendererGL3 * r = 0,
            const QGLWidget * shareWidget = 0 );
 
   /// Destructor
-  ~ViewGLFrame();
+  ~ViewGLFrame3();
 
   /// Get the Camera.
-  ViewCameraGL * getCamera() const;
+  ViewCameraGL3 * getCamera() const;
 
   /// Get the Light.
-  ViewLightGL * getLight() const;
+  ViewLightGL3 * getLight() const;
 
   /// Get the Grid.
-  ViewGridGL * getGrid() const;
+  ViewGridGL3 * getGrid() const;
 
   /// Get the Rotating Center.
-  ViewRotCenterGL * getRotCenter() const;
+  ViewRotCenterGL3 * getRotCenter() const;
 
   /// Get the Clipping Planes.
-  ViewClippingPlaneGL * getClippingPlanes() const;
+  ViewClippingPlaneGL3 * getClippingPlanes() const;
 
   /// Get the Fog.
-  ViewFogGL * getFog() const;
+  ViewFogGL3 * getFog() const;
 
   /// Get the SceneRenderer.
-  ViewRendererGL * getSceneRenderer() const;
+  ViewRendererGL3 * getSceneRenderer() const;
 
   /// Set the SceneRenderer.
-  void setSceneRenderer(ViewRendererGL *);
+  void setSceneRenderer(ViewRendererGL3 *);
 
   /// return the current background color.
   const QColor& getBackGroundColor() const;
@@ -164,12 +164,12 @@ class VIEW_API ViewGLFrame : public QGLWidget
   // copy the current image to the global clipboard
 
   /// Grab depth and color buffer
-  ViewZBuffer * grabZBuffer( bool all_values = true ) ;
+  ViewZBuffer3 * grabZBuffer( bool all_values = true ) ;
 
   /// Grab depth buffer
-  ViewZBuffer * grabDepthBuffer( bool all_values = true  ) ;
+  ViewZBuffer3 * grabDepthBuffer( bool all_values = true  ) ;
 
-  ViewRayBuffer * castRays( const Vector3& position, 
+  ViewRayBuffer3 * castRays( const Vector3& position, 
 						     const Vector3& direction, 
 						     const Vector3& dx, 
 							 const Vector3& dy,
@@ -180,9 +180,9 @@ class VIEW_API ViewGLFrame : public QGLWidget
   double getPixelWidth();
   double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL);
   
-  virtual void connectTo(ViewStatusBar *);
+  virtual void connectTo(ViewStatusBar3 *);
 
-  virtual void connectTo(ViewErrorDialog *);
+  virtual void connectTo(ViewErrorDialog3 *);
 
   /// Display error message.
   void error(const QString&);
@@ -223,7 +223,7 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   void setRotationMode();
 
-  void setMode(ViewGLFrame::Mode);
+  void setMode(ViewGLFrame3::Mode);
 
  // void changeMode();
 
@@ -263,7 +263,7 @@ signals:
   void selectedShapes(std::vector<uint32_t> i);
 
   /// Emit when mode changed.
-  void modeChanged(ViewGLFrame::Mode);
+  void modeChanged(ViewGLFrame3::Mode);
   void selectionMode(bool);
 
   /// Signal emit when some error where found.
@@ -290,10 +290,10 @@ signals:
   /// Set up the OpenGL rendering state, and define display list.
   virtual void initializeGL();
 
-  /// Paint the ViewGLFrame.
+  /// Paint the ViewGLFrame3.
   virtual void paintGL();
 
-  /// Selection in the ViewGLFrame.
+  /// Selection in the ViewGLFrame3.
   virtual void selectGL();
   virtual void multipleSelectGL(const QPoint&);
 
@@ -329,8 +329,8 @@ signals:
 
   public:
 
-  virtual void gridEvent ( ViewGridEvent * ) ;
-  virtual void cameraEvent ( ViewCameraEvent * ) ;
+  virtual void gridEvent ( ViewGridEvent3 * ) ;
+  virtual void cameraEvent ( ViewCameraEvent3 * ) ;
 
  // virtual void glDraw();
 
@@ -338,25 +338,25 @@ signals:
 
 
   /// The camera.
-  ViewCameraGL * __camera;
+  ViewCameraGL3 * __camera;
 
   /// The light.
-  ViewLightGL * __light;
+  ViewLightGL3 * __light;
 
   /// The grid.
-  ViewGridGL * __grid;
+  ViewGridGL3 * __grid;
 
   /// The rotating center.
-  ViewRotCenterGL * __rotCenter;
+  ViewRotCenterGL3 * __rotCenter;
 
   /// The clipping plane.
-  ViewClippingPlaneGL * __clippingPlane;
+  ViewClippingPlaneGL3 * __clippingPlane;
 
   /// The fog.
-  ViewFogGL * __fog;
+  ViewFogGL3 * __fog;
 
   /// scene.
-  ViewRendererGL * __scene;
+  ViewRendererGL3 * __scene;
 
   /// Mouse coordinate.
   QPoint __mouse;
@@ -374,18 +374,18 @@ signals:
   QRect * __selectionRect;
 
   /// LineWidth dialog
-  ViewToolBar * __linedialog;
+  ViewToolBar3 * __linedialog;
   /// LineWidth dialog slider
   QSlider * __lineslider;
 
 };
 
-class VIEW_API ViewDoubleToolButton : public QToolButton {
+class VIEW3_API ViewDoubleToolButton3 : public QToolButton {
   Q_OBJECT
 
 public :
 
-  ViewDoubleToolButton
+  ViewDoubleToolButton3
 			( const QPixmap & pm,
 			  const QPixmap & pm2,
 			  const QString & textLabel, 
@@ -397,7 +397,7 @@ public :
 
 public slots:
 
-  void setButton(ViewGLFrame::Mode);
+  void setButton(ViewGLFrame3::Mode);
 
 protected:
   QPixmap __pm1;

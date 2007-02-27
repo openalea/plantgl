@@ -47,38 +47,8 @@
 
 #include "util_qwidget.h"
 #include <qcombobox.h>
-class QLabel;
-class QToolButton;
-class QMainWindow;
 
 /* ----------------------------------------------------------------------- */
-
-/*
-class VIEW_API ViewComboBox : public QComboBox
-{
-  Q_OBJECT
-
-    public:
-
-  ViewComboBox( QWidget * parent=0, const char * name=0 ) ;
-
-  ~ViewComboBox();
-
-public slots:
-
-      virtual void clearfocus();
-
-      virtual void clearedit();
-
- protected:
-
-    virtual void focusInEvent ( QFocusEvent *e );
-    
-    virtual void focusOutEvent ( QFocusEvent *e );
-
-    /// This event handler is called when a mouse press event is in progress for this widget.
-    virtual void mousePressEvent( QMouseEvent*);
-};*/
 
 /// Viewer Location Bar
 class ViewLocationBar : public ViewToolBar
@@ -86,15 +56,7 @@ class ViewLocationBar : public ViewToolBar
     Q_OBJECT
 
 public:
-    ViewLocationBar( const QString &label, 
-		     QMainWindow *mw, 
-#if QT_VERSION >= 300
-		     ToolBarDock = DockTop,
-#else
-		     QMainWindow::ToolBarDock tbd = QMainWindow::Top,
-#endif
-		     bool newLine=FALSE, 
-		     const char *name=0);
+    ViewLocationBar( const QString &label,  QWidget *mw, const char *name=0);
     ~ViewLocationBar();
 
 

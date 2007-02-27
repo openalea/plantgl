@@ -44,8 +44,8 @@
 TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
-void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const Vector3& position) { 
-	RayHitList& res = getAt(i,j) ;
+void ViewRayBuffer3::setAt(size_t i, size_t j, void * buffer, size_t size,const Vector3& position) { 
+	RayHitList3& res = getAt(i,j) ;
 	GLuint names, *ptr;
 	ptr = (GLuint *) buffer;
 	GLuint id;
@@ -76,14 +76,14 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 				gluUnProject(winx,winy, zmax2, modelMatrix, projMatrix, viewport,
 				&objx2,&objy2, &objzmax) == GL_TRUE  ){
 				
-				res.push_back(RayHit(id,norm(Vector3(objx,objy,objzmin)-position),norm(Vector3(objx2,objy2,objzmax)-position)));
+				res.push_back(RayHit3(id,norm(Vector3(objx,objy,objzmin)-position),norm(Vector3(objx2,objy2,objzmax)-position)));
 			}
 			for(unsigned int j = 0 ; j < names ; j++)ptr++;
 		}
 	}
 }
 
-ViewRayPointHitBuffer& ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBuffer& buff)
+ViewRayPointHitBuffer3& ViewRayPointHitBuffer3::operator+=(const ViewRayPointHitBuffer3& buff)
 {
   //arrays must have identical size
   int w = getRowsSize();
@@ -93,10 +93,10 @@ ViewRayPointHitBuffer& ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBu
   {
       for(int c=0; c<w; ++c)
       {
-        const RayPointHitList& hitList = buff.getAt(r,c);
+        const RayPointHitList3& hitList = buff.getAt(r,c);
         if(!hitList.empty())
         {
-		  RayPointHitList& myhitList = getAt(r,c);
+		  RayPointHitList3& myhitList = getAt(r,c);
 		  myhitList.insert(myhitList.end(),hitList.begin(),hitList.end());
         }
       }
@@ -104,21 +104,21 @@ ViewRayPointHitBuffer& ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBu
   return *this;
 }
 
-ViewRayPointHitBuffer ViewRayPointHitBuffer::operator+(const ViewRayPointHitBuffer& buff)const
+ViewRayPointHitBuffer3 ViewRayPointHitBuffer3::operator+(const ViewRayPointHitBuffer3& buff)const
 {//arrays must have identical size
-  ViewRayPointHitBuffer res (*this);
+  ViewRayPointHitBuffer3 res (*this);
   res += buff;
   return res;
 }
 
 
-ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
+ViewZBuffer3* ViewZBuffer3::importglDepthBuffer(bool alldepth)
 {	
 	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT,viewport);
 	int width = viewport[2];
 	int height = viewport[3];
-	ViewZBuffer * buffer = new ViewZBuffer(height,width);
+	ViewZBuffer3 * buffer = new ViewZBuffer3(height,width);
 
 	
 	float  * zvalues = new float[width*height];
@@ -148,9 +148,9 @@ ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 	return buffer;
 }
 
-ViewZBuffer* ViewZBuffer::importglZBuffer(bool alldepth)
+ViewZBuffer3* ViewZBuffer3::importglZBuffer(bool alldepth)
 {	
-	ViewZBuffer * buffer = importglDepthBuffer(alldepth);
+	ViewZBuffer3 * buffer = importglDepthBuffer(alldepth);
 	int width = buffer->getRowsSize();
 	int height = buffer->getColsSize();
 	uchar  * colvalues = new uchar[4*width*height];

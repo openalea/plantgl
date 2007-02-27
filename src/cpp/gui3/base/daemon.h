@@ -53,15 +53,15 @@ class QSocket;
 #include <qserversocket.h>
 #include <qnetworkprotocol.h>
 #include <qdialog.h>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 /* ----------------------------------------------------------------------- */
 
 
-class ViewerDaemon : public QServerSocket
+class ViewerDaemon3 : public QServerSocket
 {
     Q_OBJECT
 public:
-    ViewerDaemon( QObject* parent=0 );
+    ViewerDaemon3( QObject* parent=0 );
 
     void newConnection( int socket );
 
@@ -83,13 +83,13 @@ private slots:
 
 /* ----------------------------------------------------------------------- */
 
-class ViewClient : public QNetworkProtocol
+class ViewClient3 : public QNetworkProtocol
 {
     Q_OBJECT
 
 public:
-    ViewClient();
-    virtual ~ViewClient();
+    ViewClient3();
+    virtual ~ViewClient3();
     virtual int supportedOperations() const;
 
 protected:
@@ -114,16 +114,16 @@ protected slots:
 /* ----------------------------------------------------------------------- */
 
 
-class VIEW_API ViewClientObj : public QObject
+class VIEW3_API ViewClientObj3 : public QObject
 {
     Q_OBJECT
 public:
 
-    ViewClientObj(bool dialog = false,
+    ViewClientObj3(bool dialog = false,
 					QObject * parent=0, 
 				    const char * name=0);
 
-    virtual ~ViewClientObj();
+    virtual ~ViewClientObj3();
 	bool requestReadFile(const QString&);
 	bool requestAddFile(const QString&);
 	bool requestShow();

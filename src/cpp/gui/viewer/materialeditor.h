@@ -72,7 +72,7 @@ class VIEW_API ViewColorGL : public QGLWidget
 
 public:
 
-  ViewColorGL( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, WFlags f=0 );
+  ViewColorGL( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f=0 );
   virtual ~ViewColorGL();
   void setAppearance(const PGL(AppearancePtr)& mat);
   
@@ -169,7 +169,7 @@ class VIEW_API MaterialEditor : public GeomModuleEditor
     Q_OBJECT
 
 public:
-    MaterialEditor( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+    MaterialEditor( QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = 0 );
     ~MaterialEditor();
 
   /// Add a menu to the main menu bar when show.

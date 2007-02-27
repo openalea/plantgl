@@ -45,7 +45,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <qstring.h>
-#include <qpopupmenu.h>
+#include <qmenu.h>
 
 #include <scenegraph/geometry/boundingbox.h>
 #include "object.h"
@@ -60,7 +60,7 @@ class ViewCameraGL;
 class ViewCameraEvent;
 
 /// Menu to control a ViewCameraGL
-class VIEW_API ViewCameraMenu : public QPopupMenu {
+class VIEW_API ViewCameraMenu : public QMenu {
    Q_OBJECT
  
 public :
@@ -75,20 +75,13 @@ public slots :
   
   /// Set GEOM Coordinates Sytem.
   void setCoordSys(int);
-
-  void setLock(bool);
   
 protected :    
   
-  int idGLcoord;
-  int idGEOMcoord;
-  int idchgcoord;
-  int idPerspective;
-  int idOrtho;
-  int idchgProj;
-  int idLock;
-  QPopupMenu * __coordMenu;
-  QPopupMenu * __projectionMenu;
+  QAction * idGLcoord;
+  QAction * idGEOMcoord;
+  QAction * idPerspective;
+  QAction *  idOrtho;
 };
 
 /* ----------------------------------------------------------------------- */
@@ -108,7 +101,7 @@ class VIEW_API ViewCameraGL  : public ViewObjectGL
   Q_PROPERTY(double DistY READ getDistY WRITE setDistanceY );
   Q_PROPERTY(bool ProjectionMode READ getProjectionMode WRITE setProjectionMode );
   Q_PROPERTY(bool CoordSys READ getCoordSys WRITE setCoordSys );
-  Q_PROPERTY(int StepMove READ getStepMove WRITE setStepMove );
+  Q_PROPERTY(double StepMove READ getStepMove WRITE setStepMove );
 
 public:
 
@@ -153,7 +146,7 @@ public:
     return __translation.z();
   }
   /// Get Step Move.
-  int getStepMove() const {
+  double getStepMove() const {
     return __stepMove;
   }
 
@@ -188,7 +181,7 @@ public:
   bool isDimLock() const { return __lockdim; }
 
   /// Create a Tools menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   void fillToolBar(QToolBar * toolBar);
 
@@ -238,9 +231,9 @@ public slots:
   void setZoom(double);
 
   /// Set X Distance from center
-  void setDistanceX(const double& dist);
+  void setDistanceX(double dist);
   /// Set Y Distance from center
-  void setDistanceY(const double& dist);
+  void setDistanceY(double dist);
 
   /// Set Center
   void setCenter(const Vector3&);
@@ -275,7 +268,7 @@ public slots:
   /// Set Step Move
   void setStepMove(const QString& step);
   /// Set Step Move
-  void setStepMove(int step);
+  void setStepMove(double step);
   
   /// Move camera
   virtual void moving(int dx, int dy);
@@ -333,11 +326,11 @@ public slots:
 signals:
 
   /// azimuth changed signal.
-  void azimuthChanged(int);
+  void azimuthChanged(double);
   /// elevation changed signal.
-  void elevationChanged(int);
+  void elevationChanged(double);
   /// zoom changed.
-  void zoomChanged(int);
+  void zoomChanged(double);
   /// near Plane changed.
   void nearPlaneChanged(const QString&);
   /// far Plane changed.
@@ -348,7 +341,7 @@ signals:
   void currentViewAngleChanged(const QString&);
 
   /// stepMove changed.
-  void stepMoveChanged(int);
+  void stepMoveChanged(double);
   ///  projection changed.
   void projectionChanged(bool);
   ///  coord system changed.
@@ -382,7 +375,7 @@ protected :
   double __dist_x;
   double __dist_y*/;
 
-  int __stepMove;
+  double __stepMove;
   Vector3 __center;
   Vector3 __eye;
   Vector3 __translation;

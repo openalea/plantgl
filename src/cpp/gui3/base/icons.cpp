@@ -54,7 +54,7 @@ STDEXT_USING_NAMESPACE
 
 static hash_map<uint32_t,QPixmap> PixmapCache;
 
-QPixmap& ViewerIcon::getPixmap(const char ** obj){
+QPixmap& ViewerIcon3::getPixmap(const char ** obj){
 	uint32_t id = (uint32_t)obj;
 	hash_map<uint32_t,QPixmap>::iterator _it = PixmapCache.find(id);
 	if(_it == PixmapCache.end()){
@@ -65,11 +65,11 @@ QPixmap& ViewerIcon::getPixmap(const char ** obj){
 	else return _it->second;
 }
 
-void ViewerIcon::clearCache(){
+void ViewerIcon3::clearCache(){
 	PixmapCache.clear();
 }
 
-QPixmap ViewerIcon::getPixmap(const char * file){
+QPixmap ViewerIcon3::getPixmap(const char * file){
   QPixmap pix;
   if(!QPixmapCache::find(file,pix)){
 	QString filename(file);
@@ -89,7 +89,7 @@ QPixmap ViewerIcon::getPixmap(const char * file){
 /* Drawn  by Mark Donohoe for the K Desktop Environment */
 /* See http://www.kde.org */
 
-const char *ViewerIcon::icon_exit[] = {
+const char *ViewerIcon3::icon_exit[] = {
   "22 22 7 1",
   "# c #000000",
   "e c #808080",
@@ -123,7 +123,7 @@ const char *ViewerIcon::icon_exit[] = {
 };
 
 
-const  char *ViewerIcon::icon_filefloppy[29] = {
+const  char *ViewerIcon3::icon_filefloppy[29] = {
   "22 22 6 1",
   "# c #000000",
   "b c #ffffff",
@@ -156,7 +156,7 @@ const  char *ViewerIcon::icon_filefloppy[29] = {
 };
 
 
-const char *ViewerIcon::icon_fileopen[29] = {
+const char *ViewerIcon3::icon_fileopen[29] = {
   "22 22 6 1",
   "# c #000000",
   "d c #808080",
@@ -190,7 +190,7 @@ const char *ViewerIcon::icon_fileopen[29] = {
 };
 
 
-const char *ViewerIcon::icon_fileprint[29] = {
+const char *ViewerIcon3::icon_fileprint[29] = {
   "22 22 6 1",
   "# c #000000",
   "a c #ffffff",
@@ -222,7 +222,7 @@ const char *ViewerIcon::icon_fileprint[29] = {
   "......................"
 };
 
-const char *ViewerIcon::icon_fileclose[20] = {
+const char *ViewerIcon3::icon_fileclose[20] = {
 "16 16 3 1",
 ". c None",
 "# c #000000",
@@ -244,7 +244,7 @@ const char *ViewerIcon::icon_fileclose[20] = {
 "......#####.....",
 "................"};
 
-const char *ViewerIcon::reload[26] = {
+const char *ViewerIcon3::reload[26] = {
   "22 22 3 1",
   "# c #808080",
   "a c #000000",
@@ -275,7 +275,7 @@ const char *ViewerIcon::reload[26] = {
 
 
 
-const char *ViewerIcon::icon_document[24] = {
+const char *ViewerIcon3::icon_document[24] = {
   "12 16 7 1",
   " 	c #040404",
   ".	c None",
@@ -302,7 +302,7 @@ const char *ViewerIcon::icon_document[24] = {
   ".###########"
 };
 
-const char *ViewerIcon::icon_camera[157] = {
+const char *ViewerIcon3::icon_camera[157] = {
 "22 22 134 2",
 "  	c None",
 ". 	c #000000",
@@ -461,7 +461,7 @@ const char *ViewerIcon::icon_camera[157] = {
 "                                            ",
 "                                            "};
 
-const char *ViewerIcon::icon_camerafile[158] = {
+const char *ViewerIcon3::icon_camerafile[158] = {
 "22 22 135 2",
 "  	c None",
 ". 	c #000000",
@@ -621,7 +621,7 @@ const char *ViewerIcon::icon_camerafile[158] = {
 "                # # # # # # # # # # # # #   ",
 "                                            "};
 
-const char *ViewerIcon::icon_perspective[26] = {
+const char *ViewerIcon3::icon_perspective[26] = {
 "22 22 3 1",
 " 	c None",
 ".	c #000000",
@@ -649,7 +649,7 @@ const char *ViewerIcon::icon_perspective[26] = {
 "   .                  ",
 "                      "};
 
-const char *ViewerIcon::icon_orthographic[26] = {
+const char *ViewerIcon3::icon_orthographic[26] = {
 "22 22 3 1",
 " 	c None",
 ".	c #000000",
@@ -678,7 +678,7 @@ const char *ViewerIcon::icon_orthographic[26] = {
 "                      "};
 
 
-const char *ViewerIcon::fullscreen[24] = {
+const char *ViewerIcon3::fullscreen[24] = {
 "16 16 7 1",
 ". c None",
 "# c #000000",
@@ -704,7 +704,7 @@ const char *ViewerIcon::fullscreen[24] = {
 "################",
 "................"};
 
-const char *ViewerIcon::icon_memory[104] = {
+const char *ViewerIcon3::icon_memory[104] = {
 /* width height num_colors chars_per_pixel */
 "    32    32       71            2",
 /* colors */
@@ -815,7 +815,7 @@ const char *ViewerIcon::icon_memory[104] = {
 };
 
 
-const char * ViewerIcon::icon_wheel[34] = {
+const char * ViewerIcon3::icon_wheel[34] = {
 "16 16 17 1",
 " 	c None",
 ".	c #6D6810",
@@ -852,7 +852,7 @@ const char * ViewerIcon::icon_wheel[34] = {
 "      %         "};
 
 
-const char * ViewerIcon::icon_wizard[27]={
+const char * ViewerIcon3::icon_wizard[27]={
 "16 16 10 1",
 ". c None",
 "# c #000000",
@@ -881,7 +881,7 @@ const char * ViewerIcon::icon_wizard[27]={
 "fgh#............",
 "gh#............."};
 
-const char * ViewerIcon::icon_wizardmenu[27]={
+const char * ViewerIcon3::icon_wizardmenu[27]={
 "16 16 10 1",
 ". c None",
 "# c #000000",
@@ -910,7 +910,7 @@ const char * ViewerIcon::icon_wizardmenu[27]={
 "fgh#.......###..",
 "gh#.........#..."};
 
-const char * ViewerIcon::icon_wizardrect[27]={
+const char * ViewerIcon3::icon_wizardrect[27]={
 "16 16 10 1",
 ". c None",
 "# c #000000",
@@ -939,7 +939,7 @@ const char * ViewerIcon::icon_wizardrect[27]={
 "fgh#.#.#.#.#.#.#",
 "gh#............."};
 
-const char * ViewerIcon::icon_notwizard[28]={
+const char * ViewerIcon3::icon_notwizard[28]={
 "16 16 11 1",
 " 	c None",
 ".	c #DB2315",
@@ -969,7 +969,7 @@ const char * ViewerIcon::icon_notwizard[28]={
 "*=-@........    ",
 "=-@    ...      "};
 
-const char * ViewerIcon::icon_home[29]={
+const char * ViewerIcon3::icon_home[29]={
 "16 16 12 1",
 ". c None",
 "# c #000000",
@@ -1000,7 +1000,7 @@ const char * ViewerIcon::icon_home[29]={
 "..#efdijjdgfe#..",
 "...##########..."};
 
-const char * ViewerIcon::icon_locerase[20]={
+const char * ViewerIcon3::icon_locerase[20]={
 "16 16 3 1",
 ". c None",
 "# c #000000",
@@ -1022,7 +1022,7 @@ const char * ViewerIcon::icon_locerase[20]={
 "................",
 "................"};
 
-const char * ViewerIcon::icon_geometry[27] = {
+const char * ViewerIcon3::icon_geometry[27] = {
 "16 16 10 1",
 " 	c None",
 ".	c #000000",
@@ -1051,7 +1051,7 @@ const char * ViewerIcon::icon_geometry[27] = {
 "  ..$#.         ",
 "    ..          "};
 
-const char * ViewerIcon::icon_transformed[26] = {
+const char * ViewerIcon3::icon_transformed[26] = {
 "16 16 9 1",
 " 	c None",
 ".	c #000000",
@@ -1079,7 +1079,7 @@ const char * ViewerIcon::icon_transformed[26] = {
 "  ..$#.         ",
 "    ..          "};
 
-const char * ViewerIcon::icon_appearance[27] = {
+const char * ViewerIcon3::icon_appearance[27] = {
 "16 16 10 1",
 " 	c None",
 ".	c #000000",
@@ -1108,7 +1108,7 @@ const char * ViewerIcon::icon_appearance[27] = {
 "  ..$#.         ",
 "    ..          "};
 
-const char * ViewerIcon::icon_shape[31] = {
+const char * ViewerIcon3::icon_shape[31] = {
 "16 16 14 1",
 " 	c None",
 ".	c #000000",
@@ -1141,7 +1141,7 @@ const char * ViewerIcon::icon_shape[31] = {
 "  ..,>.         ",
 "    ..          "};
 
-const char * ViewerIcon::icon_attribut[22] = {
+const char * ViewerIcon3::icon_attribut[22] = {
 "16 16 5 1",
 " 	c None",
 ".	c #000000",
@@ -1165,7 +1165,7 @@ const char * ViewerIcon::icon_attribut[22] = {
 "  ..#@.         ",
 "    ..          "};
 
-const char * ViewerIcon::icon_attributptr[22] = {
+const char * ViewerIcon3::icon_attributptr[22] = {
 "16 16 5 1",
 " 	c None",
 ".	c #000000",
@@ -1190,7 +1190,7 @@ const char * ViewerIcon::icon_attributptr[22] = {
 "    ..          "};
 
 /* Icons Drawn  by Frederic Boudon for the Viewer */
-const char * ViewerIcon::icon_line_width[101] = {
+const char * ViewerIcon3::icon_line_width[101] = {
 "24 24 76 1",
 " 	c #FFFFFF",
 ".	c None",
@@ -1296,7 +1296,7 @@ const char * ViewerIcon::icon_line_width[101] = {
 
 
 
-const char * ViewerIcon::icon_vrml[86] = {
+const char * ViewerIcon3::icon_vrml[86] = {
 "32 32 53 1",
 " 	c None",
 ".	c #FF0000",
@@ -1389,7 +1389,7 @@ const char * ViewerIcon::icon_vrml[86] = {
 
 
 /* Icons Drawn  by Frederic Boudon for the Viewer */
-const char *ViewerIcon::icon_color[247] = {
+const char *ViewerIcon3::icon_color[247] = {
 /* width height num_colors chars_per_pixel */
   "    22    22      223            2",
 /* colors */
@@ -1495,7 +1495,7 @@ const char *ViewerIcon::icon_color[247] = {
 
 
 /* icon of povray */
-const char *ViewerIcon::icon_pov[34] = {
+const char *ViewerIcon3::icon_pov[34] = {
 /* width height num_colors chars_per_pixel */
   "    24    24        9            1",
 /* colors */
@@ -1536,7 +1536,7 @@ const char *ViewerIcon::icon_pov[34] = {
 };
 
 
-const char *ViewerIcon::icon_bbox[32] = {
+const char *ViewerIcon3::icon_bbox[32] = {
   "16 16 5 1",
   ". c None",
   "a c #c0c000",
@@ -1561,7 +1561,7 @@ const char *ViewerIcon::icon_bbox[32] = {
   "......##........"
 };
 
-const char *ViewerIcon::icon_cross[8] = {
+const char *ViewerIcon3::icon_cross[8] = {
 "5 5 2 1",
 " 	g None",
 ".	g #000000",
@@ -1572,7 +1572,7 @@ const char *ViewerIcon::icon_cross[8] = {
 ".   ."};
 
 
-const char *ViewerIcon::icon_ctrlpoint[21]={
+const char *ViewerIcon3::icon_ctrlpoint[21]={
 "16 16 4 1",
 ". c None",
 "a c #000000",
@@ -1595,7 +1595,7 @@ const char *ViewerIcon::icon_ctrlpoint[21]={
 "..........##....",
 "................"};
 
-const char *ViewerIcon::icon_rcactive[22]={
+const char *ViewerIcon3::icon_rcactive[22]={
 "16 16 5 1",
 ". c None",
 "a c #000000",
@@ -1619,7 +1619,7 @@ const char *ViewerIcon::icon_rcactive[22]={
 "........#.......",
 "........#......."};
 
-const char *ViewerIcon::icon_rccentered[22]={
+const char *ViewerIcon3::icon_rccentered[22]={
 "16 16 5 1",
 ". c None",
 "a c #000000",
@@ -1643,7 +1643,7 @@ const char *ViewerIcon::icon_rccentered[22]={
 "....aabbbbaa....",
 "......aaaa......"};
 
-const char *ViewerIcon::icon_rcvisible[20]={
+const char *ViewerIcon3::icon_rcvisible[20]={
 "16 16 3 1",
 ". c None",
 "# c #000000",
@@ -1665,7 +1665,7 @@ const char *ViewerIcon::icon_rcvisible[20]={
 "................",
 "................"};
 
-const char *ViewerIcon::icon_skeleton[20]={
+const char *ViewerIcon3::icon_skeleton[20]={
 "16 16 3 1",
 ". c None",
 "a c #000000",
@@ -1687,7 +1687,7 @@ const char *ViewerIcon::icon_skeleton[20]={
 ".......a##......",
 "................"};
 
-const char *ViewerIcon::icon_solid[22]={
+const char *ViewerIcon3::icon_solid[22]={
 "16 16 5 1",
 ". c None",
 "# c #000000",
@@ -1711,7 +1711,7 @@ const char *ViewerIcon::icon_solid[22]={
 ".......##.......",
 "................"};
 
-const char *ViewerIcon::icon_wire[19]={
+const char *ViewerIcon3::icon_wire[19]={
 "16 16 2 1",
 ". c None",
 "# c #000000",
@@ -1733,7 +1733,7 @@ const char *ViewerIcon::icon_wire[19]={
 "................"};
 
 
-const char *ViewerIcon::icon_grid[19]={
+const char *ViewerIcon3::icon_grid[19]={
 "16 16 2 1",
 ". c None",
 "# c #000000",
@@ -1754,7 +1754,7 @@ const char *ViewerIcon::icon_grid[19]={
 "################",
 "..#...#...#...#."};
 
-const char *ViewerIcon::icon_gridXY[21]={
+const char *ViewerIcon3::icon_gridXY[21]={
 "16 17 4 1",
 ". c None",
 "# c #000000",
@@ -1777,7 +1777,7 @@ const char *ViewerIcon::icon_gridXY[21]={
 "...#...a...#....",
 "...#...a...#...."};
 
-const char *ViewerIcon::icon_gridXZ[21]={
+const char *ViewerIcon3::icon_gridXZ[21]={
 "16 16 4 1",
 ". c None",
 "# c #000000",
@@ -1800,7 +1800,7 @@ const char *ViewerIcon::icon_gridXZ[21]={
 "...#...a...#....",
 "...#...a...#...."};
 
-const char *ViewerIcon::icon_gridYZ[21]={
+const char *ViewerIcon3::icon_gridYZ[21]={
 "16 16 4 1",
 ". c None",
 "# c #000000",
@@ -1823,7 +1823,7 @@ const char *ViewerIcon::icon_gridYZ[21]={
 "...#...a...#....",
 "...#...a...#...."};
 
-const char *ViewerIcon::icon_axis[21]={
+const char *ViewerIcon3::icon_axis[21]={
 "16 16 4 1",
 ". c None",
 "# c #0000ff",
@@ -1847,7 +1847,7 @@ const char *ViewerIcon::icon_axis[21]={
 ".......##......."};
 
 
-const char *ViewerIcon::icon_light[66] = {
+const char *ViewerIcon3::icon_light[66] = {
 "16 16 49 1",
 " 	c None",
 ".	c #6C6C6C",
@@ -1916,7 +1916,7 @@ const char *ViewerIcon::icon_light[66] = {
 "      {{{{      "};
 
 
-const char *ViewerIcon::icon_eye[54] = {
+const char *ViewerIcon3::icon_eye[54] = {
 "32 32 21 1",
 " 	c None",
 ".	c #FFFFFF",
@@ -1972,7 +1972,7 @@ const char *ViewerIcon::icon_eye[54] = {
 "                                ",
 "                                "};
 
-const char *ViewerIcon::icon_eyef[54] = {
+const char *ViewerIcon3::icon_eyef[54] = {
 "32 32 21 1",
 " 	c None",
 ".	c #FFFFFF",
@@ -2028,7 +2028,7 @@ const char *ViewerIcon::icon_eyef[54] = {
 "                                ",
 "                                "};
 
-const char *ViewerIcon::icon_unlinked[70] = {
+const char *ViewerIcon3::icon_unlinked[70] = {
 "7 14 55 1",
 " 	c None",
 "+	c #B0B0B0",
@@ -2100,7 +2100,7 @@ const char *ViewerIcon::icon_unlinked[70] = {
 "-]1{~lr",
 " ^27em "};
 
-const char *ViewerIcon::icon_linked[105] = {
+const char *ViewerIcon3::icon_linked[105] = {
 "7 14 90 1",
 " 	c None",
 ".	c #D8D9C9",
@@ -2209,7 +2209,7 @@ const char *ViewerIcon::icon_linked[105] = {
 
 
 /* Cursor Drawn  by Nicolas Dones and Boris Adam for the AMAPmod Viewer */
-const unsigned char ViewerIcon::ROTATE_BITS[208] =
+const unsigned char ViewerIcon3::ROTATE_BITS[208] =
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0xF0, 0x0F, 0x00, 0x00, 0x0E, 0x70, 0x00,
@@ -2228,7 +2228,7 @@ const unsigned char ViewerIcon::ROTATE_BITS[208] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const unsigned char ViewerIcon::ROTATE_MASK[208] =
+const unsigned char ViewerIcon3::ROTATE_MASK[208] =
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0xF0, 0x0F, 0x00, 0x00, 0xFE, 0x7F, 0x00,
@@ -2247,7 +2247,7 @@ const unsigned char ViewerIcon::ROTATE_MASK[208] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const unsigned char ViewerIcon::ZOOM_BITS[208] =
+const unsigned char ViewerIcon3::ZOOM_BITS[208] =
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x3F, 0x00, 0x00, 0xC0, 0xC0, 0x00, 0x00,
   0x20, 0x1E, 0x01, 0x00, 0x90, 0x61, 0x02, 0x00,
@@ -2266,7 +2266,7 @@ const unsigned char ViewerIcon::ZOOM_BITS[208] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const unsigned char ViewerIcon::ZOOM_MASK[208] =
+const unsigned char ViewerIcon3::ZOOM_MASK[208] =
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0x00, 0x00,
   0xC0, 0xFF, 0x00, 0x00, 0xE0, 0xFF, 0x01, 0x00,
   0xF0, 0xFF, 0x03, 0x00, 0xF8, 0xE1, 0x07, 0x00,
@@ -2285,7 +2285,7 @@ const unsigned char ViewerIcon::ZOOM_MASK[208] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const unsigned char ViewerIcon::LIGHT_BITS[208] =
+const unsigned char ViewerIcon3::LIGHT_BITS[208] =
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x07, 0x00,
   0x00, 0x18, 0x18, 0x00, 0x08, 0x04, 0x20, 0x10,
@@ -2304,7 +2304,7 @@ const unsigned char ViewerIcon::LIGHT_BITS[208] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-const unsigned char ViewerIcon::LIGHT_MASK[208] =
+const unsigned char ViewerIcon3::LIGHT_MASK[208] =
   { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x20, 0xE0, 0x07, 0x04,
   0x40, 0xF8, 0x1F, 0x02, 0x88, 0xFC, 0x3F, 0x11,
@@ -2326,7 +2326,7 @@ const unsigned char ViewerIcon::LIGHT_MASK[208] =
 
 /* ----------------------------------------------------------------------- */
 
-const char * ViewerIcon::icon_flower[276] = {
+const char * ViewerIcon3::icon_flower[276] = {
 "32 32 243 2",
 "  	c None",   ". 	c #EEFDF7","+ 	c #DEECE6","@ 	c #DFEDE7",
 "# 	c #DCEAE4","$ 	c #CEDCD7","% 	c #CCD9D4","& 	c #E4F3ED",
@@ -2421,7 +2421,7 @@ const char * ViewerIcon::icon_flower[276] = {
 "                                t+                              ",
 "                                                                ",
 "                                                                "};
-const char * ViewerIcon::icon_plantlogo[4748] = {
+const char * ViewerIcon3::icon_plantlogo[4748] = {
 "140 199 4548 2",
 "  	c None",
 ". 	c #FEFEFE",
@@ -7178,7 +7178,7 @@ const char * ViewerIcon::icon_plantlogo[4748] = {
 
 
 /* XPM */
-const char *ViewerIcon::icon_logobar[2850] = {
+const char *ViewerIcon3::icon_logobar[2850] = {
 "128 32 2816 2",
 "  	c None",
 ". 	c #FFFFFF",

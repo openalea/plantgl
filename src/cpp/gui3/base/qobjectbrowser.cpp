@@ -62,12 +62,12 @@ class QObjectListBuilder {
   
 public :
   QObjectListBuilder (QListView * qListView): __current(NULL),
-	__pixgeom(ViewerIcon::icon_geometry),
-	__pixappe(ViewerIcon::icon_appearance),
-	__pixshape(ViewerIcon::icon_shape),
-	__pixtransf(ViewerIcon::icon_transformed),
-	__pixatt(ViewerIcon::icon_attribut),
-	__pixattptr(ViewerIcon::icon_attributptr){
+	__pixgeom(ViewerIcon3::icon_geometry),
+	__pixappe(ViewerIcon3::icon_appearance),
+	__pixshape(ViewerIcon3::icon_shape),
+	__pixtransf(ViewerIcon3::icon_transformed),
+	__pixatt(ViewerIcon3::icon_attribut),
+	__pixattptr(ViewerIcon3::icon_attributptr){
 	qListView->addColumn( "Name" );
 	qListView->addColumn( "Value" );
 	qListView->addColumn( "Type" );
@@ -313,10 +313,10 @@ protected :
 
 
 
-ViewQObjectBrowser::ViewQObjectBrowser(QWidget * parent,
+ViewQObjectBrowser3::ViewQObjectBrowser3(QWidget * parent,
 									   const char * name,
 									   bool modal)
-									   : ViewDialog(parent,name, modal)
+									   : ViewDialog3(parent,name, modal)
 {
   setCaption("QObject Browser");
 #if QT_VERSION >= 220
@@ -333,11 +333,11 @@ ViewQObjectBrowser::ViewQObjectBrowser(QWidget * parent,
 }
 
 
-ViewQObjectBrowser::~ViewQObjectBrowser(){
+ViewQObjectBrowser3::~ViewQObjectBrowser3(){
 }
 
 void
-ViewQObjectBrowser::resizeEvent( QResizeEvent * event)
+ViewQObjectBrowser3::resizeEvent( QResizeEvent * event)
 {
   if(isVisible()){
     int x = event->size().width() - event->oldSize().width();
@@ -350,7 +350,7 @@ ViewQObjectBrowser::resizeEvent( QResizeEvent * event)
 }
 
 void
-ViewQObjectBrowser::keyPressEvent ( QKeyEvent * e)
+ViewQObjectBrowser3::keyPressEvent ( QKeyEvent * e)
 {
   if( e->key() == Key_Escape ||
 	e->key() == Key_Home) hide();

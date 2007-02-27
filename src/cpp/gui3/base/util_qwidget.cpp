@@ -47,7 +47,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewToolBar::ViewToolBar ( const QString & label, 
+ViewToolBar3::ViewToolBar3 ( const QString & label, 
 			   QMainWindow * mw, 
 #if QT_VERSION >= 300
 			   ToolBarDock tbd,
@@ -60,7 +60,7 @@ ViewToolBar::ViewToolBar ( const QString & label,
 {
 }
 
-ViewToolBar::ViewToolBar ( const QString & label, 
+ViewToolBar3::ViewToolBar3 ( const QString & label, 
 			   QMainWindow *mw, 
 			   QWidget * w, 
 			   bool newLine , 
@@ -70,31 +70,31 @@ ViewToolBar::ViewToolBar ( const QString & label,
 {
 }
 
-ViewToolBar::ViewToolBar ( QMainWindow * parent , const char * name ) :
+ViewToolBar3::ViewToolBar3 ( QMainWindow * parent , const char * name ) :
   QToolBar(parent,name)
 {
 }
 
-ViewToolBar::~ViewToolBar()
+ViewToolBar3::~ViewToolBar3()
 {
 }
 
 void 
-ViewToolBar::showEvent ( QShowEvent * e)
+ViewToolBar3::showEvent ( QShowEvent * e)
 {
   emit __visibilityChanged(true);
   QToolBar::showEvent(e);
 }
 
 void 
-ViewToolBar::hideEvent ( QHideEvent * e)
+ViewToolBar3::hideEvent ( QHideEvent * e)
 {
   emit __visibilityChanged(false);
   QToolBar::hideEvent(e);
 }
 
 void 
-ViewToolBar::changeVisibility()
+ViewToolBar3::changeVisibility()
 {
   if(isVisible())hide();
   else show();
@@ -102,7 +102,7 @@ ViewToolBar::changeVisibility()
 
 /* ----------------------------------------------------------------------- */
 
-ViewExclusiveButtonSet::ViewExclusiveButtonSet(unsigned int size,QToolBar * toolbar,const char * name):
+ViewExclusiveButtonSet3::ViewExclusiveButtonSet3(unsigned int size,QToolBar * toolbar,const char * name):
   QObject(toolbar,name),
   __i(0),
   __size(size)
@@ -110,13 +110,13 @@ ViewExclusiveButtonSet::ViewExclusiveButtonSet(unsigned int size,QToolBar * tool
   __buttonSet = new QToolButton *[size];
 }
 
-ViewExclusiveButtonSet::~ViewExclusiveButtonSet()
+ViewExclusiveButtonSet3::~ViewExclusiveButtonSet3()
 {
   delete [] __buttonSet;
 }
 
 void
-ViewExclusiveButtonSet::add(QToolButton * b)
+ViewExclusiveButtonSet3::add(QToolButton * b)
 {
   if(__i < __size){
     __buttonSet[__i] = b;
@@ -126,7 +126,7 @@ ViewExclusiveButtonSet::add(QToolButton * b)
 }
 
 void 
-ViewExclusiveButtonSet::setSelection(const int i)
+ViewExclusiveButtonSet3::setSelection(const int i)
 {
   unsigned int k = i-1;
   for(unsigned int j = 0; j < __i; j++){
@@ -136,19 +136,19 @@ ViewExclusiveButtonSet::setSelection(const int i)
 
 /* ----------------------------------------------------------------------- */
 
-ViewDialog::ViewDialog( QWidget * parent, 
+ViewDialog3::ViewDialog3( QWidget * parent, 
 	    const char * name, 
 	    bool modal, WFlags f ):
   QDialog(parent,name,modal,f)
 {
 }
 
-ViewDialog::~ViewDialog()
+ViewDialog3::~ViewDialog3()
 {
 }
 
 void 
-ViewDialog::show()
+ViewDialog3::show()
 {
   if(!isVisible()){
     QDialog::show();
@@ -164,20 +164,20 @@ ViewDialog::show()
 }
 
 void 
-ViewDialog::keyPressEvent (QKeyEvent * e)
+ViewDialog3::keyPressEvent (QKeyEvent * e)
 {
   if(e->key() == Key_Escape) hide();
 }
 
 void 
-ViewDialog::hideEvent (QHideEvent * event)
+ViewDialog3::hideEvent (QHideEvent * event)
 {
   emit visibilityChanged(false);
   QDialog::hideEvent(event);
 }
 
 void 
-ViewDialog::showEvent (QShowEvent * event)
+ViewDialog3::showEvent (QShowEvent * event)
 {
   emit visibilityChanged(true);
   QDialog::showEvent(event);
@@ -185,31 +185,31 @@ ViewDialog::showEvent (QShowEvent * event)
 
 /* ----------------------------------------------------------------------- */
 
-ViewMainDialog::ViewMainDialog( QWidget * parent,			  
+ViewMainDialog3::ViewMainDialog3( QWidget * parent,			  
 				  const char * name, 
 				  bool modal, 
 				  WFlags f ):
-  ViewDialog(parent,name,modal,f),
+  ViewDialog3(parent,name,modal,f),
 	__mainwidget(0){
 }
   
   /// Destructor.
-ViewMainDialog::~ViewMainDialog(){
+ViewMainDialog3::~ViewMainDialog3(){
 }
 
 void 
-ViewMainDialog::setMainWidget(QWidget * mainwidget){
+ViewMainDialog3::setMainWidget(QWidget * mainwidget){
   __mainwidget = mainwidget;
 }
   
-void ViewMainDialog::resizeEvent(QResizeEvent * e){
+void ViewMainDialog3::resizeEvent(QResizeEvent * e){
   printf("resize event\n");
   if(__mainwidget)__mainwidget->resize(e->size());
 }
 
 /* ----------------------------------------------------------------------- */
 
-  ViewPopupButton::ViewPopupButton(QPopupMenu * parent, int id, char * name ):
+  ViewPopupButton3::ViewPopupButton3(QPopupMenu * parent, int id, char * name ):
   QObject(parent,name),
   __id(id),
   __menu(parent)
@@ -218,19 +218,19 @@ void ViewMainDialog::resizeEvent(QResizeEvent * e){
 }
 
 
-ViewPopupButton::~ViewPopupButton()
+ViewPopupButton3::~ViewPopupButton3()
 {
 }
 
 void 
-ViewPopupButton::check(bool b)
+ViewPopupButton3::check(bool b)
 {
   __menu->setItemChecked(__id,b);
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewStatusBar::ViewStatusBar(QWidget * parent, const char * name ):
+ViewStatusBar3::ViewStatusBar3(QWidget * parent, const char * name ):
 QStatusBar(parent,name),__progress(new QProgressBar(10,this)){ 
 	__progress->setMaximumWidth( 100 );
 	__progress->setCenterIndicator(true);
@@ -238,30 +238,30 @@ QStatusBar(parent,name),__progress(new QProgressBar(10,this)){
 	addWidget(__progress,0,true);
 }
 
-ViewStatusBar::~ViewStatusBar(){}
+ViewStatusBar3::~ViewStatusBar3(){}
 
-QProgressBar * ViewStatusBar::progressBar(){ return __progress; }
+QProgressBar * ViewStatusBar3::progressBar(){ return __progress; }
 
 void 
-ViewStatusBar::setProgress(int progress,int total) {
+ViewStatusBar3::setProgress(int progress,int total) {
 	__progress->setProgress(progress,total);
 	if(progress == total)__progress->reset();
 }
 
 void 
-ViewStatusBar::setProgress(int progress){
+ViewStatusBar3::setProgress(int progress){
 	__progress->setProgress(progress);
 }
 
 void 
-ViewStatusBar::setTotalSteps(int total){
+ViewStatusBar3::setTotalSteps(int total){
 	__progress->setTotalSteps(total);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
-void drawArrow(const QPixmap * pm,int s){
+void drawArrow3(const QPixmap * pm,int s){
   QPainter p;
   if(p.begin(pm)){
 	int x = p.window().width() - 4 -4*s;

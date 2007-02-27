@@ -45,13 +45,14 @@
 
 /* ----------------------------------------------------------------------- */
 
+#include "../gui_config.h"
 #include <qstringlist.h>
-#include "util_qwidget.h"
-#include <qthread.h>
+#include <qdockwidget.h>
+#include <qmutex.h>
 
 /* ----------------------------------------------------------------------- */
 
-class MessageDisplayer;
+namespace Ui { class MessageDisplayer; }
 
 /* ----------------------------------------------------------------------- */
 
@@ -62,16 +63,14 @@ class MessageDisplayer;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewErrorDialog : public ViewDialog
+class VIEW_API ViewErrorDialog : public QDockWidget
 {
   Q_OBJECT 
 
 public:
 
   /// Constructor
-  ViewErrorDialog (QWidget * parent = 0, 
-	       const char *name = 0, 
-	       bool modal = FALSE);
+  ViewErrorDialog (QWidget * parent = 0);
 
   /// Destructor
   ~ViewErrorDialog ();
@@ -125,15 +124,12 @@ protected:
   /// This event handler is called when a key is pressed for this widget. 
   virtual void keyPressEvent (QKeyEvent * e);
 
-  /// This event handler is called when the widget is resized.
-  virtual void resizeEvent (QResizeEvent * event);
-
 
 private:
 
 
   /// The QMultiLineEdit Object
-  MessageDisplayer * __display;
+  Ui::MessageDisplayer * __display;
   bool __verbose;
 
   void __setText(const QString& t);

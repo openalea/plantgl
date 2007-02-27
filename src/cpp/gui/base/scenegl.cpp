@@ -124,9 +124,9 @@ ViewRendererGL::selectionIdEvent(const std::vector<uint32_t>& i)
 }
 
 void
-ViewRendererGL::selectionEvent(QListViewItem *)
+ViewRendererGL::selectionEvent(Q3ListViewItem *)
 {
-  qDebug("selectionEvent(QListViewItem *) not implemented in current Renderer");
+  qDebug("selectionEvent(Q3ListViewItem *) not implemented in current Renderer");
 }
 
 std::vector<uint32_t> 
@@ -159,25 +159,25 @@ ViewRendererGL::clearSelectionEvent()
 }
 
 bool
-ViewRendererGL::addOpenEntries(QPopupMenu * menu)
+ViewRendererGL::addOpenEntries(QMenu * menu)
 {
   return false;
 }
 
 bool 
-ViewRendererGL::addImportEntries(QPopupMenu * menu)
+ViewRendererGL::addImportEntries(QMenu * menu)
 {
   return false;
 }
 
 bool
-ViewRendererGL::addSaveEntries(QPopupMenu * menu)
+ViewRendererGL::addSaveEntries(QMenu * menu)
 {
   return false;
 }
 
 bool
-ViewRendererGL::addExportEntries(QPopupMenu * menu)
+ViewRendererGL::addExportEntries(QMenu * menu)
 {
   return false;
 }
@@ -195,7 +195,7 @@ ViewRendererGL::addOtherMenu(QMenuBar * menu)
 }
 
 bool 
-ViewRendererGL::addEditEntries(QPopupMenu * menu)
+ViewRendererGL::addEditEntries(QMenu * menu)
 {
 	return false;
 }
@@ -206,7 +206,7 @@ ViewRendererGL::addOtherToolBar(QMainWindow * menu)
   return false;
 }
 
-bool ViewRendererGL::browse(QListView *,bool)
+bool ViewRendererGL::browse(Q3ListView *,bool)
 {
   return false;
 }
@@ -251,7 +251,7 @@ ViewRendererGL::save()
 void 
 ViewRendererGL::refresh()
 {
-  if(__filename){
+  if(!__filename.isEmpty()){
 	openFile(__filename);
   }
   else refreshDisplay();

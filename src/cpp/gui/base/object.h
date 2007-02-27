@@ -45,15 +45,15 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qobject.h>
 #include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */
 
+#include <qobject.h>
+#include <qpoint.h>
 class QGLWidget;
-class QPopupMenu;
+class QMenu;
 class QToolBar;
-class QPoint;
 
 /* ----------------------------------------------------------------------- */
 
@@ -86,7 +86,7 @@ public:
   virtual ~ViewObjectGL();
 
   /// Create a Popup menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
   
   /// Fill a toolBar that reflect the functionality of this.
   virtual void fillToolBar(QToolBar * toolBar);
@@ -205,7 +205,7 @@ public:
   /// Destructor.
   virtual ~ViewRelativeObjectGL();
 
-  virtual void changeStepEvent(const int newStep, const int oldStep);
+  virtual void changeStepEvent(double newStep, double oldStep);
 
   virtual void geomCoordSys();
 
@@ -228,14 +228,14 @@ public:
 private slots:
 
   /// setStep.
-  void setStep(int);
+  void setStep(double);
 
   void coordSys(int);
 
 
 private :
 
-  int __step;
+  double __step;
 };
 
 /* ----------------------------------------------------------------------- */

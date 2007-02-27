@@ -37,7 +37,7 @@
  */
 
 /*! \file view_locationbar.h
-    \brief Definition of the viewer class ViewLocationBar.
+    \brief Definition of the viewer class ViewLocationBar3.
 */
 
 #ifndef __view_locationbar_h__
@@ -54,7 +54,7 @@ class QMainWindow;
 /* ----------------------------------------------------------------------- */
 
 /*
-class VIEW_API ViewComboBox : public QComboBox
+class VIEW3_API ViewComboBox : public QComboBox
 {
   Q_OBJECT
 
@@ -81,12 +81,12 @@ public slots:
 };*/
 
 /// Viewer Location Bar
-class ViewLocationBar : public ViewToolBar
+class ViewLocationBar3 : public ViewToolBar3
 { 
     Q_OBJECT
 
 public:
-    ViewLocationBar( const QString &label, 
+    ViewLocationBar3( const QString &label, 
 		     QMainWindow *mw, 
 #if QT_VERSION >= 300
 		     ToolBarDock = DockTop,
@@ -95,7 +95,7 @@ public:
 #endif
 		     bool newLine=FALSE, 
 		     const char *name=0);
-    ~ViewLocationBar();
+    ~ViewLocationBar3();
 
 
     QComboBox* __Location;

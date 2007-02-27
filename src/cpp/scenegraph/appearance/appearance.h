@@ -111,7 +111,7 @@ typedef RCPtr<Appearance> AppearancePtr;
 PGL_END_NAMESPACE
 
 /// Write Appearance \b a in \b stream
-SG_API std::ostream& operator<<( std::ostream& stream, PGL(Appearance&) a );
+// SG_API std::ostream& operator<<( std::ostream& stream, PGL(Appearance&) a );
 
 /* ----------------------------------------------------------------------- */
 #endif

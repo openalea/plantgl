@@ -37,7 +37,7 @@
  */
 
 /*! \file view_application.h
-    \brief Definition of the viewer class ViewerApplication.
+    \brief Definition of the viewer class ViewerApplication3.
 */
 
 #ifndef __view_application_h__
@@ -45,7 +45,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #include <math/util_vector.h>
 #include <vector>
 #include <string>
@@ -54,28 +54,28 @@
 
 
 /**
-      \class ViewerApplication
+      \class ViewerApplication3
       \brief This class manage thread or not application for the viewer
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class ViewRayBuffer;
-class ViewZBuffer;
+class ViewRayBuffer3;
+class ViewZBuffer3;
 class QCustomEvent;
-class ViewerBuilder;
+class ViewerBuilder3;
 
 
-class VIEW_API ViewerApplication {
+class VIEW3_API ViewerApplication3 {
 
 public :
 
   /// Constructor.
-  ViewerApplication();
+  ViewerApplication3();
 
   /// Destructor.
-  virtual ~ViewerApplication();
+  virtual ~ViewerApplication3();
 
   /// Return whether the viewer process is a multi-thread process.
   static bool isThreadUsed() ;
@@ -91,13 +91,13 @@ public :
 					     const std::string& format = "PNG",
 						 bool  withAlpha = false );
 
-  static ViewRayBuffer * castRays(const TOOLS(Vector3)& pos, 
+  static ViewRayBuffer3 * castRays(const TOOLS(Vector3)& pos, 
 	                               const TOOLS(Vector3)& dir,
 								   const TOOLS(Vector3)& dx, 
 								   const TOOLS(Vector3)& dy,
 								   int sx, int sy);
 
-  static ViewZBuffer * grabZBuffer();
+  static ViewZBuffer3 * grabZBuffer();
 
   static int question(const std::string& caption,
 					   const std::string& text,
@@ -169,7 +169,7 @@ public :
 protected :
 
 	static void _sendAnEvent(QCustomEvent *);
-	static void _setViewerBuilder(ViewerBuilder * builder);
+	static void _setViewerBuilder(ViewerBuilder3 * builder);
 
 };
 

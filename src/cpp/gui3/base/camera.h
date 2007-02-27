@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_camera.h
-    \brief Definition of the viewer class ViewCameraGL.
+    \brief Definition of the viewer class ViewCameraGL3.
 */
 
 #ifndef __view_camera_h__
@@ -56,18 +56,18 @@ PGL_USING(BoundingBoxPtr)
 /* ----------------------------------------------------------------------- */
 
 class QTabWidget;
-class ViewCameraGL;
-class ViewCameraEvent;
+class ViewCameraGL3;
+class ViewCameraEvent3;
 
-/// Menu to control a ViewCameraGL
-class VIEW_API ViewCameraMenu : public QPopupMenu {
+/// Menu to control a ViewCameraGL3
+class VIEW3_API ViewCameraMenu3 : public QPopupMenu {
    Q_OBJECT
  
 public :
   
-  ViewCameraMenu(ViewCameraGL * camera, QWidget * parent=0, const char * name=0);
+  ViewCameraMenu3(ViewCameraGL3 * camera, QWidget * parent=0, const char * name=0);
   
-  ~ViewCameraMenu();
+  ~ViewCameraMenu3();
   
 public slots :
   /// Set Camera Mode to Perspective Projection.
@@ -94,11 +94,11 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewCameraGL
-   \brief A ViewCameraGL for GL Display
+   \class ViewCameraGL3
+   \brief A ViewCameraGL3 for GL Display
 
 */
-class VIEW_API ViewCameraGL  : public ViewObjectGL
+class VIEW3_API ViewCameraGL3  : public ViewObjectGL3
 {
   Q_OBJECT
   Q_PROPERTY(double Azimuth READ getAzimuth WRITE setAzimuth );
@@ -114,14 +114,14 @@ public:
 
 
   /// Constructor.
-  ViewCameraGL(QGLWidget * parent=0, const char * name=0);
+  ViewCameraGL3(QGLWidget * parent=0, const char * name=0);
 
   /// Constructor.
-  ViewCameraGL(QObject * parent, const char * name=0);
+  ViewCameraGL3(QObject * parent, const char * name=0);
 
 
   /// Destructor.
-  virtual ~ViewCameraGL();
+  virtual ~ViewCameraGL3();
   
   /// Get View Angle value.
   const double& getViewAngle() const {
@@ -209,7 +209,7 @@ public:
   /// Get The Camera matrix
   Matrix4 getMatrix();
 
-  virtual void cameraEvent(ViewCameraEvent *);
+  virtual void cameraEvent(ViewCameraEvent3 *);
 
   void setAngles(double azimuth, double elevation);
 

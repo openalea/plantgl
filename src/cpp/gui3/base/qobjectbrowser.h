@@ -36,7 +36,7 @@
  */
 		
 /*! \file view_qobjectbrowser.h
-    \brief Definition of the viewer class ViewQObjectBrowser.
+    \brief Definition of the viewer class ViewQObjectBrowser3.
 */
 
 
@@ -53,22 +53,22 @@ class QBrowser;
 
 
 /**   
-   \class ViewQObjectBrowser
+   \class ViewQObjectBrowser3
    \brief The Browser of the QObject of the viewer
 */
 
-class VIEW_API ViewQObjectBrowser : public ViewDialog
+class VIEW3_API ViewQObjectBrowser3 : public ViewDialog3
 {
     Q_OBJECT
 	public:
     
     /// Constructor
-    ViewQObjectBrowser(  QWidget * parent=0, 
+    ViewQObjectBrowser3(  QWidget * parent=0, 
 		  const char * name=0, 
 		  bool modal=FALSE);
 
     /// Destructor
-    ~ViewQObjectBrowser();
+    ~ViewQObjectBrowser3();
 
 
 
@@ -83,7 +83,7 @@ protected:
 private:
   
 
-  /// The GeomListViewBuilder Object
+  /// The GeomListViewBuilder3 Object
   QBrowser * __browser;
   
    

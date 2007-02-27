@@ -51,60 +51,60 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 
-PGLViewerApplication::PGLViewerApplication(){}
+PGLViewerApplication3::PGLViewerApplication3(){}
 
-PGLViewerApplication::~PGLViewerApplication(){}
+PGLViewerApplication3::~PGLViewerApplication3(){}
 
 
 void
-PGLViewerApplication::display(const GeometryPtr& g){
+PGLViewerApplication3::display(const GeometryPtr& g){
   ScenePtr scene(new Scene());
   scene->add(Shape3DPtr(new Shape(g)));
-  PGLViewerApplication::display(scene);
+  PGLViewerApplication3::display(scene);
 }
 
 void
-PGLViewerApplication::add(const GeometryPtr& g){
+PGLViewerApplication3::add(const GeometryPtr& g){
   ScenePtr scene(new Scene());
   scene->add(Shape3DPtr(new Shape(g)));
-  PGLViewerApplication::add(scene);
+  PGLViewerApplication3::add(scene);
 }
 
 void
-PGLViewerApplication::display(const ScenePtr& s){
-  ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,false));
+PGLViewerApplication3::display(const ScenePtr& s){
+  ViewerApplication3::_sendAnEvent(new GeomSceneChangeEvent3(s,QString::null,QString::null,false));
 }
 
 void
-PGLViewerApplication::add(const ScenePtr& s){
-  ViewerApplication::_sendAnEvent(new GeomSceneChangeEvent(s,QString::null,QString::null,true));
+PGLViewerApplication3::add(const ScenePtr& s){
+  ViewerApplication3::_sendAnEvent(new GeomSceneChangeEvent3(s,QString::null,QString::null,true));
 }
 
-ScenePtr PGLViewerApplication::getCurrentScene()
+ScenePtr PGLViewerApplication3::getCurrentScene()
 {
 	ScenePtr sc;
-	ViewerApplication::_sendAnEvent(new GeomGetSceneEvent(&sc));
+	ViewerApplication3::_sendAnEvent(new GeomGetSceneEvent3(&sc));
 	return sc;
 }
 
 std::vector<std::pair<uint32_t,double> > 
-PGLViewerApplication::getProjectionSizes(const PGL(ScenePtr)& sc){
+PGLViewerApplication3::getProjectionSizes(const PGL(ScenePtr)& sc){
   std::vector<std::pair<uint32_t,double> > res;
-  ViewerApplication::_sendAnEvent(new GeomProjListEvent(sc,&res));
+  ViewerApplication3::_sendAnEvent(new GeomProjListEvent3(sc,&res));
   return res;
 }
 
-ViewRayPointHitBuffer * 
-PGLViewerApplication::castRays2(const PGL(ScenePtr)& sc, bool back_test )
+ViewRayPointHitBuffer3 * 
+PGLViewerApplication3::castRays2(const PGL(ScenePtr)& sc, bool back_test )
 {
-	ViewRayPointHitBuffer * res = NULL ;
-	ViewRayBuff2Event * myevent = new ViewRayBuff2Event(sc,back_test,&res);
-	ViewerApplication::_sendAnEvent(myevent);
+	ViewRayPointHitBuffer3 * res = NULL ;
+	ViewRayBuff2Event3 * myevent = new ViewRayBuff2Event3(sc,back_test,&res);
+	ViewerApplication3::_sendAnEvent(myevent);
 	return res;
 }
 
 void
-PGLViewerApplication::init()
+PGLViewerApplication3::init()
 { 
-	_setViewerBuilder(new ViewerTBuilder<PGLViewer>()); 
+	_setViewerBuilder(new ViewerTBuilder3<PGLViewer3>()); 
 }

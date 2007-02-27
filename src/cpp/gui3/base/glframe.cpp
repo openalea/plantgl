@@ -37,7 +37,7 @@
  */
 
 #include <iomanip>
-#include "../gui_config.h"
+#include "../gui3_config.h"
 #ifdef STL_EXTENSION
 	#include <sstream>
 #else
@@ -96,13 +96,13 @@ using namespace std;
 
 /*  ------------------------------------------------------------------------ */
 
-ViewGLFrame * ViewGLFrame::LAST_GL_FRAME = NULL;
-ViewGLFrame * ViewGLFrame::CURRENT_GL_FRAME = NULL;
+ViewGLFrame3 * ViewGLFrame3::LAST_GL_FRAME = NULL;
+ViewGLFrame3 * ViewGLFrame3::CURRENT_GL_FRAME = NULL;
 
 /*  ------------------------------------------------------------------------ */
 
-/// Create a ViewGLFrame widget
-ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r, const QGLWidget * shareWidget) :
+/// Create a ViewGLFrame3 widget
+ViewGLFrame3::ViewGLFrame3( QWidget* parent, const char* name, ViewRendererGL3 * r, const QGLWidget * shareWidget) :
   QGLWidget(  QGLFormat( AlphaChannel ), parent, name, shareWidget ),
   __camera(0),
   __light(0),
@@ -120,22 +120,22 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __selectionRect(0)
 {
   /// Creation
-  __camera = new ViewCameraGL(this,"Camera");
-  __light = new ViewLightGL(__camera,this,"Light");
-  __grid = new ViewGridGL(__camera,this,"Grid");
-  __rotCenter = new ViewRotCenterGL(__camera,this,"Rotating Center");
-  __clippingPlane = new ViewClippingPlaneGL(this,"Clipping Planes");
-  __fog = new ViewFogGL(__camera,this,"Fog");
+  __camera = new ViewCameraGL3(this,"Camera");
+  __light = new ViewLightGL3(__camera,this,"Light");
+  __grid = new ViewGridGL3(__camera,this,"Grid");
+  __rotCenter = new ViewRotCenterGL3(__camera,this,"Rotating Center");
+  __clippingPlane = new ViewClippingPlaneGL3(this,"Clipping Planes");
+  __fog = new ViewFogGL3(__camera,this,"Fog");
 
   LAST_GL_FRAME = this;
 
   /// Connexion
   rendererStatus();
   __scene->connectTo(this);
-  QObject::connect(__scene,SIGNAL(changeMode(ViewGLFrame::Mode)),
-				   this,SLOT(setMode(ViewGLFrame::Mode)));
+  QObject::connect(__scene,SIGNAL(changeMode(ViewGLFrame3::Mode)),
+				   this,SLOT(setMode(ViewGLFrame3::Mode)));
   if(__scene){
-    ViewSceneRendererGL * sc = dynamic_cast<ViewSceneRendererGL *>(__scene);
+    ViewSceneRendererGL3 * sc = dynamic_cast<ViewSceneRendererGL3 *>(__scene);
     if(sc){
       sc->setCamera(__camera);
       sc->setLight(__light);
@@ -152,7 +152,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
 
 
 /// Release allocated resources
-ViewGLFrame::~ViewGLFrame() {
+ViewGLFrame3::~ViewGLFrame3() {
   if(__scene)delete __scene;
 #ifdef  GEOM_DEBUG
     cout << "GL Frame deleted" << endl;
@@ -161,58 +161,58 @@ ViewGLFrame::~ViewGLFrame() {
 
 /*  ------------------------------------------------------------------------ */
 
-ViewCameraGL *
-ViewGLFrame::getCamera() const
+ViewCameraGL3 *
+ViewGLFrame3::getCamera() const
 {
   return __camera;
 }
 
-ViewLightGL *
-ViewGLFrame::getLight() const
+ViewLightGL3 *
+ViewGLFrame3::getLight() const
 {
   return __light;
 }
 
-ViewGridGL *
-ViewGLFrame::getGrid() const
+ViewGridGL3 *
+ViewGLFrame3::getGrid() const
 {
   return __grid;
 }
 
-ViewRotCenterGL *
-ViewGLFrame::getRotCenter() const
+ViewRotCenterGL3 *
+ViewGLFrame3::getRotCenter() const
 {
   return __rotCenter;
 }
 
-ViewClippingPlaneGL *
-ViewGLFrame::getClippingPlanes() const
+ViewClippingPlaneGL3 *
+ViewGLFrame3::getClippingPlanes() const
 {
   return __clippingPlane;
 }
 
-ViewFogGL *
-ViewGLFrame::getFog() const
+ViewFogGL3 *
+ViewGLFrame3::getFog() const
 {
   return __fog;
 }
 
-ViewRendererGL *
-ViewGLFrame::getSceneRenderer() const
+ViewRendererGL3 *
+ViewGLFrame3::getSceneRenderer() const
 {
   return __scene;
 }
 
 void
-ViewGLFrame::setSceneRenderer(ViewRendererGL * s)
+ViewGLFrame3::setSceneRenderer(ViewRendererGL3 * s)
 {
   if(__scene) delete __scene;
   __scene = s;
   __scene->connectTo(this);
-  QObject::connect(__scene,SIGNAL(changeMode(ViewGLFrame::Mode)),
-				   this,SLOT(setMode(ViewGLFrame::Mode)));
+  QObject::connect(__scene,SIGNAL(changeMode(ViewGLFrame3::Mode)),
+				   this,SLOT(setMode(ViewGLFrame3::Mode)));
   if(__scene){
-    ViewSceneRendererGL * sc = dynamic_cast<ViewSceneRendererGL *>(__scene);
+    ViewSceneRendererGL3 * sc = dynamic_cast<ViewSceneRendererGL3 *>(__scene);
     if(sc){
       sc->setCamera(__camera);
       sc->setLight(__light);
@@ -223,7 +223,7 @@ ViewGLFrame::setSceneRenderer(ViewRendererGL * s)
 }
 
 void
-ViewGLFrame::rendererStatus() {
+ViewGLFrame3::rendererStatus() {
   if(__scene)
   emit initMessage(QString("Renderer ... ")+__scene->className());
   else 
@@ -232,7 +232,7 @@ ViewGLFrame::rendererStatus() {
 
 
 const QColor&
-ViewGLFrame::getBackGroundColor() const
+ViewGLFrame3::getBackGroundColor() const
 {
   return __BgColor;
 }
@@ -243,7 +243,7 @@ ViewGLFrame::getBackGroundColor() const
 
 
 void
-ViewGLFrame::connectTo(ViewStatusBar *s)
+ViewGLFrame3::connectTo(ViewStatusBar3 *s)
 {
 	if(s){
 		QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),
@@ -262,7 +262,7 @@ ViewGLFrame::connectTo(ViewStatusBar *s)
 }
 
 void
-ViewGLFrame::connectTo(ViewErrorDialog *e)
+ViewGLFrame3::connectTo(ViewErrorDialog3 *e)
 {
   if(e){
     QObject::connect(this,SIGNAL(errorMessage(const QString&)),
@@ -281,37 +281,37 @@ ViewGLFrame::connectTo(ViewErrorDialog *e)
 }
 
 void 
-ViewGLFrame::error(const QString& s)
+ViewGLFrame3::error(const QString& s)
 {
   emit errorMessage(s);
 }
 
 void 
-ViewGLFrame::warning(const QString& s)
+ViewGLFrame3::warning(const QString& s)
 {
   emit warningMessage(s);
 }
 
 void 
-ViewGLFrame::info(const QString& s)
+ViewGLFrame3::info(const QString& s)
 {
   emit infoMessage(s);
 }
 
 void 
-ViewGLFrame::status(const QString& s)
+ViewGLFrame3::status(const QString& s)
 {
   emit statusMessage(s);
 }
 
 void 
-ViewGLFrame::status(const QString& s,int t)
+ViewGLFrame3::status(const QString& s,int t)
 {
   emit statusMessage(s,t);
 }
 
 void 
-ViewGLFrame::progress(int p,int t)
+ViewGLFrame3::progress(int p,int t)
 {
   emit progressMessage(p,t);
 }
@@ -319,7 +319,7 @@ ViewGLFrame::progress(int p,int t)
 /*  ------------------------------------------------------------------------ */
 
 void
-ViewGLFrame::setBackground()
+ViewGLFrame3::setBackground()
 {
   QColor m = QColorDialog::getColor(__BgColor,this);
   if(m.isValid()){
@@ -331,7 +331,7 @@ ViewGLFrame::setBackground()
 }
 
 void
-ViewGLFrame::setBackGroundColor(const QColor& color)
+ViewGLFrame3::setBackGroundColor(const QColor& color)
 {
   __BgColor=color;
   qglClearColor(__BgColor);
@@ -340,12 +340,12 @@ ViewGLFrame::setBackGroundColor(const QColor& color)
   status(QString(tr("Set Background Color to")+" (%1,%1,%1)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
 }
 
-bool ViewGLFrame::glError(const char * file , int line ){
-  return ViewObjectGL::glError(this,__FILE__,__LINE__);
+bool ViewGLFrame3::glError(const char * file , int line ){
+  return ViewObjectGL3::glError(this,__FILE__,__LINE__);
 }
 
 void
-ViewGLFrame::setLineWidth(int i)
+ViewGLFrame3::setLineWidth(int i)
 {
   __linewidth = (GLfloat)float(i);
   status(QString(tr("Set Line Width to")+" %1").arg(i),2000);
@@ -353,7 +353,7 @@ ViewGLFrame::setLineWidth(int i)
 }
 
 void 
-ViewGLFrame::setMultipleSelectionMode()
+ViewGLFrame3::setMultipleSelectionMode()
 {
   if(__mode != MultipleSelection){
       setCursor(QCursor( crossCursor  ));
@@ -367,7 +367,7 @@ ViewGLFrame::setMultipleSelectionMode()
 }
 
 void
-ViewGLFrame::setSelectionMode()
+ViewGLFrame3::setSelectionMode()
 {
   if(__mode != Selection){
 	setCursor(QCursor( pointingHandCursor  ));
@@ -381,7 +381,7 @@ ViewGLFrame::setSelectionMode()
 }
 
 void
-ViewGLFrame::setRotationMode()
+ViewGLFrame3::setRotationMode()
 {
   if(__mode !=Rotation){
     setCursor(arrowCursor);
@@ -393,13 +393,13 @@ ViewGLFrame::setRotationMode()
 }
 
 void 
-ViewGLFrame::setLastSelectionMode()
+ViewGLFrame3::setLastSelectionMode()
 {
   setMode(__lastSelectionMode);
 }
 
 void 
-ViewGLFrame::setMode(Mode i)
+ViewGLFrame3::setMode(Mode i)
 {
   if(__mode !=i){
     __mode = i;
@@ -422,7 +422,7 @@ ViewGLFrame::setMode(Mode i)
 }
 /*
 void 
-ViewGLFrame::changeMode()
+ViewGLFrame3::changeMode()
 {
   if(__mode == true){
     setCursor(arrowCursor);
@@ -440,7 +440,7 @@ ViewGLFrame::changeMode()
 }
 */
 void 
-ViewGLFrame::clearSelection()
+ViewGLFrame3::clearSelection()
 {
   // __selected_shapes.clear();
   __scene->clearSelectionEvent();
@@ -452,7 +452,7 @@ ViewGLFrame::clearSelection()
 /*!
   Set up the OpenGL rendering state, and define display list
 */
-void ViewGLFrame::initializeGL()
+void ViewGLFrame3::initializeGL()
 {
   CURRENT_GL_FRAME = this;
 
@@ -499,11 +499,11 @@ void ViewGLFrame::initializeGL()
 
 /*!
   Set up the OpenGL view port, matrix mode, etc.
-  This function is called by Viewer::show() and when a window resize is done
+  This function is called by Viewer3::show() and when a window resize is done
   by the user.
 */
 
-void ViewGLFrame::resizeGL( int w, int h )
+void ViewGLFrame3::resizeGL( int w, int h )
 {
   __camera->resizeGL(w,h);
 }
@@ -515,7 +515,7 @@ void ViewGLFrame::resizeGL( int w, int h )
   performed here.
 */
 
-void ViewGLFrame::paintGL()
+void ViewGLFrame3::paintGL()
 {
   CURRENT_GL_FRAME = this;
   GL_ERROR;
@@ -575,7 +575,7 @@ void ViewGLFrame::paintGL()
   SelectGL
 */
 
-void ViewGLFrame::selectGL()
+void ViewGLFrame3::selectGL()
 {
   makeCurrent();
   CURRENT_GL_FRAME = this;
@@ -644,7 +644,7 @@ void ViewGLFrame::selectGL()
   CURRENT_GL_FRAME = NULL;
 }
 
-void ViewGLFrame::multipleSelectGL(const QPoint& p)
+void ViewGLFrame3::multipleSelectGL(const QPoint& p)
 {
   makeCurrent();
   CURRENT_GL_FRAME = this;
@@ -720,13 +720,13 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
   CURRENT_GL_FRAME = NULL;
 }
 
-ViewRayBuffer * 
-ViewGLFrame::castRays( const Vector3& position, 
+ViewRayBuffer3 * 
+ViewGLFrame3::castRays( const Vector3& position, 
 						  const Vector3& direction, 
 						  const Vector3& dx, 
 						  const Vector3& dy,
 						  int sx, int sy)  {
-	ViewRayBuffer * res = new ViewRayBuffer(sx,sy);
+	ViewRayBuffer3 * res = new ViewRayBuffer3(sx,sy);
 
 	GLint hits;
 	GLsizei bufsize = 40960;
@@ -766,8 +766,8 @@ ViewGLFrame::castRays( const Vector3& position,
 			if(hits > 0){
 				res->setAt(i,j,selectBuf,hits,position+delta);
 				GL_ERROR;
-				RayHitList& l = res->getAt(i,j);
-				for(RayHitList::iterator _it = l.begin();_it != l.end(); _it++)
+				RayHitList3& l = res->getAt(i,j);
+				for(RayHitList3::iterator _it = l.begin();_it != l.end(); _it++)
 					_it->id = __scene->translateId(_it->id);
 			}
 			size_t numray = i*sy+j;
@@ -784,21 +784,21 @@ ViewGLFrame::castRays( const Vector3& position,
 	return res;
 }
 
-ViewZBuffer * 
-ViewGLFrame::grabZBuffer( bool all_values  )
+ViewZBuffer3 * 
+ViewGLFrame3::grabZBuffer( bool all_values  )
 {
     makeCurrent();
-	return ViewZBuffer::importglZBuffer(all_values);
+	return ViewZBuffer3::importglZBuffer(all_values);
 }
 
-ViewZBuffer * 
-ViewGLFrame::grabDepthBuffer( bool all_values )
+ViewZBuffer3 * 
+ViewGLFrame3::grabDepthBuffer( bool all_values )
 {
     makeCurrent();
-	return ViewZBuffer::importglDepthBuffer(all_values);
+	return ViewZBuffer3::importglDepthBuffer(all_values);
 }
 
-double ViewGLFrame::getPixelWidth(){
+double ViewGLFrame3::getPixelWidth(){
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
 	makeCurrent();
@@ -819,7 +819,7 @@ double ViewGLFrame::getPixelWidth(){
 	return pixelsize;
 }
 
-int ViewGLFrame::getProjectionPixel(){
+int ViewGLFrame3::getProjectionPixel(){
 	int gridstate = __grid->getState();
 	__grid->setState(0);
 	bool mode = __camera->getProjectionMode();
@@ -846,7 +846,7 @@ int ViewGLFrame::getProjectionPixel(){
 	return projpix;
 }
 
-double ViewGLFrame::getProjectionSize(int* nbpixel, double* pixelwidth){
+double ViewGLFrame3::getProjectionSize(int* nbpixel, double* pixelwidth){
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
 	int nbpix = getProjectionPixel();
@@ -858,7 +858,7 @@ double ViewGLFrame::getProjectionSize(int* nbpixel, double* pixelwidth){
 	return res;
 }
 
-void ViewGLFrame::printProjectionSize(){
+void ViewGLFrame3::printProjectionSize(){
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
 	float pixelwidth = getPixelWidth();
@@ -873,7 +873,7 @@ void ViewGLFrame::printProjectionSize(){
 
 /*  ------------------------------------------------------------------------ */
 
-void ViewGLFrame::mousePressEvent( QMouseEvent* event)
+void ViewGLFrame3::mousePressEvent( QMouseEvent* event)
 {
 
   __mouse = event->pos();
@@ -888,8 +888,8 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
   else if(__mode == Rotation){
     if(event->state() & ControlButton )
       {
-        QBitmap bm(32,32,ViewerIcon::LIGHT_BITS,TRUE);
-        QBitmap mask(32,32,ViewerIcon::LIGHT_MASK,TRUE);
+        QBitmap bm(32,32,ViewerIcon3::LIGHT_BITS,TRUE);
+        QBitmap mask(32,32,ViewerIcon3::LIGHT_MASK,TRUE);
         setCursor(QCursor(bm,mask));
       }
     else if(event->state() & ShiftButton)
@@ -899,14 +899,14 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
       }
     else if(event->button()==LeftButton)
       {
-        QBitmap bm(32,32,ViewerIcon::ROTATE_BITS,TRUE);
-        QBitmap mask(32,32,ViewerIcon::ROTATE_MASK,TRUE);
+        QBitmap bm(32,32,ViewerIcon3::ROTATE_BITS,TRUE);
+        QBitmap mask(32,32,ViewerIcon3::ROTATE_MASK,TRUE);
         setCursor(QCursor(bm,mask));
       }
     else if(event->button()==MidButton)
       {
-        QBitmap bm(32,32,ViewerIcon::ZOOM_BITS,TRUE);
-        QBitmap mask(32,32,ViewerIcon::ZOOM_MASK,TRUE);
+        QBitmap bm(32,32,ViewerIcon3::ZOOM_BITS,TRUE);
+        QBitmap mask(32,32,ViewerIcon3::ZOOM_MASK,TRUE);
         setCursor(QCursor(bm,mask));
       }
 
@@ -918,7 +918,7 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
   updateGL();
 }
 
-void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
+void ViewGLFrame3::mouseReleaseEvent( QMouseEvent* event)
 {
   if(__mode == Selection){
 	if(!__scene->endSelect())setRotationMode();
@@ -935,7 +935,7 @@ void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
   updateGL();
 }
 
-void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
+void ViewGLFrame3::mouseMoveEvent( QMouseEvent* event)
 {
   QPoint mouse = event->pos();
   if(__mode == MultipleSelection){
@@ -1007,11 +1007,11 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
   }
 }
 
-void ViewGLFrame::dragEnterEvent(QDragEnterEvent* event){
+void ViewGLFrame3::dragEnterEvent(QDragEnterEvent* event){
   event->accept(QUriDrag::canDecode(event));
 }
 
-void ViewGLFrame::dropEvent(QDropEvent* event){
+void ViewGLFrame3::dropEvent(QDropEvent* event){
   QStringList filenames;
   if ( QUriDrag::decodeLocalFiles(event, filenames) ){
 	  if(!filenames.isEmpty()){
@@ -1030,7 +1030,7 @@ void ViewGLFrame::dropEvent(QDropEvent* event){
 #endif
 
 void 
-ViewGLFrame::wheelEvent ( QWheelEvent * e){
+ViewGLFrame3::wheelEvent ( QWheelEvent * e){
   if(__mode == Selection || e->state() & ShiftButton){
 	  __scene->zooming(0,e->delta()/WHEEL_DELTA);
       // __scene->rotating(0,e->delta()*20/WHEEL_DELTA);
@@ -1050,7 +1050,7 @@ ViewGLFrame::wheelEvent ( QWheelEvent * e){
 }
 
 void
-ViewGLFrame::keyPressEvent ( QKeyEvent * e)
+ViewGLFrame3::keyPressEvent ( QKeyEvent * e)
 {
   if(e->state() & ShiftButton){
     if( e->key() == Key_Up){
@@ -1096,8 +1096,8 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
       updateGL();
     }
     else  {
-     QBitmap bm(32,32,ViewerIcon::LIGHT_BITS,TRUE);
-     QBitmap mask(32,32,ViewerIcon::LIGHT_MASK,TRUE);
+     QBitmap bm(32,32,ViewerIcon3::LIGHT_BITS,TRUE);
+     QBitmap mask(32,32,ViewerIcon3::LIGHT_MASK,TRUE);
      setCursor(QCursor(bm,mask));
 	 e->accept();
 	}
@@ -1156,7 +1156,7 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
 }
 
 void
-ViewGLFrame::keyReleaseEvent ( QKeyEvent * e)
+ViewGLFrame3::keyReleaseEvent ( QKeyEvent * e)
 {
   if(e->stateAfter() & ShiftButton){
     setRotationMode();
@@ -1168,36 +1168,36 @@ ViewGLFrame::keyReleaseEvent ( QKeyEvent * e)
   }
 }
 
-void ViewGLFrame::customEvent(QCustomEvent *e)
+void ViewGLFrame3::customEvent(QCustomEvent *e)
 {
   if(e->type() == 12345){
-    ViewSceneChangeEvent * event = (ViewSceneChangeEvent *)e;
+    ViewSceneChangeEvent3 * event = (ViewSceneChangeEvent3 *)e;
     __scene->sceneChangeEvent(event);
   }
 }
 
-void ViewGLFrame::focusInEvent ( QFocusEvent * e) {
+void ViewGLFrame3::focusInEvent ( QFocusEvent * e) {
 //  if(e->reason()== QFocusEvent::ActiveWindow)
   __scene->checkFileModification();
 }
 
-void ViewGLFrame::gridEvent ( ViewGridEvent * e) {
+void ViewGLFrame3::gridEvent ( ViewGridEvent3 * e) {
   __grid->gridEvent(e);
 }
 
-void ViewGLFrame::cameraEvent ( ViewCameraEvent * e) {
+void ViewGLFrame3::cameraEvent ( ViewCameraEvent3 * e) {
   __camera->cameraEvent(e);
 }
 
 /*  ------------------------------------------------------------------------ */
 
 
-void ViewGLFrame::saveImage(QString _filename,const char * _format, bool withAlpha){
+void ViewGLFrame3::saveImage(QString _filename,const char * _format, bool withAlpha){
 	grabFrameBuffer(withAlpha).save(_filename,_format);
 	status(tr("Save screenshot with format")+" \""+QString(_format)+"\" "+tr("in")+" \""+_filename+'"',10000);
 }
 
-void ViewGLFrame::copyImageToClipboard(){
+void ViewGLFrame3::copyImageToClipboard(){
 	if(QApplication::clipboard()){
 		QApplication::clipboard()->setImage(grabFrameBuffer(false));
 		status(tr("Copy screenshot to clipboard"),10000);
@@ -1205,7 +1205,7 @@ void ViewGLFrame::copyImageToClipboard(){
 	else QMessageBox::warning(this,tr("System Error"),tr("Cannot access global clipboard"),"Ok");
 }
 
-void ViewGLFrame::copyImageToClipboardWithAlpha(){
+void ViewGLFrame3::copyImageToClipboardWithAlpha(){
 	if(QApplication::clipboard()){
 		QApplication::clipboard()->setImage(grabFrameBuffer(true));
 		status(tr("Copy screenshot to clipboard with alpha channel"),10000);
@@ -1213,7 +1213,7 @@ void ViewGLFrame::copyImageToClipboardWithAlpha(){
 	else QMessageBox::warning(this,tr("System Error"),tr("Cannot access global clipboard"),"Ok");
 }
 
-void ViewGLFrame::printImage(){
+void ViewGLFrame3::printImage(){
   QPrinter printer;
   if(printer.setup(this)){
 	QPainter paint;
@@ -1239,36 +1239,36 @@ void ViewGLFrame::printImage(){
 
 
 QPopupMenu *
-ViewGLFrame::createEditMenu(QWidget * parent)
+ViewGLFrame3::createEditMenu(QWidget * parent)
 {
   QPopupMenu * menu = new QPopupMenu(parent,"Edit Menu");
   __scene->addEditEntries(menu);
-  QPixmap wizard( ViewerIcon::getPixmap(ViewerIcon::icon_wizard) );
+  QPixmap wizard( ViewerIcon3::getPixmap(ViewerIcon3::icon_wizard) );
   menu->insertItem(wizard,tr("Selection"),this, SLOT(setSelectionMode()));
-  QPixmap wizardRectIcon( ViewerIcon::getPixmap(ViewerIcon::icon_wizardrect) );
+  QPixmap wizardRectIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_wizardrect) );
   menu->insertItem(wizardRectIcon,tr("Rectangle Selection"),this, SLOT(setMultipleSelectionMode()));
-  // ViewPopupButton * bt = new ViewPopupButton(menu,id,"Selection");
+  // ViewPopupButton3 * bt = new ViewPopupButton3(menu,id,"Selection");
   // QObject::connect(this,SIGNAL(modeChanged(bool)),bt,SLOT(check(bool)));
 
-  QPixmap notwizard( ViewerIcon::getPixmap(ViewerIcon::icon_notwizard) );
+  QPixmap notwizard( ViewerIcon3::getPixmap(ViewerIcon3::icon_notwizard) );
   menu->insertItem(notwizard,tr("Clear Selection"),this, SLOT(clearSelection()));
   menu->insertSeparator();
 
   if(__linedialog){
-    QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::icon_line_width) );
+    QPixmap lineIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_line_width) );
     int id2 = menu->insertItem(lineIcon,tr("Edit Line Width"),__linedialog, SLOT(changeVisibility()));
-    ViewPopupButton * bt2 = new ViewPopupButton(menu,id2,"Line Width");
+    ViewPopupButton3 * bt2 = new ViewPopupButton3(menu,id2,"Line Width");
     QObject::connect(__linedialog,SIGNAL(__visibilityChanged(bool)),bt2,SLOT(check(bool)));
   }
   return menu;
 }
 
 QPopupMenu *
-ViewGLFrame::createToolsMenu(QWidget * parent)
+ViewGLFrame3::createToolsMenu(QWidget * parent)
 {
   QPopupMenu * menu = new QPopupMenu(parent,"Tools Menu");
   menu->setCheckable(true);
-  QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::icon_wheel));
+  QPixmap wheel(ViewerIcon3::getPixmap(ViewerIcon3::icon_wheel));
   QPopupMenu * __RendererMenu = __scene->createToolsMenu(menu);  
   menu->insertItem(wheel,tr("Renderer"),__RendererMenu);
   menu->insertSeparator();
@@ -1291,19 +1291,19 @@ ViewGLFrame::createToolsMenu(QWidget * parent)
   menu->insertItem(wheel,tr("Rotating Center"),__RotCMenu);
   menu->insertSeparator();
   
-  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::icon_color));
+  QPixmap coloricon(ViewerIcon3::getPixmap(ViewerIcon3::icon_color));
   menu->insertItem(coloricon,tr("Background Color"),  this,SLOT(setBackground())); 
   return menu;
 }
 
 
 void
-ViewGLFrame::fillToolBar(QToolBar * toolBar)
+ViewGLFrame3::fillToolBar(QToolBar * toolBar)
 {
-  QPixmap wizardIcon( ViewerIcon::getPixmap(ViewerIcon::icon_wizard) );
-  QPixmap wizardRectIcon( ViewerIcon::getPixmap(ViewerIcon::icon_wizardrect) );
-  QPixmap wizardIconMenu( ViewerIcon::getPixmap(ViewerIcon::icon_wizardmenu) );
-  ViewDoubleToolButton * bt2 = new ViewDoubleToolButton( wizardIcon, 
+  QPixmap wizardIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_wizard) );
+  QPixmap wizardRectIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_wizardrect) );
+  QPixmap wizardIconMenu( ViewerIcon3::getPixmap(ViewerIcon3::icon_wizardmenu) );
+  ViewDoubleToolButton3 * bt2 = new ViewDoubleToolButton3( wizardIcon, 
 					  wizardRectIcon,tr("Selection"),tr("Selection"),
 				      this, SLOT(setLastSelectionMode()), toolBar, "Selection" );
   QString wizardtext ="<b>Selection</b><br><br>Allows you to select shapes from the scene<br><br>"
@@ -1318,9 +1318,9 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
   bt2->setPopup(selctmenu);
   QObject::connect(this,SIGNAL(selectionMode(bool)),
 		   bt2,SLOT(setOn(bool)));
-  QObject::connect(this,SIGNAL(modeChanged(ViewGLFrame::Mode)),
-		   bt2,SLOT(setButton(ViewGLFrame::Mode)));
-  QPixmap notwizardIcon( ViewerIcon::getPixmap(ViewerIcon::icon_notwizard) );
+  QObject::connect(this,SIGNAL(modeChanged(ViewGLFrame3::Mode)),
+		   bt2,SLOT(setButton(ViewGLFrame3::Mode)));
+  QPixmap notwizardIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_notwizard) );
   QString notwizardtext =tr("Clear Selection");
 
   QToolButton * bt = new QToolButton( notwizardIcon, notwizardtext, notwizardtext,
@@ -1334,7 +1334,7 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
   __grid->fillToolBar(toolBar);
   __rotCenter->fillToolBar(toolBar);
   if(__linedialog){
-    QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::icon_line_width) );
+    QPixmap lineIcon( ViewerIcon3::getPixmap(ViewerIcon3::icon_line_width) );
     QString linetext =tr("Line Width");
     bt = new QToolButton( lineIcon, linetext, linetext,
 					 __linedialog, SLOT(changeVisibility()), toolBar, "Line Width" );
@@ -1344,16 +1344,16 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
 		     bt,SLOT(setOn(bool)));
 	QWhatsThis::add(bt,tr("<b>Line Width</b><br><br>Control of the width of the lines and the points of the scene. By default, this value is egal to one."));
   }
-  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::icon_color));
+  QPixmap coloricon(ViewerIcon3::getPixmap(ViewerIcon3::icon_color));
   bt = new QToolButton(coloricon,tr("Background Color"),tr("Background Color"),
 			this,SLOT(setBackground()),toolBar);
   QWhatsThis::add(bt,tr("<b>Background Color</b><br><br>Change the background color of the 3D display."));
 }
 
 void
-ViewGLFrame::addOtherToolBar(QMainWindow * menu)
+ViewGLFrame3::addOtherToolBar(QMainWindow * menu)
 {
-  __linedialog  = new ViewToolBar(menu,"Line Width");
+  __linedialog  = new ViewToolBar3(menu,"Line Width");
   QLabel * Label = new QLabel(__linedialog, "LWLabel" );
   Label->setText( tr( " Line Width " ) );
 
@@ -1369,7 +1369,7 @@ ViewGLFrame::addOtherToolBar(QMainWindow * menu)
 
 
 void
-ViewGLFrame::addProperties(QTabWidget * tab)
+ViewGLFrame3::addProperties(QTabWidget * tab)
 {
     __scene->addProperties(tab);
     __camera->addProperties(tab);
@@ -1459,32 +1459,32 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 #define GL_COM(a)qWarning(#a);a;
 
 void
-ViewGLFrame::glCullNoFace(bool b){
+ViewGLFrame3::glCullNoFace(bool b){
   if(b){ makeCurrent(); GL_COM(glDisable(GL_CULL_FACE)); updateGL();}
 }
 
 void
-ViewGLFrame::glCullBackFace(bool b){
+ViewGLFrame3::glCullBackFace(bool b){
   if(b){ makeCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_BACK));updateGL();}
 }
 
 void
-ViewGLFrame::glCullFrontFace(bool b){
+ViewGLFrame3::glCullFrontFace(bool b){
   if(b){ makeCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_FRONT));updateGL();}
 }
 
 void
-ViewGLFrame::glSmoothShadeModel(bool b){
+ViewGLFrame3::glSmoothShadeModel(bool b){
   if(b){ makeCurrent(); GL_COM(glShadeModel(GL_SMOOTH));updateGL();}
 }
 
 void
-ViewGLFrame::glFlatShadeModel(bool b){
+ViewGLFrame3::glFlatShadeModel(bool b){
   if(b){ makeCurrent(); GL_COM(glShadeModel(GL_FLAT));updateGL();}
 }
 
 void
-ViewGLFrame::glDithering(bool b){
+ViewGLFrame3::glDithering(bool b){
   makeCurrent();
   if(b){GL_COM(glEnable(GL_DITHER));}
   else {GL_COM(glDisable(GL_DITHER));}
@@ -1492,7 +1492,7 @@ ViewGLFrame::glDithering(bool b){
 }
 
 void
-ViewGLFrame::glDepthTest(bool b){
+ViewGLFrame3::glDepthTest(bool b){
   makeCurrent();
   if(b){GL_COM(glEnable(GL_DEPTH_TEST));}
   else {GL_COM(glDisable(GL_DEPTH_TEST));}
@@ -1500,7 +1500,7 @@ ViewGLFrame::glDepthTest(bool b){
 }
 
 void
-ViewGLFrame::glNormalization(bool b){
+ViewGLFrame3::glNormalization(bool b){
   makeCurrent();
   if(b){GL_COM(glEnable(GL_NORMALIZE));}
   else {GL_COM(glDisable(GL_NORMALIZE));}
@@ -1508,15 +1508,15 @@ ViewGLFrame::glNormalization(bool b){
 }
 
 void
-ViewGLFrame::animation(bool b){
-  ViewSceneRendererGL * r = dynamic_cast<ViewSceneRendererGL *>(__scene);
+ViewGLFrame3::animation(bool b){
+  ViewSceneRendererGL3 * r = dynamic_cast<ViewSceneRendererGL3 *>(__scene);
   if(r)r->useDisplayList(!b);
   __camera->lockDim(b);
   qDebug(QString("Animation : ")+(b?"True":"False"));
 }
 
 
-ViewDoubleToolButton::ViewDoubleToolButton( const QPixmap & pm,
+ViewDoubleToolButton3::ViewDoubleToolButton3( const QPixmap & pm,
 										 const QPixmap & pm2,
 										 const QString & textLabel, 
 										 const QString & grouptext, 
@@ -1528,19 +1528,19 @@ QToolButton(pm,textLabel,grouptext,receiver,slot,parent,name),
 __pm1(pm),__pm2(pm2){
   setToggleButton(true);
   setPopupDelay(150);
-  drawArrow(&__pm1);
-  drawArrow(__pm1.mask());
-  drawArrow(&__pm2);
-  drawArrow(__pm2.mask());
+  drawArrow3(&__pm1);
+  drawArrow3(__pm1.mask());
+  drawArrow3(&__pm2);
+  drawArrow3(__pm2.mask());
   setPixmap(__pm1);
 }
 
-void ViewDoubleToolButton::setButton(ViewGLFrame::Mode m)
+void ViewDoubleToolButton3::setButton(ViewGLFrame3::Mode m)
 {
-  if(m == ViewGLFrame::Selection){
+  if(m == ViewGLFrame3::Selection){
 	setPixmap(__pm1);
   }
-  else if(m == ViewGLFrame::MultipleSelection){
+  else if(m == ViewGLFrame3::MultipleSelection){
 	setPixmap(__pm2);
   }
 }

@@ -43,23 +43,26 @@
 
 #include "camera.h"
 #include "errordialog.h"
+#include "util_qwidget.h"
 #include <stdlib.h>
 
 /* ----------------------------------------------------------------------- */
 
 ViewObjectGL::ViewObjectGL(QObject * parent, const char * name) :
-  QObject(parent,name),
+  QObject(parent),
   __frame(NULL)
 {
+	if(name) setObjectName(name);
 }
 
 ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
-  QObject(parent,name),
+  QObject(parent),
   __frame(parent)
 {
   if(parent)
     QObject::connect (this,SIGNAL(valueChanged()),
 		      parent,SLOT(updateGL()) ); 	
+  if(name) setObjectName(name);
 }
 
 ViewObjectGL::~ViewObjectGL()
@@ -109,7 +112,7 @@ ViewObjectGL::resizeGL(int w, int h)
 {
 }
 
-QPopupMenu * 
+QMenu * 
 ViewObjectGL::createToolsMenu(QWidget * parent)
 {
   return NULL;
@@ -123,12 +126,9 @@ void
 ViewObjectGL::connectTo(ViewStatusBar * s)
 {
   if(s){
-    QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),
-		     s,SLOT(message(const QString&,int)) );  
-    QObject::connect(this,SIGNAL(statusMessage(const QString&)),
-		     s,SLOT(message(const QString&)) );  
-		QObject::connect(this,SIGNAL(progressMessage(int,int)),
-			s,SLOT(setProgress(int,int)) );  
+    QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),s,SLOT(showMessage(const QString&,int)) );  
+    QObject::connect(this,SIGNAL(statusMessage(const QString&)), s,SLOT(showMessage(const QString&)) );  
+	QObject::connect(this,SIGNAL(progressMessage(int,int)), s,SLOT(setProgress(int,int)) );  
   }
 }
 
@@ -224,14 +224,14 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 	  if(!BASHMODE){
 		  if(!lock){
 			  lock = true;
-			  int res = QMessageBox::critical(widget,"GL Error",tr(_mess),"Abort","Continue");
+			  int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));
 			  if(res == 0 || res == -1){
 				  abort();
 			  }
 			  lock = false;
 		  }
 	  }
-	  else qWarning(tr(_mess));
+	  else qWarning(_mess.toAscii());
 	  return true;
   }
   return false;
@@ -243,7 +243,7 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QObject * paren
   ViewObjectGL(parent,name),
   __step(1){
   if(camera){
-    QObject::connect(camera,SIGNAL(stepMoveChanged(int)),this,SLOT(setStep(int)));
+    QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));
     QObject::connect(camera,SIGNAL(coordSys(int)),this,SLOT(coordSys(int)));
   }
 }
@@ -252,7 +252,7 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * par
   ViewObjectGL(parent,name),
   __step(1){
   if(camera){
-    QObject::connect(camera,SIGNAL(stepMoveChanged(int)),this,SLOT(setStep(int)));  
+    QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));  
     QObject::connect(camera,SIGNAL(coordSysChanged(int)),this,SLOT(coordSys(int)));
   }
 }
@@ -261,7 +261,7 @@ void
 ViewRelativeObjectGL::connectTo(ViewCameraGL *camera)
 {
   if(camera)
-	QObject::connect(camera,SIGNAL(stepMoveChanged(int)),this,SLOT(setStep(int)));  
+	QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));  
 }
 
 void 
@@ -288,14 +288,14 @@ ViewRelativeObjectGL::~ViewRelativeObjectGL()
 }
 
 void
-ViewRelativeObjectGL::setStep(const int step)
+ViewRelativeObjectGL::setStep(double step)
 {
   changeStepEvent(step,__step);
   __step = step;
 }
 
 void
-ViewRelativeObjectGL::changeStepEvent(const int newStep, const int oldStep)
+ViewRelativeObjectGL::changeStepEvent(double newStep, double oldStep)
 {
 }
 

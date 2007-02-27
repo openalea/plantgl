@@ -40,88 +40,132 @@
 #include "modalscenegl.h"
 #include "icons.h"
 
-ViewRenderingModeMenu::ViewRenderingModeMenu(ViewModalRendererGL * renderer, QWidget * parent, const char * name):
-  QPopupMenu(parent,name)
-{
+#include <qmenu.h>
+#include <qtoolbar.h>
 
+ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * renderer, const char * name):
+  QObject(renderer)
+{
+  if(name)setObjectName(name);
   if(renderer){
-    QPixmap volume(ViewerIcon::icon_solid);
-    QPixmap wire(ViewerIcon::icon_wire);
-    QPixmap skeleton(ViewerIcon::icon_skeleton);
-    QPixmap ctrlpoint(ViewerIcon::icon_ctrlpoint);
-    QPixmap bbox(ViewerIcon::icon_bbox);
-    QPixmap light(ViewerIcon::icon_light);
-    idVolume  = insertItem(volume,  tr("&Volume"),     renderer, SLOT(setRenderVolume()), CTRL+Key_M);
-    idWire    = insertItem(wire,    tr("&Wire"),       renderer, SLOT(setRenderWire()), CTRL+Key_W);
-    idSkeleton= insertItem(skeleton,tr("S&keleton"),   renderer, SLOT(setRenderSkeleton()), CTRL+Key_K);
-    idVolWire=  insertItem(volume,  tr("Volu&me and Wire"),   renderer, SLOT(setRenderVolumenWire()));
-    insertSeparator();
-    idCtrlPoints = insertItem(ctrlpoint, tr("&Control Points"),   renderer, SLOT(setRenderCtrlPoint()));
-    idBBox       = insertItem(bbox,      tr("&Bounding Box"),             renderer, SLOT(setRenderBBox()));
-    idLight      = insertItem(light,     tr("&Light"),            renderer, SLOT(setLightEnable()));
+    QPixmap volume(ViewerIcon::getPixmap(ViewerIcon::solid));
+    QPixmap wire(ViewerIcon::getPixmap(ViewerIcon::wire));
+    QPixmap skeleton(ViewerIcon::getPixmap(ViewerIcon::skeleton));
+    QPixmap ctrlpoint(ViewerIcon::getPixmap(ViewerIcon::ctrlpoint));
+    QPixmap bbox(ViewerIcon::getPixmap(ViewerIcon::bbox));
+    QPixmap light(ViewerIcon::getPixmap(ViewerIcon::light));
+
+	QActionGroup * mActionGroup = new QActionGroup(this);
+	mActionGroup->setExclusive(true);
+
+	idVolume   = new QAction(volume,  tr("&Volume"), this);
+	idVolume->setShortcut(Qt::CTRL+Qt::Key_M);
+	QObject::connect(idVolume,SIGNAL(triggered()), renderer, SLOT(setRenderVolume()));
+	idVolume->setCheckable(true);
+	idVolume->setWhatsThis(tr("<b>Volume Rendering</b><br><br>"
+	"Change the Rendering Mode to <b>Volume</b>.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Volume</b><br>"));
+
+    idWire     = new QAction(wire,    tr("&Wire"), this);
+	idWire->setShortcut(Qt::CTRL+Qt::Key_W);
+	QObject::connect(idWire,SIGNAL(triggered()), renderer, SLOT(setRenderWire()));
+	idWire->setCheckable(true);
+    idWire->setWhatsThis(tr("<b>Wire Rendering</b><br><br>"
+	"Change the Rendering Mode to <b>Wire</b>.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Wire</b><br>"));
+
+    idSkeleton = new QAction(skeleton,tr("S&keleton"),  this);
+	idWire->setShortcut(Qt::CTRL+Qt::Key_K);
+	QObject::connect(idSkeleton,SIGNAL(triggered()), renderer, SLOT(setRenderSkeleton()));
+	idSkeleton->setCheckable(true);
+    idSkeleton->setWhatsThis(tr("<b>Skeleton Rendering</b><br><br>"
+	"Change the Rendering Mode to <b>Skeleton</b>.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Skeleton</b><br>"));
+
+	idVolWire =  new QAction(volume,  tr("Volu&me and Wire"),   this);
+	QObject::connect(idVolWire,SIGNAL(triggered()), renderer, SLOT(setRenderVolumenWire()));
+	idVolWire->setCheckable(true);
+    idVolWire->setWhatsThis(tr("<b>Volume and Wire Rendering</b><br><br>"
+	"Change the Rendering Mode to <b>Volume and Wire</b>.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Volume and Wire</b><br>"));
+
+	mActionGroup->addAction(idVolume);
+	mActionGroup->addAction(idWire);
+	mActionGroup->addAction(idSkeleton);
+	mActionGroup->addAction(idVolWire);
+
+    idCtrlPoints = new QAction(ctrlpoint, tr("&Control Points"),this);
+	QObject::connect(idCtrlPoints,SIGNAL(triggered()), renderer, SLOT(setRenderCtrlPoint()));
+	idCtrlPoints->setCheckable(true);
+	idCtrlPoints->setChecked(renderer->isCtrlPointRenderingEnable());
+    idCtrlPoints->setWhatsThis(tr("<b>Control Points Rendering</b><br><br>"
+	"Set <b>Control Points Rendering</b> enable/disable.<br><br>"
+	"All the shapes define with some control points will display them.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Control Points</b><br>"));
+
+	idBBox       = new QAction(bbox,      tr("&Bounding Box"),this);
+	QObject::connect(idBBox,SIGNAL(triggered()), renderer, SLOT(setRenderBBox()));
+	idBBox->setCheckable(true);
+	idBBox->setChecked(renderer->isBBoxRenderingEnable());
+    idBBox->setWhatsThis(tr("<b>Bounding Box Rendering</b><br><br>"
+	"Set <b>Bounding Box Rendering</b> enable/disable.<br><br>"
+	"the Bounding Boxes of all shapes will be displayed.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > BBox</b><br>"));
+
+    idLight      = new QAction(light,     tr("&Light"),     this);
+	QObject::connect(idLight,SIGNAL(triggered()), renderer, SLOT(setLightEnable()));
+	idLight->setCheckable(true);
+	idLight->setChecked(renderer->isLightEnable());
+    idLight->setWhatsThis(tr("<b>Light Rendering</b><br><br>"
+	"Set <b>Light Rendering</b> enable/disable.<br><br>"
+	"The Rendering will (not) take into account ligth source.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
+
+	QObject::connect(renderer,SIGNAL(ctrlPointsRenderingChanged(bool)),idCtrlPoints,SLOT(setChecked(bool)));
+	QObject::connect(renderer,SIGNAL(bboxRenderingChanged(bool)),idBBox,SLOT(setChecked(bool)));
+	QObject::connect(renderer,SIGNAL(lightEnableChanged(bool)),idLight,SLOT(setChecked(bool)));
+
     setRenderingMode(renderer->getRenderingMode());
-    setRenderCtrlPoint(renderer->isCtrlPointRenderingEnable());
-    setLightEnable(renderer->isLightEnable());
-    setRenderBBox(renderer->isBBoxRenderingEnable());
-    QObject::connect(renderer,SIGNAL(bboxRenderingChanged(bool)),
- 		     this,SLOT(setRenderBBox(bool)));
-    QObject::connect(renderer,SIGNAL(ctrlPointsRenderingChanged(bool)),
-		     this,SLOT(setRenderCtrlPoint(bool)));
-    QObject::connect(renderer,SIGNAL(lightEnableChanged(bool)),
-		     this,SLOT(setLightEnable(bool)));
     QObject::connect(renderer,SIGNAL(renderingModeChanged(const int)),
 		     this,SLOT(setRenderingMode(const int)));
   }
 }
 
-ViewRenderingModeMenu::~ViewRenderingModeMenu()
+ViewRenderingModeActions::~ViewRenderingModeActions()
 {
 }
 
 
-void 
-ViewRenderingModeMenu::setRenderingMode(const int i)
+void ViewRenderingModeActions::fill(QMenu * menu) const
 {
-  if(i == 2){
-    setItemChecked(idVolume,false);
-    setItemChecked(idWire,true);
-    setItemChecked(idSkeleton,false);
-    setItemChecked(idVolWire,false);
-  }
-  else if(i == 3){
-    setItemChecked(idVolume,false);
-    setItemChecked(idWire,false);
-    setItemChecked(idSkeleton,true);
-    setItemChecked(idVolWire,false);
-  }
-  else if(i == 4){
-    setItemChecked(idVolume,false);
-    setItemChecked(idWire,false);
-    setItemChecked(idSkeleton,false);
-    setItemChecked(idVolWire,true);
-  }
-  else {
-    setItemChecked(idVolume,true);
-    setItemChecked(idWire,false);
-    setItemChecked(idSkeleton,false);
-    setItemChecked(idVolWire,false);
-  }
+	menu->addAction(idVolume);
+	menu->addAction(idWire);
+	menu->addAction(idSkeleton);
+	menu->addAction(idVolWire);
+	menu->addSeparator();
+	menu->addAction(idCtrlPoints);
+	menu->addAction(idBBox);
+	menu->addAction(idLight);
 }
 
-void
-ViewRenderingModeMenu::setRenderCtrlPoint(const bool b)
+void ViewRenderingModeActions::fill(QToolBar * bar) const
 {
-  setItemChecked(idCtrlPoints,b);
+	bar->addAction(idVolume);
+	bar->addAction(idWire);
+	bar->addAction(idSkeleton);
+	bar->addAction(idVolWire);
+	bar->addSeparator();
+	bar->addAction(idCtrlPoints);
+	bar->addAction(idBBox);
+	bar->addAction(idLight);
 }
 
 void 
-ViewRenderingModeMenu::setLightEnable(const bool b)
+ViewRenderingModeActions::setRenderingMode(const int i)
 {
-  setItemChecked(idLight,b);
+  idVolume->setChecked(i == 1);
+  idWire->setChecked(i == 2);
+  idSkeleton->setChecked(i == 3);
+  idVolWire->setChecked(i == 4);
 }
 
-void 
-ViewRenderingModeMenu::setRenderBBox(const bool b)
-{
-  setItemChecked(idBBox,b);
-}

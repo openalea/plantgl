@@ -43,6 +43,7 @@
 #include <qtoolbutton.h>
 #include <qvariant.h>
 #include <qwhatsthis.h>
+#include <qmenu.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -51,7 +52,8 @@ ViewModalRendererGL::ViewModalRendererGL(ViewCameraGL * camera,
 					 QGLWidget * parent, 
 					 const char * name) :
   ViewSceneRendererGL(camera,light,parent,name),
-  __renderingMode(1)
+  __renderingMode(1),
+  __actions(0)
 {
   __renderingOption[0] = false;
   __renderingOption[1] = false;
@@ -142,83 +144,18 @@ ViewModalRendererGL::setRenderBBox()
 
 /* ----------------------------------------------------------------------- */
 
-QPopupMenu * 
+QMenu * 
 ViewModalRendererGL::createToolsMenu(QWidget * parent)
 {
-  return new ViewRenderingModeMenu(this,parent);
+  if(!__actions) __actions = new ViewRenderingModeActions(this);
+  QMenu * menu = new QMenu(parent);
+  __actions->fill(menu);
+  return menu;
 }
 
 void 
 ViewModalRendererGL::fillToolBar(QToolBar * toolBar)
 {
-  ViewExclusiveButtonSet * bset = new ViewExclusiveButtonSet(4,toolBar);
-  QPixmap volume(ViewerIcon::icon_solid);
-  QPixmap wire(ViewerIcon::icon_wire);
-  QPixmap skeleton(ViewerIcon::icon_skeleton);
-  QPixmap ctrlpoint(ViewerIcon::icon_ctrlpoint);
-  QPixmap bbox(ViewerIcon::icon_bbox);
-  QPixmap light(ViewerIcon::icon_light);
-
-    
-  QToolButton * bt = new QToolButton(volume,  tr("Volume Rendering"), tr("Volume"),
-	this, SLOT(setRenderVolume()), toolBar);
-  QWhatsThis::add(bt,tr("<b>Volume Rendering</b><br><br>"
-	"Change the Rendering Mode to <b>Volume</b>.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Volume</b><br>"));
-  bset->add(bt);
-  bt = new QToolButton(wire,    tr("Wire Rendering"),   tr("Wire"),
-		       this, SLOT(setRenderWire()), toolBar);
-  QWhatsThis::add(bt,tr("<b>Wire Rendering</b><br><br>"
-	"Change the Rendering Mode to <b>Wire</b>.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Wire</b><br>"));
-  bset->add(bt);
-  bt = new QToolButton(skeleton,tr("Skeleton Rendering"),tr("Skeleton"),
-		       this, SLOT(setRenderSkeleton()), toolBar);
-  QWhatsThis::add(bt,tr("<b>Skeleton Rendering</b><br><br>"
-	"Change the Rendering Mode to <b>Skeleton</b>.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Skeleton</b><br>"));
-  bset->add(bt);
-  bt = new QToolButton(volume,    tr("Volume and Wire Rendering"),   tr("Volume and Wire"),
-		       this, SLOT(setRenderVolumenWire()), toolBar);
-  QWhatsThis::add(bt,tr("<b>Volume and Wire Rendering</b><br><br>"
-	"Change the Rendering Mode to <b>Volume and Wire</b>.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Volume and Wire</b><br>"));
-  bset->add(bt);
-  bset->setSelection(getRenderingMode());
-  toolBar->addSeparator();
-
-  QToolButton * __CtrlPoints = new QToolButton(ctrlpoint, tr("Control Points Rendering"), tr("Control Points"),
-					       this, SLOT(setRenderCtrlPoint()), toolBar);
-  QWhatsThis::add(__CtrlPoints,tr("<b>Control Points Rendering</b><br><br>"
-	"Set <b>Control Points Rendering</b> enable/disable.<br><br>"
-	"All the shapes define with some control points will display them.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Control Points</b><br>"));
-  __CtrlPoints->setToggleButton(true) ;
-  QToolButton * __BBox       = new QToolButton(bbox,      tr("Bounding Box Rendering"),tr("Bounding Box"),
-					       this, SLOT(setRenderBBox()),toolBar);
-  QWhatsThis::add(__BBox,tr("<b>Bounding Box Rendering</b><br><br>"
-	"Set <b>Bounding Box Rendering</b> enable/disable.<br><br>"
-	"the Bounding Boxes of all shapes will be displayed.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > BBox</b><br>"));
-  __BBox->setToggleButton(true) ;
-  QToolButton * __Light      = new QToolButton(light,     tr("Light Rendering"), tr("Light"),
-					       this, SLOT(setLightEnable()),toolBar);
-  QWhatsThis::add(__Light,tr("<b>Light Rendering</b><br><br>"
-	"Set <b>Light Rendering</b> enable/disable.<br><br>"
-	"The Rendering will (not) take into account ligth source.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
-  __Light->setToggleButton(true) ;
-  toolBar->addSeparator();
-  __CtrlPoints->setOn(isCtrlPointRenderingEnable());
-  __Light->setOn(isLightEnable());
-  __BBox->setOn(isBBoxRenderingEnable());
-  QObject::connect(this,SIGNAL(bboxRenderingChanged(bool)),
-		   __BBox,SLOT(setOn(bool)));
-  QObject::connect(this,SIGNAL(ctrlPointsRenderingChanged(bool)),
-		   __CtrlPoints,SLOT(setOn(bool)));
-  QObject::connect(this,SIGNAL(lightEnableChanged(bool)),
-		   __Light,SLOT(setOn(bool)));
-  QObject::connect(this,SIGNAL(renderingModeChanged(const int)),
-		   bset,SLOT(setSelection(const int)));
-  
+  if(!__actions) __actions = new ViewRenderingModeActions(this);
+  __actions->fill(toolBar);  
 }

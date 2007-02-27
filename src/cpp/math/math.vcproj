@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,.."
 				PreprocessorDefinitions="PGLMATH_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(QTDIR)\include,.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,.."
 				PreprocessorDefinitions="PGLMATH_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"

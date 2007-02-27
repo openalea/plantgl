@@ -38,15 +38,10 @@
 #include "icons.h"
 
 #include <qcombobox.h>
+#include <qtoolbutton.h>
 #include <qlabel.h>
 #include <qpixmap.h>
-#include <qtoolbutton.h>
-#include <qfile.h>
-#include <qlistbox.h>
-#include <qmainwindow.h>
 #include <qcursor.h>
-#include <qwhatsthis.h>
-#include <qvariant.h>
 
 /*----------------------------------------------------------------------------*/
 
@@ -55,41 +50,34 @@
  *  name 'name' and widget flags set to 'f' 
  */
 ViewLocationBar::ViewLocationBar(const QString &label, 
-				 QMainWindow *mw, 
-#if QT_VERSION >= 300
-				 ToolBarDock tbd,
-#else
-				 QMainWindow::ToolBarDock tbd,
-#endif
-				 bool newLine, 
-				 const char *name)
-  : ViewToolBar( label,mw,tbd,newLine, name  )
+				                 QWidget *mw,const char *name)
+  : ViewToolBar( label, mw ,name )
 {
-    if ( !name )
-	setName( "LocationBar" );
-	setHorizontalStretchable (true);
-
     QToolButton * bt = NULL;
-    QPixmap erase(ViewerIcon::getPixmap(ViewerIcon::icon_locerase));
-    bt =  new QToolButton(this,"Erase Location");
-    bt->setPixmap(erase);
+    QPixmap erase(ViewerIcon::getPixmap(ViewerIcon::locerase));
+    bt =  new QToolButton(this);
+    bt->setIcon(QIcon(erase));
 	bt->setFixedSize(QSize(25,25));
-	QWhatsThis::add(bt,"<b>"+tr("Erase Location")+"</b><br><br>"
+	bt->setWhatsThis("<b>"+tr("Erase Location")+"</b><br><br>"
 	"Erase the current filename to specify a new one.");
-    QLabel * LocationLabel = new QLabel(this, "LocationLabel" );
+	addWidget(bt);
+    QLabel * LocationLabel = new QLabel(this );
     LocationLabel->setText( tr( " Location " ) );
 	LocationLabel->setFixedSize(QSize(50,25));
-    
-    __Location = new QComboBox( this, "LocationEdit"  );
+    addWidget(LocationLabel);
+
+    __Location = new QComboBox( this );
 	__Location->setProperty("minimumHeight",25);
 //	__Location->setProperty("minimumWidth",350);
 	__Location->setEditable( TRUE );
 	__Location->setAutoCompletion ( TRUE );
-	__Location->setCursor( QCursor( 4 ) );
+	__Location->setCursor( QCursor( Qt::IBeamCursor ) );
+	__Location->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+	addWidget(__Location);
 
-	QWhatsThis::add(__Location,"<b>"+tr("The Filename")+"</b><br><br>"
+	__Location->setWhatsThis("<b>"+tr("The Filename")+"</b><br><br>"
 	"The name of the file of the current scene.");
-    if(bt)QObject::connect(bt,SIGNAL(clicked()),__Location,SLOT(clearEdit()));
+    if(bt)QObject::connect(bt,SIGNAL(clicked()),__Location,SLOT(clearEditText()));
 }
 
 /*  

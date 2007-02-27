@@ -35,14 +35,14 @@
  */
 
 /*! \file view_version.h
-    \brief File for accessing to Viewer version.
+    \brief File for accessing to Viewer3 version.
 */
 
 
 #ifndef __view_version_h__
 #define __view_version_h__
 
-#include "../gui_config.h"
+#include "../gui3_config.h"
 
 /// Viewer Version macro
 #define VIEWER_VERSION 2.0
@@ -51,11 +51,11 @@
 #include <string>
 
 /// Viewer Version
-extern VIEW_API float getViewerVersion();
-extern VIEW_API float getViewerRelease();
+extern VIEW3_API float getViewer3Version();
+extern VIEW3_API float getViewer3Release();
 
 /// Viewer Version
-extern VIEW_API std::string getViewerVersionString();
+extern VIEW3_API std::string getViewer3VersionString();
 
 #endif
 

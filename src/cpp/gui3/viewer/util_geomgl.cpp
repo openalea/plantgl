@@ -41,16 +41,16 @@
 
 PGL_USING_NAMESPACE
 
-const ViewGLFrame& operator<<(const ViewGLFrame& frame, const ScenePtr scene)
+const ViewGLFrame3& operator<<(const ViewGLFrame3& frame, const ScenePtr scene)
 {
-  GeomSceneChangeEvent * event = new GeomSceneChangeEvent(scene);
+  GeomSceneChangeEvent3 * event = new GeomSceneChangeEvent3(scene);
   QApplication::postEvent(frame.getSceneRenderer(),event);
   return frame;
 }
 
-const Viewer& operator<<(const Viewer& viewer, const ScenePtr scene)
+const Viewer3& operator<<(const Viewer3& viewer, const ScenePtr scene)
 {
-  GeomSceneChangeEvent * event = new GeomSceneChangeEvent(scene);
+  GeomSceneChangeEvent3 * event = new GeomSceneChangeEvent3(scene);
   QApplication::postEvent(viewer.getSceneRenderer(),event);
   return viewer;
 }

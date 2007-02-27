@@ -95,11 +95,11 @@ static void resolveLibs()
     }
 }
 
-class TrayIcon::TrayIconPrivate : public QWidget
+class TrayIcon3::TrayIcon3Private : public QWidget
 {
 
 public:
-    TrayIconPrivate( TrayIcon *object ) 
+    TrayIcon3Private( TrayIcon3 *object ) 
 	: QWidget( 0 ), hIcon( 0 ), hMask( 0 ), iconObject( object )
     {
 	if ( !MYWM_TASKBARCREATED ) {
@@ -112,7 +112,7 @@ public:
 	}
     }
 
-    ~TrayIconPrivate()
+    ~TrayIcon3Private()
     {
 	if ( hMask )
 	    DeleteObject( hMask );
@@ -323,7 +323,7 @@ public:
 	
     HICON		hIcon;
     HBITMAP		hMask;
-    TrayIcon		*iconObject;
+    TrayIcon3		*iconObject;
 };
 
 static HBITMAP createIconMask( const QPixmap &qp )
@@ -362,12 +362,12 @@ static HICON createIcon( const QPixmap &pm, HBITMAP &hbm )
     return CreateIconIndirect( &iconInfo );
 }
 
-void TrayIcon::sysInstall()
+void TrayIcon3::sysInstall()
 {
     if ( d )
 	return;
 
-    d = new TrayIconPrivate( this );
+    d = new TrayIcon3Private( this );
     d->hIcon = createIcon( pm, d->hMask );
 
 #if defined(UNICODE)
@@ -378,7 +378,7 @@ void TrayIcon::sysInstall()
 	d->trayMessageA( NIM_ADD );
 }
 
-void TrayIcon::sysRemove()
+void TrayIcon3::sysRemove()
 {
     if ( !d )
 	return;
@@ -394,7 +394,7 @@ void TrayIcon::sysRemove()
     d = 0;
 }
 
-void TrayIcon::sysUpdateIcon()
+void TrayIcon3::sysUpdateIcon()
 {
     if ( !d )
 	return;
@@ -414,7 +414,7 @@ void TrayIcon::sysUpdateIcon()
 	d->trayMessageA( NIM_MODIFY );
 }
 
-void TrayIcon::sysUpdateToolTip()
+void TrayIcon3::sysUpdateToolTip()
 {
     if ( !d )
 	return;
@@ -427,7 +427,7 @@ void TrayIcon::sysUpdateToolTip()
 	d->trayMessageA( NIM_MODIFY );
 }
 
-void TrayIcon::sysBalloonMsg(const QString& title, const QString& mess, uint timeout)
+void TrayIcon3::sysBalloonMsg(const QString& title, const QString& mess, uint timeout)
 {
     if ( !d )
 	return;

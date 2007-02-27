@@ -56,7 +56,7 @@
 #include <tool/util_string.h>
 
 /// Qt
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <qframe.h>
 #include <qlineedit.h>
 #include <qlabel.h>
@@ -65,8 +65,10 @@
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qclipboard.h>
-#include <qdragobject.h> 
 #include <qfileinfo.h> 
+#include <qmainwindow.h> 
+#include <qmimedata.h> 
+#include <qurl.h> 
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef _DEBUG
@@ -131,22 +133,23 @@ real_t ViewGeomSceneGL::getSelectionVolume()
 
 
 bool
-ViewGeomSceneGL::addEditEntries(QPopupMenu * menu)
+ViewGeomSceneGL::addEditEntries(QMenu * menu)
 {
-  menu->insertItem( tr("Remove Selection"),
-                    this,SLOT(removeSelection()),Key_Delete);
-  menu->insertItem( tr("Keep Selection Only"),
+  menu->addAction( tr("Remove Selection"),
+	  this,SLOT(removeSelection()),Qt::Key_Delete);
+  menu->addAction( tr("Keep Selection Only"),
                     this,SLOT(keepSelectionOnly()));
-  menu->insertSeparator();
-  QPopupMenu * sub = new QPopupMenu(menu);
-  menu->insertItem(tr("Replace Selection by"),sub);
-  sub->insertItem( tr("Wire"),
+  menu->addSeparator();
+  QMenu * sub = new QMenu(menu);
+  sub->setTitle(tr("Replace Selection by"));
+  menu->addMenu(sub);
+  sub->addAction( tr("Wire"),
                     this,SLOT(wireSelection()));
-  sub->insertItem( tr("Discretization"),
+  sub->addAction( tr("Discretization"),
                     this,SLOT(discretizeSelection()));
-  sub->insertItem( tr("Triangulation"),
+  sub->addAction( tr("Triangulation"),
                     this,SLOT(triangulateSelection()));
-  menu->insertSeparator();
+  menu->addSeparator();
   ViewModalRendererGL::addEditEntries(menu);
   return true;
 }
@@ -154,18 +157,14 @@ ViewGeomSceneGL::addEditEntries(QPopupMenu * menu)
 bool
 ViewGeomSceneGL::addProperties(QTabWidget * tab)
 {
-  QWidget * tab2 = new QWidget( tab, "Scene Prop" );
+  QWidget * tab2 = new QWidget( tab );
   if(__scene.isValid() && !__scene->isEmpty()){
     real_t surface = getSceneSurface();
     real_t volume = getSceneVolume();
     QFrame * Line = new QFrame( tab2 );
     Line->setGeometry( QRect( 30, 100, 351, 20 ) );
-#if QT_VERSION < 300
-    Line->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-#else
     Line->setFrameShape( QFrame::HLine );
     Line->setFrameShadow( QFrame::Sunken );
-#endif
 
     QLabel * TextLabel = new QLabel( tab2 );
     TextLabel->setGeometry( QRect( 150, 90, 120, 31 ) );
@@ -204,19 +203,19 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 170, 120, 200, 25 ) );
-    TextLabel2->setText( tr( QString::number(surface) ) );
+    TextLabel2->setText( QString::number(surface) );
 
     TextLabel2 = new QLineEdit( tab2 );
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 170, 145, 200, 25 ) );
-    TextLabel2->setText( tr( QString::number(volume) ) );
+    TextLabel2->setText( QString::number(volume) );
 
     TextLabel2 = new QLineEdit( tab2 );
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 170, 170, 200, 25 ) );
-    TextLabel2->setText( tr( QString::number(polygonNumber(__scene) ) ));
+    TextLabel2->setText( QString::number(polygonNumber(__scene) ));
 
     uint32_t s = comp.getMemorySize();
     QString labl;
@@ -230,16 +229,12 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 170, 195, 200, 25 ) );
-    TextLabel2->setText( tr( labl ) );
+    TextLabel2->setText( labl );
 
     Line = new QFrame( tab2  );
     Line->setGeometry( QRect( 20, 250, 351, 20 ) );
-#if QT_VERSION < 300
-    Line->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-#else
     Line->setFrameShape( QFrame::HLine );
     Line->setFrameShadow( QFrame::Sunken );
-#endif
 
     TextLabel = new QLabel( tab2 );
     TextLabel->setGeometry( QRect( 150, 240, 80, 31 ) );
@@ -265,25 +260,25 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 168, 275, 200, 25 ) );
-    TextLabel2->setText( tr( toQString( __bbox->getUpperRightCorner()) ) );
+    TextLabel2->setText( toQString( __bbox->getUpperRightCorner()) );
 
     TextLabel2 = new QLineEdit( tab2 );
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 168, 305, 200, 25 ) );
-    TextLabel2->setText( tr( toQString( __bbox->getLowerLeftCorner()) ) );
+    TextLabel2->setText( toQString( __bbox->getLowerLeftCorner()) );
 
     TextLabel2 = new QLineEdit( tab2 );
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 168, 335, 200, 25 ) );
-    TextLabel2->setText( tr(toQString( __bbox->getSize()*2)  ) );
+    TextLabel2->setText( toQString( __bbox->getSize()*2)  );
 
     TextLabel2 = new QLineEdit( tab2 );
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 168, 365, 200, 25 ) );
-    TextLabel2->setText( tr( toQString( __bbox->getCenter()) ) );
+    TextLabel2->setText( toQString( __bbox->getCenter()) );
 
 
   }
@@ -293,7 +288,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel->setText( " "+tr( "Empty Scene" ) );
   }
 
-  tab->insertTab( tab2, tr( "Geom &Scene" ) );
+  tab->addTab( tab2, tr( "Geom &Scene" ) );
 
   if(!__selectedShapes.empty()){
 	  
@@ -301,18 +296,14 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  ScenePtr selection = getSelection();
 	  selection->apply(comp);
 
-	  tab2 = new QWidget( tab, "Selection Prop" );
+	  tab2 = new QWidget( tab );
 	  real_t surface = getSelectionSurface();
 	  real_t volume = getSelectionVolume();
 	  QFrame * Line = new QFrame( tab2 );
 	  Line->setGeometry( QRect( 30, 100, 351, 20 ) );
-#if QT_VERSION < 300
-	  Line->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-#else
 	  Line->setFrameShape( QFrame::HLine );
 	  Line->setFrameShadow( QFrame::Sunken );
-#endif
-	  
+  
 	  QLabel * TextLabel = new QLabel( tab2 );
 	  TextLabel->setGeometry( QRect( 18, 20, 130,30 ) );
 	  TextLabel->setText( tr( "Selection")+" :" );
@@ -362,19 +353,19 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 170, 120, 200, 25 ) );
-	  TextLabel2->setText( tr( QString::number(surface) ) );
+	  TextLabel2->setText( QString::number(surface) );
 	  
 	  TextLabel2 = new QLineEdit( tab2 );
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 170, 145, 200, 25 ) );
-	  TextLabel2->setText( tr( QString::number(volume) ) );
+	  TextLabel2->setText( QString::number(volume) );
 	  
 	  TextLabel2 = new QLineEdit( tab2 );
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 170, 170, 200, 25 ) );
-	  TextLabel2->setText( tr( QString::number(polygonNumber(selection) ) ));
+	  TextLabel2->setText( QString::number(polygonNumber(selection) ) );
 	  
 	  uint32_t s = comp.getMemorySize();
 	  QString labl;
@@ -388,16 +379,12 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 170, 195, 200, 25 ) );
-	  TextLabel2->setText( tr( labl ) );
+	  TextLabel2->setText( labl );
 	  
 	  Line = new QFrame( tab2  );
 	  Line->setGeometry( QRect( 20, 250, 351, 20 ) );
-#if QT_VERSION < 300
-	  Line->setFrameStyle( QFrame::HLine | QFrame::Sunken );
-#else
 	  Line->setFrameShape( QFrame::HLine );
 	  Line->setFrameShadow( QFrame::Sunken );
-#endif
 	  
 	  TextLabel = new QLabel( tab2 );
 	  TextLabel->setGeometry( QRect( 150, 240, 80, 31 ) );
@@ -425,34 +412,34 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 168, 275, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( tr( toQString( bbox->getUpperRightCorner()) ) );
+	  if(bbox)TextLabel2->setText( toQString( bbox->getUpperRightCorner()) );
 	  
 	  TextLabel2 = new QLineEdit( tab2 );
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 168, 305, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( tr( toQString( bbox->getLowerLeftCorner()) ) );
+	  if(bbox)TextLabel2->setText( toQString( bbox->getLowerLeftCorner()) );
 	  
 	  TextLabel2 = new QLineEdit( tab2 );
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 168, 335, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( tr(toQString( bbox->getSize()*2)  ) );
+	  if(bbox)TextLabel2->setText( toQString( bbox->getSize()*2)  );
 	  
 	  TextLabel2 = new QLineEdit( tab2 );
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 168, 365, 200, 25 ) );
-	  if(bbox)TextLabel2->setText( tr( toQString( bbox->getCenter()) ) );
+	  if(bbox)TextLabel2->setText( toQString( bbox->getCenter()) );
 
-	  tab->insertTab( tab2, tr( "Selection" ) );
+	  tab->addTab( tab2, tr( "Selection" ) );
 	  
 	}
 	return true;
 }
 
 bool
-ViewGeomSceneGL::browse(QListView * l,bool b)
+ViewGeomSceneGL::browse(Q3ListView * l,bool b)
 {
   if(!__scene)return false;
   GeomListViewBuilder builder(l);
@@ -461,40 +448,38 @@ ViewGeomSceneGL::browse(QListView * l,bool b)
   return true;
 }
 
-QPopupMenu *
+QMenu *
 ViewGeomSceneGL::createToolsMenu(QWidget * parent)
 {
-  QPopupMenu * menu = ViewModalRendererGL::createToolsMenu(parent);
-  menu->insertSeparator();
-  QPopupMenu * __displayMenu = new QPopupMenu(menu);
-  __displayMenu->setCheckable(true);
-  int id = __displayMenu->insertItem(tr("Enable"),    this,SLOT(changeDisplayListUse()));
-  ViewPopupButton * b = new ViewPopupButton(__displayMenu,id);
-  QObject::connect(this,SIGNAL(displayList(bool)),b,SLOT(check(bool)));
-  b->check(getDisplayListUse());
-  __displayMenu->insertSeparator();
-  __displayMenu->insertItem(tr("Recompute"),      this,SLOT(clearDisplayList()));
-  menu->insertItem(tr("&Display List"),__displayMenu);
+  QMenu * menu = ViewModalRendererGL::createToolsMenu(parent);
+  menu->addSeparator();
+  QMenu * __displayMenu = new QMenu(menu);
+  QAction * act = __displayMenu->addAction(tr("Enable"),    this,SLOT(changeDisplayListUse()));
+  act->setChecked(getDisplayListUse());
+  QObject::connect(this,SIGNAL(displayList(bool)),act,SLOT(setChecked(bool)));
+  __displayMenu->addSeparator();
+  __displayMenu->addAction(tr("Recompute"),      this,SLOT(clearDisplayList()));
+  __displayMenu->setTitle(tr("&Display List"));
+  menu->addMenu(__displayMenu);
   return menu;
-
 }
 
 void 
 ViewGeomSceneGL::clipboard(){
 	QClipboard * clipboard = QApplication::clipboard();
 	if(clipboard ){
-		QMimeSource* data = clipboard->data();
+		const QMimeData* data = clipboard->mimeData();
 		if(data!=NULL ){
-			if(QUriDrag::canDecode(data)){
-				QStrList res;
-				QUriDrag::decode(data,res);
-				if(!res.isEmpty()){
-					QFileInfo f(res.at(0));
-					QString ext = f.extension();
-					ext.upper();
-					  if(f.exists()&& (ext == "GEOM" ||ext == "BGEOM")){
-						open(res.at(0));
-					  }
+			if(data->hasUrls()){
+				QList<QUrl> urls = data->urls();
+				if(!urls.empty())
+				{
+					QFileInfo f(urls[0].toLocalFile());
+					QString ext = f.suffix();
+					ext.toUpper();
+				    if(f.exists()&& (ext == "GEOM" ||ext == "BGEOM")){
+						open(urls[0].toLocalFile());
+					}
 				}
 			}
 		}
@@ -513,30 +498,28 @@ ViewMultiGeomSceneGL::fillToolBar(QToolBar * toolBar)
 bool
 ViewMultiGeomSceneGL::addOtherToolBar(QMainWindow * menu)
 {
-  __transitionBar = new ViewToolBar(menu,"Transition Bar");
-  QLabel * Label = new QLabel(__transitionBar, "TransitionLabel" );
+  __transitionBar = new ViewToolBar(tr("Transition"),menu,"TransitionBar");
+  QLabel * Label = new QLabel(__transitionBar);
   Label->setText( " "+tr( "Transition" ) +" ");
-   __transSlider =  new QSlider ( 0 , __transitionRenderer.getTotalStep() ,
-                                 0, 0, QSlider::Horizontal,
-                                 __transitionBar,"Transition Slider" );
+  __transSlider =  new QSlider ( Qt::Horizontal, __transitionBar );
+  __transSlider->setRange(0 , __transitionRenderer.getTotalStep());
+  __transSlider->setValue(0);
   __transSlider->setFixedSize(100,25);
-  QObject::connect (__transSlider,SIGNAL(valueChanged(int)),
-                    this,SLOT(setRenderingStep(int)) );
-  QObject::connect (this,SIGNAL(renderingStepChanged(int)),
-                    __transSlider,SLOT(setValue(int)) );
+  QObject::connect (__transSlider,SIGNAL(valueChanged(int)), this,SLOT(setRenderingStep(int)) );
+  QObject::connect (this,SIGNAL(renderingStepChanged(int)), __transSlider,SLOT(setValue(int)) );
+  menu->addToolBar(__transitionBar);
   __transitionBar->hide();
   return true;
 }
 
 
-QPopupMenu *
+QMenu *
 ViewMultiGeomSceneGL::createToolsMenu(QWidget * parent)
 {
-  QPopupMenu * __menu = ViewGeomSceneGL::createToolsMenu(parent);
-  __menu->insertSeparator();
-  int id = __menu->insertItem(tr("Transition Slider"),this,SLOT(changeSliderVisibility()));
-  ViewPopupButton * bt = new ViewPopupButton(__menu,id,"Transition Slider");
-  QObject::connect(this,SIGNAL(sliderVisibilityChanged(bool)),bt,SLOT(check(bool)));
+  QMenu * __menu = ViewGeomSceneGL::createToolsMenu(parent);
+  __menu->addSeparator();
+  QAction * act = __menu->addAction(tr("Transition Slider"),this,SLOT(changeSliderVisibility()));
+  QObject::connect(this,SIGNAL(sliderVisibilityChanged(bool)),act,SLOT(setChecked(bool)));
   return __menu;
 }
 

@@ -67,10 +67,10 @@ ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
   __visible(false),
   __position(0,0,0),
   __displayList(0){
-  __sliders= new ViewDialog(parent,tr("Rotating Center"),false);
-  __sliders->setCaption("Rotating Center Coordinates");
-  __editor = new RotCenterEdit(__sliders,"Rotating Center Coordinates");
-  __sliders->setFixedSize(__editor->size());
+  __sliders= new ViewDialog(parent,false);
+  __sliders->setWindowTitle(tr("Rotating Center Coordinates"));
+  __editor = new Ui::RotCenterEdit();
+  __editor->setupUi(__sliders);
   __editor->XEdit->setText(QString::number(__position.x()));
   __editor->YEdit->setText(QString::number(__position.y()));
   __editor->ZEdit->setText(QString::number(__position.z()));
@@ -102,12 +102,9 @@ ViewRotCenterGL::~ViewRotCenterGL()
 void 
 ViewRotCenterGL::setSliderStep(const int step)
 {
-  __editor->XSlider->setMaxValue(150*step);
-  __editor->YSlider->setMaxValue(150*step);
-  __editor->ZSlider->setMaxValue(150*step);
-  __editor->XSlider->setMinValue(-150*step);
-  __editor->YSlider->setMinValue(-150*step);
-  __editor->ZSlider->setMinValue(-150*step);
+  __editor->XSlider->setRange(-150*step,150*step);
+  __editor->YSlider->setRange(-150*step,150*step);
+  __editor->ZSlider->setRange(-150*step,150*step);
   __editor->XSlider->setPageStep(step);
   __editor->YSlider->setPageStep(step);
   __editor->ZSlider->setPageStep(step);
@@ -164,11 +161,12 @@ ViewRotCenterGL::init()
 {
   if(__position != Vector3::ORIGIN){
     __position = Vector3::ORIGIN;
-    emit XvalueChanged(int(__position.x()/getStep()));
+	float step = getStep();
+    emit XvalueChanged(int(__position.x()/step));
     emit XvalueChanged(QString::number(__position.x()));
-    emit YvalueChanged(int(__position.y()/getStep()));
+    emit YvalueChanged(int(__position.y()/step));
     emit YvalueChanged(QString::number(__position.y()));
-    emit ZvalueChanged(int(__position.z()/getStep()));
+    emit ZvalueChanged(int(__position.z()/step));
     emit ZvalueChanged(QString::number(__position.z()));
     emit valueChanged();
   }
@@ -233,15 +231,11 @@ void ViewRotCenterGL::center()
 	if(__frame){
 		ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
 		if(f){
-			// ViewGeomSceneGL * sc = dynamic_cast<ViewGeomSceneGL *>(f->getSceneRenderer());
-			// if(sc){
-				BoundingBoxPtr bbx = f->getSceneRenderer()->getGlobalBoundingBox();
-				Vector3 center = bbx->getCenter();
-				// center.z() = bbx->getLowerLeftCorner().z();
-				__position = center;
-				if(!__active)activate();
-			    else emit valueChanged();
-			// }
+			BoundingBoxPtr bbx = f->getSceneRenderer()->getGlobalBoundingBox();
+			Vector3 center = bbx->getCenter();
+			__position = center;
+			if(!__active)activate();
+			else emit valueChanged();
 		}
 	}
 }
@@ -370,7 +364,7 @@ ViewRotCenterGL::paintGL()
 }
 
 void 
-ViewRotCenterGL::changeStepEvent(const int newStep, const int oldStep)
+ViewRotCenterGL::changeStepEvent(double newStep, double oldStep)
 {
   real_t r = real_t(newStep)/real_t(oldStep);
   if(fabs(r)>GEOM_EPSILON)
@@ -378,88 +372,56 @@ ViewRotCenterGL::changeStepEvent(const int newStep, const int oldStep)
   setSliderStep(newStep);
 }
 
-QPopupMenu * 
+QMenu * 
 ViewRotCenterGL::createToolsMenu(QWidget * parent)
 {
-  return new ViewRotCenterMenu(this,parent,"Rotating Center Menu");
+	QMenu * menu = new QMenu(parent);
+	QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
+    QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
+    menu->addAction(home,tr("&Home"),this,SLOT(init()));
+	menu->addSeparator();
+
+    QPixmap visible(ViewerIcon::getPixmap(ViewerIcon::rcvisible));
+    QPixmap active(ViewerIcon::getPixmap(ViewerIcon::rcactive));
+    QPixmap centered(ViewerIcon::getPixmap(ViewerIcon::rccentered));
+    QAction * idVisible = menu->addAction(visible,tr("&Visible"),this,SLOT(changeVisibility()));
+    idVisible->setCheckable( true );
+    idVisible->setChecked( isVisible() );
+    QObject::connect(this,SIGNAL(visibilityChanged(bool)),idVisible,SLOT(setChecked(bool)));
+
+    QAction * idActive  = menu->addAction(active,tr("&Enable"),this,SLOT(changeActivation()));
+    idActive->setCheckable( true );
+    idActive->setCheckable( isActive() );
+    QObject::connect(this,SIGNAL(activationChanged(bool)),idActive,SLOT(setChecked(bool)));
+
+	menu->addSeparator();
+    menu->addAction(centered,tr("&Center"),this,SLOT(center()));
+    QAction * idControl = menu->addAction(wheel,tr("&Control"),getSliders(),SLOT(show()));
+    idControl->setCheckable( true );
+    idControl->setChecked( getSliders()->isVisible() );
+    QObject::connect(getSliders(),SIGNAL(visibilityChanged(bool)),idControl,SLOT(setChecked(bool)));    
+
+
+    return menu;
 }
 
 void 
 ViewRotCenterGL::fillToolBar(QToolBar * toolBar)
 {
-  QPixmap visible(ViewerIcon::icon_rcvisible);
-  QPixmap active(ViewerIcon:: icon_rcactive);
-  QPixmap centered(ViewerIcon::icon_rccentered);
-  QToolButton * __Visible = new QToolButton(visible, 
-					    tr("Visible Rotating Center"), 
-					    tr("Visible Rotating Center"),
-					    this, SLOT(changeVisibility()), toolBar);
-  __Visible->setToggleButton(true) ;
-  QToolButton * __Active = new QToolButton(active, 
-					    tr("Enable Rotating Center"), 
-					    tr("Enable Rotating Center"),
-					    this, SLOT(changeActivation()), toolBar);
-  __Active->setToggleButton(true) ;
-  QToolButton * __Centered = new QToolButton(centered, 
-					    tr("Center Rotating Center"), 
-					    tr("Center Rotating Center"),
-					    this, SLOT(center()), toolBar);
-  toolBar->addSeparator();
-  QObject::connect(this,SIGNAL(visibilityChanged(bool)),
-		   __Visible,SLOT(setOn(bool)));
-  QObject::connect(this,SIGNAL(activationChanged(bool)),
-		   __Active,SLOT(setOn(bool)));
-  
+  QPixmap visible(ViewerIcon::getPixmap(ViewerIcon::rcvisible));
+  QPixmap active(ViewerIcon::getPixmap(ViewerIcon::rcactive));
+  QPixmap centered(ViewerIcon::getPixmap(ViewerIcon::rccentered));
+  QAction * __Visible = toolBar->addAction(visible, tr("Visible Rotating Center"),this, SLOT(changeVisibility()));
+  __Visible->setCheckable(true) ;
+  QObject::connect(this,SIGNAL(visibilityChanged(bool)), __Visible,SLOT(setChecked(bool)));
+
+  QAction * __Active = toolBar->addAction(active, tr("Enable Rotating Center"),this, SLOT(changeActivation()));
+  __Active->setCheckable(true) ;
+  QObject::connect(this,SIGNAL(activationChanged(bool)), __Active,SLOT(setChecked(bool)));
+
+  QAction * __Centered = toolBar->addAction(centered, tr("Center Rotating Center"), this, SLOT(center()));
+  toolBar->addSeparator();  
 }
 
 /* ----------------------------------------------------------------------- */
 
-ViewRotCenterMenu::ViewRotCenterMenu(ViewRotCenterGL * center, 
-				       QWidget * parent, 
-				       const char * name):
-  QPopupMenu(parent,name)
-{
-  if(center){
-    QPixmap wheel(ViewerIcon::icon_wheel);
-    QPixmap home(ViewerIcon::icon_home);
-    insertItem(home,tr("&Home"),center,SLOT(init()));
-    insertSeparator();
-    QPixmap visible(ViewerIcon::icon_rcvisible);
-    QPixmap active(ViewerIcon::icon_rcactive);
-    QPixmap centered(ViewerIcon::icon_rccentered);
-    idVisible = insertItem(visible,tr("&Visible"),center,SLOT(changeVisibility()));
-    idActive  = insertItem(active,tr("&Enable"),center,SLOT(changeActivation()));
-    insertItem(centered,tr("&Center"),center,SLOT(center()));
-    insertSeparator();
-    idControl = insertItem(wheel,tr("&Control"),center->getSliders(),SLOT(show()));
-    setCheckable( TRUE );
-    setItemChecked(idVisible,center->isVisible());
-    setItemChecked(idActive,center->isActive());
-    setItemChecked(idControl,center->getSliders()->isVisible());
-    QObject::connect(center,SIGNAL(visibilityChanged(bool)),this,SLOT(setVisible(bool)));
-    QObject::connect(center,SIGNAL(activationChanged(bool)),this,SLOT(setActive(bool)));
-    QObject::connect(center->getSliders(),SIGNAL(visibilityChanged(bool)),this,SLOT(setControl(bool)));    
-  }
-}
-
-ViewRotCenterMenu::~ViewRotCenterMenu()
-{
-}
-
-void 
-ViewRotCenterMenu::setVisible(bool b)
-{
-   setItemChecked(idVisible,b);
-}
-
-void 
-ViewRotCenterMenu::setActive(bool b)
-{
-   setItemChecked(idActive,b);
-}
-
-void 
-ViewRotCenterMenu::setControl(bool b)
-{
-   setItemChecked(idControl,b);
-}

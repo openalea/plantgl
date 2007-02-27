@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_light.h
-    \brief Definition of the viewer class ViewLightGL.
+    \brief Definition of the viewer class ViewLightGL3.
 */
 
 #ifndef __view_light_h__
@@ -54,19 +54,19 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 class QString;
-class ViewLightGL;
+class ViewLightGL3;
 
 /* ----------------------------------------------------------------------- */
 
-/// Menu to control a ViewLightGL.
-class VIEW_API ViewLightMenu : public QPopupMenu {
+/// Menu to control a ViewLightGL3.
+class VIEW3_API ViewLightMenu3 : public QPopupMenu {
    Q_OBJECT
  
 public :
   
-  ViewLightMenu(ViewLightGL * light, QWidget * parent=0, const char * name=0);
+  ViewLightMenu3(ViewLightGL3 * light, QWidget * parent=0, const char * name=0);
   
-  ~ViewLightMenu();
+  ~ViewLightMenu3();
 
 public slots :
 
@@ -82,11 +82,11 @@ protected :
 
 
 /**   
-   \class ViewLightGL
-   \brief A ViewLightGL for GL Display
+   \class ViewLightGL3
+   \brief A ViewLightGL3 for GL Display
 
 */
-class VIEW_API ViewLightGL  : public ViewRelativeObjectGL
+class VIEW3_API ViewLightGL3  : public ViewRelativeObjectGL3
 {
   Q_OBJECT
   Q_PROPERTY(double Azimuth READ getAzimuth WRITE setAzimuth );
@@ -99,10 +99,10 @@ class VIEW_API ViewLightGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewLightGL(ViewCameraGL *camera, QGLWidget * parent=0, const char * name=0);
+  ViewLightGL3(ViewCameraGL3 *camera, QGLWidget * parent=0, const char * name=0);
 
   /// Destructor.
-  virtual ~ViewLightGL();
+  virtual ~ViewLightGL3();
   
   /// Get Azimuth value.
   double getAzimuth() const {

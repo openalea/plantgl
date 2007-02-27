@@ -14,7 +14,7 @@
 #define __GUICON_H__
 
 /// Create a console and redirect io on it.
-void VIEW_API RedirectIOToConsole();
+void VIEW3_API RedirectIOToConsole3();
 
 #endif
 

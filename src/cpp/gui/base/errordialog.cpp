@@ -35,11 +35,9 @@
  *
  *  ----------------------------------------------------------------------------
  */				
-#ifdef DEBUG
-#error Debug Mode
-#endif
 
 #include "errordialog.h"
+#include "configuration.h"
 #include "interface/messagedisplayer.h"
 #include <qevent.h>
 #include <qpushbutton.h>
@@ -47,8 +45,6 @@
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qmime.h>
-#include <qiconview.h>
-#include <qdragobject.h> 
 #include <qstringlist.h>
 #include <qregexp.h>
 #include <qwhatsthis.h>
@@ -76,38 +72,38 @@ void unregisterForQtMessage(){
 	QT_ERROR_MESSAGE_DISPLAY = NULL;
 }
 
-ViewErrorDialog::ViewErrorDialog( QWidget * parent, const char * name, bool modal) 
-    : ViewDialog(parent,name, modal),
+ViewErrorDialog::ViewErrorDialog( QWidget * parent) 
+    : QDockWidget("Error Log", parent),
 	 __verbose(
-// #ifdef DEBUG
-// 	 true
-// #else
+#ifdef PGL_DEBUG
+	true
+#else
 	 false
-//#endif
+#endif
 	 ),
 	 __displaylock(false)
 {
-  setCaption(tr("Viewer Error Dialog"));
-  QWhatsThis::add(this,tr("<b>Viewer Error Dialog</b><br><br>"
-	"This dialog displays all the error messages and debugging informations."
-	));
-
-#if QT_VERSION >= 220
-  setSizeGripEnabled(TRUE);
-#endif
-  __display = new MessageDisplayer(this,"Error Dialog");
+  QWidget * mwidget = new QWidget(this);
+  setWidget(mwidget);
+  __display = new Ui::MessageDisplayer();
+  __display->setupUi(mwidget);
   __display->__text->setFont(QFont("courrier", 9 ));
-  __display->VerboseButton->setChecked(__verbose);
   QObject::connect(__display->VerboseButton,SIGNAL(toggled(bool)),
 					this,SLOT(setVerbose(bool)));
-  resize( __display->size());
-  if(__verbose)
-  QObject::connect(QApplication::clipboard(),SIGNAL(dataChanged()),
-				   this,SLOT(clipboardInfo()));
   registerForQtMessage(this);
-  QObject::connect(__display->OkButton,SIGNAL(clicked()),this,SLOT(hide()));
-  QObject::connect(__display->CancelButton,SIGNAL(clicked()),this,SLOT(hide()));
   QObject::connect(__display->ClearButton,SIGNAL(clicked()),this,SLOT(clear()));
+
+  ViewerSettings settings;
+  settings.beginGroup("ErrorDialog");
+#ifndef PGL_DEBUG
+  __verbose = settings.value("Verbose",__verbose).toBool();
+#endif
+  __display->VerboseButton->setChecked(__verbose);
+  __display->mAutoClearButton->setChecked(settings.value("AutoClear",__display->mAutoClearButton->isChecked()).toBool());
+  __display->__popupButton->setChecked(settings.value("ErrorPopup",__display->__popupButton->isChecked()).toBool());
+  settings.endGroup();
+
+  qDebug("Registered for Qt message");
 }
 
 
@@ -306,23 +302,11 @@ void ViewErrorDialog::appendInfo(const QString &_text ){
 }
 
 
-void ViewErrorDialog::resizeEvent( QResizeEvent * event){
-  if(isVisible()){
-    int x = event->size().width() - event->oldSize().width();
-    int y = event->size().height() - event->oldSize().height();
-    __display->resize( event->size().width(),event->size().height()  );
-    __display->__text->resize(   __display->__text->size() + QSize(x,y) );
-    __display->OkButton->move(__display->OkButton->pos()+QPoint(x,y));
-    __display->CancelButton->move(__display->CancelButton->pos()+QPoint(x,y));
-    __display->ClearButton->move(__display->ClearButton->pos()+QPoint(x,y));
-  }
-}
-
 
 void ViewErrorDialog::keyPressEvent ( QKeyEvent * e){
-  if( e->key() == Key_F3 || 
-      e->key() == Key_Escape || 
-      e->key() == Key_Home) hide();
+	if( e->key() == Qt::Key_F3 || 
+      e->key() == Qt::Key_Escape || 
+      e->key() == Qt::Key_Home) hide();
 }
 
 void ViewErrorDialog::clipboardInfo()
@@ -331,28 +315,9 @@ void ViewErrorDialog::clipboardInfo()
 	QString text;
 	QClipboard * clipboard = QApplication::clipboard();
 	if(clipboard ){
-		QMimeSource* data = clipboard->data();
-		if(data!=NULL /*&& qApp->activeWindow() !=NULL */ ){
-			int i = 0;
-			while(data->format(i)!=NULL){
-				formats.append(data->format(i));i++; }
-			if(QUriDrag::canDecode(data)){
-				QStringList res;
-				if(QUriDrag::decodeToUnicodeUris(data,res))
-				  if(!res.isEmpty()){
-					text = QString::number(res.count())+" :: \"" ;
-					text += res.join("\" , \"") +'"';
-				  }
-				  else text = "Empty File : \""+clipboard->text()+"\"";
-				else text = "(Cannot Decode)";
-			}
-			else if(QTextDrag::canDecode(data))
-				text = "=\""+clipboard->text()+'"';
-			else if(QImageDrag::canDecode(data))text = "(Image)";
-			else if(QIconDrag::canDecode(data))text = "(Icon)";
-			else if(QColorDrag ::canDecode(data))text = "(Color)";
-			else text = "(Cannot Decode)";
-		}
+		const QMimeData* data = clipboard->mimeData();
+		formats = data->formats();
+		if(data->hasText())text = data->text();
 	}
 	else { 
 		__append("<B>*** Qt Info:</B> Clipboard not available.\n");

@@ -54,11 +54,11 @@ class QVBoxLayout;
 class QHBoxLayout; 
 class QGridLayout; 
 class QLabel;
-class QListView;
-class QListViewItem;
+class Q3ListView;
+class Q3ListViewItem;
 class QPushButton;
 class QGLWidget;
-class QListViewItem;
+class Q3ListViewItem;
 
 /* ----------------------------------------------------------------------- */
 
@@ -87,16 +87,16 @@ public:
 		     QGLWidget * FrameGL = 0,
 		     const char* name = 0,	      
 		     bool modal = FALSE, 
-		     WFlags fl = 0 );
+		     Qt::WindowFlags fl = 0 );
 
   /*!  Destructor.
    *  Destroys the object and frees any allocated resources
    */
   ~ViewSysInfo();
 
-  QListViewItem* addItem(const QString& name = QString::null, const QString& val = QString::null);
+  Q3ListViewItem* addItem(const QString& name = QString::null, const QString& val = QString::null);
 
-  QListViewItem* addItem(const QPixmap& pix, const QString& name = QString::null, const QString& val = QString::null);
+  Q3ListViewItem* addItem(const QPixmap& pix, const QString& name = QString::null, const QString& val = QString::null);
 
   static const char * tools_logo[34];
 
@@ -119,13 +119,13 @@ protected:
   QPushButton* OkButton;
 
   /// List of Attributes of the system.
-  QListView* AttView;
+  Q3ListView* AttView;
 
   /// Set of Attributes of the system.
-  QListViewItem* RootItem;
+  Q3ListViewItem* RootItem;
 
   /// Last Attribut of the system.
-  QListViewItem* LastItem;
+  Q3ListViewItem* LastItem;
 
   /// Label of the Dialog.
   QLabel* Title;

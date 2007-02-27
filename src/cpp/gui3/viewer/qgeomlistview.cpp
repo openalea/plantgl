@@ -52,15 +52,15 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-GeomListViewBuilder::GeomListViewBuilder(QWidget * parent, char * name ) :
+GeomListViewBuilder3::GeomListViewBuilder3(QWidget * parent, char * name ) :
   Action(),
   __fullmode(true),
-  __pixgeom(ViewerIcon::getPixmap(ViewerIcon::icon_geometry)),
-  __pixappe(ViewerIcon::getPixmap(ViewerIcon::icon_appearance)),
-  __pixshape(ViewerIcon::getPixmap(ViewerIcon::icon_shape)),
-  __pixtransf(ViewerIcon::getPixmap(ViewerIcon::icon_transformed)),
-  __pixatt(ViewerIcon::getPixmap(ViewerIcon::icon_attribut)),
-  __pixattptr(ViewerIcon::getPixmap(ViewerIcon::icon_attributptr))
+  __pixgeom(ViewerIcon3::getPixmap(ViewerIcon3::icon_geometry)),
+  __pixappe(ViewerIcon3::getPixmap(ViewerIcon3::icon_appearance)),
+  __pixshape(ViewerIcon3::getPixmap(ViewerIcon3::icon_shape)),
+  __pixtransf(ViewerIcon3::getPixmap(ViewerIcon3::icon_transformed)),
+  __pixatt(ViewerIcon3::getPixmap(ViewerIcon3::icon_attribut)),
+  __pixattptr(ViewerIcon3::getPixmap(ViewerIcon3::icon_attributptr))
 {
   __qListView = new QListView(parent,name);
   __qListView->addColumn( "Name" );
@@ -72,16 +72,16 @@ GeomListViewBuilder::GeomListViewBuilder(QWidget * parent, char * name ) :
   init();
 }
 
-GeomListViewBuilder::GeomListViewBuilder( QListView * l ) :
+GeomListViewBuilder3::GeomListViewBuilder3( QListView * l ) :
   Action(),
   __fullmode(true),
   __qListView(l),
-  __pixgeom(ViewerIcon::getPixmap(ViewerIcon::icon_geometry)),
-  __pixappe(ViewerIcon::getPixmap(ViewerIcon::icon_appearance)),
-  __pixshape(ViewerIcon::getPixmap(ViewerIcon::icon_shape)),
-  __pixtransf(ViewerIcon::getPixmap(ViewerIcon::icon_transformed)),
-  __pixatt(ViewerIcon::getPixmap(ViewerIcon::icon_attribut)),
-  __pixattptr(ViewerIcon::getPixmap(ViewerIcon::icon_attributptr)){
+  __pixgeom(ViewerIcon3::getPixmap(ViewerIcon3::icon_geometry)),
+  __pixappe(ViewerIcon3::getPixmap(ViewerIcon3::icon_appearance)),
+  __pixshape(ViewerIcon3::getPixmap(ViewerIcon3::icon_shape)),
+  __pixtransf(ViewerIcon3::getPixmap(ViewerIcon3::icon_transformed)),
+  __pixatt(ViewerIcon3::getPixmap(ViewerIcon3::icon_attribut)),
+  __pixattptr(ViewerIcon3::getPixmap(ViewerIcon3::icon_attributptr)){
   __qListView->addColumn( "Name" );
   __qListView->addColumn( "Value" );
   __qListView->addColumn( "Type" );
@@ -90,25 +90,25 @@ GeomListViewBuilder::GeomListViewBuilder( QListView * l ) :
   init();
 }
 
-GeomListViewBuilder::~GeomListViewBuilder( ) {
+GeomListViewBuilder3::~GeomListViewBuilder3( ) {
 }
 
 /* ----------------------------------------------------------------------- */
 
-void GeomListViewBuilder::clear( ){
+void GeomListViewBuilder3::clear( ){
     __qListView->clear();
     init();
 
 }
 
 QListView * 
-GeomListViewBuilder::getQListView(){
+GeomListViewBuilder3::getQListView(){
   return __qListView;
 }
 
 /* ----------------------------------------------------------------------- */
 
-void GeomListViewBuilder::init( ){
+void GeomListViewBuilder3::init( ){
    __rootItem = new QListViewItem(__qListView,"Global Scene","Root","Scene","The Global Scene");
    __rootItem->setPixmap(0,__pixgeom);
    __rootItem->setOpen(TRUE);
@@ -120,7 +120,7 @@ void GeomListViewBuilder::init( ){
 
 /* ----------------------------------------------------------------------- */
 
-void GeomListViewBuilder::addNode(const SceneObjectPtr& node,
+void GeomListViewBuilder3::addNode(const SceneObjectPtr& node,
 								  const QString& type,
 								  int pixmaptouse){
 
@@ -154,18 +154,18 @@ void GeomListViewBuilder::addNode(const SceneObjectPtr& node,
 
 }
 
-void GeomListViewBuilder::endNode(){
+void GeomListViewBuilder3::endNode(){
   __currentSiblingItem = __currentNodeItem;
 	popItems();
 }
 
-void GeomListViewBuilder::pushItems()
+void GeomListViewBuilder3::pushItems()
 {
 	QPair<QListViewItem *,QListViewItem *> * items = new QPair<QListViewItem *,QListViewItem *>(__currentNodeItem,__currentAttrItem);
 	__stackItem.push(items);
 }
 
-void GeomListViewBuilder::popItems()
+void GeomListViewBuilder3::popItems()
 {
   QPair<QListViewItem *,QListViewItem *> * items = __stackItem.pop();
   __currentNodeItem = items->first;
@@ -173,63 +173,63 @@ void GeomListViewBuilder::popItems()
   delete items;
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, bool value){
+void GeomListViewBuilder3::addAttr(const QString& name, bool value){
 	addAttr(name,QString::number(value),"Boolean");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, real_t value){
+void GeomListViewBuilder3::addAttr(const QString& name, real_t value){
 	addAttr(name,QString::number(value),"Real");
 }
 
-void GeomListViewBuilder::addAttrAngle(const QString& name, real_t value){
+void GeomListViewBuilder3::addAttrAngle(const QString& name, real_t value){
 	addAttr(name,QString::number(value*GEOM_DEG),"Degrees");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, uint32_t value){
+void GeomListViewBuilder3::addAttr(const QString& name, uint32_t value){
 	addAttr(name,QString::number(value),"UInt32");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, uint16_t value){
+void GeomListViewBuilder3::addAttr(const QString& name, uint16_t value){
 	addAttr(name,QString::number(value),"UInt16");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, uchar_t value){
+void GeomListViewBuilder3::addAttr(const QString& name, uchar_t value){
 	addAttr(name,QString::number(value),"UInt8");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Vector2& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Vector2& value){
 	addAttr(name,toQString(value),"Vector2");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Vector3& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Vector3& value){
 	addAttr(name,toQString(value),"Vector3");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Vector4& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Vector4& value){
 	addAttr(name,toQString(value),"Vector4");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Color3& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Color3& value){
 	addAttr(name,toQString(value),"Color3");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Color4& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Color4& value){
 	addAttr(name,toQString(value),"Color4");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Index& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Index& value){
 	addAttr(name,toQString(value),"Index");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Index3& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Index3& value){
 	addAttr(name,toQString(value),"Index3");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Index4& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Index4& value){
 	addAttr(name,toQString(value),"Index4");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name,
+void GeomListViewBuilder3::addAttr(const QString& name,
 								  const QString& value,
 								  const QString& type ){
    QListViewItem * item = new QListViewItem(__currentNodeItem,__currentAttrItem,name,value,type);
@@ -239,7 +239,7 @@ void GeomListViewBuilder::addAttr(const QString& name,
 
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& value){
+void GeomListViewBuilder3::addAttr(const QString& name, const Transform4Ptr& value){
 	pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
@@ -259,7 +259,7 @@ void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& valu
 	popItems();
 }
 
-void GeomListViewBuilder::addAttrPtr(const QString& name,
+void GeomListViewBuilder3::addAttrPtr(const QString& name,
 								     const QString& value,
 									 const QString& type ){
    QListViewItem * item = new QListViewItem(__currentNodeItem,
@@ -271,7 +271,7 @@ void GeomListViewBuilder::addAttrPtr(const QString& name,
 }
 
 template <class T>
-void GeomListViewBuilder::addArray(const QString& name, const T& _array, const QString& type)
+void GeomListViewBuilder3::addArray(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
 //			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
@@ -290,7 +290,7 @@ void GeomListViewBuilder::addArray(const QString& name, const T& _array, const Q
   } 
 }
 
-void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr& _array)
+void GeomListViewBuilder3::addArrayAngle(const QString& name, const RealArrayPtr& _array)
 {
   addAttrPtr(name,
 //			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32(),8,16,QChar('0')):"ptr=NULL"),
@@ -310,7 +310,7 @@ void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr&
 }
 
 template <class T>
-void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, const QString& type)
+void GeomListViewBuilder3::addArrayNode(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
 //			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
@@ -331,7 +331,7 @@ void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, con
 
 
 template <class T>
-void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const QString& type)
+void GeomListViewBuilder3::addMatrix(const QString& name, const T& _matrix, const QString& type)
 {
   addAttrPtr(name,
 //			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32(),8,16,QChar('0')):"NULL"),
@@ -355,7 +355,7 @@ void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const
 
 
 
-void GeomListViewBuilder::addAttrNode(const QString& name,
+void GeomListViewBuilder3::addAttrNode(const QString& name,
 								     const SceneObjectPtr& obj,
 									 const QString& type ){
 //   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32(),8,16,QChar('0')):"NULL");
@@ -372,7 +372,7 @@ void GeomListViewBuilder::addAttrNode(const QString& name,
 
 /* ----------------------------------------------------------------------- */
 
-bool GeomListViewBuilder::process(Shape * geomShape){
+bool GeomListViewBuilder3::process(Shape * geomShape){
    addNode(geomShape,"Shape",1);
    if(geomShape->getId() == Shape::NOID)addAttr("Id","None","");
    else addAttr("Id",geomShape->getId());
@@ -385,7 +385,7 @@ bool GeomListViewBuilder::process(Shape * geomShape){
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( AmapSymbol * amapSymbol ) {
+bool GeomListViewBuilder3::process( AmapSymbol * amapSymbol ) {
   GEOM_ASSERT(amapSymbol);
   GEOM_MESH(amapSymbol,"AmapSymbol")
   addAttr("FileName",QString(amapSymbol->getFileName().c_str()),"String");
@@ -398,7 +398,7 @@ bool GeomListViewBuilder::process( AmapSymbol * amapSymbol ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( AsymmetricHull * asymmetricHull ) {
+bool GeomListViewBuilder3::process( AsymmetricHull * asymmetricHull ) {
   GEOM_ASSERT(asymmetricHull);
   addNode(asymmetricHull,"AsymmetricHull");
   addAttr("Bottom",asymmetricHull->getBottom());
@@ -424,7 +424,7 @@ bool GeomListViewBuilder::process( AsymmetricHull * asymmetricHull ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( AxisRotated * axisRotated ) {
+bool GeomListViewBuilder3::process( AxisRotated * axisRotated ) {
   GEOM_ASSERT(axisRotated);
   addNode(axisRotated,"AxisRotated",3);
   addAttr("Axis",axisRotated->getAxis());
@@ -439,7 +439,7 @@ bool GeomListViewBuilder::process( AxisRotated * axisRotated ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( BezierCurve * bezierCurve ) {
+bool GeomListViewBuilder3::process( BezierCurve * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
   addNode(bezierCurve,"BezierCurve");
   addAttr("Degree",bezierCurve->getDegree());
@@ -453,7 +453,7 @@ bool GeomListViewBuilder::process( BezierCurve * bezierCurve ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( BezierPatch * bezierPatch ) {
+bool GeomListViewBuilder3::process( BezierPatch * bezierPatch ) {
   GEOM_ASSERT(bezierPatch);
   addNode(bezierPatch,"BezierPatch");
   addAttr("UDegree",bezierPatch->getUDegree());
@@ -469,7 +469,7 @@ bool GeomListViewBuilder::process( BezierPatch * bezierPatch ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Box * box ) {
+bool GeomListViewBuilder3::process( Box * box ) {
   GEOM_ASSERT(box);
   addNode(box,"Box");
   addAttr("Size",box->getSize());
@@ -481,7 +481,7 @@ bool GeomListViewBuilder::process( Box * box ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Cone * cone ) {
+bool GeomListViewBuilder3::process( Cone * cone ) {
   GEOM_ASSERT(cone);
   addNode(cone,"Cone");
   addAttr("Height",cone->getHeight());
@@ -496,7 +496,7 @@ bool GeomListViewBuilder::process( Cone * cone ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Cylinder * cylinder ) {
+bool GeomListViewBuilder3::process( Cylinder * cylinder ) {
   GEOM_ASSERT(cylinder);
   addNode(cylinder,"Cylinder");
   addAttr("Height",cylinder->getHeight());
@@ -512,7 +512,7 @@ bool GeomListViewBuilder::process( Cylinder * cylinder ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( ElevationGrid * elevationGrid ) {
+bool GeomListViewBuilder3::process( ElevationGrid * elevationGrid ) {
   GEOM_ASSERT(elevationGrid);
   addNode(elevationGrid,"ElevationGrid");
   addAttr("XSpacing",elevationGrid->getXSpacing());
@@ -527,7 +527,7 @@ bool GeomListViewBuilder::process( ElevationGrid * elevationGrid ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( EulerRotated * eulerRotated ) {
+bool GeomListViewBuilder3::process( EulerRotated * eulerRotated ) {
   GEOM_ASSERT(eulerRotated);
   addNode(eulerRotated,"EulerRotated");
   addAttrAngle("Azimuth",eulerRotated->getAzimuth());
@@ -543,7 +543,7 @@ bool GeomListViewBuilder::process( EulerRotated * eulerRotated ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( ExtrudedHull * extrudedHull ) {
+bool GeomListViewBuilder3::process( ExtrudedHull * extrudedHull ) {
   GEOM_ASSERT(extrudedHull);
   addNode(extrudedHull,"ExtrudedHull");
   addAttr("CCW",extrudedHull->getCCW());
@@ -558,7 +558,7 @@ bool GeomListViewBuilder::process( ExtrudedHull * extrudedHull ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( FaceSet * faceSet ) {
+bool GeomListViewBuilder3::process( FaceSet * faceSet ) {
   GEOM_ASSERT(faceSet);
   GEOM_MESH(faceSet,"FaceSet");
   endNode();
@@ -569,7 +569,7 @@ bool GeomListViewBuilder::process( FaceSet * faceSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Frustum * frustum ) {
+bool GeomListViewBuilder3::process( Frustum * frustum ) {
   GEOM_ASSERT(frustum);
   addNode(frustum,"Frustum");
   addAttr("Height",frustum->getHeight());
@@ -586,7 +586,7 @@ bool GeomListViewBuilder::process( Frustum * frustum ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Extrusion * extrusion ){
+bool GeomListViewBuilder3::process( Extrusion * extrusion ){
   GEOM_ASSERT(extrusion);
   addNode(extrusion,"Extrusion");
   addAttrNode("Axis",SceneObjectPtr(extrusion->getAxis()),"CurvePtr");
@@ -608,7 +608,7 @@ bool GeomListViewBuilder::process( Extrusion * extrusion ){
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Group * group ) {
+bool GeomListViewBuilder3::process( Group * group ) {
   GEOM_ASSERT(group);
   addNode(group,"Group",3);
   addArrayNode("GeometryList",group->getGeometryList(),"Geometry");
@@ -621,7 +621,7 @@ bool GeomListViewBuilder::process( Group * group ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( IFS * ifs ) {
+bool GeomListViewBuilder3::process( IFS * ifs ) {
   GEOM_ASSERT(ifs);
   addNode(ifs,"Iterative Function System",3);
   addAttr("Depth",ifs->getDepth());
@@ -635,7 +635,7 @@ bool GeomListViewBuilder::process( IFS * ifs ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Material * material ) {
+bool GeomListViewBuilder3::process( Material * material ) {
   GEOM_ASSERT(material);
   addNode(material,"Material",2);
   addAttr("Ambient",material->getAmbient());
@@ -651,7 +651,7 @@ bool GeomListViewBuilder::process( Material * material ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool GeomListViewBuilder::process( ImageTexture * texture ) {
+bool GeomListViewBuilder3::process( ImageTexture * texture ) {
   GEOM_ASSERT(material);
   addNode(texture,"ImageTexture",2);
   addAttr("Filename",QString(texture->getFilename().c_str()),"String");
@@ -669,7 +669,7 @@ bool GeomListViewBuilder::process( ImageTexture * texture ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( MonoSpectral * monoSpectral ) {
+bool GeomListViewBuilder3::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   addNode(monoSpectral,"MonoSpectral",2);
 
@@ -681,7 +681,7 @@ bool GeomListViewBuilder::process( MonoSpectral * monoSpectral ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( MultiSpectral * multiSpectral ) {
+bool GeomListViewBuilder3::process( MultiSpectral * multiSpectral ) {
   GEOM_ASSERT(multiSpectral);
   addNode(multiSpectral,"MultiSpectral",2);
 
@@ -693,7 +693,7 @@ bool GeomListViewBuilder::process( MultiSpectral * multiSpectral ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( NurbsCurve * nurbsCurve ) {
+bool GeomListViewBuilder3::process( NurbsCurve * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
   addNode(nurbsCurve,"NurbsCurve");
   addAttr("Degree",nurbsCurve->getDegree());
@@ -708,7 +708,7 @@ bool GeomListViewBuilder::process( NurbsCurve * nurbsCurve ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( NurbsPatch * nurbsPatch ) {
+bool GeomListViewBuilder3::process( NurbsPatch * nurbsPatch ) {
   GEOM_ASSERT(nurbsPatch);
 
   addNode(nurbsPatch,"NurbsPatch");
@@ -727,7 +727,7 @@ bool GeomListViewBuilder::process( NurbsPatch * nurbsPatch ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Oriented * oriented ) {
+bool GeomListViewBuilder3::process( Oriented * oriented ) {
   GEOM_ASSERT(oriented);
   addNode(oriented,"Oriented",3);
   addAttr("Primary",oriented->getPrimary());
@@ -743,7 +743,7 @@ bool GeomListViewBuilder::process( Oriented * oriented ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Paraboloid * paraboloid ) {
+bool GeomListViewBuilder3::process( Paraboloid * paraboloid ) {
   GEOM_ASSERT(paraboloid);
 
   addNode(paraboloid,"Paraboloid");
@@ -762,7 +762,7 @@ bool GeomListViewBuilder::process( Paraboloid * paraboloid ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( PointSet * pointSet ) {
+bool GeomListViewBuilder3::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
 
   addNode(pointSet,"PointSet");
@@ -777,7 +777,7 @@ bool GeomListViewBuilder::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Polyline * polyline ) {
+bool GeomListViewBuilder3::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
 
   addNode(polyline,"Polyline");
@@ -792,7 +792,7 @@ bool GeomListViewBuilder::process( Polyline * polyline ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Revolution * revolution ) {
+bool GeomListViewBuilder3::process( Revolution * revolution ) {
   GEOM_ASSERT(revolution);
 
   addNode(revolution,"Revolution");
@@ -807,7 +807,7 @@ bool GeomListViewBuilder::process( Revolution * revolution ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Swung * swung )
+bool GeomListViewBuilder3::process( Swung * swung )
 {
   GEOM_ASSERT(swung);
 
@@ -828,7 +828,7 @@ bool GeomListViewBuilder::process( Swung * swung )
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( QuadSet * quadSet ) {
+bool GeomListViewBuilder3::process( QuadSet * quadSet ) {
   GEOM_ASSERT(quadSet);
   GEOM_MESH(quadSet,"QuadSet");
 
@@ -840,7 +840,7 @@ bool GeomListViewBuilder::process( QuadSet * quadSet ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Scaled * scaled ) {
+bool GeomListViewBuilder3::process( Scaled * scaled ) {
   GEOM_ASSERT(scaled);
 
   addNode(scaled,"Scaled",3);
@@ -856,7 +856,7 @@ bool GeomListViewBuilder::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Sphere * sphere ) {
+bool GeomListViewBuilder3::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
   addNode(sphere,"Sphere");
@@ -872,7 +872,7 @@ bool GeomListViewBuilder::process( Sphere * sphere ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Tapered * tapered ) {
+bool GeomListViewBuilder3::process( Tapered * tapered ) {
   GEOM_ASSERT(tapered);
 
   addNode(tapered,"Tapered",3);
@@ -888,7 +888,7 @@ bool GeomListViewBuilder::process( Tapered * tapered ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Translated * translated ) {
+bool GeomListViewBuilder3::process( Translated * translated ) {
   GEOM_ASSERT(translated);
 
   addNode(translated,"Translated",3);
@@ -903,7 +903,7 @@ bool GeomListViewBuilder::process( Translated * translated ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( TriangleSet * triangleSet ) {
+bool GeomListViewBuilder3::process( TriangleSet * triangleSet ) {
   GEOM_ASSERT(triangleSet);
   GEOM_MESH(triangleSet,"TriangleSet");
 
@@ -915,7 +915,7 @@ bool GeomListViewBuilder::process( TriangleSet * triangleSet ) {
 /* ------------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( BezierCurve2D * bezierCurve  ) {
+bool GeomListViewBuilder3::process( BezierCurve2D * bezierCurve  ) {
   GEOM_ASSERT(bezierCurve);
   addNode(bezierCurve,"BezierCurve2D");
   addAttr("Degree",bezierCurve->getDegree());
@@ -930,7 +930,7 @@ bool GeomListViewBuilder::process( BezierCurve2D * bezierCurve  ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( Disc * disc ) {
+bool GeomListViewBuilder3::process( Disc * disc ) {
   GEOM_ASSERT(disc);
 
   addNode(disc,"Disc");
@@ -945,7 +945,7 @@ bool GeomListViewBuilder::process( Disc * disc ) {
 /* ----------------------------------------------------------------------- */
 
 
-bool GeomListViewBuilder::process( NurbsCurve2D * nurbsCurve  ) {
+bool GeomListViewBuilder3::process( NurbsCurve2D * nurbsCurve  ) {
   GEOM_ASSERT(nurbsCurve);
 
   addNode(nurbsCurve,"NurbsCurve2D");
@@ -963,7 +963,7 @@ bool GeomListViewBuilder::process( NurbsCurve2D * nurbsCurve  ) {
 
 
 
-bool GeomListViewBuilder::process( PointSet2D *  pointSet ) {
+bool GeomListViewBuilder3::process( PointSet2D *  pointSet ) {
   GEOM_ASSERT(pointSet);
 
   addNode(pointSet,"PointSet2D");
@@ -978,7 +978,7 @@ bool GeomListViewBuilder::process( PointSet2D *  pointSet ) {
 
 
 
-bool GeomListViewBuilder::process( Polyline2D * polyline  ) {
+bool GeomListViewBuilder3::process( Polyline2D * polyline  ) {
   GEOM_ASSERT(polyline);
 
   addNode(polyline,"Polyline2D");
@@ -991,7 +991,7 @@ bool GeomListViewBuilder::process( Polyline2D * polyline  ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool GeomListViewBuilder::process( Text * text  ) {
+bool GeomListViewBuilder3::process( Text * text  ) {
   GEOM_ASSERT(text);
   addNode(text,"Text");
   addAttr("String",QString(text->getString().c_str()),"String");
@@ -1005,7 +1005,7 @@ bool GeomListViewBuilder::process( Text * text  ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool GeomListViewBuilder::process( Font * font ) {
+bool GeomListViewBuilder3::process( Font * font ) {
   GEOM_ASSERT(font);
   addNode(font,"Font");
 

@@ -35,7 +35,7 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <qcombobox.h>
 #include <qpushbutton.h>
 #include <qslider.h>
@@ -63,12 +63,14 @@ ViewFogGL::ViewFogGL(ViewCameraGL *camera,QGLWidget * parent, const char * name)
   __start(0),
   __end(10),
   __control(new ViewDialog(parent,"Fog Control",false)),
-  __fogw(new FogWidget(__control,"Fog Control Widget"))
+  __fogw(new Ui::FogWidget())
 {
-  __control->setCaption(tr("Fog Control"));
+  __control->setWindowTitle(tr("Fog Control"));
+  __control->setModal(false);
+  __fogw->setupUi(__control);
   QPixmap col(__fogw->ColorButton->size());
   col.fill(__color);
-  __fogw->ColorButton->setPixmap(col);  
+  __fogw->ColorButton->setIcon(QIcon(col));  
   __fogw->EndEdit->setText(QString::number(__end));
   __fogw->StartEdit->setText(QString::number(__start));
   __fogw->DensitySlider->setValue(50);
@@ -87,24 +89,22 @@ ViewFogGL::~ViewFogGL()
 {
 }
 
-QPopupMenu * 
+QMenu * 
 ViewFogGL::createToolsMenu(QWidget * parent)
 {
-  QPixmap wheel(ViewerIcon::icon_wheel);
-  QPopupMenu * menu = new QPopupMenu(parent,"Fog Menu");
-  int id = menu->insertItem(wheel,tr("Control"),__control, SLOT(show()));
-  ViewPopupButton * bt = new ViewPopupButton(menu,id,"Control Fog");
-  QObject::connect(__control,SIGNAL(visibilityChanged(bool)),bt,SLOT(check(bool)));
-  menu->insertSeparator();
-  id = menu->insertItem(tr("Enable"),this, SLOT(setEnable()));
-  bt = new ViewPopupButton(menu,id,"Enable Fog");
-  QObject::connect(this,SIGNAL(enabled(bool)),bt,SLOT(check(bool)));
+  QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
+  QMenu * menu = new QMenu(parent);
+  QAction * act = menu->addAction(wheel,tr("Control"),__control, SLOT(show()));
+  QObject::connect(__control,SIGNAL(visibilityChanged(bool)),act,SLOT(setChecked(bool)));
+  menu->addSeparator();
+  act = menu->addAction(tr("Enable"),this, SLOT(setEnable()));
+  QObject::connect(this,SIGNAL(enabled(bool)),act,SLOT(setChecked(bool)));
   return menu;
 }
 
 
 void 
-ViewFogGL::changeStepEvent(const int newStep, const int oldStep)
+ViewFogGL::changeStepEvent(double newStep, double oldStep)
 {
   real_t r = real_t(newStep)/real_t(oldStep);
   __start *= r;
@@ -179,7 +179,7 @@ ViewFogGL::setMode(int i)
 {
   if(__mode != i){
     __mode = i;
-    __fogw->ModeCombo->setCurrentItem(i);
+    __fogw->ModeCombo->setCurrentIndex(i);
     emit valueChanged();
   }
 }
@@ -189,7 +189,7 @@ ViewFogGL::setHints(int i)
 {
   if(__hintmode != i){
     __hintmode = i;
-    __fogw->HintsCombo->setCurrentItem(i);
+    __fogw->HintsCombo->setCurrentIndex(i);
     emit valueChanged();
   }
 }
@@ -208,7 +208,7 @@ ViewFogGL::setColor(const QColor& m){
     __color=m;
     QPixmap col(__fogw->ColorButton->size());
     col.fill(__color);
-    __fogw->ColorButton->setPixmap(col);  
+    __fogw->ColorButton->setIcon(QIcon(col));  
     emit valueChanged();
   }
 }

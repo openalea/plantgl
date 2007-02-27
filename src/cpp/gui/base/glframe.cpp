@@ -38,19 +38,14 @@
 
 #include <iomanip>
 #include "../gui_config.h"
-#ifdef STL_EXTENSION
-	#include <sstream>
-#else
-	#include <strstream>
-#endif
 
 #include <qcolordialog.h>
 #include <qslider.h>
 #include <qmessagebox.h>
-#include <qdragobject.h>
+// #include <qdragobject.h>
 #include <qtoolbutton.h>
 #include <qtoolbar.h>
-#include <qpopupmenu.h>
+#include <qmenu.h>
 #include <qcursor.h>
 #include <qbitmap.h>
 #include <qapplication.h>
@@ -67,6 +62,8 @@
 #include <qradiobutton.h>
 #include <qtabwidget.h>
 #include <qvariant.h>
+#include <qmainwindow.h>
+#include <qurl.h>
 
 #include "glframe.h"
 #include "icons.h"
@@ -78,6 +75,7 @@
 #include "fog.h"
 #include "errordialog.h"
 #include "util_qwidget.h"
+#include "interface/gloptions.h"
 
 #include "event.h"
 // #include "editgeomscenegl.h"
@@ -97,13 +95,12 @@ using namespace std;
 /*  ------------------------------------------------------------------------ */
 
 ViewGLFrame * ViewGLFrame::LAST_GL_FRAME = NULL;
-ViewGLFrame * ViewGLFrame::CURRENT_GL_FRAME = NULL;
 
 /*  ------------------------------------------------------------------------ */
 
 /// Create a ViewGLFrame widget
 ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r, const QGLWidget * shareWidget) :
-  QGLWidget(  QGLFormat( AlphaChannel ), parent, name, shareWidget ),
+  QGLWidget(  QGLFormat( QGL::AlphaChannel ), parent, shareWidget ),
   __camera(0),
   __light(0),
   __grid(0),
@@ -119,6 +116,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __lineslider(0),
   __selectionRect(0)
 {
+	if(name)setObjectName(name);
   /// Creation
   __camera = new ViewCameraGL(this,"Camera");
   __light = new ViewLightGL(__camera,this,"Light");
@@ -146,7 +144,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
 
   /// Qt Option
   setAcceptDrops(TRUE);
-  setFocusPolicy(QWidget::StrongFocus);
+  setFocusPolicy(Qt::StrongFocus);
 
 }
 
@@ -225,7 +223,7 @@ ViewGLFrame::setSceneRenderer(ViewRendererGL * s)
 void
 ViewGLFrame::rendererStatus() {
   if(__scene)
-  emit initMessage(QString("Renderer ... ")+__scene->className());
+  emit initMessage(QString("Renderer ... ")+__scene->metaObject()->className());
   else 
   emit initMessage(QString("Renderer ... None"));
 }
@@ -247,9 +245,9 @@ ViewGLFrame::connectTo(ViewStatusBar *s)
 {
 	if(s){
 		QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),
-			s,SLOT(message(const QString&,int)) );  
+			s,SLOT(showMessage(const QString&,int)) );  
 		QObject::connect(this,SIGNAL(statusMessage(const QString&)),
-			s,SLOT(message(const QString&)) );  
+			s,SLOT(showMessage(const QString&)) );  
 		QObject::connect(this,SIGNAL(progressMessage(int,int)),
 			s,SLOT(setProgress(int,int)) );  
 		__camera->connectTo(s);
@@ -356,7 +354,7 @@ void
 ViewGLFrame::setMultipleSelectionMode()
 {
   if(__mode != MultipleSelection){
-      setCursor(QCursor( crossCursor  ));
+	  setCursor(QCursor( Qt::CrossCursor  ));
     __mode = MultipleSelection;
     __scene->changeModeEvent(__mode);
 	__lastSelectionMode = __mode;
@@ -370,7 +368,7 @@ void
 ViewGLFrame::setSelectionMode()
 {
   if(__mode != Selection){
-	setCursor(QCursor( pointingHandCursor  ));
+	  setCursor(QCursor( Qt::PointingHandCursor ));
     __mode = Selection;
     __scene->changeModeEvent(__mode);
 	__lastSelectionMode = __mode;
@@ -384,7 +382,7 @@ void
 ViewGLFrame::setRotationMode()
 {
   if(__mode !=Rotation){
-    setCursor(arrowCursor);
+	  setCursor( Qt::ArrowCursor);
     __mode = Rotation;
     __scene->changeModeEvent(__mode);
     emit modeChanged(__mode);
@@ -404,14 +402,14 @@ ViewGLFrame::setMode(Mode i)
   if(__mode !=i){
     __mode = i;
     if(__mode == Rotation){
-      setCursor(arrowCursor);
+      setCursor(Qt::ArrowCursor);
     }
     else if(__mode == Selection){
-      setCursor(QCursor( pointingHandCursor ));
+      setCursor(QCursor( Qt::PointingHandCursor ));
       status(tr("Mode Selection"),2000);
     }
     else if(__mode == MultipleSelection){
-      setCursor(QCursor(crossCursor  ));
+      setCursor(QCursor(Qt::CrossCursor  ));
       status(tr("Mode Multiple Selection"),2000);
     }
     __scene->changeModeEvent(__mode);
@@ -425,7 +423,7 @@ void
 ViewGLFrame::changeMode()
 {
   if(__mode == true){
-    setCursor(arrowCursor);
+    setCursor(Qt::ArrowCursor);
     __mode = false;
     __scene->rotationModeEvent();
     status(QString("Mode Rotation"),2000);
@@ -454,8 +452,6 @@ ViewGLFrame::clearSelection()
 */
 void ViewGLFrame::initializeGL()
 {
-  CURRENT_GL_FRAME = this;
-
   // clears the current GL context
   qglClearColor( __BgColor );
 
@@ -492,7 +488,6 @@ void ViewGLFrame::initializeGL()
   __fog->initializeGL();
   __scene->initializeGL();
 
-  CURRENT_GL_FRAME = NULL;
 }
 
 
@@ -517,7 +512,6 @@ void ViewGLFrame::resizeGL( int w, int h )
 
 void ViewGLFrame::paintGL()
 {
-  CURRENT_GL_FRAME = this;
   GL_ERROR;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -565,7 +559,6 @@ void ViewGLFrame::paintGL()
 
 
   glFinish();
-  CURRENT_GL_FRAME = NULL;
 
 
 }
@@ -578,7 +571,6 @@ void ViewGLFrame::paintGL()
 void ViewGLFrame::selectGL()
 {
   makeCurrent();
-  CURRENT_GL_FRAME = this;
 
   GLint hits;
   GLsizei bufsize = 512;
@@ -641,13 +633,11 @@ void ViewGLFrame::selectGL()
 #ifdef GEOM_DEBUG
   else warning("*** WARNING : hit miss all shapes");
 #endif
-  CURRENT_GL_FRAME = NULL;
 }
 
 void ViewGLFrame::multipleSelectGL(const QPoint& p)
 {
   makeCurrent();
-  CURRENT_GL_FRAME = this;
 
   GLint hits;
   GLsizei bufsize = 40960;
@@ -717,7 +707,6 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
 #ifdef GEOM_DEBUG
   else warning("*** WARNING : hit miss all shapes");
 #endif
-  CURRENT_GL_FRAME = NULL;
 }
 
 ViewRayBuffer * 
@@ -738,7 +727,6 @@ ViewGLFrame::castRays( const Vector3& position,
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
 
-	CURRENT_GL_FRAME = this;
 	size_t nbray = sx*sy;
 	for(size_t i = 0; i < sx; i++){
 		for(size_t j = 0; j < sy; j++){
@@ -886,33 +874,33 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
 	__selectionRect = new QRect(__mouse.x(),__mouse.y(),0,0);
   }
   else if(__mode == Rotation){
-    if(event->state() & ControlButton )
+	  if(event->modifiers() & Qt::ControlModifier )
       {
-        QBitmap bm(32,32,ViewerIcon::LIGHT_BITS,TRUE);
-        QBitmap mask(32,32,ViewerIcon::LIGHT_MASK,TRUE);
+		QBitmap bm = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_BITS,QImage::Format_MonoLSB );
+        QBitmap mask = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_MASK,QImage::Format_MonoLSB);
         setCursor(QCursor(bm,mask));
       }
-    else if(event->state() & ShiftButton)
+	  else if(event->modifiers() & Qt::ShiftModifier)
       {
 		setLastSelectionMode();
 		if(__mode == Selection)selectGL();
       }
-    else if(event->button()==LeftButton)
+	else if(event->button()==Qt::LeftButton)
       {
-        QBitmap bm(32,32,ViewerIcon::ROTATE_BITS,TRUE);
-        QBitmap mask(32,32,ViewerIcon::ROTATE_MASK,TRUE);
+        QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_BITS,QImage::Format_MonoLSB);
+        QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_MASK,QImage::Format_MonoLSB);
         setCursor(QCursor(bm,mask));
       }
-    else if(event->button()==MidButton)
+    else if(event->button()==Qt::MidButton)
       {
-        QBitmap bm(32,32,ViewerIcon::ZOOM_BITS,TRUE);
-        QBitmap mask(32,32,ViewerIcon::ZOOM_MASK,TRUE);
+        QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_BITS,QImage::Format_MonoLSB);
+        QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_MASK,QImage::Format_MonoLSB);
         setCursor(QCursor(bm,mask));
       }
 
-    else if(event->button()==RightButton)
+    else if(event->button()==Qt::RightButton)
       {
-        setCursor(sizeAllCursor);
+		  setCursor(Qt::SizeAllCursor);
       }
   }
   updateGL();
@@ -930,7 +918,7 @@ void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
 	multipleSelectGL(mouse);
 	setRotationMode();
   }
-  else setCursor(arrowCursor);
+  else setCursor(Qt::ArrowCursor);
 
   updateGL();
 }
@@ -953,18 +941,18 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
 								abs(__mouse.y()-mouse.y()));
 	repaint();
   }
-  else if(__mode == Selection || event->state() & ShiftButton)
+  else if(__mode == Selection || event->modifiers() & Qt::ShiftModifier)
     {
       if(__scene){
-        if(event->state() & LeftButton)
+        if(event->buttons() & Qt::LeftButton)
           {
             __scene->rotate(__mouse-mouse);
           }
-        else if(event->state() & RightButton)
+        else if(event->buttons() & Qt::RightButton)
           {
             __scene->move(__mouse-mouse);
           }
-        else if(event->state() & MidButton)
+		else if(event->buttons() & Qt::MidButton)
           {
             __scene->zoom(__mouse-mouse);
           }
@@ -972,17 +960,17 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
 	  __mouse = mouse;
 	  updateGL();
     }
-  else if(event->state() & ControlButton)
+  else if(event->modifiers() & Qt::ControlModifier)
     {
-      if(event->state() & LeftButton)
+      if(event->buttons() & Qt::LeftButton)
         {
           __light->rotate(__mouse-mouse);
         }
-      else if(event->state() & RightButton)
+      else if(event->buttons() & Qt::RightButton)
         {
           __light->move(__mouse-mouse);
         }
-      else if(event->state() & MidButton)
+	  else if(event->buttons() & Qt::MidButton)
 	{
 	  __light->zoom(__mouse-mouse);
 	}
@@ -990,15 +978,15 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
 	updateGL();
     }
   else {
-    if(event->state() & LeftButton)
+	  if(event->buttons() & Qt::LeftButton)
       {
         __camera->rotate(__mouse-mouse);
       }
-    else if(event->state() & RightButton)
+    else if(event->buttons() & Qt::RightButton)
       {
         __camera->move(__mouse-mouse);
     }
-    else if(event->state() & MidButton)
+    else if(event->buttons() & Qt::MidButton)
       {
         __camera->zoom(__mouse-mouse);
       }
@@ -1007,22 +995,25 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
   }
 }
 
-void ViewGLFrame::dragEnterEvent(QDragEnterEvent* event){
-  event->accept(QUriDrag::canDecode(event));
+void ViewGLFrame::dragEnterEvent(QDragEnterEvent* myevent){
+	if (myevent->mimeData()->hasUrls()){
+		myevent->accept();
+	}
+	else myevent->ignore();
 }
 
-void ViewGLFrame::dropEvent(QDropEvent* event){
-  QStringList filenames;
-  if ( QUriDrag::decodeLocalFiles(event, filenames) ){
-	  if(!filenames.isEmpty()){
-		if(event->action() == QDropEvent::Copy)
-		  __scene->addFile(filenames[0]);
+void ViewGLFrame::dropEvent(QDropEvent* myevent){
+	if(__scene){
+		QList<QUrl> urls = myevent->mimeData()->urls();
+		QList<QUrl>::const_iterator itUrls = urls.constBegin();
+		if(myevent->dropAction() == Qt::CopyAction)
+			__scene->openFile(itUrls->toLocalFile());
 		else
-		  __scene->openFile(filenames[0]);
-		for(int i = 1; i < filenames.count();i++)
-		  __scene->addFile(filenames[i]);
-	  }
-  }
+			__scene->addFile(itUrls->toLocalFile());
+		for(++itUrls;itUrls != urls.constEnd();++itUrls ){
+			__scene->addFile(itUrls->toLocalFile());
+		}
+	}
 }
 
 #ifndef WHEEL_DELTA
@@ -1031,12 +1022,12 @@ void ViewGLFrame::dropEvent(QDropEvent* event){
 
 void 
 ViewGLFrame::wheelEvent ( QWheelEvent * e){
-  if(__mode == Selection || e->state() & ShiftButton){
+  if(__mode == Selection || e->modifiers() & Qt::ShiftModifier){
 	  __scene->zooming(0,e->delta()/WHEEL_DELTA);
       // __scene->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
   }
-  else if(e->state() & ControlButton){
+  else if(e->modifiers() & Qt::ControlModifier){
       __light->zooming(0,e->delta()/WHEEL_DELTA);
       // __light->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
@@ -1052,23 +1043,23 @@ ViewGLFrame::wheelEvent ( QWheelEvent * e){
 void
 ViewGLFrame::keyPressEvent ( QKeyEvent * e)
 {
-  if(e->state() & ShiftButton){
-    if( e->key() == Key_Up){
+  if(e->modifiers() & Qt::ShiftModifier){
+    if( e->key() == Qt::Key_Up){
       __scene->rotating(0,2);
       e->accept();
       updateGL();
     }
-    else if( e->key() == Key_Down){
+	else if( e->key() == Qt::Key_Down){
       __scene->rotating(0,-2);
       e->accept();
       updateGL();
     }
-    else if( e->key() == Key_Left){
+    else if( e->key() == Qt::Key_Left){
       __scene->rotating(2,0);
       e->accept();
       updateGL();
     }
-    else if( e->key() == Key_Right){
+    else if( e->key() == Qt::Key_Right){
       __scene->rotating(-2,0);
       e->accept();
       updateGL();
@@ -1078,75 +1069,75 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
       e->accept();
     }
   }
-  else if(e->state() & ControlButton){
-    if( e->key() == Key_Up){
+  else if(e->modifiers() & Qt::ControlModifier){
+    if( e->key() == Qt::Key_Up){
       __light->rotating(0,4);
       updateGL();
     }
-    else if( e->key() == Key_Down){
+    else if( e->key() == Qt::Key_Down){
       __light->rotating(0,-4);
       updateGL();
     }
-    else if( e->key() == Key_Left){
+    else if( e->key() == Qt::Key_Left){
       __light->rotating(4,0);
       updateGL();
     }
-    else if( e->key() == Key_Right){
+    else if( e->key() == Qt::Key_Right){
       __light->rotating(-4,0);
       updateGL();
     }
     else  {
-     QBitmap bm(32,32,ViewerIcon::LIGHT_BITS,TRUE);
-     QBitmap mask(32,32,ViewerIcon::LIGHT_MASK,TRUE);
+	 QBitmap bm = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_BITS,QImage::Format_MonoLSB);
+     QBitmap mask = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_MASK,QImage::Format_MonoLSB);
      setCursor(QCursor(bm,mask));
 	 e->accept();
 	}
   }
   else {
-    if( e->key() == Key_Up){
+    if( e->key() == Qt::Key_Up){
       __camera->zooming(0,1);
       updateGL();
       e->accept();
     }
-    else if( e->key() == Key_Down){
+    else if( e->key() == Qt::Key_Down){
       __camera->zooming(0,-1);
       updateGL();
       e->accept();
     }
-    else if( e->key() == Key_Left){
+    else if( e->key() == Qt::Key_Left){
       __camera->rotating(4,0);
       updateGL();
       e->accept();
     }
-    else if( e->key() == Key_Right){
+    else if( e->key() == Qt::Key_Right){
       __camera->rotating(-4,0);
       updateGL();
       e->accept();
     }
-    else if( e->key() == Key_Prior){
+    else if( e->key() == Qt::Key_PageUp){
       __camera->rotating(0,-4);
       updateGL();
       e->accept();
     }
-    else if( e->key() == Key_Next){
+    else if( e->key() == Qt::Key_PageDown){
       __camera->rotating(0,4);
       updateGL();
       e->accept();
     }
-    else if( e->key() == Key_Home)
+    else if( e->key() == Qt::Key_Home)
       {
       e->ignore();
     }
-    else if( e->key() == Key_End)
+    else if( e->key() == Qt::Key_End)
       {
       e->ignore();
     }
-    else if( e->key() == Key_N)
+    else if( e->key() == Qt::Key_N)
       {
       __camera->nextView();
       e->accept();
     }
-    else if( e->key() == Key_P)
+    else if( e->key() == Qt::Key_P)
       {
       printProjectionSize();
       e->accept();
@@ -1158,17 +1149,17 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
 void
 ViewGLFrame::keyReleaseEvent ( QKeyEvent * e)
 {
-  if(e->stateAfter() & ShiftButton){
+  if(e->modifiers() & Qt::ShiftModifier){
     setRotationMode();
     e->accept();
   }
-  else if(e->stateAfter() & ControlButton){
-	setCursor(arrowCursor);
+  else if(e->modifiers() & Qt::ControlModifier){
+	setCursor(Qt::ArrowCursor);
 	e->accept();
   }
 }
 
-void ViewGLFrame::customEvent(QCustomEvent *e)
+void ViewGLFrame::customEvent(QEvent *e)
 {
   if(e->type() == 12345){
     ViewSceneChangeEvent * event = (ViewSceneChangeEvent *)e;
@@ -1215,12 +1206,12 @@ void ViewGLFrame::copyImageToClipboardWithAlpha(){
 
 void ViewGLFrame::printImage(){
   QPrinter printer;
-  if(printer.setup(this)){
+  QPrintDialog dialog(&printer, this);
+  if (dialog.exec()){
 	QPainter paint;
 	if(!paint.begin(&printer))return;
-	QSize margin = printer.margins();
-	QPoint origin(0,0);//(margin.width(),margin.height());
-	QRect r = paint.window();
+	QPoint origin(0,0);
+	QRect r = printer.pageRect();
 	QImage img = grabFrameBuffer(false);
 	QSize r2 = img.size();
 	double x = min((double)r.width()/(double)r2.width(),
@@ -1238,61 +1229,72 @@ void ViewGLFrame::printImage(){
 }
 
 
-QPopupMenu *
+QMenu *
 ViewGLFrame::createEditMenu(QWidget * parent)
 {
-  QPopupMenu * menu = new QPopupMenu(parent,"Edit Menu");
+  QMenu * menu = new QMenu(parent);
   __scene->addEditEntries(menu);
-  QPixmap wizard( ViewerIcon::getPixmap(ViewerIcon::icon_wizard) );
-  menu->insertItem(wizard,tr("Selection"),this, SLOT(setSelectionMode()));
-  QPixmap wizardRectIcon( ViewerIcon::getPixmap(ViewerIcon::icon_wizardrect) );
-  menu->insertItem(wizardRectIcon,tr("Rectangle Selection"),this, SLOT(setMultipleSelectionMode()));
-  // ViewPopupButton * bt = new ViewPopupButton(menu,id,"Selection");
-  // QObject::connect(this,SIGNAL(modeChanged(bool)),bt,SLOT(check(bool)));
+  QPixmap wizard( ViewerIcon::getPixmap(ViewerIcon::wizard) );
+  menu->addAction(wizard,tr("Selection"),this, SLOT(setSelectionMode()));
+  QPixmap wizardRectIcon( ViewerIcon::getPixmap(ViewerIcon::wizardrect) );
+  menu->addAction(wizardRectIcon,tr("Rectangle Selection"),this, SLOT(setMultipleSelectionMode()));
 
-  QPixmap notwizard( ViewerIcon::getPixmap(ViewerIcon::icon_notwizard) );
-  menu->insertItem(notwizard,tr("Clear Selection"),this, SLOT(clearSelection()));
-  menu->insertSeparator();
+  QPixmap notwizard( ViewerIcon::getPixmap(ViewerIcon::notwizard) );
+  menu->addAction(notwizard,tr("Clear Selection"),this, SLOT(clearSelection()));
+  menu->addSeparator();
 
   if(__linedialog){
-    QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::icon_line_width) );
-    int id2 = menu->insertItem(lineIcon,tr("Edit Line Width"),__linedialog, SLOT(changeVisibility()));
-    ViewPopupButton * bt2 = new ViewPopupButton(menu,id2,"Line Width");
-    QObject::connect(__linedialog,SIGNAL(__visibilityChanged(bool)),bt2,SLOT(check(bool)));
+    QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::line_width) );
+    QAction * action= menu->addAction(lineIcon,tr("Edit Line Width"),__linedialog, SLOT(changeVisibility()));
+    QObject::connect(__linedialog,SIGNAL(__visibilityChanged(bool)),action,SLOT(setChecked(bool)));
   }
   return menu;
 }
 
-QPopupMenu *
+QMenu *
 ViewGLFrame::createToolsMenu(QWidget * parent)
 {
-  QPopupMenu * menu = new QPopupMenu(parent,"Tools Menu");
-  menu->setCheckable(true);
-  QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::icon_wheel));
-  QPopupMenu * __RendererMenu = __scene->createToolsMenu(menu);  
-  menu->insertItem(wheel,tr("Renderer"),__RendererMenu);
-  menu->insertSeparator();
-  QPopupMenu * __CameraMenu = __camera->createToolsMenu(menu);
-  menu->insertItem(wheel,tr("Camera"),__CameraMenu);
-  menu->insertSeparator();
-  QPopupMenu * __LightMenu = __light->createToolsMenu(menu);
-  menu->insertItem(wheel,tr("Light"),__LightMenu);
-  menu->insertSeparator();
-  QPopupMenu * __FogMenu = __fog->createToolsMenu(menu);
-  menu->insertItem(wheel,tr("Fog"),__FogMenu);
-  menu->insertSeparator();
-  QPopupMenu * __GridMenu = __grid->createToolsMenu(menu);
-  menu->insertItem(wheel,tr("Grid"),__GridMenu);
-  menu->insertSeparator();
-  QPopupMenu * __CPMenu = __clippingPlane->createToolsMenu(menu);
-  menu->insertItem(wheel,tr("Clipping Plane"),__CPMenu);
-  menu->insertSeparator();
-  QPopupMenu * __RotCMenu = __rotCenter->createToolsMenu(menu);
-  menu->insertItem(wheel,tr("Rotating Center"),__RotCMenu);
-  menu->insertSeparator();
+
+  QMenu * menu = new QMenu(parent);
+  QPixmap wheel(ViewerIcon::getPixmap(ViewerIcon::wheel));
+  QMenu * __RendererMenu = __scene->createToolsMenu(menu);  
+  menu->addMenu(__RendererMenu);
+  __RendererMenu->setTitle(tr("Renderer"));
+  __RendererMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
+  QMenu * __CameraMenu = __camera->createToolsMenu(menu);
+  menu->addMenu(__CameraMenu);
+  __CameraMenu->setTitle(tr("Camera"));
+  __CameraMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
+  QMenu * __LightMenu = __light->createToolsMenu(menu);
+  menu->addMenu(__LightMenu);
+  __LightMenu->setTitle(tr("Light"));
+  __LightMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
+  QMenu * __FogMenu = __fog->createToolsMenu(menu);
+  menu->addMenu(__FogMenu);
+  __FogMenu->setTitle(tr("Fog"));
+  __FogMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
+  QMenu * __GridMenu = __grid->createToolsMenu(menu);
+  menu->addMenu(__GridMenu);
+  __GridMenu->setTitle(tr("Grid"));
+  __GridMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
+  QMenu * __CPMenu = __clippingPlane->createToolsMenu(menu);
+  menu->addMenu(__CPMenu);
+  __CPMenu->setTitle(tr("Clipping Plane"));
+  __CPMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
+  QMenu * __RotCMenu = __rotCenter->createToolsMenu(menu);
+  menu->addMenu(__RotCMenu);
+  __RotCMenu->setTitle(tr("Rotating Center"));
+  __RotCMenu->setIcon(QIcon(wheel));
+  menu->addSeparator();
   
-  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::icon_color));
-  menu->insertItem(coloricon,tr("Background Color"),  this,SLOT(setBackground())); 
+  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::color));
+  menu->addAction(coloricon,tr("Background Color"),  this,SLOT(setBackground())); 
   return menu;
 }
 
@@ -1300,33 +1302,32 @@ ViewGLFrame::createToolsMenu(QWidget * parent)
 void
 ViewGLFrame::fillToolBar(QToolBar * toolBar)
 {
-  QPixmap wizardIcon( ViewerIcon::getPixmap(ViewerIcon::icon_wizard) );
-  QPixmap wizardRectIcon( ViewerIcon::getPixmap(ViewerIcon::icon_wizardrect) );
-  QPixmap wizardIconMenu( ViewerIcon::getPixmap(ViewerIcon::icon_wizardmenu) );
-  ViewDoubleToolButton * bt2 = new ViewDoubleToolButton( wizardIcon, 
-					  wizardRectIcon,tr("Selection"),tr("Selection"),
-				      this, SLOT(setLastSelectionMode()), toolBar, "Selection" );
-  QString wizardtext ="<b>Selection</b><br><br>Allows you to select shapes from the scene<br><br>"
+  QPixmap wizardIcon( ViewerIcon::getPixmap(ViewerIcon::wizard) );
+  QPixmap wizardRectIcon( ViewerIcon::getPixmap(ViewerIcon::wizardrect) );
+  QPixmap wizardIconMenu( ViewerIcon::getPixmap(ViewerIcon::wizardmenu) );
+
+  ViewDoubleToolButton * bt2 = new ViewDoubleToolButton( wizardIcon,  wizardRectIcon,tr("Selection"), this, SLOT(setLastSelectionMode()), toolBar);
+  QString wizardtext =tr("<b>Selection</b><br><br>Allows you to select shapes from the scene<br><br>"
 	"Press deeply this button to have the choice between two modes of selection<br><br>"
 	"<b>Point selection</b> allows you to select one particular shapes<br>"
 	"<b>Rectangle selection</b> allows you to select all the shapes displayed inside a rectangle<br><br>"
-	"Selecting two times the same shape unselect it.<br>";
-  QWhatsThis::add(bt2,tr(wizardtext));
-  QPopupMenu * selctmenu = new QPopupMenu(bt2);
-  selctmenu->insertItem(wizardIcon,tr("Point"),this,SLOT(setSelectionMode()));
-  selctmenu->insertItem(wizardRectIcon,tr("Rectangle"),this,SLOT(setMultipleSelectionMode()));
-  bt2->setPopup(selctmenu);
-  QObject::connect(this,SIGNAL(selectionMode(bool)),
-		   bt2,SLOT(setOn(bool)));
-  QObject::connect(this,SIGNAL(modeChanged(ViewGLFrame::Mode)),
-		   bt2,SLOT(setButton(ViewGLFrame::Mode)));
-  QPixmap notwizardIcon( ViewerIcon::getPixmap(ViewerIcon::icon_notwizard) );
+	"Selecting two times the same shape unselect it.<br>");
+  bt2->setWhatsThis(wizardtext);
+  QMenu * selctmenu = new QMenu(toolBar);
+  selctmenu->addAction(wizardIcon,tr("Point"),this,SLOT(setSelectionMode()));
+  selctmenu->addAction(wizardRectIcon,tr("Rectangle"),this,SLOT(setMultipleSelectionMode()));
+  bt2->setMenu(selctmenu);
+
+  QObject::connect(this,SIGNAL(selectionMode(bool)),bt2,SLOT(setChecked(bool)));
+  QObject::connect(this,SIGNAL(modeChanged(ViewGLFrame::Mode)),bt2,SLOT(setButton(ViewGLFrame::Mode)));
+  toolBar->addWidget(bt2);
+
+  QPixmap notwizardIcon( ViewerIcon::getPixmap(ViewerIcon::notwizard) );
   QString notwizardtext =tr("Clear Selection");
 
-  QToolButton * bt = new QToolButton( notwizardIcon, notwizardtext, notwizardtext,
-				      this, SLOT(clearSelection()), toolBar, "Clear Selection" );
+  QAction * bt = toolBar->addAction( notwizardIcon, notwizardtext, this, SLOT(clearSelection()));
+  bt->setWhatsThis(tr("<b>Clear Selection</b><br><br>Clear the current selection."));
 
-  QWhatsThis::add(bt,tr("<b>Clear Selection</b><br><br>Clear the current selection."));
   toolBar->addSeparator();
   __scene->fillToolBar(toolBar);
   __camera->fillToolBar(toolBar);
@@ -1334,36 +1335,33 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
   __grid->fillToolBar(toolBar);
   __rotCenter->fillToolBar(toolBar);
   if(__linedialog){
-    QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::icon_line_width) );
+    QPixmap lineIcon( ViewerIcon::getPixmap(ViewerIcon::line_width) );
     QString linetext =tr("Line Width");
-    bt = new QToolButton( lineIcon, linetext, linetext,
-					 __linedialog, SLOT(changeVisibility()), toolBar, "Line Width" );
-    bt->setToggleButton(true);
-    bt->setOn(__linedialog->isVisible());
-    QObject::connect(__linedialog,SIGNAL(__visibilityChanged(bool)),
-		     bt,SLOT(setOn(bool)));
-	QWhatsThis::add(bt,tr("<b>Line Width</b><br><br>Control of the width of the lines and the points of the scene. By default, this value is egal to one."));
+	bt = toolBar->addAction( lineIcon, linetext, __linedialog, SLOT(changeVisibility()));
+    bt->setCheckable(true);
+    bt->setChecked(__linedialog->isVisible());
+    QObject::connect(__linedialog,SIGNAL(__visibilityChanged(bool)),bt,SLOT(setChecked(bool)));
+	bt->setWhatsThis(tr("<b>Line Width</b><br><br>Control of the width of the lines and the points of the scene. By default, this value is egal to one."));
   }
-  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::icon_color));
-  bt = new QToolButton(coloricon,tr("Background Color"),tr("Background Color"),
-			this,SLOT(setBackground()),toolBar);
-  QWhatsThis::add(bt,tr("<b>Background Color</b><br><br>Change the background color of the 3D display."));
+  QPixmap coloricon(ViewerIcon::getPixmap(ViewerIcon::color));
+  bt = toolBar->addAction(coloricon,tr("Background Color"), this,SLOT(setBackground()));
+  bt->setWhatsThis(tr("<b>Background Color</b><br><br>Change the background color of the 3D display."));
 }
 
 void
 ViewGLFrame::addOtherToolBar(QMainWindow * menu)
 {
-  __linedialog  = new ViewToolBar(menu,"Line Width");
-  QLabel * Label = new QLabel(__linedialog, "LWLabel" );
+  __linedialog  = new ViewToolBar(tr("Line Width Bar"),menu,"LineWidthBar");
+  QLabel * Label = new QLabel(__linedialog );
   Label->setText( tr( " Line Width " ) );
 
-  __lineslider =  new QSlider ( 1 , 15 ,
-                                0, 0, QSlider::Horizontal,
-                                __linedialog,"Line Width Slider" );
+  __lineslider =  new QSlider ( Qt::Horizontal, __linedialog );
+  __lineslider->setRange( 1 , 15 );
+  __lineslider->setPageStep(0);
   __lineslider->setFixedSize(100,25);
-  QObject::connect (__lineslider,SIGNAL(valueChanged(int)),
-		    this,SLOT(setLineWidth(int)) ); 	
+  QObject::connect (__lineslider,SIGNAL(valueChanged(int)), this,SLOT(setLineWidth(int)) ); 	
   
+  menu->addToolBar(__linedialog);
   __linedialog->hide();
 }
 
@@ -1371,88 +1369,51 @@ ViewGLFrame::addOtherToolBar(QMainWindow * menu)
 void
 ViewGLFrame::addProperties(QTabWidget * tab)
 {
-    __scene->addProperties(tab);
-    __camera->addProperties(tab);
+    if(__scene)__scene->addProperties(tab);
+    if(__camera)__camera->addProperties(tab);
 
-	QWidget * mtab = new QWidget( tab, "mtab" );
-	tab->insertTab( mtab, tr( "GL Options" ) );
+	QWidget * mtab = new QWidget( tab  );
+	Ui::ViewGLOptionsForm glform;
+	glform.setupUi(mtab);
+	tab->addTab( mtab, tr( "GL Options" ) );
 
     makeCurrent();
 	GLboolean glb = glIsEnabled(GL_CULL_FACE);
 
-    QButtonGroup * CullFaceGroup = new QButtonGroup( mtab, "CullFaceGroup" );
-    CullFaceGroup->setGeometry( QRect( 30, 20, 150, 90 ) ); 
-    CullFaceGroup->setProperty( "title", tr( "Culling" ) );
-    CullFaceGroup->setProperty( "exclusive", QVariant( TRUE, 0 ) );
-
-    QRadioButton * NoCullingButton = new QRadioButton( CullFaceGroup, "NoCullingButton" );
-    NoCullingButton->setGeometry( QRect( 10, 20, 120, 20 ) ); 
-    NoCullingButton->setProperty( "text", tr( "None" ) );
-
-    QRadioButton * BackFaceButton = new QRadioButton( CullFaceGroup, "BackFaceButton" );
-    BackFaceButton->setGeometry( QRect( 10, 40, 120, 20 ) ); 
-    BackFaceButton->setProperty( "text", tr( "Back Face" ) );
-
-    QRadioButton * FrontFaceButton = new QRadioButton( CullFaceGroup, "FrontFaceButton" );
-    FrontFaceButton->setGeometry( QRect( 10, 60, 120, 20 ) ); 
-    FrontFaceButton->setProperty( "text", tr( "Front Face" ) );
-
     GLint * res = new GLint;
-    if(glb == GL_FALSE)NoCullingButton->setProperty( "checked", QVariant( TRUE, 0 ) );
+    if(glb == GL_FALSE)glform.NoCullingButton->setChecked(true);
 	else {
 	  glGetIntegerv(GL_CULL_FACE_MODE ,res);
-	  if(*res == GL_BACK)BackFaceButton->setProperty( "checked", QVariant( TRUE, 0 ) );
-	  else if(*res == GL_FRONT)FrontFaceButton->setProperty( "checked", QVariant( TRUE, 0 ) );
-	  else qWarning("Error with glGet(GL_CULL_FACE_MODE) : "+QString::number(*res)+'-'+QString::number(GL_BACK));
+	  if(*res == GL_BACK)glform.BackFaceButton->setChecked(true);
+	  else if(*res == GL_FRONT)glform.FrontFaceButton->setChecked(true);
+	  else qWarning(("Error with glGet(GL_CULL_FACE_MODE) : "+QString::number(*res)+'-'+QString::number(GL_BACK)).toAscii().data());
 	}
 
-	QObject::connect(NoCullingButton,SIGNAL(toggled(bool)),this,SLOT(glCullNoFace(bool)));
-	QObject::connect(BackFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullBackFace(bool)));
-	QObject::connect(FrontFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullFrontFace(bool)));
+	QObject::connect(glform.NoCullingButton,SIGNAL(toggled(bool)),this,SLOT(glCullNoFace(bool)));
+	QObject::connect(glform.BackFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullBackFace(bool)));
+	QObject::connect(glform.FrontFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullFrontFace(bool)));
 
-    QButtonGroup * ShadeGroup = new QButtonGroup( mtab, "ShadeGroup" );
-    ShadeGroup->setGeometry( QRect( 210, 20, 150, 90 ) ); 
-    ShadeGroup->setProperty( "title", tr( "Shade Model" ) );
-    ShadeGroup->setProperty( "exclusive", QVariant( TRUE, 0 ) );
-
-    QRadioButton * FlatButton = new QRadioButton( ShadeGroup, "FlatButton" );
-    FlatButton->setGeometry( QRect( 10, 40, 60, 20 ) ); 
-    FlatButton->setProperty( "text", tr( "Flat" ) );
-
-    QRadioButton * SmoothButton = new QRadioButton( ShadeGroup, "SmoothButton" );
-    SmoothButton->setGeometry( QRect( 10, 20, 70, 20 ) ); 
-    SmoothButton->setProperty( "text", tr( "Smooth" ) );
 
 	glGetIntegerv(GL_SHADE_MODEL,res);
-	if(*res == GL_FLAT)FlatButton->setProperty( "checked", QVariant( TRUE, 0 ) );
-	else if(*res == GL_SMOOTH)SmoothButton->setProperty( "checked", QVariant( TRUE, 0 ) );
+	if(*res == GL_FLAT)glform.FlatButton->setChecked(true);
+	else if(*res == GL_SMOOTH)glform.SmoothButton->setChecked(true);
 
-	QObject::connect(FlatButton,SIGNAL(toggled(bool)),this,SLOT(glFlatShadeModel(bool)));
-	QObject::connect(SmoothButton,SIGNAL(toggled(bool)),this,SLOT(glSmoothShadeModel(bool)));
+	QObject::connect(glform.FlatButton,SIGNAL(toggled(bool)),this,SLOT(glFlatShadeModel(bool)));
+	QObject::connect(glform.SmoothButton,SIGNAL(toggled(bool)),this,SLOT(glSmoothShadeModel(bool)));
 
-    QRadioButton * DitheringButton = new QRadioButton( mtab, "DitheringButton" );
-    DitheringButton->setGeometry( QRect( 40, 130, 190, 20 ) ); 
-    DitheringButton->setProperty( "text", tr( "Color/Material Dithering" ) );
 	glb = glIsEnabled(GL_DITHER);
-	if(glb == GL_TRUE)DitheringButton->setProperty( "checked", QVariant( TRUE, 0 ) );
-	QObject::connect(DitheringButton,SIGNAL(toggled(bool)),this,SLOT(glDithering(bool)));
+	if(glb == GL_TRUE)glform.DitheringButton->setChecked(true);
+	QObject::connect(glform.DitheringButton,SIGNAL(toggled(bool)),this,SLOT(glDithering(bool)));
 
-    QRadioButton * DepthTestButton = new QRadioButton( mtab, "DepthTestButton" );
-    DepthTestButton->setGeometry( QRect( 40, 150, 180, 20 ) ); 
-    DepthTestButton->setProperty( "text", tr( "Hidden Surface Removal" ) );
 	glb = glIsEnabled(GL_DEPTH_TEST);
-	if(glb == GL_TRUE)DepthTestButton->setProperty( "checked", QVariant( TRUE, 0 ) );
-	QObject::connect(DepthTestButton,SIGNAL(toggled(bool)),this,SLOT(glDepthTest(bool)));
+	if(glb == GL_TRUE)glform.DepthTestButton->setChecked(true);
+	QObject::connect(glform.DepthTestButton,SIGNAL(toggled(bool)),this,SLOT(glDepthTest(bool)));
 
-    QRadioButton * NormalizationButton = new QRadioButton( mtab, "NormalizationButton" );
-    NormalizationButton->setGeometry( QRect( 40, 170, 180, 20 ) ); 
-    NormalizationButton->setProperty( "text", tr( "Normals Normalization" ) );
 	glb = glIsEnabled(GL_NORMALIZE);
-	if(glb == GL_TRUE)NormalizationButton->setProperty( "checked", QVariant( TRUE, 0 ) );
-	QObject::connect(NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
+	if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
+	glform.QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
 
 	delete res;
-
 }
 
 /* ----------------------------------------------------------------------- */
@@ -1512,36 +1473,39 @@ ViewGLFrame::animation(bool b){
   ViewSceneRendererGL * r = dynamic_cast<ViewSceneRendererGL *>(__scene);
   if(r)r->useDisplayList(!b);
   __camera->lockDim(b);
-  qDebug(QString("Animation : ")+(b?"True":"False"));
 }
 
 
 ViewDoubleToolButton::ViewDoubleToolButton( const QPixmap & pm,
 										 const QPixmap & pm2,
 										 const QString & textLabel, 
-										 const QString & grouptext, 
 										 QObject * receiver, 
 										 const char * slot, 
-										 QToolBar * parent, 
-										 const char * name ):
-QToolButton(pm,textLabel,grouptext,receiver,slot,parent,name),
+										 QToolBar * parent ):
+QToolButton(parent),
 __pm1(pm),__pm2(pm2){
-  setToggleButton(true);
-  setPopupDelay(150);
-  drawArrow(&__pm1);
-  drawArrow(__pm1.mask());
-  drawArrow(&__pm2);
-  drawArrow(__pm2.mask());
-  setPixmap(__pm1);
+  connect(this,SIGNAL(triggered(QAction *)),receiver,slot);
+  PGL::drawArrow(&__pm1);
+  QBitmap mask = __pm1.mask();
+  PGL::drawArrow(&mask);
+  __pm1.setMask(mask);
+  PGL::drawArrow(&__pm2);
+  mask = __pm2.mask();
+  PGL::drawArrow(&mask);
+  __pm1.setMask(mask);
+  setIcon(QIcon(__pm1));
+  setText(textLabel);
+  setPopupMode(QToolButton::DelayedPopup);
+  setCheckable(true);
 }
 
 void ViewDoubleToolButton::setButton(ViewGLFrame::Mode m)
 {
   if(m == ViewGLFrame::Selection){
-	setPixmap(__pm1);
+	setIcon(QIcon(__pm1));
   }
   else if(m == ViewGLFrame::MultipleSelection){
-	setPixmap(__pm2);
+	setIcon(QIcon(__pm2));
   }
 }
 

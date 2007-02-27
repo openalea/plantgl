@@ -1,172 +1,123 @@
-<!DOCTYPE UI><UI>
-<class>QBrowser</class>
-<widget>
-    <class>QWidget</class>
-    <property stdset="1">
-        <name>name</name>
-        <cstring>QBrowser</cstring>
-    </property>
-    <property>
-        <name>geometry</name>
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>704</width>
-            <height>596</height>
-        </rect>
-    </property>
-    <property>
-        <name>caption</name>
-        <string>Form1</string>
-    </property>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>CancelButton</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>490</x>
-                <y>560</y>
-                <width>104</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>&amp;Cancel</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>OkButton</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>600</x>
-                <y>560</y>
-                <width>104</width>
-                <height>28</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string>&amp;Ok</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>label</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>60</x>
-                <y>0</y>
-                <width>180</width>
-                <height>40</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>abiword-bookman</family>
-                <pointsize>16</pointsize>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>Browser :</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>PixmapLabel1</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>20</x>
-                <y>5</y>
-                <width>32</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property>
-            <name>text</name>
-            <string></string>
-        </property>
-        <property>
-            <name>pixmap</name>
-            <pixmap>image0</pixmap>
-        </property>
-        <property>
-            <name>scaledContents</name>
-            <bool>true</bool>
-        </property>
-    </widget>
-    <widget>
-        <class>QListView</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>__list</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>40</y>
-                <width>690</width>
-                <height>510</height>
-            </rect>
-        </property>
-        <property>
-            <name>hAlign</name>
-        </property>
-    </widget>
-    <widget>
-        <class>QCheckBox</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>__FullMode</cstring>
-        </property>
-        <property>
-            <name>geometry</name>
-            <rect>
-                <x>570</x>
-                <y>10</y>
-                <width>130</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property>
-            <name>font</name>
-            <font>
-                <family>Courier New</family>
-            </font>
-        </property>
-        <property>
-            <name>text</name>
-            <string>Full &amp;Mode</string>
-        </property>
-    </widget>
-</widget>
-<images>
-    <image>
-        <name>image0</name>
-        <data format="XPM.GZ" length="1331">789c8d93cf4ac43010c6ef7d8ad0dc8ab8ee96858af8088a47413c64d264ddc32ae87a10f1ddcd64329b4913ff8442f3757ecc3793665683babfbb51c3aa7b3b9ae3de2afb645ed530bf1f0e1f0f8fd79f5d3f6e54782ed5ba3febfa7365d5edcbb3c3bd0e7b7d11174acbd26e51ce2cbd47e9494eeb6944b9236937041b94d3c8514069b71c75287d5cb1863f56c568fd0fc65454cd00e8057562f83b32d616546692870e9b792ea8cc240f1d5ed61654c1e077ed1c535c97a8873d80290de42ff2648f44616aa4325378106500b182293c886a308507295333c2039222269e8b73828a4c8212e3e3b9149459323bef35e516d432cfaea22aaf70299754c50051a9e33613fd431eeeb8cd2c3afe81293a26066a4674cc6941d42cab80b4c33b05907bcf119d3de2cdcbff5d464e1e3c2fe2aee648f268cca08c448fe69cca486bbeaa48634e7f59fdd755f70d77703ffe</data>
-    </image>
-</images>
-<connections>
-    <slot access="public">new_slot()</slot>
-</connections>
-</UI>
+<ui version="4.0" >
+ <class>QBrowser</class>
+ <widget class="QWidget" name="QBrowser" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>704</width>
+    <height>596</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form1</string>
+  </property>
+  <widget class="QPushButton" name="CancelButton" >
+   <property name="geometry" >
+    <rect>
+     <x>490</x>
+     <y>560</y>
+     <width>104</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Cancel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="OkButton" >
+   <property name="geometry" >
+    <rect>
+     <x>600</x>
+     <y>560</y>
+     <width>104</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Ok</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label" >
+   <property name="geometry" >
+    <rect>
+     <x>60</x>
+     <y>0</y>
+     <width>180</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>abiword-bookman</family>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Browser :</string>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="PixmapLabel1" >
+   <property name="geometry" >
+    <rect>
+     <x>20</x>
+     <y>5</y>
+     <width>32</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string/>
+   </property>
+   <property name="pixmap" >
+    <pixmap/>
+   </property>
+   <property name="scaledContents" >
+    <bool>true</bool>
+   </property>
+   <property name="wordWrap" >
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="Q3ListView" name="__list" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>690</width>
+     <height>510</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="__FullMode" >
+   <property name="geometry" >
+    <rect>
+     <x>570</x>
+     <y>10</y>
+     <width>130</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font" >
+    <font>
+     <family>Courier New</family>
+    </font>
+   </property>
+   <property name="text" >
+    <string>Full &amp;Mode</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Q3ListView</class>
+   <extends>Q3Frame</extends>
+   <header>q3listview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

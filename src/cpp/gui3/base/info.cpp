@@ -149,7 +149,7 @@ static const char * icon_memory[] = {
 /* ----------------------------------------------------------------------- */
 
 
-const char* ViewSysInfo::info_logo[24] = {
+const char* ViewSysInfo3::info_logo[24] = {
 "16 16 7 1",
 ". c None",
 "d c #000000",
@@ -303,7 +303,7 @@ static char * opengl_logo[] = {
 /* ----------------------------------------------------------------------- */
 
 
-const char *ViewSysInfo::qt_logo[]={
+const char *ViewSysInfo3::qt_logo[]={
 "16 16 7 1",
 "b c #000000",
 "d c #002000",
@@ -333,7 +333,7 @@ const char *ViewSysInfo::qt_logo[]={
 /* ----------------------------------------------------------------------- */
 
 
-const char * ViewSysInfo::tools_logo[34] = {
+const char * ViewSysInfo3::tools_logo[34] = {
 "16 16 17 1",
 "       c None",
 ".      c #000000",
@@ -422,7 +422,7 @@ static char * wheel_logo[] = {
 
 
 
-ViewSysInfo::ViewSysInfo( QWidget* parent,
+ViewSysInfo3::ViewSysInfo3( QWidget* parent,
                                       QGLWidget * FrameGL,
                                       const char* name,
                                       bool modal, WFlags fl )
@@ -1407,7 +1407,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent,
 /*
  *  Destroys the object and frees any allocated resources
  */
-ViewSysInfo::~ViewSysInfo()
+ViewSysInfo3::~ViewSysInfo3()
 {
     // no need to delete child widgets, Qt does it all for us
 }
@@ -1420,7 +1420,7 @@ ViewSysInfo::~ViewSysInfo()
  *  Main event handler. Reimplemented to handle application
  *  font changes
  */
-bool ViewSysInfo::event( QEvent* ev )
+bool ViewSysInfo3::event( QEvent* ev )
 {
     bool ret = QDialog::event( ev );
     if ( ev->type() == QEvent::ApplicationFontChange ) {
@@ -1435,7 +1435,7 @@ bool ViewSysInfo::event( QEvent* ev )
 
 /* ----------------------------------------------------------------------- */
 
-void ViewSysInfo::resizeEvent(QResizeEvent*e){
+void ViewSysInfo3::resizeEvent(QResizeEvent*e){
   QSize diffSize(103,127);
   AttView->resize(e->size()-diffSize);
   QPoint diffPos(e->size().width(),e->size().height());
@@ -1449,7 +1449,7 @@ void ViewSysInfo::resizeEvent(QResizeEvent*e){
 /* ----------------------------------------------------------------------- */
 
 QListViewItem*
-ViewSysInfo::addItem(const QString& name, const QString& val){
+ViewSysInfo3::addItem(const QString& name, const QString& val){
   QListViewItem * itemN = new QListViewItem( RootItem,LastItem );
   itemN->setText( 0, tr( name ) );
   itemN->setText( 1, tr( val ) );
@@ -1461,7 +1461,7 @@ ViewSysInfo::addItem(const QString& name, const QString& val){
 }
 
 QListViewItem*
-ViewSysInfo::addItem(const QPixmap& pix,
+ViewSysInfo3::addItem(const QPixmap& pix,
                            const QString& name,
                            const QString& val){
   QListViewItem * itemN = new QListViewItem( RootItem,LastItem );
@@ -1474,7 +1474,7 @@ ViewSysInfo::addItem(const QPixmap& pix,
 }
 
 void
-ViewSysInfo::saveAsFile()  {
+ViewSysInfo3::saveAsFile()  {
         QString file = QFileDialog::getSaveFileName ( QString::null ,
                                                                                                   QString::null ,
                                                                                                   this ,
@@ -1483,7 +1483,7 @@ ViewSysInfo::saveAsFile()  {
 }
 
 void
-ViewSysInfo::saveAsFile(const QString& file) const {
+ViewSysInfo3::saveAsFile(const QString& file) const {
         QFile f(file);
         if(f.open(IO_WriteOnly)){
                 QTextStream stream(&f);

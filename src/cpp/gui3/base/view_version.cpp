@@ -43,15 +43,15 @@ using namespace std;
 
 TOOLS_USING_NAMESPACE;
 
-float getViewerVersion(){
+float getViewer3Version(){
   return float(VIEWER_VERSION);
 }
 
-float getViewerRelease(){
+float getViewer3Release(){
   return float(VIEWER_RELEASE);
 }
 
-std::string getViewerVersionString(){
+std::string getViewer3VersionString(){
   return number(VIEWER_VERSION)+'.'+number(VIEWER_RELEASE);
 }
 

@@ -57,7 +57,7 @@ PGL_USING_NAMESPACE
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
-ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f ):
+ViewColorGL3::ViewColorGL3( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f ):
  QGLWidget(parent,name,shareWidget,f),
  __sphereobject(NULL),
  __r(__d){
@@ -78,17 +78,17 @@ ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget *
   __lightmodel[3]=1.0;
 }
 
-ViewColorGL::~ViewColorGL(){
+ViewColorGL3::~ViewColorGL3(){
   if(__sphereobject)gluDeleteQuadric(__sphereobject);
 }
 
-void ViewColorGL::setAppearance(const AppearancePtr& mat){
+void ViewColorGL3::setAppearance(const AppearancePtr& mat){
     __M = mat;
     updateGL();
   }
 
 // -------------------- Rendering --------------------
-void ViewColorGL::initializeGL(){
+void ViewColorGL3::initializeGL(){
   glClearColor(0.0,0.0,0.0,1.0);
 
   glShadeModel(GL_SMOOTH);
@@ -113,7 +113,7 @@ void ViewColorGL::initializeGL(){
   glEndList();
 }
 
-void ViewColorGL::resizeGL(int,int){
+void ViewColorGL3::resizeGL(int,int){
   glViewport(0,0,(GLsizei)width(),(GLsizei)height());
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -147,7 +147,7 @@ void ViewColorGL::resizeGL(int,int){
   glLoadIdentity();
 }
 
-void ViewColorGL::paintGL(){
+void ViewColorGL3::paintGL(){
 
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
   glShadeModel(GL_SMOOTH);
@@ -200,7 +200,7 @@ void ViewColorGL::paintGL(){
   glFlush();
 }
 
-void ViewColorGL::paintAppearance(){
+void ViewColorGL3::paintAppearance(){
   if(__M){
     __M->apply(__r);
     __r.endProcess();
@@ -209,38 +209,38 @@ void ViewColorGL::paintAppearance(){
 
 /*----------------------------------------------------------------------------*/
 
-ColorButton::ColorButton ( QWidget * parent, const char * name ):
+ViewColorButton3::ViewColorButton3 ( QWidget * parent, const char * name ):
   QPushButton(parent,name),
   __color(0,0,0){
   setColor(__color);
 }
 
-ColorButton::~ColorButton(){
+ViewColorButton3::~ViewColorButton3(){
 }
 
 void
-ColorButton::setColor(const QColor& c){
+ViewColorButton3::setColor(const QColor& c){
   __color = c;
   QPixmap col(60,40);
   col.fill(c);
   setPixmap(col);
 }
 
-const QColor& ColorButton::getColor() const{
+const QColor& ViewColorButton3::getColor() const{
   return __color;
 }
 
 /*----------------------------------------------------------------------------*/
 
-ColorEditButton::ColorEditButton ( QWidget * parent, const char * name ):
-  ColorButton(parent,name){
+ViewColorEditButton3::ViewColorEditButton3 ( QWidget * parent, const char * name ):
+  ViewColorButton3(parent,name){
   QObject::connect(this,SIGNAL(clicked()),this,SLOT(selectColor()));
 }
 
-ColorEditButton::~ColorEditButton(){
+ViewColorEditButton3::~ViewColorEditButton3(){
 }
 
-void ColorEditButton::selectColor(){
+void ViewColorEditButton3::selectColor(){
   QColor col = QColorDialog::getColor(__color,this);
   if(col.isValid()){
     setColor(col);
@@ -285,15 +285,15 @@ void ColorEditSlider::valueChangedEvent(int i){
 /*----------------------------------------------------------------------------*/
 
 /*
- *  Constructs a MaterialEditor which is a child of 'parent', with the
+ *  Constructs a MaterialEditor3 which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  */
 
-MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, WFlags fl )
-    : GeomModuleEditor( parent,  fl )
+MaterialEditor3::MaterialEditor3( QWidget* parent,  const char* name, WFlags fl )
+    : GeomModuleEditor3( parent,  fl )
 {
     if ( !name )
-        setName( "MaterialEditor" );
+        setName( "MaterialEditor3" );
     resize( 550, 300 );
     setMinimumSize(550,300);
     QFont f( font() );
@@ -345,17 +345,17 @@ MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, WFlags fl )
     EditName = new QLineEdit( this, "EditName" );
     EditName->setGeometry( QRect( 30, 260, 127, 22 ) );
 
-    ButtonAmbient = new ColorEditButton( this, "ButtonAmbient" );
+    ButtonAmbient = new ViewColorEditButton3( this, "ButtonAmbient" );
     ButtonAmbient->setGeometry( QRect( 480, 10, 60, 40 ) );
 
-    ButtonDiffuse = new ColorButton( this, "ButtonDiffuse" );
+    ButtonDiffuse = new ViewColorButton3( this, "ButtonDiffuse" );
     ButtonDiffuse->setGeometry( QRect( 480, 60, 60, 40 ) );
     ButtonDiffuse->setFlat(true);
 
-    ButtonSpecular = new ColorEditButton( this, "ButtonSpecular" );
+    ButtonSpecular = new ViewColorEditButton3( this, "ButtonSpecular" );
     ButtonSpecular->setGeometry( QRect( 480, 110, 60, 40 ) );
 
-    ButtonEmission = new ColorEditButton( this, "ButtonEmission" );
+    ButtonEmission = new ViewColorEditButton3( this, "ButtonEmission" );
     ButtonEmission->setGeometry( QRect( 480, 160, 60, 40 ) );
 
     SliderAmbient = new ColorEditSlider( this, "SliderAmbient" );
@@ -391,7 +391,7 @@ MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, WFlags fl )
     SliderTransparency->setOrientation( QSlider::Horizontal );
     SliderTransparency->setTickmarks( QSlider::Left );
 
-    FrameGL = new ViewColorGL( this, "FrameGL" );
+    FrameGL = new ViewColorGL3( this, "FrameGL" );
     FrameGL->setGeometry( QRect( 5, 20, 200, 200 ) );
 
     QObject::connect (EditName,SIGNAL(textChanged(const QString&)),
@@ -429,7 +429,7 @@ MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, WFlags fl )
 /*
  *  Destroys the object and frees any allocated resources
  */
-MaterialEditor::~MaterialEditor()
+MaterialEditor3::~MaterialEditor3()
 {
     // no need to delete child widgets, Qt does it all for us
 }
@@ -438,7 +438,7 @@ MaterialEditor::~MaterialEditor()
  *  Main event handler. Reimplemented to handle application
  *  font changes
  */
-bool MaterialEditor::event( QEvent* ev )
+bool MaterialEditor3::event( QEvent* ev )
 {
     bool ret = QWidget::event( ev );
     if ( ev->type() == QEvent::ApplicationFontChange ) {
@@ -458,21 +458,21 @@ bool MaterialEditor::event( QEvent* ev )
     return ret;
 }
 
-void MaterialEditor::addMenu(QMenuBar * menubar){
+void MaterialEditor3::addMenu(QMenuBar * menubar){
 }
 
-void MaterialEditor::removeMenu(QMenuBar * menubar){
+void MaterialEditor3::removeMenu(QMenuBar * menubar){
 }
 
-QString MaterialEditor::geomClassName() const{
+QString MaterialEditor3::geomClassName() const{
   return QString("Material");
 }
 
-const QSize MaterialEditor::getSize() const {
+const QSize MaterialEditor3::getSize() const {
   return QSize(550,300);
 }
 
-bool MaterialEditor::setGeomObject(SceneObjectPtr obj){
+bool MaterialEditor3::setGeomObject(SceneObjectPtr obj){
   MaterialPtr material;
   if(material.cast(obj)){
     setMaterial(material);
@@ -481,15 +481,15 @@ bool MaterialEditor::setGeomObject(SceneObjectPtr obj){
   else return false;
 }
 
-void MaterialEditor::newObj(){
+void MaterialEditor3::newObj(){
   setMaterial(MaterialPtr(new Material(string("newMaterial"))));
 }
 
-SceneObjectPtr MaterialEditor::getGeomObject(){
+SceneObjectPtr MaterialEditor3::getGeomObject(){
   return SceneObjectPtr(__material);
 }
 
-void MaterialEditor::setMaterial(const MaterialPtr& m){
+void MaterialEditor3::setMaterial(const MaterialPtr& m){
   __material = m;
   if(m){
   EditName->setText(QString(m->getName().c_str()));
@@ -512,7 +512,7 @@ void MaterialEditor::setMaterial(const MaterialPtr& m){
   }
 }
 
-void MaterialEditor::setDiffuse(  int v ){
+void MaterialEditor3::setDiffuse(  int v ){
   const Color3& c = __material->getAmbient();
   real_t m = (*(c.getMax()));
   if(m != 0){
@@ -526,7 +526,7 @@ void MaterialEditor::setDiffuse(  int v ){
   }
 }
 
-void MaterialEditor::setAmbient(  const QColor& c ){
+void MaterialEditor3::setAmbient(  const QColor& c ){
   __material->getAmbient() = Color3(c.red(),c.green(),c.blue());
   real_t m  = *(__material->getAmbient().getMax());
   if( m != 0){
@@ -537,55 +537,55 @@ void MaterialEditor::setAmbient(  const QColor& c ){
   }
 }
 
-void MaterialEditor::setSpecular(  const QColor& c ){
+void MaterialEditor3::setSpecular(  const QColor& c ){
   __material->getSpecular() = Color3(c.red(),c.green(),c.blue());
   update();
 }
 
-void MaterialEditor::setEmission( const QColor& c ){
+void MaterialEditor3::setEmission( const QColor& c ){
   __material->getEmission() = Color3(c.red(),c.green(),c.blue());
   update();
 }
 
-void MaterialEditor::setShininess( int v ){
+void MaterialEditor3::setShininess( int v ){
   __material->getShininess() = ((real_t)v)/100.0;
   update();
 }
 
-void MaterialEditor::setTransparency( int v ){
+void MaterialEditor3::setTransparency( int v ){
   __material->getTransparency() = ((real_t)v)/100.0;
   update();
 }
 
-void MaterialEditor::setGeomName(const QString& name ){
+void MaterialEditor3::setGeomName(const QString& name ){
   if(__material){
     if(name.isEmpty()) __material->setName("");
     else __material->setName(name.data());
   }
 }
 
-void MaterialEditor::update(){
+void MaterialEditor3::update(){
   FrameGL->updateGL();
 }
 
-void MaterialEditor::ambientChangedEvent(){
+void MaterialEditor3::ambientChangedEvent(){
   QColor c = SliderAmbient->getColor();
   ButtonAmbient->setColor(c);
   setAmbient(c);
 }
 
-void MaterialEditor::specularChangedEvent(){
+void MaterialEditor3::specularChangedEvent(){
   QColor c = SliderSpecular->getColor();
   ButtonSpecular->setColor(c);
   setSpecular(c);
 }
 
-void MaterialEditor::emissionChangedEvent(){
+void MaterialEditor3::emissionChangedEvent(){
   QColor c = SliderEmission->getColor();
   ButtonEmission->setColor(c);
   setEmission(c);
 }
 
-void MaterialEditor::clear(){
+void MaterialEditor3::clear(){
         setMaterial(MaterialPtr(0));
 }

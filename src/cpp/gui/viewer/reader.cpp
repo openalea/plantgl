@@ -93,12 +93,12 @@ void ViewGeomReader::run()
 
     if(! _filename.isEmpty()) {
 	  stringstream _errlog(ios::out) ;
-      ScenePtr scene = ScenePtr(new Scene(_filename.latin1(),"", _errlog,
+      ScenePtr scene = ScenePtr(new Scene(_filename.toAscii().constData(),"", _errlog,
                                           maxerror));
       _errlog << std::ends;
       string _msg = _errlog.str();
       GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),_filename,addition);
-      QThread::postEvent(_g,e);
+      QApplication::postEvent(_g,e);
     }
 }
 
@@ -169,9 +169,9 @@ void ViewMultiGeomReader::run()
 {
   if(! _filename.isEmpty() && ! __second.isEmpty()) {
     stringstream _errlog(ios::out) ;
-    ScenePtr scene1 = ScenePtr(new Scene(_filename.latin1(),"",_errlog,
+    ScenePtr scene1 = ScenePtr(new Scene(_filename.toAscii().constData(),"",_errlog,
                                         maxerror));
-    ScenePtr scene2 = ScenePtr(new Scene(__second.latin1(),"",_errlog,
+    ScenePtr scene2 = ScenePtr(new Scene(__second.toAscii().constData(),"",_errlog,
                                         maxerror));
     _errlog << ends;
     string _msg = _errlog.str();
@@ -180,7 +180,7 @@ void ViewMultiGeomReader::run()
                                                                   _msg.c_str(),
                                                                   _filename,
                                                                   __second);
-    QThread::postEvent(_g,e);
+    QApplication::postEvent(_g,e);
   }
 }
 
@@ -243,16 +243,16 @@ void ViewLinetreeReader::run(){
 
     if(! _filename.isEmpty()) {
       stringstream _errlog(ios::out) ;
-      ScenePtr scene = readLineTree(string(_filename.data()),
-                                    string(_dtaFile.data()),
-                                    string(_smbPath.data()),
+      ScenePtr scene = readLineTree(string(_filename.toAscii().data()),
+                                    string(_dtaFile.toAscii().data()),
+                                    string(_smbPath.toAscii().data()),
 									_bigendian,
                                     _errlog);
       _errlog << ends;
       string _msg = _errlog.str();
       if(!scene) scene = ScenePtr(new Scene());
       GeomSceneChangeEvent * e = new GeomSceneChangeEvent(scene,_msg.c_str(),_filename,addition);
-      QThread::postEvent(_g,e);
+      QApplication::postEvent(_g,e);
     }
 }
 #endif

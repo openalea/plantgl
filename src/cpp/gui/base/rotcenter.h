@@ -49,12 +49,12 @@
 #include <algo/opengl/util_gl.h>
 #include <math/util_vector.h>
 
-#include <qpopupmenu.h>
+#include <qmenu.h>
 
 
 /* ----------------------------------------------------------------------- */
 
-class RotCenterEdit;
+namespace Ui { class RotCenterEdit; }
 
 /* ----------------------------------------------------------------------- */
 
@@ -107,7 +107,7 @@ public:
   ViewDialog * getSliders() const;
 
   /// Create a Tools menu that reflect the functionality of this.
-  virtual QPopupMenu * createToolsMenu(QWidget * parent);
+  virtual QMenu * createToolsMenu(QWidget * parent);
 
   /// Fill toolBar to reflect the functionality of this.
   void fillToolBar(QToolBar * toolBar);
@@ -169,7 +169,7 @@ public slots:
   virtual void paintGL(); 
 
   /// Change relative value.
-  virtual void changeStepEvent(const int newStep, const int oldStep);
+  virtual void changeStepEvent(double newStep, double oldStep);
 
   signals:
 
@@ -203,7 +203,7 @@ protected :
 
   /// Sliders to control self coordinates.
   ViewDialog * __sliders;
-  RotCenterEdit * __editor;
+  Ui::RotCenterEdit * __editor;
 
   /// Activation of this.
   bool __active;
@@ -218,46 +218,6 @@ protected :
   GLuint __displayList;
 
 };
-
-/* ----------------------------------------------------------------------- */
-
-/**   
-   \class ViewRotCenterMenu
-   \brief A Menu to control a RotCenterGL
-
-*/
-class VIEW_API ViewRotCenterMenu : public QPopupMenu {
-   Q_OBJECT
- 
-public :
-  
-   /// Constructor.
-   ViewRotCenterMenu(ViewRotCenterGL * center, 
-		      QWidget * parent=0, 
-		      const char * name=0);
-  
-  /// Destructor.
-  ~ViewRotCenterMenu();
-  
-public slots :
-
-  /// Check the menu entry Visible.
-  void setVisible(bool);
-
-  /// Check the menu entry Active.
-  void setActive(bool);
-
-  /// Check the menu entry Control.
-  void setControl(bool);
-
-  
-protected :    
-  
-  int idVisible;
-  int idActive;
-  int idControl;
-};
-
 
 /* ----------------------------------------------------------------------- */
 #endif

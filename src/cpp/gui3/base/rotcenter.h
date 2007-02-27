@@ -36,7 +36,7 @@
  */				
 
 /*! \file view_rotcenter.h
-    \brief Definition of the viewer class ViewRotCenterGL.
+    \brief Definition of the viewer class ViewRotCenterGL3.
 */
 
 #ifndef __view_rotcenter_h__
@@ -58,19 +58,19 @@ class RotCenterEdit;
 
 /* ----------------------------------------------------------------------- */
 
-class ViewDialog;
+class ViewDialog3;
 
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewRotCenterGL
-   \brief A ViewRotCenterGL for GL Display
+   \class ViewRotCenterGL3
+   \brief A ViewRotCenterGL3 for GL Display
 
 */
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewRotCenterGL  : public ViewRelativeObjectGL
+class VIEW3_API ViewRotCenterGL3  : public ViewRelativeObjectGL3
 {
   Q_OBJECT
   Q_PROPERTY(int X READ x WRITE setX );
@@ -81,12 +81,12 @@ class VIEW_API ViewRotCenterGL  : public ViewRelativeObjectGL
 public:
 
   /// Constructor.
-  ViewRotCenterGL(ViewCameraGL *camera,
+  ViewRotCenterGL3(ViewCameraGL3 *camera,
 		  QGLWidget * parent=0, 
 		  const char * name=0);
 
   /// Destructor.
-  virtual ~ViewRotCenterGL();
+  virtual ~ViewRotCenterGL3();
 
   /// Return whether self is visible.
   bool isVisible() const ;
@@ -104,7 +104,7 @@ public:
   int z() const;
 
   /// get the sliders that control this.
-  ViewDialog * getSliders() const;
+  ViewDialog3 * getSliders() const;
 
   /// Create a Tools menu that reflect the functionality of this.
   virtual QPopupMenu * createToolsMenu(QWidget * parent);
@@ -202,7 +202,7 @@ protected :
   void setSliderStep(const int step);
 
   /// Sliders to control self coordinates.
-  ViewDialog * __sliders;
+  ViewDialog3 * __sliders;
   RotCenterEdit * __editor;
 
   /// Activation of this.
@@ -222,22 +222,22 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 /**   
-   \class ViewRotCenterMenu
+   \class ViewRotCenterMenu3
    \brief A Menu to control a RotCenterGL
 
 */
-class VIEW_API ViewRotCenterMenu : public QPopupMenu {
+class VIEW3_API ViewRotCenterMenu3 : public QPopupMenu {
    Q_OBJECT
  
 public :
   
    /// Constructor.
-   ViewRotCenterMenu(ViewRotCenterGL * center, 
+   ViewRotCenterMenu3(ViewRotCenterGL3 * center, 
 		      QWidget * parent=0, 
 		      const char * name=0);
   
   /// Destructor.
-  ~ViewRotCenterMenu();
+  ~ViewRotCenterMenu3();
   
 public slots :
 

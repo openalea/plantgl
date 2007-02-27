@@ -54,7 +54,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-ViewerDaemon::ViewerDaemon( QObject* parent ) :
+ViewerDaemon3::ViewerDaemon3( QObject* parent ) :
 QServerSocket(7777,1,parent)
 {
   if ( !ok() ) {
@@ -63,7 +63,7 @@ QServerSocket(7777,1,parent)
 }
 
 void 
-ViewerDaemon::newConnection( int socket )
+ViewerDaemon3::newConnection( int socket )
 {
   // When a new client connects, the server constructs a QSocket and all
   // communication with the client is done over this QSocket. QSocket
@@ -76,7 +76,7 @@ ViewerDaemon::newConnection( int socket )
   emit newConnect();
 }
 
-void ViewerDaemon::readClient()
+void ViewerDaemon3::readClient()
 {
   QSocket* socket = (QSocket*)sender();
   if ( socket->canReadLine() ) {
@@ -122,7 +122,7 @@ void ViewerDaemon::readClient()
   }
 }
 
-void ViewerDaemon::discardClient()
+void ViewerDaemon3::discardClient()
 {
   QSocket* socket = (QSocket*)sender();
   delete socket;
@@ -130,7 +130,7 @@ void ViewerDaemon::discardClient()
 }
 
 /* ----------------------------------------------------------------------- */
-ViewClient::ViewClient()
+ViewClient3::ViewClient3()
     : QNetworkProtocol(), connectionReady( FALSE )
 {
     commandSocket = new QSocket( this );
@@ -149,13 +149,13 @@ ViewClient::ViewClient()
 	    this, SLOT( slotBytesWritten( int ) ) );*/
 }
 
-ViewClient::~ViewClient()
+ViewClient3::~ViewClient3()
 {
     close();
     delete commandSocket;
 }
 
-void ViewClient::operationPut( QNetworkOperation * n)
+void ViewClient3::operationPut( QNetworkOperation * n)
 {
     QString cmd = "POST ";
 	cmd += QString(n->rawArg(0));
@@ -165,7 +165,7 @@ void ViewClient::operationPut( QNetworkOperation * n)
     commandSocket->writeBlock( cmd.latin1(), cmd.length() );
 }
 
-void ViewClient::operationGet( QNetworkOperation * )
+void ViewClient3::operationGet( QNetworkOperation * )
 {
     QString cmd = "GET ";
     cmd += url()->encodedPathAndQuery();
@@ -173,7 +173,7 @@ void ViewClient::operationGet( QNetworkOperation * )
     commandSocket->writeBlock( cmd.latin1(), cmd.length() );
 }
 
-bool ViewClient::checkConnection( QNetworkOperation * )
+bool ViewClient3::checkConnection( QNetworkOperation * )
 {
     if ( !commandSocket->peerName().isEmpty() && connectionReady )
 	return TRUE;
@@ -191,7 +191,7 @@ bool ViewClient::checkConnection( QNetworkOperation * )
     return FALSE;
 }
 
-void ViewClient::close()
+void ViewClient3::close()
 {
     if ( !commandSocket->peerName().isEmpty() ) {
  	commandSocket->writeBlock( "quit\r\n", strlen( "quit\r\n" ) );
@@ -199,12 +199,12 @@ void ViewClient::close()
     }
 }
 
-int ViewClient::supportedOperations() const
+int ViewClient3::supportedOperations() const
 {
     return OpGet | OpPut;
 }
 
-void ViewClient::hostFound()
+void ViewClient3::hostFound()
 {
     if ( url() )
 	emit connectionStateChanged( ConHostFound, tr( "Host %1 found" ).arg( url()->host() ) );
@@ -212,7 +212,7 @@ void ViewClient::hostFound()
 	emit connectionStateChanged( ConHostFound, tr( "Host found" ) );
 }
 
-void ViewClient::connected()
+void ViewClient3::connected()
 {
     if ( url() )
 	emit connectionStateChanged( ConConnected, tr( "Connected to host %1" ).arg( url()->host() ) );
@@ -221,7 +221,7 @@ void ViewClient::connected()
     connectionReady = TRUE;
 }
 
-void ViewClient::closed()
+void ViewClient3::closed()
 {
     if ( url() )
 	emit connectionStateChanged( ConClosed, tr( "Connection to %1 closed" ).arg( url()->host() ) );
@@ -233,7 +233,7 @@ void ViewClient::closed()
 
 }
 
-void ViewClient::readyRead()
+void ViewClient3::readyRead()
 {
     QByteArray s;
     s.resize( commandSocket->bytesAvailable() );
@@ -241,7 +241,7 @@ void ViewClient::readyRead()
     emit data( s, operationInProgress() );
 }
 
-void ViewClient::slotError( int err )
+void ViewClient3::slotError( int err )
 {
   QNetworkOperation* op = operationInProgress();
   if(op){
@@ -259,7 +259,7 @@ void ViewClient::slotError( int err )
 
 
 
-ViewClientObj::ViewClientObj(bool dialog,
+ViewClientObj3::ViewClientObj3(bool dialog,
 							 QObject * parent, 
 							 const char * name):
   QObject(parent,name),
@@ -269,7 +269,7 @@ ViewClientObj::ViewClientObj(bool dialog,
   res(0){
   qInitNetworkProtocols();
   QNetworkProtocol::registerNetworkProtocol( "pgl", 
-	new QNetworkProtocolFactory<ViewClient> );
+	new QNetworkProtocolFactory<ViewClient3> );
 
   __urloperator = new QUrlOperator;
   connect( __urloperator, SIGNAL( finished( QNetworkOperation * ) ),
@@ -297,13 +297,13 @@ ViewClientObj::ViewClientObj(bool dialog,
 
 }
 
-ViewClientObj::~ViewClientObj(){
+ViewClientObj3::~ViewClientObj3(){
   delete __urloperator;
   delete __dialog;
 }
 
 bool 
-ViewClientObj::request(int argc, char ** argv)
+ViewClientObj3::request(int argc, char ** argv)
 {
   switch(argc){
   case 1:
@@ -327,7 +327,7 @@ ViewClientObj::request(int argc, char ** argv)
 }
 
 bool 
-ViewClientObj::requestReadFile(const QString& file){
+ViewClientObj3::requestReadFile(const QString& file){
    *__urloperator = QUrlOperator("pgl://localhost/READ "+QFileInfo(file).absFilePath());
    if(__urloperator->get()==NULL){
 	 return false;
@@ -337,7 +337,7 @@ ViewClientObj::requestReadFile(const QString& file){
 }
 
 bool 
-ViewClientObj::requestAddFile(const QString& file){
+ViewClientObj3::requestAddFile(const QString& file){
    *__urloperator = QUrlOperator("pgl://localhost/ADD "+QFileInfo(file).absFilePath()); 
   if(__urloperator->get()==NULL)return false;
   if(exec()==1)return true;
@@ -345,7 +345,7 @@ ViewClientObj::requestAddFile(const QString& file){
 }
 
 bool 
-ViewClientObj::requestShow(){
+ViewClientObj3::requestShow(){
    *__urloperator = QUrlOperator("pgl://localhost/SHOW"); 
   if(__urloperator->get()==NULL)return false;
   if(exec()==1)return true;
@@ -353,7 +353,7 @@ ViewClientObj::requestShow(){
 }
 
 void 
-ViewClientObj::finished( QNetworkOperation * op )
+ViewClientObj3::finished( QNetworkOperation * op )
 {
   if(op){
 	QString details = op->protocolDetail();
@@ -375,7 +375,7 @@ ViewClientObj::finished( QNetworkOperation * op )
 }
 
 void
-ViewClientObj::downloaded( const QByteArray & ba,
+ViewClientObj3::downloaded( const QByteArray & ba,
 								  QNetworkOperation * op ){
   QString msg(ba);
   if(msg != "Accepted\r\n"){
@@ -386,31 +386,31 @@ ViewClientObj::downloaded( const QByteArray & ba,
 }
 
 void 
-ViewClientObj::connectionStatus ( int i, const QString & msg )
+ViewClientObj3::connectionStatus ( int i, const QString & msg )
 {
   status(msg);
 }
 
 void
-ViewClientObj::transferProgress ( int i, int j, QNetworkOperation * ) 
+ViewClientObj3::transferProgress ( int i, int j, QNetworkOperation * ) 
 {
   status(tr("Transfert progress")+" :"+QString::number((100*i)/j)+"%.");
 }
 
 void 
-ViewClientObj::status( const QString& t){
+ViewClientObj3::status( const QString& t){
   if(__label)__label->append(t);
 }
 
 int 
-ViewClientObj::exec(){
+ViewClientObj3::exec(){
   QTimer::singleShot(3000,this,SLOT(timeout()));
   if(__dialog) __dialog->exec();
   else qApp->exec();
   return res;
 }
 
-void ViewClientObj::accept(){
+void ViewClientObj3::accept(){
   if(!__dialog){
 	qApp->quit();
 	if(res==0)res = 1;
@@ -432,7 +432,7 @@ void ViewClientObj::accept(){
   }
 }
 
-void ViewClientObj::reject(){
+void ViewClientObj3::reject(){
   if(!__dialog){
 	qApp->quit();
 	res = -1;
@@ -445,7 +445,7 @@ void ViewClientObj::reject(){
   }
 }
 
-void ViewClientObj::timeout(){
+void ViewClientObj3::timeout(){
   if(res==0){
 	status("Timeout!");
 	reject();

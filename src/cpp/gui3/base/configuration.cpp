@@ -41,13 +41,13 @@
 
 /*--------------------------------------------------------------*/
 
-QStringList ViewerSettings::args;
-QString ViewerSettings::appliname;
-QString ViewerSettings::applidir;
+QStringList ViewerSettings3::args;
+QString ViewerSettings3::appliname;
+QString ViewerSettings3::applidir;
 
 /*--------------------------------------------------------------*/
 
-void ViewerSettings::setArgs(int argc, char** argv)
+void ViewerSettings3::setArgs(int argc, char** argv)
 {
 	for(int i = 0; i < argc; ++i)
 		args.append(QString(argv[i]));
@@ -74,12 +74,12 @@ void ViewerSettings::setArgs(int argc, char** argv)
 #endif
 }
 
-void ViewerSettings::setAppliName(const QString& _appliname)
+void ViewerSettings3::setAppliName(const QString& _appliname)
 {
 	appliname = _appliname;
 }
 
-ViewerSettings::ViewerSettings():
+ViewerSettings3::ViewerSettings3():
 #if QT_VERSION >= 0x040000
 	QSettings(QSettings::IniFormat,QSettings::UserScope,"OpenAlea",appliname) {}
 #else

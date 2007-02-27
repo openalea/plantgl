@@ -68,16 +68,16 @@ false
 ;
 
 
-static ViewerAppli * VIEWER_APPLI = NULL;
+static ViewerAppli3 * VIEWER_APPLI = NULL;
 
-class EndViewer {
+class EndViewer3 {
 public :
-  EndViewer(){ }
-  ~EndViewer(){ if(VIEWER_APPLI) { VIEWER_APPLI->exit(); delete VIEWER_APPLI; VIEWER_APPLI = NULL;} }
+  EndViewer3(){ }
+  ~EndViewer3(){ if(VIEWER_APPLI) { VIEWER_APPLI->exit(); delete VIEWER_APPLI; VIEWER_APPLI = NULL;} }
 };
 
 /// To destroy and stop all at end of process.
-static EndViewer ENDV;
+static EndViewer3 ENDV;
 static bool DestroyedAppli = false;
 
 void initViewerAppli(){
@@ -85,24 +85,24 @@ void initViewerAppli(){
 #ifdef QT_THREAD_SUPPORT
 		if(qApp == NULL && MODE){
 			if(!DestroyedAppli)
-				VIEWER_APPLI = new ViewerThreadedAppli();
+				VIEWER_APPLI = new ViewerThreadedAppli3();
 			else
 				std::cerr << "Cannot create a second valid threaded Viewer Application!" << std::endl;
 		}
 		else
 #endif
-			VIEWER_APPLI = new ViewerSimpleAppli();
+			VIEWER_APPLI = new ViewerSimpleAppli3();
 	}
 }
 
 
 
-ViewerApplication::ViewerApplication(){}
+ViewerApplication3::ViewerApplication3(){}
 
-ViewerApplication::~ViewerApplication(){}
+ViewerApplication3::~ViewerApplication3(){}
 
 bool
-ViewerApplication::isThreadUsed(){
+ViewerApplication3::isThreadUsed(){
 #ifdef QT_THREAD_SUPPORT
     return MODE;
 #else
@@ -111,7 +111,7 @@ ViewerApplication::isThreadUsed(){
 }
 
 bool 
-ViewerApplication::useThread(bool use){
+ViewerApplication3::useThread(bool use){
 #ifdef QT_THREAD_SUPPORT
   if(!use && VIEWER_APPLI )return false;
   MODE = use;
@@ -122,19 +122,19 @@ ViewerApplication::useThread(bool use){
 }
 
 void 
-ViewerApplication::setBashMode(bool m){
-	ViewObjectGL::BASHMODE = m;
+ViewerApplication3::setBashMode(bool m){
+	ViewObjectGL3::BASHMODE = m;
 }
 
 
 const vector<uint32_t>
-ViewerApplication::getSelection() {
+ViewerApplication3::getSelection() {
   if(VIEWER_APPLI)return VIEWER_APPLI->getSelection();
   else return vector<uint32_t>();
 }
 
 int
-ViewerApplication::question(const std::string& caption,
+ViewerApplication3::question(const std::string& caption,
 					   const std::string& text,
 					   const std::string& but0txt,
 					   const std::string& but1txt,
@@ -145,7 +145,7 @@ ViewerApplication::question(const std::string& caption,
    else return -1;
 }
 
-std::string ViewerApplication::itemSelection(const std::string& caption,
+std::string ViewerApplication3::itemSelection(const std::string& caption,
 					   const std::string& text,
 					   const std::vector<std::string> & values,
 					   bool& ok,
@@ -157,7 +157,7 @@ std::string ViewerApplication::itemSelection(const std::string& caption,
 }
 
 std::string 
-ViewerApplication::getOpenFile(const std::string& caption,
+ViewerApplication3::getOpenFile(const std::string& caption,
 								 const std::string& filter,
 								 const std::string& startPath){
   initViewerAppli();
@@ -167,7 +167,7 @@ ViewerApplication::getOpenFile(const std::string& caption,
 }
 
 std::string 
-ViewerApplication::getSaveFile(const std::string& caption,
+ViewerApplication3::getSaveFile(const std::string& caption,
 								 const std::string& filter,
 								 const std::string& startPath){
   initViewerAppli();
@@ -176,7 +176,7 @@ ViewerApplication::getSaveFile(const std::string& caption,
   else return "";
 }
 
-std::string ViewerApplication::getDirectory(const std::string& caption,
+std::string ViewerApplication3::getDirectory(const std::string& caption,
 						 const std::string& startPath){
   initViewerAppli();
   if(VIEWER_APPLI)
@@ -184,8 +184,8 @@ std::string ViewerApplication::getDirectory(const std::string& caption,
   else return "";
 }
 
-ViewRayBuffer * 
-ViewerApplication::castRays(const TOOLS(Vector3)& pos, 
+ViewRayBuffer3 * 
+ViewerApplication3::castRays(const TOOLS(Vector3)& pos, 
 	                               const TOOLS(Vector3)& dir,
 								   const TOOLS(Vector3)& dx, 
 								   const TOOLS(Vector3)& dy,
@@ -197,8 +197,8 @@ ViewerApplication::castRays(const TOOLS(Vector3)& pos,
   return NULL;
 }
 
-ViewZBuffer * 
-ViewerApplication::grabZBuffer(){
+ViewZBuffer3 * 
+ViewerApplication3::grabZBuffer(){
   
   initViewerAppli();
   if(VIEWER_APPLI)
@@ -208,33 +208,33 @@ ViewerApplication::grabZBuffer(){
 
 
 
-bool ViewerApplication::wait( unsigned long time ){
+bool ViewerApplication3::wait( unsigned long time ){
   initViewerAppli();
   if(VIEWER_APPLI)
 	return VIEWER_APPLI->Wait(time);
   return false;
 }
 
-bool ViewerApplication::running(){
+bool ViewerApplication3::running(){
   if(VIEWER_APPLI) return VIEWER_APPLI->isRunning();
   else return false;
 }
 
 
 bool
-ViewerApplication::stop() {
+ViewerApplication3::stop() {
     if(VIEWER_APPLI) return VIEWER_APPLI->stopSession();
     else return false;
 }
 
 void
-ViewerApplication::start() {
+ViewerApplication3::start() {
   if(!VIEWER_APPLI)initViewerAppli();
   else VIEWER_APPLI->startSession();
 }
 
 void
-ViewerApplication::exit() {
+ViewerApplication3::exit() {
     if(VIEWER_APPLI) { 
 		VIEWER_APPLI->exit();  
 		delete VIEWER_APPLI; 
@@ -243,129 +243,129 @@ ViewerApplication::exit() {
 	}
 }
 
-void ViewerApplication::_sendAnEvent(QCustomEvent *e){
+void ViewerApplication3::_sendAnEvent(QCustomEvent *e){
   initViewerAppli();
   if(VIEWER_APPLI)VIEWER_APPLI->sendAnEvent(e);
 }
 
-void ViewerApplication::_setViewerBuilder(ViewerBuilder * builder){
-	ViewerAppli::setBuilder(builder);
+void ViewerApplication3::_setViewerBuilder(ViewerBuilder3 * builder){
+	ViewerAppli3::setBuilder(builder);
 }
 
 void
-ViewerApplication::setSelection(const vector<uint32_t>& sel) {
-  _sendAnEvent(new ViewSelectionSet(sel));
+ViewerApplication3::setSelection(const vector<uint32_t>& sel) {
+  _sendAnEvent(new ViewSelectionSet3(sel));
 }
 
 void 
-ViewerApplication::saveImage( const std::string& filename, 
+ViewerApplication3::saveImage( const std::string& filename, 
 							  const std::string& format,
 							  bool  withAlpha ){
-	_sendAnEvent(new ViewImageSaveEvent(filename.c_str(),format.c_str(),withAlpha));
+	_sendAnEvent(new ViewImageSaveEvent3(filename.c_str(),format.c_str(),withAlpha));
 }
 
 void 
-ViewerApplication::update(){
-  _sendAnEvent(new ViewRefreshEvent());
-}
-
-void
-ViewerApplication::fullScreen(bool b){
-  _sendAnEvent(new ViewFullScreenEvent(b));
+ViewerApplication3::update(){
+  _sendAnEvent(new ViewRefreshEvent3());
 }
 
 void
-ViewerApplication::glFrameOnly(bool b){
-  _sendAnEvent(new ViewGLFrameOnlyEvent(b));
+ViewerApplication3::fullScreen(bool b){
+  _sendAnEvent(new ViewFullScreenEvent3(b));
 }
 
-void ViewerApplication::animation(bool anim){
-  _sendAnEvent(new ViewAnimationEvent(anim));
+void
+ViewerApplication3::glFrameOnly(bool b){
+  _sendAnEvent(new ViewGLFrameOnlyEvent3(b));
 }
 
-void ViewerApplication::setBgColor(int red, int green, int blue){
-  _sendAnEvent(new ViewBgColorEvent(QColor(red,green,blue)));
+void ViewerApplication3::animation(bool anim){
+  _sendAnEvent(new ViewAnimationEvent3(anim));
 }
 
-void 
-ViewerApplication::setCamera(const Vector3& pos){
-  _sendAnEvent(new ViewCameraEvent(pos,Vector3::ORIGIN,0,0,0));
-}
-void 
-ViewerApplication::setCamera(const Vector3& pos, real_t azimuth, real_t elevation){
-  _sendAnEvent(new ViewCameraEvent(pos,Vector3::ORIGIN,azimuth,elevation,1));
-}
-void 
-ViewerApplication::lookAt(const Vector3& pos, const Vector3& target){
-  _sendAnEvent(new ViewCameraEvent(pos,target,0,0,2));
-}
-void 
-ViewerApplication::lookAt(const Vector3& target){
-  _sendAnEvent(new ViewCameraEvent(Vector3::ORIGIN,target,0,0,3));
+void ViewerApplication3::setBgColor(int red, int green, int blue){
+  _sendAnEvent(new ViewBgColorEvent3(QColor(red,green,blue)));
 }
 
 void 
-ViewerApplication::setXYGrid(bool b){
-  _sendAnEvent(new ViewGridEvent(b,false,false,false,0,0,1));
+ViewerApplication3::setCamera(const Vector3& pos){
+  _sendAnEvent(new ViewCameraEvent3(pos,Vector3::ORIGIN,0,0,0));
 }
 void 
-ViewerApplication::setXZGrid(bool b){
-  _sendAnEvent(new ViewGridEvent(false,b,false,false,0,0,2));
+ViewerApplication3::setCamera(const Vector3& pos, real_t azimuth, real_t elevation){
+  _sendAnEvent(new ViewCameraEvent3(pos,Vector3::ORIGIN,azimuth,elevation,1));
 }
-
 void 
-ViewerApplication::setYZGrid(bool b){
-  _sendAnEvent(new ViewGridEvent(false,false,b,false,0,0,4));
+ViewerApplication3::lookAt(const Vector3& pos, const Vector3& target){
+  _sendAnEvent(new ViewCameraEvent3(pos,target,0,0,2));
 }
-
 void 
-ViewerApplication::setAxis(bool b){
-  _sendAnEvent(new ViewGridEvent(false,false,false,b,0,0,8));
+ViewerApplication3::lookAt(const Vector3& target){
+  _sendAnEvent(new ViewCameraEvent3(Vector3::ORIGIN,target,0,0,3));
 }
 
 void 
-ViewerApplication::setGridSize(int val){
-  _sendAnEvent(new ViewGridEvent(false,false,false,false,val,0,16));
+ViewerApplication3::setXYGrid(bool b){
+  _sendAnEvent(new ViewGridEvent3(b,false,false,false,0,0,1));
 }
 void 
-ViewerApplication::setGridUnit(int val){
-  _sendAnEvent(new ViewGridEvent(false,false,false,false,0,val,32));
-}
-void 
-ViewerApplication::setGrid(bool a, bool b, bool c, bool d) {
-  _sendAnEvent(new ViewGridEvent(a,b,c,b,0,0,15));
+ViewerApplication3::setXZGrid(bool b){
+  _sendAnEvent(new ViewGridEvent3(false,b,false,false,0,0,2));
 }
 
 void 
-ViewerApplication::glFrameSize(int w,int h){
-  _sendAnEvent(new ViewPosEvent(0,0,w,h,0));
-}
-void 
-ViewerApplication::resize(int w,int h){
-  _sendAnEvent(new ViewPosEvent(0,0,w,h,1));
-}
-void 
-ViewerApplication::move(int x,int y){
-  _sendAnEvent(new ViewPosEvent(x,y,0,0,2));
+ViewerApplication3::setYZGrid(bool b){
+  _sendAnEvent(new ViewGridEvent3(false,false,b,false,0,0,4));
 }
 
 void 
-ViewerApplication::setGeometry(int x,int y,int w, int h){
-  _sendAnEvent(new ViewPosEvent(x,y,w,h,3));
+ViewerApplication3::setAxis(bool b){
+  _sendAnEvent(new ViewGridEvent3(false,false,false,b,0,0,8));
+}
+
+void 
+ViewerApplication3::setGridSize(int val){
+  _sendAnEvent(new ViewGridEvent3(false,false,false,false,val,0,16));
+}
+void 
+ViewerApplication3::setGridUnit(int val){
+  _sendAnEvent(new ViewGridEvent3(false,false,false,false,0,val,32));
+}
+void 
+ViewerApplication3::setGrid(bool a, bool b, bool c, bool d) {
+  _sendAnEvent(new ViewGridEvent3(a,b,c,b,0,0,15));
+}
+
+void 
+ViewerApplication3::glFrameSize(int w,int h){
+  _sendAnEvent(new ViewPosEvent3(0,0,w,h,0));
+}
+void 
+ViewerApplication3::resize(int w,int h){
+  _sendAnEvent(new ViewPosEvent3(0,0,w,h,1));
+}
+void 
+ViewerApplication3::move(int x,int y){
+  _sendAnEvent(new ViewPosEvent3(x,y,0,0,2));
+}
+
+void 
+ViewerApplication3::setGeometry(int x,int y,int w, int h){
+  _sendAnEvent(new ViewPosEvent3(x,y,w,h,3));
 }
 
 double 
-ViewerApplication::getProjectionSize(int* nbpixel, double* pixelwidth){
+ViewerApplication3::getProjectionSize(int* nbpixel, double* pixelwidth){
   double res = 0;
-  _sendAnEvent(new ViewProjSizeEvent(&res,nbpixel,pixelwidth) );
+  _sendAnEvent(new ViewProjSizeEvent3(&res,nbpixel,pixelwidth) );
   return res;
 }
 
 
-void ViewerApplication::setPerspectiveCamera(){
-  _sendAnEvent(new ViewCameraProjEvent(true));
+void ViewerApplication3::setPerspectiveCamera(){
+  _sendAnEvent(new ViewCameraProjEvent3(true));
 }
 
-void ViewerApplication::setOrthographicCamera(){
-  _sendAnEvent(new ViewCameraProjEvent(false));
+void ViewerApplication3::setOrthographicCamera(){
+  _sendAnEvent(new ViewCameraProjEvent3(false));
 }

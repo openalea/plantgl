@@ -68,46 +68,55 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const char * name):
-  QPopupMenu(parent,name)
+  QMenu(parent)
 {
-  QPixmap home(ViewerIcon::getPixmap(ViewerIcon::icon_home));
-  QPixmap read(ViewerIcon::getPixmap(ViewerIcon::icon_fileopen));
-  QPixmap save(ViewerIcon::getPixmap(ViewerIcon::icon_filefloppy));
-  QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::icon_perspective));
-  QPixmap ortho(ViewerIcon::getPixmap(ViewerIcon::icon_orthographic));
-  QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::icon_linked));
-  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::icon_eyef));
+  if(name)setObjectName(name);
 
-  insertItem(home,tr("&Home"),       camera,SLOT(home()),CTRL+Key_H);
-  insertItem(tr("&Front View (YZ)"),camera,SLOT(YZView()));
-  insertItem(tr("&Right View (XZ)"),camera,SLOT(XZView()));
-  insertItem(tr("&Top View (XY)"),camera,SLOT(XYView()));
-  insertSeparator();
-  __coordMenu = new QPopupMenu(this);
-  idGEOMcoord = __coordMenu->insertItem(tr("GEOM System"),   camera,SLOT(setGEOMCoordSys()));
-  idGLcoord   = __coordMenu->insertItem(tr("GL System"),      camera,SLOT(setGLCoordSys()));
-  idchgcoord  = __coordMenu->insertItem(tr("&Change"),       camera,SLOT(changeCoordSys()));
-  __coordMenu->setCheckable( TRUE );
+  QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
+  QPixmap read(ViewerIcon::getPixmap(ViewerIcon::fileopen));
+  QPixmap save(ViewerIcon::getPixmap(ViewerIcon::filefloppy));
+  QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::perspective));
+  QPixmap ortho(ViewerIcon::getPixmap(ViewerIcon::orthographic));
+  QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::linked));
+  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
+
+  addAction(home,tr("&Home"),      camera,SLOT(home()),Qt::CTRL+Qt::Key_H);
+  addAction(tr("&Front View (YZ)"),camera,SLOT(YZView()));
+  addAction(tr("&Right View (XZ)"),camera,SLOT(XZView()));
+  addAction(tr("&Top View (XY)"),  camera,SLOT(XYView()));
+  addSeparator();
+  QMenu * __coordMenu = new QMenu(this);
+  idGEOMcoord = __coordMenu->addAction(tr("GEOM System"),   camera,SLOT(setGEOMCoordSys()));
+  idGLcoord   = __coordMenu->addAction(tr("GL System"),     camera,SLOT(setGLCoordSys()));
+  __coordMenu->addSeparator();
+  __coordMenu->addAction(tr("&Change"),       camera,SLOT(changeCoordSys()));
+  idGEOMcoord->setCheckable(true);
+  idGLcoord->setCheckable(true);
   setCoordSys(camera->getCoordSys());
-  insertItem(tr("Coordinates System"),__coordMenu);
-  insertSeparator();
-  __projectionMenu = new QPopupMenu(this);
-  idPerspective = __projectionMenu->insertItem(persp,tr("&Perspective"),  camera,SLOT(setPerspectiveMode()));
-  idOrtho       = __projectionMenu->insertItem(ortho,tr("Ort&hographic"), camera,SLOT(setOrthographicMode()));
-  idchgProj     = __projectionMenu->insertItem(tr("&Change"),       camera,SLOT(changeCameraMode()),CTRL+Key_D);
-  __projectionMenu->setCheckable( TRUE );
-  insertItem(tr("Projection"),__projectionMenu);
+  __coordMenu->setTitle(tr("Coordinates System"));
+  addMenu(__coordMenu);
+  addSeparator();
+  QMenu * __projectionMenu = new QMenu(this);
+  idPerspective = __projectionMenu->addAction(persp,tr("&Perspective"),  camera,SLOT(setPerspectiveMode()));
+  idOrtho       = __projectionMenu->addAction(ortho,tr("Ort&hographic"), camera,SLOT(setOrthographicMode()));
+  __projectionMenu->addSeparator();
+  __projectionMenu->addAction(tr("&Change"),       camera,SLOT(changeCameraMode()),Qt::CTRL+Qt::Key_D);
+  idPerspective->setCheckable(true);
+  idOrtho->setCheckable(true);
+  __projectionMenu->setTitle(tr("Projection"));
+  addMenu(__projectionMenu);
+
   setProjectionMode(camera->getProjectionMode());
   QObject::connect(camera,SIGNAL(projectionChanged(bool)),this,SLOT(setProjectionMode(bool)));
   QObject::connect(camera,SIGNAL(coordSysChanged(int)),this,SLOT(setCoordSys(int)));
-  insertSeparator();
-  insertItem(save,tr("&Save"),       camera,SLOT(save()));
-  insertItem(read,tr("&Read"),       camera,SLOT(read()));
-  insertSeparator();
-  idLock = insertItem(linked,tr("&Auto Fit to Window"),       camera,SLOT(lockDim()));
-  if(camera)setItemChecked(idLock, !camera->isDimLock());
-  QObject::connect(camera,SIGNAL(lockDimChanged(bool)),this,SLOT(setLock(bool)));
-  insertItem(eyef,tr("&Fit to Window"),       camera,SLOT(reDim()));
+  addSeparator();
+  addAction(save,tr("&Save"),       camera,SLOT(save()));
+  addAction(read,tr("&Read"),       camera,SLOT(read()));
+  addSeparator();
+  QAction * idLock = addAction(linked,tr("&Auto Fit to Window"),       camera,SLOT(lockDim()));
+  if(camera)idLock->setChecked(camera->isDimLock());
+  QObject::connect(camera,SIGNAL(lockDimChanged(bool)),idLock,SLOT(setChecked(bool)));
+  addAction(eyef,tr("&Fit to Window"),       camera,SLOT(reDim()));
 }
 
 ViewCameraMenu::~ViewCameraMenu()
@@ -117,25 +126,17 @@ ViewCameraMenu::~ViewCameraMenu()
 void
 ViewCameraMenu::setProjectionMode(bool b)
 {
-  __projectionMenu->setItemChecked(idPerspective,b );
-  __projectionMenu->setItemChecked(idOrtho,!b);
-  __projectionMenu->setItemChecked(idchgProj,false);
+  idPerspective->setChecked(b);
+  idOrtho->setChecked(!b);
 }
 
 void
 ViewCameraMenu::setCoordSys(int b)
 {
-  __coordMenu->setItemChecked(idGEOMcoord,(b ==1));
-  __coordMenu->setItemChecked(idGLcoord,(b ==0));
-  __coordMenu->setItemChecked(idchgcoord,false);
+	idGEOMcoord->setChecked(b ==1);
+	idGLcoord->setChecked(b ==0);
 }
 
-void 
-ViewCameraMenu::setLock(bool b)
-{
-  if(isItemChecked(idLock) == b)
-  setItemChecked(idLock,!b );
-}
 
 /* ----------------------------------------------------------------------- */
 
@@ -404,20 +405,20 @@ ViewCameraGL::setStepMove(const QString& step)
 }
 
 void
-ViewCameraGL::setStepMove(int step)
+ViewCameraGL::setStepMove(double step)
 {
   __stepMove = step;
 }
 
 void
-ViewCameraGL::setDistanceX(const double& dist)
+ViewCameraGL::setDistanceX(double dist)
 {
   __translation.y() = dist;
   emit valueChanged();
 }
 
 void
-ViewCameraGL::setDistanceY(const double& dist)
+ViewCameraGL::setDistanceY(double dist)
 {
   __translation.z() = dist;
   emit valueChanged();
@@ -612,11 +613,11 @@ ViewCameraGL::beginSelectGL(const QRect& region)
   glGetIntegerv(GL_VIEWPORT, viewport);
   gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y,
 #ifdef _MSC_VER
-				(GLdouble)max(region.width(),2),
-				(GLdouble)max(region.height(),2),viewport);
+  (GLdouble)max(region.width(),2),
+  (GLdouble)max(region.height(),2),viewport);
 #else
-				(GLdouble)std::max(region.width(),2),
-				(GLdouble)std::max(region.height(),2),viewport);
+  (GLdouble)std::max(region.width(),2),
+  (GLdouble)std::max(region.height(),2),viewport);
 #endif
   glPushProjectionMatrix();
 
@@ -854,8 +855,8 @@ Vector3 ViewCameraGL::getPosition(){
 
 void 
 ViewCameraGL::setPosition(const QString& position){
-  QStringList l = QStringList::split(',',position);
-  setPosition(Vector3(l[0].toFloat(),l[1].toFloat(),l[2].toFloat()),
+	QStringList l = position.split(',');
+    setPosition(Vector3(l[0].toFloat(),l[1].toFloat(),l[2].toFloat()),
 	l[3].toFloat(),l[4].toFloat());
 }
 
@@ -1012,7 +1013,7 @@ Matrix4 ViewCameraGL::getMatrix(){
 }
 
 
-QPopupMenu *
+QMenu *
 ViewCameraGL::createToolsMenu(QWidget * parent)
 {
   ViewCameraMenu * __CameraMenu = new ViewCameraMenu(this,parent);
@@ -1023,7 +1024,11 @@ ViewCameraGL::createToolsMenu(QWidget * parent)
 void
 ViewCameraGL::addProperties(QTabWidget * tab)
 {
-  CameraProperties * tab2 = new CameraProperties( tab, "Camera Prop" );
+  QWidget * mytabWidget = new QWidget(tab);
+  Ui::CameraProperties * tab2 = new Ui::CameraProperties( );
+  tab2->setupUi(mytabWidget);
+  tab->addTab( mytabWidget, tr( "&Camera" ) );
+
   tab2->ZoomEdit->setText(QString::number(__translation.x()));
   tab2->ZoomEdit->setReadOnly(true);
   tab2->XTranslationEdit->setText(QString::number(__translation.y()));
@@ -1056,11 +1061,10 @@ ViewCameraGL::addProperties(QTabWidget * tab)
   QObject::connect(this,SIGNAL(viewAngleChanged(const QString&)),
                    tab2->DefaultAngleEdit,SLOT(setText(const QString&)));
   tab2->CurrentAngleEdit->setReadOnly(true);
-  tab2->ProjectionBox->setCurrentItem(int(__projectionmode));
+  tab2->ProjectionBox->setCurrentIndex(int(__projectionmode));
   QObject::connect(tab2->ProjectionBox,SIGNAL(activated(int)),this,SLOT(setProjectionMode(int)));
-  tab2->CoordinatesBox->setCurrentItem(int(__geomsys));
+  tab2->CoordinatesBox->setCurrentIndex(int(__geomsys));
   QObject::connect(tab2->CoordinatesBox,SIGNAL(activated(int)),this,SLOT(setCoordSys(int)));
-  tab->insertTab( tab2, tr( "&Camera" ) );
 
   /*Matrix4 m;
   glGeomGetMatrix(GL_PROJECTION_MATRIX,m);
@@ -1161,53 +1165,41 @@ ViewCameraGL::addProperties(QTabWidget * tab)
 void
 ViewCameraGL::fillToolBar(QToolBar * toolBar)
 {
-  QPixmap home(ViewerIcon::getPixmap(ViewerIcon::icon_home));
-  QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::icon_perspective));
-  QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::icon_eye));
-  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::icon_eyef));
+  QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
+  QPixmap persp(ViewerIcon::getPixmap(ViewerIcon::perspective));
+  QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::eye));
+  QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
   drawArrow(&eye,2);
-  drawArrow(eye.mask(),2);
-  QToolButton * bt = new QToolButton(home,
-                         tr("Home Position"),
-                         tr("Home Position"),
-                         this, SLOT(home()), toolBar);
-  QWhatsThis::add(bt,tr("<b>Home Position</b><br><br>"
+  drawArrow(&eye.mask(),2);
+  QAction * bt = toolBar->addAction(home,tr("Home Position"),this, SLOT(home()));
+  bt->setWhatsThis(tr("<b>Home Position</b><br><br>"
 	"Set the view to the Initial Position.<br>"
 	"You can also use Menu <br><b>Tools > Camera > Home</b><br>"));
 
-  QToolButton * bt2 = new QToolButton(eye,
-                         tr("Camera Position"),
-                         tr("Camera Position"),
-                         this,NULL,toolBar);
-  QPopupMenu * selctmenu = new QPopupMenu(bt2);
-  selctmenu->insertItem(tr("Front View (YZ)"),this,SLOT(YZView()));
-  selctmenu->insertItem(tr("Right View (XZ)"),this,SLOT(XZView()));
-  selctmenu->insertItem(tr("Top View (XY)"),this,SLOT(XYView()));
-  bt2->setPopup(selctmenu);
-  bt2->setPopupDelay(0);
+  bt = toolBar->addAction(eye,tr("Camera Position"));
+  QMenu * selctmenu = new QMenu(toolBar);
+  selctmenu->addAction(tr("Front View (YZ)"),this,SLOT(YZView()));
+  selctmenu->addAction(tr("Right View (XZ)"),this,SLOT(XZView()));
+  selctmenu->addAction(tr("Top View (XY)"),this,SLOT(XYView()));
+  bt->setMenu(selctmenu);
+  // bt2->setPopupDelay(0);
 
-  QToolButton * bt3 = new QToolButton(eyef,
-                         tr("Fit to Window"),
-                         tr("Fit to Window"),
-                         this, SLOT(reDim()), toolBar);
-  QWhatsThis::add(bt3,tr("<b>Fit to Window</b><br><br>"
+  bt = toolBar->addAction(eyef,tr("Fit to Window"),this, SLOT(reDim()));
+  bt->setWhatsThis(tr("<b>Fit to Window</b><br><br>"
 	"Set the view to fit the scene.<br>"
 	"You can also use Menu <br><b>Tools > Camera > Fit to Window</b><br>"));
-   QToolButton * b = new QToolButton(persp,
-                         tr("Perspective Camera"),
-                         tr("Perspective Camera"),
-                         this, SLOT(changeCameraMode()), toolBar);
-  QWhatsThis::add(b,tr("<b>Projection</b><br><br>"
+
+  bt = toolBar->addAction(persp,tr("Perspective Camera"),
+                         this, SLOT(changeCameraMode()));
+  bt->setWhatsThis(tr("<b>Projection</b><br><br>"
 	"Camera can be <b>Perspective</b> or <b>Orthographic</b>.<br><br>"
 	"Setting this button <i>On</i> make the camera in Perspective mode, "
 	"<i>Off</i> in Orthographic mode<br><br>"
 	"You can also use Menu <br><b>Tools > Camera > Projection</b><br>"
 	));
-   b->setToggleButton(true) ;
-   b->setOn(__projectionmode);
-   QObject::connect(this,SIGNAL(projectionChanged(bool)),
-					 b,SLOT(setOn(bool)));
-
+   bt->setCheckable(true) ;
+   bt->setChecked(__projectionmode);
+   QObject::connect(this,SIGNAL(projectionChanged(bool)),bt,SLOT(setChecked(bool)));
    toolBar->addSeparator();
 }
 
@@ -1222,7 +1214,7 @@ void ViewCameraGL::save() const
 void
 ViewCameraGL::read()
 {
-  QString filename = QFileDialog::getOpenFileName("","",__frame);
+  QString filename = QFileDialog::getOpenFileName(__frame,"Read Camera","");
   if(!filename.isEmpty()){
     read(filename);
   }
@@ -1233,7 +1225,7 @@ ViewCameraGL::read()
 void ViewCameraGL::save(const QString& filename) const
 {
     QFile file(filename);
-    if(file.open( IO_WriteOnly )) {
+	if(file.open( QIODevice::WriteOnly )) {
         file.flush();
 		QTextStream stream ( &file );
         stream << __azimuth << " " << __elevation;
@@ -1255,7 +1247,7 @@ void ViewCameraGL::save(const QString& filename) const
 void ViewCameraGL::read(const QString& filename)
 {
     QFile file(filename);
-    if(file.exists() && file.open( IO_ReadOnly )) {
+    if(file.exists() && file.open( QIODevice::ReadOnly )) {
     QTextStream stream ( &file );
 
         stream >> __azimuth >> __elevation;

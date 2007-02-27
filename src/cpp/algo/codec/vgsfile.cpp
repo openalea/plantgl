@@ -265,7 +265,7 @@ VegeStarFile::parseHeader(std::istream& stream)
 		else if(token == "Jmax")attlist.push_back(Jmax);
 		else {
 			attlist.push_back(Error);
-			*SceneObject::errorStream << "Unrecognized header token : '" << token << '\'' << endl;
+			*SceneObject::errorStream << "Unrecognized header token : '" << token.toAscii().constData() << '\'' << endl;
 		}
 	}
 	return true;

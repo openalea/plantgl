@@ -42,18 +42,18 @@
 ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppli(), __viewer(0),__appli(0), __ownappli(false) { launch(); }
 
 ViewerSimpleAppli::~ViewerSimpleAppli(){
-	if(isRunning()) exit();
+	if(running()) exit();
 	if(__appli && __ownappli)delete __appli;
 	if(__viewer) delete __viewer;
 }
 
 void 
 ViewerSimpleAppli::startSession()
-{ if(!isRunning()) __viewer->show(); }
+{ if(!running()) __viewer->show(); }
 
 bool 
 ViewerSimpleAppli::stopSession()
-{ if(isRunning()) { __viewer->hide(); return true; } else return false; }
+{ if(running()) { __viewer->hide(); return true; } else return false; }
 
 bool 
 ViewerSimpleAppli::exit()
@@ -63,16 +63,16 @@ ViewerSimpleAppli::exit()
 }
 
 void 
-ViewerSimpleAppli::sendAnEvent(QCustomEvent *e)
-{ QApplication::sendEvent(__viewer,e); delete e; }
+ViewerSimpleAppli::sendAnEvent(QEvent *e)
+{ startSession(); QApplication::sendEvent(__viewer,e); delete e; }
 
 void 
-ViewerSimpleAppli::postAnEvent(QCustomEvent *e)
-{ QApplication::postEvent(__viewer,e); }
+ViewerSimpleAppli::postAnEvent(QEvent *e)
+{ startSession(); QApplication::postEvent(__viewer,e); }
 
 bool 
-ViewerSimpleAppli::isRunning() 
-{ return __viewer != NULL && __viewer->isShown(); }
+ViewerSimpleAppli::running() 
+{ return __viewer != NULL && __viewer->isVisible(); }
 
 bool 
 ViewerSimpleAppli::Wait ( unsigned long time  )
@@ -94,8 +94,6 @@ ViewerSimpleAppli::launch(){
 		__appli = qApp;
 		__ownappli = false;
 		__viewer = build();
-		if(__appli->mainWidget() == NULL)
-			__appli->setMainWidget(__viewer);
 		__viewer->show();
 	}
 	else {
@@ -103,7 +101,6 @@ ViewerSimpleAppli::launch(){
 		__appli = new QApplication(argc,NULL);
 		__ownappli = true;
 		__viewer = build();
-        __appli->setMainWidget(__viewer);
 		__viewer->show();
 		__appli->exec();
 	}

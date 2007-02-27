@@ -64,10 +64,10 @@ class ViewerThreadedAppli : public ViewerAppli, public QThread {
 	virtual void startSession();
 	virtual bool stopSession() ;
 	virtual bool exit() ;
-	virtual void sendAnEvent(QCustomEvent *e) ;
-	virtual void postAnEvent(QCustomEvent *e) ;
+	virtual void sendAnEvent(QEvent *e) ;
+	virtual void postAnEvent(QEvent *e) ;
 
-    virtual bool isRunning() ;
+    virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
 
 	virtual const std::vector<uint32_t> getSelection();
@@ -93,6 +93,7 @@ private :
 	QWaitCondition contcond;
 
 	/// Wait Condition for end viewer session.
+	QMutex         sessionmutex;
 	QWaitCondition session;
 
 	/// The application.

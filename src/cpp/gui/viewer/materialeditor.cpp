@@ -52,15 +52,18 @@
 #include <qwhatsthis.h>
 #include <qfont.h>
 #include <qcolordialog.h>
+#include <qevent.h>
 
 PGL_USING_NAMESPACE
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
-ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f ):
- QGLWidget(parent,name,shareWidget,f),
+ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget * shareWidget, Qt::WindowFlags f ):
+ QGLWidget(parent,shareWidget,f),
  __sphereobject(NULL),
  __r(__d){
+	if(name) setObjectName(name);
+
   __range=1000;
   __Near=-3000;
   __Far=2000;
@@ -210,8 +213,9 @@ void ViewColorGL::paintAppearance(){
 /*----------------------------------------------------------------------------*/
 
 ColorButton::ColorButton ( QWidget * parent, const char * name ):
-  QPushButton(parent,name),
+  QPushButton(parent),
   __color(0,0,0){
+  if(name)setObjectName(name);
   setColor(__color);
 }
 
@@ -223,7 +227,7 @@ ColorButton::setColor(const QColor& c){
   __color = c;
   QPixmap col(60,40);
   col.fill(c);
-  setPixmap(col);
+  setIcon(QIcon(col));
 }
 
 const QColor& ColorButton::getColor() const{
@@ -250,9 +254,10 @@ void ColorEditButton::selectColor(){
 /*----------------------------------------------------------------------------*/
 
 ColorEditSlider::ColorEditSlider ( QWidget * parent, const char * name  ):
-  QSlider(parent,name){
+  QSlider(parent){
+  if(name)setObjectName(name);
   QObject::connect(this,SIGNAL(valueChanged(int)),this,SLOT(valueChangedEvent(int)));
-  setMaxValue( 255 );
+  setRange( 0, 255 );
 }
 
 ColorEditSlider::~ColorEditSlider(){
@@ -289,109 +294,108 @@ void ColorEditSlider::valueChangedEvent(int i){
  *  name 'name' and widget flags set to 'f'
  */
 
-MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, WFlags fl )
+MaterialEditor::MaterialEditor( QWidget* parent,  const char* name, Qt::WindowFlags fl )
     : GeomModuleEditor( parent,  fl )
 {
-    if ( !name )
-        setName( "MaterialEditor" );
+    if ( !name ) setObjectName( "MaterialEditor" );
     resize( 550, 300 );
     setMinimumSize(550,300);
     QFont f( font() );
     f.setFamily( "adobe-courier" );
     f.setPointSize( 10 );
     setFont( f );
-    setCaption( tr( "Material" ) );
+    setWindowTitle( tr( "Material" ) );
 
-    LabelAmbient = new QLabel( this, "LabelAmbient" );
+    LabelAmbient = new QLabel( this );
     LabelAmbient->setGeometry( QRect( 220, 20, 61, 20 ) );
     QFont LabelAmbient_font(  LabelAmbient->font() );
     LabelAmbient->setFont( LabelAmbient_font );
     LabelAmbient->setText( tr( "Ambient" ) );
 
-    LabelDiffuse = new QLabel( this, "LabelDiffuse" );
+    LabelDiffuse = new QLabel( this );
     LabelDiffuse->setGeometry( QRect( 220, 70, 61, 20 ) );
     QFont LabelDiffuse_font(  LabelDiffuse->font() );
     LabelDiffuse->setFont( LabelDiffuse_font );
     LabelDiffuse->setText( tr( "Diffuse" ) );
 
-    LabelSpecular = new QLabel( this, "LabelSpecular" );
+    LabelSpecular = new QLabel( this );
     LabelSpecular->setGeometry( QRect( 220, 120, 61, 20 ) );
     QFont LabelSpecular_font(  LabelSpecular->font() );
     LabelSpecular->setFont( LabelSpecular_font );
     LabelSpecular->setText( tr( "Specular" ) );
 
-    LabelEmission = new QLabel( this, "LabelEmission" );
+    LabelEmission = new QLabel( this);
     LabelEmission->setGeometry( QRect( 220, 170, 61, 20 ) );
     QFont LabelEmission_font(  LabelEmission->font() );
     LabelEmission->setFont( LabelEmission_font );
     LabelEmission->setText( tr( "Emission" ) );
 
-    LabelShininess = new QLabel( this, "LabelShininess" );
+    LabelShininess = new QLabel( this );
     LabelShininess->setGeometry( QRect( 220, 220, 70, 20 ) );
     QFont LabelShininess_font(  LabelShininess->font() );
     LabelShininess->setFont( LabelShininess_font );
     LabelShininess->setText( tr( "Shininess" ) );
 
-    LabelTransparency = new QLabel( this, "LabelTransparency" );
+    LabelTransparency = new QLabel( this );
     LabelTransparency->setGeometry( QRect( 220, 260, 90, 20 ) );
     QFont LabelTransparency_font(  LabelTransparency->font() );
     LabelTransparency->setFont( LabelTransparency_font );
     LabelTransparency->setText( tr( "Transparency" ) );
 
-    LabelName = new QLabel( this, "LabelName" );
+    LabelName = new QLabel( this );
     LabelName->setGeometry( QRect( 30, 230, 70, 20 ) );
     LabelName->setText( tr( "Name" ) );
 
-    EditName = new QLineEdit( this, "EditName" );
+    EditName = new QLineEdit( this );
     EditName->setGeometry( QRect( 30, 260, 127, 22 ) );
 
-    ButtonAmbient = new ColorEditButton( this, "ButtonAmbient" );
+    ButtonAmbient = new ColorEditButton( this );
     ButtonAmbient->setGeometry( QRect( 480, 10, 60, 40 ) );
 
-    ButtonDiffuse = new ColorButton( this, "ButtonDiffuse" );
+    ButtonDiffuse = new ColorButton( this );
     ButtonDiffuse->setGeometry( QRect( 480, 60, 60, 40 ) );
     ButtonDiffuse->setFlat(true);
 
-    ButtonSpecular = new ColorEditButton( this, "ButtonSpecular" );
+    ButtonSpecular = new ColorEditButton( this);
     ButtonSpecular->setGeometry( QRect( 480, 110, 60, 40 ) );
 
-    ButtonEmission = new ColorEditButton( this, "ButtonEmission" );
+    ButtonEmission = new ColorEditButton( this );
     ButtonEmission->setGeometry( QRect( 480, 160, 60, 40 ) );
 
-    SliderAmbient = new ColorEditSlider( this, "SliderAmbient" );
+    SliderAmbient = new ColorEditSlider( this );
     SliderAmbient->setGeometry( QRect( 310, 20, 150, 20 ) );
-    SliderAmbient->setOrientation( QSlider::Horizontal );
-    SliderAmbient->setTickmarks( QSlider::Left );
+    SliderAmbient->setOrientation( Qt::Horizontal );
+    SliderAmbient->setTickPosition( QSlider::TicksLeft );
 
-    SliderDiffuse = new QSlider( this, "SliderDiffuse" );
+    SliderDiffuse = new QSlider( this );
     SliderDiffuse->setGeometry( QRect( 310, 70, 150, 20 ) );
-    SliderDiffuse->setMaxValue( 255 );
-    SliderDiffuse->setOrientation( QSlider::Horizontal );
-    SliderDiffuse->setTickmarks( QSlider::Left );
+    SliderDiffuse->setRange( 0, 255 );
+    SliderDiffuse->setOrientation( Qt::Horizontal );
+    SliderDiffuse->setTickPosition( QSlider::TicksLeft );
 
-    SliderSpecular = new ColorEditSlider( this, "SliderSpecular" );
+    SliderSpecular = new ColorEditSlider( this );
     SliderSpecular->setGeometry( QRect( 310, 120, 150, 20 ) );
-    SliderSpecular->setOrientation( QSlider::Horizontal );
-    SliderSpecular->setTickmarks( QSlider::Left );
+    SliderSpecular->setOrientation( Qt::Horizontal );
+    SliderSpecular->setTickPosition( QSlider::TicksLeft );
 
-    SliderEmission = new ColorEditSlider( this, "SliderEmission" );
+    SliderEmission = new ColorEditSlider( this );
     SliderEmission->setGeometry( QRect( 310, 170, 150, 20 ) );
-    SliderEmission->setOrientation( QSlider::Horizontal );
-    SliderEmission->setTickmarks( QSlider::Left );
+    SliderEmission->setOrientation( Qt::Horizontal );
+    SliderEmission->setTickPosition( QSlider::TicksLeft );
 
-    SliderShininess = new QSlider( this, "SliderShininess" );
+    SliderShininess = new QSlider( this);
     SliderShininess->setGeometry( QRect( 310, 220, 150, 20 ) );
-    SliderShininess->setMaxValue( 100 );
-    SliderShininess->setOrientation( QSlider::Horizontal );
-    SliderShininess->setTickmarks( QSlider::Left );
+    SliderShininess->setRange( 0, 100 );
+    SliderShininess->setOrientation( Qt::Horizontal );
+    SliderShininess->setTickPosition( QSlider::TicksLeft );
 
-    SliderTransparency = new QSlider( this, "SliderTransparency" );
+    SliderTransparency = new QSlider( this );
     SliderTransparency->setGeometry( QRect( 310, 260, 150, 20 ) );
-    SliderTransparency->setMaxValue( 100 );
-    SliderTransparency->setOrientation( QSlider::Horizontal );
-    SliderTransparency->setTickmarks( QSlider::Left );
+    SliderTransparency->setRange( 0, 100 );
+    SliderTransparency->setOrientation( Qt::Horizontal );
+    SliderTransparency->setTickPosition( QSlider::TicksLeft );
 
-    FrameGL = new ViewColorGL( this, "FrameGL" );
+    FrameGL = new ViewColorGL( this );
     FrameGL->setGeometry( QRect( 5, 20, 200, 200 ) );
 
     QObject::connect (EditName,SIGNAL(textChanged(const QString&)),
@@ -560,7 +564,7 @@ void MaterialEditor::setTransparency( int v ){
 void MaterialEditor::setGeomName(const QString& name ){
   if(__material){
     if(name.isEmpty()) __material->setName("");
-    else __material->setName(name.data());
+    else __material->setName(name.toStdString());
   }
 }
 
