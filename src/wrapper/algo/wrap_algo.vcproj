@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,..\..\cpp,C:\openalea\include,C:\Python24\include"
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\cpp,C:\openalea\include,C:\Python24\include"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(QTDIR)\include,..\..\cpp,C:\openalea\include,C:\Python24\include"
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\cpp,C:\openalea\include,C:\Python24\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"

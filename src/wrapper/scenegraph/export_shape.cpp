@@ -83,7 +83,7 @@ void export_Shape()
   class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape", init<>())
     .def( init< const RefCountPtr<Geometry> &, 
 	          optional< const RefCountPtr<Appearance> &,
-	                     long unsigned int > >("Shape( geometry, material, id )") )
+	                     long unsigned int > >("Shape( geometry, appearance, id )") )
     .add_property("appearance", gs_getAppearance, gs_setAppearance)
     .add_property("geometry", gs_getGeometry, gs_setGeometry)
     .def_readwrite("id", &Shape::id)

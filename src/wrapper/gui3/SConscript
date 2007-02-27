@@ -1,0 +1,15 @@
+# -*-python-*-
+
+Import( "env" )
+
+py_dir = '../../plantgl/gui3'
+
+# Build wrappers as shared libraries
+lib_env=env.Copy()
+
+sources= lib_env.ALEAGlob( '*.cpp' )
+target= "_pglgui3"
+
+lib_env.AppendUnique(LIBS= ['pglmath','pglgui','pglsg','pgltool'])
+lib_env.ALEAWrapper( py_dir, target, sources )
+

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="wrapGui"
-	ProjectGUID="{4E64F6F6-E87D-4C1E-8270-C918F690776F}"
-	RootNamespace="wrapGui"
+	Name="wrapGui3"
+	ProjectGUID="{1EA77C8E-DE06-4E45-9B2E-736CE9FF75A9}"
+	RootNamespace="wrapGui3"
 	>
 	<Platforms>
 		<Platform
@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;C:\openalea\include;C:\Python24\include"
+				AdditionalIncludeDirectories="&quot;$(QT3DIR)\include&quot;;&quot;$(QT3DIR)\include\Qt&quot;;..\..\cpp;C:\openalea\include;C:\Python24\include"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -57,8 +57,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl_d/gui/_pglgui_d.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
+				OutputFile="../../plantgl_d/gui3/_pglgui3_d.dll"
+				AdditionalLibraryDirectories="&quot;$(QT3DIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;C:\openalea\include;C:\Python24\include"
+				AdditionalIncludeDirectories="&quot;$(QT3DIR)\include&quot;;&quot;$(QT3DIR)\include\Qt&quot;;..\..\cpp;C:\openalea\include;C:\Python24\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -128,8 +128,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl/gui/_pglgui.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
+				OutputFile="../../plantgl/gui3/_pglgui3.dll"
+				AdditionalLibraryDirectories="&quot;$(QT3DIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				ImportLibrary="../../../lib/$(TargetName).lib"
 			/>
 			<Tool

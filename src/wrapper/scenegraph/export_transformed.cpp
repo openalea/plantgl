@@ -86,7 +86,7 @@ SETGET(Scaled,Scale,Vector3)
 void export_Scaled()
 {
   class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
-    ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(vector3,geometry)") )
+    ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
 	.DEC_SETGET_WD(scale,Scaled,Scale,Vector3)
     ;
 
@@ -100,7 +100,7 @@ void export_Translated()
 {
   class_< Translated, TranslatedPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Translated", init< const Vector3&, const GeometryPtr& >
-     ("Translated(vector3,geometry)") )
+     ("Translated(translation,geometry)",args("translation","geometry")) )
     .DEC_SETGET_WD(translation,Translated,Translation,Vector3)
     ;
 
