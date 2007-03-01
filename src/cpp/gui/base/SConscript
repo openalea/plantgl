@@ -1,6 +1,5 @@
 # -*-python-*-
 Import( "env" )
-Import( "platform" )
 
 includes= env.ALEAGlob('*.h')
 

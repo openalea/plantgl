@@ -1411,7 +1411,7 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 
 	glb = glIsEnabled(GL_NORMALIZE);
 	if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
-	glform.QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
+	QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
 
 	delete res;
 }

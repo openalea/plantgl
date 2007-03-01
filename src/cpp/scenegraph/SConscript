@@ -3,6 +3,8 @@ Import( "env" )
 
 lib_env= env.Copy()
 
+lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL', 'Qt3Support' ])
+lib_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/scenegraph", includes )
 
@@ -16,15 +18,16 @@ sources= lib_env.ALEAGlob('*.cpp','*')
 sources+= lib_env.ALEAGlob('*.cpp')
 
 # Add defines to export symbols on Windows
-DEFINES= list(lib_env['CPPDEFINES'])
-DEFINES.append('SG_MAKEDLL')
+# DEFINES= list(lib_env['CPPDEFINES'])
+# DEFINES.append('SG_MAKEDLL')
+lib_env.AppendUnique( CPPDEFINES = [ 'SG_MAKEDLL' ] )
 
 # Link with the following libraries
-LIBRARIES= list(lib_env['LIBS'])
-LIBRARIES.extend(['pgltool','pglmath'])
+#LIBRARIES= list(lib_env['LIBS'])
+#LIBRARIES.extend(['pgltool','pglmath'])
+lib_env.AppendUnique( LIBS = [ 'pgltool', 'pglmath', 'QtCore4', 'QtGui4', 'QtOpenGL4', 'Qt3Support4' ] )
 
 lib_env.ALEALibrary( "pglsg",
-                     sources, 
-                     CPPDEFINES = DEFINES, 
-                     LIBS = LIBRARIES )
+                     sources 
+                     )
 

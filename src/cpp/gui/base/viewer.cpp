@@ -187,7 +187,7 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
 
         if (optind != argc) {
             if(!stdinput){
-                __FileMenu->openFile(QFileInfo(argv[optind++]).absFilePath());
+                __FileMenu->openFile(QFileInfo(argv[optind++]).absoluteFilePath());
             }
             else {
                 cerr << "Could not read " << argv[optind++] << "." << endl

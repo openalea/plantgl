@@ -67,14 +67,18 @@
 #endif
 
 #ifdef __GNUC__
+#ifndef __MINGW32__
 #include <sys/utsname.h>
 #include <unistd.h>
+#endif
 #endif
 #include <qgl.h>
 #include <GL/gl.h>
 
-#ifdef __GNUC__
+#ifdef  __GNUC__
+#ifndef __MINGW32__
 #include <GL/glx.h>
+#endif
 #endif
 
 #ifdef _WIN32
@@ -84,13 +88,13 @@
 
 #include <algo/opengl/util_glut.h>
 
-#ifdef __GNUC__
-
+#if defined(__GNUC__) 
+#ifndef __MINGW32__
 #include <stdio.h>
 extern "C" {
 #include <readline/readline.h>
 }
-
+#endif
 #endif
 
 /* ----------------------------------------------------------------------- */
@@ -484,8 +488,8 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
         QString sys_release;
         int num_proc = 0;
 
-#ifdef __GNUC__
-
+#if defined(__GNUC__)
+#ifndef __MINGW32__
     struct utsname buf;
     uname(&buf);
     proc = QString(buf.machine);
@@ -493,7 +497,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     sys_version = QString(buf.version);
     sys_release = QString(buf.release);
     sys_name = QString(buf.sysname);
-
+#endif
 #endif
 
 #ifdef _WIN32
@@ -1092,8 +1096,9 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     PROC f = wglGetProcAddress("wglGetExtensionsStringEXT");
     if(f != NULL){
-        const char*(APIENTRY * wglGetExtensionsString )(void);
-        *(GLvoid**)&wglGetExtensionsString = f;
+		typedef const char*(APIENTRY * glExtFunc)(void);
+        glExtFunc wglGetExtensionsString ;
+        wglGetExtensionsString = (glExtFunc)f;
         if(wglGetExtensionsString != NULL){
 
             const char * msg = (*wglGetExtensionsString)();
@@ -1118,6 +1123,8 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 /* ----------------------------------------------------------------------- */
 
 #ifdef __GNUC__
+#ifndef __MINGW32__
+
   Display * dpy = this->x11Display();
 
   if(dpy != NULL){
@@ -1360,7 +1367,8 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
   LastItem = item10;
 
-/* ----------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+#endif
 #endif
 
   AttView->setGeometry( QRect( 80, 70, 460, 370 ) );

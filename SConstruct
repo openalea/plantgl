@@ -16,8 +16,8 @@ SConsignFile()
 options = Options( 'options.py', ARGUMENTS )
 
 wrapper_conf= ALEAConfig(name,['boost_python', 'alea'])
-cpp_conf= ALEAConfig(name, ['alea','qt', 'flex', 'bison','opengl','readline','qhull'])
-opt_conf= ALEAConfig(name, ['boost_python', 'alea', 'qt', 'flex', 'bison','opengl','readline','qhull'])
+cpp_conf= ALEAConfig(name, ['alea','qt4', 'flex', 'bison','opengl','readline','qhull'])
+opt_conf= ALEAConfig(name, ['boost_python', 'alea', 'qt4', 'flex', 'bison','opengl','readline','qhull'])
 
 # Set all the common options for the package
 opt_conf.UpdateOptions( options )
@@ -36,6 +36,7 @@ cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
 cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
 wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
+
 
 # Build stage
 SConscript( pj(prefix,"src/cpp/SConscript"),
