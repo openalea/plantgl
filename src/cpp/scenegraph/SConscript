@@ -25,7 +25,7 @@ lib_env.AppendUnique( CPPDEFINES = [ 'SG_MAKEDLL' ] )
 # Link with the following libraries
 #LIBRARIES= list(lib_env['LIBS'])
 #LIBRARIES.extend(['pgltool','pglmath'])
-lib_env.AppendUnique( LIBS = [ 'pgltool', 'pglmath', 'QtCore4', 'QtGui4', 'QtOpenGL4', 'Qt3Support4' ] )
+lib_env.AppendUnique( LIBS = [ 'pgltool', 'pglmath'] )
 
 lib_env.ALEALibrary( "pglsg",
                      sources 

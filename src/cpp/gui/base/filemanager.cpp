@@ -791,14 +791,14 @@ QString
 ViewFileManager::getInitFilename(){
   QString filename=FILE_CONFIG;
 #ifndef _WIN32
-  QDir _dir(QDir::homeDirPath()+QString("/.kde/share/config/"));
+  QDir _dir(QDir::homePath()+QString("/.kde/share/config/"));
   filename+="rc";
 
   if(!_dir.exists()){ 
-     _dir=QDir::homeDirPath();
+     _dir=QDir::homePath();
      filename="."+filename;
   }
-  filename=_dir.absPath()+"/"+filename;
+  filename=_dir.absolutePath()+"/"+filename;
 #else
   filename+=".ini";
   filename=QString(TOOLS(getHome().c_str()))+"\\"+filename;

@@ -53,7 +53,7 @@
 #include <qthread.h>
 #include <qwaitcondition.h>
 
-// class QApplication;
+class QApplication;
 class Viewer;
 
 class ViewerThreadedAppli : public ViewerAppli, public QThread {

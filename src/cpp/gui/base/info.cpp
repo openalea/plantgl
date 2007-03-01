@@ -78,6 +78,7 @@
 #ifdef  __GNUC__
 #ifndef __MINGW32__
 #include <GL/glx.h>
+#include <QtGui/QX11Info>
 #endif
 #endif
 
@@ -1125,7 +1126,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 #ifdef __GNUC__
 #ifndef __MINGW32__
 
-  Display * dpy = this->x11Display();
+    Display * dpy = QX11Info::display();
 
   if(dpy != NULL){
     Q3ListViewItem * item8 = new Q3ListViewItem( RootItem, LastItem );
@@ -1265,10 +1266,10 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
                 item = new Q3ListViewItem( itemscreen );
                 item->setText( 0, tr( "Resolution") ) ;
-                item->setText( 1, tr( QString::number(DisplayWidth(dpy,sn)) +" x "  +
+                item->setText( 1, QString::number(DisplayWidth(dpy,sn)) +" x "  +
                                                           QString::number(DisplayHeight(dpy,sn))+ " pixels ("+
                                                           QString::number(DisplayWidthMM(dpy,sn)) +" x "  +
-                                                          QString::number(DisplayHeightMM(dpy,sn))+ " mm)") );
+                                                          QString::number(DisplayHeightMM(dpy,sn))+ " mm)" );
                 item = new Q3ListViewItem( itemscreen, item );
                 item->setText( 0, tr( "Default Depth" ) );
                 item->setText( 1, QString::number(DefaultDepth(dpy,sn)) );
@@ -1284,10 +1285,10 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                         else msg = "Always";
                         item = new Q3ListViewItem( itemscreen, item );
                         item->setText( 0, tr( "Backing Store" ) );
-                        item->setText( 1, tr( msg) ) ;
+                        item->setText( 1,  msg ) ;
                         item = new Q3ListViewItem( itemscreen, item );
                         item->setText( 0, tr( "Save Unders" ) );
-                        item->setText( 1, tr( (DoesSaveUnders(_screen)? "Supported" : "Not Supported") ) );
+                        item->setText( 1,  (DoesSaveUnders(_screen)? "Supported" : "Not Supported") );
                 }
     }
 
@@ -1328,25 +1329,25 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     item = new Q3ListViewItem( item9, item93 );
     item->setText( 0, tr( "Max Request Size" ) );
-    item->setText( 1, tr( QString::number(XMaxRequestSize(dpy))+" bytes of 4" ) );
+    item->setText( 1,  QString::number(XMaxRequestSize(dpy))+" bytes of 4"  );
     item = new Q3ListViewItem( item9, item );
     item->setText( 0, tr( "Image Byte Order" ) );
-    item->setText( 1, tr( (ImageByteOrder(dpy) == 0 ?  "Least-Significant Bit First ("
-                : "Most-Significant Bit First (")+QString::number(ImageByteOrder(dpy))+")" ) );
+    item->setText( 1, (ImageByteOrder(dpy) == 0 ?  "Least-Significant Bit First ("
+                : "Most-Significant Bit First (")+QString::number(ImageByteOrder(dpy))+")"  );
 
     Q3ListViewItem * item94 = new Q3ListViewItem( item9, item );
     item94->setText( 0, tr( "Bitmap" ) );
 
     item = new Q3ListViewItem( item94 );
     item->setText( 0, tr( "Unit" ) );
-    item->setText( 1, tr( QString::number(BitmapUnit(dpy)) ) );
+    item->setText( 1,  QString::number(BitmapUnit(dpy)) );
     item = new Q3ListViewItem( item94, item);
     item->setText( 0, tr( "Bit Order" ) );
-    item->setText( 1, tr( (BitmapBitOrder(dpy) == 0 ?  "Least-Significant Bit First ("
-                             : "Most-Significant Bit First (")+QString::number(ImageByteOrder(dpy))+")" ) );
+    item->setText( 1, (BitmapBitOrder(dpy) == 0 ?  "Least-Significant Bit First ("
+                             : "Most-Significant Bit First (")+QString::number(ImageByteOrder(dpy))+")" );
     item = new Q3ListViewItem( item94 , item);
     item->setText( 0, tr( "Pad" ) );
-    item->setText( 1, tr( QString::number(BitmapPad(dpy)) ) );
+    item->setText( 1, QString::number(BitmapPad(dpy)) );
 
 
     LastItem = item9;
@@ -1363,7 +1364,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
   item = new Q3ListViewItem( item10 );
   item->setText( 0, tr( "Version" ) );
-  item->setText( 1, tr( QString(rl_library_version) ) );
+  item->setText( 1,  QString(rl_library_version)  );
 
   LastItem = item10;
 
