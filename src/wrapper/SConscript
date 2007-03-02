@@ -1,7 +1,13 @@
 # -*-python-*-
 
 Import( "env" )
+import os.path.join as pj
 
-dirs= env.ALEAGlob( 'SConscript', '*' )
-SConscript( dirs, exports= { 'env' : env } )
+# Call other SConscript files in sub directories
+#dirs= env.ALEAGlob( 'SConscript' , dir='*')
+subdirs = ['tool','math','scenegraph','algo','gui']
+subdirs = [ pj(i,'SConscript') for i in subdirs]
+#print(subdirs)
+
+SConscript( subdirs, exports= { 'env' : env } )
 

@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "../util/export_refcountptr.h"
+#include "../util/import_list.h"
 
 using namespace boost::python;
 
@@ -19,21 +20,7 @@ DEF_POINTEE( PointSet )
 
 PointSetPtr gps_fromlist( boost::python::object l ) 
 { 
-  Point3Array * array = new Point3Array();
-  try { 
-      object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-      while( 1 )
-        {
-          object obj = iter_obj.attr( "next" )();
-          Vector3 val = boost::python::extract<Vector3>( obj );
-          array->pushBack( val );
-        }
-    }
-  catch( error_already_set )
-    {
-      PyErr_Clear();
-    }
-  return new PointSet(array);
+  return new PointSet(extract_pgllist<Point3Array>(l)());
 }
 
 Vector3 gps_getitem( PointSet* p, size_t pos )
@@ -90,21 +77,7 @@ DEF_POINTEE( PointSet2D )
 
 PointSet2DPtr gps2d_fromlist( boost::python::object l ) 
 { 
-  Point2Array * array = new Point2Array();
-  try { 
-      object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-      while( 1 )
-        {
-          object obj = iter_obj.attr( "next" )();
-          Vector2 val = boost::python::extract<Vector2>( obj );
-          array->pushBack( val );
-        }
-    }
-  catch( error_already_set )
-    {
-      PyErr_Clear();
-    }
-  return new PointSet2D(array);
+  return new PointSet2D(extract_pgllist<Point2Array>(l)());
 }
 
 Vector2 gps2d_getitem( PointSet2D* p, size_t pos )

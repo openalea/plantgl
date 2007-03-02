@@ -9,6 +9,7 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
+#include "../util/import_list.h"
 #include "../util/exception.h"
 
 using namespace boost::python;
@@ -20,18 +21,7 @@ DEF_POINTEE( Polyline )
 
 PolylinePtr gpl_fromlist( boost::python::object l ) 
 { 
-  Point3Array * array = new Point3Array();
-  object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-  while( 1 )
-  {
-	    object obj;
-		try { 
-          obj = iter_obj.attr( "next" )();
-		} catch( error_already_set ) { PyErr_Clear(); break; }
-        Vector3 val = boost::python::extract<Vector3>( obj );
-        array->pushBack( val );
-  }
-  return PolylinePtr(new Polyline(array));
+  return PolylinePtr(new Polyline(extract_pgllist<Point3Array>(l)()));
 }
 
 Vector3 gpl_getitem( Polyline* p, size_t pos )
@@ -93,19 +83,7 @@ DEF_POINTEE( Polyline2D )
 
 Polyline2DPtr gpl2_fromlist( boost::python::object l ) 
 { 
-  Point2Array * array = new Point2Array();
-  object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-  while( 1 )
-  {
-	   object obj;
-		try { 
-          obj = iter_obj.attr( "next" )();
-		}
-		catch( error_already_set ) { PyErr_Clear(); break; }
-        Vector2 val = boost::python::extract<Vector2>( obj );
-        array->pushBack( val );
-  }
-  return Polyline2DPtr(new Polyline2D(array));
+  return Polyline2DPtr(new Polyline2D(extract_pgllist<Point2Array>(l)()));
 }
 
 Vector2 gpl2_getitem( Polyline2D* p, size_t pos )

@@ -44,6 +44,7 @@
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
 #include "../util/exception.h"
+#include "../util/import_list.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -55,18 +56,7 @@ DEF_POINTEE(Group)
 
 GroupPtr gg_fromlist( boost::python::object l ) 
 { 
-  GeometryArray * array = new GeometryArray();
-      object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-      while( 1 )
-        {
-		 object obj; 
-		 try { 
-          obj = iter_obj.attr( "next" )();
-		 } catch( error_already_set )  { PyErr_Clear(); break; }
-         GeometryPtr val = boost::python::extract<GeometryPtr>( obj );
-         array->pushBack( val );
-        }
-  return new Group(array);
+  return new Group(extract_pgllist<GeometryArray>(l)());
 }
 
 GeometryPtr gg_getitem( Group * array, size_t i)

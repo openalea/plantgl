@@ -1,4 +1,6 @@
 // Array Macro
+#include "../util/import_list.h"
+
 #define EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
 ARRAY##Ptr PREFIX##_fromlist( boost::python::object l ) \
 { \
@@ -7,20 +9,7 @@ ARRAY##Ptr PREFIX##_fromlist( boost::python::object l ) \
     {\
     return new ARRAY( e_int() );\
     }\
-  ARRAY##Ptr array = ARRAY##Ptr(new ARRAY());\
-  object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );\
-  while( 1 )\
-    {\
-    object obj; \
-    try \
-      { \
-      obj = iter_obj.attr( "next" )();\
-      }\
-    catch( error_already_set ){ PyErr_Clear(); break; }\
-    T val = boost::python::extract<T>( obj );\
-    array->pushBack( val );\
-    }\
-  return array;\
+  return ARRAY##Ptr(extract_pgllist<ARRAY>(l)()); \
 }\
 
 #define EXPORT_FUNCTION2( PREFIX, T, ARRAY) \

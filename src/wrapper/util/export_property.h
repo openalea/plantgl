@@ -7,11 +7,6 @@
  *
  *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *
  *  ----------------------------------------------------------------------------
  *
  *                      GNU General Public Licence

@@ -14,19 +14,7 @@ PGL_USING_NAMESPACE
 
 Index * ind_fromlist( boost::python::object l ) 
 { 
-  Index * array = new Index();
-  object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-      while( 1 )
-       {
-		object obj; 
-		try { 
-          obj = iter_obj.attr( "next" )();
-		}
-		catch( error_already_set ){ PyErr_Clear(); break; }
-        uint32_t val = boost::python::extract<uint32_t>( obj );
-        array->pushBack( val );
-       }
-  return array;
+  return extract_pgllist<Index>(l)();
 }
 
 EXPORT_FUNCTION2( ind, uint32_t, Index );

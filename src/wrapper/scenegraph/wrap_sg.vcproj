@@ -318,6 +318,10 @@
 				RelativePath="..\util\export_refcountptr.h"
 				>
 			</File>
+			<File
+				RelativePath="..\util\import_list.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\export_scenegraph.h"
