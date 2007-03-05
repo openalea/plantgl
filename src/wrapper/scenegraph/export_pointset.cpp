@@ -9,7 +9,7 @@
 #include <sstream>
 
 #include "../util/export_refcountptr.h"
-#include "../util/import_list.h"
+#include "../util/extract_list.h"
 
 using namespace boost::python;
 

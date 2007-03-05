@@ -195,12 +195,11 @@ Swung::Swung( const Curve2DArrayPtr& profileList,
                                 uint32_t stride ) :
 /////////////////////////////////////////////////////////////////////////////
   SOR(slices),
+  __profiles(0),
   __ccw(ccw),
   __degree(degree),
   __stride(stride)
 {
-  __profiles= ProfileInterpolationPtr(0);
-
   ProfileInterpolation::Builder _builder;
 
   _builder.ProfileList = const_cast<Curve2DArrayPtr *>(&profileList);

@@ -1,11 +1,11 @@
 # -*-python-*-
 Import( "env" )
-import os.path.join as pj
+import os 
+pj = os.path.join
 
 # 1. Select and install the headers
 
 includes= env.ALEAGlob('*.h')
-
 env.ALEAIncludes( "plantgl", includes )
 
 # 2. Call other SConscript files in sub directories

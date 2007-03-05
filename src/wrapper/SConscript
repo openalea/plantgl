@@ -1,13 +1,21 @@
 # -*-python-*-
 
 Import( "env" )
-import os.path.join as pj
+import os 
+pj = os.path.join
 
-# Call other SConscript files in sub directories
+# 1. Select and install the headers
+
+includes= env.ALEAGlob('*.h',dir='util')
+env.ALEAIncludes( pj('plantgl','wrapper'), includes )
+
+# 2. Call other SConscript files in sub directories
 #dirs= env.ALEAGlob( 'SConscript' , dir='*')
 subdirs = ['tool','math','scenegraph','algo','gui']
 subdirs = [ pj(i,'SConscript') for i in subdirs]
 #print(subdirs)
 
 SConscript( subdirs, exports= { 'env' : env } )
+
+
 

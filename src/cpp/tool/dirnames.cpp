@@ -153,11 +153,17 @@ string cat_dir_file(const string & filename, const string & name) {
 }
 
 string get_suffix(const string & filename){
+#ifdef PGL_DEBUG
+	size_t pos = filename.find_last_of('.');
+	if (pos == std::string::npos) return string("");
+	else return std::string(filename.begin()+filename.find_last_of('.')+1,filename.end());
+#else
 	QFileInfo fi(filename.c_str());
 #if QT_VERSION >= 0x040000
 	return QString2StdString(fi.suffix()); 
 #else
 	return QString2StdString(fi.extension()); 
+#endif
 #endif
 }
 

@@ -112,9 +112,10 @@ SceneFactory::read(const std::string& fname)
     };
 	std::string cwd = get_cwd();
 	for(CodecList::reverse_iterator it = __codecs.rbegin(); it !=__codecs.rend(); ++it){
-			if ((*it)->__mode & SceneCodec::Read){
-				if((*it)->test(fname,SceneCodec::Read)){
-					ScenePtr sc = (*it)->read(fname);
+			SceneCodecPtr codec = *it;
+			if (codec->__mode & SceneCodec::Read){
+				if(codec->test(fname,SceneCodec::Read)){
+					ScenePtr sc = codec->read(fname);
 					if(sc) {
 						if(get_cwd() != cwd) chg_dir(cwd);
 						return sc;

@@ -30,19 +30,23 @@
  */
 
 #include <boost/python.hpp>
+#include <tool/rcobject.h>
 #include <vector>
+#include <map>
 
 /* ----------------------------------------------------------------------- */
 
-template<class T,class extractor = boost::python::extract<T::element_type> >
+template<class T, class extractor = boost::python::extract<T::element_type> >
 struct extract_pgllist {
 	typename T result_type;
 
 	extract_pgllist(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
 
-	T * operator()() const {
-		T* array = new T();
+	RCPtr<T> operator()() const {
+		boost::python::extract<RCPtr<T> > direct_extractor(pylist);
+		if (direct_extractor.check()) return direct_extractor().toPtr();
+		RCPtr<T> result (new T());
 		object iter_obj = boost::python::object( handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
 		{
@@ -50,38 +54,67 @@ struct extract_pgllist {
 			try  {  obj = iter_obj.attr( "next" )(); }
 			catch( error_already_set ){ PyErr_Clear(); break; }
 			T::element_type val = extractor( obj )();
-			array->pushBack( val );
+			result->pushBack( val );
 		}
-		return array;
+		return result;
 	}
-	operator T * () const { return operator()(); }
+	operator RCPtr<T> () const { return operator()(); }
 
 };
 
 /* ----------------------------------------------------------------------- */
 
-template<class T,class extractor = boost::python::extract<T> >
+template<class T, class extractor = boost::python::extract<T>, class result_type = std::vector<T> >
 struct extract_vec {
-
-	typename T result_type;
 
 	extract_vec(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
 
-	std::vector<T> operator()() const {
-		std::vector<T> array;
+	result_type operator()() const {
+		result_type result;
 		object iter_obj = boost::python::object( handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
 		{
 			object obj; 
 			try {  obj = iter_obj.attr( "next" )(); }
 			catch( error_already_set ){ PyErr_Clear(); break; }
-			T val = boost::python::extract<T>( obj );
-			array->push_back( val );
+			T val = extractor( obj );
+			result.push_back( val );
 		}
-		return array;
+		return result;
 	}
-	operator T * () const { return operator()(); }
+	operator result_type () const { return operator()(); }
+};
+
+/* ----------------------------------------------------------------------- */
+
+template<class key,  class value, 
+	     class key_extractor = boost::python::extract<key>, 
+	     class value_extractor = boost::python::extract<value>,
+		 class result_type = std::map<key,value> >
+struct extract_dict {
+
+	typename key key_type;
+	typename value value_type;
+
+	extract_dict(boost::python::dict _pydict):pydict(_pydict) {}
+	boost::python::dict pydict;
+
+	result_type operator()() const {
+		result_type result;
+		object iter_obj =  pydict.iteritems();
+		while( true )
+		{
+			object obj; 
+			try {  obj = iter_obj.attr( "next" )(); }
+			catch( error_already_set ){ PyErr_Clear(); break; }
+			key k = key_extractor( obj[0] );
+			value v = value_extractor( obj[1] );
+			result[k] = v ;
+		}
+		return result;
+	}
+	operator result_type () const { return operator()(); }
 };
 
 /* ----------------------------------------------------------------------- */

@@ -9,7 +9,7 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
-#include "../util/import_list.h"
+#include "../util/extract_list.h"
 #include "../util/exception.h"
 
 using namespace boost::python;
