@@ -36,9 +36,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-template<class T, class extractor = boost::python::extract<T::element_type> >
+template<class T, template < typename > class extractor = boost::python::extract >
 struct extract_pgllist {
-	typename T result_type;
+	typedef typename T::element_type element_type;
+	typedef extractor<element_type> extractor_type;
+	typedef T result_type;
 
 	extract_pgllist(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
@@ -47,13 +49,13 @@ struct extract_pgllist {
 		boost::python::extract<RCPtr<T> > direct_extractor(pylist);
 		if (direct_extractor.check()) return direct_extractor().toPtr();
 		RCPtr<T> result (new T());
-		object iter_obj = boost::python::object( handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
 		{
-			object obj; 
+			boost::python::object obj; 
 			try  {  obj = iter_obj.attr( "next" )(); }
-			catch( error_already_set ){ PyErr_Clear(); break; }
-			T::element_type val = extractor( obj )();
+			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+			element_type val = extractor_type( obj )();
 			result->pushBack( val );
 		}
 		return result;
@@ -64,21 +66,27 @@ struct extract_pgllist {
 
 /* ----------------------------------------------------------------------- */
 
-template<class T, class extractor = boost::python::extract<T>, class result_type = std::vector<T> >
+template<class T, 
+	 template < typename > class extractor_t = boost::python::extract, 
+	 template < typename > class result_t = std::vector >
 struct extract_vec {
+
+	typedef T element_type;
+	typedef extractor_t<T> extractor_type;
+	typedef result_t<T> result_type;
 
 	extract_vec(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
 
 	result_type operator()() const {
 		result_type result;
-		object iter_obj = boost::python::object( handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
 		{
-			object obj; 
+			boost::python::object obj; 
 			try {  obj = iter_obj.attr( "next" )(); }
-			catch( error_already_set ){ PyErr_Clear(); break; }
-			T val = extractor( obj );
+			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+			T val = extractor_type( obj );
 			result.push_back( val );
 		}
 		return result;
@@ -89,27 +97,30 @@ struct extract_vec {
 /* ----------------------------------------------------------------------- */
 
 template<class key,  class value, 
-	     class key_extractor = boost::python::extract<key>, 
-	     class value_extractor = boost::python::extract<value>,
-		 class result_type = std::map<key,value> >
+	     template < typename> class key_extractor_t = boost::python::extract, 
+	     template < typename> class value_extractor_t = boost::python::extract,
+	     template < typename, typename > class result_t = std::map >
 struct extract_dict {
 
-	typename key key_type;
-	typename value value_type;
+	typedef key key_type;
+	typedef value value_type;
+	typedef key_extractor_t<key>  key_extractor_type;
+	typedef value_extractor_t<value>  value_extractor_type;
+	typedef result_t<key,value> result_type;
 
 	extract_dict(boost::python::dict _pydict):pydict(_pydict) {}
 	boost::python::dict pydict;
 
 	result_type operator()() const {
 		result_type result;
-		object iter_obj =  pydict.iteritems();
+		boost::python::object iter_obj =  pydict.iteritems();
 		while( true )
 		{
-			object obj; 
+			boost::python::object obj; 
 			try {  obj = iter_obj.attr( "next" )(); }
-			catch( error_already_set ){ PyErr_Clear(); break; }
-			key k = key_extractor( obj[0] );
-			value v = value_extractor( obj[1] );
+			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+			key k = key_extractor_type( obj[0] );
+			value v = value_extractor_type( obj[1] );
 			result[k] = v ;
 		}
 		return result;
