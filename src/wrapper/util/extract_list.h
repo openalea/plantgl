@@ -68,12 +68,11 @@ struct extract_pgllist {
 
 template<class T, 
 	 template < typename > class extractor_t = boost::python::extract, 
-	 template < typename > class result_t = std::vector >
+	 class result_type = std::vector<T> >
 struct extract_vec {
 
 	typedef T element_type;
 	typedef extractor_t<T> extractor_type;
-	typedef result_t<T> result_type;
 
 	extract_vec(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
@@ -86,7 +85,7 @@ struct extract_vec {
 			boost::python::object obj; 
 			try {  obj = iter_obj.attr( "next" )(); }
 			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-			T val = extractor_type( obj );
+			element_type val = extractor_type( obj );
 			result.push_back( val );
 		}
 		return result;
@@ -97,18 +96,22 @@ struct extract_vec {
 /* ----------------------------------------------------------------------- */
 
 template<class key,  class value, 
-	     template < typename> class key_extractor_t = boost::python::extract, 
-	     template < typename> class value_extractor_t = boost::python::extract,
-	     template < typename, typename > class result_t = std::map >
+	 template < typename> class key_extractor_t = boost::python::extract, 
+	 template < typename> class value_extractor_t = boost::python::extract,
+	 class result_type = std::map<key,value> >
 struct extract_dict {
 
 	typedef key key_type;
 	typedef value value_type;
 	typedef key_extractor_t<key>  key_extractor_type;
 	typedef value_extractor_t<value>  value_extractor_type;
-	typedef result_t<key,value> result_type;
 
-	extract_dict(boost::python::dict _pydict):pydict(_pydict) {}
+        extract_dict(boost::python::object _pydict):
+	  pydict(boost::python::extract<boost::python::dict>(_pydict)) {}
+
+	extract_dict(boost::python::dict _pydict):
+	  pydict(_pydict) {}
+
 	boost::python::dict pydict;
 
 	result_type operator()() const {
@@ -119,8 +122,8 @@ struct extract_dict {
 			boost::python::object obj; 
 			try {  obj = iter_obj.attr( "next" )(); }
 			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-			key k = key_extractor_type( obj[0] );
-			value v = value_extractor_type( obj[1] );
+			key_type k = key_extractor_type( obj[0] );
+			value_type v = value_extractor_type( obj[1] );
 			result[k] = v ;
 		}
 		return result;
