@@ -15,7 +15,7 @@ SConsignFile()
 
 options = Options( 'options.py', ARGUMENTS )
 
-wrapper_conf= ALEAConfig(name,['boost_python', 'alea'])
+wrapper_conf= ALEAConfig(name,['boost_python', 'alea','qt4'])
 cpp_conf= ALEAConfig(name, ['alea','qt4', 'flex', 'bison','opengl','readline','qhull'])
 opt_conf= ALEAConfig(name, ['boost_python', 'alea', 'qt4', 'flex', 'bison','opengl','readline','qhull'])
 
@@ -34,6 +34,8 @@ BuildDir( prefix, '.' )
 
 cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
 cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
+cpp_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
+
 wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
 wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 

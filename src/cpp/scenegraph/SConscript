@@ -3,8 +3,7 @@ Import( "env" )
 
 lib_env= env.Copy()
 
-lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL', 'Qt3Support' ])
-lib_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
+lib_env.EnableQt4Modules( [ 'QtCore' ])
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/scenegraph", includes )
 
