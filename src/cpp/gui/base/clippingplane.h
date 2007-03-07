@@ -49,6 +49,7 @@
 #include <qmenu.h>   
 #include "object.h"
 class ViewDialog;
+class ViewEvent;
 
 /* ----------------------------------------------------------------------- */
 
@@ -87,6 +88,8 @@ public:
 
   /// GL command.
   virtual void paintGL(); 
+
+  virtual void clippingPlaneEvent(ViewEvent * e);
 
 public slots:
 

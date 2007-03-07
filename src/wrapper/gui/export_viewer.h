@@ -40,6 +40,7 @@
 void export_viewer();
 void export_camera();
 void export_grids();
+void export_clippingplanes();
 void export_dialog();
 void export_framegl();
 void export_widgetgeometry();

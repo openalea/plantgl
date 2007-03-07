@@ -42,6 +42,7 @@
 #include <qgl.h>
    
 #include "clippingplane.h"
+#include "event.h"
 #include "interface/clippingplanewidget.h"
 #include "icons.h"
 #include "util_qwidget.h"
@@ -49,9 +50,21 @@
 
 /* ----------------------------------------------------------------------- */
 
+static bool DEFAULT_PLANE_ACTIVATION[6] = { false, false, false, false, false, false };
+static double DEFAULT_A[6] = { -1, 1, 0, 0, 0, 0 };
+static double DEFAULT_B[6] = { 0, 0, -1, 1, 0, 0 };
+static double DEFAULT_C[6] = { 0, 0, 0, 0, -1, 1 };
+static double DEFAULT_D[6] = { 0, 0, 0, 0, 0, 0 };
+
 ViewClippingPlaneGL::ViewClippingPlaneGL(QGLWidget * parent, const char * name):
   ViewObjectGL(parent,name)
 {
+	memcpy(__enable,DEFAULT_PLANE_ACTIVATION,sizeof(__enable));
+	memcpy(__A,DEFAULT_A,sizeof(__A));
+	memcpy(__B,DEFAULT_B,sizeof(__B));
+	memcpy(__C,DEFAULT_C,sizeof(__C));
+	memcpy(__D,DEFAULT_D,sizeof(__D));
+
   __control = new ViewDialog(parent,"Clipping Planes Control");
   __control->setWindowTitle(tr("Clipping Planes Control"));
   Ui::ClippingPlaneWidget * __cpw = new Ui::ClippingPlaneWidget();
@@ -149,6 +162,33 @@ ViewClippingPlaneGL::createToolsMenu(QWidget * parent)
 	PLANEMENUICON(6);
 
   return menu;
+}
+
+void ViewClippingPlaneGL::clippingPlaneEvent(ViewEvent * e)
+{
+	if(e->type() ==ViewEvent::eClippingPlaneActivate)
+	{
+		ViewCPActivateEvent * ev = (ViewCPActivateEvent *)e;
+		int i = ev->cpid;
+		if(i < 1 || i > 6 )return ;
+		if (__enable[i-1] != ev->activation){
+			__enable[i-1] = ev->activation;
+			emit valueChanged();
+		}
+	}
+	else if(e->type() ==ViewEvent::eClippingPlaneSet)
+	{
+		ViewCPSetEvent * ev = (ViewCPSetEvent *)e;
+		int i = ev->cpid;
+		if(i < 1 || i > 6 )return ;
+		__A[i-1] = ev->a;
+		__B[i-1] = ev->b;
+		__C[i-1] = ev->c;
+		__D[i-1] = ev->d;
+		if (__enable[i-1]){
+			emit valueChanged();
+		}
+	}
 }
 
 bool ViewClippingPlaneGL::isPlaneEnable(int i)

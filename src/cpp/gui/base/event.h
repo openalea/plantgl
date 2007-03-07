@@ -61,6 +61,37 @@ TOOLS_USING(Vector3)
 
 class VIEW_API ViewEvent : public QEvent {
 public:
+	enum Type {
+		eFirstEvent = 7777,
+		eSceneChange = eFirstEvent,
+		eFileChange,
+		eImageSave,
+		eRefresh,
+		eGetSelection,
+		eSetSelection,
+		eEnd,
+		eFullScreen,
+		eGLFrameOnly,
+		eQuestion,
+		eItemSelection,
+		eFileSelection,
+		eAnimation,
+		eBgColor,
+		ePos,
+		eGrid,
+		eCameraSet,
+		eCameraGet,
+		eClippingPlaneActivate,
+		eClippingPlaneSet,
+		eRayBuff,
+		eZBuff,
+		eProjSize,
+		eCameraProj,
+		eLastEvent
+	} ;
+
+
+
 
   ViewEvent(int type):
 	QEvent(QEvent::Type(type)),
@@ -76,6 +107,23 @@ public:
    \brief An event to pass to glframe for changing scene.
 
 */
+
+/* ----------------------------------------------------------------------- */
+
+class VIEW_API ViewGeomEvent : public ViewEvent {
+public:
+	enum GeomEventType {
+		eFirstGeomEvent = ViewEvent::eLastEvent,
+		eGetScene = eFirstGeomEvent,
+		eProjList,
+		eRayBuff2,
+		eLastGeomEvent
+	};
+
+	ViewGeomEvent(int type):ViewEvent(type){}
+	virtual ~ViewGeomEvent(){}
+
+};
 
 /* ----------------------------------------------------------------------- */
 
@@ -381,22 +429,71 @@ public :
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCameraEvent : public ViewEvent {
+class ViewCameraSetEvent : public ViewEvent {
 
 public :
 
   /// Constructor.
-  ViewCameraEvent(const Vector3& pos, const Vector3& target,
+  ViewCameraSetEvent(const Vector3& pos, const Vector3& target,
 			      float azimuth, float elevation, int def);
 
   /// Destructor.
-  ~ViewCameraEvent();
+  ~ViewCameraSetEvent();
 
-  Vector3 pos;
+  Vector3 position;
   Vector3 target;
   float azimuth;
   float elevation;
   int def;
+};
+
+/* ----------------------------------------------------------------------- */
+class ViewCameraGetEvent : public ViewEvent {
+
+public :
+
+  /// Constructor.
+  ViewCameraGetEvent(Vector3* pos, Vector3* heading,Vector3* up);
+
+  /// Destructor.
+  ~ViewCameraGetEvent();
+
+  Vector3*  position;
+  Vector3*  heading;
+  Vector3*  up;
+};
+/* ----------------------------------------------------------------------- */
+class ViewCPActivateEvent : public ViewEvent {
+
+public :
+
+  /// Constructor.
+  ViewCPActivateEvent(int cpid, bool activation);
+
+  /// Destructor.
+  ~ViewCPActivateEvent();
+
+  int cpid;
+  bool activation;
+};
+
+/* ----------------------------------------------------------------------- */
+
+class ViewCPSetEvent : public ViewEvent {
+
+public :
+
+  /// Constructor.
+  ViewCPSetEvent(int cpid, double a, double b, double c, double d);
+
+  /// Destructor.
+  ~ViewCPSetEvent();
+
+  int cpid;
+  double a;
+  double b;
+  double c;
+  double d;
 };
 
 /* ----------------------------------------------------------------------- */

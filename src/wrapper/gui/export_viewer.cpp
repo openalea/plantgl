@@ -345,6 +345,11 @@ public :
 	PyViewWidgetGeometry();
 };
 
+class PyViewClippingPlanes {
+public :
+	PyViewClippingPlanes();
+};
+
 void export_viewer()
 {
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
@@ -381,10 +386,23 @@ void export_viewer()
 
   export_camera();
   export_grids();
+  export_clippingplanes();
   export_dialog();
   export_framegl();
   export_widgetgeometry();
 
+}
+
+Vector3 getCameraPosition(){
+	Vector3 pos, h, up;
+	ViewerApplication::getCamera(pos,h,up);
+	return pos;
+}
+
+object getCameraPositionInfo(){
+	Vector3 pos, h, up;
+	ViewerApplication::getCamera(pos,h,up);
+	return make_tuple(pos,h,up);
 }
 
 void export_camera(){
@@ -393,8 +411,9 @@ void export_camera(){
     .staticmethod("setPerspective")
     .def("setOrthographic",&ViewerApplication::setOrthographicCamera,"setOrthographic() : Set Camera in Orthographic mode.")
     .staticmethod("setOrthographic")
-    .def("setPosition",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::setCamera, "setPosition(Vector3 pos)",args("pos"))
-    .staticmethod("setPosition")
+    .def("getPosition",&getCameraPositionInfo)
+    .staticmethod("getPosition")
+	.add_static_property("position",&getCameraPosition,(void(*)(const TOOLS(Vector3)&))&ViewerApplication::setCamera)
     .def("set",(void(*)(const TOOLS(Vector3)&,real_t,real_t))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
     .staticmethod("set")
     .def("lookAt",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 target)",args("target"))
@@ -421,6 +440,16 @@ void export_grids(){
     .staticmethod("set")
 	;
 }
+
+void export_clippingplanes(){
+	class_<PyViewClippingPlanes >("clippingPlanes", no_init )
+    .def("activate",&ViewerApplication::activateCP,"activate(int planeid, bool enable)",args("planeid","enable") )
+    .staticmethod("activate")
+	.def("set",&ViewerApplication::setCP,"set(int planeid, double a, double b, double c, double d)",args("planeid","a","b","c","d") )
+    .staticmethod("set")
+	;
+}
+
 void export_dialog(){
 	class_<PyViewDialog> ("dialog", no_init )
     .def("question",&question0,"question(str caption, str text)",args("caption","text"))

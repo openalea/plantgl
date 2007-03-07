@@ -41,7 +41,7 @@
 /*  ------------------------------------------------------------------------ */
 
 ViewSceneChangeEvent::ViewSceneChangeEvent(int type) :
-  ViewEvent(12345),
+  ViewEvent(eSceneChange),
   scene_type(type)
 {
 }
@@ -72,7 +72,7 @@ ViewSceneChangeEvent::setSceneType(const int& i)
 /*  ------------------------------------------------------------------------ */
 
 ViewFileChangeEvent::ViewFileChangeEvent(const QString& file) :
-  ViewEvent(12348),
+  ViewEvent(eFileChange),
   filename(file)
 {
 }
@@ -86,7 +86,7 @@ ViewFileChangeEvent::~ViewFileChangeEvent()
 /* ----------------------------------------------------------------------- */
 
 ViewImageSaveEvent::ViewImageSaveEvent(const QString& file,const QString& form,bool _withAlpha) :
-  ViewEvent(12350),
+  ViewEvent(eImageSave),
   filename(file),
   format(form),
   withAlpha(_withAlpha)
@@ -102,7 +102,7 @@ ViewImageSaveEvent::~ViewImageSaveEvent()
 /* ----------------------------------------------------------------------- */
 
 ViewRefreshEvent::ViewRefreshEvent() :
-  ViewEvent(12349)
+  ViewEvent(eRefresh)
 {
 }
 
@@ -117,7 +117,7 @@ ViewRefreshEvent::~ViewRefreshEvent()
 
 
 ViewSelectRecoverEvent::ViewSelectRecoverEvent() :
-  ViewEvent(12347),
+  ViewEvent(eGetSelection),
   __exchange(0){
   __exchange =new std::vector<uint32_t>();
 }
@@ -141,7 +141,7 @@ ViewSelectRecoverEvent::setSelection(const std::vector<uint32_t>& a){
 /* ----------------------------------------------------------------------- */
 
 ViewSelectionSet::ViewSelectionSet(const std::vector<uint32_t>& d) :
-  ViewEvent(12355),
+  ViewEvent(eSetSelection),
   __data(d){
 }
 
@@ -157,7 +157,7 @@ ViewSelectionSet::getSelection() const{
 /* ----------------------------------------------------------------------- */
 
 ViewEndEvent::ViewEndEvent() :
-  ViewEvent(12346){
+  ViewEvent(eEnd){
 }
 
 ViewEndEvent::~ViewEndEvent(){
@@ -167,7 +167,7 @@ ViewEndEvent::~ViewEndEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewFullScreenEvent::ViewFullScreenEvent(bool b) :
-  ViewEvent(12352),
+  ViewEvent(eFullScreen),
   value(b){
 }
 
@@ -178,7 +178,7 @@ ViewFullScreenEvent::~ViewFullScreenEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewGLFrameOnlyEvent::ViewGLFrameOnlyEvent(bool b) :
-  ViewEvent(12353),
+  ViewEvent(eGLFrameOnly),
   value(b){
 }
 
@@ -189,7 +189,7 @@ ViewGLFrameOnlyEvent::~ViewGLFrameOnlyEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewQuestionEvent::ViewQuestionEvent() :
-  ViewEvent(12351),
+  ViewEvent(eQuestion),
   result(new int(-1)){
 }
 
@@ -220,7 +220,7 @@ ViewItemSelectionEvent::ViewItemSelectionEvent(const QString& _caption,
 				 bool _editable,
 				 QString * res,
 				 bool * _ok) :
-  ViewEvent(12354),
+  ViewEvent(eItemSelection),
 	result((res?res:new QString())),
 	ok((_ok?_ok:new bool(false))),
 	caption(_caption),
@@ -236,7 +236,7 @@ ViewItemSelectionEvent::~ViewItemSelectionEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewAnimationEvent::ViewAnimationEvent(bool m) :
-  ViewEvent(12356),
+  ViewEvent(eAnimation),
   mode(m){
 }
 
@@ -247,7 +247,7 @@ ViewAnimationEvent::~ViewAnimationEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewBgColorEvent::ViewBgColorEvent(const QColor& c) :
-  ViewEvent(12357),
+  ViewEvent(eBgColor),
   color(c){
 }
 
@@ -264,7 +264,7 @@ ViewGridEvent::ViewGridEvent(bool _xy,
 							 int _size, 
 							 int _unit, 
 							 int _def) :
-  ViewEvent(12358),
+  ViewEvent(eGrid),
   xy(_xy),yz(_yz),xz(_xz),axis(_axis),size(_size),unit(_unit),def(_def){
 }
 
@@ -274,23 +274,53 @@ ViewGridEvent::~ViewGridEvent(){
 
 /* ----------------------------------------------------------------------- */
 
-ViewCameraEvent::ViewCameraEvent(const Vector3& _pos, 
+ViewCameraSetEvent::ViewCameraSetEvent(const Vector3& _pos, 
 								 const Vector3& _target,
 								 float _azimuth, 
 								 float _elevation, 
 								 int _def):
-  ViewEvent(12359),
-  pos(_pos),target(_target),azimuth(_azimuth),elevation(_elevation),def(_def){
+  ViewEvent(eCameraSet),
+  position(_pos),target(_target),azimuth(_azimuth),elevation(_elevation),def(_def){
 }
 
-ViewCameraEvent::~ViewCameraEvent(){
+ViewCameraSetEvent::~ViewCameraSetEvent(){
   // Nothing to do.
 }
+/* ----------------------------------------------------------------------- */
+
+ViewCameraGetEvent::ViewCameraGetEvent(Vector3* _pos, Vector3* _heading,Vector3* _up):
+  ViewEvent(eCameraGet),
+  position(_pos),heading(_heading),up(_up){
+}
+
+ViewCameraGetEvent::~ViewCameraGetEvent(){
+  // Nothing to do.
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+/// Constructor.
+ViewCPActivateEvent::ViewCPActivateEvent(int _cpid, bool _activation) : 
+   ViewEvent(eClippingPlaneActivate),cpid(_cpid),activation(_activation) {}
+
+  /// Destructor.
+   ViewCPActivateEvent::~ViewCPActivateEvent(){}
+
+/* ----------------------------------------------------------------------- */
+
+  /// Constructor.
+ViewCPSetEvent::ViewCPSetEvent(int _cpid, double _a, double _b, double _c, double _d):
+	   ViewEvent(eClippingPlaneSet), cpid(_cpid),a(_a),b(_b),c(_c),d(_d) {}
+
+  /// Destructor.
+	   ViewCPSetEvent::~ViewCPSetEvent(){}
+
 
 /* ----------------------------------------------------------------------- */
 
 ViewPosEvent::ViewPosEvent(int _x, int _y, int _w, int _h, int _def):
-  ViewEvent(12360),
+  ViewEvent(ePos),
   x(_x),y(_y),w(_w),h(_h),def(_def){
 }
 
@@ -306,7 +336,7 @@ ViewFileSelEvent::ViewFileSelEvent(const QString& _caption,
 				   bool _existing, 
 				   bool _dir,
 				   QString * res) :
-  ViewEvent(12361),
+  ViewEvent(eFileSelection),
 	  result((res?res:new QString())),
 	caption(_caption),
 	startPath(_startPath),
@@ -327,7 +357,7 @@ ViewRayBuffEvent::ViewRayBuffEvent(const TOOLS(Vector3)& _pos,
 		           const TOOLS(Vector3)& _dy,
 		           int _sx, int _sy,
 				   ViewRayBuffer ** res) :
-  ViewEvent(12362),
+  ViewEvent(eRayBuff),
 	result((res?res:NULL)),
 	pos(_pos),
 	dir(_dir),
@@ -345,7 +375,7 @@ ViewRayBuffEvent::~ViewRayBuffEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewZBuffEvent::ViewZBuffEvent(ViewZBuffer ** res) :
-  ViewEvent(12366),
+  ViewEvent(eZBuff),
 	result((res?res:NULL)){
 	if(!result)result = new  ViewZBuffer *;
   }
@@ -357,7 +387,7 @@ ViewZBuffEvent::~ViewZBuffEvent(){
 /* ----------------------------------------------------------------------- */
 
 ViewProjSizeEvent::ViewProjSizeEvent(double * _size, int * _nbpix, double * _pixwidth) :
-  ViewEvent(12363),
+  ViewEvent(eProjSize),
     nbpixel(_nbpix),
 	pixelwidth(_pixwidth),
 	size((_size?_size:new double(0.0)))
@@ -372,7 +402,7 @@ ViewProjSizeEvent::~ViewProjSizeEvent(){
 
 
 ViewCameraProjEvent::ViewCameraProjEvent(bool _mode) :
-  ViewEvent(12364),
+  ViewEvent(eCameraProj),
     mode(_mode)
 {
 }
@@ -382,6 +412,3 @@ ViewCameraProjEvent::~ViewCameraProjEvent(){
 }
 
 /* ----------------------------------------------------------------------- */
-
-/// 12365 used in view_geomevent
-/// 12366 used in ViewZBuffEvent

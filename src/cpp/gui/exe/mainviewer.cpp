@@ -47,7 +47,7 @@
 #include "../viewer/pglviewer.h"
 #include "../base/daemon.h"
 
-/*
+
 int main( int argc, char **argv )
 {
 
@@ -68,7 +68,7 @@ int main( int argc, char **argv )
   return 0;
 }
 
-*/
+/*
 #include "../viewer/pglapplication.h"
 
 int main( int argc, char **argv )
@@ -82,3 +82,4 @@ int main( int argc, char **argv )
   return 0;
 }
 
+*/

@@ -1176,8 +1176,13 @@ void ViewGLFrame::gridEvent ( ViewGridEvent * e) {
   __grid->gridEvent(e);
 }
 
-void ViewGLFrame::cameraEvent ( ViewCameraEvent * e) {
+void ViewGLFrame::cameraEvent ( ViewEvent * e) {
   __camera->cameraEvent(e);
+}
+
+void ViewGLFrame::clippingPlaneEvent(ViewEvent * e)
+{
+	__clippingPlane->clippingPlaneEvent(e);
 }
 
 /*  ------------------------------------------------------------------------ */

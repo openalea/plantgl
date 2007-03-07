@@ -57,7 +57,7 @@ PGL_USING(BoundingBoxPtr)
 
 class QTabWidget;
 class ViewCameraGL;
-class ViewCameraEvent;
+class ViewEvent;
 
 /// Menu to control a ViewCameraGL
 class VIEW_API ViewCameraMenu : public QMenu {
@@ -202,7 +202,7 @@ public:
   /// Get The Camera matrix
   Matrix4 getMatrix();
 
-  virtual void cameraEvent(ViewCameraEvent *);
+  virtual void cameraEvent(ViewEvent *);
 
   void setAngles(double azimuth, double elevation);
 

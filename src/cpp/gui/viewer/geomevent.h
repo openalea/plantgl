@@ -57,10 +57,20 @@
 
 /* ----------------------------------------------------------------------- */
 
+
+
 class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
   
+
   public :
-    
+	  enum GeomSceneEventType { 
+			 eFirstGeomSceneEvent = 0,
+			 eGeomSceneEvent = eFirstGeomSceneEvent,
+			 eMultiSceneEvent,
+			 eLastGeomSceneEvent
+	  };
+
+
   /// Constructor.
   GeomSceneChangeEvent(PGL(ScenePtr) scene, 
 		       const QString& = QString::null, 
@@ -117,7 +127,7 @@ class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API GeomGetSceneEvent : public ViewEvent {
+class VIEW_API GeomGetSceneEvent : public ViewGeomEvent {
   
   public :
     
@@ -134,7 +144,7 @@ class VIEW_API GeomGetSceneEvent : public ViewEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class GeomProjListEvent : public ViewEvent {
+class GeomProjListEvent : public ViewGeomEvent {
 
 public :
 
@@ -151,7 +161,7 @@ public :
 /* ----------------------------------------------------------------------- */
 class ViewRayPointHitBuffer;
 
-class ViewRayBuff2Event : public ViewEvent {
+class ViewRayBuff2Event : public ViewGeomEvent {
 
 public :
 

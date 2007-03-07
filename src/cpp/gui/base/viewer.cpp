@@ -590,7 +590,7 @@ void  Viewer::customEvent(QEvent *e){
 #ifdef QT_THREAD_SUPPORT
   bool release_mutex = true;
 #endif
-  if(e->type() == 12345){
+  if(e->type() == ViewEvent::eSceneChange){
 	ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),k->copy());
       if(!isHidden()){
@@ -599,22 +599,22 @@ void  Viewer::customEvent(QEvent *e){
       }
   }
 
-  else if(e->type() == 12346){
+  else if(e->type() == ViewEvent::eEnd){
     bye();
   }
-  else if(e->type() == 12347){
+  else if(e->type() == ViewEvent::eGetSelection){
     ViewSelectRecoverEvent * k = ( ViewSelectRecoverEvent * )e;
     k->setSelection(getSelection());
   }
-  else if(e->type() == 12355){
+  else if(e->type() == ViewEvent::eSetSelection){
     ViewSelectionSet * k = ( ViewSelectionSet * )e;
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->getSelection());
   }
-  else if(e->type() == 12350){
+  else if(e->type() == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
 	saveImage(k->filename,k->format.toAscii().constData(),k->withAlpha);
   }
-  else if(e->type() == 12351){
+  else if(e->type() == ViewEvent::eQuestion){
     ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
 	question(k->caption,k->text,
 			 k->but0txt,k->but1txt,
@@ -624,38 +624,40 @@ void  Viewer::customEvent(QEvent *e){
 	release_mutex = false;
 #endif
   }
-  else if(e->type() == 12352){
+  else if(e->type() == ViewEvent::eFullScreen){
     ViewFullScreenEvent * k = ( ViewFullScreenEvent * )e;
 	if(__isFullScreen != k->value)displayFullScreen();
   }
-  else if(e->type() == 12353){
+  else if(e->type() == ViewEvent::eGLFrameOnly){
     ViewGLFrameOnlyEvent * k = ( ViewGLFrameOnlyEvent * )e;
 	if((__toolbarsvisibility == 0) == k->value)displayGLWidgetOnly();
   }
-  else if(e->type() == 12354){
+  else if(e->type() == ViewEvent::eItemSelection){
     ViewItemSelectionEvent * k = ( ViewItemSelectionEvent * )e;
 	itemSelection(k->caption,k->text,
 			 k->values,k->editable,
 			 k->result,
 			 k->ok);
   }
-  else if(e->type() == 12356){
+  else if(e->type() == ViewEvent::eAnimation){
     ViewAnimationEvent * k = ( ViewAnimationEvent * )e;
 	__GLFrame->animation(k->mode);
   }
-  else if(e->type() == 12357){
+  else if(e->type() == ViewEvent::eBgColor){
     ViewBgColorEvent * k = ( ViewBgColorEvent * )e;
 	__GLFrame->setBackGroundColor(k->color);
   }
-  else if(e->type() == 12358){
+  else if(e->type() == ViewEvent::eGrid){
     ViewGridEvent * k = ( ViewGridEvent * )e;
 	__GLFrame->gridEvent(k);
   }
-  else if(e->type() == 12359){
-    ViewCameraEvent * k = ( ViewCameraEvent * )e;
-	__GLFrame->cameraEvent(k);
+  else if(e->type() == ViewEvent::eCameraGet || e->type() == ViewEvent::eCameraSet){	  
+	__GLFrame->cameraEvent((ViewEvent *)e);
   }
-  else if(e->type() == 12360){
+  else if(e->type() == ViewEvent::eClippingPlaneActivate || e->type() == ViewEvent::eClippingPlaneSet){	  
+	__GLFrame->clippingPlaneEvent((ViewEvent *)e);
+  }
+  else if(e->type() == ViewEvent::ePos){
     ViewPosEvent * k = ( ViewPosEvent * )e;
 	switch(k->def){
 	case 0:
@@ -672,30 +674,30 @@ void  Viewer::customEvent(QEvent *e){
 	  break;
 	}
   }
-  else if(e->type() == 12361){
+  else if(e->type() == ViewEvent::eFileSelection){
     ViewFileSelEvent * k = ( ViewFileSelEvent * )e;
 	if(k->dir)
 	  dirSelection(k->caption,k->startPath,k->result);
 	else
 	  fileSelection(k->caption,k->filter,k->startPath,k->existing,k->result);
   }
-  else if(e->type() == 12362){
+  else if(e->type() == ViewEvent::eRayBuff){
     ViewRayBuffEvent * k = ( ViewRayBuffEvent * )e;
 	*(k->result) = __GLFrame->castRays(k->pos,k->dir,k->dx,k->dy,k->sx,k->sy);
   }
-  else if(e->type() == 12366){
+  else if(e->type() == ViewEvent::eZBuff){
     ViewZBuffEvent * k = ( ViewZBuffEvent * )e;
 	*(k->result) = __GLFrame->grabZBuffer();
   }
-  else if(e->type() == 12363){
+  else if(e->type() == ViewEvent::eProjSize){
     ViewProjSizeEvent * k = ( ViewProjSizeEvent * )e;
 	*(k->size) = __GLFrame->getProjectionSize(k->nbpixel,k->pixelwidth);
   }
-  else if(e->type() == 12364){
+  else if(e->type() == ViewEvent::eCameraProj){
     ViewCameraProjEvent * k = ( ViewCameraProjEvent * )e;
 	__GLFrame->getCamera()->setProjectionMode(k->mode);
   }
-  else if(e->type() >= 12365 && e->type() <= 12367){
+  else if(e->type() >= ViewGeomEvent::eFirstGeomEvent && e->type() <= ViewGeomEvent::eLastGeomEvent){
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
   }
   else {

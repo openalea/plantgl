@@ -148,6 +148,8 @@ public :
   static void lookAt(const TOOLS(Vector3)& pos, const TOOLS(Vector3)& target);
   static void lookAt(const TOOLS(Vector3)& target);
 
+  static void getCamera(TOOLS(Vector3)& pos, TOOLS(Vector3)& heading, TOOLS(Vector3)& up);
+
   static void setXYGrid(bool);
   static void setXZGrid(bool);
   static void setYZGrid(bool);
@@ -155,6 +157,9 @@ public :
   static void setGridUnit(int);
   static void setGridSize(int);
   static void setGrid(bool, bool, bool, bool);
+
+  static void activateCP(int, bool);
+  static void setCP(int, double, double, double, double);
 
   static void glFrameSize(int,int);
   static void resize(int,int);

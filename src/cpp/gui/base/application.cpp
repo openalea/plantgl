@@ -289,19 +289,24 @@ void ViewerApplication::setBgColor(int red, int green, int blue){
 
 void 
 ViewerApplication::setCamera(const Vector3& pos){
-  _sendAnEvent(new ViewCameraEvent(pos,Vector3::ORIGIN,0,0,0));
+  _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,0,0,0));
 }
 void 
 ViewerApplication::setCamera(const Vector3& pos, real_t azimuth, real_t elevation){
-  _sendAnEvent(new ViewCameraEvent(pos,Vector3::ORIGIN,azimuth,elevation,1));
+  _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,azimuth,elevation,1));
 }
 void 
 ViewerApplication::lookAt(const Vector3& pos, const Vector3& target){
-  _sendAnEvent(new ViewCameraEvent(pos,target,0,0,2));
+  _sendAnEvent(new ViewCameraSetEvent(pos,target,0,0,2));
 }
 void 
 ViewerApplication::lookAt(const Vector3& target){
-  _sendAnEvent(new ViewCameraEvent(Vector3::ORIGIN,target,0,0,3));
+  _sendAnEvent(new ViewCameraSetEvent(Vector3::ORIGIN,target,0,0,3));
+}
+
+void 
+ViewerApplication::getCamera(Vector3& pos, Vector3& heading, Vector3& up){
+  _sendAnEvent(new ViewCameraGetEvent(&pos,&heading,&up));
 }
 
 void 
@@ -335,6 +340,15 @@ void
 ViewerApplication::setGrid(bool a, bool b, bool c, bool d) {
   _sendAnEvent(new ViewGridEvent(a,b,c,b,0,0,15));
 }
+
+void 
+ViewerApplication::activateCP(int id, bool activation)
+{ _sendAnEvent(new ViewCPActivateEvent(id,activation)); }
+
+void 
+ViewerApplication::setCP(int id, double a, double b, double c, double d)
+{ _sendAnEvent(new ViewCPSetEvent(id,a,b,c,d)); }
+
 
 void 
 ViewerApplication::glFrameSize(int w,int h){

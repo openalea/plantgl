@@ -914,21 +914,30 @@ ViewCameraGL::lookIn(const Vector3& position,const Vector3& dir){
 }
 
 void 
-ViewCameraGL::cameraEvent(ViewCameraEvent * e){
-  switch(e->def){
-  case 0:
-	setPosition(e->pos);
-	break;
-  case 1:
-	setPosition(e->pos,e->azimuth,e->elevation);
-	break;
-  case 2:
-	lookAt(e->pos,e->target);
-	break;
-  case 3:
-	lookAt(getPosition(),e->target);
-	break;
-  }
+ViewCameraGL::cameraEvent(ViewEvent * ev){
+	if (ev->type() == ViewEvent::eCameraSet) {
+		ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
+		switch(e->def){
+			case 0:
+				setPosition(e->position);
+			break;
+			case 1:
+				setPosition(e->position,e->azimuth,e->elevation);
+			break;
+			case 2:
+				lookAt(e->position,e->target);
+			break;
+			case 3:
+				lookAt(getPosition(),e->target);
+			break;
+		}
+	}
+	else if (ev->type() == ViewEvent::eCameraGet){
+		ViewCameraGetEvent * e = (ViewCameraGetEvent *)ev;
+		*e->position = getPosition();
+		*e->heading = getDirection();
+		*e->up = getUp();
+	}
 }
 
 Vector3 ViewCameraGL::getDirection(){

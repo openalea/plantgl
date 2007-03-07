@@ -133,7 +133,7 @@ void ViewGeomSceneGL::connectTo(QGLWidget * glw)
 bool
 ViewGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
 {
-  if(k->getSceneType() == 1){
+	if(k->getSceneType() == GeomSceneChangeEvent::eGeomSceneEvent){
     GeomSceneChangeEvent * event = ( GeomSceneChangeEvent * )k;
     if(event->addition)addScene(ScenePtr(event->scene));
         else setScene(event->scene);
@@ -859,15 +859,15 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 
 void 
 ViewGeomSceneGL::customEvent(QEvent * e) {
-	if(e->type() == 12365){
+	if(e->type() == ViewGeomEvent::eProjList){
 		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
 		*(myevent->result) = getProjectionSizes(myevent->objlist);
 	}
-	else if (e->type() == 12367){
+	else if (e->type() == ViewGeomEvent::eRayBuff2){
 		ViewRayBuff2Event * myevent = (ViewRayBuff2Event *)e;
 		*(myevent->result) = castRays(myevent->objlist,myevent->back_test);
 	}
-	else if (e->type() == 12368){
+	else if (e->type() == ViewGeomEvent::eGetScene){
 		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
 		*(myevent->scene) = __scene;
 	}

@@ -267,7 +267,7 @@ VegeStarFile::parseHeader(std::istream& stream)
 			attlist.push_back(Error);
 			*SceneObject::errorStream << "Unrecognized header token : '" << 
 #if QT_VERSION >= 0x040000
-			                          token.toAscii()
+			                          token.toAscii().constData()
 #else
 			                          token.data()
 #endif
