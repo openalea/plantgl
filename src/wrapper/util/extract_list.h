@@ -45,10 +45,10 @@ struct extract_pgllist {
 	extract_pgllist(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
 
-	RCPtr<T> operator()() const {
-		boost::python::extract<RCPtr<T> > direct_extractor(pylist);
-		if (direct_extractor.check()) return direct_extractor().toPtr();
-		RCPtr<T> result (new T());
+	T * extract() const {
+		boost::python::extract<T *> direct_extractor(pylist);
+		if (direct_extractor.check()) return direct_extractor();
+		T * result (new T());
 		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
 		{
@@ -60,7 +60,10 @@ struct extract_pgllist {
 		}
 		return result;
 	}
-	operator RCPtr<T> () const { return operator()(); }
+
+	inline RCPtr<T> toRCPtr() const { return RCPtr<T>(extract()); }
+	inline T * operator()() const { return extract(); }
+	inline operator T * () const { return extract(); }
 
 };
 
@@ -77,7 +80,7 @@ struct extract_vec {
 	extract_vec(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
 
-	result_type operator()() const {
+	result_type extract() const {
 		result_type result;
 		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
@@ -90,7 +93,9 @@ struct extract_vec {
 		}
 		return result;
 	}
-	operator result_type () const { return operator()(); }
+
+	inline result_type operator()() const { return extract(); }
+	inline operator result_type () const { return extract(); }
 };
 
 /* ----------------------------------------------------------------------- */
@@ -114,7 +119,7 @@ struct extract_dict {
 
 	boost::python::dict pydict;
 
-	result_type operator()() const {
+	result_type extract() const {
 		result_type result;
 		boost::python::object iter_obj =  pydict.iteritems();
 		while( true )
@@ -128,7 +133,8 @@ struct extract_dict {
 		}
 		return result;
 	}
-	operator result_type () const { return operator()(); }
+	inline result_type operator()() const { return extract(); }
+	inline operator result_type () const { return extract(); }
 };
 
 /* ----------------------------------------------------------------------- */

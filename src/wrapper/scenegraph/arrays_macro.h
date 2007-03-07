@@ -9,7 +9,7 @@ ARRAY##Ptr PREFIX##_fromlist( boost::python::object l ) \
     {\
     return new ARRAY( e_int() );\
     }\
-  return ARRAY##Ptr(extract_pgllist<ARRAY>(l)()); \
+  return extract_pgllist<ARRAY>(l).toRCPtr(); \
 }\
 
 #define EXPORT_FUNCTION2( PREFIX, T, ARRAY) \

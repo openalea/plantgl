@@ -17,6 +17,36 @@ Index * ind_fromlist( boost::python::object l )
   return extract_pgllist<Index>(l)();
 }
 
+Index * ind_fromvalue3( uint32_t a, uint32_t b, uint32_t c) 
+{ 
+  Index * ind = new Index();
+  ind->pushBack(a);
+  ind->pushBack(b);
+  ind->pushBack(c);
+  return ind;
+}
+
+Index * ind_fromvalue4( uint32_t a, uint32_t b, uint32_t c, uint32_t d) 
+{ 
+  Index * ind = new Index();
+  ind->pushBack(a);
+  ind->pushBack(b);
+  ind->pushBack(c);
+  ind->pushBack(d);
+  return ind;
+}
+
+Index * ind_fromvalue5( uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e) 
+{ 
+  Index * ind = new Index();
+  ind->pushBack(a);
+  ind->pushBack(b);
+  ind->pushBack(c);
+  ind->pushBack(d);
+  ind->pushBack(e);
+  return ind;
+}
+
 EXPORT_FUNCTION2( ind, uint32_t, Index );
 
 #define INDEX_SETGET(PREFIX,ARRAY,SIZE) \
@@ -75,6 +105,9 @@ void export_index()
 
   class_< Index >( "Index" , init<size_t>("Index(int size)",args("size")) )
     .def( "__init__", make_constructor( ind_fromlist ), "Index([int i, int j, int k, ...])"  )
+    .def( "__init__", make_constructor( ind_fromvalue3 ), "Index(int i, int j, int k)"  )
+    .def( "__init__", make_constructor( ind_fromvalue4 ), "Index(int i, int j, int k, int l)"  )
+    .def( "__init__", make_constructor( ind_fromvalue5 ), "Index(int i, int j, int k, int l, int m)"  )
     EXPORT_ARRAY_FUNC( ind )
     ;
 
