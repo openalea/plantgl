@@ -123,7 +123,7 @@ ViewSelectRecoverEvent::ViewSelectRecoverEvent() :
 }
 
 ViewSelectRecoverEvent::ViewSelectRecoverEvent(std::vector<uint32_t> * e) :
-  ViewEvent(12347),
+  ViewEvent(eGetSelection),
   __exchange(e){
 }
 
@@ -199,7 +199,7 @@ ViewQuestionEvent::ViewQuestionEvent(const QString& _caption,
 				 const QString& _but1txt,
 				 const QString& _but2txt,
 				 int * _result) :
-  ViewEvent(12351),
+  ViewEvent(eQuestion),
   result((_result?_result:new int(-1))),
   caption(_caption),
   text(_text),

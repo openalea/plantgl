@@ -701,6 +701,8 @@ void  Viewer::customEvent(QEvent *e){
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
   }
   else {
+	  if(e->type() < ViewEvent::eFirstEvent || e->type() > ViewGeomEvent::eLastGeomEvent)
+		  qDebug(QString("Custom Event : Type=%1.").arg(e->type()).toAscii());
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
   }
 #ifdef QT_THREAD_SUPPORT

@@ -35,6 +35,7 @@
  */
 
 #include "export_viewer.h"
+#include "../util/extract_list.h"
 
 #include <boost/python.hpp>
 
@@ -66,20 +67,7 @@ void setSelection(int i){
 }
 
 void setMSelection(boost::python::list values){
-  std::vector<uint32_t> sel;
-  try { 
-    object iter_obj = boost::python::object( handle<>( PyObject_GetIter( values.ptr() ) ) );
-    while( true ) {
-          object obj = iter_obj.attr( "next" )();
-		  int val = boost::python::extract<int>( obj );
-          sel.push_back( val );
-       }
-    }
-	catch( error_already_set )
-    {
-      PyErr_Clear();
-    }
-
+  std::vector<uint32_t> sel = extract_vec<uint32_t>(values)();
   ViewerApplication::setSelection(sel);
 }
 
@@ -113,19 +101,7 @@ object itemSelection(const std::string& caption,
 					 const std::string& text,
 					 const boost::python::list& values,
 					 bool editable){
-  std::vector<std::string> vals;
-  try { 
-    object iter_obj = boost::python::object( handle<>( PyObject_GetIter( values.ptr() ) ) );
-    while( true ) {
-          object obj = iter_obj.attr( "next" )();
-		  std::string val = boost::python::extract<std::string>( obj );
-          vals.push_back( val );
-       }
-    }
-  catch( error_already_set )
-    {
-      PyErr_Clear();
-    }
+  std::vector<std::string> vals = extract_vec<std::string>(values)();
   bool ok = false;
   std::string res = ViewerApplication::itemSelection(caption,text,vals,ok,editable);
   tuple t = make_tuple(ok,res);
