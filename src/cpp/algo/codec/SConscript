@@ -15,7 +15,13 @@ src= BisonFlex( env,
                 "scne_yy" )
 
 # simple flatten implementation
-sources= [str( src[ 0 ] ),str( src[ 1 ][ 0 ] )]
+if env['compiler'] == 'mingw':
+  CXXFLAGS= env['CXXFLAGS']+['-fno-inline']
+  bison_obj= env.SharedObject(src[ 0 ], CXXFLAGS= CXXFLAGS)
+else:
+  bison_obj= env.SharedObject(src[ 0 ])
+
+sources= [str( src[ 1][ 0 ] )]
 
 if env[ 'BISON_HPP' ]:
   includes.append( 'scne_parser.hpp' )
@@ -27,6 +33,8 @@ else:
 inc= env.ALEAIncludes( "plantgl/algo/codec", includes )
 
 sources= map(lambda x: pj('codec',x),sources)
+
+sources.append(bison_obj)
 
 Return('sources')
 
