@@ -7,7 +7,7 @@ Import( "env" )
 lib_env = env.Copy()
 
 includes= lib_env.ALEAGlob('*.h')
-lib_env.ALEAIncludes( "plantgl/gui", includes )
+lib_env.ALEAIncludes( "plantgl/gui3", includes )
 
 # install headers
 

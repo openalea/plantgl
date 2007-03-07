@@ -38,7 +38,7 @@
 #include <algo/opengl/util_gl.h>
 #include <algo/opengl/util_glut.h>
 #include <math/util_math.h>
-#include <gui/viewer/util_qstring.h>
+#include <gui3/viewer/util_qstring.h>
 
 #include <qtextstream.h>
 #include <qtabwidget.h>

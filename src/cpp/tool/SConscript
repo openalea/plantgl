@@ -2,7 +2,9 @@
 Import( "env" )
 
 lib_env = env.Copy()
-lib_env.EnableQt4Modules( [ 'QtCore'])
+qt_version = int(lib_env['QT_VERSION'])
+if qt_version == 4:
+    lib_env.EnableQt4Modules( [ 'QtCore'])
 
 includes= lib_env.ALEAGlob('*.h')
 sources= lib_env.ALEAGlob('*.cpp')

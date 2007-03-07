@@ -12,7 +12,7 @@ exe_env= env.Copy()
 source= ["mainviewer.cpp"]
 
 LIBRARIES = list( exe_env['LIBS'] )
-LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
+LIBRARIES.extend( ['pglgui3', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 
 exe_env.Append( CPPPATH = '#/share/plantgl/pixmap')
 

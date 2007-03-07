@@ -149,11 +149,22 @@ ViewerThreadedAppli::cleanup(){
 
 void 
 ViewerThreadedAppli::exec(){
-      __viewer.get()->show();
+  std::cerr << "begin exec" << std::endl;
+  if(__viewer.get() == NULL){
+    std::cerr << "Null Viewer !!" << std::endl;
+    return;
+  }
+  std::cerr << "show" << std::endl;
+      __viewer.get()->setVisible(true);
+  std::cerr << "begin tray icon" << std::endl;
 	  __viewer.get()->displayTrayIcon(false);
+  std::cerr << "appli exec" << std::endl;
 	  __appli.get()->exec();
+  std::cerr << "config" << std::endl;
 	  __viewer.get()->saveConfig();
+  std::cerr << "selection" << std::endl;
 	  __selection = __viewer.get()->getSelection();
+  std::cerr << "end exec" << std::endl;
 }
 
 void 

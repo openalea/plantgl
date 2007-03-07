@@ -7,7 +7,9 @@ Import( "env" )
 # 1. Call other SConscript files in sub directories and build the library
 
 lib_env= env.Copy()
-lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL' ])
+qt_version = int(lib_env['QT_VERSION'])
+if qt_version == 4:
+    lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL' ])
 
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/algo", includes )

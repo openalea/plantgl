@@ -14,10 +14,21 @@ name='plantgl'
 SConsignFile()
 
 options = Options( 'options.py', ARGUMENTS )
+options.Add(EnumOption('QT_VERSION','Qt major version to use','3',allowed_values=('3','4')))
 
-wrapper_conf= ALEAConfig(name,['boost_python', 'alea','qt4'])
-cpp_conf= ALEAConfig(name, ['alea','qt4', 'flex', 'bison','opengl','readline','qhull'])
-opt_conf= ALEAConfig(name, ['boost_python', 'alea', 'qt4', 'flex', 'bison','opengl','readline','qhull'])
+qt_env = Environment(options=options)
+qt_version = int(qt_env['QT_VERSION'])
+
+wrapper_tools = ['boost_python', 'alea']
+cpp_tools = ['alea','flex', 'bison','opengl','readline','qhull']
+if qt_version == 3:
+    qt_tools = ['qt']
+else:
+    qt_tools = ['qt4']
+
+wrapper_conf= ALEAConfig(name,wrapper_tools+qt_tools)
+cpp_conf= ALEAConfig(name, cpp_tools+qt_tools)
+opt_conf= ALEAConfig(name, wrapper_tools+cpp_tools+qt_tools)
 
 # Set all the common options for the package
 opt_conf.UpdateOptions( options )
@@ -34,11 +45,13 @@ BuildDir( prefix, '.' )
 
 cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
 cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
-cpp_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
+cpp_env.Append( QT_VERSION = qt_version )
+if qt_version == 4:
+    cpp_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
 
 wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
 wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
-
+wrapper_env.Append( QT_VERSION = qt_version )
 
 # Build stage
 SConscript( pj(prefix,"src/cpp/SConscript"),

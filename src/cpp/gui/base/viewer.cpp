@@ -395,11 +395,9 @@ void Viewer::initialize()
 
 void 
 Viewer::displayTrayIcon(bool s){
-#ifdef Q_WS_WIN
-	if(__trayIcon)
-		if(s)__trayIcon->show();
-		else __trayIcon->hide();
-#endif
+    if(__trayIcon)
+	if(s)__trayIcon->show();
+	else __trayIcon->hide();
 }
 
 void

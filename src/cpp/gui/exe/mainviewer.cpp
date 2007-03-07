@@ -47,6 +47,7 @@
 #include "../viewer/pglviewer.h"
 #include "../base/daemon.h"
 
+/*
 int main( int argc, char **argv )
 {
 
@@ -67,7 +68,7 @@ int main( int argc, char **argv )
   return 0;
 }
 
-/*
+*/
 #include "../viewer/pglapplication.h"
 
 int main( int argc, char **argv )
@@ -75,9 +76,9 @@ int main( int argc, char **argv )
 
 	PGLViewerApplication::init();
 	PGLViewerApplication::start();
-	PGLViewerApplication::wait(10000);
+	// PGLViewerApplication::wait(10000);
 	PGLViewerApplication::exit();
 
   return 0;
 }
-*/
+
