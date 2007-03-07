@@ -64,6 +64,7 @@ struct extract_pgllist {
 	inline RCPtr<T> toRCPtr() const { return RCPtr<T>(extract()); }
 	inline T * operator()() const { return extract(); }
 	inline operator T * () const { return extract(); }
+	inline operator RCPtr<T> () const { return toRCPtr(); }
 
 };
 
