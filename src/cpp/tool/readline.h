@@ -44,6 +44,12 @@
 #ifndef __readline_h__
 #define __readline_h__
 
+#if defined( __GNUC__ ) && ! defined(  __MINGW32__ )
+#define USE_READLINE
+#endif
+
+#ifdef USE_READLINE
+
 /// Init readline or do nothing.
 extern void gnu_init_readline();
 /// Set the keyword or do nothing.
@@ -51,5 +57,6 @@ extern void setKeyword(char ** keyword);
 /// Completion Function or do nothing.
 extern int readline_input(char*, const char* prompt=0);
 
+#endif
 
 #endif

@@ -83,7 +83,7 @@ GENERIC_LEXER::GENERIC_LEXER(std::istream* is ,
   if (os) _lo = os;
   else _lo = &std::cout;
 
-#ifdef __GNUC__
+#ifdef USE_READLINE
   // for the first stream, we need to force function YY_INPUT to fill in the
   // buffer with readline input.
   // This is done by flushing the current buffer of the lexer.
@@ -200,7 +200,7 @@ const char* GENERIC_LEXER::currentFile() {return _current_file_name.c_str();}
 
 /// return whether lexer use readline or not.
 bool GENERIC_LEXER::useReadline() const {
-#ifdef __GNUC__
+#ifdef USE_READLINE
         return _uses_readline;
 #else
         return false;
@@ -221,7 +221,7 @@ buffer has been completed.
 int GENERIC_LEXER::LexerInput(char* buf, int max_size ) {
     // std::cerr << "maxsize = " << max_size << std::endl;
 
-#ifdef __GNUC__
+#ifdef USE_READLINE
     if (_uses_readline && bstack.size() == 0) {
 
                 int ret =  readline_input(buf, _prompt);

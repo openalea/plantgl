@@ -57,9 +57,6 @@
 	postream(p)<<std::endl;}
 //                      yytname[YYTRANSLATE((yychar >= 0 ? yychar : -yychar))]))) YYABORT;
 
-#ifdef __GNUC__
-// #define USING_READLINE
-#endif
 
 #include <scenegraph/core/pgl_messages.h>
 #include "scne_scanner.h"
@@ -73,9 +70,7 @@
 #include <math/util_math.h>
 #include <tool/util_enviro.h>
 #include <tool/dirnames.h>
-#ifdef USING_READLINE
-#  include <tool/readline.h>
-#endif
+#include <tool/readline.h>
 
 TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
@@ -87,7 +82,7 @@ PGL_USING_NAMESPACE
 
 /*  ---------------------------------------------------------------------- */
 
-#ifdef USING_READLINE
+#ifdef USE_READLINE
 
 static char * sh_keyword[] = {
     ":Echo",
@@ -884,7 +879,7 @@ SceneObjList :
       };
       delete $2;
     }
-#ifdef USING_READLINE
+#ifdef USE_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -894,7 +889,7 @@ SceneObjList :
     parser(p);
     smbtable(p,t);
     symbolstack.push_back(&t);
-#ifdef USING_READLINE
+#ifdef USE_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -936,7 +931,7 @@ SceneObjects :
     shape_nb = 0;
     SymbolTable<SMB_TABLE_TYPE> * t = new SymbolTable<SMB_TABLE_TYPE>;
     symbolstack.push_back(t);
-#ifdef USING_READLINE
+#ifdef USE_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -1061,7 +1056,7 @@ InlineFieldList:
    }
  | {
    $$ = new Inline::Builder;
-#ifdef USING_READLINE
+#ifdef USE_READLINE
    lexer(l);
    if(l.useReadline())setKeyword(inline_att_keyword);
 #endif
@@ -1079,7 +1074,7 @@ ShapeFieldList:
      GEOM_PARSER_SET_FIELD($1,Appearance,$3); $$=$1;
    }
  | { $$ = new Shape::Builder;
-#ifdef USING_READLINE
+#ifdef USE_READLINE
     lexer(l);
    if(l.useReadline())setKeyword(shape_att_keyword);
 #endif
@@ -1580,7 +1575,7 @@ AsymmetricHullFieldList:
      GEOM_PARSER_SET_FIELD($1,Stacks,$3); $$=$1;
    }
  | { $$ = new AsymmetricHull::Builder;
-#ifdef USING_READLINE
+#ifdef USE_READLINE
  lexer(l);
  if(l.useReadline())setKeyword(ashull_att_keyword);
 #endif
@@ -1664,7 +1659,7 @@ ConeFieldList:
    }
  | {
    $$ = new Cone::Builder;
-#ifdef USING_READLINE
+#ifdef USE_READLINE
    lexer(l);
    if(l.useReadline()) setKeyword(cone_att_keyword);
 #endif
