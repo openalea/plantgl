@@ -62,8 +62,9 @@ TOOLS_USING(Vector3)
 class VIEW_API ViewEvent : public QEvent {
 public:
 	enum Type {
-		eFirstEvent = 7777,
-		eSceneChange = eFirstEvent,
+		eFirstEvent = 10000,
+		eNoneEvent = eFirstEvent,
+		eSceneChange,
 		eFileChange,
 		eImageSave,
 		eRefresh,
@@ -93,7 +94,7 @@ public:
 
 
 
-  ViewEvent(int type):
+  ViewEvent(int type = eNoneEvent):
 	QEvent(QEvent::Type(type)),
 	sent_event(false){}
 

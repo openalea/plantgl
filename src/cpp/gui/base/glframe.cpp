@@ -1161,7 +1161,7 @@ ViewGLFrame::keyReleaseEvent ( QKeyEvent * e)
 
 void ViewGLFrame::customEvent(QEvent *e)
 {
-  if(e->type() == 12345){
+	if(e->type() == ViewEvent::eSceneChange){
     ViewSceneChangeEvent * event = (ViewSceneChangeEvent *)e;
     __scene->sceneChangeEvent(event);
   }

@@ -134,16 +134,16 @@ bool
 ViewGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
 {
 	if(k->getSceneType() == GeomSceneChangeEvent::eGeomSceneEvent){
-    GeomSceneChangeEvent * event = ( GeomSceneChangeEvent * )k;
-    if(event->addition)addScene(ScenePtr(event->scene));
-        else setScene(event->scene);
-    if(!event->error.isEmpty()){
-      error(event->error);
-    }
-    setFilename(event->file);
-    return true;
-  }
-  else return false;
+		GeomSceneChangeEvent * event = ( GeomSceneChangeEvent * )k;
+		if(event->addition)addScene(ScenePtr(event->scene));
+		else setScene(event->scene);
+		if(!event->error.isEmpty()){
+			error(event->error);
+		}
+		setFilename(event->file);
+		return true;
+	}
+	else return false;
 }
 
 void
@@ -995,19 +995,17 @@ ViewMultiGeomSceneGL::setRenderingStep(int i)
 bool 
 ViewMultiGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
 {
-  if(k->getSceneType() == 1)
-    return ViewGeomSceneGL::sceneChangeEvent(k);
-  else if(k->getSceneType() == 2){
-    GeomMultiSceneChangeEvent * event = ( GeomMultiSceneChangeEvent * )k;
-    setScene(event->scene,event->scene2);
-    if(!event->error.isEmpty()){
-      error(event->error);
-    }
-    setFilename(event->file);
-    if(__transSlider)__transSlider->show();
-    return true;
-  }
-  else return false;
+	if(k->getSceneType() == GeomSceneChangeEvent::eGeomSceneEvent)
+		return ViewGeomSceneGL::sceneChangeEvent(k);
+	else if(k->getSceneType() == GeomSceneChangeEvent::eMultiSceneEvent){
+		GeomMultiSceneChangeEvent * event = ( GeomMultiSceneChangeEvent * )k;
+		setScene(event->scene,event->scene2);
+		if(!event->error.isEmpty()) error(event->error);
+		setFilename(event->file);
+		if(__transSlider)__transSlider->show();
+		return true;
+	}
+	else return false;
 }
 /* ----------------------------------------------------------------------- */
 

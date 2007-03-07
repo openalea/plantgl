@@ -46,7 +46,7 @@ GeomSceneChangeEvent::GeomSceneChangeEvent(ScenePtr _scene,
 					   const QString& errlog, 
 					   const QString& _file,
 					   bool add) :
-  ViewSceneChangeEvent(1),
+  ViewSceneChangeEvent(eGeomSceneEvent),
   scene(_scene),
   error(errlog),
   file(_file),
@@ -61,7 +61,7 @@ GeomSceneChangeEvent::~GeomSceneChangeEvent(){
 ViewSceneChangeEvent *
 GeomSceneChangeEvent::copy()
 {
-  return new GeomSceneChangeEvent(scene,error,file,addition);
+  return new GeomSceneChangeEvent(*this);
 }
 
 
@@ -78,7 +78,7 @@ GeomMultiSceneChangeEvent::GeomMultiSceneChangeEvent(ScenePtr _scene1,
     scene2(_scene2),
     file2(_file2)
 {
-  setSceneType(2);
+  setSceneType(eMultiSceneEvent);
 }
 
 GeomMultiSceneChangeEvent::~GeomMultiSceneChangeEvent()
@@ -88,7 +88,7 @@ GeomMultiSceneChangeEvent::~GeomMultiSceneChangeEvent()
 ViewSceneChangeEvent * 
 GeomMultiSceneChangeEvent::copy()
 {
-  return new GeomMultiSceneChangeEvent(scene,scene2,error,file,file2);
+  return new GeomMultiSceneChangeEvent(*this);
 }
 
 /* ----------------------------------------------------------------------- */
