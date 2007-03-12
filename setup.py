@@ -21,7 +21,7 @@ See http://openalea.gforge.inria.fr
     sys.exit()
 
 try:
-    from openalea.distx import setup
+    from openalea.distx import setup,Shortcut
 except ImportError:
     print """
 ImportError : openalea.distx package not found.
@@ -81,7 +81,7 @@ build_prefix= "build-scons"
 # Main setup
 setup(
     # Meta data
-    name=name,
+    name="PlantGL",
     version=version,
     description=description,
     long_description=long_description,
@@ -98,20 +98,19 @@ setup(
     # scons parameters  
     scons_parameters = ["build","build_prefix="+build_prefix],
     
+    namespace=[namespace],
 
     # pure python  packages
-    packages= [ pkg_name, pj(pkg_name,'math'), pj(pkg_name,'scenegraph'), pj(pkg_name,'algo'), pj(pkg_name,'gui') ],
+    packages= [ pkg_name, pkg_name+'.math', pkg_name+'.scenegraph', pkg_name+'.algo', pkg_name+'.gui' ],
     # python packages directory
     package_dir= { pkg_name : pj('src',name),
-                   pj( pkg_name,'math' ):pj( 'src', name, 'math' ),
-                   pj( pkg_name,'scenegraph' ):pj( 'src', name, 'scenegraph' ),
-                   pj( pkg_name,'algo' ):pj( 'src', name, 'algo' ),
-                   pj( pkg_name,'gui' ):pj( 'src', name, 'gui' )},
-    # add package platform libraries if any
-    package_data= { pj( pkg_name,'math' ) : ['*.so', '*.dll', '*.pyd'],
-                    pj( pkg_name,'scenegraph' ) : ['*.so', '*.dll', '*.pyd'],
-                    pj( pkg_name,'algo' ) : ['*.so', '*.dll', '*.pyd'],
-                    pj( pkg_name,'gui' ) : ['*.so', '*.dll', '*.pyd'] },
+                   pkg_name+'.math' :pj( 'src', name, 'math' ),
+                   pkg_name+'.scenegraph' :pj( 'src', name, 'scenegraph' ),
+                   pkg_name+'.algo' :pj( 'src', name, 'algo' ),
+                   pkg_name+'.gui' :pj( 'src', name, 'gui' )},
+                   
+    # Add package platform libraries if any
+    include_package_lib = True,
 
     # copy shared data in default OpenAlea directory
     # map of 'destination subdirectory' : 'source subdirectory'
@@ -123,8 +122,27 @@ setup(
 
     
 
-    #Add to PATH environment variable for openalea lib on Windows platform
-    set_env_var=['PATH='+os.path.normpath(pj(config.prefix_dir,'lib'))]
+    # Add shortcuts
+    win_shortcuts = [Shortcut( name='PlantGLViewer', target=pj(config.bin_dir,'pglviewer.exe'), arguments='', group='OpenAlea', icon =pj(config.bin_dir,'pglviewer.exe')), ],
+    freedesk_shortcuts = [Shortcut ( name = 'PlantGLViewer', target = pj(config.bin_dir,'pglviewer.exe'), arguments = '', group = 'OpenAlea', icon='' )],
+
+    # Windows registery (list of (key, subkey, name, value))
+    winreg = [ ('HKCR', '.smb',   '', 'PGLFile') ,
+		       ('HKCR', '.lig',   '', 'PGLFile') ,
+		       ('HKCR', '.geom',  '', 'PGLFile') ,
+		       ('HKCR', '.bgeom', '', 'PGLFile') ,
+		       ('HKCR', 'PGLFile', '', 'PlantGL File') ,
+		       ('HKCR', 'PGLFile\\DefaultIcon', '', pj(config.bin_dir,'pglviewer.exe')+",1") ,
+		       ('HKCR', 'PGLFile\\shell', '', "open") ,
+		       ('HKCR', 'PGLFile\\shell\\open', '', "Open") ,
+		       ('HKCR', 'PGLFile\\shell\\open\\command', '', '"'+pj(config.bin_dir,'pglviewer.exe')+'" "%1"') ,
+		       ('HKCR', 'PGLFile\\shell\\add', '', "Add") ,
+		       ('HKCR', 'PGLFile\\shell\\add\\command', '', '"'+pj(config.bin_dir,'pglviewer.exe')+'" -a "%1"') ,
+		       # ('HKCR', 'PGLFile\\shell\\edit', '', "Edit") ,
+		       # ('HKCR', 'PGLFile\\shell\\edit\\command', '', '"'+pj(config.bin_dir,'pgleditor.exe')+'" "%1"') ,
+		       # ('HKCR', 'PGLFile\\shell\\geom2pov', '', "Translate To Povray") ,
+		       # ('HKCR', 'PGLFile\\shell\\geom2pov\\command', '', '"'+pj(config.bin_dir,'pgl2pov.exe')+'" "%1"') ,
+		       ]
 
     )
 
