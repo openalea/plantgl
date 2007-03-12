@@ -50,6 +50,9 @@
 class QToolButton;
 class QMenu;
 class QProgressBar;
+class QSize;
+class QColor;
+class QPushButton;
 
 
 /* ----------------------------------------------------------------------- */
@@ -195,6 +198,8 @@ protected:
 PGL_BEGIN_NAMESPACE
 
 VIEW_API void drawArrow(QPixmap *,int s=1);
+
+VIEW_API void fillButton(QPushButton* button, const QColor& color,const QSize& defaultsize = QSize(100,40));
 
 PGL_END_NAMESPACE
 

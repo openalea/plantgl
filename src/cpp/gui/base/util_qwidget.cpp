@@ -43,6 +43,8 @@
 #include <qprogressbar.h>
 #include <qpen.h>
 #include <qevent.h>
+#include <qpushbutton.h>
+#include <qbrush.h>
 #include <stdio.h>
 
 
@@ -204,3 +206,19 @@ void PGL::drawArrow(QPixmap * pm,int s){
 }
 
 /* ----------------------------------------------------------------------- */
+
+void PGL::fillButton(QPushButton* button, const QColor& color,const QSize& defaultsize)
+{
+  if(color.isValid()){
+    QPalette palette = button->palette();
+    QBrush brush(color);
+    brush.setStyle(Qt::SolidPattern);
+    palette.setBrush(QPalette::Active, QPalette::Button, brush);
+    button->setPalette(palette);
+
+    QPixmap pixmap(defaultsize);
+    pixmap.fill(color);
+    button->setIcon(pixmap);
+  }
+}
+

@@ -41,6 +41,7 @@
 
 
 #include "materialeditor.h"
+#include "../base/util_qwidget.h"
 
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -224,10 +225,7 @@ ColorButton::~ColorButton(){
 
 void
 ColorButton::setColor(const QColor& c){
-  __color = c;
-  QPixmap col(60,40);
-  col.fill(c);
-  setIcon(QIcon(col));
+	PGL::fillButton(this,c,QSize(60,40));
 }
 
 const QColor& ColorButton::getColor() const{

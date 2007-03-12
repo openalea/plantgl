@@ -58,7 +58,10 @@
 #include "grid.h"
 #include "scenegl.h"
 #include "icons.h"
+#include "util_qwidget.h"
 #include "interface/controlpanelwidget.h"
+
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -148,22 +151,14 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 			  light,SLOT(setDistance(double)) );
 
 
-	QPixmap col(__panel->__LightAmbientButton->size().width()-20,
-				__panel->__LightAmbientButton->iconSize().height());
 	__LightAmbient = light->getAmbient();
-	col.fill(__LightAmbient);
-	__panel->__LightAmbientButton->setIcon(QIcon(col));
-	__panel->__LightAmbientButton->setIconSize(col.size());
+	fillButton(__panel->__LightAmbientButton,__LightAmbient);
 
 	__LightDiffuse = light->getDiffuse();
-	col.fill(__LightDiffuse);
-	__panel->__LightDiffuseButton->setIcon(QIcon(col));
-	__panel->__LightDiffuseButton->setIconSize(col.size());
+	fillButton(__panel->__LightDiffuseButton,__LightDiffuse);
 
 	__LightSpecular = light->getSpecular();
-	col.fill(__LightSpecular);
-	__panel->__LightSpecularButton->setIcon(QIcon(col));
-	__panel->__LightSpecularButton->setIconSize(col.size());
+	fillButton(__panel->__LightSpecularButton,__LightSpecular);
 
 	QObject::connect (light,SIGNAL(ambientChanged(const QColor&)), 	
 			  this,SLOT(setLightAmbient(const QColor&)) );
@@ -240,9 +235,7 @@ void
 ViewControlPanel::setLightAmbient(const QColor& color)
 {
   __LightAmbient = color;
-  QPixmap col(60,30);
-  col.fill(color);
-  __panel->__LightAmbientButton->setIcon(QIcon(col));
+  fillButton(__panel->__LightAmbientButton,color);
 }
 
 void 
@@ -251,10 +244,7 @@ ViewControlPanel::selectLightAmbient()
 
   QColor LightAmbient = QColorDialog::getColor(__LightAmbient,this);
   if(LightAmbient.isValid()){
-    __LightAmbient = LightAmbient;
-    QPixmap col(__panel->__LightAmbientButton->iconSize());
-    col.fill(LightAmbient);
-    __panel->__LightAmbientButton->setIcon(QIcon(col));
+	setLightAmbient(LightAmbient);
     emit lightAmbientChanged(__LightAmbient);
   }
 }
@@ -263,9 +253,7 @@ void
 ViewControlPanel::setLightDiffuse(const QColor& color)
 {
   __LightDiffuse = color;
-  QPixmap col(__panel->__LightAmbientButton->iconSize());
-  col.fill(color);
-  __panel->__LightDiffuseButton->setIcon(QIcon(col));
+  fillButton(__panel->__LightDiffuseButton,color);
 }
 
 void 
@@ -274,10 +262,7 @@ ViewControlPanel::selectLightDiffuse()
 
   QColor LightDiffuse = QColorDialog::getColor(__LightDiffuse,this);
   if(LightDiffuse.isValid()){
-    __LightDiffuse = LightDiffuse;
-    QPixmap col(__panel->__LightAmbientButton->iconSize());
-    col.fill(LightDiffuse);
-    __panel->__LightDiffuseButton->setIcon(QIcon(col));
+	setLightDiffuse(LightDiffuse);
     emit lightDiffuseChanged(__LightDiffuse);
   }
 }
@@ -286,9 +271,7 @@ void
 ViewControlPanel::setLightSpecular(const QColor& color)
 {
   __LightSpecular = color;
-  QPixmap col(__panel->__LightAmbientButton->iconSize());
-  col.fill(color);
-  __panel->__LightSpecularButton->setIcon(QIcon(col));
+  fillButton(__panel->__LightSpecularButton,color);
 }
 
 void 
@@ -297,10 +280,7 @@ ViewControlPanel::selectLightSpecular()
 
   QColor LightSpecular = QColorDialog::getColor(__LightSpecular,this);
   if(LightSpecular.isValid()){
-    __LightSpecular = LightSpecular;
-    QPixmap col(__panel->__LightAmbientButton->iconSize());
-    col.fill(LightSpecular);
-    __panel->__LightSpecularButton->setIcon(QIcon(col));
+	setLightSpecular(LightSpecular);
     emit lightSpecularChanged(__LightSpecular);
   }
 }
