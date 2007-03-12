@@ -21,10 +21,10 @@ if isinstance( platform, Win32 ):
     res=exe_env.RES('icon.rc')
     source.append(res)
 
-CXXFLAGS = list( exe_env['CXXFLAGS'] )
+LINKFLAGS = list( exe_env['LINKFLAGS'] )
 if env['compiler'] == 'mingw':
-	CXXFLAGS.extend(['-mwindows'])
+	LINKFLAGS.extend(['-mwindows'])
 
-exe_env.ALEAProgram( "pglviewer", source, LIBS = LIBRARIES, CXXFLAGS=CXXFLAGS )
+exe_env.ALEAProgram( "pglviewer", source, LIBS = LIBRARIES, LINKFLAGS=LINKFLAGS )
 
 
