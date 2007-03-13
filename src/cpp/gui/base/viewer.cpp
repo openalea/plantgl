@@ -721,27 +721,29 @@ void  Viewer::customEvent(QEvent *e){
 
 void Viewer::send(QEvent * e) {
 #ifdef QT_THREAD_SUPPORT
-    send_event_mutex.lock();
-	ViewEvent * b = dynamic_cast<ViewEvent *>(e);
-	if(b)b->sent_event = true;
-	send_lock_mutex.lock();
-#endif
-    QApplication::postEvent( this, e );
-#ifdef QT_THREAD_SUPPORT
-	send_event_condition.wait(&send_lock_mutex);
-	send_lock_mutex.unlock();
-    send_event_mutex.unlock();
+	send_event_mutex.lock();
+	bool inthread = (QThread::currentThread() == thread());
+	if (!inthread){
+		ViewEvent * b = dynamic_cast<ViewEvent *>(e);
+		if(b)b->sent_event = true;
+		send_lock_mutex.lock();
+		QApplication::postEvent( this, e );
+		send_event_condition.wait(&send_lock_mutex);
+		send_lock_mutex.unlock();
+	}
+	else {
+		QApplication::sendEvent( this, e );
+		delete e;
+	}
+	send_event_mutex.unlock();
+#else
+	QApplication::sendEvent( this, e );
+	delete e;
 #endif
 }
 
 void Viewer::post(QEvent * e) {
-#ifdef QT_THREAD_SUPPORT
-    send_event_mutex.lock();
-#endif
     QApplication::postEvent( this, e );
-#ifdef QT_THREAD_SUPPORT
-    send_event_mutex.unlock();
-#endif
 }
 
 

@@ -64,11 +64,11 @@ ViewerSimpleAppli::exit()
 
 void 
 ViewerSimpleAppli::sendAnEvent(QEvent *e)
-{ startSession(); QApplication::sendEvent(__viewer,e); delete e; }
+{ startSession(); __viewer->send(e); }
 
 void 
 ViewerSimpleAppli::postAnEvent(QEvent *e)
-{ startSession(); QApplication::postEvent(__viewer,e); }
+{ startSession(); __viewer->post(e); }
 
 bool 
 ViewerSimpleAppli::running() 
