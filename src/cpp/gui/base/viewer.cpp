@@ -586,7 +586,20 @@ void Viewer::addFile(const QString& filename)
   appear();
 }
 
+/*
+bool Viewer::event(QEvent *e){
+	if(e->type() >= ViewEvent::eFirstEvent && e->type() <= ViewEvent::eLastEvent)
+		printf("** receive pgl event\n");
+	// else printf("** receive event\n");
+	return QMainWindow::event(e);
+}*/
+
+// #define DEBUG_EVENTDISPATCH
+
 void  Viewer::customEvent(QEvent *e){
+#ifdef DEBUG_EVENTDISPATCH
+	printf("receive Event\n");
+#endif
 #ifdef QT_THREAD_SUPPORT
   bool release_mutex = true;
 #endif
@@ -711,6 +724,9 @@ void  Viewer::customEvent(QEvent *e){
 	if(k->sent_event){
 		while(!send_lock_mutex.tryLock());
 		send_lock_mutex.unlock();
+#ifdef DEBUG_EVENTDISPATCH
+		printf("wakeAll\n");
+#endif
 		send_event_condition.wakeAll();
 	}
   }
@@ -723,12 +739,25 @@ void Viewer::send(QEvent * e) {
 #ifdef QT_THREAD_SUPPORT
 	send_event_mutex.lock();
 	bool inthread = (QThread::currentThread() == thread());
+#ifdef DEBUG_EVENTDISPATCH
+	if(inthread)printf("Event dispatch in same thread.\n");
+	else printf("Event dispatch in concurrent threads.\n");
+#endif
 	if (!inthread){
 		ViewEvent * b = dynamic_cast<ViewEvent *>(e);
 		if(b)b->sent_event = true;
 		send_lock_mutex.lock();
+#ifdef DEBUG_EVENTDISPATCH
+		printf("postEvent\n");
+#endif
 		QApplication::postEvent( this, e );
+#ifdef DEBUG_EVENTDISPATCH
+		printf("Wait\n");
+#endif
 		send_event_condition.wait(&send_lock_mutex);
+#ifdef DEBUG_EVENTDISPATCH
+		printf("Release\n");
+#endif
 		send_lock_mutex.unlock();
 	}
 	else {

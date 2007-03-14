@@ -189,7 +189,6 @@ public slots:
   void displayTrayIcon(bool);
 
 protected:
-
   /// This event handler is called when a key is pressed for this widget. 
   virtual void keyPressEvent ( QKeyEvent * e);
   

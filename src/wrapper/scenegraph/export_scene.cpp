@@ -162,6 +162,26 @@ void sc_save(Scene* s ,const std::string& fname){
 	s->save(fname);
 }
 
+uint32_t sc_index( Scene* sc, Shape3DPtr sh)
+{
+  sc->lock();
+  Scene::iterator it = std::find(sc->getBegin(),sc->getEnd(),sh);
+  if (it ==  sc->getEnd())
+	{sc->unlock(); throw PythonExc_ValueError(); }
+  uint32_t dist = std::distance(sc->getBegin(),it);
+  sc->unlock();
+  return dist;
+}
+
+void sc_remove( Scene* sc, Shape3DPtr sh)
+{
+  sc->lock();
+  Scene::iterator it = std::find(sc->getBegin(),sc->getEnd(),sh);
+  if (it ==  sc->getEnd())
+	{sc->unlock(); throw PythonExc_ValueError(); }
+  sc->remove(it);
+  sc->unlock();
+}
 
 void export_Scene()
 {
@@ -185,6 +205,8 @@ void export_Scene()
     .def("clear", &Scene::clear)
     .def("merge", &Scene::merge)
     .def("find", &sc_find)
+    .def("index", &sc_index)
+    .def("remove", &sc_remove)
     .def("isValid", (bool (Scene::*)() const)&Scene::isValid)
     .def("apply", &Scene::apply)
     .def("applyGeometryFirst", &Scene::applyGeometryFirst)
