@@ -1,6 +1,6 @@
 from openalea.core.external import *
-from vplants.plantgl import math as mt
-from vplants.plantgl import scenegraph as sg
+from openalea.plantgl import math as mt
+from openalea.plantgl import scenegraph as sg
  
 
 def toColor3(val):

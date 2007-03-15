@@ -1,5 +1,5 @@
 from openalea.core.external import *
-from vplants.plantgl.gui import *
+from openalea.plantgl.gui import *
  
 class ViewerStart(Node):
 	"""
