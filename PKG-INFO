@@ -1,5 +1,5 @@
 Metadata-Version: 1.0
-Name: PlantGL
+Name: plantgl
 Version: 2.0.0
 Summary: PlantGL package for OpenAlea.
 Home-page: http://openalea.gforge.inria.fr/dokuwiki/doku.php?id=packages:visualization:plantgl:plantgl
@@ -7,5 +7,6 @@ Author: Frederic Boudon, Christophe Pradal
 Author-email: frederic.boudon@cirad.fr, christophe.pradal@cirad.fr
 License: Cecill-C
 Description: 
+        Plant Geometric Library is a powerfull library to create and display vegetal 3D scene.
         
 Platform: UNKNOWN
