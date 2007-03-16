@@ -104,7 +104,7 @@ ViewFileManager::ViewFileManager(QMainWindow * parent,
 {
 	if(name)setObjectName(name);
     QObject::connect(__GLFrame,SIGNAL(rendererChanged()), this,SLOT(initialize()));
-    __locatToolBar = new ViewLocationBar(QString("Location ToolBar"), parent);
+    __locatToolBar = new ViewLocationBar(QString("Location ToolBar"), parent,"LocationBar");
   __OpenFileMenu = new QMenu( this );
   __ImportFileMenu = new QMenu( this );
   __SaveFileMenu = new QMenu( this );
@@ -857,12 +857,12 @@ void ViewFileManager::loadConfig()
 			if(getSaveCameraReDim())   f_initFile >> camReDim;
 
 			_fileInit.close();
-			if(getSaveBgColor()){
+/*			if(getSaveBgColor()){
 				if(__GLFrame){
 					__GLFrame->setBackGroundColor(QColor(r,g,b));
 					qDebug((QString("FrameGL.setBackgroundColor(&lt;%1,%2,%3&gt;)").arg(r).arg(g).arg(b)).toAscii().data());
 				}
-			}
+			}*/
 			if(getSaveGridVisibility()){
 				bool tabGrid[4];
 				for(int i=0;i<4;i++)
@@ -921,16 +921,16 @@ void ViewFileManager::saveConfig()
 	f_fileConfig << __saveoptions << endl;
 	if(getSaveGridVisibility())f_fileConfig << (int)grid->getXYGrid() << " "<< (int)grid->getYZGrid() << " " 
 	  << (int)grid->getXZGrid() << " " << (int)grid->getAxis() << " " << grid->getGridSize() << endl;
-	if(getSaveBgColor())f_fileConfig << _Color.red() << " "   << _Color.green() << " "  << _Color.blue() <<  endl;
+//	if(getSaveBgColor())f_fileConfig << _Color.red() << " "   << _Color.green() << " "  << _Color.blue() <<  endl;
     if(getSaveStyle()) f_fileConfig << style << endl;
-	if(getSaveWinPos())
+/*	if(getSaveWinPos())
 	  f_fileConfig << x << " "   << y << " "  << w << " "  << h << endl;
 	  
     if(getSaveHistory()){
 	  f_fileConfig << (int)__lastOpenFiles.size() << endl;
 	  for (uint32_t ind=0; ind < __lastOpenFiles.size() ; ind++)
 		f_fileConfig << "\"" << __lastOpenFiles[ind] << "\"" << endl;
-	}
+	}*/
 	_fileConfig.close();
   }
   else if(_fileConfig.exists())

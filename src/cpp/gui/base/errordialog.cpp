@@ -83,6 +83,7 @@ ViewErrorDialog::ViewErrorDialog( QWidget * parent)
 	 ),
 	 __displaylock(false)
 {
+  setObjectName("ErrorLog");
   QWidget * mwidget = new QWidget(this);
   setWidget(mwidget);
   __display = new Ui::MessageDisplayer();

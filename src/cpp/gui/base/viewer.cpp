@@ -76,6 +76,7 @@
 #include "event.h"
 #include "translator.h"
 #include "daemon.h"
+#include "configuration.h"
 #include "util_qwidget.h"
 #include "interface/frameglsizedialog.h"
 
@@ -277,7 +278,7 @@ void Viewer::initialize()
   addToolBarBreak();
 
   /// ToolBar
-  __ToolBar = new ViewToolBar("Viewer ToolBar",this);
+  __ToolBar = new ViewToolBar("View Bar",this,"ViewBar");
   addToolBar(__ToolBar);
 
 
@@ -391,6 +392,26 @@ void Viewer::initialize()
   QObject::connect(__GLFrame,SIGNAL(rendererChanged()),
            this,SLOT(initializeRenderer()) );
 
+  ViewerSettings settings;
+  settings.beginGroup("Viewer");
+  qDebug(("Try to retrieve "+ViewerSettings::getAppliName()+" Application Data.").toAscii().data());
+  int version = settings.value("StateVersion",-1).toInt();
+  if(version != -1)
+  {
+	QRect rect = settings.value("Geometry",geometry()).toRect();
+	QRect maxrect = QApplication::desktop()->geometry();
+	if( maxrect.contains(rect) && rect.width() > 100 && rect.height() > 100){
+		setGeometry(rect);
+		qDebug((QString("MainWindow.setGeometry(%1,%2,%3,%4)")
+			.arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height())).toAscii().data());
+	}
+
+	QByteArray b = settings.value("State").toByteArray();
+	restoreState(b,version);
+    qDebug("Restore State");
+  }
+  else qDebug("Cannot restore State");
+  settings.endGroup();
 }
 
 void 
@@ -780,7 +801,14 @@ void Viewer::closeEvent ( QCloseEvent * e)
 {
   if(ViewerMessageBox&&ViewerMessageBox->isVisible())ViewerMessageBox->close();
   __FileMenu->saveConfig();
-  __GLFrame->getSceneRenderer()->endEvent();
+  ViewerSettings settings;
+  settings.beginGroup("Viewer");
+  int version = 0;
+  settings.setValue("StateVersion",version);
+  settings.setValue("State",saveState(version));
+  settings.setValue("Geometry",geometry());
+  settings.endGroup();
+  __GLFrame->endEvent();
   __ErrorDialog->registerQtMsg(false);
   e->accept();
 }

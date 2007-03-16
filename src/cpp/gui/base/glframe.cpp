@@ -75,6 +75,7 @@
 #include "fog.h"
 #include "errordialog.h"
 #include "util_qwidget.h"
+#include "configuration.h"
 #include "interface/gloptions.h"
 
 #include "event.h"
@@ -146,15 +147,32 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   setAcceptDrops(TRUE);
   setFocusPolicy(Qt::StrongFocus);
 
+  ViewerSettings settings;
+  settings.beginGroup("FrameGL");
+  __BgColor = settings.value("BgColor",__BgColor).value<QColor>();
+  setBackGroundColor(__BgColor);
+  settings.endGroup();
+
 }
 
 
 /// Release allocated resources
 ViewGLFrame::~ViewGLFrame() {
+
   if(__scene)delete __scene;
-#ifdef  GEOM_DEBUG
+#ifdef  PGL_DEBUG
     cout << "GL Frame deleted" << endl;
 #endif
+}
+
+void ViewGLFrame::endEvent()
+{
+  ViewerSettings settings;
+  settings.beginGroup("FrameGL");
+  settings.setValue("BgColor",__BgColor);
+  setBackGroundColor(__BgColor);
+  settings.endGroup();
+  if(__scene)__scene->endEvent();
 }
 
 /*  ------------------------------------------------------------------------ */

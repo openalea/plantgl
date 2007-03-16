@@ -56,6 +56,7 @@ ViewBrowser::ViewBrowser(QWidget * parent, const QString& title)
     __empty(true)
 {
   setWindowTitle(title);
+  setObjectName(title);
   QWidget * mwidget = new QWidget(this);
   setWidget(mwidget);
   __browser = new Ui::QBrowser();

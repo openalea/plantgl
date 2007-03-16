@@ -198,6 +198,8 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   void rendererStatus();
 
+  void endEvent();
+
   public slots:
 
   void printProjectionSize();
