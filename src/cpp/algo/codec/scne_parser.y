@@ -2176,7 +2176,7 @@ MaterialFieldList:
 
 ImageTextureFieldList:
    ImageTextureFieldList TokFileName Filename {
-     if($3)*$3 = TOOLS(absolute_dirname)(*$3);
+     if($3)*$3 = TOOLS(absolute_filename)(*$3);
      GEOM_PARSER_SET_FIELD($1,FileName,$3); $$=$1;
    }
  | ImageTextureFieldList TokAmbient Color3 {
