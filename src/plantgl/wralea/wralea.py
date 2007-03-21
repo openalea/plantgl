@@ -8,9 +8,9 @@ def register_packages(pkgmanager):
     """
     metainfo={ 'version' : '0.0.1',
                'license' : 'CECILL-C',
-               'authors' : 'F. Boudon',
+               'authors' : 'F. Boudon, C. Pradal',
                'institutes' : 'INRIA/CIRAD',
-               'description' : 'PGL Object Generator nodes.',
+               'description' : 'PlantGL Object Generator nodes.',
                'url' : 'http://openalea.gforge.inria.fr'
                }
  
@@ -34,10 +34,8 @@ def register_packages(pkgmanager):
                   category = "Vizualisation", 
                   nodemodule = "viewernode",
                   nodeclass = "ViewerStart",
-                  
                   widgetmodule = None,
                   widgetclass = None,
-                 
                   )
     package.add_factory( nf )
     
@@ -54,3 +52,46 @@ def register_packages(pkgmanager):
     package.add_factory( nf )
 
     pkgmanager.add_package(package)
+
+
+    metainfo={ 'version' : '0.0.1',
+               'license' : 'CECILL',
+               'authors' : 'C. Pradal',
+               'institutes' : 'INRIA/CIRAD',
+               'description' : 'Geometric operators',
+               'url' : 'http://openalea.gforge.inria.fr'
+               }
+    package = Package("Geometric Operator", metainfo)
+    
+    nf = Factory( name= "random sample", 
+                  description= "Create random distribution", 
+                  category = "Stand", 
+                  nodemodule = "frog",
+                  nodeclass = "RandomSample",
+                  )
+    package.add_factory( nf )
+    nf = Factory( name= "regular sample", 
+                  description= "Create regular distribution", 
+                  category = "Stand", 
+                  nodemodule = "frog",
+                  nodeclass = "RegularSample",
+                  )
+    package.add_factory( nf )
+    nf = Factory( name= "multiply", 
+                  description= "Apply a set of transformation to a shape", 
+                  category = "Vizualisation", 
+                  nodemodule = "frog",
+                  nodeclass = "Multiply",
+                  )
+    package.add_factory( nf )
+    
+    nf = Factory( name= "load", 
+                  description= "Import GEOM scene", 
+                  category = "Vizualisation", 
+                  nodemodule = "frog",
+                  nodeclass = "Load",
+                  )
+    package.add_factory( nf )
+
+    pkgmanager.add_package(package)
+

@@ -36,3 +36,6 @@ def define_package(package):
     package.add_factory( nf )
     nf = generate_factory("EulerRotated")
     package.add_factory( nf )
+    nf = generate_factory("Sphere")
+    package.add_factory( nf )
+

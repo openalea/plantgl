@@ -207,3 +207,20 @@ class EulerRotated(Node):
 		return (sg.EulerRotated( self.get_input_by_key( 'azimuth' ),
 								 self.get_input_by_key( 'elevation' ),
 								 self.get_input_by_key( 'roll' ), geometry),)
+
+class Sphere(SOR):
+    """
+    PGL Oject Generator
+    """
+
+    def __init__(self):
+        SOR.__init__(self)
+        self.add_input( name='radius', interface=IFloat, value=0.5 )
+        self.add_input( name='stacks', interface=IInt, value=6 )
+
+    def __call__(self, inputs):
+        """ inputs is the list of input values """		
+        return (sg.Sphere( radius = self.get_input_by_key( 'radius' ),
+                           slices = self.get_input_by_key( 'slices' ),
+                           stacks = self.get_input_by_key( 'stacks' ) ),)
+
