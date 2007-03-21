@@ -2,7 +2,7 @@ from openalea.core.external import *
 from openalea import plantgl as plantgl
 from openalea.plantgl import math, scenegraph, gui
 from openalea.plantgl.scenegraph import *
-
+import random
 
 def load( fn ):
     return list(scenegraph.Scene(fn))
@@ -18,13 +18,24 @@ def regular_sample( nx= 4, ny= 5, space_x= 5, space_y= 4 ):
   
 def multiply( positions, group ):
     " return a scene by translated each group by a given position "
-    size= 900.
+    # compute the bbox
+    bbox= BoundingBox(group[0])
+    for shape in group:
+        bbox+= BoundingBox(shape)
+    size= max(bbox.getSize()[0], bbox.getSize()[1])
+
     scene= Scene()
-    [[scene.add( Shape(Translated(pos*size,s.geometry), s.appearance) ) 
-       for s in group ] for pos in positions ]
+    z_axis= math.Vector3(0,0,1)
+    for pos in positions:
+        angle= random.uniform(0,random.TWOPI)
+        [scene.add( Shape( Translated( pos*size, 
+                                       AxisRotated( z_axis, 
+                                                    angle, 
+                                                    s.geometry ) ), 
+                           s.appearance) ) for s in group ] 
     return scene
 
-class Load(Node):
+class ImportScene(Node):
     def __init__(self):
         Node.__init__(self)
         self.add_input( name = 'filename', interface = IFileStr )
@@ -75,7 +86,7 @@ class RegularSample(Node):
         size_y= self.get_input_by_key( 'col_size' )
         return (regular_sample(nx,ny,size_x, size_y),)
 
-class Multiply(Node):
+class Planter(Node):
     def __init__(self):
         Node.__init__(self)
         self.add_input( name = 'transformations', 

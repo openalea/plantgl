@@ -77,19 +77,19 @@ def register_packages(pkgmanager):
                   nodeclass = "RegularSample",
                   )
     package.add_factory( nf )
-    nf = Factory( name= "multiply", 
+    nf = Factory( name= "planter", 
                   description= "Apply a set of transformation to a shape", 
                   category = "Vizualisation", 
                   nodemodule = "frog",
-                  nodeclass = "Multiply",
+                  nodeclass = "Planter",
                   )
     package.add_factory( nf )
     
-    nf = Factory( name= "load", 
+    nf = Factory( name= "import scene", 
                   description= "Import GEOM scene", 
                   category = "Vizualisation", 
                   nodemodule = "frog",
-                  nodeclass = "Load",
+                  nodeclass = "ImportScene",
                   )
     package.add_factory( nf )
 
