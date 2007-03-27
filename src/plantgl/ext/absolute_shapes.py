@@ -74,11 +74,8 @@ class AShape3D( object ):
             describes the geometry of the object.
             
         The concept of pos property: pos attribute for cylinder, arrow, cone, pyramid, etc. corresponds to one end of the object,
-        whereas for a box, sphere, ring, etc. it corresponds to the center of the object. Whenever it is changed the position
-        if the object in the Viewer is updated (if the object is visible and if the INSTANT_UPDATE_VISUALISATION_POLICY==True). 
+        whereas for a box, sphere, ring, etc. it corresponds to the center of the object.
         
-        The concept of visible property: to temporary make the object invisible in the current scene set the visible to False.
-        If you want to wipe the object from the memory: make it invisible  and then use del to remove reference to the object.
         
     """
     def __init__( self, pos=ASHAPE3D_STANDARD_POS,  axis=ASHAPE3D_STANDARD_AXIS, roll=ASHAPE3D_STANDARD_ROLL,
@@ -221,7 +218,7 @@ class ASphere( AShape3D ):
         """
         keys.update({ "radius": radius })
         self._common_init( **keys )
-        AShape3D.__init__( self, scale=pgl.Vector3(radius,radius,radius), geometry=ASPHERE_PRIMITIVE, **keys )
+        AShape3D.__init__( self, scale=pgl.Vector3(2*radius,2*radius,2*radius), geometry=ASPHERE_PRIMITIVE, **keys )
  
     def _common_init( self, **keys ):
         self._radius = keys[ "radius" ]
@@ -230,7 +227,8 @@ class ASphere( AShape3D ):
         """Property helper method.
         """
         if radius != self._radius:
-            self.scale = pgl.Vector3( radius, radius, radius )
+            self.scale = pgl.Vector3( 2*radius, 2*radius, 2*radius )
+            self._radius = radius
     def _get_radius( self):
         """Property helper method.
         """
@@ -283,8 +281,8 @@ class ACylinder( AShape3D ):
 
         """
         keys.update( {"radius": radius, "axis": axis} )
-        self._common_init( keys )
-        AShape3D.__init__( self,  scale=pgl.Vector3(radius,radius,self._height), geometry=ACYLINDER_PRIMITIVE, axis=axis, **keys )
+        self._common_init( **keys )
+        AShape3D.__init__( self,  scale=pgl.Vector3(2*radius,2*radius,self._height), geometry=ACYLINDER_PRIMITIVE,  **keys )
 
     def _common_init( self, **keys ):
         """
@@ -301,7 +299,7 @@ class ACylinder( AShape3D ):
         """
         if radius != self._radius:
             self._radius = radius
-            self.scale = pgl.Vector3( self._radius, self._radius, self._height )
+            self.scale = pgl.Vector3( 2*self._radius, 2*self._radius, self._height )
     def _get_radius( self):
         """Property helper method.
         """
@@ -315,7 +313,7 @@ class ACylinder( AShape3D ):
         #TODO think about norm(self._axis) height relation. Shouldn't it be updated? 
         if height != self._height:
             self._height = height
-            self.scale = pgl.Vector3( self.radius, self.radius, self._height )
+            self.scale = pgl.Vector3( 2*self.radius, 2*self.radius, self._height )
     def _get_height( self):
         """Property helper method.
         """
@@ -357,8 +355,8 @@ class AArrow( ACylinder ):
         """
         keys.update( {"radius": radius, "axis": axis} )
         self._common_init( **keys )
-        AShape3D.__init__( self,  scale=pgl.Vector3(self.radius,self.radius,self.height),
-                         geometry=pgl.Group([self.shaft,self.head]), axis=axis, **keys )
+        AShape3D.__init__( self,  scale=pgl.Vector3(2*self.radius,2*self.radius,self.height),
+                         geometry=pgl.Group([self.shaft,self.head]), **keys )
 
     def _common_init( self, **keys ):
         """
@@ -379,3 +377,68 @@ class AArrow( ACylinder ):
 
     height = property( fget=ACylinder._get_height, fset=ACylinder._set_height, doc="Height of an arrow." )
     """Height of an arrow."""
+
+
+class ACenterPolygon( AShape3D ):
+    """ACenterPolygon implementation. ACenterPolygon is a wrapper for a FaceSet. Currently no
+    useful operations to scale, rotate, roll, translate were redefined so it is more container for
+    PlantGL FaceSet object. The default ones are still defined but they are not very usfull. The polygon
+    is presented as a set of triangles. One vertex of each triangle is a baricenter of all points positions.
+    the two others vertices are taken from ordered list of points obtained from init.
+    
+    ACenterPolygons' individual properties:
+        * pos : Vector3 convertable
+             Property: the shared translation T of each point creating a surface,
+        * axis : Vector3 convertable
+            Property:  the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+        * roll : Vector3 convertable
+            Property:  the shared "roll angle" R of each point creating a surface around axis,
+        * points : Vector3 convertable tuple
+            Property: the tuple of points positions,
+
+    ACenterPolygons' individual properties:        
+        * update_k_point : index
+            Updates the point in the polygon
+        * get_center : Vector3
+            Returns the center of ACenterPolygon
+
+    It also inherits properties from AShape3D object, hance look for possible properties in
+    AShape3D object.
+    """
+    
+    def __init__( self,  **keys ):
+        """ Default constructor.
+        
+        Parameters:
+            pos : Vector3 convertable
+                the shared translation T of each point creating a surface,
+            axis : Vector3 convertable
+                the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+            roll : Vector3 convertable
+                the shared "roll angle" R of each point creating a surface around axis,
+            points : Vector3 convertable tuple
+                the list of *ordered* points positions,
+
+        """
+        self._common_init( **keys )
+        AShape3D.__init__( self,  
+                         geometry=pgl.FaceSet( self._points, self._indexes ), axis=axis, **keys )
+
+    def _common_init( self, **keys ):
+        """
+        """
+        if len( keys[ "points" ] ) < 3:
+            raise Exception("ACenterPolygon: Too few points in..")
+       
+        self._indexes = []
+        self._points = pgl.Point3Array( [pgl.Vector3()]+keys[ "points" ] )
+        for i in xrange( 1, len(keys[ "points" ] ) ):
+            self._points[ 0 ] += self._points[ i ]
+            self._indexes.append( pgl.Index( [0,i, i+1] ) )
+        self._points[ 0 ] += self._points[ len( keys[ "points" ] )  ]   
+        self._indexes.append( pgl.Index( [0,len(keys[ "points" ] ), 1] ))
+        self._points[ 0 ] = self._points[ 0 ]/len( keys[ "points" ] )
+        self._indexes = pgl.IndexArray( self._indexes )
+        
+    
+    

@@ -101,6 +101,9 @@ class AShape3DI( absolute_shapes.AShape3D ):
         
         The concept of visible property: to temporary make the object invisible in the current scene set the visible to False.
         If you want to wipe the object from the memory: make it invisible  and then use del to remove reference to the object.
+
+        eg. The concept of pos property: pos attribute for cylinder, arrow, cone, pyramid, etc. corresponds to one end of the object,
+        whereas for a box, sphere, ring, etc. it corresponds to the center of the object. 
         
     """
     def __init__( self, visible=ASHAPE3D_STANDARD_VISIBILITY, **keys ):
@@ -207,7 +210,7 @@ class ASphereI( AShape3DI, absolute_shapes.ASphere ):
         """
         keys.update( {"radius":radius} ) 
         self._common_init( **keys )
-        AShape3DI.__init__( self, scale=pgl.Vector3(self.radius,self.radius,self.radius), geometry=absolute_shapes.ASPHERE_PRIMITIVE, **keys )
+        AShape3DI.__init__( self, scale=pgl.Vector3(2*self.radius,2*self.radius,2*self.radius), geometry=absolute_shapes.ASPHERE_PRIMITIVE, **keys )
         #self._radius = radius
         
     
@@ -228,7 +231,7 @@ class ACylinderI( absolute_shapes.ACylinder, AShape3DI ):
         #self._radius = radius
         keys.update( {"radius": radius, "axis": axis} )
         absolute_shapes.ACylinder._common_init( self, **keys  )
-        AShape3DI.__init__( self,  scale=pgl.Vector3(self.radius,self.radius,self.height), geometry=absolute_shapes.ACYLINDER_PRIMITIVE,  **keys )
+        AShape3DI.__init__( self,  scale=pgl.Vector3(2*self.radius,2*self.radius,self.height), geometry=absolute_shapes.ACYLINDER_PRIMITIVE,  **keys )
 
 class AArrowI( absolute_shapes.AArrow, AShape3DI ):
     """AArrowI implementation with binding to Viewer. AArrow is a shape build up from the cylinder and cone.
@@ -250,6 +253,53 @@ class AArrowI( absolute_shapes.AArrow, AShape3DI ):
         #    AARROW_HEAD_PROPORTION,AARROW_HEAD_PROPORTION,1-AARROW_SHAFT_PROPORTION), ACONE_PRIMITIVE) )
         keys.update( {"radius": radius, "axis": axis} )
         self._common_init( **keys )
-        AShape3DI.__init__( self,  scale=pgl.Vector3( self.radius, self.radius, self.height),
+        AShape3DI.__init__( self,  scale=pgl.Vector3( 2*self.radius, 2*self.radius, self.height),
                          geometry=pgl.Group([self.shaft,self.head]),  **keys )
 
+
+class ACenterPolygonI( AShape3DI, absolute_shapes.ACenterPolygon ):
+    """ACenterPolygon implementation. ACenterPolygon is a wrapper for a FaceSet. Currently no
+    useful operations to scale, rotate, roll, translate were redefined so it is more container for
+    PlantGL FaceSet object. The default ones are still defined but they are not very usfull. The polygon
+    is presented as a set of triangles. One vertex of each triangle is a baricenter of all points positions.
+    the two others vertices are taken from ordered list of points obtained from init.
+    
+    ACenterPolygons' individual properties:
+        * pos : Vector3 convertable
+             Property: the shared translation T of each point creating a surface,
+        * axis : Vector3 convertable
+            Property:  the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+        * roll : Vector3 convertable
+            Property:  the shared "roll angle" R of each point creating a surface around axis,
+        * points : Vector3 convertable tuple
+            Property: the tuple of points positions,
+
+    ACenterPolygons' individual properties:        
+        * update_k_point : index
+            Updates the point in the polygon
+        * get_center : Vector3
+            Returns the center of ACenterPolygon
+
+    It also inherits properties from AShape3D object, hance look for possible properties in
+    AShape3D object.
+    """
+    
+    def __init__( self,  **keys ):
+        """ Default constructor.
+        
+        Parameters:
+            pos : Vector3 convertable
+                the shared translation T of each point creating a surface,
+            axis : Vector3 convertable
+                the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+            roll : Vector3 convertable
+                the shared "roll angle" R of each point creating a surface around axis,
+            points : Vector3 convertable tuple
+                the list of *ordered* points positions,
+
+        """
+        absolute_shapes.ACenterPolygon._common_init( self, **keys )
+        AShape3DI.__init__( self,  
+                         geometry=pgl.FaceSet( self._points, self._indexes ),  **keys )
+    
+    
