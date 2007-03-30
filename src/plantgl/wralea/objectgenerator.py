@@ -10,9 +10,7 @@ def toVector3(val):
 	return mt.Vector3(val[0],val[1],val[2])
 
 class Material(Node):
-	"""
-	PGL Oject Generator
-	"""
+        sg.Material.__doc__
 	
 	def __init__(self):
 		
@@ -37,40 +35,45 @@ class Material(Node):
 
 
 class Shape(Node):
-	"""
-	PGL Oject Generator
-	"""
-	
-	def __init__(self):
-		
-		Node.__init__(self)
-		
-		self.add_input( name='geometry', interface=None)
-		self.add_input( name='appearance', interface=None )
-		self.add_input( name='id', interface=IInt(min=0), value=0 )
-		self.add_output( name = "shape", interface = None) 
-	
-	def __call__(self, inputs):
-		""" inputs is the list of input values """		
-		return (sg.Shape(self.get_input_by_key( 'geometry' ),
-					    self.get_input_by_key( 'appearance' ),
-					    self.get_input_by_key( 'id' )),)
+    sg.Material.__doc__
+
+    def __init__(self):
+
+        Node.__init__(self)
+        self.add_input( name='geometry', interface=None)
+        self.add_input( name='appearance', interface=None )
+        self.add_input( name='id', interface=IInt(min=0), value=0 )
+        self.add_output( name = "shape", interface = None) 
+
+    def __call__(self, inputs):
+        """ inputs is the list of input values """		
+        geometry= self.get_input_by_key( 'geometry' )
+        appearance= self.get_input_by_key( 'appearance' )
+        id= self.get_input_by_key( 'id' )
+
+        if (not geometry) or (not appearance):
+            return
+
+        return ( sg.Shape(geometry, appearance, id) ,)
 
 
 class Scene(Node):
-	"""
-	PGL Oject Generator
-	"""
-	
-	def __init__(self):
-		
-		Node.__init__(self)
-		
-		self.add_output( name = "scene", interface = None) 
-	
-	def __call__(self, inputs):
-		""" inputs is the list of input values """		
-		return (sg.Scene(),)
+    sg.Scene.__doc__
+
+    def __init__(self):
+
+        Node.__init__(self)
+
+        self.add_input( name = "objects", interface = None ) 
+        self.add_output( name = "scene", interface = None) 
+
+    def __call__(self, inputs):
+        """ inputs is the list of input values """		
+        scene= inputs[0]
+        if scene:
+            return (sg.Scene(scene),)
+        else:
+            return sg.Scene()
 
 
 class AddToScene(Node):
@@ -94,9 +97,6 @@ class AddToScene(Node):
 
 
 class SOR(Node):
-	"""
-	PGL Oject Generator
-	"""
 	
 	def __init__(self):
 		Node.__init__(self)
@@ -104,9 +104,7 @@ class SOR(Node):
 		self.add_output( name = "geometry", interface = None) 
 
 class Cone(SOR):
-	"""
-	PGL Oject Generator
-	"""
+        sg.Cone.__doc__
 	
 	def __init__(self):
 		SOR.__init__(self)
@@ -122,9 +120,7 @@ class Cone(SOR):
 					    slices = self.get_input_by_key( 'slices' )),)
 
 class Cylinder(Cone):
-	"""
-	PGL Oject Generator
-	"""
+        sg.Cylinder.__doc__
 	
 	def __init__(self):
 		Cone.__init__(self)
@@ -137,9 +133,7 @@ class Cylinder(Cone):
 					    slices = self.get_input_by_key( 'slices' )),)
 
 class Frustum(Cone):
-	"""
-	PGL Oject Generator
-	"""
+        sg.Frustum.__doc__
 	
 	def __init__(self):
 		Cone.__init__(self)
@@ -154,9 +148,7 @@ class Frustum(Cone):
 					    slices = self.get_input_by_key( 'slices' )),)
 
 class Paraboloid(Cone):
-	"""
-	PGL Oject Generator
-	"""
+        sg.Paraboloid.__doc__
 	
 	def __init__(self):
 		Cone.__init__(self)
@@ -173,45 +165,46 @@ class Paraboloid(Cone):
 					    stacks = self.get_input_by_key( 'stacks' )),)
 
 class Translated(Node):
-	"""
-	PGL Oject Generator
-	"""
-	
-	def __init__(self):
-		Node.__init__(self)
-		self.add_input( name='translation', interface=ITuple3, value=(0,0,0) )
-		self.add_input( name='geometry', interface=None )
-		self.add_output( name='geometry', interface=None)
-	
-	def __call__(self, inputs):
-		""" inputs is the list of input values """	
-		geometry = 	self.get_input_by_key( 'geometry' )
-		return (sg.Translated( toVector3(self.get_input_by_key( 'translation' )), geometry),)
+    sg.Translated.__doc__
+
+    def __init__(self):
+        Node.__init__(self)
+        self.add_input( name='x', interface=IFloat, value=0.)
+        self.add_input( name='y', interface=IFloat, value=0.)
+        self.add_input( name='z', interface=IFloat, value=0.)
+        self.add_input( name='geometry', interface=None )
+        self.add_output( name='translated', interface=None)
+
+    def __call__(self, inputs):
+        """ inputs is the list of input values """	
+        t= mt.Vector3(*inputs[0:2])
+        geometry = self.get_input_by_key( 'geometry' )
+        return (sg.Translated( t, geometry),)
 
 class EulerRotated(Node):
-	"""
-	PGL Oject Generator
-	"""
-	
-	def __init__(self):
-		Node.__init__(self)
-		self.add_input( name='azimuth', interface=IFloat, value=0. )
-		self.add_input( name='elevation', interface=IFloat, value=0. )
-		self.add_input( name='roll', interface=IFloat, value=0. )
-		self.add_input( name='geometry', interface=None )
-		self.add_output( name='geometry', interface=None)
-	
-	def __call__(self, inputs):
-		""" inputs is the list of input values """	
-		geometry = 	self.get_input_by_key( 'geometry' )
-		return (sg.EulerRotated( self.get_input_by_key( 'azimuth' ),
-								 self.get_input_by_key( 'elevation' ),
-								 self.get_input_by_key( 'roll' ), geometry),)
+        sg.EulerRotated.__doc__
+
+        def __init__(self):
+            Node.__init__(self)
+            self.add_input( name='azimuth', interface=IFloat, value=0. )
+            self.add_input( name='elevation', interface=IFloat, value=0. )
+            self.add_input( name='roll', interface=IFloat, value=0. )
+            self.add_input( name='geometry', interface=None )
+            self.add_output( name='geometry', interface=None)
+
+        def __call__(self, inputs):
+            """ inputs is the list of input values """	
+            geometry = self.get_input_by_key( 'geometry' )
+
+            if not geometry:
+                return
+
+            return (sg.EulerRotated( self.get_input_by_key( 'azimuth' ),
+                                     self.get_input_by_key( 'elevation' ),
+                                     self.get_input_by_key( 'roll' ), geometry),)
 
 class Sphere(SOR):
-    """
-    PGL Oject Generator
-    """
+    sg.Sphere.__doc__
 
     def __init__(self):
         SOR.__init__(self)
