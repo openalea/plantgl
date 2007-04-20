@@ -49,9 +49,11 @@
 TOOLS_USING_NAMESPACE
 
 ViewerThreadedAppli::ViewerThreadedAppli() : 
-			 ViewerAppli(), QThread(),
-		     __appli(NULL),
-			 __viewer(NULL) { launch();}
+			 ViewerAppli(), QThread()
+{ 
+	// printf("Threaded Appli\n");
+	launch();
+}
 
 
 ViewerThreadedAppli::~ViewerThreadedAppli(){ 
@@ -86,17 +88,6 @@ ViewerThreadedAppli::exit() {
 	else return false;
 }
 
-void 
-ViewerThreadedAppli::sendAnEvent(QEvent *e) {
-	startSession();
-	__viewer.get()->send(e);
-}
-
-void 
-ViewerThreadedAppli::postAnEvent(QEvent *e) {
-	startSession();
-	__viewer.get()->post(e);
-}
 
 bool 
 ViewerThreadedAppli::running() {
@@ -133,31 +124,27 @@ void
 ViewerThreadedAppli::init(){
     int argc = 0;
     char ** argv = NULL;
-    if(!__appli)  __appli.set(new QApplication(argc,argv));
-    if(!__viewer) {
-	   __viewer.set(build());
-    }
+    if(!qApp)  new QApplication(argc,argv);
+    if(!getViewer()) build();
 }
 
 void 
 ViewerThreadedAppli::cleanup(){
-	if(__viewer)delete __viewer;
-	if(__appli)delete __appli;
-	__viewer.set(NULL);
-	__appli.set(NULL);
+	deleteViewer();
+	if(qApp)delete qApp;
 }
 
 void 
 ViewerThreadedAppli::exec(){
-  if(__viewer.get() == NULL){
+  if(getViewer() == NULL){
     std::cerr << "Null Viewer !!" << std::endl;
     return;
   }
-      __viewer.get()->setVisible(true);
-	  __viewer.get()->displayTrayIcon(false);
-	  __appli.get()->exec();
-	  __viewer.get()->saveConfig();
-	  __selection = __viewer.get()->getSelection();
+      getViewer()->setVisible(true);
+	  getViewer()->displayTrayIcon(false);
+	  qApp->exec();
+	  getViewer()->saveConfig();
+	  __selection = getViewer()->getSelection();
 }
 
 void 

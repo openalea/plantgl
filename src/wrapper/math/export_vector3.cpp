@@ -30,8 +30,9 @@
  */
 
 
-#include "../util/exception.h"
 #include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
+#include "../util/tuple_converter.h"
 
 #include <math/util_vector.h>
 #include <math/util_math.h>
@@ -161,6 +162,21 @@ struct v3sph_pickle_suite : boost::python::pickle_suite
 	}
 };
 
+/*
+boost::python::tuple extract_tuple_from_v3(const Vector3& v){
+	return make_tuple(v.x(),v.y(),v.z());
+}
+
+struct v3_to_tuple
+{
+	static PyObject* convert(const Vector3& v){
+		return incref(make_tuple(v.x(),v.y(),v.z()).ptr());
+	}
+};*/
+
+
+
+
 void export_Vector3()
 {
   {
@@ -206,6 +222,9 @@ void export_Vector3()
     .add_static_property( "OZ", make_getter(Vector3::OZ))
 	.def_pickle(v3_pickle_suite());
 	;
+
+	// boost::python::to_python_converter<Vector3,v3_to_tuple>();
+   pgltuple_from_tuple<Vector3,3>();
 
   class_<Vector3::Cylindrical>("Cylindrical", init<const Vector3&>("Cylindrical(Vector3 v)",args("v")))
     .def(init< real_t,real_t,real_t>("Cylindrical(real_t radius, real_t theta, real_t z)",args("radius","theta","z")))

@@ -40,7 +40,7 @@
 
 #include "../gui_config.h"
 #include <math/util_vector.h>
-
+#include "util_threadeddata.h"
 #include <string>
 #include <vector>
 
@@ -54,7 +54,9 @@ class ViewerAppli {
 
 protected:
 	static ViewerBuilder * VIEWERBUILDER;
-	Viewer * build();
+	static ThreadedData<Viewer> VIEWER;
+
+	static Viewer * build();
 
 public:
 	static void setBuilder(ViewerBuilder * builder);
@@ -62,11 +64,15 @@ public:
 	ViewerAppli();
 	virtual ~ViewerAppli();
 
+	static Viewer * getViewer();
+	static void deleteViewer();
+
+	void sendAnEvent(QEvent *e) ;
+	void postAnEvent(QEvent *e) ;
+
 	virtual void startSession()= 0;
 	virtual bool stopSession() = 0;
 	virtual bool exit() = 0;
-	virtual void sendAnEvent(QEvent *e) = 0;
-	virtual void postAnEvent(QEvent *e) = 0;
 
     virtual bool running() = 0;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) = 0;
@@ -97,6 +103,7 @@ public:
 									  const TOOLS(Vector3)& dy,
 									  int sx, int sy);
 	virtual ViewZBuffer * grabZBuffer();
+
 
 };
 

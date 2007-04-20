@@ -30,8 +30,8 @@
  */
 
 
-#include "../util/exception.h"
 #include <boost/python.hpp>
+#include "../util/tuple_converter.h"
 
 #include <math/util_vector.h>
 #include <math/util_math.h>
@@ -193,13 +193,6 @@ struct v2_pickle_suite : boost::python::pickle_suite
 	}
 };
 
-struct v3pol_pickle_suite : boost::python::pickle_suite
-{
-	static tuple getinitargs(Vector2::Polar const& v)
-	{
-		return make_tuple(v.radius,v.theta);
-	}
-};
 
 void export_Vector2()
 {
@@ -244,6 +237,8 @@ void export_Vector2()
 
 	.def_pickle(v2_pickle_suite());
    ;
+
+   pgltuple_from_tuple<Vector2,2>();
 
   class_<Vector2::Polar>("Polar", init<const Vector2&>("Polar(Vector2 v)", args("v")))
     .def(init< real_t,real_t>("Polar(real_t radius, real_t theta)",args("radius","theta")))

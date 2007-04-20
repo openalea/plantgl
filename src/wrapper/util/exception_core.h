@@ -38,6 +38,9 @@ void index_trans(const PythonExc_IndexError& err)
 void value_trans(const PythonExc_ValueError& err)
 { PyErr_SetString(PyExc_ValueError, err.error_str); }
 
+void type_trans(const PythonExc_TypeError& err)
+{ PyErr_SetString(PyExc_TypeError, err.error_str); }
+
 void key_trans(const PythonExc_KeyError& err)
 { PyErr_SetString(PyExc_KeyError, err.error_str); }
 
@@ -48,6 +51,7 @@ void define_stl_exceptions()
 {
   boost::python::register_exception_translator<PythonExc_IndexError>(&index_trans);
   boost::python::register_exception_translator<PythonExc_ValueError>(&value_trans);
+  boost::python::register_exception_translator<PythonExc_TypeError>(&type_trans);
   boost::python::register_exception_translator<PythonExc_KeyError>(&key_trans);
   boost::python::register_exception_translator<PythonExc_StopIteration>(&stopiteration_trans);
 }

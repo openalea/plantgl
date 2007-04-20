@@ -2,7 +2,7 @@
 #include "../util/extract_list.h"
 
 #define EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
-ARRAY##Ptr PREFIX##_fromlist( boost::python::object l ) \
+ARRAY##Ptr extract_##PREFIX##_from_list( boost::python::object l ) \
 { \
   extract<int> e_int( l ); \
   if( e_int.check() )\
@@ -10,7 +10,44 @@ ARRAY##Ptr PREFIX##_fromlist( boost::python::object l ) \
     return new ARRAY( e_int() );\
     }\
   return extract_pgllist<ARRAY>(l).toRCPtr(); \
-}\
+} \
+struct PREFIX##_from_list { \
+  PREFIX##_from_list() { \
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< ARRAY >()); \
+  } \
+  static void* convertible(PyObject* py_obj){ \
+    if( !PySequence_Check( py_obj ) ) return 0; \
+    return py_obj; \
+  } \
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ \
+   typedef boost::python::converter::rvalue_from_python_storage<ARRAY> vector_storage_t;  \
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); \
+   void* memory_chunk = the_storage->storage.bytes; \
+   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); \
+   ARRAY##Ptr result = extract_##PREFIX##_from_list(py_sequence); \
+   new (memory_chunk) ARRAY (*result); \
+   delete result; \
+   data->convertible = memory_chunk; \
+  } \
+}; \
+struct PREFIX##_ptr_from_list { \
+  PREFIX##_ptr_from_list() { \
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< ARRAY##Ptr >()); \
+  } \
+  static void* convertible(PyObject* py_obj){ \
+    if( !PySequence_Check( py_obj ) ) return 0; \
+    return py_obj; \
+  } \
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ \
+   typedef boost::python::converter::rvalue_from_python_storage<ARRAY> vector_storage_t;  \
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); \
+   void* memory_chunk = the_storage->storage.bytes; \
+   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); \
+   ARRAY##Ptr result = extract_##PREFIX##_from_list(py_sequence); \
+   new (memory_chunk) ARRAY##Ptr (result); \
+   data->convertible = memory_chunk; \
+  } \
+}; \
 
 #define EXPORT_FUNCTION2( PREFIX, T, ARRAY) \
 T PREFIX##_getitem( ARRAY * array, int pos ) \
@@ -102,6 +139,7 @@ struct PREFIX##_pickle_suite : boost::python::pickle_suite \
 	} \
 }; \
 
+
 #define EXPORT_ARRAY_FUNC( PREFIX ) \
     .def( "__getitem__",  PREFIX##_getitem   ) \
     .def( "__getslice__", PREFIX##_getslice , return_value_policy<manage_new_object>() ) \
@@ -115,14 +153,19 @@ struct PREFIX##_pickle_suite : boost::python::pickle_suite \
     .def( "__len__",      PREFIX##_len ) \
     .def( "__repr__",     PREFIX##_str ) \
     .def( "__str__",      PREFIX##_str ) \
-	.enable_pickling()
+	.enable_pickling() \
+    
 
 	// .def_pickle(PREFIX##_pickle_suite())
 
 #define EXPORT_ARRAY( PREFIX, ARRAY, STRING )\
 class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") = 0) ) \
-    .def( "__init__", make_constructor( PREFIX##_fromlist ), STRING ) \
+    .def( "__init__", make_constructor( extract_##PREFIX##_from_list ), STRING ) \
 	EXPORT_ARRAY_FUNC( PREFIX ) \
+
+#define EXPORT_CONVERTER( PREFIX )\
+	PREFIX##_from_list(); \
+	PREFIX##_ptr_from_list(); \
 
 #define EXPORT_FUNCTION( PREFIX, T, ARRAY) \
   DEF_POINTEE( ARRAY ) \

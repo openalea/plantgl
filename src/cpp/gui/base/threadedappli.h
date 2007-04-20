@@ -49,8 +49,8 @@
 #else
 
 #include "appli.h"
-#include "util_serializedobj.h"
 #include <qthread.h>
+#include <qmutex.h>
 #include <qwaitcondition.h>
 
 class QApplication;
@@ -64,8 +64,6 @@ class ViewerThreadedAppli : public ViewerAppli, public QThread {
 	virtual void startSession();
 	virtual bool stopSession() ;
 	virtual bool exit() ;
-	virtual void sendAnEvent(QEvent *e) ;
-	virtual void postAnEvent(QEvent *e) ;
 
     virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
@@ -95,12 +93,6 @@ private :
 	/// Wait Condition for end viewer session.
 	QMutex         sessionmutex;
 	QWaitCondition session;
-
-	/// The application.
-	SerializedObject<QApplication *> __appli;
-
-	/// The viewer.
-	SerializedObject<Viewer *> __viewer;
 
 	QMutex         __continue;
 	QMutex         __running;

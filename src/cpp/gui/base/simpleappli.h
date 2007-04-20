@@ -42,7 +42,6 @@
 #include "appli.h"
 
 class QApplication;
-class Viewer;
 
 class ViewerSimpleAppli : public ViewerAppli {
 public:
@@ -52,22 +51,15 @@ public:
 	virtual void startSession();
 	virtual bool stopSession();
 	virtual bool exit();
-	virtual void sendAnEvent(QEvent *e) ;
-	virtual void postAnEvent(QEvent *e) ;
 
     virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
 
 	virtual const std::vector<uint32_t> getSelection();
 
-	QApplication * getApplication();
-
 protected:
 
 	void launch();
-
-	Viewer * __viewer;
-	QApplication * __appli;
 	bool __ownappli;
 };
 

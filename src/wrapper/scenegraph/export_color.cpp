@@ -37,7 +37,7 @@
 #include <boost/python.hpp>
 
 #include <scenegraph/appearance/color.h>
-
+#include "../util/tuple_converter.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -134,6 +134,8 @@ void export_Color3()
     .def( "__repr__", col3_str )
 	.def_pickle(col3_pickle_suite());
     ;
+
+	pgltuple_from_tuple<Color3,3>();
 }
 
 void export_Color4()
@@ -160,4 +162,5 @@ void export_Color4()
     .def( "__repr__", col4_str )
 	.def_pickle(col4_pickle_suite());
     ;
+	pgltuple_from_tuple<Color4,4>();
 }

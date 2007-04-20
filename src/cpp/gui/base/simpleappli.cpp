@@ -37,42 +37,40 @@
 
 #include "simpleappli.h"
 #include "viewer.h"
+#include "event.h"
 #include <qapplication.h>
+#include <qthread.h>
 
-ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppli(), __viewer(0),__appli(0), __ownappli(false) { launch(); }
+ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppli(), __ownappli(false) { 
+	// printf("Create Simple appli\n");
+	launch(); 
+}
 
 ViewerSimpleAppli::~ViewerSimpleAppli(){
 	if(running()) exit();
-	if(__appli && __ownappli)delete __appli;
-	if(__viewer) delete __viewer;
+	if(qApp && __ownappli)delete qApp;
+	// deleteViewer();
 }
 
 void 
 ViewerSimpleAppli::startSession()
-{ if(!running()) __viewer->show(); }
+{ if(!running()) getViewer()->show(); }
 
 bool 
 ViewerSimpleAppli::stopSession()
-{ if(running()) { __viewer->hide(); return true; } else return false; }
+{ if(running()) { getViewer()->hide(); return true; } else return false; }
 
 bool 
 ViewerSimpleAppli::exit()
 { 
-	if(__appli && __ownappli) { __appli->quit(); return true; }
+	if(qApp && __ownappli) { qApp->quit(); return true; }
 	else return false;
 }
 
-void 
-ViewerSimpleAppli::sendAnEvent(QEvent *e)
-{ startSession(); __viewer->send(e); }
-
-void 
-ViewerSimpleAppli::postAnEvent(QEvent *e)
-{ startSession(); __viewer->post(e); }
 
 bool 
 ViewerSimpleAppli::running() 
-{ return __viewer != NULL && __viewer->isVisible(); }
+{ return getViewer() != NULL && getViewer()->isVisible(); }
 
 bool 
 ViewerSimpleAppli::Wait ( unsigned long time  )
@@ -80,29 +78,32 @@ ViewerSimpleAppli::Wait ( unsigned long time  )
 
 const std::vector<uint32_t> 
 ViewerSimpleAppli::getSelection(){
-	if(__viewer)return __viewer->getSelection();
+	if(getViewer())return getViewer()->getSelection();
 	else return std::vector<uint32_t>();
 }
-
-QApplication * 
-ViewerSimpleAppli::getApplication()
-{ return __appli; }
 
 void
 ViewerSimpleAppli::launch(){
 	if(qApp != NULL){
-		__appli = qApp;
 		__ownappli = false;
-		__viewer = build();
-		__viewer->show();
+		Viewer * v = build();
+		if (qApp->thread() != QThread::currentThread()){
+			v->moveToThread(qApp->thread());
+			if (v->thread() == QThread::currentThread()){
+				printf("Viewer did not move to graphic thread. This will certainly lead to crash.\n");
+				v->show();
+			}
+			else v->post(new ViewShowEvent());
+		}
+		else v->show();
 	}
 	else {
 		int argc = 0;
-		__appli = new QApplication(argc,NULL);
+		new QApplication(argc,NULL);
 		__ownappli = true;
-		__viewer = build();
-		__viewer->show();
-		__appli->exec();
+		Viewer * v = build();
+		v->show();
+		qApp->exec();
 	}
 }
 

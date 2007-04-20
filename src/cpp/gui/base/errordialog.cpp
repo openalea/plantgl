@@ -122,12 +122,16 @@ void ViewErrorDialog::registerQtMsg(bool reg)
 void ViewErrorDialog::setVerbose(bool b){
 	if(__verbose != b){
 		__verbose = b;
-		if(__verbose)
+		if(__verbose){
 			QObject::connect(QApplication::clipboard(),SIGNAL(dataChanged()),
 			this,SLOT(clipboardInfo()));
-		else 
+			// registerForQtMessage(this);
+		}
+		else {
 			QObject::disconnect(QApplication::clipboard(),SIGNAL(dataChanged()),
 			this,SLOT(clipboardInfo()));
+			// unregisterForQtMessage();
+		}
 	}
 }
 

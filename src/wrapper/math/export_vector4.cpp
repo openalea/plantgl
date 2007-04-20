@@ -29,8 +29,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/exception.h"
 #include <boost/python.hpp>
+#include "../util/tuple_converter.h"
 
 #include <math/util_vector.h>
 #include <string>
@@ -114,6 +114,7 @@ struct v4_pickle_suite : boost::python::pickle_suite
 	}
 };
 
+
 void export_Vector4()
 {
   class_< Vector4 >("Vector4", init< const Vector4 & >("Vector4(Vector4 v)",args("v")))
@@ -158,5 +159,7 @@ void export_Vector4()
 	;
 
 	def("dot",  (real_t (*)   ( const Vector4&, const Vector4&)) dot, args("v1","v2"), "The dot product of v1 and v2" );
+
+   pgltuple_from_tuple<Vector4,4>();
 
 }

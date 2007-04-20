@@ -607,15 +607,17 @@ void Viewer::addFile(const QString& filename)
   appear();
 }
 
-/*
+// #define DEBUG_EVENTDISPATCH
+
 bool Viewer::event(QEvent *e){
+#ifdef DEBUG_EVENTDISPATCH
 	if(e->type() >= ViewEvent::eFirstEvent && e->type() <= ViewEvent::eLastEvent)
 		printf("** receive pgl event\n");
 	// else printf("** receive event\n");
+#endif
 	return QMainWindow::event(e);
-}*/
+}
 
-// #define DEBUG_EVENTDISPATCH
 
 void  Viewer::customEvent(QEvent *e){
 #ifdef DEBUG_EVENTDISPATCH
@@ -632,9 +634,11 @@ void  Viewer::customEvent(QEvent *e){
           activateWindow();
       }
   }
-
   else if(e->type() == ViewEvent::eEnd){
     bye();
+  }
+  else if(e->type() == ViewEvent::eShow){
+    show();
   }
   else if(e->type() == ViewEvent::eGetSelection){
     ViewSelectRecoverEvent * k = ( ViewSelectRecoverEvent * )e;
@@ -765,6 +769,11 @@ void Viewer::send(QEvent * e) {
 	else printf("Event dispatch in concurrent threads.\n");
 #endif
 	if (!inthread){
+#ifdef DEBUG_EVENTDISPATCH
+		printf("QApp thread : %i\n",qApp->thread());
+		printf("Viewer thread : %i\n",thread());
+		printf("Current thread : %i\n", QThread::currentThread());
+#endif
 		ViewEvent * b = dynamic_cast<ViewEvent *>(e);
 		if(b)b->sent_event = true;
 		send_lock_mutex.lock();

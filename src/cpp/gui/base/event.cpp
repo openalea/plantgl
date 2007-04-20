@@ -166,6 +166,16 @@ ViewEndEvent::~ViewEndEvent(){
 
 /* ----------------------------------------------------------------------- */
 
+ViewShowEvent::ViewShowEvent() :
+  ViewEvent(eShow){
+}
+
+ViewShowEvent::~ViewShowEvent(){
+  // Nothing to do.
+}
+
+/* ----------------------------------------------------------------------- */
+
 ViewFullScreenEvent::ViewFullScreenEvent(bool b) :
   ViewEvent(eFullScreen),
   value(b){

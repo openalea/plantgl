@@ -190,6 +190,9 @@ public slots:
 
 protected:
   /// This event handler is called when a key is pressed for this widget. 
+  virtual bool event ( QEvent * e);
+
+  /// This event handler is called when a key is pressed for this widget. 
   virtual void keyPressEvent ( QKeyEvent * e);
   
   /// This event handler is called when a drag is in progress and the mouse enters this widget.

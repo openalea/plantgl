@@ -32,17 +32,23 @@ void export_arrays()
 {
   EXPORT_ARRAY( c3a, Color3Array, "Color3Array([Index3(i,j,k),...])" )
     DEFINE_NUMPY( c3a );
+  EXPORT_CONVERTER(c3a);
   EXPORT_ARRAY( c4a, Color4Array, "Color4Array([Index4(i,j,k,l),...])" )
     DEFINE_NUMPY( c4a );
+  EXPORT_CONVERTER(c4a);
 
   EXPORT_ARRAY( i3a, Index3Array, "Index3Array([Index3(i,j,k),...])" )
     DEFINE_NUMPY( i3a );
+  EXPORT_CONVERTER(i3a);
   EXPORT_ARRAY( i4a, Index4Array, "Index4Array([Index4(i,j,k,l),...])" )
     DEFINE_NUMPY( i4a );
+  EXPORT_CONVERTER(i4a);
   EXPORT_ARRAY( inda,IndexArray,  "IndexArray([Index([i,j,..]),...])" )
     DEFINE_NUMPY( inda );
+  EXPORT_CONVERTER(inda);
   EXPORT_ARRAY( ra, RealArray,  "IndexArray([a,b,...])" )
     DEFINE_NUMPY( ra );
+  EXPORT_CONVERTER(ra);
 }
 
 

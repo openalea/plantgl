@@ -37,12 +37,20 @@ void export_pointarrays()
 {
   EXPORT_ARRAY( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
     DEFINE_NUMPY( p2a );
+  EXPORT_CONVERTER(p2a);
+
   EXPORT_ARRAY( p3a, Point3Array, "Point3Array([Vector3(x,y,z),...])")
     DEFINE_NUMPY( p3a );
+  EXPORT_CONVERTER(p3a);
+
   EXPORT_ARRAY( p4a, Point4Array, "Point4Array([Vector4(x,y,z,w),...])")
     DEFINE_NUMPY( p4a );
+  EXPORT_CONVERTER(p4a);
+
   EXPORT_ARRAY( t4a, Transform4Array,"Transform4Array([Transform4(...),...])" );
+  EXPORT_CONVERTER(t4a);
   EXPORT_ARRAY( m4a, Matrix4Array,"Matrix4Array([Matrix4(...),...])" );
+  EXPORT_CONVERTER(m4a);
 }
 
 

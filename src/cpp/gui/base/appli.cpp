@@ -43,13 +43,37 @@
 #include "../viewer/pglviewer.h"
 
 ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
+ThreadedData<Viewer> ViewerAppli::VIEWER(0);
 
 Viewer * ViewerAppli::build() {
-	if(VIEWERBUILDER) return VIEWERBUILDER->build();
-	else return new PGLViewer();
+	if(VIEWERBUILDER) { VIEWER = VIEWERBUILDER->build(); }
+	else VIEWER.set(new PGLViewer());
+	return VIEWER.get(); 
 }
 
+Viewer * ViewerAppli::getViewer() {
+	if(VIEWER) return VIEWER.get();
+	else return build();
+}
+
+void ViewerAppli::deleteViewer() {
+	if (VIEWER.get()->thread() != QThread::currentThread() && VIEWER.get()->thread()->isRunning())
+		printf("Cannot delete Viewer from other thread ...\n");
+	VIEWER.deleteData();
+	VIEWER = NULL; 
+}
+
+
 void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
+
+void 
+ViewerAppli::sendAnEvent(QEvent *e)
+{ startSession(); getViewer()->send(e); }
+
+void 
+ViewerAppli::postAnEvent(QEvent *e)
+{ startSession(); getViewer()->post(e); }
+
 
 ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }
 ViewerAppli::~ViewerAppli(){  }

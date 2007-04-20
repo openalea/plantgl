@@ -15,8 +15,8 @@ import openalea.plantgl.all as pgl
 import openalea.plantgl.ext.all as pd
 
 #local 
-import plantgl.all as pgl
-import plantgl.ext.all as pd
+#import plantgl.all as pgl
+#import plantgl.ext.all as pd
 
 a0 = pd.ASphereI()
 a0.pos = pgl.Vector3(1,0,1)

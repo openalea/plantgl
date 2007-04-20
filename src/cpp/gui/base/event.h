@@ -70,6 +70,7 @@ public:
 		eRefresh,
 		eGetSelection,
 		eSetSelection,
+		eShow,
 		eEnd,
 		eFullScreen,
 		eGLFrameOnly,
@@ -266,6 +267,25 @@ class ViewEndEvent : public ViewEvent {
 
   /// Destructor.
   ~ViewEndEvent();
+
+};
+
+/* ----------------------------------------------------------------------- */
+
+/**
+   \class ViewShowEvent
+   \brief An event to show the viewer. Usefull for inter thread communication.
+
+*/
+class ViewShowEvent : public ViewEvent {
+
+    public :
+
+  /// Constructor.
+  ViewShowEvent();
+
+  /// Destructor.
+  ~ViewShowEvent();
 
 };
 

@@ -1,7 +1,6 @@
 #include <string>
 #include <sstream>
 #include <scenegraph/container/indexarray.h>
-#include "../util/exception.h"
 
 #include <boost/python.hpp>
 
@@ -11,6 +10,7 @@ TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 #include "arrays_macro.h"
+#include "../util/tuple_converter.h"
 
 Index * ind_fromlist( boost::python::object l ) 
 { 
@@ -82,6 +82,31 @@ std::string i4_repr( Index4* i )
   return ss.str();
 }
 
+
+struct index_from_tuple {
+  index_from_tuple () {
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<Index>());
+  }
+
+  static void* convertible(PyObject* py_obj){
+    if( !PySequence_Check( py_obj ) ) return 0;
+	return py_obj;
+  }
+
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){
+    typedef boost::python::converter::rvalue_from_python_storage<Index> vector_storage_t;
+	vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
+	void* memory_chunk = the_storage->storage.bytes;
+	boost::python::object py_sequence( handle<>( borrowed( obj ) ) );
+	Index * result = extract_pgllist<Index>(py_sequence);
+    new (memory_chunk) Index (*result);
+	delete result;
+	data->convertible = memory_chunk;
+  }
+};
+
+
+
 void export_index()
 {
   class_<Index3>( "Index3", init<optional<size_t,size_t,size_t> >() )
@@ -93,6 +118,8 @@ void export_index()
     .def( self == self )
     .def( self != self )
     ;
+  pgltuple_from_tuple<Index3,3>();
+
   class_<Index4>( "Index4", init<optional<size_t,size_t,size_t,size_t> >() )
     .def( "__str__", i4_repr )
     .def( "__repr__", i4_repr )
@@ -102,6 +129,7 @@ void export_index()
     .def( self == self )
     .def( self != self )
     ;
+  pgltuple_from_tuple<Index4,4>();
 
   class_< Index >( "Index" , init<size_t>("Index(int size)",args("size")) )
     .def( "__init__", make_constructor( ind_fromlist ), "Index([int i, int j, int k, ...])"  )
@@ -110,6 +138,7 @@ void export_index()
     .def( "__init__", make_constructor( ind_fromvalue5 ), "Index(int i, int j, int k, int l, int m)"  )
     EXPORT_ARRAY_FUNC( ind )
     ;
+  index_from_tuple();
 
 }
 
