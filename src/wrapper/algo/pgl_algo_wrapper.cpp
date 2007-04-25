@@ -62,6 +62,12 @@ void module_algo()
     export_VrmlPrinter();
     export_VgstarPrinter();
 
+	// gl export
+	export_GLRenderer();
+	export_GLSkelRenderer();
+	export_GLBBoxRenderer();
+	export_GLCtrlPointRenderer();
+
 };
 
 /* ----------------------------------------------------------------------- */

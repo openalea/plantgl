@@ -61,5 +61,11 @@ void export_VrmlPrinter();
 void export_VgstarPrinter();
 
 /* ----------------------------------------------------------------------- */
+// gl export
+void export_GLRenderer();
+void export_GLSkelRenderer();
+void export_GLBBoxRenderer();
+void export_GLCtrlPointRenderer();
 
+/* ----------------------------------------------------------------------- */
 #endif

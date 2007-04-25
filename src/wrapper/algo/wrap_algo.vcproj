@@ -187,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_glrenderer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_intersect.cpp"
 				>
 			</File>
