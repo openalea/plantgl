@@ -91,7 +91,7 @@ public:
 
 private:
 	ThreadedData(ThreadedData<T>& copy): __val(copy.get()){};
-	ThreadedData<T>& operator=(ThreadedData<T>& copy){ WriteLocker l(&lock); __val = copy.get() };
+	ThreadedData<T>& operator=(ThreadedData<T>& copy){ WriteLocker l(&lock); __val = copy.get(); }
 
   data_type * __val;
   Lock lock;
