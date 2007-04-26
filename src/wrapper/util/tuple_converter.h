@@ -41,7 +41,9 @@ T * extract_pgltuple_from_tuple_at(const boost::python::tuple& t, void * addr = 
 	else { 
 		T * result = new (addr)T();
 		for(int i = 0; i < tuplesize; ++i)
-			result->setAt(i,extract<T::value_type>(t[i]));
+			//FRED please check it because i do not know if i didn't change semantics..
+			//it was: result->setAt(i,extract<T::value_type>(t[i]));
+			result->setAt(i,extract<typename T::value_type>(t[i]));
 		return result;
 	}
 }

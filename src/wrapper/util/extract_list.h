@@ -36,10 +36,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-template<class T, template < typename > class extractor = boost::python::extract >
+template<class T, template < typename > class extractor_t = boost::python::extract >
 struct extract_pgllist {
 	typedef typename T::element_type element_type;
-	typedef extractor<element_type> extractor_type;
+	typedef extractor_t<element_type> extractor_type;
 	typedef T result_type;
 
 	extract_pgllist(boost::python::object _pylist):pylist(_pylist) {}

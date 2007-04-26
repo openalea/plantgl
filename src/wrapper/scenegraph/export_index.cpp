@@ -3,6 +3,7 @@
 #include <scenegraph/container/indexarray.h>
 
 #include <boost/python.hpp>
+#include "../util/tuple_converter.h"
 
 using namespace boost::python;
 
@@ -10,11 +11,11 @@ TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 #include "arrays_macro.h"
-#include "../util/tuple_converter.h"
+
 
 Index * ind_fromlist( boost::python::object l ) 
 { 
-  return extract_pgllist<Index>(l)();
+  return extract_pgllist<Index,boost::python::extract>(l)();
 }
 
 Index * ind_fromvalue3( uint32_t a, uint32_t b, uint32_t c) 
