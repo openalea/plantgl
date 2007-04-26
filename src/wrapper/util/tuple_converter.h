@@ -30,6 +30,9 @@
  */
 
 #include "../util/exception.h"
+#include "extract_list.h"
+#include <boost/python.hpp>
+using namespace boost::python;
 
 template<class T, int tuplesize>
 T * extract_pgltuple_from_tuple_at(const boost::python::tuple& t, void * addr = NULL){
