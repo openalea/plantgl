@@ -34,8 +34,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#ifndef __MACRO_REFPTR_H_
-#define __MACRO_REFPTR_H_
+#ifndef __exoprt_refcountptr__
+#define __exoprt_refcountptr__
 
 #include <boost/python.hpp>
 #include <boost/pointee.hpp>

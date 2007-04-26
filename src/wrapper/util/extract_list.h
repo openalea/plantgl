@@ -29,10 +29,14 @@
  *  ----------------------------------------------------------------------------
  */
 
+#ifndef __extract_list_h__
+#define __extract_list_h__
+
 #include <boost/python.hpp>
 #include <tool/rcobject.h>
 #include <vector>
 #include <map>
+#include "exception.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -137,5 +141,8 @@ struct extract_dict {
 	inline result_type operator()() const { return extract(); }
 	inline operator result_type () const { return extract(); }
 };
+
+
+#endif
 
 /* ----------------------------------------------------------------------- */

@@ -28,6 +28,10 @@
  *
  *  ----------------------------------------------------------------------------
  */
+
+#ifndef __export_property_h__
+#define __export_property_h__
+
 #include <math/util_math.h>
 
 #define SETGET(_CLASS,PROP,TYPE)\
@@ -71,3 +75,5 @@ void set_##_CLASS##_##PROP(_CLASS * obj, real_t v){ \
 #define DEC_PROP_WD(PROPNAME,_CLASS,PROP,TYPE) \
   DEC_PROP(PROPNAME,_CLASS,PROP,TYPE) \
   DEC_DEFAULTVAL(PROPNAME,_CLASS,PROP,TYPE)
+
+#endif
