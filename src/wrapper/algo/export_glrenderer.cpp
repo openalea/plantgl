@@ -37,6 +37,7 @@
 #include <algo/base/bboxcomputer.h>
 #include <algo/opengl/glbboxrenderer.h>
 #include <algo/opengl/glctrlptrenderer.h>
+#include <qgl.h>
 
 /* ----------------------------------------------------------------------- */
 
