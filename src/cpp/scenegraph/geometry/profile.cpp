@@ -801,7 +801,7 @@ cout<<"is2D? "<<__is2D<<endl;
     for(uint32_t i= 0; i < __stride; i++, itpBegin+= n, itpEnd+= n )
       {
       pts= Point2ArrayPtr(new Point2Array(itpBegin, itpEnd));
-      Point3ArrayPtr pts3D( new Point3Array(pts, 1.) );
+      Point3ArrayPtr pts3D( new Point3Array(*pts, 1.) );
       Interpol local(pts3D, __knotList, __degree, 1 );
 #ifdef DEBUG
 cout<<"get2DCurve "<<i<<endl;

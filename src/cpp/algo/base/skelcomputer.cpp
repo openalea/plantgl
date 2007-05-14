@@ -575,7 +575,7 @@ bool SkelComputer::process( PointSet2D * pointSet ){
 
 bool SkelComputer::process( Polyline2D * polyline ){
   GEOM_ASSERT(polyline);
-  __skeleton = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(polyline->getPointList(),0))));
+  __skeleton = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(*(polyline->getPointList()),0))));
   return true;
 }
 

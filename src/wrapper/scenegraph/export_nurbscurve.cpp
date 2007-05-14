@@ -194,13 +194,13 @@ object convert_lc(const LineicModelPtr& res)
 	}
 }
 object nurbs2_fit1(Point2ArrayPtr pts){
-	Fit p(Point3ArrayPtr(new Point3Array(pts,0)));
+	Fit p(Point3ArrayPtr(new Point3Array(*pts,0)));
 	LineicModelPtr res = p.nurbsCurve();
 	return convert_lc(res);
 }
 
 object nurbs2_fit2(Point2ArrayPtr pts,int degree, int nbCtrlPoint){
-	LineicModelPtr res = Fit::nurbsCurve(Point3ArrayPtr(new Point3Array(pts,0)),degree,nbCtrlPoint);
+	LineicModelPtr res = Fit::nurbsCurve(Point3ArrayPtr(new Point3Array(*pts,1)),degree,nbCtrlPoint);
 	return convert_lc(res);
 }
 

@@ -218,19 +218,15 @@ Point3Array::Point3Array( const Vector3& a, const Vector3& b ) :
     __A[1] = b;
 }
 
-Point3Array::Point3Array( const Point2ArrayPtr& points2, const real_t& z ) :
-  Array1<Vector3>((points2 ? points2->getSize() : 1)) {
-  GEOM_ASSERT(points2);
-
-  uint32_t _size = points2->getSize();
-  __A.reserve(_size);
-  __A.resize(_size);
-  Point2Array::const_iterator _i2 = points2->getBegin();
-  for (iterator _i3 = __A.begin(); _i3 != __A.end(); _i3++){
-      *_i3 = Vector3(*_i2,z);_i2++;
-  }
-  GEOM_ASSERT(isValid());
+Point3Array::Point3Array( const Point2Array& a, real_t z ) :
+   Array1<Vector3>(a.getSize()){
+   GEOM_ASSERT(a.isValid());
+   Point3Array::iterator it3 = getBegin();
+   for(Point2Array::const_iterator it2 = a.getBegin();it2 != a.getEnd();++it2,++it3)
+        *it3 = Vector3(*it2,z);
+   GEOM_ASSERT(isValid());
 }
+
 
 Point3Array::~Point3Array( ) {
 }
@@ -415,15 +411,20 @@ Point4Array::Point4Array( uint32_t size ) :
 }
 
 
-Point4Array::Point4Array( const Point3ArrayPtr& points3, const real_t& z ) :
-  Array1<Vector4>() {
-  GEOM_ASSERT(points3);
-  uint32_t _size = points3->getSize();
-  __A.reserve(_size);
-  __A.resize(_size);
-  Point3Array::const_iterator _i3 = points3->getBegin();
-  for (iterator _i4 = __A.begin(); _i4 != __A.end(); _i4++)
-    *_i4 = Vector4(*_i3++,z);
+
+Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
+    Array1<Vector4>(a.getSize()){
+        Point4Array::iterator it4 = getBegin();
+        for(Point2Array::const_iterator it2 = a.getBegin();it2 != a.getEnd();++it2,++it4)
+                *it4 = Vector4(*it2,z,w);
+  GEOM_ASSERT(isValid());
+}
+
+Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
+    Array1<Vector4>(a.getSize()){
+        Point4Array::iterator it4 = getBegin();
+        for(Point3Array::const_iterator it3 = a.getBegin();it3 != a.getEnd();++it3,++it4)
+                *it4 = Vector4(*it3,w);
   GEOM_ASSERT(isValid());
 }
 

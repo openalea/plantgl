@@ -2261,7 +2261,7 @@ AngleList:
 CtrlPointArray:
    Point3Array {
      if ($1) {
-       $$ = new Point4ArrayPtr(new Point4Array(*$1,1));
+       $$ = new Point4ArrayPtr(new Point4Array(*(*$1),1));
        delete $1;
      }
      else
@@ -2274,7 +2274,7 @@ CtrlPointArray:
 CtrlPointArray2D:
    Point2Array {
      if ($1) {
-       $$ = new Point3ArrayPtr(new Point3Array(*$1,1));
+       $$ = new Point3ArrayPtr(new Point3Array(*(*$1),1));
        delete $1;
      }
      else

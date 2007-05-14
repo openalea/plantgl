@@ -83,10 +83,6 @@ Vector2::Vector2( const real_t& x , const real_t& y ) :
   GEOM_ASSERT(isValid());
 }
 
-Vector2::Vector2( const real_t * v2 ) :
-  Tuple2<real_t>(v2) {
-  GEOM_ASSERT(isValid());
-}
 
 Vector2::Vector2( const Polar& p ) :
   Tuple2<real_t>(p.radius * cos(p.theta), p.radius * sin(p.theta)) {
@@ -394,10 +390,6 @@ Vector3::Vector3( const real_t& x,
   GEOM_ASSERT(isValid());
 }
 
-Vector3::Vector3( const real_t * v3 ) :
-  Tuple3<real_t>(v3) {
-  GEOM_ASSERT(isValid());
-}
 
 Vector3::Vector3( const Vector2& v, const real_t& z ) :
   Tuple3<real_t>(v.x(),v.y(),z) {
@@ -742,13 +734,14 @@ Vector4::Vector4( const real_t& x , const real_t& y ,
   GEOM_ASSERT(isValid());
 }
 
-Vector4::Vector4( const real_t * v4 ) :
-  Tuple4<real_t>(v4) {
+Vector4::Vector4( const Vector3& v, const real_t& w ) :
+  Tuple4<real_t>(v.x(),v.y(),v.z(),w) {
+  GEOM_ASSERT(v.isValid());
   GEOM_ASSERT(isValid());
 }
 
-Vector4::Vector4( const Vector3& v, const real_t& w ) :
-  Tuple4<real_t>(v.x(),v.y(),v.z(),w) {
+Vector4::Vector4( const Vector2& v, const real_t& z , const real_t& w ) :
+  Tuple4<real_t>(v.x(),v.y(),z,w) {
   GEOM_ASSERT(v.isValid());
   GEOM_ASSERT(isValid());
 }

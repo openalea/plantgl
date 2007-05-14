@@ -105,7 +105,9 @@ class PGLMATH_API Vector2 : public Tuple2<real_t>
   /** Constructs a Vector2 with the 2D array \e v2.
       \post
       - \e self is valid. */
-  inline Vector2( const real_t * v2 ) ;
+  inline Vector2( const real_t * v2 )  :
+  Tuple2<real_t>(v2) {
+  }
 
   /** Constructs a Vector2 with the Polar \e p.
       \pre
@@ -373,7 +375,9 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /** Constructs a Vector3 with the 3D array \e v3.
       \post
       - \e self is valid. */
-  inline Vector3( const real_t * v3 );
+  inline Vector3( const real_t * v3 ):
+    Tuple3<real_t>(v3) {
+  }
 
   /** Constructs a Vector3 with the Vector2 \e v and \e z.
       \pre
@@ -608,7 +612,16 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
   /** Constructs a Vector4 with the 4D array \e v4.
       \post
       - \e self is valid. */
-  inline Vector4( const real_t * v4 );
+  inline Vector4( const real_t * v4 ):
+  Tuple4<real_t>(v4) {
+  }
+
+  /** Constructs a Vector4 with a Vector2 \e v and \e z and \e w.
+      \pre
+      - \e v must be valid.
+      \post
+      - \e self is valid. */
+  Vector4( const Vector2& v, const real_t& z, const real_t& w );
 
   /** Constructs a Vector4 with a Vector3 \e v and \e w.
       \pre

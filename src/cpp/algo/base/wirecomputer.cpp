@@ -466,7 +466,7 @@ bool WireComputer::process( Polyline2D * polyline ){
   GEOM_ASSERT( polyline );
 
   GEOM_WireComputer_CHECK_CACHE( polyline );
-  Point3ArrayPtr a (new Point3Array(polyline->getPointList(),0));
+  Point3ArrayPtr a (new Point3Array(*(polyline->getPointList()),0));
   __wire = GeometryPtr(new Polyline(a));
   GEOM_WireComputer_UPDATE_CACHE(polyline);
   return true;

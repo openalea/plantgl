@@ -171,6 +171,11 @@ public:
       - \e self is valid. */
   Point3Array( const TOOLS(Vector3)& a, const TOOLS(Vector3)& b );
 
+  /** Constructs a Point3Array from the Point2Array \e a and with z value \e z.
+      \post
+      - \e self is valid. */
+  Point3Array( const Point2Array& a, real_t z );
+
   /** Constructs a Point3Array with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
@@ -179,14 +184,6 @@ public:
     TOOLS(Array1)<TOOLS(Vector3)>(first,last) {
     GEOM_ASSERT(isValid());
   }
-
-  /** Constructs a Point3Array with the Point2Array \e points2, \c z
-      coordinate for each points is set to \e z.
-      \pre
-      - \e points2 must non null and valid.
-      \post
-      - \e self is valid. */
-  Point3Array( const Point2ArrayPtr& points2, const real_t& z );
 
   /// Destructor
   virtual ~Point3Array( );
@@ -283,14 +280,21 @@ public:
     GEOM_ASSERT(isValid());
   }
 
-  /** Constructs a Point4Array with the Point3Array \e points3, \c w
-      coordinate for each points is set to \e w.
-      points
+  /** Constructs a Point4Array with the Point2Array \e points2, \c z and \c w
+      coordinates for each points is set to \e z and \e w.
       \pre
-      - \e points3 must non null and valid.
+      - \e points2 must valid.
       \post
       - \e self is valid. */
-  Point4Array( const Point3ArrayPtr& points3, const real_t& w );
+  Point4Array( const Point2Array& points2, real_t z , real_t w );
+
+  /** Constructs a Point4Array with the Point3Array \e points3, \c w
+      coordinate for each points is set to \e w.
+      \pre
+      - \e points3 must valid.
+      \post
+      - \e self is valid. */
+  Point4Array( const Point3Array& points3, real_t w );
 
   /// Destructor
   virtual ~Point4Array( );

@@ -2021,7 +2021,7 @@ bool Discretizer::process( PointSet2D * pointSet ){
   GEOM_ASSERT(pointSet);
 
   GEOM_DISCRETIZER_CHECK_CACHE(pointSet);
-  __discretization = ExplicitModelPtr(new PointSet(Point3ArrayPtr(new Point3Array(pointSet->getPointList(),0))));
+  __discretization = ExplicitModelPtr(new PointSet(Point3ArrayPtr(new Point3Array(*(pointSet->getPointList()),0))));
   GEOM_DISCRETIZER_UPDATE_CACHE(pointSet);
   return true;
 }
@@ -2034,7 +2034,7 @@ bool Discretizer::process( Polyline2D * polyline ){
 
 
   GEOM_DISCRETIZER_CHECK_CACHE( polyline );
-  Point3ArrayPtr a (new Point3Array(polyline->getPointList(),0));
+  Point3ArrayPtr a (new Point3Array(*(polyline->getPointList()),0));
   __discretization = ExplicitModelPtr(new Polyline(a));
   GEOM_DISCRETIZER_UPDATE_CACHE(polyline);
   return true;

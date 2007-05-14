@@ -139,7 +139,7 @@ NurbsCurvePtr Interpol::get3DCurve()
 
   RealArrayPtr _KV= bezierKV( params );
 
-  Point4ArrayPtr _CtrlPts( new Point4Array( CP, 1. ) );
+  Point4ArrayPtr _CtrlPts( new Point4Array( *CP, 1. ) );
   _nurbs= new NurbsCurve( _CtrlPts, _KV, degree );
 
   return NurbsCurvePtr(_nurbs);
