@@ -128,6 +128,9 @@ public:
 
   virtual void gridEvent(ViewGridEvent *);
 
+  /// end event.
+  virtual void endEvent();
+
 public slots:
 
   /// change the Axis Display Mode

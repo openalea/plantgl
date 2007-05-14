@@ -100,6 +100,9 @@ public:
   /// Connect this to a error dialog.
   virtual void connectTo(ViewErrorDialog *);
 
+  /// end event.
+  virtual void endEvent() {};
+
   /// Display error message.
   void error(const QString&);
   /// Display warning message.

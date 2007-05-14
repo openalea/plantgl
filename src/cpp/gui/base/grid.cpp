@@ -45,6 +45,7 @@
 #include <qtoolbutton.h>
 #include <qwhatsthis.h>
 #include "icons.h"
+#include "configuration.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,8 +62,15 @@ ViewGridGL::ViewGridGL(ViewCameraGL *camera,
   __XZGrid(false),
   __YZGrid(false)
 {
-}
+  ViewerSettings settings;
+  settings.beginGroup("Grids");
+  __XYGrid = settings.value("XYGrid",__XYGrid).toBool();
+  __XZGrid = settings.value("XZGrid",__XZGrid).toBool();
+  __YZGrid = settings.value("YZGrid",__YZGrid).toBool();
+  __Axis = settings.value("Axis",__Axis).toBool();
+  settings.endGroup();
 
+}
 
 ViewGridGL::~ViewGridGL()
 {
@@ -70,6 +78,16 @@ ViewGridGL::~ViewGridGL()
   if (__axisList) glDeleteLists(__axisList,1); 
 }
 
+void ViewGridGL::endEvent()
+{
+  ViewerSettings settings;
+  settings.beginGroup("Grids");
+  settings.setValue("XYGrid",__XYGrid);
+  settings.setValue("XZGrid",__XZGrid);
+  settings.setValue("YZGrid",__YZGrid);
+  settings.setValue("Axis",__Axis);
+  settings.endGroup();
+}
 
 int
 ViewGridGL::getState() const{

@@ -170,9 +170,14 @@ void ViewGLFrame::endEvent()
   ViewerSettings settings;
   settings.beginGroup("FrameGL");
   settings.setValue("BgColor",__BgColor);
-  setBackGroundColor(__BgColor);
   settings.endGroup();
   if(__scene)__scene->endEvent();
+  if(__grid)__grid->endEvent();
+  if(__camera)__camera->endEvent();
+  if(__light)__light->endEvent();
+  if(__rotCenter)__rotCenter->endEvent();
+  if(__clippingPlane)__clippingPlane->endEvent();
+  if(__fog)__fog->endEvent();
 }
 
 /*  ------------------------------------------------------------------------ */
