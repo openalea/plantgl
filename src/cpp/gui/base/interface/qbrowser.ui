@@ -5,111 +5,52 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>704</width>
-    <height>596</height>
+    <width>322</width>
+    <height>373</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Form1</string>
   </property>
-  <widget class="QPushButton" name="CancelButton" >
-   <property name="geometry" >
-    <rect>
-     <x>490</x>
-     <y>560</y>
-     <width>104</width>
-     <height>28</height>
-    </rect>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
    </property>
-   <property name="text" >
-    <string>&amp;Cancel</string>
+   <property name="spacing" >
+    <number>6</number>
    </property>
-  </widget>
-  <widget class="QPushButton" name="OkButton" >
-   <property name="geometry" >
-    <rect>
-     <x>600</x>
-     <y>560</y>
-     <width>104</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Ok</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label" >
-   <property name="geometry" >
-    <rect>
-     <x>60</x>
-     <y>0</y>
-     <width>180</width>
-     <height>40</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>abiword-bookman</family>
-     <pointsize>16</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Browser :</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="PixmapLabel1" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>5</y>
-     <width>32</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string/>
-   </property>
-   <property name="pixmap" >
-    <pixmap/>
-   </property>
-   <property name="scaledContents" >
-    <bool>true</bool>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="Q3ListView" name="__list" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>690</width>
-     <height>510</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QCheckBox" name="__FullMode" >
-   <property name="geometry" >
-    <rect>
-     <x>570</x>
-     <y>10</y>
-     <width>130</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>Courier New</family>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Full &amp;Mode</string>
-   </property>
-  </widget>
+   <item>
+    <widget class="QLabel" name="PixmapLabel1" >
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="pixmap" >
+      <pixmap/>
+     </property>
+     <property name="scaledContents" >
+      <bool>true</bool>
+     </property>
+     <property name="wordWrap" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="__FullMode" >
+     <property name="font" >
+      <font>
+       <family>Courier New</family>
+      </font>
+     </property>
+     <property name="text" >
+      <string>Full &amp;Mode</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Q3ListView" name="__list" />
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>

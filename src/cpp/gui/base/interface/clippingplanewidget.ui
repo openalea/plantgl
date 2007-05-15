@@ -34,16 +34,6 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="A1" >
-   <property name="geometry" >
-    <rect>
-     <x>220</x>
-     <y>80</y>
-     <width>60</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="CLabel" >
    <property name="geometry" >
     <rect>
@@ -681,6 +671,22 @@
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="A1" >
+   <property name="geometry" >
+    <rect>
+     <x>220</x>
+     <y>80</y>
+     <width>60</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="maximum" >
+    <double>16777215.000000000000000</double>
+   </property>
+   <property name="minimum" >
+    <double>-16777215.000000000000000</double>
    </property>
   </widget>
  </widget>
