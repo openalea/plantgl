@@ -67,7 +67,7 @@
 #include <algo/codec/scne_parser.h>
 
 #ifdef QT_THREAD_SUPPORT
-#ifndef _DEBUG
+#ifndef PGL_DEBUG
 #define GEOM_THREAD
 #endif
 #endif

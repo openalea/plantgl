@@ -818,6 +818,7 @@ void Viewer::closeEvent ( QCloseEvent * e)
   settings.setValue("Geometry",geometry());
   settings.endGroup();
   __GLFrame->endEvent();
+  __HelpMenu->endEvent();
   __ErrorDialog->registerQtMsg(false);
   e->accept();
 }

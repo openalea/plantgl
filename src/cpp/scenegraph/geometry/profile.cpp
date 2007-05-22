@@ -676,6 +676,7 @@ ProfileInterpolation::is2DInterpolMode() const
 
 bool ProfileInterpolation::interpol()
 {
+
 #ifdef DEBUG
 cout<<"-> interpol"<<endl;
 #endif
@@ -798,7 +799,7 @@ cout<<"is2D? "<<__is2D<<endl;
     Point2ArrayPtr pts;
     Point2Array::iterator itpBegin= allPts2D->getBegin();
     Point2Array::iterator itpEnd= itpBegin + n;
-    for(uint32_t i= 0; i < __stride; i++, itpBegin+= n, itpEnd+= n )
+    for(uint32_t i= 0; i < __stride; i++ )
       {
       pts= Point2ArrayPtr(new Point2Array(itpBegin, itpEnd));
       Point3ArrayPtr pts3D( new Point3Array(*pts, 1.) );
@@ -807,6 +808,7 @@ cout<<"is2D? "<<__is2D<<endl;
 cout<<"get2DCurve "<<i<<endl;
 #endif
       __fctList2D->getAt(i)= local.get2DCurve();
+      if(itpEnd != allPts2D->getEnd()){ itpBegin+= n; itpEnd+= n; }
       }
     __evalPt2D= Point2ArrayPtr( new Point2Array( __stride ) );
     __evalPt3D= Point3ArrayPtr(0);

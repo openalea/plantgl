@@ -81,7 +81,6 @@ Swung::Builder::~Builder( )
 SceneObjectPtr Swung::Builder::build( ) const
 /////////////////////////////////////////////////////////////////////////////
 {
-
   ProfileInterpolation::Builder _builder;
 
   _builder.ProfileList = const_cast<Curve2DArrayPtr *>(ProfileList);
@@ -182,7 +181,7 @@ Swung::Swung( const ProfileInterpolationPtr& profiles,
   __ccw(ccw),
   __degree(degree),
   __stride(stride)
-{
+{ 
   GEOM_ASSERT(isValid());
 }
 

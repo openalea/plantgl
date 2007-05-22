@@ -33,17 +33,17 @@ EXPORT_NUMPY( p2a, Vector2, Point2Array, 0, 2, real_t )
 EXPORT_NUMPY( p3a, Vector3, Point3Array, 0, 3, real_t )
 EXPORT_NUMPY( p4a, Vector4, Point4Array, 0, 4, real_t )
 
-Point3Array * p3_from_p2(Point2Array * pts, real_t z)
+Point3Array * p3_from_p2(Point2ArrayPtr pts, real_t z)
 {
     return new Point3Array(*pts,z);
 }
 
-Point4Array * p4_from_p2(Point2Array * pts, real_t z, real_t w)
+Point4Array * p4_from_p2(Point2ArrayPtr pts, real_t z, real_t w)
 {
     return new Point4Array(*pts,z,w);
 }
 
-Point4Array * p4_from_p3(Point3Array * pts,  real_t w)
+Point4Array * p4_from_p3(Point3ArrayPtr pts,  real_t w)
 {
     return new Point4Array(*pts,w);
 }

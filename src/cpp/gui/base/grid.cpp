@@ -68,6 +68,7 @@ ViewGridGL::ViewGridGL(ViewCameraGL *camera,
   __XZGrid = settings.value("XZGrid",__XZGrid).toBool();
   __YZGrid = settings.value("YZGrid",__YZGrid).toBool();
   __Axis = settings.value("Axis",__Axis).toBool();
+  __gridSize = settings.value("Size",__gridSize).toInt();
   settings.endGroup();
 
 }
@@ -86,6 +87,7 @@ void ViewGridGL::endEvent()
   settings.setValue("XZGrid",__XZGrid);
   settings.setValue("YZGrid",__YZGrid);
   settings.setValue("Axis",__Axis);
+  settings.setValue("Size",__gridSize);
   settings.endGroup();
 }
 

@@ -81,6 +81,8 @@ class VIEW_API ViewHelpMenu : public QMenu
   ~ViewHelpMenu();
   
   int getStyle() const;
+  int getStyleId(const QString& name) const;
+  QString getStyleName() const;
 
   void setGLWidget(QGLWidget * glwidget);
 
@@ -107,12 +109,15 @@ public slots:
   /// Display Informations about qt objects used.
   void qtbrowse();
 
+  void setStyle(const QString& name);
   void setStyle(int);
 
   void setInitText(const QString&);
   void setInitText(const QString&,int timeout);
 
-protected slots:
+  void endEvent();
+
+  protected slots:
   void setStyleCorrespondingTo(QAction *);
 
 protected :

@@ -65,6 +65,7 @@
 #include "helpmenu.h"
 #include "info.h"
 #include "qobjectbrowser.h"
+#include "configuration.h"
 
 #include "view_version.h"
 #include <scenegraph/pgl_version.h>
@@ -106,14 +107,25 @@ ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * 
 	QStringList styles = QStyleFactory::keys();
 	QActionGroup * actiongroup = new QActionGroup(__style);
 	actiongroup->setExclusive(true);
+    QAction * action = NULL;
 	for(uint k = 0 ; k < styles.size(); k++){
-	  QAction * action = __style->addAction(styles[k]);
+	  action = __style->addAction(styles[k]);
 	  action->setCheckable(true);
 	  actiongroup->addAction(action);
 	  __ids.push_back( action );
 	}
+    __style->addSeparator();
+    action = __style->addAction("Default");
+	action->setCheckable(true);
+	actiongroup->addAction(action);
+	__ids.push_back( action );
 	default_style_name = QApplication::style()->metaObject()->className();
-    checkItem(getStyle());
+    checkItem(__ids.size()-1);
+    ViewerSettings settings;
+    settings.beginGroup("WinStyle");
+    QString stylename = settings.value("StyleName","Default").toString();
+    settings.endGroup();
+    setStyle(stylename);
 	QObject::connect(__style,SIGNAL(triggered(QAction *)),this,SLOT(setStyleCorrespondingTo(QAction*)));
 }
 
@@ -122,6 +134,14 @@ ViewHelpMenu::~ViewHelpMenu(){
 #ifdef  PGL_DEBUG
   cout << "Help Menu deleted" << endl;
 #endif
+}
+
+void ViewHelpMenu::endEvent()
+{
+  ViewerSettings settings;
+  settings.beginGroup("WinStyle");
+  settings.value("StyleName",getStyleName());
+  settings.endGroup();
 }
 
 void 
@@ -140,19 +160,37 @@ int ViewHelpMenu::getStyle() const {
 	return -1;
 }
 
+QString ViewHelpMenu::getStyleName() const {
+	for(uint i = 0 ; i < __ids.size() ; ++i)
+		if(__ids[i]->isChecked()) return __ids[i]->text();
+	return "Default";
+}
+
+int ViewHelpMenu::getStyleId(const QString& name) const {
+    int id = QStyleFactory::keys().indexOf(name);
+    if (id == -1) return __ids.size() -1;
+    else return id;
+}
+
 void  
 ViewHelpMenu::setStyleCorrespondingTo(QAction * action )
 {
-	setStyle(QStyleFactory::keys().indexOf(action->text()));
+    setStyle(action->text());
 }
+
+void ViewHelpMenu::setStyle(const QString& name)
+{ setStyle(getStyleId(name)); }
 
 void  
 ViewHelpMenu::setStyle(int i)
 {
-	if(i < 0 && i >=__ids.size())return;
-    QApplication::setStyle( QStyleFactory::create(QStyleFactory::keys()[i])); 
-    qDebug((QString("Application.setStyle(") + (QStyleFactory::keys()[i]) +')').toAscii().data() ); 
-	if(i>= 0 && i<__ids.size())checkItem(i);
+	if(i < 0 && i >= __ids.size())return;
+    else if (i == __ids.size()-1) QApplication::setStyle( QStyleFactory::create(default_style_name) ); 
+    else {
+        QApplication::setStyle( QStyleFactory::create(QStyleFactory::keys()[i])); 
+        qDebug((QString("Application.setStyle(") + (QStyleFactory::keys()[i]) +')').toAscii().data() ); 
+    }
+	if(i>= 0 && i <= __ids.size())checkItem(i);
 }
 
 void  
