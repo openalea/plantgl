@@ -39,7 +39,7 @@ PGL_BEGIN_NAMESPACE
 
 class ALGO_API PglTurtle : public Turtle {
 public:
-    typedef STDEXT::hash_map<std::string,GeometryPtr> SurfaceMap;
+    typedef hash_map_string<GeometryPtr> SurfaceMap;
 
     PglTurtle(TurtleParam * param = NULL);
     
