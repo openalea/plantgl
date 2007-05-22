@@ -19,11 +19,19 @@ DEF_POINTEE( Disc )
 void export_LineicModel()
 {
   class_<LineicModel,LineicModelPtr, bases<Primitive>, boost::noncopyable>( "LineicModel", no_init )
+    .add_property( "firstKnot", &LineicModel::getFirstKnot )
+    .add_property( "lastKnot", &LineicModel::getLastKnot )
+    .def( "getStride", &LineicModel::getStride )
+    .def( "getPointAt", &LineicModel::getPointAt, args("u") )
+    .def( "getTangentAt", &LineicModel::getTangentAt, args("u") )
+    .def( "getNormalAt", &LineicModel::getNormalAt, args("u") )
+    .def( "findClosest", &LineicModel::findClosest, args("point") )
     .def( "getLength", &LineicModel::getLength )
     ;
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
 
+  def("closestPointToSegment",&closestPointToSegment, args("point","segA","segB"));
 }
 
 void export_PlanarModel()

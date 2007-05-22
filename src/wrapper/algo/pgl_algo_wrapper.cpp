@@ -68,6 +68,11 @@ void module_algo()
 	export_GLBBoxRenderer();
 	export_GLCtrlPointRenderer();
 
+    // Turtle export
+    export_TurtleParam();
+    export_Turtle();
+    export_PglTurtle();
+
 };
 
 /* ----------------------------------------------------------------------- */

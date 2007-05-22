@@ -50,7 +50,6 @@ void set_##_CLASS##_##PROP(_CLASS * obj, real_t v){ \
   obj->get##PROP() =(real_t) fmod((double)v,(double)2 * GEOM_PI); \
 } \
 
-
 #define DEC_DEFAULTVAL(PROPNAME,_CLASS,PROP,TYPE) \
   .def("is"#PROP"ToDefault",&_CLASS::is##PROP##ToDefault,return_value_policy<return_by_value>()) \
 

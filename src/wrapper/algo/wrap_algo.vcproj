@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_pglturtle.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_povprinter.cpp"
 				>
 			</File>
@@ -212,6 +216,14 @@
 			</File>
 			<File
 				RelativePath=".\export_printer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\export_turtle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_turtleparam.cpp"
 				>
 			</File>
 			<File

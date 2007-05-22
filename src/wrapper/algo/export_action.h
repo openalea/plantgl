@@ -68,4 +68,9 @@ void export_GLBBoxRenderer();
 void export_GLCtrlPointRenderer();
 
 /* ----------------------------------------------------------------------- */
+// Turtle export
+void export_TurtleParam();
+void export_Turtle();
+void export_PglTurtle();
+
 #endif
