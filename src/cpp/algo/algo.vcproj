@@ -615,6 +615,26 @@
 			Name="RayCasting"
 			>
 		</Filter>
+		<Filter
+			Name="Modelling"
+			>
+			<File
+				RelativePath=".\modelling\pglturtle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\modelling\turtle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\modelling\turtle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\modelling\turtleparam.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\algo_config.h"
 			>
