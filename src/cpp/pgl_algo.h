@@ -52,6 +52,7 @@
 #include "algo/codec/povprinter.h"
 #include "algo/codec/linetreeprinter.h"
 #include "algo/codec/vgstarprinter.h"
+#include "algo/codec/x3dprinter.h"
 
 /// Reader
 #include "algo/codec/dtafile.h"
