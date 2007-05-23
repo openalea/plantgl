@@ -186,24 +186,19 @@ object pgl_py_dir(object obj){
 }
 
 real_t pgl_py_dot(object p1, object p2){
-    printf("dot : ");
 	extract<Vector2> pt1(p1);
     if(pt1.check()) {
-        printf("V2\n");
         return dot(pt1(),extract<Vector2>(p2)());
     }
 	extract<Vector3> pt1b(p1);
     if(pt1b.check()){
-        printf("V3\n");
         return dot(pt1b(),extract<Vector3>(p2)());
     }
 	extract<Vector4> pt1c(p1);
     if(pt1c.check()) {
-        printf("V4\n");
         return dot(pt1c(),extract<Vector4>(p2)());
     }
     else {
-        printf("VN\n");
         if (extract<int>(p1.attr("__len__")()) != extract<int>(p2.attr("__len__")()))
             throw PythonExc_IndexError();
 	    object iter_obj1 = boost::python::object( handle<>( PyObject_GetIter( p1.ptr() ) ) );
