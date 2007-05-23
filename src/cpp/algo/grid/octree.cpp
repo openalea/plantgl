@@ -48,8 +48,8 @@
 #include <scenegraph/container/pointarray.h>
 #include <scenegraph/appearance/material.h>
 #include <scenegraph/scene/shape.h>
-#include "../RayCasting/ray.h"
-#include "../RayCasting/rayintersection.h"
+#include "../raycasting/ray.h"
+#include "../raycasting/rayintersection.h"
 #endif
 
 #include <tool/timer.h>

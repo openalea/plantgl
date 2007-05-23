@@ -50,8 +50,8 @@
 #include <pgl_scene.h>
 #include <math/util_math.h>
 
-#include "../RayCasting/util_intersection.h"
-#include "../RayCasting/rayintersection.h"
+#include "../raycasting/util_intersection.h"
+#include "../raycasting/rayintersection.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
