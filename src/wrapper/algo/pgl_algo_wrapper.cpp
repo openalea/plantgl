@@ -73,6 +73,10 @@ void module_algo()
     export_Turtle();
     export_PglTurtle();
 
+    // RayCasting export
+    export_SegIntersection();
+    export_Ray();
+    export_RayIntersection();
 };
 
 /* ----------------------------------------------------------------------- */

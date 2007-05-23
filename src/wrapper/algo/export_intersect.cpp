@@ -28,17 +28,13 @@
  *
  *  ----------------------------------------------------------------------------
  */
-/*
-#include "intersect.h"
-#include "../util/property.h"
 
-#include "../MSVoxel/actn_rayintersection.h"
-#include "../MSVoxel/beam_ray.h"
+#include "../util/export_property.h"
+#include <algo/raycasting/util_intersection.h>
+#include <algo/raycasting/rayintersection.h>
 #include <algo/base/discretizer.h>
-#include "geom_geometry.h"
-#include "geom_pointarray.h"
-
-#include <string>
+#include <scenegraph/geometry/geometry.h>
+#include <scenegraph/container/pointarray.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
@@ -49,15 +45,84 @@ using namespace boost::python;
 using namespace std;
 
 
-RayIntersection* intersect_init()
+
+void export_SegIntersection()
 {
-  Discretizer d;
-  return new RayIntersection(d);
+    def("segmentIntersect", (bool (*)(const TOOLS(Vector2)&,const TOOLS(Vector2)&,const TOOLS(Vector2)&,const TOOLS(Vector2)&))&intersectSegment,args("segA1","segA2","segB1","segB2"));
+    def("segmentIntersect", (bool (*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&intersectSegment,args("segA1","segA2","point"));
+    def("segmentIntersect", (bool (*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&intersectSegment,args("segA1","segA2","segB1","segB2"));
+    def("segmentIntersect", (bool (*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&intersectSegment,args("segA1","segA2","tr1","tr2","tr3"));
+    def("segmentIntersect", (bool (*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&intersectSegment,args("segA1","segA2","qd1","qd2","qd3","qd3"));
+
 }
+
+SETGET(Ray,Origin,Vector3)
+SETGET(Ray,Direction,Vector3)
+
+object ray_intersect_seg(Ray * ray, const Vector3& p1, const Vector3& p2)
+{
+    Vector3 res;
+    int ret = ray->intersect(p1,p2,res);
+    if (ret == 1) return object(res);
+    else return object(ret);
+}
+
+object ray_intersect_seg2(Ray * ray, const Vector2& p1, const Vector2& p2)
+{
+    Vector2 res;
+    int ret = ray->intersect(p1,p2,res);
+    if (ret == 1) return object(res);
+    else return object(ret);
+}
+
+object ray_intersect_tr(Ray * ray, const Vector3& p1, const Vector3& p2, const Vector3& p3)
+{
+    Vector3 res;
+    int ret = ray->intersect(p1,p2,p3,res);
+    if (ret == 1) return object(res);
+    else return object(ret);
+}
+
+object ray_intersect_qd(Ray * ray, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& p4)
+{
+    Vector3 res;
+    int ret = ray->intersect(p1,p2,p3,p4,res);
+    if (ret == 1) return object(res);
+    else return object(ret);
+}
+
+object ray_intersect_bs(Ray * ray, const Vector3& center, real_t radius)
+{
+    Vector3 res1, res2;
+    int ret = ray->intersect(center,radius,res1,res2);
+    if (ret == 1) return object(res1);
+    if (ret == 2) return make_tuple(res1,res2);
+    else return object(ret);
+}
+
+
+void export_Ray()
+{
+  class_< Ray > ("Ray", init<optional<const Vector3&, const Vector3&> >("Ray(Vector3 origin, Vector3 direction)", args("origin","direction") ))
+      .def("isValid",&Ray::isValid)
+      .DEC_SETGET("origin",Ray,Origin,Vector3)
+      .DEC_SETGET("direction",Ray,Direction,Vector3)
+      .def("intersect",(bool(Ray::*)(const Vector3&) const)&Ray::intersect,args("point"))
+      .def("intersect",(bool(Ray::*)(const Vector2&) const)&Ray::intersect,args("point"))
+      .def("intersect",ray_intersect_seg,args("p1","p2"))
+      .def("intersect",ray_intersect_seg2,args("p1","p2"))
+      .def("intersect",ray_intersect_tr,args("p1","p2","p3"))
+      .def("intersect",ray_intersect_qd,args("p1","p2","p3","p4"))
+      .def("intersect",ray_intersect_bs,args("center","radius"))
+      .def("isIntersecting",(bool(Ray::*)(const BoundingBox&) const)&Ray::intersect,args("bbox"))
+      .def("isIntersecting",(bool(Ray::*)(const BoundingSphere&) const)&Ray::intersect,args("bsphere"))
+      ;
+}
+
 
 void set_ray( RayIntersection* self, Vector3* point, Vector3* direction )
 {
-  GeomRay ray(*point, *direction);
+  Ray ray(*point, *direction);
   self->setRay(ray);
 }
 
@@ -66,14 +131,13 @@ void run( RayIntersection* self, GeometryPtr geom )
   geom->apply(*self);
 }
 
-void class_RayIntersection()
+void export_RayIntersection()
 {
-  class_< RayIntersection, bases < Action > > ("RayIntersection", no_init)
-    .def("__init__", make_constructor(intersect_init), "RayIntersection()")
-    .def("getIntersection",&RayIntersection::getIntersection, "Return the list of result points" )
-    .def("setRay",set_ray,"set_ray( point, direction)")
-    .def("run",run,
-	 "run(geom) - Compute intersections between a ray and the geometry.")
+  class_< RayIntersection, bases < Action > > ("RayIntersection", init<Discretizer&>("RayIntersection(Discretizer d)", args("discretizer")) )
+    .add_property("intersection",&RayIntersection::getIntersection, "Return the list of result points" )
+    .def("setRay",&set_ray,"setRay( Vector3 point, Vector3 direction)",args("point", "direction"))
+    .def("setRay",&RayIntersection::setRay,"setRay( Ray ray )",args("ray"))
+    .def("run",&run, "run(geom) - Compute intersections between a ray and the geometry.")
     ;
 }
-*/
+

@@ -1,0 +1,6 @@
+# -*-python-*-
+Import( "env" )
+
+includes= env.ALEAGlob('*.h')
+inc = env.ALEAIncludes( "plantgl/algo/raycasting", includes )
+

@@ -144,12 +144,12 @@ void export_Vector4()
     .def( "__getitem__", v4_getAt )
     .def( "__setitem__", v4_setAt )
     .def( "__len__", v4_size )
-    .def( "__abs__",        (Vector4 (*) ( const Vector4&)) abs , "Returns the absolute value of self.")
-    .def( "__norm__",       (real_t (*) ( const Vector4&)) norm , "Returns the norm of self.")
-    .def( "__normL1__",     (real_t (*) ( const Vector4&)) normL1 , "Returns the L1 (Manhattan) norm of self." )
-    .def( "__normLinf__",   (real_t (*) ( const Vector4&)) normLinf , "Returns the L-infinite norm of self.")
-    .def( "__normSquared__",(real_t (*) ( const Vector4&)) normSquared , "Returns the square of the norm of self.")
-    .def( "__dir__",        (Vector4 (*) ( const Vector4&)) direction , "Returns the direction of self.")
+    .def( "__abs__",        (Vector4 (*) ( const Vector4&)) &abs , "Returns the absolute value of self.")
+    .def( "__norm__",       (real_t (*) ( const Vector4&)) &norm , "Returns the norm of self.")
+    .def( "__normL1__",     (real_t (*) ( const Vector4&)) &normL1 , "Returns the L1 (Manhattan) norm of self." )
+    .def( "__normLinf__",   (real_t (*) ( const Vector4&)) &normLinf , "Returns the L-infinite norm of self.")
+    .def( "__normSquared__",(real_t (*) ( const Vector4&)) &normSquared , "Returns the square of the norm of self.")
+    .def( "__dir__",        (Vector4 (*) ( const Vector4&)) &direction , "Returns the direction of self.")
 	.add_static_property( "ORIGIN", make_getter(Vector4::ORIGIN))
 	.add_static_property( "OX", make_getter(Vector4::OX))
 	.add_static_property( "OY", make_getter(Vector4::OY))
@@ -158,7 +158,6 @@ void export_Vector4()
 	.def_pickle(v4_pickle_suite());
 	;
 
-	def("dot",  (real_t (*)   ( const Vector4&, const Vector4&)) dot, args("v1","v2"), "The dot product of v1 and v2" );
 
    pgltuple_from_tuple<Vector4,4>();
 

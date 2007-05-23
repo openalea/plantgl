@@ -185,6 +185,43 @@ object pgl_py_dir(object obj){
    return l;
 }
 
+real_t pgl_py_dot(object p1, object p2){
+    printf("dot : ");
+	extract<Vector2> pt1(p1);
+    if(pt1.check()) {
+        printf("V2\n");
+        return dot(pt1(),extract<Vector2>(p2)());
+    }
+	extract<Vector3> pt1b(p1);
+    if(pt1b.check()){
+        printf("V3\n");
+        return dot(pt1b(),extract<Vector3>(p2)());
+    }
+	extract<Vector4> pt1c(p1);
+    if(pt1c.check()) {
+        printf("V4\n");
+        return dot(pt1c(),extract<Vector4>(p2)());
+    }
+    else {
+        printf("VN\n");
+        if (extract<int>(p1.attr("__len__")()) != extract<int>(p2.attr("__len__")()))
+            throw PythonExc_IndexError();
+	    object iter_obj1 = boost::python::object( handle<>( PyObject_GetIter( p1.ptr() ) ) );
+	    object iter_obj2 = boost::python::object( handle<>( PyObject_GetIter( p2.ptr() ) ) );
+	    real_t val = 0;
+        while( 1 )
+         {
+		    object lobj1,lobj2; 
+		    try {  lobj1 = iter_obj1.attr( "next" )(); lobj2 = iter_obj2.attr( "next" )(); }
+		    catch( error_already_set ){ PyErr_Clear(); break; }
+            real_t lval1 = extract<real_t>( lobj1 )();
+            real_t lval2 = extract<real_t>( lobj2 )();
+		    val += lval1*lval2;
+        }
+        return val;
+    }
+}
+
 struct v2_pickle_suite : boost::python::pickle_suite
 {
 	static tuple getinitargs(Vector2 const& v)
@@ -192,6 +229,8 @@ struct v2_pickle_suite : boost::python::pickle_suite
 		return make_tuple(v.x(),v.y());
 	}
 };
+
+
 
 
 void export_Vector2()
@@ -250,9 +289,10 @@ void export_Vector2()
     ;
   }
 
-  def("angle",(real_t (*)   ( const Vector2&, const Vector2&))angle , args("v1","v2"), "The angle between v1 and v2");
-  def("dot",  (real_t (*)   ( const Vector2&, const Vector2&)) dot , args("v1","v2"), "The dot product of v1 and v2" );
-  def("cross",(real_t (*) ( const Vector2&, const Vector2&)) cross , args("v1","v2"), "The cross product of v1 and v2");
+  def("angle",(real_t (*)   ( const Vector2&, const Vector2&)) &angle , args("v1","v2"), "The angle between v1 and v2");
+  def("cross",(real_t (*) ( const Vector2&, const Vector2&))   &cross , args("v1","v2"), "The cross product of v1 and v2");
+
+  def("dot",  pgl_py_dot , args("v1","v2"), "The dot product of v1 and v2" );
 
   def("norm",     pgl_py_norm , args("v") , "The norm of the vector. If v.__norm__() exists, call it." );
   def("normL1",     pgl_py_normL1 , args("v") , "The L1 (Manhattan) norm of the vector. If v.__normL1__() exists, call it."  );

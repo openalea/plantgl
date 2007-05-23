@@ -326,6 +326,10 @@
 				RelativePath="..\util\extract_list.h"
 				>
 			</File>
+			<File
+				RelativePath="..\util\tuple_converter.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\export_scenegraph.h"

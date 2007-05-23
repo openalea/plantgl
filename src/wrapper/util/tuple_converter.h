@@ -57,8 +57,11 @@ struct pgltuple_from_tuple {
   static void* convertible(PyObject* py_obj){
     if( !PySequence_Check( py_obj ) ) return 0;
 	if( !PyObject_HasAttrString( py_obj, "__len__" ) ) return 0;
-	boost::python::object py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );   
-	if( boost::python::extract<int>(py_sequence.attr("__len__")())()  != tuplesize ) return 0;
+	boost::python::object py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+    int len = 0;
+    try { len = boost::python::extract<int>(py_sequence.attr("__len__")())(); }
+    catch ( boost::python::error_already_set ){ PyErr_Clear(); return 0; }
+	if( len != tuplesize ) return 0;
 	return py_obj;
   }
 

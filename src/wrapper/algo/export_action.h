@@ -73,4 +73,10 @@ void export_TurtleParam();
 void export_Turtle();
 void export_PglTurtle();
 
+/* ----------------------------------------------------------------------- */
+// RayCasting export
+void export_SegIntersection();
+void export_Ray();
+void export_RayIntersection();
+
 #endif

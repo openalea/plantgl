@@ -614,6 +614,30 @@
 		<Filter
 			Name="RayCasting"
 			>
+			<File
+				RelativePath=".\raycasting\ray.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\raycasting\ray.h"
+				>
+			</File>
+			<File
+				RelativePath=".\raycasting\rayintersection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\raycasting\rayintersection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\raycasting\util_intersection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\raycasting\util_intersection.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Modelling"
@@ -634,6 +658,10 @@
 				RelativePath=".\modelling\turtleparam.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Grid"
+			>
 		</Filter>
 		<File
 			RelativePath=".\algo_config.h"

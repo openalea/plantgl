@@ -249,9 +249,8 @@ void export_Vector3()
     ;
 
   }
-def("angle",(real_t (*)   ( const Vector3&, const Vector3&))angle , args("v1","v2"), "The angle between v1 and v2");
-def("dot",  (real_t (*)   ( const Vector3&, const Vector3&)) dot , args("v1","v2"), "The dot product of v1 and v2");
-def("cross",(Vector3 (*) ( const Vector3&, const Vector3&)) cross, args("v1","v2"), "The cross product of v1 and v2"  );
+def("angle",(real_t (*)   ( const Vector3&, const Vector3&)) &angle , args("v1","v2"), "The angle between v1 and v2");
+def("cross",(Vector3 (*) ( const Vector3&, const Vector3&))  &cross, args("v1","v2"), "The cross product of v1 and v2"  );
 
 
 }
