@@ -77,6 +77,11 @@ void module_algo()
     export_SegIntersection();
     export_Ray();
     export_RayIntersection();
+
+    // Grid export
+    export_Mvs();
+    export_Octree();
+
 };
 
 /* ----------------------------------------------------------------------- */

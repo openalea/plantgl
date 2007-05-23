@@ -298,10 +298,6 @@
 				RelativePath=".\export_triangleset.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\tuple_converter.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Utils"

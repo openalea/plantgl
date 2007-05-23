@@ -79,4 +79,9 @@ void export_SegIntersection();
 void export_Ray();
 void export_RayIntersection();
 
+/* ----------------------------------------------------------------------- */
+// Grid export
+void export_Mvs();
+void export_Octree();
+
 #endif

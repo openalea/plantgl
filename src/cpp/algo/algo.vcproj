@@ -662,6 +662,54 @@
 		<Filter
 			Name="Grid"
 			>
+			<File
+				RelativePath=".\grid\mvs.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\mvs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\octree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\octree.h"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\octreenode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\octreenode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\tile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\tile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\voxel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\voxel.h"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\voxelintersection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\grid\voxelintersection.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\algo_config.h"

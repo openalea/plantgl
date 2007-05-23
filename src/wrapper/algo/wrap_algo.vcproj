@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_octree.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_pglturtle.cpp"
 				>
 			</File>
