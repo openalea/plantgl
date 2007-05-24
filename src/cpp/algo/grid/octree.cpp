@@ -1,5 +1,3 @@
-#define OCTREE_FACE
-//#define CPL_DEBUG
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
@@ -41,7 +39,10 @@
 #include "voxelintersection.h"
 #include "../base/discretizer.h"
 
-#ifdef OCTREE_FACE
+
+// #define OCTREE_FACE
+// #define CPL_DEBUG
+
 #include "../base/tesselator.h"
 #include <scenegraph/geometry/triangleset.h>
 #include <scenegraph/container/indexarray.h>
@@ -50,7 +51,6 @@
 #include <scenegraph/scene/shape.h>
 #include "../raycasting/ray.h"
 #include "../raycasting/rayintersection.h"
-#endif
 
 #include <tool/timer.h>
 #include <math/util_math.h>
@@ -62,31 +62,35 @@ using namespace std;
 
 Octree::Octree(const ScenePtr&  Scene,
                uint32_t maxscale,
-               uint32_t maxelements ) :
+               uint32_t maxelements,
+               Octree::ConstructionMethod method) :
     __root(0,0,Tile::Undetermined),
     __size(0,0,0),
     __center(0,0,0),
     __scene(Scene),
     __maxscale(maxscale),
     __maxelts(maxelements),
-    __nbnode(0){
-   build2();
+    __nbnode(0),
+    __method(method){
+   build();
 }
 
 Octree::Octree(const ScenePtr&  Scene,
                const Vector3& Center, const Vector3& Size,
                uint32_t maxscale,
-               uint32_t maxelements) :
+               uint32_t maxelements,
+               Octree::ConstructionMethod method) :
     __root(0,0,Tile::Undetermined),
     __size(Size),
     __center(Center),
     __scene(Scene),
     __maxscale(maxscale),
     __maxelts(maxelements),
-    __nbnode(0){
+    __nbnode(0),
+    __method(method){
     __root.getMinCoord() = Center-Size;
     __root.getMaxCoord() = Center+Size;
-   build2();
+   build();
 }
 
 Octree::~Octree(){
@@ -96,13 +100,22 @@ Octree::~Octree(){
 bool Octree::setScene( const ScenePtr& scene){
     __scene = scene;
     __root = OctreeNode(0,0,Tile::Undetermined);
-    build2();
+    build();
     return true;
 }
 
 
 bool Octree::isValid( ) const {
     return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+void Octree::build()
+/////////////////////////////////////////////////////////////////////////////
+{
+    if (__method == ShapeBased) build();
+    else build2();
 }
 
 #define URDELTA_P(a) a *= (a >= 0 ? 1.1 : 0.9 );
@@ -112,14 +125,10 @@ bool Octree::isValid( ) const {
 #define LLDELTA(a) LLDELTA_P(a.x())LLDELTA_P(a.y())LLDELTA_P(a.z())
 
 /////////////////////////////////////////////////////////////////////////////
-void Octree::build()
+void Octree::build1()
 /////////////////////////////////////////////////////////////////////////////
 {
-#ifdef OCTREE_FACE
-    Tesselator discretizer;
-#else
     Discretizer discretizer;
-#endif
     BBoxComputer bboxcomputer(discretizer);
     VoxelIntersection intersection(bboxcomputer);
 
@@ -135,10 +144,6 @@ void Octree::build()
             __size = bb->getSize();
         }
     }
-
-#ifdef OCTREE_FACE
-    __scene->applyGeometryOnly(discretizer);
-#endif
 
     OctreeNode * node;
 
@@ -165,7 +170,98 @@ void Octree::build()
             for(unsigned char i = 0 ; i <  8 ; i++){
                 node = Complex->getComponent(i);
                 node->setComponents(0);
-#ifdef OCTREE_FACE
+                ScenePtr n(new Scene());
+                intersection.setVoxel(node);
+                bool filled = false;
+                Scene::iterator _it;
+                for( _it = s->getBegin(); _it!=s->getEnd() /* || filled */; _it++)
+                  {
+                  if((*_it)->apply(intersection))
+                  n->add(*_it);
+                  if(intersection.isFilled())filled = true;
+                  }
+                if(filled)
+                  {
+                  node->getType() = Tile::Filled;
+                  node->getGeometry()=n;
+                  int diffscale = (int)__maxscale - (int)node->getScale();
+                  if(diffscale > 0)
+                    {
+                        double suppnb = (((double)pow(8.,diffscale+1)-1.0)/7.0)-1.0;
+                    max_count-= suppnb;
+                    }
+                  }
+                else if (n->isEmpty()){
+                    node->getType() = Tile::Empty;
+                        int maxsc = (int)__maxscale;
+                        int cscale = (int)node->getScale();
+                    int diffscale = maxsc - cscale;
+                        if(diffscale > 0){
+                          double suppnb = (((double)pow(8.,diffscale+1)-1.0)/7.0)-1.0;
+                      max_count-= suppnb;
+                        }
+                }
+                else {
+                    node->getType() = Tile::Undetermined;
+                    node->getGeometry()=n;
+                        Vector3 ns = node->getSize()/2;
+                        if(fabs(ns.x()) > GEOM_EPSILON &&fabs(ns.y()) > GEOM_EPSILON &&fabs(ns.z()) > GEOM_EPSILON)
+                    _myQueue.push(node);
+                }
+            }
+        }
+        }
+        _myQueue.pop();
+    }
+    __nbnode = (uint32_t)max_count2;
+}
+/////////////////////////////////////////////////////////////////////////////
+void Octree::build3()
+/////////////////////////////////////////////////////////////////////////////
+{
+    /** A first implementation of the triangle based octree sorting */      
+    Tesselator discretizer;
+    BBoxComputer bboxcomputer(discretizer);
+    VoxelIntersection intersection(bboxcomputer);
+
+    if( __root.getMinCoord() == Vector3::ORIGIN &&
+        __root.getMaxCoord() == Vector3::ORIGIN )
+        {
+        if(bboxcomputer.process(__scene)){
+            BoundingBoxPtr bb(bboxcomputer.getBoundingBox());
+            URDELTA(bb->getUpperRightCorner());
+            LLDELTA(bb->getLowerLeftCorner());
+            __root.setBBox(bb);
+            __center = bb->getCenter();
+            __size = bb->getSize();
+        }
+    }
+
+    OctreeNode * node;
+
+    OctreeNode * Complex;
+    queue<OctreeNode *> _myQueue;
+    _myQueue.push(&__root);
+    __root.getGeometry() = __scene;
+    double max_count = (pow((double)8,(double)__maxscale+1)-1)/7.0;
+    double max_count2 = max_count;
+    double count = 100.0;
+    double count_percent = 0;
+    Timer t;
+    t.start();
+
+    while(!_myQueue.empty()){
+        Complex = _myQueue.front();
+
+        if(Complex->getType() == Tile::Undetermined && Complex->getScale() < __maxscale){
+          if(Complex->decompose() !=NULL){
+            count+=800.0;
+
+            ScenePtr s(Complex->getGeometry());
+
+            for(unsigned char i = 0 ; i <  8 ; i++){
+                node = Complex->getComponent(i);
+                node->setComponents(0);
                 ScenePtr n(new Scene());
                 Scene::iterator _it;
                 uint32_t nb_triangles= 0;
@@ -226,46 +322,6 @@ void Octree::build()
                     }
                   }
 
-#else
-                ScenePtr n(new Scene());
-                intersection.setVoxel(node);
-                bool filled = false;
-                Scene::iterator _it;
-                for( _it = s->getBegin(); _it!=s->getEnd() /* || filled */; _it++)
-                  {
-                  if((*_it)->apply(intersection))
-                  n->add(*_it);
-                  if(intersection.isFilled())filled = true;
-                  }
-                if(filled)
-                  {
-                  node->getType() = Tile::Filled;
-                  node->getGeometry()=n;
-                  int diffscale = (int)__maxscale - (int)node->getScale();
-                  if(diffscale > 0)
-                    {
-                    double suppnb = (((double)pow(8,diffscale+1)-1.0)/7.0)-1.0;
-                    max_count-= suppnb;
-                    }
-                  }
-                else if (n->isEmpty()){
-                    node->getType() = Tile::Empty;
-                        int maxsc = (int)__maxscale;
-                        int cscale = (int)node->getScale();
-                    int diffscale = maxsc - cscale;
-                        if(diffscale > 0){
-                          double suppnb = (((double)pow(8,diffscale+1)-1.0)/7.0)-1.0;
-                      max_count-= suppnb;
-                        }
-                }
-                else {
-                    node->getType() = Tile::Undetermined;
-                    node->getGeometry()=n;
-                        Vector3 ns = node->getSize()/2;
-                        if(fabs(ns.x()) > GEOM_EPSILON &&fabs(ns.y()) > GEOM_EPSILON &&fabs(ns.z()) > GEOM_EPSILON)
-                    _myQueue.push(node);
-                }
-#endif
             }
         }
         }
@@ -278,6 +334,10 @@ void Octree::build()
 void Octree::build2()
 /////////////////////////////////////////////////////////////////////////////
 {
+    /** Implementation of the triangle based octree sorting 
+        with max number of triangles per voxel condition used
+        and fast overestimating marking of intercepted voxel 
+        based on triangle bounding box */      
     Tesselator discretizer;
 
     BBoxComputer bboxcomputer(discretizer);

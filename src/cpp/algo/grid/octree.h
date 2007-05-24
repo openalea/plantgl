@@ -71,17 +71,23 @@ class ALGO_API Octree : public Mvs
 {
 
 public:
+    enum ConstructionMethod {
+        TriangleBased,
+        ShapeBased
+    } ;
 
   /// Default constructor. Use Bouding Box of \e Scene for center and Size of the space.
   Octree( const ScenePtr& Scene,
           uint32_t maxscale = 10,
-          uint32_t maxelements = 10 );
+          uint32_t maxelements = 10,
+          ConstructionMethod method = TriangleBased);
 
   /// Constructor. Use center and size to define the space the decomposed space.
   Octree( const ScenePtr& Scene,
           const TOOLS(Vector3)& center, const TOOLS(Vector3)& size,
           uint32_t maxscale = 10,
-          uint32_t maxelements = 10);
+          uint32_t maxelements = 10,
+          ConstructionMethod method = TriangleBased);
 
   /// Destructor
   virtual ~Octree( );
@@ -135,8 +141,20 @@ public:
 
 protected:
 
+  /// Build method
   void build();
+
+  /// Shape based octree sorting. It includes interception test based on implicit equation.
+  void build1();
+
+  /*! Implementation of the triangle based octree sorting. 
+      with max number of triangles per voxel condition used
+      and fast overestimating marking of intercepted voxel 
+      based on triangle bounding box */
   void build2();
+
+  /*! A first implementation of the triangle based octree sorting */
+  void build3();
 
   /// The recursive structure.
   OctreeNode __root;
@@ -158,6 +176,9 @@ protected:
 
   /// number of node  of the octree.
   uint32_t __nbnode;
+
+  /// The construction method
+  ConstructionMethod __method;
 
 private:
   Index3ArrayPtr intersect( const TriangleSetPtr& mesh,

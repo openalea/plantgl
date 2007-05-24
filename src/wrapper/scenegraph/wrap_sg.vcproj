@@ -311,6 +311,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\util\export_list.h"
+				>
+			</File>
+			<File
 				RelativePath="..\util\export_property.h"
 				>
 			</File>
