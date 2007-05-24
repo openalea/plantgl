@@ -35,7 +35,7 @@
 #include <boost/python.hpp>
 
 #include "../util/export_refcountptr.h"
-#include "../util/export_list.h"
+//#include "../util/export_list.h"
 #include "../util/export_property.h"
 
 PGL_USING_NAMESPACE

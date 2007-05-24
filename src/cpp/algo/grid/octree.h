@@ -187,7 +187,7 @@ private:
         ScenePtr getCondRepresentation(const Octree& o, condition a) {
     ScenePtr _scene(new Scene());
         std::queue<const OctreeNode *> _myQueue;
-    const OctreeNode * node = &o.getNode();
+    const OctreeNode * node = &o.getRoot();
     _myQueue.push(node);
     while(!_myQueue.empty()){
       node = _myQueue.front();
