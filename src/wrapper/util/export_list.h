@@ -40,6 +40,7 @@
 template <class T>
 struct make_object {
 	typedef T obj_type;
+
     const obj_type& __c_obj;
 
     make_object(const T& c_obj) : __c_obj(c_obj) {}
@@ -49,8 +50,9 @@ struct make_object {
 template <class T, class Translator = make_object<typename T::value_type> >
 struct make_list {
 	typedef T list_type;
-    typedef typename T::value_type list_element_type;
     typedef typename T::const_iterator list_const_iterator;
+    typedef typename T::value_type list_element_type;
+
     const list_type& __c_list;
 
     make_list(const T& c_list): __c_list(c_list){}
