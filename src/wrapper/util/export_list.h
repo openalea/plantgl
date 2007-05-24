@@ -50,15 +50,15 @@ template <class T, class Translator = make_object<typename T::value_type> >
 struct make_list {
 	typedef T list_type;
     typedef typename T::value_type list_element_type;
+    typedef typename T::const_iterator list_const_iterator;
     const list_type& __c_list;
 
     make_list(const T& c_list): __c_list(c_list){}
 
     boost::python::object operator()() const {
         boost::python::list l;
-        for (T::const_iterator it = __c_list.begin(); it != __c_list.end(); ++it){
+        for (list_const_iterator it = __c_list.begin(); it != __c_list.end(); ++it)
             l.append(Translator(*it)());
-        }
         return l;
     }
 };
