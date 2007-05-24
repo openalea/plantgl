@@ -35,7 +35,7 @@
 #include <boost/python.hpp>
 
 #include "../util/export_refcountptr.h"
-//#include "../util/export_list.h"
+#include "../util/export_list.h"
 #include "../util/export_property.h"
 
 PGL_USING_NAMESPACE
@@ -80,27 +80,14 @@ Vector3* intersect( Octree* self, Vector3* point, Vector3* direction )
 Vector3 get_oct_center(Octree * oc) { return oc->getCenter(); }
 Vector3 get_oct_size(Octree * oc) { return oc->getSize(); }
 
-object get_oct_details(Octree * oc) { 
-    list l;
-    std::vector<std::vector<uint32_t> > details = oc->getDetails();
-    for (std::vector<std::vector<uint32_t> >::const_iterator it = details.begin(); it != details.end(); ++it){
-        list l2;
-        for(std::vector<uint32_t>::const_iterator it2 = it->begin(); it2 != it->end(); ++it2)
-            l2.append(*it2);
-        l.append(l2);
-    }
-    return l;
-}
+object get_oct_details(Octree * oc) 
+{ return make_list<std::vector<std::vector<uint32_t> > ,
+                   make_list<std::vector<uint32_t> > >
+                   (oc->getDetails())(); }
 
 object get_oct_sizes(Octree * oc) 
-{ 
-    list l;
-    std::vector<Vector3> sizes = oc->getSizes();
-    for (std::vector<Vector3>::const_iterator it = sizes.begin(); it != sizes.end(); ++it){
-        l.append(*it);
-    }
-    return l;
-} 
+{ return make_list<std::vector<Vector3> >(oc->getSizes())(); }
+
 
 object oct_intersect(Octree * oct, const Ray& ray) {
     Vector3 res;
