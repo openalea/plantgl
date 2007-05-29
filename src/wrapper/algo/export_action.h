@@ -33,6 +33,8 @@
 #define __export_action_h__
 
 /* ----------------------------------------------------------------------- */
+// util class export
+void export_Sequencer();
 
 // abstract action class export
 void export_action();

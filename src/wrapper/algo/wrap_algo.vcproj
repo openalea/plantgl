@@ -223,6 +223,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_sequencer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_turtle.cpp"
 				>
 			</File>

@@ -223,6 +223,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\sequencer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\sequencer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\std.h"
 				>
 			</File>

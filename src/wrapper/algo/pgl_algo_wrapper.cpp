@@ -37,6 +37,9 @@
 void module_algo()
 {
 
+    // util class export
+    export_Sequencer();
+
 	// abstract action class export
     export_action();
 
