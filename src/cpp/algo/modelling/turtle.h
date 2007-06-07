@@ -41,6 +41,7 @@ public:
     static void register_error_handler(error_msg_handler_func f = NULL);
 
     Turtle(TurtleParam * params = NULL);
+    virtual ~Turtle();
     
     virtual std::string str() const;
     
@@ -49,7 +50,7 @@ public:
     
     void dump() const ;
     
-    const TurtleParam& getParameters() const
+    inline const TurtleParam& getParameters() const
 	{ return *__params; }
    
 	/// test validity of self
@@ -61,33 +62,31 @@ public:
 	/// last command to call
     void stop();
     
-    virtual void plot() const {}
-
-    const std::stack<TurtleParam *>& getStack() const
+    inline const std::stack<TurtleParam *>& getStack() const
 	{ return __paramstack; }
     
-    bool emptyStack() const
+    inline bool emptyStack() const
 	{ return __paramstack.empty(); }
     
-    const TOOLS(Vector3)& getPosition() const
+    inline const TOOLS(Vector3)& getPosition() const
 	{ return __params->position; }
         
     const TOOLS(Vector3)& getHeading() const
 	{ return __params->heading; }
     
-    const TOOLS(Vector3)& getUp() const
+    inline const TOOLS(Vector3)& getUp() const
 	{ return __params->up; }
     
-    const TOOLS(Vector3)& getLeft() const
+    inline const TOOLS(Vector3)& getLeft() const
 	{ return __params->left; }
     
-    const TOOLS(Vector3)& getScale() const
+    inline const TOOLS(Vector3)& getScale() const
 	{ return __params->scale; }
 
-    real_t getWidth() const
+    inline real_t getWidth() const
 	{ return __params->width; }
     
-    int getColor() const
+    inline int getColor() const
 	{ return __params->color; }
     
 	/// push the current turtle state on a stack
@@ -97,23 +96,23 @@ public:
     virtual void pop();
 
 	/// Move of l step in heading direction
-    void f() { f(default_step); }
+    inline void f() { f(default_step); }
     virtual void f(real_t length);
 
     /// Move of l step in heading direction and draw a cylinder (or a frustum if topdiam is given)
-    void F() { F(default_step,-1); }
-    void F(real_t length) { F(length,-1); }
+    inline void F() { F(default_step,-1); }
+    inline void F(real_t length) { F(length,-1); }
     virtual void F(real_t length, real_t topdiam);
     
     /// Rotate on the left of default angle
-    virtual void left()
+    inline void left()
 	{ left(angle_increment); }
 
 	/// Rotate on the left of angle degrees
     virtual void left(real_t angle);
     
 	/// Rotate on the right of default angle
-    virtual void right()
+    inline void right()
 	{ left(-angle_increment); }
 
 	/// Rotate on the right of angle degrees
@@ -121,7 +120,7 @@ public:
 	{ left(-angle); }
     
 	/// Rotate in up direction of default angle
-    virtual void up()
+    inline void up()
 	{ down(-angle_increment); }
 
 	/// Rotate in up direction of angle degrees
@@ -129,23 +128,20 @@ public:
 	{ down(-angle); }
     
 	/// Rotate in down direction of default angle
-    virtual void down()
+    inline void down()
 	{ down(angle_increment); }
 
 	/// Rotate in down direction of angle degrees
     virtual void down(real_t angle);
     
     /// Roll in the left direction of default angle
-	void rollL()
-	{ rollL(angle_increment); }
+	inline void rollL() { rollL(angle_increment); }
 
 	/// Roll in the left direction of angle degrees
-    virtual void rollL(real_t angle)
-	{ rollR(-angle); }
+    virtual void rollL(real_t angle) { rollR(-angle); }
     
 	/// Roll in the right direction of default angle
-    virtual void rollR()
-	{ rollR(angle_increment); }
+    inline void rollR() { rollR(angle_increment); }
 
 	/// Roll in the right direction of angle degrees
     virtual void rollR(real_t angle);
@@ -157,7 +153,7 @@ public:
     virtual void setHead(const TOOLS(Vector3)& h, const TOOLS(Vector3)& u);
 
 	/// set Heading and Up vectors
-    virtual void setHead(real_t hx = 0, real_t hy = 0, real_t hz = 1, 
+    inline void setHead(real_t hx = 0, real_t hy = 0, real_t hz = 1, 
 						  real_t ux = 1, real_t uy = 0, real_t uz = 0)
 	{ setHead(TOOLS(Vector3)(hx,hy,hz),TOOLS(Vector3)(ux,uy,uz)); }	
     
@@ -165,81 +161,81 @@ public:
     virtual void move(const TOOLS(Vector3)& pos);
     
     /// Change position to (x,y,z)
-    virtual void move(real_t x = 0, real_t y = 0, real_t z = 0)
+    inline void move(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ move(TOOLS(Vector3)(x,y,z)); }
     
 	/// Decal the position of pos
     virtual void decal(const TOOLS(Vector3) & pos);
     
-    virtual void decal(real_t x = 0, real_t y = 0, real_t z = 0)
+    inline void decal(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ decal(TOOLS(Vector3)(x,y,z)); }
 
-    virtual void traceTo(real_t x, real_t y, real_t z)
+    inline void traceTo(real_t x, real_t y, real_t z)
 	{ traceTo(TOOLS(Vector3)(x,y,z)); }
 
     virtual void traceTo(const TOOLS(Vector3)& v);
 
 	virtual void scale(const TOOLS(Vector3)&);
 
-   	virtual void scale(real_t sx, real_t sy, real_t sz)
+   	inline void scale(real_t sx, real_t sy, real_t sz)
 	{  scale(TOOLS(Vector3)(sx,sy,sz)); }
 
-   	virtual void scale(real_t s )
+   	inline void scale(real_t s )
 	{ scale(TOOLS(Vector3)(s,s,s)); }
 
-   	virtual void scale()
+   	inline void scale()
 	{ scale(TOOLS(Vector3)(1,1,1)); }
 
-   	virtual void multScale(const TOOLS(Vector3)& s)
+   	inline void multScale(const TOOLS(Vector3)& s)
 	{ const TOOLS(Vector3)& cur_scale = getScale();
 	  scale(TOOLS(Vector3)(cur_scale.x() * s.x(),cur_scale.y() * s.y(),cur_scale.z() * s.z())); }
 
-   	virtual void multScale(real_t sx, real_t sy, real_t sz)
+   	inline void multScale(real_t sx, real_t sy, real_t sz)
 	{ const TOOLS(Vector3)& cur_scale = getScale();
 	  scale(TOOLS(Vector3)(cur_scale.x() * sx,cur_scale.y() * sy,cur_scale.z() * sz)); }
 
-   	virtual void multScale(real_t s)
+   	inline void multScale(real_t s)
 	{ multScale(TOOLS(Vector3)(s,s,s)); }
 
-   	virtual void multScale()
+   	inline void multScale()
     {  multScale(TOOLS(Vector3)(scale_multiplier,scale_multiplier,scale_multiplier)); }
 
-   	virtual void divScale(const TOOLS(Vector3)& s)
+   	inline void divScale(const TOOLS(Vector3)& s)
 	{ const TOOLS(Vector3)& cur_scale = getScale();
 	  scale(TOOLS(Vector3)(cur_scale.x() / s.x(),cur_scale.y() / s.y(),cur_scale.z() / s.z())); }
 
-   	virtual void divScale(real_t sx, real_t sy, real_t sz)
+   	inline void divScale(real_t sx, real_t sy, real_t sz)
 	{ const TOOLS(Vector3)& cur_scale = getScale();
 	  scale(TOOLS(Vector3)(cur_scale.x() / sx,cur_scale.y() / sy,cur_scale.z() / sz)); }
 
-   	virtual void divScale(real_t s)
+   	inline void divScale(real_t s)
 	{ divScale(TOOLS(Vector3)(s,s,s)); }
 
-   	virtual void divScale()
+   	inline void divScale()
 	{ divScale(TOOLS(Vector3)(scale_multiplier,scale_multiplier,scale_multiplier)); }
 
     virtual void setColor(int val);
 
-    virtual void incColor()
+    inline void incColor()
 	{ setColor( getColor() + color_increment ); }
     
-    virtual void decColor()
+    inline void decColor()
 	{  setColor( getColor() - color_increment ); }
     
     virtual void setWidth(real_t val);
     
-    virtual void incWidth()
+    inline void incWidth()
     { setWidth( getWidth() + width_increment ); }	
     
-    virtual void decWidth()
+    inline void decWidth()
 	{ setWidth( getWidth() - width_increment ); }	
 
     virtual void setTexture(int val);
 
-    virtual void incTexture()
+    inline void incTexture()
 	{ setTexture( getColor() + color_increment ); }
     
-    virtual void decTexture()
+    inline void decTexture()
 	{ setTexture( getColor() - color_increment ); }
     
     virtual void startPolygon();
@@ -258,16 +254,16 @@ public:
     virtual size_t getTextureListSize() const
 	  { return 0; }
 
-    virtual void sphere()
+    inline void sphere()
 	{ _sphere(getWidth()); }
 
-    virtual void sphere(real_t radius )
+    inline void sphere(real_t radius )
 	{ _sphere(radius); }
     
-    virtual void circle()
+    inline void circle()
 	{ _circle(getWidth()); }
 
-    virtual void circle(real_t radius )
+    inline void circle(real_t radius )
 	{ _circle(radius); }
     
     virtual void label(const std::string& text )
@@ -276,19 +272,19 @@ public:
     virtual void surface(const std::string& name, real_t scale=1)
 	{ if (!name.empty()) _surface(name,(scale > GEOM_EPSILON ? scale : 1)); }
 
-	void setDefaultStep(real_t val)
+	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }
 
-	void setAngleIncrement(real_t val)
+	inline void setAngleIncrement(real_t val)
 	{ angle_increment = (val > 0 ? val : - val); }
     
-	void setWidthIncrement(real_t val)
+	inline void setWidthIncrement(real_t val)
 	{ width_increment = (val > 0 ? val : - val); }
     
-	void setColorIncrement(int val)
+	inline void setColorIncrement(int val)
 	{ color_increment = (val > 0 ? val : - val); }
     
-	void setScaleMultiplier(real_t val)
+	inline void setScaleMultiplier(real_t val)
 	{ scale_multiplier = (val > 0 ? val : - val); }
     
     virtual void error(const std::string& error_string);

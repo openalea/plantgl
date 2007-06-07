@@ -36,7 +36,6 @@ using namespace boost::python;
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
-
 void export_PglTurtle()
 {
   class_< PglTurtle , bases < Turtle > >("PglTurtle", init< optional<TurtleParam *> >("PglTurtle([TurtleParam]) -> Create a Pgl Turtle"))
@@ -49,17 +48,18 @@ void export_PglTurtle()
     .def("removeSurface",     &PglTurtle::removeSurface )
 	.def("appendMaterial",    &PglTurtle::appendMaterial )
 	.def("setMaterial",       &PglTurtle::setMaterial )
+	.def("getMaterial",       &PglTurtle::getMaterial )
     .def("appendColor",       (void(PglTurtle::*)( uint32_t, uint32_t, uint32_t))
 							  &PglTurtle::appendColor )
     .def("appendColor",       (void(PglTurtle::*)( float, float, float))
 							  &PglTurtle::appendColor )
-    .def("setColor",          (void(PglTurtle::*)( size_t, uint32_t, uint32_t, uint32_t))
-							  &PglTurtle::setColor )
-    .def("setColor",          (void(PglTurtle::*)( size_t, float, float, float))
-							  &PglTurtle::setColor )
+    .def("setColorAt",          (void(PglTurtle::*)( size_t, uint32_t, uint32_t, uint32_t))
+							  &PglTurtle::setColorAt )
+    .def("setColorAt",          (void(PglTurtle::*)( size_t, float, float, float))
+							  &PglTurtle::setColorAt )
+    .def("setColorAt",          (void(PglTurtle::*)( size_t,const Color3&))
+							  &PglTurtle::setColorAt )
     .def("appendColor",       (void(PglTurtle::*)( const Color3&))
 							  &PglTurtle::appendColor )
-    .def("setColor",          (void(PglTurtle::*)( size_t,const Color3&))
-							  &PglTurtle::setColor )
 	;
 }

@@ -43,6 +43,9 @@ class ALGO_API TurtleParam {
 public:
 	/// Constructor
 	TurtleParam();
+
+    /// Constructor
+	virtual ~TurtleParam();
     
 	/// reset parameter to initial value
     void reset();

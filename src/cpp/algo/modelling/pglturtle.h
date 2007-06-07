@@ -42,7 +42,9 @@ public:
     typedef hash_map_string<GeometryPtr> SurfaceMap;
 
     PglTurtle(TurtleParam * param = NULL);
-    
+
+    virtual ~PglTurtle();
+
     virtual void reset();
     
     void clear();
@@ -62,10 +64,12 @@ public:
     
     size_t getColorListSize() const
 	{ return __appList.size(); }
-    
+
     void appendMaterial(const AppearancePtr& mat);
     
     void setMaterial(size_t pos, const AppearancePtr& mat);
+
+    AppearancePtr getMaterial(size_t pos);
 
     void appendColor(uint32_t red, uint32_t green, uint32_t blue);
 
@@ -73,11 +77,11 @@ public:
 
     void appendColor(const Color3& mat);
     
-    void setColor(size_t pos, uint32_t red, uint32_t green, uint32_t blue );
+    void setColorAt(size_t pos, uint32_t red, uint32_t green, uint32_t blue );
 
-    void setColor(size_t pos, float red, float green, float blue );
+    void setColorAt(size_t pos, float red, float green, float blue );
 
-    void setColor(size_t pos, const Color3& mat);
+    void setColorAt(size_t pos, const Color3& mat);
 
     void removeColor(size_t pos);
     
@@ -85,10 +89,12 @@ public:
     {  __surfList[name] = surf; } 
     
     void removeSurface(const std::string& name);
-    
+
+    GeometryPtr getSurface(const std::string& name);
+
 protected:
 
-    AppearancePtr getMaterial() const;
+    AppearancePtr getCurrentMaterial() const;
 
     GeometryPtr getCircle(real_t radius) const;
 
