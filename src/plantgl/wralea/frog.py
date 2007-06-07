@@ -42,7 +42,7 @@ class ImportScene(Node):
         self.add_output( name = 'shapes', interface = None )
 
     def __call__( self, inputs ):
-        fn = self.get_input_by_key("filename")
+        fn = self.get_input("filename")
         if fn and fn.endswith('geom'):
             return (list( Scene(fn) ),)
         else:
@@ -60,9 +60,9 @@ class RandomSample(Node):
                          interface = ISequence )
 
     def __call__( self, inputs ):
-        x_size= self.get_input_by_key( 'x_size' )
-        y_size= self.get_input_by_key( 'y_size' )
-        nb_tree= self.get_input_by_key( 'nb_element' )
+        x_size= self.get_input( 'x_size' )
+        y_size= self.get_input( 'y_size' )
+        nb_tree= self.get_input( 'nb_element' )
         return (sample(x_size, y_size, nb_tree),)
 
 class RegularSample(Node):
@@ -80,10 +80,10 @@ class RegularSample(Node):
                          interface = ISequence )
 
     def __call__( self, inputs ):
-        nx= self.get_input_by_key( 'nb_rows' )
-        ny= self.get_input_by_key( 'nb_cols' )
-        size_x= self.get_input_by_key( 'row_size' )
-        size_y= self.get_input_by_key( 'col_size' )
+        nx= self.get_input( 'nb_rows' )
+        ny= self.get_input( 'nb_cols' )
+        size_x= self.get_input( 'row_size' )
+        size_y= self.get_input( 'col_size' )
         return (regular_sample(nx,ny,size_x, size_y),)
 
 class Planter(Node):
@@ -98,8 +98,8 @@ class Planter(Node):
                          interface = None )
 
     def __call__( self, inputs ):
-        transfos= self.get_input_by_key( 'transformations' )
-        shapes= self.get_input_by_key( 'shapes' )
+        transfos= self.get_input( 'transformations' )
+        shapes= self.get_input( 'shapes' )
         if not (shapes and transfos):
             return ( None, )
         if not hasattr(shapes, "__iter__"):

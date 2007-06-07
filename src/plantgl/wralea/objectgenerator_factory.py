@@ -1,15 +1,14 @@
 from openalea.core import *
  
  
-def generate_factory(name):
+def generate_factory(name, **kargs):
 	return Factory( name= name, 
                   description= "make "+name, 
                   category = "PGL Object Generator", 
                   nodemodule = "objectgenerator",
                   nodeclass = name,
-                  
-                  widgetmodule = None,
-                  widgetclass = None) 
+		  **kargs
+) 
 
 def define_package(package):
     """ Initialisation function
@@ -20,7 +19,7 @@ def define_package(package):
     package.add_factory( nf )
     nf = generate_factory("Shape")
     package.add_factory( nf )
-    nf = generate_factory("Scene")
+    nf = generate_factory("Scene", lazy=False)
     package.add_factory( nf )
     nf = generate_factory("AddToScene")
     package.add_factory( nf )

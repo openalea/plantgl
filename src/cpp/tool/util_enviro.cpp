@@ -63,6 +63,7 @@
 #endif
 
 using namespace std;
+
 TOOLS_BEGIN_NAMESPACE
 
 static string PLANTGL_DIR;

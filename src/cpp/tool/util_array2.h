@@ -45,6 +45,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "rcobject.h"
+#include "tools_config.h"
 #include <vector>
 #include <algorithm>
 

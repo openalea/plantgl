@@ -26,12 +26,12 @@ class Material(Node):
 	
 	def __call__(self, inputs):
 		""" inputs is the list of input values """		
-		return ( sg.Material(ambient = toColor3(self.get_input_by_key( 'ambient' )),
-					    diffuse = self.get_input_by_key( 'diffuse' ),
-					    emission = toColor3(self.get_input_by_key( 'emission' )),
-					    specular = toColor3(self.get_input_by_key( 'specular' )),
-					    shininess = self.get_input_by_key( 'shininess' ),
-					    transparency = self.get_input_by_key( 'transparency' )) ,)
+		return ( sg.Material(ambient = toColor3(self.get_input( 'ambient' )),
+					    diffuse = self.get_input( 'diffuse' ),
+					    emission = toColor3(self.get_input( 'emission' )),
+					    specular = toColor3(self.get_input( 'specular' )),
+					    shininess = self.get_input( 'shininess' ),
+					    transparency = self.get_input( 'transparency' )) ,)
 
 
 class Shape(Node):
@@ -47,9 +47,9 @@ class Shape(Node):
 
     def __call__(self, inputs):
         """ inputs is the list of input values """		
-        geometry= self.get_input_by_key( 'geometry' )
-        appearance= self.get_input_by_key( 'appearance' )
-        id= self.get_input_by_key( 'id' )
+        geometry= self.get_input( 'geometry' )
+        appearance= self.get_input( 'appearance' )
+        id= self.get_input( 'id' )
 
         if (not geometry) or (not appearance):
             return
@@ -91,8 +91,8 @@ class AddToScene(Node):
 	
 	def __call__(self, inputs):
 		""" inputs is the list of input values """		
-		sc = self.get_input_by_key( 'scene' )
-		sc.add(self.get_input_by_key( 'shape' ))
+		sc = self.get_input( 'scene' )
+		sc.add(self.get_input( 'shape' ))
 		return (sc,)
 
 
@@ -114,10 +114,10 @@ class Cone(SOR):
 	
 	def __call__(self, inputs):
 		""" inputs is the list of input values """		
-		return (sg.Cone( height = self.get_input_by_key( 'height' ),
-					    radius = self.get_input_by_key( 'radius' ),
-					    solid = self.get_input_by_key( 'solid' ),
-					    slices = self.get_input_by_key( 'slices' )),)
+		return (sg.Cone( height = self.get_input( 'height' ),
+					    radius = self.get_input( 'radius' ),
+					    solid = self.get_input( 'solid' ),
+					    slices = self.get_input( 'slices' )),)
 
 class Cylinder(Cone):
         sg.Cylinder.__doc__
@@ -127,10 +127,10 @@ class Cylinder(Cone):
 	
 	def __call__(self, inputs):
 		""" inputs is the list of input values """		
-		return (sg.Cylinder( height = self.get_input_by_key( 'height' ),
-					    radius = self.get_input_by_key( 'radius' ),
-					    solid = self.get_input_by_key( 'solid' ),
-					    slices = self.get_input_by_key( 'slices' )),)
+		return (sg.Cylinder( height = self.get_input( 'height' ),
+					    radius = self.get_input( 'radius' ),
+					    solid = self.get_input( 'solid' ),
+					    slices = self.get_input( 'slices' )),)
 
 class Frustum(Cone):
         sg.Frustum.__doc__
@@ -141,11 +141,11 @@ class Frustum(Cone):
 	
 	def __call__(self, inputs):
 		""" inputs is the list of input values """		
-		return (sg.Frustum( height = self.get_input_by_key( 'height' ),
-					    taper = self.get_input_by_key( 'taper' ),
-					    radius = self.get_input_by_key( 'radius' ),
-					    solid = self.get_input_by_key( 'solid' ),
-					    slices = self.get_input_by_key( 'slices' )),)
+		return (sg.Frustum( height = self.get_input( 'height' ),
+					    taper = self.get_input( 'taper' ),
+					    radius = self.get_input( 'radius' ),
+					    solid = self.get_input( 'solid' ),
+					    slices = self.get_input( 'slices' )),)
 
 class Paraboloid(Cone):
         sg.Paraboloid.__doc__
@@ -157,12 +157,12 @@ class Paraboloid(Cone):
 	
 	def __call__(self, inputs):
 		""" inputs is the list of input values """		
-		return (sg.Paraboloid( height = self.get_input_by_key( 'height' ),
-					    shape = self.get_input_by_key( 'shape' ),
-					    radius = self.get_input_by_key( 'radius' ),
-					    solid = self.get_input_by_key( 'solid' ),
-					    slices = self.get_input_by_key( 'slices' ),
-					    stacks = self.get_input_by_key( 'stacks' )),)
+		return (sg.Paraboloid( height = self.get_input( 'height' ),
+					    shape = self.get_input( 'shape' ),
+					    radius = self.get_input( 'radius' ),
+					    solid = self.get_input( 'solid' ),
+					    slices = self.get_input( 'slices' ),
+					    stacks = self.get_input( 'stacks' )),)
 
 class Translated(Node):
     sg.Translated.__doc__
@@ -178,7 +178,7 @@ class Translated(Node):
     def __call__(self, inputs):
         """ inputs is the list of input values """	
         t= mt.Vector3(*inputs[0:2])
-        geometry = self.get_input_by_key( 'geometry' )
+        geometry = self.get_input( 'geometry' )
         return (sg.Translated( t, geometry),)
 
 class EulerRotated(Node):
@@ -194,14 +194,14 @@ class EulerRotated(Node):
 
         def __call__(self, inputs):
             """ inputs is the list of input values """	
-            geometry = self.get_input_by_key( 'geometry' )
+            geometry = self.get_input( 'geometry' )
 
             if not geometry:
                 return
 
-            return (sg.EulerRotated( self.get_input_by_key( 'azimuth' ),
-                                     self.get_input_by_key( 'elevation' ),
-                                     self.get_input_by_key( 'roll' ), geometry),)
+            return (sg.EulerRotated( self.get_input( 'azimuth' ),
+                                     self.get_input( 'elevation' ),
+                                     self.get_input( 'roll' ), geometry),)
 
 class Sphere(SOR):
     sg.Sphere.__doc__
@@ -213,7 +213,7 @@ class Sphere(SOR):
 
     def __call__(self, inputs):
         """ inputs is the list of input values """		
-        return (sg.Sphere( radius = self.get_input_by_key( 'radius' ),
-                           slices = self.get_input_by_key( 'slices' ),
-                           stacks = self.get_input_by_key( 'stacks' ) ),)
+        return (sg.Sphere( radius = self.get_input( 'radius' ),
+                           slices = self.get_input( 'slices' ),
+                           stacks = self.get_input( 'stacks' ) ),)
 

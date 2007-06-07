@@ -44,7 +44,7 @@ prefix= opt_env['build_prefix']
 BuildDir( prefix, '.' )
 
 cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
-cpp_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
+cpp_env.Prepend( CPPPATH = pj( '$build_includedir','plantgl' ) )
 cpp_env.Append( QT_VERSION = qt_version )
 if qt_version == 4:
     cpp_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
