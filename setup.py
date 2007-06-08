@@ -96,7 +96,7 @@ setup(
     scons_scripts = ['SConstruct'],
 
     # scons parameters  
-    scons_parameters = ["build","build_prefix="+build_prefix],
+    scons_parameters = ["build_prefix="+build_prefix],
     
     namespace=[namespace],
 
