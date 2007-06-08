@@ -1145,8 +1145,8 @@ bool PovPrinter::process( Text * text ) {
   GEOM_ASSERT(text);
   GEOM_POVPRINT_BEGIN(__geomStream,"text",text);
   __geomStream << __indent << "ttf \"crystal.ttf\"," << endl;
-  __geomStream << __indent << text->getString() << endl;
-  __geomStream << __indent << "2" << endl;
+  __geomStream << __indent << '"' << text->getString() << '"' << endl;
+  __geomStream << __indent << "2, 0" << endl;
   GEOM_POVPRINT_END(__geomStream, text);
   return true;
 }

@@ -1524,8 +1524,8 @@ bool GLRenderer::process( Polyline2D * polyline ) {
 
 bool GLRenderer::process( Text * text ) {
   GEOM_ASSERT(text);
-  bool l = glIsEnabled(GL_LIGHTING);
-  if(l)glDisable(GL_LIGHTING);
+  glPushAttrib(GL_LIGHTING_BIT);
+  glDisable(GL_LIGHTING);
   if(!text->getString().empty()){
 	QFont f;
 	if(text->getFontStyle()){
@@ -1562,7 +1562,8 @@ bool GLRenderer::process( Text * text ) {
 
 	}
   }
-  if(l)glEnable(GL_LIGHTING);
+  glPopAttrib();
+  // if(l)glEnable(GL_LIGHTING);
   return true;
 }
 
