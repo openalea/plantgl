@@ -32,9 +32,19 @@
 #include <algo/modelling/pglturtle.h>
 
 #include <boost/python.hpp>
+#include "../util/export_list.h"
+
 using namespace boost::python;
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
+
+boost::python::object getTurtleColorList(PglTurtle * turtle) {
+    return make_list<std::vector<AppearancePtr> >(turtle->getColorList())();
+}
+
+boost::python::object getTurtleSurfaceList(PglTurtle * turtle) {
+    return make_dict<PglTurtle::SurfaceMap>(turtle->getSurfaceList())();
+}
 
 void export_PglTurtle()
 {
@@ -61,5 +71,7 @@ void export_PglTurtle()
 							  &PglTurtle::setColorAt )
     .def("appendColor",       (void(PglTurtle::*)( const Color3&))
 							  &PglTurtle::appendColor )
+    .def("getColorList",      &getTurtleColorList )
+    .def("getSurfaceList",    &getTurtleSurfaceList )
 	;
 }
