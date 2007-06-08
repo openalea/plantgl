@@ -74,7 +74,7 @@ template <class T,
 #ifdef WIN32_STL_EXTENSION
           class ValueTranslator = make_object<typename T::mapped_type>
 #else
-          class ValueTranslator = make_object<typename T::value_type>
+          class ValueTranslator = make_object<typename T::data_type>
 #endif
          >
 struct make_dict {
@@ -84,7 +84,7 @@ struct make_dict {
 #ifdef WIN32_STL_EXTENSION
     typedef typename T::mapped_type dict_value_type;
 #else
-    typedef typename T::value_type dict_value_type;
+    typedef typename T::data_type dict_value_type;
 #endif
 
     dict_const_iterator __c_dict_begin;
