@@ -13,7 +13,7 @@ name='plantgl'
 
 SConsignFile()
 
-options = Options( 'options.py', ARGUMENTS )
+options = Options( '../options.py', 'options.py', ARGUMENTS )
 options.Add(EnumOption('QT_VERSION','Qt major version to use','3',allowed_values=('3','4')))
 
 qt_env = Environment(options=options)
