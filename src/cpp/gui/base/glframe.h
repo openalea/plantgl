@@ -378,7 +378,7 @@ signals:
   /// LineWidth dialog
   ViewToolBar * __linedialog;
   /// LineWidth dialog slider
-  QSlider * __lineslider;
+  // QSlider * __lineslider;
 
 };
 

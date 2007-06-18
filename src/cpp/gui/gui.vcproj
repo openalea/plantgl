@@ -352,6 +352,30 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\base\interface\linewidthcontrol.ui"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\base\interface\messagedisplayer.ui"
 					>
 					<FileConfiguration
@@ -458,6 +482,10 @@
 					</File>
 					<File
 						RelativePath=".\base\interface\gloptions.h"
+						>
+					</File>
+					<File
+						RelativePath=".\base\interface\linewidthcontrol.h"
 						>
 					</File>
 					<File
@@ -1410,7 +1438,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;"
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;"
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
 					</FileConfiguration>
@@ -1420,7 +1448,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputFileName)..."
-							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;"
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;&#x0D;&#x0A;"
 							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
 						/>
 					</FileConfiguration>

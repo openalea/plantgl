@@ -52,6 +52,8 @@
 #include <qtoolbar.h>
 #include <qfile.h>
 #include <qgl.h>
+#include <qdockwidget.h>
+#include <qmainwindow.h>
 #include <algo/opengl/util_glut.h>
 
 TOOLS_USING_NAMESPACE
@@ -67,29 +69,41 @@ ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
   __visible(false),
   __position(0,0,0),
   __displayList(0){
-  __sliders= new ViewDialog(parent,false);
+  QMainWindow * mwidget = dynamic_cast<QMainWindow *>(parent->parent());
+  __sliders= new QDockWidget(mwidget,false);
+  __sliders->setObjectName("RotCenterSliders");
   __sliders->setWindowTitle(tr("Rotating Center Coordinates"));
+  QWidget * widgetContent = new QWidget(__sliders);
+  __sliders->setWidget(widgetContent);
   __editor = new Ui::RotCenterEdit();
-  __editor->setupUi(__sliders);
-  __editor->XEdit->setText(QString::number(__position.x()));
-  __editor->YEdit->setText(QString::number(__position.y()));
-  __editor->ZEdit->setText(QString::number(__position.z()));
-  QObject::connect(__editor->XEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setX(const QString&)));
-  QObject::connect(__editor->YEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setY(const QString&)));
-  QObject::connect(__editor->ZEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setZ(const QString&)));
-  QObject::connect(this,SIGNAL(XvalueChanged(const QString&)),__editor->XEdit,SLOT(setText(const QString&)));
-  QObject::connect(this,SIGNAL(YvalueChanged(const QString&)),__editor->YEdit,SLOT(setText(const QString&)));
-  QObject::connect(this,SIGNAL(ZvalueChanged(const QString&)),__editor->ZEdit,SLOT(setText(const QString&)));
+  __editor->setupUi(widgetContent);
+  __editor->XEdit->setRange(-REAL_MAX,REAL_MAX);
+  __editor->YEdit->setRange(-REAL_MAX,REAL_MAX);
+  __editor->ZEdit->setRange(-REAL_MAX,REAL_MAX);
+
+  __editor->XEdit->setValue(__position.x());
+  __editor->YEdit->setValue(__position.y());
+  __editor->ZEdit->setValue(__position.z());
+  QObject::connect(__editor->XEdit,SIGNAL(valueChanged(double)),this,SLOT(setX(double)));
+  QObject::connect(__editor->YEdit,SIGNAL(valueChanged(double)),this,SLOT(setY(double)));
+  QObject::connect(__editor->ZEdit,SIGNAL(valueChanged(double)),this,SLOT(setZ(double)));
+  QObject::connect(this,SIGNAL(XvalueChanged(double)),__editor->XEdit,SLOT(setValue(double)));
+  QObject::connect(this,SIGNAL(YvalueChanged(double)),__editor->YEdit,SLOT(setValue(double)));
+  QObject::connect(this,SIGNAL(ZvalueChanged(double)),__editor->ZEdit,SLOT(setValue(double)));
   QObject::connect(__editor->XSlider,SIGNAL(sliderMoved(int)),this,SLOT(setX(int)));
   QObject::connect(__editor->YSlider,SIGNAL(sliderMoved(int)),this,SLOT(setY(int)));
   QObject::connect(__editor->ZSlider,SIGNAL(sliderMoved(int)),this,SLOT(setZ(int)));
   QObject::connect(this,SIGNAL(XvalueChanged(int)),__editor->XSlider,SLOT(setValue(int)));
   QObject::connect(this,SIGNAL(YvalueChanged(int)),__editor->YSlider,SLOT(setValue(int)));
   QObject::connect(this,SIGNAL(ZvalueChanged(int)),__editor->ZSlider,SLOT(setValue(int)));
+
   QObject::connect(__editor->OkButton,SIGNAL(clicked()),__sliders,SLOT(hide()));
   QObject::connect(__editor->CancelButton,SIGNAL(clicked()),__sliders,SLOT(hide()));
   QObject::connect(__editor->ClearButton,SIGNAL(clicked()),this,SLOT(init()));
   setSliderStep(1);
+
+  mwidget->addDockWidget(Qt::BottomDockWidgetArea,__sliders);
+  __sliders->setVisible(false);
 }
 
 
@@ -111,9 +125,9 @@ ViewRotCenterGL::setSliderStep(const int step)
   __editor->XSlider->setValue(int(__position.x()));
   __editor->YSlider->setValue(int(__position.y()));
   __editor->ZSlider->setValue(int(__position.z()));
-  __editor->XEdit->setText(QString::number(__position.x()));
-  __editor->YEdit->setText(QString::number(__position.y()));
-  __editor->ZEdit->setText(QString::number(__position.z()));
+  __editor->XEdit->setValue(__position.x());
+  __editor->YEdit->setValue(__position.y());
+  __editor->ZEdit->setValue(__position.z());
 }
 
 /* ----------------------------------------------------------------------- */
@@ -148,7 +162,7 @@ ViewRotCenterGL::z() const
   return int(__position.z());
 }
 
-ViewDialog * 
+QDockWidget * 
 ViewRotCenterGL::getSliders() const
 {
   return __sliders;
@@ -163,11 +177,11 @@ ViewRotCenterGL::init()
     __position = Vector3::ORIGIN;
 	float step = getStep();
     emit XvalueChanged(int(__position.x()/step));
-    emit XvalueChanged(QString::number(__position.x()));
+    emit XvalueChanged(__position.x());
     emit YvalueChanged(int(__position.y()/step));
-    emit YvalueChanged(QString::number(__position.y()));
+    emit YvalueChanged(__position.y());
     emit ZvalueChanged(int(__position.z()/step));
-    emit ZvalueChanged(QString::number(__position.z()));
+    emit ZvalueChanged(__position.z());
     emit valueChanged();
   }
 }
@@ -272,7 +286,7 @@ void
 ViewRotCenterGL::setX(int x)
 {
   __position.x() = x;
-  emit XvalueChanged(QString::number(x/getStep()));
+  emit XvalueChanged(double(x));
   emit valueChanged();
 }
 
@@ -280,7 +294,7 @@ void
 ViewRotCenterGL::setY(int y)
 {
   __position.y() = y;
-  emit YvalueChanged(QString::number(y/getStep()));
+  emit YvalueChanged(double(y));
   emit valueChanged();
 }
 
@@ -288,31 +302,31 @@ void
 ViewRotCenterGL::setZ(int z)
 {
   __position.z() = z;
-  emit ZvalueChanged(QString::number(z/getStep()));
+  emit ZvalueChanged(double(z));
   emit valueChanged();
 }
 
 void 
-ViewRotCenterGL::setX(const QString& x)
+ViewRotCenterGL::setX(double x)
 {
-  __position.x() = real_t(x.toInt());
+  __position.x() = x;
   emit XvalueChanged(int(__position.x()));
   emit valueChanged();
   
 }
 
 void 
-ViewRotCenterGL::setY(const QString& y)
+ViewRotCenterGL::setY(double y)
 {
-  __position.y() = real_t(y.toInt());
+  __position.y() = y;
   emit YvalueChanged(int(__position.y()));
   emit valueChanged();
   
 }
 void 
-ViewRotCenterGL::setZ(const QString& z)
+ViewRotCenterGL::setZ(double z)
 {
-  __position.z() = real_t(z.toInt());
+  __position.z() = z;
   emit ZvalueChanged(int(__position.z()));
   emit valueChanged();  
 }
@@ -384,6 +398,7 @@ ViewRotCenterGL::createToolsMenu(QWidget * parent)
     QPixmap visible(ViewerIcon::getPixmap(ViewerIcon::rcvisible));
     QPixmap active(ViewerIcon::getPixmap(ViewerIcon::rcactive));
     QPixmap centered(ViewerIcon::getPixmap(ViewerIcon::rccentered));
+
     QAction * idVisible = menu->addAction(visible,tr("&Visible"),this,SLOT(changeVisibility()));
     idVisible->setCheckable( true );
     idVisible->setChecked( isVisible() );
@@ -396,10 +411,16 @@ ViewRotCenterGL::createToolsMenu(QWidget * parent)
 
 	menu->addSeparator();
     menu->addAction(centered,tr("&Center"),this,SLOT(center()));
-    QAction * idControl = menu->addAction(wheel,tr("&Control"),getSliders(),SLOT(show()));
-    idControl->setCheckable( true );
-    idControl->setChecked( getSliders()->isVisible() );
-    QObject::connect(getSliders(),SIGNAL(visibilityChanged(bool)),idControl,SLOT(setChecked(bool)));    
+    //QAction * idControl = menu->addAction(wheel,tr("&Control"),getSliders(),SLOT(show()));
+    //idControl->setCheckable( true );
+    //idControl->setChecked( getSliders()->isVisible() );
+    //QObject::connect(getSliders(),SIGNAL(visibilityChanged(bool)),idControl,SLOT(setChecked(bool)));    
+
+    QAction * idControl = getSliders()->toggleViewAction();
+    menu->addAction(idControl);
+    idControl->setText("Rot. Center &Control");
+    idControl->setIcon(wheel);
+
 
 
     return menu;

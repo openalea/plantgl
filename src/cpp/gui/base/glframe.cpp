@@ -77,6 +77,7 @@
 #include "util_qwidget.h"
 #include "configuration.h"
 #include "interface/gloptions.h"
+#include "interface/linewidthcontrol.h"
 
 #include "event.h"
 // #include "editgeomscenegl.h"
@@ -114,7 +115,6 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __mode(Rotation),
   __lastSelectionMode(Selection),
   __linedialog(0),
-  __lineslider(0),
   __selectionRect(0)
 {
 	if(name)setObjectName(name);
@@ -1380,14 +1380,11 @@ void
 ViewGLFrame::addOtherToolBar(QMainWindow * menu)
 {
   __linedialog  = new ViewToolBar(tr("Line Width Bar"),menu,"LineWidthBar");
-  QLabel * Label = new QLabel(__linedialog );
-  Label->setText( tr( " Line Width " ) );
-
-  __lineslider =  new QSlider ( Qt::Horizontal, __linedialog );
-  __lineslider->setRange( 1 , 15 );
-  __lineslider->setPageStep(0);
-  __lineslider->setFixedSize(100,25);
-  QObject::connect (__lineslider,SIGNAL(valueChanged(int)), this,SLOT(setLineWidth(int)) ); 	
+  Ui::LineWidthControl form;
+  QWidget * widget = new QWidget(__linedialog);
+  form.setupUi(widget);
+  __linedialog->addWidget(widget);
+  QObject::connect (form.LineWidthSlider,SIGNAL(valueChanged(int)), this,SLOT(setLineWidth(int)) ); 	
   
   menu->addToolBar(__linedialog);
   __linedialog->hide();

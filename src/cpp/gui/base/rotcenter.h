@@ -58,7 +58,7 @@ namespace Ui { class RotCenterEdit; }
 
 /* ----------------------------------------------------------------------- */
 
-class ViewDialog;
+class QDockWidget;
 
 /* ----------------------------------------------------------------------- */
 
@@ -104,7 +104,7 @@ public:
   int z() const;
 
   /// get the sliders that control this.
-  ViewDialog * getSliders() const;
+  QDockWidget * getSliders() const;
 
   /// Create a Tools menu that reflect the functionality of this.
   virtual QMenu * createToolsMenu(QWidget * parent);
@@ -154,13 +154,13 @@ public slots:
   void setZ(int z);
 
   /// Set X Coordinates of this to \e x
-  void setX(const QString& x);
+  void setX(double x);
 
   /// Set Y Coordinates of this to \e y
-  void setY(const QString& y);
+  void setY(double y);
 
   /// Set Z Coordinates of this to \e z
-  void setZ(const QString& z);
+  void setZ(double z);
 
   /// Initialize the rotating center.
   virtual void initializeGL();
@@ -189,20 +189,20 @@ public slots:
   void ZvalueChanged(int);
   
   /// emit when X Coordinates changed.
-  void XvalueChanged(const QString&);
+  void XvalueChanged(double);
   
   /// emit when Y Coordinates changed.
-  void YvalueChanged(const QString&);
+  void YvalueChanged(double);
   
   /// emit when Z Coordinates changed.
-  void ZvalueChanged(const QString&);
+  void ZvalueChanged(double);
   
 protected :
 
   void setSliderStep(const int step);
 
   /// Sliders to control self coordinates.
-  ViewDialog * __sliders;
+  QDockWidget * __sliders;
   Ui::RotCenterEdit * __editor;
 
   /// Activation of this.
