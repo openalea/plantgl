@@ -18,19 +18,34 @@ using namespace boost::python;
 
 #include "arrays_macro.h"
 
-boost::python::object * sorting_method = NULL;
+boost::python::object * compare_method = NULL;
 
 template <class T>
 bool py_comp(const T& a, const T& b){
-    int res = extract<int>((*sorting_method)(object(a),object(b)));
+    int res = extract<int>((*compare_method)(object(a),object(b)));
     return res < 0;
 }
 template <class T>
-void py_sort(T * pts, boost::python::object sort_method){
-    boost::python::object * old_sorting_method = sorting_method;
-    sorting_method = & sort_method;
-    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp<T::element_type>);
-    sorting_method = old_sorting_method;
+void py_sort(T * pts, boost::python::object cmp_method){
+    boost::python::object * old_compare_method = compare_method ;
+    compare_method  = & cmp_method;
+    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp<typename T::element_type>);
+    compare_method  = old_compare_method;
+}
+
+template <class T>
+boost::python::list py_partition(T * pts, boost::python::object cmp_method){
+    boost::python::list rlist;
+    typename T::const_iterator itPrevious = pts->getBegin();
+    T * c_pointset = new T();
+    for(typename T::const_iterator it = pts->getBegin(); it != pts->getEnd(); ++it) {
+        if (cmp_method(object(*it),object(*itPrevious)) != 0) {
+            rlist.append(object(c_pointset));
+            c_pointset = new T();
+        }
+        c_pointset->pushBack(*it);
+    }
+    return rlist;
 }
 
 EXPORT_FUNCTION( p2a, Vector2, Point2Array )
@@ -79,35 +94,35 @@ int pa_wmaxindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(p
 template<class T>
 object pa_xminmaxindex(const T * pts){ 
     if(pts->isEmpty()) return object();
-    std::pair<T::const_iterator,T::const_iterator> index = pts->getXMinAndMax();
+    std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getXMinAndMax();
     return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
 }
 
 template<class T>
 object pa_yminmaxindex(const T * pts){ 
     if(pts->isEmpty()) return object();
-    std::pair<T::const_iterator,T::const_iterator> index = pts->getYMinAndMax();
+    std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getYMinAndMax();
     return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
 }
 
 template<class T>
 object pa_zminmaxindex(const T * pts){ 
     if(pts->isEmpty()) return object();
-    std::pair<T::const_iterator,T::const_iterator> index = pts->getZMinAndMax();
+    std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getZMinAndMax();
     return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
 }
 
 template<class T>
 object pa_wminmaxindex(const T * pts){ 
     if(pts->isEmpty()) return object();
-    std::pair<T::const_iterator,T::const_iterator> index = pts->getWMinAndMax();
+    std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getWMinAndMax();
     return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
 }
 
 template<class T>
 object pa_bounds(const T * pts){ 
     if(pts->isEmpty()) return object();
-    std::pair<T::element_type,T::element_type> bounds = pts->getBounds();
+    std::pair<typename T::element_type,typename T::element_type> bounds = pts->getBounds();
     return make_tuple(bounds.first,bounds.second); 
 }
 
@@ -126,6 +141,7 @@ void export_pointarrays()
     .def( "getXMinAndMaxIndex", &pa_xminmaxindex<Point2Array>) 
     .def( "getYMinAndMaxIndex", &pa_yminmaxindex<Point2Array>) 
     .def( "sort", &py_sort<Point2Array>) 
+    .def( "partition", &py_partition<Point2Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>); 
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(p2a);
@@ -148,6 +164,7 @@ void export_pointarrays()
     .def( "getYMinAndMaxIndex", &pa_yminmaxindex<Point3Array>) 
     .def( "getZMinAndMaxIndex", &pa_zminmaxindex<Point3Array>) 
     .def( "sort", &py_sort<Point3Array>) 
+    .def( "partition", &py_partition<Point3Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>); 
     DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(p3a);
@@ -174,6 +191,7 @@ void export_pointarrays()
     .def( "getZMinAndMaxIndex", &pa_zminmaxindex<Point4Array>) 
     .def( "getWMinAndMaxIndex", &pa_wminmaxindex<Point4Array>) 
     .def( "sort", &py_sort<Point4Array>) 
+    .def( "partition", &py_partition<Point4Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>); 
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(p4a);

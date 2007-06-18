@@ -2,10 +2,13 @@
 
 Import( "env" )
 
+
 py_dir = '../../plantgl/scenegraph'
 
 # Build wrappers as shared libraries
 lib_env=env.Copy()
+lib_env.EnableQt4Modules( [ 'QtCore' ])
+lib_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
 
 sources= lib_env.ALEAGlob( '*.cpp' )
 target= "_pglsg"
