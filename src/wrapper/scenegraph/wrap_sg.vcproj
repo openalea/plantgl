@@ -56,7 +56,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
+				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib QtCored4.lib "
 				OutputFile="../../plantgl_d/scenegraph/_pglsg_d.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				GenerateDebugInformation="true"
@@ -127,7 +127,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
+				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib QtCore4.lib"
 				OutputFile="../../plantgl/scenegraph/_pglsg.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				ImportLibrary="../../../lib/$(TargetName).lib"
@@ -208,6 +208,10 @@
 			</File>
 			<File
 				RelativePath=".\export_extrusion.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_factory.cpp"
 				>
 			</File>
 			<File

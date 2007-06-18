@@ -100,10 +100,10 @@ void export_Octree()
 {
   scope octree = class_< Octree, OctreePtr, boost::noncopyable >("Octree", 
           init<const ScenePtr&,optional< uint32_t,uint32_t, Octree::ConstructionMethod> >
-              ("Octree(scene,maxscale,maxelements)",args("scene","maxscale","maxelements")))
+              ("Octree(scene,maxscale,maxelements,method)",args("scene","maxscale","maxelements","method")))
      .def(init<const ScenePtr&,const Vector3&, const Vector3&, 
               optional<uint32_t,uint32_t,Octree::ConstructionMethod> >
-              ("Octree(scene,center,size,maxscale,maxelements)",args("scene","center","size","maxscale","maxelements")))
+              ("Octree(scene,center,size,maxscale,maxelements,method)",args("scene","center","size","maxscale","maxelements","method")))
      .add_property("center",&get_oct_center)
      .add_property("size",&get_oct_size)
      .add_property("depth",&Octree::getDepth)

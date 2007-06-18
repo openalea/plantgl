@@ -112,4 +112,7 @@ void export_QuadSet();
 void export_FaceSet();
 void export_AmapSymbol();
 
+void export_SceneCodec();
+void export_SceneFactory();
+
 #endif

@@ -211,7 +211,7 @@ public:
   }
 
   /// Returns whether \e self is empty.
-  inline bool isEmpty( ) {
+  inline bool isEmpty( ) const {
     return __A.empty();
   }
 

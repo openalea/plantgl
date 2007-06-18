@@ -1402,6 +1402,30 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\viewer\interface\codecview.ui"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputFileName)..."
+							CommandLine="%QTDIR%\bin\uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).h&quot;"
+							Outputs="&quot;$(InputDir)/$(InputName).h&quot;"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
 					RelativePath=".\viewer\interface\importselection.ui"
 					>
 					<FileConfiguration
@@ -1432,6 +1456,10 @@
 					>
 					<File
 						RelativePath=".\viewer\interface\approximation.h"
+						>
+					</File>
+					<File
+						RelativePath=".\viewer\interface\codecview.h"
 						>
 					</File>
 					<File

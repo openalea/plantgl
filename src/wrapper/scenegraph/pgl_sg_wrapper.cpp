@@ -135,6 +135,9 @@ void module_sg()
     export_Oriented();
     export_Tapered();
 
+    export_SceneCodec();
+    export_SceneFactory();
+
 };
 
 

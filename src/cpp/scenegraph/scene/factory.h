@@ -66,6 +66,8 @@ struct SG_API SceneFormat {
 	std::string name;
 	std::vector<std::string> suffixes;
 	std::string comment;
+    bool operator==(const SceneFormat& sf) const
+    { return name == sf.name && suffixes == sf.suffixes && comment == comment; }
 };
 
 typedef std::vector<SceneFormat> SceneFormatList;
@@ -94,6 +96,11 @@ public :
 
 	virtual void write(const std::string& fname,const ScenePtr&	scene) { }
 
+    void setName(const std::string& name) { __name = name; }
+    const std::string& getName() const { return __name; }
+
+    void setMode(Mode mode) { __mode = mode; }
+    Mode getMode() const { return __mode; }
 protected:
 	std::string __name;
 	Mode __mode;
@@ -107,12 +114,17 @@ class SG_API SceneFactory : public TOOLS(RefCountObject)
 {
 
 public:
+	typedef std::vector<SceneCodecPtr> CodecList;
 
 	~SceneFactory();
 	static SceneFactory& get();
 
-	SceneFormatList formats( SceneCodec::Mode openingMode ) const;
-	ScenePtr read(const std::string& fname);
+	SceneFormatList formats( SceneCodec::Mode openingMode = SceneCodec::None ) const;
+
+    bool isReadable(const std::string& fname);
+    bool isWritable(const std::string& fname);
+
+    ScenePtr read(const std::string& fname);
 	void write(const std::string& fname,const ScenePtr&	scene);
 
 	ScenePtr read(const std::string& fname, const std::string& codecname);
@@ -124,6 +136,9 @@ public:
 	bool installLib(const std::string& libname);
 	bool installDefaultLib();
 
+    typedef CodecList::const_iterator const_iterator;
+    const_iterator begin() const { return __codecs.begin(); }
+    const_iterator end() const { return __codecs.end(); }
 protected:
 
 	SceneFactory();
@@ -131,7 +146,6 @@ protected:
 
 	SceneCodecPtr findCodec(const std::string& codecname);
 
-	typedef std::vector<SceneCodecPtr> CodecList;
 	CodecList __codecs;
 
 private:

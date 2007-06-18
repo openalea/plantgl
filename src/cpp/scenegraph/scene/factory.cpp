@@ -61,8 +61,10 @@ bool SceneCodec::test(const std::string& fname, Mode openingMode)
 			itFormat != _formats.end(); ++itFormat){
 			for(std::vector<std::string>::const_iterator itSuffix = itFormat->suffixes.begin();
 				itSuffix != itFormat->suffixes.end(); ++itSuffix){
-					if (ext == toUpper(*itSuffix)&&
-						((openingMode | Read) && exists(fname))) return true;
+                    if (ext == toUpper(*itSuffix)){
+                        if (openingMode & Read) return exists(fname);
+                        else return true;
+                    }
 			}
 		}
 	}
@@ -88,6 +90,7 @@ SceneFactory& SceneFactory::get()
 	return *__factory;
 }
 
+
 SceneFormatList
 SceneFactory::formats( SceneCodec::Mode openingMode ) const
 {
@@ -102,6 +105,30 @@ SceneFactory::formats( SceneCodec::Mode openingMode ) const
 	return formats;
 }
 
+bool SceneFactory::isReadable(const std::string& fname)
+{
+    if (! exists(fname))  return false;
+	for(CodecList::reverse_iterator it = __codecs.rbegin(); it !=__codecs.rend(); ++it){
+			SceneCodecPtr codec = *it;
+		if (codec->__mode & SceneCodec::Read){
+			if(codec->test(fname,SceneCodec::Read))
+                return true;
+		}
+    }
+    return false;
+}
+
+bool SceneFactory::isWritable(const std::string& fname)
+{
+	for(CodecList::reverse_iterator it = __codecs.rbegin(); it !=__codecs.rend(); ++it){
+			SceneCodecPtr codec = *it;
+		if (codec->__mode & SceneCodec::Write){
+			if(codec->test(fname,SceneCodec::Write))
+                return true;
+		}
+    }
+    return false;
+}
 
 ScenePtr 
 SceneFactory::read(const std::string& fname)
@@ -167,6 +194,7 @@ SceneFactory::write(const std::string& fname,const ScenePtr& scene, const std::s
 	SceneCodecPtr codec = findCodec(codecname);
 	if (codec && codec->test(fname,SceneCodec::Write))
 		codec->write(fname,scene);
+    else std::cerr << "Cannot find or Invalid codec : '" << codecname << "'" << std::endl;
 }
 
 void SceneFactory::registerCodec(const SceneCodecPtr& codec)

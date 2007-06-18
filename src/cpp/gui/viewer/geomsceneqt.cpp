@@ -40,6 +40,7 @@
 
 /// GEOM
 #include <scenegraph/scene/shape.h>
+#include <scenegraph/scene/factory.h>
 #include <scenegraph/geometry/boundingbox.h>
 
 /// Action
@@ -52,6 +53,7 @@
 /// Viewer
 #include "util_qstring.h"
 #include "../base/util_qwidget.h"
+#include "interface/codecview.h"
 
 #include <tool/util_string.h>
 
@@ -68,7 +70,9 @@
 #include <qfileinfo.h> 
 #include <qmainwindow.h> 
 #include <qmimedata.h> 
-#include <qurl.h> 
+#include <qurl.h>
+#include <qmap.h> 
+
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef _DEBUG
@@ -288,7 +292,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel->setText( " "+tr( "Empty Scene" ) );
   }
 
-  tab->addTab( tab2, tr( "Geom &Scene" ) );
+  tab->addTab( tab2, tr( "PlantGL &Scene" ) );
 
   if(!__selectedShapes.empty()){
 	  
@@ -435,6 +439,39 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  tab->addTab( tab2, tr( "Selection" ) );
 	  
 	}
+    QWidget * tab3 = new QWidget(tab);
+    Ui::CodecView codecView;
+    codecView.setupUi(tab3);
+    QTreeWidgetItem * itemCodec = NULL;
+    QTreeWidgetItem * itemFormat = NULL;
+    QMap<SceneCodec::Mode,QString> modeMap;
+    modeMap[SceneCodec::None] = "None";
+    modeMap[SceneCodec::Read] = "Read";
+    modeMap[SceneCodec::Write] = "Write";
+    modeMap[SceneCodec::ReadWrite] = "Read/Write";
+    for(SceneFactory::const_iterator itCodec = SceneFactory::get().begin();
+        itCodec != SceneFactory::get().end(); ++itCodec){
+        itemCodec = new QTreeWidgetItem(codecView.treeWidget,itemCodec);
+        codecView.treeWidget->expandItem(itemCodec);
+        itemCodec->setText(0, (*itCodec)->getName().c_str());
+        itemCodec->setText(1, modeMap[(*itCodec)->getMode()]);
+        SceneFormatList formats = (*itCodec)->formats();
+        for(SceneFormatList::const_iterator itFormat = formats.begin(); 
+            itFormat != formats.end(); ++itFormat){
+            itemFormat = new QTreeWidgetItem(itemCodec,itemFormat);
+            itemFormat->setText(0, itFormat->name.c_str() );
+            QString fileExt;
+            for(std::vector<std::string>::const_iterator itFileExt = itFormat->suffixes.begin(); 
+                itFileExt != itFormat->suffixes.end(); ++itFileExt)
+                    fileExt += QString(itFileExt->c_str())+';';
+            itemFormat->setText(1, fileExt );
+            itemFormat->setText(2, itFormat->comment.c_str() );
+
+        }
+        itemFormat = NULL;
+    }
+
+    tab->addTab( tab3, tr( "Codecs" ) );
 	return true;
 }
 

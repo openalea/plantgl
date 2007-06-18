@@ -43,6 +43,7 @@
 
 /// GEOM
 #include <scenegraph/scene/shape.h>
+#include <scenegraph/scene/factory.h>
 #include <scenegraph/geometry/amapsymbol.h>
 
 /// Action
@@ -228,6 +229,9 @@ ViewGeomSceneGL::open(const QString& filename)
     }
     else if(ext == "QUAD" || ext == "BEZ" || ext == "OFF"){
       return openGeomViewFile(filename);
+    }
+    else if(SceneFactory::get().isReadable(filename.toStdString())){
+      return openGeomFile(filename);
     }
     else {
 			static int selection = 5;

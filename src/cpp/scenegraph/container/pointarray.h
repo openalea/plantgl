@@ -376,6 +376,29 @@ typedef RCPtr<Point4Array> Point4ArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
+template <class T>
+real_t hausdorff_distance(const RCPtr<T> pts1,
+						  const RCPtr<T> pts2)
+{
+	if(pts1.isNull() || pts2.isNull() || pts1->isEmpty() ||pts2->isEmpty())
+        return 0;
+	real_t dist1 = 0;
+	for(T::const_iterator it1 = pts1->getBegin(); it1 != pts1->getEnd();++it1){
+		real_t dist1a = REAL_MAX;
+		for(T::const_iterator it2 = pts2->getBegin(); it2 != pts2->getEnd();++it2)
+            dist1a = std::min(dist1a,norm((*it1)-(*it2)));
+		dist1 += dist1a;
+	}
+	real_t dist2 = 0;
+	for(T::const_iterator it2 = pts2->getBegin(); it2 != pts2->getEnd();++it2){
+		real_t dist2a = REAL_MAX;
+		for(T::const_iterator it1 = pts1->getBegin(); it1 != pts1->getEnd();++it1)
+			dist2a = std::min(dist2a,norm((*it1)-(*it2)));
+		dist2 += dist2a;
+	}
+	return (dist1+dist2)/(pts1->getSize()+pts2->getSize());
+}
+
 // __geom_pointarray.h__
 /* ----------------------------------------------------------------------- */
 

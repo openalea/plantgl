@@ -5,4 +5,5 @@ try:
     from gui import *
 except:
     from gui3 import *
+import codec
 

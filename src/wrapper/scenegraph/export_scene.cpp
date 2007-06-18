@@ -162,6 +162,10 @@ void sc_save(Scene* s ,const std::string& fname){
 	s->save(fname);
 }
 
+void sc_save2(Scene* s ,const std::string& fname,const std::string& format){
+	s->save(fname,format);
+}
+
 uint32_t sc_index( Scene* sc, Shape3DPtr sh)
 {
   sc->lock();
@@ -216,6 +220,7 @@ void export_Scene()
     .def("copy", &Scene::copy)
     .def("read", &sc_read)
     .def("save", &sc_save)
+    .def("save", &sc_save2)
   	.enable_pickling()
   ;
 
