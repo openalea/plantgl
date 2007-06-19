@@ -37,13 +37,14 @@ template <class T>
 boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     boost::python::list rlist;
     typename T::const_iterator itPrevious = pts->getBegin();
-    T * c_pointset = new T();
+    RCPtr<T> c_pointset (new T());
     for(typename T::const_iterator it = pts->getBegin(); it != pts->getEnd(); ++it) {
-        if (cmp_method(object(*it),object(*itPrevious)) != 0) {
+        if (cmp_method(object(*it),object(*itPrevious)) == 0) {
             rlist.append(object(c_pointset));
             c_pointset = new T();
         }
         c_pointset->pushBack(*it);
+        itPrevious = it;
     }
     return rlist;
 }
