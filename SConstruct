@@ -14,7 +14,7 @@ name='plantgl'
 SConsignFile()
 
 options = Options( ['../options.py', 'options.py'], ARGUMENTS )
-options.Add(EnumOption('QT_VERSION','Qt major version to use','3',allowed_values=('3','4')))
+options.Add(EnumOption('QT_VERSION','Qt major version to use','4',allowed_values=('3','4')))
 
 qt_env = Environment(options=options)
 qt_version = int(qt_env['QT_VERSION'])
@@ -54,7 +54,7 @@ wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 wrapper_env.Append( QT_VERSION = qt_version )
 
 # Build stage
-SConscript( pj(prefix,"src/cpp/SConscript"),
+SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
             exports={"env":cpp_env} )
 
 SConscript( pj(prefix,"src/wrapper/SConscript"),

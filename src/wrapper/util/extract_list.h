@@ -33,7 +33,7 @@
 #define __extract_list_h__
 
 #include <boost/python.hpp>
-#include <tool/rcobject.h>
+#include <plantgl/tool/rcobject.h>
 #include <vector>
 #include <map>
 #include "exception.h"

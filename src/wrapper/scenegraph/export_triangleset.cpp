@@ -1,10 +1,10 @@
-#include <scenegraph/geometry/triangleset.h>
-#include <scenegraph/geometry/quadset.h>
-#include <scenegraph/geometry/polyline.h>
-#include <scenegraph/geometry/faceset.h>
-#include <scenegraph/geometry/amapsymbol.h>
-#include <scenegraph/container/indexarray.h>
-#include <scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/geometry/triangleset.h>
+#include <plantgl/scenegraph/geometry/quadset.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/geometry/faceset.h>
+#include <plantgl/scenegraph/geometry/amapsymbol.h>
+#include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

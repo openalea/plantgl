@@ -60,7 +60,7 @@
 				OutputFile="../../plantgl_d/gui3/_pglgui3_d.dll"
 				AdditionalLibraryDirectories="&quot;$(QT3DIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
 				GenerateDebugInformation="true"
-				ImportLibrary="../../../lib/$(TargetName).lib"
+				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -130,7 +130,7 @@
 				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
 				OutputFile="../../plantgl/gui3/_pglgui3.dll"
 				AdditionalLibraryDirectories="&quot;$(QT3DIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
-				ImportLibrary="../../../lib/$(TargetName).lib"
+				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

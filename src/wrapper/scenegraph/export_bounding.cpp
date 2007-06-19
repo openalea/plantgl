@@ -34,13 +34,13 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <math/util_matrix.h>
-#include <scenegraph/geometry/boundingbox.h>
+#include <plantgl/math/util_matrix.h>
+#include <plantgl/scenegraph/geometry/boundingbox.h>
 
-#include <algo/base/discretizer.h>
-#include <algo/base/bboxcomputer.h>
-#include <scenegraph/geometry/geometry.h>
-#include <scenegraph/scene/scene.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/base/bboxcomputer.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/scene/scene.h>
 
 #include <string>
 

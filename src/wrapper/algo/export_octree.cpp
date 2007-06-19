@@ -29,8 +29,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <algo/grid/octree.h>
-#include <algo/raycasting/ray.h>
+#include <plantgl/algo/grid/octree.h>
+#include <plantgl/algo/raycasting/ray.h>
 
 #include <boost/python.hpp>
 

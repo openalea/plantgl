@@ -1,9 +1,9 @@
 
 #include <boost/python.hpp>
-#include <scenegraph/geometry/mesh.h>
-#include <scenegraph/geometry/polyline.h>
-#include <scenegraph/transformation/transformed.h>
-#include <scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/geometry/mesh.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/transformation/transformed.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 
 #include "../util/export_property.h"
 #include "../util/export_refcountptr.h"

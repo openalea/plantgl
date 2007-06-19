@@ -31,8 +31,8 @@
 
 #include "export_printer.h"
 
-#include <algo/codec/povprinter.h>
-#include <algo/base/tesselator.h>
+#include <plantgl/algo/codec/povprinter.h>
+#include <plantgl/algo/base/tesselator.h>
 
 #include <boost/python.hpp>
 

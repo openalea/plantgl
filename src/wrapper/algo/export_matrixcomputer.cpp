@@ -30,8 +30,8 @@
  */
 
 #include "../util/export_property.h"
-#include <algo/base/matrixcomputer.h>
-#include <math/util_matrix.h>
+#include <plantgl/algo/base/matrixcomputer.h>
+#include <plantgl/math/util_matrix.h>
 #include <boost/python.hpp>
 
 PGL_USING_NAMESPACE

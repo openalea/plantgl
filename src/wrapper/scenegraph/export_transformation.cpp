@@ -36,15 +36,15 @@
 
 #include <boost/python.hpp>
 
-#include <scenegraph/transformation/transformed.h>
-#include <scenegraph/transformation/mattransformed.h>
-#include <scenegraph/transformation/tapered.h>
-#include <scenegraph/transformation/axisrotated.h>
-#include <scenegraph/transformation/eulerrotated.h>
-#include <scenegraph/transformation/oriented.h>
-#include <scenegraph/transformation/translated.h>
-#include <scenegraph/transformation/scaled.h>
-#include <scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/transformation/transformed.h>
+#include <plantgl/scenegraph/transformation/mattransformed.h>
+#include <plantgl/scenegraph/transformation/tapered.h>
+#include <plantgl/scenegraph/transformation/axisrotated.h>
+#include <plantgl/scenegraph/transformation/eulerrotated.h>
+#include <plantgl/scenegraph/transformation/oriented.h>
+#include <plantgl/scenegraph/transformation/translated.h>
+#include <plantgl/scenegraph/transformation/scaled.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 #include <boost/python/make_constructor.hpp>
 
 #include "../util/export_refcountptr.h"

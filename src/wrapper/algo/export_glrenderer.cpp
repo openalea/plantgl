@@ -31,12 +31,12 @@
   
 #include <boost/python.hpp>
 
-#include <algo/opengl/glskelrenderer.h>
-#include <algo/base/discretizer.h>
-#include <algo/base/skelcomputer.h>
-#include <algo/base/bboxcomputer.h>
-#include <algo/opengl/glbboxrenderer.h>
-#include <algo/opengl/glctrlptrenderer.h>
+#include <plantgl/algo/opengl/glskelrenderer.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/base/skelcomputer.h>
+#include <plantgl/algo/base/bboxcomputer.h>
+#include <plantgl/algo/opengl/glbboxrenderer.h>
+#include <plantgl/algo/opengl/glctrlptrenderer.h>
 #include <qgl.h>
 
 /* ----------------------------------------------------------------------- */

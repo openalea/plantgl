@@ -1,6 +1,6 @@
-#include <scenegraph/geometry/polyline.h>
-#include <scenegraph/container/pointarray.h>
-#include <scenegraph/geometry/mesh.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/geometry/mesh.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>

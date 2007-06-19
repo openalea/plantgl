@@ -32,7 +32,7 @@
 #include <boost/python.hpp>
 #include "../util/tuple_converter.h"
 
-#include <math/util_vector.h>
+#include <plantgl/math/util_vector.h>
 #include <string>
 #include <sstream>
 

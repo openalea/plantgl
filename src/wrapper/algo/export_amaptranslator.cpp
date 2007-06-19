@@ -29,9 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
   
-#include <scenegraph/geometry/amapsymbol.h>
-#include <algo/base/amaptranslator.h>
-#include <algo/base/discretizer.h>
+#include <plantgl/scenegraph/geometry/amapsymbol.h>
+#include <plantgl/algo/base/amaptranslator.h>
+#include <plantgl/algo/base/discretizer.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>

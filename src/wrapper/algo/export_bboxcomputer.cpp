@@ -31,10 +31,10 @@
  
 #include <boost/python.hpp>
 
-#include <algo/base/bboxcomputer.h>
-#include <algo/base/discretizer.h>
-#include <scenegraph/geometry/boundingbox.h>
-#include <scenegraph/scene/scene.h>
+#include <plantgl/algo/base/bboxcomputer.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/scenegraph/geometry/boundingbox.h>
+#include <plantgl/scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
 

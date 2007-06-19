@@ -30,8 +30,8 @@
  */
 
 #include "../util/export_property.h"
-#include <algo/fitting/fit.h>
-#include <algo/base/discretizer.h>
+#include <plantgl/algo/fitting/fit.h>
+#include <plantgl/algo/base/discretizer.h>
 #include <boost/python.hpp>
 
 /* ----------------------------------------------------------------------- */

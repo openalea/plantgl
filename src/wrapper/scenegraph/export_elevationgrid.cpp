@@ -1,5 +1,5 @@
-#include <scenegraph/geometry/elevationgrid.h>
-#include <tool/util_array2.h>
+#include <plantgl/scenegraph/geometry/elevationgrid.h>
+#include <plantgl/tool/util_array2.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>

@@ -31,8 +31,8 @@
 
 #include <boost/python.hpp>
 
-#include <algo/base/merge.h>
-#include <algo/base/discretizer.h>
+#include <plantgl/algo/base/merge.h>
+#include <plantgl/algo/base/discretizer.h>
 
 #include "../util/export_property.h"
 

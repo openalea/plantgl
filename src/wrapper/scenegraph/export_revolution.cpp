@@ -36,16 +36,16 @@
 
 #include <boost/python.hpp>
 
-#include <scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
 
-#include <math/util_vector.h>
+#include <plantgl/math/util_vector.h>
 
-#include <scenegraph/geometry/parametricmodel.h>
-#include <scenegraph/geometry/sor.h>
-#include <scenegraph/geometry/sphere.h>
-#include <scenegraph/geometry/cone.h>
-#include <scenegraph/geometry/revolution.h>
-#include <scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/parametricmodel.h>
+#include <plantgl/scenegraph/geometry/sor.h>
+#include <plantgl/scenegraph/geometry/sphere.h>
+#include <plantgl/scenegraph/geometry/cone.h>
+#include <plantgl/scenegraph/geometry/revolution.h>
+#include <plantgl/scenegraph/geometry/curve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

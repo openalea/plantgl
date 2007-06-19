@@ -35,7 +35,7 @@
  */
 
 #include <boost/python.hpp>
-#include <scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
 #include "../util/export_refcountptr.h"
 
 PGL_USING_NAMESPACE

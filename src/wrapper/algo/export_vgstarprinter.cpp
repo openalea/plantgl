@@ -30,8 +30,8 @@
  */
 
 #include "export_printer.h"
-#include <algo/codec/vgstarprinter.h>
-#include <algo/base/tesselator.h>
+#include <plantgl/algo/codec/vgstarprinter.h>
+#include <plantgl/algo/base/tesselator.h>
 #include <boost/python.hpp>
 
 /* ----------------------------------------------------------------------- */

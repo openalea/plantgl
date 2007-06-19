@@ -32,7 +32,7 @@
 #ifndef __export_property_h__
 #define __export_property_h__
 
-#include <math/util_math.h>
+#include <plantgl/math/util_math.h>
 
 #define SETGET(_CLASS,PROP,TYPE)\
 TYPE get_##_CLASS##_##PROP(_CLASS * obj){ \

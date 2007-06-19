@@ -1,8 +1,8 @@
-#include <scenegraph/geometry/nurbscurve.h>
-#include <scenegraph/geometry/polyline.h>
-#include <scenegraph/container/pointarray.h>
-#include <scenegraph/geometry/mesh.h>
-#include <algo/fitting/fit.h>
+#include <plantgl/scenegraph/geometry/nurbscurve.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/geometry/mesh.h>
+#include <plantgl/algo/fitting/fit.h>
 
 #include <boost/python.hpp>
 #include <string>

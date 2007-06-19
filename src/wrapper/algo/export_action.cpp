@@ -35,7 +35,7 @@
  */
   
 #include "../util/export_refcountptr.h"
-#include <pgl_scenegraph.h>
+#include <plantgl/pgl_scenegraph.h>
 #include <boost/python.hpp>
 
 /* ----------------------------------------------------------------------- */

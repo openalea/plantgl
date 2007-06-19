@@ -37,12 +37,12 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <math/util_vector.h>
-#include <scenegraph/geometry/sor.h>
-#include <scenegraph/geometry/swung.h>
-#include <scenegraph/geometry/curve.h>
-#include <scenegraph/geometry/profile.h>
-#include <scenegraph/container/geometryarray2.h>
+#include <plantgl/math/util_vector.h>
+#include <plantgl/scenegraph/geometry/sor.h>
+#include <plantgl/scenegraph/geometry/swung.h>
+#include <plantgl/scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/profile.h>
+#include <plantgl/scenegraph/container/geometryarray2.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

@@ -1,8 +1,8 @@
 #include "../util/export_refcountptr.h"
-#include <scenegraph/geometry/lineicmodel.h>
-#include <scenegraph/geometry/curve.h>
-#include <scenegraph/geometry/disc.h>
-#include <scenegraph/geometry/sor.h>
+#include <plantgl/scenegraph/geometry/lineicmodel.h>
+#include <plantgl/scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/disc.h>
+#include <plantgl/scenegraph/geometry/sor.h>
 
 #include <boost/python.hpp>
 

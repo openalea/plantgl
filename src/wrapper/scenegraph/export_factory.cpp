@@ -38,7 +38,7 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <scenegraph/scene/factory.h>
+#include <plantgl/scenegraph/scene/factory.h>
 #include <string>
 #include <sstream>
 #include <qthread.h>

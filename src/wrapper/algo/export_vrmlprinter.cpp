@@ -30,9 +30,9 @@
  */
 
 #include "export_printer.h"
-#include <algo/codec/vrmlprinter.h>
-#include <algo/base/discretizer.h>
-#include <scenegraph/appearance/appearance.h>
+#include <plantgl/algo/codec/vrmlprinter.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
 #include <boost/python.hpp>
 
 PGL_USING_NAMESPACE

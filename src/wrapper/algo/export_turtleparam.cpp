@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <algo/modelling/turtleparam.h>
+#include <plantgl/algo/modelling/turtleparam.h>
 
 #include <boost/python.hpp>
 using namespace boost::python;

@@ -36,10 +36,10 @@
 
 #include <boost/python.hpp>
 
-#include <scenegraph/scene/scene.h>
-#include <scenegraph/scene/shape.h>
-#include <scenegraph/geometry/geometry.h>
-#include <scenegraph/appearance/appearance.h>
+#include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/scenegraph/scene/shape.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
 #include <string>
 
 #include "../util/export_refcountptr.h"

@@ -34,7 +34,7 @@
 
 #include <boost/python.hpp>
 #include <boost/pointee.hpp>
-#include <tool/rcobject.h>
+#include <plantgl/tool/rcobject.h>
 TOOLS_USING_NAMESPACE
 
 

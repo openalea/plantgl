@@ -1,7 +1,7 @@
-#include <scenegraph/geometry/pointset.h>
-#include <scenegraph/container/pointarray.h>
-#include <scenegraph/transformation/transformed.h>
-#include <scenegraph/geometry/mesh.h>
+#include <plantgl/scenegraph/geometry/pointset.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/transformation/transformed.h>
+#include <plantgl/scenegraph/geometry/mesh.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>

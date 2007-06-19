@@ -35,7 +35,7 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <math/util_matrix.h>
+#include <plantgl/math/util_matrix.h>
 #include <string>
 #include <sstream>
 

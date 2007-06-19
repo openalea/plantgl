@@ -1,7 +1,7 @@
-#include <tool/util_array.h>
-#include <tool/util_tuple.h>
-#include <scenegraph/container/indexarray.h>
-#include <scenegraph/container/colorarray.h>
+#include <plantgl/tool/util_array.h>
+#include <plantgl/tool/util_tuple.h>
+#include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/container/colorarray.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 

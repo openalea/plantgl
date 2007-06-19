@@ -36,13 +36,13 @@
 
 #include <boost/python.hpp>
 
-#include <scenegraph/transformation/eulerrotated.h>
-#include <scenegraph/transformation/axisrotated.h>
-#include <scenegraph/transformation/oriented.h>
-#include <scenegraph/transformation/tapered.h>
-#include <scenegraph/geometry/primitive.h>
+#include <plantgl/scenegraph/transformation/eulerrotated.h>
+#include <plantgl/scenegraph/transformation/axisrotated.h>
+#include <plantgl/scenegraph/transformation/oriented.h>
+#include <plantgl/scenegraph/transformation/tapered.h>
+#include <plantgl/scenegraph/geometry/primitive.h>
 
-#include <math/util_vector.h>
+#include <plantgl/math/util_vector.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

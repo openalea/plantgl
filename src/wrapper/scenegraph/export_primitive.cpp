@@ -36,11 +36,11 @@
 
 #include <boost/python.hpp>
 
-#include <math/util_vector.h>
+#include <plantgl/math/util_vector.h>
 
-#include <scenegraph/geometry/primitive.h>
-#include <scenegraph/geometry/parametricmodel.h>
-#include <scenegraph/geometry/box.h>
+#include <plantgl/scenegraph/geometry/primitive.h>
+#include <plantgl/scenegraph/geometry/parametricmodel.h>
+#include <plantgl/scenegraph/geometry/box.h>
 
 
 #include "../util/export_refcountptr.h"

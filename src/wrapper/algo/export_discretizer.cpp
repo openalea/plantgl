@@ -31,10 +31,10 @@
 
 #include <boost/python.hpp>
 
-#include <algo/base/discretizer.h>
-#include <algo/base/tesselator.h>
-#include <scenegraph/geometry/explicitmodel.h>
-#include <scenegraph/geometry/triangleset.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/base/tesselator.h>
+#include <plantgl/scenegraph/geometry/explicitmodel.h>
+#include <plantgl/scenegraph/geometry/triangleset.h>
 
 /* ----------------------------------------------------------------------- */
 

@@ -36,14 +36,14 @@
 
 #include <boost/python.hpp>
 
-#include <tool/util_array.h>
-#include <tool/util_array2.h>
+#include <plantgl/tool/util_array.h>
+#include <plantgl/tool/util_array2.h>
 
-#include <scenegraph/geometry/parametricmodel.h>
-#include <scenegraph/container/pointmatrix.h>
-#include <scenegraph/geometry/patch.h>
-#include <scenegraph/geometry/bezierpatch.h>
-#include <scenegraph/geometry/nurbspatch.h>
+#include <plantgl/scenegraph/geometry/parametricmodel.h>
+#include <plantgl/scenegraph/container/pointmatrix.h>
+#include <plantgl/scenegraph/geometry/patch.h>
+#include <plantgl/scenegraph/geometry/bezierpatch.h>
+#include <plantgl/scenegraph/geometry/nurbspatch.h>
 
 #include "../util/export_refcountptr.h"
 

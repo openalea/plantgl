@@ -1,6 +1,6 @@
 #include <string>
 #include <sstream>
-#include <scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/container/indexarray.h>
 
 #include "../util/tuple_converter.h"
 #include "arrays_macro.h"

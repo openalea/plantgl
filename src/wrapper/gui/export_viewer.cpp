@@ -39,8 +39,8 @@
 
 #include <boost/python.hpp>
 
-#include <gui/viewer/pglapplication.h>
-#include <gui/base/zbuffer.h>
+#include <plantgl/gui/viewer/pglapplication.h>
+#include <plantgl/gui/base/zbuffer.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

@@ -38,14 +38,14 @@
 
 #include "../util/export_refcountptr.h"
 
-#include <scenegraph/appearance/color.h>
-#include <scenegraph/appearance/appearance.h>
-#include <scenegraph/appearance/material.h>
-#include <scenegraph/appearance/spectrum.h>
-#include <scenegraph/appearance/monospectral.h>
-#include <scenegraph/appearance/multispectral.h>
-#include <tool/util_tuple.h>
-#include <tool/util_array.h>
+#include <plantgl/scenegraph/appearance/color.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
+#include <plantgl/scenegraph/appearance/material.h>
+#include <plantgl/scenegraph/appearance/spectrum.h>
+#include <plantgl/scenegraph/appearance/monospectral.h>
+#include <plantgl/scenegraph/appearance/multispectral.h>
+#include <plantgl/tool/util_tuple.h>
+#include <plantgl/tool/util_array.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

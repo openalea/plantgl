@@ -24,7 +24,7 @@
  # ---------------------------------------------------------------------------
  */
 
-#include <tool/sequencer.h>
+#include <plantgl/tool/sequencer.h>
 #include <boost/python.hpp>
 using namespace boost::python;
 

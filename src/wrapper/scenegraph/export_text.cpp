@@ -1,4 +1,4 @@
-#include <scenegraph/geometry/text.h>
+#include <plantgl/scenegraph/geometry/text.h>
 
 #include <boost/python.hpp>
 #include <string>

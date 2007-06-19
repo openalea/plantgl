@@ -37,12 +37,12 @@
 #include <boost/python.hpp>
 
 
-#include <math/util_vector.h>
-#include <scenegraph/geometry/parametricmodel.h>
-#include <scenegraph/geometry/hull.h>
-#include <scenegraph/geometry/asymmetrichull.h>
-#include <scenegraph/geometry/extrudedhull.h>
-#include <scenegraph/geometry/curve.h>
+#include <plantgl/math/util_vector.h>
+#include <plantgl/scenegraph/geometry/parametricmodel.h>
+#include <plantgl/scenegraph/geometry/hull.h>
+#include <plantgl/scenegraph/geometry/asymmetrichull.h>
+#include <plantgl/scenegraph/geometry/extrudedhull.h>
+#include <plantgl/scenegraph/geometry/curve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

@@ -30,11 +30,11 @@
  */
 
 #include "../util/export_property.h"
-#include <algo/raycasting/util_intersection.h>
-#include <algo/raycasting/rayintersection.h>
-#include <algo/base/discretizer.h>
-#include <scenegraph/geometry/geometry.h>
-#include <scenegraph/container/pointarray.h>
+#include <plantgl/algo/raycasting/util_intersection.h>
+#include <plantgl/algo/raycasting/rayintersection.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>

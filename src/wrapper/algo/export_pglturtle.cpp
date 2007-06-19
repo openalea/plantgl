@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <algo/modelling/pglturtle.h>
+#include <plantgl/algo/modelling/pglturtle.h>
 
 #include <boost/python.hpp>
 #include "../util/export_list.h"

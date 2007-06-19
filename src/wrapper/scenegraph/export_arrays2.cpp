@@ -1,9 +1,9 @@
 #include "../util/export_refcountptr.h"
 #include "../util/exception.h"
 
-#include <tool/util_array2.h>
-#include <math/util_vector.h>
-#include <scenegraph/container/pointmatrix.h>
+#include <plantgl/tool/util_array2.h>
+#include <plantgl/math/util_vector.h>
+#include <plantgl/scenegraph/container/pointmatrix.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 

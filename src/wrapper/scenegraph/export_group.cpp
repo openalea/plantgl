@@ -37,10 +37,10 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <scenegraph/geometry/geometry.h>
-#include <scenegraph/geometry/group.h>
-#include <scenegraph/container/geometryarray2.h>
-#include <scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/geometry/group.h>
+#include <plantgl/scenegraph/container/geometryarray2.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
 #include "../util/exception.h"

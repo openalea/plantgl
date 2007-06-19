@@ -30,10 +30,10 @@
  */
 
 #include "export_printer.h"
-#include <algo/codec/printer.h>
-#include <algo/codec/binaryprinter.h>
-#include <scenegraph/scene/scene.h>
-#include <tool/bfstream.h>
+#include <plantgl/algo/codec/printer.h>
+#include <plantgl/algo/codec/binaryprinter.h>
+#include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/tool/bfstream.h>
 #include <boost/python.hpp>
 
 /* ----------------------------------------------------------------------- */

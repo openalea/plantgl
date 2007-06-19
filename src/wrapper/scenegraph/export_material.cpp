@@ -36,10 +36,10 @@
 
 #include <boost/python.hpp>
 
-#include <scenegraph/appearance/color.h>
-#include <scenegraph/appearance/appearance.h>
-#include <scenegraph/appearance/material.h>
-#include <scenegraph/appearance/texture.h>
+#include <plantgl/scenegraph/appearance/color.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
+#include <plantgl/scenegraph/appearance/material.h>
+#include <plantgl/scenegraph/appearance/texture.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

@@ -36,15 +36,15 @@
 
 #include <boost/python.hpp>
 
-#include <scenegraph/transformation/transformed.h>
-#include <scenegraph/transformation/mattransformed.h>
-#include <scenegraph/transformation/translated.h>
-#include <scenegraph/transformation/scaled.h>
-#include <scenegraph/transformation/orthotransformed.h>
-#include <scenegraph/transformation/ifs.h>
-#include <scenegraph/geometry/primitive.h>
+#include <plantgl/scenegraph/transformation/transformed.h>
+#include <plantgl/scenegraph/transformation/mattransformed.h>
+#include <plantgl/scenegraph/transformation/translated.h>
+#include <plantgl/scenegraph/transformation/scaled.h>
+#include <plantgl/scenegraph/transformation/orthotransformed.h>
+#include <plantgl/scenegraph/transformation/ifs.h>
+#include <plantgl/scenegraph/geometry/primitive.h>
 
-#include <math/util_vector.h>
+#include <plantgl/math/util_vector.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"

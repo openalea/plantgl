@@ -37,12 +37,12 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include <scenegraph/scene/scene.h>
-#include <scenegraph/scene/shape.h>
-#include <scenegraph/geometry/geometry.h>
-#include <scenegraph/appearance/appearance.h>
-#include <scenegraph/core/action.h>
-#include <scenegraph/appearance/material.h>
+#include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/scenegraph/scene/shape.h>
+#include <plantgl/scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
+#include <plantgl/scenegraph/core/action.h>
+#include <plantgl/scenegraph/appearance/material.h>
 
 #include <string>
 

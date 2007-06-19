@@ -1,10 +1,10 @@
 #include <algorithm>
-#include <tool/util_array.h>
-#include <tool/util_tuple.h>
-#include <math/util_math.h>
-#include <scenegraph/container/pointarray.h>
-#include <scenegraph/transformation/ifs.h>
-#include <scenegraph/transformation/mattransformed.h>
+#include <plantgl/tool/util_array.h>
+#include <plantgl/tool/util_tuple.h>
+#include <plantgl/math/util_math.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/transformation/ifs.h>
+#include <plantgl/scenegraph/transformation/mattransformed.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 

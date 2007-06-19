@@ -1,8 +1,8 @@
-#include <scenegraph/geometry/extrusion.h>
-#include <scenegraph/geometry/lineicmodel.h>
-#include <scenegraph/container/pointarray.h>
-#include <scenegraph/geometry/profile.h>
-#include <scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/extrusion.h>
+#include <plantgl/scenegraph/geometry/lineicmodel.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/geometry/profile.h>
+#include <plantgl/scenegraph/geometry/curve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
