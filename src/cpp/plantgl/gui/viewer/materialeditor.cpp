@@ -226,6 +226,7 @@ ColorButton::~ColorButton(){
 void
 ColorButton::setColor(const QColor& c){
 	PGL::fillButton(this,c,QSize(60,40));
+    __color = c;
 }
 
 const QColor& ColorButton::getColor() const{
