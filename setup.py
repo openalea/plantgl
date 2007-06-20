@@ -102,7 +102,7 @@ setup(
 
     # pure python  packages
     packages= [ pkg_name, pkg_name+'.math', pkg_name+'.scenegraph', pkg_name+'.algo',
-                pkg_name+'.gui', pkg_name+'.gui3', pkg_name+'.wralea', pkg_name+'.ext'],
+                pkg_name+'.gui', pkg_name+'.gui3', pkg_name+'.wralea', pkg_name+'.ext', pkg_name+'.codec'],
     # python packages directory
     package_dir= { pkg_name : pj('src',name),
                    pkg_name+'.math' :pj( 'src', name, 'math' ),
@@ -112,6 +112,7 @@ setup(
                    pkg_name+'.gui3' :pj( 'src', name, 'gui3' ),
                    pkg_name+'.wralea' :pj( 'src', name, 'wralea' ),
                    pkg_name+'.ext' :pj( 'src', name, 'ext' ),
+                   pkg_name+'.codec' :pj( 'src', name, 'codec' ),
 		   
                    },
                    
