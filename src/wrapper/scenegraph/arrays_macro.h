@@ -52,40 +52,40 @@ struct PREFIX##_ptr_from_list { \
 #define EXPORT_FUNCTION2( PREFIX, T, ARRAY) \
 T PREFIX##_getitem( ARRAY * array, int pos ) \
 { \
-  if( pos < 0 && pos > -array->getSize() ) return array->getAt( array->getSize() + pos );\
+  if( pos < 0 && pos >= -array->getSize() ) return array->getAt( array->getSize() + pos );\
   else if( pos < array->getSize() ) return array->getAt( pos );\
   else throw PythonExc_IndexError();\
 }\
 \
 ARRAY * PREFIX##_getslice( ARRAY * array, int beg, int end ) \
 { \
-  if( beg > -array->getSize() && beg < 0  )  beg += array->getSize(); \
+  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); \
   else if( beg >= array->getSize() ) throw PythonExc_IndexError(); \
-  if( end > -array->getSize() && end < 0  )  end += array->getSize(); \
-  else if( end >= array->getSize() ) throw PythonExc_IndexError(); \
+  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); \
+  else if( end > array->getSize() ) throw PythonExc_IndexError(); \
   return new ARRAY(array->getBegin()+beg,array->getBegin()+end);\
 }\
 \
 void PREFIX##_setitem( ARRAY * array, int pos, T * v )\
 {\
-  if( pos < 0 && pos > -array->getSize() ) array->setAt( array->getSize() + pos, *v );\
+  if( pos < 0 && pos >= -array->getSize() ) array->setAt( array->getSize() + pos, *v );\
   else if( pos < array->getSize() ) array->setAt( pos, *v );\
   else throw PythonExc_IndexError();\
 }\
 \
 void PREFIX##_delitem( ARRAY * array, int pos )\
 {\
-  if( pos < 0 && pos > -array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );\
+  if( pos < 0 && pos >= -array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );\
   else if( pos < array->getSize() ) array->Erase( array->getBegin() + pos );\
   else throw PythonExc_IndexError();\
 }\
 \
 void PREFIX##_delslice( ARRAY * array, int beg, int end ) \
 { \
-  if( beg > -array->getSize() && beg < 0  )  beg += array->getSize(); \
+  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); \
   else if( beg >= array->getSize() ) throw PythonExc_IndexError(); \
-  if( end > -array->getSize() && end < 0  )  end += array->getSize(); \
-  else if( end >= array->getSize() ) throw PythonExc_IndexError(); \
+  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); \
+  else if( end > array->getSize() ) throw PythonExc_IndexError(); \
   array->Erase( array->getBegin()+beg,array->getBegin()+end); \
 }\
 \

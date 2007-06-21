@@ -34,17 +34,31 @@ void py_sort(T * pts, boost::python::object cmp_method){
 }
 
 template <class T>
+bool py_comp_z(const T& a, const T& b){
+    return a.z() < b.z();
+}
+
+template <class T>
+void py_sort_z(T * pts){
+    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_z<typename T::element_type>);
+}
+
+template <class T>
 boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     boost::python::list rlist;
     typename T::const_iterator itPrevious = pts->getBegin();
     RCPtr<T> c_pointset (new T());
-    for(typename T::const_iterator it = pts->getBegin(); it != pts->getEnd(); ++it) {
-        if (cmp_method(object(*it),object(*itPrevious)) == 0) {
-            rlist.append(object(c_pointset));
+    c_pointset->pushBack(*itPrevious);
+    rlist.append(object(c_pointset));
+    for(typename T::const_iterator it = pts->getBegin()+1; it != pts->getEnd(); ++it) {
+        if (cmp_method(object(*it),object(*itPrevious)) == 0) { 
+            // True (1) means that there are in the same group. False (0) in 2 differents groups.
             c_pointset = new T();
+            c_pointset->pushBack(*it);
+            rlist.append(object(c_pointset));
+            itPrevious = it;
         }
-        c_pointset->pushBack(*it);
-        itPrevious = it;
+        else { c_pointset->pushBack(*it); }
     }
     return rlist;
 }
@@ -165,6 +179,7 @@ void export_pointarrays()
     .def( "getYMinAndMaxIndex", &pa_yminmaxindex<Point3Array>) 
     .def( "getZMinAndMaxIndex", &pa_zminmaxindex<Point3Array>) 
     .def( "sort", &py_sort<Point3Array>) 
+    .def( "sortZ", &py_sort_z<Point3Array>) 
     .def( "partition", &py_partition<Point3Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>); 
     DEFINE_NUMPY( p3a );
