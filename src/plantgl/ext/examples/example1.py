@@ -18,7 +18,7 @@ import openalea.plantgl.ext.all as pd
 #import plantgl.all as pgl
 #import plantgl.ext.all as pd
 
-a0 = pd.ASphereI()
+a0 = pd.AISphere()
 a0.pos = pgl.Vector3(1,0,1)
 a0.axis=pgl.Vector3(1,0,1)
 a0.roll=30
@@ -28,7 +28,7 @@ a0.material=pd.green
 a0.visible = False
 del a0
 
-a0 = pd.ACylinderI()
+a0 = pd.AICylinder()
 a0.pos = pgl.Vector3(1,0,1)
 a0.axis=pgl.Vector3(1,0,1)
 a0.roll=30
@@ -38,7 +38,7 @@ a0.material=pd.green
 a0.visible = False
 del a0
 
-a0 = pd.ACenterPolygonI( points=[pgl.Vector3(1,1,0), pgl.Vector3(1,-1,0),pgl.Vector3(-1,-1,0),pgl.Vector3(-1,1,0)] )
+a0 = pd.AICenterPolygon( points=[pgl.Vector3(1,1,0), pgl.Vector3(1,-1,0),pgl.Vector3(-1,-1,0),pgl.Vector3(-1,1,0)] )
 a0.pos = pgl.Vector3(1,0,1)
 a0.axis=pgl.Vector3(1,0,1)
 a0.roll=30
@@ -48,7 +48,17 @@ a0.material=pd.green
 a0.visible = False
 del a0
 
-a0 = pd.AArrowI()
+a0 = pd.AITriangle( points=[pgl.Vector3(1,1,0), pgl.Vector3(1,-1,0),pgl.Vector3(-1,-1,0)] )
+a0.pos = pgl.Vector3(1,0,1)
+a0.axis=pgl.Vector3(1,0,1)
+a0.roll=30
+a0.radius=0.7
+a0.height=15
+a0.material=pd.green
+a0.visible = False
+del a0
+
+a0 = pd.AIArrow()
 a0.pos = pgl.Vector3(1,0,1)
 a0.axis=pgl.Vector3(1,0,1)
 a0.roll=30

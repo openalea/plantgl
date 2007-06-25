@@ -92,7 +92,7 @@ def set_instant_update_visualisation_policy( policy=True ):
     INSTANT_UPDATE_VISUALISATION_POLICY = policy
 
 
-class AShape3DI( absolute_shapes.AShape3D ):
+class AIShape3D( absolute_shapes.AShape3D ):
     """Basic shape used to wrap all <2 axis objects with binding to Viewer.
     
     Important properties: 
@@ -199,10 +199,10 @@ class AShape3DI( absolute_shapes.AShape3D ):
     """
 
 
-class ASphereI( AShape3DI, absolute_shapes.ASphere ):
-    """ASphereI implementation with binding to Viewer.
+class AISphere( AIShape3D, absolute_shapes.ASphere ):
+    """AISphere implementation with binding to Viewer.
             
-    It also inherits properties from AShape3DI and ASphere object, hance look for possible properties in
+    It also inherits properties from AIShape3D and ASphere object, hance look for possible properties in
     AShape3D, ASphere objects.
     """
     def __init__( self,  radius=absolute_shapes.ASPHERE_STANDARD_RADIUS, **keys ):
@@ -210,15 +210,15 @@ class ASphereI( AShape3DI, absolute_shapes.ASphere ):
         """
         keys.update( {"radius":radius} ) 
         self._common_init( **keys )
-        AShape3DI.__init__( self, scale=pgl.Vector3(2*self.radius,2*self.radius,2*self.radius), geometry=absolute_shapes.ASPHERE_PRIMITIVE, **keys )
+        AIShape3D.__init__( self, scale=pgl.Vector3(2*self.radius,2*self.radius,2*self.radius), geometry=absolute_shapes.ASPHERE_PRIMITIVE, **keys )
         #self._radius = radius
         
     
     
-class ACylinderI( absolute_shapes.ACylinder, AShape3DI ):
-    """ACylinderI implementation with binding to Viewer.
+class AICylinder( absolute_shapes.ACylinder, AIShape3D ):
+    """AICylinder implementation with binding to Viewer.
     
-    It also inherits properties from AShape3DI, ACylinder object, hance look for possible properties in
+    It also inherits properties from AIShape3D, ACylinder object, hance look for possible properties in
     AShape3D, ACylinder objects.
     """
     def __init__( self,  radius=absolute_shapes.ACYLINDER_STANDARD_RADIUS, axis=absolute_shapes.ACYLINDER_STANDARD_AXIS, **keys ):
@@ -231,10 +231,10 @@ class ACylinderI( absolute_shapes.ACylinder, AShape3DI ):
         #self._radius = radius
         keys.update( {"radius": radius, "axis": axis} )
         absolute_shapes.ACylinder._common_init( self, **keys  )
-        AShape3DI.__init__( self,  scale=pgl.Vector3(2*self.radius,2*self.radius,self.height), geometry=absolute_shapes.ACYLINDER_PRIMITIVE,  **keys )
+        AIShape3D.__init__( self,  scale=pgl.Vector3(2*self.radius,2*self.radius,self.height), geometry=absolute_shapes.ACYLINDER_PRIMITIVE,  **keys )
 
-class AArrowI( absolute_shapes.AArrow, AShape3DI ):
-    """AArrowI implementation with binding to Viewer. AArrow is a shape build up from the cylinder and cone.
+class AIArrow( absolute_shapes.AArrow, AIShape3D ):
+    """AIArrow implementation with binding to Viewer. AArrow is a shape build up from the cylinder and cone.
     
     It also inherits properties from AShape3D, AArrow object, hance look for possible properties in
     AShape3D, AArrow objects.
@@ -253,11 +253,11 @@ class AArrowI( absolute_shapes.AArrow, AShape3DI ):
         #    AARROW_HEAD_PROPORTION,AARROW_HEAD_PROPORTION,1-AARROW_SHAFT_PROPORTION), ACONE_PRIMITIVE) )
         keys.update( {"radius": radius, "axis": axis} )
         self._common_init( **keys )
-        AShape3DI.__init__( self,  scale=pgl.Vector3( 2*self.radius, 2*self.radius, self.height),
+        AIShape3D.__init__( self,  scale=pgl.Vector3( 2*self.radius, 2*self.radius, self.height),
                          geometry=pgl.Group([self.shaft,self.head]),  **keys )
 
 
-class ACenterPolygonI( AShape3DI, absolute_shapes.ACenterPolygon ):
+class AICenterPolygon( AIShape3D, absolute_shapes.ACenterPolygon ):
     """ACenterPolygon implementation. ACenterPolygon is a wrapper for a FaceSet. Currently no
     useful operations to scale, rotate, roll, translate were redefined so it is more container for
     PlantGL FaceSet object. The default ones are still defined but they are not very usfull. The polygon
@@ -299,7 +299,49 @@ class ACenterPolygonI( AShape3DI, absolute_shapes.ACenterPolygon ):
 
         """
         absolute_shapes.ACenterPolygon._common_init( self, **keys )
-        AShape3DI.__init__( self,  
+        AIShape3D.__init__( self,  
                          geometry=pgl.FaceSet( self._points, self._indexes ),  **keys )
     
+class AITriangle( AIShape3D, absolute_shapes.ATriangle ):
+    """AITriangle implementation. AITriangle is a wrapper for a FaceSet. Currently no
+    useful operations to scale, rotate, roll, translate were redefined so it is more container for
+    PlantGL FaceSet object. The default ones are still defined but they are not very usfull.
+    
+    AITriangle' individual properties:
+        * pos : Vector3 convertable
+             Property: the shared translation T of each point creating a surface,
+        * axis : Vector3 convertable
+            Property:  the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+        * roll : Vector3 convertable
+            Property:  the shared "roll angle" R of each point creating a surface around axis,
+        * points : Vector3 convertable tuple
+            Property: the tuple of points positions,
+
+    AITriangle' individual properties:        
+        * update_k_point : index
+            Updates the point in the polygon
+        * get_center : Vector3
+            Returns the center of ACenterPolygon
+
+    It also inherits properties from AShape3D object, hance look for possible properties in
+    AShape3D object.
+    """
+    
+    def __init__( self,  **keys ):
+        """ Default constructor.
+        
+        Parameters:
+            pos : Vector3 convertable
+                the shared translation T of each point creating a surface,
+            axis : Vector3 convertable
+                the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+            roll : Vector3 convertable
+                the shared "roll angle" R of each point creating a surface around axis,
+            points : Vector3 convertable tuple
+                the list of *ordered* points positions,
+
+        """
+        absolute_shapes.ATriangle._common_init( self, **keys )
+        AIShape3D.__init__( self,  
+                         geometry=pgl.FaceSet( self._points, self._indexes ),  **keys )
     

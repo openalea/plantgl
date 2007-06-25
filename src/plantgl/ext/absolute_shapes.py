@@ -441,4 +441,59 @@ class ACenterPolygon( AShape3D ):
         self._indexes = pgl.IndexArray( self._indexes )
         
     
+
+class ATriangle( AShape3D ):
+    """ATriangle implementation. ATriangle is a wrapper for a FaceSet. Currently no
+    useful operations to scale, rotate, roll, translate were redefined so it is more container for
+    PlantGL FaceSet object. The default ones are still defined but they are not very usfull. 
     
+    ATriangles' individual properties:
+        * pos : Vector3 convertable
+             Property: the shared translation T of each point creating a surface,
+        * axis : Vector3 convertable
+            Property:  the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+        * roll : Vector3 convertable
+            Property:  the shared "roll angle" R of each point creating a surface around axis,
+        * points : Vector3 convertable tuple
+            Property: the tuple of points positions,
+
+    ATriangles' individual properties:        
+        * update_k_point : index
+            Updates the point in the polygon
+        * get_center : Vector3
+            Returns the center of ACenterPolygon
+
+    It also inherits properties from AShape3D object, hance look for possible properties in
+    AShape3D object.
+    """
+    
+    def __init__( self,  **keys ):
+        """ Default constructor.
+        
+        Parameters:
+            pos : Vector3 convertable
+                the shared translation T of each point creating a surface,
+            axis : Vector3 convertable
+                the shared rotation axis A of each point around. Zero element for the rotation axis is OZ.
+            roll : Vector3 convertable
+                the shared "roll angle" R of each point creating a surface around axis,
+            points : Vector3 convertable tuple
+                the list of *ordered* points positions,
+
+        """
+        self._common_init( **keys )
+        AShape3D.__init__( self,  
+                         geometry=pgl.FaceSet( self._points, self._indexes ), axis=axis, **keys )
+
+    def _common_init( self, **keys ):
+        """
+        """
+        if len( keys[ "points" ] ) != 3:
+            raise Exception("ATriangle: triangle must be described by 3 points..")
+       
+        self._indexes = []
+        self._points = pgl.Point3Array( keys[ "points" ] )
+        for i in xrange( 1, len(keys[ "points" ] ) ):
+            self._indexes.append( pgl.Index( [0,1,2] ) )
+        self._indexes = pgl.IndexArray( self._indexes )
+            
