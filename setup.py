@@ -35,12 +35,12 @@ See http://openalea.gforge.inria.fr
 # Setup script
 
 # Package name
-name= 'plantgl'
+name = 'plantgl'
 
 #openalea namespace
-namespace=config.namespace 
+namespace = config.namespace 
 
-pkg_name= namespace + '.' + name
+pkg_name = namespace + '.' + name
 
 # Package version policy
 # major.minor.patch
