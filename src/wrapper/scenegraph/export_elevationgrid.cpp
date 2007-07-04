@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 #include "../util/exception.h"
 
 using namespace boost::python;
@@ -44,10 +45,10 @@ ElevationGridPtr geg_fromlist( boost::python::object l )
 }									
 
 
-RealArray2Ptr geg_getHeightList( ElevationGrid* pl )
-{
-  return pl->getHeightList();
-}
+
+SETGET(ElevationGrid,XSpacing,real_t);
+SETGET(ElevationGrid,YSpacing,real_t);
+SETGET(ElevationGrid,HeightList,RealArray2Ptr);
 
 void export_ElevationGrid()
 {
@@ -56,7 +57,9 @@ void export_ElevationGrid()
      ("ElevationGrid(heights [,xspacing,yspacing,ccw])"))
     .def( "__init__", make_constructor( geg_fromlist ) ) 
     .def( "copy", &ElevationGrid::copy )
-    .def( "getHeightList", geg_getHeightList )
+    .DEC_SETGET_WD(xspacing,ElevationGrid,XSpacing,real_t)
+    .DEC_SETGET_WD(yspacnig,ElevationGrid,YSpacing,real_t)
+    .DEC_SETGET(heightList,ElevationGrid,HeightList,RealArray2Ptr)
     ;
 
   implicitly_convertible< ElevationGridPtr,PatchPtr >();

@@ -281,6 +281,19 @@ boost::python::object castRays2_1(const ScenePtr& sc){
 	return res;
 }
 
+
+void displaySh(ShapePtr sh){
+    ScenePtr s = new Scene();
+    s->add(sh);
+    PGLViewerApplication::display(s);
+}
+
+void addSh(ShapePtr sh){
+    ScenePtr s = new Scene();
+    s->add(sh);
+    PGLViewerApplication::add(s);
+}
+
 void saveImage1(const std::string& fname)
 {
 	// ext = get_extension(fname);
@@ -347,9 +360,11 @@ void export_viewer()
     .staticmethod("exit")
 	.def("display",(void (*)(const ScenePtr&))&PGLViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
     .def("display",(void (*)(const GeometryPtr&))&PGLViewerApplication::display,"display(Geometry geom) : display a particular geometry.",args("geom"))
+    .def("display",&displaySh,"display(Shape sh) : display a particular shape.",args("sh"))
     .staticmethod("display")
     .def("add",(void (*)(const ScenePtr&))&PGLViewerApplication::add,"add(Scene scene) : add a scene to the current displayed scene.",args("scene"))
     .def("add",(void (*)(const GeometryPtr&))&PGLViewerApplication::add,"add(Geometry geom) : add a particular geometry to the current displayed scene.",args("geom"))
+    .def("add",&addSh,"add(Shape sh) : add a particular shape to the current displayed scene.",args("sh"))
     .staticmethod("add")
     .def("getCurrentScene",&PGLViewerApplication::getCurrentScene,"getCurrentScene() : get the current displayed scene")
     .staticmethod("getCurrentScene")

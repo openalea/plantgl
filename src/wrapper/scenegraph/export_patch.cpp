@@ -46,6 +46,7 @@
 #include <plantgl/scenegraph/geometry/nurbspatch.h>
 
 #include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -56,29 +57,49 @@ DEF_POINTEE(Patch)
 DEF_POINTEE(BezierPatch)
 DEF_POINTEE(NurbsPatch)
 
+SETGET(Patch,CCW,bool);
+
 void export_Patch()
 {
   class_< Patch, PatchPtr, bases< ParametricModel >,boost::noncopyable >
-    ("Patch",no_init);
+    ("Patch",no_init)
+    .DEC_SETGET_WD(ccw,Patch,CCW,bool)
+    ;
 
   implicitly_convertible< PatchPtr,ParametricModelPtr >();
 }
+
+SETGET(BezierPatch,UStride,uint32_t);
+SETGET(BezierPatch,VStride,uint32_t);
 
 void export_BezierPatch()
 {
   class_< BezierPatch, BezierPatchPtr, bases< Patch >,boost::noncopyable >
     ("BezierPatch",init<Point4MatrixPtr, optional<uint32_t,uint32_t,bool> >
-     ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"));
+     ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
+    .DEC_SETGET_WD(ustride,BezierPatch,UStride,uint32_t)
+    .DEC_SETGET_WD(vstride,BezierPatch,VStride,uchar_t)
+    ;
 
   implicitly_convertible< BezierPatchPtr,PatchPtr >();
 }
+
+SETGET(NurbsPatch,UDegree,uint32_t);
+SETGET(NurbsPatch,VDegree,uint32_t);
+SETGET(NurbsPatch,UKnotList,RealArrayPtr);
+SETGET(NurbsPatch,VKnotList,RealArrayPtr);
 
 void export_NurbsPatch()
 {
   class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
     ("NurbsPatch",init<Point4MatrixPtr, RealArrayPtr, RealArrayPtr, 
      optional<uint32_t,uint32_t,uint32_t,uint32_t,bool> >
-     ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnot,RealArray vKnot [,uDeg, vDeg,ustride,vstride,ccw])"));
+     ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
+    .DEC_SETGET_WD(udegree,NurbsPatch,UDegree,uint32_t)
+    .DEC_SETGET_WD(vdegree,NurbsPatch,VDegree,uint32_t)
+    .DEC_SETGET_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
+    .DEC_SETGET_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
+    ;
 
   implicitly_convertible< NurbsPatchPtr,BezierPatchPtr >();
 
