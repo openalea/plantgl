@@ -110,8 +110,8 @@ public:
       \post
       - \e self is valid. */
   NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      const TOOLS(RealArrayPtr)& uKnotList, 
-	      const TOOLS(RealArrayPtr)& vKnotList, 
+	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr(0)), 
+	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr(0)), 
 	      uint32_t uDegree = DEFAULT_NURBS_DEGREE, 
 	      uint32_t vDegree = DEFAULT_NURBS_DEGREE, 
 	      uint32_t ustride = DEFAULT_STRIDE, 

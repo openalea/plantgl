@@ -103,6 +103,7 @@ void export_NurbsCurve()
 	 .staticmethod("fit")
      .DEC_SETGET_WD(degree,NurbsCurve,Degree,uint32_t)
      .DEC_SETGET_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
+     .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
     ;
 
   implicitly_convertible<NurbsCurvePtr, BezierCurvePtr>();
@@ -224,6 +225,7 @@ void export_NurbsCurve2D()
 	 .staticmethod("fit")
      .DEC_SETGET_WD(degree,NurbsCurve2D,Degree,uint32_t)
      .DEC_SETGET_WD(knotList,NurbsCurve2D,KnotList,RealArrayPtr)
+     .def("setKnotListToDefault",&NurbsCurve2D::setKnotListToDefault)
     ;
 
    implicitly_convertible< NurbsCurve2DPtr, BezierCurve2DPtr >();

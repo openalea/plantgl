@@ -151,9 +151,11 @@ public:
       \post
       - \e self is valid. */
    virtual bool setKnotListToDefault( );
+   static TOOLS(RealArrayPtr) defaultKnotList( uint32_t nbCtrlPoints, uint32_t degree );
 
   /// Returns whether \b KnotList is set to its default value.
   bool isKnotListToDefault( ) const;
+  static bool defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint32_t nbCtrlPoints, uint32_t degree );
 
   virtual bool isValid( ) const;
 
@@ -218,6 +220,7 @@ public:
     \author Philippe Lavoie     
   */
   TOOLS(RealArray2Ptr) computeDerivatesBasisFunctions(int n, real_t u, int span) const ;
+
 
   //@}
 

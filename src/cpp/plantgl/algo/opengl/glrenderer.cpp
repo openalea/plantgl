@@ -73,7 +73,7 @@ TOOLS_USING_NAMESPACE
       __discretizer.computeTexCoord(true); \
   else __discretizer.computeTexCoord(false); \
   bool b=true; \
-  if((b=geom->apply(__discretizer))){ \
+  if((b=geom->apply(__discretizer))&&(b=(__discretizer.getDiscretization().isValid()))){ \
       b=__discretizer.getDiscretization()->apply(*this);\
   } \
   GEOM_GLRENDERER_UPDATE_CACHE(geom); \

@@ -92,13 +92,15 @@ SETGET(NurbsPatch,VKnotList,RealArrayPtr);
 void export_NurbsPatch()
 {
   class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
-    ("NurbsPatch",init<Point4MatrixPtr, RealArrayPtr, RealArrayPtr, 
-     optional<uint32_t,uint32_t,uint32_t,uint32_t,bool> >
+    ("NurbsPatch",init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
+     uint32_t,uint32_t,uint32_t,uint32_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
     .DEC_SETGET_WD(udegree,NurbsPatch,UDegree,uint32_t)
     .DEC_SETGET_WD(vdegree,NurbsPatch,VDegree,uint32_t)
     .DEC_SETGET_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
     .DEC_SETGET_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
+    .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)
+    .def("setUKnotListToDefault",&NurbsPatch::setUKnotListToDefault)
     ;
 
   implicitly_convertible< NurbsPatchPtr,BezierPatchPtr >();

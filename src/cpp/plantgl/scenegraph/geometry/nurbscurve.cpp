@@ -90,24 +90,8 @@ SceneObjectPtr NurbsCurve::Builder::build( ) const {
     else _degree = (*Degree);
 
     if( ! KnotList ){
-        uint32_t _size = ((*CtrlPointList)->getSize()) + _degree + 1;
-        _knots = new RealArrayPtr(new RealArray(_size));
-        for (uint32_t i = 0 ; i < _degree+1 ; i++ )
-            (*_knots)->setAt(i , 0.0);
+      _knots = new RealArrayPtr(NurbsCurve::defaultKnotList((*CtrlPointList)->getSize(), _degree));
 
-        for( uint32_t j =   _degree+1 ; j<_size - _degree - 1; j++ )
-            (*_knots)->setAt(j,(real_t) ( j - _degree )  /(real_t)(_size - (2 * _degree)  - 1 ));
-
-        for (uint32_t k = _size - _degree - 1 ; k < _size ; k++ )
-            (*_knots)->setAt(k , 1.0);
-
-#ifdef GEOM_DEBUG
-      cout << "KnotList assign to a vector of size " << (*_knots)->getSize() <<endl;
-      cout << "KnotList values is : "<<endl;
-      for( int l = 0 ; l < (*_knots)->getSize() ; l++ )
-        cout << " " << (*_knots)->getAt(l);
-      cout << endl;
-#endif
       SceneObjectPtr myNurbsPtr(new NurbsCurve(  *CtrlPointList , *_knots ,_degree, (Stride ? *Stride : DEFAULT_STRIDE) ));
       delete _knots;
       return myNurbsPtr;
@@ -271,33 +255,46 @@ NurbsCurve::getLastKnot( ) const {
 
 bool NurbsCurve::setKnotListToDefault( ){
     if(!__ctrlPointList) return false;
-    uint32_t _size = (__ctrlPointList->getSize()) + __degree + 1;
-    __knotList = RealArrayPtr(new RealArray(_size));
-    for (uint32_t i = 0 ; i < __degree+1 ; i++ )
-        (__knotList)->setAt(i , 0.0);
-
-    for( uint32_t j =   __degree+1 ; j<_size - __degree - 1; j++ )
-        (__knotList)->setAt(j ,(real_t) ( j - __degree )  /(real_t)(_size - (2 * __degree)  - 1 ));
-
-    for (uint32_t k = _size - __degree - 1 ; k < _size ; k++ )
-        (__knotList)->setAt(k , 1.0);
+    else __knotList = defaultKnotList(__ctrlPointList->getSize(),__degree);
     return true;
 }
 
-bool NurbsCurve::isKnotListToDefault( ) const {
-    uint32_t _size=getKnotList()->getSize();
-    real_t _val = __knotList->getAt(0);
-    for (uint32_t i = 1 ; i < __degree+1 ; i++ )
-        if( !(fabs (__knotList->getAt(i) -_val ) <GEOM_TOLERANCE) ) return false;
+TOOLS(RealArrayPtr) NurbsCurve::defaultKnotList( uint32_t nbCtrlPoints, uint32_t degree)
+{
+    uint32_t _size = nbCtrlPoints + degree + 1;
+    RealArrayPtr knotList = RealArrayPtr(new RealArray(_size));
+    for (uint32_t i = 0 ; i < degree+1 ; i++ )
+        knotList->setAt(i , 0.0);
 
-    _val = real_t(1.0) / (real_t)(_size - (2 * __degree)  - 1 );
-    for(uint32_t j= __degree+1;j<_size - __degree -1;j++)
-        if(!(fabs(fabs(__knotList->getAt(j+1)-__knotList->getAt(j))-_val)<GEOM_EPSILON))
+    for( uint32_t j =   degree+1 ; j<_size - degree - 1; j++ )
+        knotList->setAt(j ,(real_t) ( j - degree )  /(real_t)(_size - (2 * degree)  - 1 ));
+
+    for (uint32_t k = _size - degree - 1 ; k < _size ; k++ )
+        knotList->setAt(k , 1.0);
+    return knotList;
+}
+
+bool NurbsCurve::isKnotListToDefault( ) const {
+    return defaultKnotListTest(getKnotList(),__ctrlPointList->getSize(),__degree);
+}
+
+bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint32_t nbCtrlPoints, uint32_t degree )
+{
+    if( knots.isNull() ) return true;
+    uint32_t _size=knots->getSize();
+    if (_size != nbCtrlPoints + degree + 1) return false;
+    real_t _val = knots->getAt(0);
+    for (uint32_t i = 1 ; i < degree+1 ; i++ )
+        if( !(fabs (knots->getAt(i) -_val ) <GEOM_TOLERANCE) ) return false;
+
+    _val = real_t(1.0) / (real_t)(_size - (2 * degree)  - 1 );
+    for(uint32_t j= degree+1;j<_size - degree -1;j++)
+        if(!(fabs(fabs(knots->getAt(j+1)-knots->getAt(j))-_val)<GEOM_EPSILON))
             return false;
 
-    _val = __knotList->getAt(_size -1  );
-    for (uint32_t k = _size - __degree - 1 ; k < _size ; k++ )
-        if( !(fabs (__knotList->getAt(k) -_val ) <GEOM_TOLERANCE) ) return false;
+    _val = knots->getAt(_size -1  );
+    for (uint32_t k = _size - degree - 1 ; k < _size ; k++ )
+        if( !(fabs (knots->getAt(k) -_val ) <GEOM_TOLERANCE) ) return false;
     return true;
 }
 
@@ -828,24 +825,7 @@ SceneObjectPtr NurbsCurve2D::Builder::build( ) const {
     else _degree = (*Degree);
 
     if( ! KnotList ){
-        uint32_t _size = ((*CtrlPointList)->getSize()) + _degree + 1;
-        _knots = new RealArrayPtr(new RealArray(_size));
-        for (uint32_t i = 0 ; i < _degree+1 ; i++ )
-            (*_knots)->setAt(i , 0.0);
-
-        for( uint32_t j =   _degree+1 ; j<_size - _degree - 1; j++ )
-            (*_knots)->setAt(j ,(real_t) ( j - _degree )  /(real_t)(_size - (2 * _degree)  - 1 ));
-
-        for (uint32_t k = _size - _degree - 1 ; k < _size ; k++ )
-            (*_knots)->setAt(k , 1.0);
-
-#ifdef GEOM_DEBUG
-      cout << "KnotList assign to a vector of size " << (*_knots)->getSize() <<endl;
-      cout << "KnotList values is : "<<endl;
-      for( int l = 0 ; l < (*_knots)->getSize() ; l++ )
-        cout << " " << (*_knots)->getAt(l);
-      cout << endl;
-#endif
+      _knots = new RealArrayPtr(NurbsCurve::defaultKnotList((*CtrlPointList)->getSize(),_degree));
       SceneObjectPtr myNurbsPtr(new NurbsCurve2D(  *CtrlPointList , *_knots , _degree, (Stride ? *Stride : NurbsCurve::DEFAULT_STRIDE) ));
       delete _knots;
       return myNurbsPtr;
@@ -1008,36 +988,14 @@ NurbsCurve2D::getLastKnot( ) const {
 /* ----------------------------------------------------------------------- */
 
 bool NurbsCurve2D::setKnotListToDefault( ){
-    if(!__ctrlPointList)return false;
-    uint32_t _size = (__ctrlPointList->getSize()) + __degree + 1;
-    __knotList = RealArrayPtr(new RealArray(_size));
-    for (uint32_t i = 0 ; i < __degree+1 ; i++ )
-        (__knotList)->setAt(i , 0.0);
-
-    for( uint32_t j =   __degree+1 ; j<_size - __degree - 1; j++ )
-        (__knotList)->setAt(j ,(real_t) ( j - __degree )  /(real_t)(_size - (2 * __degree)  - 1 ));
-
-    for (uint32_t k = _size - __degree - 1 ; k < _size ; k++ )
-        (__knotList)->setAt(k , 1.0);
+    if(!__ctrlPointList) return false;
+    else __knotList = NurbsCurve::defaultKnotList(__ctrlPointList->getSize(),__degree);
     return true;
 }
 
 
 bool NurbsCurve2D::isKnotListToDefault( ) const {
-    uint32_t _size=getKnotList()->getSize();
-    real_t _val = __knotList->getAt(0);
-    for (uint32_t i = 1 ; i < __degree+1 ; i++ )
-        if( !(fabs (__knotList->getAt(i) -_val ) <GEOM_TOLERANCE) ) return false;
-
-    _val = real_t(1.0) / (real_t)(_size - (2 * __degree)  - 1 );
-    for(uint32_t j= __degree+1;j<_size - __degree -1;j++)
-        if(!(fabs(fabs(__knotList->getAt(j+1)-__knotList->getAt(j))-_val)<GEOM_EPSILON))
-            return false;
-
-    _val = __knotList->getAt(_size -1  );
-    for (uint32_t k = _size - __degree - 1 ; k < _size ; k++ )
-        if( !(fabs (__knotList->getAt(k) -_val ) <GEOM_TOLERANCE) ) return false;
-    return true;
+    return NurbsCurve::defaultKnotListTest(getKnotList(),__ctrlPointList->getSize(),__degree);
 }
 
 

@@ -75,9 +75,9 @@ SceneObjectPtr NurbsPatch::Builder::build( ) const {
     if (isValid()){
 
         uint32_t _udegree=0;
-        RealArrayPtr * _uknots = NULL;
+        RealArrayPtr _uknots ;
         uint32_t _vdegree=0;
-        RealArrayPtr *_vknots = NULL;
+        RealArrayPtr _vknots ;
 
         if( ! UDegree ){
             if( ! UKnotList )_udegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE,(*CtrlPointMatrix)->getRowsNb() - 1) ;
@@ -98,77 +98,18 @@ SceneObjectPtr NurbsPatch::Builder::build( ) const {
         else _vdegree = (*VDegree);
 
         if( ! UKnotList ){
-            uint32_t _usize = ((*CtrlPointMatrix)->getRowsNb()) + _udegree + 1;
-            _uknots = new RealArrayPtr(new RealArray(_usize));
-            for (uint32_t i = 0 ; i < _udegree+1 ; i++ )
-                (*_uknots)->setAt(i , 0.0);
-
-            for( uint32_t j =   _udegree+1 ; j<_usize - _udegree - 1; j++ )
-                (*_uknots)->setAt(j ,(real_t) ( j - _udegree )  /(real_t)(_usize - (2 * _udegree)  - 1 ));
-
-            for (uint32_t k = _usize - _udegree - 1 ; k < _usize ; k++ )
-                (*_uknots)->setAt(k , 1.0);
-
-#ifdef GEOM_DEBUG
-            cout << "UKnotList assign to a vector of size " << (*_uknots)->getSize() <<endl;
-            cout << "UKnotList values is : "<<endl;
-            for( int l = 0 ; l < (*_uknots)->getSize() ; l++ )
-                cout << " " << (*_uknots)->getAt(l);
-            cout << endl;
-#endif
+            _uknots = NurbsCurve::defaultKnotList((*CtrlPointMatrix)->getRowsNb(),_udegree);
         }
+        else { _uknots = *UKnotList; }
 
         if( ! VKnotList ){
-            uint32_t _vsize = ((*CtrlPointMatrix)->getColsNb()) + _vdegree + 1;
-            _vknots = new RealArrayPtr(new RealArray(_vsize));
-            for (uint32_t i = 0 ; i < _vdegree+1 ; i++ )
-                (*_vknots)->setAt(i , 0.0);
-
-            for( uint32_t j =   _vdegree+1 ; j<_vsize - _vdegree - 1; j++ )
-                (*_vknots)->setAt(j ,(real_t) ( j - _vdegree )  /(real_t)(_vsize - (2 * _vdegree)  - 1 ));
-
-            for (uint32_t k = _vsize - _vdegree - 1 ; k < _vsize ; k++ )
-                (*_vknots)->setAt(k , 1.0);
-
-#ifdef GEOM_DEBUG
-            cout << "VKnotList assign to a vector of size " << (*_vknots)->getSize() <<endl;
-            cout << "VKnotList values is : "<<endl;
-            for( int l = 0 ; l < (*_vknots)->getSize() ; l++ )
-                cout << " " << (*_vknots)->getAt(l);
-            cout << endl;
-#endif
+            _vknots = NurbsCurve::defaultKnotList((*CtrlPointMatrix)->getColsNb(),_vdegree);
         }
-        if(! UKnotList && !  VKnotList ){
-            SceneObjectPtr myNurbsPtr(new NurbsPatch(*CtrlPointMatrix,*_uknots,*_vknots, _udegree,
+        else { _vknots = *VKnotList; }
+        return SceneObjectPtr(new NurbsPatch(*CtrlPointMatrix,_uknots,_vknots, _udegree,
                                                      _vdegree, (UStride ? *UStride : DEFAULT_STRIDE),
                                                      (VStride ? *VStride : DEFAULT_STRIDE),
                                                      (CCW ? *CCW : DEFAULT_CCW)));
-            delete _uknots;
-            delete _vknots;
-            return myNurbsPtr;
-        }
-        else if ( ! UKnotList ){
-            SceneObjectPtr myNurbsPtr(new NurbsPatch(*CtrlPointMatrix, *_uknots,*VKnotList,_udegree,
-                                                     _vdegree, (UStride ? *UStride : DEFAULT_STRIDE),
-                                                     (VStride ? *VStride : DEFAULT_STRIDE),
-                                                     (CCW ? *CCW : DEFAULT_CCW)));
-            delete _uknots;
-            return myNurbsPtr;
-        }
-        else if ( ! VKnotList ){
-            SceneObjectPtr myNurbsPtr(new NurbsPatch(*CtrlPointMatrix,*UKnotList,*_vknots,
-                                                     _udegree, _vdegree,
-                                                     (UStride ? *UStride : DEFAULT_STRIDE),
-                                                     (VStride ? *VStride : DEFAULT_STRIDE),
-                                                     (CCW ? *CCW : DEFAULT_CCW)));
-            delete _vknots;
-            return myNurbsPtr;
-        }
-        else return SceneObjectPtr(new NurbsPatch(*CtrlPointMatrix,*UKnotList,*VKnotList,
-                                                  _udegree, _vdegree,
-                                                  (UStride ? *UStride : DEFAULT_STRIDE),
-                                                  (VStride ? *VStride : DEFAULT_STRIDE),
-                                                  (CCW ? *CCW : DEFAULT_CCW)));
     }
     return SceneObjectPtr();
 }
@@ -332,6 +273,8 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __udegree(uDegree),
     __vdegree(vDegree){
     GEOM_ASSERT(isValid());
+    if (uKnotList.isNull()) setUKnotListToDefault();
+    if (vKnotList.isNull()) setVKnotListToDefault();
 }
 
 NurbsPatch::~NurbsPatch( ) {
@@ -427,67 +370,23 @@ NurbsPatch::getLastVKnot( ) const {
 
 bool NurbsPatch::setUKnotListToDefault( ){
     if(!__ctrlPointMatrix) return false;
-    uint32_t _size = (__ctrlPointMatrix->getRowsNb()) + __udegree + 1;
-    __uKnotList = RealArrayPtr(new RealArray(_size));
-    for (uint32_t i = 0 ; i < __udegree+1 ; i++ )
-        (__uKnotList)->setAt(i , 0.0);
-
-    for( uint32_t j =   __udegree+1 ; j<_size - __udegree - 1; j++ )
-        (__uKnotList)->setAt(j ,(real_t) ( j - __udegree )  /(real_t)(_size - (2 * __udegree)  - 1 ));
-
-    for (uint32_t k = _size - __udegree - 1 ; k < _size ; k++ )
-        (__uKnotList)->setAt(k , 1.0);
+    __uKnotList = NurbsCurve::defaultKnotList(__ctrlPointMatrix->getRowsNb(),__udegree);
     return true;
 }
 
 bool NurbsPatch::isUKnotListToDefault( ) const{
-    uint32_t _size=getUKnotList()->getSize();
-    real_t _val = __uKnotList->getAt(0);
-    for (uint32_t i = 1 ; i < __udegree+1 ; i++ )
-        if( !(fabs (__uKnotList->getAt(i) -_val ) <GEOM_TOLERANCE) ) return false;
-
-    _val = real_t(1.0) / (real_t)(_size - (2 * __udegree)  - 1 );
-    for(uint32_t j= __udegree+1;j<_size - __udegree -1;j++)
-        if(!(fabs(fabs(__uKnotList->getAt(j+1)-__uKnotList->getAt(j))-_val)<GEOM_EPSILON))
-            return false;
-
-    _val = __uKnotList->getAt(_size -1  );
-    for (uint32_t k = _size - __udegree - 1 ; k < _size ; k++ )
-        if( !(fabs (__uKnotList->getAt(k) -_val ) <GEOM_TOLERANCE) ) return false;
-    return true;
+    return NurbsCurve::defaultKnotListTest(getUKnotList(),__ctrlPointMatrix->getRowsNb(),__udegree);
 }
 
 
 bool NurbsPatch::setVKnotListToDefault( ){
     if(!__ctrlPointMatrix) return false;
-    uint32_t _size = (__ctrlPointMatrix->getColsNb()) + __vdegree + 1;
-    __vKnotList = RealArrayPtr(new RealArray(_size));
-    for (uint32_t i = 0 ; i < __vdegree+1 ; i++ )
-        (__vKnotList)->setAt(i , 0.0);
-
-    for( uint32_t j =   __vdegree+1 ; j<_size - __vdegree - 1; j++ )
-        (__vKnotList)->setAt(j ,(real_t) ( j - __vdegree )  /(real_t)(_size - (2 * __vdegree)  - 1 ));
-
-    for (uint32_t k = _size - __vdegree - 1 ; k < _size ; k++ )
-        (__vKnotList)->setAt(k , 1.0);
+    __vKnotList = NurbsCurve::defaultKnotList(__ctrlPointMatrix->getColsNb(),__vdegree);
     return true;
 }
 
 bool NurbsPatch::isVKnotListToDefault( ) const{
-    uint32_t _size=getVKnotList()->getSize();
-    real_t _val = __vKnotList->getAt(0);
-    for (uint32_t i = 1 ; i < __vdegree+1 ; i++ )
-        if( !(fabs (__vKnotList->getAt(i) -_val ) <GEOM_TOLERANCE) ) return false;
-
-    _val = real_t(1.0) / (real_t)(_size - (2 * __vdegree)  - 1 );
-    for(uint32_t j= __vdegree+1;j<_size - __vdegree -1;j++)
-        if(!(fabs(fabs(__vKnotList->getAt(j+1)-__vKnotList->getAt(j))-_val)<GEOM_EPSILON))
-            return false;
-
-    _val = __vKnotList->getAt(_size -1  );
-    for (uint32_t k = _size - __vdegree - 1 ; k < _size ; k++ )
-        if( !(fabs (__vKnotList->getAt(k) -_val ) <GEOM_TOLERANCE) ) return false;
-    return true;
+    return NurbsCurve::defaultKnotListTest(getVKnotList(),__ctrlPointMatrix->getColsNb(),__vdegree);
 }
 
 

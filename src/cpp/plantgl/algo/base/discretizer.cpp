@@ -1438,7 +1438,7 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   QuadSet * q = new QuadSet(_pointList,_indexList,true, nurbsPatch->getCCW(), false,_skeleton);
   if(__computeTexCoord)q->getTexCoordList() = gridTexCoord(_pointList,_uStride,_vStride);
 
-  __discretization = ExplicitModelPtr();
+  __discretization = ExplicitModelPtr(q);
   GEOM_DISCRETIZER_UPDATE_CACHE(nurbsPatch);
   return true;
 }
