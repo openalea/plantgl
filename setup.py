@@ -48,7 +48,7 @@ pkg_name = namespace + '.' + name
 # beta: patch= patch + 'b' + 'number'
 major= '2'
 minor= '0'
-patch= '0'
+patch= '1'
 version= '%s.%s.%s' % (major, minor, patch)
 
 # Description of the package
