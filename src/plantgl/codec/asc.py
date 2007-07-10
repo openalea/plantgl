@@ -1,6 +1,6 @@
 import openalea.plantgl.math as mt
 import openalea.plantgl.scenegraph as sg
-import openalea.plantgl.algo._pglalgo as alg
+import openalea.plantgl.algo as alg
 
 class AscCodec (sg.SceneCodec):
 	def __init__(self):
