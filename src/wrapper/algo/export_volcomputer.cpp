@@ -3,9 +3,9 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon, DDS et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -29,63 +29,33 @@
  *  ----------------------------------------------------------------------------
  */
  
-#ifndef __export_action_h__
-#define __export_action_h__
+#include <boost/python.hpp>
+
+#include <plantgl/algo/base/volcomputer.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */
-// util class export
-void export_Sequencer();
 
-// abstract action class export
-void export_action();
-
-// basic action export
-void export_Discretizer();
-void export_Tesselator();
-void export_BBoxComputer();
-void export_VolComputer();
-void export_SurfComputer();
-void export_AmapTranslator();
-void export_MatrixComputer();
-
-// custom algo
-void export_Merge();
-void export_Fit();
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+using namespace boost::python;
+using namespace std;
 
 /* ----------------------------------------------------------------------- */
-// abstract printer export
-void export_StrPrinter();
-void export_FilePrinter();
 
-// printer export
-void export_PglPrinter();
-void export_PglBinaryPrinter();
-void export_PovPrinter();
-void export_VrmlPrinter();
-void export_VgstarPrinter();
+bool p_scene( VolComputer * v, ScenePtr s){
+	return v->process(s);
+        }
 
 /* ----------------------------------------------------------------------- */
-// gl export
-void export_GLRenderer();
-void export_GLSkelRenderer();
-void export_GLBBoxRenderer();
-void export_GLCtrlPointRenderer();
 
-/* ----------------------------------------------------------------------- */
-// Turtle export
-void export_TurtleParam();
-void export_Turtle();
-void export_PglTurtle();
-
-/* ----------------------------------------------------------------------- */
-// RayCasting export
-void export_SegIntersection();
-void export_Ray();
-void export_RayIntersection();
-
-/* ----------------------------------------------------------------------- */
-// Grid export
-void export_Mvs();
-void export_Octree();
-
-#endif
+void export_VolComputer()
+{
+  class_< VolComputer, bases<Action>, boost::noncopyable >
+    ("VolComputer", init<Discretizer&>("VolComputer() -> compute the object volume"))
+    .def("process", &p_scene) 
+    .add_property("volume", &VolComputer::getVolume, "Return the volume of the qhape")
+    .add_property("result",  &VolComputer::getVolume)
+    ;
+}

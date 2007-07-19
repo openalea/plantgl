@@ -47,6 +47,8 @@ void module_algo()
     export_Discretizer();
     export_Tesselator();
     export_BBoxComputer();
+    export_VolComputer();
+    export_SurfComputer();
     export_AmapTranslator();
     export_MatrixComputer();
 
