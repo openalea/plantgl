@@ -205,11 +205,11 @@ bool Tesselator::process( BezierPatch * bezierPatch ) {
 						(_v/_vStride1)));
       _indexList->setAt(_indexCount++,Index3(_cur, 
 					     _cur + 1,
-					     _cur + _uStride + 1));
+					     _cur + _vStride + 1));
 
       _indexList->setAt(_indexCount++,Index3(_cur, 
-					     _cur + _uStride + 1,
-					     _cur + _uStride));
+					     _cur + _vStride + 1,
+					     _cur + _vStride));
 
       _cur++;
 
@@ -553,11 +553,11 @@ bool Tesselator::process( NurbsPatch * nurbsPatch ) {
       _indexList->setAt(_indexCount++,
                         Index3(_cur,
                                _cur + 1,
-                               _cur + _uStride + 1));
+                               _cur + _vStride + 1));
        _indexList->setAt(_indexCount++,
                         Index3(_cur,
-                               _cur + _uStride + 1,
-                               _cur + _uStride));
+                               _cur + _vStride + 1,
+                               _cur + _vStride));
 
       _cur++;
     };

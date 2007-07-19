@@ -41,9 +41,11 @@ void export_arrays()
     DEFINE_NUMPY( i3a );
   EXPORT_CONVERTER(i3a);
   EXPORT_ARRAY( i4a, Index4Array, "Index4Array([Index4(i,j,k,l),...])" )
+    .def( "triangulate", &Index4Array::triangulate)
     DEFINE_NUMPY( i4a );
   EXPORT_CONVERTER(i4a);
   EXPORT_ARRAY( inda,IndexArray,  "IndexArray([Index([i,j,..]),...])" )
+    .def( "triangulate", &IndexArray::triangulate)
     DEFINE_NUMPY( inda );
   EXPORT_CONVERTER(inda);
   EXPORT_ARRAY( ra, RealArray,  "IndexArray([a,b,...])" )

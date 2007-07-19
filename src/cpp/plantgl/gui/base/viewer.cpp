@@ -277,12 +277,14 @@ void Viewer::initialize()
   addToolBar(Qt::TopToolBarArea,locatToolBar);
   addToolBarBreak();
 
+  __GLFrame->addOtherToolBar(this);
+  addToolBarBreak();
+
   /// ToolBar
   __ToolBar = new ViewToolBar("View Bar",this,"ViewBar");
   addToolBar(__ToolBar);
 
 
-  __GLFrame->addOtherToolBar(this);
 
   __GLFrame->connectTo(__ErrorDialog);
   __FileMenu->connectTo(__ErrorDialog);

@@ -443,7 +443,6 @@ bool Discretizer::process( BezierPatch * bezierPatch ) {
   uint32_t _indexCount = 0;
 
   for ( real_t _u = 0 ; _u < _uStride1 ; _u ++){
-
     for (real_t _v = 0; _v < _vStride1; _v ++) {
 
       _pointList->setAt(_pointCount++,
@@ -452,8 +451,8 @@ bool Discretizer::process( BezierPatch * bezierPatch ) {
 
       _indexList->setAt(_indexCount++,Index4(_cur,
                                              _cur + 1,
-                                             _cur + _uStride + 1,
-                                             _cur + _uStride));
+                                             _cur + _vStride + 1,
+                                             _cur + _vStride));
 
       _cur++;
 
@@ -1373,14 +1372,13 @@ bool Discretizer::process( NurbsCurve * nurbsCurve ) {
 
 bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   GEOM_ASSERT(nurbsPatch);
-
   GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(nurbsPatch);
 
-  const uint32_t _uStride = nurbsPatch->getUStride();
-  const uint32_t _vStride = nurbsPatch->getVStride();
+  uint32_t _uStride = nurbsPatch->getUStride();
+  uint32_t _vStride = nurbsPatch->getVStride();
 
-  const real_t _uStride1 = nurbsPatch->getUStride() - 1;
-  const real_t _vStride1 = nurbsPatch->getVStride() - 1;
+  real_t _uStride1 = nurbsPatch->getUStride() - real_t(1);
+  real_t _vStride1 = nurbsPatch->getVStride() - real_t(1);
 
 
   Point3ArrayPtr _pointList(new Point3Array(_uStride * _vStride));
@@ -1397,32 +1395,29 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   real_t _vlast=nurbsPatch->getLastVKnot();
   real_t _vinter=_vlast-_vfirst;
 
-  for ( real_t _u = 0 ; _u < _uStride1 ; _u ++){
-    for (real_t _v = 0; _v < _vStride1; _v ++) {
-
+  for ( real_t _u = 0 ; _u < _uStride1 - GEOM_EPSILON ; ++_u) {
+    for (real_t _v = 0; _v < _vStride1 - GEOM_EPSILON ; ++_v) {
       _pointList->setAt(_pointCount++,
-                        nurbsPatch->getPointAt((_ufirst +
-                                                (_u * _uinter) / _uStride1),
-                                               (_vfirst +
-                                                (_v * _vinter) / _vStride1)));
-
+                        nurbsPatch->getPointAt(_ufirst +
+                                                (_u * _uinter) / _uStride1,
+                                               _vfirst +
+                                                (_v * _vinter) / _vStride1));
       _indexList->setAt(_indexCount++,
                         Index4(_cur,
                                _cur + 1,
-                               _cur + _uStride + 1,
-                               _cur + _uStride));
+                               _cur + _vStride + 1,
+                               _cur + _vStride));
 
       _cur++;
     };
 
     _pointList->setAt(_pointCount++,
-                      nurbsPatch->getPointAt((_u / _uStride1),1.0));
-
-    _cur++;
+                      nurbsPatch->getPointAt(_ufirst + (_u * _uinter) / _uStride1,1.0));
+     _cur++;
 
   };
 
-  for (real_t _v = 0; _v < _vStride1; _v ++){
+  for (real_t _v = 0; _v < _vStride1 - GEOM_EPSILON; ++_v ){
     _pointList->setAt(_pointCount++,
                        nurbsPatch->getPointAt(_ulast,
                                                (_vfirst +
@@ -1430,7 +1425,6 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   }
 
   _pointList->setAt(_pointCount,nurbsPatch->getPointAt(_ulast,_vlast));
-
  
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));

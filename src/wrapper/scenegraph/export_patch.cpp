@@ -71,6 +71,7 @@ void export_Patch()
 
 SETGET(BezierPatch,UStride,uint32_t);
 SETGET(BezierPatch,VStride,uint32_t);
+SETGET(BezierPatch,CtrlPointMatrix,Point4MatrixPtr);
 
 void export_BezierPatch()
 {
@@ -78,7 +79,8 @@ void export_BezierPatch()
     ("BezierPatch",init<Point4MatrixPtr, optional<uint32_t,uint32_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
     .DEC_SETGET_WD(ustride,BezierPatch,UStride,uint32_t)
-    .DEC_SETGET_WD(vstride,BezierPatch,VStride,uchar_t)
+    .DEC_SETGET_WD(vstride,BezierPatch,VStride,uint32_t)
+    .DEC_SETGET(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     ;
 
   implicitly_convertible< BezierPatchPtr,PatchPtr >();

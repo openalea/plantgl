@@ -440,12 +440,12 @@ Point3ArrayPtr
 QuadSet::computeNormalPerVertex() const {
     Point3ArrayPtr normalList(new Point3Array(__pointList->getSize())); 
     for(uint32_t j=0; j < __indexList->getSize(); j++){ 
-	Vector3 _norm = cross(getPointAt(j,__ccw ? 1 : 2) - getPointAt(j,0), 
-			      getPointAt(j,__ccw ? 2 : 1) - getPointAt(j,0)); 
-	for(uint32_t i = 0; i < 4; i++){ 
-	    uint32_t _index = __indexList->getAt(j).getAt(i); 
-	    normalList->setAt(_index,normalList->getAt(_index)+_norm); 
-	} 
+        Vector3 _norm = cross(getPointAt(j,__ccw ? 1 : 2) - getPointAt(j,0), 
+            getPointAt(j,__ccw ? 2 : 1) - getPointAt(j,0)); 
+        for(uint32_t i = 0; i < 4; i++){ 
+            uint32_t _index = __indexList->getAt(j).getAt(i); 
+            normalList->setAt(_index,normalList->getAt(_index)+_norm); 
+        } 
     }
     for(Point3Array::iterator _it=normalList->getBegin();_it!=normalList->getEnd();_it++)
 	_it->normalize();
