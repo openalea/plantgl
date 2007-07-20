@@ -44,9 +44,19 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-bool p_scene( SurfComputer * v, ScenePtr s){
-	return v->process(s);
-        }
+real_t surf_geom(Geometry * obj){
+    Discretizer d;
+    SurfComputer sf(d);
+    obj->apply(sf);
+	return sf.getSurface();
+}
+
+real_t surf_sh(Shape * obj){
+    Discretizer d;
+    SurfComputer sf(d);
+    obj->apply(sf);
+	return sf.getSurface();
+}
 
 /* ----------------------------------------------------------------------- */
 
@@ -55,8 +65,13 @@ void export_SurfComputer()
   class_< SurfComputer, bases<Action>, boost::noncopyable >
     ("SurfComputer", init<Discretizer&>("SurfComputer() -> compute the object surface"))
     .def("clear",&SurfComputer::clear)
-    .def("process", &p_scene) 
+    .def("process", (bool (SurfComputer::*)(const ScenePtr))&SurfComputer::process) 
     .add_property("surface", &SurfComputer::getSurface, "Return the surface of the shape")
     .add_property("result",  &SurfComputer::getSurface)
     ;
+
+  def("surface",(real_t(*)(const ScenePtr))&sceneSurface,"Compute surface of a scene");
+  def("surface",&surf_geom,"Compute surface of a geometry");
+  def("surface",&surf_sh,"Compute surface of a shape");
+  def("surface",(real_t(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&surface,"Compute surface of a triangle");
 }

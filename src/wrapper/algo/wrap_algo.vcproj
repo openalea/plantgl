@@ -227,6 +227,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_surfcomputer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_turtle.cpp"
 				>
 			</File>
@@ -236,6 +240,10 @@
 			</File>
 			<File
 				RelativePath=".\export_vgstarprinter.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_volcomputer.cpp"
 				>
 			</File>
 			<File

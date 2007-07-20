@@ -44,9 +44,19 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-bool p_scene( VolComputer * v, ScenePtr s){
-	return v->process(s);
-        }
+real_t vol_geom(Geometry * obj){
+    Discretizer d;
+    VolComputer sf(d);
+    obj->apply(sf);
+	return sf.getVolume();
+}
+
+real_t vol_sh(Shape * obj){
+    Discretizer d;
+    VolComputer sf(d);
+    obj->apply(sf);
+	return sf.getVolume();
+}
 
 /* ----------------------------------------------------------------------- */
 
@@ -54,8 +64,12 @@ void export_VolComputer()
 {
   class_< VolComputer, bases<Action>, boost::noncopyable >
     ("VolComputer", init<Discretizer&>("VolComputer() -> compute the object volume"))
-    .def("process", &p_scene) 
+    .def("process", (bool (VolComputer::*)(const ScenePtr))&VolComputer::process) 
     .add_property("volume", &VolComputer::getVolume, "Return the volume of the qhape")
     .add_property("result",  &VolComputer::getVolume)
     ;
+  def("volume",(real_t(*)(const ScenePtr))&sceneVolume,"Compute volume of a scene");
+  def("volume",&vol_geom,"Compute volume of a geometry");
+  def("volume",&vol_sh,"Compute volume of a shape");
+
 }
