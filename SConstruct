@@ -20,7 +20,7 @@ qt_env = Environment(options=options)
 qt_version = int(qt_env['QT_VERSION'])
 
 wrapper_tools = ['boost_python', 'alea']
-cpp_tools = ['alea','flex', 'bison','opengl','readline','qhull']
+cpp_tools = ['alea','flex', 'bison','opengl','readline','qhull', 'install']
 if qt_version == 3:
     qt_tools = ['qt']
 else:
@@ -43,15 +43,15 @@ Help(options.GenerateHelpText(opt_env))
 prefix= opt_env['build_prefix']
 BuildDir( prefix, '.' )
 
-cpp_env= ALEAEnvironment( cpp_conf, 'options.py', ARGUMENTS )
+cpp_env= ALEAEnvironment( cpp_conf, options=options )
 cpp_env.Prepend( CPPPATH = pj( '$build_includedir','plantgl' ) )
-cpp_env.Append( QT_VERSION = qt_version )
+#cpp_env.Append( QT_VERSION = qt_version )
 if qt_version == 4:
     cpp_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
 
-wrapper_env= ALEAEnvironment( wrapper_conf, 'options.py', ARGUMENTS )
+wrapper_env= ALEAEnvironment( wrapper_conf, options=options )
 wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
-wrapper_env.Append( QT_VERSION = qt_version )
+#wrapper_env.Append( QT_VERSION = qt_version )
 
 # Build stage
 SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
