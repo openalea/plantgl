@@ -303,7 +303,7 @@ ViewGeomSceneGL::openStream(std::istream& stream)
 void
 ViewGeomSceneGL::openGeomFile()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open PlantGL",getFilename(),tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty())
      openGeomFile(filename);
 }
@@ -311,7 +311,7 @@ ViewGeomSceneGL::openGeomFile()
 void
 ViewGeomSceneGL::addGeomFile()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open PlantGL",getFilename(),tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty())
      addGeomFile(filename);
 }
@@ -321,7 +321,7 @@ ViewGeomSceneGL::addGeomFile()
 void
 ViewGeomSceneGL::openAmapSymbol()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("Amap Symbol")+" (*.smb)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("Amap Symbol")+" (*.smb);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty()){
     openAmapSymbol(filename);
   }
@@ -347,7 +347,7 @@ ViewGeomSceneGL::openLinetree()
 void
 ViewGeomSceneGL::openVegeStar()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open VegeStar File",getFilename(),tr("VegeStar File")+" (*.vgx;*.vgs)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open VegeStar File",getFilename(),tr("VegeStar File")+" (*.vgx;*.vgs);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty()){
     openVegeStar(filename);
   }
@@ -356,7 +356,7 @@ ViewGeomSceneGL::openVegeStar()
 void
 ViewGeomSceneGL::openVegeStarSymbol1()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty()){
 	openVegeStarSymbol1(filename);
   }
@@ -396,7 +396,7 @@ ViewGeomSceneGL::openVegeStarSymbol1(const QString& filename,bool add)
 void
 ViewGeomSceneGL::openVegeStarSymbol2()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty()){
     stringstream _errlog(ios::out) ;
     GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.toStdString(),_errlog);
@@ -419,7 +419,7 @@ ViewGeomSceneGL::openVegeStarSymbol2()
 void
 ViewGeomSceneGL::openVegeStarSymbol3()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open Symbol",getFilename(),tr("VegeStar Symbol")+" (*.pol);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty()){
     stringstream _errlog(ios::out) ;
     GeometryPtr _symbol = VegeStarFile::importPolygonFile(filename.toStdString(),_errlog);
@@ -755,7 +755,7 @@ ViewGeomSceneGL::saveAs()
 	initial = initial.left(initial.lastIndexOf('.')+1);
     initial += "geom";
   }
-  QString filename = ViewFileManager::getSaveFileName(initial,"",tr("Geom File")+" (*.geom;*.bgeom)",__frame);
+  QString filename = ViewFileManager::getSaveFileName(initial,"",tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"),__frame);
   if(!filename.isEmpty()){
     if(saveAsGeom(filename)){
       setFilename(filename);
@@ -877,7 +877,7 @@ ViewGeomSceneGL::getGeomFilenames(QString& shape,QString& geom, QString& mat)
     initial += "geom";
   }
   
-  GeomDialog dialog( initial, tr("Geom File")+" (*.geom;*.bgeom)", __frame,tr("Save").toAscii().data());
+  GeomDialog dialog( initial, tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"), __frame,tr("Save").toAscii().data());
   if(dialog.exec() != QFileDialog::Rejected) shape = dialog.selectedFiles()[0];
   
   if(shape.isEmpty())return false;
@@ -997,7 +997,7 @@ ViewGeomSceneGL::saveScene(const QString& shape,
 void
 ViewGeomSceneGL::saveAsPovRay()
 {
-  QString filename = ViewFileManager::getSaveFileName(getFilename(),"pov",tr("PovRay File")+" (*.pov)",__frame);
+  QString filename = ViewFileManager::getSaveFileName(getFilename(),"pov",tr("PovRay File")+" (*.pov);;"+tr("All Files (*.*)"),__frame);
   if(!filename.isEmpty()){
     saveAsPovRay(filename);
   }
@@ -1006,7 +1006,7 @@ ViewGeomSceneGL::saveAsPovRay()
 void
 ViewGeomSceneGL::saveAsVegeStar()
 {
-  QString filename = ViewFileManager::getSaveFileName(getFilename(),"vgx",tr("VegeStar File")+" (*.vgx;*.vgs)",__frame);
+  QString filename = ViewFileManager::getSaveFileName(getFilename(),"vgx",tr("VegeStar File")+" (*.vgx;*.vgs);;"+tr("All Files (*.*)"),__frame);
   if(!filename.isEmpty()){
     saveAsVegeStar(filename);
   }
@@ -1015,7 +1015,7 @@ ViewGeomSceneGL::saveAsVegeStar()
 void
 ViewGeomSceneGL::saveAsAmapSymbol()
 {
-  QString filename = ViewFileManager::getSaveFileName(getFilename(),"smb",tr("Amap Symbol")+" (*.smb)",__frame);
+  QString filename = ViewFileManager::getSaveFileName(getFilename(),"smb",tr("Amap Symbol")+" (*.smb);;"+tr("All Files (*.*)"),__frame);
   if(!filename.isEmpty()){
     saveAsAmapSymbol(filename);
   }
@@ -1176,7 +1176,7 @@ ViewGeomSceneGL::saveAsLinetree(const QString& lig,
 void
 ViewGeomSceneGL::saveAsVrml()
 {
-  QString filename = ViewFileManager::getSaveFileName(getFilename(),"wrl",tr("Vrml File")+" (*.wrl)",__frame);
+  QString filename = ViewFileManager::getSaveFileName(getFilename(),"wrl",tr("Vrml File")+" (*.wrl);;"+tr("All Files (*.*)"),__frame);
   ofstream _stream(filename.toAscii().data());
   if(_stream){
     VrmlPrinter _printer(_stream,__discretizer);
@@ -1209,7 +1209,7 @@ ViewGeomSceneGL::saveAsVrml()
 void
 ViewGeomSceneGL::saveAsPly()
 {  
-  QString filename = ViewFileManager::getSaveFileName(getFilename(),"ply",tr("Ply File")+ " (*.ply)",__frame);
+  QString filename = ViewFileManager::getSaveFileName(getFilename(),"ply",tr("Ply File")+ " (*.ply);;"+tr("All Files (*.*)"),__frame);
   if(!filename.isEmpty()){
     PlyPrinter::ply_format _format = PlyPrinter::ply_ascii;
     switch(QMessageBox::warning(__frame,"Ply Format",tr("Ply File Format"),
@@ -1279,9 +1279,9 @@ ViewMultiGeomSceneGL::openGeomFiles(const QString& filename,const QString& filen
 void
 ViewMultiGeomSceneGL::openGeomFiles()
 {
-  QString filename = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
+  QString filename = QFileDialog::getOpenFileName(__frame,"Open PlantGL",getFilename(),tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"));
   if(!filename.isEmpty()){
-    QString filename2 = QFileDialog::getOpenFileName(__frame,"Open Geom",getFilename(),tr("Geom File")+" (*.geom;*.bgeom)");
+    QString filename2 = QFileDialog::getOpenFileName(__frame,"Open PlantGL",getFilename(),tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"));
     if(!filename.isEmpty()){
       openGeomFiles(filename,filename2);
     }

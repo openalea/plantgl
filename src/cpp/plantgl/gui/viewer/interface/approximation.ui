@@ -89,80 +89,6 @@
     </property>
    </widget>
   </widget>
-  <widget class="Q3GroupBox" name="Output" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>130</y>
-     <width>330</width>
-     <height>70</height>
-    </rect>
-   </property>
-   <property name="title" >
-    <string>Output Geometry</string>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Vertical</enum>
-   </property>
-   <widget class="QRadioButton" name="Approximation" >
-    <property name="enabled" >
-     <bool>true</bool>
-    </property>
-    <property name="geometry" >
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>100</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Approximation</string>
-    </property>
-    <property name="checked" >
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="InputGeometry" >
-    <property name="geometry" >
-     <rect>
-      <x>120</x>
-      <y>20</y>
-      <width>170</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>&amp;Input Geometry</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="Rest" >
-    <property name="geometry" >
-     <rect>
-      <x>120</x>
-      <y>40</y>
-      <width>180</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text" >
-     <string>Geometry &amp;not approximated</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QPushButton" name="OkButton" >
-   <property name="geometry" >
-    <rect>
-     <x>250</x>
-     <y>200</y>
-     <width>90</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Ok</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="CancelButton" >
    <property name="geometry" >
     <rect>
@@ -234,19 +160,102 @@
     </property>
    </widget>
   </widget>
+  <widget class="Q3GroupBox" name="Output" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>130</y>
+     <width>330</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="title" >
+    <string>Output Geometry</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+   <widget class="QRadioButton" name="Approximation" >
+    <property name="enabled" >
+     <bool>true</bool>
+    </property>
+    <property name="geometry" >
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Approximation</string>
+    </property>
+    <property name="checked" >
+     <bool>true</bool>
+    </property>
+    <property name="autoExclusive" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="InputGeometry" >
+    <property name="geometry" >
+     <rect>
+      <x>120</x>
+      <y>20</y>
+      <width>170</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>&amp;Input Geometry</string>
+    </property>
+    <property name="autoExclusive" >
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="Rest" >
+    <property name="geometry" >
+     <rect>
+      <x>120</x>
+      <y>40</y>
+      <width>180</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text" >
+     <string>Geometry &amp;not approximated</string>
+    </property>
+    <property name="autoExclusive" >
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="OkButton" >
+   <property name="geometry" >
+    <rect>
+     <x>250</x>
+     <y>200</y>
+     <width>90</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text" >
+    <string>&amp;Ok</string>
+   </property>
+  </widget>
  </widget>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3GroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>Q3ButtonGroup</class>
    <extends>Q3GroupBox</extends>
    <header>Qt3Support/Q3ButtonGroup</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Q3GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

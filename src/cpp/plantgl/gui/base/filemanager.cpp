@@ -353,30 +353,21 @@ ViewFileManager::getSaveFileName( const QString& initial,
 			      const QString& caption){
   QString filename = initial;
   if(!ext.isEmpty()&&!filename.isEmpty()){
-    QString extension=filename.right(filename.length()-filename.lastIndexOf('.')-1);
+    QString extension=QFileInfo(filename).suffix();
     extension= extension.toUpper();    
-    if (extension != ext.toUpper()) {
-      filename = filename.left(filename.lastIndexOf('.')+1);
-      filename += ext;
-    }
+    if (extension != ext.toUpper())
+      filename = QFileInfo(filename).completeBaseName()+'.'+ext;
   }
 
-  filename = QFileDialog::getSaveFileName ( parent, caption, filename, filter );
+  filename = QFileDialog::getSaveFileName ( parent, caption, filename, filter+";;All Files (*.*)" );
   
   if(filename.isEmpty())return QString::null;
   else {
     if(!ext.isEmpty()){
-      QString extension=filename.right(filename.length()-filename.lastIndexOf('.')-1);
-      extension= extension.toUpper();    
-      if (extension != ext.toUpper()) {
-	filename = filename.left(filename.lastIndexOf('.')+1);
-	filename += ext;
-      }
-    }
-    if(QFile::exists(filename)){
-      if(QMessageBox::warning(parent,tr("File Exists"),filename + tr(" already exists. Overwrite ?"),
-			      tr("Yes"),tr("No"))!=0)
-	return QString::null;
+        QString extension=QFileInfo(filename).suffix();
+        extension= extension.toUpper();    
+        if (extension != ext.toUpper())
+            filename = QFileInfo(filename).completeBaseName()+'.'+ext;
     }
     return filename;
   }

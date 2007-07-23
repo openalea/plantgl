@@ -114,7 +114,7 @@ bool Octree::isValid( ) const {
 void Octree::build()
 /////////////////////////////////////////////////////////////////////////////
 {
-    if (__method == ShapeBased) build();
+    if (__method == ShapeBased) build1();
     else build2();
 }
 

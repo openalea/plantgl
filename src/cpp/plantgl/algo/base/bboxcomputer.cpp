@@ -240,6 +240,11 @@ bool BBoxComputer::process( BezierCurve * bezierCurve ) {
   // We discretize bezierCurve
   bezierCurve->apply(__discretizer);
   ExplicitModelPtr _explicitBezier = __discretizer.getDiscretization();
+  if (!_explicitBezier) {
+      Discretizer d; // because of tesselator;
+      bezierCurve->apply(d);
+      _explicitBezier = d.getDiscretization();
+  }
   GEOM_ASSERT(_explicitBezier);
 
   // We compute the bounding box of the discretization of bezierCurve
@@ -556,6 +561,11 @@ bool BBoxComputer::process( NurbsCurve * nurbsCurve ) {
   // We first discretize the nurbs
   nurbsCurve->apply(__discretizer);
   ExplicitModelPtr _explicitNurbs = __discretizer.getDiscretization();
+  if (!_explicitNurbs) {
+      Discretizer d; // because of tesselator;
+      nurbsCurve->apply(d);
+      _explicitNurbs = d.getDiscretization();
+  }
 
    // We compute the bounding box of the discretization of nurbsCurve
   _explicitNurbs->apply(*this);
@@ -900,6 +910,11 @@ bool BBoxComputer::process( BezierCurve2D * bezierCurve ) {
   // We discretize bezierCurve
   bezierCurve->apply(__discretizer);
   ExplicitModelPtr _explicitBezier = __discretizer.getDiscretization();
+  if (!_explicitBezier) {
+      Discretizer d; // because of tesselator;
+      bezierCurve->apply(d);
+      _explicitBezier = d.getDiscretization();
+  }
   GEOM_ASSERT(_explicitBezier);
 
   // We compute the bounding box of the discretization of bezierCurve
@@ -941,6 +956,11 @@ bool BBoxComputer::process( NurbsCurve2D * nurbsCurve ) {
   // We first discretize the nurbs
   nurbsCurve->apply(__discretizer);
   ExplicitModelPtr _explicitNurbs = __discretizer.getDiscretization();
+  if (!_explicitNurbs) {
+      Discretizer d; // because of tesselator;
+      nurbsCurve->apply(d);
+      _explicitNurbs = d.getDiscretization();
+  }
 
    // We compute the bounding box of the discretization of nurbsCurve
   _explicitNurbs->apply(*this);
