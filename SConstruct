@@ -52,6 +52,8 @@ if qt_version == 4:
 wrapper_env= ALEAEnvironment( wrapper_conf, options=options )
 wrapper_env.Append( CPPPATH = pj( '$build_includedir','plantgl' ) )
 #wrapper_env.Append( QT_VERSION = qt_version )
+if qt_version == 4:
+    wrapper_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
 
 # Build stage
 SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
