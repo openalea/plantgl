@@ -163,9 +163,9 @@ public:
 };
 
 /// Compute the volume of the objects in the scene \e _scene
-const real_t ALGO_API sceneVolume(const ScenePtr scene);
+real_t ALGO_API sceneVolume(const ScenePtr scene);
 
-const real_t ALGO_API sceneVolume(const Scene& scene);
+real_t ALGO_API sceneVolume(const Scene& scene);
 
 /* ------------------------------------------------------------------------- */
 

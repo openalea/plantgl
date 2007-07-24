@@ -292,9 +292,8 @@ void Turtle::rollR(real_t angle){
 	__params->left = m*__params->left;
   }
   
-  void Turtle::rollToVert(){
-	Vector3 zvec = Vector3::OZ;
-	__params->left = cross(zvec,__params->heading);
+  void Turtle::rollToVert(const Vector3& top){
+	__params->left = cross(top,__params->heading);
 	if (norm(__params->left) < GEOM_EPSILON )
 	  __params->left = Vector3(0,-1,0);
 	else{

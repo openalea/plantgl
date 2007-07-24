@@ -593,7 +593,7 @@ bool VolComputer::process(const Scene& scene){
 
 /* ----------------------------------------------------------------------- */
 
-const real_t PGL(sceneVolume)(const ScenePtr scene){
+real_t PGL(sceneVolume)(const ScenePtr scene){
   Discretizer dis;
   VolComputer _sfc(dis);
   if(_sfc.process(scene))
@@ -601,7 +601,7 @@ const real_t PGL(sceneVolume)(const ScenePtr scene){
   else return 0;
 }
 
-const real_t PGL(sceneVolume)(const Scene& scene){
+real_t PGL(sceneVolume)(const Scene& scene){
   Discretizer dis;
   VolComputer _sfc(dis);
   if(_sfc.process(scene))

@@ -147,7 +147,10 @@ public:
     virtual void rollR(real_t angle);
     
 	/// Roll such as up vector comes in the Z direction
-    virtual void rollToVert();
+    inline void rollToVert() { rollToVert(TOOLS(Vector3::OZ)); }
+    
+	/// Roll such as up vector comes in the top direction
+    virtual void rollToVert(const TOOLS(Vector3)& top);
     
 	/// set Heading and Up vectors
     virtual void setHead(const TOOLS(Vector3)& h, const TOOLS(Vector3)& u);

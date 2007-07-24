@@ -624,7 +624,7 @@ bool SurfComputer::process(const Scene& scene){
 
 /* ----------------------------------------------------------------------- */
 
-const real_t PGL(sceneSurface)(const ScenePtr scene){
+real_t PGL(sceneSurface)(const ScenePtr scene){
   Discretizer dis;
   SurfComputer _sfc(dis);
   if(_sfc.process(scene))
@@ -632,7 +632,7 @@ const real_t PGL(sceneSurface)(const ScenePtr scene){
   else return 0;
 }
 
-const real_t PGL(sceneSurface)(const Scene& scene){
+real_t PGL(sceneSurface)(const Scene& scene){
   Discretizer dis;
   SurfComputer _sfc(dis);
   if(_sfc.process(scene))

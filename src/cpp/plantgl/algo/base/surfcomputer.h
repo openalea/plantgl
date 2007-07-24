@@ -216,8 +216,8 @@ static inline real_t surface(const TOOLS(Vector3)& i, const TOOLS(Vector3)& j, c
 { return 0.5f * TOOLS(norm)( TOOLS(cross)(j-i,k-i)); }
 
 /// Compute the surface of the objects in the scene \e _scene
-const real_t ALGO_API sceneSurface(const ScenePtr scene);
-const real_t ALGO_API sceneSurface(const Scene& scene);
+real_t ALGO_API sceneSurface(const ScenePtr scene);
+real_t ALGO_API sceneSurface(const Scene& scene);
 
 /* ------------------------------------------------------------------------- */
 
