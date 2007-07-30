@@ -322,10 +322,12 @@ Polyline2D::getStride() const{
 
 Vector2 
 Polyline2D::getPointAt(real_t u) const{
+  GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
   real_t u1 = (int)u;
   if(u1 == u)return __pointList->getAt((uint32_t)u1);
-  else return ((__pointList->getAt((uint32_t)u1) * (u-u1))+(__pointList->getAt((uint32_t)(u1+1)) * ((u1+1)-u)));
+    else return ((__pointList->getAt((uint32_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint32_t)(u1+1)) * (u-u1));
 }
+
 
 /*
 ExplicitModel2DPtr

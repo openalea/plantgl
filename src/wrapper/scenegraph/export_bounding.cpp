@@ -101,9 +101,9 @@ void export_BoundingBox()
   class_< BoundingBox, BoundingBoxPtr /*, boost::noncopyable*/ >
     ("BoundingBox", init< const Vector3&, optional < const Vector3& > > 
      ( args("lowerLeft","upperRight"),
-	 "BoundingBox(Vector3 lowerLeft, Vector3 upperRight)" 
+	 "BoundingBox(Vector3 lowerLeft, Vector3 upperRight) " 
        "Constructs a BoundingBox with the 2 opposing corners lowerLeft and upperRight.") )
-    .def( "__init__", make_constructor( bbx_fromobj ) ) 
+    .def( "__init__", make_constructor( bbx_fromobj ), "BoundingBox(geometry|scene) Constructs a BoundingBox from some geometries.") 
 	.DEC_SETGET(lowerLeftCorner,BoundingBox,LowerLeftCorner,Vector3)
 	.DEC_SETGET(upperRightCorner,BoundingBox,UpperRightCorner,Vector3)
     .def("set",&BoundingBox::set,"set(lowerLeft,upperRight)")

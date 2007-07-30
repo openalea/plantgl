@@ -39,7 +39,10 @@
 
 
 #include "curve.h"
+#include <plantgl/math/util_vector.h>
+
 PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */
@@ -97,6 +100,21 @@ bool Curve2D::isASurface( ) const {
 bool Curve2D::isAVolume( ) const {
   return false;
 } 
+
+real_t Curve2D::getLength(){
+  real_t length(0);
+  real_t u0 = getFirstKnot();
+  real_t u1 = getLastKnot();
+  real_t deltau = (u1 - u0)/getStride();
+  Vector2 p1 = getPointAt(u0);
+  Vector2 p2;
+  for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
+    p2 = getPointAt(u);
+    length += norm(p2 - p1);
+    p1 = p2;
+  }
+  return length;
+}
 
 /* ----------------------------------------------------------------------- */
 

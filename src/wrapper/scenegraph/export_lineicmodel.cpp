@@ -46,6 +46,11 @@ void export_PlanarModel()
 void export_Curve2D()
 {
   class_<Curve2D,Curve2DPtr, bases<PlanarModel>, boost::noncopyable>( "Curve2D", no_init )
+    .add_property( "firstKnot", &Curve2D::getFirstKnot )
+    .add_property( "lastKnot", &Curve2D::getLastKnot )
+    .def( "getStride", &Curve2D::getStride )
+    .def( "getPointAt", &Curve2D::getPointAt, args("u") )
+    .def( "getLength", &LineicModel::getLength )
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();

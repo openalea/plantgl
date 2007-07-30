@@ -100,11 +100,17 @@ void export_Swung()
   
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >
     ("Swung",no_init)
-    .def( "__init__", make_constructor( make_swung ),(const char *)"Swung([Curve2D],list angles [,slices,ccw,degree,stride])"  ) 
-    .def( "__init__", make_constructor( make_swung5 ) ) 
-    .def( "__init__", make_constructor( make_swung4 ) ) 
-    .def( "__init__", make_constructor( make_swung3 ) ) 
-    .def( "__init__", make_constructor( make_swung2 ) ) 
+    .def( "__init__", make_constructor( make_swung , default_call_policies(), 
+                                        args("profiles","angles","slices","ccw","degree","stride")),
+                     (const char *)"Swung([Curve2D] profiles,list angles [,slices,ccw,degree,stride])" ) 
+    .def( "__init__", make_constructor( make_swung5, default_call_policies(), 
+                                        args("profiles","angles","slices","ccw","degree") )) 
+    .def( "__init__", make_constructor( make_swung4, default_call_policies(), 
+                                        args("profiles","angles","slices","ccw") ) ) 
+    .def( "__init__", make_constructor( make_swung3, default_call_policies(), 
+                                        args("profiles","angles","slices") ) ) 
+    .def( "__init__", make_constructor( make_swung2, default_call_policies(), 
+                                        args("profiles","angles") )) 
 	.DEC_SETGET_WD(ccw,      Swung,CCW,             bool)
 	.DEC_SETGET_WD(degree,   Swung,Degree,          uint32_t)
 	.DEC_SETGET_WD(stride,   Swung,Stride,          uint32_t)

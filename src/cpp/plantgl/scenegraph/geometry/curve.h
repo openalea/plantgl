@@ -152,6 +152,9 @@ public:
 
   virtual bool isAVolume( ) const;
 
+  /// Return the length of the lineic model.
+  virtual real_t getLength();
+
 };
 
 /// Curve2D Pointer
