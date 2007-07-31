@@ -4,17 +4,22 @@
 def install():
     
     from openalea.deploy.shortcut import create_win_shortcut, set_win_reg, create_fd_shortcut
-    import sys
+    import sys, os
     from os.path import join as pj
-    from openalea.deploy import get_base_dir
 
-    bin_dir = pj(get_base_dir("plantgl"), "bin")
+    # Get the location of the installed egg
+    from pkg_resources import Environment
+    env = Environment()
+    base_dir = env['plantgl'][0].location
+
+    bin_dir = pj(base_dir, "bin")
+    print bin_dir
     
     create_win_shortcut(name = 'PlantGL Viewer',
                         target = pj(bin_dir, "pglviewer.exe",),
                         arguments = "",
                         startin = "", 
-                        icon = pj(bin_dir, "pglviewer.exe",),,
+                        icon = pj(bin_dir, "pglviewer.exe",),
                         description = "PlantGL Viewer",
                         menugroup = "OpenAlea")
         
