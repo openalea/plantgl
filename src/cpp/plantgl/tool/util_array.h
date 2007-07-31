@@ -290,6 +290,9 @@ public:
 	  { res[_j] = *_i; _j++; }
 	return res;
   }
+  void reverse( ) {
+      std::reverse(__A.begin(),__A.end());
+  }
 
 protected:
 

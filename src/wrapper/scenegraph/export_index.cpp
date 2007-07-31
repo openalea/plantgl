@@ -138,7 +138,7 @@ void export_index()
     .def( "__init__", make_constructor( ind_fromvalue3 ), "Index(int i, int j, int k)"  )
     .def( "__init__", make_constructor( ind_fromvalue4 ), "Index(int i, int j, int k, int l)"  )
     .def( "__init__", make_constructor( ind_fromvalue5 ), "Index(int i, int j, int k, int l, int m)"  )
-    EXPORT_ARRAY_FUNC( ind )
+    EXPORT_ARRAY_FUNC( Index, ind )
     ;
   index_from_tuple();
 

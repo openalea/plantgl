@@ -140,8 +140,8 @@ struct PREFIX##_pickle_suite : boost::python::pickle_suite \
 }; \
 
 
-#define EXPORT_ARRAY_FUNC( PREFIX ) \
-    .def( "__getitem__",  PREFIX##_getitem   ) \
+#define EXPORT_ARRAY_FUNC( ARRAY, PREFIX ) \
+    .def( "__getitem__",  PREFIX##_getitem  ) \
     .def( "__getslice__", PREFIX##_getslice , return_value_policy<manage_new_object>() ) \
     .def( "__setitem__",  PREFIX##_setitem   ) \
     .def( "__delitem__",  PREFIX##_delitem   ) \
@@ -153,6 +153,7 @@ struct PREFIX##_pickle_suite : boost::python::pickle_suite \
     .def( "__len__",      PREFIX##_len ) \
     .def( "__repr__",     PREFIX##_str ) \
     .def( "__str__",      PREFIX##_str ) \
+    .def( "reverse",      &ARRAY::reverse ) \
 	.enable_pickling() \
     
 
@@ -161,7 +162,7 @@ struct PREFIX##_pickle_suite : boost::python::pickle_suite \
 #define EXPORT_ARRAY( PREFIX, ARRAY, STRING )\
 class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") = 0) ) \
     .def( "__init__", make_constructor( extract_##PREFIX##_from_list ), STRING ) \
-	EXPORT_ARRAY_FUNC( PREFIX ) \
+	EXPORT_ARRAY_FUNC( ARRAY, PREFIX ) \
 
 #define EXPORT_CONVERTER( PREFIX )\
 	PREFIX##_from_list(); \

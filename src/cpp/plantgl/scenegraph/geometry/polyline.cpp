@@ -192,6 +192,18 @@ Polyline::copy() const
   return SceneObjectPtr(ptr);
 }
 
+std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
+    GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+    int u_index = int(u);
+    std::pair<PolylinePtr,PolylinePtr> result;
+    result.first = new Polyline(new Point3Array(__pointList->getBegin(),__pointList->getBegin()+u_index));
+    result.second = new Polyline(new Point3Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()));
+    Vector3 mid_point = getPointAt(u);
+    result.first->getPointList()->pushBack(mid_point);
+    result.second->getPointList()->insert(result.second->getPointList()->getBegin(),mid_point);
+    return result;
+}
+
 /* ----------------------------------------------------------------------- */
 
 
@@ -328,6 +340,26 @@ Polyline2D::getPointAt(real_t u) const{
     else return ((__pointList->getAt((uint32_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint32_t)(u1+1)) * (u-u1));
 }
 
+Vector2 Polyline2D::getTangentAt(real_t u) const{
+    GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+    real_t u1 = (int)u;
+    if(u <= 0) return (__pointList->getAt(1)-__pointList->getAt(0));
+    else if(u >= (__pointList->getSize()-1)) return (__pointList->getAt(__pointList->getSize()-1)-__pointList->getAt(__pointList->getSize()-2));
+    else if(u1 == u){
+        Vector2 _a = (__pointList->getAt((uint32_t)u1)-__pointList->getAt((uint32_t)(u1-1)));
+        Vector2 _b = (__pointList->getAt((uint32_t)u1+1)-__pointList->getAt((uint32_t)u1));
+        _a.normalize();
+        _b.normalize();
+        return (_a+_b);
+    }
+    else return (__pointList->getAt((uint32_t)(u1+1))-(__pointList->getAt((uint32_t)u1)));
+}
+
+Vector2 Polyline2D::getNormalAt(real_t u) const{
+    GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+    Vector2 t  = getTangentAt(u);
+    return Vector2(-t.y(),t.x());
+}
 
 /*
 ExplicitModel2DPtr
@@ -336,6 +368,18 @@ Polyline2D::transform( const Transformation2DPtr& transformation ) const {
   return ExplicitModel2DPtr(new Polyline2D(transformation->transform(__pointList)));
 }
 */
+
+std::pair<Polyline2DPtr,Polyline2DPtr> Polyline2D::split(real_t u) const {
+    GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+    int u_index = int(u);
+    std::pair<Polyline2DPtr,Polyline2DPtr> result;
+    result.first = new Polyline2D(new Point2Array(__pointList->getBegin(),__pointList->getBegin()+u_index));
+    result.second = new Polyline2D(new Point2Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()));
+    Vector2 mid_point = getPointAt(u);
+    result.first->getPointList()->pushBack(mid_point);
+    result.second->getPointList()->insert(result.second->getPointList()->getBegin(),mid_point);
+    return result;
+}
 
 /* ----------------------------------------------------------------------- */
 

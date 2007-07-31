@@ -60,6 +60,10 @@ typedef RCPtr<Point2Array> Point2ArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
+class Polyline;
+/// Polyline Pointer
+typedef RCPtr<Polyline> PolylinePtr;
+
 /**
    \class Polyline
    \brief A polyline represented by an array of points 3D.
@@ -138,13 +142,17 @@ public:
   virtual ExplicitModelPtr
   transform( const Transformation3DPtr& transformation ) const;
 
+  std::pair<PolylinePtr,PolylinePtr> split(real_t u) const ;
+
 }; // Polyline
 
-/// Polyline Pointer
-typedef RCPtr<Polyline> PolylinePtr;
 
 
 /* ----------------------------------------------------------------------- */
+
+class Polyline2D;
+/// Polyline2D Pointer
+typedef RCPtr<Polyline2D> Polyline2DPtr;
 
 /**
    \class Polyline2D
@@ -228,6 +236,10 @@ public:
 
   virtual TOOLS(Vector2) getPointAt(real_t u) const;
 
+  virtual TOOLS(Vector2) getTangentAt(real_t u) const;
+
+  virtual TOOLS(Vector2) getNormalAt(real_t u) const;
+
   virtual bool isACurve( ) const {
     return true;
   }
@@ -242,6 +254,8 @@ public:
 
   virtual bool isValid( ) const;
 
+  std::pair<Polyline2DPtr,Polyline2DPtr> split(real_t u) const ;
+
 /*  virtual ExplicitModel2DPtr
   transform( const Transformation2DPtr& transformation ) const;
 */
@@ -252,8 +266,6 @@ protected:
 
 }; // Polyline2D
 
-/// Polyline2D Pointer
-typedef RCPtr<Polyline2D> Polyline2DPtr;
 
 
 /* ----------------------------------------------------------------------- */

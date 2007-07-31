@@ -17,12 +17,19 @@ using namespace boost::python;
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
+template<class T>
+object py_poly_plit(T * polyline, real_t u){
+    std::pair<RCPtr<T>,RCPtr<T> > res = polyline->split(u);
+    return make_tuple(res.first,res.second);
+}
+
 DEF_POINTEE( Polyline )
 
+/*
 PolylinePtr gpl_fromlist( boost::python::object l ) 
 { 
-  return PolylinePtr(new Polyline(extract_pgllist<Point3Array>(l)()));
-}
+  return PolylinePtr(new Polyline(extract_pgllist<Point3Array>(l).toRCPtr()));
+}*/
 
 Vector3 gpl_getitem( Polyline* p, size_t pos )
 {
@@ -68,12 +75,13 @@ void export_Polyline()
 {
   class_<Polyline, PolylinePtr, bases<ExplicitModel, LineicModel>, boost::noncopyable>( "Polyline", 
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("Polyline(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
-    .def( "__init__", make_constructor( gpl_fromlist ) ) 
+    // .def( "__init__", make_constructor( gpl_fromlist ) ) 
     .def( "copy", &Polyline::copy )
     .def( "__getitem__", gpl_getitem /*, return_internal_reference<1>() */)
     .def( "__setitem__", gpl_setitem )
     .def( "__len__", gpl_size )
     .def( "__repr__", gpl_repr )
+    .def( "split", &py_poly_plit<Polyline>, arg("u") )
     ;
   implicitly_convertible<PolylinePtr, ExplicitModelPtr>();
   implicitly_convertible<PolylinePtr, LineicModelPtr>();
@@ -81,10 +89,11 @@ void export_Polyline()
 
 DEF_POINTEE( Polyline2D )
 
+/*
 Polyline2DPtr gpl2_fromlist( boost::python::object l ) 
 { 
   return Polyline2DPtr(new Polyline2D(extract_pgllist<Point2Array>(l)()));
-}
+}*/
 
 Vector2 gpl2_getitem( Polyline2D* p, size_t pos )
 {
@@ -131,12 +140,15 @@ SETGET(Polyline2D,PointList,Point2ArrayPtr);
 void export_Polyline2D()
 {
   class_<Polyline2D, Polyline2DPtr, bases<Curve2D>, boost::noncopyable>( "Polyline2D", init<Point2ArrayPtr>() )
-    .def( "__init__", make_constructor( gpl2_fromlist ) ) 
+    // .def( "__init__", make_constructor( gpl2_fromlist ) ) 
     .def( "copy", &Polyline2D::copy )
     .def( "__getitem__", gpl2_getitem /*, return_internal_reference<1>()*/ )
     .def( "__setitem__", gpl2_setitem )
     .def( "__len__", gpl2_size )
     .def( "__repr__", gpl2_repr )
+    .def( "getTangentAt", &Polyline2D::getTangentAt, args("u") )
+    .def( "getNormalAt", &Polyline2D::getNormalAt, args("u") )
+    .def( "split", &py_poly_plit<Polyline2D>, arg("u") )
 	.DEC_SETGET(pointList,Polyline2D,PointList,Point2ArrayPtr)
     ;
   implicitly_convertible<Polyline2DPtr, Curve2DPtr>();

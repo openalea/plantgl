@@ -49,9 +49,13 @@ struct extract_pgllist {
 	extract_pgllist(boost::python::object _pylist):pylist(_pylist) {}
 	boost::python::object pylist;
 
-	T * extract() const {
+	RCPtr<T> extract_rcptr() const {
 		boost::python::extract<T *> direct_extractor(pylist);
-		if (direct_extractor.check()) return direct_extractor();
+		if (direct_extractor.check()) return RCPtr<T>(direct_extractor());
+        else return RCPtr<T>(0);
+    }
+
+	T * extract_list() const {
 		T * result (new T());
 		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
@@ -64,8 +68,18 @@ struct extract_pgllist {
 		}
 		return result;
 	}
+	T * extract() const {
+        RCPtr<T> exact_list = extract_rcptr();
+        if (exact_list) return exact_list.toPtr();
+        else return extract_list();
+    }
 
-	inline RCPtr<T> toRCPtr() const { return RCPtr<T>(extract()); }
+	inline RCPtr<T> toRCPtr() const {
+        RCPtr<T> exact_list = extract_rcptr();
+        if (exact_list) return exact_list.toPtr();
+        else return RCPtr<T>(extract_list()); 
+    }
+ 
 	inline T * operator()() const { return extract(); }
 	inline operator T * () const { return extract(); }
 	inline operator RCPtr<T> () const { return toRCPtr(); }
