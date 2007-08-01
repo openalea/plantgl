@@ -50,7 +50,7 @@ struct PREFIX##_ptr_from_list { \
 }; \
 
 #define EXPORT_FUNCTION2( PREFIX, T, ARRAY) \
-T& PREFIX##_getitem( ARRAY * array, int pos ) \
+T PREFIX##_getitem( ARRAY * array, int pos ) \
 { \
   if( pos < 0 && pos >= -array->getSize() ) return array->getAt( array->getSize() + pos );\
   else if( pos < array->getSize() ) return array->getAt( pos );\
@@ -141,7 +141,7 @@ struct PREFIX##_pickle_suite : boost::python::pickle_suite \
 
 
 #define EXPORT_ARRAY_FUNC( ARRAY, PREFIX ) \
-    .def( "__getitem__",  PREFIX##_getitem, return_internal_reference<>()  ) \
+    .def( "__getitem__",  PREFIX##_getitem ) \
     .def( "__getslice__", PREFIX##_getslice , return_value_policy<manage_new_object>() ) \
     .def( "__setitem__",  PREFIX##_setitem   ) \
     .def( "__delitem__",  PREFIX##_delitem   ) \
