@@ -40,7 +40,7 @@ blue = pgl.Material( ambient=pgl.Color3(0,0,210),
                  transparency=0  )
 
 black = pgl.Material( ambient=pgl.Color3(0,0,0),
-               name="White",
+               name="Black",
                diffuse=1,
                specular=pgl.Color3(40,40,40),
                emission=pgl.Color3(0,0,0),

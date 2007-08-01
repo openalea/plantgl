@@ -208,7 +208,7 @@ def rotateGrid( scene, delta=0, phi=0, psi=0 ):
 
 ########################Inside a scene #########################################
 def center(pointList):
-  """centre d'une liste de points"""
+  """Return the center of a point list."""
   v= pgl.math.Vector3(0,0,0)
   for pt in pointList:
     v += pt
@@ -216,7 +216,7 @@ def center(pointList):
   return v
 
 def pointsByShape(scene): #aka ptdiscretize
-  """renvoie un dictionnaire Shape_id:[liste de points]"""
+  """Return a dict Shape_id:[point list]"""
   d = pgl.algo.Discretizer()
   pbs = {}
   for i in scene:
@@ -227,14 +227,14 @@ def pointsByShape(scene): #aka ptdiscretize
   return pbs
 
 def centerByShape(pointsbyshape):#aka centers
-  """dictionnaire id:centre"""
+  """dict id:centre"""
   cbs = {}
   for id, points in pointsbyshape.iteritems():
     cbs[id] = center(points)
   return cbs
 
 def ptUnion(pointsbyshape,idList=None):#aka ptsum
-  """union des points de la liste ids"""
+  """Union of points of the list ids"""
   union = pgl.scenegraph.Point3Array()
   if idList is None:
     idList = pointsbyshape.keys()
@@ -268,7 +268,7 @@ def ptsHull( ptsList, id = 0 ):
   return shape
 
 def oneScHullScene(scgroup,pointsbyshape):#aka hullscene
-  """cree les cvxHull des groupes de scgroup"""
+  """ Build convex hull from scgroup groups. """
   sc = pgl.scenegraph.Scene()
   m = color(20,150,20, trans=True)
   for ids in scgroup:
@@ -285,7 +285,7 @@ def allScHullSceneList(allsclist,pointsbyshape):#aka hullscenes
   return sclist
 
 def explorehulls(hullsList,sc = None):
-  """visite des scenes echelle par echelle"""
+  """ Traverse scenes scale by scale. """
   i = 0
   ok = True
   while ok:
@@ -384,7 +384,9 @@ def voxelize( filename, gridSize, density=True ):
   #sc = pgl.scenegraph.Scene()
   for i in range( len( pts ) ):
     pt = pts[ i ]
-    vect = pgl.math.Vector3( origin_center.x + ( pt[ 0 ] * step.x ) , origin_center.y + ( pt[ 1 ] * step.y ) ,origin_center.z + ( pt[ 2 ] * step.z ) )
+    vect = pgl.math.Vector3( origin_center.x + ( pt[ 0 ] * step.x ) , 
+                             origin_center.y + ( pt[ 1 ] * step.y ) ,
+                             origin_center.z + ( pt[ 2 ] * step.z ) )
     geometry = pgl.scenegraph.Translated( vect, vox )
     if( density ):
       if ( mass[ i ] < quants[ 0 ] ) :
@@ -403,7 +405,8 @@ def voxelize( filename, gridSize, density=True ):
   
 def scene2grid( scene, tgl_list, gridSize ):
   """
-  Convert a scene into a matrix-grid where non-zero values are the coresponding surface icluded in the coresponding voxel
+  Convert a scene into a matrix-grid.
+  Non-zero values are the coresponding surface icluded in the coresponding voxel.
   """
   #tgl_list = surfPerTriangle( scene )
   #d=pgl.algo.Discretizer()
@@ -418,7 +421,8 @@ def scene2grid( scene, tgl_list, gridSize ):
   #step = bbox.getSize()*2.01 / ( gridSize )
   step_radius = ( step[ 0 ]*step[ 1 ]*step[ 2 ] )**( 1/3. )
   """
-  gridSize is a radius vector whereas gridSize is the voxel number desired per dimension, hence the gridSize must be *2
+  gridSize is a radius vector whereas gridSize is the voxel number desired per dimension, 
+  hence the gridSize must be *2
   """
   print "Bbox size : ", bbox.getSize()*2
   print "Step : ", step, "    gridSize : ", gridSize
@@ -475,7 +479,7 @@ def toPglScene( ptList, mass=None, radius=0.5 ):
   return scene
 
 def shapeProjection( scene, dir ):
-  """return the area of the scene projected along the direction dir"""
+  """ Return the area of the scene projected along the direction dir. """
   viewer = pgl.gui.Viewer
   camera = viewer.camera
     
