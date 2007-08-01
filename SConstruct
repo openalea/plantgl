@@ -19,8 +19,8 @@ options.Add(EnumOption('QT_VERSION','Qt major version to use','4',allowed_values
 qt_env = Environment(options=options)
 qt_version = int(qt_env['QT_VERSION'])
 
-wrapper_tools = ['boost_python', 'alea', 'AleaDependencies']
-cpp_tools = ['alea', 'flex', 'bison','opengl','readline', 'install', 'qhull', 'AleaDependencies']
+wrapper_tools = ['boost_python', 'alea']
+cpp_tools = ['alea', 'flex', 'bison','opengl','readline', 'install', 'qhull']
 if qt_version == 3:
     qt_tools = ['qt']
 else:

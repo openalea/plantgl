@@ -28,6 +28,13 @@ license= 'Cecill-C'
 # Scons build directory
 build_prefix= "build-scons"
 
+if("win" in sys.platform):
+    install_requires = ["boostpython", "qhull", "qt4"]
+    setup_requires = install_requires + ["bisonflex"]
+else:
+    install_requires = []
+    setup_requires = []
+    
 
 # Main setup
 setup(
@@ -49,6 +56,7 @@ setup(
     namespace_packages = ["openalea"],
     create_namespaces = True,
 
+    py_modules = ["pgl_postinstall",],
     # pure python  packages
     packages= [ pkg_name, pkg_name+'.math', pkg_name+'.scenegraph', pkg_name+'.algo',
                 pkg_name+'.gui', pkg_name+'.gui3', pkg_name+'.wralea', pkg_name+'.ext',
@@ -76,19 +84,17 @@ setup(
     lib_dirs = {'lib' : pj(build_prefix, 'lib'),},
     bin_dirs = {'bin':  pj(build_prefix, 'bin'),},
     inc_dirs = { 'include' : pj(build_prefix, 'include') },
-    postinstall_scripts = ['openalea.plantgl.postinstall',],
+    postinstall_scripts = ['pgl_postinstall',],
 
 
     # Scripts
     #entry_points = { 'gui_scripts': [ 'pglviewer = openalea.plantgl:start_viewer',]},
  
     # Dependencies
-    setup_requires = ['openalea.deploy'],
+    setup_requires = setup_requires + ['openalea.deploy'],
+    install_requires = install_requires,
     dependency_links = ['http://openalea.gforge.inria.fr/pi'],
-    install_requires = [],
-
-
-    )
+   )
 
 
 
