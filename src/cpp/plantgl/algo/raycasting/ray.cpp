@@ -37,6 +37,7 @@
 #include "ray.h"
 #include <plantgl/math/util_polymath.h>
 #include <plantgl/math/util_math.h>
+#include <plantgl/math/util_matrix.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -87,10 +88,35 @@ Ray::intersect( const Vector2& point ) const
 }
 
 
+int Ray::intersect( const Ray& ray, TOOLS(Vector3)& intersection, real_t& t ) const
+{
+    Vector3 _deltaOrig(ray.getOrigin()-__origin);
+    Vector3 _crossDirs = cross(__direction,ray.getDirection());
+    real_t ncd = norm(_crossDirs);
+    if (ncd < GEOM_EPSILON){
+        if (intersect(ray.getOrigin())) return 2;
+        else return 0;
+    }
+    Matrix3 m(_deltaOrig,ray.getDirection(),_crossDirs);
+    t = m.det() / (ncd * ncd);
+    intersection = getAt(t);
+    if (ray.intersect(intersection)) return 1;
+    else return 0;
+}
+
 int
 Ray::intersect( const Vector3& point1, const Vector3& point2, Vector3& intersection ) const
 {
-  Vector3 _deltaOrig(point1-__origin);
+  Vector3 dir(point2-point1);
+  real_t ndir = dir.normalize();
+  real_t t;
+  int res = intersect(Ray(point1,dir),intersection,t);
+  if (res == 1){
+      if ( t <= ndir) return 1;
+      else return 0;
+  }
+  else return res;
+ /* Vector3 _deltaOrig(point1-__origin);
   Vector3 d2 = point2 - point1;
   real_t a =  d2.y()*__direction.x() - d2.x()*__direction.y();
   if( fabs(a) < GEOM_EPSILON ) 
@@ -106,7 +132,7 @@ Ray::intersect( const Vector3& point1, const Vector3& point2, Vector3& intersect
   if( fabs(alpha * __direction.z() - beta * d2.z() - _deltaOrig.z()) > GEOM_EPSILON ) 
     return 0;
   intersection = __origin + __direction * alpha;
-  return 1;
+  return 1; */
 }
 
 

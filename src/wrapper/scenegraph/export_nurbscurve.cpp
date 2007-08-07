@@ -19,11 +19,6 @@ TOOLS_USING_NAMESPACE
 DEF_POINTEE( NurbsCurve )
 DEF_POINTEE( NurbsCurve2D )
 
-SETGET(NurbsCurve,Degree,uint32_t);
-SETGET(NurbsCurve2D,Degree,uint32_t);
-SETGET(NurbsCurve,KnotList,RealArrayPtr);
-SETGET(NurbsCurve2D,KnotList,RealArrayPtr);
-
 
 
 std::string nc_repr( NurbsCurve* p )
@@ -101,8 +96,8 @@ void export_NurbsCurve()
      .def( "fit", nurbs_fit3, args("points","degree","nbctrlpoints") )
      .def( "fit", nurbs_fit4, args("points") )
 	 .staticmethod("fit")
-     .DEC_SETGET_WD(degree,NurbsCurve,Degree,uint32_t)
-     .DEC_SETGET_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
+     .DEC_BT_PROPERTY_WD(degree,NurbsCurve,Degree,uint32_t)
+     .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
     ;
 
@@ -223,8 +218,8 @@ void export_NurbsCurve2D()
      .def( "fit", nurbs2_fit3, args("points") )
      .def( "fit", nurbs2_fit4, args("points","degree","nbctrlpoints") )
 	 .staticmethod("fit")
-     .DEC_SETGET_WD(degree,NurbsCurve2D,Degree,uint32_t)
-     .DEC_SETGET_WD(knotList,NurbsCurve2D,KnotList,RealArrayPtr)
+     .DEC_BT_PROPERTY_WD(degree,NurbsCurve2D,Degree,uint32_t)
+     .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve2D,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve2D::setKnotListToDefault)
     ;
 

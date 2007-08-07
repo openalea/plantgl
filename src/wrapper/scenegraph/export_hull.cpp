@@ -57,20 +57,6 @@ DEF_POINTEE(Hull)
 DEF_POINTEE(ExtrudedHull)
 
 
-SETGET(AsymmetricHull,NegXRadius,float);
-SETGET(AsymmetricHull,PosXRadius,float);
-SETGET(AsymmetricHull,NegYRadius,float);
-SETGET(AsymmetricHull,PosYRadius,float);
-SETGET(AsymmetricHull,NegXHeight,float);
-SETGET(AsymmetricHull,PosXHeight,float);
-SETGET(AsymmetricHull,NegYHeight,float);
-SETGET(AsymmetricHull,PosYHeight,float);
-SETGET(AsymmetricHull,Bottom,Vector3);
-SETGET(AsymmetricHull,Top,Vector3);
-SETGET(AsymmetricHull,BottomShape,float);
-SETGET(AsymmetricHull,TopShape,float);
-SETGET(AsymmetricHull,Slices,uchar_t);
-SETGET(AsymmetricHull,Stacks,uchar_t);
 
 void export_AsymmetricHull()
 {
@@ -85,28 +71,24 @@ void export_AsymmetricHull()
             "AsymmetricHull([negXRadius,posXRadius,negYRadius,posYRadius,"
 	    "negXHeight,posXHeight,negYHeight,posYHeight,"
             "bottom, top, bottomShape, topShape, slices, stacks])") )
-		.DEC_SETGET_WD(negXRadius,AsymmetricHull,NegXRadius,float)
-		.DEC_SETGET_WD(posXRadius,AsymmetricHull,PosXRadius,float)
-		.DEC_SETGET_WD(negYRadius,AsymmetricHull,NegYRadius,float)
-		.DEC_SETGET_WD(posYRadius,AsymmetricHull,PosYRadius,float)
-		.DEC_SETGET_WD(negXHeight,AsymmetricHull,NegXHeight,float)
-		.DEC_SETGET_WD(posXHeight,AsymmetricHull,PosXHeight,float)
-		.DEC_SETGET_WD(negYHeight,AsymmetricHull,NegYHeight,float)
-		.DEC_SETGET_WD(posYHeight,AsymmetricHull,PosYHeight,float)
-		.DEC_SETGET_WD(bottom,AsymmetricHull,Bottom,Vector3)
-		.DEC_SETGET_WD(top, AsymmetricHull,Top,Vector3)
-		.DEC_SETGET_WD(bottomShape,AsymmetricHull,BottomShape,float)
-		.DEC_SETGET_WD(topShape,AsymmetricHull,TopShape,float)
-		.DEC_SETGET_WD(slices,AsymmetricHull,Slices,uchar_t)
-		.DEC_SETGET_WD(stacks,AsymmetricHull,Stacks,uchar_t)
+		.DEC_BT_PROPERTY_WD(negXRadius,AsymmetricHull,NegXRadius,float)
+		.DEC_BT_PROPERTY_WD(posXRadius,AsymmetricHull,PosXRadius,float)
+		.DEC_BT_PROPERTY_WD(negYRadius,AsymmetricHull,NegYRadius,float)
+		.DEC_BT_PROPERTY_WD(posYRadius,AsymmetricHull,PosYRadius,float)
+		.DEC_BT_PROPERTY_WD(negXHeight,AsymmetricHull,NegXHeight,float)
+		.DEC_BT_PROPERTY_WD(posXHeight,AsymmetricHull,PosXHeight,float)
+		.DEC_BT_PROPERTY_WD(negYHeight,AsymmetricHull,NegYHeight,float)
+		.DEC_BT_PROPERTY_WD(posYHeight,AsymmetricHull,PosYHeight,float)
+		.DEC_CT_PROPERTY_WD(bottom,AsymmetricHull,Bottom,Vector3)
+		.DEC_CT_PROPERTY_WD(top, AsymmetricHull,Top,Vector3)
+		.DEC_BT_PROPERTY_WD(bottomShape,AsymmetricHull,BottomShape,float)
+		.DEC_BT_PROPERTY_WD(topShape,AsymmetricHull,TopShape,float)
+		.DEC_BT_PROPERTY_WD(slices,AsymmetricHull,Slices,uchar_t)
+		.DEC_BT_PROPERTY_WD(stacks,AsymmetricHull,Stacks,uchar_t)
 	;
 
   implicitly_convertible<AsymmetricHullPtr,HullPtr >();
 }
-
-SETGET(ExtrudedHull,Horizontal,Curve2DPtr);
-SETGET(ExtrudedHull,Vertical,Curve2DPtr);
-SETGET(ExtrudedHull,CCW,bool);
 
 void export_ExtrudedHull()
 {
@@ -114,9 +96,9 @@ void export_ExtrudedHull()
     ("ExtrudedHull",init <Curve2DPtr, Curve2DPtr, optional< bool > >
      ("ExtrudedHull(vertical,horizontal)" "Constructs a ExtrudedHull with the profiles horizontal and vertical. "))
     .def("copy",&ExtrudedHull::copy)
-	.DEC_SETGET(horizontal,ExtrudedHull,Horizontal,Curve2DPtr)
-	.DEC_SETGET(vertical,ExtrudedHull,Vertical,Curve2DPtr)
-	.DEC_SETGET_WD(ccw,ExtrudedHull,CCW,bool)
+	.DEC_PTR_PROPERTY(horizontal,ExtrudedHull,Horizontal,Curve2DPtr)
+	.DEC_PTR_PROPERTY(vertical,ExtrudedHull,Vertical,Curve2DPtr)
+	.DEC_BT_PROPERTY_WD(ccw,ExtrudedHull,CCW,bool)
     ;
   implicitly_convertible<ExtrudedHullPtr,HullPtr >();
 

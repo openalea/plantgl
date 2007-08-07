@@ -52,14 +52,6 @@ using namespace std;
 DEF_POINTEE(Material)
 DEF_POINTEE(ImageTexture)
 
-SETGET(Material,Ambient,Color3)
-SETGET(Material,Diffuse,real_t)
-SETGET(Material,Specular,Color3)
-SETGET(Material,Emission,Color3)
-SETGET(Material,Shininess,real_t)
-SETGET(Material,Transparency,real_t)
-
-
 
 #define COL3PRINT(c) "Color3(" << (int)c.getRed() << ',' << (int)c.getGreen() << ',' << (int)c.getBlue() << ')'
 
@@ -112,22 +104,17 @@ void export_Material()
 
   .def( "__str__", mat_str )
   .def( "__repr__", mat_str )
-  .DEC_SETGET_WD(ambient,Material,Ambient,Color3)
-  .DEC_SETGET_WD(diffuse,Material,Diffuse,real_t)
-  .DEC_SETGET_WD(specular,Material,Specular,Color3)
-  .DEC_SETGET_WD(emission,Material,Emission,Color3)
-  .DEC_SETGET_WD(shininess,Material,Shininess,real_t)
-  .DEC_SETGET_WD(transparency,Material,Transparency,real_t)
+  .DEC_CT_PROPERTY_WD(ambient,Material,Ambient,Color3)
+  .DEC_BT_PROPERTY_WD(diffuse,Material,Diffuse,real_t)
+  .DEC_CT_PROPERTY_WD(specular,Material,Specular,Color3)
+  .DEC_CT_PROPERTY_WD(emission,Material,Emission,Color3)
+  .DEC_BT_PROPERTY_WD(shininess,Material,Shininess,real_t)
+  .DEC_BT_PROPERTY_WD(transparency,Material,Transparency,real_t)
   .def_pickle(mat_pickle_suite());
     ;
 
    implicitly_convertible<MaterialPtr, AppearancePtr >();
 }
-
-void it_set( ImageTexture* it, const std::string& fn )
-{ it->getFilename()= fn; }
-std::string it_get( ImageTexture* it )
-{ return it->getFilename(); }
 
 void export_ImageTexture()
 {
@@ -136,7 +123,7 @@ void export_ImageTexture()
 	.def(init< string, optional< const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
   	 (args("filename","ambient","diffuse","specular","emission","shininess","transparency"),
 	  "ImageTexture(filename [,ambient, diffuse, specular, emission, shininess, transparency])"))
-    .add_property("filename", it_get, it_set)
+      .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
     ;
 
   implicitly_convertible<ImageTexturePtr, MaterialPtr >();

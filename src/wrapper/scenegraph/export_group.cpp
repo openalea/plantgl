@@ -76,8 +76,6 @@ void gg_setitem( Group * array, size_t i, GeometryPtr v )
 size_t gg_len( Group * a )
 {  return a->getGeometryListSize();}
 
-SETGET(Group,Skeleton,PolylinePtr);
-
 void export_Group()
 {
   
@@ -87,7 +85,7 @@ void export_Group()
     .def( "__getitem__", gg_getitem /*, return_internal_reference<1>()*/ )
     .def( "__setitem__", gg_setitem )
     .def( "__len__", gg_len )
-	.DEC_SETGET_WD(skeleton,Group,Skeleton,PolylinePtr);
+	.DEC_PTR_PROPERTY_WD(skeleton,Group,Skeleton,PolylinePtr);
     ;
 
   implicitly_convertible< GroupPtr, GeometryPtr >();

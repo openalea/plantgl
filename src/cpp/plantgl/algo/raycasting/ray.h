@@ -102,7 +102,11 @@ class ALGO_API Ray  {
     return __direction ;
   }
     
-    
+  /// Return point \e t on the ray.
+  inline TOOLS(Vector3) getAt(const real_t t) const {
+    return __origin + __direction * t ;
+  }
+        
   /*! Intersection between \e self and \e point.
     \pre
     - \e self must be valid;
@@ -122,10 +126,24 @@ class ALGO_API Ray  {
     \post
     - \e intersection contains the intersection if returned value is 1
     \return  type of intersection.
+    \retval -1 ray is degenerate
+    \retval 0 disjoint (no intersect)
+    \retval 1 intersect in unique point \e intersection.
+    \retval 2 are equivalent
+  */
+  int intersect( const Ray& ray, TOOLS(Vector3)& intersection, real_t& t ) const;
+
+  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
+    \pre
+    - \e self must be valid;
+    - \e point1 and \e point2 must be valid.
+    \post
+    - \e intersection contains the intersection if returned value is 1
+    \return  type of intersection.
     \retval -1 segment is degenerate
     \retval 0 disjoint (no intersect)
     \retval 1 intersect in unique point \e intersection.
-    \retval 2 are in the same plane
+    \retval 2 segment is in the ray
   */
   int intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, TOOLS(Vector3)& intersection ) const;
   

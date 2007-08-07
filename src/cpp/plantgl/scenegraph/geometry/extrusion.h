@@ -218,6 +218,24 @@ class SG_API Extrusion : public ParametricModel
   /// Return the profile transformation field of \e self.
   ProfileTransformationPtr& getProfileTransformation();
     
+  /// Return the Scaling Factor List value.
+  const Point2ArrayPtr& getScale() const;
+
+  /// Return the Scaling Factor List field.
+  Point2ArrayPtr& getScale();
+
+  /// Return the Orientation Factor List value.
+  const TOOLS(RealArrayPtr)& getOrientation() const;
+
+  /// Return the Orientation Factor List field.
+  TOOLS(RealArrayPtr)& getOrientation();
+
+  /// Return the KnotList Factor List value.
+  const TOOLS(RealArrayPtr) getKnotList() const;
+
+  /// Return the KnotList Factor List field.
+  TOOLS(RealArrayPtr)& getKnotList();
+
   virtual bool isACurve( ) const;
     
   virtual bool isASurface( ) const;

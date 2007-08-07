@@ -60,26 +60,19 @@ DEF_POINTEE(AxisRotated)
 DEF_POINTEE(Oriented)
 
 
-SETGET_ANGLE(EulerRotated,Azimuth)
-SETGET_ANGLE(EulerRotated,Elevation)
-SETGET_ANGLE(EulerRotated,Roll)
-
 void export_EulerRotated()
 {
   class_< EulerRotated, EulerRotatedPtr, bases< OrthoTransformed > , boost::noncopyable >
     ("EulerRotated", init< const real_t&,const real_t&,const real_t&, const GeometryPtr& >
        (args("azimuth","elevation","roll","geometry"),
 	"EulerRotated(azimuth,elevation,roll,geometry)") )
-	.DEC_SETGET_WD(azimuth,EulerRotated,Azimuth,real_t)
-	.DEC_SETGET_WD(elevation,EulerRotated,Elevation,real_t)
-	.DEC_SETGET_WD(roll,EulerRotated,Roll,real_t)
+	.DEC_ANGLE_PROPERTY_WD(azimuth,EulerRotated,Azimuth)
+	.DEC_ANGLE_PROPERTY_WD(elevation,EulerRotated,Elevation)
+	.DEC_ANGLE_PROPERTY_WD(roll,EulerRotated,Roll)
     ;
 
   implicitly_convertible< EulerRotatedPtr, OrthoTransformedPtr >();
 }
-
-SETGET(AxisRotated,Axis,Vector3)
-SETGET_ANGLE(AxisRotated,Angle)
 
 void export_AxisRotated()
 {
@@ -87,15 +80,12 @@ void export_AxisRotated()
     ("AxisRotated", init< const Vector3&, const real_t&, const GeometryPtr& >
      (args("axis","angle","geometry"),
 	"AxisRotated( Vector3 axis, radian angle, geometry)") )
-    .DEC_SETGET_WD(axis,AxisRotated,Axis,Vector3)
-	.DEC_SETGET_WD(angle,AxisRotated,Angle,real_t)
+    .DEC_CT_PROPERTY_WD(axis,AxisRotated,Axis,Vector3)
+	.DEC_ANGLE_PROPERTY_WD(angle,AxisRotated,Angle)
     ;
 
   implicitly_convertible< AxisRotatedPtr, OrthoTransformedPtr >();
 }
-
-SETGET(Oriented,Primary,Vector3)
-SETGET(Oriented,Secondary,Vector3)
 
 void export_Oriented()
 {
@@ -103,8 +93,8 @@ void export_Oriented()
     ("Oriented", init< const Vector3&,const Vector3&,const GeometryPtr& >
        (args("primary","secondary","geometry"),
 	"Oriented(primary,secondary,geometry) with primary,secondary: Vector3" ) )
-	.DEC_SETGET_WD(primary,Oriented,Primary,Vector3)
-	.DEC_SETGET_WD(secondary,Oriented,Secondary,Vector3)
+	.DEC_CT_PROPERTY_WD(primary,Oriented,Primary,Vector3)
+	.DEC_CT_PROPERTY_WD(secondary,Oriented,Secondary,Vector3)
     ;
 
   implicitly_convertible< OrientedPtr, OrthoTransformedPtr >();
@@ -113,19 +103,15 @@ void export_Oriented()
 
 DEF_POINTEE(Tapered)
 
-SETGET(Tapered,TopRadius,real_t)
-SETGET(Tapered,BaseRadius,real_t)
-SETGET(Tapered,Primitive,PrimitivePtr)
-
 void export_Tapered()
 {
   class_< Tapered, TaperedPtr, bases< Transformed > , boost::noncopyable >
     ("Tapered", init< real_t,real_t,const PrimitivePtr & >
        (args("base","top","primitive"),
 	"Tapered(base, top, primitive)") )
-	.DEC_SETGET_WD(topRadius,Tapered,TopRadius,real_t)
-	.DEC_SETGET_WD(baseRadius,Tapered,BaseRadius,real_t)
-	.DEC_SETGET(primitive,Tapered,Primitive,PrimitivePtr)
+	.DEC_BT_PROPERTY_WD(topRadius,Tapered,TopRadius,real_t)
+	.DEC_BT_PROPERTY_WD(baseRadius,Tapered,BaseRadius,real_t)
+	.DEC_PTR_PROPERTY(primitive,Tapered,Primitive,Primitive)
     ;
 
   implicitly_convertible< TaperedPtr, TransformedPtr >();

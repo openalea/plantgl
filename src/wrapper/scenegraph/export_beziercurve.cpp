@@ -16,11 +16,6 @@ TOOLS_USING_NAMESPACE
 DEF_POINTEE( BezierCurve )
 DEF_POINTEE( BezierCurve2D )
 
-SETGET(BezierCurve,Stride,uint32_t);
-SETGET(BezierCurve2D,Stride,uint32_t);
-SETGET(BezierCurve,CtrlPointList,Point4ArrayPtr);
-SETGET(BezierCurve2D,CtrlPointList,Point3ArrayPtr);
-
 std::string gbc_repr( BezierCurve* p )
 {
   std::stringstream ss;
@@ -53,8 +48,8 @@ void export_BezierCurve()
     .def( "copy", &BezierCurve::copy )
     .def( "getPointAt", &BezierCurve::getPointAt )
     .def( "__repr__", gbc_repr )
-    .DEC_SETGET_WD(stride,BezierCurve,Stride,uint32_t)
-    .DEC_SETGET(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
+    .DEC_BT_PROPERTY_WD(stride,BezierCurve,Stride,uint32_t)
+    .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
     ;
 
   implicitly_convertible<BezierCurvePtr, ParametricModelPtr>();
@@ -93,8 +88,8 @@ void export_BezierCurve2D()
     .def( "copy", &BezierCurve2D::copy )
     .def( "getPointAt", &BezierCurve2D::getPointAt )
     .def( "__repr__", gbc2_repr )
-    .DEC_SETGET_WD(stride,BezierCurve2D,Stride,uint32_t)
-    .DEC_SETGET(ctrlPointList,BezierCurve2D,CtrlPointList,Point3ArrayPtr)
+    .DEC_BT_PROPERTY_WD(stride,BezierCurve2D,Stride,uint32_t)
+    .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve2D,CtrlPointList,Point3ArrayPtr)
     ;
 
   implicitly_convertible<BezierCurve2DPtr, Curve2DPtr>();

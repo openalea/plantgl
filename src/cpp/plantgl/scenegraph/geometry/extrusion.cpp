@@ -365,6 +365,30 @@ Extrusion::getCCW() {
   return __ccw;
 }    
 
+/// Return the Scaling Factor List value.
+const Point2ArrayPtr& Extrusion::getScale() const
+{ return __profile->getScale(); }
+
+/// Return the Scaling Factor List field.
+Point2ArrayPtr& Extrusion::getScale()
+{ return __profile->getScale(); }
+
+/// Return the Orientation Factor List value.
+const TOOLS(RealArrayPtr)& Extrusion::getOrientation() const
+{ return __profile->getOrientation(); }
+
+/// Return the Orientation Factor List field.
+TOOLS(RealArrayPtr)& Extrusion::getOrientation()
+{ return __profile->getOrientation(); }
+
+/// Return the KnotList Factor List value.
+const TOOLS(RealArrayPtr) Extrusion::getKnotList() const
+{ return __profile->getKnotList(); }
+
+/// Return the KnotList Factor List field.
+TOOLS(RealArrayPtr)& Extrusion::getKnotList()
+{ return __profile->getKnotList(); }
+
 /* ----------------------------------------------------------------------- */
 bool 
 Extrusion::apply( Action& action ) {

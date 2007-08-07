@@ -40,19 +40,9 @@ using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-Matrix4 mc_getMatrix(MatrixComputer* mc)
-{
-  return mc->getMatrix();
-}
+Matrix4 mc_getMatrix( MatrixComputer* d )
+{ return d->getMatrix(); }
 
-void mc_setMatrix(MatrixComputer* mc, const Matrix4& m4)
-{
-  mc->getMatrix()= m4;
-}
-
-SETGET(MatrixComputer,Matrix,Matrix4)
-
-/* ----------------------------------------------------------------------- */
 
 void export_MatrixComputer()
 {
@@ -61,8 +51,8 @@ void export_MatrixComputer()
      ( ( const char* )"MatrixComputer()" 
        "Compute the matrix4 representing the affine transformations. " ))
     .def("clear",&MatrixComputer::clear)
-	.DEC_SETGET(matrix,MatrixComputer,Matrix,Matrix4)
-    .add_property("result",&get_MatrixComputer_Matrix)
+	.DEC_CT_PROPERTY(matrix,MatrixComputer,Matrix,Matrix4)
+    .add_property("result",mc_getMatrix)
     ;
 }
 

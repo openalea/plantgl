@@ -46,9 +46,6 @@ ElevationGridPtr geg_fromlist( boost::python::object l )
 
 
 
-SETGET(ElevationGrid,XSpacing,real_t);
-SETGET(ElevationGrid,YSpacing,real_t);
-SETGET(ElevationGrid,HeightList,RealArray2Ptr);
 
 void export_ElevationGrid()
 {
@@ -57,9 +54,9 @@ void export_ElevationGrid()
      ("ElevationGrid(heights [,xspacing,yspacing,ccw])"))
     .def( "__init__", make_constructor( geg_fromlist ) ) 
     .def( "copy", &ElevationGrid::copy )
-    .DEC_SETGET_WD(xspacing,ElevationGrid,XSpacing,real_t)
-    .DEC_SETGET_WD(yspacnig,ElevationGrid,YSpacing,real_t)
-    .DEC_SETGET(heightList,ElevationGrid,HeightList,RealArray2Ptr)
+    .DEC_BT_PROPERTY_WD(xspacing,ElevationGrid,XSpacing,real_t)
+    .DEC_BT_PROPERTY_WD(yspacnig,ElevationGrid,YSpacing,real_t)
+    .DEC_PTR_PROPERTY(heightList,ElevationGrid,HeightList,RealArray2Ptr)
     ;
 
   implicitly_convertible< ElevationGridPtr,PatchPtr >();

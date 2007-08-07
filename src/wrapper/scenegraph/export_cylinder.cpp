@@ -70,21 +70,16 @@ void export_Cylinder()
   implicitly_convertible<CylinderPtr, ConePtr >();
 }
 
-SETGET(Frustum,Taper,real_t);
-
 void export_Frustum()
 {
   class_< Frustum, FrustumPtr, bases< Cone > , boost::noncopyable >
     ("Frustum", init< optional<const real_t&,const real_t&,const real_t&, bool,uchar_t> >
                    (args("radius","height","taper","solid","slices"),
 		    "Frustum(radius, height, taper [, solid, slices])" ))
-  .DEC_SETGET_WD(taper,Frustum,Taper,real_t);
+  .DEC_BT_PROPERTY_WD(taper,Frustum,Taper,real_t);
 
   implicitly_convertible<FrustumPtr, ConePtr >();
 }
-
-SETGET(Paraboloid,Shape,real_t);
-SETGET(Paraboloid,Stacks,uchar_t);
 
 void export_Paraboloid()
 {
@@ -94,8 +89,8 @@ void export_Paraboloid()
      bool, uchar_t, uchar_t> >
      (args("radius","height","shape","solid","slices","stacks"),
       "Paraboloid([radius, height, shape , solid, slices, stacks])" ))
-  .DEC_SETGET_WD(stacks,Paraboloid,Stacks,uchar_t)
-  .DEC_SETGET_WD(shape,Paraboloid,Shape,real_t);
+  .DEC_BT_PROPERTY_WD(stacks,Paraboloid,Stacks,uchar_t)
+  .DEC_BT_PROPERTY_WD(shape,Paraboloid,Shape,real_t);
 
   implicitly_convertible<ParaboloidPtr, ConePtr >();
 

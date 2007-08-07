@@ -61,17 +61,12 @@ DEF_POINTEE(Cone)
 DEF_POINTEE(Revolution)
 
 
-SETGET(SOR,Slices,uchar_t);
-
 void export_SOR()
 {
   class_< SOR, SORPtr, bases< ParametricModel >,boost::noncopyable >("SOR",no_init)
-  .DEC_SETGET_WD(slices,SOR,Slices,uchar_t);
+  .DEC_BT_PROPERTY_WD(slices,SOR,Slices,uchar_t);
   implicitly_convertible<SORPtr,ParametricModelPtr >();
 }
-
-SETGET(Sphere,Stacks,uchar_t);
-SETGET(Sphere,Radius,real_t);
 
 void export_Sphere()
 {
@@ -79,16 +74,12 @@ void export_Sphere()
     ("Sphere", init< optional<const real_t&, uchar_t, uchar_t > >
      (args("radius","slices", "stacks"),
       "Sphere(radius [,slices, stacks])"))
-  .DEC_SETGET_WD(stacks,Sphere,Stacks,uchar_t)
-  .DEC_SETGET_WD(radius,Sphere,Radius,real_t);
+  .DEC_BT_PROPERTY_WD(stacks,Sphere,Stacks,uchar_t)
+  .DEC_BT_PROPERTY_WD(radius,Sphere,Radius,real_t);
 
   implicitly_convertible<SpherePtr, SORPtr >();
 }
 
-
-SETGET(Cone,Radius,real_t);
-SETGET(Cone,Height,real_t);
-SETGET(Cone,Solid,bool);
 
 void export_Cone()
 {
@@ -96,9 +87,9 @@ void export_Cone()
     ("Cone", init< optional<const real_t&,const real_t&, bool,uchar_t > >
                (args("radius","height","solid","slices"),
 		"Cone(radius, height [, solid, slices])"))
-  .DEC_SETGET_WD(radius,Cone,Radius,real_t)
-  .DEC_SETGET_WD(height,Cone,Height,real_t)
-  .DEC_SETGET_WD(solid,Cone,Solid,bool);
+  .DEC_BT_PROPERTY_WD(radius,Cone,Radius,real_t)
+  .DEC_BT_PROPERTY_WD(height,Cone,Height,real_t)
+  .DEC_BT_PROPERTY_WD(solid,Cone,Solid,bool);
 
   implicitly_convertible<ConePtr, SORPtr >();
 }

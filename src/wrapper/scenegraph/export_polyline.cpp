@@ -134,9 +134,6 @@ std::string gpl2_repr( Polyline2D* p )
   return ss.str();
 }
 
-SETGET(Polyline2D,PointList,Point2ArrayPtr);
-
-
 void export_Polyline2D()
 {
   class_<Polyline2D, Polyline2DPtr, bases<Curve2D>, boost::noncopyable>( "Polyline2D", init<Point2ArrayPtr>() )
@@ -149,7 +146,7 @@ void export_Polyline2D()
     .def( "getTangentAt", &Polyline2D::getTangentAt, args("u") )
     .def( "getNormalAt", &Polyline2D::getNormalAt, args("u") )
     .def( "split", &py_poly_plit<Polyline2D>, arg("u") )
-	.DEC_SETGET(pointList,Polyline2D,PointList,Point2ArrayPtr)
+	.DEC_PTR_PROPERTY(pointList,Polyline2D,PointList,Point2ArrayPtr)
     ;
   implicitly_convertible<Polyline2DPtr, Curve2DPtr>();
 }

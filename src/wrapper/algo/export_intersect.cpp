@@ -56,14 +56,20 @@ void export_SegIntersection()
 
 }
 
-SETGET(Ray,Origin,Vector3)
-SETGET(Ray,Direction,Vector3)
-
 object ray_intersect_seg(Ray * ray, const Vector3& p1, const Vector3& p2)
 {
     Vector3 res;
     int ret = ray->intersect(p1,p2,res);
     if (ret == 1) return object(res);
+    else return object(ret);
+}
+
+object ray_intersect_ray(Ray * ray, const Ray& ray2)
+{
+    Vector3 res;
+    real_t t;
+    int ret = ray->intersect(ray2,res,t);
+    if (ret == 1) return make_tuple(res,t);
     else return object(ret);
 }
 
@@ -105,10 +111,13 @@ void export_Ray()
 {
   class_< Ray > ("Ray", init<optional<const Vector3&, const Vector3&> >("Ray(Vector3 origin, Vector3 direction)", args("origin","direction") ))
       .def("isValid",&Ray::isValid)
-      .DEC_SETGET(origin,Ray,Origin,Vector3)
-      .DEC_SETGET(direction,Ray,Direction,Vector3)
+      .DEC_CT_PROPERTY(origin,Ray,Origin,Vector3)
+      .DEC_CT_PROPERTY(direction,Ray,Direction,Vector3)
+      .def("__call__",&Ray::getAt,args("t"))
+      .def("getAt",&Ray::getAt,args("t"))
       .def("intersect",(bool(Ray::*)(const Vector3&) const)&Ray::intersect,args("point"))
       .def("intersect",(bool(Ray::*)(const Vector2&) const)&Ray::intersect,args("point"))
+      .def("intersect",ray_intersect_ray,args("ray"))
       .def("intersect",ray_intersect_seg,args("p1","p2"))
       .def("intersect",ray_intersect_seg2,args("p1","p2"))
       .def("intersect",ray_intersect_tr,args("p1","p2","p3"))

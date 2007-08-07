@@ -49,7 +49,7 @@ Index * ind_fromvalue5( uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t
   return ind;
 }
 
-EXPORT_FUNCTION2( ind, uint32_t, Index );
+EXPORT_FUNCTION2( ind,Index );
 
 #define INDEX_SETGET(PREFIX,ARRAY,SIZE) \
  uint32_t PREFIX##_size( ARRAY* v) { return SIZE; } \
@@ -138,7 +138,7 @@ void export_index()
     .def( "__init__", make_constructor( ind_fromvalue3 ), "Index(int i, int j, int k)"  )
     .def( "__init__", make_constructor( ind_fromvalue4 ), "Index(int i, int j, int k, int l)"  )
     .def( "__init__", make_constructor( ind_fromvalue5 ), "Index(int i, int j, int k, int l, int m)"  )
-    EXPORT_ARRAY_FUNC( Index, ind )
+    EXPORT_ARRAY_FUNC_BT( Index, ind )
     ;
   index_from_tuple();
 

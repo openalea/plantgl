@@ -1,177 +1,282 @@
 // Array Macro
 #include "../util/extract_list.h"
+#include <boost/python/def_visitor.hpp>
 
-#define EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
-ARRAY##Ptr extract_##PREFIX##_from_list( boost::python::object l ) \
-{ \
-  extract<int> e_int( l ); \
-  if( e_int.check() )\
-    {\
-    return new ARRAY( e_int() );\
-    }\
-  return extract_pgllist<ARRAY>(l).toRCPtr(); \
-} \
-struct PREFIX##_from_list { \
-  PREFIX##_from_list() { \
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< ARRAY >()); \
-  } \
-  static void* convertible(PyObject* py_obj){ \
-    if( !PySequence_Check( py_obj ) ) return 0; \
-    return py_obj; \
-  } \
-  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ \
-   typedef boost::python::converter::rvalue_from_python_storage<ARRAY> vector_storage_t;  \
-   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); \
-   void* memory_chunk = the_storage->storage.bytes; \
-   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); \
-   ARRAY##Ptr result = extract_##PREFIX##_from_list(py_sequence); \
-   new (memory_chunk) ARRAY (*result); \
-   delete result; \
-   data->convertible = memory_chunk; \
-  } \
-}; \
-struct PREFIX##_ptr_from_list { \
-  PREFIX##_ptr_from_list() { \
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< ARRAY##Ptr >()); \
-  } \
-  static void* convertible(PyObject* py_obj){ \
-    if( !PySequence_Check( py_obj ) ) return 0; \
-    return py_obj; \
-  } \
-  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ \
-   typedef boost::python::converter::rvalue_from_python_storage<ARRAY> vector_storage_t;  \
-   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); \
-   void* memory_chunk = the_storage->storage.bytes; \
-   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); \
-   ARRAY##Ptr result = extract_##PREFIX##_from_list(py_sequence); \
-   new (memory_chunk) ARRAY##Ptr (result); \
-   data->convertible = memory_chunk; \
-  } \
-}; \
+template<class T>
+RCPtr<T> extract_array_from_list( boost::python::object l )
+{ 
+  extract<int> e_int( l ); 
+  if( e_int.check() )
+    {
+    return new T( e_int() );
+    }
+  return extract_pgllist<T>(l).toRCPtr();
+} 
 
-#define EXPORT_FUNCTION2( PREFIX, T, ARRAY) \
-T PREFIX##_getitem( ARRAY * array, int pos ) \
+template<class T>
+struct array_from_list {
+  array_from_list() { 
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>()); 
+  } 
+  static void* convertible(PyObject* py_obj){ 
+    if( !PySequence_Check( py_obj ) ) return 0; 
+    return py_obj; 
+  } 
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
+   void* memory_chunk = the_storage->storage.bytes; 
+   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); 
+   RCPtr<T> result = extract_array_from_list<T>(py_sequence); 
+   new (memory_chunk) T (*result); 
+   delete result; 
+   data->convertible = memory_chunk; 
+  } 
+}; 
+
+template<class T>
+struct array_ptr_from_list { 
+  array_ptr_from_list() { 
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >()); 
+  } 
+  static void* convertible(PyObject* py_obj){ 
+    if( !PySequence_Check( py_obj ) ) return 0; 
+    return py_obj; 
+  } 
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
+   void* memory_chunk = the_storage->storage.bytes; 
+   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); 
+   RCPtr<T> result = extract_array_from_list<T>(py_sequence); 
+   new (memory_chunk) RCPtr<T> (result); 
+   data->convertible = memory_chunk; 
+  } 
+}; 
+
+
+#define EXPORT_FUNCTION2(PREFIX,ARRAY) \
+std::string PREFIX##_str( ARRAY * a ) \
 { \
-  if( pos < 0 && pos >= -array->getSize() ) return array->getAt( array->getSize() + pos );\
-  else if( pos < array->getSize() ) return array->getAt( pos );\
-  else throw PythonExc_IndexError();\
-}\
-\
-ARRAY * PREFIX##_getslice( ARRAY * array, int beg, int end ) \
-{ \
-  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); \
-  else if( beg >= array->getSize() ) throw PythonExc_IndexError(); \
-  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); \
-  else if( end > array->getSize() ) throw PythonExc_IndexError(); \
-  return new ARRAY(array->getBegin()+beg,array->getBegin()+end);\
-}\
-\
-void PREFIX##_setitem( ARRAY * array, int pos, T * v )\
-{\
-  if( pos < 0 && pos >= -array->getSize() ) array->setAt( array->getSize() + pos, *v );\
-  else if( pos < array->getSize() ) array->setAt( pos, *v );\
-  else throw PythonExc_IndexError();\
-}\
-\
-void PREFIX##_delitem( ARRAY * array, int pos )\
-{\
-  if( pos < 0 && pos >= -array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );\
-  else if( pos < array->getSize() ) array->Erase( array->getBegin() + pos );\
-  else throw PythonExc_IndexError();\
-}\
-\
-void PREFIX##_delslice( ARRAY * array, int beg, int end ) \
-{ \
-  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); \
-  else if( beg >= array->getSize() ) throw PythonExc_IndexError(); \
-  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); \
-  else if( end > array->getSize() ) throw PythonExc_IndexError(); \
-  array->Erase( array->getBegin()+beg,array->getBegin()+end); \
-}\
-\
-bool PREFIX##_contains( ARRAY * array, T * v ) \
-{\
-  return array->contains(*v); \
-} \
-\
-ARRAY * PREFIX##_additem( ARRAY * array, T * v ) \
-{ \
-	ARRAY * array2 = new ARRAY(array->getBegin(),array->getEnd()); \
-	array2->pushBack(*v); \
-	return array2; \
-}\
-\
-ARRAY * PREFIX##_iadditem( ARRAY * array, T * v ) \
-{ \
-	array->pushBack(*v); \
-	return array; \
-}\
-\
-ARRAY * PREFIX##_iaddarray( ARRAY * array, ARRAY * array2 ) \
-{ \
-	array->insert(array->getEnd(),array2->getBegin(),array2->getEnd()); \
-	return array; \
-}\
-\
-std::string PREFIX##_str( ARRAY * a )\
-{\
-  std::stringstream ss;\
-  ss << #ARRAY << "("; \
+  std::stringstream ss; \
+  ss << #ARRAY << "(";  \
   if(!a->isEmpty()){ \
     ss << '['; \
-	std::copy( a->getBegin(), a->getEnd()-1, std::ostream_iterator< T >( ss, "," ) ); \
+    std::copy( a->getBegin(), a->getEnd()-1, std::ostream_iterator< ARRAY::element_type >( ss, "," ) ); \
 	ss << *( a->getEnd() - 1 ) << ']'; } \
   ss << ")"; \
-  return ss.str();\
-}\
-\
-size_t PREFIX##_len( ARRAY * a )\
-{  return a->getSize();}\
-\
-struct PREFIX##_pickle_suite : boost::python::pickle_suite \
-{ \
-	static tuple getinitargs(ARRAY const& ar) \
-	{ \
-		boost::python::list l; \
-		for(ARRAY::const_iterator it = ar.getBegin(); it != ar.getEnd(); ++it) \
-			l.append(*it); \
-		return make_tuple(l);  \
-	} \
-}; \
+  return ss.str(); \
+} \
 
 
-#define EXPORT_ARRAY_FUNC( ARRAY, PREFIX ) \
-    .def( "__getitem__",  PREFIX##_getitem ) \
-    .def( "__getslice__", PREFIX##_getslice , return_value_policy<manage_new_object>() ) \
-    .def( "__setitem__",  PREFIX##_setitem   ) \
-    .def( "__delitem__",  PREFIX##_delitem   ) \
-    .def( "__delslice__", PREFIX##_delslice  ) \
-    .def( "__contains__", PREFIX##_contains  ) \
-    .def( "__add__",      PREFIX##_additem   , return_value_policy<manage_new_object>() ) \
-    .def( "__iadd__",     PREFIX##_iadditem  , return_internal_reference<1>() ) \
-    .def( "__iadd__",     PREFIX##_iaddarray , return_internal_reference<1>() ) \
-    .def( "__len__",      PREFIX##_len ) \
-    .def( "__repr__",     PREFIX##_str ) \
-    .def( "__str__",      PREFIX##_str ) \
-    .def( "reverse",      &ARRAY::reverse ) \
-	.enable_pickling() \
-    
+template<class T>
+typename T::element_type array_bt_getitem( T * a, int pos )
+{ 
+  if( pos < 0 && pos >= -a->getSize() ) return a->getAt( a->getSize() + pos );
+  else if( pos < a->getSize() ) return a->getAt( pos );
+  else throw PythonExc_IndexError();
+}
 
-	// .def_pickle(PREFIX##_pickle_suite())
+template<class T>
+typename T::element_type& array_ct_getitem( T * a, int pos )
+{ 
+  if( pos < 0 && pos >= -a->getSize() ) return a->getAt( a->getSize() + pos );
+  else if( pos < a->getSize() ) return a->getAt( pos );
+  else throw PythonExc_IndexError();
+}
 
-#define EXPORT_ARRAY( PREFIX, ARRAY, STRING )\
+template<class T>
+typename T::element_type array_ptr_getitem( T * a, int pos )
+{ 
+  if( pos < 0 && pos >= -a->getSize() ) return a->getAt( a->getSize() + pos );
+  else if( pos < a->getSize() ) return a->getAt( pos );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+T * array_getslice( T * array, int beg, int end ) 
+{ 
+  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); 
+  else if( beg >= array->getSize() ) throw PythonExc_IndexError(); 
+  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); 
+  else if( end > array->getSize() ) throw PythonExc_IndexError(); 
+  return new T(array->getBegin()+beg,array->getBegin()+end);
+}
+
+template<class T>
+typename T::element_type array_popitem( T * a, int pos )
+{ 
+  if (a->isEmpty()) throw PythonExc_IndexError();
+  if( pos < 0 && pos >= -a->getSize() ) pos = a->getSize() + pos;
+  else if( pos >= a->getSize() ) throw PythonExc_IndexError();
+  typename T::element_type elem =  a->getAt( pos );
+  a->Erase(a->getBegin() + pos);
+  return elem;
+}
+
+template<class T>
+typename T::element_type array_poplastitem( T * a)
+{ return array_popitem(a,-1); }
+
+
+template<class T>
+void array_setitem( T * array, int pos, typename T::element_type * v )
+{
+  if( pos < 0 && pos >= -array->getSize() ) array->setAt( array->getSize() + pos, *v );
+  else if( pos < array->getSize() ) array->setAt( pos, *v );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+void array_insertitem( T * array, int pos, typename T::element_type * v )
+{
+  if( pos < 0 && pos >= -array->getSize() ) array->insert( array->getBegin() + (array->getSize() + pos), *v );
+  else if( pos < array->getSize() ) array->insert( array->getBegin() + pos, *v );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+void array_delitem( T * array, int pos )
+{
+  if( pos < 0 && pos >= -array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );
+  else if( pos < array->getSize() ) array->Erase( array->getBegin() + pos );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+void array_delslice( T * array, int beg, int end ) 
+{ 
+  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); 
+  else if( beg >= array->getSize() ) throw PythonExc_IndexError(); 
+  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); 
+  else if( end > array->getSize() ) throw PythonExc_IndexError(); 
+  array->Erase( array->getBegin()+beg,array->getBegin()+end); 
+}
+
+template<class T>
+bool array_contains( T * array, typename T::element_type * v ) 
+{
+  return array->contains(*v); 
+} 
+
+template<class T>
+T * array_additem( T * array, typename T::element_type * v ) 
+{ 
+	T * array2 = new T(array->getBegin(),array->getEnd());
+	array2->pushBack(*v);
+	return array2; 
+}
+
+template<class T>
+T * array_iadditem( T * array, typename T::element_type * v ) 
+{ 
+	array->pushBack(*v); 
+	return array; 
+}
+
+template<class T>
+void array_appenditem( T * array, typename T::element_type * v ) 
+{ array->pushBack(*v); }
+
+template<class T>
+T * array_iaddarray( T * array, T * array2 ) 
+{ 
+	array->insert(array->getEnd(),array2->getBegin(),array2->getEnd()); 
+	return array; 
+}
+
+template<class T>
+size_t array_len( T * a )
+{  return a->getSize();}
+
+template<class T>
+struct array_pickle_suite : boost::python::pickle_suite 
+{ 
+    static boost::python::tuple getinitargs(T const& ar) 
+	{ 
+		boost::python::list l; 
+		for(T::const_iterator it = ar.getBegin(); it != ar.getEnd(); ++it) 
+			l.append(*it); 
+		return boost::python::make_tuple(l);  
+	} 
+}; 
+
+template<class ARRAY>
+class array_func : public boost::python::def_visitor<array_func<ARRAY> >
+{
+    friend class boost::python::def_visitor_access;
+
+    template <class classT>
+    void visit(classT& c) const
+    {
+        c.def( "__getslice__", &array_getslice<ARRAY>, return_value_policy<manage_new_object>() ) \
+        .def( "__setitem__",  &array_setitem<ARRAY>   ) \
+        .def( "__delitem__",  &array_delitem<ARRAY>   ) \
+        .def( "__delslice__", &array_delslice<ARRAY>  ) \
+        .def( "__contains__", &array_contains<ARRAY>  ) \
+        .def( "__add__",      &array_additem<ARRAY>   , return_value_policy<manage_new_object>() ) \
+        .def( "__iadd__",     &array_iadditem<ARRAY>  , return_internal_reference<1>() ) \
+        .def( "__iadd__",     &array_iaddarray<ARRAY> , return_internal_reference<1>() ) \
+        .def( "__len__",      &array_len<ARRAY> ) \
+        .def( "reverse",      &ARRAY::reverse ) \
+        .def( "insert",       &array_insertitem<ARRAY> ) \
+        .def( "append",       &array_appenditem<ARRAY> ) \
+        .def( "pop",          &array_popitem<ARRAY> ) \
+        .def( "pop",          &array_poplastitem<ARRAY> ) \
+	    .enable_pickling() \
+        ;
+    }
+};
+
+#define EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+    .def(array_func<ARRAY>()) \
+    .def( "__repr__",     &PREFIX##_str ) \
+    .def( "__str__",      &PREFIX##_str ) \
+
+#define EXPORT_ARRAY_FUNC_BT( ARRAY, PREFIX ) \
+    .def( "__getitem__",  &array_bt_getitem<ARRAY> ) \
+    EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+
+#define EXPORT_ARRAY_FUNC_CT( ARRAY, PREFIX ) \
+    .def( "__getitem__",  &array_ct_getitem<ARRAY>, return_internal_reference<1>() ) \
+    EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+
+#define EXPORT_ARRAY_FUNC_PTR( ARRAY, PREFIX ) \
+    .def( "__getitem__",  &array_ptr_getitem<ARRAY> ) \
+    EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+
+
+#define EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING )\
 class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") = 0) ) \
-    .def( "__init__", make_constructor( extract_##PREFIX##_from_list ), STRING ) \
-	EXPORT_ARRAY_FUNC( ARRAY, PREFIX ) \
+    .def( "__init__", make_constructor( &extract_array_from_list<ARRAY> ), STRING ) \
 
-#define EXPORT_CONVERTER( PREFIX )\
-	PREFIX##_from_list(); \
-	PREFIX##_ptr_from_list(); \
 
-#define EXPORT_FUNCTION( PREFIX, T, ARRAY) \
+/* --------------------
+  Type of the element :
+   _BT : Basic Type : real_t, int, uint32_t, ...
+   _CT : Complex Type : Vector3, Color3, Index, ...
+   _PTR : Pointer : GeometryPtr
+   -------------------- */
+
+#define EXPORT_ARRAY_BT( PREFIX, ARRAY, STRING )\
+    EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING ) \
+	EXPORT_ARRAY_FUNC_BT( ARRAY, PREFIX ) \
+
+#define EXPORT_ARRAY_PTR( PREFIX, ARRAY, STRING )\
+    EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING ) \
+	EXPORT_ARRAY_FUNC_PTR( ARRAY, PREFIX ) \
+
+#define EXPORT_ARRAY_CT( PREFIX, ARRAY, STRING )\
+    EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING ) \
+	EXPORT_ARRAY_FUNC_CT( ARRAY, PREFIX ) \
+
+#define EXPORT_CONVERTER( ARRAY )\
+	array_from_list<ARRAY>(); \
+	array_ptr_from_list<ARRAY>(); \
+
+#define EXPORT_FUNCTION( PREFIX, ARRAY) \
   DEF_POINTEE( ARRAY ) \
-  EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
-  EXPORT_FUNCTION2( PREFIX, T, ARRAY)
+  EXPORT_FUNCTION2( PREFIX, ARRAY)
 
 #ifdef USE_NUMPY
 #define PY_ARRAY_UNIQUE_SYMBOL PlantGL_NUMPY_API_SYMBOL

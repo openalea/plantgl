@@ -63,11 +63,11 @@ boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     return rlist;
 }
 
-EXPORT_FUNCTION( p2a, Vector2, Point2Array )
-EXPORT_FUNCTION( p3a, Vector3, Point3Array )
-EXPORT_FUNCTION( p4a, Vector4, Point4Array )
-EXPORT_FUNCTION( t4a, Transform4Ptr, Transform4Array )
-EXPORT_FUNCTION( m4a, Matrix4, Matrix4Array )
+EXPORT_FUNCTION( p2a, Point2Array )
+EXPORT_FUNCTION( p3a, Point3Array )
+EXPORT_FUNCTION( p4a, Point4Array )
+EXPORT_FUNCTION( t4a, Transform4Array )
+EXPORT_FUNCTION( m4a, Matrix4Array )
 
 EXPORT_NUMPY( p2a, Vector2, Point2Array, 0, 2, real_t )
 EXPORT_NUMPY( p3a, Vector3, Point3Array, 0, 3, real_t )
@@ -143,7 +143,7 @@ object pa_bounds(const T * pts){
 
 void export_pointarrays()
 {
-  EXPORT_ARRAY( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
+  EXPORT_ARRAY_CT( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
     .def( "getLength", &Point2Array::getLength) 
     .def( "getCenter", &Point2Array::getCenter) 
     .def( "getExtent", &Point2Array::getExtent) 
@@ -159,9 +159,9 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point2Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>); 
     DEFINE_NUMPY( p2a );
-  EXPORT_CONVERTER(p2a);
+  EXPORT_CONVERTER(Point2Array);
 
-  EXPORT_ARRAY( p3a, Point3Array, "Point3Array([Vector3(x,y,z),...])")
+  EXPORT_ARRAY_CT( p3a, Point3Array, "Point3Array([Vector3(x,y,z),...])")
     .def( "__init__", make_constructor( p3_from_p2 ), "Point3Array(Point2Array a, z)" ) 
     .def( "getLength", &Point3Array::getLength) 
     .def( "getCenter", &Point3Array::getCenter) 
@@ -183,9 +183,9 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point3Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>); 
     DEFINE_NUMPY( p3a );
-  EXPORT_CONVERTER(p3a);
+  EXPORT_CONVERTER(Point3Array);
 
-  EXPORT_ARRAY( p4a, Point4Array, "Point4Array([Vector4(x,y,z,w),...])")
+  EXPORT_ARRAY_CT( p4a, Point4Array, "Point4Array([Vector4(x,y,z,w),...])")
     .def( "__init__", make_constructor( p4_from_p2 ), "Point4Array(Point2Array a, z, w)" ) 
     .def( "__init__", make_constructor( p4_from_p3 ), "Point4Array(Point3Array a, w)" ) 
     .def( "getLength", &Point4Array::getLength) 
@@ -210,13 +210,13 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point4Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>); 
     DEFINE_NUMPY( p4a );
-  EXPORT_CONVERTER(p4a);
+  EXPORT_CONVERTER(Point4Array);
 
 
-  EXPORT_ARRAY( t4a, Transform4Array,"Transform4Array([Transform4(...),...])" );
-  EXPORT_CONVERTER(t4a);
-  EXPORT_ARRAY( m4a, Matrix4Array,"Matrix4Array([Matrix4(...),...])" );
-  EXPORT_CONVERTER(m4a);
+  EXPORT_ARRAY_PTR( t4a, Transform4Array,"Transform4Array([Transform4(...),...])" );
+  EXPORT_CONVERTER(Transform4Array);
+  EXPORT_ARRAY_CT( m4a, Matrix4Array,"Matrix4Array([Matrix4(...),...])" );
+  EXPORT_CONVERTER(Matrix4Array);
 }
 
 

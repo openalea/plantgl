@@ -55,8 +55,6 @@ using namespace boost::python;
 using namespace std;
 
 
-SETGET(MatrixTransformed,Geometry,GeometryPtr)
-
 DEF_POINTEE(Scaled)
 DEF_POINTEE(Translated)
 DEF_POINTEE(Transformed)
@@ -71,7 +69,7 @@ void export_Transformed()
 
   class_< MatrixTransformed, MatrixTransformedPtr, bases< Transformed >, boost::noncopyable  >
     ("MatrixTransformed", no_init)
-	.DEC_SETGET(geometry,MatrixTransformed,Geometry,GeometryPtr)
+	.DEC_PTR_PROPERTY(geometry,MatrixTransformed,Geometry,GeometryPtr)
 	;
   class_< OrthoTransformed, OrthoTransformedPtr, bases< MatrixTransformed >, boost::noncopyable  >
     ("OrthoTransformed", no_init);
@@ -81,36 +79,28 @@ void export_Transformed()
   implicitly_convertible< OrthoTransformedPtr,MatrixTransformedPtr >();
 }
 
-SETGET(Scaled,Scale,Vector3)
-
 void export_Scaled()
 {
   class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
-	.DEC_SETGET_WD(scale,Scaled,Scale,Vector3)
+	.DEC_CT_PROPERTY_WD(scale,Scaled,Scale,Vector3)
     ;
 
   implicitly_convertible< ScaledPtr, MatrixTransformedPtr >();
 
 }
 
-SETGET(Translated,Translation,Vector3)
-
 void export_Translated()
 {
   class_< Translated, TranslatedPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Translated", init< const Vector3&, const GeometryPtr& >
      ("Translated(translation,geometry)",args("translation","geometry")) )
-    .DEC_SETGET_WD(translation,Translated,Translation,Vector3)
+    .DEC_CT_PROPERTY_WD(translation,Translated,Translation,Vector3)
     ;
 
   implicitly_convertible< TranslatedPtr, MatrixTransformedPtr >();
 
 }
-
-SETGET(IFS,TransfoList,Transform4ArrayPtr)
-SETGET(IFS,Depth,uchar_t)
-SETGET(IFS,Geometry,GeometryPtr)
 
 Matrix4ArrayPtr ifs_getAllTransformations(IFS * ifs)
 {
@@ -128,9 +118,9 @@ void export_IFS()
     ("IFS", init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
        (args("depth","transfoList","geometry"),
 	"IFS(depth, transfoList, geometry)") )
-    .DEC_SETGET_WD(depth,IFS,Depth,uchar_t)
-	.DEC_SETGET(transfoList,IFS,TransfoList,Transform4ArrayPtr)
-	.DEC_SETGET(geometry,IFS,Geometry,GeometryPtr)
+    .DEC_BT_PROPERTY_WD(depth,IFS,Depth,uchar_t)
+	.DEC_PTR_PROPERTY(transfoList,IFS,TransfoList,Transform4ArrayPtr)
+	.DEC_PTR_PROPERTY(geometry,IFS,Geometry,GeometryPtr)
 	.def("getAllTransformations",&ifs_getAllTransformations);
     ;
 

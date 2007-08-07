@@ -118,7 +118,7 @@ public:
     virtual ~Merge( ) {}
 
     /// get the resulting model.
-    virtual ExplicitModelPtr getModel() const
+    virtual const ExplicitModelPtr& getModel() const
       { return __model; }
 
     virtual void setModel(const ExplicitModelPtr&);

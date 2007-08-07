@@ -37,6 +37,7 @@
 #include <boost/python.hpp>
 
 #include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/appearance/appearance.h>
@@ -71,31 +72,13 @@ void export_Spectrum()
    implicitly_convertible<SpectrumPtr, AppearancePtr >();
 }
 
-void ms_rset(MonoSpectral*s, real_t re)
-{
-  s->getReflectance()= re;
-}
-
-real_t ms_rget(MonoSpectral*s)
-{
-  return s->getReflectance();
-}
-void ms_tset(MonoSpectral*s, real_t re)
-{
-  s->getTransmittance()= re;
-}
-
-real_t ms_tget(MonoSpectral*s)
-{
-  return s->getTransmittance();
-}
 
 void export_MonoSpectral()
 {
   class_< MonoSpectral, MonoSpectralPtr, bases< Spectrum >,  boost::noncopyable >
     ("MonoSpectral", init< optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
-    .add_property("transmittance",ms_tget, ms_tset)
-    .add_property("reflectance",ms_rget, ms_rset)
+    .DEC_BT_PROPERTY(transmittance,MonoSpectral, Transmittance, real_t)
+    .DEC_BT_PROPERTY(reflectance,MonoSpectral, Reflectance, real_t)
     ;
 
   implicitly_convertible< MonoSpectralPtr, SpectrumPtr >();

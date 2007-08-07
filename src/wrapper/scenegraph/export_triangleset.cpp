@@ -23,10 +23,6 @@ DEF_POINTEE( QuadSet )
 DEF_POINTEE( FaceSet )
 DEF_POINTEE( AmapSymbol )
 
-SETGET(TriangleSet,IndexList,        Index3ArrayPtr)
-SETGET(TriangleSet,NormalIndexList,  Index3ArrayPtr)
-SETGET(TriangleSet,ColorIndexList,   Index3ArrayPtr)
-SETGET(TriangleSet,TexCoordIndexList,Index3ArrayPtr)
 /*
 struct tr_pickle_suite : boost::python::pickle_suite
 {
@@ -106,10 +102,10 @@ void export_TriangleSet()
 	              "texCoord", "texCoordIndices", "normalPerVertex", "colorPerVertex", "ccw","solid","skeleton")))
 
 	.def( "copy", &TriangleSet::copy )
-	.DEC_SETGET(indexList,            TriangleSet,IndexList,        Index3ArrayPtr)
-	.DEC_SETGET_WD(normalIndexList,   TriangleSet,NormalIndexList,  Index3ArrayPtr)
-	.DEC_SETGET_WD(colorIndexList,    TriangleSet,ColorIndexList,   Index3ArrayPtr)
-	.DEC_SETGET_WD(texCoordIndexList, TriangleSet,TexCoordIndexList,Index3ArrayPtr)
+	.DEC_PTR_PROPERTY(indexList,            TriangleSet,IndexList,        Index3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(normalIndexList,   TriangleSet,NormalIndexList,  Index3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(colorIndexList,    TriangleSet,ColorIndexList,   Index3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(texCoordIndexList, TriangleSet,TexCoordIndexList,Index3ArrayPtr)
  
 	.def( "pointAt",    (const Vector3& (TriangleSet::*)(uint32_t,uint32_t) const)&TriangleSet::getPointAt,    return_value_policy<copy_const_reference>() )
     .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint32_t,uint32_t) const)&TriangleSet::getNormalAt ,  return_value_policy<copy_const_reference>())
@@ -132,11 +128,6 @@ void export_TriangleSet()
   implicitly_convertible<TriangleSetPtr, MeshPtr>();
 }
 
-SETGET(QuadSet,IndexList,        Index4ArrayPtr)
-SETGET(QuadSet,NormalIndexList,  Index4ArrayPtr)
-SETGET(QuadSet,ColorIndexList,   Index4ArrayPtr)
-SETGET(QuadSet,TexCoordIndexList,Index4ArrayPtr)
-
 void export_QuadSet()
 {
   class_<QuadSet, QuadSetPtr, bases<Mesh>, boost::noncopyable> ( "QuadSet", init<> ( "QuadSet()"))
@@ -155,10 +146,10 @@ void export_QuadSet()
 
 	.def( "copy", &QuadSet::copy )
 
-	.DEC_SETGET(indexList,            QuadSet,IndexList,        Index4ArrayPtr)
-	.DEC_SETGET_WD(normalIndexList,   QuadSet,NormalIndexList,  Index4ArrayPtr)
-	.DEC_SETGET_WD(colorIndexList,    QuadSet,ColorIndexList,   Index4ArrayPtr)
-	.DEC_SETGET_WD(texCoordIndexList, QuadSet,TexCoordIndexList,Index4ArrayPtr)
+	.DEC_PTR_PROPERTY(indexList,            QuadSet,IndexList,        Index4ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(normalIndexList,   QuadSet,NormalIndexList,  Index4ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(colorIndexList,    QuadSet,ColorIndexList,   Index4ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(texCoordIndexList, QuadSet,TexCoordIndexList,Index4ArrayPtr)
  
 	.def( "pointAt",    (const Vector3& (QuadSet::*)(uint32_t,uint32_t) const)&QuadSet::getPointAt,    return_value_policy<copy_const_reference>() )
     .def( "normalAt",   (const Vector3& (QuadSet::*)(uint32_t,uint32_t) const)&QuadSet::getNormalAt ,  return_value_policy<copy_const_reference>())
@@ -180,11 +171,6 @@ void export_QuadSet()
 }
 
 
-SETGET(FaceSet,IndexList,        IndexArrayPtr)
-SETGET(FaceSet,NormalIndexList,  IndexArrayPtr)
-SETGET(FaceSet,ColorIndexList,   IndexArrayPtr)
-SETGET(FaceSet,TexCoordIndexList,IndexArrayPtr)
-
 void export_FaceSet()
 {
   class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
@@ -203,10 +189,10 @@ void export_FaceSet()
 	              "texCoord", "texCoordIndices", "normalPerVertex", "colorPerVertex", "ccw","solid","skeleton")))
     .def( "copy", &FaceSet::copy )
 
-	.DEC_SETGET(indexList,            FaceSet,IndexList,        Index3ArrayPtr)
-	.DEC_SETGET_WD(normalIndexList,   FaceSet,NormalIndexList,  Index3ArrayPtr)
-	.DEC_SETGET_WD(colorIndexList,    FaceSet,ColorIndexList,   Index3ArrayPtr)
-	.DEC_SETGET_WD(texCoordIndexList, FaceSet,TexCoordIndexList,Index3ArrayPtr)
+	.DEC_PTR_PROPERTY(indexList,            FaceSet,IndexList,        Index3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(normalIndexList,   FaceSet,NormalIndexList,  Index3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(colorIndexList,    FaceSet,ColorIndexList,   Index3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(texCoordIndexList, FaceSet,TexCoordIndexList,Index3ArrayPtr)
  
 	.def( "pointAt",    (const Vector3& (FaceSet::*)(uint32_t,uint32_t) const)&FaceSet::getPointAt,    return_value_policy<copy_const_reference>() )
     .def( "normalAt",   (const Vector3& (FaceSet::*)(uint32_t,uint32_t) const)&FaceSet::getNormalAt ,  return_value_policy<copy_const_reference>())
@@ -226,14 +212,12 @@ void export_FaceSet()
   implicitly_convertible<FaceSetPtr, MeshPtr>();
 }
 
-SETGET(AmapSymbol,FileName,std::string)
-
 void export_AmapSymbol()
 {
   class_<AmapSymbol, AmapSymbolPtr, bases<FaceSet> >
     ( "AmapSymbol", init< optional<std::string,bool> >("AmapSymbol(filename)"))
     .def("readFile",&AmapSymbol::readFile)
-	.DEC_SETGET(filename,AmapSymbol,FileName,std::string)
+	.DEC_BT_PROPERTY(filename,AmapSymbol,FileName,std::string)
     ;
   implicitly_convertible<AmapSymbolPtr, FaceSetPtr>();
 

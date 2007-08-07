@@ -44,6 +44,7 @@
 
 
 #include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -68,7 +69,9 @@ void export_Primitive()
 void export_Box()
 {
   class_< Box, BoxPtr, bases< ParametricModel > , boost::noncopyable >
-    ("Box", init< const Vector3& >("Box(Vector3(x,y,z))") );
+    ("Box", init< const Vector3& >("Box(Vector3(x,y,z))") )
+    .DEC_CT_PROPERTY_WD(size,Box,Size,Vector3)
+    ;
 
   implicitly_convertible<BoxPtr, ParametricModelPtr >();
 }

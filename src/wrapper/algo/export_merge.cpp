@@ -41,16 +41,14 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-SETGET(Merge,Model,ExplicitModelPtr)
-
 void export_Merge()
 {
   class_< Merge, boost::noncopyable >
     ("Merge", init<Discretizer&,ExplicitModelPtr&>("Merge(Discretizer d, ExplicitModel e )" ))
-	.DEC_SETGET(model,Merge,Model,ExplicitModelPtr)
+	.DEC_PTR_PROPERTY_RO(model,Merge,Model,ExplicitModelPtr)
 	.def("apply", ( bool(Merge::*)(GeometryPtr&)      ) &Merge::apply)
 	.def("apply", ( bool(Merge::*)(ExplicitModelPtr&) ) &Merge::apply)
-	.add_property("result",&get_Merge_Model)
+    .add_property("result",make_function(&Merge::getModel,return_internal_reference<1>()))
     ;
 }
 

@@ -57,39 +57,28 @@ DEF_POINTEE(Patch)
 DEF_POINTEE(BezierPatch)
 DEF_POINTEE(NurbsPatch)
 
-SETGET(Patch,CCW,bool);
-
 void export_Patch()
 {
   class_< Patch, PatchPtr, bases< ParametricModel >,boost::noncopyable >
     ("Patch",no_init)
-    .DEC_SETGET_WD(ccw,Patch,CCW,bool)
+    .DEC_BT_PROPERTY_WD(ccw,Patch,CCW,bool)
     ;
 
   implicitly_convertible< PatchPtr,ParametricModelPtr >();
 }
-
-SETGET(BezierPatch,UStride,uint32_t);
-SETGET(BezierPatch,VStride,uint32_t);
-SETGET(BezierPatch,CtrlPointMatrix,Point4MatrixPtr);
 
 void export_BezierPatch()
 {
   class_< BezierPatch, BezierPatchPtr, bases< Patch >,boost::noncopyable >
     ("BezierPatch",init<Point4MatrixPtr, optional<uint32_t,uint32_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
-    .DEC_SETGET_WD(ustride,BezierPatch,UStride,uint32_t)
-    .DEC_SETGET_WD(vstride,BezierPatch,VStride,uint32_t)
-    .DEC_SETGET(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
+    .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint32_t)
+    .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint32_t)
+    .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     ;
 
   implicitly_convertible< BezierPatchPtr,PatchPtr >();
 }
-
-SETGET(NurbsPatch,UDegree,uint32_t);
-SETGET(NurbsPatch,VDegree,uint32_t);
-SETGET(NurbsPatch,UKnotList,RealArrayPtr);
-SETGET(NurbsPatch,VKnotList,RealArrayPtr);
 
 void export_NurbsPatch()
 {
@@ -97,10 +86,10 @@ void export_NurbsPatch()
     ("NurbsPatch",init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
      uint32_t,uint32_t,uint32_t,uint32_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
-    .DEC_SETGET_WD(udegree,NurbsPatch,UDegree,uint32_t)
-    .DEC_SETGET_WD(vdegree,NurbsPatch,VDegree,uint32_t)
-    .DEC_SETGET_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
-    .DEC_SETGET_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
+    .DEC_BT_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint32_t)
+    .DEC_BT_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint32_t)
+    .DEC_PTR_PROPERTY_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
+    .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
     .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)
     .def("setUKnotListToDefault",&NurbsPatch::setUKnotListToDefault)
     ;

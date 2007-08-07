@@ -57,9 +57,6 @@ using namespace std;
 
 DEF_POINTEE(BoundingBox)
 
-SETGET(BoundingBox,LowerLeftCorner,Vector3)
-SETGET(BoundingBox,UpperRightCorner,Vector3)
-
 std::string bbox_str(BoundingBox * bbox){
   std::stringstream ss;
   const Vector3& v = bbox->getLowerLeftCorner();
@@ -104,8 +101,8 @@ void export_BoundingBox()
 	 "BoundingBox(Vector3 lowerLeft, Vector3 upperRight) " 
        "Constructs a BoundingBox with the 2 opposing corners lowerLeft and upperRight.") )
     .def( "__init__", make_constructor( bbx_fromobj ), "BoundingBox(geometry|scene) Constructs a BoundingBox from some geometries.") 
-	.DEC_SETGET(lowerLeftCorner,BoundingBox,LowerLeftCorner,Vector3)
-	.DEC_SETGET(upperRightCorner,BoundingBox,UpperRightCorner,Vector3)
+	.DEC_CT_PROPERTY(lowerLeftCorner,BoundingBox,LowerLeftCorner,Vector3)
+	.DEC_CT_PROPERTY(upperRightCorner,BoundingBox,UpperRightCorner,Vector3)
     .def("set",&BoundingBox::set,"set(lowerLeft,upperRight)")
     .def("change",&BoundingBox::change,"change(center)")
 	.def("getCenter",&BoundingBox::getCenter)

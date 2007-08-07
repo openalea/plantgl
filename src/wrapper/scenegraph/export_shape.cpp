@@ -43,6 +43,7 @@
 #include <string>
 
 #include "../util/export_refcountptr.h"
+#include "../util/export_property.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -56,18 +57,6 @@ void export_Shape3D()
 {
   class_< Shape3D, Shape3DPtr, bases< SceneObject >, boost::noncopyable >("Shape3D", no_init);
 }
-
-void gs_setGeometry(Shape* shape, GeometryPtr geom )
-{ shape->getGeometry()= geom; }
-
-GeometryPtr gs_getGeometry(Shape* shape)
-{ return shape->getGeometry(); }
-
-void gs_setAppearance(Shape* shape, AppearancePtr app )
-{ shape->getAppearance()= app; }
-
-AppearancePtr gs_getAppearance(Shape* shape)
-{ return shape->getAppearance(); }
 
 
 struct sh_pickle_suite : boost::python::pickle_suite
@@ -84,8 +73,8 @@ void export_Shape()
     .def( init< const RefCountPtr<Geometry> &, 
 	          optional< const RefCountPtr<Appearance> &,
 	                     long unsigned int > >("Shape( geometry, appearance, id )") )
-    .add_property("appearance", gs_getAppearance, gs_setAppearance)
-    .add_property("geometry", gs_getGeometry, gs_setGeometry)
+    .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
+    .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)
     .def_readwrite("id", &Shape::id)
     .def("setComputedName", &Shape::setComputedName)
 	.def_pickle(sh_pickle_suite());
