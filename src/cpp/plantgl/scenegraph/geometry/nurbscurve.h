@@ -126,7 +126,7 @@ public:
   virtual SceneObjectPtr copy() const ;
 
   /// Returns \e Degree value.
-  virtual uint32_t getDegree( ) const;
+  virtual const uint32_t getDegree( ) const;
 
   /// Returns \e Degree field.
   uint32_t& getDegree( );
@@ -299,7 +299,7 @@ public:
   virtual SceneObjectPtr copy() const ;
 
   /// Returns \e Degree value.
-  virtual uint32_t getDegree( ) const;
+  virtual const uint32_t getDegree( ) const;
 
   /// Returns \e Degree field.
   uint32_t& getDegree( );

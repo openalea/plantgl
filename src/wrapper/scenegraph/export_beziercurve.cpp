@@ -48,7 +48,7 @@ void export_BezierCurve()
     .def( "copy", &BezierCurve::copy )
     .def( "getPointAt", &BezierCurve::getPointAt )
     .def( "__repr__", gbc_repr )
-    .DEC_BT_PROPERTY_WD(stride,BezierCurve,Stride,uint32_t)
+    .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve,Stride,uint32_t)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
     ;
 
@@ -88,7 +88,7 @@ void export_BezierCurve2D()
     .def( "copy", &BezierCurve2D::copy )
     .def( "getPointAt", &BezierCurve2D::getPointAt )
     .def( "__repr__", gbc2_repr )
-    .DEC_BT_PROPERTY_WD(stride,BezierCurve2D,Stride,uint32_t)
+    .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve2D,Stride,uint32_t)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve2D,CtrlPointList,Point3ArrayPtr)
     ;
 

@@ -98,7 +98,7 @@ void export_ExtrudedHull()
     .def("copy",&ExtrudedHull::copy)
 	.DEC_PTR_PROPERTY(horizontal,ExtrudedHull,Horizontal,Curve2DPtr)
 	.DEC_PTR_PROPERTY(vertical,ExtrudedHull,Vertical,Curve2DPtr)
-	.DEC_BT_PROPERTY_WD(ccw,ExtrudedHull,CCW,bool)
+	.DEC_BT_NR_PROPERTY_WD(ccw,ExtrudedHull,CCW,bool)
     ;
   implicitly_convertible<ExtrudedHullPtr,HullPtr >();
 

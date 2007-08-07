@@ -113,19 +113,19 @@ class SG_API Font : public SceneObject
   std::string& getFamily()
   { return __family; }
 
-  uint32_t getSize() const
+  const uint32_t getSize() const
   { return __size; }
 
   uint32_t& getSize()
   { return __size; }
 
-  bool getBold() const
+  const bool getBold() const
   { return __bold; }
 
   bool& getBold()
   { return __bold; }
 
-  bool getItalic() const
+  const bool getItalic() const
   { return __italic; }
 
   bool& getItalic()
@@ -241,7 +241,7 @@ public:
   bool isExplicit() const 
   { return false; }
 
-  inline bool getScreenCoordinates() const { return __screenCoordinates; }
+  inline const bool getScreenCoordinates() const { return __screenCoordinates; }
   inline bool& getScreenCoordinates() { return __screenCoordinates; }
   inline bool isScreenCoordinatesToDefault() { return __screenCoordinates == DEFAULT_SCREEN_COORDINATES; }
 

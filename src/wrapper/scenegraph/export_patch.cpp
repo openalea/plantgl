@@ -61,7 +61,7 @@ void export_Patch()
 {
   class_< Patch, PatchPtr, bases< ParametricModel >,boost::noncopyable >
     ("Patch",no_init)
-    .DEC_BT_PROPERTY_WD(ccw,Patch,CCW,bool)
+    .DEC_BT_NR_PROPERTY_WD(ccw,Patch,CCW,bool)
     ;
 
   implicitly_convertible< PatchPtr,ParametricModelPtr >();
@@ -86,8 +86,8 @@ void export_NurbsPatch()
     ("NurbsPatch",init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
      uint32_t,uint32_t,uint32_t,uint32_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
-    .DEC_BT_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint32_t)
-    .DEC_BT_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint32_t)
+    .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint32_t)
+    .DEC_BT_NR_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint32_t)
     .DEC_PTR_PROPERTY_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
     .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
     .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)

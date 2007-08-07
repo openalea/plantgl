@@ -62,6 +62,9 @@ DEF_POINTEE(MatrixTransformed)
 DEF_POINTEE(OrthoTransformed)
 DEF_POINTEE(IFS)
 
+template<class T>
+GeometryPtr tr_geometry(T * obj) { return obj->getGeometry(); }
+
 void export_Transformed()
 {
   class_< Transformed, TransformedPtr, bases< Geometry >, boost::noncopyable >("Transformation", no_init)
@@ -69,7 +72,7 @@ void export_Transformed()
 
   class_< MatrixTransformed, MatrixTransformedPtr, bases< Transformed >, boost::noncopyable  >
     ("MatrixTransformed", no_init)
-	.DEC_PTR_PROPERTY(geometry,MatrixTransformed,Geometry,GeometryPtr)
+	.add_property("geometry", &tr_geometry<MatrixTransformed>, &set_prop_bt_from_class<GeometryPtr,MatrixTransformed,&MatrixTransformed::getGeometry>)
 	;
   class_< OrthoTransformed, OrthoTransformedPtr, bases< MatrixTransformed >, boost::noncopyable  >
     ("OrthoTransformed", no_init);
@@ -118,9 +121,9 @@ void export_IFS()
     ("IFS", init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
        (args("depth","transfoList","geometry"),
 	"IFS(depth, transfoList, geometry)") )
-    .DEC_BT_PROPERTY_WD(depth,IFS,Depth,uchar_t)
+    .DEC_BT_NR_PROPERTY_WD(depth,IFS,Depth,uchar_t)
 	.DEC_PTR_PROPERTY(transfoList,IFS,TransfoList,Transform4ArrayPtr)
-	.DEC_PTR_PROPERTY(geometry,IFS,Geometry,GeometryPtr)
+	.DEC_PTR_NR_PROPERTY(geometry,IFS,Geometry,GeometryPtr)
 	.def("getAllTransformations",&ifs_getAllTransformations);
     ;
 

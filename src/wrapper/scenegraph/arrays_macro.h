@@ -5,7 +5,7 @@
 template<class T>
 RCPtr<T> extract_array_from_list( boost::python::object l )
 { 
-  extract<int> e_int( l ); 
+  boost::python::extract<int> e_int( l ); 
   if( e_int.check() )
     {
     return new T( e_int() );
@@ -26,7 +26,7 @@ struct array_from_list {
    typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
    void* memory_chunk = the_storage->storage.bytes; 
-   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); 
+   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
    RCPtr<T> result = extract_array_from_list<T>(py_sequence); 
    new (memory_chunk) T (*result); 
    delete result; 
@@ -47,7 +47,7 @@ struct array_ptr_from_list {
    typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
    void* memory_chunk = the_storage->storage.bytes; 
-   boost::python::list py_sequence( handle<>( borrowed( obj ) ) ); 
+   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
    RCPtr<T> result = extract_array_from_list<T>(py_sequence); 
    new (memory_chunk) RCPtr<T> (result); 
    data->convertible = memory_chunk; 
@@ -189,13 +189,14 @@ template<class T>
 size_t array_len( T * a )
 {  return a->getSize();}
 
+
 template<class T>
 struct array_pickle_suite : boost::python::pickle_suite 
 { 
     static boost::python::tuple getinitargs(T const& ar) 
 	{ 
 		boost::python::list l; 
-		for(T::const_iterator it = ar.getBegin(); it != ar.getEnd(); ++it) 
+		for(typename T::const_iterator it = ar.getBegin(); it != ar.getEnd(); ++it) 
 			l.append(*it); 
 		return boost::python::make_tuple(l);  
 	} 
@@ -209,14 +210,14 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c.def( "__getslice__", &array_getslice<ARRAY>, return_value_policy<manage_new_object>() ) \
+        c.def( "__getslice__", &array_getslice<ARRAY>, boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__setitem__",  &array_setitem<ARRAY>   ) \
         .def( "__delitem__",  &array_delitem<ARRAY>   ) \
         .def( "__delslice__", &array_delslice<ARRAY>  ) \
         .def( "__contains__", &array_contains<ARRAY>  ) \
-        .def( "__add__",      &array_additem<ARRAY>   , return_value_policy<manage_new_object>() ) \
-        .def( "__iadd__",     &array_iadditem<ARRAY>  , return_internal_reference<1>() ) \
-        .def( "__iadd__",     &array_iaddarray<ARRAY> , return_internal_reference<1>() ) \
+        .def( "__add__",      &array_additem<ARRAY>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "__iadd__",     &array_iadditem<ARRAY>  , boost::python::return_internal_reference<1>() ) \
+        .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \
         .def( "__len__",      &array_len<ARRAY> ) \
         .def( "reverse",      &ARRAY::reverse ) \
         .def( "insert",       &array_insertitem<ARRAY> ) \

@@ -216,7 +216,7 @@ NurbsCurve::~NurbsCurve( ) {
 }
 /* ----------------------------------------------------------------------- */
 
-uint32_t
+const uint32_t
 NurbsCurve::getDegree( ) const {
   return __degree;
 }
@@ -950,7 +950,7 @@ NurbsCurve2D::apply( Action& action ) {
   return action.process(this);
 }
 
-uint32_t
+const uint32_t
 NurbsCurve2D::getDegree( ) const {
   return __degree;
 }

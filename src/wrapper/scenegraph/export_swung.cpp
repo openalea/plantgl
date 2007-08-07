@@ -105,7 +105,7 @@ void export_Swung()
                                         args("profiles","angles","slices") ) ) 
     .def( "__init__", make_constructor( make_swung2, default_call_policies(), 
                                         args("profiles","angles") )) 
-	.DEC_BT_PROPERTY_WD(ccw,      Swung,CCW,             bool)
+	.DEC_BT_NR_PROPERTY_WD(ccw,      Swung,CCW,             bool)
 	.DEC_BT_PROPERTY_WD(degree,   Swung,Degree,          uint32_t)
 	.DEC_BT_PROPERTY_WD(stride,   Swung,Stride,          uint32_t)
 	.DEC_PTR_PROPERTY(angleList,   Swung,AngleList,       RealArrayPtr)

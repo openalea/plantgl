@@ -199,7 +199,7 @@ BezierCurve::isStrideToDefault( ) const{
   return ( __stride == DEFAULT_STRIDE );
 }
 
-uint32_t
+const uint32_t
 BezierCurve::getDegree( ) const {
   return __ctrlPointList->getSize() - 1;
 }
@@ -433,7 +433,7 @@ BezierCurve2D::isStrideToDefault( ) const{
   return ( __stride == BezierCurve::DEFAULT_STRIDE );
 }
 
-uint32_t
+const uint32_t
 BezierCurve2D::getDegree( ) const {
   return __ctrlPointList->getSize() - 1;
 }

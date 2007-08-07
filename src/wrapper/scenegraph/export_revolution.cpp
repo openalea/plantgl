@@ -89,7 +89,7 @@ void export_Cone()
 		"Cone(radius, height [, solid, slices])"))
   .DEC_BT_PROPERTY_WD(radius,Cone,Radius,real_t)
   .DEC_BT_PROPERTY_WD(height,Cone,Height,real_t)
-  .DEC_BT_PROPERTY_WD(solid,Cone,Solid,bool);
+  .DEC_BT_NR_PROPERTY_WD(solid,Cone,Solid,bool);
 
   implicitly_convertible<ConePtr, SORPtr >();
 }
@@ -100,7 +100,10 @@ void export_Revolution()
   class_< Revolution, RevolutionPtr, bases< SOR > , boost::noncopyable >
     ("Revolution", init< Curve2DPtr, optional< uchar_t > >
                (args("profile","slices"),
-		"Revolution(profile [, slices])"));
+		"Revolution(profile [, slices])"))
+    .DEC_PTR_PROPERTY(profile, Revolution, Profile, Curve2DPtr)
+    ;
+
 
   implicitly_convertible< RevolutionPtr, SORPtr >();
 

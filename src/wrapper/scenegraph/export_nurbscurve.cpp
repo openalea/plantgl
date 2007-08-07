@@ -84,8 +84,6 @@ object nurbs_fit4(Polyline * pts){
 	return nurbs_fit2(pts->getPointList());
 }
 
-
-
 void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
@@ -96,8 +94,7 @@ void export_NurbsCurve()
      .def( "fit", nurbs_fit3, args("points","degree","nbctrlpoints") )
      .def( "fit", nurbs_fit4, args("points") )
 	 .staticmethod("fit")
-     .DEC_BT_PROPERTY_WD(degree,NurbsCurve,Degree,uint32_t)
-     .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
+     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve,Degree,uint32_t)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
     ;
 
@@ -218,7 +215,7 @@ void export_NurbsCurve2D()
      .def( "fit", nurbs2_fit3, args("points") )
      .def( "fit", nurbs2_fit4, args("points","degree","nbctrlpoints") )
 	 .staticmethod("fit")
-     .DEC_BT_PROPERTY_WD(degree,NurbsCurve2D,Degree,uint32_t)
+     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve2D,Degree,uint32_t)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve2D,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve2D::setKnotListToDefault)
     ;

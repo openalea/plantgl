@@ -81,7 +81,7 @@ void export_AxisRotated()
      (args("axis","angle","geometry"),
 	"AxisRotated( Vector3 axis, radian angle, geometry)") )
     .DEC_CT_PROPERTY_WD(axis,AxisRotated,Axis,Vector3)
-	.DEC_ANGLE_PROPERTY_WD(angle,AxisRotated,Angle)
+	.DEC_ANGLE_NR_PROPERTY_WD(angle,AxisRotated,Angle)
     ;
 
   implicitly_convertible< AxisRotatedPtr, OrthoTransformedPtr >();
@@ -111,7 +111,7 @@ void export_Tapered()
 	"Tapered(base, top, primitive)") )
 	.DEC_BT_PROPERTY_WD(topRadius,Tapered,TopRadius,real_t)
 	.DEC_BT_PROPERTY_WD(baseRadius,Tapered,BaseRadius,real_t)
-	.DEC_PTR_PROPERTY(primitive,Tapered,Primitive,Primitive)
+	.DEC_PTR_PROPERTY(primitive,Deformed,Primitive,PrimitivePtr)
     ;
 
   implicitly_convertible< TaperedPtr, TransformedPtr >();

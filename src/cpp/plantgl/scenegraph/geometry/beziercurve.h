@@ -144,7 +144,7 @@ public:
   virtual bool isStrideToDefault( ) const;
 
   /// Returns \e Degree value.
-  virtual uint32_t getDegree( ) const ;
+  virtual const uint32_t getDegree( ) const ;
 
   /** Returns the \e Point for u = \e u.
       using deCasteljau algorithm (see the Nurbs book p.24) 
@@ -268,7 +268,7 @@ public:
   bool isStrideToDefault( ) const;
 
   /// Returns \e Degree value.
-  virtual uint32_t getDegree( ) const;
+  virtual const uint32_t getDegree( ) const;
 
   /*! Returns the \e Point for u = \e u.
       using deCasteljau algorithm (see the Nurbs book p.24) 
