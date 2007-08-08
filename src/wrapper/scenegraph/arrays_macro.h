@@ -62,12 +62,16 @@ std::string PREFIX##_str( ARRAY * a ) \
   ss << #ARRAY << "(";  \
   if(!a->isEmpty()){ \
     ss << '['; \
-    std::copy( a->getBegin(), a->getEnd()-1, std::ostream_iterator< ARRAY::element_type >( ss, "," ) ); \
-	ss << *( a->getEnd() - 1 ) << ']'; } \
+    for(ARRAY::const_iterator it = a->getBegin(); it != a->getEnd(); ++it){ \
+        if (it != a->getBegin()) ss << ","; \
+        ss << extract<std::string>(boost::python::str(boost::python::object(*it)))(); \
+    } \
+	ss << ']'; } \
   ss << ")"; \
   return ss.str(); \
 } \
 
+//    std::copy( a->getBegin(), a->getEnd()-1, std::ostream_iterator< ARRAY::element_type >( ss, "," ) ); \
 
 template<class T>
 typename T::element_type array_bt_getitem( T * a, int pos )

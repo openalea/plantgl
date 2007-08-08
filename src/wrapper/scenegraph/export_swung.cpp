@@ -39,6 +39,8 @@
 
 #include <plantgl/math/util_vector.h>
 #include <plantgl/scenegraph/geometry/sor.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/geometry/profile.h>
 #include <plantgl/scenegraph/geometry/swung.h>
 #include <plantgl/scenegraph/geometry/curve.h>
 #include <plantgl/scenegraph/geometry/profile.h>
@@ -52,6 +54,27 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
+
+DEF_POINTEE(ProfileInterpolation)
+
+object pi_getSectionAt(ProfileInterpolation * pi, real_t u){
+    if (u < pi->getUMin() | u > pi->getUMax())
+       throw PythonExc_ValueError();
+    if (pi->is2DInterpolMode())return object(pi->getSection2DAt(u));
+    else return object(pi->getSection3DAt(u));
+}
+
+void export_ProfileInterpolation()
+{
+  
+  class_< ProfileInterpolation, ProfileInterpolationPtr,boost::noncopyable >
+    ("ProfileInterpolation",init<Curve2DArrayPtr,TOOLS(RealArrayPtr),optional<uint32_t,uint32_t> >
+        ("ProfileInterpolation([Curve2D] profiles,[float] knotList,int degree,int stride"))
+    .def("getSectionAt",&pi_getSectionAt)
+    .add_property("umin",&ProfileInterpolation::getUMin)
+    .add_property("umax",&ProfileInterpolation::getUMax)
+  ;
+}
 
 DEF_POINTEE(Swung)
 
@@ -88,9 +111,11 @@ SwungPtr make_swung2( boost::python::list profiles,
 	return make_swung(profiles,angles,Swung::DEFAULT_SLICES,Swung::DEFAULT_CCW,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
 }
 
+ProfileInterpolationPtr sw_pi(Swung * sw){ return sw->getProfileInterpolation(); }
 
 void export_Swung()
 {
+    export_ProfileInterpolation();
   
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >
     ("Swung",no_init)
@@ -110,6 +135,8 @@ void export_Swung()
 	.DEC_BT_PROPERTY_WD(stride,   Swung,Stride,          uint32_t)
 	.DEC_PTR_PROPERTY(angleList,   Swung,AngleList,       RealArrayPtr)
 	.DEC_PTR_PROPERTY(profileList, Swung,ProfileList,     Curve2DArrayPtr)
+	// .DEC_PTR_PROPERTY(interpolator, Swung,ProfileInterpolation, ProfileInterpolation)
+    .add_property( "interpolator",&sw_pi);
     ;
 
   implicitly_convertible< SwungPtr, SORPtr >();

@@ -80,6 +80,8 @@ void module_sg()
     export_BezierCurve2D();
     export_NurbsCurve2D();
 
+    export_geometryarrays();
+
     export_BezierCurve();
     export_NurbsCurve();
 

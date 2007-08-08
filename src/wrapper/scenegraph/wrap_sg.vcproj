@@ -219,6 +219,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_geometryarray.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_group.cpp"
 				>
 			</File>

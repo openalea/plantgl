@@ -743,10 +743,10 @@ cout<<"Stride: "<<__stride<<endl;
     return true;
     }
 
-  if( n <= 3 )
+//  if( n <= 3 )
     __is2D= true;
-  else
-    __is2D= false;
+/*  else
+    __is2D= false;*/
 
 #ifdef DEBUG
 cout<<"is2D? "<<__is2D<<endl;
