@@ -483,7 +483,7 @@ class ATriangle( AShape3D ):
         """
         self._common_init( **keys )
         AShape3D.__init__( self,  
-                         geometry=pgl.FaceSet( self._points, self._indexes ), axis=axis, **keys )
+                         geometry=pgl.TriangleSet( self._points, self._indexes ), axis=axis, **keys )
 
     def _common_init( self, **keys ):
         """
@@ -494,6 +494,6 @@ class ATriangle( AShape3D ):
         self._indexes = []
         self._points = pgl.Point3Array( keys[ "points" ] )
         for i in xrange( 1, len(keys[ "points" ] ) ):
-            self._indexes.append( pgl.Index( [0,1,2] ) )
-        self._indexes = pgl.IndexArray( self._indexes )
+            self._indexes.append( pgl.Index3( 0,1,2 ) )
+        self._indexes = pgl.Index3Array( self._indexes )
             
