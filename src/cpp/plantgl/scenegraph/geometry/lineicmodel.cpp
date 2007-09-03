@@ -79,7 +79,7 @@ LineicModel::getLength(){
 }
 
 Vector3 
-LineicModel::findClosest(const Vector3& p) const{
+LineicModel::findClosest(const Vector3& p, real_t* ui) const{
   real_t u0 = getFirstKnot();
   real_t u1 = getLastKnot();
   real_t deltau = (u1 - u0)/getStride();
@@ -87,13 +87,15 @@ LineicModel::findClosest(const Vector3& p) const{
   Vector3 res = p1;
   real_t dist = normSquared(p-res);
   Vector3 p2, pt;
+  real_t lu;
   for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
     p2 = getPointAt(u);
 	pt = p;
-	real_t d = closestPointToSegment(pt,p1,p2);
+	real_t d = closestPointToSegment(pt,p1,p2,&lu);
 	if(d < dist){
 	  dist = d;
 	  res = pt;
+      if (ui != NULL) *ui = u + deltau * (lu -1);
 	}
     p1 = p2;
   }
@@ -102,8 +104,9 @@ LineicModel::findClosest(const Vector3& p) const{
 
 real_t 
 PGL(closestPointToSegment)(Vector3& p, 
-					  const Vector3& segA,
-					  const Vector3& segB)
+					       const Vector3& segA,
+					       const Vector3& segB,
+                           real_t* u)
 {
   Vector3 diff = p - segA;
   Vector3 M = segB - segA;
@@ -125,7 +128,7 @@ PGL(closestPointToSegment)(Vector3& p,
 	t = 0;
 	p = segA;
   }
-
+  if (u != NULL) *u = t;
   return dot(diff,diff);
 }
 

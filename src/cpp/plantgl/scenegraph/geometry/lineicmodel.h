@@ -107,7 +107,7 @@ public:
   /// Return the length of the lineic model.
   virtual real_t getLength();
 
-  virtual TOOLS(Vector3) findClosest(const TOOLS(Vector3)&) const;
+  virtual TOOLS(Vector3) findClosest(const TOOLS(Vector3)& pt, real_t* u = NULL) const;
   
 };
 
@@ -120,7 +120,8 @@ typedef RCPtr<LineicModel> LineicModelPtr;
 
 SG_API real_t closestPointToSegment(TOOLS(Vector3)& p, 
 						   const TOOLS(Vector3)& segA,
-						   const TOOLS(Vector3)& segB);
+						   const TOOLS(Vector3)& segB,
+                           real_t* u = NULL);
 
 /* ----------------------------------------------------------------------- */
 

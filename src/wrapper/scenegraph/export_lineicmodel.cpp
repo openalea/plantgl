@@ -16,6 +16,20 @@ DEF_POINTEE( Curve2D )
 DEF_POINTEE( SOR2D )
 DEF_POINTEE( Disc )
 
+object lm_findclosest(LineicModel * lm, Vector3 point)
+{
+    real_t u;
+    Vector3 res = lm->findClosest(point,&u);
+    return make_tuple(res,u);
+}
+
+object seg_findclosest(Vector3 point, Vector3 segA, Vector3 segB)
+{
+    real_t u;
+    real_t dist = closestPointToSegment(point,segA,segB,&u);
+    return make_tuple(point,dist,u);
+}
+
 void export_LineicModel()
 {
   class_<LineicModel,LineicModelPtr, bases<Primitive>, boost::noncopyable>( "LineicModel", no_init )
@@ -25,13 +39,13 @@ void export_LineicModel()
     .def( "getPointAt", &LineicModel::getPointAt, args("u") )
     .def( "getTangentAt", &LineicModel::getTangentAt, args("u") )
     .def( "getNormalAt", &LineicModel::getNormalAt, args("u") )
-    .def( "findClosest", &LineicModel::findClosest, args("point") )
+    .def( "findClosest", &lm_findclosest, args("point") )
     .def( "getLength", &LineicModel::getLength )
     ;
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
 
-  def("closestPointToSegment",&closestPointToSegment, args("point","segA","segB"));
+  def("closestPointToSegment",&seg_findclosest, args("point","segA","segB"));
 }
 
 void export_PlanarModel()
