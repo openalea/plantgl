@@ -58,6 +58,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib QtCored4.lib QtGuid4.lib"
 				OutputFile="../../../../bin/pgltools-d.dll"
+				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"

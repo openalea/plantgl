@@ -1,4 +1,6 @@
 #include "../util/export_refcountptr.h"
+#include "../util/exception.h"
+
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 #include <plantgl/scenegraph/geometry/curve.h>
 #include <plantgl/scenegraph/geometry/disc.h>
@@ -9,6 +11,7 @@
 using namespace boost::python;
 
 PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 DEF_POINTEE( LineicModel )
 DEF_POINTEE( PlanarModel )
@@ -30,15 +33,22 @@ object seg_findclosest(Vector3 point, Vector3 segA, Vector3 segB)
     return make_tuple(point,dist,u);
 }
 
+template <class T, class U, U (T::* func)(real_t) const >
+U getCurveValue(const T * lm, real_t u){
+   if (lm->getFirstKnot() > u || lm->getLastKnot() < u)
+       throw PythonExc_IndexError();
+   return (lm->*func)(u);
+}
+
 void export_LineicModel()
 {
   class_<LineicModel,LineicModelPtr, bases<Primitive>, boost::noncopyable>( "LineicModel", no_init )
     .add_property( "firstKnot", &LineicModel::getFirstKnot )
     .add_property( "lastKnot", &LineicModel::getLastKnot )
     .def( "getStride", &LineicModel::getStride )
-    .def( "getPointAt", &LineicModel::getPointAt, args("u") )
-    .def( "getTangentAt", &LineicModel::getTangentAt, args("u") )
-    .def( "getNormalAt", &LineicModel::getNormalAt, args("u") )
+    .def( "getPointAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getPointAt>, args("u") )
+    .def( "getTangentAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
+    .def( "getNormalAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
     .def( "findClosest", &lm_findclosest, args("point") )
     .def( "getLength", &LineicModel::getLength )
     ;
@@ -57,13 +67,14 @@ void export_PlanarModel()
 
 }
 
+
 void export_Curve2D()
-{
+{ 
   class_<Curve2D,Curve2DPtr, bases<PlanarModel>, boost::noncopyable>( "Curve2D", no_init )
     .add_property( "firstKnot", &Curve2D::getFirstKnot )
     .add_property( "lastKnot", &Curve2D::getLastKnot )
     .def( "getStride", &Curve2D::getStride )
-    .def( "getPointAt", &Curve2D::getPointAt, args("u") )
+    .def( "getPointAt", &getCurveValue<Curve2D,Vector2,&Curve2D::getPointAt>, args("u") )
     .def( "getLength", &LineicModel::getLength )
     ;
 

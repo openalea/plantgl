@@ -173,6 +173,8 @@ public:
     inline void decal(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ decal(TOOLS(Vector3)(x,y,z)); }
 
+    virtual void transform(const TOOLS(Matrix3)& matrix);
+
     inline void traceTo(real_t x, real_t y, real_t z)
 	{ traceTo(TOOLS(Vector3)(x,y,z)); }
 

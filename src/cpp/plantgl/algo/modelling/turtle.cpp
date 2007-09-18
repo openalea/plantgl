@@ -110,6 +110,7 @@ TurtleParam * TurtleParam::copy(){
   t->heading = heading;
   t->left = left;
   t->up = up;
+  t->scale = scale;
   t->color = color;
   t->texture = texture;
   t->width = width;
@@ -254,7 +255,7 @@ void Turtle::stop(){
   }
   
   void Turtle::f(float length){
-	__params->position += __params->heading*length;
+	__params->position += __params->heading*length*getScale().z();
 	if (__params->isGeneralizedCylinderOn() ||
 	  __params->isPolygonOn())
 	  __params->pushPosition();
@@ -292,7 +293,7 @@ void Turtle::rollR(real_t angle){
 	__params->left = m*__params->left;
   }
   
-  void Turtle::rollToVert(const Vector3& top){
+void Turtle::rollToVert(const Vector3& top){
 	__params->left = cross(top,__params->heading);
 	if (norm(__params->left) < GEOM_EPSILON )
 	  __params->left = Vector3(0,-1,0);
@@ -301,8 +302,13 @@ void Turtle::rollR(real_t angle){
 	  __params->up = cross(__params->heading,__params->left);
 	}
   }
-  
-  void Turtle::setHead(const Vector3& head, const Vector3& up){
+
+void Turtle::transform(const Matrix3& matrix)
+{
+    __params->transform(matrix);
+}
+
+void Turtle::setHead(const Vector3& head, const Vector3& up){
 	Vector3 h = head;
 	real_t lh = h.normalize();
 	Vector3 u = up;
@@ -566,21 +572,20 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
   if(FABS(width) > GEOM_EPSILON){
 	real_t taper = topdiam/width;
   if ( getScale() !=  Vector3(1,1,1) &&
-	  (getScale().x() == getScale().y() && 
-	   getScale().y() == getScale().z() ))
+	  (getScale().x() == getScale().y() ))
 	   width *= getScale().x();
 	if (FABS(taper) < GEOM_EPSILON)
-	  a = GeometryPtr(new Cone(width,length,false));
+	  a = GeometryPtr(new Cone(width,length*getScale().z(),false));
 	else if (FABS(taper-1.0) < GEOM_EPSILON)
-	  a = GeometryPtr(new Cylinder(width,length,false));
+	  a = GeometryPtr(new Cylinder(width,length*getScale().z(),false));
 	else
-	  a = GeometryPtr(new Frustum(width,length,taper,false));
+	  a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false));
 	 __scene->add(Shape(transform(a),getCurrentMaterial()));
   }
   else {
 	if (FABS(topdiam) < GEOM_EPSILON){
 	  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-	  pts->setAt(1,getPosition()+getHeading()*length);
+	  pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
 	  a = GeometryPtr(new Polyline(pts));
 	}
 	else {
@@ -589,11 +594,11 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
 		  (getScale().x() == getScale().y() && 
 		  getScale().y() == getScale().z() ))
 		  topdiam *= getScale().x();
-	  a = GeometryPtr(new Cone(_topdiam,length,false));
+	  a = GeometryPtr(new Cone(_topdiam,length*getScale().z(),false));
 	  if (getLeft() != Vector3::OX || 
 		  getUp() != -Vector3::OY)
         a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
-      a = GeometryPtr(new Translated(getPosition()+getHeading()*length,a));
+      a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
 	}
 	__scene->add(Shape(a,getCurrentMaterial()));
   }
@@ -603,15 +608,14 @@ void PglTurtle::_cylinder(real_t length){
   real_t width = getWidth();
   if(FABS(width) < GEOM_EPSILON){
 	  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-	  pts->setAt(1,getPosition()+getHeading()*length);
+	  pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
 	  __scene->add(Shape(GeometryPtr(new Polyline(pts)),getCurrentMaterial()));
   }
   else {
 	if ( getScale() !=  Vector3(1,1,1) &&
-		(getScale().x() == getScale().y() && 
-		 getScale().y() == getScale().z() ))
+		(getScale().x() == getScale().y() ))
 		width *= getScale().x();
-	__scene->add(Shape(transform(GeometryPtr(new Cylinder(width,length,false))),
+	__scene->add(Shape(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false))),
 					  getCurrentMaterial()));
   }
 }
