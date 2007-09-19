@@ -153,7 +153,13 @@ public:
   virtual bool isAVolume( ) const;
 
   /// Return the length of the lineic model.
-  virtual real_t getLength();
+  real_t getLength() { return getLength(getFirstKnot(),getLastKnot()); }
+
+  /// Return the length of the lineic model starting from u = begin.
+  real_t getLength(real_t begin) { return getLength(begin,getLastKnot()); }
+
+  /// Return the length of the lineic model from u = begin to u = end.
+  virtual real_t getLength(real_t begin, real_t end);
 
 };
 

@@ -82,7 +82,9 @@ void export_Transformation()
   class_< Matrix3Transformation, Matrix3TransformationPtr, bases< Transformation2D >, boost::noncopyable  >
     ("Matrix3Transformation", no_init);
   class_< Matrix4Transformation, Matrix4TransformationPtr, bases< Transformation3D >, boost::noncopyable  >
-    ("Matrix4Transformation", no_init);
+    ("Matrix4Transformation", no_init)
+	.def("getMatrix",&Matrix4Transformation::getMatrix);
+    ;
   class_< Deformation, DeformationPtr, bases< Transformation3D >, boost::noncopyable  >
     ("Deformation", no_init);
 
@@ -125,9 +127,9 @@ void export_Translation()
 void export_OrthonormalBasis3D()
 {
   class_< OrthonormalBasis3D, bases< Matrix4Transformation > , OrthonormalBasis3DPtr, boost::noncopyable >
-    ob ("OrthonormalBasis3D", init< const Matrix3& >() );
-	ob.def("getMatrix3",&OrthonormalBasis3D::getMatrix3);
-	ob.def("getMatrix",&OrthonormalBasis3D::getMatrix);
+    ("OrthonormalBasis3D", init< const Matrix3& >() )
+	.def("getMatrix3",&OrthonormalBasis3D::getMatrix3)
+	.def("getMatrix",&OrthonormalBasis3D::getMatrix);
 
   implicitly_convertible<OrthonormalBasis3DPtr, Matrix4TransformationPtr>();
 }

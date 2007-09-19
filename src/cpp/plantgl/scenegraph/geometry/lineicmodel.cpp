@@ -62,19 +62,45 @@ bool LineicModel::isAVolume( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-real_t
-LineicModel::getLength(){
-  real_t length(0);
-  real_t u0 = getFirstKnot();
-  real_t u1 = getLastKnot();
-  real_t deltau = (u1 - u0)/getStride();
-  Vector3 p1 = getPointAt(u0);
+
+real_t 
+LineicModel::getLength(real_t begin, real_t end)
+{
+  real_t fk = getFirstKnot();
+  real_t lk = getLastKnot();
+
+  if (begin < getFirstKnot()) begin = fk;
+  if (end > getLastKnot()) end = lk;
+
+  real_t deltau = (lk - fk)/getStride();
+  // We use the same u sequence to compute the length
+  // For this, we compute the closer smaller u value from begin and end
+  real_t beginI = int((begin-fk)/deltau) * deltau + fk;
+  real_t endI = int((end-fk)/deltau) * deltau + fk;
+
+  Vector3 p1 = getPointAt(beginI);
   Vector3 p2;
-  for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
+
+  real_t length = 0; 
+
+  // Eventually we do some adjustement according to the real begin and end values 
+  // here and just after the loop
+  if (begin-beginI > GEOM_EPSILON){
+    p2 = getPointAt(begin);
+    length -= norm(p2 - p1);
+  }
+
+  for(real_t u = beginI + fk + deltau ; u <= endI ; u += deltau){
     p2 = getPointAt(u);
     length += norm(p2 - p1);
     p1 = p2;
   }
+
+  if (end-endI > GEOM_EPSILON){
+    p2 = getPointAt(end);
+    length += norm(p2 - p1);
+  }
+
   return length;
 }
 

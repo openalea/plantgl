@@ -67,7 +67,7 @@ GeometryPtr tr_geometry(T * obj) { return obj->getGeometry(); }
 
 void export_Transformed()
 {
-  class_< Transformed, TransformedPtr, bases< Geometry >, boost::noncopyable >("Transformation", no_init)
+  class_< Transformed, TransformedPtr, bases< Geometry >, boost::noncopyable >("Transformed", no_init)
 		.def("transformation",&Transformed::getTransformation);
 
   class_< MatrixTransformed, MatrixTransformedPtr, bases< Transformed >, boost::noncopyable  >

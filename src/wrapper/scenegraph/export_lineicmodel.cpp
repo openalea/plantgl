@@ -50,7 +50,9 @@ void export_LineicModel()
     .def( "getTangentAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
     .def( "getNormalAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
     .def( "findClosest", &lm_findclosest, args("point") )
-    .def( "getLength", &LineicModel::getLength )
+    .def( "getLength", (real_t (LineicModel::*)())&LineicModel::getLength )
+    .def( "getLength", (real_t (LineicModel::*)(real_t))&LineicModel::getLength, args("begin") )
+    .def( "getLength", (real_t (LineicModel::*)(real_t,real_t))&LineicModel::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
     ;
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
@@ -75,7 +77,9 @@ void export_Curve2D()
     .add_property( "lastKnot", &Curve2D::getLastKnot )
     .def( "getStride", &Curve2D::getStride )
     .def( "getPointAt", &getCurveValue<Curve2D,Vector2,&Curve2D::getPointAt>, args("u") )
-    .def( "getLength", &LineicModel::getLength )
+    .def( "getLength", (real_t (Curve2D::*)())&Curve2D::getLength )
+    .def( "getLength", (real_t (Curve2D::*)(real_t))&Curve2D::getLength, args("begin") )
+    .def( "getLength", (real_t (Curve2D::*)(real_t,real_t))&Curve2D::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();
