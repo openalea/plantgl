@@ -35,7 +35,7 @@ object seg_findclosest(Vector3 point, Vector3 segA, Vector3 segB)
 
 template <class T, class U, U (T::* func)(real_t) const >
 U getCurveValue(const T * lm, real_t u){
-   if (lm->getFirstKnot() > u || lm->getLastKnot() < u)
+   if (lm->getFirstKnot() - GEOM_EPSILON > u || lm->getLastKnot() + GEOM_EPSILON < u )
        throw PythonExc_IndexError();
    return (lm->*func)(u);
 }

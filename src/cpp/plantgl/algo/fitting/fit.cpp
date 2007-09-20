@@ -1224,7 +1224,7 @@ GeometryPtr Fit::extrudedHull(){
 	    _it++)
 	    horizontal_proj->setAt(k++,Vector2(_it->x(),_it->y()));
 	
-	Point2ArrayPtr horizontal_profile = convexBalancedPolyline(horizontal_proj);
+	Point2ArrayPtr horizontal_profile = convexPolyline(horizontal_proj);
 
 	/// Vertical Profile.
 	Point2ArrayPtr vertical_proj(new Point2Array(numpoints));
@@ -1235,7 +1235,7 @@ GeometryPtr Fit::extrudedHull(){
 	    vertical_proj->setAt(k++,Vector2(_it2->x(),_it2->z()));
   
 
-	Point2ArrayPtr vertical_profile = convexBalancedPolyline(vertical_proj);
+	Point2ArrayPtr vertical_profile = convexPolyline(vertical_proj);
 
 
 	if(!vertical_profile||!horizontal_profile){
@@ -1609,7 +1609,7 @@ Fit::convexHull(){
 /* ----------------------------------------------------------------------- */
 
 
-Point2ArrayPtr Fit::convexBalancedPolyline(const Point2ArrayPtr& _points){
+Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
 #ifdef WITHOUT_QHULL
 	return Point2ArrayPtr(0);
 #else
@@ -1791,96 +1791,6 @@ Point2ArrayPtr Fit::convexBalancedPolyline(const Point2ArrayPtr& _points){
                     _result->pushBack(*_itf3b);_itf3b--;}
             }
         }
-        qh_freeqhull(!qh_ALL);
-        qh_memfreeshort (&curlong, &totlong);
-        if (curlong || totlong)
-            cerr << "qhull internal warning (main): did not free "<< totlong << "  bytes of long memory ("<< curlong <<" pieces)" << endl;
-
-    }
-    fclose(errfile);
-    return _result;
-#endif
-}
-
-/* ----------------------------------------------------------------------- */
-Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
-#ifdef WITHOUT_QHULL
-	return Point2ArrayPtr(0);
-#else
-    /* dimension of points */
-    int dim=2;
-
-    /* number of points */
-    int numpoints =  _points->getSize();
-
-
-    /* array of coordinates for each point */
-    coordT * points = new coordT[dim*numpoints];
-
-    /* True if qhull should free points in qh_freeqhull() or reallocation */
-    boolT ismalloc = False;
-
-    /* option flags for qhull, see qh_opt.htm */
-    char flags[]= "qhull Tv Pp";
-
-    /* output from qh_produce_output()
-     use NULL to skip qh_produce_output() */
-    FILE *outfile= NULL;
-
-#ifndef _WIN32
-    /* error messages from qhull code */
-    FILE *errfile= fopen("/dev/null","w");
-#else
-        char * tf = getenv("TMP");
-        if(tf == NULL)tf = "C:\temp";
-        string f = tf + string("\\qhull.log");
-    FILE *errfile= fopen(f.c_str(),"w");
-#endif
-
-    /* 0 if no error from qhull */
-    int exitcode;
-
-    /* set by FORALLfacets */
-    facetT *facet;
-
-    /* memory remaining after qh_memfreeshort */
-    int curlong, totlong;
-
-
-    assert(_points->isValid());
-
-    Point2ArrayPtr _result;
-
-
-    if(numpoints>3){
-
-        int k=0;
-        for(Point2Array::iterator _it = _points->getBegin();
-            _it != _points->getEnd();
-            _it++){
-            points[k++]=(coordT)(_it->x());
-            points[k++]=(coordT)(_it->y());
-        }
-
-        /* initialize dim, numpoints, points[], ismalloc here */
-        exitcode= qh_new_qhull (dim, numpoints, points, ismalloc,flags, outfile, errfile);
-
-        vertexT *vertex,**vertexp;
-        vector<Vector2> _vf;
-
-        if (!exitcode) { /* if no error */
-            /* 'qh facet_list' contains the convex hull */
-            FORALLfacets {
-                setT* _vertices = facet->vertices;
-                FOREACHvertex_(_vertices){
-                    _vf.push_back(Vector2((real_t)vertex->point[0],(real_t)vertex->point[1]));
-                }
-
-            }
-        }
-
-		_result = Point2ArrayPtr(new Point2Array(_vf.begin(),_vf.end()));
-
         qh_freeqhull(!qh_ALL);
         qh_memfreeshort (&curlong, &totlong);
         if (curlong || totlong)

@@ -214,11 +214,6 @@ class ALGO_API Fit
     /*!
       Fit the 2D points \e points with a convex Polyline.
     */
-    static Point2ArrayPtr convexBalancedPolyline(const Point2ArrayPtr& _points);
-
-    /*!
-      Fit the 2D points \e points with a convex Polyline.
-    */
     static Point2ArrayPtr convexPolyline(const Point2ArrayPtr& _points);
 
 /* ----------------------------------------------------------------------- */

@@ -154,10 +154,10 @@ void export_Matrix4()
   m2.def( "isValid", &Matrix4::isValid );
   m2.def( "set", m4_set );
   m2.def( "setTransformation", &Matrix4::setTransformation );
-  m2.def( "getTransformation", &mat4_getTransformation );
+  m2.def( "getTransformation", &mat4_getTransformation , "Return scaling, rotation and translation corresponding the decomposition of the matrix into R(rotate) * S(scale) + T(translate) where R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax)");
   m2.def( "setTransformation2", &Matrix4::setTransformation2 );
-  m2.def( "getTransformation2", &mat4_getTransformation2 );
-  m2.def( "getTransformationB", &mat4_getTransformationB );
+  m2.def( "getTransformation2", &mat4_getTransformation2,  "Return scaling, rotation and translation corresponding the decomposition of the matrix into S(scale) * R(rotate) + T(translate) where R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax)");
+  m2.def( "getTransformationB", &mat4_getTransformationB, "Alternative method to getTransformation." );
   m2.def( "adjoint", (Matrix4 (*) ( const Matrix4& )) adjoint );
   m2.def( "det", (real_t (*) ( const Matrix4& )) det );
   m2.def( "inverse", (Matrix4 (*) ( const Matrix4& )) inverse );
