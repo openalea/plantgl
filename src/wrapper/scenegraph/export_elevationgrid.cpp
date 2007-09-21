@@ -44,7 +44,8 @@ ElevationGridPtr geg_fromlist( boost::python::object l )
 	return ElevationGridPtr(new ElevationGrid(array));
 }									
 
-
+real_t eg_getHeightAt(ElevationGrid *  e, uint32_t i, uint32_t j)
+{ return e->getHeightAt(i,j); }
 
 
 void export_ElevationGrid()
@@ -54,6 +55,8 @@ void export_ElevationGrid()
      ("ElevationGrid(heights [,xspacing,yspacing,ccw])"))
     .def( "__init__", make_constructor( geg_fromlist ) ) 
     .def( "copy", &ElevationGrid::copy )
+    .def( "getPointAt", &ElevationGrid::getPointAt )
+    .def( "getHeightAt", &eg_getHeightAt )
     .DEC_BT_PROPERTY_WD(xspacing,ElevationGrid,XSpacing,real_t)
     .DEC_BT_PROPERTY_WD(yspacing,ElevationGrid,YSpacing,real_t)
     .DEC_PTR_PROPERTY(heightList,ElevationGrid,HeightList,RealArray2Ptr)

@@ -106,6 +106,14 @@ object ray_intersect_bs(Ray * ray, const Vector3& center, real_t radius)
     else return object(ret);
 }
 
+object ray_intersect_bbx(Ray * ray, const BoundingBox& bbox)
+{
+    real_t tnear,tfar;
+    if (ray->intersect(bbox,tnear,tfar))
+        return make_tuple(tnear,tfar);
+    else return object();
+}
+
 
 void export_Ray()
 {
@@ -123,7 +131,8 @@ void export_Ray()
       .def("intersect",ray_intersect_tr,args("p1","p2","p3"))
       .def("intersect",ray_intersect_qd,args("p1","p2","p3","p4"))
       .def("intersect",ray_intersect_bs,args("center","radius"))
-      .def("isIntersecting",(bool(Ray::*)(const BoundingBox&) const)&Ray::intersect,args("bbox"))
+      .def("intersect",ray_intersect_bbx,args("bbox"))
+      //.def("isIntersecting",(bool(Ray::*)(const BoundingBox&) const)&Ray::intersect,args("bbox"))
       .def("isIntersecting",(bool(Ray::*)(const BoundingSphere&) const)&Ray::intersect,args("bsphere"))
       ;
 }

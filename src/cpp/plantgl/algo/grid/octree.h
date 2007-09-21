@@ -139,6 +139,8 @@ public:
 
   bool contains(const TOOLS(Vector3)& v) const;
 
+  bool findFirstPoint(const Ray& ray, TOOLS(Vector3)& pt ) const;
+
 protected:
 
   /// Build method

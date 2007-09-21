@@ -183,7 +183,7 @@ void array_appenditem( T * array, typename T::element_type * v )
 { array->pushBack(*v); }
 
 template<class T>
-T * array_iaddarray( T * array, T * array2 ) 
+T * array_iaddarray( T * array, RCPtr<T> array2 ) 
 { 
 	array->insert(array->getEnd(),array2->getBegin(),array2->getEnd()); 
 	return array; 

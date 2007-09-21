@@ -225,13 +225,13 @@ class ALGO_API Ray  {
 
 
   /// Intersection with a bounding box
-  bool intersect(const BoundingBox& bbox) const ;
+  bool intersect(const BoundingBox& bbox, real_t& tnear, real_t& tfar) const ;
 
   /// Intersection with a bounding sphere
   bool intersect(const BoundingSphere& bsphere) const ;
 
   /// Intersection with a bounding box
-  bool intersect(const BoundingBoxPtr& bbox) const ;
+  bool intersect(const BoundingBoxPtr& bbox, real_t& tnear, real_t& tfar) const ;
 
   /// Intersection with a bounding sphere
   bool intersect(const BoundingSpherePtr& bsphere) const ;

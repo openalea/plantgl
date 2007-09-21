@@ -96,6 +96,13 @@ object oct_intersect(Octree * oct, const Ray& ray) {
     else return object(false);
 }
 
+object oct_findfirstpoint(Octree * oct, const Ray& ray) {
+    Vector3 res;
+    bool touch = oct->intersect(ray,res);
+    if(touch)return object(res);
+    else return object(false);
+}
+
 void export_Octree()
 {
   scope octree = class_< Octree, OctreePtr, boost::noncopyable >("Octree", 
@@ -113,6 +120,7 @@ void export_Octree()
      .def("getSizes",&get_oct_sizes)
      .def("contains",&Octree::contains)
      .def("intersection",&oct_intersect)
+     .def("findFirstPoint",&oct_findfirstpoint)
     ;
 
   enum_<Octree::ConstructionMethod>("ConstructionMethod")

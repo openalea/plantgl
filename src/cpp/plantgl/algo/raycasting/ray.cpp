@@ -331,11 +331,11 @@ Ray::intersect( const Vector3& origin,const real_t& a, const real_t& b, const re
 /* ----------------------------------------------------------------------- */
 
 bool 
-Ray::intersect(const BoundingBoxPtr& bbox) const {
+Ray::intersect(const BoundingBoxPtr& bbox, real_t& ta, real_t& tb) const {
 	GEOM_ASSERT(bbox);
-	return intersect(*bbox);
+	return intersect(*bbox,ta,tb);
 }
-
+/*
 bool 
 Ray::intersect(const BoundingBox& bbox) const {
   GEOM_ASSERT(isValid());
@@ -402,6 +402,38 @@ Ray::intersect(const BoundingBox& bbox) const {
 
   return false;
 }
+*/
+bool 
+Ray::intersect(const BoundingBox& bbox, real_t& ta, real_t& tb) const {
+  GEOM_ASSERT(isValid());
+  GEOM_ASSERT(bbox.isValid());
+  real_t tnear = -REAL_MAX;
+  real_t tfar = REAL_MAX;
+
+  const Vector3& ll = bbox.getLowerLeftCorner();
+  const Vector3& ur = bbox.getUpperRightCorner();
+
+  for (uchar_t i = 0; i < 3; ++i){
+      if ( fabs(__direction[i]) < GEOM_EPSILON ){
+          if ( (__origin[i] > ur[i] )|| (__origin[i] < ll[i]) ) return false;
+      }
+      else {
+          real_t t1 = ( ll[i] - __origin[i] ) / __direction[i];
+          real_t t2 = ( ur[i] - __origin[i] ) / __direction[i];
+          if (t1 > t2) { 
+              // swap(t1,t2)
+              real_t ti = t2; t2 = t1; t1 = ti;
+          }
+          if (t1 > tnear) tnear = t1;
+          if (t2 < tfar)  tfar = t2;
+              if (tnear > tfar) return false; // box is missed 
+          if (tfar < 0)  return false; // box is behind ray
+      }
+  }
+  ta = tnear;
+  tb = tfar;
+  return true;
+}
 
 bool 
 Ray::intersect(const BoundingSpherePtr& bsphere) const {
@@ -430,7 +462,8 @@ Ray::intersect(const BoundingSphere& bsphere) const {
 }
 
 bool intersection(const Ray& ray, const BoundingBox& bbox){
-	return ray.intersect(bbox);
+    real_t t1,t2;
+	return ray.intersect(bbox,t1,t2);
 }
 
 bool intersection(const Ray& ray, const BoundingSphere& bsphere){
@@ -439,7 +472,8 @@ bool intersection(const Ray& ray, const BoundingSphere& bsphere){
 
 bool intersection(const Ray& ray, const BoundingBoxPtr& bbox){
 	GEOM_ASSERT(bbox);
-	return ray.intersect(*bbox);
+    real_t t1,t2;
+	return ray.intersect(*bbox,t1,t2);
 }
 
 bool intersection(const Ray& ray, const BoundingSpherePtr& bsphere){

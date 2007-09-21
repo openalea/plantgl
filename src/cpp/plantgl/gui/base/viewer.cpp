@@ -291,7 +291,7 @@ void Viewer::initialize()
 
 
   // Preparation de la boite de dialog Object Browser
-  __Browser= new ViewBrowser(this, "Viewer Object Browser");
+  __Browser= new ViewBrowser(this, "Object Browser");
   __Browser->setWhatsThis(tr("<b>Viewer Object Browser</b><br><br>"
     "This frame displays the structure and the parameters of the 3D scenes.<br><br>"
     "Double clicking on one of the shape will select it"
@@ -299,7 +299,7 @@ void Viewer::initialize()
     setCorner(Qt::BottomRightCorner,Qt::RightDockWidgetArea);
 	addDockWidget(Qt::RightDockWidgetArea,__Browser);
 	// __Browser->setFloating(true);
-	__Browser->hide();
+	//__Browser->hide();
 
 
   // * View Menu

@@ -768,6 +768,14 @@ bool Octree::contains(const Vector3& v) const
   return __root.intersect(v);
 }
 
+bool Octree::findFirstPoint(const Ray& ray, TOOLS(Vector3)& pt ) const
+{
+    real_t tnear,tfar;
+    if(!ray.intersect(BoundingBox(__root.getMinCoord(),__root.getMaxCoord()),tnear,tfar))return false;
+    else { pt =  ray.getAt(tnear); return true; }
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 bool Octree::topDown( const OctreeNode* voxel,
                       const TriangleSetPtr& mesh,
