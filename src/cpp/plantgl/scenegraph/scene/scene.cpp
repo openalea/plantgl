@@ -49,6 +49,7 @@
 #include <plantgl/tool/dirnames.h>
 
 #include <qglobal.h>
+#include <algorithm>
 
 #ifdef QT_THREAD_SUPPORT
 #include <qthread.h>
@@ -458,6 +459,26 @@ void Scene::merge( const ScenePtr& scene ) {
   unlock();
 }
 
+/* ----------------------------------------------------------------------- */
+struct shapecmp{
+    bool operator()(const Shape3DPtr& a, const Shape3DPtr& b)
+    {
+        ShapePtr a1 = ShapePtr::Cast(a);
+        ShapePtr b1 = ShapePtr::Cast(b);
+        if(a1.isNull() || b1.isNull())return false;
+        else {
+            MaterialPtr ma = MaterialPtr::Cast(a1->appearance);
+            real_t ta = (ma.isNull()?0:ma->getTransparency());
+            MaterialPtr mb = MaterialPtr::Cast(b1->appearance);
+            real_t tb = (mb.isNull()?0:mb->getTransparency());
+            return ta < tb;
+        }
+    }
+};
+
+void Scene::sort() {
+    std::sort(__shapeList.begin(),__shapeList.end(),shapecmp());
+}
 
 
 /* ----------------------------------------------------------------------- */

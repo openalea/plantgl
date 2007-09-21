@@ -216,6 +216,8 @@ public:
   void lock() const ;
   void unlock() const;
 
+  void sort();
+
 protected:
 
   /// The list of shapes constituting the subScene.

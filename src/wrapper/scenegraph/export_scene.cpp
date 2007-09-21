@@ -221,6 +221,7 @@ void export_Scene()
     .def("read", &sc_read)
     .def("save", &sc_save)
     .def("save", &sc_save2)
+    .def("sort", &Scene::sort)
   	.enable_pickling()
   ;
 

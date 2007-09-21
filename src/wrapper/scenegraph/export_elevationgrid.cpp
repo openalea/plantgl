@@ -55,7 +55,7 @@ void export_ElevationGrid()
     .def( "__init__", make_constructor( geg_fromlist ) ) 
     .def( "copy", &ElevationGrid::copy )
     .DEC_BT_PROPERTY_WD(xspacing,ElevationGrid,XSpacing,real_t)
-    .DEC_BT_PROPERTY_WD(yspacnig,ElevationGrid,YSpacing,real_t)
+    .DEC_BT_PROPERTY_WD(yspacing,ElevationGrid,YSpacing,real_t)
     .DEC_PTR_PROPERTY(heightList,ElevationGrid,HeightList,RealArray2Ptr)
     ;
 
