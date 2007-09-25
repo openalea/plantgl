@@ -783,6 +783,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Function"
+			>
+			<File
+				RelativePath=".\function\function.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\function\function.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\pgl_version.cpp"
 			>

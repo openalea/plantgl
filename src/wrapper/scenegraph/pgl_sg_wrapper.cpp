@@ -140,6 +140,8 @@ void module_sg()
     export_SceneCodec();
     export_SceneFactory();
 
+    export_Function();
+
 };
 
 

@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_function.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_geometry.cpp"
 				>
 			</File>

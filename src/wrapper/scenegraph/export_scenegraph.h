@@ -116,4 +116,6 @@ void export_AmapSymbol();
 void export_SceneCodec();
 void export_SceneFactory();
 
+void export_Function();
+
 #endif

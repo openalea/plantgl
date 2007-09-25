@@ -52,6 +52,9 @@
 
 PGL_BEGIN_NAMESPACE
 
+class Function;
+typedef RCPtr<Function> FunctionPtr;
+
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -105,16 +108,18 @@ public:
     virtual TOOLS(Vector3) getNormalAt(real_t u) const = 0;
   
   /// Return the length of the lineic model.
-  real_t getLength() { return getLength(getFirstKnot(),getLastKnot()); }
+  real_t getLength() const { return getLength(getFirstKnot(),getLastKnot()); }
 
   /// Return the length of the lineic model starting from u = begin.
-  real_t getLength(real_t begin) { return getLength(begin,getLastKnot()); }
+  real_t getLength(real_t begin) const { return getLength(begin,getLastKnot()); }
 
   /// Return the length of the lineic model from u = begin to u = end.
-  virtual real_t getLength(real_t begin, real_t end);
+  virtual real_t getLength(real_t begin, real_t end) const ;
 
   virtual TOOLS(Vector3) findClosest(const TOOLS(Vector3)& pt, real_t* u = NULL) const;
   
+  FunctionPtr getArcLengthParametrization() const;
+
 };
 
 /* ----------------------------------------------------------------------- */

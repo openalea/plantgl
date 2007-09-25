@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       GeomPy: Python wrapper for the Plant Graphic Library
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR AMAP 
+ *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): C. Pradal (christophe.pradal@cirad.fr)
- *
- *       $Source$
- *       $Id: export_scene.cpp 2810 2007-03-14 17:03:41Z boudon $
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *

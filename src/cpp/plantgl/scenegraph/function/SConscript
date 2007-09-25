@@ -1,0 +1,6 @@
+# -*-python-*-
+Import( "env" )
+
+# 1. Select and install the headers
+includes= env.ALEAGlob('*.h')
+env.ALEAIncludes( "plantgl/scenegraph/function", includes )
