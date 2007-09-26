@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -33,7 +28,6 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
 
 #ifndef __util_appegl_h__
 #define __util_appegl_h__

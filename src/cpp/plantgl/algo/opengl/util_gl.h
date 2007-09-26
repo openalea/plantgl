@@ -1,21 +1,16 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
+ *       File author(s): F. Boudon et al.
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -33,7 +28,6 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
 
 #ifndef __util_gl_h__
 #define __util_gl_h__

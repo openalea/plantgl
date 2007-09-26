@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -33,7 +28,6 @@
  *
  *  ----------------------------------------------------------------------------
  */
-
 
 
 
@@ -932,7 +926,7 @@ bool GLRenderer::process( ImageTexture * texture ) {
 		                 GL_TEXTURE_MIN_FILTER, 
 			    	     GL_LINEAR );
 
-	    glTexImage2D( GL_TEXTURE_2D, 0, 3, img.width(), img.height(), 0,
+	    glTexImage2D( GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
 		    GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
       }
       else{
