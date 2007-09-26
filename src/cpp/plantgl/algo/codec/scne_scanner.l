@@ -382,6 +382,7 @@ Id                {TRACE; return TokId;}
 IndexList         {TRACE; return TokIndexList;}
 Italic			  {TRACE; return TokItalic;}
 KnotList          {TRACE; return TokKnotList;}
+Mipmaping         {TRACE; return TokMipmaping;}
 NegXHeight        {TRACE; return TokNegXHeight;}
 NegXRadius        {TRACE; return TokNegXRadius;}
 NegYHeight        {TRACE; return TokNegYHeight;}

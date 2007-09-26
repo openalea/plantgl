@@ -115,10 +115,11 @@ void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  Material >, boost::noncopyable >
     ( "ImageTexture", init< const ImageTexture & >())
-	.def(init< string, optional< const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
-  	 (args("filename","ambient","diffuse","specular","emission","shininess","transparency"),
-	  "ImageTexture(filename [,ambient, diffuse, specular, emission, shininess, transparency])"))
+	.def(init< string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
+  	 (args("filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
+	  "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
       .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
+	  .DEC_BT_NR_PROPERTY_WD(mipmaping,ImageTexture, Mipmaping,bool)
     ;
 
   implicitly_convertible<ImageTexturePtr, MaterialPtr >();

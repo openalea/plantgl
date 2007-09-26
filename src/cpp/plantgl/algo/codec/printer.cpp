@@ -457,6 +457,9 @@ bool Printer::process( ImageTexture * texture ) {
 
   GEOM_PRINT_FIELD(__matStream,texture,Filename,STRING);
 
+  if (! texture->isMipmapingToDefault())
+    GEOM_PRINT_FIELD(__matStream,texture,Mipmaping,BOOLEAN);
+
   if (! texture->isAmbientToDefault())
     GEOM_PRINT_FIELD(__matStream,texture,Ambient,COLOR3);
 

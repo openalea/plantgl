@@ -139,7 +139,34 @@ Curve2D::getLength(real_t begin, real_t end) const
 
 /* ----------------------------------------------------------------------- */
 
-FunctionPtr Curve2D::getArcLengthParametrization() const
+FunctionPtr Curve2D::getArcLengthToUMapping() const
+{
+  real_t totlength = getLength();
+
+  real_t fk = getFirstKnot();
+  real_t lk = getLastKnot();
+  uint32_t stride = getStride();
+
+  real_t deltau = (lk - fk)/stride;
+
+  Vector2 p1 = getPointAt(fk);
+  Vector2 p2;
+
+  real_t length = 0; 
+
+  Point2ArrayPtr points(new Point2Array(stride+1));
+  points->setAt(0,Vector2(0,fk));
+  real_t u = fk + deltau;
+  for(uint32_t i = 1 ; i <= stride; ++i, u += deltau){
+    p2 = getPointAt(u);
+    length += norm(p2 - p1);
+    p1 = p2;
+    points->setAt(i,Vector2(length/totlength,u));
+  }
+    return FunctionPtr(new Function(points,5*stride));
+}
+
+FunctionPtr Curve2D::getUToArcLengthMapping() const
 {
   real_t totlength = getLength();
 

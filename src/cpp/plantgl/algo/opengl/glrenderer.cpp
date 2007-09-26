@@ -910,6 +910,7 @@ bool GLRenderer::process( ImageTexture * texture ) {
   else {
 	QImage img;
 	if(img.load(texture->getFilename().c_str())){
+      bool notUsingMipmap = (!texture->getMipmaping()) && isPowerOfTwo(img.width()) && isPowerOfTwo(img.height());
       glEnable( GL_TEXTURE_2D );
 	  img = QGLWidget::convertToGLFormat(img);
 	  GLuint id;
@@ -923,16 +924,25 @@ bool GLRenderer::process( ImageTexture * texture ) {
 	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
 
 	  glTexParameterf( GL_TEXTURE_2D, 
-		               GL_TEXTURE_MIN_FILTER, 
-					   GL_LINEAR_MIPMAP_NEAREST );
-	  glTexParameterf( GL_TEXTURE_2D, 
 					   GL_TEXTURE_MAG_FILTER, 
 					   GL_LINEAR );
 
-//	  glTexImage2D( GL_TEXTURE_2D, 0, 3, img.width(), img.height(), 0,
-//		GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
-	  gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
-		GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+      if(notUsingMipmap){
+	    glTexParameterf( GL_TEXTURE_2D, 
+		                 GL_TEXTURE_MIN_FILTER, 
+			    	     GL_LINEAR );
+
+	    glTexImage2D( GL_TEXTURE_2D, 0, 3, img.width(), img.height(), 0,
+		    GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+      }
+      else{
+	    glTexParameterf( GL_TEXTURE_2D, 
+		                 GL_TEXTURE_MIN_FILTER, 
+			    	     GL_LINEAR_MIPMAP_NEAREST );
+
+	    gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
+		                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+      }
 
   	  __cachetexture.insert(texture->getId(),id);
 

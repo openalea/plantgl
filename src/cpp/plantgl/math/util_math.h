@@ -122,6 +122,13 @@ inline double sq( const double& v ) {
   return v * v;
 }
 
+inline bool isPowerOfTwo(int val){
+   long i=0;
+   while ((1<<i) < val) i++;
+   if (val==(1<<i)) return true;
+   return false;     
+}
+
 #ifdef _MSC_VER
 
 /// On win32, redirect finite on _finite.

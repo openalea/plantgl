@@ -72,6 +72,7 @@ U getCurveValue(const T * lm, real_t u){
    return (lm->*func)(u);
 }
 
+
 void export_LineicModel()
 {
   class_<LineicModel,LineicModelPtr, bases<Primitive>, boost::noncopyable>( "LineicModel", no_init )
@@ -85,7 +86,8 @@ void export_LineicModel()
     .def( "getLength", (real_t (LineicModel::*)()const)&LineicModel::getLength )
     .def( "getLength", (real_t (LineicModel::*)(real_t)const)&LineicModel::getLength, args("begin") )
     .def( "getLength", (real_t (LineicModel::*)(real_t,real_t)const)&LineicModel::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
-    .def( "getArcLengthParametrization", &LineicModel::getArcLengthParametrization,"getArcLengthParametrization() : Return a function that gives arc length parametrization of the curve." )
+    .def( "getArcLengthToUMapping", &LineicModel::getArcLengthToUMapping,"getArcLengthToUMapping() : Return a function that gives for each arc length the u parametrization of the curve." )
+    .def( "getUToArcLengthMapping", &LineicModel::getArcLengthToUMapping,"getUToArcLengthMapping() : Return a function that gives for each u the arc length parametrization of the curve." )
     ;
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
@@ -113,7 +115,8 @@ void export_Curve2D()
     .def( "getLength", (real_t (Curve2D::*)() const)&Curve2D::getLength )
     .def( "getLength", (real_t (Curve2D::*)(real_t) const)&Curve2D::getLength, args("begin") )
     .def( "getLength", (real_t (Curve2D::*)(real_t,real_t) const)&Curve2D::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
-    .def( "getArcLengthParametrization", &Curve2D::getArcLengthParametrization,"getArcLengthParametrization() : Return a function that gives arc length parametrization of the curve." )
+    .def( "getArcLengthToUMapping", &Curve2D::getArcLengthToUMapping,"getArcLengthToUMapping() : Return a function that gives for each arc length the u parametrization of the curve." )
+    .def( "getUToArcLengthMapping", &Curve2D::getArcLengthToUMapping,"getUToArcLengthMapping() : Return a function that gives for each u the arc length parametrization of the curve." )
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();

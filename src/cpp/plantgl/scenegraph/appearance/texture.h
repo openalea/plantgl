@@ -61,11 +61,17 @@ class SG_API ImageTexture : public Material
 
 public:
 
+  /// The default mimpaing value
+  static bool DEFAULT_MIPMAPING;
+
   /// A structure which helps to build a Material when parsing.
   struct SG_API Builder : public Material::Builder {
 
-    /// A pointer to the \b Ambient field.
+    /// A pointer to the \b FileName field.
 	std::string * FileName;
+
+    /// A pointer to the \b Mipmaping field.
+	bool * Mipmaping;
 
     /// Constructor.
     Builder( );
@@ -86,6 +92,7 @@ public:
 
   /// constructor.
   ImageTexture(  const std::string& filename,
+            bool mipmaping = DEFAULT_MIPMAPING,
             const Color3& ambient = DEFAULT_AMBIENT,
             const real_t& diffuse = DEFAULT_DIFFUSE,
             const Color3& specular = DEFAULT_SPECULAR,
@@ -96,6 +103,7 @@ public:
   /// constructor.
   ImageTexture(  const std::string& filename,
             const std::string& name,
+            bool mipmaping = DEFAULT_MIPMAPING,
             const Color3& ambient = DEFAULT_AMBIENT,
             const real_t& diffuse = DEFAULT_DIFFUSE,
             const Color3& specular = DEFAULT_SPECULAR,
@@ -117,6 +125,15 @@ public:
   /// Returns \b Filename field.
   std::string& getFilename( ) ;
 
+  /// Returns \b Mipmaping value.
+  const bool getMipmaping( ) const { return __mipmaping; }
+
+  /// Returns \b Mipmaping field.
+  bool& getMipmaping( ) { return __mipmaping; }
+
+  /// Returns whether \b Mipmaping is set to default.
+  bool isMipmapingToDefault( ) { return __mipmaping == DEFAULT_MIPMAPING; }
+
   /// Returns whether \e self id valid.
   virtual bool isValid( ) const;
 
@@ -126,6 +143,8 @@ protected:
 
    /// The \b Filename field.
   std::string __filename;
+
+  bool __mipmaping;
 
 };
 

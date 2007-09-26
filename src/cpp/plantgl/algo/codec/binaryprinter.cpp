@@ -445,7 +445,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(1.7f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(1.8f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -579,7 +579,7 @@ BinaryPrinter::printFile(const std::string& FileName){
   }
   if(pref1.size() > cwd.size())
     pref1 = string(pref1.begin(),pref1.begin()+cwd.size());
-  // cerr << "Compare '" << pref1 << "' to '" << cwd << endl;
+    // cerr << "Compare '" << pref1 << "' to '" << cwd << endl;
   if(similar_dir(pref1,cwd)){
 	  int count = 0;
 	  for(string::const_iterator _i = pref1.begin();
@@ -593,6 +593,7 @@ BinaryPrinter::printFile(const std::string& FileName){
 	  }
 	  if(*_j == '\\' || *_j == '/')_j++;
 	  string suffix = string(_j,f.end());
+      // cerr << "Print '" << suffix << "' " << endl;
 	  GEOM_PRINT_FILE(suffix);	
   }
   else  {
@@ -743,6 +744,9 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
       _default+=16;
   if (texture->isTransparencyToDefault())
       _default+=32;
+  if(__tokens.getVersion() >= 1.8f)
+    if (texture->isMipmapingToDefault())
+        _default+=64;
   writeUchar(_default);
 
   printFile(texture->getFilename());
@@ -764,6 +768,11 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
 
   if (! texture->isTransparencyToDefault())
     GEOM_PRINT_FIELD(texture,Transparency,REAL);
+
+  if(__tokens.getVersion() >= 1.8f){
+      if (! texture->isMipmapingToDefault())
+        GEOM_PRINT_FIELD(texture,Mipmaping,BOOLEAN);
+  }
 
   return true;
 }

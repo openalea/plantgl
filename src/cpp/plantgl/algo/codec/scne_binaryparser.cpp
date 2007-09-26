@@ -791,9 +791,9 @@ bool BinaryParser::readImageTexture() {
     GEOM_INIT_OBJ(mat, 39, ImageTexture);
 
     string FileName = readFile();
-	cerr << "Filename : " << FileName << endl;
+	// cerr << "Filename : " << FileName << endl;
     if(!FileName.empty()&&exists(FileName.c_str())) {
-			FileName = absolute_dirname(FileName);
+			FileName = absolute_filename(FileName);
 			mat->getFilename() = FileName;
 	}
 
@@ -814,6 +814,12 @@ bool BinaryParser::readImageTexture() {
 
     IF_GEOM_NOTDEFAULT(_default,5)
         GEOM_READ_FIELD(mat,Transparency,Real);
+
+	float version =  __tokens->getVersion();
+	if( version >= 1.8f){
+        IF_GEOM_NOTDEFAULT(_default,6)
+            GEOM_READ_FIELD(mat,Mipmaping,Bool);
+    }
 
     if (FileName.empty() || !exists(FileName.c_str())) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
@@ -877,7 +883,7 @@ bool BinaryParser::readAmapSymbol() {
 
     string FileName = readFile();
     if(!FileName.empty()&&exists(FileName.c_str())) {
-			FileName = absolute_dirname(FileName);
+			FileName = absolute_filename(FileName);
 			obj->readFile(FileName);
 	}
 	Point3ArrayPtr points;
@@ -908,7 +914,7 @@ bool BinaryParser::readAmapSymbol() {
 	return false;
       }
       else {
-	  FileName = absolute_dirname(FileName);
+	  FileName = absolute_filename(FileName);
 	  obj->readFile(FileName);
 	  obj->getFileName() = FileName;
       }

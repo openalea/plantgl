@@ -652,6 +652,7 @@ bool GeomListViewBuilder::process( ImageTexture * texture ) {
   GEOM_ASSERT(material);
   addNode(texture,"ImageTexture",2);
   addAttr("Filename",QString(texture->getFilename().c_str()),"String");
+  addAttr("Mipmaping",texture->getMipmaping());
   addAttr("Ambient",texture->getAmbient());
   addAttr("Diffuse",texture->getDiffuse());
   addAttr("Specular",texture->getSpecular());

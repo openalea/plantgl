@@ -113,7 +113,8 @@ public:
 
   virtual TOOLS(Vector3) findClosest(const TOOLS(Vector3)& pt, real_t* u = NULL) const;
   
-  FunctionPtr getArcLengthParametrization() const;
+  FunctionPtr getArcLengthToUMapping() const;
+  FunctionPtr getUToArcLengthMapping() const;
 
 };
 

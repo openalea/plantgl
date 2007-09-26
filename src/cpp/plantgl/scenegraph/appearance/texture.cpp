@@ -43,13 +43,16 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
+bool ImageTexture::DEFAULT_MIPMAPING(true);
+
 
 /* ----------------------------------------------------------------------- */
 
 
 ImageTexture::Builder::Builder() :
   Material::Builder(),
-  FileName(0){
+  FileName(0),
+  Mipmaping(0){
 }
 
 
@@ -62,6 +65,7 @@ SceneObjectPtr ImageTexture::Builder::build( ) const {
     return SceneObjectPtr
       (new ImageTexture
        (*FileName,
+       Mipmaping ? *Mipmaping : DEFAULT_MIPMAPING,
 	    Ambient ? *Ambient : DEFAULT_AMBIENT,
         Diffuse ? *Diffuse : DEFAULT_DIFFUSE,
         Specular ? *Specular : DEFAULT_SPECULAR,
@@ -80,6 +84,7 @@ void ImageTexture::Builder::destroy() {
   if (Shininess) delete Shininess;
   if (Transparency) delete Transparency;
   if (FileName) delete FileName;
+  if (Mipmaping) delete Mipmaping;
 }
 
 
@@ -109,6 +114,7 @@ ImageTexture::ImageTexture():
 }
   
 ImageTexture::ImageTexture(   const std::string& filename,
+                    bool mipmaping,
 				    const Color3& ambient,
                     const real_t& diffuse,
                     const Color3& specular,
@@ -116,12 +122,13 @@ ImageTexture::ImageTexture(   const std::string& filename,
                     const real_t& shininess,
                     const real_t& transparency ) :
   Material( ambient,diffuse,specular,emission,shininess,transparency),
-	__filename(filename) {
+	__filename(filename), __mipmaping(mipmaping) {
   GEOM_ASSERT(isValid());
 }
 
   ImageTexture::ImageTexture( const std::string& filename,
                     const std::string& name,
+                    bool mipmaping,
                     const Color3& ambient,
                     const real_t& diffuse,
                     const Color3& specular,
@@ -129,7 +136,7 @@ ImageTexture::ImageTexture(   const std::string& filename,
                     const real_t& shininess,
                     const real_t& transparency ) :
   Material( ambient,diffuse,specular,emission,shininess,transparency),
-	__filename(filename) {
+	__filename(filename), __mipmaping(mipmaping) {
   setName(name);
   GEOM_ASSERT(isValid());
 }

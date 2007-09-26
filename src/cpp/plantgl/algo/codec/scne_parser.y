@@ -572,6 +572,7 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 %token TokItalic
 %token TokIndexList
 %token TokKnotList
+%token TokMipmaping
 %token TokNegXHeight
 %token TokNegXRadius
 %token TokNegYHeight
@@ -2178,6 +2179,9 @@ ImageTextureFieldList:
    ImageTextureFieldList TokFileName Filename {
      if($3)*$3 = TOOLS(absolute_filename)(*$3);
      GEOM_PARSER_SET_FIELD($1,FileName,$3); $$=$1;
+   }   
+ | ImageTextureFieldList TokMipmaping TokBool {
+     GEOM_PARSER_SET_FIELD($1,Mipmaping,$3); $$=$1;
    }
  | ImageTextureFieldList TokAmbient Color3 {
      GEOM_PARSER_SET_FIELD($1,Ambient,$3); $$=$1;

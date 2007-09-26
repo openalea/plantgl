@@ -160,7 +160,9 @@ public:
   /// Return the length of the lineic model from u = begin to u = end.
   virtual real_t getLength(real_t begin, real_t end) const ;
 
-  FunctionPtr getArcLengthParametrization() const;
+  FunctionPtr getArcLengthToUMapping() const;
+  FunctionPtr getUToArcLengthMapping() const;
+
 
 };
 
