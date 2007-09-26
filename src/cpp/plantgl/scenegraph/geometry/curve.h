@@ -103,6 +103,10 @@ typedef RCPtr<Curve> CurvePtr;
 
 /* ----------------------------------------------------------------------- */
 
+class Function;
+typedef RCPtr<Function> FunctionPtr;
+
+
 /** 
     \class Curve2D
     \brief Abstract base class for objects of type of 2D parametric curve.
@@ -153,13 +157,15 @@ public:
   virtual bool isAVolume( ) const;
 
   /// Return the length of the lineic model.
-  real_t getLength() { return getLength(getFirstKnot(),getLastKnot()); }
+  inline real_t getLength() const { return getLength(getFirstKnot(),getLastKnot()); }
 
   /// Return the length of the lineic model starting from u = begin.
-  real_t getLength(real_t begin) { return getLength(begin,getLastKnot()); }
+  inline real_t getLength(real_t begin) const { return getLength(begin,getLastKnot()); }
 
   /// Return the length of the lineic model from u = begin to u = end.
-  virtual real_t getLength(real_t begin, real_t end);
+  virtual real_t getLength(real_t begin, real_t end) const ;
+
+  FunctionPtr getArcLengthParametrization() const;
 
 };
 

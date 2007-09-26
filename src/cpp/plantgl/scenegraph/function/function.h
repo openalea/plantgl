@@ -52,7 +52,7 @@ typedef RCPtr<Function> FunctionPtr;
 
 /**
     \class Function
-    \brief AD discrete injective function (monomorphism) defined on [0,1].
+    \brief AD quantised injective function (monomorphism) defined on [firstx,lastx].
 */
 
 class SG_API Function : public TOOLS(RefCountObject) {
@@ -66,18 +66,19 @@ public:
 
     /// Return the y-value for x.
     real_t getValue(real_t x) const ;
+    inline real_t operator()(real_t x) const { return getValue(x); }
 
     /// Return the first x value corresponding to y starting at startingX. found is set to false if it cannot be found.
     real_t findX(real_t y, bool& found) const { return findX(y,found,__firstx); }
     real_t findX(real_t y, bool& found, real_t startingX) const ;
 
-    bool build(const Curve2DPtr& curve) { return build(curve,__sampling); }
+    inline bool build(const Curve2DPtr& curve) { return build(curve,__sampling); }
     bool build(const Curve2DPtr& curve, uint32_t sampling);
 
     bool isMonotonous(bool strictly = false) const ;
     bool isIncreasing(bool strictly = false) const ;
     bool isDecreasing(bool strictly = false) const ;
-    bool isValid() const { return __values.size() != 0 && __values.size() == __sampling; }
+    inline bool isValid() const { return __values.size() != 0 && __values.size() == __sampling; }
 
     /** Give the inverse function f-1
         For this, the function f should be isomorphic, else return 0.

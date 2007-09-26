@@ -129,7 +129,6 @@ FunctionPtr LineicModel::getArcLengthParametrization() const
     p2 = getPointAt(u);
     length += norm(p2 - p1);
     p1 = p2;
-    std::cerr << "t=" << length/totlength << ", u=" << u << std::endl; 
     points->setAt(i,Vector2(length/totlength,u));
   }
     return FunctionPtr(new Function(points,5*stride));

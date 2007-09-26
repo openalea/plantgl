@@ -47,7 +47,7 @@ Function::Function(const Curve2DPtr& curve, uint32_t sampling) :
 
 Function::Function(const Point2ArrayPtr& points, uint32_t sampling):
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0)
-{ build(Polyline2DPtr(new Polyline2D(points)));}
+{ build(Curve2DPtr(new Polyline2D(points)));}
 
 
 Function::Function(const std::vector<real_t>& values, real_t firstx,real_t lastx):

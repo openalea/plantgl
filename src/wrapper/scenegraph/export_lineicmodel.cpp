@@ -110,9 +110,10 @@ void export_Curve2D()
     .add_property( "lastKnot", &Curve2D::getLastKnot )
     .def( "getStride", &Curve2D::getStride )
     .def( "getPointAt", &getCurveValue<Curve2D,Vector2,&Curve2D::getPointAt>, args("u") )
-    .def( "getLength", (real_t (Curve2D::*)())&Curve2D::getLength )
-    .def( "getLength", (real_t (Curve2D::*)(real_t))&Curve2D::getLength, args("begin") )
-    .def( "getLength", (real_t (Curve2D::*)(real_t,real_t))&Curve2D::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
+    .def( "getLength", (real_t (Curve2D::*)() const)&Curve2D::getLength )
+    .def( "getLength", (real_t (Curve2D::*)(real_t) const)&Curve2D::getLength, args("begin") )
+    .def( "getLength", (real_t (Curve2D::*)(real_t,real_t) const)&Curve2D::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
+    .def( "getArcLengthParametrization", &Curve2D::getArcLengthParametrization,"getArcLengthParametrization() : Return a function that gives arc length parametrization of the curve." )
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();
