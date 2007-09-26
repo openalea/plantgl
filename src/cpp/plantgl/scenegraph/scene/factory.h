@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/scne_scene.h,v $
- *       $Id: scne_scene.h,v 1.39 2006/06/16 13:04:46 fboudon Exp $
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
