@@ -37,17 +37,17 @@ DEF_POINTEE( ARRAY ) \
 {									\
   ARRAY* array= 0;							\
       object row_iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );\
-      uint32_t rows= extract<uint32_t>(row_iter_obj.attr("__len__")());	\
+      uint32_t rows= extract<uint32_t>(l.attr("__len__")());	\
       object col_obj= row_iter_obj.attr( "next" )();		\
       object col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );		\
-      uint32_t cols= extract<uint32_t>(col_iter_obj.attr("__len__")());	\
+      uint32_t cols= extract<uint32_t>(col_obj.attr("__len__")());	\
       array= new ARRAY(rows,cols);					\
       for(uint32_t i=0; i < rows; ++i )							\
 	 {								\
 		if (i != 0) { \
 			col_obj= row_iter_obj.attr( "next" )();			\
 			col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );		\
-			uint32_t c= extract<uint32_t>(col_iter_obj.attr("__len__")());	\
+			uint32_t c= extract<uint32_t>(col_obj.attr("__len__")());	\
 			if( c != cols ) throw PythonExc_IndexError();			\
 		} \
 	    for(uint32_t j=0; j < cols; ++j )						\

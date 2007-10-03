@@ -31,6 +31,7 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/exception.h"
+#include "../util/export_property.h"
 
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 #include <plantgl/scenegraph/geometry/curve.h>
@@ -126,6 +127,7 @@ void export_Curve2D()
 void export_SOR2D()
 {
   class_<SOR2D,SOR2DPtr, bases<PlanarModel>, boost::noncopyable>( "SOR2D", no_init )
+   .DEC_BT_PROPERTY_WD(slices,SOR2D,Slices,uchar_t);
     ;
 
   implicitly_convertible<SOR2DPtr, PlanarModelPtr>();
@@ -135,6 +137,7 @@ void export_SOR2D()
 void export_Disc()
 {
   class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", init< optional<real_t,uchar_t> >("Disc(radius, slices)") )
+   .DEC_BT_PROPERTY_WD(radius,Disc,Radius,real_t);
     ;
 
   implicitly_convertible<DiscPtr,SOR2DPtr>();

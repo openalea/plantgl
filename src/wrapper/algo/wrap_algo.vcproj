@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\cpp,C:\openalea\include,C:\Python24\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;C:\boost_1_34_1\&quot;;C:\Python25\include"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -56,9 +56,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl_d/algo/_pglalgo_d.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
+				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
+				OutputFile="../../plantgl_d/algo/_pglalgo_d.pyd"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\cpp,C:\openalea\include,C:\Python24\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;C:\boost_1_34_1\&quot;;C:\Python25\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -127,9 +127,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc71-mt-1_33_1.lib"
-				OutputFile="../../plantgl/algo/_pglalgo.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python24\libs;C:\openalea\lib"
+				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
+				OutputFile="../../plantgl/algo/_pglalgo.pyd"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
