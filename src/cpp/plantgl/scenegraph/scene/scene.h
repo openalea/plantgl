@@ -185,6 +185,9 @@ public:
   /// Returns the \e i-th element of \e self.
   const ShapePtr getShapeId(uint32_t id ) const ;
 
+  /// Returns the \e i-th element of \e self.
+  const Shape3DPtr getSceneObjectId(uint32_t id ) const ;
+
   /// Returns the size of \e self.
   uint32_t getSize( ) const ;
 

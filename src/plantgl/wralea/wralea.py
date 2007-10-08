@@ -28,17 +28,7 @@ def register_packages(pkgmanager):
  
  
     package = Package("PlantGL Visualization", metainfo)
-    
-    nf = Factory( name= "viewerDisplay", 
-                  description= "Viewer Display", 
-                  category = "Vizualisation", 
-                  nodemodule = "viewernode",
-                  nodeclass = "ViewerStart",
-                  widgetmodule = None,
-                  widgetclass = None,
-                  )
-    package.add_factory( nf )
-    
+        
     nf = Factory( name= "plot3D", 
                   description= "Viewer Display", 
                   category = "Vizualisation", 

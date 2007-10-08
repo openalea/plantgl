@@ -1,23 +1,7 @@
 from openalea.core.external import *
 from openalea.plantgl.gui import *
 from openalea.plantgl.scenegraph import *
- 
-class ViewerStart(Node):
-	"""
-	Start PlantGL Viewer
-	"""
-	
-	def __init__(self):
-		
-		Node.__init__(self)
-		
-		self.add_output( name = "Y", interface = None) 
-	 
-	def __call__(self, inputs):
-		""" inputs is the list of input values """
-		Viewer.threaded = False
-		Viewer.start()
-		return (True,)
+
 
 class Plot3D(Node):
     """

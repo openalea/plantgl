@@ -383,6 +383,22 @@ Scene::getShapeId(uint32_t id ) const {
   return 0;
 }
 
+const Shape3DPtr 
+Scene::getSceneObjectId(uint32_t id ) const {
+  lock();
+  for(Scene::const_iterator _it = __shapeList.begin() ; 
+					  _it != __shapeList.end(); 
+					  _it++)
+	{
+        if(_it->isValid() && (*_it)->SceneObject::getId() == id){
+		  unlock();
+		  return *_it;
+	  }
+	}
+  unlock();
+  return 0;
+}
+
 /* ----------------------------------------------------------------------- */
 
 ScenePtr Scene::copy() const {

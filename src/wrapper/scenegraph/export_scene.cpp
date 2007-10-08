@@ -109,6 +109,13 @@ ShapePtr sc_find( Scene* s, size_t id )
   else throw PythonExc_IndexError();
 }
 
+Shape3DPtr sc_findSceneObject( Scene* s, size_t id )
+{
+  Shape3DPtr res = s->getSceneObjectId( id );
+  if (res) return res;
+  else throw PythonExc_IndexError();
+}
+
 void sc_setitem( Scene* s, size_t pos, Shape3DPtr v )
 {
   if( pos < 0 && pos > -s->getSize() ) return s->setAt( s->getSize() + pos, v );
@@ -204,6 +211,7 @@ void export_Scene()
     .def("clear", &Scene::clear)
     .def("merge", &Scene::merge)
     .def("find", &sc_find)
+    .def("findSceneObject", &sc_findSceneObject)
     .def("index", &sc_index)
     .def("remove", &sc_remove)
     .def("isValid", (bool (Scene::*)() const)&Scene::isValid)
