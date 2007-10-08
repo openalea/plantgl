@@ -36,7 +36,7 @@ __docformat__ = "restructuredtext en"
 
 
 import openalea.plantgl.all as pgl
-from openalea.fractalysis.fractutils.pgl_utils import sphere, arrow, color, createSwung
+from openalea.plantgl.ext.pgl_utils import sphere, arrow, color, createSwung
 
 houppier_material = pgl.Material("houppier_mat",pgl.Color3(20,100,60))
 trunk_material = pgl.Material("trunk_material",pgl.Color3(50,28,6),2)
