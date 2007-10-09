@@ -139,6 +139,9 @@ public:
   /// Get the gl frame in which the scene must be rendered
   QGLWidget * getGLFrame() const { return __glframe; }
 
+  /// Set the gl frame in which the scene must be rendered
+  bool setGLFrameFromId(uint32_t);
+
   /// @name Pre and Post Processing
   //@{
   virtual bool beginProcess();

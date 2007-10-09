@@ -137,6 +137,14 @@ GLRenderer::SelectionId GLRenderer::getSelectionMode() const
   return __selectMode;
 }
 
+bool GLRenderer::setGLFrameFromId(uint32_t wid)
+{
+    QWidget * widget = QWidget::find(WId(wid));
+    if (!widget) return false;
+    QGLWidget * glwidget = dynamic_cast<QGLWidget *>(widget);
+    setGLFrame(glwidget);
+    return true;
+}
 
 void GLRenderer::clear( )
 {

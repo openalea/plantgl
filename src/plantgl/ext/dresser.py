@@ -73,9 +73,9 @@ def viewMesures( file):
 
 #treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette1.csv')
 #treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette3.csv')
-def asymetric_swung( obj , **kwds ):
-  X_attr = kwds.get('X_attr', 'X')
-  Y_attr = kwds.get('Y_attr', 'Y')
+def asymetric_swung( obj , kwds = {} ):
+  X_attr = kwds.get('X', 'X')
+  Y_attr = kwds.get('Y', 'Y')
   circ_attr = kwds.get('circ_attr', 'Circonference')
   height_attr = kwds.get('height_attr', 'Haut')
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
@@ -106,9 +106,9 @@ def asymetric_swung( obj , **kwds ):
   else :
     return ( s_h, )
 
-def chupa_chups( obj , **kwds ):
-  X_attr = kwds.get('X_attr', 'X')
-  Y_attr = kwds.get('Y_attr', 'Y')
+def chupa_chups( obj , kwds = {}  ):
+  X_attr = kwds.get('X', 'X')
+  Y_attr = kwds.get('Y', 'Y')
   circ_attr = kwds.get('circ_attr', 'Circonference')
   height_attr = kwds.get('height_attr', 'Haut')
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
@@ -131,10 +131,14 @@ def chupa_chups( obj , **kwds ):
     return ( s_h, )
 
 
-def dresser( type = 'AsymetricSwung') :
+def dresser( obj = None, type = 'AsymetricSwung', args = {}) :
   if type == 'AsymetricSwung' :
-    return asymetric_swung
-  if type == 'ChupaChups' :
-    return chupa_chups
-
+    fc = asymetric_swung
+  elif type == 'ChupaChups' :
+    fc = chupa_chups
+  print obj
+  if obj:
+    return fc(obj,args)
+  else:
+    return lambda x : fc(x,args)
 

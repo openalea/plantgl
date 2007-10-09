@@ -69,6 +69,7 @@ void export_GLRenderer()
 	.add_property("selectionMode",&get_sel_mode,&GLRenderer::setSelectionMode)
 	// .add_property("frameGL",&get_fgl_mode,&GLRenderer::setGLFrame)
 	 .def("getDiscretizer",&GLRenderer::getDiscretizer, return_internal_reference<>())
+	 .def("setGLFrameFromId",&GLRenderer::setGLFrameFromId)
     ;
 
   enum_<GLRenderer::RenderingMode>("RenderingMode")
