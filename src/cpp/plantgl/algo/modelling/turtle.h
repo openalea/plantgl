@@ -90,7 +90,7 @@ public:
 	{ return __params->color; }
     
     inline uint32_t getId() const
-	{ return __params->id; }
+	{ return id; }
     
 	/// push the current turtle state on a stack
     virtual void push();
@@ -99,12 +99,13 @@ public:
     virtual void pop();
 
 	/// Set Id
-    virtual void setId(uint32_t i) { __params->id = i; }
+    virtual void setId(uint32_t i) { id = i; }
     inline void incId() 
-    { setId(getId()+1); }
+    { if (getId() < UINT32_MAX) setId(getId()+1); 
+      else error("Id should be a valid positive value."); }
     inline void decId() 
     { if (getId() > 0) setId(getId()-1); 
-      else error("Id should be positive value"); }
+      else error("Id should be a valid positive value."); }
 
 	/// Move of l step in heading direction
     inline void f() { f(default_step); }
@@ -327,6 +328,8 @@ protected:
     TurtleParam& getParameters()
 	  { return *__params; }
 
+    uint32_t popId();
+
     TurtleParam *        __params;
 
     std::stack<TurtleParam *> __paramstack;
@@ -336,6 +339,9 @@ protected:
 	real_t width_increment;
 	int color_increment;
 	real_t scale_multiplier;
+    uint32_t id;
+    uint32_t parentId;
+
 };
 
 /* ----------------------------------------------------------------------- */

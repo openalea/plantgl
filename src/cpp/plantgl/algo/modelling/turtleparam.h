@@ -104,12 +104,15 @@ public:
   TOOLS(Vector3) left;
   TOOLS(Vector3) up;
   TOOLS(Vector3) scale;
-  uint32_t id;
+  uint32_t lastId;
   int color;
   int texture;
   real_t width;
   std::vector<TOOLS(Vector3)> pointList;
   std::vector<real_t> radiusList;
+
+  uint32_t customId;
+  uint32_t customParentId;
 
 protected:
   bool __polygon;
