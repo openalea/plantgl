@@ -141,7 +141,14 @@ bool GLRenderer::setGLFrameFromId(uint32_t wid)
 {
     QWidget * widget = QWidget::find(WId(wid));
     if (!widget) return false;
+#ifdef Q_CC_MSVC
+    // By default qmake do not compile project with rtti information when
+    // using msvc. So do a static cast
+    QGLWidget * glwidget = static_cast<QGLWidget *>(widget);
+#else
     QGLWidget * glwidget = dynamic_cast<QGLWidget *>(widget);
+#endif
+    if (!glwidget) return false;
     setGLFrame(glwidget);
     return true;
 }
