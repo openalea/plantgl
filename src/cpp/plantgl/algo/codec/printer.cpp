@@ -382,16 +382,17 @@ bool Printer::process(Inline * geomInline){
 bool Printer::process(Shape * Shape){
     GEOM_ASSERT(Shape);
 
-    if ( (__cache.find(Shape->geometry->getId())) == (__cache.end())) {
-	  if(!Shape->geometry->isNamed()){
-		Shape->geometry->setName("Geometry_"+number(Shape->geometry->getId()));
-	  }
-        __geomStream << __indent;
-        Shape->geometry->apply(*this);
-        __geomStream << endl;
-        __geomStream << endl;
+    if( Shape->geometry ){
+        if ( (__cache.find(Shape->geometry->getId())) == (__cache.end())) {
+            if(!Shape->geometry->isNamed()){
+                Shape->geometry->setName("Geometry_"+number(Shape->geometry->getId()));
+            }
+            __geomStream << __indent;
+            Shape->geometry->apply(*this);
+            __geomStream << endl;
+            __geomStream << endl;
+        }
     }
-
     if(Shape->appearance){
       if ( (__cache.find(Shape->appearance->getId())) == (__cache.end())) {
 	  if(!Shape->appearance->isNamed()){
@@ -407,10 +408,13 @@ bool Printer::process(Shape * Shape){
     if(Shape->isNamed())__shapeStream << Shape->getName().c_str();
     __shapeStream << " { " << endl;
     GEOM_PRINT_INCREMENT_INDENT;
-    if(Shape->id)
+    if(Shape->id != Shape::NOID)
         __shapeStream << __indent << "Id  " << (Shape->id) << endl;
-    __shapeStream << __indent << "Geometry  " <<
-        (Shape->geometry->getName().c_str()) << endl;
+    if(Shape->parentId != Shape::NOID)
+        __shapeStream << __indent << "ParentId  " << (Shape->parentId) << endl;
+    if (Shape->geometry)
+        __shapeStream << __indent << "Geometry  " <<
+            (Shape->geometry->getName().c_str()) << endl;
     if(Shape->appearance)
         __shapeStream << __indent << "Appearance  " <<
             (Shape->appearance->getName().c_str()) << endl;

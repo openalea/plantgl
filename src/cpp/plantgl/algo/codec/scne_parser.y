@@ -581,6 +581,7 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 %token TokNormalIndexList
 %token TokNormalPerVertex
 %token TokOrientation
+%token TokParentId
 %token TokPointList
 %token TokPosition
 %token TokPosXHeight
@@ -1067,6 +1068,9 @@ InlineFieldList:
 ShapeFieldList:
    ShapeFieldList TokId Uint32 {
        GEOM_PARSER_SET_FIELD($1,Id,$3); $$=$1;
+   }
+   ShapeFieldList TokParentId Uint32 {
+       GEOM_PARSER_SET_FIELD($1,ParentId,$3); $$=$1;
    }
  | ShapeFieldList TokGeometry GeometryObj {
        GEOM_PARSER_SET_FIELD($1,Geometry,$3); $$=$1;

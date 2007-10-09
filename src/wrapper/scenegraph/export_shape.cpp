@@ -69,10 +69,12 @@ void export_Shape()
   class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape", init<>())
     .def( init< const RefCountPtr<Geometry> &, 
 	          optional< const RefCountPtr<Appearance> &,
-	                     long unsigned int > >("Shape( geometry, appearance, id )") )
+	                     uint32_t, uint32_t > >("Shape( geometry, appearance, id, parentId )") )
+    .add_static_property("NOID",make_getter(&Shape::NOID))
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)
     .def_readwrite("id", &Shape::id)
+    .def_readwrite("parentId", &Shape::parentId)
     .def("getSceneObjectId", &sh_getptrid)
     .def("setComputedName", &Shape::setComputedName)
 	.def_pickle(sh_pickle_suite());

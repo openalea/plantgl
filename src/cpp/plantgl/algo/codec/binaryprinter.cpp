@@ -445,7 +445,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(1.8f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(1.9f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -628,6 +628,8 @@ bool BinaryPrinter::process(Shape * Shape){
     printType("Shape");
     writeString(Shape->getName());
     writeUint32(Shape->id);
+    if(__tokens.getVersion() >= 1.9f)
+        writeUint32(Shape->parentId);
     Shape->geometry->apply(*this);
     Shape->appearance->apply(*this);
 

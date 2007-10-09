@@ -89,11 +89,22 @@ public:
     inline int getColor() const
 	{ return __params->color; }
     
+    inline uint32_t getId() const
+	{ return __params->id; }
+    
 	/// push the current turtle state on a stack
     virtual void push();
 
 	/// pop the turtle state from a stack and assign it to self
     virtual void pop();
+
+	/// Set Id
+    virtual void setId(uint32_t i) { __params->id = i; }
+    inline void incId() 
+    { setId(getId()+1); }
+    inline void decId() 
+    { if (getId() > 0) setId(getId()-1); 
+      else error("Id should be positive value"); }
 
 	/// Move of l step in heading direction
     inline void f() { f(default_step); }

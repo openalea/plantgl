@@ -391,6 +391,7 @@ NormalList        {TRACE; return TokNormalList;}
 NormalIndexList   {TRACE; return TokNormalIndexList;}
 NormalPerVertex   {TRACE; return TokNormalPerVertex;}
 Orientation       {TRACE; return TokOrientation;}
+ParentId          {TRACE; return TokParentId;}
 PointList         {TRACE; return TokPointList;}
 Position		  {TRACE; return TokPosition;}
 PosXHeight        {TRACE; return TokPosXHeight;}

@@ -455,7 +455,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;"
+								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe"
 								Outputs="$(InputDir)/$(InputName).cpp"
 							/>
@@ -466,7 +466,7 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;"
+								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe"
 								Outputs="$(InputDir)/$(InputName).cpp"
 							/>

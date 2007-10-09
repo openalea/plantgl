@@ -163,6 +163,9 @@ public:
 
             /// A pointer to the \b identification field.
             uint32_t * Id;
+
+            /// A pointer to the \b parent identification field.
+            uint32_t * ParentId;
     };
 
   /// The undef value for the Id field.
@@ -171,18 +174,20 @@ public:
   /// Default constructor.
   Shape( );
 
-  /** Constructs a Shape with the Geometry \e _geom, the Appearance
-      \e _app and the id \e _id. */
-  Shape( const GeometryPtr& _geom,
-             const AppearancePtr& _app = Material::DEFAULT_MATERIAL,
-             uint32_t _id=NOID);
+  /** Constructs a Shape with the Geometry \e geom, the Appearance
+      \e app and the id \e id. */
+  Shape( const GeometryPtr&  geom,
+         const AppearancePtr& app = Material::DEFAULT_MATERIAL,
+         uint32_t id = NOID,
+         uint32_t parent_id = NOID);
 
-  /** Constructs a Shape with the Geometry \e _geom, the Appearance
-      \e _app and the id \e _id. */
+  /** Constructs a Shape with the Geometry \e geom, the Appearance
+      \e app and the id \e id. */
   Shape( const std::string&   name,
 		 const GeometryPtr&   geom,
 	     const AppearancePtr& app = Material::DEFAULT_MATERIAL,
-         uint32_t id = NOID );
+         uint32_t id = NOID,
+         uint32_t parent_id = NOID );
 
   /// Destructor
   virtual ~Shape();
@@ -225,6 +230,15 @@ public:
   /// Return the Id of \e self.
   uint32_t& getId();
 
+  /// Return the ParentId of \e self.
+  uint32_t getParentId() const { return parentId; }
+
+  /// Return the ParentId of \e self.
+  uint32_t& getParentId() { return parentId; }
+
+  /// Return if ParentId is to default.
+  bool isParentIdToDefault() { return parentId == NOID; }
+
   /// The appearance of \e self.
   AppearancePtr appearance;
 
@@ -233,6 +247,9 @@ public:
 
   /// The identification id of \e self.
   uint32_t id;
+
+  /// The parent identification id of \e self.
+  uint32_t parentId;
 
 }; // class Shape
 

@@ -78,6 +78,7 @@ TurtleParam::TurtleParam() :
   left(0,-1,0),
   up(1,0,0),
   scale(1,1,1),
+  id(0),
   color(1),
   texture(0),
   width(0.1f),
@@ -95,6 +96,7 @@ TurtleParam::reset(){
   left     = Vector3(0,-1,0);
   up       = Vector3(1,0,0);
   scale    = Vector3(1,1,1);
+  id = 0;
   color = 1;
   texture = 0;
   width = 0.1f;
@@ -111,6 +113,7 @@ TurtleParam * TurtleParam::copy(){
   t->left = left;
   t->up = up;
   t->scale = scale;
+  t->id = id;
   t->color = color;
   t->texture = texture;
   t->width = width;
@@ -580,7 +583,7 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
 	  a = GeometryPtr(new Cylinder(width,length*getScale().z(),false));
 	else
 	  a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false));
-	 __scene->add(Shape(transform(a),getCurrentMaterial()));
+	 __scene->add(Shape(transform(a),getCurrentMaterial(),getId()));
   }
   else {
 	if (FABS(topdiam) < GEOM_EPSILON){
@@ -600,7 +603,7 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
         a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
       a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
 	}
-	__scene->add(Shape(a,getCurrentMaterial()));
+	__scene->add(Shape(a,getCurrentMaterial(),getId()));
   }
 }
 
@@ -609,14 +612,14 @@ void PglTurtle::_cylinder(real_t length){
   if(FABS(width) < GEOM_EPSILON){
 	  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
 	  pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
-	  __scene->add(Shape(GeometryPtr(new Polyline(pts)),getCurrentMaterial()));
+	  __scene->add(Shape(GeometryPtr(new Polyline(pts)),getCurrentMaterial(),getId()));
   }
   else {
 	if ( getScale() !=  Vector3(1,1,1) &&
 		(getScale().x() == getScale().y() ))
 		width *= getScale().x();
 	__scene->add(Shape(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false))),
-					  getCurrentMaterial()));
+					  getCurrentMaterial(),getId()));
   }
 }
     
@@ -627,7 +630,7 @@ void PglTurtle::_sphere(real_t radius){
 		 getScale().y() == getScale().z() ))
 		rad *= getScale().x();
   __scene->add(Shape(transform(GeometryPtr(new Sphere(rad))),
-					getCurrentMaterial()));
+					getCurrentMaterial(),getId()));
 }
 
 GeometryPtr PglTurtle::getCircle(real_t radius) const{
@@ -651,7 +654,7 @@ PglTurtle::_circle(real_t radius){
 		 getScale().y() == getScale().z() ))
 		rad *= getScale().x();
   __scene->add(Shape(transform(GeometryPtr(new AxisRotated(Vector3::OX,GEOM_HALF_PI,GeometryPtr(new Disc(rad))))),
-					getCurrentMaterial()));
+					getCurrentMaterial(),getId()));
 //   __scene->add(Shape(transform(getCircle(radius),false),getCurrentMaterial()));
 }
     
@@ -661,7 +664,7 @@ void PglTurtle::_surface(const string& name,real_t scale){
  	error("Unknown surface '" + name + '\'');
   }
   GeometryPtr obj(new Scaled(getScale()*scale,it->second));
-  __scene->add(Shape(transform(obj,false),getCurrentMaterial()));
+  __scene->add(Shape(transform(obj,false),getCurrentMaterial(),getId()));
 }
     
 void 
@@ -679,7 +682,7 @@ PglTurtle::_polygon(const vector<Vector3>& pointList){
 	for (int i=0; i < s-2; i++) 
 	  ind->setAt(i,Index3(0,i+1,i+2));
 	GeometryPtr t = GeometryPtr(new TriangleSet(points,ind));
-	__scene->add(Shape(t,getCurrentMaterial()));
+	__scene->add(Shape(t,getCurrentMaterial(),getId()));
   }
 }
 
@@ -704,7 +707,7 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
   pts->setAt(16,Vector2(1,0));
   Curve2DPtr crossSection = Curve2DPtr(new Polyline2D(pts));
   __scene->add(Shape(GeometryPtr(new Extrusion(axis,crossSection,radius)),
-						 getCurrentMaterial()));
+						 getCurrentMaterial(),getId()));
 }
 
 void
@@ -712,5 +715,5 @@ PglTurtle::_label(const string& text ){
   GeometryPtr obj(new Text(text));
   if ( getPosition() != Vector3::ORIGIN )
      obj = GeometryPtr(new Translated(getPosition(),obj));
-  __scene->add(Shape(obj,getCurrentMaterial()));
+  __scene->add(Shape(obj,getCurrentMaterial(),getId()));
 }

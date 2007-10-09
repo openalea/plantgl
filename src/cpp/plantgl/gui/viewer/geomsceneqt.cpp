@@ -317,9 +317,9 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
 	  hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
-	  QString listid = QString::number(_it->second->getId()==0?_it->first:_it->second->getId());
+      QString listid = QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
 	  for(_it++;_it != __selectedShapes.end();_it++)
-			listid += ','+QString::number(_it->second->getId()==0?_it->first:_it->second->getId());
+			listid += ','+QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
 		  
 	  TextLabel2->setText( listid );
 

@@ -503,7 +503,7 @@ ViewGeomSceneGL::selectionEvent(uint32_t id)
   if(_it!=__selectedShapes.end()){
     Shape3DPtr ptr = _it->second;
 	__selectedShapes.erase(_it);
-	uint32_t _id = (ptr->getId() == 0?id:ptr->getId());
+    uint32_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 	info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
 	status(tr("Shape")+" "
 	  + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
@@ -516,7 +516,7 @@ ViewGeomSceneGL::selectionEvent(uint32_t id)
       if(ptr.cast(*_it).isValid() && 
 		(ptr->SceneObject::getId() == id)){
         __selectedShapes[id]=ptr;
-	    uint32_t _id = (ptr->getId() == 0?id:ptr->getId());
+        uint32_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 		info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("selected")+".");
 		status(tr("Shape")+" "
 		       + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
@@ -615,7 +615,7 @@ ViewGeomSceneGL::selectionEvent(Q3ListViewItem * item)
 	!found && _it != __scene->getEnd(); _it++){
 	  if((*_it)->getName() == name){
 		uint32_t id = (*_it)->getId();
-		if((*_it)->getId() == 0){
+        if((*_it)->getId() == Shape::NOID){
 		  id = (*_it)->SceneObject::getId();
 		}
 		hash_map<uint32_t,Shape3DPtr>::iterator _it2 

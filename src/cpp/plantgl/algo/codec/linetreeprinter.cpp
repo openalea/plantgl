@@ -367,7 +367,7 @@ bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
 
 bool LinetreePrinter::process(Shape * Shape) {
   GEOM_ASSERT(Shape);
-  if(Shape->getId() != 0)
+  if(Shape->getId() != Shape::NOID)
         __entity_number = Shape->getId();
   else __entity_number = Shape->SceneObject::getId();
   bool b=Shape->appearance->apply(*this);

@@ -42,7 +42,7 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 /// The undef value for the Id field.
-const uint32_t Shape::NOID = 0;
+const uint32_t Shape::NOID = UINT32_MAX;
 
 /* ----------------------------------------------------------------------- */
 
@@ -80,7 +80,7 @@ SceneObjectPtr Shape::Builder::build( ) {
   if (isValid())
     return SceneObjectPtr
       (new Shape(*Geometry,(Appearance ? *Appearance : AppearancePtr()),
-                     Id ? *Id : NOID));
+                     Id ? *Id : NOID, ParentId ? *ParentId : NOID));
   return SceneObjectPtr();
 }
 
@@ -88,6 +88,7 @@ void Shape::Builder::destroy() {
   if (Appearance) delete Appearance;
   if (Geometry) delete Geometry;
   if (Id) delete Id;
+  if (ParentId) delete ParentId;
 }
 
 bool Shape::Builder::isValid( ) const{
@@ -108,27 +109,34 @@ Shape::Shape( ) :
     Shape3D(),
     appearance(0),
     geometry(0),
-    id(NOID){
+    id(SceneObject::getId()),
+    parentId(NOID){
 }
 
 Shape::Shape( const GeometryPtr& _geom,
                       const AppearancePtr& _app,
-                      uint32_t _id) :
+                      uint32_t _id,
+                      uint32_t _parentId) :
     Shape3D(),
     appearance(_app),
     geometry(_geom),
-    id(_id) {
+    id(_id),
+    parentId(_parentId){
+    if(id == NOID)id = SceneObject::getId();
     setComputedName();
 }
 
 Shape::Shape( const string& name,
 					  const GeometryPtr& _geom,
                       const AppearancePtr& _app,
-                      uint32_t _id) :
+                      uint32_t _id,
+                      uint32_t _parentId) :
     Shape3D(),
     appearance(_app),
     geometry(_geom),
-    id(_id) {
+    id(_id),
+    parentId(_parentId) {
+    if(id == NOID)id = SceneObject::getId();
     setName(name);
 }
 
@@ -149,7 +157,7 @@ void Shape::setComputedName(){
     if (geometry)
         if (! geometry->isNamed()) {
           string _name;
-          if(id)
+          if(id != NOID)
             _name = "GEOMID_"+number(id);
           else
             _name = "GEOM_"+number(geometry->getId());
@@ -160,7 +168,7 @@ void Shape::setComputedName(){
     if (appearance)
       if (! appearance->isNamed()) {
         string _name;
-        if(id)
+        if(id != NOID)
           _name = "APPID_"+number(id);
         else
           _name = "APP_"+number(appearance->getId());
@@ -169,7 +177,7 @@ void Shape::setComputedName(){
 
     // Sets the label to the self
     if ( __name.empty() ) {
-      if(id)
+      if(id != NOID)
         __name = "ID_"+number(id);
       else if (geometry)
         __name = "SHAPE_"+number(geometry->getId());

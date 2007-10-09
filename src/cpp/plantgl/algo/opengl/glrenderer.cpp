@@ -363,7 +363,7 @@ bool GLRenderer::processGeometry(Shape * geomshape){
   if(__Mode == Dynamic)return geomshape->geometry->apply(*this);
 
   if(__Mode == Selection){
-    if(__selectMode == ShapeId && geomshape->getId()!=0){
+      if(__selectMode == ShapeId && geomshape->getId()!=Shape::NOID){
       glPushName(GLuint(geomshape->getId()));
     }
     else {

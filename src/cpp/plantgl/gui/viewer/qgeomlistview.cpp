@@ -373,6 +373,7 @@ bool GeomListViewBuilder::process(Shape * geomShape){
    addNode(geomShape,"Shape",1);
    if(geomShape->getId() == Shape::NOID)addAttr("Id","None","");
    else addAttr("Id",geomShape->getId());
+   if(geomShape->getParentId() != Shape::NOID)addAttr("ParentId",geomShape->getParentId());
    addAttrNode("Geometry",SceneObjectPtr(geomShape->geometry),"GeometryPtr");
    addAttrNode("Appearance",SceneObjectPtr(geomShape->appearance),"AppearancePtr");
    endNode();

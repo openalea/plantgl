@@ -711,6 +711,10 @@ bool BinaryParser::readShape(){
 
     string _name = readString();
     GEOM_READ_FIELD(a,Id,Uint32);
+	if( __tokens->getVersion() >= 1.9f){
+        GEOM_READ_FIELD(a,ParentId,Uint32);
+    }
+
     if(readNext())
        a->getGeometry().cast(__result);
     if(readNext())
@@ -742,7 +746,7 @@ bool BinaryParser::readShape(){
         __currents[0]--;
         a->getGeometry()=GeometryPtr(0);
         a->getAppearance() = AppearancePtr(0);
-        a->getId() = 0;
+        a->getId() = Shape::NOID;
         __result = NULLPTR;
         return false;
     }

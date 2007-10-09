@@ -104,6 +104,7 @@ public:
   TOOLS(Vector3) left;
   TOOLS(Vector3) up;
   TOOLS(Vector3) scale;
+  uint32_t id;
   int color;
   int texture;
   real_t width;

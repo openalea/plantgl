@@ -515,17 +515,13 @@ void initViewer()
 	PGLViewerApplication::init();
 }
 
-void endViewer()
-{
-	ViewerApplication::exit();
-}
 
 void cleanViewer() 
 {
   static bool RegisterCleanViewer = false;
   if (! RegisterCleanViewer)
   {
-	  Py_AtExit( &endViewer );
+	  Py_AtExit( &ViewerApplication::exit );
 	  RegisterCleanViewer = true;
   }
 }
