@@ -50,10 +50,15 @@ TOOLS_BEGIN_NAMESPACE
 #define GEOM_DET2(m0,m1,m2,m3) \
   (m0 * m3 - m1 * m2)
 
-#define GEOM_DET3(m0,m1,m2,m3,m4,m5,m6,m7,m8) \
+/*#define GEOM_DET3(m0,m1,m2,m3,m4,m5,m6,m7,m8) \
   m0 * GEOM_DET2(m4,m5,m7,m8) - \
   m3 * GEOM_DET2(m1,m2,m7,m8) + \
-  m6 * GEOM_DET2(m1,m2,m4,m5)
+  m6 * GEOM_DET2(m1,m2,m4,m5)*/
+
+#define GEOM_DET3(m0,m1,m2,m3,m4,m5,m6,m7,m8) \
+  m0 * GEOM_DET2(m4,m5,m7,m8) - \
+  m1 * GEOM_DET2(m3,m5,m6,m8) + \
+  m2 * GEOM_DET2(m3,m4,m6,m7)
 
 
 /*  --------------------------------------------------------------------- */
@@ -73,7 +78,8 @@ Matrix2::Matrix2( const real_t * matrix ) {
 }
 
 Matrix2::Matrix2( const Vector2& v0, const Vector2& v1 ) {
-  set(v0.x(),v1.x(),v0.y(),v1.y());
+  set(v0.x(),v1.x(),
+      v0.y(),v1.y());
 }
 
 Matrix2::~Matrix2(){
@@ -227,8 +233,8 @@ real_t trace( const Matrix2& m ) {
 }
 
 Matrix2 transpose( const Matrix2& m ) {
-  return Matrix2(Vector2(m.__M[0],m.__M[2]),
-                 Vector2(m.__M[1],m.__M[3]));
+  return Matrix2(m.__M[0],m.__M[2],
+                 m.__M[1],m.__M[3]);
 }
 
 std::ostream& operator<<( std::ostream& stream, const Matrix2& m ) {
@@ -467,6 +473,7 @@ Matrix3 adjoint( const Matrix3& m ) {
   return m.adjoint();
 }
 
+
 Matrix3 Matrix3::adjoint() const {
   return Matrix3( GEOM_DET2(__M[4],__M[5],__M[7],__M[8]),
                  -GEOM_DET2(__M[1],__M[2],__M[7],__M[8]),
@@ -478,6 +485,8 @@ Matrix3 Matrix3::adjoint() const {
                  -GEOM_DET2(__M[0],__M[1],__M[6],__M[7]),
                   GEOM_DET2(__M[0],__M[1],__M[3],__M[4]));
 }
+
+
 
 real_t det( const Matrix3& m ) {
   return m.det();
@@ -497,8 +506,8 @@ Matrix3
 Matrix3::inverse() const {
   Matrix3 _adjoint = adjoint();
   real_t _det= ( __M[0] * _adjoint.__M[0] +
-               __M[1] * _adjoint.__M[3] +
-               __M[2] * _adjoint.__M[6] );
+                 __M[1] * _adjoint.__M[3] +
+                 __M[2] * _adjoint.__M[6] );
   return _adjoint / _det;
 }
 
@@ -935,18 +944,20 @@ Matrix4 adjoint( const Matrix4& m ) {
                  -GEOM_DET3(m.__M[1],m.__M[2],m.__M[3],
                             m.__M[5],m.__M[6],m.__M[7],
                             m.__M[9],m.__M[10],m.__M[11]),
-                 GEOM_DET3(m.__M[4],m.__M[6],m.__M[7],
+
+                 -GEOM_DET3(m.__M[4],m.__M[6],m.__M[7],
                            m.__M[8],m.__M[10],m.__M[11],
                            m.__M[12],m.__M[14],m.__M[15]),
-                 -GEOM_DET3(m.__M[0],m.__M[2],m.__M[3],
+                 GEOM_DET3(m.__M[0],m.__M[2],m.__M[3],
                             m.__M[8],m.__M[10],m.__M[11],
                             m.__M[12],m.__M[14],m.__M[15]),
-                 GEOM_DET3(m.__M[0],m.__M[2],m.__M[3],
+                 -GEOM_DET3(m.__M[0],m.__M[2],m.__M[3],
                            m.__M[4],m.__M[6],m.__M[7],
                            m.__M[12],m.__M[14],m.__M[15]),
-                 -GEOM_DET3(m.__M[0],m.__M[2],m.__M[3],
+                 GEOM_DET3(m.__M[0],m.__M[2],m.__M[3],
                             m.__M[4],m.__M[6],m.__M[7],
                             m.__M[8],m.__M[10],m.__M[11]),
+
                  GEOM_DET3(m.__M[4],m.__M[5],m.__M[7],
                            m.__M[8],m.__M[9],m.__M[11],
                            m.__M[12],m.__M[13],m.__M[15]),
@@ -959,16 +970,17 @@ Matrix4 adjoint( const Matrix4& m ) {
                  -GEOM_DET3(m.__M[0],m.__M[1],m.__M[3],
                             m.__M[4],m.__M[5],m.__M[7],
                             m.__M[8],m.__M[9],m.__M[11]),
-                 GEOM_DET3(m.__M[4],m.__M[5],m.__M[6],
+
+                 -GEOM_DET3(m.__M[4],m.__M[5],m.__M[6],
                            m.__M[8],m.__M[9],m.__M[10],
                            m.__M[12],m.__M[13],m.__M[14]),
-                 -GEOM_DET3(m.__M[0],m.__M[1],m.__M[2],
+                 GEOM_DET3(m.__M[0],m.__M[1],m.__M[2],
                             m.__M[8],m.__M[9],m.__M[10],
                             m.__M[12],m.__M[13],m.__M[14]),
-                 GEOM_DET3(m.__M[0],m.__M[1],m.__M[2],
+                 -GEOM_DET3(m.__M[0],m.__M[1],m.__M[2],
                            m.__M[4],m.__M[5],m.__M[6],
                            m.__M[12],m.__M[13],m.__M[14]),
-                 -GEOM_DET3(m.__M[0],m.__M[1],m.__M[2],
+                 GEOM_DET3(m.__M[0],m.__M[1],m.__M[2],
                             m.__M[4],m.__M[5],m.__M[6],
                             m.__M[8],m.__M[9],m.__M[10]));
 }
