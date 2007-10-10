@@ -33,6 +33,7 @@
 #include <plantgl/scenegraph/core/pgl_messages.h>
 
 #include <plantgl/tool/util_string.h>
+#include <stdint.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
