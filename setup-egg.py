@@ -84,6 +84,7 @@ setup(
     lib_dirs = {'lib' : pj(build_prefix, 'lib'),},
     bin_dirs = {'bin':  pj(build_prefix, 'bin'),},
     inc_dirs = { 'include' : pj(build_prefix, 'include') },
+    share_dirs = { 'share' : 'share'},
     postinstall_scripts = ['pgl_postinstall',],
 
 
