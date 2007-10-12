@@ -372,7 +372,7 @@ ViewGeomSceneGL3::openVegeStarSymbol1(const QString& filename,bool add)
     if (_symbol->isValid()) {
 	  VegeStarFile::setShape11(_symbol);
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape3DPtr(new Shape(_symbol)));
 	  if(add){
 		addScene(scene);
 		return true;
@@ -404,7 +404,7 @@ ViewGeomSceneGL3::openVegeStarSymbol2()
     if (_symbol->isValid()) {
 	  VegeStarFile::setShape12(_symbol);
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape3DPtr(new Shape(_symbol)));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -427,7 +427,7 @@ ViewGeomSceneGL3::openVegeStarSymbol3()
     if (_symbol->isValid()) {
 	  VegeStarFile::setShape13(_symbol);
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape3DPtr(new Shape(_symbol)));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -440,7 +440,7 @@ void
 ViewGeomSceneGL3::showVegeStarSymbol1(){
 	  GeometryPtr _symbol = VegeStarFile::getShape11();
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape3DPtr(new Shape(_symbol)));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -479,7 +479,7 @@ void
 ViewGeomSceneGL3::showVegeStarSymbol2(){
 	  GeometryPtr _symbol = VegeStarFile::getShape12();
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape3DPtr(new Shape(_symbol)));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -491,7 +491,7 @@ void
 ViewGeomSceneGL3::showVegeStarSymbol3(){
 	  GeometryPtr _symbol = VegeStarFile::getShape13();
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,Material::DEFAULT_MATERIAL,0));
+      scene->add(Shape3DPtr(new Shape(_symbol)));
 
       if(setScene(scene) ==1){
 		emit valueChanged();
@@ -593,7 +593,7 @@ ViewGeomSceneGL3::openAmapSymbol(const QString& filename,bool add)
     if (_symbol->isValid()) {
 
       ScenePtr scene(new Scene());
-      scene->add(Shape(_symbol,_material,0));
+      scene->add(Shape3DPtr(new Shape(_symbol,_material)));
 	  if(add){
 		addScene(scene);
 		return true;

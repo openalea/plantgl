@@ -530,7 +530,7 @@ ViewMultiscaleEditGeomSceneGL3::computeMultiScaleGeometry(){
 	  else newscene->merge(getSelection());
 	}
   }
-  newscene->add(Shape(result,AppearancePtr(new Material(*__matmacro))));
+  newscene->add(Shape3DPtr(new Shape(result,AppearancePtr(new Material(*__matmacro)))));
   GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(newscene,NULL,NULL);
   QApplication::postEvent(this,e);
 

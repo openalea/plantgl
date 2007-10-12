@@ -602,10 +602,10 @@ PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
 void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid)
 {
    if (custompid)
-     __scene->add(Shape(geom,getCurrentMaterial(),__params->customId,__params->customParentId));
+     __scene->add(Shape3DPtr(new Shape(geom,getCurrentMaterial(),__params->customId,__params->customParentId)));
    else{
      uint32_t pid = parentId;
-     __scene->add(Shape(geom,getCurrentMaterial(),popId(),pid));
+     __scene->add(Shape3DPtr(new Shape(geom,getCurrentMaterial(),popId(),pid)));
    }
 }
 

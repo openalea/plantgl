@@ -335,7 +335,7 @@ VegeStarFile::build() const
 			shape->getId() = i;
 			shape->setName("SHAPE_"+number(i));
 			i++;
-			scene->add(*shape);
+			scene->add(ShapePtr(new Shape(*shape)));
 		}
 	}
 	return scene;

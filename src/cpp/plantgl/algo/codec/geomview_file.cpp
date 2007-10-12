@@ -79,7 +79,7 @@ ScenePtr GeomViewBuilder::parse()
 	while(!endFile()){
 		GeometryPtr geom = parseGeometry();
 		if(geom){
-			scene->add(Shape(geom,Material::DEFAULT_MATERIAL));
+			scene->add(Shape3DPtr(new Shape(geom)));
 		}
 	}
 	return scene;

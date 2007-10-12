@@ -560,8 +560,8 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,
 	  Point3ArrayPtr pts(new Point3Array(1,p1));
 	  geom = GeometryPtr(new PointSet(pts));
 	}
-	Shape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
-	assert(a.isValid());
+	Shape3DPtr a(new Shape(geom,__inputs[c_branch].appearance,__inputs[c_branch].id));
+	assert(a->isValid());
 	scene->add(a);
   }
   else {
@@ -589,7 +589,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,
 	}
 	if(p1 != Vector3::ORIGIN)
 	  geom = GeometryPtr(new Translated(p1,geom));
-	Shape sh(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
+	Shape3DPtr sh(new Shape(geom,__inputs[c_branch].appearance,__inputs[c_branch].id));
 	assert(sh.isValid());
 	scene->add(sh);
   }
@@ -617,8 +617,8 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) con
 	  else geom = GeometryPtr(new Extrusion(axis,DEFAULT_CROSS_SECTION,
 									   ub,radius));
 	}
-	Shape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
-	assert(a.isValid());
+	Shape3DPtr a(new Shape(geom,__inputs[c_branch].appearance,__inputs[c_branch].id));
+	assert(a->isValid());
 	scene->add(a);
   }
 }
@@ -626,8 +626,8 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) con
 void 
 BranchCompressor::addScene(ScenePtr scene, int c_branch,GeometryPtr geom) const{
   if(geom.isValid()&&geom->isValid()){
-	Shape a(geom,__inputs[c_branch].appearance,__inputs[c_branch].id);
-	assert(a.isValid());
+	Shape3DPtr a(new Shape(geom,__inputs[c_branch].appearance,__inputs[c_branch].id));
+	assert(a->isValid());
 	scene->add(a);
   }
 }

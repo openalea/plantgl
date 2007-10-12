@@ -86,7 +86,7 @@ ScenePtr sc_fromlist( boost::python::list l )
 		boost::python::extract<GeometryPtr> geom( obj );
 		if(geom.check()){
 			GeometryPtr g = geom();
-			scene->add(Shape(g,Material::DEFAULT_MATERIAL));
+			scene->add(Shape3DPtr(new Shape(g,Material::DEFAULT_MATERIAL)));
 		}
 		else {
 		    boost::python::extract<ScenePtr> sc( obj );
@@ -139,23 +139,18 @@ void sc_delitem( Scene* s, size_t pos )
   else throw PythonExc_IndexError();
 }
 
-ScenePtr sc_iadd(Scene* s ,Shape sh){
+ScenePtr sc_iadd1(Scene* s ,Shape3DPtr sh){
   s->add(sh);
   return s;
 }
 
-ScenePtr sc_iadd2(Scene* s ,Shape3DPtr sh){
-  s->add(sh);
-  return s;
-}
-
-ScenePtr sc_iadd3(Scene* s ,Scene* s2){
+ScenePtr sc_iadd2(Scene* s ,Scene* s2){
   s->merge(s2);
   return s;
 }
 
-ScenePtr sc_iadd4(Scene* s ,GeometryPtr sh){
-	s->add(Shape(sh,Material::DEFAULT_MATERIAL));
+ScenePtr sc_iadd3(Scene* s ,GeometryPtr sh){
+	s->add(Shape3DPtr(new Shape(sh,Material::DEFAULT_MATERIAL)));
 	return s;
 }
 
@@ -207,10 +202,9 @@ void export_Scene()
    scope scsc = sc.def(init< optional< unsigned int > >());
     sc.def(init< const Scene& >());
     sc.def( "__init__", make_constructor( sc_fromlist ) ) ;
-	sc.def("__iadd__", &sc_iadd);
+	sc.def("__iadd__", &sc_iadd1);
 	sc.def("__iadd__", &sc_iadd2);
 	sc.def("__iadd__", &sc_iadd3);
-	sc.def("__iadd__", &sc_iadd4);
 	sc.def("__add__", &sc_add);
     sc.def("add", (void (Scene::*)(const Shape &) ) &Scene::add );
     sc.def("add", (void (Scene::*)(const RefCountPtr<Shape3D> &) )&Scene::add);

@@ -431,13 +431,13 @@ ScenePtr Ligfile::computeScene(const Dtafile& _dtafile) const{
         if(a){
             GeometryPtr b = _it->getTransformed(a->getGeometry());
             if(!a->getAppearance())(*SceneObject::errorStream) << "The Dta object " << _it->getSymbolNumber() << " don't have valid Appearance" << endl;
-            if(b)result->add(Shape(b,AppearancePtr(a->getAppearance()),_it->getEntityNumber()));
+            if(b)result->add(Shape3DPtr(new Shape(b,AppearancePtr(a->getAppearance()),_it->getEntityNumber())));
             else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
         }
         else {
                 (*SceneObject::warningStream) << "*** Warning : Cannot find symbol in Dta file for object " << distance(recordTable->begin(),_it) << ". Default geometry used." << endl;
             GeometryPtr b = _it->getTransformed(GeometryPtr(0));
-            if(b)result->add(Shape(b,_default,_it->getEntityNumber()));
+            if(b)result->add(Shape3DPtr(new  Shape(b,_default,_it->getEntityNumber())));
             else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
         }
         id++;

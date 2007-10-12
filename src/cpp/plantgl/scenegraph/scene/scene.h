@@ -121,8 +121,8 @@ public:
   /** Adds a shape to the \e self
       \pre
       - shape must be non null and valid. */
-  void add( const Shape& shape );
-  void add( const ShapePtr& shape );
+  // void add( const Shape& shape );
+  // void add( const ShapePtr& shape );
 
   /** Adds a shape to the \e self
       \pre

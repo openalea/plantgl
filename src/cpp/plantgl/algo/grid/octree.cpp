@@ -281,7 +281,7 @@ void Octree::build3()
                                                           ts->getSolid(),
                                                           ts->getSkeleton()));
 
-                      n->add(Shape( GeometryPtr::Cast(tri), AppearancePtr() ));
+                      n->add(Shape3DPtr(new Shape( GeometryPtr::Cast(tri), AppearancePtr() )));
                       }
                     }
                   }
@@ -417,7 +417,7 @@ void Octree::build2()
                                                       ts->getSolid(),
                                                       ts->getSkeleton()));
 
-                  n[i]->add(Shape( GeometryPtr::Cast(tri), AppearancePtr() ));
+                  n[i]->add(Shape3DPtr(new Shape( GeometryPtr::Cast(tri), AppearancePtr() )));
                   }
                 }
               }

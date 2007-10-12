@@ -693,7 +693,7 @@ ViewGeomSceneGL3::wireSelection()
 	if(sh){
 	  if(sh->apply(wire)){
 		sh->geometry = wire.getWire();
-		scene->add(*sh);
+		scene->add(Shape3DPtr(new Shape(*sh)));
 		selection[sh->SceneObject::getId()] = sh;
 	  }
 	}
@@ -722,7 +722,7 @@ ViewGeomSceneGL3::discretizeSelection()
 	if(sh){
 	  if(sh->apply(__discretizer)){
 		sh->geometry = GeometryPtr(__discretizer.getDiscretization());
-		scene->add(*sh);
+		scene->add(Shape3DPtr(new Shape(*sh)));
 		selection[sh->SceneObject::getId()] = sh;
 	  }
 	}
@@ -753,7 +753,7 @@ ViewGeomSceneGL3::triangulateSelection()
 	if(sh){
 	  if(sh->apply(t)){
 		sh->geometry = GeometryPtr(t.getDiscretization());
-		scene->add(*sh);
+		scene->add(Shape3DPtr(new Shape(*sh)));
 		selection[sh->SceneObject::getId()] = sh;
 	  }
 	}

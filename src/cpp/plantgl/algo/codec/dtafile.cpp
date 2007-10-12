@@ -86,12 +86,12 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 	    b.FileName = &file;
 	    if (b.isValid()){
 			GeometryPtr s(new AmapSymbol(file));
-			result->add(Shape(s,AppearancePtr(0),id));
+			result->add(Shape3DPtr(new Shape(s,AppearancePtr(0),id)));
 	    }
 		else { 		
 		  (*SceneObject::warningStream) << "*** Warning : Cannot find symbol " << name << " in " << file << endl;
 		  (*SceneObject::warningStream) << "*** Warning : Default Geometry will be used."<< endl;
-			result->add(Shape(GeometryPtr(0),AppearancePtr(0),id));
+			result->add(Shape3DPtr(new Shape(GeometryPtr(0),AppearancePtr(0),id)));
 		}
 
 	}

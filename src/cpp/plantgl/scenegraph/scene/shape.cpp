@@ -111,7 +111,7 @@ Shape::Shape( ) :
     Shape3D(),
     appearance(0),
     geometry(0),
-    id(SceneObject::getId()),
+    id(getSceneObjectId()),
     parentId(NOID){
 }
 

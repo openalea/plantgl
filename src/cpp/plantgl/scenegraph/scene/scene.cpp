@@ -171,7 +171,7 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
       if(_shape.cast(_it->second)){
         if(!_shape->appearance)
           _shape->appearance = Material::DEFAULT_MATERIAL;
-        add(*_shape);
+        add(_shape);
       }
       else add(shape);
     }
@@ -220,6 +220,7 @@ void Scene::clear( ){
   unlock();
 }
 
+/*
 void Scene::add( const Shape& shape ) {
   GEOM_ASSERT(shape.isValid());
   lock();
@@ -233,6 +234,7 @@ void Scene::add( const ShapePtr& shape ) {
   __shapeList.insert(__shapeList.end(),Shape3DPtr(shape));
   unlock();
 }
+*/
 
 void Scene::add( const Shape3DPtr& shape ) {
   GEOM_ASSERT(shape.isValid());
