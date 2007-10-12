@@ -57,7 +57,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib QtCored4.lib QtGuid4.lib"
-				OutputFile="../../../../bin/pgltools-d.dll"
+				OutputFile="../../../../bin/pgltool-d.dll"
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="true"
@@ -129,7 +129,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib"
-				OutputFile="../../../../bin/pgltools.dll"
+				OutputFile="../../../../bin/pgltool.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>

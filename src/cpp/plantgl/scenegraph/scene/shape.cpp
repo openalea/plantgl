@@ -69,7 +69,8 @@ Shape::Builder::Builder( ) :
     Shape3D::Builder(),
     Appearance(0),
     Geometry(0),
-    Id(0){
+    Id(0),
+    ParentId(0){
 }
 
 
@@ -123,7 +124,7 @@ Shape::Shape( const GeometryPtr& _geom,
     geometry(_geom),
     id(_id),
     parentId(_parentId){
-    if(id == NOID)id = SceneObject::getId();
+    if(id == NOID)id = getSceneObjectId();
     setComputedName();
 }
 
@@ -137,7 +138,7 @@ Shape::Shape( const string& name,
     geometry(_geom),
     id(_id),
     parentId(_parentId) {
-    if(id == NOID)id = SceneObject::getId();
+    if(id == NOID)id = getSceneObjectId();
     setName(name);
 }
 
@@ -242,6 +243,11 @@ uint32_t Shape::getId() const {
 
 uint32_t& Shape::getId(){
   return id;
+}
+
+uint32_t Shape::getSceneObjectId() const
+{
+    return (uint32_t)this;
 }
 
 /* ----------------------------------------------------------------------- */

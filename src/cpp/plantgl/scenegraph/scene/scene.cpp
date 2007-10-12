@@ -67,6 +67,8 @@ using namespace std;
   GEOM_ASSERT(isValid());
 }*/
 
+#define WITH_POOL
+
 Scene::Scene(unsigned int size ) :
   RefCountObject(),
   __shapeList(size,Shape3DPtr(0))
@@ -74,6 +76,9 @@ Scene::Scene(unsigned int size ) :
   ,  __mutex(new QMutex())
 #endif
   {
+#ifdef WITH_POOL
+      POOL.registerScene(this);
+#endif
   GEOM_ASSERT(isValid());
 }
 
@@ -83,6 +88,9 @@ Scene::Scene(const Scene& scene) :
   ,  __mutex(new QMutex())
 #endif
 {
+#ifdef WITH_POOL
+      POOL.registerScene(this);
+#endif
   scene.lock();
   __shapeList = std::vector<Shape3DPtr>(scene.__shapeList);
   scene.unlock();
@@ -105,6 +113,9 @@ Scene::Scene(const string& filename, const std::string& format, ostream& errlog,
   ,  __mutex(new QMutex())
 #endif
 {
+#ifdef WITH_POOL
+      POOL.registerScene(this);
+#endif
 	read(filename,format,errlog,max_error);
 	GEOM_ASSERT(isValid());
 }
@@ -116,6 +127,9 @@ Scene::Scene(const SceneObjectSymbolTable& table) :
   , __mutex(new QMutex())
 #endif
 {
+#ifdef WITH_POOL
+      POOL.registerScene(this);
+#endif
   convert(table);
   GEOM_ASSERT(isValid());
 }
@@ -175,6 +189,9 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
 }
 
 Scene::~Scene( ){
+#ifdef WITH_POOL
+      POOL.unregisterScene(this);
+#endif
 #ifdef QT_THREAD_SUPPORT
 	if (__mutex)delete __mutex;
 #endif
@@ -493,4 +510,56 @@ void Scene::sort() {
 
 /* ----------------------------------------------------------------------- */
 
+Scene::Pool Scene::POOL;
 
+Scene::Pool& Scene::pool() { return POOL; }
+
+ScenePtr Scene::Pool::get(size_t id) const
+{ 
+    __mutex->lock();
+    ScenePtr res;
+    PoolList::const_iterator it = __pool.find(id);
+    if(it != __pool.end())
+        res = ScenePtr(it->second);
+    __mutex->unlock();
+    return res;
+}
+
+
+std::vector<ScenePtr> Scene::Pool::getScenes() const
+{ 
+    std::vector<ScenePtr> result;
+    __mutex->lock();
+    for (PoolList::const_iterator it = __pool.begin();it != __pool.end(); ++it)
+        result.push_back(ScenePtr(it->second));
+    __mutex->unlock();
+    return result;
+}
+
+void Scene::Pool::registerScene(Scene * s)
+{
+  __mutex->lock();
+  __pool[(size_t)s] = s;
+  __mutex->unlock();
+}
+void Scene::Pool::unregisterScene(const Scene * s)
+{
+  __mutex->lock();
+    PoolList::iterator it = __pool.find((size_t)s);
+    if(it != __pool.end()) __pool.erase(it);
+  __mutex->unlock();
+}
+
+Scene::Pool::Pool() { 
+#ifdef QT_THREAD_SUPPORT
+   __mutex = new QMutex();
+#endif
+}
+
+Scene::Pool::~Pool() { 
+#ifdef QT_THREAD_SUPPORT
+   delete __mutex;
+#endif
+}
+
+/* ----------------------------------------------------------------------- */

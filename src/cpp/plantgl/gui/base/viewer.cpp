@@ -626,7 +626,9 @@ void  Viewer::customEvent(QEvent *e){
 	printf("receive Event\n");
 #endif
 #ifdef QT_THREAD_SUPPORT
-  bool release_mutex = true;
+  bool release_mutex = false;
+  if(e->type() >= ViewEvent::eFirstEvent && e->type() < ViewGeomEvent::eLastGeomEvent)
+      release_mutex = true;
 #endif
   if(e->type() == ViewEvent::eSceneChange){
 	ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
@@ -780,7 +782,7 @@ void Viewer::send(QEvent * e) {
 		if(b)b->sent_event = true;
 		send_lock_mutex.lock();
 #ifdef DEBUG_EVENTDISPATCH
-		printf("postEvent\n");
+        printf("postEvent : %i\n",e->type());
 #endif
 		QApplication::postEvent( this, e );
 #ifdef DEBUG_EVENTDISPATCH
@@ -1020,9 +1022,12 @@ public:
   virtual void done ( int res ){
 	if(__result)*__result = res;
 #ifdef QT_THREAD_SUPPORT
+#ifdef DEBUG_EVENTDISPATCH
+		printf("wakeAll\n");
+#endif
     send_event_condition.wakeAll();
 #endif
-	if(!__messageBoxPos)__messageBoxPos = new QPoint(pos());
+    if(!__messageBoxPos)__messageBoxPos = new QPoint(pos());
 	else *__messageBoxPos = pos();
 	QDialog::done(res);
   }

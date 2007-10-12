@@ -200,7 +200,7 @@ ViewGLFrameOnlyEvent::~ViewGLFrameOnlyEvent(){
 
 ViewQuestionEvent::ViewQuestionEvent() :
   ViewEvent(eQuestion),
-  result(new int(-1)){
+  result(NULL){
 }
 
 ViewQuestionEvent::ViewQuestionEvent(const QString& _caption,
@@ -210,7 +210,7 @@ ViewQuestionEvent::ViewQuestionEvent(const QString& _caption,
 				 const QString& _but2txt,
 				 int * _result) :
   ViewEvent(eQuestion),
-  result((_result?_result:new int(-1))),
+  result(_result),
   caption(_caption),
   text(_text),
   but0txt(_but0txt),

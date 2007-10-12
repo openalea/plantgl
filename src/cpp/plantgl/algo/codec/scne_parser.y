@@ -1069,7 +1069,7 @@ ShapeFieldList:
    ShapeFieldList TokId Uint32 {
        GEOM_PARSER_SET_FIELD($1,Id,$3); $$=$1;
    }
-   ShapeFieldList TokParentId Uint32 {
+ | ShapeFieldList TokParentId Uint32 {
        GEOM_PARSER_SET_FIELD($1,ParentId,$3); $$=$1;
    }
  | ShapeFieldList TokGeometry GeometryObj {

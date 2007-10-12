@@ -230,6 +230,9 @@ public:
   /// Return the Id of \e self.
   uint32_t& getId();
 
+  /// Return the SceneObject Id of \e self.
+  uint32_t getSceneObjectId() const;
+
   /// Return the ParentId of \e self.
   uint32_t getParentId() const { return parentId; }
 

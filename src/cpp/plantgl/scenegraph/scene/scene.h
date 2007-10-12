@@ -40,6 +40,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <vector>
+#include <plantgl/tool/util_hashmap.h>
 #include "plantgl/scenegraph/core/sceneobject.h"
 #include "shape.h"
 
@@ -224,6 +225,37 @@ protected:
 #ifdef QT_THREAD_SUPPORT
   QMutex* __mutex;
 #endif
+public:
+
+    /// A Scene Pool class
+    class SG_API Pool {
+    public:
+        typedef STDEXT::hash_map<size_t,Scene *> PoolList;
+        friend Scene;
+        ~Pool();
+ 
+        // get scene id
+        ScenePtr get(size_t id) const;
+        // get all scene
+        std::vector<ScenePtr> getScenes() const;
+
+    protected:
+        void registerScene(Scene *);
+        void unregisterScene(const Scene *);
+
+        Pool();
+
+        PoolList __pool;
+#ifdef QT_THREAD_SUPPORT
+        QMutex* __mutex;
+#endif
+    };
+
+    // Singleton access
+    static Pool& pool();
+
+private:
+    static Pool POOL;
 
 };
 

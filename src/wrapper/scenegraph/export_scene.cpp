@@ -43,6 +43,7 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
+#include "../util/export_list.h"
 #include "../util/exception.h"
 
 PGL_USING_NAMESPACE
@@ -88,8 +89,15 @@ ScenePtr sc_fromlist( boost::python::list l )
 			scene->add(Shape(g,Material::DEFAULT_MATERIAL));
 		}
 		else {
-			Shape3DPtr val = boost::python::extract<Shape3DPtr>( obj );
-			scene->add( val );
+		    boost::python::extract<ScenePtr> sc( obj );
+            if (sc.check()){
+                ScenePtr s = sc();
+                scene->merge(s);
+            }
+            else {
+			    Shape3DPtr val = boost::python::extract<Shape3DPtr>( obj );
+			    scene->add( val );
+            }
 		}
   }
   return scene;
@@ -189,45 +197,56 @@ void sc_remove( Scene* sc, Shape3DPtr sh)
   sc->unlock();
 }
 
+object sp_scenes(Scene::Pool * pool){
+    return make_list<std::vector<ScenePtr> >(pool->getScenes())();
+}
+
 void export_Scene()
 {
-  class_<Scene,ScenePtr, boost::noncopyable>("Scene",init<const std::string&>("Scene() -> Create an empty scene"))
-    .def(init< optional< unsigned int > >())
-    .def(init< const Scene& >())
-    .def( "__init__", make_constructor( sc_fromlist ) ) 
-	.def("__iadd__", &sc_iadd)
-	.def("__iadd__", &sc_iadd2)
-	.def("__iadd__", &sc_iadd3)
-	.def("__iadd__", &sc_iadd4)
-	.def("__add__", &sc_add)
-    .def("add", (void (Scene::*)(const Shape &) ) &Scene::add )
-    .def("add", (void (Scene::*)(const RefCountPtr<Shape3D> &) )&Scene::add)
-    .def("add", &Scene::merge)
-    .def("merge", &Scene::merge)
-    .def("__len__", &Scene::getSize)
-    .def("__getitem__", &sc_getitem)
-    .def("__setitem__", &sc_setitem)
-    .def("__delitem__", &sc_delitem)
-    .def("clear", &Scene::clear)
-    .def("merge", &Scene::merge)
-    .def("find", &sc_find)
-    .def("findSceneObject", &sc_findSceneObject)
-    .def("index", &sc_index)
-    .def("remove", &sc_remove)
-    .def("isValid", (bool (Scene::*)() const)&Scene::isValid)
-    .def("apply", &Scene::apply)
-    .def("applyGeometryFirst", &Scene::applyGeometryFirst)
-    .def("applyGeometryOnly", &Scene::applyGeometryOnly)
-    .def("applyAppearanceFirst", &Scene::applyAppearanceFirst)
-    .def("applyAppearanceOnly", &Scene::applyAppearanceOnly)
-    .def("copy", &Scene::copy)
-    .def("read", &sc_read)
-    .def("save", &sc_save)
-    .def("save", &sc_save2)
-    .def("sort", &Scene::sort)
-  	.enable_pickling()
+  class_<Scene,ScenePtr, boost::noncopyable> sc("Scene",init<const std::string&>("Scene() -> Create an empty scene"));
+   scope scsc = sc.def(init< optional< unsigned int > >());
+    sc.def(init< const Scene& >());
+    sc.def( "__init__", make_constructor( sc_fromlist ) ) ;
+	sc.def("__iadd__", &sc_iadd);
+	sc.def("__iadd__", &sc_iadd2);
+	sc.def("__iadd__", &sc_iadd3);
+	sc.def("__iadd__", &sc_iadd4);
+	sc.def("__add__", &sc_add);
+    sc.def("add", (void (Scene::*)(const Shape &) ) &Scene::add );
+    sc.def("add", (void (Scene::*)(const RefCountPtr<Shape3D> &) )&Scene::add);
+    sc.def("add", &Scene::merge);
+    sc.def("merge", &Scene::merge);
+    sc.def("__len__", &Scene::getSize);
+    sc.def("__getitem__", &sc_getitem);
+    sc.def("__setitem__", &sc_setitem);
+    sc.def("__delitem__", &sc_delitem);
+    sc.def("clear", &Scene::clear);
+    sc.def("merge", &Scene::merge);
+    sc.def("find", &sc_find);
+    sc.def("findSceneObject", &sc_findSceneObject);
+    sc.def("index", &sc_index);
+    sc.def("remove", &sc_remove);
+    sc.def("isValid", (bool (Scene::*)() const)&Scene::isValid);
+    sc.def("apply", &Scene::apply);
+    sc.def("applyGeometryFirst", &Scene::applyGeometryFirst);
+    sc.def("applyGeometryOnly", &Scene::applyGeometryOnly);
+    sc.def("applyAppearanceFirst", &Scene::applyAppearanceFirst);
+    sc.def("applyAppearanceOnly", &Scene::applyAppearanceOnly);
+    sc.def("copy", &Scene::copy);
+    sc.def("read", &sc_read);
+    sc.def("save", &sc_save);
+    sc.def("save", &sc_save2);
+    sc.def("sort", &Scene::sort);
+  	sc.enable_pickling();
   ;
 
+  class_<Scene::Pool, boost::noncopyable>("Pool",no_init)
+      .def("get", &Scene::Pool::get)
+      .def("getScenes", &sp_scenes)
+      ;
+
+    sc.def("pool", &Scene::pool,return_value_policy<reference_existing_object>());
+    sc.staticmethod("pool") ;
 }
 
 
