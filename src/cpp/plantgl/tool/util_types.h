@@ -80,6 +80,7 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 // Basic types redefinition
 
 #ifdef __GNUC__
+#define __STDC_LIMIT_MACROS
 #include <stdint.h>
 #if defined( __MINGW32__ )
 #define __int8_t_defined
@@ -134,12 +135,14 @@ typedef unsigned long uint32_t;
 #ifndef UINT32_MIN 
 #define UINT32_MIN ULONG_MIN
 #endif
+
 /// uint32_t max value
 #ifndef UINT32_MAX
 #define UINT32_MAX ULONG_MAX
 #endif
 
 #endif
+
 
 #include <stddef.h>
 
