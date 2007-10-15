@@ -231,7 +231,7 @@ public:
     class SG_API Pool {
     public:
         typedef STDEXT::hash_map<size_t,Scene *> PoolList;
-        friend Scene;
+        friend class Scene;
         ~Pool();
  
         // get scene id

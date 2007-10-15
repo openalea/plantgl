@@ -171,7 +171,7 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
       if(_shape.cast(_it->second)){
         if(!_shape->appearance)
           _shape->appearance = Material::DEFAULT_MATERIAL;
-        add(_shape);
+        add(Shape3DPtr(_shape));
       }
       else add(shape);
     }
