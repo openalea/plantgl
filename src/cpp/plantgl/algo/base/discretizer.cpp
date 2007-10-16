@@ -557,7 +557,7 @@ bool Discretizer::process( Cone * cone ) {
 
   uint32_t _cur = 0;
   uint32_t _next = 1;
-  uint32_t _base = _slices;
+  uint32_t _base = _slices - 1;
   uint32_t _top = _base + 1;
 
   uint32_t _pointsCount = 0;
