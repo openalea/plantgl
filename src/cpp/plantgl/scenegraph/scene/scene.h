@@ -128,6 +128,7 @@ public:
       \pre
       - shape must be non null and valid. */
   void add( const Shape3DPtr& shape );
+  void add( const ShapePtr& shape );
 
   /** Remove a shape to the \e self
       \pre

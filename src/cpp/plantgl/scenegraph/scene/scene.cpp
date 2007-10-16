@@ -227,14 +227,14 @@ void Scene::add( const Shape& shape ) {
   __shapeList.insert(__shapeList.end(),Shape3DPtr(new Shape(shape)));
   unlock();
 }
-
+*/
 void Scene::add( const ShapePtr& shape ) {
   GEOM_ASSERT(shape.isValid());
   lock();
   __shapeList.insert(__shapeList.end(),Shape3DPtr(shape));
   unlock();
 }
-*/
+
 
 void Scene::add( const Shape3DPtr& shape ) {
   GEOM_ASSERT(shape.isValid());

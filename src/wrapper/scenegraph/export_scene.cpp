@@ -206,8 +206,8 @@ void export_Scene()
 	sc.def("__iadd__", &sc_iadd2);
 	sc.def("__iadd__", &sc_iadd3);
 	sc.def("__add__", &sc_add);
-    sc.def("add", (void (Scene::*)(const Shape &) ) &Scene::add );
-    sc.def("add", (void (Scene::*)(const RefCountPtr<Shape3D> &) )&Scene::add);
+    sc.def("add", (void (Scene::*)(const ShapePtr &) ) &Scene::add );
+    sc.def("add", (void (Scene::*)(const Shape3DPtr &) )&Scene::add);
     sc.def("add", &Scene::merge);
     sc.def("merge", &Scene::merge);
     sc.def("__len__", &Scene::getSize);
