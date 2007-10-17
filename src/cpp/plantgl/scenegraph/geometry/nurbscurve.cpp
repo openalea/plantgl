@@ -579,7 +579,6 @@ PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPt
     }
     BasisFunctions->setAt(j,saved);
   }
-  delete [] left;
   return BasisFunctions;
 }
 
