@@ -73,7 +73,7 @@ def viewMesures( file):
 
 #treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette1.csv')
 #treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette3.csv')
-def asymetric_swung( obj , kwds = {} ):
+def asymetric_swung( obj , **kwds ):
   X_attr = kwds.get('X', 'X')
   Y_attr = kwds.get('Y', 'Y')
   circ_attr = kwds.get('circ_attr', 'Circonference')
@@ -90,7 +90,7 @@ def asymetric_swung( obj , kwds = {} ):
   az_kz.sort()
   assert( len(rd_kz) == len(az_kz) and "directional canopy length and azimuth are not the same size" )
 
-  houppier=[ ( obj.__dict__[rd_kz[i]], obj.__dict__[az_kz[i]] ) for i in range( len(rd_kz) ) ]
+  houppier=[ ( obj.__dict__[rd_kz[i]], true_azimuth(obj.__dict__[az_kz[i]]) ) for i in range( len(rd_kz) ) ]
   houppier.sort(cmp = lambda x,y : cmp(x[1],y[1]))
   
   mc = float(midCrown)
@@ -106,9 +106,12 @@ def asymetric_swung( obj , kwds = {} ):
   else :
     return ( s_h, )
 
-def chupa_chups( obj , kwds = {}  ):
-  X_attr = kwds.get('X', 'X')
-  Y_attr = kwds.get('Y', 'Y')
+def true_azimuth(az):
+  return 90 - ( ( az+200 )%400 )*0.9
+
+def chupa_chups( obj , **kwds ):
+  X_attr = kwds.get('X_attr', 'X')
+  Y_attr = kwds.get('Y_attr', 'Y')
   circ_attr = kwds.get('circ_attr', 'Circonference')
   height_attr = kwds.get('height_attr', 'Haut')
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
@@ -131,14 +134,14 @@ def chupa_chups( obj , kwds = {}  ):
     return ( s_h, )
 
 
-def dresser( obj = None, type = 'AsymetricSwung', args = {}) :
+def dresser( obj = None, type = 'AsymetricSwung', **kwds) :
   # print('obj='+str(obj)+',type='+str(type)+',args='+str(args))
   if type == 'AsymetricSwung' :
     fc = asymetric_swung
   elif type == 'ChupaChups' :
     fc = chupa_chups
   if obj:
-    return (fc(obj,args),)
+    return (fc(obj,**kwds),)
   else:
-    return (lambda x : fc(x,args),)
+    return (lambda x : fc(x,**kwds),)
 
