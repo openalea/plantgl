@@ -32,6 +32,7 @@
 #include <plantgl/scenegraph/geometry/nurbscurve.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/tool/util_array2.h>
 #include <plantgl/scenegraph/geometry/mesh.h>
 #include <plantgl/algo/fitting/fit.h>
 
@@ -119,14 +120,22 @@ void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
     ( "NurbsCurve", init<Point4ArrayPtr, optional< RealArrayPtr, uint32_t, uint32_t > >(args("ctrlPointList","knotList","degree","strides")) )
+     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve,Degree,uint32_t)
+     .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
      .def( "fit", nurbs_fit1, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )
      .def( "fit", nurbs_fit2, args("points") )
      .def( "fit", nurbs_fit3, args("points","degree","nbctrlpoints") )
      .def( "fit", nurbs_fit4, args("points") )
 	 .staticmethod("fit")
-     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve,Degree,uint32_t)
-     .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
+     .def( "getDerivativeAt", &NurbsCurve::getDerivativeAt, args("u","d") )
+     .def( "getDerivativesAt", &NurbsCurve::getDerivativesAt, args("u") )
+     .def( "findSpan", &PGL::findSpan, args("u","degree","knotList") )
+	 .staticmethod("findSpan")
+     .def( "basisFunctions", &basisFunctions, args("span","u","degree","knotList") )
+	 .staticmethod("basisFunctions")
+     .def( "derivatesBasisFunctions", &derivatesBasisFunctions, args("n","u","span","degree","knotList") )
+	 .staticmethod("derivatesBasisFunctions")
     ;
 
   implicitly_convertible<NurbsCurvePtr, BezierCurvePtr>();

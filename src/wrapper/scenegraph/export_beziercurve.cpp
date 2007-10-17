@@ -32,12 +32,14 @@
 #include <plantgl/scenegraph/geometry/beziercurve.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/geometry/mesh.h>
+#include <plantgl/math/util_polymath.h>
 
 #include <boost/python.hpp>
 #include <sstream>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
+#include "../util/export_list.h"
 
 using namespace boost::python;
 
@@ -72,6 +74,10 @@ std::string gbc_repr( BezierCurve* p )
   return ss.str();
 }
 
+object bernstein_factors(uint32_t n, real_t u){
+    return make_list<std::vector<real_t> >(all_bernstein(n,u))();
+}
+
 void export_BezierCurve()
 {
   class_<BezierCurve, BezierCurvePtr, bases<ParametricModel, LineicModel>, boost::noncopyable>
@@ -80,6 +86,11 @@ void export_BezierCurve()
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve,Stride,uint32_t)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
+    .def("bernstein_factors",&bernstein_factors,args("n","u"))
+    .staticmethod("bernstein_factors")
+    .def("bernstein",&bernstein,args("i","n","u"))
+    .staticmethod("bernstein")
+
     ;
 
   implicitly_convertible<BezierCurvePtr, ParametricModelPtr>();

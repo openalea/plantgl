@@ -189,6 +189,11 @@ public:
      - \e u must be in [0,1];*/
   virtual TOOLS(Vector4) getDerivativeAt(real_t u, int d) const;
 
+  /*! Returns the \e derivative of degree \e d for u = \e u.
+     \pre 
+     - \e u must be in [0,1];*/
+  virtual Point4ArrayPtr getDerivativesAt(real_t u) const;
+
 
   TOOLS(Vector3) projectTo(const TOOLS(Vector3)& p, 
 					real_t guess, real_t& u,

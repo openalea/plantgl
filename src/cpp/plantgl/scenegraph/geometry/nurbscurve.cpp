@@ -325,142 +325,17 @@ NurbsCurve::copy() const
   Used only for clamped knot vector.
 */
 uint32_t NurbsCurve::findSpan(real_t u)  const  {
-  uint32_t n = __ctrlPointList->getSize();
-
-  if( u >= __knotList->getAt( n ) )return ( n - 1 );
-  if( u <= __knotList->getAt( __degree )  )return ( __degree );
-
-  uint32_t low = __degree;
-  uint32_t high = n  ;
-  uint32_t mid = ( low + high ) / 2;
-  real_t _knot =  __knotList->getAt(mid);
-
-  while (u < _knot  || u >= __knotList->getAt(mid+1) ){
-    if ( u < _knot ) high = mid;
-    else low = mid;
-    mid = ( low + high ) / 2;
-    _knot = __knotList->getAt(mid);
-  }
-
-  return mid;
-
+    return PGL::findSpan(u,__degree,__knotList);
 }
 
 RealArrayPtr
 NurbsCurve::computeBasisFunctions(uint32_t span, real_t u) const  {
-
-  RealArrayPtr BasisFunctions(new RealArray(__degree + 1));
-
-  real_t * left = new real_t[ __degree+1 ];
-  real_t * right = new real_t[ __degree+1 ];
-  real_t saved;
-
-  BasisFunctions->setAt(0,1.0);
-
-  for( uint32_t j = 1 ; j <= __degree ; j++ ){
-    left[j] = u - __knotList->getAt(span + 1 -j) ;
-    right[j] = __knotList->getAt(span + j) - u ;
-    saved = 0.0;
-    for ( uint32_t r = 0 ; r < j ; r++){
-      real_t temp = BasisFunctions->getAt(r) / ( right[r+1] + left[j-r] );
-      BasisFunctions->setAt(r, saved + ( right[r+1] * temp ));
-      saved = left[j-r] * temp;
-    }
-    BasisFunctions->setAt(j,saved);
-  }
-  delete left;
-  delete right;
-  return BasisFunctions;
+    return basisFunctions(span,u,__degree,__knotList);
 }
 
 /* Algo A2.3 p72 Nurbs Book */
 RealArray2Ptr NurbsCurve::computeDerivatesBasisFunctions(int n,real_t u, int span ) const {
-  real_t * left = (real_t *) alloca(2*(__degree+1)*sizeof(real_t)) ;
-  real_t * right = &left[__degree+1] ;
-
-  RealArray2 ndu(__degree+1,__degree+1) ;
-  real_t saved,temp ;
-  int r, j;
-
-  RealArray2Ptr ders(new RealArray2(n+1,__degree+1));
-
-  ndu.setAt(0,0,1.0) ;
-
-  for(j=1; j <= (int)__degree ;j++){
-      left[j] = u-__knotList->getAt(span+1-j) ;
-      right[j] = __knotList->getAt(span+j)-u ;
-      saved = 0.0 ;
-
-      for(r=0;r<j ; r++){
-          // Lower triangle
-          ndu.setAt(j,r,right[r+1]+left[j-r]) ;
-          temp = ndu.getAt(r,j-1)/ndu.getAt(j,r) ;
-          // Upper triangle
-          ndu.setAt(r,j,saved+right[r+1] * temp) ;
-          saved = left[j-r] * temp ;
-      }
-
-      ndu.setAt(j,j,saved) ;
-  }
-
-  for(j=__degree;j>=0;--j)
-      ders->setAt(0,j,ndu.getAt(j,__degree)) ;
-
-  // Compute the derivatives
-  RealArray2 a(__degree+1,__degree+1) ;
-  for(r=0;r<=(int)__degree;r++){
-      int s1,s2 ;
-      s1 = 0 ; s2 = 1 ; // alternate rows in array a
-      a.setAt(0,0,1.0) ;
-      // Compute the kth derivative
-      for(int k=1;k<=n;k++){
-          real_t d ;
-          int rk,pk,j1,j2 ;
-          d = 0.0 ;
-          rk = r-k ; pk = __degree-k ;
-
-          if(r>=k){
-              a.setAt(s2,0,(a.getAt(s1,0)/ndu.getAt(pk+1,rk))) ;
-              d = a.getAt(s2,0)*ndu.getAt(rk,pk) ;
-          }
-
-          if(rk>=-1){
-              j1 = 1 ;
-          }
-          else{
-              j1 = -rk ;
-          }
-
-          if(r-1 <= pk){
-              j2 = k-1 ;
-          }
-          else{
-              j2 = __degree-r ;
-          }
-
-          for(j=j1;j<=j2;j++){
-              a.setAt(s2,j,((a.getAt(s1,j)-a.getAt(s1,j-1))/ndu.getAt(pk+1,rk+j))) ;
-              d += a.getAt(s2,j)*ndu.getAt(rk+j,pk) ;
-          }
-
-      if(r<=pk){
-        a.setAt(s2,k,-(a.getAt(s1,k-1))/ndu.getAt(pk+1,r)) ;
-        d += a.getAt(s2,k)*ndu.getAt(r,pk) ;
-      }
-      ders->setAt(k,r, d) ;
-      j = s1 ; s1 = s2 ; s2 = j ; // Switch rows
-    }
-  }
-
-  // Multiply through by the correct factors
-  r = __degree ;
-  for(int k=1;k<=n;k++){
-      for(j=__degree;j>=0;--j)
-          ders->setAt(k,j,ders->getAt(k,j)*r) ;
-      r *= __degree-k ;
-  }
-  return ders;
-
+    return derivatesBasisFunctions(n,u,span,__degree,__knotList);
 }
 
 Point4ArrayPtr  NurbsCurve::deriveAtH(real_t u, int d, int span ) const {
@@ -518,9 +393,16 @@ Point4ArrayPtr NurbsCurve::deriveAt(real_t  u, int d, int span ) const{
 
 
 Vector4 NurbsCurve::getDerivativeAt(real_t u, int d) const {
+    if (d > __degree) return Vector4(0,0,0,0);
     int span = findSpan(u) ;
     Point4ArrayPtr ders = deriveAt(u,d, span) ;
     return ders->getAt(d) ;
+}
+
+
+Point4ArrayPtr NurbsCurve::getDerivativesAt(real_t u) const {
+    int span = findSpan(u) ;
+    return deriveAt(u,__degree, span) ;
 }
 
 
@@ -696,6 +578,7 @@ PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPt
     }
     BasisFunctions->setAt(j,saved);
   }
+  delete [] left;
   return BasisFunctions;
 }
 
@@ -729,6 +612,7 @@ PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint32_t _degree, const 
 
       ndu.setAt(j,j,saved) ;
   }
+  delete [] left;
 
   for(j=_degree;j>=0;--j)
       ders->setAt(0,j,ndu.getAt(j,_degree)) ;
@@ -1019,25 +903,7 @@ NurbsCurve2D::copy() const
 /* ----------------------------------------------------------------------- */
 
 uint32_t NurbsCurve2D::findSpan(real_t u) const {
-  uint32_t n = __ctrlPointList->getSize();
-
-  if( u >= __knotList->getAt( n ) )return ( n - 1 );
-  if( u <= __knotList->getAt( __degree )  )return ( __degree );
-
-  uint32_t low = __degree;
-  uint32_t high = n + 1 ;
-  uint32_t mid = ( low + high ) / 2;
-  real_t _knot =  __knotList->getAt(mid);
-
-  while (u < _knot  || u >= __knotList->getAt(mid+1) ){
-    if ( u < _knot ) high = mid;
-    else low = mid;
-    mid = ( low + high ) / 2;
-    _knot = __knotList->getAt(mid);
-  }
-
-  return mid;
-
+    return PGL::findSpan(u,__degree,__knotList);
 }
 
 Vector2 NurbsCurve2D::getPointAt(real_t u) const{
