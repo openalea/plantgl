@@ -555,7 +555,8 @@ PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPt
     return BasisFunctions;
   }
 
-  real_t * left = (real_t*)malloc(2*( _degree+1)*sizeof(real_t));
+  /// memory set with alloca is automatically freed at the end of the function
+  real_t * left = (real_t*)alloca(2*( _degree+1)*sizeof(real_t));
   real_t * right= &left[ _degree+1 ];
   real_t saved;
 
@@ -612,7 +613,6 @@ PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint32_t _degree, const 
 
       ndu.setAt(j,j,saved) ;
   }
-  delete [] left;
 
   for(j=_degree;j>=0;--j)
       ders->setAt(0,j,ndu.getAt(j,_degree)) ;
