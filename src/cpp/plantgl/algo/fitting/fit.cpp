@@ -1913,7 +1913,7 @@ Fit::nurbsCurve(){
     cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
     return LineicModelPtr(0);
   }
-  if(__pointstofit->getSize()<6)
+  if(__pointstofit->getSize()<4)
     return LineicModelPtr(new Polyline(__pointstofit));
   else {
 	LineicModelPtr line = leastSquares(__pointstofit,3,
