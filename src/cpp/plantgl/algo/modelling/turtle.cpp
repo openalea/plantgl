@@ -44,6 +44,7 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/scene/shape.h>
 #include <plantgl/math/util_math.h>
+#include <plantgl/tool/util_types.h>
 
 #include <sstream>
 
@@ -232,6 +233,18 @@ bool Turtle::isValid() const{
   
 void Turtle::start(){
 	reset();
+}
+
+void Turtle::incId() 
+{ 
+    if (getId() < UINT32_MAX) setId(getId()+1); 
+    else error("Id should be a valid positive value."); 
+}
+
+void Turtle::decId() 
+{ 
+    if (getId() > 0) setId(getId()-1); 
+    else error("Id should be a valid positive value."); 
 }
 
 uint32_t Turtle::popId()

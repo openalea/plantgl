@@ -52,7 +52,14 @@ TOOLS_BEGIN_NAMESPACE
 
 inline std::string QString2StdString(const QString& st)
 #if QT_VERSION >= 0x040000
+#ifdef PGL_DEBUG
+// On Windows, Qt can be compiled only with VC7 to have PyQt
+// Compiling then PlantGL on VC8 will cause a string compatibility pb in debug mode
+// for this we, reconstruct a string from char * data of the QString
+{ return std::string(st.toAscii().data()); }
+#else
 { return st.toStdString(); }
+#endif
 #else
 { return st.latin1(); }
 #endif
@@ -127,7 +134,7 @@ string short_dirname(const string& filename){
 
 string get_cwd() {
 #if QT_VERSION >= 0x040000
-	return QString2StdString(QDir::currentPath()); 
+	return QString2StdString(QDir::currentPath());
 #else
 	return QString2StdString(QDir::current().path());
 #endif
