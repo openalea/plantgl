@@ -29,6 +29,8 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include "../util/export_list.h"
+
 // Array Macro
 #define EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
 DEF_POINTEE( ARRAY ) \
@@ -63,46 +65,56 @@ DEF_POINTEE( ARRAY ) \
 									\
 
 #define EXPORT_FUNCTION2( PREFIX, T, ARRAY)			\
-T PREFIX##_getitem( ARRAY * array, size_t i, size_t j )	\
+    T PREFIX##_getitem( ARRAY * array, boost::python::tuple indices )	\
 {								\
+  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])(); \
   if( i < array->getRowsNb() && j < array->getColsNb() )	\
     return array->getAt( i, j );				\
   else throw PythonExc_IndexError();				\
 }								\
 								\
-void PREFIX##_setitem( ARRAY * array, size_t i, size_t j, T * v )\
+boost::python::object PREFIX##_getrow( ARRAY * array, size_t i)	\
+{								\
+  if( i < array->getRowsNb() )	\
+    return make_list<std::vector<T> >(array->getRow( i ))();				\
+  else throw PythonExc_IndexError();				\
+}								\
+								\
+boost::python::object PREFIX##_getcolumn( ARRAY * array, size_t j)	\
+{								\
+  if( j < array->getColsNb() )	\
+    return make_list<std::vector<T> >(array->getColumn( j ))();				\
+  else throw PythonExc_IndexError();				\
+}								\
+								\
+boost::python::object PREFIX##_getdiag( ARRAY * array)	\
+{								\
+  return make_list<std::vector<T> >(array->getDiagonal())();				\
+}								\
+								\
+void PREFIX##_setitem( ARRAY * array, boost::python::tuple indices, T * v )\
 {								 \
+  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])(); \
   if( i < array->getRowsNb() && j < array->getColsNb() )	 \
     array->setAt( i, j, *v );					 \
   else throw PythonExc_IndexError();				 \
 }								 \
 								 \
-std::string PREFIX##_str( ARRAY * a )					\
-{									\
-  uint32_t r= a->getRowsNb(); uint32_t i= 0;				\
-  std::stringstream ss;							\
-  ss << "[ ";								\
-  for( i= 0; i < r; i++ )						\
-    {									\
-      ss << "[ ";							\
-      std::copy( a->getBeginRow(i), a->getEndRow(i), std::ostream_iterator< T >( ss, " " ) ); \
-      ss << "]";							\
-    }									\
-  ss << "]";\
-  return ss.str();\
-}\
 \
-std::string PREFIX##_repr( ARRAY * a )\
+std::string PREFIX##_str( ARRAY * a )\
 {\
   uint32_t r= a->getRowsNb(); uint32_t i= 0;				\
   std::stringstream ss;							\
-  ss << "ARRAY([ ";							\
+  ss << #ARRAY <<"([";								\
   for( i= 0; i < r; i++ )						\
     {									\
-      ss << "[ ";							\
-      std::copy( a->getBeginRow(i), a->getEndRow(i)-1, std::ostream_iterator< T >( ss, ", " ) ); \
-      ss << *( a->getEndRow(i) - 1 ) << "]";				\
-      if( i < r-1 ) ss << ", ";						\
+      ss << "[";							\
+      for(ARRAY::const_iterator it = a->getBeginRow(i); it != a->getEndRow(i); ++it){ \
+            if (it != a->getBeginRow(i)) ss << ","; \
+            ss << extract<std::string>(boost::python::str(boost::python::object(*it)))(); \
+      } \
+      ss << "]";				\
+      if( i < r-1 ) ss << ",";						\
     }									\
   ss << "])";								\
   return ss.str();							\
@@ -110,15 +122,27 @@ std::string PREFIX##_repr( ARRAY * a )\
 									\
 size_t PREFIX##_len( ARRAY * a )					\
 {  return a->getRowsNb();}						\
+               \
+size_t PREFIX##_rownb( ARRAY * a )					\
+{  return a->getRowsNb();}						\
+               \
+size_t PREFIX##_colnb( ARRAY * a )					\
+{  return a->getColsNb();}						\
 
 #define EXPORT_ARRAY( PREFIX, ARRAY,STRING )				\
-  class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<optional<size_t,size_t> >(#STRING) ) \
+  class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<optional<size_t,size_t> >(STRING) ) \
     .def( "__init__", make_constructor( PREFIX##_fromlist ) )		\
-    .def( "__getitem__", PREFIX##_getitem /*, return_internal_reference<1>()*/ ) \
-    .def( "__setitem__", PREFIX##_setitem )				\
-    .def( "__len__", PREFIX##_len )					\
-    .def( "__repr__", PREFIX##_repr )					\
-    .def( "__str__", PREFIX##_str )					\
+    .def( "__getitem__", &PREFIX##_getitem /*, return_internal_reference<1>()*/ ) \
+    .def( "__getitem__", &PREFIX##_getrow  ) \
+    .def( "__setitem__", &PREFIX##_setitem )				\
+    .def( "__len__", &PREFIX##_len )					\
+    .def( "__repr__", &PREFIX##_str )					\
+    .def( "__str__", &PREFIX##_str )					\
+    .def( "getRow", &PREFIX##_getrow  ) \
+    .def( "getRowNb", &PREFIX##_rownb  ) \
+    .def( "getColumn", &PREFIX##_getcolumn  ) \
+    .def( "getColumnNb", &PREFIX##_colnb  ) \
+    .def( "getDiagonal", &PREFIX##_getdiag  ) \
     ;									\
 
 #define EXPORT_FUNCTION( PREFIX, T, ARRAY) \
