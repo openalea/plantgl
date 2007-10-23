@@ -69,7 +69,7 @@ void export_Shape()
   class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape", init<>())
     .def( init< const RefCountPtr<Geometry> &, 
 	          optional< const RefCountPtr<Appearance> &,
-	                     uint32_t, uint32_t > >("Shape( geometry, appearance, id, parentId )") )
+	                     uint32_t, uint32_t > >("Shape( geometry, appearance, id, parentId )",args( "geometry", "appearance", "id", "parentId" )) )
     .add_static_property("NOID",make_getter(&Shape::NOID))
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)

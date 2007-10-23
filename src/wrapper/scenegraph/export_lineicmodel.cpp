@@ -136,7 +136,7 @@ void export_SOR2D()
 
 void export_Disc()
 {
-  class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", init< optional<real_t,uchar_t> >("Disc(radius, slices)") )
+  class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", init< optional<real_t,uchar_t> >("Disc(radius, slices)",args("radius", "slices") ))
    .DEC_BT_PROPERTY_WD(radius,Disc,Radius,real_t);
     ;
 
