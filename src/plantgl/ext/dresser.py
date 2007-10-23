@@ -134,7 +134,7 @@ def chupa_chups( obj , **kwds ):
     return ( s_h, )
 
 
-def dresser( obj = None, type = 'AsymetricSwung', **kwds) :
+def dresser( obj = None, type = 'AsymetricSwung', kwds = {}) :
   # print('obj='+str(obj)+',type='+str(type)+',args='+str(args))
   if type == 'AsymetricSwung' :
     fc = asymetric_swung
