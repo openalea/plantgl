@@ -49,6 +49,7 @@ class PglNode(Node):
         self.add_pglinputs()
     def add_pglinputs(self):
         prop = getproperties(self.pgltype)
+        prop.remove('name')
         defaultval = []
         try:
             instance = self.pgltype()
@@ -57,7 +58,6 @@ class PglNode(Node):
         except:
             pass
         self.add_input(name = 'name', interface=IStr, value ='')
-        prop.remove('name')
         interfacedict = intface.TypeInterfaceMap()
         interfacedict[sg.Color3] = IRGBColor        
         for i,p in enumerate(prop):
