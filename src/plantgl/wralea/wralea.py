@@ -14,7 +14,7 @@ def register_packages(pkgmanager):
                'url' : 'http://openalea.gforge.inria.fr'
                }
  
-    package = Package("PlantGL Objects", metainfo)
+    package = Package("PlantGL.Objects", metainfo)
     ogf.define_package(package)
     pkgmanager.add_package(package)	
 	
@@ -27,7 +27,7 @@ def register_packages(pkgmanager):
                }
  
  
-    package = Package("PlantGL Visualization", metainfo)
+    package = Package("PlantGL.Visualization", metainfo)
         
     nf = Factory( name= "plot3D", 
                   description= "Viewer Display", 
