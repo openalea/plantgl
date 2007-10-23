@@ -18,7 +18,7 @@ def register_packages(pkgmanager):
     ogf.define_package(package)
     pkgmanager.add_package(package)	
 	
-    metainfo={ 'version' : '0.0.1',
+    metainfo={ 'version' : '0.0.2',
                'license' : 'CECILL-C',
                'authors' : 'F. Boudon',
                'institutes' : 'INRIA/CIRAD',
@@ -34,6 +34,17 @@ def register_packages(pkgmanager):
                   category = "Vizualisation", 
                   nodemodule = "viewernode",
                   nodeclass = "Plot3D",
+                  lazy = False
+                  )
+    package.add_factory( nf )
+
+    pkgmanager.add_package(package)
+
+    nf = Factory( name= "addToPlot3D", 
+                  description= "Viewer Display", 
+                  category = "Vizualisation", 
+                  nodemodule = "viewernode",
+                  nodeclass = "AddToPlot3D",
                   lazy = False
                   )
     package.add_factory( nf )
