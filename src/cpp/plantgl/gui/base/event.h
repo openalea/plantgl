@@ -95,11 +95,9 @@ public:
 
 
 
-  ViewEvent(int type = eNoneEvent):
-	QEvent(QEvent::Type(type)),
-	sent_event(false){}
+  ViewEvent(int type = eNoneEvent);
 
-  virtual ~ViewEvent(){}
+  virtual ~ViewEvent();
 
   bool sent_event;
 

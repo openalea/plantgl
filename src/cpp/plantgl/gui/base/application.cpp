@@ -140,8 +140,9 @@ ViewerApplication::question(const std::string& caption,
 					   const std::string& but1txt,
 					   const std::string& but2txt){
    initViewerAppli();
-   if(VIEWER_APPLI)
+   if(VIEWER_APPLI){
 	return VIEWER_APPLI->question(caption,text,but0txt,but1txt,but2txt);
+   }
    else return -1;
 }
 

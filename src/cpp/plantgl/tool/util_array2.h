@@ -120,7 +120,7 @@ public:
   }
 
   /// Returns whether \e self contain \e t.
-  inline bool contain( const T& t ) const {
+  inline bool contains( const T& t ) const {
 	  return std::find(__A.begin(),__A.end(),t) != __A.end();
   }
 
@@ -157,9 +157,10 @@ public:
     GEOM_ASSERT( __rowsNb!= 0 && c < (__A.size()/__rowsNb) );
     std::vector<T> _col(__rowsNb);
     const_iterator _it = __A.begin()+c;
+    size_t rowsize = __A.size()/__rowsNb;
     for ( uint32_t k = 0 ; k < __rowsNb ; k++){
         _col[k]=*_it;
-        _it+=(__A.size()/__rowsNb);
+        _it+=rowsize;
     }
     return _col;
   }
@@ -235,75 +236,64 @@ public:
     else return uint32_t(0);
   }
 
-  /* Insert \e t into \e self before the position pointed by \e it.
-  iterator insert( iterator it, const T& t ) {
-    return __A.insert(it,t);
-  }*/
-
-  /// Insert \e t into \e self before the position pointed by \e i.
-  inline void insertColumn( uint32_t i, const std::vector<T>& t ) {
-      GEOM_ASSERT( (__rowsNb ==0 && i == 0)|| i <=(__A.size()/__rowsNb));
-      GEOM_ASSERT(__rowsNb ==0 || t.size() == __rowsNb);
-      uint32_t _cols = (__A.size()/__rowsNb);
-      iterator _pos = (__A.begin()+i);
-      for(const_iterator _k = t.begin(); _k != t.end(); _k++){
-          __A.insert(_pos,(*_k));
-           _pos=_pos+_cols;
-       };
-      if(!__rowsNb)__rowsNb = t.size();
-  }
 
   /// Insert the line \e t before the line \e i.
-  inline void insertLine( uint32_t i, const std::vector<T>& t ) {
-      GEOM_ASSERT( i <= __rowsNb);
-      GEOM_ASSERT( (i == 0 && __rowsNb == 0) || (t.size() == (__A.size()/__rowsNb)));
-      iterator _pos;
-      if(!__rowsNb) _pos = this->getBegin();
-      else _pos = (this->getBegin()+(i*(this->getSize()/__rowsNb)));
-       const_iterator _f = (t.begin());
-       const_iterator _g = (t.end());
-       __A.insert(_pos,_f,_g);
-      __rowsNb++;
-  }
-
-  /// Insert from \e begin to \e end into \e self before the position pointed by \e i.
-  template <class InIterator>
-  inline void insertColumn( uint32_t i, InIterator begin, InIterator end) {
-      GEOM_ASSERT(  (i == 0 && __rowsNb == 0) || (i <=(__A.size()/__rowsNb)) );
-      GEOM_ASSERT(distance(begin,end) ==  __rowsNb);
-      typename std::vector<T>::iterator _pos = (__A.begin()+i);
-      uint32_t _cols = (__A.size()/__rowsNb);
-      for(InIterator _k = begin; _k != end; _k++){
-           __A.insert(_pos,(*_k));
-           _pos=_pos+_cols;
-       };
+  inline void insertRow( uint32_t i, const std::vector<T>& t ) {
+      insertRow(i,t.begin(),t.end());
   }
 
   /// Inserts the line \e t before the line \e j.
-
   template <class InIterator>
-  inline void insertLine( uint32_t j,InIterator begin, InIterator end ) {
+  inline void insertRow( uint32_t j,InIterator begin, InIterator end ) {
       GEOM_ASSERT( j <= __rowsNb);
-      GEOM_ASSERT( __rowsNb == 0 || distance(begin,end) == (__A.size()/__rowsNb));
-      typename std::vector<T>::iterator _pos;
+      GEOM_ASSERT((j == 0 && __rowsNb == 0) || distance(begin,end) == (__A.size()/__rowsNb));
+      iterator _pos;
       if(!__rowsNb)_pos = __A.begin();
       else _pos = (__A.begin()+(j*(__A.size()/__rowsNb)));
       __A.insert(_pos, begin,end);
       __rowsNb++;
   }
 
-  /// Inserts the line \e t at the end.
+  /// Insert \e t into \e self before the position pointed by \e i.
+  inline void insertColumn( uint32_t i, const std::vector<T>& t ) {
+      insertColumn(i,t.begin(),t.end());
+  }
 
+  /// Insert from \e begin to \e end into \e self before the position pointed by \e i.
   template <class InIterator>
-  inline void pushRow(InIterator begin, InIterator end ) 
-    { 
-	if(__rowsNb != 0)
-	  {
-      GEOM_ASSERT( distance(begin,end) == (__A.size() /__rowsNb) );
-      }
+  inline void insertColumn( uint32_t i, InIterator begin, InIterator end) {
+      size_t rowsize = getRowsSize();
+      GEOM_ASSERT(  (i == 0 && __rowsNb == 0) || (i  <= rowsize) );
+      GEOM_ASSERT(__rowsNb ==0 || distance(begin,end) ==  __rowsNb);
+      rowsize += 1;
+      iterator _pos = __A.begin()+i;
+      for(InIterator _k = begin; _k != end; _k++,_pos+=rowsize){
+           _pos = __A.insert(_pos,*_k);
+       };
+      if(!__rowsNb)__rowsNb = distance(begin,end);
+  }
+
+  /// Inserts a row \e t at the end.
+  template <class InIterator>
+  inline void pushRow(InIterator begin, InIterator end ){ 
+    GEOM_ASSERT(__rowsNb == 0 || distance(begin,end) == (__A.size() /__rowsNb) );
     __A.insert(__A.end(),begin,end);
     __rowsNb++;
-    }
+   }
+
+  /// Inserts a row \e t at the end.
+  template <class InIterator>
+  inline void pushRow(std::vector<T>& t ){ pushRow(t.begin(),t.end()); }
+
+  /// Inserts a row \e t at the end.
+  template <class InIterator>
+  inline void pushColumn(InIterator begin, InIterator end ){ 
+      insertColumn(getColsNb(),begin,end);
+   }
+
+  /// Inserts a row \e t at the end.
+  template <class InIterator>
+  inline void pushColumn(std::vector<T>& t ){ pushColumn(t.begin(),t.end()); }
 
   /// Returns whether \e self is empty.
   inline bool isEmpty( ) {
@@ -321,34 +311,6 @@ public:
     };
     return true;
   }
-
-  /// Prints \e self to the output stream \e stream.
-/*  std::ostream& print( std::ostream& stream,
-                  char delimiter = ',',
-                  char begin = '[',
-                  char end = ']' ) const {
-      stream << begin << ' ' << begin << ' ';
-      uint32_t _size = __A.size();
-      if (_size) {
-          uint32_t _colsNb = _size / __rowsNb;
-          stream  << __A[0];
-          for (uint32_t _i = 1; _i < _size - 1; _i++){
-              if((_i % _colsNb) == 0)stream << ' ' << end << ' '
-                                            << delimiter << ' ' << begin;
-              else stream  << ' '<< delimiter;
-              stream << ' ' << __A[_i];
-          }
-          if(_colsNb != 1)stream  << ' '<< delimiter;
-          if(_size != 1)stream << ' ' << __A[_size -1];
-      };
-      return (stream << ' ' << end << ' ' << end);
-  }
-
-  /// Prints \e self to the output stream \e stream.
-  friend std::ostream& operator<<(std::ostream& stream, const Array2<T> a){
-      return a.print(stream);
-  }
-*/
 
   /** Sets the \e (r,c)-th element of \e self to \e t.
       \pre
@@ -400,7 +362,7 @@ public:
       return n;
   }
 
-  /// Set \e val to the diadonal of \e self.
+  /// Set \e val to the diagonal of \e self.
   inline void setDiagonal(const T& val) {
 	  uint32_t s = std::min<uint32_t>(getRowsNb(),getColsNb());
       for(uint32_t _i = 0; _i < s ; _i++)
@@ -491,11 +453,11 @@ public:
   **/
   NumericArray2<T> get( uint32_t rw, uint32_t cl,
                    uint32_t nr, uint32_t nc) const {
-    if(rw + nr > this->__rowsNb || cl + nc > this->getColsNb( ))
+    if(rw + nr > __rowsNb || cl + nc > getColsNb( ))
       return NumericArray2<T>(0,0);
     NumericArray2<T> result(nr,nc);
     for(uint32_t _i = 0; _i < nr ; _i++){
-      typename std::vector<T>::const_iterator _it = this->__A.begin()+((_i+rw)*(this->__A.size()/this->__rowsNb) + cl);
+      typename std::vector<T>::const_iterator _it = __A.begin()+((_i+rw)*(__A.size()/__rowsNb) + cl);
       typename std::vector<T>::const_iterator _itend = _it + nc;
       uint32_t _j =0;
       for(;_it != _itend; _it++){
@@ -520,15 +482,14 @@ public:
   }
   /// Multiplication of 2 matrix.
   NumericArray2<T> operator*( const NumericArray2<T>& m ) const {
-      if(this->getColsNb() != m.getRowsNb())
-          return NumericArray2<T>(0,0);
-      NumericArray2<T> result(this->getRowsNb(),m.getColsNb());
-      for(uint32_t _i = 0; _i < this->getRowsNb(); _i++){
+      if(getColsNb() != m.getRowsNb()) return NumericArray2<T>(0,0);
+      NumericArray2<T> result(getRowsNb(),m.getColsNb());
+      for(uint32_t _i = 0; _i < getRowsNb(); _i++){
           for(uint32_t _j = 0; _j < m.getColsNb(); _j++){
-              typename NumericArray2<T>::const_iterator _it1 = this->getBeginRow(_i);
+              typename NumericArray2<T>::const_iterator _it1 = getBeginRow(_i);
               typename NumericArray2<T>::const_iterator _it2 = m.getBegin() + _j;
               T sum = (*_it1)*(*_it2);
-              while(_it1 != this->getEndRow(_i)-1){
+              while(_it1 != getEndRow(_i)-1){
                   _it1++;
                   _it2+=m.getColsNb();
                   sum += (*_it1)*(*_it2);

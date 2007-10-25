@@ -59,6 +59,7 @@
 				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
 				OutputFile="../../plantgl_d/math/_pglmath_d.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
+				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_34_1.lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>

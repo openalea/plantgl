@@ -105,6 +105,13 @@ void export_Material()
   .DEC_CT_PROPERTY_WD(emission,Material,Emission,Color3)
   .DEC_BT_PROPERTY_WD(shininess,Material,Shininess,real_t)
   .DEC_BT_PROPERTY_WD(transparency,Material,Transparency,real_t)
+  .add_static_property("DEFAULT_AMBIENT",make_getter(&Material::DEFAULT_AMBIENT))
+  .add_static_property("DEFAULT_DIFFUSE",make_getter(&Material::DEFAULT_DIFFUSE))
+  .add_static_property("DEFAULT_SPECULAR",make_getter(&Material::DEFAULT_SPECULAR))
+  .add_static_property("DEFAULT_EMISSION",make_getter(&Material::DEFAULT_EMISSION))
+  .add_static_property("DEFAULT_SHININESS",make_getter(&Material::DEFAULT_SHININESS))
+  .add_static_property("DEFAULT_TRANSPARENCY",make_getter(&Material::DEFAULT_TRANSPARENCY))
+  .add_static_property("DEFAULT_MATERIAL",make_getter(&Material::DEFAULT_MATERIAL))
   .def_pickle(mat_pickle_suite());
     ;
 
@@ -120,6 +127,7 @@ void export_ImageTexture()
 	  "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
       .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
 	  .DEC_BT_NR_PROPERTY_WD(mipmaping,ImageTexture, Mipmaping,bool)
+      .add_static_property("DEFAULT_MIPMAPING",make_getter(&ImageTexture::DEFAULT_MIPMAPING))
     ;
 
   implicitly_convertible<ImageTexturePtr, MaterialPtr >();

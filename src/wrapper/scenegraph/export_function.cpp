@@ -36,6 +36,7 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
+#include "../util/exception.h"
 
 
 using namespace boost::python;
@@ -61,6 +62,13 @@ object func_findX2(Function * func, real_t y, real_t startingx)
     else return object(x);
 }
 
+real_t Func_getValue(Function * func, real_t x)
+{
+   if (func->getFirstX() > x  || x > func->getLastX())
+      throw PythonExc_IndexError();
+   else return func->getValue(x);
+}
+
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isMonotonous_overloads, isMonotonous, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isIncreasing_overloads, isIncreasing, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isDecreasing_overloads, isDecreasing, 0, 1)
@@ -73,8 +81,8 @@ void export_Function()
      "QuantisedFunction(curve[,sampling]) : Quantised 2D function."))
       .def(init<const Point2ArrayPtr& , optional<uint32_t> >(args("points","sampling"),"Function(points [,sampling])"))
       // .def(init<const Point2ArrayPtr& , optional<uint32_t> >())
-      .def("__call__",&Function::getValue)
-      .def("getValue",&Function::getValue)
+      .def("__call__",&Func_getValue,args("x"))
+      .def("getValue",&Func_getValue,args("x"))
       .def("findX",&func_findX,args("y"))
       .def("findX",&func_findX2,args("y","startingX"),"findX(y[,startingX]) : find the first x value such as f(x) = y.")
       .def("isMonotonous",&Function::isMonotonous,isMonotonous_overloads())

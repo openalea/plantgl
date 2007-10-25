@@ -172,8 +172,6 @@ ViewGeomSceneGL::addExportEntries(QMenu * menu)
                     this,SLOT(saveAsPly()));
   menu->addAction( saveIcon , tr("Export as V&egeStar"),
                     this,SLOT(saveAsVegeStar()),Qt::CTRL+Qt::Key_E);
- // menu->addAction( saveIcon , "&Fred Export",
- //                   this,SLOT(exportFred()),Qt::CTRL+Qt::Key_E);
   return true;
 }
 

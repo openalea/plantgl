@@ -73,7 +73,7 @@ class SG_API BoundingBox : public TOOLS(RefCountObject)
 public:
 
   /// Constructs a degenerate BoundingBox reduced to the point \e point.
-  BoundingBox( const TOOLS(Vector3)& point );
+    BoundingBox( const TOOLS(Vector3)& point = TOOLS(Vector3::ORIGIN) );
 
   /** \brief Constructs a BoundingBox with the 2 opposing corners \e lowLeft and
       \e upRight.

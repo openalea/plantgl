@@ -46,18 +46,26 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 
 
-EXPORT_FUNCTION( p2m, Vector2, Point2Matrix )
-EXPORT_FUNCTION( p3m, Vector3, Point3Matrix )
-EXPORT_FUNCTION( p4m, Vector4, Point4Matrix )
-//EXPORT_FUNCTION( ra, real_t, RealArray2 )
+EXPORT_FUNCTION( p2m, Point2Matrix )
+EXPORT_FUNCTION( p3m, Point3Matrix )
+EXPORT_FUNCTION( p4m, Point4Matrix )
+EXPORT_FUNCTION( ra,  RealArray2 )
 
 void export_arrays2()
 {
 
-  EXPORT_ARRAY( p2m, Point2Matrix, "Point2Matrix(rows,cols)" )
-  EXPORT_ARRAY( p3m, Point3Matrix, "Point3Matrix(rows,cols)" )
-  EXPORT_ARRAY( p4m, Point4Matrix, "Point4Matrix(rows,cols)" )
-    //  EXPORT_ARRAY( ra, RealArray2, "RealArray2(rows,cols)" )
+  EXPORT_ARRAY_CT( p2m, Point2Matrix );
+  EXPORT_CONVERTER(Point2Matrix);
+
+  EXPORT_ARRAY_CT( p3m, Point3Matrix );
+  EXPORT_CONVERTER(Point3Matrix);
+
+  EXPORT_ARRAY_CT( p4m, Point4Matrix );
+  EXPORT_CONVERTER(Point4Matrix);
+
+  EXPORT_ARRAY_BT( ra, RealArray2 )
+   .def(numarray2_func<RealArray2>());
+  EXPORT_CONVERTER(RealArray2);
 }
 
 

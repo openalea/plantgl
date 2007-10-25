@@ -64,7 +64,7 @@ void export_Primitive()
 void export_Box()
 {
   class_< Box, BoxPtr, bases< ParametricModel > , boost::noncopyable >
-    ("Box", init< const Vector3& >("Box(Vector3(x,y,z))") )
+    ("Box", init< const Vector3& >("Box(Vector3(x,y,z))",args("size")) )
     .DEC_CT_PROPERTY_WD(size,Box,Size,Vector3)
     ;
 

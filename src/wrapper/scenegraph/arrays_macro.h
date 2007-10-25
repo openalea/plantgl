@@ -102,8 +102,6 @@ std::string PREFIX##_str( ARRAY * a ) \
   return ss.str(); \
 } \
 
-//    std::copy( a->getBegin(), a->getEnd()-1, std::ostream_iterator< ARRAY::element_type >( ss, "," ) ); \
-
 template<class T>
 typename T::element_type array_bt_getitem( T * a, int pos )
 { 
@@ -259,7 +257,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "append",       &array_appenditem<ARRAY> ) \
         .def( "pop",          &array_popitem<ARRAY> ) \
         .def( "pop",          &array_poplastitem<ARRAY> ) \
-	    .enable_pickling() \
+	    .def_pickle(array_pickle_suite<ARRAY>());
         ;
     }
 };
@@ -283,7 +281,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
 
 
 #define EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING )\
-class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") = 0) ) \
+class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") ) ) \
     .def( "__init__", make_constructor( &extract_array_from_list<ARRAY> ), STRING ) \
 
 

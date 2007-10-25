@@ -91,7 +91,7 @@ BoundingBoxPtr  bbx_fromobj( boost::python::object o )
 void export_BoundingBox()
 {
   class_< BoundingBox, BoundingBoxPtr /*, boost::noncopyable*/ >
-    ("BoundingBox", init< const Vector3&, optional < const Vector3& > > 
+    ("BoundingBox", init< optional < const Vector3&, const Vector3& > > 
      ( args("lowerLeft","upperRight"),
 	 "BoundingBox(Vector3 lowerLeft, Vector3 upperRight) " 
        "Constructs a BoundingBox with the 2 opposing corners lowerLeft and upperRight.") )

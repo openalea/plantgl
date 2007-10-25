@@ -97,8 +97,8 @@ ViewerAppli::question(const std::string& caption,
 			   const std::string& but2txt) {
 	int res = -1;
     ViewQuestionEvent * event = new ViewQuestionEvent(
-	  caption.c_str(),
-	  text.c_str(),
+	  QString(caption.c_str()),
+	  QString(text.c_str()),
 	  (but0txt.empty()?QString::null:QString( but0txt.c_str() )),
 	  (but1txt.empty()?QString::null:QString( but1txt.c_str() )),
 	  (but2txt.empty()?QString::null:QString( but2txt.c_str() )),

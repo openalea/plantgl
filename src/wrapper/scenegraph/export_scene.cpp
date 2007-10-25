@@ -236,6 +236,7 @@ void export_Scene()
 
   class_<Scene::Pool, boost::noncopyable>("Pool",no_init)
       .def("get", &Scene::Pool::get)
+      .def("__getitem__", &Scene::Pool::get)
       .def("getScenes", &sp_scenes)
       ;
 

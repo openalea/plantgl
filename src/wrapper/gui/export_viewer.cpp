@@ -47,6 +47,13 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+
+struct PyBlockState{
+    PyBlockState() { _save = PyEval_SaveThread(); }
+    ~PyBlockState() { PyEval_RestoreThread(_save); }
+    PyThreadState *_save;
+};
+
 boost::python::list selection(){
   std::vector<uint32_t> sel = ViewerApplication::getSelection();
   if(sel.empty()) return boost::python::list();
@@ -63,78 +70,103 @@ boost::python::list selection(){
 void setSelection(int i){
   std::vector<uint32_t> sel;
   sel.push_back(i);
+  PyBlockState p;
   ViewerApplication::setSelection(sel);
 }
 
 void setMSelection(boost::python::list values){
   std::vector<uint32_t> sel = extract_vec<uint32_t>(values)();
+  PyBlockState p;
   ViewerApplication::setSelection(sel);
 }
 
-int question0(const std::string& caption,
-			  const std::string& text){
+
+#ifdef PGL_DEBUG
+int question0(boost::python::str _caption,
+			  boost::python::str _text){
+  std::string caption = extract<const char *>(_caption);
+  std::string text = extract<const char *>(_text);
+#else
+int question0(std::string caption,
+			  std::string text){
+#endif
+  PyBlockState p;
   return ViewerApplication::question(caption,text);
 }
 
-int question1(const std::string& caption,
-			  const std::string& text,
-			  const std::string& but0txt){
+int question1(std::string caption,
+			  std::string text,
+			  std::string but0txt){
+  PyBlockState p;
   return ViewerApplication::question(caption,text,but0txt);
 }
 
-int question2(const std::string& caption,
-			  const std::string& text,
-			  const std::string& but0txt,
-			  const std::string& but1txt){
+int question2(std::string caption,
+			  std::string text,
+			  std::string but0txt,
+			  std::string but1txt){
+  PyBlockState p;
   return ViewerApplication::question(caption,text,but0txt,but1txt);
 }
 
-int question3(const std::string& caption,
-			  const std::string& text,
-			  const std::string& but0txt,
-			  const std::string& but1txt,
-			  const std::string& but2txt){
+int question3(std::string caption,
+			  std::string text,
+			  std::string but0txt,
+			  std::string but1txt,
+			  std::string but2txt){
+  PyBlockState p;
   return ViewerApplication::question(caption,text,but0txt,but1txt,but2txt);
 }
 
-object itemSelection(const std::string& caption,
-					 const std::string& text,
-					 const boost::python::list& values,
+object itemSelection(std::string caption,
+					 std::string text,
+					 boost::python::list values,
 					 bool editable){
   std::vector<std::string> vals = extract_vec<std::string>(values)();
   bool ok = false;
-  std::string res = ViewerApplication::itemSelection(caption,text,vals,ok,editable);
+  std::string res;
+  {
+    PyBlockState p;
+    res = ViewerApplication::itemSelection(caption,text,vals,ok,editable);
+  }
   tuple t = make_tuple(ok,res);
   return t;
 }
 
-object itemSelectionNE(const std::string& caption,
-					 const std::string& text,
-					 const boost::python::list& values){
+object itemSelectionNE(std::string caption,
+					 std::string text,
+					 boost::python::list values){
+  PyBlockState p;
   return itemSelection(caption,text,values,false);
 }
 
 void fullScreen0(){
+  PyBlockState p;
   ViewerApplication::fullScreen();
 }
 
 void fullScreen1(int b){
+  PyBlockState p;
   ViewerApplication::fullScreen(b);
 }
 
 void glFrameOnly0(){
+  PyBlockState p;
   ViewerApplication::glFrameOnly();
 }
 
 void glFrameOnly1(int b){
+  PyBlockState p;
   ViewerApplication::glFrameOnly(b);
 }
 
 void animation1(int b){
+  PyBlockState p;
   ViewerApplication::animation(b);
 }
 
 void animation0(){
+  PyBlockState p;
   ViewerApplication::animation(true);
 }
 
@@ -142,38 +174,47 @@ void setBGColorO(boost::python::object o){
   int r = extract<int>(o.attr("red"))();
   int g = extract<int>(o.attr("green"))();
   int b = extract<int>(o.attr("blue"))();
+  PyBlockState p;
   ViewerApplication::setBgColor(r,g,b);
 }
 
 std::string getOpenFile0(){
+  PyBlockState p;
   return ViewerApplication::getOpenFile("Open File","","");
 }
 
 std::string getOpenFile1(const std::string& caption){
+  PyBlockState p;
   return ViewerApplication::getOpenFile(caption,"","");
 }
 
 std::string getOpenFile2(const std::string& caption, const std::string& filter){
+  PyBlockState p;
   return ViewerApplication::getOpenFile(caption,filter,"");
 }
 
 std::string getSaveFile0(){
+  PyBlockState p;
   return ViewerApplication::getSaveFile("Save File","","");
 }
 
 std::string getSaveFile1(const std::string& caption){
+  PyBlockState p;
   return ViewerApplication::getSaveFile(caption,"","");
 }
 
 std::string getSaveFile2(const std::string& caption, const std::string& filter){
+  PyBlockState p;
   return ViewerApplication::getSaveFile(caption,filter,"");
 }
 
 std::string getDirectory0(){
+  PyBlockState p;
   return ViewerApplication::getDirectory("Choose Directory","");
 }
 
 std::string getDirectory1(const std::string& caption){
+  PyBlockState p;
   return ViewerApplication::getDirectory(caption,"");
 }
 
@@ -199,7 +240,11 @@ boost::python::object castRays(const TOOLS(Vector3)& pos,
 							      const TOOLS(Vector3)& dx, 
 							      const TOOLS(Vector3)& dy,
 								  int sx, int sy){
-	ViewRayBuffer * buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
+	ViewRayBuffer * buf;
+    {
+        PyBlockState p;
+        buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
+    }
 	boost::python::object res = raybuf_to_python(buf);
 	delete buf;
 	return res;
@@ -220,7 +265,11 @@ boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
 	return res;
 }
 boost::python::object grabZBuffer(bool allvalues){
-	ViewZBuffer * buf = ViewerApplication::grabZBuffer();
+	ViewZBuffer * buf;
+    {
+        PyBlockState p;
+        buf = ViewerApplication::grabZBuffer();
+    }
 	boost::python::object res = zbuf_to_python(buf,allvalues);
 	delete buf;
 	return res;
@@ -233,12 +282,20 @@ boost::python::object grabZBuffer0(){
 boost::python::object getProjectionSize(){
 	int nbpix;
 	double pixwidth;
-	double size = ViewerApplication::getProjectionSize(&nbpix,&pixwidth);
+	double size;
+    {
+        PyBlockState p;
+        size = ViewerApplication::getProjectionSize(&nbpix,&pixwidth);
+    }
 	return make_tuple(size,nbpix,pixwidth);
 }
 
 boost::python::object getProjectionSizes(const ScenePtr& sc){
-  std::vector<std::pair<uint32_t,double> > res = PGLViewerApplication::getProjectionSizes(sc);
+  std::vector<std::pair<uint32_t,double> > res;
+  {
+   PyBlockState p;
+   res = PGLViewerApplication::getProjectionSizes(sc);
+  }
   if(res.empty()) return object();
   else {
 	boost::python::list bres;
@@ -268,14 +325,22 @@ boost::python::object raypointhitbuf_to_python(ViewRayPointHitBuffer * buf) {
 }
 
 boost::python::object castRays2(const ScenePtr& sc, bool back_test){
-	ViewRayPointHitBuffer * buf = PGLViewerApplication::castRays2(sc,back_test);
+	ViewRayPointHitBuffer * buf;
+    {
+        PyBlockState p;
+        buf = PGLViewerApplication::castRays2(sc,back_test);
+    }
 	boost::python::object res = raypointhitbuf_to_python(buf);
 	delete buf;
 	return res;
 }
 
 boost::python::object castRays2_1(const ScenePtr& sc){
-	ViewRayPointHitBuffer * buf = PGLViewerApplication::castRays2(sc,true);
+    ViewRayPointHitBuffer * buf ;
+    {
+        PyBlockState p;
+	    buf = PGLViewerApplication::castRays2(sc,true);
+    }
 	boost::python::object res = raypointhitbuf_to_python(buf);
 	delete buf;
 	return res;
@@ -285,12 +350,14 @@ boost::python::object castRays2_1(const ScenePtr& sc){
 void displaySh(ShapePtr sh){
     ScenePtr s = new Scene();
     s->add(sh);
+    PyBlockState p;
     PGLViewerApplication::display(s);
 }
 
 void addSh(ShapePtr sh){
     ScenePtr s = new Scene();
     s->add(sh);
+    PyBlockState p;
     PGLViewerApplication::add(s);
 }
 
@@ -299,13 +366,16 @@ void saveImage1(const std::string& fname)
 	// ext = get_extension(fname);
 	// if (ext.empty()) ext = "PNG";
 	// else ext = toUpper(ext);
+    PyBlockState p;
 	ViewerApplication::saveImage(fname,"PNG");
 }
 void saveImage2(const std::string& fname, const std::string& type)
 {
+    PyBlockState p;
 	ViewerApplication::saveImage(fname,type);
 }
 bool viewer_wait(){
+    PyBlockState p;
 	return ViewerApplication::wait();
 }
 
@@ -386,12 +456,14 @@ void export_viewer()
 
 Vector3 getCameraPosition(){
 	Vector3 pos, h, up;
+    PyBlockState p;
 	ViewerApplication::getCamera(pos,h,up);
 	return pos;
 }
 
 object getCameraPositionInfo(){
 	Vector3 pos, h, up;
+    PyBlockState p;
 	ViewerApplication::getCamera(pos,h,up);
 	return make_tuple(pos,h,up);
 }

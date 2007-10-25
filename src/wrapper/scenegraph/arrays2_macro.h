@@ -30,122 +30,372 @@
  */
 
 #include "../util/export_list.h"
+#include "../util/extract_list.h"
+#include "plantgl/math/util_matrixmath.h"
 
-// Array Macro
-#define EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
-DEF_POINTEE( ARRAY ) \
-\
-     ARRAY##Ptr PREFIX##_fromlist( boost::python::object l )		\
-{									\
-  ARRAY* array= 0;							\
-      object row_iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );\
-      uint32_t rows= extract<uint32_t>(l.attr("__len__")());	\
-      object col_obj= row_iter_obj.attr( "next" )();		\
-      object col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );		\
-      uint32_t cols= extract<uint32_t>(col_obj.attr("__len__")());	\
-      array= new ARRAY(rows,cols);					\
-      for(uint32_t i=0; i < rows; ++i )							\
-	 {								\
-		if (i != 0) { \
-			col_obj= row_iter_obj.attr( "next" )();			\
-			col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );		\
-			uint32_t c= extract<uint32_t>(col_obj.attr("__len__")());	\
-			if( c != cols ) throw PythonExc_IndexError();			\
-		} \
-	    for(uint32_t j=0; j < cols; ++j )						\
-	    {								\
-			object obj; \
-			obj = col_iter_obj.attr( "next" )();		\
-			T val = boost::python::extract<T>( obj );			\
-			array->setAt(i,j,val);					\
-	    } \
-	}								\
-  return array;								\
-}									\
-									\
 
-#define EXPORT_FUNCTION2( PREFIX, T, ARRAY)			\
-    T PREFIX##_getitem( ARRAY * array, boost::python::tuple indices )	\
-{								\
-  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])(); \
-  if( i < array->getRowsNb() && j < array->getColsNb() )	\
-    return array->getAt( i, j );				\
-  else throw PythonExc_IndexError();				\
-}								\
-								\
-boost::python::object PREFIX##_getrow( ARRAY * array, size_t i)	\
-{								\
-  if( i < array->getRowsNb() )	\
-    return make_list<std::vector<T> >(array->getRow( i ))();				\
-  else throw PythonExc_IndexError();				\
-}								\
-								\
-boost::python::object PREFIX##_getcolumn( ARRAY * array, size_t j)	\
-{								\
-  if( j < array->getColsNb() )	\
-    return make_list<std::vector<T> >(array->getColumn( j ))();				\
-  else throw PythonExc_IndexError();				\
-}								\
-								\
-boost::python::object PREFIX##_getdiag( ARRAY * array)	\
-{								\
-  return make_list<std::vector<T> >(array->getDiagonal())();				\
-}								\
-								\
-void PREFIX##_setitem( ARRAY * array, boost::python::tuple indices, T * v )\
-{								 \
-  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])(); \
-  if( i < array->getRowsNb() && j < array->getColsNb() )	 \
-    array->setAt( i, j, *v );					 \
-  else throw PythonExc_IndexError();				 \
-}								 \
-								 \
-\
-std::string PREFIX##_str( ARRAY * a )\
-{\
-  uint32_t r= a->getRowsNb(); uint32_t i= 0;				\
-  std::stringstream ss;							\
-  ss << #ARRAY <<"([";								\
-  for( i= 0; i < r; i++ )						\
-    {									\
-      ss << "[";							\
-      for(ARRAY::const_iterator it = a->getBeginRow(i); it != a->getEndRow(i); ++it){ \
-            if (it != a->getBeginRow(i)) ss << ","; \
-            ss << extract<std::string>(boost::python::str(boost::python::object(*it)))(); \
-      } \
-      ss << "]";				\
-      if( i < r-1 ) ss << ",";						\
-    }									\
-  ss << "])";								\
-  return ss.str();							\
-}									\
-									\
-size_t PREFIX##_len( ARRAY * a )					\
-{  return a->getRowsNb();}						\
-               \
-size_t PREFIX##_rownb( ARRAY * a )					\
-{  return a->getRowsNb();}						\
-               \
-size_t PREFIX##_colnb( ARRAY * a )					\
-{  return a->getColsNb();}						\
+template<class T>
+RCPtr<T> extract_array2_from_list( boost::python::object l )
+{
+  object row_iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
+  uint32_t rows= extract<uint32_t>(l.attr("__len__")());
+  object col_obj= row_iter_obj.attr( "next" )();
+  uint32_t cols= extract<uint32_t>(col_obj.attr("__len__")());
+  object col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
+  RCPtr<T> array= new T(rows,cols);
 
-#define EXPORT_ARRAY( PREFIX, ARRAY,STRING )				\
-  class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<optional<size_t,size_t> >(STRING) ) \
-    .def( "__init__", make_constructor( PREFIX##_fromlist ) )		\
-    .def( "__getitem__", &PREFIX##_getitem /*, return_internal_reference<1>()*/ ) \
-    .def( "__getitem__", &PREFIX##_getrow  ) \
-    .def( "__setitem__", &PREFIX##_setitem )				\
-    .def( "__len__", &PREFIX##_len )					\
-    .def( "__repr__", &PREFIX##_str )					\
-    .def( "__str__", &PREFIX##_str )					\
-    .def( "getRow", &PREFIX##_getrow  ) \
-    .def( "getRowNb", &PREFIX##_rownb  ) \
-    .def( "getColumn", &PREFIX##_getcolumn  ) \
-    .def( "getColumnNb", &PREFIX##_colnb  ) \
-    .def( "getDiagonal", &PREFIX##_getdiag  ) \
-    ;									\
+  for(uint32_t i=0; i < rows; ++i )	
+	 {	
+		if (i != 0) {
+			col_obj= row_iter_obj.attr( "next" )();	
+			col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
+			uint32_t c= extract<uint32_t>(col_obj.attr("__len__")());
+			if( c != cols ) throw PythonExc_IndexError("Array2 has invalid number of element in a row.");
+		}
+	    for(uint32_t j=0; j < cols; ++j )
+	    {
+			object obj;
+			obj = col_iter_obj.attr( "next" )();
+            array->setAt(i,j,boost::python::extract<typename T::element_type>(obj));
+	    }
+	}
+  return array;
+}
 
-#define EXPORT_FUNCTION( PREFIX, T, ARRAY) \
-  EXPORT_FUNCTION1( PREFIX, T, ARRAY) \
-  EXPORT_FUNCTION2( PREFIX, T, ARRAY)
+template<class T>
+struct array2_from_list {
+  array2_from_list() { 
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>()); 
+  } 
+  static void* convertible(PyObject* py_obj){ 
+    if( !PySequence_Check( py_obj ) ) return 0; 
+    return py_obj; 
+  } 
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
+   void* memory_chunk = the_storage->storage.bytes; 
+   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
+   RCPtr<T> result = extract_array2_from_list<T>(py_sequence); 
+   new (memory_chunk) T (*result); 
+   delete result; 
+   data->convertible = memory_chunk; 
+  } 
+}; 
+
+template<class T>
+struct array2_ptr_from_list { 
+  array2_ptr_from_list() { 
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >()); 
+  } 
+  static void* convertible(PyObject* py_obj){ 
+    if( !PySequence_Check( py_obj ) ) return 0; 
+    return py_obj; 
+  } 
+  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
+   typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
+   vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
+   void* memory_chunk = the_storage->storage.bytes; 
+   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
+   RCPtr<T> result = extract_array2_from_list<T>(py_sequence); 
+   new (memory_chunk) RCPtr<T> (result); 
+   data->convertible = memory_chunk; 
+  } 
+}; 
+
+
+
+template<class T>
+typename T::element_type array2_bt_getitem( T * array, boost::python::tuple indices )
+{
+  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])();
+  if( i < array->getRowsNb() && j < array->getColsNb() )
+    return array->getAt( i, j );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+typename T::element_type& array2_ct_getitem( T * array, boost::python::tuple indices )
+{
+  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])();
+  if( i < array->getRowsNb() && j < array->getColsNb() )
+    return array->getAt( i, j );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+boost::python::object array2_getrow( T * array, size_t i)
+{
+  if( i < array->getRowsNb() )
+    return make_list<std::vector<typename T::element_type> >(array->getRow( i ))();
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+boost::python::object array2_getcolumn( T * array, size_t j)
+{
+  if( j < array->getColsNb() )
+    return make_list<std::vector<typename T::element_type> >(array->getColumn( j ))();
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+boost::python::object array2_getdiag( T * array)
+{
+  return make_list<std::vector<T::element_type> >(array->getDiagonal())();
+}
+
+template<class T>
+void array2_setitem( T * array, boost::python::tuple indices, typename T::element_type v )
+{
+  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])();
+  if( i < array->getRowsNb() && j < array->getColsNb() )
+    array->setAt( i, j, v );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+void array2_insertRow( T * array, size_t i, boost::python::object v )
+{
+  std::vector<T::element_type> row = extract_vec<T::element_type>(v)();
+  if( row.size() != array->getRowsSize() ) throw PythonExc_ValueError();
+  if( i <= array->getRowsNb() )
+    array->insertRow( i, row );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+void array2_pushRow( T * array, boost::python::object v )
+{
+  std::vector<T::element_type> row = extract_vec<T::element_type>(v)();
+  if( row.size() != array->getRowsSize() ) throw PythonExc_ValueError();
+  array->insertRow(array->getRowsNb(), row );
+}
+
+template<class T>
+void array2_insertColumn( T * array, size_t i, boost::python::object v )
+{
+  std::vector<T::element_type> col = extract_vec<T::element_type>(v)();
+  if( col.size() != array->getColsSize() ) throw PythonExc_ValueError();
+  if( i <= array->getColsNb() )
+    array->insertColumn( i, col.begin(),col.end() );
+  else throw PythonExc_IndexError();
+}
+
+template<class T>
+void array2_pushColumn( T * array, boost::python::object v )
+{
+  std::vector<T::element_type> col = extract_vec<T::element_type>(v)();
+  if( col.size() != array->getColsSize() ) throw PythonExc_ValueError();
+  array->insertColumn( array->getColsNb(), col );
+}
+
+template<class T>
+size_t array2_rownb( T * a )
+{  return a->getRowsNb();}
+
+template<class T>
+size_t array2_colnb( T * a )
+{  return a->getColsNb();}
+
+
+template<class T>
+std::string array2_str( T * a, const char * name )
+{
+    uint32_t r= a->getRowsNb();
+    std::stringstream ss;
+    ss << name <<"([";
+    for(uint32_t i= 0; i < r; i++ )
+    {
+        ss << "[";
+        for(typename T::const_iterator it = a->getBeginRow(i); it != a->getEndRow(i); ++it){
+            if (it != a->getBeginRow(i)) ss << ",";
+            ss << extract<std::string>(boost::python::str(boost::python::object(*it)))();
+        }
+        ss << "]";
+        if( i < r-1 ) ss << ",";
+    }
+    ss << "])";
+    return ss.str();
+}
+
+template<class T>
+RCPtr<T> array2_to_T(Array2<typename T::element_type> a)
+{ return RCPtr<T>(new T(a.getBegin(),a.getEnd(),a.getRowsNb())); }
+
+template<class T>
+RCPtr<T> array2_transpose( T * array)
+{
+  return array2_to_T<T>(transpose(*array));
+}
+
+template<class T>
+RCPtr<T> array2_submatrix( T * array, uint32_t rw, uint32_t cl, uint32_t nr, uint32_t nc)
+{
+  if( (rw + nr) < array->getRowsNb() && (cl + nc) < array->getColsNb() )
+      return array2_to_T<T>(array->get(rw,cl,nr,nc));
+  else throw PythonExc_IndexError();
+}
+
+
+template<class T>
+struct array2_pickle_suite : boost::python::pickle_suite 
+{ 
+    static boost::python::tuple getinitargs(T const& ar) 
+	{ 
+		boost::python::list args; 
+        for(uint32_t i= 0; i < ar.getRowsNb(); i++ ){
+		    boost::python::list l; 
+		    for(typename T::const_iterator it = ar.getBeginRow(i); it != ar.getEndRow(i); ++it) 
+			    l.append(*it); 
+			args.append(l); 
+        }
+		return boost::python::make_tuple(args);  
+	} 
+}; 
+
+template<class ARRAY>
+class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
+{
+    friend class boost::python::def_visitor_access;
+
+    template <class classT>
+    void visit(classT& c) const
+    {
+        c.def( "__getitem__", &array2_getrow<ARRAY>  ) 
+         .def( "__setitem__", &array2_setitem<ARRAY> )				
+         .def( "__len__", &array2_rownb<ARRAY> )					
+         .def( "__contains__", &ARRAY::contains )					
+         .def( "empty", &ARRAY::isEmpty )					
+         .def( "isUnique", &ARRAY::isUnique )					
+         .def( "getRow", &array2_getrow<ARRAY>  ) 
+         .def( "getRowNb", &array2_rownb<ARRAY>  ) 
+         .def( "getColumn", &array2_getcolumn<ARRAY>  ) 
+         .def( "getColumnNb", &array2_colnb<ARRAY>  ) 
+         .def( "getDiagonal", &array2_getdiag<ARRAY>  ) 
+         .def( "transpose", &array2_transpose<ARRAY>  ) 
+         .def( "submatrix", &array2_submatrix<ARRAY>, args("row","col","nbrow","nbcol") ) 
+         .def( "insertRow", &array2_insertRow<ARRAY>  ) 
+         .def( "insertColumn", &array2_insertColumn<ARRAY>  ) 
+         .def( "pushRow", &array2_pushRow<ARRAY>  ) 
+         .def( "pushColumn", &array2_pushColumn<ARRAY>  ) 
+	    .def_pickle(array2_pickle_suite<ARRAY>());
+        ;
+    }
+};
+
+template<class T>
+RCPtr<T> array2_iadd( T * array, T * array2)
+{ (*array) += (*array2); return RCPtr<T>(array); }
+
+template<class T>
+RCPtr<T> array2_add( T * array, T * array2)
+{ return array2_to_T<T>( (*array) + (*array2)); }
+
+template<class T>
+RCPtr<T> array2_isub( T * array, T * array2)
+{ (*array) -= (*array2); return RCPtr<T>(array); }
+
+template<class T>
+RCPtr<T> array2_sub( T * array, T * array2)
+{ return array2_to_T<T>( (*array) - (*array2)); }
+
+template<class T>
+RCPtr<T> array2_mul( T * array, T * array2)
+{
+  if(array->getColsNb() != array2->getRowsNb())
+      throw PythonExc_ValueError("Incompatible sizes of matrices.");
+  return array2_to_T<T>( (*array) * (*array2));
+}
+
+template<class T>
+RCPtr<T> array2_iadde( T * array, typename T::element_type el)
+{ (*array) += el; return RCPtr<T>(array); }
+
+template<class T>
+RCPtr<T> array2_adde( T * array, typename T::element_type el)
+{ return array2_to_T<T>( (*array) + el); }
+
+template<class T>
+RCPtr<T> array2_isube( T * array, typename T::element_type el)
+{ (*array) -= el; return RCPtr<T>(array); }
+
+template<class T>
+RCPtr<T> array2_sube( T * array, typename T::element_type el)
+{ return array2_to_T<T>( (*array) - el); }
+
+template<class T>
+RCPtr<T> array2_mule( T * array, typename T::element_type el)
+{ return array2_to_T<T>( (*array) * el); }
+
+template<class T>
+RCPtr<T> array2_imule( T * array, typename T::element_type el)
+{ (*array) *= el; return RCPtr<T>(array); }
+
+template<class T>
+RCPtr<T> array2_inverse( T * array )
+{
+  if(array->getColsNb() <= array->getRowsNb())
+      throw PythonExc_ValueError("Incompatible sizes of matrices.");
+  return array2_to_T<T>( inverse(*array));
+}
+
+
+
+template<class ARRAY>
+class numarray2_func : public boost::python::def_visitor<numarray2_func<ARRAY> >
+{
+    friend class boost::python::def_visitor_access;
+
+    template <class classT>
+    void visit(classT& c) const
+    {
+        c.def( "__iadd__", &array2_iadd<ARRAY>  ) 
+         .def( "__iadd__", &array2_iadde<ARRAY>  ) 
+         .def( "__add__", &array2_add<ARRAY> )				
+         .def( "__add__", &array2_adde<ARRAY> )				
+         .def( "__isub__", &array2_isub<ARRAY>  ) 
+         .def( "__isub__", &array2_isube<ARRAY>  ) 
+         .def( "__sub__", &array2_sub<ARRAY> )				
+         .def( "__sub__", &array2_sube<ARRAY> )				
+         .def( "__imul__", &array2_imule<ARRAY>  ) 
+         .def( "__mul__", &array2_mul<ARRAY> )				
+         .def( "__mul__", &array2_mule<ARRAY> )				
+         .def( "inverse", &array2_inverse<ARRAY> )				
+        ;
+    }
+};
+
+#define EXPORT_FUNCTION2( PREFIX, ARRAY ) \
+std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
+
+#define EXPORT_FUNCTION( PREFIX, ARRAY) \
+  DEF_POINTEE( ARRAY ) \
+  EXPORT_FUNCTION2( PREFIX, ARRAY) 
+
+
+#define EXPORT_CLASS_ARRAY( PREFIX, ARRAY )\
+    class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t,size_t>( #ARRAY "(int rows, int cols)", args("rows","cols")) ) \
+    .def( "__init__", make_constructor( &extract_array2_from_list<ARRAY> ), #ARRAY "([[a,b,c],[d,e,f]])" ) \
+
+#define EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+    .def(array2_func<ARRAY>()) \
+    .def( "__repr__",     &PREFIX##_str ) \
+    .def( "__str__",      &PREFIX##_str ) \
+
+#define EXPORT_ARRAY_BT( PREFIX, ARRAY ) \
+    EXPORT_CLASS_ARRAY( PREFIX, ARRAY ) \
+    .def( "__getitem__", &array2_bt_getitem<ARRAY> ) \
+	EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+
+
+#define EXPORT_ARRAY_CT( PREFIX, ARRAY ) \
+    EXPORT_CLASS_ARRAY( PREFIX, ARRAY  ) \
+    .def( "__getitem__", &array2_ct_getitem<ARRAY> , return_internal_reference<1>() ) \
+	EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+
+
+#define EXPORT_CONVERTER( ARRAY ) \
+	array2_from_list<ARRAY>();  \
+	array2_ptr_from_list<ARRAY>(); 
 

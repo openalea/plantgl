@@ -113,10 +113,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
+				Optimization="2"
 				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,$(QTDIR)\include\QtCore,..\.."
 				PreprocessorDefinitions="VIEW_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
+				WarnAsError="true"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

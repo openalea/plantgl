@@ -111,9 +111,8 @@ struct col4_pickle_suite : boost::python::pickle_suite
 void export_Color3()
 {
   class_< Color3 >("Color3", init< const Color3 & >())
-    .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)"))
+    .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",args("red","green","blue")))
     .def(init< optional< unsigned char > >())
-    .def(init< const unsigned char * >())
     .def( self == self )
     .def( self != self )
     .add_property( "red", col3_getRed, col3_setRed )
@@ -127,7 +126,14 @@ void export_Color3()
 	.def( "setClampedBlue", col3_setBlueClamped )
     .def( "__str__", col3_str )
     .def( "__repr__", col3_str )
-	.def_pickle(col3_pickle_suite());
+    .add_static_property("BLACK",make_getter(&Color3::BLACK))
+    .add_static_property("BLUE",make_getter(&Color3::BLUE))
+    .add_static_property("CYAN",make_getter(&Color3::CYAN))
+    .add_static_property("GREEN",make_getter(&Color3::GREEN))
+    .add_static_property("RED",make_getter(&Color3::RED))
+    .add_static_property("WHITE",make_getter(&Color3::WHITE))
+    .add_static_property("YELLOW",make_getter(&Color3::YELLOW))
+    .def_pickle(col3_pickle_suite());
     ;
 
 	pgltuple_from_tuple<Color3,3>();
@@ -136,9 +142,8 @@ void export_Color3()
 void export_Color4()
 {
   class_< Color4 >("Color4", init< const Color4 & >())
-    .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)"))
+    .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",args("red","green","blue","alpha")))
     .def(init< optional< unsigned char > >())
-    .def(init< const unsigned char * >())
     .def( self == self )
     .def( self != self )
     .add_property( "red", col4_getRed, col4_setRed )
@@ -155,6 +160,13 @@ void export_Color4()
 	.def( "setClampedAlpha", col4_setAlphaClamped )
     .def( "__str__", col4_str )
     .def( "__repr__", col4_str )
+    .add_static_property("BLACK",make_getter(&Color4::BLACK))
+    .add_static_property("BLUE",make_getter(&Color4::BLUE))
+    .add_static_property("CYAN",make_getter(&Color4::CYAN))
+    .add_static_property("GREEN",make_getter(&Color4::GREEN))
+    .add_static_property("RED",make_getter(&Color4::RED))
+    .add_static_property("WHITE",make_getter(&Color4::WHITE))
+    .add_static_property("YELLOW",make_getter(&Color4::YELLOW))
 	.def_pickle(col4_pickle_suite());
     ;
 	pgltuple_from_tuple<Color4,4>();

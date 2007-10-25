@@ -38,6 +38,21 @@
 
 #include "event.h"
 
+ViewEvent::ViewEvent(int type):
+	QEvent(QEvent::Type(type)),
+	sent_event(false)
+{
+#ifdef PGL_DEBUG
+    printf("Create event %i of type %i\n",size_t(this),type);
+#endif
+}
+
+ViewEvent::~ViewEvent(){
+#ifdef PGL_DEBUG
+    printf("Destroy event %i of type %i\n",size_t(this),type());
+#endif
+}
+
 /*  ------------------------------------------------------------------------ */
 
 ViewSceneChangeEvent::ViewSceneChangeEvent(int type) :

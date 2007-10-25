@@ -793,10 +793,19 @@ void Viewer::send(QEvent * e) {
 		printf("Release\n");
 #endif
 		send_lock_mutex.unlock();
+#ifdef DEBUG_EVENTDISPATCH
+		printf("Release done\n");
+#endif
 	}
 	else {
+#ifdef DEBUG_EVENTDISPATCH
+		printf("Send within-thread event.\n");
+#endif
 		QApplication::sendEvent( this, e );
 		delete e;
+#ifdef DEBUG_EVENTDISPATCH
+		printf("Send within-thread event done.\n");
+#endif
 	}
 	send_event_mutex.unlock();
 #else
@@ -1004,6 +1013,7 @@ public:
 #endif
 	  {
 	  setModal(false);
+      setAttribute(Qt::WA_DeleteOnClose,true);
 		if(!but0txt.isEmpty())setButtonText(1,but0txt);
 		if(!but1txt.isEmpty())setButtonText(2,but1txt);
 		if(!but2txt.isEmpty())setButtonText(3,but2txt);
@@ -1017,7 +1027,11 @@ public:
 		}
 	  }
 
-  virtual ~ViewMessageBox(){}
+  virtual ~ViewMessageBox(){
+#ifdef DEBUG_EVENTDISPATCH
+		printf("delete ViewMessageBox\n");
+#endif
+  }
 
   virtual void done ( int res ){
 	if(__result)*__result = res;
@@ -1025,11 +1039,12 @@ public:
 #ifdef DEBUG_EVENTDISPATCH
 		printf("wakeAll\n");
 #endif
-    send_event_condition.wakeAll();
+    send_event_condition.wakeOne();
 #endif
     if(!__messageBoxPos)__messageBoxPos = new QPoint(pos());
 	else *__messageBoxPos = pos();
-	QDialog::done(res);
+    // if (res == -1) 
+        QDialog::done(res);
   }
 
 #ifdef QT_THREAD_SUPPORT
@@ -1051,6 +1066,9 @@ Viewer::question(const QString& caption, const QString& text,
 
   activateWindow();
   ViewerMessageBox->show();
+#ifdef DEBUG_EVENTDISPATCH
+  printf("end question posting.\n");
+#endif
 }
 
 void 

@@ -358,7 +358,7 @@ ViewGLFrame::setBackGroundColor(const QColor& color)
   qglClearColor(__BgColor);
   __fog->setColor(color);
   updateGL();
-  status(QString(tr("Set Background Color to")+" (%1,%1,%1)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
+  status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
 }
 
 bool ViewGLFrame::glError(const char * file , int line ){
@@ -1180,6 +1180,17 @@ ViewGLFrame::keyReleaseEvent ( QKeyEvent * e)
 	setCursor(Qt::ArrowCursor);
 	e->accept();
   }
+}
+
+// #define DEBUG_EVENTDISPATCH
+
+bool ViewGLFrame::event(QEvent *e){
+#ifdef DEBUG_EVENTDISPATCH
+	if(e->type() >= ViewEvent::eFirstEvent && e->type() <= ViewEvent::eLastEvent)
+		printf("** gl ** receive pgl event\n");
+	// else printf("** gl ** receive event\n");
+#endif
+	return QGLWidget::event(e);
 }
 
 void ViewGLFrame::customEvent(QEvent *e)

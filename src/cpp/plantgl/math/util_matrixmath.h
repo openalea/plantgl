@@ -569,10 +569,10 @@ public:
 
     NumericArray2<T> S(V_.getColsNb(),U_.getRowsNb()) ;
 
-    for(int i=0;i<sig_.n();++i)
+    for(int i=0;i<sig_.size();++i)
       S.setAt(i,i,(T)1/sig_[i]) ;
 
-    inv = U_.transpose() ;
+    inv = transpose(U_) ;
     inv = (const NumericArray2<T>&)S*(const NumericArray2<T>&)inv ; // transpose(U) ;
     inv = (const NumericArray2<T>&)V_*(const NumericArray2<T>&)inv ;
   }

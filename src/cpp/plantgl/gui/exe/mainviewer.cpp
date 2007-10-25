@@ -56,7 +56,7 @@ int main( int argc, char **argv )
 	qWarning( "This system has no OpenGL support. Exiting." );
 	return -1;
   }
-  
+   
   // if(!ViewClientObj().request(argc, argv)){
 	PGLViewer m_viewer(argc, argv) ;
 	m_viewer.startDaemon();

@@ -33,19 +33,29 @@
 
 struct PythonExc
 {
-  PythonExc() : error_str("") {}
+  PythonExc(const char* error = "") : error_str(error) {}
   const char* error_str;
 };
 
-struct PythonExc_IndexError : public PythonExc { };
+struct PythonExc_IndexError : public PythonExc { 
+    PythonExc_IndexError(const char* error = "") :PythonExc(error){}  
+};
 
-struct PythonExc_ValueError : public PythonExc { };
+struct PythonExc_ValueError : public PythonExc { 
+    PythonExc_ValueError(const char* error = "") :PythonExc(error){}  
+};
 
-struct PythonExc_TypeError : public PythonExc { };
+struct PythonExc_TypeError : public PythonExc { 
+    PythonExc_TypeError(const char* error = "") :PythonExc(error){}  
+};
 
-struct PythonExc_KeyError : public PythonExc { };
+struct PythonExc_KeyError : public PythonExc { 
+    PythonExc_KeyError(const char* error = "") :PythonExc(error){}  
+};
 
-struct PythonExc_StopIteration : public PythonExc { };
+struct PythonExc_StopIteration : public PythonExc { 
+    PythonExc_StopIteration(const char* error = "") :PythonExc(error){}  
+};
 
 void define_stl_exceptions();
 

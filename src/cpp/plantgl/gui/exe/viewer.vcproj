@@ -57,6 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				LinkLibraryDependencies="false"
 				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib qtmaind.lib QtCored4.lib QtGuid4.lib opengl32.lib glu32.lib"
 				OutputFile="../../../../../bin/PlantGLViewer-d.exe"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"

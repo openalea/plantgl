@@ -200,6 +200,8 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   void endEvent();
 
+  virtual bool event(QEvent *e);
+
   public slots:
 
   void printProjectionSize();

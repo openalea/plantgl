@@ -87,7 +87,11 @@ public:
     virtual SceneFormatList formats() const
     { 
         PythonInterpreterAcquirer py;
-        return call<SceneFormatList>(this->get_override("formats").ptr()); 
+        try{
+            return call<SceneFormatList>(this->get_override("formats").ptr()); 
+        }
+        catch(error_already_set) { PyErr_Print(); }
+        return SceneFormatList();
     }
 
     bool default_test(const std::string& fname, Mode openingMode)
@@ -95,8 +99,13 @@ public:
 	virtual bool test(const std::string& fname, Mode openingMode)
     {
         PythonInterpreterAcquirer py;
-        if (override func = this->get_override("test"))
-            return call<bool>(func.ptr(),object(fname),object(openingMode)); 
+        if (override func = this->get_override("test")){
+            try{
+                return call<bool>(func.ptr(),object(fname),object(openingMode)); 
+            }
+            catch(error_already_set) { PyErr_Print(); }
+            return false;
+        }
         return default_test(fname,openingMode);
     }
 
@@ -106,8 +115,13 @@ public:
     {
         {
             PythonInterpreterAcquirer py;
-            if (override func = this->get_override("read"))
-                return call<ScenePtr>(func.ptr(),object(fname)); 
+            if (override func = this->get_override("read")){
+                try{
+                    return call<ScenePtr>(func.ptr(),object(fname)); 
+                }
+                catch(error_already_set) { PyErr_Print(); }
+                return ScenePtr();
+            }
         }
         return default_read(fname);
     }
@@ -118,8 +132,12 @@ public:
     {
         {
             PythonInterpreterAcquirer py;
-            if (override func = this->get_override("write"))
-                return call<void>(func.ptr(),object(fname),object(scene)); 
+            if (override func = this->get_override("write")){
+                try{
+                    return call<void>(func.ptr(),object(fname),object(scene)); 
+                }
+                catch(error_already_set) { PyErr_Print(); }
+            }
         }
         return default_write(fname,scene);
     }
