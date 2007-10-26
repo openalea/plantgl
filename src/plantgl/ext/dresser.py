@@ -83,7 +83,7 @@ def asymetric_swung( obj , **kwds ):
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
   radiusHoup_prefix = kwds.get('radiusHoup_prefix', 'r_houp')
   azimuthHoup_prefix = kwds.get('azimuthHoup_prefix', 'a_houp')
-  midCrown = kwds.get('midCrown', 0.5)
+  midCrown = kwds.get('midCrown', 0.8)
   wood = kwds.get( 'wood', True )
 
   rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
@@ -140,16 +140,18 @@ def chupa_chups( obj , **kwds ):
   radiusHoup = kwds.get('radiusHoup', None)
   wood = kwds.get( 'wood', True )
 
-  try :
-    r = obj.__dict__[pos_dist]
-    a = obj.__dict__[pos_az]
-    objX = r*cos( radians(forest2geomAZ(a)) )
-    objY = r*sin( radians(forest2geomAZ(a)) )
-    print "using polar coordinate"
-  except AttributeError: 
-    objX = obj.__dict__[X_attr]
-    objY = obj.__dict__[Y_attr]
-    print "using cartesian coordinate"
+  if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
+    print "using object positions"
+    try :
+      r = obj.__dict__[pos_dist]
+      a = obj.__dict__[pos_az]
+      obj.posX = r*cos( radians(forest2geomAZ(a)) )
+      obj.posY = r*sin( radians(forest2geomAZ(a)) )
+      print "using polar coordinate"
+    except AttributeError: 
+      obj.posX = obj.__dict__[X_attr]
+      obj.posY = obj.__dict__[Y_attr]
+      print "using cartesian coordinate"
 
 
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
@@ -157,8 +159,8 @@ def chupa_chups( obj , **kwds ):
     sph_radius = obj.__dict__[radiusHoup]
   else :
     sph_radius = ht/2.
-  h = pgl.Translated( pgl.Vector3(objX, objY, obj.__dict__[botHoup_attr]*100 + sph_radius), pgl.Sphere(sph_radius,10,5) )
-  tr = pgl.Translated(pgl.Vector3(objX, objY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
+  h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 + sph_radius), pgl.Sphere(sph_radius,10,5) )
+  tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
   s_h = pgl.Shape(h, houppier_material, obj.pid)
   s_tr = pgl.Shape(tr, trunk_material, obj.pid+100000)
