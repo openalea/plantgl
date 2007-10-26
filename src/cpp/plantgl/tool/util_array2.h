@@ -453,11 +453,11 @@ public:
   **/
   NumericArray2<T> get( uint32_t rw, uint32_t cl,
                    uint32_t nr, uint32_t nc) const {
-    if(rw + nr > __rowsNb || cl + nc > getColsNb( ))
+    if(rw + nr > this->__rowsNb || cl + nc > this->getColsNb( ))
       return NumericArray2<T>(0,0);
     NumericArray2<T> result(nr,nc);
     for(uint32_t _i = 0; _i < nr ; _i++){
-      typename std::vector<T>::const_iterator _it = __A.begin()+((_i+rw)*(__A.size()/__rowsNb) + cl);
+      typename std::vector<T>::const_iterator _it = this->__A.begin()+((_i+rw)*(this->__A.size()/this->__rowsNb) + cl);
       typename std::vector<T>::const_iterator _itend = _it + nc;
       uint32_t _j =0;
       for(;_it != _itend; _it++){
@@ -482,14 +482,14 @@ public:
   }
   /// Multiplication of 2 matrix.
   NumericArray2<T> operator*( const NumericArray2<T>& m ) const {
-      if(getColsNb() != m.getRowsNb()) return NumericArray2<T>(0,0);
-      NumericArray2<T> result(getRowsNb(),m.getColsNb());
-      for(uint32_t _i = 0; _i < getRowsNb(); _i++){
+      if(this->getColsNb() != m.getRowsNb()) return NumericArray2<T>(0,0);
+      NumericArray2<T> result(this->getRowsNb(),m.getColsNb());
+      for(uint32_t _i = 0; _i < this->getRowsNb(); _i++){
           for(uint32_t _j = 0; _j < m.getColsNb(); _j++){
-              typename NumericArray2<T>::const_iterator _it1 = getBeginRow(_i);
+              typename NumericArray2<T>::const_iterator _it1 = this->getBeginRow(_i);
               typename NumericArray2<T>::const_iterator _it2 = m.getBegin() + _j;
               T sum = (*_it1)*(*_it2);
-              while(_it1 != getEndRow(_i)-1){
+              while(_it1 != this->getEndRow(_i)-1){
                   _it1++;
                   _it2+=m.getColsNb();
                   sum += (*_it1)*(*_it2);
