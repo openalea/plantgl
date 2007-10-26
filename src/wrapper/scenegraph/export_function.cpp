@@ -36,6 +36,7 @@
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
+#include "../util/export_list.h"
 #include "../util/exception.h"
 
 
@@ -64,10 +65,13 @@ object func_findX2(Function * func, real_t y, real_t startingx)
 
 real_t Func_getValue(Function * func, real_t x)
 {
-   if (func->getFirstX() > x  || x > func->getLastX())
+   if (func->getClamped() && (func->getFirstX() > x  || x > func->getLastX()))
       throw PythonExc_IndexError();
    else return func->getValue(x);
 }
+
+object Func_getSamples(Function * func)
+{ return make_list<std::vector<real_t> >(func->getSamples())(); }
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isMonotonous_overloads, isMonotonous, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isIncreasing_overloads, isIncreasing, 0, 1)
@@ -78,7 +82,9 @@ void export_Function()
   class_< Function, FunctionPtr, boost::noncopyable >
     ("QuantisedFunction",init<const Curve2DPtr& , optional<uint32_t> >
      (args("curve","sampling"),
-     "QuantisedFunction(curve[,sampling]) : Quantised 2D function."))
+     "QuantisedFunction(curve[,sampling,clamped]) : Quantised 2D function.\n"
+     "If clamped parameter is set to False, if a x value is out of range, first or last value is returned.\n"
+     "Otherwise an exception is raised."))
       .def(init<const Point2ArrayPtr& , optional<uint32_t> >(args("points","sampling"),"Function(points [,sampling])"))
       // .def(init<const Point2ArrayPtr& , optional<uint32_t> >())
       .def("__call__",&Func_getValue,args("x"))
@@ -95,6 +101,8 @@ void export_Function()
       .add_property("sampling",&Function::getSampling)
       .add_property("firstx",&Function::getFirstX)
       .add_property("lastx",&Function::getLastX)
+      .DEC_BT_NR_PROPERTY_WD(clamped,Function,Clamped,bool)
+      .def("_getSamples",&Func_getSamples)
     ;
 
   // implicitly_convertible< FontPtr, SceneObjectPtr >();

@@ -58,10 +58,11 @@ typedef RCPtr<Function> FunctionPtr;
 class SG_API Function : public TOOLS(RefCountObject) {
 public:
     static uint32_t DEFAULT_SAMPLING;
+    static bool DEFAULT_CLAMPED;
 
-    Function(const Curve2DPtr& curve, uint32_t sampling = DEFAULT_SAMPLING);
-    Function(const Point2ArrayPtr& points, uint32_t sampling = DEFAULT_SAMPLING);
-    Function(const std::vector<real_t>& values, real_t firstx = 0.0,real_t lastx = 1.0);
+    Function(const Curve2DPtr& curve, uint32_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
+    Function(const Point2ArrayPtr& points, uint32_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
+    Function(const std::vector<real_t>& values, real_t firstx = 0.0,real_t lastx = 1.0, bool clamped = DEFAULT_CLAMPED);
     ~Function();
 
     /// Return the y-value for x.
@@ -69,7 +70,7 @@ public:
     inline real_t operator()(real_t x) const { return getValue(x); }
 
     /// Return the first x value corresponding to y starting at startingX. found is set to false if it cannot be found.
-    real_t findX(real_t y, bool& found) const { return findX(y,found,__firstx); }
+    inline real_t findX(real_t y, bool& found) const { return findX(y,found,__firstx); }
     real_t findX(real_t y, bool& found, real_t startingX) const ;
 
     inline bool build(const Curve2DPtr& curve) { return build(curve,__sampling); }
@@ -86,13 +87,18 @@ public:
     FunctionPtr inverse() const;
 
     /// Return sampling
-    uint32_t getSampling() { return __sampling; }
+    inline uint32_t getSampling() { return __sampling; }
 
-    real_t getFirstX() const { return __firstx; }
-    real_t getLastX() const { return __lastx; }
+    inline real_t getFirstX() const { return __firstx; }
+    inline real_t getLastX() const { return __lastx; }
 
     static real_t computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror = GEOM_EPSILON);
 
+    inline const bool getClamped() const { return __clamped; }
+    inline bool& getClamped() { return __clamped; }
+    inline bool isClampedToDefault() { return __clamped == DEFAULT_CLAMPED; }
+
+    inline const std::vector<real_t>& getSamples() const { return  __values; }
 protected:
     static real_t _computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror = GEOM_EPSILON);
     static bool check(const Curve2DPtr& curve);
@@ -105,6 +111,7 @@ protected:
     std::vector<real_t> __values;
     uint32_t __sampling;
     real_t __firstx,__lastx;
+    bool __clamped;
 };
 
 /* ----------------------------------------------------------------------- */

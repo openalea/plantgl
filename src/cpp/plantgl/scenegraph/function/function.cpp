@@ -39,19 +39,19 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 uint32_t Function::DEFAULT_SAMPLING(100);
+bool Function::DEFAULT_CLAMPED(true);
 
-
-Function::Function(const Curve2DPtr& curve, uint32_t sampling) : 
-    RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0)
+Function::Function(const Curve2DPtr& curve, uint32_t sampling, bool clamped) : 
+    RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(curve);}
 
-Function::Function(const Point2ArrayPtr& points, uint32_t sampling):
-    RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0)
+Function::Function(const Point2ArrayPtr& points, uint32_t sampling, bool clamped):
+    RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(Curve2DPtr(new Polyline2D(points)));}
 
 
-Function::Function(const std::vector<real_t>& values, real_t firstx,real_t lastx):
-    RefCountObject(), __values(values), __sampling(values.size()), __firstx(firstx),__lastx(lastx)
+Function::Function(const std::vector<real_t>& values, real_t firstx,real_t lastx, bool clamped):
+    RefCountObject(), __values(values), __sampling(values.size()), __firstx(firstx),__lastx(lastx),__clamped(clamped)
 { }
 
 Function::~Function() 
@@ -66,6 +66,9 @@ real_t Function::getX(real_t i) const
 real_t Function::getValue(real_t x) const
 {
   assert(isValid());
+  if (!__clamped)
+    if (x < __firstx) x = __firstx;
+    else if (x > __lastx) x = __lastx;
   assert(x>=__firstx);
   assert(x<=__lastx);
 
@@ -158,7 +161,7 @@ void Function::computeCache(const Curve2DPtr& curve)
   real_t extent = __lastx - __firstx;
   __values.resize(__sampling);
   for (uint32_t i=0; i<__sampling; ++i)
-        __values[i] = computeValue(curve, extent * real_t(i)/real_t(__sampling-1) + __firstx);
+        __values[i] = _computeValue(curve, extent * real_t(i)/real_t(__sampling-1) + __firstx);
 }
 
 real_t Function::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
@@ -169,6 +172,10 @@ real_t Function::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror
 
 real_t Function::_computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
 {
+   Vector2 firstpoint = curve->getPointAt(curve->getFirstKnot());
+   if (x == firstpoint.x()) return firstpoint.y();
+   Vector2 lastpoint = curve->getPointAt(curve->getLastKnot());
+   if (x == lastpoint.x()) return lastpoint.y();
    real_t low = curve->getFirstKnot();
    real_t high = curve->getLastKnot();
    real_t check = 0.5f;
