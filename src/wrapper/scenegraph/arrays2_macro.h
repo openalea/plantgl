@@ -32,29 +32,29 @@
 #include "../util/export_list.h"
 #include "../util/extract_list.h"
 #include "plantgl/math/util_matrixmath.h"
-
+#include <boost/python.hpp>
 
 template<class T>
 RCPtr<T> extract_array2_from_list( boost::python::object l )
 {
-  object row_iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
-  uint32_t rows= extract<uint32_t>(l.attr("__len__")());
-  object col_obj= row_iter_obj.attr( "next" )();
-  uint32_t cols= extract<uint32_t>(col_obj.attr("__len__")());
-  object col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
+  boost::python::object row_iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( l.ptr() ) ) );
+  uint32_t rows= boost::python::extract<uint32_t>(l.attr("__len__")());
+  boost::python::object col_obj= row_iter_obj.attr( "next" )();
+  uint32_t cols= boost::python::extract<uint32_t>(col_obj.attr("__len__")());
+  boost::python::object col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
   RCPtr<T> array= new T(rows,cols);
 
   for(uint32_t i=0; i < rows; ++i )	
 	 {	
 		if (i != 0) {
 			col_obj= row_iter_obj.attr( "next" )();	
-			col_iter_obj= boost::python::object( handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
-			uint32_t c= extract<uint32_t>(col_obj.attr("__len__")());
+			col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
+			uint32_t c= boost::python::extract<uint32_t>(col_obj.attr("__len__")());
 			if( c != cols ) throw PythonExc_IndexError("Array2 has invalid number of element in a row.");
 		}
 	    for(uint32_t j=0; j < cols; ++j )
 	    {
-			object obj;
+			boost::python::object obj;
 			obj = col_iter_obj.attr( "next" )();
             array->setAt(i,j,boost::python::extract<typename T::element_type>(obj));
 	    }
@@ -108,7 +108,7 @@ struct array2_ptr_from_list {
 template<class T>
 typename T::element_type array2_bt_getitem( T * array, boost::python::tuple indices )
 {
-  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])();
+  size_t i = boost::python::extract<size_t>(indices[0])(), j = boost::python::extract<size_t>(indices[1])();
   if( i < array->getRowsNb() && j < array->getColsNb() )
     return array->getAt( i, j );
   else throw PythonExc_IndexError();
@@ -117,7 +117,7 @@ typename T::element_type array2_bt_getitem( T * array, boost::python::tuple indi
 template<class T>
 typename T::element_type& array2_ct_getitem( T * array, boost::python::tuple indices )
 {
-  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])();
+  size_t i = boost::python::extract<size_t>(indices[0])(), j = boost::python::extract<size_t>(indices[1])();
   if( i < array->getRowsNb() && j < array->getColsNb() )
     return array->getAt( i, j );
   else throw PythonExc_IndexError();
@@ -142,13 +142,13 @@ boost::python::object array2_getcolumn( T * array, size_t j)
 template<class T>
 boost::python::object array2_getdiag( T * array)
 {
-  return make_list<std::vector<T::element_type> >(array->getDiagonal())();
+  return make_list<std::vector<typename T::element_type> >(array->getDiagonal())();
 }
 
 template<class T>
 void array2_setitem( T * array, boost::python::tuple indices, typename T::element_type v )
 {
-  size_t i = extract<size_t>(indices[0])(), j = extract<size_t>(indices[1])();
+  size_t i = boost::python::extract<size_t>(indices[0])(), j = boost::python::extract<size_t>(indices[1])();
   if( i < array->getRowsNb() && j < array->getColsNb() )
     array->setAt( i, j, v );
   else throw PythonExc_IndexError();
@@ -157,7 +157,7 @@ void array2_setitem( T * array, boost::python::tuple indices, typename T::elemen
 template<class T>
 void array2_insertRow( T * array, size_t i, boost::python::object v )
 {
-  std::vector<T::element_type> row = extract_vec<T::element_type>(v)();
+  std::vector<typename T::element_type> row = extract_vec<typename T::element_type>(v)();
   if( row.size() != array->getRowsSize() ) throw PythonExc_ValueError();
   if( i <= array->getRowsNb() )
     array->insertRow( i, row );
@@ -167,7 +167,7 @@ void array2_insertRow( T * array, size_t i, boost::python::object v )
 template<class T>
 void array2_pushRow( T * array, boost::python::object v )
 {
-  std::vector<T::element_type> row = extract_vec<T::element_type>(v)();
+  std::vector<typename T::element_type> row = extract_vec<typename T::element_type>(v)();
   if( row.size() != array->getRowsSize() ) throw PythonExc_ValueError();
   array->insertRow(array->getRowsNb(), row );
 }
@@ -175,7 +175,7 @@ void array2_pushRow( T * array, boost::python::object v )
 template<class T>
 void array2_insertColumn( T * array, size_t i, boost::python::object v )
 {
-  std::vector<T::element_type> col = extract_vec<T::element_type>(v)();
+  std::vector<typename T::element_type> col = extract_vec<typename T::element_type>(v)();
   if( col.size() != array->getColsSize() ) throw PythonExc_ValueError();
   if( i <= array->getColsNb() )
     array->insertColumn( i, col.begin(),col.end() );
@@ -185,7 +185,7 @@ void array2_insertColumn( T * array, size_t i, boost::python::object v )
 template<class T>
 void array2_pushColumn( T * array, boost::python::object v )
 {
-  std::vector<T::element_type> col = extract_vec<T::element_type>(v)();
+  std::vector<typename T::element_type> col = extract_vec<typename T::element_type>(v)();
   if( col.size() != array->getColsSize() ) throw PythonExc_ValueError();
   array->insertColumn( array->getColsNb(), col );
 }
@@ -210,7 +210,7 @@ std::string array2_str( T * a, const char * name )
         ss << "[";
         for(typename T::const_iterator it = a->getBeginRow(i); it != a->getEndRow(i); ++it){
             if (it != a->getBeginRow(i)) ss << ",";
-            ss << extract<std::string>(boost::python::str(boost::python::object(*it)))();
+            ss << boost::python::extract<std::string>(boost::python::str(boost::python::object(*it)))();
         }
         ss << "]";
         if( i < r-1 ) ss << ",";
@@ -274,7 +274,7 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "getColumnNb", &array2_colnb<ARRAY>  ) 
          .def( "getDiagonal", &array2_getdiag<ARRAY>  ) 
          .def( "transpose", &array2_transpose<ARRAY>  ) 
-         .def( "submatrix", &array2_submatrix<ARRAY>, args("row","col","nbrow","nbcol") ) 
+	  .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","col","nbrow","nbcol") ) 
          .def( "insertRow", &array2_insertRow<ARRAY>  ) 
          .def( "insertColumn", &array2_insertColumn<ARRAY>  ) 
          .def( "pushRow", &array2_pushRow<ARRAY>  ) 
