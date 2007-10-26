@@ -95,22 +95,23 @@ def asymetric_swung( obj , **kwds ):
   houppier=[ ( obj.__dict__[rd_kz[i]], houppier2geomAZ(obj.__dict__[az_kz[i]]) ) for i in range( len(rd_kz) ) ]
   houppier.sort(cmp = lambda x,y : cmp(x[1],y[1]))
   
-  try :
-    r = obj.__dict__[pos_dist]
-    a = obj.__dict__[pos_az]
-    objX = r*cos( radians(forest2geomAZ(a)) )
-    objY = r*sin( radians(forest2geomAZ(a)) )
-  except KeyError: 
-    objX = obj.__dict__[X_attr]
-    objY = obj.__dict__[Y_attr]
-    print "using cartesian coordinate", obj.Arbre
+  if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
+    try :
+      r = obj.__dict__[pos_dist]
+      a = obj.__dict__[pos_az]
+      obj.posX = r*cos( radians(forest2geomAZ(a)) )
+      obj.posY = r*sin( radians(forest2geomAZ(a)) )
+    except KeyError: 
+      obj.posX = obj.__dict__[X_attr]
+      obj.posY = obj.__dict__[Y_attr]
+      print "using cartesian coordinate", obj.Arbre
 
     
   mc = float(midCrown)
   radii = list(houppier)
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
-  h = pgl.Translated( pgl.Vector3(objX, objY, obj.__dict__[botHoup_attr]*100), createSwung(ht*mc,ht,radii) )
-  tr = pgl.Translated(pgl.Vector3(objX, objY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
+  h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100), createSwung(ht*mc,ht,radii) )
+  tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
   s_h = pgl.Shape(h, houppier_material, obj.pid)
   s_tr = pgl.Shape(tr, trunk_material, obj.pid+100000)
