@@ -38,13 +38,8 @@ def register_packages(pkg_manager):
                   category="Modelling",
                   nodemodule="dresser",
                   nodeclass="dresser",
-                  inputs= ( dict( name = "obj", interface=None ),
-                            dict( name = "type", interface=IEnumStr(['AsymetricSwung', 'ChupaChups']), value = 'AsymetricSwung', showwidget=True ),
-                            dict( name = "args", interface=IDict ),
-                          ),
-                  outputs=(dict(name="dresser function", interface = None),
-                          ),
-                  )
+                )
+                  
 
     package.add_factory( nf )
 

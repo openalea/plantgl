@@ -37,6 +37,7 @@ __docformat__ = "restructuredtext en"
 
 import openalea.plantgl.all as pgl
 from openalea.plantgl.ext.pgl_utils import sphere, arrow, color, createSwung
+from openalea.core import *
 
 houppier_material = pgl.Material("houppier_mat",pgl.Color3(20,100,60))
 trunk_material = pgl.Material("trunk_material",pgl.Color3(50,28,6),2)
@@ -104,7 +105,6 @@ def asymetric_swung( obj , **kwds ):
     except KeyError: 
       obj.posX = obj.__dict__[X_attr]
       obj.posY = obj.__dict__[Y_attr]
-      print "using cartesian coordinate", obj.Arbre
 
     
   mc = float(midCrown)
@@ -129,7 +129,7 @@ def forest2geomAZ(az):
 def houppier2geomAZ(az):
   return  - ( ( az+200 )%400 )*0.9
 
-def chupa_chups( obj , **kwds ):
+def spheres( obj , **kwds ):
   X_attr = kwds.get('X_attr', 'X')
   Y_attr = kwds.get('Y_attr', 'Y')
   pos_dist = kwds.get('dist', 'Distance')
@@ -141,17 +141,14 @@ def chupa_chups( obj , **kwds ):
   wood = kwds.get( 'wood', True )
 
   if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
-    print "using object positions"
     try :
       r = obj.__dict__[pos_dist]
       a = obj.__dict__[pos_az]
       obj.posX = r*cos( radians(forest2geomAZ(a)) )
       obj.posY = r*sin( radians(forest2geomAZ(a)) )
-      print "using polar coordinate"
     except AttributeError: 
       obj.posX = obj.__dict__[X_attr]
       obj.posY = obj.__dict__[Y_attr]
-      print "using cartesian coordinate"
 
 
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
@@ -169,15 +166,72 @@ def chupa_chups( obj , **kwds ):
   else :
     return ( s_h, )
 
+def cones( obj , **kwds ):
+  X_attr = kwds.get('X_attr', 'X')
+  Y_attr = kwds.get('Y_attr', 'Y')
+  pos_dist = kwds.get('dist', 'Distance')
+  pos_az = kwds.get('az', 'Azimuth')
+  circ_attr = kwds.get('circ_attr', 'Circonference')
+  height_attr = kwds.get('height_attr', 'Haut')
+  botHoup_attr = kwds.get('botHoup', 'BaseHoup')
+  radiusHoup = kwds.get('radiusHoup', None)
+  wood = kwds.get( 'wood', True )
 
-def dresser( obj = None, type = 'AsymetricSwung', kwds = {}) :
-  # print('obj='+str(obj)+',type='+str(type)+',args='+str(args))
-  if type == 'AsymetricSwung' :
-    fc = asymetric_swung
-  elif type == 'ChupaChups' :
-    fc = chupa_chups
-  if obj:
-    return (fc(obj,**kwds),)
-  else:
-    return (lambda x : fc(x,**kwds),)
+  if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
+    try :
+      r = obj.__dict__[pos_dist]
+      a = obj.__dict__[pos_az]
+      obj.posX = r*cos( radians(forest2geomAZ(a)) )
+      obj.posY = r*sin( radians(forest2geomAZ(a)) )
+    except AttributeError: 
+      obj.posX = obj.__dict__[X_attr]
+      obj.posY = obj.__dict__[Y_attr]
+
+
+  ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
+  if radiusHoup :
+    cone_radius = obj.__dict__[radiusHoup]
+  else :
+    cone_radius = ht/2.
+  h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 ), pgl.Cone(cone_radius,ht,1,12) )
+  tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
+  
+  s_h = pgl.Shape(h, houppier_material, obj.pid)
+  s_tr = pgl.Shape(tr, trunk_material, obj.pid+100000)
+  if wood:
+    return ( s_h, s_tr )
+  else :
+    return ( s_h, )
+
+
+class dresser( Node ):
+    """
+    Dresser (type) -> func
+    Input:
+        Type of the function.
+    Output:
+        function that generates geometry.
+    """
+    
+    geom_func= { "AsymetricSwung" : asymetric_swung,
+                  "Sheres" : spheres,
+                  "Cones" : cones,
+              } 
+    
+    def __init__(self):
+    
+        Node.__init__(self)
+
+        funs= self.geom_func.keys()
+        funs.sort()
+        self.add_input( name = "Type", interface = IEnumStr(funs), value = funs[0]) 
+        self.add_output( name = "Geometry function", interface = None)
+
+    def __call__(self, inputs):
+        func_name= self.get_input("Type")
+        f = self.geom_func[func_name]
+        self.set_caption(func_name)
+
+        return f
+
 
