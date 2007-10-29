@@ -32,14 +32,11 @@
  
 #include <boost/python.hpp>
 #include "export_scenegraph.h"
-#include "../util/exception_core.h"
 
 using namespace boost::python;
 
 void module_sg()
 {
-	define_stl_exceptions();
-
     export_arrays();
     export_arrays2();
     export_index();

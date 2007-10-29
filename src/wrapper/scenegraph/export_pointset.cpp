@@ -54,8 +54,10 @@ DEF_POINTEE( PointSet )
 std::string gps_repr( PointSet* p )
 {
   std::stringstream ss;
-  ss << "PointSet(" << extract<std::string>(boost::python::str(boost::python::object(p->getPointList())))()
-     << "," << extract<std::string>(boost::python::str(boost::python::object(p->getColorList())))() << ")";
+  ss << "PointSet(" << extract<std::string>(boost::python::str(boost::python::object(p->getPointList())))();
+  if (p->getColorList())
+    ss << "," << extract<std::string>(boost::python::str(boost::python::object(p->getColorList())))() ;
+  ss << ")";
   return ss.str();
 }
 

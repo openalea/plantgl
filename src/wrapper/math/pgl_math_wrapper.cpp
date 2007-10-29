@@ -36,11 +36,13 @@
  
 #include <boost/python.hpp>
 #include "export_math.h"
+#include "../util/exception_core.h"
 
 using namespace boost::python;
 
 void module_math()
 {
+  define_stl_exceptions();
 
   export_Vector2();
   export_Vector3();

@@ -78,8 +78,10 @@ size_t gpl_size( Polyline* pl )
 std::string gpl_repr( Polyline* p )
 {
   std::stringstream ss;
-  ss << "Polyline(" << extract<std::string>(boost::python::str(boost::python::object(p->getPointList())))()
-     << "," << extract<std::string>(boost::python::str(boost::python::object(p->getColorList())))() << ")";
+  ss << "Polyline(" << extract<std::string>(boost::python::str(boost::python::object(p->getPointList())))();
+  if (p->getColorList())
+    ss << "," << extract<std::string>(boost::python::str(boost::python::object(p->getColorList())))() ;
+  ss << ")";
   return ss.str();
 }
 

@@ -73,6 +73,14 @@ U getCurveValue(const T * lm, real_t u){
    return (lm->*func)(u);
 }
 
+template <class T, class U, U (T::* func)(real_t) const >
+U getCurveDerivativeValue(const T * lm, real_t u){
+   if (lm->getFirstKnot() - GEOM_EPSILON > u || lm->getLastKnot() + GEOM_EPSILON < u 
+       || fabs(lm->getLastKnot() - lm->getFirstKnot()) < GEOM_EPSILON )
+       throw PythonExc_IndexError();
+   return (lm->*func)(u);
+}
+
 
 void export_LineicModel()
 {
@@ -81,8 +89,8 @@ void export_LineicModel()
     .add_property( "lastKnot", &LineicModel::getLastKnot )
     .def( "getStride", &LineicModel::getStride )
     .def( "getPointAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getPointAt>, args("u") )
-    .def( "getTangentAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
-    .def( "getNormalAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
+    .def( "getTangentAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
+    .def( "getNormalAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
     .def( "findClosest", &lm_findclosest, args("point") )
     .def( "getLength", (real_t (LineicModel::*)()const)&LineicModel::getLength )
     .def( "getLength", (real_t (LineicModel::*)(real_t)const)&LineicModel::getLength, args("begin") )
