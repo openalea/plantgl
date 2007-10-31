@@ -56,6 +56,7 @@ struct extract_pgllist {
     }
 
 	T * extract_list() const {
+        if (pylist.ptr() == Py_None) return NULL;
 		T * result (new T());
 		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
@@ -101,6 +102,7 @@ struct extract_vec {
 
 	result_type extract() const {
 		result_type result;
+        if (pylist.ptr() == Py_None) return result;
 		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
 		while( true )
 		{

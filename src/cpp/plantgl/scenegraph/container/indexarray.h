@@ -69,7 +69,7 @@ public:
   /** Constructs an Index3Array of size of \e size.
       \post
       - \e self is valid. */
-  Index3Array( uint32_t size = 0 );
+  Index3Array( uint32_t size = 0, const Index3& defaultvalue = Index3());
 
   /** Constructs a Index3Array with the range [\e first, \e last).
       \post
@@ -117,7 +117,7 @@ public:
   /** Constructs an Index4Array of size of \e size.
       \post
       - \e self is valid. */
-  Index4Array( uint32_t size = 0 );
+  Index4Array( uint32_t size = 0, const Index4& defaultvalue = Index4() );
 
   /** Constructs a Index4Array with the range [\e first, \e last).
       \post
@@ -169,7 +169,7 @@ public:
   /** Constructs an IndexArray of size of \e size.
       \post
       - \e self is valid. */
-  IndexArray( uint32_t size = 0 );
+  IndexArray( uint32_t size = 0, const Index& defaultvalue = Index(3) );
 
   /** Constructs an IndexArray from an Index3Array.
       \post

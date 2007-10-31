@@ -39,8 +39,8 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-Index3Array::Index3Array( uint32_t size ) :
-  Array1<Index3>(size) {
+Index3Array::Index3Array( uint32_t size, const Index3& defaultvalue ) :
+  Array1<Index3>(size,defaultvalue) {
 }
 
 Index3Array::~Index3Array( ) {
@@ -66,8 +66,8 @@ uint32_t * Index3Array::data( ) const {
 /* ----------------------------------------------------------------------- */
 
 
-Index4Array::Index4Array( uint32_t size ) :
-  Array1<Index4>(size) {
+Index4Array::Index4Array( uint32_t size, const Index4& defaultvalue ) :
+  Array1<Index4>(size,defaultvalue) {
 }
 
 Index4Array::~Index4Array( ) {
@@ -107,8 +107,8 @@ uint32_t * Index4Array::data( ) const {
 /* ----------------------------------------------------------------------- */
 
 
-IndexArray::IndexArray( uint32_t size ) :
-  Array1<Index>(size,Index(3)) {
+IndexArray::IndexArray( uint32_t size, const Index& defaultvalue  ) :
+  Array1<Index>(size,defaultvalue) {
 }
 
 /** Constructs an IndexArray from an Index3Array.

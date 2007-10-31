@@ -72,6 +72,11 @@ public:
       - \e self is valid. */
   Point2Array( uint32_t size, const TOOLS(Vector2)& t);
 
+  /** Constructs a Point2Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
+      \post
+      - \e self is valid. */
+  Point2Array( size_t size, const TOOLS(Vector2)& firstval, const TOOLS(Vector2)& increment);
+
   /** Constructs a Point2Array of size 2 with \e a and \e b.
       \post
       - \e self is valid. */
@@ -160,6 +165,11 @@ public:
       \post
       - \e self is valid. */
   Point3Array( uint32_t size, const TOOLS(Vector3)& t);
+
+  /** Constructs a Point3Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
+      \post
+      - \e self is valid. */
+  Point3Array( size_t size, const TOOLS(Vector3)& firstval, const TOOLS(Vector3)& increment);
 
   /** Constructs a Point3Array of size 2 with \e a and \e b.
       \post
@@ -291,6 +301,11 @@ public:
       - \e self is valid. */
   Point4Array( const Point3Array& points3, real_t w );
 
+  /** Constructs a Point4Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
+      \post
+      - \e self is valid. */
+  Point4Array( size_t size, const TOOLS(Vector4)& firstval, const TOOLS(Vector4)& increment);
+
   /// Destructor
   virtual ~Point4Array( );
 
@@ -300,7 +315,7 @@ public:
   /// Returns the center of \e self.
   TOOLS(Vector4) getCenter( ) const;
 
-  /// Returns the extent along the \c axis and \c y axis of \e self.
+  /// Returns the extent along the \c axis and \c y axis  of \e self.
   TOOLS(Vector4) getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.

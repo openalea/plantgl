@@ -37,6 +37,7 @@
 template<class T>
 RCPtr<T> extract_array2_from_list( boost::python::object l )
 {
+  if (l.ptr() == Py_None) return RCPtr<T>(0);
   boost::python::object row_iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( l.ptr() ) ) );
   uint32_t rows= boost::python::extract<uint32_t>(l.attr("__len__")());
   boost::python::object col_obj= row_iter_obj.attr( "next" )();
@@ -68,17 +69,19 @@ struct array2_from_list {
 	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>()); 
   } 
   static void* convertible(PyObject* py_obj){ 
-    if( !PySequence_Check( py_obj ) ) return 0; 
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0; 
     return py_obj; 
   } 
-  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
+  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
    typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
    void* memory_chunk = the_storage->storage.bytes; 
-   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-   RCPtr<T> result = extract_array2_from_list<T>(py_sequence); 
-   new (memory_chunk) T (*result); 
-   delete result; 
+   if (py_obj != Py_None){
+    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) ); 
+    RCPtr<T> result = extract_array2_from_list<T>(py_sequence); 
+    new (memory_chunk) T (*result);
+   }
+   else { new (memory_chunk) T(0); }
    data->convertible = memory_chunk; 
   } 
 }; 
@@ -89,15 +92,18 @@ struct array2_ptr_from_list {
 	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >()); 
   } 
   static void* convertible(PyObject* py_obj){ 
-    if( !PySequence_Check( py_obj ) ) return 0; 
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0; 
     return py_obj; 
   } 
-  static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
+  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
    typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
    void* memory_chunk = the_storage->storage.bytes; 
-   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-   RCPtr<T> result = extract_array2_from_list<T>(py_sequence); 
+   RCPtr<T> result;
+   if (py_obj != Py_None){
+    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) ); 
+    result = extract_array2_from_list<T>(py_sequence); 
+   }
    new (memory_chunk) RCPtr<T> (result); 
    data->convertible = memory_chunk; 
   } 
@@ -267,6 +273,7 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "__len__", &array2_rownb<ARRAY> )					
          .def( "__contains__", &ARRAY::contains )					
          .def( "empty", &ARRAY::isEmpty )					
+         .def( "clear", &ARRAY::clear )					
          .def( "isUnique", &ARRAY::isUnique )					
          .def( "getRow", &array2_getrow<ARRAY>  ) 
          .def( "getRowNb", &array2_rownb<ARRAY>  ) 
@@ -274,7 +281,7 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "getColumnNb", &array2_colnb<ARRAY>  ) 
          .def( "getDiagonal", &array2_getdiag<ARRAY>  ) 
          .def( "transpose", &array2_transpose<ARRAY>  ) 
-	  .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","col","nbrow","nbcol") ) 
+	     .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","col","nbrow","nbcol") ) 
          .def( "insertRow", &array2_insertRow<ARRAY>  ) 
          .def( "insertColumn", &array2_insertColumn<ARRAY>  ) 
          .def( "pushRow", &array2_pushRow<ARRAY>  ) 

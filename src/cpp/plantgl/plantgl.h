@@ -40,6 +40,7 @@
 #include "pgl_tool.h"
 #include "pgl_math.h"
 #include "pgl_scenegraph.h"
+#include "pgl_algo.h"
 #include "pgl_gui.h"
 
 // __plantgl_h__

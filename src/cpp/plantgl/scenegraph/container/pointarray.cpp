@@ -50,6 +50,11 @@ Point2Array::Point2Array( uint32_t size, const Vector2& t):
     Array1<Vector2>(size,t){
 }
 
+Point2Array::Point2Array( size_t size, const Vector2& firstval, const Vector2& inc):
+Array1<Vector2>(range<Array1<Vector2> >(size,firstval,inc)){
+}
+
+
 Point2Array::Point2Array( Vector2 a, Vector2 b ) :
     Array1<Vector2>(2){
     __A[0] = a;
@@ -205,6 +210,11 @@ Point3Array::Point3Array( uint32_t size ) :
 Point3Array::Point3Array( uint32_t size, const Vector3& t):
     Array1<Vector3>(size,t){
 }
+
+Point3Array::Point3Array( size_t size, const Vector3& firstval, const Vector3& inc):
+Array1<Vector3>(range<Array1<Vector3> >(size,firstval,inc)){
+}
+
 
 Point3Array::Point3Array( const Vector3& a, const Vector3& b ) :
     Array1<Vector3>(2){
@@ -421,6 +431,11 @@ Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
                 *it4 = Vector4(*it3,w);
   GEOM_ASSERT(isValid());
 }
+
+Point4Array::Point4Array( size_t size, const Vector4& firstval, const Vector4& inc):
+Array1<Vector4>(range<Array1<Vector4> >(size,firstval,inc)){
+}
+
 
 Point4Array::~Point4Array( ) {
 }

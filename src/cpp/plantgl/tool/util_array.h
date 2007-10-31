@@ -82,16 +82,17 @@ public:
   typedef T element_type;
 
   /// Constructs an Array1 of size \e size
-  Array1( uint32_t size = 0 ) :
+  Array1( size_t size = 0 ) :
     RefCountObject(),
     __A(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
-  Array1( uint32_t size, const T& t ) :
+  Array1( size_t size, const T& t ) :
     RefCountObject(),
-    __A((unsigned int)size,t) {
+    __A(size,t) {
   }
+
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
@@ -148,6 +149,11 @@ public:
   /// Returns the size of \e self.
   inline uint32_t getSize( ) const {
     return __A.size();
+  }
+
+  /// Clear \e self.
+  inline void clear( ) {
+    __A.clear();
   }
 
   /// Returns an iterator at the maximum value of \e self.
@@ -299,6 +305,27 @@ protected:
   /// The elements contained by \e self.
   std::vector<T> __A;
 
+};
+
+/// Constructs an Array1 with \e size copies of \e t.
+template<class U, class T = typename U::element_type>
+struct range {
+    const T& firstvalue;
+    const T& increment;
+    size_t size;
+
+    range(size_t _size, const T& _firstvalue,  const T& _increment) :
+        size(_size),
+        firstvalue(_firstvalue),
+        increment(_increment) {}
+
+    operator U () const {
+        U result(size,firstvalue);
+        T value = firstvalue + increment;
+        for (size_t i = 1; i < size; ++i, value += increment)
+            result.setAt(i,value);
+        return result;
+    }
 };
 
 /// Array of bool

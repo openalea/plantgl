@@ -300,6 +300,10 @@ public:
     return __A.empty();
   }
 
+  /// Clear \e self.
+  inline void clear( ) {
+    __A.clear(); __rowsNb = 0;
+  }
   /// Returns whether \e self contain unique elements.
   bool isUnique( ) const {
     if (__A.empty()) return true;

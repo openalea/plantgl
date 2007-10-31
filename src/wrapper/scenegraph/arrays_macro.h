@@ -50,17 +50,19 @@ struct array_from_list {
 	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>()); 
   } 
   static void* convertible(PyObject* py_obj){ 
-    if( !PySequence_Check( py_obj ) ) return 0; 
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj )) return 0; 
     return py_obj; 
   } 
   static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
    typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
-   void* memory_chunk = the_storage->storage.bytes; 
-   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-   RCPtr<T> result = extract_array_from_list<T>(py_sequence); 
-   new (memory_chunk) T (*result); 
-   delete result; 
+   void* memory_chunk = the_storage->storage.bytes;
+   if (obj != Py_None){
+    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
+    RCPtr<T> result= extract_array_from_list<T>(py_sequence); 
+    new (memory_chunk) T (*result); 
+   }
+   else { new (memory_chunk) T(0); }
    data->convertible = memory_chunk; 
   } 
 }; 
@@ -71,15 +73,18 @@ struct array_ptr_from_list {
 	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id< RCPtr<T> >()); 
   } 
   static void* convertible(PyObject* py_obj){ 
-    if( !PySequence_Check( py_obj ) ) return 0; 
+    if( py_obj !=  Py_None && !PySequence_Check( py_obj ) ) return 0; 
     return py_obj; 
   } 
   static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){ 
    typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;  
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
-   void* memory_chunk = the_storage->storage.bytes; 
-   boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-   RCPtr<T> result = extract_array_from_list<T>(py_sequence); 
+   void* memory_chunk = the_storage->storage.bytes;
+   RCPtr<T> result;
+   if (obj != Py_None){
+    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
+    result = extract_array_from_list<T>(py_sequence); 
+   }
    new (memory_chunk) RCPtr<T> (result); 
    data->convertible = memory_chunk; 
   } 
@@ -253,6 +258,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \
         .def( "__len__",      &array_len<ARRAY> ) \
         .def( "reverse",      &ARRAY::reverse ) \
+        .def( "clear",        &ARRAY::clear ) \
         .def( "insert",       &array_insertitem<ARRAY> ) \
         .def( "append",       &array_appenditem<ARRAY> ) \
         .def( "pop",          &array_popitem<ARRAY> ) \
