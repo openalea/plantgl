@@ -36,6 +36,7 @@
  
 #include <boost/python.hpp>
 #include "export_viewer.h"
+#include "../util/exception_core.h"
 
 using namespace boost::python;
 
@@ -47,6 +48,8 @@ BOOST_PYTHON_MODULE(_pglgui3_d)
 BOOST_PYTHON_MODULE(_pglgui3)
 #endif
 {
+ define_stl_exceptions();
+
   module_gui();
 };
 

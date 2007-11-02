@@ -31,11 +31,13 @@
 
 #include <boost/python.hpp>
 #include "export_action.h"
+#include "../util/exception_core.h"
 
 /* ----------------------------------------------------------------------- */
 
 void module_algo()
 {
+  define_stl_exceptions();
 
     // util class export
     export_Sequencer();
