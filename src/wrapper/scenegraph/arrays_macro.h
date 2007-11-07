@@ -158,18 +158,18 @@ typename T::element_type array_poplastitem( T * a)
 
 
 template<class T>
-void array_setitem( T * array, int pos, typename T::element_type * v )
+void array_setitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -array->getSize() ) array->setAt( array->getSize() + pos, *v );
-  else if( pos < array->getSize() ) array->setAt( pos, *v );
+  if( pos < 0 && pos >= -array->getSize() ) array->setAt( array->getSize() + pos, v );
+  else if( pos < array->getSize() ) array->setAt( pos, v );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
-void array_insertitem( T * array, int pos, typename T::element_type * v )
+void array_insertitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -array->getSize() ) array->insert( array->getBegin() + (array->getSize() + pos), *v );
-  else if( pos < array->getSize() ) array->insert( array->getBegin() + pos, *v );
+  if( pos < 0 && pos >= -array->getSize() ) array->insert( array->getBegin() + (array->getSize() + pos), v );
+  else if( pos < array->getSize() ) array->insert( array->getBegin() + pos, v );
   else throw PythonExc_IndexError();
 }
 
@@ -192,29 +192,29 @@ void array_delslice( T * array, int beg, int end )
 }
 
 template<class T>
-bool array_contains( T * array, typename T::element_type * v ) 
+bool array_contains( T * array, typename T::element_type v ) 
 {
-  return array->contains(*v); 
+  return array->contains(v); 
 } 
 
 template<class T>
-T * array_additem( T * array, typename T::element_type * v ) 
+T * array_additem( T * array, typename T::element_type v ) 
 { 
 	T * array2 = new T(array->getBegin(),array->getEnd());
-	array2->pushBack(*v);
+	array2->pushBack(v);
 	return array2; 
 }
 
 template<class T>
-T * array_iadditem( T * array, typename T::element_type * v ) 
+T * array_iadditem( T * array, typename T::element_type v ) 
 { 
-	array->pushBack(*v); 
+	array->pushBack(v); 
 	return array; 
 }
 
 template<class T>
-void array_appenditem( T * array, typename T::element_type * v ) 
-{ array->pushBack(*v); }
+void array_appenditem( T * array, typename T::element_type v ) 
+{ array->pushBack(v); }
 
 template<class T>
 T * array_iaddarray( T * array, RCPtr<T> array2 ) 

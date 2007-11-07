@@ -30,6 +30,7 @@
  */
 
 #include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/math/util_vector.h>
 
@@ -61,10 +62,16 @@ void export_Primitive()
   implicitly_convertible< ParametricModelPtr,PrimitivePtr >();
 }
 
+BoxPtr box_from_val(real_t x, real_t y, real_t z)
+{
+    return new Box(Vector3(x,y,z));
+}
+
 void export_Box()
 {
   class_< Box, BoxPtr, bases< ParametricModel > , boost::noncopyable >
     ("Box", init< const Vector3& >("Box(Vector3(x,y,z))",args("size")) )
+    .def( "__init__", make_constructor( box_from_val ) ) 
     .DEC_CT_PROPERTY_WD(size,Box,Size,Vector3)
     ;
 

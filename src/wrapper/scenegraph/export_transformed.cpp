@@ -30,6 +30,7 @@
  */
 
 #include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/scenegraph/transformation/transformed.h>
 #include <plantgl/scenegraph/transformation/mattransformed.h>
@@ -88,11 +89,17 @@ void export_Scaled()
 
 }
 
+TranslatedPtr tr_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
+{
+    return new Translated(Vector3(x,y,z),geom);
+}
+
 void export_Translated()
 {
   class_< Translated, TranslatedPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Translated", init< const Vector3&, const GeometryPtr& >
      ("Translated(translation,geometry)",args("translation","geometry")) )
+    .def( "__init__", make_constructor( tr_from_val ) ) 
     .DEC_CT_PROPERTY_WD(translation,Translated,Translation,Vector3)
     ;
 

@@ -479,20 +479,18 @@ bool BBoxComputer::process( Group * group ) {
   const GeometryArrayPtr& _group = group->getGeometryList();
   uint32_t _size = _group->getSize();
   uint32_t _first = 0;
-  while(__bbox.isNull() && _first <_size)
-	_group->getAt(0)->apply(*this);
+  do {
+	_group->getAt(_first)->apply(*this);
+    ++_first;
+  } while(__bbox.isNull() && _first <_size);
   if(!__bbox)return false;
 
-  Vector3 _ll = __bbox->getLowerLeftCorner();
-  Vector3 _ur = __bbox->getUpperRightCorner();
-  for (uint32_t _i = _first; _i < _size; _i++) {
+  BoundingBoxPtr _bbox (new BoundingBox(*__bbox));
+  for (uint32_t _i = _first; _i < _size; ++_i) {
     _group->getAt(_i)->apply(*this);
-    if(__bbox){
-	  _ll = Min(_ll,__bbox->getLowerLeftCorner());
-	  _ur = Max(_ur,__bbox->getUpperRightCorner());
-	}
+    if(__bbox) _bbox->extend(__bbox);
   };
-  __bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
+  __bbox = _bbox;
   GEOM_ASSERT(__bbox);
 
   GEOM_BBOXCOMPUTER_UPDATE_CACHE(group);

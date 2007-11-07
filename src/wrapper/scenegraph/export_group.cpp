@@ -49,9 +49,42 @@ using namespace std;
 
 DEF_POINTEE(Group)
 
-GroupPtr gg_fromlist( boost::python::object l ) 
+GroupPtr gg_fromobject2( GeometryPtr o, GeometryPtr o2 ) 
 { 
-  return new Group(extract_pgllist<GeometryArray>(l)());
+  GeometryArrayPtr geometries = new GeometryArray();
+  geometries->pushBack(o);
+  geometries->pushBack(o2);
+  return new Group(geometries);
+}
+
+GroupPtr gg_fromobject3( GeometryPtr o, GeometryPtr o2, GeometryPtr o3 ) 
+{ 
+  GeometryArrayPtr geometries = new GeometryArray();
+  geometries->pushBack(o);
+  geometries->pushBack(o2);
+  geometries->pushBack(o3);
+  return new Group(geometries);
+}
+
+GroupPtr gg_fromobject4( GeometryPtr o, GeometryPtr o2, GeometryPtr o3, GeometryPtr o4 ) 
+{ 
+  GeometryArrayPtr geometries = new GeometryArray();
+  geometries->pushBack(o);
+  geometries->pushBack(o2);
+  geometries->pushBack(o3);
+  geometries->pushBack(o4);
+  return new Group(geometries);
+}
+
+GroupPtr gg_fromobject5( GeometryPtr o, GeometryPtr o2, GeometryPtr o3, GeometryPtr o4, GeometryPtr o5 ) 
+{ 
+  GeometryArrayPtr geometries = new GeometryArray();
+  geometries->pushBack(o);
+  geometries->pushBack(o2);
+  geometries->pushBack(o3);
+  geometries->pushBack(o4);
+  geometries->pushBack(o5);
+  return new Group(geometries);
 }
 
 GeometryPtr gg_getitem( Group * array, size_t i)
@@ -68,19 +101,36 @@ void gg_setitem( Group * array, size_t i, GeometryPtr v )
   else throw PythonExc_IndexError();
 }
 
+GroupPtr gg_getslice( Group * array, int beg, int end ) 
+{ 
+  if( beg >= -array->getGeometryListSize() && beg < 0  )  beg += array->getGeometryListSize(); 
+  else if( beg >= array->getGeometryListSize() ) throw PythonExc_IndexError(); 
+  if( end >= -array->getGeometryListSize() && end < 0  )  end += array->getGeometryListSize(); 
+  else if( end > array->getGeometryListSize() ) throw PythonExc_IndexError(); 
+  return new Group(GeometryArrayPtr(new GeometryArray(array->getGeometryList()->getBegin()+beg,
+                                                  array->getGeometryList()->getBegin()+end)));
+}
+
 size_t gg_len( Group * a )
 {  return a->getGeometryListSize();}
+
 
 void export_Group()
 {
   
   class_< Group, GroupPtr, bases< Geometry >,boost::noncopyable >
-    ("Group",no_init)
-    .def( "__init__", make_constructor( gg_fromlist ) ) 
+    ("Group", init<const GeometryArrayPtr&, optional<const PolylinePtr&> >
+    ("Group(list geometryList [,Polyline skeleton])",args("geometryList","skeleton") ))
+    .def( "__init__", make_constructor( gg_fromobject2 ) ) 
+    .def( "__init__", make_constructor( gg_fromobject3 ) ) 
+    .def( "__init__", make_constructor( gg_fromobject4 ) ) 
+    .def( "__init__", make_constructor( gg_fromobject5 ) ) 
     .def( "__getitem__", gg_getitem /*, return_internal_reference<1>()*/ )
     .def( "__setitem__", gg_setitem )
+    .def( "__getslice__", gg_getslice )
     .def( "__len__", gg_len )
-	.DEC_PTR_PROPERTY_WD(skeleton,Group,Skeleton,PolylinePtr);
+	.DEC_PTR_PROPERTY_WD(skeleton,Group,Skeleton,PolylinePtr)
+	.DEC_PTR_PROPERTY(geometryList,Group,GeometryList,GeometryArrayPtr)
     ;
 
   implicitly_convertible< GroupPtr, GeometryPtr >();
