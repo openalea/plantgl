@@ -669,6 +669,12 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
   /// Returns a reference to the \c w coordinate of \e self.
   real_t& w( );
 
+  /// Returns the index of the maximum absolute coordinate
+  int getMaxAbsCoord() const;
+
+  /// Returns the index of the minimum absolute coordinate
+  int getMinAbsCoord() const;
+
   /// Returns whether \e self is equal to \e v.
   bool operator==( const Vector4& v ) const;
 

@@ -29,24 +29,19 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "export_matrix.h"
-#include "../util/exception.h"
-
 #include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
-
 #include <plantgl/math/util_matrix.h>
 #include <string>
 #include <sstream>
+
+#include "export_matrix.h"
+#include "../util/exception.h"
+
 
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-
-
-GET_ELT(Matrix3)
-SET_ELT(Matrix3)
 
 string m3_repr( const Matrix3& m )
 {
@@ -66,35 +61,21 @@ void export_Matrix3()
     .def(init<const Vector3&, const Vector3&, const Vector3&>("Matrix3(vec3,vec3,vec3)"))
     .def(init<const Matrix2&>("Matrix3(matrix2)"))
     .def(init<const Matrix4&>("Matrix3(matrix4)"))
-    .def( self == self )
-    .def( self != self )
-    .def( self += self )
-    .def( self -= self )
-    .def( self *= real_t() )
-    .def( self /= real_t() )
-    .def( self + self )
-    .def( self - self )
-    .def( self * self )
-    .def( self * other<Vector3>() )
-    .def( self * real_t() )
-    .def( self / real_t() )
-    .def( "getColumn", &Matrix3::getColumn )
-    .def( "getDiagonal", &Matrix3::getDiagonal )
-    .def( "getRow", &Matrix3::getRow )
-    .def( "isOrthogonal", &Matrix3::isOrthogonal )
-    .def( "isSingular", &Matrix3::isSingular )
-    .def( "isValid", &Matrix3::isValid )
-    .def( "adjoint", (Matrix3 (*) ( const Matrix3& )) adjoint )
-    .def( "det", (real_t (*) ( const Matrix3& )) det )
-    .def( "inverse", (Matrix3 (*) ( const Matrix3& )) inverse )
-    .def( "transpose", (Matrix3 (*) ( const Matrix3& )) transpose )
-    .def( "trace", (real_t (*) ( const Matrix3& )) trace )
+    .def(vector_matrix_func<Matrix3,Vector3>())
     .def( "eulerAnglesZYX", &Matrix3::eulerAnglesZYX )
     .def( "eulerAnglesXYZ", &Matrix3::eulerAnglesXYZ )
-    .def( "__getitem__", Matrix3_getElt )
-    .def( "__setitem__", Matrix3_setElt )
     .def( "__str__", m3_repr )
-    .def( "__repr__", m3_repr );
+    .def( "__repr__", m3_repr )
+    .def("scaling",&Matrix3::scaling)
+    .staticmethod("scaling")
+    .def("eulerRotationZYX",&Matrix3::eulerRotationZYX)
+    .staticmethod("eulerRotationZYX")
+    .def("eulerRotationXYZ",&Matrix3::eulerRotationXYZ)
+    .staticmethod("eulerRotationXYZ")
+    .def("axisRotation",&Matrix3::axisRotation)
+    .staticmethod("axisRotation")
+    ;
+
   def("scaling",&Matrix3::scaling);
   def("eulerRotationZYX",&Matrix3::eulerRotationZYX);
   def("eulerRotationXYZ",&Matrix3::eulerRotationXYZ);

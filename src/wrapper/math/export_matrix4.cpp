@@ -29,9 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "export_matrix.h"
-#include "../util/exception.h"
-
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
@@ -39,12 +36,13 @@
 #include <string>
 #include <sstream>
 
+#include "export_matrix.h"
+#include "../util/exception.h"
+
+
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
-
-GET_ELT(Matrix4)
-SET_ELT(Matrix4)
 
 string m4_repr( const Matrix4& m )
 {
@@ -130,45 +128,19 @@ void export_Matrix4()
   m2.def("__init__", make_constructor(m4_init));
   m2.def(init<const Vector4&, const Vector4&, const Vector4&, const Vector4&>());
   m2.def(init<const Matrix3&>());
-  m2.def( self == self );
-  m2.def( self != self );
-  m2.def( self += self );
-  m2.def( self -= self );
-  m2.def( self *= real_t() );
-  m2.def( self *= self );
+  m2.def(vector_matrix_func<Matrix4,Vector4>());
   m2.def( self * other<Vector3>() );
-  m2.def( self * other<Vector4>() );
-  m2.def( self * real_t() );
-  m2.def( self *= self );
-  m2.def( self *= self );
-  m2.def( self /= real_t() );
-  m2.def( self / real_t() );
-  m2.def( self + self );
-  m2.def( self - self );
-  m2.def( self * self ) ;
-  m2.def( "getColumn", &Matrix4::getColumn );
-  m2.def( "getDiagonal", &Matrix4::getDiagonal );
-  m2.def( "getRow", &Matrix4::getRow );
-  m2.def( "isOrthogonal", &Matrix4::isOrthogonal );
-  m2.def( "isSingular", &Matrix4::isSingular );
-  m2.def( "isValid", &Matrix4::isValid );
+  m2.def( "__str__", m4_repr );
+  m2.def( "__repr__", m4_repr );
   m2.def( "set", m4_set );
   m2.def( "setTransformation", &Matrix4::setTransformation );
   m2.def( "getTransformation", &mat4_getTransformation , "Return scaling, rotation and translation corresponding the decomposition of the matrix into R(rotate) * S(scale) + T(translate) where R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax)");
   m2.def( "setTransformation2", &Matrix4::setTransformation2 );
   m2.def( "getTransformation2", &mat4_getTransformation2,  "Return scaling, rotation and translation corresponding the decomposition of the matrix into S(scale) * R(rotate) + T(translate) where R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax)");
   m2.def( "getTransformationB", &mat4_getTransformationB, "Alternative method to getTransformation." );
-  m2.def( "adjoint", (Matrix4 (*) ( const Matrix4& )) adjoint );
-  m2.def( "det", (real_t (*) ( const Matrix4& )) det );
-  m2.def( "inverse", (Matrix4 (*) ( const Matrix4& )) inverse );
-  m2.def( "transpose", (Matrix4 (*) ( const Matrix4& )) transpose );
-  m2.def( "trace", (real_t (*) ( const Matrix4& )) trace );
-  m2.def( "__getitem__", Matrix4_getElt );
-  m2.def( "__setitem__", Matrix4_setElt );
-  m2.def( "__str__", m4_repr );
-  m2.def( "__repr__", m4_repr );
 
-  def("translation",&Matrix4::translation);
+  m2.def("translation",&Matrix4::translation);
+  m2.staticmethod("translation");
 
 }
 

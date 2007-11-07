@@ -188,6 +188,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_vector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\export_vector2.cpp"
 				>
 			</File>

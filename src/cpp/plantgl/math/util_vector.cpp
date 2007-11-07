@@ -820,6 +820,40 @@ real_t& Vector4::w( ) {
   return __W;
 }
 
+int 
+Vector4::getMaxAbsCoord() const
+{
+    if ( fabs(__X) > fabs(__Y) ){
+        if( fabs(__X) > fabs(__Z) )
+            return ( fabs(__X) > fabs(__W) ) ? 0 : 3;
+        else
+            return ( fabs(__Z) > fabs(__W) ) ? 2 : 3;
+    }
+    else {
+        if( fabs(__Y) > fabs(__Z) )
+            return ( fabs(__Y) > fabs(__W) ) ? 1 : 3;
+        else
+            return ( fabs(__Z) > fabs(__W) ) ? 2 : 3;
+    }
+}
+
+int 
+Vector4::getMinAbsCoord() const
+{
+    if ( fabs(__X) < fabs(__Y) ){
+        if( fabs(__X) < fabs(__Z) )
+            return ( fabs(__X) < fabs(__W) ) ? 0 : 3;
+        else
+            return ( fabs(__Z) < fabs(__W) ) ? 2 : 3;
+    }
+    else {
+        if( fabs(__Y) < fabs(__Z) )
+            return ( fabs(__Y) < fabs(__W) ) ? 1 : 3;
+        else
+            return ( fabs(__Z) < fabs(__W) ) ? 2 : 3;
+    }
+}
+
 /*  --------------------------------------------------------------------- */
 
 bool Vector4::operator==( const Vector4& v ) const {

@@ -80,7 +80,9 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 // Basic types redefinition
 
 #ifdef __GNUC__
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
 #include <stdint.h>
 #if defined( __MINGW32__ )
 #define __int8_t_defined

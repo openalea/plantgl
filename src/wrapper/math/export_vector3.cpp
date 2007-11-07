@@ -30,12 +30,10 @@
  */
 
 
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
+#include "export_vector.h"
 #include "../util/tuple_converter.h"
+//#include <plantgl/math/util_math.h>
 
-#include <plantgl/math/util_vector.h>
-#include <plantgl/math/util_math.h>
 #include <string>
 #include <sstream>
 
@@ -50,54 +48,6 @@ std::string v3_repr( Vector3* v )
   return ss.str(); 
 } 
 
-#define EXPORT_FUNCTION( PREFIX, SIZE, ARRAY) \
-real_t PREFIX##_getx( ARRAY* v ) \
-{ \
-  return v->x(); \
-} \
-\
-real_t PREFIX##_gety( ARRAY* v ) \
-{ \
-  return v->y(); \
-} \
-\
-void PREFIX##_setx( ARRAY* v, real_t val ) \
-{ \
-  v->x() = val; \
-} \
-\
-void PREFIX##_sety( ARRAY* v, real_t val ) \
-{ \
-  v->y() = val; \
-} \
-
-EXPORT_FUNCTION(v3, 3, Vector3 )
-
-real_t v3_getz( Vector3* v )
-{
-  return v->z();
-}
-
-void v3_setz( Vector3* v, real_t val )
-{
-  v->z() = val;
-}
-
-
-#define VECTOR_SETGET(PREFIX,ARRAY,SIZE) \
-real_t PREFIX##_size( ARRAY* v) { return SIZE; } \
-real_t PREFIX##_getAt( ARRAY* v, size_t i ) \
-{ \
-  if (i < SIZE) return v->getAt(i); \
-  else throw PythonExc_IndexError(); \
-} \
-void PREFIX##_setAt( ARRAY* v, size_t i, real_t val ) \
-{ \
-  if (i < SIZE) v->getAt(i) = val; \
-  else throw PythonExc_IndexError(); \
-} \
-
-VECTOR_SETGET(v3,Vector3,3);
 
 #define VECTOR_STRUCT_SG(PREFIX,ARRAY,MEMBER) \
 real_t PREFIX##_get##MEMBER( ARRAY* v ) \
@@ -114,21 +64,10 @@ VECTOR_STRUCT_SG(sph,Vector3::Spherical,theta);
 VECTOR_STRUCT_SG(sph,Vector3::Spherical,phi);
 
 
-std::string sph_str(Vector3::Spherical * v){
-  std::stringstream ss;
-  ss << "Vector3::Spherical(" << v->radius << ',' << v->theta*GEOM_DEG << "°," << v->phi*GEOM_DEG << "°)";
-  return ss.str();
-}
 
 std::string sph_repr(Vector3::Spherical * v){
   std::stringstream ss;
-  ss << "Vector3::Spherical(" << v->radius << ',' << v->theta << ',' << v->phi << ')';
-  return ss.str();
-}
-
-std::string cyl_str(Vector3::Cylindrical * v){
-  std::stringstream ss;
-  ss << "Vector3.Cylindrical(" << v->radius << ',' << v->theta*GEOM_DEG << "°," << v->z << ")";
+  ss << "Vector3.Spherical(" << v->radius << ',' << v->theta << ',' << v->phi << ')';
   return ss.str();
 }
 
@@ -162,18 +101,6 @@ struct v3sph_pickle_suite : boost::python::pickle_suite
 	}
 };
 
-/*
-boost::python::tuple extract_tuple_from_v3(const Vector3& v){
-	return make_tuple(v.x(),v.y(),v.z());
-}
-
-struct v3_to_tuple
-{
-	static PyObject* convert(const Vector3& v){
-		return incref(make_tuple(v.x(),v.y(),v.z()).ptr());
-	}
-};*/
-
 
 
 
@@ -185,66 +112,34 @@ void export_Vector3()
     .def(init< const Vector3::Cylindrical& >("Vector3(Vector3.Cylindrical c)",args("c")))
     .def(init< const Vector3::Spherical& >("Vector3(Vector3.Spherical s)",args("s")))
     .def(init< const Vector2&, real_t >("Vector3(Vector2 v, real_t z)",args("v","z")))
-    .def( self + self )
-    .def( -self )
-    .def( self / other< real_t >() )
-    .def( self * other< real_t >() )
-    .def( self == self )
-    .def( self != self )
-    .def( self += self )
-    .def( self /= other< real_t >() )
-    .def( self - self )
-    .def( self * self )
-    .def( self ^ self )
-    .def( "normalize", &Vector3::normalize , "Normalizes self and returns the norm before.")
-    .def( "isNormalized", &Vector3::isNormalized , "Returns whether self is normalized.")
-    .def( "isOrthogonalTo", &Vector3::isOrthogonalTo, args("v"), "Returns whether self is orthogonal to v." )
-    .def( "isValid", &Vector3::isValid , "Returns whether self is valid." )
-    .def( "getMaxAbsCoord", &Vector3::getMaxAbsCoord, "Returns the index of the maximum absolute coordinate." )
-    .def( "getMinAbsCoord", &Vector3::getMinAbsCoord, "Returns the index of the minimum absolute coordinate." )
-    .add_property( "x", v3_getx , v3_setx )
-    .add_property( "y", v3_gety, v3_sety )
-    .add_property( "z", v3_getz, v3_setz )
     .def( "__str__", v3_repr )
     .def( "__repr__", v3_repr )
-    .def( "__getitem__", v3_getAt )
-    .def( "__setitem__", v3_setAt )
-    .def( "__len__", v3_size )
-    .def( "__abs__",        (Vector3 (*) ( const Vector3&)) abs , "Returns the absolute value of self.")
-    .def( "__norm__",       (real_t (*) ( const Vector3&)) norm , "Returns the norm of self.")
-    .def( "__normL1__",     (real_t (*) ( const Vector3&)) normL1 , "Returns the L1 (Manhattan) norm of self.")
-    .def( "__normLinf__",   (real_t (*) ( const Vector3&)) normLinf , "Returns the L-infinite norm of self.")
-    .def( "__normSquared__",(real_t (*) ( const Vector3&)) normSquared , "Returns the square of the norm of self.")
-    .def( "__dir__",        (Vector3 (*) ( const Vector3&)) direction , "Returns the direction of self.")
-    .add_static_property( "ORIGIN", make_getter(Vector3::ORIGIN))
-    .add_static_property( "OX", make_getter(Vector3::OX))
-    .add_static_property( "OY", make_getter(Vector3::OY))
-    .add_static_property( "OZ", make_getter(Vector3::OZ))
+    .def(vector_dim3_func<Vector3>())
+    .def(vector_crossdot<Vector3>())
 	.def_pickle(v3_pickle_suite());
 	;
 
-	// boost::python::to_python_converter<Vector3,v3_to_tuple>();
    pgltuple_from_tuple<Vector3,3>();
 
   class_<Vector3::Cylindrical>("Cylindrical", init<const Vector3&>("Cylindrical(Vector3 v)",args("v")))
     .def(init< real_t,real_t,real_t>("Cylindrical(real_t radius, real_t theta, real_t z)",args("radius","theta","z")))
     .def("isValid",&Vector3::Cylindrical::isValid , "Returns whether self is valid.")
-    .def("__str__",&cyl_str)
+    .def("__str__",&cyl_repr)
     .def("__repr__",&cyl_repr)
-    .add_property("radius",cyl_getradius,cyl_setradius)
-    .add_property("theta",cyl_gettheta,cyl_settheta)
-    .add_property("z",cyl_getz,cyl_setz)
+    .add_property("radius",make_getter(&Vector3::Cylindrical::radius),make_setter(&Vector3::Cylindrical::radius))
+    .add_property("theta",make_getter(&Vector3::Cylindrical::theta),make_setter(&Vector3::Cylindrical::theta))
+    .add_property("z",make_getter(&Vector3::Cylindrical::z),make_setter(&Vector3::Cylindrical::z))
 	.def_pickle(v3cyl_pickle_suite());
     ;
 
   class_<Vector3::Spherical>("Spherical", init<const Vector3&>("Spherical(Vector3 v)",args("v")))
     .def(init< real_t,real_t,real_t>("Spherical(real_t radius, real_t theta, real_t phi)",args("radius","theta","phi")))
     .def("isValid",&Vector3::Spherical::isValid, "Returns whether self is valid.")
-    .def("__str__",&sph_str)
+    .def("__str__",&sph_repr)
     .def("__repr__",&sph_repr)
-    .add_property("radius",sph_getradius,sph_setradius)
-    .add_property("theta",sph_gettheta,sph_settheta)
-    .add_property("phi",sph_getphi,sph_setphi)
+    .add_property("radius",make_getter(&Vector3::Spherical::radius),make_setter(&Vector3::Spherical::radius))
+    .add_property("theta",make_getter(&Vector3::Spherical::theta),make_setter(&Vector3::Spherical::theta))
+    .add_property("phi",make_getter(&Vector3::Spherical::phi),make_setter(&Vector3::Spherical::phi))
 	.def_pickle(v3sph_pickle_suite());
     ;
 

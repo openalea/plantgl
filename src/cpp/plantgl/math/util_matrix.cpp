@@ -136,6 +136,10 @@ Matrix2& Matrix2::operator-=( const Matrix2& m ) {
   return *this;
 }
 
+Matrix2& Matrix2::operator*=( const Matrix2& m ) {	
+	*this = operator*(m);
+    return *this ;
+}
 Matrix2& Matrix2::operator*=( const real_t& s ) {
   __M[0] *= s; __M[1] *= s;
   __M[2] *= s; __M[3] *= s;

@@ -112,6 +112,9 @@ public:
   /// Sets \e self to result of the substraction of itself and \e m.
   Matrix2& operator-=( const Matrix2& m );
 
+ /// Sets \e self to result of the multiplication of itself and \e m.
+  Matrix2& operator*=( const Matrix2& m );
+
   /** Sets \e self to result of the multiplication of itself by
       the scalar \e s. */
   Matrix2& operator*=( const real_t& s );

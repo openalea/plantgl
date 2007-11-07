@@ -32,31 +32,63 @@
 #ifndef __export_matrix_h__
 #define __export_matrix_h__
 
-#define GET_ELT(MATRIX) \
-real_t MATRIX##_getElt( const MATRIX & m, tuple& t ) \
-{ \
-  if( PyObject_Size(t.ptr()) != 2 ) \
-    throw PythonExc_ValueError(); \
-  extract<uchar_t> i(t[0]); \
-  extract<uchar_t> j(t[1]); \
-  if (i.check() && j.check() ) \
-    return m(i(),j()); \
-  else \
-    throw PythonExc_TypeError(); \
-} \
+#include <boost/python.hpp>
+#include <boost/python/def_visitor.hpp>
 
-#define SET_ELT(MATRIX) \
-void MATRIX##_setElt(  MATRIX & m, tuple& t, real_t v ) \
-{ \
-  if( PyObject_Length(t.ptr()) != 2 ) \
-    throw PythonExc_ValueError(); \
-  extract<uchar_t> i(t[0]); \
-  extract<uchar_t> j(t[1]); \
-  if (i.check() && j.check() ) \
-    m(i(),j())= v; \
-  else \
-    throw PythonExc_TypeError(); \
-} \
+
+template<class Matrix>
+real_t matrix_getElt( const Matrix & m, boost::python::tuple t ) 
+{ 
+  if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError(); 
+  return m(boost::python::extract<uchar_t>(t),boost::python::extract<uchar_t>(t)); 
+} 
+
+template<class Matrix>
+void matrix_setElt( Matrix & m, boost::python::tuple t, real_t v ) 
+{ 
+  if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError(); 
+  m(boost::python::extract<uchar_t>(t),boost::python::extract<uchar_t>(t)) = v ; 
+} 
+
+template<class Matrix, class Vector>
+class vector_matrix_func : public boost::python::def_visitor<vector_matrix_func<Matrix,Vector> >
+{
+    friend class boost::python::def_visitor_access;
+
+    template <class classT>
+    void visit(classT& c) const
+    {          
+        c.def( self == self )
+         .def( self != self )
+         .def( self += self )
+         .def( self -= self )
+         .def( self *= self )
+         .def( self *= real_t() )
+         .def( self /= real_t() )
+         .def( self + self )
+         .def( self - self )
+         .def( self * self )
+         .def( self * other<Vector>() )
+         .def( self * real_t() )
+         .def( self / real_t() )
+         .def( "getColumn", &Matrix::getColumn )
+         .def( "getDiagonal", &Matrix::getDiagonal )
+         .def( "getRow", &Matrix::getRow )
+         .def( "isOrthogonal", &Matrix::isOrthogonal )
+         .def( "isSingular", &Matrix::isSingular )
+         .def( "isValid", &Matrix::isValid )
+         .def( "adjoint", (Matrix (*) ( const Matrix& )) &adjoint )
+         .def( "inverse", (Matrix (*) ( const Matrix& )) &inverse )
+         .def( "det", (real_t (*) ( const Matrix& )) &det )
+         .def( "transpose", (Matrix (*) ( const Matrix& )) &transpose )
+         .def( "trace", (real_t (*) ( const Matrix& )) &trace )
+         .def( "__getitem__", matrix_getElt<Matrix> )
+         .def( "__setitem__", matrix_setElt<Matrix> )
+         .add_static_property( "IDENTITY", make_getter(Matrix::IDENTITY))
+         ;
+    }
+};
+
 
 #endif
 

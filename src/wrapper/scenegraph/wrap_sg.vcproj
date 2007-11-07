@@ -340,6 +340,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\util\extract_pgl.h"
+				>
+			</File>
+			<File
+				RelativePath="..\util\extract_widget.h"
+				>
+			</File>
+			<File
 				RelativePath="..\util\tuple_converter.h"
 				>
 			</File>

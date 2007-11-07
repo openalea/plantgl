@@ -29,24 +29,21 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "export_matrix.h"
-#include "../util/exception.h"
 
 #include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/math/util_matrix.h>
 #include <string>
 #include <sstream>
+
+#include "../util/exception.h"
+#include "export_matrix.h"
 
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
 
-
-GET_ELT(Matrix2)
-SET_ELT(Matrix2)
 
 string m2_repr( const Matrix2& m )
 {
@@ -60,31 +57,7 @@ void export_Matrix2()
 {
   class_< Matrix2 >( "Matrix2", init< optional<real_t,real_t,real_t,real_t> >("Matrix2(f,f,f,f)") )
   .def(init<const Vector2&, const Vector2&>())
-  .def( self == self )
-  .def( self != self )
-  .def( self += self )
-  .def( self -= self )
-  .def( self *= real_t() )
-  .def( self /= real_t() )
-  .def( self + self )
-  .def( self - self )
-  .def( self * self )
-  .def( self * other<Vector2>() )
-  .def( self * real_t() )
-  .def( self / real_t() )
-  .def( "getColumn", &Matrix2::getColumn )
-  .def( "getDiagonal", &Matrix2::getDiagonal )
-  .def( "getRow", &Matrix2::getRow )
-  .def( "isOrthogonal", &Matrix2::isOrthogonal )
-  .def( "isSingular", &Matrix2::isSingular )
-  .def( "isValid", &Matrix2::isValid )
-  .def( "adjoint", (Matrix2 (*) ( const Matrix2& )) adjoint )
-  .def( "inverse", (Matrix2 (*) ( const Matrix2& )) inverse )
-  .def( "det", (real_t (*) ( const Matrix2& )) det )
-  .def( "transpose", (Matrix2 (*) ( const Matrix2& )) transpose )
-  .def( "trace", (real_t (*) ( const Matrix2& )) trace )
-  .def( "__getitem__", Matrix2_getElt )
-  .def( "__setitem__", Matrix2_setElt )
+  .def(vector_matrix_func<Matrix2,Vector2>())
   .def( "__str__", m2_repr )
   .def( "__repr__", m2_repr )
   ;
