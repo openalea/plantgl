@@ -35,6 +35,9 @@
 #include <plantgl/math/util_vector.h>
 #include <boost/python.hpp>
 #include <boost/python/def_visitor.hpp>
+#include "../util/exception.h"
+
+using namespace boost::python;
 
 template<class V>
 real_t vec_getx(V * v){ return v->x(); }

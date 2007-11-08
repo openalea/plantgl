@@ -101,7 +101,7 @@ void export_Function()
       .add_property("sampling",&Function::getSampling)
       .add_property("firstx",&Function::getFirstX)
       .add_property("lastx",&Function::getLastX)
-      .DEC_BT_NR_PROPERTY_WD(clamped,Function,Clamped,bool)
+      .DEC_BT_NR_PROPERTY_WDV(clamped,Function,Clamped,bool,DEFAULT_CLAMPED)
       .def("_getSamples",&Func_getSamples)
     ;
 

@@ -99,19 +99,12 @@ void export_Material()
 
   .def( "__str__", mat_str )
   .def( "__repr__", mat_str )
-  .DEC_CT_PROPERTY_WD(ambient,Material,Ambient,Color3)
-  .DEC_BT_PROPERTY_WD(diffuse,Material,Diffuse,real_t)
-  .DEC_CT_PROPERTY_WD(specular,Material,Specular,Color3)
-  .DEC_CT_PROPERTY_WD(emission,Material,Emission,Color3)
-  .DEC_BT_PROPERTY_WD(shininess,Material,Shininess,real_t)
-  .DEC_BT_PROPERTY_WD(transparency,Material,Transparency,real_t)
-  .add_static_property("DEFAULT_AMBIENT",make_getter(&Material::DEFAULT_AMBIENT))
-  .add_static_property("DEFAULT_DIFFUSE",make_getter(&Material::DEFAULT_DIFFUSE))
-  .add_static_property("DEFAULT_SPECULAR",make_getter(&Material::DEFAULT_SPECULAR))
-  .add_static_property("DEFAULT_EMISSION",make_getter(&Material::DEFAULT_EMISSION))
-  .add_static_property("DEFAULT_SHININESS",make_getter(&Material::DEFAULT_SHININESS))
-  .add_static_property("DEFAULT_TRANSPARENCY",make_getter(&Material::DEFAULT_TRANSPARENCY))
-  .add_static_property("DEFAULT_MATERIAL",make_getter(&Material::DEFAULT_MATERIAL))
+  .DEC_CT_PROPERTY_WDV(ambient,Material,Ambient,Color3,DEFAULT_AMBIENT)
+  .DEC_BT_PROPERTY_WDV(diffuse,Material,Diffuse,real_t,DEFAULT_DIFFUSE)
+  .DEC_CT_PROPERTY_WDV(specular,Material,Specular,Color3,DEFAULT_SPECULAR)
+  .DEC_CT_PROPERTY_WDV(emission,Material,Emission,Color3,DEFAULT_EMISSION)
+  .DEC_BT_PROPERTY_WDV(shininess,Material,Shininess,real_t,DEFAULT_SHININESS)
+  .DEC_BT_PROPERTY_WDV(transparency,Material,Transparency,real_t,DEFAULT_TRANSPARENCY)
   .def_pickle(mat_pickle_suite());
     ;
 
@@ -126,8 +119,7 @@ void export_ImageTexture()
   	 (args("filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
 	  "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
       .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
-	  .DEC_BT_NR_PROPERTY_WD(mipmaping,ImageTexture, Mipmaping,bool)
-      .add_static_property("DEFAULT_MIPMAPING",make_getter(&ImageTexture::DEFAULT_MIPMAPING))
+	  .DEC_BT_NR_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
     ;
 
   implicitly_convertible<ImageTexturePtr, MaterialPtr >();

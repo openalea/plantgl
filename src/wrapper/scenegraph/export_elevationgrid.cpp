@@ -60,8 +60,8 @@ void export_ElevationGrid()
     .def( "copy", &ElevationGrid::copy )
     .def( "getPointAt", &ElevationGrid::getPointAt )
     .def( "getHeightAt", &eg_getHeightAt )
-    .DEC_BT_PROPERTY_WD(xspacing,ElevationGrid,XSpacing,real_t)
-    .DEC_BT_PROPERTY_WD(yspacing,ElevationGrid,YSpacing,real_t)
+    .DEC_BT_PROPERTY_WDV(xspacing,ElevationGrid,XSpacing,real_t,DEFAULT_X_SPACING)
+    .DEC_BT_PROPERTY_WDV(yspacing,ElevationGrid,YSpacing,real_t,DEFAULT_Y_SPACING)
     .DEC_PTR_PROPERTY(heightList,ElevationGrid,HeightList,RealArray2Ptr)
     ;
 

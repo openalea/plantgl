@@ -57,12 +57,12 @@ void export_Extrusion()
     .def( "copy", &Extrusion::copy )
 	.DEC_PTR_PROPERTY(axis,Extrusion,Axis,LineicModelPtr)
 	.DEC_PTR_PROPERTY(crossSection,Extrusion,CrossSection,Curve2DPtr)
-	.DEC_BT_NR_PROPERTY_WD(solid,Extrusion,Solid,bool)
-	.DEC_BT_NR_PROPERTY_WD(ccw, Extrusion,CCW,bool)
+	.DEC_BT_NR_PROPERTY_WDV(solid,Extrusion,Solid,bool,DEFAULT_SOLID)
+	.DEC_BT_NR_PROPERTY_WDV(ccw, Extrusion,CCW,bool,DEFAULT_CCW)
 
 	.DEC_PTR_PROPERTY(scale,Extrusion,Scale,Point2ArrayPtr)
-	.DEC_PTR_PROPERTY(orientation,Extrusion,Orientation,RealArrayPtr)
-	.DEC_PTR_NR_PROPERTY(knotList,Extrusion,KnotList,RealArrayPtr)
+	.DEC_PTR_PROPERTY_WDV(orientation,Extrusion,Orientation,RealArrayPtr,DEFAULT_ORIENTATION_LIST)
+	.DEC_PTR_NR_PROPERTY_WDV(knotList,Extrusion,KnotList,RealArrayPtr,DEFAULT_SCALE_LIST)
     ;
   implicitly_convertible<ExtrusionPtr, ParametricModelPtr>();
 }

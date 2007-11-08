@@ -129,7 +129,7 @@ void export_Group()
     .def( "__setitem__", gg_setitem )
     .def( "__getslice__", gg_getslice )
     .def( "__len__", gg_len )
-	.DEC_PTR_PROPERTY_WD(skeleton,Group,Skeleton,PolylinePtr)
+	.DEC_PTR_PROPERTY_WDV(skeleton,Group,Skeleton,PolylinePtr,DEFAULT_SKELETON)
 	.DEC_PTR_PROPERTY(geometryList,Group,GeometryList,GeometryArrayPtr)
     ;
 

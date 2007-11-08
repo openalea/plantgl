@@ -120,7 +120,7 @@ void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
     ( "NurbsCurve", init<Point4ArrayPtr, optional< RealArrayPtr, uint32_t, uint32_t > >(args("ctrlPointList","knotList","degree","strides")) )
-     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve,Degree,uint32_t)
+     .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint32_t,DEFAULT_NURBS_DEGREE)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
      .def( "fit", nurbs_fit1, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )

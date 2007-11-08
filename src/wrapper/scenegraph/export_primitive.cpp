@@ -67,12 +67,18 @@ BoxPtr box_from_val(real_t x, real_t y, real_t z)
     return new Box(Vector3(x,y,z));
 }
 
+BoxPtr box_from_val1(real_t v)
+{
+    return new Box(Vector3(v,v,v));
+}
+
 void export_Box()
 {
   class_< Box, BoxPtr, bases< ParametricModel > , boost::noncopyable >
-    ("Box", init< const Vector3& >("Box(Vector3(x,y,z))",args("size")) )
+    ("Box", init< optional<const Vector3&> >("Box(Vector3(x,y,z))",args("size")) )
     .def( "__init__", make_constructor( box_from_val ) ) 
-    .DEC_CT_PROPERTY_WD(size,Box,Size,Vector3)
+    .def( "__init__", make_constructor( box_from_val1 ) ) 
+    .DEC_CT_PROPERTY_WDV(size,Box,Size,Vector3,DEFAULT_SIZE)
     ;
 
   implicitly_convertible<BoxPtr, ParametricModelPtr >();

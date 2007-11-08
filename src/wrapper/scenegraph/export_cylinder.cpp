@@ -71,8 +71,7 @@ void export_Frustum()
     ("Frustum", init< optional<const real_t&,const real_t&,const real_t&, bool,uchar_t> >
                    (args("radius","height","taper","solid","slices"),
 		    "Frustum(radius, height, taper [, solid, slices])" ))
-  .DEC_BT_PROPERTY_WD(taper,Frustum,Taper,real_t)
-  .add_static_property( "DEFAULT_TAPER", make_getter(Frustum::DEFAULT_TAPER))
+  .DEC_BT_PROPERTY_WDV(taper,Frustum,Taper,real_t,DEFAULT_TAPER)
       ;
 
   implicitly_convertible<FrustumPtr, ConePtr >();
@@ -86,10 +85,8 @@ void export_Paraboloid()
      bool, uchar_t, uchar_t> >
      (args("radius","height","shape","solid","slices","stacks"),
       "Paraboloid([radius, height, shape , solid, slices, stacks])" ))
-  .DEC_BT_PROPERTY_WD(stacks,Paraboloid,Stacks,uchar_t)
-  .DEC_BT_PROPERTY_WD(shape,Paraboloid,Shape,real_t)
-  .add_static_property( "DEFAULT_SHAPE", make_getter(Paraboloid::DEFAULT_SHAPE))
-  .add_static_property( "DEFAULT_STACKS", make_getter(Paraboloid::DEFAULT_STACKS))
+  .DEC_BT_PROPERTY_WDV(stacks,Paraboloid,Stacks,uchar_t,DEFAULT_STACKS)
+  .DEC_BT_PROPERTY_WDV(shape,Paraboloid,Shape,real_t,DEFAULT_SHAPE)
     ;
 
   implicitly_convertible<ParaboloidPtr, ConePtr >();

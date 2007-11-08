@@ -34,7 +34,9 @@
 
 #include <boost/python.hpp>
 #include <boost/python/def_visitor.hpp>
+#include "../util/exception.h"
 
+using namespace boost::python;
 
 template<class Matrix>
 real_t matrix_getElt( const Matrix & m, boost::python::tuple t ) 
