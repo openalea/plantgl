@@ -52,6 +52,21 @@ void matrix_setElt( Matrix & m, boost::python::tuple t, real_t v )
   m(boost::python::extract<uchar_t>(t),boost::python::extract<uchar_t>(t)) = v ; 
 } 
 
+template<class Matrix>
+Matrix matrix_adjoint(const Matrix& mat) { return adjoint(mat); }
+
+template<class Matrix>
+Matrix matrix_inverse(const Matrix& mat) { return inverse(mat); }
+
+template<class Matrix>
+real_t matrix_det(const Matrix& mat) { return det(mat); }
+
+template<class Matrix>
+Matrix matrix_transpose(const Matrix& mat) { return transpose(mat); }
+
+template<class Matrix>
+real_t matrix_trace(const Matrix& mat) { return trace(mat); }
+
 template<class Matrix, class Vector>
 class vector_matrix_func : public boost::python::def_visitor<vector_matrix_func<Matrix,Vector> >
 {
@@ -79,11 +94,11 @@ class vector_matrix_func : public boost::python::def_visitor<vector_matrix_func<
          .def( "isOrthogonal", &Matrix::isOrthogonal )
          .def( "isSingular", &Matrix::isSingular )
          .def( "isValid", &Matrix::isValid )
-         .def( "adjoint", (Matrix (*) ( const Matrix& )) &adjoint )
-         .def( "inverse", (Matrix (*) ( const Matrix& )) &inverse )
-         .def( "det", (real_t (*) ( const Matrix& )) &det )
-         .def( "transpose", (Matrix (*) ( const Matrix& )) &transpose )
-         .def( "trace", (real_t (*) ( const Matrix& )) &trace )
+         .def( "adjoint", &matrix_adjoint<Matrix> )
+         .def( "inverse", &matrix_inverse<Matrix> )
+         .def( "det",  &matrix_det<Matrix> )
+         .def( "transpose", &matrix_transpose<Matrix> )
+         .def( "trace", &matrix_trace<Matrix> )
          .def( "__getitem__", matrix_getElt<Matrix> )
          .def( "__setitem__", matrix_setElt<Matrix> )
          .add_static_property( "IDENTITY", make_getter(Matrix::IDENTITY))

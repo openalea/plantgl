@@ -80,6 +80,21 @@ void vec_setAt(V * v, size_t i, real_t val)
   else throw PythonExc_IndexError(); 
 } 
 
+template <class V>
+real_t vec_norm(const V& v){ return norm(v); }
+
+template <class V>
+real_t vec_normL1(const V& v){ return normL1(v); }
+
+template <class V>
+real_t vec_normLinf(const V& v){ return normLinf(v); }
+
+template <class V>
+real_t vec_normSquared(const V& v){ return normSquared(v); }
+
+template <class V>
+V vec_direction(const V& v){ return direction(v); }
+
 template<class V>
 class vector_base_func : public boost::python::def_visitor<vector_base_func<V> >
 {
@@ -103,15 +118,15 @@ class vector_base_func : public boost::python::def_visitor<vector_base_func<V> >
          .def( "isValid", & V::isValid , "Returns whether self is valid.")
          .def( "getMaxAbsCoord", &V::getMaxAbsCoord , "Returns the index of the maximum absolute coordinate.")
          .def( "getMinAbsCoord", &V::getMinAbsCoord , "Returns the index of the minimum absolute coordinate.")
-         .def( "__abs__",          (V (*) ( const V&))abs ,         "Returns the absolute value of self.")
-         .def( "__norm__",         (real_t  (*) ( const V&))norm ,        "Returns the norm of self.")
-         .def( "__normL1__",       (real_t  (*) ( const V&))normL1 ,      "Returns the L1 (Manhattan) norm of self.")
-         .def( "__normLinf__",     (real_t  (*) ( const V&))normLinf ,    "Returns the L-infinite norm of self.")
-         .def( "__normSquared__",  (real_t  (*) ( const V&))normSquared , "Returns the square of the norm of self." )
-         .def( "__dir__",          (V (*) ( const V&))direction ,   "Returns the direction of self.")
-         .def( "__getitem__", vec_getAt<V> )
-         .def( "__setitem__", vec_setAt<V> )
-         .def( "__len__", vec_size<V> )
+         .def( "__abs__",          (V (*) ( const V&))&abs ,         "Returns the absolute value of self.")
+         .def( "__norm__",         &vec_norm<V> ,        "Returns the norm of self.")
+         .def( "__normL1__",       &vec_normL1<V> ,      "Returns the L1 (Manhattan) norm of self.")
+         .def( "__normLinf__",     &vec_normLinf<V> ,    "Returns the L-infinite norm of self.")
+         .def( "__normSquared__",  &vec_normSquared<V> , "Returns the square of the norm of self." )
+         .def( "__dir__",          &vec_direction<V> ,   "Returns the direction of self.")
+         .def( "__getitem__", &vec_getAt<V> )
+         .def( "__setitem__", &vec_setAt<V> )
+         .def( "__len__", &vec_size<V> )
          ;
     }
 };
