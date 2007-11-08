@@ -61,9 +61,9 @@ void export_EulerRotated()
     ("EulerRotated", init< const real_t&,const real_t&,const real_t&, const GeometryPtr& >
        (args("azimuth","elevation","roll","geometry"),
 	"EulerRotated(azimuth,elevation,roll,geometry)") )
-	.DEC_ANGLE_PROPERTY_WD(azimuth,EulerRotated,Azimuth)
-	.DEC_ANGLE_PROPERTY_WD(elevation,EulerRotated,Elevation)
-	.DEC_ANGLE_PROPERTY_WD(roll,EulerRotated,Roll)
+	.DEC_ANGLE_PROPERTY_WDV(azimuth,EulerRotated,Azimuth,DEFAULT_AZIMUTH)
+	.DEC_ANGLE_PROPERTY_WDV(elevation,EulerRotated,Elevation,DEFAULT_ELEVATION)
+	.DEC_ANGLE_PROPERTY_WDV(roll,EulerRotated,Roll,DEFAULT_ROLL)
     ;
 
   implicitly_convertible< EulerRotatedPtr, OrthoTransformedPtr >();
@@ -75,8 +75,8 @@ void export_AxisRotated()
     ("AxisRotated", init< const Vector3&, const real_t&, const GeometryPtr& >
      (args("axis","angle","geometry"),
 	"AxisRotated( Vector3 axis, radian angle, geometry)") )
-    .DEC_CT_PROPERTY_WD(axis,AxisRotated,Axis,Vector3)
-	.DEC_ANGLE_NR_PROPERTY_WD(angle,AxisRotated,Angle)
+    .DEC_CT_PROPERTY_WDV(axis,AxisRotated,Axis,Vector3,DEFAULT_AXIS)
+	.DEC_ANGLE_NR_PROPERTY_WDV(angle,AxisRotated,Angle,DEFAULT_ANGLE)
     ;
 
   implicitly_convertible< AxisRotatedPtr, OrthoTransformedPtr >();
@@ -88,8 +88,8 @@ void export_Oriented()
     ("Oriented", init< const Vector3&,const Vector3&,const GeometryPtr& >
        (args("primary","secondary","geometry"),
 	"Oriented(primary,secondary,geometry) with primary,secondary: Vector3" ) )
-	.DEC_CT_PROPERTY_WD(primary,Oriented,Primary,Vector3)
-	.DEC_CT_PROPERTY_WD(secondary,Oriented,Secondary,Vector3)
+	.DEC_CT_PROPERTY_WDV(primary,Oriented,Primary,Vector3,DEFAULT_PRIMARY)
+	.DEC_CT_PROPERTY_WDV(secondary,Oriented,Secondary,Vector3,DEFAULT_SECONDARY)
     ;
 
   implicitly_convertible< OrientedPtr, OrthoTransformedPtr >();
@@ -104,8 +104,8 @@ void export_Tapered()
     ("Tapered", init< real_t,real_t,const PrimitivePtr & >
        (args("base","top","primitive"),
 	"Tapered(base, top, primitive)") )
-	.DEC_BT_PROPERTY_WD(topRadius,Tapered,TopRadius,real_t)
-	.DEC_BT_PROPERTY_WD(baseRadius,Tapered,BaseRadius,real_t)
+	.DEC_BT_PROPERTY_WDV(topRadius,Tapered,TopRadius,real_t,DEFAULT_TOP_RADIUS)
+	.DEC_BT_PROPERTY_WDV(baseRadius,Tapered,BaseRadius,real_t,DEFAULT_BASE_RADIUS)
 	.DEC_PTR_PROPERTY(primitive,Deformed,Primitive,PrimitivePtr)
     ;
 

@@ -82,7 +82,7 @@ void export_Scaled()
 {
   class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
-	.DEC_CT_PROPERTY_WD(scale,Scaled,Scale,Vector3)
+	.DEC_CT_PROPERTY_WDV(scale,Scaled,Scale,Vector3,DEFAULT_SCALE)
     ;
 
   implicitly_convertible< ScaledPtr, MatrixTransformedPtr >();
@@ -100,7 +100,7 @@ void export_Translated()
     ("Translated", init< const Vector3&, const GeometryPtr& >
      ("Translated(translation,geometry)",args("translation","geometry")) )
     .def( "__init__", make_constructor( tr_from_val ) ) 
-    .DEC_CT_PROPERTY_WD(translation,Translated,Translation,Vector3)
+    .DEC_CT_PROPERTY_WDV(translation,Translated,Translation,Vector3,DEFAULT_TRANSLATION)
     ;
 
   implicitly_convertible< TranslatedPtr, MatrixTransformedPtr >();
@@ -123,7 +123,7 @@ void export_IFS()
     ("IFS", init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
        (args("depth","transfoList","geometry"),
 	"IFS(depth, transfoList, geometry)") )
-    .DEC_BT_NR_PROPERTY_WD(depth,IFS,Depth,uchar_t)
+    .DEC_BT_NR_PROPERTY_WDV(depth,IFS,Depth,uchar_t,DEFAULT_DEPTH)
 	.DEC_PTR_PROPERTY(transfoList,IFS,TransfoList,Transform4ArrayPtr)
 	.DEC_PTR_NR_PROPERTY(geometry,IFS,Geometry,GeometryPtr)
 	.def("getAllTransformations",&ifs_getAllTransformations);

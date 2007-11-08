@@ -69,6 +69,7 @@ void export_BezierPatch()
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
     .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint32_t)
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint32_t)
+    .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
     .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     ;
 

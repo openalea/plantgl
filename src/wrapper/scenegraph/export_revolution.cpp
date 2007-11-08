@@ -69,8 +69,8 @@ void export_Sphere()
     ("Sphere", init< optional<const real_t&, uchar_t, uchar_t > >
      (args("radius","slices", "stacks"),
       "Sphere(radius [,slices, stacks])"))
-  .DEC_BT_PROPERTY_WD(stacks,Sphere,Stacks,uchar_t)
-  .DEC_BT_PROPERTY_WD(radius,Sphere,Radius,real_t);
+  .DEC_BT_PROPERTY_WDV(stacks,Sphere,Stacks,uchar_t,DEFAULT_STACKS)
+  .DEC_BT_PROPERTY_WDV(radius,Sphere,Radius,real_t,DEFAULT_RADIUS);
 
   implicitly_convertible<SpherePtr, SORPtr >();
 }
@@ -82,9 +82,9 @@ void export_Cone()
     ("Cone", init< optional<const real_t&,const real_t&, bool,uchar_t > >
                (args("radius","height","solid","slices"),
 		"Cone(radius, height [, solid, slices])"))
-  .DEC_BT_PROPERTY_WD(radius,Cone,Radius,real_t)
-  .DEC_BT_PROPERTY_WD(height,Cone,Height,real_t)
-  .DEC_BT_NR_PROPERTY_WD(solid,Cone,Solid,bool);
+  .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
+  .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
+  .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);
 
   implicitly_convertible<ConePtr, SORPtr >();
 }

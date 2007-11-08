@@ -53,9 +53,9 @@ void export_Font()
 	  "Font([family,size,bold,italic])"))
     .def( "copy", &Font::copy )
 	.DEC_BT_PROPERTY(family,Font,Family,std::string)
-	.DEC_BT_NR_PROPERTY_WD(size,Font,Size,uint32_t)
-	.DEC_BT_NR_PROPERTY_WD(bold,Font,Bold,bool)
-	.DEC_BT_NR_PROPERTY_WD(italic,Font,Italic,bool)
+	.DEC_BT_NR_PROPERTY_WDV(size,Font,Size,uint32_t,DEFAULT_SIZE)
+	.DEC_BT_NR_PROPERTY_WDV(bold,Font,Bold,bool,DEFAULT_BOLD)
+	.DEC_BT_NR_PROPERTY_WDV(italic,Font,Italic,bool,DEFAULT_ITALIC)
 
     ;
 
@@ -73,9 +73,9 @@ void export_Text()
 	  "Text(str string[, Vector3 position, bool screencoordinates, Font fontstyle])"))
     .def( "copy", &Text::copy )
 	.DEC_BT_PROPERTY(string,Text,String,std::string)
-	.DEC_PTR_PROPERTY_WD(fontstyle,Text,FontStyle,FontPtr)
-	.DEC_CT_PROPERTY_WD(position,Text,Position,Vector3)
-	.DEC_BT_NR_PROPERTY_WD(screencoordinates,Text,ScreenCoordinates,bool)
+	.DEC_PTR_PROPERTY_WDV(fontstyle,Text,FontStyle,FontPtr,DEFAULT_FONT)
+	.DEC_CT_PROPERTY_WDV(position,Text,Position,Vector3,DEFAULT_POSITION)
+	.DEC_BT_NR_PROPERTY_WDV(screencoordinates,Text,ScreenCoordinates,bool,DEFAULT_SCREEN_COORDINATES)
 
     ;
 
