@@ -32,6 +32,8 @@
 #include <string>
 #include <stack>
 
+#define UINT32_MAX 0xffffffff /* ADD DEBUG !! */
+
 PGL_BEGIN_NAMESPACE
 
 /// Turtle class allow rotation, displacement and drawing operation
