@@ -40,6 +40,10 @@ using namespace std;
 
 DEF_POINTEE(Geometry)
 
+GeometryPtr deepcopy(Geometry * s){
+    return GeometryPtr::Cast(s->copy());
+}
+
 void export_Geometry()
 {
 
@@ -49,6 +53,7 @@ void export_Geometry()
      .def("isASurface",&Geometry::isASurface)
      .def("isAVolume",&Geometry::isAVolume)
      .def("isExplicit",&Geometry::isExplicit)
+     .def("deepcopy", &deepcopy)
 ;
    
    implicitly_convertible<GeometryPtr, SceneObjectPtr >();

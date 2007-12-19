@@ -1236,7 +1236,7 @@ bool BinaryParser::readExtrudedHull() {
 bool BinaryParser::readExtrusion() {
     GEOM_BEGIN(_name,_ident);
     GEOM_READ_DEFAULT(_default);
-    GEOM_INIT_OBJ(obj, 15,Extrusion );
+    GEOM_INIT_OBJ(obj, 17,Extrusion );
 
 
     IF_GEOM_NOTDEFAULT(_default,0){
@@ -1283,7 +1283,7 @@ bool BinaryParser::readExtrusion() {
       obj->getSolid() = Mesh::DEFAULT_SOLID;
       obj->getCCW() = Mesh::DEFAULT_CCW;
       obj->getProfileTransformation() = ProfileTransformationPtr(0);
-      GEOM_DEL_OBJ(obj,15) ;
+      GEOM_DEL_OBJ(obj,17) ;
       return false;
     }
 
@@ -1292,7 +1292,7 @@ bool BinaryParser::readExtrusion() {
       obj->getSolid() = Mesh::DEFAULT_SOLID;
       obj->getCCW() = Mesh::DEFAULT_CCW;
       obj->getProfileTransformation() = ProfileTransformationPtr(0);
-      GEOM_DEL_OBJ(obj,15) ;
+      GEOM_DEL_OBJ(obj,17) ;
       return false;
     }
 
@@ -1301,7 +1301,7 @@ bool BinaryParser::readExtrusion() {
       obj->getSolid() = Mesh::DEFAULT_SOLID;
       obj->getCCW() = Mesh::DEFAULT_CCW;
       obj->getProfileTransformation() = ProfileTransformationPtr(0);
-      GEOM_DEL_OBJ(obj,15) ;
+      GEOM_DEL_OBJ(obj,17) ;
       return false;
     }
 
@@ -1326,7 +1326,7 @@ bool BinaryParser::readFaceSet() {
 		_default = _ldefault;
 	}
 
-    GEOM_INIT_OBJ(obj, 16,FaceSet );
+    GEOM_INIT_OBJ(obj, 15,FaceSet );
 
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,CCW,Bool);
@@ -1395,7 +1395,7 @@ bool BinaryParser::readFaceSet() {
 bool BinaryParser::readFrustum() {
     GEOM_BEGIN(_name,_ident);
     GEOM_READ_DEFAULT(_default);
-    GEOM_INIT_OBJ(obj, 17,Frustum );
+    GEOM_INIT_OBJ(obj, 16,Frustum );
 
 
     IF_GEOM_NOTDEFAULT(_default,0)
@@ -1455,7 +1455,7 @@ bool BinaryParser::readGroup() {
             __outputStream << "*** PARSER: <Group : " << (_name.empty() ? "(unamed)" : _name ) << "> A Geometry component is not valid." << endl;
         }
     }
-    if(err >= _sizej-1){
+    if(err > 0 && err >= _sizej-1){
       obj->getSkeleton() = PolylinePtr(0);
       obj->getGeometryList()= GeometryArrayPtr(0);
       GEOM_DEL_OBJ(obj,18) ;

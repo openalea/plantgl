@@ -57,6 +57,7 @@ DEF_POINTEE(SceneObject)
 std::string get_sco_name(SceneObject * obj){ return obj->getName(); } 
 void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
 
+
 void export_SceneObject()
 {
   class_< SceneObject,SceneObjectPtr, boost::noncopyable >("SceneObject", no_init)
@@ -66,7 +67,7 @@ void export_SceneObject()
     .add_property("name",get_sco_name,&SceneObject::setName)
     .def("isValid", &SceneObject::isValid)
     .def("apply", &SceneObject::apply)
-    .def("copy", &SceneObject::copy)
+    .def("deepcopy", &SceneObject::copy)
     .def("getId", &SceneObject::getId)
 	.enable_pickling()
     ;

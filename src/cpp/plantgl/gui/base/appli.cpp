@@ -124,6 +124,22 @@ ViewerAppli::itemSelection(const std::string& caption,
 	return std::string(res.toAscii().constData());
 }
 
+double 
+ViewerAppli::doubleSelection(const std::string& caption,
+								   const std::string& text,
+								   double value,
+                                   double minvalue,
+                                   double maxvalue,
+								   bool& ok)
+{
+    double res ;
+    ViewDoubleSelectionEvent * event = new ViewDoubleSelectionEvent (
+	  caption.c_str(), text.c_str(), value, minvalue, maxvalue,&res,&ok);
+	sendAnEvent(event);
+	return res;
+}
+
+
 std::string 
 ViewerAppli::getFile(const std::string& caption,
 					  const std::string& startPath,

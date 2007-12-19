@@ -78,10 +78,22 @@ void export_Transformed()
   implicitly_convertible< OrthoTransformedPtr,MatrixTransformedPtr >();
 }
 
+ScaledPtr sca_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
+{
+    return new Scaled(Vector3(x,y,z),geom);
+}
+
+ScaledPtr sca1_from_val(real_t x, const GeometryPtr& geom)
+{
+    return new Scaled(Vector3(x,x,x),geom);
+}
+
 void export_Scaled()
 {
   class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
     ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
+    .def( "__init__", make_constructor( sca_from_val ) ) 
+    .def( "__init__", make_constructor( sca1_from_val ) ) 
 	.DEC_CT_PROPERTY_WDV(scale,Scaled,Scale,Vector3,DEFAULT_SCALE)
     ;
 

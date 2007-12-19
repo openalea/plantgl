@@ -130,11 +130,20 @@ void export_NurbsCurve()
 	 .staticmethod("fit")
      .def( "getDerivativeAt", &NurbsCurve::getDerivativeAt, args("u","d") )
      .def( "getDerivativesAt", &NurbsCurve::getDerivativesAt, args("u") )
-     .def( "findSpan", &PGL::findSpan, args("u","degree","knotList") )
+     .def( "findSpan", &PGL::findSpan, args("u","degree","knotList"),
+           "int findSpan(float u,  int degree,  [float] knotList)."
+           "Determine the knot Span index at a given u for degree and on the knot vector knotList."
+           "See the Nurbs Book : A2.1 p68" )
 	 .staticmethod("findSpan")
-     .def( "basisFunctions", &basisFunctions, args("span","u","degree","knotList") )
+     .def( "basisFunctions", &basisFunctions, args("span","u","degree","knotList"),
+        "[float] basisFunctions(int span, float u, int  degree, [float] knotList)."
+        "Compute the Basis Functions values at a given u for degree and on the knot vector knotList."
+        "See Algo 2.2 From The Nurbs Book p70.")
 	 .staticmethod("basisFunctions")
-     .def( "derivatesBasisFunctions", &derivatesBasisFunctions, args("n","u","span","degree","knotList") )
+     .def( "derivatesBasisFunctions", &derivatesBasisFunctions, args("n","u","span","degree","knotList"),
+        "[float] derivatesBasisFunctions(int span, float u, int  _degree, [float] _knotList)."
+        "Compute the n-th Derivative Basis Functions values at a given u for degree and on the knot vector knotList."
+        "See Algo 2.2 From The Nurbs Book p70." )
 	 .staticmethod("derivatesBasisFunctions")
     ;
 

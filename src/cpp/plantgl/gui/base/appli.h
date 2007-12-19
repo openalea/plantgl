@@ -91,6 +91,14 @@ public:
 									  const std::vector<std::string> & values,
 									  bool& ok,
 									  bool editable);
+
+	virtual double doubleSelection(const std::string& caption,
+								   const std::string& text,
+								   double value,
+                                   double minvalue,
+                                   double maxvalue,
+								   bool& ok);
+
 	virtual std::string getFile(const std::string& caption,
 					            const std::string& startPath,
 				                const std::string& filter,

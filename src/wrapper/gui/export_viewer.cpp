@@ -118,11 +118,28 @@ int question3(std::string caption,
   return ViewerApplication::question(caption,text,but0txt,but1txt,but2txt);
 }
 
+#ifdef PGL_DEBUG
+
+template <class T >
+class MyExtractor : public boost::python::extract<const char *> {
+public:
+    MyExtractor(object obj):extract<const char *>(obj){};
+};
+
+object itemSelection(boost::python::str _caption,
+					 boost::python::str _text,
+					 boost::python::list values,
+					 bool editable){
+  std::string caption = boost::python::extract<const char *>(_caption);
+  std::string text = boost::python::extract<const char *>(_text);
+  std::vector<std::string> vals = extract_vec<std::string,MyExtractor >(values)();
+#else
 object itemSelection(std::string caption,
 					 std::string text,
 					 boost::python::list values,
 					 bool editable){
-  std::vector<std::string> vals = extract_vec<std::string>(values)();
+  std::vector<std::string> vals = extract_vec<std::string >(values)();
+#endif
   bool ok = false;
   std::string res;
   {
@@ -133,11 +150,69 @@ object itemSelection(std::string caption,
   return t;
 }
 
+#ifdef PGL_DEBUG
+object itemSelectionNE(boost::python::str caption,
+					   boost::python::str text,
+					   boost::python::list values){
+#else
 object itemSelectionNE(std::string caption,
-					 std::string text,
-					 boost::python::list values){
+					   std::string text,
+					   boost::python::list values){
+#endif
   PyBlockState p;
   return itemSelection(caption,text,values,false);
+}
+
+
+#ifdef PGL_DEBUG
+object doubleSelection(boost::python::str _caption,
+					   boost::python::str _text,
+                       double value,
+                       double minvalue,
+                       double maxvalue){
+  std::string caption = boost::python::extract<const char *>(_caption);
+  std::string text = boost::python::extract<const char *>(_text);
+#else
+object doubleSelection(std::string caption,
+					   std::string text,
+                       double value,
+                       double minvalue,
+                       double maxvalue){
+#endif
+
+  double res = 0;
+  bool ok;
+  {
+    PyBlockState p;
+    res = ViewerApplication::doubleSelection(caption,text,value,minvalue,maxvalue,ok);
+  }
+  if (ok) return object(res);
+  else return object();
+}
+
+
+#ifdef PGL_DEBUG
+object doubleSelection3(boost::python::str caption,
+					   boost::python::str text,
+                       double value)
+#else
+object doubleSelection3(std::string caption,
+					   std::string text,
+                       double value)
+#endif
+{
+  return doubleSelection(caption,text,value,DBL_MIN,DBL_MAX);
+}
+
+#ifdef PGL_DEBUG
+object doubleSelection2(boost::python::str caption,
+					   boost::python::str text)
+#else
+object doubleSelection2(std::string caption,
+					   std::string text)
+#endif
+{
+   return doubleSelection(caption,text,0,DBL_MIN,DBL_MAX);
 }
 
 void fullScreen0(){
@@ -523,6 +598,10 @@ void export_dialog(){
     .def("itemSelection",&itemSelection,"itemSelection(str caption, str text, list values, bool editable = False)",args("caption","text","values","editable"))
     .def("itemSelection",&itemSelectionNE,args("caption","text","values"))
     .staticmethod("itemSelection")
+    .def("doubleSelection",&doubleSelection,"doubleSelection(str caption, str text [, double value, double minvalue, double maxvalue])",args("caption","text","value","minvalue","maxvalue"))
+    .def("doubleSelection",&doubleSelection3,args("caption","text","value"))
+    .def("doubleSelection",&doubleSelection2,args("caption","text"))
+    .staticmethod("doubleSelection")
     .def("getOpenFile",&getOpenFile0)
     .def("getOpenFile",&getOpenFile1,args("caption"))
     .def("getOpenFile",&getOpenFile2,args("caption","filter"))

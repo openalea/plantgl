@@ -111,6 +111,13 @@ public :
 					   bool& ok,
 					   bool editable = false);
 
+  static double doubleSelection(const std::string& caption,
+								   const std::string& text,
+								   double value,
+                                   double minvalue,
+                                   double maxvalue,
+								   bool& ok);
+
   static std::string getOpenFile(const std::string& caption,
 								 const std::string& filter,
 								 const std::string& startPath);

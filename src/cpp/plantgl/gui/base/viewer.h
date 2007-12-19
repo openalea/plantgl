@@ -145,6 +145,9 @@ public:
    				    const QString& startPath,
  				    QString* result);
  
+  void  doubleSelection(const QString& caption, const QString& text, double value,
+					    double minvalue, double maxvalue, double* result, bool * ok);
+  
   void animation(bool);
 
 public slots:

@@ -260,6 +260,29 @@ ViewItemSelectionEvent::~ViewItemSelectionEvent(){
 
 /* ----------------------------------------------------------------------- */
 
+ViewDoubleSelectionEvent::ViewDoubleSelectionEvent(const QString& _caption,
+				 const QString& _text,
+				 double _value,
+                 double _minvalue,
+                 double _maxvalue,
+				 double * _res,
+				 bool * _ok) :
+  ViewEvent(eDoubleSelection),
+	result((_res?_res:new double())),
+	ok((_ok?_ok:new bool(false))),
+	caption(_caption),
+	text(_text),
+	value(_value),
+	minvalue(_minvalue),
+    maxvalue(_maxvalue){
+}
+
+ViewDoubleSelectionEvent::~ViewDoubleSelectionEvent(){
+  // Nothing to do.
+}
+
+/* ----------------------------------------------------------------------- */
+
 ViewAnimationEvent::ViewAnimationEvent(bool m) :
   ViewEvent(eAnimation),
   mode(m){

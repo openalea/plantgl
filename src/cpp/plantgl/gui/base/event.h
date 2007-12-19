@@ -77,6 +77,7 @@ public:
 		eQuestion,
 		eItemSelection,
 		eFileSelection,
+		eDoubleSelection,
 		eAnimation,
 		eBgColor,
 		ePos,
@@ -391,6 +392,40 @@ public :
   QString text;
   QStringList values;
   bool editable;
+
+};
+
+/* ----------------------------------------------------------------------- */
+
+/**
+   \class ViewDoubleSelectionEvent
+   \brief An event to request double to the viewer. Usefull for inter thread communication.
+
+*/
+class ViewDoubleSelectionEvent : public ViewEvent {
+
+public :
+
+  /// Constructor.
+  ViewDoubleSelectionEvent(const QString& caption,
+				 const QString& text,
+				 double value,
+                 double minvalue,
+                 double maxvalue,
+				 double * res = NULL,
+				 bool * ok = NULL);
+
+  /// Destructor.
+  ~ViewDoubleSelectionEvent();
+
+  double * result;
+  bool * ok;
+
+  QString caption;
+  QString text;
+  double value;
+  double minvalue;
+  double maxvalue;
 
 };
 

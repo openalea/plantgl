@@ -78,6 +78,8 @@ object bernstein_factors(uint32_t n, real_t u){
     return make_list<std::vector<real_t> >(all_bernstein(n,u))();
 }
 
+
+
 void export_BezierCurve()
 {
   class_<BezierCurve, BezierCurvePtr, bases<ParametricModel, LineicModel>, boost::noncopyable>
@@ -86,9 +88,15 @@ void export_BezierCurve()
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint32_t,DEFAULT_STRIDE)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
-    .def("bernstein_factors",&bernstein_factors,args("n","u"))
+    .def("bernstein_factors",&bernstein_factors,args("n","u"),
+    "[float] bernstein_factors( int n, float u )"
+    "Computes the n + 1 th degree Bernstein polynomials for a fixed u."
+    "See the Nurbs Book p21 . usefull for Bezier Curve computation.")
     .staticmethod("bernstein_factors")
-    .def("bernstein",&bernstein,args("i","n","u"))
+    .def("bernstein",&bernstein,args("i","n","u"),
+    "float bernstein( int i, int n, float u )"
+    "Computes the value of i-th Bernstein polynomial for a fixed u."
+    "See the Nurbs Book p20. usefull for Bezier Curve computation.")
     .staticmethod("bernstein")
 
     ;

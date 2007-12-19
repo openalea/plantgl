@@ -73,6 +73,41 @@ object pgl_py_normSquared(object obj){
    return object(val);
 }
 
+real_t pgl_py_normSquaredList(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
+                              real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
+                              real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
+	real_t val = 0;
+    val += val1 * val1;
+    val += val2 * val2;
+    val += val3 * val3;
+    val += val4 * val4;
+    val += val5 * val5;
+    val += val6 * val6;
+    val += val7 * val7;
+    val += val8 * val8;
+    val += val9 * val9;
+    val += val10 * val10;
+    val += val11 * val11;
+    val += val12 * val12;
+    val += val13 * val13;
+    val += val14 * val14;
+    val += val15 * val15;
+    return val;
+}
+
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normSquaredList_overloads, pgl_py_normSquaredList, 2, 15)
+
+real_t pgl_py_normList(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
+                       real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
+                       real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
+    return sqrt(pgl_py_normSquaredList(val1, val2, val3, val4, val5,
+                              val6, val7, val8, val9, val10,
+                              val11, val12, val13, val14, val15));
+}
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normList_overloads, pgl_py_normList, 2, 15)
+
 object pgl_py_norm(object obj){
 	try { return obj.attr( "__norm__" )();	}
 	catch( error_already_set ){ PyErr_Clear(); }
@@ -96,6 +131,31 @@ object pgl_py_normL1(object obj){
    return object(val);
 }
 
+real_t pgl_py_normL1List(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
+                              real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
+                              real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
+	real_t val = 0;
+    val += abs(val1);
+    val += abs(val2);
+    val += abs(val3);
+    val += abs(val4);
+    val += abs(val5);
+    val += abs(val6);
+    val += abs(val7);
+    val += abs(val8);
+    val += abs(val9);
+    val += abs(val10);
+    val += abs(val11);
+    val += abs(val12);
+    val += abs(val13);
+    val += abs(val14);
+    val += abs(val15);
+    return val;
+}
+
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normL1List_overloads, pgl_py_normL1List, 2, 15)
+
 object pgl_py_normLinf(object obj){
 	try { return obj.attr( "__normLinf__" )(); }
 	catch( error_already_set ){ PyErr_Clear(); }
@@ -111,6 +171,33 @@ object pgl_py_normLinf(object obj){
    }
    return object(val);
 }
+
+#define LINFCMP(v,val) val = abs(val); if (v < val) v = val;
+
+real_t pgl_py_normLinfList(real_t val1     , real_t val2     , real_t val3  = 0, real_t val4  = 0, real_t val5  = 0,
+                              real_t val6  = 0, real_t val7  = 0, real_t val8  = 0, real_t val9  = 0, real_t val10 = 0,
+                              real_t val11 = 0, real_t val12 = 0, real_t val13 = 0, real_t val14 = 0, real_t val15 = 0){
+	real_t val = 0;
+    LINFCMP(val,val1);
+    LINFCMP(val,val2);
+    LINFCMP(val,val3);
+    LINFCMP(val,val4);
+    LINFCMP(val,val5);
+    LINFCMP(val,val6);
+    LINFCMP(val,val7);
+    LINFCMP(val,val8);
+    LINFCMP(val,val9);
+    LINFCMP(val,val10);
+    LINFCMP(val,val11);
+    LINFCMP(val,val12);
+    LINFCMP(val,val13);
+    LINFCMP(val,val14);
+    LINFCMP(val,val15);
+    return val;
+}
+
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normLinfList_overloads, pgl_py_normLinfList, 2, 15)
 
 object pgl_py_dir(object obj){
 	try { return obj.attr( "__dir__" )(); }
@@ -203,10 +290,14 @@ void export_Vector2()
   def("dot",  pgl_py_dot , args("v1","v2"), "The dot product of v1 and v2" );
 
   def("norm",     pgl_py_norm , args("v") , "The norm of the vector. If v.__norm__() exists, call it." );
+  def("norm",     pgl_py_normList, pgl_py_normList_overloads()  );
   def("normL1",     pgl_py_normL1 , args("v") , "The L1 (Manhattan) norm of the vector. If v.__normL1__() exists, call it."  );
+  def("normL1",     pgl_py_normL1List, pgl_py_normL1List_overloads()  );
   def("normLinf",     pgl_py_normLinf , args("v") , "The L-infinite norm of the vector. If v.__normLinf__() exists, call it."  );
+  def("normLinf",     pgl_py_normLinfList, pgl_py_normLinfList_overloads()  );
   def("normSquared",     pgl_py_normSquared , args("v") , "The square of the norm of the vector. If v.__normSquared__() exists, call it." );
+  def("normSquared",     pgl_py_normSquaredList, pgl_py_normSquaredList_overloads()  );
   def("direction",  pgl_py_dir , args("v") , "The direction of the vector. Resulting vector is normed. If v.__dir__() exists, call it."  );
-
+ 
 }
 

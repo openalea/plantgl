@@ -157,6 +157,18 @@ std::string ViewerApplication::itemSelection(const std::string& caption,
   else return "";
 }
 
+double ViewerApplication::doubleSelection(const std::string& caption,
+								   const std::string& text,
+								   double value,
+                                   double minvalue,
+                                   double maxvalue,
+								   bool& ok){
+  initViewerAppli();
+  if(VIEWER_APPLI)
+     return VIEWER_APPLI->doubleSelection(caption,text,value,minvalue,maxvalue,ok);
+  else return 0;
+}
+
 std::string 
 ViewerApplication::getOpenFile(const std::string& caption,
 								 const std::string& filter,

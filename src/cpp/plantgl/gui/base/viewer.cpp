@@ -681,6 +681,13 @@ void  Viewer::customEvent(QEvent *e){
 			 k->result,
 			 k->ok);
   }
+  else if(e->type() == ViewEvent::eDoubleSelection){
+    ViewDoubleSelectionEvent * k = ( ViewDoubleSelectionEvent * )e;
+	doubleSelection(k->caption,k->text,
+			 k->value,k->minvalue,k->maxvalue,
+			 k->result,
+			 k->ok);
+  }
   else if(e->type() == ViewEvent::eAnimation){
     ViewAnimationEvent * k = ( ViewAnimationEvent * )e;
 	__GLFrame->animation(k->mode);
@@ -1098,6 +1105,13 @@ Viewer::dirSelection(const QString& caption,
 					 QString* result){
   activateWindow();
   *result = QFileDialog::getExistingDirectory(this,caption,startPath);
+}
+
+void 
+Viewer::doubleSelection(const QString& caption, const QString& text, double value,
+					    double minvalue, double maxvalue,  double* result, bool * ok){
+  activateWindow();
+  *result = QInputDialog::getDouble(this,caption,text,value,minvalue,maxvalue,2,ok);
 }
 
 void
