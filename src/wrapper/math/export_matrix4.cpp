@@ -129,6 +129,7 @@ void export_Matrix4()
   m2.def(init<const Vector4&, const Vector4&, const Vector4&, const Vector4&>());
   m2.def(init<const Matrix3&>());
   m2.def(vector_matrix_func<Matrix4,Vector4>());
+  m2.def( "data", &matrix_data<Matrix4,16> );
   m2.def( self * other<Vector3>() );
   m2.def( "__str__", m4_repr );
   m2.def( "__repr__", m4_repr );

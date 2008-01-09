@@ -70,7 +70,11 @@ real_t Function::getValue(real_t x) const
     if (x < __firstx) x = __firstx;
     else if (x > __lastx) x = __lastx;
   assert(x>=__firstx);
-  assert(x<=__lastx);
+  if (!(x<=__lastx)){
+      std::cerr << x << ' ' << __lastx << std::endl;
+      assert(x<=__lastx);
+  }
+
 
   real_t index = getIndex(x);
   int floorindex = int(floor(index));

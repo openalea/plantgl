@@ -47,18 +47,16 @@ TOOLS_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
-#define GEOM_DET2(m0,m1,m2,m3) \
-  (m0 * m3 - m1 * m2)
+inline real_t GEOM_DET2(real_t m0, real_t m1,real_t m2,real_t m3) 
+{ return m0 * m3 - m1 * m2; }
 
 /*#define GEOM_DET3(m0,m1,m2,m3,m4,m5,m6,m7,m8) \
   m0 * GEOM_DET2(m4,m5,m7,m8) - \
   m3 * GEOM_DET2(m1,m2,m7,m8) + \
   m6 * GEOM_DET2(m1,m2,m4,m5)*/
 
-#define GEOM_DET3(m0,m1,m2,m3,m4,m5,m6,m7,m8) \
-  m0 * GEOM_DET2(m4,m5,m7,m8) - \
-  m1 * GEOM_DET2(m3,m5,m6,m8) + \
-  m2 * GEOM_DET2(m3,m4,m6,m7)
+inline real_t GEOM_DET3(real_t m0, real_t m1,real_t m2,real_t m3,real_t m4,real_t m5,real_t m6,real_t m7,real_t m8){
+return m0 * GEOM_DET2(m4,m5,m7,m8) - m1 * GEOM_DET2(m3,m5,m6,m8) + m2 * GEOM_DET2(m3,m4,m6,m7); }
 
 
 /*  --------------------------------------------------------------------- */
@@ -546,6 +544,14 @@ Matrix3 Matrix3::scaling( const Vector3& s )
                   0,     0,     s.z());
 }
 
+Matrix3 Matrix3::scaling( real_t s )
+{
+  GEOM_ASSERT(s.isValid());
+  return Matrix3( s, 0, 0,
+                  0, s, 0,
+                  0, 0, s);
+}
+
 /*inline*/ Matrix3 Matrix3::axisRotation( const Vector3& axis, const real_t& angle )
 {
     GEOM_ASSERT(std::finite(angle));
@@ -945,9 +951,10 @@ Matrix4 adjoint( const Matrix4& m ) {
                  GEOM_DET3(m.__M[1],m.__M[2],m.__M[3],
                            m.__M[5],m.__M[6],m.__M[7],
                            m.__M[13],m.__M[14],m.__M[15]),
+
                  -GEOM_DET3(m.__M[1],m.__M[2],m.__M[3],
-                            m.__M[5],m.__M[6],m.__M[7],
-                            m.__M[9],m.__M[10],m.__M[11]),
+                         m.__M[5],m.__M[6],m.__M[7],
+                         m.__M[9],m.__M[10],m.__M[11]),
 
                  -GEOM_DET3(m.__M[4],m.__M[6],m.__M[7],
                            m.__M[8],m.__M[10],m.__M[11],

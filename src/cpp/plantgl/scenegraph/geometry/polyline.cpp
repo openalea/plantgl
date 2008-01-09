@@ -190,7 +190,7 @@ std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     int u_index = int(u);
     std::pair<PolylinePtr,PolylinePtr> result;
-    result.first = new Polyline(new Point3Array(__pointList->getBegin(),__pointList->getBegin()+u_index));
+    result.first = new Polyline(new Point3Array(__pointList->getBegin(),__pointList->getBegin()+u_index+1));
     result.second = new Polyline(new Point3Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()));
     Vector3 mid_point = getPointAt(u);
     result.first->getPointList()->pushBack(mid_point);

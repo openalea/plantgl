@@ -33,7 +33,7 @@
 #define __extract_widget_h__
 
 #include <boost/python.hpp>
-#include <QtGui/QWidget.h>
+#include <QtGui/QWidget>
 #include "exception.h"
 
 /* ----------------------------------------------------------------------- */

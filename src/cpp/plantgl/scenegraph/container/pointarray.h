@@ -43,6 +43,7 @@
 #include "../sg_config.h"
 #include <plantgl/tool/util_array.h>
 #include <plantgl/math/util_vector.h>
+#include <plantgl/math/util_matrix.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -133,6 +134,9 @@ public:
 
   /// Normalize all the points.
   void normalize();
+
+  /// Transform all the points of the array with a matrix
+  void transform(const TOOLS(Matrix2)&);
 
   real_t * data() const;
 
@@ -251,6 +255,11 @@ public:
 
   real_t * data() const;
 
+  /// Transform all the points of the array with a matrix
+  void transform(const TOOLS(Matrix3)&);
+
+  /// Transform all the points of the array with a matrix
+  void transform(const TOOLS(Matrix4)&);
 };
 
 /// Point3Array Pointer
@@ -378,6 +387,8 @@ public:
 
   real_t * data() const;
 
+  /// Transform all the points of the array with a matrix
+  void transform(const TOOLS(Matrix4)&);
 };
 
 /// Point4Array Pointer

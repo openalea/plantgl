@@ -410,6 +410,11 @@ public:
       - \e s must be valid. */
   static Matrix3 scaling( const Vector3& s );
 
+  /** Returns the scaling matrix corresponding to a scaling with factor \e v.
+      \pre
+      - \e s must be valid. */
+  static Matrix3 scaling( real_t  s );
+
   /** Returns the euler rotation matrix R(angle) where
       R( angle=(az,ay,ax) ) is the product of 3 matrices Rz(az)*Ry(ay)*Rx(ax).
       The object is rotated around the X axis, then around the Y axis,

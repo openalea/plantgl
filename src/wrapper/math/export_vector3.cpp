@@ -102,6 +102,34 @@ struct v3sph_pickle_suite : boost::python::pickle_suite
 };
 
 
+struct pglvec3_from_vec3 {
+  pglvec3_from_vec3() {
+	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<Vector3>());
+  }
+
+  static void* convertible(PyObject* py_obj){
+	boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+    if(boost::python::extract<Vector3::Cylindrical>(bpy_obj).check()||boost::python::extract<Vector3::Spherical>(bpy_obj).check())
+    	return py_obj;
+    else return 0;
+  }
+
+  static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){
+	  boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+      boost::python::extract<Vector3::Cylindrical> cyl(bpy_obj);
+      Vector3 res;
+      if(cyl.check())
+          res = Vector3(cyl());
+      else {
+          res = Vector3(boost::python::extract<Vector3::Spherical>(bpy_obj)());
+      }
+    typedef boost::python::converter::rvalue_from_python_storage<Vector3> vector_storage_t;
+	vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
+	void* memory_chunk = the_storage->storage.bytes;
+	Vector3 * result = new (memory_chunk)Vector3(res);
+	data->convertible = memory_chunk;
+  }
+};
 
 
 void export_Vector3()
@@ -120,6 +148,7 @@ void export_Vector3()
 	;
 
    pgltuple_from_tuple<Vector3,3>();
+   pglvec3_from_vec3();
 
   class_<Vector3::Cylindrical>("Cylindrical", init<const Vector3&>("Cylindrical(Vector3 v)",args("v")))
     .def(init< real_t,real_t,real_t>("Cylindrical(real_t radius, real_t theta, real_t z)",args("radius","theta","z")))

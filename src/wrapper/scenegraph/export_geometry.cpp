@@ -40,7 +40,7 @@ using namespace std;
 
 DEF_POINTEE(Geometry)
 
-GeometryPtr deepcopy(Geometry * s){
+const GeometryPtr deepcopy(Geometry * s){
     return GeometryPtr::Cast(s->copy());
 }
 

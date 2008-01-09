@@ -42,14 +42,14 @@ template<class Matrix>
 real_t matrix_getElt( const Matrix & m, boost::python::tuple t ) 
 { 
   if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError(); 
-  return m(boost::python::extract<uchar_t>(t),boost::python::extract<uchar_t>(t)); 
+  return m(boost::python::extract<uchar_t>(t[0]),boost::python::extract<uchar_t>(t[1])); 
 } 
 
 template<class Matrix>
 void matrix_setElt( Matrix & m, boost::python::tuple t, real_t v ) 
 { 
   if( PyObject_Size(t.ptr()) != 2 ) throw PythonExc_ValueError(); 
-  m(boost::python::extract<uchar_t>(t),boost::python::extract<uchar_t>(t)) = v ; 
+  m(boost::python::extract<uchar_t>(t[0]),boost::python::extract<uchar_t>(t[1])) = v ; 
 } 
 
 template<class Matrix>
@@ -66,6 +66,16 @@ Matrix matrix_transpose(const Matrix& mat) { return transpose(mat); }
 
 template<class Matrix>
 real_t matrix_trace(const Matrix& mat) { return trace(mat); }
+
+template<class Matrix,int size>
+boost::python::list 
+matrix_data(const Matrix& mat) 
+{ 
+    boost::python::list l;
+    for (const real_t * it = mat.getData() ; it != mat.getData()+size; ++it)
+        l.append(*it);
+    return l;
+}
 
 template<class Matrix, class Vector>
 class vector_matrix_func : public boost::python::def_visitor<vector_matrix_func<Matrix,Vector> >

@@ -188,7 +188,8 @@ void export_pointarrays()
     .def( "getYMinAndMaxIndex", &pa_yminmaxindex<Point2Array>) 
     .def( "sort", &py_sort<Point2Array>) 
     .def( "partition", &py_partition<Point2Array>) 
-    .def( "hausdorff_distance", &hausdorff_distance<Point2Array>); 
+    .def( "hausdorff_distance", &hausdorff_distance<Point2Array>)
+    .def( "transform", &Point2Array::transform)
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -212,7 +213,9 @@ void export_pointarrays()
     .def( "sort", &py_sort<Point3Array>) 
     .def( "sortZ", &py_sort_z<Point3Array>) 
     .def( "partition", &py_partition<Point3Array>) 
-    .def( "hausdorff_distance", &hausdorff_distance<Point3Array>); 
+    .def( "hausdorff_distance", &hausdorff_distance<Point3Array>)
+    .def( "transform", (void(Point3Array::*)(const Matrix3&))&Point3Array::transform)
+    .def( "transform", (void(Point3Array::*)(const Matrix4&))&Point3Array::transform)
     DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
@@ -239,7 +242,8 @@ void export_pointarrays()
     .def( "getWMinAndMaxIndex", &pa_wminmaxindex<Point4Array>) 
     .def( "sort", &py_sort<Point4Array>) 
     .def( "partition", &py_partition<Point4Array>) 
-    .def( "hausdorff_distance", &hausdorff_distance<Point4Array>); 
+    .def( "hausdorff_distance", &hausdorff_distance<Point4Array>)
+    .def( "transform", &Point4Array::transform)
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 

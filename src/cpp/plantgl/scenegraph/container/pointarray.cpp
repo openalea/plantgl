@@ -198,6 +198,12 @@ real_t * Point2Array::data() const {
   return res;
 }
 
+void Point2Array::transform(const Matrix2& m) {
+  for (iterator _i = __A.begin(); _i != __A.end(); _i++){
+      *_i = m* (*_i);
+  }
+}
+
 /* ----------------------------------------------------------------------- */
 
 
@@ -403,6 +409,17 @@ real_t * Point3Array::data() const{
 	res[_j] = _i->z(); _j++;
   }
   return res;
+}
+void Point3Array::transform(const Matrix3& m) {
+  for (iterator _i = __A.begin(); _i != __A.end(); _i++){
+      *_i = m* (*_i);
+  }
+}
+
+void Point3Array::transform(const Matrix4& m) {
+  for (iterator _i = __A.begin(); _i != __A.end(); _i++){
+      *_i = m* (*_i);
+  }
 }
 
 /* ----------------------------------------------------------------------- */
@@ -641,6 +658,12 @@ real_t * Point4Array::data() const {
 	res[_j] = _i->w(); _j++;
   }
   return res;
+}
+
+void Point4Array::transform(const Matrix4& m) {
+  for (iterator _i = __A.begin(); _i != __A.end(); _i++){
+      *_i = m* (*_i);
+  }
 }
 
 

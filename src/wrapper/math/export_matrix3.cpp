@@ -52,6 +52,10 @@ string m3_repr( const Matrix3& m )
   return ss.str();
 }
 
+
+inline Matrix3 scaling3(const Vector3& v) { return Matrix3::scaling(v); }
+inline Matrix3 scaling1(real_t v) { return Matrix3::scaling(v); }
+
 void export_Matrix3()
 {
   class_< Matrix3 >( "Matrix3", init< optional< real_t,real_t,real_t,
@@ -62,11 +66,13 @@ void export_Matrix3()
     .def(init<const Matrix2&>("Matrix3(matrix2)"))
     .def(init<const Matrix4&>("Matrix3(matrix4)"))
     .def(vector_matrix_func<Matrix3,Vector3>())
+    .def( "data", &matrix_data<Matrix3,9> )
     .def( "eulerAnglesZYX", &Matrix3::eulerAnglesZYX )
     .def( "eulerAnglesXYZ", &Matrix3::eulerAnglesXYZ )
     .def( "__str__", m3_repr )
     .def( "__repr__", m3_repr )
-    .def("scaling",&Matrix3::scaling)
+    .def("scaling",&scaling3)
+    .def("scaling",&scaling1)
     .staticmethod("scaling")
     .def("eulerRotationZYX",&Matrix3::eulerRotationZYX)
     .staticmethod("eulerRotationZYX")
@@ -76,7 +82,7 @@ void export_Matrix3()
     .staticmethod("axisRotation")
     ;
 
-  def("scaling",&Matrix3::scaling);
+  def("scaling",&scaling3);
   def("eulerRotationZYX",&Matrix3::eulerRotationZYX);
   def("eulerRotationXYZ",&Matrix3::eulerRotationXYZ);
   def("axisRotation",&Matrix3::axisRotation);
