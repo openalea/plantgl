@@ -113,6 +113,15 @@ typedef short int16_t;
 
 /// type uint16_t (unsigned short)
 typedef unsigned short uint16_t;
+
+/// type int32_t (long)
+typedef long int32_t;
+
+/// type uint32_t (unsigned long)
+typedef unsigned long uint32_t;
+
+#endif
+
 /// uint16_t min value
 #ifndef UINT16_MIN 
 #define UINT16_MIN USHRT_MIN
@@ -121,8 +130,6 @@ typedef unsigned short uint16_t;
 #ifndef UINT16_MAX
 #define UINT16_MAX USHRT_MAX
 #endif
-/// type int32_t (long)
-typedef long int32_t;
 /// int32_t min value
 #ifndef INT32_MIN 
 #define INT32_MIN LONG_MIN
@@ -131,8 +138,6 @@ typedef long int32_t;
 #ifndef INT32_MAX
 #define INT32_MAX LONG_MAX
 #endif
-/// type uint32_t (unsigned long)
-typedef unsigned long uint32_t;
 /// uint32_t min value
 #ifndef UINT32_MIN 
 #define UINT32_MIN ULONG_MIN
@@ -143,7 +148,6 @@ typedef unsigned long uint32_t;
 #define UINT32_MAX ULONG_MAX
 #endif
 
-#endif
 
 
 #include <stddef.h>
