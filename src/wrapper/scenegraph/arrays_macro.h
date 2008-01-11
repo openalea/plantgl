@@ -227,6 +227,10 @@ template<class T>
 size_t array_len( T * a )
 {  return a->getSize();}
 
+template<class T>
+size_t array_id( T * a )
+{ return (size_t)a; }
+
 
 template<class T>
 struct array_pickle_suite : boost::python::pickle_suite 
@@ -263,6 +267,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "append",       &array_appenditem<ARRAY> ) \
         .def( "pop",          &array_popitem<ARRAY> ) \
         .def( "pop",          &array_poplastitem<ARRAY> ) \
+        .def( "getId",        &array_id<ARRAY> ) \
 	    .def_pickle(array_pickle_suite<ARRAY>());
         ;
     }

@@ -90,7 +90,7 @@ void export_Polyline()
 {
   class_<Polyline, PolylinePtr, bases<ExplicitModel, LineicModel>, boost::noncopyable>( "Polyline", 
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("Polyline(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
-    .def( "copy", &Polyline::copy )
+    .def( "deepcopy", &Polyline::copy )
     .def( "__getitem__", gpl_getitem /*, return_internal_reference<1>() */)
     .def( "__setitem__", gpl_setitem )
     .def( "__len__", gpl_size )
