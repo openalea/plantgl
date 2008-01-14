@@ -49,7 +49,7 @@ class Segment (AbstractPolyhedra) :
 		point1,point2=self._extremities
 		pid1,=point1
 		pid2,=point2
-		return (positions[pid2]-positions[pid1]).norm()
+		return (positions[pid2]-positions[pid1]).__norm__()
 	volume.__doc__=AbstractPolyhedra.volume.__doc__
 	
 	def size (self, positions) :

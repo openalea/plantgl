@@ -57,14 +57,9 @@ class Polygon (AbstractPolyhedra) :
 	def volume (self, positions) :
 		surf=0.
 		mid=self.centroid(positions)
-		if mid.dim()==2 :
-			for edge in self._edges :
-				pos1,pos2=[positions[pid] for pid in edge]
-				surf+=abs((pos2-mid).cross(pos1-mid))
-		else :
-			for edge in self._edges :
-				pos1,pos2=[positions[pid] for pid in edge]
-				surf+=(pos2-mid).cross(pos1-mid).norm()
+		for edge in self._edges :
+			pos1,pos2=[positions[pid] for pid in edge]
+			surf+=((pos2-mid)^(pos1-mid)).__norm__()
 		return surf/2.
 	volume.__doc__=AbstractPolyhedra.volume.__doc__
 	
