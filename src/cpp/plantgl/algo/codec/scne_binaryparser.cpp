@@ -91,8 +91,9 @@ using namespace STDEXT;
     if (!_name.empty()) { \
         __result->setName(_name); \
         count_name++; \
-        __referencetable.insert(_ident, __result); \
     } \
+    if (_ident != 0) \
+        __referencetable.insert(_ident, __result); \
     return  true; \
   } \
   else { \
@@ -108,17 +109,21 @@ using namespace STDEXT;
 
 #define GEOM_READ_ARRAY(obj,type,primitive) { \
     uint32_t _sizej = readUint32(); \
-    obj = type##Ptr (new type(_sizej)); \
-    for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
-	*_it = read##primitive(); \
+    if (_sizej > 0){ \
+      obj = type##Ptr (new type(_sizej)); \
+      for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
+	  *_it = read##primitive(); \
+      }; \
     }; \
   };
 
 #define GEOM_READ_INDEXARRAY(obj) { \
     uint32_t _sizej  = readUint32(); \
-    obj = IndexArrayPtr(new IndexArray(_sizej)); \
-    for (IndexArray::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
-     *_it = readIndex(); \
+    if (_sizej > 0){ \
+      obj = IndexArrayPtr(new IndexArray(_sizej)); \
+      for (IndexArray::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
+        *_it = readIndex(); \
+      }; \
     }; \
   };
 
@@ -222,6 +227,8 @@ using namespace STDEXT;
      _ident = readUint32(); \
      cerr << "Name : '" << _name << "', Id : " << _ident << endl; \
     } \
+    else if( __tokens->getVersion() >= 2.0f) \
+     _ident = readUint32(); \
 
 #else
 
@@ -231,6 +238,8 @@ using namespace STDEXT;
     if(!_name.empty()){ \
      _ident = readUint32(); \
     } \
+    else if( __tokens->getVersion() >= 2.0f) \
+     _ident = readUint32(); \
 
 #endif
 

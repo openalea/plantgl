@@ -315,7 +315,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_BEGIN(type,obj) \
-  if (obj->isNamed()) { \
+  if (obj->isShared()) { \
     if (! __cache.insert(obj->SceneObject::getId()).second) { \
       DEBUG_INFO(TokReference,obj->getName(),obj->SceneObject::getId()) \
       printType(TokReference); \
@@ -331,7 +331,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
   } \
   else { \
     DEBUG_INFO(#type,"",obj->SceneObject::getId())	\
-    printType(#type); writeString("") ;	\
+    printType(#type); writeString("") ; writeUint32(0);	\
   }
 
 #define GEOM_PRINT_APPEARANCE(val) \
@@ -445,7 +445,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(1.9f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(2.0f);
 
 /* ----------------------------------------------------------------------- */
 

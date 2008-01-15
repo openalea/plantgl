@@ -111,6 +111,22 @@ void export_Material()
    implicitly_convertible<MaterialPtr, AppearancePtr >();
 }
 
+std::string tex_str(ImageTexture * m){
+  std::stringstream ss;
+  ss << "ImageTexture(";
+  if(m->isNamed()) ss << "'" << m->getName() << "',";
+  ss << "'" << m->getFilename() << "'," << (m->getMipmaping()?"True":"False") << ','
+     << COL3PRINT(m->getAmbient()) << ','
+     << m->getDiffuse() << ','
+	 << COL3PRINT(m->getSpecular()) << ','
+	 << COL3PRINT(m->getEmission()) << ','
+     << m->getShininess() << ','
+     << m->getTransparency() << ')'
+	  ;
+  return ss.str();
+}
+
+
 void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  Material >, boost::noncopyable >
@@ -118,8 +134,13 @@ void export_ImageTexture()
 	.def(init< string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
   	 (args("filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
 	  "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
+	.def(init< string,string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
+  	 (args("name","filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
+	  "ImageTexture(name, filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
       .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
 	  .DEC_BT_NR_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
+     .def( "__str__", tex_str )
+    .def( "__repr__", tex_str )
     ;
 
   implicitly_convertible<ImageTexturePtr, MaterialPtr >();
