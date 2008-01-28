@@ -13,6 +13,7 @@ class Plot3D(Node):
         Node.__init__(self)
         self.add_input( name='object', interface=None )
         self.add_output( name='object', interface=None )
+
     def view(self,obj):
         """ view a plantgl object and return it """
         if isinstance( obj, Shape ):
@@ -21,13 +22,11 @@ class Plot3D(Node):
             obj= sc
         Viewer.display(obj)
         return obj
+
     def __call__(self, inputs):
         """ inputs is the list of input values """
         obj = inputs[0]
-        if callable( obj):
-            return lambda x : self.view(obj(x))
-        else:
-            return self.view(obj)
+        return self.view(obj)
 
 class AddToPlot3D(Node):
     """

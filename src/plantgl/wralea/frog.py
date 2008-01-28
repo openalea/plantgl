@@ -44,7 +44,7 @@ class ImportScene(Node):
     def __call__( self, inputs ):
         fn = self.get_input("filename")
         if fn and fn.endswith('geom'):
-            return (list( Scene(fn) ),)
+            return (Scene(fn),)
         else:
             return (None,)
 

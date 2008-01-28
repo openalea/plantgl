@@ -1,7 +1,7 @@
 # -*-python-*-
 
 from openalea.sconsx import config, environ
-import os, fnmatch
+import os
 
 Config= config.Config
 ALEAConfig= config.ALEAConfig

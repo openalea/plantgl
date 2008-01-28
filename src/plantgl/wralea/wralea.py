@@ -40,16 +40,16 @@ def register_packages(pkgmanager):
 
     pkgmanager.add_package(package)
 
-    nf = Factory( name= "addToPlot3D", 
-                  description= "Viewer Display", 
-                  category = "Vizualisation", 
-                  nodemodule = "viewernode",
-                  nodeclass = "AddToPlot3D",
-                  lazy = False
-                  )
-    package.add_factory( nf )
-
-    pkgmanager.add_package(package)
+#    nf = Factory( name= "addToPlot3D", 
+#                  description= "Viewer Display", 
+#                  category = "Vizualisation", 
+#                  nodemodule = "viewernode",
+#                  nodeclass = "AddToPlot3D",
+#                  lazy = False
+#                  )
+#    package.add_factory( nf )
+#
+#    pkgmanager.add_package(package)
 
 
     metainfo={ 'version' : '0.0.1',

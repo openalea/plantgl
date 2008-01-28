@@ -14,7 +14,7 @@ def define_package(package):
     Return a list of package to include in the package manager.
     This function is called by the package manager when it is updated
     """
-    nf = generate_factory("Scene", lazy=False)
+    nf = generate_factory("Scene")
     package.add_factory( nf )
     map(lambda x : package.add_factory(generate_factory(x.__name__)),PGLCLASS)
 
