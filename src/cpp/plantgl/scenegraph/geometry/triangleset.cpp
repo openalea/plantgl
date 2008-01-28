@@ -458,8 +458,8 @@ Point3ArrayPtr
 TriangleSet::computeNormalPerVertex() const {
     Point3ArrayPtr normalList(new Point3Array(__pointList->getSize()));
     for(uint32_t j=0; j < __indexList->getSize(); j++){
-        Vector3 _norm = cross(getPointAt(j,__ccw ? 1 : 2) - getPointAt(j,0),
-                              getPointAt(j,__ccw ? 2 : 1) - getPointAt(j,0));
+        Vector3 _norm = cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0),
+                              getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0));
         for(uint32_t i = 0; i < 3; i++){
             uint32_t _index = __indexList->getAt(j).getAt(i);
             normalList->setAt(_index,normalList->getAt(_index)+_norm);
@@ -474,8 +474,8 @@ Point3ArrayPtr
 TriangleSet::computeNormalPerFace() const {
     Point3ArrayPtr normalList(new Point3Array(__indexList->getSize())); 
     for(uint32_t j=0; j < __indexList->getSize(); j++){ 
-	    normalList->setAt(j,cross(getPointAt(j,__ccw ? 1 : 2) - getPointAt(j,0), 
-			      getPointAt(j,__ccw ? 2 : 1) - getPointAt(j,0))); 
+	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
+			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
     }
     for(Point3Array::iterator _it=normalList->getBegin();_it!=normalList->getEnd();_it++)
 	_it->normalize();
@@ -484,13 +484,7 @@ TriangleSet::computeNormalPerFace() const {
 
 /* ----------------------------------------------------------------------- */
 
-const Vector3& TriangleSet::getPointAt( uint32_t i ) const {
-  GEOM_ASSERT(__pointList.isValid());
-  GEOM_ASSERT(i < __pointList->getSize());
-  return __pointList->getAt(i);
-}
-
-const Vector3& TriangleSet::getPointAt( uint32_t i, uint32_t j ) const {
+const Vector3& TriangleSet::getFacePointAt( uint32_t i, uint32_t j ) const {
   GEOM_ASSERT(__pointList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 3);

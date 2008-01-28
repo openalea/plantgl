@@ -518,13 +518,13 @@ bool VgstarPrinter::process( TriangleSet * triangleSet ) {
     GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"0");
         printNullTransformation();
         printColor();
-    Vector3 _vertex1 = triangleSet->getPointAt(_i,0);
+    Vector3 _vertex1 = triangleSet->getFacePointAt(_i,0);
         _vertex1 = getMatrix() * _vertex1 ;
     GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-    Vector3 _vertex2 = triangleSet->getPointAt(_i,1);
+    Vector3 _vertex2 = triangleSet->getFacePointAt(_i,1);
         _vertex2 = getMatrix() * _vertex2;
     GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex2);
-    Vector3 _vertex3 = triangleSet->getPointAt(_i,2);
+    Vector3 _vertex3 = triangleSet->getFacePointAt(_i,2);
     _vertex3 = getMatrix() * _vertex3;
         GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex3);
     GEOM_VGSTARPRINT_END(__vgstarStream);

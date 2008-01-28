@@ -257,15 +257,9 @@ public:
   /** Returns the \e j-th point of the \e i-th face.
       \warning
 	  - \e PointList should be set
-      - \e i must be belong to the range [0,size of \b PointList[. */
-  const TOOLS(Vector3)& getPointAt( uint32_t i ) const ;
-
-  /** Returns the \e j-th point of the \e i-th face.
-      \warning
-	  - \e PointList should be set
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,2]. */
-  const TOOLS(Vector3)& getPointAt( uint32_t i, uint32_t j ) const ;
+  const TOOLS(Vector3)& getFacePointAt( uint32_t i, uint32_t j ) const ;
     
   /** Returns the \e j-th texture coordinates of the \e i-th face.
       \warning
@@ -309,6 +303,9 @@ public:
 
    /// Returns whether \b TexCoordIndexList is set to its default value.
   inline bool isTexCoordIndexListToDefault() const { return __texCoordIndexList.isNull(); }
+
+  /// Returns the nb of points of the \b i-th face.
+  virtual uint32_t getFaceSize( uint32_t i ) const { return __indexList->getAt(i).getSize(); }
 
   protected:
 

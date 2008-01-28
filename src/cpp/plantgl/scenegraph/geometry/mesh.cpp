@@ -318,6 +318,23 @@ Mesh::hasTexCoordList( ) const {
   return __texCoordList.isValid();
 }
 
+/// Returns the center of the \b i-th face.
+Vector3 
+Mesh::getFaceCenter( uint32_t i ) const 
+{ 
+    uint32_t nbpoints = getFaceSize(i);
+    Vector3 center;
+    for(uint32_t j = 0; j < nbpoints; ++j)
+        center += getFacePointAt(i,j);
+    return center/nbpoints;
+}
+
+const Vector3& Mesh::getPointAt( uint32_t i ) const {
+  GEOM_ASSERT(__pointList.isValid());
+  GEOM_ASSERT(i < __pointList->getSize());
+  return __pointList->getAt(i);
+}
+
 
 /* ----------------------------------------------------------------------- */
 

@@ -69,6 +69,10 @@ void export_Mesh()
 	  .DEC_PTR_PROPERTY_WD(normalList,      Mesh, NormalList,      Point3ArrayPtr)
 	  .DEC_PTR_PROPERTY_WD(texCoordList,    Mesh, TexCoordList,    Point2ArrayPtr)
 	  .def("computeNormalList",  (void (Mesh::*)())&Mesh::computeNormalList)
+	  .def( "pointAt",    (const Vector3& (Mesh::*)(uint32_t) const)&Mesh::getPointAt,    return_value_policy<copy_const_reference>() )
+	  .def( "pointAt",    (const Vector3& (Mesh::*)(uint32_t,uint32_t) const)&Mesh::getFacePointAt,    return_value_policy<copy_const_reference>() )
+	  .def( "getFaceCenter",    &Mesh::getFaceCenter )
+	  .def( "getFaceSize",    &Mesh::getFaceSize )
 
 	  ;
   implicitly_convertible<MeshPtr, ExplicitModelPtr>();

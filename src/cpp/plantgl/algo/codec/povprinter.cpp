@@ -990,19 +990,19 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
   for (uint32_t _i = 0; _i < triangleSet->getIndexListSize(); _i++) {
 	  if(normalV){
 		  __geomStream << __indent << "smooth_triangle { ";
-		  const Vector3& _vertex1 = triangleSet->getPointAt(_i,0);
+		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
 		  __geomStream << ", ";
 		  const Vector3& _normal1 = triangleSet->getNormalAt(_i,0);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
 		  __geomStream << ", ";
-		  const Vector3& _vertex2 = triangleSet->getPointAt(_i,1);
+		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
 		  __geomStream << ", ";
 		  const Vector3& _normal2 = triangleSet->getNormalAt(_i,1);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
 		  __geomStream << ", ";
-		  const Vector3& _vertex3 = triangleSet->getPointAt(_i,2);
+		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
 		  __geomStream << ", ";
 		  const Vector3& _normal3 = triangleSet->getNormalAt(_i,2);
@@ -1010,13 +1010,13 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 	  }
 	  else {
 		  __geomStream << __indent << "triangle { ";
-		  const Vector3& _vertex1 = triangleSet->getPointAt(_i,0);
+		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
 		  __geomStream << ", ";
-		  const Vector3& _vertex2 = triangleSet->getPointAt(_i,1);
+		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
 		  __geomStream << ", ";
-		  const Vector3& _vertex3 = triangleSet->getPointAt(_i,2);
+		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
 	  }
 	  if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())

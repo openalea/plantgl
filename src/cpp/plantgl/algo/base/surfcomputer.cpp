@@ -158,9 +158,9 @@ bool SurfComputer::process( AmapSymbol * amapSymbol ) {
       Vector3 _vj = amapSymbol->getPointAt(_i,_j + 1) -
                     amapSymbol->getPointAt(_i,0); 
       __result += 0.5 * norm(cross(_vi,_vj)); */
-	  __result += surface(amapSymbol->getPointAt(_i,0),
-						  amapSymbol->getPointAt(_i,_j),
-						  amapSymbol->getPointAt(_i,_j + 1));
+	  __result += surface(amapSymbol->getFacePointAt(_i,0),
+						  amapSymbol->getFacePointAt(_i,_j),
+						  amapSymbol->getFacePointAt(_i,_j + 1));
     };
   };
 
@@ -314,7 +314,7 @@ bool SurfComputer::process( FaceSet * faceSet ) {
     const Index& _index = faceSet->getIndexList()->getAt(_i);
     uint32_t _jSize = _index.getSize();
     for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
-	  __result += surface(faceSet->getPointAt(_i,0),faceSet->getPointAt(_i,_j),faceSet->getPointAt(_i,_j+1));
+	  __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
     };
   };
 
@@ -484,9 +484,9 @@ bool SurfComputer::process( QuadSet * quadSet ) {
   __result  = 0;
   uint32_t _size = quadSet->getIndexListSize();
   for (uint32_t _i = 0; _i < _size; _i++) {
-    Vector3 _v1 = quadSet->getPointAt(_i,1) - quadSet->getPointAt(_i,0);
-    Vector3 _v2 = quadSet->getPointAt(_i,2) - quadSet->getPointAt(_i,0);
-    Vector3 _v3 = quadSet->getPointAt(_i,3) - quadSet->getPointAt(_i,0);
+    Vector3 _v1 = quadSet->getFacePointAt(_i,1) - quadSet->getFacePointAt(_i,0);
+    Vector3 _v2 = quadSet->getFacePointAt(_i,2) - quadSet->getFacePointAt(_i,0);
+    Vector3 _v3 = quadSet->getFacePointAt(_i,3) - quadSet->getFacePointAt(_i,0);
     __result += 0.5 * norm(cross(_v1,_v2));
     __result += 0.5 * norm(cross(_v2,_v3));
   };
@@ -554,9 +554,9 @@ bool SurfComputer::process( TriangleSet * triangleSet ) {
   __result  = 0;
   uint32_t _size = triangleSet->getIndexListSize();
   for (uint32_t _i = 0; _i < _size; _i++) {
-    __result += surface(triangleSet->getPointAt(_i,0),
-						triangleSet->getPointAt(_i,1),
-						triangleSet->getPointAt(_i,2));
+    __result += surface(triangleSet->getFacePointAt(_i,0),
+						triangleSet->getFacePointAt(_i,1),
+						triangleSet->getFacePointAt(_i,2));
   };
 
   GEOM_SURFCOMPUTER_UPDATE_CACHE(triangleSet);

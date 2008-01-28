@@ -481,7 +481,7 @@ bool GLRenderer::process( AmapSymbol * amapSymbol ) {
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
           glColor4fv(_rgba);
         }
-      glGeomVertex(amapSymbol->getPointAt(_i,_j));
+      glGeomVertex(amapSymbol->getFacePointAt(_i,_j));
     }
     glEnd();
   };
@@ -709,7 +709,7 @@ bool GLRenderer::process( FaceSet * faceSet ) {
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
           glColor4fv(_rgba);
         }
-      glGeomVertex(faceSet->getPointAt(_i,_j));
+      glGeomVertex(faceSet->getFacePointAt(_i,_j));
     }
     glEnd();
   };
@@ -1223,7 +1223,7 @@ bool GLRenderer::process( QuadSet * quadSet ) {
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
           glColor4fv(_rgba);
         }
-	  glGeomVertex(quadSet->getPointAt(_i,_j));
+	  glGeomVertex(quadSet->getFacePointAt(_i,_j));
 	}
   };
   glEnd();
@@ -1432,7 +1432,7 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
           glColor4fv(_rgba);
         }
-      glGeomVertex(triangleSet->getPointAt(_i,_j));
+      glGeomVertex(triangleSet->getFacePointAt(_i,_j));
     }
   };
   glEnd();

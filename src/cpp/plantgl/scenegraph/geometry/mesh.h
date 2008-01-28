@@ -224,6 +224,18 @@ public:
   /// Returns the size of \b IndexList i.e. the number of polygon.
   virtual uint32_t getIndexListSize( ) const =0;
 
+  /** Returns the \e j-th point of the \e i-th face.
+      \warning
+	  - \e PointList should be set
+      - \e i must be belong to the range [0,size of \b PointList[. */
+  const TOOLS(Vector3)& getPointAt( uint32_t i ) const ;
+
+  /** Returns the \e j-th point of the \e i-th face.
+      \warning
+	  - \e PointList should be set
+      - \e i must belong to the range [0,size of \b IndexList[;
+      - \e j must belong to the range [0,2]. */
+  virtual const TOOLS(Vector3)& getFacePointAt( uint32_t i, uint32_t j ) const = 0;
 
   void computeNormalList(bool pervertex);
   virtual Point3ArrayPtr computeNormalPerVertex() const = 0;
@@ -234,6 +246,12 @@ public:
   inline void computeNormalList() { computeNormalList(__normalPerVertex); };
 
   bool hasTexCoordList() const;
+
+  /// Returns the nb of points of the \b i-th face.
+  virtual uint32_t getFaceSize( uint32_t i ) const  = 0;
+
+  /// Returns the center of the \b i-th face.
+  TOOLS(Vector3) getFaceCenter( uint32_t i ) const ;
 
   protected:
 

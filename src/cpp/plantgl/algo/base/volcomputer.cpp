@@ -132,11 +132,11 @@ bool VolComputer::process( AmapSymbol * amapSymbol ) {
     for (uint32_t _i = 0; _i < _iSize; _i++) {
       const Index& _index = amapSymbol->getIndexList()->getAt(_i);
       uint32_t _jSize = _index.getSize();
-      const Vector3& _origfacet = amapSymbol->getPointAt(_i,0);
+      const Vector3& _origfacet = amapSymbol->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
-	Vector3 _vi = amapSymbol->getPointAt(_i,_j) - _origfacet;
-	Vector3 _vj = amapSymbol->getPointAt(_i,_j + 1) - _origfacet;
+	Vector3 _vi = amapSymbol->getFacePointAt(_i,_j) - _origfacet;
+	Vector3 _vj = amapSymbol->getFacePointAt(_i,_j + 1) - _origfacet;
 	__result += fabs(dot(_center,cross(_vi,_vj)))/6;
        };
     };
@@ -276,11 +276,11 @@ bool VolComputer::process( FaceSet * faceSet ) {
     for (uint32_t _i = 0; _i < _iSize; _i++) {
       const Index& _index = faceSet->getIndexList()->getAt(_i);
       uint32_t _jSize = _index.getSize();
-      const Vector3& _origfacet = faceSet->getPointAt(_i,0);
+      const Vector3& _origfacet = faceSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
-	Vector3 _vi = faceSet->getPointAt(_i,_j) - _origfacet;
-	Vector3 _vj = faceSet->getPointAt(_i,_j + 1) - _origfacet;
+	Vector3 _vi = faceSet->getFacePointAt(_i,_j) - _origfacet;
+	Vector3 _vj = faceSet->getFacePointAt(_i,_j + 1) - _origfacet;
 	__result += fabs(dot(_center,cross(_vi,_vj)))/6;
        };
     };
@@ -459,11 +459,11 @@ bool VolComputer::process( QuadSet * quadSet ) {
     uint32_t _size = quadSet->getIndexListSize();
     Vector3 center = quadSet->getPointList()->getCenter();    
     for (uint32_t _i = 0; _i < _size; _i++) {
-      const Vector3& _origfacet = quadSet->getPointAt(_i,0);
+      const Vector3& _origfacet = quadSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
-      Vector3 _v1 = quadSet->getPointAt(_i,1) - _origfacet;
-      Vector3 _v2 = quadSet->getPointAt(_i,2) - _origfacet;
-      Vector3 _v3 = quadSet->getPointAt(_i,3) - _origfacet;
+      Vector3 _v1 = quadSet->getFacePointAt(_i,1) - _origfacet;
+      Vector3 _v2 = quadSet->getFacePointAt(_i,2) - _origfacet;
+      Vector3 _v3 = quadSet->getFacePointAt(_i,3) - _origfacet;
       __result += fabs(dot(_center,cross(_v1,_v2)))/6;
       __result += fabs(dot(_center,cross(_v2,_v3)))/6;
     };
@@ -546,10 +546,10 @@ bool VolComputer::process( TriangleSet * triangleSet ) {
     uint32_t _size = triangleSet->getIndexListSize();
     Vector3 center = triangleSet->getPointList()->getCenter();
     for (uint32_t _i = 0; _i < _size; _i++) {
-      const Vector3& _origfacet = triangleSet->getPointAt(_i,0);
+      const Vector3& _origfacet = triangleSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
-      Vector3 _v1 = triangleSet->getPointAt(_i,1) - _origfacet;
-      Vector3 _v2 = triangleSet->getPointAt(_i,2) - _origfacet;
+      Vector3 _v1 = triangleSet->getFacePointAt(_i,1) - _origfacet;
+      Vector3 _v2 = triangleSet->getFacePointAt(_i,2) - _origfacet;
       __result += fabs(dot(_center,cross(_v1,_v2)))/6;
     };
   }
