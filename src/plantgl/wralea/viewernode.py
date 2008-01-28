@@ -14,19 +14,15 @@ class Plot3D(Node):
         self.add_input( name='object', interface=None )
         self.add_output( name='object', interface=None )
 
-    def view(self,obj):
-        """ view a plantgl object and return it """
+    def __call__(self, inputs):
+        """ inputs is the list of input values """
+        obj = inputs[0]
         if isinstance( obj, Shape ):
             sc= Scene()
             sc.add(obj)
             obj= sc
         Viewer.display(obj)
         return obj
-
-    def __call__(self, inputs):
-        """ inputs is the list of input values """
-        obj = inputs[0]
-        return self.view(obj)
 
 class AddToPlot3D(Node):
     """
