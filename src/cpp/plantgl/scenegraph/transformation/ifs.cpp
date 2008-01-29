@@ -74,25 +74,25 @@ void IT::init()
 /////////////////////////////////////////////////////////////////////////////
 {
   // compute all transformations with an iterative system
-  uint32_t n= __transfoList->getSize();
-  uint32_t size= IFS::power( n , __depth );
+  uint_t n= __transfoList->getSize();
+  uint_t size= IFS::power( n , __depth );
   __transfoNodes= Matrix4ArrayPtr( new Matrix4Array( size ));
   Matrix4Array::iterator it= __transfoNodes->getBegin();
   apply( __depth, it, size );
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void IT::apply( uchar_t depth, Matrix4Array::iterator& it, uint32_t size )
+void IT::apply( uchar_t depth, Matrix4Array::iterator& it, uint_t size )
 /////////////////////////////////////////////////////////////////////////////
 {
   if( depth < 1 )
     return;
 
-  uint32_t n= __transfoList->getSize();
-  uint32_t step= size / n;
+  uint_t n= __transfoList->getSize();
+  uint_t step= size / n;
 
   Matrix4 transfo= *it;
-  uint32_t i= 0;
+  uint_t i= 0;
   Matrix4Array::iterator it_sub= it;
   for( i= 0; i < n; i++ )
     {
@@ -126,7 +126,7 @@ Point3ArrayPtr IT::transform( const Point3ArrayPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint32_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->getSize();
 
   Point3ArrayPtr _tPoints(new Point3Array(n*points->getSize()));
 
@@ -151,7 +151,7 @@ Point4ArrayPtr IT::transform( const Point4ArrayPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint32_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->getSize();
 
   Point4ArrayPtr _tPoints(new Point4Array(n*points->getSize()));
 
@@ -176,7 +176,7 @@ Point3MatrixPtr IT::transform( const Point3MatrixPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint32_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->getSize();
 
   Point3MatrixPtr _tPoints(new Point3Matrix(n*points->getSize()));
 
@@ -201,7 +201,7 @@ Point4MatrixPtr IT::transform( const Point4MatrixPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint32_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->getSize();
 
   Point4MatrixPtr _tPoints(new Point4Matrix(n*points->getSize()));
 
@@ -314,8 +314,8 @@ bool IFS::Builder::isValid( ) const
 
   if( Depth )
     {
-    uint32_t n= (*TransfoList)->getSize();
-    uint32_t size= IFS::power( n , *Depth );
+    uint_t n= (*TransfoList)->getSize();
+    uint_t size= IFS::power( n , *Depth );
 
     if( size > MAX_OBJECTS )
       {

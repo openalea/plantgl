@@ -182,7 +182,7 @@ void GeomListViewBuilder::addAttrAngle(const QString& name, real_t value){
 	addAttr(name,QString::number(value*GEOM_DEG),"Degrees");
 }
 
-void GeomListViewBuilder::addAttr(const QString& name, uint32_t value){
+void GeomListViewBuilder::addAttr(const QString& name, uint_t value){
 	addAttr(name,QString::number(value),"UInt32");
 }
 
@@ -280,7 +280,7 @@ void GeomListViewBuilder::addArray(const QString& name, const T& _array, const Q
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-    for(uint32_t it = 0; it < _array->getSize() ; it++) { 
+    for(uint_t it = 0; it < _array->getSize() ; it++) { 
 		addAttr('['+QString::number(it)+']',_array->getAt(it));
     }
 	popItems();
@@ -299,7 +299,7 @@ void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr&
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-    for(uint32_t it = 0; it < _array->getSize() ; it++) { 
+    for(uint_t it = 0; it < _array->getSize() ; it++) { 
 		addAttrAngle('['+QString::number(it)+']',_array->getAt(it));
     }
 	popItems();
@@ -319,7 +319,7 @@ void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, con
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-    for(uint32_t it = 0; it < _array->getSize() ; it++) { 
+    for(uint_t it = 0; it < _array->getSize() ; it++) { 
 		_array->getAt(it)->apply(*this);
     }
 	popItems();
@@ -341,8 +341,8 @@ void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-	for(uint32_t it1 = 0; it1 < _matrix->getColsSize() ; it1++) { 
-		for(uint32_t it2 = 0; it2 < _matrix->getRowsSize() ; it2++) { 
+	for(uint_t it1 = 0; it1 < _matrix->getColsSize() ; it1++) { 
+		for(uint_t it2 = 0; it2 < _matrix->getRowsSize() ; it2++) { 
 			addAttr('['+QString::number(it1)+','+QString::number(it2)+']',_matrix->getAt(it1,it2));
 		}
 	}

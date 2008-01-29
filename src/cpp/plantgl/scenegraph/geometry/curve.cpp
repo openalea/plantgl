@@ -145,7 +145,7 @@ FunctionPtr Curve2D::getArcLengthToUMapping() const
 
   real_t fk = getFirstKnot();
   real_t lk = getLastKnot();
-  uint32_t stride = getStride();
+  uint_t stride = getStride();
 
   real_t deltau = (lk - fk)/stride;
 
@@ -157,7 +157,7 @@ FunctionPtr Curve2D::getArcLengthToUMapping() const
   Point2ArrayPtr points(new Point2Array(stride+1));
   points->setAt(0,Vector2(0,fk));
   real_t u = fk + deltau;
-  for(uint32_t i = 1 ; i <= stride; ++i, u += deltau){
+  for(uint_t i = 1 ; i <= stride; ++i, u += deltau){
     p2 = getPointAt(u);
     length += norm(p2 - p1);
     p1 = p2;
@@ -172,7 +172,7 @@ FunctionPtr Curve2D::getUToArcLengthMapping() const
 
   real_t fk = getFirstKnot();
   real_t lk = getLastKnot();
-  uint32_t stride = getStride();
+  uint_t stride = getStride();
 
   real_t deltau = (lk - fk)/stride;
 
@@ -184,7 +184,7 @@ FunctionPtr Curve2D::getUToArcLengthMapping() const
   Point2ArrayPtr points(new Point2Array(stride+1));
   points->setAt(0,Vector2(0,fk));
   real_t u = fk + deltau;
-  for(uint32_t i = 1 ; i <= stride; ++i, u += deltau){
+  for(uint_t i = 1 ; i <= stride; ++i, u += deltau){
     p2 = getPointAt(u);
     length += norm(p2 - p1);
     p1 = p2;

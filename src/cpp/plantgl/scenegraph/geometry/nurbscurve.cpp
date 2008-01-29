@@ -52,7 +52,7 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 
-const uint32_t NurbsCurve::DEFAULT_NURBS_DEGREE(3);
+const uint_t NurbsCurve::DEFAULT_NURBS_DEGREE(3);
 
 
 /* ----------------------------------------------------------------------- */
@@ -72,7 +72,7 @@ NurbsCurve::Builder::~Builder( ) {
 
 SceneObjectPtr NurbsCurve::Builder::build( ) const {
   if (isValid()){
-      uint32_t _degree=0;
+      uint_t _degree=0;
       RealArrayPtr *_knots;
       if( ! Degree ){
       if( ! KnotList ) _degree = min ( DEFAULT_NURBS_DEGREE,(*CtrlPointList)->getSize() - 1) ;
@@ -112,13 +112,13 @@ bool NurbsCurve::Builder::isValid( ) const {
     return false;
   }
 
-  uint32_t _size = (*CtrlPointList)->getSize();
+  uint_t _size = (*CtrlPointList)->getSize();
   if ( _size < 3 ) {
     genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater than 2.");
     return false;
   }
 
-  for (uint32_t i=0; i<_size;i++)
+  for (uint_t i=0; i<_size;i++)
     if (fabs((*CtrlPointList)->getAt(i).w()) < GEOM_TOLERANCE) {
       genMessage
         (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Nurbs Curve","CtrlPointList",number(i + 1).c_str(),"Weigth must be not null.");
@@ -149,18 +149,18 @@ bool NurbsCurve::Builder::isValid( ) const {
 
   // Clamped knot vector test
   if( KnotList ){
-      uint32_t _deg;
+      uint_t _deg;
       if (Degree !=NULL) _deg = (*Degree);
       else _deg =  ((*KnotList)->getSize()) - _size -1;
       real_t _val = (*KnotList)->getAt(0);
-      for (uint32_t i = 1 ; i < _deg+1 ; i++ )
+      for (uint_t i = 1 ; i < _deg+1 ; i++ )
           if( (!(fabs ((*KnotList)->getAt(i) - _val ) <GEOM_TOLERANCE ))){
               genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Curve","KnotList",number(i+1).c_str(),"Must be a clamped vector.");
               return false;
           }
-      uint32_t _knsize = (*KnotList)->getSize();
+      uint_t _knsize = (*KnotList)->getSize();
       _val = (*KnotList)->getAt(_knsize -1  );
-      for (uint32_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
+      for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
           if( !(fabs ((*KnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
               genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Curve","KnotList",number(j+1).c_str(),"Must be a clamped vector.");
               return false;
@@ -195,8 +195,8 @@ NurbsCurve::NurbsCurve(  ) :
 
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          const RealArrayPtr  knots,
-                         uint32_t degree,
-                         uint32_t stride ) :
+                         uint_t degree,
+                         uint_t stride ) :
   BezierCurve(ctrlPoints, stride),
   __degree(degree),
   __knotList(knots)
@@ -210,12 +210,12 @@ NurbsCurve::~NurbsCurve( ) {
 }
 /* ----------------------------------------------------------------------- */
 
-const uint32_t
+const uint_t
 NurbsCurve::getDegree( ) const {
   return __degree;
 }
 
-uint32_t&
+uint_t&
 NurbsCurve::getDegree( ) {
   return __degree;
 }
@@ -253,17 +253,17 @@ bool NurbsCurve::setKnotListToDefault( ){
     return true;
 }
 
-TOOLS(RealArrayPtr) NurbsCurve::defaultKnotList( uint32_t nbCtrlPoints, uint32_t degree)
+TOOLS(RealArrayPtr) NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
 {
-    uint32_t _size = nbCtrlPoints + degree + 1;
+    uint_t _size = nbCtrlPoints + degree + 1;
     RealArrayPtr knotList = RealArrayPtr(new RealArray(_size));
-    for (uint32_t i = 0 ; i < degree+1 ; i++ )
+    for (uint_t i = 0 ; i < degree+1 ; i++ )
         knotList->setAt(i , 0.0);
 
-    for( uint32_t j =   degree+1 ; j<_size - degree - 1; j++ )
+    for( uint_t j =   degree+1 ; j<_size - degree - 1; j++ )
         knotList->setAt(j ,(real_t) ( j - degree )  /(real_t)(_size - (2 * degree)  - 1 ));
 
-    for (uint32_t k = _size - degree - 1 ; k < _size ; k++ )
+    for (uint_t k = _size - degree - 1 ; k < _size ; k++ )
         knotList->setAt(k , 1.0);
     return knotList;
 }
@@ -272,22 +272,22 @@ bool NurbsCurve::isKnotListToDefault( ) const {
     return defaultKnotListTest(getKnotList(),__ctrlPointList->getSize(),__degree);
 }
 
-bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint32_t nbCtrlPoints, uint32_t degree )
+bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree )
 {
     if( knots.isNull() ) return true;
-    uint32_t _size=knots->getSize();
+    uint_t _size=knots->getSize();
     if (_size != nbCtrlPoints + degree + 1) return false;
     real_t _val = knots->getAt(0);
-    for (uint32_t i = 1 ; i < degree+1 ; i++ )
+    for (uint_t i = 1 ; i < degree+1 ; i++ )
         if( !(fabs (knots->getAt(i) -_val ) <GEOM_TOLERANCE) ) return false;
 
     _val = real_t(1.0) / (real_t)(_size - (2 * degree)  - 1 );
-    for(uint32_t j= degree+1;j<_size - degree -1;j++)
+    for(uint_t j= degree+1;j<_size - degree -1;j++)
         if(!(fabs(fabs(knots->getAt(j+1)-knots->getAt(j))-_val)<GEOM_EPSILON))
             return false;
 
     _val = knots->getAt(_size -1  );
-    for (uint32_t k = _size - degree - 1 ; k < _size ; k++ )
+    for (uint_t k = _size - degree - 1 ; k < _size ; k++ )
         if( !(fabs (knots->getAt(k) -_val ) <GEOM_TOLERANCE) ) return false;
     return true;
 }
@@ -300,9 +300,9 @@ NurbsCurve::apply( Action& action ) {
 bool NurbsCurve::isValid( ) const {
   Builder _builder;
   _builder.CtrlPointList = const_cast< Point4ArrayPtr *>(&__ctrlPointList);
-  _builder.Degree = const_cast<uint32_t *>(&__degree);
+  _builder.Degree = const_cast<uint_t *>(&__degree);
   _builder.KnotList = const_cast<RealArrayPtr *>(&__knotList);
-  _builder.Stride = const_cast<uint32_t *>(&__stride);
+  _builder.Stride = const_cast<uint_t *>(&__stride);
   return _builder.isValid();
 }
 
@@ -324,12 +324,12 @@ NurbsCurve::copy() const
   From the Nurbs Book : A2.1 p68
   Used only for clamped knot vector.
 */
-uint32_t NurbsCurve::findSpan(real_t u)  const  {
+uint_t NurbsCurve::findSpan(real_t u)  const  {
     return PGL::findSpan(u,__degree,__knotList);
 }
 
 RealArrayPtr
-NurbsCurve::computeBasisFunctions(uint32_t span, real_t u) const  {
+NurbsCurve::computeBasisFunctions(uint_t span, real_t u) const  {
     return basisFunctions(span,u,__degree,__knotList);
 }
 
@@ -410,10 +410,10 @@ Point4ArrayPtr NurbsCurve::getDerivativesAt(real_t u) const {
 Vector3 NurbsCurve::getPointAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
 
-    uint32_t span = findSpan(u);
+    uint_t span = findSpan(u);
     RealArrayPtr _basisFunctions = computeBasisFunctions(span,u);
     Vector4 Cw(0.0,0.0,0.0,0.0);
-    for (uint32_t j = 0; j <= __degree; j++) {
+    for (uint_t j = 0; j <= __degree; j++) {
         Vector4 Pj = __ctrlPointList->getAt( span - __degree + j );
         Pj.x() *= Pj.w();
         Pj.y() *= Pj.w();
@@ -521,18 +521,18 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
 }
 
 
-uint32_t 
+uint_t 
 PGL(findSpan)(real_t u,  
-	 uint32_t _degree, 
+	 uint_t _degree, 
 	 const RealArrayPtr& _knotList ){
-    uint32_t n = _knotList->getSize()-_degree -1;
+    uint_t n = _knotList->getSize()-_degree -1;
 
   if( u >= _knotList->getAt( n ) )return ( n -1 );
   if( u <= _knotList->getAt( _degree )  )return ( _degree );
 
-  uint32_t low = _degree;
-  uint32_t high = n ;
-  uint32_t mid = ( low + high ) / 2;
+  uint_t low = _degree;
+  uint_t high = n ;
+  uint_t mid = ( low + high ) / 2;
   real_t _knot =  _knotList->getAt(mid);
 
   while (u < _knot  || u >= _knotList->getAt(mid+1) ){
@@ -547,10 +547,10 @@ PGL(findSpan)(real_t u,
 }
 
 RealArrayPtr
-PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPtr& _knotList) {
+PGL(basisFunctions)(uint_t span, real_t u, uint_t _degree, const RealArrayPtr& _knotList) {
   RealArrayPtr BasisFunctions(new RealArray(_degree + 1));
   if( span >= _knotList->getSize()-_degree - 1){ // for clamped vector only
-    for(uint32_t _i = 0 ; _i <_degree ; _i ++)
+    for(uint_t _i = 0 ; _i <_degree ; _i ++)
       BasisFunctions->setAt(_degree - _i ,1.0);
     return BasisFunctions;
   }
@@ -562,13 +562,13 @@ PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPt
 
   BasisFunctions->setAt(0,1.0);
 
-  for( uint32_t j = 1 ; j <= _degree ; j++ ){
+  for( uint_t j = 1 ; j <= _degree ; j++ ){
     left[j] = u - _knotList->getAt(span + 1 -j) ;
     right[j] = _knotList->getAt(span + j) - u ;
     saved = 0.0;
-    for ( uint32_t r = 0 ; r < j ; r++){
+    for ( uint_t r = 0 ; r < j ; r++){
         if(right[r+1] + left[j-r] ==0){
-            for(uint32_t m = 0 ; m <2*(_degree+1) ; m++)cerr << left[m] << " - ";
+            for(uint_t m = 0 ; m <2*(_degree+1) ; m++)cerr << left[m] << " - ";
             cerr << "right[" << r << "+1] = " << right[r+1] << " & left["
                  << j << '-' << r << "] = " << left[j-r] << endl;
         }
@@ -584,7 +584,7 @@ PGL(basisFunctions)(uint32_t span, real_t u, uint32_t _degree, const RealArrayPt
 
 /* Algo A2.3 p72 Nurbs Book */
 RealArray2Ptr
-PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint32_t _degree, const RealArrayPtr& _knotList ){
+PGL(derivatesBasisFunctions)(int n,real_t u, int span,  uint_t _degree, const RealArrayPtr& _knotList ){
   real_t * left = (real_t *) alloca(2*(_degree+1)*sizeof(real_t)) ;
   real_t * right = &left[_degree+1] ;
 
@@ -690,7 +690,7 @@ NurbsCurve2D::Builder::~Builder( ) {
 
 SceneObjectPtr NurbsCurve2D::Builder::build( ) const {
   if (isValid()){
-      uint32_t _degree=0;
+      uint_t _degree=0;
       RealArrayPtr *_knots;
       if( ! Degree ){
       if( ! KnotList ) _degree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE,(*CtrlPointList)->getSize() - 1) ;
@@ -729,13 +729,13 @@ bool NurbsCurve2D::Builder::isValid( ) const {
     return false;
   }
 
-  uint32_t _size = (*CtrlPointList)->getSize();
+  uint_t _size = (*CtrlPointList)->getSize();
   if ( _size < 3 ) {
     genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","CtrlPointList","Must be greater than 2.");
     return false;
   }
 
-  for (uint32_t i=0; i<_size;i++)
+  for (uint_t i=0; i<_size;i++)
     if (fabs((*CtrlPointList)->getAt(i).z()) < GEOM_TOLERANCE) {
       genMessage
         (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"NurbsCurve2D","CtrlPointList",number(i + 1).c_str(),"Weigth must be not null.");
@@ -766,18 +766,18 @@ bool NurbsCurve2D::Builder::isValid( ) const {
 
   // Clamped knot vector test
   if( KnotList ){
-      uint32_t _deg;
+      uint_t _deg;
       if (Degree !=NULL) _deg = (*Degree);
       else _deg =  ((*KnotList)->getSize()) - _size -1;
       real_t _val = (*KnotList)->getAt(0);
-      for (uint32_t i = 1 ; i < _deg+1 ; i++ )
+      for (uint_t i = 1 ; i < _deg+1 ; i++ )
           if( (!(fabs ((*KnotList)->getAt(i) - _val ) <GEOM_TOLERANCE ))){
               genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"NurbsCurve2D","KnotList",number(i+1).c_str(),"Must be a clamped vector.");
               return false;
           }
-      uint32_t _knsize = (*KnotList)->getSize();
+      uint_t _knsize = (*KnotList)->getSize();
       _val = (*KnotList)->getAt(_knsize -1  );
-      for (uint32_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
+      for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
           if( !(fabs ((*KnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
               genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"NurbsCurve2D","KnotList",number(j+1).c_str(),"Must be a clamped vector.");
               return false;
@@ -807,7 +807,7 @@ NurbsCurve2D::NurbsCurve2D(   ) :
     __knotList(0){
 }
 
-NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPtr  knots, uint32_t degree, uint32_t stride ) :
+NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPtr  knots, uint_t degree, uint_t stride ) :
   BezierCurve2D(ctrlPoints, stride),
   __degree(degree),
   __knotList(knots)
@@ -827,12 +827,12 @@ NurbsCurve2D::apply( Action& action ) {
   return action.process(this);
 }
 
-const uint32_t
+const uint_t
 NurbsCurve2D::getDegree( ) const {
   return __degree;
 }
 
-uint32_t&
+uint_t&
 NurbsCurve2D::getDegree( ) {
   return __degree;
 }
@@ -880,9 +880,9 @@ bool NurbsCurve2D::isKnotListToDefault( ) const {
 bool NurbsCurve2D::isValid( ) const {
   Builder _builder;
   _builder.CtrlPointList = const_cast< Point3ArrayPtr *>(&__ctrlPointList);
-  _builder.Degree = const_cast<uint32_t *>(&__degree);
+  _builder.Degree = const_cast<uint_t *>(&__degree);
   _builder.KnotList = const_cast<RealArrayPtr *>(&__knotList);
-  _builder.Stride = const_cast<uint32_t *>(&__stride);
+  _builder.Stride = const_cast<uint_t *>(&__stride);
   return _builder.isValid();
 }
 
@@ -901,17 +901,17 @@ NurbsCurve2D::copy() const
 /*                   Computational Algorithms                              */
 /* ----------------------------------------------------------------------- */
 
-uint32_t NurbsCurve2D::findSpan(real_t u) const {
+uint_t NurbsCurve2D::findSpan(real_t u) const {
     return PGL::findSpan(u,__degree,__knotList);
 }
 
 Vector2 NurbsCurve2D::getPointAt(real_t u) const{
   GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
 
-  uint32_t span = findSpan(u);
+  uint_t span = findSpan(u);
   RealArrayPtr _basisFunctions = basisFunctions(span,u,__degree,__knotList);
   Vector3 Cw(0.0,0.0,0.0);
-  for (uint32_t j = 0; j <= __degree; j++) {
+  for (uint_t j = 0; j <= __degree; j++) {
       Vector3 Pj = __ctrlPointList->getAt( span - __degree + j );
       Pj.x() *= Pj.z();
       Pj.y() *= Pj.z();

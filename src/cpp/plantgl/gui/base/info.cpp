@@ -806,6 +806,8 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 	TYPEITEM(item, item2tris2, uint16_t)
 	TYPEITEM(item, item2tris2, int32_t)
 	TYPEITEM(item, item2tris2, uint32_t)
+	TYPEITEM(item, item2tris2, int_t)
+	TYPEITEM(item, item2tris2, uint_t)
 	TYPEITEM(item, item2tris2, real_t)
 
 /* ----------------------------------------------------------------------- */

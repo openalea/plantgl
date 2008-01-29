@@ -50,7 +50,7 @@
 
 PGL_BEGIN_NAMESPACE
 
-typedef STDEXT::hash_map<uint32_t,AppearancePtr> VGStarColorMap;
+typedef STDEXT::hash_map<uint_t,AppearancePtr> VGStarColorMap;
 
 /* ----------------------------------------------------------------------- */
 

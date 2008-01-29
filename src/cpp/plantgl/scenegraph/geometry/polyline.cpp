@@ -70,7 +70,7 @@ bool Polyline::Builder::isValid( ) const {
 	if(!EMValid()) return false;
 
 	if (ColorList && *ColorList) {
-		uint32_t _colorListSize = (*ColorList)->getSize();
+		uint_t _colorListSize = (*ColorList)->getSize();
 		if(_colorListSize != (*PointList)->getSize()){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Polyline","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
@@ -108,13 +108,13 @@ bool Polyline::apply( Action& action ) {
 }
 
 const Vector3& 
-Polyline::getPointListAt( uint32_t i ) const {
+Polyline::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);
 }
 
 Vector3& 
-Polyline::getPointListAt( uint32_t i ) {
+Polyline::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);
 }
@@ -129,7 +129,7 @@ Polyline::getLastKnot() const{
   return (real_t)(__pointList->getSize()-1);
 }
 
-const uint32_t
+const uint_t
 Polyline::getStride() const{
     return (__pointList->getSize()-1);
 }
@@ -137,8 +137,8 @@ Polyline::getStride() const{
 Vector3 Polyline::getPointAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     real_t u1 = (int)u;
-    if(u1 == u)return __pointList->getAt((uint32_t)u1);
-    else return ((__pointList->getAt((uint32_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint32_t)(u1+1)) * (u-u1));
+    if(u1 == u)return __pointList->getAt((uint_t)u1);
+    else return ((__pointList->getAt((uint_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint_t)(u1+1)) * (u-u1));
 }
 
 Vector3 Polyline::getTangentAt(real_t u) const{
@@ -147,13 +147,13 @@ Vector3 Polyline::getTangentAt(real_t u) const{
     if(u <= 0) return (__pointList->getAt(1)-__pointList->getAt(0));
     else if(u >= (__pointList->getSize()-1)) return (__pointList->getAt(__pointList->getSize()-1)-__pointList->getAt(__pointList->getSize()-2));
     else if(u1 == u){
-        Vector3 _a = (__pointList->getAt((uint32_t)u1)-__pointList->getAt((uint32_t)(u1-1)));
-        Vector3 _b = (__pointList->getAt((uint32_t)u1+1)-__pointList->getAt((uint32_t)u1));
+        Vector3 _a = (__pointList->getAt((uint_t)u1)-__pointList->getAt((uint_t)(u1-1)));
+        Vector3 _b = (__pointList->getAt((uint_t)u1+1)-__pointList->getAt((uint_t)u1));
         _a.normalize();
         _b.normalize();
         return (_a+_b);
     }
-    else return (__pointList->getAt((uint32_t)(u1+1))-(__pointList->getAt((uint32_t)u1)));
+    else return (__pointList->getAt((uint_t)(u1+1))-(__pointList->getAt((uint_t)u1)));
 }
 
 Vector3 Polyline::getNormalAt(real_t u) const{
@@ -285,13 +285,13 @@ Polyline2D::copy() const
 }
 
 const Vector2& 
-Polyline2D::getPointListAt( uint32_t i ) const {
+Polyline2D::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);
 }
 
 Vector2&
-Polyline2D::getPointListAt( uint32_t i ) {
+Polyline2D::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);
 }
@@ -306,7 +306,7 @@ Polyline2D::getPointList( ){
   return __pointList;
 }
 
-uint32_t 
+uint_t 
 Polyline2D::getPointListSize( ) const {
   return __pointList->getSize();
 }
@@ -321,7 +321,7 @@ Polyline2D::getLastKnot() const{
   return (real_t)(__pointList->getSize()-1);
 }
 
-const uint32_t 
+const uint_t 
 Polyline2D::getStride() const{
   return __pointList->getSize();
 }
@@ -330,8 +330,8 @@ Vector2
 Polyline2D::getPointAt(real_t u) const{
   GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
   real_t u1 = (int)u;
-  if(u1 == u)return __pointList->getAt((uint32_t)u1);
-    else return ((__pointList->getAt((uint32_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint32_t)(u1+1)) * (u-u1));
+  if(u1 == u)return __pointList->getAt((uint_t)u1);
+    else return ((__pointList->getAt((uint_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint_t)(u1+1)) * (u-u1));
 }
 
 Vector2 Polyline2D::getTangentAt(real_t u) const{
@@ -340,13 +340,13 @@ Vector2 Polyline2D::getTangentAt(real_t u) const{
     if(u <= 0) return (__pointList->getAt(1)-__pointList->getAt(0));
     else if(u >= (__pointList->getSize()-1)) return (__pointList->getAt(__pointList->getSize()-1)-__pointList->getAt(__pointList->getSize()-2));
     else if(u1 == u){
-        Vector2 _a = (__pointList->getAt((uint32_t)u1)-__pointList->getAt((uint32_t)(u1-1)));
-        Vector2 _b = (__pointList->getAt((uint32_t)u1+1)-__pointList->getAt((uint32_t)u1));
+        Vector2 _a = (__pointList->getAt((uint_t)u1)-__pointList->getAt((uint_t)(u1-1)));
+        Vector2 _b = (__pointList->getAt((uint_t)u1+1)-__pointList->getAt((uint_t)u1));
         _a.normalize();
         _b.normalize();
         return (_a+_b);
     }
-    else return (__pointList->getAt((uint32_t)(u1+1))-(__pointList->getAt((uint32_t)u1)));
+    else return (__pointList->getAt((uint_t)(u1+1))-(__pointList->getAt((uint_t)u1)));
 }
 
 Vector2 Polyline2D::getNormalAt(real_t u) const{

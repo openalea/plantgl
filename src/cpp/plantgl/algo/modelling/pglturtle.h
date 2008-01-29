@@ -71,13 +71,13 @@ public:
 
     AppearancePtr getMaterial(size_t pos);
 
-    void appendColor(uint32_t red, uint32_t green, uint32_t blue);
+    void appendColor(uint_t red, uint_t green, uint_t blue);
 
     void appendColor(float red, float green, float blue);
 
     void appendColor(const Color3& mat);
     
-    void setColorAt(size_t pos, uint32_t red, uint32_t green, uint32_t blue );
+    void setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue );
 
     void setColorAt(size_t pos, float red, float green, float blue );
 

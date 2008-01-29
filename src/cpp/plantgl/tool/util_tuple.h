@@ -110,7 +110,7 @@ public:
   }
 
   /// Return size of this
-  inline uint32_t getSize() const { return 2; }
+  inline uint_t getSize() const { return 2; }
 
   /** Returns a const reference to the \e i-th element of \e self.
       \pre
@@ -206,10 +206,12 @@ typedef Tuple2<bool> BoolTuple2;
 typedef Tuple2<char> CharTuple2;
 typedef Tuple2<int16_t> Int16Tuple2;
 typedef Tuple2<int32_t> Int32Tuple2;
+typedef Tuple2<int_t> IntTuple2;
 typedef Tuple2<real_t> RealTuple2;
 typedef Tuple2<uchar_t> UCharTuple2;
 typedef Tuple2<uint16_t> Uint16Tuple2;
 typedef Tuple2<uint32_t> Uint32Tuple2;
+typedef Tuple2<uint_t> UintTuple2;
 
 
 /*  --------------------------------------------------------------------- */
@@ -271,7 +273,7 @@ public:
   }
 
   /// Return size of this
-  inline uint32_t getSize() const { return 3; }
+  inline uint_t getSize() const { return 3; }
 
   /** Returns a const reference to the \e i-th element of \e self.
       \pre
@@ -372,10 +374,12 @@ typedef Tuple3<bool> BoolTuple3;
 typedef Tuple3<char> CharTuple3;
 typedef Tuple3<int16_t> Int16Tuple3;
 typedef Tuple3<int32_t> Int32Tuple3;
+typedef Tuple3<int_t> IntTuple3;
 typedef Tuple3<real_t> RealTuple3;
 typedef Tuple3<uchar_t> UCharTuple3;
 typedef Tuple3<uint16_t> Uint16Tuple3;
 typedef Tuple3<uint32_t> Uint32Tuple3;
+typedef Tuple3<uint_t> UintTuple3;
 
 
 /*  --------------------------------------------------------------------- */
@@ -441,7 +445,7 @@ public:
   }
 
   /// Return size of this
-  inline uint32_t getSize() const { return 4; }
+  inline uint_t getSize() const { return 4; }
 
   /** Returns a const reference to the \e i-th element of \e self.
       \pre
@@ -553,10 +557,12 @@ typedef Tuple4<bool> BoolTuple4;
 typedef Tuple4<char> CharTuple4;
 typedef Tuple4<int16_t> Int16Tuple4;
 typedef Tuple4<int32_t> Int32Tuple4;
+typedef Tuple4<int_t> IntTuple4;
 typedef Tuple4<real_t> RealTuple4;
 typedef Tuple4<uchar_t> UCharTuple4;
 typedef Tuple4<uint16_t> Uint16Tuple4;
 typedef Tuple4<uint32_t> Uint32Tuple4;
+typedef Tuple4<uint_t> UintTuple4;
 
 
 /*  ---------------------------------------------------------------------- */

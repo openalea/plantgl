@@ -166,18 +166,18 @@ public :
   ViewSelectRecoverEvent3();
 
   /// Constructor.
-  ViewSelectRecoverEvent3(std::vector<uint32_t> * e);
+  ViewSelectRecoverEvent3(std::vector<uint_t> * e);
 
 /// Destructor.
   ~ViewSelectRecoverEvent3();
 
   /// set the selection (for the viewer).
-  void setSelection(const std::vector<uint32_t>& a);
+  void setSelection(const std::vector<uint_t>& a);
 
 //private :
 
   /// Data Selection exchange beetwen the 2 process.
-  std::vector<uint32_t> * __exchange;
+  std::vector<uint_t> * __exchange;
 
 };
 
@@ -186,18 +186,18 @@ class ViewSelectionSet3 : public ViewEvent3 {
 public :
 
   /// Constructor.
-  ViewSelectionSet3(const std::vector<uint32_t>&);
+  ViewSelectionSet3(const std::vector<uint_t>&);
 
   /// Destructor.
   ~ViewSelectionSet3();
 
   /// set the selection (for the viewer).
-  const std::vector<uint32_t>& getSelection() const;
+  const std::vector<uint_t>& getSelection() const;
 
 protected :
 
   /// Data Selection exchange beetwen the 2 process.
-  const std::vector<uint32_t> __data;
+  const std::vector<uint_t> __data;
 
 };
 

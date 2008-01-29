@@ -90,7 +90,7 @@ public:
     inline int getColor() const
 	{ return __params->color; }
     
-    inline uint32_t getId() const
+    inline uint_t getId() const
 	{ return id; }
     
 	/// push the current turtle state on a stack
@@ -100,7 +100,7 @@ public:
     virtual void pop();
 
 	/// Set Id
-    virtual void setId(uint32_t i) { id = i; }
+    virtual void setId(uint_t i) { id = i; }
     void incId();
     void decId() ;
 
@@ -325,7 +325,7 @@ protected:
     TurtleParam& getParameters()
 	  { return *__params; }
 
-    uint32_t popId();
+    uint_t popId();
 
     TurtleParam *        __params;
 
@@ -336,8 +336,8 @@ protected:
 	real_t width_increment;
 	int color_increment;
 	real_t scale_multiplier;
-    uint32_t id;
-    uint32_t parentId;
+    uint_t id;
+    uint_t parentId;
 
 };
 

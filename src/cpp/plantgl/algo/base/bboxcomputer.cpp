@@ -477,8 +477,8 @@ bool BBoxComputer::process( Group * group ) {
   GEOM_BBOXCOMPUTER_CHECK_CACHE(group);
 
   const GeometryArrayPtr& _group = group->getGeometryList();
-  uint32_t _size = _group->getSize();
-  uint32_t _first = 0;
+  uint_t _size = _group->getSize();
+  uint_t _first = 0;
   do {
 	_group->getAt(_first)->apply(*this);
     ++_first;
@@ -486,7 +486,7 @@ bool BBoxComputer::process( Group * group ) {
   if(!__bbox)return false;
 
   BoundingBoxPtr _bbox (new BoundingBox(*__bbox));
-  for (uint32_t _i = _first; _i < _size; ++_i) {
+  for (uint_t _i = _first; _i < _size; ++_i) {
     _group->getAt(_i)->apply(*this);
     if(__bbox) _bbox->extend(__bbox);
   };
@@ -692,11 +692,11 @@ bool BBoxComputer::process( Revolution * revolution ) {
 
   const Point3ArrayPtr& _pointList = __discretizer.getDiscretization()->getPointList();
 
-  uint32_t _size = _pointList->getSize();
+  uint_t _size = _pointList->getSize();
   real_t _yMin = _pointList->getAt(0).y();
   real_t _yMax = _pointList->getAt(0).y();
   real_t _xMax = _pointList->getAt(0).x();
-  for (uint32_t _i = 1; _i < _size; _i++) {
+  for (uint_t _i = 1; _i < _size; _i++) {
     const real_t& _x = _pointList->getAt(_i).x();
     const real_t& _y = _pointList->getAt(_i).y();
     if (_x > _xMax)
@@ -735,8 +735,8 @@ bool BBoxComputer::process( Swung * swung )
   Vector3 _ll= __bbox->getLowerLeftCorner();
   Vector3 _ur= __bbox->getUpperRightCorner();
 
-  uint32_t i= 0;
-  uint32_t size = p->getSize();
+  uint_t i= 0;
+  uint_t size = p->getSize();
   for( i= 1; i < size; i++ )
     {
     p->getAt(i)->apply(*this);

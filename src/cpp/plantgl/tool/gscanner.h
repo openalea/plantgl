@@ -67,7 +67,7 @@ typedef struct yy_buffer_state* LexBufferType;
 
 
 /// Maximum depth of nested include.
-static uint32_t MAX_INCLUDE_DEPTH = 10;
+static uint_t MAX_INCLUDE_DEPTH = 10;
 /// Default prompt for default shell.
 static char * DEFAULT_PROMPT = "> ";
 /// Readline input buffer size.

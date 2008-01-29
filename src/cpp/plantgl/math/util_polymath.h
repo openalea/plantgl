@@ -44,20 +44,20 @@
 TOOLS_BEGIN_NAMESPACE
 
 
-/*! \fn std::vector<real_t> all_bernstein( uint32_t n, const real_t& u );
+/*! \fn std::vector<real_t> all_bernstein( uint_t n, const real_t& u );
    Computes the \e n + 1 th degree Bernstein polynomials for a fixed \e u.
    (see the Nurbs Book p21)
    usefull for Bezier Curve calcul.
 */
-PGLMATH_API extern std::vector<real_t> all_bernstein( uint32_t n, const real_t& u );
+PGLMATH_API extern std::vector<real_t> all_bernstein( uint_t n, const real_t& u );
 
 
-/*! \fn real_t bernstein( uint32_t i, uint32_t n, const real_t& u );
+/*! \fn real_t bernstein( uint_t i, uint_t n, const real_t& u );
    Computes the value of \e i-th Bernstein polynomial for a fixed \e u.
    (see the Nurbs Book p20)
    usefull for Bezier Curve calcul.
 */
-PGLMATH_API extern real_t bernstein( uint32_t i, uint32_t n, const real_t& u );
+PGLMATH_API extern real_t bernstein( uint_t i, uint_t n, const real_t& u );
 
 
 

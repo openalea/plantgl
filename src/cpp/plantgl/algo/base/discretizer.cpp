@@ -216,24 +216,24 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
   const Vector3& _topPoint = asymmetricHull->getTop();
   const real_t& _shapeBot = asymmetricHull->getBottomShape();
   const real_t& _shapeTop = asymmetricHull->getTopShape();
-  uint32_t _slices = asymmetricHull->getSlices();
-  uint32_t _stacks = asymmetricHull->getStacks();
+  uint_t _slices = asymmetricHull->getSlices();
+  uint_t _stacks = asymmetricHull->getStacks();
 
-  uint32_t _totalSlices = _slices * 4;
-  uint32_t _totalStacks = _stacks * 2;
+  uint_t _totalSlices = _slices * 4;
+  uint_t _totalStacks = _stacks * 2;
 
-  uint32_t _ringCount = _totalStacks - 1;     // number of rings of points
-  uint32_t _bot = _totalSlices * _ringCount;  // index of the lower point
-  uint32_t _top = _bot + 1;                   // index of the upper point
+  uint_t _ringCount = _totalStacks - 1;     // number of rings of points
+  uint_t _bot = _totalSlices * _ringCount;  // index of the lower point
+  uint_t _top = _bot + 1;                   // index of the upper point
 
   Point3ArrayPtr _pointList(new Point3Array(_top + 1));
   Index3ArrayPtr _indexList(new Index3Array(_ringCount * _totalSlices * 2));
 
-  uint32_t _cur = 0;
-  uint32_t _next = _ringCount;
+  uint_t _cur = 0;
+  uint_t _next = _ringCount;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
   real_t _azStep = real_t(GEOM_TWO_PI) / _totalSlices;
   real_t _azIter = 0;
@@ -248,7 +248,7 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
   real_t _z2;
 
   // Constructs quadrats by quadrats
-  for (uint32_t _q = 0; _q < 4; _q++) {
+  for (uint_t _q = 0; _q < 4; _q++) {
 
     switch(_q) {
     case 0:
@@ -285,7 +285,7 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
     };
       // _zStep = _deltaZ / _slices;
 
-    for (uint32_t _i = 0; _i < _slices; _i++) {
+    for (uint_t _i = 0; _i < _slices; _i++) {
 
       // Computes the peripheral point
       real_t _cosAz = cos(_azIter);
@@ -301,7 +301,7 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
       real_t _rStepBot = _PiBot.radius / _stacks;
       real_t _rIterBot = 0;
 
-      for (uint32_t _j = 0; _j < _stacks - 1; _j++) {
+      for (uint_t _j = 0; _j < _stacks - 1; _j++) {
         _rIterBot += _rStepBot;
 
         Vector3::Cylindrical _PijBot(_rIterBot,
@@ -331,7 +331,7 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
       real_t _rStepTop = _PiTop.radius / _stacks;
       real_t _rIterTop = _PiTop.radius;
 
-      for (uint32_t _j2 = 0; _j2 < _stacks - 1; _j2++) {
+      for (uint_t _j2 = 0; _j2 < _stacks - 1; _j2++) {
         _rIterTop -= _rStepTop;
 
         Vector3::Cylindrical _PijTop(_rIterTop,
@@ -404,11 +404,11 @@ bool Discretizer::process( BezierCurve * bezierCurve ) {
   GEOM_DISCRETIZER_CHECK_CACHE(bezierCurve);
 
   real_t _start = 0;
-  uint32_t _size = bezierCurve->getStride();
+  uint_t _size = bezierCurve->getStride();
   real_t _step = real_t(1.0) / (real_t)_size;
   Point3ArrayPtr _pointList(new Point3Array(_size + 1));
 
-  for (uint32_t _i = 0; _i <= _size; _i++) {
+  for (uint_t _i = 0; _i <= _size; _i++) {
     _pointList->setAt(_i,bezierCurve->getPointAt(_start));
     _start += _step;
   };
@@ -428,8 +428,8 @@ bool Discretizer::process( BezierPatch * bezierPatch ) {
 
   GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(bezierPatch);
 
-  const uint32_t _uStride = bezierPatch->getUStride();
-  const uint32_t _vStride = bezierPatch->getVStride();
+  const uint_t _uStride = bezierPatch->getUStride();
+  const uint_t _vStride = bezierPatch->getVStride();
 
   const real_t _uStride1 = bezierPatch->getUStride() - real_t(1);
   const real_t _vStride1 = bezierPatch->getVStride() - real_t(1);
@@ -437,10 +437,10 @@ bool Discretizer::process( BezierPatch * bezierPatch ) {
   Point3ArrayPtr _pointList(new Point3Array(_uStride * _vStride));
   Index4ArrayPtr _indexList(new Index4Array( (_uStride - 1) * (_vStride - 1)));
 
-  uint32_t _cur = 0;
+  uint_t _cur = 0;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
   for ( real_t _u = 0 ; _u < _uStride1 ; _u ++){
     for (real_t _v = 0; _v < _vStride1; _v ++) {
@@ -548,25 +548,25 @@ bool Discretizer::process( Cone * cone ) {
   real_t _radius = cone->getRadius();
   real_t _height = cone->getHeight();
   bool _solid = cone->getSolid();
-  uint32_t _slices = cone->getSlices();
+  uint_t _slices = cone->getSlices();
 
-  uint32_t _offset = (_solid ? 1 : 0);
+  uint_t _offset = (_solid ? 1 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array(_slices + 1 + _offset));
   Index3ArrayPtr _indexList(new Index3Array(_slices * (1 + _offset)));
 
-  uint32_t _cur = 0;
-  uint32_t _next = 1;
-  uint32_t _base = _slices + 1;
-  uint32_t _top = _base - 1;
+  uint_t _cur = 0;
+  uint_t _next = 1;
+  uint_t _base = _slices + 1;
+  uint_t _top = _base - 1;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
   real_t _angleStep = real_t(GEOM_TWO_PI) / _slices;
 
   _pointList->setAt(_top,Vector3(0,0,_height));
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _x = cos(_i * _angleStep) * _radius;
     real_t _y = sin(_i * _angleStep) * _radius;
 
@@ -607,9 +607,9 @@ bool Discretizer::process( Cylinder * cylinder ) {
   real_t _radius = cylinder->getRadius();
   real_t _height = cylinder->getHeight();
   bool _solid = cylinder->getSolid();
-  uint32_t _slices = cylinder->getSlices();
+  uint_t _slices = cylinder->getSlices();
 
-  uint32_t _offset = (_solid ? 2 : 0);
+  uint_t _offset = (_solid ? 2 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   IndexArrayPtr _indexList;
@@ -620,19 +620,19 @@ bool Discretizer::process( Cylinder * cylinder ) {
       _index4List= Index4ArrayPtr(new Index4Array(_slices ));
 
 
-  uint32_t _cur = 0;
-  uint32_t _next = 2;
-  uint32_t _base = 2 * _slices;
-  uint32_t _top = _base + 1;
+  uint_t _cur = 0;
+  uint_t _next = 2;
+  uint_t _base = 2 * _slices;
+  uint_t _top = _base + 1;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
   if (_solid)
     _pointList->setAt(_top,Vector3(0,0,_height));
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _x = cos(_i * _angleStep) * _radius;
     real_t _y = sin(_i * _angleStep) * _radius;
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
@@ -693,23 +693,23 @@ bool Discretizer::process( ElevationGrid * elevationGrid ) {
 
   GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(elevationGrid);
 
-  const uint32_t& _xDim = elevationGrid->getXDim();
-  const uint32_t& _yDim = elevationGrid->getYDim();
+  const uint_t& _xDim = elevationGrid->getXDim();
+  const uint_t& _yDim = elevationGrid->getYDim();
 
-  uint32_t _colCount = _yDim - 1;
-  uint32_t _rowCount = _xDim - 1;
+  uint_t _colCount = _yDim - 1;
+  uint_t _rowCount = _xDim - 1;
 
   Point3ArrayPtr _pointList(new Point3Array(_xDim * _yDim));
   Index3ArrayPtr _indexList(new Index3Array(_rowCount * _colCount * 2));
-  uint32_t _cur = 0;
-  uint32_t _next = 1;
+  uint_t _cur = 0;
+  uint_t _next = 1;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
 
-  for (uint32_t _j = 0; _j < _yDim; _j++) {
-    for (uint32_t _i = 0; _i < _xDim; _i++) {
+  for (uint_t _j = 0; _j < _yDim; _j++) {
+    for (uint_t _i = 0; _i < _xDim; _i++) {
 
       _pointList->setAt(_pointCount++,elevationGrid->getPointAt(_i,_j));
       if ((_i < _rowCount) && (_j < _colCount)) {
@@ -798,59 +798,59 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
   real_t _xcenter = (_xMinAndMax.second->x() + _xMinAndMax.first->x())/2;
   real_t _ycenter = (_yMinAndMax.second->y() + _yMinAndMax.first->y())/2;
 
-  uint32_t _hSize = _horizontal->getSize();
-  uint32_t _vSize = _vertical->getSize();
+  uint_t _hSize = _horizontal->getSize();
+  uint_t _vSize = _vertical->getSize();
 
 
   // Computes the position of the top
   Point3Array::const_iterator _begin = _vertical->getBegin();
   pair<Point3Array::const_iterator,Point3Array::const_iterator>
     _minAndMax = _vertical->getYMinAndMax();
-  uint32_t _ndxBot = distance(_begin,_minAndMax.first);
-  uint32_t _ndxTop = distance(_begin,_minAndMax.second);
+  uint_t _ndxBot = distance(_begin,_minAndMax.first);
+  uint_t _ndxTop = distance(_begin,_minAndMax.second);
 
-  vector<uint32_t> _ndx1;
+  vector<uint_t> _ndx1;
   real_t _len1 = 0;
-  uint32_t _iNdx = _ndxBot;
+  uint_t _iNdx = _ndxBot;
 
   while (_iNdx != _ndxTop) {
     _ndx1.push_back(_iNdx);
-    uint32_t _jNdx = (_iNdx + 1) % _vSize;
+    uint_t _jNdx = (_iNdx + 1) % _vSize;
     _len1 += norm(_vertical->getAt(_iNdx) - _vertical->getAt(_jNdx));
     _iNdx = _jNdx;
   };
   _ndx1.push_back(_ndxTop);
 
-  vector<uint32_t> _ndx2;
+  vector<uint_t> _ndx2;
   real_t _len2 = 0;
   _iNdx = _ndxBot;
 
   while (_iNdx != _ndxTop) {
     _ndx2.push_back(_iNdx);
-    uint32_t _jNdx = _iNdx == 0 ? _vSize - 1 : _iNdx - 1;
+    uint_t _jNdx = _iNdx == 0 ? _vSize - 1 : _iNdx - 1;
     _len2 += norm(_vertical->getAt(_iNdx) - _vertical->getAt(_jNdx));
     _iNdx = _jNdx;
   };
 
   _ndx2.push_back(_ndxTop);
 
-  uint32_t _stacks1 = _ndx1.size() - 1;
-  uint32_t _stacks2 = _ndx2.size() - 1;
-  uint32_t _stacks = std::max(_stacks1,_stacks2);
-//  uint32_t _stacks = _stacks1 + _stacks2;
+  uint_t _stacks1 = _ndx1.size() - 1;
+  uint_t _stacks2 = _ndx2.size() - 1;
+  uint_t _stacks = std::max(_stacks1,_stacks2);
+//  uint_t _stacks = _stacks1 + _stacks2;
 
-  uint32_t _ring = _stacks - 1;
-  uint32_t _ringBySize = _ring * _hSize;
+  uint_t _ring = _stacks - 1;
+  uint_t _ringBySize = _ring * _hSize;
 
-  uint32_t _bot = _ringBySize;
-  uint32_t _top = _bot + 1;
-  uint32_t _cur = 0;
+  uint_t _bot = _ringBySize;
+  uint_t _top = _bot + 1;
+  uint_t _cur = 0;
 
   Point3ArrayPtr _pointList(new Point3Array(_ringBySize + 2));
   Index3ArrayPtr _indexList(new Index3Array(_ringBySize * 2));
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
   Vector3 _p1, _p2;
 
@@ -862,14 +862,14 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
   real_t _dt1 = _dtSeg1;
   real_t _dt2 = _dtSeg2;
 
-  uint32_t _i1 = 0;
-  uint32_t _i2 = 0;
-  for (uint32_t _i = 0; _i < _hSize; _i++) {
-    uint32_t _j = (_i + 1) % _hSize;
+  uint_t _i1 = 0;
+  uint_t _i2 = 0;
+  for (uint_t _i = 0; _i < _hSize; _i++) {
+    uint_t _j = (_i + 1) % _hSize;
     _indexList->setAt(_indexCount++,Index3(_cur + _i, _bot, _cur + _j));
   };
 
-  for (uint32_t _iStacks = 1; _iStacks < _stacks; _iStacks++) {
+  for (uint_t _iStacks = 1; _iStacks < _stacks; _iStacks++) {
 
     real_t _t = (real_t)_iStacks / (real_t)_stacks;
 
@@ -924,7 +924,7 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
     Vector2 _v( (_p1.x() + _p2.x()) / 2 ,
                 (_p1.y() + _p2.y()) / 2 );
 
-    for (uint32_t _hPoint = 0; _hPoint < _hSize; _hPoint++) {
+    for (uint_t _hPoint = 0; _hPoint < _hSize; _hPoint++) {
 
       const Vector2 _p = Vector2(_horizontal->getAt(_hPoint).x(),_horizontal->getAt(_hPoint).y());
 
@@ -933,7 +933,7 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
                                 _sf * (_p.y()-_ycenter) + _ycenter,
                                 _sinA * _p.x() * _sf + _v.y()));
 
-      uint32_t _hNextPoint = (_hPoint + 1) % _hSize;
+      uint_t _hNextPoint = (_hPoint + 1) % _hSize;
       if (_iStacks != _stacks - 1) {
         _indexList->setAt(_indexCount++,
                           Index3(_cur + _hPoint,
@@ -993,9 +993,9 @@ bool Discretizer::process( Frustum * frustum ) {
   real_t _height = frustum->getHeight();
   real_t _taper = frustum->getTaper();
   bool _solid = frustum->getSolid();
-  uint32_t _slices = frustum->getSlices();
+  uint_t _slices = frustum->getSlices();
 
-  uint32_t _offset = (_solid ? 2 : 0);
+  uint_t _offset = (_solid ? 2 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   IndexArrayPtr _indexList;
@@ -1007,19 +1007,19 @@ bool Discretizer::process( Frustum * frustum ) {
 
 
 
-  uint32_t _cur = 0;
-  uint32_t _next = 2;
-  uint32_t _base = 2 * _slices;
-  uint32_t _top = _base + 1;
+  uint_t _cur = 0;
+  uint_t _next = 2;
+  uint_t _base = 2 * _slices;
+  uint_t _top = _base + 1;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
   if (_solid)
     _pointList->setAt(_top,Vector3(0,0,_height));
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _x = cos(_i * _angleStep) * _radius;
     real_t _y = sin(_i * _angleStep) * _radius;
 
@@ -1096,7 +1096,7 @@ bool Discretizer::process( Extrusion * extrusion ){
 	  closed = true;
 	}
 
-    uint32_t _nbPoints = _crossPoints->getSize();
+    uint_t _nbPoints = _crossPoints->getSize();
 
     LineicModelPtr _axis = extrusion->getAxis();
 
@@ -1105,7 +1105,7 @@ bool Discretizer::process( Extrusion * extrusion ){
     if(!_profileTransf)_useTransf = false;
 
     real_t _start = _axis->getFirstKnot();
-    uint32_t _size =  _axis->getStride();
+    uint_t _size =  _axis->getStride();
     real_t _step =  (_axis->getLastKnot()-_start) / (real_t) _size;
     real_t _starttransf = 0;
     real_t _steptransf = 0;
@@ -1118,8 +1118,8 @@ bool Discretizer::process( Extrusion * extrusion ){
     Point2ArrayPtr _texList(0);
 	if(__computeTexCoord)_texList = Point2ArrayPtr(new Point2Array(((_size+1)*(_nbPoints))));
     Index4ArrayPtr _indexList(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
-    uint32_t _j = 0;
-    uint32_t _k = 0;
+    uint_t _j = 0;
+    uint_t _k = 0;
 
     Vector3 _oldBinormal;
     Vector3 _normal;( _axis->getNormalAt(_start) );
@@ -1137,7 +1137,7 @@ bool Discretizer::process( Extrusion * extrusion ){
       _normal= cross(tg,U);
       }
 
-    for (uint32_t _i = 0; _i < _size; _i++) {
+    for (uint_t _i = 0; _i < _size; _i++) {
         Vector3 _center = _axis->getPointAt(_start);
         Vector3 _velocity = _axis->getTangentAt(_start);
         if(_i!=0)
@@ -1209,7 +1209,7 @@ bool Discretizer::process( Extrusion * extrusion ){
         IndexArrayPtr _indexList2(new IndexArray(2));
         Index a(_nbPoints);
         Index b(_nbPoints);
-        for(uint32_t _p=0; _p < _nbPoints; _p++){
+        for(uint_t _p=0; _p < _nbPoints; _p++){
             a.setAt(_p,_p);
             b.setAt(_p,(_size*_nbPoints)+_p);
         }
@@ -1217,7 +1217,7 @@ bool Discretizer::process( Extrusion * extrusion ){
         _indexList2->setAt(1,b);
         Index3ArrayPtr _cap = _indexList2->triangulate();
         _indexList2 = IndexArrayPtr(new IndexArray(_cap->getSize()+_indexList->getSize()));
-        uint32_t _f =0;
+        uint_t _f =0;
         for(Index3Array::iterator _it2 = _cap->getBegin(); _it2 != _cap->getEnd() ; _it2++){
             _indexList2->setAt(_f,*_it2);_f++;
         }
@@ -1304,7 +1304,7 @@ bool Discretizer::process( IFS * ifs )  {
   chrono.start();
 #endif
 
-  uint32_t size= matrixList->getSize();
+  uint_t size= matrixList->getSize();
 
   Matrix4Array::const_iterator matrix= matrixList->getBegin();
   Transform4Ptr t(new Transform4(*matrix));
@@ -1351,11 +1351,11 @@ bool Discretizer::process( NurbsCurve * nurbsCurve ) {
   GEOM_DISCRETIZER_CHECK_CACHE( nurbsCurve );
 
   real_t _start = nurbsCurve->getFirstKnot();
-  uint32_t _size = nurbsCurve->getStride();
+  uint_t _size = nurbsCurve->getStride();
   real_t _step =  (nurbsCurve->getLastKnot()-_start) / (real_t) _size;
   Point3ArrayPtr _pointList(new Point3Array(_size + 1));
 
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  for (uint_t _i = 0; _i < _size; _i++) {
     _pointList->setAt(_i,nurbsCurve->getPointAt(_start));
     _start += _step;
   };
@@ -1374,8 +1374,8 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   GEOM_ASSERT(nurbsPatch);
   GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(nurbsPatch);
 
-  uint32_t _uStride = nurbsPatch->getUStride();
-  uint32_t _vStride = nurbsPatch->getVStride();
+  uint_t _uStride = nurbsPatch->getUStride();
+  uint_t _vStride = nurbsPatch->getVStride();
 
   real_t _uStride1 = nurbsPatch->getUStride() - real_t(1);
   real_t _vStride1 = nurbsPatch->getVStride() - real_t(1);
@@ -1384,10 +1384,10 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   Point3ArrayPtr _pointList(new Point3Array(_uStride * _vStride));
   Index4ArrayPtr _indexList(new Index4Array( (_uStride - 1) * (_vStride - 1)));
 
-  uint32_t _cur = 0;
+  uint_t _cur = 0;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
   real_t _ufirst=nurbsPatch->getFirstUKnot();
   real_t _ulast=nurbsPatch->getLastUKnot();
   real_t _uinter=_ulast-_ufirst;
@@ -1462,7 +1462,7 @@ bool Discretizer::process( Paraboloid * paraboloid ) {
   uchar_t _slices = paraboloid->getSlices();
   uchar_t _stacks = paraboloid->getStacks();
 
-  uint32_t _stacksBySlices = _stacks * _slices;
+  uint_t _stacksBySlices = _stacks * _slices;
 
   Point3ArrayPtr _pointList(new Point3Array(_solid ?
                                             _stacksBySlices + 2 :
@@ -1477,15 +1477,15 @@ bool Discretizer::process( Paraboloid * paraboloid ) {
   real_t _radiusStep = _radius / _stacks;
   real_t _radiusIter = _radius;
 
-  uint32_t _cur = 0;
-  uint32_t _next = _stacks;
-  uint32_t _bot = _stacksBySlices;
-  uint32_t _top = _stacksBySlices + (_solid ? 1 : 0);
+  uint_t _cur = 0;
+  uint_t _next = _stacks;
+  uint_t _bot = _stacksBySlices;
+  uint_t _top = _stacksBySlices + (_solid ? 1 : 0);
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _cosAngle = cos(_angleIter);
     real_t _sinAngle = sin(_angleIter);
     real_t _x = _cosAngle * _radius;
@@ -1497,7 +1497,7 @@ bool Discretizer::process( Paraboloid * paraboloid ) {
     if (_solid)
       _indexList->setAt(_indexCount++,Index3(_cur,_bot,_next));
 
-    for (uint32_t _j = 1; _j < _stacks; _j++) {
+    for (uint_t _j = 1; _j < _stacks; _j++) {
 
       _radiusIter -= _radiusStep;
       _x = _cosAngle * _radiusIter;
@@ -1563,21 +1563,21 @@ bool Discretizer::process( Revolution * revolution ) {
   }
 
   const Point3ArrayPtr& _curve = __discretization->getPointList();
-  uint32_t _curveSize = _curve->getSize();
-  uint32_t _slices = revolution->getSlices();
+  uint_t _curveSize = _curve->getSize();
+  uint_t _slices = revolution->getSlices();
 
   Point3ArrayPtr _pointList(new Point3Array(_slices * _curveSize));
   Index3ArrayPtr _indexList(new Index3Array(_slices * 2 * (_curveSize - 1)));
 
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
-  uint32_t _cur = 0;
-  uint32_t _next = _curveSize;
+  uint_t _cur = 0;
+  uint_t _next = _curveSize;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
 
     real_t _x = cos(_i * _angleStep);
     real_t _y = sin(_i * _angleStep);
@@ -1587,7 +1587,7 @@ bool Discretizer::process( Revolution * revolution ) {
 
     _pointList->setAt(_pointsCount++,Vector3(_x * _rad, _y * _rad, _z));
 
-    for (uint32_t _j = 1; _j < _curveSize; _j++) {
+    for (uint_t _j = 1; _j < _curveSize; _j++) {
       real_t _rad = _curve->getAt(_j).x();
       real_t _z = _curve->getAt(_j).y();
 
@@ -1631,8 +1631,8 @@ bool Discretizer::process( Swung * swung )
 
   const ProfileInterpolationPtr& section= swung->getProfileInterpolation();
   GEOM_ASSERT(section);
-  uint32_t sectionSize= section->getStride();
-  uint32_t slices = swung->getSlices();
+  uint_t sectionSize= section->getStride();
+  uint_t slices = swung->getSlices();
 
   Point3ArrayPtr pointList(new Point3Array(slices * sectionSize));
 #ifdef TEST_CLOSURE
@@ -1643,7 +1643,7 @@ bool Discretizer::process( Swung * swung )
 
   const real_t angleMin= section->getUMin();
   const real_t angleMax= section->getUMax();
-  uint32_t nbKnots= section->getKnotList()->getSize();
+  uint_t nbKnots= section->getKnotList()->getSize();
   const real_t range=
     ( nbKnots > 1 ) ? ( angleMax - angleMin ) : GEOM_TWO_PI;
 #ifdef TEST_CLOSURE
@@ -1652,13 +1652,13 @@ bool Discretizer::process( Swung * swung )
   const real_t angleStep= range / slices;
 #endif
 
-  uint32_t cur= 0;
-  uint32_t next= sectionSize;
+  uint_t cur= 0;
+  uint_t next= sectionSize;
 
   real_t angle= angleMin;
-  uint32_t pointsCount = 0;
-  uint32_t facesCount = 0;
-  uint32_t i= 0, j= 0;
+  uint_t pointsCount = 0;
+  uint_t facesCount = 0;
+  uint_t i= 0, j= 0;
 
   bool is2D= section->is2DInterpolMode();
 
@@ -1765,9 +1765,9 @@ bool Discretizer::process( Sphere * sphere ) {
   uchar_t _slices = sphere->getSlices();
   uchar_t _stacks = sphere->getStacks();
 
-  uint32_t _ringCount = _stacks - 1;    // number of rings of points
-  uint32_t _bot = _slices * _ringCount; // index of the lower point
-  uint32_t _top = _bot + 1;             // index of the upper point
+  uint_t _ringCount = _stacks - 1;    // number of rings of points
+  uint_t _bot = _slices * _ringCount; // index of the lower point
+  uint_t _top = _bot + 1;             // index of the upper point
 
   Point3ArrayPtr _pointList = Point3ArrayPtr(new Point3Array(_top + 1));
   // Point3ArrayPtr _normalList = Point3ArrayPtr(new Point3Array(_top + 1));
@@ -1776,13 +1776,13 @@ bool Discretizer::process( Sphere * sphere ) {
   real_t _azStep = GEOM_TWO_PI / _slices;
   real_t _elStep = GEOM_PI / _stacks;
 
-  uint32_t _cur = 0;
-  uint32_t _next = _ringCount;
+  uint_t _cur = 0;
+  uint_t _next = _ringCount;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
-  for (uint32_t _i = 0; _i < _slices; ++_i) {
+  for (uint_t _i = 0; _i < _slices; ++_i) {
 
     real_t _az = _i * _azStep;
     real_t _el = - GEOM_HALF_PI + _elStep;
@@ -1800,7 +1800,7 @@ bool Discretizer::process( Sphere * sphere ) {
     _indexList->setAt(_indexCount++,
                       Index3(_cur + _ringCount - 1,_next + _ringCount - 1,_top));
 
-    for (uint32_t _j = 1; _j < _ringCount; ++_j) {
+    for (uint_t _j = 1; _j < _ringCount; ++_j) {
       _el += _elStep;
       _cosEl = cos(_el);
       _x = _cosAz * _cosEl ;
@@ -1833,18 +1833,18 @@ bool Discretizer::process( Sphere * sphere ) {
 	  uchar_t _slices1 = _slices+1;
 	  Point2ArrayPtr _texList(new Point2Array(_slices1 * (_stacks +1)));
 	  _pointCount = 0;
-	  for(uint32_t _i = 0; _i < _slices1 ; ++_i){
+	  for(uint_t _i = 0; _i < _slices1 ; ++_i){
 		  real_t _s = (real_t)_i/(real_t)_slices;
-		  for (uint32_t _j = 1; _j < _stacks; ++_j) {
+		  for (uint_t _j = 1; _j < _stacks; ++_j) {
 			  _texList->setAt(_pointCount++, Vector2(_s,(real_t)_j/(real_t)(_stacks+1)));
 		  }
 	  }
 	  _bot = _pointCount;
-	  for(uint32_t _i = 0; _i < _slices1 ; ++_i){
+	  for(uint_t _i = 0; _i < _slices1 ; ++_i){
 		  _texList->setAt(_pointCount++, Vector2((real_t)_i/(real_t)_slices,0));
 	  }
 	  _top = _pointCount;
-	  for(uint32_t _i = 0; _i < _slices1 ; ++_i){
+	  for(uint_t _i = 0; _i < _slices1 ; ++_i){
 		  _texList->setAt(_pointCount++, Vector2((real_t)_i/(real_t)_slices,1));
 	  }
 	  t->getTexCoordList() = _texList;
@@ -1853,10 +1853,10 @@ bool Discretizer::process( Sphere * sphere ) {
 	  _indexCount = 0;
 	  _cur = 0;
 	  _next = _ringCount;
-	  for(uint32_t _i = 0; _i < _slices ; ++_i){
+	  for(uint_t _i = 0; _i < _slices ; ++_i){
 		  _texIndexList->setAt(_indexCount++, Index3(_cur,_bot+_i,_next));
 		  _texIndexList->setAt(_indexCount++,  Index3(_cur + _ringCount - 1,_next + _ringCount - 1,_top+_i));
-		  for (uint32_t _j = 1; _j < _ringCount; ++_j) {
+		  for (uint_t _j = 1; _j < _ringCount; ++_j) {
 			  _texIndexList->setAt(_indexCount++,Index3(_cur + _j, _cur + _j - 1, _next + _j - 1));
 			  _texIndexList->setAt(_indexCount++,Index3(_cur + _j, _next + _j - 1, _next + _j));
 		  }
@@ -1910,11 +1910,11 @@ bool Discretizer::process( BezierCurve2D * bezierCurve ) {
   GEOM_DISCRETIZER_CHECK_CACHE(bezierCurve);
 
   real_t _start = 0;
-  uint32_t _size = bezierCurve->getStride();
+  uint_t _size = bezierCurve->getStride();
   real_t _step = 1.0 / (real_t)_size;
   Point3ArrayPtr _pointList(new Point3Array(_size + 1));
 
-  for (uint32_t _i = 0; _i <= _size; _i++) {
+  for (uint_t _i = 0; _i <= _size; _i++) {
     _pointList->setAt(_i,Vector3(bezierCurve->getPointAt(_start),0));
     _start += _step;
   };
@@ -1934,7 +1934,7 @@ bool Discretizer::process( Disc * disc ) {
   GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(disc);
 
   real_t _radius = disc->getRadius();
-  uint32_t _slices = disc->getSlices();
+  uint_t _slices = disc->getSlices();
 
   Point3ArrayPtr _pointList(new Point3Array(_slices + 1));
   Point2ArrayPtr _texList(0);
@@ -1943,15 +1943,15 @@ bool Discretizer::process( Disc * disc ) {
   }
   Index3ArrayPtr _indexList(new Index3Array(_slices));
 
-  uint32_t _cen = _slices;
-  uint32_t _cur = 0;
-  uint32_t _next = 1;
+  uint_t _cen = _slices;
+  uint_t _cur = 0;
+  uint_t _next = 1;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
 
     real_t _c = cos(_i * _angleStep);
 	real_t _s = sin(_i * _angleStep);
@@ -1992,11 +1992,11 @@ bool Discretizer::process( NurbsCurve2D * nurbsCurve ) {
   GEOM_DISCRETIZER_CHECK_CACHE(nurbsCurve);
 
   real_t _start = nurbsCurve->getFirstKnot();
-  uint32_t _size = nurbsCurve->getStride();
+  uint_t _size = nurbsCurve->getStride();
   real_t _step =  (nurbsCurve->getLastKnot()-_start) / (real_t) _size;
   Point3ArrayPtr _pointList(new Point3Array(_size + 1));
 
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  for (uint_t _i = 0; _i < _size; _i++) {
     _pointList->setAt(_i,Vector3(nurbsCurve->getPointAt(_start),0));
     _start += _step;
   };

@@ -68,7 +68,7 @@ PolygonComputer::clear(){
   __polygon = 0;
 }
 
-const uint32_t
+const uint_t
 PolygonComputer::getPolygonNb() const{
   return __polygon;
 }
@@ -143,12 +143,12 @@ bool PolygonComputer::process( ExtrudedHull * extrudedHull ){
   const Curve2DPtr& _vcurve = extrudedHull->getVertical();
 
   real_t _start = _vcurve->getFirstKnot();
-  uint32_t size =_vcurve->getStride();
+  uint_t size =_vcurve->getStride();
   real_t _step =  (_vcurve->getLastKnot()-_start) / (real_t) size;
 
   Point2ArrayPtr _pointList(new Point2Array(size));
 
-  for (uint32_t _i = 0; _i < size; _i++) {
+  for (uint_t _i = 0; _i < size; _i++) {
     _pointList->setAt(_i,_vcurve->getPointAt(_start));
     _start += _step;
   };
@@ -160,10 +160,10 @@ bool PolygonComputer::process( ExtrudedHull * extrudedHull ){
   pair<Point2Array::const_iterator,Point2Array::const_iterator>
     _minAndMax = _vertical->getYMinAndMax();
   Point2Array::const_iterator _begin = _vertical->getBegin();
-  uint32_t _ndxBot = distance(_begin,_minAndMax.first);
-  uint32_t _ndxTop = distance(_begin,_minAndMax.second);
-  uint32_t stack1 = (uint32_t)abs((int)_ndxTop - (int)_ndxBot);
-  uint32_t stack2 =  size - stack1;
+  uint_t _ndxBot = distance(_begin,_minAndMax.first);
+  uint_t _ndxTop = distance(_begin,_minAndMax.second);
+  uint_t stack1 = (uint_t)abs((int)_ndxTop - (int)_ndxBot);
+  uint_t stack2 =  size - stack1;
   __polygon = ((max(stack1,stack2)-1) *
     (extrudedHull->getHorizontal()->getStride()+1));
   return true;
@@ -191,7 +191,7 @@ bool PolygonComputer::process( Extrusion * extrusion ){
 }
 
 bool PolygonComputer::process( Group * group ){
-  uint32_t nb = 0;
+  uint_t nb = 0;
   GeometryArrayPtr _geometryList = group->getGeometryList();
    for (GeometryArray::const_iterator _i = _geometryList->getBegin()+1;
        _i != _geometryList->getEnd();
@@ -211,7 +211,7 @@ bool PolygonComputer::process( IFS * ifs )
 GEOM_TRACE("process IFS");
 
   const Transform4ArrayPtr& tList= ifs->getTransfoList();
-  uint32_t nbTransfos= tList->getSize();
+  uint_t nbTransfos= tList->getSize();
   nbTransfos= IFS::power( nbTransfos, ifs->getDepth() );
 
   ifs->getGeometry()->apply(*this);
@@ -250,7 +250,7 @@ bool PolygonComputer::process( Revolution * revolution ){
 
 bool PolygonComputer::process( Swung * swung )
 {
-  const uint32_t& stride= swung->getProfileInterpolation()->getStride();
+  const uint_t& stride= swung->getProfileInterpolation()->getStride();
   __polygon = ( ( stride - 1 ) * swung->getSlices() * 2 );
   return true;
 }
@@ -289,7 +289,7 @@ bool PolygonComputer::process( ScenePtr _scene) {
     __polygon = 0;
     return false;
   }
-  uint32_t nb = 0;
+  uint_t nb = 0;
   for(Scene::iterator _it = _scene->getBegin();
       _it != _scene->getEnd();
       _it++){

@@ -59,7 +59,7 @@ Interpol::Interpol() :
 
 Interpol::Interpol( const Point3ArrayPtr& _points,
                     const RealArrayPtr& _params,
-                    uint32_t _degree,
+                    uint_t _degree,
                     bool _closed ) :
   points(_points),
   knots(_params),
@@ -86,10 +86,10 @@ const RealArrayPtr& Interpol::getParameters( ) const
 RealArrayPtr& Interpol::getParameters( )
     { return knots; }
 
-uint32_t Interpol::getDegree( ) const
+uint_t Interpol::getDegree( ) const
     { return degree; }
 
-uint32_t& Interpol::getDegree( )
+uint_t& Interpol::getDegree( )
     { return degree; }
 
 bool Interpol::getClosure( ) const
@@ -150,15 +150,15 @@ bool Interpol::initTangent()
   GEOM_ASSERT(points);
   GEOM_ASSERT(knots);
 
-  uint32_t size= points->getSize();
+  uint_t size= points->getSize();
   GEOM_ASSERT( size == knots->getSize() );
-  uint32_t n= size-1;
+  uint_t n= size-1;
 
   T= Point3ArrayPtr(new Point3Array(size));
 
   real_t du= 0., dv= 0., alpha= 0.;
   Vector3 dpu, dpv;
-  uint32_t i= 1;
+  uint_t i= 1;
   for( i= 1; i < n; i++ )
     {
     Vector3 P= points->getAt(i-1);
@@ -216,17 +216,17 @@ bool Interpol::initTangent()
 // compute one or two arcs ( degree 2) between points
 // cf. Nurbs Book p 388
 
-uint32_t Interpol::bezierArc2( uint32_t _arcNum )
+uint_t Interpol::bezierArc2( uint_t _arcNum )
 {
 #ifdef DEBUG
-uint32_t methode= 0;
+uint_t methode= 0;
 #endif
 
   GEOM_ASSERT(degree==2);
   GEOM_ASSERT(points);
   GEOM_ASSERT(T);
 
-  uint32_t nbArcs= 1;
+  uint_t nbArcs= 1;
 
   Vector3  P= points->getAt(_arcNum), Q= points->getAt(_arcNum+1);
   Vector3 T1= T->getAt(_arcNum),     T2= T->getAt(_arcNum+1);
@@ -369,7 +369,7 @@ cout<<"P: "<<P<<" Q: "<<Q<<endl;
 // compute one arc ( degree 3) between points
 // cf. Nurbs Book p 395
 
-uint32_t Interpol::bezierArc3( uint32_t _arcNum )
+uint_t Interpol::bezierArc3( uint_t _arcNum )
 {
 #ifdef DEBUG
 //cout<<" bezierArc 3"<<endl;
@@ -454,9 +454,9 @@ cout<<" bezierKV "<<endl;
 
   GEOM_ASSERT(_knots);
 
-  uint32_t size= _knots->getSize();
-  uint32_t nCP= degree * (size-1) + 1;
-  uint32_t nKnots= degree + 1 + nCP;
+  uint_t size= _knots->getSize();
+  uint_t nCP= degree * (size-1) + 1;
+  uint_t nKnots= degree + 1 + nCP;
 
 #ifdef DEBUG
 cout<<" size "<<size<<endl;
@@ -473,7 +473,7 @@ cout<<" nKnots "<<nKnots<<endl;
   real_t u= *_itU;
   *(_itKV++)= u;
 
-  uint32_t i= 1, j= 0;
+  uint_t i= 1, j= 0;
   for( i= 1; _itU != _knots->getEnd(); _itU++ )
     {
     u= *_itU;
@@ -492,23 +492,23 @@ cout<<" nKnots "<<nKnots<<endl;
 
 /////////////////////////////////////////////////////////////////////////////
 
-uint32_t Interpol::checkContinuity( ) const
+uint_t Interpol::checkContinuity( ) const
 {
   if( degree < 2 )
     return 0;
 
   Vector3 Tprev, Tnext;
-  uint32_t i= 0;
-  uint32_t size= CP->getSize();
+  uint_t i= 0;
+  uint_t size= CP->getSize();
 
   if( (size-1) % degree )
     return 0;
 
-  uint32_t nArcs= (size-1) / degree;
+  uint_t nArcs= (size-1) / degree;
 
   for( i= 0; i < nArcs-1; i++ )
     {
-    uint32_t index= (i+1) * degree;
+    uint_t index= (i+1) * degree;
 
     Vector3 P0= CP->getAt(index-1);
     Vector3 P1= CP->getAt(index);
@@ -571,7 +571,7 @@ bool Interpol::run()
   GEOM_ASSERT(points);
   GEOM_ASSERT(knots);
 
-  const uint32_t size= points->getSize();
+  const uint_t size= points->getSize();
 
   if( size != knots->getSize() )
     return false;
@@ -579,7 +579,7 @@ bool Interpol::run()
   if( size < 2 )
     return false;
 
-  const uint32_t max_degree= 3;
+  const uint_t max_degree= 3;
 
   if( degree < 1)
     degree= 1;
@@ -608,13 +608,13 @@ bool Interpol::run()
     if( degree == 2 )
       params= RealArrayPtr( new RealArray() );
 
-    uint32_t n= size-1;
-    uint32_t i= 0;
+    uint_t n= size-1;
+    uint_t i= 0;
     if( degree == 2 )
       {
       for( i= 0; i < n; i++ )
         {
-        uint32_t nbArcs= bezierArc2(i);
+        uint_t nbArcs= bezierArc2(i);
 
         real_t u= knots->getAt(i);
         real_t v= knots->getAt(i+1);
@@ -656,7 +656,7 @@ cout<<"Pas de solution!!!!!!!!!! "<<endl;
     }
 
 #ifdef DEBUG
-  uint32_t c= checkContinuity();
+  uint_t c= checkContinuity();
   if( c < min( 1, degree-1 ) )
     cout<<"Continuite KO"<<endl;
 #endif

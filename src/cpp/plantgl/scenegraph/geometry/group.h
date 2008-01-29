@@ -118,12 +118,12 @@ public:
   /** Returns the value of the \e i-th geom of  \b GeometryList.
       \e pre
       - \e i must belong to the range [0,size of \b GeometryList[. */
-  const GeometryPtr& getGeometryListAt( uint32_t i ) const;
+  const GeometryPtr& getGeometryListAt( uint_t i ) const;
 
   /** Returns the \e i-th geom of  \b GeometryList.
       \e pre
       - \e i must belong to the range [0,size of \b GeometryList[. */
-  GeometryPtr& getGeometryListAt( uint32_t i );
+  GeometryPtr& getGeometryListAt( uint_t i );
 
   /// Returns \b GeometryList values.
   const GeometryArrayPtr& getGeometryList( ) const;
@@ -132,7 +132,7 @@ public:
   GeometryArrayPtr& getGeometryList( );
 
   /// Returns \b GeometryList size.
-  uint32_t getGeometryListSize( ) const;
+  uint_t getGeometryListSize( ) const;
 
   /// Returns \b Skeleton value.
   virtual const PolylinePtr& getSkeleton( ) const ;

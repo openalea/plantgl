@@ -69,7 +69,7 @@ public:
       the normal display type \t. */
   GLTransitionRenderer( Discretizer& discretizer, 
 						QGLWidget * widget = NULL, 
-						uint32_t step = 10);
+						uint_t step = 10);
 
   /// Destructor
   virtual ~GLTransitionRenderer( );
@@ -78,10 +78,10 @@ public:
   void clear( );
 
   /// Return the total step that renderer do.
-  const uint32_t getTotalStep() const;
+  const uint_t getTotalStep() const;
 
   /// Set the total step that renderer do.
-  void setTotalStep(const uint32_t);
+  void setTotalStep(const uint_t);
 
   /// Set the 2 scene \e scene1 and \e scene2 to display.
   void setScene(ScenePtr scene1, ScenePtr scene2);
@@ -105,17 +105,17 @@ public:
   //@}
   
   /// make a render of the 2 scene at the step \e step.
-  virtual bool rend(uint32_t step);
+  virtual bool rend(uint_t step);
 
 protected:
 
   
 
   /// Number of total step
-  uint32_t __totalstep;
+  uint_t __totalstep;
 
   /// Last step
-  uint32_t __laststep;
+  uint_t __laststep;
 
   /// Value of transparency
   GLfloat __transparency;

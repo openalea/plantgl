@@ -62,7 +62,7 @@ PGL_BEGIN_NAMESPACE
 ShapePtr 
 VegeStarLine::build(VGStarColorMap& colormap) const {
 	if(!isValid())return ShapePtr(0);
-	uint32_t c = color.getRed() + 256*color.getGreen() + 256*256*color.getBlue();
+	uint_t c = color.getRed() + 256*color.getGreen() + 256*256*color.getBlue();
 	AppearancePtr mat;
 	VGStarColorMap::const_iterator _it = colormap.find(c);
 	if(_it == colormap.end()){

@@ -80,13 +80,13 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isDecreasing_overloads, isDecreasing, 0, 
 void export_Function()
 {
   class_< Function, FunctionPtr, boost::noncopyable >
-    ("QuantisedFunction",init<const Curve2DPtr& , optional<uint32_t> >
+    ("QuantisedFunction",init<const Curve2DPtr& , optional<uint_t> >
      (args("curve","sampling"),
      "QuantisedFunction(curve[,sampling,clamped]) : Quantised 2D function.\n"
      "If clamped parameter is set to False, if a x value is out of range, first or last value is returned.\n"
      "Otherwise an exception is raised."))
-      .def(init<const Point2ArrayPtr& , optional<uint32_t> >(args("points","sampling"),"Function(points [,sampling])"))
-      // .def(init<const Point2ArrayPtr& , optional<uint32_t> >())
+      .def(init<const Point2ArrayPtr& , optional<uint_t> >(args("points","sampling"),"Function(points [,sampling])"))
+      // .def(init<const Point2ArrayPtr& , optional<uint_t> >())
       .def("__call__",&Func_getValue,args("x"))
       .def("getValue",&Func_getValue,args("x"))
       .def("findX",&func_findX,args("y"))
@@ -96,7 +96,7 @@ void export_Function()
       .def("isDecreasing",&Function::isDecreasing,isDecreasing_overloads())
       .def("isValid",&Function::isValid)
       .def("inverse",&Function::inverse)
-      .def("build",(bool(Function::*)(const Curve2DPtr&, uint32_t))&Function::build,args("curve","sampling"))
+      .def("build",(bool(Function::*)(const Curve2DPtr&, uint_t))&Function::build,args("curve","sampling"))
       .def("build",(bool(Function::*)(const Curve2DPtr&))&Function::build)
       .add_property("sampling",&Function::getSampling)
       .add_property("firstx",&Function::getFirstX)

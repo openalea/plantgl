@@ -50,14 +50,14 @@ TOOLS_BEGIN_NAMESPACE
   (see the Nurbs Book p20)
 */
 
-real_t bernstein( uint32_t i, uint32_t n, const real_t& u ) {
+real_t bernstein( uint_t i, uint_t n, const real_t& u ) {
   vector<real_t> temp(n+1);
   real_t u1=1.0-u;
-  for (uint32_t j = 0; j <= n; j++)
+  for (uint_t j = 0; j <= n; j++)
     temp[j]=0.0;
   temp[n-i] = 1.0;
-  for (uint32_t k = 1; k <= n; k++)
-    for (uint32_t j = n; j >= k; j--)
+  for (uint_t k = 1; k <= n; k++)
+    for (uint_t j = n; j >= k; j--)
       temp[j] = (u1*temp[j]) + (u*temp[j-1]);
   return temp[n];
 }
@@ -66,14 +66,14 @@ real_t bernstein( uint32_t i, uint32_t n, const real_t& u ) {
   Compute the n+1 nth-degree Bernstein polynomials for a fixed u.
   (see the Nurbs Book p21)
 */
-vector<real_t> all_bernstein( uint32_t n, const real_t& u ) {
+vector<real_t> all_bernstein( uint_t n, const real_t& u ) {
   vector<real_t> B(n+1);
   B[0]=1.0;
   real_t u1=1.0-u;
   real_t saved, temp;  
-  for(uint32_t j=1; j<=n; j++){
+  for(uint_t j=1; j<=n; j++){
       saved =0.0;
-      for(uint32_t k=0; k<j; k++){
+      for(uint_t k=0; k<j; k++){
 	  temp = B[k];
 	  B[k] = saved+u1*temp;
 	  saved = u*temp;

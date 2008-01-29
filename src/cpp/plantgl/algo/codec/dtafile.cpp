@@ -95,7 +95,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 		}
 
 	}
-	for(uint32_t a=0;a < (uint32_t) num;a++){
+	for(uint_t a=0;a < (uint_t) num;a++){
 	    string name;
 	    stream >> name;
 		while(name != "Symbole") {(*SceneObject::errorStream) << "Error with Token '" << name.c_str()  << "' when parsing " << fileName << endl;stream >> name;}
@@ -213,7 +213,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 		ShapePtr * pt;
 		while(_it!=result->getEnd() && !ok){
 		    pt = (ShapePtr *)&(*(_it));
-		    if((*pt)->getId() == (uint32_t)id){
+		    if((*pt)->getId() == (uint_t)id){
 			(*pt)->appearance = app;
 			ok = true;
 		    }
@@ -294,7 +294,7 @@ const unsigned int  Dtafile::getSize() const {
     return _scene->getSize();
 }
 
-AmapSymbolPtr Dtafile::getSymbol( const uint32_t id) const {
+AmapSymbolPtr Dtafile::getSymbol( const uint_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
     ShapePtr shape;
@@ -307,7 +307,7 @@ AmapSymbolPtr Dtafile::getSymbol( const uint32_t id) const {
     return AmapSymbolPtr(0);
 }
 
-MaterialPtr Dtafile::getMaterial( const uint32_t id) const {
+MaterialPtr Dtafile::getMaterial( const uint_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
     ShapePtr shape;
@@ -320,7 +320,7 @@ MaterialPtr Dtafile::getMaterial( const uint32_t id) const {
     return MaterialPtr(0);
 };
 
-const ShapePtr Dtafile::getdtainfo( const uint32_t id) const {
+const ShapePtr Dtafile::getdtainfo( const uint_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
     ShapePtr shape;

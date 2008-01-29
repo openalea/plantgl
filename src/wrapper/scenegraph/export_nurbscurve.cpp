@@ -58,10 +58,10 @@ std::string nc_repr( NurbsCurve* p )
   std::stringstream ss;
   Point4ArrayPtr ctrl= p->getCtrlPoints();
   RealArrayPtr knot= p->getKnotList();
-  uint32_t d= p->getDegree();
-  uint32_t stride= p->getStride();
-  uint32_t n= ctrl->getSize();
-  uint32_t nk= knot->getSize();
+  uint_t d= p->getDegree();
+  uint_t stride= p->getStride();
+  uint_t n= ctrl->getSize();
+  uint_t nk= knot->getSize();
   if( n == 0 )
     {
       ss << "NurbsCurve(Point4Array([]),RealArray([])," << stride << ")";
@@ -119,8 +119,8 @@ object nurbs_fit4(Polyline * pts){
 void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
-    ( "NurbsCurve", init<Point4ArrayPtr, optional< RealArrayPtr, uint32_t, uint32_t > >(args("ctrlPointList","knotList","degree","strides")) )
-     .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint32_t,DEFAULT_NURBS_DEGREE)
+    ( "NurbsCurve", init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
+     .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
      .def( "fit", nurbs_fit1, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )
@@ -156,10 +156,10 @@ std::string nc2_repr( NurbsCurve2D* p )
   std::stringstream ss;
   Point3ArrayPtr ctrl= p->getCtrlPoints();
   RealArrayPtr knot= p->getKnotList();
-  uint32_t d= p->getDegree();
-  uint32_t stride= p->getStride();
-  uint32_t n= ctrl->getSize();
-  uint32_t nk= knot->getSize();
+  uint_t d= p->getDegree();
+  uint_t stride= p->getStride();
+  uint_t n= ctrl->getSize();
+  uint_t nk= knot->getSize();
   if( n == 0 )
     {
       ss << "NurbsCurve2D(Point3Array([]),RealArray([])," << stride << ")";
@@ -257,14 +257,14 @@ object nurbs2_fit4(Polyline2D * pts,int degree, int nbCtrlPoint){
 void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
-     ( "NurbsCurve2D", init<Point3ArrayPtr,  optional<RealArrayPtr, uint32_t, uint32_t > >( args("ctrlPointList","knotList","degree","strides") ) )
+     ( "NurbsCurve2D", init<Point3ArrayPtr,  optional<RealArrayPtr, uint_t, uint_t > >( args("ctrlPointList","knotList","degree","strides") ) )
       .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )
      .def( "fit", nurbs2_fit2, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )
      .def( "fit", nurbs2_fit3, args("points") )
      .def( "fit", nurbs2_fit4, args("points","degree","nbctrlpoints") )
 	 .staticmethod("fit")
-     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve2D,Degree,uint32_t)
+     .DEC_BT_NR_PROPERTY_WD(degree,NurbsCurve2D,Degree,uint_t)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve2D,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve2D::setKnotListToDefault)
     ;

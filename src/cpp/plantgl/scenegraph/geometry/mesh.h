@@ -222,20 +222,20 @@ public:
   // virtual TOOLS(bofstream)& write( TOOLS(bofstream)& stream ) const = 0;
 
   /// Returns the size of \b IndexList i.e. the number of polygon.
-  virtual uint32_t getIndexListSize( ) const =0;
+  virtual uint_t getIndexListSize( ) const =0;
 
   /** Returns the \e j-th point in the point list.
       \warning
 	  - \e PointList should be set
       - \e i must be belong to the range [0,size of \b PointList[. */
-  const TOOLS(Vector3)& getPointAt( uint32_t i ) const ;
+  const TOOLS(Vector3)& getPointAt( uint_t i ) const ;
 
   /** Returns the \e j-th point of the \e i-th face.
       \warning
 	  - \e PointList should be set
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,2]. */
-  virtual const TOOLS(Vector3)& getFacePointAt( uint32_t i, uint32_t j ) const = 0;
+  virtual const TOOLS(Vector3)& getFacePointAt( uint_t i, uint_t j ) const = 0;
 
   void computeNormalList(bool pervertex);
   virtual Point3ArrayPtr computeNormalPerVertex() const = 0;
@@ -248,10 +248,10 @@ public:
   bool hasTexCoordList() const;
 
   /// Returns the nb of points of the \b i-th face.
-  virtual uint32_t getFaceSize( uint32_t i ) const  = 0;
+  virtual uint_t getFaceSize( uint_t i ) const  = 0;
 
   /// Returns the center of the \b i-th face.
-  TOOLS(Vector3) getFaceCenter( uint32_t i ) const ;
+  TOOLS(Vector3) getFaceCenter( uint_t i ) const ;
 
   /// flip the order of corners around the given face
   void flipFace ( uint32_t i );

@@ -76,10 +76,10 @@ public:
   static const bool DEFAULT_CCW;
 
   /// The \b DEGREE field default value.
-  static const uint32_t DEFAULT_DEGREE;
+  static const uint_t DEFAULT_DEGREE;
 
   /// The \b STRIDE field default value.
-  static const uint32_t DEFAULT_STRIDE;
+  static const uint_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a Swung when parsing.
   struct SG_API Builder : public SOR::Builder
@@ -94,10 +94,10 @@ public:
     TOOLS(RealArrayPtr) * AngleList;
 
     /// A pointer to the \b Degree field.
-    uint32_t * Degree;
+    uint_t * Degree;
 
     /// A pointer to the \b Stride field.
-    uint32_t * Stride;
+    uint_t * Stride;
 
     /// Constructor.
     Builder( );
@@ -124,8 +124,8 @@ public:
   Swung( const ProfileInterpolationPtr& profiles,
          uchar_t slices = DEFAULT_SLICES,
          bool ccw = DEFAULT_CCW,
-         uint32_t degree = DEFAULT_DEGREE,
-         uint32_t stride = DEFAULT_STRIDE );
+         uint_t degree = DEFAULT_DEGREE,
+         uint_t stride = DEFAULT_STRIDE );
 
   /** Constructs a Swung with a \b Profile List and an
       \b Angle List
@@ -138,8 +138,8 @@ public:
          const TOOLS(RealArrayPtr)& angleList,
          uchar_t slices = DEFAULT_SLICES,
          bool ccw = DEFAULT_CCW,
-         uint32_t degree = DEFAULT_DEGREE,
-         uint32_t stride = DEFAULT_STRIDE );
+         uint_t degree = DEFAULT_DEGREE,
+         uint_t stride = DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~Swung( );
@@ -174,15 +174,15 @@ public:
   TOOLS(RealArrayPtr)& getAngleList( );
 
   /// Returns \b Degree value.
-  const uint32_t& getDegree() const;
+  const uint_t& getDegree() const;
 
   /// Returns \b Degree field.
-  uint32_t& getDegree();
+  uint_t& getDegree();
 
-  const uint32_t& getStride() const;
+  const uint_t& getStride() const;
 
   /// Returns \b Degree field.
-  uint32_t& getStride();
+  uint_t& getStride();
 
   /// Returns whether \b CCW is set to its default value.
   bool isCCWToDefault( ) const;
@@ -210,10 +210,10 @@ protected:
   bool __ccw;
 
   /// The \b Degree field.
-  uint32_t __degree;
+  uint_t __degree;
 
   /// The \b Stride field.
-  uint32_t __stride;
+  uint_t __stride;
 
 }; // Swung
 

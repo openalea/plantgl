@@ -40,13 +40,13 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 
-Point2Array::Point2Array( uint32_t size ) :
+Point2Array::Point2Array( uint_t size ) :
   Array1<Vector2>(size) {
   __A.reserve(size);
   GEOM_ASSERT(isValid());
 }
 
-Point2Array::Point2Array( uint32_t size, const Vector2& t):
+Point2Array::Point2Array( uint_t size, const Vector2& t):
     Array1<Vector2>(size,t){
 }
 
@@ -207,13 +207,13 @@ void Point2Array::transform(const Matrix2& m) {
 /* ----------------------------------------------------------------------- */
 
 
-Point3Array::Point3Array( uint32_t size ) :
+Point3Array::Point3Array( uint_t size ) :
   Array1<Vector3>(size) {
   __A.reserve(size);
   GEOM_ASSERT(isValid());
 }
 
-Point3Array::Point3Array( uint32_t size, const Vector3& t):
+Point3Array::Point3Array( uint_t size, const Vector3& t):
     Array1<Vector3>(size,t){
 }
 
@@ -425,7 +425,7 @@ void Point3Array::transform(const Matrix4& m) {
 /* ----------------------------------------------------------------------- */
 
 
-Point4Array::Point4Array( uint32_t size ) :
+Point4Array::Point4Array( uint_t size ) :
   Array1<Vector4>(size) {
   __A.reserve(size);
   GEOM_ASSERT(isValid());

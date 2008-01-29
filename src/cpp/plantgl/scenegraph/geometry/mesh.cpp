@@ -101,13 +101,13 @@ Mesh::Builder::MeshValid( ) const{
   if(!EMValid())return false;
   
   if(NormalList){
-    uint32_t _normalListSize = (*NormalList)->getSize();
+    uint_t _normalListSize = (*NormalList)->getSize();
 	if(NormalPerVertex && *NormalPerVertex &&_normalListSize != (*PointList)->getSize()){
     genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Normals","Number of normals must be compatible to PointList.");
 	return false;
 	}
 
-    for (uint32_t _i = 0; _i < _normalListSize; _i++){
+    for (uint_t _i = 0; _i < _normalListSize; _i++){
       if (!(*NormalList)->getAt(_i).isValid()) {
 	genMessage
 	  (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a valid normal.");
@@ -121,8 +121,8 @@ Mesh::Builder::MeshValid( ) const{
     }
   }
   if(TexCoordList){
-    uint32_t _texCoordListSize = (*TexCoordList)->getSize();
-    for (uint32_t _i = 0; _i < _texCoordListSize; _i++){
+    uint_t _texCoordListSize = (*TexCoordList)->getSize();
+    for (uint_t _i = 0; _i < _texCoordListSize; _i++){
       if (!(*TexCoordList)->getAt(_i).isValid()) {
 	genMessage
 	  (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","TexCoordList",number(_i+1).c_str(),"Must be a valid texture coordinates.");
@@ -320,16 +320,16 @@ Mesh::hasTexCoordList( ) const {
 
 /// Returns the center of the \b i-th face.
 Vector3 
-Mesh::getFaceCenter( uint32_t i ) const 
+Mesh::getFaceCenter( uint_t i ) const 
 { 
-    uint32_t nbpoints = getFaceSize(i);
+    uint_t nbpoints = getFaceSize(i);
     Vector3 center;
-    for(uint32_t j = 0; j < nbpoints; ++j)
+    for(uint_t j = 0; j < nbpoints; ++j)
         center += getFacePointAt(i,j);
     return center/nbpoints;
 }
 
-const Vector3& Mesh::getPointAt( uint32_t i ) const {
+const Vector3& Mesh::getPointAt( uint_t i ) const {
   GEOM_ASSERT(__pointList.isValid());
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);

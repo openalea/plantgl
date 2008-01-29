@@ -151,14 +151,14 @@ using namespace std;
 
 #define GEOM_PRINT_INDEXN(stream,val) { \
     stream << "["; \
-    uint32_t _sizej = val.getSize(); \
-    for (uint32_t _j = 0; _j < _sizej; _j++) \
+    uint_t _sizej = val.getSize(); \
+    for (uint_t _j = 0; _j < _sizej; _j++) \
       stream << val.getAt(_j) << (_j == (_sizej - 1) ? "]" : ","); \
   }
 
 
 #define GEOM_PRINT_INTEGER(stream,val) \
-  stream << (int32_t)val;
+  stream << (int_t)val;
 
 
 #define GEOM_PRINT_REAL(stream,val) \
@@ -244,8 +244,8 @@ using namespace std;
     stream << __indent << #field << " [ " << endl; \
     GEOM_PRINT_INCREMENT_INDENT; \
     stream << __indent; \
-    uint32_t _sizei = obj->get##field()->getSize(); \
-    for (uint32_t _i = 0; _i < _sizei; _i++) { \
+    uint_t _sizei = obj->get##field()->getSize(); \
+    for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(stream,obj->get##field()->getAt(_i)); \
       if (_i != (_sizei - 1)) stream << ", " << endl << __indent ; \
     }; \
@@ -255,12 +255,12 @@ using namespace std;
 
 
 #define GEOM_PRINT_FIELD_MATRIX(stream,obj,field,type) { \
-    uint32_t _cols =obj->get##field()->getColsNb(); \
+    uint_t _cols =obj->get##field()->getColsNb(); \
     stream << __indent << #field << " [" << endl; \
     GEOM_PRINT_INCREMENT_INDENT; \
     stream << __indent << " [ " ; \
-    uint32_t _sizei = obj->get##field()->getSize(); \
-    for (uint32_t _i = 0; _i < _sizei; _i++) { \
+    uint_t _sizei = obj->get##field()->getSize(); \
+    for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(stream,obj->get##field()->getAt(_i / _cols ,_i % _cols)); \
       if (_i != (_sizei - 1)){ \
           if (_i !=0 && (_i+1) % (_cols) ==0){ stream << " ]," << endl;\
@@ -318,9 +318,9 @@ void Printer::clear( ) {
   __cache.clear();
 }
 
-void Printer::addIndent(uint32_t i){
+void Printer::addIndent(uint_t i){
   __indent = "";
-  for(uint32_t j = 0; j<i; j++)__indent += " ";
+  for(uint_t j = 0; j<i; j++)__indent += " ";
 }
 
 bool Printer::header(const char * comment){

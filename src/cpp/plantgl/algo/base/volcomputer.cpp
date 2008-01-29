@@ -127,14 +127,14 @@ bool VolComputer::process( AmapSymbol * amapSymbol ) {
   GEOM_VOLCOMPUTER_CHECK_CACHE(amapSymbol);
 
   if(amapSymbol->getSolid()){
-    uint32_t _iSize = amapSymbol->getIndexListSize();
+    uint_t _iSize = amapSymbol->getIndexListSize();
     Vector3 center = amapSymbol->getPointList()->getCenter();
-    for (uint32_t _i = 0; _i < _iSize; _i++) {
+    for (uint_t _i = 0; _i < _iSize; _i++) {
       const Index& _index = amapSymbol->getIndexList()->getAt(_i);
-      uint32_t _jSize = _index.getSize();
+      uint_t _jSize = _index.getSize();
       const Vector3& _origfacet = amapSymbol->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
-      for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
+      for (uint_t _j = 1; _j < _jSize - 1; _j++) {
 	Vector3 _vi = amapSymbol->getFacePointAt(_i,_j) - _origfacet;
 	Vector3 _vj = amapSymbol->getFacePointAt(_i,_j + 1) - _origfacet;
 	__result += fabs(dot(_center,cross(_vi,_vj)))/6;
@@ -271,14 +271,14 @@ bool VolComputer::process( FaceSet * faceSet ) {
   GEOM_VOLCOMPUTER_CHECK_CACHE(faceSet);
 
   if(faceSet->getSolid()){
-    uint32_t _iSize = faceSet->getIndexListSize();
+    uint_t _iSize = faceSet->getIndexListSize();
     Vector3 center = faceSet->getPointList()->getCenter();
-    for (uint32_t _i = 0; _i < _iSize; _i++) {
+    for (uint_t _i = 0; _i < _iSize; _i++) {
       const Index& _index = faceSet->getIndexList()->getAt(_i);
-      uint32_t _jSize = _index.getSize();
+      uint_t _jSize = _index.getSize();
       const Vector3& _origfacet = faceSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
-      for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
+      for (uint_t _j = 1; _j < _jSize - 1; _j++) {
 	Vector3 _vi = faceSet->getFacePointAt(_i,_j) - _origfacet;
 	Vector3 _vj = faceSet->getFacePointAt(_i,_j + 1) - _origfacet;
 	__result += fabs(dot(_center,cross(_vi,_vj)))/6;
@@ -456,9 +456,9 @@ bool VolComputer::process( QuadSet * quadSet ) {
   GEOM_VOLCOMPUTER_CHECK_CACHE(quadSet);
 
   if(quadSet->getSolid()){
-    uint32_t _size = quadSet->getIndexListSize();
+    uint_t _size = quadSet->getIndexListSize();
     Vector3 center = quadSet->getPointList()->getCenter();    
-    for (uint32_t _i = 0; _i < _size; _i++) {
+    for (uint_t _i = 0; _i < _size; _i++) {
       const Vector3& _origfacet = quadSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       Vector3 _v1 = quadSet->getFacePointAt(_i,1) - _origfacet;
@@ -543,9 +543,9 @@ bool VolComputer::process( TriangleSet * triangleSet ) {
     ///                  | x2 y2 z2 1 |
     /// Normaly coef is 1/6 (??)
 
-    uint32_t _size = triangleSet->getIndexListSize();
+    uint_t _size = triangleSet->getIndexListSize();
     Vector3 center = triangleSet->getPointList()->getCenter();
-    for (uint32_t _i = 0; _i < _size; _i++) {
+    for (uint_t _i = 0; _i < _size; _i++) {
       const Vector3& _origfacet = triangleSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       Vector3 _v1 = triangleSet->getFacePointAt(_i,1) - _origfacet;

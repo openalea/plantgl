@@ -172,13 +172,13 @@ void sc_save2(Scene* s ,const std::string& fname,const std::string& format){
 	s->save(fname,format);
 }
 
-uint32_t sc_index( Scene* sc, Shape3DPtr sh)
+uint_t sc_index( Scene* sc, Shape3DPtr sh)
 {
   sc->lock();
   Scene::iterator it = std::find(sc->getBegin(),sc->getEnd(),sh);
   if (it ==  sc->getEnd())
 	{sc->unlock(); throw PythonExc_ValueError(); }
-  uint32_t dist = std::distance(sc->getBegin(),it);
+  uint_t dist = std::distance(sc->getBegin(),it);
   sc->unlock();
   return dist;
 }

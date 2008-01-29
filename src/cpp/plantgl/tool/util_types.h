@@ -86,7 +86,7 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 #include <stdint.h>
 #if defined( __MINGW32__ )
 #define __int8_t_defined
-#define __uint32_t_defined
+#define __uint_t_defined
 #endif // __MINGW32__
 #endif
 
@@ -109,16 +109,16 @@ typedef short int16_t;
 
 #endif
 
-#ifndef __uint32_t_defined
+#ifndef __uint_t_defined
 
 /// type uint16_t (unsigned short)
 typedef unsigned short uint16_t;
 
 /// type int32_t (long)
-typedef long int32_t;
+typedef int int32_t;
 
-/// type uint32_t (unsigned long)
-typedef unsigned long uint32_t;
+/// type uint_t (unsigned long)
+typedef unsigned int uint32_t;
 
 #endif
 
@@ -138,17 +138,23 @@ typedef unsigned long uint32_t;
 #ifndef INT32_MAX
 #define INT32_MAX LONG_MAX
 #endif
-/// uint32_t min value
+/// uint_t min value
 #ifndef UINT32_MIN 
 #define UINT32_MIN ULONG_MIN
 #endif
 
-/// uint32_t max value
+/// uint_t max value
 #ifndef UINT32_MAX
 #define UINT32_MAX ULONG_MAX
 #endif
 
-
+#if WORDSIZE == 64
+typedef uint64_t      uint_t;
+typedef int64_t       int_t;
+#else
+typedef uint32_t      uint_t;
+typedef int32_t       int_t;
+#endif
 
 #include <stddef.h>
 

@@ -259,8 +259,8 @@ signals:
   void rendererChanged();
 
   /// Selection.
-  void selectedShape(uint32_t i);
-  void selectedShapes(std::vector<uint32_t> i);
+  void selectedShape(uint_t i);
+  void selectedShapes(std::vector<uint_t> i);
 
   /// Emit when mode changed.
   void modeChanged(ViewGLFrame3::Mode);

@@ -85,7 +85,7 @@ public:
 
   Interpol( const Point3ArrayPtr& _points,
             const TOOLS(RealArrayPtr)&   _params,
-            uint32_t _degree,
+            uint_t _degree,
             bool _closed );
 
   /// Destructor
@@ -104,10 +104,10 @@ public:
   virtual TOOLS(RealArrayPtr)& getParameters( );
 
   /// Return the Interpolate Degree value
-  virtual uint32_t getDegree( ) const;
+  virtual uint_t getDegree( ) const;
 
   /// Return the Interpolate Degree field
-  virtual uint32_t& getDegree( );
+  virtual uint_t& getDegree( );
 
   /// Return the Closure value
   virtual bool getClosure( ) const;
@@ -139,7 +139,7 @@ protected:
   TOOLS(RealArrayPtr) knots;
 
   /// Interpolation degree
-  uint32_t degree;
+  uint_t degree;
 
   /// the set of points is it closed?
   bool closed;
@@ -164,13 +164,13 @@ private:
   virtual TOOLS(RealArrayPtr) bezierKV( const TOOLS(RealArrayPtr)& _knots ) const;
 
   /// check the continuity of the result curve
-  virtual uint32_t checkContinuity() const;
+  virtual uint_t checkContinuity() const;
 
   /// compute one or two arcs between points (degree 2)
-  virtual uint32_t bezierArc2( uint32_t _arcNum );
+  virtual uint_t bezierArc2( uint_t _arcNum );
 
   /// compute one or two arcs between points (degree 3)
-  virtual uint32_t bezierArc3( uint32_t _arcNum );
+  virtual uint_t bezierArc3( uint_t _arcNum );
 
   /// compute curve data
   virtual bool run();

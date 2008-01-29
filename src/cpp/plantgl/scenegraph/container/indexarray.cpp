@@ -39,7 +39,7 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-Index3Array::Index3Array( uint32_t size, const Index3& defaultvalue ) :
+Index3Array::Index3Array( uint_t size, const Index3& defaultvalue ) :
   Array1<Index3>(size,defaultvalue) {
 }
 
@@ -52,9 +52,9 @@ bool Index3Array::isValid( ) const {
   return true;
 }
 
-uint32_t * Index3Array::data( ) const {
+uint_t * Index3Array::data( ) const {
   if(__A.empty())return NULL;
-  uint32_t * res = new uint32_t[__A.size()*3];
+  uint_t * res = new uint_t[__A.size()*3];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++)
     { res[_j] = _i->getAt(0); _j++;
@@ -66,7 +66,7 @@ uint32_t * Index3Array::data( ) const {
 /* ----------------------------------------------------------------------- */
 
 
-Index4Array::Index4Array( uint32_t size, const Index4& defaultvalue ) :
+Index4Array::Index4Array( uint_t size, const Index4& defaultvalue ) :
   Array1<Index4>(size,defaultvalue) {
 }
 
@@ -92,9 +92,9 @@ Index3ArrayPtr Index4Array::triangulate( ) const {
   return _index3List;
 };  
 
-uint32_t * Index4Array::data( ) const {
+uint_t * Index4Array::data( ) const {
   if(__A.empty())return NULL;
-  uint32_t * res = new uint32_t[__A.size()*4];
+  uint_t * res = new uint_t[__A.size()*4];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++)
     { res[_j] = _i->getAt(0); _j++;
@@ -107,7 +107,7 @@ uint32_t * Index4Array::data( ) const {
 /* ----------------------------------------------------------------------- */
 
 
-IndexArray::IndexArray( uint32_t size, const Index& defaultvalue  ) :
+IndexArray::IndexArray( uint_t size, const Index& defaultvalue  ) :
   Array1<Index>(size,defaultvalue) {
 }
 
@@ -151,7 +151,7 @@ bool IndexArray::isValid( ) const {
 
 
 Index3ArrayPtr IndexArray::triangulate( ) const {
-  uint32_t _size = 0;
+  uint_t _size = 0;
 
   for (const_iterator _i4f = __A.begin(); _i4f != __A.end(); _i4f++)
     if(_i4f->getSize() >= 3)_size += _i4f->getSize() - 2;
@@ -174,7 +174,7 @@ Index3ArrayPtr IndexArray::triangulate( ) const {
   return _index3List;
 };  
 
-void IndexArray::setAt(uint32_t i, const Index3& t ) {
+void IndexArray::setAt(uint_t i, const Index3& t ) {
     Index t2(3);
     t2.setAt(0,t.getAt(0));
     t2.setAt(1,t.getAt(1));
@@ -182,7 +182,7 @@ void IndexArray::setAt(uint32_t i, const Index3& t ) {
     Array1<Index>::setAt(i,t2);
 }
 
-void IndexArray::setAt(uint32_t i, const Index4& t ) {
+void IndexArray::setAt(uint_t i, const Index4& t ) {
     Index t2(4);
     t2.setAt(0,t.getAt(0));
     t2.setAt(1,t.getAt(1));
@@ -191,17 +191,17 @@ void IndexArray::setAt(uint32_t i, const Index4& t ) {
     Array1<Index>::setAt(i,t2);
 }
 
-void IndexArray::setAt(uint32_t i, const Index& t ) {
+void IndexArray::setAt(uint_t i, const Index& t ) {
     Array1<Index>::setAt(i,t);
 }
 
-uint32_t * IndexArray::data( ) const {
+uint_t * IndexArray::data( ) const {
   size_t _size = 0;
   for (const_iterator _i4f = __A.begin(); _i4f != __A.end(); _i4f++)
     _size += _i4f->getSize();
   if(__A.empty())return NULL;
 
-  uint32_t * res = new uint32_t[__A.size()];
+  uint_t * res = new uint_t[__A.size()];
   size_t _k = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++)
 	for (Index::const_iterator _j = _i->getBegin(); _j != _i->getEnd(); _j++)

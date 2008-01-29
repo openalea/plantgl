@@ -138,18 +138,18 @@ void export_TriangleSet()
 	.DEC_PTR_PROPERTY_WD(colorIndexList,    TriangleSet,ColorIndexList,   Index3ArrayPtr)
 	.DEC_PTR_PROPERTY_WD(texCoordIndexList, TriangleSet,TexCoordIndexList,Index3ArrayPtr)
  
-    .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint32_t,uint32_t) const)&TriangleSet::getNormalAt ,  return_value_policy<copy_const_reference>())
-    .def( "colorAt",    (const Color4&  (TriangleSet::*)(uint32_t,uint32_t) const)&TriangleSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (TriangleSet::*)(uint32_t,uint32_t) const)&TriangleSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
+    .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint_t,uint_t) const)&TriangleSet::getNormalAt ,  return_value_policy<copy_const_reference>())
+    .def( "colorAt",    (const Color4&  (TriangleSet::*)(uint_t,uint_t) const)&TriangleSet::getColorAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordAt", (const Vector2& (TriangleSet::*)(uint_t,uint_t) const)&TriangleSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-    .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint32_t) const)&TriangleSet::getNormalAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorAt",    (const Color4&  (TriangleSet::*)(uint32_t) const)&TriangleSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (TriangleSet::*)(uint32_t) const)&TriangleSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
+    .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint_t) const)&TriangleSet::getNormalAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorAt",    (const Color4&  (TriangleSet::*)(uint_t) const)&TriangleSet::getColorAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordAt", (const Vector2& (TriangleSet::*)(uint_t) const)&TriangleSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-    .def( "indexAt",        (const Index3&  (TriangleSet::*)(uint32_t) const)&TriangleSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
-    .def( "normalIndexAt",  (const Index3&  (TriangleSet::*)(uint32_t) const)&TriangleSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorIndexAt",   (const Index3&  (TriangleSet::*)(uint32_t) const)&TriangleSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordIndexAt",(const Index3&  (TriangleSet::*)(uint32_t) const)&TriangleSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
+    .def( "indexAt",        (const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
+    .def( "normalIndexAt",  (const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorIndexAt",   (const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordIndexAt",(const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
 
 	// .def_pickle(tr_pickle_suite());
     ;
@@ -180,18 +180,18 @@ void export_QuadSet()
 	.DEC_PTR_PROPERTY_WD(colorIndexList,    QuadSet,ColorIndexList,   Index4ArrayPtr)
 	.DEC_PTR_PROPERTY_WD(texCoordIndexList, QuadSet,TexCoordIndexList,Index4ArrayPtr)
  
-    .def( "normalAt",   (const Vector3& (QuadSet::*)(uint32_t,uint32_t) const)&QuadSet::getNormalAt ,  return_value_policy<copy_const_reference>())
-    .def( "colorAt",    (const Color4&  (QuadSet::*)(uint32_t,uint32_t) const)&QuadSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (QuadSet::*)(uint32_t,uint32_t) const)&QuadSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
+    .def( "normalAt",   (const Vector3& (QuadSet::*)(uint_t,uint_t) const)&QuadSet::getNormalAt ,  return_value_policy<copy_const_reference>())
+    .def( "colorAt",    (const Color4&  (QuadSet::*)(uint_t,uint_t) const)&QuadSet::getColorAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordAt", (const Vector2& (QuadSet::*)(uint_t,uint_t) const)&QuadSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-    .def( "normalAt",   (const Vector3& (QuadSet::*)(uint32_t) const)&QuadSet::getNormalAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorAt",    (const Color4&  (QuadSet::*)(uint32_t) const)&QuadSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (QuadSet::*)(uint32_t) const)&QuadSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
+    .def( "normalAt",   (const Vector3& (QuadSet::*)(uint_t) const)&QuadSet::getNormalAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorAt",    (const Color4&  (QuadSet::*)(uint_t) const)&QuadSet::getColorAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordAt", (const Vector2& (QuadSet::*)(uint_t) const)&QuadSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-    .def( "indexAt",        (const Index4&  (QuadSet::*)(uint32_t) const)&QuadSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
-    .def( "normalIndexAt",  (const Index4&  (QuadSet::*)(uint32_t) const)&QuadSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorIndexAt",   (const Index4&  (QuadSet::*)(uint32_t) const)&QuadSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordIndexAt",(const Index4&  (QuadSet::*)(uint32_t) const)&QuadSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
+    .def( "indexAt",        (const Index4&  (QuadSet::*)(uint_t) const)&QuadSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
+    .def( "normalIndexAt",  (const Index4&  (QuadSet::*)(uint_t) const)&QuadSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorIndexAt",   (const Index4&  (QuadSet::*)(uint_t) const)&QuadSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordIndexAt",(const Index4&  (QuadSet::*)(uint_t) const)&QuadSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
 	;
 	
   implicitly_convertible<QuadSetPtr, MeshPtr>();
@@ -221,18 +221,18 @@ void export_FaceSet()
 	.DEC_PTR_PROPERTY_WD(colorIndexList,    FaceSet,ColorIndexList,   IndexArrayPtr)
 	.DEC_PTR_PROPERTY_WD(texCoordIndexList, FaceSet,TexCoordIndexList,IndexArrayPtr)
  
-    .def( "normalAt",   (const Vector3& (FaceSet::*)(uint32_t,uint32_t) const)&FaceSet::getNormalAt ,  return_value_policy<copy_const_reference>())
-    .def( "colorAt",    (const Color4&  (FaceSet::*)(uint32_t,uint32_t) const)&FaceSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (FaceSet::*)(uint32_t,uint32_t) const)&FaceSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
+    .def( "normalAt",   (const Vector3& (FaceSet::*)(uint_t,uint_t) const)&FaceSet::getNormalAt ,  return_value_policy<copy_const_reference>())
+    .def( "colorAt",    (const Color4&  (FaceSet::*)(uint_t,uint_t) const)&FaceSet::getColorAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordAt", (const Vector2& (FaceSet::*)(uint_t,uint_t) const)&FaceSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-    .def( "normalAt",   (const Vector3& (FaceSet::*)(uint32_t) const)&FaceSet::getNormalAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorAt",    (const Color4&  (FaceSet::*)(uint32_t) const)&FaceSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (FaceSet::*)(uint32_t) const)&FaceSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
+    .def( "normalAt",   (const Vector3& (FaceSet::*)(uint_t) const)&FaceSet::getNormalAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorAt",    (const Color4&  (FaceSet::*)(uint_t) const)&FaceSet::getColorAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordAt", (const Vector2& (FaceSet::*)(uint_t) const)&FaceSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-    .def( "indexAt",        (const Index&  (FaceSet::*)(uint32_t) const)&FaceSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
-    .def( "normalIndexAt",  (const Index&  (FaceSet::*)(uint32_t) const)&FaceSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorIndexAt",   (const Index&  (FaceSet::*)(uint32_t) const)&FaceSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordIndexAt",(const Index&  (FaceSet::*)(uint32_t) const)&FaceSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
+    .def( "indexAt",        (const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
+    .def( "normalIndexAt",  (const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorIndexAt",   (const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordIndexAt",(const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
     ;
   implicitly_convertible<FaceSetPtr, MeshPtr>();
 }

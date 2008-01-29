@@ -137,7 +137,7 @@ GLRenderer::SelectionId GLRenderer::getSelectionMode() const
   return __selectMode;
 }
 
-bool GLRenderer::setGLFrameFromId(uint32_t wid)
+bool GLRenderer::setGLFrameFromId(uint_t wid)
 {
     QWidget * widget = QWidget::find(WId(wid));
     if (!widget) return false;
@@ -179,7 +179,7 @@ void GLRenderer::clear( )
 }
 
 
-bool GLRenderer::check(uint32_t id, GLuint& displaylist){
+bool GLRenderer::check(uint_t id, GLuint& displaylist){
   if(__Mode != Dynamic){ 
 	Cache<GLuint>::Iterator _it = __cache.find(id); 
 	if (_it != __cache.end()) { 
@@ -209,7 +209,7 @@ bool GLRenderer::check(uint32_t id, GLuint& displaylist){
   return false;
 }
 
-bool GLRenderer::call(uint32_t id){
+bool GLRenderer::call(uint_t id){
   if(__Mode != Dynamic){ 
 	Cache<GLuint>::Iterator _it = __cache.find(id); 
 	if (_it != __cache.end()) { 
@@ -224,7 +224,7 @@ bool GLRenderer::call(uint32_t id){
   return false;
 }
 
-void GLRenderer::update(uint32_t id, GLuint displaylist){
+void GLRenderer::update(uint_t id, GLuint displaylist){
   if(__Mode != Dynamic && displaylist != 0 && __currentdisplaylist){ 
 #ifdef GEOM_DLDEBUG
 	  printf("End Display List %i\n",displaylist);
@@ -449,9 +449,9 @@ bool GLRenderer::process( AmapSymbol * amapSymbol ) {
   amapSymbol->checkNormalList();
 
 #ifndef WITH_VERTEXARRAY
-  uint32_t _sizei = _indexList->getSize();
+  uint_t _sizei = _indexList->getSize();
   GLfloat _rgba[4];
-  for (uint32_t _i = 0; _i < _sizei; _i++) {
+  for (uint_t _i = 0; _i < _sizei; _i++) {
     glBegin(GL_POLYGON);
 	if ( color && !colorV) { 
           const Color4& _ambient = amapSymbol->getColorAt( _i );
@@ -464,8 +464,8 @@ bool GLRenderer::process( AmapSymbol * amapSymbol ) {
 	}
 
     const Index& _index = _indexList->getAt(_i);
-    uint32_t _sizej = _index.getSize();
-    for (uint32_t _j = 0; _j < _sizej; _j++){
+    uint_t _sizej = _index.getSize();
+    for (uint_t _j = 0; _j < _sizej; _j++){
       glGeomNormal(amapSymbol->getNormalAt(_i,_j));
       if(tex){
 		Vector3& tex = amapSymbol->getTexCoord3At(_i,_j);
@@ -679,9 +679,9 @@ bool GLRenderer::process( FaceSet * faceSet ) {
   faceSet->checkNormalList();
 
 #ifndef WITH_VERTEXARRAY
-  uint32_t _sizei = _indexList->getSize();
+  uint_t _sizei = _indexList->getSize();
   GLfloat _rgba[4];
-  for (uint32_t _i = 0; _i < _sizei; _i++) {
+  for (uint_t _i = 0; _i < _sizei; _i++) {
     glBegin(GL_POLYGON);
     if (!normalV)glGeomNormal(faceSet->getNormalAt(_i));
 	if ( color && !colorV) { 
@@ -695,8 +695,8 @@ bool GLRenderer::process( FaceSet * faceSet ) {
 	}
 
     const Index& _index = _indexList->getAt(_i);
-    uint32_t _sizej = _index.getSize();
-    for (uint32_t _j = 0; _j < _sizej; _j++){
+    uint_t _sizej = _index.getSize();
+    for (uint_t _j = 0; _j < _sizej; _j++){
       if (normalV)glGeomNormal(faceSet->getNormalAt(_i,_j));
 	  if(tex)glGeomTexCoord(faceSet->getTexCoordAt(_i,_j));
 	  else if ( color && colorV)
@@ -1197,9 +1197,9 @@ bool GLRenderer::process( QuadSet * quadSet ) {
   quadSet->checkNormalList();
 #ifndef WITH_VERTEXARRAY
   glBegin(GL_QUADS);
-  uint32_t _size = quadSet->getIndexListSize();
+  uint_t _size = quadSet->getIndexListSize();
   GLfloat _rgba[4];
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  for (uint_t _i = 0; _i < _size; _i++) {
     if (!normalV)glGeomNormal(quadSet->getNormalAt(_i));
 	if ( color && !colorV) { 
           const Color4& _ambient = quadSet->getColorAt( _i );
@@ -1210,7 +1210,7 @@ bool GLRenderer::process( QuadSet * quadSet ) {
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
           glColor4fv(_rgba);
 	}
-	for (uint32_t _j = 0; _j < 4; _j++) {
+	for (uint_t _j = 0; _j < 4; _j++) {
 	  if (normalV) glGeomNormal(quadSet->getNormalAt(_i,_j));
 	  if(tex)glGeomTexCoord(quadSet->getTexCoordAt(_i,_j));
       else if ( color && colorV)
@@ -1254,7 +1254,7 @@ bool GLRenderer::process( QuadSet * quadSet ) {
 
   if (normalV){
 	size_t si = quadSet->getIndexList()->getSize();
-	uint32_t * indices = quadSet->getIndexList()->data();
+	uint_t * indices = quadSet->getIndexList()->data();
 	glDrawElements(	GL_QUADS, 4*si , GL_UNSIGNED_INT, indices);
 	delete [] indices;
   }
@@ -1403,9 +1403,9 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
 
 #ifndef WITH_VERTEXARRAY
   glBegin(GL_TRIANGLES);
-  uint32_t _size = triangleSet->getIndexListSize();
+  uint_t _size = triangleSet->getIndexListSize();
   GLfloat _rgba[4];
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  for (uint_t _i = 0; _i < _size; _i++) {
     if (!normalV)
       glGeomNormal(triangleSet->getNormalAt(_i));
 	if ( color && !colorV) { 
@@ -1417,7 +1417,7 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
           glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
           glColor4fv(_rgba);
 	}
-    for (uint32_t _j = 0; _j < 3; _j++) {
+    for (uint_t _j = 0; _j < 3; _j++) {
       if (normalV)
         glGeomNormal(triangleSet->getNormalAt(_i,_j));
       if(tex)
@@ -1463,7 +1463,7 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
   }
 
   if (normalV){
-	uint32_t * indices = triangleSet->getIndexList()->data();
+	uint_t * indices = triangleSet->getIndexList()->data();
 	glDrawElements(	GL_TRIANGLES, 3*si , GL_UNSIGNED_INT, indices);
 	delete [] indices;
   }

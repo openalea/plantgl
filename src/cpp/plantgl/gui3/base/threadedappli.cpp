@@ -170,9 +170,9 @@ ViewerThreadedAppli3::run(){
 	join();
 }
 
-const std::vector<uint32_t>
+const std::vector<uint_t>
 ViewerThreadedAppli3::getSelection() {
-	std::vector<uint32_t> res;
+	std::vector<uint_t> res;
     if(isRunning()){
       ViewSelectRecoverEvent3 * event = new ViewSelectRecoverEvent3(&res) ;
       sendAnEvent(event);

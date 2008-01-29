@@ -179,18 +179,18 @@ ViewGeomSceneGL3::getScene( ) const
   return __scene;
 }
 
-std::vector<uint32_t>
+std::vector<uint_t>
 ViewGeomSceneGL3::getSelectionIds() const
 {
-  std::vector<uint32_t> res;
-  for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  std::vector<uint_t> res;
+  for(hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  res.push_back(_it->second->getId());
   return res;
 }
 
-uint32_t
-ViewGeomSceneGL3::translateId(uint32_t id) const
+uint_t
+ViewGeomSceneGL3::translateId(uint_t id) const
 {
     Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->getBegin();
@@ -206,7 +206,7 @@ ScenePtr
 ViewGeomSceneGL3::getSelection( ) const
 {
   ScenePtr scene(new Scene);
-  for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  scene->add(_it->second);
   return scene;
@@ -216,7 +216,7 @@ ScenePtr
 ViewGeomSceneGL3::getNotSelection( ) const
 {
   ScenePtr scene(new Scene);
-  uint32_t id;
+  uint_t id;
   for(Scene::const_iterator _it = __scene->getBegin(); _it !=__scene->getEnd(); _it++){
 	id = (*_it)->SceneObject::getId();
 	if(__selectedShapes.find(id)==__selectedShapes.end())
@@ -235,7 +235,7 @@ const BoundingBoxPtr
 ViewGeomSceneGL3::getSelectionBoundingBox() 
 {
   BoundingBoxPtr bbox;
-  for(hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(__bboxComputer)){
 		if(bbox)bbox->extend(__bboxComputer.getBoundingBox());
@@ -473,7 +473,7 @@ ViewGeomSceneGL3::paintGL()
       glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	  glGeomColor(Color3(64,64,64));
-      for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+      for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
           _it !=__selectedShapes.end(); _it++)
         _it->second->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
@@ -496,13 +496,13 @@ ViewGeomSceneGL3::selectGL()
 }
 
 void
-ViewGeomSceneGL3::selectionEvent(uint32_t id)
+ViewGeomSceneGL3::selectionEvent(uint_t id)
 {
-  hash_map<uint32_t,Shape3DPtr>::iterator _it =__selectedShapes.find(id);
+  hash_map<uint_t,Shape3DPtr>::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
     Shape3DPtr ptr = _it->second;
 	__selectedShapes.erase(_it);
-    uint32_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
+    uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 	info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
 	status(tr("Shape")+" "
 	  + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
@@ -515,7 +515,7 @@ ViewGeomSceneGL3::selectionEvent(uint32_t id)
       if(ptr.cast(*_it).isValid() && 
 		(ptr->SceneObject::getId() == id)){
         __selectedShapes[id]=ptr;
-	    uint32_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
+	    uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 		info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("selected")+".");
 		status(tr("Shape")+" "
 		       + (ptr->isNamed()?QString((ptr->getName()+" ").c_str()):"")+"(Id=" +QString::number(_id)
@@ -528,12 +528,12 @@ ViewGeomSceneGL3::selectionEvent(uint32_t id)
 }
 
 void
-ViewGeomSceneGL3::selectionEvent(const vector<uint32_t>& id)
+ViewGeomSceneGL3::selectionEvent(const vector<uint_t>& id)
 {
-  hash_map<uint32_t,Shape3DPtr>::iterator _it;
-  uint32_t selected = 0;
-  uint32_t unselected = 0;
-  for(vector<uint32_t>::const_iterator _id = id.begin();_id != id.end();_id++){
+  hash_map<uint_t,Shape3DPtr>::iterator _it;
+  uint_t selected = 0;
+  uint_t unselected = 0;
+  for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
 	_it =__selectedShapes.find(*_id);
 	if(_it!=__selectedShapes.end()){
 	  __selectedShapes.erase(_it);
@@ -572,11 +572,11 @@ ViewGeomSceneGL3::selectionEvent(const vector<uint32_t>& id)
 }
 
 void
-ViewGeomSceneGL3::selectionIdEvent(const vector<uint32_t>& id)
+ViewGeomSceneGL3::selectionIdEvent(const vector<uint_t>& id)
 {
   __selectedShapes.clear();
-  uint32_t selected = 0;
-  for(vector<uint32_t>::const_iterator _id = id.begin();_id != id.end();_id++){
+  uint_t selected = 0;
+  for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
 	  __scene->lock();
 	  for(Scene::const_iterator _it = __scene->getBegin() ; 
 					  _it != __scene->getEnd(); 
@@ -613,11 +613,11 @@ ViewGeomSceneGL3::selectionEvent(QListViewItem * item)
     for(Scene::iterator _it = __scene->getBegin();
 	!found && _it != __scene->getEnd(); _it++){
 	  if((*_it)->getName() == name){
-		uint32_t id = (*_it)->getId();
+		uint_t id = (*_it)->getId();
 		if((*_it)->getId() == Shape::NOID){
 		  id = (*_it)->SceneObject::getId();
 		}
-		hash_map<uint32_t,Shape3DPtr>::iterator _it2 
+		hash_map<uint_t,Shape3DPtr>::iterator _it2 
 		  =__selectedShapes.find(id);
 		if(_it2!=__selectedShapes.end()){
 		  __selectedShapes.erase(_it2);
@@ -671,7 +671,7 @@ ViewGeomSceneGL3::keepSelectionOnly()
 	return;
   }
   GeomSceneChangeEvent3 * e = new GeomSceneChangeEvent3(getSelection(),NULL,NULL);
-  hash_map<uint32_t,Shape3DPtr> selection = __selectedShapes;
+  hash_map<uint_t,Shape3DPtr> selection = __selectedShapes;
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
@@ -686,8 +686,8 @@ ViewGeomSceneGL3::wireSelection()
   }
   ScenePtr scene = getNotSelection();
   WireComputer wire(__discretizer);
-  hash_map<uint32_t,Shape3DPtr> selection;
-  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  hash_map<uint_t,Shape3DPtr> selection;
+  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
 	ShapePtr sh = ShapePtr::Cast(_it->second);
 	if(sh){
@@ -715,8 +715,8 @@ ViewGeomSceneGL3::discretizeSelection()
 	return;
   }
   ScenePtr scene = getNotSelection();
-  hash_map<uint32_t,Shape3DPtr> selection;
-  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  hash_map<uint_t,Shape3DPtr> selection;
+  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
 	ShapePtr sh = ShapePtr::Cast(_it->second);
 	if(sh){
@@ -745,8 +745,8 @@ ViewGeomSceneGL3::triangulateSelection()
 	return;
   }
   ScenePtr scene = getNotSelection();
-  hash_map<uint32_t,Shape3DPtr> selection;
-  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  hash_map<uint_t,Shape3DPtr> selection;
+  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
 	ShapePtr sh = ShapePtr::Cast(_it->second);
 	Tesselator t;
@@ -769,9 +769,9 @@ ViewGeomSceneGL3::triangulateSelection()
 
 /* ----------------------------------------------------------------------- */
 
-vector<pair<uint32_t,double> > 
+vector<pair<uint_t,double> > 
 ViewGeomSceneGL3::getProjectionSizes(const ScenePtr& sc){
-	vector<pair<uint32_t,double> > res;
+	vector<pair<uint_t,double> > res;
 	ViewGLFrame3 * frame = dynamic_cast<ViewGLFrame3 *>(__frame);
 	if (!frame) return res;
 	bool mode = frame->getCamera()->getProjectionMode();
@@ -784,7 +784,7 @@ ViewGeomSceneGL3::getProjectionSizes(const ScenePtr& sc){
 		nsc->clear();
 		nsc->add(*it);
 		setScene(nsc);
-		res.push_back(pair<uint32_t,double>((*it)->getId(),frame->getProjectionSize()));
+		res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
 		cur++;
 		if(cur % per == 0)
 			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
@@ -816,7 +816,7 @@ ViewGeomSceneGL3::castRays(const ScenePtr& sc, bool back_test){
 	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
 		nsc->clear();
 		nsc->add(*it);
-		uint32_t id = (*it)->getId();
+		uint_t id = (*it)->getId();
 		setScene(nsc);
 		ViewZBuffer3 * cbuff = frame->grabDepthBuffer(false);
 		if(! back_test) {
@@ -955,7 +955,7 @@ ViewMultiGeomSceneGL3::paintGL()
         __light->disable();
         glBlendFunc(GL_ONE,GL_ZERO);
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-        for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+        for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
             _it !=__selectedShapes.end(); _it++)
           _it->second->apply(__bboxRenderer);
       }

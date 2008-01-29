@@ -49,7 +49,7 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-const uint32_t
+const uint_t
 NurbsPatch::DEFAULT_NURBS_DEGREE(NurbsCurve::DEFAULT_NURBS_DEGREE);
 
 /* ----------------------------------------------------------------------- */
@@ -69,9 +69,9 @@ NurbsPatch::Builder::~Builder( ) {
 SceneObjectPtr NurbsPatch::Builder::build( ) const {
     if (isValid()){
 
-        uint32_t _udegree=0;
+        uint_t _udegree=0;
         RealArrayPtr _uknots ;
-        uint32_t _vdegree=0;
+        uint_t _vdegree=0;
         RealArrayPtr _vknots ;
 
         if( ! UDegree ){
@@ -129,8 +129,8 @@ bool NurbsPatch::Builder::isValid( ) const {
         genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Nurbs Patch","CtrlPointMatrix");
         return false;
     }
-    uint32_t _usize = (*CtrlPointMatrix)->getRowsNb();
-    uint32_t _vsize = (*CtrlPointMatrix)->getColsNb();
+    uint_t _usize = (*CtrlPointMatrix)->getRowsNb();
+    uint_t _vsize = (*CtrlPointMatrix)->getColsNb();
 
     if (_usize < 2 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Rows must be greater than 1.");
@@ -142,8 +142,8 @@ bool NurbsPatch::Builder::isValid( ) const {
         return false;
     }
 
-    for(uint32_t i=0; i < _usize;i++)
-        for(uint32_t j=0; j < _vsize;j++){
+    for(uint_t i=0; i < _usize;i++)
+        for(uint_t j=0; j < _vsize;j++){
             if(fabs((*CtrlPointMatrix)->getAt(i,j).w()) < GEOM_TOLERANCE) {
                 string _ith = '(' + number(i + 1) + " , " + number(j+1) + ')';
                 genMessage(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Nurbs Patch","CtrlPointMatrix",_ith.c_str(),"Weight must be not null");
@@ -189,18 +189,18 @@ bool NurbsPatch::Builder::isValid( ) const {
 
     // Clamped knot vector test
     if( UKnotList ){
-        uint32_t _deg;
+        uint_t _deg;
         if (UDegree) _deg = (*UDegree);
         else _deg =  ((*UKnotList)->getSize()) - _usize -1;
         real_t _val = (*UKnotList)->getAt(0);
-        for (uint32_t i1 = 1 ; i1 < _deg+1 ; i1++ )
+        for (uint_t i1 = 1 ; i1 < _deg+1 ; i1++ )
             if( !(fabs ((*UKnotList)->getAt(i1) - _val ) <GEOM_TOLERANCE )){
                 genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(i1+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
-        uint32_t _knsize = (*UKnotList)->getSize();
+        uint_t _knsize = (*UKnotList)->getSize();
         _val = (*UKnotList)->getAt(_knsize -1  );
-        for (uint32_t j1 = _knsize - _deg - 1 ; j1 < _knsize ; j1++ )
+        for (uint_t j1 = _knsize - _deg - 1 ; j1 < _knsize ; j1++ )
             if( !(fabs ((*UKnotList)->getAt(j1) -_val ) <GEOM_TOLERANCE )){
                 genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(j1+1).c_str(),"Must be a clamped vector.");
                 return false;
@@ -210,18 +210,18 @@ bool NurbsPatch::Builder::isValid( ) const {
 
     // Clamped knot vector test
     if( VKnotList ){
-        uint32_t _deg;
+        uint_t _deg;
         if (VDegree ) _deg = (*VDegree);
         else _deg =  ((*VKnotList)->getSize()) - _vsize -1;
         real_t _val = (*VKnotList)->getAt(0);
-        for (uint32_t i = 1 ; i < _deg+1 ; i++ )
+        for (uint_t i = 1 ; i < _deg+1 ; i++ )
             if( !(fabs ((*VKnotList)->getAt(i) - _val ) <GEOM_TOLERANCE )){
                 genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(i+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
-        uint32_t _knsize = (*VKnotList)->getSize();
+        uint_t _knsize = (*VKnotList)->getSize();
         _val = (*VKnotList)->getAt(_knsize -1  );
-        for (uint32_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
+        for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
             if( !(fabs ((*VKnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
                 genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(j+1).c_str(),"Must be a clamped vector.");
                 return false;
@@ -260,8 +260,8 @@ NurbsPatch::NurbsPatch( ) :
 NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
                         const RealArrayPtr& uKnotList,
                         const RealArrayPtr& vKnotList,
-                        uint32_t uDegree, uint32_t vDegree,
-                        uint32_t ustride , uint32_t vstride,  bool ccw ) :
+                        uint_t uDegree, uint_t vDegree,
+                        uint_t ustride , uint_t vstride,  bool ccw ) :
     BezierPatch(ctrlPoints,ustride,vstride,ccw),
     __uKnotList(uKnotList),
     __vKnotList(vKnotList),
@@ -290,22 +290,22 @@ SceneObjectPtr NurbsPatch::copy() const {
 
 
 /* ----------------------------------------------------------------------- */
-const uint32_t
+const uint_t
 NurbsPatch::getUDegree( ) const {
   return __udegree;
 }
 
-uint32_t&
+uint_t&
 NurbsPatch::getUDegree( ) {
   return __udegree;
 }
 
-const uint32_t
+const uint_t
 NurbsPatch::getVDegree( ) const {
   return __vdegree;
 }
 
-uint32_t&
+uint_t&
 NurbsPatch::getVDegree( )  {
   return __vdegree;
 }
@@ -315,7 +315,7 @@ NurbsPatch::isUDegreeToDefault( ) const {
   return (__udegree == NurbsCurve::DEFAULT_NURBS_DEGREE);
 }
 
-uint32_t
+uint_t
 NurbsPatch::isVDegreeToDefault( ) const {
   return (__vdegree == NurbsCurve::DEFAULT_NURBS_DEGREE);
 }
@@ -389,21 +389,21 @@ bool NurbsPatch::isVKnotListToDefault( ) const{
 Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
   GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
 
-  uint32_t uspan = findSpan(__udegree,__uKnotList,u);
+  uint_t uspan = findSpan(__udegree,__uKnotList,u);
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
-  uint32_t vspan = findSpan(__vdegree,__vKnotList,v);
+  uint_t vspan = findSpan(__vdegree,__vKnotList,v);
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
   Point4Array temp(__vdegree+1);
-  for (uint32_t l = 0 ; l <= __vdegree ; l++ ){
+  for (uint_t l = 0 ; l <= __vdegree ; l++ ){
       temp.setAt(l,Vector4(0,0,0,0));
-      for (uint32_t k = 0 ; k <= __udegree ; k++ )
+      for (uint_t k = 0 ; k <= __udegree ; k++ )
           temp.setAt(l, temp.getAt(l) + (__ctrlPointMatrix->getAt(uspan - __udegree +k,vspan - __vdegree +l) *  (Nu->getAt(k)))) ;
   }
 
 
   Vector4 Sw( 0 , 0 , 0 ,0 );
 
-  for (uint32_t l2 = 0; l2 <= __vdegree ; l2++)
+  for (uint_t l2 = 0; l2 <= __vdegree ; l2++)
       Sw = Sw + (temp.getAt(l2) * Nv->getAt(l2));
 
   if (fabs(Sw.w()) < GEOM_TOLERANCE)
@@ -416,10 +416,10 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 bool NurbsPatch::isValid( ) const {
     Builder _builder;
   _builder.CtrlPointMatrix = const_cast<Point4MatrixPtr *>(&__ctrlPointMatrix);
-  _builder.UStride = const_cast<uint32_t *>(&__ustride);
-  _builder.VStride = const_cast<uint32_t *>(&__vstride);
-  _builder.UDegree = const_cast<uint32_t *>(&__udegree);
-  _builder.VDegree = const_cast<uint32_t *>(&__vdegree);
+  _builder.UStride = const_cast<uint_t *>(&__ustride);
+  _builder.VStride = const_cast<uint_t *>(&__vstride);
+  _builder.UDegree = const_cast<uint_t *>(&__udegree);
+  _builder.VDegree = const_cast<uint_t *>(&__vdegree);
   _builder.UKnotList = const_cast<RealArrayPtr *>(&__uKnotList);
   _builder.VKnotList= const_cast<RealArrayPtr *>(&__vKnotList);
   _builder.CCW= const_cast<bool *>(&__ccw);
@@ -439,14 +439,14 @@ bool NurbsPatch::isValid( ) const {
 
   /* Computational Algorithms */
 
-uint32_t NurbsPatch::findSpan(uint32_t deg, const RealArrayPtr& U,  real_t u) const{
-    uint32_t n = U->getSize() - deg - 1 ;
+uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U,  real_t u) const{
+    uint_t n = U->getSize() - deg - 1 ;
     if( u >= U->getAt( n ) )return ( n - 1 );
     if( u <= U->getAt( deg )  )return ( deg );
 
-    uint32_t low = deg;
-    uint32_t high = n ;
-    uint32_t mid = ( low + high ) / 2;
+    uint_t low = deg;
+    uint_t high = n ;
+    uint_t mid = ( low + high ) / 2;
     real_t _knot =  U->getAt(mid);
 
     while (u < _knot  || u >= U->getAt(mid+1) ){
@@ -459,7 +459,7 @@ uint32_t NurbsPatch::findSpan(uint32_t deg, const RealArrayPtr& U,  real_t u) co
     return mid;
 }
 /*
-RealArrayPtr NurbsPatch::computeBasisFunctions(uint32_t span, real_t u, uint32_t deg,const RealArrayPtr& U ) const{
+RealArrayPtr NurbsPatch::computeBasisFunctions(uint_t span, real_t u, uint_t deg,const RealArrayPtr& U ) const{
 
   RealArrayPtr BasisFunctions(new RealArray( deg + 1));
   real_t left[ deg+1 ];
@@ -468,11 +468,11 @@ RealArrayPtr NurbsPatch::computeBasisFunctions(uint32_t span, real_t u, uint32_t
 
   BasisFunctions->setAt(0,1.0);
 
-  for( uint32_t j = 1 ; j <= deg ; j++ ){
+  for( uint_t j = 1 ; j <= deg ; j++ ){
     left[j] = u - U->getAt(span + 1 -j) ;
     right[j] = U->getAt(span + j) - u ;
     saved = 0.0;
-    for ( uint32_t r = 0; r < j; r++){
+    for ( uint_t r = 0; r < j; r++){
       real_t temp = BasisFunctions->getAt(r) / ( right[r+1] + left[j-r] );
       BasisFunctions->setAt(r, saved + ( right[r+1] * temp ));
       saved = left[j-r] * temp;

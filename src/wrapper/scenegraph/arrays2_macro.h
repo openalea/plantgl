@@ -39,21 +39,21 @@ RCPtr<T> extract_array2_from_list( boost::python::object l )
 {
   if (l.ptr() == Py_None) return RCPtr<T>(0);
   boost::python::object row_iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( l.ptr() ) ) );
-  uint32_t rows= boost::python::extract<uint32_t>(l.attr("__len__")());
+  uint_t rows= boost::python::extract<uint_t>(l.attr("__len__")());
   boost::python::object col_obj= row_iter_obj.attr( "next" )();
-  uint32_t cols= boost::python::extract<uint32_t>(col_obj.attr("__len__")());
+  uint_t cols= boost::python::extract<uint_t>(col_obj.attr("__len__")());
   boost::python::object col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
   RCPtr<T> array= new T(rows,cols);
 
-  for(uint32_t i=0; i < rows; ++i )	
+  for(uint_t i=0; i < rows; ++i )	
 	 {	
 		if (i != 0) {
 			col_obj= row_iter_obj.attr( "next" )();	
 			col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
-			uint32_t c= boost::python::extract<uint32_t>(col_obj.attr("__len__")());
+			uint_t c= boost::python::extract<uint_t>(col_obj.attr("__len__")());
 			if( c != cols ) throw PythonExc_IndexError("Array2 has invalid number of element in a row.");
 		}
-	    for(uint32_t j=0; j < cols; ++j )
+	    for(uint_t j=0; j < cols; ++j )
 	    {
 			boost::python::object obj;
 			obj = col_iter_obj.attr( "next" )();
@@ -208,10 +208,10 @@ size_t array2_colnb( T * a )
 template<class T>
 std::string array2_str( T * a, const char * name )
 {
-    uint32_t r= a->getRowsNb();
+    uint_t r= a->getRowsNb();
     std::stringstream ss;
     ss << name <<"([";
-    for(uint32_t i= 0; i < r; i++ )
+    for(uint_t i= 0; i < r; i++ )
     {
         ss << "[";
         for(typename T::const_iterator it = a->getBeginRow(i); it != a->getEndRow(i); ++it){
@@ -236,7 +236,7 @@ RCPtr<T> array2_transpose( T * array)
 }
 
 template<class T>
-RCPtr<T> array2_submatrix( T * array, uint32_t rw, uint32_t cl, uint32_t nr, uint32_t nc)
+RCPtr<T> array2_submatrix( T * array, uint_t rw, uint_t cl, uint_t nr, uint_t nc)
 {
   if( (rw + nr) < array->getRowsNb() && (cl + nc) < array->getColsNb() )
       return array2_to_T<T>(array->get(rw,cl,nr,nc));
@@ -250,7 +250,7 @@ struct array2_pickle_suite : boost::python::pickle_suite
     static boost::python::tuple getinitargs(T const& ar) 
 	{ 
 		boost::python::list args; 
-        for(uint32_t i= 0; i < ar.getRowsNb(); i++ ){
+        for(uint_t i= 0; i < ar.getRowsNb(); i++ ){
 		    boost::python::list l; 
 		    for(typename T::const_iterator it = ar.getBeginRow(i); it != ar.getEndRow(i); ++it) 
 			    l.append(*it); 

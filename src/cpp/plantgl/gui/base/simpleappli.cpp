@@ -76,10 +76,10 @@ bool
 ViewerSimpleAppli::Wait ( unsigned long time  )
 { return false; }
 
-const std::vector<uint32_t> 
+const std::vector<uint_t> 
 ViewerSimpleAppli::getSelection(){
 	if(getViewer())return getViewer()->getSelection();
-	else return std::vector<uint32_t>();
+	else return std::vector<uint_t>();
 }
 
 void

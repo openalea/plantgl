@@ -368,10 +368,10 @@ protected :
   int __pass;
 
   /// number of vertex in the scene.
-  uint32_t __vertex;
+  uint_t __vertex;
 
   /// number of face in the scene.
-  uint32_t __face;
+  uint_t __face;
 
   /// current red color.
   int __red;
@@ -383,7 +383,7 @@ protected :
   int __blue;
 
   /// index of point.
-  uint32_t __index;
+  uint_t __index;
 
 
 };

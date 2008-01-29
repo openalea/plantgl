@@ -118,7 +118,7 @@ inline QString toQString(const PGL(Index4)& a){
 /// Transform an Index3 to QString
 inline QString toQString(const PGL(Index)& a){
 	QString res = "<";
-	for(uint32_t i = 0 ; i < a.getSize()-1 ; i++)
+	for(uint_t i = 0 ; i < a.getSize()-1 ; i++)
 		res += QString::number(a.getAt(i))+',';
 	return res+QString::number(a.getAt(a.getSize()-1))+'>';
 }

@@ -140,7 +140,7 @@ public:
   QGLWidget * getGLFrame() const { return __glframe; }
 
   /// Set the gl frame in which the scene must be rendered
-  bool setGLFrameFromId(uint32_t);
+  bool setGLFrameFromId(uint_t);
 
   /// @name Pre and Post Processing
   //@{
@@ -258,9 +258,9 @@ public:
 
   virtual bool process( Font * font );
 
-  bool check(uint32_t id, GLuint& displaylist);
-  bool call(uint32_t id);
-  void update(uint32_t id, GLuint displaylist);
+  bool check(uint_t id, GLuint& displaylist);
+  bool call(uint_t id);
+  void update(uint_t id, GLuint displaylist);
   const AppearancePtr& getAppearanceCache() const { return __appearance; }
 
 protected:

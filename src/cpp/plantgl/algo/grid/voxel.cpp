@@ -158,12 +158,12 @@ Shape3DPtr Voxel::representation() const{
     ShapePtr res(new Shape(GeometryPtr(new Translated(getCenter(),GeometryPtr(new Box(getSize())))),mat));
     res->setName("VXL_"+getName());
     if(__scale < 8){
-      uint32_t id = (uint32_t)__num;
-      uint32_t base = 1;
+      uint_t id = (uint_t)__num;
+      uint_t base = 1;
       const Tile * comp = getComplex();
       while(comp != NULL){
 	base *=  comp->getComponentsSize();
-	id += base *  (uint32_t)comp->getNum();
+	id += base *  (uint_t)comp->getNum();
 	comp = comp->getComplex();
       }
       res->getId() = id;

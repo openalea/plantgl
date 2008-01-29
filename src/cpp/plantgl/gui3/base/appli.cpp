@@ -55,9 +55,9 @@ ViewerAppli3::ViewerAppli3(){ ViewObjectGL3::BASHMODE = true; }
 ViewerAppli3::~ViewerAppli3(){  }
 
 
-const std::vector<uint32_t>
+const std::vector<uint_t>
 ViewerAppli3::getSelection() {
-	std::vector<uint32_t> res;
+	std::vector<uint_t> res;
     if(isRunning()){
       ViewSelectRecoverEvent3 * event = new ViewSelectRecoverEvent3(&res) ;
       sendAnEvent(event);

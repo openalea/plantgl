@@ -52,12 +52,12 @@ using namespace std;
 STDEXT_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
-static hash_map<uint32_t,QPixmap> PixmapCache;
+static hash_map<uint_t,QPixmap> PixmapCache;
 
 const char * const * ViewerIcon::getPixmap(const char * const obj[]){
 	return obj;
-/*	uint32_t id = (uint32_t)obj;
-	hash_map<uint32_t,QPixmap>::iterator _it = PixmapCache.find(id);
+/*	uint_t id = (uint_t)obj;
+	hash_map<uint_t,QPixmap>::iterator _it = PixmapCache.find(id);
 	if(_it == PixmapCache.end()){
 		QImage img(obj);
 		return QPixmap(32,32);

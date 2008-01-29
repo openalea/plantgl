@@ -1212,13 +1212,13 @@ double PGL(findfactor)(double x, double r, double y, double h){
 GeometryPtr Fit::extrudedHull(){
     if(! __pointstofit )return GeometryPtr(0);
   
-    uint32_t numpoints = __pointstofit->getSize();
+    uint_t numpoints = __pointstofit->getSize();
     if(numpoints>3){
 
 	Vector3 _translation;
 	/// Horizontal Profile.
 	Point2ArrayPtr horizontal_proj(new Point2Array(numpoints)) ;
-	uint32_t k=0;
+	uint_t k=0;
 	for(Point3Array::iterator _it = __pointstofit->getBegin();
 	    _it != __pointstofit->getEnd();
 	    _it++)
@@ -1835,7 +1835,7 @@ GeometryPtr Fit::extrusion(){
 					     __default_crossSection));
 	}
 	else{
-	  uint32_t size = 1; 
+	  uint_t size = 1; 
 	  bool _double = false;
 	  bool _unique = true;
 	  for(Point2Array::iterator _it= __radius->getBegin()+1; _it !=__radius->getEnd(); _it++){
@@ -1871,7 +1871,7 @@ GeometryPtr Fit::extrusion(){
 	  else {
 		Point2ArrayPtr _radius(new Point2Array(size));
 		RealArrayPtr _knot(new RealArray(size));
-		uint32_t _i = 1, _j =1; 
+		uint_t _i = 1, _j =1; 
 		_double = false;
 		real_t interval = __radius->getSize()-1;
 		_radius->setAt(0,__radius->getAt(0));_knot->setAt(0,0.0);
@@ -1917,7 +1917,7 @@ Fit::nurbsCurve(){
     return LineicModelPtr(new Polyline(__pointstofit));
   else {
 	LineicModelPtr line = leastSquares(__pointstofit,3,
-					 max(uint32_t(4),min(__pointstofit->getSize()/3,uint32_t(10))));
+					 max(uint_t(4),min(__pointstofit->getSize()/3,uint_t(10))));
 	if(!line){
 	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : Error with leastSquares computation." << endl;
 	  return LineicModelPtr(new Polyline(__pointstofit));
@@ -1925,7 +1925,7 @@ Fit::nurbsCurve(){
 	NurbsCurvePtr nurbs;
 	if(nurbs.cast(line)){
 	  if(nurbs->getCtrlPointList()->getSize() == 4){
-		return LineicModelPtr(new BezierCurve(nurbs->getCtrlPointList(),min((__pointstofit->getSize()-1),uint32_t(10))));
+		return LineicModelPtr(new BezierCurve(nurbs->getCtrlPointList(),min((__pointstofit->getSize()-1),uint_t(10))));
 	  }
 	  else return line;
 	}
@@ -1974,7 +1974,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q, int degC, int n){
 
 
 RealArrayPtr Fit::chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength){
-  uint32_t i ;
+  uint_t i ;
   RealArrayPtr ub(new RealArray(Q->getSize()));
   totalLength = 0;
 
@@ -2034,14 +2034,14 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
                                 int degC, int n, const RealArrayPtr& ub,
                                 const RealArrayPtr& knot){
 
-    uint32_t span;
-    const uint32_t& m=Q->getSize() ;
+    uint_t span;
+    const uint_t& m=Q->getSize() ;
 
     if(ub->getSize() != Q->getSize()){
 	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate Knot Vector." << endl;
 	return LineicModelPtr(0);
     }
-    if(knot->getSize() != (uint32_t)n+degC+1){
+    if(knot->getSize() != (uint_t)n+degC+1){
 	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Knot Vector." << endl;
 	return LineicModelPtr(0);
     }
@@ -2050,7 +2050,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 
     Point3ArrayPtr R(new Point3Array(n)), rk(new Point3Array(m));
     RealArrayPtr funs;
-    DoubleArray2 N(m,uint32_t(n),double(0)) ;
+    DoubleArray2 N(m,uint_t(n),double(0)) ;
     R->setAt(0,Q->getAt(0));
     R->setAt(n-1,Q->getAt(m-1));
 
@@ -2060,7 +2060,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 
 //    cerr << "Knot : " << *knot << endl;
 
-    for(uint32_t i=0;i<m;i++){
+    for(uint_t i=0;i<m;i++){
 //      cerr << "u = " << ub->getAt(i) << endl;
         span = findSpan(ub->getAt(i),degC,knot) ;
 //      cerr << "Span = " << span << endl;
@@ -2076,7 +2076,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     // Set up R
     for(int i2=0;i2<n;i2++){
 		R->setAt(i2,Vector3::ORIGIN) ;
-		for(uint32_t j=0;j<m;j++){
+		for(uint_t j=0;j<m;j++){
 			R->setAt(i2, R->getAt(i2)+ rk->getAt(j)*(real_t)(N.getAt(j,i2))) ;
 		}
 		Vector3 a = R->getAt(i2);
@@ -2094,8 +2094,8 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     // must check for the case where we want a curve of degree 1 having
     // only 2 points.
     if(n-2>0){ 
-	DoubleArray2 X(n-2,3),B(uint32_t(n-2),uint32_t(3),double(0));
-	for(uint32_t i=0;i<B.getRowsNb();i++){
+	DoubleArray2 X(n-2,3),B(uint_t(n-2),uint_t(3),double(0));
+	for(uint_t i=0;i<B.getRowsNb();i++){
 //	    cerr << "B(" << i << ",0)=" << R->getAt(i+1).x() << endl;
 	    B.setAt(i,0,(double)(R->getAt(i+1).x()) );
 //	    cerr << "B(" << i << ",1)=" << R->getAt(i+1).y() << endl;
@@ -2116,13 +2116,13 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 //	cerr << "B : " << B << endl;
 	solve(TNs*Ns,B,X) ;
 
-	for(uint32_t i3=0;i3<X.getRowsNb();i3++){
+	for(uint_t i3=0;i3<X.getRowsNb();i3++){
 	    P->setAt(i3+1,Vector4((real_t)X.getAt(i3,0),(real_t)X.getAt(i3,1),(real_t)X.getAt(i3,2),1.0));
 	}
     }
     P->setAt(0, Vector4(Q->getAt(0),1)) ;
     P->setAt(n-1, Vector4(Q->getAt(m-1),1)) ;
-    return  LineicModelPtr(new NurbsCurve(P,knot,degC,uint32_t(Q->getSize()-1))) ;
+    return  LineicModelPtr(new NurbsCurve(P,knot,degC,uint_t(Q->getSize()-1))) ;
 }
 /*
 

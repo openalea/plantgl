@@ -113,7 +113,7 @@ public:
   /** Returns the \e i-th element of \e self
       \pre
       - \e i must be strictly less than the size of \e self. */
-  inline const T& getAt( uint32_t i ) const {
+  inline const T& getAt( uint_t i ) const {
     GEOM_ASSERT(i < __A.size());
     return __A[i];
   }
@@ -121,7 +121,7 @@ public:
   /** Returns the \e i-th element of \e self
       \pre
       - \e i must be strictly less than the size of \e self. */
-  inline T& getAt( uint32_t i ) {
+  inline T& getAt( uint_t i ) {
     GEOM_ASSERT(i < __A.size());
     return __A[i];
   }
@@ -147,7 +147,7 @@ public:
   }
 
   /// Returns the size of \e self.
-  inline uint32_t getSize( ) const {
+  inline uint_t getSize( ) const {
     return __A.size();
   }
 
@@ -239,10 +239,10 @@ public:
                   char begin = '[',
                   char end = ']' ) const {
     stream << begin;
-    uint32_t _size = __A.size();
+    uint_t _size = __A.size();
     if (_size) {
         stream << __A[0];
-        for (uint32_t _i = 1; _i < _size - 1; _i++)
+        for (uint_t _i = 1; _i < _size - 1; _i++)
             stream << delimiter << __A[_i];
         if(_size>1) stream <<  delimiter << __A[_size -1];
     };
@@ -258,7 +258,7 @@ public:
   /** Sets the \e i-th element of \e self to \e t.
       \pre
       - \e i must be strictly less than the size of \e self. */
-  void setAt( uint32_t i, const T& t ) {
+  void setAt( uint_t i, const T& t ) {
     GEOM_ASSERT(i < __A.size());
     __A[i] = t;
   }
@@ -271,7 +271,7 @@ public:
 
   /** increase \e self capacity to size.
       */
-  void reserve( uint32_t size ) {
+  void reserve( uint_t size ) {
     __A.reserve(size);
   }
 
@@ -344,6 +344,10 @@ typedef RCPtr<Int16Array1> Int16Array1Ptr;
 typedef Array1<int32_t> Int32Array1;
 /// Array of int32_t pointer
 typedef RCPtr<Int32Array1> Int32Array1Ptr;
+/// Array of int_t
+typedef Array1<int_t> IntArray1;
+/// Array of int_t pointer
+typedef RCPtr<IntArray1> IntArray1Ptr;
 /// Array of uchar
 typedef Array1<uchar_t> UCharArray1;
 /// Array of uchar_t pointer
@@ -352,10 +356,14 @@ typedef RCPtr<UCharArray1> UCharArray1Ptr;
 typedef Array1<uint16_t> Uint16Array1;
 /// Array of uint16_t pointer
 typedef RCPtr<Uint16Array1> Uint16Array1Ptr;
-/// Array of uint32_t
+/// Array of uint_t
 typedef Array1<uint32_t> Uint32Array1;
-/// Array of uint32_t pointer
+/// Array of uint_t pointer
 typedef RCPtr<Uint32Array1> Uint32Array1Ptr;
+/// Array of uint_t
+typedef Array1<uint_t> UintArray1;
+/// Array of uint_t pointer
+typedef RCPtr<UintArray1> UintArray1Ptr;
 
 // typedef Array1<real_t> RealArray1;
 // typedef RCPtr<RealArray1> RealArray1Ptr;
@@ -377,10 +385,10 @@ class TOOLS_API RealArray : public Array1<real_t>
 public:
 
   /// Constructs an Array1 of size \e size
-  RealArray( uint32_t size = 0 ) ;
+  RealArray( uint_t size = 0 ) ;
 
   /// Constructs an Array1 with \e size copies of \e t.
-  RealArray(uint32_t size, const real_t& t  ) ;
+  RealArray(uint_t size, const real_t& t  ) ;
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>

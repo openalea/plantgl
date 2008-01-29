@@ -92,7 +92,7 @@ public:
   void clear( );
 
   /// Add indentation.
-  void addIndent(uint32_t i);
+  void addIndent(uint_t i);
 
   /// test if an object is already printed.
   virtual bool isPrinted(SceneObjectPtr);

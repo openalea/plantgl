@@ -53,8 +53,8 @@ std::string gbc_repr( BezierCurve* p )
 {
   std::stringstream ss;
   Point4ArrayPtr ctrl= p->getCtrlPoints();
-  uint32_t stride= p->getStride();
-  uint32_t n= ctrl->getSize();
+  uint_t stride= p->getStride();
+  uint_t n= ctrl->getSize();
   if( n == 0 )
     {
       ss << "BezierCurve(Point4Array([])," << stride << ")";
@@ -74,7 +74,7 @@ std::string gbc_repr( BezierCurve* p )
   return ss.str();
 }
 
-object bernstein_factors(uint32_t n, real_t u){
+object bernstein_factors(uint_t n, real_t u){
     return make_list<std::vector<real_t> >(all_bernstein(n,u))();
 }
 
@@ -83,10 +83,10 @@ object bernstein_factors(uint32_t n, real_t u){
 void export_BezierCurve()
 {
   class_<BezierCurve, BezierCurvePtr, bases<ParametricModel, LineicModel>, boost::noncopyable>
-    ( "BezierCurve", init<Point4ArrayPtr, optional< uint32_t > >() )
+    ( "BezierCurve", init<Point4ArrayPtr, optional< uint_t > >() )
     .def( "copy", &BezierCurve::copy )
     .def( "__repr__", gbc_repr )
-    .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint32_t,DEFAULT_STRIDE)
+    .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint_t,DEFAULT_STRIDE)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
     .def("bernstein_factors",&bernstein_factors,args("n","u"),
     "[float] bernstein_factors( int n, float u )"
@@ -109,8 +109,8 @@ std::string gbc2_repr( BezierCurve2D* p )
 {
   std::stringstream ss;
   Point3ArrayPtr ctrl= p->getCtrlPoints();
-  uint32_t stride= p->getStride();
-  uint32_t n= ctrl->getSize();
+  uint_t stride= p->getStride();
+  uint_t n= ctrl->getSize();
   if( n == 0 )
     {
       ss << "BezierCurve2D(Point3Array([])," << stride << ")";
@@ -133,10 +133,10 @@ std::string gbc2_repr( BezierCurve2D* p )
 void export_BezierCurve2D()
 {
    class_<BezierCurve2D, BezierCurve2DPtr, bases<Curve2D>, boost::noncopyable>
-    ( "BezierCurve2D", init<Point3ArrayPtr, optional< uint32_t > >() )
+    ( "BezierCurve2D", init<Point3ArrayPtr, optional< uint_t > >() )
     .def( "copy", &BezierCurve2D::copy )
     .def( "__repr__", gbc2_repr )
-    .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve2D,Stride,uint32_t)
+    .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve2D,Stride,uint_t)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve2D,CtrlPointList,Point3ArrayPtr)
     ;
 

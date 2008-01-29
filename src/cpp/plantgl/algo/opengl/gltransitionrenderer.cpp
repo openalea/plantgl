@@ -62,7 +62,7 @@ PGL_USING_NAMESPACE
 
 GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer, 
 											QGLWidget * widget, 
-											uint32_t step ) :
+											uint_t step ) :
   GLRenderer( discretizer, widget ),
   __totalstep(step),
   __laststep(step+1),
@@ -83,13 +83,13 @@ GLTransitionRenderer::clear( ) {
   __scene2 = ScenePtr(0);
 }
 
-const uint32_t 
+const uint_t 
 GLTransitionRenderer::getTotalStep() const {
   return __totalstep;
 }
 
 void
-GLTransitionRenderer::setTotalStep(const uint32_t s){
+GLTransitionRenderer::setTotalStep(const uint_t s){
   __totalstep = s;
   __laststep = s+1;
 }
@@ -207,7 +207,7 @@ bool GLTransitionRenderer::process( MultiSpectral * multiSpectral ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool GLTransitionRenderer::rend(uint32_t step){
+bool GLTransitionRenderer::rend(uint_t step){
   if(step >= __totalstep)step = __totalstep - 1;
   
   if(__laststep != step){

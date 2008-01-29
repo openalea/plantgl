@@ -169,9 +169,9 @@ public :
   /// Function to tell the qglwidget to enter in this mode.
   void setSelectionMode();
 
-  virtual std::vector<uint32_t> getSelectionIds() const;
+  virtual std::vector<uint_t> getSelectionIds() const;
 
-  virtual uint32_t translateId(uint32_t) const;
+  virtual uint_t translateId(uint_t) const;
 
   /// Get the global Bounding Box.
   virtual const PGL::BoundingBoxPtr getGlobalBoundingBox() const;
@@ -200,9 +200,9 @@ public slots:
   virtual void clearSelectionEvent();
 
   /// Selection Event.
-  virtual void selectionEvent(uint32_t);
-  virtual void selectionEvent(const std::vector<uint32_t>&);
-  virtual void selectionIdEvent(const std::vector<uint32_t>&);
+  virtual void selectionEvent(uint_t);
+  virtual void selectionEvent(const std::vector<uint_t>&);
+  virtual void selectionIdEvent(const std::vector<uint_t>&);
   virtual void selectionEvent(Q3ListViewItem *);
 
   virtual void checkFileModification();

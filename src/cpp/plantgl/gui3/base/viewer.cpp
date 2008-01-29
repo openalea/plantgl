@@ -520,10 +520,10 @@ Viewer3::setSceneRenderer(ViewRendererGL3 * s)
 }
 
 
-std::vector<uint32_t>
+std::vector<uint_t>
 Viewer3::getSelection() const
 {
-  if(__GLFrame->getSceneRenderer() == NULL) return std::vector<uint32_t>(0);
+  if(__GLFrame->getSceneRenderer() == NULL) return std::vector<uint_t>(0);
   return __GLFrame->getSceneRenderer()->getSelectionIds();
 }
 

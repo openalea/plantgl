@@ -42,7 +42,7 @@ PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-GeometryArray::GeometryArray (uint32_t size ) :
+GeometryArray::GeometryArray (uint_t size ) :
   GeomArray<GeometryPtr>( size){ 
 }
 
@@ -52,7 +52,7 @@ GeometryArray::~GeometryArray()
 
 
 /* ----------------------------------------------------------------------- */
-Curve2DArray::Curve2DArray (uint32_t size ) :
+Curve2DArray::Curve2DArray (uint_t size ) :
   GeomArray<Curve2DPtr>( size){ 
 }
 
@@ -61,7 +61,7 @@ Curve2DArray::~Curve2DArray (){
 
 /* ----------------------------------------------------------------------- */
 
-CurveArray::CurveArray (uint32_t size ) :
+CurveArray::CurveArray (uint_t size ) :
   GeomArray<LineicModelPtr>( size){ 
 }
 
@@ -72,7 +72,7 @@ CurveArray::~CurveArray ()
 /* ----------------------------------------------------------------------- */
 
 /*
-GeometryArray<T>::GeometryArray<T>( uint32_t size = 0 ) :
+GeometryArray<T>::GeometryArray<T>( uint_t size = 0 ) :
   Array1<T>(size) {
 }
 

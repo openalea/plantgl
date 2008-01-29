@@ -69,7 +69,7 @@ bool PointSet::Builder::isValid( ) const {
 	if(!EMValid()) return false;
 
 	if (ColorList && *ColorList) {
-		uint32_t _colorListSize = (*ColorList)->getSize();
+		uint_t _colorListSize = (*ColorList)->getSize();
 		if(_colorListSize != (*PointList)->getSize()){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
@@ -120,13 +120,13 @@ bool  PointSet::isAVolume( ) const {
 
 
 const Vector3& 
-PointSet::getPointListAt( uint32_t i ) const {
+PointSet::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);   
 }
 
 Vector3& 
-PointSet::getPointListAt( uint32_t i ) {
+PointSet::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);   
 }
@@ -240,13 +240,13 @@ PointSet2D::copy() const
 }
 
 const Vector2& 
-PointSet2D::getPointListAt( uint32_t i ) const {
+PointSet2D::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);   
 }
 
 Vector2& 
-PointSet2D::getPointListAt( uint32_t i ) {
+PointSet2D::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->getSize());
   return __pointList->getAt(i);   
 }
@@ -261,7 +261,7 @@ PointSet2D::getPointList( ) {
   return __pointList;
 }
 
-uint32_t 
+uint_t 
 PointSet2D::getPointListSize( ) const {
   return __pointList->getSize();
 }

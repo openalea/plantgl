@@ -83,12 +83,12 @@ bool Group::Builder::isValid( ) const {
     genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Group","GeometryList");
     return false;
   };
-  uint32_t _size = (*GeometryList)->getSize();
+  uint_t _size = (*GeometryList)->getSize();
   if (_size < 1) {
     genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Group","GeometryList","Must be greater than 1.");
     return false;
   };
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  for (uint_t _i = 0; _i < _size; _i++) {
     const GeometryPtr& _geometry = (*GeometryList)->getAt(_i);
     if (! (_geometry) ) {
       genMessage
@@ -133,13 +133,13 @@ bool Group::apply( Action& action ) {
 /* ----------------------------------------------------------------------- */
 
 const GeometryPtr&
-Group::getGeometryListAt( uint32_t i ) const {
+Group::getGeometryListAt( uint_t i ) const {
   GEOM_ASSERT(i < __geometryList->getSize());
   return __geometryList->getAt(i);
 }
 
 GeometryPtr& 
-Group::getGeometryListAt( uint32_t i ) {
+Group::getGeometryListAt( uint_t i ) {
   GEOM_ASSERT(i < __geometryList->getSize());
   return __geometryList->getAt(i);
 }
@@ -153,7 +153,7 @@ Group::getGeometryList( ) {
   return __geometryList;
 }
 
-uint32_t 
+uint_t 
 Group::getGeometryListSize( ) const {
   return __geometryList->getSize();
 }
@@ -219,8 +219,8 @@ bool Group::isValid( ) const {
   _builder.GeometryList = const_cast<GeometryArrayPtr *>(&__geometryList);
   _builder.Skeleton = const_cast<PolylinePtr *>(&__skeleton);
   if(!_builder.isValid())return false;
-  uint32_t _size = __geometryList->getSize();
-  for (uint32_t _i = 0; _i < _size ; _i++) {
+  uint_t _size = __geometryList->getSize();
+  for (uint_t _i = 0; _i < _size ; _i++) {
       const GeometryPtr& _geometry = __geometryList->getAt(_i);
       if (! (_geometry) && (_geometry->isValid())) {
 	  genMessage
@@ -236,9 +236,9 @@ bool Group::isValid( ) const {
 SceneObjectPtr Group::copy() const 
 {
   Group * ptr = new Group(*this);
-  uint32_t size = ptr->getGeometryListSize();
+  uint_t size = ptr->getGeometryListSize();
   GeometryArrayPtr _ga(new GeometryArray(size));
-  uint32_t i = 0;
+  uint_t i = 0;
   for(GeometryArray::iterator _it = _ga->getBegin() ; _it != _ga->getEnd() ; _it ++){
     if(__geometryList->getAt(i))_it->cast(__geometryList->getAt(i)->copy());
     i++;

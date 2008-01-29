@@ -616,18 +616,18 @@ void ViewGLFrame3::selectGL()
   hits = glRenderMode(GL_RENDER);
   GLuint names, *ptr;
   ptr = (GLuint *) selectBuf;
-  uint32_t val, selectedval;
+  uint_t val, selectedval;
   float z, zmin;
 
   if(hits > 0){
-    for(uint32_t i = 0 ; i < (uint32_t)hits ; i++){
+    for(uint_t i = 0 ; i < (uint_t)hits ; i++){
       names = *ptr; //    cerr << "Number of names for this hits = " << names << endl;
       ptr++;
       z = (float)*ptr;        //    cerr << "z1 = " << *ptr << endl;
       if(i == 0)zmin = z;
       ptr++;        //    cerr << "z2 = " << *ptr << endl;
       ptr++;
-      val = (uint32_t)*ptr;
+      val = (uint_t)*ptr;
       if(i == 0)selectedval = val;
       else if(z < zmin){
 	selectedval = val;
@@ -688,18 +688,18 @@ void ViewGLFrame3::multipleSelectGL(const QPoint& p)
   hits = glRenderMode(GL_RENDER);
   GLuint names, *ptr;
   ptr = (GLuint *) selectBuf;
-  uint32_t val;
+  uint_t val;
   float z;
 
-  vector<uint32_t> vals;
+  vector<uint_t> vals;
   if(hits > 0){
-    for(uint32_t i = 0 ; i < (uint32_t)hits ; i++){
+    for(uint_t i = 0 ; i < (uint_t)hits ; i++){
       names = *ptr; //    cerr << "Number of names for this hits = " << names << endl;
       ptr++;
       z = (float)*ptr;        //    cerr << "z1 = " << *ptr << endl;
       ptr++;        //    cerr << "z2 = " << *ptr << endl;
       ptr++;
-      val = (uint32_t)*ptr;
+      val = (uint_t)*ptr;
 	  vals.push_back(val);
       for(unsigned int j = 0 ; j < names ; j++)ptr++;
     }
@@ -834,8 +834,8 @@ int ViewGLFrame3::getProjectionPixel(){
 	glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
 
-	uint32_t projpix = 0;
-	for(uint32_t i = 0; i < nbpix; ++i)
+	uint_t projpix = 0;
+	for(uint_t i = 0; i < nbpix; ++i)
 		if(0 < zvalues[i] && zvalues[i] < 1) projpix++;
 
 	delete [] zvalues;

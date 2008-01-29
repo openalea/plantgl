@@ -39,7 +39,7 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-const uint32_t Font::DEFAULT_SIZE(10);
+const uint_t Font::DEFAULT_SIZE(10);
 const bool   Font::DEFAULT_BOLD(false);
 const bool   Font::DEFAULT_ITALIC(false);
 
@@ -89,7 +89,7 @@ bool Font::Builder::isValid( ) const
 /* ----------------------------------------------------------------------- */
 
 Font::Font(const std::string& family, 
-	 uint32_t size,
+	 uint_t size,
 	 bool bold,
 	 bool italic):
   SceneObject(),
@@ -104,7 +104,7 @@ Font::~Font(){}
 bool  Font::isValid( ) const{
   Builder _builder;
   _builder.Family = const_cast<std::string *>(&__family);
-  _builder.Size = const_cast<uint32_t *>(&__size);
+  _builder.Size = const_cast<uint_t *>(&__size);
   _builder.Bold = const_cast<bool *>(&__bold);
   _builder.Italic = const_cast<bool *>(&__italic);
   return _builder.isValid();

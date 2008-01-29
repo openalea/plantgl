@@ -101,7 +101,7 @@ public:
     decompose(a) ;
   }
 
-  virtual void resize(const uint32_t r, const uint32_t c) {
+  virtual void resize(const uint_t r, const uint_t c) {
     NumericArray2<T>::resize(r,c) ;
     pivot_.resize(r) ;
   }
@@ -630,7 +630,7 @@ public:
     std::vector<T> S(sig_.size()) ;
 
     // doing one column from B at a time
-    uint32_t i,j,k ;
+    uint_t i,j,k ;
     for(j=0;j<B.getColsNb();++j){
       for(i=0;i<V_.getColsNb();++i){
         T s = 0 ;
@@ -654,10 +654,10 @@ public:
 
 protected:
   /// Dimensions of the problem (M > N)
-  uint32_t M;
+  uint_t M;
 
   /// Dimensions of the problem (M > N)
-  uint32_t N;
+  uint_t N;
 
   /// M * M orthogonal matrix \a U
   NumericArray2<T> U_;
@@ -721,8 +721,8 @@ protected:
    * the result).
    *
        */
-  double left_householder(NumericArray2<T>& A, const uint32_t i){
-    uint32_t j,k;
+  double left_householder(NumericArray2<T>& A, const uint_t i){
+    uint_t j,k;
     T scale = 0;                        // Compute the scaling factor
     for(k=i; k<M; k++)
       scale += fabs(A.getAt(k,i));
@@ -810,8 +810,8 @@ protected:
        * store the result).
        *
        */
-  double right_householder(NumericArray2<T>& A, const uint32_t i){
-    uint32_t j,k;
+  double right_householder(NumericArray2<T>& A, const uint_t i){
+    uint_t j,k;
     T scale = 0;                        // Compute the scaling factor
     for(k=i+1; k<N; k++)
       scale += fabs(A.getAt(i,k));
@@ -867,10 +867,10 @@ protected:
     double norm_acc = 0;
     super_diag[0] = 0;                  // No superdiag elem above A(1,1)
     NumericArray2<T> A = _A;                   // A being transformed
-    for(uint32_t i=0; i<N; i++)
+    for(uint_t i=0; i<N; i++)
       {
         const T& diagi = sig_[i] = left_householder(A,i);
-        if( i < (uint32_t)N-1 )
+        if( i < (uint_t)N-1 )
           super_diag[i+1] = right_householder(A,i);
         double t2 = fabs(diagi)+fabs(super_diag[i]) ;
         norm_acc = std::max(norm_acc,t2);
@@ -931,7 +931,7 @@ protected:
        */
   void rotate(NumericArray2<T>& Mu, const int i, const int j,
               const double cos_ph, const double sin_ph){
-    for(uint32_t l=0; l<Mu.getRowsNb(); l++)
+    for(uint_t l=0; l<Mu.getRowsNb(); l++)
       {
         T Uil = Mu.getAt(l,i);
         T Ujl = Mu.getAt(l,j);

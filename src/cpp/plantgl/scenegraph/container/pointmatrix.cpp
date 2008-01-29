@@ -39,7 +39,7 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 
-Point2Matrix::Point2Matrix( uint32_t rows , uint32_t cols ) :
+Point2Matrix::Point2Matrix( uint_t rows , uint_t cols ) :
   Array2<Vector2>(rows,cols) {
   __A.reserve(rows*cols);
   GEOM_ASSERT(isValid());
@@ -158,7 +158,7 @@ void Point2Matrix::normalize(){
 /* ----------------------------------------------------------------------- */
 
 
-Point3Matrix::Point3Matrix( uint32_t rows, uint32_t cols ) :
+Point3Matrix::Point3Matrix( uint_t rows, uint_t cols ) :
   Array2<Vector3>(rows,cols) {
   __A.reserve(rows*cols);
   GEOM_ASSERT(isValid());
@@ -168,7 +168,7 @@ Point3Matrix::Point3Matrix( uint32_t rows, uint32_t cols ) :
 Point3Matrix::Point3Matrix( const Point2MatrixPtr& points2, const real_t& z ) :
   Array2<Vector3>() {
   GEOM_ASSERT(points2);
-  uint32_t _size = points2->getSize();
+  uint_t _size = points2->getSize();
   __A.reserve(_size);
   __A.resize(_size);
   Point2Matrix::const_iterator _i2 = points2->getBegin();
@@ -328,7 +328,7 @@ void Point3Matrix::normalize(){
 /* ----------------------------------------------------------------------- */
 
 
-Point4Matrix::Point4Matrix( uint32_t rows,uint32_t cols ) :
+Point4Matrix::Point4Matrix( uint_t rows,uint_t cols ) :
   Array2<Vector4>(rows,cols) {
   __A.reserve(rows*cols);
   GEOM_ASSERT(isValid());
@@ -338,7 +338,7 @@ Point4Matrix::Point4Matrix( uint32_t rows,uint32_t cols ) :
 Point4Matrix::Point4Matrix( const Point3MatrixPtr& points3, const real_t& z ) :
   Array2<Vector4>() {
   GEOM_ASSERT(points3);
-  uint32_t _size = points3->getSize();
+  uint_t _size = points3->getSize();
   __A.reserve(_size);
   __A.resize(_size);
   Point3Matrix::const_iterator _i3 = points3->getBegin();

@@ -50,7 +50,7 @@ Index * ind_fromlist( boost::python::object l )
   return extract_pgllist<Index >(l)();
 }
 
-Index * ind_fromvalue3( uint32_t a, uint32_t b, uint32_t c) 
+Index * ind_fromvalue3( uint_t a, uint_t b, uint_t c) 
 { 
   Index * ind = new Index();
   ind->pushBack(a);
@@ -59,7 +59,7 @@ Index * ind_fromvalue3( uint32_t a, uint32_t b, uint32_t c)
   return ind;
 }
 
-Index * ind_fromvalue4( uint32_t a, uint32_t b, uint32_t c, uint32_t d) 
+Index * ind_fromvalue4( uint_t a, uint_t b, uint_t c, uint_t d) 
 { 
   Index * ind = new Index();
   ind->pushBack(a);
@@ -69,7 +69,7 @@ Index * ind_fromvalue4( uint32_t a, uint32_t b, uint32_t c, uint32_t d)
   return ind;
 }
 
-Index * ind_fromvalue5( uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e) 
+Index * ind_fromvalue5( uint_t a, uint_t b, uint_t c, uint_t d, uint_t e) 
 { 
   Index * ind = new Index();
   ind->pushBack(a);
@@ -83,13 +83,13 @@ Index * ind_fromvalue5( uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t
 EXPORT_FUNCTION2( ind,Index );
 
 #define INDEX_SETGET(PREFIX,ARRAY,SIZE) \
- uint32_t PREFIX##_size( ARRAY* v) { return SIZE; } \
- uint32_t PREFIX##_getAt( ARRAY* v, size_t i ) \
+ uint_t PREFIX##_size( ARRAY* v) { return SIZE; } \
+ uint_t PREFIX##_getAt( ARRAY* v, size_t i ) \
  { \
    if (i < SIZE) return v->getAt(i); \
    else throw PythonExc_IndexError(); \
  } \
- void PREFIX##_setAt( ARRAY* v, size_t i, uint32_t val ) \
+ void PREFIX##_setAt( ARRAY* v, size_t i, uint_t val ) \
  { \
    if (i < SIZE) v->getAt(i) = val; \
    else throw PythonExc_IndexError(); \

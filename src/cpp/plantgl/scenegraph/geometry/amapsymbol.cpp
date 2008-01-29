@@ -141,8 +141,8 @@ bool AmapSymbol::readFile(const string& filename){
 
 beifstream& AmapSymbol::read( beifstream& stream ){
   // reads the header : number of polygons / number of points
-  uint32_t _pointsCount= 0;
-  uint32_t _facesCount= 0;
+  uint_t _pointsCount= 0;
+  uint_t _facesCount= 0;
   stream >> _facesCount >> _pointsCount;
 #ifdef GEOM_DEBUG
   gerr << _facesCount << " Faces - " << _pointsCount << " Points" << endl;
@@ -154,12 +154,12 @@ beifstream& AmapSymbol::read( beifstream& stream ){
 
   // Reads the polygons
   uint16_t _faceInfo[2];
-  uint32_t _indicesCount = 0;
-  uint32_t _pointColor= 0;
-  uint32_t _pointIndex= 0;
+  uint_t _indicesCount = 0;
+  uint_t _pointColor= 0;
+  uint_t _pointIndex= 0;
   uint16_t _pointAttribute= 0;
   _faceInfo[0]= 0; _faceInfo[1]= 0;
-  for (uint32_t _i = 0; _i < _facesCount; _i++) {
+  for (uint_t _i = 0; _i < _facesCount; _i++) {
     stream >> _indicesCount >> _faceInfo[0] >> _faceInfo[1];
 #ifdef GEOM_DEBUG
         gerr << "Face " << _i << " : " << _indicesCount
@@ -167,7 +167,7 @@ beifstream& AmapSymbol::read( beifstream& stream ){
                  << " { " << endl;
 #endif
     Index _index(_indicesCount);
-    for (uint32_t _j = 0; _j < _indicesCount; _j++) {
+    for (uint_t _j = 0; _j < _indicesCount; _j++) {
       stream >> _pointColor >> _pointIndex >> _pointAttribute;
 #ifdef GEOM_DEBUG
         gerr << " Point " << _j << " : Index = " << _pointIndex
@@ -191,7 +191,7 @@ beifstream& AmapSymbol::read( beifstream& stream ){
         gerr << endl;
 #endif
 
-  for (uint32_t _j = 0; _j < _pointsCount; _j++) {
+  for (uint_t _j = 0; _j < _pointsCount; _j++) {
     stream >> _nx >> _ny >> _nz;
     stream >> _x >> _y >> _z;
     stream >> _u >> _v >> _d;
@@ -250,16 +250,16 @@ bool AmapSymbol::isValid( ) const {
 
 bofstream& AmapSymbol::write( bofstream& stream ) const {
   GEOM_ASSERT(stream);
-  uint32_t _facesCount = __indexList->getSize();
-  uint32_t _pointsCount = __pointList->getSize();
+  uint_t _facesCount = __indexList->getSize();
+  uint_t _pointsCount = __pointList->getSize();
 
   stream << _facesCount << _pointsCount;
 
   // Kind of face: always 1 for polygon - Dimension: always 3 for 3D
   uint16_t _faceInfo[2] = { 1, 3 };
-  uint32_t _indicesCount;
-  uint32_t _pointColor = 1;
-  uint32_t _pointIndex;
+  uint_t _indicesCount;
+  uint_t _pointColor = 1;
+  uint_t _pointIndex;
 
   /* The construction attribute is used for the connection between two 
    internodes:
@@ -269,12 +269,12 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
   uint16_t _pointAttribute = 0;
 
   // Writes the faces
-  for (uint32_t _i = 0; _i < _facesCount; _i++) {
+  for (uint_t _i = 0; _i < _facesCount; _i++) {
 
     _indicesCount = __indexList->getAt(_i).getSize();
     stream << _indicesCount << _faceInfo[0] << _faceInfo[1];
 
-    for (uint32_t _k = 0; _k < _indicesCount; _k++) {
+    for (uint_t _k = 0; _k < _indicesCount; _k++) {
 
       _pointIndex = __indexList->getAt(_i).getAt(_k);
       stream << _pointColor << _pointIndex << _pointAttribute;
@@ -284,7 +284,7 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
   // Writes the points
   float _d = 0;
 
-  for (uint32_t _j = 0; _j < _pointsCount; _j++) {
+  for (uint_t _j = 0; _j < _pointsCount; _j++) {
     const Vector3& _point = __pointList->getAt(_j);
 	// Bug: __normalList is null for default cylinder...
     const Vector3& _normal = (__normalList?__normalList->getAt(_j):Vector3::ORIGIN);
@@ -300,13 +300,13 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
 
 /* ----------------------------------------------------------------------- */
 
-const Vector3& AmapSymbol::getTexCoord3At( uint32_t i, uint32_t j ) const {
+const Vector3& AmapSymbol::getTexCoord3At( uint_t i, uint_t j ) const {
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());
   return __texCoord3List->getAt(__indexList->getAt(i).getAt(j));
 }
 
-Vector3& AmapSymbol::getTexCoord3At( uint32_t i, uint32_t j ){
+Vector3& AmapSymbol::getTexCoord3At( uint_t i, uint_t j ){
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());
   return __texCoord3List->getAt(__indexList->getAt(i).getAt(j));

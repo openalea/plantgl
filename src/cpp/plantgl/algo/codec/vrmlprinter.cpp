@@ -71,7 +71,7 @@ using namespace std;
 /*
 #define GEOM_VRMLPRINT_BEGINSHAPE(obj){ \
   if (obj->isNamed()) { \
-    uint32_t appid = 0; \
+    uint_t appid = 0; \
     if(__app)appid= __app->getId(); \
     if (! __shapecache.insert((number(obj->getId())+"_"+number(appid)).c_str()).second){ \
       __geomStream << "USE SHAPE_" << obj->getId() <<"_" << appid << endl; \
@@ -96,9 +96,9 @@ using namespace std;
 */
 
 /*  if (obj->isNamed()) { \
-    uint32_t appid = 0; \
+    uint_t appid = 0; \
     if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint32_t,uint32_t>(obj->getId(),appid)).second ){ \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
       __geomStream << "USE SHAPE_" << obj->getId() <<"_" << appid << endl; \
       return true; \
     } \
@@ -114,9 +114,9 @@ using namespace std;
 #define GEOM_VRMLPRINT_BEGINSHAPE(obj) \
   bool shapeused = false; \
   if (obj->isNamed()) { \
-    uint32_t appid = 0; \
+    uint_t appid = 0; \
     if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint32_t,uint32_t>(obj->getId(),appid)).second ){ \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
       if(__app->isNamed())  \
       __geomStream << "USE SHAPE_" << obj->getName().c_str() <<"_" << __app->getName().c_str() << endl; \
       else __geomStream << "USE SHAPE_" << obj->getName().c_str() <<"_" << appid << endl; \
@@ -167,9 +167,9 @@ using namespace std;
 #define GEOM_VRMLPRINT_BEGINGROUP(type,obj) \
   bool used = false; \
   if (obj->isNamed()) { \
-    uint32_t appid = 0; \
+    uint_t appid = 0; \
     if(__app)appid= __app->getId(); \
-    if (!__shapecache.insert(pair<uint32_t,uint32_t>(obj->getId(),appid)).second ){ \
+    if (!__shapecache.insert(pair<uint_t,uint_t>(obj->getId(),appid)).second ){ \
       if(__app->isNamed())  \
       __geomStream << "USE " << obj->getName().c_str() << "_" << __app->getName().c_str() << endl; \
       else __geomStream << "USE " << obj->getName().c_str() << "_" << appid << endl; \
@@ -250,7 +250,7 @@ using namespace std;
   __geomStream << " [ " << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
   __geomStream << __indent; \
-  for(uint32_t _i = 0 ; _i < val->getSize(); _i++){ \
+  for(uint_t _i = 0 ; _i < val->getSize(); _i++){ \
    val->getAt(_i)->apply(*this); \
    if(_i != val->getSize()-1)__geomStream << __indent << ',' << endl << __indent ; \
   } \
@@ -306,7 +306,7 @@ using namespace std;
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
    __geomStream << __indent; \
-    uint32_t _j =0 ; \
+    uint_t _j =0 ; \
     for(RealArray2::const_iterator _i = val->getBegin();_i!=val->getEnd();_i++){ \
       _j++; \
       GEOM_VRMLPRINT_REAL(*_i); \
@@ -341,11 +341,11 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDEXARRAY(val){ \
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   uint32_t _sizej = val->getSize(); \
-   for(uint32_t _j = 0 ; _j < _sizej; _j++){ \
+   uint_t _sizej = val->getSize(); \
+   for(uint_t _j = 0 ; _j < _sizej; _j++){ \
      __geomStream << __indent; \
-     uint32_t _sizek = val->getAt(_j).getSize(); \
-     for(uint32_t _k = 0 ; _k < _sizek ; _k++){ \
+     uint_t _sizek = val->getAt(_j).getSize(); \
+     for(uint_t _k = 0 ; _k < _sizek ; _k++){ \
        __geomStream << (val->getAt(_j).getAt(_k)) << " , "; \
      } \
      __geomStream << "-1" ; \
@@ -358,10 +358,10 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDEXARRAY3(val){ \
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   uint32_t _sizej = val->getSize(); \
-   for(uint32_t _j = 0 ; _j < _sizej; _j++){ \
+   uint_t _sizej = val->getSize(); \
+   for(uint_t _j = 0 ; _j < _sizej; _j++){ \
      __geomStream << __indent; \
-     for(uint32_t _k = 0 ; _k < 3 ; _k++){ \
+     for(uint_t _k = 0 ; _k < 3 ; _k++){ \
        __geomStream << (val->getAt(_j).getAt(_k)) << " , "; \
      } \
      __geomStream << "-1" ; \
@@ -374,10 +374,10 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDEXARRAY4(val){ \
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   uint32_t _sizej = val->getSize(); \
-   for(uint32_t _j = 0 ; _j < _sizej; _j++){ \
+   uint_t _sizej = val->getSize(); \
+   for(uint_t _j = 0 ; _j < _sizej; _j++){ \
      __geomStream << __indent; \
-     for(uint32_t _k = 0 ; _k < 4 ; _k++){ \
+     for(uint_t _k = 0 ; _k < 4 ; _k++){ \
        __geomStream << (val->getAt(_j).getAt(_k)) << " , "; \
      } \
      __geomStream << "-1" ; \
@@ -945,7 +945,7 @@ bool VrmlPrinter::process( Polyline * polyline ) {
    __geomStream << __indent <<"coordIndex [ " << endl;
    GEOM_VRMLPRINT_INCREMENT_INDENT;
    __geomStream << __indent;
-   for(uint32_t in = 0 ; in < polyline->getPointList()->getSize(); in++)
+   for(uint_t in = 0 ; in < polyline->getPointList()->getSize(); in++)
      __geomStream << in << " , ";
    GEOM_VRMLPRINT_DECREMENT_INDENT;
    __geomStream << "-1" << endl << __indent << ']' << endl;

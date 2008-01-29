@@ -99,7 +99,7 @@ protected:
 private:
 
   void init();
-  void apply( uchar_t depth, Matrix4Array::iterator& it, uint32_t size );
+  void apply( uchar_t depth, Matrix4Array::iterator& it, uint_t size );
 
   Matrix4ArrayPtr __transfoNodes;
 

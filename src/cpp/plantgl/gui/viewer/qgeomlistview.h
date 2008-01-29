@@ -209,7 +209,7 @@ class VIEW_API GeomListViewBuilder : public Action
   void addAttr(const QString& name, bool value);
   void addAttr(const QString& name, real_t value);
   void addAttrAngle(const QString& name, real_t value);
-  void addAttr(const QString& name, uint32_t value);
+  void addAttr(const QString& name, uint_t value);
   void addAttr(const QString& name, uint16_t value);
   void addAttr(const QString& name, uchar_t value);
   void addAttr(const QString& name, const TOOLS(Vector2)& value);

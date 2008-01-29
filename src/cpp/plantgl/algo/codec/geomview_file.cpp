@@ -1054,12 +1054,12 @@ QuadBuilder::parse(){
 		}
 	}
 	if(valid){
-		uint32_t nbfaces = points->getSize()/4;
+		uint_t nbfaces = points->getSize()/4;
 		if(nbfaces*4 != points->getSize()){
 			__data.output() << "*** Error : QUAD: Number of vertices not multiple of 4 : " << points->getSize() << endl;
 		}
 		Index4ArrayPtr indices(new Index4Array(nbfaces));
-		for(uint32_t it = 0; it < nbfaces; it++)
+		for(uint_t it = 0; it < nbfaces; it++)
 			indices->setAt(it,Index4(4*it,4*it+1,4*it+2,4*it+3));
 		if(!__normals)
 			return new QuadSet(points,indices);
@@ -1163,7 +1163,7 @@ VectBuilder::parse(){
 		}
 	}
 	if(valid){
-		uint32_t sum = 0;
+		uint_t sum = 0;
 		{ for(int k = 0 ; valid && k < NPolylines ; k++)
 			sum += (NPointsP[k]<0?-NPointsP[k]:NPointsP[k]); }
 		if(sum != points->getSize()){

@@ -66,12 +66,12 @@ public:
   /** Constructs a Point2Array of size of \e size.
       \post
       - \e self is valid. */
-  Point2Array( uint32_t size = 0 );
+  Point2Array( uint_t size = 0 );
 
   /** Constructs a Point2Array of size of \e size.
       \post
       - \e self is valid. */
-  Point2Array( uint32_t size, const TOOLS(Vector2)& t);
+  Point2Array( uint_t size, const TOOLS(Vector2)& t);
 
   /** Constructs a Point2Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
@@ -163,12 +163,12 @@ public:
   /** Constructs a Point3Array of size of \e size.
       \post
       - \e self is valid. */
-  Point3Array( uint32_t size = 0 );
+  Point3Array( uint_t size = 0 );
 
   /** Constructs a Point3Array of size of \e size.
       \post
       - \e self is valid. */
-  Point3Array( uint32_t size, const TOOLS(Vector3)& t);
+  Point3Array( uint_t size, const TOOLS(Vector3)& t);
 
   /** Constructs a Point3Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
@@ -283,7 +283,7 @@ public:
   /** Constructs a Point4Array of size of \e size.
       \post
       - \e self is valid. */
-  Point4Array( uint32_t size = 0 );
+  Point4Array( uint_t size = 0 );
 
   /** Constructs a Point4Array with the range of points [\e first, \e last).
       \post

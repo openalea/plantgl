@@ -743,7 +743,7 @@ GEOM_ASSERT(ifs);
 GEOM_TRACE("process IFS");
 //  GEOM_DISCRETIZE(ifs);
 
-  uint32_t size= __transformstack.size();
+  uint_t size= __transformstack.size();
 
   ITPtr transfos = ITPtr::Cast( ifs->getTransformation() );
   GEOM_ASSERT(transfos);

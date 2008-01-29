@@ -79,9 +79,9 @@ ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }
 ViewerAppli::~ViewerAppli(){  }
 
 
-const std::vector<uint32_t>
+const std::vector<uint_t>
 ViewerAppli::getSelection() {
-	std::vector<uint32_t> res;
+	std::vector<uint_t> res;
     if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
       sendAnEvent(event);

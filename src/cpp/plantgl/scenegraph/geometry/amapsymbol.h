@@ -126,9 +126,9 @@ public:
       in stream. */
   virtual TOOLS(beifstream)& read( TOOLS(beifstream)& stream );
 
-  const TOOLS(Vector3)& getTexCoord3At( uint32_t i, uint32_t j ) const;
+  const TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j ) const;
   
-  TOOLS(Vector3)& getTexCoord3At( uint32_t i, uint32_t j );
+  TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j );
 
   const Point3ArrayPtr& getTexCoord3List() const{
 	return __texCoord3List; }

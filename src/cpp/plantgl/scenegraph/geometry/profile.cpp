@@ -106,11 +106,11 @@ RealArrayPtr& ProfileTransformation::getOrientation(){
 const RealArrayPtr ProfileTransformation::getKnotList() const {
     if(__knotList)return __knotList;
     else {
-        uint32_t _size = max(__scalingList->getSize(),__orientationList->getSize());
+        uint_t _size = max(__scalingList->getSize(),__orientationList->getSize());
         if(_size<1)_size = 2;
         RealArrayPtr a(new RealArray(_size));
         a->setAt(0,0.0);
-        for(uint32_t _i = 1; _i < _size; _i++)
+        for(uint_t _i = 1; _i < _size; _i++)
             a->setAt(_i, ((real_t)_i /(real_t)(_size - 1)));
         a->setAt(_size-1,1.0);
         return a;
@@ -125,7 +125,7 @@ RealArrayPtr& ProfileTransformation::getKnotList(){
 
 Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
     Matrix3TransformationPtr val(0);
-    uint32_t _i = 0;
+    uint_t _i = 0;
     real_t _t = 0;
 
     if((!__scalingList)||__scalingList->isEmpty() ||(__scalingList==DEFAULT_SCALE_LIST));
@@ -257,10 +257,10 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
 const bool
 ProfileTransformation::isKnotListToDefault() const{
     if(!__knotList)return true;
-    uint32_t _size = max((__scalingList == NULL || __scalingList->isEmpty()?0:__scalingList->getSize()),
+    uint_t _size = max((__scalingList == NULL || __scalingList->isEmpty()?0:__scalingList->getSize()),
 					   (__orientationList == NULL ||__orientationList->isEmpty()?0:__orientationList->getSize()));
     if(__knotList->getAt(0) > GEOM_EPSILON )return false;
-    for(uint32_t _i = 1; _i < _size; _i++)
+    for(uint_t _i = 1; _i < _size; _i++)
         if(fabs(__knotList->getAt(_i) - ((real_t)_i /(real_t)(_size - 1))) > GEOM_EPSILON ) return false;
     return true;
 }
@@ -296,7 +296,7 @@ bool ProfileTransformation::isValid( ) const{
     }
 
     if((__knotList.isValid()) && ((__scalingList.isValid()) || (__orientationList.isValid()))){
-        uint32_t _size = 0;
+        uint_t _size = 0;
         if(__scalingList) _size = __scalingList->getSize();
         if(__orientationList) _size = max(_size,__orientationList->getSize());
         if(_size > 1 && __knotList->getSize() != _size){
@@ -319,8 +319,8 @@ RealArrayPtr ProfileTransformation::DEFAULT_ORIENTATION_LIST(new RealArray((unsi
 
 /* ----------------------------------------------------------------------- */
 
-const uint32_t ProfileInterpolation::DEFAULT_DEGREE(3);
-const uint32_t ProfileInterpolation::DEFAULT_STRIDE(0);
+const uint_t ProfileInterpolation::DEFAULT_DEGREE(3);
+const uint_t ProfileInterpolation::DEFAULT_STRIDE(0);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -437,8 +437,8 @@ bool ProfileInterpolation::Builder::isValid( ) const
     return false;
     }
 
-  uint32_t nbKnots= (*KnotList)->getSize();
-  uint32_t nbProfiles= (*ProfileList)->getSize();
+  uint_t nbKnots= (*KnotList)->getSize();
+  uint_t nbProfiles= (*ProfileList)->getSize();
   if( nbKnots != nbProfiles )
     {
     genMessage( WARNINGMSG(INVALID_FIELD_SIZE_sss),
@@ -473,8 +473,8 @@ ProfileInterpolation::ProfileInterpolation( ) :
 
 ProfileInterpolation::ProfileInterpolation( Curve2DArrayPtr _profileList,
                                             RealArrayPtr    _knotList,
-                                            uint32_t          _degree,
-                                            uint32_t          _stride ) :
+                                            uint_t          _degree,
+                                            uint_t          _stride ) :
   __profileList(_profileList),
   __knotList(_knotList),
   __stride(_stride),
@@ -503,10 +503,10 @@ bool ProfileInterpolation::isValid( ) const
     _builder.KnotList= const_cast< RealArrayPtr* >(&__knotList);
 
   if( !isDegreeToDefault() )
-    _builder.Degree= const_cast< uint32_t* >(&__degree);
+    _builder.Degree= const_cast< uint_t* >(&__degree);
 
   if( !isStrideToDefault() )
-    _builder.Stride= const_cast< uint32_t* >(&__stride);
+    _builder.Stride= const_cast< uint_t* >(&__stride);
 
   return _builder.isValid();
 }
@@ -635,25 +635,25 @@ ProfileInterpolation::getKnotList()
   return __knotList;
 }
 
-const uint32_t&
+const uint_t&
 ProfileInterpolation::getStride( ) const
 {
   return __stride;
 }
 
-uint32_t&
+uint_t&
 ProfileInterpolation::getStride( )
 {
   return __stride;
 }
 
-const uint32_t&
+const uint_t&
 ProfileInterpolation::getDegree( ) const
 {
   return __degree;
 }
 
-uint32_t&
+uint_t&
 ProfileInterpolation::getDegree( )
 {
   return __degree;
@@ -676,9 +676,9 @@ bool ProfileInterpolation::interpol()
 cout<<"-> interpol"<<endl;
 #endif
 
-  uint32_t n= __profileList->getSize();
+  uint_t n= __profileList->getSize();
 
-  // uint32_t i= 0;
+  // uint_t i= 0;
   if( __stride <= 2 )
     {
     __stride= 0;
@@ -690,7 +690,7 @@ cout<<"-> interpol"<<endl;
     for( it= itBegin; it != itEnd; it++ )
       {
       Curve2DPtr p= *it;
-      uint32_t stride= p->getStride();
+      uint_t stride= p->getStride();
 
       if( stride > __stride )
         __stride= stride;
@@ -723,7 +723,7 @@ cout<<"Stride: "<<__stride<<endl;
       __evalPt2D= Point2ArrayPtr( new Point2Array( __stride ) );
 
       real_t u= u_start;
-      for(uint32_t i= 0; i < __stride; i++ )
+      for(uint_t i= 0; i < __stride; i++ )
         {
         Vector2 point= p->getPointAt(u);
         __evalPt2D->setAt( i, point );
@@ -756,7 +756,7 @@ cout<<"is2D? "<<__is2D<<endl;
     allPts3D= Point3ArrayPtr( new Point3Array( n * __stride) );
 
   real_t cosa= 0., sina= 0.;
-  uint32_t j= 0;
+  uint_t j= 0;
   for( j= 0; j < n ; j++ )
     {
     Curve2DPtr p= __profileList->getAt(j);
@@ -772,7 +772,7 @@ cout<<"is2D? "<<__is2D<<endl;
       cosa= cos(angle);
       sina= sin(angle);
       }
-    for(uint32_t i= 0; i < __stride; i++ )
+    for(uint_t i= 0; i < __stride; i++ )
       {
       Vector2 pt= p->getPointAt(u);
       GEOM_ASSERT( j+i*n < n * __stride );
@@ -794,7 +794,7 @@ cout<<"is2D? "<<__is2D<<endl;
     Point2ArrayPtr pts;
     Point2Array::iterator itpBegin= allPts2D->getBegin();
     Point2Array::iterator itpEnd= itpBegin + n;
-    for(uint32_t i= 0; i < __stride; i++ )
+    for(uint_t i= 0; i < __stride; i++ )
       {
       pts= Point2ArrayPtr(new Point2Array(itpBegin, itpEnd));
       Point3ArrayPtr pts3D( new Point3Array(*pts, 1.) );
@@ -816,7 +816,7 @@ cout<<"get2DCurve "<<i<<endl;
 	  Point3ArrayPtr pts;
 	  Point3Array::iterator itpBegin= allPts3D->getBegin();
 	  Point3Array::iterator itpEnd= itpBegin + n;
-	  for(uint32_t i= 0; i < __stride; i++ )
+	  for(uint_t i= 0; i < __stride; i++ )
 	  {
 		  pts= Point3ArrayPtr(new Point3Array(itpBegin, itpEnd));
 		  Interpol local(pts, __knotList, __degree, 1 );

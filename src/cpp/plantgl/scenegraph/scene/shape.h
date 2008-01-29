@@ -162,14 +162,14 @@ public:
             GeometryPtr * Geometry;
 
             /// A pointer to the \b identification field.
-            uint32_t * Id;
+            uint_t * Id;
 
             /// A pointer to the \b parent identification field.
-            uint32_t * ParentId;
+            uint_t * ParentId;
     };
 
   /// The undef value for the Id field.
-  static const uint32_t NOID;
+  static const uint_t NOID;
 
   /// Default constructor.
   Shape( );
@@ -178,16 +178,16 @@ public:
       \e app and the id \e id. */
   Shape( const GeometryPtr&  geom,
          const AppearancePtr& app = Material::DEFAULT_MATERIAL,
-         uint32_t id = NOID,
-         uint32_t parent_id = NOID);
+         uint_t id = NOID,
+         uint_t parent_id = NOID);
 
   /** Constructs a Shape with the Geometry \e geom, the Appearance
       \e app and the id \e id. */
   Shape( const std::string&   name,
 		 const GeometryPtr&   geom,
 	     const AppearancePtr& app = Material::DEFAULT_MATERIAL,
-         uint32_t id = NOID,
-         uint32_t parent_id = NOID );
+         uint_t id = NOID,
+         uint_t parent_id = NOID );
 
   /// Destructor
   virtual ~Shape();
@@ -225,19 +225,19 @@ public:
   AppearancePtr& getAppearance();
 
   /// Return the Id of \e self.
-  virtual uint32_t getId() const;
+  virtual size_t getId() const;
 
   /// Return the Id of \e self.
-  uint32_t& getId();
+  uint_t& getId();
 
   /// Return the SceneObject Id of \e self.
-  uint32_t getSceneObjectId() const;
+  size_t getSceneObjectId() const;
 
   /// Return the ParentId of \e self.
-  uint32_t getParentId() const { return parentId; }
+  uint_t getParentId() const { return parentId; }
 
   /// Return the ParentId of \e self.
-  uint32_t& getParentId() { return parentId; }
+  uint_t& getParentId() { return parentId; }
 
   /// Return if ParentId is to default.
   bool isParentIdToDefault() { return parentId == NOID; }
@@ -249,10 +249,10 @@ public:
   GeometryPtr geometry;
 
   /// The identification id of \e self.
-  uint32_t id;
+  uint_t id;
 
   /// The parent identification id of \e self.
-  uint32_t parentId;
+  uint_t parentId;
 
 }; // class Shape
 

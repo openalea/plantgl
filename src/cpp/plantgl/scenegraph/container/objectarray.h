@@ -63,7 +63,7 @@ public:
   /** Constructs an ObjectArray of size of \e size.
       \post
       - \e self is valid. */
-  ObjectArray( uint32_t size = 0 ) :
+  ObjectArray( uint_t size = 0 ) :
     TOOLS(Array1)<T>( size)
      { }
 

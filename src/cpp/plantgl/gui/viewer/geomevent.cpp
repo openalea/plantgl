@@ -102,7 +102,7 @@ GeomGetSceneEvent::~GeomGetSceneEvent() {}
 /* ----------------------------------------------------------------------- */
 
 
-GeomProjListEvent::GeomProjListEvent(const ScenePtr& sc, std::vector<std::pair<uint32_t,double> > * _res):
+GeomProjListEvent::GeomProjListEvent(const ScenePtr& sc, std::vector<std::pair<uint_t,double> > * _res):
 ViewGeomEvent(eProjList),objlist(sc),result(_res){}
 
   

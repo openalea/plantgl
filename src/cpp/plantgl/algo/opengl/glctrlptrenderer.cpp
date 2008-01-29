@@ -121,9 +121,9 @@ TOOLS_USING_NAMESPACE
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINES(Point4Matrix) { \
-    for (uint32_t _usize = 0 ; _usize < Point4Matrix->getRowsNb() ; _usize++){ \
+    for (uint_t _usize = 0 ; _usize < Point4Matrix->getRowsNb() ; _usize++){ \
       glBegin(GL_LINE_STRIP); \
-      for (uint32_t _vsize = 0; \
+      for (uint_t _vsize = 0; \
          _vsize <  Point4Matrix->getColsNb() ; _vsize++){ \
          Vector4 mypoint=Point4Matrix->getAt(_usize,_vsize); \
          glGeomVertex(mypoint.x(), \
@@ -132,9 +132,9 @@ TOOLS_USING_NAMESPACE
          } \
       glEnd(); \
     }; \
-    for (uint32_t _vsize = 0 ; _vsize < Point4Matrix->getColsNb(); _vsize++){ \
+    for (uint_t _vsize = 0 ; _vsize < Point4Matrix->getColsNb(); _vsize++){ \
       glBegin(GL_LINE_STRIP); \
-      for (uint32_t _usize = 0; \
+      for (uint_t _usize = 0; \
          _usize <  Point4Matrix->getRowsNb() ; _usize++){ \
          Vector4 mypoint=Point4Matrix->getAt(_usize,_vsize); \
          glGeomVertex(mypoint.x(), \

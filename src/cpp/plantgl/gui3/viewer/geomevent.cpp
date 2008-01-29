@@ -102,7 +102,7 @@ GeomMultiSceneChangeEvent3::copy()
 /* ----------------------------------------------------------------------- */
 
 
-GeomProjListEvent3::GeomProjListEvent3(const ScenePtr& sc, std::vector<std::pair<uint32_t,double> > * _res):
+GeomProjListEvent3::GeomProjListEvent3(const ScenePtr& sc, std::vector<std::pair<uint_t,double> > * _res):
 ViewEvent3(12365),objlist(sc),result(_res){}
 
   

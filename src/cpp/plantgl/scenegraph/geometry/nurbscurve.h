@@ -73,7 +73,7 @@ class SG_API NurbsCurve : public BezierCurve
 public:
 
   /// The \b Degree field default value.
-  static const uint32_t DEFAULT_NURBS_DEGREE;
+  static const uint_t DEFAULT_NURBS_DEGREE;
 
 
   /// A structure which helps to build a NurbsCurve when parsing. 
@@ -109,8 +109,8 @@ public:
       - \e self is valid. */
   NurbsCurve(  const Point4ArrayPtr& ctrlPoints, 
 	       const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr(0)), 
-	       uint32_t degree = DEFAULT_NURBS_DEGREE, 
-	       uint32_t stride = DEFAULT_STRIDE );
+	       uint_t degree = DEFAULT_NURBS_DEGREE, 
+	       uint_t stride = DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~NurbsCurve( );
@@ -121,10 +121,10 @@ public:
   virtual SceneObjectPtr copy() const ;
 
   /// Returns \e Degree value.
-  virtual const uint32_t getDegree( ) const;
+  virtual const uint_t getDegree( ) const;
 
   /// Returns \e Degree field.
-  uint32_t& getDegree( );
+  uint_t& getDegree( );
 
   /// Returns whether \b Degree is set to its default value.
   bool isDegreeToDefault( ) const;
@@ -146,11 +146,11 @@ public:
       \post
       - \e self is valid. */
    virtual bool setKnotListToDefault( );
-   static TOOLS(RealArrayPtr) defaultKnotList( uint32_t nbCtrlPoints, uint32_t degree );
+   static TOOLS(RealArrayPtr) defaultKnotList( uint_t nbCtrlPoints, uint_t degree );
 
   /// Returns whether \b KnotList is set to its default value.
   bool isKnotListToDefault( ) const;
-  static bool defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint32_t nbCtrlPoints, uint32_t degree );
+  static bool defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree );
 
   virtual bool isValid( ) const;
 
@@ -207,12 +207,12 @@ public:
   /*! Determine the knot Span index.
     From the Nurbs Book : A2.1 p68
   */
-  uint32_t findSpan(real_t u) const ;  
+  uint_t findSpan(real_t u) const ;  
 
   /*! \brief Compute the Basis Functions Values 
     Algo 2.2 From The Nurbs Book p70
   */
-  TOOLS(RealArrayPtr) computeBasisFunctions(uint32_t span, real_t u) const ;
+  TOOLS(RealArrayPtr) computeBasisFunctions(uint_t span, real_t u) const ;
 
   /*!
     \brief Compute the Derivates Basis Functions Values 
@@ -227,7 +227,7 @@ public:
 protected:
 
   /// The \b Degree field.
-  uint32_t __degree;
+  uint_t __degree;
 
   /// The \b knotsList field.
   TOOLS(RealArrayPtr) __knotList;
@@ -287,8 +287,8 @@ public:
       - \e self is valid. */
   NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, 
 		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr(0)), 
-		 uint32_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
-		 uint32_t stride = BezierCurve::DEFAULT_STRIDE );
+		 uint_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
+		 uint_t stride = BezierCurve::DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~NurbsCurve2D( );
@@ -299,10 +299,10 @@ public:
   virtual SceneObjectPtr copy() const ;
 
   /// Returns \e Degree value.
-  virtual const uint32_t getDegree( ) const;
+  virtual const uint_t getDegree( ) const;
 
   /// Returns \e Degree field.
-  uint32_t& getDegree( );
+  uint_t& getDegree( );
 
   /// Returns whether \b Degree is set to its default value.
   bool isDegreeToDefault( ) const;
@@ -334,7 +334,7 @@ public:
   /*! Determine the knot Span index.
     From the Nurbs Book : A2.1 p68
   */
-  uint32_t findSpan(real_t u) const ;  
+  uint_t findSpan(real_t u) const ;  
 
   /*! 
      Compute point on the NURBS for u = \b u
@@ -345,7 +345,7 @@ public:
 protected:
 
   /// The \b Degree field.
-  uint32_t __degree;
+  uint_t __degree;
 
   /// The \b knotsList field.
   TOOLS(RealArrayPtr) __knotList;
@@ -359,14 +359,14 @@ typedef RCPtr<NurbsCurve2D> NurbsCurve2DPtr;
   /*! Determine the knot Span index.
     From the Nurbs Book : A2.1 p68
   */
-uint32_t SG_API findSpan(real_t u,  uint32_t _degree, 
+uint_t SG_API findSpan(real_t u,  uint_t _degree, 
 		const TOOLS(RealArrayPtr)& _knotList);  
 
 /*! \brief Compute the Basis Functions Values 
   Algo 2.2 From The Nurbs Book p70
 */
-TOOLS(RealArrayPtr) SG_API basisFunctions(uint32_t span, real_t u,  
-				   uint32_t _degree, 
+TOOLS(RealArrayPtr) SG_API basisFunctions(uint_t span, real_t u,  
+				   uint_t _degree, 
 				   const TOOLS(RealArrayPtr)& _knotList );
 
 /*!
@@ -376,7 +376,7 @@ TOOLS(RealArrayPtr) SG_API basisFunctions(uint32_t span, real_t u,
 */
 TOOLS(RealArray2Ptr) SG_API derivatesBasisFunctions(int n, real_t u, 
 				      int span, 
-				      uint32_t _degree, 
+				      uint_t _degree, 
 				      const TOOLS(RealArrayPtr)& _knotList );
 
 /* ----------------------------------------------------------------------- */

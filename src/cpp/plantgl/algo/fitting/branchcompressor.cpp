@@ -1120,10 +1120,10 @@ BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
   }
   bool k_def = true;
   if(!knot){
-	uint32_t _size = rad->getSize();
+	uint_t _size = rad->getSize();
 	knot = RealArrayPtr(new RealArray(_size));
     knot->setAt(0,0.0);
-    for(uint32_t _i = 1; _i < _size; _i++)
+    for(uint_t _i = 1; _i < _size; _i++)
         knot->setAt(_i, ((real_t)_i /(real_t)(_size - 1)));
     knot->setAt(_size-1,1);
 	k_def = false;
@@ -1164,9 +1164,9 @@ BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
 bool 
 BranchCompressor::isDefault(RealArrayPtr& knot) const
 {
-  uint32_t _size = knot->getSize();
+  uint_t _size = knot->getSize();
   if(fabs(knot->getAt(0)) > GEOM_EPSILON)return false;
-  for(uint32_t _i = 1; _i < _size; _i++)
+  for(uint_t _i = 1; _i < _size; _i++)
     if(fabs(knot->getAt(_i) - ((real_t)_i /(real_t)(_size - 1))) > GEOM_EPSILON)
 	  return false;
   return true;

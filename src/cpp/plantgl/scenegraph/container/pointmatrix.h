@@ -63,13 +63,13 @@ public:
   /** Constructs a Point2Matrix of size of \e size.
       \post
       - \e self is valid. */
-  Point2Matrix( uint32_t rows = 0, uint32_t cols =0 );
+  Point2Matrix( uint_t rows = 0, uint_t cols =0 );
 
   /** Constructs a PointMatrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
-      Point2Matrix( InIterator first, InIterator last, uint32_t rows ) :
+      Point2Matrix( InIterator first, InIterator last, uint_t rows ) :
     TOOLS(Array2)<TOOLS(Vector2)>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
@@ -140,13 +140,13 @@ public:
   /** Constructs a Point3Matrix of rows \e rows and columns \e cols.
       \post
       - \e self is valid. */
-  Point3Matrix( uint32_t rows = 0,uint32_t cols = 0 );
+  Point3Matrix( uint_t rows = 0,uint_t cols = 0 );
 
   /** Constructs a Point3Matrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
-  Point3Matrix( InIterator first, InIterator last, uint32_t rows ) :
+  Point3Matrix( InIterator first, InIterator last, uint_t rows ) :
     TOOLS(Array2)<TOOLS(Vector3)>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
@@ -237,13 +237,13 @@ public:
   /** Constructs a Point4Matrix with \e rows rows and \e cols columns.
       \post
       - \e self is valid. */
-  Point4Matrix( uint32_t rows = 0, uint32_t cols = 0);
+  Point4Matrix( uint_t rows = 0, uint_t cols = 0);
 
   /** Constructs a Point4Matrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
-  Point4Matrix( InIterator first, InIterator last ,uint32_t rows) :
+  Point4Matrix( InIterator first, InIterator last ,uint_t rows) :
     TOOLS(Array2)<TOOLS(Vector4)>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }

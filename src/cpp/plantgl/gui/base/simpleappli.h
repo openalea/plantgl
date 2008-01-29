@@ -55,7 +55,7 @@ public:
     virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
 
-	virtual const std::vector<uint32_t> getSelection();
+	virtual const std::vector<uint_t> getSelection();
 
 protected:
 

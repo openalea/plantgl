@@ -141,15 +141,15 @@ class VIEW3_API ViewGeomSceneGL3  : public ViewModalRendererGL3
   /// Get the scene. 
   PGL(ScenePtr) getNotSelection( ) const;
 
-  virtual std::vector<uint32_t> getSelectionIds() const;
-  virtual uint32_t translateId(uint32_t) const;
+  virtual std::vector<uint_t> getSelectionIds() const;
+  virtual uint_t translateId(uint_t) const;
 
   /// Get the global Bounding Box.
   const PGL(BoundingBoxPtr) getGlobalBoundingBox() const;
 
   const PGL(BoundingBoxPtr) getSelectionBoundingBox() ;
 
-  std::vector<std::pair<uint32_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
+  std::vector<std::pair<uint_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
   ViewRayPointHitBuffer3 * castRays(const PGL(ScenePtr)& sc, bool back_test);
 
   /// Get the surface of the scene.
@@ -304,9 +304,9 @@ public slots:
   virtual void clearDisplayList();
 
   /// Selection Event.
-  virtual void selectionEvent(uint32_t);
-  virtual void selectionEvent(const std::vector<uint32_t>&);
-  virtual void selectionIdEvent(const std::vector<uint32_t>&);
+  virtual void selectionEvent(uint_t);
+  virtual void selectionEvent(const std::vector<uint_t>&);
+  virtual void selectionIdEvent(const std::vector<uint_t>&);
   virtual void selectionEvent(QListViewItem *);
 
   void removeSelection();
@@ -355,7 +355,7 @@ protected :
   PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
- STDEXT::hash_map<uint32_t,PGL(Shape3DPtr)> __selectedShapes;
+ STDEXT::hash_map<uint_t,PGL(Shape3DPtr)> __selectedShapes;
 
 #ifdef QT_THREAD_SUPPORT
   /// Reader.

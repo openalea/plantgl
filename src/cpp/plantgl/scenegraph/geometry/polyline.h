@@ -113,18 +113,18 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector3)& getPointListAt( uint32_t i ) const;
+  const TOOLS(Vector3)& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector3)& getPointListAt( uint32_t i );
+  TOOLS(Vector3)& getPointListAt( uint_t i );
 
   virtual const real_t getFirstKnot() const;
 
   virtual const real_t getLastKnot() const;
 
-  virtual const uint32_t getStride() const;
+  virtual const uint_t getStride() const;
 
   virtual TOOLS(Vector3) getPointAt(real_t u) const;
 
@@ -207,12 +207,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector2)& getPointListAt( uint32_t i ) const;
+  const TOOLS(Vector2)& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector2)& getPointListAt( uint32_t i );
+  TOOLS(Vector2)& getPointListAt( uint_t i );
 
   /// Returns \b PointList value.
   const Point2ArrayPtr& getPointList( ) const ;
@@ -221,13 +221,13 @@ public:
   Point2ArrayPtr& getPointList( );
 
   /// Returns the size of \b PointList.
-  uint32_t getPointListSize( ) const ;
+  uint_t getPointListSize( ) const ;
 
   virtual const real_t getFirstKnot() const;
 
   virtual const real_t getLastKnot() const;
 
-  virtual const uint32_t getStride() const;
+  virtual const uint_t getStride() const;
 
   virtual TOOLS(Vector2) getPointAt(real_t u) const;
 

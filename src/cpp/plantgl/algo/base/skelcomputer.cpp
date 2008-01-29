@@ -349,10 +349,10 @@ bool SkelComputer::process( Swung * swung )
   GEOM_SKELCOMPUTER_CHECK_CACHE(swung);
 
   const Curve2DArrayPtr& pList= swung->getProfileList();
-  uint32_t size= pList->getSize();
+  uint_t size= pList->getSize();
 
   Vector2 ptStart, ptEnd;
-  uint32_t i= 0;
+  uint_t i= 0;
   for( i= 0; i < size; i++ )
     {
     const Curve2DPtr& p= pList->getAt(i);

@@ -139,7 +139,7 @@ Merge::MODEL_TYPE Merge::getType( const ExplicitModelPtr& model )
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void Merge::setIsoModel( uint32_t nbObjects )
+void Merge::setIsoModel( uint_t nbObjects )
 /////////////////////////////////////////////////////////////////////////////
 {
 GEOM_TRACE("setIsoModel "<<nbObjects);
@@ -148,12 +148,12 @@ GEOM_TRACE("setIsoModel "<<nbObjects);
   if( (__model.isValid()) && __type != OTHER )
     {
     Point3ArrayPtr& points= __model->getPointList();
-    uint32_t sizeP= points->getSize();
+    uint_t sizeP= points->getSize();
     points->reserve( sizeP * nbObjects );
 
     if( __type != POLYLINE && __type != POINT_SET )
       {
-      uint32_t sizeI= MeshPtr::Cast(__model)->getIndexListSize();
+      uint_t sizeI= MeshPtr::Cast(__model)->getIndexListSize();
       sizeI*= nbObjects;
       if( __type == TRIANGLE_SET )
         {
@@ -284,7 +284,7 @@ if( __type != QUAD_SET ){
 
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
-  uint32_t size = points->getSize();
+  uint_t size = points->getSize();
 
   points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
 
@@ -341,7 +341,7 @@ GEOM_TRACE("apply TriangleSet");
 
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
-  uint32_t size = points->getSize();
+  uint_t size = points->getSize();
 
   points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
 
@@ -391,7 +391,7 @@ bool Merge::apply( FaceSet& geom )
 
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
-  uint32_t size = points->getSize();
+  uint_t size = points->getSize();
 
   points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
 
@@ -414,9 +414,9 @@ bool Merge::apply( FaceSet& geom )
 
   for( _it= index1->getBegin(); _it != index1->getEnd(); _it++ )
     {
-    register uint32_t n= _it->getSize();
+    register uint_t n= _it->getSize();
     Index _new(n);
-    uint32_t idi= ( ccw == ccw1 ) ? 0 : n-1;
+    uint_t idi= ( ccw == ccw1 ) ? 0 : n-1;
     for( _it2=_it->getBegin();
          _it2 != _it->getEnd();
          _it2++, ( ccw == ccw1 ) ? idi++ : idi--)

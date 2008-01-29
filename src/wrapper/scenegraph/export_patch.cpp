@@ -65,10 +65,10 @@ void export_Patch()
 void export_BezierPatch()
 {
   class_< BezierPatch, BezierPatchPtr, bases< Patch >,boost::noncopyable >
-    ("BezierPatch",init<Point4MatrixPtr, optional<uint32_t,uint32_t,bool> >
+    ("BezierPatch",init<Point4MatrixPtr, optional<uint_t,uint_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
-    .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint32_t)
-    .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint32_t)
+    .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint_t)
+    .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
     .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     ;
@@ -80,10 +80,10 @@ void export_NurbsPatch()
 {
   class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
     ("NurbsPatch",init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
-     uint32_t,uint32_t,uint32_t,uint32_t,bool> >
+     uint_t,uint_t,uint_t,uint_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
-    .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint32_t)
-    .DEC_BT_NR_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint32_t)
+    .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint_t)
+    .DEC_BT_NR_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint_t)
     .DEC_PTR_PROPERTY_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
     .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
     .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)

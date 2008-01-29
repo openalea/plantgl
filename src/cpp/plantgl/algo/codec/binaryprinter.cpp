@@ -66,49 +66,49 @@ TokenCode::TokenCode(const float version ):
   __version(version) // ,
 //  __code(44)
 {
-  __code[uchar_t(1)] = pair<string,uint32_t>(string("Reference"),0);
-  __code[uchar_t(2)] = pair<string,uint32_t>(string("Shape"),0);
-  __code[uchar_t(3)] = pair<string,uint32_t>(string("Material"),0);
-  __code[uchar_t(4)] = pair<string,uint32_t>(string("MonoSpectral"),0);
-  __code[uchar_t(5)] = pair<string,uint32_t>(string("MultiSpectral"),0);
-  __code[uchar_t(6)] = pair<string,uint32_t>(string("AmapSymbol"),0);
-  __code[uchar_t(7)] = pair<string,uint32_t>(string("AsymmetricHull"),0);
-  __code[uchar_t(8)] = pair<string,uint32_t>(string("AxisRotated"),0);
-  __code[uchar_t(9)] = pair<string,uint32_t>(string("BezierCurve"),0);
-  __code[uchar_t(10)] = pair<string,uint32_t>(string("BezierPatch"),0);
-  __code[uchar_t(11)] = pair<string,uint32_t>(string("Box"),0);
-  __code[uchar_t(12)] = pair<string,uint32_t>(string("Cone"),0);
-  __code[uchar_t(13)] = pair<string,uint32_t>(string("Cylinder"),0);
-  __code[uchar_t(14)] = pair<string,uint32_t>(string("ElevationGrid"),0);
-  __code[uchar_t(15)] = pair<string,uint32_t>(string("EulerRotated"),0);
-  __code[uchar_t(16)] = pair<string,uint32_t>(string("ExtrudedHull"),0);
-  __code[uchar_t(17)] = pair<string,uint32_t>(string("FaceSet"),0);
-  __code[uchar_t(18)] = pair<string,uint32_t>(string("Frustum"),0);
-  __code[uchar_t(19)] = pair<string,uint32_t>(string("Extrusion"),0);
-  __code[uchar_t(20)] = pair<string,uint32_t>(string("Group"),0);
-  __code[uchar_t(21)] = pair<string,uint32_t>(string("NurbsCurve"),0);
-  __code[uchar_t(22)] = pair<string,uint32_t>(string("NurbsPatch"),0);
-  __code[uchar_t(23)] = pair<string,uint32_t>(string("Oriented"),0);
-  __code[uchar_t(24)] = pair<string,uint32_t>(string("Paraboloid"),0);
-  __code[uchar_t(25)] = pair<string,uint32_t>(string("PointSet"),0);
-  __code[uchar_t(26)] = pair<string,uint32_t>(string("Polyline"),0);
-  __code[uchar_t(27)] = pair<string,uint32_t>(string("QuadSet"),0);
-  __code[uchar_t(28)] = pair<string,uint32_t>(string("Revolution"),0);
-  __code[uchar_t(29)] = pair<string,uint32_t>(string("Scaled"),0);
-  __code[uchar_t(30)] = pair<string,uint32_t>(string("Sphere"),0);
-  __code[uchar_t(31)] = pair<string,uint32_t>(string("Tapered"),0);
-  __code[uchar_t(32)] = pair<string,uint32_t>(string("Translated"),0);
-  __code[uchar_t(33)] = pair<string,uint32_t>(string("TriangleSet"),0);
-  __code[uchar_t(34)] = pair<string,uint32_t>(string("BezierCurve2D"),0);
-  __code[uchar_t(35)] = pair<string,uint32_t>(string("Disc"),0);
-  __code[uchar_t(36)] = pair<string,uint32_t>(string("NurbsCurve2D"),0);
-  __code[uchar_t(37)] = pair<string,uint32_t>(string("PointSet2D"),0);
-  __code[uchar_t(38)] = pair<string,uint32_t>(string("Polyline2D"),0);
-  __code[uchar_t(39)] = pair<string,uint32_t>(string("Swung"),0);
-  __code[uchar_t(40)] = pair<string,uint32_t>(string("IFS"),0);
-  __code[uchar_t(41)] = pair<string,uint32_t>(string("ImageTexture"),0);
-  __code[uchar_t(42)] = pair<string,uint32_t>(string("Text"),0);
-  __code[uchar_t(43)] = pair<string,uint32_t>(string("Font"),0);
+  __code[uchar_t(1)] = pair<string,uint_t>(string("Reference"),0);
+  __code[uchar_t(2)] = pair<string,uint_t>(string("Shape"),0);
+  __code[uchar_t(3)] = pair<string,uint_t>(string("Material"),0);
+  __code[uchar_t(4)] = pair<string,uint_t>(string("MonoSpectral"),0);
+  __code[uchar_t(5)] = pair<string,uint_t>(string("MultiSpectral"),0);
+  __code[uchar_t(6)] = pair<string,uint_t>(string("AmapSymbol"),0);
+  __code[uchar_t(7)] = pair<string,uint_t>(string("AsymmetricHull"),0);
+  __code[uchar_t(8)] = pair<string,uint_t>(string("AxisRotated"),0);
+  __code[uchar_t(9)] = pair<string,uint_t>(string("BezierCurve"),0);
+  __code[uchar_t(10)] = pair<string,uint_t>(string("BezierPatch"),0);
+  __code[uchar_t(11)] = pair<string,uint_t>(string("Box"),0);
+  __code[uchar_t(12)] = pair<string,uint_t>(string("Cone"),0);
+  __code[uchar_t(13)] = pair<string,uint_t>(string("Cylinder"),0);
+  __code[uchar_t(14)] = pair<string,uint_t>(string("ElevationGrid"),0);
+  __code[uchar_t(15)] = pair<string,uint_t>(string("EulerRotated"),0);
+  __code[uchar_t(16)] = pair<string,uint_t>(string("ExtrudedHull"),0);
+  __code[uchar_t(17)] = pair<string,uint_t>(string("FaceSet"),0);
+  __code[uchar_t(18)] = pair<string,uint_t>(string("Frustum"),0);
+  __code[uchar_t(19)] = pair<string,uint_t>(string("Extrusion"),0);
+  __code[uchar_t(20)] = pair<string,uint_t>(string("Group"),0);
+  __code[uchar_t(21)] = pair<string,uint_t>(string("NurbsCurve"),0);
+  __code[uchar_t(22)] = pair<string,uint_t>(string("NurbsPatch"),0);
+  __code[uchar_t(23)] = pair<string,uint_t>(string("Oriented"),0);
+  __code[uchar_t(24)] = pair<string,uint_t>(string("Paraboloid"),0);
+  __code[uchar_t(25)] = pair<string,uint_t>(string("PointSet"),0);
+  __code[uchar_t(26)] = pair<string,uint_t>(string("Polyline"),0);
+  __code[uchar_t(27)] = pair<string,uint_t>(string("QuadSet"),0);
+  __code[uchar_t(28)] = pair<string,uint_t>(string("Revolution"),0);
+  __code[uchar_t(29)] = pair<string,uint_t>(string("Scaled"),0);
+  __code[uchar_t(30)] = pair<string,uint_t>(string("Sphere"),0);
+  __code[uchar_t(31)] = pair<string,uint_t>(string("Tapered"),0);
+  __code[uchar_t(32)] = pair<string,uint_t>(string("Translated"),0);
+  __code[uchar_t(33)] = pair<string,uint_t>(string("TriangleSet"),0);
+  __code[uchar_t(34)] = pair<string,uint_t>(string("BezierCurve2D"),0);
+  __code[uchar_t(35)] = pair<string,uint_t>(string("Disc"),0);
+  __code[uchar_t(36)] = pair<string,uint_t>(string("NurbsCurve2D"),0);
+  __code[uchar_t(37)] = pair<string,uint_t>(string("PointSet2D"),0);
+  __code[uchar_t(38)] = pair<string,uint_t>(string("Polyline2D"),0);
+  __code[uchar_t(39)] = pair<string,uint_t>(string("Swung"),0);
+  __code[uchar_t(40)] = pair<string,uint_t>(string("IFS"),0);
+  __code[uchar_t(41)] = pair<string,uint_t>(string("ImageTexture"),0);
+  __code[uchar_t(42)] = pair<string,uint_t>(string("Text"),0);
+  __code[uchar_t(43)] = pair<string,uint_t>(string("Font"),0);
 }
 
 TokenCode::~TokenCode(){
@@ -122,7 +122,7 @@ TokenCode::getVersion(){
 /* ----------------------------------------------------------------------- */
 
 bool TokenCode::setStatistic(const StatisticComputer& a){
-    const vector<uint32_t>& el = a.getElements();
+    const vector<uint_t>& el = a.getElements();
     for(uchar_t i = 2; i < __code.size() ; i++ ){
         __code[i].second = el[int(i)-2];
     }
@@ -130,9 +130,9 @@ bool TokenCode::setStatistic(const StatisticComputer& a){
 }
 
 
-vector<uint32_t> TokenCode::getCounts(){
-    vector<uint32_t> counts((unsigned int)42,0);
-    for(hash_map<uchar_t,pair<string,uint32_t> >::iterator _it = __code.begin();
+vector<uint_t> TokenCode::getCounts(){
+    vector<uint_t> counts((unsigned int)42,0);
+    for(hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
         _it != __code.end();_it++){
         if(_it->second.first == "Shape") counts[0]+=_it->second.second;
         else if(_it->second.first =="Material" ) counts[1]+=_it->second.second;
@@ -182,7 +182,7 @@ vector<uint32_t> TokenCode::getCounts(){
 /* ----------------------------------------------------------------------- */
 
 leofstream& TokenCode::printCurrentToken(leofstream& stream,string token){
-  hash_map<uchar_t,pair<string,uint32_t> >::iterator _it = __code.begin();
+  hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
   for(;_it != __code.end() && _it->second.first!=token;_it++);
   if(_it!=__code.end()){
     stream << _it->first;
@@ -204,8 +204,8 @@ leofstream& TokenCode::printCurrentToken(leofstream& stream,string token){
 
 leofstream& TokenCode::printAll(leofstream& stream){
   stream << '!';
-  hash_map<uchar_t,pair<string,uint32_t> >::iterator _it = __code.begin();
-  uint32_t size(0);
+  hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
+  uint_t size(0);
   uchar_t _maxcode = 0;
   for(;_it != __code.end();_it++){
     if(_it->second.second !=0)size++;
@@ -240,7 +240,7 @@ string TokenCode::readCurrentToken(leifstream& stream){
     uchar_t c;
     stream >> c;
     if(stream.eof())return string("EOF");
-    hash_map<uchar_t,pair<string,uint32_t> >::iterator _it = __code.find(c);
+    hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.find(c);
     if(_it!=__code.end())
         return _it->second.first;
     else {
@@ -252,7 +252,7 @@ string TokenCode::readCurrentToken(leifstream& stream){
 /* ----------------------------------------------------------------------- */
 
 bool TokenCode::initTokens(leifstream& stream,ostream & output){
-  uint32_t size;
+  uint_t size;
   char c;
   stream >> c;
   if(c != '!'){
@@ -266,7 +266,7 @@ bool TokenCode::initTokens(leifstream& stream,ostream & output){
 #ifdef GEOM_DEBUG
       cerr << "must find " << size << " Tokens " << endl;
 #endif
-      for(uint32_t a = 0; a < size ; a++){
+      for(uint_t a = 0; a < size ; a++){
           uchar_t code(0);
           stream >> code;
           uint16_t length(0);
@@ -276,9 +276,9 @@ bool TokenCode::initTokens(leifstream& stream,ostream & output){
           label[length]='\0';
           string _label = label;
                   delete label;
-          uint32_t nb(0);
+          uint_t nb(0);
           stream >> nb;
-          __code[code] = pair<string,uint32_t>(_label,nb);
+          __code[code] = pair<string,uint_t>(_label,nb);
 #ifdef GEOM_DEBUG
          output << "Token : " << (int)code << " - '" << _label << "' [length=" << length << "] (nb=" << nb << ')' << endl;;
          cerr << "Token : " << (int)code << " - '" << _label << "' [length=" << length << "] (nb=" << nb << ')' << endl;;
@@ -289,7 +289,7 @@ bool TokenCode::initTokens(leifstream& stream,ostream & output){
   if(c != '!'){
       output << "Token for End of Initialisation not Found [ Char=" << int(c) << " ('" << c << "') instead of '!' ]" << endl;
       output << "Found the " << size << " following Tokens : " << endl;
-          for(hash_map<uchar_t,pair<string,uint32_t> >::iterator _it = __code.begin();
+          for(hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
                         _it != __code.end(); _it++)
                                 if(_it->second.second != 0)
                 output << "Token : " << (int)_it->first << " - '" << _it->second.first << "' (nb=" << _it->second.second << ')' << endl;;
@@ -376,7 +376,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_INDEXN(val) { \
-    uint32_t _sizej = val.getSize(); \
+    uint_t _sizej = val.getSize(); \
     writeUint32(_sizej); \
     for (uchar_t _j = 0; _j < _sizej; _j++) \
        writeUint32(val.getAt(_j)); \
@@ -425,19 +425,19 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_FIELD_ARRAY(obj,field,type) { \
-    uint32_t _sizei = (obj->get##field().isValid()?obj->get##field()->getSize():0); \
+    uint_t _sizei = (obj->get##field().isValid()?obj->get##field()->getSize():0); \
     writeUint32(_sizei); \
-    for (uint32_t _i = 0; _i < _sizei; _i++) { \
+    for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i)); \
     }; \
   };
 
 
 #define GEOM_PRINT_FIELD_MATRIX(obj,field,type) { \
-    uint32_t _cols =obj->get##field()->getColsNb(); \
-    uint32_t _sizei = obj->get##field()->getSize(); \
+    uint_t _cols =obj->get##field()->getColsNb(); \
+    uint_t _sizei = obj->get##field()->getSize(); \
     writeUint32( _sizei/ _cols); writeUint32(_cols); \
-    for (uint32_t _i = 0; _i < _sizei; _i++) { \
+    for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i / _cols ,_i % _cols)); \
     }; \
   };
@@ -474,13 +474,21 @@ inline void BinaryPrinter::writeBool(bool var)
 { __outputStream << var; }
 
 
-/// write an uint32_t value from stream
-inline void BinaryPrinter::writeUint32(uint32_t var)
+/// write an uint_t value from stream
+inline void BinaryPrinter::writeUint32(uint_t var)
+#if WORDSIZE == 64
+{ __outputStream << (uintptr_t)var; }
+#else
 { __outputStream << var; }
+#endif
 
   /// write an int32_t value from stream
-inline void BinaryPrinter::writeInt32(int32_t var)
+inline void BinaryPrinter::writeInt32(int_t var)
+#if WORDSIZE == 64
+{ __outputStream << (intptr_t)var; }
+#else
 { __outputStream << var; }
+#endif
 
 /// write a uint16_t value from stream
 inline void BinaryPrinter::writeUint16(uint16_t var)

@@ -87,22 +87,22 @@ StatisticComputer::StatisticComputer( ) :
 StatisticComputer::~StatisticComputer( ) {
 }
 
-const uint32_t
+const uint_t
 StatisticComputer::getSize() const{
   return __element;
 }
 
-const uint32_t
+const uint_t
 StatisticComputer::getNamed() const{
   return __named;
 }
 
-const uint32_t
+const uint_t
 StatisticComputer::getMemorySize() const {
   return __memsize;
 }
 
-const vector<uint32_t>&
+const vector<uint_t>&
 StatisticComputer::getElements() const{
   return __shape;
 }
@@ -343,7 +343,7 @@ bool StatisticComputer::process( Extrusion * extrusion ) {
 bool StatisticComputer::process( Group * group  ) {
   GEOM_COMPUTE(group,18);
 
-  for(uint32_t _i = 0 ; _i < group->getGeometryListSize( ) ; _i++)
+  for(uint_t _i = 0 ; _i < group->getGeometryListSize( ) ; _i++)
       group->getGeometryListAt(_i)->apply(*this);
 
   GEOM_APPLY(group,Skeleton);
@@ -619,173 +619,173 @@ bool StatisticComputer::process( Font * font ) {
 /* ----------------------------------------------------------------------- */
 
 
-const uint32_t StatisticComputer::getShape() const {
+const uint_t StatisticComputer::getShape() const {
   return __shape[0];
 }
 
 
-const uint32_t StatisticComputer::getMaterial() const {
+const uint_t StatisticComputer::getMaterial() const {
   return __shape[1];
 }
 
-const uint32_t StatisticComputer::getImageTexture() const {
+const uint_t StatisticComputer::getImageTexture() const {
   return __shape[39];
 }
 
 
-const uint32_t StatisticComputer::getMonoSpectral() const {
+const uint_t StatisticComputer::getMonoSpectral() const {
   return __shape[2];
 }
 
-const uint32_t StatisticComputer::getMultiSpectral() const {
+const uint_t StatisticComputer::getMultiSpectral() const {
   return __shape[3];
 }
 
-const uint32_t StatisticComputer::getAmapSymbol() const {
+const uint_t StatisticComputer::getAmapSymbol() const {
   return __shape[4];
 }
 
-const uint32_t StatisticComputer::getAsymmetricHull() const {
+const uint_t StatisticComputer::getAsymmetricHull() const {
   return __shape[5];
 }
 
-const uint32_t StatisticComputer::getAxisRotated() const {
+const uint_t StatisticComputer::getAxisRotated() const {
   return __shape[6];
 };
 
-const uint32_t StatisticComputer::getBezierCurve() const {
+const uint_t StatisticComputer::getBezierCurve() const {
   return __shape[7];
 }
 
-const uint32_t StatisticComputer::getBezierPatch() const {
+const uint_t StatisticComputer::getBezierPatch() const {
   return __shape[8];
 }
 
-const uint32_t StatisticComputer::getBox() const {
+const uint_t StatisticComputer::getBox() const {
   return __shape[9];
 }
 
-const uint32_t StatisticComputer::getCone() const {
+const uint_t StatisticComputer::getCone() const {
   return __shape[10];
 }
 
 
-const uint32_t StatisticComputer::getCylinder() const {
+const uint_t StatisticComputer::getCylinder() const {
   return __shape[11];
 }
 
-const uint32_t StatisticComputer::getElevationGrid() const {
+const uint_t StatisticComputer::getElevationGrid() const {
   return __shape[12];
 }
 
-const uint32_t StatisticComputer::getEulerRotated() const {
+const uint_t StatisticComputer::getEulerRotated() const {
   return __shape[13];
 }
 
-const uint32_t StatisticComputer::getExtrudedHull() const {
+const uint_t StatisticComputer::getExtrudedHull() const {
   return __shape[14];
 }
 
-const uint32_t StatisticComputer::getFaceSet() const {
+const uint_t StatisticComputer::getFaceSet() const {
   return __shape[15];
 }
 
-const uint32_t StatisticComputer::getFrustum() const {
+const uint_t StatisticComputer::getFrustum() const {
   return __shape[16];
 }
 
-const uint32_t StatisticComputer::getExtrusion() const {
+const uint_t StatisticComputer::getExtrusion() const {
   return __shape[17];
 }
 
-const uint32_t StatisticComputer::getGroup() const {
+const uint_t StatisticComputer::getGroup() const {
   return __shape[18];
 }
 
-const uint32_t StatisticComputer::getNurbsCurve() const {
+const uint_t StatisticComputer::getNurbsCurve() const {
   return __shape[19];
 }
-const uint32_t StatisticComputer::getNurbsPatch() const {
+const uint_t StatisticComputer::getNurbsPatch() const {
   return __shape[20];
 }
 
-const uint32_t StatisticComputer::getOriented() const {
+const uint_t StatisticComputer::getOriented() const {
   return __shape[21];
 }
 
-const uint32_t StatisticComputer::getParaboloid() const {
+const uint_t StatisticComputer::getParaboloid() const {
   return __shape[22];
 }
 
-const uint32_t StatisticComputer::getPointSet() const {
+const uint_t StatisticComputer::getPointSet() const {
   return __shape[23];
 }
 
-const uint32_t StatisticComputer::getPolyline() const {
+const uint_t StatisticComputer::getPolyline() const {
   return __shape[24];
 }
 
-const uint32_t StatisticComputer::getQuadSet() const {
+const uint_t StatisticComputer::getQuadSet() const {
   return __shape[25];
 }
 
-const uint32_t StatisticComputer::getRevolution() const {
+const uint_t StatisticComputer::getRevolution() const {
   return __shape[26];
 }
 
-const uint32_t StatisticComputer::getScaled() const {
+const uint_t StatisticComputer::getScaled() const {
   return __shape[27];
 }
 
-const uint32_t StatisticComputer::getSphere() const {
+const uint_t StatisticComputer::getSphere() const {
   return __shape[28];
 }
 
-const uint32_t StatisticComputer::getTapered() const {
+const uint_t StatisticComputer::getTapered() const {
   return __shape[29];
 }
 
-const uint32_t StatisticComputer::getTranslated() const {
+const uint_t StatisticComputer::getTranslated() const {
   return __shape[30];
 }
 
-const uint32_t StatisticComputer::getTriangleSet() const {
+const uint_t StatisticComputer::getTriangleSet() const {
   return __shape[31];
 }
 
-const uint32_t StatisticComputer::getBezierCurve2D() const {
+const uint_t StatisticComputer::getBezierCurve2D() const {
   return __shape[32];
 }
 
-const uint32_t StatisticComputer::getDisc() const {
+const uint_t StatisticComputer::getDisc() const {
   return __shape[33];
 }
 
-const uint32_t StatisticComputer::getNurbsCurve2D() const {
+const uint_t StatisticComputer::getNurbsCurve2D() const {
   return __shape[34];
 }
 
-const uint32_t StatisticComputer::getPointSet2D() const {
+const uint_t StatisticComputer::getPointSet2D() const {
   return __shape[35];
 }
 
-const uint32_t StatisticComputer::getPolyline2D() const {
+const uint_t StatisticComputer::getPolyline2D() const {
   return __shape[36];
 }
 
-const uint32_t StatisticComputer::getSwung() const {
+const uint_t StatisticComputer::getSwung() const {
   return __shape[37];
 }
 
-const uint32_t StatisticComputer::getIFS() const {
+const uint_t StatisticComputer::getIFS() const {
   return __shape[38];
 }
 
-const uint32_t StatisticComputer::getText() const {
+const uint_t StatisticComputer::getText() const {
   return __shape[40];
 }
 
-const uint32_t StatisticComputer::getFont() const {
+const uint_t StatisticComputer::getFont() const {
   return __shape[41];
 }
 

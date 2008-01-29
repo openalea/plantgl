@@ -83,7 +83,7 @@ public:
   virtual const real_t getLastKnot() const = 0;
   
   /// Returns \e Stride value.
-  virtual const uint32_t getStride( ) const = 0;
+  virtual const uint_t getStride( ) const = 0;
   
   
   /*! Returns the \e Point for u = \e u.

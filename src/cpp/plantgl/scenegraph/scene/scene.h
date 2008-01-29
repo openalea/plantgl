@@ -179,22 +179,22 @@ public:
   iterator getEnd( );
 
   /// Returns the \e i-th element of \e self.
-  const Shape3DPtr getAt(uint32_t i ) const ;
+  const Shape3DPtr getAt(uint_t i ) const ;
 
   /// Returns the \e i-th element of \e self.
-  void setAt(uint32_t i, const Shape3DPtr& );
+  void setAt(uint_t i, const Shape3DPtr& );
 
   /// Returns the \e i-th element of \e self.
-  const ShapePtr getShapeId(uint32_t id ) const ;
+  const ShapePtr getShapeId(uint_t id ) const ;
 
   /// Returns the \e i-th element of \e self.
-  const Shape3DPtr getSceneObjectId(uint32_t id ) const ;
+  const Shape3DPtr getSceneObjectId(uint_t id ) const ;
 
   /// Returns the size of \e self.
-  uint32_t getSize( ) const ;
+  uint_t getSize( ) const ;
 
   /// Resize  \e self.
-  void Resize(const uint32_t size );
+  void Resize(const uint_t size );
 
   /// Returns whether \e self is empty.
   bool isEmpty( ) const ;

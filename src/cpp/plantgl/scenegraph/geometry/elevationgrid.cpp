@@ -90,8 +90,8 @@ bool ElevationGrid::Builder::isValid( ) const {
     genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Elevation Grid","HeightList");
     return false;
   };
- for (uint32_t _i = 0 ; _i< (*HeightList)->getRowsNb() ; _i++)
-     for (uint32_t _j = 0 ; _j< (*HeightList)->getColsNb() ; _j++)
+ for (uint_t _i = 0 ; _i< (*HeightList)->getRowsNb() ; _i++)
+     for (uint_t _j = 0 ; _j< (*HeightList)->getColsNb() ; _j++)
          if (! finite((*HeightList)->getAt(_i,_j))) {
              string _ith = '(' + TOOLS(number)(_i + 1) + '-' + TOOLS(number)(_j + 1) + ')';
              genMessage(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
@@ -147,12 +147,12 @@ ElevationGrid::apply( Action& action ) {
 /* ----------------------------------------------------------------------- */
 
 const real_t&
-ElevationGrid::getHeightAt( const uint32_t i, const uint32_t j ) const {
+ElevationGrid::getHeightAt( const uint_t i, const uint_t j ) const {
   return __heightList->getAt(i,j);
 }
 
 real_t&
-ElevationGrid::getHeightAt( const uint32_t i, const uint32_t j ) {
+ElevationGrid::getHeightAt( const uint_t i, const uint_t j ) {
   return __heightList->getAt(i,j);
 }
 
@@ -166,7 +166,7 @@ ElevationGrid::getHeightList( ) {
   return __heightList;
 }
 
-const uint32_t
+const uint_t
 ElevationGrid::getXDim( ) const {
   return __heightList->getColsNb();
 }
@@ -186,7 +186,7 @@ ElevationGrid::getXSpacing( ) {
   return __xSpacing;
 }
 
-const uint32_t
+const uint_t
 ElevationGrid::getYDim( ) const {
   return __heightList->getRowsNb();
 }
@@ -227,7 +227,7 @@ ElevationGrid::copy() const {
 
 
 Vector3
-ElevationGrid::getPointAt(uint32_t i, uint32_t j) const{
+ElevationGrid::getPointAt(uint_t i, uint_t j) const{
     GEOM_ASSERT(i<__heightList->getColsNb());
     GEOM_ASSERT(j<__heightList->getRowsNb());
     return Vector3(i*__xSpacing,j*__ySpacing,__heightList->getAt(j,i));
@@ -236,8 +236,8 @@ ElevationGrid::getPointAt(uint32_t i, uint32_t j) const{
 Point4MatrixPtr
 ElevationGrid::getCtrlPoints( ) const {
     Point4MatrixPtr theCtrlPoint(new Point4Matrix(__heightList->getRowsNb(),__heightList->getColsNb()));
-    for(uint32_t _i=0;_i<__heightList->getRowsNb();_i++)
-        for(uint32_t _j=0;_j<__heightList->getColsNb();_j++)
+    for(uint_t _i=0;_i<__heightList->getRowsNb();_i++)
+        for(uint_t _j=0;_j<__heightList->getColsNb();_j++)
             theCtrlPoint->setAt(_i,_j,Vector4(_i*__xSpacing,_j*__ySpacing,__heightList->getAt(_i,_j),1));
     return theCtrlPoint;
 }

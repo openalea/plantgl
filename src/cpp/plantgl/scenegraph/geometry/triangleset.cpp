@@ -97,7 +97,7 @@ bool TriangleSet::Builder::isValid( ) const {
   if(!MeshValid()) return false;
 
   // PointList size check
-  uint32_t _pointListSize = (*PointList)->getSize();
+  uint_t _pointListSize = (*PointList)->getSize();
   if (_pointListSize < 3) {
     genMessage(ERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","PointList","Must have more than 2 points.");
     return false;
@@ -110,14 +110,14 @@ bool TriangleSet::Builder::isValid( ) const {
   };
 
   // IndexList size check
-  uint32_t _indexListSize = (*IndexList)->getSize();
+  uint_t _indexListSize = (*IndexList)->getSize();
   if (_indexListSize < 1) {
     genMessage(ERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","IndexList","Number of Index must be greater than 0.");
     return false;
   };
 
   // IndexList values check
-  for (uint32_t _i = 0; _i < _indexListSize; _i++) {
+  for (uint_t _i = 0; _i < _indexListSize; _i++) {
     // Max index check
     if ((*(*IndexList)->getAt(_i).getMax()) >= _pointListSize) {
         genMessage
@@ -132,7 +132,7 @@ bool TriangleSet::Builder::isValid( ) const {
   };
 
   if (NormalList) {
-	  uint32_t _normalListSize = (*NormalList)->getSize();
+	  uint_t _normalListSize = (*NormalList)->getSize();
 	  if (!NormalIndexList){
 		  if(NormalPerVertex && !*NormalPerVertex){
 			  if(_normalListSize != _indexListSize){
@@ -149,7 +149,7 @@ bool TriangleSet::Builder::isValid( ) const {
 		  }
 	  }
 	  else {
-		  uint32_t _normalIndexListSize = (*NormalIndexList)->getSize();
+		  uint_t _normalIndexListSize = (*NormalIndexList)->getSize();
 		  if(NormalPerVertex && !*NormalPerVertex){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
 			return false;
@@ -162,7 +162,7 @@ bool TriangleSet::Builder::isValid( ) const {
 			  }
 		  }
 		  // NormalIndexList values check
-		  for (uint32_t _i = 0; _i < _normalIndexListSize; _i++) {
+		  for (uint_t _i = 0; _i < _normalIndexListSize; _i++) {
 			// Max index check
 			if ((*(*NormalIndexList)->getAt(_i).getMax()) >= _normalListSize) {
 				genMessage
@@ -182,7 +182,7 @@ bool TriangleSet::Builder::isValid( ) const {
   }
 
   if (ColorList) {
-	  uint32_t _colorListSize = (*ColorList)->getSize();
+	  uint_t _colorListSize = (*ColorList)->getSize();
 	  if (!ColorIndexList){
 		  if(ColorPerVertex && !*ColorPerVertex){
 			  if(_colorListSize != _indexListSize){
@@ -199,7 +199,7 @@ bool TriangleSet::Builder::isValid( ) const {
 		  }
 	  }
 	  else {
-		  uint32_t _colorIndexListSize = (*ColorIndexList)->getSize();
+		  uint_t _colorIndexListSize = (*ColorIndexList)->getSize();
 		  if(ColorPerVertex && !*ColorPerVertex){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
 			return false;
@@ -212,7 +212,7 @@ bool TriangleSet::Builder::isValid( ) const {
 			  }
 		  }
 		  // ColorIndexList values check
-		  for (uint32_t _i = 0; _i < _colorIndexListSize; _i++) {
+		  for (uint_t _i = 0; _i < _colorIndexListSize; _i++) {
 			// Max index check
 			if ((*(*ColorIndexList)->getAt(_i).getMax()) >= _colorListSize) {
 				genMessage
@@ -232,7 +232,7 @@ bool TriangleSet::Builder::isValid( ) const {
   }
 
   if (TexCoordList) {
-	  uint32_t _texCoordListSize = (*TexCoordList)->getSize();
+	  uint_t _texCoordListSize = (*TexCoordList)->getSize();
 	  if (!TexCoordIndexList){
 		  if(_texCoordListSize != _pointListSize){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordList","Number of TexCoord must be compatible to PointList size.");
@@ -240,13 +240,13 @@ bool TriangleSet::Builder::isValid( ) const {
 		  }
 	  }
 	  else {
-		  uint32_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
+		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
 		  if(_texCoordIndexListSize != _indexListSize){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
 			return false;
 		  }
 		  // TexCoordIndexList values check
-		  for (uint32_t _i = 0; _i < _texCoordIndexListSize; _i++) {
+		  for (uint_t _i = 0; _i < _texCoordIndexListSize; _i++) {
 			// Max index check
 			if ((*(*TexCoordIndexList)->getAt(_i).getMax()) >= _texCoordListSize) {
 				genMessage
@@ -331,18 +331,18 @@ TriangleSet::getIndexList( ) {
 }
 
 const Index3& 
-TriangleSet::getIndexListAt( uint32_t i ) const {
+TriangleSet::getIndexListAt( uint_t i ) const {
   GEOM_ASSERT(i < __indexList->getSize());
   return __indexList->getAt(i);
 }
 
 Index3& 
-TriangleSet::getIndexListAt( uint32_t i ) {
+TriangleSet::getIndexListAt( uint_t i ) {
   GEOM_ASSERT(i < __indexList->getSize());
   return __indexList->getAt(i);
 }
 
-uint32_t 
+uint_t 
 TriangleSet::getIndexListSize( ) const {
   return __indexList->getSize();
 }
@@ -414,17 +414,17 @@ bofstream& TriangleSet::write( bofstream& stream ) const {
   GEOM_ASSERT(stream);
 
   // Points
-  uint32_t _pointListSize = __pointList->getSize();
+  uint_t _pointListSize = __pointList->getSize();
   stream << _pointListSize;
-  for (uint32_t _i1 = 0; _i1 < _pointListSize; _i1++) {
+  for (uint_t _i1 = 0; _i1 < _pointListSize; _i1++) {
     const Vector3& _point = __pointList->getAt(_i1);
     stream << _point.x() << _point.y() << _point.z();
   };
 
   // Faces
-  uint32_t _indexListSize = __indexList->getSize();
+  uint_t _indexListSize = __indexList->getSize();
   stream << _indexListSize;
-  for (uint32_t _i = 0; _i < _indexListSize; _i++) {
+  for (uint_t _i = 0; _i < _indexListSize; _i++) {
     const Index3& _index = __indexList->getAt(_i);
     stream << _index.getAt(0) << _index.getAt(1) << _index.getAt(2);
   };
@@ -439,8 +439,8 @@ bofstream& TriangleSet::write( bofstream& stream ) const {
   if (__skeleton) {
     stream << true;
     const Point3ArrayPtr& _skelPointList = __skeleton->getPointList();
-    uint32_t _skelPointListSize = _skelPointList->getSize();
-    for (uint32_t _i2 = 0; _i2 < _skelPointListSize; _i2++) {
+    uint_t _skelPointListSize = _skelPointList->getSize();
+    for (uint_t _i2 = 0; _i2 < _skelPointListSize; _i2++) {
       const Vector3& _point = _skelPointList->getAt(_i2);
       stream << _point.x() << _point.y() << _point.z();
     };
@@ -457,11 +457,11 @@ bofstream& TriangleSet::write( bofstream& stream ) const {
 Point3ArrayPtr 
 TriangleSet::computeNormalPerVertex() const {
     Point3ArrayPtr normalList(new Point3Array(__pointList->getSize()));
-    for(uint32_t j=0; j < __indexList->getSize(); j++){
+    for(uint_t j=0; j < __indexList->getSize(); j++){
         Vector3 _norm = cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0),
                               getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0));
-        for(uint32_t i = 0; i < 3; i++){
-            uint32_t _index = __indexList->getAt(j).getAt(i);
+        for(uint_t i = 0; i < 3; i++){
+            uint_t _index = __indexList->getAt(j).getAt(i);
             normalList->setAt(_index,normalList->getAt(_index)+_norm);
         }
     }
@@ -473,7 +473,7 @@ TriangleSet::computeNormalPerVertex() const {
 Point3ArrayPtr 
 TriangleSet::computeNormalPerFace() const {
     Point3ArrayPtr normalList(new Point3Array(__indexList->getSize())); 
-    for(uint32_t j=0; j < __indexList->getSize(); j++){ 
+    for(uint_t j=0; j < __indexList->getSize(); j++){ 
 	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
 			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
     }
@@ -484,20 +484,20 @@ TriangleSet::computeNormalPerFace() const {
 
 /* ----------------------------------------------------------------------- */
 
-const Vector3& TriangleSet::getFacePointAt( uint32_t i, uint32_t j ) const {
+const Vector3& TriangleSet::getFacePointAt( uint_t i, uint_t j ) const {
   GEOM_ASSERT(__pointList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 3);
   return __pointList->getAt(__indexList->getAt(i).getAt(j));
 }
 
-const Vector3& TriangleSet::getNormalAt( uint32_t i ) const {
+const Vector3& TriangleSet::getNormalAt( uint_t i ) const {
   GEOM_ASSERT(__normalList.isValid());
   GEOM_ASSERT(i < __normalList->getSize());
   return __normalList->getAt(i);
 }
 
-const Vector3& TriangleSet::getNormalAt( uint32_t i, uint32_t j )  const {
+const Vector3& TriangleSet::getNormalAt( uint_t i, uint_t j )  const {
   GEOM_ASSERT(__normalList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 3);
@@ -507,13 +507,13 @@ const Vector3& TriangleSet::getNormalAt( uint32_t i, uint32_t j )  const {
 	  return __normalList->getAt(__indexList->getAt(i).getAt(j));
 }
 
-const Color4& TriangleSet::getColorAt( uint32_t i ) const {
+const Color4& TriangleSet::getColorAt( uint_t i ) const {
   GEOM_ASSERT(__colorList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   return __colorList->getAt(i);
 }
 
-const Color4& TriangleSet::getColorAt( uint32_t i, uint32_t j ) const {
+const Color4& TriangleSet::getColorAt( uint_t i, uint_t j ) const {
   GEOM_ASSERT(__colorList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 3);
@@ -523,13 +523,13 @@ const Color4& TriangleSet::getColorAt( uint32_t i, uint32_t j ) const {
 	return __colorList->getAt(__indexList->getAt(i).getAt(j));
 }
 
-const Vector2& TriangleSet::getTexCoordAt( uint32_t i ) const {
+const Vector2& TriangleSet::getTexCoordAt( uint_t i ) const {
   GEOM_ASSERT(__texCoordList.isValid());
   GEOM_ASSERT(i < __texCoordList->getSize());
   return __texCoordList->getAt(i);
 }
 
-const Vector2& TriangleSet::getTexCoordAt( uint32_t i, uint32_t j ) const {
+const Vector2& TriangleSet::getTexCoordAt( uint_t i, uint_t j ) const {
   GEOM_ASSERT(__texCoordList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 3);

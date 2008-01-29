@@ -557,7 +557,7 @@ OZ                {TRACE; return TokOZ;}
                    return TokFile;
                   }
 {I}               {TRACE;
-                   VAL->int32_o = new int32_t(atoi(YYText()));
+                   VAL->int32_o = new int_t(atoi(YYText()));
                    return TokInt;
                   }
 {R}               {TRACE; VAL->real_o = new real_t(atof(YYText()));

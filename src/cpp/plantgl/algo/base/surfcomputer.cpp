@@ -148,11 +148,11 @@ bool SurfComputer::process( AmapSymbol * amapSymbol ) {
   GEOM_SURFCOMPUTER_CHECK_CACHE(amapSymbol);
 
   __result  = 0;
-  uint32_t _iSize = amapSymbol->getIndexListSize();
-  for (uint32_t _i = 0; _i < _iSize; _i++) {
+  uint_t _iSize = amapSymbol->getIndexListSize();
+  for (uint_t _i = 0; _i < _iSize; _i++) {
     const Index& _index = amapSymbol->getIndexList()->getAt(_i);
-    uint32_t _jSize = _index.getSize();
-    for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
+    uint_t _jSize = _index.getSize();
+    for (uint_t _j = 1; _j < _jSize - 1; _j++) {
       /* Vector3 _vi = amapSymbol->getPointAt(_i,_j) -
                     amapSymbol->getPointAt(_i,0);
       Vector3 _vj = amapSymbol->getPointAt(_i,_j + 1) -
@@ -309,11 +309,11 @@ bool SurfComputer::process( FaceSet * faceSet ) {
   GEOM_SURFCOMPUTER_CHECK_CACHE(faceSet);
 
   __result  = 0;
-  uint32_t _iSize = faceSet->getIndexListSize();
-  for (uint32_t _i = 0; _i < _iSize; _i++) {
+  uint_t _iSize = faceSet->getIndexListSize();
+  for (uint_t _i = 0; _i < _iSize; _i++) {
     const Index& _index = faceSet->getIndexList()->getAt(_i);
-    uint32_t _jSize = _index.getSize();
-    for (uint32_t _j = 1; _j < _jSize - 1; _j++) {
+    uint_t _jSize = _index.getSize();
+    for (uint_t _j = 1; _j < _jSize - 1; _j++) {
 	  __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
     };
   };
@@ -482,8 +482,8 @@ bool SurfComputer::process( QuadSet * quadSet ) {
   GEOM_SURFCOMPUTER_CHECK_CACHE(quadSet);
 
   __result  = 0;
-  uint32_t _size = quadSet->getIndexListSize();
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  uint_t _size = quadSet->getIndexListSize();
+  for (uint_t _i = 0; _i < _size; _i++) {
     Vector3 _v1 = quadSet->getFacePointAt(_i,1) - quadSet->getFacePointAt(_i,0);
     Vector3 _v2 = quadSet->getFacePointAt(_i,2) - quadSet->getFacePointAt(_i,0);
     Vector3 _v3 = quadSet->getFacePointAt(_i,3) - quadSet->getFacePointAt(_i,0);
@@ -552,8 +552,8 @@ bool SurfComputer::process( TriangleSet * triangleSet ) {
   GEOM_SURFCOMPUTER_CHECK_CACHE(triangleSet);
 
   __result  = 0;
-  uint32_t _size = triangleSet->getIndexListSize();
-  for (uint32_t _i = 0; _i < _size; _i++) {
+  uint_t _size = triangleSet->getIndexListSize();
+  for (uint_t _i = 0; _i < _size; _i++) {
     __result += surface(triangleSet->getFacePointAt(_i,0),
 						triangleSet->getFacePointAt(_i,1),
 						triangleSet->getFacePointAt(_i,2));
@@ -584,7 +584,7 @@ bool SurfComputer::process(const ScenePtr scene){
   if(!scene || scene->isEmpty()){
     return false;
   }
-  Cache<real_t>::Iterator _it = __cache.find((uint32_t)&(*scene));
+  Cache<real_t>::Iterator _it = __cache.find((uint_t)&(*scene));
   if (! (_it == __cache.end())) {
     __result = _it->second;
     return true;
@@ -597,7 +597,7 @@ bool SurfComputer::process(const ScenePtr scene){
     if((*_it2)->apply(*this))
       surface+=__result;
   __result = surface;
-  __cache.insert((uint32_t)&(*scene),__result);
+  __cache.insert((uint_t)&(*scene),__result);
   return true;
 }
 
@@ -605,7 +605,7 @@ bool SurfComputer::process(const Scene& scene){
   if(scene.isEmpty()){
     return false;
   }
-  Cache<real_t>::Iterator _it = __cache.find((uint32_t)&(scene));
+  Cache<real_t>::Iterator _it = __cache.find((uint_t)&(scene));
   if (! (_it == __cache.end())) {
     __result = _it->second;
     return true;
@@ -618,7 +618,7 @@ bool SurfComputer::process(const Scene& scene){
     if((*_it2)->apply(*this))
       surface+=__result;
   __result = surface;
-  __cache.insert((uint32_t)&(scene),__result);
+  __cache.insert((uint_t)&(scene),__result);
   return true;
 }
 

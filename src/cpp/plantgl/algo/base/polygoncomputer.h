@@ -78,7 +78,7 @@ public:
   virtual void clear();
 
   /// Get the number of polygon of the last object processed.
-  virtual const uint32_t getPolygonNb() const;
+  virtual const uint_t getPolygonNb() const;
 
   virtual bool process(Shape * Shape);
 
@@ -173,7 +173,7 @@ public:
   protected:
 
   /// The number of polygon.
-  uint32_t __polygon;
+  uint_t __polygon;
 
 };
 

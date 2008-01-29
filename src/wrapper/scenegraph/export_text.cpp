@@ -53,7 +53,7 @@ void export_Font()
 	  "Font([family,size,bold,italic])"))
     .def( "copy", &Font::copy )
 	.DEC_BT_PROPERTY(family,Font,Family,std::string)
-	.DEC_BT_NR_PROPERTY_WDV(size,Font,Size,uint32_t,DEFAULT_SIZE)
+	.DEC_BT_NR_PROPERTY_WDV(size,Font,Size,uint_t,DEFAULT_SIZE)
 	.DEC_BT_NR_PROPERTY_WDV(bold,Font,Bold,bool,DEFAULT_BOLD)
 	.DEC_BT_NR_PROPERTY_WDV(italic,Font,Italic,bool,DEFAULT_ITALIC)
 

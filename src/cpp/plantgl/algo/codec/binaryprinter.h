@@ -103,7 +103,7 @@ public:
   friend CODEC_API TOOLS(leofstream)& operator<<( TOOLS(leofstream)& stream, TokenCode& c );
 
   /// get the number of element of each class.
-  std::vector<uint32_t> getCounts();
+  std::vector<uint_t> getCounts();
 
   /// print the
   const float getVersion();
@@ -113,7 +113,7 @@ public:
   /// the version of the token code.
   float __version;
 
-  STDEXT::hash_map<uchar_t,std::pair<std::string,uint32_t> > __code;
+  STDEXT::hash_map<uchar_t,std::pair<std::string,uint_t> > __code;
 
 };
 
@@ -276,10 +276,10 @@ public:
   void writeBool(bool var);
 
   /// write an int32_t value from stream
-  void writeUint32(uint32_t var);
+  void writeUint32(uint_t var);
 
-  /// write an uint32_t value from stream
-  void writeInt32(int32_t var);
+  /// write an uint_t value from stream
+  void writeInt32(int_t var);
 
   /// write a uint16_t value from stream
   void writeUint16(uint16_t var);

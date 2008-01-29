@@ -406,12 +406,12 @@ BSphereComputer::process( Group * group )
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( group );
 
   const GeometryArrayPtr& _group = group->getGeometryList();
-  uint32_t _size = _group->getSize();
+  uint_t _size = _group->getSize();
   if(!_group->getAt(0)->apply(*this))return false;
   GEOM_ASSERT(__result);
   BoundingSphere res(*__result);
 
-  for (uint32_t _i = 1; _i < _size; _i++) {
+  for (uint_t _i = 1; _i < _size; _i++) {
           if(_group->getAt(_i)->apply(*this)){
                   res += *__result;
           }

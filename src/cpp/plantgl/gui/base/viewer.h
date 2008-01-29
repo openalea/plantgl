@@ -118,7 +118,7 @@ public:
   void saveImage( QString _filename, const char* _format, bool withAlpha = false );
 
   /// Get the selection.
-  std::vector<uint32_t> getSelection() const;
+  std::vector<uint_t> getSelection() const;
 
   void setFrameGLSize(int width, int height);
 

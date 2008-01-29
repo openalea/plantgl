@@ -116,7 +116,7 @@ using namespace std;
   __stream << val;
 
 #define GEOM_XMLPRINT_ARRAY(val,type){ \
-   for(uint32_t _i = 0;_i < val->getSize();_i++){ \
+   for(uint_t _i = 0;_i < val->getSize();_i++){ \
     GEOM_XMLPRINT_##type(val->getAt(_i)); \
     if(_i != (val->getSize()-1)){ \
       __stream << " "; \

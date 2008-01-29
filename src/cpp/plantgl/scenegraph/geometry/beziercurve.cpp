@@ -45,7 +45,7 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 
-const uint32_t BezierCurve::DEFAULT_STRIDE(30);
+const uint_t BezierCurve::DEFAULT_STRIDE(30);
 
 
 /* ----------------------------------------------------------------------- */
@@ -89,13 +89,13 @@ bool BezierCurve::Builder::isValid( ) const {
         genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Curve","CtrlPointList");
         return false;
     }
-    uint32_t _size = (*CtrlPointList)->getSize();
+    uint_t _size = (*CtrlPointList)->getSize();
     if (_size < 3 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList","Must have more than 2 control points.");
         return false;
     }
 
-    for(uint32_t i=0; i < _size;i++)
+    for(uint_t i=0; i < _size;i++)
         if(fabs((*CtrlPointList)->getAt(i).w()) < GEOM_TOLERANCE) {
             string _ith = number(i + 1);
             genMessage
@@ -104,7 +104,7 @@ bool BezierCurve::Builder::isValid( ) const {
         }
 
     // Degree field
-    uint32_t _degree = (Degree ? *Degree : _size - 1);
+    uint_t _degree = (Degree ? *Degree : _size - 1);
     if (_degree < 1 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Curve","Degree","Must be greater than 0.");
         return false;
@@ -135,7 +135,7 @@ BezierCurve::BezierCurve() :
     __stride(DEFAULT_STRIDE){
 }
 
-BezierCurve::BezierCurve( const Point4ArrayPtr& ctrlPoints, uint32_t stride ) :
+BezierCurve::BezierCurve( const Point4ArrayPtr& ctrlPoints, uint_t stride ) :
     ParametricModel(),
     __ctrlPointList(ctrlPoints),
     __stride(stride){
@@ -177,12 +177,12 @@ BezierCurve::getLastKnot() const {
   return 1;
 }
 
-const uint32_t
+const uint_t
 BezierCurve::getStride( ) const {
   return __stride;
 }
 
-uint32_t&
+uint_t&
 BezierCurve::getStride( ) {
   return __stride;
 }
@@ -192,7 +192,7 @@ BezierCurve::isStrideToDefault( ) const{
   return ( __stride == DEFAULT_STRIDE );
 }
 
-const uint32_t
+const uint_t
 BezierCurve::getDegree( ) const {
   return __ctrlPointList->getSize() - 1;
 }
@@ -202,13 +202,13 @@ BezierCurve::getDegree( ) const {
 Vector3 BezierCurve::getPointAt(real_t u) const{
   GEOM_ASSERT( u >= 0.0 && u <= 1.0 );
 
-  uint32_t _deg = getDegree();
+  uint_t _deg = getDegree();
 
   vector<Vector4> Q(__ctrlPointList->getBegin(),__ctrlPointList->getEnd());
 
   real_t u1 = real_t(1.0) - u;
-  for (uint32_t k = 1; k <= _deg ; k++)
-    for (uint32_t i = 0; i <= ( _deg - k ) ; i++)
+  for (uint_t k = 1; k <= _deg ; k++)
+    for (uint_t i = 0; i <= ( _deg - k ) ; i++)
       Q[i] = (Q[i] * u1) + (Q[i+1] * u);
 
   if (fabs(Q[0].w()) < GEOM_TOLERANCE)
@@ -221,7 +221,7 @@ Vector3 BezierCurve::getPointAt(real_t u) const{
 bool BezierCurve::isValid( ) const {
   Builder _builder;
   _builder.CtrlPointList = const_cast<Point4ArrayPtr *>(&__ctrlPointList);
-  _builder.Stride = const_cast<uint32_t *>(&__stride);
+  _builder.Stride = const_cast<uint_t *>(&__stride);
   return _builder.isValid();
 }
 
@@ -239,7 +239,7 @@ Vector3 BezierCurve::getPointAt2(real_t u) const{
     else if(u==1)return __ctrlPointList->getAt(__ctrlPointList->getSize()).project();
     vector<real_t> _allBernstein=all_bernstein(getDegree(),u);
     Vector4 C(0.0,0.0,0.0,0.0);
-    for(uint32_t i=0;i<=getDegree();i++){
+    for(uint_t i=0;i<=getDegree();i++){
         C = C + (__ctrlPointList->getAt(i) * _allBernstein[i]);
         cerr << " C = C + <" << __ctrlPointList->getAt(i).x() << "," << __ctrlPointList->getAt(i).y()
              << "," << __ctrlPointList->getAt(i).z() <<  "," << __ctrlPointList->getAt(i).w()  << "> * " << _allBernstein[i] << endl;
@@ -264,9 +264,9 @@ Vector3 BezierCurve::getTangentAt(real_t u) const{
     }
 
     Vector4 _tangent(0.0,0.0,0.0,0.0);
-    uint32_t _deg = getDegree();
+    uint_t _deg = getDegree();
     vector<real_t> derBernstein=all_bernstein(_deg-1,u);
-    for(uint32_t i=0;i<_deg;i++)
+    for(uint_t i=0;i<_deg;i++)
         _tangent+=(__ctrlPointList->getAt(i+1)-__ctrlPointList->getAt(i))*derBernstein[i];
     _tangent=_tangent*_deg;
     if(!_tangent.w())
@@ -278,9 +278,9 @@ Vector3 BezierCurve::getTangentAt(real_t u) const{
 Vector3 BezierCurve::getNormalAt(real_t u) const{
     GEOM_ASSERT(u>=0.0&&u<=1.0);
     Vector4 _normal(0.0,0.0,0.0,0.0);
-    uint32_t _deg = getDegree();
+    uint_t _deg = getDegree();
     vector<real_t> derBernstein=all_bernstein(_deg-2,u);
-    for(uint32_t i=0;i<(_deg-1);i++)
+    for(uint_t i=0;i<(_deg-1);i++)
         _normal+=(__ctrlPointList->getAt(i+2)-(__ctrlPointList->getAt(i+1)*2)+__ctrlPointList->getAt(i))*derBernstein[i];
     _normal=_normal*(_deg*(_deg-1));
     Vector3 _tangent = getTangentAt(u);
@@ -331,14 +331,14 @@ bool BezierCurve2D::Builder::isValid( ) const {
         genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"BezierCurve2D","CtrlPointList");
         return false;
     }
-    uint32_t _size = (*CtrlPointList)->getSize();
+    uint_t _size = (*CtrlPointList)->getSize();
     if (_size < 3 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"BezierCurve2D","CtrlPointList","Must have more than 2 control points.");
         return false;
     }
 
     // Degree field
-    uint32_t _degree = (Degree ? *Degree : _size - 1);
+    uint_t _degree = (Degree ? *Degree : _size - 1);
     if (_degree < 1 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"BezierCurve2D","Degree","Must be greater than 0.");
         return false;
@@ -370,7 +370,7 @@ BezierCurve2D::BezierCurve2D( ) :
     GEOM_ASSERT(isValid());
 }
 
-BezierCurve2D::BezierCurve2D( const Point3ArrayPtr& ctrlPoints, uint32_t stride ) :
+BezierCurve2D::BezierCurve2D( const Point3ArrayPtr& ctrlPoints, uint_t stride ) :
     Curve2D(),
     __ctrlPointList(ctrlPoints),
     __stride(stride){
@@ -411,12 +411,12 @@ BezierCurve2D::getLastKnot() const {
   return 1;
 }
 
-const uint32_t
+const uint_t
 BezierCurve2D::getStride( ) const {
   return __stride;
 }
 
-uint32_t&
+uint_t&
 BezierCurve2D::getStride( ) {
   return __stride;
 }
@@ -426,7 +426,7 @@ BezierCurve2D::isStrideToDefault( ) const{
   return ( __stride == BezierCurve::DEFAULT_STRIDE );
 }
 
-const uint32_t
+const uint_t
 BezierCurve2D::getDegree( ) const {
   return __ctrlPointList->getSize() - 1;
 }
@@ -444,13 +444,13 @@ BezierCurve2D::copy() const
 Vector2 BezierCurve2D::getPointAt(real_t u) const{
   GEOM_ASSERT( u >= 0.0 && u <= 1.0 );
 
-  uint32_t _deg = getDegree();
+  uint_t _deg = getDegree();
 
   vector<Vector3> Q(__ctrlPointList->getBegin(),__ctrlPointList->getEnd());
 
   real_t u1 = real_t(1.0) - u;
-  for (uint32_t k = 1; k <= _deg ; k++)
-    for (uint32_t i = 0; i <= ( _deg - k ) ; i++)
+  for (uint_t k = 1; k <= _deg ; k++)
+    for (uint_t i = 0; i <= ( _deg - k ) ; i++)
       Q[i] = (Q[i] * u1) + (Q[i+1] * u);
 
   if (fabs(Q[0].z()) < GEOM_TOLERANCE)
@@ -463,7 +463,7 @@ Vector2 BezierCurve2D::getPointAt(real_t u) const{
 bool BezierCurve2D::isValid( ) const {
   Builder _builder;
   _builder.CtrlPointList = const_cast<Point3ArrayPtr *>(&__ctrlPointList);
-  _builder.Stride = const_cast<uint32_t *>(&__stride);
+  _builder.Stride = const_cast<uint_t *>(&__stride);
   return _builder.isValid();
 }
 

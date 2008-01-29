@@ -149,12 +149,12 @@ class GeomProjListEvent : public ViewGeomEvent {
 public :
 
   /// Constructor.
-	GeomProjListEvent(const PGL(ScenePtr)& sc, std::vector<std::pair<uint32_t,double> > * res);
+	GeomProjListEvent(const PGL(ScenePtr)& sc, std::vector<std::pair<uint_t,double> > * res);
 
   /// Destructor.
   ~GeomProjListEvent();
 
-  std::vector<std::pair<uint32_t,double> > *  result;
+  std::vector<std::pair<uint_t,double> > *  result;
   PGL(ScenePtr) objlist;
 };
 

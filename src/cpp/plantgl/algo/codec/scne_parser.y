@@ -345,13 +345,13 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 %union {
   /* basic types readed with the lexer */
   bool *                       bool_t;
-  int32_t *                    int32_o;
+  int_t *                    int32_o;
   real_t *                     real_o;
   std::string *                string_t;
   /* extended types */
   uchar_t *                    uchar_o;
-  uint32_t *                   uint32_o;
-  std::list<uint32_t> *        uint32_l;
+  uint_t *                   uint32_o;
+  std::list<uint_t> *        uint32_l;
   Color3 *                     color3_t;
   Color4 *                     color4_t;
   std::list<Color4> *          color4_l;
@@ -1106,7 +1106,7 @@ AppearanceRef:
  TokName {
 //     parser(p);
 //     smbtable(p,t);
-     uint32_t index = symbolstack.size()-1;
+     uint_t index = symbolstack.size()-1;
      SymbolTable<SMB_TABLE_TYPE>* t = symbolstack[index];
      SymbolTable<SMB_TABLE_TYPE>::iterator _i = t->find(*$1);
      while(index > 0 && _i == t->end()){
@@ -1136,7 +1136,7 @@ GeometryRef:
 //     parser(p);
 //     smbtable(p,t);
 
-     uint32_t index = symbolstack.size()-1;
+     uint_t index = symbolstack.size()-1;
      SymbolTable<SMB_TABLE_TYPE>* t = symbolstack[index];
      SymbolTable<SMB_TABLE_TYPE>::iterator _i = t->find(*$1);
      while(index > 0 && _i == t->end()){
@@ -2734,11 +2734,11 @@ RealMatrix:
 
 Integer :
    TokInt {$$ = $1;}
- | Integer TokPLUS  Integer {$$ = new int32_t(*$1 + *$3); delete $1; delete $3;}
- | Integer TokMINUS Integer {$$ = new int32_t(*$1 - *$3); delete $1; delete $3;}
- | Integer TokTIMES Integer {$$ = new int32_t(*$1 * *$3); delete $1; delete $3;}
- | Integer TokSLASH Integer {$$ = new int32_t(*$1 / *$3); delete $1; delete $3;}
- | TokMINUS Integer %prec UMINUS {$$ =  new int32_t(- *$2); delete $2;}
+ | Integer TokPLUS  Integer {$$ = new int_t(*$1 + *$3); delete $1; delete $3;}
+ | Integer TokMINUS Integer {$$ = new int_t(*$1 - *$3); delete $1; delete $3;}
+ | Integer TokTIMES Integer {$$ = new int_t(*$1 * *$3); delete $1; delete $3;}
+ | Integer TokSLASH Integer {$$ = new int_t(*$1 / *$3); delete $1; delete $3;}
+ | TokMINUS Integer %prec UMINUS {$$ =  new int_t(- *$2); delete $2;}
  | TokPLUS  Integer %prec UPLUS  {$$ =  $2;}
  | '(' Integer ')' { $$ = $2 ;};
 
@@ -2757,7 +2757,7 @@ Uint32:
   Integer {
      GEOM_ASSERT($1);
      if (*$1 >= 0)
-       $$ = new uint32_t(*$1);
+       $$ = new uint_t(*$1);
      else
        $$ = NULL;
      delete $1;
@@ -2768,7 +2768,7 @@ Uint32List:
      GEOM_PARSER_ADD_LIST($1,$3,$$);
    }
  | Uint32 {
-     GEOM_PARSER_INIT_LIST(uint32_t,$1,$$);
+     GEOM_PARSER_INIT_LIST(uint_t,$1,$$);
    };
 
 Skeleton:

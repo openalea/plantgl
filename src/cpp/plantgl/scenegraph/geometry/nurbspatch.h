@@ -66,7 +66,7 @@ class SG_API NurbsPatch : public BezierPatch {
 public:
 
   /// The \b Degree field default value.
-  static const uint32_t DEFAULT_NURBS_DEGREE;
+  static const uint_t DEFAULT_NURBS_DEGREE;
 
   /// A structure which helps to build a NurbsPatch when parsing. 
   struct SG_API Builder : public BezierPatch::Builder { 
@@ -106,10 +106,10 @@ public:
   NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
 	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr(0)), 
 	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr(0)), 
-	      uint32_t uDegree = DEFAULT_NURBS_DEGREE, 
-	      uint32_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      uint32_t ustride = DEFAULT_STRIDE, 
-	      uint32_t vstride = DEFAULT_STRIDE, 
+	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
+	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
+	      uint_t ustride = DEFAULT_STRIDE, 
+	      uint_t vstride = DEFAULT_STRIDE, 
 	      bool ccw = DEFAULT_CCW );
 
   /// Destructor
@@ -121,22 +121,22 @@ public:
   virtual SceneObjectPtr copy() const ;
 
   /// Returns \e UDegree value.
-  virtual const uint32_t getUDegree( ) const;
+  virtual const uint_t getUDegree( ) const;
 
   /// Returns \e UDegree field.
-  uint32_t& getUDegree( ) ;
+  uint_t& getUDegree( ) ;
 
   /// Returns \e VDegree value.
-  virtual const uint32_t getVDegree( ) const ;
+  virtual const uint_t getVDegree( ) const ;
 
   /// Returns \e VDegree field.
-  uint32_t& getVDegree( ) ;
+  uint_t& getVDegree( ) ;
 
   /// Returns  whether \e UDegree is set to its default value.
   virtual bool  isUDegreeToDefault( ) const;
 
   /// Returns  whether \e VDegree is set to its default value.
-  virtual uint32_t isVDegreeToDefault( ) const ;
+  virtual uint_t isVDegreeToDefault( ) const ;
 
   /// Returns \e uknotsList value.
   virtual const TOOLS(RealArrayPtr)& getUKnotList( ) const;
@@ -197,13 +197,13 @@ public:
     Determine the knot Span index.
     From the Nurbs Book : A2.1 p68
   */
-  uint32_t findSpan(uint32_t deg, const TOOLS(RealArrayPtr)& U,  real_t u) const;  
+  uint_t findSpan(uint_t deg, const TOOLS(RealArrayPtr)& U,  real_t u) const;  
 
   /*!
     Compute the Basis Functions Values 
     From the Nurbs Book : A2.1 p68
   */
-  //RealArrayPtr computeBasisFunctions(uint32_t span, real_t u, uint32_t deg,const RealArrayPtr& U ) const;
+  //RealArrayPtr computeBasisFunctions(uint_t span, real_t u, uint_t deg,const RealArrayPtr& U ) const;
 
 
   virtual bool isValid( ) const;
@@ -217,10 +217,10 @@ protected:
   TOOLS(RealArrayPtr) __vKnotList;
 
   /// The \b udegree field.
-  uint32_t __udegree;
+  uint_t __udegree;
 
   /// The \b vdegree field.
-  uint32_t __vdegree;
+  uint_t __vdegree;
 
 }; // NurbsPatch
 

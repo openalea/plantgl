@@ -842,7 +842,7 @@ bool PovPrinter::process( Revolution * revolution ) {
   const Curve2DPtr prof = revolution->getProfile();
   real_t fk = prof->getFirstKnot();
   real_t lk = prof->getLastKnot();
-  uint32_t st = prof->getStride();
+  uint_t st = prof->getStride();
   real_t step = (lk - fk)/st;
   __geomStream << __indent << "quadratic_spline " << st << "," << endl;
 
@@ -854,7 +854,7 @@ bool PovPrinter::process( Revolution * revolution ) {
     __geomStream << (_i != lk ? "," : "") << endl;
   };*/
 
-  for (uint32_t _i = 0;
+  for (uint_t _i = 0;
        _i < st; _i++) {
     Vector2 _point = prof->getPointAt(fk);
     __geomStream << __indent;
@@ -987,7 +987,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 
   triangleSet->checkNormalList();
   bool normalV = triangleSet->getNormalPerVertex();
-  for (uint32_t _i = 0; _i < triangleSet->getIndexListSize(); _i++) {
+  for (uint_t _i = 0; _i < triangleSet->getIndexListSize(); _i++) {
 	  if(normalV){
 		  __geomStream << __indent << "smooth_triangle { ";
 		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);

@@ -121,13 +121,13 @@ public:
       \warning
       - \e i must belong to the range [0,XDim[;
       - \e j must belong to the range [0,YDim[. */
-  const real_t& getHeightAt( const uint32_t i, const uint32_t j ) const;
+  const real_t& getHeightAt( const uint_t i, const uint_t j ) const;
 
   /** Returns the field of \b HeightList at the i-th row and the j-th column.
       \warning
       - \e i must belong to the range [0,XDim[;
       - \e j must belong to the range [0,YDim[. */
-  real_t& getHeightAt( const uint32_t i, const uint32_t j );
+  real_t& getHeightAt( const uint_t i, const uint_t j );
 
   /// Returns \b HeightList values.
   const TOOLS(RealArray2Ptr)& getHeightList( ) const;
@@ -140,7 +140,7 @@ public:
 
 
   /// Returns \b XDim value.
-  const uint32_t getXDim( ) const;
+  const uint_t getXDim( ) const;
 
   /// Returns the extent of \e self along the \c x-axis.
   const real_t getXSize( ) const;
@@ -152,7 +152,7 @@ public:
   real_t& getXSpacing( ) ;
 
   /// Returns \b YDim value.
-  const uint32_t getYDim( ) const;
+  const uint_t getYDim( ) const;
 
   /// Returns the extent of \e self along the \c y-axis.
   const real_t getYSize( ) const;
@@ -164,7 +164,7 @@ public:
   real_t& getYSpacing( );
 
   /// Returns the (i,j)th point of the grid
-  TOOLS(Vector3) getPointAt(uint32_t i, uint32_t j) const;
+  TOOLS(Vector3) getPointAt(uint_t i, uint_t j) const;
 
   /// Returns whether \b XSpacing is set to its default value.
   bool isXSpacingToDefault( ) const;

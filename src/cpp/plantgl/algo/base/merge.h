@@ -145,7 +145,7 @@ public:
     virtual bool apply( FaceSet& geom );
 
     /// Method use for optimization purpose when all objects are similar.
-    virtual void setIsoModel( uint32_t nbObjects );
+    virtual void setIsoModel( uint_t nbObjects );
 
 	virtual void checkNormals(Mesh& geom);
 

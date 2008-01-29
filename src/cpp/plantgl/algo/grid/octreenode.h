@@ -112,15 +112,15 @@ class ALGO_API OctreeNode : public Voxel {
   /** Returns the \e i-th geometry intersecting  \e self
       \pre
       - \e i must be strictly less than the number of components of \e self. */
-  inline  Shape3DPtr getGeometry(uint32_t i)  {
+  inline  Shape3DPtr getGeometry(uint_t i)  {
     return __objects->getAt(i);
   }
 
-  inline  void setGeometry(uint32_t i, const Shape3DPtr& s)  {
+  inline  void setGeometry(uint_t i, const Shape3DPtr& s)  {
     __objects->setAt(i,s);
   }
 
-  virtual uint32_t getGeometrySize()  {
+  virtual uint_t getGeometrySize()  {
     return __objects->getSize();
   }
 

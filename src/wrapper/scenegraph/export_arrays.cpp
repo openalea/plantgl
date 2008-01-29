@@ -54,9 +54,9 @@ EXPORT_FUNCTION( ra,   RealArray )
 
 EXPORT_NUMPY( c3a, Color3, Color3Array, 0, 3, uchar_t )
 EXPORT_NUMPY( c4a, Color4, Color4Array, 0, 4, uchar_t )
-EXPORT_NUMPY( i3a, Index3, Index3Array, 0, 3, uint32_t )
-EXPORT_NUMPY( i4a, Index4, Index4Array, 0, 4, uint32_t )
-EXPORT_NUMPY( inda, Index, IndexArray, 0, 0, uint32_t )
+EXPORT_NUMPY( i3a, Index3, Index3Array, 0, 3, uint_t )
+EXPORT_NUMPY( i4a, Index4, Index4Array, 0, 4, uint_t )
+EXPORT_NUMPY( inda, Index, IndexArray, 0, 0, uint_t )
 EXPORT_NUMPY_1DIM( ra, real_t, RealArray, 0, real_t )
 
 void export_arrays()

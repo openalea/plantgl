@@ -131,12 +131,12 @@ public:
   /** Returns the \e i-th value of \b Reflectance.
       \pre
       - \e i must belong to the range [0,size(\b Reflectance)[. */
-  const real_t& getReflectanceAt( uint32_t i ) const;
+  const real_t& getReflectanceAt( uint_t i ) const;
 
   /** Returns the \e i-th field of \b Reflectance.
       \pre
       - \e i must belong to the range [0,size(\b Reflectance)[. */
-  real_t& getReflectanceAt( uint32_t i ) ;
+  real_t& getReflectanceAt( uint_t i ) ;
 
   /// Returns a const iterator to the beginning of \b Reflectance.
 /*  RealArray::const_iterator getReflectanceBegin( ) const {
@@ -150,7 +150,7 @@ public:
 */
 
   /// Returns the size of \b Reflectance.
-  uint32_t getReflectanceSize( ) const ;
+  uint_t getReflectanceSize( ) const ;
 
   /// Returns \b Transmittance values.
   const TOOLS(RealArrayPtr)& getTransmittance( ) const ;
@@ -161,12 +161,12 @@ public:
   /** Returns the \e i-th value of \b Transmittance.
       \pre
       - \e i must belong to the range [0,size(\b Transmittance)[. */
-  const real_t& getTransmittanceAt( uint32_t i ) const;
+  const real_t& getTransmittanceAt( uint_t i ) const;
 
   /** Returns the \e i-th field of \b Transmittance.
       \pre
       - \e i must belong to the range [0,size(\b Transmittance)[. */
-  real_t& getTransmittanceAt( uint32_t i );
+  real_t& getTransmittanceAt( uint_t i );
 
   /// Returns a const iterator to the beginning of \b Transmittance.
 /*  RealArray::const_iterator getTransmittanceBegin( ) const {
@@ -179,7 +179,7 @@ public:
   }*/
 
   /// Returns the size of \b Transmittance.
-  uint32_t getTransmittanceSize( ) const;
+  uint_t getTransmittanceSize( ) const;
 
   /// Returns \b Filter value.
   const Index3& getFilter( ) const;

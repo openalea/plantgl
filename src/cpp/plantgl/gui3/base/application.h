@@ -129,8 +129,8 @@ public :
   static void setBgColor(int red, int green, int blue);
 
   /// Get the selection.
-  static const std::vector<uint32_t> getSelection();
-  static void setSelection(const std::vector<uint32_t>&);
+  static const std::vector<uint_t> getSelection();
+  static void setSelection(const std::vector<uint_t>&);
 
   /// wait for viewer to finish for time milliseconds. Return true if viewer finished.
   static bool wait( unsigned long time = ULONG_MAX);

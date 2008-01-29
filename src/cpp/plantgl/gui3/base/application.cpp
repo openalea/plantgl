@@ -127,10 +127,10 @@ ViewerApplication3::setBashMode(bool m){
 }
 
 
-const vector<uint32_t>
+const vector<uint_t>
 ViewerApplication3::getSelection() {
   if(VIEWER_APPLI)return VIEWER_APPLI->getSelection();
-  else return vector<uint32_t>();
+  else return vector<uint_t>();
 }
 
 int
@@ -253,7 +253,7 @@ void ViewerApplication3::_setViewerBuilder(ViewerBuilder3 * builder){
 }
 
 void
-ViewerApplication3::setSelection(const vector<uint32_t>& sel) {
+ViewerApplication3::setSelection(const vector<uint_t>& sel) {
   _sendAnEvent(new ViewSelectionSet3(sel));
 }
 

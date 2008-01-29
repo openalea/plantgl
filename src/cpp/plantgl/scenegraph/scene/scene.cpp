@@ -352,14 +352,14 @@ Scene::getEnd( ) {
   return __shapeList.end();
 }
 
-uint32_t Scene::getSize( ) const {
+uint_t Scene::getSize( ) const {
   lock();
-  uint32_t s = __shapeList.size();
+  uint_t s = __shapeList.size();
   unlock();
   return s;
 }
 
-void Scene::Resize(const uint32_t size ) {
+void Scene::Resize(const uint_t size ) {
   lock();
   __shapeList.resize(size);
   unlock();
@@ -372,21 +372,21 @@ bool Scene::isEmpty( ) const {
   return b;
 }
 
-const Shape3DPtr Scene::getAt(uint32_t i ) const {
+const Shape3DPtr Scene::getAt(uint_t i ) const {
   lock();
   Shape3DPtr ptr = __shapeList[i];
   unlock();
   return ptr;
 }
 
-void Scene::setAt(uint32_t i, const Shape3DPtr& ptr) {
+void Scene::setAt(uint_t i, const Shape3DPtr& ptr) {
   lock();
   __shapeList[i] = ptr;
   unlock();
 }
 
 const ShapePtr 
-Scene::getShapeId(uint32_t id ) const {
+Scene::getShapeId(uint_t id ) const {
   lock();
   for(Scene::const_iterator _it = __shapeList.begin() ; 
 					  _it != __shapeList.end(); 
@@ -403,7 +403,7 @@ Scene::getShapeId(uint32_t id ) const {
 }
 
 const Shape3DPtr 
-Scene::getSceneObjectId(uint32_t id ) const {
+Scene::getSceneObjectId(uint_t id ) const {
   lock();
   for(Scene::const_iterator _it = __shapeList.begin() ; 
 					  _it != __shapeList.end(); 

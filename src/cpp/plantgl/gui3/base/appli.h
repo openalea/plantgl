@@ -71,7 +71,7 @@ public:
     virtual bool isRunning() = 0;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) = 0;
 
-	virtual const std::vector<uint32_t> getSelection();
+	virtual const std::vector<uint_t> getSelection();
 
 	virtual int question(const std::string& caption,
 						 const std::string& text,

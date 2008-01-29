@@ -61,8 +61,8 @@ TOOLS_USING_NAMESPACE
 using namespace std;
 
 Octree::Octree(const ScenePtr&  Scene,
-               uint32_t maxscale,
-               uint32_t maxelements,
+               uint_t maxscale,
+               uint_t maxelements,
                Octree::ConstructionMethod method) :
     __root(0,0,Tile::Undetermined),
     __size(0,0,0),
@@ -77,8 +77,8 @@ Octree::Octree(const ScenePtr&  Scene,
 
 Octree::Octree(const ScenePtr&  Scene,
                const Vector3& Center, const Vector3& Size,
-               uint32_t maxscale,
-               uint32_t maxelements,
+               uint_t maxscale,
+               uint_t maxelements,
                Octree::ConstructionMethod method) :
     __root(0,0,Tile::Undetermined),
     __size(Size),
@@ -213,7 +213,7 @@ void Octree::build1()
         }
         _myQueue.pop();
     }
-    __nbnode = (uint32_t)max_count2;
+    __nbnode = (uint_t)max_count2;
 }
 /////////////////////////////////////////////////////////////////////////////
 void Octree::build3()
@@ -264,7 +264,7 @@ void Octree::build3()
                 node->setComponents(0);
                 ScenePtr n(new Scene());
                 Scene::iterator _it;
-                uint32_t nb_triangles= 0;
+                uint_t nb_triangles= 0;
                 for( _it = s->getBegin(); _it!=s->getEnd(); _it++ )
                   {
                   if((*_it)->apply(discretizer))
@@ -327,7 +327,7 @@ void Octree::build3()
         }
         _myQueue.pop();
     }
-    __nbnode = (uint32_t)max_count2;
+    __nbnode = (uint_t)max_count2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -367,8 +367,8 @@ void Octree::build2()
     _myQueue.push(&__root);
     __root.getGeometry() = __scene;
 
-    uint32_t max_count2= 0;
-    uint32_t total_triangles= 0;
+    uint_t max_count2= 0;
+    uint_t total_triangles= 0;
     uchar_t i;
     while(!_myQueue.empty())
       {
@@ -383,7 +383,7 @@ void Octree::build2()
           {
           ScenePtr s(Complex->getGeometry());
           ScenePtr n[8];
-          uint32_t nb_triangles[8];
+          uint_t nb_triangles[8];
           double xm[8], ym[8], zm[8];
           for( i = 0 ; i <  8 ; i++ )
             {
@@ -457,7 +457,7 @@ void Octree::build2()
         }//if1
       }
 
-    __nbnode = (uint32_t)max_count2;
+    __nbnode = (uint_t)max_count2;
 }
 
 ScenePtr Octree::getRepresentation() const{
@@ -478,7 +478,7 @@ ScenePtr Octree::getRepresentation() const{
 }
 
 /////////////////////////////////////////////////////////////////////////////
-real_t Octree::getVolume(uint32_t scale) const
+real_t Octree::getVolume(uint_t scale) const
 /////////////////////////////////////////////////////////////////////////////
 {
   real_t vol = 0;
@@ -501,7 +501,7 @@ real_t Octree::getVolume(uint32_t scale) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
-vector<vector<uint32_t> >
+vector<vector<uint_t> >
 Octree::getDetails() const
 /////////////////////////////////////////////////////////////////////////////
 {
@@ -511,8 +511,8 @@ Octree::getDetails() const
   double nbnode = __nbnode / 100;
 #endif
 
-  vector<vector<uint32_t> > result(__maxscale+1,vector<uint32_t>(4,0));
-  for(uint32_t i = 1 ; i < __maxscale+1; i++){
+  vector<vector<uint_t> > result(__maxscale+1,vector<uint_t>(4,0));
+  for(uint_t i = 1 ; i < __maxscale+1; i++){
     result[i][0] = i;
   }
   queue<const OctreeNode *> _myQueue;
@@ -538,7 +538,7 @@ Octree::getDetails() const
     count++;
     if(count / nbnode - count_percent > 1){
       count_percent = count / nbnode;
-      cerr << "\x0d" << "Already computed " << (uint32_t)count_percent << " %" << flush;
+      cerr << "\x0d" << "Already computed " << (uint_t)count_percent << " %" << flush;
     }
 #endif
   }
@@ -552,7 +552,7 @@ Octree::getSizes() const
 {
 
   vector<Vector3> result(__maxscale+1,__size);
-  for(uint32_t i = 1 ; i < __maxscale+1; i++){
+  for(uint_t i = 1 ; i < __maxscale+1; i++){
     result[i] /= pow((double)2,(double)i);
   }
   return result;

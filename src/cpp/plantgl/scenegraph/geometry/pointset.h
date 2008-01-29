@@ -108,12 +108,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector3)& getPointListAt( uint32_t i ) const;
+  const TOOLS(Vector3)& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector3)& getPointListAt( uint32_t i );
+  TOOLS(Vector3)& getPointListAt( uint_t i );
 
 /*  /// Returns an iterator at the beginning of \b PointList.
   Point3Array::const_iterator getPointListBegin( ) const {
@@ -198,12 +198,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector2)& getPointListAt( uint32_t i ) const ;
+  const TOOLS(Vector2)& getPointListAt( uint_t i ) const ;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector2)& getPointListAt( uint32_t i ) ;
+  TOOLS(Vector2)& getPointListAt( uint_t i ) ;
 
   /// Returns an iterator at the beginning of \b PointList.
 /*  Point2Array::const_iterator getPointListBegin( ) const {
@@ -222,7 +222,7 @@ public:
   Point2ArrayPtr& getPointList( );
 
   /// Returns the size of \b PointList.
-  uint32_t getPointListSize( ) const;
+  uint_t getPointListSize( ) const;
 
   virtual bool isACurve( ) const;
 

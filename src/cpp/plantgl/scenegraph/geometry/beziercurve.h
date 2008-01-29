@@ -69,7 +69,7 @@ public:
 
 
   /// The \b Stride field default value.
-  static const uint32_t DEFAULT_STRIDE;
+  static const uint_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a BezierCurve when parsing. 
   struct SG_API Builder : public ParametricModel::Builder { 
@@ -78,10 +78,10 @@ public:
     Point4ArrayPtr * CtrlPointList;
 
     /// A pointer to the \b Degree field.
-    uint32_t * Degree;
+    uint_t * Degree;
 
     /// A pointer to the \b Stride field.
-    uint32_t * Stride;
+    uint_t * Stride;
 
     /// Constructor.
     Builder( );
@@ -107,7 +107,7 @@ public:
       - the number of \e control points must be equal to \e degree + 1.
       \post
       - \e self is valid. */
-  BezierCurve( const Point4ArrayPtr& ctrlPoints ,uint32_t stride = DEFAULT_STRIDE );
+  BezierCurve( const Point4ArrayPtr& ctrlPoints ,uint_t stride = DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~BezierCurve( ); 
@@ -130,16 +130,16 @@ public:
 
   virtual const real_t getLastKnot() const;
 
-  virtual const uint32_t getStride( ) const;
+  virtual const uint_t getStride( ) const;
 
   /// Returns \e Stride field.
-  uint32_t& getStride( );
+  uint_t& getStride( );
   
   /// Returns whether \b Stride is set to its default value.
   virtual bool isStrideToDefault( ) const;
 
   /// Returns \e Degree value.
-  virtual const uint32_t getDegree( ) const ;
+  virtual const uint_t getDegree( ) const ;
 
   /** Returns the \e Point for u = \e u.
       using deCasteljau algorithm (see the Nurbs book p.24) 
@@ -172,7 +172,7 @@ protected:
   Point4ArrayPtr __ctrlPointList;
 
   /// The stride field
-  uint32_t __stride;
+  uint_t __stride;
 
 }; // BezierCurve
 
@@ -202,10 +202,10 @@ public:
     Point3ArrayPtr * CtrlPointList;
 
     /// A pointer to the \b Degree field.
-    uint32_t * Degree;
+    uint_t * Degree;
 
     /// A pointer to the \b Stride field.
-    uint32_t * Stride;
+    uint_t * Stride;
 
     /// Constructor.
     Builder( );
@@ -231,7 +231,7 @@ public:
       - the number of \e control points must be equal to \e degree + 1.
       \post
       - \e self is valid. */
-  BezierCurve2D( const Point3ArrayPtr& ctrlPoints ,uint32_t stride = BezierCurve::DEFAULT_STRIDE );
+  BezierCurve2D( const Point3ArrayPtr& ctrlPoints ,uint_t stride = BezierCurve::DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~BezierCurve2D( ) ;
@@ -254,16 +254,16 @@ public:
 
   virtual const real_t getLastKnot() const ;
 
-  virtual const uint32_t getStride( ) const ;
+  virtual const uint_t getStride( ) const ;
   
   /// Return Stride field.
-  uint32_t& getStride( ) ;
+  uint_t& getStride( ) ;
   
   /// Returns whether \b Stride is set to its default value.
   bool isStrideToDefault( ) const;
 
   /// Returns \e Degree value.
-  virtual const uint32_t getDegree( ) const;
+  virtual const uint_t getDegree( ) const;
 
   /*! Returns the \e Point for u = \e u.
       using deCasteljau algorithm (see the Nurbs book p.24) 
@@ -291,7 +291,7 @@ protected:
   Point3ArrayPtr __ctrlPointList;
 
   /// The stride field
-  uint32_t __stride;
+  uint_t __stride;
 
 }; // BezierCurve2D
 

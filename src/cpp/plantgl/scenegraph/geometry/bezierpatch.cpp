@@ -42,7 +42,7 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 
-const uint32_t BezierPatch::DEFAULT_STRIDE(30);
+const uint_t BezierPatch::DEFAULT_STRIDE(30);
 
 
 /* ----------------------------------------------------------------------- */
@@ -93,8 +93,8 @@ bool BezierPatch::Builder::isValid( ) const {
         genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Patch","CtrlPointMatrix");
         return false;
     }
-    uint32_t _usize = (*CtrlPointMatrix)->getColsNb();
-    uint32_t _vsize = (*CtrlPointMatrix)->getRowsNb();
+    uint_t _usize = (*CtrlPointMatrix)->getColsNb();
+    uint_t _vsize = (*CtrlPointMatrix)->getRowsNb();
 
     if (_usize < 2 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Rows must be greater than 1.");
@@ -105,8 +105,8 @@ bool BezierPatch::Builder::isValid( ) const {
         return false;
     }
 
-    for(uint32_t i=0; i < _usize;i++)
-      for(uint32_t j=0; j < _vsize;j++)
+    for(uint_t i=0; i < _usize;i++)
+      for(uint_t j=0; j < _vsize;j++)
         {
 // getAt( rows, columns ) => getAt(j,i) !!!
 //        if(fabs((*CtrlPointMatrix)->getAt(i,j).w()) < GEOM_TOLERANCE) {
@@ -119,14 +119,14 @@ bool BezierPatch::Builder::isValid( ) const {
         }
 
     // UDegree field
-    uint32_t _udegree = (UDegree ? *UDegree : _usize - 1);
+    uint_t _udegree = (UDegree ? *UDegree : _usize - 1);
     if (_udegree < 1 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","UDegree","Must be greater than 0.");
         return false;
     };
 
     // VDegree field
-    uint32_t _vdegree = (VDegree ? *VDegree : _vsize - 1);
+    uint_t _vdegree = (VDegree ? *VDegree : _vsize - 1);
     if (_vdegree < 1 ) {
         genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","VDegree","Must be greater than 0.");
         return false;
@@ -158,8 +158,8 @@ bool BezierPatch::Builder::isValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 BezierPatch::BezierPatch( const Point4MatrixPtr& ctrlPoints,
-                          uint32_t ustride ,
-                          uint32_t vstride ,
+                          uint_t ustride ,
+                          uint_t vstride ,
                           bool ccw) :
     Patch(ccw),
     __ctrlPointMatrix(ctrlPoints),
@@ -202,22 +202,22 @@ BezierPatch::getCtrlPointMatrix( ) {
   return __ctrlPointMatrix;
 }
 
-const uint32_t&
+const uint_t&
 BezierPatch::getUStride( ) const {
   return __ustride;
 }
 
-uint32_t&
+uint_t&
 BezierPatch::getUStride( ){
   return __ustride;
 }
 
-const uint32_t&
+const uint_t&
 BezierPatch::getVStride( ) const {
   return __vstride;
 }
 
-uint32_t&
+uint_t&
 BezierPatch::getVStride( ) {
   return __vstride;
 }
@@ -232,12 +232,12 @@ BezierPatch::isVStrideToDefault( ) const{
   return ( __vstride == DEFAULT_STRIDE );
 }
 
-const uint32_t
+const uint_t
 BezierPatch::getUDegree( ) const {
   return __ctrlPointMatrix->getColsNb() - 1;
 }
 
-const uint32_t
+const uint_t
 BezierPatch::getVDegree( ) const {
   return __ctrlPointMatrix->getRowsNb() - 1;
 }
@@ -253,8 +253,8 @@ BezierPatch::getVDegree( ) const {
 Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
     GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
 
-    uint32_t _udeg = getUDegree();
-    uint32_t _vdeg = getVDegree();
+    uint_t _udeg = getUDegree();
+    uint_t _vdeg = getVDegree();
     Vector3 myPoint( 0 , 0 , 0 );
 
     real_t u1 = real_t(1.0) - u;
@@ -265,15 +265,15 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
 
 
         vector<Vector4> Q(_vdeg+1);
-        for (uint32_t j =0 ; j <= _vdeg ; j ++){
+        for (uint_t j =0 ; j <= _vdeg ; j ++){
           vector<Vector4> T=__ctrlPointMatrix->getRow(j);
-          for (uint32_t k = 1 ; k <= _udeg ; k++)
-              for (uint32_t i = 0 ; i <= ( _udeg - k ) ; i++)
+          for (uint_t k = 1 ; k <= _udeg ; k++)
+              for (uint_t i = 0 ; i <= ( _udeg - k ) ; i++)
                   T[i] = (T[i] * u1) + (T[i+1] * u);
           Q[j]=T[0];
         }
-        for (uint32_t k = 1 ; k <= _vdeg ; k++)
-            for (uint32_t j = 0 ; j <= ( _vdeg - k ) ; j++)
+        for (uint_t k = 1 ; k <= _vdeg ; k++)
+            for (uint_t j = 0 ; j <= ( _vdeg - k ) ; j++)
                 Q[j] = (Q[j] * v1) + (Q[j+1] * v);
 
         if (fabs(Q[0].w()) < GEOM_TOLERANCE)
@@ -282,16 +282,16 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
     }
     else{
         vector<Vector4> Q(_udeg+1);
-        for (uint32_t i =0 ; i <= _udeg ; i ++){
+        for (uint_t i =0 ; i <= _udeg ; i ++){
             vector<Vector4> T=__ctrlPointMatrix->getColumn(i);
 
-            for (uint32_t k = 1 ; k <= _vdeg ; k++)
-                for (uint32_t j = 0 ; j <= ( _vdeg - k ) ; j++)
+            for (uint_t k = 1 ; k <= _vdeg ; k++)
+                for (uint_t j = 0 ; j <= ( _vdeg - k ) ; j++)
                     T[j] = (T[j] * u1) + (T[j+1] * u);
             Q[i]=T[0];
         }
-        for (uint32_t k = 1 ; k <= _udeg ; k++)
-            for (uint32_t i = 0 ; i <= ( _udeg - k ) ; i++)
+        for (uint_t k = 1 ; k <= _udeg ; k++)
+            for (uint_t i = 0 ; i <= ( _udeg - k ) ; i++)
                 Q[i] = (Q[i] * v1) + (Q[i+1] * v);
 
         if (fabs(Q[0].w()) < GEOM_TOLERANCE)
@@ -304,8 +304,8 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
 bool BezierPatch::isValid( ) const {
   Builder _builder;
   _builder.CtrlPointMatrix = const_cast<Point4MatrixPtr *>(&__ctrlPointMatrix);
-  _builder.UStride = const_cast<uint32_t *>(&__ustride);
-  _builder.VStride = const_cast<uint32_t *>(&__vstride);
+  _builder.UStride = const_cast<uint_t *>(&__ustride);
+  _builder.VStride = const_cast<uint_t *>(&__vstride);
   _builder.CCW= const_cast<bool *>(&__ccw);
   return _builder.isValid();
 }

@@ -119,10 +119,10 @@ ViewRefreshEvent3::~ViewRefreshEvent3()
 ViewSelectRecoverEvent3::ViewSelectRecoverEvent3() :
   ViewEvent3(12347),
   __exchange(0){
-  __exchange =new std::vector<uint32_t>();
+  __exchange =new std::vector<uint_t>();
 }
 
-ViewSelectRecoverEvent3::ViewSelectRecoverEvent3(std::vector<uint32_t> * e) :
+ViewSelectRecoverEvent3::ViewSelectRecoverEvent3(std::vector<uint_t> * e) :
   ViewEvent3(12347),
   __exchange(e){
 }
@@ -132,7 +132,7 @@ ViewSelectRecoverEvent3::~ViewSelectRecoverEvent3(){
 }
 
 void
-ViewSelectRecoverEvent3::setSelection(const std::vector<uint32_t>& a){
+ViewSelectRecoverEvent3::setSelection(const std::vector<uint_t>& a){
   *__exchange = a;
 }
 
@@ -140,7 +140,7 @@ ViewSelectRecoverEvent3::setSelection(const std::vector<uint32_t>& a){
 
 /* ----------------------------------------------------------------------- */
 
-ViewSelectionSet3::ViewSelectionSet3(const std::vector<uint32_t>& d) :
+ViewSelectionSet3::ViewSelectionSet3(const std::vector<uint_t>& d) :
   ViewEvent3(12355),
   __data(d){
 }
@@ -149,7 +149,7 @@ ViewSelectionSet3::~ViewSelectionSet3(){
   // Nothing to do.
 }
 
-const std::vector<uint32_t>& 
+const std::vector<uint_t>& 
 ViewSelectionSet3::getSelection() const{
   return __data;
 }

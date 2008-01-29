@@ -78,7 +78,7 @@ public:
   typedef T element_type;
 
   /// Constructs an Array2 with \e col columns and \e row rows
-  Array2( uint32_t row = 0, uint32_t col = 0 ) :
+  Array2( uint_t row = 0, uint_t col = 0 ) :
     RefCountObject(),
       __A(col*row),
       __rowsNb(row)
@@ -86,7 +86,7 @@ public:
  }
 
   /// Constructs an Array2 with \e size copies of \e t.
-  Array2( uint32_t row, uint32_t col, const T& t ) :
+  Array2( uint_t row, uint_t col, const T& t ) :
     RefCountObject(),
       __A((unsigned int)(col*row),t),
       __rowsNb(row)
@@ -95,7 +95,7 @@ public:
 
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
-  Array2( InIterator begin, InIterator end, uint32_t rowsNb ) :
+  Array2( InIterator begin, InIterator end, uint_t rowsNb ) :
     RefCountObject(),
       __A(begin,end),
       __rowsNb(rowsNb)
@@ -114,7 +114,7 @@ public:
   }
 
   /// Changes the matrix dimensions.
-  virtual void resize(const uint32_t nr, const uint32_t nc){
+  virtual void resize(const uint_t nr, const uint_t nc){
       __A = std::vector<T> (nr * nc);
       __rowsNb = nr;
   }
@@ -128,7 +128,7 @@ public:
       \pre
       - \e r must be strictly less than the number of rows of \e self.
       - \e c must be strictly less than the number of columns of \e self. */
-  inline const T& getAt( uint32_t r, uint32_t c ) const {
+  inline const T& getAt( uint_t r, uint_t c ) const {
     GEOM_ASSERT(__A.size() !=0 && r < __rowsNb&& c <(__A.size()/__rowsNb) );
     return __A[((r*(__A.size()/__rowsNb))+c)];
   }
@@ -137,7 +137,7 @@ public:
       \pre
       - \e r must be strictly less than the number of rows of \e self.
       - \e c must be strictly less than the number of columns of \e self. */
-  inline T& getAt( uint32_t r, uint32_t c ) {
+  inline T& getAt( uint_t r, uint_t c ) {
     GEOM_ASSERT(__A.size() !=0 && r < __rowsNb&& c <(__A.size()/__rowsNb) );
     return __A[((r*(__A.size()/__rowsNb))+c)];
   }
@@ -145,7 +145,7 @@ public:
   /** Returns the \e j-th row of \e self
       \pre
       - \e j must be strictly less than the number of the rows of \e self. */
-  inline std::vector<T> getRow( uint32_t r) const {
+  inline std::vector<T> getRow( uint_t r) const {
     GEOM_ASSERT( r < __rowsNb);
     return std::vector<T>(__A.begin()+(r*(__A.size()/__rowsNb)),__A.begin()+((r+1)*(__A.size()/__rowsNb)));
   }
@@ -153,12 +153,12 @@ public:
   /** Returns the \e i-th column of \e self
       \pre
       - \e j must be strictly less than the dimension of the columns of \e self. */
-  inline std::vector<T> getColumn( uint32_t c) const {
+  inline std::vector<T> getColumn( uint_t c) const {
     GEOM_ASSERT( __rowsNb!= 0 && c < (__A.size()/__rowsNb) );
     std::vector<T> _col(__rowsNb);
     const_iterator _it = __A.begin()+c;
     size_t rowsize = __A.size()/__rowsNb;
-    for ( uint32_t k = 0 ; k < __rowsNb ; k++){
+    for ( uint_t k = 0 ; k < __rowsNb ; k++){
         _col[k]=*_it;
         _it+=rowsize;
     }
@@ -186,65 +186,65 @@ public:
   }
 
   /// Returns a const iterator at the beginning of the row \e row of\e self.
-  inline const_iterator getBeginRow(uint32_t row ) const {
+  inline const_iterator getBeginRow(uint_t row ) const {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+(row*(__A.size()/__rowsNb)));
   }
 
   /// Returns an iterator at the beginning of \e self.
-  inline iterator getBeginRow(uint32_t row ) {
+  inline iterator getBeginRow(uint_t row ) {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+(row*(__A.size()/__rowsNb)));
   }
 
   /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEndRow(uint32_t row ) const {
+  inline const_iterator getEndRow(uint_t row ) const {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+((row+1)*(__A.size()/__rowsNb)));
   }
 
   /// Returns a const iterator at the end of \e self.
-  inline iterator getEndRow(uint32_t row ) {
+  inline iterator getEndRow(uint_t row ) {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+((row+1)*(__A.size()/__rowsNb)));
   }
 
   /// Returns the size of \e self.
-  inline uint32_t getSize( ) const {
+  inline uint_t getSize( ) const {
     return __A.size();
   }
 
   /// Returns the size of each rows of \e self.
-  inline uint32_t getRowsSize( ) const {
+  inline uint_t getRowsSize( ) const {
     if(__rowsNb != 0)return (__A.size()/__rowsNb);
-    else return uint32_t(0);
+    else return uint_t(0);
   }
 
   /// Returns the size of each cols \e self.
-  inline uint32_t getColsSize( ) const {
+  inline uint_t getColsSize( ) const {
     return __rowsNb;
   }
 
   /// Returns the number of rows of \e self.
-  inline uint32_t getRowsNb( ) const {
+  inline uint_t getRowsNb( ) const {
     return __rowsNb;
   }
 
   /// Returns the number of columns \e self.7
-  inline uint32_t getColsNb( ) const {
+  inline uint_t getColsNb( ) const {
     if(__rowsNb != 0)return (__A.size()/__rowsNb);
-    else return uint32_t(0);
+    else return uint_t(0);
   }
 
 
   /// Insert the line \e t before the line \e i.
-  inline void insertRow( uint32_t i, const std::vector<T>& t ) {
+  inline void insertRow( uint_t i, const std::vector<T>& t ) {
       insertRow(i,t.begin(),t.end());
   }
 
   /// Inserts the line \e t before the line \e j.
   template <class InIterator>
-  inline void insertRow( uint32_t j,InIterator begin, InIterator end ) {
+  inline void insertRow( uint_t j,InIterator begin, InIterator end ) {
       GEOM_ASSERT( j <= __rowsNb);
       GEOM_ASSERT((j == 0 && __rowsNb == 0) || distance(begin,end) == (__A.size()/__rowsNb));
       iterator _pos;
@@ -255,13 +255,13 @@ public:
   }
 
   /// Insert \e t into \e self before the position pointed by \e i.
-  inline void insertColumn( uint32_t i, const std::vector<T>& t ) {
+  inline void insertColumn( uint_t i, const std::vector<T>& t ) {
       insertColumn(i,t.begin(),t.end());
   }
 
   /// Insert from \e begin to \e end into \e self before the position pointed by \e i.
   template <class InIterator>
-  inline void insertColumn( uint32_t i, InIterator begin, InIterator end) {
+  inline void insertColumn( uint_t i, InIterator begin, InIterator end) {
       size_t rowsize = getRowsSize();
       GEOM_ASSERT(  (i == 0 && __rowsNb == 0) || (i  <= rowsize) );
       GEOM_ASSERT(__rowsNb ==0 || distance(begin,end) ==  __rowsNb);
@@ -320,7 +320,7 @@ public:
       \pre
       - \e r must be strictly less than the number of rows of \e self.
       - \e c must be strictly less than the number of columns of \e self. */
-  void setAt( uint32_t r, uint32_t c, const T& t ) {
+  void setAt( uint_t r, uint_t c, const T& t ) {
       GEOM_ASSERT(r < __rowsNb&& c <(__A.size()/__rowsNb) );
       __A[((r*(__A.size()/__rowsNb))+c)] = t;
   }
@@ -336,15 +336,15 @@ public:
       \pre
       - The matrix to return must fit inside the original matrix.
   **/
-  Array2<T> get( uint32_t rw, uint32_t cl,
-                   uint32_t nr, uint32_t nc) const {
+  Array2<T> get( uint_t rw, uint_t cl,
+                   uint_t nr, uint_t nc) const {
     if(rw + nr > __rowsNb || cl + nc > getColsNb( ))
       return Array2<T>(0,0);
     Array2<T> result(nr,nc);
-    for(uint32_t _i = 0; _i < nr ; _i++){
+    for(uint_t _i = 0; _i < nr ; _i++){
       typename std::vector<T>::const_iterator _it = __A.begin()+((_i+rw)*(__A.size()/__rowsNb) + cl);
       typename std::vector<T>::const_iterator _itend = _it + nc;
-      uint32_t _j =0;
+      uint_t _j =0;
       for(;_it != _itend; _it++){
         result.setAt(_i,_j,*_it);
         _j++;
@@ -356,7 +356,7 @@ public:
   /// returns the transpose of the matrix.
   friend Array2<T> transpose( const Array2<T>& m ) {
       Array2<T> n(m.getColsNb(),m.getRowsNb());
-      uint32_t _i = 0, _j = 0;
+      uint_t _i = 0, _j = 0;
       for(typename Array2<T>::const_iterator _it = m.getBegin();
           _it != m.getEnd();_it++){
           n.setAt(_i,_j,*_it);
@@ -368,16 +368,16 @@ public:
 
   /// Set \e val to the diagonal of \e self.
   inline void setDiagonal(const T& val) {
-	  uint32_t s = std::min<uint32_t>(getRowsNb(),getColsNb());
-      for(uint32_t _i = 0; _i < s ; _i++)
+	  uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
+      for(uint_t _i = 0; _i < s ; _i++)
           setAt(_i,_i,val);
   }
 
   /// Get the Diagonal of \e self.
   inline std::vector<T> getDiagonal() const {
-	  uint32_t s = std::min<uint32_t>(getRowsNb(),getColsNb());
+	  uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
       std::vector<T> diag(s);
-      for(uint32_t _i = 0; _i < s ; _i++)
+      for(uint_t _i = 0; _i < s ; _i++)
           diag[_i] = getAt(_i,_i);
 	  return diag;
   }
@@ -389,7 +389,7 @@ protected:
   std::vector<T> __A;
 
   /// The number of row of \e self.
-  uint32_t __rowsNb;
+  uint_t __rowsNb;
 };
 
 
@@ -401,20 +401,20 @@ public:
   typedef typename Array2<T>::const_iterator const_iterator;
 
   /// Constructs an Array2 with \e col columns and \e row rows
-  NumericArray2( uint32_t row = 0, uint32_t col = 0 ) :
+  NumericArray2( uint_t row = 0, uint_t col = 0 ) :
 	  Array2<T>( row, col )
       {
 	 }
 
   /// Constructs an Array2 with \e size copies of \e t.
-  NumericArray2( uint32_t row, uint32_t col, const T& t ) :
+  NumericArray2( uint_t row, uint_t col, const T& t ) :
     Array2<T>( row, col, t )
       {
   }
 
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
-  NumericArray2( InIterator begin, InIterator end, uint32_t rowsNb ) :
+  NumericArray2( InIterator begin, InIterator end, uint_t rowsNb ) :
 	Array2<T>(begin,end,rowsNb)
       {
    }
@@ -455,15 +455,15 @@ public:
       \pre
       - The matrix to return must fit inside the original matrix.
   **/
-  NumericArray2<T> get( uint32_t rw, uint32_t cl,
-                   uint32_t nr, uint32_t nc) const {
+  NumericArray2<T> get( uint_t rw, uint_t cl,
+                   uint_t nr, uint_t nc) const {
     if(rw + nr > this->__rowsNb || cl + nc > this->getColsNb( ))
       return NumericArray2<T>(0,0);
     NumericArray2<T> result(nr,nc);
-    for(uint32_t _i = 0; _i < nr ; _i++){
+    for(uint_t _i = 0; _i < nr ; _i++){
       typename std::vector<T>::const_iterator _it = this->__A.begin()+((_i+rw)*(this->__A.size()/this->__rowsNb) + cl);
       typename std::vector<T>::const_iterator _itend = _it + nc;
-      uint32_t _j =0;
+      uint_t _j =0;
       for(;_it != _itend; _it++){
         result.setAt(_i,_j,*_it);
         _j++;
@@ -475,7 +475,7 @@ public:
   /// returns the transpose of the matrix.
   friend NumericArray2<T> transpose( const NumericArray2<T>& m ) {
       NumericArray2<T> n(m.getColsNb(),m.getRowsNb());
-      uint32_t _i = 0, _j = 0;
+      uint_t _i = 0, _j = 0;
       for(typename NumericArray2<T>::const_iterator _it = m.getBegin();
           _it != m.getEnd();_it++){
           n.setAt(_i,_j,*_it);
@@ -488,8 +488,8 @@ public:
   NumericArray2<T> operator*( const NumericArray2<T>& m ) const {
       if(this->getColsNb() != m.getRowsNb()) return NumericArray2<T>(0,0);
       NumericArray2<T> result(this->getRowsNb(),m.getColsNb());
-      for(uint32_t _i = 0; _i < this->getRowsNb(); _i++){
-          for(uint32_t _j = 0; _j < m.getColsNb(); _j++){
+      for(uint_t _i = 0; _i < this->getRowsNb(); _i++){
+          for(uint_t _j = 0; _j < m.getColsNb(); _j++){
               typename NumericArray2<T>::const_iterator _it1 = this->getBeginRow(_i);
               typename NumericArray2<T>::const_iterator _it2 = m.getBegin() + _j;
               T sum = (*_it1)*(*_it2);
@@ -621,6 +621,10 @@ typedef RCPtr<Int16Array2> Int16Array2Ptr;
 typedef NumericArray2<int32_t> Int32Array2;
 /// Pointer on Array of dim 2 of int32_t
 typedef RCPtr<Int32Array2> Int32Array2Ptr;
+/// Array of dim 2 of int_t
+typedef NumericArray2<int_t> IntArray2;
+/// Pointer on Array of dim 2 of int32_t
+typedef RCPtr<IntArray2> IntArray2Ptr;
 /// Array of dim 2 of uchar
 typedef NumericArray2<uchar_t> UCharArray2;
 /// Pointer on Array of dim 2 of uchar
@@ -629,10 +633,14 @@ typedef RCPtr<UCharArray2> UCharArray2Ptr;
 typedef NumericArray2<uint16_t> Uint16Array2;
 /// Pointer on Array of dim 2 of uint16_t
 typedef RCPtr<Uint16Array2> Uint16Array2Ptr;
-/// Array of dim 2 of uint32_t
+/// Array of dim 2 of uint_t
 typedef NumericArray2<uint32_t> Uint32Array2;
-/// Pointer on Array of dim 2 of uint32_t
+/// Pointer on Array of dim 2 of uint_t
 typedef RCPtr<Uint32Array2> Uint32Array2Ptr;
+/// Array of dim 2 of uint_t
+typedef NumericArray2<uint_t> UintArray2;
+/// Pointer on Array of dim 2 of uint_t
+typedef RCPtr<UintArray2> UintArray2Ptr;
 
 // typedef Array2<string> StringArray2;
 // typedef RCPtr<StringArray2> StringArray2Ptr;
@@ -643,7 +651,7 @@ typedef NumericArray2<double> DoubleArray2;
 typedef RCPtr<DoubleArray2> DoubleArray2Ptr;
 /// Array of dim 2 of float
 typedef NumericArray2<float> FloatArray2;
-/// Pointer on Array of dim 2 of uint32_t
+/// Pointer on Array of dim 2 of uint_t
 typedef RCPtr<FloatArray2> FloatArray2Ptr;
 
 /*  --------------------------------------------------------------------- */
@@ -659,14 +667,14 @@ class TOOLS_API RealArray2 : public NumericArray2<real_t>
 public:
 
   /// Constructs an Array2 with \e col columns and \e row rows
-  RealArray2( uint32_t row = 0, uint32_t col = 0 );
+  RealArray2( uint_t row = 0, uint_t col = 0 );
 
   /// Constructs an Array2 with \e size copies of \e t.
-  RealArray2( uint32_t row, uint32_t col, const real_t& t ) ;
+  RealArray2( uint_t row, uint_t col, const real_t& t ) ;
 
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
-  RealArray2( InIterator begin, InIterator end, uint32_t rowsNb ) :
+  RealArray2( InIterator begin, InIterator end, uint_t rowsNb ) :
    NumericArray2<real_t>( begin, end, rowsNb ) {
   }
 

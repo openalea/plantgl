@@ -77,17 +77,17 @@ public:
   virtual ~StatisticComputer( ) ;
 
   /// Get the number of element of a scene.
-  virtual const uint32_t getSize() const;
+  virtual const uint_t getSize() const;
 
   /// Get the number of named element of a scene.
-  virtual const uint32_t getNamed() const;
+  virtual const uint_t getNamed() const;
 
   /// Get the memory size of the scene.
-  virtual const uint32_t getMemorySize() const ;
+  virtual const uint_t getMemorySize() const ;
 
 
   /// Get the all elements of the scene.
-  virtual const std::vector<uint32_t>& getElements() const;
+  virtual const std::vector<uint_t>& getElements() const;
 
 
 
@@ -96,7 +96,7 @@ public:
   virtual bool process(Shape * Shape);
 
   /// Get the number of shape.
-  const uint32_t getShape() const ;
+  const uint_t getShape() const ;
   //@}
 
   /// @name Material
@@ -105,22 +105,22 @@ public:
   virtual bool process( Material * material );
 
   /// Get the number of Material.
-  const uint32_t getMaterial() const;
+  const uint_t getMaterial() const;
 
   virtual bool process( MonoSpectral * monoSpectral );
 
   /// Get the number of MonoSpectral.
-  const uint32_t getMonoSpectral() const;
+  const uint_t getMonoSpectral() const;
 
   virtual bool process( MultiSpectral * multiSpectral );
 
   /// Get the number of MultiSpectral.
-  const uint32_t getMultiSpectral() const;
+  const uint_t getMultiSpectral() const;
 
   virtual bool process( ImageTexture * texture );
 
   /// Get the number of ImageTexture.
-  const uint32_t getImageTexture() const;
+  const uint_t getImageTexture() const;
   //@}
 
   /// @name Geom3D
@@ -128,142 +128,142 @@ public:
   virtual bool process( AmapSymbol * amapSymbol );
 
   /// Get the number of AmapSymbol.
-  const uint32_t getAmapSymbol() const;
+  const uint_t getAmapSymbol() const;
 
   virtual bool process( AsymmetricHull * asymmetricHull );
 
   /// Get the number of AsymmetricHull.
-  const uint32_t getAsymmetricHull() const;
+  const uint_t getAsymmetricHull() const;
 
   virtual bool process( AxisRotated * axisRotated );
 
   /// Get the number of AxisRotated.
-  const uint32_t getAxisRotated() const ;
+  const uint_t getAxisRotated() const ;
 
   virtual bool process( BezierCurve * bezierCurve );
 
   /// Get the number of BezierCurve.
-  const uint32_t getBezierCurve() const ;
+  const uint_t getBezierCurve() const ;
 
   virtual bool process( BezierPatch * bezierPatch );
 
   /// Get the number of BezierPatch.
-  const uint32_t getBezierPatch() const ;
+  const uint_t getBezierPatch() const ;
 
   virtual bool process( Box * box );
 
   /// Get the number of Box.
-  const uint32_t getBox() const ;
+  const uint_t getBox() const ;
 
   virtual bool process( Cone * cone );
 
   /// Get the number of Cone.
-  const uint32_t getCone() const ;
+  const uint_t getCone() const ;
 
   virtual bool process( Cylinder * cylinder );
 
   /// Get the number of Cylinder.
-  const uint32_t getCylinder() const ;
+  const uint_t getCylinder() const ;
 
   virtual bool process( ElevationGrid * elevationGrid );
 
   /// Get the number of ElevationGrid.
-  const uint32_t getElevationGrid() const ;
+  const uint_t getElevationGrid() const ;
 
   virtual bool process( EulerRotated * eulerRotated );
 
   /// Get the number of EulerRotated.
-  const uint32_t getEulerRotated() const ;
+  const uint_t getEulerRotated() const ;
 
   virtual bool process( ExtrudedHull * extrudedHull );
 
   /// Get the number of ExtrudedHull.
-  const uint32_t getExtrudedHull() const;
+  const uint_t getExtrudedHull() const;
 
   virtual bool process( FaceSet * faceSet );
 
   /// Get the number of FaceSet.
-  const uint32_t getFaceSet() const ;
+  const uint_t getFaceSet() const ;
 
   virtual bool process( Frustum * frustum );
 
   /// Get the number of Frustum.
-  const uint32_t getFrustum() const;
+  const uint_t getFrustum() const;
 
   virtual bool process( Extrusion * extrusion );
 
   /// Get the number of Extrusion.
-  const uint32_t getExtrusion() const ;
+  const uint_t getExtrusion() const ;
 
   virtual bool process( Group * group );
 
   /// Get the number of Group.
-  const uint32_t getGroup() const;
+  const uint_t getGroup() const;
 
   virtual bool process( NurbsCurve * nurbsCurve );
 
   /// Get the number of NurbsCurve.
-  const uint32_t getNurbsCurve() const ;
+  const uint_t getNurbsCurve() const ;
 
   virtual bool process( NurbsPatch * nurbsPatch );
 
   /// Get the number of NurbsPatch.
-  const uint32_t getNurbsPatch() const ;
+  const uint_t getNurbsPatch() const ;
 
   virtual bool process( Oriented * oriented );
 
   /// Get the number of Oriented.
-  const uint32_t getOriented() const;
+  const uint_t getOriented() const;
 
   virtual bool process( Paraboloid * paraboloid );
 
   /// Get the number of Paraboloid.
-  const uint32_t getParaboloid() const;
+  const uint_t getParaboloid() const;
 
   virtual bool process( PointSet * pointSet );
 
   /// Get the number of PointSet.
-  const uint32_t getPointSet() const;
+  const uint_t getPointSet() const;
 
   virtual bool process( Polyline * polyline );
 
   /// Get the number of Polyline.
-  const uint32_t getPolyline() const;
+  const uint_t getPolyline() const;
 
   virtual bool process( QuadSet * quadSet );
 
   /// Get the number of QuadSet.
-  const uint32_t getQuadSet() const ;
+  const uint_t getQuadSet() const ;
 
   virtual bool process( Revolution * revolution );
 
   /// Get the number of Revolution.
-  const uint32_t getRevolution() const ;
+  const uint_t getRevolution() const ;
 
   virtual bool process( Scaled * scaled );
 
   /// Get the number of Scaled.
-  const uint32_t getScaled() const ;
+  const uint_t getScaled() const ;
 
   virtual bool process( Sphere * sphere );
 
   /// Get the number of Sphere.
-  const uint32_t getSphere() const ;
+  const uint_t getSphere() const ;
 
   virtual bool process( Tapered * tapered );
 
   /// Get the number of Tapered.
-  const uint32_t getTapered() const ;
+  const uint_t getTapered() const ;
 
   virtual bool process( Translated * translated );
 
   /// Get the number of Translated.
-  const uint32_t getTranslated() const;
+  const uint_t getTranslated() const;
 
   virtual bool process( TriangleSet * triangleSet );
 
   /// Get the number of TriangleSet.
-  const uint32_t getTriangleSet() const;
+  const uint_t getTriangleSet() const;
 
   //@}
 
@@ -272,46 +272,46 @@ public:
   virtual bool process( BezierCurve2D * bezierCurve );
 
   /// Get the number of BezierCurve2D.
-  const uint32_t getBezierCurve2D() const ;
+  const uint_t getBezierCurve2D() const ;
 
   virtual bool process( Disc * disc );
 
   /// Get the number of Disc.
-  const uint32_t getDisc() const ;
+  const uint_t getDisc() const ;
 
   virtual bool process( NurbsCurve2D * nurbsCurve );
 
   /// Get the number of NurbsCurve2D.
-  const uint32_t getNurbsCurve2D() const;
+  const uint_t getNurbsCurve2D() const;
 
   virtual bool process( PointSet2D * pointSet );
 
   /// Get the number of PointSet2D.
-  const uint32_t getPointSet2D() const ;
+  const uint_t getPointSet2D() const ;
 
   virtual bool process( Polyline2D * polyline );
 
   /// Get the number of Polyline2D.
-  const uint32_t getPolyline2D() const;
+  const uint_t getPolyline2D() const;
 
   virtual bool process( Swung * revolution );
 
   /// Get the number of Swung.
-  const uint32_t getSwung() const;
+  const uint_t getSwung() const;
 
   virtual bool process( IFS * ifs );
 
   /// Get the number of IFS.
-  const uint32_t getIFS() const;
+  const uint_t getIFS() const;
   //@}
 
   virtual bool process( Text * text );
 
-  const uint32_t getText() const;
+  const uint_t getText() const;
 
   virtual bool process( Font * font );
 
-  const uint32_t getFont() const;
+  const uint_t getFont() const;
 
   protected:
 
@@ -319,16 +319,16 @@ public:
   hash_set_uint32 __cache;
 
   /// nb element.
-  uint32_t __element;
+  uint_t __element;
 
   /// nb named element.
-  uint32_t __named;
+  uint_t __named;
 
   /// nb shape by class.
-  std::vector<uint32_t> __shape;
+  std::vector<uint_t> __shape;
 
   /// memory size.
-  uint32_t __memsize;
+  uint_t __memsize;
 
 };
 

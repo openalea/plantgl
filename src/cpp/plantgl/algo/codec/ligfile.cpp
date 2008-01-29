@@ -423,7 +423,7 @@ ScenePtr Ligfile::computeScene(const Dtafile& _dtafile) const{
     AppearancePtr _default( Material::DEFAULT_MATERIAL);
     if(!isValid() && _dtafile.isValid())return ScenePtr(0);
     ScenePtr result(new Scene());
-    uint32_t id = 1;
+    uint_t id = 1;
     for(vector< LigRecord >::iterator _it=recordTable->begin();
         _it!=recordTable->end();
         _it++){

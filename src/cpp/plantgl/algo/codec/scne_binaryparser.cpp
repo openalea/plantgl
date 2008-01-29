@@ -108,7 +108,7 @@ using namespace STDEXT;
 #define GEOM_READ_FIELD(obj,field,type)  obj->get##field() = read##type();
 
 #define GEOM_READ_ARRAY(obj,type,primitive) { \
-    uint32_t _sizej = readUint32(); \
+    uint_t _sizej = readUint32(); \
     if (_sizej > 0){ \
       obj = type##Ptr (new type(_sizej)); \
       for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
@@ -118,7 +118,7 @@ using namespace STDEXT;
   };
 
 #define GEOM_READ_INDEXARRAY(obj) { \
-    uint32_t _sizej  = readUint32(); \
+    uint_t _sizej  = readUint32(); \
     if (_sizej > 0){ \
       obj = IndexArrayPtr(new IndexArray(_sizej)); \
       for (IndexArray::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
@@ -128,8 +128,8 @@ using namespace STDEXT;
   };
 
 #define GEOM_READ_MATRIX(obj,type,primitive) { \
-    uint32_t _rows  = readUint32(); \
-    uint32_t _cols  = readUint32(); \
+    uint_t _rows  = readUint32(); \
+    uint_t _cols  = readUint32(); \
     obj = type##Ptr (new type(_rows,_cols)); \
     for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
 	*_it = read##primitive(); \
@@ -195,14 +195,14 @@ using namespace STDEXT;
         if(obj) { \
          if(!__currents[num]){ \
           __outputStream << "Unused object(s) (" << num << " - " <<__sizes[num]  << ") : adr=" \
-               << (uint32_t)obj << " - size=" << __sizes[num]*sizeof(*obj)<< endl; \
+               << (uint_t)obj << " - size=" << __sizes[num]*sizeof(*obj)<< endl; \
           if(__sizes[num] == 1) delete obj; \
           else delete [] obj; \
          } \
          else {\
           obj+=__currents[num]; \
-          for(uint32_t j = __currents[num]; j < __sizes[num]; j++){ \
-           __outputStream << "Unused object (" << num << " , " << j << ") : adr=" << (uint32_t)obj << " - size=" << sizeof(*obj)<< endl; \
+          for(uint_t j = __currents[num]; j < __sizes[num]; j++){ \
+           __outputStream << "Unused object (" << num << " , " << j << ") : adr=" << (uint_t)obj << " - size=" << sizeof(*obj)<< endl; \
            obj->~type(); obj++;\
           } \
          } \
@@ -222,7 +222,7 @@ using namespace STDEXT;
 
 #define GEOM_BEGIN(_name,_ident) \
     string  _name = readString(); \
-    uint32_t _ident(0); \
+    uint_t _ident(0); \
     if(!_name.empty()){ \
      _ident = readUint32(); \
      cerr << "Name : '" << _name << "', Id : " << _ident << endl; \
@@ -234,7 +234,7 @@ using namespace STDEXT;
 
 #define GEOM_BEGIN(_name,_ident) \
     string  _name = readString(); \
-    uint32_t _ident(0); \
+    uint_t _ident(0); \
     if(!_name.empty()){ \
      _ident = readUint32(); \
     } \
@@ -245,7 +245,7 @@ using namespace STDEXT;
 
 /* ----------------------------------------------------------------------- */
 
-static uint32_t count_name(0);
+static uint_t count_name(0);
 
 const SceneObjectPtr BinaryParser::NULLPTR(0);
 
@@ -261,12 +261,12 @@ BinaryParser::BinaryParser(ostream& output,int max_errors) :
     __errors_count(0),
     shape_nb(0),
     __comment(),
-    __sizes(39,uint32_t(0)),
-    __currents(39,uint32_t(0)),
+    __sizes(39,uint_t(0)),
+    __currents(39,uint_t(0)),
     __result(0),
     __assigntime(0),
 	__double_precision(false){
-    for(uint32_t i=0;i<39;i++)__mem[i]=NULL;
+    for(uint_t i=0;i<39;i++)__mem[i]=NULL;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -274,7 +274,7 @@ BinaryParser::BinaryParser(ostream& output,int max_errors) :
 BinaryParser::~BinaryParser( ) {
   if(__tokens)delete __tokens;
 #ifdef MEMORY_MANAGEMENT
-  uint32_t _reservedsize(0);
+  uint_t _reservedsize(0);
 #endif
   GEOM_CLEAN_MEM(0,Shape,_reservedsize);
   GEOM_CLEAN_MEM(1,Material,_reservedsize);  GEOM_CLEAN_MEM(2,MonoSpectral,_reservedsize);
@@ -315,7 +315,7 @@ inline bool BinaryParser::readBool()
 inline uint32_t BinaryParser::readUint32()
 { uint32_t val;  *stream >> val; return val; }
 
-/// read an uint32_t value from stream
+/// read an uint_t value from stream
 inline int32_t BinaryParser::readInt32()
 { int32_t val;  *stream >> val; return val; }
 
@@ -361,7 +361,7 @@ inline std::string BinaryParser::readFile()
 {
   std::string val;
   char c[MAXFILELENGTH+1]; 
-  uint32_t i=0; 
+  uint_t i=0; 
   *stream >> c[i]; 
   if( c[i] =='!'){ 
    *stream >> c[i]; 
@@ -423,7 +423,7 @@ inline Index4 BinaryParser::readIndex4()
 /// read a Index value from stream
 inline Index BinaryParser::readIndex()
 { 
-  uint32_t size = readUint32(); 
+  uint_t size = readUint32(); 
   Index val(size); 
   for(uchar_t it = 0; it < size; ++it) val.setAt(it,readUint32());  
   return val; 
@@ -441,7 +441,7 @@ const ScenePtr BinaryParser::getScene() const {
 
 /* ----------------------------------------------------------------------- */
 
-SceneObject * BinaryParser::getNext(uint32_t _class){
+SceneObject * BinaryParser::getNext(uint_t _class){
     if(__currents[_class]<  __sizes[_class]){
         return (__mem[_class]);
     }
@@ -537,7 +537,7 @@ bool BinaryParser::readHeader(){
           __outputStream << "*** ERROR: Abort." <<  endl;
           return false;
   }
-  uint32_t _size = readUint32();
+  uint_t _size = readUint32();
 #ifdef GEOM_DEBUG
   cerr << "Must find a scene of " << _size << " objects." << endl;
   __outputStream << "Must find a scene of " << _size << " objects." << endl;
@@ -545,7 +545,7 @@ bool BinaryParser::readHeader(){
   __scene->Resize(_size);
   __sizes = __tokens->getCounts();
 #ifdef MEMORY_MANAGEMENT
-  uint32_t _reservedsize(0);
+  uint_t _reservedsize(0);
   __outputStream << "Initialisation of memory management ... " << flush;
 #endif
   GEOM_INIT_MEM(0,Shape,_reservedsize);
@@ -625,7 +625,7 @@ bool BinaryParser::parse(const string& filename){
 bool BinaryParser::readNext(){
   string _classname = __tokens->readCurrentToken(*stream);
 #ifdef GEOM_DEBUG
-  uint32_t pos =  stream->getStream().tellg();
+  uint_t pos =  stream->getStream().tellg();
   --pos;
   cerr << "Found " << _classname << " at pos : " << pos << std::endl;
   __outputStream << "Found " << _classname << " at pos : " << pos << std::endl;
@@ -673,14 +673,14 @@ bool BinaryParser::readNext(){
   else if(_classname == "Text")				  return readText();
   else if(_classname == "Font")				  return readFont();
   else if(_classname == "Reference"){
-    uint32_t _ref = readUint32();
+    uint_t _ref = readUint32();
 #ifdef GEOM_DEBUG
     cerr << "Ref : " << _ref << endl;
     __outputStream << "Ref : " << _ref << endl;
 #endif
     Timer _timer;
     _timer.start();
-    hash_map<uint32_t, SceneObjectPtr >::iterator _it = __referencetable.find(_ref);
+    hash_map<uint_t, SceneObjectPtr >::iterator _it = __referencetable.find(_ref);
     __assigntime += _timer.stop();
     if(_it !=__referencetable.end()){
         __result =  _it->second;
@@ -1446,13 +1446,13 @@ bool BinaryParser::readGroup() {
       }
 
 
-    uint32_t _sizej;
+    uint_t _sizej;
     *stream >> _sizej;
     obj->getGeometryList()= GeometryArrayPtr(new GeometryArray(_sizej));
-    uint32_t err = 0;
+    uint_t err = 0;
     GeometryArray::iterator _it = obj->getGeometryList()->getBegin();
 
-    for (uint32_t num = 0;
+    for (uint_t num = 0;
 	     num < _sizej && 
 		 _it != obj->getGeometryList()->getEnd() && 
 		 !stream->eof(); num++) {
@@ -1488,14 +1488,14 @@ bool BinaryParser::readIFS() {
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Depth,Uchar);
 
-    uint32_t size;
+    uint_t size;
     *stream >> size;
     obj->getTransfoList()= Transform4ArrayPtr(new Transform4Array(size));
 
-    uint32_t err= 0;
+    uint_t err= 0;
     Transform4Array::iterator _ti= obj->getTransfoList()->getBegin();
     Transform4Array::iterator _tend= obj->getTransfoList()->getEnd();
-    for( uint32_t num = 0;
+    for( uint_t num = 0;
          num < size && _ti != _tend && !stream->eof();
          num++ )
       {
@@ -1831,7 +1831,7 @@ bool BinaryParser::readSwung()
 #endif
   }
 
-  uint32_t degree = Swung::DEFAULT_DEGREE;
+  uint_t degree = Swung::DEFAULT_DEGREE;
   IF_GEOM_NOTDEFAULT(_default,2){
     degree = readUint32();
 #ifdef GEOM_DEBUG
@@ -1839,7 +1839,7 @@ bool BinaryParser::readSwung()
 #endif
   }
 
-  uint32_t stride = Swung::DEFAULT_STRIDE;
+  uint_t stride = Swung::DEFAULT_STRIDE;
   IF_GEOM_NOTDEFAULT(_default,3){
     stride = readUint32();
 #ifdef GEOM_DEBUG
@@ -1851,7 +1851,7 @@ bool BinaryParser::readSwung()
   GEOM_READ_ARRAY(angles,RealArray,Real);
 
   // we try to read the Curve2D List
-  uint32_t size = readUint32();
+  uint_t size = readUint32();
 #ifdef GEOM_DEBUG
   cerr << "must find " << size << " curves" << endl;
 #endif
@@ -1859,8 +1859,8 @@ bool BinaryParser::readSwung()
 
   Curve2DArray::iterator _it = curves->getBegin();
   Curve2DArray::iterator _itEnd = curves->getEnd();
-  uint32_t i= 0;
-  uint32_t err = 0;
+  uint_t i= 0;
+  uint_t err = 0;
   for( i= 0 ; i < size && _it != _itEnd && !stream->eof(); i++ )
     {
     if( readNext() )

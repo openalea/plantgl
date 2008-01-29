@@ -65,7 +65,7 @@ class SG_API Font : public SceneObject
     /// A pointer to the \b String field.
 	std::string * Family;
 
-	uint32_t * Size;
+	uint_t * Size;
 
 	bool * Bold;
 
@@ -85,12 +85,12 @@ class SG_API Font : public SceneObject
 
   };
 
-  static const uint32_t DEFAULT_SIZE;
+  static const uint_t DEFAULT_SIZE;
   static const bool   DEFAULT_BOLD;
   static const bool   DEFAULT_ITALIC;
 
   Font(const std::string& family ="", 
-	   uint32_t size = DEFAULT_SIZE,
+	   uint_t size = DEFAULT_SIZE,
 	   bool   bold = DEFAULT_BOLD,
 	   bool italic = DEFAULT_ITALIC);
 
@@ -108,10 +108,10 @@ class SG_API Font : public SceneObject
   std::string& getFamily()
   { return __family; }
 
-  const uint32_t getSize() const
+  const uint_t getSize() const
   { return __size; }
 
-  uint32_t& getSize()
+  uint_t& getSize()
   { return __size; }
 
   const bool getBold() const
@@ -139,7 +139,7 @@ protected:
 
   std::string __family;
 
-  uint32_t __size;
+  uint_t __size;
 
   bool __bold;
 

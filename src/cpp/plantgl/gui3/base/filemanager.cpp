@@ -318,8 +318,8 @@ ViewFileManager3::clearReview() {
 
 void deleteInsideDir(QDir& dir){
   QStringList filenames = dir.entryList();
-  uint32_t f_count = filenames.count();
-  for(uint32_t i = 0 ; i < f_count ; i++  ) {
+  uint_t f_count = filenames.count();
+  for(uint_t i = 0 ; i < f_count ; i++  ) {
 	QString filename = filenames[i];
 	if(filename != "." && filename != ".."){
 	  QFileInfo file(dir.absPath() + '/' + filename);
@@ -1282,7 +1282,7 @@ void ViewFileManager3::saveConfig()
 	}
 
     if(getSaveHistory()){
-	  for (uint32_t ind=0; ind < __lastOpenFiles.size() ; ind++)
+	  for (uint_t ind=0; ind < __lastOpenFiles.size() ; ind++)
 		f_fileConfig << "\"" << __lastOpenFiles[ind] << "\"" << endl;
 	}
 	_fileConfig.close();
@@ -1352,7 +1352,7 @@ void ViewFileManager3::saveConfigBeforeQuit()
 		f_fileConfig << r << " "   << g << " "  << b <<  endl;
 		f_fileConfig << style << endl;
 		f_fileConfig << x << " "   << y << " "  << w << " "  << h <<  endl;
-		for( uint32_t ind=0; ind < __lastOpenFiles.size() ; ind++ )
+		for( uint_t ind=0; ind < __lastOpenFiles.size() ; ind++ )
 			f_fileConfig << "\"" << __lastOpenFiles[ind] << "\"" << endl;
 		_fileConfig.close();
 	}

@@ -82,12 +82,12 @@ struct hashpair
   {
     return H((a.first+a.second));
   }
-  STDEXT::hash<uint32_t> H;
+  STDEXT::hash<uint_t> H;
 };
 
 
 /// hash set of pairs
-typedef STDEXT::hash_set<std::pair< uint32_t, uint32_t>,hashpair<uint32_t>,eqpair<uint32_t> > SCache;
+typedef STDEXT::hash_set<std::pair< uint_t, uint_t>,hashpair<uint_t>,eqpair<uint_t> > SCache;
 
 #else
 
@@ -118,7 +118,7 @@ struct hash_comp_pair : STDEXT::hash_compare<std::pair<type,type>,less_pair<type
   STDEXT::hash_compare<type> H;
 };
 
-typedef STDEXT::hash_set<std::pair< uint32_t, uint32_t>, hash_comp_pair<uint32_t> > SCache;
+typedef STDEXT::hash_set<std::pair< uint_t, uint_t>, hash_comp_pair<uint_t> > SCache;
 
 #endif
 

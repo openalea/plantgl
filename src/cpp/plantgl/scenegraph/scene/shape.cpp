@@ -43,7 +43,7 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 /// The undef value for the Id field.
-const uint32_t Shape::NOID = UINT32_MAX;
+const uint_t Shape::NOID = UINT32_MAX;
 
 /* ----------------------------------------------------------------------- */
 
@@ -117,8 +117,8 @@ Shape::Shape( ) :
 
 Shape::Shape( const GeometryPtr& _geom,
                       const AppearancePtr& _app,
-                      uint32_t _id,
-                      uint32_t _parentId) :
+                      uint_t _id,
+                      uint_t _parentId) :
     Shape3D(),
     appearance(_app),
     geometry(_geom),
@@ -131,8 +131,8 @@ Shape::Shape( const GeometryPtr& _geom,
 Shape::Shape( const string& name,
 					  const GeometryPtr& _geom,
                       const AppearancePtr& _app,
-                      uint32_t _id,
-                      uint32_t _parentId) :
+                      uint_t _id,
+                      uint_t _parentId) :
     Shape3D(),
     appearance(_app),
     geometry(_geom),
@@ -237,17 +237,17 @@ AppearancePtr& Shape::getAppearance(){
   return appearance;
 }
 
-uint32_t Shape::getId() const {
+uint_t Shape::getId() const {
   return id;
 }
 
-uint32_t& Shape::getId(){
+uint_t& Shape::getId(){
   return id;
 }
 
-uint32_t Shape::getSceneObjectId() const
+size_t Shape::getSceneObjectId() const
 {
-    return (uint32_t)this;
+    return (size_t)this;
 }
 
 /* ----------------------------------------------------------------------- */

@@ -1330,19 +1330,19 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
   const Vector3& _topPoint = asymmetricHull->getTop();
   const real_t& _shapeBot = asymmetricHull->getBottomShape();
   const real_t& _shapeTop = asymmetricHull->getTopShape();
-  uint32_t _slices = asymmetricHull->getSlices();
-  uint32_t _stacks = asymmetricHull->getStacks();
+  uint_t _slices = asymmetricHull->getSlices();
+  uint_t _stacks = asymmetricHull->getStacks();
 
-  uint32_t _totalSlices = _slices * 4;
-  uint32_t _totalStacks = _stacks * 2;
+  uint_t _totalSlices = _slices * 4;
+  uint_t _totalStacks = _stacks * 2;
 
-  uint32_t _ringCount = _totalStacks - 1;     // number of rings of points
-  uint32_t _bot = _totalSlices * _ringCount;  // index of the lower point
-  uint32_t _top = _bot + 1;                   // index of the upper point
+  uint_t _ringCount = _totalStacks - 1;     // number of rings of points
+  uint_t _bot = _totalSlices * _ringCount;  // index of the lower point
+  uint_t _top = _bot + 1;                   // index of the upper point
 
   Point3ArrayPtr * pointSet = new Point3ArrayPtr[_totalSlices + 1];
   {
-	for(uint32_t i = 0 ; i < _totalSlices ; i++){
+	for(uint_t i = 0 ; i < _totalSlices ; i++){
 	  pointSet[i] = Point3ArrayPtr(new Point3Array(_totalStacks));
 	  pointSet[i]->setAt(0,_botPoint);
 	  pointSet[i]->setAt(_totalStacks-1,_topPoint);
@@ -1350,11 +1350,11 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
   }
   pointSet[_totalSlices] = Point3ArrayPtr(new Point3Array(_totalSlices+1));
 
-  uint32_t _cur = 0;
-  uint32_t _next = _ringCount;
+  uint_t _cur = 0;
+  uint_t _next = _ringCount;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
   real_t _azStep = real_t(GEOM_TWO_PI) / _totalSlices;
   real_t _azIter = 0;
@@ -1367,7 +1367,7 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
 
 
   // Constructs quadrats by quadrats
-  for (uint32_t _q = 0; _q < 4; _q++) {
+  for (uint_t _q = 0; _q < 4; _q++) {
 
     switch(_q) {
     case 0:
@@ -1399,7 +1399,7 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
       _zStep = _deltaZ / _slices;
     };
 
-    for (uint32_t _i = 0; _i < _slices; _i++) {
+    for (uint_t _i = 0; _i < _slices; _i++) {
 
       // Computes the peripheral point
       real_t _cosAz = cos(_azIter);
@@ -1412,7 +1412,7 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
       real_t _rStepBot = _PiBot.radius / _stacks;
       real_t _rIterBot = 0;
 
-      for (uint32_t _j = 0; _j < _stacks - 1; _j++) {
+      for (uint_t _j = 0; _j < _stacks - 1; _j++) {
         _rIterBot += _rStepBot;
 
         Vector3::Cylindrical _PijBot(_rIterBot,
@@ -1435,7 +1435,7 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
       real_t _rStepTop = _PiTop.radius / _stacks;
       real_t _rIterTop = _PiTop.radius;
 
-      for (uint32_t _j2 = 0; _j2 < _stacks - 1; _j2++) {
+      for (uint_t _j2 = 0; _j2 < _stacks - 1; _j2++) {
         _rIterTop -= _rStepTop;
 
         Vector3::Cylindrical _PijTop(_rIterTop,
@@ -1458,7 +1458,7 @@ ViewGeomSceneGL3::exportFred(const QString& filename)
   ScenePtr scene(new Scene());
   AppearancePtr mat(new Material(Color3::BLACK));
   { 
-	for(uint32_t i = 0 ; i < _totalSlices + 1; i++){
+	for(uint_t i = 0 ; i < _totalSlices + 1; i++){
 	  scene->add(Shape(new Polyline(pointSet[i]),mat));
 	}
   }

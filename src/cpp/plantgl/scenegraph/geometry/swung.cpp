@@ -45,8 +45,8 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 const bool Swung::DEFAULT_CCW(true);
-const uint32_t Swung::DEFAULT_DEGREE(ProfileInterpolation::DEFAULT_DEGREE);
-const uint32_t Swung::DEFAULT_STRIDE(ProfileInterpolation::DEFAULT_STRIDE);
+const uint_t Swung::DEFAULT_DEGREE(ProfileInterpolation::DEFAULT_DEGREE);
+const uint_t Swung::DEFAULT_STRIDE(ProfileInterpolation::DEFAULT_STRIDE);
 
 /* ----------------------------------------------------------------------- */
 
@@ -79,8 +79,8 @@ SceneObjectPtr Swung::Builder::build( ) const
 
   _builder.ProfileList = const_cast<Curve2DArrayPtr *>(ProfileList);
   _builder.KnotList = const_cast<RealArrayPtr *>(AngleList);
-  _builder.Degree= const_cast<uint32_t *>(Degree);
-  _builder.Stride= const_cast<uint32_t *>(Stride);
+  _builder.Degree= const_cast<uint_t *>(Degree);
+  _builder.Stride= const_cast<uint_t *>(Stride);
 
   bool valid= _builder.isValid();
 
@@ -167,8 +167,8 @@ Swung::Swung() :
 Swung::Swung( const ProfileInterpolationPtr& profiles,
                                 uchar_t slices,
                                 bool ccw,
-                                uint32_t degree,
-                                uint32_t stride ) :
+                                uint_t degree,
+                                uint_t stride ) :
 /////////////////////////////////////////////////////////////////////////////
   SOR(slices),
   __profiles(profiles),
@@ -184,8 +184,8 @@ Swung::Swung( const Curve2DArrayPtr& profileList,
                                 const RealArrayPtr& angleList,
                                 uchar_t slices,
                                 bool ccw,
-                                uint32_t degree,
-                                uint32_t stride ) :
+                                uint_t degree,
+                                uint_t stride ) :
 /////////////////////////////////////////////////////////////////////////////
   SOR(slices),
   __profiles(0),
@@ -197,8 +197,8 @@ Swung::Swung( const Curve2DArrayPtr& profileList,
 
   _builder.ProfileList = const_cast<Curve2DArrayPtr *>(&profileList);
   _builder.KnotList = const_cast<RealArrayPtr *>(&angleList);
-  _builder.Degree= const_cast<uint32_t *>(&degree);
-  _builder.Stride= const_cast<uint32_t *>(&stride);
+  _builder.Degree= const_cast<uint_t *>(&degree);
+  _builder.Stride= const_cast<uint_t *>(&stride);
 
   GEOM_ASSERT(_builder.isValid());
 
@@ -221,7 +221,7 @@ SceneObjectPtr Swung::copy() const {
     const Curve2DArrayPtr& _ca2 = getProfileList( );
     Curve2DArrayPtr _ca(_ca2?new Curve2DArray(_ca2->getSize()):0);
     if(_ca2){
-      uint32_t i = 0;
+      uint_t i = 0;
       for(Curve2DArray::iterator _it = _ca->getBegin(); _it != _ca->getEnd(); _it++){
 	if(_ca2->getAt(i))_it->cast(_ca2->getAt(i)->copy());
 	i++;
@@ -304,22 +304,22 @@ Swung::getProfileInterpolation( )
   return __profiles;
 }
 
-const uint32_t& Swung::getDegree() const
+const uint_t& Swung::getDegree() const
 {
   return __degree;
 }
 
-uint32_t& Swung::getDegree()
+uint_t& Swung::getDegree()
 {
   return __degree;
 }
 
-const uint32_t& Swung::getStride() const
+const uint_t& Swung::getStride() const
 {
   return __stride;
 }
 
-uint32_t& Swung::getStride()
+uint_t& Swung::getStride()
 {
   return __stride;
 }

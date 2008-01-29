@@ -85,8 +85,8 @@ bool ExplicitModel::Builder::EMValid( ) const
     return false;
   };
 
-  uint32_t _pointListSize = (*PointList)->getSize();
-  for (uint32_t _i = 0; _i < _pointListSize; _i++)
+  uint_t _pointListSize = (*PointList)->getSize();
+  for (uint_t _i = 0; _i < _pointListSize; _i++)
     if (! (*PointList)->getAt(_i).isValid()) {
       const Vector3& p = (*PointList)->getAt(_i);
       string mess = "Must be a valid point <" + number(p.x()) + "," + number(p.y()) + "," + number(p.z()) + ">.";
@@ -128,7 +128,7 @@ ExplicitModel::getPointList( ) {
   return __pointList;
 }
 
-uint32_t
+uint_t
 ExplicitModel::getPointListSize( ) const {
   return __pointList->getSize();
 }

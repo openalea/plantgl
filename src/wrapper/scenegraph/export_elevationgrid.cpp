@@ -48,7 +48,7 @@ TOOLS_USING_NAMESPACE
 
 DEF_POINTEE(ElevationGrid)
 
-real_t eg_getHeightAt(ElevationGrid *  e, uint32_t i, uint32_t j)
+real_t eg_getHeightAt(ElevationGrid *  e, uint_t i, uint_t j)
 { return e->getHeightAt(i,j); }
 
 

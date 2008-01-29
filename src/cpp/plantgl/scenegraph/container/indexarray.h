@@ -50,7 +50,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 /// Index of size 3
-typedef TOOLS(Uint32Tuple3) Index3;
+typedef TOOLS(UintTuple3) Index3;
 
 /* ----------------------------------------------------------------------- */
 
@@ -69,7 +69,7 @@ public:
   /** Constructs an Index3Array of size of \e size.
       \post
       - \e self is valid. */
-  Index3Array( uint32_t size = 0, const Index3& defaultvalue = Index3());
+  Index3Array( uint_t size = 0, const Index3& defaultvalue = Index3());
 
   /** Constructs a Index3Array with the range [\e first, \e last).
       \post
@@ -86,7 +86,7 @@ public:
   /// Returns whether \e self is valid.
   virtual bool isValid( ) const;
 
-  uint32_t * data() const;
+  uint_t * data() const;
 
 };
 
@@ -98,7 +98,7 @@ typedef RCPtr<Index3Array> Index3ArrayPtr;
 /* ----------------------------------------------------------------------- */
 
 /// Index of size 4
-typedef TOOLS(Uint32Tuple4) Index4;
+typedef TOOLS(UintTuple4) Index4;
 
 /* ----------------------------------------------------------------------- */
 
@@ -117,7 +117,7 @@ public:
   /** Constructs an Index4Array of size of \e size.
       \post
       - \e self is valid. */
-  Index4Array( uint32_t size = 0, const Index4& defaultvalue = Index4() );
+  Index4Array( uint_t size = 0, const Index4& defaultvalue = Index4() );
 
   /** Constructs a Index4Array with the range [\e first, \e last).
       \post
@@ -140,7 +140,7 @@ public:
   */
   Index3ArrayPtr triangulate( ) const;
 
-  uint32_t * data() const;
+  uint_t * data() const;
 
 };
 
@@ -150,7 +150,7 @@ typedef RCPtr<Index4Array> Index4ArrayPtr;
 /* ----------------------------------------------------------------------- */
 
 /// Index of non fixed size
-typedef TOOLS(Uint32Array1) Index;
+typedef TOOLS(UintArray1) Index;
 
 /* ----------------------------------------------------------------------- */
 
@@ -169,7 +169,7 @@ public:
   /** Constructs an IndexArray of size of \e size.
       \post
       - \e self is valid. */
-  IndexArray( uint32_t size = 0, const Index& defaultvalue = Index(3) );
+  IndexArray( uint_t size = 0, const Index& defaultvalue = Index(3) );
 
   /** Constructs an IndexArray from an Index3Array.
       \post
@@ -203,15 +203,15 @@ public:
   Index3ArrayPtr triangulate( ) const;
 
   /// Sets the \b i-th element of self to \e t. 
-  void setAt(uint32_t i, const Index3& t );
+  void setAt(uint_t i, const Index3& t );
   
   /// Sets the \b i-th element of self to \e t. 
-  void setAt(uint32_t i, const Index4& t );
+  void setAt(uint_t i, const Index4& t );
 
   /// Sets the \b i-th element of self to \e t. 
-  void setAt(uint32_t i, const Index& t ) ;
+  void setAt(uint_t i, const Index& t ) ;
 
-  uint32_t * data() const;
+  uint_t * data() const;
 
 };
 

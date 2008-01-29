@@ -87,9 +87,9 @@ ScenePtr PGLViewerApplication::getCurrentScene()
 	return sc;
 }
 
-std::vector<std::pair<uint32_t,double> > 
+std::vector<std::pair<uint_t,double> > 
 PGLViewerApplication::getProjectionSizes(const PGL(ScenePtr)& sc){
-  std::vector<std::pair<uint32_t,double> > res;
+  std::vector<std::pair<uint_t,double> > res;
   ViewerApplication::_sendAnEvent(new GeomProjListEvent(sc,&res));
   return res;
 }

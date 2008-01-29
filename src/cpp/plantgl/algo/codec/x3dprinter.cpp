@@ -95,7 +95,7 @@ using namespace std;
 
 
 #define GEOM_VRMLPRINT_ARRAY(val,type){ \
-   for(uint32_t _i = 0;_i < val->getSize();_i++){ \
+   for(uint_t _i = 0;_i < val->getSize();_i++){ \
     GEOM_VRMLPRINT_##type(val->getAt(_i)); \
     if(_i != (val->getSize()-1)){ \
       __geomStream << ", "; \

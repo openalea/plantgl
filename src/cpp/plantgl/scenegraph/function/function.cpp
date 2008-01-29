@@ -38,14 +38,14 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-uint32_t Function::DEFAULT_SAMPLING(100);
+uint_t Function::DEFAULT_SAMPLING(100);
 bool Function::DEFAULT_CLAMPED(true);
 
-Function::Function(const Curve2DPtr& curve, uint32_t sampling, bool clamped) : 
+Function::Function(const Curve2DPtr& curve, uint_t sampling, bool clamped) : 
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(curve);}
 
-Function::Function(const Point2ArrayPtr& points, uint32_t sampling, bool clamped):
+Function::Function(const Point2ArrayPtr& points, uint_t sampling, bool clamped):
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(Curve2DPtr(new Polyline2D(points)));}
 
@@ -92,9 +92,9 @@ real_t Function::findX(real_t y, bool& found, real_t startingX) const
 {
   assert(isValid());
   assert(__firstx <= startingX && startingX < __lastx);
-  uint32_t startingI = getIndex(startingX) + 1;
+  uint_t startingI = getIndex(startingX) + 1;
   if (startingI >= __sampling) return -1;
-  for(uint32_t i = startingI; i < __sampling; ++i)
+  for(uint_t i = startingI; i < __sampling; ++i)
   {
       if ((__values[i-1] <= y &&  y < __values[i])||
           (__values[i-1] >= y &&  y > __values[i]))
@@ -110,7 +110,7 @@ real_t Function::findX(real_t y, bool& found, real_t startingX) const
   return -1;
 }
 
-bool Function::build(const Curve2DPtr& curve, uint32_t sampling)
+bool Function::build(const Curve2DPtr& curve, uint_t sampling)
 {
     if (!check(curve)) return false;
     __sampling = sampling;
@@ -125,7 +125,7 @@ bool Function::isMonotonous(bool strictly) const
 
 bool Function::isIncreasing(bool strictly) const
 {
-  for(uint32_t i = 1; i < __sampling; ++i)
+  for(uint_t i = 1; i < __sampling; ++i)
       if ((__values[i-1] > __values[i])||
           (strictly && (__values[i-1] == __values[i])))
           return false;
@@ -134,7 +134,7 @@ bool Function::isIncreasing(bool strictly) const
 
 bool Function::isDecreasing(bool strictly) const
 {
-  for(uint32_t i = 1; i < __sampling; ++i)
+  for(uint_t i = 1; i < __sampling; ++i)
       if ((__values[i-1] < __values[i])||
           (strictly && (__values[i-1] == __values[i])))
           return false;
@@ -144,12 +144,12 @@ bool Function::isDecreasing(bool strictly) const
 bool Function::check(const Curve2DPtr& curve)
 {
   real_t _start = curve->getFirstKnot();
-  uint32_t _size = curve->getStride();
+  uint_t _size = curve->getStride();
   real_t _step =  (curve->getLastKnot()-_start) / (real_t) _size;
   Vector2 p0 = curve->getPointAt(_start);
   _start += _step;
 
-  for (uint32_t _i = 1; _i < _size; _i++) {
+  for (uint_t _i = 1; _i < _size; _i++) {
     Vector2 p1 = curve->getPointAt(_start);
     if (p1.x() <= p0.x()) return false;
     _start += _step;
@@ -164,7 +164,7 @@ void Function::computeCache(const Curve2DPtr& curve)
   __lastx = curve->getPointAt(curve->getLastKnot()).x();
   real_t extent = __lastx - __firstx;
   __values.resize(__sampling);
-  for (uint32_t i=0; i<__sampling; ++i)
+  for (uint_t i=0; i<__sampling; ++i)
         __values[i] = _computeValue(curve, extent * real_t(i)/real_t(__sampling-1) + __firstx);
 }
 
@@ -206,7 +206,7 @@ FunctionPtr Function::inverse() const
     real_t extent = lasty - firsty;
     real_t deltay = extent / (__sampling-1);
     bool found;
-    for (uint32_t i = 0; i < __sampling; ++i){
+    for (uint_t i = 0; i < __sampling; ++i){
         x = findX(y,found,x);
         assert(found == true);
         values[i] = x;

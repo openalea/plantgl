@@ -100,7 +100,7 @@ string short_dirnameU(const string& filename){
 	LPTSTR lpszShortPath = new TCHAR[MAXPATHLEN];
 	DWORD cchBuffer(MAXPATHLEN);
 	LPTSTR lpszLongPath  = new TCHAR[filename.length()+1];
-	for(uint32_t i = 0; i < filename.length(); i++)
+	for(uint_t i = 0; i < filename.length(); i++)
 		lpszLongPath[i] = filename[i];
 	lpszLongPath[filename.length()] = '\0';
 

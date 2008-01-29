@@ -57,7 +57,7 @@ PGL_BEGIN_NAMESPACE
 
 class SG_API GeometryArray : public GeomArray<GeometryPtr> {
 public :
-  GeometryArray (uint32_t size = 0 );
+  GeometryArray (uint_t size = 0 );
 
   template <class InIterator>
   GeometryArray( InIterator first, InIterator last ) :
@@ -73,7 +73,7 @@ public :
 
 class SG_API Curve2DArray : public GeomArray<Curve2DPtr> {
 public :
-  Curve2DArray (uint32_t size = 0 );
+  Curve2DArray (uint_t size = 0 );
   template <class InIterator>
   Curve2DArray( InIterator first, InIterator last ) :
     GeomArray<Curve2DPtr>(first,last){ }
@@ -86,7 +86,7 @@ public :
 */
 class SG_API CurveArray : public GeomArray<LineicModelPtr> {
 public :
-  CurveArray (uint32_t size = 0 );
+  CurveArray (uint_t size = 0 );
   template <class InIterator>
   CurveArray( InIterator first, InIterator last ) :
     GeomArray<LineicModelPtr>(first,last){ }

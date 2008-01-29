@@ -48,12 +48,12 @@ public:
 
 
   /// Constructs an Array1 of size \e size
-  Color3Array( uint32_t size = 0 ) :
+  Color3Array( uint_t size = 0 ) :
     TOOLS(Array1)<Color3>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
-  Color3Array( uint32_t size, const Color3& t ) :
+  Color3Array( uint_t size, const Color3& t ) :
     TOOLS(Array1)<Color3>(size,t) {
   }
 
@@ -89,12 +89,12 @@ public:
 
 
   /// Constructs an Array1 of size \e size
-  Color4Array( uint32_t size = 0 ) :
+  Color4Array( uint_t size = 0 ) :
     TOOLS(Array1)<Color4>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
-  Color4Array( uint32_t size, const Color4& t ) :
+  Color4Array( uint_t size, const Color4& t ) :
     TOOLS(Array1)<Color4>(size,t) {
   }
 

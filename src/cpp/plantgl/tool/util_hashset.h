@@ -58,13 +58,13 @@
 
 typedef STDEXT::hash_set<std::string, hashstr, eqstr> hash_set_string;
 
-typedef STDEXT::hash_set<uint32_t,STDEXT::hash<uint32_t>,std::equal_to<uint32_t> > hash_set_uint32;
+typedef STDEXT::hash_set<uint_t,STDEXT::hash<uint_t>,std::equal_to<uint_t> > hash_set_uint32;
 
 #else
 
 typedef STDEXT::hash_set<std::string> hash_set_string ;
 
-typedef STDEXT::hash_set<uint32_t> hash_set_uint32;
+typedef STDEXT::hash_set<uint_t> hash_set_uint32;
 
 
 

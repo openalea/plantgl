@@ -182,8 +182,8 @@ bool Tesselator::process( BezierPatch * bezierPatch ) {
 
   GEOM_TESSELATOR_CHECK_CACHE(bezierPatch);
 
-  const uint32_t _uStride = bezierPatch->getUStride();
-  const uint32_t _vStride = bezierPatch->getVStride();
+  const uint_t _uStride = bezierPatch->getUStride();
+  const uint_t _vStride = bezierPatch->getVStride();
 
   const real_t _uStride1 = bezierPatch->getUStride() - 1;
   const real_t _vStride1 = bezierPatch->getVStride() - 1;
@@ -191,10 +191,10 @@ bool Tesselator::process( BezierPatch * bezierPatch ) {
   Point3ArrayPtr _pointList(new Point3Array(_uStride * _vStride));
   Index3ArrayPtr _indexList(new Index3Array(2 * (_uStride - 1) * (_vStride - 1)));
 
-  uint32_t _cur = 0;
+  uint_t _cur = 0;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
 
   for ( real_t _u = 0 ; _u < _uStride1 ; _u ++){
 
@@ -252,26 +252,26 @@ bool Tesselator::process( Cylinder * cylinder ) {
   real_t _radius = cylinder->getRadius();
   real_t _height = cylinder->getHeight();
   bool _solid = cylinder->getSolid();
-  uint32_t _slices = cylinder->getSlices();
+  uint_t _slices = cylinder->getSlices();
 
-  uint32_t _offset = (_solid ? 2 : 0);
+  uint_t _offset = (_solid ? 2 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   Index3ArrayPtr _indexList(new Index3Array(_slices * (2 + _offset)));
 
-  uint32_t _cur = 0;
-  uint32_t _next = 2;
-  uint32_t _base = 2 * _slices;
-  uint32_t _top = _base + 1;
+  uint_t _cur = 0;
+  uint_t _next = 2;
+  uint_t _base = 2 * _slices;
+  uint_t _top = _base + 1;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
   if (_solid)
     _pointList->setAt(_top,Vector3(0,0,_height));
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _x = cos(_i * _angleStep) * _radius;
     real_t _y = sin(_i * _angleStep) * _radius;
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
@@ -352,7 +352,7 @@ bool Tesselator::process( FaceSet * faceSet ) {
 		   _itInd != faceSet->getIndexList()->getEnd(); ++_itInd)
 	  {
 		  if(_itInd->getSize() >=3){
-			  for (uint32_t i = 0 ; i < _itInd->getSize() - 2; ++i)
+			  for (uint_t i = 0 ; i < _itInd->getSize() - 2; ++i)
 			  { *_it = *_it2; ++_it; }
 		  }
 		  ++_it2;
@@ -369,7 +369,7 @@ bool Tesselator::process( FaceSet * faceSet ) {
 		   _itInd != faceSet->getIndexList()->getEnd(); ++_itInd)
 	  {
 		  if(_itInd->getSize() >=3){
-			for (uint32_t i = 0 ; i < _itInd->getSize() - 2; ++i)
+			for (uint_t i = 0 ; i < _itInd->getSize() - 2; ++i)
 				{ *_it = *_it2; ++_it; }
 		  }
 		  ++_it2;
@@ -397,26 +397,26 @@ bool Tesselator::process( Frustum * frustum ) {
   real_t _height = frustum->getHeight();
   real_t _taper = frustum->getTaper();
   bool _solid = frustum->getSolid();
-  uint32_t _slices = frustum->getSlices();
+  uint_t _slices = frustum->getSlices();
 
-  uint32_t _offset = (_solid ? 2 : 0);
+  uint_t _offset = (_solid ? 2 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   Index3ArrayPtr _indexList(new Index3Array(_slices * (2 + _offset)));
 
-  uint32_t _cur = 0;
-  uint32_t _next = 2;
-  uint32_t _base = 2 * _slices;
-  uint32_t _top = _base + 1;
+  uint_t _cur = 0;
+  uint_t _next = 2;
+  uint_t _base = 2 * _slices;
+  uint_t _top = _base + 1;
 
-  uint32_t _pointsCount = 0;
-  uint32_t _facesCount = 0;
+  uint_t _pointsCount = 0;
+  uint_t _facesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
   if (_solid)
     _pointList->setAt(_top,Vector3(0,0,_height));
 
-  for (uint32_t _i = 0; _i < _slices; _i++) {
+  for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _x = cos(_i * _angleStep) * _radius;
     real_t _y = sin(_i * _angleStep) * _radius;
 
@@ -519,8 +519,8 @@ bool Tesselator::process( NurbsPatch * nurbsPatch ) {
 
   GEOM_TESSELATOR_CHECK_CACHE(nurbsPatch);
 
-  const uint32_t _uStride = nurbsPatch->getUStride();
-  const uint32_t _vStride = nurbsPatch->getVStride();
+  const uint_t _uStride = nurbsPatch->getUStride();
+  const uint_t _vStride = nurbsPatch->getVStride();
 
   const real_t _uStride1 = nurbsPatch->getUStride() - 1;
   const real_t _vStride1 = nurbsPatch->getVStride() - 1;
@@ -529,10 +529,10 @@ bool Tesselator::process( NurbsPatch * nurbsPatch ) {
   Point3ArrayPtr _pointList(new Point3Array(_uStride * _vStride));
   Index3ArrayPtr _indexList(new Index3Array(2 * (_uStride - 1) * (_vStride - 1)));
 
-  uint32_t _cur = 0;
+  uint_t _cur = 0;
 
-  uint32_t _pointCount = 0;
-  uint32_t _indexCount = 0;
+  uint_t _pointCount = 0;
+  uint_t _indexCount = 0;
   real_t _ufirst=nurbsPatch->getFirstUKnot();
   real_t _ulast=nurbsPatch->getLastUKnot();
   real_t _uinter=_ulast-_ufirst;

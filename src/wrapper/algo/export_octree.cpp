@@ -81,8 +81,8 @@ Vector3 get_oct_center(Octree * oc) { return oc->getCenter(); }
 Vector3 get_oct_size(Octree * oc) { return oc->getSize(); }
 
 object get_oct_details(Octree * oc) 
-{ return make_list<std::vector<std::vector<uint32_t> > ,
-                   make_list<std::vector<uint32_t> > >
+{ return make_list<std::vector<std::vector<uint_t> > ,
+                   make_list<std::vector<uint_t> > >
                    (oc->getDetails())(); }
 
 object get_oct_sizes(Octree * oc) 
@@ -106,10 +106,10 @@ object oct_findfirstpoint(Octree * oct, const Ray& ray) {
 void export_Octree()
 {
   scope octree = class_< Octree, OctreePtr, boost::noncopyable >("Octree", 
-          init<const ScenePtr&,optional< uint32_t,uint32_t, Octree::ConstructionMethod> >
+          init<const ScenePtr&,optional< uint_t,uint_t, Octree::ConstructionMethod> >
               ("Octree(scene,maxscale,maxelements,method)",args("scene","maxscale","maxelements","method")))
      .def(init<const ScenePtr&,const Vector3&, const Vector3&, 
-              optional<uint32_t,uint32_t,Octree::ConstructionMethod> >
+              optional<uint_t,uint_t,Octree::ConstructionMethod> >
               ("Octree(scene,center,size,maxscale,maxelements,method)",args("scene","center","size","maxscale","maxelements","method")))
      .add_property("center",&get_oct_center)
      .add_property("size",&get_oct_size)

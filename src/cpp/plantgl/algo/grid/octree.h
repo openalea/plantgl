@@ -78,15 +78,15 @@ public:
 
   /// Default constructor. Use Bouding Box of \e Scene for center and Size of the space.
   Octree( const ScenePtr& Scene,
-          uint32_t maxscale = 10,
-          uint32_t maxelements = 10,
+          uint_t maxscale = 10,
+          uint_t maxelements = 10,
           ConstructionMethod method = TriangleBased);
 
   /// Constructor. Use center and size to define the space the decomposed space.
   Octree( const ScenePtr& Scene,
           const TOOLS(Vector3)& center, const TOOLS(Vector3)& size,
-          uint32_t maxscale = 10,
-          uint32_t maxelements = 10,
+          uint_t maxscale = 10,
+          uint_t maxelements = 10,
           ConstructionMethod method = TriangleBased);
 
   /// Destructor
@@ -108,7 +108,7 @@ public:
   }
 
   ///  Return the maximum scale from \e self.
-  virtual uint32_t getDepth() const{
+  virtual uint_t getDepth() const{
     return __maxscale;
   }
 
@@ -122,13 +122,13 @@ public:
   ScenePtr getRepresentation() const;
 
   /// Return the volume of the octree at a scale
-  real_t getVolume(uint32_t scale = 0) const;
+  real_t getVolume(uint_t scale = 0) const;
 
   /*! Return the details of the octree.
     on a vector of set of real values.
-    the set contains the scale, the nb of entity filled, undetermined, empty. (a tab of 4 uint32_t)
+    the set contains the scale, the nb of entity filled, undetermined, empty. (a tab of 4 uint_t)
   */
-  std::vector<std::vector<uint32_t> > getDetails() const;
+  std::vector<std::vector<uint_t> > getDetails() const;
 
   /// Return the size of the entity at the different scale.
   std::vector<TOOLS(Vector3) > getSizes() const;
@@ -171,13 +171,13 @@ protected:
   ScenePtr __scene;
 
   /// Maximum scale of the octree.
-  uint32_t __maxscale;
+  uint_t __maxscale;
 
   /// Maximum number of elements store by each node.
-  uint32_t __maxelts;
+  uint_t __maxelts;
 
   /// number of node  of the octree.
-  uint32_t __nbnode;
+  uint_t __nbnode;
 
   /// The construction method
   ConstructionMethod __method;

@@ -96,13 +96,13 @@ public:
   const unsigned int getSize() const;
 
   /// Get the symbol associate to the identifier id.
-  virtual AmapSymbolPtr getSymbol(uint32_t id) const ;
+  virtual AmapSymbolPtr getSymbol(uint_t id) const ;
 
   /// Get the Material associate to the identifier id.
-  virtual MaterialPtr getMaterial(uint32_t id) const ;
+  virtual MaterialPtr getMaterial(uint_t id) const ;
 
   /// Get the Dta Info associate to the identifier id encapsulate in a Shape.
-  virtual const ShapePtr getdtainfo(uint32_t id) const ;
+  virtual const ShapePtr getdtainfo(uint_t id) const ;
 
   /// Test object validity.
   virtual bool isValid( ) const;

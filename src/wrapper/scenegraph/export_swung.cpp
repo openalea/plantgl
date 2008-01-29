@@ -63,7 +63,7 @@ void export_ProfileInterpolation()
 {
   
   class_< ProfileInterpolation, ProfileInterpolationPtr,boost::noncopyable >
-    ("ProfileInterpolation",init<Curve2DArrayPtr,TOOLS(RealArrayPtr),optional<uint32_t,uint32_t> >
+    ("ProfileInterpolation",init<Curve2DArrayPtr,TOOLS(RealArrayPtr),optional<uint_t,uint_t> >
         ("ProfileInterpolation([Curve2D] profiles,[float] knotList,int degree,int stride"))
     .def("getSectionAt",&pi_getSectionAt)
     .add_property("umin",&ProfileInterpolation::getUMin)
@@ -74,7 +74,7 @@ void export_ProfileInterpolation()
 DEF_POINTEE(Swung)
 
 SwungPtr make_swung( boost::python::list profiles, boost::python::list angles, 
-		     uchar_t slices, bool ccw, uint32_t degree, uint32_t stride ) 
+		     uchar_t slices, bool ccw, uint_t degree, uint_t stride ) 
 { 
   Curve2DArrayPtr profilearray= extract_pgllist<Curve2DArray>(profiles)();
   RealArrayPtr anglesarray= extract_pgllist<RealArray>(angles)();
@@ -82,7 +82,7 @@ SwungPtr make_swung( boost::python::list profiles, boost::python::list angles,
 }
 
 SwungPtr make_swung5( boost::python::list profiles, boost::python::list angles, 
-		     uchar_t slices, bool ccw, uint32_t degree) 
+		     uchar_t slices, bool ccw, uint_t degree) 
 { 
 	return make_swung(profiles,angles,slices,ccw,degree,Swung::DEFAULT_STRIDE);
 }
@@ -126,8 +126,8 @@ void export_Swung()
     .def( "__init__", make_constructor( make_swung2, default_call_policies(), 
                                         args("profiles","angles") )) 
 	.DEC_BT_NR_PROPERTY_WDV(ccw,      Swung,CCW,             bool  ,DEFAULT_CCW )
-	.DEC_BT_PROPERTY_WDV(degree,   Swung,Degree,          uint32_t ,DEFAULT_DEGREE)
-	.DEC_BT_PROPERTY_WDV(stride,   Swung,Stride,          uint32_t ,DEFAULT_STRIDE)
+	.DEC_BT_PROPERTY_WDV(degree,   Swung,Degree,          uint_t ,DEFAULT_DEGREE)
+	.DEC_BT_PROPERTY_WDV(stride,   Swung,Stride,          uint_t ,DEFAULT_STRIDE)
 	.DEC_PTR_PROPERTY(angleList,   Swung,AngleList,       RealArrayPtr)
 	.DEC_PTR_PROPERTY(profileList, Swung,ProfileList,     Curve2DArrayPtr)
 	// .DEC_PTR_PROPERTY(interpolator, Swung,ProfileInterpolation, ProfileInterpolation)

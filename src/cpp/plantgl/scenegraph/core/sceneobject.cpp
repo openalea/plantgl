@@ -76,8 +76,8 @@ void SceneObject::setName( const std::string& name ) {
   __name = name;
 }
 
-uint32_t SceneObject::getId( ) const {
-  return (uint32_t)this;
+size_t SceneObject::getId( ) const {
+  return (size_t)this;
 }
 
 const std::string&

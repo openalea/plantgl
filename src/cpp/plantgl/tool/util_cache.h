@@ -66,17 +66,17 @@ public:
 
   /// A const iterator used to iterate through the cache.
 #ifndef WIN32_STL_EXTENSION
-  typedef typename STDEXT::hash_map<uint32_t,T,STDEXT::hash<uint32_t>,std::equal_to<uint32_t> >::const_iterator \
+  typedef typename STDEXT::hash_map<uint_t,T,STDEXT::hash<uint_t>,std::equal_to<uint_t> >::const_iterator \
                                                                 const_Iterator;
 #else
-  typedef typename STDEXT::hash_map<uint32_t,T>::const_iterator const_Iterator;
+  typedef typename STDEXT::hash_map<uint_t,T>::const_iterator const_Iterator;
 #endif
   /// An iterator used to iterate through the cache.
 
 #ifndef WIN32_STL_EXTENSION
-  typedef typename STDEXT::hash_map<uint32_t,T,STDEXT::hash<uint32_t>,std::equal_to<uint32_t> >::iterator Iterator;
+  typedef typename STDEXT::hash_map<uint_t,T,STDEXT::hash<uint_t>,std::equal_to<uint_t> >::iterator Iterator;
 #else
-  typedef typename STDEXT::hash_map<uint32_t,T>::iterator Iterator;
+  typedef typename STDEXT::hash_map<uint_t,T>::iterator Iterator;
 #endif
 
   /// Constructs an empty Cache.
@@ -115,17 +115,17 @@ public:
   }
 
   /// Returns an iterator to the object identified with \e id.
-  inline Iterator find( uint32_t id ) {
+  inline Iterator find( uint_t id ) {
     return __cache.find(id);
   }
 
   /** Inserts into \e self the element \e t associated to the object
       identified with \e id. */
-  inline Iterator insert( uint32_t id, const T& t ) {
-    return __cache.insert(std::pair<uint32_t,T>(id,t)).first;
+  inline Iterator insert( uint_t id, const T& t ) {
+    return __cache.insert(std::pair<uint_t,T>(id,t)).first;
   }
     
-  inline void remove( uint32_t id ) {
+  inline void remove( uint_t id ) {
 	Iterator _it = find(id);
 	if(_it != end()) __cache.erase(_it);
   }
@@ -139,9 +139,9 @@ protected:
 
   /// The elements contained by \e self.
 #ifndef WIN32_STL_EXTENSION
-  STDEXT::hash_map<uint32_t,T,STDEXT::hash<uint32_t>,std::equal_to<uint32_t> > __cache;
+  STDEXT::hash_map<uint_t,T,STDEXT::hash<uint_t>,std::equal_to<uint_t> > __cache;
 #else
-  STDEXT::hash_map<uint32_t,T> __cache;
+  STDEXT::hash_map<uint_t,T> __cache;
 #endif
 };
 

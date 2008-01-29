@@ -274,7 +274,7 @@ public:
   /// Read a Font object
   virtual bool readFont();
 
-  SceneObject * getNext(uint32_t _class);
+  SceneObject * getNext(uint_t _class);
 
   protected :
 
@@ -284,10 +284,10 @@ public:
   /// read an bool value from stream
   bool readBool();
 
-  /// read an int32_t value from stream
+  /// read an uint_t value from stream
   uint32_t readUint32();
 
-  /// read an uint32_t value from stream
+  /// read an int_t value from stream
   int32_t readInt32();
 
   /// read a uint16_t value from stream
@@ -333,7 +333,7 @@ public:
   ScenePtr __scene;
 
   /// The number of roots of the scene found.
-  uint32_t __roots;
+  uint_t __roots;
 
   /// The reference table
   TOOLS(Cache)<SceneObjectPtr > __referencetable;
@@ -363,10 +363,10 @@ public:
   SceneObject * __mem[42];
 
   /// sizes of memory reservation tabs.
-  std::vector<uint32_t> __sizes;
+  std::vector<uint_t> __sizes;
 
   /// current
-  std::vector<uint32_t> __currents;
+  std::vector<uint_t> __currents;
 
   /// result of parsing an object.
   SceneObjectPtr __result;

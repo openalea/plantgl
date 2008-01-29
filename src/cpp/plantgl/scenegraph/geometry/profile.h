@@ -180,10 +180,10 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   public :
 
   /// The Default Degree Field Value.
-  static const uint32_t DEFAULT_DEGREE;
+  static const uint_t DEFAULT_DEGREE;
 
   /// The \b Slices field default value.
-  static const uint32_t DEFAULT_STRIDE;
+  static const uint_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a Profile Interpolation when parsing.
   struct Builder
@@ -196,10 +196,10 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
     TOOLS(RealArrayPtr)* KnotList;
 
     /// The \b degree field
-    uint32_t* Degree;
+    uint_t* Degree;
 
     /// The \b stride field
-    uint32_t* Stride;
+    uint_t* Stride;
 
     /// Constructor.
     Builder( );
@@ -221,8 +221,8 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   /// Constructs Profiles Interpolant.
   ProfileInterpolation( Curve2DArrayPtr _profileList,
                         TOOLS(RealArrayPtr) _knotList,
-                        uint32_t _degree= DEFAULT_DEGREE,
-                        uint32_t _stride= DEFAULT_STRIDE );
+                        uint_t _degree= DEFAULT_DEGREE,
+                        uint_t _stride= DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~ProfileInterpolation( );
@@ -259,16 +259,16 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   virtual bool isStrideToDefault() const;
 
   /// Returns \e Stride value.
-  virtual const uint32_t& getStride( ) const;
+  virtual const uint_t& getStride( ) const;
 
   /// Returns \e Stride field.
-  uint32_t& getStride( );
+  uint_t& getStride( );
 
   /// Returns \e Interpolation Degree value.
-  virtual const uint32_t& getDegree( ) const;
+  virtual const uint_t& getDegree( ) const;
 
   /// Returns \e Interpolation Degree field.
-  uint32_t& getDegree( );
+  uint_t& getDegree( );
 
   /// Interpolate 2D pts (r,z) or 3D pts (r cos,r sin,z)
   /// Returns \e Interpolation Mode value.
@@ -288,10 +288,10 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   TOOLS(RealArrayPtr) __knotList;
 
   /// The stride field
-  uint32_t __stride;
+  uint_t __stride;
 
   /// The degree value
-  uint32_t __degree;
+  uint_t __degree;
 
   private:
 

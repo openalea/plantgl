@@ -64,7 +64,7 @@ public:
   /** Constructs an GeomArray of size of \e size.
       \post
       - \e self is valid. */
-  GeomArray( uint32_t size = 0 ) :
+  GeomArray( uint_t size = 0 ) :
     ObjectArray<T>( size)
      { }
 

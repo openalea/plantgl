@@ -64,7 +64,7 @@ public:
 
 
   /// The \b Stride field default value.
-  static const uint32_t DEFAULT_STRIDE;
+  static const uint_t DEFAULT_STRIDE;
 
   /// A structure which helps to build a BezierPatch when parsing. 
   struct SG_API Builder : public Patch::Builder { 
@@ -73,16 +73,16 @@ public:
     Point4MatrixPtr * CtrlPointMatrix;
 
     /// A pointer to the \b UDegree field.
-    uint32_t * UDegree;
+    uint_t * UDegree;
 
     /// A pointer to the \b UStride field.
-    uint32_t * UStride;
+    uint_t * UStride;
 
     /// A pointer to the \b VDegree field.
-    uint32_t * VDegree;
+    uint_t * VDegree;
 
     /// A pointer to the \b VStride field.
-    uint32_t * VStride;
+    uint_t * VStride;
 
     /// Constructor.
     Builder( );
@@ -108,8 +108,8 @@ public:
       \post
       - \e self is valid. */
   BezierPatch( const Point4MatrixPtr& ctrlPoints, 
-	       uint32_t ustride = DEFAULT_STRIDE,
-	       uint32_t vstride = DEFAULT_STRIDE,
+	       uint_t ustride = DEFAULT_STRIDE,
+	       uint_t vstride = DEFAULT_STRIDE,
 	       bool ccw = DEFAULT_CCW );
 
   /// Destructor
@@ -130,16 +130,16 @@ public:
   Point4MatrixPtr& getCtrlPointMatrix( );
 
   /// Returns \e UStride value.
-  const uint32_t& getUStride( ) const ;
+  const uint_t& getUStride( ) const ;
 
   /// Returns \e UStride field.
-  uint32_t& getUStride( );
+  uint_t& getUStride( );
 
   /// Returns \e VStride value.
-  const uint32_t& getVStride( ) const;
+  const uint_t& getVStride( ) const;
 
   /// Returns \e VStride field.
-  uint32_t& getVStride( ) ;
+  uint_t& getVStride( ) ;
   
   /// Returns whether \b UStride is set to its default value.
   bool isUStrideToDefault( ) const;
@@ -148,10 +148,10 @@ public:
   bool isVStrideToDefault( ) const;
 
   /// Returns \e UDegree value.
-  virtual const uint32_t getUDegree( ) const;
+  virtual const uint_t getUDegree( ) const;
 
   /// Returns \e VDegree value.
-  virtual const uint32_t getVDegree( ) const;
+  virtual const uint_t getVDegree( ) const;
 
   /*! Returns the \e Point for u = \e u and  v = \e v.
       using deCasteljau algorithm (see the Nurbs book A1.7 p.39) 
@@ -180,10 +180,10 @@ protected:
   Point4MatrixPtr __ctrlPointMatrix;
 
   /// The ustride field
-  uint32_t __ustride;
+  uint_t __ustride;
 
   /// The vstride field
-  uint32_t __vstride;
+  uint_t __vstride;
 
 }; // BezierPatch
 

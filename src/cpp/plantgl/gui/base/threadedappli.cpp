@@ -165,9 +165,9 @@ ViewerThreadedAppli::run(){
 	join();
 }
 
-const std::vector<uint32_t>
+const std::vector<uint_t>
 ViewerThreadedAppli::getSelection() {
-	std::vector<uint32_t> res;
+	std::vector<uint_t> res;
     if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
       sendAnEvent(event);

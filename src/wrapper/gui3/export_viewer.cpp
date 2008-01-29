@@ -47,11 +47,11 @@ using namespace boost::python;
 using namespace std;
 
 boost::python::list selection(){
-  std::vector<uint32_t> sel = ViewerApplication3::getSelection();
+  std::vector<uint_t> sel = ViewerApplication3::getSelection();
   if(sel.empty()) return boost::python::list();
   else {
 	boost::python::list res;
-	for(vector<uint32_t>::const_iterator _it = sel.begin();
+	for(vector<uint_t>::const_iterator _it = sel.begin();
 	_it != sel.end(); _it++){
 	  res.append(object((int)*_it));
 	}
@@ -60,13 +60,13 @@ boost::python::list selection(){
 }
 
 void setSelection(int i){
-  std::vector<uint32_t> sel;
+  std::vector<uint_t> sel;
   sel.push_back(i);
   ViewerApplication3::setSelection(sel);
 }
 
 void setMSelection(boost::python::list values){
-  std::vector<uint32_t> sel;
+  std::vector<uint_t> sel;
   try { 
     object iter_obj = boost::python::object( handle<>( PyObject_GetIter( values.ptr() ) ) );
     while( true ) {
@@ -262,11 +262,11 @@ boost::python::object getProjectionSize(){
 }
 
 boost::python::object getProjectionSizes(const ScenePtr& sc){
-  std::vector<std::pair<uint32_t,double> > res = PGLViewerApplication3::getProjectionSizes(sc);
+  std::vector<std::pair<uint_t,double> > res = PGLViewerApplication3::getProjectionSizes(sc);
   if(res.empty()) return object();
   else {
 	boost::python::list bres;
-	for(vector<std::pair<uint32_t,double> >::const_iterator _it = res.begin();
+	for(vector<std::pair<uint_t,double> >::const_iterator _it = res.begin();
 	_it != res.end(); _it++){
 	  bres.append(make_tuple((int)(_it->first),_it->second));
 	}

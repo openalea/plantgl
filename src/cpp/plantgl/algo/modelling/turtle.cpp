@@ -247,9 +247,9 @@ void Turtle::decId()
     else error("Id should be a valid positive value."); 
 }
 
-uint32_t Turtle::popId()
+uint_t Turtle::popId()
 {
-    uint32_t nid = id;
+    uint_t nid = id;
     parentId = id;
     return nid;
 }
@@ -554,7 +554,7 @@ void PglTurtle::setColorAt(size_t pos, const Color3& mat){
 }
 
 void 
-PglTurtle::appendColor(uint32_t red, uint32_t green, uint32_t blue)
+PglTurtle::appendColor(uint_t red, uint_t green, uint_t blue)
 { appendColor(Color3(red,green,blue)); }
 
 void 
@@ -566,7 +566,7 @@ PglTurtle::appendColor(const Color3& mat)
 { __appList.push_back(AppearancePtr(new Material(mat))); }
     
 void 
-PglTurtle::setColorAt(size_t pos, uint32_t red, uint32_t green, uint32_t blue )
+PglTurtle::setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue )
 { setColorAt(pos,Color3(red,green,blue)); }
 
 void 
@@ -617,7 +617,7 @@ void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid)
    if (custompid)
      __scene->add(Shape3DPtr(new Shape(geom,getCurrentMaterial(),__params->customId,__params->customParentId)));
    else{
-     uint32_t pid = parentId;
+     uint_t pid = parentId;
      __scene->add(Shape3DPtr(new Shape(geom,getCurrentMaterial(),popId(),pid)));
    }
 }

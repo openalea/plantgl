@@ -114,7 +114,7 @@ ViewGeomSceneGL::getSelectionSurface()
   if(!__scene)return 0;
   SurfComputer _sfc(__discretizer);
   real_t surface = 0;
-  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(_sfc))
 		surface += _sfc.getSurface();
@@ -126,7 +126,7 @@ real_t ViewGeomSceneGL::getSelectionVolume()
   if(!__scene)return 0;
   VolComputer _vfc(__discretizer);
   real_t volume = 0;
-  for(hash_map<uint32_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(_vfc))
 		volume += _vfc.getVolume();
@@ -221,7 +221,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel2->setGeometry( QRect( 170, 170, 200, 25 ) );
     TextLabel2->setText( QString::number(polygonNumber(__scene) ));
 
-    uint32_t s = comp.getMemorySize();
+    uint_t s = comp.getMemorySize();
     QString labl;
     if( s/1024 > 0 )
         labl = QString::number(s/1024)+" Kb "+QString::number(s % 1024)+" bytes.";
@@ -316,7 +316,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
-	  hash_map<uint32_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+	  hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
       QString listid = QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
 	  for(_it++;_it != __selectedShapes.end();_it++)
 			listid += ','+QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
@@ -371,7 +371,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setGeometry( QRect( 170, 170, 200, 25 ) );
 	  TextLabel2->setText( QString::number(polygonNumber(selection) ) );
 	  
-	  uint32_t s = comp.getMemorySize();
+	  uint_t s = comp.getMemorySize();
 	  QString labl;
 	  if( s/1024 > 0 )
 		  labl = QString::number(s/1024)+" Kb "+QString::number(s % 1024)+" bytes.";

@@ -102,23 +102,23 @@ ViewRendererGL::selectGL()
 }
 
 void
-ViewRendererGL::selectionEvent(uint32_t i)
+ViewRendererGL::selectionEvent(uint_t i)
 {
-  qDebug("selectionEvent(uint32_t) not implemented in current Renderer");
+  qDebug("selectionEvent(uint_t) not implemented in current Renderer");
 }
 
 void
-ViewRendererGL::selectionEvent(const std::vector<uint32_t>& i)
+ViewRendererGL::selectionEvent(const std::vector<uint_t>& i)
 {
-  for(std::vector<uint32_t>::const_iterator _it = i.begin();
+  for(std::vector<uint_t>::const_iterator _it = i.begin();
 	  _it != i.end(); _it++)
 	  selectionEvent(*_it);
 }
 
 void
-ViewRendererGL::selectionIdEvent(const std::vector<uint32_t>& i)
+ViewRendererGL::selectionIdEvent(const std::vector<uint_t>& i)
 {
-  for(std::vector<uint32_t>::const_iterator _it = i.begin();
+  for(std::vector<uint_t>::const_iterator _it = i.begin();
 	  _it != i.end(); _it++)
 	  selectionEvent(*_it);
 }
@@ -129,15 +129,15 @@ ViewRendererGL::selectionEvent(Q3ListViewItem *)
   qDebug("selectionEvent(Q3ListViewItem *) not implemented in current Renderer");
 }
 
-std::vector<uint32_t> 
+std::vector<uint_t> 
 ViewRendererGL::getSelectionIds() const
 {
-  qDebug("std::vector<uint32_t> getSelectionIds() const not implemented in current Renderer");
-  return std::vector<uint32_t>(0);
+  qDebug("std::vector<uint_t> getSelectionIds() const not implemented in current Renderer");
+  return std::vector<uint_t>(0);
 }
 
-uint32_t 
-ViewRendererGL::translateId(uint32_t id) const
+uint_t 
+ViewRendererGL::translateId(uint_t id) const
 {
 	return id;
 }

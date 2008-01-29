@@ -416,7 +416,7 @@ bool VgstarPrinter::process( PointSet * pointSet ) {
   bool hasColor = pointSet->hasColorList();
   Color3 oldcolor = __color;
   const Point3ArrayPtr& points = pointSet->getPointList();
-  for (uint32_t _i = 0; _i < points->getSize(); ++_i)
+  for (uint_t _i = 0; _i < points->getSize(); ++_i)
   {
 	  GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"40");
 	  printNullTransformation();
@@ -513,7 +513,7 @@ bool VgstarPrinter::process( Tapered * tapered ) {
 bool VgstarPrinter::process( TriangleSet * triangleSet ) {
   GEOM_ASSERT(triangleSet);
 
-  for (uint32_t _i = 0; _i < triangleSet->getIndexListSize(); _i++)
+  for (uint_t _i = 0; _i < triangleSet->getIndexListSize(); _i++)
     {
     GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"0");
         printNullTransformation();

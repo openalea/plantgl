@@ -104,7 +104,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 
   // PointList field
   // Size check
-  uint32_t _pointListSize = (*PointList)->getSize();
+  uint_t _pointListSize = (*PointList)->getSize();
   if (_pointListSize < 3) {
     genMessage(ERRORMSG(INVALID_FIELD_SIZE_sss),"FaceSet","PointList","Must have more than 2 Points.");
     return false;
@@ -117,7 +117,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
     return false;
   };
   // Size check
-  uint32_t _indexListSize = (*IndexList)->getSize();
+  uint_t _indexListSize = (*IndexList)->getSize();
   if (_indexListSize < 1) {
     genMessage(ERRORMSG(INVALID_FIELD_SIZE_sss),"FaceSet","IndexList","Number of Index must be greater than 0.");
     return false;
@@ -125,7 +125,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 
   // Indices check
   IndexArray::iterator _it = (*IndexList)->getBegin();
-  for (uint32_t _i = 0; _i < _indexListSize; ++_i,++_it) {
+  for (uint_t _i = 0; _i < _indexListSize; ++_i,++_it) {
     // Max index check
 	  if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _pointListSize) {
 	genMessage
@@ -141,7 +141,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
   };
   
   if (NormalList) {
-	  uint32_t _normalListSize = (*NormalList)->getSize();
+	  uint_t _normalListSize = (*NormalList)->getSize();
 	  if (!NormalIndexList){
 		  if(NormalPerVertex && !*NormalPerVertex){
 			  if(_normalListSize != _indexListSize){
@@ -158,7 +158,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 		  }
 	  }
 	  else {
-		  uint32_t _normalIndexListSize = (*NormalIndexList)->getSize();
+		  uint_t _normalIndexListSize = (*NormalIndexList)->getSize();
 		  if(NormalPerVertex && !*NormalPerVertex){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"FaceSet","NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
 			return false;
@@ -172,7 +172,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 		  }
 		  // NormalIndexList values check
 		  IndexArray::iterator _it = (*NormalIndexList)->getBegin();
-		  for (uint32_t _i = 0; _i < _normalIndexListSize; ++_i,++_it) {
+		  for (uint_t _i = 0; _i < _normalIndexListSize; ++_i,++_it) {
 			// Max index check
 			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _normalListSize) {
 				genMessage
@@ -198,7 +198,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
   }
 
   if (ColorList) {
-	  uint32_t _colorListSize = (*ColorList)->getSize();
+	  uint_t _colorListSize = (*ColorList)->getSize();
 	  if (!ColorIndexList){
 		  if(ColorPerVertex && !*ColorPerVertex){
 			  if(_colorListSize != _indexListSize){
@@ -215,7 +215,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 		  }
 	  }
 	  else {
-		  uint32_t _colorIndexListSize = (*ColorIndexList)->getSize();
+		  uint_t _colorIndexListSize = (*ColorIndexList)->getSize();
 		  if(ColorPerVertex && !*ColorPerVertex){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"FaceSet","ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
 			return false;
@@ -229,7 +229,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 		  }
 		  // ColorIndexList values check
 		  IndexArray::iterator _it = (*ColorIndexList)->getBegin();
-		  for (uint32_t _i = 0; _i < _colorIndexListSize; ++_i,++_it) {
+		  for (uint_t _i = 0; _i < _colorIndexListSize; ++_i,++_it) {
 			// Max index check
 			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _colorListSize) {
 				genMessage
@@ -255,7 +255,7 @@ bool FaceSet::Builder::FaceSetValid( ) const {
   }
 
   if (TexCoordList) {
-	  uint32_t _texCoordListSize = (*TexCoordList)->getSize();
+	  uint_t _texCoordListSize = (*TexCoordList)->getSize();
 	  if (!TexCoordIndexList){
 		  if(_texCoordListSize != _pointListSize){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"FaceSet","TexCoordList","Number of TexCoord must be compatible to PointList size.");
@@ -263,14 +263,14 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 		  }
 	  }
 	  else {
-		  uint32_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
+		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
 		  if(_texCoordIndexListSize != _indexListSize){
 			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"FaceSet","TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
 			return false;
 		  }
 		  // TexCoordIndexList values check
 		  IndexArray::iterator _it = (*TexCoordIndexList)->getBegin();
-		  for (uint32_t _i = 0; _i < _texCoordIndexListSize; ++_i,++_it) {
+		  for (uint_t _i = 0; _i < _texCoordIndexListSize; ++_i,++_it) {
 			// Max index check
 			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _texCoordListSize) {
 				genMessage
@@ -434,21 +434,21 @@ bofstream& FaceSet::write( bofstream& stream ) const {
   GEOM_ASSERT(stream);
 
   // Points
-  uint32_t _pointListSize = __pointList->getSize();
+  uint_t _pointListSize = __pointList->getSize();
   stream << _pointListSize;
-  for (uint32_t _l = 0; _l < _pointListSize; _l++) {
+  for (uint_t _l = 0; _l < _pointListSize; _l++) {
     const Vector3& _point = __pointList->getAt(_l);
     stream << _point.x() << _point.y() << _point.z();
   };
 
   // Faces
-  uint32_t _indexListSize = __indexList->getSize();
+  uint_t _indexListSize = __indexList->getSize();
   stream << _indexListSize;
-  for (uint32_t _i = 0; _i < _indexListSize; _i++) {
+  for (uint_t _i = 0; _i < _indexListSize; _i++) {
     const Index& _index = __indexList->getAt(_i);
-    uint32_t _indexSize = _index.getSize();
+    uint_t _indexSize = _index.getSize();
     stream << _indexSize;
-    for (uint32_t _j = 0; _j < _indexSize; _j++)
+    for (uint_t _j = 0; _j < _indexSize; _j++)
       stream << _index.getAt(_j);
   };
 
@@ -462,8 +462,8 @@ bofstream& FaceSet::write( bofstream& stream ) const {
   if (__skeleton) {
     stream << true;
     const Point3ArrayPtr& _skelPointList = __skeleton->getPointList();
-    uint32_t _skelPointListSize = _skelPointList->getSize();
-    for (uint32_t _i = 0; _i < _skelPointListSize; _i++) {
+    uint_t _skelPointListSize = _skelPointList->getSize();
+    for (uint_t _i = 0; _i < _skelPointListSize; _i++) {
       const Vector3& _point = _skelPointList->getAt(_i);
       stream << _point.x() << _point.y() << _point.z();
     };
@@ -479,11 +479,11 @@ bofstream& FaceSet::write( bofstream& stream ) const {
 
 Point3ArrayPtr FaceSet::computeNormalPerVertex() const {
     Point3ArrayPtr normalList(new Point3Array(__pointList->getSize())); 
-    for(uint32_t j=0; j < __indexList->getSize(); j++){ 
+    for(uint_t j=0; j < __indexList->getSize(); j++){ 
 	  Vector3 _norm = cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
 		getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0)); 
-	  for(uint32_t i = 0; i <__indexList->getAt(j).getSize() ; i++){ 
-		uint32_t _index = __indexList->getAt(j).getAt(i); 
+	  for(uint_t i = 0; i <__indexList->getAt(j).getSize() ; i++){ 
+		uint_t _index = __indexList->getAt(j).getAt(i); 
 		normalList->setAt(_index,normalList->getAt(_index)+_norm); 
 	  } 
     }
@@ -494,7 +494,7 @@ Point3ArrayPtr FaceSet::computeNormalPerVertex() const {
 
 Point3ArrayPtr FaceSet::computeNormalPerFace() const {
     Point3ArrayPtr normalList(new Point3Array(__indexList->getSize())); 
-    for(uint32_t j=0; j < __indexList->getSize(); j++){ 
+    for(uint_t j=0; j < __indexList->getSize(); j++){ 
 	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
 			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
     }
@@ -513,36 +513,36 @@ IndexArrayPtr& FaceSet::getIndexList( ) {
   return __indexList;
 } 
 
-const Index& FaceSet::getIndexListAt( uint32_t i ) const {
+const Index& FaceSet::getIndexListAt( uint_t i ) const {
   GEOM_ASSERT(i < __indexList->getSize());
   return __indexList->getAt(i);
 }
 
-Index& FaceSet::getIndexListAt( uint32_t i ){
+Index& FaceSet::getIndexListAt( uint_t i ){
   GEOM_ASSERT(i < __indexList->getSize());
   return __indexList->getAt(i);
 }
 
-uint32_t FaceSet::getIndexListSize( ) const {
+uint_t FaceSet::getIndexListSize( ) const {
   return __indexList->getSize();
 }
 
 /* ----------------------------------------------------------------------- */
 
-const Vector3& FaceSet::getFacePointAt( uint32_t i, uint32_t j ) const {
+const Vector3& FaceSet::getFacePointAt( uint_t i, uint_t j ) const {
   GEOM_ASSERT(__pointList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());
   return __pointList->getAt(__indexList->getAt(i).getAt(j));
 }
 
-const Vector3& FaceSet::getNormalAt( uint32_t i ) const {
+const Vector3& FaceSet::getNormalAt( uint_t i ) const {
   GEOM_ASSERT(__normalList.isValid());
   GEOM_ASSERT(i < __normalList->getSize());
   return __normalList->getAt(i);
 }
 
-const Vector3& FaceSet::getNormalAt( uint32_t i, uint32_t j )  const {
+const Vector3& FaceSet::getNormalAt( uint_t i, uint_t j )  const {
   GEOM_ASSERT(__normalList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());
@@ -552,13 +552,13 @@ const Vector3& FaceSet::getNormalAt( uint32_t i, uint32_t j )  const {
 	  return __normalList->getAt(__indexList->getAt(i).getAt(j));
 }
 
-const Color4& FaceSet::getColorAt( uint32_t i ) const {
+const Color4& FaceSet::getColorAt( uint_t i ) const {
   GEOM_ASSERT(__colorList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   return __colorList->getAt(i);
 }
 
-const Color4& FaceSet::getColorAt( uint32_t i, uint32_t j ) const {
+const Color4& FaceSet::getColorAt( uint_t i, uint_t j ) const {
   GEOM_ASSERT(__colorList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());
@@ -568,13 +568,13 @@ const Color4& FaceSet::getColorAt( uint32_t i, uint32_t j ) const {
 	return __colorList->getAt(__indexList->getAt(i).getAt(j));
 }
 
-const Vector2& FaceSet::getTexCoordAt( uint32_t i ) const {
+const Vector2& FaceSet::getTexCoordAt( uint_t i ) const {
   GEOM_ASSERT(__texCoordList.isValid());
   GEOM_ASSERT(i < __texCoordList->getSize());
   return __texCoordList->getAt(i);
 }
 
-const Vector2& FaceSet::getTexCoordAt( uint32_t i, uint32_t j ) const {
+const Vector2& FaceSet::getTexCoordAt( uint_t i, uint_t j ) const {
   GEOM_ASSERT(__texCoordList.isValid());
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());

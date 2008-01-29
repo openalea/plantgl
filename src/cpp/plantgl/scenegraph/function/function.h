@@ -57,11 +57,11 @@ typedef RCPtr<Function> FunctionPtr;
 
 class SG_API Function : public TOOLS(RefCountObject) {
 public:
-    static uint32_t DEFAULT_SAMPLING;
+    static uint_t DEFAULT_SAMPLING;
     static bool DEFAULT_CLAMPED;
 
-    Function(const Curve2DPtr& curve, uint32_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
-    Function(const Point2ArrayPtr& points, uint32_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
+    Function(const Curve2DPtr& curve, uint_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
+    Function(const Point2ArrayPtr& points, uint_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
     Function(const std::vector<real_t>& values, real_t firstx = 0.0,real_t lastx = 1.0, bool clamped = DEFAULT_CLAMPED);
     ~Function();
 
@@ -74,7 +74,7 @@ public:
     real_t findX(real_t y, bool& found, real_t startingX) const ;
 
     inline bool build(const Curve2DPtr& curve) { return build(curve,__sampling); }
-    bool build(const Curve2DPtr& curve, uint32_t sampling);
+    bool build(const Curve2DPtr& curve, uint_t sampling);
 
     bool isMonotonous(bool strictly = false) const ;
     bool isIncreasing(bool strictly = false) const ;
@@ -87,7 +87,7 @@ public:
     FunctionPtr inverse() const;
 
     /// Return sampling
-    inline uint32_t getSampling() { return __sampling; }
+    inline uint_t getSampling() { return __sampling; }
 
     inline real_t getFirstX() const { return __firstx; }
     inline real_t getLastX() const { return __lastx; }
@@ -109,7 +109,7 @@ protected:
     void computeCache(const Curve2DPtr& curve);
 
     std::vector<real_t> __values;
-    uint32_t __sampling;
+    uint_t __sampling;
     real_t __firstx,__lastx;
     bool __clamped;
 };

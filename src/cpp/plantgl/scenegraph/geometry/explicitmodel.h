@@ -118,7 +118,7 @@ public:
   virtual Point3ArrayPtr& getPointList( );
 
   /// Returns the size of \b PointList.
-  uint32_t getPointListSize( ) const;
+  uint_t getPointListSize( ) const;
 
   /// Returns \b ColorList values.
   Color4ArrayPtr& getColorList( );
