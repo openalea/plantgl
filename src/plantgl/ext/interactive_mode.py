@@ -61,6 +61,50 @@ INSTANT_UPDATE_VISUALISATION_POLICY=True
 ASHAPE3D_STANDARD_VISIBILITY = True
 
 
+def change_scene( scene=None,scn_index=None ):
+    """Changes current scene
+    
+    <Long description of the function functionality.>
+    
+    :parameters:
+        arg1 : `T`
+            <Description of `arg1` meaning>
+    :rtype: `T`
+    :return: <Description of ``return_object`` meaning>
+    :raise Exception: <Description of situation raising `Exception`>
+    """
+    if not scn_index: SCENES[ CURRENT_SCENE ]=scene
+    else:  SCENES[ scn_index ]=scene
+    
+def clear_scene( scn_index=None ):
+    """Clears scene.
+    
+    <Long description of the function functionality.>
+    
+    :parameters:
+        arg1 : `T`
+            <Description of `arg1` meaning>
+    :rtype: `T`
+    :return: <Description of ``return_object`` meaning>
+    :raise Exception: <Description of situation raising `Exception`>
+    """
+    if not scn_index: SCENES[ CURRENT_SCENE ].clear()
+    else:  SCENES[ scn_index ].clear()
+    
+def get_scene( scn_index=None ):
+    """Gets scene.
+    
+    <Long description of the function functionality.>
+    
+    :parameters:
+        arg1 : `T`
+            <Description of `arg1` meaning>
+    :rtype: `T`
+    :return: <Description of ``return_object`` meaning>
+    :raise Exception: <Description of situation raising `Exception`>
+    """
+    if not scn_index: return SCENES[ CURRENT_SCENE ]
+    else:  return SCENES[ scn_index ]
 
 def display_viewer( ):
     """Helper function used to make the Viewer visible whenever sth was changed and the Viewer was closed. 

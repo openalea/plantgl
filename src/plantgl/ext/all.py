@@ -10,5 +10,5 @@ Basic module init file.
 from material import *
 from absolute_shapes import *
 from interactive_mode import *
-
+#from color import *
 __docformat__="restructuredtext en"

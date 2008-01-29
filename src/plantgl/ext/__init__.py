@@ -10,5 +10,6 @@ Basic module init file.
 import absolute_shapes
 import material
 import interactive_mode
+import color
 
 __docformat__="restructuredtext en"
