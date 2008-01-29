@@ -224,7 +224,7 @@ public:
   /// Returns the size of \b IndexList i.e. the number of polygon.
   virtual uint32_t getIndexListSize( ) const =0;
 
-  /** Returns the \e j-th point of the \e i-th face.
+  /** Returns the \e j-th point in the point list.
       \warning
 	  - \e PointList should be set
       - \e i must be belong to the range [0,size of \b PointList[. */
@@ -252,6 +252,9 @@ public:
 
   /// Returns the center of the \b i-th face.
   TOOLS(Vector3) getFaceCenter( uint32_t i ) const ;
+
+  /// flip the order of corners around the given face
+  void flipFace ( uint32_t i );
 
   protected:
 
