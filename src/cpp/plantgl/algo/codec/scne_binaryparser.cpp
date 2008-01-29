@@ -680,7 +680,7 @@ bool BinaryParser::readNext(){
 #endif
     Timer _timer;
     _timer.start();
-    hash_map<uint_t, SceneObjectPtr >::iterator _it = __referencetable.find(_ref);
+    Cache<SceneObjectPtr >::Iterator _it = __referencetable.find(_ref);
     __assigntime += _timer.stop();
     if(_it !=__referencetable.end()){
         __result =  _it->second;

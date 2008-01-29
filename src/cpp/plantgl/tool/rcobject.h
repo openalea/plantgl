@@ -346,7 +346,12 @@ public:
   size_t toSizeT( ) const { return (size_t)__ptr; }
   
   /// Return a conversion of \e self into uint_t
-  uint_t toUint32( ) const { return (uint_t)__ptr; }
+  uint32_t toUint32( ) const 
+#if WORDSIZE == 64
+  { return (uintptr_t)__ptr; }
+#else
+  { return (uint32_t)__ptr; }
+#endif
   
   
   //@}

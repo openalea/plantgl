@@ -605,7 +605,7 @@ bool SurfComputer::process(const Scene& scene){
   if(scene.isEmpty()){
     return false;
   }
-  Cache<real_t>::Iterator _it = __cache.find(scene.toSizeT());
+  Cache<real_t>::Iterator _it = __cache.find((size_t)&scene);
   if (! (_it == __cache.end())) {
     __result = _it->second;
     return true;
@@ -618,7 +618,7 @@ bool SurfComputer::process(const Scene& scene){
     if((*_it2)->apply(*this))
       surface+=__result;
   __result = surface;
-  __cache.insert(scene.toSizeT(),__result);
+  __cache.insert((size_t)&scene,__result);
   return true;
 }
 
