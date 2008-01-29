@@ -34,7 +34,7 @@ def register_packages(pkgmanager):
                   category = "Vizualisation", 
                   nodemodule = "viewernode",
                   nodeclass = "Plot3D",
-                  lazy = False
+                  #lazy = False
                   )
     package.add_factory( nf )
 
