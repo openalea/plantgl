@@ -77,8 +77,11 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 /// Geom out of range value
 #define GEOM_OUT_OF_RANGE LONG_MAX;
 
-// Basic types redefinition
+#ifdef _WIN64
+#define __WORDSIZE  64
+#endif
 
+// Basic types redefinition
 #ifdef __GNUC__
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
