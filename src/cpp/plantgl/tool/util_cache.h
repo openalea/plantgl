@@ -74,7 +74,7 @@ public:
   /// An iterator used to iterate through the cache.
 
 #ifndef WIN32_STL_EXTENSION
-  typedef typename STDEXT::hash_map<size_t,T,STDEXT::hash<uint_t>,std::equal_to<size_t> >::iterator Iterator;
+  typedef typename STDEXT::hash_map<size_t,T,STDEXT::hash<size_t>,std::equal_to<size_t> >::iterator Iterator;
 #else
   typedef typename STDEXT::hash_map<size_t,T>::iterator Iterator;
 #endif
@@ -115,7 +115,7 @@ public:
   }
 
   /// Returns an iterator to the object identified with \e id.
-  inline Iterator find( uint_t id ) {
+  inline Iterator find( size_t id ) {
     return __cache.find(id);
   }
 
