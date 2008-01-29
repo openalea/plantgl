@@ -584,7 +584,7 @@ bool SurfComputer::process(const ScenePtr scene){
   if(!scene || scene->isEmpty()){
     return false;
   }
-  Cache<real_t>::Iterator _it = __cache.find((uint_t)&(*scene));
+  Cache<real_t>::Iterator _it = __cache.find((size_t)&(*scene));
   if (! (_it == __cache.end())) {
     __result = _it->second;
     return true;
@@ -605,7 +605,7 @@ bool SurfComputer::process(const Scene& scene){
   if(scene.isEmpty()){
     return false;
   }
-  Cache<real_t>::Iterator _it = __cache.find((uint_t)&(scene));
+  Cache<real_t>::Iterator _it = __cache.find((size_t)&(scene));
   if (! (_it == __cache.end())) {
     __result = _it->second;
     return true;

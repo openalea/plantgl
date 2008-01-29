@@ -237,7 +237,7 @@ AppearancePtr& Shape::getAppearance(){
   return appearance;
 }
 
-uint_t Shape::getId() const {
+size_t Shape::getId() const {
   return id;
 }
 
