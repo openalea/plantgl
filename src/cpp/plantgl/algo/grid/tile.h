@@ -114,8 +114,8 @@ class ALGO_API Tile {
 	std::string getName() const;
 
     /// Return id of \e self.
-    const unsigned int getId() const {
-	return (unsigned int)this;
+    const size_t getId() const {
+	return (size_t)this;
     }
 
     /// Return num of \e self.

@@ -148,13 +148,8 @@ typedef unsigned int uint32_t;
 #define UINT32_MAX ULONG_MAX
 #endif
 
-#if WORDSIZE == 64
-typedef uint64_t      uint_t;
-typedef int64_t       int_t;
-#else
-typedef uint32_t      uint_t;
-typedef int32_t       int_t;
-#endif
+typedef unsigned int      uint_t;
+typedef int               int_t;
 
 #include <stddef.h>
 

@@ -476,7 +476,10 @@ inline void BinaryPrinter::writeBool(bool var)
 
 /// write an uint_t value from stream
 inline void BinaryPrinter::writeUint32(uint_t var)
-#if WORDSIZE == 64
+#if __WORDSIZE == 64
+#ifdef __GNUC__
+#warning "Approximate uint64 to uint32 for Binary output"
+#endif
 { __outputStream << (uintptr_t)var; }
 #else
 { __outputStream << var; }
@@ -484,7 +487,7 @@ inline void BinaryPrinter::writeUint32(uint_t var)
 
   /// write an int32_t value from stream
 inline void BinaryPrinter::writeInt32(int_t var)
-#if WORDSIZE == 64
+#if __WORDSIZE == 64
 { __outputStream << (intptr_t)var; }
 #else
 { __outputStream << var; }
