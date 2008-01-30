@@ -71,6 +71,19 @@ public :
 
 };
 
+class CODEC_API BGeomCodec : public SceneCodec {
+public :
+
+	BGeomCodec();
+
+	virtual SceneFormatList formats() const;
+
+	virtual ScenePtr read(const std::string& fname);
+
+	virtual void write(const std::string& fname,const ScenePtr&	scene);
+
+};
+
 
 PGL_END_NAMESPACE
 

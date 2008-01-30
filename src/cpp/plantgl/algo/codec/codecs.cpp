@@ -58,6 +58,7 @@ void installCodecs(){
 	if(!installed){
 		installed = true;
 		SceneFactory::get().registerCodec(new GeomCodec());
+		SceneFactory::get().registerCodec(new BGeomCodec());
 		SceneFactory::get().registerCodec(new VgStarCodec());
 		SceneFactory::get().registerCodec(new PovCodec());
 	}

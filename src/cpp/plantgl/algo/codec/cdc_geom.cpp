@@ -162,3 +162,36 @@ void GeomCodec::write(const std::string& fname,const ScenePtr&	scene)
 		}
 	}
 }
+
+/* ----------------------------------------------------------------------- */
+
+BGeomCodec::BGeomCodec() : 
+	SceneCodec("BGEOM", ReadWrite ) 
+	{}
+
+SceneFormatList BGeomCodec::formats() const
+{
+	SceneFormat _format;
+	_format.name = "BGEOM";
+	_format.suffixes.push_back("bgeom");
+	_format.comment = "The Standart PlantGL binary format.";
+	SceneFormatList _formats;
+	_formats.push_back(_format);
+	return _formats;
+}
+
+ScenePtr BGeomCodec::read(const std::string& fname)
+{
+  if(BinaryParser::isAGeomBinaryFile(fname)){
+	  BinaryParser _parser(*SceneObject::errorStream);
+	  _parser.parse(fname);
+	  return _parser.getScene();
+  }
+  else return ScenePtr(0);
+}
+
+void BGeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+{
+    BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
+}
+/* ----------------------------------------------------------------------- */

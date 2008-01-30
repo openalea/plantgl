@@ -178,18 +178,25 @@ ScenePtr
 SceneFactory::read(const std::string& fname, const std::string& codecname)
 {
 	SceneCodecPtr codec = findCodec(codecname);
-	if (codec && codec->test(fname,SceneCodec::Read))
+	if (codec) // && codec->test(fname,SceneCodec::Read))
 		return codec->read(fname);
-	else return ScenePtr();
+    else {
+        if (!codec) std::cerr << "Cannot find codec : '" << codecname << "'" << std::endl;
+        else std::cerr << "Incompatible codec : '" << codecname << "'" << std::endl;
+        return ScenePtr();
+    }
 }
 
 void 
 SceneFactory::write(const std::string& fname,const ScenePtr& scene, const std::string& codecname)
 {
 	SceneCodecPtr codec = findCodec(codecname);
-	if (codec && codec->test(fname,SceneCodec::Write))
+	if (codec) // && codec->test(fname,SceneCodec::Write))
 		codec->write(fname,scene);
-    else std::cerr << "Cannot find or Invalid codec : '" << codecname << "'" << std::endl;
+    else {
+        if (!codec) std::cerr << "Cannot find codec : '" << codecname << "'" << std::endl;
+        else std::cerr << "Incompatible codec : '" << codecname << "'" << std::endl;
+    }
 }
 
 void SceneFactory::registerCodec(const SceneCodecPtr& codec)
