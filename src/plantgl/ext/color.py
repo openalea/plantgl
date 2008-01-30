@@ -572,3 +572,15 @@ class HeatMap (ColorRange) :
 			[Color(0.2,0.,0.),red,yellow,white,Color(0.3,0.3,1.)],
 			(0.,0.3,0.6,0.9,1.), **keys)
 
+class JetMapWithoutRed (ColorRange) :
+	def __init__ (self, val_min=0., val_max=1., **keys) :
+		ColorRange.__init__(self,(val_min,val_max),
+			[Color(0.,0.,0.3),blue,green,
+			yellow,magenta],
+			(0.,0.2,0.5,0.8,1.), **keys)
+
+class GreenMap (ColorRange) :
+	def __init__ (self, val_min=0., val_max=1., **keys) :
+		ColorRange.__init__(self,(val_min,val_max),
+			[Color(0.,0.,0.),Color(0.,0.1,0.),green],
+			(0.,.5,1.), **keys)

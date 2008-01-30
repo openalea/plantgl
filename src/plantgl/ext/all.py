@@ -4,7 +4,7 @@ a set of usefull routines helping the use of PlantGL.
 
 Basic module init file.
 
-:version: ¶ro mar 14 10:41:35 CET 2007
+:version: ro mar 14 10:41:35 CET 2007
 :author:  szymon stoma
 """
 from material import *
