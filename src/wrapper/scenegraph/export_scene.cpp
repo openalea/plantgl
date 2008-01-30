@@ -164,6 +164,10 @@ void sc_read(Scene* s ,const std::string& fname){
 	s->read(fname);
 }
 
+void sc_read2(Scene* s ,const std::string& fname, const std::string& format){
+	s->read(fname,format);
+}
+
 void sc_save(Scene* s ,const std::string& fname){
 	s->save(fname);
 }
@@ -229,6 +233,7 @@ void export_Scene()
     sc.def("applyAppearanceOnly", &Scene::applyAppearanceOnly);
     sc.def("copy", &Scene::copy);
     sc.def("read", &sc_read);
+    sc.def("read", &sc_read2);
     sc.def("save", &sc_save);
     sc.def("save", &sc_save2);
     sc.def("sort", &Scene::sort);
