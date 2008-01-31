@@ -132,6 +132,9 @@ class CODEC_API LigRecord {
   long  __entity_number;
 };
 
+CODEC_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
+CODEC_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
+
 /* ----------------------------------------------------------------------- */
 
 

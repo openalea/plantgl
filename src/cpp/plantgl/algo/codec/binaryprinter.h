@@ -117,6 +117,7 @@ public:
 
 };
 
+CODEC_API TOOLS(leofstream)& operator<<( TOOLS(leofstream)& stream, TokenCode& c );
 
 
 

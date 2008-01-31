@@ -222,6 +222,10 @@ protected:
 /// BoundingSphere Pointer
 typedef RCPtr<BoundingSphere> BoundingSpherePtr;
 
+SG_API BoundingSphere operator+( const BoundingSphere& b1, const BoundingSphere& b2);
+SG_API BoundingSphere operator+( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+SG_API bool intersection( const BoundingSphere& b1, const BoundingSphere& b2) ;
+SG_API bool intersection( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
 
 /* ----------------------------------------------------------------------- */
 

@@ -307,6 +307,13 @@ protected:
 /// BoundingBox Pointer
 typedef RCPtr<BoundingBox> BoundingBoxPtr;
 
+SG_API BoundingBox operator+( const BoundingBox& b1, const BoundingBox& b2);
+SG_API BoundingBox operator+( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+SG_API BoundingBox operator|( const BoundingBox& b1, const BoundingBox& b2);
+SG_API BoundingBox operator|( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+SG_API BoundingBox operator&( const BoundingBox& b1, const BoundingBox& b2);
+SG_API bool intersection( const BoundingBox& b1, const BoundingBox& b2) ;
+SG_API bool intersection( const BoundingBox& b1, const TOOLS(Vector3)& v2);
 
 /* ----------------------------------------------------------------------- */
 

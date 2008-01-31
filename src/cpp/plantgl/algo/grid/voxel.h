@@ -249,6 +249,14 @@ class ALGO_API Voxel : public Tile {
    
 };
 
+ALGO_API bool intersection( const Voxel& v1, const Voxel& v2);
+ALGO_API bool intersection( const Voxel& v1, const BoundingBox& b2);
+ALGO_API bool intersection( const Voxel& v1, const BoundingBoxPtr& b2);
+ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& v2);
+ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2);
+ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& triangle1, const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3);
+ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& quad1, const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3, const TOOLS(Vector3)& quad4);
+
 /* ----------------------------------------------------------------------- */
 
 PGL_END_NAMESPACE

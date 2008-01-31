@@ -258,6 +258,11 @@ protected :
   
 };
 
+ALGO_API bool intersection(const Ray& ray, const BoundingBox& bbox);
+ALGO_API bool intersection(const Ray& ray, const BoundingSphere& bsphere);
+ALGO_API bool intersection(const Ray& ray, const BoundingBoxPtr& bbox);
+ALGO_API bool intersection(const Ray& ray, const BoundingSpherePtr& bsphere);
+
 /* ----------------------------------------------------------------------- */
 
 PGL_END_NAMESPACE
