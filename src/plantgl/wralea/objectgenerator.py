@@ -25,10 +25,13 @@ class SceneNode(Node):
 
 
 def isWritableProperty(obj,name):
-    prop = getattr(obj,name)
-    if not isinstance(prop,property):
+    try:
+        prop = getattr(obj,name)
+        if not isinstance(prop,property):
+            return False
+        return prop.fset != None
+    except:
         return False
-    return prop.fset != None
     
 def getproperties(obj):
     return [i for i in dir(obj) if isWritableProperty(obj,i)]
