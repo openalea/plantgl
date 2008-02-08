@@ -1663,9 +1663,34 @@ bool Discretizer::process( Swung * swung )
   bool is2D= section->is2DInterpolMode();
 
   real_t cosa= 0., sina= 0., rad= 0.;
-  Vector3 pt;
+  Vector3 pt, ref_pt_up, ref_pt_down;
+  bool closed = true;
   Point2ArrayPtr crv2D;
   Point3ArrayPtr crv3D;
+
+/*the swung will be closed if all slices have the same first and last point, as a reference ref_pt_up and ref_pt_down are generated from the first slice*/
+  
+  if(is2D)
+  {
+    crv2D= section->getSection2DAt(angleMin);
+    cosa= cos(angle);
+    sina= sin(angle);
+    rad= crv2D->getAt(0).x();
+    ref_pt_up.x()= rad * cosa;
+    ref_pt_up.y()= rad * sina;
+    ref_pt_up.z()= crv2D->getAt(0).y();
+    rad= crv2D->getAt(sectionSize - 1).x();
+    ref_pt_down.x()= rad * cosa;
+    ref_pt_down.y()= rad * sina;
+    ref_pt_down.z()= crv2D->getAt(sectionSize - 1).y();
+  }
+  else
+  {
+    crv3D= section->getSection3DAt(angle);
+    ref_pt_up = crv3D->getAt(0);
+    ref_pt_down = crv3D->getAt(sectionSize - 1);
+  }
+
 
   for( i= 0; i < slices; i++ )
     {
@@ -1685,8 +1710,13 @@ bool Discretizer::process( Swung * swung )
       crv3D= section->getSection3DAt(angle);
       pt= crv3D->getAt(0);
       }
-
+    
     pointList->setAt(pointsCount++,pt);
+    if(norm(pt - ref_pt_up) > 0.01)
+      {
+        closed = false ;
+        cout<<"up diff : "<<norm(pt - ref_pt_up)<<endl;
+      }
 
     for( j= 1; j < sectionSize; j++ )
       {
@@ -1701,6 +1731,11 @@ bool Discretizer::process( Swung * swung )
         pt= crv3D->getAt(j);
 
       pointList->setAt(pointsCount++,pt);
+      if( j == sectionSize - 1 && norm(pt - ref_pt_down) > 0.01)
+      {
+        closed = false ;
+        cout<<"down diff : "<<norm(pt - ref_pt_down)<<endl;
+      }
 
 #ifdef TEST_CLOSURE
 if( i != slices-1 )
@@ -1729,12 +1764,26 @@ if( i != slices-1 )
                                     Vector3(0,0,1)));
 
   // to do: gerer la fermeture (solid, volume)
-  __discretization = ExplicitModelPtr(new TriangleSet(pointList,
-                                                      indexList,
-													  true,
-                                                      swung->getCCW(), // CCW
-                                                      false, // swung->isAVolume(),
-                                                      skeleton));
+
+  if( closed)
+  {
+    __discretization = ExplicitModelPtr(new TriangleSet(pointList,
+                                                        indexList,
+                                                        true,
+                                                        swung->getCCW(), // CCW
+                                                        true, // swung->isAVolume(),
+                                                        skeleton));
+  }
+  else
+  {
+    __discretization = ExplicitModelPtr(new TriangleSet(pointList,
+                                                        indexList,
+                                                        true,
+                                                        swung->getCCW(), // CCW
+                                                        false, // swung->isAVolume(),
+                                                        skeleton));
+  }
+
 
   GEOM_DISCRETIZER_UPDATE_CACHE(swung);
 

@@ -65,7 +65,7 @@ void export_VolComputer()
   class_< VolComputer, bases<Action>, boost::noncopyable >
     ("VolComputer", init<Discretizer&>("VolComputer() -> compute the object volume"))
     .def("process", (bool (VolComputer::*)(const ScenePtr))&VolComputer::process) 
-    .add_property("volume", &VolComputer::getVolume, "Return the volume of the qhape")
+    .add_property("volume", &VolComputer::getVolume, "Return the volume of the shape")
     .add_property("result",  &VolComputer::getVolume)
     ;
   def("volume",(real_t(*)(const ScenePtr))&sceneVolume,"Compute volume of a scene");
