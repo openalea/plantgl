@@ -458,6 +458,10 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   
 /*----------------------------------------------------------*/
 
+Polyline2DPtr PglTurtle::DEFAULT_CROSS_SECTION(0);
+
+      /*----------------------------------------------------------*/
+
 PglTurtle::PglTurtle(TurtleParam * param):
   Turtle(param),
   __scene(new Scene()){
@@ -518,6 +522,20 @@ void PglTurtle::defaultValue(){
   indices->setAt(4,Index3(0,6,5));
   indices->setAt(5,Index3(0,1,6));
   __surfList["l"] = GeometryPtr(new TriangleSet(points, indices));
+
+  if (DEFAULT_CROSS_SECTION.isNull()){
+
+    uint_t slices = 16;
+    Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices+1,Vector2(1,0)));
+    real_t angdelta = 2*GEOM_PI/slices;
+    real_t angle = 0;
+    for (int i = 1; i < slices; i++){
+	      angle += angdelta;
+	    pts->setAt(i,Vector2(cos(angle),sin(angle)));
+    }
+    pts->setAt(slices,Vector2(1,0));
+    DEFAULT_CROSS_SECTION = new Polyline2D(pts);
+  }
 }
 
 /*
@@ -596,7 +614,13 @@ AppearancePtr PglTurtle::getCurrentMaterial() const{
             return __appList[getColor()];
    else return AppearancePtr(new Material("Default"));
 }
-    
+
+void PglTurtle::customGeometry(const GeometryPtr smb)
+{
+  _addToScene(transform(smb));
+}
+
+
 GeometryPtr 
 PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
   GeometryPtr obj = o;
@@ -747,15 +771,7 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
 		it != radiusList.end(); it++){
 		  *it2 = Vector2(*it,*it); it2++;
   }
-  Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(17,Vector2(1,0)));
-  real_t angdelta = GEOM_PI/8.0;
-  real_t angle = 0;
-  for (int i = 1; i < 16; i++){
-	  angle += angdelta;
-	  pts->setAt(i,Vector2(cos(angle),sin(angle)));
-  }
-  pts->setAt(16,Vector2(1,0));
-  Curve2DPtr crossSection = Curve2DPtr(new Polyline2D(pts));
+  Curve2DPtr crossSection = Curve2DPtr(DEFAULT_CROSS_SECTION);
   _addToScene(GeometryPtr(new Extrusion(axis,crossSection,radius)),true);
 }
 

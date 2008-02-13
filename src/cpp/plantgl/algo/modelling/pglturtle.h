@@ -30,6 +30,7 @@
 #include "turtle.h"
 
 #include <plantgl/scenegraph/geometry/geometry.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/appearance/material.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/tool/util_hashmap.h>
@@ -39,6 +40,8 @@ PGL_BEGIN_NAMESPACE
 
 class ALGO_API PglTurtle : public Turtle {
 public:
+    static Polyline2DPtr DEFAULT_CROSS_SECTION;
+
     typedef hash_map_string<GeometryPtr> SurfaceMap;
 
     PglTurtle(TurtleParam * param = NULL);
@@ -91,6 +94,8 @@ public:
     void removeSurface(const std::string& name);
 
     GeometryPtr getSurface(const std::string& name);
+
+    void customGeometry(const GeometryPtr smb);
 
 protected:
 

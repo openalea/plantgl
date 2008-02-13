@@ -175,6 +175,7 @@ class vector_dim3_func : public boost::python::def_visitor<vector_dim3_func<V> >
         c.def(vector_dim2_func<V>())
          .add_property( "z", vec_getz<V>, vec_setz<V> )
          .add_static_property( "OZ", make_getter(V::OZ))
+         .def("project",&V::project)
         ;
     }
 };

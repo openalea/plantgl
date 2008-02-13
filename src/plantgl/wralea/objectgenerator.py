@@ -90,11 +90,32 @@ from new import classobj
         
 def generatePglNode(pgltype):
     globals()[pgltype.__name__+'Node'] = classobj(pgltype.__name__+'Node',(PglNode,),{'pgltype':pgltype})
+
+def getSceneGraphNodes(baseclass):
+    cl = []
+    for i in dir(sg):
+        c = getattr(sg,i)
+        try:
+          if issubclass(c,baseclass):
+            try:
+                i = c()
+                cl.append(c)
+            except RuntimeError,e:
+                # Cannot instanciate this class. Boost return runtime error.
+                pass
+            except:
+                cl.append(c)
+        except:
+          pass
+    cl.sort(lambda x,y : cmp(x.__name__,y.__name__))
+    return cl
     
-PGLCLASS = [sg.Sphere,sg.Cylinder,sg.Cone,sg.Frustum,sg.Paraboloid,sg.AsymmetricHull,sg.ExtrudedHull,sg.FaceSet,
-sg.AmapSymbol, sg.QuadSet, sg.TriangleSet, sg.PointSet, sg.Polyline, sg.BezierCurve, sg.NurbsCurve,
-sg.Box, sg.Extrusion, sg.BezierPatch, sg.NurbsPatch, sg.ElevationGrid, sg.BezierCurve2D, sg.NurbsCurve2D,
-sg.Polyline2D, sg.PointSet2D, sg.Disc, sg.Revolution, sg.Swung, sg.Text, sg.Font, sg.IFS, sg.AxisRotated,
-sg.EulerRotated, sg.Oriented, sg.Scaled, sg.Translated, sg.Tapered, sg.Shape, sg.Material, sg.ImageTexture]
+PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance,sg.Scene))
+
+#[sg.Sphere,sg.Cylinder,sg.Cone,sg.Frustum,sg.Paraboloid,sg.AsymmetricHull,sg.ExtrudedHull,sg.FaceSet,
+#sg.AmapSymbol, sg.QuadSet, sg.TriangleSet, sg.PointSet, sg.Polyline, sg.Group, sg.BezierCurve, sg.NurbsCurve,
+#sg.Box, sg.Extrusion, sg.BezierPatch, sg.NurbsPatch, sg.ElevationGrid, sg.BezierCurve2D, sg.NurbsCurve2D,
+#sg.Polyline2D, sg.PointSet2D, sg.Disc, sg.Revolution, sg.Swung, sg.Text, sg.Font, sg.IFS, sg.AxisRotated,
+#sg.EulerRotated, sg.Oriented, sg.Scaled, sg.Translated, sg.Tapered, sg.Shape, sg.Material, sg.ImageTexture]
 
 map(lambda x : generatePglNode(x),PGLCLASS)

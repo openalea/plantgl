@@ -73,5 +73,6 @@ void export_PglTurtle()
 							  &PglTurtle::appendColor )
     .def("getColorList",      &getTurtleColorList )
     .def("getSurfaceList",    &getTurtleSurfaceList )
+    .def("customGeometry",    &PglTurtle::customGeometry )
 	;
 }
