@@ -1667,7 +1667,7 @@ bool Discretizer::process( Swung * swung )
   bool closed = true;
   Point2ArrayPtr crv2D;
   Point3ArrayPtr crv3D;
-
+  real_t epsilon = 0.01;
 /*the swung will be closed if all slices have the same first and last point, as a reference ref_pt_up and ref_pt_down are generated from the first slice*/
   
   if(is2D)
@@ -1712,10 +1712,10 @@ bool Discretizer::process( Swung * swung )
       }
     
     pointList->setAt(pointsCount++,pt);
-    if(norm(pt - ref_pt_up) > 0.01)
+    if(norm(pt - ref_pt_up) > epsilon)
       {
         closed = false ;
-        cout<<"up diff : "<<norm(pt - ref_pt_up)<<endl;
+        //cout<<"up diff : "<<norm(pt - ref_pt_up)<<endl;
       }
 
     for( j= 1; j < sectionSize; j++ )
@@ -1731,10 +1731,10 @@ bool Discretizer::process( Swung * swung )
         pt= crv3D->getAt(j);
 
       pointList->setAt(pointsCount++,pt);
-      if( j == sectionSize - 1 && norm(pt - ref_pt_down) > 0.01)
+      if( j == sectionSize - 1 && norm(pt - ref_pt_down) > epsilon)
       {
         closed = false ;
-        cout<<"down diff : "<<norm(pt - ref_pt_down)<<endl;
+        //cout<<"down diff : "<<norm(pt - ref_pt_down)<<endl;
       }
 
 #ifdef TEST_CLOSURE
