@@ -543,14 +543,14 @@ class ColorRange (object) :
 #
 ##########################
 class GrayMap (ColorRange) :
-	def __init__ (self, val_min=0., val_max=1., outside_values=False) :
+	def __init__ (self, val_min=0., val_max=1., outside_value=False) :
 		ColorRange.__init__(self,(val_min,val_max),
-				[black,white],out_side_values=outside_values)
+				[black,white],outside_values=outside_value)
 
 class InvGrayMap (ColorRange) :
-	def __init__ (self, val_min=0., val_max=1., outside_values=False) :
+	def __init__ (self, val_min=0., val_max=1., outside_value=False) :
 		ColorRange.__init__(self,(val_min,val_max),
-				[white,black],out_side_values=outside_values)
+				[white,black],outside_values=outside_value)
 
 class JetMap (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., outside_values=False) :
