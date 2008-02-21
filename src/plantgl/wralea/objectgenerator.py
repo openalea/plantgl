@@ -110,7 +110,7 @@ def getSceneGraphNodes(baseclass):
     cl.sort(lambda x,y : cmp(x.__name__,y.__name__))
     return cl
     
-PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance,sg.Scene))
+PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))
 
 #[sg.Sphere,sg.Cylinder,sg.Cone,sg.Frustum,sg.Paraboloid,sg.AsymmetricHull,sg.ExtrudedHull,sg.FaceSet,
 #sg.AmapSymbol, sg.QuadSet, sg.TriangleSet, sg.PointSet, sg.Polyline, sg.Group, sg.BezierCurve, sg.NurbsCurve,
