@@ -6,5 +6,5 @@ build_prefix="build-scons"
 import sys
 if('win' in sys.platform):   
     compiler='msvc'
-    # compiler == 'mingw'
+    # compiler = 'mingw'
 
