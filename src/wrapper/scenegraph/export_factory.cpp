@@ -64,7 +64,9 @@ public:
 
     PythonInterpreterAcquirer() 
     { 
-        multiple_thread =  (QThread::currentThread() != PythonThread );
+        /** It seems mandatory to acquire the GIL to call python 
+            from C++ internal (during GUI process for instance) */
+        multiple_thread =  true; // (QThread::currentThread() != PythonThread );
         if(multiple_thread) gstate = PyGILState_Ensure(); 
     }
     ~PythonInterpreterAcquirer()
@@ -82,7 +84,7 @@ class PySceneCodec : public SceneCodec, public boost::python::wrapper<SceneCodec
 public:
     PySceneCodec(const std::string& name = "", Mode mode = None) : 
       SceneCodec(name,mode), wrapper<SceneCodec>() 
-      { if (PythonThread == NULL) PythonThread = QThread::currentThread(); }
+      {  }
 
     virtual SceneFormatList formats() const
     { 
@@ -225,6 +227,8 @@ SceneFormatList sf_formats( SceneFactory * f) {
 
 void export_SceneFactory()
 {
+  // if (PythonThread == NULL) PythonThread = QThread::currentThread();
+
   class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory",no_init)
       .def("get", &SceneFactory::get,return_value_policy<reference_existing_object>())
       .staticmethod("get") 
