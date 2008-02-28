@@ -12,7 +12,7 @@ name = 'plantgl'
 namespace = 'openalea'
 pkg_name = 'openalea.plantgl'
 
-version= '2.0.1'
+version= '2.2.0'
 
 description= 'PlantGL package for OpenAlea.' 
 long_description= '''
@@ -90,6 +90,12 @@ setup(
 
     # Scripts
     #entry_points = { 'gui_scripts': [ 'pglviewer = openalea.plantgl:start_viewer',]},
+    entry_points = {
+        "wralea": ['plantgl = openalea.plantgl.wralea', 
+                   'plantgl.ext = openalea.plantgl.ext',
+                   ]
+              ],
+
  
     # Dependencies
     setup_requires = setup_requires + ['openalea.deploy'],
