@@ -94,7 +94,7 @@ setup(
         "wralea": ['plantgl = openalea.plantgl.wralea', 
                    'plantgl.ext = openalea.plantgl.ext',
                    ]
-              ],
+              },
 
  
     # Dependencies
