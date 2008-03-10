@@ -292,7 +292,7 @@ void Turtle::stop(){
 	}
   }
   
-  void Turtle::f(float length){
+  void Turtle::f(real_t length){
 	__params->position += __params->heading*length*getScale().z();
 	if (__params->isGeneralizedCylinderOn() ||
 	  __params->isPolygonOn())
