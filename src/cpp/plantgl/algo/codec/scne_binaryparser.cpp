@@ -513,7 +513,7 @@ bool BinaryParser::readHeader(){
     __double_precision = false;
   }
 #ifdef GEOM_DEBUG
-  std::cerr << "Assume "<< (__double_precision?"simple":"double")<< " precision." << std::endl;
+  std::cerr << "Assume "<< (!__double_precision?"simple":"double")<< " precision." << std::endl;
 #endif
 
   c = readChar();
@@ -804,7 +804,7 @@ bool BinaryParser::readImageTexture() {
     GEOM_INIT_OBJ(mat, 39, ImageTexture);
 
     string FileName = readFile();
-	// cerr << "Filename : " << FileName << endl;
+    cerr << "Filename : " << FileName << endl;
     if(!FileName.empty()&&exists(FileName.c_str())) {
 			FileName = absolute_filename(FileName);
 			mat->getFilename() = FileName;
