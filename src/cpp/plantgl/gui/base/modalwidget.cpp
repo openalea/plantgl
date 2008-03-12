@@ -38,6 +38,7 @@
 
 #include "modalwidget.h"
 #include "modalscenegl.h"
+#include "light.h"
 #include "icons.h"
 
 #include <qmenu.h>
@@ -53,7 +54,6 @@ ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * rendere
     QPixmap skeleton(ViewerIcon::getPixmap(ViewerIcon::skeleton));
     QPixmap ctrlpoint(ViewerIcon::getPixmap(ViewerIcon::ctrlpoint));
     QPixmap bbox(ViewerIcon::getPixmap(ViewerIcon::bbox));
-    QPixmap light(ViewerIcon::getPixmap(ViewerIcon::light));
 
 	QActionGroup * mActionGroup = new QActionGroup(this);
 	mActionGroup->setExclusive(true);
@@ -112,18 +112,10 @@ ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * rendere
 	"the Bounding Boxes of all shapes will be displayed.<br><br>"
 	"You can also use Menu <br><b>Tools > Renderer > BBox</b><br>"));
 
-    idLight      = new QAction(light,     tr("&Light"),     this);
-	QObject::connect(idLight,SIGNAL(triggered()), renderer, SLOT(setLightEnable()));
-	idLight->setCheckable(true);
-	idLight->setChecked(renderer->isLightEnable());
-    idLight->setWhatsThis(tr("<b>Light Rendering</b><br><br>"
-	"Set <b>Light Rendering</b> enable/disable.<br><br>"
-	"The Rendering will (not) take into account ligth source.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
 
 	QObject::connect(renderer,SIGNAL(ctrlPointsRenderingChanged(bool)),idCtrlPoints,SLOT(setChecked(bool)));
 	QObject::connect(renderer,SIGNAL(bboxRenderingChanged(bool)),idBBox,SLOT(setChecked(bool)));
-	QObject::connect(renderer,SIGNAL(lightEnableChanged(bool)),idLight,SLOT(setChecked(bool)));
+	QObject::connect(renderer->getLight(),SIGNAL(enabledChanged(bool)),idLight,SLOT(setChecked(bool)));
 
     setRenderingMode(renderer->getRenderingMode());
     QObject::connect(renderer,SIGNAL(renderingModeChanged(const int)),
@@ -145,7 +137,7 @@ void ViewRenderingModeActions::fill(QMenu * menu) const
 	menu->addSeparator();
 	menu->addAction(idCtrlPoints);
 	menu->addAction(idBBox);
-	menu->addAction(idLight);
+	// menu->addAction(idLight);
 }
 
 void ViewRenderingModeActions::fill(QToolBar * bar) const
@@ -157,7 +149,7 @@ void ViewRenderingModeActions::fill(QToolBar * bar) const
 	bar->addSeparator();
 	bar->addAction(idCtrlPoints);
 	bar->addAction(idBBox);
-	bar->addAction(idLight);
+	// bar->addAction(idLight);
 }
 
 void 

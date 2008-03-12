@@ -157,6 +157,21 @@ public :
 
   static void getCamera(TOOLS(Vector3)& pos, TOOLS(Vector3)& heading, TOOLS(Vector3)& up);
 
+  static void setLightEnabled(bool);
+  static bool isLightEnabled();
+
+  static void setLightPosition(const TOOLS(Vector3)& position);
+  static TOOLS(Vector3) getLightPosition();
+
+  static void setLightAmbient(int red, int green, int blue);
+  static void getLightAmbient(int& red, int& green, int& blue);
+
+  static void setLightDiffuse(int red, int green, int blue);
+  static void getLightDiffuse(int& red, int& green, int& blue);
+
+  static void setLightSpecular(int red, int green, int blue);
+  static void getLightSpecular(int& red, int& green, int& blue);
+
   static void setXYGrid(bool);
   static void setXZGrid(bool);
   static void setYZGrid(bool);

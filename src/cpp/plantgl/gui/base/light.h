@@ -54,6 +54,7 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 class QString;
+class ViewEvent;
 
 /* ----------------------------------------------------------------------- */
 
@@ -72,7 +73,7 @@ class VIEW_API ViewLightGL  : public ViewRelativeObjectGL
   Q_PROPERTY(QColor Ambient READ getAmbient WRITE setAmbient );
   Q_PROPERTY(QColor Diffuse READ getDiffuse WRITE setDiffuse );
   Q_PROPERTY(QColor Specular READ getSpecular WRITE setSpecular );
-
+  Q_PROPERTY( bool Enable READ isEnabled WRITE setEnabled )
 public:
 
   /// Constructor.
@@ -114,8 +115,17 @@ public:
   /// Get Position value.
   Vector3 getPosition() const;
 
+  /// Set Position value.
+  void setPosition(const Vector3&);
+
   /// Create a Popup menu that reflect the functionality of this.
   virtual QMenu * createToolsMenu(QWidget * parent);
+  void  fillToolBar(QToolBar * toolBar);
+
+  void lightEvent(ViewEvent * event);
+
+  /// Return whether Rendering with light is enable.
+  bool isEnabled() const;
 
 public slots:
 
@@ -168,9 +178,12 @@ public slots:
   /// GL command for Light.
   virtual void paintGL(); 
   /// GL command for enabling Light.
-  void enable(); 
+  void switchOn(); 
   /// GL command for disabling Light.
-  void disable(); 
+  void switchOff(); 
+
+  void setEnabled(bool);
+  void toggleEnabled();
 
 signals:
 
@@ -188,6 +201,8 @@ signals:
   void specularChanged(const QColor&);
   /// visibility changed.
   void visibilityChanged(const bool);
+  /// Emit when light enable status change.
+  void enabledChanged(bool);
 
 protected :
   /// Paint Light material.
@@ -202,6 +217,7 @@ protected :
   QColor __diffuse;
   QColor __specular;
   bool __show;
+  bool __enable;
 };
 
 /* ----------------------------------------------------------------------- */

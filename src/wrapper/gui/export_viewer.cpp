@@ -449,10 +449,33 @@ void saveImage2(const std::string& fname, const std::string& type)
     PyBlockState p;
 	ViewerApplication::saveImage(fname,type);
 }
+
 bool viewer_wait(){
     PyBlockState p;
 	return ViewerApplication::wait();
 }
+
+#define LIGHTFUNCWRAP(COLNAME) \
+void setLight##COLNAME(boost::python::object o){ \
+  int r = extract<int>(o.attr("red"))(); \
+  int g = extract<int>(o.attr("green"))(); \
+  int b = extract<int>(o.attr("blue"))(); \
+  PyBlockState p; \
+  ViewerApplication::setLight##COLNAME(r,g,b); \
+} \
+\
+boost::python::object getLight##COLNAME(){ \
+  int r,g,b; \
+  PyBlockState p; \
+  ViewerApplication::getLight##COLNAME(r,g,b); \
+  return boost::python::object(Color3(r,g,b)); \
+} \
+
+LIGHTFUNCWRAP(Ambient)
+LIGHTFUNCWRAP(Diffuse)
+LIGHTFUNCWRAP(Specular)
+
+
 
 class PyViewCamera {
 public :
@@ -482,6 +505,11 @@ public :
 class PyViewClippingPlanes {
 public :
 	PyViewClippingPlanes();
+};
+
+class PyViewLight {
+public :
+	PyViewLight();
 };
 
 void export_viewer()
@@ -526,6 +554,7 @@ void export_viewer()
   export_dialog();
   export_framegl();
   export_widgetgeometry();
+  export_light();
 
 }
 
@@ -661,6 +690,15 @@ void export_widgetgeometry(){
 	;
 }
 
+void export_light(){
+	class_<PyViewLight >("light", no_init )
+    .add_static_property("enabled",&ViewerApplication::isLightEnabled,&ViewerApplication::setLightEnabled )
+    .add_static_property("position",&ViewerApplication::getLightPosition,&ViewerApplication::setLightPosition )
+    .add_static_property("ambient",&getLightAmbient,&setLightAmbient)
+    .add_static_property("diffuse",&getLightDiffuse,&setLightDiffuse)
+    .add_static_property("specular",&getLightSpecular,&setLightSpecular)
+	;
+}
 void initViewer()
 {
 	PGLViewerApplication::init();

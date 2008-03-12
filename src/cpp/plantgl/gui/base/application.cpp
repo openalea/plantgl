@@ -308,6 +308,7 @@ void
 ViewerApplication::setCamera(const Vector3& pos, real_t azimuth, real_t elevation){
   _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,azimuth,elevation,1));
 }
+
 void 
 ViewerApplication::lookAt(const Vector3& pos, const Vector3& target){
   _sendAnEvent(new ViewCameraSetEvent(pos,target,0,0,2));
@@ -320,6 +321,51 @@ ViewerApplication::lookAt(const Vector3& target){
 void 
 ViewerApplication::getCamera(Vector3& pos, Vector3& heading, Vector3& up){
   _sendAnEvent(new ViewCameraGetEvent(&pos,&heading,&up));
+}
+
+void ViewerApplication::setLightEnabled(bool b)
+{ _sendAnEvent(new ViewLightSetEvent(Vector3(),QColor(),QColor(),QColor(),b,ViewLightSetEvent::eActivation)); }
+
+bool ViewerApplication::isLightEnabled()
+{  bool b; _sendAnEvent(new ViewLightGetEvent(NULL,NULL,NULL,NULL,&b,ViewLightSetEvent::eActivation)); return b;}
+
+void ViewerApplication::setLightPosition(const Vector3& position)
+{ _sendAnEvent(new ViewLightSetEvent(position,QColor(),QColor(),QColor(),false,ViewLightSetEvent::ePosition)); }
+
+Vector3 ViewerApplication::getLightPosition()
+{ Vector3 position; _sendAnEvent(new ViewLightGetEvent(&position,NULL,NULL,NULL,NULL,ViewLightSetEvent::ePosition)); return position; }
+
+void ViewerApplication::setLightAmbient(int red, int green, int blue)
+{ _sendAnEvent(new ViewLightSetEvent(Vector3(),QColor(red,green,blue),QColor(),QColor(),false,ViewLightSetEvent::eAmbient)); }
+void ViewerApplication::getLightAmbient(int& red, int& green, int& blue)
+{ 
+    QColor color; 
+    _sendAnEvent(new ViewLightGetEvent(NULL,&color,NULL,NULL,NULL,ViewLightSetEvent::eAmbient)); 
+    red = color.red();
+    green = color.green();
+    blue = color.blue();
+}
+
+void ViewerApplication::setLightDiffuse(int red, int green, int blue)
+{ _sendAnEvent(new ViewLightSetEvent(Vector3(),QColor(),QColor(red,green,blue),QColor(),false,ViewLightSetEvent::eDiffuse)); }
+void ViewerApplication::getLightDiffuse(int& red, int& green, int& blue)
+{ 
+    QColor color; 
+    _sendAnEvent(new ViewLightGetEvent(NULL,NULL,&color,NULL,NULL,ViewLightSetEvent::eDiffuse)); 
+    red = color.red();
+    green = color.green();
+    blue = color.blue();
+}
+
+void ViewerApplication::setLightSpecular(int red, int green, int blue)
+{ _sendAnEvent(new ViewLightSetEvent(Vector3(),QColor(),QColor(),QColor(red,green,blue),false,ViewLightSetEvent::eSpecular)); }
+void ViewerApplication::getLightSpecular(int& red, int& green, int& blue)
+{ 
+    QColor color; 
+    _sendAnEvent(new ViewLightGetEvent(NULL,NULL,NULL,&color,NULL,ViewLightSetEvent::eSpecular)); 
+    red = color.red();
+    green = color.green();
+    blue = color.blue();
 }
 
 void 

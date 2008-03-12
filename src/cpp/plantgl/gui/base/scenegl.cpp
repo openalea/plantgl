@@ -342,8 +342,7 @@ ViewSceneRendererGL::ViewSceneRendererGL(ViewCameraGL * camera,
 					 const char * name):
   ViewRendererGL(parent,name),
   __camera(camera),
-  __light(light),
-  __lightEnable(true)
+  __light(light)
 {
   if(camera)
 	QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));  
@@ -377,23 +376,6 @@ void
 ViewSceneRendererGL::setLight(ViewLightGL * light)
 {
   __light = light;
-}
-
-
-bool 
-ViewSceneRendererGL::isLightEnable() const
-{
-  return __lightEnable;
-}
-
-void 
-ViewSceneRendererGL::setLightEnable()
-{
-  __lightEnable=!__lightEnable;
-  emit lightEnableChanged(__lightEnable);
-  emit valueChanged();
-  if(__lightEnable)status("Light Enable",5000);
-  else status("Light Disable",5000);
 }
 
 void  

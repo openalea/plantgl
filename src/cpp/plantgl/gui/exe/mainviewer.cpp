@@ -59,10 +59,16 @@ int main( int argc, char **argv )
    
   // if(!ViewClientObj().request(argc, argv)){
 	PGLViewer m_viewer(argc, argv) ;
-	m_viewer.startDaemon();
-	m_viewer.displayTrayIcon(true);
+	// m_viewer.startDaemon();
+#ifndef __GNUC__
+    m_viewer.displayTrayIcon(true);
+#endif
 	m_viewer.show();
 	return a.exec();
+#ifndef __GNUC__
+	m_viewer.displayTrayIcon(false);
+#endif
+	// m_viewer.stopDaemon();
   // }
 
   return 0;

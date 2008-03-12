@@ -65,6 +65,7 @@
 #include "viewer.h"
 #include "event.h"
 #include "scenegl.h"
+#include "light.h"
 #include "camera.h"
 #include "glframe.h"
 #include "controlpanel.h"
@@ -702,6 +703,9 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(e->type() == ViewEvent::eCameraGet || e->type() == ViewEvent::eCameraSet){	  
 	__GLFrame->cameraEvent((ViewEvent *)e);
+  }
+  else if(e->type() == ViewEvent::eLightGet || e->type() == ViewEvent::eLightSet){	  
+	__GLFrame->getLight()->lightEvent((ViewEvent *)e);
   }
   else if(e->type() == ViewEvent::eClippingPlaneActivate || e->type() == ViewEvent::eClippingPlaneSet){	  
 	__GLFrame->clippingPlaneEvent((ViewEvent *)e);

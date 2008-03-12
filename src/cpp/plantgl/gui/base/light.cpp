@@ -36,12 +36,14 @@
  */				
 
 #include "light.h"
+#include "event.h"
 #include "icons.h"
 #include <plantgl/math/util_vector.h>
 #include <plantgl/math/util_math.h>
 #include <plantgl/algo/opengl/util_glut.h>
 #include <plantgl/algo/opengl/util_appegl.h>
 #include <qfile.h>
+#include <qtoolbar.h>
 #include <qstring.h>
 
 TOOLS_USING_NAMESPACE
@@ -56,7 +58,8 @@ ViewLightGL::ViewLightGL(ViewCameraGL *camera,QGLWidget * parent, const char * n
   __ambient(153,153,153),
   __diffuse(255,255,255),
   __specular(255,255,255),
-  __show(false)
+  __show(false),
+  __enable(true)
 {
 }
 
@@ -199,25 +202,34 @@ ViewLightGL::setDistance(int distance)
 void 
 ViewLightGL::setAmbient(const QColor& color)
 {
-  __ambient = color;
-  gllightMaterial();
-  emit valueChanged();
+    if( __ambient != color){
+        __ambient = color;
+        gllightMaterial();
+        emit ambientChanged(__ambient);
+        emit valueChanged();
+    }
 }
 
 void 
 ViewLightGL::setDiffuse(const QColor& color)
 {
-  __diffuse = color;
-  gllightMaterial();
-  emit valueChanged();
+    if( __diffuse != color){
+        __diffuse = color;
+        gllightMaterial();
+        emit diffuseChanged(__diffuse);
+        emit valueChanged();
+    }
 }
 
 void 
 ViewLightGL::setSpecular(const QColor& color)
 {
-  __specular = color;
-  gllightMaterial();
-  emit valueChanged();  
+  if( __specular != color){
+     __specular = color;
+    gllightMaterial();
+    emit specularChanged(__specular);
+    emit valueChanged();  
+  }
 }
 
 void 
@@ -281,6 +293,7 @@ ViewLightGL::changeStepEvent(double newStep, double oldStep)
 void 
 ViewLightGL::paintGL()
 {
+
   Vector3 pos(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
   if(fabs(pos.x()) < GEOM_EPSILON && fabs(pos.y()) < GEOM_EPSILON && fabs(pos.z()) < GEOM_EPSILON){
     pos = Vector3(0,0,1);
@@ -291,7 +304,7 @@ ViewLightGL::paintGL()
   dir.normalize();
   glGeomLightDirection(GL_LIGHT0,dir);
 
-  enable();
+  switchOn();
   if(__show){
     glPushMatrix();
 	glGeomTranslate(pos);
@@ -308,18 +321,55 @@ ViewLightGL::getPosition() const{
   return Vector3(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
 }
 
-void 
-ViewLightGL::enable()
+void ViewLightGL::setPosition(const Vector3& pos)
 {
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);  
+    Vector3::Spherical spos(pos);
+    __distance = spos.radius;
+    __azimuth = spos.theta * GEOM_DEG;
+    __elevation = spos.phi * GEOM_DEG;
+
 }
 
 void 
-ViewLightGL::disable()
+ViewLightGL::switchOn()
+{
+    if (__enable){
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);  
+    }
+    else {
+        glDisable(GL_LIGHTING);
+    }
+}
+
+void 
+ViewLightGL::switchOff()
 {
   glDisable(GL_LIGHTING);
 }
+
+bool 
+ViewLightGL::isEnabled() const
+{
+  return __enable;
+}
+
+void 
+ViewLightGL::toggleEnabled()
+{
+  setEnabled(!__enable);
+}
+
+void 
+ViewLightGL::setEnabled(bool b)
+{
+   __enable = b;
+  emit enabledChanged(__enable);
+  emit valueChanged();
+  if(__enable)status("Light Enable",5000);
+  else status("Light Disable",5000);
+}
+
 
 void 
 ViewLightGL::gllightMaterial()
@@ -344,5 +394,73 @@ ViewLightGL::createToolsMenu(QWidget * parent)
     idVisibility->setCheckable( TRUE );
     idVisibility->setChecked( isVisible() );
     QObject::connect(this,SIGNAL(visibilityChanged( bool)),idVisibility,SLOT(setChecked(bool)));
+    menu->addSeparator();
+    QAction * idLight = menu->addAction(_light,     tr("&Enabled"),     this, SLOT(toggleEnabled()));
+	idLight->setCheckable(true);
+	idLight->setChecked(isEnabled());
+    idLight->setWhatsThis(tr("<b>Light Rendering</b><br><br>"
+	"Set <b>Light Rendering</b> enable/disable.<br><br>"
+	"The Rendering will (not) take into account ligth source.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
 	return menu;
 }
+
+void 
+ViewLightGL::fillToolBar(QToolBar * toolBar)
+{
+    QPixmap _light(ViewerIcon::getPixmap(ViewerIcon::light));
+    QAction * idLight = toolBar->addAction(_light,     tr("&Light"),     this, SLOT(toggleEnabled()));
+	idLight->setCheckable(true);
+	idLight->setChecked(isEnabled());
+    idLight->setWhatsThis(tr("<b>Light Rendering</b><br><br>"
+	"Set <b>Light Rendering</b> enable/disable.<br><br>"
+	"The Rendering will (not) take into account ligth source.<br><br>"
+	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
+}
+
+
+void ViewLightGL::lightEvent(ViewEvent * event)
+{
+	if (event->type() == ViewEvent::eLightSet) {
+		ViewLightSetEvent * e = (ViewLightSetEvent *)event;
+		switch(e->def){
+            case ViewLightSetEvent::ePosition:
+				setPosition(e->position);
+			break;
+			case ViewLightSetEvent::eActivation:
+				setEnabled(e->activation);
+			break;
+			case ViewLightSetEvent::eAmbient:
+				setAmbient(e->ambient);
+			break;
+			case ViewLightSetEvent::eDiffuse:
+				setDiffuse(e->diffuse);
+			break;
+			case ViewLightSetEvent::eSpecular:
+				setSpecular(e->specular);
+			break;
+		}
+	}
+	else if (event->type() == ViewEvent::eLightGet){
+		ViewLightGetEvent * e = (ViewLightGetEvent *)event;
+		switch(e->def){
+            case ViewLightSetEvent::ePosition:
+        		*e->position = getPosition();
+			break;
+			case ViewLightSetEvent::eActivation:
+				*e->activation = isEnabled();
+			break;
+			case ViewLightSetEvent::eAmbient:
+				*e->ambient = __ambient;
+			break;
+			case ViewLightSetEvent::eDiffuse:
+				*e->diffuse = __diffuse;
+			break;
+			case ViewLightSetEvent::eSpecular:
+				*e->specular = __specular;
+			break;
+        }
+	}
+
+}
+

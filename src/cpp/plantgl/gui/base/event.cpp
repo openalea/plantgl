@@ -348,6 +348,38 @@ ViewCameraGetEvent::~ViewCameraGetEvent(){
 
 /* ----------------------------------------------------------------------- */
 
+ViewLightSetEvent::ViewLightSetEvent(const Vector3& _pos,
+                    QColor _ambient,
+                    QColor _diffuse,
+                    QColor _specular,
+                    bool _activation,
+                    eLightAttribute _def):
+  ViewEvent(eLightSet),
+  position(_pos),ambient(_ambient),diffuse(_diffuse),specular(_specular),activation(_activation),def(_def){
+}
+
+ViewLightSetEvent::~ViewLightSetEvent(){
+  // Nothing to do.
+}
+/* ----------------------------------------------------------------------- */
+
+ViewLightGetEvent::ViewLightGetEvent(Vector3* _pos,
+                    QColor* _ambient,
+                    QColor* _diffuse,
+                    QColor* _specular,
+                    bool* _activation,
+                    ViewLightSetEvent::eLightAttribute _def):
+  ViewEvent(eLightGet),
+  position(_pos),ambient(_ambient),diffuse(_diffuse),specular(_specular),activation(_activation),def(_def){
+}
+
+ViewLightGetEvent::~ViewLightGetEvent(){
+  // Nothing to do.
+}
+
+
+/* ----------------------------------------------------------------------- */
+
 /// Constructor.
 ViewCPActivateEvent::ViewCPActivateEvent(int _cpid, bool _activation) : 
    ViewEvent(eClippingPlaneActivate),cpid(_cpid),activation(_activation) {}

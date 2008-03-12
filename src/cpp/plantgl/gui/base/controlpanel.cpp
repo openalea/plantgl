@@ -92,7 +92,7 @@ ViewControlPanel::ViewControlPanel( ViewGLFrame * _glframe,
 	ViewSceneRendererGL * sc2 = dynamic_cast<ViewSceneRendererGL *>(sc);
 
 	if(sc2){
-	  QObject::connect(sc2,SIGNAL(lightEnableChanged(bool)),
+        QObject::connect(sc2->getLight(),SIGNAL(enabledChanged(bool)),
 			   this,SLOT(setLightEnable(bool)) );
 	}
 

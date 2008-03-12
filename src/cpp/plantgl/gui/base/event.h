@@ -82,6 +82,8 @@ public:
 		eBgColor,
 		ePos,
 		eGrid,
+        eLightSet,
+        eLightGet,
 		eCameraSet,
 		eCameraGet,
 		eClippingPlaneActivate,
@@ -516,6 +518,62 @@ public :
   Vector3*  heading;
   Vector3*  up;
 };
+/* ----------------------------------------------------------------------- */
+
+class ViewLightSetEvent : public ViewEvent {
+
+public :
+    enum eLightAttribute {
+        ePosition,
+        eAmbient,
+        eDiffuse,
+        eSpecular,
+        eActivation
+    } ;
+
+  /// Constructor.
+  ViewLightSetEvent(const Vector3& pos,
+                    QColor ambient,
+                    QColor diffuse,
+                    QColor specular,
+                    bool activation,
+                    eLightAttribute def);
+
+  /// Destructor.
+  ~ViewLightSetEvent();
+
+  Vector3 position;
+  QColor ambient;
+  QColor diffuse;
+  QColor specular;
+  bool activation;
+  eLightAttribute def;
+};
+
+/* ----------------------------------------------------------------------- */
+class ViewLightGetEvent : public ViewEvent {
+
+public :
+
+  /// Constructor.
+  ViewLightGetEvent(Vector3* pos = NULL,
+                    QColor* ambient = NULL,
+                    QColor* diffuse = NULL,
+                    QColor* specular = NULL,
+                    bool* activation = NULL,
+                    ViewLightSetEvent::eLightAttribute def = ViewLightSetEvent::ePosition);
+
+  /// Destructor.
+  ~ViewLightGetEvent();
+
+  Vector3* position;
+  QColor* ambient;
+  QColor* diffuse;
+  QColor* specular;
+  bool* activation;
+  ViewLightSetEvent::eLightAttribute def;
+};
+
 /* ----------------------------------------------------------------------- */
 class ViewCPActivateEvent : public ViewEvent {
 

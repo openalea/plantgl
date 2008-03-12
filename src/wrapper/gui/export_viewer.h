@@ -44,6 +44,7 @@ void export_clippingplanes();
 void export_dialog();
 void export_framegl();
 void export_widgetgeometry();
+void export_light();
 
 void initViewer();
 void cleanViewer();

@@ -93,14 +93,14 @@ object oct_intersect(Octree * oct, const Ray& ray) {
     Vector3 res;
     bool touch = oct->intersect(ray,res);
     if(touch)return object(res);
-    else return object(false);
+    else return object();
 }
 
 object oct_findfirstpoint(Octree * oct, const Ray& ray) {
     Vector3 res;
     bool touch = oct->intersect(ray,res);
     if(touch)return object(res);
-    else return object(false);
+    else return object();
 }
 
 void export_Octree()

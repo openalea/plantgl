@@ -546,7 +546,7 @@ void ViewGLFrame::paintGL()
 
   __rotCenter->paintGL();
   __clippingPlane->paintGL();
-  __light->disable();
+  __light->switchOff();
   __grid->paintGL();
 
   GL_ERROR;
@@ -1369,8 +1369,8 @@ ViewGLFrame::fillToolBar(QToolBar * toolBar)
 
   toolBar->addSeparator();
   __scene->fillToolBar(toolBar);
-  __camera->fillToolBar(toolBar);
   __light->fillToolBar(toolBar);
+  __camera->fillToolBar(toolBar);
   __grid->fillToolBar(toolBar);
   __rotCenter->fillToolBar(toolBar);
   if(__linedialog){

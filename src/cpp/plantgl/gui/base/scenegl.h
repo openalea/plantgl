@@ -242,7 +242,6 @@ private:
 class VIEW_API ViewSceneRendererGL  : public ViewRendererGL
 {
   Q_OBJECT
-  Q_PROPERTY( bool LightEnable READ isLightEnable )
 
 public :
   
@@ -267,22 +266,12 @@ public :
   /// Set the light.
   void setLight(ViewLightGL *); 
 
-  /// Return whether Rendering with light is enable.
-  bool isLightEnable() const;
-
 public slots:
-
-  /// Set the Light Enable Rendering Mode.
-  void setLightEnable();
 
   virtual void computeCamera();
 
   virtual void useDisplayList(bool);
 
-signals:
-
-  /// Emit when light enable status change.
-  void lightEnableChanged(bool);
 
 protected :
 
@@ -292,8 +281,6 @@ protected :
   /// The light.
   ViewLightGL * __light;
 
-  /// Light Enable.
-  bool __lightEnable;
 };
 
 /* ----------------------------------------------------------------------- */

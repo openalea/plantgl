@@ -381,8 +381,7 @@ ViewGeomSceneGL::paintGL()
 
     switch (__renderingMode) {
     case 1:
-      if(__lightEnable)__light->enable();
-      else __light->disable();
+      __light->switchOn();
       glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
@@ -410,7 +409,7 @@ ViewGeomSceneGL::paintGL()
       if(GEOM_GL_ERROR) clear();
       break;
     case 2:
-      __light->disable();
+      __light->switchOff();
       glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
       if(__renderer.beginSceneList()){
@@ -420,7 +419,7 @@ ViewGeomSceneGL::paintGL()
       if(GEOM_GL_ERROR) clear();
       break;
     case 3:
-      __light->disable();
+      __light->switchOff();
       glBlendFunc(GL_ONE,GL_ZERO);
       if(__skelRenderer.beginSceneList()){
         __scene->apply(__skelRenderer);
@@ -429,15 +428,14 @@ ViewGeomSceneGL::paintGL()
       if(GEOM_GL_ERROR) clear();
       break;
     case 4:
-      __light->disable();
+      __light->switchOff();
       glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
       if(__renderer.beginSceneList()){
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      if(__lightEnable)__light->enable();
-      else __light->disable();
+      __light->switchOn();
       glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
@@ -449,8 +447,7 @@ ViewGeomSceneGL::paintGL()
     };
 
     if(__renderingOption[0]){
-      if(__lightEnable)__light->enable();
-      else __light->disable();
+      __light->switchOn();
       glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__bboxRenderer.beginSceneList()){
@@ -460,7 +457,7 @@ ViewGeomSceneGL::paintGL()
       if(GEOM_GL_ERROR) clear();
     };
     if(__renderingOption[1]){
-      __light->disable();
+      __light->switchOff();
       glBlendFunc(GL_ONE,GL_ZERO);
 	  glGeomColor(Color3(64,64,64));
       if(__ctrlPtRenderer.beginSceneList()){
@@ -470,7 +467,7 @@ ViewGeomSceneGL::paintGL()
       if(GEOM_GL_ERROR) clear();
     }
     if(!__selectedShapes.empty()){
-      __light->disable();
+      __light->switchOff();
       glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	  glGeomColor(Color3(64,64,64));
@@ -913,20 +910,19 @@ ViewMultiGeomSceneGL::paintGL()
     if (__scene){
       switch (__renderingMode) {
       case 1:
-        if(__lightEnable)__light->enable();
-        else __light->disable();
+        __light->switchOn();
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         __transitionRenderer.rend(__renderingStep);
         break;
       case 2:
-        __light->disable();
+        __light->switchOff();
         glBlendFunc(GL_ONE,GL_ZERO);
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         __transitionRenderer.rend(__renderingStep);
         break;
       case 3:
-        __light->disable();
+        __light->switchOff();
         glBlendFunc(GL_ONE,GL_ZERO);
         if(__skelRenderer.beginSceneList()){
           __scene->apply(__skelRenderer);
@@ -935,8 +931,7 @@ ViewMultiGeomSceneGL::paintGL()
       };
 
       if(__renderingOption[0]){
-        if(__lightEnable)__light->enable();
-        else __light->disable();
+        __light->switchOn();
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
         glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
         if(__bboxRenderer.beginSceneList()){
@@ -945,7 +940,7 @@ ViewMultiGeomSceneGL::paintGL()
         }
       };
       if(__renderingOption[1]){
-        __light->disable();
+        __light->switchOff();
         glBlendFunc(GL_ONE,GL_ZERO);
         if(__ctrlPtRenderer.beginSceneList()){
           __scene->apply(__ctrlPtRenderer);
@@ -953,7 +948,7 @@ ViewMultiGeomSceneGL::paintGL()
         }
       }
       if(!__selectedShapes.empty()){
-        __light->disable();
+        __light->switchOff();
         glBlendFunc(GL_ONE,GL_ZERO);
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
