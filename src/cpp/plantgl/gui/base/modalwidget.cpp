@@ -115,7 +115,6 @@ ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * rendere
 
 	QObject::connect(renderer,SIGNAL(ctrlPointsRenderingChanged(bool)),idCtrlPoints,SLOT(setChecked(bool)));
 	QObject::connect(renderer,SIGNAL(bboxRenderingChanged(bool)),idBBox,SLOT(setChecked(bool)));
-	QObject::connect(renderer->getLight(),SIGNAL(enabledChanged(bool)),idLight,SLOT(setChecked(bool)));
 
     setRenderingMode(renderer->getRenderingMode());
     QObject::connect(renderer,SIGNAL(renderingModeChanged(const int)),
@@ -137,7 +136,6 @@ void ViewRenderingModeActions::fill(QMenu * menu) const
 	menu->addSeparator();
 	menu->addAction(idCtrlPoints);
 	menu->addAction(idBBox);
-	// menu->addAction(idLight);
 }
 
 void ViewRenderingModeActions::fill(QToolBar * bar) const
@@ -149,7 +147,6 @@ void ViewRenderingModeActions::fill(QToolBar * bar) const
 	bar->addSeparator();
 	bar->addAction(idCtrlPoints);
 	bar->addAction(idBBox);
-	// bar->addAction(idLight);
 }
 
 void 

@@ -80,7 +80,6 @@ protected :
 
   QAction * idCtrlPoints;
   QAction * idBBox;
-  QAction * idLight;
 };
 
 /* ----------------------------------------------------------------------- */
