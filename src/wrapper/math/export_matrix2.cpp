@@ -33,6 +33,8 @@
 #include <boost/python.hpp>
 
 #include <plantgl/math/util_matrix.h>
+#include <plantgl/math/linearalgebra.h>
+#include <plantgl/math/util_deformation.h>
 #include <string>
 #include <sstream>
 
@@ -52,6 +54,31 @@ string m2_repr( const Matrix2& m )
   return ss.str();
 }
 
+object py_svd (const Matrix2& m){
+    if (fabs(m(1,0) - m(0,1)) > 0 ){
+        PyErr_SetString(PyExc_ValueError, "Non symmetrical Matrix" );
+	    throw_error_already_set();
+    }
+    real_t lambda1, lambda2;
+    Matrix2 rot = svd(m,lambda1, lambda2);
+    return make_tuple(rot,make_tuple(lambda1, lambda2));
+}
+
+object py_strain (const Matrix2& m ){
+    real_t epsilon1, epsilon2;
+    Matrix2 rot = strain(m,epsilon1, epsilon2);
+    return make_tuple(rot,make_tuple(epsilon1, epsilon2));
+}
+
+object py_strain4 (const Vector2& i1,
+               const Vector2& j1,
+               const Vector2& i2,
+               const Vector2& j2){
+    real_t epsilon1, epsilon2;
+    Matrix2 rot = strain(i1,j1,i2,j2,epsilon1, epsilon2);
+    return make_tuple(rot,make_tuple(epsilon1, epsilon2));
+}
+
 void export_Matrix2()
 {
   class_< Matrix2 >( "Matrix2", init< optional<real_t,real_t,real_t,real_t> >("Matrix2(f,f,f,f)") )
@@ -60,6 +87,14 @@ void export_Matrix2()
   .def( "data", &matrix_data<Matrix2,4> )
   .def( "__str__", m2_repr )
   .def( "__repr__", m2_repr )
+  .def( "svd",&py_svd, "Singular Value Decomposition of a Matrix2. Return rotation matrix and the two singular values.")
+  .def( "rotation", &Matrix2::rotation, args("angle"))
+  .staticmethod("rotation")
+  .def( "linearTransformation", &Matrix2::linearTransformation, args("i1","j1","i2","j2"))
+  .staticmethod("linearTransformation")
   ;
+
+  def ("strain",&py_strain,args("transformation"),"Return strain decomposition as a rotation matrix and two main strain values") ;
+  def ("strain",&py_strain4,args("i1","j1","i2","j2")) ;
 }
 

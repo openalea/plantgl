@@ -239,9 +239,32 @@ Matrix2 transpose( const Matrix2& m ) {
                  m.__M[1],m.__M[3]);
 }
 
+/*  --------------------------------------------------------------------- */
+
 std::ostream& operator<<( std::ostream& stream, const Matrix2& m ) {
   stream << "[[" << m.__M[0] << "," << m.__M[1] <<  "]," << endl;
   return stream << "[" << m.__M[2] << "," << m.__M[3]  << "]]" << endl;
+}
+
+/*  --------------------------------------------------------------------- */
+Matrix2 Matrix2::rotation(const real_t angle) { 
+    real_t c = cos(angle);
+    real_t s = sin(angle);
+    return Matrix2(c,-s,s,c);
+}
+
+
+Matrix2 Matrix2::linearTransformation(const Vector2& i1,
+                                      const Vector2& j1,
+                                      const Vector2& i2,
+                                      const Vector2& j2)
+{
+	real_t denom = cross(i1,j1); // non colinear vectors
+	real_t alpha=(i2.x()*j1.y()-j2.x()*i1.y())/denom;
+	real_t beta =(j2.x()*i1.x()-i2.x()*j1.x())/denom;
+	real_t gamma=(i2.y()*j1.y()-j2.y()*i1.y())/denom;
+	real_t delta=(j2.y()*i1.x()-i2.y()*j1.x())/denom;
+	return Matrix2(alpha,beta,gamma,delta);
 }
 
 /*  --------------------------------------------------------------------- */

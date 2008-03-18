@@ -189,6 +189,19 @@ public:
   /// Prints \e m to the output stream \e stream.
   friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
 
+  /** Returns the rotation matrix corresponding to angle \e angle. 
+      \warning angle must be in radians.
+  */
+  static Matrix2 rotation(const real_t angle);
+
+  /** compute the matrix of the transformation
+	that change i1 into i2 and j1 into j2.
+  */
+  static Matrix2 linearTransformation(const Vector2& i1,
+                                      const Vector2& j1,
+                                      const Vector2& i2,
+                                      const Vector2& j2);
+
 protected:
 
   /// The matrix values.

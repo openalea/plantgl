@@ -165,6 +165,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\linearalgebra.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util_deformation.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util_math.cpp"
 				>
 			</File>
