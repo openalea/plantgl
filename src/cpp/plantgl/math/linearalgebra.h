@@ -53,7 +53,6 @@ TOOLS_BEGIN_NAMESPACE
 Matrix2 svd (const Matrix2& matrix, real_t& lambda1, real_t& lambda2 ) {
 	real_t tr = trace(matrix);
 	real_t delta = sqrt(tr*tr-4*det(matrix));
-    std::cerr << "delta " << delta << std::endl;
 	lambda1=(tr-delta)/2.;
 	lambda2=(tr+delta)/2.;
 
@@ -62,10 +61,8 @@ Matrix2 svd (const Matrix2& matrix, real_t& lambda1, real_t& lambda2 ) {
     }
     else {
 		real_t diff=(matrix(0,0)-matrix(1,1))/(2.*delta);
-        std::cerr << "Diff " << diff << std::endl;
 		real_t ctheta=sqrt(0.5-diff);
 	    real_t stheta=sqrt(0.5+diff);
-        std::cerr << "stheta " << stheta << std::endl;
 		if (matrix(0,1) < 0 )
 			stheta*=-1;
         return Matrix2(ctheta,-stheta,stheta,ctheta); 
