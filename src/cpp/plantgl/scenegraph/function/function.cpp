@@ -69,10 +69,13 @@ real_t Function::getValue(real_t x) const
   if (!__clamped)
     if (x < __firstx) x = __firstx;
     else if (x > __lastx) x = __lastx;
-  assert(x>=__firstx);
-  if (!(x<=__lastx)){
+  if (!(x > __firstx - GEOM_EPSILON)){
+     std::cerr << x << ' ' << __firstx << std::endl;
+     assert( x > __firstx - GEOM_EPSILON );
+  }
+  if (!(x < __lastx + GEOM_EPSILON)){
       std::cerr << x << ' ' << __lastx << std::endl;
-      assert(x<=__lastx);
+      assert(x < __lastx + GEOM_EPSILON);
   }
 
 

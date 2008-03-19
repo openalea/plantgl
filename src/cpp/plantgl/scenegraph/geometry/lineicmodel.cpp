@@ -116,17 +116,27 @@ FunctionPtr LineicModel::getArcLengthToUMapping() const
   Vector3 p2;
 
   real_t length = 0; 
+  real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
   points->setAt(0,Vector2(0,fk));
   real_t u = fk + deltau;
+  uint_t j = 1;
   for(uint_t i = 1 ; i <= stride; ++i, u += deltau){
     p2 = getPointAt(u);
-    length += norm(p2 - p1);
-    p1 = p2;
-    points->setAt(i,Vector2(length/totlength,u));
+    n = norm(p2 - p1);
+    if (n > 0){
+        length += n;
+        p1 = p2;
+        points->setAt(j,Vector2(length/totlength,u));
+        ++j;
+    }
   }
-    return FunctionPtr(new Function(points,5*stride));
+  points->setAt(j-1,Vector2(1.0,lk));
+  if (j != stride+1){
+      points = Point2ArrayPtr(new Point2Array(points->getBegin(),points->getBegin()+j));
+  }
+  return FunctionPtr(new Function(points,5*stride));
 }
 
 FunctionPtr LineicModel::getUToArcLengthMapping() const
@@ -143,17 +153,20 @@ FunctionPtr LineicModel::getUToArcLengthMapping() const
   Vector3 p2;
 
   real_t length = 0; 
+  real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
   points->setAt(0,Vector2(0,fk));
   real_t u = fk + deltau;
   for(uint_t i = 1 ; i <= stride; ++i, u += deltau){
     p2 = getPointAt(u);
-    length += norm(p2 - p1);
+    n = norm(p2 - p1);
+    length += n;
     p1 = p2;
     points->setAt(i,Vector2(u,length/totlength));
   }
-    return FunctionPtr(new Function(points,5*stride));
+  points->setAt(stride,Vector2(lk,1.0));
+  return FunctionPtr(new Function(points,5*stride));
 }
 
 /* ----------------------------------------------------------------------- */

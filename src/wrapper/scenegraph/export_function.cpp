@@ -103,6 +103,8 @@ void export_Function()
       .add_property("lastx",&Function::getLastX)
       .DEC_BT_NR_PROPERTY_WDV(clamped,Function,Clamped,bool,DEFAULT_CLAMPED)
       .def("_getSamples",&Func_getSamples)
+      .def("checkQuantisableFunction",&Function::check)
+      .staticmethod("checkQuantisableFunction");
     ;
 
   // implicitly_convertible< FontPtr, SceneObjectPtr >();

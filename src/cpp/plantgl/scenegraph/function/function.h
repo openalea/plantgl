@@ -99,9 +99,10 @@ public:
     inline bool isClampedToDefault() { return __clamped == DEFAULT_CLAMPED; }
 
     inline const std::vector<real_t>& getSamples() const { return  __values; }
+
+    static bool check(const Curve2DPtr& curve);
 protected:
     static real_t _computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror = GEOM_EPSILON);
-    static bool check(const Curve2DPtr& curve);
 
     real_t getIndex(real_t x) const;
     real_t getX(real_t i) const;
