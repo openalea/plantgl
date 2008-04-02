@@ -139,7 +139,7 @@ Curve2D::getLength(real_t begin, real_t end) const
 
 /* ----------------------------------------------------------------------- */
 
-FunctionPtr Curve2D::getArcLengthToUMapping() const
+QuantisedFunctionPtr Curve2D::getArcLengthToUMapping() const
 {
   real_t totlength = getLength();
 
@@ -153,20 +153,30 @@ FunctionPtr Curve2D::getArcLengthToUMapping() const
   Vector2 p2;
 
   real_t length = 0; 
+  real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
   points->setAt(0,Vector2(0,fk));
   real_t u = fk + deltau;
+  uint_t j = 1;
   for(uint_t i = 1 ; i <= stride; ++i, u += deltau){
     p2 = getPointAt(u);
-    length += norm(p2 - p1);
-    p1 = p2;
-    points->setAt(i,Vector2(length/totlength,u));
+    n = norm(p2 - p1);
+    if (n > 0){
+        length += n;
+        p1 = p2;
+        points->setAt(j,Vector2(length/totlength,u));
+        ++j;
+    }
   }
-    return FunctionPtr(new Function(points,5*stride));
+  points->setAt(j-1,Vector2(1.0,lk));
+  if (j != stride+1){
+      points = Point2ArrayPtr(new Point2Array(points->getBegin(),points->getBegin()+j));
+  }
+  return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
 }
 
-FunctionPtr Curve2D::getUToArcLengthMapping() const
+QuantisedFunctionPtr Curve2D::getUToArcLengthMapping() const
 {
   real_t totlength = getLength();
 
@@ -190,7 +200,7 @@ FunctionPtr Curve2D::getUToArcLengthMapping() const
     p1 = p2;
     points->setAt(i,Vector2(length/totlength,u));
   }
-    return FunctionPtr(new Function(points,5*stride));
+    return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
 }
 
 /* ----------------------------------------------------------------------- */

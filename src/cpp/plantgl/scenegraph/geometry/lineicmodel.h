@@ -47,8 +47,8 @@
 
 PGL_BEGIN_NAMESPACE
 
-class Function;
-typedef RCPtr<Function> FunctionPtr;
+class QuantisedFunction;
+typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -113,8 +113,8 @@ public:
 
   virtual TOOLS(Vector3) findClosest(const TOOLS(Vector3)& pt, real_t* u = NULL) const;
   
-  FunctionPtr getArcLengthToUMapping() const;
-  FunctionPtr getUToArcLengthMapping() const;
+  QuantisedFunctionPtr getArcLengthToUMapping() const;
+  QuantisedFunctionPtr getUToArcLengthMapping() const;
 
 };
 

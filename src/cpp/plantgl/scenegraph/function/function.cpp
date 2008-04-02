@@ -38,32 +38,32 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-uint_t Function::DEFAULT_SAMPLING(100);
-bool Function::DEFAULT_CLAMPED(true);
+uint_t QuantisedFunction::DEFAULT_SAMPLING(100);
+bool QuantisedFunction::DEFAULT_CLAMPED(true);
 
-Function::Function(const Curve2DPtr& curve, uint_t sampling, bool clamped) : 
+QuantisedFunction::QuantisedFunction(const Curve2DPtr& curve, uint_t sampling, bool clamped) : 
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(curve);}
 
-Function::Function(const Point2ArrayPtr& points, uint_t sampling, bool clamped):
+QuantisedFunction::QuantisedFunction(const Point2ArrayPtr& points, uint_t sampling, bool clamped):
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(Curve2DPtr(new Polyline2D(points)));}
 
 
-Function::Function(const std::vector<real_t>& values, real_t firstx,real_t lastx, bool clamped):
+QuantisedFunction::QuantisedFunction(const std::vector<real_t>& values, real_t firstx,real_t lastx, bool clamped):
     RefCountObject(), __values(values), __sampling(values.size()), __firstx(firstx),__lastx(lastx),__clamped(clamped)
 { }
 
-Function::~Function() 
+QuantisedFunction::~QuantisedFunction() 
 { }
 
-real_t Function::getIndex(real_t x) const
+real_t QuantisedFunction::getIndex(real_t x) const
 { return (__sampling-1) * (x - __firstx) / (__lastx - __firstx); }
 
-real_t Function::getX(real_t i) const
+real_t QuantisedFunction::getX(real_t i) const
 { return  __firstx + i * (__lastx - __firstx) / (__sampling-1)  ; }
 
-real_t Function::getValue(real_t x) const
+real_t QuantisedFunction::getValue(real_t x) const
 {
   assert(isValid());
   if (!__clamped)
@@ -91,7 +91,7 @@ real_t Function::getValue(real_t x) const
         return w1*__values[floorindex] + diff*__values[floorindex+1];
 }
 
-real_t Function::findX(real_t y, bool& found, real_t startingX) const 
+real_t QuantisedFunction::findX(real_t y, bool& found, real_t startingX) const 
 {
   assert(isValid());
   assert(__firstx <= startingX && startingX < __lastx);
@@ -113,7 +113,7 @@ real_t Function::findX(real_t y, bool& found, real_t startingX) const
   return -1;
 }
 
-bool Function::build(const Curve2DPtr& curve, uint_t sampling)
+bool QuantisedFunction::build(const Curve2DPtr& curve, uint_t sampling)
 {
     if (!check(curve)) return false;
     __sampling = sampling;
@@ -121,12 +121,12 @@ bool Function::build(const Curve2DPtr& curve, uint_t sampling)
     return true;
 }
 
-bool Function::isMonotonous(bool strictly) const 
+bool QuantisedFunction::isMonotonous(bool strictly) const 
 {
   return isIncreasing(strictly) || isDecreasing(strictly);
 }
 
-bool Function::isIncreasing(bool strictly) const
+bool QuantisedFunction::isIncreasing(bool strictly) const
 {
   for(uint_t i = 1; i < __sampling; ++i)
       if ((__values[i-1] > __values[i])||
@@ -135,7 +135,7 @@ bool Function::isIncreasing(bool strictly) const
   return true;
 }
 
-bool Function::isDecreasing(bool strictly) const
+bool QuantisedFunction::isDecreasing(bool strictly) const
 {
   for(uint_t i = 1; i < __sampling; ++i)
       if ((__values[i-1] < __values[i])||
@@ -144,7 +144,7 @@ bool Function::isDecreasing(bool strictly) const
   return true;
 }
 
-bool Function::check(const Curve2DPtr& curve)
+bool QuantisedFunction::check(const Curve2DPtr& curve)
 {
   real_t _start = curve->getFirstKnot();
   uint_t _size = curve->getStride();
@@ -160,7 +160,7 @@ bool Function::check(const Curve2DPtr& curve)
   return true;
 }
 
-void Function::computeCache(const Curve2DPtr& curve)
+void QuantisedFunction::computeCache(const Curve2DPtr& curve)
 {
   assert( __sampling > 2 );
   __firstx = curve->getPointAt(curve->getFirstKnot()).x();
@@ -171,13 +171,13 @@ void Function::computeCache(const Curve2DPtr& curve)
         __values[i] = _computeValue(curve, extent * real_t(i)/real_t(__sampling-1) + __firstx);
 }
 
-real_t Function::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
+real_t QuantisedFunction::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
 {
     assert(check(curve));
     return _computeValue(curve,x,maxerror);
 }
 
-real_t Function::_computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
+real_t QuantisedFunction::_computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
 {
    Vector2 firstpoint = curve->getPointAt(curve->getFirstKnot());
    if (x == firstpoint.x()) return firstpoint.y();
@@ -197,9 +197,9 @@ real_t Function::_computeValue(const Curve2DPtr& curve, real_t x, real_t maxerro
    return tst.y();
 }
 
-FunctionPtr Function::inverse() const
+QuantisedFunctionPtr QuantisedFunction::inverse() const
 {
-    if(!isMonotonous(true)) return FunctionPtr(0);
+    if(!isMonotonous(true)) return QuantisedFunctionPtr(0);
     std::vector<real_t> values(__sampling,0);
     real_t firsty = __values[0];
     real_t lasty = __values[__sampling-1];
@@ -215,7 +215,7 @@ FunctionPtr Function::inverse() const
         values[i] = x;
         y += deltay;
     }
-    return FunctionPtr(new Function(values,firsty,lasty));
+    return QuantisedFunctionPtr(new QuantisedFunction(values,firsty,lasty));
 }
 
 /* ----------------------------------------------------------------------- */

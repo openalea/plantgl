@@ -46,24 +46,24 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class Function;
-typedef RCPtr<Function> FunctionPtr; 
+class QuantisedFunction;
+typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr; 
 
 
 /**
-    \class Function
+    \class QuantisedFunction
     \brief AD quantised injective function (monomorphism) defined on [firstx,lastx].
 */
 
-class SG_API Function : public TOOLS(RefCountObject) {
+class SG_API QuantisedFunction : public TOOLS(RefCountObject) {
 public:
     static uint_t DEFAULT_SAMPLING;
     static bool DEFAULT_CLAMPED;
 
-    Function(const Curve2DPtr& curve, uint_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
-    Function(const Point2ArrayPtr& points, uint_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
-    Function(const std::vector<real_t>& values, real_t firstx = 0.0,real_t lastx = 1.0, bool clamped = DEFAULT_CLAMPED);
-    ~Function();
+    QuantisedFunction(const Curve2DPtr& curve, uint_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
+    QuantisedFunction(const Point2ArrayPtr& points, uint_t sampling = DEFAULT_SAMPLING, bool clamped = DEFAULT_CLAMPED);
+    QuantisedFunction(const std::vector<real_t>& values, real_t firstx = 0.0,real_t lastx = 1.0, bool clamped = DEFAULT_CLAMPED);
+    ~QuantisedFunction();
 
     /// Return the y-value for x.
     real_t getValue(real_t x) const ;
@@ -84,7 +84,7 @@ public:
     /** Give the inverse function f-1
         For this, the function f should be isomorphic, else return 0.
      */
-    FunctionPtr inverse() const;
+    QuantisedFunctionPtr inverse() const;
 
     /// Return sampling
     inline uint_t getSampling() { return __sampling; }

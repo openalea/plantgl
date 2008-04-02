@@ -102,7 +102,7 @@ LineicModel::getLength(real_t begin, real_t end) const
 
 /* ----------------------------------------------------------------------- */
 
-FunctionPtr LineicModel::getArcLengthToUMapping() const
+QuantisedFunctionPtr LineicModel::getArcLengthToUMapping() const
 {
   real_t totlength = getLength();
 
@@ -136,10 +136,10 @@ FunctionPtr LineicModel::getArcLengthToUMapping() const
   if (j != stride+1){
       points = Point2ArrayPtr(new Point2Array(points->getBegin(),points->getBegin()+j));
   }
-  return FunctionPtr(new Function(points,5*stride));
+  return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
 }
 
-FunctionPtr LineicModel::getUToArcLengthMapping() const
+QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
 {
   real_t totlength = getLength();
 
@@ -166,7 +166,7 @@ FunctionPtr LineicModel::getUToArcLengthMapping() const
     points->setAt(i,Vector2(u,length/totlength));
   }
   points->setAt(stride,Vector2(lk,1.0));
-  return FunctionPtr(new Function(points,5*stride));
+  return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
 }
 
 /* ----------------------------------------------------------------------- */

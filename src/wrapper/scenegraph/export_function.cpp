@@ -45,9 +45,9 @@ using namespace boost::python;
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
-DEF_POINTEE(Function)
+DEF_POINTEE(QuantisedFunction)
 
-object func_findX(Function * func, real_t y)
+object func_findX(QuantisedFunction * func, real_t y)
 {
     bool found = false;
     real_t x = func->findX(y,found);
@@ -55,7 +55,7 @@ object func_findX(Function * func, real_t y)
     else return object(x);
 }
 
-object func_findX2(Function * func, real_t y, real_t startingx)
+object func_findX2(QuantisedFunction * func, real_t y, real_t startingx)
 {
     bool found = false;
     real_t x = func->findX(y,found,startingx);
@@ -63,14 +63,14 @@ object func_findX2(Function * func, real_t y, real_t startingx)
     else return object(x);
 }
 
-real_t Func_getValue(Function * func, real_t x)
+real_t Func_getValue(QuantisedFunction * func, real_t x)
 {
    if (func->getClamped() && (func->getFirstX() > x  || x > func->getLastX()))
       throw PythonExc_IndexError();
    else return func->getValue(x);
 }
 
-object Func_getSamples(Function * func)
+object Func_getSamples(QuantisedFunction * func)
 { return make_list<std::vector<real_t> >(func->getSamples())(); }
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isMonotonous_overloads, isMonotonous, 0, 1)
@@ -79,7 +79,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isDecreasing_overloads, isDecreasing, 0, 
 
 void export_Function()
 {
-  class_< Function, FunctionPtr, boost::noncopyable >
+  class_< QuantisedFunction, QuantisedFunctionPtr, boost::noncopyable >
     ("QuantisedFunction",init<const Curve2DPtr& , optional<uint_t> >
      (args("curve","sampling"),
      "QuantisedFunction(curve[,sampling,clamped]) : Quantised 2D function.\n"
@@ -91,19 +91,19 @@ void export_Function()
       .def("getValue",&Func_getValue,args("x"))
       .def("findX",&func_findX,args("y"))
       .def("findX",&func_findX2,args("y","startingX"),"findX(y[,startingX]) : find the first x value such as f(x) = y.")
-      .def("isMonotonous",&Function::isMonotonous,isMonotonous_overloads())
-      .def("isIncreasing",&Function::isIncreasing,isIncreasing_overloads())
-      .def("isDecreasing",&Function::isDecreasing,isDecreasing_overloads())
-      .def("isValid",&Function::isValid)
-      .def("inverse",&Function::inverse)
-      .def("build",(bool(Function::*)(const Curve2DPtr&, uint_t))&Function::build,args("curve","sampling"))
-      .def("build",(bool(Function::*)(const Curve2DPtr&))&Function::build)
-      .add_property("sampling",&Function::getSampling)
-      .add_property("firstx",&Function::getFirstX)
-      .add_property("lastx",&Function::getLastX)
-      .DEC_BT_NR_PROPERTY_WDV(clamped,Function,Clamped,bool,DEFAULT_CLAMPED)
+      .def("isMonotonous",&QuantisedFunction::isMonotonous,isMonotonous_overloads())
+      .def("isIncreasing",&QuantisedFunction::isIncreasing,isIncreasing_overloads())
+      .def("isDecreasing",&QuantisedFunction::isDecreasing,isDecreasing_overloads())
+      .def("isValid",&QuantisedFunction::isValid)
+      .def("inverse",&QuantisedFunction::inverse)
+      .def("build",(bool(QuantisedFunction::*)(const Curve2DPtr&, uint_t))&QuantisedFunction::build,args("curve","sampling"))
+      .def("build",(bool(QuantisedFunction::*)(const Curve2DPtr&))&QuantisedFunction::build)
+      .add_property("sampling",&QuantisedFunction::getSampling)
+      .add_property("firstx",&QuantisedFunction::getFirstX)
+      .add_property("lastx",&QuantisedFunction::getLastX)
+      .DEC_BT_NR_PROPERTY_WDV(clamped,QuantisedFunction,Clamped,bool,DEFAULT_CLAMPED)
       .def("_getSamples",&Func_getSamples)
-      .def("checkQuantisableFunction",&Function::check)
+      .def("checkQuantisableFunction",&QuantisedFunction::check)
       .staticmethod("checkQuantisableFunction");
     ;
 

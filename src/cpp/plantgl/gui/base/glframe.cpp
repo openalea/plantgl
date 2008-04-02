@@ -755,7 +755,7 @@ ViewGLFrame::castRays( const Vector3& position,
 		for(size_t j = 0; j < sy; j++){
 			Vector3 delta = dx*i+dy*j;
 			__camera->lookIn(position+delta,direction);
-  
+
 			glSelectBuffer(bufsize,selectBuf);
 			(void)glRenderMode(GL_SELECT);
 			GL_ERROR;
