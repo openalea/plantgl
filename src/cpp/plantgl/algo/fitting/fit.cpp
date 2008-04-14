@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -66,6 +61,13 @@
 extern "C" {
 #include <qhull/qhull_a.h>
 }
+#endif
+
+#ifdef WITH_CGAL
+#include <CGAL/Cartesian_d.h>
+#include <CGAL/MP_Float.h>
+#include <CGAL/Approximate_min_ellipsoid_d.h>
+#include <CGAL/Approximate_min_ellipsoid_d_traits_d.h>
 #endif
 
 #define GEOM_DEBUG
@@ -620,6 +622,7 @@ GeometryPtr Fit::aellipsoid(){
 GeometryPtr Fit::bellipsoid(){
   if(! __pointstofit )return GeometryPtr(0);
   if(__pointstofit->getSize()>2){
+#ifndef WITH_CGAL
 	ExplicitModelPtr result = ExplicitModelPtr::Cast(convexHull());
 	Point3ArrayPtr pts;
 	if(!result) pts = __pointstofit;
@@ -646,43 +649,50 @@ GeometryPtr Fit::bellipsoid(){
 
 	}
 	Vector3 _center = pts->getCenter();
-//	Matrix3 basis(u,v,w);
-//  assert(basis.isOrthogonal());
-//	basis = basis.inverse();
-//	MinEllipsoidCR3 (pts,_center,basis,s); // putain ca marche pas ce truc !
 	real_t vmax = 1;
-//	printf("S = %f %f %f\n",vpint[0],vpint[1],vpint[2]);
-//	Point3Array::iterator _it2;
 	for(Point3Array::iterator _it = pts->getBegin();
 		  _it != pts->getEnd();_it++){
 	    Vector3 cl = (*_it) - _center;
-//		Vector3 cl = basis*l;
 		cl = Vector3(dot(cl,u),dot(cl,v),dot(cl,w));
 		Vector3 test = _center+u*cl.x()+v*cl.y()+w*cl.z();
 		real_t error = norm(*_it - test);
 		assert(error < GEOM_EPSILON);
 		real_t val = sq(cl.x())/s.x()+sq(cl.y())/s.y()+sq(cl.z())/s.z();
 		if(val > vmax){
-//		  _it2 = _it;
 		  vmax = val;
 		}
 	}
-/*	printf("Vmax = %f\n",vmax);
-	printf("Point = %f %f %f\n",_it2->x(),_it2->y(),_it2->z());
-	printf("center = %f %f %f\n",_center.x(),_center.y(),_center.z());
-    Vector3 cl = (*_it2) - _center;
-	printf("Point = %f %f %f\n",cl.x(),cl.y(),cl.z());
-	cl = Vector3(dot(u,cl),dot(v,cl),dot(w,cl));
-	printf("U = %f %f %f\n",u.x(),u.y(),u.z());
-	printf("V = %f %f %f\n",v.x(),v.y(),v.z());
-	printf("W = %f %f %f\n",w.x(),w.y(),w.z());
-	printf("Point = %f %f %f\n",cl.x(),cl.y(),cl.z());
-	printf("F = %f %f %f\n",sq(cl.x())/s.x(),sq(cl.y())/s.y(),sq(cl.z())/s.z());
-*/
 	s *= vmax;
 	s.x() = sqrt(s.x());s.y() = sqrt(s.y());s.z() = sqrt(s.z());
-//	printf("S = %f %f %f\n",s.x(),s.y(),s.z());
+#else
 
+    typedef CGAL::Cartesian_d<double>                              Kernel;
+    typedef CGAL::MP_Float                                         ET;
+    typedef CGAL::Approximate_min_ellipsoid_d_traits_d<Kernel, ET> AMETraits;
+    typedef AMETraits::Point                                       CgalPoint;
+    typedef std::vector<CgalPoint>                                 CgalPointList;
+    typedef CGAL::Approximate_min_ellipsoid_d<AMETraits>           AME;
+
+    CgalPointList P;
+    for(Point3Array::const_iterator it = __pointstofit->getBegin(); it != __pointstofit->getEnd(); ++it)
+        P.push_back(CgalPoint((double)it->x(),(double)it->y(),(double)it->z()));
+
+    // compute approximation:
+    const double eps = 0.01;                // approximation ratio is (1+eps)
+    AMETraits traits;
+    AME ame(eps, P.begin(), P.end(), traits);
+    if (!ame.is_valid(false) || !ame.is_full_dimensional())return GeometryPtr(0);
+    AME::Center_coordinate_iterator c_it = ame.center_cartesian_begin();
+    Vector3 _center(*(c_it++),*(c_it++),*(c_it++));
+    AME::Axes_lengths_iterator axeslength = ame.axes_lengths_begin();
+    Vector3 s(*(axeslength++),*(axeslength++),*(axeslength++));
+    AME::Axes_direction_coordinate_iterator d_it = ame.axis_direction_cartesian_begin(0);
+    Vector3 u(*(d_it++),*(d_it++),*(d_it++));
+    d_it = ame.axis_direction_cartesian_begin(1);
+    Vector3 v(*(d_it++),*(d_it++),*(d_it++));
+    d_it = ame.axis_direction_cartesian_begin(2);
+    Vector3 w(*(d_it++),*(d_it++),*(d_it++));
+#endif
 	if(fabs(*(s.getMin())) > GEOM_EPSILON){
 	  GeometryPtr geom(new Sphere(1,32,32));
 	  if(fabs(*((s - Vector3(1,1,1)).getMax())) > GEOM_EPSILON)

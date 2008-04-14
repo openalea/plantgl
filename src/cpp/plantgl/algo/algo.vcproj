@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..,C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
 				PreprocessorDefinitions="ALGO_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -129,9 +129,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  opengl32.lib glu32.lib qhull-vc80.lib"
+				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  opengl32.lib glu32.lib qhull-vc80.lib CGAL.lib"
 				OutputFile="../../../../bin/pglalgo.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib;&quot;$(CGALROOT)\lib\msvc7&quot;"
+				IgnoreDefaultLibraryNames=""
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
