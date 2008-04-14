@@ -15,6 +15,7 @@ SConsignFile()
 
 options = Options( ['../options.py', 'options.py'], ARGUMENTS )
 options.Add(EnumOption('QT_VERSION','Qt major version to use','4',allowed_values=('3','4')))
+options.Add(BoolOption('WITH_CGAL','Use CGAL',False))
 
 env = Environment(options=options)
 qt_env = env

@@ -63,12 +63,6 @@ extern "C" {
 }
 #endif
 
-#ifdef WITH_CGAL
-#include <CGAL/Cartesian_d.h>
-#include <CGAL/MP_Float.h>
-#include <CGAL/Approximate_min_ellipsoid_d.h>
-#include <CGAL/Approximate_min_ellipsoid_d_traits_d.h>
-#endif
 
 #define GEOM_DEBUG
 
@@ -607,17 +601,15 @@ GeometryPtr Fit::aellipsoid(){
 
 /* ----------------------------------------------------------------------- */
 
-// POST, M. J. 
-// Minimum spanning ellipsoids. 
-// In Proc. 16th Annu. ACM Sympos. Theory Comput. (1984), pp. 108-116
-// WELZL, E.
 
-// Smallest enclosing disks (balls and ellipsoids). 
-// In New Results and New Trends in Computer Science, 
-// H. Maurer, Ed., vol. 555 of Lecture Notes in Computer Science. 
-// Springer-Verlag, 1991, pp. 359-370. 
 
-// #include "MagicSoft/WmlContMinEllipsoidCR3.h"
+#ifdef WITH_CGAL
+#include <CGAL/Cartesian_d.h>
+#include <CGAL/MP_Float.h>
+#include <CGAL/Approximate_min_ellipsoid_d.h>
+#include <CGAL/Approximate_min_ellipsoid_d_traits_d.h>
+#include <CGAL/Approximate_min_ellipsoid_d_traits_3.h>
+#endif
 
 GeometryPtr Fit::bellipsoid(){
   if(! __pointstofit )return GeometryPtr(0);
@@ -665,10 +657,10 @@ GeometryPtr Fit::bellipsoid(){
 	s *= vmax;
 	s.x() = sqrt(s.x());s.y() = sqrt(s.y());s.z() = sqrt(s.z());
 #else
-
-    typedef CGAL::Cartesian_d<double>                              Kernel;
+    // std::cerr << "Using CGAL" << std::endl;
+    typedef CGAL::Cartesian<double>                              Kernel;
     typedef CGAL::MP_Float                                         ET;
-    typedef CGAL::Approximate_min_ellipsoid_d_traits_d<Kernel, ET> AMETraits;
+    typedef CGAL::Approximate_min_ellipsoid_d_traits_3<Kernel, ET> AMETraits;
     typedef AMETraits::Point                                       CgalPoint;
     typedef std::vector<CgalPoint>                                 CgalPointList;
     typedef CGAL::Approximate_min_ellipsoid_d<AMETraits>           AME;
@@ -681,11 +673,14 @@ GeometryPtr Fit::bellipsoid(){
     const double eps = 0.01;                // approximation ratio is (1+eps)
     AMETraits traits;
     AME ame(eps, P.begin(), P.end(), traits);
-    if (!ame.is_valid(false) || !ame.is_full_dimensional())return GeometryPtr(0);
+    if (!ame.is_valid(true) || !ame.is_full_dimensional()){
+	std::cerr << "Not valid bounding ellipsoid" << std::endl;
+	return GeometryPtr(0);
+    }
     AME::Center_coordinate_iterator c_it = ame.center_cartesian_begin();
     Vector3 _center(*(c_it++),*(c_it++),*(c_it++));
     AME::Axes_lengths_iterator axeslength = ame.axes_lengths_begin();
-    Vector3 s(*(axeslength++),*(axeslength++),*(axeslength++));
+    Vector3 s(*axeslength,*(axeslength+1),*(axeslength+2));
     AME::Axes_direction_coordinate_iterator d_it = ame.axis_direction_cartesian_begin(0);
     Vector3 u(*(d_it++),*(d_it++),*(d_it++));
     d_it = ame.axis_direction_cartesian_begin(1);
@@ -702,7 +697,8 @@ GeometryPtr Fit::bellipsoid(){
 	  if(fabs(*(_center.getMax())) > GEOM_EPSILON)
 		geom = GeometryPtr(new Translated(_center,geom));
 	  return geom;
-    }
+         }
+         else std::cerr << "Ellipsoid dimension not valid : "<< s.x() << ',' << s.y() << ',' << s.z() << std::endl;
   }
   return GeometryPtr(0);
 }

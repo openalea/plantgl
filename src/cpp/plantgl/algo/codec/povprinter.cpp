@@ -983,11 +983,36 @@ bool PovPrinter::process( Translated * translated ) {
 bool PovPrinter::process( TriangleSet * triangleSet ) {
   GEOM_ASSERT(triangleSet);
 
+  bool ok = false;
+  for (uint_t _i = 0; _i < triangleSet->getIndexListSize(); _i++) {
+    if (triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,1) && 
+        triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,2) && 
+        triangleSet->getFacePointAt(_i,1) != triangleSet->getFacePointAt(_i,2)){
+        ok = true;
+        break;
+    }
+   }
+  if (!ok) {
+    GEOM_POVPRINT_BEGIN(__geomStream,"sphere",triangleSet);
+
+     __geomStream << __indent;
+    GEOM_POVPRINT_VECTOR3(__geomStream,triangleSet->getFacePointAt(0,0));
+    __geomStream << ", 0.00000001"  << endl;
+
+    GEOM_POVPRINT_TEXTURE;
+
+    GEOM_POVPRINT_END(__geomStream,triangleSet);
+    return true;
+  }
+
   GEOM_POVPRINT_BEGIN(__geomStream,"mesh",triangleSet);
 
   triangleSet->checkNormalList();
   bool normalV = triangleSet->getNormalPerVertex();
   for (uint_t _i = 0; _i < triangleSet->getIndexListSize(); _i++) {
+    if (triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,1) && 
+        triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,2) && 
+        triangleSet->getFacePointAt(_i,1) != triangleSet->getFacePointAt(_i,2)){
 	  if(normalV){
 		  __geomStream << __indent << "smooth_triangle { ";
 		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
@@ -1032,6 +1057,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
 	  }
     __geomStream << "}" << endl;
+    }
   };
   GEOM_POVPRINT_TEXTURE;
 
