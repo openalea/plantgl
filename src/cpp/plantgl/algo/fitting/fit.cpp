@@ -678,15 +678,15 @@ GeometryPtr Fit::bellipsoid(){
 	return GeometryPtr(0);
     }
     AME::Center_coordinate_iterator c_it = ame.center_cartesian_begin();
-    Vector3 _center(*(c_it++),*(c_it++),*(c_it++));
+    Vector3 _center(*c_it,*(c_it+1),*(c_it+2));
     AME::Axes_lengths_iterator axeslength = ame.axes_lengths_begin();
     Vector3 s(*axeslength,*(axeslength+1),*(axeslength+2));
     AME::Axes_direction_coordinate_iterator d_it = ame.axis_direction_cartesian_begin(0);
-    Vector3 u(*(d_it++),*(d_it++),*(d_it++));
+    Vector3 u(*d_it,*(d_it+1),*(d_it+2));
     d_it = ame.axis_direction_cartesian_begin(1);
-    Vector3 v(*(d_it++),*(d_it++),*(d_it++));
+    Vector3 v(*d_it,*(d_it+1),*(d_it+2));
     d_it = ame.axis_direction_cartesian_begin(2);
-    Vector3 w(*(d_it++),*(d_it++),*(d_it++));
+    Vector3 w(*d_it,*(d_it+1),*(d_it+2));
 #endif
 	if(fabs(*(s.getMin())) > GEOM_EPSILON){
 	  GeometryPtr geom(new Sphere(1,32,32));
