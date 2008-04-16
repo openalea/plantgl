@@ -64,7 +64,6 @@ public:
 	enum Type {
 		eFirstEvent = 10000,
 		eNoneEvent = eFirstEvent,
-		eSceneChange,
 		eFileChange,
 		eImageSave,
 		eRefresh,
@@ -92,6 +91,7 @@ public:
 		eZBuff,
 		eProjSize,
 		eCameraProj,
+		eSceneChange,
 		eLastEvent
 	} ;
 

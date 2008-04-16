@@ -43,6 +43,7 @@
 
 #include "../gui_config.h"
 
+
 class Viewer;
 
 class VIEW_API ViewerBuilder {
@@ -52,6 +53,7 @@ public:
 	virtual Viewer * build() = 0;
 };
 
+
 template<class T>
 struct ViewerTBuilder : public ViewerBuilder {
 public:
@@ -59,6 +61,29 @@ public:
 	virtual ~ViewerTBuilder() {}
 	typedef T ViewerType;
 	virtual Viewer * build() { return new T(); }
+};
+
+class VIEW_API ThreadStateSaver {
+public:
+    ThreadStateSaver() {}
+    virtual ~ThreadStateSaver() {}
+    virtual void pushState() = 0;
+    virtual void popState() = 0;
+};
+
+class VIEW_API ThreadStateSaverFactory {
+public:
+    ThreadStateSaverFactory() {}
+    virtual ~ThreadStateSaverFactory() {}
+    virtual ThreadStateSaver * produceStateSaver() = 0;
+};
+
+template<class T>
+class ThreadStateSaverTFactory : public ThreadStateSaverFactory {
+public:
+    ThreadStateSaverTFactory() {}
+    virtual ~ThreadStateSaverTFactory() {}
+    virtual ThreadStateSaver * produceStateSaver() { return new T; }
 };
 
 #endif

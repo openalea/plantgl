@@ -81,11 +81,11 @@ void ViewerSettings::setAppliName(const QString& _appliname)
 
 ViewerSettings::ViewerSettings():
 #if QT_VERSION >= 0x040000
-	QSettings(QSettings::IniFormat,QSettings::UserScope,"OpenAlea",appliname) {}
+	QSettings(QSettings::IniFormat,QSettings::UserScope,"OpenAlea",getAppliName()) {}
 #else
 	QSettings(QSettings::Ini)
 {
-	setPath("OpenAlea",appliname);
+	setPath("OpenAlea",getAppliName());
 }
 #endif
 

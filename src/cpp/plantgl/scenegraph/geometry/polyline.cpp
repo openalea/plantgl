@@ -200,6 +200,22 @@ std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
 
 /* ----------------------------------------------------------------------- */
 
+Polyline2DPtr Polyline2D::Circle(real_t radius, 
+                                 uchar_t slices)
+{
+   Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices + 1));
+   real_t angle_delta = GEOM_TWO_PI / slices;
+   real_t angle = 0;
+   pts->setAt(0,Vector2(radius,0));
+   for (int i = 1; i < slices; ++i){
+	 angle += angle_delta;
+     pts->setAt(i,Vector2(radius*cos(angle),radius*sin(angle)));
+   }
+   pts->setAt(slices,Vector2(radius,0));
+   return new Polyline2D(pts);
+}
+
+/* ----------------------------------------------------------------------- */
 
 Polyline2D::Builder::Builder( ) :
   Curve2D::Builder(),

@@ -46,6 +46,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
+#include "appbuilder.h"
 #include <plantgl/math/util_vector.h>
 #include <vector>
 #include <string>
@@ -65,7 +66,7 @@ class ViewRayBuffer;
 class ViewZBuffer;
 class QEvent;
 class ViewerBuilder;
-
+class ThreadStateSaver;
 
 class VIEW_API ViewerApplication {
 
@@ -192,6 +193,12 @@ public :
 
   static void setPerspectiveCamera(); 
   static void setOrthographicCamera(); 
+
+  template<class T>
+  static void registerThreadStateSaver() 
+  { registerThreadStateSaverFatory(new ThreadStateSaverTFactory<T>()); }
+
+  static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
 
 protected :
 

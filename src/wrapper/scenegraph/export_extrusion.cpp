@@ -60,9 +60,9 @@ void export_Extrusion()
 	.DEC_BT_NR_PROPERTY_WDV(solid,Extrusion,Solid,bool,DEFAULT_SOLID)
 	.DEC_BT_NR_PROPERTY_WDV(ccw, Extrusion,CCW,bool,DEFAULT_CCW)
 
-	.DEC_PTR_PROPERTY(scale,Extrusion,Scale,Point2ArrayPtr)
+	.DEC_PTR_PROPERTY_WDV(scale,Extrusion,Scale,Point2ArrayPtr,DEFAULT_SCALE_LIST)
 	.DEC_PTR_PROPERTY_WDV(orientation,Extrusion,Orientation,RealArrayPtr,DEFAULT_ORIENTATION_LIST)
-	.DEC_PTR_NR_PROPERTY_WDV(knotList,Extrusion,KnotList,RealArrayPtr,DEFAULT_SCALE_LIST)
+	.DEC_PTR_NR_PROPERTY(knotList,Extrusion,KnotList,RealArrayPtr)
     ;
   implicitly_convertible<ExtrusionPtr, ParametricModelPtr>();
 }

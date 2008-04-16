@@ -41,6 +41,7 @@
 
 #include <plantgl/gui/viewer/pglapplication.h>
 #include <plantgl/gui/base/zbuffer.h>
+#include <plantgl/gui/base/appbuilder.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -48,10 +49,17 @@ using namespace boost::python;
 using namespace std;
 
 
-struct PyBlockState{
-    PyBlockState() { _save = PyEval_SaveThread(); }
-    ~PyBlockState() { PyEval_RestoreThread(_save); }
-    PyThreadState *_save;
+class PyStateSaver : public ThreadStateSaver{
+public:
+    PyStateSaver() : ThreadStateSaver(), _state(0) {}
+    ~PyStateSaver() { if (_state) popState(); }
+
+    virtual void pushState () { _state = PyEval_SaveThread(); }
+    virtual void popState () { PyEval_RestoreThread(_state); _state = NULL; }
+
+protected:
+    PyThreadState *_state;
+
 };
 
 boost::python::list selection(){
@@ -70,13 +78,11 @@ boost::python::list selection(){
 void setSelection(int i){
   std::vector<uint_t> sel;
   sel.push_back(i);
-  PyBlockState p;
   ViewerApplication::setSelection(sel);
 }
 
 void setMSelection(boost::python::list values){
   std::vector<uint_t> sel = extract_vec<uint_t>(values)();
-  PyBlockState p;
   ViewerApplication::setSelection(sel);
 }
 
@@ -90,14 +96,12 @@ int question0(boost::python::str _caption,
 int question0(std::string caption,
 			  std::string text){
 #endif
-  PyBlockState p;
   return ViewerApplication::question(caption,text);
 }
 
 int question1(std::string caption,
 			  std::string text,
 			  std::string but0txt){
-  PyBlockState p;
   return ViewerApplication::question(caption,text,but0txt);
 }
 
@@ -105,7 +109,6 @@ int question2(std::string caption,
 			  std::string text,
 			  std::string but0txt,
 			  std::string but1txt){
-  PyBlockState p;
   return ViewerApplication::question(caption,text,but0txt,but1txt);
 }
 
@@ -114,7 +117,6 @@ int question3(std::string caption,
 			  std::string but0txt,
 			  std::string but1txt,
 			  std::string but2txt){
-  PyBlockState p;
   return ViewerApplication::question(caption,text,but0txt,but1txt,but2txt);
 }
 
@@ -143,7 +145,6 @@ object itemSelection(std::string caption,
   bool ok = false;
   std::string res;
   {
-    PyBlockState p;
     res = ViewerApplication::itemSelection(caption,text,vals,ok,editable);
   }
   tuple t = make_tuple(ok,res);
@@ -159,7 +160,6 @@ object itemSelectionNE(std::string caption,
 					   std::string text,
 					   boost::python::list values){
 #endif
-  PyBlockState p;
   return itemSelection(caption,text,values,false);
 }
 
@@ -183,7 +183,6 @@ object doubleSelection(std::string caption,
   double res = 0;
   bool ok;
   {
-    PyBlockState p;
     res = ViewerApplication::doubleSelection(caption,text,value,minvalue,maxvalue,ok);
   }
   if (ok) return object(res);
@@ -216,32 +215,26 @@ object doubleSelection2(std::string caption,
 }
 
 void fullScreen0(){
-  PyBlockState p;
   ViewerApplication::fullScreen();
 }
 
 void fullScreen1(int b){
-  PyBlockState p;
   ViewerApplication::fullScreen(b);
 }
 
 void glFrameOnly0(){
-  PyBlockState p;
   ViewerApplication::glFrameOnly();
 }
 
 void glFrameOnly1(int b){
-  PyBlockState p;
   ViewerApplication::glFrameOnly(b);
 }
 
 void animation1(int b){
-  PyBlockState p;
   ViewerApplication::animation(b);
 }
 
 void animation0(){
-  PyBlockState p;
   ViewerApplication::animation(true);
 }
 
@@ -249,47 +242,38 @@ void setBGColorO(boost::python::object o){
   int r = extract<int>(o.attr("red"))();
   int g = extract<int>(o.attr("green"))();
   int b = extract<int>(o.attr("blue"))();
-  PyBlockState p;
   ViewerApplication::setBgColor(r,g,b);
 }
 
 std::string getOpenFile0(){
-  PyBlockState p;
   return ViewerApplication::getOpenFile("Open File","","");
 }
 
 std::string getOpenFile1(const std::string& caption){
-  PyBlockState p;
   return ViewerApplication::getOpenFile(caption,"","");
 }
 
 std::string getOpenFile2(const std::string& caption, const std::string& filter){
-  PyBlockState p;
   return ViewerApplication::getOpenFile(caption,filter,"");
 }
 
 std::string getSaveFile0(){
-  PyBlockState p;
   return ViewerApplication::getSaveFile("Save File","","");
 }
 
 std::string getSaveFile1(const std::string& caption){
-  PyBlockState p;
   return ViewerApplication::getSaveFile(caption,"","");
 }
 
 std::string getSaveFile2(const std::string& caption, const std::string& filter){
-  PyBlockState p;
   return ViewerApplication::getSaveFile(caption,filter,"");
 }
 
 std::string getDirectory0(){
-  PyBlockState p;
   return ViewerApplication::getDirectory("Choose Directory","");
 }
 
 std::string getDirectory1(const std::string& caption){
-  PyBlockState p;
   return ViewerApplication::getDirectory(caption,"");
 }
 
@@ -316,10 +300,7 @@ boost::python::object castRays(const TOOLS(Vector3)& pos,
 							      const TOOLS(Vector3)& dy,
 								  int sx, int sy){
 	ViewRayBuffer * buf;
-    {
-        PyBlockState p;
-        buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
-    }
+    buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
 	boost::python::object res = raybuf_to_python(buf);
 	delete buf;
 	return res;
@@ -341,10 +322,7 @@ boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
 }
 boost::python::object grabZBuffer(bool allvalues){
 	ViewZBuffer * buf;
-    {
-        PyBlockState p;
-        buf = ViewerApplication::grabZBuffer();
-    }
+    buf = ViewerApplication::grabZBuffer();
 	boost::python::object res = zbuf_to_python(buf,allvalues);
 	delete buf;
 	return res;
@@ -358,19 +336,13 @@ boost::python::object getProjectionSize(){
 	int nbpix;
 	double pixwidth;
 	double size;
-    {
-        PyBlockState p;
-        size = ViewerApplication::getProjectionSize(&nbpix,&pixwidth);
-    }
+    size = ViewerApplication::getProjectionSize(&nbpix,&pixwidth);
 	return make_tuple(size,nbpix,pixwidth);
 }
 
 boost::python::object getProjectionSizes(const ScenePtr& sc){
   std::vector<std::pair<uint_t,double> > res;
-  {
-   PyBlockState p;
-   res = PGLViewerApplication::getProjectionSizes(sc);
-  }
+  res = PGLViewerApplication::getProjectionSizes(sc);
   if(res.empty()) return object();
   else {
 	boost::python::list bres;
@@ -401,10 +373,7 @@ boost::python::object raypointhitbuf_to_python(ViewRayPointHitBuffer * buf) {
 
 boost::python::object castRays2(const ScenePtr& sc, bool back_test){
 	ViewRayPointHitBuffer * buf;
-    {
-        PyBlockState p;
-        buf = PGLViewerApplication::castRays2(sc,back_test);
-    }
+    buf = PGLViewerApplication::castRays2(sc,back_test);
 	boost::python::object res = raypointhitbuf_to_python(buf);
 	delete buf;
 	return res;
@@ -412,11 +381,8 @@ boost::python::object castRays2(const ScenePtr& sc, bool back_test){
 
 boost::python::object castRays2_1(const ScenePtr& sc){
     ViewRayPointHitBuffer * buf ;
-    {
-        PyBlockState p;
-	    buf = PGLViewerApplication::castRays2(sc,true);
-    }
-	boost::python::object res = raypointhitbuf_to_python(buf);
+    buf = PGLViewerApplication::castRays2(sc,true);
+ 	boost::python::object res = raypointhitbuf_to_python(buf);
 	delete buf;
 	return res;
 }
@@ -425,14 +391,12 @@ boost::python::object castRays2_1(const ScenePtr& sc){
 void displaySh(ShapePtr sh){
     ScenePtr s = new Scene();
     s->add(sh);
-    PyBlockState p;
     PGLViewerApplication::display(s);
 }
 
 void addSh(ShapePtr sh){
     ScenePtr s = new Scene();
     s->add(sh);
-    PyBlockState p;
     PGLViewerApplication::add(s);
 }
 
@@ -441,17 +405,14 @@ void saveImage1(const std::string& fname)
 	// ext = get_extension(fname);
 	// if (ext.empty()) ext = "PNG";
 	// else ext = toUpper(ext);
-    PyBlockState p;
 	ViewerApplication::saveImage(fname,"PNG");
 }
 void saveImage2(const std::string& fname, const std::string& type)
 {
-    PyBlockState p;
 	ViewerApplication::saveImage(fname,type);
 }
 
 bool viewer_wait(){
-    PyBlockState p;
 	return ViewerApplication::wait();
 }
 
@@ -460,13 +421,11 @@ void setLight##COLNAME(boost::python::object o){ \
   int r = extract<int>(o.attr("red"))(); \
   int g = extract<int>(o.attr("green"))(); \
   int b = extract<int>(o.attr("blue"))(); \
-  PyBlockState p; \
   ViewerApplication::setLight##COLNAME(r,g,b); \
 } \
 \
 boost::python::object getLight##COLNAME(){ \
   int r,g,b; \
-  PyBlockState p; \
   ViewerApplication::getLight##COLNAME(r,g,b); \
   return boost::python::object(Color3(r,g,b)); \
 } \
@@ -514,6 +473,8 @@ public :
 
 void export_viewer()
 {
+  ViewerApplication::registerThreadStateSaver<PyStateSaver>();
+
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
 	.add_static_property("selection",&selection,&setMSelection)
 	.add_static_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
@@ -560,14 +521,12 @@ void export_viewer()
 
 Vector3 getCameraPosition(){
 	Vector3 pos, h, up;
-    PyBlockState p;
 	ViewerApplication::getCamera(pos,h,up);
 	return pos;
 }
 
 object getCameraPositionInfo(){
 	Vector3 pos, h, up;
-    PyBlockState p;
 	ViewerApplication::getCamera(pos,h,up);
 	return make_tuple(pos,h,up);
 }

@@ -256,6 +256,8 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   void animation(bool b);
 
+  void useOcclusionQuery(bool b);
+
 signals:
 
   /// Emit when renderer change.
@@ -382,6 +384,7 @@ signals:
   /// LineWidth dialog slider
   // QSlider * __lineslider;
 
+  bool __useOcclusionQuery;
 };
 
 class VIEW_API ViewDoubleToolButton : public QToolButton {

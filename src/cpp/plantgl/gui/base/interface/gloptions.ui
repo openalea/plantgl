@@ -1,39 +1,24 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>ViewGLOptionsForm</class>
  <widget class="QWidget" name="ViewGLOptionsForm" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>256</height>
+    <width>301</width>
+    <height>296</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Form</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" >
     <widget class="QGroupBox" name="CullFaceGroup" >
      <property name="title" >
       <string>Culling</string>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <widget class="QRadioButton" name="NoCullingButton" >
         <property name="text" >
@@ -55,6 +40,19 @@
         </property>
        </widget>
       </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>21</width>
+          <height>2</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
     </widget>
    </item>
@@ -64,11 +62,20 @@
       <string>Shade Model</string>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="leftMargin" >
+       <number>9</number>
+      </property>
+      <property name="topMargin" >
+       <number>9</number>
+      </property>
+      <property name="rightMargin" >
+       <number>9</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>9</number>
       </property>
       <item>
        <widget class="QRadioButton" name="SmoothButton" >
@@ -92,7 +99,7 @@
         <property name="sizeHint" >
          <size>
           <width>20</width>
-          <height>40</height>
+          <height>2</height>
          </size>
         </property>
        </spacer>
@@ -112,12 +119,6 @@
       <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <widget class="QRadioButton" name="DitheringButton" >
         <property name="text" >
@@ -148,6 +149,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QRadioButton" name="OcclusionQueryButton" >
+        <property name="text" >
+         <string>Use Occlusion Query</string>
+        </property>
+        <property name="autoExclusive" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -158,15 +169,14 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>20</width>
-       <height>21</height>
+       <width>138</width>
+       <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources/>
  <connections/>
 </ui>

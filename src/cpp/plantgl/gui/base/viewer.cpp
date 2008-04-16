@@ -101,8 +101,8 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
       __EditMenu(0),
       __ToolsMenu(0),
       __service(0),
-      __toolbarsvisibility(0)
-      ,__trayIcon(0)
+      __toolbarsvisibility(0),
+      __trayIcon(0)
 {
 	setObjectName(name);
 #ifdef _WIN32
@@ -615,7 +615,7 @@ void Viewer::addFile(const QString& filename)
 bool Viewer::event(QEvent *e){
 #ifdef DEBUG_EVENTDISPATCH
 	if(e->type() >= ViewEvent::eFirstEvent && e->type() <= ViewEvent::eLastEvent)
-		printf("** receive pgl event\n");
+		printf("* ViewerThread : receive pgl event\n");
 	// else printf("** receive event\n");
 #endif
 	return QMainWindow::event(e);
@@ -624,7 +624,7 @@ bool Viewer::event(QEvent *e){
 
 void  Viewer::customEvent(QEvent *e){
 #ifdef DEBUG_EVENTDISPATCH
-	printf("receive Event\n");
+	printf("ViewerThread : receive Event\n");
 #endif
 #ifdef QT_THREAD_SUPPORT
   bool release_mutex = false;
@@ -633,11 +633,12 @@ void  Viewer::customEvent(QEvent *e){
 #endif
   if(e->type() == ViewEvent::eSceneChange){
 	ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
-    QApplication::sendEvent(__GLFrame->getSceneRenderer(),k->copy());
-      if(!isHidden()){
+    // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
+    __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
+    if(!isHidden()){
         if(!isActiveWindow())
           activateWindow();
-      }
+    }
   }
   else if(e->type() == ViewEvent::eEnd){
     bye();
@@ -762,10 +763,13 @@ void  Viewer::customEvent(QEvent *e){
   if(release_mutex){
 	ViewEvent * k = dynamic_cast<ViewEvent *>(e);
 	if(k->sent_event){
+#ifdef DEBUG_EVENTDISPATCH
+        printf("ViewerThread : ready to wake up caller.\n");
+#endif
 		while(!send_lock_mutex.tryLock());
 		send_lock_mutex.unlock();
 #ifdef DEBUG_EVENTDISPATCH
-		printf("wakeAll\n");
+		printf("ViewerThread : wakeAll\n");
 #endif
 		send_event_condition.wakeAll();
 	}
@@ -780,14 +784,14 @@ void Viewer::send(QEvent * e) {
 	send_event_mutex.lock();
 	bool inthread = (QThread::currentThread() == thread());
 #ifdef DEBUG_EVENTDISPATCH
-	if(inthread)printf("Event dispatch in same thread.\n");
-	else printf("Event dispatch in concurrent threads.\n");
+	if(inthread)printf("** Event dispatch in same thread.\n");
+	else printf("** Event dispatch in concurrent threads.\n");
 #endif
 	if (!inthread){
 #ifdef DEBUG_EVENTDISPATCH
-		printf("QApp thread : %i\n",qApp->thread());
-		printf("Viewer thread : %i\n",thread());
-		printf("Current thread : %i\n", QThread::currentThread());
+		printf("QApp    thread id : %i\n",qApp->thread());
+		printf("Viewer  thread id : %i\n",thread());
+		printf("Current thread id : %i\n", QThread::currentThread());
 #endif
 		ViewEvent * b = dynamic_cast<ViewEvent *>(e);
 		if(b)b->sent_event = true;

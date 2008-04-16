@@ -143,6 +143,8 @@ void export_Polyline2D()
     .def( "getNormalAt", &Polyline2D::getNormalAt, args("u") )
     .def( "split", &py_poly_plit<Polyline2D>, arg("u") )
 	.DEC_PTR_PROPERTY(pointList,Polyline2D,PointList,Point2ArrayPtr)
+    .def("Circle",&Polyline2D::Circle,args("radius","slices"))
+    .staticmethod("Circle")
     ;
   implicitly_convertible<Polyline2DPtr, Curve2DPtr>();
 }

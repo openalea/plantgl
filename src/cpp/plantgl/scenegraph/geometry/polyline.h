@@ -43,6 +43,7 @@
 #include "explicitmodel.h"
 #include "lineicmodel.h"
 #include "curve.h"
+#include "disc.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -160,6 +161,8 @@ class SG_API Polyline2D : public Curve2D
 
 public:
 
+    static Polyline2DPtr Circle(real_t radius = Disc::DEFAULT_RADIUS, uchar_t slices = SOR::DEFAULT_SLICES);
+
   /// A structure which helps to build a Polyline when parsing.
   struct SG_API Builder : public Curve2D::Builder {
 
@@ -254,6 +257,8 @@ public:
 /*  virtual ExplicitModel2DPtr
   transform( const Transformation2DPtr& transformation ) const;
 */
+
+
 protected:
 
   /// The \b PointList field.

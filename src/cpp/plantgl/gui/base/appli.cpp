@@ -44,6 +44,7 @@
 
 ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
 ThreadedData<Viewer> ViewerAppli::VIEWER(0);
+ThreadStateSaverFactory * ViewerAppli::THREADSTATESAVERFACTORY(0);
 
 Viewer * ViewerAppli::build() {
 	if(VIEWERBUILDER) { VIEWER = VIEWERBUILDER->build(); }
@@ -65,10 +66,22 @@ void ViewerAppli::deleteViewer() {
 
 
 void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
+void ViewerAppli::registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) { THREADSTATESAVERFACTORY = tssf; }
 
 void 
 ViewerAppli::sendAnEvent(QEvent *e)
-{ startSession(); getViewer()->send(e); }
+{ 
+    ThreadStateSaver * tss = NULL;
+    if (THREADSTATESAVERFACTORY) {
+        tss = THREADSTATESAVERFACTORY->produceStateSaver();
+        if(tss) tss->pushState();
+    }
+    startSession(); getViewer()->send(e); 
+    if (tss) {
+        tss->popState();
+        delete tss;
+    }
+}
 
 void 
 ViewerAppli::postAnEvent(QEvent *e)

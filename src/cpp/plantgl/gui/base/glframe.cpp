@@ -100,6 +100,74 @@ ViewGLFrame * ViewGLFrame::LAST_GL_FRAME = NULL;
 
 /*  ------------------------------------------------------------------------ */
 
+#define WITH_OCCLUSION_QUERY
+
+#ifdef WITH_OCCLUSION_QUERY
+
+#ifndef GL_ARB_occlusion_query
+    #define GL_ARB_occlusion_query
+
+    #ifndef APIENTRY
+    #define APIENTRY
+    #endif
+    #ifndef APIENTRYP
+    #define APIENTRYP APIENTRY *
+    #endif
+
+    #define GL_QUERY_COUNTER_BITS_ARB         0x8864
+    #define GL_CURRENT_QUERY_ARB              0x8865
+    #define GL_QUERY_RESULT_ARB               0x8866
+    #define GL_QUERY_RESULT_AVAILABLE_ARB     0x8867
+    #define GL_SAMPLES_PASSED_ARB             0x8914
+
+    typedef void (APIENTRYP PFNGLGENQUERIESARBPROC)(GLsizei, GLuint *);
+    typedef void (APIENTRYP PFNGLDELETEQUERIESARBPROC) (GLsizei, const GLuint *);
+    typedef void (APIENTRYP PFNGLBEGINQUERYARBPROC)   (GLenum, GLuint);
+    typedef void (APIENTRYP PFNGLENDQUERYARBPROC)   (GLenum);
+    typedef void (APIENTRYP PFNGLGETQUERYOBJECTIVARBPROC)   (GLuint, GLenum, GLint *);
+
+#endif
+
+static PFNGLGENQUERIESARBPROC          glGenQueriesARB = NULL;
+static PFNGLDELETEQUERIESARBPROC       glDeleteQueriesARB = NULL;
+static PFNGLBEGINQUERYARBPROC          glBeginQueryARB = NULL;
+static PFNGLENDQUERYARBPROC            glEndQueryARB = NULL;
+static PFNGLGETQUERYOBJECTIVARBPROC    glGetQueryObjectivARB = NULL;
+
+bool hasGLExtension(char * extname){
+   QString extensions = (char *)glGetString(GL_EXTENSIONS);
+   return extensions.contains(extname);
+}
+
+bool glInitOcclusionQuery(){
+    static bool tested = false;
+    static bool hasOcclusionQuery = false;
+    if (!tested){
+        tested = true;
+#ifdef GL_ARB_occlusion_query
+        hasOcclusionQuery = hasGLExtension("GL_ARB_occlusion_query")  ;
+        if(!hasOcclusionQuery)printf("OcclusionQuery not supported\n");
+        else{
+            glGenQueriesARB = (PFNGLGENQUERIESARBPROC)QGLContext::currentContext()->getProcAddress("glGenQueriesARB");
+            assert(glGenQueriesARB);
+            glDeleteQueriesARB = (PFNGLDELETEQUERIESARBPROC)QGLContext::currentContext()->getProcAddress("glDeleteQueriesARB");
+            assert(glDeleteQueriesARB);
+            glBeginQueryARB = (PFNGLBEGINQUERYARBPROC)QGLContext::currentContext()->getProcAddress("glBeginQueryARB");
+            assert(glBeginQueryARB);
+            glEndQueryARB = (PFNGLENDQUERYARBPROC)QGLContext::currentContext()->getProcAddress("glEndQueryARB");
+            assert(glEndQueryARB);
+            glGetQueryObjectivARB = (PFNGLGETQUERYOBJECTIVARBPROC)QGLContext::currentContext()->getProcAddress("glGetQueryObjectivARB");
+            assert(glGetQueryObjectivARB); 
+        }
+#endif
+    }
+    return hasOcclusionQuery;
+}
+
+#endif
+
+/*  ------------------------------------------------------------------------ */
+
 /// Create a ViewGLFrame widget
 ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r, const QGLWidget * shareWidget) :
   QGLWidget(  QGLFormat( QGL::AlphaChannel ), parent, shareWidget ),
@@ -115,7 +183,8 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __mode(Rotation),
   __lastSelectionMode(Selection),
   __linedialog(0),
-  __selectionRect(0)
+  __selectionRect(0),
+  __useOcclusionQuery(false)
 {
 	if(name)setObjectName(name);
   /// Creation
@@ -581,7 +650,7 @@ void ViewGLFrame::paintGL()
   }
 
 
-  glFinish();
+  // glFinish();
 
 
 }
@@ -831,26 +900,44 @@ double ViewGLFrame::getPixelWidth(){
 }
 
 int ViewGLFrame::getProjectionPixel(){
+	uint_t projpix = 0;
 	int gridstate = __grid->getState();
 	__grid->setState(0);
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
 	else if(gridstate != 0)updateGL();
+#ifdef WITH_OCCLUSION_QUERY
+    if(__useOcclusionQuery && glInitOcclusionQuery()){
+        makeCurrent();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        GLuint qn;
+        GLint sampleCount;
+        glGenQueriesARB(1,&qn);
+        glBeginQueryARB(GL_SAMPLES_PASSED_ARB, qn);
+        updateGL();
+        glEndQueryARB(GL_SAMPLES_PASSED_ARB);
+        glGetQueryObjectivARB(qn, GL_QUERY_RESULT_ARB,&sampleCount);
+        projpix= sampleCount;
+        glDeleteQueriesARB(1,&qn);
+    }
+    else{
+#endif
+        int w = width();
+        int h = height();
 
-	int w = width();
-	int h = height();
+        int nbpix = w*h;
+        float  * zvalues = new float[nbpix];
+        glReadBuffer(GL_FRONT);
+        glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
 
-	int nbpix = w*h;
-	float  * zvalues = new float[nbpix];
-	glReadBuffer(GL_FRONT);
-	glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
+        float  * zvaluesiter = zvalues;
+        for(uint_t i = 0; i < nbpix; ++i,++zvaluesiter)
+            if(0 < *zvaluesiter && *zvaluesiter < 1) projpix++;
 
-	uint_t projpix = 0;
-	for(uint_t i = 0; i < nbpix; ++i)
-		if(0 < zvalues[i] && zvalues[i] < 1) projpix++;
-
-	delete [] zvalues;
-
+        delete [] zvalues;
+#ifdef WITH_OCCLUSION_QUERY
+    }
+#endif
 	__grid->setState(gridstate);
 	if(mode)__camera->setProjectionMode(mode);
 	else if(gridstate != 0)updateGL();
@@ -1428,6 +1515,7 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 	QObject::connect(glform.NoCullingButton,SIGNAL(toggled(bool)),this,SLOT(glCullNoFace(bool)));
 	QObject::connect(glform.BackFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullBackFace(bool)));
 	QObject::connect(glform.FrontFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullFrontFace(bool)));
+	QObject::connect(glform.OcclusionQueryButton,SIGNAL(toggled(bool)),this,SLOT(useOcclusionQuery(bool)));
 
 
 	glGetIntegerv(GL_SHADE_MODEL,res);
@@ -1448,6 +1536,8 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 	glb = glIsEnabled(GL_NORMALIZE);
 	if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
 	QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
+
+    glform.OcclusionQueryButton->setChecked(__useOcclusionQuery);
 
 	delete res;
 }
@@ -1509,6 +1599,11 @@ ViewGLFrame::animation(bool b){
   ViewSceneRendererGL * r = dynamic_cast<ViewSceneRendererGL *>(__scene);
   if(r)r->useDisplayList(!b);
   __camera->lockDim(b);
+}
+
+void ViewGLFrame::useOcclusionQuery(bool b)
+{
+    __useOcclusionQuery = b;
 }
 
 

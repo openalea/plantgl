@@ -41,13 +41,13 @@
 #include "../gui_config.h"
 #include <plantgl/math/util_vector.h>
 #include "util_threadeddata.h"
+#include "appbuilder.h"
 #include <string>
 #include <vector>
 
 class ViewRayBuffer;
 class ViewZBuffer;
 class QEvent;
-class ViewerBuilder;
 class Viewer;
 
 class ViewerAppli {
@@ -55,11 +55,19 @@ class ViewerAppli {
 protected:
 	static ViewerBuilder * VIEWERBUILDER;
 	static ThreadedData<Viewer> VIEWER;
+    static ThreadStateSaverFactory * THREADSTATESAVERFACTORY;
+
 
 	static Viewer * build();
 
 public:
 	static void setBuilder(ViewerBuilder * builder);
+
+    template<class T>
+    static void registerThreadStateSaver() 
+    { registerThreadStateSaverFatory(new ThreadStateSaverTFactory<T>()); }
+
+    static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
 
 	ViewerAppli();
 	virtual ~ViewerAppli();
