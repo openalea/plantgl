@@ -36,10 +36,12 @@
 
 #include "export_viewer.h"
 #include "../util/extract_list.h"
+#include "../util/extract_widget.h"
 
 #include <boost/python.hpp>
 
 #include <plantgl/gui/viewer/pglapplication.h>
+#include <plantgl/gui/viewer/editgeomscenegl.h>
 #include <plantgl/gui/base/zbuffer.h>
 #include <plantgl/gui/base/appbuilder.h>
 
@@ -416,6 +418,33 @@ bool viewer_wait(){
 	return ViewerApplication::wait();
 }
 
+
+PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost::python::object(),
+                                       char * caption = "", 
+                                       Material * initial = NULL )
+{
+    QWidget * parent  = NULL;
+    if (pyparent != boost::python::object())
+        parent = extract_widget<QWidget>(pyparent)();
+    return getMaterialFromDialog(parent,caption,initial);
+}
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(pyGetMaterialFromDialog_overloads, pyGetMaterialFromDialog, 0, 3)
+
+void pyEditMaterialInDialog(Material * initial,
+                            boost::python::object pyparent = boost::python::object(), 
+                            char * caption = "")
+{
+    QWidget * parent  = NULL;
+    if (pyparent != boost::python::object())
+        parent = extract_widget<QWidget>(pyparent)();
+    return editMaterialInDialog(initial,parent,caption);
+}
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(pyEditMaterialInDialog_overloads, pyEditMaterialInDialog, 1, 3)
+
+
+
 #define LIGHTFUNCWRAP(COLNAME) \
 void setLight##COLNAME(boost::python::object o){ \
   int r = extract<int>(o.attr("red"))(); \
@@ -474,6 +503,9 @@ public :
 void export_viewer()
 {
   ViewerApplication::registerThreadStateSaver<PyStateSaver>();
+
+  def("getMaterialFromDialog", pyGetMaterialFromDialog, pyGetMaterialFromDialog_overloads());
+  def("editMaterialInDialog", pyEditMaterialInDialog, pyEditMaterialInDialog_overloads());
 
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
 	.add_static_property("selection",&selection,&setMSelection)

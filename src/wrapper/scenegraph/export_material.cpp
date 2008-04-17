@@ -73,6 +73,7 @@ struct mat_pickle_suite : boost::python::pickle_suite
 	}
 };
 
+MaterialPtr getDefaultMaterial() { return MaterialPtr::Cast(Material::DEFAULT_MATERIAL); }
 
 void export_Material()
 {
@@ -105,6 +106,7 @@ void export_Material()
   .DEC_CT_PROPERTY_WDV(emission,Material,Emission,Color3,DEFAULT_EMISSION)
   .DEC_BT_PROPERTY_WDV(shininess,Material,Shininess,real_t,DEFAULT_SHININESS)
   .DEC_BT_PROPERTY_WDV(transparency,Material,Transparency,real_t,DEFAULT_TRANSPARENCY)
+  .add_static_property("DEFAULT_MATERIAL",&getDefaultMaterial)
   .def_pickle(mat_pickle_suite());
     ;
 

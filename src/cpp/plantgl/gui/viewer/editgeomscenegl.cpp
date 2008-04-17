@@ -96,12 +96,12 @@ ViewEditMatDialog::ViewEditMatDialog(QWidget * parent,
   QVBoxLayout * l1 = new QVBoxLayout(this);
   l1->addWidget(__matedit);
   QHBoxLayout * l = new QHBoxLayout(this);
-  l1->addLayout(l);
   l->addSpacing(__matedit->width()/3);
-  QPushButton * b = new QPushButton(tr("&Import Clipboard"),this);
-  QObject::connect(b,SIGNAL(pressed()),this,SLOT(importClipboard()));
-  l->addWidget(b);
-  b = new QPushButton(tr("&Apply"),this);
+   __clipboardButton = new QPushButton(tr("&Import Clipboard"),this);
+  QObject::connect(__clipboardButton,SIGNAL(pressed()),this,SLOT(importClipboard()));
+  l->addWidget(__clipboardButton);
+  __clipboardButton->hide();
+  QPushButton * b = new QPushButton(tr("&Apply"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(apply()));
   l->addWidget(b);
   b = new QPushButton(tr("&Reset"),this);
@@ -113,6 +113,7 @@ ViewEditMatDialog::ViewEditMatDialog(QWidget * parent,
   b = new QPushButton(tr("&Cancel"),this);
   QObject::connect(b,SIGNAL(pressed()),this,SLOT(cancel()));
   l->addWidget(b);
+  l1->addLayout(l);
 }
 
 void 
@@ -127,6 +128,7 @@ void
 ViewEditMatDialog::setClipboardMaterial(PGL(AppearancePtr)* clipboard)
 {
 	__clipboard = clipboard;
+    __clipboardButton->show();
 }
 
 void
@@ -163,6 +165,29 @@ void ViewEditMatDialog::importClipboard()
 		__matedit->setMaterial(new Material(*clipboard));
 		// emit valueChanged();
 	}
+}
+
+/* ----------------------------------------------------------------------- */
+
+MaterialPtr getMaterialFromDialog(QWidget * parent, 
+                                  char * caption, 
+                                  MaterialPtr initial)
+{
+    ViewEditMatDialog dialog(parent,caption,true);
+    dialog.setWindowTitle(caption);
+    if(initial)   dialog.setMaterial(MaterialPtr::Cast(initial->copy()));
+    else dialog.setMaterial(MaterialPtr::Cast(Material::DEFAULT_MATERIAL));
+    dialog.exec();
+    return dialog.getMaterial();
+}
+
+void editMaterialInDialog(MaterialPtr initial,QWidget * parent, char * caption)
+{
+    ViewEditMatDialog dialog(parent,caption,true);
+    dialog.setWindowTitle(caption);
+    if(initial)dialog.setMaterial(initial);
+    else return;
+    dialog.exec();
 }
 
 

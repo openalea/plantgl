@@ -50,6 +50,7 @@
 
 
 class MaterialEditor;
+class QPushButton;
 
 class VIEW_API  ViewEditMatDialog : public ViewDialog {
   Q_OBJECT
@@ -83,8 +84,16 @@ protected:
   PGL(MaterialPtr) __appe;
   PGL(MaterialPtr) __default;
   PGL(AppearancePtr)* __clipboard;
+  QPushButton * __clipboardButton;
 };
 
+PGL(MaterialPtr) VIEW_API getMaterialFromDialog(QWidget * parent = NULL, 
+                                                char * caption = "", 
+                                                PGL(MaterialPtr) initial = NULL);
+
+void VIEW_API editMaterialInDialog(PGL(MaterialPtr) initial,
+                                   QWidget * parent = NULL, 
+                                   char * caption = "");
 
 /* ----------------------------------------------------------------------- */
 

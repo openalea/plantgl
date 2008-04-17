@@ -56,7 +56,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
+				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib QtGuid4.lib"
 				OutputFile="../../plantgl_d/gui/_pglgui_d.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
 				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_34_1.lib"
@@ -128,7 +128,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
+				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib QtGui4.lib"
 				OutputFile="../../plantgl/gui/_pglgui.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
