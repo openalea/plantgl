@@ -67,6 +67,7 @@ void ViewerAppli::deleteViewer() {
 
 void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
 void ViewerAppli::registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) { THREADSTATESAVERFACTORY = tssf; }
+void ViewerAppli::cleanThreadStateSaverFatory() { delete THREADSTATESAVERFACTORY; THREADSTATESAVERFACTORY = NULL; }
 
 void 
 ViewerAppli::sendAnEvent(QEvent *e)

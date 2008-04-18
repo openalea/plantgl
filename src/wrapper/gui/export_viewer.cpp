@@ -57,7 +57,7 @@ public:
     ~PyStateSaver() { if (_state) popState(); }
 
     virtual void pushState () { _state = PyEval_SaveThread(); }
-    virtual void popState () { PyEval_RestoreThread(_state); _state = NULL; }
+    virtual void popState () { if(_state)PyEval_RestoreThread(_state); _state = NULL; }
 
 protected:
     PyThreadState *_state;
@@ -696,12 +696,18 @@ void initViewer()
 }
 
 
+void ShutDownViewer()
+{
+    ViewerApplication::cleanThreadStateSaverFatory();
+    ViewerApplication::exit();
+}
+
 void cleanViewer() 
 {
   static bool RegisterCleanViewer = false;
   if (! RegisterCleanViewer)
   {
-	  Py_AtExit( &ViewerApplication::exit );
+	  Py_AtExit( &ShutDownViewer );
 	  RegisterCleanViewer = true;
   }
 }

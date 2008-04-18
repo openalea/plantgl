@@ -199,6 +199,7 @@ public :
   { registerThreadStateSaverFatory(new ThreadStateSaverTFactory<T>()); }
 
   static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
+  static void cleanThreadStateSaverFatory() ;
 
 protected :
 

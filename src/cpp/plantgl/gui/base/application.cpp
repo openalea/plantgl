@@ -270,6 +270,11 @@ void ViewerApplication::registerThreadStateSaverFatory(ThreadStateSaverFactory *
     ViewerAppli::registerThreadStateSaverFatory(tssf);
 }
 
+void ViewerApplication::cleanThreadStateSaverFatory() 
+{
+    ViewerAppli::cleanThreadStateSaverFatory();
+}
+
 void
 ViewerApplication::setSelection(const vector<uint_t>& sel) {
   _sendAnEvent(new ViewSelectionSet(sel));
