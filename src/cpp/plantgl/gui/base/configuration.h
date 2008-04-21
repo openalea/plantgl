@@ -54,7 +54,7 @@ public:
 	static const QStringList& getArgs() { return args; }
 
 	static void setAppliName(const QString& appliname);
-	static const QString& getAppliName() { return appliname; }
+	static const QString& getAppliName() ;
 	static const QString& getAppliDir() { return applidir; }
 
 	ViewerSettings();

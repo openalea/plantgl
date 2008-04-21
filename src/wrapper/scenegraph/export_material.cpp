@@ -100,6 +100,7 @@ void export_Material()
 
   .def( "__str__", mat_str )
   .def( "__repr__", mat_str )
+  .def( "isSimilar", &Material::isSimilar)
   .DEC_CT_PROPERTY_WDV(ambient,Material,Ambient,Color3,DEFAULT_AMBIENT)
   .DEC_BT_PROPERTY_WDV(diffuse,Material,Diffuse,real_t,DEFAULT_DIFFUSE)
   .DEC_CT_PROPERTY_WDV(specular,Material,Specular,Color3,DEFAULT_SPECULAR)

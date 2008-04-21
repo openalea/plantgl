@@ -65,7 +65,7 @@ void ViewerSettings::setArgs(int argc, char** argv)
 #endif
 		}
 	}
-	if(getAppliName().isEmpty()){
+	if(appliname.isEmpty()){
 		setAppliName("PlantGLViewer");
 	}
 #if QT_VERSION >= 0x040000
@@ -77,6 +77,12 @@ void ViewerSettings::setArgs(int argc, char** argv)
 void ViewerSettings::setAppliName(const QString& _appliname)
 {
 	appliname = _appliname;
+}
+
+const QString& ViewerSettings::getAppliName() 
+{ 
+    if(appliname.isEmpty()) setAppliName("PlantGLViewer");
+    return appliname; 
 }
 
 ViewerSettings::ViewerSettings():

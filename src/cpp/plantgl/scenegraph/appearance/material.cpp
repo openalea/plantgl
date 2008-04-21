@@ -284,3 +284,12 @@ bool Material::isTransparencyToDefault( ) const {
   return fabs(__transparency - DEFAULT_TRANSPARENCY) < GEOM_EPSILON;
 }
 
+bool Material::isSimilar(const Material& other) const
+{
+    return __ambient == other.__ambient    &&
+           __diffuse == other.__diffuse   &&
+           __specular == other.__specular &&
+           __emission == other.__emission &&
+           __shininess == other.__shininess &&
+           __transparency == other.__transparency;
+}
