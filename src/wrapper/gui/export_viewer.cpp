@@ -52,16 +52,16 @@ public:
     ~PyStateSaver() { if (_state) popState(); }
 
     virtual void pushState () { 
-        _state = PyThreadState_Swap(NULL);
-        PyEval_ReleaseLock();
-        // _state = PyEval_SaveThread(); 
+        // _state = PyThreadState_Swap(NULL);
+        // PyEval_ReleaseLock();
+        _state = PyEval_SaveThread(); 
     }
     virtual void popState () 
     { 
         if(_state){
-            PyEval_AcquireLock();
-            PyThreadState_Swap(_state);
-            // PyEval_RestoreThread(_state); 
+            // PyEval_AcquireLock();
+            // PyThreadState_Swap(_state);
+            PyEval_RestoreThread(_state); 
             _state = NULL; 
         }
     }

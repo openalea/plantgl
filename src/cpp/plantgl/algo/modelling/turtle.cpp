@@ -324,7 +324,7 @@ void Turtle::down(real_t angle){
 	__params->up = m*__params->up;
   }
   
-void Turtle::rollR(real_t angle){
+void Turtle::rollL(real_t angle){
 	real_t ra = angle * GEOM_RAD;
 	Matrix3 m = Matrix3::axisRotation(__params->heading,ra);
 	__params->up = m*__params->up;

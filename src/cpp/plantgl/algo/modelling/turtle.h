@@ -147,13 +147,13 @@ public:
 	inline void rollL() { rollL(angle_increment); }
 
 	/// Roll in the left direction of angle degrees
-    virtual void rollL(real_t angle) { rollR(-angle); }
+    virtual void rollL(real_t angle);
     
 	/// Roll in the right direction of default angle
     inline void rollR() { rollR(angle_increment); }
 
 	/// Roll in the right direction of angle degrees
-    virtual void rollR(real_t angle);
+    virtual void rollR(real_t angle)  { rollL(-angle); }
     
 	/// Roll such as up vector comes in the Z direction
     inline void rollToVert() { rollToVert(TOOLS(Vector3::OZ)); }
