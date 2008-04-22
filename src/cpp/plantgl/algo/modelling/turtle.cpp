@@ -293,20 +293,26 @@ void Turtle::stop(){
   }
   
   void Turtle::f(real_t length){
-	__params->position += __params->heading*length*getScale().z();
-	if (__params->isGeneralizedCylinderOn() ||
-	  __params->isPolygonOn())
-	  __params->pushPosition();
+      if(length > 0){
+          __params->position += __params->heading*length*getScale().z();
+          if (__params->isGeneralizedCylinderOn() ||
+              __params->isPolygonOn())
+              __params->pushPosition();
+      }
+      else error("f length should be positive non null.");
   }
   
   void Turtle::F(real_t length,real_t topdiam){
-	if (!__params->isGeneralizedCylinderOn() && 
-	  ! __params->isPolygonOn()){
-	  if (topdiam < GEOM_EPSILON) _cylinder(length);
-	  else _frustum(length,topdiam);
-	}
-	if (topdiam > GEOM_EPSILON ) setWidth(topdiam);
-	f(length);
+      if(length > 0){
+          if (!__params->isGeneralizedCylinderOn() && 
+              ! __params->isPolygonOn()){
+                  if (topdiam < GEOM_EPSILON) _cylinder(length);
+                  else _frustum(length,topdiam);
+          }
+          if (topdiam > GEOM_EPSILON ) setWidth(topdiam);
+          f(length);
+      }
+      else error("F length should be positive non null.");
   }
 
 
