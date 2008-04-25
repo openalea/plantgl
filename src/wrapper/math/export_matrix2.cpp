@@ -64,21 +64,6 @@ object py_svd (const Matrix2& m){
     return make_tuple(rot,make_tuple(lambda1, lambda2));
 }
 
-object py_strain (const Matrix2& m ){
-    real_t epsilon1, epsilon2;
-    Matrix2 rot = strain(m,epsilon1, epsilon2);
-    return make_tuple(rot,make_tuple(epsilon1, epsilon2));
-}
-
-object py_strain4 (const Vector2& i1,
-               const Vector2& j1,
-               const Vector2& i2,
-               const Vector2& j2){
-    real_t epsilon1, epsilon2;
-    Matrix2 rot = strain(i1,j1,i2,j2,epsilon1, epsilon2);
-    return make_tuple(rot,make_tuple(epsilon1, epsilon2));
-}
-
 void export_Matrix2()
 {
   class_< Matrix2 >( "Matrix2", init< optional<real_t,real_t,real_t,real_t> >("Matrix2(f,f,f,f)") )
@@ -88,13 +73,16 @@ void export_Matrix2()
   .def( "__str__", m2_repr )
   .def( "__repr__", m2_repr )
   .def( "svd",&py_svd, "Singular Value Decomposition of a Matrix2. Return rotation matrix and the two singular values.")
+  //.def( "diagonal", &Matrix2::diagonal, args("val1","val2"))
+  //.staticmethod("diagonal")
   .def( "rotation", &Matrix2::rotation, args("angle"))
   .staticmethod("rotation")
   .def( "linearTransformation", &Matrix2::linearTransformation, args("i1","j1","i2","j2"))
   .staticmethod("linearTransformation")
   ;
 
-  def ("strain",&py_strain,args("transformation"),"Return strain decomposition as a rotation matrix and two main strain values") ;
-  def ("strain",&py_strain4,args("i1","j1","i2","j2")) ;
+  def ("strain",(Matrix2 (*) (const Matrix2&))& strain,args("transformation"),"Return the engineering strain associated to the transformation") ;
+  def ("strain",(Matrix2 (*) (const Vector2&,const Vector2&,const Vector2&,const Vector2&))& strain,args("i1","j1","i2","j2")) ;
+  def ("stress",&stress,args("strain","material"),"Return the stress associated to a given strain using Hook's law");
 }
 

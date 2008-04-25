@@ -36,6 +36,7 @@
     \brief File that contains some deformation utility.
 */
 
+#include "util_vector.h"
 #include "linearalgebra.h"
 
 /* ----------------------------------------------------------------------- */
@@ -45,29 +46,28 @@ TOOLS_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 /**
-    \brief compute singular value decomposition of a symmetric Matrix2
-	\pre matrix is symmetric
+    \brief compute the engineering strain of a given transformation
 */
 
-inline Matrix2 strain(const Matrix2& transformation, real_t& epsilon1, real_t& epsilon2) {
-    Matrix2 rot = svd( transpose(transformation)*transformation,
-                  epsilon1,
-                  epsilon2);
-    epsilon1 = (epsilon1-1)/2.;
-    epsilon2 = (epsilon2-1)/2.;
-    return rot;
+inline Matrix2 strain(const Matrix2& transformation) {
+    return (transpose(transformation)*transformation-Matrix2::IDENTITY)/2.;
 }
 
 inline Matrix2 strain(const Vector2& i1,
                const Vector2& j1,
                const Vector2& i2,
-               const Vector2& j2,
-               real_t& epsilon1,
-               real_t& epsilon2) {
-    return strain(Matrix2::linearTransformation(i1,j1,i2,j2),epsilon1,epsilon2);
+               const Vector2& j2) {
+    return strain(Matrix2::linearTransformation(i1,j1,i2,j2));
 }
 
-
+/**
+    \brief compute the stress associated to a strain using Hook's law
+*/
+Matrix2 stress (const Matrix2& strain, const Matrix3& material) {
+	Vector3 strain_vec(strain(0,0),strain(1,1),strain(0,1));
+	Vector3 stress_vec = material * strain_vec;
+	return Matrix2(stress_vec.x(),stress_vec.z(),stress_vec.z(),stress_vec.y());
+}
 
 /* ----------------------------------------------------------------------- */
 

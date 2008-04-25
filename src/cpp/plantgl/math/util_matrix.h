@@ -192,6 +192,11 @@ public:
   /** Returns the rotation matrix corresponding to angle \e angle. 
       \warning angle must be in radians.
   */
+  static Matrix2 diagonal(const real_t val1, const real_t val2);
+
+  /** Returns the rotation matrix corresponding to angle \e angle. 
+      \warning angle must be in radians.
+  */
   static Matrix2 rotation(const real_t angle);
 
   /** compute the matrix of the transformation

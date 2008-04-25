@@ -247,6 +247,10 @@ std::ostream& operator<<( std::ostream& stream, const Matrix2& m ) {
 }
 
 /*  --------------------------------------------------------------------- */
+Matrix2 Matrix2::diagonal(const real_t val1, const real_t val2) {
+       return Matrix2(val1,0,0,val2);	
+}
+
 Matrix2 Matrix2::rotation(const real_t angle) { 
     real_t c = cos(angle);
     real_t s = sin(angle);
