@@ -72,6 +72,7 @@ setup(
                    pkg_name+'.wralea' :pj( 'src', name, 'wralea' ),
                    pkg_name+'.ext' :pj( 'src', name, 'ext' ),
                    pkg_name+'.codec' :pj( 'src', name, 'codec' ),
+                   '' : 'src',
                    },
 
                    
