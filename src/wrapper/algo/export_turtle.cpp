@@ -41,9 +41,14 @@ void py_error_handler(const std::string& msg){
 	throw_error_already_set();
 }
 
+void py_warning_handler(const std::string& msg){
+    PyErr_WarnEx(PyExc_Warning,msg.c_str(),1);
+}
+
 void export_Turtle()
 {
     Turtle::register_error_handler(&py_error_handler);
+    Turtle::register_warning_handler(&py_warning_handler);
 
 
   class_< Turtle >("Turtle", init< optional<TurtleParam * > >("Turtle([TurtleParam]) -> Create Turtle"))

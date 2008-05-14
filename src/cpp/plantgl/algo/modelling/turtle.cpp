@@ -57,9 +57,13 @@ TOOLS_USING_NAMESPACE
 /*----------------------------------------------------------*/
 
 Turtle::error_msg_handler_func ERROR_FUNC = NULL;
+Turtle::error_msg_handler_func WARNING_FUNC = NULL;
 
 void Turtle::register_error_handler(Turtle::error_msg_handler_func f)
 { ERROR_FUNC = f; }
+
+void Turtle::register_warning_handler(Turtle::error_msg_handler_func f)
+{ WARNING_FUNC = f; }
 
 void Turtle::error(const std::string& msg){
     if (ERROR_FUNC != NULL) ERROR_FUNC(msg);
@@ -67,6 +71,7 @@ void Turtle::error(const std::string& msg){
 }
 
 void Turtle::warning(const std::string& msg){
+    if (WARNING_FUNC != NULL) WARNING_FUNC(msg);
     std::cerr << "*** WARNING : " << msg << std::endl;
 }
 
@@ -299,7 +304,8 @@ void Turtle::stop(){
               __params->isPolygonOn())
               __params->pushPosition();
       }
-      else error("f length should be positive non null.");
+      else if(fabs(length) < GEOM_EPSILON) warning("f length should be non null.");
+      else error("f length should be positive.");
   }
   
   void Turtle::F(real_t length,real_t topdiam){
@@ -312,7 +318,8 @@ void Turtle::stop(){
           if (topdiam > GEOM_EPSILON ) setWidth(topdiam);
           f(length);
       }
-      else error("F length should be positive non null.");
+      else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
+      else error("F length should be positive.");
   }
 
 

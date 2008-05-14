@@ -55,10 +55,12 @@ public:
         // _state = PyThreadState_Swap(NULL);
         // PyEval_ReleaseLock();
         _state = PyEval_SaveThread(); 
+        // Py_BEGIN_ALLOW_THREADS
     }
     virtual void popState () 
     { 
         if(_state){
+            // Py_END_ALLOW_THREADS
             // PyEval_AcquireLock();
             // PyThreadState_Swap(_state);
             PyEval_RestoreThread(_state); 

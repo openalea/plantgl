@@ -34,8 +34,9 @@ void export_Sequencer(){
 
   class_<Sequencer>
 	("Sequencer", init<optional<double> >("Sequencer([timestep])"))
-	.def("__call__", &Sequencer::touch)
-	.def("touch", &Sequencer::touch)
+	.def("__call__", (void(Sequencer::*)())&Sequencer::touch)
+	.def("touch", (void(Sequencer::*)())&Sequencer::touch)
+	.def("touch", (void(Sequencer::*)(double))&Sequencer::touch,args("next_timestep"))
 	.add_property("timeStep",&Sequencer::getTimeStep,&Sequencer::setTimeStep)
 	.def("elapsedTime",&Sequencer::elapsedTime)
 	.def("ok", &Sequencer::ok)

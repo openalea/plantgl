@@ -65,6 +65,7 @@ public:
   timestep msec has been spend
   Else sleep remaining time */
   void touch();
+  void touch(double nexttimestep);
 
   void sleep(double) const;
 

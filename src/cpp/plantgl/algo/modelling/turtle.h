@@ -40,6 +40,7 @@ class ALGO_API Turtle {
 public:
     typedef void (* error_msg_handler_func) ( const std::string& );
     static void register_error_handler(error_msg_handler_func f = NULL);
+    static void register_warning_handler(error_msg_handler_func f = NULL);
 
     Turtle(TurtleParam * params = NULL);
     virtual ~Turtle();

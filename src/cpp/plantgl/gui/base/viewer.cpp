@@ -770,8 +770,8 @@ void  Viewer::customEvent(QEvent *e){
 #ifdef DEBUG_EVENTDISPATCH
 		printf("ViewerThread : wakeAll\n");
 #endif
-		send_event_condition.wakeAll();
 		send_lock_mutex.unlock();
+		send_event_condition.wakeAll();
 	}
   }
 #endif

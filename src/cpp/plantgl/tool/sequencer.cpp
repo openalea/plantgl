@@ -38,6 +38,11 @@ Sequencer::touch(){
   }
 }
 
+void Sequencer::touch(double nexttimestep){
+    touch();
+    setTimeStep(nexttimestep);
+}
+
 void Sequencer::_sleep(clock_t wait) const {
    clock_t goal;
    goal = wait + clock();

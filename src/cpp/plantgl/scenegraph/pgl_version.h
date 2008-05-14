@@ -45,7 +45,7 @@
 #include "sg_config.h"
 
 /// PGL Version macro
-#define PGL_VERSION 2.0
+#define PGL_VERSION 2.3
 #define PGL_RELEASE 0
 
 #include <string>
