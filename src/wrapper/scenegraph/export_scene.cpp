@@ -141,24 +141,28 @@ void sc_delitem( Scene* s, size_t pos )
 }
 
 ScenePtr sc_iadd1(Scene* s ,Shape3DPtr sh){
-  s->add(sh);
+  if(sh)s->add(sh);
   return s;
 }
 
 ScenePtr sc_iadd2(Scene* s ,Scene* s2){
-  s->merge(s2);
+  if(s2)s->merge(s2);
   return s;
 }
 
 ScenePtr sc_iadd3(Scene* s ,GeometryPtr sh){
-	s->add(Shape3DPtr(new Shape(sh,Material::DEFAULT_MATERIAL)));
-	return s;
+  if(sh)s->add(Shape3DPtr(new Shape(sh,Material::DEFAULT_MATERIAL)));
+  return s;
 }
 
 ScenePtr sc_add(Scene* s ,Scene* s2){
-  ScenePtr s3 = ScenePtr(new Scene(*s));
-  s3->merge(s2);
-  return s3;
+  if(s && s2){
+    ScenePtr s3 = ScenePtr(new Scene(*s));
+    s3->merge(s2);
+    return s3;
+  }
+  else if (s) return ScenePtr(new Scene(*s));
+  else return ScenePtr(new Scene());
 }
 void sc_read(Scene* s ,const std::string& fname){
 	s->read(fname);

@@ -63,11 +63,11 @@ void export_VrmlPrinter()
     .def("setCamera",&VrmlPrinter::setCamera,( const char* )"setCamera (Vector3 position, real_t az, real_t el, name)")
     ;
 
-  class_< PyStrVrmlPrinter, bases< VrmlPrinter, PyStrPrinter >, boost::noncopyable > 
+  class_< PyStrVrmlPrinter, bases< PyStrPrinter, VrmlPrinter >, boost::noncopyable > 
 	  ("StrVrmlPrinter", init<Discretizer&>("String Printer in Vrml format", args("t")) )
     ;
 
-  class_< PyFileVrmlPrinter, bases< VrmlPrinter, PyFilePrinter >, boost::noncopyable > 
+  class_< PyFileVrmlPrinter, bases< PyFilePrinter, VrmlPrinter >, boost::noncopyable > 
 		("FileVrmlPrinter", init<const std::string&,Discretizer&>("File Printer in Vrml format", args("fname","t")) )
     ;
 

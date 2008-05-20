@@ -90,17 +90,17 @@ void print_header(Printer * p, const std::string comment)
 void export_PglPrinter()
 {
  class_< Printer, bases< Action >, boost::noncopyable > ( "PglPrinter" , no_init )
-    .def("clear",&Printer::clear)
+    .def("clearCache",&Printer::clear)
     .def("addIndent",&Printer::addIndent)
     .def("isPrinted",&Printer::isPrinted)
     .def("header",&print_header0)
     .def("header",&print_header)
     ;
 
-  class_< PyStrPGLPrinter , bases< Printer, PyStrPrinter > , boost::noncopyable> 
+  class_< PyStrPGLPrinter , bases< PyStrPrinter, Printer > , boost::noncopyable> 
 	  ("PglStrPrinter",init<>("String Printer in PGL format" ));
 
-  class_< PyFilePGLPrinter , bases< Printer, PyFilePrinter > , boost::noncopyable> 
+  class_< PyFilePGLPrinter , bases< PyFilePrinter, Printer > , boost::noncopyable> 
 	  ("PglFilePrinter",init<const std::string&>("File Printer in PGL format",args("filename")) );
     ;
 }

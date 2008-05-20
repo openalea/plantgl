@@ -55,7 +55,7 @@ class PyStrPrinter {
 		/// resulting string
 		std::string str() { return _mystream.str(); }
 		/// clear the buffer
-		void clear() { return _mystream.clear(); }
+        void clear() { return _mystream.clear(); }
 };
 
 /* ----------------------------------------------------------------------- */

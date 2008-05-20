@@ -61,11 +61,11 @@ void export_VgstarPrinter()
   class_<VgstarPrinter,bases < MatrixComputer > > ("VgstarPrinter",no_init)
     ;
 
-  class_< PyStrVgstarPrinter, bases< VgstarPrinter, PyStrPrinter >, boost::noncopyable > 
+  class_< PyStrVgstarPrinter, bases< PyStrPrinter, VgstarPrinter >, boost::noncopyable > 
 	  ("VgStarStrPrinter", init<Tesselator&>("String Printer in VgStar format", args("t")) )
     ;
 
-  class_< PyFileVgstarPrinter, bases< VgstarPrinter, PyFilePrinter >, boost::noncopyable > 
+  class_< PyFileVgstarPrinter, bases< PyFilePrinter, VgstarPrinter >, boost::noncopyable > 
 		("VgStarFilePrinter", init<const std::string&,Tesselator&>("File Printer in VgStar format", args("fname","t")) )
     ;
 

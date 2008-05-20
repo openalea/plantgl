@@ -64,11 +64,11 @@ void export_PovPrinter()
     .def("setBackground",&PovPrinter::setBackGround, "setBackGround(Color3 color)",args("color"))
     ;
 
-  class_< PyStrPovPrinter, bases< PovPrinter, PyStrPrinter >, boost::noncopyable > 
+  class_< PyStrPovPrinter, bases< PyStrPrinter, PovPrinter >, boost::noncopyable > 
 	  ("PovStrPrinter", init<Tesselator&>("String Printer in Povray format", args("t")) )
     ;
 
-  class_< PyFilePovPrinter, bases< PovPrinter, PyFilePrinter >, boost::noncopyable > 
+  class_< PyFilePovPrinter, bases< PyFilePrinter, PovPrinter >, boost::noncopyable > 
 		("PovFilePrinter", init<const std::string&,Tesselator&>("File Printer in Povray format", args("fname","t")) )
     ;
 }
