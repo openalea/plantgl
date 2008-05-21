@@ -39,8 +39,11 @@ import openalea.plantgl.all as pgl
 from openalea.plantgl.ext.pgl_utils import sphere, arrow, color, createSwung
 from openalea.core import *
 
-houppier_material = pgl.Material("houppier_mat",pgl.Color3(20,100,60))
-trunk_material = pgl.Material("trunk_material",pgl.Color3(50,28,6),2)
+def houppier_material(r=20,g=100,b=60):
+  return pgl.Material("houppier_mat",pgl.Color3(r,g,b),0.5)
+
+def trunk_material(r=50, g=28, b=6):
+  return pgl.Material("trunk_material",pgl.Color3(r,g,b),2)
 
 from math import pi, cos, sin, radians
   
@@ -75,8 +78,8 @@ def viewMesures( file):
 #treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette1.csv')
 #treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette3.csv')
 def asymetric_swung( obj , **kwds ):
-  X_attr = kwds.get('X', 'X')
-  Y_attr = kwds.get('Y', 'Y')
+  X_attr = kwds.get('X_attr', 'X')
+  Y_attr = kwds.get('Y_attr', 'Y')
   pos_dist = kwds.get('dist', 'Distance')
   pos_az = kwds.get('az', 'Azimuth')
   circ_attr = kwds.get('circ_attr', 'Circonference')
@@ -86,6 +89,7 @@ def asymetric_swung( obj , **kwds ):
   azimuthHoup_prefix = kwds.get('azimuthHoup_prefix', 'a_houp')
   midCrown = kwds.get('midCrown', 0.8)
   wood = kwds.get( 'wood', True )
+  rgb = kwds.get('rgb', None)
 
   rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
   rd_kz.sort()
@@ -113,8 +117,14 @@ def asymetric_swung( obj , **kwds ):
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100), createSwung(ht*mc,ht,radii) )
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
-  s_h = pgl.Shape(h, houppier_material, obj.pid)
-  s_tr = pgl.Shape(tr, trunk_material, obj.pid+100000)
+  if rgb == None:
+    s_h = pgl.Shape(h, houppier_material(), obj.pid)
+  else :
+    r,g,b = rgb
+    s_h = pgl.Shape(h, houppier_material(r,g,b), obj.pid)
+
+  s_tr = pgl.Shape(tr, trunk_material(), obj.pid+100000)
+
   if wood:
     return ( s_h, s_tr )
   else :
@@ -139,6 +149,7 @@ def spheres( obj , **kwds ):
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
   radiusHoup = kwds.get('radiusHoup', None)
   wood = kwds.get( 'wood', True )
+  rgb = kwds.get('rgb', None)
 
   if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
     try :
@@ -146,7 +157,7 @@ def spheres( obj , **kwds ):
       a = obj.__dict__[pos_az]
       obj.posX = r*cos( radians(forest2geomAZ(a)) )
       obj.posY = r*sin( radians(forest2geomAZ(a)) )
-    except AttributeError: 
+    except KeyError: 
       obj.posX = obj.__dict__[X_attr]
       obj.posY = obj.__dict__[Y_attr]
 
@@ -159,8 +170,14 @@ def spheres( obj , **kwds ):
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 + sph_radius), pgl.Sphere(sph_radius,10,5) )
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
-  s_h = pgl.Shape(h, houppier_material, obj.pid)
-  s_tr = pgl.Shape(tr, trunk_material, obj.pid+100000)
+  if rgb == None:
+    s_h = pgl.Shape(h, houppier_material(), obj.pid)
+  else :
+    r,g,b = rgb
+    s_h = pgl.Shape(h, houppier_material(r,g,b), obj.pid)
+
+  s_tr = pgl.Shape(tr, trunk_material(), obj.pid+100000)
+
   if wood:
     return ( s_h, s_tr )
   else :
@@ -176,6 +193,7 @@ def cones( obj , **kwds ):
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
   radiusHoup = kwds.get('radiusHoup', None)
   wood = kwds.get( 'wood', True )
+  rgb = kwds.get('rgb', None)
 
   if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
     try :
@@ -183,7 +201,7 @@ def cones( obj , **kwds ):
       a = obj.__dict__[pos_az]
       obj.posX = r*cos( radians(forest2geomAZ(a)) )
       obj.posY = r*sin( radians(forest2geomAZ(a)) )
-    except AttributeError: 
+    except KeyError: 
       obj.posX = obj.__dict__[X_attr]
       obj.posY = obj.__dict__[Y_attr]
 
@@ -196,8 +214,14 @@ def cones( obj , **kwds ):
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 ), pgl.Cone(cone_radius,ht,1,12) )
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
-  s_h = pgl.Shape(h, houppier_material, obj.pid)
-  s_tr = pgl.Shape(tr, trunk_material, obj.pid+100000)
+  if rgb == None:
+    s_h = pgl.Shape(h, houppier_material(), obj.pid)
+  else :
+    r,g,b = rgb
+    s_h = pgl.Shape(h, houppier_material(r,g,b), obj.pid)
+
+  s_tr = pgl.Shape(tr, trunk_material(), obj.pid+100000)
+
   if wood:
     return ( s_h, s_tr )
   else :
@@ -224,14 +248,16 @@ class dresser( Node ):
 
         funs= self.geom_func.keys()
         funs.sort()
-        self.add_input( name = "Type", interface = IEnumStr(funs), value = funs[0]) 
+        self.add_input( name = "Type", interface = IEnumStr(funs), value = funs[0])
+        self.add_input(name = "Params", interface = IDict, value = {'X_attr': 'X','Y_attr': 'Y'})
         self.add_output( name = "Geometry function", interface = None)
 
     def __call__(self, inputs):
         func_name= self.get_input("Type")
+        dico = self.get_input("Params")
         f = self.geom_func[func_name]
         self.set_caption(func_name)
 
-        return f
+        return lambda x : f(x, **dico)
 
 
