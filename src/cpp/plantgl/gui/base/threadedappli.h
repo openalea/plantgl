@@ -68,7 +68,7 @@ class ViewerThreadedAppli : public ViewerAppli, public QThread {
     virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
 
-	virtual const std::vector<uint_t> getSelection();
+	virtual std::vector<uint_t> getSelection();
 
 protected:
 

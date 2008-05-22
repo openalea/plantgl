@@ -127,7 +127,7 @@ ViewerApplication::setBashMode(bool m){
 }
 
 
-const vector<uint_t>
+vector<uint_t>
 ViewerApplication::getSelection() {
   if(VIEWER_APPLI)return VIEWER_APPLI->getSelection();
   else return vector<uint_t>();

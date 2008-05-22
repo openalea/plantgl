@@ -102,8 +102,8 @@ public:
 
 	/// Set Id
     virtual void setId(uint_t i) { id = i; }
-    void incId();
-    void decId() ;
+    void incId(uint_t i = 1);
+    void decId(uint_t i = 1) ;
 
 	/// Move of l step in heading direction
     inline void f() { f(default_step); }

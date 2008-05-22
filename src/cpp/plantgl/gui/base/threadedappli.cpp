@@ -165,7 +165,7 @@ ViewerThreadedAppli::run(){
 	join();
 }
 
-const std::vector<uint_t>
+std::vector<uint_t>
 ViewerThreadedAppli::getSelection() {
 	std::vector<uint_t> res;
     if(running()){

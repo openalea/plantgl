@@ -93,7 +93,7 @@ ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }
 ViewerAppli::~ViewerAppli(){  }
 
 
-const std::vector<uint_t>
+std::vector<uint_t>
 ViewerAppli::getSelection() {
 	std::vector<uint_t> res;
     if(running()){

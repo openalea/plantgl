@@ -240,15 +240,15 @@ void Turtle::start(){
 	reset();
 }
 
-void Turtle::incId() 
+void Turtle::incId(uint_t i) 
 { 
-    if (getId() < UINT32_MAX) setId(getId()+1); 
+    if (getId() <= UINT32_MAX-i) setId(getId()+i); 
     else error("Id should be a valid positive value."); 
 }
 
-void Turtle::decId() 
+void Turtle::decId(uint_t i) 
 { 
-    if (getId() > 0) setId(getId()-1); 
+    if (getId() >= i) setId(getId()-i); 
     else error("Id should be a valid positive value."); 
 }
 
