@@ -71,6 +71,7 @@ void export_BezierPatch()
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
     .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
+    .def("getPointAt",&BezierPatch::getPointAt)
     ;
 
   implicitly_convertible< BezierPatchPtr,PatchPtr >();
