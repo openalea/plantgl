@@ -22,7 +22,7 @@ def test_sphere():
     surf = 3.141592; vol = 0.5236
     assert_geom(geom, surf, vol)
     geom.radius *= 2
-    assert_geom(sphere, surf*4,vol*8, epsilon*8) 
+    assert_geom(geom, surf*4,vol*8, epsilon*8) 
 
 def test_cone():
     geom = Cone()
@@ -33,4 +33,8 @@ def test_cone():
 
 def test_cylinder():
     geom = Cylinder()
+    surf = 4.712389; vol = 0.785398
+    assert_geom(geom, surf, vol)
+    geom.radius*=2; geom.height*=2
+    assert_geom(geom, surf*4,vol*8, epsilon*8) 
     
