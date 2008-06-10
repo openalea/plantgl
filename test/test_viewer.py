@@ -1,5 +1,6 @@
 from openalea.plantgl.all import *
 from math import *
+import os
 
 def test_start():
     Viewer.start()
@@ -98,9 +99,28 @@ def test_camera_light():
     Viewer.position = pos
     assert Viewer.position == pos, "Viewer.light.position do not set the good value"
 
+def test_image():
+    w = 300
+    Viewer.frameGL.setSize(w,w)
+    fname = 'test_framegl.png'
+    Viewer.frameGL.saveImage(fname,'PNG')
+    assert os.path.exists(fname), "Viewer.frameGL.saveImage failed"
+    try:
+    #if True:
+        from PIL import Image
+        q = Image.open(fname)
+        imgsizetest = (q.size[0] == w and q.size[1] == w)
+        del q
+    except:
+        imgsizetest = True
+    assert imgsizetest,"Viewer.frameGL.setSize failed"
+    os.remove(fname)
+    
 def test_state():
     Viewer.start()
     assert Viewer.isRunning() == True, "Viewer not running. Viewer.start() failed."
     Viewer.stop()
-    Viewer.wait(10)
+    Viewer.wait()
     assert Viewer.isRunning() == False, "Viewer not running. Viewer.stop() failed."
+
+    
