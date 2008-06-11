@@ -13,7 +13,7 @@ import __version__
 name = 'plantgl'
 namespace = 'openalea'
 pkg_name = 'openalea.plantgl'
-
+version = __version__.PGL_VERSION_STR
 print pkg_name,': version =',__version__.PGL_VERSION_STR
 
 description= 'PlantGL package for OpenAlea.' 
