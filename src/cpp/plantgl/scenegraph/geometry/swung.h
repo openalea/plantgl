@@ -62,7 +62,7 @@ typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 
 /**
    \class Swung
-   \brief A surface defined by the revolution of several 2D profiles along Z axis.
+   \brief A surface defined by the revolution and interpolation of several 2D profiles along Z axis.
 */
 
 /* ----------------------------------------------------------------------- */

@@ -118,7 +118,9 @@ struct tr_pickle_suite : boost::python::pickle_suite
 void export_TriangleSet()
 {
   class_<TriangleSet, TriangleSetPtr, bases<Mesh>, boost::noncopyable>
-	( "TriangleSet", init<>("TriangleSet()") )
+	( "TriangleSet", 
+	  "A TriangleSet describes a surface formed by a set of connected triangles, i.e. three sided polygons.\n Triangles are specified using set of tuples of 3 indices (Index3) pointing to a list of points.",
+	init<>("TriangleSet()") )
     .def( init<Point3ArrayPtr,Index3ArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "TriangleSet(Point3Array points, Index3Array indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
@@ -159,7 +161,9 @@ void export_TriangleSet()
 
 void export_QuadSet()
 {
-  class_<QuadSet, QuadSetPtr, bases<Mesh>, boost::noncopyable> ( "QuadSet", init<> ( "QuadSet()"))
+  class_<QuadSet, QuadSetPtr, bases<Mesh>, boost::noncopyable> ( "QuadSet", 
+	  "A QuadSet describes a surface formed by a set of connected quadrilaterals, i.e. four sided polygons.\n Quads are specified using set of tuples of 4 indices (Index4) pointing to a list of points.",
+	  init<> ( "QuadSet()"))
     .def( init<Point3ArrayPtr,Index4ArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "QuadSet(Point3Array points, Index4Array indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
@@ -201,7 +205,7 @@ void export_QuadSet()
 void export_FaceSet()
 {
   class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
-	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n Faces are specified using set of indices (Index) pointing to a list of points.", init<> ( "FaceSet()"))
+	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n Faces are specified using set of tuples of n indices (Index) pointing to a list of points.", init<> ( "FaceSet()"))
     .def( init<Point3ArrayPtr,IndexArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "FaceSet(Point3Array points, IndexArray indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )

@@ -119,7 +119,11 @@ object nurbs_fit4(Polyline * pts){
 void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
-    ( "NurbsCurve", "A NURBS Curve represented by an array of control Points, a knots list and a degree.", 
+    ( "NurbsCurve", 
+	  "NURBS Curve describes rational and non rational B-Spline curves.\n" 
+	  "It is defined from a list of control points Pi, a knots vector and a degree p."
+	  "It uses the parametric equation C(u) = Sum(i=0,n)(Ri,p(u)Pi with u in [a,b]"
+      "where the Ri,p(u) are p-th degree rational basis functions defined on the knot vector.", 
 	  init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
@@ -258,7 +262,7 @@ object nurbs2_fit4(Polyline2D * pts,int degree, int nbCtrlPoint){
 void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
-     ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree.",
+     ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree. See NurbsCurve.",
 	   init<Point3ArrayPtr,  optional<RealArrayPtr, uint_t, uint_t > >( args("ctrlPointList","knotList","degree","strides") ) )
       .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )

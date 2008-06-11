@@ -61,7 +61,12 @@ void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); }
 
 void export_SceneObject()
 {
-  class_< SceneObject,SceneObjectPtr, boost::noncopyable >("SceneObject", no_init)
+  class_< SceneObject,SceneObjectPtr, boost::noncopyable >(
+	  "SceneObject", 
+	  "Abstract base class for all objects of the scenegraph.\n"
+	  "It is named, has unique id and support reference counting.\n"
+	  "It can support Action application.",
+	  no_init)
     .def("getName", &SceneObject::getName, return_value_policy< copy_const_reference >())
     .def("isNamed", &SceneObject::isNamed)
     .def("setName", &SceneObject::setName)
@@ -208,11 +213,15 @@ object sp_scenes(Scene::Pool * pool){
 
 size_t py_sc_getId(Scene * sc) { return (size_t)sc; }
 
+Scene::Pool& new_pool(object){ return Scene::pool(); }
+
 void export_Scene()
 {
-  class_<Scene,ScenePtr, boost::noncopyable> sc("Scene",init<const std::string&>("Scene() -> Create an empty scene"));
-   scope scsc = sc.def(init< optional< unsigned int > >());
-    sc.def(init< const Scene& >());
+  class_<Scene,ScenePtr, boost::noncopyable> sc("Scene",
+	  "A 3D Scene defined as a list of objects of type of Shape.",
+	  init<const std::string&>("Read a scene from file."));
+   scope scsc = sc.def(init< optional< unsigned int > >("Create a scene with n empty elements."));
+    sc.def(init< const Scene& >("Create an empty scene."));
     sc.def( "__init__", make_constructor( sc_fromlist ) ) ;
 	sc.def("__iadd__", &sc_iadd1);
 	sc.def("__iadd__", &sc_iadd2);
@@ -248,13 +257,13 @@ void export_Scene()
   	sc.enable_pickling();
   ;
 
-  class_<Scene::Pool, boost::noncopyable>("Pool",no_init)
-      .def("get", &Scene::Pool::get)
-      .def("__getitem__", &Scene::Pool::get)
-      .def("getScenes", &sp_scenes)
+  class_<Scene::Pool, boost::noncopyable>("Pool","The scene pool. Allow you to access all scene in memory using their id.",no_init)
+      .def("get", &Scene::Pool::get, "get scene from id.")
+      .def("__getitem__", &Scene::Pool::get, "get scene from id.")
+      .def("getScenes", &sp_scenes , "get all scene.")
       ;
 
-    sc.def("pool", &Scene::pool,return_value_policy<reference_existing_object>());
+    sc.def("pool", &Scene::pool,return_value_policy<reference_existing_object>(),"Scene pool singleton access");
     sc.staticmethod("pool") ;
 }
 

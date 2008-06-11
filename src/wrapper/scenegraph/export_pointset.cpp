@@ -64,7 +64,8 @@ std::string gps_repr( PointSet* p )
 
 void export_PointSet()
 {
-  class_< PointSet, PointSetPtr, bases<ExplicitModel>, boost::noncopyable>( "PointSet", 
+  class_< PointSet, PointSetPtr, bases<ExplicitModel>, boost::noncopyable>( "PointSet",
+	  "PointSet describes an explicit set of points",
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("PointSet(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
     .def( "copy", &PointSet::copy )
     .def( "__repr__", gps_repr )
@@ -85,7 +86,9 @@ std::string gps2d_repr( PointSet2D* p )
 
 void export_PointSet2D()
 {
-  class_< PointSet2D, PointSet2DPtr, bases<PlanarModel>, boost::noncopyable>( "PointSet2D", init<Point2ArrayPtr>() )
+  class_< PointSet2D, PointSet2DPtr, bases<PlanarModel>, boost::noncopyable>( 
+	  "PointSet2D", "PointSet2D describes an explicit set of 2D points. See PointSet.",
+	  init<Point2ArrayPtr>() )
     .def( "copy", &PointSet2D::copy )
     .def( "__repr__", gps2d_repr )
 	.DEC_PTR_PROPERTY(pointList,PointSet2D,PointList,Point2ArrayPtr)

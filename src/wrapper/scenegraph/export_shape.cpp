@@ -50,7 +50,8 @@ DEF_POINTEE(Shape3D)
 
 void export_Shape3D()
 {
-  class_< Shape3D, Shape3DPtr, bases< SceneObject >, boost::noncopyable >("Shape3D", no_init);
+  class_< Shape3D, Shape3DPtr, bases< SceneObject >, boost::noncopyable >("Shape3D", 
+	  "Abstract base class for shape that can be stored into a scene.",no_init);
 }
 
 
@@ -66,7 +67,9 @@ uint_t sh_getptrid(const Shape * sh) { return sh->SceneObject::getId(); }
 
 void export_Shape()
 {
-  class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape", init<>())
+  class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape",
+	  "A Shape is composed of a Geometry object and an Appearance object.\n"
+      "There is an optional id to identy the shape and parent id to store shape relationship.",init<>())
     .def( init< const RefCountPtr<Geometry> &, 
 	          optional< const RefCountPtr<Appearance> &,
 	                     uint_t, uint_t > >("Shape( geometry, appearance, id, parentId )",args( "geometry", "appearance", "id", "parentId" )) )

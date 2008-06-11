@@ -185,7 +185,7 @@ SceneFormatList * make_sformatlist(boost::python::list formats)
 
 void export_SceneCodec()
 {
-  class_<SceneFormat>("SceneFormat", "The format of a scene description.", no_init)
+  class_<SceneFormat>("SceneFormat", "A scene description format.", no_init)
       .def( "__init__", make_constructor( make_sformat ) ) 
       .add_property("name",make_getter(&SceneFormat::name),make_setter(&SceneFormat::name))
       .add_property("comment",make_getter(&SceneFormat::comment),make_setter(&SceneFormat::comment))
@@ -213,7 +213,11 @@ void export_SceneCodec()
 
   implicitly_convertible<PySceneCodecPtr, SceneCodecPtr>();
 
-  enum_<SceneCodec::Mode>("Mode","Mode of a Scene Codec")
+  enum_<SceneCodec::Mode>("Mode"
+#ifdef BOOST_VERSION >= 103500
+	  ,"Enum representing coding and decoding capabilities of a codec."
+#endif
+	  )
       .value("No",SceneCodec::None)
       .value("Read",SceneCodec::Read)
       .value("Write",SceneCodec::Write)
@@ -230,7 +234,7 @@ void export_SceneFactory()
 {
   // if (PythonThread == NULL) PythonThread = QThread::currentThread();
 
-  class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene from file that register and use all SceneCodec.",no_init)
+  class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene that register and use SceneCodec to read scene from files.",no_init)
       .def("get", &SceneFactory::get,return_value_policy<reference_existing_object>())
       .staticmethod("get") 
       .def("formats", &SceneFactory::formats)

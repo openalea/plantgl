@@ -63,15 +63,16 @@ GeometryPtr tr_geometry(T * obj) { return obj->getGeometry(); }
 
 void export_Transformed()
 {
-  class_< Transformed, TransformedPtr, bases< Geometry >, boost::noncopyable >("Transformed", no_init)
+  class_< Transformed, TransformedPtr, bases< Geometry >, boost::noncopyable >("Transformed", 
+	  "Abstract base class for trasnformed node.\n It suppose to contain object on which the transformation is applied.", no_init)
 		.def("transformation",&Transformed::getTransformation);
 
   class_< MatrixTransformed, MatrixTransformedPtr, bases< Transformed >, boost::noncopyable  >
-    ("MatrixTransformed", no_init)
+    ("MatrixTransformed", "Abstract base class for objects on which a transformation that can be express as a matrix is applied.", no_init)
 	.add_property("geometry", &tr_geometry<MatrixTransformed>, &set_prop_bt_from_class<GeometryPtr,MatrixTransformed,&MatrixTransformed::getGeometry>)
 	;
   class_< OrthoTransformed, OrthoTransformedPtr, bases< MatrixTransformed >, boost::noncopyable  >
-    ("OrthoTransformed", no_init);
+    ("OrthoTransformed", "Abstract base class for objects on which a transformation that can be express as an orthonormal matrix is applied.", no_init);
 
   implicitly_convertible< TransformedPtr, GeometryPtr >();
   implicitly_convertible< MatrixTransformedPtr, TransformedPtr >();
@@ -91,7 +92,14 @@ ScaledPtr sca1_from_val(real_t x, const GeometryPtr& geom)
 void export_Scaled()
 {
   class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
-    ("Scaled", init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
+    ("Scaled", 
+	"The Scaled describes an object to which an anisotropic scaling has been applied.\n"
+	"The scaling transformation is given by the matrix:\n"
+	"|sx 0 0|\n"
+	"|0 sy 0|\n"
+	"|0 0 sz|\n"
+	"where (sx, sy, sz) denotes the scaling factors along the x, y and z-axis.",
+	init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
     .def( "__init__", make_constructor( sca_from_val ) ) 
     .def( "__init__", make_constructor( sca1_from_val ) ) 
 	.DEC_CT_PROPERTY_WDV(scale,Scaled,Scale,Vector3,DEFAULT_SCALE)
@@ -109,7 +117,15 @@ TranslatedPtr tr_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
 void export_Translated()
 {
   class_< Translated, TranslatedPtr, bases< MatrixTransformed > , boost::noncopyable >
-    ("Translated", init< const Vector3&, const GeometryPtr& >
+    ("Translated",
+	"A Translated describes an object to which a translation of a specified vector is applied.\n"
+	"The translation is given by the homogeneous matrix:\n"
+    "|1 0 0 tx|\n"
+    "|0 1 0 ty|\n"
+    "|0 0 1 tz|\n"
+    "|0 0 0 1 |\n"
+	"where (tx, ty, tz) denotes the translation vector.\n",
+	 init< const Vector3&, const GeometryPtr& >
      ("Translated(translation,geometry)",args("translation","geometry")) )
     .def( "__init__", make_constructor( tr_from_val ) ) 
     .DEC_CT_PROPERTY_WDV(translation,Translated,Translation,Vector3,DEFAULT_TRANSLATION)
@@ -132,7 +148,10 @@ Matrix4ArrayPtr ifs_getAllTransformations(IFS * ifs)
 void export_IFS()
 {
   class_< IFS, IFSPtr, bases< Transformed > , boost::noncopyable >
-    ("IFS", init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
+    ("IFS", 
+	 "The IFS is a recursive transformation applied to an object. Transformation are specified as a set of affine transformations.\n"
+     "It is a method for generating fractals and the complexity is exponential with regard to numbers of iterations.",
+	init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
        (args("depth","transfoList","geometry"),
 	"IFS(depth, transfoList, geometry)") )
     .DEC_BT_NR_PROPERTY_WDV(depth,IFS,Depth,uchar_t,DEFAULT_DEPTH)

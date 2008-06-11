@@ -68,7 +68,7 @@ void export_Cylinder()
 void export_Frustum()
 {
   class_< Frustum, FrustumPtr, bases< Cone > , boost::noncopyable >
-    ("Frustum", "A frustum structure defined by a radius, a height and a taper factor.\n Its base is centered at origin.", init< optional<const real_t&,const real_t&,const real_t&, bool,uchar_t> >
+    ("Frustum", "A frustum structure defined by a base radius, a height and a taper factor.\n Its base is centered at origin.", init< optional<const real_t&,const real_t&,const real_t&, bool,uchar_t> >
                    (args("radius","height","taper","solid","slices"),
 		    "Frustum(radius, height, taper [, solid, slices])" ))
   .DEC_BT_PROPERTY_WDV(taper,Frustum,Taper,real_t,DEFAULT_TAPER)
@@ -80,7 +80,7 @@ void export_Frustum()
 void export_Paraboloid()
 {
   class_< Paraboloid, ParaboloidPtr, bases< Cone > , boost::noncopyable >
-    ("Paraboloid", "A paraboloid structure defined by a radius, a height and a shape factor.\n Its base is centered at origin.",
+    ("Paraboloid", "A paraboloid structure defined by a base radius, a height and a shape factor.\n Its base is centered at origin.",
      init< optional< const real_t&, const real_t&, const real_t&, 
      bool, uchar_t, uchar_t> >
      (args("radius","height","shape","solid","slices","stacks"),

@@ -48,7 +48,7 @@ DEF_POINTEE(Font)
 void export_Font()
 {
   class_< Font, FontPtr, bases< SceneObject >,boost::noncopyable >
-    ("Font",init<optional<std::string,int,bool,bool> >
+    ("Font","Font describes how text is displayed.",init<optional<std::string,int,bool,bool> >
      (args("family","size","bold","italic"),
 	  "Font([family,size,bold,italic])"))
     .def( "copy", &Font::copy )
@@ -68,7 +68,7 @@ DEF_POINTEE(Text)
 void export_Text()
 {
   class_< Text, TextPtr, bases< Geometry >,boost::noncopyable >
-    ("Text",init<std::string,optional<const TOOLS(Vector3)&,bool, const FontPtr&> >
+    ("Text","Text with font. It support display in screen or world coordinates.",init<std::string,optional<const TOOLS(Vector3)&,bool, const FontPtr&> >
      (args("string","position","screencoordinates","fontstyle"),
 	  "Text(str string[, Vector3 position, bool screencoordinates, Font fontstyle])"))
     .def( "copy", &Text::copy )

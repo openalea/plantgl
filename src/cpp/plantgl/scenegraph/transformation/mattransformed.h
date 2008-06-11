@@ -166,7 +166,7 @@ typedef RCPtr<Transform4> Transform4Ptr;
 
 /**
     \class MatrixTransformed
-    \brief A matrixined transformed object
+    \brief A matrix transformed object
 */
 
 

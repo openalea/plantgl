@@ -85,7 +85,12 @@ void export_BezierPatch()
 void export_NurbsPatch()
 {
   class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
-    ("NurbsPatch", "A NURBS Patch represented by 2 degrees, 2 knot vectors and a matrix of control Points.",
+    ("NurbsPatch", 
+	 // "A NURBS Patch represented by 2 degrees, 2 knot vectors and a matrix of control Points.",
+    "NurbsPatch describes rational and non rational Bezier surface.\n"
+	"It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
+	"and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Ri,n(u)Rj,m(v)Pi,j) with u and v in [0,1]\n"
+	"where Ri,n(u) and Ri,m(v) are classical n and m-th degree rational basis function.",
 	 init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
      uint_t,uint_t,uint_t,uint_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))

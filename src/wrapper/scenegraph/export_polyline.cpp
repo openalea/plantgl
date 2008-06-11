@@ -89,6 +89,8 @@ std::string gpl_repr( Polyline* p )
 void export_Polyline()
 {
   class_<Polyline, PolylinePtr, bases<ExplicitModel, LineicModel>, boost::noncopyable>( "Polyline", 
+	  "A Polyline describes a curve formed by connected segments.\n"
+	  "It is defined by a set of points. A color can be associated to each point for visualisation.",
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("Polyline(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
     .def( "deepcopy", &Polyline::copy )
     .def( "__getitem__", gpl_getitem /*, return_internal_reference<1>() */)
@@ -132,7 +134,11 @@ std::string gpl2_repr( Polyline2D* p )
 
 void export_Polyline2D()
 {
-  class_<Polyline2D, Polyline2DPtr, bases<Curve2D>, boost::noncopyable>( "Polyline2D", init<Point2ArrayPtr>() )
+  class_<Polyline2D, Polyline2DPtr, bases<Curve2D>, boost::noncopyable>( 
+	  "Polyline2D", 
+	  "A Polyline2D describes a curve formed by connected 2D segments.\n"
+	  "It is defined by a set of 2D points. See Polyline.",
+	  init<Point2ArrayPtr>() )
     // .def( "__init__", make_constructor( gpl2_fromlist ) ) 
     .def( "copy", &Polyline2D::copy )
     .def( "__getitem__", gpl2_getitem /*, return_internal_reference<1>()*/ )

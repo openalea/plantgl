@@ -53,10 +53,7 @@ PGL_BEGIN_NAMESPACE
 
 /**
     \class Shape3D
-    \brief A Shape is composed of a Geometry object and an Appearance object.
-      There is an optional id to identy the shape. We use it when
-      building a Scene from AMAPmod to store the id of the corresponding
-      Vertex.
+    \brief Abstract base class for shape that can be stored into a scene. 
 */
 
 /* ------------------------------------------------------------------------- */
@@ -123,9 +120,7 @@ typedef RCPtr<Shape3D> Shape3DPtr;
 /**
     \class Shape
     \brief A Shape is composed of a Geometry object and an Appearance object.
-      There is an optional id to identy the shape. We use it when
-      building a Scene from AMAPmod to store the id of the corresponding
-      Vertex.
+      There is an optional id to identy the shape and parent id to store shape relationship.
 */
 class SG_API Shape : public Shape3D
 {

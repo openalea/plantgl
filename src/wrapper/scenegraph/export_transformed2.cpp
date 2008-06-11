@@ -99,7 +99,14 @@ void export_AxisRotated()
 void export_Oriented()
 {
   class_< Oriented, OrientedPtr, bases< OrthoTransformed > , boost::noncopyable >
-    ("Oriented", init< const Vector3&,const Vector3&,const GeometryPtr& >
+    ("Oriented", 
+	 "Oriented describes an object to a change of coordinate specified by an orthonormal basis has been applied.\n"
+	 "The basis is expressed by the matrix:\n"
+	 "|px sx tx|\n"
+	 "|py sy ty|\n"
+	 "|pz sz tz|\n"
+	 "where (px, py, pz) denotes the primary direction, (sx,, sy, sz) the secondary direction and (tx,, ty, tz) the ternary direction, which is given by: t = p ^ s.",
+	 init< const Vector3&,const Vector3&,const GeometryPtr& >
        (args("primary","secondary","geometry"),
 	"Oriented(primary,secondary,geometry) with primary,secondary: Vector3" ) )
 	.DEC_CT_PROPERTY_WDV(primary,Oriented,Primary,Vector3,DEFAULT_PRIMARY)
@@ -115,7 +122,12 @@ DEF_POINTEE(Tapered)
 void export_Tapered()
 {
   class_< Tapered, TaperedPtr, bases< Transformed > , boost::noncopyable >
-    ("Tapered", init< real_t,real_t,const PrimitivePtr & >
+    ("Tapered",
+	 "Tapered describes an object to which it has been applied a Taper deformation.\n" 
+	 "A Taper deforms an object in order to be able to bound the object within a cone frustum of a specified base radius and top radius.\n"
+     "For each point composing an object, a Taper scale the polar coordinates according the zcoordinate.\n"
+     "The amplitude of the scale is given by the radii.\n",
+	 init< real_t,real_t,const PrimitivePtr & >
        (args("base","top","primitive"),
 	"Tapered(base, top, primitive)") )
 	.DEC_BT_PROPERTY_WDV(topRadius,Tapered,TopRadius,real_t,DEFAULT_TOP_RADIUS)

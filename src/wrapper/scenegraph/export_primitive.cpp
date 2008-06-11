@@ -55,7 +55,7 @@ DEF_POINTEE(Geometry)
 void export_Primitive()
 {
   
-  class_< Primitive, PrimitivePtr, bases< Geometry >,boost::noncopyable >("Primitive",no_init);
+  class_< Primitive, PrimitivePtr, bases< Geometry >,boost::noncopyable >("Primitive","Abstract base class for all predefined primitives.", no_init);
   class_< ParametricModel, ParametricModelPtr, bases< Primitive >,boost::noncopyable >("ParametricModel",no_init);
 
   implicitly_convertible< PrimitivePtr, GeometryPtr >();

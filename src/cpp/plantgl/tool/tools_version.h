@@ -7,9 +7,6 @@
  *
  *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/geom_version.h,v $
- *       $Id: geom_version.h,v 1.10 2006/09/04 13:10:59 fboudon Exp $
- *
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------

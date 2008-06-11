@@ -77,7 +77,10 @@ MaterialPtr getDefaultMaterial() { return MaterialPtr::Cast(Material::DEFAULT_MA
 
 void export_Material()
 {
-  class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > ("Material", "The material of an object.", init< const Material & >())
+  class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > 
+	  ("Material", 
+	   "The material of an object. It determine the way light reflect off an object to create color.", 
+	   init< const Material & >())
     .def(init< optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
 	 (args("ambient","diffuse","specular","emission","shininess","transparency"),
 	  "Material( ambient=Color3(160,160,160),"

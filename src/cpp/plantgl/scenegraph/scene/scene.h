@@ -72,7 +72,7 @@ typedef RCPtr<Scene> ScenePtr;
 
 /**
    \class Scene
-   \brief A 3D Scene represented by a list of objects of type of Shape.
+   \brief A 3D Scene defined as a list of objects of type of Shape.
 */
 
 /* ----------------------------------------------------------------------- */

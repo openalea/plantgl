@@ -113,7 +113,7 @@ void export_Swung()
     export_ProfileInterpolation();
   
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >
-    ("Swung",no_init)
+    ("Swung","A surface defined by the revolution and interpolation of several 2D profiles along Z axis.", no_init)
     .def( "__init__", make_constructor( make_swung , default_call_policies(), 
                                         args("profiles","angles","slices","ccw","degree","stride")),
                      (const char *)"Swung([Curve2D] profiles,list angles [,slices,ccw,degree,stride])" ) 
