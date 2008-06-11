@@ -39,11 +39,13 @@ import openalea.plantgl.all as pgl
 from openalea.plantgl.ext.pgl_utils import sphere, arrow, color, createSwung
 from openalea.core import *
 
-def houppier_material(r=20,g=100,b=60):
-  return pgl.Material("houppier_mat",pgl.Color3(r,g,b),0.5)
+houppier_mat = pgl.Material("houppier_mat",pgl.Color3(20,100,60),0.5) 
+trunk_mat = pgl.Material("trunk_mat",pgl.Color3(50,28,6),2)
 
-def trunk_material(r=50, g=28, b=6):
-  return pgl.Material("trunk_material",pgl.Color3(r,g,b),2)
+stand_mat =  {"houppier_mat": houppier_mat, "trunk_mat": trunk_mat}
+
+def stand_material(r=20,g=100,b=60, spec_name="houppier_mat"):
+  return stand_mat.setdefault(spec_name, pgl.Material(spec_name,pgl.Color3(r,g,b),0.5))
 
 from math import pi, cos, sin, radians
   
@@ -90,6 +92,7 @@ def asymetric_swung( obj , **kwds ):
   midCrown = kwds.get('midCrown', 0.8)
   wood = kwds.get( 'wood', True )
   rgb = kwds.get('rgb', None)
+  spec_name = kwds.get('spec_name', 'houppier_mat')
 
   rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
   rd_kz.sort()
@@ -118,12 +121,12 @@ def asymetric_swung( obj , **kwds ):
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
   if rgb == None:
-    s_h = pgl.Shape(h, houppier_material(), obj.pid)
+    s_h = pgl.Shape(h, stand_material(spec_name=spec_name))
   else :
     r,g,b = rgb
-    s_h = pgl.Shape(h, houppier_material(r,g,b), obj.pid)
+    s_h = pgl.Shape(h, stand_material(r,g,b, spec_name))
 
-  s_tr = pgl.Shape(tr, trunk_material(), obj.pid+100000)
+  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"), s_h.id*10 )
 
   if wood:
     return ( s_h, s_tr )
@@ -147,9 +150,11 @@ def spheres( obj , **kwds ):
   circ_attr = kwds.get('circ_attr', 'Circonference')
   height_attr = kwds.get('height_attr', 'Haut')
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
+  radiusHoup_prefix = kwds.get('radiusHoup_prefix', 'r_houp')
   radiusHoup = kwds.get('radiusHoup', None)
   wood = kwds.get( 'wood', True )
   rgb = kwds.get('rgb', None)
+  spec_name = kwds.get('spec_name', 'houppier_mat')
 
   if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
     try :
@@ -166,17 +171,20 @@ def spheres( obj , **kwds ):
   if radiusHoup :
     sph_radius = obj.__dict__[radiusHoup]
   else :
-    sph_radius = ht/2.
+    rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+    radii=[ obj.__dict__[k] for k in rd_kz ]
+    sph_radius = 1.0*sum(radii)/len(radii)
+    #sph_radius = ht/2.
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 + sph_radius), pgl.Sphere(sph_radius,10,5) )
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
   if rgb == None:
-    s_h = pgl.Shape(h, houppier_material(), obj.pid)
+    s_h = pgl.Shape(h, stand_material(spec_name=spec_name))
   else :
     r,g,b = rgb
-    s_h = pgl.Shape(h, houppier_material(r,g,b), obj.pid)
+    s_h = pgl.Shape(h, stand_material(r,g,b, spec_name))
 
-  s_tr = pgl.Shape(tr, trunk_material(), obj.pid+100000)
+  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"), s_h.id*10 )
 
   if wood:
     return ( s_h, s_tr )
@@ -191,9 +199,11 @@ def cones( obj , **kwds ):
   circ_attr = kwds.get('circ_attr', 'Circonference')
   height_attr = kwds.get('height_attr', 'Haut')
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
+  radiusHoup_prefix = kwds.get('radiusHoup_prefix', 'r_houp')
   radiusHoup = kwds.get('radiusHoup', None)
   wood = kwds.get( 'wood', True )
   rgb = kwds.get('rgb', None)
+  spec_name = kwds.get('spec_name', 'houppier_mat')
 
   if not obj.__dict__.has_key("posX") and not obj.__dict__.has_key("posY"):
     try :
@@ -210,17 +220,20 @@ def cones( obj , **kwds ):
   if radiusHoup :
     cone_radius = obj.__dict__[radiusHoup]
   else :
-    cone_radius = ht/2.
+    rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+    radii=[ obj.__dict__[k] for k in rd_kz ]
+    cone_radius = 1.0*sum(radii)/len(radii)
+    #cone_radius = ht/2.
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 ), pgl.Cone(cone_radius,ht,1,12) )
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
   if rgb == None:
-    s_h = pgl.Shape(h, houppier_material(), obj.pid)
+    s_h = pgl.Shape(h, stand_material(spec_name=spec_name))
   else :
     r,g,b = rgb
-    s_h = pgl.Shape(h, houppier_material(r,g,b), obj.pid)
+    s_h = pgl.Shape(h, stand_material(r,g,b, spec_name))
 
-  s_tr = pgl.Shape(tr, trunk_material(), obj.pid+100000)
+  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"), s_h.id*10 )
 
   if wood:
     return ( s_h, s_tr )
