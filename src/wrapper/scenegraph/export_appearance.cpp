@@ -56,13 +56,13 @@ DEF_POINTEE(MultiSpectral)
 void export_Appearance()
 {
   class_< Appearance, AppearancePtr, bases< SceneObject >,  boost::noncopyable >
-    ("Appearance", no_init);
+    ("Appearance", "Abstract base class for all appearance objects.", no_init);
 }
 
 void export_Spectrum()
 {
   class_< Spectrum, SpectrumPtr, bases< Appearance >,  boost::noncopyable >
-    ("Spectrum", no_init);
+    ("Spectrum", "Abstract base class for all spectrum objects.", no_init);
 
    implicitly_convertible<SpectrumPtr, AppearancePtr >();
 }
@@ -71,7 +71,7 @@ void export_Spectrum()
 void export_MonoSpectral()
 {
   class_< MonoSpectral, MonoSpectralPtr, bases< Spectrum >,  boost::noncopyable >
-    ("MonoSpectral", init< optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
+    ("MonoSpectral", "Mono spectral appearance property of an object.", init< optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
     .DEC_BT_PROPERTY(transmittance,MonoSpectral, Transmittance, real_t)
     .DEC_BT_PROPERTY(reflectance,MonoSpectral, Reflectance, real_t)
     ;
@@ -81,7 +81,7 @@ void export_MonoSpectral()
 void export_MultiSpectral()
 {
   class_< MultiSpectral, MultiSpectralPtr, bases< Spectrum >,  boost::noncopyable >
-    ("MultiSpectral", init< RealArrayPtr, RealArrayPtr, optional < const Index3& > >
+    ("MultiSpectral", "Multi spectral appearance property of an object.", init< RealArrayPtr, RealArrayPtr, optional < const Index3& > >
      ("MultiSpectral(reflectance= RealArray, transmittance= RealArray [, filter= index3])"));
 
   implicitly_convertible< MultiSpectralPtr, SpectrumPtr >();

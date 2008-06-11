@@ -119,7 +119,8 @@ object nurbs_fit4(Polyline * pts){
 void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
-    ( "NurbsCurve", init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
+    ( "NurbsCurve", "A NURBS Curve represented by an array of control Points, a knots list and a degree.", 
+	  init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
@@ -257,7 +258,8 @@ object nurbs2_fit4(Polyline2D * pts,int degree, int nbCtrlPoint){
 void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
-     ( "NurbsCurve2D", init<Point3ArrayPtr,  optional<RealArrayPtr, uint_t, uint_t > >( args("ctrlPointList","knotList","degree","strides") ) )
+     ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree.",
+	   init<Point3ArrayPtr,  optional<RealArrayPtr, uint_t, uint_t > >( args("ctrlPointList","knotList","degree","strides") ) )
       .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )
      .def( "fit", nurbs2_fit2, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )

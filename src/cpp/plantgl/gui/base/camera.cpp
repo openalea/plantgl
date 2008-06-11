@@ -945,7 +945,7 @@ Vector3 ViewCameraGL::getDirection(){
         dir.normalize();
         dir = Matrix3::axisRotation(Vector3::OY,-__elevation * GEOM_RAD ) * dir;
         dir = Matrix3::axisRotation(Vector3::OZ,__azimuth  * GEOM_RAD ) * dir;
-
+        dir.normalize();
         if(!__geomsys) dir = geom2gl(dir);
         return dir;
 }

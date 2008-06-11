@@ -84,7 +84,7 @@ U getCurveDerivativeValue(const T * lm, real_t u){
 
 void export_LineicModel()
 {
-  class_<LineicModel,LineicModelPtr, bases<Primitive>, boost::noncopyable>( "LineicModel", no_init )
+  class_<LineicModel,LineicModelPtr, bases<Primitive>, boost::noncopyable>( "LineicModel", "Abstract base class for all lineic model.", no_init )
     .add_property( "firstKnot", &LineicModel::getFirstKnot )
     .add_property( "lastKnot", &LineicModel::getLastKnot )
     .def( "getStride", &LineicModel::getStride )
@@ -116,7 +116,7 @@ void export_PlanarModel()
 
 void export_Curve2D()
 { 
-  class_<Curve2D,Curve2DPtr, bases<PlanarModel>, boost::noncopyable>( "Curve2D", no_init )
+  class_<Curve2D,Curve2DPtr, bases<PlanarModel>, boost::noncopyable>( "Curve2D", "Abstract base class for objects of type of 2D parametric curve.", no_init )
     .add_property( "firstKnot", &Curve2D::getFirstKnot )
     .add_property( "lastKnot", &Curve2D::getLastKnot )
     .def( "getStride", &Curve2D::getStride )
@@ -134,7 +134,7 @@ void export_Curve2D()
 
 void export_SOR2D()
 {
-  class_<SOR2D,SOR2DPtr, bases<PlanarModel>, boost::noncopyable>( "SOR2D", no_init )
+  class_<SOR2D,SOR2DPtr, bases<PlanarModel>, boost::noncopyable>( "SOR2D", "Abstract base class for 2D objects of type of surface of revolution.", no_init )
    .DEC_BT_PROPERTY_WD(slices,SOR2D,Slices,uchar_t);
     ;
 
@@ -144,7 +144,9 @@ void export_SOR2D()
 
 void export_Disc()
 {
-  class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", init< optional<real_t,uchar_t> >("Disc(radius, slices)",args("radius", "slices") ))
+  class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", 
+	"A 2D disc structure centered on origin and defined by a radius.", 
+	init< optional<real_t,uchar_t> >("Disc(radius, slices)",args("radius", "slices") ))
    .DEC_BT_PROPERTY_WD(radius,Disc,Radius,real_t);
     ;
 

@@ -552,7 +552,9 @@ bool BinaryPrinter::header(const char * comment){
     __outputStream << float(BINARY_FORMAT_VERSION) << char(13) << char(10);
   if(__tokens.getVersion() >= 1.6f){
 #ifdef GEOM_USE_DOUBLE
+#ifdef __GNUC__
 #warning Use double floating precision 
+#endif
 	uchar_t precision = 64 ;
 #else 
 	uchar_t precision = 32 ;

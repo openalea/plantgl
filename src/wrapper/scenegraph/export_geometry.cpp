@@ -48,7 +48,7 @@ void export_Geometry()
 {
 
    class_< Geometry,GeometryPtr, bases< SceneObject >, boost::noncopyable > 
-      ("Geometry",no_init)
+      ("Geometry","Abstract base class for all geometrical structure.", no_init)
      .def("isACurve",&Geometry::isACurve)
      .def("isASurface",&Geometry::isASurface)
      .def("isAVolume",&Geometry::isAVolume)

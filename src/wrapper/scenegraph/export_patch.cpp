@@ -55,7 +55,7 @@ DEF_POINTEE(NurbsPatch)
 void export_Patch()
 {
   class_< Patch, PatchPtr, bases< ParametricModel >,boost::noncopyable >
-    ("Patch",no_init)
+    ("Patch","Abstract base class for patches.",no_init)
     .DEC_BT_NR_PROPERTY_WD(ccw,Patch,CCW,bool)
     ;
 
@@ -65,7 +65,12 @@ void export_Patch()
 void export_BezierPatch()
 {
   class_< BezierPatch, BezierPatchPtr, bases< Patch >,boost::noncopyable >
-    ("BezierPatch",init<Point4MatrixPtr, optional<uint_t,uint_t,bool> >
+    ("BezierPatch", 
+    "BezierPatch describes rational and non rational Bezier surface.\n"
+	"It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
+	"and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Bi,n(u)Bj,m(v)Pi,j) with u and v in [0,1]\n"
+	"where Bi,n(u) and Bi,m(v) are the classical n and m-th degree Bernstein polynomials.",
+	 init<Point4MatrixPtr, optional<uint_t,uint_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
     .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint_t)
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
@@ -80,7 +85,8 @@ void export_BezierPatch()
 void export_NurbsPatch()
 {
   class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
-    ("NurbsPatch",init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
+    ("NurbsPatch", "A NURBS Patch represented by 2 degrees, 2 knot vectors and a matrix of control Points.",
+	 init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
      uint_t,uint_t,uint_t,uint_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
     .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint_t)

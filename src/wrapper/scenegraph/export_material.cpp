@@ -77,7 +77,7 @@ MaterialPtr getDefaultMaterial() { return MaterialPtr::Cast(Material::DEFAULT_MA
 
 void export_Material()
 {
-  class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > ("Material", init< const Material & >())
+  class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > ("Material", "The material of an object.", init< const Material & >())
     .def(init< optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
 	 (args("ambient","diffuse","specular","emission","shininess","transparency"),
 	  "Material( ambient=Color3(160,160,160),"
@@ -133,7 +133,7 @@ std::string tex_str(ImageTexture * m){
 void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  Material >, boost::noncopyable >
-    ( "ImageTexture", init< const ImageTexture & >())
+    ( "ImageTexture", "The material of a textured object.", init< const ImageTexture & >())
 	.def(init< string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
   	 (args("filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
 	  "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))

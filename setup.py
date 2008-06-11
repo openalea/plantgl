@@ -5,6 +5,8 @@ import os, sys
 from setuptools import setup
 pj = os.path.join
 
+sys.path.insert(0,pj(os.path.dirname(__file__),'src', 'openalea', 'plantgl'))
+import __version__
 
 # Setup script
 
@@ -12,7 +14,8 @@ name = 'plantgl'
 namespace = 'openalea'
 pkg_name = 'openalea.plantgl'
 
-version= '2.2.0'
+version= __version__.PGL_VERSION_STR
+print pkg_name,': version =',version
 
 description= 'PlantGL package for OpenAlea.' 
 long_description= '''

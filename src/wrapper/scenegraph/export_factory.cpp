@@ -185,7 +185,7 @@ SceneFormatList * make_sformatlist(boost::python::list formats)
 
 void export_SceneCodec()
 {
-  class_<SceneFormat>("SceneFormat", no_init)
+  class_<SceneFormat>("SceneFormat", "The format of a scene description.", no_init)
       .def( "__init__", make_constructor( make_sformat ) ) 
       .add_property("name",make_getter(&SceneFormat::name),make_setter(&SceneFormat::name))
       .add_property("comment",make_getter(&SceneFormat::comment),make_setter(&SceneFormat::comment))
@@ -193,7 +193,7 @@ void export_SceneCodec()
       .def("__repr__",&scformat_repr)
       ;  
 
-  class_<std::vector<SceneFormat> >("SceneFormatList")
+  class_<std::vector<SceneFormat> >("SceneFormatList", "A list of scene description format.")
     .def( "__init__", make_constructor( make_sformatlist ) ) 
     .def(vector_indexing_suite<std::vector<SceneFormat> >())
     ;
@@ -201,6 +201,7 @@ void export_SceneCodec()
 
 
   scope codec = class_< PySceneCodec,PySceneCodecPtr,boost::noncopyable >("SceneCodec",
+	    "Coder/Decoder of a scene description.",
         init<optional<const std::string&,SceneCodec::Mode> >("SceneCodec([name,mode])",args("name","mode")))
     .def("formats",pure_virtual(&SceneCodec::formats))
     .def("test", &SceneCodec::test,&PySceneCodec::default_test)
@@ -212,7 +213,7 @@ void export_SceneCodec()
 
   implicitly_convertible<PySceneCodecPtr, SceneCodecPtr>();
 
-  enum_<SceneCodec::Mode>("Mode")
+  enum_<SceneCodec::Mode>("Mode","Mode of a Scene Codec")
       .value("No",SceneCodec::None)
       .value("Read",SceneCodec::Read)
       .value("Write",SceneCodec::Write)
@@ -229,7 +230,7 @@ void export_SceneFactory()
 {
   // if (PythonThread == NULL) PythonThread = QThread::currentThread();
 
-  class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory",no_init)
+  class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene from file that register and use all SceneCodec.",no_init)
       .def("get", &SceneFactory::get,return_value_policy<reference_existing_object>())
       .staticmethod("get") 
       .def("formats", &SceneFactory::formats)

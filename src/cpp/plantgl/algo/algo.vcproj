@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -57,9 +57,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib QtCored4.lib QtGuid4.lib opengl32.lib glu32.lib  qhull-vc80.lib"
+				AdditionalDependencies="Qt3Supportd4.lib QtOpenGLd4.lib QtCored4.lib QtGuid4.lib opengl32.lib glu32.lib  qhull-vc80.lib cgal-vc80-mt.lib"
 				OutputFile="../../../../bin/pglalgo-d.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib;&quot;$(CGALROOT)\lib&quot;"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
 				PreprocessorDefinitions="ALGO_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -129,9 +129,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  opengl32.lib glu32.lib qhull-vc80.lib CGAL.lib"
+				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  opengl32.lib glu32.lib qhull-vc80.lib cgal-vc80-mt.lib"
 				OutputFile="../../../../bin/pglalgo.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib;&quot;$(CGALROOT)\lib\msvc7&quot;"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib;&quot;$(CGALROOT)\lib&quot;"
 				IgnoreDefaultLibraryNames=""
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
@@ -430,8 +430,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Bison on $(InputName).y ..."
-								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;"
-								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\bison.exe"
+								CommandLine="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;"
+								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\bison.exe"
 								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"
 							/>
 						</FileConfiguration>
@@ -441,8 +441,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Bison on $(InputName).y ..."
-								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;"
-								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\bison.exe"
+								CommandLine="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\bison.exe -dv -p scne_yy  &quot;$(InputPath)&quot; -o &quot;$(InputDir)/$(InputName).cpp&quot;&#x0D;&#x0A;"
+								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\bison.exe"
 								Outputs="&quot;$(InputDir)/$(InputName).hpp&quot;;&quot;$(InputDir)/$(InputName).cpp&quot;"
 							/>
 						</FileConfiguration>
@@ -456,8 +456,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe"
+								CommandLine="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\flex.exe"
 								Outputs="$(InputDir)/$(InputName).cpp"
 							/>
 						</FileConfiguration>
@@ -467,8 +467,8 @@
 							<Tool
 								Name="VCCustomBuildTool"
 								Description="Performing Flex on $(InputName).l ..."
-								CommandLine="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-flex2.5.4_bison1.35-py2.5-win32.egg\bin\flex.exe"
+								CommandLine="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\flex.exe -Pscene_yy  -o&quot;$(InputDir)/$(InputName).cpp&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+								AdditionalDependencies="C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\bin\flex.exe"
 								Outputs="$(InputDir)/$(InputName).cpp"
 							/>
 						</FileConfiguration>

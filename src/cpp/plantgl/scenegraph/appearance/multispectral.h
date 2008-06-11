@@ -67,7 +67,7 @@ typedef TOOLS(Uint32Tuple3) Index3;
 
 /** 
     \class MultiSpectral
-    \brief The material of an object. 
+    \brief The multi spectral appereance property of an object. 
 */
 
 

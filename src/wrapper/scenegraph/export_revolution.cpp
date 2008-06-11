@@ -79,7 +79,9 @@ void export_Sphere()
 void export_Cone()
 {
   class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
-    ("Cone", init< optional<const real_t&,const real_t&, bool,uchar_t > >
+    ("Cone", 
+	"A cone structure defined by a radius and a height. Its base is centered at origin.",
+	init< optional<const real_t&,const real_t&, bool,uchar_t > >
                (args("radius","height","solid","slices"),
 		"Cone(radius, height [, solid, slices])"))
   .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)

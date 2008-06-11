@@ -55,7 +55,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 
 /**
    \class BezierPatch
-   \brief A Bezier Patch represented by 2 stride values  and a matrix of control Points.
+   \brief A Bezier Patch represented by 2 degrees and a matrix of control Points.
 */
 
 class SG_API BezierPatch : public Patch {

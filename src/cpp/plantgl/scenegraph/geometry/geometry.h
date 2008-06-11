@@ -55,7 +55,7 @@ class GeometrySymbolTable;
 
 /**
     \class Geometry
-    \brief Abstract base class for all 3D geometric geometry models.
+    \brief Abstract base class for all 3D geometric models.
 */
 
 class SG_API Geometry : public virtual SceneObject

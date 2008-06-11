@@ -58,6 +58,7 @@ std::string get_sco_name(SceneObject * obj){ return obj->getName(); }
 void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
 
 
+
 void export_SceneObject()
 {
   class_< SceneObject,SceneObjectPtr, boost::noncopyable >("SceneObject", no_init)
@@ -205,6 +206,8 @@ object sp_scenes(Scene::Pool * pool){
     return make_list<std::vector<ScenePtr> >(pool->getScenes())();
 }
 
+size_t py_sc_getId(Scene * sc) { return (size_t)sc; }
+
 void export_Scene()
 {
   class_<Scene,ScenePtr, boost::noncopyable> sc("Scene",init<const std::string&>("Scene() -> Create an empty scene"));
@@ -241,6 +244,7 @@ void export_Scene()
     sc.def("save", &sc_save);
     sc.def("save", &sc_save2);
     sc.def("sort", &Scene::sort);
+	sc.def("getId",&py_sc_getId);
   	sc.enable_pickling();
   ;
 

@@ -201,7 +201,7 @@ void export_QuadSet()
 void export_FaceSet()
 {
   class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
-	( "FaceSet", init<> ( "FaceSet()"))
+	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n Faces are specified using set of indices (Index) pointing to a list of points.", init<> ( "FaceSet()"))
     .def( init<Point3ArrayPtr,IndexArrayPtr,optional<bool,bool,bool,PolylinePtr> >
 				( "FaceSet(Point3Array points, IndexArray indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
 				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
@@ -240,7 +240,10 @@ void export_FaceSet()
 void export_AmapSymbol()
 {
   class_<AmapSymbol, AmapSymbolPtr, bases<FaceSet> >
-    ( "AmapSymbol", init< optional<std::string,bool> >("AmapSymbol(filename)"))
+    ( "AmapSymbol", 
+	  "The AmapSymbol describes an object of class of Mesh stored in the SMB file format of the Amap software."
+	  "This is provided for ascendant compatibility.", 
+	  init< optional<std::string,bool> >("AmapSymbol(filename)"))
     .def("readFile",&AmapSymbol::readFile)
 	.DEC_BT_PROPERTY(filename,AmapSymbol,FileName,std::string)
     ;

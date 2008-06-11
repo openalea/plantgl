@@ -142,7 +142,7 @@ struct index_from_tuple {
 
 void export_index()
 {
-  class_<Index3>( "Index3", init<optional<size_t,size_t,size_t> >() )
+  class_<Index3>( "Index3", "A set of 3 indices", init<optional<size_t,size_t,size_t> >() )
     .def( "__str__", i3_repr )
     .def( "__repr__", i3_repr )
     .def( "__getitem__", i3_getAt )
@@ -153,7 +153,7 @@ void export_index()
     ;
   pgltuple_from_tuple<Index3,3>();
 
-  class_<Index4>( "Index4", init<optional<size_t,size_t,size_t,size_t> >() )
+  class_<Index4>( "Index4", "A set of 4 indices", init<optional<size_t,size_t,size_t,size_t> >() )
     .def( "__str__", i4_repr )
     .def( "__repr__", i4_repr )
     .def( "__getitem__", i4_getAt )
@@ -164,7 +164,7 @@ void export_index()
     ;
   pgltuple_from_tuple<Index4,4>();
 
-  class_< Index >( "Index" , init<size_t>("Index(int size)",args("size")) )
+  class_< Index >( "Index" , "A set of indices", init<size_t>("Index(int size)",args("size")) )
     .def( "__init__", make_constructor( ind_fromlist ), "Index([int i, int j, int k, ...])"  )
     .def( "__init__", make_constructor( ind_fromvalue3 ), "Index(int i, int j, int k)"  )
     .def( "__init__", make_constructor( ind_fromvalue4 ), "Index(int i, int j, int k, int l)"  )

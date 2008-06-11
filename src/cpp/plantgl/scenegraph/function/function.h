@@ -52,7 +52,7 @@ typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr;
 
 /**
     \class QuantisedFunction
-    \brief AD quantised injective function (monomorphism) defined on [firstx,lastx].
+    \brief A 2D quantised injective function (homomorphism) defined on [firstx,lastx].
 */
 
 class SG_API QuantisedFunction : public TOOLS(RefCountObject) {

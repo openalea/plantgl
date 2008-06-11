@@ -47,16 +47,30 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-DEF_POINTEE(AsymmetricHull)
 DEF_POINTEE(Hull)
+DEF_POINTEE(AsymmetricHull)
 DEF_POINTEE(ExtrudedHull)
 
+
+void export_Hull()
+{
+  class_< Hull, HullPtr, bases< ParametricModel >,boost::noncopyable >("Hull","Abstract base class for objects of type of 3D envelope.",no_init);
+  implicitly_convertible< HullPtr, ParametricModelPtr >();
+}
 
 
 void export_AsymmetricHull()
 {
   class_< AsymmetricHull, AsymmetricHullPtr, bases< Hull >,boost::noncopyable >
-    ("AsymmetricHull", init< optional < const real_t&, const real_t&, const real_t&,
+    ("AsymmetricHull",
+	"An Asymmetric Hull describes an anvelop defined by 6 morphological points.\n"
+	"This is an implementation of the asymmetric crowns introduced by [Koop,89] and [Cescatti,97]."
+	"The two first morphological points are the bottom and top points of the hull."
+	"The four other points are used to defined the peripheral line of the hull (P1,P2,P3,P4)."
+	"The two first points are located along the x -axis (P1,P2) and the two other along the y-axis (P3,P4)."
+	"As such Pi points are described with only two dimensions, i.e. a radius and a height using corresponding parameters"
+	"Finally, the shape coefficients are versatile indices which describe the curvature of the hull above and below the peripheral line.",
+	 init< optional < const real_t&, const real_t&, const real_t&,
      const real_t&, const real_t&, const real_t&,
      const real_t&, const real_t&, const Vector3&, const Vector3&, const real_t&, const real_t&,
      uchar_t, uchar_t > > 
@@ -88,7 +102,7 @@ void export_AsymmetricHull()
 void export_ExtrudedHull()
 {
   class_< ExtrudedHull, ExtrudedHullPtr,  bases< Hull >,boost::noncopyable > 
-    ("ExtrudedHull",init <Curve2DPtr, Curve2DPtr, optional< bool > >
+    ("ExtrudedHull","A hull extruded by a vertical and an horizontal profiles.", init <Curve2DPtr, Curve2DPtr, optional< bool > >
      ("ExtrudedHull(vertical,horizontal)" "Constructs a ExtrudedHull with the profiles horizontal and vertical. "))
     .def("copy",&ExtrudedHull::copy)
 	.DEC_PTR_PROPERTY(horizontal,ExtrudedHull,Horizontal,Curve2DPtr)
@@ -97,11 +111,5 @@ void export_ExtrudedHull()
     ;
   implicitly_convertible<ExtrudedHullPtr,HullPtr >();
 
-}
-
-void export_Hull()
-{
-  class_< Hull, HullPtr, bases< ParametricModel >,boost::noncopyable >("Hull",no_init);
-  implicitly_convertible< HullPtr, ParametricModelPtr >();
 }
 

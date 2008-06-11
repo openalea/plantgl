@@ -58,7 +58,15 @@ DEF_POINTEE(Oriented)
 void export_EulerRotated()
 {
   class_< EulerRotated, EulerRotatedPtr, bases< OrthoTransformed > , boost::noncopyable >
-    ("EulerRotated", init< const real_t&,const real_t&,const real_t&, const GeometryPtr& >
+    ("EulerRotated", 
+	"The EulerRotated describes an object to which it has been applied a composition of 3 rotations.\n"
+	"Rotations angles are the roll around the x-axis, the elevation around the rotated y-axis\n"
+	"and azimuth around the rotated z -axis. The equivalent rotation is given by the matrix:\n"
+	" | ca*ce   ca*se*sr - sa*cr    ca*se*cr + sa*sr |\n"
+	" | sa*ce   ca*cr + sa*se*sr    sa*se*cr - ca*sr |\n"
+	" | -se     ce*sr               ce*cr            |\n"
+	"where cr = cos(roll), sr = sin(roll), ce = cos(elevation), se = sin(elevation), ca = cos(azimuth) and sa = sin(azimuth).\n",
+	init< const real_t&,const real_t&,const real_t&, const GeometryPtr& >
        (args("azimuth","elevation","roll","geometry"),
 	"EulerRotated(azimuth,elevation,roll,geometry)") )
 	.DEC_ANGLE_PROPERTY_WDV(azimuth,EulerRotated,Azimuth,DEFAULT_AZIMUTH)
@@ -72,7 +80,13 @@ void export_EulerRotated()
 void export_AxisRotated()
 {
   class_< AxisRotated, AxisRotatedPtr, bases< OrthoTransformed > , boost::noncopyable >
-    ("AxisRotated", init< const Vector3&, const real_t&, const GeometryPtr& >
+    ("AxisRotated", 
+	 "The AxisRotated describes an object to which it has been applied a rotation of a specified angle about a specified axis.\n"
+	 "The rotation is given by the matrix: |(1-c)x2 + c    (1-c)xy - sz (1-c)xy + sy|\n"
+	 "                                     |(1-c)xy + sz   (1-c)y2 + c  (1-c)yz - sx|\n"
+     "                                     |(1-c)xz - sy   (1-c)yz + sx (1-c)z2 + c |\n"
+     "where s = sin(angle), c = cos(angle), x,y and z the coordinates of the axis.",
+	 init< const Vector3&, const real_t&, const GeometryPtr& >
      (args("axis","angle","geometry"),
 	"AxisRotated( Vector3 axis, radian angle, geometry)") )
     .DEC_CT_PROPERTY_WDV(axis,AxisRotated,Axis,Vector3,DEFAULT_AXIS)

@@ -80,7 +80,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isDecreasing_overloads, isDecreasing, 0, 
 void export_Function()
 {
   class_< QuantisedFunction, QuantisedFunctionPtr, boost::noncopyable >
-    ("QuantisedFunction",init<const Curve2DPtr& , optional<uint_t> >
+    ("QuantisedFunction","A 2D quantised injective function (homomorphism) defined on the range [firstx,lastx].", init<const Curve2DPtr& , optional<uint_t> >
      (args("curve","sampling"),
      "QuantisedFunction(curve[,sampling,clamped]) : Quantised 2D function.\n"
      "If clamped parameter is set to False, if a x value is out of range, first or last value is returned.\n"

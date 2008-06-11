@@ -58,7 +58,7 @@ typedef RCPtr<Point2Array> Point2ArrayPtr;
 
 /**
    \class PointSet
-   \brief An point set bounding a set of points 3D.
+   \brief A set of 3D points.
 */
 
 /* ----------------------------------------------------------------------- */
@@ -147,7 +147,7 @@ typedef RCPtr<PointSet> PointSetPtr;
 
 /**
    \class PointSet2D
-   \brief An point set bounding a set of points 2D.
+   \brief A set of 2D points.
 */
 
 

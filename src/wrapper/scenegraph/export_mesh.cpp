@@ -48,7 +48,7 @@ DEF_POINTEE( Mesh )
 
 void export_ExplicitModel()
 {
-  class_<ExplicitModel, ExplicitModelPtr, bases<Primitive>, boost::noncopyable>( "ExplicitModel", no_init )
+  class_<ExplicitModel, ExplicitModelPtr, bases<Primitive>, boost::noncopyable>( "ExplicitModel", "Explicit geometric representation based on a set of 3D points.",  no_init )
     .def( "transform", &ExplicitModel::transform )
 	.DEC_PTR_PROPERTY(pointList,ExplicitModel,PointList,Point3ArrayPtr)
 	.DEC_PTR_PROPERTY_WD(colorList,ExplicitModel,ColorList,Color4ArrayPtr)
@@ -59,7 +59,7 @@ void export_ExplicitModel()
 
 void export_Mesh()
 {
-  class_<Mesh, MeshPtr, bases<ExplicitModel>, boost::noncopyable>( "Mesh", no_init )
+  class_<Mesh, MeshPtr, bases<ExplicitModel>, boost::noncopyable>( "Mesh", "Abstract base class for objects of type of mesh.", no_init )
 	  .def("indexListSize",&Mesh::getIndexListSize)
 	  .DEC_BT_NR_PROPERTY_WDV(solid,            Mesh, Solid,           bool,  DEFAULT_SOLID)
 	  .DEC_BT_NR_PROPERTY_WDV(ccw,              Mesh, CCW,             bool,  DEFAULT_CCW)

@@ -50,7 +50,7 @@ PGL_BEGIN_NAMESPACE
 
 /** 
     \class Hull
-    \brief Abstract base class for objects of type of 3D envelop.
+    \brief Abstract base class for objects of type of 3D envelope.
 */
 
 class SG_API Hull : public ParametricModel

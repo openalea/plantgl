@@ -119,7 +119,7 @@ void export_Group()
 {
   
   class_< Group, GroupPtr, bases< Geometry >,boost::noncopyable >
-    ("Group", init<const GeometryArrayPtr&, optional<const PolylinePtr&> >
+    ("Group", "A Group of Geometry", init<const GeometryArrayPtr&, optional<const PolylinePtr&> >
     ("Group(list geometryList [,Polyline skeleton])",args("geometryList","skeleton") ))
     .def( "__init__", make_constructor( gg_fromobject2 ) ) 
     .def( "__init__", make_constructor( gg_fromobject3 ) ) 

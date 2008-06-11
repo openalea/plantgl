@@ -128,7 +128,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib"
+				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib Advapi32.lib"
 				OutputFile="../../../../bin/pgltool.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				ImportLibrary="../../../../lib/$(TargetName).lib"

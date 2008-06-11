@@ -52,7 +52,7 @@ DEF_POINTEE( Extrusion )
 void export_Extrusion()
 {
   class_<Extrusion, ExtrusionPtr, bases<ParametricModel>, boost::noncopyable>
-	( "Extrusion", init<LineicModelPtr,Curve2DPtr,optional<Point2ArrayPtr> >
+	( "Extrusion", "An Extrusion represented by an axis, a cross section and a tranformation function.", init<LineicModelPtr,Curve2DPtr,optional<Point2ArrayPtr> >
 	 ( "Extrusion (LineicModel, Curve2D,[Point2Array([])])"))
     .def( "copy", &Extrusion::copy )
 	.DEC_PTR_PROPERTY(axis,Extrusion,Axis,LineicModelPtr)

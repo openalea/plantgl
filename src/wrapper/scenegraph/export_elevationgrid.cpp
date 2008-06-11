@@ -55,7 +55,7 @@ real_t eg_getHeightAt(ElevationGrid *  e, uint_t i, uint_t j)
 void export_ElevationGrid()
 {
   class_< ElevationGrid, ElevationGridPtr, bases< Patch >,boost::noncopyable >
-    ("ElevationGrid",init<RealArray2Ptr, optional<real_t,real_t,bool> >
+    ("ElevationGrid","A regular grid of elevation.",init<RealArray2Ptr, optional<real_t,real_t,bool> >
      ("ElevationGrid(heightList [,xspacing,yspacing,ccw])",args("heightList","xspacing","yspacing","ccw")))
     .def( "copy", &ElevationGrid::copy )
     .def( "getPointAt", &ElevationGrid::getPointAt )

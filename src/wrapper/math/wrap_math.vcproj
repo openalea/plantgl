@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;C:\boost_1_34_1\&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python25\include"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -56,10 +56,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
+				AdditionalDependencies="boost_python-vc80-mt-1_35.lib"
 				OutputFile="../../plantgl_d/math/_pglmath_d.pyd"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
-				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_34_1.lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;C:\boost_1_34_1\&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python25\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -128,9 +128,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_34_1.lib"
+				AdditionalDependencies="boost_python-vc80-mt-1_35.lib"
 				OutputFile="../../plantgl/math/_pglmath.pyd"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;C:\boost_1_34_1\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool

@@ -49,7 +49,7 @@ PGL_BEGIN_NAMESPACE
 
 /** 
     \class Spectrum
-    \brief Abstract base class for all appearance objects.
+    \brief Abstract base class for all spectrum objects.
 */
 
 

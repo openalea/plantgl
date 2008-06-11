@@ -80,7 +80,7 @@
 
     Uncomment to use this functionnality
 */
-// #define GEOM_USE_DOUBLE
+#define GEOM_USE_DOUBLE
 
 
 

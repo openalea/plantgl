@@ -48,7 +48,7 @@ PGL_BEGIN_NAMESPACE
 
 /** 
     \class MonoSpectral
-    \brief The material of an object. 
+    \brief Mono spectral material property of an object. 
 */
 
 

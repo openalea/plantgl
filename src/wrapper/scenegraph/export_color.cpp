@@ -110,7 +110,7 @@ struct col4_pickle_suite : boost::python::pickle_suite
 
 void export_Color3()
 {
-  class_< Color3 >("Color3", init< const Color3 & >())
+  class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >())
     .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",args("red","green","blue")))
     .def(init< optional< unsigned char > >())
     .def( self == self )
@@ -141,7 +141,7 @@ void export_Color3()
 
 void export_Color4()
 {
-  class_< Color4 >("Color4", init< const Color4 & >())
+  class_< Color4 >("Color4", "A 4 component color expressed in red, green, blue and alpha.", init< const Color4 & >())
     .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",args("red","green","blue","alpha")))
     .def(init< optional< unsigned char > >())
     .def( self == self )
