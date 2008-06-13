@@ -1,11 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: The Plant Graphic Library
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *

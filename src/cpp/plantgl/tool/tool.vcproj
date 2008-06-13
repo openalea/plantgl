@@ -176,10 +176,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\config.h"
-				>
-			</File>
-			<File
 				RelativePath=".\dirnames.cpp"
 				>
 			</File>
@@ -233,10 +229,6 @@
 			</File>
 			<File
 				RelativePath=".\std.h"
-				>
-			</File>
-			<File
-				RelativePath=".\timer.cpp"
 				>
 			</File>
 			<File

@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
  *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier 
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
  *               
  *  ----------------------------------------------------------------------------
  * 

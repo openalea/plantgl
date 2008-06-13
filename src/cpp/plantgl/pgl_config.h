@@ -45,7 +45,7 @@
  *   This file control the compilation with some predefined macro.\n
  *      Uncomment the macro for particular compilation option. \n
  *      - Use double instead of float for real_t values \n
- *      \#define \b GEOM_USE_DOUBLE \n\n
+ *      \#define \b PGL_USE_DOUBLE \n\n
  *      - Make debug code and output. \n
  *      \#define \b GEOM_DEBUG \n\n
  *      - Make debug code  and output about reference counting object. \n
@@ -75,12 +75,14 @@
  */
 
 
-/*! \def GEOM_USE_DOUBLE
+/*! \def PGL_USE_DOUBLE
     \brief Use double instead of float for real_t values
 
     Uncomment to use this functionnality
 */
-#define GEOM_USE_DOUBLE
+#ifndef PGL_USE_DOUBLE
+#define PGL_USE_DOUBLE
+#endif
 
 
 

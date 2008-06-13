@@ -61,7 +61,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef GEOM_USE_DOUBLE  // For Double Config
+#ifdef PGL_USE_DOUBLE  // For Double Config
 
 #define GL_GEOM_REAL GL_DOUBLE
 /* ----------------------------------------------------------------------- */

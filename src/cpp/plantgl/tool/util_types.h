@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
  *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier 
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
  *               
  *  ----------------------------------------------------------------------------
  * 
@@ -34,8 +29,8 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#ifndef __util_types_h__
-#define __util_types_h__
+#ifndef __util_pgl_types_h__
+#define __util_pgl_types_h__
 /*! 
 	\file util_types.h
     \brief File that contains some utility about type. define the type real_t.
@@ -50,8 +45,8 @@
 
 #include <cfloat>
 
-#ifdef GEOM_USE_DOUBLE
-/// type for real values. can be float or double depending to the macro GEOM_USE_DOUBLE
+#ifdef PGL_USE_DOUBLE
+/// type for real values. can be float or double depending to the macro PGL_USE_DOUBLE
 typedef double real_t;
 /// min real value
 const real_t REAL_MIN = DBL_MIN;
@@ -60,7 +55,7 @@ const real_t REAL_MAX = DBL_MAX;
 /// real epsilon value
 const real_t REAL_EPSILON = DBL_EPSILON;
 #else
-/// type for real values. can be float or double depending to the macro GEOM_USE_DOUBLE
+/// type for real values. can be float or double depending to the macro PGL_USE_DOUBLE
 typedef float real_t;
 /// min real value
 const real_t REAL_MIN = FLT_MIN;
@@ -77,6 +72,8 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 /// Geom out of range value
 #define GEOM_OUT_OF_RANGE LONG_MAX;
 
+/* ----------------------------------------------------------------------- */
+#ifndef __util_types_h__
 #ifdef _WIN64
 #define __WORDSIZE  64
 #endif
@@ -156,8 +153,7 @@ typedef int               int_t;
 
 #include <stddef.h>
 
-
-/* ----------------------------------------------------------------------- */
+#endif
 
 // __util_types_h__
 #endif

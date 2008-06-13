@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): F. Boudon (boudon@cirad.fr)
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -60,101 +55,51 @@ TOOLS_BEGIN_NAMESPACE
 /// Transform a number into a string
 inline std::string number(long int i) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%li",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string number ( unsigned long int i ) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%lu",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( int i ) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%i",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( unsigned int i) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%u",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( short int i ) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%hi",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( unsigned short int i) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%hu",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( double i ) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%e",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( float i ) {
   NUMBER(i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%e",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( unsigned char i ) {
   NUMBER((int)i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%hhi",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform a number into a string
 inline std::string  number ( char i ) {
   NUMBER((int)i)
-/*
-  char * tmp = new char[64];
-  sprintf(tmp,"%hhi",i);
-  return std::string(tmp);
-*/
 }
 
 /// Transform all character of the string into lower character.

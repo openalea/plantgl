@@ -43,7 +43,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef GEOM_USE_DOUBLE
+#ifdef PGL_USE_DOUBLE
 
 /// value of a degree in radian
 #define GEOM_RAD 0.01745329252

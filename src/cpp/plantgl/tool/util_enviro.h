@@ -1,16 +1,11 @@
 /* -*-c++-*- 
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): Ch. Godin (christophe.godin@cirad.fr) 
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon
  *               
  *  ----------------------------------------------------------------------------
  * 
@@ -58,12 +53,6 @@ TOOLS_API std::string getPlantGLDir();
 
 /// Set PlantGL directory.
 TOOLS_API void setPlantGLDir(const std::string&);
-
-/// Get Symbol directory.
-// TOOLS_API std::string getSymbolDir();
-
-/// Set Symbol directory.
-// TOOLS_API void setSymbolDir(const std::string&);
 
 /// Get User name
 TOOLS_API std::string getUserName();
