@@ -61,7 +61,7 @@ TOOLS_BEGIN_NAMESPACE
 
 */
 
-class Timer
+class TOOLS_API Timer
 {
 
  public:
@@ -77,7 +77,7 @@ class Timer
   }
 
   // Destructor
-	 ~Timer() {} ; 
+	 ~Timer() ; 
 
   /*!
     Returns the number of seconds elpased since \e this timer is 
