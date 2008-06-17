@@ -43,7 +43,7 @@
 
 /// PGL Version macro
 #define PGL_VERSION 0x020400
-#define PGL_SVNREVISION "$Revision:  $"
+#define PGL_SVNREVISION "$Revision$"
 
 #include <string>
 
