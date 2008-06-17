@@ -43,6 +43,8 @@ void export_Overlay()
   class_< Overlay > ("Overlay", no_init)
     .def("process",&Overlay::process, "compute the overlay between 2 closed polylines.")
 	.staticmethod("process")
+	.def("supportCGAL",&Overlay::supportCGAL)
+	.staticmethod("supportCGAL")
     ;
  
  

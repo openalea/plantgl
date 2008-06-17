@@ -73,6 +73,14 @@ typedef CGAL::Arr_face_overlay_traits<Arrangement_2,
 Vector2 toVec2(const Point_2& p) { return Vector2(to_double(p.x()),to_double(p.y())); }
 #endif
 
+bool Overlay::supportCGAL() {
+#ifdef WITH_CGAL
+	return true;
+#else
+	return false;
+#endif
+}
+
 GeometryPtr 
 Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 {

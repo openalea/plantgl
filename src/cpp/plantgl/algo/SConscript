@@ -39,7 +39,7 @@ sources+= lib_env.SConscript('codec/SConscript', exports = { "env" : lib_env } )
 LIBRARIES = list( lib_env['LIBS'] )
 LIBRARIES.extend( ['pgltool','pglmath','pglsg'] )
 if use_cgal:
-    LIBRARIES.extend( ['CGAL'] )
+    LIBRARIES.extend( ['CGAL','gmp'] )
 
 lib_env.ALEALibrary( "pglalgo",
                      sources, 

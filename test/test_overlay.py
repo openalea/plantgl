@@ -19,26 +19,31 @@ def overlay_with_cirle(p2i, visual = False):
     return res
 
 def test_two_circle(visual = False):
+    if not Overlay.supportCGAL(): return
     res = overlay_with_cirle(Translated((-2.5,1,0),Polyline2D.Circle(1,32)),visual)
     assert not res is None and "overlay between 2 circles fail. Gives None."
     assert isinstance(res,Polyline2D) and "overlay between 2 circles fail. Gives multiple curves."
 
 def test_circle_beziercurve(visual = False):
+    if not Overlay.supportCGAL(): return
     res = overlay_with_cirle(BezierCurve2D([(1.2,0,1),(1,1.5,1),(-3,2,1),(-6,0,1),(-3,-2,1),(1,-1.5,1),(1.2,0,1)]),visual)
     assert not res is None and "overlay between circle and bezier curve fail. Gives None."
     assert isinstance(res,Polyline2D) and "overlay between circle and bezier curve  fail. Gives multiple curves."
 
 def test_circle_beziercurve_two_bumps(visual = False):
+    if not Overlay.supportCGAL(): return
     res = overlay_with_cirle(BezierCurve2D([(-3,0,1),(1,1.5,1),(-3,2,1),(-6,0,1),(-3,-2,1),(1,-1.5,1),(-3,0,1)]),visual)
     assert not res is None and "overlay between circle and bumpy bezier curve fail. Gives None."
     assert isinstance(res,Group) and len(res) == 2 and "overlay between circle and bumpy bezier curve fail. Gives not valid number of curves."
 
 def test_circle_beziercurve_three_bumps(visual = False):
+    if not Overlay.supportCGAL(): return
     res = overlay_with_cirle(NurbsCurve2D([(-2.5,0,1),(1,0.5,1),(-4,1,1),(1,1.5,1),(-3,2,1),(-6,0,1),(-3,-2,1),(1,-1.5,1),(-2.5,0,1)]),visual)
     assert not res is None and "overlay between circle and bumpy bezier curve fail. Gives None."
     assert isinstance(res,Group) and len(res) == 3 and "overlay between circle and bumpy bezier curve fail. Gives not valid number of curves."
 
 def test_non_overlapping_circles(visual = False):
+    if not Overlay.supportCGAL(): return
     res = overlay_with_cirle(Translated((-3.5,1,0),Polyline2D.Circle(1,32)),visual)
     assert res is None and "overlay between 2 non overlapping circles fail. Gives not None."
 

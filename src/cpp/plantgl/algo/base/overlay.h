@@ -63,6 +63,8 @@ public:
 	/// Compute the overlay between 2 closed planar polylines.
 	static GeometryPtr process(const Polyline2DPtr&, const Polyline2DPtr&);
 
+	static bool supportCGAL();
+
 };
 
 
