@@ -33,6 +33,7 @@
 #include <boost/python.hpp>
 #include "export_scenegraph.h"
 #include "../util/exception_core.h"
+#include <plantgl/scenegraph/pgl_version.h>
 
 using namespace boost::python;
 
@@ -141,6 +142,11 @@ void module_sg()
     export_SceneFactory();
 
     export_Function();
+
+	scope().attr("PGL_VERSION_STR") = getPGLVersionString();
+	scope().attr("PGL_VERSION") = PGL_VERSION;
+	scope().attr("PGL_SVNREVISION") = getPGLSvnRevision();
+	def("getPGLVersion",&getPGLVersion);
 
 };
 

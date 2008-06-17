@@ -89,6 +89,8 @@ void module_algo()
     export_Mvs();
     export_Octree();
 
+	// Overlay export
+	export_Overlay();
 };
 
 /* ----------------------------------------------------------------------- */

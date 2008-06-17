@@ -88,4 +88,7 @@ void export_RayIntersection();
 void export_Mvs();
 void export_Octree();
 
+/* ----------------------------------------------------------------------- */
+// Overlay export
+void export_Overlay();
 #endif

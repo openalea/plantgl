@@ -208,6 +208,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_overlay.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_pglturtle.cpp"
 				>
 			</File>

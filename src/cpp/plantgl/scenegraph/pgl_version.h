@@ -42,16 +42,17 @@
 #include "sg_config.h"
 
 /// PGL Version macro
-#define PGL_VERSION 2.3
-#define PGL_RELEASE 0
+#define PGL_VERSION 0x020400
+#define PGL_SVNREVISION "$Revision: 5119 $"
 
 #include <string>
 
 /// PGL Version
 extern SG_API float getPGLVersion();
-extern SG_API float getPGLRelease();
+extern SG_API int getPGLRevision();
+extern SG_API int getPGLSvnRevision();
 
-/// GEOM Version
+/// PGL Version String
 extern SG_API std::string getPGLVersionString();
 
 #endif

@@ -300,14 +300,6 @@
 			RelativePath=".\tools_config.h"
 			>
 		</File>
-		<File
-			RelativePath=".\tools_version.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\tools_version.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

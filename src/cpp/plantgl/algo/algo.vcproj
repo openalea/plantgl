@@ -113,8 +113,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
-				PreprocessorDefinitions="ALGO_MAKEDLL"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc&quot;;&quot;$(CGALROOT)\auxiliary\gmp\include&quot;;&quot;$(BOOSTDIR)&quot;"
+				PreprocessorDefinitions="ALGO_MAKEDLL;WITH_CGAL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 			/>
@@ -131,7 +131,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib  opengl32.lib glu32.lib qhull-vc80.lib cgal-vc80-mt.lib"
 				OutputFile="../../../../bin/pglalgo.dll"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib;&quot;$(CGALROOT)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib&quot;;&quot;$(CGALROOT)\lib&quot;;&quot;$(CGALROOT)\auxiliary\gmp\lib&quot;"
 				IgnoreDefaultLibraryNames=""
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
@@ -213,6 +213,14 @@
 			</File>
 			<File
 				RelativePath=".\base\merge.h"
+				>
+			</File>
+			<File
+				RelativePath=".\base\overlay.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\base\overlay.h"
 				>
 			</File>
 			<File

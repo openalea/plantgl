@@ -1,13 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -31,24 +29,23 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include <plantgl/algo/base/overlay.h>
+#include <boost/python.hpp>
 
+/* ----------------------------------------------------------------------- */
 
-#include "util_string.h"
-#include "tools_version.h"
+PGL_USING_NAMESPACE
+using namespace boost::python;
 
-using namespace std;
-
-TOOLS_USING_NAMESPACE;
-
-
-float getToolsVersion(){
-  return float(TOOLS_VERSION);
+/* ----------------------------------------------------------------------- */
+void export_Overlay()
+{
+  class_< Overlay > ("Overlay", no_init)
+    .def("process",&Overlay::process, "compute the overlay between 2 closed polylines.")
+	.staticmethod("process")
+    ;
+ 
+ 
 }
 
-float getToolsRelease(){
-  return float(TOOLS_RELEASE);
-}
-
-std::string getToolsVersionString(){
-  return number(TOOLS_VERSION)+'.'+number(TOOLS_RELEASE);
-}
+/* ----------------------------------------------------------------------- */

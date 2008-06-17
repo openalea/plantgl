@@ -67,9 +67,7 @@
 #include "qobjectbrowser.h"
 #include "configuration.h"
 
-#include "view_version.h"
 #include <plantgl/scenegraph/pgl_version.h>
-#include <plantgl/tool/tools_version.h>
 
 #include <plantgl/algo/codec/scne_scanner.h>
 #include <plantgl/algo/codec/binaryprinter.h>
@@ -286,13 +284,12 @@ ViewHelpMenu::qtbrowse()
 void
 ViewHelpMenu::generalInfo()
 {
-  std::string text2 = getViewerVersionString();
+  std::string text2 = getPGLVersionString();
   QString text;
   ViewSysInfo a (this,__glwidget,(tr("PlantGL Viewer")+" "+QString(text2.c_str())).toAscii(),true);
-  Q3ListViewItem * itemF = a.addItem(tr("Geom Library"));
+  Q3ListViewItem * itemF = a.addItem(tr("PlantGL Library"));
   Q3ListViewItem *item = new Q3ListViewItem( itemF );
   item->setText( 0, tr( "Version" ) );
-  text2 = getPGLVersionString();
   item->setText( 1, QString(text2.c_str()) );
   item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Binary Format Version" ) );
@@ -312,7 +309,7 @@ ViewHelpMenu::generalInfo()
   item->setText( 1, tr( text.toAscii() ) );
 
   item = new Q3ListViewItem( itemF, item );
-  item->setText( 0, tr( "Geom Namespace" ) );
+  item->setText( 0, tr( "PGL Namespace" ) );
 #ifndef PGL_NAMESPACE_NAME
   text = "False";
 #else
@@ -320,7 +317,7 @@ ViewHelpMenu::generalInfo()
 #endif
   item->setText( 1, tr( text.toAscii() ) );
   item = new Q3ListViewItem( itemF, item );
-  item->setText( 0, tr( "Geom Debug" ) );
+  item->setText( 0, tr( "PGL Debug" ) );
 #ifdef PGL_DEBUG
   text = "True";
 #else
@@ -347,9 +344,6 @@ ViewHelpMenu::generalInfo()
   item->setText( 1, tr( text.toAscii() ) );
   itemF = a.addItem(tr("Tools Library"));
   item = new Q3ListViewItem( itemF );
-  item->setText( 0, tr( "Version" ) );
-  item->setText( 1, QString(getToolsVersionString().c_str()) );
-  item = new Q3ListViewItem( itemF, item );
   item->setText( 0, tr( "Tools Namespace" ) );
 #ifndef TOOLS_NAMESPACE_NAME
   text = "False";

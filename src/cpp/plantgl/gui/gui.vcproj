@@ -1257,14 +1257,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\base\view_version.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\base\view_version.h"
-					>
-				</File>
-				<File
 					RelativePath=".\base\viewer.cpp"
 					>
 				</File>

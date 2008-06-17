@@ -35,6 +35,7 @@
 #include <plantgl/algo/base/tesselator.h>
 #include <plantgl/scenegraph/geometry/explicitmodel.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
+#include "../util/exception.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -57,6 +58,13 @@ void set_Dis_texCoord(Discretizer * obj, bool v){
   obj->computeTexCoord(v); 
 } 
 
+ExplicitModelPtr py_discretize( const GeometryPtr& obj) {
+	if (!obj.isValid())throw PythonExc_ValueError("Cannot discretize empty object.");
+	Discretizer d;
+	if (!obj->apply(d))throw PythonExc_ValueError("Error in discretization.");
+	else return d.getDiscretization();
+}
+
 /* ----------------------------------------------------------------------- */
 
 void export_Discretizer()
@@ -68,12 +76,22 @@ void export_Discretizer()
 	.add_property("texCoord",get_Dis_texCoord,set_Dis_texCoord)
     .add_property("result",d_getDiscretization)
     ;
+
+   def("discretize",&py_discretize);
 }
 
 /* ----------------------------------------------------------------------- */
 
 TriangleSetPtr 	t_getTriangulation ( Tesselator* t )
 { return t->getTriangulation(); }
+
+TriangleSetPtr py_tesselate( const GeometryPtr& obj) {
+	if (!obj.isValid())throw PythonExc_ValueError("Cannot tesselate empty object.");
+	Tesselator t;
+	if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
+	else return t.getTriangulation();
+}
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -84,6 +102,7 @@ void export_Tesselator()
     .add_property("triangulation",t_getTriangulation,"Return the last computed triangulation.")
     .add_property("result",t_getTriangulation)
     ;
+   def("tesselate",&py_tesselate);
 
 }
 
