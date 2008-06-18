@@ -2,15 +2,20 @@ from openalea.plantgl.all import *
 from math import *
 import os
 
-def test_start():
+try:
+	import avoid_display
+	print 'Avoid display.'
+except:
+  
+  def test_start():
     Viewer.start()
-
-def test_display():
+  
+  def test_display():
     Viewer.display(Sphere())
     Viewer.display(Shape(Sphere(),Material()))
     Viewer.display(Scene([Shape(Sphere(),Material())]))
-
-def test_add():
+  
+  def test_add():
     Viewer.display(Box())
     Viewer.add(Sphere())
     assert len(Viewer.getCurrentScene()) == 2, "Size of displayed scene of the viewer is not valid. Viewer.add failed."
@@ -18,27 +23,27 @@ def test_add():
     assert len(Viewer.getCurrentScene()) == 3, "Size of displayed scene of the viewer is not valid. Viewer.add failed."
     Viewer.add(Scene([Shape(Sphere(),Material())]))
     assert len(Viewer.getCurrentScene()) == 4, "Size of displayed scene of the viewer is not valid. Viewer.add failed."
-
-def test_update():
+  
+  def test_update():
     s = Scene([Shape(Sphere(),Material())])
     Viewer.display(s)
     s[0].geometry = Box()
     Viewer.update()
-    
-def test_selection():
+  
+  def test_selection():
     Viewer.display(Scene([Shape(Sphere(),Material(),1),Shape(Box(),Material(),2)]))
     assert len(Viewer.selection) == 0, "Invalid Viewer.selection"
     Viewer.selection = [1]
     assert len(Viewer.selection) == 1 and Viewer.selection[0] == 1, "Invalid Viewer.selection"
-    
-def test_scene_interaction():
+  
+  def test_scene_interaction():
     s = Scene()
     s += Sphere()
     Viewer.display(s)
     s2 = Viewer.getCurrentScene()
     assert len(s) == len(s2), "Scene of the viewer is not equal to displayed scene"
-
-def test_camera_lookat():
+  
+  def test_camera_lookat():
     Viewer.display(Sphere())
     pos = Vector3(0,5,5)
     target = Vector3(0,0,1)
@@ -48,8 +53,8 @@ def test_camera_lookat():
     resulting_pos, direction, up= Viewer.camera.getPosition()
     assert norm(direction^(target-pos)) < 1e-2, "Viewer.camera.lookAt do not set the good orientation"    
     assert norm((direction^up) + Vector3.OX) < 1e-2, "Viewer.camera.lookAt do not set the good orientation"
-
-def test_camera_set():
+  
+  def test_camera_set():
     Viewer.display(Sphere())
     pos = Vector3(5,5,5)
     az = 45
@@ -76,8 +81,8 @@ def test_camera_set():
     resulting_pos, direction, up= Viewer.camera.getPosition()
     assert norm(direction^Vector3(-0.5,-0.5,-1/sqrt(2))) < 1e-2, "Viewer.camera.set do not set the good orientation"    
     assert norm((direction^up)^Vector3(-1,1,0)) < 1e-2, "Viewer.camera.set do not set the good orientation"
-
-def test_camera_light():
+  
+  def test_camera_light():
     col = Color3(200,200,200)
     oldambient = Viewer.light.ambient
     Viewer.light.ambient = col
@@ -98,8 +103,8 @@ def test_camera_light():
     pos = (10,10,10)
     Viewer.position = pos
     assert Viewer.position == pos, "Viewer.light.position do not set the good value"
-
-def test_image():
+  
+  def test_image():
     w = 300
     Viewer.frameGL.setSize(w,w)
     fname = 'test_framegl.png'
@@ -116,8 +121,8 @@ def test_image():
     assert imgsizetest,"Viewer.frameGL.setSize failed"
     os.remove(fname)
 
-import warnings    
-def test_state():
+  import warnings    
+  def test_state():
     Viewer.start()
     assert Viewer.isRunning() == True, "Viewer not running. Viewer.start() failed."
     Viewer.stop()
