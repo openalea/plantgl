@@ -214,7 +214,7 @@ void export_SceneCodec()
   implicitly_convertible<PySceneCodecPtr, SceneCodecPtr>();
 
   enum_<SceneCodec::Mode>("Mode"
-#ifdef BOOST_VERSION >= 103500
+#if BOOST_VERSION >= 103500
 	  ,"Enum representing coding and decoding capabilities of a codec."
 #endif
 	  )

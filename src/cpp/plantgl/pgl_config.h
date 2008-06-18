@@ -80,8 +80,12 @@
 
     Uncomment to use this functionnality
 */
+#ifndef PGL_USE_FLOAT
+
 #ifndef PGL_USE_DOUBLE
 #define PGL_USE_DOUBLE
+#endif
+
 #endif
 
 

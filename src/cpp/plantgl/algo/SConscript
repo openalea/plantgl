@@ -12,10 +12,6 @@ lib_env.AppendUnique(CPPDEFINES= 'ALGO_MAKEDLL')
 qt_version = int(lib_env['QT_VERSION'])
 if qt_version == 4:
     lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL' ])
-
-use_cgal = lib_env['WITH_CGAL']
-if use_cgal:
-    lib_env.AppendUnique(CPPDEFINES= 'WITH_CGAL')
 	
 
 includes= lib_env.ALEAGlob('*.h')
@@ -38,8 +34,8 @@ sources+= lib_env.SConscript('codec/SConscript', exports = { "env" : lib_env } )
 # Link with the following libraries
 LIBRARIES = list( lib_env['LIBS'] )
 LIBRARIES.extend( ['pgltool','pglmath','pglsg'] )
-if use_cgal:
-    LIBRARIES.extend( ['CGAL','gmp'] )
+#if use_cgal:
+#    LIBRARIES.extend( lib_env['cgal_libs'] )
 
 lib_env.ALEALibrary( "pglalgo",
                      sources, 
