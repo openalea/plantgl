@@ -4,7 +4,7 @@ def opposite_point (mesh, eid, pid) :
 	"""
 	return opposite point of edge
 	"""
-	for corid in mesh.borders(1,eid) :
+	for cornid in mesh.borders(1,eid) :
 		if cornid!=pid :
 			return cornid
 
@@ -63,7 +63,7 @@ def refine_triangular_mesh (mesh, position, fids) :
 			faces.remove(fid)
 			to_divide_face|=faces
 			#retrait de l'ancienne edge
-			self.remove_edge(div_eid)
+			mesh.remove_wisp(1,div_eid)
 			divided_edges.append( (div_eid,(eid1,eid2)) )
 			#mise a jour de div_eid
 			div_eid=eid1
@@ -117,7 +117,7 @@ def refine_triangular_mesh (mesh, position, fids) :
 		mesh.remove_wisp(2,fid)
 		#mise a jour des faces modifiees
 		divided_faces.append( (fid,[fid1,fid2]) )
-		#ajout des faces à la liste des faces à traiter si necessaire
+		#ajout des faces a la liste des faces a traiter si necessaire
 		for fid in (fid1,fid2) :
 			if mesh.nb_borders(2,fid)>3 :
 				to_divide_face.add(fid)
