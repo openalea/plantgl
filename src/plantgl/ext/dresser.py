@@ -76,9 +76,6 @@ def viewMesures( file):
       scene.add(sh)
   pgl.Viewer.display(scene)
 
-
-#treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette1.csv')
-#treeList=makeScene('/home/ddasilva/dev/fractalysis/PlantDB/stands/placette3.csv')
 def asymetric_swung( obj , **kwds ):
   X_attr = kwds.get('X_attr', 'X')
   Y_attr = kwds.get('Y_attr', 'Y')
@@ -126,7 +123,7 @@ def asymetric_swung( obj , **kwds ):
     r,g,b = rgb
     s_h = pgl.Shape(h, stand_material(r,g,b, spec_name))
 
-  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"), s_h.id*10 )
+  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"),)# s_h.id*10 )
 
   if wood:
     return ( s_h, s_tr )
@@ -184,7 +181,7 @@ def spheres( obj , **kwds ):
     r,g,b = rgb
     s_h = pgl.Shape(h, stand_material(r,g,b, spec_name))
 
-  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"), s_h.id*10 )
+  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"),)# s_h.id*10 )
 
   if wood:
     return ( s_h, s_tr )
@@ -233,7 +230,7 @@ def cones( obj , **kwds ):
     r,g,b = rgb
     s_h = pgl.Shape(h, stand_material(r,g,b, spec_name))
 
-  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"), s_h.id*10 )
+  s_tr = pgl.Shape(tr, stand_material(spec_name="trunk_mat"),)# s_h.id*10 )
 
   if wood:
     return ( s_h, s_tr )
