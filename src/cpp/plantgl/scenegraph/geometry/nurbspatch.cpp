@@ -439,6 +439,11 @@ bool NurbsPatch::isValid( ) const {
 
   /* Computational Algorithms */
 
+uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U, real_t u)  const  {
+    return PGL::findSpan(u,deg,U);
+}
+
+/*
 uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U,  real_t u) const{
     uint_t n = U->getSize() - deg - 1 ;
     if( u >= U->getAt( n ) )return ( n - 1 );
@@ -457,7 +462,9 @@ uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U,  real_t u) const{
     }
 
     return mid;
-}
+}*/
+
+
 /*
 RealArrayPtr NurbsPatch::computeBasisFunctions(uint_t span, real_t u, uint_t deg,const RealArrayPtr& U ) const{
 

@@ -150,6 +150,10 @@ void export_NurbsCurve()
         "Compute the n-th Derivative Basis Functions values at a given u for degree and on the knot vector knotList."
         "See Algo 2.2 From The Nurbs Book p70." )
 	 .staticmethod("derivatesBasisFunctions")
+	 .def("defaultKnotList",&NurbsCurve::defaultKnotList,args("nbCtrlPoints","degree"),"Compute a default knot list for a curve of n control points and a degree d")
+	 .staticmethod("defaultKnotList")
+	 .def("defaultKnotListTest",&NurbsCurve::defaultKnotListTest,args("knots","nbCtrlPoints","degree"),"Test whether knots corresponds to a default knot list for a curve of n control points and a degree d")
+	 .staticmethod("defaultKnotListTest")
     ;
 
   implicitly_convertible<NurbsCurvePtr, BezierCurvePtr>();
