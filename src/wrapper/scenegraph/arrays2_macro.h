@@ -350,10 +350,10 @@ RCPtr<T> array2_inverse( T * array )
 template<class T>
 boost::python::object array2_svd( T * array )
 {
-	SVDMatrix<T::element_type> m;
+	SVDMatrix<typename T::element_type> m;
   int res = m.decompose(*array);
   if(!res) throw PythonExc_ValueError();
-  return make_tuple(make_list<std::vector<T::element_type> >(m.getSig())(),m.getU(),m.getV());
+  return make_tuple(make_list<std::vector<typename T::element_type> >(m.getSig())(),m.getU(),m.getV());
 }
 
 
