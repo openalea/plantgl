@@ -347,6 +347,15 @@ RCPtr<T> array2_inverse( T * array )
   return array2_to_T<T>( inverse(*array));
 }
 
+template<class T>
+boost::python::object array2_svd( T * array )
+{
+	SVDMatrix<T::element_type> m;
+  int res = m.decompose(*array);
+  if(!res) throw PythonExc_ValueError();
+  return make_tuple(make_list<std::vector<T::element_type> >(m.getSig())(),m.getU(),m.getV());
+}
+
 
 
 template<class ARRAY>
@@ -357,18 +366,19 @@ class numarray2_func : public boost::python::def_visitor<numarray2_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c.def( "__iadd__", &array2_iadd<ARRAY>  ) 
-         .def( "__iadd__", &array2_iadde<ARRAY>  ) 
+        c.def( "__iadd__",&array2_iadd<ARRAY>  ) 
+         .def( "__iadd__",&array2_iadde<ARRAY>  ) 
          .def( "__add__", &array2_add<ARRAY> )				
          .def( "__add__", &array2_adde<ARRAY> )				
-         .def( "__isub__", &array2_isub<ARRAY>  ) 
-         .def( "__isub__", &array2_isube<ARRAY>  ) 
+         .def( "__isub__",&array2_isub<ARRAY>  ) 
+         .def( "__isub__",&array2_isube<ARRAY>  ) 
          .def( "__sub__", &array2_sub<ARRAY> )				
          .def( "__sub__", &array2_sube<ARRAY> )				
-         .def( "__imul__", &array2_imule<ARRAY>  ) 
+         .def( "__imul__",&array2_imule<ARRAY>  ) 
          .def( "__mul__", &array2_mul<ARRAY> )				
          .def( "__mul__", &array2_mule<ARRAY> )				
          .def( "inverse", &array2_inverse<ARRAY> )				
+         .def( "svd",     &array2_svd<ARRAY> )
         ;
     }
 };

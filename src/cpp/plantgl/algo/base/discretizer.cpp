@@ -1412,7 +1412,7 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
     };
 
     _pointList->setAt(_pointCount++,
-                      nurbsPatch->getPointAt(_ufirst + (_u * _uinter) / _uStride1,1.0));
+                      nurbsPatch->getPointAt(_ufirst + (_u * _uinter) / _uStride1,_vlast));
      _cur++;
 
   };
