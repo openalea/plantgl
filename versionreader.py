@@ -30,10 +30,10 @@ def version_str(hex_version,str_revision = None):
     minor = ((hex_version & 0x00ff00) >> 8)
     rev   = (hex_version & 0x0000ff)
     vers_str = str(major)+'.'+str(minor)+'.'+str(rev)
-    if not str_revision is None : 
-        str_revision = str_revision.split(':')[1][1:-1]
-        if len(str_revision) > 0:
-            vers_str +='-r'+str_revision
+    # if not str_revision is None : 
+        # str_revision = str_revision.split(':')[1][1:-1]
+        # if len(str_revision) > 0:
+            # vers_str +='-r'+str_revision
     return vers_str
 
 def getPGLVersionString():
