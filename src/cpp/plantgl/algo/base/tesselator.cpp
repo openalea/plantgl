@@ -563,7 +563,7 @@ bool Tesselator::process( NurbsPatch * nurbsPatch ) {
     };
 
     _pointList->setAt(_pointCount++,
-                      nurbsPatch->getPointAt((_u / _uStride1),1.0));
+                      nurbsPatch->getPointAt((_u / _uStride1),_vlast));
 
     _cur++;
 
