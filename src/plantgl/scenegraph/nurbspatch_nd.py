@@ -93,10 +93,11 @@ class NurbsPatch3D:
             for j in xrange(0,self.vdegree):
                 tmpVec += tmp[j][i] * Nv[j]
             tmp2[i] = tmpVec
-        res = Vector4()
-        for i in xrange(0,self.wdegree):
-            res += tmp2[i] * Nw[i]
-        return res
+        res = [Vector4() for i in xrange(2)]
+        for j in xrange(2):
+          for i in xrange(self.wdegree):
+            res[j] += tmp2[i] * Nw[j,i]
+        return res[1]
     
         
         
