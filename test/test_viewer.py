@@ -114,11 +114,12 @@ except:
     #if True:
         from PIL import Image
         q = Image.open(fname)
-        imgsizetest = (q.size[0] == w and q.size[1] == w)
+        rw, rh = q.size[0], q.size[1]
+        imgsizetest = (rw == w and rh == w)
         del q
     except:
         imgsizetest = True
-    assert imgsizetest,"Viewer.frameGL.setSize failed"
+    assert imgsizetest and "Viewer.frameGL.setSize failed %s", str((rw,rh))
     os.remove(fname)
 
   import warnings    
