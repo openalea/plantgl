@@ -1,7 +1,8 @@
 from openalea.plantgl.scenegraph.nurbspatch_nd import *
 
-def createCubePatch():
-    pts1 = [[[Vector4(i,j,k,1)  for i in xrange (10)]  for j in xrange (10)]  for k in xrange (10)]
+def createCubePatch(dim = 10):    
+    pts1 = [[[Vector4(i,j,k,1)  for i in xrange (dim+1)]  for j in xrange (dim+1)]  for k in xrange (dim+1)]
+    #print pts1
     return NurbsPatch3D(pts1)
 
 ########################################################

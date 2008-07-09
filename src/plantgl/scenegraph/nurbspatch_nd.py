@@ -1,5 +1,5 @@
 import _pglsg as sg
-from openalea.plantgl.math import Vector4
+from openalea.plantgl.math import Vector4, Vector3
 
 class NurbsPatch3D:
     def __init__(self, points, 
@@ -49,23 +49,26 @@ class NurbsPatch3D:
         wdeg = self.wdegree
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknots)
-        tmp = [[None for i in xrange(self.vdegree+1)] for i in xrange(self.wdegree+1)]
-        for i in xrange(0,self.wdegree):
-            for j in xrange(0,self.vdegree):
-                tmpVec = Vector4()
-                for k in xrange(0,self.udegree):
+        tmp = [[None for i in xrange(vdeg+1)] for j in xrange(wdeg+1)]
+        for i in xrange(0,wdeg+1):
+            for j in xrange(0,vdeg+1):
+                tmpVec = Vector4(0,0,0,0)
+                for k in xrange(0,udeg+1):
                     tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg-i] * Nu[k]
                 tmp[i][j] = tmpVec
-        tmp2 = [None for i in xrange(self.wdegree+1)]
-        for i in xrange(0,self.wdegree):
-            tmpVec = Vector4()
-            for j in xrange(0,self.vdegree):
-                tmpVec += tmp[j][i] * Nv[j]
+        tmp2 = [None for i in xrange(wdeg+1)]
+        for i in xrange(0,wdeg+1):
+            tmpVec = Vector4(0,0,0,0)
+            for j in xrange(0,vdeg+1):
+                tmpVec += tmp[i][j] * Nv[j]
             tmp2[i] = tmpVec
-        res = Vector4()
-        for i in xrange(0,self.wdegree):
+        res = Vector4(0,0,0,0)
+        for i in xrange(0,wdeg+1):
             res += tmp2[i] * Nw[i]
-        return res
+        if res.w != 0:
+            return res.project()
+        else:
+            return Vector3(res.x,res.y,res.z)
         
     def getParametrization(self,p):
         """ return (u,v,t) """
@@ -81,21 +84,21 @@ class NurbsPatch3D:
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.derivatesBasisFunctions(1, w, wspan, wdeg, self.wknots)
         tmp = [[None for i in xrange(self.vdegree+1)] for i in xrange(self.wdegree+1)]
-        for i in xrange(0,self.wdegree):
-            for j in xrange(0,self.vdegree):
-                tmpVec = Vector4()
-                for k in xrange(0,self.udegree):
+        for i in xrange(0,wdeg+1):
+            for j in xrange(0,vdeg+1):
+                tmpVec = Vector4(0,0,0,0)
+                for k in xrange(0,udeg+1):
                     tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg-i] * Nu[k]
                 tmp[i][j] = tmpVec
         tmp2 = [None for i in xrange(self.wdegree+1)]
-        for i in xrange(0,self.wdegree):
-            tmpVec = Vector4()
-            for j in xrange(0,self.vdegree):
-                tmpVec += tmp[j][i] * Nv[j]
+        for i in xrange(0,wdeg+1):
+            tmpVec = Vector4(0,0,0,0)
+            for j in xrange(0,vdeg+1):
+                tmpVec += tmp[i][j] * Nv[j]
             tmp2[i] = tmpVec
         res = [Vector4() for i in xrange(2)]
         for j in xrange(2):
-          for i in xrange(self.wdegree):
+          for i in xrange(0,wdeg+1):
             res[j] += tmp2[i] * Nw[j,i]
         return res[1]
     

@@ -156,6 +156,9 @@ public:
 	/// Roll in the right direction of angle degrees
     virtual void rollR(real_t angle)  { rollL(-angle); }
     
+	/// Turn Around turtle
+	inline void turnAround() { left(180); }
+
 	/// Roll such as up vector comes in the Z direction
     inline void rollToVert() { rollToVert(TOOLS(Vector3::OZ)); }
     

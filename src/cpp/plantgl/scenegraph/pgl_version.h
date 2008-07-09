@@ -42,7 +42,7 @@
 #include "sg_config.h"
 
 /// PGL Version macro
-#define PGL_VERSION 0x020501
+#define PGL_VERSION 0x020502
 #define PGL_SVNREVISION "$Revision$"
 
 #include <string>
