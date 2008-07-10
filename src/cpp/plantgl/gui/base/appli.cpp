@@ -1,17 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -45,6 +39,7 @@
 ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
 ThreadedData<Viewer> ViewerAppli::VIEWER(0);
 ThreadStateSaverFactory * ViewerAppli::THREADSTATESAVERFACTORY(0);
+bool ViewerAppli::THREADSTATESAVERENABLED(true);
 
 Viewer * ViewerAppli::build() {
 	if(VIEWERBUILDER) { VIEWER = VIEWERBUILDER->build(); }
@@ -68,15 +63,17 @@ void ViewerAppli::deleteViewer() {
 void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
 void ViewerAppli::registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) { THREADSTATESAVERFACTORY = tssf; }
 void ViewerAppli::cleanThreadStateSaverFatory() { delete THREADSTATESAVERFACTORY; THREADSTATESAVERFACTORY = NULL; }
+void ViewerAppli::activateStateSaver(bool enabling) { THREADSTATESAVERENABLED =  enabling; }
 
 void 
 ViewerAppli::sendAnEvent(QEvent *e)
 { 
     ThreadStateSaver * tss = NULL;
-    if (THREADSTATESAVERFACTORY) {
+    if (THREADSTATESAVERENABLED && THREADSTATESAVERFACTORY) {
         tss = THREADSTATESAVERFACTORY->produceStateSaver();
         if(tss) tss->pushState();
     }
+	else { std::cerr << "do not save state" << std::endl; }
     startSession(); getViewer()->send(e); 
     if (tss) {
         tss->popState();

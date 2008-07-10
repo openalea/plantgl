@@ -147,6 +147,9 @@ Material::Material( const Color3& ambient,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
+	if(__diffuse*real_t(ambient.getRed())>255) __diffuse = 255./real_t(ambient.getRed());
+	if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = 255./real_t(ambient.getGreen());
+	if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = 255./real_t(ambient.getBlue());
   GEOM_ASSERT(isValid());
 }
 
@@ -164,6 +167,9 @@ Material::Material( const string& name,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
+	if(__diffuse*real_t(ambient.getRed())>255) __diffuse = 255./real_t(ambient.getRed());
+	if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = 255./real_t(ambient.getGreen());
+	if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = 255./real_t(ambient.getBlue());
   setName(name);
   GEOM_ASSERT(isValid());
 }

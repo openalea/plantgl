@@ -1,17 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -68,7 +62,9 @@ ViewerThreadedAppli::startSession(){
 bool 
 ViewerThreadedAppli::stopSession(){
     if(running()){
+	   activateStateSaver(false);
 	   sendAnEvent(new ViewEndEvent());
+	   activateStateSaver(true);
        return true;
     }
     else return false;
@@ -76,10 +72,14 @@ ViewerThreadedAppli::stopSession(){
 
 bool 
 ViewerThreadedAppli::exit() {
-    if(isRunning()){
+	if(isRunning()){
 	  startSync();
 	  __continue.unlock();
-	  if(running())sendAnEvent(new ViewEndEvent());
+	  if(running()){ 
+		  activateStateSaver(false);
+		  sendAnEvent(new ViewEndEvent());
+		  activateStateSaver(true);
+	  }
 	  else  contcond.wakeAll();
 	  sync();
 	  terminate();

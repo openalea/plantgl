@@ -395,6 +395,9 @@ class ALGO_API Fit
 						    TOOLS(Vector3)& u, TOOLS(Vector3)& v, 
 							TOOLS(Vector3)& w, TOOLS(Vector3)& s);
 
+	static bool inertiaAxis(const Point2ArrayPtr& points, 
+						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s);
+
 protected:
 
   /// The points to fit.

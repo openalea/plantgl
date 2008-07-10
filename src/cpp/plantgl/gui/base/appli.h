@@ -1,17 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon
- *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -56,9 +50,11 @@ protected:
 	static ViewerBuilder * VIEWERBUILDER;
 	static ThreadedData<Viewer> VIEWER;
     static ThreadStateSaverFactory * THREADSTATESAVERFACTORY;
+	static bool THREADSTATESAVERENABLED;
 
 
 	static Viewer * build();
+	void activateStateSaver(bool enabling);
 
 public:
 	static void setBuilder(ViewerBuilder * builder);

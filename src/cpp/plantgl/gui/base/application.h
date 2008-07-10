@@ -6,11 +6,7 @@
  *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
  *                           UMR PIAF INRA-UBP Clermont-Ferrand
  *
- *       File author(s): C. Nouguier & F. Boudon
- *                       N. Dones & B. Adam
- *
- *       $Source$
- *       $Id$
+ *       File author(s): F. Boudon
  *
  *       Forum for AMAPmod developers    : amldevlp@cirad.fr
  *

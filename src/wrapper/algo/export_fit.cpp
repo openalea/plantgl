@@ -72,6 +72,13 @@ boost::python::object inertiaAxis(Point3Array * points){
 	else return make_tuple(u,v,w,s);
 }
 
+boost::python::object inertiaAxis2d(Point2Array * points){
+	Vector2 u,v,s;
+	bool res = Fit::inertiaAxis(Point2ArrayPtr(points),u,v,s);
+	if (!res) return object();
+	else return make_tuple(u,v,s);
+}
+
 /* ----------------------------------------------------------------------- */
 
 void export_Fit()
@@ -113,11 +120,15 @@ void export_Fit()
 	.staticmethod("available")
     .def("areRadiusNeeded",&Fit::areRadiusNeeded)
 	.staticmethod("areRadiusNeeded")
+	.def("inertiaAxis",inertiaAxis,args("points"))
+	.def("inertiaAxis",inertiaAxis2d,args("points"))
+    .staticmethod("inertiaAxis")
     ;
   
   
   def("fit",&fit,args("algo","src"));
   def("inertiaAxis",inertiaAxis,args("points"));
+  def("inertiaAxis",inertiaAxis2d,args("points"));
 }
 
 /* ----------------------------------------------------------------------- */

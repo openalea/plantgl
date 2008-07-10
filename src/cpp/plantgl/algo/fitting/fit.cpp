@@ -214,6 +214,29 @@ bool Fit::inertiaAxis(const Point3ArrayPtr& points,
   return false;
 }
 
+bool Fit::inertiaAxis(const Point2ArrayPtr& points, 
+						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s)
+{
+  if(points->getSize()>2){
+	float vpvec[3][3];
+	float vpint[3] = {0,0,0};
+	float vpang[3][3];
+	short vpok[3];
+	Point3ArrayPtr npoints = new Point3Array(*points,0);
+	Laxi_ComputeInertia (npoints,vpvec,vpint,vpang,vpok);
+	if(vpok[2]!=0  && vpok[1]!=0 && vpint[2]!=0 && vpint[1]!=0  ){ 
+	    u = Vector2(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1]);
+	    v = Vector2(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2]);
+	    s = Vector2(vpint[1],vpint[2]);
+		return true;
+	}
+	else return false;
+  }
+  return false;
+}
+
+
+
 GeometryPtr Fit::sphere(){
   if(! __pointstofit )return GeometryPtr(0);
   if(__pointstofit->getSize()>2){

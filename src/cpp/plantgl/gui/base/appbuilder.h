@@ -7,9 +7,6 @@
  *
  *       File author(s): F. Boudon
  *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/view_application.h,v $
- *       $Id: view_application.h,v 1.20 2006/08/12 21:44:09 barbier Exp $
- *
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
