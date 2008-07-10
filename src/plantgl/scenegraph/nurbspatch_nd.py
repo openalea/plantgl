@@ -38,33 +38,40 @@ class NurbsPatch3D:
         assert not self.vknots is None and len(self.vknots) > self.vdim + 2
         assert not self.wknots is None and len(self.wknots) > self.wdim + 2
         return True
+        
     def getPointAt(self,u,v,w):
         """ Compute point at (u,v,w) """
         udeg = self.udegree
         uspan = sg.NurbsCurve.findSpan(u,udeg,self.uknots)        
         Nu = sg.NurbsCurve.basisFunctions(uspan, u, udeg, self.uknots)
+
         vdeg = self.vdegree
         vspan = sg.NurbsCurve.findSpan(v,vdeg,self.vknots)
         Nv = sg.NurbsCurve.basisFunctions(vspan, v, vdeg, self.vknots)
+
         wdeg = self.wdegree
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknots)
+        
         tmp = [[None for i in xrange(vdeg+1)] for j in xrange(wdeg+1)]
         for i in xrange(0,wdeg+1):
             for j in xrange(0,vdeg+1):
                 tmpVec = Vector4(0,0,0,0)
                 for k in xrange(0,udeg+1):
-                    tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg-i] * Nu[k]
+                    tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i] * Nu[k]
                 tmp[i][j] = tmpVec
+                
         tmp2 = [None for i in xrange(wdeg+1)]
         for i in xrange(0,wdeg+1):
             tmpVec = Vector4(0,0,0,0)
             for j in xrange(0,vdeg+1):
                 tmpVec += tmp[i][j] * Nv[j]
             tmp2[i] = tmpVec
+        
         res = Vector4(0,0,0,0)
         for i in xrange(0,wdeg+1):
             res += tmp2[i] * Nw[i]
+            
         if res.w != 0:
             return res.project()
         else:
@@ -72,30 +79,35 @@ class NurbsPatch3D:
         
     def getParametrization(self,p):
         """ return (u,v,t) """
-    def getTDerivativeAt(self,u,v,w):
+    def getWDerivativeAt(self,u,v,w):
         """ Compute point at (u,v,w) """
         udeg = self.udegree
         uspan = sg.NurbsCurve.findSpan(u,udeg,self.uknots)        
         Nu = sg.NurbsCurve.basisFunctions(uspan, u, udeg, self.uknots)
+        
         vdeg = self.vdegree
         vspan = sg.NurbsCurve.findSpan(v,vdeg,self.vknots)
         Nv = sg.NurbsCurve.basisFunctions(vspan, v, vdeg, self.vknots)
+        
         wdeg = self.wdegree
         wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
         Nw = sg.NurbsCurve.derivatesBasisFunctions(1, w, wspan, wdeg, self.wknots)
-        tmp = [[None for i in xrange(self.vdegree+1)] for i in xrange(self.wdegree+1)]
+        
+        tmp = [[None for i in xrange(vdeg+1)] for j in xrange(wdeg+1)]
         for i in xrange(0,wdeg+1):
             for j in xrange(0,vdeg+1):
                 tmpVec = Vector4(0,0,0,0)
                 for k in xrange(0,udeg+1):
-                    tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg-i] * Nu[k]
+                    tmpVec += self.points[uspan-udeg+k][vspan-vdeg+j][wspan-wdeg+i] * Nu[k]
                 tmp[i][j] = tmpVec
+        
         tmp2 = [None for i in xrange(self.wdegree+1)]
         for i in xrange(0,wdeg+1):
             tmpVec = Vector4(0,0,0,0)
             for j in xrange(0,vdeg+1):
                 tmpVec += tmp[i][j] * Nv[j]
             tmp2[i] = tmpVec
+        
         res = [Vector4() for i in xrange(2)]
         for j in xrange(2):
           for i in xrange(0,wdeg+1):

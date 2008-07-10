@@ -24,7 +24,7 @@ def test_gpt():
 def test_gdt():
     """ Creation of a cube patch 3D """
     nb3d = createCubePatch()
-    res = nb3d.getTDerivativeAt(0.5,0.5,0.5)
+    res = nb3d.getWDerivativeAt(0.5,0.5,0.5)
     print res
 
 ########################################################
