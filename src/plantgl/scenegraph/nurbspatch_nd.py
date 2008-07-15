@@ -113,6 +113,43 @@ class NurbsPatch3D:
           for i in xrange(0,wdeg+1):
             res[j] += tmp2[i] * Nw[j,i]
         return res[1]
-    
-        
+    def getWPatch(self,w):
+        wdeg = self.wdegree
+        wspan = sg.NurbsCurve.findSpan(w,wdeg,self.wknots)
+        Nw = sg.NurbsCurve.basisFunctions(wspan, w, wdeg, self.wknots)
+       
+        tmp = [[None for j in xrange(self.vdim)] for i in xrange(self.udim)]
+        for i in xrange(0,self.udim):
+            for j in xrange(0,self.vdim):
+                tmpVec = Vector4(0,0,0,0)
+                for k in xrange(0,wdeg+1):
+                    tmpVec += self.points[i][j][wspan-wdeg+k] * Nw[k]
+                tmp[i][j] = tmpVec
+        return sg.NurbsPatch(tmp,self.uknots,self.vknots,self.udegree,self.vdegree,self.ustride,self.vstride)
+    def getUPatch(self,u):
+        udeg = self.udegree
+        uspan = sg.NurbsCurve.findSpan(u,udeg,self.uknots)        
+        Nu = sg.NurbsCurve.basisFunctions(uspan, u, udeg, self.uknots)
+       
+        tmp = [[None for j in xrange(self.wdim)] for i in xrange(self.vdim)]
+        for i in xrange(0,self.vdim):
+            for j in xrange(0,self.wdim):
+                tmpVec = Vector4(0,0,0,0)
+                for k in xrange(0,udeg+1):
+                    tmpVec += self.points[uspan-udeg+k][i][j] * Nu[k]
+                tmp[i][j] = tmpVec
+        return sg.NurbsPatch(tmp,self.vknots,self.wknots,self.vdegree,self.wdegree,self.vstride,self.wstride)
+    def getVPatch(self,v):
+        vdeg = self.vdegree
+        vspan = sg.NurbsCurve.findSpan(v,vdeg,self.vknots)
+        Nv = sg.NurbsCurve.basisFunctions(vspan, v, vdeg, self.vknots)
+       
+        tmp = [[None for j in xrange(self.wdim)] for i in xrange(self.udim)]
+        for i in xrange(0,self.udim):
+            for j in xrange(0,self.wdim):
+                tmpVec = Vector4(0,0,0,0)
+                for k in xrange(0,vdeg+1):
+                    tmpVec += self.points[i][vspan-vdeg+k][j] * Nv[k]
+                tmp[i][j] = tmpVec
+        return sg.NurbsPatch(tmp,self.uknots,self.wknots,self.udegree,self.wdegree,self.ustride,self.wstride)
         

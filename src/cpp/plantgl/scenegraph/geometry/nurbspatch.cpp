@@ -395,9 +395,10 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
   Point4Array temp(__vdegree+1);
   for (uint_t l = 0 ; l <= __vdegree ; l++ ){
-      temp.setAt(l,Vector4(0,0,0,0));
+	  Vector4 vec;
       for (uint_t k = 0 ; k <= __udegree ; k++ )
-          temp.setAt(l, temp.getAt(l) + (__ctrlPointMatrix->getAt(uspan - __udegree +k,vspan - __vdegree +l) *  (Nu->getAt(k)))) ;
+          vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,vspan - __vdegree +l) *  (Nu->getAt(k))) ;
+	  temp.setAt(l,vec);
   }
 
 
@@ -412,6 +413,43 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
   return Sw.project();
 }
 
+/* ----------------------------------------------------------------------- */
+
+LineicModelPtr NurbsPatch::getUSection(real_t u) const
+{
+  GEOM_ASSERT( u >= 0.0 && u <= 1.0 );
+
+  uint_t uspan = findSpan(__udegree,__uKnotList,u);
+  RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
+  uint_t vdim = __ctrlPointMatrix->getColsNb();
+  Point4ArrayPtr temp(new Point4Array(vdim));
+  for (uint_t l = 0 ; l < vdim ; l++ ){
+	  Vector4 vec;
+      for (uint_t k = 0 ; k <= __udegree ; k++ )
+          vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,l) *  (Nu->getAt(k))) ;
+	  temp->setAt(l,vec);
+  }
+  return new NurbsCurve(temp,__vKnotList,__vdegree,__vstride);
+}
+
+LineicModelPtr NurbsPatch::getVSection(real_t v) const
+{
+  GEOM_ASSERT(  v>= 0.0 && v<=1.0 );
+
+  uint_t vspan = findSpan(__vdegree,__vKnotList,v);
+  RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
+  uint_t udim = __ctrlPointMatrix->getRowsNb();
+  Point4ArrayPtr temp(new Point4Array(udim));
+  for (uint_t l = 0 ; l < udim ; l++ ){
+	  Vector4 vec;
+      for (uint_t k = 0 ; k <= __vdegree ; k++ )
+          vec += (__ctrlPointMatrix->getAt(l,vspan - __vdegree +k) *  (Nv->getAt(k))) ;
+	  temp->setAt(l,vec);
+  }
+  return new NurbsCurve(temp,__uKnotList,__udegree,__ustride);
+}
+
+/* ----------------------------------------------------------------------- */
 
 bool NurbsPatch::isValid( ) const {
     Builder _builder;
@@ -427,13 +465,6 @@ bool NurbsPatch::isValid( ) const {
 }
 
 
-/*Vector3 NurbsPatch::getPointAt2(real_t u) const{
-}*/
-
-/*Vector3 NurbsPatch::getTangentAt(real_t u) const{
-}*/
-
-
 /* ----------------------------------------------------------------------- */
 
 
@@ -443,49 +474,4 @@ uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U, real_t u)  const 
     return PGL::findSpan(u,deg,U);
 }
 
-/*
-uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U,  real_t u) const{
-    uint_t n = U->getSize() - deg - 1 ;
-    if( u >= U->getAt( n ) )return ( n - 1 );
-    if( u <= U->getAt( deg )  )return ( deg );
 
-    uint_t low = deg;
-    uint_t high = n ;
-    uint_t mid = ( low + high ) / 2;
-    real_t _knot =  U->getAt(mid);
-
-    while (u < _knot  || u >= U->getAt(mid+1) ){
-        if ( u < _knot ) high = mid;
-        else low = mid;
-        mid = ( low + high ) / 2;
-        _knot = U->getAt(mid);
-    }
-
-    return mid;
-}*/
-
-
-/*
-RealArrayPtr NurbsPatch::computeBasisFunctions(uint_t span, real_t u, uint_t deg,const RealArrayPtr& U ) const{
-
-  RealArrayPtr BasisFunctions(new RealArray( deg + 1));
-  real_t left[ deg+1 ];
-  real_t right[ deg+1 ];
-  real_t saved;
-
-  BasisFunctions->setAt(0,1.0);
-
-  for( uint_t j = 1 ; j <= deg ; j++ ){
-    left[j] = u - U->getAt(span + 1 -j) ;
-    right[j] = U->getAt(span + j) - u ;
-    saved = 0.0;
-    for ( uint_t r = 0; r < j; r++){
-      real_t temp = BasisFunctions->getAt(r) / ( right[r+1] + left[j-r] );
-      BasisFunctions->setAt(r, saved + ( right[r+1] * temp ));
-      saved = left[j-r] * temp;
-    }
-    BasisFunctions->setAt(j,saved);
-  }
-  return BasisFunctions;
-}
-*/

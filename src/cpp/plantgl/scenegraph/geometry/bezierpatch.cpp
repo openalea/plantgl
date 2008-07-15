@@ -30,10 +30,12 @@
  */
 
 #include "bezierpatch.h"
+#include "beziercurve.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
 #include <plantgl/tool/util_string.h>
 #include <plantgl/math/util_math.h>
 #include <plantgl/scenegraph/container/pointmatrix.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -287,17 +289,62 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
 
             for (uint_t k = 1 ; k <= _vdeg ; k++)
                 for (uint_t j = 0 ; j <= ( _vdeg - k ) ; j++)
-                    T[j] = (T[j] * u1) + (T[j+1] * u);
+                    T[j] = (T[j] * v1) + (T[j+1] * v);
             Q[i]=T[0];
         }
         for (uint_t k = 1 ; k <= _udeg ; k++)
             for (uint_t i = 0 ; i <= ( _udeg - k ) ; i++)
-                Q[i] = (Q[i] * v1) + (Q[i+1] * v);
+                Q[i] = (Q[i] * u1) + (Q[i+1] * u);
 
         if (fabs(Q[0].w()) < GEOM_TOLERANCE)
             return Vector3(Q[0].x(),Q[0].y(),Q[0].z());
         return Q[0].project();
     }
+}
+
+
+LineicModelPtr BezierPatch::getUSection(real_t u) const
+{
+    GEOM_ASSERT( u >= 0.0 && u <= 1.0);
+
+    uint_t _udeg = getUDegree();
+    uint_t _vdeg = getVDegree();
+    Vector3 myPoint( 0 , 0 , 0 );
+
+    real_t u1 = real_t(1.0) - u;
+
+    vector<Vector4> Q(_vdeg+1);
+    for (uint_t j =0 ; j <= _vdeg ; j ++){
+          vector<Vector4> T=__ctrlPointMatrix->getRow(j);
+          for (uint_t k = 1 ; k <= _udeg ; k++)
+              for (uint_t i = 0 ; i <= ( _udeg - k ) ; i++)
+                  T[i] = (T[i] * u1) + (T[i+1] * u);
+          Q[j]=T[0];
+    }
+	return new BezierCurve(new Point4Array(Q.begin(),Q.end()),_vdeg);
+}
+
+
+LineicModelPtr BezierPatch::getVSection(real_t v) const
+{
+    GEOM_ASSERT( u >= 0.0 && u <= 1.0);
+
+    uint_t _udeg = getUDegree();
+    uint_t _vdeg = getVDegree();
+    Vector3 myPoint( 0 , 0 , 0 );
+
+    real_t v1 = real_t(1.0) - v;
+
+    vector<Vector4> Q(_udeg+1);
+    for (uint_t i =0 ; i <= _udeg ; i ++){
+        vector<Vector4> T=__ctrlPointMatrix->getColumn(i);
+
+        for (uint_t k = 1 ; k <= _vdeg ; k++)
+                for (uint_t j = 0 ; j <= ( _vdeg - k ) ; j++)
+                    T[j] = (T[j] * v1) + (T[j+1] * v);
+        Q[i]=T[0];
+    }
+	return new BezierCurve(new Point4Array(Q.begin(),Q.end()),_udeg);
 }
 
 

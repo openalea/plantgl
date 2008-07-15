@@ -39,6 +39,7 @@
 #include <plantgl/scenegraph/geometry/patch.h>
 #include <plantgl/scenegraph/geometry/bezierpatch.h>
 #include <plantgl/scenegraph/geometry/nurbspatch.h>
+#include <plantgl/scenegraph/geometry/nurbscurve.h>
 
 #include "../util/export_refcountptr.h"
 #include "../util/export_property.h"
@@ -100,6 +101,8 @@ void export_NurbsPatch()
     .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
     .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)
     .def("setUKnotListToDefault",&NurbsPatch::setUKnotListToDefault)
+    .def("getUSection",&NurbsPatch::getUSection,args("u"),"Compute a section line of the patch corresponding to a constant u value.")
+    .def("getVSection",&NurbsPatch::getVSection,args("v"),"Compute a section line of the patch corresponding to a constant v value.")
     ;
 
   implicitly_convertible< NurbsPatchPtr,BezierPatchPtr >();

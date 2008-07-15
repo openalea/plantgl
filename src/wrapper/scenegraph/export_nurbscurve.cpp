@@ -126,6 +126,7 @@ void export_NurbsCurve()
       "where the Ri,p(u) are p-th degree rational basis functions defined on the knot vector.", 
 	  init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
+     .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
      .def( "fit", nurbs_fit1, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )

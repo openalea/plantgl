@@ -50,6 +50,8 @@ PGL_BEGIN_NAMESPACE
 
 class Point4Matrix;
 typedef RCPtr<Point4Matrix> Point4MatrixPtr;
+class LineicModel;
+typedef RCPtr<LineicModel> LineicModelPtr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -173,6 +175,16 @@ public:
   //virtual Vector3 getTangentAt(real_t u) const;
 
   virtual bool isValid( ) const;
+  /*!
+    Compute a section line of the patch corresponding to a constant u value
+   */
+  virtual LineicModelPtr getUSection(real_t u) const;
+
+  /*!
+    Compute a section line of the patch corresponding to a constant v value
+   */
+  virtual LineicModelPtr getVSection(real_t v) const;
+
 
 protected:
 
