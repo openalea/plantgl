@@ -130,7 +130,7 @@ public:
   bool isDegreeToDefault( ) const;
 
   /// Returns \e knotsList value.
-  virtual TOOLS(RealArrayPtr) getKnotList( ) const ;
+  const TOOLS(RealArrayPtr)& getKnotList( ) const ;
 
   /// Returns \e knotsList field.
   TOOLS(RealArrayPtr)& getKnotList( );

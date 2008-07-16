@@ -225,7 +225,7 @@ NurbsCurve::isDegreeToDefault( ) const {
   return __degree == DEFAULT_NURBS_DEGREE;
 }
 
-RealArrayPtr
+const RealArrayPtr&
 NurbsCurve::getKnotList( ) const {
   return __knotList;
 }
