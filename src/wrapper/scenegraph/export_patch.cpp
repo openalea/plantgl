@@ -78,6 +78,8 @@ void export_BezierPatch()
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
     .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     .def("getPointAt",&BezierPatch::getPointAt)
+    .def("getUSection",&BezierPatch::getUSection,args("u"),"Compute a section line of the patch corresponding to a constant u value.")
+    .def("getVSection",&BezierPatch::getVSection,args("v"),"Compute a section line of the patch corresponding to a constant v value.")
     ;
 
   implicitly_convertible< BezierPatchPtr,PatchPtr >();
@@ -101,8 +103,6 @@ void export_NurbsPatch()
     .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
     .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)
     .def("setUKnotListToDefault",&NurbsPatch::setUKnotListToDefault)
-    .def("getUSection",&NurbsPatch::getUSection,args("u"),"Compute a section line of the patch corresponding to a constant u value.")
-    .def("getVSection",&NurbsPatch::getVSection,args("v"),"Compute a section line of the patch corresponding to a constant v value.")
     ;
 
   implicitly_convertible< NurbsPatchPtr,BezierPatchPtr >();

@@ -38,7 +38,6 @@
 #define __pgl_scenegraph_h__
 
 
-#include "plantgl/scenegraph/pgl_version.h"
 #include "pgl_geometry.h"
 #include "pgl_transformation.h"
 #include "pgl_appearance.h"
