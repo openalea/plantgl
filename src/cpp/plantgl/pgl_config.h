@@ -1,16 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
- *
- *       $Source: /usr/cvsmaster/AMAPmod/src/Tools/config.h,v $
- *       $Id: config.h,v 1.34 2006/08/21 12:12:46 fboudon Exp $
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -256,6 +251,14 @@
 #endif
 
 
+/// deprecated attribute definition
+#ifdef __GNUC__
+#define attribute_deprecated __attribute__((deprecated))
+#elif defined( _MSC_VER )
+#define attribute_deprecated __declspec(deprecated)
+#else
+#define attribute_deprecated
+#endif
 /* ----------------------------------------------------------------------- */
 
 // __config_h__
