@@ -41,10 +41,10 @@
 
 #include <string>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
-#include "../util/export_list.h"
-#include "../util/exception.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/exception.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -170,6 +170,11 @@ ScenePtr sc_add(Scene* s ,Scene* s2){
   else if (s) return ScenePtr(new Scene(*s));
   else return ScenePtr(new Scene());
 }
+
+void sc_add2(Scene* s ,GeometryPtr sh){
+  if(sh)s->add(Shape3DPtr(new Shape(sh,Material::DEFAULT_MATERIAL)));
+}
+
 void sc_read(Scene* s ,const std::string& fname){
 	s->read(fname);
 }
@@ -229,6 +234,7 @@ void export_Scene()
 	sc.def("__add__", &sc_add);
     sc.def("add", (void (Scene::*)(const ShapePtr &) ) &Scene::add );
     sc.def("add", (void (Scene::*)(const Shape3DPtr &) )&Scene::add);
+	sc.def("add", &sc_add2);
     sc.def("add", &Scene::merge);
     sc.def("merge", &Scene::merge);
     sc.def("__len__", &Scene::getSize);

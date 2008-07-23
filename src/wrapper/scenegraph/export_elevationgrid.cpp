@@ -37,9 +37,9 @@
 #include <string>
 #include <sstream>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
-#include "../util/exception.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/exception.h>
 
 using namespace boost::python;
 

@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/export_property.h"
+#include <plantgl/python/export_property.h>
 #include <plantgl/algo/base/matrixcomputer.h>
 #include <plantgl/math/util_matrix.h>
 #include <boost/python.hpp>

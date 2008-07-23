@@ -36,7 +36,7 @@
  
 #include <boost/python.hpp>
 #include "export_math.h"
-#include "../util/exception_core.h"
+#include <plantgl/python/exception_core.h>
 
 using namespace boost::python;
 

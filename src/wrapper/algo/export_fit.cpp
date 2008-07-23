@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/export_property.h"
+#include <plantgl/python/export_property.h>
 #include <plantgl/algo/fitting/fit.h>
 #include <plantgl/algo/base/discretizer.h>
 #include <boost/python.hpp>

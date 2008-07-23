@@ -37,8 +37,8 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
 
 #include <boost/python.hpp>
 #include <string>

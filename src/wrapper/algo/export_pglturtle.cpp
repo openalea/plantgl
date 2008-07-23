@@ -32,7 +32,7 @@
 #include <plantgl/algo/modelling/pglturtle.h>
 
 #include <boost/python.hpp>
-#include "../util/export_list.h"
+#include <plantgl/python/export_list.h>
 
 using namespace boost::python;
 PGL_USING_NAMESPACE

@@ -31,7 +31,7 @@
 
 #include <boost/python.hpp>
 #include "export_action.h"
-#include "../util/exception_core.h"
+#include <plantgl/python/exception_core.h>
 
 /* ----------------------------------------------------------------------- */
 

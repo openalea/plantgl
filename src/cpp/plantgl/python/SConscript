@@ -1,0 +1,9 @@
+# -*-python-*-
+Import( "env" )
+lib_env = env.Copy()
+
+# 1. Select and install the headers
+
+includes= lib_env.ALEAGlob('*.h')
+lib_env.ALEAIncludes( pj('plantgl','python'), includes )
+

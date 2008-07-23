@@ -31,7 +31,7 @@
 
 
 #include "export_vector.h"
-#include "../util/tuple_converter.h"
+#include <plantgl/python/tuple_converter.h>
 //#include <plantgl/math/util_math.h>
 
 #include <string>

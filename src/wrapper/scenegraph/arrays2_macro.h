@@ -29,9 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/export_list.h"
-#include "../util/extract_list.h"
-#include "plantgl/math/util_matrixmath.h"
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
+#include <plantgl/math/util_matrixmath.h>
 #include <boost/python.hpp>
 
 template<class T>

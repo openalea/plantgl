@@ -138,6 +138,8 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				SuppressStartupBanner="false"
+				VerboseOutput="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

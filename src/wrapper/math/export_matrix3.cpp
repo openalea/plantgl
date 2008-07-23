@@ -35,7 +35,7 @@
 #include <sstream>
 
 #include "export_matrix.h"
-#include "../util/exception.h"
+#include <plantgl/python/exception.h>
 
 
 TOOLS_USING_NAMESPACE

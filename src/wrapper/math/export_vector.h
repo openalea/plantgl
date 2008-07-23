@@ -33,9 +33,9 @@
 #define __export_vector_h__
 
 #include <plantgl/math/util_vector.h>
+#include <plantgl/python/exception.h>
 #include <boost/python.hpp>
 #include <boost/python/def_visitor.hpp>
-#include "../util/exception.h"
 
 using namespace boost::python;
 

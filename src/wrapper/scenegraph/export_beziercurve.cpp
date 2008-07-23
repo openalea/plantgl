@@ -37,9 +37,9 @@
 #include <boost/python.hpp>
 #include <sstream>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
-#include "../util/export_list.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/export_list.h>
 
 using namespace boost::python;
 
@@ -88,7 +88,7 @@ void export_BezierCurve()
 	"It is defined by a degree n and a list of control Points Pi\n"
 	"and using the parametric equation C(u) = Sum(i=0,n)(Bi,n(u)Pi) with u in [0,1]\n"
 	"where Bi,n(u) are the classical n-th degree Bernstein polynomials.",
-	init<Point4ArrayPtr, optional< uint_t > >() )
+	init<Point4ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride") ) )
     .def( "copy", &BezierCurve::copy )
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint_t,DEFAULT_STRIDE)

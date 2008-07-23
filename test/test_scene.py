@@ -5,9 +5,6 @@ def test_scene():
     assert scene.isValid()
     return scene
 
-def test_sphere():
-    sphere = Sphere()
-    assert sphere.isValid()
 
 def test_default_material():
     mat = Material()
@@ -38,11 +35,7 @@ def test_default_material1():
 def test_scene1():
     scene = Scene()
     sphere = Sphere()
-    try:
-        scene.add(sphere)
-        assert False # TODO: It have to pass
-    except:
-        assert True
+    scene.add(sphere)
     
 def test_scene2():
     scene = Scene()
@@ -58,4 +51,4 @@ def test_scene3():
     scene.add(shape)
     assert scene.isValid()
 
-
+    

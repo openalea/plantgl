@@ -34,8 +34,8 @@
 #include <boost/python.hpp>
 #include <string>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
 
 
 using namespace boost::python;

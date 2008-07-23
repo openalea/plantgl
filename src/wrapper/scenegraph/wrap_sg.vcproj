@@ -313,42 +313,46 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Utils"
+			Name="Util"
 			>
 			<File
-				RelativePath="..\util\exception.h"
+				RelativePath="..\..\cpp\plantgl\python\exception.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\exception_core.h"
+				RelativePath="..\..\cpp\plantgl\python\exception_core.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\export_list.h"
+				RelativePath="..\..\cpp\plantgl\python\export_list.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\export_property.h"
+				RelativePath="..\..\cpp\plantgl\python\export_property.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\export_refcountptr.h"
+				RelativePath="..\..\cpp\plantgl\python\export_refcountptr.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\extract_list.h"
+				RelativePath="..\..\cpp\plantgl\python\extract_list.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\extract_pgl.h"
+				RelativePath="..\..\cpp\plantgl\python\extract_pgl.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\extract_widget.h"
+				RelativePath="..\..\cpp\plantgl\python\extract_widget.h"
 				>
 			</File>
 			<File
-				RelativePath="..\util\tuple_converter.h"
+				RelativePath="..\..\cpp\plantgl\python\list_converter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\cpp\plantgl\python\tuple_converter.h"
 				>
 			</File>
 		</Filter>

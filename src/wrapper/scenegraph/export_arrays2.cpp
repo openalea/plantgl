@@ -29,8 +29,8 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/export_refcountptr.h"
-#include "../util/exception.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/exception.h>
 
 #include <plantgl/tool/util_array2.h>
 #include <plantgl/math/util_vector.h>

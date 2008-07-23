@@ -1,13 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -31,30 +29,18 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file geom_version.h
-    \brief File for accessing to PGL version.
-*/
+#ifndef __exoprt_refcountptr__
+#define __exoprt_refcountptr__
+
+#include <boost/python.hpp>
+#include <boost/pointee.hpp>
+#include <plantgl/tool/rcobject.h>
+TOOLS_USING_NAMESPACE
 
 
-#ifndef __pgl_version_h__
-#define __pgl_version_h__
+#define DEF_POINTEE(CLASS) \
+namespace boost { namespace python { \
+template <> struct pointee<RCPtr<CLASS> > { typedef CLASS type; }; } }
 
-#include "sg_config.h"
-
-/// PGL Version macro
-#define PGL_VERSION 0x020700
-#define PGL_SVNREVISION "$Revision$"
-
-#include <string>
-
-/// PGL Version
-extern SG_API float getPGLVersion();
-extern SG_API int getPGLRevision();
-extern SG_API int getPGLSvnRevision();
-
-/// PGL Version String
-extern SG_API std::string getPGLVersionString();
 
 #endif
-
-

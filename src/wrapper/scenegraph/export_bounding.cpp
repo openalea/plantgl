@@ -42,8 +42,8 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

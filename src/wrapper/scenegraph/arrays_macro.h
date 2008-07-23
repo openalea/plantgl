@@ -30,7 +30,7 @@
  */
 
 // Array Macro
-#include "../util/extract_pgl.h"
+#include <plantgl/python/extract_pgl.h>
 #include <boost/python/def_visitor.hpp>
 
 template<class T>

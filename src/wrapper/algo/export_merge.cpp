@@ -34,7 +34,7 @@
 #include <plantgl/algo/base/merge.h>
 #include <plantgl/algo/base/discretizer.h>
 
-#include "../util/export_property.h"
+#include <plantgl/python/export_property.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

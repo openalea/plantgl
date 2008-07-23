@@ -29,9 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/export_refcountptr.h"
-#include "../util/exception.h"
-#include "../util/export_property.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/exception.h>
+#include <plantgl/python/export_property.h>
 
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 #include <plantgl/scenegraph/geometry/curve.h>

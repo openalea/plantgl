@@ -31,8 +31,8 @@
 
 #include <boost/python.hpp>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
 
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/appearance/appearance.h>

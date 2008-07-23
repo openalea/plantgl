@@ -33,7 +33,7 @@
 #include <sstream>
 #include <plantgl/scenegraph/container/indexarray.h>
 
-#include "../util/tuple_converter.h"
+#include <plantgl/python/tuple_converter.h>
 #include "arrays_macro.h"
 
 #include <boost/python.hpp>

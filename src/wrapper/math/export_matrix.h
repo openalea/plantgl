@@ -34,7 +34,7 @@
 
 #include <boost/python.hpp>
 #include <boost/python/def_visitor.hpp>
-#include "../util/exception.h"
+#include <plantgl/python/exception.h>
 
 using namespace boost::python;
 

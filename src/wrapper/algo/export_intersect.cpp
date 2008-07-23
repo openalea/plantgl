@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "../util/export_property.h"
+#include <plantgl/python/export_property.h>
 #include <plantgl/algo/raycasting/util_intersection.h>
 #include <plantgl/algo/raycasting/rayintersection.h>
 #include <plantgl/algo/base/discretizer.h>

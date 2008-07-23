@@ -32,7 +32,7 @@
  
 #include <boost/python.hpp>
 #include "export_scenegraph.h"
-#include "../util/exception_core.h"
+#include <plantgl/python/exception_core.h>
 #include <plantgl/scenegraph/pgl_version.h>
 
 using namespace boost::python;

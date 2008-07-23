@@ -38,12 +38,12 @@
 #include <sstream>
 #include <qthread.h>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
-#include "../util/exception.h"
-#include "../util/export_list.h"
-#include "../util/extract_list.h"
-#include "../util/list_converter.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/exception.h>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
+#include <plantgl/python/list_converter.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

@@ -41,9 +41,9 @@
 #include <plantgl/scenegraph/geometry/profile.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_property.h"
-#include "../util/extract_pgl.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/extract_pgl.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

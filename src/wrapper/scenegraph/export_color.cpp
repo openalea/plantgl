@@ -32,7 +32,7 @@
 #include <boost/python.hpp>
 
 #include <plantgl/scenegraph/appearance/color.h>
-#include "../util/tuple_converter.h"
+#include <plantgl/python/tuple_converter.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

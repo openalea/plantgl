@@ -30,8 +30,8 @@
  */
 
 #include "export_viewer.h"
-#include "../util/extract_list.h"
-#include "../util/extract_widget.h"
+#include <plantgl/python/extract_list.h>
+#include <plantgl/python/extract_widget.h>
 
 #include <boost/python.hpp>
 

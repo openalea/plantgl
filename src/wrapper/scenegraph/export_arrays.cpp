@@ -36,8 +36,8 @@
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
-#include "../util/exception.h"
-#include "../util/export_refcountptr.h"
+#include <plantgl/python/exception.h>
+#include <plantgl/python/export_refcountptr.h>
 #include "arrays_macro.h"
 
 PGL_USING_NAMESPACE

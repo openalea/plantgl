@@ -40,9 +40,10 @@
 #include <plantgl/scenegraph/transformation/translated.h>
 #include <plantgl/scenegraph/transformation/scaled.h>
 #include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/pointmatrix.h>
 #include <boost/python/make_constructor.hpp>
 
-#include "../util/export_refcountptr.h"
+#include <plantgl/python/export_refcountptr.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -66,14 +67,75 @@ DEF_POINTEE(EulerRotation)
 DEF_POINTEE(BaseOrientation)
 DEF_POINTEE(Transform4)
 
+/*
+object tr2D(Transformation2D * t2, object arg){
+	extract<Point2ArrayPtr> ex_p2(arg);
+	if(ex_p2.check())return object(t2->transform(ex_p2()));
+	else{
+		extract<Point3ArrayPtr> ex_p3(arg);
+		if(ex_p3.check())return object(t2->transform(ex_p3()));
+		else {
+			extract<Point2MatrixPtr> ex_p2m(arg);
+			if(ex_p2m.check())return object(t2->transform(ex_p2m()));
+			else{
+				extract<Point3MatrixPtr> ex_p3m(arg);
+				if(ex_p3m.check())return object(t2->transform(ex_p3m()));
+				else{
+					Vector2 a = extract<Vector2>(arg)();
+					Point2ArrayPtr pa(new Point2Array(1,a));
+					return object(t2->transform(pa)->getAt(0));
+				}
+			}
+		}
+	}
+}
+
+object tr3D(Transformation3D * t3, object arg){
+	extract<Point3ArrayPtr> ex_p3(arg);
+	if(ex_p3.check())return object(t3->transform(ex_p3()));
+	else{
+		extract<Point4ArrayPtr> ex_p4(arg);
+		if(ex_p4.check())return object(t3->transform(ex_p4()));
+		else {
+			extract<Point3MatrixPtr> ex_p3m(arg);
+			if(ex_p3m.check())return object(t3->transform(ex_p3m()));
+			else{
+				extract<Point4MatrixPtr> ex_p4m(arg);
+				if(ex_p4m.check())return object(t3->transform(ex_p4m()));
+				else{
+					Vector3 a = extract<Vector3>(arg)();
+					Point3ArrayPtr pa(new Point3Array(1,a));
+					return object(t3->transform(pa)->getAt(0));
+				}
+			}
+		}
+	}
+}*/
+
 void export_Transformation()
 {
   class_< Transformation, TransformationPtr, boost::noncopyable >("Transformation", no_init);
 
   class_< Transformation2D, Transformation2DPtr, bases< Transformation >, boost::noncopyable  >
-    ("Transformation2D", no_init);
+    ("Transformation2D", no_init)
+	.def("transform",(Point2ArrayPtr (Transformation2D::*)( const Point2ArrayPtr&) const)&Transformation2D::transform)
+	// Cannot add transform on other type. boost.python will try to cast the object into a Point2Array anyway.
+	.def("transformP3List",(Point3ArrayPtr (Transformation2D::*)( const Point3ArrayPtr&) const)&Transformation2D::transform)
+	.def("transformP2Matrix",(Point2MatrixPtr (Transformation2D::*)( const Point2MatrixPtr&) const)&Transformation2D::transform)
+	.def("transformP3Matrix",(Point3MatrixPtr (Transformation2D::*)( const Point3MatrixPtr&) const)&Transformation2D::transform)
+	// .def("transform",&tr2D )
+	;
+
   class_< Transformation3D, Transformation3DPtr, bases< Transformation >, boost::noncopyable  >
-    ("Transformation3D", no_init);
+    ("Transformation3D", no_init)
+	.def("transform",(Point3ArrayPtr (Transformation3D::*)( const Point3ArrayPtr&) const)&Transformation3D::transform)
+	// Cannot add transform on other type. boost.python will try to cast the object into a Point2Array anyway.
+	// .def("transform",&tr3D )
+	.def("transformP4List",(Point4ArrayPtr (Transformation3D::*)( const Point4ArrayPtr&) const)&Transformation3D::transform)
+	.def("transformP3Matrix",(Point3MatrixPtr (Transformation3D::*)( const Point3MatrixPtr&) const)&Transformation3D::transform)
+	.def("transformP4Matrix",(Point4MatrixPtr (Transformation3D::*)( const Point4MatrixPtr&) const)&Transformation3D::transform)
+	;
+
   class_< Matrix3Transformation, Matrix3TransformationPtr, bases< Transformation2D >, boost::noncopyable  >
     ("Matrix3Transformation", no_init);
   class_< Matrix4Transformation, Matrix4TransformationPtr, bases< Transformation3D >, boost::noncopyable  >

@@ -35,7 +35,7 @@
 #include <plantgl/algo/base/tesselator.h>
 #include <plantgl/scenegraph/geometry/explicitmodel.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
-#include "../util/exception.h"
+#include <plantgl/python/exception.h>
 
 /* ----------------------------------------------------------------------- */
 

@@ -34,9 +34,9 @@
 
 #include <boost/python.hpp>
 
-#include "../util/export_refcountptr.h"
-#include "../util/export_list.h"
-#include "../util/export_property.h"
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_list.h>
+#include <plantgl/python/export_property.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
