@@ -1,4 +1,7 @@
 # -*-python-*-
+import os.path
+pj = os.path.join
+
 Import( "env" )
 lib_env = env.Copy()
 
