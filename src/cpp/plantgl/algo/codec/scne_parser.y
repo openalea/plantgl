@@ -126,12 +126,12 @@ static char * sh_keyword[] = {
     "Tapered",
     "Translated",
     "TriangleSet",
-    (char *)NULL
+    NULL
 };
 
- static char *cone_att_keyword[] = { "Radius", "Height", "Solid", "Slices", (char *)NULL };
- static char *shape_att_keyword[] = { "Appearance", "Id", "Geometry", (char *)NULL };
- static char *inline_att_keyword[] = { "BBoxCenter","BBoxSize", "FileName", "Scene", (char *)NULL };
+ static char *cone_att_keyword[] = { "Radius", "Height", "Solid", "Slices", NULL };
+ static char *shape_att_keyword[] = { "Appearance", "Id", "Geometry", NULL };
+ static char *inline_att_keyword[] = { "BBoxCenter","BBoxSize", "FileName", "Scene", NULL };
  static char *ashull_att_keyword[] = { "NegXHeight", "NegXRadius",
                                         "NegYRadius", "NegYHeight",
                                         "PosXRadius", "PosXHeight",
@@ -139,7 +139,7 @@ static char * sh_keyword[] = {
                                         "Bottom","BottomShape",
                                         "Top","Topshape",
                                         "Slices","Stacks",
-                                        (char *)NULL };
+                                        NULL };
 
 #endif
 

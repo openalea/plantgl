@@ -77,11 +77,12 @@ extern "C" {
   int scne_yywrap() {
     return 1; // if 0 then it is assumed that the scanning continues
   }
-// redefined since lex uses the option -P and the default
-// yywrap is nolonger provided by the lex library -lfl
-int yywrap();
+  // redefined since lex uses the option -P and the default
+  // yywrap is nolonger provided by the lex library -lfl
+  int yywrap();
 
-}
+} 
+
 
 
 /* ----------------------------------------------------------------------- */
@@ -511,9 +512,6 @@ OZ                {TRACE; return TokOZ;}
 <defarg>[\t ]+      {_columno += strlen(YYText());TRACE;}
 <defarg>\n          {_columno = 1;TRACE;}
 <defarg>"("                     {TRACE;parant = 0; BEGIN(definarg);}
-<defarg>^"("        {TRACE;
-                                         lostream << "error: Call to macro " << current_macro
-                                                          << " without argument" << std::endl;BEGIN(INITIAL);}
 <definarg>"("           {TRACE;
                                          parant++;
                                          current_macro_args += std::string(YYText());}
@@ -623,7 +621,7 @@ OZ                {TRACE; return TokOZ;}
                            std::istream* fs = new std::ifstream(_str.c_str());
                            if (!*fs) {
                                delete fs;
-                               lostream << "*** SCANNER : error: cannot include file: " << _str.c_str() << '"' << std::endl;
+                               lostream << "*** SCANNER : error: cannot include file: \"" << _str.c_str() << '"' << std::endl;
                                lostream << "*** SCANNER : error: skipping the include command. " << std::endl;
                            }
                            else
@@ -703,3 +701,6 @@ std::string lexerVersion(){
   return _version;
 }
 
+#if YY_FLEX_SUBMINOR_VERSION > 4
+int yyFlexLexer::yywrap() { return 1; }
+#endif
