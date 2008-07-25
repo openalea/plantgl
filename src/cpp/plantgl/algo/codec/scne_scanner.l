@@ -74,12 +74,12 @@ using namespace std;
 
 
 extern "C" {
-  int scne_yywrap() {
-    return 1; // if 0 then it is assumed that the scanning continues
-  }
+  // int scne_yywrap() {
+  //   return 1; // if 0 then it is assumed that the scanning continues
+  // }
   // redefined since lex uses the option -P and the default
   // yywrap is nolonger provided by the lex library -lfl
-  int yywrap();
+  // int yywrap();
 
 } 
 
@@ -231,7 +231,7 @@ static int parant = 0;
 %option yyclass="GENERIC_LEXER"
 %option yylineno
 %option prefix="scne_yy"
-
+%option noyywrap
 
 
 /* lex states */
@@ -701,6 +701,6 @@ std::string lexerVersion(){
   return _version;
 }
 
-#if YY_FLEX_SUBMINOR_VERSION > 4
-int yyFlexLexer::yywrap() { return 1; }
-#endif
+// #if YY_FLEX_SUBMINOR_VERSION > 4
+// int yyFlexLexer::yywrap() { return 1; }
+// #endif
