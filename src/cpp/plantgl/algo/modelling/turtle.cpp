@@ -535,6 +535,14 @@ void PglTurtle::defaultValue(){
   indices->setAt(4,Index3(0,6,5));
   indices->setAt(5,Index3(0,1,6));
   __surfList["l"] = GeometryPtr(new TriangleSet(points, indices));
+  points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
+  points->setAt(1,Vector3(0,0,0));
+  points->setAt(2,Vector3(0,-0.25,1./3));
+  points->setAt(3,Vector3(0,-0.25,2./3));
+  points->setAt(4,Vector3(0,0,1));
+  points->setAt(5,Vector3(0,0.25,2./3.));
+  points->setAt(6,Vector3(0,0.25,1./3.));
+  __surfList["s"] = GeometryPtr(new TriangleSet(points, indices));
 
   if (DEFAULT_CROSS_SECTION.isNull()){
 
@@ -628,9 +636,9 @@ AppearancePtr PglTurtle::getCurrentMaterial() const{
    else return AppearancePtr(new Material("Default"));
 }
 
-void PglTurtle::customGeometry(const GeometryPtr smb)
+void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 {
-  _addToScene(transform(smb));
+  _addToScene(transform(new Scaled(Vector3(scale,scale,scale),smb),true));
 }
 
 

@@ -95,7 +95,7 @@ public:
 
     GeometryPtr getSurface(const std::string& name);
 
-    void customGeometry(const GeometryPtr smb);
+    void customGeometry(const GeometryPtr smb, real_t scale = 1.0);
 
 protected:
 
