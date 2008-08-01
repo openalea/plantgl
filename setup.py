@@ -54,25 +54,28 @@ setup(
     scons_scripts = ['SConstruct'],
     scons_parameters = ["build_prefix="+build_prefix],
 
-    namespace_packages = ["openalea"],
+    namespace_packages = ["openalea", "vplants"],
     create_namespaces = True,
 
     py_modules = ["pgl_postinstall",],
     # pure python  packages
-    packages= [ pkg_name, pkg_name+'.math', pkg_name+'.scenegraph', pkg_name+'.algo',
-                pkg_name+'.gui', pkg_name+'.gui3', pkg_name+'.wralea', pkg_name+'.ext',
-                pkg_name+'.codec'],
+    packages= [ "vplants.plantgl",
+                pkg_name, 
+                pkg_name+'.math', 
+                pkg_name+'.scenegraph', 
+                pkg_name+'.algo',
+                pkg_name+'.gui', 
+                pkg_name+'.gui3',
+                pkg_name+'.wralea',
+                pkg_name+'.wralea.objects', 
+                pkg_name+'.wralea.visualization', 
+                pkg_name+'.wralea.operator', 
+                pkg_name+'.ext',
+                pkg_name+'.codec'
+                ],
     
     # python packages directory
     package_dir= { pkg_name : pj('src',name),
-                   pkg_name+'.math' :pj( 'src', name, 'math' ),
-                   pkg_name+'.scenegraph' :pj( 'src', name, 'scenegraph' ),
-                   pkg_name+'.algo' :pj( 'src', name, 'algo' ),
-                   pkg_name+'.gui' :pj( 'src', name, 'gui' ),
-                   pkg_name+'.gui3' :pj( 'src', name, 'gui3' ),
-                   pkg_name+'.wralea' :pj( 'src', name, 'wralea' ),
-                   pkg_name+'.ext' :pj( 'src', name, 'ext' ),
-                   pkg_name+'.codec' :pj( 'src', name, 'codec' ),
                    '' : 'src',
                    },
 
@@ -92,7 +95,9 @@ setup(
     # Scripts
     #entry_points = { 'gui_scripts': [ 'pglviewer = openalea.plantgl:start_viewer',]},
     entry_points = {
-        "wralea": ['plantgl = openalea.plantgl.wralea', 
+        "wralea": ['plantgl.objects = openalea.plantgl.wralea.objects', 
+                   'plantgl.visualization = openalea.plantgl.wralea.visualization', 
+                   'plantgl.operator = openalea.plantgl.wralea.operator', 
                    'plantgl.ext = openalea.plantgl.ext',
                    ]
               },
