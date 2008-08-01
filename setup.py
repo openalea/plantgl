@@ -54,7 +54,7 @@ setup(
     scons_scripts = ['SConstruct'],
     scons_parameters = ["build_prefix="+build_prefix],
 
-    namespace_packages = ["openalea", "vplants"],
+    namespace_packages = ["openalea"],
     create_namespaces = True,
 
     py_modules = ["pgl_postinstall",],
