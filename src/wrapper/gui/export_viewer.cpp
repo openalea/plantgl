@@ -54,7 +54,7 @@ public:
     virtual void pushState () { 
         // _state = PyThreadState_Swap(NULL);
         // PyEval_ReleaseLock();
-        _state = PyEval_SaveThread(); 
+       _state = PyEval_SaveThread(); 
         // Py_BEGIN_ALLOW_THREADS
     }
     virtual void popState () 
@@ -97,16 +97,12 @@ void setMSelection(boost::python::list values){
   ViewerApplication::setSelection(sel);
 }
 
+int question00(std::string text){
+  return ViewerApplication::question("Question",text);
+}
 
-#ifdef PGL_DEBUG
-int question0(boost::python::str _caption,
-			  boost::python::str _text){
-  std::string caption = extract<const char *>(_caption);
-  std::string text = extract<const char *>(_text);
-#else
 int question0(std::string caption,
 			  std::string text){
-#endif
   return ViewerApplication::question(caption,text);
 }
 
@@ -130,6 +126,7 @@ int question3(std::string caption,
 			  std::string but2txt){
   return ViewerApplication::question(caption,text,but0txt,but1txt,but2txt);
 }
+
 
 #ifdef PGL_DEBUG
 
@@ -158,6 +155,25 @@ object itemSelection(std::string caption,
   {
     res = ViewerApplication::itemSelection(caption,text,vals,ok,editable);
   }
+  tuple t = make_tuple(ok,res);
+  return t;
+}
+
+object itemSelection2(std::string text,
+					 boost::python::list values){
+  std::vector<std::string> vals = extract_vec<std::string >(values)();
+  bool ok = false;
+  std::string res;
+  res = ViewerApplication::itemSelection("Select Item",text,vals,ok,false);
+  tuple t = make_tuple(ok,res);
+  return t;
+}
+
+object itemSelection1(boost::python::list values){
+  std::vector<std::string> vals = extract_vec<std::string >(values)();
+  bool ok = false;
+  std::string res;
+  res = ViewerApplication::itemSelection("Select Item","Please select an item from the list",vals,ok,false);
   tuple t = make_tuple(ok,res);
   return t;
 }
@@ -224,6 +240,17 @@ object doubleSelection2(std::string caption,
 {
    return doubleSelection(caption,text,0,DBL_MIN,DBL_MAX);
 }
+
+object doubleSelection1(std::string text)
+{
+   return doubleSelection("Select a value",text,0,DBL_MIN,DBL_MAX);
+}
+
+object doubleSelection0()
+{
+   return doubleSelection("Select a value","Please, select a value",0,DBL_MIN,DBL_MAX);
+}
+
 
 void fullScreen0(){
   ViewerApplication::fullScreen();
@@ -527,10 +554,14 @@ void export_viewer()
     .staticmethod("wait")
     .def("isRunning", &ViewerApplication::running,"Tell if viewer is curently running.")
     .staticmethod("isRunning")
-    .def("stop", &ViewerApplication::stop,"Stop Viewer")
+    .def("stop", &ViewerApplication::stop,"Hide the Viewer")
     .staticmethod("stop")
-    .def("start", &ViewerApplication::start,"Start Viewer")
+    .def("hide", &ViewerApplication::stop,"Hide the Viewer")
+    .staticmethod("hide")
+    .def("start", &ViewerApplication::start,"Show the Viewer")
     .staticmethod("start")
+    .def("show", &ViewerApplication::start,"Show the Viewer")
+    .staticmethod("show")
     .def("exit", &ViewerApplication::exit,"Exit from Viewer Application. Cannot be restarted after.")
     .staticmethod("exit")
 	.def("display",(void (*)(const ScenePtr&))&PGLViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
@@ -619,6 +650,7 @@ void export_clippingplanes(){
 
 void export_dialog(){
 	class_<PyViewDialog> ("dialog", no_init )
+    .def("question",&question00,"question(str text)",args("text"))
     .def("question",&question0,"question(str caption, str text)",args("caption","text"))
     .def("question",&question1,"question(str caption, str text, str button1)",args("caption","text","button1"))
     .def("question",&question2,"question(str caption, str text, str button1, str button2)",args("caption","text","button1","button2"))
@@ -626,10 +658,14 @@ void export_dialog(){
     .staticmethod("question")
     .def("itemSelection",&itemSelection,"itemSelection(str caption, str text, list values, bool editable = False)",args("caption","text","values","editable"))
     .def("itemSelection",&itemSelectionNE,args("caption","text","values"))
+    .def("itemSelection",&itemSelection2,args("text","values"))
+    .def("itemSelection",&itemSelection1,args("values"))
     .staticmethod("itemSelection")
-    .def("doubleSelection",&doubleSelection,"doubleSelection(str caption, str text [, double value, double minvalue, double maxvalue])",args("caption","text","value","minvalue","maxvalue"))
+    .def("doubleSelection",&doubleSelection,"doubleSelection([str caption, str text, double value, double minvalue, double maxvalue])",args("caption","text","value","minvalue","maxvalue"))
     .def("doubleSelection",&doubleSelection3,args("caption","text","value"))
     .def("doubleSelection",&doubleSelection2,args("caption","text"))
+    .def("doubleSelection",&doubleSelection1,args("text"))
+    .def("doubleSelection",&doubleSelection0)
     .staticmethod("doubleSelection")
     .def("getOpenFile",&getOpenFile0)
     .def("getOpenFile",&getOpenFile1,args("caption"))

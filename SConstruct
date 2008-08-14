@@ -34,9 +34,6 @@ cpp_conf= ALEAConfig(name, cpp_tools+qt_tools)
 # Set all the common options for the package
 cpp_conf.UpdateOptions( options )
 
-#cgaltool = cpp_conf.find_tool('cgal')
-#cgaltool.configure( options )
-
 options.Update( env )
 cpp_conf.Update( env )
 

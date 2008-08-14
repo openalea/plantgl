@@ -73,7 +73,6 @@ ViewerAppli::sendAnEvent(QEvent *e)
         tss = THREADSTATESAVERFACTORY->produceStateSaver();
         if(tss) tss->pushState();
     }
-	else { std::cerr << "do not save state" << std::endl; }
     startSession(); getViewer()->send(e); 
     if (tss) {
         tss->popState();

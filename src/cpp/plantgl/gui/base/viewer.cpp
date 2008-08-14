@@ -93,8 +93,6 @@
 using namespace std;
 /* ----------------------------------------------------------------------- */
 
-QMessageBox * ViewerMessageBox = 0;
-
 Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::WindowFlags f )
     : QMainWindow( parent ,  f ),
       __GLFrame(0),
@@ -300,7 +298,7 @@ void Viewer::initialize()
     setCorner(Qt::BottomRightCorner,Qt::RightDockWidgetArea);
 	addDockWidget(Qt::RightDockWidgetArea,__Browser);
 	// __Browser->setFloating(true);
-	//__Browser->hide();
+	__Browser->hide();
 
 
   // * View Menu
@@ -664,9 +662,6 @@ void  Viewer::customEvent(QEvent *e){
 			 k->but0txt,k->but1txt,
 			 k->but2txt,
 			 k->result);
-#ifdef QT_THREAD_SUPPORT
-	release_mutex = false;
-#endif
   }
   else if(e->type() == ViewEvent::eFullScreen){
     ViewFullScreenEvent * k = ( ViewFullScreenEvent * )e;
@@ -772,6 +767,7 @@ void  Viewer::customEvent(QEvent *e){
 #endif
 		send_lock_mutex.unlock();
 		send_event_condition.wakeAll();
+		// qApp->processEvents();
 	}
   }
 #endif
@@ -833,6 +829,8 @@ void Viewer::post(QEvent * e) {
     QApplication::postEvent( this, e );
 }
 
+
+QMessageBox * ViewerMessageBox = 0;
 
 void Viewer::closeEvent ( QCloseEvent * e)
 {
@@ -1012,9 +1010,6 @@ public:
   ViewMessageBox(QWidget * parent, const QString& caption, const QString& text,
 		 const QString& but0txt, const QString& but1txt,
 		 const QString& but2txt,
-#ifdef QT_THREAD_SUPPORT
-		 QWaitCondition& w,
-#endif
 		 int * result = NULL):
 	  QMessageBox(caption,text,
 			  QMessageBox::Question,
@@ -1023,9 +1018,6 @@ public:
 			  (but2txt.isEmpty()?QMessageBox::NoButton:3),
 				  parent),
 	  __result(result)
-#ifdef QT_THREAD_SUPPORT
-	  , send_event_condition(w)
-#endif
 	  {
 	  setModal(false);
       setAttribute(Qt::WA_DeleteOnClose,true);
@@ -1050,21 +1042,11 @@ public:
 
   virtual void done ( int res ){
 	if(__result)*__result = res;
-#ifdef QT_THREAD_SUPPORT
-#ifdef DEBUG_EVENTDISPATCH
-		printf("wakeAll\n");
-#endif
-    send_event_condition.wakeOne();
-#endif
     if(!__messageBoxPos)__messageBoxPos = new QPoint(pos());
 	else *__messageBoxPos = pos();
-    // if (res == -1) 
-        QDialog::done(res);
+    QDialog::done(res);
   }
 
-#ifdef QT_THREAD_SUPPORT
-  QWaitCondition& send_event_condition;
-#endif
   int * __result;
 };
 
@@ -1074,16 +1056,13 @@ Viewer::question(const QString& caption, const QString& text,
 			    const QString& but2txt, int * result){
   ViewerMessageBox = new ViewMessageBox(this,caption,text,
 		  but0txt,but1txt,but2txt,
-#ifdef QT_THREAD_SUPPORT
-		  send_event_condition,
-#endif
 		  result);
 
   activateWindow();
   ViewerMessageBox->show();
-#ifdef DEBUG_EVENTDISPATCH
-  printf("end question posting.\n");
-#endif
+  while(ViewerMessageBox->isVisible())qApp->processEvents();
+  delete ViewerMessageBox;
+  ViewerMessageBox = NULL;
 }
 
 void 
