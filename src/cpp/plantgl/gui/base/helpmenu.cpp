@@ -1,18 +1,13 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon
- *                       N. Dones & B. Adam
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
  * 
@@ -119,6 +114,7 @@ ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * 
 	__ids.push_back( action );
 	default_style_name = QApplication::style()->metaObject()->className();
     checkItem(__ids.size()-1);
+
     ViewerSettings settings;
     settings.beginGroup("WinStyle");
     QString stylename = settings.value("StyleName","Default").toString();
@@ -138,7 +134,7 @@ void ViewHelpMenu::endEvent()
 {
   ViewerSettings settings;
   settings.beginGroup("WinStyle");
-  settings.value("StyleName",getStyleName());
+  settings.setValue("StyleName",getStyleName());
   settings.endGroup();
 }
 

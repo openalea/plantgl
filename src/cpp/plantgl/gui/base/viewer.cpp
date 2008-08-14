@@ -1,18 +1,13 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon
- *                       N. Dones & B. Adam
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
  *
@@ -136,8 +131,8 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
   addDockWidget(Qt::BottomDockWidgetArea,__ErrorDialog);
 
   if(argv!=NULL){
-    QFileInfo f(argv[0]);
-    ViewFileManager::FILE_CONFIG = f.baseName();
+    // QFileInfo f(argv[0]);
+    // ViewFileManager::FILE_CONFIG = f.baseName();
   }
 
     __GLFrame = new ViewGLFrame(this,"FrameGL",r);
@@ -835,16 +830,7 @@ QMessageBox * ViewerMessageBox = 0;
 void Viewer::closeEvent ( QCloseEvent * e)
 {
   if(ViewerMessageBox&&ViewerMessageBox->isVisible())ViewerMessageBox->close();
-  __FileMenu->saveConfig();
-  ViewerSettings settings;
-  settings.beginGroup("Viewer");
-  int version = 0;
-  settings.setValue("StateVersion",version);
-  settings.setValue("State",saveState(version));
-  settings.setValue("Geometry",geometry());
-  settings.endGroup();
-  __GLFrame->endEvent();
-  __HelpMenu->endEvent();
+  saveConfig();
   __ErrorDialog->registerQtMsg(false);
   e->accept();
 }
@@ -855,7 +841,7 @@ void Viewer::showEvent ( QShowEvent * e)
 }
 
 void Viewer::polish (){
-  __FileMenu->loadConfig();
+  // __FileMenu->loadConfig();
   setStatusBarMsg(tr("Ready"));
 }
 
@@ -874,7 +860,15 @@ Viewer::displayAbout() const
 void 
 Viewer::saveConfig() const
 {
-  __FileMenu->saveConfig();
+  ViewerSettings settings;
+  settings.beginGroup("Viewer");
+  int version = 0;
+  settings.setValue("StateVersion",version);
+  settings.setValue("State",saveState(version));
+  settings.setValue("Geometry",geometry());
+  settings.endGroup();
+  __GLFrame->endEvent();
+  __HelpMenu->endEvent();
 }
 
 
@@ -931,6 +925,14 @@ void Viewer::displayGLWidgetOnly(){
 	  __FileMenu->getLocationBar()->changeVisibility();
 	  __toolbarsvisibility += 8;
 	}
+	if(__ErrorDialog->isVisible()){
+	  __ErrorDialog->hide();
+	  __toolbarsvisibility += 16;
+	}
+	if(__Browser->isVisible()){
+	  __Browser->hide();
+	  __toolbarsvisibility += 32;
+	}
   }
   else {
 	if(!__toolbarsvisibility || __toolbarsvisibility & 1 ){
@@ -944,6 +946,12 @@ void Viewer::displayGLWidgetOnly(){
 	}
 	if(!__toolbarsvisibility || __toolbarsvisibility & 8){
 	  __FileMenu->getLocationBar()->changeVisibility();
+	}
+	if(!__toolbarsvisibility || __toolbarsvisibility & 16){
+	  __ErrorDialog->show();
+	}
+	if(!__toolbarsvisibility || __toolbarsvisibility & 32){
+	  __Browser->show();
 	}
  	__toolbarsvisibility = 0;
  }

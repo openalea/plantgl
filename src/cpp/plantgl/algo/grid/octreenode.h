@@ -1,16 +1,13 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
  *
- *       $Source$
- *       $Id: vxl_octreenode.h 1703 2006-06-16 13:04:47Z fboudon $
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
  *

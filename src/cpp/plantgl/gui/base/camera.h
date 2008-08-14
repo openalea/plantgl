@@ -1,18 +1,14 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
  * 
  *                      GNU General Public Licence
@@ -206,6 +202,9 @@ public:
 
   void setAngles(double azimuth, double elevation);
 
+  /// end event.
+  virtual void endEvent();
+
 public slots:
 
   /// Set Camera to Home Position.
@@ -351,6 +350,7 @@ signals:
   void needReDim();
 
 protected :
+  void init();
   /// Initialize the camera
   void initialize(const PGL(BoundingBoxPtr)& bbox);
   /// Initialize the camera

@@ -5,10 +5,7 @@
  *
  *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/scne_scene.h,v $
- *       $Id: scne_scene.h,v 1.39 2006/06/16 13:04:46 fboudon Exp $
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
  *
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *

@@ -1,19 +1,14 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon
- *                       N. Dones & B. Adam
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
  * 
  *                      GNU General Public Licence
@@ -283,36 +278,4 @@ ViewControlPanel::selectLightSpecular()
 	setLightSpecular(LightSpecular);
     emit lightSpecularChanged(__LightSpecular);
   }
-}
-
-void
-ViewControlPanel::useSpinBox(bool b){
-/*  if(__useSpinBox != b){
-	__useSpinBox = b;
-	if(__useSpinBox){
-	  __elevation->hide();
-	  __azimuth->hide();
-	  __elevationSpin->show();
-	  __azimuthSpin->show();
-	  __lightElevation->hide();
-	  __lightAzimuth->hide();
-	  __lightElevationSpin->show();
-	  __lightAzimuthSpin->show();
-	}
-	else {
-	  __elevation->show();
-	  __azimuth->show();
-	  __elevationSpin->hide();
-	  __azimuthSpin->hide();
-	  __lightElevation->show();
-	  __lightAzimuth->show();
-	  __lightElevationSpin->hide();
-	  __lightAzimuthSpin->hide();
-	}
-  }*/
-}
-
-bool
-ViewControlPanel::spinBoxUsed() const{
-  return __useSpinBox;
 }

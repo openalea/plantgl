@@ -532,6 +532,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fitting\eigenvector.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fitting\eigenvector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\fitting\fit.cpp"
 				>
 			</File>
@@ -549,14 +557,6 @@
 			</File>
 			<File
 				RelativePath=".\fitting\miniball_config.h"
-				>
-			</File>
-			<File
-				RelativePath=".\fitting\propervector.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\fitting\propervector.h"
 				>
 			</File>
 		</Filter>

@@ -1,16 +1,13 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
  *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
  *
@@ -186,80 +183,12 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
     TabWidget->addTab( tab, tr( "C&onfig" ) );
     if(config)TabWidget->setCurrentWidget(tab);
 
-    QGroupBox * SaveGroup = new QGroupBox( tab );
-    SaveGroup->setGeometry( QRect( 30, 20, 320, 190 ) );
-    SaveGroup->setProperty( "title", tr( "Saved Options")+" - v"+QString::number(ViewFileManager::CONFIG_VERSION) );
-
-    QCheckBox * Box = new QCheckBox( SaveGroup );
-    Box->setGeometry( QRect( 10, 20, 270, 20 ) );
-    Box->setText( tr( "Window Position and Size" ) );
-    Box->setChecked(parent->getSaveWinPos());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveWinPos(bool)));
-
-    Box = new QCheckBox( SaveGroup );
-    Box->setGeometry( QRect( 10, 40, 270, 20 ) );
-    Box->setText( tr( "Window Style" ) );
-    Box->setChecked(parent->getSaveStyle());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveStyle(bool)));
-
-    Box = new QCheckBox( SaveGroup);
-    Box->setGeometry( QRect( 10, 60, 270, 20 ) );
-    Box->setText( tr( "ToolBars States (Experimental)" ) );
-    Box->setChecked(parent->getToolbarStateSave());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveToolbarState(bool)));
-
-    Box = new QCheckBox( SaveGroup);
-    Box->setGeometry( QRect( 10, 80, 270, 20 ) );
-    Box->setText( tr( "File History" ) );
-    Box->setChecked(parent->getSaveHistory());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveHistory(bool)));
-
-    Box = new QCheckBox( SaveGroup  );
-    Box->setGeometry( QRect( 10, 100, 270, 20 ) );
-    Box->setText( tr( "BackGround Color" ) );
-    Box->setChecked(parent->getSaveBgColor());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveBgColor(bool)));
-
-    Box = new QCheckBox( SaveGroup );
-    Box->setGeometry( QRect( 10, 120, 270, 20 ) );
-    Box->setText( tr( "Grids Visibility" ) );
-    Box->setChecked(parent->getSaveGridVisibility());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveGridVisibility(bool)));
-
-    Box = new QCheckBox( SaveGroup );
-    Box->setGeometry( QRect( 10, 140, 270, 20 ) );
-    Box->setText( tr( "Camera/Grid Automatic Fitting" ) );
-    Box->setChecked(parent->getSaveCameraReDim());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveCameraReDim(bool)));
-
-    Box = new QCheckBox( SaveGroup );
-    Box->setGeometry( QRect( 10, 160, 270, 20 ) );
-    Box->setText( tr( "SpinBox instead of Dials in Control Panel" ) );
-    Box->setChecked(parent->getSaveUseSpinBox());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(saveUseSpinBox(bool)));
-
-    QGroupBox * AppGroup = new QGroupBox( tab );
-    AppGroup->setGeometry( QRect( 30, 210, 320, 70 ) );
-    AppGroup->setProperty( "title", tr( "Appearance Options") );
-
-    Box = new QCheckBox( AppGroup );
-    Box->setGeometry( QRect( 10, 20, 270, 20 ) );
-    Box->setText( tr( "use SpinBox instead of Dials in Control Panel" ) );
-    if(controlpanel)Box->setChecked(controlpanel->spinBoxUsed());
-    QObject::connect(Box,SIGNAL(toggled(bool)),controlpanel,SLOT(useSpinBox(bool)));
-
-    Box = new QCheckBox( AppGroup );
-    Box->setGeometry( QRect( 10, 40, 270, 20 ) );
-    Box->setText( tr( "show Initialization Dialog at Startup" ) );
-    Box->setChecked(parent->getShowInit());
-    QObject::connect(Box,SIGNAL(toggled(bool)),parent,SLOT(showInit(bool)));
-
     QString langname = TOOLS(getLanguage()).c_str();
     QGroupBox * LangGroup = new QGroupBox( tab );
-    LangGroup->setGeometry( QRect( 30, 280, 320, 70 ) );
+    LangGroup->setGeometry( QRect( 30, 30, 320, 70 ) );
     LangGroup->setProperty( "title", tr( "Language") + ": " + langname);
 
-    lang = new QComboBox( LangGroup );
+    lang = new QComboBox( LangGroup );	
     lang->setGeometry( QRect( 10, 20, 270, 20 ) );
     int id  = -1;
     lang->addItem("English",0);
@@ -270,7 +199,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
 
     QLabel * lbl = new QLabel( tr("Note: Language change takes effect only at next startup."), LangGroup );
     lbl->setGeometry( QRect( 10, 40, 300, 20 ) );
-
+	lang->setEnabled(false);
 }
 
 /*

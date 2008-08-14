@@ -5,12 +5,8 @@
  *       PlantGL: Modeling Plant Geometry
  *
  *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
  *
- *       File author(s): F. Boudon
- *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/view_application.cpp,v $
- *       $Id: view_application.cpp,v 1.29 2006/08/12 21:44:09 barbier Exp $
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *

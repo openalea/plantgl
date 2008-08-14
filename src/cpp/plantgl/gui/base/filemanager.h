@@ -1,19 +1,14 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon
- *                       N. Dones & B. Adam
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
  * 
  *                      GNU General Public Licence
@@ -87,9 +82,6 @@ class VIEW_API ViewFileManager : public QMenu
   /// The \b size of the open file review.
   static const uint REVIEW_SIZE;
 
-  static QString FILE_CONFIG;
-  static float CONFIG_VERSION;
-
   /// Constructor
   ViewFileManager( QMainWindow * parent=0, 
 	       const char * name=0, 
@@ -125,8 +117,6 @@ class VIEW_API ViewFileManager : public QMenu
 
   /// Get the Location toolBar
   ViewToolBar * getLocationBar();
-
-  QString getInitFilename();
 
   void saveImage(bool withAlpha);
 
@@ -179,12 +169,6 @@ public slots:
   /// Refresh.
   void refresh();
 
-  /// load current viewer configuration.
-  void loadConfig();
-
-  /// Save current viewer configuration.
-  void saveConfig();
-
 
   /// Display error message.
   void error(const QString&);
@@ -199,28 +183,6 @@ public slots:
 
   void connectTo(QStatusBar *);
   void connectTo(ViewErrorDialog *);
-
-  void saveToolbarState(bool);
-  bool getToolbarStateSave() const;
-  void saveWinPos(bool);
-  bool getSaveWinPos() const;
-  void saveStyle(bool);
-  bool getSaveStyle() const;
-  void saveHistory(bool);
-  bool getSaveHistory() const;
-  void saveBgColor(bool);
-  bool getSaveBgColor() const;
-  void saveGridVisibility(bool);
-  bool getSaveGridVisibility() const;
-  void saveCameraReDim(bool b);
-  bool getSaveCameraReDim() const;
-  void saveUseSpinBox(bool b);
-  bool getSaveUseSpinBox() const;
-  void showInit(bool b);
-  bool getShowInit() const;
-  void saveOption(int,bool);
-  bool getSaveOption(int) const;
-
 
 signals:
   /// Signal emit when some error where found.
@@ -269,7 +231,6 @@ signals:
   ViewHelpMenu * __helpmenu;
   QString __pictureDir;
 
-  int __saveoptions;
 };
 
 

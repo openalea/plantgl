@@ -1,17 +1,14 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) & P. Borianne
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
  *
- *       $Source$
- *       $Id$
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
  * 
  *                      GNU General Public Licence
@@ -34,14 +31,14 @@
  *  ----------------------------------------------------------------------------
  */				
 
-/*! \file util_propervector.h
-    \brief Algorithm to compute proper vector from points.
+/*! \file util_eigenvector.h
+    \brief Algorithm to compute eigen vector from points.
     This code was written by Philippe Borianne.
 */
 
 
-#ifndef __util_propervector_h__
-#define __util_propervector_h__
+#ifndef __util_eigenvector_h__
+#define __util_eigenvector_h__
 
 /* ----------------------------------------------------------------------- */
 
@@ -181,4 +178,4 @@ PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#endif // __util_propervector_h__
+#endif // __util_eigenvector_h__

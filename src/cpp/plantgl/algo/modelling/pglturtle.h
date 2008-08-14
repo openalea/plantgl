@@ -1,7 +1,13 @@
 /* ---------------------------------------------------------------------------
- #
- #       File author(s): F. Boudon (frederic.boudon@loria.fr)
- #
+ *
+ *       PlantGL: Modeling Plant Geometry
+ *
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
+ *
+ *       Development site : https://gforge.inria.fr/projects/openalea/
+ *
  # ---------------------------------------------------------------------------
  #
  #                      GNU General Public Licence

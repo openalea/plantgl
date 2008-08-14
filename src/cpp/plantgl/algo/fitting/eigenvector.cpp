@@ -1,17 +1,14 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) & P. Borianne
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
  *
- *       $Source$
- *       $Id$
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
  * 
  *                      GNU General Public Licence
@@ -40,7 +37,7 @@
 
 
 
-#include "propervector.h"
+#include "eigenvector.h"
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE

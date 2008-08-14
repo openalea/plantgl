@@ -106,9 +106,11 @@ except:
   
   def test_image():
     w = 300
+    Viewer.frameGL.maximize()
     Viewer.frameGL.setSize(w,w)
     fname = 'test_framegl.png'
     Viewer.frameGL.saveImage(fname,'PNG')
+    Viewer.frameGL.maximize(False)
     assert os.path.exists(fname), "Viewer.frameGL.saveImage failed"
     try:
     #if True:

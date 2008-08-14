@@ -1,19 +1,14 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon
- *                       N. Dones & B. Adam
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
  *  ----------------------------------------------------------------------------
  * 
  *                      GNU General Public Licence
@@ -85,7 +80,6 @@ TOOLS_USING_NAMESPACE
 
 
 const uint ViewFileManager::REVIEW_SIZE(50);
-QString ViewFileManager::FILE_CONFIG("pglviewer-qt4");
 
 /*------------------------------------------------------------------------------------*/
 
@@ -99,8 +93,7 @@ ViewFileManager::ViewFileManager(QMainWindow * parent,
       __hasOpenFile(false),
       __GLFrame(frame),
 	  __controlPanel(controlpanel),
-	  __helpmenu(helpmenu),
-      __saveoptions(254)
+	  __helpmenu(helpmenu)
 {
 	if(name)setObjectName(name);
     QObject::connect(__GLFrame,SIGNAL(rendererChanged()), this,SLOT(initialize()));
@@ -700,235 +693,6 @@ ViewFileManager::refresh()
 {
   __GLFrame->getSceneRenderer()->refresh();
 }
-
-void
-ViewFileManager::saveToolbarState(bool b){ saveOption(0,b); }
-
-void
-ViewFileManager::saveWinPos(bool b){ saveOption(1,b); }
-
-void
-ViewFileManager::saveStyle(bool b){ saveOption(2,b); }
-
-void
-ViewFileManager::saveHistory(bool b){ saveOption(3,b); }
-
-void
-ViewFileManager::saveBgColor(bool b){ saveOption(4,b); }
-
-void
-ViewFileManager::saveGridVisibility(bool b){ saveOption(5,b); }
-
-void
-ViewFileManager::saveCameraReDim(bool b){ saveOption(6,b); }
-
-void
-ViewFileManager::saveUseSpinBox(bool b){ saveOption(7,b); }
-
-bool 
-ViewFileManager::getToolbarStateSave() const 
-{ return getSaveOption(0);}
-
-bool 
-ViewFileManager::getSaveWinPos() const 
-{ return getSaveOption(1);}
-
-bool 
-ViewFileManager::getSaveStyle() const 
-{ return getSaveOption(2);}
-
-bool 
-ViewFileManager::getSaveHistory() const 
-{ return getSaveOption(3);}
-
-bool 
-ViewFileManager::getSaveBgColor() const 
-{ return getSaveOption(4);}
-
-bool 
-ViewFileManager::getSaveGridVisibility() const 
-{ return getSaveOption(5);}
-
-bool 
-ViewFileManager::getSaveCameraReDim() const 
-{ return getSaveOption(6);}
-
-bool 
-ViewFileManager::getSaveUseSpinBox() const 
-{ return getSaveOption(7);}
-
-bool 
-ViewFileManager::getSaveOption(int i) const 
-{ return ((__saveoptions & (1 << i)) != 0); }
-
-void
-ViewFileManager::saveOption(int i, bool b){
-  if(b)__saveoptions |= (1 << i);
-  else if(getSaveOption(i))__saveoptions ^= (1 << i);
-}
-
-void
-ViewFileManager::showInit(bool b){ saveOption(8,b); }
-
-bool
-ViewFileManager::getShowInit() const
-{ return getSaveOption(8);}
-
-/* ---------------------------------------------------------------------------*/
-
-float ViewFileManager::CONFIG_VERSION(1.17f);
-
-QString 
-ViewFileManager::getInitFilename(){
-  QString filename=FILE_CONFIG;
-#ifndef _WIN32
-  QDir _dir(QDir::homePath()+QString("/.kde/share/config/"));
-  filename+="rc";
-
-  if(!_dir.exists()){ 
-     _dir=QDir::homePath();
-     filename="."+filename;
-  }
-  filename=_dir.absolutePath()+"/"+filename;
-#else
-  filename+=".ini";
-  filename=QString(TOOLS(getHome().c_str()))+"\\"+filename;
-#endif
-  return filename;
-}
-
-void ViewFileManager::loadConfig()
-{
-	QString filename = getInitFilename();
-	//read init file
-	QFile _fileInit(filename);
-	if(_fileInit.exists()){
-		if(_fileInit.open( QIODevice::ReadOnly )) {
-			int options;
-			int  r,g,b;
-			int tabGridtemp[4];
-			int gridSize;
-			int camReDim = 1;
-			int useSpinBox = 1;
-			int style;
-
-			int numToolBar = 0;
-			QString * lname;
-			int * lindex;
-			int * lnl;
-			int * lextraOffset;
-			int * ldock;
-			int * lv;
-
-			QTextStream f_initFile( & _fileInit );
-			float version;
-			f_initFile >> version;
-			if(version != CONFIG_VERSION){
-				QString _mess = tr("Incompatible init file version")+" !";
-				_mess += "<br><b>"+tr("File")+" :</b>";
-				_mess += filename;
-				_mess += "<br><b>"+tr("Version")+" :</b>";
-				_mess += QString::number(version);
-				_mess += "<br><b>"+tr("Current Version")+" :</b>";
-				_mess += QString::number(CONFIG_VERSION);
-				qWarning(_mess.toAscii().data());
-				_fileInit.close();
-				__helpmenu->showInit();
-				return;
-			}
-			else 
-				qDebug((tr("Init file")+" : \""+filename+"\" - "+tr("Version")+" : "+QString::number(version)).toAscii().data());
-			f_initFile >> options;
-			__saveoptions = options;
-			if(getShowInit())__helpmenu->showInit();
-			if(getSaveGridVisibility())
-				f_initFile >> tabGridtemp[0]  >> tabGridtemp[1] >> tabGridtemp[2]  >> tabGridtemp[3] >> gridSize;
-			if(getSaveBgColor())       f_initFile >> r  >> g  >> b ;
-			if(getSaveStyle())	       f_initFile >> style;
-			if(getSaveCameraReDim())   f_initFile >> camReDim;
-
-			_fileInit.close();
-/*			if(getSaveBgColor()){
-				if(__GLFrame){
-					__GLFrame->setBackGroundColor(QColor(r,g,b));
-					qDebug((QString("FrameGL.setBackgroundColor(&lt;%1,%2,%3&gt;)").arg(r).arg(g).arg(b)).toAscii().data());
-				}
-			}*/
-			if(getSaveGridVisibility()){
-				bool tabGrid[4];
-				for(int i=0;i<4;i++)
-					tabGrid[i]=(tabGridtemp[i]==1);
-				if(__GLFrame){
-					ViewGridGL * grid = __GLFrame->getGrid();
-					if(grid){
-						grid->showXYGrid(tabGrid[0]);
-						grid->showYZGrid(tabGrid[1]);
-						grid->showXZGrid(tabGrid[2]);
-						grid->showAxis(tabGrid[3]);
-						grid->setGridSize(gridSize);
-						qDebug((QString("Axis.show(%1) - XYGrid.show(%2)  - XZGrid.show(%3) - YZGrid.show(%4)")
-							.arg(tabGrid[3]).arg(tabGrid[0]).arg(tabGrid[2]).arg(tabGrid[1])).toAscii().data());
-					}
-				}
-			}
-			if(getSaveStyle() && __helpmenu){
-				__helpmenu->setStyle(style);
-			}
-		}
-		else qWarning((tr("Cannot access to init file")+" :\""+filename+'"').toAscii().data());
-	}
-	else {
-		qWarning((tr("Non-existing init file")+" :\""+filename+'"').toAscii().data());
-		__helpmenu->showInit();
-	}
-}
-
-
-void ViewFileManager::saveConfig()
-{
-  QString filename = getInitFilename();
-  QFile _fileConfig(filename);
-  if(_fileConfig.open(QIODevice::WriteOnly)){
-
-	QColor _Color = __GLFrame->getBackGroundColor();
-	// m_fileConfig.writeBlock("grilleXY grilleYZ grilleXZ axes red green blue\n",32);
-	QTextStream f_fileConfig( &  _fileConfig );
-	const ViewGridGL * grid = __GLFrame->getGrid();
-	int style = (__helpmenu?__helpmenu->getStyle():-1);
-	int w = 0, h = 0;
-	int x = 0, y = 0;
-   
-	if(parentWidget()){
-	  QWidget * par = parentWidget();
-	  QPoint pos = par->mapToGlobal(QPoint(0,0));
-	  x = pos.x();
-	  y = pos.y();
-	  w = par->width();
-	  h = par->height();
-	}
-
-	// qWarning((tr("Writing init file")+" :\""+filename+'"').toAscii());
-	f_fileConfig << CONFIG_VERSION << endl;
-	f_fileConfig << __saveoptions << endl;
-	if(getSaveGridVisibility())f_fileConfig << (int)grid->getXYGrid() << " "<< (int)grid->getYZGrid() << " " 
-	  << (int)grid->getXZGrid() << " " << (int)grid->getAxis() << " " << grid->getGridSize() << endl;
-//	if(getSaveBgColor())f_fileConfig << _Color.red() << " "   << _Color.green() << " "  << _Color.blue() <<  endl;
-    if(getSaveStyle()) f_fileConfig << style << endl;
-/*	if(getSaveWinPos())
-	  f_fileConfig << x << " "   << y << " "  << w << " "  << h << endl;
-	  
-    if(getSaveHistory()){
-	  f_fileConfig << (int)__lastOpenFiles.size() << endl;
-	  for (uint_t ind=0; ind < __lastOpenFiles.size() ; ind++)
-		f_fileConfig << "\"" << __lastOpenFiles[ind] << "\"" << endl;
-	}*/
-	_fileConfig.close();
-  }
-  else if(_fileConfig.exists())
-	  qWarning((tr("Cannot access to existing init file")+" :\""+filename+'"').toAscii().data());
-  else qWarning((tr("Cannot access to init file")+" :\""+filename+'"').toAscii().data());
-}
-
 
 
 /*-----------------------------------------------------------------*/

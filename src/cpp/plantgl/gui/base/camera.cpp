@@ -1,17 +1,13 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
- *                           UMR PIAF INRA-UBP Clermont-Ferrand
+ *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
  *
@@ -60,6 +56,7 @@
 #include "icons.h"
 #include "glframe.h"
 #include "event.h"
+#include "configuration.h"
 
 #include <plantgl/math/util_math.h>
 
@@ -117,6 +114,7 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   if(camera)idLock->setChecked(camera->isDimLock());
   QObject::connect(camera,SIGNAL(lockDimChanged(bool)),idLock,SLOT(setChecked(bool)));
   addAction(eyef,tr("&Fit to Window"),       camera,SLOT(reDim()));
+
 }
 
 ViewCameraMenu::~ViewCameraMenu()
@@ -160,6 +158,7 @@ ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
   __geomsys(true),
   __lockdim(false)
 {
+	init();
 }
 
 ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
@@ -178,12 +177,32 @@ ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
   __width(500),
   __height(500),
   __projectionmode(true),
-  __geomsys(true)
+  __geomsys(true),
+  __lockdim(false)
 {
+	init();
 }
 
 ViewCameraGL::~ViewCameraGL()
 {
+}
+
+void ViewCameraGL::init()
+{
+  
+  ViewerSettings settings;
+  settings.beginGroup("Camera");
+  bool autofit = settings.value("AutoFit",!__lockdim).toBool();
+  lockDim(!autofit);
+  settings.endGroup();
+}
+
+void ViewCameraGL::endEvent()
+{
+  ViewerSettings settings;
+  settings.beginGroup("Camera");
+  settings.setValue("AutoFit",!isDimLock());
+  settings.endGroup();
 }
 
 void ViewCameraGL::home()
@@ -794,8 +813,6 @@ ViewCameraGL::setCoordSys(bool b)
 void ViewCameraGL::lockDim(int i)
 {
   lockDim(i != 0);
-  emit lockDimChanged(__lockdim);
-  if(!__lockdim)reDim();
 }
 
 void ViewCameraGL::lockDim(bool b)

@@ -5,10 +5,7 @@
  *
  *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       $Source: /usr/cvsmaster/AMAPmod/src/Tools/config.h,v $
- *       $Id: config.h,v 1.34 2006/08/21 12:12:46 fboudon Exp $
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
  *
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *

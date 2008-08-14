@@ -53,7 +53,7 @@
 
 #include <plantgl/math/util_matrixmath.h>
 #include "miniball.h"
-#include "propervector.h"
+#include "eigenvector.h"
 
 // #define WITHOUT_QHULL
 
