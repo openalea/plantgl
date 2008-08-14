@@ -124,12 +124,20 @@ except:
     assert imgsizetest and "Viewer.frameGL.setSize failed %s", str((rw,rh))
     os.remove(fname)
 
-  import warnings    
+  import warnings, time    
   def test_state():
     Viewer.start()
     assert Viewer.isRunning() == True, "Viewer not running. Viewer.start() failed."
     Viewer.stop()
-    if Viewer.isRunning() == False:
-        warnings.warn("Viewer not running. Viewer.isRunning() failed.")
+    if Viewer.isRunning():      
+      deb = time.time()
+      t = 0
+      while Viewer.isRunning() and t < 10:
+        t = time.time() - deb
+      if t >= 10:
+        raise Exception("Viewer shutdown failed")
+      else:
+        warnings.warn("Viewer.stop requires %f to totally shutdown." % t)
+        
 
     
