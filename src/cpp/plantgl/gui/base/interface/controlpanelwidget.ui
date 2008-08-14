@@ -36,16 +36,13 @@
      <property name="currentIndex" >
       <number>0</number>
      </property>
-     <property name="tabSpacing" >
-      <number>1</number>
-     </property>
      <widget class="QWidget" name="page" >
       <property name="geometry" >
        <rect>
         <x>0</x>
         <y>0</y>
         <width>135</width>
-        <height>263</height>
+        <height>248</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -184,7 +181,7 @@
         <x>0</x>
         <y>0</y>
         <width>115</width>
-        <height>263</height>
+        <height>227</height>
        </rect>
       </property>
       <attribute name="label" >
@@ -370,8 +367,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>115</width>
-        <height>263</height>
+        <width>98</width>
+        <height>70</height>
        </rect>
       </property>
       <attribute name="label" >
