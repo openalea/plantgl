@@ -19,7 +19,7 @@ class VersionReader:
 
 class PGLVersionReader (VersionReader):
     def __init__(self):
-        VersionReader.__init__(self,pj('src','cpp','plantgl','scenegraph','pgl_version.h'))
+        VersionReader.__init__(self,pj('src','cpp','plantgl','version.h'))
     def getVersion(self):
         return self.find('PGL_VERSION')
     def getRevision(self):
