@@ -807,6 +807,10 @@
 			RelativePath=".\sg_config.h"
 			>
 		</File>
+		<File
+			RelativePath="..\version.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

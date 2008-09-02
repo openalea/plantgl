@@ -467,7 +467,7 @@ PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost:
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(pyGetMaterialFromDialog_overloads, pyGetMaterialFromDialog, 0, 3)
 
-void pyEditMaterialInDialog(Material * initial,
+int pyEditMaterialInDialog(Material * initial,
                             boost::python::object pyparent = boost::python::object(), 
                             char * caption = "")
 {

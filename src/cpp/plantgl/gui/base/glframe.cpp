@@ -547,17 +547,11 @@ void ViewGLFrame::initializeGL()
     IMPORTANT - GL_NORMALIZE is enabled because GL needs to re-normalize
     normals as we use anisotropic transformation such as scaling.
   */
-  glEnable(GL_NORMALIZE);
+  // glEnable(GL_NORMALIZE);
+  glEnable(GL_RESCALE_NORMAL);
   __light->initializeGL();
   glShadeModel(GL_SMOOTH);
-// glShadeModel(GL_FLAT);
-// glEnable(GL_DITHER);
-//  glEnable(GL_LINE_SMOOTH);
-//  glEnable(GL_POINT_SMOOTH);
-//  glEnable(GL_POLYGON_SMOOTH);
-//  glEnable(GL_CULL_FACE);
-//  glCullFace(GL_FRONT);
-//  glCullFace(GL_BACK);
+
   /*
     Hidden-surfaces settings (ZBuffer)
   */

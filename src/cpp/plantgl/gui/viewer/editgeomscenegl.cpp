@@ -173,17 +173,17 @@ MaterialPtr getMaterialFromDialog(QWidget * parent,
     dialog.setWindowTitle(caption);
     if(initial)   dialog.setMaterial(MaterialPtr::Cast(initial->copy()));
     else dialog.setMaterial(MaterialPtr::Cast(Material::DEFAULT_MATERIAL));
-    dialog.exec();
-    return dialog.getMaterial();
+    if (dialog.exec() == QDialog::Accepted) return dialog.getMaterial();
+	else return MaterialPtr(0);
 }
 
-void editMaterialInDialog(MaterialPtr initial,QWidget * parent, char * caption)
+int editMaterialInDialog(MaterialPtr initial,QWidget * parent, char * caption)
 {
     ViewEditMatDialog dialog(parent,caption,true);
     dialog.setWindowTitle(caption);
     if(initial)dialog.setMaterial(initial);
-    else return;
-    dialog.exec();
+    else return -1;
+    return dialog.exec();
 }
 
 

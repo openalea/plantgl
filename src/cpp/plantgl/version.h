@@ -31,26 +31,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file pgl_version.h
+/*! \file version.h
     \brief File for accessing to PGL version.
 */
 
 
-#ifndef __pgl_version_h__
-#define __pgl_version_h__
+#ifndef __plantgl_version_h__
+#define __plantgl_version_h__
 
-#include "../version.h"
-
-#include "sg_config.h"
-#include <string>
-
-/// PGL Version
-extern SG_API float getPGLVersion();
-extern SG_API int getPGLRevision();
-extern SG_API int getPGLSvnRevision();
-
-/// PGL Version String
-extern SG_API std::string getPGLVersionString();
+/// PGL Version macro
+#define PGL_VERSION 0x020704
+#define PGL_SVNREVISION "$Revision: 5410 $"
 
 #endif
 
