@@ -41,7 +41,7 @@
 
 /// PGL Version macro
 #define PGL_VERSION 0x020704
-#define PGL_SVNREVISION "$Revision: 5410 $"
+#define PGL_SVNREVISION "$Revision$"
 
 #endif
 
