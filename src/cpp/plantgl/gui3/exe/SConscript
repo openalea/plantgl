@@ -7,7 +7,7 @@ pj= os.path.join
 
 Import( "env" )
 
-exe_env= env.Copy()
+exe_env= env.Clone()
 
 source= ["mainviewer.cpp"]
 

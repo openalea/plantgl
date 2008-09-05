@@ -1,7 +1,7 @@
 # -*-python-*-
 Import( "env" )
 
-lib_env = env.Copy()
+lib_env = env.Clone()
 qt_version = int(lib_env['QT_VERSION'])
 if qt_version == 4:
     lib_env.EnableQt4Modules( [ 'QtCore'])

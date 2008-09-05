@@ -5,7 +5,7 @@ Import( "env" )
 py_dir = '../../plantgl/algo'
 
 # Build wrappers as shared libraries
-lib_env=env.Copy()
+lib_env=env.Clone()
 
 qt_version = int(lib_env['QT_VERSION'])
 if qt_version == 4:

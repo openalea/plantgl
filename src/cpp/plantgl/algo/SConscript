@@ -6,7 +6,7 @@ Import( "env" )
 
 # 1. Call other SConscript files in sub directories and build the library
 
-lib_env= env.Copy()
+lib_env= env.Clone()
 lib_env.AppendUnique(CPPDEFINES= 'ALGO_MAKEDLL')
 
 qt_version = int(lib_env['QT_VERSION'])

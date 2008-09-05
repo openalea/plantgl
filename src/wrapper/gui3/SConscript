@@ -5,7 +5,7 @@ Import( "env" )
 py_dir = '../../plantgl/gui3'
 
 # Build wrappers as shared libraries
-lib_env=env.Copy()
+lib_env=env.Clone()
 
 sources= lib_env.ALEAGlob( '*.cpp' )
 target= "_pglgui3"

@@ -3,7 +3,7 @@ import os.path
 pj = os.path.join
 
 Import( "env" )
-lib_env = env.Copy()
+lib_env = env.Clone()
 
 # 1. Select and install the headers
 
