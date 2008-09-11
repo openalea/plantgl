@@ -39,7 +39,7 @@ else:
 
 # Main setup
 setup(
-    name="PlantGL",
+    name="VPlants.PlantGL",
     version=version,
     description=description,
     long_description=long_description,
