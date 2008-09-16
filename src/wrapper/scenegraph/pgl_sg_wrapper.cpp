@@ -34,12 +34,19 @@
 #include "export_scenegraph.h"
 #include <plantgl/python/exception_core.h>
 #include <plantgl/scenegraph/pgl_version.h>
+#include <iostream>
 
 using namespace boost::python;
 
 void module_sg()
 {
-  define_stl_exceptions();
+	// check lib version.
+	float linked_version = float((PGL_VERSION & 0xff0000) >> 16)+ (0.01*float((PGL_VERSION & 0x00ff00) >> 8));
+	float linked_revision = float(PGL_VERSION & 0x0000ff);
+	assert( linked_version == getPGLVersion() && linked_revision == getPGLRevision() &&
+			"PlantGL version of the loaded library different from the one at linking.");
+			
+    define_stl_exceptions();
 
     export_arrays();
     export_arrays2();
