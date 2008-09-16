@@ -64,6 +64,7 @@ void export_TurtleParam()
     .EXPORT_PROP(color,TurtleParam)
     .EXPORT_PROP(texture,TurtleParam)
     .EXPORT_PROP(width,TurtleParam)
+    .EXPORT_PROP(crossSection,TurtleParam)
     ;
 }
 

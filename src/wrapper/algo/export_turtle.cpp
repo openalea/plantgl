@@ -45,6 +45,8 @@ void py_warning_handler(const std::string& msg){
     PyErr_WarnEx(PyExc_Warning,msg.c_str(),1);
 }
 
+void setDefaultCrossSection0(Turtle * t) { t->setDefaultCrossSection(); }
+
 void export_Turtle()
 {
     Turtle::register_error_handler(&py_error_handler);
@@ -146,6 +148,11 @@ void export_Turtle()
     .def("setWidthIncrement", &Turtle::setWidthIncrement )
     .def("setColorIncrement", &Turtle::setColorIncrement )
     .def("setScaleMultiplier",&Turtle::setScaleMultiplier )
+
+	.def("setCrossSection", &Turtle::setCrossSection, args("curve"))
+	.def("setDefaultCrossSection", &Turtle::setDefaultCrossSection, args("slices"))
+	.def("setDefaultCrossSection", &setDefaultCrossSection0)
+
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

@@ -310,6 +310,10 @@ public:
     
 	inline void setScaleMultiplier(real_t val)
 	{ scale_multiplier = (val > 0 ? val : - val); }
+
+    void setCrossSection(const Curve2DPtr& curve);
+	void setDefaultCrossSection(size_t slicenb = 16);
+
     
     virtual void error(const std::string& error_string);
     virtual void warning(const std::string& error_string);

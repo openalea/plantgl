@@ -36,6 +36,7 @@
 #include "../algo_config.h"
 #include <plantgl/math/util_vector.h>
 #include <plantgl/math/util_matrix.h>
+#include <plantgl/scenegraph/geometry/curve.h>
 #include <vector>
 
 PGL_BEGIN_NAMESPACE
@@ -116,9 +117,13 @@ public:
   real_t width;
   std::vector<TOOLS(Vector3)> pointList;
   std::vector<real_t> radiusList;
+  Curve2DPtr crossSection;
 
   uint_t customId;
   uint_t customParentId;
+
+  Curve2DPtr initialCrossSection;
+  int initialColor;
 
 protected:
   bool __polygon;

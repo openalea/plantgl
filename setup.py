@@ -3,6 +3,8 @@
 
 import os, sys
 from setuptools import setup
+from openalea.deploy.binary_deps import binary_deps
+
 pj = os.path.join
 
 import versionreader
@@ -32,6 +34,7 @@ build_prefix= "build-scons"
 if("win" in sys.platform):
     install_requires = ["boostpython", "qhull", "qt4"]
     setup_requires = install_requires + ["bisonflex"]
+    install_requires = [ binary_deps(i) for i in install_requires ]
 else:
     install_requires = []
     setup_requires = []

@@ -46,7 +46,7 @@ PGL_BEGIN_NAMESPACE
 
 class ALGO_API PglTurtle : public Turtle {
 public:
-    static Polyline2DPtr DEFAULT_CROSS_SECTION;
+    // static Polyline2DPtr DEFAULT_CROSS_SECTION;
 
     typedef hash_map_string<GeometryPtr> SurfaceMap;
 
@@ -106,6 +106,7 @@ public:
 protected:
 
     AppearancePtr getCurrentMaterial() const;
+    AppearancePtr getCurrentInitialMaterial() const;
 
     GeometryPtr getCircle(real_t radius) const;
 
