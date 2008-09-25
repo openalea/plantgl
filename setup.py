@@ -62,7 +62,8 @@ setup(
 
     py_modules = ["pgl_postinstall",],
     # pure python  packages
-    packages= [ "vplants.plantgl",
+    packages= [ "vplants", 
+                "vplants.plantgl",
                 pkg_name, 
                 pkg_name+'.math', 
                 pkg_name+'.scenegraph', 
