@@ -15,7 +15,7 @@ public:
 	PyObjectLink(PyObject * self = NULL, RefCountObject * pgl_object = NULL) : 
 	  m_self(self) {
 		  if (pgl_object) {
-				size_t rc = pgl_object->getReferenceCount();
+				size_t rc = pgl_object->use_count();
 				if (m_self) {
 					for (size_t i = 1; i < rc; ++i) { Py_INCREF(m_self); }
 				}
@@ -24,11 +24,11 @@ public:
     
 	virtual void referenceAdded(RefCountObject * obj) 
 	  {   // One of the reference count is due to the py object. We dont want to consider it
-		  if (m_self && obj->getReferenceCount() > 1) Py_INCREF(m_self);  
+		  if (m_self && obj->use_count() > 1) Py_INCREF(m_self);  
 	  }
 
 	virtual void referenceRemoved(RefCountObject * obj)  
-	  { if (m_self && obj->getReferenceCount() > 1) Py_DECREF(m_self); }
+	  { if (m_self && obj->use_count() > 1) Py_DECREF(m_self); }
 	virtual void objectDeleted(RefCountObject * obj) 
 	  { m_self = NULL; }
 
@@ -70,3 +70,4 @@ void pydel(T * obj) {  boost::intrusive_ptr_clear_pyobject(obj); }
 
 
 #endif
+

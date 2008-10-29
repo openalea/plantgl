@@ -312,7 +312,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_BEGIN(type,obj) \
-  if (obj->isShared()) { \
+  if (!obj->unique()) { \
     if (! __cache.insert(obj->SceneObject::getId()).second) { \
       DEBUG_INFO(TokReference,obj->getName(),obj->SceneObject::getId()) \
       printType(TokReference); \

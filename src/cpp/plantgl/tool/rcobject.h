@@ -338,19 +338,12 @@ private:
 
 }; // RefCountPtr
 
-
 /* ------------------------------------------------------------------------- */
 
 TOOLS_END_NAMESPACE
 
 /// Tools Reference Counting Pointer 
 #define RCPtr TOOLS(RefCountPtr)
-
-// For compatibility with Boost.Python.
-namespace boost { namespace python {
-	template<class T>
-	T* get_pointer(const RCPtr<T>& p){ return p.get(); }
-}}
 
 /* ----------------------------------------------------------------------- */
 

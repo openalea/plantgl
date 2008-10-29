@@ -58,7 +58,7 @@ using namespace std;
 
 
 #define GEOM_BBOXCOMPUTER_CHECK_CACHE(geom) \
-  if (geom->isNamed()) { \
+  if (!geom->unique()) { \
     Cache<BoundingBoxPtr>::Iterator _it = __cache.find(geom->getId()); \
     if (! (_it == __cache.end())) { \
        __bbox = _it->second; \
@@ -68,12 +68,12 @@ using namespace std;
 
 
 #define GEOM_BBOXCOMPUTER_UPDATE_CACHE(geom) \
-  if (geom->isNamed()) \
+  if (!geom->unique()) \
      __cache.insert(geom->getId(),__bbox);
 
 
 #define GEOM_BBOXCOMPUTER_TRANSFORM_BBOX(matrix) \
-  if( ! __bbox->isShared() ) __bbox->transform(matrix); \
+  if( __bbox->unique() ) __bbox->transform(matrix); \
   else { \
 	BoundingBox bbox(*__bbox); \
 	bbox.transform(matrix); \

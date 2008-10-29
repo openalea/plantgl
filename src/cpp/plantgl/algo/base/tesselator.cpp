@@ -63,7 +63,7 @@ using namespace std;
 
 
 #define GEOM_TESSELATOR_CHECK_CACHE(geom) \
-if(geom->isNamed()){ \
+if(!geom->unique()){ \
   Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId()); \
   if (! (_it == __cache.end())) { \
     __discretization = _it->second; \
@@ -72,8 +72,8 @@ if(geom->isNamed()){ \
 
 
 #define GEOM_TESSELATOR_UPDATE_CACHE(geom) \
-if(geom->isNamed()){ \
-  __discretization->setName(geom->getName()); \
+if(!geom->unique()){ \
+  if(geom->isNamed())__discretization->setName(geom->getName()); \
   __cache.insert(geom->getId(),__discretization); \
 }
 

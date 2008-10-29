@@ -71,7 +71,7 @@ bool Merge::init()
   if( __type == OTHER )
     return false;
 
-  if (__model->isShared()){
+  if (!__model->unique()){
 	  // duplication of index List fields to avoid
 	  // modification of others objects
 	  if( __type == TRIANGLE_SET )

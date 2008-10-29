@@ -40,6 +40,13 @@ TOOLS_USING_NAMESPACE
 
 
 #ifdef NO_BOOST_REFCOUNTPTR
+
+// For compatibility with Boost.Python.
+TOOLS_BEGIN_NAMESPACE
+template<class T>
+T* get_pointer(const RCPtr<T>& p){ return p.get(); }
+TOOLS_END_NAMESPACE
+
 #define DEF_POINTEE(CLASS) \
 namespace boost { namespace python { \
 template <> struct pointee<RCPtr<CLASS> > { typedef CLASS type; }; } }

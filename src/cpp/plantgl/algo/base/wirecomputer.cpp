@@ -54,7 +54,7 @@ TOOLS_USING_NAMESPACE
 
 
 #define GEOM_WireComputer_CHECK_CACHE(geom) \
-  if (geom->isNamed()) { \
+  if (!geom->unique()) { \
     Cache<GeometryPtr>::Iterator _it = __cache.find(geom->getId()); \
     if (! (_it == __cache.end())) { \
        __wire = GeometryPtr(_it->second); \
@@ -65,7 +65,7 @@ TOOLS_USING_NAMESPACE
 
 
 #define GEOM_WireComputer_UPDATE_CACHE(geom) \
-  if (geom->isNamed()) \
+  if (!geom->unique()) \
     __cache.insert(geom->getId(),__wire);
 
 

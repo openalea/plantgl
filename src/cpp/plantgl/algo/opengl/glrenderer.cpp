@@ -64,7 +64,7 @@ TOOLS_USING_NAMESPACE
 
 #define GEOM_GLRENDERER_CHECK_CACHE(geom) \
   GLuint _displaylist = 0; \
-  if(!geom->isShared()){ \
+  if(!geom->unique()){ \
 	if(__compil == 0){ \
 	  if(check(geom->getId(),_displaylist))return true; \
 	}  \
@@ -73,13 +73,10 @@ TOOLS_USING_NAMESPACE
   
 
 #define GEOM_GLRENDERER_UPDATE_CACHE(geom) \
-  if(__compil == 0 && !geom->isShared()) update(geom->getId(),_displaylist); \
+  if(__compil == 0 && !geom->unique()) update(geom->getId(),_displaylist); \
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
   if (__appearance.get() == app) return true;
-
-//      (__appearance->getId() == app->getId())) return true;
-
 
 #define GEOM_GLRENDERER_UPDATE_APPEARANCE(app) \
   __appearance = AppearancePtr(app);

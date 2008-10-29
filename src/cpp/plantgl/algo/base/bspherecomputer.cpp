@@ -52,7 +52,7 @@ using namespace std;
 
 
 #define GEOM_BSPHERECOMPUTER_CHECK_CACHE(geom) \
-  if (geom->isShared()) { \
+  if (!geom->unique()) { \
     Cache<BoundingSpherePtr>::Iterator _it = __cache.find(geom->getId()); \
     if (! (_it == __cache.end())) { \
        __result = _it->second; \
@@ -62,7 +62,7 @@ using namespace std;
 
 
 #define GEOM_BSPHERECOMPUTER_UPDATE_CACHE(geom) \
-  if (geom->isShared()) \
+  if (!geom->unique()) \
      __cache.insert(geom->getId(),__result);
 
 
