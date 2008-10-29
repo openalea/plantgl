@@ -45,9 +45,9 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 #ifdef _WIN32
-AppearancePtr Voxel::EMPTY_APPEARANCE(0);
-AppearancePtr Voxel::FILLED_APPEARANCE(0);
-AppearancePtr Voxel::UNDETERMINED_APPEARANCE(0);
+AppearancePtr Voxel::EMPTY_APPEARANCE;
+AppearancePtr Voxel::FILLED_APPEARANCE;
+AppearancePtr Voxel::UNDETERMINED_APPEARANCE;
 
 #else
 

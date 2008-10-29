@@ -41,6 +41,7 @@
 
 #include "material.h"
 #include "color.h"
+#include <plantgl/math/util_vector.h>
 
 
 /* ----------------------------------------------------------------------- */
@@ -146,6 +147,13 @@ protected:
 
   bool __mipmaping;
 
+  TOOLS(Vector2) __scale;
+
+  real_t __rotation;
+
+  TOOLS(Vector2) __translation;
+
+  TOOLS(Vector2) __center;
 };
 
 /// ImageTexture Pointer

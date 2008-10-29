@@ -54,7 +54,7 @@ PointSet::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet::Builder::build( ) const {
   if (isValid())
-    return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:NULL));
+    return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr()));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -202,7 +202,7 @@ PointSet2D::PointSet2D( const Point2ArrayPtr& points ) :
 
 PointSet2D::PointSet2D(  ) :
   PlanarModel(),
-  __pointList(0) {
+  __pointList() {
 }
 
 PointSet2D::~PointSet2D( ) {

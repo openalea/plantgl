@@ -73,7 +73,7 @@ struct mat_pickle_suite : boost::python::pickle_suite
 	}
 };
 
-MaterialPtr getDefaultMaterial() { return MaterialPtr::Cast(Material::DEFAULT_MATERIAL); }
+MaterialPtr getDefaultMaterial() { return dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL); }
 
 void export_Material()
 {

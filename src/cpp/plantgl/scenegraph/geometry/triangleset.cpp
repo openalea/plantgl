@@ -67,12 +67,12 @@ SceneObjectPtr TriangleSet::Builder::build( ) const {
   if (isValid()){
 	TriangleSet * t = new TriangleSet(*PointList,
 									  *IndexList,
-									  NormalList?*NormalList:NULL,
-									  NormalIndexList?*NormalIndexList:NULL,
-									  ColorList?*ColorList:NULL,
-									  ColorIndexList?*ColorIndexList:NULL,
-									  TexCoordList?*TexCoordList:NULL,
-									  TexCoordIndexList?*TexCoordIndexList:NULL,
+									  NormalList?*NormalList:Point3ArrayPtr(),
+									  NormalIndexList?*NormalIndexList:Index3ArrayPtr(),
+									  ColorList?*ColorList:Color4ArrayPtr(),
+									  ColorIndexList?*ColorIndexList:Index3ArrayPtr(),
+									  TexCoordList?*TexCoordList:Point2ArrayPtr(),
+									  TexCoordIndexList?*TexCoordIndexList:Index3ArrayPtr(),
 									  NormalPerVertex? *NormalPerVertex : DEFAULT_NORMALPERVERTEX,
 									  ColorPerVertex? *ColorPerVertex: DEFAULT_COLORPERVERTEX,
 									  CCW ? *CCW : DEFAULT_CCW,
@@ -272,10 +272,10 @@ bool TriangleSet::Builder::isValid( ) const {
 
 TriangleSet::TriangleSet() :
     Mesh(),
-    __indexList(0),
-	__normalIndexList(0),
-	__texCoordIndexList(0),
-	__colorIndexList(0){
+    __indexList(),
+	__normalIndexList(),
+	__texCoordIndexList(),
+	__colorIndexList(){
 }
 
 TriangleSet::TriangleSet( const Point3ArrayPtr& points,
@@ -286,9 +286,9 @@ TriangleSet::TriangleSet( const Point3ArrayPtr& points,
                           const PolylinePtr& skeleton ) :
     Mesh(points,normalPerVertex,ccw,solid,skeleton),
     __indexList(indices),
-	__normalIndexList(0),
-	__texCoordIndexList(0),
-	__colorIndexList(0){
+	__normalIndexList(),
+	__texCoordIndexList(),
+	__colorIndexList(){
     GEOM_ASSERT(isValid());
 }
 
@@ -352,7 +352,7 @@ TriangleSet::copy() const{
   TriangleSetPtr ptr(new TriangleSet(*this));
   if(__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*__pointList));
   if(__indexList)ptr->getIndexList() = Index3ArrayPtr(new Index3Array(*__indexList));
-  if(__skeleton)ptr->getSkeleton().cast(__skeleton->copy());
+  if(__skeleton)ptr->getSkeleton() = dynamic_pointer_cast<Polyline>(__skeleton->copy());
   if(__normalList)ptr->getNormalList() = Point3ArrayPtr(new Point3Array(*__normalList));
   if(__texCoordList)ptr->getTexCoordList() = Point2ArrayPtr(new Point2Array(*__texCoordList));
   if(__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*__colorList));
@@ -385,7 +385,7 @@ TriangleSet::transform( const Transformation3DPtr& transformation ) const {
 
   PolylinePtr _tSkeleton = __skeleton;
   if (_tSkeleton)
-    _tSkeleton.cast(__skeleton->transform(transformation));
+    _tSkeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(transformation));
 
   Point3ArrayPtr _n = __normalList;
   if(_n){

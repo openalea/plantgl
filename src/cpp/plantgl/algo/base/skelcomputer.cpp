@@ -123,7 +123,7 @@ bool SkelComputer::process( AxisRotated * axisRotated ) {
 
   if(!(axisRotated->getGeometry()->apply(*this)))return false;
   if (__skeleton) {
-      __skeleton.cast(__skeleton->transform(axisRotated->getTransformation()));
+      __skeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(axisRotated->getTransformation()));
   }
   else return false;
 
@@ -138,11 +138,11 @@ bool SkelComputer::process( AxisRotated * axisRotated ) {
 bool SkelComputer::process( BezierCurve * bezierCurve ) {
     GEOM_ASSERT(bezierCurve);
 	if(bezierCurve->apply(__discretizer))
-	  __skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
+	  __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
 	else
-    __skeleton = new Polyline(
+    __skeleton = PolylinePtr(new Polyline(
         bezierCurve->getPointAt(0),
-        bezierCurve->getPointAt(1));
+        bezierCurve->getPointAt(1)));
 
     return true;
 }
@@ -153,8 +153,8 @@ bool SkelComputer::process( BezierCurve * bezierCurve ) {
 bool SkelComputer::process( BezierPatch * bezierPatch ) {
     GEOM_ASSERT(bezierPatch);
 
-    __skeleton = new Polyline(bezierPatch->getPointAt(0.0,0.0),
-                              bezierPatch->getPointAt(1.0,1.0));
+    __skeleton = PolylinePtr(new Polyline(bezierPatch->getPointAt(0.0,0.0),
+                              bezierPatch->getPointAt(1.0,1.0)));
     return true;
 }
 
@@ -212,7 +212,7 @@ bool SkelComputer::process( EulerRotated * eulerRotated ) {
 
   if(!eulerRotated->getGeometry()->apply(*this))return false;
   if (__skeleton) {
-    __skeleton.cast(__skeleton->transform(eulerRotated->getTransformation()));
+    __skeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(eulerRotated->getTransformation()));
   }
   else return false;
 
@@ -291,11 +291,11 @@ bool SkelComputer::process( NurbsCurve * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
   
   if(nurbsCurve->apply(__discretizer))
-	__skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
+	__skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
   else
-	__skeleton = new Polyline(
+	__skeleton = PolylinePtr(new Polyline(
 	nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),
-	nurbsCurve->getPointAt(nurbsCurve->getLastKnot()));
+	nurbsCurve->getPointAt(nurbsCurve->getLastKnot())));
   
   return true;
 }
@@ -306,11 +306,11 @@ bool SkelComputer::process( NurbsCurve * nurbsCurve ) {
 bool SkelComputer::process( NurbsPatch * nurbsPatch ) {
   GEOM_ASSERT(nurbsPatch);
 
-  __skeleton = new Polyline
+  __skeleton = PolylinePtr(new Polyline
      (nurbsPatch->getPointAt(nurbsPatch->getFirstUKnot(),
                              nurbsPatch->getFirstVKnot()),
       nurbsPatch->getPointAt(nurbsPatch->getLastUKnot(),
-                             nurbsPatch->getLastVKnot()));
+                             nurbsPatch->getLastVKnot())));
   return true;
 }
 
@@ -384,7 +384,7 @@ bool SkelComputer::process( Oriented * oriented ) {
 
   if(!(oriented->getGeometry()->apply(*this)))return false;
   if (__skeleton) {
-    __skeleton.cast(__skeleton->transform(oriented->getTransformation()));
+    __skeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(oriented->getTransformation()));
   }
   else return false;
 
@@ -437,7 +437,7 @@ bool SkelComputer::process( Scaled * scaled ) {
 
   if(!(scaled->getGeometry()->apply(*this)))return false;
   if (__skeleton) {
-    __skeleton.cast(__skeleton->transform(scaled->getTransformation()));
+    __skeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(scaled->getTransformation()));
   };
 
   GEOM_SKELCOMPUTER_UPDATE_CACHE(scaled);
@@ -463,7 +463,7 @@ bool SkelComputer::process( Tapered * tapered ) {
 
   if(!(tapered->getPrimitive()->apply(*this)))return false;
   if (__skeleton) {
-    __skeleton.cast(__skeleton->transform(tapered->getTransformation()));
+    __skeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(tapered->getTransformation()));
   }
   else return false;
 
@@ -482,7 +482,7 @@ bool SkelComputer::process( Translated * translated ) {
 
   if(!(translated->getGeometry()->apply(*this)))return false;
   if (__skeleton) {
-    __skeleton.cast(__skeleton->transform(translated->getTransformation()));
+    __skeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(translated->getTransformation()));
   }
   else return false;
 
@@ -527,7 +527,7 @@ bool SkelComputer::process( BezierCurve2D * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
 
 	if(bezierCurve->apply(__discretizer))
-	  __skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
+	  __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
 	else
     __skeleton = PolylinePtr(new Polyline(
       Vector3(bezierCurve->getPointAt(0),0),
@@ -551,7 +551,7 @@ bool SkelComputer::process( NurbsCurve2D * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
 
 	if(nurbsCurve->apply(__discretizer))
-	  __skeleton = PolylinePtr::Cast(__discretizer.getDiscretization());
+	  __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
 	else
 	  __skeleton = PolylinePtr(new Polyline(
       Vector3(nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),0),

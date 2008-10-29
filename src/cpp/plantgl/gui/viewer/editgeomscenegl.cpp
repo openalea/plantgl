@@ -87,7 +87,7 @@ ViewEditMatDialog::ViewEditMatDialog(QWidget * parent,
 	      Qt::WindowFlags f) : 
   ViewDialog(parent,name,modal,f),
   __matedit(NULL),
-  __appe(0){
+  __appe(){
   __matedit = new MaterialEditor(this);
   QVBoxLayout * l1 = new QVBoxLayout(this);
   l1->addWidget(__matedit);
@@ -116,8 +116,8 @@ void
 ViewEditMatDialog::setMaterial(PGL(MaterialPtr) appe)
 {
   __appe = appe;
-  __default = new Material(*appe);
-  __matedit->setMaterial(new Material(*appe));
+  __default = MaterialPtr(new Material(*appe));
+  __matedit->setMaterial(MaterialPtr(new Material(*appe)));
 }
 
 void 
@@ -135,30 +135,30 @@ ViewEditMatDialog::apply(){
 
 void
 ViewEditMatDialog::reset(){
-  __matedit->setMaterial(new Material(*__default));
+  __matedit->setMaterial(MaterialPtr(new Material(*__default)));
   emit valueChanged();
 }
 
 void
 ViewEditMatDialog::ok(){
   apply();
-  __appe = 0;
+  __appe = MaterialPtr();
   accept();
 }
 
 void
 ViewEditMatDialog::cancel(){
-  __appe = 0;
+  __appe = MaterialPtr();
   reject();
 }
 
 void ViewEditMatDialog::importClipboard()
 {
-	if(__clipboard && __clipboard->isValid())
+	if(__clipboard && *__clipboard)
 	{
 		MaterialPtr clipboard;
-		if (clipboard.cast(*__clipboard))
-		__matedit->setMaterial(new Material(*clipboard));
+		if ((clipboard = dynamic_pointer_cast<Material>(*__clipboard)))
+		__matedit->setMaterial(MaterialPtr(new Material(*clipboard)));
 		// emit valueChanged();
 	}
 }
@@ -171,10 +171,10 @@ MaterialPtr getMaterialFromDialog(QWidget * parent,
 {
     ViewEditMatDialog dialog(parent,caption,true);
     dialog.setWindowTitle(caption);
-    if(initial)   dialog.setMaterial(MaterialPtr::Cast(initial->copy()));
-    else dialog.setMaterial(MaterialPtr::Cast(Material::DEFAULT_MATERIAL));
+    if(initial)   dialog.setMaterial(dynamic_pointer_cast<Material>(initial->copy()));
+    else dialog.setMaterial(dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL));
     if (dialog.exec() == QDialog::Accepted) return dialog.getMaterial();
-	else return MaterialPtr(0);
+	else return MaterialPtr();
 }
 
 int editMaterialInDialog(MaterialPtr initial,QWidget * parent, char * caption)
@@ -194,7 +194,7 @@ ViewEditGeomSceneGL::ViewEditGeomSceneGL(ViewCameraGL * camera,
 										 QGLWidget * parent, 
 										 const char * name):
 ViewMultiGeomSceneGL(camera,light,parent,name),
-__appeclipboard(0),
+__appeclipboard(),
 __mateditor(0){
 }
 
@@ -203,7 +203,7 @@ ViewEditGeomSceneGL::~ViewEditGeomSceneGL(){
 
 void
 ViewEditGeomSceneGL::clear(){
-  __appeclipboard = 0;
+  __appeclipboard = AppearancePtr();
   ViewMultiGeomSceneGL::clear();
 }
 
@@ -241,7 +241,7 @@ ViewEditGeomSceneGL::editMaterial()
   }
   AppearancePtr appe = getSelectedAppearance();
   MaterialPtr mat;
-  if(mat.cast(appe)){
+  if((mat = dynamic_pointer_cast<Material>(appe))){
 	if(!__mateditor){
 	  __mateditor = new ViewEditMatDialog(__frame,"Material Editor");
 	  __mateditor->setClipboardMaterial(&__appeclipboard);
@@ -275,7 +275,7 @@ ViewEditGeomSceneGL::dissociateMaterial()
 	return;
   }
   AppearancePtr appe = getSelectedAppearance();
-  MaterialPtr mat = MaterialPtr::Cast(appe);
+  MaterialPtr mat = dynamic_pointer_cast<Material>(appe);
   if(!mat){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  QString("Cannot find selected material."),1,0,0);
@@ -285,10 +285,10 @@ ViewEditGeomSceneGL::dissociateMaterial()
   mat->setName("APP_"+number(mat->getId()));
   for( STDEXT::hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
 	   _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = ShapePtr::Cast(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape)shape->getAppearance() = mat;
 	else {
-	  InlinePtr in = InlinePtr::Cast(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
 	  if(in){
 		setAppearance(in->getScene(),AppearancePtr(mat));
 	  }
@@ -302,10 +302,10 @@ void ViewEditGeomSceneGL::setAppearance(ScenePtr scene,AppearancePtr appe) const
 {
   if(!scene)return;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
-	ShapePtr shape = ShapePtr::Cast(*_it);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
 	if(shape) shape->appearance = appe;
 	else {
-	  InlinePtr in = InlinePtr::Cast(*_it);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(*_it);
 	  if(in)setAppearance(in->getScene(),appe);
 	}
   }
@@ -314,14 +314,14 @@ void ViewEditGeomSceneGL::setAppearance(ScenePtr scene,AppearancePtr appe) const
 bool 
 ViewEditGeomSceneGL::hasSameMaterial(ScenePtr scene,AppearancePtr appe) const
 {
-  if(scene.isNull() ||appe.isNull())return true;
+  if(!scene || !appe)return true;
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
-	ShapePtr shape = ShapePtr::Cast(*_it);
-	if(shape.isValid()){
+	ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
+	if(shape){
 	  if(shape->getAppearance() != appe)return false;
 	}
 	else {
-	  InlinePtr in = InlinePtr::Cast(*_it);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(*_it);
 	  if(in){
 		if(!hasSameMaterial(in->getScene(),appe))return false;
 	  }
@@ -338,12 +338,12 @@ ViewEditGeomSceneGL::hasSameMaterial() const
   if(!mat)return false;
   for(STDEXT::hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = ShapePtr::Cast(_it->second);
-	if(shape.isValid()){
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
+	if(shape){
 	  if(shape->getAppearance() != mat)return false;
 	}
 	else {
-	  InlinePtr in = InlinePtr::Cast(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
 	  if(in){
 		if(!hasSameMaterial(in->getScene(),mat))return false;
 	  }
@@ -358,43 +358,43 @@ ViewEditGeomSceneGL::getSelectedAppearance() const
 {
   if(__selectedShapes.empty()) {
 	if (__scene->getSize() == 1) return getSelectedAppearance(__scene);
-	return NULL;
+	return AppearancePtr();
   }
   for(STDEXT::hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
     _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = ShapePtr::Cast(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape) {
 	  if(shape->getAppearance())return shape->getAppearance();
 	}
 	else {
-	  InlinePtr in = InlinePtr::Cast(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
 	  if(in){
 		AppearancePtr appe = getSelectedAppearance(in->getScene());
 		if(appe)return appe;
 	  }
 	}
   }
-  return NULL;
+  return AppearancePtr();
 }
 
 AppearancePtr 
 ViewEditGeomSceneGL::getSelectedAppearance(ScenePtr scene) const
 {
-  if(scene.isNull() || scene->isEmpty()) return NULL;
+  if(!scene || scene->isEmpty()) return AppearancePtr();
   for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
-	ShapePtr shape = ShapePtr::Cast(*_it);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
 	if(shape) {
 	  if(shape->getAppearance())return shape->getAppearance();
 	}
 	else {
-	  InlinePtr in = InlinePtr::Cast(*_it);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(*_it);
 	  if(in){
 		AppearancePtr appe = getSelectedAppearance(in->getScene());
 		if(appe)return appe;
 	  }
 	}
   }
-  return NULL;
+  return AppearancePtr();
 }
 
 void
@@ -425,10 +425,10 @@ ViewEditGeomSceneGL::pasteMaterial(){
   
   for( hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = ShapePtr::Cast(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape)shape->getAppearance() = __appeclipboard;
 	else {
-	  InlinePtr in = InlinePtr::Cast(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
 	  setAppearance(in->getScene(),__appeclipboard);
 	}
   }
@@ -445,7 +445,7 @@ ViewMultiscaleEditGeomSceneGL::ViewMultiscaleEditGeomSceneGL(ViewCameraGL * came
 ViewEditGeomSceneGL(camera,light,parent,name),
 __appdialog(0),
 __appform(0),
-__matmacro(new Material(*MaterialPtr::Cast(Material::DEFAULT_MATERIAL))){
+__matmacro(new Material(*dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL))){
   __matmacro->setName("");
   __matmacro->getTransparency() = 0.6;  
 }
@@ -466,7 +466,7 @@ ViewMultiscaleEditGeomSceneGL::addEditEntries(QMenu * menu)
 
 void
 ViewMultiscaleEditGeomSceneGL::editMultiScaleGeometry(){
-  if(__scene.isNull() || __scene->isEmpty()){
+  if(!__scene || __scene->isEmpty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No Geometry to Fit."),1,0,0);
 	return;
@@ -514,7 +514,7 @@ ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
   if(__appform->SceneButton->isChecked())scene = __scene;
   else if (__appform->SelectionButton->isChecked())scene = getSelection();
   else scene = getNotSelection();
-  if(scene.isNull()||scene->isEmpty()){
+  if(!scene||scene->isEmpty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No Geometry to Fit."),1,0,0);
 	return;
@@ -587,7 +587,7 @@ ViewMultiscaleEditGeomSceneGL::updateMaterial(const QColor& col){
 
 void
 ViewMultiscaleEditGeomSceneGL::applyEdition(){
-  if(__mateditor && __mateditor->getMaterial().equal(__matmacro)){
+  if(__mateditor && (__mateditor->getMaterial() == __matmacro)){
 	updateMaterial(GCOL2QCOL(__matmacro->getDiffuseColor()));
   }
   else {

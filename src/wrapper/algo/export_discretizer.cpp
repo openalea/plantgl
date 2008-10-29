@@ -59,7 +59,7 @@ void set_Dis_texCoord(Discretizer * obj, bool v){
 } 
 
 ExplicitModelPtr py_discretize( const GeometryPtr& obj) {
-	if (!obj.isValid())throw PythonExc_ValueError("Cannot discretize empty object.");
+	if (!obj)throw PythonExc_ValueError("Cannot discretize empty object.");
 	Discretizer d;
 	if (!obj->apply(d))throw PythonExc_ValueError("Error in discretization.");
 	else return d.getDiscretization();
@@ -86,7 +86,7 @@ TriangleSetPtr 	t_getTriangulation ( Tesselator* t )
 { return t->getTriangulation(); }
 
 TriangleSetPtr py_tesselate( const GeometryPtr& obj) {
-	if (!obj.isValid())throw PythonExc_ValueError("Cannot tesselate empty object.");
+	if (!obj)throw PythonExc_ValueError("Cannot tesselate empty object.");
 	Tesselator t;
 	if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
 	else return t.getTriangulation();

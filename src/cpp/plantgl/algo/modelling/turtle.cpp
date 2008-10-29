@@ -120,8 +120,8 @@ TurtleParam::reset(){
   __generalizedCylinder = false;
   pointList.clear();
   radiusList.clear();
-  crossSection = NULL;
-  initialCrossSection = NULL;
+  crossSection = Curve2DPtr();
+  initialCrossSection = Curve2DPtr();
   initialColor = -1;
 }
     
@@ -143,8 +143,10 @@ TurtleParam * TurtleParam::copy(){
   t->crossSection = crossSection;
   t->initialCrossSection = initialCrossSection;
   t->initialColor = initialColor;
-  t->polygon(__polygon);
-  t->generalizedCylinder(__generalizedCylinder);
+  t->__polygon = __polygon;
+  t->__generalizedCylinder = __generalizedCylinder;
+  // t->polygon(__polygon);
+  // t->generalizedCylinder(__generalizedCylinder);
 
   return t;
 }
@@ -208,7 +210,7 @@ void TurtleParam::generalizedCylinder(bool t){
 	initialColor = color;
   }
   else {
-	initialCrossSection = NULL;
+	initialCrossSection = Curve2DPtr();
 	initialColor = -1;
   }
 
@@ -232,6 +234,9 @@ Turtle::Turtle(TurtleParam * params):
   id(Shape::NOID),
   parentId(Shape::NOID)
 {
+	if (!__params->crossSection)
+		setDefaultCrossSection();
+	assert (__params->crossSection && "Failed to initialize cross section");
 }
 
 Turtle::~Turtle() { }
@@ -253,6 +258,8 @@ void Turtle::reset(){
 
 void Turtle::resetValues(){
 	__params->reset();
+	if (!__params->crossSection)
+		setDefaultCrossSection();
 	__paramstack = stack<TurtleParam *>();
 }
   
@@ -289,9 +296,11 @@ uint_t Turtle::popId()
 
 void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
-     if(__params->pointList.size() > 1)
-	  _generalizedCylinder(__params->pointList,
-						   __params->radiusList);
+	  if(__params->pointList.size() > 1){
+		_generalizedCylinder(__params->pointList,
+						   __params->radiusList,
+						   __params->initialCrossSection);
+	  }
     __params->removePoints();
   }
 }
@@ -309,10 +318,11 @@ void Turtle::stop(){
   
   void Turtle::pop(){
 	if (__params->isGeneralizedCylinderOn()){
-     if(__params->pointList.size() > 1)
-	  _generalizedCylinder(__params->pointList,
-						   __params->radiusList);
-      __params->removePoints();
+		if(__params->pointList.size() > 1){
+			_generalizedCylinder(__params->pointList,
+							    __params->radiusList,
+							    __params->initialCrossSection);
+		}
 	}
 	if(!__paramstack.empty()){
 	  delete __params;
@@ -482,6 +492,7 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   }
   
   void Turtle::startGC(){
+	if (!__params->crossSection) setDefaultCrossSection();
     __params->generalizedCylinder(true);
     __params->customId = popId();
     __params->customParentId = parentId;
@@ -489,9 +500,11 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   }
   
 void Turtle::stopGC(){
-    if(__params->pointList.size() > 1)
-	  _generalizedCylinder(__params->pointList,
-						   __params->radiusList);
+	if(__params->pointList.size() > 1){
+		_generalizedCylinder(__params->pointList,
+							 __params->radiusList,
+							 __params->initialCrossSection);
+	}
     __params->generalizedCylinder(false);
     __params->customId = Shape::NOID;
     __params->customParentId = Shape::NOID;
@@ -504,15 +517,7 @@ void Turtle::setCrossSection(const Curve2DPtr& curve)
 
 void Turtle::setDefaultCrossSection(size_t slices)
 {
-   Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices+1,Vector2(1,0)));
-   real_t angdelta = 2*GEOM_PI/slices;
-   real_t angle = 0;
-   for (int i = 1; i < slices; i++){
-	    angle += angdelta;
-	    pts->setAt(i,Vector2(cos(angle),sin(angle)));
-    }
-    pts->setAt(slices,Vector2(1,0));
-    setCrossSection(new Polyline2D(pts));
+	setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)));
 }
 
 /*----------------------------------------------------------*/
@@ -561,11 +566,11 @@ PglTurtle::getSurfaceList() const {
 void PglTurtle::defaultValue(){
   __appList.clear();
   __surfList.clear();
-  __appList.push_back(new Material("default"));
-  __appList.push_back(new Material("Brown",Color3(65,45,15),3)); // Brown
-  __appList.push_back(new Material("Green",Color3(30,60,10),3)); // Green
-  __appList.push_back(new Material("Red",Color3(60,0,0),3));     // Red
-  __appList.push_back(new Material("Yellow",Color3(60,60,15),3));// Yellow
+  __appList.push_back(AppearancePtr(new Material("default")));
+  __appList.push_back(AppearancePtr(new Material("Brown",Color3(65,45,15),3))); // Brown
+  __appList.push_back(AppearancePtr(new Material("Green",Color3(30,60,10),3))); // Green
+  __appList.push_back(AppearancePtr(new Material("Red",Color3(60,0,0),3)));     // Red
+  __appList.push_back(AppearancePtr(new Material("Yellow",Color3(60,60,15),3)));// Yellow
   Point3ArrayPtr points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
   points->setAt(1,Vector3(0,0,0));
   points->setAt(2,Vector3(-0.25,0,1./3));
@@ -603,7 +608,7 @@ void PglTurtle::appendMaterial(const AppearancePtr& mat)
 
 void PglTurtle::setMaterial(size_t pos, const AppearancePtr& mat){
   while (__appList.size() < pos)
-    __appList.push_back(new Material("Default"));
+    __appList.push_back(AppearancePtr(new Material("Default")));
   if (__appList.size() == pos)
     __appList.push_back(mat);
   else __appList[pos] = mat;
@@ -612,16 +617,16 @@ void PglTurtle::setMaterial(size_t pos, const AppearancePtr& mat){
 AppearancePtr PglTurtle::getMaterial(size_t pos){
     if (pos >= __appList.size()) {
         while (__appList.size() <= pos)
-        __appList.push_back(new Material("Default"));      
+        __appList.push_back(AppearancePtr(new Material("Default")));
     }
     return __appList[pos];
 }
 
 void PglTurtle::setColorAt(size_t pos, const Color3& mat){
   while (__appList.size() < pos)
-    __appList.push_back(new Material("Default"));
+    __appList.push_back(AppearancePtr(new Material("Default")));
   if (__appList.size() == pos)
-    __appList.push_back(new Material(mat));
+    __appList.push_back(AppearancePtr(new Material(mat)));
   else __appList[pos] = AppearancePtr(new Material(mat));
 }
 
@@ -660,7 +665,7 @@ void PglTurtle::removeSurface(const string& name){
 GeometryPtr PglTurtle::getSurface(const string& name){
   SurfaceMap::iterator it = __surfList.find(name);
   if(it != __surfList.end())return it->second;
-  else return GeometryPtr(0);
+  else return GeometryPtr();
 }
     
 AppearancePtr PglTurtle::getCurrentMaterial() const{
@@ -677,7 +682,7 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 {
-  _addToScene(transform(new Scaled(Vector3(scale,scale,scale),smb),true));
+  _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),smb)),true));
 }
 
 
@@ -822,7 +827,8 @@ PglTurtle::_polygon(const vector<Vector3>& pointList){
 
 void 
 PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
-								const vector<real_t>& radiusList){
+								const vector<real_t>& radiusList,
+								const Curve2DPtr& crossSection){
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
 						  new Point3Array(points.begin(),points.end()))));
   Point2ArrayPtr radius(new Point2Array(radiusList.size()));
@@ -831,11 +837,10 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
 		it != radiusList.end(); it++){
 		  *it2 = Vector2(*it,*it); it2++;
   }
-  if (__params->initialCrossSection.isNull()){
-	  setDefaultCrossSection();
-	  __params->initialCrossSection = __params->crossSection;
-  }
-  _addToScene(GeometryPtr(new Extrusion(axis,__params->initialCrossSection,radius)),true);
+  if (!crossSection)
+	  error("Invalid cross section");
+  assert (crossSection);
+  _addToScene(GeometryPtr(new Extrusion(axis,crossSection,radius)),true);
 }
 
 void

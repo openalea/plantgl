@@ -50,7 +50,7 @@ const bool Mesh::DEFAULT_SOLID(false);
 const bool Mesh::DEFAULT_NORMALPERVERTEX(true);
 const bool Mesh::DEFAULT_COLORPERVERTEX(true);
 
-const PolylinePtr Mesh::DEFAULT_SKELETON(0);
+const PolylinePtr Mesh::DEFAULT_SKELETON;
 
 
 /* ----------------------------------------------------------------------- */
@@ -150,8 +150,8 @@ Mesh::Mesh() :
   __solid(DEFAULT_SOLID),
   __colorPerVertex(DEFAULT_COLORPERVERTEX),
   __normalPerVertex(DEFAULT_NORMALPERVERTEX),
-  __normalList(0),
-  __texCoordList(0),
+  __normalList(),
+  __texCoordList(),
   __skeleton(DEFAULT_SKELETON)
 {
 }
@@ -166,8 +166,8 @@ Mesh::Mesh( const Point3ArrayPtr& points,
   __solid(solid),
   __colorPerVertex(DEFAULT_COLORPERVERTEX),
   __normalPerVertex(normalPerVertex),
-  __normalList(0),
-  __texCoordList(0),
+  __normalList(),
+  __texCoordList(),
   __skeleton(skeleton)
 {
 }
@@ -315,7 +315,7 @@ Mesh::computeNormalList(bool pervertex){
 
 bool
 Mesh::hasTexCoordList( ) const {
-  return __texCoordList.isValid();
+  return (__texCoordList);
 }
 
 /// Returns the center of the \b i-th face.

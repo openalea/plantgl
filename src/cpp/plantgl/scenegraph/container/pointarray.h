@@ -401,7 +401,7 @@ template <class T>
 real_t hausdorff_distance(const RCPtr<T> pts1,
 						  const RCPtr<T> pts2)
 {
-	if(pts1.isNull() || pts2.isNull() || pts1->isEmpty() ||pts2->isEmpty())
+	if(!pts1 || !pts2 || pts1->isEmpty() ||pts2->isEmpty())
         return 0;
 	real_t dist1 = 0;
 	for(typename T::const_iterator it1 = pts1->getBegin(); it1 != pts1->getEnd();++it1){

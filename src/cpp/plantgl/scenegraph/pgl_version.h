@@ -51,6 +51,12 @@ extern SG_API int getPGLSvnRevision();
 
 /// PGL Version String
 extern SG_API std::string getPGLVersionString();
+extern SG_API int getPGLVersionNumber();
+extern SG_API std::string getPGLRevisionString();
+
+#define PGL_LIB_VERSION_CHECK \
+	 assert( PGL_VERSION == getPGLVersionNumber() && \
+             "PlantGL version of the loaded library is different from the one at linking.");
 
 #endif
 

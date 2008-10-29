@@ -42,7 +42,7 @@ PGL_USING_NAMESPACE
 
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
-  if ((__appearance.isValid()) && \
+  if ((__appearance) && \
       (__appearance->getId() == app->getId())) return true;
 
 
@@ -79,8 +79,8 @@ GLTransitionRenderer::~GLTransitionRenderer( ) {
 void 
 GLTransitionRenderer::clear( ) {
   GLRenderer::clear();
-  __scene1 = ScenePtr(0);
-  __scene2 = ScenePtr(0);
+  __scene1 = ScenePtr();
+  __scene2 = ScenePtr();
 }
 
 const uint_t 

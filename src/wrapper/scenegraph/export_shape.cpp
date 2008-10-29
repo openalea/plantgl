@@ -39,6 +39,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include <plantgl/python/pyobj_reference.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -52,14 +53,16 @@ void export_Shape3D()
 {
   class_< Shape3D, Shape3DPtr, bases< SceneObject >, boost::noncopyable >("Shape3D", 
 	  "Abstract base class for shape that can be stored into a scene.",no_init);
-}
 
+  implicitly_convertible<Shape3DPtr, SceneObjectPtr >();
+}
 
 struct sh_pickle_suite : boost::python::pickle_suite
 {
 	static tuple getinitargs(Shape const& sh)
 	{
-		return make_tuple(sh.getGeometry(),sh.getAppearance(),sh.getId());
+		return boost::python::make_tuple<GeometryPtr,AppearancePtr,uint_t,uint_t>
+					(sh.getGeometry(),sh.getAppearance(),sh.getId(),sh.getParentId());
 	}
 };
 
@@ -67,12 +70,12 @@ uint_t sh_getptrid(const Shape * sh) { return sh->SceneObject::getId(); }
 
 void export_Shape()
 {
-  class_< Shape,ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape",
+  class_< Shape, ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape",
 	  "A Shape is composed of a Geometry object and an Appearance object.\n"
       "There is an optional id to identy the shape and parent id to store shape relationship.",init<>())
-    .def( init< const RefCountPtr<Geometry> &, 
-	          optional< const RefCountPtr<Appearance> &,
-	                     uint_t, uint_t > >("Shape( geometry, appearance, id, parentId )",args( "geometry", "appearance", "id", "parentId" )) )
+    .def( init< const GeometryPtr &, 
+	            optional< const AppearancePtr &,
+	            uint_t, uint_t > >("Shape( geometry, appearance, id, parentId )",args( "geometry", "appearance", "id", "parentId" )) )
     .add_static_property("NOID",make_getter(&Shape::NOID))
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)
@@ -83,6 +86,11 @@ void export_Shape()
 	.def_pickle(sh_pickle_suite());
     ;
 
+	/*
+	boost::python::converter::intrusive_ptr_from_python<Shape>();
+    register_ptr_to_python< intrusive_ptr<Shape> >();
+	*/
+
+
   implicitly_convertible<ShapePtr, Shape3DPtr >();
-  
 }

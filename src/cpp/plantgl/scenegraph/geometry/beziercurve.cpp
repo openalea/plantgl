@@ -131,7 +131,7 @@ bool BezierCurve::Builder::isValid( ) const {
 
 BezierCurve::BezierCurve() :
     ParametricModel(),
-    __ctrlPointList(0),
+    __ctrlPointList(),
     __stride(DEFAULT_STRIDE){
 }
 
@@ -298,7 +298,7 @@ Vector3 BezierCurve::getNormalAt(real_t u) const{
 
 BezierCurve2D::Builder::Builder( ) :
     Curve2D::Builder(),
-    CtrlPointList(0),
+    CtrlPointList(),
     Degree(0),
     Stride(0){
 }
@@ -365,7 +365,7 @@ bool BezierCurve2D::Builder::isValid( ) const {
 
 BezierCurve2D::BezierCurve2D( ) :
     Curve2D(),
-    __ctrlPointList(0),
+    __ctrlPointList(),
     __stride(BezierCurve::DEFAULT_STRIDE){
     GEOM_ASSERT(isValid());
 }

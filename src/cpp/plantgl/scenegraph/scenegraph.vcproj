@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,&quot;$(BOOSTDIR)&quot;;..\.."
 				PreprocessorDefinitions="SG_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,&quot;$(BOOSTDIR)&quot;;..\.."
 				PreprocessorDefinitions="SG_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"

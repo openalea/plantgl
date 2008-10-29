@@ -54,7 +54,7 @@ IT::IT( uchar_t depth,
 Transformation3D(),
 __depth(depth),
 __transfoList(transfoList),
-__transfoNodes(0)
+__transfoNodes()
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(isValid());
@@ -336,8 +336,8 @@ IFS::IFS() :
 /////////////////////////////////////////////////////////////////////////////
   Transformed(),
   __depth(DEFAULT_DEPTH),
-  __transfoList(0),
-  __geometry(0)
+  __transfoList(),
+  __geometry()
 { }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -379,7 +379,7 @@ SceneObjectPtr IFS::copy( ) const
 {
   IFS * ptr = new IFS(*this);
   ptr->getTransfoList( ) = Transform4ArrayPtr(new Transform4Array(*__transfoList));
-  ptr->getGeometry().cast(__geometry->copy());
+  ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
   return SceneObjectPtr(ptr);
 }
 

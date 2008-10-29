@@ -422,7 +422,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_FIELD_ARRAY(obj,field,type) { \
-    uint_t _sizei = (obj->get##field().isValid()?obj->get##field()->getSize():0); \
+    uint_t _sizei = (obj->get##field()?obj->get##field()->getSize():0); \
     writeUint32(_sizei); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i)); \
@@ -662,31 +662,30 @@ bool BinaryPrinter::process(Inline * geomInline){
       MatrixTransformedPtr _s;
       GeometryPtr _transf;
       if(_trans == Vector3::ORIGIN){
-        _s = MatrixTransformedPtr(new Scaled(_scale,GeometryPtr(0)));
-        _transf.cast(_s);
+        _s = MatrixTransformedPtr(new Scaled(_scale,GeometryPtr()));
+        _transf = dynamic_pointer_cast<MatrixTransformed>(_s);
       }
       else if (_scale == Vector3(1,1,1)){
-        _s = MatrixTransformedPtr(new Translated(_trans,GeometryPtr(0)));
-        _transf.cast(_s);
+        _s = MatrixTransformedPtr(new Translated(_trans,GeometryPtr()));
+        _transf = dynamic_pointer_cast<MatrixTransformed>(_s);
       }
       else {
-        _s = MatrixTransformedPtr(new Scaled(_scale,GeometryPtr(0)));
+        _s = MatrixTransformedPtr(new Scaled(_scale,GeometryPtr()));
         GeometryPtr _s2;
-        if(!_s2.cast(_s))return false;
+        if(!(_s2 = dynamic_pointer_cast<Geometry>(_s)))return false;
         _transf = GeometryPtr(new Translated(_trans,_s2));
       }
 
       for(Scene::iterator _it = geomInline->getScene()->getBegin();_it != geomInline->getScene()->getEnd();_it++ ){
-        ShapePtr Shape;
-                Shape.cast(*_it);
-        if(Shape){
-	  DEBUG_INFO("Shape",Shape->getName(),Shape->SceneObject::getId());
+        ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
+        if(shape){
+		  DEBUG_INFO("Shape",shape->getName(),shape->SceneObject::getId());
           printType("Shape");
-          writeString(Shape->getName());
-		  writeUint32(Shape->id);
-          _s->getGeometry() = Shape->getGeometry();
+          writeString(shape->getName());
+		  writeUint32(shape->id);
+          _s->getGeometry() = shape->getGeometry();
           _transf->apply(*this);
-          Shape->appearance->apply(*this);
+          shape->appearance->apply(*this);
         }
         else {
 

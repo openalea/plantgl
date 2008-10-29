@@ -326,7 +326,7 @@ ViewRendererGL::clear()
 const PGL(BoundingBoxPtr) 
 ViewRendererGL::getGlobalBoundingBox() const
 {
-	return new PGL(BoundingBox)(Vector3(-1,-1,-1),Vector3(1,1,1));
+	return PGL(BoundingBoxPtr)(new PGL(BoundingBox)(Vector3(-1,-1,-1),Vector3(1,1,1)));
 }
 
 

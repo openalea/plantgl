@@ -71,7 +71,7 @@ using namespace std;
 
 Scene::Scene(unsigned int size ) :
   RefCountObject(),
-  __shapeList(size,Shape3DPtr(0))
+  __shapeList(size,Shape3DPtr())
 #ifdef QT_THREAD_SUPPORT
   ,  __mutex(new QMutex())
 #endif
@@ -155,8 +155,8 @@ void Scene::read( const std::string& filename,
 
 
 void Scene::save( const std::string& fname, const std::string& format)  {
-	if(format.empty())SceneFactory::get().write(fname,this);
-	else SceneFactory::get().write(fname,this,format);
+	if(format.empty())SceneFactory::get().write(fname,ScenePtr(this));
+	else SceneFactory::get().write(fname,ScenePtr(this),format);
 }
 
 void Scene::convert( const SceneObjectSymbolTable& table ){
@@ -166,9 +166,9 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
   for (SceneObjectSymbolTable::const_iterator _it = table.begin();
        _it != table.end();
        _it++){
-    if(shape.cast(_it->second)){
+	  if(shape = dynamic_pointer_cast<Shape3D>(_it->second)){
 	  added = true;
-      if(_shape.cast(_it->second)){
+      if(_shape = dynamic_pointer_cast<Shape>(_it->second)){
         if(!_shape->appearance)
           _shape->appearance = Material::DEFAULT_MATERIAL;
         add(Shape3DPtr(_shape));
@@ -181,7 +181,7 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
     for (SceneObjectSymbolTable::const_iterator _it = table.begin();
          _it != table.end();
          _it++){
-      if(_geom.cast(_it->second)){
+      if(_geom = dynamic_pointer_cast<Geometry>(_it->second)){
         add(Shape3DPtr(new Shape(_geom,Material::DEFAULT_MATERIAL,0)));
       }
     }
@@ -392,14 +392,14 @@ Scene::getShapeId(uint_t id ) const {
 					  _it != __shapeList.end(); 
 					  _it++)
 	{
-	  ShapePtr ptr = ShapePtr::Cast(*_it);
-	  if(ptr.isValid() && ptr->getId() == id){
+	  ShapePtr ptr = dynamic_pointer_cast<Shape>(*_it);
+	  if(ptr && ptr->getId() == id){
 		  unlock();
 		  return ptr;
 	  }
 	}
   unlock();
-  return 0;
+  return ShapePtr();
 }
 
 const Shape3DPtr 
@@ -409,13 +409,13 @@ Scene::getSceneObjectId(uint_t id ) const {
 					  _it != __shapeList.end(); 
 					  _it++)
 	{
-        if(_it->isValid() && (*_it)->SceneObject::getId() == id){
+        if(*_it && (*_it)->SceneObject::getId() == id){
 		  unlock();
 		  return *_it;
 	  }
 	}
   unlock();
-  return 0;
+  return Shape3DPtr();
 }
 
 /* ----------------------------------------------------------------------- */
@@ -424,7 +424,7 @@ ScenePtr Scene::copy() const {
   ScenePtr ptr(new Scene(*this));
   lock();
   for(Scene::iterator _it = ptr->getBegin() ; _it != ptr->getEnd(); _it++)
-    if ( *_it  )_it->cast((*_it)->copy());
+    if ( *_it  )*_it = dynamic_pointer_cast<Shape3D>((*_it)->copy());
   unlock();
   return ptr;
 }
@@ -492,14 +492,14 @@ void Scene::merge( const ScenePtr& scene ) {
 struct shapecmp{
     bool operator()(const Shape3DPtr& a, const Shape3DPtr& b)
     {
-        ShapePtr a1 = ShapePtr::Cast(a);
-        ShapePtr b1 = ShapePtr::Cast(b);
-        if(a1.isNull() || b1.isNull())return false;
+        ShapePtr a1 = dynamic_pointer_cast<Shape>(a);
+        ShapePtr b1 = dynamic_pointer_cast<Shape>(b);
+        if(!a1 || !b1)return false;
         else {
-            MaterialPtr ma = MaterialPtr::Cast(a1->appearance);
-            real_t ta = (ma.isNull()?0:ma->getTransparency());
-            MaterialPtr mb = MaterialPtr::Cast(b1->appearance);
-            real_t tb = (mb.isNull()?0:mb->getTransparency());
+            MaterialPtr ma = dynamic_pointer_cast<Material>(a1->appearance);
+            real_t ta = (!ma?0:ma->getTransparency());
+            MaterialPtr mb = dynamic_pointer_cast<Material>(b1->appearance);
+            real_t tb = (!mb?0:mb->getTransparency());
             return ta < tb;
         }
     }

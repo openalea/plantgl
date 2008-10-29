@@ -45,6 +45,7 @@
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_list.h>
 #include <plantgl/python/exception.h>
+#include <plantgl/python/intrusive_ptr_python_helper.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -67,6 +68,7 @@ void export_SceneObject()
 	  "It is named, has unique id and support reference counting.\n"
 	  "It can support Action application.",
 	  no_init)
+ 	.def("__del__",&pydel<SceneObject>)
     .def("getName", &SceneObject::getName, return_value_policy< copy_const_reference >())
     .def("isNamed", &SceneObject::isNamed)
     .def("setName", &SceneObject::setName)
@@ -75,6 +77,7 @@ void export_SceneObject()
     .def("apply", &SceneObject::apply)
     .def("deepcopy", &SceneObject::copy)
     .def("getId", &SceneObject::getId)
+	.def("getPglReferenceCount",&RefCountObject::getReferenceCount)
 	.enable_pickling()
     ;
 }
@@ -82,7 +85,7 @@ void export_SceneObject()
 
 ScenePtr sc_fromlist( boost::python::list l ) 
 { 
-  ScenePtr scene = new Scene();
+  ScenePtr scene = ScenePtr(new Scene());
   object iter_obj = boost::python::object( handle<>( PyObject_GetIter( l.ptr() ) ) );
   while( 1 )
   {
@@ -110,12 +113,23 @@ ScenePtr sc_fromlist( boost::python::list l )
   return scene;
 }
 
-Shape3DPtr sc_getitem( Scene* s, size_t pos )
+Shape3DPtr sc_getitem( Scene* s, int pos )
 {
-  if( pos < 0 && pos > -s->getSize() ) return s->getAt( s->getSize() + pos );
-  if (pos < s->getSize()) return s->getAt( pos );
+  // Shape3DPtr res;
+  if( pos < 0 && pos > -(int)s->getSize() ) return s->getAt( s->getSize() + pos );
+  else if (pos < s->getSize()) return s->getAt( pos );
+  else throw PythonExc_IndexError();
+  // return_py_reference(res);
+}
+
+/*
+object sc_find( Scene* s, size_t id )
+{
+  ShapePtr res = s->getShapeId( id );
+  if (res) return_py_reference(res);
   else throw PythonExc_IndexError();
 }
+*/
 
 ShapePtr sc_find( Scene* s, size_t id )
 {
@@ -131,37 +145,37 @@ Shape3DPtr sc_findSceneObject( Scene* s, size_t id )
   else throw PythonExc_IndexError();
 }
 
-void sc_setitem( Scene* s, size_t pos, Shape3DPtr v )
+void sc_setitem( Scene* s, int pos, Shape3DPtr v )
 {
-  if( pos < 0 && pos > -s->getSize() ) return s->setAt( s->getSize() + pos, v );
+  if( pos < 0 && pos > -(int)s->getSize() ) return s->setAt( s->getSize() + pos, v );
   if (pos < s->getSize()) s->setAt( pos ,v );
   else throw PythonExc_IndexError();
 }
 
-void sc_delitem( Scene* s, size_t pos )
+void sc_delitem( Scene* s, int pos )
 {
   Scene::iterator it;
-  if( pos < 0 && pos > -s->getSize() ) { it = s->getEnd()+pos;  return s->remove( it ); }
+  if( pos < 0 && pos > -(int)s->getSize() ) { it = s->getEnd()+pos;  return s->remove( it ); }
   if (pos < s->getSize()) { it = s->getBegin() + pos; s->remove(it ); } 
   else throw PythonExc_IndexError();
 }
 
-ScenePtr sc_iadd1(Scene* s ,Shape3DPtr sh){
+ScenePtr sc_iadd1(ScenePtr s ,Shape3DPtr sh){
   if(sh)s->add(sh);
   return s;
 }
 
-ScenePtr sc_iadd2(Scene* s ,Scene* s2){
+ScenePtr sc_iadd2(ScenePtr s ,ScenePtr s2){
   if(s2)s->merge(s2);
   return s;
 }
 
-ScenePtr sc_iadd3(Scene* s ,GeometryPtr sh){
+ScenePtr sc_iadd3(ScenePtr s ,GeometryPtr sh){
   if(sh)s->add(Shape3DPtr(new Shape(sh,Material::DEFAULT_MATERIAL)));
   return s;
 }
 
-ScenePtr sc_add(Scene* s ,Scene* s2){
+ScenePtr sc_add(ScenePtr s ,ScenePtr s2){
   if(s && s2){
     ScenePtr s3 = ScenePtr(new Scene(*s));
     s3->merge(s2);

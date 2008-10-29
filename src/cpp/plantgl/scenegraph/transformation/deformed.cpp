@@ -89,7 +89,7 @@ bool Deformed::Builder::DefValid( ) const {
 
 Deformed::Deformed() :
   Transformed(),
-  __primitive(0) {
+  __primitive() {
 }
 
 Deformed::Deformed( const PrimitivePtr& primitive ) :

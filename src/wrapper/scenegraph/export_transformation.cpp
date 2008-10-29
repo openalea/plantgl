@@ -221,7 +221,7 @@ void scale( Transform4& t, const TOOLS(Vector3)& v ) { t.scale(v); }
 void rotate_t4( Transform4& t, const TOOLS(Matrix3)& v ) { t.rotate(v); }
 
 Transform4Ptr t4_default()
-{ return new Transform4();}
+{ return Transform4Ptr(new Transform4());}
 
 std::string t4_str( Transform4* t )
 {

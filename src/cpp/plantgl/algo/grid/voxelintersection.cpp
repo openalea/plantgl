@@ -68,7 +68,7 @@ using namespace std;
       RayIntersection rintersect(__bboxComputer.getDiscretizer()); \
       rintersect.setRay(ray); \
       if(!obj->apply(rintersect))return false; \
-      else if ( rintersect.getIntersection().isValid() && \
+      else if ( rintersect.getIntersection() && \
                 rintersect.getIntersection()->getSize() % 2 == 1 ){ \
         __filled = true; \
         return true; \
@@ -85,7 +85,7 @@ using namespace std;
 #define GEOM_INTERSECTION_TRANSF(obj)\
   GEOM_ASSERT(obj); \
   Matrix4TransformationPtr mat; \
-  if(mat.cast(obj->getTransformation())){ \
+  if(mat = dynamic_pointer_cast<Matrix4Transformation>(obj->getTransformation())){ \
    __transformstack.push_back(mat->getMatrix()); \
    return obj->getGeometry()->apply(*this); } \
   else return false; \
@@ -145,13 +145,13 @@ VoxelIntersection::setVoxel(Voxel * voxel){
 /* ----------------------------------------------------------------------- */
 #define GEOM_TEST_CLASS(obj,result) \
         PrimitivePtr primitive; \
-        if(!primitive.cast(obj)){ \
+        if(!(primitive = dynamic_pointer_cast<Primitive>(obj))){ \
             GroupPtr group; \
-            if(!group.cast(obj)){ \
+            if(!(group= dynamic_pointer_cast<Group>(obj))){ \
               ScaledPtr sc; \
-              if(!sc.cast(obj)) { \
+              if(!(sc= dynamic_pointer_cast<Scaled>(obj))) { \
                TranslatedPtr tr; \
-               if(!tr.cast(obj)){ \
+               if(!(tr= dynamic_pointer_cast<Translated>(obj))){ \
                  if(!obj->apply(__bboxComputer.getDiscretizer())){ \
                    result = false; \
                    cerr << "Error with discretizer !" << endl; \
@@ -742,7 +742,7 @@ GEOM_TRACE("process IFS");
 
   uint_t size= __transformstack.size();
 
-  ITPtr transfos = ITPtr::Cast( ifs->getTransformation() );
+  ITPtr transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);

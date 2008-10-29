@@ -83,12 +83,12 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 	    b.FileName = &file;
 	    if (b.isValid()){
 			GeometryPtr s(new AmapSymbol(file));
-			result->add(Shape3DPtr(new Shape(s,AppearancePtr(0),id)));
+			result->add(Shape3DPtr(new Shape(s,AppearancePtr(),id)));
 	    }
 		else { 		
 		  (*SceneObject::warningStream) << "*** Warning : Cannot find symbol " << name << " in " << file << endl;
 		  (*SceneObject::warningStream) << "*** Warning : Default Geometry will be used."<< endl;
-			result->add(Shape3DPtr(new Shape(GeometryPtr(0),AppearancePtr(0),id)));
+			result->add(Shape3DPtr(new Shape(GeometryPtr(),AppearancePtr(),id)));
 		}
 
 	}
@@ -222,7 +222,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 	}
 	return result;
     }
-    else return ScenePtr(0);
+    else return ScenePtr();
 }
 
 
@@ -248,7 +248,7 @@ bool Dtafile::isValid( ) const {
 Dtafile::Dtafile( const string& fileName,  const string& __symbol_path ) :
     _fileName(fileName),
     _symbol_path(__symbol_path),
-    _scene(0),
+    _scene(),
     linear(false),
     symbolTable(0){
 
@@ -298,10 +298,10 @@ AmapSymbolPtr Dtafile::getSymbol( const uint_t id) const {
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){
-      if(shape.cast(*_it).isValid() && (int)shape->getId() == Id)
-        return AmapSymbolPtr::Cast(shape->geometry);
+      if((shape = dynamic_pointer_cast<Shape>(*_it)) && (int)shape->getId() == Id)
+        return AmapSymbolPtr(dynamic_pointer_cast<AmapSymbol>(shape->geometry));
     }
-    return AmapSymbolPtr(0);
+    return AmapSymbolPtr();
 }
 
 MaterialPtr Dtafile::getMaterial( const uint_t id) const {
@@ -311,10 +311,10 @@ MaterialPtr Dtafile::getMaterial( const uint_t id) const {
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){
-        if(shape.cast(*_it).isValid() && (int)shape->getId() == Id)
-          return MaterialPtr::Cast(shape->appearance);
+        if((shape = dynamic_pointer_cast<Shape>(*_it)) && (int)shape->getId() == Id)
+          return MaterialPtr(dynamic_pointer_cast<Material>(shape->appearance));
     }
-    return MaterialPtr(0);
+    return MaterialPtr();
 };
 
 const ShapePtr Dtafile::getdtainfo( const uint_t id) const {
@@ -324,10 +324,10 @@ const ShapePtr Dtafile::getdtainfo( const uint_t id) const {
     for(Scene::iterator _it = _scene->getBegin();
         _it != _scene->getEnd();
         _it++){
-      if(shape.cast(*_it).isValid() && (int)shape->getId() == Id)
+      if((shape = dynamic_pointer_cast<Shape>(*_it)) && (int)shape->getId() == Id)
         return shape;
     }
-    return ShapePtr(0);
+    return ShapePtr();
 };
 
 
@@ -444,8 +444,8 @@ ostream& Dtafile::writeAMLCode(ostream& stream){
         stream << "#  Function that return the name of the appearance" << endl;
         stream << "#  associate to the entity _e." << endl;
         stream << "appName(_e) = If(step(_e) < "<< symbolTable->begin()->first << ") Then ";
-        AppearancePtr _app;
-        if(_app.cast(getMaterial(symbolTable->begin()->first)))
+        AppearancePtr _app = dynamic_pointer_cast<Appearance>(getMaterial(symbolTable->begin()->first));
+        if(_app)
             stream << _app->getName().c_str() << " \\" << endl;
         else stream << "\"\" \\" << endl;
 
@@ -503,7 +503,7 @@ ostream& Dtafile::writeAMLCode(ostream& stream){
         _it != _scene->getEnd();
         _it++){
         nb++;
-        if(shape.cast(*_it)){
+        if((shape = dynamic_pointer_cast<Shape>(*_it))){
           stream << shape->getId();
           if(nb!=itf)stream << ",";
           stream << " \\" << endl;
@@ -517,7 +517,7 @@ ostream& Dtafile::writeAMLCode(ostream& stream){
     for(Scene::iterator _it2 = _scene->getBegin();
         _it2 != _scene->getEnd();
         _it2++){
-      if(shape.cast(*_it2)){
+      if((shape= dynamic_pointer_cast<Shape>(*_it2))){
         nb++;
         stream << "[";
         if(shape->getGeometry())stream <<shape->getGeometry()->getName().c_str() << ",";

@@ -101,7 +101,7 @@ public:
       - \e points must contain at least 2 points.
       \post
       - \e self is valid. */
-  Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = 0 );
+  Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = Color4ArrayPtr() );
 
   /// Destructor
   virtual ~Polyline( );

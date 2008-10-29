@@ -65,12 +65,12 @@ SceneObjectPtr QuadSet::Builder::build( ) const {
   if (isValid()){
 	QuadSet * q = new QuadSet(*PointList,
 									  *IndexList,
-									  NormalList?*NormalList:NULL,
-									  NormalIndexList?*NormalIndexList:NULL,
-									  ColorList?*ColorList:NULL,
-									  ColorIndexList?*ColorIndexList:NULL,
-									  TexCoordList?*TexCoordList:NULL,
-									  TexCoordIndexList?*TexCoordIndexList:NULL,
+									  NormalList?*NormalList:Point3ArrayPtr(),
+									  NormalIndexList?*NormalIndexList:Index4ArrayPtr(),
+									  ColorList?*ColorList:Color4ArrayPtr(),
+									  ColorIndexList?*ColorIndexList:Index4ArrayPtr(),
+									  TexCoordList?*TexCoordList:Point2ArrayPtr(),
+									  TexCoordIndexList?*TexCoordIndexList:Index4ArrayPtr(),
 									  NormalPerVertex? *NormalPerVertex : DEFAULT_NORMALPERVERTEX,
 									  ColorPerVertex? *ColorPerVertex: DEFAULT_COLORPERVERTEX,
 									  CCW ? *CCW : DEFAULT_CCW,
@@ -272,10 +272,10 @@ bool QuadSet::Builder::isValid( ) const {
 
 QuadSet::QuadSet() :
   Mesh(),
-    __indexList(0),
-	__normalIndexList(0),
-	__texCoordIndexList(0),
-	__colorIndexList(0){
+    __indexList(),
+	__normalIndexList(),
+	__texCoordIndexList(),
+	__colorIndexList(){
 }
 
 QuadSet::QuadSet( const Point3ArrayPtr& points,
@@ -286,9 +286,9 @@ QuadSet::QuadSet( const Point3ArrayPtr& points,
 				  const PolylinePtr& skeleton ) :
   Mesh(points,normalPerVertex,ccw,solid,skeleton),
     __indexList(indices),
-	__normalIndexList(0),
-	__texCoordIndexList(0),
-	__colorIndexList(0){
+	__normalIndexList(),
+	__texCoordIndexList(),
+	__colorIndexList(){
     GEOM_ASSERT(isValid());
 }
 
@@ -326,7 +326,7 @@ QuadSet::copy() const{
   QuadSet * ptr = new QuadSet(*this);
   if(__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*__pointList));
   if(__indexList)ptr->getIndexList() = Index4ArrayPtr(new Index4Array(*__indexList));
-  if(__skeleton)ptr->getSkeleton().cast(__skeleton->copy());
+  if(__skeleton)ptr->getSkeleton()= dynamic_pointer_cast<Polyline>(__skeleton->copy());
   if(__normalList)ptr->getNormalList() = Point3ArrayPtr(new Point3Array(*__normalList));
   if(__texCoordList)ptr->getTexCoordList() = Point2ArrayPtr(new Point2Array(*__texCoordList));
   if(__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*__colorList));
@@ -359,7 +359,7 @@ QuadSet::transform( const Transformation3DPtr& transformation ) const {
 
   PolylinePtr _tSkeleton = __skeleton;
   if (_tSkeleton)
-    _tSkeleton.cast(__skeleton->transform(transformation));
+    _tSkeleton = dynamic_pointer_cast<Polyline>(__skeleton->transform(transformation));
 
   Point3ArrayPtr _n = __normalList;
   if(_n){
@@ -495,20 +495,20 @@ QuadSet::getIndexListSize( ) const {
 
 
 const Vector3& QuadSet::getFacePointAt( uint_t i, uint_t j ) const {
-  GEOM_ASSERT(__pointList.isValid());
+  GEOM_ASSERT(__pointList);
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 4);
   return __pointList->getAt(__indexList->getAt(i).getAt(j));
 }
 
 const Vector3& QuadSet::getNormalAt( uint_t i ) const {
-  GEOM_ASSERT(__normalList.isValid());
+  GEOM_ASSERT(__normalList);
   GEOM_ASSERT(i < __normalList->getSize());
   return __normalList->getAt(i);
 }
 
 const Vector3& QuadSet::getNormalAt( uint_t i, uint_t j )  const {
-  GEOM_ASSERT(__normalList.isValid());
+  GEOM_ASSERT(__normalList);
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 4);
   if( __normalIndexList)
@@ -518,13 +518,13 @@ const Vector3& QuadSet::getNormalAt( uint_t i, uint_t j )  const {
 }
 
 const Color4& QuadSet::getColorAt( uint_t i ) const {
-  GEOM_ASSERT(__colorList.isValid());
+  GEOM_ASSERT(__colorList);
   GEOM_ASSERT(i < __indexList->getSize());
   return __colorList->getAt(i);
 }
 
 const Color4& QuadSet::getColorAt( uint_t i, uint_t j ) const {
-  GEOM_ASSERT(__colorList.isValid());
+  GEOM_ASSERT(__colorList.);
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 4);
   if (__colorIndexList)
@@ -534,13 +534,13 @@ const Color4& QuadSet::getColorAt( uint_t i, uint_t j ) const {
 }
 
 const Vector2& QuadSet::getTexCoordAt( uint_t i ) const {
-  GEOM_ASSERT(__texCoordList.isValid());
+  GEOM_ASSERT(__texCoordList);
   GEOM_ASSERT(i < __texCoordList->getSize());
   return __texCoordList->getAt(i);
 }
 
 const Vector2& QuadSet::getTexCoordAt( uint_t i, uint_t j ) const {
-  GEOM_ASSERT(__texCoordList.isValid());
+  GEOM_ASSERT(__texCoordList);
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < 4);
   if (__texCoordIndexList)

@@ -290,6 +290,8 @@ protected:
   QGLWidget * __glframe;
 
 private:
+  template<class T> 
+  bool discretize_and_render(T * geom);
 
   bool __currentdisplaylist;
 };

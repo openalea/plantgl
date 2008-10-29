@@ -120,7 +120,7 @@ bool ElevationGrid::Builder::isValid( ) const {
 
 ElevationGrid::ElevationGrid( ) :
   Patch(),
-  __heightList(0),
+  __heightList(),
   __xSpacing(DEFAULT_X_SPACING),
   __ySpacing(DEFAULT_Y_SPACING) {
 }

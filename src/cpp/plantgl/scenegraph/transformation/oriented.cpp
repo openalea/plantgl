@@ -267,7 +267,7 @@ bool Oriented::isValid( ) const {
 
 SceneObjectPtr Oriented::copy() const {
   Oriented * ptr = new Oriented(*this);
-  if(__geometry)ptr->getGeometry().cast(__geometry->copy());
+  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
   return SceneObjectPtr(ptr);
 }
 

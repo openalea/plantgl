@@ -479,7 +479,7 @@ bool BBoxComputer::process( Group * group ) {
   do {
 	_group->getAt(_first)->apply(*this);
     ++_first;
-  } while(__bbox.isNull() && _first <_size);
+  } while(!__bbox && _first <_size);
   if(!__bbox)return false;
 
   BoundingBoxPtr _bbox (new BoundingBox(*__bbox));
@@ -505,8 +505,7 @@ bool BBoxComputer::process( IFS * ifs ) {
 
   GEOM_BBOXCOMPUTER_CHECK_CACHE(ifs);
 
-  ITPtr transfos;
-  transfos.cast( ifs->getTransformation() );
+  ITPtr transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
@@ -605,8 +604,7 @@ bool BBoxComputer::process( Oriented * oriented ) {
   if(!__bbox) return false;
 	
   // We retrieve the matrix transformation attached to axisRotated
-  Matrix4TransformationPtr _transformation;
-  _transformation.cast(oriented->getTransformation());
+  Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(oriented->getTransformation());
   GEOM_ASSERT(_transformation);
   Matrix4 _matrix = _transformation->getMatrix();
 
@@ -789,8 +787,7 @@ bool BBoxComputer::process( Scaled * scaled ) {
   if(!__bbox) return false;
 	
   // We retrieve the matrix transformation attached to axisRotated
-  Matrix4TransformationPtr _transformation;
-  _transformation.cast(scaled->getTransformation());
+  Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(scaled->getTransformation());
   GEOM_ASSERT(_transformation);
   Matrix4 _matrix = _transformation->getMatrix();
 
@@ -1056,7 +1053,7 @@ bool BBoxComputer::process(const ScenePtr& scene){
 
     // Computes the global bounding box
     BoundingBoxPtr _bbox = BoundingBoxPtr();
-    if (scene.isValid() && (! scene->isEmpty())) {
+    if (scene && (! scene->isEmpty())) {
         Scene::const_iterator _i = scene->getBegin();
         while ((_i != scene->getEnd())&&(!((*(_i++))->applyGeometryOnly(*this))));
         if(__bbox){

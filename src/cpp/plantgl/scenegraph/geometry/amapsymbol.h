@@ -137,7 +137,7 @@ public:
 	return __texCoord3List; }
 
   bool hasTexCoord3List() const {
-	return __texCoord3List.isValid(); }
+	return (__texCoord3List); }
 
   protected:
 

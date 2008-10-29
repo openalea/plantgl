@@ -62,7 +62,7 @@ class MyWidget(QWidget):
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import openalea.plantgl_d.all as pgl
+import openalea.plantgl.all as pgl
 import code
 
 def test():

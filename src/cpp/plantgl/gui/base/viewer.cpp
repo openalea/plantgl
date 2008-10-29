@@ -829,7 +829,11 @@ QMessageBox * ViewerMessageBox = 0;
 
 void Viewer::closeEvent ( QCloseEvent * e)
 {
-  if(ViewerMessageBox&&ViewerMessageBox->isVisible())ViewerMessageBox->close();
+  if(ViewerMessageBox&&ViewerMessageBox->isVisible()){
+		ViewerMessageBox->close();
+		// in case python thread is locked
+		send_lock_mutex.unlock();
+  }
   saveConfig();
   __ErrorDialog->registerQtMsg(false);
   e->accept();

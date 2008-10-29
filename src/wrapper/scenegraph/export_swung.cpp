@@ -76,9 +76,9 @@ DEF_POINTEE(Swung)
 SwungPtr make_swung( boost::python::list profiles, boost::python::list angles, 
 		     uchar_t slices, bool ccw, uint_t degree, uint_t stride ) 
 { 
-  Curve2DArrayPtr profilearray= extract_pgllist<Curve2DArray>(profiles)();
-  RealArrayPtr anglesarray= extract_pgllist<RealArray>(angles)();
-  return new Swung(profilearray, anglesarray, slices, ccw, degree, stride);
+  Curve2DArrayPtr profilearray= Curve2DArrayPtr(extract_pgllist<Curve2DArray>(profiles)());
+  RealArrayPtr anglesarray= RealArrayPtr(extract_pgllist<RealArray>(angles)());
+  return SwungPtr(new Swung(profilearray, anglesarray, slices, ccw, degree, stride));
 }
 
 SwungPtr make_swung5( boost::python::list profiles, boost::python::list angles, 

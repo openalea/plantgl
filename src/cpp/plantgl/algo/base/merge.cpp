@@ -46,14 +46,14 @@ Merge::Merge( Discretizer& discretizer,
 /////////////////////////////////////////////////////////////////////////////
 {
   if( !init() )
-    __model= ExplicitModelPtr(0);
+    __model= ExplicitModelPtr();
 }
 
 void Merge::setModel(const ExplicitModelPtr& model)
 {
   __model = model;
   if( !init() )
-    __model= ExplicitModelPtr(0);
+    __model= ExplicitModelPtr();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -76,20 +76,20 @@ bool Merge::init()
 	  // modification of others objects
 	  if( __type == TRIANGLE_SET )
 	  {
-		  TriangleSetPtr m = TriangleSetPtr::Cast(__model);
+		  TriangleSetPtr m = dynamic_pointer_cast<TriangleSet>(__model);
 		  Index3ArrayPtr index(new Index3Array(*(m->getIndexList())));
 		  m->getIndexList()= index;
 	  }
 	  else
 		  if( __type == QUAD_SET )
 		  {
-			  QuadSetPtr m = QuadSetPtr::Cast(__model);
+			  QuadSetPtr m = dynamic_pointer_cast<QuadSet>(__model);
 			  Index4ArrayPtr index(new Index4Array(*(m->getIndexList())));
 			  m->getIndexList()= index;
 		  }
 		  else
 		  {
-			  FaceSetPtr m = FaceSetPtr::Cast(__model);
+			  FaceSetPtr m = dynamic_pointer_cast<FaceSet>(__model);
 			  IndexArrayPtr index(new IndexArray(*(m->getIndexList())));
 			  m->getIndexList()= index;
 		  }
@@ -103,28 +103,28 @@ Merge::MODEL_TYPE Merge::getType( const ExplicitModelPtr& model )
 {
   MODEL_TYPE type= OTHER;
 
-  PointSetPtr pointSet;
-  if( pointSet.cast(model) )
+  PointSetPtr pointSet = dynamic_pointer_cast<PointSet>(model);
+  if( pointSet )
     type= POINT_SET;
   else
     {
-    PolylinePtr polyline;
-    if( polyline.cast(model) )
+    PolylinePtr polyline = dynamic_pointer_cast<Polyline>(model);
+    if( polyline )
       type= POLYLINE;
     else
       {
-      FaceSetPtr faceset;
-      if( faceset.cast(model) )
+      FaceSetPtr faceset = dynamic_pointer_cast<FaceSet>(model);
+      if( faceset )
         type= FACE_SET;
       else
         {
-        QuadSetPtr quadset;
-        if( quadset.cast(model) )
+        QuadSetPtr quadset = dynamic_pointer_cast<QuadSet>(model);
+        if( quadset )
           type= QUAD_SET;
         else
           {
-          TriangleSetPtr triangleset;
-          if( triangleset.cast(model) )
+          TriangleSetPtr triangleset = dynamic_pointer_cast<TriangleSet>(model);
+          if( triangleset )
             type= TRIANGLE_SET;
           }
         }
@@ -141,7 +141,7 @@ void Merge::setIsoModel( uint_t nbObjects )
 GEOM_TRACE("setIsoModel "<<nbObjects);
 
   __isoModel= true;
-  if( (__model.isValid()) && __type != OTHER )
+  if( (__model ) && __type != OTHER )
     {
     Point3ArrayPtr& points= __model->getPointList();
     uint_t sizeP= points->getSize();
@@ -149,22 +149,22 @@ GEOM_TRACE("setIsoModel "<<nbObjects);
 
     if( __type != POLYLINE && __type != POINT_SET )
       {
-      uint_t sizeI= MeshPtr::Cast(__model)->getIndexListSize();
+      uint_t sizeI= dynamic_pointer_cast<Mesh>(__model)->getIndexListSize();
       sizeI*= nbObjects;
       if( __type == TRIANGLE_SET )
         {
-        TriangleSetPtr m = TriangleSetPtr::Cast(__model);
+        TriangleSetPtr m = dynamic_pointer_cast<TriangleSet>(__model);
         m->getIndexList()->reserve(sizeI);
         }
       else
       if( __type == QUAD_SET )
         {
-        QuadSetPtr m = QuadSetPtr::Cast(__model);
+        QuadSetPtr m = dynamic_pointer_cast<QuadSet>(__model);
         m->getIndexList()->reserve(sizeI);
         }
       else
         {
-        FaceSetPtr m = FaceSetPtr::Cast(__model);
+        FaceSetPtr m = dynamic_pointer_cast<FaceSet>(__model);
         m->getIndexList()->reserve(sizeI);
         }
       }
@@ -200,31 +200,31 @@ GEOM_TRACE("apply ExplicitModelPtr");
     {
     case POINT_SET:
       {
-      PointSetPtr pointSet = PointSetPtr::Cast(geom);
+      PointSetPtr pointSet = dynamic_pointer_cast<PointSet>(geom);
       GEOM_ASSERT(pointSet);
       return apply(*pointSet);
       }
     case POLYLINE:
       {
-      PolylinePtr polyline = PolylinePtr::Cast(geom);
+      PolylinePtr polyline = dynamic_pointer_cast<Polyline>(geom);
       GEOM_ASSERT(polyline);
       return apply(*polyline);
       }
     case FACE_SET:
       {
-      FaceSetPtr faceset = FaceSetPtr::Cast(geom);
+      FaceSetPtr faceset = dynamic_pointer_cast<FaceSet>(geom);
       GEOM_ASSERT(faceset);
       return apply(*faceset);
       }
     case QUAD_SET:
       {
-      QuadSetPtr quadset = QuadSetPtr::Cast(geom);
+      QuadSetPtr quadset = dynamic_pointer_cast<QuadSet>(geom);
       GEOM_ASSERT(quadset);
       return apply(*quadset);
       }
     case TRIANGLE_SET:
       {
-      TriangleSetPtr triangleset = TriangleSetPtr::Cast(geom);
+      TriangleSetPtr triangleset = dynamic_pointer_cast<TriangleSet>(geom);
       GEOM_ASSERT(triangleset);
       return apply(*triangleset);
       }
@@ -272,7 +272,7 @@ if( __type != QUAD_SET ){
 	FaceSet fs( geom );
 	if(__type == FACE_SET) return apply(fs);
 	else if(__type == TRIANGLE_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*TriangleSetPtr::Cast(__model))));
+		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<TriangleSet>(__model))));
 		return apply(fs);
 	}
     else return false;
@@ -284,7 +284,7 @@ if( __type != QUAD_SET ){
 
   points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
 
-  QuadSetPtr model = QuadSetPtr::Cast(__model);
+  QuadSetPtr model = dynamic_pointer_cast<QuadSet>(__model);
   GEOM_ASSERT(model);
 
   checkNormals(geom);
@@ -329,7 +329,7 @@ GEOM_TRACE("apply TriangleSet");
 	FaceSet fs( geom );
 	if(__type == FACE_SET) return apply(fs);
 	else if(__type == QUAD_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*QuadSetPtr::Cast(__model))));
+		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<QuadSet>(__model))));
 		return apply(fs);
 	}
     else return false;
@@ -341,7 +341,7 @@ GEOM_TRACE("apply TriangleSet");
 
   points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
 
-  TriangleSetPtr model = TriangleSetPtr::Cast(__model);
+  TriangleSetPtr model = dynamic_pointer_cast<TriangleSet>(__model);
   GEOM_ASSERT(model);
 
   checkNormals(geom);
@@ -377,10 +377,10 @@ bool Merge::apply( FaceSet& geom )
   GEOM_TRACE("apply FaceSet");
   if( __type != FACE_SET ){
 	if(__type == QUAD_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*QuadSetPtr::Cast(__model))));
+		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<QuadSet>(__model))));
 	}
 	else if(__type == TRIANGLE_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*TriangleSetPtr::Cast(__model))));
+		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<TriangleSet>(__model))));
 	}
     else return false;
   }
@@ -391,7 +391,7 @@ bool Merge::apply( FaceSet& geom )
 
   points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
 
-  FaceSetPtr model = FaceSetPtr::Cast(__model);
+  FaceSetPtr model = dynamic_pointer_cast<FaceSet>(__model);
   GEOM_ASSERT(model);
 
   checkNormals(geom);
@@ -427,7 +427,7 @@ bool Merge::apply( FaceSet& geom )
 void Merge::checkNormals(Mesh& geom)
 /////////////////////////////////////////////////////////////////////////////
 {
-  MeshPtr model = MeshPtr::Cast(__model);
+  MeshPtr model = dynamic_pointer_cast<Mesh>(__model);
   if(model->hasNormalList() && geom.hasNormalList()){
 	if(model->getNormalPerVertex() != geom.getNormalPerVertex()){
 		if(!model->getNormalPerVertex()){

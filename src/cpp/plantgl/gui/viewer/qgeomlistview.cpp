@@ -135,7 +135,7 @@ void GeomListViewBuilder::init( ){
 
 /* ----------------------------------------------------------------------- */
 
-void GeomListViewBuilder::addNode(const SceneObjectPtr& node,
+void GeomListViewBuilder::addNode(const SceneObject * node,
 								  const QString& type,
 								  int pixmaptouse){
 
@@ -255,7 +255,7 @@ void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& valu
 	pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
-    QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32(),8,16,QChar('0')):"NULL");
+    QString val = "ptr="+(value?QString("0x%1").arg((uint_t)value.get(),8,16,QChar('0')):"NULL");
     // QString val = "ptr="+(!value.isNull()?QString("0x%1").arg(value.toUint32()):"NULL");
 	addAttrPtr(name, val,"Transform4");
 
@@ -286,11 +286,11 @@ template <class T>
 void GeomListViewBuilder::addArray(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
-			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
-//			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32()):"NULL"),
+			 "ptr="+(_array?QString("0x%1").arg((uint_t)_array.get(),8,16,QChar('0')):"NULL"),
+//			 "ptr="+(_array?QString("0x%1").arg((uint_t)_array.get()):"NULL"),
 			 "Array<"+type+">["+QString::number(_array?_array->getSize():0)+']');
 
-  if(__fullmode && _array.isValid()){ 
+  if(__fullmode && _array){ 
 	  pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
@@ -305,11 +305,11 @@ void GeomListViewBuilder::addArray(const QString& name, const T& _array, const Q
 void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr& _array)
 {
   addAttrPtr(name,
-			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32(),8,16,QChar('0')):"ptr=NULL"),
-//			 (!_array.isNull()?QString("ptr=0x%1").arg(_array.toUint32()):"ptr=NULL"),
+			 (_array?QString("ptr=0x%1").arg((uint_t)_array.get(),8,16,QChar('0')):"ptr=NULL"),
+//			 (_array?QString("ptr=0x%1").arg((uint_t)_array.get()):"ptr=NULL"),
 			 "Array<Angle>["+QString::number(_array?_array->getSize():0)+']');
 
-  if(__fullmode && _array.isValid()){ 
+  if(__fullmode && _array){ 
 	  pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
@@ -325,11 +325,11 @@ template <class T>
 void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, const QString& type)
 {
   addAttrPtr(name,
-			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32(),8,16,QChar('0')):"NULL"),
-//			 "ptr="+(!_array.isNull()?QString("0x%1").arg(_array.toUint32()):"NULL"),
+			 "ptr="+(_array?QString("0x%1").arg((uint_t)_array.get(),8,16,QChar('0')):"NULL"),
+//			 "ptr="+(_array?QString("0x%1").arg((uint_t)_array.get()):"NULL"),
 			 "Array<"+type+">["+QString::number(_array?_array->getSize():0)+']');
 
-  if( _array.isValid()){ 
+  if( _array){ 
 	pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
@@ -346,12 +346,12 @@ template <class T>
 void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const QString& type)
 {
   addAttrPtr(name,
-			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32(),8,16,QChar('0')):"NULL"),
-//			 "ptr="+(!_matrix.isNull()?QString("0x%1").arg(_matrix.toUint32()):"NULL"),
+			 "ptr="+(_matrix?QString("0x%1").arg((uint_t)_matrix.get(),8,16,QChar('0')):"NULL"),
+//			 "ptr="+(_matrix?QString("0x%1").arg((uint_t)_matrix.get()):"NULL"),
 			 "Matrix<"+type+">["+QString::number(_matrix?_matrix->getColsSize():0)+','+
 			 QString::number(_matrix?_matrix->getRowsSize():0)+']');
 
-  if(__fullmode && _matrix.isValid()){ 
+  if(__fullmode && _matrix){ 
 	  pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
@@ -370,13 +370,13 @@ void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const
 void GeomListViewBuilder::addAttrNode(const QString& name,
 								     const SceneObjectPtr& obj,
 									 const QString& type ){
-   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32(),8,16,QChar('0')):"NULL");
-//   QString value = "ptr="+(!obj.isNull()?QString("0x%1").arg(obj.toUint32()):"NULL");
+   QString value = "ptr="+(obj?QString("0x%1").arg((uint_t)obj.get(),8,16,QChar('0')):"NULL");
+//   QString value = "ptr="+(obj?QString("0x%1").arg((uint_t)obj.get()):"NULL");
    pushItems();
    addAttrPtr(name,value,type);
    __currentNodeItem = __currentAttrItem;
    __currentAttrItem = NULL;
-   if(!obj.isNull()){
+   if(obj){
 	obj->apply(*this);
    }
    popItems();

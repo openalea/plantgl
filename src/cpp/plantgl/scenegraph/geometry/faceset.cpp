@@ -66,12 +66,12 @@ SceneObjectPtr FaceSet::Builder::build( ) const {
   if (isValid()){
 	FaceSet * f = new FaceSet(*PointList,
 							  *IndexList,
-							  NormalList?*NormalList:NULL,
-							  NormalIndexList?*NormalIndexList:NULL,
-							  ColorList?*ColorList:NULL,
-							  ColorIndexList?*ColorIndexList:NULL,
-							  TexCoordList?*TexCoordList:NULL,
-							  TexCoordIndexList?*TexCoordIndexList:NULL,
+							  NormalList?*NormalList:Point3ArrayPtr(),
+							  NormalIndexList?*NormalIndexList:IndexArrayPtr(),
+							  ColorList?*ColorList:Color4ArrayPtr(),
+							  ColorIndexList?*ColorIndexList:IndexArrayPtr(),
+							  TexCoordList?*TexCoordList:Point2ArrayPtr(),
+							  TexCoordIndexList?*TexCoordIndexList:IndexArrayPtr(),
 							  NormalPerVertex? *NormalPerVertex : DEFAULT_NORMALPERVERTEX,
 							  ColorPerVertex? *ColorPerVertex: DEFAULT_COLORPERVERTEX,
 							  CCW ? *CCW : DEFAULT_CCW,
@@ -303,10 +303,10 @@ bool FaceSet::Builder::FaceSetValid( ) const {
 
 FaceSet::FaceSet() :
   Mesh(),
-    __indexList(0),
-	__normalIndexList(0),
-	__texCoordIndexList(0),
-	__colorIndexList(0) {
+    __indexList(),
+	__normalIndexList(),
+	__texCoordIndexList(),
+	__colorIndexList() {
 }
 
 FaceSet::FaceSet( const Point3ArrayPtr& points,
@@ -344,21 +344,29 @@ FaceSet::FaceSet( const Point3ArrayPtr& points,
 /** Constructs a FaceSet from a TriangleSet.  */
 FaceSet::FaceSet(const TriangleSet& obj) :
   Mesh(obj),
-  __indexList(obj.getIndexList()?new IndexArray(*obj.getIndexList()):0),
-  __normalIndexList(obj.getNormalIndexList()?new IndexArray(*obj.getNormalIndexList()):0),
-  __colorIndexList(obj.getColorIndexList()?new IndexArray(*obj.getColorIndexList()):0),
-  __texCoordIndexList(obj.getTexCoordIndexList()?new IndexArray(*obj.getTexCoordIndexList()):0) {
+  __indexList( ),
+  __normalIndexList(),
+  __colorIndexList(),
+  __texCoordIndexList() {
+  if( obj.getIndexList()) __indexList = IndexArrayPtr(new IndexArray(*obj.getIndexList())) ;
+  if( obj.getNormalIndexList()) __normalIndexList = IndexArrayPtr(new IndexArray(*obj.getNormalIndexList())) ;
+  if( obj.getColorIndexList()) __colorIndexList = IndexArrayPtr(new IndexArray(*obj.getColorIndexList())) ;
+  if( obj.getTexCoordIndexList()) __texCoordIndexList = IndexArrayPtr(new IndexArray(*obj.getTexCoordIndexList())) ;
   GEOM_ASSERT(isValid());
 }
 
   /** Constructs a FaceSet from a TriangleSet.  */
 FaceSet::FaceSet(const QuadSet& obj)  :
   Mesh(obj),
-  __indexList(obj.getIndexList()?new IndexArray(*obj.getIndexList()):0),
-  __normalIndexList(obj.getNormalIndexList()?new IndexArray(*obj.getNormalIndexList()):0),
-  __colorIndexList(obj.getColorIndexList()?new IndexArray(*obj.getColorIndexList()):0),
-  __texCoordIndexList(obj.getTexCoordIndexList()?new IndexArray(*obj.getTexCoordIndexList()):0) {
+  __indexList(),
+  __normalIndexList(),
+  __colorIndexList(),
+  __texCoordIndexList() {
   GEOM_ASSERT(isValid());
+  if( obj.getIndexList()) __indexList = IndexArrayPtr(new IndexArray(*obj.getIndexList())) ;
+  if( obj.getNormalIndexList()) __normalIndexList = IndexArrayPtr(new IndexArray(*obj.getNormalIndexList())) ;
+  if( obj.getColorIndexList()) __colorIndexList = IndexArrayPtr(new IndexArray(*obj.getColorIndexList())) ;
+  if( obj.getTexCoordIndexList()) __texCoordIndexList = IndexArrayPtr(new IndexArray(*obj.getTexCoordIndexList())) ;
 }
 
 
@@ -390,7 +398,7 @@ FaceSet::copy() const{
   FaceSetPtr ptr(new FaceSet(*this));
   if(__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*__pointList));
   if(__indexList)ptr->getIndexList() = IndexArrayPtr(new IndexArray(*__indexList));
-  if(__skeleton)ptr->getSkeleton().cast(__skeleton->copy());
+  if(__skeleton)ptr->getSkeleton()= dynamic_pointer_cast<Polyline>(__skeleton->copy());
   if(__normalList)ptr->getNormalList() = Point3ArrayPtr(new Point3Array(*__normalList));
   if(__texCoordList)ptr->getTexCoordList() = Point2ArrayPtr(new Point2Array(*__texCoordList));
   if(__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*__colorList));
@@ -406,7 +414,7 @@ FaceSet::transform( const Transformation3DPtr& transformation ) const {
 
   PolylinePtr _tSkeleton = __skeleton;
   if (_tSkeleton)
-    _tSkeleton.cast(__skeleton->transform(transformation));
+    _tSkeleton= dynamic_pointer_cast<Polyline>(__skeleton->transform(transformation));
 
   Point3ArrayPtr _n = __normalList;
   if(_n){

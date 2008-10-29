@@ -84,7 +84,7 @@ boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     for(typename T::const_iterator it = pts->getBegin()+1; it != pts->getEnd(); ++it) {
         if (cmp_method(object(*it),object(*itPrevious)) == 0) { 
             // True (1) means that there are in the same group. False (0) in 2 differents groups.
-            c_pointset = new T();
+            c_pointset = RCPtr<T>(new T());
             c_pointset->pushBack(*it);
             rlist.append(object(c_pointset));
             itPrevious = it;

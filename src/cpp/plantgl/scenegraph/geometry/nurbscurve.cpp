@@ -189,7 +189,7 @@ bool NurbsCurve::Builder::isValid( ) const {
 NurbsCurve::NurbsCurve(  ) :
   BezierCurve(),
   __degree(DEFAULT_NURBS_DEGREE),
-  __knotList(0)
+  __knotList()
   {
 }
 
@@ -274,7 +274,7 @@ bool NurbsCurve::isKnotListToDefault( ) const {
 
 bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree )
 {
-    if( knots.isNull() ) return true;
+    if( !knots ) return true;
     uint_t _size=knots->getSize();
     if (_size != nbCtrlPoints + degree + 1) return false;
     real_t _val = knots->getAt(0);
@@ -804,7 +804,7 @@ bool NurbsCurve2D::Builder::isValid( ) const {
 NurbsCurve2D::NurbsCurve2D(   ) :
   BezierCurve2D(),
   __degree(NurbsCurve::DEFAULT_NURBS_DEGREE),
-    __knotList(0){
+    __knotList(){
 }
 
 NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPtr  knots, uint_t degree, uint_t stride ) :

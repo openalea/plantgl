@@ -172,7 +172,7 @@ BezierPatch::BezierPatch( const Point4MatrixPtr& ctrlPoints,
 
 BezierPatch::BezierPatch() :
     Patch(),
-    __ctrlPointMatrix(0),
+    __ctrlPointMatrix(),
     __ustride(DEFAULT_STRIDE),
     __vstride(DEFAULT_STRIDE){
 }
@@ -321,7 +321,7 @@ LineicModelPtr BezierPatch::getUSection(real_t u) const
                   T[i] = (T[i] * u1) + (T[i+1] * u);
           Q[j]=T[0];
     }
-	return new BezierCurve(new Point4Array(Q.begin(),Q.end()),_vdeg);
+	return LineicModelPtr(new BezierCurve(Point4ArrayPtr(new Point4Array(Q.begin(),Q.end())),_vdeg));
 }
 
 
@@ -344,7 +344,7 @@ LineicModelPtr BezierPatch::getVSection(real_t v) const
                     T[j] = (T[j] * v1) + (T[j+1] * v);
         Q[i]=T[0];
     }
-	return new BezierCurve(new Point4Array(Q.begin(),Q.end()),_udeg);
+	return LineicModelPtr(new BezierCurve(Point4ArrayPtr(new Point4Array(Q.begin(),Q.end())),_udeg));
 }
 
 

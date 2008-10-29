@@ -46,13 +46,13 @@ using namespace std;
 /////////////////////////////////////////////////////////////////////////////
 
 Interpol::Interpol() :
-  points(0),
-  knots(0),
+  points(),
+  knots(),
   degree(1),
   closed(false),
-  CP(0),
-  params(0),
-  T(0)
+  CP(),
+  params(),
+  T()
 {}
 
 /////////////////////////////////////////////////////////////////////////////
@@ -65,9 +65,9 @@ Interpol::Interpol( const Point3ArrayPtr& _points,
   knots(_params),
   degree(_degree),
   closed(_closed),
-  CP(0),
-  params(0),
-  T(0)
+  CP(),
+  params(),
+  T()
 {}
 
 Interpol::~Interpol()

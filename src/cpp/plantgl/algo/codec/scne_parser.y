@@ -147,8 +147,7 @@ static char * sh_keyword[] = {
 
 #define GEOM_PARSER_BUILD_OBJECT(_type, shape,_name,builder) \
   GEOM_ASSERT(builder); \
-  _type##Ptr _shape; \
-  _shape.cast(builder->build()); \
+  _type##Ptr _shape = dynamic_pointer_cast<_type>(builder->build()); \
   builder->destroy(); \
   delete builder; \
   if (_shape) { \
@@ -1112,8 +1111,8 @@ AppearanceRef:
         _i = t->find(*$1);
      }
      if (_i != t->end()){
-         AppearancePtr _app;
-         if(_app.cast(_i->second))
+         AppearancePtr _app = dynamic_pointer_cast<Appearance>(_i->second);
+         if(_app)
              $$ = new AppearancePtr(_app);
          else{
              genMessage(WARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(*(_i->second)).name());
@@ -1142,8 +1141,8 @@ GeometryRef:
         _i = t->find(*$1);
      }
      if (_i != t->end()){
-       GeometryPtr  _geom;
-       if(_geom.cast(_i->second))
+       GeometryPtr  _geom = dynamic_pointer_cast<Geometry>(_i->second);
+       if(_geom)
          $$ = new GeometryPtr(_geom);
        else{
          genMessage(WARNINGMSG(INVALID_TYPE_sss),"Geometry",$1->c_str(),typeid(*(_i->second)).name());
@@ -1204,10 +1203,10 @@ TransformedObj:
 ;
 
 Curve2DObj:
-   BezierCurve2DObj   { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
- | NurbsCurve2DObj    { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
- | Polyline2DObj      { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
- | GeometryRef        { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
+   BezierCurve2DObj   { if($1) {$$ = new Curve2DPtr(dynamic_pointer_cast<Curve2D>(*$1));delete $1;}else $$ = NULL; }
+ | NurbsCurve2DObj    { if($1) {$$ = new Curve2DPtr(dynamic_pointer_cast<Curve2D>(*$1));delete $1;}else $$ = NULL; }
+ | Polyline2DObj      { if($1) {$$ = new Curve2DPtr(dynamic_pointer_cast<Curve2D>(*$1));delete $1;}else $$ = NULL; }
+ | GeometryRef        { if($1) {$$ = new Curve2DPtr(dynamic_pointer_cast<Curve2D>(*$1));delete $1;}else $$ = NULL; }
  | Point2Array {
       Polyline2D::Builder * builder = new Polyline2D::Builder;
       GEOM_PARSER_SET_FIELD(builder,PointList,$1);
@@ -1216,19 +1215,19 @@ Curve2DObj:
       GEOM_PARSER_BUILD_OBJECT(SceneObject,obj,name,builder);
       Curve2DPtr * line = NULL;
       if(obj){
-          line = new Curve2DPtr; line->cast(*obj);
+          line = new Curve2DPtr(dynamic_pointer_cast<Curve2D>(*obj));
       }
       $$ = line;
   }
 ;
 
-// | CircleObj          { if($1) {$$ = new Curve2DPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
+// | CircleObj          { if($1) {$$ = new Curve2DPtr(dynamic_pointer_cast<Curve2D>(*$1));delete $1;}else $$ = NULL; }
 
 CurveObj:
- BezierCurveObj       { if($1) {$$ = new LineicModelPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
- | NurbsCurveObj      { if($1) {$$ = new LineicModelPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
- | GeometryRef        { if($1) {$$ = new LineicModelPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
- | PolylineObj        { if($1) {$$ = new LineicModelPtr; $$->cast(*$1);delete $1;}else $$ = NULL; }
+ BezierCurveObj       { if($1) {$$ = new LineicModelPtr(dynamic_pointer_cast<LineicModel>(*$1));delete $1;}else $$ = NULL; }
+ | NurbsCurveObj      { if($1) {$$ = new LineicModelPtr(dynamic_pointer_cast<LineicModel>(*$1));delete $1;}else $$ = NULL; }
+ | GeometryRef        { if($1) {$$ = new LineicModelPtr(dynamic_pointer_cast<LineicModel>(*$1));delete $1;}else $$ = NULL; }
+ | PolylineObj        { if($1) {$$ = new LineicModelPtr(dynamic_pointer_cast<LineicModel>(*$1));delete $1;}else $$ = NULL; }
  | Point3Array {
       Polyline::Builder * builder = new Polyline::Builder;
       GEOM_PARSER_SET_FIELD(builder,PointList,$1);
@@ -1237,7 +1236,7 @@ CurveObj:
       GEOM_PARSER_BUILD_OBJECT(SceneObject,obj,name,builder);
       LineicModelPtr * line = NULL;
       if(obj){
-          line = new LineicModelPtr; line->cast(*obj);
+          line = new LineicModelPtr(dynamic_pointer_cast<LineicModel>(*obj));
       }
       $$ = line;
   }
@@ -2675,8 +2674,8 @@ Point4Matrix:
    };
 
 Primitive:
-   GeometryRef { if($1) {$$ = new PrimitivePtr; $$->cast(*$1);delete $1;} else $$ = NULL; }
- | PrimitiveObj  { if($1) { $$ = new PrimitivePtr; $$->cast(*$1); delete $1; } else $$ = NULL; };
+   GeometryRef { if($1) {$$ = new PrimitivePtr(dynamic_pointer_cast<Primitive>(*$1));delete $1;} else $$ = NULL; }
+ | PrimitiveObj  { if($1) { $$ = new PrimitivePtr(dynamic_pointer_cast<Primitive>(*$1)); delete $1; } else $$ = NULL; };
 
 Real :
    RealAtom {$$ = $1;}
@@ -2769,8 +2768,8 @@ Uint32List:
    };
 
 Skeleton:
-   GeometryRef { if($1) { $$ = new PolylinePtr; $$->cast(*$1); delete $1; } else $$ = NULL; }
- | PolylineObj { if($1) { $$ = new PolylinePtr; $$->cast(*$1); delete $1; } else $$ = NULL; };
+   GeometryRef { if($1) { $$ = new PolylinePtr(dynamic_pointer_cast<Polyline>(*$1)); delete $1; } else $$ = NULL; }
+ | PolylineObj { if($1) { $$ = new PolylinePtr(dynamic_pointer_cast<Polyline>(*$1)); delete $1; } else $$ = NULL; };
 
 Vector2:
    Vector2Atom  {$$ = $1;}

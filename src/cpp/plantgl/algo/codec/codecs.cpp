@@ -54,10 +54,10 @@ void installCodecs(){
 	static bool installed = false;
 	if(!installed){
 		installed = true;
-		SceneFactory::get().registerCodec(new GeomCodec());
-		SceneFactory::get().registerCodec(new BGeomCodec());
-		SceneFactory::get().registerCodec(new VgStarCodec());
-		SceneFactory::get().registerCodec(new PovCodec());
+		SceneFactory::get().registerCodec(SceneCodecPtr(new GeomCodec()));
+		SceneFactory::get().registerCodec(SceneCodecPtr(new BGeomCodec()));
+		SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
+		SceneFactory::get().registerCodec(SceneCodecPtr(new PovCodec()));
 	}
 }
 

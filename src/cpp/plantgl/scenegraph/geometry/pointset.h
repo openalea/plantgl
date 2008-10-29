@@ -95,7 +95,7 @@ public:
     
       \postt
       - \e self is valid. */
-  PointSet( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = 0 );
+  PointSet( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = Color4ArrayPtr() );
 
   /// Destructor
   virtual ~PointSet( );

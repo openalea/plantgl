@@ -195,16 +195,14 @@ bool GLCtrlPointRenderer::process( ExtrudedHull * extrudedHull ) {
   GEOM_ASSERT(extrudedHull);
 
   if(extrudedHull->getHorizontal()->apply(__discretizer)){
-    PolylinePtr p;
-    p.cast(__discretizer.getDiscretization());
+    PolylinePtr p = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
     if(p){
       GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(p->getPointList());
     }
   }
 
   if(extrudedHull->getVertical()->apply(__discretizer)){
-    PolylinePtr p;
-    p.cast(__discretizer.getDiscretization());
+    PolylinePtr p = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
     if(p){
       GEOM_GLCTRLPOINTRENDERER_DRAW_VERTLINE2D(p->getPointList());
     }
@@ -257,32 +255,31 @@ bool GLCtrlPointRenderer::process( NurbsPatch * nurbsPatch ) {
 
 bool GLCtrlPointRenderer::process( Tapered * tapered ) {
   GEOM_ASSERT(tapered);
-  BezierCurvePtr _curve;
-  if(_curve.cast(tapered->getPrimitive())){
+  BezierCurvePtr _curve = dynamic_pointer_cast<BezierCurve>(tapered->getPrimitive());
+  if(_curve){
       Transformation3DPtr _taper=tapered->getTransformation();
       Point4ArrayPtr mypoints =  _taper->transform(_curve->getCtrlPoints());
       GEOM_GLCTRLPOINTRENDERER_DRAW_LINE(mypoints);
   }
   else{
-      BezierPatchPtr _patch;
-      if(_patch.cast(tapered->getPrimitive())){
+      BezierPatchPtr _patch = dynamic_pointer_cast<BezierPatch>(tapered->getPrimitive());
+      if(_patch){
           Transformation3DPtr _taper=tapered->getTransformation();
           Point4MatrixPtr mypoints =  _taper->transform(_patch->getCtrlPoints());
           GEOM_GLCTRLPOINTRENDERER_DRAW_LINES(mypoints);
       }
       else {
-        ExtrudedHullPtr extrudedHull;
-        if(extrudedHull.cast(tapered->getPrimitive())){
+        ExtrudedHullPtr extrudedHull = dynamic_pointer_cast<ExtrudedHull>(tapered->getPrimitive());
+        if(extrudedHull){
           if(extrudedHull->getHorizontal()->apply(__discretizer)){
-	    PolylinePtr p;
-            if(p.cast(__discretizer.getDiscretization())){
+	        PolylinePtr p  = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
+            if(p){
               GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(p->getPointList());
             }
           }
 
           if(extrudedHull->getVertical()->apply(__discretizer)){
-            PolylinePtr p;
-	    p.cast(__discretizer.getDiscretization());
+            PolylinePtr p = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
             Point3ArrayPtr points(new Point3Array(*(p->getPointList())));
             points->pushBack(points->getAt(0));
             for(Point3Array::iterator _it = points->getBegin();

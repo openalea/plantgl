@@ -201,7 +201,7 @@ bool Scaled::isValid( ) const {
 
 SceneObjectPtr Scaled::copy() const {
   Scaled * ptr = new Scaled(*this);
-  if(__geometry)ptr->getGeometry().cast(__geometry->copy());
+  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
   return SceneObjectPtr(ptr);
 }
 

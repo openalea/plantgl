@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\..,$(BOOSTDIR)"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
-				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\.."
+				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\..,$(BOOSTDIR)"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 			/>

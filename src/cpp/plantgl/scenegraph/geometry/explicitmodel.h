@@ -104,7 +104,7 @@ public:
 
   /// Constructs a ExplicitModel.
   ExplicitModel( const Point3ArrayPtr& points,
-				 const Color4ArrayPtr& colors  = 0 );
+				 const Color4ArrayPtr& colors  = Color4ArrayPtr() );
 
   /// Destructor
   virtual ~ExplicitModel( );

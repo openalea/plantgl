@@ -40,7 +40,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc7&quot;;&quot;$(BOOSTDIR)&quot;"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\include&quot;;&quot;C:\Python25\Lib\site-packages\bisonflex-1.35_4_2.5.4-py2.5-win32.egg\include&quot;;&quot;$(CGALROOT)\include&quot;;&quot;$(CGALROOT)\include\CGAL\config\msvc&quot;;&quot;$(CGALROOT)\auxiliary\gmp\include&quot;;&quot;$(BOOSTDIR)&quot;"
 				PreprocessorDefinitions="ALGO_MAKEDLL;PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"

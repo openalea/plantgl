@@ -97,7 +97,7 @@ bool Revolution::Builder::isValid( ) const {
 
 Revolution::Revolution() :
   SOR(),
-  __profile(0) {
+  __profile() {
 }
 
 Revolution::Revolution( const Curve2DPtr& profile,
@@ -124,7 +124,7 @@ bool Revolution::isValid( ) const {
 
 SceneObjectPtr Revolution::copy() const {
   Revolution * ptr = new Revolution(*this);
-  if(__profile)ptr->getProfile().cast(__profile->copy());
+  if(__profile)ptr->getProfile() = dynamic_pointer_cast<Curve2D>(__profile->copy());
   return SceneObjectPtr(ptr);
 }
 

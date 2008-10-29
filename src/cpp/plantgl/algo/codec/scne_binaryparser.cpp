@@ -244,7 +244,7 @@ using namespace STDEXT;
 
 static uint_t count_name(0);
 
-const SceneObjectPtr BinaryParser::NULLPTR(0);
+const SceneObjectPtr BinaryParser::NULLPTR;
 
 /* ----------------------------------------------------------------------- */
 BinaryParser::BinaryParser(ostream& output,int max_errors) :
@@ -260,7 +260,7 @@ BinaryParser::BinaryParser(ostream& output,int max_errors) :
     __comment(),
     __sizes(39,uint_t(0)),
     __currents(39,uint_t(0)),
-    __result(0),
+    __result(),
     __assigntime(0),
 	__double_precision(false){
     for(uint_t i=0;i<39;i++)__mem[i]=NULL;
@@ -722,15 +722,14 @@ bool BinaryParser::readShape(){
     }
 
     if(readNext())
-       a->getGeometry().cast(__result);
+       a->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
     if(readNext())
-        a->getAppearance().cast(__result);
+        a->getAppearance() = dynamic_pointer_cast<Appearance>(__result);
 
-    if((a->getGeometry().isValid()) && (a->getAppearance().isValid())){
+    if((a->getGeometry()) && (a->getAppearance())){
         if(!_name.empty())a->setName(_name);
-        __result = a;
-        Shape3DPtr sh;
-        sh.cast(__result);
+        __result = SceneObjectPtr(a);
+        Shape3DPtr sh = Shape3DPtr(a);
         if(!sh) cerr << "Shape not valid" << endl;
         else {
             if(__roots < __scene->getSize())
@@ -747,11 +746,11 @@ bool BinaryParser::readShape(){
     }
     else{
         __outputStream << "*** PARSER: <Shape : " << (_name.empty() ? "(unamed)" : _name ) << ">"
-                       << (a->getGeometry().isNull() || !a->getGeometry()->isValid()? " Geometry ":" ") 
-					   << (a->getAppearance().isNull() || !a->getAppearance()->isValid() ? "Appearance " : "" ) << "not valid." << endl;
+                       << (!a->getGeometry() || !a->getGeometry()->isValid()? " Geometry ":" ") 
+					   << (!a->getAppearance() || !a->getAppearance()->isValid() ? "Appearance " : "" ) << "not valid." << endl;
         __currents[0]--;
-        a->getGeometry()=GeometryPtr(0);
-        a->getAppearance() = AppearancePtr(0);
+        a->getGeometry()=GeometryPtr();
+        a->getAppearance() = AppearancePtr();
         a->getId() = Shape::NOID;
         __result = NULLPTR;
         return false;
@@ -898,7 +897,7 @@ bool BinaryParser::readAmapSymbol() {
 	}
 	Point3ArrayPtr points;
 	Point3ArrayPtr normals;
-	Point3ArrayPtr texCoords(0);
+	Point3ArrayPtr texCoords;
 	IndexArrayPtr indices;
 
 	GEOM_READ_FIELD(obj,Solid,Bool);
@@ -1024,7 +1023,7 @@ bool BinaryParser::readAxisRotated() {
 
 
     if(readNext())
-        obj->getGeometry().cast(__result);
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
     if(!obj->getGeometry()){
         __outputStream << "*** PARSER: <AxisRotated : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
         obj->getAngle() = AxisRotated::DEFAULT_ANGLE;
@@ -1191,7 +1190,7 @@ bool BinaryParser::readEulerRotated() {
         GEOM_READ_FIELD(obj,Roll,Real);
 
     if(readNext())
-        obj->getGeometry().cast(__result);
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
     if(!obj->getGeometry()){
         __outputStream << "*** PARSER: <EulerRotated : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
         obj->getAzimuth() = EulerRotated::DEFAULT_AZIMUTH;
@@ -1218,15 +1217,15 @@ bool BinaryParser::readExtrudedHull() {
         GEOM_READ_FIELD(obj,CCW,Bool);
 
     if(readNext())
-        obj->getVertical().cast(__result);
+        obj->getVertical() = dynamic_pointer_cast<Curve2D>(__result);
     if(readNext())
-        obj->getHorizontal().cast(__result);
+        obj->getHorizontal() = dynamic_pointer_cast<Curve2D>(__result);
 
     if((!obj->getVertical()) || (!obj->getHorizontal())){
         __outputStream << "*** PARSER: <ExtrudedHull : " << (_name.empty() ? "(unamed)" : _name ) << "> Vertical or Horizontal profile not valid." << endl;
         obj->getCCW() =  ExtrudedHull::DEFAULT_CCW;
-        obj->getVertical() = Curve2DPtr(0);
-        obj->getHorizontal() = Curve2DPtr(0);
+        obj->getVertical() = Curve2DPtr();
+        obj->getHorizontal() = Curve2DPtr();
         GEOM_DEL_OBJ(obj,14) ;
         return false;
     }
@@ -1271,14 +1270,14 @@ bool BinaryParser::readExtrusion() {
     }
 
     if(readNext()){
-      obj->getAxis().cast(__result);
+      obj->getAxis() = dynamic_pointer_cast<LineicModel>(__result);
     }
     else {
       __outputStream << "*** PARSER: <Extrusion : " << (_name.empty() ? "(unamed)" : _name ) << "> Axis not find." << endl;
     }
 
     if(readNext()){
-      obj->getCrossSection().cast(__result);
+      obj->getCrossSection() = dynamic_pointer_cast<Curve2D>(__result);
     }
     else {
       __outputStream << "*** PARSER: <Extrusion : " << (_name.empty() ? "(unamed)" : _name ) << "> CrossSection not find." << endl;
@@ -1288,7 +1287,7 @@ bool BinaryParser::readExtrusion() {
       __outputStream << "*** PARSER: <Extrusion : " << (_name.empty() ? "(unamed)" : _name ) << "> Axis and CrossSection not valid." << endl;
       obj->getSolid() = Mesh::DEFAULT_SOLID;
       obj->getCCW() = Mesh::DEFAULT_CCW;
-      obj->getProfileTransformation() = ProfileTransformationPtr(0);
+      obj->getProfileTransformation() = ProfileTransformationPtr();
       GEOM_DEL_OBJ(obj,17) ;
       return false;
     }
@@ -1297,7 +1296,7 @@ bool BinaryParser::readExtrusion() {
       __outputStream << "*** PARSER: <Extrusion : " << (_name.empty() ? "(unamed)" : _name ) << "> Axis not valid." << endl;
       obj->getSolid() = Mesh::DEFAULT_SOLID;
       obj->getCCW() = Mesh::DEFAULT_CCW;
-      obj->getProfileTransformation() = ProfileTransformationPtr(0);
+      obj->getProfileTransformation() = ProfileTransformationPtr();
       GEOM_DEL_OBJ(obj,17) ;
       return false;
     }
@@ -1306,7 +1305,7 @@ bool BinaryParser::readExtrusion() {
       __outputStream << "*** PARSER: <Extrusion : " << (_name.empty() ? "(unamed)" : _name ) << "> CrossSection not valid." << endl;
       obj->getSolid() = Mesh::DEFAULT_SOLID;
       obj->getCCW() = Mesh::DEFAULT_CCW;
-      obj->getProfileTransformation() = ProfileTransformationPtr(0);
+      obj->getProfileTransformation() = ProfileTransformationPtr();
       GEOM_DEL_OBJ(obj,17) ;
       return false;
     }
@@ -1342,7 +1341,7 @@ bool BinaryParser::readFaceSet() {
 
     IF_GEOM_NOTDEFAULT(_default,2)
       if(readNext()){
-        obj->getSkeleton().cast(__result);
+        obj->getSkeleton() = dynamic_pointer_cast<Polyline>(__result);
         if(!obj->getSkeleton()){
           __outputStream << "*** PARSER: <FaceSet : " << (_name.empty() ? "(unamed)" : _name ) << "> Skeleton not valid." << endl;
         }
@@ -1432,11 +1431,11 @@ bool BinaryParser::readGroup() {
     GEOM_READ_DEFAULT(_default);
     GEOM_INIT_OBJ(obj, 18,Group );
 
-    GeometryArrayPtr GeometryList(0);
+    GeometryArrayPtr GeometryList;
 
     IF_GEOM_NOTDEFAULT(_default,0)
       if(readNext()){
-        obj->getSkeleton().cast(__result);
+        obj->getSkeleton() = dynamic_pointer_cast<Polyline>(__result);
         if(!obj->getSkeleton()){
           __outputStream << "*** PARSER: <Group : " << (_name.empty() ? "(unamed)" : _name ) << "> Skeleton not valid." << endl;
         }
@@ -1454,7 +1453,7 @@ bool BinaryParser::readGroup() {
 		 _it != obj->getGeometryList()->getEnd() && 
 		 !stream->eof(); num++) {
         if(readNext())
-            _it->cast(__result);
+            *_it  = dynamic_pointer_cast<Geometry>(__result);
         if((*_it))_it++;
         else {
             err++;
@@ -1462,8 +1461,8 @@ bool BinaryParser::readGroup() {
         }
     }
     if(err > 0 && err >= _sizej-1){
-      obj->getSkeleton() = PolylinePtr(0);
-      obj->getGeometryList()= GeometryArrayPtr(0);
+      obj->getSkeleton() = PolylinePtr();
+      obj->getGeometryList()= GeometryArrayPtr();
       GEOM_DEL_OBJ(obj,18) ;
       return false;
     }
@@ -1513,12 +1512,12 @@ bool BinaryParser::readIFS() {
       }
 
     if(readNext())
-        obj->getGeometry().cast(__result);
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
 
     if( err >= size-1 || (!obj->getGeometry()) )
       {
       obj->getDepth()= IFS::DEFAULT_DEPTH;
-      obj->getTransfoList()= Transform4ArrayPtr(0);
+      obj->getTransfoList()= Transform4ArrayPtr();
       GEOM_DEL_OBJ(obj,38) ;
       }
 
@@ -1610,7 +1609,7 @@ bool BinaryParser::readOriented() {
         GEOM_READ_FIELD(obj,Secondary, Vector3);
 
     if(readNext())
-        obj->getGeometry().cast(__result);
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
     if(!obj->getGeometry()){
       __outputStream << "*** PARSER: <Oriented : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
       obj->getPrimary() = Oriented::DEFAULT_PRIMARY;
@@ -1722,7 +1721,7 @@ bool BinaryParser::readQuadSet() {
 
     IF_GEOM_NOTDEFAULT(_default,2)
       if(readNext()){
-        obj->getSkeleton().cast(__result);
+        obj->getSkeleton() = dynamic_pointer_cast<Polyline>(__result);
         if(!obj->getSkeleton()){
           __outputStream << "*** PARSER: <QuadSet : " << (_name.empty() ? "(unamed)" : _name ) << "> Skeleton not valid." << endl;
         }
@@ -1788,7 +1787,7 @@ bool BinaryParser::readRevolution() {
         GEOM_READ_FIELD(obj,Slices,Uchar);
 
     if(readNext())
-        obj->getProfile().cast(__result);
+        obj->getProfile() = dynamic_pointer_cast<Curve2D>(__result);
     if(!obj->getProfile()){
       __outputStream << "*** PARSER: <Revolution : " << (_name.empty() ? "(unamed)" : _name ) << "> Profile not valid." << endl;
     }
@@ -1861,7 +1860,7 @@ bool BinaryParser::readSwung()
   for( i= 0 ; i < size && _it != _itEnd && !stream->eof(); i++ )
     {
     if( readNext() )
-      _it->cast(__result);
+      *_it  = dynamic_pointer_cast<Curve2D>(__result);
     if( (*_it) )
       _it++;
     else
@@ -1904,7 +1903,7 @@ bool BinaryParser::readScaled() {
     GEOM_READ_FIELD(obj,Scale,Vector3);
 
     if(readNext())
-        obj->getGeometry().cast(__result);
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
     if(!obj->getGeometry()){
         __outputStream << "*** PARSER: <Scaled : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
         GEOM_DEL_OBJ(obj,27) ;
@@ -1953,7 +1952,7 @@ bool BinaryParser::readTapered() {
         GEOM_READ_FIELD(obj,TopRadius,Real);
 
     if(readNext())
-        obj->getPrimitive().cast(__result);
+        obj->getPrimitive() = dynamic_pointer_cast<Primitive>(__result);
     if(!obj->getPrimitive()){
         __outputStream << "*** PARSER: <Tapered : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
         obj->getBaseRadius() = Tapered::DEFAULT_BASE_RADIUS;
@@ -1979,7 +1978,7 @@ bool BinaryParser::readTranslated() {
 
 
     if(readNext()){
-        obj->getGeometry().cast(__result);
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
     }
     if(!obj->getGeometry()){
         __outputStream << "*** PARSER: <Translated : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
@@ -2018,7 +2017,7 @@ bool BinaryParser::readTriangleSet() {
 
     IF_GEOM_NOTDEFAULT(_default,2)
       if(readNext()){
-        obj->getSkeleton().cast(__result);
+        obj->getSkeleton() = dynamic_pointer_cast<Polyline>(__result);
         if(!obj->getSkeleton())
           __outputStream << "*** PARSER: <TriangleSet : " << (_name.empty() ? "(unamed)" : _name ) << "> Skeleton not valid." << endl;
       }
@@ -2174,7 +2173,7 @@ bool BinaryParser::readText() {
 
     IF_GEOM_NOTDEFAULT(_default,0){
       if(readNext()){
-        obj->getFontStyle().cast(__result);
+        obj->getFontStyle() = dynamic_pointer_cast<Font>(__result);
         if(!obj->getFontStyle())
           __outputStream << "*** PARSER: <Text : " << (_name.empty() ? "(unamed)" : _name ) << "> font not valid." << endl;
       }

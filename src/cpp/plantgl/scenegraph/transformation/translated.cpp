@@ -199,7 +199,7 @@ bool Translated::isValid( ) const {
 SceneObjectPtr
 Translated::copy() const {
   Translated * ptr = new Translated(*this);
-  if(__geometry)ptr->getGeometry().cast(__geometry->copy());
+  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
   return SceneObjectPtr(ptr);
 }
 

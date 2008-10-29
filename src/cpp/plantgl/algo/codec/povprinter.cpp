@@ -461,7 +461,7 @@ bool PovPrinter::process( AxisRotated * axisRotated ) {
   axisRotated->getGeometry()->apply(*this);
 
   /*Matrix4TransformationPtr _transform;
-  _transform.cast(axisRotated->getTransformation());
+  _transform = dynamic_pointer_cast<Matrix4Transform>(axisRotated->getTransformation());
   GEOM_ASSERT(_transform);
   Matrix4 _matrix = _transform->getMatrix();
   GEOM_POVPRINT_MATRIX(__geomStream,_matrix);*/
@@ -681,7 +681,7 @@ bool PovPrinter::process( IFS * ifs )
   GEOM_TRACE("process IFS");
 
   ITPtr transfos;
-  transfos.cast( ifs->getTransformation() );
+  transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
@@ -934,7 +934,7 @@ bool PovPrinter::process( Tapered * tapered ) {
   TriangleSetPtr _triangleSet = __tesselator.getTriangulation();
   if (_triangleSet) {
     TriangleSetPtr _tTriangleSet;
-    _tTriangleSet.cast(_triangleSet->transform(_taper));
+    _tTriangleSet = dynamic_pointer_cast<TriangleSet>(_triangleSet->transform(_taper));
     _tTriangleSet->apply(*this);
   }
   else

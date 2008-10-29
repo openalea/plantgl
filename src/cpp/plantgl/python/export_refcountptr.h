@@ -29,18 +29,33 @@
  *  ----------------------------------------------------------------------------
  */
 
-#ifndef __exoprt_refcountptr__
-#define __exoprt_refcountptr__
+#ifndef __export_refcountptr__
+#define __export_refcountptr__
 
 #include <boost/python.hpp>
 #include <boost/pointee.hpp>
 #include <plantgl/tool/rcobject.h>
+
 TOOLS_USING_NAMESPACE
 
 
+#ifdef NO_BOOST_REFCOUNTPTR
 #define DEF_POINTEE(CLASS) \
 namespace boost { namespace python { \
 template <> struct pointee<RCPtr<CLASS> > { typedef CLASS type; }; } }
+#else
+#define DEF_POINTEE(CLASS)
+#endif
 
+#include "intrusive_ptr_python_helper.h"
+
+// resolve conflict between initialize_wrapper for RefCountObject and for boost::python::base
+#define BOOST_INITIALIZE_WRAPPER_FIX(T) \
+	namespace boost { namespace python { namespace detail { \
+		inline void initialize_wrapper(PyObject* self, T * w){ \
+			initialize_wrapper(self,(boost::python::detail::wrapper_base*)w); \
+			intrusive_ptr_set_pyobject(w,self); \
+		} \
+	}}} \
 
 #endif

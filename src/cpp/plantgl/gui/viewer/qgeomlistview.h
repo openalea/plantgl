@@ -218,7 +218,7 @@ class VIEW_API GeomListViewBuilder : public Action
 
   protected:
 
-  void addNode(const SceneObjectPtr& node, const QString& type, int pixmaptouse = 0);
+  void addNode(const SceneObject * node, const QString& type, int pixmaptouse = 0);
   void endNode();
 
   void addAttr(const QString& name, bool value);

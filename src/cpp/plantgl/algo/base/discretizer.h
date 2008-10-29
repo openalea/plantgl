@@ -209,6 +209,10 @@ public:
   Point2ArrayPtr gridTexCoord(Point3ArrayPtr pts, int gw, int gh) const;
 
 protected:
+  template <class T> bool check_cache(T * geom);
+  template <class T> bool check_cache_with_tex(T * geom);
+  template <class T> void update_cache(T * geom);
+  template <class T> bool transformed(T * geom);
 
   /// The cache storing the already discretized geometries.
   TOOLS(Cache)<ExplicitModelPtr> __cache;

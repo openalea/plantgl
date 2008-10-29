@@ -38,9 +38,7 @@ RCPtr<T> extract_array_from_list( boost::python::object l )
 { 
   boost::python::extract<int> e_int( l ); 
   if( e_int.check() )
-    {
-    return new T( e_int() );
-    }
+    { return RCPtr<T>(new T( e_int() ));  }
   return extract_pgllist<T>(l).toRCPtr();
 } 
 
@@ -94,6 +92,7 @@ struct array_ptr_from_list {
 #define EXPORT_FUNCTION2(PREFIX,ARRAY) \
 std::string PREFIX##_str( ARRAY * a ) \
 { \
+  assert (a); \
   std::stringstream ss; \
   ss << #ARRAY << "(";  \
   if(!a->isEmpty()){ \
@@ -118,7 +117,7 @@ typename T::element_type array_bt_getitem( T * a, int pos )
 template<class T>
 typename T::element_type& array_ct_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -a->getSize() ) return a->getAt( a->getSize() + pos );
+  if( pos < 0 && pos >= -(int)a->getSize() ) return a->getAt( a->getSize() + pos );
   else if( pos < a->getSize() ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
@@ -126,7 +125,7 @@ typename T::element_type& array_ct_getitem( T * a, int pos )
 template<class T>
 typename T::element_type array_ptr_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -a->getSize() ) return a->getAt( a->getSize() + pos );
+  if( pos < 0 && pos >= -(int)a->getSize() ) return a->getAt( a->getSize() + pos );
   else if( pos < a->getSize() ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
@@ -134,9 +133,9 @@ typename T::element_type array_ptr_getitem( T * a, int pos )
 template<class T>
 T * array_getslice( T * array, int beg, int end ) 
 { 
-  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); 
+  if( beg >= -(int)array->getSize() && beg < 0  )  beg += array->getSize(); 
   else if( beg >= array->getSize() ) throw PythonExc_IndexError(); 
-  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); 
+  if( end >= -(int)array->getSize() && end < 0  )  end += array->getSize(); 
   else if( end > array->getSize() ) throw PythonExc_IndexError(); 
   return new T(array->getBegin()+beg,array->getBegin()+end);
 }
@@ -145,7 +144,7 @@ template<class T>
 typename T::element_type array_popitem( T * a, int pos )
 { 
   if (a->isEmpty()) throw PythonExc_IndexError();
-  if( pos < 0 && pos >= -a->getSize() ) pos = a->getSize() + pos;
+  if( pos < 0 && pos >= -(int)a->getSize() ) pos = a->getSize() + pos;
   else if( pos >= a->getSize() ) throw PythonExc_IndexError();
   typename T::element_type elem =  a->getAt( pos );
   a->Erase(a->getBegin() + pos);
@@ -160,7 +159,7 @@ typename T::element_type array_poplastitem( T * a)
 template<class T>
 void array_setitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -array->getSize() ) array->setAt( array->getSize() + pos, v );
+  if( pos < 0 && pos >= -(int)array->getSize() ) array->setAt( array->getSize() + pos, v );
   else if( pos < array->getSize() ) array->setAt( pos, v );
   else throw PythonExc_IndexError();
 }
@@ -168,7 +167,7 @@ void array_setitem( T * array, int pos, typename T::element_type v )
 template<class T>
 void array_insertitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -array->getSize() ) array->insert( array->getBegin() + (array->getSize() + pos), v );
+  if( pos < 0 && pos >= -(int)array->getSize() ) array->insert( array->getBegin() + (array->getSize() + pos), v );
   else if( pos < array->getSize() ) array->insert( array->getBegin() + pos, v );
   else throw PythonExc_IndexError();
 }
@@ -176,7 +175,7 @@ void array_insertitem( T * array, int pos, typename T::element_type v )
 template<class T>
 void array_delitem( T * array, int pos )
 {
-  if( pos < 0 && pos >= -array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );
+  if( pos < 0 && pos >= -(int)array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );
   else if( pos < array->getSize() ) array->Erase( array->getBegin() + pos );
   else throw PythonExc_IndexError();
 }
@@ -184,9 +183,9 @@ void array_delitem( T * array, int pos )
 template<class T>
 void array_delslice( T * array, int beg, int end ) 
 { 
-  if( beg >= -array->getSize() && beg < 0  )  beg += array->getSize(); 
+  if( beg >= -(int)array->getSize() && beg < 0  )  beg += array->getSize(); 
   else if( beg >= array->getSize() ) throw PythonExc_IndexError(); 
-  if( end >= -array->getSize() && end < 0  )  end += array->getSize(); 
+  if( end >= -(int)array->getSize() && end < 0  )  end += array->getSize(); 
   else if( end > array->getSize() ) throw PythonExc_IndexError(); 
   array->Erase( array->getBegin()+beg,array->getBegin()+end); 
 }

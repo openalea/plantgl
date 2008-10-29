@@ -43,7 +43,7 @@ const uint_t Font::DEFAULT_SIZE(10);
 const bool   Font::DEFAULT_BOLD(false);
 const bool   Font::DEFAULT_ITALIC(false);
 
-const FontPtr Text::DEFAULT_FONT(0);
+const FontPtr Text::DEFAULT_FONT;
 
 /* ----------------------------------------------------------------------- */
 
@@ -164,7 +164,7 @@ bool Text::Builder::isValid( ) const{
         genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
         return false;
     };
-	if(FontStyle && FontStyle->isValid() && !(*FontStyle)->isValid()){
+	if(FontStyle && *FontStyle && !(*FontStyle)->isValid()){
       genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","FontStyle","");
 	  return false;
 	}
@@ -193,7 +193,7 @@ bool Text::apply( Action& action ){
 
 SceneObjectPtr Text::copy() const {
   Text * t = new Text(*this);
-  if(__fontStyle)t->getFontStyle() = FontPtr::Cast(__fontStyle->copy());
+  if(__fontStyle)t->getFontStyle() = dynamic_pointer_cast<Font>(__fontStyle->copy());
   return SceneObjectPtr(t);
 }
 

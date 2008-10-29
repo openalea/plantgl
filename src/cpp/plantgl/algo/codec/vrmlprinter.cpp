@@ -401,7 +401,7 @@ using namespace std;
 VrmlPrinter::VrmlPrinter( ostream& vrmlStream, Discretizer& discretizer ) :
   Printer(vrmlStream,vrmlStream,vrmlStream),
   __discretizer(discretizer),
-  __app(0){
+  __app(){
 }
 
 VrmlPrinter::~VrmlPrinter( ) {

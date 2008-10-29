@@ -265,7 +265,7 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
     Nbloop+=nbtour;
   }while(((SommeEk>(ErreurBound*k)||NoErr<=0)&&ok)&&CPbegin<=nbPtCtrlMax);
   if(!C){
-	return NurbsCurvePtr(0);
+	return NurbsCurvePtr();
   }
   return C;
 }
@@ -285,9 +285,9 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
   //#      Approximation des points      # 
   //######################################
   
-  NurbsCurvePtr C(0); 
-  NurbsCurvePtr C2(0); 
-  NurbsCurvePtr Cold(0);
+  NurbsCurvePtr C; 
+  NurbsCurvePtr C2; 
+  NurbsCurvePtr Cold;
   real_t EkOld=0;
   real_t polygonLength=0.0;
   int k=MyVector->getSize();
@@ -301,12 +301,12 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
   
   do{
     EkOld=0;SommeEk=0;
-	C.cast(Fit::leastSquares(MyVector,deg,CPbegin,ub));
+	C = dynamic_pointer_cast<NurbsCurve>(Fit::leastSquares(MyVector,deg,CPbegin,ub));
     if(!C){
 		NoErr=0;
 		printf("%s:%d:Error with least Squares Function when n=%d.\n",
 		  get_filename(__FILE__).c_str(),__LINE__,CPbegin);
-		  if(CPbegin>deg+1 && Cold.isValid())C = Cold;
+		  if(CPbegin>deg+1 && Cold)C = Cold;
 		  CPbegin++;
     }
     else C2 = C;
@@ -345,14 +345,14 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
     }	
   }while(((SommeEk>(ErreurBound*k)||NoErr<=0)&&ok)&&CPbegin<=nbPtCtrlMax);
   if(!C){
-	return NurbsCurvePtr(0);
+	return NurbsCurvePtr();
   }
   return C;
 }
 
 /* ----------------------------------------------------------------------- */
 
-Curve2DPtr BranchCompressor::DEFAULT_CROSS_SECTION(0);
+Curve2DPtr BranchCompressor::DEFAULT_CROSS_SECTION;
 
 /* ----------------------------------------------------------------------- */
 
@@ -363,7 +363,7 @@ BranchCompressor::BranchCompressor():__verbose(false),__roots(-1){
 	for(int i = 0; i <= slices; i++){
 	  pts->setAt(i,Vector2::Polar(1,GEOM_TWO_PI*i/slices));
 	}
-	DEFAULT_CROSS_SECTION = new Polyline2D(pts);
+	DEFAULT_CROSS_SECTION = Curve2DPtr(new Polyline2D(pts));
 	DEFAULT_CROSS_SECTION->setName("BrCompressorCrossSection");
   }
 };
@@ -587,18 +587,18 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,
 	if(p1 != Vector3::ORIGIN)
 	  geom = GeometryPtr(new Translated(p1,geom));
 	Shape3DPtr sh(new Shape(geom,__inputs[c_branch].appearance,__inputs[c_branch].id));
-	assert(sh.isValid());
+	assert(sh);
 	scene->add(sh);
   }
 }
 
 void 
 BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) const{
-  if(axis.isValid() && axis->isValid()){
-	GeometryPtr geom(0);
+  if(axis && axis->isValid()){
+	GeometryPtr geom;
 	if(!axis->isExplicit()){
 	  real_t polygonalLength;
-	  RealArrayPtr ub(0);
+	  RealArrayPtr ub;
 	  ub = Fit::chordLengthParam(__inputs[c_branch].points,polygonalLength);
 	  Point2ArrayPtr radius = __inputs[c_branch].radius;
 	  removeDouble(radius,ub);
@@ -606,7 +606,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) con
 										  ub,radius));
 	}
 	else {
-	  RealArrayPtr ub(0);
+	  RealArrayPtr ub;
 	  Point2ArrayPtr radius = __inputs[c_branch].radius;
 	  removeDouble(radius,ub);
 	  if(!ub)geom = GeometryPtr(new Extrusion(axis,DEFAULT_CROSS_SECTION,
@@ -622,7 +622,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) con
 
 void 
 BranchCompressor::addScene(ScenePtr scene, int c_branch,GeometryPtr geom) const{
-  if(geom.isValid()&&geom->isValid()){
+  if(geom&&geom->isValid()){
 	Shape3DPtr a(new Shape(geom,__inputs[c_branch].appearance,__inputs[c_branch].id));
 	assert(a->isValid());
 	scene->add(a);
@@ -988,20 +988,20 @@ BranchCompressor::interConnection(ScenePtr& scene){
   for(Scene::iterator _it = scene->getBegin(); _it != scene->getEnd(); _it++){
 	id = (*_it)->getId();
 	father = graph[id];
-    while(father > 0 && scene->getShapeId(father).isNull())
+    while(father > 0 && !(scene->getShapeId(father)))
 		  father = graph[father];
 	if(father > 0){
-	  ShapePtr sh = ShapePtr::Cast(scene->getShapeId(id));
+	  ShapePtr sh = dynamic_pointer_cast<Shape>(scene->getShapeId(id));
 	  if(sh){
-		ExtrusionPtr ex = ExtrusionPtr::Cast(sh->getGeometry());
+		ExtrusionPtr ex = dynamic_pointer_cast<Extrusion>(sh->getGeometry());
 		if(ex){
 		  if(ex->getAxis()->isExplicit()){
-			PolylinePtr pol = PolylinePtr::Cast(ex->getAxis());
+			PolylinePtr pol = dynamic_pointer_cast<Polyline>(ex->getAxis());
 			if(pol)pol->getPointList()->setAt(0,
 			  connectionTo(pol->getPointList()->getAt(0),scene,father));
 		  }
 		  else {
-			BezierCurvePtr bez = BezierCurvePtr::Cast(ex->getAxis());
+			BezierCurvePtr bez = dynamic_pointer_cast<BezierCurve>(ex->getAxis());
 			if(bez)bez->getCtrlPointList()->setAt(0,
 			  connectionTo(bez->getCtrlPointList()->getAt(0),scene,father));
 		  }
@@ -1012,23 +1012,22 @@ BranchCompressor::interConnection(ScenePtr& scene){
 		  Vector3 v = Vector3::OY;
 		  Vector3 h = Vector3::OZ;
 		  GeometryPtr geom = sh->getGeometry();
-		  TransformedPtr tr;
-		  tr.cast(geom);
+		  TransformedPtr tr = dynamic_pointer_cast<Transformed>(geom);
 		  if(tr){
-			TranslatedPtr trans(0);
-			OrientedPtr oriented(0);
+			TranslatedPtr trans;
+			OrientedPtr oriented;
 			do{
-			  if(trans.cast(geom))o = trans->getTranslation();
-			  else if(oriented.cast(geom)) {
+			  if((trans = dynamic_pointer_cast<Translated>(geom)))o = trans->getTranslation();
+			  else if ((oriented =dynamic_pointer_cast<Oriented>(geom))) {
 				u = oriented->getPrimary(); 
 				v = oriented->getSecondary();
 				h = cross(u,v);
 			  }
 			  geom = tr->getGeometry();
-			}while(tr.cast(geom));
+			} while ((tr= dynamic_pointer_cast<Transformed>(geom)));
 		  }
-		  ConePtr cone;
-		  if(cone.cast(geom)){
+		  ConePtr cone = dynamic_pointer_cast<Cone>(geom);
+		  if(cone){
 			real_t height = cone->getHeight();
 			Vector3 pt = o+h*height;
 			Vector3 newo = connectionTo(o,scene,father);
@@ -1069,14 +1068,14 @@ Vector3
 BranchCompressor::connectionTo(const Vector3& p, 
 							   const ScenePtr& scene,
 							   int fid){
-  if(fid <= 0 ||scene.isNull()){
+  if(fid <= 0 || !scene){
 	return p;
   }
-  ShapePtr sh = ShapePtr::Cast(scene->getShapeId(fid));
+  ShapePtr sh = dynamic_pointer_cast<Shape>(scene->getShapeId(fid));
   if(!sh) {
 	return p;
   }
-  ExtrusionPtr ex = ExtrusionPtr::Cast(sh->getGeometry());
+  ExtrusionPtr ex = dynamic_pointer_cast<Extrusion>(sh->getGeometry());
   if(ex){
 	return ex->getAxis()->findClosest(p);
   }
@@ -1084,19 +1083,18 @@ BranchCompressor::connectionTo(const Vector3& p,
 	Vector3 o = Vector3::ORIGIN;
 	Vector3 h = Vector3::OZ;
 	GeometryPtr geom = sh->getGeometry();
-	TransformedPtr tr;
-	tr.cast(geom);
+	TransformedPtr tr = dynamic_pointer_cast<Transformed>(geom);
 	if(tr){
 	  TranslatedPtr trans;
 	  OrientedPtr oriented;
 	  do{
-		if(trans.cast(geom))o = trans->getTranslation();
-		else if(oriented.cast(geom)) h = cross(oriented->getPrimary(),oriented->getSecondary());
+		if((trans= dynamic_pointer_cast<Translated>(geom)))o = trans->getTranslation();
+		else if((oriented= dynamic_pointer_cast<Oriented>(geom))) h = cross(oriented->getPrimary(),oriented->getSecondary());
 		geom = tr->getGeometry();
-	  }while(tr.cast(geom));
+	  }while((tr = dynamic_pointer_cast<Transformed>(geom)));
 	}
-	ConePtr cone;
-	if(cone.cast(geom)){
+	ConePtr cone = dynamic_pointer_cast<Cone>(geom);
+	if(cone){
 	  real_t height = cone->getHeight();
 	  Vector3 pt = p;
 	  closestPointToSegment(pt,o,o+h*height);
@@ -1110,8 +1108,8 @@ BranchCompressor::connectionTo(const Vector3& p,
 void 
 BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
 {
-  if(rad.isNull()||rad->getSize()<3)return;
-  if(knot.isValid() &&rad->getSize() != knot->getSize()){
+  if(!rad||rad->getSize()<3)return;
+  if(knot&&rad->getSize() != knot->getSize()){
 	cerr << "Input Knot vector not valid" << endl;
 	return;
   }
@@ -1145,17 +1143,17 @@ BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
   if(knot2->getSize()!=rad2->getSize())cerr << "Error with knot vector size !!" << endl;
 
   if(isDefault(knot)){
-	knot = RealArrayPtr(0);
+	knot = RealArrayPtr();
 	rad = rad2;
   }
   else {
 	if(k_def){ rad = rad2; knot = knot2; }
 	else {
 	  if(knot2->getSize() <= 2*nbdouble){ rad = rad2; knot = knot2; }
-	  else { knot = RealArrayPtr(0); /*rad = rad;*/ }
+	  else { knot = RealArrayPtr(); /*rad = rad;*/ }
 	}
   }
-  if(knot.isValid()&&knot->getSize()!=rad->getSize())cerr << "Error with final knot vector size !!" << endl;
+  if(knot&&knot->getSize()!=rad->getSize())cerr << "Error with final knot vector size !!" << endl;
 }
 
 bool 

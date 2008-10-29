@@ -112,8 +112,8 @@ bool ExtrudedHull::Builder::isValid( ) const {
 
 ExtrudedHull::ExtrudedHull() :
   Hull(),
-  __vertical(0),
-  __horizontal(0),
+  __vertical(),
+  __horizontal(),
   __ccw(DEFAULT_CCW) {
 }
 
@@ -144,8 +144,8 @@ bool ExtrudedHull::isValid( ) const {
 SceneObjectPtr ExtrudedHull::copy() const 
 {
   ExtrudedHull * ptr = new ExtrudedHull(*this);
-  if(__horizontal)ptr->getHorizontal().cast(__horizontal->copy());
-  if(__vertical)ptr->getVertical().cast(__vertical->copy());
+  if(__horizontal)ptr->getHorizontal()= dynamic_pointer_cast<Curve2D>(__horizontal->copy());
+  if(__vertical)ptr->getVertical()= dynamic_pointer_cast<Curve2D>(__vertical->copy());
   return SceneObjectPtr(ptr);
 }
 

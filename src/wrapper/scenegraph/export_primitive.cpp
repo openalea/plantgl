@@ -64,12 +64,12 @@ void export_Primitive()
 
 BoxPtr box_from_val(real_t x, real_t y, real_t z)
 {
-    return new Box(Vector3(x,y,z));
+    return BoxPtr(new Box(Vector3(x,y,z)));
 }
 
 BoxPtr box_from_val1(real_t v)
 {
-    return new Box(Vector3(v,v,v));
+    return BoxPtr(new Box(Vector3(v,v,v)));
 }
 
 void export_Box()

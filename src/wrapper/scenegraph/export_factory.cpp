@@ -147,6 +147,8 @@ protected:
     SceneFormatList __formats;
 };
 
+BOOST_INITIALIZE_WRAPPER_FIX(PySceneCodec)
+
 typedef RCPtr<PySceneCodec> PySceneCodecPtr;
 DEF_POINTEE(PySceneCodec)
 
@@ -183,6 +185,11 @@ SceneFormat * make_sformat(const std::string& name, boost::python::list suffixes
 SceneFormatList * make_sformatlist(boost::python::list formats)
 { return new SceneFormatList(extract_vec<SceneFormat>(formats)()); }
 
+void pydel_scenecodec (PySceneCodec * c) { 
+	boost::intrusive_ptr_clear_pyobject(c);
+	SceneFactory::get().unregisterCodec(SceneCodecPtr(c));
+}
+
 void export_SceneCodec()
 {
   class_<SceneFormat>("SceneFormat", "A scene description format.", no_init)
@@ -203,6 +210,7 @@ void export_SceneCodec()
   scope codec = class_< PySceneCodec,PySceneCodecPtr,boost::noncopyable >("SceneCodec",
 	    "Coder/Decoder of a scene description.",
         init<optional<const std::string&,SceneCodec::Mode> >("SceneCodec([name,mode])",args("name","mode")))
+	.def("__del__",&pydel_scenecodec)
     .def("formats",pure_virtual(&SceneCodec::formats))
     .def("test", &SceneCodec::test,&PySceneCodec::default_test)
     .def("read", &SceneCodec::read,&PySceneCodec::default_read)

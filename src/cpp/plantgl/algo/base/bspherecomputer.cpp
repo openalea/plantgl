@@ -52,7 +52,7 @@ using namespace std;
 
 
 #define GEOM_BSPHERECOMPUTER_CHECK_CACHE(geom) \
-  if (geom->isNamed()) { \
+  if (geom->isShared()) { \
     Cache<BoundingSpherePtr>::Iterator _it = __cache.find(geom->getId()); \
     if (! (_it == __cache.end())) { \
        __result = _it->second; \
@@ -62,7 +62,7 @@ using namespace std;
 
 
 #define GEOM_BSPHERECOMPUTER_UPDATE_CACHE(geom) \
-  if (geom->isNamed()) \
+  if (geom->isShared()) \
      __cache.insert(geom->getId(),__result);
 
 
@@ -83,7 +83,7 @@ using namespace std;
   for(Point3Array::iterator _it = geom->getPointList()->getBegin(); \
                 _it != geom->getPointList()->getEnd(); _it++) \
                 radius = max(norm(*_it-center),radius); \
-  __result = new BoundingSphere(center,radius); \
+  __result = BoundingSpherePtr(new BoundingSphere(center,radius)); \
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( geom ); \
   return true; \
 
@@ -95,7 +95,7 @@ using namespace std;
   for(Point2Array::iterator _it = geom->getPointList()->getBegin(); \
                 _it != geom->getPointList()->getEnd(); _it++) \
                 radius = max(norm(*_it-center),radius); \
-  __result = new BoundingSphere(Vector3(center,0),radius); \
+  __result = BoundingSpherePtr(new BoundingSphere(Vector3(center,0),radius)); \
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( geom ); \
   return true; \
 
@@ -104,8 +104,7 @@ using namespace std;
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( geom ); \
   if(!geom->getGeometry()->apply(*this))return false; \
   GEOM_ASSERT(__result); \
-  Matrix4TransformationPtr _transformation; \
-  _transformation.cast(geom->getTransformation()); \
+  Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(geom->getTransformation()); \
   GEOM_ASSERT(_transformation); \
   Matrix4 _matrix = _transformation->getMatrix(); \
   __result->transform(_matrix); \
@@ -123,7 +122,7 @@ using namespace std;
 
 BSphereComputer::BSphereComputer(Discretizer& dis) :
   Action(),
-  __result(0),
+  __result(),
   __discretizer(dis)
 {
 }
@@ -288,7 +287,7 @@ BSphereComputer::process( Box * box )
 {
   GEOM_ASSERT( box );
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( box );
-  __result = new BoundingSphere(Vector3::ORIGIN,norm(box->getSize()));
+  __result = BoundingSpherePtr(new BoundingSphere(Vector3::ORIGIN,norm(box->getSize())));
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( box );
   return true;
 }
@@ -304,7 +303,7 @@ BSphereComputer::process( Cone * cone )
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( cone );
   Vector3 center(0,0,cone->getHeight()/3);
   real_t radius = max ( (real_t)(2 * cone->getHeight() / 3), (real_t)(sqrt(sq(cone->getHeight()/3)+sq(cone->getRadius()))));
-  __result = new BoundingSphere(center,radius);
+  __result = BoundingSpherePtr(new BoundingSphere(center,radius));
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( cone  );
   return true;
 }
@@ -318,7 +317,7 @@ BSphereComputer::process( Cylinder * cylinder )
 {
   GEOM_ASSERT( cylinder );
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( cylinder );
-  __result = new BoundingSphere(Vector3(0,0,cylinder->getHeight()/2),norm(Vector3(cylinder->getRadius(),0,cylinder->getHeight()/2)));
+  __result = BoundingSpherePtr(new BoundingSphere(Vector3(0,0,cylinder->getHeight()/2),norm(Vector3(cylinder->getRadius(),0,cylinder->getHeight()/2))));
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( cylinder  );
   return true;
 }
@@ -543,7 +542,7 @@ BSphereComputer::process( Sphere * sphere )
 {
   GEOM_ASSERT( sphere );
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( sphere );
-  __result = new BoundingSphere(Vector3::ORIGIN,sphere->getRadius());
+  __result = BoundingSpherePtr(new BoundingSphere(Vector3::ORIGIN,sphere->getRadius()));
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( sphere );
   return true;
 }
@@ -607,7 +606,7 @@ BSphereComputer::process( Disc * disc )
 {
   GEOM_ASSERT( disc );
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( disc );
-  __result = new BoundingSphere(Vector3::ORIGIN,disc->getRadius());
+  __result = BoundingSpherePtr(new BoundingSphere(Vector3::ORIGIN,disc->getRadius()));
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( disc );
   return true;
 }

@@ -101,11 +101,11 @@ class SG_API AppearanceSymbolTable : public SymbolTable<AppearancePtr> {};
 template<class T,class U>
 void convertTable(const SymbolTable<U>& intable, SymbolTable<T>& outtable)
 {
-  T tobject;
+  RCPtr<T> tobject;
   typedef typename SymbolTable< U >::const_iterator const_iterator;
   for( const_iterator _it = intable.begin();
       _it != intable.end() ; ++_it){
-      if(tobject.cast(_it->second)) outtable[_it->first] = tobject;
+      if(tobject = dynamic_pointer_cast<T>(_it->second)) outtable[_it->first] = tobject;
   }
 }
 

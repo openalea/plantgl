@@ -252,8 +252,8 @@ bool NurbsPatch::Builder::isValid( ) const {
 
 NurbsPatch::NurbsPatch( ) :
     BezierPatch(),
-    __uKnotList(0),
-    __vKnotList(0),
+    __uKnotList(),
+    __vKnotList(),
     __udegree(DEFAULT_NURBS_DEGREE),
     __vdegree(DEFAULT_NURBS_DEGREE){
 }
@@ -268,8 +268,8 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __udegree(uDegree),
     __vdegree(vDegree){
     GEOM_ASSERT(isValid());
-    if (uKnotList.isNull()) setUKnotListToDefault();
-    if (vKnotList.isNull()) setVKnotListToDefault();
+    if (!uKnotList) setUKnotListToDefault();
+    if (!vKnotList) setVKnotListToDefault();
 }
 
 NurbsPatch::~NurbsPatch( ) {
@@ -429,7 +429,7 @@ LineicModelPtr NurbsPatch::getUSection(real_t u) const
           vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,l) *  (Nu->getAt(k))) ;
 	  temp->setAt(l,vec);
   }
-  return new NurbsCurve(temp,__vKnotList,__vdegree,__vstride);
+  return LineicModelPtr(new NurbsCurve(temp,__vKnotList,__vdegree,__vstride));
 }
 
 LineicModelPtr NurbsPatch::getVSection(real_t v) const
@@ -446,7 +446,7 @@ LineicModelPtr NurbsPatch::getVSection(real_t v) const
           vec += (__ctrlPointMatrix->getAt(l,vspan - __vdegree +k) *  (Nv->getAt(k))) ;
 	  temp->setAt(l,vec);
   }
-  return new NurbsCurve(temp,__uKnotList,__udegree,__ustride);
+  return LineicModelPtr(new NurbsCurve(temp,__uKnotList,__udegree,__ustride));
 }
 
 /* ----------------------------------------------------------------------- */

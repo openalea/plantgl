@@ -56,47 +56,67 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
+template <class T> bool Discretizer::check_cache(T * geom)
+{
+  if (geom->isShared()) {
+    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId());
+    if (! (_it == __cache.end())) {
+       __discretization = ExplicitModelPtr(_it->second);
+      if (__discretization) return true;
+	  else  cerr << "Cache of Discretizer Error !" << endl;
+    }
+  } 
+  __discretization = ExplicitModelPtr();
+  return false;
+}
+
+template <class T> bool Discretizer::check_cache_with_tex(T * geom)
+{
+  if (geom->isShared()) {
+    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId());
+	if ((_it != __cache.end()) && (dynamic_pointer_cast<Mesh>(_it->second))->hasTexCoordList()) {
+       __discretization = ExplicitModelPtr(_it->second);
+      if (__discretization) return true;
+	  else  cerr << "Cache of Discretizer Error !" << endl;
+    }
+  } 
+  __discretization = ExplicitModelPtr();
+  return false;
+}
+
+template <class T> 
+void Discretizer::update_cache(T * geom) {
+  if (geom->isShared()) { 
+    if(__discretization && geom->isNamed())__discretization->setName(geom->getName());
+    __cache.insert(geom->getId(),__discretization); 
+  }
+}
 
 #define GEOM_DISCRETIZER_CHECK_CACHE(geom) \
-  if (geom->isNamed()) { \
-    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId()); \
-    if (! (_it == __cache.end())) { \
-       __discretization = ExplicitModelPtr(_it->second); \
-      if(__discretization)return true; \
-      else cerr << "Cache of Discretizer Error !" << endl; \
-    }; \
-  } else __discretization = 0;
+  if (check_cache(geom)) return true;
 
 #define GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(geom) \
-  if (geom->isNamed()) { \
-    Cache<ExplicitModelPtr>::Iterator _it = __cache.find(geom->getId()); \
-	if (! (_it == __cache.end()) && MeshPtr::Cast(_it->second)->hasTexCoordList()) { \
-       __discretization = ExplicitModelPtr(_it->second); \
-      if(__discretization)return true; \
-      else cerr << "Cache of Discretizer Error !" << endl; \
-    }; \
-  } else __discretization = 0;
+  if (check_cache_with_tex(geom)) return true;
 
+#define GEOM_DISCRETIZER_UPDATE_CACHE update_cache
 
-#define GEOM_DISCRETIZER_UPDATE_CACHE(geom) \
-  if (geom->isNamed()) { \
-    if(__discretization)__discretization->setName(geom->getName()); \
-    __cache.insert(geom->getId(),__discretization); \
+template <class T> 
+bool Discretizer::transformed(T * geom) {
+  GEOM_DISCRETIZER_CHECK_CACHE(geom); 
+  if(geom->getGeometry() && 
+	(geom->getGeometry())->apply(*this) && 
+    __discretization){ 
+    __discretization = __discretization->transform(geom->getTransformation()); 
+    GEOM_DISCRETIZER_UPDATE_CACHE(geom); 
+	return true;
   }
-
-
-#define GEOM_DISCRETIZER_TRANSFORM(transformed) \
-  GEOM_DISCRETIZER_CHECK_CACHE(transformed); \
-  if(transformed->getGeometry().isValid() &&  \
-	(transformed->getGeometry())->apply(*this) && \
-    __discretization.isValid()){ \
-    __discretization = __discretization->transform(transformed->getTransformation()); \
-    GEOM_DISCRETIZER_UPDATE_CACHE(transformed); \
-  } \
-  else { \
-    __discretization = ExplicitModelPtr(); \
-    return false; \
+  else {
+    __discretization = ExplicitModelPtr();
+    return false;
   }
+}
+
+#define GEOM_DISCRETIZER_TRANSFORM(transf) return transformed(transf)
 
 /* ----------------------------------------------------------------------- */
 
@@ -1112,7 +1132,7 @@ bool Discretizer::process( Extrusion * extrusion ){
     }
 
     Point3ArrayPtr _pointList(new Point3Array(((_size+1)*(_nbPoints))));
-    Point2ArrayPtr _texList(0);
+    Point2ArrayPtr _texList;
 	if(__computeTexCoord)_texList = Point2ArrayPtr(new Point2Array(((_size+1)*(_nbPoints))));
     Index4ArrayPtr _indexList(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
     uint_t _j = 0;
@@ -1247,8 +1267,8 @@ bool Discretizer::process( Group * group )  {
     return false;
   }
   ExplicitModelPtr basegeom;
-  if (__discretization  == _geometryList->getBegin()->toPtr())
-	  basegeom = ExplicitModelPtr::Cast(__discretization->copy());
+  if (__discretization  == *_geometryList->getBegin())
+	  basegeom = dynamic_pointer_cast<ExplicitModel>(__discretization->copy());
   else basegeom = __discretization;
   Merge fusion(*this,basegeom);
 
@@ -1289,8 +1309,7 @@ bool Discretizer::process( IFS * ifs )  {
   chrono.start();
 #endif
 
-  ITPtr transfos;
-  transfos.cast( ifs->getTransformation() );
+  ITPtr transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
@@ -1306,7 +1325,7 @@ bool Discretizer::process( IFS * ifs )  {
   Matrix4Array::const_iterator matrix= matrixList->getBegin();
   Transform4Ptr t(new Transform4(*matrix));
 
-  ExplicitModelPtr bigD = __discretization->transform(Transformation3DPtr::Cast(t));
+  ExplicitModelPtr bigD = __discretization->transform(dynamic_pointer_cast<Transformation3D>(t));
 
   Merge fusion(*this,bigD);
   fusion.setIsoModel( size );
@@ -1316,7 +1335,7 @@ bool Discretizer::process( IFS * ifs )  {
   while( matrix != matrixList->getEnd() )
     {
     t->getMatrix()= *matrix;
-    tmpD= __discretization->transform(Transformation3DPtr::Cast(t));
+    tmpD= __discretization->transform(dynamic_pointer_cast<Transformation3D>(t));
 
     if(! fusion.apply(tmpD))
       {
@@ -1873,7 +1892,10 @@ bool Discretizer::process( Sphere * sphere ) {
   PolylinePtr _skeleton(new Polyline(Vector3(_pointList->getAt(_bot)),
                                      Vector3(_pointList->getAt(_top))));
 
-  TriangleSet * t = new TriangleSet(_pointList, _indexList, 0, 0 , 0, 0, /*_texList, _texIndexList,*/0,0, true, true,true,true,_skeleton);
+  TriangleSet * t = new TriangleSet(_pointList, _indexList, Point3ArrayPtr(), 
+	                                Index3ArrayPtr() , Color4ArrayPtr(), Index3ArrayPtr(),
+									/*_texList, _texIndexList,*/
+									Point2ArrayPtr(),Index3ArrayPtr(), true, true,true,true,_skeleton);
 
   if(__computeTexCoord){
 	  uchar_t _slices1 = _slices+1;
@@ -1983,9 +2005,9 @@ bool Discretizer::process( Disc * disc ) {
   uint_t _slices = disc->getSlices();
 
   Point3ArrayPtr _pointList(new Point3Array(_slices + 1));
-  Point2ArrayPtr _texList(0);
+  Point2ArrayPtr _texList;
   if(__computeTexCoord){
-	  _texList = new Point2Array(_slices + 1);
+	  _texList = Point2ArrayPtr(new Point2Array(_slices + 1));
   }
   Index3ArrayPtr _indexList(new Index3Array(_slices));
 

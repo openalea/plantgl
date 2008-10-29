@@ -84,7 +84,7 @@ bool Overlay::supportCGAL() {
 GeometryPtr 
 Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 {
-	if (!p1.isValid() || !p2.isValid() || p1->getPointListSize() < 2 || p2->getPointListSize() < 2) return GeometryPtr(0);
+	if (!p1 || !p2 || p1->getPointListSize() < 2 || p2->getPointListSize() < 2) return GeometryPtr();
 #ifdef WITH_CGAL
 
   // Construct the first arrangement, containing a polyline 1.
@@ -153,15 +153,15 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
       ++curr;
     } while (curr != face->outer_ccb());
 	if (pointSet->getSize() == 1){
-		geomarray->pushBack(new PointSet2D(pointSet));
+		geomarray->pushBack(GeometryPtr(new PointSet2D(pointSet)));
 	}
 	else if(pointSet->getSize() > 1){
-		geomarray->pushBack(new Polyline2D(pointSet));
+		geomarray->pushBack(GeometryPtr(new Polyline2D(pointSet)));
 	}
   }
   if (geomarray->isEmpty())return GeometryPtr();
   else if (geomarray->getSize() == 1) return geomarray->getAt(0);
-  else return new Group(geomarray);
+  else return GeometryPtr(new Group(geomarray));
 
 #else
 #ifdef _MSC_VER
@@ -169,7 +169,7 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 #else
 #warning "CGAL not included. Overlay routine will not work."
 #endif
-	return GeometryPtr(0);
+	return GeometryPtr();
 #endif
 
 }

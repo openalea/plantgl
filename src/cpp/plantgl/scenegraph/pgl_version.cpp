@@ -69,3 +69,5 @@ std::string getPGLVersionString(){
 }
 
 
+int getPGLVersionNumber() { return PGL_VERSION; }
+std::string getPGLRevisionString() { return PGL_SVNREVISION; }

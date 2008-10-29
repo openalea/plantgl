@@ -90,7 +90,7 @@ SceneObjectPtr Extrusion::Builder::build( ) const {
 					    ( Solid ? *Solid : Mesh::DEFAULT_SOLID ), 
 					    ( CCW ? *CCW : Mesh::DEFAULT_CCW )));
     }
-    return SceneObjectPtr(0);
+    return SceneObjectPtr();
 }
 
 void Extrusion::Builder::destroy() {
@@ -191,9 +191,9 @@ bool Extrusion::Builder::isValid( ) const {
 
 Extrusion::Extrusion( ) :
     ParametricModel(),
-    __axis(0),
-    __crossSection(0),
-    __profile(0),
+    __axis(),
+    __crossSection(),
+    __profile(),
     __solid(Mesh::DEFAULT_SOLID),
     __ccw(Mesh::DEFAULT_CCW){
 }
@@ -214,7 +214,7 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
-    __profile(0),
+    __profile(),
     __solid(_solid),
     __ccw(_ccw){
     GEOM_ASSERT(isValid());
@@ -393,7 +393,7 @@ Extrusion::apply( Action& action ) {
 bool
 Extrusion::isValid( ) const {
   Builder _builder;
-  RealArrayPtr _knot(0);
+  RealArrayPtr _knot;
   _builder.Axis = const_cast<LineicModelPtr *>(&__axis);
   _builder.CrossSection = const_cast<Curve2DPtr *>(&__crossSection);
   if(__profile){
@@ -411,13 +411,13 @@ Extrusion::isValid( ) const {
 
 bool
 Extrusion::isScaleToDefault() const {
-  if((__profile.isValid())&&(__profile->getScale().isValid()))return (__profile->getScale() == DEFAULT_SCALE_LIST);
+  if((__profile)&&(__profile->getScale()))return (__profile->getScale() == DEFAULT_SCALE_LIST);
   else return true;
 }
 
 bool
 Extrusion::isOrientationToDefault() const {
-  if((__profile.isValid())&&(__profile->getOrientation().isValid()))return (__profile->getOrientation() == DEFAULT_ORIENTATION_LIST);
+  if((__profile)&&(__profile->getOrientation()))return (__profile->getOrientation() == DEFAULT_ORIENTATION_LIST);
   else return true;
 }
 
@@ -430,8 +430,8 @@ Extrusion::isKnotListToDefault() const {
 SceneObjectPtr
 Extrusion::copy() const {
   Extrusion * ptr = new Extrusion(*this);
-  if(__axis)ptr->getAxis().cast(__axis->copy());
-  if(__crossSection)ptr->getCrossSection().cast(__crossSection->copy());
+  if(__axis)ptr->getAxis()= dynamic_pointer_cast<LineicModel>(__axis->copy());
+  if(__crossSection)ptr->getCrossSection()= dynamic_pointer_cast<Curve2D>(__crossSection->copy());
   if(__profile){
     Point2ArrayPtr scale((__profile->getScale()?new Point2Array(*(__profile->getScale())):0));
     RealArrayPtr orientation((__profile->getOrientation()?new RealArray(*(__profile->getOrientation())):0));

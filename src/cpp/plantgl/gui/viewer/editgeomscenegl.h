@@ -85,7 +85,7 @@ protected:
 
 PGL(MaterialPtr) VIEW_API getMaterialFromDialog(QWidget * parent = NULL, 
                                                 char * caption = "", 
-                                                PGL(MaterialPtr) initial = NULL);
+                                                PGL(MaterialPtr) initial = PGL(MaterialPtr()));
 
 int VIEW_API editMaterialInDialog(PGL(MaterialPtr) initial,
                                    QWidget * parent = NULL, 

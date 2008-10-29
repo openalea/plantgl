@@ -140,8 +140,8 @@ bool MultiSpectral::Builder::isValid( ) const {
 
 MultiSpectral::MultiSpectral( ) :
   Spectrum(),
-  __reflectance(0),
-  __transmittance(0),
+  __reflectance(),
+  __transmittance(),
   __filter(DEFAULT_RGB_INDEX) {
 }
 

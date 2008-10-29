@@ -37,13 +37,13 @@
 template<class T>
 RCPtr<T> extract_array2_from_list( boost::python::object l )
 {
-  if (l.ptr() == Py_None) return RCPtr<T>(0);
+  if (l.ptr() == Py_None) return RCPtr<T>();
   boost::python::object row_iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( l.ptr() ) ) );
   uint_t rows= boost::python::extract<uint_t>(l.attr("__len__")());
   boost::python::object col_obj= row_iter_obj.attr( "next" )();
   uint_t cols= boost::python::extract<uint_t>(col_obj.attr("__len__")());
   boost::python::object col_iter_obj= boost::python::object( boost::python::handle<>( PyObject_GetIter( col_obj.ptr() ) ) );
-  RCPtr<T> array= new T(rows,cols);
+  RCPtr<T> array= RCPtr<T>(new T(rows,cols));
 
   for(uint_t i=0; i < rows; ++i )	
 	 {	
@@ -353,7 +353,7 @@ boost::python::object array2_svd( T * array )
 	SVDMatrix<typename T::element_type> m;
   int res = m.decompose(*array);
   if(!res) throw PythonExc_ValueError();
-  return make_tuple(make_list<std::vector<typename T::element_type> >(m.getSig())(),m.getU(),m.getV());
+  return boost::python::make_tuple(make_list<std::vector<typename T::element_type> >(m.getSig())(),m.getU(),m.getV());
 }
 
 

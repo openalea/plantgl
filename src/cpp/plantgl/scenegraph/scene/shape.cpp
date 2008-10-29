@@ -109,8 +109,8 @@ bool Shape::Builder::isValid( ) const{
 
 Shape::Shape( ) :
     Shape3D(),
-    appearance(0),
-    geometry(0),
+    appearance(),
+    geometry(),
     id(getSceneObjectId()),
     parentId(NOID){
 }
@@ -191,8 +191,8 @@ void Shape::setComputedName(){
 SceneObjectPtr Shape::copy() const
 {
   Shape * ptr = new Shape(*this);
-  if(geometry)ptr->getGeometry().cast(geometry->copy());
-  if(appearance)ptr->getAppearance().cast(appearance->copy());
+  if(geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(geometry->copy());
+  if(appearance)ptr->getAppearance() = dynamic_pointer_cast<Appearance>(appearance->copy());
   return SceneObjectPtr(ptr);
 }
 
@@ -261,7 +261,7 @@ bool Shape::isValid( ) const {
     genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
 	return false;
   }
-  if ((appearance.isValid()) && (! appearance->isValid())) {
+  if ((appearance) && (! appearance->isValid())) {
     genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
 	return false;
   }

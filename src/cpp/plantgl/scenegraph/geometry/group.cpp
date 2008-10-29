@@ -111,7 +111,7 @@ bool Group::Builder::isValid( ) const {
 
 Group::Group() :
   Geometry(),
-  __geometryList(0),
+  __geometryList(),
   __skeleton(DEFAULT_SKELETON) {
 }
 
@@ -240,11 +240,11 @@ SceneObjectPtr Group::copy() const
   GeometryArrayPtr _ga(new GeometryArray(size));
   uint_t i = 0;
   for(GeometryArray::iterator _it = _ga->getBegin() ; _it != _ga->getEnd() ; _it ++){
-    if(__geometryList->getAt(i))_it->cast(__geometryList->getAt(i)->copy());
+    if(__geometryList->getAt(i))*_it = dynamic_pointer_cast<Geometry>(__geometryList->getAt(i)->copy());
     i++;
   }
   ptr->getGeometryList( ) = _ga;
-  if(__skeleton)ptr->getSkeleton().cast(__skeleton->copy());
+  if(__skeleton)ptr->getSkeleton()= dynamic_pointer_cast<Polyline>(__skeleton->copy());
   return SceneObjectPtr(ptr);
 }
 

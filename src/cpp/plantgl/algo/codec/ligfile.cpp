@@ -143,14 +143,14 @@ LigRecord::getTransformed(GeometryPtr primitive,
 	if (base_dia > REAL_EPSILON) ratio = sommit_dia/base_dia;
 	else ratio = REAL_MAX;
 	
-	GeometryPtr shape(0);
+	GeometryPtr shape;
 	
 	// if the radius is non-zero, define a "default" geometric object:
 	//		if(fabs(base_dia) > REAL_EPSILON){
 	
 	if(length > REAL_EPSILON){
 	  if(!(fabs(s1) > GEOM_EPSILON && fabs(s2) > GEOM_EPSILON)){
-		Point3ArrayPtr pts = new Point3Array(2,origin);
+		Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
 		pts->setAt(1,origin+dirp*length);
 		return GeometryPtr(new Polyline(pts));
 	  }
@@ -160,13 +160,13 @@ LigRecord::getTransformed(GeometryPtr primitive,
 			shape = GeometryPtr(new Cone(base_dia*(s1==s2?s1:1),
 			length, open, 6));
 		  else {
-			Point3ArrayPtr pts = new Point3Array(2,origin);
+			Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
 			pts->setAt(1,origin+dirp*length);
 			return GeometryPtr(new Polyline(pts));
 		  }
 		}
 		else {
-		  Point3ArrayPtr pts = new Point3Array(2,origin);
+		  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
 		  pts->setAt(1,origin+dirp*length);
 		  return GeometryPtr(new Polyline(pts));
 		}
@@ -179,7 +179,7 @@ LigRecord::getTransformed(GeometryPtr primitive,
 		  new Cone(sommit_dia*(s1==s2?s1:1),
 		  length, open, 6))))));
 		else {
-		  Point3ArrayPtr pts = new Point3Array(2,origin);
+		  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,origin));
 		  pts->setAt(1,origin+dirp*length);
 		  return GeometryPtr(new Polyline(pts));
 		}
@@ -228,15 +228,15 @@ LigRecord::getTransformed(GeometryPtr primitive,
   if(!(fabs(base_dia) > GEOM_EPSILON &&
 	fabs(s1) > GEOM_EPSILON &&
 	fabs(s2) > GEOM_EPSILON &&
-	fabs(length) > GEOM_EPSILON ))return GeometryPtr(0);
+	fabs(length) > GEOM_EPSILON ))return GeometryPtr();
 		
   
-  PrimitivePtr _primitive;
+  PrimitivePtr _primitive  = dynamic_pointer_cast<Primitive>(primitive);
   
-  if(!_primitive.cast(primitive)){
+  if(!_primitive){
 	
 	if (fabs(base_dia - sommit_dia) > GEOM_EPSILON) {
-	  GeometryPtr psmb(0);
+	  GeometryPtr psmb;
 	  if (!(fabs(length - 1.0) > GEOM_EPSILON || 
 		fabs(s1 - 1.0) > GEOM_EPSILON || 
 		fabs(s2 - 1.0) > GEOM_EPSILON || 
@@ -273,7 +273,7 @@ LigRecord::getTransformed(GeometryPtr primitive,
   }
   
   if (primitive) {
-	GeometryPtr psmb(0);
+	GeometryPtr psmb;
 	
 	// Creates a tapered geometry
 	// The geometric model is defined in a reference system Rl = (x,y,z)
@@ -334,7 +334,7 @@ LigRecord::getTransformed(GeometryPtr primitive,
 	
 	return psmb;
   }
-  return GeometryPtr(0); // the geometric symbol was not defined: default is used
+  return GeometryPtr(); // the geometric symbol was not defined: default is used
 }
 
 const long& LigRecord::getSymbolNumber() const{
@@ -421,7 +421,7 @@ const unsigned int Ligfile::getSize( ) const{
 
 ScenePtr Ligfile::computeScene(const Dtafile& _dtafile) const{
     AppearancePtr _default( Material::DEFAULT_MATERIAL);
-    if(!isValid() && _dtafile.isValid())return ScenePtr(0);
+    if(!isValid() && _dtafile.isValid())return ScenePtr();
     ScenePtr result(new Scene());
     uint_t id = 1;
     for(vector< LigRecord >::iterator _it=recordTable->begin();
@@ -436,7 +436,7 @@ ScenePtr Ligfile::computeScene(const Dtafile& _dtafile) const{
         }
         else {
                 (*SceneObject::warningStream) << "*** Warning : Cannot find symbol in Dta file for object " << distance(recordTable->begin(),_it) << ". Default geometry used." << endl;
-            GeometryPtr b = _it->getTransformed(GeometryPtr(0));
+            GeometryPtr b = _it->getTransformed(GeometryPtr());
             if(b)result->add(Shape3DPtr(new  Shape(b,_default,_it->getEntityNumber())));
             else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
         }
@@ -477,7 +477,7 @@ ScenePtr PGL(readLineTree)(string ligFile,
 							ostream& output){
 
     string p = get_cwd();
-    ScenePtr result(0);
+    ScenePtr result;
     ostream * errlog = SceneObject::errorStream;
     ostream * warlog = SceneObject::warningStream;
     ostream * comlog = SceneObject::commentStream;

@@ -199,7 +199,7 @@ real_t QuantisedFunction::_computeValue(const Curve2DPtr& curve, real_t x, real_
 
 QuantisedFunctionPtr QuantisedFunction::inverse() const
 {
-    if(!isMonotonous(true)) return QuantisedFunctionPtr(0);
+    if(!isMonotonous(true)) return QuantisedFunctionPtr();
     std::vector<real_t> values(__sampling,0);
     real_t firsty = __values[0];
     real_t lasty = __values[__sampling-1];

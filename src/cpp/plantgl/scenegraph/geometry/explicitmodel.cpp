@@ -150,7 +150,7 @@ ExplicitModel::isColorListToDefault() const {
 
 bool
 ExplicitModel::hasColorList( ) const {
-  return __colorList.isValid();
+  return (__colorList);
 }
 
 

@@ -59,12 +59,12 @@ TOOLS_USING_NAMESPACE
         ExplicitModelPtr _discret = __discretizer.getDiscretization(); \
         if (_discret) return _discret->apply(*this); \
         else { \
-            __symbol = AmapSymbolPtr(0); \
+            __symbol = AmapSymbolPtr(); \
             return false; \
         }; \
     } \
     else { \
-        __symbol = AmapSymbolPtr(0); \
+        __symbol = AmapSymbolPtr(); \
         return false; \
     }; \
 
@@ -110,7 +110,7 @@ bool AmapTranslator::process(Shape * Shape) {
 bool AmapTranslator::process( Material * material ) {
   GEOM_ASSERT(material);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -120,7 +120,7 @@ bool AmapTranslator::process( Material * material ) {
 bool AmapTranslator::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -131,7 +131,7 @@ bool AmapTranslator::process( ImageTexture * texture ) {
 bool AmapTranslator::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -142,7 +142,7 @@ bool AmapTranslator::process( MonoSpectral * monoSpectral ) {
 bool AmapTranslator::process( MultiSpectral * multiSpectral ) {
   GEOM_ASSERT(multiSpectral);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -181,7 +181,7 @@ bool AmapTranslator::process( AxisRotated * axisRotated ) {
 bool AmapTranslator::process( BezierCurve * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -277,7 +277,7 @@ bool AmapTranslator::process( FaceSet * faceSet ) {
                         __normfactor = Vector3(1/a,1/a,1/a);
                 }
                 else __normfactor = Vector3(1,1,1);
-        AmapSymbol * _smb = new AmapSymbol(FaceSetPtr::Cast(_m));
+        AmapSymbol * _smb = new AmapSymbol(dynamic_pointer_cast<FaceSet>(_m));
         __symbol = AmapSymbolPtr(_smb);
     }
     else {
@@ -324,7 +324,7 @@ bool AmapTranslator::process( IFS * ifs ) {
 bool AmapTranslator::process( NurbsCurve * nurbsCurve ) {
     GEOM_ASSERT(nurbsCurve);
     // nothing to do
-    __symbol = AmapSymbolPtr(0);
+    __symbol = AmapSymbolPtr();
     return false;
 }
 
@@ -357,7 +357,7 @@ bool AmapTranslator::process( Paraboloid * paraboloid ) {
 bool AmapTranslator::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -368,7 +368,7 @@ bool AmapTranslator::process( PointSet * pointSet ) {
 bool AmapTranslator::process( Polyline * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -465,7 +465,7 @@ bool AmapTranslator::process( TriangleSet * triangleSet ) {
 bool AmapTranslator::process( BezierCurve2D * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -484,7 +484,7 @@ bool AmapTranslator::process( Disc * disc ) {
 bool AmapTranslator::process( NurbsCurve2D * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -494,7 +494,7 @@ bool AmapTranslator::process( NurbsCurve2D * nurbsCurve ) {
 bool AmapTranslator::process( PointSet2D * pointSet ) {
   GEOM_ASSERT(pointSet);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -505,7 +505,7 @@ bool AmapTranslator::process( PointSet2D * pointSet ) {
 bool AmapTranslator::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -516,7 +516,7 @@ bool AmapTranslator::process( Polyline2D * polyline ) {
 bool AmapTranslator::process( Text * text ) {
   GEOM_ASSERT(text);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 
@@ -527,7 +527,7 @@ bool AmapTranslator::process( Text * text ) {
 bool AmapTranslator::process( Font * font ) {
   GEOM_ASSERT(font);
   // nothing to do
-  __symbol = AmapSymbolPtr(0);
+  __symbol = AmapSymbolPtr();
   return false;
 }
 

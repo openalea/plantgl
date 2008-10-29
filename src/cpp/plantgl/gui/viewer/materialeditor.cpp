@@ -468,8 +468,8 @@ const QSize MaterialEditor::getSize() const {
 }
 
 bool MaterialEditor::setGeomObject(SceneObjectPtr obj){
-  MaterialPtr material;
-  if(material.cast(obj)){
+  MaterialPtr material = dynamic_pointer_cast<Material>(obj);
+  if(material){
     setMaterial(material);
     return true;
   }
@@ -582,5 +582,5 @@ void MaterialEditor::emissionChangedEvent(){
 }
 
 void MaterialEditor::clear(){
-        setMaterial(MaterialPtr(0));
+        setMaterial(MaterialPtr());
 }

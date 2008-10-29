@@ -81,12 +81,12 @@ void export_Transformed()
 
 ScaledPtr sca_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
 {
-    return new Scaled(Vector3(x,y,z),geom);
+    return ScaledPtr(new Scaled(Vector3(x,y,z),geom));
 }
 
 ScaledPtr sca1_from_val(real_t x, const GeometryPtr& geom)
 {
-    return new Scaled(Vector3(x,x,x),geom);
+    return ScaledPtr(new Scaled(Vector3(x,x,x),geom));
 }
 
 void export_Scaled()
@@ -111,7 +111,7 @@ void export_Scaled()
 
 TranslatedPtr tr_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
 {
-    return new Translated(Vector3(x,y,z),geom);
+    return TranslatedPtr(new Translated(Vector3(x,y,z),geom));
 }
 
 void export_Translated()
@@ -137,8 +137,7 @@ void export_Translated()
 
 Matrix4ArrayPtr ifs_getAllTransformations(IFS * ifs)
 {
-  ITPtr transfos;
-  transfos.cast( ifs->getTransformation() );
+  ITPtr transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);

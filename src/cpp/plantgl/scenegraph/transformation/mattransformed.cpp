@@ -110,7 +110,7 @@ MatrixTransformed::MatrixTransformed( const GeometryPtr& geometry ) :
 
 MatrixTransformed::MatrixTransformed() :
   Transformed(),
-  __geometry(0) {
+  __geometry() {
 }
 
 MatrixTransformed::~MatrixTransformed( ) {

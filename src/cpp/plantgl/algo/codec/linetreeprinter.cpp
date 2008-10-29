@@ -54,11 +54,11 @@ using namespace std;
 using namespace STDEXT;
 
 /* ----------------------------------------------------------------------- */
-GeometryPtr LinetreePrinter::UNIT_CYLINDER(0);
-GeometryPtr LinetreePrinter::UNIT_SOLID_CYLINDER(0);
-GeometryPtr LinetreePrinter::UNIT_SPHERE(0);
-GeometryPtr LinetreePrinter::UNIT_DISC(0);
-GeometryPtr LinetreePrinter::UNIT_BOX(0);
+GeometryPtr LinetreePrinter::UNIT_CYLINDER;
+GeometryPtr LinetreePrinter::UNIT_SOLID_CYLINDER;
+GeometryPtr LinetreePrinter::UNIT_SPHERE;
+GeometryPtr LinetreePrinter::UNIT_DISC;
+GeometryPtr LinetreePrinter::UNIT_BOX;
 
 void LinetreePrinter::initUnitShape(){
   if(!UNIT_CYLINDER){
@@ -353,7 +353,7 @@ bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
         }
         __cache[amapSymbol->getId()][__mat->getId()] = __smbNumber;
         __dta.push_back(pair<long, pair<AmapSymbolPtr,MaterialPtr> >(__smbNumber,
-                pair<AmapSymbolPtr,MaterialPtr> (amapSymbol,__mat)));
+                pair<AmapSymbolPtr,MaterialPtr> (AmapSymbolPtr(amapSymbol),__mat)));
         return true;
 }
 
@@ -376,14 +376,14 @@ bool LinetreePrinter::process(Shape * Shape) {
 
 bool LinetreePrinter::process( Material * material ) {
   GEOM_ASSERT(material);
-  __mat = material;
+  __mat = MaterialPtr(material);
   return true;
 }
 
 
 bool LinetreePrinter::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
-  __mat = texture;
+  __mat = MaterialPtr(texture);
   return true;
 }
 
@@ -393,7 +393,7 @@ bool LinetreePrinter::process( ImageTexture * texture ) {
 
 bool LinetreePrinter::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
-  __mat.cast(Material::DEFAULT_MATERIAL);
+  __mat = dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL);
   return true;
 }
 
@@ -403,7 +403,7 @@ bool LinetreePrinter::process( MonoSpectral * monoSpectral ) {
 
 bool LinetreePrinter::process( MultiSpectral * multiSpectral ) {
   GEOM_ASSERT(multiSpectral);
-  __mat.cast(Material::DEFAULT_MATERIAL);
+  __mat = dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL);
   return true;
 }
 
@@ -440,7 +440,7 @@ bool LinetreePrinter::process( BezierPatch * bezierPatch ) {
 bool LinetreePrinter::process( Box * box ) {
   pushMatrix();
   scale(box->getSize()*2);
-  symbolProcess(UNIT_BOX);
+  symbolProcess(UNIT_BOX.get());
   popMatrix();
   return true;
 }
@@ -459,8 +459,8 @@ bool LinetreePrinter::process( Cone * cone ) {
   scale(Vector3(cone->getRadius()*2,
                                 cone->getRadius()*2,
                                 cone->getHeight()));
-  if(cone->getSolid())symbolProcess(UNIT_SOLID_CYLINDER);
-  else symbolProcess(UNIT_CYLINDER);
+  if(cone->getSolid())symbolProcess(UNIT_SOLID_CYLINDER.get());
+  else symbolProcess(UNIT_CYLINDER.get());
 
   __top_radius = top;
   popMatrix();
@@ -480,8 +480,8 @@ bool LinetreePrinter::process( Cylinder * cylinder ) {
   scale(Vector3(cylinder->getRadius()*2,
                             cylinder->getRadius()*2,
                                 cylinder->getHeight()));
-  if(cylinder->getSolid())symbolProcess(UNIT_SOLID_CYLINDER);
-  else symbolProcess(UNIT_CYLINDER);
+  if(cylinder->getSolid())symbolProcess(UNIT_SOLID_CYLINDER.get());
+  else symbolProcess(UNIT_CYLINDER.get());
 
   popMatrix();
 
@@ -527,8 +527,8 @@ bool LinetreePrinter::process( Frustum * cylinder) {
   scale(Vector3(cylinder->getRadius()*2,
                                 cylinder->getRadius()*2,
                                 cylinder->getHeight()));
-  if(cylinder->getSolid())symbolProcess(UNIT_SOLID_CYLINDER);
-  else symbolProcess(UNIT_CYLINDER);
+  if(cylinder->getSolid())symbolProcess(UNIT_SOLID_CYLINDER.get());
+  else symbolProcess(UNIT_CYLINDER.get());
 
   __top_radius = top;
   popMatrix();
@@ -634,7 +634,7 @@ bool LinetreePrinter::process( Sphere * sphere ) {
   real_t r = sphere->getRadius()*2;
   Vector3 scales(r,r,r);
   scale(scales);
-  symbolProcess(UNIT_SPHERE);
+  symbolProcess(UNIT_SPHERE.get());
   popMatrix();
 
   return true;
@@ -687,7 +687,7 @@ bool LinetreePrinter::process( Disc * disc ) {
   real_t r = disc->getRadius()*2;
   Vector3 scales(r,r,1);
   scale(scales);
-  symbolProcess(UNIT_DISC);
+  symbolProcess(UNIT_DISC.get());
   popMatrix();
   return true;
 }

@@ -193,6 +193,7 @@ void ViewCameraGL::init()
   ViewerSettings settings;
   settings.beginGroup("Camera");
   bool autofit = settings.value("AutoFit",!__lockdim).toBool();
+  __geomsys = settings.value("PglRefSystem",__geomsys).toBool();
   lockDim(!autofit);
   settings.endGroup();
 }
@@ -202,6 +203,7 @@ void ViewCameraGL::endEvent()
   ViewerSettings settings;
   settings.beginGroup("Camera");
   settings.setValue("AutoFit",!isDimLock());
+  settings.setValue("PglRefSystem",__geomsys);
   settings.endGroup();
 }
 
@@ -503,7 +505,7 @@ ViewCameraGL::setViewAngle(double angle)
 void
 ViewCameraGL::initializeGL()
 {
-  BoundingBoxPtr bbox(0);
+  BoundingBoxPtr bbox;
   initialize(bbox);
 }
 

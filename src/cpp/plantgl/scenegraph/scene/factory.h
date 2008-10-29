@@ -87,7 +87,7 @@ public :
 
 	virtual bool test(const std::string& fname, Mode openingMode);
 
-	virtual ScenePtr read(const std::string& fname) { return ScenePtr(0); }
+	virtual ScenePtr read(const std::string& fname) { return ScenePtr(); }
 
 	virtual void write(const std::string& fname,const ScenePtr&	scene) { }
 
@@ -113,6 +113,7 @@ public:
 
 	~SceneFactory();
 	static SceneFactory& get();
+	static void finalize();
 
 	SceneFormatList formats( SceneCodec::Mode openingMode = SceneCodec::None ) const;
 
@@ -130,6 +131,7 @@ public:
 
 	bool installLib(const std::string& libname);
 	bool installDefaultLib();
+	void clear();
 
     typedef CodecList::const_iterator const_iterator;
     const_iterator begin() const { return __codecs.begin(); }

@@ -93,7 +93,7 @@ bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePt
     SceneObjectRecursiveLexer _sceneLexer(&stream,SceneObject::errorStream,fname.c_str());
     Timer t;
     t.start();
-    bool b =_parser.parse(&_sceneLexer,*SceneObject::errorStream,scene.toPtr());
+    bool b =_parser.parse(&_sceneLexer,*SceneObject::errorStream,scene.get());
     t.stop();
     if(isParserVerbose())cerr << "Parse file " << fname.c_str() << " in " << t.elapsedTime() << " sec. " << endl;
 	return b;
@@ -135,10 +135,10 @@ ScenePtr GeomCodec::read(const std::string& fname)
 	SceneObjectSymbolTable table;
 	ScenePtr scene(new Scene());
 	bool b = geom_read(_file,table,scene,fname);
-    if(!b) return ScenePtr(0);
+    if(!b) return ScenePtr();
 	else {
 		if(scene && !scene->isEmpty()) return scene;
-		else return new Scene(table);
+		else return ScenePtr(new Scene(table));
 	}
   }
   
@@ -184,7 +184,7 @@ ScenePtr BGeomCodec::read(const std::string& fname)
 	  _parser.parse(fname);
 	  return _parser.getScene();
   }
-  else return ScenePtr(0);
+  else return ScenePtr();
 }
 
 void BGeomCodec::write(const std::string& fname,const ScenePtr&	scene)

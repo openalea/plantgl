@@ -68,7 +68,7 @@ if(geom->isNamed()){ \
   if (! (_it == __cache.end())) { \
     __discretization = _it->second; \
     return true; \
-  }} else __discretization= 0; 
+  }} else __discretization= ExplicitModelPtr(); 
 
 
 #define GEOM_TESSELATOR_UPDATE_CACHE(geom) \
@@ -90,7 +90,7 @@ Tesselator::~Tesselator( )
 }
 
 TriangleSetPtr Tesselator::getTriangulation( ) const {
-  return TriangleSetPtr::Cast(__discretization);
+  return TriangleSetPtr(dynamic_pointer_cast<TriangleSet>(__discretization));
 }
 
 /* ----------------------------------------------------------------------- */
@@ -98,19 +98,19 @@ TriangleSetPtr Tesselator::getTriangulation( ) const {
 bool Tesselator::process( AmapSymbol * amapSymbol ) {
   GEOM_ASSERT(amapSymbol);
   GEOM_TESSELATOR_CHECK_CACHE(amapSymbol);
-  __discretization = new TriangleSet(amapSymbol->getPointList(),
+  __discretization = ExplicitModelPtr(new TriangleSet(amapSymbol->getPointList(),
 				     amapSymbol->getIndexList()->triangulate(),
 				     amapSymbol->getNormalList(),
-					 (amapSymbol->getNormalIndexList()?amapSymbol->getNormalIndexList()->triangulate():0),
+					 (amapSymbol->getNormalIndexList()?amapSymbol->getNormalIndexList()->triangulate():Index3ArrayPtr()),
 				     amapSymbol->getColorList(),
-					 (amapSymbol->getColorIndexList()?amapSymbol->getColorIndexList()->triangulate():0),
+					 (amapSymbol->getColorIndexList()?amapSymbol->getColorIndexList()->triangulate():Index3ArrayPtr()),
 				     amapSymbol->getTexCoordList(),
-					 (amapSymbol->getTexCoordIndexList()?amapSymbol->getTexCoordIndexList()->triangulate():0),
+					 (amapSymbol->getTexCoordIndexList()?amapSymbol->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
 				     amapSymbol->getNormalPerVertex(),
 				     amapSymbol->getColorPerVertex(),
 				     amapSymbol->getCCW(),
 				     amapSymbol->getSolid(),
-				     amapSymbol->getSkeleton());
+				     amapSymbol->getSkeleton()));
   GEOM_TESSELATOR_UPDATE_CACHE(amapSymbol);
   return true;
 }
@@ -307,7 +307,6 @@ bool Tesselator::process( Cylinder * cylinder ) {
 bool Tesselator::process( Extrusion * extrusion ){
     GEOM_ASSERT(extrusion);
     GEOM_TESSELATOR_CHECK_CACHE(extrusion);
-	__discretization = 0;
     /// Hack for bug with tesselation of curve.
 	Discretizer d;
 	d.computeTexCoord(texCoordComputed());
@@ -329,18 +328,18 @@ bool Tesselator::process( FaceSet * faceSet ) {
   TriangleSet * tr = new TriangleSet(faceSet->getPointList(),
 				     faceSet->getIndexList()->triangulate(),
 				     faceSet->getNormalList(),
-					 (faceSet->getNormalIndexList()?faceSet->getNormalIndexList()->triangulate():0),
+					 (faceSet->getNormalIndexList()?faceSet->getNormalIndexList()->triangulate():Index3ArrayPtr()),
 				     faceSet->getColorList(),
-					 (faceSet->getColorIndexList()?faceSet->getColorIndexList()->triangulate():0),
+					 (faceSet->getColorIndexList()?faceSet->getColorIndexList()->triangulate():Index3ArrayPtr()),
 				     faceSet->getTexCoordList(),
-					 (faceSet->getTexCoordIndexList()?faceSet->getTexCoordIndexList()->triangulate():0),
+					 (faceSet->getTexCoordIndexList()?faceSet->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
 				     faceSet->getNormalPerVertex(),
 				     faceSet->getColorPerVertex(),
 				     faceSet->getCCW(),
 				     faceSet->getSolid(),
 				     faceSet->getSkeleton());
 
-  if (!faceSet->getNormalPerVertex() && faceSet->getNormalList().isValid()){
+  if (!faceSet->getNormalPerVertex() && faceSet->getNormalList()){
 	  Point3ArrayPtr _nml( new Point3Array(tr->getIndexList()->getSize()));
 	  Point3Array::iterator _it = _nml->getBegin();
 	  Point3Array::const_iterator _it2 = faceSet->getNormalList()->getBegin();
@@ -357,7 +356,7 @@ bool Tesselator::process( FaceSet * faceSet ) {
 	  tr->getNormalList() = _nml;
   }
 
-  if (!faceSet->getColorPerVertex() && faceSet->getColorList().isValid()){
+  if (!faceSet->getColorPerVertex() && faceSet->getColorList()){
 	  Color4ArrayPtr _cl( new Color4Array(tr->getIndexList()->getSize()));
 	  Color4Array::iterator _it = _cl->getBegin();
 	  Color4Array::const_iterator _it2 = faceSet->getColorList()->getBegin();
@@ -375,7 +374,7 @@ bool Tesselator::process( FaceSet * faceSet ) {
 	  tr->getColorList() = _cl;
   }
 
-  __discretization = tr;
+  __discretization = ExplicitModelPtr(tr);
 
 
   GEOM_TESSELATOR_UPDATE_CACHE(faceSet);
@@ -459,18 +458,18 @@ bool Tesselator::process( QuadSet * quadSet ) {
   TriangleSet * tr = new TriangleSet(quadSet->getPointList(),
 				     quadSet->getIndexList()->triangulate(),
 				     quadSet->getNormalList(),
-					 (quadSet->getNormalIndexList()?quadSet->getNormalIndexList()->triangulate():0),
+					 (quadSet->getNormalIndexList()?quadSet->getNormalIndexList()->triangulate():Index3ArrayPtr()),
 				     quadSet->getColorList(),
-					 (quadSet->getColorIndexList()?quadSet->getColorIndexList()->triangulate():0),
+					 (quadSet->getColorIndexList()?quadSet->getColorIndexList()->triangulate():Index3ArrayPtr()),
 				     quadSet->getTexCoordList(),
-					 (quadSet->getTexCoordIndexList()?quadSet->getTexCoordIndexList()->triangulate():0),
+					 (quadSet->getTexCoordIndexList()?quadSet->getTexCoordIndexList()->triangulate():Index3ArrayPtr()),
 				     quadSet->getNormalPerVertex(),
 				     quadSet->getColorPerVertex(),
 				     quadSet->getCCW(),
 				     quadSet->getSolid(),
 				     quadSet->getSkeleton());
 
-  if (!quadSet->getNormalPerVertex() && quadSet->getNormalList().isValid()){
+  if (!quadSet->getNormalPerVertex() && quadSet->getNormalList()){
 	  Point3ArrayPtr _nml( new Point3Array(quadSet->getNormalList()->getSize()*2));
 	  Point3Array::iterator _it = _nml->getBegin();
 	  for (Point3Array::const_iterator _it2 = quadSet->getNormalList()->getBegin();
@@ -482,7 +481,7 @@ bool Tesselator::process( QuadSet * quadSet ) {
 	  tr->getNormalList() = _nml;
   }
 
-  if (!quadSet->getColorPerVertex() && quadSet->getColorList().isValid()){
+  if (!quadSet->getColorPerVertex() && quadSet->getColorList()){
 	  Color4ArrayPtr _cl( new Color4Array(quadSet->getColorList()->getSize()*2));
 	  Color4Array::iterator _it = _cl->getBegin();
 	  for (Color4Array::const_iterator _it2 = quadSet->getColorList()->getBegin();
@@ -494,7 +493,7 @@ bool Tesselator::process( QuadSet * quadSet ) {
 	  tr->getColorList() = _cl;
   }
 
-  __discretization = tr;
+  __discretization = ExplicitModelPtr(tr);
 
   GEOM_TESSELATOR_UPDATE_CACHE(quadSet);
   return true;

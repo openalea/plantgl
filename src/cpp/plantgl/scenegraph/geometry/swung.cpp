@@ -157,7 +157,7 @@ bool Swung::Builder::isValid( ) const
 Swung::Swung() :
 /////////////////////////////////////////////////////////////////////////////
   SOR(),
-  __profiles(0),
+  __profiles(),
   __ccw(DEFAULT_CCW),
   __degree(DEFAULT_DEGREE),
   __stride(DEFAULT_STRIDE)
@@ -188,7 +188,7 @@ Swung::Swung( const Curve2DArrayPtr& profileList,
                                 uint_t stride ) :
 /////////////////////////////////////////////////////////////////////////////
   SOR(slices),
-  __profiles(0),
+  __profiles(),
   __ccw(ccw),
   __degree(degree),
   __stride(stride)
@@ -223,7 +223,7 @@ SceneObjectPtr Swung::copy() const {
     if(_ca2){
       uint_t i = 0;
       for(Curve2DArray::iterator _it = _ca->getBegin(); _it != _ca->getEnd(); _it++){
-	if(_ca2->getAt(i))_it->cast(_ca2->getAt(i)->copy());
+	if(_ca2->getAt(i))*_it = dynamic_pointer_cast<Curve2D>(_ca2->getAt(i)->copy());
 	i++;
       }
     }

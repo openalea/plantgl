@@ -193,7 +193,7 @@ bool MatrixComputer::process( Group * group ) {
 
 
 bool MatrixComputer::process( IFS * ifs ) {
-  ITPtr transfos = ITPtr::Cast( ifs->getTransformation() );
+  ITPtr transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
@@ -384,7 +384,7 @@ bool MatrixComputer::transfo_process( MatrixTransformed* object )
 
 
   Matrix4TransformationPtr _transform =
-    Matrix4TransformationPtr::Cast(object->getTransformation());
+    dynamic_pointer_cast<Matrix4Transformation>(object->getTransformation());
 
   GEOM_ASSERT(_transform);
 

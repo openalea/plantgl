@@ -128,7 +128,7 @@ int question3(std::string caption,
 }
 
 
-#ifdef PGL_DEBUG
+#ifdef False // PGL_DEBUG
 
 template <class T >
 class MyExtractor : public boost::python::extract<const char *> {
@@ -178,35 +178,18 @@ object itemSelection1(boost::python::list values){
   return t;
 }
 
-#ifdef PGL_DEBUG
-object itemSelectionNE(boost::python::str caption,
-					   boost::python::str text,
-					   boost::python::list values){
-#else
 object itemSelectionNE(std::string caption,
 					   std::string text,
 					   boost::python::list values){
-#endif
   return itemSelection(caption,text,values,false);
 }
 
 
-#ifdef PGL_DEBUG
-object doubleSelection(boost::python::str _caption,
-					   boost::python::str _text,
-                       double value,
-                       double minvalue,
-                       double maxvalue){
-  std::string caption = boost::python::extract<const char *>(_caption);
-  std::string text = boost::python::extract<const char *>(_text);
-#else
 object doubleSelection(std::string caption,
 					   std::string text,
                        double value,
                        double minvalue,
                        double maxvalue){
-#endif
-
   double res = 0;
   bool ok;
   {
@@ -217,26 +200,15 @@ object doubleSelection(std::string caption,
 }
 
 
-#ifdef PGL_DEBUG
-object doubleSelection3(boost::python::str caption,
-					   boost::python::str text,
-                       double value)
-#else
 object doubleSelection3(std::string caption,
 					   std::string text,
                        double value)
-#endif
 {
   return doubleSelection(caption,text,value,DBL_MIN,DBL_MAX);
 }
 
-#ifdef PGL_DEBUG
-object doubleSelection2(boost::python::str caption,
-					   boost::python::str text)
-#else
 object doubleSelection2(std::string caption,
 					   std::string text)
-#endif
 {
    return doubleSelection(caption,text,0,DBL_MIN,DBL_MAX);
 }
@@ -427,13 +399,13 @@ boost::python::object castRays2_1(const ScenePtr& sc){
 
 
 void displaySh(ShapePtr sh){
-    ScenePtr s = new Scene();
+    ScenePtr s = ScenePtr(new Scene());
     s->add(sh);
     PGLViewerApplication::display(s);
 }
 
 void addSh(ShapePtr sh){
-    ScenePtr s = new Scene();
+    ScenePtr s = ScenePtr(new Scene());
     s->add(sh);
     PGLViewerApplication::add(s);
 }
@@ -457,7 +429,7 @@ bool viewer_wait(){
 
 PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost::python::object(),
                                        char * caption = "", 
-                                       Material * initial = NULL )
+                                       MaterialPtr initial = MaterialPtr() )
 {
     QWidget * parent  = NULL;
     if (pyparent != boost::python::object())
@@ -467,7 +439,7 @@ PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost:
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(pyGetMaterialFromDialog_overloads, pyGetMaterialFromDialog, 0, 3)
 
-int pyEditMaterialInDialog(Material * initial,
+int pyEditMaterialInDialog(MaterialPtr initial,
                             boost::python::object pyparent = boost::python::object(), 
                             char * caption = "")
 {

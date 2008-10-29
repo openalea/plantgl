@@ -50,7 +50,7 @@ TOOLS_USING_NAMESPACE
 template<class T>
 object py_poly_plit(T * polyline, real_t u){
     std::pair<RCPtr<T>,RCPtr<T> > res = polyline->split(u);
-    return make_tuple(res.first,res.second);
+	return boost::python::make_tuple(res.first,res.second);
 }
 
 DEF_POINTEE( Polyline )

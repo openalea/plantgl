@@ -50,117 +50,19 @@
 #include <iostream>
 #endif
 
+#define PGL_SMARTPTR
+// #define BOOST_INSTRUSIVEPTR
+// #define BOOST_SHAREDPTR
 
-/* ----------------------------------------------------------------------- */
-
-TOOLS_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-
-/**
-   \class RefCountObject
-   \brief A base class for reference-counted objects.
-
-   This implementation is taken from the book \b More \b Effective \b C++ 
-   (Scott Meyers).
-   \warning Destructor must always be implemented even if they are pure 
-   virtual and do nothing. When implemeting an object inheriting from 
-   RefCountObject, you can use the macro DECLARE_REF_COUNT_OBJECT(your 
-   object) in the object specification section in order to be sure to 
-   declare the virtual destructor. You need then to implement it.
-*/
-
-class TOOLS_API RefCountObject
-{
-
-public:
-
-  /// @name Constructors
-  //@{
-
-  /// Default constructor.
-  RefCountObject( ) :
-    _ref_count(0)
-  {
-  }
-
-  /// Copy constructor.
-  RefCountObject( const RefCountObject& ) :
-    _ref_count(0)
-  {
-  }
-  
-  //@}
-
-  /// @name Destructor
-  //@{
-
-  /// Destructor.
-  virtual ~RefCountObject( )
-  {
-  }
-
-  //@}
-  
-  /// @name Assignement operator
-  //@{
-  
-  /// Assignement operator
-  RefCountObject& operator=( const RefCountObject& )
-  {
-    return *this;
-  }
-  //@}
-
-
-  /// @name Reference counting functions
-  //@{
-
-  /// Increments the reference counter.
-  inline void addReference( )
-  {
-    ++_ref_count;
-#ifdef RCOBJECT_DEBUG
-    std::cerr << this << " ref++ => " << getReferenceCount();
-    std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
+#ifdef PGL_SMARTPTR
+#define NO_BOOST_REFCOUNTPTR
+#else
+#define BOOST_REFCOUNTPTR
 #endif
-  }
 
-  /// Returns the number of reference to \e self.
-  inline size_t getReferenceCount( ) const 
-  {
-    return _ref_count;
-  }
-
-  /// Returns whether \e self is shared.
-  inline bool isShared( ) const
-  {
-    return _ref_count > 1;
-  }
-
-  /// Decrements the reference counter.  
-  inline void removeReference( )
-  {
-    --_ref_count;
-#ifdef RCOBJECT_DEBUG
-    std::cerr << this << " ref-- => " << getReferenceCount();
-    std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
-#endif
-    if (_ref_count == 0) delete this;
-  }
-  
-  //@}
-
-private:
-
-  size_t _ref_count;
-
-}; // RefCountObject
-
+#define WITH_REFCOUNTLISTENER
 
 /* ----------------------------------------------------------------------- */
-
 
 /**
    \class RefCountPtr
@@ -172,6 +74,62 @@ private:
    - T must inherit from RefCountObject..
 */
 
+#ifdef BOOST_REFCOUNTPTR
+
+  #ifdef BOOST_SHAREDPTR
+	/// Using Boost shared_ptr
+	#include <boost/shared_ptr.hpp>
+
+	// using boost::shared_ptr;
+
+	template<class T> struct intrusive_deleter
+	{
+		void operator()(T * p) { if(p) boost::intrusive_ptr_release(p); }
+	};
+
+	template<class X> 
+	boost::shared_ptr<X> make_shared_from_intrusive(X * p)
+	{
+		if(p) boost::intrusive_ptr_add_ref(p);
+		boost::shared_ptr<X> px(p, intrusive_deleter<X>());
+		return px;
+	}
+
+	template <class T>
+	class my_shared_ptr : public boost::shared_ptr<T> {
+	public:
+
+		my_shared_ptr(): shared_ptr() { }
+
+		template<class Y>
+		explicit my_shared_ptr( Y * p ): shared_ptr<T>( p, intrusive_deleter<Y>() )
+		{ if(p) boost::intrusive_ptr_add_ref(p);   }
+
+		template<class Y>
+		my_shared_ptr(shared_ptr<Y> const & r): shared_ptr(r) // never throws
+		{
+		}
+
+	};
+
+	/// Tools Reference Counting Pointer 
+	#define RCPtr my_shared_ptr
+
+
+  #else // BOOST_INSTRUSIVEPTR
+    /// Using Boost intrusive_ptr
+	#include <boost/intrusive_ptr.hpp>
+
+	using boost::intrusive_ptr;
+	/// Tools Reference Counting Pointer 
+	#define RCPtr intrusive_ptr
+
+#endif
+
+#else // PGL_SMARTPTR
+/// Using home made smart_ptr
+
+TOOLS_BEGIN_NAMESPACE
 
 template <class T>
 class RefCountPtr
@@ -198,7 +156,7 @@ public:
 #if _MSC_VER > 1200
   /// Copy constructor.
   template<class U>
-  RefCountPtr( const RefCountPtr<U>& ptr ) :  __ptr(ptr.toPtr()) { if (__ptr) __ptr->addReference(); }
+  RefCountPtr( const RefCountPtr<U>& ptr ) :  __ptr(ptr.get()) { if (__ptr) __ptr->addReference(); }
 #endif
 
   //@}
@@ -257,7 +215,7 @@ public:
 
   /// Cast operation
   template <class U>
-  inline RefCountPtr& cast( const RefCountPtr<U>& ptr )
+  attribute_deprecated inline RefCountPtr& cast( const RefCountPtr<U>& ptr )
   {
     if (__ptr != ptr.toPtr())
 	{
@@ -270,7 +228,7 @@ public:
 
   /// Cast operation
   template <class U>
-  static RefCountPtr Cast( const RefCountPtr<U>& ptr )
+  attribute_deprecated static RefCountPtr Cast( const RefCountPtr<U>& ptr )
   {
     RefCountPtr rptr;
     if (ptr.toPtr() != NULL)return rptr.cast(ptr);
@@ -285,8 +243,13 @@ public:
 
   /// Comparison operator with RefCountPtr<T> \e ptr.
   bool equal( const RefCountPtr& ptr ) const { return __ptr == ptr.__ptr; }
+
   /// Comparison operator with RefCountPtr<T> \e ptr.
   bool operator==( const RefCountPtr& ptr ) const { return __ptr == ptr.__ptr; }
+
+  /// Comparison operator with RefCountPtr<U> \e ptr.
+  template<class U>
+  bool operator==( const RefCountPtr<U>& ptr ) const { return __ptr == ptr.get(); }
 
   /// Comparison operator with pointer \e ptr.
   bool operator==( const T * ptr ) const { return __ptr == ptr; }
@@ -297,6 +260,10 @@ public:
 
   /// Comparison operator with pointer \e ptr.
   bool operator!=( const T * ptr ) const { return __ptr != ptr; }
+
+  /// Comparison operator with RefCountPtr<T> \e ptr.
+  template<class U>
+  bool operator!=( const RefCountPtr<U>& ptr ) const { return __ptr != ptr.get(); }
 
   /// Comparison operator with RefCountPtr<T> \e ptr.
   bool inf( const RefCountPtr& ptr ) const { return __ptr < ptr.__ptr; }
@@ -329,19 +296,20 @@ public:
   //  operator bool( ) const { return __ptr != 0; }
   
   /// Return a conversion of \e self into bool
-  bool toBool( ) const { return __ptr != 0; }
+  attribute_deprecated bool toBool( ) const { return __ptr != 0; }
 
   /// Implicit conversion into normal pointer.
   operator T * ( ) const { return __ptr; }
   
   /// Return a conversion of \e self into T *
-  T * toPtr( ) const { return __ptr; }
+  attribute_deprecated T * toPtr( ) const { return __ptr; }
+  T * get( ) const { return __ptr; }
 
   /// Return a conversion of \e self into size_t
-  size_t toSizeT( ) const { return (size_t)__ptr; }
+  attribute_deprecated size_t toSizeT( ) const { return (size_t)__ptr; }
   
   /// Return a conversion of \e self into uint_t
-  uint32_t toUint32( ) const 
+  attribute_deprecated uint32_t toUint32( ) const 
 #if __WORDSIZE == 64
   { return (uintptr_t)__ptr; }
 #else
@@ -354,13 +322,13 @@ public:
   //@{
 
   /// Returns true if and only if \e self is not null.
-  bool isValid( ) const { return __ptr != 0; }
+  attribute_deprecated bool isValid( ) const { return __ptr != 0; }
 
   /// Returns true if and only if \e self is null.
   bool operator!( ) const { return __ptr == 0; }
 
   /// Returns true if and only if \e self is null.
-  bool isNull( ) const { return __ptr == 0; }
+  attribute_deprecated bool isNull( ) const { return __ptr == 0; }
 
   //@}
 
@@ -370,35 +338,233 @@ private:
 
 }; // RefCountPtr
 
+
 /* ------------------------------------------------------------------------- */
-
-// For compatibility with Boost.Python.
-template<class T>
-T* get_pointer(const RefCountPtr<T>& p)
-{
-	return p.toPtr();
-}
-
-/*
- * helper macros section
- *
- */
-
-/// To declare a Reference Counting Pointer on Type : TypePtr
-#define DECLARE_PTR(Type) \
-  typedef RCPtr<Type> Type##Ptr; \
-
-/// To make a forward declaration of a Reference Counting Pointer on Type : TypePtr
-#define DECLARE_FWD_PTR(Type) \
-  class Type; \
-  typedef RCPtr<Type> Type##Ptr; \
-
-/* ----------------------------------------------------------------------- */
 
 TOOLS_END_NAMESPACE
 
 /// Tools Reference Counting Pointer 
 #define RCPtr TOOLS(RefCountPtr)
+
+// For compatibility with Boost.Python.
+namespace boost { namespace python {
+	template<class T>
+	T* get_pointer(const RCPtr<T>& p){ return p.get(); }
+}}
+
+/* ----------------------------------------------------------------------- */
+
+#endif
+/* ----------------------------------------------------------------------- */
+
+TOOLS_BEGIN_NAMESPACE
+
+/**
+   \class RefCountObject
+   \brief A base class for reference-counted objects.
+
+   This implementation is taken from the book \b More \b Effective \b C++ 
+   (Scott Meyers).
+   \warning Destructor must always be implemented even if they are pure 
+   virtual and do nothing. When implemeting an object inheriting from 
+   RefCountObject, you can use the macro DECLARE_REF_COUNT_OBJECT(your 
+   object) in the object specification section in order to be sure to 
+   declare the virtual destructor. You need then to implement it.
+*/
+
+#ifdef WITH_REFCOUNTLISTENER
+/**
+    \class RefCountListener 
+	\brief RefCountListener are used to propagate reference count changed.
+	       For instance, it can be used to link with PyObject representation.
+*/
+class RefCountObject;
+class TOOLS_API RefCountListener {
+public:
+	virtual ~RefCountListener() { }
+	virtual void referenceAdded(RefCountObject *) = 0;
+	virtual void referenceRemoved(RefCountObject *) = 0;
+	virtual void objectDeleted(RefCountObject *) = 0;
+};
+
+#endif
+
+class TOOLS_API RefCountObject 
+{
+
+public:
+  /// @name Constructors
+  //@{
+
+  /// Default constructor.
+  RefCountObject( ) :
+    _ref_count(0)
+#ifdef WITH_REFCOUNTLISTENER
+	,_ref_count_listener(0)
+#endif
+  {
+  }
+
+  /// Copy constructor.
+  RefCountObject( const RefCountObject& ) :
+    _ref_count(0)
+#ifdef WITH_REFCOUNTLISTENER
+	,_ref_count_listener(0)
+#endif
+  {
+  }
+  
+  //@}
+
+  /// @name Destructor
+  //@{
+
+  /// Destructor.
+  virtual ~RefCountObject( )
+  {
+#ifdef WITH_REFCOUNTLISTENER
+	  if(_ref_count_listener) {
+		  _ref_count_listener->objectDeleted(this);
+		  if(_ref_count_listener) { delete _ref_count_listener; _ref_count_listener = NULL; }
+	  }
+#endif
+  }
+
+  //@}
+  
+  /// @name Assignement operator
+  //@{
+  
+  /// Assignement operator
+  RefCountObject& operator=( const RefCountObject& )
+  {
+    return *this;
+  }
+  //@}
+
+
+  /// @name Reference counting functions
+  //@{
+
+  /// Increments the reference counter.
+  inline void addReference( )
+  {
+    ++_ref_count;
+#ifdef RCOBJECT_DEBUG
+    std::cerr << this << " ref++ => " << getReferenceCount();
+    std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
+#endif
+#ifdef WITH_REFCOUNTLISTENER
+	if(_ref_count_listener) _ref_count_listener->referenceAdded(this);
+#endif
+  }
+
+  /// Returns the number of reference to \e self.
+  attribute_deprecated inline size_t getReferenceCount( ) const 
+  {
+    return _ref_count;
+  }
+
+  /// Returns the number of reference to \e self.
+  inline size_t use_count( ) const 
+  {
+    return _ref_count;
+  }
+
+  /// Returns whether \e self is shared.
+  attribute_deprecated inline bool isShared( ) const
+  {
+    return _ref_count > 1;
+  }
+
+  /// Returns whether \e self is shared.
+  inline bool unique( ) const
+  {
+    return _ref_count > 1;
+  }
+
+  /// Decrements the reference counter.  
+  inline void removeReference( )
+  {
+    --_ref_count;
+#ifdef RCOBJECT_DEBUG
+    std::cerr << this << " ref-- => " << getReferenceCount();
+    std::cerr << "\t(" << typeid(*this).name() << ")" << std::endl;
+#endif
+#ifdef WITH_REFCOUNTLISTENER
+	if(_ref_count_listener) _ref_count_listener->referenceRemoved(this);
+#endif
+    if (_ref_count == 0) delete this;
+  }
+  
+  //@}
+
+#ifdef WITH_REFCOUNTLISTENER
+  inline void setRefCountListener(RefCountListener * r) 
+  {  _ref_count_listener = r;   }
+
+  inline RefCountListener * getRefCountListener() const 
+  { return _ref_count_listener; }
+#endif
+
+private:
+
+  size_t _ref_count;
+#ifdef WITH_REFCOUNTLISTENER
+  RefCountListener * _ref_count_listener;
+#endif
+
+}; // RefCountObject
+
+TOOLS_END_NAMESPACE
+
+#ifdef BOOST_REFCOUNTPTR
+    // Use of intrusive_ptr or shared_ptr
+	namespace boost
+	{
+		inline void intrusive_ptr_add_ref(TOOLS(RefCountObject) * obj) { obj->addReference(); }
+		inline void intrusive_ptr_release(TOOLS(RefCountObject) * obj) { obj->removeReference(); }
+	};
+#endif
+
+
+/// dynamic_pointer_cast
+#ifdef BOOST_REFCOUNTPTR
+using boost::dynamic_pointer_cast;
+using boost::static_pointer_cast;
+using boost::const_pointer_cast;
+#else
+template <class T, class U>
+RCPtr<T> dynamic_pointer_cast(const RCPtr<U>& r) {  return RCPtr<T>(dynamic_cast<T *>(r.get())); }
+
+template <class T, class U>
+RCPtr<T> static_pointer_cast(const RCPtr<U>& r) {  return RCPtr<T>(static_cast<T *>(r.get())); }
+
+template <class T, class U>
+RCPtr<T> const_pointer_cast(const RCPtr<U>& r) {  return RCPtr<T>(const_cast<T *>(r.get())); }
+#endif
+
+
+/// Return a conversion of \e ptr into size_t
+template <class U>
+inline size_t ptr_to_size_t( const RCPtr<U>& p ) { return (size_t)p.get(); }
+  
+/// Return a conversion of \e ptr into uint_t
+template <class U>
+inline uint32_t ptr_to_uint32( const RCPtr<U>& p ) 
+#if __WORDSIZE == 64
+  { return (uintptr_t)p.get(); }
+#else
+  { return (uint32_t)p.get(); }
+#endif
+
+/// Returns true if and only if \e ptr is not null.
+template <class U>
+inline bool is_valid_ptr( const RCPtr<U>& p ) { return (p); }
+
+/// Returns true if and only if \e ptr is null.
+template <class U>
+inline bool is_null_ptr( const RCPtr<U>& p ) { return p.get() == 0; }
 
 /* ----------------------------------------------------------------------- */
 

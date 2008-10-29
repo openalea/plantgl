@@ -59,7 +59,7 @@
 				AdditionalDependencies="boost_python-vc80-mt-1_35.lib"
 				OutputFile="../../plantgl_d/algo/_pglalgo_d.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
-				IgnoreDefaultLibraryNames=""
+				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_35.lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>

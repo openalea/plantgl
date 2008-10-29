@@ -201,8 +201,8 @@ object convert_lc(const LineicModelPtr& res)
 {
 	if (!res)return object();
 	else {
-		NurbsCurvePtr c;		
-		if(c.cast(res)){
+		NurbsCurvePtr c = dynamic_pointer_cast<NurbsCurve>(res);		
+		if(c){
 			Point3ArrayPtr cpts(new Point3Array(c->getCtrlPointList()->getSize()));
 			Point3Array::iterator _it = cpts->getBegin();
 			for (Point4Array::const_iterator _it2 = c->getCtrlPointList()->getBegin();
@@ -214,7 +214,7 @@ object convert_lc(const LineicModelPtr& res)
 				return object(c2);
 		}
 		else {
-			BezierCurvePtr bc = BezierCurvePtr::Cast(res);
+			BezierCurvePtr bc = dynamic_pointer_cast<BezierCurve>(res);
 			if (bc){
 				Point3ArrayPtr cpts(new Point3Array(bc->getCtrlPointList()->getSize()));
 				Point3Array::iterator _it = cpts->getBegin();
@@ -227,8 +227,8 @@ object convert_lc(const LineicModelPtr& res)
 					return object(bc2);
 			}
 			else {
-				PolylinePtr pc;
-				if(pc.cast(res)){
+				PolylinePtr pc = dynamic_pointer_cast<Polyline>(res);
+				if(pc){
 					Point2ArrayPtr cpts(new Point2Array(pc->getPointList()->getSize()));
 					Point2Array::iterator _it = cpts->getBegin();
 					for (Point3Array::const_iterator _it2 = pc->getPointList()->getBegin();

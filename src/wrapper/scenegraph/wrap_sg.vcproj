@@ -59,7 +59,7 @@
 				AdditionalDependencies="boost_python-vc80-mt-1_35.lib QtCored4.lib "
 				OutputFile="../../plantgl_d/scenegraph/_pglsg_d.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
-				IgnoreDefaultLibraryNames=""
+				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_35.lib"
 				GenerateDebugInformation="true"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
@@ -348,7 +348,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\cpp\plantgl\python\intrusive_ptr_python_helper.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\cpp\plantgl\python\list_converter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\cpp\plantgl\python\pyobj_reference.h"
 				>
 			</File>
 			<File

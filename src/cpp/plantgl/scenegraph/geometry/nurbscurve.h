@@ -108,7 +108,7 @@ public:
       \post
       - \e self is valid. */
   NurbsCurve(  const Point4ArrayPtr& ctrlPoints, 
-	       const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr(0)), 
+	       const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
 	       uint_t degree = DEFAULT_NURBS_DEGREE, 
 	       uint_t stride = DEFAULT_STRIDE );
 
@@ -286,7 +286,7 @@ public:
       \post
       - \e self is valid. */
   NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, 
-		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr(0)), 
+		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
 		 uint_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
 		 uint_t stride = BezierCurve::DEFAULT_STRIDE );
 

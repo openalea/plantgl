@@ -33,15 +33,12 @@
  
 
 
-
 #include <qapplication.h>
 #include <qgl.h>
 #include <qpixmap.h>
 
-
 #include "../viewer/pglviewer.h"
 #include "../base/daemon.h"
-
 
 int main( int argc, char **argv )
 {

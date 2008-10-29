@@ -79,7 +79,7 @@ ViewGeomSceneGL::ViewGeomSceneGL(ViewCameraGL * camera,
                                  QGLWidget * parent,
                                  const char * name) :
   ViewModalRendererGL(camera,light,parent,name),
-  __scene(0),
+  __scene(),
   __discretizer(),
   __renderer(__discretizer,parent),
   __skelComputer(__discretizer),
@@ -145,7 +145,7 @@ ViewGeomSceneGL::sceneChangeEvent( ViewSceneChangeEvent * k)
 void
 ViewGeomSceneGL::clear()
 {
-  __scene = ScenePtr(0);
+  __scene = ScenePtr();
   __bbox= BoundingBoxPtr(new BoundingBox(Vector3(-1,-1,-1),Vector3(1,1,1)));
   setFilename("");
   clearCache();
@@ -192,7 +192,7 @@ ViewGeomSceneGL::translateId(uint_t id) const
     Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->getBegin();
         _it != __scene->getEnd(); _it++){
-      if( ptr.cast(*_it).isValid() && (ptr->SceneObject::getId() == id))
+      if( (ptr = dynamic_pointer_cast<Shape3D>(*_it)) && (ptr->SceneObject::getId() == id))
 	    return ptr->getId();
     }
 	return id;
@@ -236,7 +236,7 @@ ViewGeomSceneGL::getSelectionBoundingBox()
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(__bboxComputer)){
 		if(bbox)bbox->extend(__bboxComputer.getBoundingBox());
-		else bbox = new BoundingBox(*__bboxComputer.getBoundingBox());
+		else bbox = BoundingBoxPtr(new BoundingBox(*__bboxComputer.getBoundingBox()));
 	  }
   return bbox;
 }
@@ -324,7 +324,7 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
   }
 
   // Clears all the actions
-  __scene = ScenePtr(0);
+  __scene = ScenePtr();
   __bbox= BoundingBoxPtr();
   clearCache();
 
@@ -506,7 +506,7 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
     Shape3DPtr ptr;
     for(Scene::iterator _it = __scene->getBegin();
         _it != __scene->getEnd(); _it++){
-      if(ptr.cast(*_it).isValid() && 
+      if((ptr = dynamic_pointer_cast<Shape>(*_it)) && 
 		(ptr->SceneObject::getId() == id)){
         __selectedShapes[id]=ptr;
         uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
@@ -537,7 +537,7 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 	  Shape3DPtr ptr;
 	  for(Scene::iterator _it = __scene->getBegin();
 	  _it != __scene->getEnd(); _it++){
-		if(ptr.cast(*_it).isValid() && ptr->SceneObject::getId() == *_id){
+		if((ptr= dynamic_pointer_cast<Shape>(*_it)) && ptr->SceneObject::getId() == *_id){
 		  __selectedShapes[*_id]=ptr;
 		  selected++;
 		  break;
@@ -575,8 +575,8 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint_t>& id)
 	  for(Scene::const_iterator _it = __scene->getBegin() ; 
 					  _it != __scene->getEnd(); 
 					  _it++){
-		ShapePtr ptr = ShapePtr::Cast(*_it);
-		if(ptr.isValid() && ptr->getId() == *_id){
+		ShapePtr ptr = dynamic_pointer_cast<Shape>(*_it);
+		if(ptr && ptr->getId() == *_id){
 		  __selectedShapes[ptr->SceneObject::getId()]=ptr;
 		  selected++;
 		}
@@ -683,7 +683,7 @@ ViewGeomSceneGL::wireSelection()
   hash_map<uint_t,Shape3DPtr> selection;
   for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = ShapePtr::Cast(_it->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
 	if(sh){
 	  if(sh->apply(wire)){
 		sh->geometry = wire.getWire();
@@ -712,7 +712,7 @@ ViewGeomSceneGL::discretizeSelection()
   hash_map<uint_t,Shape3DPtr> selection;
   for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = ShapePtr::Cast(_it->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
 	if(sh){
 	  if(sh->apply(__discretizer)){
 		sh->geometry = GeometryPtr(__discretizer.getDiscretization());
@@ -742,7 +742,7 @@ ViewGeomSceneGL::triangulateSelection()
   hash_map<uint_t,Shape3DPtr> selection;
   for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = ShapePtr::Cast(_it->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
 	Tesselator t;
 	if(sh){
 	  if(sh->apply(t)){

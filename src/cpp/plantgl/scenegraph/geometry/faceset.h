@@ -135,11 +135,11 @@ public:
   FaceSet( const Point3ArrayPtr& points,
 	       const IndexArrayPtr& indices,
 		   const Point3ArrayPtr& normals ,
-		   const IndexArrayPtr& nomalIndices = 0,
-		   const Color4ArrayPtr& colors  = 0,
-		   const IndexArrayPtr& colorIndices = 0,
-		   const Point2ArrayPtr& texCoord = 0,
-		   const IndexArrayPtr& texCoordIndices = 0,
+		   const IndexArrayPtr& nomalIndices = IndexArrayPtr(),
+		   const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+		   const IndexArrayPtr& colorIndices = IndexArrayPtr(),
+		   const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
+		   const IndexArrayPtr& texCoordIndices = IndexArrayPtr(),
 		   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
 		   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
 		   bool CCW = DEFAULT_CCW,
@@ -198,7 +198,7 @@ public:
   { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->getSize()) return __normalIndexList->getAt(i); }
 
   /// Returns the size of \b NormalIndexList.
-  inline uint_t getNormalIndexListSize( ) const { return (__normalIndexList.isValid()?__normalIndexList->getSize():0); }
+  inline uint_t getNormalIndexListSize( ) const { return (__normalIndexList?__normalIndexList->getSize():0); }
 
   /// Returns \b ColorIndexList values.
   inline const IndexArrayPtr& getColorIndexList( ) const { return __colorIndexList; }
@@ -219,7 +219,7 @@ public:
   { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->getSize()) return __colorIndexList->getAt(i); }
 
   /// Returns the size of \b ColorIndexList.
-  inline uint_t getColorIndexListSize( ) const { return (__colorIndexList.isValid()?__colorIndexList->getSize():0); }
+  inline uint_t getColorIndexListSize( ) const { return (__colorIndexList?__colorIndexList->getSize():0); }
 
   /// Returns \b TexCoordIndexList values.
   inline const IndexArrayPtr& getTexCoordIndexList( ) const { return __texCoordIndexList; }
@@ -240,7 +240,7 @@ public:
   { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->getSize()) return __texCoordIndexList->getAt(i); }
 
   /// Returns the size of \b TexCoordIndexList.
-  inline uint_t getTexCoordIndexListSize( ) const { return (__texCoordIndexList.isValid()?__texCoordIndexList->getSize():0); }
+  inline uint_t getTexCoordIndexListSize( ) const { return (__texCoordIndexList?__texCoordIndexList->getSize():0); }
 
   /** Returns the \e i-th normal to (normally correxponding to the \e i-th face).
       \pre
@@ -296,13 +296,13 @@ public:
   virtual Point3ArrayPtr computeNormalPerFace() const ;
 
    /// Returns whether \b NormalIndexList is set to its default value.
-  inline bool isNormalIndexListToDefault() const { return __normalIndexList.isNull(); }
+  inline bool isNormalIndexListToDefault() const { return (!__normalIndexList); }
 
    /// Returns whether \b ColorIndexList is set to its default value.
-  inline bool isColorIndexListToDefault() const { return __colorIndexList.isNull(); }
+  inline bool isColorIndexListToDefault() const { return (!__colorIndexList); }
 
    /// Returns whether \b TexCoordIndexList is set to its default value.
-  inline bool isTexCoordIndexListToDefault() const { return __texCoordIndexList.isNull(); }
+  inline bool isTexCoordIndexListToDefault() const { return (!__texCoordIndexList); }
 
   /// Returns the nb of points of the \b i-th face.
   virtual uint_t getFaceSize( uint_t i ) const { return __indexList->getAt(i).getSize(); }

@@ -134,8 +134,8 @@ public:
   /// Constructor.
   Mesh( const Point3ArrayPtr& points,
         const Point3ArrayPtr& normals ,
-        const Color4ArrayPtr& colors  = 0,
-        const Point2ArrayPtr& texCoord = 0,
+        const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+        const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
         bool NormalPerVertex = DEFAULT_NORMALPERVERTEX,
         bool colorPerVertex = DEFAULT_COLORPERVERTEX,
         bool CCW = DEFAULT_CCW,
@@ -241,7 +241,7 @@ public:
   virtual Point3ArrayPtr computeNormalPerVertex() const = 0;
   virtual Point3ArrayPtr computeNormalPerFace() const = 0;
 
-  inline bool hasNormalList() const { return __normalList.isValid(); }
+  inline bool hasNormalList() const { return (__normalList); }
   inline void checkNormalList() { if(!hasNormalList())computeNormalList(); }
   inline void computeNormalList() { computeNormalList(__normalPerVertex); };
 

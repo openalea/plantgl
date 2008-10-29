@@ -52,7 +52,7 @@ OctreeNode::OctreeNode(Tile * Complex,
                        const Vector3& PMax) :
     Voxel(Complex,Scale,Type,Num,PMin,PMax),
     __components(NULL),
-    __objects(0){
+    __objects(){
 }
 
 

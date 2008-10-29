@@ -81,7 +81,7 @@ ScenePtr GeomViewBuilder::Parse(const string& filename, ostream& output)
 	ifstream input(filename.c_str());
 	if(!input) {
 		chg_dir(p);
-		return 0;
+		return ScenePtr();
 	}
 	GeomViewBuilder t(input,output);
 	ScenePtr scene = t.parse();
@@ -133,7 +133,7 @@ GeometryPtr GeomViewBuilder::parseGeometry()
 	uchar_t t = 0;
 	string token = processToken();
 	string name;
-	GeometryPtr geom(0);
+	GeometryPtr geom;
 	if(token == "{"){
 		bracket = true;
 		token = readToken();
@@ -231,7 +231,7 @@ GeometryPtr GeomViewBuilder::parseGeometry()
 		__output << "*** Error : geometry not define" << endl;
 	if(!name.empty()){
 		if(geom) __defines[name] = geom;
-		geom = GeometryPtr(0);
+		geom = GeometryPtr();
 	}
 	return geom;
 }
@@ -260,7 +260,7 @@ GeomViewBuilder::parseGeometry(std::string& token){
 		}while(!endListObject());
 		if(!geoms->isEmpty()){
 			if(geoms->getSize() == 1)geom = geoms->getAt(0);
-			else geom = new Group(geoms);
+			else geom = GeometryPtr(new Group(geoms));
 		}
 	}
 	else if(contains(token,"BEZ") || contains(token,"BBP")){
@@ -682,11 +682,11 @@ BezBuilder::parse(){
 		   << " Colored : " << (__colored?"True":"False")
 			<< endl;
 #endif
-	GeometryArrayPtr group = new GeometryArray(0);
+	GeometryArrayPtr group = GeometryArrayPtr(new GeometryArray(0));
 	Vector4 p;
 	bool valid = true;
 	while(!__data.endObject()){
-		Point4MatrixPtr ctrls = new Point4Matrix(__Nu+1,__Nv+1);
+		Point4MatrixPtr ctrls = Point4MatrixPtr(new Point4Matrix(__Nu+1,__Nv+1));
 		valid = true;
 		for(int i = 0 ; valid && i <= __Nu ; i++){
 			if(__data.endObject() )
@@ -718,11 +718,11 @@ BezBuilder::parse(){
 				{ valid = false; break; }
 				__data.readUColor4();
 			}
-		group->pushBack(new BezierPatch(ctrls));
+		group->pushBack(GeometryPtr(new BezierPatch(ctrls)));
 	}
-	if(group->isEmpty())return 0;
+	if(group->isEmpty())return GeometryPtr();
 	else if (group->getSize() == 1 )return group->getAt(0);
-	else return new Group(group);
+	else return GeometryPtr(new Group(group));
 }
 
 /* ----------------------------------------------------------------------- */
@@ -850,7 +850,7 @@ OffBuilder::parse(){
 		indices->setAt(j,ind);
 	}
 	if(valid){
-		geometry = new FaceSet(points,indices,normals);
+		geometry = GeometryPtr(new FaceSet(points,indices,normals));
 	}
 	return geometry;
 }
@@ -908,7 +908,7 @@ GVMeshBuilder::setTag(const string& t){
 
 GeometryPtr 
 GVMeshBuilder::parse(){
-	GeometryPtr geometry(0);
+	GeometryPtr geometry;
 #ifdef COMMENT_PARSE_OUTPUT
 	__data.output() << "*** Comment : GVMeshBuilder : " 
 			 << " Dim4 : " <<  (__dim4?"True":"False")
@@ -987,7 +987,7 @@ GVMeshBuilder::parse(){
 	}
 	if(valid){
 		if(__grid){
-			geometry = new ElevationGrid(grid);
+			geometry = GeometryPtr(new ElevationGrid(grid));
 		}
 		else {
 			int NFaces = (Nu-1)*(Nv-1)*2;
@@ -1017,9 +1017,9 @@ GVMeshBuilder::parse(){
 			}
 			
 			if(!__normals)
-				geometry = new TriangleSet(points,indices);
+				geometry = GeometryPtr(new TriangleSet(points,indices));
 			else 
-				geometry = new TriangleSet(points,indices,normals);
+				geometry = GeometryPtr(new TriangleSet(points,indices,normals));
 		}
 	}
 	return geometry;
@@ -1095,11 +1095,11 @@ QuadBuilder::parse(){
 		for(uint_t it = 0; it < nbfaces; it++)
 			indices->setAt(it,Index4(4*it,4*it+1,4*it+2,4*it+3));
 		if(!__normals)
-			return new QuadSet(points,indices);
+			return GeometryPtr(new QuadSet(points,indices));
 		else 
-			return new QuadSet(points,indices,normals);
+			return GeometryPtr(new QuadSet(points,indices,normals));
 	}
-	else return 0;
+	else return GeometryPtr();
 }
 
 
@@ -1145,15 +1145,15 @@ VectBuilder::parse(){
 	int NPolylines = __data.readInt();
 	if(__data.endObject()){ 
 		__data.output() << "*** Error : VectBuilder[" << __LINE__ << "] : Invalid end of object." << endl;
-		return 0; }
+		return GeometryPtr(); }
 	int NVertices = __data.readInt();
 	if(__data.endObject()){ 
 		__data.output() << "*** Error : VectBuilder[" << __LINE__ << "] : Invalid end of object." << endl;
-		return 0; }
+		return GeometryPtr(); }
 	int NColors = __data.readInt();
 	if(__data.endObject()){ 
 		__data.output() << "*** Error : VectBuilder[" << __LINE__ << "] : Invalid end of object." << endl;
-		return 0; }
+		return GeometryPtr(); }
 	bool valid = true;
 	int * NPointsP = new int [NPolylines];
 	int * NColorsP = new int [NPolylines];
@@ -1203,28 +1203,28 @@ VectBuilder::parse(){
 			__data.output() << "*** Error : VectBuilder : Number of points does not correspond " 
 				<< sum << " -- " << points->getSize()
 				<< endl;
-			return 0;
+			return GeometryPtr();
 		}
 		Point3Array::iterator it = points->getBegin();
 		for(int k = 0 ; it != points->getEnd() && k < NPolylines ; k++){
 			bool closed = (NPointsP[k] < 0);
 			int nbp = (NPointsP[k]<0?-NPointsP[k]:NPointsP[k]);
 			if(nbp == 1){
-				group->pushBack(new PointSet(new Point3Array(it,it+1)));
+				group->pushBack(GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(it,it+1)))));
 				it++;
 			}
 			else if(nbp > 1){
 				Point3ArrayPtr lpoints(new Point3Array(it,it+nbp));
 				if(closed)lpoints->pushBack(*it);
-				group->pushBack(new Polyline(lpoints));
+				group->pushBack(GeometryPtr(new Polyline(lpoints)));
 				it = it+nbp;
 			}
 		}
-		if(group->isEmpty())return 0;
+		if(group->isEmpty())return GeometryPtr();
 		else if (group->getSize() == 1 )return group->getAt(0);
-		else return new Group(group);
+		else return GeometryPtr(new Group(group));
 	}
-	return 0;
+	return GeometryPtr();
 }
 
 
@@ -1252,8 +1252,8 @@ GVSphereBuilder::parse(){
 	real_t radius = __data.readFloat();
 	Vector3 center = __data.readVector3();
 	if(center == Vector3::ORIGIN)
-	return new Sphere(radius);
-	else return new Translated(center,new Sphere(radius));
+	return GeometryPtr(new Sphere(radius));
+	else return GeometryPtr(new Translated(center,GeometryPtr(new Sphere(radius))));
 }
 
 

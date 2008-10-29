@@ -32,6 +32,7 @@
 #include <boost/python.hpp>
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/pyobj_reference.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -41,21 +42,22 @@ using namespace std;
 DEF_POINTEE(Geometry)
 
 const GeometryPtr deepcopy(Geometry * s){
-    return GeometryPtr::Cast(s->copy());
+    return dynamic_pointer_cast<Geometry>(s->copy());
 }
 
 void export_Geometry()
 {
 
-   class_< Geometry,GeometryPtr, bases< SceneObject >, boost::noncopyable > 
+   class_< Geometry, GeometryPtr, bases< SceneObject >, boost::noncopyable > 
       ("Geometry","Abstract base class for all geometrical structure.", no_init)
      .def("isACurve",&Geometry::isACurve)
      .def("isASurface",&Geometry::isASurface)
      .def("isAVolume",&Geometry::isAVolume)
      .def("isExplicit",&Geometry::isExplicit)
      .def("deepcopy", &deepcopy)
-;
+   ;
    
+   // WrapperToPython<GeometryPtr>();
    implicitly_convertible<GeometryPtr, SceneObjectPtr >();
    
 }

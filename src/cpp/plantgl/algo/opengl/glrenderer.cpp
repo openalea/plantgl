@@ -60,23 +60,11 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-#define GEOM_GLRENDERER_DISCRETIZE_RENDER(geom) \
-  GEOM_ASSERT(geom); \
-  GEOM_GLRENDERER_CHECK_CACHE(geom); \
-   if(__appearance.isValid() && __appearance->isTexture()) \
-      __discretizer.computeTexCoord(true); \
-  else __discretizer.computeTexCoord(false); \
-  bool b=true; \
-  if((b=geom->apply(__discretizer))&&(b=(__discretizer.getDiscretization().isValid()))){ \
-      b=__discretizer.getDiscretization()->apply(*this);\
-  } \
-  GEOM_GLRENDERER_UPDATE_CACHE(geom); \
-  return b; \
-
+  
 
 #define GEOM_GLRENDERER_CHECK_CACHE(geom) \
   GLuint _displaylist = 0; \
-  if(geom->isShared()){ \
+  if(!geom->isShared()){ \
 	if(__compil == 0){ \
 	  if(check(geom->getId(),_displaylist))return true; \
 	}  \
@@ -85,10 +73,10 @@ TOOLS_USING_NAMESPACE
   
 
 #define GEOM_GLRENDERER_UPDATE_CACHE(geom) \
-  if(__compil == 0 && geom->isShared()) update(geom->getId(),_displaylist); \
+  if(__compil == 0 && !geom->isShared()) update(geom->getId(),_displaylist); \
 
 #define GEOM_GLRENDERER_CHECK_APPEARANCE(app) \
-  if (__appearance.equal(app)) return true;
+  if (__appearance.get() == app) return true;
 
 //      (__appearance->getId() == app->getId())) return true;
 
@@ -96,6 +84,23 @@ TOOLS_USING_NAMESPACE
 #define GEOM_GLRENDERER_UPDATE_APPEARANCE(app) \
   __appearance = AppearancePtr(app);
 
+template<class T>
+bool GLRenderer::discretize_and_render(T * geom){
+  GEOM_ASSERT(geom); 
+  GEOM_GLRENDERER_CHECK_CACHE(geom);
+  if(__appearance && __appearance->isTexture())
+      __discretizer.computeTexCoord(true);
+  else __discretizer.computeTexCoord(false);
+  bool b=geom->apply(__discretizer); 
+  if( b && (b=(__discretizer.getDiscretization()))){ 
+      b=__discretizer.getDiscretization()->apply(*this);
+  } 
+  GEOM_GLRENDERER_UPDATE_CACHE(geom);
+  return b; 
+}
+
+#define GEOM_GLRENDERER_DISCRETIZE_RENDER(geom) \
+  return discretize_and_render(geom); \
 
 /* ----------------------------------------------------------------------- */
 
@@ -805,7 +810,7 @@ bool GLRenderer::process( IFS * ifs ) {
   GEOM_GLRENDERER_CHECK_CACHE(ifs);
 
   ITPtr transfos;
-  transfos.cast( ifs->getTransformation() );
+  transfos= dynamic_pointer_cast<IT>( ifs->getTransformation() );
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
@@ -1050,7 +1055,7 @@ bool GLRenderer::process( Oriented * oriented ) {
 
   glPushMatrix();
   Matrix4TransformationPtr _basis;
-  _basis.cast(oriented->getTransformation());
+  _basis= dynamic_pointer_cast<Matrix4Transformation>(oriented->getTransformation());
   GEOM_ASSERT(_basis);
   glGeomMultMatrix(_basis->getMatrix());
   oriented->getGeometry()->apply(*this);

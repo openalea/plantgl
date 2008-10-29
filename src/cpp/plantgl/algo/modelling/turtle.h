@@ -326,7 +326,8 @@ protected:
     virtual void _polygon(const std::vector<TOOLS(Vector3)>& points){}
     
     virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
-									  const std::vector<real_t>& radius){}
+									  const std::vector<real_t>& radius,
+									  const Curve2DPtr& crossSection){}
 
     virtual void _sphere(real_t radius){}
     

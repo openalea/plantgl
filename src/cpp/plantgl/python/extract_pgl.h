@@ -69,7 +69,7 @@ struct extract_pgllist {
 	RCPtr<T> extract_rcptr() const {
 		boost::python::extract<T *> direct_extractor(pylist);
 		if (direct_extractor.check()) return RCPtr<T>(direct_extractor());
-        else return RCPtr<T>(0);
+        else return RCPtr<T>();
     }
 
 	T * extract_list() const {
@@ -88,13 +88,13 @@ struct extract_pgllist {
 	}
 	T * extract() const {
         RCPtr<T> exact_list = extract_rcptr();
-        if (exact_list) return exact_list.toPtr();
+        if (exact_list) return exact_list.get();
         else return extract_list();
     }
 
 	inline RCPtr<T> toRCPtr() const {
         RCPtr<T> exact_list = extract_rcptr();
-        if (exact_list) return exact_list.toPtr();
+        if (exact_list) return exact_list;
         else return RCPtr<T>(extract_list()); 
     }
  

@@ -47,7 +47,7 @@ TOOLS_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 #define GEOM_GLBBOXRENDERER_CHECK_APPEARANCE(app) \
-  if ((__appearance.isValid()) && \
+  if ((__appearance) && \
       (__appearance->getId() == app->getId())) return true;
 
 #define GEOM_GLBBOXRENDERER_UPDATE_APPEARANCE(app) \

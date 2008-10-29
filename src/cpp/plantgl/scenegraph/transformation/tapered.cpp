@@ -300,7 +300,7 @@ bool Tapered::isValid( ) const {
 
 SceneObjectPtr Tapered::copy() const {
   Tapered * ptr = new Tapered(*this);
-  if(__primitive)ptr->getPrimitive().cast(__primitive->copy());
+  if(__primitive)ptr->getPrimitive() = dynamic_pointer_cast<Primitive>(__primitive->copy());
   return SceneObjectPtr(ptr);
 }
 

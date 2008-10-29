@@ -90,7 +90,7 @@ bool AmapSymbol::Builder::isValid( ) const {
 AmapSymbol::AmapSymbol() :
     FaceSet(),
   __fileName(),
-  __texCoord3List(0)
+  __texCoord3List()
 {
 }
 
@@ -102,7 +102,7 @@ AmapSymbol::AmapSymbol( const string& fileName,
 	  false,
 	  solid),
   __fileName(fileName),
-  __texCoord3List(0)
+  __texCoord3List()
 {
   beifstream _file(__fileName.c_str());
   GEOM_ASSERT(_file);

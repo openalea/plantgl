@@ -67,7 +67,7 @@ bool SceneCodec::test(const std::string& fname, Mode openingMode)
 }
 /* ----------------------------------------------------------------------- */
 
-SceneFactoryPtr SceneFactory::__factory(0);
+SceneFactoryPtr SceneFactory::__factory;
 
 
 SceneFactory::SceneFactory()
@@ -78,13 +78,20 @@ SceneFactory::~SceneFactory(){}
 
 SceneFactory& SceneFactory::get()
 {
-	if(__factory.isNull()) {
-		__factory = new SceneFactory();
+	if(!__factory) {
+		__factory = SceneFactoryPtr(new SceneFactory());
 		__factory->installDefaultLib();
 	}
 	return *__factory;
 }
 
+void SceneFactory::finalize(){
+	if(__factory) {
+		__factory->clear();
+	}
+}
+
+void SceneFactory::clear() { __codecs.clear(); }
 
 SceneFormatList
 SceneFactory::formats( SceneCodec::Mode openingMode ) const
@@ -130,7 +137,7 @@ SceneFactory::read(const std::string& fname)
 {
     if (! exists(fname)) {
       genMessage(ERRORMSG(C_FILE_OPEN_ERR_s),fname.c_str());
-      return ScenePtr(0);
+      return ScenePtr();
     };
 	std::string cwd = get_cwd();
 	for(CodecList::reverse_iterator it = __codecs.rbegin(); it !=__codecs.rend(); ++it){
@@ -146,7 +153,7 @@ SceneFactory::read(const std::string& fname)
 			}
 	}
 	if(get_cwd() != cwd) chg_dir(cwd);
-	return ScenePtr(0);
+	return ScenePtr();
 }
 
 void SceneFactory::write(const std::string& fname,const ScenePtr& scene)
@@ -171,7 +178,7 @@ SceneFactory::findCodec(const std::string& codecname)
 		it !=__codecs.rend(); ++it){
 			if ((*it)->__name == codecname) return *it;
 	}
-	return SceneCodecPtr(0);
+	return SceneCodecPtr();
 }
 
 ScenePtr 

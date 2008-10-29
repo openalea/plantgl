@@ -56,7 +56,7 @@ Polyline::Builder::~Builder( ) {
 
 SceneObjectPtr Polyline::Builder::build( ) const {
   if (isValid())
-    return SceneObjectPtr(new Polyline(*PointList,ColorList?*ColorList:NULL));
+    return SceneObjectPtr(new Polyline(*PointList,ColorList?*ColorList:Color4ArrayPtr()));
   return SceneObjectPtr();
 }
 
@@ -190,8 +190,8 @@ std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     int u_index = int(u);
     std::pair<PolylinePtr,PolylinePtr> result;
-    result.first = new Polyline(new Point3Array(__pointList->getBegin(),__pointList->getBegin()+u_index+1));
-    result.second = new Polyline(new Point3Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()));
+    result.first = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(__pointList->getBegin(),__pointList->getBegin()+u_index+1))));
+    result.second = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()))));
     Vector3 mid_point = getPointAt(u);
     result.first->getPointList()->pushBack(mid_point);
     result.second->getPointList()->insert(result.second->getPointList()->getBegin(),mid_point);
@@ -212,7 +212,7 @@ Polyline2DPtr Polyline2D::Circle(real_t radius,
      pts->setAt(i,Vector2(radius*cos(angle),radius*sin(angle)));
    }
    pts->setAt(slices,Vector2(radius,0));
-   return new Polyline2D(pts);
+   return Polyline2DPtr(new Polyline2D(pts));
 }
 
 /* ----------------------------------------------------------------------- */
@@ -261,7 +261,7 @@ bool Polyline2D::Builder::isValid( ) const {
 
 Polyline2D::Polyline2D( ) :
   Curve2D(),
-  __pointList(0) {
+  __pointList() {
 }
 
 Polyline2D::Polyline2D( const Vector2& point1, const Vector2& point2 ) :
@@ -383,8 +383,8 @@ std::pair<Polyline2DPtr,Polyline2DPtr> Polyline2D::split(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     int u_index = int(u);
     std::pair<Polyline2DPtr,Polyline2DPtr> result;
-    result.first = new Polyline2D(new Point2Array(__pointList->getBegin(),__pointList->getBegin()+u_index));
-    result.second = new Polyline2D(new Point2Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()));
+    result.first = Polyline2DPtr(new Polyline2D(Point2ArrayPtr(new Point2Array(__pointList->getBegin(),__pointList->getBegin()+u_index))));
+    result.second = Polyline2DPtr(new Polyline2D(Point2ArrayPtr(new Point2Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()))));
     Vector2 mid_point = getPointAt(u);
     result.first->getPointList()->pushBack(mid_point);
     result.second->getPointList()->insert(result.second->getPointList()->getBegin(),mid_point);

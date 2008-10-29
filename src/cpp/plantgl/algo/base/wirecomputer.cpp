@@ -83,7 +83,7 @@ TOOLS_USING_NAMESPACE
 #define GEOM_DISCRETIZE(geom) \
     GEOM_ASSERT(geom); \
 	if(!(geom->apply(__discretizer))) { \
-	  __wire = GeometryPtr(0); \
+	  __wire = GeometryPtr(); \
 	  return false; \
 	} \
 	else return __discretizer.getDiscretization()->apply(*this); \
@@ -162,7 +162,7 @@ bool WireComputer::process( AmapSymbol * amapSymbol ) {
 	points->pushBack(amapSymbol->getPointList()->getAt(*(_it->getBegin())));
 	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr(0);
+  if(polys->isEmpty())__wire = GeometryPtr();
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
@@ -181,7 +181,7 @@ bool WireComputer::process( FaceSet * faceSet ) {
 	points->pushBack(faceSet->getPointList()->getAt(*(_it->getBegin())));
 	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr(0);
+  if(polys->isEmpty())__wire = GeometryPtr();
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
@@ -190,7 +190,7 @@ bool WireComputer::process( FaceSet * faceSet ) {
 bool WireComputer::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
   // nothing to do as quadSet is already an ExplicitModel
-  __wire = GeometryPtr(0);
+  __wire = GeometryPtr();
   return true;
 }
 
@@ -214,7 +214,7 @@ bool WireComputer::process( QuadSet * quadSet ) {
 	points->pushBack(quadSet->getPointList()->getAt(*(_it->getBegin())));
 	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr(0);
+  if(polys->isEmpty())__wire = GeometryPtr();
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
@@ -232,7 +232,7 @@ bool WireComputer::process( TriangleSet * triangleSet ) {
 	points->pushBack(triangleSet->getPointList()->getAt(*(_it->getBegin())));
 	polys->pushBack(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr(0);
+  if(polys->isEmpty())__wire = GeometryPtr();
   else if(polys->getSize() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
@@ -453,7 +453,7 @@ bool WireComputer::process( NurbsCurve2D * nurbsCurve ) {
 bool WireComputer::process( PointSet2D * pointSet ){
   GEOM_ASSERT(pointSet);
 
-  __wire = GeometryPtr(0);
+  __wire = GeometryPtr();
   return true;
 }
 
@@ -473,7 +473,7 @@ bool WireComputer::process( Polyline2D * polyline ){
 
 bool WireComputer::process( Text * text ){
   GEOM_ASSERT(text);
-  __wire = GeometryPtr(0);
+  __wire = GeometryPtr();
   return true;
 }
 
@@ -481,7 +481,7 @@ bool WireComputer::process( Text * text ){
 
 bool WireComputer::process( Font * font ){
   GEOM_ASSERT(font);
-  __wire = GeometryPtr(0);
+  __wire = GeometryPtr();
   return true;
 }
 

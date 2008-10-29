@@ -158,7 +158,7 @@ bool
 ViewGeomSceneGL::addProperties(QTabWidget * tab)
 {
   QWidget * tab2 = new QWidget( tab );
-  if(__scene.isValid() && !__scene->isEmpty()){
+  if(__scene && !__scene->isEmpty()){
     real_t surface = getSceneSurface();
     real_t volume = getSceneVolume();
     QFrame * Line = new QFrame( tab2 );
