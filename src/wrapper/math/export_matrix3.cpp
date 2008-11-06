@@ -29,13 +29,11 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
 #include <plantgl/math/util_matrix.h>
 #include <string>
 #include <sstream>
 
 #include "export_matrix.h"
-#include <plantgl/python/exception.h>
 
 
 TOOLS_USING_NAMESPACE

@@ -33,11 +33,11 @@
 #include <plantgl/tool/util_tuple.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/container/colorarray.h>
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/python/exception.h>
 #include <plantgl/python/export_refcountptr.h>
+#include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
 #include "arrays_macro.h"
 
 PGL_USING_NAMESPACE

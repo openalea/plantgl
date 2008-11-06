@@ -32,14 +32,13 @@
 #include <plantgl/scenegraph/geometry/elevationgrid.h>
 #include <plantgl/tool/util_array2.h>
 
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
-#include <string>
-#include <sstream>
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/exception.h>
+#include <boost/python/make_constructor.hpp>
+
+#include <string>
+#include <sstream>
 
 using namespace boost::python;
 

@@ -29,7 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>

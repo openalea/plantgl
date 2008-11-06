@@ -2,7 +2,7 @@ from openalea.plantgl.all import *
 import sys
 import gc
 
-def test_consistant_sh(verbose = False):
+def test_consistant_sh(verbose = True):
     """ Test if the python image of a created shape stay consistant throw manipulation """
     s = Scene()
     sh = Shape(Sphere(),Material())
@@ -44,9 +44,9 @@ def test_consistant_sh2():
     assert sh1 is sh2
     sh1.toto = True
     assert sh2.toto == True
-    sh1.id
     del sh1
     del sh2
+    assert s[0].toto == True
     del s
 
 def test_consistant_sphere():

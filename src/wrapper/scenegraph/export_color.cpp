@@ -29,10 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/python/tuple_converter.h>
+#include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

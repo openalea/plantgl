@@ -36,11 +36,11 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/transformation/ifs.h>
 #include <plantgl/scenegraph/transformation/mattransformed.h>
+
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/exception.h>
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
-
-#include <plantgl/python/exception.h>
-#include <plantgl/python/export_refcountptr.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

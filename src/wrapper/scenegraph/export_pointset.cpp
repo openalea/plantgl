@@ -34,14 +34,14 @@
 #include <plantgl/scenegraph/transformation/transformed.h>
 #include <plantgl/scenegraph/geometry/mesh.h>
 
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+#include <plantgl/python/extract_list.h>
+
 #include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 #include <string>
 #include <sstream>
-
-#include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/export_property.h>
-#include <plantgl/python/extract_list.h>
 
 using namespace boost::python;
 

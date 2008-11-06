@@ -29,9 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-
-
 #include <plantgl/math/util_vector.h>
 #include <plantgl/scenegraph/geometry/parametricmodel.h>
 #include <plantgl/scenegraph/geometry/hull.h>

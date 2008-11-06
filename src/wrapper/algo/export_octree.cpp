@@ -32,8 +32,6 @@
 #include <plantgl/algo/grid/octree.h>
 #include <plantgl/algo/raycasting/ray.h>
 
-#include <boost/python.hpp>
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_list.h>
 #include <plantgl/python/export_property.h>

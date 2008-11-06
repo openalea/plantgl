@@ -29,7 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
 #include <plantgl/scenegraph/container/geometryarray2.h>
 #include <plantgl/python/export_refcountptr.h>
 #include "arrays_macro.h"

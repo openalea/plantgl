@@ -33,14 +33,14 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/geometry/mesh.h>
 
-#include <boost/python.hpp>
-#include <string>
-#include <sstream>
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/extract_list.h>
 #include <plantgl/python/exception.h>
+
+#include <boost/python.hpp>
+#include <string>
+#include <sstream>
 
 using namespace boost::python;
 

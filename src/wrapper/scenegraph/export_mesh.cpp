@@ -30,7 +30,6 @@
  */
 
 
-#include <boost/python.hpp>
 #include <plantgl/scenegraph/geometry/mesh.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/transformation/transformed.h>
@@ -38,6 +37,7 @@
 
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_refcountptr.h>
+#include <boost/python.hpp>
 
 using namespace boost::python;
 

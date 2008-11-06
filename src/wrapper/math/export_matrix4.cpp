@@ -29,15 +29,13 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/math/util_matrix.h>
 #include <string>
 #include <sstream>
 
 #include "export_matrix.h"
-#include <plantgl/python/exception.h>
+#include <boost/python/make_constructor.hpp>
 
 
 TOOLS_USING_NAMESPACE

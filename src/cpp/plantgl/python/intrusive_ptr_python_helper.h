@@ -4,6 +4,7 @@
 /// from http://mail.python.org/pipermail/cplusplus-sig/2007-July/012266.html
 
 # include "pyobj_reference.h"
+# include <boost/python.hpp>
 
 //#include <iostream>
 //using namespace std;
@@ -42,11 +43,13 @@ struct make_instance_impl<
     static inline PyObject* execute(Arg& x)
     {
 
+#ifdef WITH_REFCOUNTLISTENER
         // If a python wrapper already exists, return a reference to it
         if (x && intrusive_ptr_get_pyobject(x.get()))
         {
           return incref(intrusive_ptr_get_pyobject(x.get()));
         }
+#endif
 
         BOOST_STATIC_ASSERT(is_class<T>::value);
 
@@ -72,9 +75,10 @@ struct make_instance_impl<
             // for the sake of destruction
             instance->ob_size = offsetof(instance_t, storage);
 
+#ifdef WITH_REFCOUNTLISTENER
             // Save a pointer to the pyobject for future reference
             intrusive_ptr_set_pyobject(x.get(), raw_result);
-
+#endif
             // Release ownership of the python object
             protect.cancel();
         }

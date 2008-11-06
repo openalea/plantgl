@@ -29,8 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/geometry/group.h>
@@ -40,6 +38,7 @@
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/exception.h>
 #include <plantgl/python/extract_list.h>
+#include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

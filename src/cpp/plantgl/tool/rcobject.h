@@ -50,8 +50,8 @@
 #include <iostream>
 #endif
 
-#define PGL_SMARTPTR
-// #define BOOST_INSTRUSIVEPTR
+// #define PGL_SMARTPTR
+#define BOOST_INSTRUSIVEPTR
 // #define BOOST_SHAREDPTR
 
 #ifdef PGL_SMARTPTR

@@ -29,7 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
 
 #include <plantgl/tool/util_array.h>
 #include <plantgl/tool/util_array2.h>
@@ -43,6 +42,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

@@ -34,12 +34,11 @@
 #include <plantgl/scenegraph/geometry/mesh.h>
 #include <plantgl/math/util_polymath.h>
 
-#include <boost/python.hpp>
-#include <sstream>
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_list.h>
+
+#include <sstream>
 
 using namespace boost::python;
 

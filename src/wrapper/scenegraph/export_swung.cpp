@@ -29,9 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
-
 #include <plantgl/math/util_vector.h>
 #include <plantgl/scenegraph/geometry/sor.h>
 #include <plantgl/scenegraph/container/pointarray.h>
@@ -44,6 +41,10 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/extract_pgl.h>
+
+#include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
+
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

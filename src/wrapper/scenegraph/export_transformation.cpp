@@ -29,8 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-
 #include <plantgl/scenegraph/transformation/transformed.h>
 #include <plantgl/scenegraph/transformation/mattransformed.h>
 #include <plantgl/scenegraph/transformation/tapered.h>
@@ -41,9 +39,10 @@
 #include <plantgl/scenegraph/transformation/scaled.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/pointmatrix.h>
-#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/python/export_refcountptr.h>
+#include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

@@ -29,18 +29,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-#include <boost/python/make_constructor.hpp>
-
 #include <plantgl/math/util_vector.h>
 
 #include <plantgl/scenegraph/geometry/primitive.h>
 #include <plantgl/scenegraph/geometry/parametricmodel.h>
 #include <plantgl/scenegraph/geometry/box.h>
 
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+
+#include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

@@ -29,10 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/pyobj_reference.h>
+#include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

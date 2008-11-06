@@ -36,12 +36,13 @@
 #include <plantgl/scenegraph/geometry/mesh.h>
 #include <plantgl/algo/fitting/fit.h>
 
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
+
 #include <boost/python.hpp>
 #include <string>
 #include <sstream>
 
-#include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/export_property.h>
 
 using namespace boost::python;
 

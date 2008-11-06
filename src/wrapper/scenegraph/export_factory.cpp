@@ -29,14 +29,15 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/make_constructor.hpp>
 
 #include <plantgl/scenegraph/scene/factory.h>
 #include <string>
 #include <sstream>
 #include <qthread.h>
+
+#include <plantgl/python/pyobj_reference.h>
+
+BOOST_INITIALIZE_WRAPPER_FIX_DECLARE(PySceneCodec)
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
@@ -45,10 +46,20 @@
 #include <plantgl/python/extract_list.h>
 #include <plantgl/python/list_converter.h>
 
-PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
-using namespace boost::python;
-using namespace std;
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/make_constructor.hpp>
+
+// PGL_USING_NAMESPACE
+// TOOLS_USING_NAMESPACE
+// using namespace std;
+#define bp boost::python
+PGL_USING(SceneFormat)
+PGL_USING(SceneFormatList)
+PGL_USING(SceneCodec)
+PGL_USING(SceneCodecPtr)
+PGL_USING(SceneFactory)
+PGL_USING(SceneFactoryPtr)
+PGL_USING(ScenePtr)
 
 DEF_POINTEE(SceneFactory)
 
@@ -79,20 +90,20 @@ protected:
     PyGILState_STATE gstate;
 };
 
-class PySceneCodec : public SceneCodec, public boost::python::wrapper<SceneCodec>
+class PySceneCodec : public SceneCodec, public bp::wrapper<SceneCodec>
 {
 public:
     PySceneCodec(const std::string& name = "", Mode mode = None) : 
-      SceneCodec(name,mode), wrapper<SceneCodec>() 
+     SceneCodec(name,mode), bp::wrapper<SceneCodec>() 
       {  }
 
     virtual SceneFormatList formats() const
     { 
         PythonInterpreterAcquirer py;
         try{
-            return call<SceneFormatList>(this->get_override("formats").ptr()); 
+            return bp::call<SceneFormatList>(this->get_override("formats").ptr()); 
         }
-        catch(error_already_set) { PyErr_Print(); }
+        catch(bp::error_already_set) { PyErr_Print(); }
         return SceneFormatList();
     }
 
@@ -101,11 +112,11 @@ public:
 	virtual bool test(const std::string& fname, Mode openingMode)
     {
         PythonInterpreterAcquirer py;
-        if (override func = this->get_override("test")){
+        if (bp::override func = this->get_override("test")){
             try{
-                return call<bool>(func.ptr(),object(fname),object(openingMode)); 
+                return bp::call<bool>(func.ptr(),bp::object(fname),bp::object(openingMode)); 
             }
-            catch(error_already_set) { PyErr_Print(); }
+            catch(bp::error_already_set) { PyErr_Print(); }
             return false;
         }
         return default_test(fname,openingMode);
@@ -117,11 +128,11 @@ public:
     {
         {
             PythonInterpreterAcquirer py;
-            if (override func = this->get_override("read")){
+            if (bp::override func = this->get_override("read")){
                 try{
-                    return call<ScenePtr>(func.ptr(),object(fname)); 
+                    return bp::call<ScenePtr>(func.ptr(),bp::object(fname)); 
                 }
-                catch(error_already_set) { PyErr_Print(); }
+                catch(bp::error_already_set) { PyErr_Print(); }
                 return ScenePtr();
             }
         }
@@ -129,16 +140,16 @@ public:
     }
 
 	void default_write(const std::string& fname,const ScenePtr&	scene) 
-    { SceneCodec::write(fname,scene); }
+    {SceneCodec::write(fname,scene); }
 	virtual void write(const std::string& fname,const ScenePtr&	scene)
     {
         {
             PythonInterpreterAcquirer py;
-            if (override func = this->get_override("write")){
+            if (bp::override func = this->get_override("write")){
                 try{
-                    return call<void>(func.ptr(),object(fname),object(scene)); 
+                    return bp::call<void>(func.ptr(),bp::object(fname),bp::object(scene)); 
                 }
-                catch(error_already_set) { PyErr_Print(); }
+                catch(bp::error_already_set) { PyErr_Print(); }
             }
         }
         return default_write(fname,scene);
@@ -147,21 +158,21 @@ protected:
     SceneFormatList __formats;
 };
 
-BOOST_INITIALIZE_WRAPPER_FIX(PySceneCodec)
 
 typedef RCPtr<PySceneCodec> PySceneCodecPtr;
 DEF_POINTEE(PySceneCodec)
+BOOST_INITIALIZE_WRAPPER_FIX(PySceneCodec)
 
-boost::python::object scformat_get_suffixes(SceneFormat * sf){
+bp::object scformat_get_suffixes(SceneFormat * sf){
     return make_list<std::vector<std::string> >(sf->suffixes)(); 
 }
 
-void scformat_set_suffixes(SceneFormat * sf, boost::python::object suf){
+void scformat_set_suffixes(SceneFormat * sf, bp::object suf){
     sf->suffixes = extract_vec<std::string>(suf)();
 }
 
 std::string scformat_repr(SceneFormat * sf){
-    stringstream ss;
+    std::stringstream ss;
     ss << "<SceneFormat '" << sf->name << "' for files [";
     if (!sf->suffixes.empty()){
         ss << "'" << sf->suffixes[0] << "'";
@@ -173,45 +184,46 @@ std::string scformat_repr(SceneFormat * sf){
     return ss.str();
 }
 
-SceneFormat * make_sformat(const std::string& name, boost::python::list suffixes, const std::string& comment = "")
+SceneFormat * make_sformat(const std::string& name, bp::list suffixes, const std::string& comment = "")
 {
     SceneFormat * sf = new SceneFormat();
     sf->name = name;
     sf->comment = comment;
-    sf->suffixes = extract_vec<std::string>(object(suffixes))();
+    sf->suffixes = extract_vec<std::string>(bp::object(suffixes))();
     return sf;
 }
 
-SceneFormatList * make_sformatlist(boost::python::list formats)
+SceneFormatList * make_sformatlist(bp::list formats)
 { return new SceneFormatList(extract_vec<SceneFormat>(formats)()); }
 
 void pydel_scenecodec (PySceneCodec * c) { 
 	boost::intrusive_ptr_clear_pyobject(c);
-	SceneFactory::get().unregisterCodec(SceneCodecPtr(c));
+	SceneFactory::get().unregisterCodec(PGL(SceneCodecPtr)(c));
 }
+
 
 void export_SceneCodec()
 {
-  class_<SceneFormat>("SceneFormat", "A scene description format.", no_init)
-      .def( "__init__", make_constructor( make_sformat ) ) 
-      .add_property("name",make_getter(&SceneFormat::name),make_setter(&SceneFormat::name))
-      .add_property("comment",make_getter(&SceneFormat::comment),make_setter(&SceneFormat::comment))
+  bp::class_<SceneFormat>("SceneFormat", "A scene description format.", bp::no_init)
+      .def( "__init__", bp::make_constructor( make_sformat ) ) 
+      .add_property("name",bp::make_getter(&SceneFormat::name),bp::make_setter(&SceneFormat::name))
+      .add_property("comment",bp::make_getter(&SceneFormat::comment),bp::make_setter(&SceneFormat::comment))
       .add_property("suffixes",&scformat_get_suffixes,&scformat_get_suffixes)
       .def("__repr__",&scformat_repr)
       ;  
 
-  class_<std::vector<SceneFormat> >("SceneFormatList", "A list of scene description format.")
-    .def( "__init__", make_constructor( make_sformatlist ) ) 
-    .def(vector_indexing_suite<std::vector<SceneFormat> >())
+  bp::class_<std::vector<SceneFormat> >("SceneFormatList", "A list of scene description format.")
+    .def( "__init__", bp::make_constructor( make_sformatlist ) ) 
+    .def(bp::vector_indexing_suite<std::vector<SceneFormat> >())
     ;
   pgllist_from_list <std::vector<SceneFormat> >();
 
 
-  scope codec = class_< PySceneCodec,PySceneCodecPtr,boost::noncopyable >("SceneCodec",
+  bp::scope codec = bp::class_< PySceneCodec,PySceneCodecPtr,boost::noncopyable >("SceneCodec",
 	    "Coder/Decoder of a scene description.",
-        init<optional<const std::string&,SceneCodec::Mode> >("SceneCodec([name,mode])",args("name","mode")))
+        bp::init<bp::optional<const std::string&,SceneCodec::Mode> >("SceneCodec([name,mode])",bp::args("name","mode")))
 	.def("__del__",&pydel_scenecodec)
-    .def("formats",pure_virtual(&SceneCodec::formats))
+    .def("formats",bp::pure_virtual(&SceneCodec::formats))
     .def("test", &SceneCodec::test,&PySceneCodec::default_test)
     .def("read", &SceneCodec::read,&PySceneCodec::default_read)
     .def("write", &SceneCodec::write,&PySceneCodec::default_write)
@@ -219,9 +231,9 @@ void export_SceneCodec()
     .add_property("mode",&SceneCodec::getMode,&SceneCodec::setMode)
     ;
 
-  implicitly_convertible<PySceneCodecPtr, SceneCodecPtr>();
+  bp::implicitly_convertible<PySceneCodecPtr, PGL(SceneCodecPtr)>();
 
-  enum_<SceneCodec::Mode>("Mode"
+  bp::enum_<SceneCodec::Mode>("Mode"
 #if BOOST_VERSION >= 103500
 	  ,"Enum representing coding and decoding capabilities of a codec."
 #endif
@@ -242,8 +254,8 @@ void export_SceneFactory()
 {
   // if (PythonThread == NULL) PythonThread = QThread::currentThread();
 
-  class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene that register and use SceneCodec to read scene from files.",no_init)
-      .def("get", &SceneFactory::get,return_value_policy<reference_existing_object>())
+  bp::class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene that register and use SceneCodec to read scene from files.",bp::no_init)
+      .def("get", &SceneFactory::get,bp::return_value_policy<bp::reference_existing_object>())
       .staticmethod("get") 
       .def("formats", &SceneFactory::formats)
       .def("formats", &sf_formats)

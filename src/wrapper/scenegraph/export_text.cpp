@@ -31,11 +31,11 @@
 
 #include <plantgl/scenegraph/geometry/text.h>
 
-#include <boost/python.hpp>
-#include <string>
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+
+#include <boost/python.hpp>
+#include <string>
 
 
 using namespace boost::python;

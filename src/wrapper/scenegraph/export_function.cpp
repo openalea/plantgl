@@ -31,14 +31,12 @@
 
 #include <plantgl/scenegraph/function/function.h>
 
-#include <boost/python.hpp>
-#include <string>
-
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_list.h>
 #include <plantgl/python/exception.h>
 
+#include <string>
 
 using namespace boost::python;
 

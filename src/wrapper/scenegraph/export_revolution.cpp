@@ -29,8 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <boost/python.hpp>
-
 #include <plantgl/scenegraph/geometry/geometry.h>
 
 #include <plantgl/math/util_vector.h>
@@ -44,6 +42,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

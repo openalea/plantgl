@@ -30,7 +30,6 @@
  */
 
 
-#include <boost/python.hpp>
 
 #include <plantgl/math/util_matrix.h>
 #include <plantgl/math/linearalgebra.h>
