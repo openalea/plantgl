@@ -67,7 +67,10 @@ public:
     void transform(const TOOLS(Matrix3)&);
     
     /// get Current Orientation on the form of a matrix """
-    TOOLS(Matrix3) getMatrix() const;
+    TOOLS(Matrix3) getOrientationMatrix() const;
+    
+    /// get transformtation on the form of a matrix """
+    TOOLS(Matrix4) getTransformationMatrix() const;
     
     /// test validity of . Should be orthonormal and normalized """
     bool isValid() const;

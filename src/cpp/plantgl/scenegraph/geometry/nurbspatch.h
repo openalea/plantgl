@@ -113,6 +113,24 @@ public:
 	      uint_t vstride = DEFAULT_STRIDE, 
 	      bool ccw = DEFAULT_CCW );
 
+  NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
+	      uint_t uDegree, 
+	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
+	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
+	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
+	      uint_t ustride = DEFAULT_STRIDE, 
+	      uint_t vstride = DEFAULT_STRIDE, 
+	      bool ccw = DEFAULT_CCW );
+
+  NurbsPatch( const Point3MatrixPtr& ctrlPoints, 
+	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
+	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
+	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
+	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
+	      uint_t ustride = DEFAULT_STRIDE, 
+	      uint_t vstride = DEFAULT_STRIDE, 
+	      bool ccw = DEFAULT_CCW );
+
   /// Destructor
   virtual ~NurbsPatch( ) ;
 

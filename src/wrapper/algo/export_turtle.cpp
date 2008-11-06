@@ -87,6 +87,9 @@ void export_Turtle()
     .def("getWidth",    &Turtle::getWidth,    return_value_policy<return_by_value>())
     .def("getColor",    &Turtle::getColor,    return_value_policy<return_by_value>())
 
+    .def("getOrientationMatrix", &Turtle::getOrientationMatrix)
+    .def("getTransformationMatrix", &Turtle::getTransformationMatrix)
+
     .def("getColorListSize",  &Turtle::getColorListSize )
     .def("getTextureListSize",&Turtle::getTextureListSize )
     

@@ -91,6 +91,12 @@ public:
     inline const TOOLS(Vector3)& getScale() const
 	{ return __params->scale; }
 
+    inline const TOOLS(Matrix4) getTransformationMatrix() const
+	{ return __params->getTransformationMatrix(); }
+
+    inline const TOOLS(Matrix3) getOrientationMatrix() const
+	{ return __params->getOrientationMatrix(); }
+
     inline real_t getWidth() const
 	{ return __params->width; }
     

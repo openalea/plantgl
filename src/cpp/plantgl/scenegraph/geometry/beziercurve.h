@@ -53,6 +53,8 @@ class  Point4Array;
 typedef RCPtr<Point4Array> Point4ArrayPtr;
 class Point3Array;
 typedef RCPtr<Point3Array> Point3ArrayPtr;
+class Point2Array;
+typedef RCPtr<Point2Array> Point2ArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -108,6 +110,7 @@ public:
       \post
       - \e self is valid. */
   BezierCurve( const Point4ArrayPtr& ctrlPoints ,uint_t stride = DEFAULT_STRIDE );
+  BezierCurve( const Point3ArrayPtr& ctrlPoints ,uint_t stride = DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~BezierCurve( ); 
@@ -232,6 +235,7 @@ public:
       \post
       - \e self is valid. */
   BezierCurve2D( const Point3ArrayPtr& ctrlPoints ,uint_t stride = BezierCurve::DEFAULT_STRIDE );
+  BezierCurve2D( const Point2ArrayPtr& ctrlPoints ,uint_t stride = BezierCurve::DEFAULT_STRIDE );
 
   /// Destructor
   virtual ~BezierCurve2D( ) ;

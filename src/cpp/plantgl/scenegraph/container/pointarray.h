@@ -184,6 +184,7 @@ public:
       \post
       - \e self is valid. */
   Point3Array( const Point2Array& a, real_t z );
+  Point3Array( const Point2ArrayPtr& a, real_t z );
 
   /** Constructs a Point3Array with the range of points [\e first, \e last).
       \post
@@ -301,6 +302,7 @@ public:
       \post
       - \e self is valid. */
   Point4Array( const Point2Array& points2, real_t z , real_t w );
+  Point4Array( const Point2ArrayPtr& points2, real_t z , real_t w );
 
   /** Constructs a Point4Array with the Point3Array \e points3, \c w
       coordinate for each points is set to \e w.
@@ -309,6 +311,7 @@ public:
       \post
       - \e self is valid. */
   Point4Array( const Point3Array& points3, real_t w );
+  Point4Array( const Point3ArrayPtr& points3, real_t w );
 
   /** Constructs a Point4Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post

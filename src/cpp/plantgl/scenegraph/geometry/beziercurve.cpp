@@ -142,6 +142,14 @@ BezierCurve::BezierCurve( const Point4ArrayPtr& ctrlPoints, uint_t stride ) :
     GEOM_ASSERT(isValid());
 }
 
+BezierCurve::BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride ) :
+    ParametricModel(),
+    __ctrlPointList(),
+    __stride(stride){
+	if (ctrlPoints) __ctrlPointList = Point4ArrayPtr(new Point4Array(*ctrlPoints,1));
+    GEOM_ASSERT(isValid());
+}
+
 BezierCurve::~BezierCurve( ) {
 }
 
@@ -374,6 +382,14 @@ BezierCurve2D::BezierCurve2D( const Point3ArrayPtr& ctrlPoints, uint_t stride ) 
     Curve2D(),
     __ctrlPointList(ctrlPoints),
     __stride(stride){
+    GEOM_ASSERT(isValid());
+}
+
+BezierCurve2D::BezierCurve2D( const Point2ArrayPtr& ctrlPoints, uint_t stride ) :
+    Curve2D(),
+    __ctrlPointList(),
+    __stride(stride){
+	if (ctrlPoints) __ctrlPointList = Point3ArrayPtr(new Point3Array(*ctrlPoints,1));
     GEOM_ASSERT(isValid());
 }
 

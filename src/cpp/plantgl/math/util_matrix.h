@@ -508,12 +508,19 @@ public:
   /// Constructs a Matrix4 with the 16 values array \e matrix.
   Matrix4( const real_t * matrix );
 
-  /** Constructs a Matrix3 with the 4 column vectors \e v0, \e v1, \e v2
+  /** Constructs a Matrix4 with the 4 column vectors \e v0, \e v1, \e v2
       and \e v3. */
   Matrix4( const Vector4& v0,
            const Vector4& v1,
            const Vector4& v2,
            const Vector4& v3 );
+
+  /** Constructs a Matrix4 with the 4 column vectors \e v0, \e v1, \e v2
+      and \e v3. */
+  Matrix4( const Vector3& v0,
+           const Vector3& v1,
+           const Vector3& v2,
+           const Vector3& v3 );
 
   /** Constructs a Matrix4 with the Matrix3 \e m.
       \pre

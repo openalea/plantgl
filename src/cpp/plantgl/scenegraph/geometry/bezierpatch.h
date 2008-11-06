@@ -50,6 +50,8 @@ PGL_BEGIN_NAMESPACE
 
 class Point4Matrix;
 typedef RCPtr<Point4Matrix> Point4MatrixPtr;
+class Point3Matrix;
+typedef RCPtr<Point3Matrix> Point3MatrixPtr;
 class LineicModel;
 typedef RCPtr<LineicModel> LineicModelPtr;
 
@@ -110,6 +112,11 @@ public:
       \post
       - \e self is valid. */
   BezierPatch( const Point4MatrixPtr& ctrlPoints, 
+	       uint_t ustride = DEFAULT_STRIDE,
+	       uint_t vstride = DEFAULT_STRIDE,
+	       bool ccw = DEFAULT_CCW );
+
+  BezierPatch( const Point3MatrixPtr& ctrlPoints, 
 	       uint_t ustride = DEFAULT_STRIDE,
 	       uint_t vstride = DEFAULT_STRIDE,
 	       bool ccw = DEFAULT_CCW );

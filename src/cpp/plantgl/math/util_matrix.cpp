@@ -709,6 +709,16 @@ Matrix4::Matrix4( const Vector4& v0,
       v0.w(),v1.w(),v2.w(),v3.w());
 }
 
+Matrix4::Matrix4( const Vector3& v0,
+                  const Vector3& v1,
+                  const Vector3& v2,
+                  const Vector3& v3 ) {
+  set(v0.x(),v1.x(),v2.x(),v3.x(),
+      v0.y(),v1.y(),v2.y(),v3.y(),
+      v0.z(),v1.z(),v2.z(),v3.z(),
+      0,0,0,1);
+}
+
 Matrix4::Matrix4( const Matrix3& m ) {
   GEOM_ASSERT(m.isValid());
   __M[0] = m.__M[0]; __M[1] = m.__M[1]; __M[2] = m.__M[2]; __M[3] = 0;

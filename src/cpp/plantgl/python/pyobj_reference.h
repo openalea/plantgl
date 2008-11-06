@@ -2,7 +2,9 @@
 #define __pyobj_reference__
 
 #ifdef PYTHON_DWA2002810_HPP
+#ifdef __GNUC__
 #warning boost/python.hpp already included
+#endif
 #endif
 
 #include <plantgl/tool/rcobject.h>

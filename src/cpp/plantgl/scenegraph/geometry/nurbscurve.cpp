@@ -206,6 +206,32 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
   GEOM_ASSERT(isValid());
 }
 
+NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
+                         uint_t degree,
+                         const RealArrayPtr  knots,
+                         uint_t stride ) :
+  BezierCurve(ctrlPoints, stride),
+  __degree(degree),
+  __knotList(knots)
+  {
+    if(!__knotList)setKnotListToDefault();
+  // initialisation de l'objet
+  GEOM_ASSERT(isValid());
+}
+
+NurbsCurve::NurbsCurve(  const Point3ArrayPtr& ctrlPoints,
+                         uint_t degree,
+                         const RealArrayPtr  knots,
+                         uint_t stride ) :
+  BezierCurve(ctrlPoints, stride),
+  __degree(degree),
+  __knotList(knots)
+  {
+    if(!__knotList)setKnotListToDefault();
+  // initialisation de l'objet
+  GEOM_ASSERT(isValid());
+}
+
 NurbsCurve::~NurbsCurve( ) {
 }
 /* ----------------------------------------------------------------------- */
@@ -808,6 +834,26 @@ NurbsCurve2D::NurbsCurve2D(   ) :
 }
 
 NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPtr  knots, uint_t degree, uint_t stride ) :
+  BezierCurve2D(ctrlPoints, stride),
+  __degree(degree),
+  __knotList(knots)
+  {
+  if(!__knotList)setKnotListToDefault();
+  // initialisation de l'objet
+  GEOM_ASSERT(isValid());
+}
+
+NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, uint_t degree, const RealArrayPtr  knots, uint_t stride ) :
+  BezierCurve2D(ctrlPoints, stride),
+  __degree(degree),
+  __knotList(knots)
+  {
+  if(!__knotList)setKnotListToDefault();
+  // initialisation de l'objet
+  GEOM_ASSERT(isValid());
+}
+
+  NurbsCurve2D::NurbsCurve2D(  const Point2ArrayPtr& ctrlPoints, uint_t degree, const RealArrayPtr  knots, uint_t stride ) :
   BezierCurve2D(ctrlPoints, stride),
   __degree(degree),
   __knotList(knots)

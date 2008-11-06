@@ -257,6 +257,7 @@ NurbsPatch::NurbsPatch( ) :
     __udegree(DEFAULT_NURBS_DEGREE),
     __vdegree(DEFAULT_NURBS_DEGREE){
 }
+
 NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
                         const RealArrayPtr& uKnotList,
                         const RealArrayPtr& vKnotList,
@@ -267,9 +268,39 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
-    GEOM_ASSERT(isValid());
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
+    GEOM_ASSERT(isValid());
+}
+
+NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
+                        uint_t uDegree, uint_t vDegree,
+                        const RealArrayPtr& uKnotList,
+                        const RealArrayPtr& vKnotList,
+                        uint_t ustride , uint_t vstride,  bool ccw ) :
+    BezierPatch(ctrlPoints,ustride,vstride,ccw),
+    __uKnotList(uKnotList),
+    __vKnotList(vKnotList),
+    __udegree(uDegree),
+    __vdegree(vDegree){
+    if (!uKnotList) setUKnotListToDefault();
+    if (!vKnotList) setVKnotListToDefault();
+    GEOM_ASSERT(isValid());
+}
+
+NurbsPatch::NurbsPatch( const Point3MatrixPtr& ctrlPoints,
+                        uint_t uDegree, uint_t vDegree,
+                        const RealArrayPtr& uKnotList,
+                        const RealArrayPtr& vKnotList,
+                        uint_t ustride , uint_t vstride,  bool ccw ) :
+    BezierPatch(ctrlPoints,ustride,vstride,ccw),
+    __uKnotList(uKnotList),
+    __vKnotList(vKnotList),
+    __udegree(uDegree),
+    __vdegree(vDegree){
+    if (!uKnotList) setUKnotListToDefault();
+    if (!vKnotList) setVKnotListToDefault();
+    GEOM_ASSERT(isValid());
 }
 
 NurbsPatch::~NurbsPatch( ) {

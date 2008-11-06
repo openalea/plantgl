@@ -170,6 +170,18 @@ BezierPatch::BezierPatch( const Point4MatrixPtr& ctrlPoints,
     GEOM_ASSERT(isValid());
 }
 
+BezierPatch::BezierPatch( const Point3MatrixPtr& ctrlPoints,
+                          uint_t ustride ,
+                          uint_t vstride ,
+                          bool ccw) :
+    Patch(ccw),
+    __ctrlPointMatrix(),
+    __ustride(ustride),
+    __vstride(vstride){
+	if(ctrlPoints) __ctrlPointMatrix = Point4MatrixPtr(new Point4Matrix(*ctrlPoints,1));
+    GEOM_ASSERT(isValid());
+}
+
 BezierPatch::BezierPatch() :
     Patch(),
     __ctrlPointMatrix(),

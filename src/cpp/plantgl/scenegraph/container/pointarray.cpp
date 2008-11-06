@@ -237,6 +237,19 @@ Point3Array::Point3Array( const Point2Array& a, real_t z ) :
    GEOM_ASSERT(isValid());
 }
 
+Point3Array::Point3Array( const Point2ArrayPtr& a, real_t z ) :
+   Array1<Vector3>(){
+   if(!a) return;
+   GEOM_ASSERT(a->isValid());
+   size_t size = a->getSize();
+   __A.reserve(size);
+   __A.resize(size);
+   Point3Array::iterator it3 = getBegin();
+   for(Point2Array::const_iterator it2 = a->getBegin();it2 != a->getEnd();++it2,++it3)
+        *it3 = Vector3(*it2,z);
+   GEOM_ASSERT(isValid());
+}
+
 
 Point3Array::~Point3Array( ) {
 }
@@ -431,8 +444,6 @@ Point4Array::Point4Array( uint_t size ) :
   GEOM_ASSERT(isValid());
 }
 
-
-
 Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
     Array1<Vector4>(a.getSize()){
         Point4Array::iterator it4 = getBegin();
@@ -441,12 +452,34 @@ Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
   GEOM_ASSERT(isValid());
 }
 
+Point4Array::Point4Array( const Point2ArrayPtr& a, real_t z, real_t w  ) :
+    Array1<Vector4>(){
+	if (!a) return;
+	__A.reserve(getSize());
+	__A.resize(getSize());
+    Point4Array::iterator it4 = getBegin();
+    for(Point2Array::const_iterator it2 = a->getBegin();it2 != a->getEnd();++it2,++it4)
+        *it4 = Vector4(*it2,z,w);
+    GEOM_ASSERT(isValid());
+}
+
 Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
     Array1<Vector4>(a.getSize()){
         Point4Array::iterator it4 = getBegin();
         for(Point3Array::const_iterator it3 = a.getBegin();it3 != a.getEnd();++it3,++it4)
                 *it4 = Vector4(*it3,w);
   GEOM_ASSERT(isValid());
+}
+
+Point4Array::Point4Array( const Point3ArrayPtr& a, real_t w  ) :
+    Array1<Vector4>(){
+	if (!a) return;
+	__A.reserve(getSize());
+	__A.resize(getSize());
+    Point4Array::iterator it4 = getBegin();
+    for(Point3Array::const_iterator it2 = a->getBegin();it2 != a->getEnd();++it2,++it4)
+        *it4 = Vector4(*it2,w);
+    GEOM_ASSERT(isValid());
 }
 
 Point4Array::Point4Array( size_t size, const Vector4& firstval, const Vector4& inc):

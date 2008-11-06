@@ -149,9 +149,9 @@ Vector3 Polyline::getTangentAt(real_t u) const{
     else if(u1 == u){
         Vector3 _a = (__pointList->getAt((uint_t)u1)-__pointList->getAt((uint_t)(u1-1)));
         Vector3 _b = (__pointList->getAt((uint_t)u1+1)-__pointList->getAt((uint_t)u1));
-        _a.normalize();
-        _b.normalize();
-        return (_a+_b);
+        real_t la = _a.normalize();
+        real_t lb = _b.normalize();
+        return (_a+_b)*(la+lb)/2;
     }
     else return (__pointList->getAt((uint_t)(u1+1))-(__pointList->getAt((uint_t)u1)));
 }
@@ -358,9 +358,9 @@ Vector2 Polyline2D::getTangentAt(real_t u) const{
     else if(u1 == u){
         Vector2 _a = (__pointList->getAt((uint_t)u1)-__pointList->getAt((uint_t)(u1-1)));
         Vector2 _b = (__pointList->getAt((uint_t)u1+1)-__pointList->getAt((uint_t)u1));
-        _a.normalize();
-        _b.normalize();
-        return (_a+_b);
+        real_t la = _a.normalize();
+        real_t lb = _b.normalize();
+        return (_a+_b)*(la+lb)/2;
     }
     else return (__pointList->getAt((uint_t)(u1+1))-(__pointList->getAt((uint_t)u1)));
 }

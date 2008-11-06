@@ -158,6 +158,7 @@ public:
       \post
       - \e self is valid. */
   Point3Matrix( const Point2MatrixPtr& points2, const real_t& z );
+  Point3Matrix( const Point2Matrix& points2, const real_t& z );
 
   /// Destructor
   virtual ~Point3Matrix( );
@@ -255,6 +256,7 @@ public:
       - \e points3 must non null and valid.
       \post
       - \e self is valid. */
+  Point4Matrix( const Point3Matrix& points3, const real_t& w );
   Point4Matrix( const Point3MatrixPtr& points3, const real_t& w );
 
   /// Destructor

@@ -166,10 +166,14 @@ void TurtleParam::transform(const Matrix3& m){
    up = m * up;
 }
     
-Matrix3 TurtleParam::getMatrix() const{
+Matrix3 TurtleParam::getOrientationMatrix() const{
    return Matrix3(heading,left,up);
 }
-    
+
+Matrix4 TurtleParam::getTransformationMatrix() const{
+   return Matrix4(heading*scale.x(),left*scale.y(),up*scale.z(),position);
+}
+
 bool TurtleParam::isValid() const{
    return heading.isNormalized() &&
 		  left.isNormalized() &&
