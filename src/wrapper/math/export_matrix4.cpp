@@ -125,6 +125,7 @@ void export_Matrix4()
   class_< Matrix4 > m2( "Matrix4");
   m2.def("__init__", make_constructor(m4_init));
   m2.def(init<const Vector4&, const Vector4&, const Vector4&, const Vector4&>());
+  m2.def(init<const Vector3&, const Vector3&, const Vector3&, const Vector3&>());
   m2.def(init<const Matrix3&>());
   m2.def(vector_matrix_func<Matrix4,Vector4>());
   m2.def( "data", &matrix_data<Matrix4,16> );

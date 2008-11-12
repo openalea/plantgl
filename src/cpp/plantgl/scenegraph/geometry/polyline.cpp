@@ -339,7 +339,7 @@ Polyline2D::getLastKnot() const{
 
 const uint_t 
 Polyline2D::getStride() const{
-  return __pointList->getSize();
+    return (__pointList->getSize()-1);
 }
 
 Vector2 

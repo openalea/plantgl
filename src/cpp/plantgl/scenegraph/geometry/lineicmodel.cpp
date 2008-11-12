@@ -156,7 +156,7 @@ QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
   real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
-  points->setAt(0,Vector2(0,fk));
+  points->setAt(0,Vector2(fk,0));
   real_t u = fk + deltau;
   for(uint_t i = 1 ; i <= stride; ++i, u += deltau){
     p2 = getPointAt(u);

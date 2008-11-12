@@ -64,7 +64,7 @@ namespace boost {
 }
 
 namespace boost { namespace python { namespace detail {
-   	// A magic boost function to associate a pyobject with a c++ object. Used normally for boost::python::wrapper
+   	// A magic boost function to associate a pyobject with a c++ object. Normally used for boost::python::wrapper
 	inline void initialize_wrapper(PyObject* self, TOOLS(RefCountObject)* w){
 		intrusive_ptr_set_pyobject(w,self);
 	}
