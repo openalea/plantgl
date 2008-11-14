@@ -69,6 +69,8 @@ TOOLS_USING_NAMESPACE
 
 #include "scne_binaryparser.h"
 
+#include <string.h>
+
 using namespace std;
 /* ----------------------------------------------------------------------- */
 

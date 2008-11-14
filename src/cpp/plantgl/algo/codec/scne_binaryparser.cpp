@@ -51,6 +51,8 @@
 
 #include <iostream>
 
+#include <typeinfo>
+
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
@@ -109,7 +111,7 @@ using namespace STDEXT;
     if (_sizej > 0){ \
       obj = type##Ptr (new type(_sizej)); \
       for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
-	  *_it = read##primitive(); \
+      *_it = read##primitive(); \
       }; \
     }; \
   };
@@ -129,7 +131,7 @@ using namespace STDEXT;
     uint_t _cols  = readUint32(); \
     obj = type##Ptr (new type(_rows,_cols)); \
     for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
-	*_it = read##primitive(); \
+    *_it = read##primitive(); \
     }; \
   };
 
@@ -262,7 +264,7 @@ BinaryParser::BinaryParser(ostream& output,int max_errors) :
     __currents(39,uint_t(0)),
     __result(),
     __assigntime(0),
-	__double_precision(false){
+    __double_precision(false){
     for(uint_t i=0;i<39;i++)__mem[i]=NULL;
 }
 
@@ -329,7 +331,7 @@ inline char BinaryParser::readChar()
 
 /// read a real_t value from stream
 inline real_t BinaryParser::readReal()
-{ 
+{
  if (__double_precision)
  { double val;  *stream >> val; return val; }
  else
@@ -341,12 +343,12 @@ inline std::string BinaryParser::readString()
 {
   std::string val;
   uint16_t _sizes = readUint16();
-  if( _sizes!=0){ 
-   char * label = new char[_sizes+1]; 
-   stream->read(label,_sizes); 
-   label[_sizes] = '\0'; 
-   val = std::string(label); 
-   delete label; 
+  if( _sizes!=0){
+   char * label = new char[_sizes+1];
+   stream->read(label,_sizes);
+   label[_sizes] = '\0';
+   val = std::string(label);
+   delete label;
   }
   return val;
 }
@@ -357,42 +359,42 @@ inline std::string BinaryParser::readString()
 inline std::string BinaryParser::readFile()
 {
   std::string val;
-  char c[MAXFILELENGTH+1]; 
-  uint_t i=0; 
-  *stream >> c[i]; 
-  if( c[i] =='!'){ 
-   *stream >> c[i]; 
-   while(c[i]!='!' && !stream->eof() && i< MAXFILELENGTH){ 
-    i++; 
-    *stream >> c[i]; 
-   }  
-   if(i==MAXFILELENGTH){ 
-      char r = ' '; 
-      while(r!='!'  && !stream->eof()) *stream >> r; 
+  char c[MAXFILELENGTH+1];
+  uint_t i=0;
+  *stream >> c[i];
+  if( c[i] =='!'){
+   *stream >> c[i];
+   while(c[i]!='!' && !stream->eof() && i< MAXFILELENGTH){
+    i++;
+    *stream >> c[i];
+   }
+   if(i==MAXFILELENGTH){
+      char r = ' ';
+      while(r!='!'  && !stream->eof()) *stream >> r;
    } \
-   c[i] = '\0'; 
-   if(i!=0) val = c; 
-   if(val.size() > 11 && 
-	  (string(val.begin(),val.begin()+11) == "AMAPMOD_DIR" || 
-	   string(val.begin(),val.begin()+11) == "PLANTGL_DIR")){ 
-		string suffix(val.begin()+11,val.end()); 
-        val = getPlantGLDir(); 
-        if(suffix[0] != '\\' && suffix[0] != '/')val += '/'; 
-        val += suffix; 
-   } 
-  } 
-  else __outputStream << "Filename wrong format." << endl; 
+   c[i] = '\0';
+   if(i!=0) val = c;
+   if(val.size() > 11 &&
+      (string(val.begin(),val.begin()+11) == "AMAPMOD_DIR" ||
+       string(val.begin(),val.begin()+11) == "PLANTGL_DIR")){
+        string suffix(val.begin()+11,val.end());
+        val = getPlantGLDir();
+        if(suffix[0] != '\\' && suffix[0] != '/')val += '/';
+        val += suffix;
+   }
+  }
+  else __outputStream << "Filename wrong format." << endl;
   return val;
 }
 
 /// read a Color3 value from stream
 inline Color3 BinaryParser::readColor3()
-{ Color3 val; val.getRed() = readUchar(); val.getGreen() = readUchar(); 
+{ Color3 val; val.getRed() = readUchar(); val.getGreen() = readUchar();
   val.getBlue() = readUchar(); return val; }
 
 /// read a Color4 value from stream
 inline Color4 BinaryParser::readColor4()
-{ Color4 val; val.getRed() = readUchar(); val.getGreen() = readUchar(); 
+{ Color4 val; val.getRed() = readUchar(); val.getGreen() = readUchar();
   val.getBlue() = readUchar(); val.getAlpha() = readUchar(); return val; }
 
 /// read a Vector2 value from stream
@@ -401,12 +403,12 @@ inline Vector2 BinaryParser::readVector2()
 
 /// read a Vector3 value from stream
 inline Vector3 BinaryParser::readVector3()
-{ Vector3 val; val.x() = readReal(); val.y() = readReal(); 
+{ Vector3 val; val.x() = readReal(); val.y() = readReal();
   val.z() = readReal(); return val; }
 
 /// read a Vector4 value from stream
 inline Vector4 BinaryParser::readVector4()
-{ Vector4 val; val.x() = readReal(); val.y() = readReal(); 
+{ Vector4 val; val.x() = readReal(); val.y() = readReal();
   val.z() = readReal(); val.w() = readReal(); return val; }
 
 /// read a Index3 value from stream
@@ -419,11 +421,11 @@ inline Index4 BinaryParser::readIndex4()
 
 /// read a Index value from stream
 inline Index BinaryParser::readIndex()
-{ 
-  uint_t size = readUint32(); 
-  Index val(size); 
-  for(uchar_t it = 0; it < size; ++it) val.setAt(it,readUint32());  
-  return val; 
+{
+  uint_t size = readUint32();
+  Index val(size);
+  for(uchar_t it = 0; it < size; ++it) val.setAt(it,readUint32());
+  return val;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -495,16 +497,16 @@ bool BinaryParser::readHeader(){
           }
   }
   if(_version >= 1.6f){
-	  uchar_t precision = readUchar();
-	  if (precision == 32){
-	    __double_precision = false;
-	  }
-	  else if (precision == 64){
-	    __double_precision = true;
-	  }
-	  else	{
-	    __outputStream << "*** ERROR: Real precision not valid ! [ Value=" << int(precision) << " ]" <<  endl;
-	  }
+      uchar_t precision = readUchar();
+      if (precision == 32){
+        __double_precision = false;
+      }
+      else if (precision == 64){
+        __double_precision = true;
+      }
+      else  {
+        __outputStream << "*** ERROR: Real precision not valid ! [ Value=" << int(precision) << " ]" <<  endl;
+      }
   }
   else {
     __double_precision = false;
@@ -528,7 +530,7 @@ bool BinaryParser::readHeader(){
   }
 #ifdef GEOM_DEBUG
   cerr << std::endl;
-#endif  
+#endif
     if(!__tokens->initTokens(*stream,__outputStream)){
           __outputStream << "*** ERROR: Token initialization failed !" <<  endl;
           __outputStream << "*** ERROR: Abort." <<  endl;
@@ -599,14 +601,14 @@ bool BinaryParser::parse(const string& filename){
     t.start();
     while(!stream->eof()&& __errors_count!=__max_errors)readNext();
     t.stop();
-	if(__roots > 0)
-	   __scene->Resize(__roots);
-	else __scene = ScenePtr(new Scene);
+    if(__roots > 0)
+       __scene->Resize(__roots);
+    else __scene = ScenePtr(new Scene);
 #ifdef GEOM_DEBUG
-	if(isParserVerbose()){
-	  __outputStream << "Parse file in " << t.elapsedTime() << " sec (" << __assigntime << ")." << endl;
-	  cerr << "Parse file in " << t.elapsedTime() << " sec (" << __assigntime << ")." << endl;
-	}
+    if(isParserVerbose()){
+      __outputStream << "Parse file in " << t.elapsedTime() << " sec (" << __assigntime << ")." << endl;
+      cerr << "Parse file in " << t.elapsedTime() << " sec (" << __assigntime << ")." << endl;
+    }
 #endif
     delete stream;
     stream = 0;
@@ -667,8 +669,8 @@ bool BinaryParser::readNext(){
   else if(_classname == "NurbsCurve2D")       return readNurbsCurve2D();
   else if(_classname == "PointSet2D")         return readPointSet2D();
   else if(_classname == "Polyline2D")         return readPolyline2D();
-  else if(_classname == "Text")				  return readText();
-  else if(_classname == "Font")				  return readFont();
+  else if(_classname == "Text")               return readText();
+  else if(_classname == "Font")               return readFont();
   else if(_classname == "Reference"){
     uint_t _ref = readUint32();
 #ifdef GEOM_DEBUG
@@ -717,7 +719,7 @@ bool BinaryParser::readShape(){
 
     string _name = readString();
     GEOM_READ_FIELD(a,Id,Uint32);
-	if( __tokens->getVersion() >= 1.9f){
+    if( __tokens->getVersion() >= 1.9f){
         GEOM_READ_FIELD(a,ParentId,Uint32);
     }
 
@@ -740,14 +742,14 @@ bool BinaryParser::readShape(){
         }
         if(isParserVerbose())
           if(__roots%50==0)
-			std::cerr << "\x0d" << "Already parsed : " 
-					  << __roots << " shapes." << std::flush;
+            std::cerr << "\x0d" << "Already parsed : "
+                      << __roots << " shapes." << std::flush;
         return true;
     }
     else{
         __outputStream << "*** PARSER: <Shape : " << (_name.empty() ? "(unamed)" : _name ) << ">"
-                       << (!a->getGeometry() || !a->getGeometry()->isValid()? " Geometry ":" ") 
-					   << (!a->getAppearance() || !a->getAppearance()->isValid() ? "Appearance " : "" ) << "not valid." << endl;
+                       << (!a->getGeometry() || !a->getGeometry()->isValid()? " Geometry ":" ")
+                       << (!a->getAppearance() || !a->getAppearance()->isValid() ? "Appearance " : "" ) << "not valid." << endl;
         __currents[0]--;
         a->getGeometry()=GeometryPtr();
         a->getAppearance() = AppearancePtr();
@@ -802,9 +804,9 @@ bool BinaryParser::readImageTexture() {
     string FileName = readFile();
     cerr << "Filename : " << FileName << endl;
     if(!FileName.empty()&&exists(FileName.c_str())) {
-			FileName = absolute_filename(FileName);
-			mat->getFilename() = FileName;
-	}
+            FileName = absolute_filename(FileName);
+            mat->getFilename() = FileName;
+    }
 
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(mat,Ambient,Color3) ;
@@ -824,8 +826,8 @@ bool BinaryParser::readImageTexture() {
     IF_GEOM_NOTDEFAULT(_default,5)
         GEOM_READ_FIELD(mat,Transparency,Real);
 
-	float version =  __tokens->getVersion();
-	if( version >= 1.8f){
+    float version =  __tokens->getVersion();
+    if( version >= 1.8f){
         IF_GEOM_NOTDEFAULT(_default,6)
             GEOM_READ_FIELD(mat,Mipmaping,Bool);
     }
@@ -833,12 +835,12 @@ bool BinaryParser::readImageTexture() {
     if (FileName.empty() || !exists(FileName.c_str())) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
         genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
-		MaterialPtr mat2(new Material(*mat));
-		GEOM_PARSER_SETNAME(_name,_ident,mat,Material);
-	}
-	else {
-	  GEOM_PARSER_SETNAME(_name,_ident,mat,ImageTexture);
-	}
+        MaterialPtr mat2(new Material(*mat));
+        GEOM_PARSER_SETNAME(_name,_ident,mat,Material);
+    }
+    else {
+      GEOM_PARSER_SETNAME(_name,_ident,mat,ImageTexture);
+    }
 
     return true;
 
@@ -892,40 +894,40 @@ bool BinaryParser::readAmapSymbol() {
 
     string FileName = readFile();
     if(!FileName.empty()&&exists(FileName.c_str())) {
-			FileName = absolute_filename(FileName);
-			obj->readFile(FileName);
-	}
-	Point3ArrayPtr points;
-	Point3ArrayPtr normals;
-	Point3ArrayPtr texCoords;
-	IndexArrayPtr indices;
+            FileName = absolute_filename(FileName);
+            obj->readFile(FileName);
+    }
+    Point3ArrayPtr points;
+    Point3ArrayPtr normals;
+    Point3ArrayPtr texCoords;
+    IndexArrayPtr indices;
 
-	GEOM_READ_FIELD(obj,Solid,Bool);
-	
-	float version =  __tokens->getVersion();
-	if( version >= 1.1f){
-		GEOM_READ_ARRAY(points,Point3Array,Vector3);
+    GEOM_READ_FIELD(obj,Solid,Bool);
 
-		GEOM_READ_ARRAY(normals,Point3Array,Vector3);
+    float version =  __tokens->getVersion();
+    if( version >= 1.1f){
+        GEOM_READ_ARRAY(points,Point3Array,Vector3);
 
-		GEOM_READ_INDEXARRAY(indices);
+        GEOM_READ_ARRAY(normals,Point3Array,Vector3);
 
-		if( version >= 1.3f){
-		  GEOM_READ_ARRAY(texCoords,Point3Array,Vector3);
-		}
-	}
+        GEOM_READ_INDEXARRAY(indices);
+
+        if( version >= 1.3f){
+          GEOM_READ_ARRAY(texCoords,Point3Array,Vector3);
+        }
+    }
 
     if( version < 1.1f){
       if (FileName.empty() || !exists(FileName.c_str())) {
-	string label = "AmapSymbol : " + string((_name.empty() ? "(unamed)" : _name));
-	genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
-	GEOM_DEL_OBJ(obj,4) ;
-	return false;
+    string label = "AmapSymbol : " + string((_name.empty() ? "(unamed)" : _name));
+    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+    GEOM_DEL_OBJ(obj,4) ;
+    return false;
       }
       else {
-	  FileName = absolute_filename(FileName);
-	  obj->readFile(FileName);
-	  obj->getFileName() = FileName;
+      FileName = absolute_filename(FileName);
+      obj->readFile(FileName);
+      obj->getFileName() = FileName;
       }
     }
     else {
@@ -937,7 +939,7 @@ bool BinaryParser::readAmapSymbol() {
       real_t _maxZ = points->getZMax()->z();
       obj->getSkeleton() = PolylinePtr(new Polyline(Vector3::ORIGIN,Vector3(0,0,_maxZ)));
       if (!FileName.empty() && exists(FileName.c_str())) {
-	  obj->getFileName() = FileName;
+      obj->getFileName() = FileName;
       }
     }
 
@@ -1321,15 +1323,15 @@ bool BinaryParser::readExtrusion() {
 bool BinaryParser::readFaceSet() {
     GEOM_BEGIN(_name,_ident);
 
-	float version =  __tokens->getVersion();
+    float version =  __tokens->getVersion();
     uint16_t _default;
-	if( version >= 1.5f)
-	    *stream >> _default;
-	else {
-		uchar_t _ldefault;
-	    *stream >> _ldefault;
-		_default = _ldefault;
-	}
+    if( version >= 1.5f)
+        *stream >> _default;
+    else {
+        uchar_t _ldefault;
+        *stream >> _ldefault;
+        _default = _ldefault;
+    }
 
     GEOM_INIT_OBJ(obj, 15,FaceSet );
 
@@ -1351,43 +1353,43 @@ bool BinaryParser::readFaceSet() {
 
     GEOM_READ_INDEXARRAY(obj->getIndexList());
 
-	if( version >= 1.2f){
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,4){
-				 GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
-			}
-			else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
-		}
-		else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+    if( version >= 1.2f){
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,4){
+                 GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
+            }
+            else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+        }
+        else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
 
-		IF_GEOM_NOTDEFAULT(_default,3)
-			GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);
+        IF_GEOM_NOTDEFAULT(_default,3)
+            GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);
 
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,6)
-				GEOM_READ_INDEXARRAY(obj->getNormalIndexList());
-		}
-	}
-	if( version >= 1.5f){
-		IF_GEOM_NOTDEFAULT(_default,7)
-			GEOM_READ_FIELD(obj,ColorPerVertex,Bool);
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,6)
+                GEOM_READ_INDEXARRAY(obj->getNormalIndexList());
+        }
+    }
+    if( version >= 1.5f){
+        IF_GEOM_NOTDEFAULT(_default,7)
+            GEOM_READ_FIELD(obj,ColorPerVertex,Bool);
 
-		IF_GEOM_NOTDEFAULT(_default,8)
-			GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
+        IF_GEOM_NOTDEFAULT(_default,8)
+            GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
 
-		IF_GEOM_NOTDEFAULT(_default,9)
-			GEOM_READ_INDEXARRAY(obj->getColorIndexList());
-	}
+        IF_GEOM_NOTDEFAULT(_default,9)
+            GEOM_READ_INDEXARRAY(obj->getColorIndexList());
+    }
 
-	if( version >= 1.3f){
-		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_ARRAY(obj->getTexCoordList(),Point2Array,Vector2);
+    if( version >= 1.3f){
+        IF_GEOM_NOTDEFAULT(_default,5)
+            GEOM_READ_ARRAY(obj->getTexCoordList(),Point2Array,Vector2);
 
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,10)
-				GEOM_READ_INDEXARRAY(obj->getTexCoordIndexList());
-		}
-	}
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,10)
+                GEOM_READ_INDEXARRAY(obj->getTexCoordIndexList());
+        }
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,FaceSet);
     return true;
@@ -1449,9 +1451,9 @@ bool BinaryParser::readGroup() {
     GeometryArray::iterator _it = obj->getGeometryList()->getBegin();
 
     for (uint_t num = 0;
-	     num < _sizej && 
-		 _it != obj->getGeometryList()->getEnd() && 
-		 !stream->eof(); num++) {
+         num < _sizej &&
+         _it != obj->getGeometryList()->getEnd() &&
+         !stream->eof(); num++) {
         if(readNext())
             *_it  = dynamic_pointer_cast<Geometry>(__result);
         if((*_it))_it++;
@@ -1647,11 +1649,11 @@ bool BinaryParser::readParaboloid() {
     IF_GEOM_NOTDEFAULT(_default,4)
         GEOM_READ_FIELD(obj,Slices, Uchar);
 
-	float version =  __tokens->getVersion();
-	if( version >= 1.6f){
-		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_FIELD(obj,Stacks, Uchar);
-	}
+    float version =  __tokens->getVersion();
+    if( version >= 1.6f){
+        IF_GEOM_NOTDEFAULT(_default,5)
+            GEOM_READ_FIELD(obj,Stacks, Uchar);
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,Paraboloid);
     return true;
@@ -1667,10 +1669,10 @@ bool BinaryParser::readPointSet() {
 
     GEOM_READ_ARRAY(obj->getPointList(),Point3Array,Vector3);
 
-	float version =  __tokens->getVersion();
-	if( version >= 1.7f){
-		GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
-	}
+    float version =  __tokens->getVersion();
+    if( version >= 1.7f){
+        GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,PointSet);
     return true;
@@ -1686,10 +1688,10 @@ bool BinaryParser::readPolyline() {
 
     GEOM_READ_ARRAY(obj->getPointList(),Point3Array,Vector3);
 
-	float version =  __tokens->getVersion();
-	if( version >= 1.7f){
-		GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
-	}
+    float version =  __tokens->getVersion();
+    if( version >= 1.7f){
+        GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,Polyline);
     return true;
@@ -1701,15 +1703,15 @@ bool BinaryParser::readPolyline() {
 
 bool BinaryParser::readQuadSet() {
     GEOM_BEGIN(_name,_ident);
-	float version =  __tokens->getVersion();
+    float version =  __tokens->getVersion();
     uint16_t _default;
-	if( version >= 1.5f)
-	    *stream >> _default;
-	else {
-		uchar_t _ldefault;
-	    *stream >> _ldefault;
-		_default = _ldefault;
-	}
+    if( version >= 1.5f)
+        *stream >> _default;
+    else {
+        uchar_t _ldefault;
+        *stream >> _ldefault;
+        _default = _ldefault;
+    }
 
     GEOM_INIT_OBJ(obj, 25,QuadSet);
 
@@ -1731,43 +1733,43 @@ bool BinaryParser::readQuadSet() {
 
     GEOM_READ_ARRAY(obj->getIndexList(),Index4Array,Index4);
 
-	if( version >= 1.2f){
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,4){
-				GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
-			}
-			else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
-		}
-		else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+    if( version >= 1.2f){
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,4){
+                GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
+            }
+            else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+        }
+        else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
 
-		IF_GEOM_NOTDEFAULT(_default,3)
-			GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);
+        IF_GEOM_NOTDEFAULT(_default,3)
+            GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);
 
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,6)
-				GEOM_READ_ARRAY(obj->getNormalIndexList(),Index4Array,Index4);
-		}
-	}
-	if( version >= 1.5f){
-		IF_GEOM_NOTDEFAULT(_default,7)
-			GEOM_READ_FIELD(obj,ColorPerVertex,Bool);
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,6)
+                GEOM_READ_ARRAY(obj->getNormalIndexList(),Index4Array,Index4);
+        }
+    }
+    if( version >= 1.5f){
+        IF_GEOM_NOTDEFAULT(_default,7)
+            GEOM_READ_FIELD(obj,ColorPerVertex,Bool);
 
-		IF_GEOM_NOTDEFAULT(_default,8)
-			GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
+        IF_GEOM_NOTDEFAULT(_default,8)
+            GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
 
-		IF_GEOM_NOTDEFAULT(_default,9)
-			GEOM_READ_ARRAY(obj->getColorIndexList(),Index4Array,Index4);
-	}
+        IF_GEOM_NOTDEFAULT(_default,9)
+            GEOM_READ_ARRAY(obj->getColorIndexList(),Index4Array,Index4);
+    }
 
-	if( version >= 1.3f){
-		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_ARRAY(obj->getTexCoordList(),Point2Array,Vector2);
+    if( version >= 1.3f){
+        IF_GEOM_NOTDEFAULT(_default,5)
+            GEOM_READ_ARRAY(obj->getTexCoordList(),Point2Array,Vector2);
 
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,10)
-				GEOM_READ_ARRAY(obj->getTexCoordIndexList(),Index4Array,Index4);
-		}
-	}
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,10)
+                GEOM_READ_ARRAY(obj->getTexCoordIndexList(),Index4Array,Index4);
+        }
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,QuadSet);
     return true;
@@ -1804,7 +1806,7 @@ bool BinaryParser::readSwung()
 {
   GEOM_BEGIN(_name,_ident);
   // std::cerr << "Pos : " << stream->getStream().tellg() << std::endl;
- 
+
   GEOM_READ_DEFAULT(_default);
 #ifdef GEOM_DEBUG
   std::cerr << "Default : " << int(_default) << std::endl;
@@ -1821,9 +1823,9 @@ bool BinaryParser::readSwung()
 
   bool ccw = Swung::DEFAULT_CCW;
   IF_GEOM_NOTDEFAULT(_default,1){
-	  ccw = readBool();
+      ccw = readBool();
 #ifdef GEOM_DEBUG
-	  std::cerr << "Read CCW : " << (ccw?"True":"False") << std::endl;
+      std::cerr << "Read CCW : " << (ccw?"True":"False") << std::endl;
 #endif
   }
 
@@ -1869,11 +1871,11 @@ bool BinaryParser::readSwung()
       __outputStream << "*** PARSER: <Swung : "
                      << ( _name.empty() ? "(unamed)" : _name )
                      << "> A Curve2D component is not valid." << endl;
-	  if(__result){
+      if(__result){
       __outputStream << "*** PARSER: <Swung : "
                      << ( _name.empty() ? "(unamed)" : _name )
                      << "> Found " << typeid(*__result).name() << " instead." << endl;
-	  }
+      }
       }
     }
 
@@ -1882,7 +1884,7 @@ bool BinaryParser::readSwung()
     return false;
   }
   else if( err > 0 ){
-	curves = Curve2DArrayPtr(new Curve2DArray(curves->getBegin(),_it));
+    curves = Curve2DArrayPtr(new Curve2DArray(curves->getBegin(),_it));
   }
 
   Swung * obj = new Swung(curves,angles,slices,ccw,degree,stride);
@@ -1997,15 +1999,15 @@ bool BinaryParser::readTranslated() {
 bool BinaryParser::readTriangleSet() {
     GEOM_BEGIN(_name,_ident);
 
-	float version =  __tokens->getVersion();
+    float version =  __tokens->getVersion();
     uint16_t _default;
-	if( version >= 1.5f)
-	    *stream >> _default;
-	else {
-		uchar_t _ldefault;
-	    *stream >> _ldefault;
-		_default = _ldefault;
-	}
+    if( version >= 1.5f)
+        *stream >> _default;
+    else {
+        uchar_t _ldefault;
+        *stream >> _ldefault;
+        _default = _ldefault;
+    }
 
     GEOM_INIT_OBJ(obj, 31,TriangleSet);
 
@@ -2026,44 +2028,44 @@ bool BinaryParser::readTriangleSet() {
 
     GEOM_READ_ARRAY(obj->getIndexList(),Index3Array,Index3);
 
-	if( version >= 1.2f){
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,4){
-				 GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
-			}
-			else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
-		}
-		else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+    if( version >= 1.2f){
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,4){
+                 GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
+            }
+            else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+        }
+        else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
 
-		IF_GEOM_NOTDEFAULT(_default,3)
-			GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);
+        IF_GEOM_NOTDEFAULT(_default,3)
+            GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);
 
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,6)
-				GEOM_READ_ARRAY(obj->getNormalIndexList(),Index3Array,Index3);
-		}
-	}
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,6)
+                GEOM_READ_ARRAY(obj->getNormalIndexList(),Index3Array,Index3);
+        }
+    }
 
-	if( version >= 1.5f){
-		IF_GEOM_NOTDEFAULT(_default,7)
-			GEOM_READ_FIELD(obj,ColorPerVertex,Bool);
+    if( version >= 1.5f){
+        IF_GEOM_NOTDEFAULT(_default,7)
+            GEOM_READ_FIELD(obj,ColorPerVertex,Bool);
 
-		IF_GEOM_NOTDEFAULT(_default,8)
-			GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
+        IF_GEOM_NOTDEFAULT(_default,8)
+            GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
 
-		IF_GEOM_NOTDEFAULT(_default,9)
-			GEOM_READ_ARRAY(obj->getColorIndexList(),Index3Array,Index3);
-	}
+        IF_GEOM_NOTDEFAULT(_default,9)
+            GEOM_READ_ARRAY(obj->getColorIndexList(),Index3Array,Index3);
+    }
 
-	if( version >= 1.3f){
-		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_ARRAY(obj->getTexCoordList(),Point2Array,Vector2);
+    if( version >= 1.3f){
+        IF_GEOM_NOTDEFAULT(_default,5)
+            GEOM_READ_ARRAY(obj->getTexCoordList(),Point2Array,Vector2);
 
-		if( version >= 1.5f){
-			IF_GEOM_NOTDEFAULT(_default,10)
-				GEOM_READ_ARRAY(obj->getTexCoordIndexList(),Index3Array,Index3);
-		}
-	}
+        if( version >= 1.5f){
+            IF_GEOM_NOTDEFAULT(_default,10)
+                GEOM_READ_ARRAY(obj->getTexCoordIndexList(),Index3Array,Index3);
+        }
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,TriangleSet);
     return true;
@@ -2169,7 +2171,7 @@ bool BinaryParser::readText() {
     GEOM_INIT_OBJ(obj, 40, Text);
 
     GEOM_READ_FIELD(obj,String,String);
-	std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
+    std::cerr << "String :\"" << obj->getString() << '"' << std::endl;
 
     IF_GEOM_NOTDEFAULT(_default,0){
       if(readNext()){
@@ -2177,17 +2179,17 @@ bool BinaryParser::readText() {
         if(!obj->getFontStyle())
           __outputStream << "*** PARSER: <Text : " << (_name.empty() ? "(unamed)" : _name ) << "> font not valid." << endl;
       }
-	}
+    }
 
-	float version =  __tokens->getVersion();
-	if( version >= 1.7f){
-		IF_GEOM_NOTDEFAULT(_default,1){
-			GEOM_READ_FIELD(obj,Position,Vector3);
-		}
-		IF_GEOM_NOTDEFAULT(_default,2){
-			GEOM_READ_FIELD(obj,ScreenCoordinates,Bool);
-		}
-	}
+    float version =  __tokens->getVersion();
+    if( version >= 1.7f){
+        IF_GEOM_NOTDEFAULT(_default,1){
+            GEOM_READ_FIELD(obj,Position,Vector3);
+        }
+        IF_GEOM_NOTDEFAULT(_default,2){
+            GEOM_READ_FIELD(obj,ScreenCoordinates,Bool);
+        }
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,Text);
     return true;
@@ -2204,10 +2206,10 @@ bool BinaryParser::readFont() {
 
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Size,Uint32);
-	  
+
     IF_GEOM_NOTDEFAULT(_default,1)
         GEOM_READ_FIELD(obj,Bold,Bool);
-	  
+
     IF_GEOM_NOTDEFAULT(_default,2)
         GEOM_READ_FIELD(obj,Italic,Bool);
 
