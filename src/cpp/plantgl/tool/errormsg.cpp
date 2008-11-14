@@ -1,16 +1,16 @@
-/* -*-c++-*- 
+/* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
  *       PlantGL: Plant Graphic Library
  *
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): Ch. Godin (christophe.godin@cirad.fr) 
+ *       File author(s): Ch. Godin (christophe.godin@cirad.fr)
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -27,7 +27,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -36,22 +36,23 @@
 #include <stdio.h>
 #include <stdarg.h>
 #ifdef __GNUC__
-#include <stream.h>   //for the use of function extern char* form(const char* ...); (printf format)
+#include <iostream>
+// #include <stream.h>   //for the use of function extern char* form(const char* ...); (printf format)
 #endif
 #include <assert.h>
 
 #include "errormsg.h"
 
 
-void genMessage(const char* file, 
-		int line, 
-		const char* module_name, 
-		ErrorType errtype, 
-		std::ostream& o, 
-		bool b,		
-		const char* msg ...) {
+void genMessage(const char* file,
+        int line,
+        const char* module_name,
+        ErrorType errtype,
+        std::ostream& o,
+        bool b,
+        const char* msg ...) {
 
-  va_list args;			// man vprintf
+  va_list args;         // man vprintf
   va_start(args, msg);
 
   if (errtype!=NO_MESSAGE) {
@@ -60,7 +61,7 @@ void genMessage(const char* file,
     vsprintf(fullmsg,msg,args);
 
     ErrorObj err_item(module_name, file, line, errtype, fullmsg);
-  
+
     err_item.print(o,b) << std::endl;
 
   }
@@ -81,11 +82,11 @@ ErrorObj::ErrorObj() {
 }
 
 ErrorObj::ErrorObj(const char* module,
-		     const char* file,
-		     int line_nb,
-		     ErrorType type,
-		     const char* message
-		     )
+             const char* file,
+             int line_nb,
+             ErrorType type,
+             const char* message
+             )
 {
 
 
@@ -102,7 +103,7 @@ ErrorObj::ErrorObj(const ErrorObj& err) {
 
   _module = err._module;
   _file = err._file;
-  _message = err._message; 
+  _message = err._message;
   _line_nb = err._line_nb;
   _error_type = err._error_type;
 }
@@ -114,10 +115,10 @@ ErrorObj& ErrorObj::operator=(const ErrorObj& err) {
 
     _module = err._module;
     _file = err._file;
-    _message = err._message; 
+    _message = err._message;
     _line_nb = err._line_nb;
     _error_type = err._error_type;
-    
+
   }
   return *this;
 }
@@ -127,11 +128,11 @@ bool ErrorObj::operator==(const ErrorObj& err) {
   if (this == &err) return true;
   else {
     if (_module == err._module  &&
-	_file == err._file &&
-	_line_nb == err._line_nb &&		
-	_message == err._message && 
-	_error_type == err._error_type
-	)
+    _file == err._file &&
+    _line_nb == err._line_nb &&
+    _message == err._message &&
+    _error_type == err._error_type
+    )
     return true;
     else return false;
   }
@@ -154,7 +155,7 @@ ErrorObj::ErrorObj() {
   _line = -1;
   _token = "";
 
-  _message = ""; 
+  _message = "";
   _module = "";
 
   _line_nb = 0;
@@ -166,15 +167,15 @@ ErrorObj::ErrorObj() {
 
 
 ErrorObj::ErrorObj(const char* module,
-		     const char* file,
-		     const char* line,
-		     const char* message,
-		     const char* token,
-		     int srcline,
-		     int line_nb,
-		     int column_nb,
-		     int err_pos
-		     )
+             const char* file,
+             const char* line,
+             const char* message,
+             const char* token,
+             int srcline,
+             int line_nb,
+             int column_nb,
+             int err_pos
+             )
 {
 
 
@@ -182,7 +183,7 @@ ErrorObj::ErrorObj(const char* module,
   _line = line;
   _token = token;
 
-  _message = message; 
+  _message = message;
   _module = module;
 
   _line_nb = line_nb;
@@ -198,14 +199,14 @@ ErrorObj::ErrorObj(const ErrorObj& err) {
   _line = err._line;
   _token = err._token;
 
-  _message = err._message; 
+  _message = err._message;
   _module = err._module;
 
   _line_nb = err._line_nb;
   _column_nb = err._column_nb;
   _input_line = err._input_line;
   _err_pos = err._err_pos;
-  
+
 }
 
 ErrorObj& ErrorObj::operator=(const ErrorObj& err) {
@@ -217,14 +218,14 @@ ErrorObj& ErrorObj::operator=(const ErrorObj& err) {
     _line = err._line;
     _token = err._token;
 
-    _message = err._message; // RWCString& operator=(const char*) 
+    _message = err._message; // RWCString& operator=(const char*)
     _module = err._module;
 
     _line_nb = err._line_nb;
     _column_nb = err._column_nb;
     _input_line = err._input_line;
     _err_pos = err._err_pos;
-    
+
   }
   return *this;
 }
@@ -233,10 +234,10 @@ bool ErrorObj::operator==(const ErrorObj& err) {
 
   if (this == &err) return true;
   else {
-    if (_message == err._message && 
-	_line_nb == err._line_nb &&
-	_column_nb == err._column_nb &&
-	_input_line == err._input_line)
+    if (_message == err._message &&
+    _line_nb == err._line_nb &&
+    _column_nb == err._column_nb &&
+    _input_line == err._input_line)
 
     return true;
     else return false;
@@ -264,7 +265,7 @@ ostream& ErrorObj::print(ostream& o) const {
   if (_file) {
     o << " ... detected in source FILE: " << _file;
     if (_line) o << ", LINE:  " << _line;
-    if (_token) o << ", on TOKEN : " << _token << "'"; 
+    if (_token) o << ", on TOKEN : " << _token << "'";
   }
 #endif
   o << endl;
@@ -287,11 +288,11 @@ ostream& operator<<(ostream& o, const ErrorObj& i) {return i.print(o);}
 
 const char* common_err_msgs_aml[] = {
 
-  "Sorry: message not yet implemented",	        // C_NYI_ERR
+  "Sorry: message not yet implemented",         // C_NYI_ERR
   "variable %s: bad value %s: should be %s" ,   // C_VAR_BAD_VALUE_sss
-  "file access: cannot access file %s",		// C_FILE_ERR_s
-  "file access: cannot open file %s",		// C_FILE_OPEN_ERR_s
-  "file access: cannot read file %s",		// C_FILE_READ_ERR_s
-  "file access: cannot write file %s",		// C_FILE_WRITE_ERR_s
+  "file access: cannot access file %s",     // C_FILE_ERR_s
+  "file access: cannot open file %s",       // C_FILE_OPEN_ERR_s
+  "file access: cannot read file %s",       // C_FILE_READ_ERR_s
+  "file access: cannot write file %s",      // C_FILE_WRITE_ERR_s
 };
 

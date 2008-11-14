@@ -43,6 +43,7 @@
 #include "tools_config.h"
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 /* ----------------------------------------------------------------------- */
 
@@ -116,7 +117,7 @@ public:
 
   /// Returns whether \e self contain \e t.
   inline bool contains( const T& t ) const {
-	  return std::find(__A.begin(),__A.end(),t) != __A.end();
+      return std::find(__A.begin(),__A.end(),t) != __A.end();
   }
 
   /** Returns the value of the \e c-th element of \e r row of \e self
@@ -270,7 +271,7 @@ public:
 
   /// Inserts a row \e t at the end.
   template <class InIterator>
-  inline void pushRow(InIterator begin, InIterator end ){ 
+  inline void pushRow(InIterator begin, InIterator end ){
     GEOM_ASSERT(__rowsNb == 0 || distance(begin,end) == (__A.size() /__rowsNb) );
     __A.insert(__A.end(),begin,end);
     __rowsNb++;
@@ -282,7 +283,7 @@ public:
 
   /// Inserts a row \e t at the end.
   template <class InIterator>
-  inline void pushColumn(InIterator begin, InIterator end ){ 
+  inline void pushColumn(InIterator begin, InIterator end ){
       insertColumn(getColsNb(),begin,end);
    }
 
@@ -363,18 +364,18 @@ public:
 
   /// Set \e val to the diagonal of \e self.
   inline void setDiagonal(const T& val) {
-	  uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
+      uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
       for(uint_t _i = 0; _i < s ; _i++)
           setAt(_i,_i,val);
   }
 
   /// Get the Diagonal of \e self.
   inline std::vector<T> getDiagonal() const {
-	  uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
+      uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
       std::vector<T> diag(s);
       for(uint_t _i = 0; _i < s ; _i++)
           diag[_i] = getAt(_i,_i);
-	  return diag;
+      return diag;
   }
 
 
@@ -397,9 +398,9 @@ public:
 
   /// Constructs an Array2 with \e col columns and \e row rows
   NumericArray2( uint_t row = 0, uint_t col = 0 ) :
-	  Array2<T>( row, col )
+      Array2<T>( row, col )
       {
-	 }
+     }
 
   /// Constructs an Array2 with \e size copies of \e t.
   NumericArray2( uint_t row, uint_t col, const T& t ) :
@@ -410,7 +411,7 @@ public:
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
   NumericArray2( InIterator begin, InIterator end, uint_t rowsNb ) :
-	Array2<T>(begin,end,rowsNb)
+    Array2<T>(begin,end,rowsNb)
       {
    }
 
@@ -420,7 +421,7 @@ public:
 
   /// Returns an iterator at the maximum value of \e self.
   inline const_iterator getMax( ) const {
-	  return std::max_element(this->__A.begin(),this->__A.end());
+      return std::max_element(this->__A.begin(),this->__A.end());
   }
 
   /// Returns an iterator at the minimum value of \e self.
