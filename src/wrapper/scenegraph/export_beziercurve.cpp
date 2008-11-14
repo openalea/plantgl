@@ -87,8 +87,8 @@ void export_BezierCurve()
 	"It is defined by a degree n and a list of control Points Pi\n"
 	"and using the parametric equation C(u) = Sum(i=0,n)(Bi,n(u)Pi) with u in [0,1]\n"
 	"where Bi,n(u) are the classical n-th degree Bernstein polynomials.",
-	init<Point4ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride") ) )
-    .def(init< Point3ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points."))
+	init<Point3ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride") ) )
+    .def(init< Point4ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points."))
     .def( "copy", &BezierCurve::copy )
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint_t,DEFAULT_STRIDE)
@@ -139,8 +139,8 @@ void export_BezierCurve2D()
 {
    class_<BezierCurve2D, BezierCurve2DPtr, bases<Curve2D>, boost::noncopyable>
     ( "BezierCurve2D", "BezierCurve2D describes rational and non rational 2D Bezier curve.\n It is represented by a degree and a list of control Points.\n See BezierCurve.", 
-	  init<Point3ArrayPtr, optional< uint_t > >() )
-    .def(init< Point2ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points."))
+	  init<Point2ArrayPtr, optional< uint_t > >() )
+    .def(init< Point3ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points."))
     .def( "copy", &BezierCurve2D::copy )
     .def( "__repr__", gbc2_repr )
     .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve2D,Stride,uint_t)

@@ -67,7 +67,7 @@ void export_SceneObject()
 	  "It is named, has unique id and support reference counting.\n"
 	  "It can support Action application.",
 	  no_init)
- 	.def("__del__",&pydel<SceneObject>)
+ 	// .def("__del__",&pydel<SceneObject>)
     .def("getName", &SceneObject::getName, return_value_policy< copy_const_reference >())
     .def("isNamed", &SceneObject::isNamed)
     .def("setName", &SceneObject::setName)

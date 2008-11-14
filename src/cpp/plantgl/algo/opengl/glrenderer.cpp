@@ -66,7 +66,7 @@ TOOLS_USING_NAMESPACE
   GLuint _displaylist = 0; \
   if(!geom->unique()){ \
 	if(__compil == 0){ \
-	  if(check(geom->getId(),_displaylist))return true; \
+	  if(check(geom->getId(),_displaylist)) return true; \
 	}  \
 	else if(call(geom->getId()))return true; \
   } \
@@ -229,7 +229,7 @@ bool GLRenderer::call(uint_t id){
 void GLRenderer::update(uint_t id, GLuint displaylist){
   if(__Mode != Dynamic && displaylist != 0 && __currentdisplaylist){ 
 #ifdef GEOM_DLDEBUG
-	  printf("End Display List %i\n",displaylist);
+	  printf("End Display List %i for obj %i\n",displaylist,id);
 #endif
 	  glEndList(); 
 	  __cache.insert(id,displaylist); 

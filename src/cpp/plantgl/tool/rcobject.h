@@ -473,7 +473,7 @@ public:
   /// Returns whether \e self is shared.
   inline bool unique( ) const
   {
-    return _ref_count > 1;
+    return _ref_count == 1;
   }
 
   /// Decrements the reference counter.  

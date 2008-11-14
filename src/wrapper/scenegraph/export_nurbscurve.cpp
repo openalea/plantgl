@@ -126,8 +126,8 @@ void export_NurbsCurve()
 	  "It uses the parametric equation C(u) = Sum(i=0,n)(Ri,p(u)Pi with u in [a,b]"
       "where the Ri,p(u) are p-th degree rational basis functions defined on the knot vector.", 
 	  init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
-	 .def(init<Point4ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
 	 .def(init<Point3ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
+	 .def(init<Point4ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
@@ -272,8 +272,8 @@ void export_NurbsCurve2D()
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
      ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree. See NurbsCurve.",
 	   init<Point3ArrayPtr,  optional<RealArrayPtr, uint_t, uint_t > >( args("ctrlPointList","knotList","degree","strides") ) )
-	 .def(init<Point3ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
 	 .def(init<Point2ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
+	 .def(init<Point3ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
      .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )
      .def( "fit", nurbs2_fit2, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )

@@ -71,8 +71,10 @@ void export_BezierPatch()
 	"It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
 	"and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Bi,n(u)Bj,m(v)Pi,j) with u and v in [0,1]\n"
 	"where Bi,n(u) and Bi,m(v) are the classical n and m-th degree Bernstein polynomials.",
-	 init<Point4MatrixPtr, optional<uint_t,uint_t,bool> >
+	 init<const Point4MatrixPtr&, optional<uint_t,uint_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
+	.def(init<const Point3MatrixPtr&, optional<uint_t,uint_t,bool> >
+           ("BezierPatch(Point3Matrix ctrlPoints [,ustride,vstride,ccw])"))
     .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint_t)
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
@@ -94,9 +96,10 @@ void export_NurbsPatch()
 	"It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
 	"and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Ri,n(u)Rj,m(v)Pi,j) with u and v in [0,1]\n"
 	"where Ri,n(u) and Ri,m(v) are classical n and m-th degree rational basis function.",
-	 init<Point4MatrixPtr, optional< RealArrayPtr, RealArrayPtr, 
-     uint_t,uint_t,uint_t,uint_t,bool> >
+	 init<const Point4MatrixPtr&, optional< RealArrayPtr, RealArrayPtr, uint_t,uint_t,uint_t,uint_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
+	 .def(init<const Point4MatrixPtr&, uint_t, optional< uint_t,RealArrayPtr, RealArrayPtr, uint_t,uint_t,bool> >
+         ("NurbsPatch(Point4Matrix ctrlPoints, uDeg, vDeg,RealArray uKnotList,RealArray vKnotList [,ustride,vstride,ccw])"))
     .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint_t)
     .DEC_BT_NR_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint_t)
     .DEC_PTR_PROPERTY_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
