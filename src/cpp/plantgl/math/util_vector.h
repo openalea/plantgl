@@ -384,7 +384,7 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
       - \v must be valid.
       \post
       - \e self is valid. */
-  Vector3( const Vector2& v, const real_t& z );
+  Vector3( const Vector2& v, const real_t& z = 0);
 
   /** Constructs a Vector3 with the Cylindrical \e c.
       \pre
@@ -621,14 +621,14 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
       - \e v must be valid.
       \post
       - \e self is valid. */
-  Vector4( const Vector2& v, const real_t& z, const real_t& w );
+  Vector4( const Vector2& v, const real_t& z = 0, const real_t& w = 0);
 
   /** Constructs a Vector4 with a Vector3 \e v and \e w.
       \pre
       - \e v must be valid.
       \post
       - \e self is valid. */
-  Vector4( const Vector3& v, const real_t& w );
+  Vector4( const Vector3& v, const real_t& w = 0);
 
   /// Destructor
   virtual ~Vector4( );
