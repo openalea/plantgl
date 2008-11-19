@@ -23,7 +23,7 @@ else:
 
 sources= [str( src[ 1][ 0 ] )]
 
-if env[ 'BISON_HPP' ]:
+if env.get('BISON_HPP',False):
   includes.append( 'scne_parser.hpp' )
 else:
   includes.append( 'scne_parser.cpp.h' )
