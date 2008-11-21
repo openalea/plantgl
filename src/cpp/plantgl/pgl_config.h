@@ -246,7 +246,6 @@
  #   pragma warning (disable : 4250) // 'class' : inherits 'member' via dominance
  #   pragma warning (disable : 4251)
  #   pragma warning (disable : 4275)
- #   pragma warning (disable : 4996)
 
 #endif
 

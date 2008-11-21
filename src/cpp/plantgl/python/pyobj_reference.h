@@ -55,7 +55,7 @@ namespace boost {
 		((PyObjectLink *)ptr->getRefCountListener())->m_self = NULL; 
 	}
 
-	inline PyObject * intrusive_ptr_get_pyobject(TOOLS(RefCountObject) * ptr)
+	inline PyObject * intrusive_ptr_get_pyobject(const TOOLS(RefCountObject) * ptr)
 	{  
 		if(ptr->getRefCountListener())
 			return ((PyObjectLink *)ptr->getRefCountListener())->m_self; 

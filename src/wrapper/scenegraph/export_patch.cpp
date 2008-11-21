@@ -73,8 +73,8 @@ void export_BezierPatch()
 	"where Bi,n(u) and Bi,m(v) are the classical n and m-th degree Bernstein polynomials.",
 	 init<const Point4MatrixPtr&, optional<uint_t,uint_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
-	.def(init<const Point3MatrixPtr&, optional<uint_t,uint_t,bool> >
-           ("BezierPatch(Point3Matrix ctrlPoints [,ustride,vstride,ccw])"))
+	//.def(init<const Point3MatrixPtr&, optional<uint_t,uint_t,bool> >
+    //       ("BezierPatch(Point3Matrix ctrlPoints [,ustride,vstride,ccw])"))
     .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint_t)
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
