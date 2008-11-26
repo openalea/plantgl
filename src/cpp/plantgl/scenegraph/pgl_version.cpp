@@ -35,6 +35,7 @@
 
 #include <plantgl/tool/util_string.h>
 #include "pgl_version.h"
+#include <cstdlib>
 
 using namespace std;
 
@@ -71,3 +72,4 @@ std::string getPGLVersionString(){
 
 int getPGLVersionNumber() { return PGL_VERSION; }
 std::string getPGLRevisionString() { return PGL_SVNREVISION; }
+
