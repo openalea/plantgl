@@ -781,13 +781,12 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		setScene(nsc);
 		res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
 		cur++;
-		if(cur % per == 0)
+		if(cur % per == 0){
 			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
 			// std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
 		}
-
 	}
-	std::cerr << "\x0d Projections 100% done.\n";
+	std::cerr << "\x0d Projections 100% done." << std::endl;
 	if(mode)frame->getCamera()->setProjectionMode(mode);
 	return res;
 }
