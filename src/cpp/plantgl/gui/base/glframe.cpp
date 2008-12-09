@@ -59,6 +59,7 @@
 #include <qvariant.h>
 #include <qmainwindow.h>
 #include <qurl.h>
+#include <QHash>
 
 #include "glframe.h"
 #include "icons.h"
@@ -956,6 +957,61 @@ void ViewGLFrame::printProjectionSize(){
 		   " pixels ; Pixel Width = "+QString::number(pixelwidth)+
 		   " (Screen = "+QString::number(pixelwidth*width())+" x "+QString::number(pixelwidth*height())+
 		   " ) ; Projection Size = "+QString::number(projsurf));
+}
+
+std::vector<std::pair<uint_t,uint_t> > 
+ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
+{
+	uint_t projpix = 0;
+	int gridstate = __grid->getState();
+	__grid->setState(0);
+	QColor curcolor = getBackGroundColor();
+	setBackGroundColor(QColor(255,255,255,0));
+	bool lightmode = __light->isEnabled();
+	bool mode = __camera->getProjectionMode();
+	if(lightmode)__light->setEnabled(false);
+	if(mode)__camera->setOrthographicMode();
+	// else if(gridstate != 0)
+	updateGL();
+
+	if(pixelwidth) *pixelwidth = getPixelWidth();
+
+    int w = width();
+    int h = height();
+
+    int nbpix = w*h;
+    uchar_t  * cvalues = new uchar_t[4*nbpix];
+    glReadPixels(0,0,w,h,GL_RGBA, GL_UNSIGNED_BYTE, cvalues);
+
+	QHash<uint_t,uint_t> pcount; 
+    uchar_t  * cvaluesiter = cvalues;
+	for(uint_t i = 0; i < nbpix; ++i){
+		uchar_t red =   *cvaluesiter; ++cvaluesiter;
+		uchar_t green = *cvaluesiter; ++cvaluesiter;
+		uchar_t blue =  *cvaluesiter; ++cvaluesiter;
+		uchar_t alpha = 255-(*cvaluesiter); ++cvaluesiter;
+		uint_t id = (uint_t(alpha) << 24)+
+					(uint_t(red) << 16)+
+					(uint_t(green) << 8)+
+					 uint_t(blue);
+		if(id != UINT32_MAX){
+			pcount[id] += 1;
+		}
+	}
+
+    delete [] cvalues;
+	__grid->setState(gridstate);
+	setBackGroundColor(curcolor);
+	if(lightmode)__light->setEnabled(lightmode);
+	if(mode)__camera->setProjectionMode(mode);
+	else if(gridstate != 0)updateGL();
+	std::vector<std::pair<uint_t,uint_t> > res;
+	if(pixelwidth)
+		for(QHash<uint_t,uint_t>::const_iterator it = pcount.begin();
+			it != pcount.end(); ++it) {
+				res.push_back(std::pair<uint_t,uint_t>(it.key(),it.value()));
+		}
+	return res;
 }
 
 /*  ------------------------------------------------------------------------ */

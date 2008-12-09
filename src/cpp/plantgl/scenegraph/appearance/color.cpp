@@ -72,6 +72,14 @@ Color3::Color3( const uchar_t * rgb ) :
   Tuple3<uchar_t>(rgb) {
 }
 
+Color3::Color3( const Color4& c4) :
+	Tuple3<uchar_t>(c4.getRed(),c4.getGreen(),c4.getBlue()) {
+}
+
+Color3::Color3( uint32_t rgb ) :
+  Tuple3<uchar_t>(uchar_t((rgb & 0xff0000) >> 16),uchar_t((rgb & 0x00ff00) >> 8),uchar_t(rgb & 0x0000ff))
+{}
+
 Color3::~Color3(){
 }
 
@@ -131,6 +139,19 @@ real_t Color3::getAverageClamped() const {
     return (real_t)(__RED + __GREEN +__BLUE)/(real_t)765;
 }
 
+
+uint_t Color3::toUint() const {
+	return (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
+}
+
+Color3 Color3::fromUint(uint_t value) {
+  Color3 res;
+  res.__RED = uchar_t((value & 0xff0000) >> 16);
+  res.__GREEN = uchar_t((value & 0x00ff00) >> 8);
+  res.__BLUE = uchar_t(value & 0x0000ff);
+  return res;
+}
+
 std::ostream& PGL(operator<<( std::ostream& stream, const Color3& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," << (uint16_t)c.getBlue() << ">";
 }
@@ -164,6 +185,12 @@ Color4::Color4( const uchar_t * rgba ) :
 Color4::Color4( const Color3& c, uchar_t alpha ) :
   Tuple4<uchar_t>(c.getRed(),c.getGreen(),c.getBlue(),alpha) {
 }
+
+Color4::Color4( uint32_t argb ):
+  Tuple4<uchar_t>(uchar_t((argb & 0xff0000) >> 16),uchar_t((argb & 0x00ff00) >> 8),
+	              uchar_t(argb & 0x0000ff),uchar_t((argb & 0xff000000) >> 24))
+{}
+
 
 Color4::~Color4(  )  {
 }
@@ -205,6 +232,19 @@ uchar_t Color4::getRed( ) const { return __RED;}
 uchar_t& Color4::getRed( ) { return __RED;}
 
 real_t Color4::getRedClamped( ) const { return (real_t)__RED / 255;}
+
+uint_t Color4::toUint() const {
+	return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
+}
+
+Color4 Color4::fromUint(uint_t value) {
+  Color4 res;
+  res.__ALPHA = ((value & 0xff000000) >> 24);
+  res.__RED = ((value & 0x00ff0000) >> 16);
+  res.__GREEN = ((value & 0x0000ff00) >> 8);
+  res.__BLUE = (value & 0x000000ff);
+  return res;
+}
 
 std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," 

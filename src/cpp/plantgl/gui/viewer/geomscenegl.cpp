@@ -59,6 +59,7 @@
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qgl.h>
+#include <QHash>
 
 #include <plantgl/algo/codec/scne_parser.h>
 
@@ -782,6 +783,8 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		cur++;
 		if(cur % per == 0)
 			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
+			// std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
+		}
 
 	}
 	std::cerr << "\x0d Projections 100% done.\n";
@@ -813,6 +816,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		uint_t id = (*it)->getId();
 		setScene(nsc);
 		ViewZBuffer * cbuff = frame->grabDepthBuffer(false);
+
 		if(! back_test) {
 			for(int c = 0;  c < w; ++c){
 				for(int r = 0;  r < h; ++r){
@@ -839,13 +843,42 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		}
 		delete cbuff;
 		cur++;
-		if(cur % per == 0)
+		if(cur % per == 0){
 			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
-
+			// QCoreApplication::processEvents();
+		}
 	}
 	std::cerr << "\x0d Projections 100% done.\n";
 	setScene(sc);
 	return res;
+}
+
+
+std::vector<std::pair<uint_t,uint_t> > 
+ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
+{
+	ViewGLFrame * frame = dynamic_cast<ViewGLFrame *>(__frame);
+	if (!frame) return std::vector<std::pair<uint_t,uint_t> >();
+	else {
+		ScenePtr nsc(new Scene());
+		QHash<uint_t,uint_t> coloridmap;
+		for(Scene::const_iterator it = __scene->getBegin(); it != __scene->getEnd(); it++){
+			uint_t id = (*it)->getId();
+			Color4 c = Color4::fromUint(id);
+			MaterialPtr mat = new Material(Color3(c),1);
+			mat->getTransparency() = c.getAlphaClamped();
+			ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
+			nsc->add(ShapePtr(new Shape(sh->getGeometry(),mat)));
+		}
+		ScenePtr oldscene = __scene;
+		glDisable(GL_BLEND);
+		setScene(nsc);
+		std::vector<std::pair<uint_t,uint_t> > res = frame->getProjectionPixelPerColor(pixelwidth);
+		glEnable(GL_BLEND);
+		setScene(oldscene);
+		return res;
+	}
+
 }
 
 /* ----------------------------------------------------------------------- */
@@ -863,6 +896,10 @@ ViewGeomSceneGL::customEvent(QEvent * e) {
 	else if (e->type() == ViewGeomEvent::eGetScene){
 		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
 		*(myevent->scene) = __scene;
+	}
+	else if (e->type() == ViewGeomEvent::eIntegratedProjList){
+		ViewIntegratedProjListEvent * myevent = (ViewIntegratedProjListEvent *)e;
+		*(myevent->result) = getPixelPerShape(myevent->arg1);
 	}
 }
 

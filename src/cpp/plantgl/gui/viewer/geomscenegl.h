@@ -148,6 +148,9 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   std::vector<std::pair<uint_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
   ViewRayPointHitBuffer * castRays(const PGL(ScenePtr)& sc, bool back_test);
 
+  std::vector<std::pair<uint_t,uint_t> > 
+  getPixelPerShape(double* pixelwidth = NULL);
+
   /// Get the surface of the scene.
   real_t getSceneSurface();
 

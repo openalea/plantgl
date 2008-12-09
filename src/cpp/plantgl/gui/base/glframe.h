@@ -173,6 +173,9 @@ class VIEW_API ViewGLFrame : public QGLWidget
   int getProjectionPixel();
   double getPixelWidth();
   double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL);
+
+  std::vector<std::pair<uint_t,uint_t> > 
+  getProjectionPixelPerColor(double* pixelwidth = NULL);
   
   virtual void connectTo(ViewStatusBar *);
 

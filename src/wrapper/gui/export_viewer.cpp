@@ -52,17 +52,12 @@ public:
     ~PyStateSaver() { if (_state) popState(); }
 
     virtual void pushState () { 
-        // _state = PyThreadState_Swap(NULL);
-        // PyEval_ReleaseLock();
-       _state = PyEval_SaveThread(); 
-        // Py_BEGIN_ALLOW_THREADS
+		if(PyEval_ThreadsInitialized()) 
+			_state = PyEval_SaveThread(); 
     }
     virtual void popState () 
     { 
         if(_state){
-            // Py_END_ALLOW_THREADS
-            // PyEval_AcquireLock();
-            // PyThreadState_Swap(_state);
             PyEval_RestoreThread(_state); 
             _state = NULL; 
         }
@@ -358,9 +353,24 @@ boost::python::object getProjectionSizes(const ScenePtr& sc){
 	boost::python::list bres;
 	for(vector<std::pair<uint_t,double> >::const_iterator _it = res.begin();
 	_it != res.end(); _it++){
-	  bres.append(make_tuple((int)(_it->first),_it->second));
+	  bres.append(make_tuple(_it->first,_it->second));
 	}
 	return bres;
+  }
+}
+
+boost::python::object getProjectionPerShape(){
+  std::vector<std::pair<uint_t,uint_t> > res;
+  double pixelsize;
+  res = PGLViewerApplication::getProjectionPerShape(pixelsize);
+  if(res.empty()) return object();
+  else {
+	boost::python::list bres;
+	for(vector<std::pair<uint_t,uint_t> >::const_iterator _it = res.begin();
+	_it != res.end(); _it++){
+	  bres.append(make_tuple(_it->first,_it->second));
+	}
+	return make_tuple(bres,pixelsize);
   }
 }
 
@@ -681,6 +691,8 @@ void export_framegl(){
     .staticmethod("getProjectionSize")
 	.def("getProjectionSizes",&getProjectionSizes,"getProjectionSizes(Scene objects) : individual projected sizes of a set of elements.",args("objects"))
     .staticmethod("getProjectionSizes")
+	.def("getProjectionPerShape",&getProjectionPerShape,"getProjectionPerShape() : projected sizes of a set of elements per elements.")
+    .staticmethod("getProjectionPerShape")
 	;
 }
 

@@ -90,6 +90,13 @@ PGLViewerApplication::getProjectionSizes(const PGL(ScenePtr)& sc){
   return res;
 }
 
+std::vector<std::pair<uint_t,uint_t> > 
+PGLViewerApplication::getProjectionPerShape(double& pixelsize){
+  std::vector<std::pair<uint_t,uint_t> > res;
+  ViewerApplication::_sendAnEvent(new ViewIntegratedProjListEvent(&res,&pixelsize));
+  return res;
+}
+
 ViewRayPointHitBuffer * 
 PGLViewerApplication::castRays2(const PGL(ScenePtr)& sc, bool back_test )
 {

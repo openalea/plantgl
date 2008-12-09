@@ -115,6 +115,7 @@ public:
 		eFirstGeomEvent = ViewEvent::eLastEvent,
 		eGetScene = eFirstGeomEvent,
 		eProjList,
+		eIntegratedProjList,
 		eRayBuff2,
 		eLastGeomEvent
 	};
@@ -122,6 +123,56 @@ public:
 	ViewGeomEvent(int type):ViewEvent(type){}
 	virtual ~ViewGeomEvent(){}
 
+};
+
+template <int TEventType, class ReturnType = int,class Arg1 = int, class Arg2 = int, class Arg3 = int, class Arg4 = int, class Arg5 = int>
+class TViewGeomEvent : public ViewGeomEvent {
+public:
+	TViewGeomEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3,
+				   const Arg4& _arg4,
+				   const Arg5& _arg5):
+		ViewGeomEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(_arg5) {}
+
+	TViewGeomEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3,
+				   const Arg4& _arg4):
+		ViewGeomEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(0) {}
+
+	TViewGeomEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3):
+		ViewGeomEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(0),arg5(0) {}
+
+	TViewGeomEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2):
+		ViewGeomEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(0),arg4(0),arg5(0) {}
+
+	TViewGeomEvent(ReturnType* _result, 
+				   const Arg1& _arg1):
+		ViewGeomEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(0),arg3(0),arg4(0),arg5(0) {}
+
+	TViewGeomEvent(ReturnType* _result):
+		ViewGeomEvent(TEventType),result(_result),
+		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
+
+	typename ReturnType * result;
+	typename Arg1 arg1;
+	typename Arg2 arg2;
+	typename Arg3 arg3;
+	typename Arg4 arg4;
+	typename Arg5 arg5;
 };
 
 /* ----------------------------------------------------------------------- */

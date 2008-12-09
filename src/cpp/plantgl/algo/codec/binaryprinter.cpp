@@ -556,7 +556,7 @@ bool BinaryPrinter::header(const char * comment){
 #else 
 	uchar_t precision = 32 ;
 #endif 
-        std::cerr << "Assume "<< (precision==32?"simple":"double")<< " precision." << std::endl;
+    // std::cerr << "Assume "<< (precision==32?"simple":"double")<< " precision." << std::endl;
 	writeUchar(precision);
   }
 	__outputStream << '#';

@@ -80,6 +80,7 @@ public :
   static PGL(ScenePtr) getCurrentScene();
 
   static std::vector<std::pair<uint_t,double> > getProjectionSizes(const PGL(ScenePtr)& sc); 
+  static std::vector<std::pair<uint_t,uint_t> > getProjectionPerShape(double& pixelsize); 
 
   static ViewRayPointHitBuffer * castRays2(const PGL(ScenePtr)& sc, bool back_test = false );
 

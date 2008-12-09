@@ -96,7 +96,13 @@ public:
   explicit Color3( uchar_t v  = 255) ;
 
   /// Constructs a Color3 with the 3 element array \e rgb.
-  Color3( const uchar_t * rgb );
+  explicit Color3( const uchar_t * rgb );
+
+  /// Constructs a Color3 with the 3 uchar_t element of \e rgb.
+  explicit Color3( uint32_t rgb );
+
+  /// Constructs a Color3 with the red, blue and green components of c4.
+  Color3( const Color4& c4) ;
 
   /// Destructor
   ~Color3();
@@ -136,6 +142,12 @@ public:
 
   /// Returns the \e average of the red, green and blue value.
   real_t getAverageClamped() const ;
+
+  /// Encode the rgb value onto an uint
+  uint_t toUint() const;
+
+  /// Decode the rgb value from an uint
+  static Color3 fromUint(uint_t);
 
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color3& c );
@@ -192,8 +204,11 @@ public:
   /// Constructs a Color4 with the 4 element array \e rgb.
   Color4( const uchar_t * rgba );
 
+  /// Constructs a Color4 with the 4 uchar_t element of \e argb.
+  explicit Color4( uint32_t argb );
+
   /// Constructs a Color4 with the Color3 \e c and the alpha value \e alpha.
-  Color4( const Color3& c, uchar_t alpha );
+  Color4( const Color3& c, uchar_t alpha = 0);
 
   /// Destructor.
   ~Color4(  );
@@ -236,6 +251,12 @@ public:
 
   /// Returns the \c red component of \e self clamped to [0,1].
   real_t getRedClamped( ) const ;
+
+  /// Encode the argb value onto an uint
+  uint_t toUint() const;
+
+  /// Decode the argb value from an uint
+  static Color4 fromUint(uint_t);
 
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color4& c ) ;

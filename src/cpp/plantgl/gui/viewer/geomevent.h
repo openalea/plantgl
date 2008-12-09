@@ -175,6 +175,7 @@ public :
 
 };
 
+typedef TViewGeomEvent<ViewGeomEvent::eIntegratedProjList,std::vector<std::pair<uint_t,uint_t> >,double*> ViewIntegratedProjListEvent;
 /* ----------------------------------------------------------------------- */
 
 #endif
