@@ -167,12 +167,12 @@ public:
 		ViewGeomEvent(TEventType),result(_result),
 		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
 
-	typename ReturnType * result;
-	typename Arg1 arg1;
-	typename Arg2 arg2;
-	typename Arg3 arg3;
-	typename Arg4 arg4;
-	typename Arg5 arg5;
+        ReturnType * result;
+        Arg1 arg1;
+        Arg2 arg2;
+        Arg3 arg3;
+        Arg4 arg4;
+        Arg5 arg5;
 };
 
 /* ----------------------------------------------------------------------- */

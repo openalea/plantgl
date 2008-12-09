@@ -867,7 +867,7 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 			MaterialPtr mat = new Material(Color3(c),1);
 			mat->getTransparency() = c.getAlphaClamped();
 			ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
-			nsc->add(ShapePtr(new Shape(sh->getGeometry(),mat)));
+			nsc->add(ShapePtr(new Shape(sh->getGeometry(),AppearancePtr(mat),id)));
 		}
 		ScenePtr oldscene = __scene;
 		glDisable(GL_BLEND);

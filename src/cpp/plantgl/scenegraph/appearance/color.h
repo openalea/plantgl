@@ -58,6 +58,7 @@ template class SG_API TOOLS(Tuple3)<uchar_t>;
 */
 
 
+class Color4;
 class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
 {
 
