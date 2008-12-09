@@ -977,12 +977,16 @@ ShapeObj:
   TokShape Name '{' ShapeFieldList '}' {
     GEOM_PARSER_BUILD_SHAPE($$,$2,$4);shape_nb++;
     if(__verbose)
-      if(shape_nb%10==0)std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
+      if(shape_nb%10==0)
+      	printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
+      // std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
   }
 | TokShape  Name '{' ShapeShortFieldList '}'{
   GEOM_PARSER_BUILD_SHAPE($$,$2,$4);shape_nb++;
   if(__verbose)
-    if(shape_nb%10==0)std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
+    if(shape_nb%10==0)
+		printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
+    // std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
 };
 
 InlineObj:

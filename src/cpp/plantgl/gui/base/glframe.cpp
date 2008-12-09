@@ -60,6 +60,7 @@
 #include <qmainwindow.h>
 #include <qurl.h>
 #include <QHash>
+#include <QtOpenGL/QGLPixelBuffer>
 
 #include "glframe.h"
 #include "icons.h"
@@ -180,7 +181,11 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __lastSelectionMode(Selection),
   __linedialog(0),
   __selectionRect(0),
-  __useOcclusionQuery(false)
+  __useOcclusionQuery(false),
+  __pixelbuffer(0),
+  __usePBuffer(true),
+  __pBufferActivated(false),
+  __redrawEnabled(true)
 {
 	if(name)setObjectName(name);
   /// Creation
@@ -225,6 +230,8 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
 ViewGLFrame::~ViewGLFrame() {
 
   if(__scene)delete __scene;
+  if(__pixelbuffer) delete __pixelbuffer;
+
 #ifdef  PGL_DEBUG
     cout << "GL Frame deleted" << endl;
 #endif
@@ -307,6 +314,8 @@ ViewGLFrame::setSceneRenderer(ViewRendererGL * s)
   rendererStatus();
   emit rendererChanged();
 }
+
+QGLPixelBuffer * ViewGLFrame::getPBuffer() { return __pixelbuffer; }
 
 void
 ViewGLFrame::rendererStatus() {
@@ -422,7 +431,7 @@ ViewGLFrame::setBackGroundColor(const QColor& color)
   __BgColor=color;
   qglClearColor(__BgColor);
   __fog->setColor(color);
-  updateGL();
+  redrawGL();
   status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
 }
 
@@ -435,7 +444,7 @@ ViewGLFrame::setLineWidth(int i)
 {
   __linewidth = (GLfloat)float(i);
   status(QString(tr("Set Line Width to")+" %1").arg(i),2000);
-  updateGL();
+  redrawGL();
 }
 
 void 
@@ -533,7 +542,34 @@ ViewGLFrame::clearSelection()
   status(tr("Selection cleared"),5000);
 }
 
+void ViewGLFrame::activatePBuffer(bool b){
+	static bool PBufferSupport = QGLPixelBuffer::hasOpenGLPbuffers();
+	if(PBufferSupport && __usePBuffer) __pBufferActivated = b;
+    if(__pBufferActivated) {
+	  if (!__pixelbuffer || __pixelbuffer->size() != size()){
+		  if(__pixelbuffer) delete __pixelbuffer;
+		  __pixelbuffer = new QGLPixelBuffer(size(),format(),this);
+	  }
+	  __pixelbuffer->makeCurrent();
+	  initializeGL();
+   }
+}
+
+
+void ViewGLFrame::activateRedraw(bool b) { __redrawEnabled = b; }
+
 /*  ------------------------------------------------------------------------ */
+
+void ViewGLFrame::makeItCurrent()
+{
+	if(__pBufferActivated)__pixelbuffer->makeCurrent();
+	else makeCurrent();
+}
+
+void ViewGLFrame::redrawGL()
+{
+	if (__redrawEnabled) updateGL();
+}
 
 /*!
   Set up the OpenGL rendering state, and define display list
@@ -594,6 +630,14 @@ void ViewGLFrame::resizeGL( int w, int h )
 
 void ViewGLFrame::paintGL()
 {
+  if(__pBufferActivated) {
+	  if (!__pixelbuffer || __pixelbuffer->size() != size()){
+		  if(__pixelbuffer) delete __pixelbuffer;
+		  __pixelbuffer = new QGLPixelBuffer(size(),format(),this);
+	  }
+	  __pixelbuffer->makeCurrent();
+	  initializeGL();
+  }
   GL_ERROR;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -618,28 +662,29 @@ void ViewGLFrame::paintGL()
 	if(GL_ERROR)__scene->clear();
   }
 
-  if(__mode == MultipleSelection && __selectionRect){
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0,width(),0,height(),-50,50);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-	glColor3f(0.2,0.2,0.8);
-	glEnable (GL_LINE_STIPPLE);
-	glLineStipple(1,0x0FFF);
-	glBegin(GL_LINE_LOOP);
-	int x = __selectionRect->x();
-	int y = height() - __selectionRect->y();
-	glVertex3f(x,y,0);
-	glVertex3f(x+__selectionRect->width(),y,0);
-	glVertex3f(x+__selectionRect->width(),y-__selectionRect->height(),0);
-	glVertex3f(x,y-__selectionRect->height(),0);
-	glEnd();
-	glDisable (GL_LINE_STIPPLE);
+  if (!__pBufferActivated) { // __pBufferActivated = false; }
+  // else {
+	  if(__mode == MultipleSelection && __selectionRect){
+		  glMatrixMode(GL_PROJECTION);
+		  glLoadIdentity();
+		  glOrtho(0,width(),0,height(),-50,50);
+		  glMatrixMode(GL_MODELVIEW);
+		  glLoadIdentity();
+		  glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		  glColor3f(0.2,0.2,0.8);
+		  glEnable (GL_LINE_STIPPLE);
+		  glLineStipple(1,0x0FFF);
+		  glBegin(GL_LINE_LOOP);
+		  int x = __selectionRect->x();
+		  int y = height() - __selectionRect->y();
+		  glVertex3f(x,y,0);
+		  glVertex3f(x+__selectionRect->width(),y,0);
+		  glVertex3f(x+__selectionRect->width(),y-__selectionRect->height(),0);
+		  glVertex3f(x,y-__selectionRect->height(),0);
+		  glEnd();
+		  glDisable (GL_LINE_STIPPLE);
+	  }
   }
-
-
   // glFinish();
 
 
@@ -803,7 +848,7 @@ ViewGLFrame::castRays( const Vector3& position,
 	GLsizei bufsize = 40960;
 	GLuint selectBuf[40960];
 
-	makeCurrent();
+	makeItCurrent();
 	Vector3 oldpos = __camera->getPosition();
 	Vector3 olddir = __camera->getDirection();
 	bool mode = __camera->getProjectionMode();
@@ -857,21 +902,21 @@ ViewGLFrame::castRays( const Vector3& position,
 ViewZBuffer * 
 ViewGLFrame::grabZBuffer( bool all_values  )
 {
-    makeCurrent();
+    makeItCurrent();
 	return ViewZBuffer::importglZBuffer(all_values);
 }
 
 ViewZBuffer * 
 ViewGLFrame::grabDepthBuffer( bool all_values )
 {
-    makeCurrent();
+    makeItCurrent();
 	return ViewZBuffer::importglDepthBuffer(all_values);
 }
 
 double ViewGLFrame::getPixelWidth(){
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
-	makeCurrent();
+	makeItCurrent();
 	GLint viewport[4];
 	GLdouble modelMatrix[16], projMatrix[16];
 	glGetIntegerv(GL_VIEWPORT,viewport);
@@ -895,16 +940,16 @@ int ViewGLFrame::getProjectionPixel(){
 	__grid->setState(0);
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
-	else if(gridstate != 0)updateGL();
+	// else if(gridstate != 0)updateGL();
 #ifdef WITH_OCCLUSION_QUERY
     if(__useOcclusionQuery && glInitOcclusionQuery()){
-        makeCurrent();
+        makeItCurrent();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         GLuint qn;
         GLint sampleCount;
         glGenQueriesARB(1,&qn);
         glBeginQueryARB(GL_SAMPLES_PASSED_ARB, qn);
-        updateGL();
+        paintGL();
         glEndQueryARB(GL_SAMPLES_PASSED_ARB);
         glGetQueryObjectivARB(qn, GL_QUERY_RESULT_ARB,&sampleCount);
         projpix= sampleCount;
@@ -912,12 +957,13 @@ int ViewGLFrame::getProjectionPixel(){
     }
     else{
 #endif
+        makeItCurrent();
+        paintGL();
         int w = width();
         int h = height();
 
         int nbpix = w*h;
         float  * zvalues = new float[nbpix];
-        glReadBuffer(GL_FRONT);
         glReadPixels(0,0,w,h,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
 
         float  * zvaluesiter = zvalues;
@@ -930,7 +976,7 @@ int ViewGLFrame::getProjectionPixel(){
 #endif
 	__grid->setState(gridstate);
 	if(mode)__camera->setProjectionMode(mode);
-	else if(gridstate != 0)updateGL();
+	// else if(gridstate != 0)updateGL();
 	return projpix;
 }
 
@@ -963,6 +1009,8 @@ std::vector<std::pair<uint_t,uint_t> >
 ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 {
 	uint_t projpix = 0;
+    bool redrawEnabledPrevious = __redrawEnabled;
+    activateRedraw(false);
 	int gridstate = __grid->getState();
 	__grid->setState(0);
 	QColor curcolor = getBackGroundColor();
@@ -971,8 +1019,8 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 	bool mode = __camera->getProjectionMode();
 	if(lightmode)__light->setEnabled(false);
 	if(mode)__camera->setOrthographicMode();
-	// else if(gridstate != 0)
-	updateGL();
+	makeItCurrent();
+	paintGL();
 
 	if(pixelwidth) *pixelwidth = getPixelWidth();
 
@@ -1004,7 +1052,7 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 	setBackGroundColor(curcolor);
 	if(lightmode)__light->setEnabled(lightmode);
 	if(mode)__camera->setProjectionMode(mode);
-	else if(gridstate != 0)updateGL();
+    activateRedraw(redrawEnabledPrevious);
 	std::vector<std::pair<uint_t,uint_t> > res;
 	if(pixelwidth)
 		for(QHash<uint_t,uint_t>::const_iterator it = pcount.begin();
@@ -1557,12 +1605,6 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 	  else qWarning(("Error with glGet(GL_CULL_FACE_MODE) : "+QString::number(*res)+'-'+QString::number(GL_BACK)).toAscii().data());
 	}
 
-	QObject::connect(glform.NoCullingButton,SIGNAL(toggled(bool)),this,SLOT(glCullNoFace(bool)));
-	QObject::connect(glform.BackFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullBackFace(bool)));
-	QObject::connect(glform.FrontFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullFrontFace(bool)));
-	QObject::connect(glform.OcclusionQueryButton,SIGNAL(toggled(bool)),this,SLOT(useOcclusionQuery(bool)));
-
-
 	glGetIntegerv(GL_SHADE_MODEL,res);
 	if(*res == GL_FLAT)glform.FlatButton->setChecked(true);
 	else if(*res == GL_SMOOTH)glform.SmoothButton->setChecked(true);
@@ -1583,6 +1625,13 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 	QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
 
     glform.OcclusionQueryButton->setChecked(__useOcclusionQuery);
+    glform.PixelBufferButton->setChecked(__usePBuffer);
+
+	QObject::connect(glform.NoCullingButton,SIGNAL(toggled(bool)),this,SLOT(glCullNoFace(bool)));
+	QObject::connect(glform.BackFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullBackFace(bool)));
+	QObject::connect(glform.FrontFaceButton,SIGNAL(toggled(bool)),this,SLOT(glCullFrontFace(bool)));
+	QObject::connect(glform.OcclusionQueryButton,SIGNAL(toggled(bool)),this,SLOT(useOcclusionQuery(bool)));
+	QObject::connect(glform.PixelBufferButton,SIGNAL(toggled(bool)),this,SLOT(usePixelBuffer(bool)));
 
 	delete res;
 }
@@ -1592,51 +1641,51 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 
 void
 ViewGLFrame::glCullNoFace(bool b){
-  if(b){ makeCurrent(); GL_COM(glDisable(GL_CULL_FACE)); updateGL();}
+  if(b){ makeItCurrent(); GL_COM(glDisable(GL_CULL_FACE)); redrawGL();}
 }
 
 void
 ViewGLFrame::glCullBackFace(bool b){
-  if(b){ makeCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_BACK));updateGL();}
+  if(b){ makeItCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_BACK));redrawGL();}
 }
 
 void
 ViewGLFrame::glCullFrontFace(bool b){
-  if(b){ makeCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_FRONT));updateGL();}
+  if(b){ makeItCurrent(); glEnable(GL_CULL_FACE); GL_COM(glCullFace(GL_FRONT));redrawGL();}
 }
 
 void
 ViewGLFrame::glSmoothShadeModel(bool b){
-  if(b){ makeCurrent(); GL_COM(glShadeModel(GL_SMOOTH));updateGL();}
+  if(b){ makeItCurrent(); GL_COM(glShadeModel(GL_SMOOTH));redrawGL();}
 }
 
 void
 ViewGLFrame::glFlatShadeModel(bool b){
-  if(b){ makeCurrent(); GL_COM(glShadeModel(GL_FLAT));updateGL();}
+  if(b){ makeItCurrent(); GL_COM(glShadeModel(GL_FLAT));redrawGL();}
 }
 
 void
 ViewGLFrame::glDithering(bool b){
-  makeCurrent();
+  makeItCurrent();
   if(b){GL_COM(glEnable(GL_DITHER));}
   else {GL_COM(glDisable(GL_DITHER));}
-  updateGL();
+  redrawGL();
 }
 
 void
 ViewGLFrame::glDepthTest(bool b){
-  makeCurrent();
+  makeItCurrent();
   if(b){GL_COM(glEnable(GL_DEPTH_TEST));}
   else {GL_COM(glDisable(GL_DEPTH_TEST));}
-  updateGL();
+  redrawGL();
 }
 
 void
 ViewGLFrame::glNormalization(bool b){
-  makeCurrent();
+  makeItCurrent();
   if(b){GL_COM(glEnable(GL_NORMALIZE));}
   else {GL_COM(glDisable(GL_NORMALIZE));}
-  updateGL();
+  redrawGL();
 }
 
 void
@@ -1650,6 +1699,8 @@ void ViewGLFrame::useOcclusionQuery(bool b)
 {
     __useOcclusionQuery = b;
 }
+
+void ViewGLFrame::usePixelBuffer(bool b) { __usePBuffer = b; }
 
 
 ViewDoubleToolButton::ViewDoubleToolButton( const QPixmap & pm,

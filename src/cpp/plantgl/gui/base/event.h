@@ -538,7 +538,7 @@ public :
 
   /// Constructor.
   ViewCameraSetEvent(const Vector3& pos, const Vector3& target,
-			      float azimuth, float elevation, int def);
+			      float azimuth, float elevation, bool redraw, int def);
 
   /// Destructor.
   ~ViewCameraSetEvent();
@@ -547,6 +547,7 @@ public :
   Vector3 target;
   float azimuth;
   float elevation;
+  bool redraw;
   int def;
 };
 

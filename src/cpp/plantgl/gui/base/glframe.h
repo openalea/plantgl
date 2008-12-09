@@ -81,6 +81,8 @@ class ViewZBuffer;
 
 TOOLS_USING(Vector3)
 
+class QGLPixelBuffer;
+
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -200,8 +202,19 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   virtual bool event(QEvent *e);
 
-  public slots:
+  void activatePBuffer(bool b);
+  QGLPixelBuffer * getPBuffer();
 
+  bool isPixelBufferUsed()  { return __usePBuffer; }
+
+  void makeItCurrent();
+  
+  void activateRedraw(bool b);
+  bool isRedrawEnabled() { return __redrawEnabled; }
+ 
+public slots:
+
+  void redrawGL();
   void printProjectionSize();
 
   /// Set the Line Width.
@@ -255,6 +268,8 @@ class VIEW_API ViewGLFrame : public QGLWidget
   void animation(bool b);
 
   void useOcclusionQuery(bool b);
+
+  void usePixelBuffer(bool b);
 
 signals:
 
@@ -383,6 +398,12 @@ signals:
   // QSlider * __lineslider;
 
   bool __useOcclusionQuery;
+
+  QGLPixelBuffer * __pixelbuffer;
+  bool __pBufferActivated;
+  bool __usePBuffer;
+
+  bool __redrawEnabled;
 };
 
 class VIEW_API ViewDoubleToolButton : public QToolButton {

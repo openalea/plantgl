@@ -742,8 +742,7 @@ bool BinaryParser::readShape(){
         }
         if(isParserVerbose())
           if(__roots%50==0)
-            std::cerr << "\x0d" << "Already parsed : "
-                      << __roots << " shapes." << std::flush;
+			 printf("\x0dAlready parsed : %i%% shapes.",__roots);
         return true;
     }
     else{

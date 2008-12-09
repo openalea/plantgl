@@ -10,6 +10,7 @@ def test_projpershape():
     sc += s
     Viewer.display(sc)    
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()
+    print pixpershape, pixsize
     pixpershape = dict(pixpershape)
     assert len(pixpershape) == len(sc)
     keys1 = [sh.id for sh in sc]
@@ -22,7 +23,7 @@ def test_projpershape_nullid():
     s = Shape(Sphere())
     s.id = 0
     Viewer.display(s)    
-    pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()
+    pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()    
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
     

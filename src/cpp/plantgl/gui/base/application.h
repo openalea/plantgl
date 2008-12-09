@@ -146,10 +146,10 @@ public :
   static void start();
   static void exit();
 
-  static void setCamera(const TOOLS(Vector3)& pos);
-  static void setCamera(const TOOLS(Vector3)& pos, real_t azimuth, real_t elevation);
-  static void lookAt(const TOOLS(Vector3)& pos, const TOOLS(Vector3)& target);
-  static void lookAt(const TOOLS(Vector3)& target);
+  static void setCamera(const TOOLS(Vector3)& pos, bool redraw = true);
+  static void setCamera(const TOOLS(Vector3)& pos, real_t azimuth, real_t elevation, bool redraw = true);
+  static void lookAt(const TOOLS(Vector3)& pos, const TOOLS(Vector3)& target, bool redraw = true);
+  static void lookAt(const TOOLS(Vector3)& target, bool redraw = true);
 
   static void getCamera(TOOLS(Vector3)& pos, TOOLS(Vector3)& heading, TOOLS(Vector3)& up);
 

@@ -579,12 +579,19 @@ Vector3 getCameraPosition(){
 	return pos;
 }
 
+void setCameraPosition(const TOOLS(Vector3)& pos){
+	ViewerApplication::setCamera(pos);
+}
+
 object getCameraPositionInfo(){
 	Vector3 pos, h, up;
 	ViewerApplication::getCamera(pos,h,up);
 	return make_tuple(pos,h,up);
 }
 
+void lookAt1 (const TOOLS(Vector3)& pos) { ViewerApplication::lookAt(pos); }
+void lookAt3 (const TOOLS(Vector3)& pos,const TOOLS(Vector3)& target) { ViewerApplication::lookAt(pos,target); }
+ 
 void export_camera(){
 	class_<PyViewCamera >("camera", no_init )
 		.def("setPerspective",&ViewerApplication::setPerspectiveCamera,"setPerspective() : Set Camera in Perspective mode.")
@@ -593,11 +600,15 @@ void export_camera(){
     .staticmethod("setOrthographic")
     .def("getPosition",&getCameraPositionInfo)
     .staticmethod("getPosition")
-	.add_static_property("position",&getCameraPosition,(void(*)(const TOOLS(Vector3)&))&ViewerApplication::setCamera)
-    .def("set",(void(*)(const TOOLS(Vector3)&,real_t,real_t))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
+    .def("setPosition",&(void(*)(const TOOLS(Vector3)&, bool))&ViewerApplication::setCamera)
+    .staticmethod("setPosition")
+	.add_static_property("position",&getCameraPosition,&setCameraPosition)
+    .def("set",(void(*)(const TOOLS(Vector3)&,real_t,real_t, bool))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
     .staticmethod("set")
-    .def("lookAt",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 target)",args("target"))
-    .def("lookAt",(void(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 pos, Vector3 target)",args("pos","target"))
+    .def("lookAt",&lookAt1,"lookAt(Vector3 target)",args("target"))
+    .def("lookAt",(void(*)(const TOOLS(Vector3)&, bool))&ViewerApplication::lookAt,"lookAt(Vector3 target, bool redraw)",args("target","redraw"))
+    .def("lookAt",&lookAt3,"lookAt(Vector3 pos, Vector3 target)",args("pos","target"))
+    .def("lookAt",(void(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&, bool))&ViewerApplication::lookAt,"lookAt(Vector3 pos, Vector3 target, bool redraw)",args("pos","target","redraw"))
     .staticmethod("lookAt")
 	;
 }

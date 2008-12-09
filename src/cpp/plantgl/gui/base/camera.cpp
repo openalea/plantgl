@@ -936,6 +936,11 @@ void
 ViewCameraGL::cameraEvent(ViewEvent * ev){
 	if (ev->type() == ViewEvent::eCameraSet) {
 		ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
+		ViewGLFrame * frameGL = NULL;
+		if (!e->redraw){ 
+			frameGL = dynamic_cast<ViewGLFrame *>(__frame); 
+			if(frameGL)frameGL->activateRedraw(false);
+		}
 		switch(e->def){
 			case 0:
 				setPosition(e->position);
@@ -949,6 +954,9 @@ ViewCameraGL::cameraEvent(ViewEvent * ev){
 			case 3:
 				lookAt(getPosition(),e->target);
 			break;
+		}
+		if (!e->redraw){ 
+			if(frameGL)frameGL->activateRedraw(true);
 		}
 	}
 	else if (ev->type() == ViewEvent::eCameraGet){

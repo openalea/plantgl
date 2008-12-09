@@ -6,13 +6,13 @@
     <x>0</x>
     <y>0</y>
     <width>301</width>
-    <height>296</height>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QGridLayout" name="gridLayout" >
    <item row="0" column="0" >
     <widget class="QGroupBox" name="CullFaceGroup" >
      <property name="title" >
@@ -45,7 +45,7 @@
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>21</width>
           <height>2</height>
@@ -65,16 +65,7 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>9</number>
-      </property>
-      <property name="topMargin" >
-       <number>9</number>
-      </property>
-      <property name="rightMargin" >
-       <number>9</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin" >
        <number>9</number>
       </property>
       <item>
@@ -96,7 +87,7 @@
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>20</width>
           <height>2</height>
@@ -118,7 +109,7 @@
      <property name="checkable" >
       <bool>false</bool>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout" name="verticalLayout" >
       <item>
        <widget class="QRadioButton" name="DitheringButton" >
         <property name="text" >
@@ -159,6 +150,16 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QRadioButton" name="PixelBufferButton" >
+        <property name="text" >
+         <string>Use Pixel Buffer</string>
+        </property>
+        <property name="autoExclusive" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -167,7 +168,7 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>138</width>
        <height>20</height>

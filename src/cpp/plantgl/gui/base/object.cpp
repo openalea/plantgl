@@ -57,7 +57,7 @@ ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
 {
   if(parent)
     QObject::connect (this,SIGNAL(valueChanged()),
-		      parent,SLOT(updateGL()) ); 	
+		      parent,SLOT(redrawGL()) ); 	
   if(name) setObjectName(name);
 }
 
@@ -133,7 +133,7 @@ ViewObjectGL::connectTo(QGLWidget *g)
 {
   if(g){
     QObject::connect (this,SIGNAL(valueChanged()),
-		      g,SLOT(updateGL()) );
+		      g,SLOT(redrawGL()) );
     __frame = g;
   }
 }

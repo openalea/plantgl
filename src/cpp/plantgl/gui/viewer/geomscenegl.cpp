@@ -60,6 +60,8 @@
 #include <qclipboard.h>
 #include <qgl.h>
 #include <QHash>
+#include <QtGui/QImage>
+#include <QtOpenGL/QGLPixelBuffer>
 
 #include <plantgl/algo/codec/scne_parser.h>
 
@@ -775,6 +777,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 	size_t tot = sc->getSize();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
+	if(frame->isPixelBufferUsed())frame->activatePBuffer(true);
 	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
 		nsc->clear();
 		nsc->add(*it);
@@ -782,11 +785,12 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
 		cur++;
 		if(cur % per == 0){
-			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
-			// std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
+			printf("\x0d Projections %i%% done.",cur*100/tot);
+			QCoreApplication::processEvents();
 		}
 	}
-	std::cerr << "\x0d Projections 100% done." << std::endl;
+	if(frame->isPixelBufferUsed())frame->activatePBuffer(false);
+	printf("\x0d Projections 100%% done.");
 	if(mode)frame->getCamera()->setProjectionMode(mode);
 	return res;
 }
@@ -809,6 +813,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	size_t tot = sc->getSize();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
+	if(frame->isPixelBufferUsed())frame->activatePBuffer(true);
 	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
 		nsc->clear();
 		nsc->add(*it);
@@ -843,11 +848,13 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		delete cbuff;
 		cur++;
 		if(cur % per == 0){
-			std::cerr << "\x0d Projections " << cur*100/tot << "% done." << std::flush;
-			// QCoreApplication::processEvents();
+			printf("\x0d Projections %i%",cur*100/tot);
+			QCoreApplication::processEvents();
 		}
 	}
-	std::cerr << "\x0d Projections 100% done.\n";
+	printf("\x0d Projections 100%\n");
+	// std::cerr << "\x0d Projections 100% done.\n";
+	if(frame->isPixelBufferUsed())frame->activatePBuffer(false);
 	setScene(sc);
 	return res;
 }
@@ -870,11 +877,16 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 			nsc->add(ShapePtr(new Shape(sh->getGeometry(),AppearancePtr(mat),id)));
 		}
 		ScenePtr oldscene = __scene;
-		glDisable(GL_BLEND);
+		frame->activateRedraw(false);
+		if(frame->isPixelBufferUsed()){
+			frame->activatePBuffer(true);
+		}
 		setScene(nsc);
 		std::vector<std::pair<uint_t,uint_t> > res = frame->getProjectionPixelPerColor(pixelwidth);
-		glEnable(GL_BLEND);
+		if(frame->isPixelBufferUsed()) frame->activatePBuffer(false);
+		// frame->getPBuffer()->toImage().save("test.png");
 		setScene(oldscene);
+		frame->activateRedraw(true);
 		return res;
 	}
 
