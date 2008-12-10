@@ -600,7 +600,7 @@ void export_camera(){
     .staticmethod("setOrthographic")
     .def("getPosition",&getCameraPositionInfo)
     .staticmethod("getPosition")
-    .def("setPosition",&(void(*)(const TOOLS(Vector3)&, bool))&ViewerApplication::setCamera)
+    .def("setPosition",(void(*)(const TOOLS(Vector3)&, bool))&ViewerApplication::setCamera)
     .staticmethod("setPosition")
 	.add_static_property("position",&getCameraPosition,&setCameraPosition)
     .def("set",(void(*)(const TOOLS(Vector3)&,real_t,real_t, bool))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
