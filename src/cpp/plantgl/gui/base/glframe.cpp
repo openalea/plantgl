@@ -1012,7 +1012,7 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 {
 	uint_t projpix = 0;
     bool redrawEnabledPrevious = __redrawEnabled;
-    activateRedraw(false);
+    if(redrawEnabledPrevious)activateRedraw(false);
 	int gridstate = __grid->getState();
 	__grid->setState(0);
 	QColor curcolor = getBackGroundColor();
@@ -1054,7 +1054,7 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 	setBackGroundColor(curcolor);
 	if(lightmode)__light->setEnabled(lightmode);
 	if(mode)__camera->setProjectionMode(mode);
-    activateRedraw(redrawEnabledPrevious);
+    if(redrawEnabledPrevious)activateRedraw(redrawEnabledPrevious);
 	std::vector<std::pair<uint_t,uint_t> > res;
 	if(pixelwidth)
 		for(QHash<uint_t,uint_t>::const_iterator it = pcount.begin();

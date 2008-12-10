@@ -881,6 +881,7 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 	ViewGLFrame * frame = dynamic_cast<ViewGLFrame *>(__frame);
 	if (!frame) return std::vector<std::pair<uint_t,uint_t> >();
 	else {
+		// custom scene creation : color represent id
 		ScenePtr nsc(new Scene());
 		QHash<uint_t,uint_t> coloridmap;
 		for(Scene::const_iterator it = __scene->getBegin(); it != __scene->getEnd(); it++){
@@ -891,37 +892,62 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 			ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
 			nsc->add(ShapePtr(new Shape(sh->getGeometry(),AppearancePtr(mat),id)));
 		}
-		ScenePtr oldscene = __scene;
-		frame->activateRedraw(false);
+
+
+		// auto repaint desactivate
+		bool autoredraw = frame->isRedrawEnabled();
+		if(autoredraw)frame->activateRedraw(false);
+
+		// dynamic rendering init
 		GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
 		__renderer.setRenderingMode(GLRenderer::Selection);
-	    bool mode = frame->getCamera()->getProjectionMode();
-	    if(mode)frame->getCamera()->setOrthographicMode();
-		if(frame->isPixelBufferUsed()){
+
+		// camera init
+	    bool mode = __camera->getProjectionMode();
+		bool cameralockdim = __camera->isDimLock();
+	    if(mode)__camera->setOrthographicMode();
+		if(!cameralockdim) __camera->lockDim(true);
+
+		// pixel buffer init
+		if(frame->isPixelBufferUsed())
 			frame->activatePBuffer(true);
-		}
+
+		// blending init
 		GLboolean glblend = glIsEnabled(GL_BLEND);
-		GLboolean glcf = glIsEnabled(GL_CULL_FACE);
-		GLint glcff;
 		bool blending = __blending;
 		if(!glblend)glEnable(GL_BLEND);
 		if(blending)enableBlending(false);
-		if(!glcf){
-			glGetIntegerv(GL_CULL_FACE_MODE ,&glcff);
-			glEnable(GL_CULL_FACE); 
-			if(glcff != GL_BACK)glCullFace(GL_BACK);
-		}
+
+		// scene init
+		ScenePtr oldscene = __scene;
 		setScene(nsc);
+		if(!frame->isPixelBufferUsed()) frame->updateGL();
+
+		// projection computation
 		std::vector<std::pair<uint_t,uint_t> > res = frame->getProjectionPixelPerColor(pixelwidth);
-		if(frame->isPixelBufferUsed()) frame->activatePBuffer(false);
-		// frame->getPBuffer()->toImage().save("test.png");
+
+		// pixel buffer desactive
+		if(frame->isPixelBufferUsed()){
+			// frame->getPBuffer()->toImage().save("test.png");
+			frame->activatePBuffer(false);
+		}
+
+		// scene restore
 		setScene(oldscene);
+
+		// blending restore
 		if(!glblend)glDisable(GL_BLEND);
-		if(!glcf)glDisable(GL_BLEND);
-		else if(glcff != GL_BACK)glCullFace(glcff);
 		if(blending)enableBlending(blending);
+
+		// dynamic rendering restore
 		__renderer.setRenderingMode(rtype);
-		frame->activateRedraw(true);
+
+		// camera restore
+		if(!cameralockdim) __camera->lockDim(cameralockdim);
+		if(mode) __camera->setPerspectiveMode();
+
+		// auto repaint desactivate
+		if(autoredraw)frame->activateRedraw(autoredraw);
 		return res;
 	}
 
