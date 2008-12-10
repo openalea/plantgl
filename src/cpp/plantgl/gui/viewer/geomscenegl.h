@@ -232,6 +232,8 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   /// Connect this to a GL Widget.
   virtual void connectTo(QGLWidget *);
 
+  bool isBlendingEnabled() { return __blending; }
+
 public slots:
 
   virtual void refreshDisplay();
@@ -315,6 +317,8 @@ public slots:
 
   virtual void computeCamera();
 
+  void enableBlending(bool);
+
 signals:
   
   void displayList(bool);
@@ -352,6 +356,9 @@ protected :
 
   /// Selected shapes.
  STDEXT::hash_map<uint_t,PGL(Shape3DPtr)> __selectedShapes;
+
+  /// Do some blending
+  bool __blending;
 
 #ifdef QT_THREAD_SUPPORT
   /// Reader.

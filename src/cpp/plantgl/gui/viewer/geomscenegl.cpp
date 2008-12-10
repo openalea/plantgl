@@ -91,7 +91,8 @@ ViewGeomSceneGL::ViewGeomSceneGL(ViewCameraGL * camera,
   __bboxRenderer(__bboxComputer),
   __ctrlPtRenderer(__discretizer),
   __bbox(new BoundingBox(Vector3(-1,-1,-1),Vector3(1,1,1))),
-  __selectedShapes()
+  __selectedShapes(),
+  __blending(true)
 #ifdef QT_THREAD_SUPPORT
   ,__reader(0)
 #endif
@@ -275,6 +276,8 @@ ViewGeomSceneGL::refreshDisplay() {
   if(__scene)setScene(ScenePtr(__scene));
 }
 
+void ViewGeomSceneGL::enableBlending(bool b) { __blending = b; emit valueChanged(); }
+
 /* ----------------------------------------------------------------------- */
 int
 ViewGeomSceneGL::addScene( const ScenePtr& scene )
@@ -381,7 +384,8 @@ ViewGeomSceneGL::paintGL()
     switch (__renderingMode) {
     case 1:
       __light->switchOn();
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      else glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
 		if(__renderer.getRenderingMode() == GLRenderer::Dynamic)
@@ -435,7 +439,8 @@ ViewGeomSceneGL::paintGL()
         __renderer.endSceneList();
       }
       __light->switchOn();
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      else glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
         __scene->apply(__renderer);
@@ -447,7 +452,8 @@ ViewGeomSceneGL::paintGL()
 
     if(__renderingOption[0]){
       __light->switchOn();
-      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      else glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__bboxRenderer.beginSceneList()){
         __scene->apply(__bboxRenderer);
@@ -483,8 +489,9 @@ ViewGeomSceneGL::selectGL()
 {
   if (__scene){
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-        GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
+    if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    else glBlendFunc(GL_ONE,GL_ZERO);
+    GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
     __renderer.setRenderingMode(GLRenderer::Selection);
     __scene->apply(__renderer);
     __renderer.setRenderingMode(rtype);
@@ -773,6 +780,8 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 	if (!frame) return res;
 	bool mode = frame->getCamera()->getProjectionMode();
 	if(mode)frame->getCamera()->setOrthographicMode();
+    GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
+    __renderer.setRenderingMode(GLRenderer::Selection);
 	ScenePtr nsc(new Scene());
 	size_t tot = sc->getSize();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
@@ -789,6 +798,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 			QCoreApplication::processEvents();
 		}
 	}
+    __renderer.setRenderingMode(rtype);
 	if(frame->isPixelBufferUsed())frame->activatePBuffer(false);
 	printf("\x0d Projections 100%% done.");
 	if(mode)frame->getCamera()->setProjectionMode(mode);
@@ -814,6 +824,10 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
 	if(frame->isPixelBufferUsed())frame->activatePBuffer(true);
+	bool mode = frame->getCamera()->getProjectionMode();
+	if(mode)frame->getCamera()->setOrthographicMode();
+    GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
+    __renderer.setRenderingMode(GLRenderer::Selection);
 	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
 		nsc->clear();
 		nsc->add(*it);
@@ -853,6 +867,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		}
 	}
 	printf("\x0d Projections 100%\n");
+    __renderer.setRenderingMode(rtype);
 	// std::cerr << "\x0d Projections 100% done.\n";
 	if(frame->isPixelBufferUsed())frame->activatePBuffer(false);
 	setScene(sc);
@@ -878,14 +893,34 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 		}
 		ScenePtr oldscene = __scene;
 		frame->activateRedraw(false);
+		GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
+		__renderer.setRenderingMode(GLRenderer::Selection);
+	    bool mode = frame->getCamera()->getProjectionMode();
+	    if(mode)frame->getCamera()->setOrthographicMode();
 		if(frame->isPixelBufferUsed()){
 			frame->activatePBuffer(true);
+		}
+		GLboolean glblend = glIsEnabled(GL_BLEND);
+		GLboolean glcf = glIsEnabled(GL_CULL_FACE);
+		GLint glcff;
+		bool blending = __blending;
+		if(!glblend)glEnable(GL_BLEND);
+		if(blending)enableBlending(false);
+		if(!glcf){
+			glGetIntegerv(GL_CULL_FACE_MODE ,&glcff);
+			glEnable(GL_CULL_FACE); 
+			if(glcff != GL_BACK)glCullFace(GL_BACK);
 		}
 		setScene(nsc);
 		std::vector<std::pair<uint_t,uint_t> > res = frame->getProjectionPixelPerColor(pixelwidth);
 		if(frame->isPixelBufferUsed()) frame->activatePBuffer(false);
 		// frame->getPBuffer()->toImage().save("test.png");
 		setScene(oldscene);
+		if(!glblend)glDisable(GL_BLEND);
+		if(!glcf)glDisable(GL_BLEND);
+		else if(glcff != GL_BACK)glCullFace(glcff);
+		if(blending)enableBlending(blending);
+		__renderer.setRenderingMode(rtype);
 		frame->activateRedraw(true);
 		return res;
 	}

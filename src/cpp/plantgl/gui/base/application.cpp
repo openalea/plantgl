@@ -274,6 +274,16 @@ ViewerApplication::setSelection(const vector<uint_t>& sel) {
   _sendAnEvent(new ViewSelectionSet(sel));
 }
 
+bool ViewerApplication::getRedrawPolicy(){
+  bool res;
+  _sendAnEvent(new ViewGetRedrawEvent(&res));
+  return res;
+}
+
+void ViewerApplication::setRedrawPolicy(bool b){
+  _sendAnEvent(new ViewSetRedrawEvent(b));
+}
+
 void 
 ViewerApplication::saveImage( const std::string& filename, 
 							  const std::string& format,
@@ -305,21 +315,21 @@ void ViewerApplication::setBgColor(int red, int green, int blue){
 }
 
 void 
-ViewerApplication::setCamera(const Vector3& pos, bool redraw){
-  _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,0,0,redraw,0));
+ViewerApplication::setCamera(const Vector3& pos){
+  _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,0,0,0));
 }
 void 
-ViewerApplication::setCamera(const Vector3& pos, real_t azimuth, real_t elevation, bool redraw){
-  _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,azimuth,elevation,redraw,1));
+ViewerApplication::setCamera(const Vector3& pos, real_t azimuth, real_t elevation){
+  _sendAnEvent(new ViewCameraSetEvent(pos,Vector3::ORIGIN,azimuth,elevation,1));
 }
 
 void 
-ViewerApplication::lookAt(const Vector3& pos, const Vector3& target, bool redraw){
-  _sendAnEvent(new ViewCameraSetEvent(pos,target,0,0,redraw,2));
+ViewerApplication::lookAt(const Vector3& pos, const Vector3& target){
+  _sendAnEvent(new ViewCameraSetEvent(pos,target,0,0,2));
 }
 void 
-ViewerApplication::lookAt(const Vector3& target, bool redraw){
-  _sendAnEvent(new ViewCameraSetEvent(Vector3::ORIGIN,target,0,0,redraw,3));
+ViewerApplication::lookAt(const Vector3& target){
+  _sendAnEvent(new ViewCameraSetEvent(Vector3::ORIGIN,target,0,0,3));
 }
 
 void 

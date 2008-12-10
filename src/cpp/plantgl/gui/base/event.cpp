@@ -321,10 +321,9 @@ ViewCameraSetEvent::ViewCameraSetEvent(const Vector3& _pos,
 								 const Vector3& _target,
 								 float _azimuth, 
 								 float _elevation,
-								 bool _redraw,
 								 int _def):
   ViewEvent(eCameraSet),
-  position(_pos),target(_target),azimuth(_azimuth),elevation(_elevation),redraw(_redraw),def(_def){
+  position(_pos),target(_target),azimuth(_azimuth),elevation(_elevation),def(_def){
 }
 
 ViewCameraSetEvent::~ViewCameraSetEvent(){

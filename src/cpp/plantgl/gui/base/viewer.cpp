@@ -628,7 +628,7 @@ void  Viewer::customEvent(QEvent *e){
 	ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
     // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
     __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
-    if(!isHidden()){
+    if(!isHidden()&&!__GLFrame->isRedrawEnabled()){
         if(!isActiveWindow())
           activateWindow();
     }
@@ -646,6 +646,14 @@ void  Viewer::customEvent(QEvent *e){
   else if(e->type() == ViewEvent::eSetSelection){
     ViewSelectionSet * k = ( ViewSelectionSet * )e;
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->getSelection());
+  }
+  else if(e->type() == ViewEvent::eGetRedrawPolicy){
+    ViewGetRedrawEvent * k = ( ViewGetRedrawEvent * )e;
+    *k->result = __GLFrame->isRedrawEnabled();
+  }
+  else if(e->type() == ViewEvent::eSetRedrawPolicy){
+    ViewSetRedrawEvent * k = ( ViewSetRedrawEvent * )e;
+    __GLFrame->activateRedraw(k->arg1);
   }
   else if(e->type() == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;

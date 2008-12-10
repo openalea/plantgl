@@ -65,6 +65,8 @@ public:
 		eRefresh,
 		eGetSelection,
 		eSetSelection,
+		eGetRedrawPolicy,
+		eSetRedrawPolicy,
 		eShow,
 		eEnd,
 		eFullScreen,
@@ -101,6 +103,102 @@ public:
   bool sent_event;
 
 };
+
+
+template <int TEventType, class ReturnType = int,class Arg1 = int, class Arg2 = int, class Arg3 = int, class Arg4 = int, class Arg5 = int>
+class TViewEvent : public ViewEvent {
+public:
+	TViewEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3,
+				   const Arg4& _arg4,
+				   const Arg5& _arg5):
+		ViewEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(_arg5) {}
+
+	TViewEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3,
+				   const Arg4& _arg4):
+		ViewEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(0) {}
+
+	TViewEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3):
+		ViewEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(0),arg5(0) {}
+
+	TViewEvent(ReturnType* _result, 
+				   const Arg1& _arg1,
+				   const Arg2& _arg2):
+		ViewEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(_arg2),arg3(0),arg4(0),arg5(0) {}
+
+	TViewEvent(ReturnType* _result, 
+				   const Arg1& _arg1):
+		ViewEvent(TEventType),result(_result),
+		arg1(_arg1),arg2(0),arg3(0),arg4(0),arg5(0) {}
+
+	TViewEvent(ReturnType* _result):
+		ViewEvent(TEventType),result(_result),
+		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
+
+        ReturnType * result;
+        Arg1 arg1;
+        Arg2 arg2;
+        Arg3 arg3;
+        Arg4 arg4;
+        Arg5 arg5;
+};
+
+template <int TEventType, class Arg1 = int, class Arg2 = int, class Arg3 = int, class Arg4 = int, class Arg5 = int>
+class TPViewEvent : public ViewEvent {
+public:
+	TPViewEvent(   const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3,
+				   const Arg4& _arg4,
+				   const Arg5& _arg5):
+		ViewEvent(TEventType),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(_arg5) {}
+
+	TPViewEvent(const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3,
+				   const Arg4& _arg4):
+		ViewEvent(TEventType),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(0) {}
+
+	TPViewEvent(const Arg1& _arg1,
+				   const Arg2& _arg2,
+				   const Arg3& _arg3):
+		ViewEvent(TEventType),
+		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(0),arg5(0) {}
+
+	TPViewEvent(const Arg1& _arg1,
+				   const Arg2& _arg2):
+		ViewEvent(TEventType),
+		arg1(_arg1),arg2(_arg2),arg3(0),arg4(0),arg5(0) {}
+
+	TPViewEvent(const Arg1& _arg1):
+		ViewEvent(TEventType),
+		arg1(_arg1),arg2(0),arg3(0),arg4(0),arg5(0) {}
+
+	TPViewEvent():
+		ViewEvent(TEventType),
+		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
+
+        Arg1 arg1;
+        Arg2 arg2;
+        Arg3 arg3;
+        Arg4 arg4;
+        Arg5 arg5;
+};
+
 /**
    \class ViewSceneChangeEvent
    \brief An event to pass to glframe for changing scene.
@@ -538,7 +636,7 @@ public :
 
   /// Constructor.
   ViewCameraSetEvent(const Vector3& pos, const Vector3& target,
-			      float azimuth, float elevation, bool redraw, int def);
+			      float azimuth, float elevation, int def);
 
   /// Destructor.
   ~ViewCameraSetEvent();
@@ -547,7 +645,6 @@ public :
   Vector3 target;
   float azimuth;
   float elevation;
-  bool redraw;
   int def;
 };
 
@@ -774,6 +871,11 @@ public :
 
   bool mode;
 };
+
+/* ----------------------------------------------------------------------- */
+
+typedef TPViewEvent<ViewEvent::eSetRedrawPolicy,bool> ViewSetRedrawEvent;
+typedef TViewEvent<ViewEvent::eGetRedrawPolicy,bool> ViewGetRedrawEvent;
 
 /* ----------------------------------------------------------------------- */
 

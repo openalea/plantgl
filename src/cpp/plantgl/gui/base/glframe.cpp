@@ -183,7 +183,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __selectionRect(0),
   __useOcclusionQuery(false),
   __pixelbuffer(0),
-  __usePBuffer(true),
+  __usePBuffer(false),
   __pBufferActivated(false),
   __redrawEnabled(true)
 {
@@ -220,6 +220,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   ViewerSettings settings;
   settings.beginGroup("FrameGL");
   __BgColor = settings.value("BgColor",__BgColor).value<QColor>();
+  __usePBuffer = settings.value("PixelBuffer",__usePBuffer).toBool();
   setBackGroundColor(__BgColor);
   settings.endGroup();
 
@@ -242,6 +243,7 @@ void ViewGLFrame::endEvent()
   ViewerSettings settings;
   settings.beginGroup("FrameGL");
   settings.setValue("BgColor",__BgColor);
+  settings.setValue("PixelBuffer",__usePBuffer);
   settings.endGroup();
   if(__scene)__scene->endEvent();
   if(__grid)__grid->endEvent();
