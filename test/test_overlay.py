@@ -1,4 +1,8 @@
 from openalea.plantgl.all import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+app = QApplication([])
 
 if not Overlay.supportCGAL():
   print 'Do not have CGAL support for Overlay'
@@ -28,7 +32,6 @@ else:
     assert isinstance(res,Polyline2D) and "overlay between 2 circles fail. Gives multiple curves."
 
   def test_circle_beziercurve(visual = False):
-    
     res = overlay_with_cirle(BezierCurve2D([(1.2,0,1),(1,1.5,1),(-3,2,1),(-6,0,1),(-3,-2,1),(1,-1.5,1),(1.2,0,1)]),visual)
     assert not res is None and "overlay between circle and bezier curve fail. Gives None."
     assert isinstance(res,Polyline2D) and "overlay between circle and bezier curve  fail. Gives multiple curves."
