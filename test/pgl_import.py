@@ -15,6 +15,7 @@ def addpybinpath(dir_name):
 	dir_name = os.path.abspath(dir_name)
 	sys.path.insert(0,dir_name)
 
+
 if exists('../bin'):
 	"Visual 8 Binary path added"
 	addbinpath('../bin')
@@ -25,14 +26,17 @@ else:
 
 addpybinpath('../src')
 
-import openalea.plantgl.all as pgl
 
-v = pgl.Vector3.ORIGIN
-print('Vector3 : '+str(v))
-c =pgl.Cylinder()
-print(c)
-d = pgl.Discretizer()
-print(d)
+
+def test_import():
+    import openalea.plantgl.all as pgl
+
+    v = pgl.Vector3.ORIGIN
+    print('Vector3 : '+str(v))
+    c =pgl.Cylinder()
+    print(c)
+    d = pgl.Discretizer()
+    print(d)
 
 
 
