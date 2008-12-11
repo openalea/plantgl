@@ -14,28 +14,28 @@ __all__ = ['random_sample', 'regular_sample','planter', 'import_scene']
 
 random_sample = Factory( name= "random sample", 
                          description= "Create random distribution", 
-                         category = "Stand", 
+                         category = "Stand,scene", 
                          nodemodule = "frog",
                          nodeclass = "RandomSample",
                          )
 
 regular_sample = Factory( name= "regular sample", 
                           description= "Create regular distribution", 
-                          category = "Stand", 
+                          category = "Stand,scene", 
                           nodemodule = "frog",
                           nodeclass = "RegularSample",
                           )
 
 planter = Factory( name= "planter", 
                    description= "Apply a set of transformation to a shape", 
-                   category = "Vizualisation", 
+                   category = "Visualization,scene", 
                    nodemodule = "frog",
                    nodeclass = "Planter",
                    )
     
 import_scene = Factory( name= "import scene", 
                         description= "Import GEOM scene", 
-                        category = "Vizualisation", 
+                        category = "Visualization,scene,IO", 
                         nodemodule = "frog",
                         nodeclass = "ImportScene",
                         )
