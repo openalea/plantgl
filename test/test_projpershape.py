@@ -1,4 +1,9 @@
 from openalea.plantgl.all import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+import sys
+
+app = QApplication([])
 
 def test_projpershape():
     sc = Scene()
@@ -18,6 +23,7 @@ def test_projpershape():
     keys2 = pixpershape.keys()
     keys2.sort()
     assert keys1 == keys2
+
 
 def test_projpershape_nullid():
     s = Shape(Sphere())
@@ -67,4 +73,6 @@ if __name__ == '__main__':
     test_projpershape()
     test_projpershape_nullid()
     test_projpershape_bigid()
-    test_projpershape_2bigid()    
+    test_projpershape_2bigid()
+    
+    sys.exit(app.exec_())
