@@ -15,7 +15,7 @@ __all__ = ['plot3d']
         
 plot3d = Factory( name= "plot3D", 
                   description= "Viewer Display", 
-                  category = "Vizualisation", 
+                  category = "Visualisation, plot", 
                   nodemodule = "viewernode",
                   nodeclass = "Plot3D",
                   #lazy = False
@@ -23,7 +23,7 @@ plot3d = Factory( name= "plot3D",
 
 #    nf = Factory( name= "addToPlot3D", 
 #                  description= "Viewer Display", 
-#                  category = "Vizualisation", 
+#                  category = "Visualisation", 
 #                  nodemodule = "viewernode",
 #                  nodeclass = "AddToPlot3D",
 #                  lazy = False
