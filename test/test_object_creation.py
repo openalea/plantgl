@@ -1,8 +1,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from openalea.plantgl.all import Scene, Viewer, Shape, Sphere, Material, Translated, Vector3, Box
-import code
-
+from openalea.plantgl.scenegraph import *
+from openalea.plantgl.math import Vector3,Matrix4,scaling
 
 def create_default_objects():
     yield AmapSymbol('../share/plantgl/database/amapsymbols/nentn105.smb')
@@ -34,12 +34,10 @@ def create_default_objects():
 class MyThread(QThread):
     def __init__(self):
         QThread.__init__(self)
-    
-    def run(self):
-        code.interact("Sub thread interpretation",local=globals())
-        QApplication.quit()
-
-    def doit(self):
+   
+    # the show option is used if the test is called with python
+    # and not used if called with nosetests 
+    def doit(self, show=False):
         app = QApplication([])
         Viewer.start()
     	s = Scene()
@@ -50,9 +48,14 @@ class MyThread(QThread):
         Viewer.display(s)
         
         self.start()
-        app.exec_()
+        if show:
+            app.exec_()
+
+
+def test_objects(show=False):
+    m = MyThread()
+    m.doit(show)
 
 
 if __name__ == '__main__':
-    m = MyThread()
-    m.doit()
+    test_objects(show=True)
