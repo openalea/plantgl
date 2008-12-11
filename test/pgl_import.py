@@ -25,18 +25,14 @@ else:
 
 addpybinpath('../src')
 
-import plantgl as pgl
+import openalea.plantgl.all as pgl
 
-v = pgl.math.Vector3.ORIGIN
+v = pgl.Vector3.ORIGIN
 print('Vector3 : '+str(v))
-c = pgl.scenegraph.Cylinder()
+c =pgl.Cylinder()
 print(c)
-d = pgl.algo.Discretizer()
+d = pgl.Discretizer()
 print(d)
-pgl.gui.Viewer.start()
-
-
-raw_input("Appuyer sur une touche")
 
 
 
