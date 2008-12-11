@@ -31,7 +31,7 @@ __all__ = ["dresser"]
 
 dresser = Factory( name="PGL Dresser",
                    description="Add Pgl geometry an object",
-                   category="Modelling",
+                   category="Modelling,scene",
                    nodemodule="dresser",
                    nodeclass="dresser",
                    )
