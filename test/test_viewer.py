@@ -112,7 +112,7 @@ def test_image():
     w = 300
     h = 408
     Viewer.frameGL.maximize()
-    Viewer.frameGL.setSize(w,w)
+    Viewer.frameGL.setSize(w, w)
     fname = 'test_framegl.png'
     Viewer.frameGL.saveImage(fname,'PNG')
     Viewer.frameGL.maximize(False)
@@ -126,7 +126,8 @@ def test_image():
         del q
     except:
         imgsizetest = True
-    assert imgsizetest and "Viewer.frameGL.setSize failed %s", str((rw,rh))
+
+    assert imgsizetest and "Viewer.frameGL.setSize failed %s" % str((rw,rh))
     os.remove(fname)
 
 def test_state():
