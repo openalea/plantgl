@@ -1388,7 +1388,7 @@ void ViewGLFrame::focusInEvent ( QFocusEvent * e) {
   __scene->checkFileModification();
 }
 
-void ViewGLFrame::gridEvent ( ViewGridEvent * e) {
+void ViewGLFrame::gridEvent ( ViewEvent * e) {
   __grid->gridEvent(e);
 }
 

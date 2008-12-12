@@ -54,7 +54,6 @@
 /* ----------------------------------------------------------------------- */
 
 
-
 class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
   
 
@@ -123,59 +122,13 @@ class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API GeomGetSceneEvent : public ViewGeomEvent {
-  
-  public :
-    
-  /// Constructor.
-  GeomGetSceneEvent(PGL(ScenePtr)* scene);
-  
-  /// Destructor.
-  ~GeomGetSceneEvent();
-    
-  /// The scene to display.
-  PGL(ScenePtr)* scene;
-      
-};
-
-/* ----------------------------------------------------------------------- */
-
-class GeomProjListEvent : public ViewGeomEvent {
-
-public :
-
-  /// Constructor.
-	GeomProjListEvent(const PGL(ScenePtr)& sc, std::vector<std::pair<uint_t,double> > * res);
-
-  /// Destructor.
-  ~GeomProjListEvent();
-
-  std::vector<std::pair<uint_t,double> > *  result;
-  PGL(ScenePtr) objlist;
-};
-
-/* ----------------------------------------------------------------------- */
-class ViewRayPointHitBuffer;
-
-class ViewRayBuff2Event : public ViewGeomEvent {
-
-public :
-
-  /// Constructor.
-	ViewRayBuff2Event(const PGL(ScenePtr)& sc, 
-					  bool back_test = true,
-					  ViewRayPointHitBuffer ** res = NULL);
-	
-	/// Destructor.
-	~ViewRayBuff2Event();
-	
-	ViewRayPointHitBuffer **  result;
-    PGL(ScenePtr) objlist;
-	bool back_test;
-
-};
-
+typedef TViewGeomEvent<ViewGeomEvent::eGetScene,PGL(ScenePtr)> GeomGetSceneEvent;
+typedef TViewGeomEvent<ViewGeomEvent::eProjList,std::vector<std::pair<uint_t,double> >,PGL(ScenePtr)> GeomProjListEvent;
 typedef TViewGeomEvent<ViewGeomEvent::eIntegratedProjList,std::vector<std::pair<uint_t,uint_t> >,double*> ViewIntegratedProjListEvent;
+class ViewRayPointHitBuffer;
+typedef TViewGeomEvent<ViewGeomEvent::eRayBuff2,ViewRayPointHitBuffer *,PGL(ScenePtr),bool> ViewRayBuff2Event;
+
+
 /* ----------------------------------------------------------------------- */
 
 #endif

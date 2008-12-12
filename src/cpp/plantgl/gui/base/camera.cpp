@@ -936,26 +936,26 @@ void
 ViewCameraGL::cameraEvent(ViewEvent * ev){
 	if (ev->type() == ViewEvent::eCameraSet) {
 		ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
-		switch(e->def){
+		switch(e->arg5){
 			case 0:
-				setPosition(e->position);
+				setPosition(e->arg1);
 			break;
 			case 1:
-				setPosition(e->position,e->azimuth,e->elevation);
+				setPosition(e->arg1,e->arg3,e->arg4);
 			break;
 			case 2:
-				lookAt(e->position,e->target);
+				lookAt(e->arg1,e->arg2);
 			break;
 			case 3:
-				lookAt(getPosition(),e->target);
+				lookAt(getPosition(),e->arg2);
 			break;
 		}
 	}
 	else if (ev->type() == ViewEvent::eCameraGet){
 		ViewCameraGetEvent * e = (ViewCameraGetEvent *)ev;
-		*e->position = getPosition();
-		*e->heading = getDirection();
-		*e->up = getUp();
+		*e->result = getPosition();
+		*e->arg1 = getDirection();
+		*e->arg2 = getUp();
 	}
 }
 

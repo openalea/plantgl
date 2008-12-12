@@ -106,13 +106,12 @@ ViewerAppli::question(const std::string& caption,
 			   const std::string& but1txt,
 			   const std::string& but2txt) {
 	int res = -1;
-    ViewQuestionEvent * event = new ViewQuestionEvent(
+    ViewQuestionEvent * event = new ViewQuestionEvent(&res,
 	  QString(caption.c_str()),
 	  QString(text.c_str()),
 	  (but0txt.empty()?QString::null:QString( but0txt.c_str() )),
 	  (but1txt.empty()?QString::null:QString( but1txt.c_str() )),
-	  (but2txt.empty()?QString::null:QString( but2txt.c_str() )),
-	  &res);
+	  (but2txt.empty()?QString::null:QString( but2txt.c_str() )));
 	sendAnEvent(event);
 	return res;
 }
@@ -128,8 +127,8 @@ ViewerAppli::itemSelection(const std::string& caption,
 	for(std::vector<std::string>::const_iterator _it = values.begin();
 		_it != values.end(); _it++)
 		  if(!_it->empty())l.append(QString(_it->c_str()));
-    ViewItemSelectionEvent * event = new ViewItemSelectionEvent(
-	  caption.c_str(), text.c_str(), l, editable,&res,&ok);
+    ViewItemSelectionEvent * event = new ViewItemSelectionEvent(&res,
+	  caption.c_str(), text.c_str(), l, editable,&ok);
 	sendAnEvent(event);
 	return std::string(res.toAscii().constData());
 }
@@ -143,8 +142,8 @@ ViewerAppli::doubleSelection(const std::string& caption,
 								   bool& ok)
 {
     double res ;
-    ViewDoubleSelectionEvent * event = new ViewDoubleSelectionEvent (
-	  caption.c_str(), text.c_str(), value, minvalue, maxvalue,&res,&ok);
+    ViewDoubleSelectionEvent * event = new ViewDoubleSelectionEvent (&res,
+	  caption.c_str(), text.c_str(), value, minvalue, maxvalue,&ok);
 	sendAnEvent(event);
 	return res;
 }
@@ -157,12 +156,12 @@ ViewerAppli::getFile(const std::string& caption,
 					  bool existing,bool dir){
 
 	QString res;
-    ViewFileSelEvent * event = new ViewFileSelEvent(
+    ViewFileSelEvent * event = new ViewFileSelEvent(&res,
 	  (caption.empty()?"Choose File":caption.c_str()),
 	  (startPath.empty()?QString::null:QString( startPath.c_str() )),
 	  (filter.empty()?QString::null:QString( filter.c_str() )),
 	  existing,
-	  dir, &res);
+	  dir);
 	sendAnEvent(event);
 	return (res.isEmpty()?std::string():std::string(res.toAscii().constData()));
   }
@@ -174,7 +173,7 @@ ViewerAppli::castRays(const TOOLS(Vector3)& pos,
 						 const TOOLS(Vector3)& dy,
 						 int sx, int sy){
 	ViewRayBuffer * res = NULL ;
-	ViewRayBuffEvent * event = new ViewRayBuffEvent(pos,dir,dx,dy,sx,sy,&res);
+	ViewRayBuffEvent * event = new ViewRayBuffEvent(&res,pos,dir,dx,dy,sx,sy);
 	sendAnEvent(event);
 	return res;
 }

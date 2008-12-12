@@ -71,7 +71,6 @@ class ViewClippingPlaneGL;
 class ViewFogGL;
 class ViewRendererGL;
 class ViewErrorDialog;
-class ViewGridEvent;
 class ViewEvent;
 #include "util_qwidget.h"
 // #include "zbuffer.h"
@@ -347,7 +346,7 @@ signals:
 
   public:
 
-  virtual void gridEvent ( ViewGridEvent * ) ;
+  virtual void gridEvent ( ViewEvent * ) ;
   virtual void cameraEvent ( ViewEvent * ) ;
   virtual void clippingPlaneEvent(ViewEvent * e);
 

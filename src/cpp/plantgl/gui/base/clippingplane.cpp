@@ -189,22 +189,22 @@ void ViewClippingPlaneGL::clippingPlaneEvent(ViewEvent * e)
 	if(e->type() ==ViewEvent::eClippingPlaneActivate)
 	{
 		ViewCPActivateEvent * ev = (ViewCPActivateEvent *)e;
-		int i = ev->cpid;
+		int i = ev->arg1;
 		if(i < 1 || i > 6 )return ;
-		if (__enable[i-1] != ev->activation){
-			__enable[i-1] = ev->activation;
+		if (__enable[i-1] != ev->arg2){
+			__enable[i-1] = ev->arg2;
 			emit valueChanged();
 		}
 	}
 	else if(e->type() ==ViewEvent::eClippingPlaneSet)
 	{
 		ViewCPSetEvent * ev = (ViewCPSetEvent *)e;
-		int i = ev->cpid;
+		int i = ev->arg1;
 		if(i < 1 || i > 6 )return ;
-		__A[i-1] = ev->a;
-		__B[i-1] = ev->b;
-		__C[i-1] = ev->c;
-		__D[i-1] = ev->d;
+		__A[i-1] = ev->arg2;
+		__B[i-1] = ev->arg3;
+		__C[i-1] = ev->arg4;
+		__D[i-1] = ev->arg5;
 		if (__enable[i-1]){
 			emit valueChanged();
 		}

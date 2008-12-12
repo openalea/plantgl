@@ -395,7 +395,7 @@ bool ViewRendererGL::event(QEvent * e)
   }
   else if(e->type() == ViewEvent::eFileChange){
     ViewFileChangeEvent * k = ( ViewFileChangeEvent * )e;
-	openFile(k->filename);
+	openFile(k->arg1);
     return true;
   }
   else if(e->type() == ViewEvent::eRefresh){

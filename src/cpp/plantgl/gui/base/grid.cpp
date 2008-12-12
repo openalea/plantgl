@@ -520,36 +520,37 @@ ViewGridGL::glCoordSys()
   }
 }
 
-void ViewGridGL::gridEvent(ViewGridEvent * e){
+void ViewGridGL::gridEvent(ViewEvent * _e){
+  ViewGridEvent * e = (ViewGridEvent *)(_e);
   bool c = false;
-  if((e->def & 1) && (__XYGrid != e->xy)){
-	__XYGrid = e->xy;
+  if((e->arg7 & 1) && (__XYGrid != e->arg1)){
+	__XYGrid = e->arg1;
 	emit XYGridDisplayChanged(__XYGrid);
 	c = true;
   }
-  if((e->def & 2) && (__YZGrid != e->yz)){
-	__YZGrid = e->yz;
+  if((e->arg7 & 2) && (__YZGrid != e->arg2)){
+	__YZGrid = e->arg2;
 	emit YZGridDisplayChanged(__YZGrid);
 	c = true;
   }
-  if((e->def & 4) && (__XZGrid != e->xz)){
-	__XZGrid = e->xz;
+  if((e->arg7 & 4) && (__XZGrid != e->arg3)){
+	__XZGrid = e->arg3;
 	emit XZGridDisplayChanged(__XZGrid);
 	c = true;
   }
-  if((e->def & 8) && (__Axis != e->axis)){
-	__Axis = e->axis;
+  if((e->arg7 & 8) && (__Axis != e->arg4)){
+	__Axis = e->arg4;
 	emit AxisDisplayChanged(__Axis);
 	c = true;
   }
-  if((e->def & 16) && (__gridSize != e->size) && e->size > 1){
-	__gridSize = e->size;
+  if((e->arg7 & 16) && (__gridSize != e->arg5) && e->arg5 > 1){
+	__gridSize = e->arg5;
 	if (__gridList) { glDeleteLists(__gridList,1); __gridList = 0; }
 	emit GridSizeChanged(__gridSize);
 	c = true;
   }
-  if((e->def & 32) && (__gridUnit != e->unit) && e->unit > 1){
-	__gridUnit = e->unit;
+  if((e->arg7 & 32) && (__gridUnit != e->arg6) && e->arg6 > 1){
+	__gridUnit = e->arg6;
 	emit GridUnitChanged(__gridUnit);
 	c = true;
   }

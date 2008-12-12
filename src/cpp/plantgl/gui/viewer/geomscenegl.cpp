@@ -959,15 +959,15 @@ void
 ViewGeomSceneGL::customEvent(QEvent * e) {
 	if(e->type() == ViewGeomEvent::eProjList){
 		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
-		*(myevent->result) = getProjectionSizes(myevent->objlist);
+		*(myevent->result) = getProjectionSizes(myevent->arg1);
 	}
 	else if (e->type() == ViewGeomEvent::eRayBuff2){
 		ViewRayBuff2Event * myevent = (ViewRayBuff2Event *)e;
-		*(myevent->result) = castRays(myevent->objlist,myevent->back_test);
+		*(myevent->result) = castRays(myevent->arg1,myevent->arg2);
 	}
 	else if (e->type() == ViewGeomEvent::eGetScene){
 		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
-		*(myevent->scene) = __scene;
+		*(myevent->result) = __scene;
 	}
 	else if (e->type() == ViewGeomEvent::eIntegratedProjList){
 		ViewIntegratedProjListEvent * myevent = (ViewIntegratedProjListEvent *)e;

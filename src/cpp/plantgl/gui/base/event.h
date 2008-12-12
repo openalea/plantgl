@@ -104,100 +104,154 @@ public:
 
 };
 
+struct void_ { typedef void_ type; };
 
-template <int TEventType, class ReturnType = int,class Arg1 = int, class Arg2 = int, class Arg3 = int, class Arg4 = int, class Arg5 = int>
-class TViewEvent : public ViewEvent {
+#define ARGHOLDER(NUM) \
+	template<typename T> class Arg##NUM##Holder { \
+	public: \
+	Arg##NUM##Holder(const T& v) : arg##NUM(v) {} \
+	T arg##NUM; }; \
+	template<> class Arg##NUM##Holder<void_> { };
+
+
+ARGHOLDER(1)
+ARGHOLDER(2)
+ARGHOLDER(3)
+ARGHOLDER(4)
+ARGHOLDER(5)
+ARGHOLDER(6)
+ARGHOLDER(7)
+ARGHOLDER(8)
+
+
+template <int TEventType, typename ReturnType = int, typename Arg1 = void_, 
+		  typename Arg2 = void_, typename Arg3 = void_, typename Arg4 = void_, 
+		  typename Arg5 = void_, typename Arg6 = void_, typename Arg7 = void_, typename Arg8 = void_>
+class TViewEvent : public ViewEvent, public Arg1Holder<typename Arg1>, public Arg2Holder<typename Arg2>, 
+				   public Arg3Holder<typename Arg3>, public Arg4Holder<typename Arg4>, 
+				   public Arg5Holder<typename Arg5>, public Arg6Holder<typename Arg6>, 
+				   public Arg7Holder<typename Arg7>, public Arg8Holder<typename Arg8>  {
 public:
-	TViewEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3,
-				   const Arg4& _arg4,
-				   const Arg5& _arg5):
-		ViewEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(_arg5) {}
+	TViewEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, 
+			   const Arg6& arg6, const Arg7& arg7, 
+			   const Arg8& arg8):
+		ViewEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5), Arg6Holder<Arg6>(arg6),
+		Arg7Holder<Arg7>(arg7), Arg8Holder<Arg8>(arg8){}
 
-	TViewEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3,
-				   const Arg4& _arg4):
-		ViewEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(0) {}
+	TViewEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, 
+			   const Arg6& arg6, const Arg7& arg7):
+		ViewEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5), Arg6Holder<Arg6>(arg6),
+		Arg7Holder<Arg7>(arg7){}
 
-	TViewEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3):
-		ViewEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(0),arg5(0) {}
+	TViewEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6):
+		ViewEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5), Arg6Holder<Arg6>(arg6){}
 
-	TViewEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2):
-		ViewEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(0),arg4(0),arg5(0) {}
+	TViewEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5):
+		ViewEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5) {}
 
-	TViewEvent(ReturnType* _result, 
-				   const Arg1& _arg1):
+	TViewEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2,    const Arg3& arg3,
+			   const Arg4& arg4):
+		ViewEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4) {}
+
+	TViewEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2,    const Arg3& arg3):
 		ViewEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(0),arg3(0),arg4(0),arg5(0) {}
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3) {}
+
+	TViewEvent(ReturnType* _result,  const Arg1& arg1,
+			   const Arg2& arg2):
+		ViewEvent(TEventType),result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2) {}
+
+	TViewEvent(ReturnType* _result, const Arg1& arg1):
+		ViewEvent(TEventType),result(_result),
+		Arg1Holder<Arg1>(arg1){}
 
 	TViewEvent(ReturnType* _result):
-		ViewEvent(TEventType),result(_result),
-		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
+		ViewEvent(TEventType),result(_result) {}
 
         ReturnType * result;
-        Arg1 arg1;
-        Arg2 arg2;
-        Arg3 arg3;
-        Arg4 arg4;
-        Arg5 arg5;
 };
 
-template <int TEventType, class Arg1 = int, class Arg2 = int, class Arg3 = int, class Arg4 = int, class Arg5 = int>
-class TPViewEvent : public ViewEvent {
+template <int TEventType, typename Arg1 = void_, 
+          typename Arg2 = void_, typename Arg3 = void_, 
+		  typename Arg4 = void_, typename Arg5 = void_,
+		  typename Arg6 = void_, typename Arg7 = void_,
+		  typename Arg8 = void_>
+class TPViewEvent : public ViewEvent, public Arg1Holder<typename Arg1>, 
+				   public Arg2Holder<typename Arg2>, public Arg3Holder<typename Arg3>, 
+				   public Arg4Holder<typename Arg4>, public Arg5Holder<typename Arg5>, 
+				   public Arg6Holder<typename Arg6>, public Arg7Holder<typename Arg7>, 
+				   public Arg8Holder<typename Arg8> {
 public:
-	TPViewEvent(   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3,
-				   const Arg4& _arg4,
-				   const Arg5& _arg5):
-		ViewEvent(TEventType),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(_arg5) {}
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6,
+			   const Arg7& arg7, const Arg8& arg8):
+		ViewEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5),
+		Arg6Holder<Arg6>(arg6), Arg7Holder<Arg7>(arg7), Arg8Holder<Arg8>(arg8){}
 
-	TPViewEvent(const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3,
-				   const Arg4& _arg4):
-		ViewEvent(TEventType),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(0) {}
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6,
+			   const Arg7& arg7):
+		ViewEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5),
+		Arg6Holder<Arg6>(arg6), Arg7Holder<Arg7>(arg7){}
 
-	TPViewEvent(const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3):
-		ViewEvent(TEventType),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(0),arg5(0) {}
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6):
+		ViewEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5),
+		Arg6Holder<Arg6>(arg6){}
 
-	TPViewEvent(const Arg1& _arg1,
-				   const Arg2& _arg2):
-		ViewEvent(TEventType),
-		arg1(_arg1),arg2(_arg2),arg3(0),arg4(0),arg5(0) {}
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5):
+		ViewEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5) {}
 
-	TPViewEvent(const Arg1& _arg1):
-		ViewEvent(TEventType),
-		arg1(_arg1),arg2(0),arg3(0),arg4(0),arg5(0) {}
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3, const Arg4& arg4):
+		ViewEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4){}
+
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3):
+		ViewEvent(TEventType), Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3) {}
+
+	TPViewEvent(const Arg1& arg1, const Arg2& arg2):
+		ViewEvent(TEventType), Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2){}
+
+	TPViewEvent(const Arg1& arg1):
+		ViewEvent(TEventType), Arg1Holder<Arg1>(arg1){}
 
 	TPViewEvent():
-		ViewEvent(TEventType),
-		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
+		ViewEvent(TEventType) {}
 
-        Arg1 arg1;
-        Arg2 arg2;
-        Arg3 arg3;
-        Arg4 arg4;
-        Arg5 arg5;
 };
+
 
 /**
    \class ViewSceneChangeEvent
@@ -223,55 +277,135 @@ public:
 
 };
 
-template <int TEventType, class ReturnType = int,class Arg1 = int, class Arg2 = int, class Arg3 = int, class Arg4 = int, class Arg5 = int>
-class TViewGeomEvent : public ViewGeomEvent {
+
+template <int TEventType, typename ReturnType = int, typename Arg1 = void_, 
+		  typename Arg2 = void_, typename Arg3 = void_, typename Arg4 = void_, 
+		  typename Arg5 = void_, typename Arg6 = void_, typename Arg7 = void_, typename Arg8 = void_>
+class TViewGeomEvent : public ViewGeomEvent, public Arg1Holder<typename Arg1>, public Arg2Holder<typename Arg2>, 
+				   public Arg3Holder<typename Arg3>, public Arg4Holder<typename Arg4>, 
+				   public Arg5Holder<typename Arg5>, public Arg6Holder<typename Arg6>, 
+				   public Arg7Holder<typename Arg7>, public Arg8Holder<typename Arg8>  {
 public:
-	TViewGeomEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3,
-				   const Arg4& _arg4,
-				   const Arg5& _arg5):
-		ViewGeomEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(_arg5) {}
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, 
+			   const Arg6& arg6, const Arg7& arg7, 
+			   const Arg8& arg8):
+		ViewGeomEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5), Arg6Holder<Arg6>(arg6),
+		Arg7Holder<Arg7>(arg7), Arg8Holder<Arg8>(arg8){}
 
-	TViewGeomEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3,
-				   const Arg4& _arg4):
-		ViewGeomEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(_arg4),arg5(0) {}
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, 
+			   const Arg6& arg6, const Arg7& arg7):
+		ViewGeomEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5), Arg6Holder<Arg6>(arg6),
+		Arg7Holder<Arg7>(arg7){}
 
-	TViewGeomEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2,
-				   const Arg3& _arg3):
-		ViewGeomEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(_arg3),arg4(0),arg5(0) {}
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6):
+		ViewGeomEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5), Arg6Holder<Arg6>(arg6){}
 
-	TViewGeomEvent(ReturnType* _result, 
-				   const Arg1& _arg1,
-				   const Arg2& _arg2):
-		ViewGeomEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(_arg2),arg3(0),arg4(0),arg5(0) {}
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5):
+		ViewGeomEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4),
+		Arg5Holder<Arg5>(arg5) {}
 
-	TViewGeomEvent(ReturnType* _result, 
-				   const Arg1& _arg1):
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2,    const Arg3& arg3,
+			   const Arg4& arg4):
+		ViewGeomEvent(TEventType),  result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4) {}
+
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
+			   const Arg2& arg2,    const Arg3& arg3):
 		ViewGeomEvent(TEventType),result(_result),
-		arg1(_arg1),arg2(0),arg3(0),arg4(0),arg5(0) {}
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3) {}
+
+	TViewGeomEvent(ReturnType* _result,  const Arg1& arg1,
+			   const Arg2& arg2):
+		ViewGeomEvent(TEventType),result(_result),
+		Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2) {}
+
+	TViewGeomEvent(ReturnType* _result, const Arg1& arg1):
+		ViewGeomEvent(TEventType),result(_result),
+		Arg1Holder<Arg1>(arg1){}
 
 	TViewGeomEvent(ReturnType* _result):
-		ViewGeomEvent(TEventType),result(_result),
-		arg1(0),arg2(0),arg3(0),arg4(0),arg5(0) {}
+		ViewGeomEvent(TEventType),result(_result) {}
 
         ReturnType * result;
-        Arg1 arg1;
-        Arg2 arg2;
-        Arg3 arg3;
-        Arg4 arg4;
-        Arg5 arg5;
 };
+
+template <int TEventType, typename Arg1 = void_, 
+          typename Arg2 = void_, typename Arg3 = void_, 
+		  typename Arg4 = void_, typename Arg5 = void_,
+		  typename Arg6 = void_, typename Arg7 = void_,
+		  typename Arg8 = void_>
+class TPViewGeomEvent : public ViewGeomEvent, public Arg1Holder<typename Arg1>, 
+				   public Arg2Holder<typename Arg2>, public Arg3Holder<typename Arg3>, 
+				   public Arg4Holder<typename Arg4>, public Arg5Holder<typename Arg5>, 
+				   public Arg6Holder<typename Arg6>, public Arg7Holder<typename Arg7>, 
+				   public Arg8Holder<typename Arg8> {
+public:
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6,
+			   const Arg7& arg7, const Arg8& arg8):
+		ViewGeomEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5),
+		Arg6Holder<Arg6>(arg6), Arg7Holder<Arg7>(arg7), Arg8Holder<Arg8>(arg8){}
+
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6,
+			   const Arg7& arg7):
+		ViewGeomEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5),
+		Arg6Holder<Arg6>(arg6), Arg7Holder<Arg7>(arg7){}
+
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6):
+		ViewGeomEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5),
+		Arg6Holder<Arg6>(arg6){}
+
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
+			   const Arg4& arg4, const Arg5& arg5):
+		ViewGeomEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4), Arg5Holder<Arg5>(arg5) {}
+
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3, const Arg4& arg4):
+		ViewGeomEvent(TEventType),  Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3), Arg4Holder<Arg4>(arg4){}
+
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3):
+		ViewGeomEvent(TEventType), Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2),
+		Arg3Holder<Arg3>(arg3) {}
+
+	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2):
+		ViewGeomEvent(TEventType), Arg1Holder<Arg1>(arg1), Arg2Holder<Arg2>(arg2){}
+
+	TPViewGeomEvent(const Arg1& arg1):
+		ViewGeomEvent(TEventType), Arg1Holder<Arg1>(arg1){}
+
+	TPViewGeomEvent():
+		ViewGeomEvent(TEventType) {}
+
+};
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -300,369 +434,39 @@ private:
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewFileChangeEvent : public ViewEvent {
 
-  public :
+typedef TPViewEvent<ViewEvent::eFileChange,QString> ViewFileChangeEvent;
+typedef TPViewEvent<ViewEvent::eImageSave,QString,QString,bool> ViewImageSaveEvent;
+typedef TPViewEvent<ViewEvent::eRefresh> ViewRefreshEvent;
+typedef TViewEvent<ViewEvent::eGetSelection,std::vector<uint_t> > ViewSelectRecoverEvent;
+typedef TPViewEvent<ViewEvent::eSetSelection,std::vector<uint_t> > ViewSelectionSet;
+typedef TPViewEvent<ViewEvent::eEnd> ViewEndEvent;
+typedef TPViewEvent<ViewEvent::eShow> ViewShowEvent;
+typedef TPViewEvent<ViewEvent::eFullScreen,bool> ViewFullScreenEvent;
+typedef TPViewEvent<ViewEvent::eGLFrameOnly,bool> ViewGLFrameOnlyEvent;
+typedef TViewEvent<ViewEvent::eQuestion,int,QString,QString,QString,QString,QString> ViewQuestionEvent;
+typedef TViewEvent<ViewEvent::eItemSelection,QString,QString,QString,QStringList,bool,bool *> ViewItemSelectionEvent;
+typedef TViewEvent<ViewEvent::eDoubleSelection,double,QString,QString,double,double,double,bool *> ViewDoubleSelectionEvent;
+typedef TViewEvent<ViewEvent::eFileSelection,QString,QString,QString,QString,bool,bool> ViewFileSelEvent;
+typedef TPViewEvent<ViewEvent::eAnimation,bool> ViewAnimationEvent;
+typedef TPViewEvent<ViewEvent::eBgColor,QColor> ViewBgColorEvent;
+typedef TPViewEvent<ViewEvent::eGrid,bool,bool,bool,bool,int,int,int> ViewGridEvent;
+typedef TPViewEvent<ViewEvent::eCameraSet,Vector3,Vector3,float,float,int> ViewCameraSetEvent;
+typedef TViewEvent<ViewEvent::eCameraGet,Vector3,Vector3*,Vector3*> ViewCameraGetEvent;
+typedef TPViewEvent<ViewEvent::eClippingPlaneActivate,int,bool> ViewCPActivateEvent;
+typedef TPViewEvent<ViewEvent::eClippingPlaneSet,int,double,double,double,double> ViewCPSetEvent;
+typedef TPViewEvent<ViewEvent::ePos,int,int,int,int,int> ViewPosEvent;
+class ViewRayBuffer;
+typedef TViewEvent<ViewEvent::eRayBuff,ViewRayBuffer *,Vector3,Vector3,Vector3,Vector3,int,int> ViewRayBuffEvent;
+class ViewZBuffer;
+typedef TViewEvent<ViewEvent::eZBuff,ViewZBuffer *> ViewZBuffEvent;
+typedef TViewEvent<ViewEvent::eProjSize,double,int *,double *> ViewProjSizeEvent;
+typedef TPViewEvent<ViewEvent::eCameraProj,bool> ViewCameraProjEvent;
+typedef TPViewEvent<ViewEvent::eSetRedrawPolicy,bool> ViewSetRedrawEvent;
+typedef TViewEvent<ViewEvent::eGetRedrawPolicy,bool> ViewGetRedrawEvent;
 
-  /// Constructor.
-  ViewFileChangeEvent(const QString& file);
 
-  /// Destructor.
-  ~ViewFileChangeEvent();
 
-  /// new file to parse.
-  QString filename;
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-class VIEW_API ViewImageSaveEvent : public ViewEvent {
-
-  public :
-
-  /// Constructor.
-  ViewImageSaveEvent(const QString& file,const QString& format, bool withAlpha);
-
-  /// Destructor.
-  ~ViewImageSaveEvent();
-
-  QString filename;
-  QString format;
-  bool withAlpha;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class VIEW_API ViewRefreshEvent : public ViewEvent {
-
-  public :
-
-  /// Constructor.
-  ViewRefreshEvent();
-
-  /// Destructor.
-  ~ViewRefreshEvent();
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-
-
-/**
-   \class ViewSelectRecoverEvent
-   \brief An event to get selection from the viewer. Usefull for inter thread communication.
-*/
-class ViewSelectRecoverEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewSelectRecoverEvent();
-
-  /// Constructor.
-  ViewSelectRecoverEvent(std::vector<uint_t> * e);
-
-/// Destructor.
-  ~ViewSelectRecoverEvent();
-
-  /// set the selection (for the viewer).
-  void setSelection(const std::vector<uint_t>& a);
-
-//private :
-
-  /// Data Selection exchange beetwen the 2 process.
-  std::vector<uint_t> * __exchange;
-
-};
-
-class ViewSelectionSet : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewSelectionSet(const std::vector<uint_t>&);
-
-  /// Destructor.
-  ~ViewSelectionSet();
-
-  /// set the selection (for the viewer).
-  const std::vector<uint_t>& getSelection() const;
-
-protected :
-
-  /// Data Selection exchange beetwen the 2 process.
-  const std::vector<uint_t> __data;
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-/**
-   \class ViewEndEvent
-   \brief An event to end the viewer. Usefull for inter thread communication.
-
-*/
-class ViewEndEvent : public ViewEvent {
-
-    public :
-
-  /// Constructor.
-  ViewEndEvent();
-
-  /// Destructor.
-  ~ViewEndEvent();
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-/**
-   \class ViewShowEvent
-   \brief An event to show the viewer. Usefull for inter thread communication.
-
-*/
-class ViewShowEvent : public ViewEvent {
-
-    public :
-
-  /// Constructor.
-  ViewShowEvent();
-
-  /// Destructor.
-  ~ViewShowEvent();
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-/**
-   \class ViewFullScreenEvent
-   \brief An event to set the viewer full screen. Usefull for inter thread communication.
-
-*/
-class ViewFullScreenEvent : public ViewEvent {
-
-    public :
-
-  /// Constructor.
-  ViewFullScreenEvent(bool b = true);
-
-  /// Destructor.
-  ~ViewFullScreenEvent();
-
-  bool value;
-};
-
-/* ----------------------------------------------------------------------- */
-
-/**
-   \class ViewGLFrameOnlyEvent
-   \brief An event to display GL Frame Only. Usefull for inter thread communication.
-
-*/
-class ViewGLFrameOnlyEvent : public ViewEvent {
-
-    public :
-
-  /// Constructor.
-  ViewGLFrameOnlyEvent(bool b = true);
-
-  /// Destructor.
-  ~ViewGLFrameOnlyEvent();
-
-  bool value;
-};
-
-/* ----------------------------------------------------------------------- */
-
-
-/**
-   \class ViewQuestionEvent
-   \brief An event to end the viewer. Usefull for inter thread communication.
-
-*/
-class ViewQuestionEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewQuestionEvent();
-  ViewQuestionEvent(const QString& _caption,
-				 const QString& _text,
-				 const QString& _but0txt = QString::null,
-				 const QString& _but1txt = QString::null,
-				 const QString& _but2txt = QString::null,
-				 int * result = NULL);
-
-  /// Destructor.
-  ~ViewQuestionEvent();
-
-  int * result;
-
-  QString caption;
-  QString text;
-  QString but0txt;
-  QString but1txt;
-  QString but2txt;
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-
-/**
-   \class ViewQuestionEvent
-   \brief An event to end the viewer. Usefull for inter thread communication.
-
-*/
-class ViewItemSelectionEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewItemSelectionEvent(const QString& _caption,
-				 const QString& _text,
-				 const QStringList& _values,
-				 bool _editable = false,
-				 QString * res = NULL,
-				 bool * ok = NULL);
-
-  /// Destructor.
-  ~ViewItemSelectionEvent();
-
-  QString * result;
-  bool * ok;
-
-  QString caption;
-  QString text;
-  QStringList values;
-  bool editable;
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-/**
-   \class ViewDoubleSelectionEvent
-   \brief An event to request double to the viewer. Usefull for inter thread communication.
-
-*/
-class ViewDoubleSelectionEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewDoubleSelectionEvent(const QString& caption,
-				 const QString& text,
-				 double value,
-                 double minvalue,
-                 double maxvalue,
-				 double * res = NULL,
-				 bool * ok = NULL);
-
-  /// Destructor.
-  ~ViewDoubleSelectionEvent();
-
-  double * result;
-  bool * ok;
-
-  QString caption;
-  QString text;
-  double value;
-  double minvalue;
-  double maxvalue;
-
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewAnimationEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewAnimationEvent(bool a);
-
-  /// Destructor.
-  ~ViewAnimationEvent();
-
-  bool mode;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewBgColorEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewBgColorEvent(const QColor& c);
-
-  /// Destructor.
-  ~ViewBgColorEvent();
-
-  QColor color;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewGridEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewGridEvent(bool _xy, bool _yz, bool _xz, 
-				bool _axis, int _size, int _unit, int _def);
-
-  /// Destructor.
-  ~ViewGridEvent();
-
-  bool xy;
-  bool yz;
-  bool xz;
-  bool axis;
-  int size;
-  int unit;
-  int def;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewCameraSetEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewCameraSetEvent(const Vector3& pos, const Vector3& target,
-			      float azimuth, float elevation, int def);
-
-  /// Destructor.
-  ~ViewCameraSetEvent();
-
-  Vector3 position;
-  Vector3 target;
-  float azimuth;
-  float elevation;
-  int def;
-};
-
-/* ----------------------------------------------------------------------- */
-class ViewCameraGetEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewCameraGetEvent(Vector3* pos, Vector3* heading,Vector3* up);
-
-  /// Destructor.
-  ~ViewCameraGetEvent();
-
-  Vector3*  position;
-  Vector3*  heading;
-  Vector3*  up;
-};
 /* ----------------------------------------------------------------------- */
 
 class ViewLightSetEvent : public ViewEvent {
@@ -720,162 +524,9 @@ public :
 };
 
 /* ----------------------------------------------------------------------- */
-class ViewCPActivateEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewCPActivateEvent(int cpid, bool activation);
-
-  /// Destructor.
-  ~ViewCPActivateEvent();
-
-  int cpid;
-  bool activation;
-};
 
 /* ----------------------------------------------------------------------- */
 
-class ViewCPSetEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewCPSetEvent(int cpid, double a, double b, double c, double d);
-
-  /// Destructor.
-  ~ViewCPSetEvent();
-
-  int cpid;
-  double a;
-  double b;
-  double c;
-  double d;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewPosEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewPosEvent(int _x, int _y, int _w, int _h, int _def);
-
-  /// Destructor.
-  ~ViewPosEvent();
-
-  int x;
-  int y;
-  int w;
-  int h;
-  int def;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewFileSelEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewFileSelEvent(const QString& caption,
-				   const QString& startPath,
-				   const QString& filter = QString::null,
-				   bool existing = true, 
-				   bool dir = true,
-				   QString * res = NULL);
-
-  /// Destructor.
-  ~ViewFileSelEvent();
-
-  QString *  result;
-  QString caption;
-  QString startPath;
-  QString filter;
-  bool existing;
-  bool dir;
-};
-
-/* ----------------------------------------------------------------------- */
-class ViewRayBuffer;
-
-class ViewRayBuffEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-	ViewRayBuffEvent(const TOOLS(Vector3)& pos,
-				   const TOOLS(Vector3)& dir,
-		           const TOOLS(Vector3)& dx, 
-		           const TOOLS(Vector3)& dy,
-		           int sx, int sy,
-				   ViewRayBuffer ** res = NULL);
-	
-	/// Destructor.
-	~ViewRayBuffEvent();
-	
-	ViewRayBuffer **  result;
-	const TOOLS(Vector3) pos;
-	const TOOLS(Vector3) dir;
-	const TOOLS(Vector3) dx; 
-	const TOOLS(Vector3) dy;
-    int sx;
-	int sy;
-};
-
-/* ----------------------------------------------------------------------- */
-class ViewZBuffer;
-
-class ViewZBuffEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-	ViewZBuffEvent(ViewZBuffer ** res = NULL);
-	
-	/// Destructor.
-	~ViewZBuffEvent();
-	
-	ViewZBuffer **  result;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewProjSizeEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-	ViewProjSizeEvent (double * _size = NULL, int * _nbpix = NULL, double * _pixwidth = NULL);
-	
-	/// Destructor.
-	~ViewProjSizeEvent();
-	
-    int * nbpixel;
-	double * pixelwidth;
-	double * size;
-};
-
-/* ----------------------------------------------------------------------- */
-
-class ViewCameraProjEvent : public ViewEvent {
-
-public :
-
-  /// Constructor.
-  ViewCameraProjEvent(bool _mode);
-
-  /// Destructor.
-  ~ViewCameraProjEvent();
-
-  bool mode;
-};
-
-/* ----------------------------------------------------------------------- */
-
-typedef TPViewEvent<ViewEvent::eSetRedrawPolicy,bool> ViewSetRedrawEvent;
-typedef TViewEvent<ViewEvent::eGetRedrawPolicy,bool> ViewGetRedrawEvent;
 
 /* ----------------------------------------------------------------------- */
 

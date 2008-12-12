@@ -48,7 +48,7 @@
 #include "object.h"
 #include <plantgl/algo/opengl/util_gl.h>
 
-class ViewGridEvent;
+class ViewEvent;
 
 /* ----------------------------------------------------------------------- */
 
@@ -122,7 +122,7 @@ public:
   /// Fill a toolBar that reflect the functionality of this.
   virtual void fillToolBar(QToolBar * toolBar);
 
-  virtual void gridEvent(ViewGridEvent *);
+  virtual void gridEvent(ViewEvent *);
 
   /// end event.
   virtual void endEvent();

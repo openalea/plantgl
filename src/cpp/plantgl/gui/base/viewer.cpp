@@ -641,11 +641,11 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(e->type() == ViewEvent::eGetSelection){
     ViewSelectRecoverEvent * k = ( ViewSelectRecoverEvent * )e;
-    k->setSelection(getSelection());
+    *k->result = getSelection();
   }
   else if(e->type() == ViewEvent::eSetSelection){
     ViewSelectionSet * k = ( ViewSelectionSet * )e;
-    __GLFrame->getSceneRenderer()->selectionIdEvent(k->getSelection());
+    __GLFrame->getSceneRenderer()->selectionIdEvent(k->arg1);
   }
   else if(e->type() == ViewEvent::eGetRedrawPolicy){
     ViewGetRedrawEvent * k = ( ViewGetRedrawEvent * )e;
@@ -657,44 +657,43 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(e->type() == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
-	saveImage(k->filename,k->format.toAscii().constData(),k->withAlpha);
+	saveImage(k->arg1,k->arg2.toAscii().constData(),k->arg3);
   }
   else if(e->type() == ViewEvent::eQuestion){
     ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
-	question(k->caption,k->text,
-			 k->but0txt,k->but1txt,
-			 k->but2txt,
+	question(k->arg1,k->arg2,
+			 k->arg3,k->arg4,
+			 k->arg5,
 			 k->result);
   }
   else if(e->type() == ViewEvent::eFullScreen){
     ViewFullScreenEvent * k = ( ViewFullScreenEvent * )e;
-	if(__isFullScreen != k->value)displayFullScreen();
+	if(__isFullScreen != k->arg1)displayFullScreen();
   }
   else if(e->type() == ViewEvent::eGLFrameOnly){
     ViewGLFrameOnlyEvent * k = ( ViewGLFrameOnlyEvent * )e;
-	if((__toolbarsvisibility == 0) == k->value)displayGLWidgetOnly();
+	if((__toolbarsvisibility == 0) == k->arg1)displayGLWidgetOnly();
   }
   else if(e->type() == ViewEvent::eItemSelection){
     ViewItemSelectionEvent * k = ( ViewItemSelectionEvent * )e;
-	itemSelection(k->caption,k->text,
-			 k->values,k->editable,
+	itemSelection(k->arg1,k->arg2,
+			 k->arg3,k->arg4,
 			 k->result,
-			 k->ok);
+			 k->arg5);
   }
   else if(e->type() == ViewEvent::eDoubleSelection){
     ViewDoubleSelectionEvent * k = ( ViewDoubleSelectionEvent * )e;
-	doubleSelection(k->caption,k->text,
-			 k->value,k->minvalue,k->maxvalue,
-			 k->result,
-			 k->ok);
+	doubleSelection(k->arg1, k->arg2,
+			k->arg3,k->arg4, k->arg5,
+			k->result, k->arg6);
   }
   else if(e->type() == ViewEvent::eAnimation){
     ViewAnimationEvent * k = ( ViewAnimationEvent * )e;
-	__GLFrame->animation(k->mode);
+	__GLFrame->animation(k->arg1);
   }
   else if(e->type() == ViewEvent::eBgColor){
     ViewBgColorEvent * k = ( ViewBgColorEvent * )e;
-	__GLFrame->setBackGroundColor(k->color);
+	__GLFrame->setBackGroundColor(k->arg1);
   }
   else if(e->type() == ViewEvent::eGrid){
     ViewGridEvent * k = ( ViewGridEvent * )e;
@@ -711,31 +710,31 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(e->type() == ViewEvent::ePos){
     ViewPosEvent * k = ( ViewPosEvent * )e;
-	switch(k->def){
+	switch(k->arg5){
 	case 0:
-	  setFrameGLSize(k->w,k->h);
+	  setFrameGLSize(k->arg3,k->arg4);
 	  break;
 	case 1:
-	  resize(k->w,k->h);
+	  resize(k->arg3,k->arg4);
 	  break;
 	case 2:
-	  move(k->x,k->y);
+	  move(k->arg1,k->arg2);
 	  break;
 	case 3:
-	  setGeometry(k->x,k->y,k->w,k->h);
+	  setGeometry(k->arg1,k->arg2,k->arg3,k->arg4);
 	  break;
 	}
   }
   else if(e->type() == ViewEvent::eFileSelection){
     ViewFileSelEvent * k = ( ViewFileSelEvent * )e;
-	if(k->dir)
-	  dirSelection(k->caption,k->startPath,k->result);
+	if(k->arg5)
+	  dirSelection(k->arg1,k->arg2,k->result);
 	else
-	  fileSelection(k->caption,k->filter,k->startPath,k->existing,k->result);
+	  fileSelection(k->arg1,k->arg3,k->arg2,k->arg4,k->result);
   }
   else if(e->type() == ViewEvent::eRayBuff){
     ViewRayBuffEvent * k = ( ViewRayBuffEvent * )e;
-	*(k->result) = __GLFrame->castRays(k->pos,k->dir,k->dx,k->dy,k->sx,k->sy);
+	*(k->result) = __GLFrame->castRays(k->arg1,k->arg2,k->arg3,k->arg4,k->arg5,k->arg6);
   }
   else if(e->type() == ViewEvent::eZBuff){
     ViewZBuffEvent * k = ( ViewZBuffEvent * )e;
@@ -743,11 +742,11 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(e->type() == ViewEvent::eProjSize){
     ViewProjSizeEvent * k = ( ViewProjSizeEvent * )e;
-	*(k->size) = __GLFrame->getProjectionSize(k->nbpixel,k->pixelwidth);
+	*(k->result) = __GLFrame->getProjectionSize(k->arg1,k->arg2);
   }
   else if(e->type() == ViewEvent::eCameraProj){
     ViewCameraProjEvent * k = ( ViewCameraProjEvent * )e;
-	__GLFrame->getCamera()->setProjectionMode(k->mode);
+	__GLFrame->getCamera()->setProjectionMode(k->arg1);
   }
   else if(e->type() >= ViewGeomEvent::eFirstGeomEvent && e->type() <= ViewGeomEvent::eLastGeomEvent){
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
