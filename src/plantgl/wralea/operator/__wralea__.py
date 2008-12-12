@@ -14,14 +14,14 @@ __all__ = ['random_sample', 'regular_sample','planter', 'import_scene']
 
 random_sample = Factory( name= "random sample", 
                          description= "Create random distribution", 
-                         category = "Stand,scene", 
+                         category = "scene.distribution", 
                          nodemodule = "frog",
                          nodeclass = "RandomSample",
                          )
 
 regular_sample = Factory( name= "regular sample", 
                           description= "Create regular distribution", 
-                          category = "Stand,scene", 
+                          category = "scene.distribution", 
                           nodemodule = "frog",
                           nodeclass = "RegularSample",
                           )

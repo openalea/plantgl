@@ -18,7 +18,7 @@ __all__ = ['scene']
 def generate_factory(name, **kargs):
 	return Factory( name= name, 
 			description= "Create a "+name, 
-			category = "PGL Object Generator", 
+			category = "scene.PGL Object Generator", 
 			nodemodule = "objectgenerator",
 			nodeclass = name+'Node',
 			**kargs) 
