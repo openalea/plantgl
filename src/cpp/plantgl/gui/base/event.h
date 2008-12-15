@@ -127,10 +127,10 @@ ARGHOLDER(8)
 template <int TEventType, typename ReturnType = int, typename Arg1 = void_, 
 		  typename Arg2 = void_, typename Arg3 = void_, typename Arg4 = void_, 
 		  typename Arg5 = void_, typename Arg6 = void_, typename Arg7 = void_, typename Arg8 = void_>
-class TViewEvent : public ViewEvent, public Arg1Holder<typename Arg1>, public Arg2Holder<typename Arg2>, 
-				   public Arg3Holder<typename Arg3>, public Arg4Holder<typename Arg4>, 
-				   public Arg5Holder<typename Arg5>, public Arg6Holder<typename Arg6>, 
-				   public Arg7Holder<typename Arg7>, public Arg8Holder<typename Arg8>  {
+class TViewEvent : public ViewEvent, public Arg1Holder<Arg1>, public Arg2Holder<Arg2>, 
+				   public Arg3Holder<Arg3>, public Arg4Holder<Arg4>, 
+				   public Arg5Holder<Arg5>, public Arg6Holder<Arg6>, 
+				   public Arg7Holder<Arg7>, public Arg8Holder<Arg8>  {
 public:
 	TViewEvent(ReturnType* _result, const Arg1& arg1,
 			   const Arg2& arg2, const Arg3& arg3,
@@ -202,11 +202,11 @@ template <int TEventType, typename Arg1 = void_,
 		  typename Arg4 = void_, typename Arg5 = void_,
 		  typename Arg6 = void_, typename Arg7 = void_,
 		  typename Arg8 = void_>
-class TPViewEvent : public ViewEvent, public Arg1Holder<typename Arg1>, 
-				   public Arg2Holder<typename Arg2>, public Arg3Holder<typename Arg3>, 
-				   public Arg4Holder<typename Arg4>, public Arg5Holder<typename Arg5>, 
-				   public Arg6Holder<typename Arg6>, public Arg7Holder<typename Arg7>, 
-				   public Arg8Holder<typename Arg8> {
+class TPViewEvent : public ViewEvent, public Arg1Holder<Arg1>, 
+				   public Arg2Holder<Arg2>, public Arg3Holder<Arg3>, 
+				   public Arg4Holder<Arg4>, public Arg5Holder<Arg5>, 
+				   public Arg6Holder<Arg6>, public Arg7Holder<Arg7>, 
+				   public Arg8Holder<Arg8> {
 public:
 	TPViewEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
 			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6,
@@ -281,10 +281,10 @@ public:
 template <int TEventType, typename ReturnType = int, typename Arg1 = void_, 
 		  typename Arg2 = void_, typename Arg3 = void_, typename Arg4 = void_, 
 		  typename Arg5 = void_, typename Arg6 = void_, typename Arg7 = void_, typename Arg8 = void_>
-class TViewGeomEvent : public ViewGeomEvent, public Arg1Holder<typename Arg1>, public Arg2Holder<typename Arg2>, 
-				   public Arg3Holder<typename Arg3>, public Arg4Holder<typename Arg4>, 
-				   public Arg5Holder<typename Arg5>, public Arg6Holder<typename Arg6>, 
-				   public Arg7Holder<typename Arg7>, public Arg8Holder<typename Arg8>  {
+class TViewGeomEvent : public ViewGeomEvent, public Arg1Holder<Arg1>, public Arg2Holder<Arg2>, 
+				   public Arg3Holder<Arg3>, public Arg4Holder<Arg4>, 
+				   public Arg5Holder<Arg5>, public Arg6Holder<Arg6>, 
+				   public Arg7Holder<Arg7>, public Arg8Holder<Arg8>  {
 public:
 	TViewGeomEvent(ReturnType* _result, const Arg1& arg1,
 			   const Arg2& arg2, const Arg3& arg3,
@@ -356,11 +356,11 @@ template <int TEventType, typename Arg1 = void_,
 		  typename Arg4 = void_, typename Arg5 = void_,
 		  typename Arg6 = void_, typename Arg7 = void_,
 		  typename Arg8 = void_>
-class TPViewGeomEvent : public ViewGeomEvent, public Arg1Holder<typename Arg1>, 
-				   public Arg2Holder<typename Arg2>, public Arg3Holder<typename Arg3>, 
-				   public Arg4Holder<typename Arg4>, public Arg5Holder<typename Arg5>, 
-				   public Arg6Holder<typename Arg6>, public Arg7Holder<typename Arg7>, 
-				   public Arg8Holder<typename Arg8> {
+class TPViewGeomEvent : public ViewGeomEvent, public Arg1Holder<Arg1>, 
+				   public Arg2Holder<Arg2>, public Arg3Holder<Arg3>, 
+				   public Arg4Holder<Arg4>, public Arg5Holder<Arg5>, 
+				   public Arg6Holder<Arg6>, public Arg7Holder<Arg7>, 
+				   public Arg8Holder<Arg8> {
 public:
 	TPViewGeomEvent(const Arg1& arg1, const Arg2& arg2, const Arg3& arg3,
 			   const Arg4& arg4, const Arg5& arg5, const Arg6& arg6,
