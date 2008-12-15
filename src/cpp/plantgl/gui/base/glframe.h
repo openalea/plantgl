@@ -306,6 +306,7 @@ signals:
 
   /// Set up the OpenGL rendering state, and define display list.
   virtual void initializeGL();
+  void reinitializeGL();
 
   /// Paint the ViewGLFrame.
   virtual void paintGL();

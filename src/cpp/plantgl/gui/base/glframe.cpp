@@ -553,7 +553,7 @@ void ViewGLFrame::activatePBuffer(bool b){
 		  __pixelbuffer = new QGLPixelBuffer(size(),format(),this);
 	  }
 	  __pixelbuffer->makeCurrent();
-	  initializeGL();
+	  reinitializeGL();
    }
 }
 
@@ -576,7 +576,16 @@ void ViewGLFrame::redrawGL()
 /*!
   Set up the OpenGL rendering state, and define display list
 */
-void ViewGLFrame::initializeGL()
+void ViewGLFrame::initializeGL(){
+   reinitializeGL();
+  __camera->initializeGL();
+  __grid->initializeGL();
+  __rotCenter->initializeGL();
+  __clippingPlane->initializeGL();
+  __fog->initializeGL();
+}
+
+void ViewGLFrame::reinitializeGL()
 {
   // clears the current GL context
   qglClearColor( __BgColor );
@@ -601,13 +610,7 @@ void ViewGLFrame::initializeGL()
   glEnable(GL_LIGHTING);
 //  __light->enable();
   glEnable(GL_BLEND);
-  __camera->initializeGL();
-  __grid->initializeGL();
-  __rotCenter->initializeGL();
-  __clippingPlane->initializeGL();
-  __fog->initializeGL();
   __scene->initializeGL();
-
 }
 
 
@@ -636,9 +639,9 @@ void ViewGLFrame::paintGL()
 	  if (!__pixelbuffer || __pixelbuffer->size() != size()){
 		  if(__pixelbuffer) delete __pixelbuffer;
 		  __pixelbuffer = new QGLPixelBuffer(size(),format(),this);
+		__pixelbuffer->makeCurrent();
+		reinitializeGL();
 	  }
-	  __pixelbuffer->makeCurrent();
-	  initializeGL();
   }
   GL_ERROR;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1023,6 +1026,7 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 	if(mode)__camera->setOrthographicMode();
 	makeItCurrent();
 	paintGL();
+    glFlush();
 
 	if(pixelwidth) *pixelwidth = getPixelWidth();
 

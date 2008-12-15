@@ -900,7 +900,8 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 
 		// dynamic rendering init
 		GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
-		__renderer.setRenderingMode(GLRenderer::Selection);
+		__renderer.setRenderingMode(GLRenderer::Dynamic);
+		__renderer.clear();
 
 		// camera init
 	    bool mode = __camera->getProjectionMode();
@@ -926,11 +927,15 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 		// projection computation
 		std::vector<std::pair<uint_t,uint_t> > res = frame->getProjectionPixelPerColor(pixelwidth);
 
+		/* static int nbimg = 0;
+		nbimg += 1;
+	    QString fname =  "test"+QString::number(nbimg)+".png";*/
 		// pixel buffer desactive
 		if(frame->isPixelBufferUsed()){
-			// frame->getPBuffer()->toImage().save("test.png");
+			// frame->getPBuffer()->toImage().save(fname);
 			frame->activatePBuffer(false);
 		}
+		// else { frame->grabFrameBuffer(true).save(fname); }
 
 		// scene restore
 		setScene(oldscene);
