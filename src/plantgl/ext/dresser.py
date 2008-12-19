@@ -248,7 +248,7 @@ class dresser( Node ):
     """
     
     geom_func= { "AsymetricSwung" : asymetric_swung,
-                  "Sheres" : spheres,
+                  "Spheres" : spheres,
                   "Cones" : cones,
               } 
     
