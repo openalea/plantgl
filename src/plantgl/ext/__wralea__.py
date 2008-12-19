@@ -20,11 +20,11 @@ from openalea.core import *
 __name__ = "vplants.plantgl.dresser"
 __alias__ = ["PlantGL.Dresser"]
 
-__version__ = '0.0.1',
-__license__ = 'CECILL-C',
-__authors__ = 'F. Boudon and D. Da Silva',
-__institutes__ = 'INRIA/CIRAD',
-__description__ = 'Spatial distribution module.',
+__version__ = '0.0.1'
+__license__ = 'CECILL-C'
+__authors__ = 'F. Boudon and D. Da Silva'
+__institutes__ = 'INRIA/CIRAD'
+__description__ = 'Spatial distribution module.'
 __url__ = 'http://www.scipy.org'
     
 __all__ = ["dresser"]    

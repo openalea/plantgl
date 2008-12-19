@@ -4,10 +4,10 @@ __name__ = "vplants.plantgl.operator"
 __alias__= ["Geometric Operator"]
 
 __version__ = '0.0.1',
-__license__ = 'CECILL-V2',
-__authors__ = 'C. Pradal',
-__institutes__ = 'INRIA/CIRAD',
-__description__ = 'PlantGL Object Generator nodes.',
+__license__ = 'CECILL-V2'
+__authors__ = 'C. Pradal'
+__institutes__ = 'INRIA/CIRAD'
+__description__ = 'PlantGL Object Generator nodes.'
 __url__ =  'http://openalea.gforge.inria.fr'
 
 __all__ = ['random_sample', 'regular_sample','planter', 'import_scene']
