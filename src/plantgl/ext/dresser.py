@@ -241,10 +241,9 @@ def cones( obj , **kwds ):
 class dresser( Node ):
     """
     Dresser (type) -> func
-    Input:
-        Type of the function.
-    Output:
-        function that generates geometry.
+
+    :param inputs: Type of the function.
+    :returns: function that generates geometry.
     """
     
     geom_func= { "AsymetricSwung" : asymetric_swung,
