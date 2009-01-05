@@ -6,16 +6,33 @@ import sys
 app = QApplication([])
 
 def test_projpershape():
-    sc = Scene()
-    s = Shape(Sphere())
+    try:
+        sc = Scene()
+    except:
+        print 'Could not create Scene()'
+    
+    try:
+        s = Shape(Sphere())
+    except:
+        print 'Could not create Shape(Sphere())'
+
     s.id = 100
     sc += s
-    s = Shape(Translated(1,2,1,Sphere()))
+
+    try:
+        s = Shape(Translated(1,2,1,Sphere()))
+    except:
+        print 'issue with Shape(Translated)'
+
     s.id = 200
+
     sc += s
+
     Viewer.display(sc)    
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()
-    print pixpershape, pixsize
+    print pixpershape
+    print pixsize
+    print '---------'
     pixpershape = dict(pixpershape)
     assert len(pixpershape) == len(sc)
     keys1 = [sh.id for sh in sc]
@@ -30,7 +47,8 @@ def test_projpershape_nullid():
     s.id = 0
     Viewer.display(s)    
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()    
-    print pixpershape, pixsize
+    print pixpershape
+    print pixsize
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
     
@@ -39,7 +57,8 @@ def test_projpershape_bigid():
     s.id = 0x0f0f0f0f
     Viewer.display(s)    
     pixpershape, pixsize = Viewer.frameGL.getProjectionPerShape()    
-    print s.id,pixpershape, pixsize
+    print s.id,pixpershape
+    print pixsize
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
 
