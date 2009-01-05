@@ -4,6 +4,9 @@ from openalea.plantgl.all import Scene, Viewer, Shape, Sphere, Material, Transla
 from openalea.plantgl.scenegraph import *
 from openalea.plantgl.math import Vector3,Matrix4,scaling
 
+
+app = QApplication([])
+
 def create_default_objects():
     yield AmapSymbol('../share/plantgl/database/amapsymbols/nentn105.smb')
     yield AsymmetricHull()
@@ -30,32 +33,14 @@ def create_default_objects():
     yield NurbsCurve2D([(0,0,1),(.5,1,1),(1.,1,1),(1.5,0,1)])
     yield NurbsPatch([[(0,0,0,1),(.5,1,0,1),(1.,1,0,1),(1.5,0,0,1)],[(0,0,1,1),(.5,1,1,1),(1.,1,1,1),(1.5,0,1,1)],[(0,0,3,1),(.5,1,3,1),(1.,1,3,1),(1.5,0,3,1)]],2,2)
 
-
-class MyThread(QThread):
-    def __init__(self):
-        QThread.__init__(self)
-   
-    # the show option is used if the test is called with python
-    # and not used if called with nosetests 
-    def doit(self, show=False):
-        app = QApplication([])
-        Viewer.start()
-    	s = Scene()
-    	for i,geom in enumerate(create_default_objects()):
-            assert geom.isValid()
-            s += Shape(Translated((0,i*2,0),geom))
-        
-        Viewer.display(s)
-        
-        self.start()
-        if show:
-            app.exec_()
-
-
-def test_objects(show=False):
-    m = MyThread()
-    m.doit(show)
-
-
+def test_create_default_objects():
+    Viewer.start()
+    s = Scene()
+    for i,geom in enumerate(create_default_objects()):
+        assert geom.isValid()
+        s += Shape(Translated((0,i*2,0),geom))
+    Viewer.display(s)
+    
 if __name__ == '__main__':
-    test_objects(show=True)
+    test_create_default_objects()
+        
