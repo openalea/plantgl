@@ -113,7 +113,7 @@ def test_camera_light():
 # For instance, w and h are not equql to rw qnd rh respectively
 # Moreover, it fails in buildbot
 # to put back this test chqnge its name to test_image 
-def tst_image():
+def test_image():
     w = 400
     h = 400
     Viewer.frameGL.maximize()
