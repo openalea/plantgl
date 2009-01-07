@@ -101,7 +101,7 @@ void setPlantGLDir(const std::string& dir){
 }
 
 string getUserName(){
-#ifdef _WIN32
+#if defined(_WIN32)
 	char lpBuffer[UNLEN];
     DWORD nSize(UNLEN);
     if(GetUserNameA(lpBuffer,&nSize)){
@@ -110,13 +110,16 @@ string getUserName(){
     else{
          return string("Windows User");
     }
-#elif __GNUC__
+#elif defined(__APPLE__)
+#warning username not defined
+    return string("");
+#elif defined(__GNUC__)
     char uname[L_cuserid]; // defined in stdio.h;
     (char*)cuserid(uname);
     return string(uname);
 #else
 #warning username not defined
-	return string("")
+	return string("");
 #endif
 }
 
@@ -129,6 +132,8 @@ string getOSFamily(){
         return string("Cygwin");
 #elif _WIN32
         return string("Windows");
+#elif __APPLE__
+        return string("MacOSX");
 #else
   #warning OS Family not defined
 		return string("");
@@ -162,7 +167,7 @@ string getOSName(){
         }
         else sys_name = "Windows";
         return sys_name;
-#elif defined (__GNUC__)    
+#elif defined (__GNUC__)
 	struct utsname buf;
     uname(&buf);
     return string(buf.sysname);
@@ -170,7 +175,7 @@ string getOSName(){
 # warning OS Name not defined
 	return string("");
 #endif
-    
+
 }
 
 string getOSVersion(){

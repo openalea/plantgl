@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -189,7 +189,8 @@
 #if defined(__GNUC__)
 #ifndef GNU_STL_EXTENSION
 
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(__APPLE__)
+#else
 #include <features.h>
 #endif
 
@@ -198,6 +199,8 @@
 #define GNU_STL_EXTENSION
 #endif
 #elif defined (__MINGW32__)
+#define GNU_STL_EXTENSION
+#elif defined (__APPLE__)
 #define GNU_STL_EXTENSION
 #elif defined (SYSTEM_IS__CYGWIN)
 #define GNU_STL_EXTENSION

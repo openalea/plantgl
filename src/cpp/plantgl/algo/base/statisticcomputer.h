@@ -39,12 +39,13 @@
 #ifndef __actn_statisticcomputer_h__
 #define __actn_statisticcomputer_h__
 
+#include <plantgl/pgl_config.h>
 #include "../algo_config.h"
 #include <plantgl/scenegraph/core/action.h>
 
-#ifndef _WIN32
-#include <features.h>
-#endif
+//#ifndef _WIN32
+//#include <features.h>
+//#endif
 
 #include <vector>
 #include <plantgl/tool/util_types.h>
