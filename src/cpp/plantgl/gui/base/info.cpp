@@ -72,7 +72,8 @@
 #include <GL/gl.h>
 
 #ifdef  __GNUC__
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(__APPLE__)
+#else
 #include <GL/glx.h>
 #include <QtGui/QX11Info>
 #endif
@@ -85,7 +86,7 @@
 
 #include <plantgl/algo/opengl/util_glut.h>
 
-#if defined(__GNUC__) 
+#if defined(__GNUC__)
 #ifndef __MINGW32__
 #include <stdio.h>
 extern "C" {
@@ -1004,8 +1005,8 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     item = new Q3ListViewItem( item5, item );
     item->setText( 0, tr( "Renderer" ) );
     item->setText( 1, QString((char*)glGetString(GL_RENDERER) ) );
-	
-	
+
+
     QStringList ext = QString((char*)glGetString(GL_EXTENSIONS)).split ( ' ');
 
 	if(ext.contains("GL_ARB_shading_language_100")){
@@ -1122,7 +1123,8 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 /* ----------------------------------------------------------------------- */
 
 #ifdef __GNUC__
-#ifndef __MINGW32__
+#if defined(__MINGW32__) || defined(__APPLE__)
+#else
 
     Display * dpy = QX11Info::display();
 
