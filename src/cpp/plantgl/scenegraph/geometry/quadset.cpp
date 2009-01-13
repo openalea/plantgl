@@ -340,8 +340,8 @@ bool QuadSet::isValid( ) const {
   Builder _builder;
   _builder.NormalPerVertex = const_cast<bool *>(&__normalPerVertex);
   _builder.ColorPerVertex = const_cast<bool *>(&__colorPerVertex);
-  _builder.PointList = const_cast<Point3ArrayPtr *>(&__pointList);
-  _builder.IndexList = const_cast<Index4ArrayPtr *>(&__indexList);
+  if(__pointList)_builder.PointList = const_cast<Point3ArrayPtr *>(&__pointList);
+  if(__indexList)_builder.IndexList = const_cast<Index4ArrayPtr *>(&__indexList);
   if(__skeleton)_builder.Skeleton = const_cast<PolylinePtr *>(&__skeleton);
   if(__normalList)_builder.NormalList = const_cast<Point3ArrayPtr *>(&__normalList);
   if(__texCoordList)_builder.TexCoordList = const_cast<Point2ArrayPtr *>(&__texCoordList);

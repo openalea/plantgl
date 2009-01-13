@@ -118,7 +118,7 @@ ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 	
 	float  * zvalues = new float[width*height];
 	// std::cerr << "Read Depth Buffer ... ";
-	glReadBuffer(GL_FRONT);
+	// glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,width,height,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
 	// std::cerr << "done." << std::endl;
 	GLdouble modelMatrix[16], projMatrix[16];

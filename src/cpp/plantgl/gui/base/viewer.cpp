@@ -986,9 +986,9 @@ Viewer::appear(){
 
 void Viewer::saveImage( QString _filename, const char* _format, bool withAlpha )
 {
-  activateWindow();
-  __GLFrame->updateGL();
-  __GLFrame->saveImage( _filename, _format );
+	if(__GLFrame->isPixelBufferUsed())
+		activateWindow();
+	__GLFrame->saveImage( _filename, _format );
 }
 
 void Viewer::set800x600FrameGL(){ setFrameGLSize(800,600); }

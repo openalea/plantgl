@@ -47,7 +47,7 @@ const char * GEOM_MESSAGES[] = {
   // INITIALIZED_FIELD_ss,
   "<%s> Field '%s' already initialized, replace the existing value(s).",
   // UNINITIALIZED_FIELD_ss,
-  "<%s> Field '%s' is uninitialized, cannot create the object.",
+  "<%s> Field '%s' is uninitialized.",
   // INVALID_FIELD_VALUE_sss
   "<%s> Field '%s' has a bad value : %s",
   // INVALID_FIELD_SIZE_sss

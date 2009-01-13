@@ -331,6 +331,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\codec\pyprinter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\codec\pyprinter.h"
+					>
+				</File>
+				<File
 					RelativePath=".\codec\vgstarprinter.cpp"
 					>
 				</File>

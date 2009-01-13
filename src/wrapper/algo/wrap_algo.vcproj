@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_pyprinter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_sequencer.cpp"
 				>
 			</File>

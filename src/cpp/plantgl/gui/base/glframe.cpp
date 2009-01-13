@@ -574,6 +574,15 @@ void ViewGLFrame::redrawGL()
 	if (__redrawEnabled) updateGL();
 }
 
+void ViewGLFrame::paintPixelBuffer(){
+	bool pbufactivation = __pBufferActivated;
+	if(!pbufactivation) activatePBuffer(true);
+	else makeItCurrent();
+	paintGL();
+	if(!pbufactivation) activatePBuffer(false);
+}
+
+
 /*!
   Set up the OpenGL rendering state, and define display list
 */
@@ -908,8 +917,21 @@ ViewGLFrame::castRays( const Vector3& position,
 ViewZBuffer *
 ViewGLFrame::grabZBuffer( bool all_values  )
 {
-    makeItCurrent();
-	return ViewZBuffer::importglZBuffer(all_values);
+	bool pbufactivation = true;
+	if(!isRedrawEnabled()){
+		if (isPixelBufferUsed()){
+			pbufactivation = __pBufferActivated;
+			if(!pbufactivation){
+				activatePBuffer(true);
+                paintGL();
+			}
+			else  makeItCurrent();
+		}
+		else updateGL();
+	}
+	ViewZBuffer * res = ViewZBuffer::importglZBuffer(all_values);
+	if(!pbufactivation) activatePBuffer(false);
+	return res;
 }
 
 ViewZBuffer *
@@ -1410,7 +1432,21 @@ void ViewGLFrame::clippingPlaneEvent(ViewEvent * e)
 
 
 void ViewGLFrame::saveImage(QString _filename,const char * _format, bool withAlpha){
-	grabFrameBuffer(withAlpha).save(_filename,_format);
+	bool done = false;
+	if(isPixelBufferUsed()){
+		bool pbufactivation = __pBufferActivated;
+		if(!pbufactivation) activatePBuffer(true);
+		if(__pixelbuffer){
+			paintGL();
+			__pixelbuffer->toImage().save(_filename,_format);
+			if(!pbufactivation) activatePBuffer(false);
+			done = true;
+		}
+	}
+	if(!done) {
+	    updateGL();
+		grabFrameBuffer(withAlpha).save(_filename,_format);
+	}
 	status(tr("Save screenshot with format")+" \""+QString(_format)+"\" "+tr("in")+" \""+_filename+'"',10000);
 }
 

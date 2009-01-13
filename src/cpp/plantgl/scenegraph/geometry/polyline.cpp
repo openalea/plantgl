@@ -165,7 +165,7 @@ Vector3 Polyline::getNormalAt(real_t u) const{
 
 bool Polyline::isValid( ) const {
   Builder _builder;
-  _builder.PointList = const_cast<Point3ArrayPtr *>(&__pointList);
+  if(__pointList)_builder.PointList = const_cast<Point3ArrayPtr *>(&__pointList);
   if(__colorList)_builder.ColorList = const_cast<Color4ArrayPtr *>(&__colorList);
   return _builder.isValid();
 }
@@ -288,7 +288,7 @@ bool Polyline2D::apply( Action& action ) {
 
 bool Polyline2D::isValid( ) const {
   Builder _builder;
-  _builder.PointList = const_cast<Point2ArrayPtr *>(&__pointList);
+  if(__pointList)_builder.PointList = const_cast<Point2ArrayPtr *>(&__pointList);
   return _builder.isValid();
 }
 

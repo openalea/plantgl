@@ -786,11 +786,16 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 	size_t tot = sc->getSize();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
-	if(frame->isPixelBufferUsed())frame->activatePBuffer(true);
+	bool autoredraw = frame->isRedrawEnabled();
+	if(frame->isPixelBufferUsed()){
+		frame->activatePBuffer(true);
+		if(autoredraw)frame->activateRedraw(false);
+	}
 	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
 		nsc->clear();
 		nsc->add(*it);
 		setScene(nsc);
+		if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
 		res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
 		cur++;
 		if(cur % per == 0){
@@ -799,7 +804,10 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		}
 	}
     __renderer.setRenderingMode(rtype);
-	if(frame->isPixelBufferUsed())frame->activatePBuffer(false);
+	if(frame->isPixelBufferUsed()){
+		frame->activatePBuffer(false);
+		if(autoredraw)frame->activateRedraw(true);
+	}
 	printf("\x0d Projections 100%% done.");
 	if(mode)frame->getCamera()->setProjectionMode(mode);
 	return res;
@@ -823,16 +831,22 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	size_t tot = sc->getSize();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
-	if(frame->isPixelBufferUsed())frame->activatePBuffer(true);
+	bool autoredraw = frame->isRedrawEnabled();
+	if(frame->isPixelBufferUsed()){
+		frame->activatePBuffer(true);
+		if(autoredraw)frame->activateRedraw(false);
+	}
 	bool mode = frame->getCamera()->getProjectionMode();
 	if(mode)frame->getCamera()->setOrthographicMode();
     GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
-    __renderer.setRenderingMode(GLRenderer::Selection);
+    __renderer.setRenderingMode(GLRenderer::Dynamic);
 	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
 		nsc->clear();
 		nsc->add(*it);
 		uint_t id = (*it)->getId();
 		setScene(nsc);
+		if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
+		else if (!autoredraw) frame->updateGL();
 		ViewZBuffer * cbuff = frame->grabDepthBuffer(false);
 
 		if(! back_test) {
@@ -847,7 +861,8 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		}
 		else {
 			frame->getCamera()->setAngles(b_az,b_el);
-			emit valueChanged();
+			if(frame->isPixelBufferUsed())frame->paintPixelBuffer();
+			else frame->updateGL();
 			ViewZBuffer * cbackbuff = frame->grabDepthBuffer(false);
 			for(int c = 0;  c < w; ++c){
 				for(int r = 0;  r < h; ++r){
@@ -869,7 +884,10 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	printf("\x0d Projections 100%\n");
     __renderer.setRenderingMode(rtype);
 	// std::cerr << "\x0d Projections 100% done.\n";
-	if(frame->isPixelBufferUsed())frame->activatePBuffer(false);
+	if(frame->isPixelBufferUsed()){
+		frame->activatePBuffer(false);
+		if(autoredraw)frame->activateRedraw(true);
+	}
 	setScene(sc);
 	return res;
 }

@@ -741,8 +741,8 @@ bool BinaryParser::readShape(){
             __roots++;
         }
         if(isParserVerbose())
-          if(__roots%50==0)
-			 printf("\x0dAlready parsed : %i%% shapes.",__roots);
+          if(__roots % 50 == 0 || __roots == __scene->getSize())
+			 printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->getSize());
         return true;
     }
     else{

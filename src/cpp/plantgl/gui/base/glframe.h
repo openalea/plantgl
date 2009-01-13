@@ -215,6 +215,7 @@ public slots:
 
   void redrawGL();
   void printProjectionSize();
+  void paintPixelBuffer();
 
   /// Set the Line Width.
   void setLineWidth(int i);
