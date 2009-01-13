@@ -63,6 +63,7 @@ void export_PglBinaryPrinter();
 void export_PovPrinter();
 void export_VrmlPrinter();
 void export_VgstarPrinter();
+void export_PyPrinter();
 
 /* ----------------------------------------------------------------------- */
 // gl export

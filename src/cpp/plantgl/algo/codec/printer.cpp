@@ -453,7 +453,7 @@ bool Printer::process( Material * material ) {
 /* ----------------------------------------------------------------------- */
 
 bool Printer::process( ImageTexture * texture ) {
-  GEOM_ASSERT(material);
+  GEOM_ASSERT(texture);
   GEOM_PRINT_BEGIN(__matStream,"ImageTexture",texture);
 
   GEOM_PRINT_FIELD(__matStream,texture,Filename,STRING);

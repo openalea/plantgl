@@ -29,79 +29,41 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include "export_printer.h"
+#include <plantgl/algo/codec/pyprinter.h>
 #include <boost/python.hpp>
-#include "export_action.h"
-#include <plantgl/python/exception_core.h>
 
 /* ----------------------------------------------------------------------- */
 
-void module_algo()
-{
-  define_stl_exceptions();
-
-    // util class export
-    export_Sequencer();
-
-	// abstract action class export
-    export_action();
-
-	// basic action export
-    export_Discretizer();
-    export_Tesselator();
-    export_BBoxComputer();
-    export_VolComputer();
-    export_SurfComputer();
-    export_AmapTranslator();
-    export_MatrixComputer();
-
-	// custom algo
-    export_Merge();
-    export_Fit();
-
-	// abstract printer export
-    export_StrPrinter();
-    export_FilePrinter();
-
-	// printer export
-    export_PglPrinter();
-    export_PglBinaryPrinter();
-    export_PovPrinter();
-    export_VrmlPrinter();
-    export_VgstarPrinter();
-    export_PyPrinter();
-
-	// gl export
-	export_GLRenderer();
-	export_GLSkelRenderer();
-	export_GLBBoxRenderer();
-	export_GLCtrlPointRenderer();
-
-    // Turtle export
-    export_TurtleParam();
-    export_Turtle();
-    export_PglTurtle();
-
-    // RayCasting export
-    export_SegIntersection();
-    export_Ray();
-    export_RayIntersection();
-
-    // Grid export
-    export_Mvs();
-    export_Octree();
-
-	// Overlay export
-	export_Overlay();
-};
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef PGL_DEBUG
-BOOST_PYTHON_MODULE(_pglalgo_d)
-#else
-BOOST_PYTHON_MODULE(_pglalgo)
-#endif
-{
-  module_algo();
+class PyStrPyPrinter : public PyStrPrinter, public PyPrinter { 
+public:
+	PyStrPyPrinter() :  PyPrinter(_mystream) {}     
 };
 
+class PyFilePyPrinter : public PyFilePrinter, public PyPrinter { 
+public:
+	PyFilePyPrinter(const std::string& fname) : PyFilePrinter(fname), PyPrinter(_mystream) {}   
+};  
+
+/* ----------------------------------------------------------------------- */
+
+void export_PyPrinter()
+{
+ class_< PyPrinter, bases< Printer >, boost::noncopyable > ( "PyPrinter" , no_init )
+    ;
+
+  class_< PyStrPyPrinter , bases< PyStrPrinter, PyPrinter > , boost::noncopyable> 
+	  ("PyStrPrinter",init<>("String Printer in python format" ));
+
+  class_< PyFilePyPrinter , bases< PyFilePrinter, PyPrinter > , boost::noncopyable> 
+	  ("PyFilePrinter",init<const std::string&>("File Printer in python format",args("filename")) );
+    ;
+}
+
+/* ----------------------------------------------------------------------- */
