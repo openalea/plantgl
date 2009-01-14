@@ -39,47 +39,47 @@ ostream& print_arg_field(ostream& os, const T& value)
 	return os << endl;
 }
 
-ostream& print_value(ostream& os, const bool& value)
+inline ostream& print_value(ostream& os, const bool& value)
 {
 	return os << (value ? "True" : "False");
 }
 
-ostream& print_value(ostream& os, const int_t& value)
+inline  ostream& print_value(ostream& os, const int_t& value)
 {
 	return os << value;
 }
 
-ostream& print_value(ostream& os, const uint_t& value)
+inline ostream& print_value(ostream& os, const uint_t& value)
 {
 	return os << value;
 }
 
-ostream& print_value(ostream& os, const real_t& value)
+inline ostream& print_value(ostream& os, const real_t& value)
 {
 	return os << value;
 } 
 
-ostream& print_value(ostream& os, const string& value)
+inline ostream& print_value(ostream& os, const string& value)
 {
 	return os << "\"" << value << "\"";
 } 
 
-ostream& print_value(ostream& os, const Vector2& value)
+inline ostream& print_value(ostream& os, const Vector2& value)
 {
 	return os << "Vector2(" << value.x() << ", " << value.y() <<  ")";
 } 
 
-ostream& print_value(ostream& os, const Vector3& value)
+inline ostream& print_value(ostream& os, const Vector3& value)
 {
 	return os << "Vector3(" << value.x() << ", " << value.y() << ", " << value.z() << ")";
 } 
 
-ostream& print_value(ostream& os, const Vector4& value)
+inline ostream& print_value(ostream& os, const Vector4& value)
 {
 	return os << "Vector4(" << value.x() << ", " << value.y() << ", " << value.z() << ", " << value.w() << ")";
 } 
 
-ostream& print_value(ostream& os, const Color3& value)
+inline ostream& print_value(ostream& os, const Color3& value)
 {	
 	os << "Color3(" << (uint16_t)value.getRed() 
          << "," << (uint16_t)value.getGreen() 
@@ -87,6 +87,7 @@ ostream& print_value(ostream& os, const Color3& value)
 	
 	return os;
 } 
+
 
 ostream& print_value(ostream& os, const Color4ArrayPtr& value)
 {	
@@ -186,9 +187,8 @@ ostream& print_value(ostream& os, const Point2ArrayPtr& value)
 {
 	os << "Point2Array([";
 	uint_t _sizei = value->getSize();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << "(" << value->getAt(_i).x() << "," << value->getAt(_i).y() << "), ";
-	}
+        for(Point2Array::const_iterator it = value->getBegin(); it != value->getEnd(); ++it)
+		print_value(os,*it) << ',';
 	os << "])";
 	return os;
 }
@@ -197,10 +197,8 @@ ostream& print_value(ostream& os, const Point3ArrayPtr& value)
 {
 	os << "Point3Array([";
 	uint_t _sizei = value->getSize();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		Vector3 v = value->getAt(_i);
-		os << "(" << v.x() << "," << v.y() << "," << v.z() << "), ";
-	}
+        for(Point3Array::const_iterator it = value->getBegin(); it != value->getEnd(); ++it)
+		print_value(os,*it) << ',';
 	os << "])";
 	return os;
 }
@@ -209,10 +207,8 @@ ostream& print_value(ostream& os, const Point4ArrayPtr& value)
 {
 	os << "Point4Array([";
 	uint_t _sizei = value->getSize();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << "(" << value->getAt(_i).x() << "," << value->getAt(_i).y() << "," 
-			<< value->getAt(_i).z() << "," << value->getAt(_i).w() << "), ";
-	}
+        for(Point4Array::const_iterator it = value->getBegin(); it != value->getEnd(); ++it)
+		print_value(os,*it) << ',';
 	os << "])";
 	return os;
 }
@@ -220,62 +216,61 @@ ostream& print_value(ostream& os, const Point4ArrayPtr& value)
 ostream& print_value(ostream& os, const Point4MatrixPtr& value)
 {
 	uint_t _cols = value->getColsNb();
-	os << "[[";
+	uint_t _rows = value->getRowsNb();
+	os << "[";
 	uint_t _sizei = value->getSize();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << "(";
-		os << value->getAt(_i / _cols ,_i % _cols).x() << ","
-			<< value->getAt(_i / _cols ,_i % _cols).y() << ","
-			<< value->getAt(_i / _cols ,_i % _cols).z() << ","
-			<< value->getAt(_i / _cols ,_i % _cols).w() << ")";
-		if (_i != (_sizei - 1)){ 
-          if (_i !=0 && (_i+1) % (_cols) ==0){ 
-			  os << "], ";
-              os << "[";} 
-          else  os << ", "; 
-		}
+	for (uint_t _i = 0; _i < _rows; ++_i) {
+           os << "[";
+   	   for (uint_t _j = 0; _j < _cols; ++_j) 
+		print_value(os,value->getAt(_i ,_j)) << ',';
+ 	   os << "], ";
 	}
-	os << "]]";
+	os << "]";
 	return os;
 }
 
-ostream& print_field_string(ostream& os, string name, string str, const string& value)
-{
-	os << name << '.' << str << " = \"";
-	print_value(os,value);
-	return os << '"' << endl;
-}
 
-string compute_name(SceneObjectPtr obj)
-{
+template<class T>
+inline string compute_name(T * obj) {  
 	if(obj->isNamed()) return obj->getName();
 	
 	if(obj->use_count() > 1){
 		string _name;
-		_name = "GEOM_"+number(obj->getId());
+		_name = "PGL_"+number(obj->getId());
 		obj->setName(_name);
 	}
-	else obj->setName("aaa");
+	else return "anobject";
+
 	return obj->getName();
 }
 
-void print_begin(ostream& os, string name, string type)
+template<class T>
+inline string compute_name(RCPtr<T> obj)
+{ return compute_name(obj.get()); }
+
+inline ostream& print_value(ostream& os, SceneObjectPtr value)
+{
+	return os << compute_name(value);
+}
+
+
+inline void print_begin(ostream& os, string name, string type)
 {
 	os << name << " = " << type << "()" << endl;
 }
 
-void print_cons_begin(ostream& os, string name, string type)
+inline void print_cons_begin(ostream& os, string name, string type)
 {
 	os << name << " = " << type << "(" << endl;
 }
-void print_cons_end(ostream& os, SceneObjectPtr obj, string name)
+inline void print_cons_end(ostream& os, SceneObjectPtr obj, string name)
 {
 	os << ")" << endl;
 	if ( obj->isNamed())
-		print_field_string (os, name, "name", obj->getName());
+		print_field (os, name, "name", obj->getName());
 }
 
-void print_end(ostream& os)
+inline void print_end(ostream& os)
 {
 	os << endl;
 }
@@ -308,10 +303,10 @@ bool PyPrinter::process(Shape * shape)
 	print_cons_begin(__shapeStream, name, "Shape");
 
 	if( shape->geometry ){
-		print_arg_field (__shapeStream, "geometry", compute_name(shape->geometry));
+		print_arg_field (__shapeStream, "geometry", SceneObjectPtr(shape->geometry));
 		if( shape->appearance )
 		{
-			print_arg_field (__shapeStream, "appearance", compute_name(shape->appearance));
+			print_arg_field (__shapeStream, "appearance", SceneObjectPtr(shape->appearance));
 			if(shape->id != Shape::NOID)
 			{
 				print_arg_field (__shapeStream, "id", (shape->id));
@@ -336,7 +331,7 @@ bool PyPrinter::process(Shape * shape)
 	{
 		print_cons_end(__shapeStream, shape, name);
 		if( shape->appearance )
-			print_field (__shapeStream, name, "appearance", compute_name(shape->appearance));
+			print_field (__shapeStream, name, "appearance", SceneObjectPtr(shape->appearance));
 		if(shape->id != Shape::NOID)
 			print_field (__shapeStream, name, "id", (shape->id));
 		if(shape->parentId != Shape::NOID)
@@ -354,89 +349,49 @@ bool PyPrinter::process( Material * material ) {
   GEOM_ASSERT(material);
   
   string name = compute_name(material);
-  print_cons_begin(__matStream, name, "Material");
+  int construtor_args = 0; // nb of arguments printed in construtor
 
+  print_cons_begin(__matStream, name, "Material");
   if (! material->isAmbientToDefault())
   {
 	print_arg_field (__matStream, "ambient", material->getAmbient());
+        construtor_args++;
 	if (! material->isDiffuseToDefault())
 	{
 		print_arg_field (__matStream, "diffuse", material->getDiffuse());
+	        construtor_args++;
 		if (! material->isSpecularToDefault())
 		{
 			print_arg_field (__matStream, "specular", material->getSpecular());
+		        construtor_args++;
 			if (! material->isEmissionToDefault())
 			{
 				print_arg_field (__matStream, "emission", material->getEmission());
+			        construtor_args++;
 				if (! material->isShininessToDefault())
 				{
 					print_arg_field (__matStream, "shininess", material->getShininess());
-					if (! material->isTransparencyToDefault())
+				        construtor_args++;
+					if (! material->isTransparencyToDefault()){
 						print_arg_field (__matStream, "transparency", material->getTransparency());
+					        construtor_args++;
+					}
 				}
-				else // shininess is default
-				{
-					print_cons_end (__matStream, material, name);
-					if (! material->isTransparencyToDefault())
-					print_field (__matStream, name, "transparency", material->getTransparency());
-					print_end(__matStream);
-				    return true;
-				}
-			}
-			else // emission is default
-			{
-				print_cons_end (__matStream, material, name);
-				if (! material->isShininessToDefault())
-					print_field (__matStream, name, "shininess", material->getShininess());
-				if (! material->isTransparencyToDefault())
-					print_field (__matStream, name, "transparency", material->getTransparency());
-				print_end(__matStream);
-			    return true;
 			}
 		} 
-		else // specular is default
-		{
-			print_cons_end (__matStream, material, name);
-			if (! material->isEmissionToDefault())
-				print_field (__matStream, name, "emission", material->getEmission());
-			if (! material->isShininessToDefault())
-				print_field (__matStream, name, "shininess", material->getShininess());
-			if (! material->isTransparencyToDefault())
-				print_field (__matStream, name, "transparency", material->getTransparency());
-			print_end(__matStream);
-			return true;
-		}
 	}
-	else  // diffuse is default
-	{
-		print_cons_end (__matStream, material, name);
-		if (! material->isSpecularToDefault())
-			print_field (__matStream, name, "specular", material->getSpecular());
-		if (! material->isEmissionToDefault())
-			print_field (__matStream, name, "emission", material->getEmission());
-		if (! material->isShininessToDefault())
-			print_field (__matStream, name, "shininess", material->getShininess());
-		if (! material->isTransparencyToDefault())
-			print_field (__matStream, name, "transparency", material->getTransparency());
-		print_end(__matStream);
-		return true;
-	}
-	print_cons_end (__matStream, material, name);
-  }
-  else // ambient is default
-  {
-    print_cons_end(__matStream, material, name);
-	if (! material->isDiffuseToDefault())
+  }  print_cons_end (__matStream, material, name);
+  
+  if (! material->isDiffuseToDefault() && construtor_args < 2)
 		print_field (__matStream, name, "diffuse", material->getDiffuse());
-	if (! material->isSpecularToDefault())
+  if (! material->isSpecularToDefault() && construtor_args < 3)
 		print_field (__matStream, name, "specular", material->getSpecular());
-	if (! material->isEmissionToDefault())
+  if (! material->isEmissionToDefault() && construtor_args < 4)
 		print_field (__matStream, name, "emission", material->getEmission());
-	if (! material->isShininessToDefault())
+  if (! material->isShininessToDefault() && construtor_args < 5)
 		print_field (__matStream, name, "shininess", material->getShininess());
-    if (! material->isTransparencyToDefault())
+  if (! material->isTransparencyToDefault() && construtor_args < 6)
 		print_field (__matStream, name, "transparency", material->getTransparency());
-  }
 
   print_end(__matStream);
   return true;
@@ -809,12 +764,11 @@ bool PyPrinter::process( AxisRotated * axisRotated ) {
   GeometryPtr obj = axisRotated->getGeometry();
   obj->apply(*this);
 
-  string geometryname = compute_name(obj);
 
   print_cons_begin(__geomStream, name, "AxisRotated");
   print_arg_field (__geomStream, "axis", axisRotated->getAxis());
   print_arg_field (__geomStream, "angle", axisRotated->getAngle());
-  print_arg_field (__geomStream, "geometry", geometryname);
+  print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
   print_cons_end(__geomStream, axisRotated, name);
   
   /*
@@ -1070,13 +1024,11 @@ bool PyPrinter::process( EulerRotated * eulerRotated ) {
   GeometryPtr obj = eulerRotated->getGeometry();
   obj->apply(*this);
 
-  string geometryname = compute_name(obj);
-
   print_cons_begin(__geomStream, name, "EulerRotated");
   print_arg_field (__geomStream, "azimuth", eulerRotated->getAzimuth());
   print_arg_field (__geomStream, "elevation", eulerRotated->getElevation());
   print_arg_field (__geomStream, "roll", eulerRotated->getRoll());
-  print_arg_field (__geomStream, "geometry", geometryname);
+  print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
 
   print_cons_end(__geomStream, eulerRotated, name);
   print_end(__geomStream);
@@ -1097,13 +1049,11 @@ bool PyPrinter::process( ExtrudedHull * extrudedHull ) {
   horizontal_obj->apply(*this);
   
   string name = compute_name(extrudedHull);
-  string vobj_name = compute_name(vertical_obj);
-  string hobj_name = compute_name(horizontal_obj);
-
+ 
   print_cons_begin(__geomStream, name, "ExtrudedHull");
 
-  print_arg_field(__geomStream,vobj_name);
-  print_arg_field(__geomStream,hobj_name);
+  print_arg_field(__geomStream,SceneObjectPtr(vertical_obj));
+  print_arg_field(__geomStream,SceneObjectPtr(horizontal_obj));
   if (! extrudedHull->isCCWToDefault())
 	  print_arg_field(__geomStream, extrudedHull->getCCW());
 
@@ -1353,14 +1303,14 @@ bool PyPrinter::process(Sphere * sphere)
 	{
 		print_arg_field (__geomStream, "slices", sphere->getSlices());
 		if (! sphere->isStacksToDefault())
-			print_arg_field (__geomStream, "stack", sphere->getStacks());
+			print_arg_field (__geomStream, "stacks", sphere->getStacks());
 	}
 	else 
 	{
 		if (! sphere->isStacksToDefault())
 		{
 			print_cons_end(__geomStream, sphere, name);
-			print_field (__geomStream, name, "stack", sphere->getStacks());
+			print_field (__geomStream, name, "stacks", sphere->getStacks());
 			print_end(__geomStream);
 			return true;
 		}
@@ -1374,7 +1324,7 @@ bool PyPrinter::process(Sphere * sphere)
 	if (! sphere->isSlicesToDefault())
 		print_field<int_t> (__geomStream, name, "slices", sphere->getSlices());
 	if (! sphere->isStacksToDefault())
-		print_field<int_t> (__geomStream, name, "stack", sphere->getStacks());
+		print_field<int_t> (__geomStream, name, "stacks", sphere->getStacks());
   }
 
   print_end(__geomStream);
@@ -1391,12 +1341,10 @@ bool PyPrinter::process( Scaled * scaled ) {
 
   GeometryPtr obj = scaled->getGeometry();
   obj->apply(*this);
-
-  string geometryname = compute_name(obj);
-
+
   print_cons_begin(__geomStream, name, "Scaled");
   print_arg_field (__geomStream, "scale", scaled->getScale());
-  print_arg_field (__geomStream, "geometry", geometryname);
+  print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
 
   print_cons_end(__geomStream, scaled, name);
 
@@ -1521,11 +1469,11 @@ bool PyPrinter::process( Translated * translated ) {
   GeometryPtr obj = translated->getGeometry();
   obj->apply(*this);
 
-  string geometryname = compute_name(obj);
+  // string geometryname = compute_name(obj);
   
   print_cons_begin(__geomStream, name, "Translated");
   print_arg_field (__geomStream, "translation", translated->getTranslation());
-  print_arg_field (__geomStream, "geometry", geometryname);
+  print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
 
   print_cons_end(__geomStream, translated, name);
 
