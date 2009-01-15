@@ -1080,6 +1080,7 @@ bool GLRenderer::process( PointSet * pointSet ) {
   GEOM_GLRENDERER_CHECK_CACHE(pointSet);
 
   const Point3ArrayPtr& points = pointSet->getPointList();
+  if (!points) return false;
   bool color = pointSet->hasColorList() && 
 			 (pointSet->getColorList()->getSize() == points->getSize());
 

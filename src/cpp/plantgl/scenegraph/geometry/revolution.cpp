@@ -85,7 +85,7 @@ bool Revolution::Builder::isValid( ) const {
   // Size check
   uint_t _pointListSize = (*Profile)->getStride();
   if (_pointListSize < 3) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Revolution","Profile","Must have more than 2 points.");
+    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Revolution","Profile","Must have more than 3 points.");
     return false;
   };
   return true;

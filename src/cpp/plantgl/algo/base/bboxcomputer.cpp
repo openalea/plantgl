@@ -646,6 +646,7 @@ bool BBoxComputer::process( PointSet * pointSet ) {
   GEOM_BBOXCOMPUTER_CHECK_CACHE(pointSet);
 
   const Point3ArrayPtr& _pointList = pointSet->getPointList();
+  if (!_pointList) return false;
   pair<Vector3,Vector3> _bounds = _pointList->getBounds();
   __bbox = BoundingBoxPtr(new BoundingBox(_bounds.first,_bounds.second));
   GEOM_ASSERT(__bbox);

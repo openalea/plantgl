@@ -154,9 +154,10 @@ public:
     std::vector<T> _col(__rowsNb);
     const_iterator _it = __A.begin()+c;
     size_t rowsize = __A.size()/__rowsNb;
-    for ( uint_t k = 0 ; k < __rowsNb ; k++){
-        _col[k]=*_it;
+    _col[0]=*_it;
+    for ( uint_t k = 1 ; k < __rowsNb ; k++){
         _it+=rowsize;
+        _col[k]=*_it;
     }
     return _col;
   }

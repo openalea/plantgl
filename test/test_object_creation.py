@@ -11,7 +11,7 @@ def create_default_objects():
     cpts = [[(0,0,0,1),(.5,1,0,1),(1.,1,0,1),(1.5,0,0,1)],
             [(0,0,1,1),(.5,1,1,1),(1.,1,1,1),(1.5,0,1,1)],
             [(0,0,3,1),(.5,1,3,1),(1.,1,3,1),(1.5,0,3,1)]]
-    #yield BezierPatch(cpts)
+    yield BezierPatch(cpts)
     yield Box()
     yield Cone()
     yield Cylinder()
@@ -117,7 +117,7 @@ def create_random_objects():
     bc2 = BezierCurve2D([randtuple(3) for i in xrange(randint(3,maxelem))])
     yield bc2
     nbrow = xrange(randint(2,maxelem))
-    #yield BezierPatch([[randtuple(4) for i in nbrow] for j in xrange(randint(2,maxelem))])
+    yield BezierPatch([[randtuple(4) for i in nbrow] for j in xrange(randint(2,maxelem))])
     yield Box(size = randtuple())
     yield Cone(radius = uniform(0.1,maxdim), height = uniform(0.1,maxdim), solid = randbool(), slices = randint(4,255))
     yield Cylinder(radius = uniform(0.1,maxdim), height = uniform(0.1,maxdim), solid = randbool(), slices = randint(4,255))
@@ -152,7 +152,7 @@ def create_random_objects():
     yield Text('test2',position=randtuple(),screencoordinates=randbool(),fontstyle=Font(family="courrier new",size=randint(6,20),bold=randbool(),italic=randbool()))
     yield TriangleSet([randtuple() for i in xrange(dim)],[randuninttuple(3,0,dim-1) for i in xrange(10,maxelem)])
 
-rdtransgen = {0 : (lambda : Matrix4.translation(randtuple())),
+rdtransgen = {0 : (lambda : Matrix4.translation(randtuple(maxvalue=1))),
               1 : (lambda : Matrix4(Matrix3.scaling(randtuple(maxvalue=1)))),
               2 : (lambda : Matrix4(Matrix3.axisRotation(randtuple(), uniform(0,2*pi)))),
               3 : (lambda : Matrix4(Matrix3.eulerRotationZYX((uniform(0,2*pi),uniform(0,2*pi),uniform(0,2*pi))))),
@@ -163,7 +163,7 @@ def randtransform():
 def create_random_transforms():
     yield AxisRotated(randtuple(),uniform(0,2*pi),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255)))
     yield EulerRotated(uniform(0,2*pi),uniform(0,2*pi),uniform(0,2*pi),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255)))
-    yield IFS(randint(0,3),[Transform4(randtransform()) for i in xrange(1,4)],Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255)))
+    yield IFS(randint(0,3),[Transform4(randtransform()) for i in xrange(1,4)],Sphere(radius = uniform(0.1,1),slices = randint(4,255), stacks = randint(4,255)))
     prim = Vector3(randtuple())
     prim.normalize()
     sec = Vector3(randtuple())

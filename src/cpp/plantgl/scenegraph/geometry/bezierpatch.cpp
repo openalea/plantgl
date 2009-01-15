@@ -279,15 +279,15 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
 
 
         vector<Vector4> Q(_vdeg+1);
-        for (uint_t j =0 ; j <= _vdeg ; j ++){
+        for (uint_t j =0 ; j <= _vdeg ; ++j){
           vector<Vector4> T=__ctrlPointMatrix->getRow(j);
-          for (uint_t k = 1 ; k <= _udeg ; k++)
-              for (uint_t i = 0 ; i <= ( _udeg - k ) ; i++)
+          for (uint_t k = 1 ; k <= _udeg ; ++k)
+              for (uint_t i = 0 ; i <= ( _udeg - k ) ; ++i)
                   T[i] = (T[i] * u1) + (T[i+1] * u);
           Q[j]=T[0];
         }
-        for (uint_t k = 1 ; k <= _vdeg ; k++)
-            for (uint_t j = 0 ; j <= ( _vdeg - k ) ; j++)
+        for (uint_t k = 1 ; k <= _vdeg ; ++k)
+            for (uint_t j = 0 ; j <= ( _vdeg - k ) ; ++j)
                 Q[j] = (Q[j] * v1) + (Q[j+1] * v);
 
         if (fabs(Q[0].w()) < GEOM_TOLERANCE)
@@ -296,16 +296,15 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
     }
     else{
         vector<Vector4> Q(_udeg+1);
-        for (uint_t i =0 ; i <= _udeg ; i ++){
+        for (uint_t i =0 ; i <= _udeg ; ++i){
             vector<Vector4> T=__ctrlPointMatrix->getColumn(i);
-
-            for (uint_t k = 1 ; k <= _vdeg ; k++)
-                for (uint_t j = 0 ; j <= ( _vdeg - k ) ; j++)
+            for (uint_t k = 1 ; k <= _vdeg ; ++k)
+                for (uint_t j = 0 ; j <= ( _vdeg - k ) ; ++j)
                     T[j] = (T[j] * v1) + (T[j+1] * v);
             Q[i]=T[0];
         }
         for (uint_t k = 1 ; k <= _udeg ; k++)
-            for (uint_t i = 0 ; i <= ( _udeg - k ) ; i++)
+            for (uint_t i = 0 ; i <= ( _udeg - k ) ; ++i)
                 Q[i] = (Q[i] * u1) + (Q[i+1] * u);
 
         if (fabs(Q[0].w()) < GEOM_TOLERANCE)
