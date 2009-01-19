@@ -168,7 +168,7 @@ public:
     const_iterator _max = __A.begin();
     for (const_iterator _i = __A.begin() + 1; _i != __A.end(); _i++)
       if (*_i < *_min) _min = _i;
-      else if (*_i != *_max) _max = _i;
+      else if (*_i > *_max) _max = _i;
     return std::pair<const_iterator,const_iterator>(_min,_max);
   }*/
 

@@ -717,9 +717,9 @@ cout<<"Stride: "<<__stride<<endl;
       real_t u_start= p->getFirstKnot();
       real_t u_end=   p->getLastKnot();
 
-      real_t step= (u_end - u_start) / real_t(__stride-1);
+      real_t step= (u_end - u_start) / real_t(__stride);
 
-      __evalPt2D= Point2ArrayPtr( new Point2Array( __stride ) );
+      __evalPt2D= Point2ArrayPtr( new Point2Array( __stride+1 ) );
 
       real_t u= u_start;
       for(uint_t i= 0; i < __stride; i++ )
@@ -728,7 +728,8 @@ cout<<"Stride: "<<__stride<<endl;
         __evalPt2D->setAt( i, point );
         u+= step;
         }
-      }
+        __evalPt2D->setAt( __stride, p->getPointAt(u_end) );
+	}
 
     __fctList2D= Curve2DArrayPtr();
     __evalPt3D= Point3ArrayPtr();
@@ -750,9 +751,9 @@ cout<<"is2D? "<<__is2D<<endl;
   Point3ArrayPtr allPts3D;
 
   if( __is2D )
-    allPts2D= Point2ArrayPtr ( new Point2Array( n * __stride) );
+    allPts2D= Point2ArrayPtr ( new Point2Array( n * (__stride+1)) );
   else
-    allPts3D= Point3ArrayPtr( new Point3Array( n * __stride) );
+    allPts3D= Point3ArrayPtr( new Point3Array( n * (__stride+1)) );
 
   real_t cosa= 0., sina= 0.;
   uint_t j= 0;
@@ -762,7 +763,7 @@ cout<<"is2D? "<<__is2D<<endl;
 
     real_t u_start= p->getFirstKnot();
     real_t u_end=   p->getLastKnot();
-    real_t step= (u_end - u_start) / real_t(__stride-1);
+    real_t step= (u_end - u_start) / real_t(__stride);
     real_t u= u_start;
 
     if( !__is2D )
@@ -771,7 +772,7 @@ cout<<"is2D? "<<__is2D<<endl;
       cosa= cos(angle);
       sina= sin(angle);
       }
-    for(uint_t i= 0; i < __stride; i++ )
+    for(uint_t i= 0; i <= __stride; ++i )
       {
       Vector2 pt= p->getPointAt(u);
       GEOM_ASSERT( j+i*n < n * __stride );
@@ -789,11 +790,11 @@ cout<<"is2D? "<<__is2D<<endl;
 
   if(__is2D)
     {
-   __fctList2D= Curve2DArrayPtr( new Curve2DArray(__stride) );
+   __fctList2D= Curve2DArrayPtr( new Curve2DArray(__stride+1) );
     Point2ArrayPtr pts;
     Point2Array::iterator itpBegin= allPts2D->getBegin();
     Point2Array::iterator itpEnd= itpBegin + n;
-    for(uint_t i= 0; i < __stride; i++ )
+    for(uint_t i= 0; i <= __stride; i++ )
       {
       pts= Point2ArrayPtr(new Point2Array(itpBegin, itpEnd));
       Point3ArrayPtr pts3D( new Point3Array(*pts, 1.) );
@@ -804,18 +805,18 @@ cout<<"get2DCurve "<<i<<endl;
       __fctList2D->getAt(i)= local.get2DCurve();
       if(itpEnd != allPts2D->getEnd()){ itpBegin+= n; itpEnd+= n; }
       }
-    __evalPt2D= Point2ArrayPtr( new Point2Array( __stride ) );
+    __evalPt2D= Point2ArrayPtr( new Point2Array( __stride+1 ) );
     __evalPt3D= Point3ArrayPtr();
     __fctList3D= CurveArrayPtr();
 
     }
   else
   {
-	  __fctList3D= CurveArrayPtr( new CurveArray(__stride) );
+	  __fctList3D= CurveArrayPtr( new CurveArray(__stride+1) );
 	  Point3ArrayPtr pts;
 	  Point3Array::iterator itpBegin= allPts3D->getBegin();
 	  Point3Array::iterator itpEnd= itpBegin + n;
-	  for(uint_t i= 0; i < __stride; i++ )
+	  for(uint_t i= 0; i <= __stride; i++ )
 	  {
 		  pts= Point3ArrayPtr(new Point3Array(itpBegin, itpEnd));
 		  Interpol local(pts, __knotList, __degree, 1 );

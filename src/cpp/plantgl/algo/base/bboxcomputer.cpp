@@ -427,7 +427,9 @@ bool BBoxComputer::process( Frustum * frustum ) {
 
   GEOM_BBOXCOMPUTER_CHECK_CACHE(frustum);
 
-  const real_t& _radius = frustum->getRadius();
+  real_t _radius = frustum->getRadius();
+  real_t _taper = frustum->getTaper();
+  if(_taper > 1)_radius *= _taper;
   Vector3 _ll(-_radius,-_radius,0);
   Vector3 _ur(_radius,_radius,frustum->getHeight());
   __bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
@@ -688,13 +690,15 @@ bool BBoxComputer::process( Revolution * revolution ) {
 
   const Point3ArrayPtr& _pointList = __discretizer.getDiscretization()->getPointList();
 
-  uint_t _size = _pointList->getSize();
-  real_t _yMin = _pointList->getAt(0).y();
-  real_t _yMax = _pointList->getAt(0).y();
-  real_t _xMax = _pointList->getAt(0).x();
-  for (uint_t _i = 1; _i < _size; _i++) {
-    const real_t& _x = _pointList->getAt(_i).x();
-    const real_t& _y = _pointList->getAt(_i).y();
+  Point3Array::const_iterator it = _pointList->getBegin();
+
+  real_t _yMin = it->y();
+  real_t _yMax = it->y();
+  real_t _xMax = it->x();
+  
+  for (++it; it < _pointList->getEnd(); ++it) {
+    const real_t& _x = it->x();
+    const real_t& _y = it->y();
     if (_x > _xMax)
       _xMax = _x;
     if (_y < _yMin)
@@ -703,7 +707,7 @@ bool BBoxComputer::process( Revolution * revolution ) {
       if (_y > _yMax)
         _yMax = _y;
   };
-  Vector3 _ll(-_xMax,-_xMax,-_yMin);
+  Vector3 _ll(-_xMax,-_xMax,_yMin);
   Vector3 _ur(_xMax,_xMax,_yMax);
   __bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
   GEOM_ASSERT(__bbox);
