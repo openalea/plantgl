@@ -102,8 +102,11 @@ def randbool(): return bool(randint(0,1))
 
 from math import pi
 
-def randcircle(nbpoints, minradius = 0.1, maxradius = maxdim, minangle = 0, maxangle = 2*pi):
+def randcircle(nbpoints, minradius = 0.1, maxradius = maxdim, minangle = -pi/2, maxangle = 3*pi/2):
     return Polyline2D([Vector2(Vector2.Polar(uniform(minradius,maxradius),minangle+k*(maxangle-minangle)/(nbpoints-1))) for k in xrange(nbpoints)])
+
+def randhalfcircle(nbpoints, minradius = 0.1, maxradius = maxdim):
+    return randcircle(nbpoints, minradius, maxradius, maxangle = pi/2)
     
 def create_random_objects():
     yield AsymmetricHull(negXRadius = uniform(0,maxdim), posXRadius = uniform(0,maxdim), 
@@ -142,13 +145,15 @@ def create_random_objects():
     yield Polyline([randtuple() for i in xrange(randint(2,maxelem))])
     yield Polyline2D([randtuple(2) for i in xrange(randint(2,maxelem))])
     yield QuadSet([randtuple() for i in xrange(dim)],[randuninttuple(4,0,dim-1) for i in xrange(10,maxelem)])
-    yield Revolution(randcircle(randint(4,20),maxangle=pi),slices = randint(4,255))
+    yield Revolution(randhalfcircle(randint(4,20)),slices = randint(4,255))
     yield Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255))
     dim = randint(10,maxelem)
-    ang = [uniform(0.1,2*pi/dim) for i in xrange(dim)]
-    ang = [sum(ang[0:i+1]) for i in xrange(dim)]
+    ang = [uniform(0,1) for i in xrange(dim)]
+    sa = sum(ang)
+    anglist = [2*pi*sum(ang[0:i+1])/sa for i in xrange(dim)]
     nbpts = randint(5,10)
-    #yield Swung([randcircle(nbpts,maxangle=pi) for i in xrange(dim)],ang)
+    pflist = [randhalfcircle(nbpts) for i in xrange(dim)]
+    yield Swung(pflist,anglist)
     yield Text('test2',position=randtuple(),screencoordinates=randbool(),fontstyle=Font(family="courrier new",size=randint(6,20),bold=randbool(),italic=randbool()))
     yield TriangleSet([randtuple() for i in xrange(dim)],[randuninttuple(3,0,dim-1) for i in xrange(10,maxelem)])
 
@@ -192,7 +197,7 @@ def create_random_scene():
     return s
 
     
-def test_create_random_objects(nb = 10):
+def test_create_random_objects(nb = 5):
     Viewer.start()
     for i in xrange(nb):
         Viewer.display(create_random_scene())

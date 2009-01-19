@@ -113,7 +113,7 @@ def test_camera_light():
 # For instance, w and h are not equql to rw qnd rh respectively
 # Moreover, it fails in buildbot
 # to put back this test change its name to test_image 
-def tst_image():
+def test_image():
     w = 400
     h = 400
     Viewer.frameGL.maximize()
@@ -122,8 +122,8 @@ def tst_image():
     Viewer.frameGL.saveImage(fname,'PNG')
     Viewer.frameGL.maximize(False)
     assert os.path.exists(fname), "Viewer.frameGL.saveImage failed"
-    try:
-    #if True:
+    #try:
+    if True:
         from PIL import Image
         q = Image.open(fname)
         rw, rh = q.size[0], q.size[1]
@@ -131,8 +131,8 @@ def tst_image():
         # the excess is constant (172,108). Is it the expected behaviour ?
         imgsizetest = (rw == (w+172) and rh == (h+108))
         del q
-    except:
-        imgsizetest = True
+    #except:
+    #    imgsizetest = True
 
     assert imgsizetest and "Viewer.frameGL.setSize failed %s" % str((rw,rh))
     os.remove(fname)
