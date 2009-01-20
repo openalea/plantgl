@@ -88,7 +88,10 @@ public:
   void clear( );
 
   /// Returns the last computed discretized  geomety when applying \e self.
-  const ExplicitModelPtr& getDiscretization( ) const;
+  inline const ExplicitModelPtr& getDiscretization( ) const { return __discretization; }
+
+  /// Returns the last computed discretized  geomety when applying \e self.
+  inline ExplicitModelPtr& getDiscretization( )  { return __discretization; }
 
   /// @name Shape
   //@{

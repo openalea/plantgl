@@ -179,6 +179,8 @@ void  BoundingBox::transform(const Matrix4& matrix){
   __ur = Vector3(_maxBx,_maxBy,_maxBz) + translation;
 }
 
+bool BoundingBox::operator==(const BoundingBox& other) const
+{ return norm(__ll-other.__ll) < GEOM_EPSILON && norm(__ur-other.__ur) < GEOM_EPSILON; }
 
 BoundingBox& BoundingBox::extend( const BoundingBoxPtr& bbox ) {
   GEOM_ASSERT(isValid());

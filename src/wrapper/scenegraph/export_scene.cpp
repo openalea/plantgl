@@ -229,8 +229,6 @@ object sp_scenes(Scene::Pool * pool){
     return make_list<std::vector<ScenePtr> >(pool->getScenes())();
 }
 
-size_t py_sc_getId(Scene * sc) { return (size_t)sc; }
-
 Scene::Pool& new_pool(object){ return Scene::pool(); }
 
 void export_Scene()
@@ -272,7 +270,7 @@ void export_Scene()
     sc.def("save", &sc_save);
     sc.def("save", &sc_save2);
     sc.def("sort", &Scene::sort);
-	sc.def("getId",&py_sc_getId);
+	sc.def("getId",&RefCountObject::uid);
   	sc.enable_pickling();
   ;
 

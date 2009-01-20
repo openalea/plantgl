@@ -273,6 +273,10 @@ public:
   /// scaling of self.
   void scale(const TOOLS(Vector3)& t);
 
+  bool operator==(const BoundingBox& other) const;
+
+  inline bool operator!=(const BoundingBox& other) const { return !operator==(other); }
+
   /// Returns the addition of \e b1 and \e b2.
   friend SG_API BoundingBox operator+( const BoundingBox& b1, const BoundingBox& b2);
 

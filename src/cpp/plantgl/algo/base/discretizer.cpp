@@ -136,10 +136,6 @@ void Discretizer::clear( ) {
   __cache.clear();
 }
 
-const ExplicitModelPtr& Discretizer::getDiscretization( ) const {
-  return __discretization;
-}
-
 /* ----------------------------------------------------------------------- */
 
 bool Discretizer::process(Shape * Shape){

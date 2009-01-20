@@ -86,7 +86,6 @@ BoundingBoxPtr  bbx_fromobj( boost::python::object o )
 	}
 }
 
-
 void export_BoundingBox()
 {
   class_< BoundingBox, BoundingBoxPtr /*, boost::noncopyable*/ >
@@ -117,13 +116,16 @@ void export_BoundingBox()
 	.def("transform",(void (BoundingBox::*)(const Matrix3&))&BoundingBox::transform)
 	.def("translate",&BoundingBox::translate)	 
 	.def("scale",&BoundingBox::scale)	 
+    .def( self == self )
+    .def( self != self )
     .def( self + self )
     .def( self + other< Vector3 >() )
     .def( self | self )
     .def( self | other< Vector3 >() )
     .def( self & self )
 	.def("contains",&contains_bbox)	 
-	.def("contains",&contains_v3)	 
+	.def("contains",&contains_v3)
+    .def("getId",&RefCountObject::uid) 
 	 ;
 
 }

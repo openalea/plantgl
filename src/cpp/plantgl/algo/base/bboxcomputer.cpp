@@ -80,6 +80,38 @@ using namespace std;
 	__bbox = BoundingBoxPtr(new BoundingBox(bbox)); \
   } \
 
+#define GEOM_BBOXCOMPUTER_DISCRETIZE(geom) \
+  GEOM_ASSERT(geom); \
+  GEOM_BBOXCOMPUTER_CHECK_CACHE(geom); \
+  /* We discretize bezierPatch  */ \
+  if(!geom->apply(__discretizer)) return false; \
+  ExplicitModelPtr _explicitGeom = __discretizer.getDiscretization(); \
+  if(!_explicitGeom) return false; \
+  __discretizer.getDiscretization() = ExplicitModelPtr(); \
+  /* We compute the bounding box of the discretization of geom */ \
+  _explicitGeom->apply(*this); \
+  GEOM_BBOXCOMPUTER_UPDATE_CACHE(geom); \
+  return true; \
+
+#define GEOM_BBOXCOMPUTER_DISCRETIZE_LINE(geom) \
+  GEOM_ASSERT(geom); \
+  GEOM_BBOXCOMPUTER_CHECK_CACHE(geom); \
+  /* We discretize bezierPatch  */ \
+  if(!geom->apply(__discretizer)) return false; \
+  ExplicitModelPtr _explicitGeom = __discretizer.getDiscretization(); \
+  if (!_explicitGeom) { \
+      /* because of tesselator; */ \
+      Discretizer d;  \
+      geom->apply(d); \
+      _explicitGeom = d.getDiscretization(); \
+  } \
+  if(!_explicitGeom) { return false; }\
+  __discretizer.getDiscretization() = ExplicitModelPtr(); \
+  /* We compute the bounding box of the discretization of geom */ \
+  _explicitGeom->apply(*this); \
+  GEOM_BBOXCOMPUTER_UPDATE_CACHE(geom); \
+  return true; \
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -230,26 +262,7 @@ bool BBoxComputer::process( AxisRotated * axisRotated ) {
 
 
 bool BBoxComputer::process( BezierCurve * bezierCurve ) {
-  GEOM_ASSERT(bezierCurve);
-
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(bezierCurve);
-
-  // We discretize bezierCurve
-  bezierCurve->apply(__discretizer);
-  ExplicitModelPtr _explicitBezier = __discretizer.getDiscretization();
-  if (!_explicitBezier) {
-      Discretizer d; // because of tesselator;
-      bezierCurve->apply(d);
-      _explicitBezier = d.getDiscretization();
-  }
-  GEOM_ASSERT(_explicitBezier);
-
-  // We compute the bounding box of the discretization of bezierCurve
-  _explicitBezier->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(bezierCurve);
-
-  return true;
+  GEOM_BBOXCOMPUTER_DISCRETIZE_LINE(bezierCurve);
 }
 
 
@@ -257,21 +270,8 @@ bool BBoxComputer::process( BezierCurve * bezierCurve ) {
 
 
 bool BBoxComputer::process( BezierPatch * bezierPatch ) {
-  GEOM_ASSERT(bezierPatch);
+  GEOM_BBOXCOMPUTER_DISCRETIZE(bezierPatch);
 
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(bezierPatch);
-
-  // We discretize bezierPatch
-  bezierPatch->apply(__discretizer);
-  ExplicitModelPtr _explicitBezier = __discretizer.getDiscretization();
-  GEOM_ASSERT(_explicitBezier);
-
-  // We compute the bounding box of the discretization of bezierPatch
-  _explicitBezier->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(bezierPatch);
-
-  return true;
 }
 
 
@@ -382,21 +382,7 @@ bool BBoxComputer::process( EulerRotated * eulerRotated ) {
 
 
 bool BBoxComputer::process( ExtrudedHull * extrudedHull ) {
-  GEOM_ASSERT(extrudedHull);
-
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(extrudedHull);
-
-  // We discretize extrudedHull
-  extrudedHull->apply(__discretizer);
-  ExplicitModelPtr _explicitHull = __discretizer.getDiscretization();
-  GEOM_ASSERT(_explicitHull);
-
-  // We compute the bounding box of the discretization of extrudedHull
-  _explicitHull->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(extrudedHull);
-
-  return true;
+  GEOM_BBOXCOMPUTER_DISCRETIZE(extrudedHull);
 }
 
 
@@ -445,25 +431,7 @@ bool BBoxComputer::process( Frustum * frustum ) {
 
 
 bool BBoxComputer::process( Extrusion * extrusion ) {
-  GEOM_ASSERT(extrusion);
-
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(extrusion);
-
-  // We first discretize the extrusion
-  if(extrusion->apply(__discretizer)){
-      ExplicitModelPtr _explicitCyl = __discretizer.getDiscretization();
-
-      // We compute the bounding box of the discretization of extrusion
-      _explicitCyl->apply(*this);
-
-      GEOM_BBOXCOMPUTER_UPDATE_CACHE(extrusion);
-
-      return true;
-  }
-  else {
-      __bbox = BoundingBoxPtr();
-      return false;
-  }
+  GEOM_BBOXCOMPUTER_DISCRETIZE(extrusion);
 }
 
 
@@ -550,25 +518,7 @@ bool BBoxComputer::process( IFS * ifs ) {
 
 
 bool BBoxComputer::process( NurbsCurve * nurbsCurve ) {
-  GEOM_ASSERT(nurbsCurve);
-
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(nurbsCurve);
-
-  // We first discretize the nurbs
-  nurbsCurve->apply(__discretizer);
-  ExplicitModelPtr _explicitNurbs = __discretizer.getDiscretization();
-  if (!_explicitNurbs) {
-      Discretizer d; // because of tesselator;
-      nurbsCurve->apply(d);
-      _explicitNurbs = d.getDiscretization();
-  }
-
-   // We compute the bounding box of the discretization of nurbsCurve
-  _explicitNurbs->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(nurbsCurve);
-
-  return true;
+  GEOM_BBOXCOMPUTER_DISCRETIZE_LINE(nurbsCurve);
 }
 
 
@@ -576,21 +526,8 @@ bool BBoxComputer::process( NurbsCurve * nurbsCurve ) {
 
 
 bool BBoxComputer::process( NurbsPatch * nurbsPatch ) {
-  GEOM_ASSERT(nurbsPatch);
+  GEOM_BBOXCOMPUTER_DISCRETIZE(nurbsPatch);
 
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(nurbsPatch);
-
-  // We discretize nurbsPatch
-  nurbsPatch->apply(__discretizer);
-  ExplicitModelPtr _explicitNurbs = __discretizer.getDiscretization();
-  GEOM_ASSERT(_explicitNurbs);
-
-  // We compute the bounding box of the discretization of nurbsPatch
-  _explicitNurbs->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(nurbsPatch);
-
-  return true;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -900,26 +837,7 @@ bool BBoxComputer::process( TriangleSet * triangleSet ) {
 
 
 bool BBoxComputer::process( BezierCurve2D * bezierCurve ) {
-  GEOM_ASSERT(bezierCurve);
-
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(bezierCurve);
-
-  // We discretize bezierCurve
-  bezierCurve->apply(__discretizer);
-  ExplicitModelPtr _explicitBezier = __discretizer.getDiscretization();
-  if (!_explicitBezier) {
-      Discretizer d; // because of tesselator;
-      bezierCurve->apply(d);
-      _explicitBezier = d.getDiscretization();
-  }
-  GEOM_ASSERT(_explicitBezier);
-
-  // We compute the bounding box of the discretization of bezierCurve
-  _explicitBezier->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(bezierCurve);
-
-  return true;
+  GEOM_BBOXCOMPUTER_DISCRETIZE_LINE(bezierCurve);
 }
 
 
@@ -946,25 +864,8 @@ bool BBoxComputer::process( Disc * disc ) {
 
 
 bool BBoxComputer::process( NurbsCurve2D * nurbsCurve ) {
-  GEOM_ASSERT(nurbsCurve);
+  GEOM_BBOXCOMPUTER_DISCRETIZE_LINE(nurbsCurve);
 
-  GEOM_BBOXCOMPUTER_CHECK_CACHE(nurbsCurve);
-
-  // We first discretize the nurbs
-  nurbsCurve->apply(__discretizer);
-  ExplicitModelPtr _explicitNurbs = __discretizer.getDiscretization();
-  if (!_explicitNurbs) {
-      Discretizer d; // because of tesselator;
-      nurbsCurve->apply(d);
-      _explicitNurbs = d.getDiscretization();
-  }
-
-   // We compute the bounding box of the discretization of nurbsCurve
-  _explicitNurbs->apply(*this);
-
-  GEOM_BBOXCOMPUTER_UPDATE_CACHE(nurbsCurve);
-
-  return true;
 }
 
 

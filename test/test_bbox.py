@@ -7,18 +7,19 @@ def test_bbox_object(nbtest = 5):
     b = BBoxComputer(d)
     for i in xrange(nbtest):
       for geom in create_random_objects():
-       if not isinstance(geom,Text):        
-        geom.apply(b)
+       if not isinstance(geom,Text):
+        #b.clear() # a cache pb may occur sometimes.
+        assert geom.apply(b)
         b1 = b.result
         geom.apply(d)
-        d.result.apply(b)
+        assert d.result.apply(b)
         b2 = b.result
         refv = b1.getSize()
         ref = 1
         if refv.x != 0: ref *= refv.x
         if refv.y != 0: ref *= refv.y
         if refv.z != 0: ref *= refv.z
-        dist = norm(b1.lowerLeftCorner-b2.lowerLeftCorner + b1.upperRightCorner - b2.upperRightCorner)/ref
+        dist = norm(b1.lowerLeftCorner-b2.lowerLeftCorner + b1.upperRightCorner - b2.upperRightCorner)/ref	
         if dist > 0.1 :
             Scene([geom]).save('bboxerror.bgeom')
             print b1,b2,norm(b1.getSize())

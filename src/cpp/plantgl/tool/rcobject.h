@@ -492,6 +492,10 @@ public:
   
   //@}
 
+  /// Returns unique id.
+  inline size_t uid( ) const { return (size_t)this; }
+
+
 #ifdef WITH_REFCOUNTLISTENER
   inline void setRefCountListener(RefCountListener * r) 
   {  _ref_count_listener = r;   }
