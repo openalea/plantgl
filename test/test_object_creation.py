@@ -70,8 +70,14 @@ def create_default_scene():
     return s
 
 def test_create_default_objects():
+    s = create_default_scene()
+    d = Discretizer()
+    s.apply(d)
+    
+def view_create_default_objects():
     Viewer.start()
     Viewer.display(create_default_scene())
+    Viewer.stop()
 
 if __name__ == '__main__':
     test_create_default_objects()
@@ -196,12 +202,17 @@ def create_random_scene():
         s += Shape(Translated((maxdim*2,i*maxdim,0),geom),randmaterial())
     return s
 
+def test_create_random_objects():
+    s = create_default_scene()
+    d = Discretizer()
+    s.apply(d)
     
-def test_create_random_objects(nb = 5):
+def view_create_random_objects(nb = 5):
     Viewer.start()
     for i in xrange(nb):
         Viewer.display(create_random_scene())
+    Viewer.stop()
     
 if __name__ == '__main__':
-    test_create_random_objects()
+    view_create_random_objects()
         

@@ -5,7 +5,7 @@ import os, sys
 from PyQt4 import QtGui
 
 def test_tutorial():
-    app = QtGui.QApplication(sys.argv)
+    #app = QtGui.QApplication(sys.argv)
     
     path = os.path.join( os.path.abspath(os.path.dirname(__file__)), "tutorial_standbuilder")
     image = os.path.join(path, "stand.csv.png")

@@ -1,12 +1,8 @@
 from openalea.plantgl.all import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 import sys
 
-app = QApplication([])
 
-# this test fails under buildbot
-def tst_projpershape():
+def test_projpershape():
     sc = Scene()
     s = Shape(Sphere())
     s.id = 100
@@ -25,8 +21,7 @@ def tst_projpershape():
     assert keys1 == keys2
 
 
-# this test fails under buildbot
-def tst_projpershape_nullid():
+def test_projpershape_nullid():
     s = Shape(Sphere())
     s.id = 0
     Viewer.display(s)    
@@ -36,8 +31,7 @@ def tst_projpershape_nullid():
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
     
-# this test fails under buildbot
-def tst_projpershape_bigid():
+def test_projpershape_bigid():
     s = Shape(Sphere())
     s.id = 0x0f0f0f0f
     Viewer.display(s)    
@@ -47,8 +41,7 @@ def tst_projpershape_bigid():
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
 
-# this test fails under buildbot
-def tst_projpershape_2bigid():
+def test_projpershape_2bigid():
     sc = Scene()
     s = Shape(Translated(-2,0,0.5,Sphere()))
     s.id = 0x0f0f0f0f
@@ -75,9 +68,9 @@ def tst_projpershape_2bigid():
     assert keys1 == keys2
     
 if __name__ == '__main__':
-    tst_projpershape()
-    tst_projpershape_nullid()
-    tst_projpershape_bigid()
-    tst_projpershape_2bigid()
+    test_projpershape()
+    test_projpershape_nullid()
+    test_projpershape_bigid()
+    test_projpershape_2bigid()
     
     sys.exit(app.exec_())

@@ -724,6 +724,7 @@ void  Viewer::customEvent(QEvent *e){
 	  setGeometry(k->arg1,k->arg2,k->arg3,k->arg4);
 	  break;
 	}
+	QApplication::processEvents();
   }
   else if(e->type() == ViewEvent::eFileSelection){
     ViewFileSelEvent * k = ( ViewFileSelEvent * )e;
