@@ -29,64 +29,32 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/scenegraph/geometry/geometry.h>
 
-#include <plantgl/math/util_vector.h>
-
-#include <plantgl/scenegraph/geometry/parametricmodel.h>
-#include <plantgl/scenegraph/geometry/sor.h>
 #include <plantgl/scenegraph/geometry/cylinder.h>
-#include <plantgl/scenegraph/geometry/frustum.h>
-#include <plantgl/scenegraph/geometry/paraboloid.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
-using namespace std;
+
+#define bp boost::python
 
 DEF_POINTEE(Cylinder)
-DEF_POINTEE(Frustum)
-DEF_POINTEE(Paraboloid)
 
 
 
 void export_Cylinder()
 {
   class_< Cylinder, CylinderPtr, bases< Cone > , boost::noncopyable >
-    ("Cylinder", "A cylinder structure defined by a radius and a height.\n Its base is centered at origin.", init< optional<const real_t&,const real_t&,bool,uchar_t> >
-                   (args("radius","height","solid","slices"),
-		    "Cylinder(radius, height [, solid, slices])" ));
+    ("Cylinder", "A cylinder structure defined by a radius and a height.\n Its base is centered at origin.", 
+	             init< optional<const real_t&,const real_t&,bool,uchar_t> >
+                 ("Cylinder([radius, height, solid, slices])",
+				 (bp::arg("radius")=Cylinder::DEFAULT_RADIUS,
+				  bp::arg("height")=Cylinder::DEFAULT_HEIGHT,
+				  bp::arg("solid")=Cylinder::DEFAULT_SOLID,
+				  bp::arg("slices")=Cylinder::DEFAULT_SLICES)));
 
   implicitly_convertible<CylinderPtr, ConePtr >();
 }
 
-void export_Frustum()
-{
-  class_< Frustum, FrustumPtr, bases< Cone > , boost::noncopyable >
-    ("Frustum", "A frustum structure defined by a base radius, a height and a taper factor.\n Its base is centered at origin.", init< optional<const real_t&,const real_t&,const real_t&, bool,uchar_t> >
-                   (args("radius","height","taper","solid","slices"),
-		    "Frustum(radius, height, taper [, solid, slices])" ))
-  .DEC_BT_PROPERTY_WDV(taper,Frustum,Taper,real_t,DEFAULT_TAPER)
-      ;
-
-  implicitly_convertible<FrustumPtr, ConePtr >();
-}
-
-void export_Paraboloid()
-{
-  class_< Paraboloid, ParaboloidPtr, bases< Cone > , boost::noncopyable >
-    ("Paraboloid", "A paraboloid structure defined by a base radius, a height and a shape factor.\n Its base is centered at origin.",
-     init< optional< const real_t&, const real_t&, const real_t&, 
-     bool, uchar_t, uchar_t> >
-     (args("radius","height","shape","solid","slices","stacks"),
-      "Paraboloid([radius, height, shape , solid, slices, stacks])" ))
-  .DEC_BT_PROPERTY_WDV(stacks,Paraboloid,Stacks,uchar_t,DEFAULT_STACKS)
-  .DEC_BT_PROPERTY_WDV(shape,Paraboloid,Shape,real_t,DEFAULT_SHAPE)
-    ;
-
-  implicitly_convertible<ParaboloidPtr, ConePtr >();
-
-}

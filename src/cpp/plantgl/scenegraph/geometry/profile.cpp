@@ -53,26 +53,12 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-
-ProfileTransformation::ProfileTransformation():
-    __scalingList(DEFAULT_SCALE_LIST),
-    __orientationList(DEFAULT_ORIENTATION_LIST),
-    __knotList(){
-}
-
 ProfileTransformation::ProfileTransformation(Point2ArrayPtr _scalingList,
                                              RealArrayPtr _orientationList,
                                              RealArrayPtr _knotList ):
     __scalingList(_scalingList),
     __orientationList(_orientationList),
     __knotList(_knotList){
-}
-
-ProfileTransformation::ProfileTransformation(Point2ArrayPtr _scalingList,
-                                             RealArrayPtr _orientationList):
-    __scalingList(_scalingList),
-    __orientationList(_orientationList),
-    __knotList(){
 }
 
 ProfileTransformation::~ProfileTransformation(){}

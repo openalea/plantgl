@@ -39,6 +39,13 @@ ostream& print_arg_field(ostream& os, const T& value)
 	return os << endl;
 }
 
+template <typename T>
+ostream& print_field(ostream& os, string name, string str, const T& value, bool in_constructor)
+{
+	if (in_constructor) return print_arg_field(os,str,value);
+	else return print_field(os,name, str,value);
+}
+
 inline ostream& print_value(ostream& os, const bool& value)
 {
 	return os << (value ? "True" : "False");
@@ -344,55 +351,33 @@ bool PyPrinter::process(Shape * shape)
 
 /* ----------------------------------------------------------------------- */
 
+#define PYPRINT_ARG(stream,obj, name, pyattribute, cattribute,in_constructor) \
+  if (! obj->is##cattribute##ToDefault()){ \
+	print_field (stream, name, #pyattribute, obj->get##cattribute(),in_constructor); \
+  } \
+  else if (in_constructor) { \
+	print_cons_end (stream, obj, name); \
+	in_constructor = false; \
+  } \
+
 
 bool PyPrinter::process( Material * material ) {
   GEOM_ASSERT(material);
   
   string name = compute_name(material);
-  int construtor_args = 0; // nb of arguments printed in construtor
+  bool in_constructor = true; // tell if the constructor of the object is still described.
 
   print_cons_begin(__matStream, name, "Material");
-  if (! material->isAmbientToDefault())
-  {
-	print_arg_field (__matStream, "ambient", material->getAmbient());
-        construtor_args++;
-	if (! material->isDiffuseToDefault())
-	{
-		print_arg_field (__matStream, "diffuse", material->getDiffuse());
-	        construtor_args++;
-		if (! material->isSpecularToDefault())
-		{
-			print_arg_field (__matStream, "specular", material->getSpecular());
-		        construtor_args++;
-			if (! material->isEmissionToDefault())
-			{
-				print_arg_field (__matStream, "emission", material->getEmission());
-			        construtor_args++;
-				if (! material->isShininessToDefault())
-				{
-					print_arg_field (__matStream, "shininess", material->getShininess());
-				        construtor_args++;
-					if (! material->isTransparencyToDefault()){
-						print_arg_field (__matStream, "transparency", material->getTransparency());
-					        construtor_args++;
-					}
-				}
-			}
-		} 
-	}
-  }  print_cons_end (__matStream, material, name);
-  
-  if (! material->isDiffuseToDefault() && construtor_args < 2)
-		print_field (__matStream, name, "diffuse", material->getDiffuse());
-  if (! material->isSpecularToDefault() && construtor_args < 3)
-		print_field (__matStream, name, "specular", material->getSpecular());
-  if (! material->isEmissionToDefault() && construtor_args < 4)
-		print_field (__matStream, name, "emission", material->getEmission());
-  if (! material->isShininessToDefault() && construtor_args < 5)
-		print_field (__matStream, name, "shininess", material->getShininess());
-  if (! material->isTransparencyToDefault() && construtor_args < 6)
-		print_field (__matStream, name, "transparency", material->getTransparency());
 
+  PYPRINT_ARG(__matStream, material, name, ambient,  Ambient,  in_constructor)
+  PYPRINT_ARG(__matStream, material, name, diffuse,  Diffuse,  in_constructor)
+  PYPRINT_ARG(__matStream, material, name, specular, Specular, in_constructor)
+  PYPRINT_ARG(__matStream, material, name, emission, Emission, in_constructor)
+  PYPRINT_ARG(__matStream, material, name, shininess, Shininess, in_constructor)
+  PYPRINT_ARG(__matStream, material, name, transparency, Transparency, in_constructor)
+
+  if (in_constructor) print_cons_end (__matStream, material, name);
+  
   print_end(__matStream);
   return true;
 }

@@ -96,17 +96,10 @@ class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
   /// The Default OrientationList Field Value.
   static const TOOLS(RealArrayPtr) DEFAULT_ORIENTATION_LIST;
 
-    /// Constructs a ProfileScaling with default value.
-    ProfileTransformation();
-
     /// Constructs a ProfileScaling.
-    ProfileTransformation(Point2ArrayPtr _scalingList,
-                          TOOLS(RealArrayPtr) _orientationList,
-                          TOOLS(RealArrayPtr) _knotList );
-
-    /// Constructs a ProfileScaling.
-    ProfileTransformation(Point2ArrayPtr _scalingList,
-                          TOOLS(RealArrayPtr) _orientationList);
+    ProfileTransformation(Point2ArrayPtr _scalingList = DEFAULT_SCALE_LIST,
+                          TOOLS(RealArrayPtr) _orientationList = DEFAULT_ORIENTATION_LIST,
+                          TOOLS(RealArrayPtr) _knotList =  TOOLS(RealArrayPtr(0)));
 
     /// Destructor
     virtual ~ProfileTransformation( ) ;

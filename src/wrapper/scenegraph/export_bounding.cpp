@@ -48,6 +48,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
+#define bp boost::python
 
 DEF_POINTEE(BoundingBox)
 
@@ -90,9 +91,10 @@ void export_BoundingBox()
 {
   class_< BoundingBox, BoundingBoxPtr /*, boost::noncopyable*/ >
     ("BoundingBox", "An axis aligned box represented by 2 opposite corners.", init< optional < const Vector3&, const Vector3& > > 
-     ( args("lowerLeft","upperRight"),
-	 "BoundingBox(Vector3 lowerLeft, Vector3 upperRight) " 
-       "Constructs a BoundingBox with the 2 opposing corners lowerLeft and upperRight.") )
+     ( "BoundingBox(Vector3 lowerLeft, Vector3 upperRight) " 
+       "Constructs a BoundingBox with the 2 opposing corners lowerLeft and upperRight.",
+	   (bp::arg("lowerLeft")= TOOLS(Vector3::ORIGIN),bp::arg("upperRight")=TOOLS(Vector3::ORIGIN))
+	   ) )
     .def( "__init__", make_constructor( bbx_fromobj ), "BoundingBox(geometry|scene) Constructs a BoundingBox from some geometries.") 
 	.DEC_CT_PROPERTY(lowerLeftCorner,BoundingBox,LowerLeftCorner,Vector3)
 	.DEC_CT_PROPERTY(upperRightCorner,BoundingBox,UpperRightCorner,Vector3)

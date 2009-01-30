@@ -46,22 +46,30 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
+#define bp boost::python
 
 DEF_POINTEE( Extrusion )
 
 void export_Extrusion()
 {
   class_<Extrusion, ExtrusionPtr, bases<ParametricModel>, boost::noncopyable>
-	( "Extrusion", "An Extrusion represented by an axis, a cross section and a tranformation function.", init<LineicModelPtr,Curve2DPtr,optional<Point2ArrayPtr> >
-	 ( "Extrusion (LineicModel, Curve2D,[Point2Array([])])"))
+	( "Extrusion", "An Extrusion represented by an axis, a cross section and a tranformation function.", 
+	  init<LineicModelPtr,Curve2DPtr,optional<Point2ArrayPtr, RealArrayPtr, RealArrayPtr,bool,bool> >
+	 ( "Extrusion (LineicModel axis, Curve2D crossSection,[Point2Array scale, RealArray orientation, RealArray knotList, bool solid, bool ccw])",
+	 (bp::arg("axis"),bp::arg("crossSection"),
+	  bp::arg("scaleList")=Extrusion::DEFAULT_SCALE_LIST,
+	  bp::arg("orientationList")=Extrusion::DEFAULT_ORIENTATION_LIST,
+	  bp::arg("knotList")=RealArrayPtr(),
+	  bp::arg("solid")=Extrusion::DEFAULT_SOLID,
+	  bp::arg("ccw")=Extrusion::DEFAULT_CCW)))
     .def( "copy", &Extrusion::copy )
 	.DEC_PTR_PROPERTY(axis,Extrusion,Axis,LineicModelPtr)
 	.DEC_PTR_PROPERTY(crossSection,Extrusion,CrossSection,Curve2DPtr)
 	.DEC_BT_NR_PROPERTY_WDV(solid,Extrusion,Solid,bool,DEFAULT_SOLID)
 	.DEC_BT_NR_PROPERTY_WDV(ccw, Extrusion,CCW,bool,DEFAULT_CCW)
 
-	.DEC_PTR_PROPERTY_WDV(scale,Extrusion,Scale,Point2ArrayPtr,DEFAULT_SCALE_LIST)
-	.DEC_PTR_PROPERTY_WDV(orientation,Extrusion,Orientation,RealArrayPtr,DEFAULT_ORIENTATION_LIST)
+	.DEC_PTR_PROPERTY_WDV(scaleList,Extrusion,Scale,Point2ArrayPtr,DEFAULT_SCALE_LIST)
+	.DEC_PTR_PROPERTY_WDV(orientationList,Extrusion,Orientation,RealArrayPtr,DEFAULT_ORIENTATION_LIST)
 	.DEC_PTR_NR_PROPERTY(knotList,Extrusion,KnotList,RealArrayPtr)
     ;
   implicitly_convertible<ExtrusionPtr, ParametricModelPtr>();

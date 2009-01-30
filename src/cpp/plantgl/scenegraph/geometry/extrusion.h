@@ -157,17 +157,17 @@ class SG_API Extrusion : public ParametricModel
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
-	    const TOOLS(RealArrayPtr)& _knot,
 	    const Point2ArrayPtr& _scale,
 	    const TOOLS(RealArrayPtr)& _orientation = DEFAULT_ORIENTATION_LIST,
+	    const TOOLS(RealArrayPtr)& _knot = TOOLS(RealArrayPtr(0)),
 	    const bool _solid = DEFAULT_SOLID,
 	    const bool _ccw = DEFAULT_CCW);
     
-  /// Constructor
+   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
+	    const TOOLS(RealArrayPtr)& _knot,
 	    const Point2ArrayPtr& _scale,
-	    const TOOLS(RealArrayPtr)& _orientation = DEFAULT_ORIENTATION_LIST,
 	    const bool _solid = DEFAULT_SOLID,
 	    const bool _ccw = DEFAULT_CCW);
     
@@ -175,16 +175,9 @@ class SG_API Extrusion : public ParametricModel
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
 	    const TOOLS(RealArrayPtr)& _orientation,
+	    const TOOLS(RealArrayPtr)& _knot = TOOLS(RealArrayPtr(0)),
 	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW);
-    
-  /// Constructor
-  Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const TOOLS(RealArrayPtr)& _knot,
-	    const TOOLS(RealArrayPtr)& _orientation,
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW);
+	    const bool _ccw = DEFAULT_CCW); 
     
   /// Destructor
   virtual ~Extrusion();

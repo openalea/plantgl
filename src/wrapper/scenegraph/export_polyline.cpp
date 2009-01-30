@@ -43,6 +43,7 @@
 #include <sstream>
 
 using namespace boost::python;
+#define bp boost::python
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -149,7 +150,7 @@ void export_Polyline2D()
     .def( "getNormalAt", &Polyline2D::getNormalAt, args("u") )
     .def( "split", &py_poly_plit<Polyline2D>, arg("u") )
 	.DEC_PTR_PROPERTY(pointList,Polyline2D,PointList,Point2ArrayPtr)
-    .def("Circle",&Polyline2D::Circle,args("radius","slices"))
+	.def("Circle",&Polyline2D::Circle,(bp::arg("radius")=Disc::DEFAULT_RADIUS,bp::arg("slices")=SOR::DEFAULT_SLICES))
     .staticmethod("Circle")
     ;
   implicitly_convertible<Polyline2DPtr, Curve2DPtr>();

@@ -200,6 +200,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_cone.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_cylinder.cpp"
 				>
 			</File>
@@ -213,6 +217,10 @@
 			</File>
 			<File
 				RelativePath=".\export_factory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_frustum.cpp"
 				>
 			</File>
 			<File
@@ -256,6 +264,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_paraboloid.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_patch.cpp"
 				>
 			</File>
@@ -276,6 +288,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_quadset.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_revolution.cpp"
 				>
 			</File>
@@ -285,6 +301,14 @@
 			</File>
 			<File
 				RelativePath=".\export_shape.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_sor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_sphere.cpp"
 				>
 			</File>
 			<File

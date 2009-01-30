@@ -77,7 +77,7 @@ void export_Box()
     ("Box", 
 	"The Box describes a rectangular axis-aligned box centered at origin and whose extension "
 	"along the x, y and z-axis is specified with the size vector.",
-	init< optional<const Vector3&> >("Box(Vector3(x,y,z))",args("size")) )
+	init< optional<const Vector3&> >("Box(Vector3(x,y,z))",(boost::python::arg("size")=Box::DEFAULT_SIZE)) )
     .def( "__init__", make_constructor( box_from_val ) ) 
     .def( "__init__", make_constructor( box_from_val1 ) ) 
     .DEC_CT_PROPERTY_WDV(size,Box,Size,Vector3,DEFAULT_SIZE)

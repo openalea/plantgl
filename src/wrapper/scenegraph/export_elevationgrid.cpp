@@ -34,16 +34,11 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <plantgl/python/exception.h>
-#include <boost/python/make_constructor.hpp>
-
-#include <string>
-#include <sstream>
 
 using namespace boost::python;
+#define bp boost::python
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 DEF_POINTEE(ElevationGrid)
 
@@ -55,7 +50,11 @@ void export_ElevationGrid()
 {
   class_< ElevationGrid, ElevationGridPtr, bases< Patch >,boost::noncopyable >
     ("ElevationGrid","A regular grid of elevations.",init<RealArray2Ptr, optional<real_t,real_t,bool> >
-     ("ElevationGrid(heightList [,xspacing,yspacing,ccw])",args("heightList","xspacing","yspacing","ccw")))
+     ("ElevationGrid(heightList [,xspacing,yspacing,ccw])",
+	 (bp::arg("heightList"),
+	 bp::arg("xspacing")=ElevationGrid::DEFAULT_X_SPACING,
+	  bp::arg("yspacing")=ElevationGrid::DEFAULT_Y_SPACING,
+	  bp::arg("ccw")=ElevationGrid::DEFAULT_CCW)))
     .def( "copy", &ElevationGrid::copy )
     .def( "getPointAt", &ElevationGrid::getPointAt )
     .def( "getHeightAt", &eg_getHeightAt )

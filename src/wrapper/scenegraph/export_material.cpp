@@ -43,6 +43,8 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+#define bp boost::python
+
 DEF_POINTEE(Material)
 DEF_POINTEE(ImageTexture)
 
@@ -81,24 +83,26 @@ void export_Material()
 	   "The material of an object. It determine the way light reflect off an object to create color.", 
 	   init< const Material & >())
     .def(init< optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
-	 (args("ambient","diffuse","specular","emission","shininess","transparency"),
-	  "Material( ambient=Color3(160,160,160),"
-	  "diffuse=1,"
-	  "specular=Color3(40,40,40),"
-	  "emission=Color3(0,0,0),"
-	  "shininess=1,"
-	  "transparency=0)"))
+	 ("Material( ambient=(160,160,160),diffuse=1,specular=(40,40,40),emission=(0,0,0),shininess=1,transparency=0)",
+	 (bp::arg("ambient")=Material::DEFAULT_AMBIENT,
+	  bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
+	  bp::arg("specular")=Material::DEFAULT_SPECULAR,
+	  bp::arg("emission")=Material::DEFAULT_EMISSION,
+	  bp::arg("shininess")=Material::DEFAULT_SHININESS,
+	  bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
+	  ))
     .def(init< const string&, 
 	 optional< const Color3&, const real_t&, 
 	           const Color3&, const Color3&, const real_t&, const real_t&> >
-	 (args("name","ambient","diffuse","specular","emission","shininess","transparency"),
-	  "Material( name,"
-	  "ambient=Color3(160,160,160),"
-	  "diffuse=1,"
-	  "specular=Color3(40,40,40),"
-	  "emission=Color3(0,0,0),"
-	  "shininess=1,"
-	  "transparency=0)"))
+	 ("Material( name, ambient=(160,160,160), diffuse=1, specular=(40,40,40), emission=(0,0,0), shininess=1, transparency=0)",
+	 (bp::arg("name"),
+	  bp::arg("ambient")=Material::DEFAULT_AMBIENT,
+	  bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
+	  bp::arg("specular")=Material::DEFAULT_SPECULAR,
+	  bp::arg("emission")=Material::DEFAULT_EMISSION,
+	  bp::arg("shininess")=Material::DEFAULT_SHININESS,
+	  bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
+	  ))
 
   .def( "__str__", mat_str )
   .def( "__repr__", mat_str )

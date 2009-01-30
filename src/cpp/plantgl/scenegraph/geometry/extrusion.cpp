@@ -193,7 +193,7 @@ Extrusion::Extrusion( ) :
     ParametricModel(),
     __axis(),
     __crossSection(),
-    __profile(),
+    __profile(new ProfileTransformation()),
     __solid(Mesh::DEFAULT_SOLID),
     __ccw(Mesh::DEFAULT_CCW){
 }
@@ -214,7 +214,7 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
-    __profile(),
+    __profile(new ProfileTransformation()),
     __solid(_solid),
     __ccw(_ccw){
     GEOM_ASSERT(isValid());
@@ -222,9 +222,9 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,
 		       const Curve2DPtr& _crossSection, 
-		       const RealArrayPtr& _knot,
 		       const Point2ArrayPtr& _scale,
 		       const RealArrayPtr& _orientation,
+		       const RealArrayPtr& _knot,
 		       const bool _solid,
 		       const bool _ccw) :
     ParametricModel(),
@@ -238,37 +238,24 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,
 		       const Curve2DPtr& _crossSection, 
+		       const RealArrayPtr& _knot,
 		       const Point2ArrayPtr& _scale,
-		       const RealArrayPtr& _orientation,
 		       const bool _solid,
 		       const bool _ccw) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
-    __profile(new ProfileTransformation(_scale,_orientation)),
+    __profile(new ProfileTransformation(_scale,DEFAULT_ORIENTATION_LIST,_knot)),
     __solid(_solid),
     __ccw(_ccw){
     GEOM_ASSERT(isValid());
 }
+
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,
 		       const Curve2DPtr& _crossSection, 
 		       const RealArrayPtr& _orientation,
-		       const bool _solid ,
-		       const bool _ccw) :
-    ParametricModel(),
-    __axis(_axis),
-    __crossSection(_crossSection),
-    __profile(new ProfileTransformation(ProfileTransformation::DEFAULT_SCALE_LIST,_orientation)),
-    __solid(_solid),
-    __ccw(_ccw){
-    GEOM_ASSERT(isValid());
-}
-
-Extrusion::Extrusion(const LineicModelPtr& _axis,
-		       const Curve2DPtr& _crossSection, 
 		       const RealArrayPtr& _knot,
-		       const RealArrayPtr& _orientation,
 		       const bool _solid,
 		       const bool _ccw) :
     ParametricModel(),
@@ -279,6 +266,7 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,
     __ccw(_ccw){
     GEOM_ASSERT(isValid());
 }
+
 
 Extrusion::~Extrusion(){
 }

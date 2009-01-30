@@ -37,6 +37,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
+#define bp boost::python
 
 #define EXPORT(PREFIX,TYPE,CHANNEL) \
 int PREFIX##_get##CHANNEL( TYPE* v ) \
@@ -109,10 +110,11 @@ struct col4_pickle_suite : boost::python::pickle_suite
 
 void export_Color3()
 {
-  class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >())
-    .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",args("red","green","blue")))
-    .def(init< optional< unsigned char > >())
-    .def(init< const Color4& >())
+	class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >(args("other")))
+    .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",
+	(bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0)))
+	.def(init< optional< unsigned char > >(bp::arg("value")=0))
+    .def(init< const Color4& >(args("other")))
     .def( self == self )
     .def( self != self )
     .add_property( "red", col3_getRed, col3_setRed )
@@ -145,10 +147,11 @@ void export_Color3()
 
 void export_Color4()
 {
-  class_< Color4 >("Color4", "A 4 component color expressed in red, green, blue and alpha.", init< const Color4 & >())
-    .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",args("red","green","blue","alpha")))
-    .def(init< optional< unsigned char > >())
-    .def(init< const Color3&, optional< unsigned char > >())
+  class_< Color4 >("Color4", "A 4 component color expressed in red, green, blue and alpha.", init< const Color4 & >(args("other")))
+	 .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",
+	                                     (bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0,bp::arg("alpha")=0)))
+	 .def(init< optional< unsigned char > >(bp::arg("value")=0))
+	 .def(init< const Color3&, optional< unsigned char > >((bp::arg("other")=0,bp::arg("alpha")=0)))
     .def( self == self )
     .def( self != self )
     .add_property( "red", col4_getRed, col4_setRed )
