@@ -70,8 +70,6 @@ void module_sg()
 
     export_Geometry();
     export_Primitive();
-    export_Group();
-    export_Transformed();
 
     export_ExplicitModel();
     export_LineicModel();
@@ -124,6 +122,9 @@ void module_sg()
     export_QuadSet();
     export_FaceSet();
     export_AmapSymbol();
+
+    export_Group();
+    export_Transformed();
 
 	export_Transformation();
     export_Taper();

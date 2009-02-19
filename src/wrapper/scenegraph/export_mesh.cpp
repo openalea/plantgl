@@ -57,8 +57,6 @@ void export_ExplicitModel()
 
 }
 
-PolylinePtr getdefaultskeleton() { return Mesh::DEFAULT_SKELETON; }
-
 void export_Mesh()
 {
   class_<Mesh, MeshPtr, bases<ExplicitModel>, boost::noncopyable>( "Mesh", "Abstract base class for objects of type of mesh.", no_init )
@@ -67,10 +65,9 @@ void export_Mesh()
 	  .DEC_BT_NR_PROPERTY_WDV(ccw,              Mesh, CCW,             bool,  DEFAULT_CCW)
 	  .DEC_BT_NR_PROPERTY_WDV(normalPerVertex,  Mesh, NormalPerVertex, bool,  DEFAULT_NORMALPERVERTEX)
 	  .DEC_BT_NR_PROPERTY_WDV(colorPerVertex,   Mesh, ColorPerVertex,  bool,  DEFAULT_COLORPERVERTEX)
-	  .DEC_PTR_PROPERTY_WD(skeleton,        Mesh, Skeleton,        PolylinePtr)
+	  .DEC_PTR_PROPERTY_WDV(skeleton,        Mesh, Skeleton,        PolylinePtr, DEFAULT_SKELETON)
 	  .DEC_PTR_PROPERTY_WD(normalList,      Mesh, NormalList,      Point3ArrayPtr)
 	  .DEC_PTR_PROPERTY_WD(texCoordList,    Mesh, TexCoordList,    Point2ArrayPtr)
-	  .add_static_property("DEFAULT_SKELETON",&getdefaultskeleton)
 	  .def("computeNormalList",  (void (Mesh::*)())&Mesh::computeNormalList)
 	  .def( "pointAt",    (const Vector3& (Mesh::*)(uint_t) const)&Mesh::getPointAt,    return_value_policy<copy_const_reference>() )
 	  .def( "pointAt",    (const Vector3& (Mesh::*)(uint_t,uint_t) const)&Mesh::getFacePointAt,    return_value_policy<copy_const_reference>() )

@@ -62,6 +62,9 @@ void set_prop_ptr_from_class(T * obj, U val){  (obj->*func)() = val; }
 template <class T, real_t& (T::* func)() >
 void set_prop_ang_from_class(T * obj, real_t val){  (obj->*func)() = (real_t) fmod((double)val,(double)2 * GEOM_PI); }
 
+template <class T, const T * static_property> 
+T retrieve_static_ptr_property() { return *static_property; }
+
 /* --------------------
   Type of the element :
    _BT : Basic Type : real_t, int, uint_t, ...
@@ -76,6 +79,12 @@ void set_prop_ang_from_class(T * obj, real_t val){  (obj->*func)() = (real_t) fm
 
 #define DEC_DEFAULTVAL(_CLASS,DEFAULTVAL) \
    .add_static_property(#DEFAULTVAL,make_getter(&_CLASS::DEFAULTVAL))
+
+/* In case of Null SmartPtr, make_getter do not translate correctly the value.
+   We thus create the wrapping function 'retrieve_static_ptr_property' 
+   to get the static value which will be translate correctly as normal function result */
+#define DEC_DEFAULTVAL_PTR(_CLASS,DEFAULTVAL,TYPE) \
+   .add_static_property(#DEFAULTVAL,&retrieve_static_ptr_property<TYPE,&_CLASS::DEFAULTVAL>)
 
 #define DEC_BT_PROPERTY(PROPNAME,_CLASS,PROP,TYPE) \
     add_property(#PROPNAME,&get_prop_bt_from_class<TYPE,_CLASS,&_CLASS::get##PROP>, \
@@ -165,7 +174,7 @@ void set_prop_ang_from_class(T * obj, real_t val){  (obj->*func)() = (real_t) fm
 #define DEC_PTR_PROPERTY_WDV(PROPNAME,_CLASS,PROP,TYPE,DEFAULTVAL) \
   DEC_PTR_PROPERTY(PROPNAME,_CLASS,PROP,TYPE) \
   DEC_DEFAULTVALTEST(_CLASS,PROP) \
-  DEC_DEFAULTVAL(_CLASS,DEFAULTVAL)
+  DEC_DEFAULTVAL_PTR(_CLASS,DEFAULTVAL,TYPE)
  
 #define DEC_PTR_NR_PROPERTY_WD(PROPNAME,_CLASS,PROP,TYPE) \
   DEC_PTR_NR_PROPERTY(PROPNAME,_CLASS,PROP,TYPE) \
@@ -174,7 +183,7 @@ void set_prop_ang_from_class(T * obj, real_t val){  (obj->*func)() = (real_t) fm
 #define DEC_PTR_NR_PROPERTY_WDV(PROPNAME,_CLASS,PROP,TYPE,DEFAULTVAL) \
   DEC_PTR_NR_PROPERTY(PROPNAME,_CLASS,PROP,TYPE) \
   DEC_DEFAULTVALTEST(_CLASS,PROP)\
-  DEC_DEFAULTVAL(_CLASS,DEFAULTVAL)
+  DEC_DEFAULTVAL_PTR(_CLASS,DEFAULTVAL,TYPE)
  
 
 #endif
