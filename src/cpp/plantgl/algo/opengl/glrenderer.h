@@ -263,6 +263,9 @@ public:
   void update(uint_t id, GLuint displaylist);
   const AppearancePtr& getAppearanceCache() const { return __appearance; }
 
+  void registerTexture(ImageTexture * texture, GLuint id, bool erasePreviousIfExists = true);
+  GLuint getTextureId(ImageTexture * texture);
+
 protected:
 
   /// A cache used to store display list.

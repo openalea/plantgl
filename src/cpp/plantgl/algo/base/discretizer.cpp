@@ -516,7 +516,7 @@ bool Discretizer::process( Box * box ) {
 
   Point3ArrayPtr _pointList(new Point3Array(8));
   Index4ArrayPtr _indexList(new Index4Array(6));
-  Point3ArrayPtr _normalList(new Point3Array(6));
+  // Point3ArrayPtr _normalList(new Point3Array(6));
 
   _pointList->setAt(0,Vector3( _size.x(),-_size.y(),-_size.z()));
   _pointList->setAt(1,Vector3(-_size.x(),-_size.y(),-_size.z()));
@@ -534,16 +534,30 @@ bool Discretizer::process( Box * box ) {
   _indexList->setAt(4,Index4(3,2,6,7));
   _indexList->setAt(5,Index4(4,7,6,5));
 
-
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,-_size.z()),
                                      Vector3(0,0,_size.z())));
 
-  __discretization = ExplicitModelPtr(new QuadSet(_pointList,
-                                                  _indexList,
-												  false,
-                                                  true, // CCW
-                                                  true, // solid
-                                                  _skeleton));
+  QuadSet * qs = new QuadSet(_pointList,
+                             _indexList,
+							 false,
+                             true, // CCW
+                             true, // solid
+                             _skeleton);
+
+  if(__computeTexCoord) {
+	  Point2ArrayPtr _texCoordList = Point2ArrayPtr(new Point2Array(8));
+	  _texCoordList->setAt(0,Vector2(1, 0));
+      _texCoordList->setAt(1,Vector2(0, 0));
+      _texCoordList->setAt(2,Vector2(0, 1));
+      _texCoordList->setAt(3,Vector2(1, 1));
+	  qs->getTexCoordList() = _texCoordList;
+	  Index4ArrayPtr _indexCoordList(new Index4Array(6));
+	  for(int i = 0 ; i < 6; ++i)
+		_indexCoordList->setAt(i,Index4(0,1,2,3));
+	  qs->getTexCoordIndexList() = _indexCoordList;
+  }
+
+  __discretization = ExplicitModelPtr(qs);
 
   GEOM_DISCRETIZER_UPDATE_CACHE(box);
   return true;

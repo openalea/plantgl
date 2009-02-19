@@ -37,12 +37,15 @@
 #include <plantgl/algo/base/bboxcomputer.h>
 #include <plantgl/algo/opengl/glbboxrenderer.h>
 #include <plantgl/algo/opengl/glctrlptrenderer.h>
+#include <plantgl/scenegraph/appearance/texture.h>
+
 #include <qgl.h>
 
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
+#define bp boost::python
 
 /* ----------------------------------------------------------------------- */
 
@@ -70,6 +73,8 @@ void export_GLRenderer()
 	// .add_property("frameGL",&get_fgl_mode,&GLRenderer::setGLFrame)
 	 .def("getDiscretizer",&GLRenderer::getDiscretizer, return_internal_reference<>())
 	 .def("setGLFrameFromId",&GLRenderer::setGLFrameFromId)
+	 .def("registerTexture",&GLRenderer::registerTexture, (bp::arg("texture"),bp::arg("id"),bp::arg("erasePreviousIfExists")=true))
+	 .def("getTextureId",&GLRenderer::getTextureId)
     ;
 
   enum_<GLRenderer::RenderingMode>("RenderingMode")

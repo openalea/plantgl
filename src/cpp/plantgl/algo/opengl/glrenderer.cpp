@@ -238,6 +238,27 @@ void GLRenderer::update(uint_t id, GLuint displaylist){
   }
 }
 
+void GLRenderer::registerTexture(ImageTexture * texture, GLuint id, bool erasePreviousIfExists)
+{ 
+  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
+  if(it != __cachetexture.end()){
+    GLuint oldid = it->second;
+	if(erasePreviousIfExists)glDeleteTextures(1,&(it->second));
+	it->second = id;
+  }
+  else {
+	  __cachetexture.insert(texture->getId(),id);
+  }
+}
+
+
+GLuint GLRenderer::getTextureId(ImageTexture * texture)
+{
+  Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
+  if(it != __cachetexture.end()) return it->second;
+  else return 0;
+}
+
 /* ----------------------------------------------------------------------- */
 void
 GLRenderer::setRenderingMode(RenderingMode mode)
@@ -915,6 +936,7 @@ bool GLRenderer::process( ImageTexture * texture ) {
 
   Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
   if(it != __cachetexture.end()){
+	//  printf("bind texture : %i\n", it->second);
     glEnable( GL_TEXTURE_2D );
     glBindTexture(GL_TEXTURE_2D, it->second);
   }
@@ -954,7 +976,8 @@ bool GLRenderer::process( ImageTexture * texture ) {
 	    gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
 		                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
       }
-
+	  // printf("gen texture : %i\n",id);
+	  // registerTexture(texture,id);
   	  __cachetexture.insert(texture->getId(),id);
 
 	  }
