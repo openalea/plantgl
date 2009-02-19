@@ -55,4 +55,5 @@ how to use VPlants.Plantgl see :ref:`PlantGL_user`.
     openalea_plantgl_wralea_objects_objectgenerator_ref.rst
     openalea_plantgl_wralea_operator_frog_ref.rst
     openalea_plantgl_wralea_visualization_viewernode_ref.rst
-    openalea_versionreader_ref.rst
+    openalea_plantgl__pglsg.rst
+    openalea_plantgl__pglmath.rst
