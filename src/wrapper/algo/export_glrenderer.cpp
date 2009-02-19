@@ -104,11 +104,14 @@ void export_GLBBoxRenderer()
 	;
 }
 
+AppearancePtr get_default_app() { return GLCtrlPointRenderer::DEFAULT_APPEARANCE; }
+void set_default_app(AppearancePtr p) { GLCtrlPointRenderer::DEFAULT_APPEARANCE = p; }
+
 void export_GLCtrlPointRenderer()
 {
 	class_< GLCtrlPointRenderer,bases< GLRenderer >,boost::noncopyable >
     ( "GLCtrlPointRenderer", init<Discretizer& >("GLCtrlPointRenderer(Discretizer d) An action which display the Control Points of Geometry objects."))
-	.add_static_property("DEFAULT_APPEARANCE",make_getter(GLCtrlPointRenderer::DEFAULT_APPEARANCE),make_setter(GLCtrlPointRenderer::DEFAULT_APPEARANCE))
+	.add_static_property("DEFAULT_APPEARANCE",&get_default_app,&set_default_app)
 	;
 }
 
