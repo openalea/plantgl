@@ -60,7 +60,7 @@ import ipython_console_highlighting
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'sphinx.ext.autodoc', 
+    'autodoc',
     'sphinx.ext.doctest', 
     'sphinx.ext.intersphinx',
     'inheritance_diagram', 
@@ -70,7 +70,7 @@ extensions = [
     'phantom_import', 
     'autosummary',
     'sphinx.ext.coverage',
-    'only_directives'
+    'only_directives',
     ]
 
 todo_include_todos =True

@@ -26,11 +26,8 @@ how to use VPlants.Plantgl see :ref:`PlantGL_user`.
 .. toctree::
     :maxdepth: 1
             
-    openalea_pgl_postinstall_ref.rst
     openalea_plantgl_algo_mesh_grid_shape_ref.rst
     openalea_plantgl_algo_mesh_refine_ref.rst
-    openalea_plantgl_codec_asc_ref.rst
-    openalea_plantgl_codec_gts_ref.rst
     openalea_plantgl_ext_absolute_shapes_ref.rst
     openalea_plantgl_ext_color_ref.rst
     openalea_plantgl_ext_dresser_ref.rst
@@ -55,5 +52,7 @@ how to use VPlants.Plantgl see :ref:`PlantGL_user`.
     openalea_plantgl_wralea_objects_objectgenerator_ref.rst
     openalea_plantgl_wralea_operator_frog_ref.rst
     openalea_plantgl_wralea_visualization_viewernode_ref.rst
-    openalea_plantgl__pglsg.rst
-    openalea_plantgl__pglmath.rst
+    openalea_plantgl_scenegraph__pglsg.rst
+    openalea_plantgl_algo__pglalgo.rst
+    openalea_plantgl_math__pglmath.rst
+    openalea_plantgl_gui__pglgui.rst

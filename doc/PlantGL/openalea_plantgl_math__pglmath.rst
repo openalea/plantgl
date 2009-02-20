@@ -1,5 +1,8 @@
-Shared librairies PGLmath
--------------------------
+.. module:: math.pglmath
+    :synopsis: c++ math library
+
+PGLmath shared library
+----------------------
 
 
 .. automodule:: openalea.plantgl.math._pglmath 

@@ -25,5 +25,4 @@ how to use VPlants.Plantgl see :ref:`PlantGL_reference`.
 
 .. toctree::
     :maxdepth: 1
-            
-    *rst
+   

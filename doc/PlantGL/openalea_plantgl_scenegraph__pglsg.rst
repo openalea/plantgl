@@ -1,5 +1,8 @@
-test
-----
+.. module:: scenegraph._pglsg
+   :synopsis: scenegraph c++ library
+
+PGLSG shared library
+--------------------
 
 
 .. automodule:: openalea.plantgl.scenegraph._pglsg 
@@ -9,11 +12,5 @@ test
     :inherited-members:
     :undoc-members:
 
-
-..    :inherited-members:
-
-
-..    :show-inheritance:
-    :synopsis:
 
 
