@@ -33,6 +33,7 @@
 #include "appbuilder.h"
 #include "event.h"
 #include "object.h"
+#include "glframe.h"
 
 #include "../viewer/pglviewer.h"
 
@@ -98,6 +99,25 @@ ViewerAppli::getSelection() {
     }
     return res;
 }
+
+bool ViewerAppli::getRedrawPolicy()
+{
+	if(running()){
+		bool res;
+		sendAnEvent(new ViewGetRedrawEvent(&res));
+		return res;
+	}
+	else return getViewer()->getFrameGL()->isRedrawEnabled();
+}
+
+void ViewerAppli::setRedrawPolicy(bool policy)
+{
+	if(running()){
+		sendAnEvent(new ViewSetRedrawEvent(policy));
+	}
+	else return getViewer()->getFrameGL()->activateRedraw(policy);
+}
+
 
 int 
 ViewerAppli::question(const std::string& caption,

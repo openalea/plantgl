@@ -189,6 +189,12 @@ public:
     __T[i] = t;
   }  
 
+ /** Sets the elements of \e self. */
+  void set( const T& t1, const T& t2  ) {
+    __T[0] = t1;
+    __T[1] = t2;
+  }  
+
 protected:
 
   /// The tuple of value.
@@ -355,6 +361,13 @@ public:
   void setAt( uchar_t i, const T& t ) {
     GEOM_ASSERT(i < 3);
     __T[i] = t;
+  }  
+
+ /** Sets the elements of \e self. */
+  void set( const T& t1, const T& t2, const T& t3  ) {
+    __T[0] = t1;
+    __T[1] = t2;
+    __T[2] = t3;
   }  
 
 protected:
@@ -540,6 +553,13 @@ public:
     __T[i] = t;
   }  
 
+ /** Sets the elements of \e self. */
+  void set( const T& t1, const T& t2, const T& t3, const T& t4  ) {
+    __T[0] = t1;
+    __T[1] = t2;
+    __T[2] = t3;
+    __T[3] = t4;
+  }  
 protected:
 
   /// The 4D value tuple.

@@ -84,6 +84,9 @@ public:
 
 	virtual std::vector<uint_t> getSelection();
 
+	virtual bool getRedrawPolicy();
+	virtual void setRedrawPolicy(bool);
+
 	virtual int question(const std::string& caption,
 						 const std::string& text,
 						 const std::string& but0txt = "",

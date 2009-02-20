@@ -275,13 +275,13 @@ ViewerApplication::setSelection(const vector<uint_t>& sel) {
 }
 
 bool ViewerApplication::getRedrawPolicy(){
-  bool res;
-  _sendAnEvent(new ViewGetRedrawEvent(&res));
-  return res;
+  if(VIEWER_APPLI) return VIEWER_APPLI->getRedrawPolicy();
+  else return true;
 }
 
 void ViewerApplication::setRedrawPolicy(bool b){
-  _sendAnEvent(new ViewSetRedrawEvent(b));
+  initViewerAppli();
+  if(VIEWER_APPLI) VIEWER_APPLI->setRedrawPolicy(b);
 }
 
 void 

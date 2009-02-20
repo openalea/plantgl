@@ -42,6 +42,7 @@
 #include <plantgl/pgl_transformation.h>
 #include <plantgl/pgl_container.h>
 #include <plantgl/scenegraph/scene/shape.h>
+#include <plantgl/scenegraph/function/function.h>
 
 #include <plantgl/math/util_math.h>
 
@@ -641,6 +642,10 @@ bool Discretizer::process( Cylinder * cylinder ) {
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   IndexArrayPtr _indexList;
   Index4ArrayPtr _index4List;
+  /*Point2ArrayPtr _texCoordList
+  if(__computeTexCoord)
+	_texCoordList = Point2ArrayPtr(new Point3Array(((_slices+1) * 2) + _offset));*/
+
   if(_solid)
       _indexList= IndexArrayPtr(new IndexArray(_slices * 3 ));
   else
@@ -656,8 +661,9 @@ bool Discretizer::process( Cylinder * cylinder ) {
   uint_t _facesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
-  if (_solid)
+  if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
+  }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
     real_t _x = cos(_i * _angleStep) * _radius;
@@ -666,19 +672,18 @@ bool Discretizer::process( Cylinder * cylinder ) {
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,_height));
 
     if (_solid) {
-        Index _index4(4);
-        _index4.setAt(0,_cur);_index4.setAt(1,_next);_index4.setAt(2,_next+1);_index4.setAt(3,_cur+1);
-        _indexList->setAt(_facesCount++,_index4);
-        Index _index3(3);
-        _index3.setAt(0,_cur + 1);_index3.setAt(1,_next + 1);_index3.setAt(2,_top);
-        _indexList->setAt(_facesCount++,_index3);
-        Index _index3b(3);
-        _index3b.setAt(0,_cur);_index3b.setAt(1,_base);_index3b.setAt(2,_next);
-        _indexList->setAt(_facesCount++,_index3b);
+        _indexList->setAt(_facesCount++,Index4(_cur,_next,_next+1,_cur+1));
+        _indexList->setAt(_facesCount++,Index3(_cur + 1,_next + 1,_top));
+        _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
     }
     else {
         _index4List->setAt(_facesCount++,Index4(_cur,_next ,_next+1,_cur + 1));
     }
+	/*if(__computeTexCoord){
+		real_t u = real_t(_i)/(_slices-1);
+		_texCoordList->setAt(_pointsCount-2,Vector2(0,u);
+		_texCoordList->setAt(_pointsCount-1,Vector2(1,u);
+	}*/
 
 
     _cur = _next;
@@ -704,8 +709,6 @@ bool Discretizer::process( Cylinder * cylinder ) {
                                                       _solid,
                                                       _skeleton));
 
-//  Printer _p(cerr,cerr,cerr);
-//  __discretization->apply(_p);
   GEOM_DISCRETIZER_UPDATE_CACHE(cylinder);
   return true;
 }
@@ -1011,6 +1014,201 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
 /* ----------------------------------------------------------------------- */
 
 
+
+bool Discretizer::process( Extrusion * extrusion ){
+    GEOM_ASSERT(extrusion);
+    GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(extrusion);
+    if(!(extrusion->getCrossSection()->apply(*this))){
+        cerr << "Warning ! could not perform discretization on Cross Section of " << extrusion->getName() << endl;
+        __discretization = ExplicitModelPtr();
+        return false;
+    }
+    ExplicitModelPtr _explicitCrossSection(__discretization);
+    if(!_explicitCrossSection){
+        cerr << "Warning ! could not perform discretization on Cross Section of " << extrusion->getName() << endl;
+        GEOM_ASSERT(_explicitCrossSection);
+        __discretization = ExplicitModelPtr();
+        return false;
+    }
+
+    Point3ArrayPtr _crossPoints = _explicitCrossSection->getPointList();
+	bool closed = false;
+	if(!(norm(_crossPoints->getAt(0) - _crossPoints->getAt(_crossPoints->getSize()-1)) > GEOM_EPSILON)){
+	  _crossPoints = Point3ArrayPtr(new Point3Array(_crossPoints->getBegin(),_crossPoints->getEnd() -1));
+	  closed = true;
+	}
+
+    uint_t _nbPoints = _crossPoints->getSize();
+
+    LineicModelPtr _axis = extrusion->getAxis();
+
+    ProfileTransformationPtr _profileTransf = extrusion->getProfileTransformation();
+    bool _useTransf = true;
+    if(!_profileTransf)_useTransf = false;
+
+    real_t _start = _axis->getFirstKnot();
+    uint_t _size =  _axis->getStride();
+    real_t _step =  (_axis->getLastKnot()-_start) / (real_t) _size;
+    real_t _starttransf = 0;
+    real_t _steptransf = 0;
+	QuantisedFunctionPtr texumapping = extrusion->getCrossSection()->getUToArcLengthMapping();
+
+    if(_useTransf){
+        _starttransf = _profileTransf->getUMin();
+        _steptransf = (_profileTransf->getUMax()-_starttransf) /  _size;
+    }
+
+    Point3ArrayPtr _pointList(new Point3Array(((_size+1)*(_nbPoints))));
+    Point2ArrayPtr _texList;
+	if(__computeTexCoord)_texList = Point2ArrayPtr(new Point2Array(((_size+1)*(_nbPoints+1))));
+    Index4ArrayPtr _indexList(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
+	Index4ArrayPtr _texIndexList;
+	if(__computeTexCoord && closed)_texIndexList = Index4ArrayPtr(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
+    uint_t _j = 0;
+    uint_t _j2 = 0;
+    uint_t _k = 0;
+
+    Vector3 _oldBinormal;
+    Vector3 _normal;( _axis->getNormalAt(_start) );
+    _normal= ( _axis->getNormalAt(_start) );
+    if( normSquared(_normal) < GEOM_EPSILON )
+      {
+      // normal==0 : curve is locally like a line
+      Vector3 tg( _axis->getTangentAt(_start) );
+      Vector3 U=
+        ( tg.x() < tg.y() ) ? ( ( tg.z() < tg.x() ) ? Vector3::OZ
+                                                    : Vector3::OX )
+                            : ( ( tg.z() < tg.y() ) ? Vector3::OZ
+                                                    : Vector3::OY );
+
+      _normal= cross(tg,U);
+      }
+
+    for (uint_t _i = 0; _i < _size; _i++) {
+        Vector3 _center = _axis->getPointAt(_start);
+        Vector3 _velocity = _axis->getTangentAt(_start);
+        if(_i!=0)
+            _normal = cross(_oldBinormal,_velocity);
+        else _normal = _axis->getNormalAt(_start);
+        _velocity.normalize();
+        _normal.normalize();
+        Vector3 _binormal = cross(_velocity,_normal);
+        _binormal.normalize();
+        _oldBinormal = _binormal;
+
+        Matrix3 _frame(_normal,_binormal,_velocity);
+        OrthonormalBasis3D _transf(_frame);
+        Point3ArrayPtr _newPoint;
+        if(_useTransf){
+            Transformation2DPtr _transf2D =  (*_profileTransf)(_starttransf);
+            _newPoint = _transf2D->transform(_crossPoints);
+            _newPoint =  _transf.transform(_newPoint);
+        }
+        else _newPoint =  _transf.transform(_crossPoints);
+		float _idPoint = 0;
+        for(Point3Array::iterator _it = _newPoint->getBegin();
+            _it != _newPoint->getEnd();
+            ++_it,++_idPoint,++_j,++_j2){
+            _pointList->setAt(_j,((*_it)+_center));
+			if(__computeTexCoord){
+				_texList->setAt(_j2,Vector2(_start,texumapping->getValue(_idPoint)));
+			}
+            if((_j+1)%(_nbPoints)!=0){                
+				_indexList->setAt(_k,Index4(_j,_j+1,_j+_nbPoints+1,_j+_nbPoints));
+				if(__computeTexCoord && closed)_texIndexList->setAt(_k,Index4(_j2,_j2+1,_j2+_nbPoints+1+(closed?1:0),_j2+_nbPoints+(closed?1:0)));
+				_k++;
+            }
+			else if (closed){
+				_indexList->setAt(_k,Index4(_j,_j-_nbPoints+1,_j+1,_j+_nbPoints));
+				if(__computeTexCoord){
+					_texIndexList->setAt(_k,Index4(_j2,_j2+1,_j2+_nbPoints+2,_j2+_nbPoints+1));
+					++_j2;_texList->setAt(_j2,Vector2(_start,1.0));
+				}
+				_k++;
+			}
+        }
+        _start += _step;
+        _starttransf += _steptransf;
+    };
+    _start= _axis->getLastKnot();
+    if(_useTransf){
+        _starttransf = _profileTransf->getUMax();
+    }
+    Vector3 _velocity = _axis->getTangentAt(_start);
+    _normal = cross(_oldBinormal,_velocity);
+    _velocity.normalize();
+    _normal.normalize();
+    Vector3 _binormal = cross(_velocity,_normal);
+    Matrix3 _frame(_normal,_binormal,_velocity);
+    OrthonormalBasis3D _transf(_frame);
+    Vector3 _center = _axis->getPointAt(_start);
+    Point3ArrayPtr _newPoint;
+    if(_useTransf){
+        Transformation2DPtr _transf2D =  (*_profileTransf)(_starttransf);
+        _newPoint = _transf2D->transform(_crossPoints);
+        _newPoint =  _transf.transform(_newPoint);
+    }
+    else _newPoint =  _transf.transform(_crossPoints);
+	float _idPoint = 0;
+    for(Point3Array::iterator _it = _newPoint->getBegin();
+        _it != _newPoint->getEnd();
+        ++_it,++_idPoint,++_j,++_j2){
+        _pointList->setAt(_j,((*_it)+_center));
+		if(__computeTexCoord)_texList->setAt(_j2,Vector2(_start,texumapping->getValue(_idPoint)));
+    }
+	if(__computeTexCoord && closed){ _texList->setAt(_j2,Vector2(_start,1.0)); }
+	PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
+                                     Vector3(0,0,0)));
+
+	Mesh * m;
+    if(extrusion->getSolid()){
+        IndexArrayPtr _indexList2(new IndexArray(2));
+        _indexList2->setAt(0,range<Index>(_nbPoints,0,1));
+        _indexList2->setAt(1,range<Index>(_nbPoints,_size*_nbPoints,1));
+        Index3ArrayPtr _cap = _indexList2->triangulate();
+
+        _indexList2 = IndexArrayPtr(new IndexArray(_cap->getSize()+_indexList->getSize()));
+		uint_t _f =0;
+        for(Index3Array::iterator _it2 = _cap->getBegin(); _it2 != _cap->getEnd() ; ++_it2, ++_f)
+            _indexList2->setAt(_f,*_it2);      
+        for(Index4Array::iterator _it3 = _indexList->getBegin(); _it3 != _indexList->getEnd() ; ++_it3,++_f)
+            _indexList2->setAt(_f,*_it3);
+
+		FaceSet * f = new FaceSet(_pointList,_indexList2,true,extrusion->getCCW(),true,_skeleton);
+
+		if (__computeTexCoord && closed){
+			if(closed){
+				IndexArrayPtr _indexList2(new IndexArray(2));
+				_indexList2->setAt(0,range<Index>(_nbPoints,0,1));
+				_indexList2->setAt(1,range<Index>(_nbPoints,_size*(_nbPoints+1),1));
+				_cap = _indexList2->triangulate();
+			}
+
+			IndexArrayPtr _texIndexList2 = IndexArrayPtr(new IndexArray(_cap->getSize()+_texIndexList->getSize()));
+			_f =0;
+			for(Index3Array::iterator _it2 = _cap->getBegin(); _it2 != _cap->getEnd() ; ++_it2,++_f)
+				_texIndexList2->setAt(_f,*_it2);     
+			for(Index4Array::iterator _it3 = _texIndexList->getBegin(); _it3 != _texIndexList->getEnd() ; ++_it3,++_f)
+				_texIndexList2->setAt(_f,*_it3);	
+			f->getTexCoordIndexList() = _texIndexList2;
+		}
+		m = f;
+    }
+    else {
+		QuadSet * q = new QuadSet(_pointList,_indexList,true,extrusion->getCCW(),false,_skeleton);
+		q->getTexCoordIndexList() = _texIndexList;
+		m = q;
+    }
+	m->getTexCoordList() = _texList;
+
+	__discretization = ExplicitModelPtr(m);
+
+    GEOM_DISCRETIZER_UPDATE_CACHE(extrusion);
+    return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool Discretizer::process( Frustum * frustum ) {
   GEOM_ASSERT(frustum);
 
@@ -1096,173 +1294,6 @@ bool Discretizer::process( Frustum * frustum ) {
   return true;
 }
 
-
-/* ----------------------------------------------------------------------- */
-
-
-bool Discretizer::process( Extrusion * extrusion ){
-    GEOM_ASSERT(extrusion);
-    GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(extrusion);
-    if(!(extrusion->getCrossSection()->apply(*this))){
-        cerr << "Warning ! could not perform discretization on Cross Section of " << extrusion->getName() << endl;
-        __discretization = ExplicitModelPtr();
-        return false;
-    }
-    ExplicitModelPtr _explicitCrossSection(__discretization);
-    if(!_explicitCrossSection){
-        cerr << "Warning ! could not perform discretization on Cross Section of " << extrusion->getName() << endl;
-        GEOM_ASSERT(_explicitCrossSection);
-        __discretization = ExplicitModelPtr();
-        return false;
-    }
-
-    Point3ArrayPtr _crossPoints = _explicitCrossSection->getPointList();
-	bool closed = false;
-	if(!(norm(_crossPoints->getAt(0) - _crossPoints->getAt(_crossPoints->getSize()-1)) > GEOM_EPSILON)){
-	  _crossPoints = Point3ArrayPtr(new Point3Array(_crossPoints->getBegin(),_crossPoints->getEnd() -1));
-	  closed = true;
-	}
-
-    uint_t _nbPoints = _crossPoints->getSize();
-
-    LineicModelPtr _axis = extrusion->getAxis();
-
-    ProfileTransformationPtr _profileTransf = extrusion->getProfileTransformation();
-    bool _useTransf = true;
-    if(!_profileTransf)_useTransf = false;
-
-    real_t _start = _axis->getFirstKnot();
-    uint_t _size =  _axis->getStride();
-    real_t _step =  (_axis->getLastKnot()-_start) / (real_t) _size;
-    real_t _starttransf = 0;
-    real_t _steptransf = 0;
-    if(_useTransf){
-        _starttransf = _profileTransf->getUMin();
-        _steptransf = (_profileTransf->getUMax()-_starttransf) /  _size;
-    }
-
-    Point3ArrayPtr _pointList(new Point3Array(((_size+1)*(_nbPoints))));
-    Point2ArrayPtr _texList;
-	if(__computeTexCoord)_texList = Point2ArrayPtr(new Point2Array(((_size+1)*(_nbPoints))));
-    Index4ArrayPtr _indexList(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
-    uint_t _j = 0;
-    uint_t _k = 0;
-
-    Vector3 _oldBinormal;
-    Vector3 _normal;( _axis->getNormalAt(_start) );
-    _normal= ( _axis->getNormalAt(_start) );
-    if( normSquared(_normal) < GEOM_EPSILON )
-      {
-      // normal==0 : curve is locally like a line
-      Vector3 tg( _axis->getTangentAt(_start) );
-      Vector3 U=
-        ( tg.x() < tg.y() ) ? ( ( tg.z() < tg.x() ) ? Vector3::OZ
-                                                    : Vector3::OX )
-                            : ( ( tg.z() < tg.y() ) ? Vector3::OZ
-                                                    : Vector3::OY );
-
-      _normal= cross(tg,U);
-      }
-
-    for (uint_t _i = 0; _i < _size; _i++) {
-        Vector3 _center = _axis->getPointAt(_start);
-        Vector3 _velocity = _axis->getTangentAt(_start);
-        if(_i!=0)
-            _normal = cross(_oldBinormal,_velocity);
-        else _normal = _axis->getNormalAt(_start);
-        _velocity.normalize();
-        _normal.normalize();
-        Vector3 _binormal = cross(_velocity,_normal);
-        _binormal.normalize();
-        _oldBinormal = _binormal;
-
-        Matrix3 _frame(_normal,_binormal,_velocity);
-        OrthonormalBasis3D _transf(_frame);
-        Point3ArrayPtr _newPoint;
-        if(_useTransf){
-            Transformation2DPtr _transf2D =  (*_profileTransf)(_starttransf);
-            _newPoint = _transf2D->transform(_crossPoints);
-            _newPoint =  _transf.transform(_newPoint);
-        }
-        else _newPoint =  _transf.transform(_crossPoints);
-        if(closed ){
-           _indexList->setAt(_k,Index4(_j+_nbPoints-1,_j,_j+_nbPoints,_j+2*_nbPoints-1));_k++;
-		}
-		float _idPoint = 0;
-        for(Point3Array::iterator _it = _newPoint->getBegin();
-            _it != _newPoint->getEnd();
-            ++_it,++_idPoint,++_j){
-            _pointList->setAt(_j,((*_it)+_center));
-			if(__computeTexCoord)
-				_texList->setAt(_j,Vector2(_start,_idPoint/(_nbPoints-1)));
-            if((_j+1)%(_nbPoints)!=0){
-                _indexList->setAt(_k,Index4(_j,_j+1,_j+_nbPoints+1,_j+_nbPoints));_k++;
-            }
-        }
-        _start += _step;
-        _starttransf += _steptransf;
-    };
-    _start= _axis->getLastKnot();
-    if(_useTransf){
-        _starttransf = _profileTransf->getUMax();
-    }
-    Vector3 _velocity = _axis->getTangentAt(_start);
-    _normal = cross(_oldBinormal,_velocity);
-    _velocity.normalize();
-    _normal.normalize();
-    Vector3 _binormal = cross(_velocity,_normal);
-    Matrix3 _frame(_normal,_binormal,_velocity);
-    OrthonormalBasis3D _transf(_frame);
-    Vector3 _center = _axis->getPointAt(_start);
-    Point3ArrayPtr _newPoint;
-    if(_useTransf){
-        Transformation2DPtr _transf2D =  (*_profileTransf)(_starttransf);
-        _newPoint = _transf2D->transform(_crossPoints);
-        _newPoint =  _transf.transform(_newPoint);
-    }
-    else _newPoint =  _transf.transform(_crossPoints);
-	float _idPoint = 0;
-    for(Point3Array::iterator _it = _newPoint->getBegin();
-        _it != _newPoint->getEnd();
-        ++_it,++_idPoint,++_j){
-        _pointList->setAt(_j,((*_it)+_center));
-		if(__computeTexCoord)_texList->setAt(_j,Vector2(_start,_idPoint/(_nbPoints-1)));
-    }
-    PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
-                                     Vector3(0,0,0)));
-
-	Mesh * m;
-    if(extrusion->getSolid()){
-        IndexArrayPtr _indexList2(new IndexArray(2));
-        Index a(_nbPoints);
-        Index b(_nbPoints);
-        for(uint_t _p=0; _p < _nbPoints; _p++){
-            a.setAt(_p,_p);
-            b.setAt(_p,(_size*_nbPoints)+_p);
-        }
-        _indexList2->setAt(0,a);
-        _indexList2->setAt(1,b);
-        Index3ArrayPtr _cap = _indexList2->triangulate();
-        _indexList2 = IndexArrayPtr(new IndexArray(_cap->getSize()+_indexList->getSize()));
-        uint_t _f =0;
-        for(Index3Array::iterator _it2 = _cap->getBegin(); _it2 != _cap->getEnd() ; _it2++){
-            _indexList2->setAt(_f,*_it2);_f++;
-        }
-        for(Index4Array::iterator _it3 = _indexList->getBegin(); _it3 != _indexList->getEnd() ; _it3++){
-            _indexList2->setAt(_f,*_it3);_f++;
-        }
-		m = new FaceSet(_pointList,_indexList2,true,extrusion->getCCW(),true,_skeleton);
-    }
-    else {
-		m = new QuadSet(_pointList,_indexList,true,extrusion->getCCW(),false,_skeleton);
-    }
-	m->getTexCoordList() = _texList;
-
-	__discretization = ExplicitModelPtr(m);
-
-    GEOM_DISCRETIZER_UPDATE_CACHE(extrusion);
-    return true;
-}
 
 /* ----------------------------------------------------------------------- */
 
