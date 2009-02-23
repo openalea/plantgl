@@ -256,21 +256,42 @@ bool Tesselator::process( Cylinder * cylinder ) {
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   Index3ArrayPtr _indexList(new Index3Array(_slices * (2 + _offset)));
 
+  Point2ArrayPtr _texCoordList;
+  Index3ArrayPtr _texIndexList;
+  if(__computeTexCoord){
+	_texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
+	_texIndexList= Index3ArrayPtr(new Index3Array(_slices * (2 + _offset) ));
+  }
+
   uint_t _cur = 0;
   uint_t _next = 2;
+
+  uint_t _curtex = 0;
+  uint_t _nexttexstep = 2+ (_solid ? 1 : 0);
+  uint_t _nexttex = _nexttexstep;
+
   uint_t _base = 2 * _slices;
   uint_t _top = _base + 1;
+  uint_t _basetex = (2+ (_solid ? 1 : 0)) * (_slices+1);
 
   uint_t _pointsCount = 0;
+  uint_t _texCoordCount = 0;
   uint_t _facesCount = 0;
+  uint_t _texFacesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
-  if (_solid)
+  if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
+	if(__computeTexCoord)
+		_texCoordList->setAt(_basetex,Vector2(0.5,0.5));
+  }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
-    real_t _x = cos(_i * _angleStep) * _radius;
-    real_t _y = sin(_i * _angleStep) * _radius;
+    real_t cosa = cos(_i * _angleStep);
+	real_t sina = sin(_i * _angleStep);
+    real_t _x = cosa * _radius;
+    real_t _y = sina * _radius;
+
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,_height));
 
@@ -280,21 +301,48 @@ bool Tesselator::process( Cylinder * cylinder ) {
     if (_solid) {
       _indexList->setAt(_facesCount++,Index3(_cur + 1,_next + 1,_top));
       _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
-    };
+    }
+
+	if(__computeTexCoord){
+		real_t u = real_t(_i)/_slices;
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+
+		_texIndexList->setAt(_texFacesCount++,Index3(_curtex,_nexttex ,_curtex + 1));
+		_texIndexList->setAt(_texFacesCount++,Index3(_curtex+1,_nexttex ,_nexttex+1));
+
+		if (_solid){
+			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
+		}
+	}
+
 
     _cur = _next;
     _next = (_next + 2 ) % (2 * _slices);
+    _curtex = _nexttex;
+	_nexttex += _nexttexstep ; 
   }
+
+  if(__computeTexCoord){
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+		if (_solid)
+			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
+  }
+
 
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
-  __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
-                                                      _indexList,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
+  TriangleSet * t = new TriangleSet(_pointList,_indexList,
+								    true, true, // CCW
+									_solid, _skeleton);
+
+  t->getTexCoordList() = _texCoordList;
+  t->getTexCoordIndexList() = _texIndexList;
+  __discretization = ExplicitModelPtr(t);
 
   GEOM_TESSELATOR_UPDATE_CACHE(cylinder);
   return true;
@@ -400,21 +448,42 @@ bool Tesselator::process( Frustum * frustum ) {
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
   Index3ArrayPtr _indexList(new Index3Array(_slices * (2 + _offset)));
 
+  Point2ArrayPtr _texCoordList;
+  Index3ArrayPtr _texIndexList;
+  if(__computeTexCoord){
+	_texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
+	_texIndexList = Index3ArrayPtr(new Index3Array(_slices * (2 + _offset)));
+  }
+
   uint_t _cur = 0;
   uint_t _next = 2;
+
+  uint_t _curtex = 0;
+  uint_t _nexttexstep = 2+ (_solid ? 1 : 0);
+  uint_t _nexttex = _nexttexstep;
+
   uint_t _base = 2 * _slices;
   uint_t _top = _base + 1;
+  uint_t _basetex = (2+ (_solid ? 1 : 0)) * (_slices+1);
 
   uint_t _pointsCount = 0;
+  uint_t _texCoordCount = 0;
   uint_t _facesCount = 0;
+  uint_t _texFacesCount = 0;
+
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
-  if (_solid)
+  if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
+	if(__computeTexCoord)
+		_texCoordList->setAt(_basetex,Vector2(0.5,0.5));
+  }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
-    real_t _x = cos(_i * _angleStep) * _radius;
-    real_t _y = sin(_i * _angleStep) * _radius;
+    real_t cosa = cos(_i * _angleStep);
+	real_t sina = sin(_i * _angleStep);
+    real_t _x = cosa * _radius;
+    real_t _y = sina * _radius;
 
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
     _pointList->setAt(_pointsCount++,Vector3(_x * _taper,
@@ -429,19 +498,44 @@ bool Tesselator::process( Frustum * frustum ) {
       _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
     };
 
+	if(__computeTexCoord){
+		real_t u = real_t(_i)/_slices;
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+
+		_texIndexList->setAt(_texFacesCount++,Index3(_curtex,_nexttex ,_curtex + 1));
+		_texIndexList->setAt(_texFacesCount++,Index3(_curtex+1,_nexttex ,_nexttex+1));
+
+		if (_solid){
+			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
+		}
+	}
+
     _cur = _next;
     _next = (_next + 2 ) % (2 * _slices);
+    _curtex = _nexttex;
+	_nexttex += _nexttexstep ; 
+  }
+
+  if(__computeTexCoord){
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+		if (_solid)
+			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
   }
 
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
-  __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
-                                                      _indexList,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
+  TriangleSet * t = new TriangleSet(_pointList, _indexList,
+									true, true, // CCW 
+									_solid, _skeleton);
+
+  t->getTexCoordList() = _texCoordList;
+  t->getTexCoordIndexList() = _texIndexList;
+  __discretization = ExplicitModelPtr(t);
 
   GEOM_TESSELATOR_UPDATE_CACHE(frustum);
   return true;

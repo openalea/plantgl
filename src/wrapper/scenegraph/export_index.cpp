@@ -101,8 +101,8 @@ INDEX_SETGET(i4,Index4,4);
 std::string i3_repr( Index3* i )
 {
   std::stringstream ss;
-  ss << "Index3( " << i->getAt( 0 ) << ", " << i->getAt( 1 ) << ", "
-     << i->getAt( 2 ) << " )";
+  ss << "Index3(" << i->getAt( 0 ) << "," << i->getAt( 1 ) << ","
+     << i->getAt( 2 ) << ")";
   return ss.str();
 }
 
@@ -110,8 +110,8 @@ std::string i3_repr( Index3* i )
 std::string i4_repr( Index4* i )
 {
   std::stringstream ss;
-  ss << "Index4( " << i->getAt( 0 ) << ", " << i->getAt( 1 ) << ", "
-     << i->getAt( 2 ) << ", " << i->getAt( 3 ) << " )";
+  ss << "Index4(" << i->getAt( 0 ) << "," << i->getAt( 1 ) << ","
+     << i->getAt( 2 ) << "," << i->getAt( 3 ) << ")";
   return ss.str();
 }
 

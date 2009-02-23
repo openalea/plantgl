@@ -582,42 +582,65 @@ bool Discretizer::process( Cone * cone ) {
 
   Point3ArrayPtr _pointList(new Point3Array(_slices + 1 + _offset));
   Index3ArrayPtr _indexList(new Index3Array(_slices * (1 + _offset)));
+  Point2ArrayPtr _texCoordList;
+  Index3ArrayPtr _texIndexList;
+  if(__computeTexCoord){
+	_texCoordList = Point2ArrayPtr(new Point2Array(_slices + 2));
+    _texIndexList = Index3ArrayPtr(new Index3Array(_slices * (1 + _offset)));
+  }
 
   uint_t _cur = 0;
   uint_t _next = 1;
   uint_t _base = _slices + 1;
   uint_t _top = _base - 1;
+  uint_t _toptex = _base;
 
   uint_t _pointsCount = 0;
+  uint_t _texCoordCount = 0;
   uint_t _facesCount = 0;
   real_t _angleStep = real_t(GEOM_TWO_PI) / _slices;
 
   _pointList->setAt(_top,Vector3(0,0,_height));
+  if(__computeTexCoord)
+	  _texCoordList->setAt(_toptex,Vector2(0.5,0.5));
 
   for (uint_t _i = 0; _i < _slices; _i++) {
-    real_t _x = cos(_i * _angleStep) * _radius;
-    real_t _y = sin(_i * _angleStep) * _radius;
+    real_t cosa = cos(_i * _angleStep);
+	real_t sina = sin(_i * _angleStep);
+    real_t _x = cosa * _radius;
+    real_t _y = sina * _radius;
 
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
+    _indexList->setAt(_facesCount,Index3(_cur,_next,_top));
+	if(__computeTexCoord){
+	  _texCoordList->setAt(_texCoordCount++,Vector2(0.5+cosa/2,0.5+sina/2));
+	  _texIndexList->setAt(_facesCount,Index3(_cur,_cur+1,_toptex));
+	}
+	++_facesCount;
 
-    _indexList->setAt(_facesCount++,Index3(_cur,_next,_top));
-
-    if (_solid)
-      _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
+	if (_solid){
+      _indexList->setAt(_facesCount,Index3(_cur,_base,_next));
+	  if(__computeTexCoord)
+			_texIndexList->setAt(_facesCount,Index3(_cur,_toptex,_cur+1));
+	  ++_facesCount;
+	}
 
     _cur = _next;
     _next = (_next + 1 ) % _slices;
   }
+  _texCoordList->setAt(_texCoordCount,Vector2(1.0,0.5));
 
   PolylinePtr _skeleton(new Polyline(Vector3(Vector3::ORIGIN),
                                      Vector3(0,0,_height)));
 
-  __discretization = ExplicitModelPtr(new TriangleSet(_pointList,
-                                                      _indexList,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
+  TriangleSet * t = new TriangleSet(_pointList, _indexList,
+									true, true, // CCW
+									_solid,_skeleton);
+  if (__computeTexCoord){
+	t->getTexCoordList() = _texCoordList;
+	t->getTexCoordIndexList() = _texIndexList;
+  }
+  __discretization = ExplicitModelPtr(t);
 
   GEOM_DISCRETIZER_UPDATE_CACHE(cone);
   return true;
@@ -640,74 +663,118 @@ bool Discretizer::process( Cylinder * cylinder ) {
   uint_t _offset = (_solid ? 2 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
+  Point2ArrayPtr _texCoordList;
+  if(__computeTexCoord)
+	_texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
+
   IndexArrayPtr _indexList;
   Index4ArrayPtr _index4List;
-  /*Point2ArrayPtr _texCoordList
-  if(__computeTexCoord)
-	_texCoordList = Point2ArrayPtr(new Point3Array(((_slices+1) * 2) + _offset));*/
-
   if(_solid)
       _indexList= IndexArrayPtr(new IndexArray(_slices * 3 ));
   else
       _index4List= Index4ArrayPtr(new Index4Array(_slices ));
 
+  IndexArrayPtr _texIndexList;
+  Index4ArrayPtr _texIndex4List;
+  if(__computeTexCoord)
+	if(_solid)
+      _texIndexList= IndexArrayPtr(new IndexArray(_slices * 3 ));
+	else
+      _texIndex4List= Index4ArrayPtr(new Index4Array(_slices ));
+
 
   uint_t _cur = 0;
   uint_t _next = 2;
+
+  uint_t _curtex = 0;
+  uint_t _nexttexstep = 2+ (_solid ? 1 : 0);
+  uint_t _nexttex = _nexttexstep;
+
   uint_t _base = 2 * _slices;
   uint_t _top = _base + 1;
+  uint_t _basetex = (2+ (_solid ? 1 : 0)) * (_slices+1);
 
   uint_t _pointsCount = 0;
+  uint_t _texCoordCount = 0;
   uint_t _facesCount = 0;
+  uint_t _texFacesCount = 0;
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
   if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
+	if(__computeTexCoord)
+		_texCoordList->setAt(_basetex,Vector2(0.5,0.5));
   }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
-    real_t _x = cos(_i * _angleStep) * _radius;
-    real_t _y = sin(_i * _angleStep) * _radius;
+    real_t cosa = cos(_i * _angleStep);
+	real_t sina = sin(_i * _angleStep);
+    real_t _x = cosa * _radius;
+    real_t _y = sina * _radius;
+
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,_height));
+
+	if(__computeTexCoord){
+		real_t u = real_t(_i)/_slices;
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+		if (_solid)
+			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
+	}
 
     if (_solid) {
         _indexList->setAt(_facesCount++,Index4(_cur,_next,_next+1,_cur+1));
         _indexList->setAt(_facesCount++,Index3(_cur + 1,_next + 1,_top));
         _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
+		if(__computeTexCoord){
+			_texIndexList->setAt(_texFacesCount++,Index4(_curtex,_nexttex ,_nexttex+1,_curtex + 1));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
+		}
     }
     else {
         _index4List->setAt(_facesCount++,Index4(_cur,_next ,_next+1,_cur + 1));
+		if(__computeTexCoord)
+			_texIndex4List->setAt(_texFacesCount++,Index4(_curtex,_nexttex ,_nexttex+1,_curtex + 1));
     }
-	/*if(__computeTexCoord){
-		real_t u = real_t(_i)/(_slices-1);
-		_texCoordList->setAt(_pointsCount-2,Vector2(0,u);
-		_texCoordList->setAt(_pointsCount-1,Vector2(1,u);
-	}*/
 
 
     _cur = _next;
     _next = (_next + 2 ) % (2 * _slices);
+    _curtex = _nexttex;
+	_nexttex += _nexttexstep ; 
+  }
+	
+  if(__computeTexCoord){
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+		if (_solid)
+			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
   }
 
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
 
-  if (_solid)
-      __discretization = ExplicitModelPtr(new FaceSet(_pointList,
-                                                      _indexList,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
-  else
-      __discretization = ExplicitModelPtr(new QuadSet(_pointList,
-                                                      _index4List,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
+  if (_solid){
+      FaceSet * f = new FaceSet(_pointList, _indexList, 
+								true, true, // CCW
+								_solid, _skeleton);
+	  f->getTexCoordList() = _texCoordList;
+	  f->getTexCoordIndexList() = _texIndexList;
+	  __discretization = ExplicitModelPtr(f);
+  }
+  else {
+      QuadSet * q = new QuadSet(_pointList,
+							    _index4List,
+								true, true, // CCW
+								_solid, _skeleton);
+	  q->getTexCoordList() = _texCoordList;
+	  q->getTexCoordIndexList() = _texIndex4List;
+	  __discretization = ExplicitModelPtr(q);
+  }
+
 
   GEOM_DISCRETIZER_UPDATE_CACHE(cylinder);
   return true;
@@ -1060,7 +1127,7 @@ bool Discretizer::process( Extrusion * extrusion ){
 
     Point3ArrayPtr _pointList(new Point3Array(((_size+1)*(_nbPoints))));
     Point2ArrayPtr _texList;
-	if(__computeTexCoord)_texList = Point2ArrayPtr(new Point2Array(((_size+1)*(_nbPoints+1))));
+	if(__computeTexCoord)_texList = Point2ArrayPtr(new Point2Array(((_size+1)*(_nbPoints+(closed?1:0)))));
     Index4ArrayPtr _indexList(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
 	Index4ArrayPtr _texIndexList;
 	if(__computeTexCoord && closed)_texIndexList = Index4ArrayPtr(new Index4Array((_size)*(_nbPoints-(closed?0:1))));
@@ -1223,6 +1290,10 @@ bool Discretizer::process( Frustum * frustum ) {
   uint_t _offset = (_solid ? 2 : 0);
 
   Point3ArrayPtr _pointList(new Point3Array((_slices * 2) + _offset));
+  Point2ArrayPtr _texCoordList;
+  if(__computeTexCoord)
+	_texCoordList = Point2ArrayPtr(new Point2Array(((_slices+1) * (2 + (_solid ? 1 : 0))) + (_solid ? 1 : 0)));
+
   IndexArrayPtr _indexList;
   Index4ArrayPtr _index4List;
   if(_solid)
@@ -1230,65 +1301,106 @@ bool Discretizer::process( Frustum * frustum ) {
   else
       _index4List= Index4ArrayPtr(new Index4Array(_slices ));
 
+  IndexArrayPtr _texIndexList;
+  Index4ArrayPtr _texIndex4List;
+  if(__computeTexCoord)
+	if(_solid)
+      _texIndexList= IndexArrayPtr(new IndexArray(_slices * 3 ));
+	else
+      _texIndex4List= Index4ArrayPtr(new Index4Array(_slices ));
 
 
   uint_t _cur = 0;
   uint_t _next = 2;
+
+  uint_t _curtex = 0;
+  uint_t _nexttexstep = 2+ (_solid ? 1 : 0);
+  uint_t _nexttex = _nexttexstep;
+
   uint_t _base = 2 * _slices;
   uint_t _top = _base + 1;
+  uint_t _basetex = (2+ (_solid ? 1 : 0)) * (_slices+1);
 
   uint_t _pointsCount = 0;
+  uint_t _texCoordCount = 0;
   uint_t _facesCount = 0;
+  uint_t _texFacesCount = 0;
+
   real_t _angleStep = GEOM_TWO_PI / _slices;
 
-  if (_solid)
+  if (_solid){
     _pointList->setAt(_top,Vector3(0,0,_height));
+	if(__computeTexCoord)
+		_texCoordList->setAt(_basetex,Vector2(0.5,0.5));
+  }
 
   for (uint_t _i = 0; _i < _slices; _i++) {
-    real_t _x = cos(_i * _angleStep) * _radius;
-    real_t _y = sin(_i * _angleStep) * _radius;
+    real_t cosa = cos(_i * _angleStep);
+	real_t sina = sin(_i * _angleStep);
+    real_t _x = cosa * _radius;
+    real_t _y = sina * _radius;
 
     _pointList->setAt(_pointsCount++,Vector3(_x,_y,0));
     _pointList->setAt(_pointsCount++,Vector3(_x * _taper,
                                              _y * _taper,
                                              _height));
 
+	if(__computeTexCoord){
+		real_t u = real_t(_i)/_slices;
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+		if (_solid)
+			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
+	}
+
     if (_solid) {
-        Index _index4(4);
-        _index4.setAt(0,_cur);_index4.setAt(1,_next);_index4.setAt(2,_next+1);_index4.setAt(3,_cur+1);
-        _indexList->setAt(_facesCount++,_index4);
-        Index _index3(3);
-        _index3.setAt(0,_cur + 1);_index3.setAt(1,_next + 1);_index3.setAt(2,_top);
-        _indexList->setAt(_facesCount++,_index3);
-        Index _index3b(3);
-        _index3b.setAt(0,_cur);_index3b.setAt(1,_base);_index3b.setAt(2,_next);
-        _indexList->setAt(_facesCount++,_index3b);
+        _indexList->setAt(_facesCount++,Index4(_cur,_next,_next+1,_cur+1));
+        _indexList->setAt(_facesCount++,Index3(_cur + 1,_next + 1,_top));
+        _indexList->setAt(_facesCount++,Index3(_cur,_base,_next));
+		if(__computeTexCoord){
+			_texIndexList->setAt(_texFacesCount++,Index4(_curtex,_nexttex ,_nexttex+1,_curtex + 1));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_nexttex+2,_basetex));
+			_texIndexList->setAt(_texFacesCount++,Index3(_curtex+2,_basetex,_nexttex+2));
+		}
     }
     else {
         _index4List->setAt(_facesCount++,Index4(_cur,_next ,_next+1,_cur + 1));
+		if(__computeTexCoord)
+			_texIndex4List->setAt(_texFacesCount++,Index4(_curtex,_nexttex ,_nexttex+1,_curtex + 1));
     }
 
     _cur = _next;
     _next = (_next + 2 ) % (2 * _slices);
+    _curtex = _nexttex;
+	_nexttex += _nexttexstep ; 
+  }
+
+  if(__computeTexCoord){
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+		if (_solid)
+			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
   }
 
   PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,_height)));
 
-  if (_solid)
-      __discretization = ExplicitModelPtr(new FaceSet(_pointList,
-                                                      _indexList,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
-  else
-      __discretization = ExplicitModelPtr(new QuadSet(_pointList,
-                                                      _index4List,
-													  true,
-                                                      true, // CCW
-                                                      _solid,
-                                                      _skeleton));
+  if (_solid){
+      FaceSet * f = new FaceSet(_pointList, _indexList,
+								true, true, // CCW
+								_solid, _skeleton);
+	  f->getTexCoordList() = _texCoordList;
+	  f->getTexCoordIndexList() = _texIndexList;
+	  __discretization = ExplicitModelPtr(f);
+  }
+  else {
+      QuadSet * q = new QuadSet(_pointList, _index4List,
+								true, true, // CCW
+                                _solid, _skeleton);
+	  q->getTexCoordList() = _texCoordList;
+	  q->getTexCoordIndexList() = _texIndex4List;
+	  __discretization = ExplicitModelPtr(q);
+  }
 
   GEOM_DISCRETIZER_UPDATE_CACHE(frustum);
   return true;
