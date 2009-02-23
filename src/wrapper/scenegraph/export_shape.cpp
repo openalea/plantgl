@@ -46,6 +46,8 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+#define bp boost::python
+
 DEF_POINTEE(Shape)
 DEF_POINTEE(Shape3D)
 
@@ -72,11 +74,14 @@ void export_Shape()
 {
   class_< Shape, ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape",
 	  "A Shape is composed of a Geometry object and an Appearance object.\n"
-      "There is an optional id to identy the shape and parent id to store shape relationship.",init<>())
-    .def( init< const GeometryPtr &, 
-	            optional< const AppearancePtr &,
-	            uint_t, uint_t > >("Shape( geometry, appearance, id, parentId )",args( "geometry", "appearance", "id", "parentId" )) )
-    .add_static_property("NOID",make_getter(&Shape::NOID))
+      "There is an optional id to identy the shape and parent id to store shape relationship.",
+	  init< optional<const GeometryPtr&, const AppearancePtr &, uint_t, uint_t > >
+	        ("Shape( geometry, appearance, id, parentId )",
+				(bp::arg("geometry")   = GeometryPtr(),
+				 bp::arg("appearance") = Material::DEFAULT_MATERIAL, 
+				 bp::arg("id")         = Shape::NOID,
+				 bp::arg("parentId")   = Shape::NOID )))
+   .add_static_property("NOID",make_getter(&Shape::NOID))
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)
     .def_readwrite("id", &Shape::id)

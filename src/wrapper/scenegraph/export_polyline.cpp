@@ -31,7 +31,6 @@
 
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/container/pointarray.h>
-#include <plantgl/scenegraph/geometry/mesh.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
@@ -140,9 +139,8 @@ void export_Polyline2D()
 	  "A Polyline2D describes a curve formed by connected 2D segments.\n"
 	  "It is defined by a set of 2D points. See Polyline.",
 	  init<Point2ArrayPtr>() )
-    // .def( "__init__", make_constructor( gpl2_fromlist ) ) 
     .def( "copy", &Polyline2D::copy )
-    .def( "__getitem__", gpl2_getitem /*, return_internal_reference<1>()*/ )
+    .def( "__getitem__", gpl2_getitem )
     .def( "__setitem__", gpl2_setitem )
     .def( "__len__", gpl2_size )
     .def( "__repr__", gpl2_repr )

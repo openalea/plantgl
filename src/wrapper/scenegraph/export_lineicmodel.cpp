@@ -35,8 +35,6 @@
 
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 #include <plantgl/scenegraph/geometry/curve.h>
-#include <plantgl/scenegraph/geometry/disc.h>
-#include <plantgl/scenegraph/geometry/sor.h>
 #include <plantgl/scenegraph/function/function.h>
 
 #include <boost/python.hpp>
@@ -47,9 +45,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 DEF_POINTEE( LineicModel )
-DEF_POINTEE( PlanarModel )
 DEF_POINTEE( Curve2D )
-DEF_POINTEE( SOR2D )
 DEF_POINTEE( Disc )
 
 object lm_findclosest(LineicModel * lm, Vector3 point)
@@ -105,14 +101,6 @@ void export_LineicModel()
   def("closestPointToSegment",&seg_findclosest, args("point","segA","segB"));
 }
 
-void export_PlanarModel()
-{
-  class_<PlanarModel,PlanarModelPtr, bases<ParametricModel>, boost::noncopyable>( "PlanarModel", no_init )
-    ;
-
-  implicitly_convertible<PlanarModelPtr, ParametricModelPtr>();
-
-}
 
 
 void export_Curve2D()
@@ -131,27 +119,5 @@ void export_Curve2D()
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();
-
-}
-
-void export_SOR2D()
-{
-  class_<SOR2D,SOR2DPtr, bases<PlanarModel>, boost::noncopyable>( "SOR2D", "Abstract base class for 2D objects of type of surface of revolution.", no_init )
-   .DEC_BT_PROPERTY_WD(slices,SOR2D,Slices,uchar_t);
-    ;
-
-  implicitly_convertible<SOR2DPtr, PlanarModelPtr>();
-
-}
-
-void export_Disc()
-{
-  class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", 
-	"A 2D disc structure centered on origin and defined by a radius.", 
-	init< optional<real_t,uchar_t> >("Disc(radius, slices)",args("radius", "slices") ))
-   .DEC_BT_PROPERTY_WD(radius,Disc,Radius,real_t);
-    ;
-
-  implicitly_convertible<DiscPtr,SOR2DPtr>();
 
 }

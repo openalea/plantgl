@@ -29,40 +29,42 @@
  *  ----------------------------------------------------------------------------
  */
 
-
-#include <plantgl/scenegraph/geometry/cone.h>
+#include <plantgl/scenegraph/core/sceneobject.h>
+#include <plantgl/scenegraph/core/action.h>
 
 #include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-#define bp boost::python
+DEF_POINTEE(SceneObject)
 
-DEF_POINTEE(Cone)
+std::string get_sco_name(SceneObject * obj){ return obj->getName(); } 
+void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
 
 
-void export_Cone()
+
+void export_SceneObject()
 {
-  class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
-    ("Cone", "A cone structure defined by a radius and a height. Its base is centered at origin.",
-	init< optional<const real_t&,const real_t&, bool,uchar_t > >
-               ("Cone(radius, height [, solid, slices])",
-			   (bp::arg("radius")=Cone::DEFAULT_RADIUS,
-			    bp::arg("height")=Cone::DEFAULT_HEIGHT,
-			    bp::arg("solid") =Cone::DEFAULT_SOLID,
-				bp::arg("slices")=Cone::DEFAULT_SLICES)
-				)
-	)
-  .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
-  .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
-  .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);
-
-  implicitly_convertible<ConePtr, SORPtr >();
+  class_< SceneObject,SceneObjectPtr, boost::noncopyable >(
+	  "SceneObject", 
+	  "Abstract base class for all objects of the scenegraph.\n"
+	  "It is named, has unique id and support reference counting.\n"
+	  "It can support Action application.",
+	  no_init)
+ 	// .def("__del__",&pydel<SceneObject>)
+    .def("getName", &SceneObject::getName, return_value_policy< copy_const_reference >())
+    .def("isNamed", &SceneObject::isNamed)
+    .def("setName", &SceneObject::setName)
+    .add_property("name",get_sco_name,&SceneObject::setName)
+    .def("isValid", &SceneObject::isValid)
+    .def("apply", &SceneObject::apply)
+    .def("deepcopy", &SceneObject::copy)
+    .def("getId", &SceneObject::getId)
+	.def("getPglReferenceCount",&RefCountObject::getReferenceCount)
+	// .enable_pickling()
+    ;
 }
-
 

@@ -1351,8 +1351,8 @@ bool PyPrinter::process( Swung * swung )
 
   print_cons_begin(__geomStream, name, "Swung");
 
-  print_arg_field (__geomStream, "profiles", swung->getProfileList());
-  print_arg_field (__geomStream, "angles", swung->getAngleList());
+  print_arg_field (__geomStream, "profileList", swung->getProfileList());
+  print_arg_field (__geomStream, "angleList", swung->getAngleList());
 
   if (! swung->isSlicesToDefault())
   {
@@ -1412,8 +1412,8 @@ bool PyPrinter::process( QuadSet * quadSet ) {
   string name = compute_name(quadSet);
   
   print_cons_begin(__geomStream, name, "QuadSet");
-  print_arg_field (__geomStream, "points", quadSet->getPointList());
-  print_arg_field (__geomStream, "indices", quadSet->getIndexList());
+  print_arg_field (__geomStream, "pointList", quadSet->getPointList());
+  print_arg_field (__geomStream, "indexList", quadSet->getIndexList());
 
   print_cons_end(__geomStream, quadSet, name);
   if (!quadSet->isNormalPerVertexToDefault())
@@ -1475,8 +1475,8 @@ bool PyPrinter::process( TriangleSet * triangleSet ) {
   string name = compute_name(triangleSet);
   
   print_cons_begin(__geomStream, name, "TriangleSet");
-  print_arg_field (__geomStream, "points", triangleSet->getPointList());
-  print_arg_field (__geomStream, "indices", triangleSet->getIndexList());
+  print_arg_field (__geomStream, "pointList", triangleSet->getPointList());
+  print_arg_field (__geomStream, "indexList", triangleSet->getIndexList());
 
   print_cons_end(__geomStream, triangleSet, name);
   if (!triangleSet->isNormalPerVertexToDefault())

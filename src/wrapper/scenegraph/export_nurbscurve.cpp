@@ -30,10 +30,7 @@
  */
 
 #include <plantgl/scenegraph/geometry/nurbscurve.h>
-#include <plantgl/scenegraph/geometry/polyline.h>
-#include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/tool/util_array2.h>
-#include <plantgl/scenegraph/geometry/mesh.h>
 #include <plantgl/algo/fitting/fit.h>
 
 #include <plantgl/python/export_refcountptr.h>
@@ -45,6 +42,7 @@
 
 
 using namespace boost::python;
+#define bp boost::python
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -65,20 +63,20 @@ std::string nc_repr( NurbsCurve* p )
   uint_t nk= knot->getSize();
   if( n == 0 )
     {
-      ss << "NurbsCurve(Point4Array([]),RealArray([])," << stride << ")";
+      ss << "NurbsCurve(Point4Array([]))," << stride << ")";
       return ss.str();
     }
 
   Vector4 v = ctrl->getAt( 0 );
-  ss << "NurbsCurve(Point4Array([Vector4(" << v.x() << ", " << v.y()
+  ss << "NurbsCurve([(" << v.x() << ", " << v.y()
      << ", " << v.z() << ", " << v.w() << ")";
   size_t i;
   for( i = 1 ; i < n ; ++i )
   {
       v = ctrl->getAt( i );
-      ss << ", Vector4(" << v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << ")";
+      ss << ", (" << v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << ")";
   }
-  ss << "),RealArray([";
+  ss << "],"<< d << ",[";
   if (knot && !knot->isEmpty()) {
     ss << knot->getAt(0);
 	for( i = 1 ; i < nk ; ++i )
@@ -86,7 +84,7 @@ std::string nc_repr( NurbsCurve* p )
       ss << ", " << knot->getAt( i );
 	}
   }
-  ss << "])," << d << ',' << stride <<")";
+  ss << "]," << stride <<")";
   return ss.str();
 }
 
@@ -125,9 +123,13 @@ void export_NurbsCurve()
 	  "It is defined from a list of control points Pi, a knots vector and a degree p."
 	  "It uses the parametric equation C(u) = Sum(i=0,n)(Ri,p(u)Pi with u in [a,b]"
       "where the Ri,p(u) are p-th degree rational basis functions defined on the knot vector.", 
-	  init<Point4ArrayPtr, optional< RealArrayPtr, uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
-	 .def(init<Point3ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
-	 .def(init<Point4ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
+	  init<Point4ArrayPtr, optional< uint_t, RealArrayPtr, uint_t > >(
+	  "NurbsCurve(ctrlPointList[,degree,knotList,strides])",(
+		  bp::arg("ctrlPointList"),
+		  bp::arg("degree")  = NurbsCurve::DEFAULT_NURBS_DEGREE,
+		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
+		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE)) )
+	 .def(init<Point4ArrayPtr,  RealArrayPtr, optional< uint_t, uint_t > >())
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
@@ -271,9 +273,13 @@ void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
      ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree. See NurbsCurve.",
-	   init<Point3ArrayPtr,  optional<RealArrayPtr, uint_t, uint_t > >( args("ctrlPointList","knotList","degree","strides") ) )
-	 .def(init<Point2ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
-	 .def(init<Point3ArrayPtr, uint_t, optional< RealArrayPtr, uint_t > >(args("ctrlPointList","degree","knotList","strides")) )
+	   init<Point3ArrayPtr,  optional<uint_t, RealArrayPtr, uint_t > >(
+	   "NurbsCurve2D(ctrlPointList[,degree,knotList,strides])",
+		 ( bp::arg("ctrlPointList"),
+		  bp::arg("degree")  = NurbsCurve::DEFAULT_NURBS_DEGREE,
+		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
+		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE)) )
+	 .def(init<Point3ArrayPtr, RealArrayPtr, optional<  uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
      .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )
      .def( "fit", nurbs2_fit2, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )

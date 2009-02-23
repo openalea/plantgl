@@ -188,11 +188,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_asymmetrichull.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_beziercurve.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\export_bezierpatch.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_bounding.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_box.cpp"
 				>
 			</File>
 			<File
@@ -208,7 +220,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_disc.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_elevationgrid.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_explicitmodel.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_extrudedhull.cpp"
 				>
 			</File>
 			<File
@@ -264,11 +288,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_nurbspatch.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_paraboloid.cpp"
 				>
 			</File>
 			<File
+				RelativePath=".\export_parametricmodel.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_patch.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_planarmodel.cpp"
 				>
 			</File>
 			<File
@@ -297,6 +333,10 @@
 			</File>
 			<File
 				RelativePath=".\export_scene.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_sceneobject.cpp"
 				>
 			</File>
 			<File

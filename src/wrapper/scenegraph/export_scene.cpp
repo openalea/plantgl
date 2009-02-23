@@ -52,35 +52,6 @@ using namespace boost::python;
 using namespace std;
 
 DEF_POINTEE(Scene)
-DEF_POINTEE(SceneObject)
-
-std::string get_sco_name(SceneObject * obj){ return obj->getName(); } 
-void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
-
-
-
-void export_SceneObject()
-{
-  class_< SceneObject,SceneObjectPtr, boost::noncopyable >(
-	  "SceneObject", 
-	  "Abstract base class for all objects of the scenegraph.\n"
-	  "It is named, has unique id and support reference counting.\n"
-	  "It can support Action application.",
-	  no_init)
- 	// .def("__del__",&pydel<SceneObject>)
-    .def("getName", &SceneObject::getName, return_value_policy< copy_const_reference >())
-    .def("isNamed", &SceneObject::isNamed)
-    .def("setName", &SceneObject::setName)
-    .add_property("name",get_sco_name,&SceneObject::setName)
-    .def("isValid", &SceneObject::isValid)
-    .def("apply", &SceneObject::apply)
-    .def("deepcopy", &SceneObject::copy)
-    .def("getId", &SceneObject::getId)
-	.def("getPglReferenceCount",&RefCountObject::getReferenceCount)
-	.enable_pickling()
-    ;
-}
-
 
 ScenePtr sc_fromlist( boost::python::list l ) 
 { 
@@ -114,21 +85,12 @@ ScenePtr sc_fromlist( boost::python::list l )
 
 Shape3DPtr sc_getitem( Scene* s, int pos )
 {
-  // Shape3DPtr res;
   if( pos < 0 && pos > -(int)s->getSize() ) return s->getAt( s->getSize() + pos );
   else if (pos < s->getSize()) return s->getAt( pos );
   else throw PythonExc_IndexError();
-  // return_py_reference(res);
 }
 
-/*
-object sc_find( Scene* s, size_t id )
-{
-  ShapePtr res = s->getShapeId( id );
-  if (res) return_py_reference(res);
-  else throw PythonExc_IndexError();
-}
-*/
+
 
 ShapePtr sc_find( Scene* s, size_t id )
 {

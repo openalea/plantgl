@@ -74,6 +74,7 @@ void export_NurbsCurve2D();
 void export_Patch();
 void export_BezierPatch();
 void export_NurbsPatch();
+void export_ParametricModel();
 void export_PointSet();
 void export_PointSet2D();
 void export_Polyline();

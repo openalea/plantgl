@@ -30,39 +30,46 @@
  */
 
 
-#include <plantgl/scenegraph/geometry/cone.h>
+#include <plantgl/scenegraph/geometry/box.h>
+#include <plantgl/math/util_vector.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+
 #include <boost/python.hpp>
+#include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-#define bp boost::python
-
-DEF_POINTEE(Cone)
+DEF_POINTEE(Box)
 
 
-void export_Cone()
+BoxPtr box_from_val(real_t x, real_t y, real_t z)
 {
-  class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
-    ("Cone", "A cone structure defined by a radius and a height. Its base is centered at origin.",
-	init< optional<const real_t&,const real_t&, bool,uchar_t > >
-               ("Cone(radius, height [, solid, slices])",
-			   (bp::arg("radius")=Cone::DEFAULT_RADIUS,
-			    bp::arg("height")=Cone::DEFAULT_HEIGHT,
-			    bp::arg("solid") =Cone::DEFAULT_SOLID,
-				bp::arg("slices")=Cone::DEFAULT_SLICES)
-				)
-	)
-  .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
-  .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
-  .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);
+    return BoxPtr(new Box(Vector3(x,y,z)));
+}
 
-  implicitly_convertible<ConePtr, SORPtr >();
+BoxPtr box_from_val1(real_t v)
+{
+    return BoxPtr(new Box(Vector3(v,v,v)));
+}
+
+void export_Box()
+{
+  class_< Box, BoxPtr, bases< ParametricModel > , boost::noncopyable >
+    ("Box", 
+	"The Box describes a rectangular axis-aligned box centered at origin and whose extension "
+	"along the x, y and z-axis is specified with the size vector.",
+	init< optional<const Vector3&> >("Box(Vector3(x,y,z))",(boost::python::arg("size")=Box::DEFAULT_SIZE)) )
+    .def( "__init__", make_constructor( box_from_val ) ) 
+    .def( "__init__", make_constructor( box_from_val1 ) ) 
+    .DEC_CT_PROPERTY_WDV(size,Box,Size,Vector3,DEFAULT_SIZE)
+    ;
+
+  implicitly_convertible<BoxPtr, ParametricModelPtr >();
 }
 
 

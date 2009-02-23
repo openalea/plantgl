@@ -29,40 +29,32 @@
  *  ----------------------------------------------------------------------------
  */
 
-
-#include <plantgl/scenegraph/geometry/cone.h>
-
 #include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/exception.h>
 #include <plantgl/python/export_property.h>
+
+#include <plantgl/scenegraph/geometry/disc.h>
+
 #include <boost/python.hpp>
+
+using namespace boost::python;
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
-using namespace boost::python;
-using namespace std;
+
+DEF_POINTEE( Disc )
 
 #define bp boost::python
 
-DEF_POINTEE(Cone)
-
-
-void export_Cone()
+void export_Disc()
 {
-  class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
-    ("Cone", "A cone structure defined by a radius and a height. Its base is centered at origin.",
-	init< optional<const real_t&,const real_t&, bool,uchar_t > >
-               ("Cone(radius, height [, solid, slices])",
-			   (bp::arg("radius")=Cone::DEFAULT_RADIUS,
-			    bp::arg("height")=Cone::DEFAULT_HEIGHT,
-			    bp::arg("solid") =Cone::DEFAULT_SOLID,
-				bp::arg("slices")=Cone::DEFAULT_SLICES)
-				)
-	)
-  .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
-  .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
-  .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);
+  class_<Disc,DiscPtr, bases<SOR2D>, boost::noncopyable>( "Disc", 
+	"A 2D disc structure centered on origin and defined by a radius.", 
+	init< optional<real_t,uchar_t> >("Disc(radius, slices)",
+	(bp::arg("radius")=Disc::DEFAULT_RADIUS, bp::arg("slices")=SOR::DEFAULT_SLICES)))
+   .DEC_BT_PROPERTY_WDV(radius,Disc,Radius,real_t,DEFAULT_RADIUS);
+    ;
 
-  implicitly_convertible<ConePtr, SORPtr >();
+  implicitly_convertible<DiscPtr,SOR2DPtr>();
+
 }
-
-

@@ -30,15 +30,8 @@
  */
 
 
-#include <plantgl/tool/util_array.h>
-#include <plantgl/tool/util_array2.h>
 
-#include <plantgl/scenegraph/geometry/parametricmodel.h>
-#include <plantgl/scenegraph/container/pointmatrix.h>
 #include <plantgl/scenegraph/geometry/patch.h>
-#include <plantgl/scenegraph/geometry/bezierpatch.h>
-#include <plantgl/scenegraph/geometry/nurbspatch.h>
-#include <plantgl/scenegraph/geometry/nurbscurve.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
@@ -50,68 +43,13 @@ using namespace boost::python;
 using namespace std;
 
 DEF_POINTEE(Patch)
-DEF_POINTEE(BezierPatch)
-DEF_POINTEE(NurbsPatch)
 
 void export_Patch()
 {
   class_< Patch, PatchPtr, bases< ParametricModel >,boost::noncopyable >
     ("Patch","Abstract base class for patches.",no_init)
-    .DEC_BT_NR_PROPERTY_WD(ccw,Patch,CCW,bool)
+    .DEC_BT_NR_PROPERTY_WDV(ccw,Patch,CCW,bool,DEFAULT_CCW)
     ;
 
   implicitly_convertible< PatchPtr,ParametricModelPtr >();
 }
-
-void export_BezierPatch()
-{
-  class_< BezierPatch, BezierPatchPtr, bases< Patch >,boost::noncopyable >
-    ("BezierPatch", 
-    "BezierPatch describes rational and non rational Bezier surface.\n"
-	"It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
-	"and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Bi,n(u)Bj,m(v)Pi,j) with u and v in [0,1]\n"
-	"where Bi,n(u) and Bi,m(v) are the classical n and m-th degree Bernstein polynomials.",
-	 init<const Point4MatrixPtr&, optional<uint_t,uint_t,bool> >
-     ("BezierPatch(Point4Matrix ctrlPoints [,ustride,vstride,ccw])"))
-	//.def(init<const Point3MatrixPtr&, optional<uint_t,uint_t,bool> >
-    //       ("BezierPatch(Point3Matrix ctrlPoints [,ustride,vstride,ccw])"))
-    .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint_t)
-    .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
-    .add_property("udegree",&BezierPatch::getUDegree)
-    .add_property("vdegree",&BezierPatch::getVDegree)
-    .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
-    .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
-    .def("getPointAt",&BezierPatch::getPointAt)
-    .def("getUSection",&BezierPatch::getUSection,args("u"),"Compute a section line of the patch corresponding to a constant u value.")
-    .def("getVSection",&BezierPatch::getVSection,args("v"),"Compute a section line of the patch corresponding to a constant v value.")
-    ;
-
-  implicitly_convertible< BezierPatchPtr,PatchPtr >();
-}
-
-void export_NurbsPatch()
-{
-  class_< NurbsPatch, NurbsPatchPtr, bases< BezierPatch >,boost::noncopyable >
-    ("NurbsPatch", 
-	 // "A NURBS Patch represented by 2 degrees, 2 knot vectors and a matrix of control Points.",
-    "NurbsPatch describes rational and non rational Bezier surface.\n"
-	"It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
-	"and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Ri,n(u)Rj,m(v)Pi,j) with u and v in [0,1]\n"
-	"where Ri,n(u) and Ri,m(v) are classical n and m-th degree rational basis function.",
-	 init<const Point4MatrixPtr&, optional< RealArrayPtr, RealArrayPtr, uint_t,uint_t,uint_t,uint_t,bool> >
-     ("NurbsPatch(Point4Matrix ctrlPoints, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
-	 .def(init<const Point4MatrixPtr&, uint_t, optional< uint_t,RealArrayPtr, RealArrayPtr, uint_t,uint_t,bool> >
-         ("NurbsPatch(Point4Matrix ctrlPoints, uDeg, vDeg,RealArray uKnotList,RealArray vKnotList [,ustride,vstride,ccw])"))
-    .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint_t)
-    .DEC_BT_NR_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint_t)
-    .DEC_PTR_PROPERTY_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)
-    .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
-    .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)
-    .def("setUKnotListToDefault",&NurbsPatch::setUKnotListToDefault)
-    ;
-
-  implicitly_convertible< NurbsPatchPtr,BezierPatchPtr >();
-
-}
-
-

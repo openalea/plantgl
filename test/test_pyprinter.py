@@ -8,7 +8,7 @@ def eval_code(sceneobj):
 	  sceneobj.name = 'testedobject'
   sceneobj.apply(printer)
   code = printer.str()
-  #print code
+  print code
   dic = {}
   exec code in globals(),dic
   assert dic.has_key(sceneobj.name) and "evaluated object not found"
@@ -177,7 +177,6 @@ def test_swung():
   
   an = [0,pi/2.,3*pi/2,2*pi,0,pi/2.,3*pi/2,2*pi]
   ls = [nc1,nc2,nc3,nc4,b1,b2,b3,b4] 
-
   swung = Swung(ls,an, 10, True, 18, 20)
   #swung = Swung(profiles=[nc1,nc2,nc3,nc4,b1,b2,b3,b4] , angles = [0,pi/2.,3*pi/2,2*pi,0,pi/2.,3*pi/2,2*pi])
   eval_code(swung)
@@ -245,7 +244,15 @@ def test_imagetex():
   eval_code(imagetex)
 """
 
-if __name__ == '__main__': 
-    test_sphere()
-    #test_translated()
-    #test_shape()
+
+if __name__ == '__main__':
+    #test_quadset()
+    import traceback as tb
+    test_func = [ (n,v) for n,v in globals().items() if 'test' in n]
+    test_func.sort(lambda x,y : cmp(x[1].func_code.co_firstlineno,y[1].func_code.co_firstlineno))
+    for tfn,tf in test_func:
+        print tfn
+        try:
+            tf()
+        except:
+            tb.print_exc()

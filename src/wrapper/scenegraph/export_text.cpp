@@ -39,6 +39,7 @@
 
 
 using namespace boost::python;
+#define bp boost::python
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -49,9 +50,12 @@ void export_Font()
 {
   class_< Font, FontPtr, bases< SceneObject >,boost::noncopyable >
     ("Font","Font describes how text is displayed.",init<optional<std::string,int,bool,bool> >
-     (args("family","size","bold","italic"),
-	  "Font([family,size,bold,italic])"))
-    .def( "copy", &Font::copy )
+     ("Font([family,size,bold,italic])",
+	 (bp::arg("family") = "",
+	  bp::arg("size")   = Font::DEFAULT_SIZE,
+	  bp::arg("bold")   = Font::DEFAULT_BOLD,
+	  bp::arg("italic") = Font::DEFAULT_ITALIC)))
+    .def( "deepcopy", &Font::copy )
 	.DEC_BT_PROPERTY(family,Font,Family,std::string)
 	.DEC_BT_NR_PROPERTY_WDV(size,Font,Size,uint_t,DEFAULT_SIZE)
 	.DEC_BT_NR_PROPERTY_WDV(bold,Font,Bold,bool,DEFAULT_BOLD)
@@ -69,9 +73,12 @@ void export_Text()
 {
   class_< Text, TextPtr, bases< Geometry >,boost::noncopyable >
     ("Text","Text with font. It support display in screen or world coordinates.",init<std::string,optional<const TOOLS(Vector3)&,bool, const FontPtr&> >
-     (args("string","position","screencoordinates","fontstyle"),
-	  "Text(str string[, Vector3 position, bool screencoordinates, Font fontstyle])"))
-    .def( "copy", &Text::copy )
+     ("Text(str string[, Vector3 position, bool screencoordinates, Font fontstyle])",
+	 (bp::arg("string"),
+	  bp::arg("position") = Text::DEFAULT_POSITION,
+	  bp::arg("screencoordinates") = Text::DEFAULT_SCREEN_COORDINATES,
+	  bp::arg("fontstyle") = Text::DEFAULT_FONT)))
+    .def( "deepcopy", &Text::copy )
 	.DEC_BT_PROPERTY(string,Text,String,std::string)
 	.DEC_PTR_PROPERTY_WDV(fontstyle,Text,FontStyle,FontPtr,DEFAULT_FONT)
 	.DEC_CT_PROPERTY_WDV(position,Text,Position,Vector3,DEFAULT_POSITION)

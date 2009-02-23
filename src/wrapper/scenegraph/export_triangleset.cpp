@@ -48,6 +48,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
+#define bp boost::python
 
 DEF_POINTEE( TriangleSet )
 DEF_POINTEE( FaceSet )
@@ -119,21 +120,28 @@ void export_TriangleSet()
   class_<TriangleSet, TriangleSetPtr, bases<Mesh>, boost::noncopyable>
 	( "TriangleSet", 
 	  "A TriangleSet describes a surface formed by a set of connected triangles, i.e. three sided polygons.\n Triangles are specified using set of tuples of 3 indices (Index3) pointing to a list of points.",
-	init<>("TriangleSet()") )
-    .def( init<Point3ArrayPtr,Index3ArrayPtr,optional<bool,bool,bool,PolylinePtr> >
-				( "TriangleSet(Point3Array points, Index3Array indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
-				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
-    .def( init<Point3ArrayPtr, Index3ArrayPtr, Point3ArrayPtr,
+	  init<Point3ArrayPtr, Index3ArrayPtr, Point3ArrayPtr,
 	           optional<Index3ArrayPtr,Color4ArrayPtr,Index3ArrayPtr,
 			            Point2ArrayPtr,Index3ArrayPtr,
 						bool, bool, bool, bool, PolylinePtr> >
-			("TriangleSet(Point3Array points, Index3Array indices, Point3Array normal[, Index3Array nomalIndices, "
-			 "Color4Array colors, Index3Array colorIndices, Point2Array texCoord, Index3Array texCoordIndices, "
+			("TriangleSet(Point3Array pointList, Index3Array indexList [, Point3Array normalList, Index3Array nomalIndexList, "
+			 "Color4Array colorList, Index3Array colorIndexList, Point2Array texCoordList, Index3Array texCoordIndexList, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
-	         args("points","indices","normals","nomalIndices", "colors", "colorIndices",
-	              "texCoord", "texCoordIndices", "normalPerVertex", "colorPerVertex", "ccw","solid","skeleton")))
+	         (bp::arg("pointList")         = Point3ArrayPtr(),
+			  bp::arg("indexList")         = Index3ArrayPtr(),
+			  bp::arg("normalList")        = Point3ArrayPtr(),
+			  bp::arg("nomalIndexList")    = Index3ArrayPtr(),
+			  bp::arg("colorList")         = Color4ArrayPtr(),
+			  bp::arg("colorIndexList")    = Index3ArrayPtr(),
+			  bp::arg("texCoordList")      = Point2ArrayPtr(),
+			  bp::arg("texCoordIndexList") = Index3ArrayPtr(),
+			  bp::arg("normalPerVertex")= Mesh::DEFAULT_NORMALPERVERTEX,
+			  bp::arg("colorPerVertex") = Mesh::DEFAULT_COLORPERVERTEX,
+			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
+			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
+			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
 
-	.def( "copy", &TriangleSet::copy )
+	.def( "deepcopy", &TriangleSet::copy )
 	.DEC_PTR_PROPERTY(indexList,            TriangleSet,IndexList,        Index3ArrayPtr)
 	.DEC_PTR_PROPERTY_WD(normalIndexList,   TriangleSet,NormalIndexList,  Index3ArrayPtr)
 	.DEC_PTR_PROPERTY_WD(colorIndexList,    TriangleSet,ColorIndexList,   Index3ArrayPtr)
@@ -162,20 +170,29 @@ void export_TriangleSet()
 void export_FaceSet()
 {
   class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
-	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n Faces are specified using set of tuples of n indices (Index) pointing to a list of points.", init<> ( "FaceSet()"))
-    .def( init<Point3ArrayPtr,IndexArrayPtr,optional<bool,bool,bool,PolylinePtr> >
-				( "FaceSet(Point3Array points, IndexArray indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
-				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
-    .def( init<Point3ArrayPtr, IndexArrayPtr, Point3ArrayPtr,
+	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n"
+	  "Faces are specified using set of tuples of n indices (Index) pointing to a list of points.", 
+	  init<Point3ArrayPtr, IndexArrayPtr, Point3ArrayPtr,
 	           optional<IndexArrayPtr,Color4ArrayPtr,IndexArrayPtr,
 			            Point2ArrayPtr,IndexArrayPtr,
 						bool, bool, bool, bool, PolylinePtr> >
-			("FaceSet (Point3Array points, IndexArray indices, Point3Array normal[, IndexArray nomalIndices, "
-			 "Color4Array colors, IndexArray colorIndices, Point2Array texCoord, IndexArray texCoordIndices, "
+			("FaceSet (Point3Array pointList, IndexArray indexList [, Point3Array normalList, IndexArray nomalIndexList, "
+			 "Color4Array colorList, IndexArray colorIndexList, Point2Array texCoordList, IndexArray texCoordIndexList, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
-	         args("points","indices","normals","nomalIndices", "colors", "colorIndices",
-	              "texCoord", "texCoordIndices", "normalPerVertex", "colorPerVertex", "ccw","solid","skeleton")))
-    .def( "copy", &FaceSet::copy )
+	         (bp::arg("pointList")         = Point3ArrayPtr(),
+			  bp::arg("indexList")         = IndexArrayPtr(),
+			  bp::arg("normalList")        = Point3ArrayPtr(),
+			  bp::arg("nomalIndexList")    = IndexArrayPtr(),
+			  bp::arg("colorList")         = Color4ArrayPtr(),
+			  bp::arg("colorIndexList")    = IndexArrayPtr(),
+			  bp::arg("texCoordList")      = Point2ArrayPtr(),
+			  bp::arg("texCoordIndexList") = IndexArrayPtr(),
+			  bp::arg("normalPerVertex")= Mesh::DEFAULT_NORMALPERVERTEX,
+			  bp::arg("colorPerVertex") = Mesh::DEFAULT_COLORPERVERTEX,
+			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
+			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
+			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
+    .def( "deepcopy", &FaceSet::copy )
 
 	.DEC_PTR_PROPERTY(indexList,            FaceSet,IndexList,        IndexArrayPtr)
 	.DEC_PTR_PROPERTY_WD(normalIndexList,   FaceSet,NormalIndexList,  IndexArrayPtr)

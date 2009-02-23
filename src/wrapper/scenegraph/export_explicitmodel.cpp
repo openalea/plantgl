@@ -30,39 +30,28 @@
  */
 
 
-#include <plantgl/scenegraph/geometry/cone.h>
+#include <plantgl/scenegraph/geometry/explicitmodel.h>
+#include <plantgl/scenegraph/transformation/transformed.h>
+// #include <plantgl/scenegraph/container/pointarray.h>
 
-#include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include <plantgl/python/export_refcountptr.h>
 #include <boost/python.hpp>
 
-PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
-using namespace std;
 
-#define bp boost::python
+PGL_USING_NAMESPACE
 
-DEF_POINTEE(Cone)
+DEF_POINTEE( ExplicitModel )
 
-
-void export_Cone()
+void export_ExplicitModel()
 {
-  class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
-    ("Cone", "A cone structure defined by a radius and a height. Its base is centered at origin.",
-	init< optional<const real_t&,const real_t&, bool,uchar_t > >
-               ("Cone(radius, height [, solid, slices])",
-			   (bp::arg("radius")=Cone::DEFAULT_RADIUS,
-			    bp::arg("height")=Cone::DEFAULT_HEIGHT,
-			    bp::arg("solid") =Cone::DEFAULT_SOLID,
-				bp::arg("slices")=Cone::DEFAULT_SLICES)
-				)
-	)
-  .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
-  .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
-  .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);
+  class_<ExplicitModel, ExplicitModelPtr, bases<Primitive>, boost::noncopyable>( "ExplicitModel", "Explicit geometric representation based on a set of 3D points.",  no_init )
+    .def( "transform", &ExplicitModel::transform )
+	.DEC_PTR_PROPERTY(pointList,ExplicitModel,PointList,Point3ArrayPtr)
+	.DEC_PTR_PROPERTY_WD(colorList,ExplicitModel,ColorList,Color4ArrayPtr)
+    ;
+  implicitly_convertible<ExplicitModelPtr, PrimitivePtr>();
 
-  implicitly_convertible<ConePtr, SORPtr >();
 }
-
 

@@ -88,7 +88,7 @@ void export_BezierCurve()
 	"and using the parametric equation C(u) = Sum(i=0,n)(Bi,n(u)Pi) with u in [0,1]\n"
 	"where Bi,n(u) are the classical n-th degree Bernstein polynomials.",
 	init<Point3ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride") ) )
-    .def(init< Point4ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points."))
+    .def(init< Point4ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points.",args("ctrlPointList","stride")))
     .def( "copy", &BezierCurve::copy )
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint_t,DEFAULT_STRIDE)

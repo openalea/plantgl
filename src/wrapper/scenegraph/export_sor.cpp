@@ -44,7 +44,20 @@ DEF_POINTEE(SOR)
 
 void export_SOR()
 {
-  class_< SOR, SORPtr, bases< ParametricModel >,boost::noncopyable >("SOR",no_init)
+  class_< SOR, SORPtr, bases< ParametricModel >,boost::noncopyable >
+	("SOR","Abstract base class for 3D objects of type of surface of revolution.",no_init)
   .DEC_BT_PROPERTY_WDV(slices,SOR,Slices,uchar_t,DEFAULT_SLICES);
   implicitly_convertible<SORPtr,ParametricModelPtr >();
+}
+
+
+void export_SOR2D()
+{
+  class_<SOR2D,SOR2DPtr, bases<PlanarModel>, boost::noncopyable>
+   ( "SOR2D", "Abstract base class for 2D objects of type of surface of revolution.", no_init )
+   .DEC_BT_PROPERTY_WD(slices,SOR2D,Slices,uchar_t);
+    ;
+
+  implicitly_convertible<SOR2DPtr, PlanarModelPtr>();
+
 }

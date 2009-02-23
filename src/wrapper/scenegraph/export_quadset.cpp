@@ -45,6 +45,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
+#define bp boost::python
 
 DEF_POINTEE( QuadSet )
 
@@ -54,21 +55,28 @@ void export_QuadSet()
 {
   class_<QuadSet, QuadSetPtr, bases<Mesh>, boost::noncopyable> ( "QuadSet", 
 	  "A QuadSet describes a surface formed by a set of connected quadrilaterals, i.e. four sided polygons.\n Quads are specified using set of tuples of 4 indices (Index4) pointing to a list of points.",
-	  init<> ( "QuadSet()"))
-    .def( init<Point3ArrayPtr,Index4ArrayPtr,optional<bool,bool,bool,PolylinePtr> >
-				( "QuadSet(Point3Array points, Index4Array indices [,bool normalPerVertex, bool ccw, bool solid, Polyline skeleton])",
-				args("points","indices","normalPerVertex","ccw","solid","skeleton")) )
-    .def( init<Point3ArrayPtr, Index4ArrayPtr, Point3ArrayPtr,
+	  init<Point3ArrayPtr, Index4ArrayPtr, Point3ArrayPtr,
 	           optional<Index4ArrayPtr,Color4ArrayPtr,Index4ArrayPtr,
 			            Point2ArrayPtr,Index4ArrayPtr,
 						bool, bool, bool, bool, PolylinePtr> >
-			("QuadSet(Point3Array points, Index4Array indices, Point3Array normal[, Index4Array nomalIndices, "
-			 "Color4Array colors, Index4Array colorIndices, Point2Array texCoord, Index4Array texCoordIndices, "
+			("QuadSet(Point3Array pointList, Index4Array indexList [, Point3Array normalList, Index4Array nomalIndexList, "
+			 "Color4Array colorList, Index4Array colorIndexList, Point2Array texCoordList, Index4Array texCoordIndexList, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
-	         args("points","indices","normals","nomalIndices", "colors", "colorIndices",
-	              "texCoord", "texCoordIndices", "normalPerVertex", "colorPerVertex", "ccw","solid","skeleton")))
+			 (bp::arg("pointList")         = Point3ArrayPtr(),
+			  bp::arg("indexList")         = Index4ArrayPtr(),
+			  bp::arg("normalList")        = Point3ArrayPtr(),
+			  bp::arg("nomalIndexList")    = Index4ArrayPtr(),
+			  bp::arg("colorList")         = Color4ArrayPtr(),
+			  bp::arg("colorIndexList")    = Index4ArrayPtr(),
+			  bp::arg("texCoordList")      = Point2ArrayPtr(),
+			  bp::arg("texCoordIndexList") = Index4ArrayPtr(),
+			  bp::arg("normalPerVertex")= Mesh::DEFAULT_NORMALPERVERTEX,
+			  bp::arg("colorPerVertex") = Mesh::DEFAULT_COLORPERVERTEX,
+			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
+			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
+			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
 
-	.def( "copy", &QuadSet::copy )
+	.def( "deepcopy", &QuadSet::copy )
 
 	.DEC_PTR_PROPERTY(indexList,            QuadSet,IndexList,        Index4ArrayPtr)
 	.DEC_PTR_PROPERTY_WD(normalIndexList,   QuadSet,NormalIndexList,  Index4ArrayPtr)

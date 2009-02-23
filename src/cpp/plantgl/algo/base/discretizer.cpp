@@ -628,7 +628,8 @@ bool Discretizer::process( Cone * cone ) {
     _cur = _next;
     _next = (_next + 1 ) % _slices;
   }
-  _texCoordList->setAt(_texCoordCount,Vector2(1.0,0.5));
+  if(__computeTexCoord)
+	_texCoordList->setAt(_texCoordCount,Vector2(1.0,0.5));
 
   PolylinePtr _skeleton(new Polyline(Vector3(Vector3::ORIGIN),
                                      Vector3(0,0,_height)));

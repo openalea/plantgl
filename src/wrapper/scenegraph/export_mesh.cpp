@@ -31,9 +31,6 @@
 
 
 #include <plantgl/scenegraph/geometry/mesh.h>
-#include <plantgl/scenegraph/geometry/polyline.h>
-#include <plantgl/scenegraph/transformation/transformed.h>
-#include <plantgl/scenegraph/container/pointarray.h>
 
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_refcountptr.h>
@@ -43,19 +40,7 @@ using namespace boost::python;
 
 PGL_USING_NAMESPACE
 
-DEF_POINTEE( ExplicitModel )
 DEF_POINTEE( Mesh )
-
-void export_ExplicitModel()
-{
-  class_<ExplicitModel, ExplicitModelPtr, bases<Primitive>, boost::noncopyable>( "ExplicitModel", "Explicit geometric representation based on a set of 3D points.",  no_init )
-    .def( "transform", &ExplicitModel::transform )
-	.DEC_PTR_PROPERTY(pointList,ExplicitModel,PointList,Point3ArrayPtr)
-	.DEC_PTR_PROPERTY_WD(colorList,ExplicitModel,ColorList,Color4ArrayPtr)
-    ;
-  implicitly_convertible<ExplicitModelPtr, PrimitivePtr>();
-
-}
 
 void export_Mesh()
 {

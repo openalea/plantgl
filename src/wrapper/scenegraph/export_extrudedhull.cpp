@@ -29,12 +29,11 @@
  *  ----------------------------------------------------------------------------
  */
 
-
-#include <plantgl/scenegraph/geometry/cone.h>
+#include <plantgl/scenegraph/geometry/extrudedhull.h>
+#include <plantgl/scenegraph/geometry/curve.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -43,26 +42,20 @@ using namespace std;
 
 #define bp boost::python
 
-DEF_POINTEE(Cone)
+DEF_POINTEE(Hull)
 
-
-void export_Cone()
+void export_ExtrudedHull()
 {
-  class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
-    ("Cone", "A cone structure defined by a radius and a height. Its base is centered at origin.",
-	init< optional<const real_t&,const real_t&, bool,uchar_t > >
-               ("Cone(radius, height [, solid, slices])",
-			   (bp::arg("radius")=Cone::DEFAULT_RADIUS,
-			    bp::arg("height")=Cone::DEFAULT_HEIGHT,
-			    bp::arg("solid") =Cone::DEFAULT_SOLID,
-				bp::arg("slices")=Cone::DEFAULT_SLICES)
-				)
-	)
-  .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
-  .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
-  .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);
+  class_< ExtrudedHull, ExtrudedHullPtr,  bases< Hull >,boost::noncopyable > 
+    ("ExtrudedHull","A hull extruded by a vertical and an horizontal profiles.", init <Curve2DPtr, Curve2DPtr, optional< bool > >
+	("ExtrudedHull(vertical,horizontal) : Constructs a ExtrudedHull with the profiles 'vertical' and 'horizontal'. ",
+	(bp::arg("vertical"),bp::arg("horizontal"),bp::arg("ccw")=ExtrudedHull::DEFAULT_CCW)))
+    .def("copy",&ExtrudedHull::copy)
+	.DEC_PTR_PROPERTY(vertical,ExtrudedHull,Vertical,Curve2DPtr)
+	.DEC_PTR_PROPERTY(horizontal,ExtrudedHull,Horizontal,Curve2DPtr)
+	.DEC_BT_NR_PROPERTY_WDV(ccw,ExtrudedHull,CCW,bool,DEFAULT_CCW)
+    ;
+  implicitly_convertible<ExtrudedHullPtr,HullPtr >();
 
-  implicitly_convertible<ConePtr, SORPtr >();
 }
-
 

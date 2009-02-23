@@ -57,10 +57,6 @@ void module_sg()
 
 	export_BoundingBox();
 
-	export_Scene();
-    export_Shape3D();
-    export_Shape();
-
 	export_Appearance();
     export_Material();
     export_ImageTexture();
@@ -71,8 +67,13 @@ void module_sg()
     export_Geometry();
     export_Primitive();
 
-    export_ExplicitModel();
+	export_Scene();
+    export_Shape3D();
+    export_Shape();
+
+	export_ExplicitModel();
     export_LineicModel();
+    export_ParametricModel();
 
     export_Mesh();
     export_Hull();

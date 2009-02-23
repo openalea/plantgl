@@ -51,6 +51,8 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
+#define bp boost::python
+
 DEF_POINTEE(ProfileInterpolation)
 
 object pi_getSectionAt(ProfileInterpolation * pi, real_t u){
@@ -65,15 +67,24 @@ void export_ProfileInterpolation()
   
   class_< ProfileInterpolation, ProfileInterpolationPtr,boost::noncopyable >
     ("ProfileInterpolation",init<Curve2DArrayPtr,TOOLS(RealArrayPtr),optional<uint_t,uint_t> >
-        ("ProfileInterpolation([Curve2D] profiles,[float] knotList,int degree,int stride"))
+        ("ProfileInterpolation([Curve2D] profiles,[float] knotList,int degree,int stride",
+		(bp::arg("profiles"),
+		 bp::arg("knotList"),
+		 bp::arg("degree")=ProfileInterpolation::DEFAULT_DEGREE,
+		 bp::arg("stride")=ProfileInterpolation::DEFAULT_STRIDE)))
     .def("getSectionAt",&pi_getSectionAt)
     .add_property("umin",&ProfileInterpolation::getUMin)
     .add_property("umax",&ProfileInterpolation::getUMax)
+	.DEC_BT_PROPERTY_WDV(degree,   ProfileInterpolation,Degree,          uint_t ,DEFAULT_DEGREE)
+	.DEC_BT_PROPERTY_WDV(stride,   ProfileInterpolation,Stride,          uint_t ,DEFAULT_STRIDE)
+	.DEC_PTR_PROPERTY(knotList,   ProfileInterpolation,KnotList,         RealArrayPtr)
+	.DEC_PTR_PROPERTY(profileList, ProfileInterpolation,ProfileList,     Curve2DArrayPtr)
   ;
 }
 
 DEF_POINTEE(Swung)
 
+/*
 SwungPtr make_swung( boost::python::list profiles, boost::python::list angles, 
 		     uchar_t slices, bool ccw, uint_t degree, uint_t stride ) 
 { 
@@ -87,7 +98,7 @@ SwungPtr make_swung5( boost::python::list profiles, boost::python::list angles,
 { 
 	return make_swung(profiles,angles,slices,ccw,degree,Swung::DEFAULT_STRIDE);
 }
-
+ 
 SwungPtr make_swung4( boost::python::list profiles, boost::python::list angles, 
 		     uchar_t slices, bool ccw) 
 { 
@@ -106,6 +117,7 @@ SwungPtr make_swung2( boost::python::list profiles,
 { 
 	return make_swung(profiles,angles,Swung::DEFAULT_SLICES,Swung::DEFAULT_CCW,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
 }
+*/
 
 ProfileInterpolationPtr sw_pi(Swung * sw){ return sw->getProfileInterpolation(); }
 
@@ -114,8 +126,16 @@ void export_Swung()
     export_ProfileInterpolation();
   
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >
-    ("Swung","A surface defined by the revolution and interpolation of several 2D profiles along Z axis.", no_init)
-    .def( "__init__", make_constructor( make_swung , default_call_policies(), 
+    ("Swung","A surface defined by the revolution and interpolation of several 2D profiles along Z axis.", 
+	init<Curve2DArrayPtr,RealArrayPtr,optional<uchar_t,bool,uint_t,uint_t>>
+	  ("Swung(profileList,angleList,slices,ccw,degree,stride)",
+	  (bp::arg("profileList"),
+	   bp::arg("angleList"),
+	   bp::arg("slices") = SOR::DEFAULT_SLICES,
+	   bp::arg("ccw")    = Swung::DEFAULT_CCW,
+	   bp::arg("degree") = Swung::DEFAULT_DEGREE,
+	   bp::arg("stride") = Swung::DEFAULT_STRIDE)))
+/*    .def( "__init__", make_constructor( make_swung , default_call_policies(), 
                                         args("profiles","angles","slices","ccw","degree","stride")),
                      (const char *)"Swung([Curve2D] profiles,list angles [,slices,ccw,degree,stride])" ) 
     .def( "__init__", make_constructor( make_swung5, default_call_policies(), 
@@ -125,13 +145,12 @@ void export_Swung()
     .def( "__init__", make_constructor( make_swung3, default_call_policies(), 
                                         args("profiles","angles","slices") ) ) 
     .def( "__init__", make_constructor( make_swung2, default_call_policies(), 
-                                        args("profiles","angles") )) 
+                                        args("profiles","angles") )) */
 	.DEC_BT_NR_PROPERTY_WDV(ccw,      Swung,CCW,             bool  ,DEFAULT_CCW )
 	.DEC_BT_PROPERTY_WDV(degree,   Swung,Degree,          uint_t ,DEFAULT_DEGREE)
 	.DEC_BT_PROPERTY_WDV(stride,   Swung,Stride,          uint_t ,DEFAULT_STRIDE)
 	.DEC_PTR_PROPERTY(angleList,   Swung,AngleList,       RealArrayPtr)
 	.DEC_PTR_PROPERTY(profileList, Swung,ProfileList,     Curve2DArrayPtr)
-	// .DEC_PTR_PROPERTY(interpolator, Swung,ProfileInterpolation, ProfileInterpolation)
     .add_property( "interpolator",&sw_pi);
     ;
 
