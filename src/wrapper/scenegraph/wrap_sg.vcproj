@@ -176,6 +176,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_amapsymbol.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_appearance.cpp"
 				>
 			</File>
@@ -189,6 +193,10 @@
 			</File>
 			<File
 				RelativePath=".\export_asymmetrichull.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_axisrotated.cpp"
 				>
 			</File>
 			<File
@@ -228,6 +236,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_eulerrotated.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_explicitmodel.cpp"
 				>
 			</File>
@@ -237,6 +249,10 @@
 			</File>
 			<File
 				RelativePath=".\export_extrusion.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_faceset.cpp"
 				>
 			</File>
 			<File
@@ -268,6 +284,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_ifs.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_index.cpp"
 				>
 			</File>
@@ -284,11 +304,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_mesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\export_nurbscurve.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\export_nurbspatch.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\export_oriented.cpp"
 				>
 			</File>
 			<File
@@ -332,6 +360,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_scaled.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_scene.cpp"
 				>
 			</File>
@@ -356,6 +388,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_tapered.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_text.cpp"
 				>
 			</File>
@@ -368,7 +404,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\export_transformed2.cpp"
+				RelativePath=".\export_translated.cpp"
 				>
 			</File>
 			<File

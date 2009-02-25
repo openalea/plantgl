@@ -1,13 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -31,18 +29,29 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file version.h
-    \brief File for accessing to PGL version.
-*/
+#include <plantgl/scenegraph/geometry/amapsymbol.h>
 
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
 
-#ifndef __plantgl_version_h__
-#define __plantgl_version_h__
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
-/// PGL Version macro
-#define PGL_VERSION 0x020900
-#define PGL_SVNREVISION "$Revision$"
+using namespace boost::python;
+#define bp boost::python
 
-#endif
+DEF_POINTEE( AmapSymbol )
 
+void export_AmapSymbol()
+{
+  class_<AmapSymbol, AmapSymbolPtr, bases<FaceSet> >
+    ( "AmapSymbol", 
+	  "The AmapSymbol describes an object of class of Mesh stored in the SMB file format of the Amap software."
+	  "This is provided for ascendant compatibility.", 
+	  init< optional<std::string,bool> >("AmapSymbol(filename)"))
+    .def("readFile",&AmapSymbol::readFile)
+	.DEC_BT_PROPERTY(filename,AmapSymbol,FileName,std::string)
+    ;
+  implicitly_convertible<AmapSymbolPtr, FaceSetPtr>();
 
+}

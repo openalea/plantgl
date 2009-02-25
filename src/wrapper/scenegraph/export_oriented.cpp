@@ -29,21 +29,39 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/scenegraph/geometry/quadset.h>
-#include "export_mesh.h"
+#include <plantgl/scenegraph/transformation/oriented.h>
 
-DEF_POINTEE( QuadSet )
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_property.h>
 
-void export_QuadSet()
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+using namespace boost::python;
+#define bp boost::python
+
+
+DEF_POINTEE(Oriented)
+
+void export_Oriented()
 {
+  class_< Oriented, OrientedPtr, bases< OrthoTransformed > , boost::noncopyable >
+    ("Oriented", 
+	 "Oriented describes an object to a change of coordinate specified by an orthonormal basis has been applied.\n"
+	 "The basis is expressed by the matrix:\n"
+	 "|px sx tx|\n"
+	 "|py sy ty|\n"
+	 "|pz sz tz|\n"
+	 "where (px, py, pz) denotes the primary direction, (sx,, sy, sz) the secondary direction and (tx,, ty, tz) the ternary direction, which is given by: t = p ^ s.",
+	 init< const Vector3&,const Vector3&,const GeometryPtr& >
+       ("Oriented(primary,secondary,geometry) with primary,secondary: Vector3" ,
+	   (bp::arg("primary")   = Oriented::DEFAULT_PRIMARY,
+	    bp::arg("secondary") = Oriented::DEFAULT_SECONDARY,
+		bp::arg("geometry")  = GeometryPtr())   ) )
+	.DEC_CT_PROPERTY_WDV(primary,Oriented,Primary,Vector3,DEFAULT_PRIMARY)
+	.DEC_CT_PROPERTY_WDV(secondary,Oriented,Secondary,Vector3,DEFAULT_SECONDARY)
+    ;
 
-  class_<QuadSet, QuadSetPtr, bases<Mesh>, boost::noncopyable> ( "QuadSet", 
-	  "A QuadSet describes a surface formed by a set of connected quadrilaterals, i.e. four sided polygons.\n"
-	  " Quads are specified using set of tuples of 4 indices (Index4) pointing to a list of points.",no_init)
-	  .def(mesh_func<QuadSet>())
-	  ;
-     implicitly_convertible<QuadSetPtr, MeshPtr>();
+  implicitly_convertible< OrientedPtr, OrthoTransformedPtr >();
 }
-
 
 

@@ -31,27 +31,16 @@
 
 #include <plantgl/scenegraph/transformation/transformed.h>
 #include <plantgl/scenegraph/transformation/mattransformed.h>
-#include <plantgl/scenegraph/transformation/translated.h>
-#include <plantgl/scenegraph/transformation/scaled.h>
 #include <plantgl/scenegraph/transformation/orthotransformed.h>
-#include <plantgl/scenegraph/transformation/ifs.h>
-#include <plantgl/scenegraph/geometry/primitive.h>
-
-#include <plantgl/math/util_vector.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
-using namespace std;
 
-
-DEF_POINTEE(Scaled)
-DEF_POINTEE(Translated)
 DEF_POINTEE(Transformed)
 DEF_POINTEE(MatrixTransformed)
 DEF_POINTEE(OrthoTransformed)
@@ -76,88 +65,5 @@ void export_Transformed()
   implicitly_convertible< TransformedPtr, GeometryPtr >();
   implicitly_convertible< MatrixTransformedPtr, TransformedPtr >();
   implicitly_convertible< OrthoTransformedPtr,MatrixTransformedPtr >();
-}
-
-ScaledPtr sca_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
-{
-    return ScaledPtr(new Scaled(Vector3(x,y,z),geom));
-}
-
-ScaledPtr sca1_from_val(real_t x, const GeometryPtr& geom)
-{
-    return ScaledPtr(new Scaled(Vector3(x,x,x),geom));
-}
-
-void export_Scaled()
-{
-  class_< Scaled, ScaledPtr, bases< MatrixTransformed > , boost::noncopyable >
-    ("Scaled", 
-	"The Scaled describes an object to which an anisotropic scaling has been applied.\n"
-	"The scaling transformation is given by the matrix:\n"
-	"|sx 0 0|\n"
-	"|0 sy 0|\n"
-	"|0 0 sz|\n"
-	"where (sx, sy, sz) denotes the scaling factors along the x, y and z-axis.",
-	init< const Vector3&, const GeometryPtr& >("Scaled(scale,geometry)",args("scale","geometry")) )
-    .def( "__init__", make_constructor( sca_from_val ) ) 
-    .def( "__init__", make_constructor( sca1_from_val ) ) 
-	.DEC_CT_PROPERTY_WDV(scale,Scaled,Scale,Vector3,DEFAULT_SCALE)
-    ;
-
-  implicitly_convertible< ScaledPtr, MatrixTransformedPtr >();
-
-}
-
-TranslatedPtr tr_from_val(real_t x, real_t y, real_t z, const GeometryPtr& geom)
-{
-    return TranslatedPtr(new Translated(Vector3(x,y,z),geom));
-}
-
-void export_Translated()
-{
-  class_< Translated, TranslatedPtr, bases< MatrixTransformed > , boost::noncopyable >
-    ("Translated",
-	"A Translated describes an object to which a translation of a specified vector is applied.\n"
-	"The translation is given by the homogeneous matrix:\n"
-    "|1 0 0 tx|\n"
-    "|0 1 0 ty|\n"
-    "|0 0 1 tz|\n"
-    "|0 0 0 1 |\n"
-	"where (tx, ty, tz) denotes the translation vector.\n",
-	 init< const Vector3&, const GeometryPtr& >
-     ("Translated(translation,geometry)",args("translation","geometry")) )
-    .def( "__init__", make_constructor( tr_from_val ) ) 
-    .DEC_CT_PROPERTY_WDV(translation,Translated,Translation,Vector3,DEFAULT_TRANSLATION)
-    ;
-
-  implicitly_convertible< TranslatedPtr, MatrixTransformedPtr >();
-
-}
-
-Matrix4ArrayPtr ifs_getAllTransformations(IFS * ifs)
-{
-  ITPtr transfos = dynamic_pointer_cast<IT>( ifs->getTransformation() );
-  GEOM_ASSERT(transfos);
-  const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
-  GEOM_ASSERT(matrixList);
-  return matrixList;
-}
-
-void export_IFS()
-{
-  class_< IFS, IFSPtr, bases< Transformed > , boost::noncopyable >
-    ("IFS", 
-	 "The IFS is a recursive transformation applied to an object. Transformation are specified as a set of affine transformations.\n"
-     "It is a method for generating fractals and the complexity is exponential with regard to numbers of iterations.",
-	init< uchar_t, const Transform4ArrayPtr&, const GeometryPtr& >
-       (args("depth","transfoList","geometry"),
-	"IFS(depth, transfoList, geometry)") )
-    .DEC_BT_NR_PROPERTY_WDV(depth,IFS,Depth,uchar_t,DEFAULT_DEPTH)
-	.DEC_PTR_PROPERTY(transfoList,IFS,TransfoList,Transform4ArrayPtr)
-	.DEC_PTR_NR_PROPERTY(geometry,IFS,Geometry,GeometryPtr)
-	.def("getAllTransformations",&ifs_getAllTransformations);
-    ;
-
-  implicitly_convertible< IFSPtr, TransformedPtr >();
 }
 

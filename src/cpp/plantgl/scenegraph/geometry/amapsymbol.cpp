@@ -66,7 +66,7 @@ SceneObjectPtr AmapSymbol::Builder::build( ) const {
 
 
 void AmapSymbol::Builder::destroy( ) {
-  FaceSetDestroy();
+  indexedMeshDestroy();
   if (FileName) delete FileName;
 }
 

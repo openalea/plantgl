@@ -36,25 +36,25 @@
 #include <plantgl/math/util_math.h>
 
 template <class U,class T, const U& (T::* func)() const >
-U get_prop_bt_from_class(T * obj){  return (obj->*func)(); }
+U get_prop_bt_from_class(const T * obj){  return (obj->*func)(); }
 
 template <class U,class T, const U (T::* func)() const >
-U get_prop_bt_nr_from_class(T * obj){  return (obj->*func)(); }
+U get_prop_bt_nr_from_class(const T * obj){  return (obj->*func)(); }
 
 template <class U,class T, U& (T::* func)() >
 void set_prop_bt_from_class(T * obj, U val){  (obj->*func)() = val; }
 
 template <class U,class T, const U& (T::* func)() const >
-const U& get_prop_ct_from_class(T * obj){  return (obj->*func)(); }
+const U& get_prop_ct_from_class(const T * obj){  return (obj->*func)(); }
 
 template <class U,class T, U& (T::* func)() >
 void set_prop_ct_from_class(T * obj, const U& val){  (obj->*func)() = val; }
 
 template <class U,class T, const U& (T::* func)() const >
-U get_prop_ptr_from_class(T * obj){  return (obj->*func)(); }
+U get_prop_ptr_from_class(const T * obj){  return (obj->*func)(); }
 
 template <class U,class T, const U (T::* func)() const >
-U get_prop_ptr_nr_from_class(T * obj){  return (obj->*func)(); }
+U get_prop_ptr_nr_from_class(const T * obj){  return (obj->*func)(); }
 
 template <class U,class T, U& (T::* func)() >
 void set_prop_ptr_from_class(T * obj, U val){  (obj->*func)() = val; }

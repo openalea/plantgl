@@ -62,6 +62,7 @@
 #include "scne_binaryparser.h"
 
 #include <plantgl/pgl_scenegraph.h>
+#include <plantgl/scenegraph/geometry/mesh_inline.h>
 
 #include "printer.h"
 #include <plantgl/math/util_math.h>

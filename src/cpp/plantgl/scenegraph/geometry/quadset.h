@@ -57,40 +57,16 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API QuadSet : public Mesh
+class SG_API QuadSet : public IndexedMesh<Index4Array>
 {
 
 public:
+  friend class FaceSet;
 
-  /// A structure which helps to build a QuadSet when parsing. 
-  struct SG_API Builder : public Mesh::Builder {
+  typedef IndexedMesh<Index4Array>::Builder<QuadSet> Builder;
 
-    /// A pointer to the IndexList field.
-    Index4ArrayPtr * IndexList;
+  static std::string getClassName() { return "QuadSet"; }
 
-    /// A pointer to the NormalIndexList field.
-    Index4ArrayPtr * NormalIndexList;
-
-    /// A pointer to the ColorIndexList field.
-    Index4ArrayPtr * ColorIndexList;
-
-    /// A pointer to the TexCoordIndexList field.
-    Index4ArrayPtr * TexCoordIndexList;
-
-    /// Constructor
-    Builder( );
-
-    /// Destructor.
-    virtual ~Builder( );
-
-    virtual SceneObjectPtr build( ) const;
-
-    virtual void destroy( );
-
-    virtual bool isValid( ) const;
-
-  };
-  
   /// Default Constructor. Build object is invalid.
   QuadSet();
 
@@ -141,171 +117,16 @@ public:
   /// Destructor
   virtual ~QuadSet( );
 
-  virtual bool apply( Action& action );
+  virtual bool apply( Action& action )
+  { return action.process(this); }
 
   /// Deep copy of \e this.
   virtual SceneObjectPtr copy() const ;
-
-  /// Returns \b IndexList values.
-  const Index4ArrayPtr& getIndexList( ) const ;
-
-  /// Returns \b IndexList field.
-  Index4ArrayPtr& getIndexList( );
-
-  /** Returns the \e i-th index of \b IndexList.
-      \pre
-      - \e i must be belong to the range [0,size of \b IndexList[. */
-  const Index4& getIndexListAt( uint_t i ) const ;
-
-  /** Returns the \e i-th index of \b IndexList.
-      \pre
-      - \e i must be belong to the range [0,size of \b IndexList[. */
-  Index4& getIndexListAt( uint_t i ) ;
-
-  /// Returns the size of \b IndexList.
-  virtual uint_t getIndexListSize( ) const;
-  
-  /// Returns \b NormalIndexList values.
-  inline const Index4ArrayPtr& getNormalIndexList( ) const { return __normalIndexList; }
-
-  /// Returns \b NormalIndexList field.
-  inline Index4ArrayPtr& getNormalIndexList( )  { return __normalIndexList; }
-
-  /** Returns the \e i-th value of \b NormalIndexList.
-      \pre
-      - \e i must belong to the range [0,size of \b IndexList). */
-  inline const Index4& getNormalIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->getSize()) return __normalIndexList->getAt(i); }
-
-  /** Returns the \e i-th value of \b IndexList.
-      \pre
-      - \e i must belong to the range [0,size of \b IndexList). */
-  inline Index4& getNormalIndexListAt( uint_t i )
-  { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->getSize()) return __normalIndexList->getAt(i); }
-
-  /// Returns the size of \b NormalIndexList.
-  inline uint_t getNormalIndexListSize( ) const { return (__normalIndexList?__normalIndexList->getSize():0); }
-
-  /// Returns \b ColorIndexList values.
-  inline const Index4ArrayPtr& getColorIndexList( ) const { return __colorIndexList; }
-
-  /// Returns \b ColorIndexList field.
-  inline Index4ArrayPtr& getColorIndexList( )  { return __colorIndexList; }
-
-  /** Returns the \e i-th value of \b ColorIndexList.
-      \pre
-      - \e i must belong to the range [0,size of \b IndexList). */
-  inline const Index4& getColorIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->getSize()) return __colorIndexList->getAt(i); }
-
-  /** Returns the \e i-th value of \b IndexList.
-      \pre
-      - \e i must belong to the range [0,size of \b IndexList). */
-  inline Index4& getColorIndexListAt( uint_t i )
-  { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->getSize()) return __colorIndexList->getAt(i); }
-
-  /// Returns the size of \b ColorIndexList.
-  inline uint_t getColorIndexListSize( ) const { return (__colorIndexList?__colorIndexList->getSize():0); }
-
-  /// Returns \b TexCoordIndexList values.
-  inline const Index4ArrayPtr& getTexCoordIndexList( ) const { return __texCoordIndexList; }
-
-  /// Returns \b TexCoordIndexList field.
-  inline Index4ArrayPtr& getTexCoordIndexList( )  { return __texCoordIndexList; }
-
-  /** Returns the \e i-th value of \b TexCoordIndexList.
-      \pre
-      - \e i must belong to the range [0,size of \b IndexList). */
-  inline const Index4& getTexCoordIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->getSize()) return __texCoordIndexList->getAt(i); }
-
-  /** Returns the \e i-th value of \b IndexList.
-      \pre
-      - \e i must belong to the range [0,size of \b IndexList). */
-  inline Index4& getTexCoordIndexListAt( uint_t i )
-  { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->getSize()) return __texCoordIndexList->getAt(i); }
-
-  /// Returns the size of \b TexCoordIndexList.
-  inline uint_t getTexCoordIndexListSize( ) const { return (__texCoordIndexList?__texCoordIndexList->getSize():0); }
-
-  /** Returns the \e i-th normal to (normally correxponding to the \e i-th face).
-      \pre
-	  - \e NormalList should be set
-      - \e i must be belong to the range [0,size of \b NormalList[. */
-  const TOOLS(Vector3)& getNormalAt( uint_t i )  const ;
-  
-  /** Returns the normal at the \e j-th point of the \e i-th face.
-      \pre
-      - \e i must be belong to the range [0,size of \b IndexList[. 
-      - \e j must belong to the range [0,2]. */
-  const TOOLS(Vector3)& getNormalAt( uint_t i, uint_t j ) const ;
-
-  /** Returns the \e j-th point of the \e i-th face.
-      \warning
-	  - \e PointList should be set
-      - \e i must belong to the range [0,size of \b IndexList[;
-      - \e j must belong to the range [0,2]. */
-  const TOOLS(Vector3)& getFacePointAt( uint_t i, uint_t j ) const ;
-    
-  /** Returns the \e j-th texture coordinates of the \e i-th face.
-      \warning
-	  - \e TexCoordList should be set
-      - \e i must be belong to the range [0,size of \b TexCoordList[. */
-  const TOOLS(Vector2)& getTexCoordAt( uint_t i ) const ;
-
-  /** Returns the \e j-th texture coordinates of the \e i-th face.
-      \warning
-	  - \e TexCoordList should be set
-      - \e i must belong to the range [0,size of \b IndexList[;
-      - \e j must belong to the range [0,2]. */
-  const TOOLS(Vector2)& getTexCoordAt( uint_t i, uint_t j ) const ;
-    
-  /** Returns the \e j-th colors of the \e i-th face.
-      \warning
-      - \e i must be belong to the range [0,size of \b ColorList[. */
-  const Color4& getColorAt( uint_t i ) const ;
-    
-  /** Returns the \e j-th colors of the \e i-th face.
-      \warning
-      - \e i must belong to the range [0,size of \b IndexList[;
-      - \e j must belong to the range [0,2]. */
-  const Color4& getColorAt( uint_t i, uint_t j ) const ;
 
   virtual bool isValid( ) const;
 
   virtual ExplicitModelPtr
   transform( const Transformation3DPtr& transformation ) const;
-
-  // virtual TOOLS(bofstream)& write( TOOLS(bofstream)& stream ) const;
-
-  virtual Point3ArrayPtr computeNormalPerVertex() const ;
-  virtual Point3ArrayPtr computeNormalPerFace() const ;
-
-   /// Returns whether \b NormalIndexList is set to its default value.
-  inline bool isNormalIndexListToDefault() const { return (!__normalIndexList); }
-
-   /// Returns whether \b ColorIndexList is set to its default value.
-  inline bool isColorIndexListToDefault() const { return (!__colorIndexList); }
-
-   /// Returns whether \b TexCoordIndexList is set to its default value.
-  inline bool isTexCoordIndexListToDefault() const { return (!__texCoordIndexList); }
-
-  /// Returns the nb of points of the \b i-th face.
-  virtual uint_t getFaceSize( uint_t i ) const { return 4; }
-
-  protected:
-
-  /// The \b IndexList field.
-  Index4ArrayPtr __indexList;
-
-  /// The \b NormalIndexList field.
-  Index4ArrayPtr __normalIndexList;
-
-  /// The \b TexCoordIndexList field.
-  Index4ArrayPtr __texCoordIndexList;
-
-  /// The \b ColorIndexList field.
-  Index4ArrayPtr __colorIndexList;
 
 };
 

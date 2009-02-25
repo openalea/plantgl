@@ -66,50 +66,6 @@ DEF_POINTEE(EulerRotation)
 DEF_POINTEE(BaseOrientation)
 DEF_POINTEE(Transform4)
 
-/*
-object tr2D(Transformation2D * t2, object arg){
-	extract<Point2ArrayPtr> ex_p2(arg);
-	if(ex_p2.check())return object(t2->transform(ex_p2()));
-	else{
-		extract<Point3ArrayPtr> ex_p3(arg);
-		if(ex_p3.check())return object(t2->transform(ex_p3()));
-		else {
-			extract<Point2MatrixPtr> ex_p2m(arg);
-			if(ex_p2m.check())return object(t2->transform(ex_p2m()));
-			else{
-				extract<Point3MatrixPtr> ex_p3m(arg);
-				if(ex_p3m.check())return object(t2->transform(ex_p3m()));
-				else{
-					Vector2 a = extract<Vector2>(arg)();
-					Point2ArrayPtr pa(new Point2Array(1,a));
-					return object(t2->transform(pa)->getAt(0));
-				}
-			}
-		}
-	}
-}
-
-object tr3D(Transformation3D * t3, object arg){
-	extract<Point3ArrayPtr> ex_p3(arg);
-	if(ex_p3.check())return object(t3->transform(ex_p3()));
-	else{
-		extract<Point4ArrayPtr> ex_p4(arg);
-		if(ex_p4.check())return object(t3->transform(ex_p4()));
-		else {
-			extract<Point3MatrixPtr> ex_p3m(arg);
-			if(ex_p3m.check())return object(t3->transform(ex_p3m()));
-			else{
-				extract<Point4MatrixPtr> ex_p4m(arg);
-				if(ex_p4m.check())return object(t3->transform(ex_p4m()));
-				else{
-					Vector3 a = extract<Vector3>(arg)();
-					Point3ArrayPtr pa(new Point3Array(1,a));
-					return object(t3->transform(pa)->getAt(0));
-				}
-			}
-		}
-	}
-}*/
 
 void export_Transformation()
 {

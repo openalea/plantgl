@@ -1,13 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -31,18 +29,23 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file version.h
-    \brief File for accessing to PGL version.
-*/
+#include <plantgl/scenegraph/geometry/faceset.h>
+#include <plantgl/scenegraph/geometry/triangleset.h>
+#include <plantgl/scenegraph/geometry/quadset.h>
+#include "export_mesh.h"
 
+DEF_POINTEE( FaceSet )
 
-#ifndef __plantgl_version_h__
-#define __plantgl_version_h__
+void export_FaceSet()
+{
 
-/// PGL Version macro
-#define PGL_VERSION 0x020900
-#define PGL_SVNREVISION "$Revision$"
+    class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
+	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n"
+	  "Faces are specified using set of tuples of n indices (Index) pointing to a list of points.", no_init)
+	  .def(init<const TriangleSet&>("Construct from TriangleSet",args("obj")))
+	  .def(init<const QuadSet&>("Construct from QuadSet",args("obj")))
+	  .def(mesh_func<FaceSet>())
+	  ;
 
-#endif
-
-
+     implicitly_convertible<FaceSetPtr, MeshPtr>();
+}

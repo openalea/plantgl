@@ -329,10 +329,33 @@ Mesh::getFaceCenter( uint_t i ) const
     return center/nbpoints;
 }
 
-const Vector3& Mesh::getPointAt( uint_t i ) const {
-  GEOM_ASSERT(__pointList.isValid());
-  GEOM_ASSERT(i < __pointList->getSize());
-  return __pointList->getAt(i);
+
+Point3ArrayPtr 
+Mesh::computeNormalPerVertex() const {
+    Point3ArrayPtr normalList(new Point3Array(__pointList->getSize()));
+    for(uint_t j=0; j < getIndexListSize(); j++){
+        Vector3 _norm = cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0),
+                              getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0));
+        for(uint_t i = 0; i < getFaceSize(j); i++){
+            uint_t _index = getFacePointIndexAt(j,i);
+            _index,normalList->getAt(_index)+=_norm;
+        }
+    }
+    for(Point3Array::iterator _it=normalList->getBegin();_it!=normalList->getEnd();_it++)
+        _it->normalize();
+	return normalList;
+}
+
+Point3ArrayPtr 
+Mesh::computeNormalPerFace() const {
+    Point3ArrayPtr normalList(new Point3Array(getIndexListSize())); 
+    for(uint_t j=0; j < getIndexListSize(); j++){ 
+	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
+			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
+    }
+    for(Point3Array::iterator _it=normalList->getBegin();_it!=normalList->getEnd();_it++)
+	_it->normalize();
+	return normalList;
 }
 
 

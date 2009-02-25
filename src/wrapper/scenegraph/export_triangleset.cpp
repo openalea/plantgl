@@ -30,19 +30,7 @@
  */
 
 #include <plantgl/scenegraph/geometry/triangleset.h>
-#include <plantgl/scenegraph/geometry/quadset.h>
-#include <plantgl/scenegraph/geometry/polyline.h>
-#include <plantgl/scenegraph/geometry/faceset.h>
-#include <plantgl/scenegraph/geometry/amapsymbol.h>
-#include <plantgl/scenegraph/container/indexarray.h>
-#include <plantgl/scenegraph/container/pointarray.h>
-
-#include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/export_property.h>
-
-#include <boost/python.hpp>
-#include <string>
-#include <sstream>
+#include "export_mesh.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -51,180 +39,17 @@ using namespace boost::python;
 #define bp boost::python
 
 DEF_POINTEE( TriangleSet )
-DEF_POINTEE( FaceSet )
-DEF_POINTEE( AmapSymbol )
-
-/*
-struct tr_pickle_suite : boost::python::pickle_suite
-{
-	static tuple getinitargs(TriangleSet const& tr)
-	{
-		return make_tuple();
-	}
-	static tuple getstate(TriangleSet const& tr)
-	{
-		int _default = (tr.getPointList()        ?1:0)+
-					 (tr.getIndexList()        ?1<<1:0)+
-					 (tr.getNormalList()       ?1<<2:0)+
-					 (tr.getNormalIndexList()  ?1<<3:0)+
-					 (tr.getColorList()        ?1<<4:0)+
-					 (tr.getColorIndexList()   ?1<<5:0)+
-					 (tr.getTexCoordList()     ?1<<6:0)+
-					 (tr.getTexCoordIndexList()?1<<7:0)+
-					 (tr.getSkeleton()         ?1<<8:0);
-		boost::python::list l;
-		l.append(tr.getNormalPerVertex());
-		l.append(tr.getColorPerVertex());
-		l.append(tr.getCCW());
-		l.append(tr.getSolid());
-		l.append(_default);
-
-		if(tr.getPointList())l.append(tr.getPointList());
-		if(tr.getIndexList())l.append(tr.getIndexList());
-		if(tr.getNormalList())l.append(tr.getNormalList());
-		if(tr.getNormalIndexList())l.append(tr.getNormalIndexList());
-		if(tr.getColorList())l.append(tr.getColorList());
-		if(tr.getColorIndexList())l.append(tr.getColorIndexList());
-		if(tr.getTexCoordList())l.append(tr.getTexCoordList());
-		if(tr.getTexCoordIndexList())l.append(tr.getTexCoordIndexList());
-		if(tr.getSkeleton())l.append(tr.getSkeleton());
-
-		return tuple(l);
-	}
-	static void setstate(TriangleSet& tr, tuple state)
-	{
-
-		tr.getNormalPerVertex() = extract<bool>(state[0])();
-		tr.getColorPerVertex() =  extract<bool>(state[1])();
-		tr.getCCW() = extract<bool>(state[2])();
-		tr.getSolid() = extract<bool>(state[3])();
-
-		int _default = extract<int>(state[4])();
-		int index = 5;
-
-		if (_default & 1)      tr.getPointList() = extract<Point3ArrayPtr>(state[index++])();
-		if (_default & 1 << 1) tr.getIndexList() = extract<Index3ArrayPtr>(state[index++])();
-		if (_default & 1 << 2) tr.getNormalList() = extract<Point3ArrayPtr>(state[index++])();
-		if (_default & 1 << 3) tr.getNormalIndexList() = extract<Index3ArrayPtr>(state[index++])();
-		if (_default & 1 << 4) tr.getColorList() = extract<Color4ArrayPtr>(state[index++])();
-		if (_default & 1 << 5) tr.getColorIndexList() = extract<Index3ArrayPtr>(state[index++])();
-		if (_default & 1 << 6) tr.getTexCoordList() = extract<Point2ArrayPtr>(state[index++])();
-		if (_default & 1 << 7) tr.getTexCoordIndexList() = extract<Index3ArrayPtr>(state[index++])();
-		if (_default & 1 << 8) tr.getSkeleton() = extract<PolylinePtr>(state[index++])();
-	}
-};*/
 
 
 void export_TriangleSet()
 {
-  class_<TriangleSet, TriangleSetPtr, bases<Mesh>, boost::noncopyable>
+    class_<TriangleSet, TriangleSetPtr, bases<Mesh>, boost::noncopyable>
 	( "TriangleSet", 
-	  "A TriangleSet describes a surface formed by a set of connected triangles, i.e. three sided polygons.\n Triangles are specified using set of tuples of 3 indices (Index3) pointing to a list of points.",
-	  init<Point3ArrayPtr, Index3ArrayPtr, Point3ArrayPtr,
-	           optional<Index3ArrayPtr,Color4ArrayPtr,Index3ArrayPtr,
-			            Point2ArrayPtr,Index3ArrayPtr,
-						bool, bool, bool, bool, PolylinePtr> >
-			("TriangleSet(Point3Array pointList, Index3Array indexList [, Point3Array normalList, Index3Array nomalIndexList, "
-			 "Color4Array colorList, Index3Array colorIndexList, Point2Array texCoordList, Index3Array texCoordIndexList, "
-			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
-	         (bp::arg("pointList")         = Point3ArrayPtr(),
-			  bp::arg("indexList")         = Index3ArrayPtr(),
-			  bp::arg("normalList")        = Point3ArrayPtr(),
-			  bp::arg("nomalIndexList")    = Index3ArrayPtr(),
-			  bp::arg("colorList")         = Color4ArrayPtr(),
-			  bp::arg("colorIndexList")    = Index3ArrayPtr(),
-			  bp::arg("texCoordList")      = Point2ArrayPtr(),
-			  bp::arg("texCoordIndexList") = Index3ArrayPtr(),
-			  bp::arg("normalPerVertex")= Mesh::DEFAULT_NORMALPERVERTEX,
-			  bp::arg("colorPerVertex") = Mesh::DEFAULT_COLORPERVERTEX,
-			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
-			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
-			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
-
-	.def( "deepcopy", &TriangleSet::copy )
-	.DEC_PTR_PROPERTY(indexList,            TriangleSet,IndexList,        Index3ArrayPtr)
-	.DEC_PTR_PROPERTY_WD(normalIndexList,   TriangleSet,NormalIndexList,  Index3ArrayPtr)
-	.DEC_PTR_PROPERTY_WD(colorIndexList,    TriangleSet,ColorIndexList,   Index3ArrayPtr)
-	.DEC_PTR_PROPERTY_WD(texCoordIndexList, TriangleSet,TexCoordIndexList,Index3ArrayPtr)
- 
-    .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint_t,uint_t) const)&TriangleSet::getNormalAt ,  return_value_policy<copy_const_reference>())
-    .def( "colorAt",    (const Color4&  (TriangleSet::*)(uint_t,uint_t) const)&TriangleSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (TriangleSet::*)(uint_t,uint_t) const)&TriangleSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
-
-    .def( "normalAt",   (const Vector3& (TriangleSet::*)(uint_t) const)&TriangleSet::getNormalAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorAt",    (const Color4&  (TriangleSet::*)(uint_t) const)&TriangleSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (TriangleSet::*)(uint_t) const)&TriangleSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
-
-    .def( "indexAt",        (const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
-    .def( "normalIndexAt",  (const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorIndexAt",   (const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordIndexAt",(const Index3&  (TriangleSet::*)(uint_t) const)&TriangleSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
-
-	// .def_pickle(tr_pickle_suite());
-    ;
+	  "A TriangleSet describes a surface formed by a set of connected triangles, i.e. three sided polygons.\n"
+	  " Triangles are specified using set of tuples of 3 indices (Index3) pointing to a list of points.",no_init)
+	  .def(mesh_func<TriangleSet>())
+	  ;
 
   implicitly_convertible<TriangleSetPtr, MeshPtr>();
 }
 
-
-void export_FaceSet()
-{
-  class_<FaceSet, FaceSetPtr, bases<Mesh>, boost::noncopyable>
-	( "FaceSet", "A FaceSet describes a surface formed by a set of connected faces.\n"
-	  "Faces are specified using set of tuples of n indices (Index) pointing to a list of points.", 
-	  init<Point3ArrayPtr, IndexArrayPtr, Point3ArrayPtr,
-	           optional<IndexArrayPtr,Color4ArrayPtr,IndexArrayPtr,
-			            Point2ArrayPtr,IndexArrayPtr,
-						bool, bool, bool, bool, PolylinePtr> >
-			("FaceSet (Point3Array pointList, IndexArray indexList [, Point3Array normalList, IndexArray nomalIndexList, "
-			 "Color4Array colorList, IndexArray colorIndexList, Point2Array texCoordList, IndexArray texCoordIndexList, "
-			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
-	         (bp::arg("pointList")         = Point3ArrayPtr(),
-			  bp::arg("indexList")         = IndexArrayPtr(),
-			  bp::arg("normalList")        = Point3ArrayPtr(),
-			  bp::arg("nomalIndexList")    = IndexArrayPtr(),
-			  bp::arg("colorList")         = Color4ArrayPtr(),
-			  bp::arg("colorIndexList")    = IndexArrayPtr(),
-			  bp::arg("texCoordList")      = Point2ArrayPtr(),
-			  bp::arg("texCoordIndexList") = IndexArrayPtr(),
-			  bp::arg("normalPerVertex")= Mesh::DEFAULT_NORMALPERVERTEX,
-			  bp::arg("colorPerVertex") = Mesh::DEFAULT_COLORPERVERTEX,
-			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
-			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
-			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
-    .def( "deepcopy", &FaceSet::copy )
-
-	.DEC_PTR_PROPERTY(indexList,            FaceSet,IndexList,        IndexArrayPtr)
-	.DEC_PTR_PROPERTY_WD(normalIndexList,   FaceSet,NormalIndexList,  IndexArrayPtr)
-	.DEC_PTR_PROPERTY_WD(colorIndexList,    FaceSet,ColorIndexList,   IndexArrayPtr)
-	.DEC_PTR_PROPERTY_WD(texCoordIndexList, FaceSet,TexCoordIndexList,IndexArrayPtr)
- 
-    .def( "normalAt",   (const Vector3& (FaceSet::*)(uint_t,uint_t) const)&FaceSet::getNormalAt ,  return_value_policy<copy_const_reference>())
-    .def( "colorAt",    (const Color4&  (FaceSet::*)(uint_t,uint_t) const)&FaceSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (FaceSet::*)(uint_t,uint_t) const)&FaceSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
-
-    .def( "normalAt",   (const Vector3& (FaceSet::*)(uint_t) const)&FaceSet::getNormalAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorAt",    (const Color4&  (FaceSet::*)(uint_t) const)&FaceSet::getColorAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordAt", (const Vector2& (FaceSet::*)(uint_t) const)&FaceSet::getTexCoordAt, return_value_policy<copy_const_reference>() )
-
-    .def( "indexAt",        (const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getIndexListAt,         return_value_policy<copy_const_reference>() )
-    .def( "normalIndexAt",  (const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorIndexAt",   (const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordIndexAt",(const Index&  (FaceSet::*)(uint_t) const)&FaceSet::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
-    ;
-  implicitly_convertible<FaceSetPtr, MeshPtr>();
-}
-
-void export_AmapSymbol()
-{
-  class_<AmapSymbol, AmapSymbolPtr, bases<FaceSet> >
-    ( "AmapSymbol", 
-	  "The AmapSymbol describes an object of class of Mesh stored in the SMB file format of the Amap software."
-	  "This is provided for ascendant compatibility.", 
-	  init< optional<std::string,bool> >("AmapSymbol(filename)"))
-    .def("readFile",&AmapSymbol::readFile)
-	.DEC_BT_PROPERTY(filename,AmapSymbol,FileName,std::string)
-    ;
-  implicitly_convertible<AmapSymbolPtr, FaceSetPtr>();
-
-}
