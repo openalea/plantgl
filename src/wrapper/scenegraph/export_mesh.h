@@ -116,8 +116,11 @@ template<class MeshType, class IndexArrayPtrType, IndexArrayPtrType& (IndexedMes
 void set_prop_from_indexedmesh(MeshType * obj, IndexArrayPtrType value){ (obj->*func)() = value; }
 
 #define DEC_MESH_PROPERTY(PROPNAME,MeshClass,PROP,TYPE) \
-    add_property(#PROPNAME,&get_prop_from_indexedmesh<MeshClass,MeshClass::IndexArrayPtr,&IndexedMesh<MeshClass::IndexArray>::get##PROP>, \
-	&set_prop_from_indexedmesh<MeshClass,MeshClass::IndexArrayPtr,&IndexedMesh<MeshClass::IndexArray>::get##PROP> )
+    add_property(#PROPNAME, \
+      &get_prop_from_indexedmesh<MeshClass,typename MeshClass::IndexArrayPtr, \
+                                 &IndexedMesh<typename MeshClass::IndexArray>::get##PROP>, \
+      &set_prop_from_indexedmesh<MeshClass, typename MeshClass::IndexArrayPtr, \
+                                 &IndexedMesh<typename  MeshClass::IndexArray>::get##PROP> )
 
 #define DEC_MESH_PROPERTY_WD(PROPNAME,_CLASS,PROP,TYPE) \
   DEC_MESH_PROPERTY(PROPNAME,_CLASS,PROP,TYPE) \
@@ -127,26 +130,30 @@ void set_prop_from_indexedmesh(MeshType * obj, IndexArrayPtrType value){ (obj->*
 template<class MeshType>
 class mesh_func : public boost::python::def_visitor<mesh_func<MeshType> >
 {
+    typedef typename MeshType::IndexArrayPtr MeshIndexArrayPtr;
+    typedef typename MeshType::IndexArray MeshIndexArray;
+    typedef typename MeshIndexArray::element_type MeshIndex;
+
     friend class boost::python::def_visitor_access;
 
     template <class classT>
     void visit(classT& c) const
     {
-	  c.def(init<Point3ArrayPtr, MeshType::IndexArrayPtr, Point3ArrayPtr,
-	           optional<MeshType::IndexArrayPtr,Color4ArrayPtr,MeshType::IndexArrayPtr,
-			            Point2ArrayPtr,MeshType::IndexArrayPtr,
+	  c.def(init<Point3ArrayPtr, MeshIndexArrayPtr, Point3ArrayPtr,
+	           optional<MeshIndexArrayPtr,Color4ArrayPtr,MeshIndexArrayPtr,
+			            Point2ArrayPtr,MeshIndexArrayPtr,
 						bool, bool, bool, bool, PolylinePtr> >
 			("__init__(Point3Array pointList, IndexArray indexList [, Point3Array normalList, IndexArray nomalIndexList, "
 			 "Color4Array colorList, IndexArray colorIndexList, Point2Array texCoordList, IndexArray texCoordIndexList, "
 			 "bool normalPerVertex, bool colorPerVertex, bool ccw, bool solid, Polyline skeleton])",
 	         (bp::arg("pointList")         = Point3ArrayPtr(),
-			  bp::arg("indexList")         = MeshType::IndexArrayPtr(),
+			  bp::arg("indexList")         = MeshIndexArrayPtr(),
 			  bp::arg("normalList")        = Point3ArrayPtr(),
-			  bp::arg("nomalIndexList")    = MeshType::IndexArrayPtr(),
+			  bp::arg("nomalIndexList")    = MeshIndexArrayPtr(),
 			  bp::arg("colorList")         = Color4ArrayPtr(),
-			  bp::arg("colorIndexList")    = MeshType::IndexArrayPtr(),
+			  bp::arg("colorIndexList")    = MeshIndexArrayPtr(),
 			  bp::arg("texCoordList")      = Point2ArrayPtr(),
-			  bp::arg("texCoordIndexList") = MeshType::IndexArrayPtr(),
+			  bp::arg("texCoordIndexList") = MeshIndexArrayPtr(),
 			  bp::arg("normalPerVertex")= Mesh::DEFAULT_NORMALPERVERTEX,
 			  bp::arg("colorPerVertex") = Mesh::DEFAULT_COLORPERVERTEX,
 			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
@@ -154,10 +161,10 @@ class mesh_func : public boost::python::def_visitor<mesh_func<MeshType> >
 			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
 	.def( "deepcopy", &MeshType::copy )
 
-	.DEC_MESH_PROPERTY(indexList,            MeshType, IndexList,        IndexArrayPtrType)
-	.DEC_MESH_PROPERTY_WD(normalIndexList,   MeshType, NormalIndexList,  IndexArrayPtrType)
-	.DEC_MESH_PROPERTY_WD(colorIndexList,    MeshType, ColorIndexList,   IndexArrayPtrType)
-	.DEC_MESH_PROPERTY_WD(texCoordIndexList, MeshType, TexCoordIndexList,IndexArrayPtrType)
+	.DEC_MESH_PROPERTY(indexList,            MeshType, IndexList,         MeshIndexArrayPtr)
+	.DEC_MESH_PROPERTY_WD(normalIndexList,   MeshType, NormalIndexList,   MeshIndexArrayPtr)
+	.DEC_MESH_PROPERTY_WD(colorIndexList,    MeshType, ColorIndexList,    MeshIndexArrayPtr)
+	.DEC_MESH_PROPERTY_WD(texCoordIndexList, MeshType, TexCoordIndexList, MeshIndexArrayPtr)
  
     .def( "faceNormalAt",   (const Vector3& (MeshType::*)(uint_t,uint_t) const)&MeshType::getFaceNormalAt ,  return_value_policy<copy_const_reference>())
     .def( "faceColorAt",    (const Color4&  (MeshType::*)(uint_t,uint_t) const)&MeshType::getFaceColorAt,    return_value_policy<copy_const_reference>() )
@@ -167,10 +174,10 @@ class mesh_func : public boost::python::def_visitor<mesh_func<MeshType> >
     .def( "colorAt",    (const Color4&  (MeshType::*)(uint_t) const)&MeshType::getColorAt,    return_value_policy<copy_const_reference>() )
     .def( "texCoordAt", (const Vector2& (MeshType::*)(uint_t) const)&MeshType::getTexCoordAt, return_value_policy<copy_const_reference>() )
 
-	.def( "indexAt",        (const MeshType::IndexArray::element_type&  (MeshType::*)(uint_t) const)&MeshType::getIndexListAt,         return_value_policy<copy_const_reference>() )
-    .def( "normalIndexAt",  (const MeshType::IndexArray::element_type&  (MeshType::*)(uint_t) const)&MeshType::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
-    .def( "colorIndexAt",   (const MeshType::IndexArray::element_type&  (MeshType::*)(uint_t) const)&MeshType::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
-    .def( "texCoordIndexAt",(const MeshType::IndexArray::element_type&  (MeshType::*)(uint_t) const)&MeshType::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
+	.def( "indexAt",        (const MeshIndex&  (MeshType::*)(uint_t) const)&MeshType::getIndexListAt,         return_value_policy<copy_const_reference>() )
+    .def( "normalIndexAt",  (const MeshIndex&  (MeshType::*)(uint_t) const)&MeshType::getNormalIndexListAt,   return_value_policy<copy_const_reference>() )
+    .def( "colorIndexAt",   (const MeshIndex&  (MeshType::*)(uint_t) const)&MeshType::getColorIndexListAt,    return_value_policy<copy_const_reference>() )
+    .def( "texCoordIndexAt",(const MeshIndex&  (MeshType::*)(uint_t) const)&MeshType::getTexCoordIndexListAt, return_value_policy<copy_const_reference>() )
         ;
     }
 };
