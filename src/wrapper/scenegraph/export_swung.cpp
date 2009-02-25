@@ -127,7 +127,7 @@ void export_Swung()
   
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >
     ("Swung","A surface defined by the revolution and interpolation of several 2D profiles along Z axis.", 
-	init<Curve2DArrayPtr,RealArrayPtr,optional<uchar_t,bool,uint_t,uint_t>>
+	init<Curve2DArrayPtr,RealArrayPtr,optional<uchar_t,bool,uint_t,uint_t> >
 	  ("Swung(profileList,angleList,slices,ccw,degree,stride)",
 	  (bp::arg("profileList"),
 	   bp::arg("angleList"),
