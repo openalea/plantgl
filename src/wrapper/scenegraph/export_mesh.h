@@ -149,7 +149,7 @@ class mesh_func : public boost::python::def_visitor<mesh_func<MeshType> >
 	         (bp::arg("pointList")         = Point3ArrayPtr(),
 			  bp::arg("indexList")         = MeshIndexArrayPtr(),
 			  bp::arg("normalList")        = Point3ArrayPtr(),
-			  bp::arg("nomalIndexList")    = MeshIndexArrayPtr(),
+			  bp::arg("normalIndexList")    = MeshIndexArrayPtr(),
 			  bp::arg("colorList")         = Color4ArrayPtr(),
 			  bp::arg("colorIndexList")    = MeshIndexArrayPtr(),
 			  bp::arg("texCoordList")      = Point2ArrayPtr(),

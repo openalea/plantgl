@@ -1922,6 +1922,9 @@ ParaboloidFieldList:
  | ParaboloidFieldList TokShapeFactor Real {
      GEOM_PARSER_SET_FIELD($1,Shape,$3); $$=$1;
    }
+ | ParaboloidFieldList TokShape Real {
+     GEOM_PARSER_SET_FIELD($1,Shape,$3); $$=$1;
+   }
  | ParaboloidFieldList TokSolid TokBool {
      GEOM_PARSER_SET_FIELD($1,Solid,$3); $$=$1;
    }

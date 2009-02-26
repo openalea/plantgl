@@ -54,6 +54,14 @@ string m3_repr( const Matrix3& m )
 inline Matrix3 scaling3(const Vector3& v) { return Matrix3::scaling(v); }
 inline Matrix3 scaling1(real_t v) { return Matrix3::scaling(v); }
 
+object pyToAxisAngle(const Matrix3 *m) 
+{ 
+	Vector3 axis;
+	real_t angle;
+	m->toAxisAngle(axis,angle);
+	return make_tuple(axis,angle);
+}
+
 void export_Matrix3()
 {
   class_< Matrix3 >( "Matrix3", init< optional< real_t,real_t,real_t,
@@ -67,6 +75,7 @@ void export_Matrix3()
     .def( "data", &matrix_data<Matrix3,9> )
     .def( "eulerAnglesZYX", &Matrix3::eulerAnglesZYX )
     .def( "eulerAnglesXYZ", &Matrix3::eulerAnglesXYZ )
+	.def( "toAxisAngle", &pyToAxisAngle)
     .def( "__str__", m3_repr )
     .def( "__repr__", m3_repr )
     .def("scaling",&scaling3)

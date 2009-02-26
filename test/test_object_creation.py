@@ -69,6 +69,14 @@ def create_default_scene():
         s += sh
     return s
 
+def defaultobj_func_generator(testfunc):
+    for geom in create_default_objects():
+        yield testfunc, geom
+    for geom in create_default_transforms():
+        yield testfunc, geom
+    for i,sh in enumerate(create_default_shapes()):
+        yield testfunc, sh
+    
 def test_create_default_objects():
     s = create_default_scene()
     d = Discretizer()
@@ -103,6 +111,11 @@ def randuninttuple(nbvalues = 3,minvalue = 0,maxvalue = maxdim):
         if not v in t:
             t.append(v)
     return tuple(t)
+
+def randnormal():
+    v = Vector3(uniform(0,1),uniform(0,1),uniform(0,1))
+    v.normalize()
+    return v
 
 def randbool(): return bool(randint(0,1))
 
@@ -161,7 +174,50 @@ def create_random_objects():
     pflist = [randhalfcircle(nbpts) for i in xrange(dim)]
     yield Swung(pflist,anglist)
     yield Text('test2',position=randtuple(),screencoordinates=randbool(),fontstyle=Font(family="courrier new",size=randint(6,20),bold=randbool(),italic=randbool()))
-    yield TriangleSet([randtuple() for i in xrange(dim)],[randuninttuple(3,0,dim-1) for i in xrange(10,maxelem)])
+    dim = randint(10,maxelem)
+    yield TriangleSet([randtuple() for i in xrange(dim)],
+                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    dim = randint(10,maxelem)
+    colorPerVertex = randbool()                       
+    yield TriangleSet([randtuple() for i in xrange(dim)],
+                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                       colorList=[randinttuple(4,0,255) for i in xrange(dim if colorPerVertex else maxelem)],
+                       colorPerVertex=colorPerVertex)
+    dim = randint(10,maxelem)
+    yield TriangleSet([randtuple() for i in xrange(dim)],
+                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      colorList=[randinttuple(4,0,255) for i in xrange(dim)],
+                      colorIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    dim = randint(10,maxelem)
+    normalPerVertex = randbool()                       
+    yield TriangleSet([randtuple() for i in xrange(dim)],
+                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      normalList=[randnormal() for i in xrange(dim if normalPerVertex else maxelem)],
+                      normalPerVertex=normalPerVertex)
+    dim = randint(10,maxelem)
+    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      normalList=[randnormal() for i in xrange(dim)],
+                      normalIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    dim = randint(10,maxelem)
+    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      texCoordList=[randtuple(2) for i in xrange(dim)])
+    dim = randint(10,maxelem)
+    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      texCoordList=[randtuple(2) for i in xrange(dim)],
+                      texCoordIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      normalList=[randnormal() for i in xrange(dim)],
+                      normalIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      colorList=[randinttuple(4,0,255) for i in xrange(dim)],
+                      colorIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      texCoordList=[randtuple(2) for i in xrange(dim)],
+                      texCoordIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
+                      ccw = randbool(),skeleton=Polyline([randtuple() for i in xrange(randint(2,maxelem))]))
+
 
 rdtransgen = {0 : (lambda : Matrix4.translation(randtuple(maxvalue=1))),
               1 : (lambda : Matrix4(Matrix3.scaling(randtuple(maxvalue=1)))),
@@ -191,6 +247,18 @@ def randmaterial():
     amb = randinttuple(3,0,255)
     diffuse = float(randint(0,255)) / max(amb)    
     return Material(ambient=amb,diffuse=diffuse,specular=randinttuple(3,0,255),emission=randinttuple(3,0,255),shininess= uniform(0,1),transparency=uniform(0,1))    
+
+def randomobj_func_generator(testfunc):
+    for geom in create_random_objects():
+        yield testfunc, geom
+    for geom in create_random_transforms():
+        yield testfunc, geom
+    
+def randomshape_func_generator(testfunc):
+    for geom in create_random_objects():
+        yield testfunc, Shape(geom,randmaterial())
+    for geom in create_random_transforms():
+        yield testfunc, Shape(geom,randmaterial())
 
 def create_random_scene():
     s = Scene()

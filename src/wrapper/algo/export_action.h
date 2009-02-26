@@ -65,6 +65,9 @@ void export_VrmlPrinter();
 void export_VgstarPrinter();
 void export_PyPrinter();
 
+// reader export
+void export_PglReader();
+
 /* ----------------------------------------------------------------------- */
 // gl export
 void export_GLRenderer();

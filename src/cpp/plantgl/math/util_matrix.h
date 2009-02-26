@@ -423,6 +423,11 @@ public:
       \return a vector made of the 3 euler angles a, b, c in this order. */
   Vector3 eulerAnglesXYZ() const;
 
+  /** Computes the axis and angle corresponding to this.
+      \warning the decomposition is not unique.
+      \warning angle is in radians. */
+  void toAxisAngle(Vector3& axis, real_t& angle ) const;
+
   /** Returns the scaling matrix corresponding to a scaling with factor \e v.
       \pre
       - \e s must be valid. */

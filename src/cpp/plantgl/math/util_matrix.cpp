@@ -675,6 +675,101 @@ Matrix3 Matrix3::eulerRotationXYZ( const Vector3& angle )
                   -_SY*_CZ,  _CXSZ*_SY + _SX*_CY,    -_SXSY * _SZ + _CX*_CY );
 }
 
+void Matrix3::toAxisAngle(Vector3& axis, real_t& angle ) const
+{
+        // Inspired from Ogre
+
+        // Let (x,y,z) be the unit-length axis and let A be an angle of rotation.
+        // The rotation matrix is R = I + sin(A)*P + (1-cos(A))*P^2 where
+        // I is the identity and
+        //
+        //       +-        -+
+        //   P = |  0 -z +y |
+        //       | +z  0 -x |
+        //       | -y +x  0 |
+        //       +-        -+
+        //
+        // If A > 0, R represents a counterclockwise rotation about the axis in
+        // the sense of looking from the tip of the axis vector towards the
+        // origin.  Some algebra will show that
+        //
+        //   cos(A) = (trace(R)-1)/2  and  R - R^t = 2*sin(A)*P
+        //
+        // In the event that A = pi, R-R^t = 0 which prevents us from extracting
+        // the axis through P.  Instead note that R = I+2*P^2 when A = pi, so
+        // P^2 = (R-I)/2.  The diagonal entries of P^2 are x^2-1, y^2-1, and
+        // z^2-1.  We can solve these for axis (x,y,z).  Because the angle is pi,
+        // it does not matter which sign you choose on the square roots.
+
+        real_t fTrace = __M[0] + __M[4] + __M[8];
+        real_t fCos = 0.5*(fTrace-1.0);
+        angle = acos(fCos);  // in [0,PI]
+
+        if ( angle > 0.0 )
+        {
+            if ( angle < GEOM_PI )
+            {
+                axis.x() = __M[7]-__M[5];
+                axis.y() = __M[2]-__M[6];
+                axis.z() = __M[3]-__M[1];
+                axis.normalize();
+            }
+            else
+            {
+                // angle is PI
+                real_t fHalfInverse;
+                if ( __M[0] >= __M[4] )
+                {
+                    // r00 >= r11
+                    if ( __M[0] >= __M[8] )
+                    {
+                        // r00 is maximum diagonal term
+                        axis.x() = 0.5*sqrt(__M[0] - __M[4] - __M[8] + 1.0);
+                        fHalfInverse = 0.5/axis.x();
+                        axis.y() = fHalfInverse*__M[1];
+                        axis.z() = fHalfInverse*__M[2];
+                    }
+                    else
+                    {
+                        // r22 is maximum diagonal term
+                        axis.z() = 0.5*sqrt(__M[8] - __M[0] - __M[4] + 1.0);
+                        fHalfInverse = 0.5/axis.z();
+                        axis.x() = fHalfInverse*__M[2];
+                        axis.y() = fHalfInverse*__M[5];
+                    }
+                }
+                else
+                {
+                    // r11 > r00
+                    if ( __M[4] >= __M[8] )
+                    {
+                        // r11 is maximum diagonal term
+                        axis.y() = 0.5*sqrt(__M[4] - __M[0] - __M[8] + 1.0);
+                        fHalfInverse  = 0.5/axis.y();
+                        axis.x() = fHalfInverse*__M[1];
+                        axis.z() = fHalfInverse*__M[5];
+                    }
+                    else
+                    {
+                        // r22 is maximum diagonal term
+                        axis.z() = 0.5*sqrt(__M[8] - __M[0] - __M[4] + 1.0);
+                        fHalfInverse = 0.5/axis.z();
+                        axis.x() = fHalfInverse*__M[2];
+                        axis.y() = fHalfInverse*__M[5];
+                    }
+                }
+            }
+        }
+        else
+        {
+            // The angle is 0 and the matrix is the identity.  Any axis will
+            // work, so just use the x-axis.
+            axis.x() = 1.0;
+            axis.y() = 0.0;
+            axis.z() = 0.0;
+        }
+}
+
 /*  --------------------------------------------------------------------- */
 
 const Matrix4 Matrix4::IDENTITY;
@@ -1117,11 +1212,12 @@ void Matrix4::setTransformation( const Vector3& scale,
 
 /////////////////////////////////////////////////////////////////////////////
 
-void Matrix4::getTransformation( Vector3& scale,
+void Matrix4::getTransformationB( Vector3& scale,
                                  Vector3& rotate,
                                  Vector3& translate ) const
 {
 #define m(i,j) __M[4*i+j]
+
   translate.x()= m(0,3);
   translate.y()= m(1,3);
   translate.z()= m(2,3);
@@ -1363,7 +1459,7 @@ void Matrix4::getTransformation2( Vector3& scale,
 #undef m
 }
 
-void Matrix4::getTransformationB( Vector3& scale,
+void Matrix4::getTransformation( Vector3& scale,
                                   Vector3& rotate,
                                   Vector3& translate ) const
 {

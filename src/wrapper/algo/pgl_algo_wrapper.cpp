@@ -70,6 +70,9 @@ void module_algo()
     export_VgstarPrinter();
     export_PyPrinter();
 
+	// reader export
+	export_PglReader();
+
 	// gl export
 	export_GLRenderer();
 	export_GLSkelRenderer();

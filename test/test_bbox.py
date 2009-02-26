@@ -1,15 +1,16 @@
-from test_object_creation import create_random_objects
+from test_object_creation import *
 from openalea.plantgl.all import *
 
-def test_bbox_object(nbtest = 5):
+def bbox_application(geom,nbtest = 5,testshape = False):
     """ Simple test on Bounding Box Computation """
     d = Discretizer()
     b = BBoxComputer(d)
     for i in xrange(nbtest):
-      for geom in create_random_objects():
-       if not isinstance(geom,Text):
+       if not isinstance(geom,Text) and not ((testshape and isinstance(geom.geometry,Text))):
         #b.clear() # a cache pb may occur sometimes.
-        assert geom.apply(b)
+        if not geom.apply(b):
+            Scene([geom]).save('bboxerror.bgeom')
+            assert False and "Application of BBoxComputer failed."
         b1 = b.result
         geom.apply(d)
         assert d.result.apply(b)
@@ -23,7 +24,28 @@ def test_bbox_object(nbtest = 5):
         if dist > 0.1 :
             Scene([geom]).save('bboxerror.bgeom')
             print b1,b2,norm(b1.getSize())
-            raise Exception('Invalid BoundingBox Computation for object of type '+geom.__class__.__name__+' : '+str(dist))
+            cname = geom.__class__.__name__ if not testshape else geom.geometry.__class__.__name__
+            raise Exception('Invalid BoundingBox Computation for object of type '+cname+' : '+str(dist))
+
+def test_bbox_on_default_object():
+    for v in defaultobj_func_generator(bbox_application):
+        yield v
+
+def test_bbox_on_random_object():
+    for v in randomobj_func_generator(bbox_application):
+        yield v
+
+def test_bbox_on_random_shape():
+    for v in randomshape_func_generator(lambda x : bbox_application(x,testshape = True)):
+        yield v
+
+def apply_bbox_on_objects():
+    for t in test_bbox_on_default_object():
+        pass
+    for t in test_bbox_on_random_object():
+        pass
+    for t in test_bbox_on_random_shape():
+        pass
 
 if __name__ == '__main__':
-    test_bbox_object()
+    apply_bbox_on_objects()

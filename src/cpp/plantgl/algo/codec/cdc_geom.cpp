@@ -95,7 +95,7 @@ bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePt
     t.start();
     bool b =_parser.parse(&_sceneLexer,*SceneObject::errorStream,scene.get());
     t.stop();
-    if(isParserVerbose())cerr << "Parse file " << fname.c_str() << " in " << t.elapsedTime() << " sec. " << endl;
+    if(isParserVerbose())printf("Parse file %s in %.2f sec.\n", fname.c_str(),t.elapsedTime());
 	return b;
 }
 
