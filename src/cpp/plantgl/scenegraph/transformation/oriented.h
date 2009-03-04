@@ -169,10 +169,7 @@ public:
   /// Destructor
   virtual ~Oriented( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Oriented)
 
   /// Returns \b Primary value.
   const TOOLS(Vector3)& getPrimary( ) const;

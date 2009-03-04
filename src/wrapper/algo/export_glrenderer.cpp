@@ -81,11 +81,13 @@ void export_GLRenderer()
 	  .value("Normal",GLRenderer::Normal)
 	  .value("Selection",GLRenderer::Selection)
 	  .value("Dynamic",GLRenderer::Dynamic)
+	  .export_values()
 	  ;
 
   enum_<GLRenderer::SelectionId>("SelectionId")
 	  .value("ShapeId",GLRenderer::ShapeId)
 	  .value("SceneObjectId",GLRenderer::SceneObjectId)
+	  .export_values()
 	  ;
 
 }

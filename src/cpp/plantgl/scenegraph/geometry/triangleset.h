@@ -117,13 +117,9 @@ public:
   /// Destructor
   virtual ~TriangleSet( );
 
-  virtual bool apply( Action& action )
-  { return action.process(this); }
+  PGL_OBJECT(TriangleSet)
 
   virtual bool isValid() const;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
 
   virtual ExplicitModelPtr
   transform( const Transformation3DPtr& transformation ) const;

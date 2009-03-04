@@ -94,14 +94,14 @@ bool ImageTexture::Builder::isValid( ) const {
   if(!MaterialValidity())return false;
 
     if (! FileName) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"ImageTexture","FileName");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"ImageTexture","FileName");
         return false;
     };
 	ifstream _file(FileName->c_str());
     if (_file) return true;
     string _mess;
     _mess = "Cannot open " + *FileName + ".";
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"ImageTexture","FileName",_mess.c_str());
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"ImageTexture","FileName",_mess.c_str());
     return false;
 
 }
@@ -144,9 +144,6 @@ ImageTexture::ImageTexture(   const std::string& filename,
 ImageTexture::~ImageTexture( ) {
 }
 
-bool ImageTexture::apply( Action& action ) {
-  return action.process(this);
-}
 
 bool ImageTexture::isValid( ) const {
   Builder _builder;
@@ -158,7 +155,7 @@ bool ImageTexture::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr ImageTexture::copy() const
+SceneObjectPtr ImageTexture::copy(DeepCopier& copier) const
 {
   return SceneObjectPtr(new ImageTexture(*this));
 }

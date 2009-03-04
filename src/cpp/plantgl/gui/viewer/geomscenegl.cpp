@@ -306,10 +306,10 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
     return -1;
   }
   if (!scene->isValid()){
-		  QString _mess1 = "<b>[GeomSceneGL] "+tr("GEOM Error")+" !!</b><br>"+tr("Scene Not Valid")+"<br>"
-			  +tr("To continue can cause dysfunction of this program")+"<br>";
-		  QString _mess2 = _mess1 + "<b>"+tr("File")+" :</b> " + QString(__FILE__) + "<br>";
-		  _mess2 += "<b>"+tr("Line")+" :</b> " + QString::number(__LINE__) + "<br>";
+	  QString _mess1 = "<b>[GeomSceneGL] "+tr("GEOM Error")+" !!</b><br>"+tr("Scene Not Valid")+"<br>"
+		  +tr("To continue can cause dysfunction of this program")+"<br>";
+	  QString _mess2 = _mess1 + "<b>"+tr("File")+" :</b> " + QString(__FILE__) + "<br>";
+	  _mess2 += "<b>"+tr("Line")+" :</b> " + QString::number(__LINE__) + "<br>";
 	  if(!BASHMODE){
 		  int res = QMessageBox::critical(__frame,tr("GEOM Error"),_mess2,tr("Abort"),tr("Continue"),tr("Validity"));
 		  if(res == 0 || res == -1)return -1;
@@ -326,7 +326,10 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
 			  }
 		  }
 	  }
-	  else warning("*** Warning : "+_mess2);
+	  else {
+		  warning("*** Warning : "+_mess2);
+		  return -1;
+	  }
   }
 
   // Clears all the actions

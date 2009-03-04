@@ -124,10 +124,7 @@ public:
   /// Destructor
   virtual ~BezierPatch( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(BezierPatch)
 
   /// Returns \e Control Points value.
   virtual  Point4MatrixPtr getCtrlPoints( ) const;

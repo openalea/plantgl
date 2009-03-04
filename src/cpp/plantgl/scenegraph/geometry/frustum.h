@@ -95,7 +95,7 @@ public:
   /// Destructor
   virtual ~Frustum( ) ;
 
-  virtual bool apply( Action& action );
+  PGL_OBJECT(Frustum)
   
   /// Returns \b Taper value.
   const real_t& getTaper( ) const ;
@@ -108,9 +108,6 @@ public:
 
   /// Returns whether \e self is valid.
   virtual bool isValid( ) const;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
 
 protected:
 

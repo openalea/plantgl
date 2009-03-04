@@ -34,6 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 using namespace boost::python;
 #define bp boost::python
@@ -55,12 +56,12 @@ void export_ElevationGrid()
 	 bp::arg("xspacing")=ElevationGrid::DEFAULT_X_SPACING,
 	  bp::arg("yspacing")=ElevationGrid::DEFAULT_Y_SPACING,
 	  bp::arg("ccw")=ElevationGrid::DEFAULT_CCW)))
-    .def( "copy", &ElevationGrid::copy )
     .def( "getPointAt", &ElevationGrid::getPointAt )
     .def( "getHeightAt", &eg_getHeightAt )
     .DEC_BT_PROPERTY_WDV(xspacing,ElevationGrid,XSpacing,real_t,DEFAULT_X_SPACING)
     .DEC_BT_PROPERTY_WDV(yspacing,ElevationGrid,YSpacing,real_t,DEFAULT_Y_SPACING)
     .DEC_PTR_PROPERTY(heightList,ElevationGrid,HeightList,RealArray2Ptr)
+	.DEF_PGLBASE(ElevationGrid)
     ;
 
   implicitly_convertible< ElevationGridPtr,PatchPtr >();

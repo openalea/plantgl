@@ -79,13 +79,13 @@ bool Revolution::Builder::isValid( ) const {
   */
   // Initialization check
   if (! Profile) { 
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Revolution","Profile");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Revolution","Profile");
     return false;
   };
   // Size check
   uint_t _pointListSize = (*Profile)->getStride();
   if (_pointListSize < 3) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Revolution","Profile","Must have more than 3 points.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Revolution","Profile","Must have more than 3 points.");
     return false;
   };
   return true;
@@ -110,10 +110,6 @@ Revolution::Revolution( const Curve2DPtr& profile,
 Revolution::~Revolution( ) {
 }
 
-bool 
-Revolution::apply( Action& action ) {    
-  return action.process(this);
-}
 
 bool Revolution::isValid( ) const {
   Builder _builder;
@@ -122,9 +118,9 @@ bool Revolution::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr Revolution::copy() const {
+SceneObjectPtr Revolution::copy(DeepCopier& copier) const {
   Revolution * ptr = new Revolution(*this);
-  if(__profile)ptr->getProfile() = dynamic_pointer_cast<Curve2D>(__profile->copy());
+  copier.copy_object_attribute(ptr->getProfile());
   return SceneObjectPtr(ptr);
 }
 

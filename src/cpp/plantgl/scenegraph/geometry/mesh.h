@@ -537,7 +537,7 @@ public:
 
   /// Returns the nb of points of the \b i-th face.
   virtual uint_t getFaceSize( uint_t i ) const 
-  { return __indexList->getAt(i).getSize(); }
+  { return __indexList->getIndexSizeAt(i); }
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
@@ -715,7 +715,7 @@ public:
 							             const Transformation3DPtr& transformation )  ;
 
   template<class MeshType>
-  static SceneObjectPtr mesh_copy(const MeshType& mesh);
+  static RCPtr<MeshType> mesh_copy(const MeshType& mesh, DeepCopier& copier);
 
 };
 

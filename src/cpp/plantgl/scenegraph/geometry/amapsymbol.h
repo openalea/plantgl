@@ -102,7 +102,7 @@ public:
   /// Destructor
   virtual ~AmapSymbol( );
 
-  virtual bool apply( Action& action );
+  PGL_OBJECT(AmapSymbol)
 
   /// Returns \b FileName value.
   const std::string& getFileName( ) const ;

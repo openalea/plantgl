@@ -193,8 +193,7 @@ VegeStarFile::parse(const std::string& filename)
 {
 	ifstream stream(filename.c_str());
 	if(!stream){
-		*SceneObject::errorStream << "Cannot open file :'" 
-			<< filename << '\'' << endl;
+	    pglError(ERRORMSG(FILE_OPEN_ERR_s),filename.c_str());
 		return false;
 	}
 	else return parse(stream);
@@ -262,13 +261,13 @@ VegeStarFile::parseHeader(std::istream& stream)
 		else if(token == "Jmax")attlist.push_back(Jmax);
 		else {
 			attlist.push_back(Error);
-			*SceneObject::errorStream << "Unrecognized header token : '" << 
+			pglError("Unrecognized header token : '%s'.\n", 
 #if QT_VERSION >= 0x040000
 			                          token.toAscii().constData()
 #else
 			                          token.data()
 #endif
-						  << '\'' << endl;
+									  );
 		}
 	}
 	return true;
@@ -345,19 +344,10 @@ ScenePtr VegeStarFile::read(const std::string& filename,
 
   ScenePtr result;
   string p = get_cwd();
-  ostream * errlog = SceneObject::errorStream;
-  ostream * warlog = SceneObject::warningStream;
-  ostream * infolog = SceneObject::commentStream;
-  SceneObject::commentStream = &error;
-  SceneObject::warningStream = &error;
-  SceneObject::errorStream = &error;
+  PglErrorStream::Binder psb(error);
   VegeStarFile f;
   if(f.parse(filename))
 	result = f.build();
-
-  SceneObject::commentStream = infolog;
-  SceneObject::warningStream = warlog;
-  SceneObject::errorStream = errlog;
   chg_dir(p);
   return result;
 }
@@ -489,16 +479,10 @@ GeometryPtr
 VegeStarFile::importPolygonFile(const string& filename, ostream& error){
   GeometryPtr result;
   string p = get_cwd();
-  ostream * errlog = SceneObject::errorStream;
-  ostream * warlog = SceneObject::warningStream;
-  ostream * infolog = SceneObject::commentStream;
-  SceneObject::commentStream = &error;
-  SceneObject::warningStream = &error;
-  SceneObject::errorStream = &error;
+  PglErrorStream::Binder psb(error);
   ifstream stream(filename.c_str());
   if(!stream){
-	  *SceneObject::errorStream << "Cannot open file :'" 
-		  << filename << '\'' << endl;
+	  pglError(ERRORMSG(FILE_OPEN_ERR_s),filename.c_str());
   }
   else {
 	  int vnb = 0;
@@ -540,9 +524,6 @@ VegeStarFile::importPolygonFile(const string& filename, ostream& error){
 	  }
   }
   
-  SceneObject::commentStream = infolog;
-  SceneObject::warningStream = warlog;
-  SceneObject::errorStream = errlog;
   chg_dir(p);
   return result;
 

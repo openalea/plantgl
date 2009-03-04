@@ -95,10 +95,7 @@ public:
   /// Destructor
   virtual ~Revolution( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Revolution)
 
   /// Returns PointList values.
   const Curve2DPtr& getProfile( ) const ;

@@ -92,10 +92,7 @@ public:
   /// Destructor
   virtual ~Box( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Box)
 
   /// Returns the back lower left corner.
   TOOLS(Vector3) getBackLowerLeftCorner( ) const;

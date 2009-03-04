@@ -42,9 +42,9 @@
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_list.h>
 #include <plantgl/python/exception.h>
-#include <boost/python.hpp>
+#include <plantgl/python/pyinterpreter.h>
 #include <boost/python/make_constructor.hpp>
-
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -188,10 +188,15 @@ void sc_remove( Scene* sc, Shape3DPtr sh)
 }
 
 object sp_scenes(Scene::Pool * pool){
-    return make_list<std::vector<ScenePtr> >(pool->getScenes())();
+    return make_list(pool->getScenes())();
 }
 
 Scene::Pool& new_pool(object){ return Scene::pool(); }
+
+bool scene_is_valid(Scene * sc){
+	PyStateSaver s;
+	return sc->isValid();
+}
 
 void export_Scene()
 {
@@ -220,13 +225,14 @@ void export_Scene()
     sc.def("findSceneObject", &sc_findSceneObject);
     sc.def("index", &sc_index);
     sc.def("remove", &sc_remove);
-    sc.def("isValid", (bool (Scene::*)() const)&Scene::isValid);
+    sc.def("isValid",  (bool (Scene::*)() const)&Scene::isValid);
     sc.def("apply", &Scene::apply);
     sc.def("applyGeometryFirst", &Scene::applyGeometryFirst);
     sc.def("applyGeometryOnly", &Scene::applyGeometryOnly);
     sc.def("applyAppearanceFirst", &Scene::applyAppearanceFirst);
     sc.def("applyAppearanceOnly", &Scene::applyAppearanceOnly);
-    sc.def("copy", &Scene::copy);
+    sc.def("deepcopy", (ScenePtr (Scene::*)() const)&Scene::deepcopy);
+    sc.def("deepcopy", (ScenePtr (Scene::*)(DeepCopier&) const)&Scene::deepcopy,args("copier"));
     sc.def("read", &sc_read);
     sc.def("read", &sc_read2);
     sc.def("save", &sc_save);

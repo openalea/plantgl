@@ -73,7 +73,7 @@ bool Box::Builder::isValid( ) const {
     if ((Size->x() < GEOM_EPSILON) ||
 	(Size->y() < GEOM_EPSILON) ||
 	(Size->z() < GEOM_EPSILON)) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Box","Size","The three values of size must not be null");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Box","Size","The three values of size must not be null");
       return false;
     };
   };
@@ -94,17 +94,13 @@ Box::Box( const Vector3& size ) :
 Box::~Box( ) {
 }
 
-bool Box::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool Box::isValid( ) const {
   Builder _builder;
   _builder.Size = const_cast<Vector3 *>(&__size);
   return _builder.isValid();
 }
 
-SceneObjectPtr Box::copy() const 
+SceneObjectPtr Box::copy(DeepCopier& copier) const 
 {
   return SceneObjectPtr(new Box(*this));
 }

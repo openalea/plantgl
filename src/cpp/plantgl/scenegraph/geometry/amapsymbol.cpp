@@ -33,7 +33,7 @@
 
 #include <plantgl/tool/bfstream.h>
 #include "amapsymbol.h"
-#include "polyline.h"
+#include "mesh_inline.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
@@ -73,14 +73,14 @@ void AmapSymbol::Builder::destroy( ) {
 
 bool AmapSymbol::Builder::isValid( ) const {
     if (! FileName) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
         return false;
     };
     beifstream _file(FileName->c_str());
     if (_file) return true;
     string _mess;
     _mess = "Cannot open " + *FileName + ".";
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"AmapSymbol","FileName",_mess.c_str());
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"AmapSymbol","FileName",_mess.c_str());
     return false;
 }
 
@@ -110,10 +110,6 @@ AmapSymbol::AmapSymbol( const string& fileName,
 }
 
 AmapSymbol::~AmapSymbol( ) {
-}
-
-bool AmapSymbol::apply( Action& action ) {
-  return action.process(this);
 }
 
 const string&
@@ -242,7 +238,7 @@ AmapSymbol::AmapSymbol( const FaceSetPtr& faceSet ) :
 bool AmapSymbol::isValid( ) const {
   if (! FaceSet::isValid()) return false;
   //if (__fileName.empty()) {
-  //  genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
+  //  pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
   //};
   return true;
 }
@@ -310,6 +306,14 @@ Vector3& AmapSymbol::getTexCoord3At( uint_t i, uint_t j ){
   GEOM_ASSERT(i < __indexList->getSize());
   GEOM_ASSERT(j < __indexList->getAt(i).getSize());
   return __texCoord3List->getAt(__indexList->getAt(i).getAt(j));
+}
+
+ 
+SceneObjectPtr
+AmapSymbol::copy(DeepCopier& copier) const{
+  AmapSymbolPtr res = mesh_copy<AmapSymbol>(*this,copier);
+  copier.copy_attribute(res->__texCoord3List);
+  return SceneObjectPtr(res);
 }
 
 /* ----------------------------------------------------------------------- */

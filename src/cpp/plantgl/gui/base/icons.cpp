@@ -42,6 +42,7 @@
 #include "plantgl/tool/util_types.h"
 #include "plantgl/tool/util_enviro.h"
 #include "plantgl/tool/util_hashmap.h"
+#include "plantgl/tool/errormsg.h"
 
 using namespace std;
 STDEXT_USING_NAMESPACE
@@ -10086,4 +10087,20 @@ static const char * const * icons_database [] = {
 const char * const* ViewerIcon::getPixmap(const ViewerIcon::PredefinedIcon id)
 {
 	return icons_database[id];
+}
+
+void ViewerIcon::getPixmapInfo(const PredefinedIcon id, int& width, int& heigth,int& nbcolors,int& header)
+{
+	const char * const * icon = getPixmap(id);
+	if (sscanf(icon[0], "%d %d %d %d", &width, &heigth, &nbcolors, &header) < 4){
+		pglError("Invalid XPM content");
+		width = 0; heigth = 0; nbcolors = 0; header = 0;
+	}
+}
+
+int ViewerIcon::getPixmapNbLines(const PredefinedIcon id)
+{
+	int w = 0, h = 0, nbcolors = 0, header = 0;
+	getPixmapInfo(id,w,h,nbcolors,header);
+	return h+nbcolors+header;
 }

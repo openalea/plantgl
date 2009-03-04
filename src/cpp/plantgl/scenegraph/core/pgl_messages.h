@@ -39,22 +39,14 @@
 
 
 #include <plantgl/tool/errormsg.h>
-#include "sceneobject.h"
+#include "../sg_config.h"
 
 /* ----------------------------------------------------------------------- */
 
 /// Name of the module
-#define MODULE_NAME "GEOM"
+#define MODULE_NAME "PlantGL"
 /// Geom Error Message Array
-#define ERR_MSG_ARRAY GEOM_MESSAGES
-/// Geom Comment Stream
-#define OUTPUT_COMMENT_STREAM *(SceneObject::commentStream)
-/// Geom Warning Stream
-#define OUTPUT_WARNING_STREAM *(SceneObject::warningStream)
-/// Geom Error Stream
-#define OUTPUT_ERROR_STREAM  *(SceneObject::errorStream)
-/// Geom Error Value
-#define ERROR_VALUE -1
+#define ERR_MSG_ARRAY PGL_MESSAGES
 
 
 /* ----------------------------------------------------------------------- */
@@ -110,7 +102,7 @@
   \var GEOM_MESSAGE_LABELS INVALID_TYPE_sss
    For message : "< \b type > Invalid Type for ' \b obj '. Found ' \b type '".
   */
-enum  GEOM_MESSAGE_LABELS  {
+enum  PGL_MESSAGE_LABELS  {
   UNNAMED_OBJECT = COMMON_ERR_OFFSET,
   DECLARED_OBJECT_ss,
   UNDECLARED_OBJECT_s,
@@ -123,11 +115,15 @@ enum  GEOM_MESSAGE_LABELS  {
   CANNOT_DEFORM_ss,
   INVALID_FIELD_VECTOR_TYPE_ssss,
   INVALID_TYPE_sss,
+  FILE_ERR_s,
+  FILE_OPEN_ERR_s,
+  FILE_READ_ERR_s,
+  FILE_WRITE_ERR_s
 };
 
 
 /// Geom Error Message Array
-SG_API extern const char * GEOM_MESSAGES[];
+SG_API extern const char * PGL_MESSAGES[];
 
 
 /* ----------------------------------------------------------------------- */

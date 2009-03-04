@@ -98,10 +98,7 @@ public:
   /// Destructor
   virtual ~Sphere( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Sphere)
 
   /// Returns \b Stacks value.
   const uchar_t& getStacks( ) const;

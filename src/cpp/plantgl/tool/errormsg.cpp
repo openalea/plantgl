@@ -38,260 +38,236 @@
 #include <cassert>
 
 
-
-
 #include "errormsg.h"
+#include "util_string.h"
+
+#define STREAM_BASED_ERRORS
+
+/* ----------------------------------------------------------------------- */
+
+std::ostream * PglErrorStream::debug =  & std::cerr ;
+std::ostream * PglErrorStream::warning = & std::cerr ;
+std::ostream * PglErrorStream::error = & std::cerr ;
+
+/* ----------------------------------------------------------------------- */
+
+static error_msg_handler_func ERROR_PRINTER = NULL;
+static error_msg_handler_func WARNING_PRINTER = NULL;
+static error_msg_handler_func DEBUG_PRINTER = NULL;
+
+/* ----------------------------------------------------------------------- */
 
 
-void genMessage(const char* file,
-        int line,
-        const char* module_name,
-        ErrorType errtype,
-        std::ostream& o,
-        bool b,
-        const char* msg ...) {
+PglErrorStream::Binder::Binder(std::ostream& _error, 
+								 std::ostream& _warning, 
+								 std::ostream& _debug):
+	previousDebug(PglErrorStream::debug), 
+	previoudWarning(PglErrorStream::warning),
+	previousError(PglErrorStream::error),
+	previousDebugPrinter(DEBUG_PRINTER),
+	previousWarningPrinter(WARNING_PRINTER),
+	previousErrorPrinter(ERROR_PRINTER)
+{
+	PglErrorStream::debug = &_debug;
+	PglErrorStream::warning = &_warning;
+	PglErrorStream::error = &_error;
+	DEBUG_PRINTER = NULL;
+	WARNING_PRINTER = NULL;
+	ERROR_PRINTER = NULL;
+}
 
+  
+PglErrorStream::Binder::Binder(std::ostream& stream):
+	previousDebug(PglErrorStream::debug), 
+	previoudWarning(PglErrorStream::warning),
+	previousError(PglErrorStream::error),
+	previousDebugPrinter(DEBUG_PRINTER),
+	previousWarningPrinter(WARNING_PRINTER),
+	previousErrorPrinter(ERROR_PRINTER)
+{
+	PglErrorStream::debug = &stream;
+	PglErrorStream::warning = &stream;
+	PglErrorStream::error = &stream;
+	DEBUG_PRINTER = NULL;
+	WARNING_PRINTER = NULL;
+	ERROR_PRINTER = NULL;
+}
+
+PglErrorStream::Binder::~Binder()
+{
+	PglErrorStream::debug = previousDebug;
+	PglErrorStream::warning = previoudWarning;
+	PglErrorStream::error = previousError;
+	DEBUG_PRINTER = previousDebugPrinter;
+	WARNING_PRINTER = previousWarningPrinter;
+	ERROR_PRINTER = previousErrorPrinter;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+void register_error_handler(error_msg_handler_func f)
+{ ERROR_PRINTER = f; }
+
+void register_warning_handler(error_msg_handler_func f)
+{ WARNING_PRINTER = f; }
+
+void register_debug_handler(error_msg_handler_func f)
+{ DEBUG_PRINTER = f; }
+
+/* ----------------------------------------------------------------------- */
+
+void pglErrorEx(const char* file, int line, const std::string& msg){
+    if (ERROR_PRINTER != NULL) ERROR_PRINTER(msg,file,line);
+	else 
+#ifdef STREAM_BASED_ERRORS
+		if(PglErrorStream::error) *PglErrorStream::error << "*** ERROR : " << msg << std::endl;
+#else
+		printf("*** ERROR : %s\n",msg.c_str());
+#endif
+	    
+}
+
+void pglWarningEx(const char* file, int line, const std::string& msg){
+    if (WARNING_PRINTER != NULL) WARNING_PRINTER(msg,file,line);
+	else
+#ifdef STREAM_BASED_ERRORS
+		if(PglErrorStream::warning) *PglErrorStream::warning << "*** WARNING : " << msg << std::endl;
+#else
+         printf("*** WARNING : %s\n",msg.c_str());
+#endif
+}
+
+void pglDebugEx(const char* file, int line, const std::string& msg){
+    if (DEBUG_PRINTER != NULL) DEBUG_PRINTER(msg,file,line);
+	else
+#ifdef STREAM_BASED_ERRORS
+		if(PglErrorStream::debug) *PglErrorStream::debug << "*** DEBUG : " << msg << std::endl;
+#else
+		 printf("*** DEBUG : %s\n",msg.c_str());
+#endif
+}
+
+void pglErrorEx(ErrorType errtype, const char* file, int line, const std::string& msg){
+  switch(errtype){
+	case ERROR_MESSAGE : pglErrorEx(file,line,msg); break;
+	case WARNING_MESSAGE : pglWarningEx(file,line,msg); break;
+	case DEBUG_MESSAGE : pglErrorEx(file,line,msg); break;
+  }
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+void pglDebug(const char* msg ...){
   va_list args;         // man vprintf
   va_start(args, msg);
 
-  if (errtype!=NO_MESSAGE) {
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
-    char fullmsg[1000];
-    vsprintf(fullmsg,msg,args);
-
-    ErrorObj err_item(module_name, file, line, errtype, fullmsg);
-
-    err_item.print(o,b) << std::endl;
-
-  }
+  pglDebugEx("",-1,std::string(fullmsg));
 
   va_end(args);
-
 }
 
-// ------------------
-// Class ErrorObj
-// ------------------
+void pglWarning(const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
-ErrorObj::ErrorObj() {
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
-  _line_nb = -1;
-  _error_type = ERROR_MESSAGE;
+  pglWarningEx("",-1,std::string(fullmsg));
 
+  va_end(args);
 }
 
-ErrorObj::ErrorObj(const char* module,
-             const char* file,
-             int line_nb,
-             ErrorType type,
-             const char* message
-             )
-{
+void pglError(const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
-  if (module) _module = module;
-  if (file) _file = file;
-  if (message) _message = message;
-  _error_type = type;
+  pglErrorEx("",-1,std::string(fullmsg));
 
-  _line_nb = line_nb;
-
+  va_end(args);
 }
 
-ErrorObj::ErrorObj(const ErrorObj& err) {
+void pglError(ErrorType errtype, const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
-  _module = err._module;
-  _file = err._file;
-  _message = err._message;
-  _line_nb = err._line_nb;
-  _error_type = err._error_type;
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
+
+  pglErrorEx(errtype,"",-1,std::string(fullmsg));
+
+  va_end(args);
 }
 
-ErrorObj& ErrorObj::operator=(const ErrorObj& err) {
+/* ----------------------------------------------------------------------- */
 
-  if (this == &err) return *this;
-  else {
+void pglDebugEx(const char* file, int line,const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
-    _module = err._module;
-    _file = err._file;
-    _message = err._message;
-    _line_nb = err._line_nb;
-    _error_type = err._error_type;
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
-  }
-  return *this;
+  pglDebugEx(file,line,std::string(fullmsg));
+
+  va_end(args);
 }
 
-bool ErrorObj::operator==(const ErrorObj& err) {
+void pglWarningEx(const char* file, int line,const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
-  if (this == &err) return true;
-  else {
-    if (_module == err._module  &&
-    _file == err._file &&
-    _line_nb == err._line_nb &&
-    _message == err._message &&
-    _error_type == err._error_type
-    )
-    return true;
-    else return false;
-  }
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
+  pglWarningEx(file,line,std::string(fullmsg));
+
+  va_end(args);
 }
 
+void pglErrorEx(const char* file, int line,const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
-std::ostream& operator<<(std::ostream& o, const ErrorObj& i) {return i.print(o);}
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
+  pglErrorEx(file,line,std::string(fullmsg));
 
-/*
+  va_end(args);
+}
 
-// ------------------
-// Class ParserErrorObj
-// ------------------
+void pglErrorEx(ErrorType errtype, const char* file, int line,const char* msg ...){
+  va_list args;         // man vprintf
+  va_start(args, msg);
 
-ErrorObj::ErrorObj() {
+  char fullmsg[1000];
+  vsprintf(fullmsg,msg,args);
 
-  _file = "";
-  _line = -1;
-  _token = "";
+  pglErrorEx(errtype, file,line, std::string(fullmsg));
 
-  _message = "";
-  _module = "";
-
-  _line_nb = 0;
-  _column_nb = 0;
-  _input_line = "";
-  _err_pos = 0;
-
+  va_end(args);
 }
 
 
-ErrorObj::ErrorObj(const char* module,
-             const char* file,
-             const char* line,
-             const char* message,
-             const char* token,
-             int srcline,
-             int line_nb,
-             int column_nb,
-             int err_pos
-             )
-{
-
-
-  if (file) _file = file;
-  _line = line;
-  _token = token;
-
-  _message = message;
-  _module = module;
-
-  _line_nb = line_nb;
-  _column_nb = column_nb;
-  _input_line = input_line;
-  _err_pos = err_pos;
-
-}
-
-ErrorObj::ErrorObj(const ErrorObj& err) {
-
-  _file = err._file;
-  _line = err._line;
-  _token = err._token;
-
-  _message = err._message;
-  _module = err._module;
-
-  _line_nb = err._line_nb;
-  _column_nb = err._column_nb;
-  _input_line = err._input_line;
-  _err_pos = err._err_pos;
-
-}
-
-ErrorObj& ErrorObj::operator=(const ErrorObj& err) {
-
-  if (this == &err) return *this;
-  else {
-
-    _file = err._file;
-    _line = err._line;
-    _token = err._token;
-
-    _message = err._message; // RWCString& operator=(const char*)
-    _module = err._module;
-
-    _line_nb = err._line_nb;
-    _column_nb = err._column_nb;
-    _input_line = err._input_line;
-    _err_pos = err._err_pos;
-
-  }
-  return *this;
-}
-
-bool ErrorObj::operator==(const ErrorObj& err) {
-
-  if (this == &err) return true;
-  else {
-    if (_message == err._message &&
-    _line_nb == err._line_nb &&
-    _column_nb == err._column_nb &&
-    _input_line == err._input_line)
-
-    return true;
-    else return false;
-  }
-
-}
-
-
-ostream& ErrorObj::print(ostream& o) const {
-
-  string locs;
-
-  if (_err_pos >= 0) for(register int i=0; i<_line.length()-1; i++) locs += "-";
-
-  locs += "^";
-
-  o << endl;
-  o << "*** ";
-
-  if (_error_type == ERROR_TYPE) o << "ERROR : in ";
-  else if (_error_type == WARNING_TYPE) o << "WARNING : in ";
-  else o << "UNKNOWN ERROR TYPE : in ";
-  o << _module << " module";
-#ifdef DEBUGERRORLINE
-  if (_file) {
-    o << " ... detected in source FILE: " << _file;
-    if (_line) o << ", LINE:  " << _line;
-    if (_token) o << ", on TOKEN : " << _token << "'";
-  }
-#endif
-  o << endl;
-  if (_line) {
-    o << "*** line  : " << _input_line;
-    if (_err_pos) o << "*** at    : " << locs.data() << endl;
-  }
-  o << "***    ---> " << _message << endl;
-
-return o;
-
-}
-
-
-ostream& operator<<(ostream& o, const ErrorObj& i) {return i.print(o);}
-
-
-*/
-
+/* ----------------------------------------------------------------------- */
 
 const char* common_err_msgs_aml[] = {
 
   "Sorry: message not yet implemented",         // C_NYI_ERR
   "variable %s: bad value %s: should be %s" ,   // C_VAR_BAD_VALUE_sss
-  "file access: cannot access file %s",     // C_FILE_ERR_s
-  "file access: cannot open file %s",       // C_FILE_OPEN_ERR_s
-  "file access: cannot read file %s",       // C_FILE_READ_ERR_s
-  "file access: cannot write file %s",      // C_FILE_WRITE_ERR_s
+  "file access: cannot access file '%s'.",     // C_FILE_ERR_s
+  "file access: cannot open file '%s'.",       // C_FILE_OPEN_ERR_s
+  "file access: cannot read file '%s'.",       // C_FILE_READ_ERR_s
+  "file access: cannot write file '%s'.",      // C_FILE_WRITE_ERR_s
 };
 
+/* ----------------------------------------------------------------------- */

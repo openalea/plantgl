@@ -157,10 +157,7 @@ public:
   /// Destructor
   virtual ~AxisRotated( );
 
-  virtual bool apply( Action& action ) ;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(AxisRotated)
 
   /// Returns Angle value.
   const real_t getAngle( ) const;

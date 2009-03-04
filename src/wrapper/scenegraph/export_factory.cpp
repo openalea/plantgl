@@ -36,6 +36,7 @@
 #include <qthread.h>
 
 #include <plantgl/python/pyobj_reference.h>
+#include <plantgl/python/pyinterpreter.h>
 
 BOOST_INITIALIZE_WRAPPER_FIX_DECLARE(PySceneCodec)
 
@@ -68,27 +69,6 @@ std::string get_scodec_name(SceneCodec * codec) {
         return codec->getName(); 
 }
 
-static QThread * PythonThread = NULL;
-
-struct PythonInterpreterAcquirer {
-public:
-
-    PythonInterpreterAcquirer() 
-    { 
-        /** It seems mandatory to acquire the GIL to call python 
-            from C++ internal (during GUI process for instance) */
-        multiple_thread =  true; // (QThread::currentThread() != PythonThread );
-        if(multiple_thread) gstate = PyGILState_Ensure(); 
-    }
-    ~PythonInterpreterAcquirer()
-    { 
-        if(multiple_thread) PyGILState_Release(gstate); 
-    }
-
-    bool multiple_thread;
-protected:
-    PyGILState_STATE gstate;
-};
 
 class PySceneCodec : public SceneCodec, public bp::wrapper<SceneCodec>
 {
@@ -164,7 +144,7 @@ DEF_POINTEE(PySceneCodec)
 BOOST_INITIALIZE_WRAPPER_FIX(PySceneCodec)
 
 bp::object scformat_get_suffixes(SceneFormat * sf){
-    return make_list<std::vector<std::string> >(sf->suffixes)(); 
+    return make_list(sf->suffixes)(); 
 }
 
 void scformat_set_suffixes(SceneFormat * sf, bp::object suf){
@@ -242,6 +222,7 @@ void export_SceneCodec()
       .value("Read",SceneCodec::Read)
       .value("Write",SceneCodec::Write)
       .value("ReadWrite",SceneCodec::ReadWrite)
+  	  .export_values()
       ;
 }
 

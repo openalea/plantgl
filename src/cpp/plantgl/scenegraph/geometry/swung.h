@@ -144,10 +144,7 @@ public:
   /// Destructor
   virtual ~Swung( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Swung)
 
   /// Returns \b CCW value.
   const bool getCCW( ) const;

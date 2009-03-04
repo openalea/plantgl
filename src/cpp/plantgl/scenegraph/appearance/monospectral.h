@@ -96,10 +96,7 @@ public:
   /// Destructor.
   virtual ~MonoSpectral( ) ;
 
-  virtual bool apply( Action& action ) ;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(MonoSpectral)
 
   /// Returns \b Reflectance value.
   const real_t& getReflectance( ) const ;

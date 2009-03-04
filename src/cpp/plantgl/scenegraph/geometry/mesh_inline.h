@@ -82,20 +82,18 @@ ExplicitModelPtr IndexedMesh<IndexArrayType>::mesh_transform(const MeshType& mes
 
 template<class IndexArrayType>
 template<class MeshType>
-SceneObjectPtr IndexedMesh<IndexArrayType>::mesh_copy(const MeshType& mesh) { 
-  typedef typename MeshType::IndexArray MeshIndexArrayType;
-  typedef typename MeshType::IndexArrayPtr MeshIndexArrayPtrType;
+RCPtr<MeshType> IndexedMesh<IndexArrayType>::mesh_copy(const MeshType& mesh, DeepCopier& copier) { 
   MeshType * ptr(new MeshType(mesh));
-  if(mesh.__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*mesh.__pointList));
-  if(mesh.__indexList)ptr->getIndexList() = MeshIndexArrayPtrType(new MeshIndexArrayType(*mesh.__indexList));
-  if(mesh.__skeleton)ptr->getSkeleton() = dynamic_pointer_cast<Polyline>(mesh.__skeleton->copy());
-  if(mesh.__normalList)ptr->getNormalList() = Point3ArrayPtr(new Point3Array(*mesh.__normalList));
-  if(mesh.__texCoordList)ptr->getTexCoordList() = Point2ArrayPtr(new Point2Array(*mesh.__texCoordList));
-  if(mesh.__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*mesh.__colorList));
-  if(mesh.__normalIndexList) ptr->getNormalIndexList() = MeshIndexArrayPtrType(new MeshIndexArrayType(*mesh.__normalIndexList));
-  if(mesh.__texCoordIndexList) ptr->getTexCoordIndexList() = MeshIndexArrayPtrType(new MeshIndexArrayType(*mesh.__texCoordIndexList));
-  if(mesh.__colorIndexList) ptr->getColorIndexList() = MeshIndexArrayPtrType(new MeshIndexArrayType(*mesh.__colorIndexList));
-  return SceneObjectPtr(ptr);
+  copier.copy_attribute(ptr->getPointList());
+  copier.copy_attribute(ptr->getIndexList());
+  copier.copy_attribute(ptr->getSkeleton());
+  copier.copy_attribute(ptr->getNormalList());
+  copier.copy_attribute(ptr->getTexCoordList());
+  copier.copy_attribute(ptr->getColorList());
+  copier.copy_attribute(ptr->getNormalIndexList());
+  copier.copy_attribute(ptr->getTexCoordIndexList());
+  copier.copy_attribute(ptr->getColorIndexList());
+  return RCPtr<MeshType>(ptr);
 }
 
 template<class IndexArrayType>
@@ -130,20 +128,20 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 
   uint_t _pointListSize = (*PointList)->getSize();
   if (_pointListSize < 3) {
-    genMessage(ERRORMSG(INVALID_FIELD_SIZE_sss),classname.c_str(),"PointList","Must have more than 2 Points.");
+    pglErrorEx(ERRORMSG(INVALID_FIELD_SIZE_sss),classname.c_str(),"PointList","Must have more than 2 Points.");
     return false;
   };
 
   // IndexList field
   // Initialization check
   if (! IndexList) {
-    genMessage(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"IndexList");
+    pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"IndexList");
     return false;
   };
   // Size check
   uint_t _indexListSize = (*IndexList)->getSize();
   if (_indexListSize < 1) {
-    genMessage(ERRORMSG(INVALID_FIELD_SIZE_sss),classname.c_str(),"IndexList","Number of Index must be greater than 0.");
+    pglErrorEx(ERRORMSG(INVALID_FIELD_SIZE_sss),classname.c_str(),"IndexList","Number of Index must be greater than 0.");
     return false;
   };
 
@@ -152,12 +150,12 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   for (uint_t _i = 0; _i < _indexListSize; ++_i,++_it) {
     // Max index check
 	  if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _pointListSize) {
-	genMessage
+	pglErrorEx
 	    (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"IndexList",number(_i+1).c_str(),"Do not represent any point of the list.");
       }
       // Unique elements check
       else if (! _it->isUnique()) {
-	  genMessage
+	  pglErrorEx
 	      (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"IndexList",number(_i+1).c_str(),"Redundance : Already declared.");
 	  // _it = (*IndexList)->Erase(_it);
       }
@@ -168,14 +166,14 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 	  if (!NormalIndexList){
 		  if(NormalPerVertex && !*NormalPerVertex){
 			  if(_normalListSize != _indexListSize){
-				genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalList","Number of normals must be compatible to IndexList size.");
+				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalList","Number of normals must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
 		  else
 		  {
 			  if(_normalListSize != _pointListSize){
-				genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalList","Number of normals must be compatible to PointList size.");
+				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalList","Number of normals must be compatible to PointList size.");
 				return false;
 			  }
 		  }
@@ -183,13 +181,13 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 	  else {
 		  uint_t _normalIndexListSize = (*NormalIndexList)->getSize();
 		  if(NormalPerVertex && !*NormalPerVertex){
-			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
+			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
 			return false;
 		  }
 		  else
 		  {
 			  if(_normalIndexListSize != _indexListSize){
-				genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalIndexList","Number of normals indices must be compatible to IndexList size.");
+				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalIndexList","Number of normals indices must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
@@ -198,13 +196,13 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 		  for (uint_t _i = 0; _i < _normalIndexListSize; ++_i,++_it) {
 			// Max index check
 			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _normalListSize) {
-				genMessage
+				pglErrorEx
 					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"NormalIndexList",number(_i+1).c_str(),"Do not represent any normal of the list.");
 				return false;
 			}
 			// Size index check
 			if (_it->getSize() != (*IndexList)->getAt(_i).getSize()) {
-				genMessage
+				pglErrorEx
 					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"NormalIndexList",number(_i+1).c_str(),"Normal indice size do no reflect actual polygon indice size.");
 				return false;
 			}
@@ -215,7 +213,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   else 
   {
 	  if (NormalIndexList){
-		genMessage(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"NormalList");
+		pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"NormalList");
 		return false;
 	  }
   }
@@ -225,14 +223,14 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 	  if (!ColorIndexList){
 		  if(ColorPerVertex && !*ColorPerVertex){
 			  if(_colorListSize != _indexListSize){
-				genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorList","Number of colors must be compatible to IndexList size.");
+				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorList","Number of colors must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
 		  else
 		  {
 			  if(_colorListSize != _pointListSize){
-				genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorList","Number of colors must be compatible to PointList size.");
+				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorList","Number of colors must be compatible to PointList size.");
 				return false;
 			  }
 		  }
@@ -240,13 +238,13 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 	  else {
 		  uint_t _colorIndexListSize = (*ColorIndexList)->getSize();
 		  if(ColorPerVertex && !*ColorPerVertex){
-			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
+			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
 			return false;
 		  }
 		  else
 		  {
 			  if(_colorIndexListSize != _indexListSize){
-				genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorIndexList","Number of colors indices must be compatible to IndexList size.");
+				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorIndexList","Number of colors indices must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
@@ -255,13 +253,13 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 		  for (uint_t _i = 0; _i < _colorIndexListSize; ++_i,++_it) {
 			// Max index check
 			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _colorListSize) {
-				genMessage
+				pglErrorEx
 					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"ColorIndexList",number(_i+1).c_str(),"Do not represent any color of the list.");
 				return false;
 			}
 			// Size index check
 			if (_it->getSize() != (*IndexList)->getAt(_i).getSize()) {
-				genMessage
+				pglErrorEx
 					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"ColorIndexList",number(_i+1).c_str(),"Color indice size do no reflect actual polygon indice size.");
 				return false;
 			}
@@ -272,7 +270,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   else 
   {
 	  if (ColorIndexList){
-		genMessage(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"ColorList");
+		pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"ColorList");
 		return false;
 	  }
   }
@@ -281,14 +279,14 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 	  uint_t _texCoordListSize = (*TexCoordList)->getSize();
 	  if (!TexCoordIndexList){
 		  if(_texCoordListSize != _pointListSize){
-			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"TexCoordList","Number of TexCoord must be compatible to PointList size.");
+			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"TexCoordList","Number of TexCoord must be compatible to PointList size.");
 			return false;
 		  }
 	  }
 	  else {
 		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
 		  if(_texCoordIndexListSize != _indexListSize){
-			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
+			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
 			return false;
 		  }
 		  // TexCoordIndexList values check
@@ -296,13 +294,13 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 		  for (uint_t _i = 0; _i < _texCoordIndexListSize; ++_i,++_it) {
 			// Max index check
 			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _texCoordListSize) {
-				genMessage
+				pglErrorEx
 					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"TexCoordIndexList",number(_i+1).c_str(),"Do not represent any TexCoord of the list.");
 				return false;
 			}
 			// Size index check
 			if (_it->getSize() != (*IndexList)->getAt(_i).getSize()) {
-				genMessage
+				pglErrorEx
 					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"TexCoordIndexList",number(_i+1).c_str(),"TexCoord indice size do no reflect actual polygon indice size.");
 				return false;
 			}
@@ -313,7 +311,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   else 
   {
 	  if (TexCoordIndexList){
-		genMessage(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"TexCoordList");
+		pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),classname.c_str(),"TexCoordList");
 		return false;
 	  }
   }

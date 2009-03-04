@@ -112,10 +112,7 @@ public:
   /// Destructor
   virtual ~ElevationGrid( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(ElevationGrid)
 
   /** Returns the value of \b HeightList at the i-th row and the j-th column.
       \warning

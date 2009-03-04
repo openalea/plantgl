@@ -32,6 +32,8 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/exception.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
+
 
 #include <plantgl/scenegraph/geometry/disc.h>
 
@@ -52,7 +54,8 @@ void export_Disc()
 	"A 2D disc structure centered on origin and defined by a radius.", 
 	init< optional<real_t,uchar_t> >("Disc(radius, slices)",
 	(bp::arg("radius")=Disc::DEFAULT_RADIUS, bp::arg("slices")=SOR::DEFAULT_SLICES)))
-   .DEC_BT_PROPERTY_WDV(radius,Disc,Radius,real_t,DEFAULT_RADIUS);
+    .DEF_PGLBASE(Disc)
+    .DEC_BT_PROPERTY_WDV(radius,Disc,Radius,real_t,DEFAULT_RADIUS)
     ;
 
   implicitly_convertible<DiscPtr,SOR2DPtr>();

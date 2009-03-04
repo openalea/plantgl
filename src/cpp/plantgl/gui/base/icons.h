@@ -144,6 +144,9 @@ public :
 	/// Static function that clear the cache use to store pixmap.
 	static void clearCache();
 
+	static void getPixmapInfo(const PredefinedIcon id, int& width, int& heigth,int& nbcolors,int& header);
+	static int getPixmapNbLines(const PredefinedIcon id);
+
 protected:
 	/// Constructor.
 	ViewerIcon(){

@@ -78,7 +78,7 @@ bool Disc::Builder::isValid( ) const {
 
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Disc","Radius","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Disc","Radius","Must be not null.");
     return false;
   };
   
@@ -98,11 +98,6 @@ Disc::Disc( const real_t& radius,
 
  Disc::~Disc( ) {
   }
-
-bool 
-Disc::apply( Action& action ) {
-  return action.process(this);
-}
 
 const real_t&
 Disc::getRadius( ) const {
@@ -131,7 +126,7 @@ bool Disc::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr Disc::copy() const {
+SceneObjectPtr Disc::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Disc(*this));
 }
 

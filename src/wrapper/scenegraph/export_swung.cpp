@@ -41,8 +41,8 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/extract_pgl.h>
+#include "export_sceneobject.h"
 
-#include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
 
@@ -146,6 +146,7 @@ void export_Swung()
                                         args("profiles","angles","slices") ) ) 
     .def( "__init__", make_constructor( make_swung2, default_call_policies(), 
                                         args("profiles","angles") )) */
+    .DEF_PGLBASE(Swung)
 	.DEC_BT_NR_PROPERTY_WDV(ccw,      Swung,CCW,             bool  ,DEFAULT_CCW )
 	.DEC_BT_PROPERTY_WDV(degree,   Swung,Degree,          uint_t ,DEFAULT_DEGREE)
 	.DEC_BT_PROPERTY_WDV(stride,   Swung,Stride,          uint_t ,DEFAULT_STRIDE)

@@ -32,10 +32,9 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/exception.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 #include <plantgl/scenegraph/geometry/planarmodel.h>
-
-#include <boost/python.hpp>
 
 using namespace boost::python;
 

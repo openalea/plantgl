@@ -35,8 +35,8 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
-#include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
@@ -66,6 +66,7 @@ void export_Box()
 	init< optional<const Vector3&> >("Box(Vector3(x,y,z))",(boost::python::arg("size")=Box::DEFAULT_SIZE)) )
     .def( "__init__", make_constructor( box_from_val ) ) 
     .def( "__init__", make_constructor( box_from_val1 ) ) 
+	.DEF_PGLBASE(Box)
     .DEC_CT_PROPERTY_WDV(size,Box,Size,Vector3,DEFAULT_SIZE)
     ;
 

@@ -89,11 +89,11 @@ bool MatrixTransformed::Builder::isValid( ) const {
 }
 bool MatrixTransformed::Builder::MTValid( ) const {
   if (! Geometry) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Matrix Transformed","Geometry");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Matrix Transformed","Geometry");
     return false;
   };
   if (! (*Geometry) ) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Matrix Transformed","Geometry","Must be a valid Geometry Object.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Matrix Transformed","Geometry","Must be a valid Geometry Object.");
     return false;
   };
   return true;
@@ -258,25 +258,25 @@ bool Transform4::Builder::isValid( ) const
   GEOM_TRACE("validate Transform4::Builder");
   if( (!Translation) && (!Scale) && (!Rotation) )
     {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Transform4","Translation, Scale and Rotation");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Transform4","Translation, Scale and Rotation");
     return false;
     }
 
   if( Translation && (!Translation->isValid()) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Transform4","Translation","Must be a valid Translation.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Transform4","Translation","Must be a valid Translation.");
     return false;
     }
 
   if( Scale && (!Scale->isValid()) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Transform4","Scale","Must be a valid Scale.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Transform4","Scale","Must be a valid Scale.");
     return false;
     }
 
   if( Rotation && (!(*Rotation)->isValid()) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Transform4","Rotation","Must be a valid Rotation.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Transform4","Rotation","Must be a valid Rotation.");
     return false;
     }
 

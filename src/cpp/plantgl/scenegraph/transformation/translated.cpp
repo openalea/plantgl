@@ -156,7 +156,7 @@ bool Translated::Builder::isValid( ) const {
 
   if (Translation &&
       (! Translation->isValid())) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Translated","Translation","Must be a valid Translation");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Translated","Translation","Must be a valid Translation");
     return false;
   };
 
@@ -185,10 +185,6 @@ Translated::~Translated( ) {
 #endif
 }
 
-bool Translated::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool Translated::isValid( ) const {
   Builder _builder;
   _builder.Geometry = const_cast<GeometryPtr *>(&__geometry);
@@ -197,9 +193,9 @@ bool Translated::isValid( ) const {
 }
 
 SceneObjectPtr
-Translated::copy() const {
+Translated::copy(DeepCopier& copier) const {
   Translated * ptr = new Translated(*this);
-  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
+  copier.copy_object_attribute(ptr->getGeometry());
   return SceneObjectPtr(ptr);
 }
 

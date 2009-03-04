@@ -134,7 +134,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
        (Bottom->x() > (PosXRadius ? *PosXRadius : DEFAULT_POS_X_RADIUS)) ||
        (Bottom->y() < -(NegYRadius ? *NegYRadius : DEFAULT_NEG_Y_RADIUS)) ||
        (Bottom->y() > (PosYRadius ? *PosYRadius : DEFAULT_POS_Y_RADIUS))*/)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Bottom","Depend on Top, NegXRadius, PosXRadius, NegYRadius and PosYRadius values.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Bottom","Depend on Top, NegXRadius, PosXRadius, NegYRadius and PosYRadius values.");
     return false;
   };
   
@@ -146,7 +146,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
        (Top->x() > (PosXRadius ? *PosXRadius : DEFAULT_POS_X_RADIUS)) ||
        (Top->y() < -(NegYRadius ? *NegYRadius : DEFAULT_NEG_Y_RADIUS)) ||
        (Top->y() > (PosYRadius ? *PosYRadius : DEFAULT_POS_Y_RADIUS))*/)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Top","Depend on Bottom, NegXRadius, PosXRadius, NegYRadius and PosYRadius values.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Top","Depend on Bottom, NegXRadius, PosXRadius, NegYRadius and PosYRadius values.");
     return false;
   };
 
@@ -154,7 +154,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
   if (NegXRadius && 
       ((! finite(*NegXRadius)) /*|| 
        (*NegXRadius < 0)*/)) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","NegXRadius","Must be Finite and Positive.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","NegXRadius","Must be Finite and Positive.");
       return false;
     };
 
@@ -162,7 +162,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
   if (PosXRadius && 
       ((! finite(*PosXRadius)) /*|| 
        (*PosXRadius < 0)*/)) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","PosXRadius","Must be Finite and Positive.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","PosXRadius","Must be Finite and Positive.");
       return false;
     };
 
@@ -170,7 +170,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
   if (NegYRadius && 
       ((! finite(*NegYRadius)) /*||
        (*NegYRadius < 0)*/)) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","NegYRadius","Must be Finite and Positive.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","NegYRadius","Must be Finite and Positive.");
       return false;
     };
 
@@ -178,35 +178,35 @@ bool AsymmetricHull::Builder::isValid( ) const {
   if (PosYRadius && 
       ((! finite(*PosYRadius)) /*||
        (*PosYRadius < 0)*/)) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","PosYRadius","Must be Finite and Positive.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","PosYRadius","Must be Finite and Positive.");
       return false;
     }; 
 
   // BottomShape
   if (BottomShape && 
       ( !(*BottomShape > GEOM_EPSILON))) { 
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","BottomShape","Must be not null.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","BottomShape","Must be not null.");
       return false;
     };
 
   // TopShape
   if (TopShape && 
       ( !(*TopShape > GEOM_EPSILON))) { 
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","TopShape","Must be not null.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","TopShape","Must be not null.");
       return false;
     };
 
   // Slices field
   if (Slices && 
       (*Slices < 1)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Slices","Must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Slices","Must be greater than 0.");
     return false;
   };
 
   // Stacks field
   if (Stacks && 
       (*Stacks < 1)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Stacks","Must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","Stacks","Must be greater than 0.");
     return false;
   };
 
@@ -255,10 +255,6 @@ AsymmetricHull::~AsymmetricHull( ) {
 #endif
 }
 
-bool AsymmetricHull::apply( Action& action ) {    
-  return action.process(this);
-}
-
 bool AsymmetricHull::isValid( ) const {
   Builder _builder;
   _builder.NegXHeight = const_cast<real_t *>(&__negXHeight);
@@ -278,7 +274,7 @@ bool AsymmetricHull::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr AsymmetricHull::copy() const 
+SceneObjectPtr AsymmetricHull::copy(DeepCopier& copier) const 
 {
   return SceneObjectPtr(new AsymmetricHull(*this));
 }

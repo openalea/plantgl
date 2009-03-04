@@ -193,11 +193,7 @@ public:
   /// Returns whether \e self is valid.
   virtual bool isValid( ) const;
 
-    /// Applies the action \e action to \e self.
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Shape)
 
   virtual bool applyGeometryFirst( Action& action );
 

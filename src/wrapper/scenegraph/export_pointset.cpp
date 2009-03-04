@@ -36,9 +36,9 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 #include <plantgl/python/extract_list.h>
 
-#include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
 #include <string>
 #include <sstream>
@@ -67,7 +67,7 @@ void export_PointSet()
   class_< PointSet, PointSetPtr, bases<ExplicitModel>, boost::noncopyable>( "PointSet",
 	  "PointSet describes an explicit set of points",
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("PointSet(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
-    .def( "copy", &PointSet::copy )
+    .DEF_PGLBASE(PointSet)
     .def( "__repr__", gps_repr )
     .def( "transform", &PointSet::transform )
     ;
@@ -89,7 +89,7 @@ void export_PointSet2D()
   class_< PointSet2D, PointSet2DPtr, bases<PlanarModel>, boost::noncopyable>( 
 	  "PointSet2D", "PointSet2D describes an explicit set of 2D points. See PointSet.",
 	  init<Point2ArrayPtr>() )
-    .def( "copy", &PointSet2D::copy )
+    .DEF_PGLBASE(PointSet2D)
     .def( "__repr__", gps2d_repr )
 	.DEC_PTR_PROPERTY(pointList,PointSet2D,PointList,Point2ArrayPtr)
     ;

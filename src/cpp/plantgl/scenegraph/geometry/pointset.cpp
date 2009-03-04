@@ -71,7 +71,7 @@ bool PointSet::Builder::isValid( ) const {
 	if (ColorList && *ColorList) {
 		uint_t _colorListSize = (*ColorList)->getSize();
 		if(_colorListSize != (*PointList)->getSize()){
-			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
+			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
 		}
 	}
@@ -93,10 +93,6 @@ PointSet::PointSet( const Point3ArrayPtr& points, const Color4ArrayPtr& colors )
 }
 
 PointSet::~PointSet( ) {
-}
-
-bool PointSet::apply( Action& action ) {    
-  return action.process(this);
 }
 
 bool PointSet::isValid( ) const {
@@ -139,11 +135,11 @@ PointSet::transform( const Transformation3DPtr& transformation ) const {
 }
 
 SceneObjectPtr 
-PointSet::copy() const 
+PointSet::copy(DeepCopier& copier) const 
 {
   PointSet * ptr = new PointSet(*this);
-  if(__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*__pointList));
-  if(__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*__colorList));
+  copier.copy_attribute(ptr->getPointList());
+  copier.copy_attribute(ptr->getColorList());
   return SceneObjectPtr(ptr);
 }
 
@@ -179,11 +175,11 @@ bool PointSet2D::Builder::isValid( ) const {
 
   // PointList
   if (! PointList) { 
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
     return false;
   };
   if ((*PointList)->getSize() < 1) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"PointSet2D","PointList","Number of points must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"PointSet2D","PointList","Number of points must be greater than 0.");
     return false;
   };
 
@@ -208,11 +204,6 @@ PointSet2D::PointSet2D(  ) :
 PointSet2D::~PointSet2D( ) {
 }
 
-bool 
-PointSet2D::apply( Action& action ) {    
-  return action.process(this);
-}
-
 bool PointSet2D::isValid( ) const {
   Builder _builder;
   _builder.PointList = const_cast<Point2ArrayPtr *>(&__pointList);
@@ -232,10 +223,10 @@ bool PointSet2D::isAVolume( ) const {
 }
 
 SceneObjectPtr 
-PointSet2D::copy() const 
+PointSet2D::copy(DeepCopier& copier) const 
 {
   PointSet2D * ptr = new PointSet2D(*this);
-  if(__pointList)ptr->getPointList() = Point2ArrayPtr(new Point2Array(*__pointList));
+  copier.copy_attribute(ptr->getPointList());
   return SceneObjectPtr(ptr);
 }
 

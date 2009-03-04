@@ -106,10 +106,7 @@ public:
   /// Destructor
   virtual ~Polyline( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Polyline)
 
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
@@ -202,10 +199,7 @@ public:
   /// Destructor
   virtual ~Polyline2D( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Polyline2D)
 
   /** Returns the value of the \e i-th point of \b PointList.
       \pre

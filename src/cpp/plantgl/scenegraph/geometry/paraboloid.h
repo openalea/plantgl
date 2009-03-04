@@ -102,10 +102,7 @@ public:
   /// Destructor
   virtual ~Paraboloid( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Paraboloid)
 
   /// Returns \b Shape value.
   const real_t& getShape( ) const ;

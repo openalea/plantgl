@@ -144,37 +144,55 @@ static char * sh_keyword[] = {
 
 #endif
 
+/* ----------------------------------------------------------------------- */
+
+static bool __verbose = true;
+
+static int shape_nb = 0;
+
+static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
+
+#define cursmbtable(t) \
+   SymbolTable<SceneObjectPtr>& t = *(symbolstack[symbolstack.size()-1]);
+
+
 /*  ---------------------------------------------------------------------- */
 
-#define GEOM_PARSER_BUILD_OBJECT(_type, shape,_name,builder) \
-  GEOM_ASSERT(builder); \
-  _type##Ptr _shape = dynamic_pointer_cast<_type>(builder->build()); \
-  builder->destroy(); \
-  delete builder; \
-  if (_shape) { \
-    if (_name) { \
-      cursmbtable(t); \
-      SymbolTable<SceneObjectPtr>::iterator _i = t.find(*_name); \
-      if (_i != t.end()) { \
-        genMessage(WARNINGMSG(DECLARED_OBJECT_ss),typeid(*shape).name(),_name->c_str()); \
-        shape = NULL; \
-        delete _name; \
-        yyerror("Object Already declared"); \
-      } \
-      else { \
-        _shape->setName(*_name); \
-        t[*_name] = _shape; \
-        delete _name; \
-      }; \
-    } \
-    shape = new _type##Ptr(_shape); \
-  } \
-  else { \
-    if(_name)delete _name; \
-    shape = NULL; \
-    yyerror("Object not Valid"); \
-  }
+#define GEOM_PARSER_BUILD_OBJECT(_type, shape,name,builder) \
+	parser_build_object(shape,name,builder)
 
+template<class GeomType,class GeomBuilderType>
+void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuilderType * builder){
+  typedef RCPtr<GeomType> GeomTypePtr;
+  GEOM_ASSERT(builder); 
+  GeomTypePtr object = dynamic_pointer_cast<GeomType>(builder->build()); 
+  builder->destroy(); 
+  delete builder; 
+  if (object) { 
+    if (name) { 
+      cursmbtable(t); 
+      SymbolTable<SceneObjectPtr>::iterator _i = t.find(*name); 
+      if (_i != t.end()) { 
+        std::string geomtypename = typeid(*object).name();
+        pglErrorEx(ERRORMSG(DECLARED_OBJECT_ss),geomtypename.c_str(),name->c_str()); 
+        shape = NULL; 
+        delete name; 
+        // yyerror("Object Already declared"); 
+      } 
+      else { 
+        object->setName(*name); 
+        t[*name] = object; 
+        delete name; 
+      }; 
+    } 
+    shape = new GeomTypePtr(object); 
+  } 
+  else { 
+    if(name)delete name; 
+    shape = NULL; 
+    // yyerror("Object not Valid"); 
+  }
+}
 
 /*  ---------------------------------------------------------------------- */
 
@@ -190,7 +208,7 @@ static char * sh_keyword[] = {
       cursmbtable(t); \
       SymbolTable<SceneObjectPtr>::iterator _i = t.find(name); \
       if (_i != t.end()) { \
-        genMessage(WARNINGMSG(DECLARED_OBJECT_ss),"Shape",name.c_str()); \
+        pglErrorEx(WARNINGMSG(DECLARED_OBJECT_ss),"Shape",name.c_str()); \
         shape = NULL; \
         yyerror("A Shape with the same Geometry has already been declared"); \
       } \
@@ -202,7 +220,7 @@ static char * sh_keyword[] = {
       cursmbtable(t); \
       SymbolTable<SceneObjectPtr>::iterator _i = t.find(*_name); \
       if (_i != t.end()) { \
-        genMessage(WARNINGMSG(DECLARED_OBJECT_ss),typeid(*shape).name(),_name->c_str()); \
+        pglErrorEx(WARNINGMSG(DECLARED_OBJECT_ss),typeid(*shape).name(),_name->c_str()); \
         shape = NULL; \
         delete _name; \
         yyerror("Object Already declared"); \
@@ -231,13 +249,13 @@ static char * sh_keyword[] = {
     if (! builder->field) \
       builder->field = value; \
     else { \
-      genMessage(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*builder).name(),#field); \
+      pglErrorEx(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*builder).name(),#field); \
       yyerror("Field not valid "); \
       delete value; \
     } \
   } \
   else { \
-      genMessage(ERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*builder).name()),#field,""); \
+      pglErrorEx(ERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*builder).name()),#field,""); \
       yyerror("Field not valid "); \
     }  \
   }
@@ -318,17 +336,6 @@ static char * sh_keyword[] = {
     shape = new _type##Ptr(_shape); \
   } \
   else shape = NULL; \
-
-/* ----------------------------------------------------------------------- */
-
-static bool __verbose = true;
-
-static int shape_nb = 0;
-
-static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
-
-#define cursmbtable(t) \
-   SymbolTable<SceneObjectPtr>& t = *(symbolstack[symbolstack.size()-1]);
 
 
 
@@ -872,7 +879,7 @@ SceneObjList :
 #endif
       }
       else {
-        genMessage(WARNINGMSG(UNNAMED_OBJECT));
+        pglErrorEx(WARNINGMSG(UNNAMED_OBJECT));
         delete $2;
         YYERROR;
       };
@@ -919,7 +926,7 @@ SceneObjects :
 #endif
       }
       else {
-        genMessage(WARNINGMSG(UNNAMED_OBJECT));
+        pglErrorEx(WARNINGMSG(UNNAMED_OBJECT));
         delete $2;
         YYERROR;
       };
@@ -1005,20 +1012,20 @@ InlineFieldList:
           if (! $1->FileName || ! $1->Scene )
               $1->FileName = $3;
           else if ( $1->FileName) {
-              genMessage(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"FileName");
+              pglErrorEx(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"FileName");
               yyerror("Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
           else {
-              genMessage(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"Scene");
+              pglErrorEx(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"Scene");
               yyerror("Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
       }
       else {
-          genMessage(ERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*$1).name()),"Filename","");
+          pglErrorEx(ERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*$1).name()),"Filename","");
           yyerror("Field not valid ");
           //postream(p) << std::endl;
       }
@@ -1031,20 +1038,20 @@ InlineFieldList:
           if (! $1->FileName || ! $1->Scene )
               $1->Scene = $3;
           else if ( $1->Scene) {
-              genMessage(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"Scene");
+              pglErrorEx(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"Scene");
               yyerror("Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
           else {
-              genMessage(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"FileName");
+              pglErrorEx(ERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"FileName");
               yyerror("Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
       }
       else {
-          genMessage(ERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*$1).name()),"Scene","");
+          pglErrorEx(ERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*$1).name()),"Scene","");
           yyerror("Field not valid ");
           //postream(p) << std::endl;
       }
@@ -1120,12 +1127,12 @@ AppearanceRef:
          if(_app)
              $$ = new AppearancePtr(_app);
          else{
-             genMessage(WARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(*(_i->second)).name());
+             pglErrorEx(WARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(*(_i->second)).name());
              $$ = NULL;
          }
      }
      else {
-       genMessage(WARNINGMSG(UNDECLARED_OBJECT_s),$1->c_str());
+       pglErrorEx(WARNINGMSG(UNDECLARED_OBJECT_s),$1->c_str());
        $$ = NULL;
      }
      delete $1;
@@ -1150,13 +1157,13 @@ GeometryRef:
        if(_geom)
          $$ = new GeometryPtr(_geom);
        else{
-         genMessage(WARNINGMSG(INVALID_TYPE_sss),"Geometry",$1->c_str(),typeid(*(_i->second)).name());
+         pglErrorEx(WARNINGMSG(INVALID_TYPE_sss),"Geometry",$1->c_str(),typeid(*(_i->second)).name());
          $$ = NULL;
        }
 
      }
      else {
-         genMessage(WARNINGMSG(UNDECLARED_OBJECT_s),$1->c_str());
+         pglErrorEx(WARNINGMSG(UNDECLARED_OBJECT_s),$1->c_str());
          $$ = NULL;
      }
      delete $1;

@@ -180,10 +180,7 @@ public:
   /// Destructor
   virtual ~EulerRotated( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(EulerRotated)
 
   /// Returns Azimuth value.
   const real_t& getAzimuth( ) const ;

@@ -134,10 +134,7 @@ public:
   /// Destructor
   virtual ~NurbsPatch( ) ;
 
-  virtual bool apply( Action& action ) ;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(NurbsPatch)
 
   /// Returns \e UDegree value.
   virtual const uint_t getUDegree( ) const;

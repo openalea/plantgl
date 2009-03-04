@@ -34,6 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -50,7 +51,7 @@ void export_ExtrudedHull()
     ("ExtrudedHull","A hull extruded by a vertical and an horizontal profiles.", init <Curve2DPtr, Curve2DPtr, optional< bool > >
 	("ExtrudedHull(vertical,horizontal) : Constructs a ExtrudedHull with the profiles 'vertical' and 'horizontal'. ",
 	(bp::arg("vertical"),bp::arg("horizontal"),bp::arg("ccw")=ExtrudedHull::DEFAULT_CCW)))
-    .def("copy",&ExtrudedHull::copy)
+	.DEF_PGLBASE(ExtrudedHull)
 	.DEC_PTR_PROPERTY(vertical,ExtrudedHull,Vertical,Curve2DPtr)
 	.DEC_PTR_PROPERTY(horizontal,ExtrudedHull,Horizontal,Curve2DPtr)
 	.DEC_BT_NR_PROPERTY_WDV(ccw,ExtrudedHull,CCW,bool,DEFAULT_CCW)

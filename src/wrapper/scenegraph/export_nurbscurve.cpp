@@ -35,6 +35,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 #include <boost/python.hpp>
 #include <string>
@@ -130,6 +131,7 @@ void export_NurbsCurve()
 		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
 		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE)) )
 	 .def(init<Point4ArrayPtr,  RealArrayPtr, optional< uint_t, uint_t > >())
+     .DEF_PGLBASE(NurbsCurve)
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
@@ -280,6 +282,7 @@ void export_NurbsCurve2D()
 		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
 		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE)) )
 	 .def(init<Point3ArrayPtr, RealArrayPtr, optional<  uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
+     .DEF_PGLBASE(NurbsCurve2D)
      .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )
      .def( "fit", nurbs2_fit2, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )

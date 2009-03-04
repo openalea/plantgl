@@ -34,6 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 #include <boost/python/make_constructor.hpp>
 
 PGL_USING_NAMESPACE
@@ -64,7 +65,8 @@ void export_IFS()
 	   (bp::arg("depth")=IFS::DEFAULT_DEPTH,
 	    bp::arg("transfoList")=Transform4ArrayPtr(),
 		bp::arg("geometry")=GeometryPtr())))
-	   .DEC_BT_NR_PROPERTY_WDV(depth,IFS,Depth,uchar_t,DEFAULT_DEPTH)
+    .DEF_PGLBASE(IFS)
+    .DEC_BT_NR_PROPERTY_WDV(depth,IFS,Depth,uchar_t,DEFAULT_DEPTH)
 	.DEC_PTR_PROPERTY(transfoList,IFS,TransfoList,Transform4ArrayPtr)
 	.DEC_PTR_NR_PROPERTY(geometry,IFS,Geometry,GeometryPtr)
 	.def("getAllTransformations",&ifs_getAllTransformations);

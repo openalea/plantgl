@@ -37,9 +37,8 @@
 
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_refcountptr.h>
-#include <boost/python.hpp>
 #include <boost/python/make_constructor.hpp>
-
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -82,6 +81,7 @@ void export_Shape()
 				 bp::arg("id")         = Shape::NOID,
 				 bp::arg("parentId")   = Shape::NOID )))
    .add_static_property("NOID",make_getter(&Shape::NOID))
+    .DEF_PGLBASE(Shape)
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)
     .def_readwrite("id", &Shape::id)

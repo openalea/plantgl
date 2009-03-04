@@ -110,10 +110,7 @@ public:
   /// Destructor
   virtual ~Group( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Group)
 
   /** Returns the value of the \e i-th geom of  \b GeometryList.
       \e pre

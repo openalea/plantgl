@@ -95,11 +95,11 @@ void Shape::Builder::destroy() {
 
 bool Shape::Builder::isValid( ) const{
   if (! (Geometry)){
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
   }
   if (! (*Geometry)){
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
   }
   return true;
@@ -148,10 +148,6 @@ Shape::~Shape() {
 #endif
 }
 
-bool Shape::apply( Action& action ){
-  return action.process(this);
-}
-
 /* ----------------------------------------------------------------------- */
 
 void Shape::setComputedName(){
@@ -188,11 +184,11 @@ void Shape::setComputedName(){
     };
 }
 
-SceneObjectPtr Shape::copy() const
+SceneObjectPtr Shape::copy(DeepCopier& copier) const
 {
   Shape * ptr = new Shape(*this);
-  if(geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(geometry->copy());
-  if(appearance)ptr->getAppearance() = dynamic_pointer_cast<Appearance>(appearance->copy());
+  copier.copy_object_attribute(ptr->getGeometry());
+  copier.copy_object_attribute(ptr->getAppearance());
   return SceneObjectPtr(ptr);
 }
 
@@ -254,15 +250,15 @@ size_t Shape::getSceneObjectId() const
 
 bool Shape::isValid( ) const {
   if (! (geometry)){
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
   }
   if (! (geometry->isValid())) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
 	return false;
   }
   if ((appearance) && (! appearance->isValid())) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
 	return false;
   }
   return true;

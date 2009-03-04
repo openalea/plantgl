@@ -34,7 +34,7 @@
 
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/export_refcountptr.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
 
 using namespace boost::python;
 

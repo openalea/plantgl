@@ -34,6 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -52,7 +53,8 @@ void export_Frustum()
 			bp::arg("taper")=Frustum::DEFAULT_TAPER,
 			bp::arg("solid")=Frustum::DEFAULT_SOLID,
 			bp::arg("slices")=Frustum::DEFAULT_SLICES)))
-  .DEC_BT_PROPERTY_WDV(taper,Frustum,Taper,real_t,DEFAULT_TAPER)
+   .DEF_PGLBASE(Frustum)
+   .DEC_BT_PROPERTY_WDV(taper,Frustum,Taper,real_t,DEFAULT_TAPER)
       ;
 
   implicitly_convertible<FrustumPtr, ConePtr >();

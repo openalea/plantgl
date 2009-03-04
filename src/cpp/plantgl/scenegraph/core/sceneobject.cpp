@@ -30,14 +30,17 @@
  */
 
 #include "sceneobject.h"
+#include "deepcopier.h"
 
 PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+/*
 std::ostream * SceneObject::commentStream =  & std::cerr ;
 std::ostream * SceneObject::warningStream = & std::cerr ;
 std::ostream * SceneObject::errorStream = & std::cerr ;
+*/
 
 /* ----------------------------------------------------------------------- */
 
@@ -54,17 +57,6 @@ SceneObject::Builder::~Builder() {
 
 /* ----------------------------------------------------------------------- */
 
-/*
-SceneObject::SceneObject( ) :
-  RefCountObject(),
-  __name() {
-}
-
-SceneObject::SceneObject(const string& name ) :
-  RefCountObject(),
-  __name(name) {
-}
-*/
 
 SceneObject::~SceneObject( ){
 #ifdef GEOM_DEBUG
@@ -90,6 +82,17 @@ SceneObject::isNamed( ) const {
   return ! __name.empty();
 }
 
+
+/// Deep copy of \e this.
+SceneObjectPtr SceneObject::deepcopy() const {
+	DeepCopier map;
+	return deepcopy(map);
+}
+
+SceneObjectPtr SceneObject::deepcopy(DeepCopier& objmap) const 
+{
+  return objmap.copy(this);
+}
 
 /* ----------------------------------------------------------------------- */
 

@@ -41,6 +41,7 @@
 
 #include <plantgl/tool/dirnames.h>
 #include <plantgl/tool/util_string.h>
+#include <plantgl/tool/errormsg.h>
 #include <plantgl/tool/timer.h>
 
 #include <plantgl/scenegraph/core/sceneobject.h>
@@ -90,10 +91,10 @@ TOOLS_USING_NAMESPACE
 bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname)
 {
     GenericParser<SceneObjectPtr> _parser(scne_yyparse,&table);
-    SceneObjectRecursiveLexer _sceneLexer(&stream,SceneObject::errorStream,fname.c_str());
+    SceneObjectRecursiveLexer _sceneLexer(&stream,PglErrorStream::error,fname.c_str());
     Timer t;
     t.start();
-    bool b =_parser.parse(&_sceneLexer,*SceneObject::errorStream,scene.get());
+    bool b =_parser.parse(&_sceneLexer,*PglErrorStream::error,scene.get());
     t.stop();
     if(isParserVerbose())printf("Parse file %s in %.2f sec.\n", fname.c_str(),t.elapsedTime());
 	return b;
@@ -120,7 +121,7 @@ SceneFormatList GeomCodec::formats() const
 ScenePtr GeomCodec::read(const std::string& fname)
 {
   if(BinaryParser::isAGeomBinaryFile(fname)){
-	  BinaryParser _parser(*SceneObject::errorStream);
+	  BinaryParser _parser(*PglErrorStream::error);
 	  _parser.parse(fname);
 	  return _parser.getScene();
   }
@@ -180,7 +181,7 @@ SceneFormatList BGeomCodec::formats() const
 ScenePtr BGeomCodec::read(const std::string& fname)
 {
   if(BinaryParser::isAGeomBinaryFile(fname)){
-	  BinaryParser _parser(*SceneObject::errorStream);
+	  BinaryParser _parser(*PglErrorStream::error);
 	  _parser.parse(fname);
 	  return _parser.getScene();
   }

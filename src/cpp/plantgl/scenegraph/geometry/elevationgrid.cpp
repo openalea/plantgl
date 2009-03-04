@@ -87,14 +87,14 @@ bool ElevationGrid::Builder::isValid( ) const {
 
   // Height Field
  if (! HeightList) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Elevation Grid","HeightList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Elevation Grid","HeightList");
     return false;
   };
  for (uint_t _i = 0 ; _i< (*HeightList)->getRowsNb() ; _i++)
      for (uint_t _j = 0 ; _j< (*HeightList)->getColsNb() ; _j++)
          if (! finite((*HeightList)->getAt(_i,_j))) {
              string _ith = '(' + TOOLS(number)(_i + 1) + '-' + TOOLS(number)(_j + 1) + ')';
-             genMessage(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
+             pglErrorEx(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
                         "Elevation Grid","HeightList",_ith.c_str(),"Must be finite.");
              return false;
          };
@@ -102,13 +102,13 @@ bool ElevationGrid::Builder::isValid( ) const {
 
   // XSpacing field
   if (XSpacing && (*XSpacing < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","XSpacing","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","XSpacing","Must be not null.");
     return false;
   }
 
   // YSpacing field
   if (YSpacing && (*YSpacing < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","YSpacing","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","YSpacing","Must be not null.");
     return false;
   }
 
@@ -137,11 +137,6 @@ ElevationGrid::ElevationGrid( const RealArray2Ptr& heights,
 }
 
 ElevationGrid::~ElevationGrid( ) {
-}
-
-bool
-ElevationGrid::apply( Action& action ) {
-  return action.process(this);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -219,9 +214,9 @@ ElevationGrid::isYSpacingToDefault( ) const {
 /* ----------------------------------------------------------------------- */
 
 SceneObjectPtr
-ElevationGrid::copy() const {
+ElevationGrid::copy(DeepCopier& copier) const {
   ElevationGrid * ptr = new ElevationGrid(*this);
-  if(__heightList)ptr->getHeightList( ) = RealArray2Ptr(new RealArray2(*__heightList));
+  copier.copy_attribute(ptr->getHeightList());
   return SceneObjectPtr(ptr);
 }
 

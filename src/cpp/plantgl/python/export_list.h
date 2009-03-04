@@ -48,7 +48,7 @@ struct make_object {
 };
 
 template <class T, class Translator = make_object<typename T::value_type> >
-struct make_list {
+struct list_converter {
 	typedef T list_type;
     typedef typename T::const_iterator list_const_iterator;
     typedef typename T::value_type list_element_type;
@@ -56,8 +56,8 @@ struct make_list {
     list_const_iterator __c_list_begin;
     list_const_iterator __c_list_end;
 
-    make_list(const T& c_list): __c_list_begin(c_list.begin()),__c_list_end(c_list.end()){}
-    make_list(const list_const_iterator& c_list_begin,
+    list_converter(const T& c_list): __c_list_begin(c_list.begin()),__c_list_end(c_list.end()){}
+    list_converter(const list_const_iterator& c_list_begin,
               const list_const_iterator& c_list_end): 
             __c_list_begin(c_list_begin),__c_list_end(c_list_end){}
 
@@ -69,6 +69,12 @@ struct make_list {
     }
 };
 
+template <class T, class Translator>
+list_converter<T,Translator> make_list(const T& c_list) { return list_converter<T,Translator>(c_list); }
+
+template <class T>
+list_converter<T> make_list(const T& c_list) { return list_converter<T>(c_list); }
+
 template <class T, 
           class KeyTranslator = make_object<typename T::key_type>, 
 #ifdef WIN32_STL_EXTENSION
@@ -77,7 +83,7 @@ template <class T,
           class ValueTranslator = make_object<typename T::data_type>
 #endif
          >
-struct make_dict {
+struct dict_converter {
 	typedef T dict_type;
     typedef typename T::const_iterator dict_const_iterator;
     typedef typename T::key_type dict_key_type;
@@ -90,8 +96,8 @@ struct make_dict {
     dict_const_iterator __c_dict_begin;
     dict_const_iterator __c_dict_end;
 
-    make_dict(const T& c_dict): __c_dict_begin(c_dict.begin()),__c_dict_end(c_dict.end()){}
-    make_dict(const dict_const_iterator& c_dict_begin,const dict_const_iterator& c_dict_end): 
+    dict_converter(const T& c_dict): __c_dict_begin(c_dict.begin()),__c_dict_end(c_dict.end()){}
+    dict_converter(const dict_const_iterator& c_dict_begin,const dict_const_iterator& c_dict_end): 
         __c_dict_begin(c_dict_begin),__c_dict_end(c_dict_end){}
 
     boost::python::object operator()() const {
@@ -101,6 +107,19 @@ struct make_dict {
         return d;
     }
 };
+
+template <class T, class KeyTranslator, class ValueTranslator>
+dict_converter<T,KeyTranslator,ValueTranslator> make_dict(const T& c_dict) 
+{ return dict_converter<T,KeyTranslator,ValueTranslator>(c_dict); }
+
+template <class T, class KeyTranslator>
+dict_converter<T,KeyTranslator> make_dict(const T& c_dict) 
+{ return dict_converter<T,KeyTranslator>(c_dict); }
+
+template <class T>
+dict_converter<T> make_dict(const T& c_dict) 
+{ return dict_converter<T>(c_dict); }
+
 #endif
 
 /* ----------------------------------------------------------------------- */

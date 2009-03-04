@@ -108,19 +108,19 @@ bool NurbsCurve::Builder::isValid( ) const {
 
   // CtrlPointList field
   if ( !CtrlPointList ) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Nurbs Curve","CtrlPointList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Nurbs Curve","CtrlPointList");
     return false;
   }
 
   uint_t _size = (*CtrlPointList)->getSize();
   if ( _size < 3 ) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater than 2.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","CtrlPointList","Must be greater than 2.");
     return false;
   }
 
   for (uint_t i=0; i<_size;i++)
     if (fabs((*CtrlPointList)->getAt(i).w()) < GEOM_TOLERANCE) {
-      genMessage
+      pglErrorEx
         (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Nurbs Curve","CtrlPointList",number(i + 1).c_str(),"Weigth must be not null.");
       return false;
     }
@@ -128,20 +128,20 @@ bool NurbsCurve::Builder::isValid( ) const {
 
   // Degree field
   if ( Degree && (*Degree < 1 ||  *Degree >= _size ) ) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Curve","Degree","Number of knot Must be greater than 0 and smaller than the number of control points.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Curve","Degree","Number of knot Must be greater than 0 and smaller than the number of control points.");
       return false;
   }
 
 
   // knot list
   if( KnotList  && (*KnotList)->getSize() < _size + 2 ){
-      genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","KnotList","Number of knots must be greater than the number of control points.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","KnotList","Number of knots must be greater than the number of control points.");
       return false;
   };
 
   // Stride field
   if ( Stride && *Stride < 1 ) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Curve","Stride","Must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Curve","Stride","Must be greater than 0.");
     return false;
   };
 
@@ -155,14 +155,14 @@ bool NurbsCurve::Builder::isValid( ) const {
       real_t _val = (*KnotList)->getAt(0);
       for (uint_t i = 1 ; i < _deg+1 ; i++ )
           if( (!(fabs ((*KnotList)->getAt(i) - _val ) <GEOM_TOLERANCE ))){
-              genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Curve","KnotList",number(i+1).c_str(),"Must be a clamped vector.");
+              pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Curve","KnotList",number(i+1).c_str(),"Must be a clamped vector.");
               return false;
           }
       uint_t _knsize = (*KnotList)->getSize();
       _val = (*KnotList)->getAt(_knsize -1  );
       for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
           if( !(fabs ((*KnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
-              genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Curve","KnotList",number(j+1).c_str(),"Must be a clamped vector.");
+              pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Curve","KnotList",number(j+1).c_str(),"Must be a clamped vector.");
               return false;
           }
 
@@ -174,7 +174,7 @@ bool NurbsCurve::Builder::isValid( ) const {
         KnotList != NULL  &&
         _size != ( (*KnotList)->getSize() -  *Degree - 1)) {
     string _val = "Must be " + number(_size+(*Degree)+1) + ". Number of knots must be coherent with degree and number of control points.";
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","KnotList",_val.c_str());
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Curve","KnotList",_val.c_str());
     return false;
   };
 
@@ -318,11 +318,6 @@ bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nb
     return true;
 }
 
-bool
-NurbsCurve::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool NurbsCurve::isValid( ) const {
   Builder _builder;
   _builder.CtrlPointList = const_cast< Point4ArrayPtr *>(&__ctrlPointList);
@@ -333,11 +328,11 @@ bool NurbsCurve::isValid( ) const {
 }
 
 SceneObjectPtr
-NurbsCurve::copy() const
+NurbsCurve::copy(DeepCopier& copier) const
 {
   NurbsCurve * ptr = new NurbsCurve(*this);
-  if(__ctrlPointList)ptr->getCtrlPointList() = Point4ArrayPtr(new Point4Array(*__ctrlPointList));
-  if(__knotList)ptr->getKnotList() = RealArrayPtr(new RealArray(*__knotList));
+  copier.copy_attribute(ptr->getCtrlPointList());
+  copier.copy_attribute(ptr->getKnotList());
   return SceneObjectPtr(ptr);
 }
 
@@ -751,19 +746,19 @@ bool NurbsCurve2D::Builder::isValid( ) const {
 
   // CtrlPointList field
   if ( !CtrlPointList ) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"NurbsCurve2D","CtrlPointList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"NurbsCurve2D","CtrlPointList");
     return false;
   }
 
   uint_t _size = (*CtrlPointList)->getSize();
   if ( _size < 3 ) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","CtrlPointList","Must be greater than 2.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","CtrlPointList","Must be greater than 2.");
     return false;
   }
 
   for (uint_t i=0; i<_size;i++)
     if (fabs((*CtrlPointList)->getAt(i).z()) < GEOM_TOLERANCE) {
-      genMessage
+      pglErrorEx
         (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"NurbsCurve2D","CtrlPointList",number(i + 1).c_str(),"Weigth must be not null.");
       return false;
     }
@@ -771,20 +766,20 @@ bool NurbsCurve2D::Builder::isValid( ) const {
 
   // Degree field
   if ( Degree && (*Degree < 1 ||  *Degree >= _size ) ) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"NurbsCurve2D","Degree","Number of knot Must be greater than 0 and smaller than the number of control points.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"NurbsCurve2D","Degree","Number of knot Must be greater than 0 and smaller than the number of control points.");
       return false;
   }
 
 
   // knot list
   if( KnotList  && (*KnotList)->getSize() < _size + 2 ){
-      genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","KnotList","Number of knots must be greater than the number of control points.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","KnotList","Number of knots must be greater than the number of control points.");
       return false;
   };
 
   // Stride field
   if ( Stride && *Stride < 1 ) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"NurbsCurve2D","Stride","Must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"NurbsCurve2D","Stride","Must be greater than 0.");
     return false;
   };
 
@@ -798,14 +793,14 @@ bool NurbsCurve2D::Builder::isValid( ) const {
       real_t _val = (*KnotList)->getAt(0);
       for (uint_t i = 1 ; i < _deg+1 ; i++ )
           if( (!(fabs ((*KnotList)->getAt(i) - _val ) <GEOM_TOLERANCE ))){
-              genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"NurbsCurve2D","KnotList",number(i+1).c_str(),"Must be a clamped vector.");
+              pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"NurbsCurve2D","KnotList",number(i+1).c_str(),"Must be a clamped vector.");
               return false;
           }
       uint_t _knsize = (*KnotList)->getSize();
       _val = (*KnotList)->getAt(_knsize -1  );
       for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
           if( !(fabs ((*KnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
-              genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"NurbsCurve2D","KnotList",number(j+1).c_str(),"Must be a clamped vector.");
+              pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"NurbsCurve2D","KnotList",number(j+1).c_str(),"Must be a clamped vector.");
               return false;
           }
 
@@ -816,7 +811,7 @@ bool NurbsCurve2D::Builder::isValid( ) const {
   if (  Degree != NULL &&
         KnotList != NULL  &&
         _size != ( (*KnotList)->getSize() -  *Degree - 1)) {
-      genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","KnotList","Number of knots must be coherent with degree and number of control points.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"NurbsCurve2D","KnotList","Number of knots must be coherent with degree and number of control points.");
       return false;
   };
 
@@ -868,10 +863,6 @@ NurbsCurve2D::~NurbsCurve2D( ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool
-NurbsCurve2D::apply( Action& action ) {
-  return action.process(this);
-}
 
 const uint_t
 NurbsCurve2D::getDegree( ) const {
@@ -934,11 +925,11 @@ bool NurbsCurve2D::isValid( ) const {
 
 
 SceneObjectPtr
-NurbsCurve2D::copy() const
+NurbsCurve2D::copy(DeepCopier& copier) const
 {
   NurbsCurve2D * ptr = new NurbsCurve2D(*this);
-  if(__ctrlPointList)ptr->getCtrlPointList() = Point3ArrayPtr(new Point3Array(*__ctrlPointList));
-  if(__knotList)ptr->getKnotList() = RealArrayPtr(new RealArray(*__knotList));
+  copier.copy_attribute(ptr->getCtrlPointList());
+  copier.copy_attribute(ptr->getKnotList());
   return SceneObjectPtr(ptr);
 }
 

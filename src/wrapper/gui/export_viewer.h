@@ -42,6 +42,7 @@ void export_dialog();
 void export_framegl();
 void export_widgetgeometry();
 void export_light();
+void export_icon();
 
 void initViewer();
 void cleanViewer();

@@ -1422,7 +1422,7 @@ bool Discretizer::process( Group * group )  {
   }
   ExplicitModelPtr basegeom;
   if (__discretization  == *_geometryList->getBegin())
-	  basegeom = dynamic_pointer_cast<ExplicitModel>(__discretization->copy());
+	  basegeom = __discretization->casted_deepcopy<ExplicitModel>();
   else basegeom = __discretization;
   Merge fusion(*this,basegeom);
 

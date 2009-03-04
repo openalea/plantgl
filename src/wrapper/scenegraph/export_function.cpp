@@ -33,10 +33,10 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 #include <plantgl/python/export_list.h>
 #include <plantgl/python/exception.h>
 
-#include <string>
 
 using namespace boost::python;
 
@@ -69,7 +69,7 @@ real_t Func_getValue(QuantisedFunction * func, real_t x)
 }
 
 object Func_getSamples(QuantisedFunction * func)
-{ return make_list<std::vector<real_t> >(func->getSamples())(); }
+{ return make_list(func->getSamples())(); }
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isMonotonous_overloads, isMonotonous, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(isIncreasing_overloads, isIncreasing, 0, 1)

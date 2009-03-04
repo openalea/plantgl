@@ -36,6 +36,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 #include <plantgl/python/export_list.h>
 
 #include <sstream>
@@ -74,7 +75,7 @@ std::string gbc_repr( BezierCurve* p )
 }
 
 object bernstein_factors(uint_t n, real_t u){
-    return make_list<std::vector<real_t> >(all_bernstein(n,u))();
+    return make_list(all_bernstein(n,u))();
 }
 
 
@@ -89,7 +90,6 @@ void export_BezierCurve()
 	"where Bi,n(u) are the classical n-th degree Bernstein polynomials.",
 	init<Point3ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride") ) )
     .def(init< Point4ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points.",args("ctrlPointList","stride")))
-    .def( "copy", &BezierCurve::copy )
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint_t,DEFAULT_STRIDE)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
@@ -103,7 +103,7 @@ void export_BezierCurve()
     "Computes the value of i-th Bernstein polynomial for a fixed u."
     "See the Nurbs Book p20. usefull for Bezier Curve computation.")
     .staticmethod("bernstein")
-
+	.DEF_PGLBASE(BezierCurve)
     ;
 
   implicitly_convertible<BezierCurvePtr, ParametricModelPtr>();
@@ -141,10 +141,10 @@ void export_BezierCurve2D()
     ( "BezierCurve2D", "BezierCurve2D describes rational and non rational 2D Bezier curve.\n It is represented by a degree and a list of control Points.\n See BezierCurve.", 
 	  init<Point2ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride")) )
     .def(init< Point3ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points.",args("ctrlPointList","stride")))
-    .def( "copy", &BezierCurve2D::copy )
     .def( "__repr__", gbc2_repr )
     .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve2D,Stride,uint_t)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve2D,CtrlPointList,Point3ArrayPtr)
+	.DEF_PGLBASE(BezierCurve2D)
     ;
 
   implicitly_convertible<BezierCurve2DPtr, Curve2DPtr>();

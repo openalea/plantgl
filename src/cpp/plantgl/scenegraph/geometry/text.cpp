@@ -80,7 +80,7 @@ void Font::Builder::destroy( ){
 bool Font::Builder::isValid( ) const
 {
   if(Size && *Size < 6){
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","Size","Font Size should be greater than 6. ");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","Size","Font Size should be greater than 6. ");
 	return false;
   }
   return true;
@@ -110,12 +110,8 @@ bool  Font::isValid( ) const{
   return _builder.isValid();
 }
 
-SceneObjectPtr Font::copy() const {
+SceneObjectPtr Font::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Font(*this));
-}
-
-bool Font::apply( Action& action ){
-  return action.process(this);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -157,15 +153,15 @@ Text::Builder::destroy( ){
     
 bool Text::Builder::isValid( ) const{
     if (!String) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
         return false;
     };
     if (String->empty()) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
         return false;
     };
 	if(FontStyle && *FontStyle && !(*FontStyle)->isValid()){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","FontStyle","");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","FontStyle","");
 	  return false;
 	}
 	return true;
@@ -187,13 +183,10 @@ __fontStyle(font){}
   /// Destructor
 Text::~Text( ) {}
 
-bool Text::apply( Action& action ){
-  return action.process(this);
-}
 
-SceneObjectPtr Text::copy() const {
+SceneObjectPtr Text::copy(DeepCopier& copier) const {
   Text * t = new Text(*this);
-  if(__fontStyle)t->getFontStyle() = dynamic_pointer_cast<Font>(__fontStyle->copy());
+  copier.copy_object_attribute(t->getFontStyle());
   return SceneObjectPtr(t);
 }
 

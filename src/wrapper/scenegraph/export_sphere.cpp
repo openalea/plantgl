@@ -33,7 +33,7 @@
 #include <plantgl/scenegraph/geometry/sphere.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -51,7 +51,8 @@ void export_Sphere()
 	("Sphere(radius [,slices, stacks])",
 	(bp::arg("radius")=Sphere::DEFAULT_RADIUS,
 	 bp::arg("slices")=Sphere::DEFAULT_SLICES, 
-	 bp::arg("stacks")=Sphere::DEFAULT_STACKS)))      
+	 bp::arg("stacks")=Sphere::DEFAULT_STACKS)))
+  .DEF_PGLBASE(Sphere)
   .DEC_BT_PROPERTY_WDV(stacks,Sphere,Stacks,uchar_t,DEFAULT_STACKS)
   .DEC_BT_PROPERTY_WDV(radius,Sphere,Radius,real_t,DEFAULT_RADIUS);
 

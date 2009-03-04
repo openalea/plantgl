@@ -751,6 +751,7 @@ void cleanViewer()
   }
 }
 
+
 void module_gui()
 {
   initViewer();
@@ -758,6 +759,7 @@ void module_gui()
   export_viewer();
 
   cleanViewer();
+  export_icon();
 }
 
 

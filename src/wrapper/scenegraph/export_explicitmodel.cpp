@@ -35,8 +35,8 @@
 // #include <plantgl/scenegraph/container/pointarray.h>
 
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 #include <plantgl/python/export_refcountptr.h>
-#include <boost/python.hpp>
 
 using namespace boost::python;
 

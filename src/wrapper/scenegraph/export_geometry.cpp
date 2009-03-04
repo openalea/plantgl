@@ -40,9 +40,6 @@ using namespace std;
 
 DEF_POINTEE(Geometry)
 
-const GeometryPtr deepcopy(Geometry * s){
-    return dynamic_pointer_cast<Geometry>(s->copy());
-}
 
 void export_Geometry()
 {
@@ -53,7 +50,6 @@ void export_Geometry()
      .def("isASurface",&Geometry::isASurface)
      .def("isAVolume",&Geometry::isAVolume)
      .def("isExplicit",&Geometry::isExplicit)
-     .def("deepcopy", &deepcopy)
    ;
    
    // WrapperToPython<GeometryPtr>();

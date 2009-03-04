@@ -81,14 +81,14 @@ bool MonoSpectral::Builder::isValid( ) const {
   /// Reflectance
   if (Reflectance)
     if (*Reflectance < 0 || *Reflectance > 1) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Reflectance","Must be in [0,1].");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Reflectance","Must be in [0,1].");
       return false;
   };
 
   /// Transmittance
   if (Transmittance)
     if (*Transmittance < 0 || *Transmittance > 1) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Transmittance","Must be in [0,1].");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Transmittance","Must be in [0,1].");
       return false;
   };
 
@@ -111,9 +111,6 @@ MonoSpectral::MonoSpectral( const real_t& reflectance,
 MonoSpectral::~MonoSpectral( ) {
 }
 
-bool MonoSpectral::apply( Action& action ) {
-  return action.process(this);
-}
 
 bool MonoSpectral::isValid( ) const {
   Builder _builder;
@@ -122,7 +119,7 @@ bool MonoSpectral::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr MonoSpectral::copy() const 
+SceneObjectPtr MonoSpectral::copy(DeepCopier& copier) const 
 {
   return SceneObjectPtr(new MonoSpectral(*this));
 }

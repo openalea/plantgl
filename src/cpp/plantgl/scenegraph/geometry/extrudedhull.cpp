@@ -81,25 +81,25 @@ bool ExtrudedHull::Builder::isValid( ) const {
 
   // Vertical
   if (! Vertical) {
-      genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Vertical");
+      pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Vertical");
       return false;
     };
 
   // Vertical
   if (! (*Vertical)->isValid()) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Vertical","Must be a valid Object");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Vertical","Must be a valid Object");
       return false;
     };
 
   // Horizontal
   if (! Horizontal) {
-      genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Horizontal");
+      pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Horizontal");
       return false;
     };
 
   // Horizontal
   if (! (*Horizontal)->isValid()) {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Horizontal","Must be a valid Object");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Horizontal","Must be a valid Object");
       return false;
     };
 
@@ -130,10 +130,6 @@ ExtrudedHull::ExtrudedHull( const Curve2DPtr& vertical,
 ExtrudedHull::~ExtrudedHull( ) {
 }
 
-bool ExtrudedHull::apply( Action& action ) {    
-  return action.process(this);
-}
-
 bool ExtrudedHull::isValid( ) const {
   Builder _builder;
   _builder.Horizontal = const_cast<Curve2DPtr *>(&__horizontal);
@@ -141,11 +137,11 @@ bool ExtrudedHull::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr ExtrudedHull::copy() const 
+SceneObjectPtr ExtrudedHull::copy(DeepCopier& copier) const 
 {
   ExtrudedHull * ptr = new ExtrudedHull(*this);
-  if(__horizontal)ptr->getHorizontal()= dynamic_pointer_cast<Curve2D>(__horizontal->copy());
-  if(__vertical)ptr->getVertical()= dynamic_pointer_cast<Curve2D>(__vertical->copy());
+  copier.copy_object_attribute(ptr->getHorizontal());
+  copier.copy_object_attribute(ptr->getVertical());
   return SceneObjectPtr(ptr);
 }
 

@@ -77,11 +77,11 @@ bool ExplicitModel::Builder::EMValid( ) const
 {
   // PointList
   if (! PointList) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"ExplicitModel","PointList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"ExplicitModel","PointList");
     return false;
   };
   if ((*PointList)->getSize() < 1) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"ExplicitModel","PointList","Number of points must be greater than 1.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"ExplicitModel","PointList","Number of points must be greater than 1.");
     return false;
   };
 
@@ -90,7 +90,7 @@ bool ExplicitModel::Builder::EMValid( ) const
     if (! (*PointList)->getAt(_i).isValid()) {
       const Vector3& p = (*PointList)->getAt(_i);
       string mess = "Must be a valid point <" + number(p.x()) + "," + number(p.y()) + "," + number(p.z()) + ">.";
-      genMessage
+      pglErrorEx
         (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"ExplicitModel","PointList",number(_i+1).c_str(),mess.c_str());
       return false;
     };

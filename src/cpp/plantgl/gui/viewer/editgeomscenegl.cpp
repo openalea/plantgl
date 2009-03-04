@@ -171,7 +171,7 @@ MaterialPtr getMaterialFromDialog(QWidget * parent,
 {
     ViewEditMatDialog dialog(parent,caption,true);
     dialog.setWindowTitle(caption);
-    if(initial)   dialog.setMaterial(dynamic_pointer_cast<Material>(initial->copy()));
+    if(initial)   dialog.setMaterial(initial->casted_deepcopy<Material>());
     else dialog.setMaterial(dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL));
     if (dialog.exec() == QDialog::Accepted) return dialog.getMaterial();
 	else return MaterialPtr();

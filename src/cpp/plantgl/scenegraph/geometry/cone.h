@@ -107,10 +107,7 @@ public:
   /// Destructor
   virtual ~Cone( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Cone)
 
   /// Returns \b solid value.
   const bool getSolid( ) const;

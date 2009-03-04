@@ -72,7 +72,7 @@ bool Polyline::Builder::isValid( ) const {
 	if (ColorList && *ColorList) {
 		uint_t _colorListSize = (*ColorList)->getSize();
 		if(_colorListSize != (*PointList)->getSize()){
-			genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Polyline","ColorList","Number of colors must be compatible to PointList size.");
+			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Polyline","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
 		}
 	}
@@ -101,10 +101,6 @@ Polyline::Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors )
 }
 
 Polyline::~Polyline( ){
-}
-
-bool Polyline::apply( Action& action ) {
-  return action.process(this);
 }
 
 const Vector3& 
@@ -178,11 +174,13 @@ Polyline::transform( const Transformation3DPtr& transformation ) const {
 }
 
 SceneObjectPtr 
-Polyline::copy() const 
-{
+Polyline::copy(DeepCopier& copier) const 
+{  
   Polyline * ptr = new Polyline(*this);
-  if(__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*__pointList));
-  if(__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*__colorList));
+  copier.copy_attribute(ptr->getPointList());
+  copier.copy_attribute(ptr->getColorList());
+  // if(__pointList)ptr->getPointList() = Point3ArrayPtr(new Point3Array(*__pointList));
+  // if(__colorList)ptr->getColorList() = Color4ArrayPtr(new Color4Array(*__colorList));
   return SceneObjectPtr(ptr);
 }
 
@@ -244,11 +242,11 @@ bool Polyline2D::Builder::isValid( ) const {
 
   // PointList
   if (! PointList) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Polyline2D","PointList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Polyline2D","PointList");
     return false;
   };
   if ((*PointList)->getSize() < 1) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Polyline2D","PointList","Number of points must be greater than 1.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Polyline2D","PointList","Number of points must be greater than 1.");
     return false;
   };
 
@@ -282,10 +280,6 @@ Polyline2D::Polyline2D( const Point2ArrayPtr& points ) :
 Polyline2D::~Polyline2D( ) {
 }
 
-bool Polyline2D::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool Polyline2D::isValid( ) const {
   Builder _builder;
   if(__pointList)_builder.PointList = const_cast<Point2ArrayPtr *>(&__pointList);
@@ -293,10 +287,10 @@ bool Polyline2D::isValid( ) const {
 }
 
 SceneObjectPtr 
-Polyline2D::copy() const 
+Polyline2D::copy(DeepCopier& copier) const 
 {
   Polyline2D *  ptr = new Polyline2D(*this);
-  if(__pointList)ptr->getPointList() = Point2ArrayPtr(new Point2Array(*__pointList));
+  copier.copy_attribute(ptr->getPointList());
   return SceneObjectPtr(ptr);
 }
 

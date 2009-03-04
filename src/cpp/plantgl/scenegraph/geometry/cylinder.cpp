@@ -76,12 +76,7 @@ Cylinder::~Cylinder( ) {
 #endif
 }
 
-bool 
-Cylinder::apply( Action& action ) {    
-  return action.process(this);
-}
-
-SceneObjectPtr Cylinder::copy() const {
+SceneObjectPtr Cylinder::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Cylinder(*this));
 }
 

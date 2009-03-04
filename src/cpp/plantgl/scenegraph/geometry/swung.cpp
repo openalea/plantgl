@@ -210,29 +210,10 @@ Swung::Swung( const Curve2DArrayPtr& profileList,
 Swung::~Swung( )
     { }
 
-bool Swung::apply( Action& action )
-    {
-    return action.process(this);
-    }
 
-SceneObjectPtr Swung::copy() const {
+SceneObjectPtr Swung::copy(DeepCopier& copier) const {
   Swung * ptr = new Swung(*this);
-  if(__profiles){
-    const Curve2DArrayPtr& _ca2 = getProfileList( );
-    Curve2DArrayPtr _ca(_ca2?new Curve2DArray(_ca2->getSize()):0);
-    if(_ca2){
-      uint_t i = 0;
-      for(Curve2DArray::iterator _it = _ca->getBegin(); _it != _ca->getEnd(); _it++){
-	if(_ca2->getAt(i))*_it = dynamic_pointer_cast<Curve2D>(_ca2->getAt(i)->copy());
-	i++;
-      }
-    }
-    RealArrayPtr _ang = RealArrayPtr((getAngleList( )?new RealArray(*getAngleList( )):0));
-    ProfileInterpolationPtr _p(new ProfileInterpolation(*__profiles));
-    _p->getKnotList() = _ang;
-    _p->getProfileList() = _ca;
-    ptr->getProfileInterpolation( ) = _p;
-  }
+  if(ptr->__profiles) ptr->__profiles = ptr->__profiles->deepcopy(copier);
   return SceneObjectPtr(ptr);
 }
 

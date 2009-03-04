@@ -42,6 +42,9 @@
 
 #include <plantgl/scenegraph/core/action.h>
 #include <plantgl/tool/rcobject.h>
+#include <plantgl/tool/util_hashmap.h>
+#include "deepcopier.h"
+#include "pgl_messages.h"
 #include <string>
 #include <iostream>
 
@@ -57,6 +60,7 @@ PGL_BEGIN_NAMESPACE
 class SceneObject;
 typedef RCPtr<SceneObject> SceneObjectPtr;
 class SceneObjectSymbolTable;
+class DeepCopier;
 
 /* ----------------------------------------------------------------------- */
 
@@ -72,15 +76,17 @@ class SG_API SceneObject : public virtual TOOLS(RefCountObject)
 {
 
 public:
+	 friend class DeepCopier;
 
-     /// A stream in which builder put their comment message.
+
+/*     /// A stream in which builder put their comment message.
      static std::ostream * commentStream;
 
      /// A stream in which builder put their warning message.
      static std::ostream * warningStream;
 
      /// A stream in which builder put their error message.
-     static std::ostream * errorStream;
+     static std::ostream * errorStream;*/
 
   /*! A structure which helps to build an object of type of \c SceneObject.
 
@@ -166,9 +172,23 @@ public:
   void setName( const std::string& name );
 
   /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const = 0 ;
+  SceneObjectPtr deepcopy() const;
+
+  /// Deep copy of \e this.
+  SceneObjectPtr deepcopy(DeepCopier&) const;
+
+  /// Deep copy and cast of \e this.
+  template<class T>
+  RCPtr<T> casted_deepcopy_using(DeepCopier&m) const{ return dynamic_pointer_cast<T>(deepcopy(m)); }
+
+  template<class T>
+  RCPtr<T> casted_deepcopy() const{ return dynamic_pointer_cast<T>(deepcopy()); }
 
 protected:
+
+  /// Deep copy of \e this.
+  virtual SceneObjectPtr copy(DeepCopier&) const = 0 ;
+
 
   /// Self's name
   std::string __name;
@@ -181,6 +201,14 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 #define gerr *SceneObject::errorStream
 #define gwarning *SceneObject::warningStream
 #define gcomment *SceneObject::commentStream
+
+
+#define PGL_OBJECT(T) \
+	public: \
+	virtual bool apply( Action& action ) { return action.process(this); } \
+	protected: \
+    virtual SceneObjectPtr copy(DeepCopier&) const; \
+	public: \
 
 /* ------------------------------------------------------------------------- */
 

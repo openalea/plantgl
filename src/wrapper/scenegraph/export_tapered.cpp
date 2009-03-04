@@ -35,7 +35,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -57,6 +57,7 @@ void export_Tapered()
 	   (bp::arg("baseRadius") = Tapered::DEFAULT_BASE_RADIUS,
 	    bp::arg("topRadius")  = Tapered::DEFAULT_TOP_RADIUS,
 		bp::arg("primitive")  = PrimitivePtr()) ))
+    .DEF_PGLBASE(Tapered)
 	.DEC_BT_PROPERTY_WDV(topRadius,Tapered,TopRadius,real_t,DEFAULT_TOP_RADIUS)
 	.DEC_BT_PROPERTY_WDV(baseRadius,Tapered,BaseRadius,real_t,DEFAULT_BASE_RADIUS)
 	.DEC_PTR_PROPERTY(primitive,Deformed,Primitive,PrimitivePtr)

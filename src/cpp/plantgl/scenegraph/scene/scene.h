@@ -137,7 +137,8 @@ public:
   void remove( Scene::iterator& it );
 
   /// Deep copy of \e this.
-  virtual ScenePtr copy() const ;
+  inline ScenePtr deepcopy() const { DeepCopier copier; return deepcopy(copier); }
+  virtual ScenePtr deepcopy(DeepCopier& copier) const ;
 
   /** Applies the action \e action to each shape of \e self.
     */

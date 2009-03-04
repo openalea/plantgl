@@ -115,10 +115,7 @@ public:
   /// Destructor.
   virtual ~ImageTexture( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(ImageTexture)
 
   /// Returns \b Filename value.
   const std::string& getFilename( ) const ;
@@ -152,8 +149,6 @@ protected:
   real_t __rotation;
 
   TOOLS(Vector2) __translation;
-
-  TOOLS(Vector2) __center;
 };
 
 /// ImageTexture Pointer

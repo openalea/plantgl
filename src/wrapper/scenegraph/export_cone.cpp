@@ -34,7 +34,8 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
+
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -58,6 +59,7 @@ void export_Cone()
 				bp::arg("slices")=Cone::DEFAULT_SLICES)
 				)
 	)
+	.DEF_PGLBASE(Cone)
   .DEC_BT_PROPERTY_WDV(radius,Cone,Radius,real_t,DEFAULT_RADIUS)
   .DEC_BT_PROPERTY_WDV(height,Cone,Height,real_t,DEFAULT_HEIGHT)
   .DEC_BT_NR_PROPERTY_WDV(solid,Cone,Solid,bool,DEFAULT_SOLID);

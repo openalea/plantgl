@@ -86,16 +86,18 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 			result->add(Shape3DPtr(new Shape(s,AppearancePtr(),id)));
 	    }
 		else { 		
-		  (*SceneObject::warningStream) << "*** Warning : Cannot find symbol " << name << " in " << file << endl;
-		  (*SceneObject::warningStream) << "*** Warning : Default Geometry will be used."<< endl;
-			result->add(Shape3DPtr(new Shape(GeometryPtr(),AppearancePtr(),id)));
+		  pglWarning("Cannot find symbol %s in %s. Default Geometry will be used." , name , file );
+  		  result->add(Shape3DPtr(new Shape(GeometryPtr(),AppearancePtr(),id)));
 		}
 
 	}
 	for(uint_t a=0;a < (uint_t) num;a++){
 	    string name;
 	    stream >> name;
-		while(name != "Symbole") {(*SceneObject::errorStream) << "Error with Token '" << name.c_str()  << "' when parsing " << fileName << endl;stream >> name;}
+		while(name != "Symbole") {
+			pglError("Error with Token '%s' when parsing '%s'.", name, fileName);
+		    stream >> name;
+		}
 	    int id;
 	    stream >> id;
 	    Color3 emission;
@@ -155,7 +157,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 		    stream >> a;
 		    shininess = a / 20;
 		}
-		else (*SceneObject::errorStream) << "Error with Token field '" << field.c_str()  << "' when parsing " << fileName << endl;
+		else pglError("Error with Token field '%s' when parsing %s.",field,fileName);
 	    }
 		if(interpol != -1){
 		    Color3 emission2;
@@ -199,7 +201,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 				shininess2 = a / 20;
 				shininess = (shininess * interpol + shininess2 * (100-interpol))/100;
 			}
-			else (*SceneObject::errorStream) << "Error with Token field '" << field.c_str()  << "' when parsing " << fileName << endl;
+			else pglError("Error with Token field '%s' when parsing %s.",field,fileName);
 			}
 		}
 
@@ -216,9 +218,9 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 		    }
 		    _it++;
 		}
-		if(!ok) (*SceneObject::errorStream) << "*** Error : The Appearance " << a  << " cannot be attributed." << endl;
+		if(!ok) pglError("The Appearance '%s' cannot be attributed.",a);
 	    }
-	    else (*SceneObject::errorStream) << "*** Error : An appearance is not valid (with GEOM)." << endl;
+	    else pglError("An appearance is not valid.");
 	}
 	return result;
     }
@@ -231,13 +233,13 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 
 bool Dtafile::isValid( ) const {
   if (_fileName.empty()) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Dtafile","FileName");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Dtafile","FileName");
     return 0;
   };
   ifstream _file(_fileName.c_str());
   if (_file) return true;
   string _mess = "Cannot open " + _fileName + '.';
-  genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Dtafile","FileName",_mess.c_str());
+  pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Dtafile","FileName",_mess.c_str());
   return false;
 }
 

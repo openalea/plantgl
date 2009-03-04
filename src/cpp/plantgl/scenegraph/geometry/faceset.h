@@ -126,12 +126,7 @@ public:
   /// Destructor
   virtual ~FaceSet( );
 
-  virtual bool apply( Action& action )
-  { return action.process(this); }
-  
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
-
+  PGL_OBJECT(FaceSet)
 
   virtual bool isValid( ) const;
 

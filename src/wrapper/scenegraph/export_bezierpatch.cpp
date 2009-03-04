@@ -37,7 +37,8 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
+
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -63,6 +64,7 @@ void export_BezierPatch()
 	  bp::arg("ustride")=BezierPatch::DEFAULT_STRIDE,
 	  bp::arg("vstride")=BezierPatch::DEFAULT_STRIDE,
 	  bp::arg("ccw")=Patch::DEFAULT_CCW)))
+	.DEF_PGLBASE(BezierPatch)
     .DEC_BT_PROPERTY_WD(ustride,BezierPatch,UStride,uint_t)
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
     .add_property("udegree",&BezierPatch::getUDegree)

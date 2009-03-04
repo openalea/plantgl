@@ -37,6 +37,7 @@
 
 #include "vgsfile.h"
 #include <plantgl/algo/base/tesselator.h>
+#include <plantgl/tool/errormsg.h>
 #include "vgstarprinter.h"
 #include <fstream>
 
@@ -71,7 +72,7 @@ SceneFormatList VgStarCodec::formats() const
 
 ScenePtr VgStarCodec::read(const std::string& fname)
 {
-  return VegeStarFile::read(fname,*SceneObject::errorStream);
+  return VegeStarFile::read(fname,*PglErrorStream::error);
 }
 
 void VgStarCodec::write(const std::string& fname,const ScenePtr& scene)

@@ -228,6 +228,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_deepcopier.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_disc.cpp"
 				>
 			</File>
@@ -372,6 +376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_sceneobject.h"
+				>
+			</File>
+			<File
 				RelativePath=".\export_shape.cpp"
 				>
 			</File>
@@ -453,6 +461,10 @@
 			</File>
 			<File
 				RelativePath="..\..\cpp\plantgl\python\list_converter.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\cpp\plantgl\python\pyinterpreter.h"
 				>
 			</File>
 			<File

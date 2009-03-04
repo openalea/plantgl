@@ -168,7 +168,7 @@ public:
   /// Destructor
   virtual ~IFS( );
 
-  virtual bool apply( Action& action );
+  PGL_OBJECT(IFS)
 
   /// Returns the transformation attached to \e self.
   virtual Transformation3DPtr getTransformation( ) const;
@@ -203,9 +203,6 @@ public:
   bool isDepthToDefault( ) const;
 
   virtual bool isValid( ) const;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
 
   template <class T> static T power( const T& a, uchar_t b )
     {

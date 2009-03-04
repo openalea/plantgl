@@ -35,10 +35,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-
-#include <boost/python.hpp>
-#include <string>
-#include <sstream>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -159,7 +156,8 @@ class mesh_func : public boost::python::def_visitor<mesh_func<MeshType> >
 			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
 			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
 			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
-	.def( "deepcopy", &MeshType::copy )
+	// .def( "deepcopy", &MeshType::castcopy<MeshType> )
+     .DEF_PGLBASE(MeshType)
 
 	.DEC_MESH_PROPERTY(indexList,            MeshType, IndexList,         MeshIndexArrayPtr)
 	.DEC_MESH_PROPERTY_WD(normalIndexList,   MeshType, NormalIndexList,   MeshIndexArrayPtr)

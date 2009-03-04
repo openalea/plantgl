@@ -74,19 +74,19 @@ bool EulerRotation::Builder::isValid( ) const
 {
   if( Azimuth && (! finite(*Azimuth)) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
     return false;
     }
 
   if( Elevation && (! finite(*Elevation)) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
     return false;
     }
 
   if( Roll && (! finite(*Roll)) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
     return false;
     }
 
@@ -159,17 +159,17 @@ bool EulerRotated::Builder::isValid( ) const {
   if (! MTValid()) return false;
 
   if (Azimuth && (! finite(*Azimuth))) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
     return false;
   };
 
   if (Elevation && (! finite(*Elevation))) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
     return false;
   };
 
   if (Roll && (! finite(*Roll))) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
     return false;
   };
 
@@ -200,10 +200,6 @@ EulerRotated::EulerRotated( const real_t& azimuth,
 EulerRotated::~EulerRotated( ) {
 }
 
-bool
-EulerRotated::apply( Action& action ) {
-  return action.process(this);
-}
 
 bool EulerRotated::isValid( ) const {
   Builder _builder;
@@ -214,9 +210,9 @@ bool EulerRotated::isValid( ) const {
   return (_builder.isValid() && __geometry->isValid());
 }
 
-SceneObjectPtr EulerRotated::copy() const {
+SceneObjectPtr EulerRotated::copy(DeepCopier& copier) const {
   EulerRotated * ptr = new EulerRotated(*this);
-  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
+  copier.copy_object_attribute(ptr->getGeometry());
   return SceneObjectPtr(ptr);
 }
 

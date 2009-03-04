@@ -35,6 +35,7 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <boost/python/make_constructor.hpp>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -70,6 +71,7 @@ void export_Scaled()
 	 bp::arg("geometry") = GeometryPtr())) )
     .def( "__init__", make_constructor( sca_from_val ) ) 
     .def( "__init__", make_constructor( sca1_from_val ) ) 
+    .DEF_PGLBASE(Scaled)
 	.DEC_CT_PROPERTY_WDV(scale,Scaled,Scale,Vector3,DEFAULT_SCALE)
     ;
 

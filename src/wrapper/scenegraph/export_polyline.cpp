@@ -36,8 +36,8 @@
 #include <plantgl/python/export_property.h>
 #include <plantgl/python/extract_list.h>
 #include <plantgl/python/exception.h>
+#include "export_sceneobject.h"
 
-#include <boost/python.hpp>
 #include <string>
 #include <sstream>
 
@@ -92,7 +92,7 @@ void export_Polyline()
 	  "A Polyline describes a curve formed by connected segments.\n"
 	  "It is defined by a set of points. A color can be associated to each point for visualisation.",
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("Polyline(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
-    .def( "deepcopy", &Polyline::copy )
+    .DEF_PGLBASE(Polyline)
     .def( "__getitem__", gpl_getitem /*, return_internal_reference<1>() */)
     .def( "__setitem__", gpl_setitem )
     .def( "__len__", gpl_size )
@@ -139,7 +139,7 @@ void export_Polyline2D()
 	  "A Polyline2D describes a curve formed by connected 2D segments.\n"
 	  "It is defined by a set of 2D points. See Polyline.",
 	  init<Point2ArrayPtr>() )
-    .def( "copy", &Polyline2D::copy )
+    .DEF_PGLBASE(Polyline2D)
     .def( "__getitem__", gpl2_getitem )
     .def( "__setitem__", gpl2_setitem )
     .def( "__len__", gpl2_size )

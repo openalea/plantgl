@@ -33,6 +33,8 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
+
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -89,6 +91,8 @@ void export_AsymmetricHull()
 		.DEC_BT_PROPERTY_WDV(topShape,AsymmetricHull,TopShape,real_t,DEFAULT_TOP_SHAPE)
 		.DEC_BT_PROPERTY_WDV(slices,AsymmetricHull,Slices,uchar_t,DEFAULT_SLICES)
 		.DEC_BT_PROPERTY_WDV(stacks,AsymmetricHull,Stacks,uchar_t,DEFAULT_STACKS)
+		.DEF_PGLBASE(AsymmetricHull)
+
 	;
 
   implicitly_convertible<AsymmetricHullPtr,HullPtr >();

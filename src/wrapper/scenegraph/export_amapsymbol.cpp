@@ -33,6 +33,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -51,6 +52,7 @@ void export_AmapSymbol()
 	  init< optional<std::string,bool> >("AmapSymbol(filename)"))
     .def("readFile",&AmapSymbol::readFile)
 	.DEC_BT_PROPERTY(filename,AmapSymbol,FileName,std::string)
+	.DEF_PGLBASE(AmapSymbol)
     ;
   implicitly_convertible<AmapSymbolPtr, FaceSetPtr>();
 

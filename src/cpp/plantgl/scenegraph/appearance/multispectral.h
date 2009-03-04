@@ -117,10 +117,7 @@ public:
   /// Destructor.
   virtual ~MultiSpectral( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(MultiSpectral)
 
   /// Returns \b Reflectance values.
   const TOOLS(RealArrayPtr)& getReflectance( ) const ;

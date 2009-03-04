@@ -81,7 +81,7 @@ bool Frustum::Builder::isValid( ) const {
 
   // taper field.
   if (Taper && (*Taper < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Frustum","Taper","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Frustum","Taper","Must be not null.");
     return false;
   };
 
@@ -105,10 +105,7 @@ Frustum::Frustum( const real_t& radius,
 Frustum::~Frustum( ) {
 }
 
-bool 
-Frustum::apply( Action& action ) {    
-  return action.process(this);
-}
+
 
 bool Frustum::isValid( ) const {
   Builder _builder;
@@ -119,7 +116,7 @@ bool Frustum::isValid( ) const {
   return _builder.isValid();
 }
   
-SceneObjectPtr Frustum::copy() const {
+SceneObjectPtr Frustum::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Frustum(*this));
 }
 

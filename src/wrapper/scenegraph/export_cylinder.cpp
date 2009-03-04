@@ -34,6 +34,8 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
+
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -53,7 +55,9 @@ void export_Cylinder()
 				 (bp::arg("radius")=Cylinder::DEFAULT_RADIUS,
 				  bp::arg("height")=Cylinder::DEFAULT_HEIGHT,
 				  bp::arg("solid")=Cylinder::DEFAULT_SOLID,
-				  bp::arg("slices")=Cylinder::DEFAULT_SLICES)));
+				  bp::arg("slices")=Cylinder::DEFAULT_SLICES)))
+	.DEF_PGLBASE(Cylinder)
+				  ;
 
   implicitly_convertible<CylinderPtr, ConePtr >();
 }

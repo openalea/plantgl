@@ -430,15 +430,15 @@ ScenePtr Ligfile::computeScene(const Dtafile& _dtafile) const{
         ShapePtr a = _dtafile.getdtainfo((unsigned int)_it->getSymbolNumber());
         if(a){
             GeometryPtr b = _it->getTransformed(a->getGeometry());
-            if(!a->getAppearance())(*SceneObject::errorStream) << "The Dta object " << _it->getSymbolNumber() << " don't have valid Appearance" << endl;
+            if(!a->getAppearance())pglError("The Dta object %i don't have a valid Appearance.",_it->getSymbolNumber());
             if(b)result->add(Shape3DPtr(new Shape(b,AppearancePtr(a->getAppearance()),_it->getEntityNumber())));
-            else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
+            else  pglError("The object %i cannot be computed.",distance(recordTable->begin(),_it) );
         }
         else {
-                (*SceneObject::warningStream) << "*** Warning : Cannot find symbol in Dta file for object " << distance(recordTable->begin(),_it) << ". Default geometry used." << endl;
+            pglWarning("Cannot find symbol in Dta file for object %i. Default geometry used.", distance(recordTable->begin(),_it));;
             GeometryPtr b = _it->getTransformed(GeometryPtr());
             if(b)result->add(Shape3DPtr(new  Shape(b,_default,_it->getEntityNumber())));
-            else  (*SceneObject::errorStream) << "*** Error : The object " << distance(recordTable->begin(),_it) << " cannot be computed" << endl;
+            else  pglError("The object %i cannot be computed", distance(recordTable->begin(),_it) );
         }
         id++;
     }
@@ -478,13 +478,7 @@ ScenePtr PGL(readLineTree)(string ligFile,
 
     string p = get_cwd();
     ScenePtr result;
-    ostream * errlog = SceneObject::errorStream;
-    ostream * warlog = SceneObject::warningStream;
-    ostream * comlog = SceneObject::commentStream;
-
-    SceneObject::commentStream = &output;
-    SceneObject::warningStream = &output;
-    SceneObject::errorStream = &output;
+	PglErrorStream::Binder psb(output);
     // (*SceneObject::commentStream) << "Read Line Tree on " << ligFile << " , " << dtaFile << " and on " << smbpath << endl;
     Dtafile d(dtaFile,smbpath);
     if(d.isValid()){
@@ -492,24 +486,19 @@ ScenePtr PGL(readLineTree)(string ligFile,
       Ligfile l(ligFile,bigendian);
       // (*SceneObject::commentStream) << "Lig File read (" << l.getSize() << ") - " << (l.isValid()?"Valid":"Invalid") << endl;
       if(!l.isValid()){
-                  (*SceneObject::errorStream) << "Error : Invalid Lig File !"  << endl;
-                  result = d.getScene();
+		   pglError("Error : Invalid Lig File !");
+           result = d.getScene();
           }
       else result =l.computeScene(d);
     }
         else {
-      (*SceneObject::errorStream) << "Error : Invalid Dta File !"  << endl;
+          pglError("Error : Invalid Dta File !");
           result = ScenePtr(new Scene());
         }
     chg_dir(p);
-    if(!result->isValid()){
-                (*SceneObject::errorStream) << "Error : Invalid Scene !" << endl;
-        }
+    if(!result->isValid())pglError("Error : Invalid Scene !");
     // else (*SceneObject::commentStream) << "Scene of " << result->getSize() << " element(s)" << endl;
-    SceneObject::commentStream = comlog;
-        SceneObject::warningStream = warlog;
-        SceneObject::errorStream = errlog;
-        return result;
+    return result;
 }
 
 

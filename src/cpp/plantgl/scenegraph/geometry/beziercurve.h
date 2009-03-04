@@ -115,10 +115,7 @@ public:
   /// Destructor
   virtual ~BezierCurve( ); 
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(BezierCurve)
 
   /// Returns \e Control Points value.
   virtual Point4ArrayPtr getCtrlPoints( ) const;
@@ -240,10 +237,7 @@ public:
   /// Destructor
   virtual ~BezierCurve2D( ) ;
 
-  virtual bool apply( Action& action ) ;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(BezierCurve2D)
 
   /// Returns \e Control Points value.
   virtual Point3ArrayPtr getCtrlPoints( ) const;

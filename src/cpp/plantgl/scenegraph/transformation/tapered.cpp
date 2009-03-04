@@ -253,12 +253,12 @@ bool Tapered::Builder::isValid( ) const {
   if (! DefValid()) return false;
 
   if (BaseRadius && (*BaseRadius < 0)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","BaseRadius","Must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","BaseRadius","Must be greater than 0.");
     return false;
   };
 
   if (TopRadius && (*TopRadius < 0)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","TopRadius","Must be greater than 0.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","TopRadius","Must be greater than 0.");
     return false;
   };
 
@@ -286,10 +286,6 @@ Tapered::Tapered( const real_t& baseRadius,
 Tapered::~Tapered( ) {
 }
 
-bool Tapered::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool Tapered::isValid( ) const {
   Builder _builder;
   _builder.Primitive = const_cast<PrimitivePtr *>(&__primitive);
@@ -298,9 +294,9 @@ bool Tapered::isValid( ) const {
   return (_builder.isValid() && __primitive->isValid());
 }
 
-SceneObjectPtr Tapered::copy() const {
+SceneObjectPtr Tapered::copy(DeepCopier& copier) const {
   Tapered * ptr = new Tapered(*this);
-  if(__primitive)ptr->getPrimitive() = dynamic_pointer_cast<Primitive>(__primitive->copy());
+  copier.copy_object_attribute(ptr->getPrimitive());
   return SceneObjectPtr(ptr);
 }
 

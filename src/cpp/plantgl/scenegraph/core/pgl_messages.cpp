@@ -37,11 +37,11 @@
 /* ----------------------------------------------------------------------- */
 
 
-const char * GEOM_MESSAGES[] = {
+const char * PGL_MESSAGES[] = {
   // UNNAMED_OBJECT
   "Object is unnamed, cannot record it.",
   // DECLARED_OBJECT_ss
-  "<%s> Object '%s' already declared. %s",
+  "<%s> Object '%s' already declared.",
   // UNDECLARED_OBJECT_s
   "Object '%s' is undeclared, cannot record it.",
   // INITIALIZED_FIELD_ss,
@@ -62,6 +62,14 @@ const char * GEOM_MESSAGES[] = {
   "<%s> Field '%s' has a bad '%s'th value : %s",
   // INVALID_TYPE_sss,
   "<%s> Invalid Type for '%s'. Found '%s'",
+  // FILE_ERR_s
+  "Cannot access file '%s'.",
+  // FILE_OPEN_ERR_s
+  "Cannot open file '%s'.",
+  // FILE_READ_ERR_s
+  "Cannot read file '%s'.",
+  // FILE_WRITE_ERR_s
+  "Cannot write file '%s'."
 
 };
 

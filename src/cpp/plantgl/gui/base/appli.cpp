@@ -86,7 +86,7 @@ ViewerAppli::postAnEvent(QEvent *e)
 { startSession(); getViewer()->post(e); }
 
 
-ViewerAppli::ViewerAppli(){ ViewObjectGL::BASHMODE = true; }
+ViewerAppli::ViewerAppli(){ /*ViewObjectGL::BASHMODE = true;*/ }
 ViewerAppli::~ViewerAppli(){  }
 
 

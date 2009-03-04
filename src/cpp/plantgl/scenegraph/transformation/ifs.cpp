@@ -108,13 +108,13 @@ bool IT::isValid( ) const
 {
   if( (__transfoList->getSize() == 0) || (!__transfoList->isValid()) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","TransfoList","Must be a list of valid transformations");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","TransfoList","Must be a list of valid transformations");
     return false;
     }
 
   if( __depth && (! finite(__depth)) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be finite");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be finite");
     return false;
     }
 
@@ -281,34 +281,34 @@ bool IFS::Builder::isValid( ) const
 //GEOM_TRACE("validate IFS::Builder");
   if(! Geometry)
     {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","Geometry");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","Geometry");
     return false;
     }
   if(! (*Geometry) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
     return false;
     }
   if(! (*Geometry)->isValid() )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
     return false;
     }
   if(! TransfoList )
     {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","TransfoList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","TransfoList");
     return false;
     }
 
   if( ((*TransfoList)->getSize() == 0) || (!(*TransfoList)->isValid()) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","TransfoList","Must be a list of valid transformations");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","TransfoList","Must be a list of valid transformations");
     return false;
     }
 
   if( Depth && (! finite(*Depth)) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be finite");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be finite");
     return false;
     }
 
@@ -319,7 +319,7 @@ bool IFS::Builder::isValid( ) const
 
     if( size > MAX_OBJECTS )
       {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must be decreased");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must be decreased");
       return false;
       }
     }
@@ -357,11 +357,6 @@ IFS::IFS( uchar_t depth,
 IFS::~IFS( )
 { }
 
-bool IFS::apply( Action& action )
-{
-  return action.process(this);
-}
-
 /////////////////////////////////////////////////////////////////////////////
 bool IFS::isValid( ) const
 /////////////////////////////////////////////////////////////////////////////
@@ -374,12 +369,12 @@ bool IFS::isValid( ) const
 }
 
 /////////////////////////////////////////////////////////////////////////////
-SceneObjectPtr IFS::copy( ) const
+SceneObjectPtr IFS::copy(DeepCopier& copier ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   IFS * ptr = new IFS(*this);
-  ptr->getTransfoList( ) = Transform4ArrayPtr(new Transform4Array(*__transfoList));
-  ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
+  copier.copy_recursive_attribute(ptr->getTransfoList());
+  copier.copy_object_attribute(ptr->getGeometry());
   return SceneObjectPtr(ptr);
 }
 

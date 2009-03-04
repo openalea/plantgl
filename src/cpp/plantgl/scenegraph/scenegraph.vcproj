@@ -175,6 +175,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\core\deepcopier.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\core\deepcopier.h"
+				>
+			</File>
+			<File
 				RelativePath=".\core\pgl_messages.cpp"
 				>
 			</File>
@@ -488,6 +496,10 @@
 			</File>
 			<File
 				RelativePath=".\geometry\mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\geometry\mesh_inline.h"
 				>
 			</File>
 			<File

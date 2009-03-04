@@ -80,11 +80,11 @@ Vector3 get_oct_size(Octree * oc) { return oc->getSize(); }
 
 object get_oct_details(Octree * oc) 
 { return make_list<std::vector<std::vector<uint_t> > ,
-                   make_list<std::vector<uint_t> > >
+                   list_converter<std::vector<uint_t> > >
                    (oc->getDetails())(); }
 
 object get_oct_sizes(Octree * oc) 
-{ return make_list<std::vector<Vector3> >(oc->getSizes())(); }
+{ return make_list(oc->getSizes())(); }
 
 
 object oct_intersect(Octree * oct, const Ray& ray) {
@@ -124,6 +124,7 @@ void export_Octree()
   enum_<Octree::ConstructionMethod>("ConstructionMethod")
       .value("TriangleBased",Octree::TriangleBased)
       .value("ShapeBased",Octree::ShapeBased)
+	  .export_values()
       ;
 }
 

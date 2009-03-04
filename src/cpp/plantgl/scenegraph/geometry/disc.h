@@ -92,7 +92,7 @@ public:
   /// Destructor
   virtual ~Disc( );
 
-  virtual bool apply( Action& action );
+  PGL_OBJECT(Disc)
 
   /// Returns \b Radius value.
   const real_t& getRadius( ) const;
@@ -106,9 +106,6 @@ public:
   bool isRadiusToDefault( ) const ;
 
   virtual bool isValid( ) const;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
 
 
 protected:

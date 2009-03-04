@@ -185,10 +185,7 @@ public:
   /// Destructor
   virtual ~AsymmetricHull( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(AsymmetricHull)
 
   /// Returns \b Bottom value.
   const TOOLS(Vector3)& getBottom( ) const;

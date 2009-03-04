@@ -163,7 +163,7 @@ bool Scaled::Builder::isValid( ) const {
 
   if (Scale &&
       (*Scale == Vector3::ORIGIN)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Scaled","Scale","Couldn't scale with factors <0,0,0>.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Scaled","Scale","Couldn't scale with factors <0,0,0>.");
     return false;
   };
 
@@ -188,10 +188,6 @@ Scaled::Scaled( const Vector3& scale,
 Scaled::~Scaled( ) {
 }
 
-bool Scaled::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool Scaled::isValid( ) const {
   Builder _builder;
   _builder.Geometry = const_cast<GeometryPtr *>(&__geometry);
@@ -199,9 +195,9 @@ bool Scaled::isValid( ) const {
   return (_builder.isValid() && __geometry->isValid());
 }
 
-SceneObjectPtr Scaled::copy() const {
+SceneObjectPtr Scaled::copy(DeepCopier& copier) const {
   Scaled * ptr = new Scaled(*this);
-  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
+  copier.copy_object_attribute(ptr->getGeometry());
   return SceneObjectPtr(ptr);
 }
 

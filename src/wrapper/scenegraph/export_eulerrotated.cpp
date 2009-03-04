@@ -33,6 +33,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -59,6 +60,7 @@ void export_EulerRotated()
 		 bp::arg("elevation")=EulerRotated::DEFAULT_ELEVATION,
 		 bp::arg("roll")=EulerRotated::DEFAULT_ROLL,
 		 bp::arg("geometry")=GeometryPtr()) ))
+	.DEF_PGLBASE(EulerRotated)
 	.DEC_ANGLE_PROPERTY_WDV(azimuth,EulerRotated,Azimuth,DEFAULT_AZIMUTH)
 	.DEC_ANGLE_PROPERTY_WDV(elevation,EulerRotated,Elevation,DEFAULT_ELEVATION)
 	.DEC_ANGLE_PROPERTY_WDV(roll,EulerRotated,Roll,DEFAULT_ROLL)

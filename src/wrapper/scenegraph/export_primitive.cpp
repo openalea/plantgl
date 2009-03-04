@@ -34,6 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 using namespace boost::python;

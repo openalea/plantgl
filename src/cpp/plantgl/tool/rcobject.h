@@ -192,7 +192,7 @@ public:
   template<class U>
   RefCountPtr& operator=( const RefCountPtr<U>& ptr )
   {
-	 return operator=(ptr.toPtr());
+	 return operator=(ptr.get());
   }
 #endif
 
@@ -217,10 +217,10 @@ public:
   template <class U>
   attribute_deprecated inline RefCountPtr& cast( const RefCountPtr<U>& ptr )
   {
-    if (__ptr != ptr.toPtr())
+    if (__ptr != ptr.get())
 	{
 	  if (__ptr) __ptr->removeReference();
-	  __ptr = dynamic_cast<T *>(ptr.toPtr());
+	  __ptr = dynamic_cast<T *>(ptr.get());
 	  if (__ptr) __ptr->addReference();
 	};
     return *this;
@@ -231,7 +231,7 @@ public:
   attribute_deprecated static RefCountPtr Cast( const RefCountPtr<U>& ptr )
   {
     RefCountPtr rptr;
-    if (ptr.toPtr() != NULL)return rptr.cast(ptr);
+    if (ptr.get() != NULL)return rptr.cast(ptr);
     return rptr;
   }
 
@@ -512,6 +512,8 @@ private:
 #endif
 
 }; // RefCountObject
+
+typedef RefCountPtr<RefCountObject> RefCountObjectPtr;
 
 TOOLS_END_NAMESPACE
 

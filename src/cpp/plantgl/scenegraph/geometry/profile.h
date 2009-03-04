@@ -77,6 +77,8 @@ typedef RCPtr<Point3Array> Point3ArrayPtr;
 typedef RCPtr<Transformation2D> Transformation2DPtr;
 #endif
 
+class ProfileTransformation;
+typedef RCPtr<ProfileTransformation> ProfileTransformationPtr;
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -136,6 +138,8 @@ class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
 
     /// Returns whether \e self is valid.
     virtual bool isValid( ) const;
+
+    virtual ProfileTransformationPtr deepcopy(DeepCopier& copier) const;
 
   protected:
 
@@ -272,7 +276,10 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
 
   virtual bool interpol();
 
+  virtual ProfileInterpolationPtr deepcopy(DeepCopier& copier) const;
+
   protected:
+
 
   /// A pointee to the \b profile list.
   Curve2DArrayPtr __profileList;
@@ -298,8 +305,6 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   bool __is2D;
 };
 
-/// ProfileInterpolation Pointer
-typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 
 /* ----------------------------------------------------------------------- */
 

@@ -52,7 +52,14 @@ def test_ifs():
                     print res.transfoList[j].getMatrix()
                     print k,norm(ifs.transfoList[j].getMatrix().getColumn(k) - res.transfoList[j].getMatrix().getColumn(k))
                     warnings.warn("Transformation retrieval from matrix4 failed.")
-    
+
+def test_parser_already_declared_error():
+    txt = """Group test { GeometryList [ Sphere test { } ] }"""
+    b = isPglParserVerbose()
+    pglParserVerbose(False)
+    sc, dic = pgl_read(txt)    
+    pglParserVerbose(b)
+                    
 if __name__ == '__main__':
     import traceback as tb
     test_func = [ (n,v) for n,v in globals().items() if 'test' in n]

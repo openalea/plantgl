@@ -583,16 +583,11 @@ bool BinaryParser::readHeader(){
 bool BinaryParser::parse(const string& filename){
     stream = new leifstream(filename.c_str());
     if(!*stream){
-        genMessage(ERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
+        pglErrorEx(ERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
         return false;
     }
     if(!readHeader())return false;
-    ostream * errlog1 = SceneObject::errorStream;
-    ostream * errlog2 = SceneObject::warningStream;
-    ostream * errlog3 = SceneObject::commentStream;
-    SceneObject::commentStream = &__outputStream;
-    SceneObject::warningStream = &__outputStream;
-    SceneObject::errorStream = &__outputStream;
+	PglErrorStream::Binder psb(__outputStream);
     string p = get_cwd();
     chg_dir(get_dirname(filename));
     Timer t;
@@ -612,9 +607,6 @@ bool BinaryParser::parse(const string& filename){
 #endif
     delete stream;
     stream = 0;
-    SceneObject::commentStream = errlog3;
-    SceneObject::warningStream = errlog2;
-    SceneObject::errorStream = errlog1;
     chg_dir(p);
     return true;
 }
@@ -833,7 +825,7 @@ bool BinaryParser::readImageTexture() {
 
     if (FileName.empty() || !exists(FileName.c_str())) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
         MaterialPtr mat2(new Material(*mat));
         GEOM_PARSER_SETNAME(_name,_ident,mat,Material);
     }
@@ -919,7 +911,7 @@ bool BinaryParser::readAmapSymbol() {
     if( version < 1.1f){
       if (FileName.empty() || !exists(FileName.c_str())) {
     string label = "AmapSymbol : " + string((_name.empty() ? "(unamed)" : _name));
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
     GEOM_DEL_OBJ(obj,4) ;
     return false;
       }

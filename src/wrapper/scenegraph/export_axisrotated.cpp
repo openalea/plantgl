@@ -33,6 +33,8 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
+
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -58,6 +60,7 @@ void export_AxisRotated()
 	  bp::arg("geometry") = GeometryPtr())))
     .DEC_CT_PROPERTY_WDV(axis,AxisRotated,Axis,Vector3,DEFAULT_AXIS)
 	.DEC_ANGLE_NR_PROPERTY_WDV(angle,AxisRotated,Angle,DEFAULT_ANGLE)
+	.DEF_PGLBASE(AxisRotated)
     ;
 
   implicitly_convertible< AxisRotatedPtr, OrthoTransformedPtr >();

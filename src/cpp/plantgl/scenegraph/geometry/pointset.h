@@ -100,10 +100,7 @@ public:
   /// Destructor
   virtual ~PointSet( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(PointSet)
 
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
@@ -190,10 +187,7 @@ public:
   /// Destructor
   virtual ~PointSet2D( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(PointSet2D)
 
   /** Returns the value of the \e i-th point of \b PointList.
       \pre

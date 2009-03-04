@@ -33,6 +33,7 @@
 #include <plantgl/scenegraph/core/action.h>
 
 #include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/pyinterpreter.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -41,13 +42,34 @@ using namespace std;
 
 DEF_POINTEE(SceneObject)
 
+
+void py_error_handler(const std::string& msg, const char * fname, int lineno){
+	PythonInterpreterAcquirer py;
+	PyErr_SetString(PyExc_ValueError, msg.c_str() );
+	PyErr_Print();
+}
+
+void py_warning_handler(const std::string& msg, const char * fname, int lineno){
+    PythonInterpreterAcquirer py;
+    PyErr_WarnExplicit(PyExc_Warning,msg.c_str(),"openalea.plantgl",lineno,fname,NULL);
+}
+
+void py_debug_handler(const std::string& msg, const char * fname, int lineno){
+    PythonInterpreterAcquirer py;
+    PyErr_WarnExplicit(PyExc_Warning,msg.c_str(),"openalea.plantgl",lineno,fname,NULL);
+}
+
 std::string get_sco_name(SceneObject * obj){ return obj->getName(); } 
 void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
 
 
-
 void export_SceneObject()
 {
+
+   register_error_handler(&py_error_handler);
+   register_warning_handler(&py_warning_handler);
+   register_debug_handler(&py_debug_handler);
+
   class_< SceneObject,SceneObjectPtr, boost::noncopyable >(
 	  "SceneObject", 
 	  "Abstract base class for all objects of the scenegraph.\n"
@@ -61,10 +83,8 @@ void export_SceneObject()
     .add_property("name",get_sco_name,&SceneObject::setName)
     .def("isValid", &SceneObject::isValid)
     .def("apply", &SceneObject::apply)
-    .def("deepcopy", &SceneObject::copy)
     .def("getId", &SceneObject::getId)
 	.def("getPglReferenceCount",&RefCountObject::getReferenceCount)
-	// .enable_pickling()
     ;
 }
 

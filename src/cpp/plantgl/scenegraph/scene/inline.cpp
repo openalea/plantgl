@@ -89,30 +89,30 @@ Inline::Builder::destroy( ){
 
 bool Inline::Builder::isValid( ) const {
   if (! FileName && ! Scene) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Inline","FileName");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Inline","FileName");
     return false;
   };
   if(FileName){
       ifstream _file(FileName->c_str());
       if (!_file){
           string _mess = "Cannot open " + *FileName;
-          genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","FileName",_mess.c_str());
+          pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","FileName",_mess.c_str());
           return false;
       }
   }
 
   if(Scene && !(*Scene)->isValid()){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scene","Not Valid");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scene","Not Valid");
       return false;      
   }
 
   if(Translation && !Translation->isValid()){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Translation","Not Valid");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Translation","Not Valid");
       return false;      
   }
 
   if(Scale && !Scale->isValid()){
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scale","Not Valid");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scale","Not Valid");
       return false;
   }
 
@@ -127,7 +127,7 @@ Inline::Inline(const string& filename, const Vector3& translation, const Vector3
     __filename(filename),
     __translation(translation),
     __scale(scale),
-    __scene(new Scene(filename, "", *errorStream)){
+    __scene(new Scene(filename, "")){
     if ( __name.empty() ) setDefaultName();
 }
 
@@ -141,10 +141,6 @@ void Inline::setDefaultName()
 	__name = "INLINE_"+number(getId());
 }
 
-bool Inline::apply( Action& action ){
-  return action.process(this);
-}
-
 const string&
 Inline::getFileName() const {
   return __filename;
@@ -155,10 +151,10 @@ bool Inline::isValid( ) const{
     else return __scene->isValid();
 }
 
-SceneObjectPtr Inline::copy() const
+SceneObjectPtr Inline::copy(DeepCopier& copier) const
 {
   Inline * ptr = new Inline(*this);
-  if(__scene)ptr->__scene = __scene->copy();
+  if(ptr->__scene)ptr->__scene = ptr->__scene->deepcopy(copier);
   return SceneObjectPtr(ptr);
 }
 

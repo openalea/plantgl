@@ -80,23 +80,23 @@ bool Group::Builder::isValid( ) const {
 
   // GeometryList field
   if (! GeometryList) {
-    genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Group","GeometryList");
+    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Group","GeometryList");
     return false;
   };
   uint_t _size = (*GeometryList)->getSize();
   if (_size < 1) {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Group","GeometryList","Must be greater than 1.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Group","GeometryList","Must be greater than 1.");
     return false;
   };
   for (uint_t _i = 0; _i < _size; _i++) {
     const GeometryPtr& _geometry = (*GeometryList)->getAt(_i);
     if (! (_geometry) ) {
-      genMessage
+      pglErrorEx
 	  (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
       return false;
     };	
     if (!_geometry->isValid() ) {
-      genMessage
+      pglErrorEx
 	  (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
       return false;
     };	
@@ -124,10 +124,6 @@ Group::Group( const GeometryArrayPtr& geometryList,
 }
 
 Group::~Group( ) {
-}
-
-bool Group::apply( Action& action ) { 
-  return action.process(this);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -223,7 +219,7 @@ bool Group::isValid( ) const {
   for (uint_t _i = 0; _i < _size ; _i++) {
       const GeometryPtr& _geometry = __geometryList->getAt(_i);
       if (! (_geometry) && (_geometry->isValid())) {
-	  genMessage
+	  pglErrorEx
 	      (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
 	  return false;
       };	
@@ -233,18 +229,11 @@ bool Group::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-SceneObjectPtr Group::copy() const 
+SceneObjectPtr Group::copy(DeepCopier& copier) const 
 {
   Group * ptr = new Group(*this);
-  uint_t size = ptr->getGeometryListSize();
-  GeometryArrayPtr _ga(new GeometryArray(size));
-  uint_t i = 0;
-  for(GeometryArray::iterator _it = _ga->getBegin() ; _it != _ga->getEnd() ; _it ++){
-    if(__geometryList->getAt(i))*_it = dynamic_pointer_cast<Geometry>(__geometryList->getAt(i)->copy());
-    i++;
-  }
-  ptr->getGeometryList( ) = _ga;
-  if(__skeleton)ptr->getSkeleton()= dynamic_pointer_cast<Polyline>(__skeleton->copy());
+  copier.copy_recursive_object_attribute(ptr->getGeometryList());
+  copier.copy_object_attribute(ptr->getSkeleton());
   return SceneObjectPtr(ptr);
 }
 

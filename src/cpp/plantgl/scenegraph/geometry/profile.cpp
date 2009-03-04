@@ -257,17 +257,17 @@ bool ProfileTransformation::isValid( ) const{
 
     if(__scalingList){
         if(!(__scalingList)->isValid()) {
-            genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
+            pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
             return false;
         };
         if((__scalingList)->getSize() == 0 ){
-            genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
+            pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
             return false;
         }
     }
     if(__orientationList)
         if((__orientationList)->getSize() == 0 ){
-            genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
+            pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
             return false;
         }
 
@@ -275,7 +275,7 @@ bool ProfileTransformation::isValid( ) const{
         (__scalingList->getSize() !=1) &&
         (__orientationList->getSize() !=1) &&
         (__scalingList->getSize()!=__orientationList->getSize()) ){
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
                    "Must specifie Scale and Orientation with the same number of value.");
         return false;
     }
@@ -285,12 +285,22 @@ bool ProfileTransformation::isValid( ) const{
         if(__scalingList) _size = __scalingList->getSize();
         if(__orientationList) _size = max(_size,__orientationList->getSize());
         if(_size > 1 && __knotList->getSize() != _size){
-            genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
+            pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
                        "Must specifie Scale or Orientation with more than one value.");
             return false;
         }
     }
     return true;
+}
+
+ProfileTransformationPtr 
+ProfileTransformation::deepcopy(DeepCopier& copier) const
+{
+	ProfileTransformationPtr ptr = new ProfileTransformation(*this);
+	copier.copy_attribute(ptr->getScale());
+	copier.copy_attribute(ptr->getOrientation());
+	copier.copy_attribute(ptr->getKnotList());
+	return ptr;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -377,21 +387,21 @@ bool ProfileInterpolation::Builder::isValid( ) const
 {
   if( !ProfileList )
     {
-    genMessage( WARNINGMSG(UNINITIALIZED_FIELD_ss),
+    pglErrorEx( WARNINGMSG(UNINITIALIZED_FIELD_ss),
                 "ProfileInterpolation",
                 "ProfileList" );
     return false;
     }
   if( !(*ProfileList) )
     {
-    genMessage( WARNINGMSG(UNINITIALIZED_FIELD_ss),
+    pglErrorEx( WARNINGMSG(UNINITIALIZED_FIELD_ss),
                 "ProfileInterpolation",
                 "*ProfileList" );
     return false;
     }
   if( (*ProfileList)->getSize() == 0 )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),
                "ProfileInterpolation",
                "ProfileList",
                "Must have more values.");
@@ -399,7 +409,7 @@ bool ProfileInterpolation::Builder::isValid( ) const
     }
   if( ! (*ProfileList)->isValid() )
     {
-    genMessage( WARNINGMSG(INVALID_FIELD_VALUE_sss),
+    pglErrorEx( WARNINGMSG(INVALID_FIELD_VALUE_sss),
                 "ProfileInterpolation",
                 "ProfileList",
                 "Must be a list of valid Geometry Objects." );
@@ -409,14 +419,14 @@ bool ProfileInterpolation::Builder::isValid( ) const
 
   if( !KnotList )
     {
-    genMessage( WARNINGMSG(UNINITIALIZED_FIELD_ss),
+    pglErrorEx( WARNINGMSG(UNINITIALIZED_FIELD_ss),
                 "ProfileInterpolation",
                 "KnotList" );
     return false;
     }
   if( !(*KnotList) )
     {
-    genMessage( WARNINGMSG(UNINITIALIZED_FIELD_ss),
+    pglErrorEx( WARNINGMSG(UNINITIALIZED_FIELD_ss),
                 "ProfileInterpolation",
                 "*KnotList" );
     return false;
@@ -426,7 +436,7 @@ bool ProfileInterpolation::Builder::isValid( ) const
   uint_t nbProfiles= (*ProfileList)->getSize();
   if( nbKnots != nbProfiles )
     {
-    genMessage( WARNINGMSG(INVALID_FIELD_SIZE_sss),
+    pglErrorEx( WARNINGMSG(INVALID_FIELD_SIZE_sss),
                 "ProfileInterpolation",
                 "KnotList",
                 "Must have the same number of value than ProfileList." );
@@ -822,6 +832,15 @@ cout<<"<-"<<endl;
 #endif
 
   return true;
+}
+
+ProfileInterpolationPtr 
+ProfileInterpolation::deepcopy(DeepCopier& copier) const
+{
+	ProfileInterpolationPtr ptr = new ProfileInterpolation(*this);
+	copier.copy_recursive_object_attribute(ptr->getProfileList());
+	copier.copy_attribute(ptr->getKnotList());
+	return ptr;
 }
 
 

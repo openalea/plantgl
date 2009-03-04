@@ -138,19 +138,11 @@ void Scene::read( const std::string& filename,
 				  const std::string& format,
 				  std::ostream& errlog, 
 				  int max_error ){
-	ostream * _errlog  = SceneObject::errorStream;
-	ostream * _warlog  = SceneObject::warningStream;
-	ostream * _infolog = SceneObject::commentStream;
-	SceneObject::commentStream = &errlog;
-	SceneObject::warningStream = &errlog;
-	SceneObject::errorStream   = &errlog;
+	PglErrorStream::Binder psb(errlog);
 	ScenePtr scne;
 	if(format.empty())scne = SceneFactory::get().read(filename);
 	else scne = SceneFactory::get().read(filename,format);
 	if(scne)merge(scne);
-	SceneObject::commentStream = _infolog;
-	SceneObject::warningStream = _warlog;
-	SceneObject::errorStream   = _errlog;
 }
 
 
@@ -420,11 +412,11 @@ Scene::getSceneObjectId(uint_t id ) const {
 
 /* ----------------------------------------------------------------------- */
 
-ScenePtr Scene::copy() const {
+ScenePtr Scene::deepcopy(DeepCopier& copier) const {
   ScenePtr ptr(new Scene(*this));
   lock();
   for(Scene::iterator _it = ptr->getBegin() ; _it != ptr->getEnd(); _it++)
-    if ( *_it  )*_it = dynamic_pointer_cast<Shape3D>((*_it)->copy());
+	  copier.copy_object_attribute(*_it);
   unlock();
   return ptr;
 }
@@ -435,13 +427,13 @@ bool Scene::isValid( ) const {
   _i != __shapeList.end();
   _i++){
     if (! (*_i) ) {
-      genMessage
+      pglErrorEx
 		(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must not be a null Shape.");
 	  unlock();
       return false;
     };	
     if (!(*_i)->isValid() ) {
-      genMessage
+      pglErrorEx
 		(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must be a valid Shape.");
 	  unlock();
       return false;
@@ -452,30 +444,14 @@ bool Scene::isValid( ) const {
 }
 
 bool Scene::isValid(ostream& stream ) const{
-  ostream * errlog = SceneObject::errorStream;
-  ostream * warlog = SceneObject::warningStream;
-  ostream * infolog = SceneObject::commentStream;
-  SceneObject::commentStream = &stream;
-  SceneObject::warningStream = &stream;
-  SceneObject::errorStream = &stream;
+  PglErrorStream::Binder psb(stream);
   bool b = isValid( );
-  SceneObject::commentStream = infolog;
-  SceneObject::warningStream = warlog;
-  SceneObject::errorStream = errlog;
   return b;
 }
 
 bool Scene::isValid( ostream& error,ostream& warning, ostream& info) const {
-  ostream * errlog = SceneObject::errorStream;
-  ostream * warlog = SceneObject::warningStream;
-  ostream * infolog = SceneObject::commentStream;
-  SceneObject::commentStream = &info;
-  SceneObject::warningStream = &warning;
-  SceneObject::errorStream = &error;
+  PglErrorStream::Binder psb(error,warning,info);
   bool b = isValid( );
-  SceneObject::commentStream = infolog;
-  SceneObject::warningStream = warlog;
-  SceneObject::errorStream = errlog;
   return b;
 }
 

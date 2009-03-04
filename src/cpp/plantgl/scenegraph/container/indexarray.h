@@ -88,6 +88,8 @@ public:
 
   uint_t * data() const;
 
+  inline uint_t getIndexSizeAt(uint_t) const { return 3; }
+
 };
 
 /* ----------------------------------------------------------------------- */
@@ -141,6 +143,8 @@ public:
   Index3ArrayPtr triangulate( ) const;
 
   uint_t * data() const;
+
+  inline uint_t getIndexSizeAt(uint_t) const { return 4; }
 
 };
 
@@ -212,6 +216,8 @@ public:
   void setAt(uint_t i, const Index& t ) ;
 
   uint_t * data() const;
+
+  inline uint_t getIndexSizeAt(uint_t t) const { return getAt(t).getSize(); }
 
 };
 

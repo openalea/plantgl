@@ -32,10 +32,11 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
+
 
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/appearance/appearance.h>
-#include <plantgl/scenegraph/appearance/material.h>
 #include <plantgl/scenegraph/appearance/spectrum.h>
 #include <plantgl/scenegraph/appearance/monospectral.h>
 #include <plantgl/scenegraph/appearance/multispectral.h>
@@ -73,6 +74,7 @@ void export_MonoSpectral()
     ("MonoSpectral", "Mono spectral appearance property of an object.", init< optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
     .DEC_BT_PROPERTY(transmittance,MonoSpectral, Transmittance, real_t)
     .DEC_BT_PROPERTY(reflectance,MonoSpectral, Reflectance, real_t)
+	.DEF_PGLBASE(MonoSpectral)
     ;
 
   implicitly_convertible< MonoSpectralPtr, SpectrumPtr >();
@@ -81,7 +83,9 @@ void export_MultiSpectral()
 {
   class_< MultiSpectral, MultiSpectralPtr, bases< Spectrum >,  boost::noncopyable >
     ("MultiSpectral", "Multi spectral appearance property of an object.", init< RealArrayPtr, RealArrayPtr, optional < const Index3& > >
-     ("MultiSpectral(reflectance= RealArray, transmittance= RealArray [, filter= index3])"));
+     ("MultiSpectral(reflectance= RealArray, transmittance= RealArray [, filter= index3])"))
+	.DEF_PGLBASE(MultiSpectral)
+	 ;
 
   implicitly_convertible< MultiSpectralPtr, SpectrumPtr >();
 }

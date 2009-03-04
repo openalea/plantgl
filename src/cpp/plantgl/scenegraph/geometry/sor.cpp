@@ -73,7 +73,7 @@ bool SOR::Builder::isValid( ) const {
 
 bool SOR::Builder::SORValid( ) const {
   if (Slices && (*Slices < 4)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Surface Of Revolution","Slices","Must be greater than 3.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Surface Of Revolution","Slices","Must be greater than 3.");
     return false;
   };
   return true;
@@ -145,7 +145,7 @@ bool SOR2D::Builder::isValid( ) const {
 
 bool SOR2D::Builder::SOR2DValid( ) const {
   if (Slices && (*Slices < 4)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Surface Of Revolution 2D","Slices","Must be greater than 3.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Surface Of Revolution 2D","Slices","Must be greater than 3.");
     return false;
   };
   return true;

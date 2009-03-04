@@ -92,18 +92,18 @@ bool BezierPatch::Builder::isValid( ) const {
 
   // CtrlPointList field
     if ( !CtrlPointMatrix ) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Patch","CtrlPointMatrix");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Patch","CtrlPointMatrix");
         return false;
     }
     uint_t _usize = (*CtrlPointMatrix)->getColsNb();
     uint_t _vsize = (*CtrlPointMatrix)->getRowsNb();
 
     if (_usize < 2 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Rows must be greater than 1.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Rows must be greater than 1.");
         return false;
 
     }    if (_vsize < 2 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Columns must be greater than 1.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Columns must be greater than 1.");
         return false;
     }
 
@@ -114,7 +114,7 @@ bool BezierPatch::Builder::isValid( ) const {
 //        if(fabs((*CtrlPointMatrix)->getAt(i,j).w()) < GEOM_TOLERANCE) {
         if(fabs((*CtrlPointMatrix)->getAt(j,i).w()) < GEOM_TOLERANCE) {
             string _ith =  "( " + number(i + 1) + " , " + number(j+1) + ")";
-            genMessage
+            pglErrorEx
                 (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Bezier Patch","CtrlPointMatrix",_ith.c_str(),"Weight must be not null.");
           return false;
         }
@@ -123,33 +123,33 @@ bool BezierPatch::Builder::isValid( ) const {
     // UDegree field
     uint_t _udegree = (UDegree ? *UDegree : _usize - 1);
     if (_udegree < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","UDegree","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","UDegree","Must be greater than 0.");
         return false;
     };
 
     // VDegree field
     uint_t _vdegree = (VDegree ? *VDegree : _vsize - 1);
     if (_vdegree < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","VDegree","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","VDegree","Must be greater than 0.");
         return false;
     };
 
     // UStride field
     if ( UStride && *UStride < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","UStride","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","UStride","Must be greater than 0.");
         return false;
     };
 
     // VStride field
     if ( VStride && *VStride < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","VStride","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Patch","VStride","Must be greater than 0.");
         return false;
     };
 
     // Fields dependency
     if ( (_usize != (_udegree + 1)) || (_vsize !=(_vdegree +1)) ) {
         string _mess = "Must be coherent with UDegree and VDegree : wait for " + number(_udegree + 1) + "x" + number(_vdegree+1) + " Matrix";
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix",_mess.c_str());
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix",_mess.c_str());
         return false;
     };
 
@@ -190,11 +190,6 @@ BezierPatch::BezierPatch() :
 }
 
 BezierPatch::~BezierPatch( ) {
-}
-
-bool
-BezierPatch::apply( Action& action ) {
-  return action.process(this);
 }
 
 
@@ -368,9 +363,9 @@ bool BezierPatch::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr BezierPatch::copy() const {
+SceneObjectPtr BezierPatch::copy(DeepCopier& copier) const {
   BezierPatch * ptr = new BezierPatch(*this);
-  if(__ctrlPointMatrix)ptr->getCtrlPointMatrix( ) = Point4MatrixPtr(new Point4Matrix(*__ctrlPointMatrix));
+  copier.copy_attribute(ptr->getCtrlPointMatrix());
   return SceneObjectPtr(ptr);
 }
 

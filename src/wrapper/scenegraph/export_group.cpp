@@ -36,6 +36,7 @@
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 #include <plantgl/python/exception.h>
 #include <plantgl/python/extract_list.h>
 #include <boost/python/make_constructor.hpp>
@@ -124,6 +125,7 @@ void export_Group()
     .def( "__init__", make_constructor( gg_fromobject3 ) ) 
     .def( "__init__", make_constructor( gg_fromobject4 ) ) 
     .def( "__init__", make_constructor( gg_fromobject5 ) ) 
+    .DEF_PGLBASE(Group)
     .def( "__getitem__", gg_getitem /*, return_internal_reference<1>()*/ )
     .def( "__setitem__", gg_setitem )
     .def( "__getslice__", gg_getslice )

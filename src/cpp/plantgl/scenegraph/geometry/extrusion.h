@@ -182,10 +182,7 @@ class SG_API Extrusion : public ParametricModel
   /// Destructor
   virtual ~Extrusion();
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Extrusion)
 
     /// Return the cross section value of \e self.
   virtual const Curve2DPtr& getCrossSection() const;

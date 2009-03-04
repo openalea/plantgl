@@ -126,19 +126,19 @@ bool NurbsPatch::Builder::isValid( ) const {
 
   // CtrlPointList field
     if ( !CtrlPointMatrix ) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Nurbs Patch","CtrlPointMatrix");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Nurbs Patch","CtrlPointMatrix");
         return false;
     }
     uint_t _usize = (*CtrlPointMatrix)->getRowsNb();
     uint_t _vsize = (*CtrlPointMatrix)->getColsNb();
 
     if (_usize < 2 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Rows must be greater than 1.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Rows must be greater than 1.");
         return false;
     }
 
     if (_vsize < 2 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Columns must be greater than 1.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Columns must be greater than 1.");
         return false;
     }
 
@@ -146,44 +146,44 @@ bool NurbsPatch::Builder::isValid( ) const {
         for(uint_t j=0; j < _vsize;j++){
             if(fabs((*CtrlPointMatrix)->getAt(i,j).w()) < GEOM_TOLERANCE) {
                 string _ith = '(' + number(i + 1) + " , " + number(j+1) + ')';
-                genMessage(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Nurbs Patch","CtrlPointMatrix",_ith.c_str(),"Weight must be not null");
+                pglErrorEx(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Nurbs Patch","CtrlPointMatrix",_ith.c_str(),"Weight must be not null");
                 return false;
             }
         }
 
     // UDegree field
     if (UDegree!=NULL && (*UDegree < 1 || *UDegree >= (*CtrlPointMatrix)->getRowsNb())) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","UDegree","Must be greater than 0 and smaller than the number of control points in a row.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","UDegree","Must be greater than 0 and smaller than the number of control points in a row.");
         return false;
     };
 
     // uknot list
     if( UKnotList != NULL && (*UKnotList)->getSize() < _usize + 2 ){
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be greater than the number of control points in a row.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be greater than the number of control points in a row.");
         return false;
     };
 
     // vknot list
     if( VKnotList != NULL && (*VKnotList)->getSize() < _vsize + 2 ){
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be greater than the number of control points in a column.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be greater than the number of control points in a column.");
         return false;
     };
 
     // VDegree field
     if (VDegree && (*VDegree < 1 || *VDegree >= (*CtrlPointMatrix)->getColsNb()) ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","VDegree","Must be greater than 0 and smaller than the number of control points in a column.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","VDegree","Must be greater than 0 and smaller than the number of control points in a column.");
         return false;
     };
 
     // UStride field
     if ( UStride && *UStride < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","UStride","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","UStride","Must be greater than 0.");
         return false;
     };
 
     // VStride field
     if ( VStride && *VStride < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","VStride","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","VStride","Must be greater than 0.");
         return false;
     };
 
@@ -195,14 +195,14 @@ bool NurbsPatch::Builder::isValid( ) const {
         real_t _val = (*UKnotList)->getAt(0);
         for (uint_t i1 = 1 ; i1 < _deg+1 ; i1++ )
             if( !(fabs ((*UKnotList)->getAt(i1) - _val ) <GEOM_TOLERANCE )){
-                genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(i1+1).c_str(),"Must be a clamped vector.");
+                pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(i1+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
         uint_t _knsize = (*UKnotList)->getSize();
         _val = (*UKnotList)->getAt(_knsize -1  );
         for (uint_t j1 = _knsize - _deg - 1 ; j1 < _knsize ; j1++ )
             if( !(fabs ((*UKnotList)->getAt(j1) -_val ) <GEOM_TOLERANCE )){
-                genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(j1+1).c_str(),"Must be a clamped vector.");
+                pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(j1+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
 
@@ -216,14 +216,14 @@ bool NurbsPatch::Builder::isValid( ) const {
         real_t _val = (*VKnotList)->getAt(0);
         for (uint_t i = 1 ; i < _deg+1 ; i++ )
             if( !(fabs ((*VKnotList)->getAt(i) - _val ) <GEOM_TOLERANCE )){
-                genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(i+1).c_str(),"Must be a clamped vector.");
+                pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(i+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
         uint_t _knsize = (*VKnotList)->getSize();
         _val = (*VKnotList)->getAt(_knsize -1  );
         for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
             if( !(fabs ((*VKnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
-                genMessage(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(j+1).c_str(),"Must be a clamped vector.");
+                pglErrorEx(WARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(j+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
 
@@ -234,13 +234,13 @@ bool NurbsPatch::Builder::isValid( ) const {
     if (  UDegree != NULL &&
           UKnotList != NULL  &&
            _usize != ( (*UKnotList)->getSize() -  *UDegree - 1)) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be coherent with degree and number of control points in a row.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be coherent with degree and number of control points in a row.");
         return false;
     };
     if (  VDegree != NULL &&
           VKnotList != NULL  &&
           _vsize != ( (*VKnotList)->getSize() -  *VDegree - 1)) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be coherent with degree and number of control points in a columns.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be coherent with degree and number of control points in a columns.");
         return false;
     };
 
@@ -306,16 +306,12 @@ NurbsPatch::NurbsPatch( const Point3MatrixPtr& ctrlPoints,
 NurbsPatch::~NurbsPatch( ) {
 }
 
-bool
-NurbsPatch::apply( Action& action ) {
-  return action.process(this);
-}
 
-SceneObjectPtr NurbsPatch::copy() const {
+SceneObjectPtr NurbsPatch::copy(DeepCopier& copier) const {
   NurbsPatch * ptr = new NurbsPatch(*this);
-  if(__ctrlPointMatrix)ptr->getCtrlPointMatrix( ) = Point4MatrixPtr(new Point4Matrix(*__ctrlPointMatrix));
-  if(__uKnotList)ptr->getUKnotList( ) = RealArrayPtr(new RealArray(*__uKnotList));
-  if(__vKnotList)ptr->getVKnotList( ) = RealArrayPtr(new RealArray(*__vKnotList));
+  copier.copy_attribute(ptr->getCtrlPointMatrix( ));
+  copier.copy_attribute(ptr->getUKnotList( ));
+  copier.copy_attribute(ptr->getVKnotList( ));
   return SceneObjectPtr(ptr);
 }
 

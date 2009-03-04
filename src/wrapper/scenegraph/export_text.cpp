@@ -33,9 +33,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-
-#include <boost/python.hpp>
-#include <string>
+#include "export_sceneobject.h"
 
 
 using namespace boost::python;
@@ -55,7 +53,7 @@ void export_Font()
 	  bp::arg("size")   = Font::DEFAULT_SIZE,
 	  bp::arg("bold")   = Font::DEFAULT_BOLD,
 	  bp::arg("italic") = Font::DEFAULT_ITALIC)))
-    .def( "deepcopy", &Font::copy )
+    .DEF_PGLBASE(Font)
 	.DEC_BT_PROPERTY(family,Font,Family,std::string)
 	.DEC_BT_NR_PROPERTY_WDV(size,Font,Size,uint_t,DEFAULT_SIZE)
 	.DEC_BT_NR_PROPERTY_WDV(bold,Font,Bold,bool,DEFAULT_BOLD)
@@ -78,7 +76,7 @@ void export_Text()
 	  bp::arg("position") = Text::DEFAULT_POSITION,
 	  bp::arg("screencoordinates") = Text::DEFAULT_SCREEN_COORDINATES,
 	  bp::arg("fontstyle") = Text::DEFAULT_FONT)))
-    .def( "deepcopy", &Text::copy )
+    .DEF_PGLBASE(Text)
 	.DEC_BT_PROPERTY(string,Text,String,std::string)
 	.DEC_PTR_PROPERTY_WDV(fontstyle,Text,FontStyle,FontPtr,DEFAULT_FONT)
 	.DEC_CT_PROPERTY_WDV(position,Text,Position,Vector3,DEFAULT_POSITION)

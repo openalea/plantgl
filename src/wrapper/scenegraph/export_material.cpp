@@ -36,7 +36,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -103,7 +103,7 @@ void export_Material()
 	  bp::arg("shininess")=Material::DEFAULT_SHININESS,
 	  bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
 	  ))
-
+  .DEF_PGLBASE(Material)
   .def( "__str__", mat_str )
   .def( "__repr__", mat_str )
   .def( "isSimilar", &Material::isSimilar)

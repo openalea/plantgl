@@ -36,6 +36,7 @@
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
 #include <boost/python/make_constructor.hpp>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -67,6 +68,7 @@ void export_Translated()
 	   (bp::arg("translation")=Translated::DEFAULT_TRANSLATION,
 	    bp::arg("geometry")=GeometryPtr())) )
     .def( "__init__", make_constructor( tr_from_val ) ) 
+	.DEF_PGLBASE(Translated)
     .DEC_CT_PROPERTY_WDV(translation,Translated,Translation,Vector3,DEFAULT_TRANSLATION)
     ;
 

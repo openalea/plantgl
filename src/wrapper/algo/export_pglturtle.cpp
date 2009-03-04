@@ -39,11 +39,11 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 boost::python::object getTurtleColorList(PglTurtle * turtle) {
-    return make_list<std::vector<AppearancePtr> >(turtle->getColorList())();
+    return make_list(turtle->getColorList())();
 }
 
 boost::python::object getTurtleSurfaceList(PglTurtle * turtle) {
-    return make_dict<PglTurtle::SurfaceMap>(turtle->getSurfaceList())();
+    return make_dict(turtle->getSurfaceList())();
 }
 
 void export_PglTurtle()

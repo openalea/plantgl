@@ -117,11 +117,7 @@ public:
   /// Destructor
   virtual ~QuadSet( );
 
-  virtual bool apply( Action& action )
-  { return action.process(this); }
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(QuadSet)
 
   virtual bool isValid( ) const;
 

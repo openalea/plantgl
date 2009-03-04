@@ -111,10 +111,7 @@ public:
   /// Destructor
   virtual ~ExtrudedHull( );
 
-  virtual bool apply( Action& action ) ;
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(ExtrudedHull)
 
   /// Returns \b CCW value.
   const bool getCCW( ) const;

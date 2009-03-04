@@ -108,8 +108,8 @@ bool FaceSet::isValid( ) const {
 }
 
 SceneObjectPtr 
-FaceSet::copy() const{
-  return mesh_copy<FaceSet>(*this);
+FaceSet::copy(DeepCopier& copier) const{
+  return SceneObjectPtr(mesh_copy<FaceSet>(*this,copier));
 }
 
 ExplicitModelPtr 

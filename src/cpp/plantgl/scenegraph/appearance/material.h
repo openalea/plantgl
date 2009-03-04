@@ -140,10 +140,7 @@ public:
   /// Destructor.
   virtual ~Material( ) ;
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Material)
 
   /// Returns \b Ambient value.
   const Color3& getAmbient( ) const ;

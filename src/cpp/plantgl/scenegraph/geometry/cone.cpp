@@ -95,13 +95,13 @@ bool Cone::Builder::ConeValid( ) const {
 
   // height field.
   if (Height && (*Height < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Height","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Height","Must be not null.");
     return false;
   };
 
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Radius","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Radius","Must be not null.");
     return false;
   };
 
@@ -127,11 +127,6 @@ Cone::~Cone( ) {
 }
 
 bool
-Cone::apply( Action& action ) {    
-  return action.process(this);
-}
-
-bool
 Cone::isValid( ) const {
   Builder _builder;
   _builder.Radius = const_cast<real_t *>(&__radius);
@@ -140,7 +135,7 @@ Cone::isValid( ) const {
   return _builder.isValid();
 }
   
-SceneObjectPtr Cone::copy() const {
+SceneObjectPtr Cone::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Cone(*this));
 }
 

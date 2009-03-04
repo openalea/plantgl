@@ -125,10 +125,7 @@ public:
   /// Destructor
   virtual ~NurbsCurve( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(NurbsCurve)
 
   /// Returns \e Degree value.
   virtual const uint_t getDegree( ) const;
@@ -313,10 +310,7 @@ public:
   /// Destructor
   virtual ~NurbsCurve2D( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(NurbsCurve2D)
 
   /// Returns \e Degree value.
   virtual const uint_t getDegree( ) const;

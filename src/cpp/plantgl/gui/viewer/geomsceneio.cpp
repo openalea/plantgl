@@ -570,19 +570,13 @@ ViewGeomSceneGL::openAmapSymbol(const QString& filename,bool add)
   if(! filename.isEmpty()) {
     AppearancePtr _material(new Material());
     _material->setName(string("Default"));
+	GeometryPtr _symbol;
     stringstream _errlog(ios::out) ;
-	ostream * s1 = SceneObject::errorStream;
-	ostream * s2 = SceneObject::warningStream;
-	ostream * s3 = SceneObject::commentStream;
-	SceneObject::errorStream = & _errlog;
-	SceneObject::warningStream = & _errlog;
-	SceneObject::commentStream = & _errlog;
-
-    GeometryPtr _symbol(new AmapSymbol(filename.toStdString(),
-                                       AmapSymbol::DEFAULT_SOLID));
-	SceneObject::errorStream = s1;
-	SceneObject::warningStream = s2;
-	SceneObject::commentStream = s3;
+	{
+		PglErrorStream::Binder psb(_errlog);
+		_symbol = GeometryPtr(new AmapSymbol(filename.toStdString(),
+			                   AmapSymbol::DEFAULT_SOLID));
+	}
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());
 		  

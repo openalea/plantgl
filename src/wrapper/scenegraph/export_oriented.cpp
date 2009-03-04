@@ -33,6 +33,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -57,6 +58,7 @@ void export_Oriented()
 	   (bp::arg("primary")   = Oriented::DEFAULT_PRIMARY,
 	    bp::arg("secondary") = Oriented::DEFAULT_SECONDARY,
 		bp::arg("geometry")  = GeometryPtr())   ) )
+    .DEF_PGLBASE(Oriented)
 	.DEC_CT_PROPERTY_WDV(primary,Oriented,Primary,Vector3,DEFAULT_PRIMARY)
 	.DEC_CT_PROPERTY_WDV(secondary,Oriented,Secondary,Vector3,DEFAULT_SECONDARY)
     ;

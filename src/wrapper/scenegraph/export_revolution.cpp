@@ -34,7 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-#include <boost/python.hpp>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -56,6 +56,7 @@ void export_Revolution()
                ("Revolution(profile [, slices])",
 			   (bp::arg("profile"),bp::arg("slices")=Revolution::DEFAULT_SLICES))
 			)
+    .DEF_PGLBASE(Revolution)
     .DEC_PTR_PROPERTY(profile, Revolution, Profile, Curve2DPtr)
     ;
 

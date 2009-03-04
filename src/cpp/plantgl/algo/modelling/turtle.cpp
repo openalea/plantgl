@@ -78,7 +78,7 @@ void Turtle::error(const std::string& msg){
 
 void Turtle::warning(const std::string& msg){
     if (WARNING_FUNC != NULL) WARNING_FUNC(msg);
-    std::cerr << "*** WARNING : " << msg << std::endl;
+    else std::cerr << "*** WARNING : " << msg << std::endl;
 }
 
 

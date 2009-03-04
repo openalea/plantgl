@@ -106,42 +106,42 @@ void Extrusion::Builder::destroy() {
 bool Extrusion::Builder::isValid( ) const {
     // Axis field
     if(!Axis) {
-	genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","Axis");
+	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","Axis");
 	return false;
     };
 
     if(!(*Axis)) {
-	genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*Axis");
+	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*Axis");
 	return false;
     };
 
     if(!(*Axis)->isValid()) {
-	genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Axis","Must be a valid Geometry Object.");
+	pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Axis","Must be a valid Geometry Object.");
 	return false;
     };
 
     if(!CrossSection) {
-	genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","CrossSection");
+	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","CrossSection");
 	return false;
     };
 
     if(!(*CrossSection)) {
-	genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*CrossSection");
+	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*CrossSection");
 	return false;
     };
 
     if(!(*CrossSection)->isValid()) {
-	genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","CrossSection","Must be a valid Geometry Object.");
+	pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","CrossSection","Must be a valid Geometry Object.");
 	return false;
     };
     
     if(Scale){
 	if(!(*Scale)->isValid()) {
-	    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
+	    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
 	    return false;
 	};
 	if((*Scale)->getSize() == 0 ){
-	    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
+	    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
 	    return false;
 	}
 
@@ -149,7 +149,7 @@ bool Extrusion::Builder::isValid( ) const {
 
     if(Orientation){
 	if((*Orientation)->getSize() == 0 ){
-	    genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
+	    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
 	    return false;
 	}
     }
@@ -157,26 +157,26 @@ bool Extrusion::Builder::isValid( ) const {
     if( ((Scale)&&(*Scale)->getSize() !=1) &&
 	((Orientation)&&(*Orientation)->getSize() !=1) &&
 	((*Scale)->getSize()!=((*Orientation)->getSize())) ){
-	    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
+	    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
 		       "Must specifie Scale and Orientation with the same number of value."); 
 	    return false;
     }
 
     if(KnotList){
 	if(((!Scale)||(*Scale)->getSize() ==1)&&((!Orientation)||(*Orientation)->getSize() ==1)){
-	    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
+	    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
 		       "Must specifie Scale or Orientation with more than one value."); 
 	}
 	else if(Scale){
 	    if(((*Scale)->getSize() > 1)&&((*Scale)->getSize() != (*KnotList)->getSize())){
-		genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
+		pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
 			   "Must have the same number of value than Scale .");
 		return false;
 	    }
 	}
 	else {
 	    if(((*Orientation)->getSize() ==1)&&(((*Orientation)->getSize()) != (*KnotList)->getSize())){
-		genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
+		pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
 			   "Must have the same number of value than Orientation .");
 		return false;
 	    }
@@ -373,10 +373,7 @@ TOOLS(RealArrayPtr)& Extrusion::getKnotList()
 { return __profile->getKnotList(); }
 
 /* ----------------------------------------------------------------------- */
-bool 
-Extrusion::apply( Action& action ) {
-  return action.process(this);
-}
+
 
 bool
 Extrusion::isValid( ) const {
@@ -416,10 +413,11 @@ Extrusion::isKnotListToDefault() const {
 }
 
 SceneObjectPtr
-Extrusion::copy() const {
+Extrusion::copy(DeepCopier& copier) const {
   Extrusion * ptr = new Extrusion(*this);
-  if(__axis)ptr->getAxis()= dynamic_pointer_cast<LineicModel>(__axis->copy());
-  if(__crossSection)ptr->getCrossSection()= dynamic_pointer_cast<Curve2D>(__crossSection->copy());
+  copier.copy_object_attribute(ptr->getAxis());
+  copier.copy_object_attribute(ptr->getCrossSection());
+  if(ptr->__profile) ptr->__profile = ptr->__profile->deepcopy(copier);
   if(__profile){
     Point2ArrayPtr scale((__profile->getScale()?new Point2Array(*(__profile->getScale())):0));
     RealArrayPtr orientation((__profile->getOrientation()?new RealArray(*(__profile->getOrientation())):0));

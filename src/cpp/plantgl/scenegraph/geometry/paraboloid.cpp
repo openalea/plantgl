@@ -85,13 +85,13 @@ bool Paraboloid::Builder::isValid( ) const {
 
   // shape field.
   if (Shape && (*Shape < GEOM_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Shape","Must be not null.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Shape","Must be not null.");
     return false;
   };
 
   // stacks field
   if (Stacks && (*Stacks < 4)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Stacks","Must be greater than 3.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Stacks","Must be greater than 3.");
     return false;
   };
 
@@ -117,11 +117,6 @@ Paraboloid::Paraboloid( const real_t& radius,
 Paraboloid::~Paraboloid( ) {
 }
 
-bool 
-Paraboloid::apply( Action& action ) {
-  return action.process(this);
-}
-
 bool Paraboloid::isValid( ) const {
   Builder _builder;
   _builder.Radius = const_cast<real_t *>(&__radius);
@@ -132,7 +127,7 @@ bool Paraboloid::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr Paraboloid::copy() const {
+SceneObjectPtr Paraboloid::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Paraboloid(*this));
 }
   

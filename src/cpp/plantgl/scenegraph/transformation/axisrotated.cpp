@@ -79,7 +79,7 @@ bool AxisRotation::Builder::isValid( ) const
   // Angle field
   if( Angle && (! finite(*Angle)) )
     {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Axis Rotated","Angle","Must be Finite");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Axis Rotated","Angle","Must be Finite");
     return false;
     }
 
@@ -166,11 +166,6 @@ AxisRotated::AxisRotated( const Vector3& axis,
 AxisRotated::~AxisRotated( ) {
 }
 
-bool 
-AxisRotated::apply( Action& action ) {
-    return action.process(this);
-}
-
 bool AxisRotated::isValid( ) const {
   Builder _builder;
   _builder.Geometry = const_cast<GeometryPtr *>(&__geometry);
@@ -179,9 +174,9 @@ bool AxisRotated::isValid( ) const {
   return (_builder.isValid() && __geometry->isValid());
 }
 
-SceneObjectPtr AxisRotated::copy() const {
+SceneObjectPtr AxisRotated::copy(DeepCopier& copier) const {
   AxisRotated * ptr = new AxisRotated(*this);
-  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
+  copier.copy_object_attribute(ptr->getGeometry());
   return SceneObjectPtr(ptr);
 }
 

@@ -86,19 +86,19 @@ bool BezierCurve::Builder::isValid( ) const {
 
   // CtrlPointList field
     if ( !CtrlPointList ) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Curve","CtrlPointList");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Curve","CtrlPointList");
         return false;
     }
     uint_t _size = (*CtrlPointList)->getSize();
     if (_size < 3 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList","Must have more than 2 control points.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList","Must have more than 2 control points.");
         return false;
     }
 
     for(uint_t i=0; i < _size;i++)
         if(fabs((*CtrlPointList)->getAt(i).w()) < GEOM_TOLERANCE) {
             string _ith = number(i + 1);
-            genMessage
+            pglErrorEx
                 (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Bezier Curve","CtrlPointList",_ith.c_str(),"Weight must not be null.");
             return false;
         }
@@ -106,20 +106,20 @@ bool BezierCurve::Builder::isValid( ) const {
     // Degree field
     uint_t _degree = (Degree ? *Degree : _size - 1);
     if (_degree < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Curve","Degree","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Curve","Degree","Must be greater than 0.");
         return false;
     };
 
     // Stride field
     if ( Stride && *Stride < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Curve","Stride","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Bezier Curve","Stride","Must be greater than 0.");
         return false;
     };
 
     // Fields dependency
     if (_size != (_degree + 1)) {
         string _mess =  "Must have " + number(_degree + 1) + " control points";
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList",_mess.c_str());
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList",_mess.c_str());
         return false;
     };
 
@@ -151,10 +151,6 @@ BezierCurve::BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride ) :
 }
 
 BezierCurve::~BezierCurve( ) {
-}
-
-bool BezierCurve::apply( Action& action ) {
-  return action.process(this);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -234,10 +230,10 @@ bool BezierCurve::isValid( ) const {
 }
 
 SceneObjectPtr
-BezierCurve::copy() const
+BezierCurve::copy(DeepCopier& copier) const
 {
   BezierCurve * ptr = new BezierCurve(*this);
-  if(__ctrlPointList)ptr->getCtrlPointList() = Point4ArrayPtr(new Point4Array(*__ctrlPointList));
+  copier.copy_attribute(ptr->getCtrlPointList());
   return SceneObjectPtr(ptr);
 }
 
@@ -336,32 +332,32 @@ bool BezierCurve2D::Builder::isValid( ) const {
 
   // CtrlPointList field
     if ( !CtrlPointList ) {
-        genMessage(WARNINGMSG(UNINITIALIZED_FIELD_ss),"BezierCurve2D","CtrlPointList");
+        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"BezierCurve2D","CtrlPointList");
         return false;
     }
     uint_t _size = (*CtrlPointList)->getSize();
     if (_size < 3 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"BezierCurve2D","CtrlPointList","Must have more than 2 control points.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"BezierCurve2D","CtrlPointList","Must have more than 2 control points.");
         return false;
     }
 
     // Degree field
     uint_t _degree = (Degree ? *Degree : _size - 1);
     if (_degree < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"BezierCurve2D","Degree","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"BezierCurve2D","Degree","Must be greater than 0.");
         return false;
     };
 
     // Stride field
     if ( Stride && *Stride < 1 ) {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"BezierCurve2D","Stride","Must be greater than 0.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"BezierCurve2D","Stride","Must be greater than 0.");
         return false;
     };
 
     // Fields dependency
     if (_size != (_degree + 1)) {
         string _mess = "Must have " + number(_degree + 1) + " control points";
-        genMessage(WARNINGMSG(INVALID_FIELD_SIZE_sss),"BezierCurve2D","CtrlPointList",_mess.c_str());
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"BezierCurve2D","CtrlPointList",_mess.c_str());
         return false;
     };
 
@@ -394,10 +390,6 @@ BezierCurve2D::BezierCurve2D( const Point2ArrayPtr& ctrlPoints, uint_t stride ) 
 }
 
 BezierCurve2D::~BezierCurve2D( ) {
-}
-
-bool BezierCurve2D::apply( Action& action ) {
-  return action.process(this);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -450,10 +442,10 @@ BezierCurve2D::getDegree( ) const {
 /* ----------------------------------------------------------------------- */
 
 SceneObjectPtr
-BezierCurve2D::copy() const
+BezierCurve2D::copy(DeepCopier& copier) const
 {
   BezierCurve2D * ptr = new BezierCurve2D(*this);
-  if(__ctrlPointList)ptr->getCtrlPointList() = Point3ArrayPtr(new Point3Array(*__ctrlPointList));
+  copier.copy_attribute(ptr->getCtrlPointList());
   return SceneObjectPtr(ptr);
 }
 

@@ -148,10 +148,7 @@ public:
   /// Destructor
   virtual ~Translated( );
 
-  virtual bool apply( Action& action ) ;
-  
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Translated)
 
   virtual Transformation3DPtr getTransformation( ) const ;
 

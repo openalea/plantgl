@@ -98,9 +98,7 @@ class SG_API Font : public SceneObject
 
   virtual bool isValid( ) const;
 
-  virtual SceneObjectPtr copy() const;
-
-  virtual bool apply( Action& action );
+  PGL_OBJECT(Font)
 
   const std::string& getFamily() const
   { return __family; }
@@ -202,10 +200,7 @@ public:
   /// Destructor
   virtual ~Text( );
 
-  virtual bool apply( Action& action );
-
-  /// Deep copy of \e this.
-  virtual SceneObjectPtr copy() const ;
+  PGL_OBJECT(Text)
 
   virtual bool isValid( ) const;
 

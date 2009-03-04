@@ -83,7 +83,7 @@ bool BaseOrientation::Builder::isValid( ) const
     {
     if(*Primary != Vector3::ORIGIN)Primary->normalize();
     else {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be normalized.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be normalized.");
 	  return false;
 	  }
 	}
@@ -93,7 +93,7 @@ bool BaseOrientation::Builder::isValid( ) const
     {
     if(*Secondary != Vector3::ORIGIN)Secondary->normalize();
     else {
-	  genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be normalized.");
+	  pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be normalized.");
 	  return false;
 	  }
     }
@@ -105,11 +105,11 @@ bool BaseOrientation::Builder::isValid( ) const
       {
       if( fabs(dot(*Primary,s)) <  2*GEOM_EPSILON )
         {
-        // genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector (Numerical Approximation Error).");
+        // pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector (Numerical Approximation Error).");
         }
       else
         {
-        genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector.");
+        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector.");
         return false;
         }
       }
@@ -119,11 +119,11 @@ bool BaseOrientation::Builder::isValid( ) const
     {
     if(fabs(dot(*Secondary,Oriented::DEFAULT_PRIMARY)) < 2*GEOM_EPSILON)
       {
-        // genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector (Numerical Approximation Error).");
+        // pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector (Numerical Approximation Error).");
       }
     else
       {
-      genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector.");
+      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector.");
       return false;
       }
     }
@@ -208,10 +208,6 @@ Oriented::Oriented( const Vector3& primary,
 Oriented::~Oriented( ) {
 }
 
-bool 
-Oriented::apply( Action& action ) {    
-  return action.process(this);
-}
 
 const Vector3&
 Oriented::getPrimary( ) const {
@@ -265,9 +261,9 @@ bool Oriented::isValid( ) const {
   return (_builder.isValid() && __geometry->isValid());
 }
 
-SceneObjectPtr Oriented::copy() const {
+SceneObjectPtr Oriented::copy(DeepCopier& copier) const {
   Oriented * ptr = new Oriented(*this);
-  if(__geometry)ptr->getGeometry() = dynamic_pointer_cast<Geometry>(__geometry->copy());
+  copier.copy_object_attribute(ptr->getGeometry());
   return SceneObjectPtr(ptr);
 }
 

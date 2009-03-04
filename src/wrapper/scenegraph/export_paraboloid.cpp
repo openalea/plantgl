@@ -34,6 +34,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -56,6 +57,7 @@ void export_Paraboloid()
 	   bp::arg("solid")=Paraboloid::DEFAULT_SOLID,
 	   bp::arg("slices")=Paraboloid::DEFAULT_SLICES,
 	   bp::arg("stacks")=Paraboloid::DEFAULT_STACKS)))
+  .DEF_PGLBASE(Paraboloid)
   .DEC_BT_PROPERTY_WDV(stacks,Paraboloid,Stacks,uchar_t,DEFAULT_STACKS)
   .DEC_BT_PROPERTY_WDV(shape,Paraboloid,Shape,real_t,DEFAULT_SHAPE)
     ;

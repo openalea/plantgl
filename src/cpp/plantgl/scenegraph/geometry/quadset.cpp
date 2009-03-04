@@ -73,8 +73,8 @@ QuadSet::~QuadSet( ) {
 }
 
 SceneObjectPtr 
-QuadSet::copy() const{
-  return mesh_copy<QuadSet>(*this);
+QuadSet::copy(DeepCopier& copier) const{
+  return SceneObjectPtr(mesh_copy<QuadSet>(*this,copier));
 }
 
 bool QuadSet::isValid( ) const {

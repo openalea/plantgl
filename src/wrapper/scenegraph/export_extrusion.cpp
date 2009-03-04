@@ -37,10 +37,7 @@
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
-
-#include <boost/python.hpp>
-#include <string>
-#include <sstream>
+#include "export_sceneobject.h"
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -62,7 +59,7 @@ void export_Extrusion()
 	  bp::arg("knotList")=RealArrayPtr(),
 	  bp::arg("solid")=Extrusion::DEFAULT_SOLID,
 	  bp::arg("ccw")=Extrusion::DEFAULT_CCW)))
-    .def( "copy", &Extrusion::copy )
+	.DEF_PGLBASE(Extrusion)
 	.DEC_PTR_PROPERTY(axis,Extrusion,Axis,LineicModelPtr)
 	.DEC_PTR_PROPERTY(crossSection,Extrusion,CrossSection,Curve2DPtr)
 	.DEC_BT_NR_PROPERTY_WDV(solid,Extrusion,Solid,bool,DEFAULT_SOLID)

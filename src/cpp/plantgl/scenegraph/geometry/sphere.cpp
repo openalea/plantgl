@@ -84,13 +84,13 @@ bool Sphere::Builder::isValid( ) const {
 
   // Stacks field.
   if (Stacks && (*Stacks < 4)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Sphere","Stacks","Must be greater than 3.");
+    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Sphere","Stacks","Must be greater than 3.");
     return false;
   };
   
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
-    genMessage(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Sphere","Radius","Must be not null.");
+    pglErrorEx(ERRORMSG(INVALID_FIELD_VALUE_sss),"Sphere","Radius","Must be positive non null.");
     return false;
   };
 
@@ -113,11 +113,6 @@ Sphere::Sphere( const real_t& radius,
 Sphere::~Sphere( ) {
 }
 
-bool 
-Sphere::apply( Action& action ) {    
-  return action.process(this);
-}
-
 bool Sphere::isValid( ) const {
   Builder _builder;
   _builder.Radius = const_cast<real_t *>(&__radius);
@@ -126,7 +121,7 @@ bool Sphere::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr Sphere::copy() const {
+SceneObjectPtr Sphere::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Sphere(*this));
 }
 
