@@ -66,8 +66,10 @@ class SG_API DeepCopier
 {
 
 public:
-  typedef STDEXT::hash_map<const TOOLS(RefCountObject) *,
-	                       TOOLS(RefCountObjectPtr)> RCObjectMap;
+  // typedef const TOOLS(RefCountObject) * KeyType;
+  typedef size_t KeyType;
+  typedef TOOLS(RefCountObjectPtr) ValueType;
+  typedef pgl_hash_map<KeyType,ValueType> RCObjectMap;
 
   /** Default constructor.  */
   DeepCopier( )  { }
@@ -77,25 +79,27 @@ public:
 
   inline void clear() { __map.clear(); }
 
+  inline KeyType to_key(const TOOLS(RefCountObject) * ptr) { return (size_t)ptr; }
+
   template<class T>
   inline void set(const TOOLS(RefCountObject) * source, 
 	              const RCPtr<T> target) 
-  { __map[source] = TOOLS(RefCountObjectPtr)(target);  }
+  { __map[to_key(source)] = TOOLS(RefCountObjectPtr)(target);  }
 
   inline void set(const TOOLS(RefCountObject) * source,
 	              TOOLS(RefCountObject) * target) 
-  { __map[source] = TOOLS(RefCountObjectPtr)(target);  }
+  { __map[to_key(source)] = TOOLS(RefCountObjectPtr)(target);  }
 
   inline TOOLS(RefCountObjectPtr) get(const TOOLS(RefCountObject) * source) 
   { 
-	  RCObjectMap::const_iterator it = __map.find(source);
+	  RCObjectMap::const_iterator it = __map.find(to_key(source));
 	  if(it != __map.end()) return it->second;
 	  else return TOOLS(RefCountObjectPtr)(0);
   }
 
   inline bool remove(const TOOLS(RefCountObject) * source) 
   { 
-	  RCObjectMap::iterator it = __map.find(source);
+	  RCObjectMap::iterator it = __map.find(to_key(source));
 	  if(it != __map.end()) { __map.erase(it); return true; }
 	  else return false;
   }
@@ -103,7 +107,7 @@ public:
   template<class T>
   SceneObjectPtr copy(const T * obj){
 	  if(obj == NULL)return SceneObjectPtr();
-	  RCObjectMap::const_iterator it = __map.find(obj);
+	  RCObjectMap::const_iterator it = __map.find(to_key(obj));
 	  if(it != __map.end()) return dynamic_pointer_cast<SceneObject>(it->second);
 	  else{
 		  SceneObjectPtr newobj = obj->copy(*this);
@@ -124,7 +128,9 @@ public:
 
   template<class T>
   void copy_object_attribute(RCPtr<T>& att) {
-	  if(!is_null_ptr(att))att = att->casted_deepcopy_using<T>(*this);
+	  if(!is_null_ptr(att)){
+		att = dynamic_pointer_cast<T>(att->deepcopy(*this));
+	  }
   }
 
   template<class T>
@@ -136,7 +142,7 @@ public:
   RCPtr<T> get_attribute_copy(const RCPtr<T>& att) {
 	  if(is_null_ptr(att))return att;
 	  if(att->unique()) return RCPtr<T>(new T(*att));
-	  RCObjectMap::const_iterator it = __map.find(att.get());
+	  RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
 	  if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
 	  else {
 		T * ptr = new T(*att);
@@ -150,7 +156,7 @@ public:
 	  typedef typename T::iterator TIterator;
 	  if(is_null_ptr(att))return att;
 	  if(!att->unique()) {
-		RCObjectMap::const_iterator it = __map.find(att.get());
+		RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
 		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
 	  }
 	  T * ptr = new T(*att);
@@ -165,7 +171,7 @@ public:
 	  typedef typename T::iterator TIterator;
 	  if(is_null_ptr(att))return att;
 	  if(!att->unique()){
-		RCObjectMap::const_iterator it = __map.find(att.get());
+		RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
 		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
 	  }
 	  T * ptr = new T(*att);

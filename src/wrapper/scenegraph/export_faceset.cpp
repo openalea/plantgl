@@ -45,6 +45,7 @@ void export_FaceSet()
 	  .def(init<const TriangleSet&>("Construct from TriangleSet",args("obj")))
 	  .def(init<const QuadSet&>("Construct from QuadSet",args("obj")))
 	  .def(mesh_func<FaceSet>())
+	  .DEF_PGLBASE(FaceSet)
 	  ;
 
      implicitly_convertible<FaceSetPtr, MeshPtr>();

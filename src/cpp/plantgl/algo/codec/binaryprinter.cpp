@@ -129,7 +129,7 @@ bool TokenCode::setStatistic(const StatisticComputer& a){
 
 vector<uint_t> TokenCode::getCounts(){
     vector<uint_t> counts((unsigned int)42,0);
-    for(hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
+    for(pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
         _it != __code.end();_it++){
         if(_it->second.first == "Shape") counts[0]+=_it->second.second;
         else if(_it->second.first =="Material" ) counts[1]+=_it->second.second;
@@ -179,7 +179,7 @@ vector<uint_t> TokenCode::getCounts(){
 /* ----------------------------------------------------------------------- */
 
 leofstream& TokenCode::printCurrentToken(leofstream& stream,string token){
-  hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
+  pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
   for(;_it != __code.end() && _it->second.first!=token;_it++);
   if(_it!=__code.end()){
     stream << _it->first;
@@ -201,7 +201,7 @@ leofstream& TokenCode::printCurrentToken(leofstream& stream,string token){
 
 leofstream& TokenCode::printAll(leofstream& stream){
   stream << '!';
-  hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
+  pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
   uint_t size(0);
   uchar_t _maxcode = 0;
   for(;_it != __code.end();_it++){
@@ -237,7 +237,7 @@ string TokenCode::readCurrentToken(leifstream& stream){
     uchar_t c;
     stream >> c;
     if(stream.eof())return string("EOF");
-    hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.find(c);
+    pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.find(c);
     if(_it!=__code.end())
         return _it->second.first;
     else {
@@ -286,7 +286,7 @@ bool TokenCode::initTokens(leifstream& stream,ostream & output){
   if(c != '!'){
       output << "Token for End of Initialisation not Found [ Char=" << int(c) << " ('" << c << "') instead of '!' ]" << endl;
       output << "Found the " << size << " following Tokens : " << endl;
-          for(hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
+          for(pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
                         _it != __code.end(); _it++)
                                 if(_it->second.second != 0)
                 output << "Token : " << (int)_it->first << " - '" << _it->second.first << "' (nb=" << _it->second.second << ')' << endl;;

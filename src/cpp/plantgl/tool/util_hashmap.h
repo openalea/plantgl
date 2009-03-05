@@ -39,6 +39,25 @@
     \brief Utility for hashmap with std::string.
 */
 
+#ifndef USING_OLD_HASHMAP
+#ifdef GNU_STL_EXTENSION
+	#include <tr1/unordered_map>
+	#define pgl_hash_map std::tr1::unordered_map
+#else
+	#include <unordered_map>
+	#define pgl_hash_map unordered_map
+#endif
+
+#ifndef pgl_hash
+#define pgl_hash std::tr1::hash
+#endif
+
+
+template <class T>
+struct hash_map_string : public pgl_hash_map<std::string, T >{};
+
+#else
+
 #ifdef GNU_STL_EXTENSION
 	#include <ext/hash_map>
 #else
@@ -47,6 +66,11 @@
 	#endif
 	#include <hash_map>
 #endif
+
+#ifndef pgl_hash
+#define pgl_hash STDEXT::hash
+#endif
+#define pgl_hash_map STDEXT::hash_map
 
 #include "util_hash.h"
 
@@ -58,14 +82,16 @@
 */
 
 template <class T>
-struct hash_map_string : public STDEXT::hash_map<std::string, T, hashstr, eqstr>
+struct hash_map_string : public pgl_hash_map<std::string, T, hashstr, eqstr>
 {};
 
 #else
 
 template <class T>
-struct hash_map_string : public STDEXT::hash_map<std::string, T >
+struct hash_map_string : public pgl_hash_map<std::string, T >
 {};
+
+#endif
 
 #endif
 

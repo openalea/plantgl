@@ -242,7 +242,7 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
         Vector3 translation;
         Vector3 scaling;
 
-        hash_map<uint_t, pair<AmapSymbolPtr,pair<Vector3,Vector3> > >::const_iterator
+        SmbMap::const_iterator
                 _it = __smbcache.find(object->getId());
         if(_it == __smbcache.end()){
                 if(!object->apply(__translator))return false;
@@ -274,7 +274,7 @@ bool LinetreePrinter::symbolProcess( Geometry* object )
 
 bool LinetreePrinter::endProcess(){
         __dtastream << "  " << __dta.size() << "  symbole(s)" << endl;
-        for(vector<pair<long, pair<AmapSymbolPtr,MaterialPtr> > >::const_iterator
+        for(DtaList::const_iterator
                 _it = __dta.begin(); _it != __dta.end(); _it++){
                 string file = __smbfilecache[_it->second.first->getId()];
                 if(!file.empty()){
@@ -287,7 +287,7 @@ bool LinetreePrinter::endProcess(){
                                 << "   " << file << "   1" << endl;
                 }
         }
-        for(vector<pair<long, pair<AmapSymbolPtr,MaterialPtr> > >::const_iterator
+        for(DtaList::const_iterator
                 _it2 = __dta.begin(); _it2 != __dta.end(); _it2++){
                 __dtastream << "Symbole   " << _it2->first << endl;
                 printMaterial(_it2->second.second);
@@ -300,10 +300,10 @@ bool LinetreePrinter::endProcess(){
 
 bool LinetreePrinter::process( AmapSymbol * amapSymbol ) {
 
-        hash_map<uint_t, hash_map<uint_t,long> >::const_iterator
+        Cache::const_iterator
                 _it = __cache.find(amapSymbol->getId());
         if(_it != __cache.end()){
-                hash_map<uint_t,long>::const_iterator _it2 = _it->second.find(__mat->getId());
+                CacheUnit::const_iterator _it2 = _it->second.find(__mat->getId());
                 if(_it2 != _it->second.end()){
                         __ligstream << _it2->second;
                         printTransformation();

@@ -156,8 +156,7 @@ class mesh_func : public boost::python::def_visitor<mesh_func<MeshType> >
 			  bp::arg("ccw")            = Mesh::DEFAULT_CCW,
 			  bp::arg("solid")          = Mesh::DEFAULT_SOLID,
 			  bp::arg("skeleton")       = Mesh::DEFAULT_SKELETON)))
-	// .def( "deepcopy", &MeshType::castcopy<MeshType> )
-     .DEF_PGLBASE(MeshType)
+         // .DEF_PGLBASE(MeshType)
 
 	.DEC_MESH_PROPERTY(indexList,            MeshType, IndexList,         MeshIndexArrayPtr)
 	.DEC_MESH_PROPERTY_WD(normalIndexList,   MeshType, NormalIndexList,   MeshIndexArrayPtr)

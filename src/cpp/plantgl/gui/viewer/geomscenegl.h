@@ -355,7 +355,8 @@ protected :
   PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
- STDEXT::hash_map<uint_t,PGL(Shape3DPtr)> __selectedShapes;
+  typedef pgl_hash_map<uint_t,PGL(Shape3DPtr)> SelectionCache;
+  SelectionCache __selectedShapes;
 
   /// Do some blending
   bool __blending;

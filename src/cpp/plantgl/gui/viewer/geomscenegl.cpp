@@ -184,7 +184,7 @@ std::vector<uint_t>
 ViewGeomSceneGL::getSelectionIds() const
 {
   std::vector<uint_t> res;
-  for(hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  res.push_back(_it->second->getId());
   return res;
@@ -207,7 +207,7 @@ ScenePtr
 ViewGeomSceneGL::getSelection( ) const
 {
   ScenePtr scene(new Scene);
-  for(hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  scene->add(_it->second);
   return scene;
@@ -236,7 +236,7 @@ const BoundingBoxPtr
 ViewGeomSceneGL::getSelectionBoundingBox() 
 {
   BoundingBoxPtr bbox;
-  for(hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(__bboxComputer)){
 		if(bbox)bbox->extend(__bboxComputer.getBoundingBox());
@@ -479,7 +479,7 @@ ViewGeomSceneGL::paintGL()
       glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	  glGeomColor(Color3(64,64,64));
-      for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+      for(SelectionCache::iterator _it = __selectedShapes.begin();
           _it !=__selectedShapes.end(); _it++)
         _it->second->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
@@ -505,7 +505,7 @@ ViewGeomSceneGL::selectGL()
 void
 ViewGeomSceneGL::selectionEvent(uint_t id)
 {
-  hash_map<uint_t,Shape3DPtr>::iterator _it =__selectedShapes.find(id);
+  SelectionCache::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
     Shape3DPtr ptr = _it->second;
 	__selectedShapes.erase(_it);
@@ -537,7 +537,7 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
 void
 ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 {
-  hash_map<uint_t,Shape3DPtr>::iterator _it;
+  SelectionCache::iterator _it;
   uint_t selected = 0;
   uint_t unselected = 0;
   for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
@@ -624,7 +624,7 @@ ViewGeomSceneGL::selectionEvent(Q3ListViewItem * item)
         if((*_it)->getId() == Shape::NOID){
 		  id = (*_it)->SceneObject::getId();
 		}
-		hash_map<uint_t,Shape3DPtr>::iterator _it2 
+		SelectionCache::iterator _it2 
 		  =__selectedShapes.find(id);
 		if(_it2!=__selectedShapes.end()){
 		  __selectedShapes.erase(_it2);
@@ -678,7 +678,7 @@ ViewGeomSceneGL::keepSelectionOnly()
 	return;
   }
   GeomSceneChangeEvent * e = new GeomSceneChangeEvent(getSelection(),NULL,NULL);
-  hash_map<uint_t,Shape3DPtr> selection = __selectedShapes;
+  SelectionCache selection = __selectedShapes;
   QApplication::sendEvent(this,e);
   __selectedShapes = selection;
 }
@@ -693,8 +693,8 @@ ViewGeomSceneGL::wireSelection()
   }
   ScenePtr scene = getNotSelection();
   WireComputer wire(__discretizer);
-  hash_map<uint_t,Shape3DPtr> selection;
-  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  SelectionCache selection;
+  for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
 	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
 	if(sh){
@@ -722,8 +722,8 @@ ViewGeomSceneGL::discretizeSelection()
 	return;
   }
   ScenePtr scene = getNotSelection();
-  hash_map<uint_t,Shape3DPtr> selection;
-  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  SelectionCache selection;
+  for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
 	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
 	if(sh){
@@ -752,8 +752,8 @@ ViewGeomSceneGL::triangulateSelection()
 	return;
   }
   ScenePtr scene = getNotSelection();
-  hash_map<uint_t,Shape3DPtr> selection;
-  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  SelectionCache selection;
+  for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
 	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
 	Tesselator t;
@@ -1082,7 +1082,7 @@ ViewMultiGeomSceneGL::paintGL()
         __light->switchOff();
         glBlendFunc(GL_ONE,GL_ZERO);
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-        for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+        for(SelectionCache::iterator _it = __selectedShapes.begin();
             _it !=__selectedShapes.end(); _it++)
           _it->second->apply(__bboxRenderer);
       }

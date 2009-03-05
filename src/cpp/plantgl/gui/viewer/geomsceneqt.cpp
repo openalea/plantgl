@@ -110,7 +110,7 @@ ViewGeomSceneGL::getSelectionSurface()
   if(!__scene)return 0;
   SurfComputer _sfc(__discretizer);
   real_t surface = 0;
-  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(_sfc))
 		surface += _sfc.getSurface();
@@ -122,7 +122,7 @@ real_t ViewGeomSceneGL::getSelectionVolume()
   if(!__scene)return 0;
   VolComputer _vfc(__discretizer);
   real_t volume = 0;
-  for(hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
 	  if(_it->second->apply(_vfc))
 		volume += _vfc.getVolume();
@@ -312,7 +312,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
-	  hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+	  SelectionCache::const_iterator _it = __selectedShapes.begin();
       QString listid = QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
 	  for(_it++;_it != __selectedShapes.end();_it++)
 			listid += ','+QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());

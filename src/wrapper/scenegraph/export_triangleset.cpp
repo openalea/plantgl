@@ -48,6 +48,7 @@ void export_TriangleSet()
 	  "A TriangleSet describes a surface formed by a set of connected triangles, i.e. three sided polygons.\n"
 	  " Triangles are specified using set of tuples of 3 indices (Index3) pointing to a list of points.",no_init)
 	  .def(mesh_func<TriangleSet>())
+	  .DEF_PGLBASE(TriangleSet)
 	  ;
 
   implicitly_convertible<TriangleSetPtr, MeshPtr>();

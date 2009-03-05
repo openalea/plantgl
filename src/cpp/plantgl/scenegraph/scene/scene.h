@@ -232,7 +232,7 @@ public:
     /// A Scene Pool class
     class SG_API Pool {
     public:
-        typedef STDEXT::hash_map<size_t,Scene *> PoolList;
+        typedef pgl_hash_map<size_t,Scene *> PoolList;
         friend class Scene;
         ~Pool();
  

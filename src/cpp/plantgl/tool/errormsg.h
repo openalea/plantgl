@@ -125,7 +125,7 @@ public:
 
 
 /// General messages that can be used by different modules
-const char* common_err_messages[];
+extern const char* common_err_messages[];
 
 
 // ******************************************************

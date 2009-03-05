@@ -437,18 +437,20 @@ BranchCompressor::sortByDecSize(const std::vector<BranchInput>&i)
   return res;
 }
 
+typedef pgl_hash_map<int,pair<int,int> > GraphMap;
+
 std::vector<BranchInput> 
 BranchCompressor::sortByIncOrder(const std::vector<BranchInput>&i)
 {
 //  cerr << "sortByIncreasingOrder" << endl;
-  hash_map<int,pair<int,int> > graph;
+  GraphMap graph;
   for(std::vector<BranchInput>::const_iterator _it = i.begin(); _it != i.end(); _it++)
 	graph[_it->id] = pair<int,int>(_it->father,(_it->father <=0?0:-1));
-  stack<hash_map<int,pair<int,int> >::iterator> st;
-  for(hash_map<int,pair<int,int> >::iterator _it2 = graph.begin(); _it2 != graph.end(); _it2++){
+  stack<GraphMap::iterator> st;
+  for(GraphMap::iterator _it2 = graph.begin(); _it2 != graph.end(); _it2++){
 	if(_it2->second.second == -1 ){
 	  int f = _it2->second.first;
-	  hash_map<int,pair<int,int> >::iterator _it3 = graph.find(f);
+	  GraphMap::iterator _it3 = graph.find(f);
 	  while( _it3 != graph.end() && _it3->second.second == -1 ){
 		st.push(_it3);_it3 = graph.find(_it3->second.first);
 	  }
@@ -487,18 +489,19 @@ std::vector<BranchInput>
 BranchCompressor::sortByDecOrder(const std::vector<BranchInput>&i)
 {
 //  cerr << "sortByDecreasingOrder" << endl;
-  hash_map<int,pair<int,int> > graph;
+  GraphMap graph;
   for(std::vector<BranchInput>::const_iterator _it = i.begin(); _it != i.end(); _it++){
 	graph[_it->id] = pair<int,int>(_it->father,(_it->father <=0?0:-1));
 	if(_it->father <=0)__roots= _it->id;
   }
-  stack<hash_map<int,pair<int,int> >::iterator> st;
-  for(hash_map<int,pair<int,int> >::iterator _it2 = graph.begin(); _it2 != graph.end(); _it2++){
+  std::stack<GraphMap::iterator> st;
+  for(GraphMap::iterator _it2 = graph.begin(); _it2 != graph.end(); _it2++){
 	if(_it2->second.second == -1 ){
 	  int f = _it2->second.first;
-	  hash_map<int,pair<int,int> >::iterator _it3 = graph.find(f);
+	  GraphMap::iterator _it3 = graph.find(f);
 	  while( _it3 != graph.end() && _it3->second.second == -1 ){
-		st.push(_it3);_it3 = graph.find(_it3->second.first);
+		st.push(_it3);
+		_it3 = graph.find(_it3->second.first);
 	  }
 	  int order = 0;
 	  if(_it3 != graph.end())order = _it3->second.second +1;
@@ -685,7 +688,7 @@ BranchCompressor::compress(real_t taux,
     int NbNotRep=0;
     int NbNotRep2=0;
 
-    int DataIn2;           ;
+    int DataIn2;
     int DataRemind;
     int DataOut=0;
 
@@ -978,7 +981,7 @@ BranchCompressor::compress(real_t taux,
 
 void
 BranchCompressor::interConnection(ScenePtr& scene){
-  hash_map<int,int> graph;
+  pgl_hash_map<int,int> graph;
   for(std::vector<BranchInput>::const_iterator _iter = __inputs.begin(); 
   _iter != __inputs.end(); _iter++)
 	graph[_iter->id] = _iter->father;

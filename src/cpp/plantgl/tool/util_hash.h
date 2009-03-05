@@ -42,6 +42,7 @@
 
 #include <string>
 
+
 #ifndef WIN32_STL_EXTENSION
 
 /**
@@ -63,12 +64,13 @@ struct eqstr
 */
 struct hashstr
 {
+  typedef pgl_hash<const char*> hash_cstr;
+
   /// hash of the string.
   size_t operator() (const std::string& s1) const
-    {
-    STDEXT::hash<const char*> my_hasher;
-    return my_hasher(s1.c_str());
-    }
+    { return my_hasher(s1.c_str()); }
+
+   hash_cstr my_hasher;
 };
 
 

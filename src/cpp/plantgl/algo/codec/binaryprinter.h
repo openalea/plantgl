@@ -45,6 +45,9 @@
 #include <plantgl/tool/rcobject.h>
 
 #include <plantgl/tool/util_hashmap.h>
+#include <plantgl/tool/util_types.h>
+
+#include <vector>
 
 TOOLS_BEGIN_NAMESPACE
 class leifstream;
@@ -110,7 +113,7 @@ public:
   /// the version of the token code.
   float __version;
 
-  STDEXT::hash_map<uchar_t,std::pair<std::string,uint_t> > __code;
+  pgl_hash_map<uchar_t,std::pair<std::string,uint_t> > __code;
 
 };
 

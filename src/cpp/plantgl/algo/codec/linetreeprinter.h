@@ -216,10 +216,16 @@ protected:
   /// The name of the current texture is cached using a string.
   MaterialPtr __mat;
 
-  STDEXT::hash_map<uint_t, std::pair<AmapSymbolPtr,std::pair<TOOLS(Vector3),TOOLS(Vector3)> > > __smbcache;
-  STDEXT::hash_map<uint_t, std::string > __smbfilecache;
-  STDEXT::hash_map<uint_t, STDEXT::hash_map<uint_t,long> > __cache;
-  std::vector<std::pair<long, std::pair<AmapSymbolPtr,MaterialPtr> > > __dta;
+  typedef pgl_hash_map<uint_t, std::pair<AmapSymbolPtr,std::pair<TOOLS(Vector3),TOOLS(Vector3)> > > SmbMap;
+  typedef pgl_hash_map<uint_t, std::string > SmbFileMap;
+  typedef pgl_hash_map<uint_t,long> CacheUnit;
+  typedef pgl_hash_map<uint_t, CacheUnit > Cache;
+  typedef std::vector<std::pair<long, std::pair<AmapSymbolPtr,MaterialPtr> > > DtaList;
+
+  SmbMap __smbcache;
+  SmbFileMap __smbfilecache;
+  Cache __cache;
+  DtaList __dta;
 
   long __smbNumber;
 

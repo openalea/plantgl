@@ -48,7 +48,7 @@ using namespace std;
 STDEXT_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
-static hash_map<uint_t,QPixmap> PixmapCache;
+// static pgl_hash_map<uint_t,QPixmap> PixmapCache;
 
 const char * const * ViewerIcon::getPixmap(const char * const obj[]){
 	return obj;
@@ -66,7 +66,8 @@ const char * const * ViewerIcon::getPixmap(const char * const obj[]){
 }
 
 void ViewerIcon::clearCache(){
-	PixmapCache.clear();
+	QPixmapCache::clear();
+	// PixmapCache.clear();
 }
 
 QPixmap ViewerIcon::getPixmap(const char * file){

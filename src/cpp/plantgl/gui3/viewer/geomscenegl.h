@@ -355,7 +355,7 @@ protected :
   PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
- STDEXT::hash_map<uint_t,PGL(Shape3DPtr)> __selectedShapes;
+  pgl_hash_map<uint_t,PGL(Shape3DPtr)> __selectedShapes;
 
 #ifdef QT_THREAD_SUPPORT
   /// Reader.

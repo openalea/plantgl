@@ -38,6 +38,24 @@
 */
 #include "tools_config.h"
 
+#ifndef USING_OLD_HASHMAP
+#ifdef GNU_STL_EXTENSION
+	#include <tr1/unordered_set>
+	#define pgl_hash_set std::tr1::unordered_set
+#else
+	#include <unordered_set>
+	#define pgl_hash_set unordered_set
+#endif
+
+#ifndef pgl_hash
+#define pgl_hash std::tr1::hash
+#endif
+
+typedef pgl_hash_set<std::string> hash_set_string ;
+typedef pgl_hash_set<uint_t> hash_set_uint32;
+
+#else
+
 #ifdef GNU_STL_EXTENSION
 	#include <ext/hash_set>
 #else
@@ -46,6 +64,11 @@
 	#endif
 	#include <hash_set>
 #endif
+
+#ifndef pgl_hash
+#define pgl_hash STDEXT::hash
+#endif
+#define pgl_hash_set STDEXT::hash_set
 
 #include "util_hash.h"
 
@@ -56,17 +79,16 @@
    \brief Class for using hash_set with string.
 */
 
-typedef STDEXT::hash_set<std::string, hashstr, eqstr> hash_set_string;
-
-typedef STDEXT::hash_set<uint_t,STDEXT::hash<uint_t>,std::equal_to<uint_t> > hash_set_uint32;
+typedef pgl_hash_set<std::string, hashstr, eqstr> hash_set_string;
+typedef pgl_hash_set<uint_t,pgl_hash<uint_t>,std::equal_to<uint_t> > hash_set_uint32;
 
 #else
 
-typedef STDEXT::hash_set<std::string> hash_set_string ;
+typedef pgl_hash_set<std::string> hash_set_string ;
+typedef pgl_hash_set<uint_t> hash_set_uint32;
 
-typedef STDEXT::hash_set<uint_t> hash_set_uint32;
 
-
+#endif
 
 #endif
 

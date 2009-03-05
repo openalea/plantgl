@@ -59,20 +59,13 @@ class Cache {
 
 public:
 
-  /// A const iterator used to iterate through the cache.
-#ifndef WIN32_STL_EXTENSION
-  typedef typename STDEXT::hash_map<size_t,T,STDEXT::hash<size_t>,std::equal_to<size_t> >::const_iterator \
-                                                                const_Iterator;
-#else
-  typedef typename STDEXT::hash_map<size_t,T>::const_iterator const_Iterator;
-#endif
-  /// An iterator used to iterate through the cache.
+  typedef typename pgl_hash_map<size_t,T> maptype;
 
-#ifndef WIN32_STL_EXTENSION
-  typedef typename STDEXT::hash_map<size_t,T,STDEXT::hash<size_t>,std::equal_to<size_t> >::iterator Iterator;
-#else
-  typedef typename STDEXT::hash_map<size_t,T>::iterator Iterator;
-#endif
+  /// A const iterator used to iterate through the cache.
+  typedef typename maptype::const_iterator const_Iterator;
+
+  /// An iterator used to iterate through the cache.
+  typedef typename maptype::iterator Iterator;
 
   /// Constructs an empty Cache.
   Cache( ) :
@@ -133,11 +126,7 @@ public:
 protected:
 
   /// The elements contained by \e self.
-#ifndef WIN32_STL_EXTENSION
-  STDEXT::hash_map<size_t,T,STDEXT::hash<size_t>,std::equal_to<size_t> > __cache;
-#else
-  STDEXT::hash_map<size_t,T> __cache;
-#endif
+  maptype __cache;
 };
 
 

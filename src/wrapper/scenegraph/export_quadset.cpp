@@ -41,6 +41,7 @@ void export_QuadSet()
 	  "A QuadSet describes a surface formed by a set of connected quadrilaterals, i.e. four sided polygons.\n"
 	  " Quads are specified using set of tuples of 4 indices (Index4) pointing to a list of points.",no_init)
 	  .def(mesh_func<QuadSet>())
+	  .DEF_PGLBASE(QuadSet)
 	  ;
      implicitly_convertible<QuadSetPtr, MeshPtr>();
 }

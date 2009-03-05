@@ -1,5 +1,5 @@
 
-
+#include <plantgl/python/pyobj_reference.h>
 
 template<class T>
 RCPtr<T> py_recast(T * obj) { 
@@ -9,7 +9,7 @@ RCPtr<T> py_recast(T * obj) {
 
 #define DEF_PGLBASE(T) def("deepcopy",&T::casted_deepcopy<T>) \
                        .def("deepcopy",&T::casted_deepcopy_using<T>, args("copier")) \
-					   .def("recast",&py_recast<T>)
+		       .def("recast",&py_recast<T>)
  
 
 

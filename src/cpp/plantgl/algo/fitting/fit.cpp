@@ -1565,7 +1565,8 @@ Fit::convexHull(){
   /* initialize dim, numpoints, points[], ismalloc here */
   exitcode= qh_new_qhull (dim, numpoints, points, ismalloc,flags, outfile, errfile);
 
-  hash_map<int,int> mem;
+  typedef pgl_hash_map<int,int> memtype;
+  memtype mem;
   Point3ArrayPtr resulting_points(new Point3Array());
   int p_count=0;
   Index3ArrayPtr resulting_topo(new Index3Array());
@@ -1581,7 +1582,7 @@ Fit::convexHull(){
           int lt_count=0;
           FOREACHvertex_(_vertices){
               int _id = vertex->id;
-              hash_map<int,int>::const_iterator _it;
+              memtype::const_iterator _it;
               if((_it=mem.find(_id) )!=mem.end()){
                   topo.pushBack(_it->second);
                   lt_count++;

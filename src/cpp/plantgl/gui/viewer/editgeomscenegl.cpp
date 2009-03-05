@@ -283,7 +283,7 @@ ViewEditGeomSceneGL::dissociateMaterial()
   }
   mat = MaterialPtr(new Material(*(mat)));
   mat->setName("APP_"+number(mat->getId()));
-  for( STDEXT::hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for( SelectionCache::const_iterator _it = __selectedShapes.begin();
 	   _it !=__selectedShapes.end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape)shape->getAppearance() = mat;
@@ -336,7 +336,7 @@ ViewEditGeomSceneGL::hasSameMaterial() const
 {
   AppearancePtr mat = getSelectedAppearance();
   if(!mat)return false;
-  for(STDEXT::hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(SelectionCache::const_iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape){
@@ -360,7 +360,7 @@ ViewEditGeomSceneGL::getSelectedAppearance() const
 	if (__scene->getSize() == 1) return getSelectedAppearance(__scene);
 	return AppearancePtr();
   }
-  for(STDEXT::hash_map<uint_t,Shape3DPtr>::const_iterator _it = __selectedShapes.begin();
+  for(SelectionCache::const_iterator _it = __selectedShapes.begin();
     _it !=__selectedShapes.end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape) {
@@ -423,7 +423,7 @@ ViewEditGeomSceneGL::pasteMaterial(){
 	  tr("At least one shape must be selected to paste material."),1,0,0);
   }
   
-  for( hash_map<uint_t,Shape3DPtr>::iterator _it = __selectedShapes.begin();
+  for( SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
 	if(shape)shape->getAppearance() = __appeclipboard;
