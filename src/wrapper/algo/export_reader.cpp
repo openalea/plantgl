@@ -51,8 +51,8 @@ object pgl_read(const std::string& txt, const std::string& fname)
 	SceneObjectSymbolTable table;
 	ScenePtr scene;
 	std::stringstream input(txt, std::ios_base::in);
-    bool res = geom_read(input,table,scene);
-	return make_tuple(scene,make_dict(table)());
+        bool res = geom_read(input,table,scene);
+	return make_tuple(scene,dict_converter<SceneObjectSymbolTable>(table)());
 }
 
 void export_PglReader()
