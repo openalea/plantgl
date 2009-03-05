@@ -78,7 +78,7 @@ list_converter<T> make_list(const T& c_list) { return list_converter<T>(c_list);
 
 template <class T, 
           class KeyTranslator = make_object<typename T::key_type>, 
-#if (!USING_OLD_HASHMAP) || WIN32_STL_EXTENSION
+#if (!defined(USING_OLD_HASHMAP)) || defined(WIN32_STL_EXTENSION)
           class ValueTranslator = make_object<typename T::mapped_type>
 #else
           class ValueTranslator = make_object<typename T::data_type>
@@ -88,7 +88,7 @@ struct dict_converter {
 	typedef T dict_type;
     typedef typename T::const_iterator dict_const_iterator;
     typedef typename T::key_type dict_key_type;
-#if (!USING_OLD_HASHMAP) || WIN32_STL_EXTENSION
+#if (!defined(USING_OLD_HASHMAP)) || defined(WIN32_STL_EXTENSION)
     typedef typename T::mapped_type dict_value_type;
 #else
     typedef typename T::data_type dict_value_type;

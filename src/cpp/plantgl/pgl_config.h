@@ -240,6 +240,11 @@
 	#define STDEXT_USING_NAMESPACE
 #endif
 
+#ifndef __GNUC__
+// Gcc use tr1 extension
+// msvc did not integrate it yet. 
+#define USING_OLD_HASHMAP
+#endif
 
 
 #if defined( _MSC_VER )
