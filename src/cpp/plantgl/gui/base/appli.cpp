@@ -37,23 +37,23 @@
 
 #include "../viewer/pglviewer.h"
 
-ViewerBuilder * ViewerAppli::VIEWERBUILDER(0);
-ThreadedData<Viewer> ViewerAppli::VIEWER(0);
-ThreadStateSaverFactory * ViewerAppli::THREADSTATESAVERFACTORY(0);
-bool ViewerAppli::THREADSTATESAVERENABLED(true);
+ViewerBuilder * ViewerAppliInternal::VIEWERBUILDER(0);
+ThreadedData<Viewer> ViewerAppliInternal::VIEWER(0);
+ThreadStateSaverFactory * ViewerAppliInternal::THREADSTATESAVERFACTORY(0);
+bool ViewerAppliInternal::THREADSTATESAVERENABLED(true);
 
-Viewer * ViewerAppli::build() {
+Viewer * ViewerAppliInternal::build() {
 	if(VIEWERBUILDER) { VIEWER = VIEWERBUILDER->build(); }
 	else VIEWER.set(new PGLViewer());
 	return VIEWER.get(); 
 }
 
-Viewer * ViewerAppli::getViewer() {
+Viewer * ViewerAppliInternal::getViewer() {
 	if(VIEWER) return VIEWER.get();
 	else return build();
 }
 
-void ViewerAppli::deleteViewer() {
+void ViewerAppliInternal::deleteViewer() {
 	if (VIEWER.get()->thread() != QThread::currentThread() && VIEWER.get()->thread()->isRunning())
 		printf("Cannot delete Viewer from other thread ...\n");
 	VIEWER.deleteData();
@@ -61,13 +61,13 @@ void ViewerAppli::deleteViewer() {
 }
 
 
-void ViewerAppli::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
-void ViewerAppli::registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) { THREADSTATESAVERFACTORY = tssf; }
-void ViewerAppli::cleanThreadStateSaverFatory() { delete THREADSTATESAVERFACTORY; THREADSTATESAVERFACTORY = NULL; }
-void ViewerAppli::activateStateSaver(bool enabling) { THREADSTATESAVERENABLED =  enabling; }
+void ViewerAppliInternal::setBuilder(ViewerBuilder * builder) { VIEWERBUILDER = builder; }
+void ViewerAppliInternal::registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) { THREADSTATESAVERFACTORY = tssf; }
+void ViewerAppliInternal::cleanThreadStateSaverFatory() { delete THREADSTATESAVERFACTORY; THREADSTATESAVERFACTORY = NULL; }
+void ViewerAppliInternal::activateStateSaver(bool enabling) { THREADSTATESAVERENABLED =  enabling; }
 
 void 
-ViewerAppli::sendAnEvent(QEvent *e)
+ViewerAppliInternal::sendAnEvent(QEvent *e)
 { 
     ThreadStateSaver * tss = NULL;
     if (THREADSTATESAVERENABLED && THREADSTATESAVERFACTORY) {
@@ -82,16 +82,16 @@ ViewerAppli::sendAnEvent(QEvent *e)
 }
 
 void 
-ViewerAppli::postAnEvent(QEvent *e)
+ViewerAppliInternal::postAnEvent(QEvent *e)
 { startSession(); getViewer()->post(e); }
 
 
-ViewerAppli::ViewerAppli(){ /*ViewObjectGL::BASHMODE = true;*/ }
-ViewerAppli::~ViewerAppli(){  }
+ViewerAppliInternal::ViewerAppliInternal(){ /*ViewObjectGL::BATCHMODE = true;*/ }
+ViewerAppliInternal::~ViewerAppliInternal(){  }
 
 
 std::vector<uint_t>
-ViewerAppli::getSelection() {
+ViewerAppliInternal::getSelection() {
 	std::vector<uint_t> res;
     if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
@@ -100,7 +100,7 @@ ViewerAppli::getSelection() {
     return res;
 }
 
-bool ViewerAppli::getRedrawPolicy()
+bool ViewerAppliInternal::getRedrawPolicy()
 {
 	if(running()){
 		bool res;
@@ -110,7 +110,7 @@ bool ViewerAppli::getRedrawPolicy()
 	else return getViewer()->getFrameGL()->isRedrawEnabled();
 }
 
-void ViewerAppli::setRedrawPolicy(bool policy)
+void ViewerAppliInternal::setRedrawPolicy(bool policy)
 {
 	if(running()){
 		sendAnEvent(new ViewSetRedrawEvent(policy));
@@ -120,7 +120,7 @@ void ViewerAppli::setRedrawPolicy(bool policy)
 
 
 int 
-ViewerAppli::question(const std::string& caption,
+ViewerAppliInternal::question(const std::string& caption,
 			   const std::string& text,
 			   const std::string& but0txt,
 			   const std::string& but1txt,
@@ -137,7 +137,7 @@ ViewerAppli::question(const std::string& caption,
 }
 
 std::string 
-ViewerAppli::itemSelection(const std::string& caption,
+ViewerAppliInternal::itemSelection(const std::string& caption,
 					   const std::string& text,
 					   const std::vector<std::string> & values,
 					   bool& ok,
@@ -154,7 +154,7 @@ ViewerAppli::itemSelection(const std::string& caption,
 }
 
 double 
-ViewerAppli::doubleSelection(const std::string& caption,
+ViewerAppliInternal::doubleSelection(const std::string& caption,
 								   const std::string& text,
 								   double value,
                                    double minvalue,
@@ -170,7 +170,7 @@ ViewerAppli::doubleSelection(const std::string& caption,
 
 
 std::string 
-ViewerAppli::getFile(const std::string& caption,
+ViewerAppliInternal::getFile(const std::string& caption,
 					  const std::string& startPath,
 				      const std::string& filter,
 					  bool existing,bool dir){
@@ -187,7 +187,7 @@ ViewerAppli::getFile(const std::string& caption,
   }
 
 ViewRayBuffer * 
-ViewerAppli::castRays(const TOOLS(Vector3)& pos, 
+ViewerAppliInternal::castRays(const TOOLS(Vector3)& pos, 
 	                     const TOOLS(Vector3)& dir,
 						 const TOOLS(Vector3)& dx, 
 						 const TOOLS(Vector3)& dy,
@@ -199,7 +199,7 @@ ViewerAppli::castRays(const TOOLS(Vector3)& pos,
 }
 
 ViewZBuffer * 
-ViewerAppli::grabZBuffer(){
+ViewerAppliInternal::grabZBuffer(){
 	ViewZBuffer * res = NULL ;
 	ViewZBuffEvent * event = new ViewZBuffEvent(&res);
 	sendAnEvent(event);

@@ -44,7 +44,7 @@ DEF_POINTEE(ParametricModel)
 
 void export_ParametricModel()
 {
-  class_< ParametricModel, ParametricModelPtr, bases< Primitive >,boost::noncopyable >("ParametricModel""Abstract base class for all  parametric primitives",no_init);
+  class_< ParametricModel, ParametricModelPtr, bases< Primitive >,boost::noncopyable >("ParametricModel","Abstract base class for all  parametric primitives",no_init);
   implicitly_convertible< ParametricModelPtr,PrimitivePtr >();
 }
 

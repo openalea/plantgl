@@ -79,7 +79,7 @@ public :
   /// Set use thread or not. Return whether it is possible or not.
   static bool useThread(bool);
 
-  static void setBashMode(bool);
+  static void setBatchMode(bool);
 
   static void update();
 
@@ -199,6 +199,8 @@ public :
 
   static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
   static void cleanThreadStateSaverFatory() ;
+
+  static unsigned int viewerId();
 
 protected :
 

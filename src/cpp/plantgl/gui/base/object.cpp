@@ -195,7 +195,7 @@ ViewObjectGL::glError(const char * file, int line) const
 }
 
 static bool lock = false;
-bool ViewObjectGL::BASHMODE = false;
+bool ViewObjectGL::BATCHMODE = false;
 
 bool
 ViewObjectGL::glError(QWidget * widget, const char * file, int line)
@@ -217,7 +217,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 		  _mess += "<br><b>Line :</b>";
 		  _mess += QString::number(line);
 	  }
-	  if(!BASHMODE){
+	  if(!BATCHMODE){
 		  if(!lock){
 			  lock = true;
 			  int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));

@@ -62,7 +62,7 @@ false
 ;
 
 
-static ViewerAppli * VIEWER_APPLI = NULL;
+static ViewerAppliInternal * VIEWER_APPLI = NULL;
 
 class EndViewer {
 public :
@@ -116,8 +116,8 @@ ViewerApplication::useThread(bool use){
 }
 
 void 
-ViewerApplication::setBashMode(bool m){
-	ViewObjectGL::BASHMODE = m;
+ViewerApplication::setBatchMode(bool m){
+	ViewObjectGL::BATCHMODE = m;
 }
 
 
@@ -256,17 +256,17 @@ void ViewerApplication::_sendAnEvent(QEvent *e){
 }
 
 void ViewerApplication::_setViewerBuilder(ViewerBuilder * builder){
-	ViewerAppli::setBuilder(builder);
+	ViewerAppliInternal::setBuilder(builder);
 }
 
 void ViewerApplication::registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) 
 {
-    ViewerAppli::registerThreadStateSaverFatory(tssf);
+    ViewerAppliInternal::registerThreadStateSaverFatory(tssf);
 }
 
 void ViewerApplication::cleanThreadStateSaverFatory() 
 {
-    ViewerAppli::cleanThreadStateSaverFatory();
+    ViewerAppliInternal::cleanThreadStateSaverFatory();
 }
 
 void
@@ -455,4 +455,10 @@ void ViewerApplication::setPerspectiveCamera(){
 
 void ViewerApplication::setOrthographicCamera(){
   _sendAnEvent(new ViewCameraProjEvent(false));
+}
+
+unsigned int ViewerApplication::viewerId()
+{
+	if(VIEWER_APPLI && VIEWER_APPLI->getViewer()) return (unsigned int)VIEWER_APPLI->getViewer()->winId();
+	else return 0;
 }

@@ -116,7 +116,7 @@ public:
 
   /// Test if there is any gl error.
   static bool glError( QWidget * widget, const char * file = NULL, int line = 0 ) ;
-  static bool BASHMODE;
+  static bool BATCHMODE;
 
 public slots:
 

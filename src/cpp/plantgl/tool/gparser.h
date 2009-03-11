@@ -345,7 +345,6 @@ bool GenericParser<T>::handleError(std::string msg, int yychar, const char* toke
         parser(p);\
         if (!(p.handleError(std::string(_msg), yychar, yytname[YYTRANSLATE((yychar>=0?yychar:-yychar))]))) YYABORT;\
         postream(p) << std::endl; }
-#endif
 #else
 #define yyerror(_msg){ 				\
         yyerrok;\
@@ -354,6 +353,7 @@ bool GenericParser<T>::handleError(std::string msg, int yychar, const char* toke
         if (!(p.handleError(std::string(_msg), yychar, ""))) YYABORT;\
         postream(p) << std::endl; }
 
+#endif
 #endif
 
 #endif

@@ -43,22 +43,22 @@
 /* ----------------------------------------------------------------------- */
 
 
-  /*! \enum ErrorType
+  /*! \enum PglErrorType
   Error Message Type.
   */
   /*!
-  \var ErrorType NO_MESSAGE
+  \var PglErrorType NO_MESSAGE
   Error without message.
   */
   /*!
-  \var ErrorType ERROR_MESSAGE
+  \var PglErrorType ERROR_MESSAGE
    Error with message.
   */
   /*!
-  \var ErrorType WARNING_MESSAGE
+  \var PglErrorType WARNING_MESSAGE
     Warning message.
   */
-enum ErrorType {NO_MESSAGE, ERROR_MESSAGE, WARNING_MESSAGE, DEBUG_MESSAGE};
+enum PglErrorType { PGL_NO_MESSAGE, PGL_ERROR_MESSAGE, PGL_WARNING_MESSAGE, PGL_DEBUG_MESSAGE};
 
 /* ----------------------------------------------------------------------- */
 
@@ -72,17 +72,17 @@ TOOLS_API void register_debug_handler(error_msg_handler_func f = NULL);
 TOOLS_API void pglDebug(const char* msg ...);
 TOOLS_API void pglWarning(const char* msg ...);
 TOOLS_API void pglError(const char* msg ...);
-TOOLS_API void pglError(ErrorType errtype, const char* msg ...);
+TOOLS_API void pglError(PglErrorType errtype, const char* msg ...);
 
 TOOLS_API void pglDebugEx(const char* file, int line, const char* msg ...);
 TOOLS_API void pglWarningEx(const char* file, int line, const char* msg ...);
 TOOLS_API void pglErrorEx(const char* file, int line, const char* msg ...);
-TOOLS_API void pglErrorEx(ErrorType errtype, const char* file, int line, const char* msg ...);
+TOOLS_API void pglErrorEx(PglErrorType errtype, const char* file, int line, const char* msg ...);
 
 TOOLS_API void pglDebugEx(const char* file, int line, const std::string& msg );
 TOOLS_API void pglWarningEx(const char* file, int line, const std::string& msg);
 TOOLS_API void pglErrorEx(const char* file, int line, const std::string& msg);
-TOOLS_API void pglErrorEx(ErrorType errtype, const char* file, int line, const std::string& msg);
+TOOLS_API void pglErrorEx(PglErrorType errtype, const char* file, int line, const std::string& msg);
 
 /* ----------------------------------------------------------------------- */
 /*
@@ -188,7 +188,7 @@ enum  COMON_ERRORLABEL {
  To generate an error/warning message with parameters:
  pglErrorEx(ERRORMSG(i),p1,p2,p3)
 */
-#define ERRORMSG(i)       _ERRORARGS_(i,ERROR_MESSAGE)
+#define ERRORMSG(i)       _ERRORARGS_(i,PGL_ERROR_MESSAGE)
 
 #ifndef REMOVE_WARNINGS
 /** \brief Warning message
@@ -196,14 +196,14 @@ enum  COMON_ERRORLABEL {
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define WARNINGMSG(i)     _ERRORARGS_(i,WARNING_MESSAGE)
+#define WARNINGMSG(i)     _ERRORARGS_(i,PGL_WARNING_MESSAGE)
 #else
 /** \brief Warning message
 
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define WARNINGMSG(i)     _ERRORARGS_(i,NO_MESSAGE)
+#define WARNINGMSG(i)     _ERRORARGS_(i,PGL_NO_MESSAGE)
 #endif
 
 #ifndef REMOVE_DEBUG
@@ -212,14 +212,14 @@ enum  COMON_ERRORLABEL {
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define DEBUGMSG(i)     _ERRORARGS_(i,DEBUG_MESSAGE)
+#define DEBUGMSG(i)     _ERRORARGS_(i,PGL_DEBUG_MESSAGE)
 #else
 /** \brief Debug message
 
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define DEBUGMSG(i)     _ERRORARGS_(i,NO_MESSAGE)
+#define DEBUGMSG(i)     _ERRORARGS_(i,PGL_NO_MESSAGE)
 #endif
 
 /** this function creates an ErrorObj with the desired error message

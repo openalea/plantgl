@@ -43,7 +43,7 @@
 TOOLS_USING_NAMESPACE
 
 ViewerThreadedAppli::ViewerThreadedAppli() : 
-			 ViewerAppli(), QThread()
+			 ViewerAppliInternal(), QThread()
 { 
 	// printf("Threaded Appli\n");
 	launch();

@@ -530,8 +530,8 @@ void export_viewer()
 	.add_static_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
 	.add_static_property("redrawPolicy",&ViewerApplication::getRedrawPolicy,&ViewerApplication::setRedrawPolicy)
 
-	.def("setBashMode", &ViewerApplication::setBashMode,"setBashMode(bool enable) : No blocking message from the Viewer.",args("enable"))
-    .staticmethod("setBashMode")
+	.def("setBatchMode", &ViewerApplication::setBatchMode,"setBatchMode(bool enable) : No blocking message from the Viewer.",args("enable"))
+    .staticmethod("setBatchMode")
 	.def("wait", &ViewerApplication::wait, "wait(long timeout = MAXLONG) : wait for the viewer ending.", args("timeout"))
     .def("wait", &viewer_wait)
     .staticmethod("wait")
@@ -562,6 +562,8 @@ void export_viewer()
 	.def("animation",&animation1,"animation(bool enable = True) : Set viewer in animation mode [No display list, No camera adjutement]",args("enable"))
     .def("animation",&animation0)
     .staticmethod("animation") 
+	.def("winId",&ViewerApplication::viewerId)
+    .staticmethod("winId") 
     ;
 
   export_camera();

@@ -50,7 +50,7 @@
 class QApplication;
 class Viewer;
 
-class ViewerThreadedAppli : public ViewerAppli, public QThread {
+class ViewerThreadedAppli : public ViewerAppliInternal, public QThread {
 	public:
 	ViewerThreadedAppli();
 	virtual ~ViewerThreadedAppli();

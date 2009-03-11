@@ -148,11 +148,11 @@ void pglDebugEx(const char* file, int line, const std::string& msg){
 #endif
 }
 
-void pglErrorEx(ErrorType errtype, const char* file, int line, const std::string& msg){
+void pglErrorEx(PglErrorType errtype, const char* file, int line, const std::string& msg){
   switch(errtype){
-	case ERROR_MESSAGE : pglErrorEx(file,line,msg); break;
-	case WARNING_MESSAGE : pglWarningEx(file,line,msg); break;
-	case DEBUG_MESSAGE : pglErrorEx(file,line,msg); break;
+	case PGL_ERROR_MESSAGE : pglErrorEx(file,line,msg); break;
+	case PGL_WARNING_MESSAGE : pglWarningEx(file,line,msg); break;
+	case PGL_DEBUG_MESSAGE : pglErrorEx(file,line,msg); break;
   }
 }
 
@@ -195,7 +195,7 @@ void pglError(const char* msg ...){
   va_end(args);
 }
 
-void pglError(ErrorType errtype, const char* msg ...){
+void pglError(PglErrorType errtype, const char* msg ...){
   va_list args;         // man vprintf
   va_start(args, msg);
 
@@ -245,7 +245,7 @@ void pglErrorEx(const char* file, int line,const char* msg ...){
   va_end(args);
 }
 
-void pglErrorEx(ErrorType errtype, const char* file, int line,const char* msg ...){
+void pglErrorEx(PglErrorType errtype, const char* file, int line,const char* msg ...){
   va_list args;         // man vprintf
   va_start(args, msg);
 

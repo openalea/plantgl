@@ -44,7 +44,7 @@ class ViewZBuffer;
 class QEvent;
 class Viewer;
 
-class ViewerAppli {
+class ViewerAppliInternal {
 
 protected:
 	static ViewerBuilder * VIEWERBUILDER;
@@ -66,8 +66,8 @@ public:
     static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
     static void cleanThreadStateSaverFatory() ;
 
-	ViewerAppli();
-	virtual ~ViewerAppli();
+	ViewerAppliInternal();
+	virtual ~ViewerAppliInternal();
 
 	static Viewer * getViewer();
 	static void deleteViewer();

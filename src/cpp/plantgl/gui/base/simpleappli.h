@@ -37,7 +37,7 @@
 
 class QApplication;
 
-class ViewerSimpleAppli : public ViewerAppli {
+class ViewerSimpleAppli : public ViewerAppliInternal {
 public:
 	ViewerSimpleAppli();
 	virtual ~ViewerSimpleAppli();
