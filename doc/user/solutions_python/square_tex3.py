@@ -10,7 +10,7 @@ indices = [(0, 1, 2, 3)]
 # creating the geometry
 carre = QuadSet(points,indices)
 # creating the texture
-tex = ImageTexture("./textures/bois_texture.png")
+tex = ImageTexture("./textures/wood_texture.png")
 # the texture coordinates that we will use
 texCoord = [(0.25,0.25),(0.25,0.75),(0.75,0.75),(0.75,0.25)]
 # associating the coordinates and the vertices

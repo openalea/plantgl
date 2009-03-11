@@ -1,66 +1,115 @@
+
+# This file should be mianted by the administrators only; not the users or developpers.
+# New functionalities and options should be handled by sphinx.ini, 
+# openalea/doc/common.ini and misc/sphinx_tools.py  files.
 # This file is execfile()d with the current directory set to its containing dir.
+
 import sys, os
 import time
 import ConfigParser
+import warnings
+
+sys.path.append(os.path.join('../'))
+
+print "Reading configuration file conf.py"
+# Check that sphinx version is correct
+try:
+    import sphinx
+except ImportError, e:
+    print e
+    print 'Could not find sphinx on your system'
+else:
+    if float(sphinx.__version__) < 0.6:
+        print 'Sphinx 0.6 or higher required. found %s' % sphinx.__version__
+        sys.exit(0)
 
 
-
-print 'Reading configuration file conf.py '
-
-config = ConfigParser.RawConfigParser()
-config.read('sphinx.ini')
-name = config.get('metadata','package')
-release = config.get('metadata','release')
-version = config.get('metadata','version')
-project = config.get('metadata','project')
-openalea = config.get('metadata','path_to_openalea')
-
-if not openalea:
-    openalea = os.environ['OPENALEA']
-    if not openalea:
-        print """ERROR: openalea path unknown. '
-You can set it as an environmental variable:
-
- >>>export OPENALEA=path_to_openalea
-
-or inside the sphinx.ini (field path_to_openalea)"""
-        sys.exit()
-print 'Openalea path is ' + openalea 
-
-
-# -----------------------------------------------------------------------------
-#  NOTHING to CHANGE BELOW. Note that some options still have 'openalea' 
-#  harcoded (e.g., the CSS filename.
-# -----------------------------------------------------------------------------
-Project = project.capitalize()
-Name = name.capitalize()
-
-# Get the year
+# get year
 year = time.ctime().split()[4]
 
-# now check that we have the release 
+# Get the metadata from sphinx.ini -------------------------------------------
+print "...Reading sphinx.ini file"
+config = ConfigParser.RawConfigParser()
+config.read('sphinx.ini')
+section = 'metadata'
+for option in config.options(section):
+    print '...%s %s' % (option, config.get(section, option))
+    exec( ' '.join([option, "=", "'" + config.get(section, option) + "'"]) )
+# Check that we have the release 
 try:
-    print 'version found of %s package is %s ' % (name, release)
+    Project = project.capitalize()
+    Package = package.capitalize()
+    version = version # just to check it exsits
+    release = release # just to check it exists
 except NameError:
-    'Please, provide the \'version\' variable within your setup.py file'
+    """
+Please, provide the \'version\', \'release\', \'project\', 
+\'package\'variable within your setup.py file
+"""
 
-# This paths are required to access the extension and the import_modules.py file
-sys.path.append(os.path.abspath(openalea+ '/doc/sphinxext'))
-sys.path.append(os.path.abspath(openalea+ '/doc/sphinxext/numpyext'))
-sys.path.append(os.path.abspath('./'+str(name)))
-sys.path.append(os.path.abspath('./PlantGL'))
-sys.path.append(os.path.abspath('./plantgl'))
 
+
+# set project path -----------------------------------------------------------
+# TODO: make it robust
+if project=='openalea':
+    openalea = os.path.join(os.getcwd(), '../../')
+elif project=='vplants':
+    openalea = os.path.join(os.getcwd() , '../../../openalea/')
+elif project=='alinea':
+    openalea = os.path.join(os.getcwd() , '../../../alinea/')
+else:
+    print "openalea path not implemented yet for this configuration. FIXME"
+
+
+# ! project is overwritten in common.ini, so keep track of it for future use
+project_ini = project
+
+# read common parameters -----------------------------------------------------
+# must be after setting the variable openalea
+print "...Reading common.ini file"
+config = ConfigParser.RawConfigParser()
+config.read(os.path.join(openalea, 'doc/common.ini'))
+# Read sections: general, HTML, Latex
+for section in config.sections():
+    print "......Parsing section '%s' found in common.ini file. " % section ,
+    for option in config.options(section):
+        exec( ' '.join([option, "=", config.get(section, option)]) )
+    print 'done'
+
+# create all the API documentation automatically (ref+src)
+# TODO: clean up this piece of code
+if 'api' in locals():
+    if api=='automated':
+        cmd = 'python ' + os.path.join(openalea, 'misc/sphinx_tools.py --project %s --package %s ' %(project_ini, package))
+        print cmd
+        if 'inheritance' in locals():
+            cmd += ' --inheritance '
+        if 'verbose' in locals():
+            cmd += ' --verbose '
+
+        warnings.warn('API automatically generated. To avoid it, change the api option in common.ini')
+        try:
+            status = os.system(cmd)
+        except:
+        
+            print 'sphinx_tools call failed'
+            print cmd
+            sys.exit()
+
+
+# Set the extensions --------------------------------------------------------- 
+# These paths are required to access extensions
+print "...Setting the extensions"
+print openalea
+sys.path.append(os.path.join(openalea , 'doc/sphinxext'))
+sys.path.append(os.path.join(openalea , 'doc/sphinxext/numpyext'))
+sys.path.append(os.path.join(openalea , package , 'src'))
 import ipython_console_highlighting
-
-
-# General configuration
-# ---------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
-    'autodoc',
+    'sphinx.ext.autodoc',
     'sphinx.ext.doctest', 
     'sphinx.ext.intersphinx',
     'inheritance_diagram', 
@@ -70,185 +119,12 @@ extensions = [
     'phantom_import', 
     'autosummary',
     'sphinx.ext.coverage',
-    'only_directives',
+    'only_directives'
     ]
 
-todo_include_todos =True
-
-# Add any paths that contain templates here, relative to this directory.
-templates_path = [openalea + '/doc/.templates']
-
-# The suffix of source filenames.
-source_suffix = '.rst'
-
-# The encoding of source files.
-#source_encoding = 'utf-8'
-
-# The master toctree document.
-master_doc = 'contents'
-
-# General information about the project.
-project = unicode(project + '.' + name)
-copyright = unicode('2009,'+ Project + '.' + Name)
-
-# The version info for the project you're documenting, acts as replacement for
-# |version| and |release|, also used in various other places throughout the
-# built documents.
-#
-
-# The language for content autogenerated by Sphinx. Refer to documentation
-# for a list of supported languages.
-#language = None
-
-# There are two options for replacing |today|: either, you set today to some
-# non-false value, then it is used:
-#today = ''
-# Else, today_fmt is used as the format for a strftime call.
-today_fmt = '%B %d, %Y'
-
-# List of documents that shouldn't be included in the build.
-#unused_docs = []
-
-# List of directories, relative to source directory, that shouldn't be searched
-# for source files.
-exclude_trees = ['.build']
-
-# The reST default role (used for this markup: `text`) to use for all documents.
-#default_role = None
-
-# If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
-
-# If true, the current module name will be prepended to all description
-# unit titles (such as .. function::).
-add_module_names = False
-
-# If true, sectionauthor and moduleauthor directives will be shown in the
-# output. They are ignored by default.
-show_authors = True
-
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
-
-
-# Options for HTML output
-# -----------------------
-
-# The style sheet to use for HTML and HTML Help pages. A file of that name
-# must exist either in Sphinx' static/ path, or in one of the custom paths
-# given in html_static_path.
-html_style = 'openalea.css'
-
-# The name for this set of Sphinx documents.  If None, it defaults to
-# "<project> v<release> documentation".
-#html_title = None
-
-# A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
-
-# The name of an image file (relative to this directory) to place at the top
-# of the sidebar.
-html_logo = openalea + '/doc/source/images/wiki_logo_openalea.png'
-
-# The name of an image file (within the static path) to use as favicon of the
-# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
-# pixels large.
-html_favicon = openalea  + '/doc/source/images/oaicon.ico'
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['.static', openalea + '/doc/.static']
-
-# If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
-# using the given strftime format.
-html_last_updated_fmt = '%b %d, %Y'
-
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-#html_use_smartypants = True
-
-#content template for the index page.
-html_index = 'index.html'
-
-# Custom sidebar templates, maps page names to templates.
-html_sidebars = {'index': 'indexsidebar.html'}
-html_additional_pages = {'index': 'index.html'}
-# If false, no module index is generated.
-html_use_modindex = True
-
-# If false, no index is generated.
-html_use_index = True
-
-# If true, the index is split into individual pages for each letter.
-html_split_index = True
-
-# If true, the reST sources are included in the HTML build as _sources/<name>.
-html_copy_source = True
-
-# If true, an OpenSearch description file will be output, and all pages will
-# contain a <link> tag referring to it.  The value of this option must be the
-# base URL from which the finished HTML is served.
-#html_use_opensearch = ''
-
-# If nonempty, this is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = ''
-
-# Output file base name for HTML help builder.
-htmlhelp_basename = Project + 'doc'
-
-
-# Options for LaTeX output
-# ------------------------
-
-# The paper size ('letter' or 'a4').
-latex_paper_size = 'letter'
-
-# The font size ('10pt', '11pt' or '12pt').
-latex_font_size = '10pt'
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, document class [howto/manual]).
-latex_documents = [
-    ('contents', 
-     name + '.tex',
-     unicode(Project + '.' + name + ' Documentation'),
-     unicode(Project + ' consortium'), 
-    'manual'),]
-
-# The name of an image file (relative to this directory) to place at the top of
-# the title page.
-latex_logo =  openalea + '/doc/source/images/wiki_logo_openalea.png'
-
-# For "manual" documents, if this is true, then toplevel headings are parts,
-# not chapters.
-#latex_use_parts = False
-
-# Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
-
-# Documents to append as an appendix to all manuals.
-#latex_appendices = []
-
-# If false, no module index is generated.
-#latex_use_modindex = True
-
-# Additional stuff for the LaTeX preamble.
-latex_preamble = """
-   \usepackage{amsmath}
-   \usepackage{amsfonts}
-   \usepackage{amssymb}
-   \usepackage{txfonts}
-"""
-
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/dev': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/core/html/': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/visualea/html/': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/deploy/html/': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/deploygui/html/': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/sconsx/html/': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/misc/html/': None,
-'http://openalea.gforge.inria.fr/doc/sphinx/stdlib/html/': None }
+# This test should be done after the intersphinx option has been read in common.ini
+try:
+    if 'intersphinx' not in locals():
+        intersphinx_mapping = {}
+except:
+    pass

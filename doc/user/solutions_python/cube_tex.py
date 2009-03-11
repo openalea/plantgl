@@ -19,7 +19,7 @@ indices = [(0, 1, 2, 3),
 # creation of the geometry
 cube = QuadSet(points,indices)
 # creation of a texture from a file
-tex = ImageTexture("./textures/bois_texture.png")
+tex = ImageTexture("./textures/wood_texture.png")
 # the texture coordinates that we will use
 texCoord = [(0,0),(0,1),(1,1),(1,0)]
 # how we associate texture coordinates to vertices in a quad

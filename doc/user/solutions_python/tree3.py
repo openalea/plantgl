@@ -8,7 +8,7 @@ def tree3():
     # We compute the trunk of the tree with an extruded circle
     cyl = Extrusion(Polyline([(0,0,0),(0,0,3),(0,2,5)]),Polyline2D.Circle(1.0,50))
     cyl.solid = True
-    tex = ImageTexture("./textures/bois_texture.png")
+    tex = ImageTexture("./textures/wood_texture.png")
     trunk = Shape(cyl,tex)
     
     # Now we compute a leaf. We will use a transparent texture over a square

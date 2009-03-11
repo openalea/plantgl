@@ -16,7 +16,7 @@ indices = [(0, 1, 2, 3),
 # creating the geometry
 cross = QuadSet(points,indices)
 # creating the textures from files in materials
-tex = ImageTexture("./textures/bois_texture.png")
+tex = ImageTexture("./textures/wood_texture.png")
 tex2 = ImageTexture("./textures/leaf_tex.png")
 
 # the coordinates of the texture to use
