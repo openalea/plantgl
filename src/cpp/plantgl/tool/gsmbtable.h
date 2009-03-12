@@ -41,6 +41,6 @@
     \brief File for generic symbol table.
 */
 
-#define SymbolTable hash_map_string
+#define SymbolTable pgl_hash_map_string
 
 #endif

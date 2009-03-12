@@ -71,7 +71,7 @@ bool PointSet::Builder::isValid( ) const {
 	if (ColorList && *ColorList) {
 		uint_t _colorListSize = (*ColorList)->getSize();
 		if(_colorListSize != (*PointList)->getSize()){
-			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
+			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
 		}
 	}
@@ -175,11 +175,11 @@ bool PointSet2D::Builder::isValid( ) const {
 
   // PointList
   if (! PointList) { 
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
     return false;
   };
   if ((*PointList)->getSize() < 1) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"PointSet2D","PointList","Number of points must be greater than 0.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"PointSet2D","PointList","Number of points must be greater than 0.");
     return false;
   };
 

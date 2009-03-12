@@ -87,14 +87,14 @@ bool ElevationGrid::Builder::isValid( ) const {
 
   // Height Field
  if (! HeightList) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Elevation Grid","HeightList");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Elevation Grid","HeightList");
     return false;
   };
  for (uint_t _i = 0 ; _i< (*HeightList)->getRowsNb() ; _i++)
      for (uint_t _j = 0 ; _j< (*HeightList)->getColsNb() ; _j++)
          if (! finite((*HeightList)->getAt(_i,_j))) {
              string _ith = '(' + TOOLS(number)(_i + 1) + '-' + TOOLS(number)(_j + 1) + ')';
-             pglErrorEx(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
+             pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
                         "Elevation Grid","HeightList",_ith.c_str(),"Must be finite.");
              return false;
          };
@@ -102,13 +102,13 @@ bool ElevationGrid::Builder::isValid( ) const {
 
   // XSpacing field
   if (XSpacing && (*XSpacing < REAL_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","XSpacing","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","XSpacing","Must be not null.");
     return false;
   }
 
   // YSpacing field
   if (YSpacing && (*YSpacing < REAL_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","YSpacing","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Elevation Grid","YSpacing","Must be not null.");
     return false;
   }
 

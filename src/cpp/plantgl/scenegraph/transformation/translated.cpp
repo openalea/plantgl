@@ -156,7 +156,7 @@ bool Translated::Builder::isValid( ) const {
 
   if (Translation &&
       (! Translation->isValid())) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Translated","Translation","Must be a valid Translation");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Translated","Translation","Must be a valid Translation");
     return false;
   };
 

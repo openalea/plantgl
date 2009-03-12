@@ -85,13 +85,13 @@ bool Paraboloid::Builder::isValid( ) const {
 
   // shape field.
   if (Shape && (*Shape < GEOM_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Shape","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Shape","Must be not null.");
     return false;
   };
 
   // stacks field
   if (Stacks && (*Stacks < 4)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Stacks","Must be greater than 3.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Paraboloid","Stacks","Must be greater than 3.");
     return false;
   };
 

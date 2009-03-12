@@ -95,20 +95,20 @@ bool TriangleSet::Builder::isValid( ) const {
   // PointList size check
   uint_t _pointListSize = (*PointList)->getSize();
   if (_pointListSize < 3) {
-    pglErrorEx(ERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","PointList","Must have more than 2 points.");
+    pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","PointList","Must have more than 2 points.");
     return false;
   };
 
   // IndexList field
   if (! IndexList) {
-    pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","IndexList");
+    pglErrorEx(PGLERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","IndexList");
     return false;
   };
 
   // IndexList size check
   uint_t _indexListSize = (*IndexList)->getSize();
   if (_indexListSize < 1) {
-    pglErrorEx(ERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","IndexList","Number of Index must be greater than 0.");
+    pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","IndexList","Number of Index must be greater than 0.");
     return false;
   };
 
@@ -117,13 +117,13 @@ bool TriangleSet::Builder::isValid( ) const {
     // Max index check
     if ((*(*IndexList)->getAt(_i).getMax()) >= _pointListSize) {
         pglDebugEx
-            (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","IndexList",number(_i+1).c_str(),"Do not represent any point of the list.");
+            (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","IndexList",number(_i+1).c_str(),"Do not represent any point of the list.");
         return false;
     };
     // Unique elements check
     if (! (*IndexList)->getAt(_i).isUnique()) {
         pglDebugEx
-            (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","IndexList",number(_i+1).c_str(),"Redundance : Already declared.");
+            (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","IndexList",number(_i+1).c_str(),"Redundance : Already declared.");
     };
   };
 
@@ -132,14 +132,14 @@ bool TriangleSet::Builder::isValid( ) const {
 	  if (!NormalIndexList){
 		  if(NormalPerVertex && !*NormalPerVertex){
 			  if(_normalListSize != _indexListSize){
-				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalList","Number of normals must be compatible to IndexList size.");
+				pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalList","Number of normals must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
 		  else
 		  {
 			  if(_normalListSize != _pointListSize){
-				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalList","Number of normals must be compatible to PointList size.");
+				pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalList","Number of normals must be compatible to PointList size.");
 				return false;
 			  }
 		  }
@@ -147,13 +147,13 @@ bool TriangleSet::Builder::isValid( ) const {
 	  else {
 		  uint_t _normalIndexListSize = (*NormalIndexList)->getSize();
 		  if(NormalPerVertex && !*NormalPerVertex){
-			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
+			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
 			return false;
 		  }
 		  else
 		  {
 			  if(_normalIndexListSize != _indexListSize){
-				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalIndexList","Number of normals indices must be compatible to IndexList size.");
+				pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalIndexList","Number of normals indices must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
@@ -162,7 +162,7 @@ bool TriangleSet::Builder::isValid( ) const {
 			// Max index check
 			if ((*(*NormalIndexList)->getAt(_i).getMax()) >= _normalListSize) {
 				pglDebugEx
-					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","NormalIndexList",number(_i+1).c_str(),"Do not represent any normal of the list.");
+					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","NormalIndexList",number(_i+1).c_str(),"Do not represent any normal of the list.");
 				return false;
 			}
 	  	 }
@@ -172,7 +172,7 @@ bool TriangleSet::Builder::isValid( ) const {
   else 
   {
 	  if (NormalIndexList){
-		pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","NormalList");
+		pglErrorEx(PGLERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","NormalList");
 		return false;
 	  }
   }
@@ -182,14 +182,14 @@ bool TriangleSet::Builder::isValid( ) const {
 	  if (!ColorIndexList){
 		  if(ColorPerVertex && !*ColorPerVertex){
 			  if(_colorListSize != _indexListSize){
-				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorList","Number of colors must be compatible to IndexList size.");
+				pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorList","Number of colors must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
 		  else
 		  {
 			  if(_colorListSize != _pointListSize){
-				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorList","Number of colors must be compatible to PointList size.");
+				pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorList","Number of colors must be compatible to PointList size.");
 				return false;
 			  }
 		  }
@@ -197,13 +197,13 @@ bool TriangleSet::Builder::isValid( ) const {
 	  else {
 		  uint_t _colorIndexListSize = (*ColorIndexList)->getSize();
 		  if(ColorPerVertex && !*ColorPerVertex){
-			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
+			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
 			return false;
 		  }
 		  else
 		  {
 			  if(_colorIndexListSize != _indexListSize){
-				pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorIndexList","Number of colors indices must be compatible to IndexList size.");
+				pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorIndexList","Number of colors indices must be compatible to IndexList size.");
 				return false;
 			  }
 		  }
@@ -212,7 +212,7 @@ bool TriangleSet::Builder::isValid( ) const {
 			// Max index check
 			if ((*(*ColorIndexList)->getAt(_i).getMax()) >= _colorListSize) {
 				pglDebugEx
-					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","ColorIndexList",number(_i+1).c_str(),"Do not represent any color of the list.");
+					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","ColorIndexList",number(_i+1).c_str(),"Do not represent any color of the list.");
 				return false;
 			}
 	  	 }
@@ -222,7 +222,7 @@ bool TriangleSet::Builder::isValid( ) const {
   else 
   {
 	  if (ColorIndexList){
-		pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","ColorList");
+		pglErrorEx(PGLERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","ColorList");
 		return false;
 	  }
   }
@@ -231,14 +231,14 @@ bool TriangleSet::Builder::isValid( ) const {
 	  uint_t _texCoordListSize = (*TexCoordList)->getSize();
 	  if (!TexCoordIndexList){
 		  if(_texCoordListSize != _pointListSize){
-			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordList","Number of TexCoord must be compatible to PointList size.");
+			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordList","Number of TexCoord must be compatible to PointList size.");
 			return false;
 		  }
 	  }
 	  else {
 		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
 		  if(_texCoordIndexListSize != _indexListSize){
-			pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
+			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
 			return false;
 		  }
 		  // TexCoordIndexList values check
@@ -246,7 +246,7 @@ bool TriangleSet::Builder::isValid( ) const {
 			// Max index check
 			if ((*(*TexCoordIndexList)->getAt(_i).getMax()) >= _texCoordListSize) {
 				pglDebugEx
-					(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","TexCoordIndexList",number(_i+1).c_str(),"Do not represent any TexCoord of the list.");
+					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"TriangleSet","TexCoordIndexList",number(_i+1).c_str(),"Do not represent any TexCoord of the list.");
 				return false;
 			}
 	  	 }
@@ -256,7 +256,7 @@ bool TriangleSet::Builder::isValid( ) const {
   else 
   {
 	  if (TexCoordIndexList){
-		pglErrorEx(ERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","TexCoordList");
+		pglErrorEx(PGLERRORMSG(UNINITIALIZED_FIELD_ss),"TriangleSet","TexCoordList");
 		return false;
 	  }
   }

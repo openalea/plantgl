@@ -51,9 +51,9 @@
 #include <plantgl/algo/opengl/gltransitionrenderer.h>
 #include <plantgl/algo/opengl/glskelrenderer.h>
 #include <plantgl/algo/opengl/glctrlptrenderer.h>
-#include <plantgl/tool/util_hashmap.h>
+//#include <plantgl/tool/util_hashmap.h>
 #include <vector>
-
+#include <QtCore/QHash>
 /* ----------------------------------------------------------------------- */
 
 class QSlider;
@@ -355,7 +355,7 @@ protected :
   PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
-  typedef pgl_hash_map<uint_t,PGL(Shape3DPtr)> SelectionCache;
+  typedef QHash<uint_t,PGL(Shape3DPtr)> SelectionCache;
   SelectionCache __selectedShapes;
 
   /// Do some blending

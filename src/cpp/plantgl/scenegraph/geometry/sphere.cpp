@@ -84,13 +84,13 @@ bool Sphere::Builder::isValid( ) const {
 
   // Stacks field.
   if (Stacks && (*Stacks < 4)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Sphere","Stacks","Must be greater than 3.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Sphere","Stacks","Must be greater than 3.");
     return false;
   };
   
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
-    pglErrorEx(ERRORMSG(INVALID_FIELD_VALUE_sss),"Sphere","Radius","Must be positive non null.");
+    pglErrorEx(PGLERRORMSG(INVALID_FIELD_VALUE_sss),"Sphere","Radius","Must be positive non null.");
     return false;
   };
 

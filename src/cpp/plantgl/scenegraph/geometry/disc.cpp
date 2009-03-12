@@ -78,7 +78,7 @@ bool Disc::Builder::isValid( ) const {
 
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Disc","Radius","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Disc","Radius","Must be not null.");
     return false;
   };
   

@@ -428,13 +428,13 @@ bool Scene::isValid( ) const {
   _i++){
     if (! (*_i) ) {
       pglErrorEx
-		(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must not be a null Shape.");
+		(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must not be a null Shape.");
 	  unlock();
       return false;
     };	
     if (!(*_i)->isValid() ) {
       pglErrorEx
-		(WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must be a valid Shape.");
+		(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must be a valid Shape.");
 	  unlock();
       return false;
     };	

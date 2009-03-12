@@ -80,7 +80,7 @@ void Font::Builder::destroy( ){
 bool Font::Builder::isValid( ) const
 {
   if(Size && *Size < 6){
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","Size","Font Size should be greater than 6. ");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","Size","Font Size should be greater than 6. ");
 	return false;
   }
   return true;
@@ -153,15 +153,15 @@ Text::Builder::destroy( ){
     
 bool Text::Builder::isValid( ) const{
     if (!String) {
-        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
+        pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
         return false;
     };
     if (String->empty()) {
-        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
+        pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
         return false;
     };
 	if(FontStyle && *FontStyle && !(*FontStyle)->isValid()){
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","FontStyle","");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","FontStyle","");
 	  return false;
 	}
 	return true;

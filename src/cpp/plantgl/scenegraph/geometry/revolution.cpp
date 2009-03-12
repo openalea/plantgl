@@ -79,13 +79,13 @@ bool Revolution::Builder::isValid( ) const {
   */
   // Initialization check
   if (! Profile) { 
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Revolution","Profile");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Revolution","Profile");
     return false;
   };
   // Size check
   uint_t _pointListSize = (*Profile)->getStride();
   if (_pointListSize < 3) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Revolution","Profile","Must have more than 3 points.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Revolution","Profile","Must have more than 3 points.");
     return false;
   };
   return true;

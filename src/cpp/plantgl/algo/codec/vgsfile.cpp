@@ -193,7 +193,7 @@ VegeStarFile::parse(const std::string& filename)
 {
 	ifstream stream(filename.c_str());
 	if(!stream){
-	    pglError(ERRORMSG(FILE_OPEN_ERR_s),filename.c_str());
+	    pglError(PGLERRORMSG(FILE_OPEN_ERR_s),filename.c_str());
 		return false;
 	}
 	else return parse(stream);
@@ -482,7 +482,7 @@ VegeStarFile::importPolygonFile(const string& filename, ostream& error){
   PglErrorStream::Binder psb(error);
   ifstream stream(filename.c_str());
   if(!stream){
-	  pglError(ERRORMSG(FILE_OPEN_ERR_s),filename.c_str());
+	  pglError(PGLERRORMSG(FILE_OPEN_ERR_s),filename.c_str());
   }
   else {
 	  int vnb = 0;

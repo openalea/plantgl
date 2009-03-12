@@ -314,7 +314,7 @@ public:
   protected:
 
   /// The cache where to store the already printed objects
-  hash_set_uint32 __cache;
+  pgl_hash_set_uint32 __cache;
 
   /// nb element.
   uint_t __element;

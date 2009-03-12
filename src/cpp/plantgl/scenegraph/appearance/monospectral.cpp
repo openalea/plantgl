@@ -81,14 +81,14 @@ bool MonoSpectral::Builder::isValid( ) const {
   /// Reflectance
   if (Reflectance)
     if (*Reflectance < 0 || *Reflectance > 1) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Reflectance","Must be in [0,1].");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Reflectance","Must be in [0,1].");
       return false;
   };
 
   /// Transmittance
   if (Transmittance)
     if (*Transmittance < 0 || *Transmittance > 1) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Transmittance","Must be in [0,1].");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"MonoSpectral","Transmittance","Must be in [0,1].");
       return false;
   };
 

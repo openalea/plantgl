@@ -106,42 +106,42 @@ void Extrusion::Builder::destroy() {
 bool Extrusion::Builder::isValid( ) const {
     // Axis field
     if(!Axis) {
-	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","Axis");
+	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","Axis");
 	return false;
     };
 
     if(!(*Axis)) {
-	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*Axis");
+	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*Axis");
 	return false;
     };
 
     if(!(*Axis)->isValid()) {
-	pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Axis","Must be a valid Geometry Object.");
+	pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Axis","Must be a valid Geometry Object.");
 	return false;
     };
 
     if(!CrossSection) {
-	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","CrossSection");
+	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","CrossSection");
 	return false;
     };
 
     if(!(*CrossSection)) {
-	pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*CrossSection");
+	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*CrossSection");
 	return false;
     };
 
     if(!(*CrossSection)->isValid()) {
-	pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","CrossSection","Must be a valid Geometry Object.");
+	pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","CrossSection","Must be a valid Geometry Object.");
 	return false;
     };
     
     if(Scale){
 	if(!(*Scale)->isValid()) {
-	    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
+	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
 	    return false;
 	};
 	if((*Scale)->getSize() == 0 ){
-	    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
+	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
 	    return false;
 	}
 
@@ -149,7 +149,7 @@ bool Extrusion::Builder::isValid( ) const {
 
     if(Orientation){
 	if((*Orientation)->getSize() == 0 ){
-	    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
+	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
 	    return false;
 	}
     }
@@ -157,26 +157,26 @@ bool Extrusion::Builder::isValid( ) const {
     if( ((Scale)&&(*Scale)->getSize() !=1) &&
 	((Orientation)&&(*Orientation)->getSize() !=1) &&
 	((*Scale)->getSize()!=((*Orientation)->getSize())) ){
-	    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
+	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
 		       "Must specifie Scale and Orientation with the same number of value."); 
 	    return false;
     }
 
     if(KnotList){
 	if(((!Scale)||(*Scale)->getSize() ==1)&&((!Orientation)||(*Orientation)->getSize() ==1)){
-	    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
+	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
 		       "Must specifie Scale or Orientation with more than one value."); 
 	}
 	else if(Scale){
 	    if(((*Scale)->getSize() > 1)&&((*Scale)->getSize() != (*KnotList)->getSize())){
-		pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
+		pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
 			   "Must have the same number of value than Scale .");
 		return false;
 	    }
 	}
 	else {
 	    if(((*Orientation)->getSize() ==1)&&(((*Orientation)->getSize()) != (*KnotList)->getSize())){
-		pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
+		pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
 			   "Must have the same number of value than Orientation .");
 		return false;
 	    }

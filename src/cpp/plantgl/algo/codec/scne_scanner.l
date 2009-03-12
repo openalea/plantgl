@@ -211,7 +211,7 @@ class geommacro {
         }
 };
 
-static hash_map_string<geommacro> MacroTable;
+static pgl_hash_map_string<geommacro> MacroTable;
 static std::string current_macro;
 static std::string current_macro_args;
 static int parant = 0;
@@ -482,7 +482,7 @@ OZ                {TRACE; return TokOZ;}
 
 {NAME}            {TRACE;
                    std::string n(YYText());
-                   hash_map_string<geommacro>::iterator i = MacroTable.find(n);
+                   pgl_hash_map_string<geommacro>::iterator i = MacroTable.find(n);
                    if(i == MacroTable.end()){
                      VAL->string_t = new std::string(n);
                      return TokName;
@@ -524,7 +524,7 @@ OZ                {TRACE; return TokOZ;}
                                           }
                                           else {
 //                                     lostream << "Instanciation of " << current_macro << " with (" << current_macro_args << ')' << std::endl;
-                                       hash_map_string<geommacro>::iterator i = MacroTable.find(current_macro);
+                                       pgl_hash_map_string<geommacro>::iterator i = MacroTable.find(current_macro);
                                            std::string res = i->second.apply(lostream,current_macro_args);
 //                                         lostream << "Instanciation = " << res << std::endl;
                                            if(!res.empty()){
@@ -600,7 +600,7 @@ OZ                {TRACE; return TokOZ;}
                   }
 
 
-:[pP]rint[Dd]ef   {TRACE; for(hash_map_string<geommacro>::const_iterator _it = MacroTable.begin();
+:[pP]rint[Dd]ef   {TRACE; for(pgl_hash_map_string<geommacro>::const_iterator _it = MacroTable.begin();
                                                           _it != MacroTable.end(); _it++)_it->second.print(lostream);}
 
 <echo>{T}+     {_columno += strlen(YYText());TRACE;}

@@ -73,11 +73,11 @@ bool Deformed::Builder::isValid( ) const {
 
 bool Deformed::Builder::DefValid( ) const {
   if (! Primitive) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Deformed","Primitive");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Deformed","Primitive");
     return false;
   };
   if (! (*Primitive)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Deformed","Primitive","Must be a valid Primitive.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Deformed","Primitive","Must be a valid Primitive.");
     return false;
   };
   return true;

@@ -163,7 +163,7 @@ bool Scaled::Builder::isValid( ) const {
 
   if (Scale &&
       (*Scale == Vector3::ORIGIN)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Scaled","Scale","Couldn't scale with factors <0,0,0>.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Scaled","Scale","Couldn't scale with factors <0,0,0>.");
     return false;
   };
 

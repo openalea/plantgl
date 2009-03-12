@@ -99,7 +99,7 @@ protected :
 	std::stack<std::istream *> __input;
 	std::ostream& __output;
 	std::string __token;
-	hash_map_string<GeometryPtr> __defines;
+	pgl_hash_map_string<GeometryPtr> __defines;
 };
 
 /* ----------------------------------------------------------------------- */

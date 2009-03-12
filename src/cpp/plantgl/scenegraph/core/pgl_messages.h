@@ -43,10 +43,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-/// Name of the module
-#define MODULE_NAME "PlantGL"
 /// Geom Error Message Array
-#define ERR_MSG_ARRAY PGL_MESSAGES
+#define PGL_ERR_MSG_ARRAY PGL_MESSAGES
 
 
 /* ----------------------------------------------------------------------- */

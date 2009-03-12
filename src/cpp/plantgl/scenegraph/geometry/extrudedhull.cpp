@@ -81,25 +81,25 @@ bool ExtrudedHull::Builder::isValid( ) const {
 
   // Vertical
   if (! Vertical) {
-      pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Vertical");
+      pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Vertical");
       return false;
     };
 
   // Vertical
   if (! (*Vertical)->isValid()) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Vertical","Must be a valid Object");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Vertical","Must be a valid Object");
       return false;
     };
 
   // Horizontal
   if (! Horizontal) {
-      pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Horizontal");
+      pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extruded Hull","Horizontal");
       return false;
     };
 
   // Horizontal
   if (! (*Horizontal)->isValid()) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Horizontal","Must be a valid Object");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extruded Hull","Horizontal","Must be a valid Object");
       return false;
     };
 

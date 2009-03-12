@@ -447,7 +447,7 @@ ViewGeomSceneGL::showVegeStarSymbol1(){
 void
 ViewGeomSceneGL::setSelectionVegeStarSymbol1(){
   if(!__selectedShapes.empty()){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(__selectedShapes.begin()->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(__selectedShapes.begin().value());
 	if(sh&&sh->getGeometry())
 	  VegeStarFile::setShape11(sh->getGeometry());
   }
@@ -456,7 +456,7 @@ ViewGeomSceneGL::setSelectionVegeStarSymbol1(){
 void
 ViewGeomSceneGL::setSelectionVegeStarSymbol2(){
   if(!__selectedShapes.empty()){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(__selectedShapes.begin()->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(__selectedShapes.begin().value());
 	if(sh&&sh->getGeometry())
 	  VegeStarFile::setShape12(sh->getGeometry());
   }
@@ -465,7 +465,7 @@ ViewGeomSceneGL::setSelectionVegeStarSymbol2(){
 void
 ViewGeomSceneGL::setSelectionVegeStarSymbol3(){
   if(!__selectedShapes.empty()){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(__selectedShapes.begin()->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(__selectedShapes.begin().value());
 	if(sh&&sh->getGeometry())
 	  VegeStarFile::setShape13(sh->getGeometry());
   }

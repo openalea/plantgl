@@ -48,7 +48,7 @@ class ALGO_API PglTurtle : public Turtle {
 public:
     // static Polyline2DPtr DEFAULT_CROSS_SECTION;
 
-    typedef hash_map_string<GeometryPtr> SurfaceMap;
+    typedef pgl_hash_map_string<GeometryPtr> SurfaceMap;
 
     PglTurtle(TurtleParam * param = NULL);
 

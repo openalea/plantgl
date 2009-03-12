@@ -73,7 +73,7 @@ bool Box::Builder::isValid( ) const {
     if ((Size->x() < GEOM_EPSILON) ||
 	(Size->y() < GEOM_EPSILON) ||
 	(Size->z() < GEOM_EPSILON)) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Box","Size","The three values of size must not be null");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Box","Size","The three values of size must not be null");
       return false;
     };
   };

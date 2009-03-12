@@ -83,7 +83,7 @@ bool BaseOrientation::Builder::isValid( ) const
     {
     if(*Primary != Vector3::ORIGIN)Primary->normalize();
     else {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be normalized.");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be normalized.");
 	  return false;
 	  }
 	}
@@ -93,7 +93,7 @@ bool BaseOrientation::Builder::isValid( ) const
     {
     if(*Secondary != Vector3::ORIGIN)Secondary->normalize();
     else {
-	  pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be normalized.");
+	  pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be normalized.");
 	  return false;
 	  }
     }
@@ -105,11 +105,11 @@ bool BaseOrientation::Builder::isValid( ) const
       {
       if( fabs(dot(*Primary,s)) <  2*GEOM_EPSILON )
         {
-        // pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector (Numerical Approximation Error).");
+        // pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector (Numerical Approximation Error).");
         }
       else
         {
-        pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be orthogonal to Secondary vector.");
         return false;
         }
       }
@@ -119,11 +119,11 @@ bool BaseOrientation::Builder::isValid( ) const
     {
     if(fabs(dot(*Secondary,Oriented::DEFAULT_PRIMARY)) < 2*GEOM_EPSILON)
       {
-        // pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector (Numerical Approximation Error).");
+        // pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector (Numerical Approximation Error).");
       }
     else
       {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector.");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be orthogonal to Primary vector.");
       return false;
       }
     }

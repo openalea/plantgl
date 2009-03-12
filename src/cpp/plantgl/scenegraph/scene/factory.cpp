@@ -136,7 +136,7 @@ ScenePtr
 SceneFactory::read(const std::string& fname)
 {
     if (! exists(fname)) {
-      pglErrorEx(ERRORMSG(C_FILE_OPEN_ERR_s),fname.c_str());
+      pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),fname.c_str());
       return ScenePtr();
     };
 	std::string cwd = get_cwd();

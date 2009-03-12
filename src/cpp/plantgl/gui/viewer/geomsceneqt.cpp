@@ -112,7 +112,7 @@ ViewGeomSceneGL::getSelectionSurface()
   real_t surface = 0;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(_it->second->apply(_sfc))
+	  if(_it.value()->apply(_sfc))
 		surface += _sfc.getSurface();
   return surface;
 }
@@ -124,7 +124,7 @@ real_t ViewGeomSceneGL::getSelectionVolume()
   real_t volume = 0;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(_it->second->apply(_vfc))
+	  if(_it.value()->apply(_vfc))
 		volume += _vfc.getVolume();
   return volume;
 }
@@ -313,9 +313,9 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
 	  SelectionCache::const_iterator _it = __selectedShapes.begin();
-      QString listid = QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
+      QString listid = QString::number(_it.value()->getId()==Shape::NOID?_it.key():_it.value()->getId());
 	  for(_it++;_it != __selectedShapes.end();_it++)
-			listid += ','+QString::number(_it->second->getId()==Shape::NOID?_it->first:_it->second->getId());
+			listid += ','+QString::number(_it.value()->getId()==Shape::NOID?_it.key():_it.value()->getId());
 		  
 	  TextLabel2->setText( listid );
 

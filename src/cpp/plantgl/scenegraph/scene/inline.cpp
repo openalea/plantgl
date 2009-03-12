@@ -89,30 +89,30 @@ Inline::Builder::destroy( ){
 
 bool Inline::Builder::isValid( ) const {
   if (! FileName && ! Scene) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Inline","FileName");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Inline","FileName");
     return false;
   };
   if(FileName){
       ifstream _file(FileName->c_str());
       if (!_file){
           string _mess = "Cannot open " + *FileName;
-          pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","FileName",_mess.c_str());
+          pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","FileName",_mess.c_str());
           return false;
       }
   }
 
   if(Scene && !(*Scene)->isValid()){
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scene","Not Valid");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scene","Not Valid");
       return false;      
   }
 
   if(Translation && !Translation->isValid()){
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Translation","Not Valid");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Translation","Not Valid");
       return false;      
   }
 
   if(Scale && !Scale->isValid()){
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scale","Not Valid");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scale","Not Valid");
       return false;
   }
 

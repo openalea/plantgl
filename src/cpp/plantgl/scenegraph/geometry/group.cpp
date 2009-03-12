@@ -80,24 +80,24 @@ bool Group::Builder::isValid( ) const {
 
   // GeometryList field
   if (! GeometryList) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Group","GeometryList");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Group","GeometryList");
     return false;
   };
   uint_t _size = (*GeometryList)->getSize();
   if (_size < 1) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_SIZE_sss),"Group","GeometryList","Must be greater than 1.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Group","GeometryList","Must be greater than 1.");
     return false;
   };
   for (uint_t _i = 0; _i < _size; _i++) {
     const GeometryPtr& _geometry = (*GeometryList)->getAt(_i);
     if (! (_geometry) ) {
       pglErrorEx
-	  (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
+	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
       return false;
     };	
     if (!_geometry->isValid() ) {
       pglErrorEx
-	  (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
+	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
       return false;
     };	
  };
@@ -220,7 +220,7 @@ bool Group::isValid( ) const {
       const GeometryPtr& _geometry = __geometryList->getAt(_i);
       if (! (_geometry) && (_geometry->isValid())) {
 	  pglErrorEx
-	      (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
+	      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
 	  return false;
       };	
   };

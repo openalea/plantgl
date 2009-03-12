@@ -104,7 +104,7 @@ bool Material::Builder::MaterialValidity( ) const {
     if ((((*Diffuse) * Ambient->getRed())> 255) || ((((*Diffuse) * Ambient->getRed()))<0) ||
         (((*Diffuse) * Ambient->getGreen())> 255) || ((((*Diffuse) * Ambient->getGreen()))<0) ||
         (((*Diffuse) * Ambient->getBlue())> 255) || ((((*Diffuse) * Ambient->getBlue()))<0)) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Diffuse","Don't give a valid Diffuse Color.");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Diffuse","Don't give a valid Diffuse Color.");
       return false;
   };
 
@@ -115,14 +115,14 @@ bool Material::Builder::MaterialValidity( ) const {
   /// Shininess
   if (Shininess)
     if (*Shininess < 0 || *Shininess > 1) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Shininess","Must be in [0,1].");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Shininess","Must be in [0,1].");
       return false;
   };
 
   /// Transparency
   if (Transparency)
     if (*Transparency < 0 || *Transparency > 1) {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Transparency","Must be in [0,1].");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Transparency","Must be in [0,1].");
       return false;
   };
 

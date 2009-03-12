@@ -285,10 +285,10 @@ ViewEditGeomSceneGL::dissociateMaterial()
   mat->setName("APP_"+number(mat->getId()));
   for( SelectionCache::const_iterator _it = __selectedShapes.begin();
 	   _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it.value());
 	if(shape)shape->getAppearance() = mat;
 	else {
-	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it.value());
 	  if(in){
 		setAppearance(in->getScene(),AppearancePtr(mat));
 	  }
@@ -338,12 +338,12 @@ ViewEditGeomSceneGL::hasSameMaterial() const
   if(!mat)return false;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it.value());
 	if(shape){
 	  if(shape->getAppearance() != mat)return false;
 	}
 	else {
-	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it.value());
 	  if(in){
 		if(!hasSameMaterial(in->getScene(),mat))return false;
 	  }
@@ -362,12 +362,12 @@ ViewEditGeomSceneGL::getSelectedAppearance() const
   }
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
     _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it.value());
 	if(shape) {
 	  if(shape->getAppearance())return shape->getAppearance();
 	}
 	else {
-	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it.value());
 	  if(in){
 		AppearancePtr appe = getSelectedAppearance(in->getScene());
 		if(appe)return appe;
@@ -425,10 +425,10 @@ ViewEditGeomSceneGL::pasteMaterial(){
   
   for( SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it !=__selectedShapes.end(); _it++){
-	ShapePtr shape = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr shape = dynamic_pointer_cast<Shape>(_it.value());
 	if(shape)shape->getAppearance() = __appeclipboard;
 	else {
-	  InlinePtr in = dynamic_pointer_cast<Inline>(_it->second);
+	  InlinePtr in = dynamic_pointer_cast<Inline>(_it.value());
 	  setAppearance(in->getScene(),__appeclipboard);
 	}
   }

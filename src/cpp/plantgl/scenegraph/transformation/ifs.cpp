@@ -108,13 +108,13 @@ bool IT::isValid( ) const
 {
   if( (__transfoList->getSize() == 0) || (!__transfoList->isValid()) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","TransfoList","Must be a list of valid transformations");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","TransfoList","Must be a list of valid transformations");
     return false;
     }
 
   if( __depth && (! finite(__depth)) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be finite");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be finite");
     return false;
     }
 
@@ -281,34 +281,34 @@ bool IFS::Builder::isValid( ) const
 //GEOM_TRACE("validate IFS::Builder");
   if(! Geometry)
     {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","Geometry");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","Geometry");
     return false;
     }
   if(! (*Geometry) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
     return false;
     }
   if(! (*Geometry)->isValid() )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Geometry","Must be a valid Geometry Object.");
     return false;
     }
   if(! TransfoList )
     {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","TransfoList");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"IFS","TransfoList");
     return false;
     }
 
   if( ((*TransfoList)->getSize() == 0) || (!(*TransfoList)->isValid()) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","TransfoList","Must be a list of valid transformations");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","TransfoList","Must be a list of valid transformations");
     return false;
     }
 
   if( Depth && (! finite(*Depth)) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be finite");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be finite");
     return false;
     }
 
@@ -319,7 +319,7 @@ bool IFS::Builder::isValid( ) const
 
     if( size > MAX_OBJECTS )
       {
-      pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must be decreased");
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must be decreased");
       return false;
       }
     }

@@ -186,7 +186,7 @@ ViewGeomSceneGL::getSelectionIds() const
   std::vector<uint_t> res;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  res.push_back(_it->second->getId());
+	  res.push_back(_it.value()->getId());
   return res;
 }
 
@@ -209,7 +209,7 @@ ViewGeomSceneGL::getSelection( ) const
   ScenePtr scene(new Scene);
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  scene->add(_it->second);
+	  scene->add(_it.value());
   return scene;
 }
 
@@ -238,7 +238,7 @@ ViewGeomSceneGL::getSelectionBoundingBox()
   BoundingBoxPtr bbox;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(_it->second->apply(__bboxComputer)){
+	  if(_it.value()->apply(__bboxComputer)){
 		if(bbox)bbox->extend(__bboxComputer.getBoundingBox());
 		else bbox = BoundingBoxPtr(new BoundingBox(*__bboxComputer.getBoundingBox()));
 	  }
@@ -481,7 +481,7 @@ ViewGeomSceneGL::paintGL()
 	  glGeomColor(Color3(64,64,64));
       for(SelectionCache::iterator _it = __selectedShapes.begin();
           _it !=__selectedShapes.end(); _it++)
-        _it->second->apply(__bboxRenderer);
+        _it.value()->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
     }
   }
@@ -507,7 +507,7 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
 {
   SelectionCache::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
-    Shape3DPtr ptr = _it->second;
+    Shape3DPtr ptr = _it.value();
 	__selectedShapes.erase(_it);
     uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 	info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
@@ -696,7 +696,7 @@ ViewGeomSceneGL::wireSelection()
   SelectionCache selection;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(_it.value());
 	if(sh){
 	  if(sh->apply(wire)){
 		sh->geometry = wire.getWire();
@@ -725,7 +725,7 @@ ViewGeomSceneGL::discretizeSelection()
   SelectionCache selection;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(_it.value());
 	if(sh){
 	  if(sh->apply(__discretizer)){
 		sh->geometry = GeometryPtr(__discretizer.getDiscretization());
@@ -755,7 +755,7 @@ ViewGeomSceneGL::triangulateSelection()
   SelectionCache selection;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(_it->second);
+	ShapePtr sh = dynamic_pointer_cast<Shape>(_it.value());
 	Tesselator t;
 	if(sh){
 	  if(sh->apply(t)){
@@ -1084,7 +1084,7 @@ ViewMultiGeomSceneGL::paintGL()
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         for(SelectionCache::iterator _it = __selectedShapes.begin();
             _it !=__selectedShapes.end(); _it++)
-          _it->second->apply(__bboxRenderer);
+          _it.value()->apply(__bboxRenderer);
       }
     }
   }

@@ -82,13 +82,13 @@ bool MultiSpectral::Builder::isValid( ) const {
 
   // Reflectance
   if ((! Reflectance) || (! (*Reflectance))) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"MultiSpectral","Reflectance");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"MultiSpectral","Reflectance");
     return false;
   }
 
   uint_t _size = (*Reflectance)->getSize();
   if (_size < 1) {
-    pglErrorEx(ERRORMSG(INVALID_FIELD_SIZE_sss),"MultiSpectral","Reflectance","Must have more than 0 value.");
+    pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"MultiSpectral","Reflectance","Must have more than 0 value.");
     return false;
   };
 
@@ -97,19 +97,19 @@ bool MultiSpectral::Builder::isValid( ) const {
     if (_value < 0 || _value > 1) {
         string _ith = TOOLS(number)(_i + 1);
         pglErrorEx
-            (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"MultiSpectral","Reflectance",_ith.c_str(),"Must be in [0,1].");
+            (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"MultiSpectral","Reflectance",_ith.c_str(),"Must be in [0,1].");
         return false;
     }
   };
 
   /// Transmittance
   if ((! Transmittance) || (! (*Transmittance))) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"MultiSpectral","Transmittance");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"MultiSpectral","Transmittance");
     return false;
   }
 
   if ((*Transmittance)->getSize() != _size) {
-    pglErrorEx(ERRORMSG(INVALID_FIELD_SIZE_sss),"MultiSpectral","Transmittance","Must have the same number of values than Reflectance.");
+    pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"MultiSpectral","Transmittance","Must have the same number of values than Reflectance.");
     return false;
   };
 
@@ -117,7 +117,7 @@ bool MultiSpectral::Builder::isValid( ) const {
     const real_t& _value = (*Transmittance)->getAt(_i1);
     if (_value < 0 || _value > 1) {
         pglErrorEx
-            (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"MultiSpectral","Transmittance", TOOLS(number(_i1 + 1)).c_str(),"Must be in [0,1].");
+            (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"MultiSpectral","Transmittance", TOOLS(number(_i1 + 1)).c_str(),"Must be in [0,1].");
         return false;
     }
   };
@@ -127,7 +127,7 @@ bool MultiSpectral::Builder::isValid( ) const {
     if ((Filter->getAt(0) > _size - 1) ||
         (Filter->getAt(1) > _size - 1) ||
         (Filter->getAt(2) > _size - 1)) {
-      pglErrorEx(ERRORMSG(INVALID_FIELD_VALUE_sss),"MultiSpectral","Filter","Must be coherent with Refectance and Transmittance numbers of values.");
+      pglErrorEx(PGLERRORMSG(INVALID_FIELD_VALUE_sss),"MultiSpectral","Filter","Must be coherent with Refectance and Transmittance numbers of values.");
     };
   };
 

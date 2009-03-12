@@ -81,7 +81,7 @@ bool Frustum::Builder::isValid( ) const {
 
   // taper field.
   if (Taper && (*Taper < REAL_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Frustum","Taper","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Frustum","Taper","Must be not null.");
     return false;
   };
 

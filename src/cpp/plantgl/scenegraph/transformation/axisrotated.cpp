@@ -79,7 +79,7 @@ bool AxisRotation::Builder::isValid( ) const
   // Angle field
   if( Angle && (! finite(*Angle)) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Axis Rotated","Angle","Must be Finite");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Axis Rotated","Angle","Must be Finite");
     return false;
     }
 

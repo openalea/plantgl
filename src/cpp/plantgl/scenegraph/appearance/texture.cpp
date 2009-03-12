@@ -94,14 +94,14 @@ bool ImageTexture::Builder::isValid( ) const {
   if(!MaterialValidity())return false;
 
     if (! FileName) {
-        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"ImageTexture","FileName");
+        pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"ImageTexture","FileName");
         return false;
     };
 	ifstream _file(FileName->c_str());
     if (_file) return true;
     string _mess;
     _mess = "Cannot open " + *FileName + ".";
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"ImageTexture","FileName",_mess.c_str());
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"ImageTexture","FileName",_mess.c_str());
     return false;
 
 }

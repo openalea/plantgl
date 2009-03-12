@@ -218,7 +218,7 @@ protected:
   std::ostream& __matStream;
 
   /// The cache where to store the already printed objects
-  hash_set_uint32 __cache;
+  pgl_hash_set_uint32 __cache;
 
   /// The ident used to perform a pretty print.
   std::string __indent;

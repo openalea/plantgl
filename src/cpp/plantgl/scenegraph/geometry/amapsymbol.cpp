@@ -73,14 +73,14 @@ void AmapSymbol::Builder::destroy( ) {
 
 bool AmapSymbol::Builder::isValid( ) const {
     if (! FileName) {
-        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
+        pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
         return false;
     };
     beifstream _file(FileName->c_str());
     if (_file) return true;
     string _mess;
     _mess = "Cannot open " + *FileName + ".";
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"AmapSymbol","FileName",_mess.c_str());
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"AmapSymbol","FileName",_mess.c_str());
     return false;
 }
 
@@ -238,7 +238,7 @@ AmapSymbol::AmapSymbol( const FaceSetPtr& faceSet ) :
 bool AmapSymbol::isValid( ) const {
   if (! FaceSet::isValid()) return false;
   //if (__fileName.empty()) {
-  //  pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
+  //  pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"AmapSymbol","FileName");
   //};
   return true;
 }

@@ -103,19 +103,19 @@ Mesh::Builder::MeshValid( ) const{
   if(NormalList){
     uint_t _normalListSize = (*NormalList)->getSize();
 	if(NormalPerVertex && *NormalPerVertex &&_normalListSize != (*PointList)->getSize()){
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Normals","Number of normals must be compatible to PointList.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Normals","Number of normals must be compatible to PointList.");
 	return false;
 	}
 
     for (uint_t _i = 0; _i < _normalListSize; _i++){
       if (!(*NormalList)->getAt(_i).isValid()) {
 	pglErrorEx
-	  (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a valid normal.");
+	  (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a valid normal.");
 	return false;
       }
       else if (!(*NormalList)->getAt(_i).isNormalized() ){
 	pglErrorEx
-	  (WARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a normalized normal.");
+	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a normalized normal.");
 	return false;
       }
     }
@@ -125,7 +125,7 @@ Mesh::Builder::MeshValid( ) const{
     for (uint_t _i = 0; _i < _texCoordListSize; _i++){
       if (!(*TexCoordList)->getAt(_i).isValid()) {
 	pglErrorEx
-	  (ERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","TexCoordList",number(_i+1).c_str(),"Must be a valid texture coordinates.");
+	  (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","TexCoordList",number(_i+1).c_str(),"Must be a valid texture coordinates.");
 	return false;
       }
 
@@ -134,7 +134,7 @@ Mesh::Builder::MeshValid( ) const{
 
   // Skeleton field
   if (Skeleton && (! (Skeleton))){
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Skeleton","Must be a valid skeleton.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Skeleton","Must be a valid skeleton.");
     return false;
   };
 

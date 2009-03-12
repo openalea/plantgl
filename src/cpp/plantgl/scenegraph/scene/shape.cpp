@@ -95,11 +95,11 @@ void Shape::Builder::destroy() {
 
 bool Shape::Builder::isValid( ) const{
   if (! (Geometry)){
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
   }
   if (! (*Geometry)){
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
   }
   return true;
@@ -250,15 +250,15 @@ size_t Shape::getSceneObjectId() const
 
 bool Shape::isValid( ) const {
   if (! (geometry)){
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
 	return false;
   }
   if (! (geometry->isValid())) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
 	return false;
   }
   if ((appearance) && (! appearance->isValid())) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
 	return false;
   }
   return true;

@@ -320,7 +320,7 @@ public :
 protected:
 
   /// The cache where to store the already printed objects
-  hash_set_uint32 __cache;
+  pgl_hash_set_uint32 __cache;
 
 
   /// The output stream.

@@ -33,8 +33,8 @@
     \brief Procedure to generate error messages using parameters:
 */
 
-#ifndef ERROR_MESSAGES_HEADER
-#define ERROR_MESSAGES_HEADER
+#ifndef PGL_ERROR_MESSAGES_HEADER
+#define PGL_ERROR_MESSAGES_HEADER
 
 #include <iostream>
 #include <string>
@@ -166,7 +166,6 @@ extern TOOLS_API const char* common_err_msgs_aml[];
     For message : "file access: cannot write file \b filename ".
   */
 enum  COMON_ERRORLABEL {
-
   C_NYI_ERR = 0,
   C_VAR_BAD_VALUE_sss,
   C_FILE_ERR_s,
@@ -179,16 +178,16 @@ enum  COMON_ERRORLABEL {
 /* ----------------------------------------------------------------------- */
 
 /// preparation of genError() arguments
-#define _ERRORARGS_(i,t)   t,__FILE__,__LINE__,\
+#define _PGL_ERRORARGS_(i,t)   t,__FILE__,__LINE__,\
                           (((i)<COMMON_ERR_OFFSET)?\
                             common_err_msgs_aml[i]:\
-                            ERR_MSG_ARRAY[(i-COMMON_ERR_OFFSET)<0?0:i-COMMON_ERR_OFFSET])
+                            PGL_ERR_MSG_ARRAY[(i-COMMON_ERR_OFFSET)<0?0:i-COMMON_ERR_OFFSET])
 /** \brief Error message
 
  To generate an error/warning message with parameters:
- pglErrorEx(ERRORMSG(i),p1,p2,p3)
+ pglErrorEx(PGLERRORMSG(i),p1,p2,p3)
 */
-#define ERRORMSG(i)       _ERRORARGS_(i,PGL_ERROR_MESSAGE)
+#define PGLERRORMSG(i)       _PGL_ERRORARGS_(i,PGL_ERROR_MESSAGE)
 
 #ifndef REMOVE_WARNINGS
 /** \brief Warning message
@@ -196,14 +195,14 @@ enum  COMON_ERRORLABEL {
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define WARNINGMSG(i)     _ERRORARGS_(i,PGL_WARNING_MESSAGE)
+#define PGLWARNINGMSG(i)     _PGL_ERRORARGS_(i,PGL_WARNING_MESSAGE)
 #else
 /** \brief Warning message
 
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define WARNINGMSG(i)     _ERRORARGS_(i,PGL_NO_MESSAGE)
+#define PGLWARNINGMSG(i)     _PGL_ERRORARGS_(i,PGL_NO_MESSAGE)
 #endif
 
 #ifndef REMOVE_DEBUG
@@ -212,14 +211,14 @@ enum  COMON_ERRORLABEL {
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define DEBUGMSG(i)     _ERRORARGS_(i,PGL_DEBUG_MESSAGE)
+#define PGLDEBUGMSG(i)     _PGL_ERRORARGS_(i,PGL_DEBUG_MESSAGE)
 #else
 /** \brief Debug message
 
   Generates a warning message (without parameters)
   the second parameter i must be an enum <MODULE>_ERRORLABEL
 */
-#define DEBUGMSG(i)     _ERRORARGS_(i,PGL_NO_MESSAGE)
+#define PGLDEBUGMSG(i)     _PGL_ERRORARGS_(i,PGL_NO_MESSAGE)
 #endif
 
 /** this function creates an ErrorObj with the desired error message
@@ -228,9 +227,9 @@ enum  COMON_ERRORLABEL {
    It should not be called with all its arguments explicitly. \n
    Rather call it as follows : \n
   \n
-   \b pglErrorEx(ERRORMSG(i));                  or \n
-   \b pglErrorEx(WARNINGMSG(i));                or \n
-   \b pglErrorEx(WARNINGMSG(i), \b p1, \b p2, \b p3); \n
+   \b pglErrorEx(PGLERRORMSG(i));                  or \n
+   \b pglErrorEx(PGLWARNINGMSG(i));                or \n
+   \b pglErrorEx(PGLWARNINGMSG(i), \b p1, \b p2, \b p3); \n
 */
 
 /* ----------------------------------------------------------------------- */

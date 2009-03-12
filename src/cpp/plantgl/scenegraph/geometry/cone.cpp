@@ -95,13 +95,13 @@ bool Cone::Builder::ConeValid( ) const {
 
   // height field.
   if (Height && (*Height < REAL_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Height","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Height","Must be not null.");
     return false;
   };
 
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Radius","Must be not null.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Cone","Radius","Must be not null.");
     return false;
   };
 

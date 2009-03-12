@@ -30,8 +30,8 @@
  */
 
 
-#ifndef __util_hashset_h__
-#define __util_hashset_h__
+#ifndef __util_pgl_hashset_h__
+#define __util_pgl_hashset_h__
 
 /*! \file util_hashset.h
     \brief Utility for hashset with std::string.
@@ -51,8 +51,8 @@
 #define pgl_hash std::tr1::hash
 #endif
 
-typedef pgl_hash_set<std::string> hash_set_string ;
-typedef pgl_hash_set<uint_t> hash_set_uint32;
+typedef pgl_hash_set<std::string> pgl_hash_set_string ;
+typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;
 
 #else
 
@@ -79,13 +79,13 @@ typedef pgl_hash_set<uint_t> hash_set_uint32;
    \brief Class for using hash_set with string.
 */
 
-typedef pgl_hash_set<std::string, hashstr, eqstr> hash_set_string;
-typedef pgl_hash_set<uint_t,pgl_hash<uint_t>,std::equal_to<uint_t> > hash_set_uint32;
+typedef pgl_hash_set<std::string, hashstr, eqstr> pgl_hash_set_string;
+typedef pgl_hash_set<uint_t,pgl_hash<uint_t>,std::equal_to<uint_t> > pgl_hash_set_uint32;
 
 #else
 
-typedef pgl_hash_set<std::string> hash_set_string ;
-typedef pgl_hash_set<uint_t> hash_set_uint32;
+typedef pgl_hash_set<std::string> pgl_hash_set_string ;
+typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;
 
 
 #endif

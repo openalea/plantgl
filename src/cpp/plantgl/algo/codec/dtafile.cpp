@@ -233,13 +233,13 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 
 bool Dtafile::isValid( ) const {
   if (_fileName.empty()) {
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),"Dtafile","FileName");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Dtafile","FileName");
     return 0;
   };
   ifstream _file(_fileName.c_str());
   if (_file) return true;
   string _mess = "Cannot open " + _fileName + '.';
-  pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Dtafile","FileName",_mess.c_str());
+  pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Dtafile","FileName",_mess.c_str());
   return false;
 }
 

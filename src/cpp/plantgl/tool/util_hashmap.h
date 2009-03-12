@@ -30,8 +30,8 @@
  */
 
 
-#ifndef __util_hashmap_h__
-#define __util_hashmap_h__
+#ifndef __util_pgl_hashmap_h__
+#define __util_pgl_hashmap_h__
 
 #include "tools_config.h"
 
@@ -54,7 +54,7 @@
 
 
 template <class T>
-struct hash_map_string : public pgl_hash_map<std::string, T >{};
+struct pgl_hash_map_string : public pgl_hash_map<std::string, T >{};
 
 #else
 
@@ -82,13 +82,13 @@ struct hash_map_string : public pgl_hash_map<std::string, T >{};
 */
 
 template <class T>
-struct hash_map_string : public pgl_hash_map<std::string, T, hashstr, eqstr>
+struct pgl_hash_map_string : public pgl_hash_map<std::string, T, hashstr, eqstr>
 {};
 
 #else
 
 template <class T>
-struct hash_map_string : public pgl_hash_map<std::string, T >
+struct pgl_hash_map_string : public pgl_hash_map<std::string, T >
 {};
 
 #endif

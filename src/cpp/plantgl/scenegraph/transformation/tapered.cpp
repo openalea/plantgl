@@ -253,12 +253,12 @@ bool Tapered::Builder::isValid( ) const {
   if (! DefValid()) return false;
 
   if (BaseRadius && (*BaseRadius < 0)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","BaseRadius","Must be greater than 0.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","BaseRadius","Must be greater than 0.");
     return false;
   };
 
   if (TopRadius && (*TopRadius < 0)) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","TopRadius","Must be greater than 0.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Tapered","TopRadius","Must be greater than 0.");
     return false;
   };
 

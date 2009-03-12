@@ -74,19 +74,19 @@ bool EulerRotation::Builder::isValid( ) const
 {
   if( Azimuth && (! finite(*Azimuth)) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
     return false;
     }
 
   if( Elevation && (! finite(*Elevation)) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
     return false;
     }
 
   if( Roll && (! finite(*Roll)) )
     {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
     return false;
     }
 
@@ -159,17 +159,17 @@ bool EulerRotated::Builder::isValid( ) const {
   if (! MTValid()) return false;
 
   if (Azimuth && (! finite(*Azimuth))) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
     return false;
   };
 
   if (Elevation && (! finite(*Elevation))) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
     return false;
   };
 
   if (Roll && (! finite(*Roll))) {
-    pglErrorEx(WARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
     return false;
   };
 

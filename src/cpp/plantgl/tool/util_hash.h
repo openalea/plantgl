@@ -31,8 +31,8 @@
 
 
 
-#ifndef __util_hash_h__
-#define __util_hash_h__
+#ifndef __util_pgl_hash_h__
+#define __util_pgl_hash_h__
 
 #include "tools_config.h"
 
@@ -50,7 +50,7 @@
    \brief Comparison between 2 string.
 */
 
-struct eqstr
+struct pgl_eqstr
 {
   /// Compare the 2 string.
   bool operator() (const std::string& s1, const std::string& s2) const
@@ -62,7 +62,7 @@ struct eqstr
    \strust hashstr
    \brief Find using a hasher a place for the string.
 */
-struct hashstr
+struct pgl_hashstr
 {
   typedef pgl_hash<const char*> hash_cstr;
 

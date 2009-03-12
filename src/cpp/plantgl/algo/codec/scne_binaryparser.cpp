@@ -583,7 +583,7 @@ bool BinaryParser::readHeader(){
 bool BinaryParser::parse(const string& filename){
     stream = new leifstream(filename.c_str());
     if(!*stream){
-        pglErrorEx(ERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
+        pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
         return false;
     }
     if(!readHeader())return false;
@@ -825,7 +825,7 @@ bool BinaryParser::readImageTexture() {
 
     if (FileName.empty() || !exists(FileName.c_str())) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
-        pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+        pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
         MaterialPtr mat2(new Material(*mat));
         GEOM_PARSER_SETNAME(_name,_ident,mat,Material);
     }
@@ -911,7 +911,7 @@ bool BinaryParser::readAmapSymbol() {
     if( version < 1.1f){
       if (FileName.empty() || !exists(FileName.c_str())) {
     string label = "AmapSymbol : " + string((_name.empty() ? "(unamed)" : _name));
-    pglErrorEx(WARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
     GEOM_DEL_OBJ(obj,4) ;
     return false;
       }
