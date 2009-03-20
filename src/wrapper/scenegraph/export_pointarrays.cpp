@@ -65,13 +65,43 @@ void py_sort(T * pts, boost::python::object cmp_method){
 }
 
 template <class T>
+bool py_comp_x(const T& a, const T& b){
+    return a.x() < b.x();
+}
+
+template <class T>
+bool py_comp_y(const T& a, const T& b){
+    return a.y() < b.y();
+}
+
+template <class T>
 bool py_comp_z(const T& a, const T& b){
     return a.z() < b.z();
 }
 
 template <class T>
+bool py_comp_w(const T& a, const T& b){
+    return a.w() < b.w();
+}
+
+template <class T>
+void py_sort_x(T * pts){
+    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_x<typename T::element_type>);
+}
+
+template <class T>
+void py_sort_y(T * pts){
+    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_x<typename T::element_type>);
+}
+
+template <class T>
 void py_sort_z(T * pts){
     std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_z<typename T::element_type>);
+}
+
+template <class T>
+void py_sort_w(T * pts){
+    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_w<typename T::element_type>);
 }
 
 template <class T>
@@ -187,6 +217,8 @@ void export_pointarrays()
     .def( "getXMinAndMaxIndex", &pa_xminmaxindex<Point2Array>) 
     .def( "getYMinAndMaxIndex", &pa_yminmaxindex<Point2Array>) 
     .def( "sort", &py_sort<Point2Array>) 
+    .def( "sortX", &py_sort_x<Point2Array>) 
+    .def( "sortY", &py_sort_y<Point2Array>) 
     .def( "partition", &py_partition<Point2Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>)
     .def( "transform", &Point2Array::transform)
@@ -211,6 +243,8 @@ void export_pointarrays()
     .def( "getYMinAndMaxIndex", &pa_yminmaxindex<Point3Array>) 
     .def( "getZMinAndMaxIndex", &pa_zminmaxindex<Point3Array>) 
     .def( "sort", &py_sort<Point3Array>) 
+    .def( "sortX", &py_sort_x<Point3Array>) 
+    .def( "sortY", &py_sort_y<Point3Array>) 
     .def( "sortZ", &py_sort_z<Point3Array>) 
     .def( "partition", &py_partition<Point3Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>)
@@ -241,6 +275,10 @@ void export_pointarrays()
     .def( "getZMinAndMaxIndex", &pa_zminmaxindex<Point4Array>) 
     .def( "getWMinAndMaxIndex", &pa_wminmaxindex<Point4Array>) 
     .def( "sort", &py_sort<Point4Array>) 
+    .def( "sortX", &py_sort_x<Point4Array>) 
+    .def( "sortY", &py_sort_y<Point4Array>) 
+    .def( "sortZ", &py_sort_z<Point4Array>) 
+    .def( "sortW", &py_sort_w<Point4Array>) 
     .def( "partition", &py_partition<Point4Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>)
     .def( "transform", &Point4Array::transform)

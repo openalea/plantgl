@@ -84,7 +84,7 @@ void export_SceneObject()
     .def("isValid", &SceneObject::isValid)
     .def("apply", &SceneObject::apply)
     .def("getId", &SceneObject::getId)
-	.def("getPglReferenceCount",&RefCountObject::getReferenceCount)
+	.def("getPglReferenceCount",&RefCountObject::use_count)
     ;
 }
 

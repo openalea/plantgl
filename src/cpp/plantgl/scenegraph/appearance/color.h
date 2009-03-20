@@ -253,6 +253,18 @@ public:
   /// Returns the \c red component of \e self clamped to [0,1].
   real_t getRedClamped( ) const ;
 
+  /// Returns the \e average of the red, green, blue and alpha value.
+  real_t getRGBAverage() const ;
+
+  /// Returns the \e average of the red, green, blue and alpha  value.
+  real_t getRGBAverageClamped() const ;
+
+  /// Returns the \e average of the red, green, blue and alpha value.
+  real_t getAverage() const ;
+
+  /// Returns the \e average of the red, green, blue and alpha  value.
+  real_t getAverageClamped() const ;
+
   /// Encode the argb value onto an uint
   uint_t toUint() const;
 

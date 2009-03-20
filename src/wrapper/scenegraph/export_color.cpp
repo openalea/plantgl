@@ -49,6 +49,7 @@ void PREFIX##_set##CHANNEL( TYPE* v, int val ) \
 { \
   if (val >= 0 && val < 256) \
 	v->get##CHANNEL() = (uchar_t)val; \
+  else throw PythonExc_ValueError(); \
 } \
 \
 real_t PREFIX##_get##CHANNEL##Clamped( TYPE* v ) \
@@ -60,6 +61,7 @@ void PREFIX##_set##CHANNEL##Clamped( TYPE* v, real_t val ) \
 { \
   if (val >= 0.0 && val <= 1.0) \
 	v->get##CHANNEL() = (uchar_t)(val*255); \
+  else throw PythonExc_ValueError(); \
 } \
 
 std::string col3_str( Color3* v ) 
@@ -126,10 +128,13 @@ void export_Color3()
 	.def( "setClampedGreen", col3_setGreenClamped )
     .def( "clampedBlue", col3_getBlueClamped)
 	.def( "setClampedBlue", col3_setBlueClamped )
+    .def( "getAverage", &Color3::getAverage )
+    .def( "getAverageClamped", &Color3::getAverageClamped )
 	.def( "toUint", &Color3::toUint )
 	.def( "__int__", &Color3::toUint )
 	.def( "fromUint", &Color3::fromUint )
 	.staticmethod("fromUint")
+    .def( "__repr__", col3_str )
     .def( "__str__", col3_str )
     .def( "__repr__", col3_str )
     .add_static_property("BLACK",make_getter(&Color3::BLACK))
@@ -166,6 +171,10 @@ void export_Color4()
 	.def( "setClampedBlue", col4_setBlueClamped )
     .def( "clampedAlpha", col4_getAlphaClamped)
 	.def( "setClampedAlpha", col4_setAlphaClamped )
+    .def( "getAverage", &Color4::getAverage )
+    .def( "getAverageClamped", &Color4::getAverageClamped )
+    .def( "getRGBAverage", &Color4::getAverage )
+    .def( "getRGBAverageClamped", &Color4::getAverageClamped )
 	.def( "toUint", &Color4::toUint )
 	.def( "__int__", &Color4::toUint )
 	.def( "fromUint", &Color4::fromUint )

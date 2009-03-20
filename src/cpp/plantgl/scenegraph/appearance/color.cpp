@@ -233,6 +233,21 @@ uchar_t& Color4::getRed( ) { return __RED;}
 
 real_t Color4::getRedClamped( ) const { return (real_t)__RED / 255;}
 
+real_t Color4::getRGBAverage() const {
+    return (real_t)(__RED + __GREEN +__BLUE)/(real_t)3;
+}
+
+real_t Color4::getRGBAverageClamped() const {
+    return (real_t)(__RED + __GREEN +__BLUE+__ALPHA)/(real_t)765;
+}
+real_t Color4::getAverage() const {
+    return (real_t)(__RED + __GREEN +__BLUE)/(real_t)3;
+}
+
+real_t Color4::getAverageClamped() const {
+    return (real_t)(__RED + __GREEN +__BLUE+__ALPHA)/(real_t)1020;
+}
+
 uint_t Color4::toUint() const {
 	return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
 }

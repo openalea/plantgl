@@ -98,24 +98,6 @@ object nurbs_fit1(Point3ArrayPtr pts, int degree, int nbctrlpoints){
 	}
 }
 
-object nurbs_fit2(Point3ArrayPtr pts){
-	Fit p(pts);
-	LineicModelPtr res = p.nurbsCurve();
-	if (!res)return object();
-	else {
-		return object(res);
-	}
-}
-
-object nurbs_fit3(Polyline * pts, int degree, int nbctrlpoints){
-	return nurbs_fit1(pts->getPointList(),degree,nbctrlpoints);
-}
-
-
-object nurbs_fit4(Polyline * pts){
-	return nurbs_fit2(pts->getPointList());
-}
-
 void export_NurbsCurve()
 {
   class_<NurbsCurve, NurbsCurvePtr, bases<BezierCurve>, boost::noncopyable>
@@ -136,10 +118,7 @@ void export_NurbsCurve()
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
      .def("setKnotListToDefault",&NurbsCurve::setKnotListToDefault)
      .def( "__repr__", nc_repr )
-     .def( "fit", nurbs_fit1, args("points","degree","nbctrlpoints"), "fit(points [, int degree, int nbctrlpoints])" )
-     .def( "fit", nurbs_fit2, args("points") )
-     .def( "fit", nurbs_fit3, args("points","degree","nbctrlpoints") )
-     .def( "fit", nurbs_fit4, args("points") )
+	 .def( "fit", nurbs_fit1, "fit(points [, int degree, int nbctrlpoints])", (bp::arg("points")=Point3ArrayPtr(),bp::arg("degree")=3,bp::arg("nbctrlpoints")=4) )
 	 .staticmethod("fit")
      .def( "getDerivativeAt", &NurbsCurve::getDerivativeAt, args("u","d") )
      .def( "getDerivativesAt", &NurbsCurve::getDerivativesAt, args("u") )
