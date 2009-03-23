@@ -105,7 +105,7 @@ public:
   }
 
   /// Return size of this
-  inline uint_t getSize() const { return 2; }
+  static inline uint_t getSize() { return 2; }
 
   /** Returns a const reference to the \e i-th element of \e self.
       \pre
@@ -274,7 +274,7 @@ public:
   }
 
   /// Return size of this
-  inline uint_t getSize() const { return 3; }
+  static inline uint_t getSize() { return 3; }
 
   /** Returns a const reference to the \e i-th element of \e self.
       \pre
@@ -453,7 +453,7 @@ public:
   }
 
   /// Return size of this
-  inline uint_t getSize() const { return 4; }
+  static inline uint_t getSize() { return 4; }
 
   /** Returns a const reference to the \e i-th element of \e self.
       \pre

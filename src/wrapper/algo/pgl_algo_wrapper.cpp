@@ -92,6 +92,7 @@ void module_algo()
     // Grid export
     export_Mvs();
     export_Octree();
+	export_PointGrid();
 
 	// Overlay export
 	export_Overlay();

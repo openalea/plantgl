@@ -91,6 +91,7 @@ void export_RayIntersection();
 // Grid export
 void export_Mvs();
 void export_Octree();
+void export_PointGrid();
 
 /* ----------------------------------------------------------------------- */
 // Overlay export

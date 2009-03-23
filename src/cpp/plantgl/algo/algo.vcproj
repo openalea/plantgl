@@ -704,6 +704,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\grid\regularpointgrid.h"
+				>
+			</File>
+			<File
 				RelativePath=".\grid\tile.cpp"
 				>
 			</File>
