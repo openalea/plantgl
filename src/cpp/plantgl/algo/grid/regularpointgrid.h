@@ -51,6 +51,9 @@ public:
 	typedef typename PointContainer::element_type VectorType;
 	typedef RCPtr<PointContainer> PointContainerPtr;
 
+	typedef typename PointContainer::iterator PointIterator;
+	typedef typename PointContainer::const_iterator PointConstIterator;
+	
 	typedef size_t PointContainerIndex;
 	typedef size_t VoxelCoordinate;
 	typedef std::vector<VoxelCoordinate> VoxelCoordinates;
@@ -58,11 +61,17 @@ public:
 	typedef std::vector<VoxelId> VoxelIdList;
 	typedef std::vector<PointContainerIndex> PointIndexList;
 
+	typedef std::vector<PointIndexList> VoxelList;
+	typedef typename VoxelList::iterator VoxelIterator;
+	typedef typename VoxelList::const_iterator VoxelConstIterator;
+
 	PointGrid(const VectorType& voxelsize,
 			  const VectorType& minpoint, 
-			  const VectorType& maxpoint):
+			  const VectorType& maxpoint,
+			  const PointContainerPtr& data):
 	  __voxelsize(voxelsize){
 		  initialize(minpoint,maxpoint);
+		  appendData(data);
 	}
 
 	PointGrid(const VectorType& voxelsize,
@@ -168,7 +177,7 @@ public:
 		size_t len = __voxels[vid].size();
 		if (len == 0) return new PointContainer();
 		PointContainerPtr pts(new PointContainer(len));
-		PointContainer::iterator itpoints = pts->getBegin();
+		PointIterator itpoints = pts->getBegin();
 		for(PointIndexList::const_iterator itindex = __voxels[vid].begin(); 
 			itindex != __voxels[vid].end(); ++itindex){
 			*itpoints = __points[*itindex];
@@ -227,7 +236,7 @@ public:
 		PointIndexList res;
 		for(VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
 			const PointIndexList& voxelpointlist = __voxels[*itvoxel];
-			for(PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
+			for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
 				if (norm(__points.getAt(*itPointIndex)-point) < radius)
 					res.push_back(*itPointIndex);
 			}
@@ -258,7 +267,6 @@ protected:
 	VectorType __origin;
 	VectorType __voxelsize;
 	size_t  __dimension[NbDimension];
-	typedef std::vector<PointIndexList> VoxelList;
 	VoxelList __voxels;
 	PointContainer __points;
 };

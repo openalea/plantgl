@@ -1,5 +1,5 @@
 from openalea.plantgl.all import *
-from random import uniform
+from random import uniform, randint
 
 pointrange = (0,10)
 
@@ -24,5 +24,10 @@ def test_point3grid():
             assert(norm(p-center) <= radius)
         else :
             assert(norm(p-center) > radius)
-
+    vcoord = (randint(0,20),randint(0,20),randint(0,20))
+    vid = p3grid.getVoxelIdFromCoord(vcoord)
+    print vid, vcoord, p3grid.getVoxelCoordFromId(vid)
+    assert tuple(p3grid.getVoxelCoordFromId(vid)) == vcoord
+    assert p3grid.getVoxelCenter(vcoord) == p3grid.getVoxelCenterFromId(vid)
+    
 test_point3grid()
