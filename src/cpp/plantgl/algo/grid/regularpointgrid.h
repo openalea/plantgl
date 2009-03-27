@@ -198,7 +198,7 @@ public:
 		return __voxels[vid];
 	}
 
-	VoxelIdList get_voxel_around_point(const VectorType& point, real_t radius) const {
+	VoxelIdList get_voxel_around_point(const VectorType& point, real_t radius, bool filterEmpty = true) const {
 		VoxelIdList res;
 		VoxelCoordinates centervxl = getVoxelCoordFromPoint(point);
 		// discretize radius in term of voxel size
@@ -220,8 +220,10 @@ public:
 		bool stop = false;
 		while(!stop){			
 			// Check whether coord is in ball
-			if (!(norm(getVoxelCenter(coord)-point) > r)){
-				res.push_back(getVoxelIdFromCoord(coord));
+			if (!(norm(getVoxelCenter(coord)-point) > r) ){
+				VoxelId vxlid = getVoxelIdFromCoord(coord);
+				if(!filterEmpty || !__voxels[vxlid].empty())
+					res.push_back(vxlid);
 			}
 			// increment coord
 			for (size_t i = 0; i < NbDimension; ++i){
