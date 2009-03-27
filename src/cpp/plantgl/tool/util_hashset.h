@@ -79,7 +79,7 @@ typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;
    \brief Class for using hash_set with string.
 */
 
-typedef pgl_hash_set<std::string, hashstr, eqstr> pgl_hash_set_string;
+typedef pgl_hash_set<std::string, pgl_hashstr, pgl_eqstr> pgl_hash_set_string;
 typedef pgl_hash_set<uint_t,pgl_hash<uint_t>,std::equal_to<uint_t> > pgl_hash_set_uint32;
 
 #else

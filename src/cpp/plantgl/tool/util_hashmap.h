@@ -82,7 +82,7 @@ struct pgl_hash_map_string : public pgl_hash_map<std::string, T >{};
 */
 
 template <class T>
-struct pgl_hash_map_string : public pgl_hash_map<std::string, T, hashstr, eqstr>
+struct pgl_hash_map_string : public pgl_hash_map<std::string, T, pgl_hashstr, pgl_eqstr>
 {};
 
 #else
