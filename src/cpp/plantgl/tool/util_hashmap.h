@@ -39,7 +39,7 @@
     \brief Utility for hashmap with std::string.
 */
 
-#ifndef USING_OLD_HASHMAP
+#ifdef USING_UNORDERED_MAP
 #ifdef GNU_STL_EXTENSION
 	#include <tr1/unordered_map>
 	#define pgl_hash_map std::tr1::unordered_map

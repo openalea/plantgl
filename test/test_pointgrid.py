@@ -29,5 +29,12 @@ def test_point3grid():
     print vid, vcoord, p3grid.getVoxelCoordFromId(vid)
     assert tuple(p3grid.getVoxelCoordFromId(vid)) == vcoord
     assert p3grid.getVoxelCenter(vcoord) == p3grid.getVoxelCenterFromId(vid)
+
+def test_pointgrid_access():
+    p3list = [(1,1,1),(6,6,6),(10,10,10),(20,20,20)]
+    r = 0
+    p3grid = Point3Grid(r+1,p3list)
+    assert [p3grid.query_ball_point(i,r) for i in p3list] == [[i] for i in xrange(len(p3list))]
     
-test_point3grid()
+#test_point3grid()
+test_pointgrid_access()

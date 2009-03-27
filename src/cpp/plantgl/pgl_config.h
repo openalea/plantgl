@@ -240,7 +240,7 @@
 	#define STDEXT_USING_NAMESPACE
 #endif
 
-#if not defined(__GNUC__)  || defined (__APPLE__)
+#ifndef USING_UNORDERED_MAP  // !defined(__GNUC__)  || defined (__APPLE__)
 // Gcc use tr1 extension
 // msvc did not integrate it yet.
 #define USING_OLD_HASHMAP

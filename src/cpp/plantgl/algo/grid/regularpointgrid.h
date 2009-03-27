@@ -77,6 +77,8 @@ public:
 	PointGrid(const VectorType& voxelsize,
 			  const PointContainerPtr& data):
 	  __voxelsize(voxelsize){
+		  for(size_t i = 0; i < NbDimension; ++i) 
+			  assert(__voxelsize[i] > GEOM_EPSILON);
 		  std::pair<VectorType,VectorType> bounds = data->getBounds();
 		  initialize(bounds.first,bounds.second);
 		  appendData(data);
@@ -84,7 +86,10 @@ public:
 
 	PointGrid(const real_t& voxelsize,
 			  const PointContainerPtr& data):
-	  __voxelsize(voxelsize,voxelsize,voxelsize){
+		  __voxelsize(voxelsize){
+		  for(size_t i = 1; i < NbDimension; ++i)
+			  __voxelsize[i] = voxelsize;
+		  assert(voxelsize > GEOM_EPSILON);
 		  std::pair<VectorType,VectorType> bounds = data->getBounds();
 		  initialize(bounds.first,bounds.second);
 		  appendData(data);
@@ -206,8 +211,8 @@ public:
 		VoxelCoordinates mincoord = centervxl;
 		VoxelCoordinates maxcoord = centervxl;
 		for (size_t i = 0; i < NbDimension; ++i){
-			mincoord[i] = std::max<VoxelCoordinate>(0,mincoord[i]-radiusvoxelsize[i]);
-			maxcoord[i] = std::min<VoxelCoordinate>(__dimension[i],maxcoord[i]+radiusvoxelsize[i]);
+			mincoord[i] = std::max<int>(0,mincoord[i]-radiusvoxelsize[i]);
+			maxcoord[i] = std::min<int>(__dimension[i],maxcoord[i]+radiusvoxelsize[i]);
 		}
 
 		VoxelCoordinates coord = mincoord;
@@ -215,7 +220,7 @@ public:
 		bool stop = false;
 		while(!stop){			
 			// Check whether coord is in ball
-			if (norm(getVoxelCenter(coord)-point) < r){
+			if (!(norm(getVoxelCenter(coord)-point) > r)){
 				res.push_back(getVoxelIdFromCoord(coord));
 			}
 			// increment coord
@@ -237,7 +242,8 @@ public:
 		for(VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
 			const PointIndexList& voxelpointlist = __voxels[*itvoxel];
 			for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
-				if (norm(__points.getAt(*itPointIndex)-point) < radius)
+			    // Check whether point i is in the ball
+				if (!(norm(__points.getAt(*itPointIndex)-point) > radius))
 					res.push_back(*itPointIndex);
 			}
 		}

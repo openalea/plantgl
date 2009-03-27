@@ -38,7 +38,7 @@
 */
 #include "tools_config.h"
 
-#ifndef USING_OLD_HASHMAP
+#ifdef USING_UNORDERED_MAP
 #ifdef GNU_STL_EXTENSION
 	#include <tr1/unordered_set>
 	#define pgl_hash_set std::tr1::unordered_set
