@@ -29,86 +29,22 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include <plantgl/algo/base/pointmanipulation.h>
 #include <boost/python.hpp>
-#include "export_action.h"
-#include <plantgl/python/exception_core.h>
 
 /* ----------------------------------------------------------------------- */
 
-void module_algo()
-{
-  define_stl_exceptions();
-
-    // util class export
-    export_Sequencer();
-
-	// abstract action class export
-    export_action();
-
-	// basic action export
-    export_Discretizer();
-    export_Tesselator();
-    export_BBoxComputer();
-    export_VolComputer();
-    export_SurfComputer();
-    export_AmapTranslator();
-    export_MatrixComputer();
-
-	// custom algo
-    export_Merge();
-    export_Fit();
-
-	// abstract printer export
-    export_StrPrinter();
-    export_FilePrinter();
-
-	// printer export
-    export_PglPrinter();
-    export_PglBinaryPrinter();
-    export_PovPrinter();
-    export_VrmlPrinter();
-    export_VgstarPrinter();
-    export_PyPrinter();
-
-	// reader export
-	export_PglReader();
-
-	// gl export
-	export_GLRenderer();
-	export_GLSkelRenderer();
-	export_GLBBoxRenderer();
-	export_GLCtrlPointRenderer();
-
-    // Turtle export
-    export_TurtleParam();
-    export_Turtle();
-    export_PglTurtle();
-
-    // RayCasting export
-    export_SegIntersection();
-    export_Ray();
-    export_RayIntersection();
-
-    // Grid export
-    export_Mvs();
-    export_Octree();
-	export_PointGrid();
-
-	// Overlay export
-	export_Overlay();
-
-	// Point manip
-	export_PointManip();
-};
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef PGL_DEBUG
-BOOST_PYTHON_MODULE(_pglalgo_d)
-#else
-BOOST_PYTHON_MODULE(_pglalgo)
-#endif
+void export_PointManip()
 {
-  module_algo();
-};
+	def("compress_point2",&compress_point<Point2Array,2>,args("points","radius"));
+	def("compress_point3",&compress_point<Point3Array,3>,args("points","radius"));
+	def("compress_point4",&compress_point<Point4Array,4>,args("points","radius"));
+}
 
+/* ----------------------------------------------------------------------- */

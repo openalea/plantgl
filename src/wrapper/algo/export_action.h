@@ -96,4 +96,8 @@ void export_PointGrid();
 /* ----------------------------------------------------------------------- */
 // Overlay export
 void export_Overlay();
+/* ----------------------------------------------------------------------- */
+// Point manip export
+void export_PointManip();
+
 #endif
