@@ -220,6 +220,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_pointmanip.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_povprinter.cpp"
 				>
 			</File>

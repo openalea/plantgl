@@ -37,6 +37,7 @@
 #include <list>
 #include <vector>
 #include <plantgl/math/util_math.h>
+#include <plantgl/math/util_vector.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/tool/errormsg.h>
@@ -44,8 +45,43 @@
 
 PGL_BEGIN_NAMESPACE
 
-template <class PointContainer, int NbDimension>
-class PointGrid {
+
+/* ----------------------------------------------------------------------- */
+
+template<class T> class Dimension {} ;
+
+template<> class Dimension<TOOLS::Vector2> 
+{ public: static const int Nb = 2; };
+
+template<> class Dimension<TOOLS::Vector3> 
+{ public: static const int Nb = 3; };
+
+template<> class Dimension<TOOLS::Vector4> 
+{ public: static const int Nb = 4; };
+
+/* ----------------------------------------------------------------------- */
+
+template<class PointContainer>
+class ContainerReferencePolicy {
+public:
+	ContainerReferencePolicy(const PointContainer& data) : __points(data) {}
+protected:
+	const PointContainer& __points;
+};
+
+template<class PointContainer>
+class LocalContainerPolicy {
+public:
+	LocalContainerPolicy(const PointContainer& data) : __points(data) {}
+protected:
+	const PointContainer __points;
+};
+
+/* ----------------------------------------------------------------------- */
+
+template <class PointContainer, class ContainerPolicy = LocalContainerPolicy<PointContainer>,
+int NbDimension = Dimension<typename PointContainer::element_type>::Nb >
+class PointGrid : public ContainerPolicy {
 public:
 	typedef PointContainer ContainerType;
 	typedef typename PointContainer::element_type VectorType;
@@ -69,30 +105,33 @@ public:
 			  const VectorType& minpoint, 
 			  const VectorType& maxpoint,
 			  const PointContainerPtr& data):
+	  ContainerPolicy(*data),
 	  __voxelsize(voxelsize){
 		  initialize(minpoint,maxpoint);
-		  appendData(data);
+		  registerData(data,0);
 	}
 
 	PointGrid(const VectorType& voxelsize,
 			  const PointContainerPtr& data):
+	  ContainerPolicy(*data),
 	  __voxelsize(voxelsize){
 		  for(size_t i = 0; i < NbDimension; ++i) 
 			  assert(__voxelsize[i] > GEOM_EPSILON);
 		  std::pair<VectorType,VectorType> bounds = data->getBounds();
 		  initialize(bounds.first,bounds.second);
-		  appendData(data);
+		  registerData(data,0);
 	}
 
 	PointGrid(const real_t& voxelsize,
 			  const PointContainerPtr& data):
+		  ContainerPolicy(*data),
 		  __voxelsize(voxelsize){
 		  for(size_t i = 1; i < NbDimension; ++i)
 			  __voxelsize[i] = voxelsize;
 		  assert(voxelsize > GEOM_EPSILON);
 		  std::pair<VectorType,VectorType> bounds = data->getBounds();
 		  initialize(bounds.first,bounds.second);
-		  appendData(data);
+		  registerData(data,0);
 	}
 
 	VoxelCoordinates getVoxelCoordFromPoint(const VectorType& point) const{
@@ -156,22 +195,6 @@ public:
 
 	inline VectorType getVoxelCenter(const VoxelId& vid) const {
 		return getVoxelCenter(getVoxelCoordFromId(vid));
-	}
-
-
-	template<class Iterator>
-	inline void appendData(Iterator beg, Iterator end){
-		PointContainerIndex psize =  __points.getSize();
-		for(Iterator it = beg; it != end; ++it){
-			VoxelId vid = getVoxelIdFromPoint(*it);
-			__voxels[vid].push_back(psize);
-			psize++;
-		}
-		__points.insert(__points.getEnd(), beg, end);
-	}
-
-	inline  void appendData(const PointContainerPtr& data){
-		appendData(data->getBegin(),data->getEnd());
 	}
 
 	inline  PointContainerPtr getVoxelPoints(const VoxelCoordinates& coord) const {
@@ -253,6 +276,19 @@ public:
 	}
 
 protected:
+	template<class Iterator>
+	inline void registerData(Iterator beg, Iterator end, PointContainerIndex startingindex){
+		for(Iterator it = beg; it != end; ++it){
+			VoxelId vid = getVoxelIdFromPoint(*it);
+			__voxels[vid].push_back(startingindex);
+			startingindex++;
+		}
+	}
+
+	inline  void registerData(const PointContainerPtr& data, PointContainerIndex startingindex){
+		registerData(data->getBegin(),data->getEnd(),startingindex);
+	}
+
 	void initialize(const VectorType& minpoint, 
 					VectorType maxpoint)
 	{
@@ -276,13 +312,15 @@ protected:
 	VectorType __voxelsize;
 	size_t  __dimension[NbDimension];
 	VoxelList __voxels;
-	PointContainer __points;
 };
 
+/* ----------------------------------------------------------------------- */
 
-typedef PointGrid<Point2Array,2> Point2Grid;
-typedef PointGrid<Point3Array,3> Point3Grid;
-typedef PointGrid<Point4Array,4> Point4Grid;
+typedef PointGrid<Point2Array> Point2Grid;
+typedef PointGrid<Point3Array> Point3Grid;
+typedef PointGrid<Point4Array> Point4Grid;
+
+/* ----------------------------------------------------------------------- */
 
 PGL_END_NAMESPACE
 #endif

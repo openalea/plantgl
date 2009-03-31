@@ -224,6 +224,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\base\pointmanipulation.h"
+				>
+			</File>
+			<File
 				RelativePath=".\base\polygoncomputer.cpp"
 				>
 			</File>

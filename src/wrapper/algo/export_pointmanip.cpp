@@ -42,9 +42,9 @@ using namespace boost::python;
 
 void export_PointManip()
 {
-	def("compress_point2",&compress_point<Point2Array,2>,args("points","radius"));
-	def("compress_point3",&compress_point<Point3Array,3>,args("points","radius"));
-	def("compress_point4",&compress_point<Point4Array,4>,args("points","radius"));
+	def("compress_point2",&compress_point<Point2Array>,args("points","radius"));
+	def("compress_point3",&compress_point<Point3Array>,args("points","radius"));
+	def("compress_point4",&compress_point<Point4Array>,args("points","radius"));
 }
 
 /* ----------------------------------------------------------------------- */

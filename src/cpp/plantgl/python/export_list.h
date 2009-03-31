@@ -76,6 +76,8 @@ list_converter<T,Translator> make_list(const T& c_list) { return list_converter<
 template <class T>
 list_converter<T> make_list(const T& c_list) { return list_converter<T>(c_list); }
 
+/* ----------------------------------------------------------------------- */
+
 template <class T, 
           class KeyTranslator = make_object<typename T::key_type>, 
 #if (defined(USING_UNORDERED_MAP)) || defined(WIN32_STL_EXTENSION)

@@ -42,24 +42,24 @@
 PGL_BEGIN_NAMESPACE
 
 
-template <class PointListType, int NbDimension>
+template <class PointListType>
 RCPtr<PointListType> compress_point(RCPtr<PointListType> points, real_t radius)
 {
 	typedef typename PointListType::element_type VectorType;
-	typedef PointGrid<PointListType,NbDimension> LocalPointGrid;
+	typedef PointGrid<PointListType,ContainerReferencePolicy<PointListType> > LocalPointGrid;
 	typedef typename LocalPointGrid::PointIndexList PointIndexList;
 
 	LocalPointGrid grid(radius,points);
 	
 	RCPtr<PointListType> result(new PointListType(points->getSize()));
-	PointListType::iterator _itresult = result->getBegin();
-	for(PointListType::const_iterator _itsource = points->getBegin();
+	typename PointListType::iterator _itresult = result->getBegin();
+	for(typename PointListType::const_iterator _itsource = points->getBegin();
 		_itsource != points->getEnd(); ++_itsource, ++_itresult)
 	{
 	  PointIndexList pointindices = grid.query_ball_point(*_itsource,radius);
 	  VectorType center;
 	  if (pointindices.size() > 0){
-	   for(PointIndexList::const_iterator itptindex = pointindices.begin(); itptindex != pointindices.end(); ++itptindex)
+	   for(typename PointIndexList::const_iterator itptindex = pointindices.begin(); itptindex != pointindices.end(); ++itptindex)
 	   { center += points->getAt(*itptindex); }
 	   center /= pointindices.size();
 	   *_itresult = center;
