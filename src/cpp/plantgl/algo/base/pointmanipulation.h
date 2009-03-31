@@ -46,7 +46,7 @@ template <class PointListType>
 RCPtr<PointListType> compress_point(RCPtr<PointListType> points, real_t radius)
 {
 	typedef typename PointListType::element_type VectorType;
-	typedef PointGrid<PointListType,ContainerReferencePolicy<PointListType> > LocalPointGrid;
+	typedef PointRefGrid<PointListType> LocalPointGrid;
 	typedef typename LocalPointGrid::PointIndexList PointIndexList;
 
 	LocalPointGrid grid(radius,points);

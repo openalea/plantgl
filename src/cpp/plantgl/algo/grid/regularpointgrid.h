@@ -66,7 +66,7 @@ class ContainerReferencePolicy {
 public:
 	ContainerReferencePolicy(const PointContainer& data) : __points(data) {}
 protected:
-	const PointContainer& __points;
+ 	const PointContainer& __points;
 };
 
 template<class PointContainer>
@@ -77,11 +77,14 @@ protected:
 	const PointContainer __points;
 };
 
+
 /* ----------------------------------------------------------------------- */
 
-template <class PointContainer, class ContainerPolicy = LocalContainerPolicy<PointContainer>,
-int NbDimension = Dimension<typename PointContainer::element_type>::Nb >
-class PointGrid : public ContainerPolicy {
+template <class PointContainer,
+        class ContainerPolicy = LocalContainerPolicy<PointContainer>,
+        int NbDimension = Dimension<typename PointContainer::element_type>::Nb >
+class PointGrid : public ContainerPolicy 
+{
 public:
 	typedef PointContainer ContainerType;
 	typedef typename PointContainer::element_type VectorType;
@@ -124,8 +127,8 @@ public:
 
 	PointGrid(const real_t& voxelsize,
 			  const PointContainerPtr& data):
-		  ContainerPolicy(*data),
-		  __voxelsize(voxelsize){
+	  ContainerPolicy(*data),
+	  __voxelsize(voxelsize){
 		  for(size_t i = 1; i < NbDimension; ++i)
 			  __voxelsize[i] = voxelsize;
 		  assert(voxelsize > GEOM_EPSILON);
@@ -133,6 +136,7 @@ public:
 		  initialize(bounds.first,bounds.second);
 		  registerData(data,0);
 	}
+        const PointContainer& points() const { return ContainerPolicy::__points; }
 
 	VoxelCoordinates getVoxelCoordFromPoint(const VectorType& point) const{
 		VoxelCoordinates coord(NbDimension);
@@ -208,7 +212,7 @@ public:
 		PointIterator itpoints = pts->getBegin();
 		for(PointIndexList::const_iterator itindex = __voxels[vid].begin(); 
 			itindex != __voxels[vid].end(); ++itindex){
-			*itpoints = __points[*itindex];
+			*itpoints = points()[*itindex];
 		}
 		return pts;
 	}
@@ -268,7 +272,7 @@ public:
 			const PointIndexList& voxelpointlist = __voxels[*itvoxel];
 			for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
 			    // Check whether point i is in the ball
-				if (!(norm(__points.getAt(*itPointIndex)-point) > radius))
+				if (!(norm(points().getAt(*itPointIndex)-point) > radius))
 					res.push_back(*itPointIndex);
 			}
 		}
@@ -314,11 +318,45 @@ protected:
 	VoxelList __voxels;
 };
 
+template <class PointContainer, int NbDimension = Dimension<typename PointContainer::element_type>::Nb >
+class PointRefGrid : public PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>,  NbDimension>
+{
+public:
+	typedef typename PointContainer::element_type VectorType;
+	typedef RCPtr<PointContainer> PointContainerPtr;
+	typedef PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>, NbDimension> ParentGridType;
+
+	PointRefGrid(const VectorType& voxelsize,
+			  const VectorType& minpoint, 
+			  const VectorType& maxpoint,
+			  const PointContainerPtr& data):
+		ParentGridType(voxelsize, minpoint, maxpoint, data)
+	{
+	}
+
+	PointRefGrid(const VectorType& voxelsize,
+			  const PointContainerPtr& data):
+		ParentGridType(voxelsize,data)
+	{
+	}
+
+	PointRefGrid(const real_t& voxelsize,
+			  const PointContainerPtr& data):
+		ParentGridType(voxelsize, data)
+	{
+	}
+};
+
 /* ----------------------------------------------------------------------- */
 
 typedef PointGrid<Point2Array> Point2Grid;
 typedef PointGrid<Point3Array> Point3Grid;
 typedef PointGrid<Point4Array> Point4Grid;
+
+typedef PointRefGrid<Point2Array> Point2RefGrid;
+typedef PointRefGrid<Point3Array> Point3RefGrid;
+typedef PointRefGrid<Point4Array> Point4RefGrid;
+
 
 /* ----------------------------------------------------------------------- */
 
