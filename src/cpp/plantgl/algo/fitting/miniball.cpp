@@ -49,7 +49,7 @@
    
    void Miniball::check_in (const Point3ArrayPtr& p)
    {
-       L.insert(L.end(),p->getBegin(),p->getEnd());
+       L.insert(L.end(),p->begin(),p->end());
    }
    
    
@@ -256,7 +256,7 @@
    {
        m = s = 0;
        // we misuse c[0] for the center of the empty sphere
-       for (Vector3::iterator j=c[0].getBegin(); j !=c[0].getEnd(); ++j)
+       for (Vector3::iterator j=c[0].begin(); j !=c[0].end(); ++j)
            *j=0;
        current_c = &c[0];
        current_sqr_r = -1;

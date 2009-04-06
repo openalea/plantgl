@@ -128,7 +128,7 @@ bool VolComputer::process( AmapSymbol * amapSymbol ) {
     Vector3 center = amapSymbol->getPointList()->getCenter();
     for (uint_t _i = 0; _i < _iSize; _i++) {
       const Index& _index = amapSymbol->getIndexList()->getAt(_i);
-      uint_t _jSize = _index.getSize();
+      uint_t _jSize = _index.size();
       const Vector3& _origfacet = amapSymbol->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       for (uint_t _j = 1; _j < _jSize - 1; _j++) {
@@ -272,7 +272,7 @@ bool VolComputer::process( FaceSet * faceSet ) {
     Vector3 center = faceSet->getPointList()->getCenter();
     for (uint_t _i = 0; _i < _iSize; _i++) {
       const Index& _index = faceSet->getIndexList()->getAt(_i);
-      uint_t _jSize = _index.getSize();
+      uint_t _jSize = _index.size();
       const Vector3& _origfacet = faceSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       for (uint_t _j = 1; _j < _jSize - 1; _j++) {
@@ -342,8 +342,8 @@ bool VolComputer::process( Group * group ) {
   // Cumulates the volume for each elements within the group
   real_t _volume = 0;
   const GeometryArrayPtr& _geometryList = group->getGeometryList();
-  for (GeometryArray::const_iterator _i = _geometryList->getBegin();
-       _i != _geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = _geometryList->begin();
+       _i != _geometryList->end();
        _i++) {
     (*_i)->apply(*this);
     _volume += __result;
@@ -367,9 +367,9 @@ GEOM_TRACE("process IFS");
 
 //todo OK
   const Transform4ArrayPtr& tList= ifs->getTransfoList();
-  Transform4Array::const_iterator t_It= tList->getBegin();
+  Transform4Array::const_iterator t_It= tList->begin();
   real_t volume = 0.;
-  while( t_It != tList->getEnd() )
+  while( t_It != tList->end() )
     {
     volume+= (*t_It)->getVolume();
     t_It++;
@@ -559,13 +559,13 @@ bool VolComputer::process( TriangleSet * triangleSet ) {
 /* ----------------------------------------------------------------------- */
 
 bool VolComputer::process(const ScenePtr scene){
-  if(!scene || scene->isEmpty()){
+  if(!scene || scene->empty()){
     __result = 0;
     return false;
   }
   real_t volume = 0;
-  for(Scene::const_iterator _it=scene->getBegin();
-      _it!=scene->getEnd();
+  for(Scene::const_iterator _it=scene->begin();
+      _it!=scene->end();
       _it++)
     if((*_it)->apply(*this))
       volume+=__result;
@@ -574,13 +574,13 @@ bool VolComputer::process(const ScenePtr scene){
 }
 
 bool VolComputer::process(const Scene& scene){
-  if(scene.isEmpty()){
+  if(scene.empty()){
     __result = 0;
     return false;
   }
   real_t volume = 0;
-  for(Scene::const_iterator _it=scene.getBegin();
-      _it!=scene.getEnd();
+  for(Scene::const_iterator _it=scene.begin();
+      _it!=scene.end();
       _it++)
     if((*_it)->apply(*this))
       volume+=__result;

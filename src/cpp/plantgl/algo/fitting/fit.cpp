@@ -196,7 +196,7 @@ bool Fit::areRadiusNeeded(string classname){
 bool Fit::inertiaAxis(const Point3ArrayPtr& points, 
 					  Vector3& u, Vector3& v, Vector3& w, Vector3& s)
 {
-  if(points->getSize()>2){
+  if(points->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -217,7 +217,7 @@ bool Fit::inertiaAxis(const Point3ArrayPtr& points,
 bool Fit::inertiaAxis(const Point2ArrayPtr& points, 
 						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s)
 {
-  if(points->getSize()>2){
+  if(points->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -239,7 +239,7 @@ bool Fit::inertiaAxis(const Point2ArrayPtr& points,
 
 GeometryPtr Fit::sphere(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -271,10 +271,10 @@ GeometryPtr Fit::asphere(){
     if(! __pointstofit )return GeometryPtr();
     Vector3 _center = __pointstofit->getCenter();
     real_t _radius = 0.0;
-    for(Point3Array::iterator _it = __pointstofit->getBegin();
-	_it != __pointstofit->getEnd();
+    for(Point3Array::iterator _it = __pointstofit->begin();
+	_it != __pointstofit->end();
 	_it++)_radius += norm(*_it-_center);
-    _radius /= __pointstofit->getSize();
+    _radius /= __pointstofit->size();
     if(_radius != 0){
 	if(_center.x() > GEOM_EPSILON || _center.y() > GEOM_EPSILON ||_center.z() > GEOM_EPSILON  ){
 	    return GeometryPtr(
@@ -301,7 +301,7 @@ GeometryPtr Fit::asphere(){
 // of Lecture Notes in Computer Science, pages 359-370. Springer Verlag, 1991.
 
 GeometryPtr Fit::bsphere(){
-    if(! __pointstofit || __pointstofit->getSize() < 2)return GeometryPtr();
+    if(! __pointstofit || __pointstofit->size() < 2)return GeometryPtr();
 	Miniball ball;
 	ball.check_in(__pointstofit);
 	ball.build();
@@ -330,7 +330,7 @@ GeometryPtr Fit::bsphere(){
 
 GeometryPtr Fit::cylinder(){
     if(! __pointstofit )return GeometryPtr();
-    if(__pointstofit->getSize()>2){
+    if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -369,7 +369,7 @@ GeometryPtr Fit::cylinder(){
 					  GeometryPtr(new Oriented(v,w,
 					   GeometryPtr(new Cylinder(radius,norm(u)*2,true,32))))));
     }
-    else if(__pointstofit->getSize() == 2){
+    else if(__pointstofit->size() == 2){
 	return frustum();
     }
     return GeometryPtr();
@@ -379,7 +379,7 @@ GeometryPtr Fit::cylinder(){
 
 GeometryPtr Fit::acylinder(){
     if(! __pointstofit )return GeometryPtr();
-    if(__pointstofit->getSize()>2){
+    if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -410,7 +410,7 @@ GeometryPtr Fit::acylinder(){
 	Vector3 _center = __pointstofit->getCenter();
 	real_t radius=0;
 	real_t height=0;
-	for(Point3Array::iterator _it = __pointstofit->getBegin();_it != __pointstofit->getEnd();_it++){
+	for(Point3Array::iterator _it = __pointstofit->begin();_it != __pointstofit->end();_it++){
 	    Vector3 l = *_it - _center;
 	    real_t a = dot(l,v);
 	    real_t b = dot(l,w);
@@ -419,13 +419,13 @@ GeometryPtr Fit::acylinder(){
 		real_t c = fabs(dot(l,u));
 		height += c;
 	}
-	radius /= __pointstofit->getSize();
-	height /= __pointstofit->getSize();
+	radius /= __pointstofit->size();
+	height /= __pointstofit->size();
 	if(radius)return GeometryPtr(new Translated((_center-u*(height)),
 					  GeometryPtr(new Oriented(v,w,
 					   GeometryPtr(new Cylinder(radius,height*2,true,32))))));
     }
-    else if(__pointstofit->getSize() == 2){
+    else if(__pointstofit->size() == 2){
         return frustum();
     }
     return GeometryPtr();
@@ -438,7 +438,7 @@ GeometryPtr Fit::acylinder(){
 
 GeometryPtr Fit::bcylinder(){
     if(! __pointstofit )return GeometryPtr();
-    if(__pointstofit->getSize()>2){
+    if(__pointstofit->size()>2){
 	ExplicitModelPtr result = dynamic_pointer_cast<ExplicitModel>(convexHull());
 	Point3ArrayPtr pts;
 	if(!result) pts = __pointstofit;
@@ -477,10 +477,10 @@ GeometryPtr Fit::bcylinder(){
 	real_t zi = dot(first,u);
 	real_t zmax  = zi;
 	real_t zmin = zi;
-	Point3ArrayPtr pts2(new Point3Array(pts->getSize()));
-	Point3Array::iterator _it2 = pts2->getBegin();
-	for(Point3Array::const_iterator _it1 = pts->getBegin();
-		_it1 != pts->getEnd();_it1++){
+	Point3ArrayPtr pts2(new Point3Array(pts->size()));
+	Point3Array::iterator _it2 = pts2->begin();
+	for(Point3Array::const_iterator _it1 = pts->begin();
+		_it1 != pts->end();_it1++){
 	    const Vector3& l = *_it1 ;
 		*_it2 = Vector3(dot(l,v),dot(l,w),0);_it2++;
 	    real_t c = dot(l,u);
@@ -500,7 +500,7 @@ GeometryPtr Fit::bcylinder(){
 			  GeometryPtr(new Oriented(v,w,
 				GeometryPtr(new Cylinder(radius,height,true,32))))));
     }
-    else if(__pointstofit->getSize() == 2){
+    else if(__pointstofit->size() == 2){
         return frustum();
     }
     return GeometryPtr();
@@ -512,7 +512,7 @@ GeometryPtr Fit::bcylinder(){
 
 GeometryPtr Fit::ellipsoid(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -545,7 +545,7 @@ GeometryPtr Fit::ellipsoid(){
 
 GeometryPtr Fit::ellipsoid2(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	ExplicitModelPtr result = dynamic_pointer_cast<ExplicitModel>(convexHull());
 	Point3ArrayPtr pts;
 	if(!result) pts = __pointstofit;
@@ -582,7 +582,7 @@ GeometryPtr Fit::ellipsoid2(){
 
 GeometryPtr Fit::aellipsoid(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -599,14 +599,14 @@ GeometryPtr Fit::aellipsoid(){
 	else return GeometryPtr();
 	Vector3 _center = __pointstofit->getCenter();
 	s = Vector3(0,0,0);
-	for(Point3Array::iterator _it = __pointstofit->getBegin();_it != __pointstofit->getEnd();_it++){
+	for(Point3Array::iterator _it = __pointstofit->begin();_it != __pointstofit->end();_it++){
 	    Vector3 l = *_it - _center;
 	    real_t a = fabs(dot(l,u));
 	    real_t b = fabs(dot(l,v));
 	    real_t c = fabs(dot(l,w));
 		s.x()+=a;s.y()+=b;s.z()+=c;
 	}
-	s/=__pointstofit->getSize();
+	s/=__pointstofit->size();
 	if(fabs(*(s.getMin())) > GEOM_EPSILON){
 	  GeometryPtr geom(new Sphere(1,32,32));
 	  if(fabs(*((s - Vector3(1,1,1)).getMax())) > GEOM_EPSILON)
@@ -636,7 +636,7 @@ GeometryPtr Fit::aellipsoid(){
 
 GeometryPtr Fit::bellipsoid(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 #ifndef WITH_CGAL
 	ExplicitModelPtr result = dynamic_pointer_cast<ExplicitModel>(convexHull());
 	Point3ArrayPtr pts;
@@ -665,8 +665,8 @@ GeometryPtr Fit::bellipsoid(){
 	}
 	Vector3 _center = pts->getCenter();
 	real_t vmax = 1;
-	for(Point3Array::iterator _it = pts->getBegin();
-		  _it != pts->getEnd();_it++){
+	for(Point3Array::iterator _it = pts->begin();
+		  _it != pts->end();_it++){
 	    Vector3 cl = (*_it) - _center;
 		cl = Vector3(dot(cl,u),dot(cl,v),dot(cl,w));
 		Vector3 test = _center+u*cl.x()+v*cl.y()+w*cl.z();
@@ -689,7 +689,7 @@ GeometryPtr Fit::bellipsoid(){
     typedef CGAL::Approximate_min_ellipsoid_d<AMETraits>           AME;
 
     CgalPointList P;
-    for(Point3Array::const_iterator it = __pointstofit->getBegin(); it != __pointstofit->getEnd(); ++it)
+    for(Point3Array::const_iterator it = __pointstofit->begin(); it != __pointstofit->end(); ++it)
         P.push_back(CgalPoint((double)it->x(),(double)it->y(),(double)it->z()));
 
     // compute approximation:
@@ -729,7 +729,7 @@ GeometryPtr Fit::bellipsoid(){
 /* ----------------------------------------------------------------------- */
 
 GeometryPtr Fit::balignedbox(){
-  if(__pointstofit->getSize() > 2){
+  if(__pointstofit->size() > 2){
 	pair<Vector3,Vector3> _bounds = __pointstofit->getBounds();
 	Vector3 center = _bounds.first+_bounds.second;
 	center/=2;
@@ -743,11 +743,11 @@ GeometryPtr Fit::balignedbox(){
 /* ----------------------------------------------------------------------- */
 
 GeometryPtr Fit::aalignedbox(){
-  if(__pointstofit->getSize() > 2){
+  if(__pointstofit->size() > 2){
 	Vector3 center = __pointstofit->getCenter();
 	Vector3 s(0,0,0);
-	for(Point3Array::iterator _it = __pointstofit->getBegin();
-							  _it != __pointstofit->getEnd();
+	for(Point3Array::iterator _it = __pointstofit->begin();
+							  _it != __pointstofit->end();
 							  _it++){
 	    Vector3 l = *_it - center;
 	    real_t a = fabs(l.x());
@@ -755,7 +755,7 @@ GeometryPtr Fit::aalignedbox(){
 	    real_t c = fabs(l.z());
 		s.x()+=a;s.y()+=b;s.z()+=c;
 	}
-	s/=__pointstofit->getSize();
+	s/=__pointstofit->size();
 	return GeometryPtr(new Translated(center,GeometryPtr(new Box(s))));
   }
   return GeometryPtr();
@@ -765,7 +765,7 @@ GeometryPtr Fit::aalignedbox(){
 
 GeometryPtr Fit::box(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -795,7 +795,7 @@ GeometryPtr Fit::box(){
 /* ----------------------------------------------------------------------- */
 GeometryPtr Fit::abox(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -811,14 +811,14 @@ GeometryPtr Fit::abox(){
 	else return GeometryPtr();
 	Vector3 _center = __pointstofit->getCenter();
 	s = Vector3(0,0,0);
-	for(Point3Array::iterator _it = __pointstofit->getBegin();_it != __pointstofit->getEnd();_it++){
+	for(Point3Array::iterator _it = __pointstofit->begin();_it != __pointstofit->end();_it++){
 	    Vector3 l = *_it - _center;
 	    real_t a = fabs(dot(l,u));
 	    real_t b = fabs(dot(l,v));
 	    real_t c = fabs(dot(l,w));
 		s.x()+=a;s.y()+=b;s.z()+=c;
 	}
-	s/=__pointstofit->getSize();
+	s/=__pointstofit->size();
 	if(fabs(*(s.getMin())) > GEOM_EPSILON){
 	  GeometryPtr geom(new Box(s));
 	  if(!(u == Oriented::DEFAULT_PRIMARY) && !(v == Oriented::DEFAULT_SECONDARY))
@@ -834,7 +834,7 @@ GeometryPtr Fit::abox(){
 /* ----------------------------------------------------------------------- */
 GeometryPtr Fit::bbox(){
   if(! __pointstofit )return GeometryPtr();
-  if(__pointstofit->getSize()>2){
+  if(__pointstofit->size()>2){
 	float vpvec[3][3];
 	float vpint[3] = {0,0,0};
 	float vpang[3][3];
@@ -853,8 +853,8 @@ GeometryPtr Fit::bbox(){
 	Vector3 pmax(p1);
 	Vector3 pmin(p1);
 	Vector3 _center(0,0,0);
-	for(Point3Array::iterator _it1 = __pointstofit->getBegin();
-		_it1 != __pointstofit->getEnd();_it1++){
+	for(Point3Array::iterator _it1 = __pointstofit->begin();
+		_it1 != __pointstofit->end();_it1++){
 	    Vector3 l = *_it1 ;
 	    real_t a = dot(l,u);
 	    real_t b = dot(l,v);
@@ -869,7 +869,7 @@ GeometryPtr Fit::bbox(){
 	_center =(pmin+pmax)/2;
 	_center = u*_center.x()+v*_center.y()+w*_center.z();
 	s = (pmax - pmin)/2;
-/*	for(Point3Array::iterator _it = __pointstofit->getBegin();_it != __pointstofit->getEnd();_it++){
+/*	for(Point3Array::iterator _it = __pointstofit->begin();_it != __pointstofit->end();_it++){
 	    Vector3 l = *_it - _center;
 	    real_t a = fabs(dot(l,u));
 	    real_t b = fabs(dot(l,v));
@@ -893,7 +893,7 @@ GeometryPtr Fit::bbox(){
 /* ----------------------------------------------------------------------- */
 
 GeometryPtr Fit::frustum(){
-  if(__pointstofit->getSize() == 2){
+  if(__pointstofit->size() == 2){
 	Vector3 u =__pointstofit->getAt(1) -__pointstofit->getAt(0);
 	real_t height = u.normalize();
 	if(height < GEOM_EPSILON) return GeometryPtr();
@@ -1057,7 +1057,7 @@ GeometryPtr Fit::asymmetricHull(){
     ExplicitModelPtr convex = dynamic_pointer_cast<ExplicitModel>(convexHull());
     if(!convex) _points = __pointstofit;
     else _points = convex->getPointList();
-    if(_points->getSize()<6) return GeometryPtr();
+    if(_points->size()<6) return GeometryPtr();
     pair<Point3Array::const_iterator,Point3Array::const_iterator> _bounds;
     Vector3 XMin,XMax,YMin,YMax,bottom,top;
     _bounds = _points->getXMinAndMax();
@@ -1107,8 +1107,8 @@ GeometryPtr Fit::asymmetricHull(){
 
 
 
-    for(Point3Array::iterator _it = _points->getBegin();
-	_it != _points->getEnd(); _it++){
+    for(Point3Array::iterator _it = _points->begin();
+	_it != _points->end(); _it++){
 	  Vector3 a = *_it - center;
 	  if(a.x() < bottom.x() && a.z() <  negXHeight){
 		botshape = max(botshape,
@@ -1241,15 +1241,15 @@ double PGL(findfactor)(double x, double r, double y, double h){
 GeometryPtr Fit::extrudedHull(){
     if(! __pointstofit )return GeometryPtr();
   
-    uint_t numpoints = __pointstofit->getSize();
+    uint_t numpoints = __pointstofit->size();
     if(numpoints>3){
 
 	Vector3 _translation;
 	/// Horizontal Profile.
 	Point2ArrayPtr horizontal_proj(new Point2Array(numpoints)) ;
 	uint_t k=0;
-	for(Point3Array::iterator _it = __pointstofit->getBegin();
-	    _it != __pointstofit->getEnd();
+	for(Point3Array::iterator _it = __pointstofit->begin();
+	    _it != __pointstofit->end();
 	    _it++)
 	    horizontal_proj->setAt(k++,Vector2(_it->x(),_it->y()));
 	
@@ -1258,8 +1258,8 @@ GeometryPtr Fit::extrudedHull(){
 	/// Vertical Profile.
 	Point2ArrayPtr vertical_proj(new Point2Array(numpoints));
 	k=0;
-	for(Point3Array::iterator _it2 = __pointstofit->getBegin();
-	    _it2 != __pointstofit->getEnd();
+	for(Point3Array::iterator _it2 = __pointstofit->begin();
+	    _it2 != __pointstofit->end();
 	    _it2++)
 	    vertical_proj->setAt(k++,Vector2(_it2->x(),_it2->z()));
   
@@ -1281,8 +1281,8 @@ GeometryPtr Fit::extrudedHull(){
 	    
 /*	Vector2 average = horizontal_profile->getCenter();
 	if(fabs(average.x()) > GEOM_EPSILON || fabs(average.y()) > GEOM_EPSILON){
-	    for(Point2Array::iterator _iter = horizontal_profile->getBegin();
-		_iter != horizontal_profile->getEnd();
+	    for(Point2Array::iterator _iter = horizontal_profile->begin();
+		_iter != horizontal_profile->end();
 		_iter++)
 		(*_iter) -= average;
 	}
@@ -1293,8 +1293,8 @@ GeometryPtr Fit::extrudedHull(){
 	average.x() = _translation.x();
 
 	if(fabs(average.x()) > GEOM_EPSILON || fabs(average.y()) > GEOM_EPSILON){
-	    for(Point2Array::iterator _iter = vertical_profile->getBegin();
-		_iter != vertical_profile->getEnd();
+	    for(Point2Array::iterator _iter = vertical_profile->begin();
+		_iter != vertical_profile->end();
 		_iter++)
 		(*_iter) -= average;
 	}
@@ -1306,40 +1306,40 @@ GeometryPtr Fit::extrudedHull(){
 	vector<Vector2> gauche2(0);
 	vector<Vector2> droite2(0);
 
-	Point2Array::iterator _itf,_itf2=vertical_profile->getBegin(),
-	    _itf3=vertical_profile->getBegin();
+	Point2Array::iterator _itf,_itf2=vertical_profile->begin(),
+	    _itf3=vertical_profile->begin();
 	
-	for(_itf=vertical_profile->getBegin()+1;_itf!=vertical_profile->getEnd();_itf++){
+	for(_itf=vertical_profile->begin()+1;_itf!=vertical_profile->end();_itf++){
 	    if(_itf2->y()>_itf->y())_itf2=_itf; // min 
 	    if(_itf3->y()<_itf->y())_itf3=_itf; // max 
 	}
 	if(distance(_itf2,_itf3)>0){
-/*	    cerr << "Decoupage 0 - " << distance(vertical_profile->getBegin(),_itf2) << " - " 
-		 << distance(vertical_profile->getBegin(),_itf3) << " - " 
-		 << distance(vertical_profile->getBegin(),vertical_profile->getEnd())<<  endl;
+/*	    cerr << "Decoupage 0 - " << distance(vertical_profile->begin(),_itf2) << " - " 
+		 << distance(vertical_profile->begin(),_itf3) << " - " 
+		 << distance(vertical_profile->begin(),vertical_profile->end())<<  endl;
 */	    
 	    gauche.insert(gauche.begin(),_itf2,_itf3);
 //	    cerr << "Gauche set made" << endl;
-	    if(_itf3!=vertical_profile->getEnd())
-		droite.insert(droite.begin(),_itf3,vertical_profile->getEnd());
-	    if(_itf2!=vertical_profile->getBegin())
-		droite.insert(droite.end(),vertical_profile->getBegin(),_itf2);
+	    if(_itf3!=vertical_profile->end())
+		droite.insert(droite.begin(),_itf3,vertical_profile->end());
+	    if(_itf2!=vertical_profile->begin())
+		droite.insert(droite.end(),vertical_profile->begin(),_itf2);
 	}
 	else {
-/*	    cerr << "*Decoupage 0 - " << distance(vertical_profile->getBegin(),_itf3) << " - " 
-		 << distance(vertical_profile->getBegin(),_itf2) << " - " 
-		 << distance(vertical_profile->getBegin(),vertical_profile->getEnd())<<  endl;*/
+/*	    cerr << "*Decoupage 0 - " << distance(vertical_profile->begin(),_itf3) << " - " 
+		 << distance(vertical_profile->begin(),_itf2) << " - " 
+		 << distance(vertical_profile->begin(),vertical_profile->end())<<  endl;*/
 	    vector<Vector2>::iterator _itf4=_itf2;
 	    while(_itf4!=_itf3){gauche.push_back(*_itf4);_itf4--;}
-	    while(_itf4!=vertical_profile->getBegin()){droite.push_back(*_itf4);_itf4--;}
-	    if(_itf4==vertical_profile->getBegin())droite.push_back(*_itf4);
-	    _itf4=vertical_profile->getEnd()-1;
+	    while(_itf4!=vertical_profile->begin()){droite.push_back(*_itf4);_itf4--;}
+	    if(_itf4==vertical_profile->begin())droite.push_back(*_itf4);
+	    _itf4=vertical_profile->end()-1;
 	    while(_itf4!=_itf2){droite.push_back(*_itf4);_itf4--;}
 	}
 //	cerr << "Scinde l'ensemble en 2." << endl;
 //	cerr << "Ensemble initial :" << endl;
-/*	_itf2 = vertical_profile->getBegin();
-	while(_itf2!=vertical_profile->getEnd()){
+/*	_itf2 = vertical_profile->begin();
+	while(_itf2!=vertical_profile->end()){
 	    cerr << *_itf2 << ",";_itf2++;
 	}
 	cerr  << endl;
@@ -1436,27 +1436,27 @@ GeometryPtr Fit::extrudedHull(){
 	vertical_profile = Point2ArrayPtr(new Point2Array(0));;
 	if(gauche2[1].x()<droite2[0].x()){
 //	    cerr << "Normal orientation" << endl;
-	    vertical_profile->insert(vertical_profile->getBegin(),gauche2.begin(),gauche2.end());
+	    vertical_profile->insert(vertical_profile->begin(),gauche2.begin(),gauche2.end());
 	    for(_itf3 = droite2.end();_itf3 != droite2.begin();){
-		_itf3--;vertical_profile->pushBack(*_itf3);
+		_itf3--;vertical_profile->push_back(*_itf3);
 	    }
 	}
 	else{
 //	    cerr << "Inverse orientation" << endl;
-	    vertical_profile->pushBack(*gauche2.begin());
-	    vertical_profile->insert(vertical_profile->getEnd(),droite2.begin(),droite2.end());
+	    vertical_profile->push_back(*gauche2.begin());
+	    vertical_profile->insert(vertical_profile->end(),droite2.begin(),droite2.end());
 	    for(_itf3 = gauche2.end();_itf3 != gauche2.begin()+1;){
-		_itf3--;vertical_profile->pushBack(*_itf3);
+		_itf3--;vertical_profile->push_back(*_itf3);
 	    }	  
 	}
 //	cerr << "Fin fusion des points" << endl;
 	
 
-	_itf2=vertical_profile->getBegin();_itf3=vertical_profile->getBegin();
-	Point2Array::iterator _itf2bis=vertical_profile->getBegin(),
-	    _itf3bis=vertical_profile->getBegin();
+	_itf2=vertical_profile->begin();_itf3=vertical_profile->begin();
+	Point2Array::iterator _itf2bis=vertical_profile->begin(),
+	    _itf3bis=vertical_profile->begin();
 	
-	for(_itf=vertical_profile->getBegin()+1;_itf!=vertical_profile->getEnd();_itf++){
+	for(_itf=vertical_profile->begin()+1;_itf!=vertical_profile->end();_itf++){
 	    if(_itf2->y()>_itf->y())_itf2=_itf; // min 
 	    else if(_itf2->y()==_itf->y())_itf2bis=_itf;
 	    if(_itf3->y()<_itf->y())_itf3=_itf; // max
@@ -1482,7 +1482,7 @@ GeometryPtr Fit::extrudedHull(){
     }
     else if(numpoints==3){
 	Index3ArrayPtr topo(new Index3Array());
-	topo->pushBack(Index3(0,1,2));
+	topo->push_back(Index3(0,1,2));
 	return GeometryPtr(new TriangleSet(__pointstofit,topo,true,
 					   true,true,
 					   PolylinePtr(new Polyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
@@ -1511,7 +1511,7 @@ Fit::convexHull(){
 
 
   /* number of points */
-  int numpoints =  __pointstofit->getSize();
+  int numpoints =  __pointstofit->size();
 
 //  cerr << "Fit " << numpoints << " points 3D." << endl;
 
@@ -1553,8 +1553,8 @@ Fit::convexHull(){
 
 //        errfile = fopen("/dev/null","w");
   int k=0;
-  for(Point3Array::iterator _it = __pointstofit->getBegin();
-      _it != __pointstofit->getEnd();
+  for(Point3Array::iterator _it = __pointstofit->begin();
+      _it != __pointstofit->end();
       _it++){
     points[k++]=(coordT)(_it->x());
     points[k++]=(coordT)(_it->y());
@@ -1584,15 +1584,15 @@ Fit::convexHull(){
               int _id = vertex->id;
               memtype::const_iterator _it;
               if((_it=mem.find(_id) )!=mem.end()){
-                  topo.pushBack(_it->second);
+                  topo.push_back(_it->second);
                   lt_count++;
               }
               else {
-                  resulting_points->pushBack(Vector3((real_t)vertex->point[0],
+                  resulting_points->push_back(Vector3((real_t)vertex->point[0],
                                                      (real_t)vertex->point[1],
                                                      (real_t)vertex->point[2]));
                   mem[_id]= p_count;
-                  topo.pushBack(p_count);lt_count++;
+                  topo.push_back(p_count);lt_count++;
                   p_count++;
                   /* ... your code ... */
               }
@@ -1604,9 +1604,9 @@ Fit::convexHull(){
                                     resulting_points->getAt(topo.getAt(2))
                                     - resulting_points->getAt(topo.getAt(0)));
               if(dot(_norm,_normal) < GEOM_EPSILON)
-                  resulting_topo->pushBack(Index3(topo.getAt(0),topo.getAt(2),topo.getAt(1)));
+                  resulting_topo->push_back(Index3(topo.getAt(0),topo.getAt(2),topo.getAt(1)));
               else
-                  resulting_topo->pushBack(Index3(topo.getAt(0),topo.getAt(1),topo.getAt(2)));
+                  resulting_topo->push_back(Index3(topo.getAt(0),topo.getAt(1),topo.getAt(2)));
               t_count++;
           }
       }
@@ -1625,7 +1625,7 @@ Fit::convexHull(){
   }
   else if(numpoints==3){
       Index3ArrayPtr topo(new Index3Array());
-      topo->pushBack(Index3(0,1,2));
+      topo->push_back(Index3(0,1,2));
       return GeometryPtr(new TriangleSet(__pointstofit,topo, true,true, true,
                                          PolylinePtr(new Polyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
 
@@ -1648,7 +1648,7 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
     int dim=2;
 
     /* number of points */
-    int numpoints =  _points->getSize();
+    int numpoints =  _points->size();
 
 
     /* array of coordinates for each point */
@@ -1692,8 +1692,8 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
     if(numpoints>3){
 
         int k=0;
-        for(Point2Array::iterator _it = _points->getBegin();
-            _it != _points->getEnd();
+        for(Point2Array::iterator _it = _points->begin();
+            _it != _points->end();
             _it++){
             points[k++]=(coordT)(_it->x());
             points[k++]=(coordT)(_it->y());
@@ -1809,16 +1809,16 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
             else x2=(_lf->end()-1)->x();
             if(x2<x){
                 if(_itf2!=_lf->end())
-                    _result->insert(_result->getBegin(),_itf2,_lf->end());
+                    _result->insert(_result->begin(),_itf2,_lf->end());
                 if(_itf2!=_lf->begin())
-                    _result->insert(_result->getEnd(),_lf->begin(),_itf2);
+                    _result->insert(_result->end(),_lf->begin(),_itf2);
             }
             else{
-                _result->pushBack(*_itf2);
+                _result->push_back(*_itf2);
                 for(vector<Vector2>::iterator _itf3=_itf2;_itf3!=_lf->begin();){
-                    _itf3--; _result->pushBack(*_itf3);}
+                    _itf3--; _result->push_back(*_itf3);}
                 for(vector<Vector2>::iterator _itf3b=_lf->end()-1;_itf3b!=_itf2;){
-                    _result->pushBack(*_itf3b);_itf3b--;}
+                    _result->push_back(*_itf3b);_itf3b--;}
             }
         }
         qh_freeqhull(!qh_ALL);
@@ -1836,7 +1836,7 @@ Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
 
 GeometryPtr Fit::extrusion(){
     if(! __pointstofit )return GeometryPtr();
-    if(__radius && __pointstofit->getSize() != __radius->getSize()){
+    if(__radius && __pointstofit->size() != __radius->size()){
 	cerr << "Not valid data!" << endl;
 	return GeometryPtr();
     }
@@ -1854,8 +1854,8 @@ GeometryPtr Fit::extrusion(){
 	__default_crossSection = Curve2DPtr(new Polyline2D(_crossSection));
 	__default_crossSection->setName(string("Default_CrossSection"));
     }
-    if(__pointstofit->getSize() < 2) return GeometryPtr();
-    else if(__pointstofit->getSize() == 2){
+    if(__pointstofit->size() < 2) return GeometryPtr();
+    else if(__pointstofit->size() == 2){
 	return frustum();
     }
     else {
@@ -1868,7 +1868,7 @@ GeometryPtr Fit::extrusion(){
 	  uint_t size = 1; 
 	  bool _double = false;
 	  bool _unique = true;
-	  for(Point2Array::iterator _it= __radius->getBegin()+1; _it !=__radius->getEnd(); _it++){
+	  for(Point2Array::iterator _it= __radius->begin()+1; _it !=__radius->end(); _it++){
 		if(*_it==*(_it-1)){
 		  if(!_double){ 
 			size++;
@@ -1893,7 +1893,7 @@ GeometryPtr Fit::extrusion(){
 		  Point2ArrayPtr(
 		  new Point2Array(1,__radius->getAt(0)))));
 	  }
-	  else if(size <= (__radius->getSize()*2/3)){
+	  else if(size <= (__radius->size()*2/3)){
 		return GeometryPtr(new Extrusion(nurbsCurve(),
 		  __default_crossSection,
 		  __radius));
@@ -1903,9 +1903,9 @@ GeometryPtr Fit::extrusion(){
 		RealArrayPtr _knot(new RealArray(size));
 		uint_t _i = 1, _j =1; 
 		_double = false;
-		real_t interval = __radius->getSize()-1;
+		real_t interval = __radius->size()-1;
 		_radius->setAt(0,__radius->getAt(0));_knot->setAt(0,0.0);
-		for(Point2Array::iterator _it= __radius->getBegin()+1; _it !=__radius->getEnd(); _it++){
+		for(Point2Array::iterator _it= __radius->begin()+1; _it !=__radius->end(); _it++){
 		  if(*_it == *(_it-1)){
 			if(!_double){
 			  _double = true;
@@ -1943,19 +1943,19 @@ Fit::nurbsCurve(){
     cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
     return LineicModelPtr();
   }
-  if(__pointstofit->getSize()<4)
+  if(__pointstofit->size()<4)
     return LineicModelPtr(new Polyline(__pointstofit));
   else {
 	LineicModelPtr line = leastSquares(__pointstofit,3,
-					 max(uint_t(4),min(__pointstofit->getSize()/3,uint_t(10))));
+					 max(uint_t(4),min(__pointstofit->size()/3,uint_t(10))));
 	if(!line){
 	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : Error with leastSquares computation." << endl;
 	  return LineicModelPtr(new Polyline(__pointstofit));
 	}
 	NurbsCurvePtr nurbs = dynamic_pointer_cast<NurbsCurve>(line);
 	if(nurbs){
-	  if(nurbs->getCtrlPointList()->getSize() == 4){
-		return LineicModelPtr(new BezierCurve(nurbs->getCtrlPointList(),min((__pointstofit->getSize()-1),uint_t(10))));
+	  if(nurbs->getCtrlPointList()->size() == 4){
+		return LineicModelPtr(new BezierCurve(nurbs->getCtrlPointList(),min((__pointstofit->size()-1),uint_t(10))));
 	  }
 	  else return line;
 	}
@@ -1967,8 +1967,8 @@ Fit::nurbsCurve(){
 }
 
 LineicModelPtr Fit::nurbsCurve(const Point3ArrayPtr & Q, int degC, int n){
-  if(!Q  || Q->getSize() < n ){
-	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Not enougth points (" << (Q?Q->getSize():0) << ") to fit with a Nurbs Curve." << endl;
+  if(!Q  || Q->size() < n ){
+	  cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Not enougth points (" << (Q?Q->size():0) << ") to fit with a Nurbs Curve." << endl;
     return LineicModelPtr();
   }
   if(degC > n - 1 ){
@@ -1982,7 +1982,7 @@ LineicModelPtr Fit::nurbsCurve(const Point3ArrayPtr & Q, int degC, int n){
 	}
 	NurbsCurvePtr nurbs = dynamic_pointer_cast<NurbsCurve>(line);
 	if(nurbs){
-	  if(nurbs->getCtrlPointList()->getSize() == degC+1){
+	  if(nurbs->getCtrlPointList()->size() == degC+1){
 		return LineicModelPtr(new BezierCurve(nurbs->getCtrlPointList()));
 	  }
 	  else return line;
@@ -2005,23 +2005,23 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q, int degC, int n){
 
 RealArrayPtr Fit::chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength){
   uint_t i ;
-  RealArrayPtr ub(new RealArray(Q->getSize()));
+  RealArrayPtr ub(new RealArray(Q->size()));
   totalLength = 0;
 
   ub->setAt(0, 0) ;
-  for(i=1;i<ub->getSize();i++){
+  for(i=1;i<ub->size();i++){
       totalLength += norm(Q->getAt(i)-Q->getAt(i-1)) ;
   }
   if(totalLength>0){
-    for(i=1;i<ub->getSize()-1;++i){
+    for(i=1;i<ub->size()-1;++i){
       ub->setAt(i, ub->getAt(i-1) + norm(Q->getAt(i)-Q->getAt(i-1))/totalLength) ;
     }
-    ub->setAt(ub->getSize()-1, 1.0) ; // In case there is some addition round-off
+    ub->setAt(ub->size()-1, 1.0) ; // In case there is some addition round-off
   }
   else{
-    for(i=1;i<ub->getSize()-1;++i)
-      ub->setAt(i, real_t(i)/real_t(ub->getSize()-1)) ;
-    ub->setAt(ub->getSize()-1, 1.0) ; // In case there is some addition round-off
+    for(i=1;i<ub->size()-1;++i)
+      ub->setAt(i, real_t(i)/real_t(ub->size()-1)) ;
+    ub->setAt(ub->size()-1, 1.0) ; // In case there is some addition round-off
   }
   return ub;
 }
@@ -2031,7 +2031,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
                                 int degC, int n, const RealArrayPtr& ub){
     int i,j;
     real_t d,a ;
-    if(ub->getSize() != Q->getSize()){
+    if(ub->size() != Q->size()){
 	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate  Knot Vector." << endl;
 	return LineicModelPtr();
     }
@@ -2040,7 +2040,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     // Changing the method to generate a U compare to the one
     // described by Piegl and Tiller in the NURBS book (eq 9.69)
 
-    d = (real_t)(Q->getSize())/(real_t)(n) ;
+    d = (real_t)(Q->size())/(real_t)(n) ;
     for(j=0;j<=degC;++j)
         U->setAt(j, 0) ;
 
@@ -2065,13 +2065,13 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
                                 const RealArrayPtr& knot){
 
     uint_t span;
-    const uint_t& m=Q->getSize() ;
+    const uint_t& m=Q->size() ;
 
-    if(ub->getSize() != Q->getSize()){
+    if(ub->size() != Q->size()){
 	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Estimate Knot Vector." << endl;
 	return LineicModelPtr();
     }
-    if(knot->getSize() != (uint_t)n+degC+1){
+    if(knot->size() != (uint_t)n+degC+1){
 	cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Wrong size of Knot Vector." << endl;
 	return LineicModelPtr();
     }
@@ -2134,7 +2134,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 	    B.setAt(i,2,(double)(R->getAt(i+1).z()) );
 	}
 	DoubleArray2 Ns = N.get(1,1,m-2,n-2);
-	if(Ns.getSize() == 0){
+	if(Ns.size() == 0){
 	    cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "Error in getting sub-matrix." << endl;
 	    return LineicModelPtr();
 	}
@@ -2152,7 +2152,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     }
     P->setAt(0, Vector4(Q->getAt(0),1)) ;
     P->setAt(n-1, Vector4(Q->getAt(m-1),1)) ;
-    return  LineicModelPtr(new NurbsCurve(P,knot,degC,uint_t(Q->getSize()-1))) ;
+    return  LineicModelPtr(new NurbsCurve(P,knot,degC,uint_t(Q->size()-1))) ;
 }
 /*
 
@@ -2165,7 +2165,7 @@ Fit::selectModel(real_t ki, Point3ArrayPtr pts, real_t& kirestant){
 	  res = leastSquares(pts,deg,nnmax);
 	  NurbsCurvePtr nurbs;
 	  if(nurbs.cast(res)){
-	  if(nurbs->getCtrlPointList()->getSize() == deg+1){
+	  if(nurbs->getCtrlPointList()->size() == deg+1){
 		res = LineicModelPtr(new BezierCurve(nurbs->getCtrlPointList(),deg));
 		kirestant = ki - 3*nurbs->getCtrlPointListSize()*sizeof(real_t)+sizeof(int);
 	  }

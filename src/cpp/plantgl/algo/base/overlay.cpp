@@ -90,10 +90,10 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
   // Construct the first arrangement, containing a polyline 1.
   Arrangement_2          arr1;
 
-  for (Point2Array::const_iterator it1 = p1->getPointList()->getBegin()+1; it1 != p1->getPointList()->getEnd(); ++it1)
+  for (Point2Array::const_iterator it1 = p1->getPointList()->begin()+1; it1 != p1->getPointList()->end(); ++it1)
 	insert_non_intersecting_curve(arr1,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
   Vector2& fp1 = p1->getPointList()->getAt(0);
-  Vector2& lp1 = *(p1->getPointList()->getEnd()-1);
+  Vector2& lp1 = *(p1->getPointList()->end()-1);
 
   // to be a closed face, first and last point should be exactly the same.
   // However we should not duplicate the same point twice at the end.
@@ -112,10 +112,10 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
   // Construct the second arrangement, containing a rhombus-shaped face.
   Arrangement_2          arr2;
 
-  for (Point2Array::const_iterator it2 = p2->getPointList()->getBegin()+1; it2 != p2->getPointList()->getEnd(); ++it2)
+  for (Point2Array::const_iterator it2 = p2->getPointList()->begin()+1; it2 != p2->getPointList()->end(); ++it2)
 	 	insert_curve(arr2,Segment_2(Point_2((it2-1)->x(),(it2-1)->y()),Point_2(it2->x(),it2->y())));
   Vector2& fp2 = p2->getPointList()->getAt(0);
-  Vector2& lp2 = *(p2->getPointList()->getEnd()-1);
+  Vector2& lp2 = *(p2->getPointList()->end()-1);
 
   // to be a closed face, first and last point should be exactly the same.
   // However we should not duplicate the same point twice at the end.
@@ -149,18 +149,18 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 	Point2ArrayPtr pointSet( new Point2Array(1,toVec2(curr->source()->point())));
     do
     {
-	  pointSet->pushBack(toVec2(curr->target()->point()));
+	  pointSet->push_back(toVec2(curr->target()->point()));
       ++curr;
     } while (curr != face->outer_ccb());
-	if (pointSet->getSize() == 1){
-		geomarray->pushBack(GeometryPtr(new PointSet2D(pointSet)));
+	if (pointSet->size() == 1){
+		geomarray->push_back(GeometryPtr(new PointSet2D(pointSet)));
 	}
-	else if(pointSet->getSize() > 1){
-		geomarray->pushBack(GeometryPtr(new Polyline2D(pointSet)));
+	else if(pointSet->size() > 1){
+		geomarray->push_back(GeometryPtr(new Polyline2D(pointSet)));
 	}
   }
-  if (geomarray->isEmpty())return GeometryPtr();
-  else if (geomarray->getSize() == 1) return geomarray->getAt(0);
+  if (geomarray->empty())return GeometryPtr();
+  else if (geomarray->size() == 1) return geomarray->getAt(0);
   else return GeometryPtr(new Group(geomarray));
 
 #else

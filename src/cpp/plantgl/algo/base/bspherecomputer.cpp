@@ -80,8 +80,8 @@ using namespace std;
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( geom ); \
   Vector3 center = geom->getPointList()->getCenter(); \
   real_t radius = 0; \
-  for(Point3Array::iterator _it = geom->getPointList()->getBegin(); \
-                _it != geom->getPointList()->getEnd(); _it++) \
+  for(Point3Array::iterator _it = geom->getPointList()->begin(); \
+                _it != geom->getPointList()->end(); _it++) \
                 radius = max(norm(*_it-center),radius); \
   __result = BoundingSpherePtr(new BoundingSphere(center,radius)); \
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( geom ); \
@@ -92,8 +92,8 @@ using namespace std;
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( geom ); \
   Vector2 center = geom->getPointList()->getCenter(); \
   real_t radius = 0; \
-  for(Point2Array::iterator _it = geom->getPointList()->getBegin(); \
-                _it != geom->getPointList()->getEnd(); _it++) \
+  for(Point2Array::iterator _it = geom->getPointList()->begin(); \
+                _it != geom->getPointList()->end(); _it++) \
                 radius = max(norm(*_it-center),radius); \
   __result = BoundingSpherePtr(new BoundingSphere(Vector3(center,0),radius)); \
   GEOM_BSPHERECOMPUTER_UPDATE_CACHE( geom ); \
@@ -401,7 +401,7 @@ BSphereComputer::process( Group * group )
   GEOM_BSPHERECOMPUTER_CHECK_CACHE( group );
 
   const GeometryArrayPtr& _group = group->getGeometryList();
-  uint_t _size = _group->getSize();
+  uint_t _size = _group->size();
   if(!_group->getAt(0)->apply(*this))return false;
   GEOM_ASSERT(__result);
   BoundingSphere res(*__result);

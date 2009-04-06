@@ -69,8 +69,8 @@ bool PointSet::Builder::isValid( ) const {
 	if(!EMValid()) return false;
 
 	if (ColorList && *ColorList) {
-		uint_t _colorListSize = (*ColorList)->getSize();
-		if(_colorListSize != (*PointList)->getSize()){
+		uint_t _colorListSize = (*ColorList)->size();
+		if(_colorListSize != (*PointList)->size()){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
 		}
@@ -117,13 +117,13 @@ bool  PointSet::isAVolume( ) const {
 
 const Vector3& 
 PointSet::getPointListAt( uint_t i ) const {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);   
 }
 
 Vector3& 
 PointSet::getPointListAt( uint_t i ) {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);   
 }
 
@@ -178,7 +178,7 @@ bool PointSet2D::Builder::isValid( ) const {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
     return false;
   };
-  if ((*PointList)->getSize() < 1) {
+  if ((*PointList)->size() < 1) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"PointSet2D","PointList","Number of points must be greater than 0.");
     return false;
   };
@@ -232,13 +232,13 @@ PointSet2D::copy(DeepCopier& copier) const
 
 const Vector2& 
 PointSet2D::getPointListAt( uint_t i ) const {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);   
 }
 
 Vector2& 
 PointSet2D::getPointListAt( uint_t i ) {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);   
 }
 
@@ -254,7 +254,7 @@ PointSet2D::getPointList( ) {
 
 uint_t 
 PointSet2D::getPointListSize( ) const {
-  return __pointList->getSize();
+  return __pointList->size();
 }
 
 /*

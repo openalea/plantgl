@@ -227,7 +227,7 @@ ViewEditGeomSceneGL::addEditEntries(QMenu * menu)
 void 
 ViewEditGeomSceneGL::editMaterial()
 {
-  if(__scene->getSize() != 1){
+  if(__scene->size() != 1){
 	if(__selectedShapes.empty()){
 	  QMessageBox::warning(__frame,tr("GEOM Error"),
 		tr("Material edition can be apply only on selected shapes."),1,0,0);
@@ -301,7 +301,7 @@ ViewEditGeomSceneGL::dissociateMaterial()
 void ViewEditGeomSceneGL::setAppearance(ScenePtr scene,AppearancePtr appe) const
 {
   if(!scene)return;
-  for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
+  for(Scene::const_iterator _it = scene->begin(); _it !=scene->end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
 	if(shape) shape->appearance = appe;
 	else {
@@ -315,7 +315,7 @@ bool
 ViewEditGeomSceneGL::hasSameMaterial(ScenePtr scene,AppearancePtr appe) const
 {
   if(!scene || !appe)return true;
-  for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
+  for(Scene::const_iterator _it = scene->begin(); _it !=scene->end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
 	if(shape){
 	  if(shape->getAppearance() != appe)return false;
@@ -357,7 +357,7 @@ AppearancePtr
 ViewEditGeomSceneGL::getSelectedAppearance() const
 {
   if(__selectedShapes.empty()) {
-	if (__scene->getSize() == 1) return getSelectedAppearance(__scene);
+	if (__scene->size() == 1) return getSelectedAppearance(__scene);
 	return AppearancePtr();
   }
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
@@ -380,8 +380,8 @@ ViewEditGeomSceneGL::getSelectedAppearance() const
 AppearancePtr 
 ViewEditGeomSceneGL::getSelectedAppearance(ScenePtr scene) const
 {
-  if(!scene || scene->isEmpty()) return AppearancePtr();
-  for(Scene::const_iterator _it = scene->getBegin(); _it !=scene->getEnd(); _it++){
+  if(!scene || scene->empty()) return AppearancePtr();
+  for(Scene::const_iterator _it = scene->begin(); _it !=scene->end(); _it++){
 	ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
 	if(shape) {
 	  if(shape->getAppearance())return shape->getAppearance();
@@ -466,7 +466,7 @@ ViewMultiscaleEditGeomSceneGL::addEditEntries(QMenu * menu)
 
 void
 ViewMultiscaleEditGeomSceneGL::editMultiScaleGeometry(){
-  if(!__scene || __scene->isEmpty()){
+  if(!__scene || __scene->empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No Geometry to Fit."),1,0,0);
 	return;
@@ -514,18 +514,18 @@ ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
   if(__appform->SceneButton->isChecked())scene = __scene;
   else if (__appform->SelectionButton->isChecked())scene = getSelection();
   else scene = getNotSelection();
-  if(!scene||scene->isEmpty()){
+  if(!scene||scene->empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No Geometry to Fit."),1,0,0);
 	return;
   }
   Point3ArrayPtr points(new Point3Array);
-  for(Scene::iterator _it = scene->getBegin();_it != scene->getEnd(); _it++){
+  for(Scene::iterator _it = scene->begin();_it != scene->end(); _it++){
 	if((*_it)->apply(__discretizer)){
 	  *points += *(__discretizer.getDiscretization()->getPointList());
 	}
   }
-  if(points->isEmpty()){
+  if(points->empty()){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("No Geometry to Fit."),1,0,0);
 	return;

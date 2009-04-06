@@ -140,7 +140,7 @@ bool Extrusion::Builder::isValid( ) const {
 	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
 	    return false;
 	};
-	if((*Scale)->getSize() == 0 ){
+	if((*Scale)->size() == 0 ){
 	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
 	    return false;
 	}
@@ -148,34 +148,34 @@ bool Extrusion::Builder::isValid( ) const {
     }
 
     if(Orientation){
-	if((*Orientation)->getSize() == 0 ){
+	if((*Orientation)->size() == 0 ){
 	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
 	    return false;
 	}
     }
 
-    if( ((Scale)&&(*Scale)->getSize() !=1) &&
-	((Orientation)&&(*Orientation)->getSize() !=1) &&
-	((*Scale)->getSize()!=((*Orientation)->getSize())) ){
+    if( ((Scale)&&(*Scale)->size() !=1) &&
+	((Orientation)&&(*Orientation)->size() !=1) &&
+	((*Scale)->size()!=((*Orientation)->size())) ){
 	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
 		       "Must specifie Scale and Orientation with the same number of value."); 
 	    return false;
     }
 
     if(KnotList){
-	if(((!Scale)||(*Scale)->getSize() ==1)&&((!Orientation)||(*Orientation)->getSize() ==1)){
+	if(((!Scale)||(*Scale)->size() ==1)&&((!Orientation)||(*Orientation)->size() ==1)){
 	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
 		       "Must specifie Scale or Orientation with more than one value."); 
 	}
 	else if(Scale){
-	    if(((*Scale)->getSize() > 1)&&((*Scale)->getSize() != (*KnotList)->getSize())){
+	    if(((*Scale)->size() > 1)&&((*Scale)->size() != (*KnotList)->size())){
 		pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
 			   "Must have the same number of value than Scale .");
 		return false;
 	    }
 	}
 	else {
-	    if(((*Orientation)->getSize() ==1)&&(((*Orientation)->getSize()) != (*KnotList)->getSize())){
+	    if(((*Orientation)->size() ==1)&&(((*Orientation)->size()) != (*KnotList)->size())){
 		pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
 			   "Must have the same number of value than Orientation .");
 		return false;

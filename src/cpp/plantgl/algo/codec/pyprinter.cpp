@@ -99,7 +99,7 @@ inline ostream& print_value(ostream& os, const Color3& value)
 ostream& print_value(ostream& os, const Color4ArrayPtr& value)
 {	
 	os << "Color4Array([";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		Color4 c = value->getAt(_i);
 		os << "(" << (uint16_t)c.getRed() 
@@ -114,7 +114,7 @@ ostream& print_value(ostream& os, const Color4ArrayPtr& value)
 ostream& print_value(ostream& os, const Curve2DArrayPtr& value)
 {
 	os << "[";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		os << value->getAt(_i)->getName() << ", ";
 	}
@@ -125,7 +125,7 @@ ostream& print_value(ostream& os, const Curve2DArrayPtr& value)
 ostream& print_value(ostream& os, const GeometryArrayPtr& value)
 {
 	os << "[";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		os << value->getAt(_i)->getName() << ", ";
 	}
@@ -136,7 +136,7 @@ ostream& print_value(ostream& os, const GeometryArrayPtr& value)
 ostream& print_value(ostream& os, const Index3ArrayPtr& value)
 {
 	os << "Index3Array([";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		os << "(" 
 			<< value->getAt(_i).getAt(0) << "," << value->getAt(_i).getAt(1) << ","
@@ -149,7 +149,7 @@ ostream& print_value(ostream& os, const Index3ArrayPtr& value)
 ostream& print_value(ostream& os, const Index4ArrayPtr& value)
 {
 	os << "Index4Array([";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		os << "(" 
 			<< value->getAt(_i).getAt(0) << "," << value->getAt(_i).getAt(1) << ","
@@ -164,7 +164,7 @@ ostream& print_value(ostream& os, const RealArrayPtr& value)
 {
 	//os << "RealArray([";
 	os << "[";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		os << value->getAt(_i) << ", ";
 	}
@@ -176,7 +176,7 @@ ostream& print_value(ostream& os, const RealArray2Ptr& value)
 {
 	uint_t _cols = value->getColsNb();
 	os << "[[";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _sizei; _i++) {
 		os << value->getAt(_i / _cols ,_i % _cols) << ",";
 		if (_i != (_sizei - 1)){ 
@@ -193,8 +193,8 @@ ostream& print_value(ostream& os, const RealArray2Ptr& value)
 ostream& print_value(ostream& os, const Point2ArrayPtr& value)
 {
 	os << "Point2Array([";
-	uint_t _sizei = value->getSize();
-        for(Point2Array::const_iterator it = value->getBegin(); it != value->getEnd(); ++it)
+	uint_t _sizei = value->size();
+        for(Point2Array::const_iterator it = value->begin(); it != value->end(); ++it)
 		print_value(os,*it) << ',';
 	os << "])";
 	return os;
@@ -203,8 +203,8 @@ ostream& print_value(ostream& os, const Point2ArrayPtr& value)
 ostream& print_value(ostream& os, const Point3ArrayPtr& value)
 {
 	os << "Point3Array([";
-	uint_t _sizei = value->getSize();
-        for(Point3Array::const_iterator it = value->getBegin(); it != value->getEnd(); ++it)
+	uint_t _sizei = value->size();
+        for(Point3Array::const_iterator it = value->begin(); it != value->end(); ++it)
 		print_value(os,*it) << ',';
 	os << "])";
 	return os;
@@ -213,8 +213,8 @@ ostream& print_value(ostream& os, const Point3ArrayPtr& value)
 ostream& print_value(ostream& os, const Point4ArrayPtr& value)
 {
 	os << "Point4Array([";
-	uint_t _sizei = value->getSize();
-        for(Point4Array::const_iterator it = value->getBegin(); it != value->getEnd(); ++it)
+	uint_t _sizei = value->size();
+        for(Point4Array::const_iterator it = value->begin(); it != value->end(); ++it)
 		print_value(os,*it) << ',';
 	os << "])";
 	return os;
@@ -225,7 +225,7 @@ ostream& print_value(ostream& os, const Point4MatrixPtr& value)
 	uint_t _cols = value->getColsNb();
 	uint_t _rows = value->getRowsNb();
 	os << "[";
-	uint_t _sizei = value->getSize();
+	uint_t _sizei = value->size();
 	for (uint_t _i = 0; _i < _rows; ++_i) {
            os << "[";
    	   for (uint_t _j = 0; _j < _cols; ++_j) 

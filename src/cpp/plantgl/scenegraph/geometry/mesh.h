@@ -230,7 +230,7 @@ public:
       - \e i must be belong to the range [0,size of \b PointList[. */
   inline const TOOLS(Vector3)& getPointAt( uint_t i ) const {
 	GEOM_ASSERT(__pointList.isValid());
-	GEOM_ASSERT(i < __pointList->getSize());
+	GEOM_ASSERT(i < __pointList->size());
 	return __pointList->getAt(i);
   }
 
@@ -283,7 +283,7 @@ public:
       - \e i must be belong to the range [0,size of \b NormalList]. */
   inline const TOOLS(Vector3)& getNormalAt( uint_t i )  const  {
 	GEOM_ASSERT(__normalList.isValid());
-	GEOM_ASSERT(i < __normalList->getSize());
+	GEOM_ASSERT(i < __normalList->size());
 	return __normalList->getAt(i);
   }
 
@@ -293,13 +293,10 @@ public:
       - \e j must belong to the range [0,2]. */
   inline const TOOLS(Vector3)& getFaceNormalAt( uint_t i, uint_t j ) const {
 	GEOM_ASSERT(__normalList.isValid());
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	return __normalList->getAt(getFaceNormalIndexAt(i,j));
   }
-
-  inline attribute_deprecated const TOOLS(Vector3)& getNormalAt( uint_t i, uint_t j ) const 
-  { return getFaceNormalAt(i,j); }
 
   /** Returns the \e j-th texture coordinates of the \e i-th face.
       \warning
@@ -307,7 +304,7 @@ public:
       - \e i must be belong to the range [0,size of \b TexCoordList[. */
   const TOOLS(Vector2)& getTexCoordAt( uint_t i ) const  {
 	GEOM_ASSERT(__texCoordList.isValid());
-	GEOM_ASSERT(i < __texCoordList->getSize());
+	GEOM_ASSERT(i < __texCoordList->size());
 	return __texCoordList->getAt(i);
   }
 
@@ -318,20 +315,17 @@ public:
       - \e j must belong to the range [0,2]. */
   const TOOLS(Vector2)& getFaceTexCoordAt( uint_t i, uint_t j ) const {
 	GEOM_ASSERT(__texCoordList.isValid());
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	return __texCoordList->getAt(getFaceTexCoordIndexAt(i,j));
 	}
-
-  inline attribute_deprecated const TOOLS(Vector2)& getTexCoordAt( uint_t i, uint_t j ) const 
-  { return getFaceTexCoordAt(i,j); }
    
   /** Returns the \e j-th colors of the \e i-th face.
       \warning
       - \e i must be belong to the range [0,size of \b ColorList[. */
   const Color4& getColorAt( uint_t i ) const {
 	GEOM_ASSERT(__colorList.isValid());
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	return __colorList->getAt(i);
   }
     
@@ -341,14 +335,21 @@ public:
       - \e j must belong to the range [0,2]. */
   const Color4& getFaceColorAt( uint_t i, uint_t j ) const {
 	GEOM_ASSERT(__colorList.isValid());
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	return __colorList->getAt(getFaceColorIndexAt(i,j));
   }
 
+#ifndef PGL_NO_DEPRECATED
+  inline attribute_deprecated const TOOLS(Vector3)& getNormalAt( uint_t i, uint_t j ) const 
+  { return getFaceNormalAt(i,j); }
+
+  inline attribute_deprecated const TOOLS(Vector2)& getTexCoordAt( uint_t i, uint_t j ) const 
+  { return getFaceTexCoordAt(i,j); }
+
   inline attribute_deprecated const Color4& getColorAt( uint_t i, uint_t j ) const 
   { return getFaceColorAt(i,j); }
-
+#endif
 
   void computeNormalList(bool pervertex);
   Point3ArrayPtr computeNormalPerVertex() const;
@@ -533,7 +534,7 @@ public:
 
   /// Returns the size of \b IndexList.
   virtual uint_t getIndexListSize( ) const 
-  { return (__indexList?__indexList->getSize():0); }
+  { return (__indexList?__indexList->size():0); }
 
   /// Returns the nb of points of the \b i-th face.
   virtual uint_t getFaceSize( uint_t i ) const 
@@ -544,7 +545,7 @@ public:
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual const uint_t & getFacePointIndexAt( uint_t i, uint_t j ) const
-  { GEOM_ASSERT(i < __indexList->getSize());
+  { GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	return __indexList->getAt(i).getAt(j); }
 
@@ -554,7 +555,7 @@ public:
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual const uint_t & getFaceNormalIndexAt( uint_t i, uint_t j ) const 
   {
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	if( __normalIndexList) return __normalIndexList->getAt(i).getAt(j);
 	else  return __indexList->getAt(i).getAt(j);
@@ -566,7 +567,7 @@ public:
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual const uint_t & getFaceTexCoordIndexAt( uint_t i, uint_t j ) const 
   {
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	if( __texCoordIndexList) return __texCoordIndexList->getAt(i).getAt(j);
 	else  return __indexList->getAt(i).getAt(j);
@@ -578,7 +579,7 @@ public:
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
   virtual const uint_t & getFaceColorIndexAt( uint_t i, uint_t j ) const 
   {
-	GEOM_ASSERT(i < __indexList->getSize());
+	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	if( __colorIndexList) return __colorIndexList->getAt(i).getAt(j);
 	else  return __indexList->getAt(i).getAt(j);
@@ -596,13 +597,13 @@ public:
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline const IndexType& getIndexListAt( uint_t i ) const
-  { GEOM_ASSERT(i < __indexList->getSize()); return __indexList->getAt(i); }
+  { GEOM_ASSERT(i < __indexList->size()); return __indexList->getAt(i); }
 
   /** Returns the \e i-th value of \b IndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline IndexType& getIndexListAt( uint_t i )
-  { GEOM_ASSERT(i < __indexList->getSize()); return __indexList->getAt(i); }
+  { GEOM_ASSERT(i < __indexList->size()); return __indexList->getAt(i); }
 
   /// Returns \b NormalIndexList values.
   inline const IndexArrayPtr& getNormalIndexList( ) const 
@@ -616,19 +617,19 @@ public:
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline const IndexType& getNormalIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->getSize()); 
+  { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->size()); 
     return __normalIndexList->getAt(i); }
 
   /** Returns the \e i-th value of \b IndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline IndexType& getNormalIndexListAt( uint_t i )
-  { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->getSize()); 
+  { GEOM_ASSERT(__normalIndexList.isValid() && i < __normalIndexList->size()); 
     return __normalIndexList->getAt(i); }
 
   /// Returns the size of \b NormalIndexList.
   inline uint_t getNormalIndexListSize( ) const 
-  { return (__normalIndexList?__normalIndexList->getSize():0); }
+  { return (__normalIndexList?__normalIndexList->size():0); }
 
   /// Returns \b ColorIndexList values.
   inline const IndexArrayPtr& getColorIndexList( ) const 
@@ -642,19 +643,19 @@ public:
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline const IndexType& getColorIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->getSize());
+  { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->size());
     return __colorIndexList->getAt(i); }
 
   /** Returns the \e i-th value of \b IndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline IndexType& getColorIndexListAt( uint_t i )
-  { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->getSize());
+  { GEOM_ASSERT(__colorIndexList.isValid() && i < __colorIndexList->size());
     return __colorIndexList->getAt(i); }
 
   /// Returns the size of \b ColorIndexList.
   inline uint_t getColorIndexListSize( ) const 
-  { return (__colorIndexList?__colorIndexList->getSize():0); }
+  { return (__colorIndexList?__colorIndexList->size():0); }
 
   /// Returns \b TexCoordIndexList values.
   inline const IndexArrayPtr& getTexCoordIndexList( ) const 
@@ -668,19 +669,19 @@ public:
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline const IndexType& getTexCoordIndexListAt( uint_t i ) const 
-  { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->getSize());
+  { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->size());
     return __texCoordIndexList->getAt(i); }
 
   /** Returns the \e i-th value of \b IndexList.
       \pre
       - \e i must belong to the range [0,size of \b IndexList). */
   inline IndexType& getTexCoordIndexListAt( uint_t i )
-  { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->getSize());
+  { GEOM_ASSERT(__texCoordIndexList.isValid() && i < __texCoordIndexList->size());
     return __texCoordIndexList->getAt(i); }
 
   /// Returns the size of \b TexCoordIndexList.
   inline uint_t getTexCoordIndexListSize( ) const 
-  { return (__texCoordIndexList?__texCoordIndexList->getSize():0); }
+  { return (__texCoordIndexList?__texCoordIndexList->size():0); }
 
 
    /// Returns whether \b NormalIndexList is set to its default value.

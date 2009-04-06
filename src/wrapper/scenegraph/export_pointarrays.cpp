@@ -60,7 +60,7 @@ template <class T>
 void py_sort(T * pts, boost::python::object cmp_method){
     boost::python::object * old_compare_method = compare_method ;
     compare_method  = & cmp_method;
-    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp<typename T::element_type>);
+    std::stable_sort(pts->begin(),pts->end(),py_comp<typename T::element_type>);
     compare_method  = old_compare_method;
 }
 
@@ -86,40 +86,40 @@ bool py_comp_w(const T& a, const T& b){
 
 template <class T>
 void py_sort_x(T * pts){
-    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_x<typename T::element_type>);
+    std::stable_sort(pts->begin(),pts->end(),py_comp_x<typename T::element_type>);
 }
 
 template <class T>
 void py_sort_y(T * pts){
-    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_x<typename T::element_type>);
+    std::stable_sort(pts->begin(),pts->end(),py_comp_x<typename T::element_type>);
 }
 
 template <class T>
 void py_sort_z(T * pts){
-    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_z<typename T::element_type>);
+    std::stable_sort(pts->begin(),pts->end(),py_comp_z<typename T::element_type>);
 }
 
 template <class T>
 void py_sort_w(T * pts){
-    std::stable_sort(pts->getBegin(),pts->getEnd(),py_comp_w<typename T::element_type>);
+    std::stable_sort(pts->begin(),pts->end(),py_comp_w<typename T::element_type>);
 }
 
 template <class T>
 boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     boost::python::list rlist;
-    typename T::const_iterator itPrevious = pts->getBegin();
+    typename T::const_iterator itPrevious = pts->begin();
     RCPtr<T> c_pointset (new T());
-    c_pointset->pushBack(*itPrevious);
+    c_pointset->push_back(*itPrevious);
     rlist.append(object(c_pointset));
-    for(typename T::const_iterator it = pts->getBegin()+1; it != pts->getEnd(); ++it) {
+    for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it) {
         if (cmp_method(object(*it),object(*itPrevious)) == 0) { 
             // True (1) means that there are in the same group. False (0) in 2 differents groups.
             c_pointset = RCPtr<T>(new T());
-            c_pointset->pushBack(*it);
+            c_pointset->push_back(*it);
             rlist.append(object(c_pointset));
             itPrevious = it;
         }
-        else { c_pointset->pushBack(*it); }
+        else { c_pointset->push_back(*it); }
     }
     return rlist;
 }
@@ -144,60 +144,60 @@ Point4Array * p4_from_p3(Point3ArrayPtr pts,  real_t w)
 { return new Point4Array(*pts,w); }
 
 template<class T>
-int pa_xminindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getXMin()); }
+int pa_xminindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getXMin()); }
 
 template<class T>
-int pa_xmaxindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getXMax()); }
+int pa_xmaxindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getXMax()); }
 
 template<class T>
-int pa_yminindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getYMin()); }
+int pa_yminindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getYMin()); }
 
 template<class T>
-int pa_ymaxindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getYMax()); }
+int pa_ymaxindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getYMax()); }
 
 template<class T>
-int pa_zminindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getZMin()); }
+int pa_zminindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getZMin()); }
 
 template<class T>
-int pa_zmaxindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getZMax()); }
+int pa_zmaxindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getZMax()); }
 
 template<class T>
-int pa_wminindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getWMin()); }
+int pa_wminindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getWMin()); }
 
 template<class T>
-int pa_wmaxindex(const T * pts){ if(pts->isEmpty()) return -1; return distance(pts->getBegin(),pts->getWMax()); }
+int pa_wmaxindex(const T * pts){ if(pts->empty()) return -1; return distance(pts->begin(),pts->getWMax()); }
 
 template<class T>
 object pa_xminmaxindex(const T * pts){ 
-    if(pts->isEmpty()) return object();
+    if(pts->empty()) return object();
     std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getXMinAndMax();
-    return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
+    return make_tuple(distance(pts->begin(),index.first),distance(pts->begin(),index.second)); 
 }
 
 template<class T>
 object pa_yminmaxindex(const T * pts){ 
-    if(pts->isEmpty()) return object();
+    if(pts->empty()) return object();
     std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getYMinAndMax();
-    return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
+    return make_tuple(distance(pts->begin(),index.first),distance(pts->begin(),index.second)); 
 }
 
 template<class T>
 object pa_zminmaxindex(const T * pts){ 
-    if(pts->isEmpty()) return object();
+    if(pts->empty()) return object();
     std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getZMinAndMax();
-    return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
+    return make_tuple(distance(pts->begin(),index.first),distance(pts->begin(),index.second)); 
 }
 
 template<class T>
 object pa_wminmaxindex(const T * pts){ 
-    if(pts->isEmpty()) return object();
+    if(pts->empty()) return object();
     std::pair<typename T::const_iterator,typename T::const_iterator> index = pts->getWMinAndMax();
-    return make_tuple(distance(pts->getBegin(),index.first),distance(pts->getBegin(),index.second)); 
+    return make_tuple(distance(pts->begin(),index.first),distance(pts->begin(),index.second)); 
 }
 
 template<class T>
 object pa_bounds(const T * pts){ 
-    if(pts->isEmpty()) return object();
+    if(pts->empty()) return object();
     std::pair<typename T::element_type,typename T::element_type> bounds = pts->getBounds();
     return make_tuple(bounds.first,bounds.second); 
 }

@@ -396,11 +396,11 @@ bool AmapTranslator::process( Swung * swung )
 bool AmapTranslator::process( QuadSet * quadSet ) {
   GEOM_ASSERT(quadSet);
   Index4ArrayPtr _ind = quadSet->getIndexList();
-  IndexArrayPtr indices(new IndexArray(_ind->getSize()));
-  IndexArray::iterator _it2 = indices->getBegin();
-  for(Index4Array::const_iterator _it = _ind->getBegin();_it!=_ind->getEnd();_it++){
+  IndexArrayPtr indices(new IndexArray(_ind->size()));
+  IndexArray::iterator _it2 = indices->begin();
+  for(Index4Array::const_iterator _it = _ind->begin();_it!=_ind->end();_it++){
       (*_it2) = Index(0);
-      _it2->insert(_it2->getBegin(),_it->getBegin(),_it->getEnd());
+      _it2->insert(_it2->begin(),_it->begin(),_it->end());
       _it2++;
   }
   FaceSetPtr f(new FaceSet(quadSet->getPointList(), indices, quadSet->getNormalPerVertex(),
@@ -447,11 +447,11 @@ bool AmapTranslator::process( Translated * translated ) {
 bool AmapTranslator::process( TriangleSet * triangleSet ) {
   GEOM_ASSERT(triangleSet);
   Index3ArrayPtr _ind = triangleSet->getIndexList();
-  IndexArrayPtr indices(new IndexArray(_ind->getSize()));
-  IndexArray::iterator _it2 = indices->getBegin();
-  for(Index3Array::const_iterator _it = _ind->getBegin();_it!=_ind->getEnd();_it++){
+  IndexArrayPtr indices(new IndexArray(_ind->size()));
+  IndexArray::iterator _it2 = indices->begin();
+  for(Index3Array::const_iterator _it = _ind->begin();_it!=_ind->end();_it++){
       (*_it2) = Index(0);
-      _it2->insert(_it2->getBegin(),_it->getBegin(),_it->getEnd());_it2++;
+      _it2->insert(_it2->begin(),_it->begin(),_it->end());_it2++;
   }
   FaceSetPtr f( new FaceSet( triangleSet->getPointList(), indices, triangleSet->getNormalPerVertex(),
              triangleSet->getCCW(), triangleSet->getSolid(), triangleSet->getSkeleton()));

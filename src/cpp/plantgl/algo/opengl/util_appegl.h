@@ -135,7 +135,7 @@ inline void glGeomFogColor(const QRgb& rgb)
 
 /// glColor for GEOM
 inline void glGeomColor(const PGL(Color3)& v){
-  glColor3ubv(v.getBegin());
+  glColor3ubv(v.begin());
 }
 
 /// glColor for GEOM
@@ -145,7 +145,7 @@ inline void glGeomColor(const PGL(Color3)& v,const uchar_t& alpha){
 
 /// glColor for GEOM
 inline void glGeomColor(const PGL(Color4)& v){
-  glColor4ubv(v.getBegin());
+  glColor4ubv(v.begin());
 }
 
 /// glColor for Qt

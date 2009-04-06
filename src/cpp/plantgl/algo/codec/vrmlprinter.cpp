@@ -247,9 +247,9 @@ using namespace std;
   __geomStream << " [ " << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
   __geomStream << __indent; \
-  for(uint_t _i = 0 ; _i < val->getSize(); _i++){ \
+  for(uint_t _i = 0 ; _i < val->size(); _i++){ \
    val->getAt(_i)->apply(*this); \
-   if(_i != val->getSize()-1)__geomStream << __indent << ',' << endl << __indent ; \
+   if(_i != val->size()-1)__geomStream << __indent << ',' << endl << __indent ; \
   } \
   GEOM_VRMLPRINT_DECREMENT_INDENT; \
   __geomStream << __indent << ']'; \
@@ -287,11 +287,11 @@ using namespace std;
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
    __geomStream << __indent  << "point ["  << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   for(Point3Array::iterator _i = val->getBegin();_i!=val->getEnd();_i++){ \
+   for(Point3Array::iterator _i = val->begin();_i!=val->end();_i++){ \
       __geomStream << __indent << _i->y() \
          << " " << _i->z() \
          << " " << _i->x(); \
-      if(_i!=val->getEnd()-1)__geomStream << ',' << endl; \
+      if(_i!=val->end()-1)__geomStream << ',' << endl; \
    } \
    GEOM_VRMLPRINT_DECREMENT_INDENT; \
    __geomStream << endl << __indent << ']' << endl; \
@@ -304,10 +304,10 @@ using namespace std;
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
    __geomStream << __indent; \
     uint_t _j =0 ; \
-    for(RealArray2::const_iterator _i = val->getBegin();_i!=val->getEnd();_i++){ \
+    for(RealArray2::const_iterator _i = val->begin();_i!=val->end();_i++){ \
       _j++; \
       GEOM_VRMLPRINT_REAL(*_i); \
-      if(_i!=val->getEnd()-1){ \
+      if(_i!=val->end()-1){ \
         __geomStream << " , "; \
         if(_j == val->getColsNb() ){ \
             _j = 0; \
@@ -323,11 +323,11 @@ using namespace std;
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
    __geomStream << __indent  << "vector ["  << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   for(Point3Array::const_iterator _i = val->getBegin();_i!=val->getEnd();_i++){ \
+   for(Point3Array::const_iterator _i = val->begin();_i!=val->end();_i++){ \
       __geomStream << __indent << _i->y() \
          << " " << _i->z() \
          << " " << _i->x(); \
-      if(_i!=val->getEnd()-1)__geomStream << ',' << endl; \
+      if(_i!=val->end()-1)__geomStream << ',' << endl; \
    } \
    GEOM_VRMLPRINT_DECREMENT_INDENT; \
    __geomStream << endl << __indent << ']' << endl; \
@@ -338,10 +338,10 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDEXARRAY(val){ \
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   uint_t _sizej = val->getSize(); \
+   uint_t _sizej = val->size(); \
    for(uint_t _j = 0 ; _j < _sizej; _j++){ \
      __geomStream << __indent; \
-     uint_t _sizek = val->getAt(_j).getSize(); \
+     uint_t _sizek = val->getAt(_j).size(); \
      for(uint_t _k = 0 ; _k < _sizek ; _k++){ \
        __geomStream << (val->getAt(_j).getAt(_k)) << " , "; \
      } \
@@ -355,7 +355,7 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDEXARRAY3(val){ \
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   uint_t _sizej = val->getSize(); \
+   uint_t _sizej = val->size(); \
    for(uint_t _j = 0 ; _j < _sizej; _j++){ \
      __geomStream << __indent; \
      for(uint_t _k = 0 ; _k < 3 ; _k++){ \
@@ -371,7 +371,7 @@ using namespace std;
 #define GEOM_VRMLPRINT_INDEXARRAY4(val){ \
    __geomStream << '[' << endl; \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   uint_t _sizej = val->getSize(); \
+   uint_t _sizej = val->size(); \
    for(uint_t _j = 0 ; _j < _sizej; _j++){ \
      __geomStream << __indent; \
      for(uint_t _k = 0 ; _k < 4 ; _k++){ \
@@ -942,7 +942,7 @@ bool VrmlPrinter::process( Polyline * polyline ) {
    __geomStream << __indent <<"coordIndex [ " << endl;
    GEOM_VRMLPRINT_INCREMENT_INDENT;
    __geomStream << __indent;
-   for(uint_t in = 0 ; in < polyline->getPointList()->getSize(); in++)
+   for(uint_t in = 0 ; in < polyline->getPointList()->size(); in++)
      __geomStream << in << " , ";
    GEOM_VRMLPRINT_DECREMENT_INDENT;
    __geomStream << "-1" << endl << __indent << ']' << endl;

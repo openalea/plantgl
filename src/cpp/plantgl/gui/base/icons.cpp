@@ -10090,6 +10090,10 @@ const char * const* ViewerIcon::getPixmap(const ViewerIcon::PredefinedIcon id)
 	return icons_database[id];
 }
 
+#if defined (_MSC_VER)
+#define sscanf sscanf_s
+#endif
+
 void ViewerIcon::getPixmapInfo(const PredefinedIcon id, int& width, int& heigth,int& nbcolors,int& header)
 {
 	const char * const * icon = getPixmap(id);

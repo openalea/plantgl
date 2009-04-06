@@ -154,7 +154,8 @@ typedef RCPtr<Index4Array> Index4ArrayPtr;
 /* ----------------------------------------------------------------------- */
 
 /// Index of non fixed size
-typedef TOOLS(UintArray1) Index;
+// typedef TOOLS(UintArray1) Index;
+typedef TOOLS(PglVector<uint_t>) Index;
 
 /* ----------------------------------------------------------------------- */
 
@@ -217,7 +218,7 @@ public:
 
   uint_t * data() const;
 
-  inline uint_t getIndexSizeAt(uint_t t) const { return getAt(t).getSize(); }
+  inline uint_t getIndexSizeAt(uint_t t) const { return getAt(t).size(); }
 
 };
 

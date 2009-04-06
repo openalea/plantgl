@@ -1497,7 +1497,7 @@ void PGL(Laxi_ComputeInertia) (Point3ArrayPtr pts,float vpvec[3][3],float vpint[
    double mxy, mxz, myz;
    Vector3 v1, v2, v3, testdirect;
    int j;
-   int nbp =  pts->getSize();
+   int nbp =  pts->size();
    for (j = 0; j < 3; j++)
       {
       vpvec[j][0] = 0.0;

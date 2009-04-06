@@ -93,7 +93,7 @@ bool TriangleSet::Builder::isValid( ) const {
   if(!MeshValid()) return false;
 
   // PointList size check
-  uint_t _pointListSize = (*PointList)->getSize();
+  uint_t _pointListSize = (*PointList)->size();
   if (_pointListSize < 3) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","PointList","Must have more than 2 points.");
     return false;
@@ -106,7 +106,7 @@ bool TriangleSet::Builder::isValid( ) const {
   };
 
   // IndexList size check
-  uint_t _indexListSize = (*IndexList)->getSize();
+  uint_t _indexListSize = (*IndexList)->size();
   if (_indexListSize < 1) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"TriangleSet","IndexList","Number of Index must be greater than 0.");
     return false;
@@ -128,7 +128,7 @@ bool TriangleSet::Builder::isValid( ) const {
   };
 
   if (NormalList) {
-	  uint_t _normalListSize = (*NormalList)->getSize();
+	  uint_t _normalListSize = (*NormalList)->size();
 	  if (!NormalIndexList){
 		  if(NormalPerVertex && !*NormalPerVertex){
 			  if(_normalListSize != _indexListSize){
@@ -145,7 +145,7 @@ bool TriangleSet::Builder::isValid( ) const {
 		  }
 	  }
 	  else {
-		  uint_t _normalIndexListSize = (*NormalIndexList)->getSize();
+		  uint_t _normalIndexListSize = (*NormalIndexList)->size();
 		  if(NormalPerVertex && !*NormalPerVertex){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
 			return false;
@@ -178,7 +178,7 @@ bool TriangleSet::Builder::isValid( ) const {
   }
 
   if (ColorList) {
-	  uint_t _colorListSize = (*ColorList)->getSize();
+	  uint_t _colorListSize = (*ColorList)->size();
 	  if (!ColorIndexList){
 		  if(ColorPerVertex && !*ColorPerVertex){
 			  if(_colorListSize != _indexListSize){
@@ -195,7 +195,7 @@ bool TriangleSet::Builder::isValid( ) const {
 		  }
 	  }
 	  else {
-		  uint_t _colorIndexListSize = (*ColorIndexList)->getSize();
+		  uint_t _colorIndexListSize = (*ColorIndexList)->size();
 		  if(ColorPerVertex && !*ColorPerVertex){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
 			return false;
@@ -228,7 +228,7 @@ bool TriangleSet::Builder::isValid( ) const {
   }
 
   if (TexCoordList) {
-	  uint_t _texCoordListSize = (*TexCoordList)->getSize();
+	  uint_t _texCoordListSize = (*TexCoordList)->size();
 	  if (!TexCoordIndexList){
 		  if(_texCoordListSize != _pointListSize){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordList","Number of TexCoord must be compatible to PointList size.");
@@ -236,7 +236,7 @@ bool TriangleSet::Builder::isValid( ) const {
 		  }
 	  }
 	  else {
-		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
+		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->size();
 		  if(_texCoordIndexListSize != _indexListSize){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"TriangleSet","TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
 			return false;

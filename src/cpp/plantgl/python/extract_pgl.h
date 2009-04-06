@@ -82,7 +82,7 @@ struct extract_pgllist {
 			try  {  obj = iter_obj.attr( "next" )(); }
 			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
 			element_type val = extractor_type( obj )();
-			result->pushBack( val );
+			result->push_back( val );
 		}
 		return result;
 	}

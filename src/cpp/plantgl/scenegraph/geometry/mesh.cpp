@@ -101,8 +101,8 @@ Mesh::Builder::MeshValid( ) const{
   if(!EMValid())return false;
   
   if(NormalList){
-    uint_t _normalListSize = (*NormalList)->getSize();
-	if(NormalPerVertex && *NormalPerVertex &&_normalListSize != (*PointList)->getSize()){
+    uint_t _normalListSize = (*NormalList)->size();
+	if(NormalPerVertex && *NormalPerVertex &&_normalListSize != (*PointList)->size()){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Normals","Number of normals must be compatible to PointList.");
 	return false;
 	}
@@ -121,7 +121,7 @@ Mesh::Builder::MeshValid( ) const{
     }
   }
   if(TexCoordList){
-    uint_t _texCoordListSize = (*TexCoordList)->getSize();
+    uint_t _texCoordListSize = (*TexCoordList)->size();
     for (uint_t _i = 0; _i < _texCoordListSize; _i++){
       if (!(*TexCoordList)->getAt(_i).isValid()) {
 	pglErrorEx
@@ -332,7 +332,7 @@ Mesh::getFaceCenter( uint_t i ) const
 
 Point3ArrayPtr 
 Mesh::computeNormalPerVertex() const {
-    Point3ArrayPtr normalList(new Point3Array(__pointList->getSize()));
+    Point3ArrayPtr normalList(new Point3Array(__pointList->size()));
     for(uint_t j=0; j < getIndexListSize(); j++){
         Vector3 _norm = cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0),
                               getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0));
@@ -341,7 +341,7 @@ Mesh::computeNormalPerVertex() const {
             _index,normalList->getAt(_index)+=_norm;
         }
     }
-    for(Point3Array::iterator _it=normalList->getBegin();_it!=normalList->getEnd();_it++)
+    for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
         _it->normalize();
 	return normalList;
 }
@@ -353,7 +353,7 @@ Mesh::computeNormalPerFace() const {
 	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
 			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
     }
-    for(Point3Array::iterator _it=normalList->getBegin();_it!=normalList->getEnd();_it++)
+    for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
 	_it->normalize();
 	return normalList;
 }

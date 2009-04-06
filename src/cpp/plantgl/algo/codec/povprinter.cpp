@@ -324,7 +324,7 @@ bool PovPrinter::process(Shape * Shape) {
 
 bool PovPrinter::process( Inline * geomInline ) {
   GEOM_ASSERT(geomInline);
-  if(geomInline->getScene() && geomInline->getScene()->getSize()>1){
+  if(geomInline->getScene() && geomInline->getScene()->size()>1){
 	GEOM_POVPRINT_BEG_(__geomStream,"union");
   }
   else {
@@ -688,8 +688,8 @@ bool PovPrinter::process( IFS * ifs )
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",ifs);
 
-  Matrix4Array::const_iterator matrix= matrixList->getBegin();
-  while( matrix != matrixList->getEnd() )
+  Matrix4Array::const_iterator matrix= matrixList->begin();
+  while( matrix != matrixList->end() )
     {
     GEOM_POVPRINT_BEG_(__geomStream,"object");
     ifs->getGeometry()->apply(*this);
@@ -776,8 +776,8 @@ bool PovPrinter::process( PointSet * pointSet ) {
   }
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",pointSet);
-  for (Point3Array::const_iterator _i = pointSet->getPointList()->getBegin();
-	_i != pointSet->getPointList()->getEnd(); _i++) {
+  for (Point3Array::const_iterator _i = pointSet->getPointList()->begin();
+	_i != pointSet->getPointList()->end(); _i++) {
     const Vector3& _vertex1 = *_i;
  	GEOM_POVPRINT_BEG_(__geomStream,"sphere");
 	__geomStream << __indent;
@@ -807,8 +807,8 @@ bool PovPrinter::process( Polyline * polyline ) {
   }
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",polyline);
-  for (Point3Array::const_iterator _i = polyline->getPointList()->getBegin();
-	_i != polyline->getPointList()->getEnd()-1; _i++) {
+  for (Point3Array::const_iterator _i = polyline->getPointList()->begin();
+	_i != polyline->getPointList()->end()-1; _i++) {
     const Vector3& _vertex1 = *_i;
     const Vector3& _vertex2 = *(_i+1);
 	if(norm(_vertex1-_vertex2) > GEOM_EPSILON){
@@ -1015,19 +1015,19 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
 		  __geomStream << ", ";
-		  const Vector3& _normal1 = triangleSet->getNormalAt(_i,0);
+		  const Vector3& _normal1 = triangleSet->getFaceNormalAt(_i,0);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
 		  __geomStream << ", ";
 		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
 		  __geomStream << ", ";
-		  const Vector3& _normal2 = triangleSet->getNormalAt(_i,1);
+		  const Vector3& _normal2 = triangleSet->getFaceNormalAt(_i,1);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
 		  __geomStream << ", ";
 		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
 		  __geomStream << ", ";
-		  const Vector3& _normal3 = triangleSet->getNormalAt(_i,2);
+		  const Vector3& _normal3 = triangleSet->getFaceNormalAt(_i,2);
 		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal3);
 	  }
 	  else {
@@ -1044,13 +1044,13 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 	  if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
 	  {
 		  __geomStream << " uv_vectors ";
-		  const Vector2& _vertex1 = triangleSet->getTexCoordAt(_i,0);
+		  const Vector2& _vertex1 = triangleSet->getFaceTexCoordAt(_i,0);
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
 		  __geomStream << ", ";
-		  const Vector2& _vertex2 = triangleSet->getTexCoordAt(_i,1);
+		  const Vector2& _vertex2 = triangleSet->getFaceTexCoordAt(_i,1);
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
 		  __geomStream << ", ";
-		  const Vector2& _vertex3 = triangleSet->getTexCoordAt(_i,2);
+		  const Vector2& _vertex3 = triangleSet->getFaceTexCoordAt(_i,2);
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
 	  }
     __geomStream << "}" << endl;
@@ -1136,8 +1136,8 @@ bool PovPrinter::process( PointSet2D * pointSet ) {
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",pointSet);
   Vector3 _vertex1;
-  for (Point2Array::const_iterator _i = pointSet->getPointList()->getBegin();
-	_i != pointSet->getPointList()->getEnd(); _i++) {
+  for (Point2Array::const_iterator _i = pointSet->getPointList()->begin();
+	_i != pointSet->getPointList()->end(); _i++) {
     _vertex1 = Vector3(*_i,0);
  	GEOM_POVPRINT_BEG_(__geomStream,"sphere");
 	__geomStream << __indent;

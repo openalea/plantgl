@@ -51,10 +51,10 @@ PGL_USING_NAMESPACE
 
 
 #define GEOM_GLRENDERER_COLOR3(color) \
-  glColor3ubv(color.getBegin());
+  glColor3ubv(color.begin());
 
 #define GEOM_GLRENDERER_COLOR4(color) \
-  glColor4ubv(color.getBegin());
+  glColor4ubv(color.begin());
 
 
 /* ----------------------------------------------------------------------- */

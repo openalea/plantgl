@@ -52,38 +52,38 @@ DEF_POINTEE(Group)
 GroupPtr gg_fromobject2( GeometryPtr o, GeometryPtr o2 ) 
 { 
   GeometryArrayPtr geometries = GeometryArrayPtr(new GeometryArray());
-  geometries->pushBack(o);
-  geometries->pushBack(o2);
+  geometries->push_back(o);
+  geometries->push_back(o2);
   return GroupPtr(new Group(geometries));
 }
 
 GroupPtr gg_fromobject3( GeometryPtr o, GeometryPtr o2, GeometryPtr o3 ) 
 { 
   GeometryArrayPtr geometries = GeometryArrayPtr(new GeometryArray());
-  geometries->pushBack(o);
-  geometries->pushBack(o2);
-  geometries->pushBack(o3);
+  geometries->push_back(o);
+  geometries->push_back(o2);
+  geometries->push_back(o3);
   return GroupPtr(new Group(geometries));
 }
 
 GroupPtr gg_fromobject4( GeometryPtr o, GeometryPtr o2, GeometryPtr o3, GeometryPtr o4 ) 
 { 
   GeometryArrayPtr geometries = GeometryArrayPtr(new GeometryArray());
-  geometries->pushBack(o);
-  geometries->pushBack(o2);
-  geometries->pushBack(o3);
-  geometries->pushBack(o4);
+  geometries->push_back(o);
+  geometries->push_back(o2);
+  geometries->push_back(o3);
+  geometries->push_back(o4);
   return GroupPtr(new Group(geometries));
 }
 
 GroupPtr gg_fromobject5( GeometryPtr o, GeometryPtr o2, GeometryPtr o3, GeometryPtr o4, GeometryPtr o5 ) 
 { 
   GeometryArrayPtr geometries = GeometryArrayPtr(new GeometryArray());
-  geometries->pushBack(o);
-  geometries->pushBack(o2);
-  geometries->pushBack(o3);
-  geometries->pushBack(o4);
-  geometries->pushBack(o5);
+  geometries->push_back(o);
+  geometries->push_back(o2);
+  geometries->push_back(o3);
+  geometries->push_back(o4);
+  geometries->push_back(o5);
   return GroupPtr(new Group(geometries));
 }
 
@@ -107,8 +107,8 @@ GroupPtr gg_getslice( Group * array, int beg, int end )
   else if( beg >= array->getGeometryListSize() ) throw PythonExc_IndexError(); 
   if( end >= -array->getGeometryListSize() && end < 0  )  end += array->getGeometryListSize(); 
   else if( end > array->getGeometryListSize() ) throw PythonExc_IndexError(); 
-  return GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(array->getGeometryList()->getBegin()+beg,
-                                                  array->getGeometryList()->getBegin()+end))));
+  return GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(array->getGeometryList()->begin()+beg,
+                                                  array->getGeometryList()->begin()+end))));
 }
 
 size_t gg_len( Group * a )

@@ -54,15 +54,33 @@ TOOLS_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+template<class Iterator>
+std::ostream& print_array( Iterator beg, Iterator end,
+						   std::ostream& stream,
+						   char delimiter = ',',
+						   char beg_sign = '[',
+                           char end_sign = ']' ) {
+    stream << beg_sign;
+    if (beg != end) {
+        stream << *beg;
+        for (Iterator _i = beg+1; _i != end; _i++)
+            stream << delimiter << *_i;
+    }
+    return stream << end_sign;
+}
+
+/* ----------------------------------------------------------------------- */
+
 /**
    \class Array1
    \brief A mono dimensional array of non fixed size.
 */
 
+
 /* ----------------------------------------------------------------------- */
 
 template <class T>
-class Array1 : public RefCountObject
+class PglVector 
 {
 
 public:
@@ -77,27 +95,24 @@ public:
   typedef T element_type;
 
   /// Constructs an Array1 of size \e size
-  Array1( size_t size = 0 ) :
-    RefCountObject(),
+  PglVector( size_t size = 0 ) :
     __A(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
-  Array1( size_t size, const T& t ) :
-    RefCountObject(),
+  PglVector( size_t size, const T& t ) :
     __A(size,t) {
   }
 
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
-  Array1( InIterator begin, InIterator end ) :
-    RefCountObject(),
+  PglVector( InIterator begin, InIterator end ) :
     __A(begin,end) {
   }
 
   /// Destructor
-  virtual ~Array1( ) {
+  virtual ~PglVector( ) {
   }
 
   /// Returns whether \e self contains \e t.
@@ -121,56 +136,26 @@ public:
     return __A[i];
   }
 
+  inline const T& operator[]( uint_t i ) const { return getAt(i); }
+  inline T& operator[]( uint_t i ) { return getAt(i); }
+
   /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator getBegin( ) const {
-    return __A.begin();
-  }
+  inline const_iterator begin( ) const { return __A.begin(); }
 
   /// Returns an iterator at the beginning of \e self.
-  inline iterator getBegin( ) {
-    return __A.begin();
-  }
+  inline iterator begin( ) { return __A.begin(); }
 
   /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEnd( ) const {
-    return __A.end();
-  }
+  inline const_iterator end( ) const { return __A.end(); }
 
   /// Returns a const iterator at the end of \e self.
-  inline iterator getEnd( ) {
-    return __A.end();
-  }
+  inline iterator end( ) { return __A.end(); }
 
   /// Returns the size of \e self.
-  inline uint_t getSize( ) const {
-    return __A.size();
-  }
+  inline uint_t size( ) const { return __A.size(); }
 
   /// Clear \e self.
-  inline void clear( ) {
-    __A.clear();
-  }
-
-  /// Returns an iterator at the maximum value of \e self.
-  /*const_iterator getMax( ) const {
-    return std::max_element(__A.begin(),__A.end());
-  }
-
-  /// Returns an iterator at the minimum value of \e self.
-  const_iterator getMin( ) const {
-    return std::min_element(__A.begin(),__A.end());
-  }*/
-
-  /** Returns an iterator first at the minimum value, second at the
-      maximum value of \e self. */
-   /*std::pair<const_iterator,const_iterator> getMinAndMax( ) const {
-    const_iterator _min = __A.begin();
-    const_iterator _max = __A.begin();
-    for (const_iterator _i = __A.begin() + 1; _i != __A.end(); _i++)
-      if (*_i < *_min) _min = _i;
-      else if (*_i > *_max) _max = _i;
-    return std::pair<const_iterator,const_iterator>(_min,_max);
-  }*/
+  inline void clear( ) { __A.clear();  }
 
   /// Inserts \e t into \e self before the position pointed by \e it.
   iterator insert( iterator it, const T& t ) {
@@ -180,20 +165,20 @@ public:
 
   /// Inserts the range [first, last) before pos.
   template <class InputIterator>
-      void insert(iterator pos, InputIterator f, InputIterator l){
+  void insert(iterator pos, InputIterator f, InputIterator l){
       __A.insert(pos,f,l);
   }
 
   /// Inserts \e t into \e self before the position pointed by \e it.
-  Array1& operator+=( const Array1& t ) {
-    __A.insert(__A.end(),t.getBegin(),t.getEnd());
+  PglVector& operator+=( const PglVector& t ) {
+    __A.insert(__A.end(),t.begin(),t.end());
 	return *this;
   }
 
-  bool operator==( const Array1& t ) const {
-    if (__A.size() != t.getSize()) 
+  bool operator==( const PglVector& t ) const {
+    if (__A.size() != t.size()) 
       return false;
-    const_iterator _it= t.getBegin();
+    const_iterator _it= t.begin();
     for (const_iterator _i = __A.begin() ; _i != __A.end(); _i++){
 	  if(*_i != *_it) return false;
 	  _it++;
@@ -201,9 +186,9 @@ public:
 	return true;
   }
 
-  bool operator!=( const Array1& t ) const {
-    if (__A.size() != t.getSize()) return true;
-    const_iterator _it = t.getBegin();
+  bool operator!=( const PglVector& t ) const {
+    if (__A.size() != t.size()) return true;
+    const_iterator _it = t.begin();
     for (const_iterator _i = __A.begin() ; _i != __A.end(); _i++){
 	  if(*_i != *_it) return true;
 	  _it++;
@@ -212,9 +197,7 @@ public:
   }
 
   /// Returns whether \e self is empty.
-  inline bool isEmpty( ) const {
-    return __A.empty();
-  }
+  inline bool empty( ) const { return __A.empty(); }
 
   /// Returns whether \e self contain unique elements.
   bool isUnique( ) const {
@@ -231,21 +214,13 @@ public:
   /// Prints \e self to the output stream \e stream.
   std::ostream& print( std::ostream& stream,
                   char delimiter = ',',
-                  char begin = '[',
-                  char end = ']' ) const {
-    stream << begin;
-    uint_t _size = __A.size();
-    if (_size) {
-        stream << __A[0];
-        for (uint_t _i = 1; _i < _size - 1; _i++)
-            stream << delimiter << __A[_i];
-        if(_size>1) stream <<  delimiter << __A[_size -1];
-    };
-    return stream << end;
+                  char beg_sign = '[',
+                  char end_sign = ']' ) const {
+		return print_array(begin(),end(),stream,delimiter,beg_sign,end_sign);
   }
 
   /// Prints \e self to the output stream \e stream.
-  friend std::ostream& operator<<(std::ostream& stream, const Array1<T> a){
+  friend std::ostream& operator<<(std::ostream& stream, const PglVector<T>& a){
       return a.print(stream);
   }
 
@@ -258,11 +233,8 @@ public:
     __A[i] = t;
   }
 
-  /** push back \e t to \e self.
-      */
-  void pushBack( const T& t ) {
-    __A.push_back(t);
-  }
+  /** push back \e t to \e self. */
+  void push_back( const T& t ) { __A.push_back(t); }
 
   /** increase \e self capacity to size.
       */
@@ -271,17 +243,11 @@ public:
   }
 
 
-  /** erase \e pos to \e self and return the next element.
-      */
-  iterator Erase(iterator pos) {
-    return __A.erase(pos);
-  }
+  /** erase \e pos to \e self and return the next element. */
+  iterator erase(iterator pos) { return __A.erase(pos); }
 
-  /** erase elements range \e [first,last)  of \e self and return the next element.
-      */
-  iterator Erase(iterator first,iterator last) {
-    return __A.erase(first,last);
-  }
+  /** erase elements range \e [first,last)  of \e self and return the next element. */
+  iterator erase(iterator first,iterator last) { return __A.erase(first,last); }
 
   T * data() const {
 	if(__A.empty())return NULL;
@@ -295,11 +261,70 @@ public:
       std::reverse(__A.begin(),__A.end());
   }
 
+#ifndef PGL_NO_DEPRECATED
+  /// Returns a const iterator at the beginning of \e self.
+  inline attribute_deprecated const_iterator getBegin( ) const { return begin(); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline attribute_deprecated iterator getBegin( ) { return begin(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline attribute_deprecated const_iterator getEnd( ) const { return end(); }
+
+  /// Returns an iterator at the end of \e self.
+  inline attribute_deprecated iterator getEnd( ) { return end(); }
+
+  /// Return size of this
+  inline attribute_deprecated uint_t getSize() const { return size(); }
+
+  inline attribute_deprecated bool isEmpty() const { return empty(); }
+
+  inline attribute_deprecated void pushBack( const T& t ) { push_back(t); }
+
+  inline attribute_deprecated iterator Erase(iterator pos) { return erase(pos); }
+
+  inline attribute_deprecated iterator Erase(iterator first,iterator last) { return erase(first,last); }
+
+#endif
+
 protected:
 
   /// The elements contained by \e self.
   std::vector<T> __A;
 
+};
+
+/* ----------------------------------------------------------------------- */
+
+template <class T>
+class Array1 : public RefCountObject, public PglVector<T>
+{
+public:
+  /// Constructs an Array1 of size \e size
+  Array1( size_t size = 0 ) :
+    RefCountObject(),
+    PglVector(size) {
+ }
+
+  /// Constructs an Array1 with \e size copies of \e t.
+  Array1( size_t size, const T& t ) :
+    RefCountObject(),
+    PglVector(size,t) {
+  }
+
+
+  /// Constructs an Array1 with the range [\e begin, \e end).
+  template <class InIterator>
+  Array1( InIterator begin, InIterator end ) :
+    RefCountObject(),
+    PglVector(begin,end) {
+  }
+
+  /// Inserts \e t into \e self before the position pointed by \e it.
+  Array1& operator+=( const Array1& t ) {
+    __A.insert(__A.end(),t.begin(),t.end());
+	return *this;
+  }
 };
 
 /// Constructs an Array1 with \e size copies of \e t.
@@ -318,7 +343,7 @@ struct range {
         U result(size,firstvalue);
         T value = firstvalue + increment;
         for (size_t i = 1; i < size; ++i, value += increment)
-            result.setAt(i,value);
+            result[i] = value;
         return result;
     }
 };
@@ -408,7 +433,7 @@ TOOLS_END_NAMESPACE
 
 /// Write Array \b a in \b stream.
   template <class T>
-  std::ostream& operator<<(std::ostream& stream, const TOOLS(Array1<T>) a){
+  std::ostream& operator<<(std::ostream& stream, const TOOLS(Array1<T>)& a){
       return a.print(stream);
   }
 

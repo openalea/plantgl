@@ -295,8 +295,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 #define GEOM_PARSER_CREATE_MATRIX(type,matrix,result) { \
     if (matrix) { \
-      result = new type##Ptr(new type(matrix->getBegin(), \
-                                      matrix->getEnd(), \
+      result = new type##Ptr(new type(matrix->begin(), \
+                                      matrix->end(), \
                                       matrix->getRowsNb())); \
       delete matrix; \
     } \
@@ -306,7 +306,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 
 #define GEOM_PARSER_ADD_MATRIX(matrix,row,result) { \
-    if (!(matrix->isEmpty()) && (row)) { \
+    if (!(matrix->empty()) && (row)) { \
       matrix->pushRow(row->begin(),row->end()); \
       delete row; \
       result = matrix; \
@@ -1337,7 +1337,7 @@ Command:
    _bp.parse(*$1);
    ScenePtr a = _bp.getScene();
    SceneObjectPtr b;
-   for(Scene::iterator _it = a->getBegin(); _it != a->getEnd() ; _it++){
+   for(Scene::iterator _it = a->begin(); _it != a->end() ; _it++){
      if((*_it)->isNamed()){
        b = (*_it);
        if(b)

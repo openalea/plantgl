@@ -156,7 +156,7 @@ bool PolygonComputer::process( ExtrudedHull * extrudedHull ){
   size++;
   pair<Point2Array::const_iterator,Point2Array::const_iterator>
     _minAndMax = _vertical->getYMinAndMax();
-  Point2Array::const_iterator _begin = _vertical->getBegin();
+  Point2Array::const_iterator _begin = _vertical->begin();
   uint_t _ndxBot = distance(_begin,_minAndMax.first);
   uint_t _ndxTop = distance(_begin,_minAndMax.second);
   uint_t stack1 = (uint_t)abs((int)_ndxTop - (int)_ndxBot);
@@ -190,8 +190,8 @@ bool PolygonComputer::process( Extrusion * extrusion ){
 bool PolygonComputer::process( Group * group ){
   uint_t nb = 0;
   GeometryArrayPtr _geometryList = group->getGeometryList();
-   for (GeometryArray::const_iterator _i = _geometryList->getBegin()+1;
-       _i != _geometryList->getEnd();
+   for (GeometryArray::const_iterator _i = _geometryList->begin()+1;
+       _i != _geometryList->end();
        _i++) {
       GeometryPtr geom = *_i;
       if(geom)
@@ -208,7 +208,7 @@ bool PolygonComputer::process( IFS * ifs )
 GEOM_TRACE("process IFS");
 
   const Transform4ArrayPtr& tList= ifs->getTransfoList();
-  uint_t nbTransfos= tList->getSize();
+  uint_t nbTransfos= tList->size();
   nbTransfos= IFS::power( nbTransfos, ifs->getDepth() );
 
   ifs->getGeometry()->apply(*this);
@@ -282,13 +282,13 @@ bool PolygonComputer::process( Disc * disc ){
 bool PolygonComputer::process( ScenePtr _scene) {
   GEOM_ASSERT(_scene);
   __polygon = 0;
-  if(_scene->isEmpty()){
+  if(_scene->empty()){
     __polygon = 0;
     return false;
   }
   uint_t nb = 0;
-  for(Scene::iterator _it = _scene->getBegin();
-      _it != _scene->getEnd();
+  for(Scene::iterator _it = _scene->begin();
+      _it != _scene->end();
       _it++){
     if((*_it)->apply(*this))
       nb += __polygon;

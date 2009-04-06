@@ -70,11 +70,11 @@ VegeStarLine::build(VGStarColorMap& colormap) const {
 	switch(shapeid) {
 	case 0: {
 		Point3ArrayPtr points(new Point3Array);
-		points->pushBack(point1);
-		points->pushBack(point2);
-		points->pushBack(point3);
+		points->push_back(point1);
+		points->push_back(point2);
+		points->push_back(point3);
 		Index3ArrayPtr indices(new Index3Array);
-		indices->pushBack(Index3(0,1,2));
+		indices->push_back(Index3(0,1,2));
 		GeometryPtr t(new TriangleSet(points,indices,true,true,false,PolylinePtr()));
 		return ShapePtr(new Shape(t,mat));
 			}
@@ -144,7 +144,7 @@ VegeStarLine::build(VGStarColorMap& colormap) const {
 		break;
 	case 40: {
 		Point3ArrayPtr points(new Point3Array);
-		points->pushBack(point1);
+		points->push_back(point1);
 		GeometryPtr t(new PointSet(points));
 		return ShapePtr(new Shape(t,mat));
 			}
@@ -358,20 +358,20 @@ VegeStarFile::initShape(){
 	
 	if(!SHAPE_11||!SHAPE_12||!SHAPE_13){
 		Point3ArrayPtr points(new Point3Array);
-		points->pushBack(Vector3(0.5,0,0));
-		points->pushBack(Vector3(0,0,0));
-		points->pushBack(Vector3(1./3.,-0.5,0));
-		points->pushBack(Vector3(2./3.,-0.5,0));
-		points->pushBack(Vector3(1,0,0));
-		points->pushBack(Vector3((real_t)2./3.,(real_t)0.5,0));
-		points->pushBack(Vector3((real_t)1./3.,(real_t)0.5,0));
+		points->push_back(Vector3(0.5,0,0));
+		points->push_back(Vector3(0,0,0));
+		points->push_back(Vector3(1./3.,-0.5,0));
+		points->push_back(Vector3(2./3.,-0.5,0));
+		points->push_back(Vector3(1,0,0));
+		points->push_back(Vector3((real_t)2./3.,(real_t)0.5,0));
+		points->push_back(Vector3((real_t)1./3.,(real_t)0.5,0));
 		Index3ArrayPtr indices(new Index3Array);
-		indices->pushBack(Index3(0,2,1));
-		indices->pushBack(Index3(0,3,2));
-		indices->pushBack(Index3(0,4,3));
-		indices->pushBack(Index3(0,5,4));
-		indices->pushBack(Index3(0,6,5));
-		indices->pushBack(Index3(0,1,6));
+		indices->push_back(Index3(0,2,1));
+		indices->push_back(Index3(0,3,2));
+		indices->push_back(Index3(0,4,3));
+		indices->push_back(Index3(0,5,4));
+		indices->push_back(Index3(0,6,5));
+		indices->push_back(Index3(0,1,6));
 		if(!SHAPE_11){
 			SHAPE_11 = GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr()));
 			SHAPE_11->setName("VGX_SHAPE_11");
@@ -392,12 +392,12 @@ VegeStarFile::initShape(){
 
 	if(!SHAPE_22){
 		Point3ArrayPtr points(new Point3Array);
-		points->pushBack(Vector3(0,-0.5,0));
-		points->pushBack(Vector3(0,0.5,0));
-		points->pushBack(Vector3(1,0.5,0));
-		points->pushBack(Vector3(1,-0.5,0));
+		points->push_back(Vector3(0,-0.5,0));
+		points->push_back(Vector3(0,0.5,0));
+		points->push_back(Vector3(1,0.5,0));
+		points->push_back(Vector3(1,-0.5,0));
 		Index4ArrayPtr indices4(new Index4Array);
-		indices4->pushBack(Index4(0,1,2,3));
+		indices4->push_back(Index4(0,1,2,3));
 		SHAPE_22 = GeometryPtr(new Translated(Vector3(0.5,0,0),
 			GeometryPtr(new QuadSet(points,indices4,true,true,false,PolylinePtr()))));
 		SHAPE_22->setName("VGX_SHAPE_22");
@@ -405,14 +405,14 @@ VegeStarFile::initShape(){
 	
 	if(!SHAPE_23){
 		Point3ArrayPtr points(new Point3Array);
-		points->pushBack(Vector3(1,0,0));
+		points->push_back(Vector3(1,0,0));
 		int slices = 1 + SOR::DEFAULT_SLICES / 4;
 		for(int i = 1; i <= slices; i++)
-			points->pushBack(Vector3(Vector3::Cylindrical(1,(i*GEOM_PI)/(2*slices),0)));
-		points->pushBack(Vector3(0,0,0));
+			points->push_back(Vector3(Vector3::Cylindrical(1,(i*GEOM_PI)/(2*slices),0)));
+		points->push_back(Vector3(0,0,0));
 		Index3ArrayPtr indices(new Index3Array);
 		for(int j = 0; j < slices; j++)
-			indices->pushBack(Index3(j,j+1,slices+1));
+			indices->push_back(Index3(j,j+1,slices+1));
 		SHAPE_23 = GeometryPtr(new Translated(Vector3(0.5,0,0),
 			GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr()))));
 		SHAPE_23->setName("VGX_SHAPE_23");
@@ -420,11 +420,11 @@ VegeStarFile::initShape(){
 	
 	if(!SHAPE_24){
 		Point3ArrayPtr points(new Point3Array);
-		points->pushBack(Vector3::ORIGIN);
-		points->pushBack(Vector3::OY);
-		points->pushBack(Vector3::OX);
+		points->push_back(Vector3::ORIGIN);
+		points->push_back(Vector3::OY);
+		points->push_back(Vector3::OX);
 		Index3ArrayPtr indices(new Index3Array);
-		indices->pushBack(Index3(0,1,2));
+		indices->push_back(Index3(0,1,2));
 		SHAPE_24 = GeometryPtr(new TriangleSet(points,indices,true,true,false,PolylinePtr()));
 		SHAPE_24->setName("VGX_SHAPE_24");
 	}
@@ -501,7 +501,7 @@ VegeStarFile::importPolygonFile(const string& filename, ostream& error){
 		  if(!stream.eof()){
 			stream >> x >> y;
 			if(points->getAt(0) != Vector3(x,y,0)){
-				points->pushBack(Vector3(x,y,0));
+				points->push_back(Vector3(x,y,0));
 				Index index(vnb+1);
 				for(int j = 0; j < vnb+1 ; j++)index.setAt(j,j);
 				indices->setAt(0,index);

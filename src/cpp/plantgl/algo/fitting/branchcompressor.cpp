@@ -151,10 +151,10 @@ PGL(discretizeWithCurvature)(NurbsCurvePtr C,int NumberOfPoint){
 Point3ArrayPtr  
 PGL(compressPolyline)(Point3ArrayPtr C,int NumberOfPoint){
   if(!C)return Point3ArrayPtr();
-  if(C->getSize() <= NumberOfPoint) return C;
+  if(C->size() <= NumberOfPoint) return C;
   Point3ArrayPtr theVector(new Point3Array(NumberOfPoint));
   theVector->setAt(0,C->getAt(0));
-  theVector->setAt(NumberOfPoint-1,C->getAt(C->getSize()-1));
+  theVector->setAt(NumberOfPoint-1,C->getAt(C->size()-1));
   if(NumberOfPoint > 2){
 	real_t polygonLength;
 	RealArrayPtr ub = Fit::chordLengthParam(C,polygonLength) ;
@@ -162,7 +162,7 @@ PGL(compressPolyline)(Point3ArrayPtr C,int NumberOfPoint){
 	real_t s = ub->getAt(0) + step;
 	int j = 0;
 	for(int i = 1 ; i < NumberOfPoint - 1; i++){
-	  while(j < ub->getSize() && ub->getAt(j) < s)j++;
+	  while(j < ub->size() && ub->getAt(j) < s)j++;
 	  real_t u1 = ub->getAt(j) - s;
 	  real_t u2 = s - ub->getAt(j-1);
 	  real_t interv = ub->getAt(j) - ub->getAt(j-1);
@@ -194,7 +194,7 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
   NurbsCurvePtr Cold(0);
   real_t EkOld=0;
   real_t polygonLength=0.0;
-  int k=MyVector->getSize();
+  int k=MyVector->size();
   RealArrayPtr ub;
   ub = Fit::chordLengthParam(MyVector,polygonLength) ;
   real_t oldLength=polygonLength;
@@ -231,7 +231,7 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
       EkOld=SommeEk;
       SommeEk=0;
       nbtour++;
-      for(int i=0;i<MyVector->getSize();i++){
+      for(int i=0;i<MyVector->size();i++){
 		real_t u_i ; 
 		Vector3 r_i = C->projectTo(MyVector->getAt(i),ub->getAt(i),u_i) ;
 		SommeEk+=norm(r_i-MyVector->getAt(i)) ;
@@ -290,7 +290,7 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
   NurbsCurvePtr Cold;
   real_t EkOld=0;
   real_t polygonLength=0.0;
-  int k=MyVector->getSize();
+  int k=MyVector->size();
   RealArrayPtr ub;
   ub = Fit::chordLengthParam(MyVector,polygonLength) ;
   real_t oldLength=polygonLength;
@@ -313,7 +313,7 @@ PGL(fitt)(const Point3ArrayPtr&  MyVector,
 	if(C){
 	  EkOld=SommeEk;
 	  SommeEk=0;
-	  for(int i=0;i<MyVector->getSize();i++){
+	  for(int i=0;i<MyVector->size();i++){
 		real_t u_i ; 
 		Vector3 r_i = C->projectTo(MyVector->getAt(i),ub->getAt(i),u_i) ;
 		SommeEk+=norm(r_i-MyVector->getAt(i)) ;
@@ -383,7 +383,7 @@ BranchCompressor::setData(const std::vector<BranchInput>& i,
 /*  hash_map<int,int> l;
   for(vector<BranchInput>::const_iterator _it1 = __inputs.begin();
 	_it1!=__inputs.end();_it1++){
-	  l[_it1->points->getSize()]++;
+	  l[_it1->points->size()]++;
 	}
 	for(hash_map<int,int>::const_iterator  _it2 = l.begin();
 	_it2 != l.end(); _it2++)
@@ -404,7 +404,7 @@ BranchCompressor::sortByIncSize(const std::vector<BranchInput>&i){
 	else {
 	  _i1 = res.begin();
 	  while(_i1 != res.end() &&
-			_i1->points->getSize() > _it1->points->getSize()){
+			_i1->points->size() > _it1->points->size()){
 		_i1++;
 	  }
 	  res.insert(_i1,*_it1);
@@ -428,7 +428,7 @@ BranchCompressor::sortByDecSize(const std::vector<BranchInput>&i)
 	else {
 	  _i1 = res.begin();
 	  while(_i1 != res.end() &&
-			_i1->points->getSize() < _it1->points->getSize()){
+			_i1->points->size() < _it1->points->size()){
 		_i1++;
 	  }
 	  res.insert(_i1,*_it1);
@@ -476,7 +476,7 @@ BranchCompressor::sortByIncOrder(const std::vector<BranchInput>&i)
 	  _i1 = res.begin();
 	  while(_i1 != res.end() && 
 		     (graph[_i1->id].second < graph[_it1->id].second || 
-			 (graph[_i1->id].second == graph[_it1->id].second && _i1->points->getSize() > _it1->points->getSize()))){
+			 (graph[_i1->id].second == graph[_it1->id].second && _i1->points->size() > _it1->points->size()))){
 		_i1++;
 	  }
 	  res.insert(_i1,*_it1);
@@ -525,7 +525,7 @@ BranchCompressor::sortByDecOrder(const std::vector<BranchInput>&i)
 	  _i1 = res.begin();
 	  while(_i1 != res.end() && 
 		    (graph[_i1->id].second > graph[_it1->id].second || 
-			 (graph[_i1->id].second == graph[_it1->id].second &&_i1->points->getSize() < _it1->points->getSize()))){
+			 (graph[_i1->id].second == graph[_it1->id].second &&_i1->points->size() < _it1->points->size()))){
 		_i1++;
 	  }
 	  res.insert(_i1,*_it1);
@@ -566,7 +566,7 @@ BranchCompressor::addScene(ScenePtr scene, int c_branch,
   }
   else {
 	real_t botrad = _radius->getAt(0).x();
-	real_t toprad = _radius->getAt(_radius->getSize()-1).x();
+	real_t toprad = _radius->getAt(_radius->size()-1).x();
 	real_t length = norm(p2-p1);
 	GeometryPtr geom;
 	if(botrad != toprad)
@@ -639,9 +639,9 @@ BranchCompressor::inputScene() const{
   ScenePtr scene(new Scene);    
   for(vector<BranchInput>::const_iterator _it = __inputs.begin();
   _it != __inputs.end(); _it++){
-	if(_it->points->getSize() == 1)
+	if(_it->points->size() == 1)
 	  addScene(scene, i,GeometryPtr(new PointSet(_it->points)));
-	else if(_it->points->getSize() == 2)
+	else if(_it->points->size() == 2)
 	  addScene(scene,i,_it->points->getAt(0),_it->points->getAt(1));
 	else addScene(scene,i,LineicModelPtr(new Polyline(_it->points)));
 	i++;
@@ -706,7 +706,7 @@ BranchCompressor::compress(real_t taux,
 	{
 	  for(vector<BranchInput>::const_iterator _it = GeometryVector.begin();
 		  _it!=GeometryVector.end();_it++)
-	  DataIn2+=_it->points->getSize();
+	  DataIn2+=_it->points->size();
 	}
     DataIn2=DataIn2*3*sizeof(real_t); 
     int DataIn = DataIn2;
@@ -733,7 +733,7 @@ BranchCompressor::compress(real_t taux,
     if(indexGeometry!=0){
       working=true;
       MyVector=GeometryVector[currentBranch].points;
-      k=MyVector->getSize();
+      k=MyVector->size();
     }
     while(working){
       if(GeometryVector[currentBranch].id == __roots){
@@ -780,11 +780,11 @@ BranchCompressor::compress(real_t taux,
 		  SumError+=SommeEk; 
 		  int localDataOut=sizeof(int);
 		  if(C){
-			PR("<#> Number of Control Points : %d.\n",C->getCtrlPoints()->getSize());
-			localDataOut=localDataOut+( 4 * (C->getCtrlPoints()->getSize()) * sizeof(real_t) );
-			if(C->getCtrlPoints()->getSize()==deg+1){
+			PR("<#> Number of Control Points : %d.\n",C->getCtrlPoints()->size());
+			localDataOut=localDataOut+( 4 * (C->getCtrlPoints()->size()) * sizeof(real_t) );
+			if(C->getCtrlPoints()->size()==deg+1){
 			  addScene(scene, currentBranch,LineicModelPtr(new BezierCurve(C->getCtrlPoints())));
-			  // scene->pushBack(GeometryPtr(new BezierCurve(C->getCtrlPoints())));
+			  // scene->push_back(GeometryPtr(new BezierCurve(C->getCtrlPoints())));
 			  PR("Using Bezier curve ...\n");
 			  NbBezierCurve++;			
 			  if(k>Bmax)Bmax=k;
@@ -792,10 +792,10 @@ BranchCompressor::compress(real_t taux,
 			}
 			else{
 			  addScene(scene, currentBranch,LineicModelPtr(C));
-			  //			scene->pushBack(GeometryPtr(C));
-			  PR("<#> Knot Vector Size         : %d.\n",C->getKnotList()->getSize());
+			  //			scene->push_back(GeometryPtr(C));
+			  PR("<#> Knot Vector Size         : %d.\n",C->getKnotList()->size());
 			  PR("Using NURBS curve ...\n");
-			  localDataOut+=((C->getKnotList()->getSize())*sizeof(real_t));
+			  localDataOut+=((C->getKnotList()->size())*sizeof(real_t));
 			  if(k>Nmax)Nmax=k;
 			  if(k<Nmin)Nmin=k;
 			}
@@ -821,7 +821,7 @@ BranchCompressor::compress(real_t taux,
 		  NbPolyline++;		  
 		  
 		  Point3ArrayPtr pts;
-		  if(maxPoint > 3 && MyVector->getSize() > 3){
+		  if(maxPoint > 3 && MyVector->size() > 3){
 			NurbsCurvePtr C;
 			if(k < degre+1 )deg = k - 1;
 			else {deg = degre;}	    
@@ -839,13 +839,13 @@ BranchCompressor::compress(real_t taux,
 		    fittime += fittimer.stop();
 		  }
 		  if(pts){
-			if(pts->getSize() == 2)
+			if(pts->size() == 2)
 			  addScene(scene, currentBranch,
 			  pts->getAt(0),pts->getAt(1));
 			else addScene(scene, currentBranch,LineicModelPtr(new Polyline(pts)));
-			DataOut+=(3*pts->getSize()*sizeof(real_t));
-			DataRemind-=3*pts->getSize()*sizeof(real_t);
-			PR("Compressed at %d %\n\n",(100-(pts->getSize()*100/k)));
+			DataOut+=(3*pts->size()*sizeof(real_t));
+			DataRemind-=3*pts->size()*sizeof(real_t);
+			PR("Compressed at %d %\n\n",(100-(pts->size()*100/k)));
 		  }
 		}
 		else if(currentBranch< indexGeometry&&currentBranch>=0){
@@ -860,11 +860,11 @@ BranchCompressor::compress(real_t taux,
 		  if(k>Pmax)Pmax=k;
 		  if(k<Pmin)Pmin=k;
 		  NbPolyline++;
-		  if(MyVector->getSize() == 2)
+		  if(MyVector->size() == 2)
 			addScene(scene, currentBranch,
 			MyVector->getAt(0),MyVector->getAt(1));
 		  else addScene(scene, currentBranch,LineicModelPtr(new Polyline(MyVector)));
-		  // scene->pushBack(GeometryPtr(new Polyline(MyVector)));
+		  // scene->push_back(GeometryPtr(new Polyline(MyVector)));
 		  DataOut+=(6*sizeof(real_t));
 		  DataRemind-=(6*sizeof(real_t));
 		}
@@ -899,14 +899,14 @@ BranchCompressor::compress(real_t taux,
 		//		nbBranch--;
 		currentBranch++;
 		MyVector=GeometryVector[currentBranch].points;
-		k=MyVector->getSize();
+		k=MyVector->size();
       } 
       else{
 		if(DataRemind<=0)working=false;
 		else if(first_pass && currentBranch >=GeometryVector.size()-1){
 		  DataIn2=0;
 		  for(int m=0;m<NbNotRep;m++)
-			DataIn2+=(GeometryVector[VectorNotRep[m]].points->getSize());
+			DataIn2+=(GeometryVector[VectorNotRep[m]].points->size());
 		  DataIn2=DataIn2*3*sizeof(real_t); 
 		  NbNotRep2=0;
 		  //		  nbBranch=-1;
@@ -920,7 +920,7 @@ BranchCompressor::compress(real_t taux,
 		if(NbNotRep2<NbNotRep){
 		  currentBranch = VectorNotRep[NbNotRep2];
 		  MyVector=GeometryVector[currentBranch].points;
-		  k=MyVector->getSize();
+		  k=MyVector->size();
 		  //PR("Curve %d -> %d of %d points. Remind ressource : %d for %d bytes\n",NbNotRep2,VectorNotRep[NbNotRep2],k,DataRemind,DataIn2);
 		  NbNotRep2++;
 		}
@@ -933,7 +933,7 @@ BranchCompressor::compress(real_t taux,
     timer.stop();
 
     PR("\n##############################################\n");
-    PR("# Number of Object in the list : %d\n",scene->getSize());
+    PR("# Number of Object in the list : %d\n",scene->size());
     PR("##############################################\n");
     PR("# Input  : %d bytes - %d Point 3D.\n",DataIn,(DataIn/(3*sizeof(real_t))));
     PR("# Output : %d bytes.\n",DataOut);
@@ -943,8 +943,8 @@ BranchCompressor::compress(real_t taux,
     PR("# Error Average : %.2f per Point 3D.\n",((SumError*3*sizeof(real_t))/DataIn));
     PR("#                 %.2f per Curve.\n",(SumError/GeometryVector.size()));
     PR("# Loop Number : %d .\n",Nbloop);
-    if(!scene->isEmpty()){
-      PR("#   Average   : %d per Curve.\n",(Nbloop/scene->getSize()));}
+    if(!scene->empty()){
+      PR("#   Average   : %d per Curve.\n",(Nbloop/scene->size()));}
     real_t timing = timer.elapsedTime();
     char time[100];
     if (timing > 60.0){
@@ -962,17 +962,17 @@ BranchCompressor::compress(real_t taux,
 	if(_fittime)*_fittime = fittime;
 
     PR("# Number of Curve found : %d.\n",GeometryVector.size());
-    if((scene->getSize()-NbBezierCurve)!=0)
-      PR("# NURBS : %.2f % (%d : Max %d, Min %d).\n",((real_t)scene->getSize()-(real_t)NbBezierCurve)*100.0/(real_t)GeometryVector.size(),(scene->getSize()-NbBezierCurve),Nmax,Nmin);
+    if((scene->size()-NbBezierCurve)!=0)
+      PR("# NURBS : %.2f % (%d : Max %d, Min %d).\n",((real_t)scene->size()-(real_t)NbBezierCurve)*100.0/(real_t)GeometryVector.size(),(scene->size()-NbBezierCurve),Nmax,Nmin);
     if(NbBezierCurve!=0)
       PR("# Bezier : %.2f % (%d : Max %d, Min %d).\n",(real_t)NbBezierCurve*100.0/(real_t)GeometryVector.size(),NbBezierCurve,Bmax,Bmin);
     if(NbPolyline!=0)
       PR("# Polyline : %.2f % (%d : Max %d, Min %d).\n",(real_t)NbPolyline*100.0/(real_t)GeometryVector.size(),NbPolyline,Pmax,Pmin);
     if(NbPoint!=0)
       PR("# Point : %.2f % (%d).\n",(real_t)NbPoint*100.0/(real_t)indexGeometry,NbPoint);
-    if((GeometryVector.size()-scene->getSize()-NbPolyline-NbPoint)!=0)
-      PR("# None : %.2f % (%d : Max %d, Min 0).\n",(real_t)(GeometryVector.size()-scene->getSize()-NbPolyline-NbPoint)*100.0/(real_t)GeometryVector.size(),
-	 (GeometryVector.size()-scene->getSize()-NbPolyline-NbPoint),Emax);
+    if((GeometryVector.size()-scene->size()-NbPolyline-NbPoint)!=0)
+      PR("# None : %.2f % (%d : Max %d, Min 0).\n",(real_t)(GeometryVector.size()-scene->size()-NbPolyline-NbPoint)*100.0/(real_t)GeometryVector.size(),
+	 (GeometryVector.size()-scene->size()-NbPolyline-NbPoint),Emax);
     PR("##############################################\n");
 	interConnection(scene);
 
@@ -988,7 +988,7 @@ BranchCompressor::interConnection(ScenePtr& scene){
   int id = 0;
   int father = 0;
   Vector3 origin;
-  for(Scene::iterator _it = scene->getBegin(); _it != scene->getEnd(); _it++){
+  for(Scene::iterator _it = scene->begin(); _it != scene->end(); _it++){
 	id = (*_it)->getId();
 	father = graph[id];
     while(father > 0 && !(scene->getShapeId(father)))
@@ -1111,14 +1111,14 @@ BranchCompressor::connectionTo(const Vector3& p,
 void 
 BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
 {
-  if(!rad||rad->getSize()<3)return;
-  if(knot&&rad->getSize() != knot->getSize()){
+  if(!rad||rad->size()<3)return;
+  if(knot&&rad->size() != knot->size()){
 	cerr << "Input Knot vector not valid" << endl;
 	return;
   }
   bool k_def = true;
   if(!knot){
-	uint_t _size = rad->getSize();
+	uint_t _size = rad->size();
 	knot = RealArrayPtr(new RealArray(_size));
     knot->setAt(0,0.0);
     for(uint_t _i = 1; _i < _size; _i++)
@@ -1131,19 +1131,19 @@ BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
   RealArrayPtr knot2 = RealArrayPtr(new RealArray(1,knot->getAt(0)));
   Point2ArrayPtr rad2 = Point2ArrayPtr(new Point2Array(1,rad->getAt(0)));
 
-  RealArray::iterator _it2 = knot->getBegin()+1;
-  for(Point2Array::const_iterator _it = rad->getBegin() +1;
-	  _it != rad->getEnd()-1; _it++){
+  RealArray::iterator _it2 = knot->begin()+1;
+  for(Point2Array::const_iterator _it = rad->begin() +1;
+	  _it != rad->end()-1; _it++){
 	if(norm(*_it-((*(_it-1)+*(_it+1))/2))>GEOM_EPSILON){
-	  knot2->pushBack(*_it2);
-	  rad2->pushBack(*_it);
+	  knot2->push_back(*_it2);
+	  rad2->push_back(*_it);
 	}
 	else nbdouble++;
 	_it2++;
   }
-  knot2->pushBack(*(knot->getEnd()-1));
-  rad2->pushBack(*(rad->getEnd()-1));
-  if(knot2->getSize()!=rad2->getSize())cerr << "Error with knot vector size !!" << endl;
+  knot2->push_back(*(knot->end()-1));
+  rad2->push_back(*(rad->end()-1));
+  if(knot2->size()!=rad2->size())cerr << "Error with knot vector size !!" << endl;
 
   if(isDefault(knot)){
 	knot = RealArrayPtr();
@@ -1152,17 +1152,17 @@ BranchCompressor::removeDouble(Point2ArrayPtr& rad,RealArrayPtr& knot) const
   else {
 	if(k_def){ rad = rad2; knot = knot2; }
 	else {
-	  if(knot2->getSize() <= 2*nbdouble){ rad = rad2; knot = knot2; }
+	  if(knot2->size() <= 2*nbdouble){ rad = rad2; knot = knot2; }
 	  else { knot = RealArrayPtr(); /*rad = rad;*/ }
 	}
   }
-  if(knot&&knot->getSize()!=rad->getSize())cerr << "Error with final knot vector size !!" << endl;
+  if(knot&&knot->size()!=rad->size())cerr << "Error with final knot vector size !!" << endl;
 }
 
 bool 
 BranchCompressor::isDefault(RealArrayPtr& knot) const
 {
-  uint_t _size = knot->getSize();
+  uint_t _size = knot->size();
   if(fabs(knot->getAt(0)) > GEOM_EPSILON)return false;
   for(uint_t _i = 1; _i < _size; _i++)
     if(fabs(knot->getAt(_i) - ((real_t)_i /(real_t)(_size - 1))) > GEOM_EPSILON)

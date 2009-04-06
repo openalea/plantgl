@@ -86,7 +86,7 @@ bool MultiSpectral::Builder::isValid( ) const {
     return false;
   }
 
-  uint_t _size = (*Reflectance)->getSize();
+  uint_t _size = (*Reflectance)->size();
   if (_size < 1) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"MultiSpectral","Reflectance","Must have more than 0 value.");
     return false;
@@ -108,7 +108,7 @@ bool MultiSpectral::Builder::isValid( ) const {
     return false;
   }
 
-  if ((*Transmittance)->getSize() != _size) {
+  if ((*Transmittance)->size() != _size) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),"MultiSpectral","Transmittance","Must have the same number of values than Reflectance.");
     return false;
   };
@@ -190,19 +190,19 @@ MultiSpectral::getReflectance( ) {
 
 const real_t&
 MultiSpectral::getReflectanceAt( uint_t i ) const {
-  GEOM_ASSERT(i < __reflectance->getSize());
+  GEOM_ASSERT(i < __reflectance->size());
   return __reflectance->getAt(i);
 }
 
 real_t&
 MultiSpectral::getReflectanceAt( uint_t i ) {
-  GEOM_ASSERT(i < __reflectance->getSize());
+  GEOM_ASSERT(i < __reflectance->size());
   return __reflectance->getAt(i);
 }
 
 uint_t
 MultiSpectral::getReflectanceSize( ) const {
-  return __reflectance->getSize();
+  return __reflectance->size();
 }
 
 /* ----------------------------------------------------------------------- */
@@ -218,19 +218,19 @@ MultiSpectral::getTransmittance( ){
 
 const real_t&
 MultiSpectral::getTransmittanceAt( uint_t i ) const {
-  GEOM_ASSERT(i < __transmittance->getSize());
+  GEOM_ASSERT(i < __transmittance->size());
   return __transmittance->getAt(i);
 }
 
 real_t&
 MultiSpectral::getTransmittanceAt( uint_t i ) {
-  GEOM_ASSERT(i < __transmittance->getSize());
+  GEOM_ASSERT(i < __transmittance->size());
   return __transmittance->getAt(i);
 }
 
 uint_t
 MultiSpectral::getTransmittanceSize( ) const {
-  return __transmittance->getSize();
+  return __transmittance->size();
 }
 
 /* ----------------------------------------------------------------------- */

@@ -180,31 +180,31 @@ inline void glGeomRadEulerRotateXYZ(const real_t& azimuth,
 
 /// glVertex for GEOM
 inline void glGeomVertex(const TOOLS(Vector2)& v)
-{ glVertex2dv(v.getBegin()); }
+{ glVertex2dv(v.begin()); }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const TOOLS(Vector3)& v)
-{ glVertex3dv(v.getBegin()); }
+{ glVertex3dv(v.begin()); }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const TOOLS(Vector4)& v)
-{ glVertex4dv(v.getBegin()); }
+{ glVertex4dv(v.begin()); }
 
 /// glNormal for GEOM
 inline void glGeomNormal(const TOOLS(Vector3)& v)
-{ glNormal3dv(v.getBegin()); }
+{ glNormal3dv(v.begin()); }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const TOOLS(Vector2)& v)
-{ glTexCoord2dv(v.getBegin()); }
+{ glTexCoord2dv(v.begin()); }
 
 /// glVertex for GEOM
 inline void glGeomTexCoord(const TOOLS(Vector3)& v)
-{ glTexCoord3dv(v.getBegin()); }
+{ glTexCoord3dv(v.begin()); }
 
 /// glVertex for GEOM
 inline void glGeomTexCoord(const TOOLS(Vector4)& v)
-{ glTexCoord4dv(v.getBegin()); }
+{ glTexCoord4dv(v.begin()); }
 
 /* ----------------------------------------------------------------------- */
 
@@ -427,31 +427,31 @@ inline void glGeomRadEulerRotateXYZ(const real_t& azimuth,
 
 /// glVertex for GEOM
 inline void glGeomVertex(const TOOLS(Vector2)& v)
-{ glVertex2fv(v.getBegin()); }
+{ glVertex2fv(v.begin()); }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const TOOLS(Vector3)& v)
-{ glVertex3fv(v.getBegin()); }
+{ glVertex3fv(v.begin()); }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const TOOLS(Vector4)& v)
-{ glVertex4fv(v.getBegin()); }
+{ glVertex4fv(v.begin()); }
 
 /// glNormal for GEOM
 inline void glGeomNormal(const TOOLS(Vector3)& v)
-{ glNormal3fv(v.getBegin()); }
+{ glNormal3fv(v.begin()); }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const TOOLS(Vector2)& v)
-{ glTexCoord2fv(v.getBegin()); }
+{ glTexCoord2fv(v.begin()); }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const TOOLS(Vector3)& v)
-{ glTexCoord3fv(v.getBegin()); }
+{ glTexCoord3fv(v.begin()); }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const TOOLS(Vector4)& v)
-{ glTexCoord4fv(v.getBegin()); }
+{ glTexCoord4fv(v.begin()); }
 
 /* ----------------------------------------------------------------------- */
 
@@ -525,7 +525,7 @@ inline void glGeomGetMatrix(GLenum pname,TOOLS(Matrix4)& m)
 
 /// glLight(GL_POSITION) for GEOM
 inline void glGeomLightPosition(GLenum light, const TOOLS(Vector4)& v )
-{ glLightfv (light, GL_POSITION, v.getBegin()); }
+{ glLightfv (light, GL_POSITION, v.begin()); }
 
 /// glLight(GL_POSITION) for GEOM
 inline void glGeomLightPosition(GLenum light, const TOOLS(Vector3)& v )
@@ -534,15 +534,15 @@ inline void glGeomLightPosition(GLenum light, const TOOLS(Vector3)& v )
 
 /// glLight(GL_SPOT_DIRECTION) for GEOM
 inline void glGeomLightDirection(GLenum light, const TOOLS(Vector3)& v )
-{ glLightfv (light, GL_SPOT_DIRECTION, v.getBegin()); }
+{ glLightfv (light, GL_SPOT_DIRECTION, v.begin()); }
 
 /// glGetLight(GL_POSITION) for GEOM
 inline void glGeomGetLightPosition(GLenum light, TOOLS(Vector4)& v )
-{ glGetLightfv (light, GL_POSITION, v.getBegin()); }
+{ glGetLightfv (light, GL_POSITION, v.begin()); }
 
 /// glGetLight(GL_SPOT_DIRECTION) for GEOM
 inline void glGeomGetLightDirection(GLenum light, TOOLS(Vector3)& v )
-{ glGetLightfv (light, GL_SPOT_DIRECTION, v.getBegin()); }
+{ glGetLightfv (light, GL_SPOT_DIRECTION, v.begin()); }
 
 /* ----------------------------------------------------------------------- */
 

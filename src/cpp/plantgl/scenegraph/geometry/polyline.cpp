@@ -70,8 +70,8 @@ bool Polyline::Builder::isValid( ) const {
 	if(!EMValid()) return false;
 
 	if (ColorList && *ColorList) {
-		uint_t _colorListSize = (*ColorList)->getSize();
-		if(_colorListSize != (*PointList)->getSize()){
+		uint_t _colorListSize = (*ColorList)->size();
+		if(_colorListSize != (*PointList)->size()){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Polyline","ColorList","Number of colors must be compatible to PointList size.");
 			return false;
 		}
@@ -105,13 +105,13 @@ Polyline::~Polyline( ){
 
 const Vector3& 
 Polyline::getPointListAt( uint_t i ) const {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
 }
 
 Vector3& 
 Polyline::getPointListAt( uint_t i ) {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
 }
 
@@ -122,12 +122,12 @@ Polyline::getFirstKnot() const{
 
 const real_t 
 Polyline::getLastKnot() const{
-  return (real_t)(__pointList->getSize()-1);
+  return (real_t)(__pointList->size()-1);
 }
 
 const uint_t
 Polyline::getStride() const{
-    return (__pointList->getSize()-1);
+    return (__pointList->size()-1);
 }
 
 Vector3 Polyline::getPointAt(real_t u) const{
@@ -141,7 +141,7 @@ Vector3 Polyline::getTangentAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     real_t u1 = (int)u;
     if(u <= 0) return (__pointList->getAt(1)-__pointList->getAt(0));
-    else if(u >= (__pointList->getSize()-1)) return (__pointList->getAt(__pointList->getSize()-1)-__pointList->getAt(__pointList->getSize()-2));
+    else if(u >= (__pointList->size()-1)) return (__pointList->getAt(__pointList->size()-1)-__pointList->getAt(__pointList->size()-2));
     else if(u1 == u){
         Vector3 _a = (__pointList->getAt((uint_t)u1)-__pointList->getAt((uint_t)(u1-1)));
         Vector3 _b = (__pointList->getAt((uint_t)u1+1)-__pointList->getAt((uint_t)u1));
@@ -188,11 +188,11 @@ std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     int u_index = int(u);
     std::pair<PolylinePtr,PolylinePtr> result;
-    result.first = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(__pointList->getBegin(),__pointList->getBegin()+u_index+1))));
-    result.second = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()))));
+    result.first = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(__pointList->begin(),__pointList->begin()+u_index+1))));
+    result.second = PolylinePtr(new Polyline(Point3ArrayPtr(new Point3Array(__pointList->begin()+u_index+1,__pointList->end()))));
     Vector3 mid_point = getPointAt(u);
-    result.first->getPointList()->pushBack(mid_point);
-    result.second->getPointList()->insert(result.second->getPointList()->getBegin(),mid_point);
+    result.first->getPointList()->push_back(mid_point);
+    result.second->getPointList()->insert(result.second->getPointList()->begin(),mid_point);
     return result;
 }
 
@@ -245,7 +245,7 @@ bool Polyline2D::Builder::isValid( ) const {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Polyline2D","PointList");
     return false;
   };
-  if ((*PointList)->getSize() < 1) {
+  if ((*PointList)->size() < 1) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Polyline2D","PointList","Number of points must be greater than 1.");
     return false;
   };
@@ -296,13 +296,13 @@ Polyline2D::copy(DeepCopier& copier) const
 
 const Vector2& 
 Polyline2D::getPointListAt( uint_t i ) const {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
 }
 
 Vector2&
 Polyline2D::getPointListAt( uint_t i ) {
-  GEOM_ASSERT(i < __pointList->getSize());
+  GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
 }
 
@@ -318,7 +318,7 @@ Polyline2D::getPointList( ){
 
 uint_t 
 Polyline2D::getPointListSize( ) const {
-  return __pointList->getSize();
+  return __pointList->size();
 }
 
 const real_t 
@@ -328,12 +328,12 @@ Polyline2D::getFirstKnot() const{
 
 const real_t 
 Polyline2D::getLastKnot() const{
-  return (real_t)(__pointList->getSize()-1);
+  return (real_t)(__pointList->size()-1);
 }
 
 const uint_t 
 Polyline2D::getStride() const{
-    return (__pointList->getSize()-1);
+    return (__pointList->size()-1);
 }
 
 Vector2 
@@ -348,7 +348,7 @@ Vector2 Polyline2D::getTangentAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     real_t u1 = (int)u;
     if(u <= 0) return (__pointList->getAt(1)-__pointList->getAt(0));
-    else if(u >= (__pointList->getSize()-1)) return (__pointList->getAt(__pointList->getSize()-1)-__pointList->getAt(__pointList->getSize()-2));
+    else if(u >= (__pointList->size()-1)) return (__pointList->getAt(__pointList->size()-1)-__pointList->getAt(__pointList->size()-2));
     else if(u1 == u){
         Vector2 _a = (__pointList->getAt((uint_t)u1)-__pointList->getAt((uint_t)(u1-1)));
         Vector2 _b = (__pointList->getAt((uint_t)u1+1)-__pointList->getAt((uint_t)u1));
@@ -377,11 +377,11 @@ std::pair<Polyline2DPtr,Polyline2DPtr> Polyline2D::split(real_t u) const {
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
     int u_index = int(u);
     std::pair<Polyline2DPtr,Polyline2DPtr> result;
-    result.first = Polyline2DPtr(new Polyline2D(Point2ArrayPtr(new Point2Array(__pointList->getBegin(),__pointList->getBegin()+u_index))));
-    result.second = Polyline2DPtr(new Polyline2D(Point2ArrayPtr(new Point2Array(__pointList->getBegin()+u_index+1,__pointList->getEnd()))));
+    result.first = Polyline2DPtr(new Polyline2D(Point2ArrayPtr(new Point2Array(__pointList->begin(),__pointList->begin()+u_index))));
+    result.second = Polyline2DPtr(new Polyline2D(Point2ArrayPtr(new Point2Array(__pointList->begin()+u_index+1,__pointList->end()))));
     Vector2 mid_point = getPointAt(u);
-    result.first->getPointList()->pushBack(mid_point);
-    result.second->getPointList()->insert(result.second->getPointList()->getBegin(),mid_point);
+    result.first->getPointList()->push_back(mid_point);
+    result.second->getPointList()->insert(result.second->getPointList()->begin(),mid_point);
     return result;
 }
 

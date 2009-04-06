@@ -252,14 +252,14 @@ GeomViewBuilder::parseGeometry(std::string& token){
 		do{
 			geom2 = parseGeometry();
 			if(geom2){
-				geoms->pushBack(geom2);
+				geoms->push_back(geom2);
 #ifdef COMMENT_PARSE_OUTPUT
 			__output << "*** Comment : Add Geometry to LIST. " << endl;
 #endif
 			}
 		}while(!endListObject());
-		if(!geoms->isEmpty()){
-			if(geoms->getSize() == 1)geom = geoms->getAt(0);
+		if(!geoms->empty()){
+			if(geoms->size() == 1)geom = geoms->getAt(0);
 			else geom = GeometryPtr(new Group(geoms));
 		}
 	}
@@ -718,10 +718,10 @@ BezBuilder::parse(){
 				{ valid = false; break; }
 				__data.readUColor4();
 			}
-		group->pushBack(GeometryPtr(new BezierPatch(ctrls)));
+		group->push_back(GeometryPtr(new BezierPatch(ctrls)));
 	}
-	if(group->isEmpty())return GeometryPtr();
-	else if (group->getSize() == 1 )return group->getAt(0);
+	if(group->empty())return GeometryPtr();
+	else if (group->size() == 1 )return group->getAt(0);
 	else return GeometryPtr(new Group(group));
 }
 
@@ -1071,13 +1071,13 @@ QuadBuilder::parse(){
 			p = Vector3(p2.x(),p2.y(),p2.z());
 		}
 		else p = __data.readVector3();
-		if(p.isValid())points->pushBack(p);
+		if(p.isValid())points->push_back(p);
 		if(__normals){
 			if(__data.endObject()){ 
 				__data.output() << "*** Error : QuadBuilder[" << __LINE__ << "] : Invalid end of object." << endl;
 				valid = false; break; }
 			n = __data.readVector3();
-			if(n.isValid())normals->pushBack(n);
+			if(n.isValid())normals->push_back(n);
 		}
 		if(__colored){
 			if(__data.endObject()){ 
@@ -1087,9 +1087,9 @@ QuadBuilder::parse(){
 		}
 	}
 	if(valid){
-		uint_t nbfaces = points->getSize()/4;
-		if(nbfaces*4 != points->getSize()){
-			__data.output() << "*** Error : QUAD: Number of vertices not multiple of 4 : " << points->getSize() << endl;
+		uint_t nbfaces = points->size()/4;
+		if(nbfaces*4 != points->size()){
+			__data.output() << "*** Error : QUAD: Number of vertices not multiple of 4 : " << points->size() << endl;
 		}
 		Index4ArrayPtr indices(new Index4Array(nbfaces));
 		for(uint_t it = 0; it < nbfaces; it++)
@@ -1184,10 +1184,10 @@ VectBuilder::parse(){
 			p = Vector3(p2.x(),p2.y(),p2.z());
 		}
 		else p = __data.readVector3();
-		if(p.isValid())points->pushBack(p);
+		if(p.isValid())points->push_back(p);
 		else {
 			__data.output() << "*** Error : VectBuilder[" << __LINE__ << "] : Invalid Point " << endl;
-			points->pushBack(Vector3::ORIGIN);
+			points->push_back(Vector3::ORIGIN);
 		}
 	}
 	if(valid){
@@ -1199,29 +1199,29 @@ VectBuilder::parse(){
 		uint_t sum = 0;
 		{ for(int k = 0 ; valid && k < NPolylines ; k++)
 			sum += (NPointsP[k]<0?-NPointsP[k]:NPointsP[k]); }
-		if(sum != points->getSize()){
+		if(sum != points->size()){
 			__data.output() << "*** Error : VectBuilder : Number of points does not correspond " 
-				<< sum << " -- " << points->getSize()
+				<< sum << " -- " << points->size()
 				<< endl;
 			return GeometryPtr();
 		}
-		Point3Array::iterator it = points->getBegin();
-		for(int k = 0 ; it != points->getEnd() && k < NPolylines ; k++){
+		Point3Array::iterator it = points->begin();
+		for(int k = 0 ; it != points->end() && k < NPolylines ; k++){
 			bool closed = (NPointsP[k] < 0);
 			int nbp = (NPointsP[k]<0?-NPointsP[k]:NPointsP[k]);
 			if(nbp == 1){
-				group->pushBack(GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(it,it+1)))));
+				group->push_back(GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(it,it+1)))));
 				it++;
 			}
 			else if(nbp > 1){
 				Point3ArrayPtr lpoints(new Point3Array(it,it+nbp));
-				if(closed)lpoints->pushBack(*it);
-				group->pushBack(GeometryPtr(new Polyline(lpoints)));
+				if(closed)lpoints->push_back(*it);
+				group->push_back(GeometryPtr(new Polyline(lpoints)));
 				it = it+nbp;
 			}
 		}
-		if(group->isEmpty())return GeometryPtr();
-		else if (group->getSize() == 1 )return group->getAt(0);
+		if(group->empty())return GeometryPtr();
+		else if (group->size() == 1 )return group->getAt(0);
 		else return GeometryPtr(new Group(group));
 	}
 	return GeometryPtr();

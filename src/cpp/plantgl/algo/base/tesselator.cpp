@@ -388,15 +388,15 @@ bool Tesselator::process( FaceSet * faceSet ) {
 				     faceSet->getSkeleton());
 
   if (!faceSet->getNormalPerVertex() && faceSet->getNormalList()){
-	  Point3ArrayPtr _nml( new Point3Array(tr->getIndexList()->getSize()));
-	  Point3Array::iterator _it = _nml->getBegin();
-	  Point3Array::const_iterator _it2 = faceSet->getNormalList()->getBegin();
+	  Point3ArrayPtr _nml( new Point3Array(tr->getIndexList()->size()));
+	  Point3Array::iterator _it = _nml->begin();
+	  Point3Array::const_iterator _it2 = faceSet->getNormalList()->begin();
 	  
-	  for (IndexArray::iterator _itInd = faceSet->getIndexList()->getBegin();
-		   _itInd != faceSet->getIndexList()->getEnd(); ++_itInd)
+	  for (IndexArray::iterator _itInd = faceSet->getIndexList()->begin();
+		   _itInd != faceSet->getIndexList()->end(); ++_itInd)
 	  {
-		  if(_itInd->getSize() >=3){
-			  for (uint_t i = 0 ; i < _itInd->getSize() - 2; ++i)
+		  if(_itInd->size() >=3){
+			  for (uint_t i = 0 ; i < _itInd->size() - 2; ++i)
 			  { *_it = *_it2; ++_it; }
 		  }
 		  ++_it2;
@@ -405,15 +405,15 @@ bool Tesselator::process( FaceSet * faceSet ) {
   }
 
   if (!faceSet->getColorPerVertex() && faceSet->getColorList()){
-	  Color4ArrayPtr _cl( new Color4Array(tr->getIndexList()->getSize()));
-	  Color4Array::iterator _it = _cl->getBegin();
-	  Color4Array::const_iterator _it2 = faceSet->getColorList()->getBegin();
+	  Color4ArrayPtr _cl( new Color4Array(tr->getIndexList()->size()));
+	  Color4Array::iterator _it = _cl->begin();
+	  Color4Array::const_iterator _it2 = faceSet->getColorList()->begin();
 
-	  for (IndexArray::iterator _itInd = faceSet->getIndexList()->getBegin();
-		   _itInd != faceSet->getIndexList()->getEnd(); ++_itInd)
+	  for (IndexArray::iterator _itInd = faceSet->getIndexList()->begin();
+		   _itInd != faceSet->getIndexList()->end(); ++_itInd)
 	  {
-		  if(_itInd->getSize() >=3){
-			for (uint_t i = 0 ; i < _itInd->getSize() - 2; ++i)
+		  if(_itInd->size() >=3){
+			for (uint_t i = 0 ; i < _itInd->size() - 2; ++i)
 				{ *_it = *_it2; ++_it; }
 		  }
 		  ++_it2;
@@ -564,10 +564,10 @@ bool Tesselator::process( QuadSet * quadSet ) {
 				     quadSet->getSkeleton());
 
   if (!quadSet->getNormalPerVertex() && quadSet->getNormalList()){
-	  Point3ArrayPtr _nml( new Point3Array(quadSet->getNormalList()->getSize()*2));
-	  Point3Array::iterator _it = _nml->getBegin();
-	  for (Point3Array::const_iterator _it2 = quadSet->getNormalList()->getBegin();
-		   _it2 != quadSet->getNormalList()->getEnd(); ++_it2)
+	  Point3ArrayPtr _nml( new Point3Array(quadSet->getNormalList()->size()*2));
+	  Point3Array::iterator _it = _nml->begin();
+	  for (Point3Array::const_iterator _it2 = quadSet->getNormalList()->begin();
+		   _it2 != quadSet->getNormalList()->end(); ++_it2)
 	  {
 		  *_it = *_it2; ++_it;
 		  *_it = *_it2; ++_it;	
@@ -576,10 +576,10 @@ bool Tesselator::process( QuadSet * quadSet ) {
   }
 
   if (!quadSet->getColorPerVertex() && quadSet->getColorList()){
-	  Color4ArrayPtr _cl( new Color4Array(quadSet->getColorList()->getSize()*2));
-	  Color4Array::iterator _it = _cl->getBegin();
-	  for (Color4Array::const_iterator _it2 = quadSet->getColorList()->getBegin();
-		   _it2 != quadSet->getColorList()->getEnd(); ++_it2)
+	  Color4ArrayPtr _cl( new Color4Array(quadSet->getColorList()->size()*2));
+	  Color4Array::iterator _it = _cl->begin();
+	  for (Color4Array::const_iterator _it2 = quadSet->getColorList()->begin();
+		   _it2 != quadSet->getColorList()->end(); ++_it2)
 	  {
 		  *_it = *_it2; ++_it;
 		  *_it = *_it2; ++_it;	

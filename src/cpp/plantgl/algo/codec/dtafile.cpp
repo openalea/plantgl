@@ -207,10 +207,10 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 
 	    AppearancePtr app(new Material(ambient,diffuse,specular,emission,shininess));
 	    if(app->isValid()){
-		Scene::iterator _it=result->getBegin();
+		Scene::iterator _it=result->begin();
 		bool ok = false;
 		ShapePtr * pt;
-		while(_it!=result->getEnd() && !ok){
+		while(_it!=result->end() && !ok){
 		    pt = (ShapePtr *)&(*(_it));
 		    if((*pt)->getId() == (uint_t)id){
 			(*pt)->appearance = app;
@@ -290,15 +290,15 @@ Dtafile::getScene() const {
 /* ----------------------------------------------------------------------- */
 
 const unsigned int  Dtafile::getSize() const {
-    return _scene->getSize();
+    return _scene->size();
 }
 
 AmapSymbolPtr Dtafile::getSymbol( const uint_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
     ShapePtr shape;
-    for(Scene::iterator _it = _scene->getBegin();
-        _it != _scene->getEnd();
+    for(Scene::iterator _it = _scene->begin();
+        _it != _scene->end();
         _it++){
       if((shape = dynamic_pointer_cast<Shape>(*_it)) && (int)shape->getId() == Id)
         return AmapSymbolPtr(dynamic_pointer_cast<AmapSymbol>(shape->geometry));
@@ -310,8 +310,8 @@ MaterialPtr Dtafile::getMaterial( const uint_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
     ShapePtr shape;
-    for(Scene::iterator _it = _scene->getBegin();
-        _it != _scene->getEnd();
+    for(Scene::iterator _it = _scene->begin();
+        _it != _scene->end();
         _it++){
         if((shape = dynamic_pointer_cast<Shape>(*_it)) && (int)shape->getId() == Id)
           return MaterialPtr(dynamic_pointer_cast<Material>(shape->appearance));
@@ -323,8 +323,8 @@ const ShapePtr Dtafile::getdtainfo( const uint_t id) const {
     int Id = getSymbolNumber(id);
     if(Id == -1) Id =id;
     ShapePtr shape;
-    for(Scene::iterator _it = _scene->getBegin();
-        _it != _scene->getEnd();
+    for(Scene::iterator _it = _scene->begin();
+        _it != _scene->end();
         _it++){
       if((shape = dynamic_pointer_cast<Shape>(*_it)) && (int)shape->getId() == Id)
         return shape;
@@ -499,10 +499,10 @@ ostream& Dtafile::writeAMLCode(ostream& stream){
 
     stream << "#  Array of symbol num." << endl;
     stream << " num_symb_array = [ \\" << endl;
-    int nb = 0,itf = _scene->getSize();
+    int nb = 0,itf = _scene->size();
     ShapePtr shape;
-    for(Scene::iterator _it = _scene->getBegin();
-        _it != _scene->getEnd();
+    for(Scene::iterator _it = _scene->begin();
+        _it != _scene->end();
         _it++){
         nb++;
         if((shape = dynamic_pointer_cast<Shape>(*_it))){
@@ -516,8 +516,8 @@ ostream& Dtafile::writeAMLCode(ostream& stream){
     stream << "#  Array of [symbol name ,appearance name]." << endl;
     stream << " symb_array = [ \\" << endl;
     nb = 0;
-    for(Scene::iterator _it2 = _scene->getBegin();
-        _it2 != _scene->getEnd();
+    for(Scene::iterator _it2 = _scene->begin();
+        _it2 != _scene->end();
         _it2++){
       if((shape= dynamic_pointer_cast<Shape>(*_it2))){
         nb++;

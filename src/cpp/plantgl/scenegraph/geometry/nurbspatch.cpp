@@ -76,7 +76,7 @@ SceneObjectPtr NurbsPatch::Builder::build( ) const {
 
         if( ! UDegree ){
             if( ! UKnotList )_udegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE,(*CtrlPointMatrix)->getRowsNb() - 1) ;
-            else _udegree = (*UKnotList)->getSize() - (*CtrlPointMatrix)->getRowsNb() - 1;
+            else _udegree = (*UKnotList)->size() - (*CtrlPointMatrix)->getRowsNb() - 1;
 #ifdef GEOM_DEBUG
             cout << "UDegree value assign to " <<  _udegree << endl;
 #endif
@@ -85,7 +85,7 @@ SceneObjectPtr NurbsPatch::Builder::build( ) const {
 
         if( ! VDegree ){
             if( ! VKnotList ) _vdegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE, (*CtrlPointMatrix)->getColsNb() - 1);
-            else _vdegree = (*VKnotList)->getSize() - (*CtrlPointMatrix)->getColsNb() - 1;
+            else _vdegree = (*VKnotList)->size() - (*CtrlPointMatrix)->getColsNb() - 1;
 #ifdef GEOM_DEBUG
             cout << "VDegree value assign to " <<  _vdegree  << endl;
 #endif
@@ -158,13 +158,13 @@ bool NurbsPatch::Builder::isValid( ) const {
     };
 
     // uknot list
-    if( UKnotList != NULL && (*UKnotList)->getSize() < _usize + 2 ){
+    if( UKnotList != NULL && (*UKnotList)->size() < _usize + 2 ){
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be greater than the number of control points in a row.");
         return false;
     };
 
     // vknot list
-    if( VKnotList != NULL && (*VKnotList)->getSize() < _vsize + 2 ){
+    if( VKnotList != NULL && (*VKnotList)->size() < _vsize + 2 ){
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be greater than the number of control points in a column.");
         return false;
     };
@@ -191,14 +191,14 @@ bool NurbsPatch::Builder::isValid( ) const {
     if( UKnotList ){
         uint_t _deg;
         if (UDegree) _deg = (*UDegree);
-        else _deg =  ((*UKnotList)->getSize()) - _usize -1;
+        else _deg =  ((*UKnotList)->size()) - _usize -1;
         real_t _val = (*UKnotList)->getAt(0);
         for (uint_t i1 = 1 ; i1 < _deg+1 ; i1++ )
             if( !(fabs ((*UKnotList)->getAt(i1) - _val ) <GEOM_TOLERANCE )){
                 pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","UKnotList",number(i1+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
-        uint_t _knsize = (*UKnotList)->getSize();
+        uint_t _knsize = (*UKnotList)->size();
         _val = (*UKnotList)->getAt(_knsize -1  );
         for (uint_t j1 = _knsize - _deg - 1 ; j1 < _knsize ; j1++ )
             if( !(fabs ((*UKnotList)->getAt(j1) -_val ) <GEOM_TOLERANCE )){
@@ -212,14 +212,14 @@ bool NurbsPatch::Builder::isValid( ) const {
     if( VKnotList ){
         uint_t _deg;
         if (VDegree ) _deg = (*VDegree);
-        else _deg =  ((*VKnotList)->getSize()) - _vsize -1;
+        else _deg =  ((*VKnotList)->size()) - _vsize -1;
         real_t _val = (*VKnotList)->getAt(0);
         for (uint_t i = 1 ; i < _deg+1 ; i++ )
             if( !(fabs ((*VKnotList)->getAt(i) - _val ) <GEOM_TOLERANCE )){
                 pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VECTOR_TYPE_ssss),"Nurbs Patch","VKnotList",number(i+1).c_str(),"Must be a clamped vector.");
                 return false;
             }
-        uint_t _knsize = (*VKnotList)->getSize();
+        uint_t _knsize = (*VKnotList)->size();
         _val = (*VKnotList)->getAt(_knsize -1  );
         for (uint_t j = _knsize - _deg - 1 ; j < _knsize ; j++ )
             if( !(fabs ((*VKnotList)->getAt(j) -_val ) <GEOM_TOLERANCE )){
@@ -233,13 +233,13 @@ bool NurbsPatch::Builder::isValid( ) const {
     // Fields dependency
     if (  UDegree != NULL &&
           UKnotList != NULL  &&
-           _usize != ( (*UKnotList)->getSize() -  *UDegree - 1)) {
+           _usize != ( (*UKnotList)->size() -  *UDegree - 1)) {
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be coherent with degree and number of control points in a row.");
         return false;
     };
     if (  VDegree != NULL &&
           VKnotList != NULL  &&
-          _vsize != ( (*VKnotList)->getSize() -  *VDegree - 1)) {
+          _vsize != ( (*VKnotList)->size() -  *VDegree - 1)) {
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be coherent with degree and number of control points in a columns.");
         return false;
     };
@@ -364,7 +364,7 @@ NurbsPatch::getFirstUKnot( ) const {
 
 const real_t
 NurbsPatch::getLastUKnot( ) const {
-  return __uKnotList->getAt((__uKnotList->getSize())-1);
+  return __uKnotList->getAt((__uKnotList->size())-1);
 }
 
 
@@ -385,7 +385,7 @@ NurbsPatch::getFirstVKnot( ) const {
 
 real_t
 NurbsPatch::getLastVKnot( ) const {
-  return __vKnotList->getAt((__vKnotList->getSize())-1);
+  return __vKnotList->getAt((__vKnotList->size())-1);
 }
 
 /* ----------------------------------------------------------------------- */

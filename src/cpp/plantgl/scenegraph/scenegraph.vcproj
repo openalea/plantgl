@@ -808,6 +808,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath="..\pgl_config.h"
+			>
+		</File>
+		<File
 			RelativePath=".\pgl_version.cpp"
 			>
 		</File>

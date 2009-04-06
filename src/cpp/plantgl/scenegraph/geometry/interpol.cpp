@@ -110,8 +110,8 @@ NurbsCurve2DPtr Interpol::get2DCurve()
 
   RealArrayPtr _KV= bezierKV( params );
 
-  Point3Array::iterator _itB= CP->getBegin();
-  Point3Array::iterator _itE= CP->getEnd();
+  Point3Array::iterator _itB= CP->begin();
+  Point3Array::iterator _itE= CP->end();
   Point3Array::iterator _it= _itB;
 
   for( _it= _itB; _it < _itE; _it++ )
@@ -150,8 +150,8 @@ bool Interpol::initTangent()
   GEOM_ASSERT(points);
   GEOM_ASSERT(knots);
 
-  uint_t size= points->getSize();
-  GEOM_ASSERT( size == knots->getSize() );
+  uint_t size= points->size();
+  GEOM_ASSERT( size == knots->size() );
   uint_t n= size-1;
 
   T= Point3ArrayPtr(new Point3Array(size));
@@ -235,7 +235,7 @@ uint_t methode= 0;
   real_t beta= 0.;
 
 //  real_t detT1T2= T1.x()*T2.y() - T2.x()*T1.y();
-  CP->pushBack(P);
+  CP->push_back(P);
 
   Vector3 PQ= Q-P;
   real_t eps2= GEOM_EPSILON*GEOM_EPSILON;
@@ -245,7 +245,7 @@ uint_t methode= 0;
     {
     // P=Q
     Vector3 R= (P + Q)/2.;
-    CP->pushBack(R);
+    CP->push_back(R);
     nbArcs= 1;
     }
   else
@@ -260,7 +260,7 @@ uint_t methode= 0;
   methode= 1;
   #endif
         Vector3 R= P + ( T1 * alpha );
-        CP->pushBack(R);
+        CP->push_back(R);
         nbArcs= 1;
         }
       else
@@ -303,9 +303,9 @@ uint_t methode= 0;
         Vector3 R2= Q - ( T2 * beta / nT2 );
         Vector3 P1= ( R1 * beta + R2 * alpha ) / ( alpha +  beta );
 
-        CP->pushBack(R1);
-        CP->pushBack(P1);
-        CP->pushBack(R2);
+        CP->push_back(R1);
+        CP->push_back(P1);
+        CP->push_back(R2);
 
         nbArcs= 2;
         }
@@ -326,7 +326,7 @@ uint_t methode= 0;
   methode= 3;
   #endif
         Vector3 R= ( P + Q ) / 2.;
-        CP->pushBack(R);
+        CP->push_back(R);
         nbArcs= 1;
         }
       else
@@ -346,9 +346,9 @@ uint_t methode= 0;
 
         Vector3 P1= ( R1 + R2 ) / 2.;
 
-        CP->pushBack(R1);
-        CP->pushBack(P1);
-        CP->pushBack(R2);
+        CP->push_back(R1);
+        CP->push_back(P1);
+        CP->push_back(R2);
   #ifdef DEBUG
   cout<<"Arc "<<_arcNum<<": "<<P<<","<<R1<<","<<P1<<","<<R2<<","<<Q<<endl;
   #endif
@@ -437,9 +437,9 @@ uint_t Interpol::bezierArc3( uint_t _arcNum )
 cout<<"Arc "<<_arcNum<<": "<<P0<<","<<P1<<","<<P2<<endl;
 #endif
 
-  CP->pushBack(P0);
-  CP->pushBack(P1);
-  CP->pushBack(P2);
+  CP->push_back(P0);
+  CP->push_back(P1);
+  CP->push_back(P2);
 
   return 1;
 }
@@ -454,7 +454,7 @@ cout<<" bezierKV "<<endl;
 
   GEOM_ASSERT(_knots);
 
-  uint_t size= _knots->getSize();
+  uint_t size= _knots->size();
   uint_t nCP= degree * (size-1) + 1;
   uint_t nKnots= degree + 1 + nCP;
 
@@ -467,14 +467,14 @@ cout<<" nKnots "<<nKnots<<endl;
   // Knot Vector Computation
   RealArrayPtr KV(new RealArray(nKnots));
 
-  RealArray::const_iterator _itU= _knots->getBegin();
-  RealArray::iterator _itKV= KV->getBegin();
+  RealArray::const_iterator _itU= _knots->begin();
+  RealArray::iterator _itKV= KV->begin();
 
   real_t u= *_itU;
   *(_itKV++)= u;
 
   uint_t i= 1, j= 0;
-  for( i= 1; _itU != _knots->getEnd(); _itU++ )
+  for( i= 1; _itU != _knots->end(); _itU++ )
     {
     u= *_itU;
     for( j= 0; j < degree; j++ )
@@ -499,7 +499,7 @@ uint_t Interpol::checkContinuity( ) const
 
   Vector3 Tprev, Tnext;
   uint_t i= 0;
-  uint_t size= CP->getSize();
+  uint_t size= CP->size();
 
   if( (size-1) % degree )
     return 0;
@@ -571,9 +571,9 @@ bool Interpol::run()
   GEOM_ASSERT(points);
   GEOM_ASSERT(knots);
 
-  const uint_t size= points->getSize();
+  const uint_t size= points->size();
 
-  if( size != knots->getSize() )
+  if( size != knots->size() )
     return false;
 
   if( size < 2 )
@@ -619,12 +619,12 @@ bool Interpol::run()
         real_t u= knots->getAt(i);
         real_t v= knots->getAt(i+1);
 
-        params->pushBack(u);
+        params->push_back(u);
         if( nbArcs > 1 )
           {
           GEOM_ASSERT( nbArcs == 2 );
           real_t w= (u + v) / 2.;
-          params->pushBack(w);
+          params->push_back(w);
           }
         }
       }
@@ -644,12 +644,12 @@ cout<<"Pas de solution!!!!!!!!!! "<<endl;
       }
 
     Vector3 P= points->getAt(n);
-    CP->pushBack(P);
+    CP->push_back(P);
 
     if( degree == 2 )
       {
       real_t u= knots->getAt(n);
-      params->pushBack(u);
+      params->push_back(u);
       }
     else
       params= knots;

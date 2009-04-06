@@ -110,7 +110,7 @@ using namespace STDEXT;
     uint_t _sizej = readUint32(); \
     if (_sizej > 0){ \
       obj = type##Ptr (new type(_sizej)); \
-      for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
+      for (type::iterator _it = obj->begin();_it != obj->end() && !stream->eof(); _it++) { \
       *_it = read##primitive(); \
       }; \
     }; \
@@ -120,7 +120,7 @@ using namespace STDEXT;
     uint_t _sizej  = readUint32(); \
     if (_sizej > 0){ \
       obj = IndexArrayPtr(new IndexArray(_sizej)); \
-      for (IndexArray::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
+      for (IndexArray::iterator _it = obj->begin();_it != obj->end() && !stream->eof(); _it++) { \
         *_it = readIndex(); \
       }; \
     }; \
@@ -130,7 +130,7 @@ using namespace STDEXT;
     uint_t _rows  = readUint32(); \
     uint_t _cols  = readUint32(); \
     obj = type##Ptr (new type(_rows,_cols)); \
-    for (type::iterator _it = obj->getBegin();_it != obj->getEnd() && !stream->eof(); _it++) { \
+    for (type::iterator _it = obj->begin();_it != obj->end() && !stream->eof(); _it++) { \
     *_it = read##primitive(); \
     }; \
   };
@@ -541,7 +541,7 @@ bool BinaryParser::readHeader(){
   cerr << "Must find a scene of " << _size << " objects." << endl;
   __outputStream << "Must find a scene of " << _size << " objects." << endl;
 #endif
-  __scene->Resize(_size);
+  __scene->resize(_size);
   __sizes = __tokens->getCounts();
 #ifdef MEMORY_MANAGEMENT
   uint_t _reservedsize(0);
@@ -597,7 +597,7 @@ bool BinaryParser::parse(const string& filename){
     while(!stream->eof()&& __errors_count!=__max_errors)readNext();
     t.stop();
     if(__roots > 0)
-       __scene->Resize(__roots);
+       __scene->resize(__roots);
     else __scene = ScenePtr(new Scene);
 #ifdef GEOM_DEBUG
     if(isParserVerbose()){
@@ -726,15 +726,15 @@ bool BinaryParser::readShape(){
         Shape3DPtr sh = Shape3DPtr(a);
         if(!sh) cerr << "Shape not valid" << endl;
         else {
-            if(__roots < __scene->getSize())
+            if(__roots < __scene->size())
                  __scene->setAt(__roots, sh);
             else
                  __scene->add(sh);
             __roots++;
         }
         if(isParserVerbose())
-          if(__roots % 50 == 0 || __roots == __scene->getSize())
-			 printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->getSize());
+          if(__roots % 50 == 0 || __roots == __scene->size())
+			 printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->size());
         return true;
     }
     else{
@@ -1439,11 +1439,11 @@ bool BinaryParser::readGroup() {
     *stream >> _sizej;
     obj->getGeometryList()= GeometryArrayPtr(new GeometryArray(_sizej));
     uint_t err = 0;
-    GeometryArray::iterator _it = obj->getGeometryList()->getBegin();
+    GeometryArray::iterator _it = obj->getGeometryList()->begin();
 
     for (uint_t num = 0;
          num < _sizej &&
-         _it != obj->getGeometryList()->getEnd() &&
+         _it != obj->getGeometryList()->end() &&
          !stream->eof(); num++) {
         if(readNext())
             *_it  = dynamic_pointer_cast<Geometry>(__result);
@@ -1482,8 +1482,8 @@ bool BinaryParser::readIFS() {
     obj->getTransfoList()= Transform4ArrayPtr(new Transform4Array(size));
 
     uint_t err= 0;
-    Transform4Array::iterator _ti= obj->getTransfoList()->getBegin();
-    Transform4Array::iterator _tend= obj->getTransfoList()->getEnd();
+    Transform4Array::iterator _ti= obj->getTransfoList()->begin();
+    Transform4Array::iterator _tend= obj->getTransfoList()->end();
     for( uint_t num = 0;
          num < size && _ti != _tend && !stream->eof();
          num++ )
@@ -1846,8 +1846,8 @@ bool BinaryParser::readSwung()
 #endif
   Curve2DArrayPtr curves(new Curve2DArray(size));
 
-  Curve2DArray::iterator _it = curves->getBegin();
-  Curve2DArray::iterator _itEnd = curves->getEnd();
+  Curve2DArray::iterator _it = curves->begin();
+  Curve2DArray::iterator _itEnd = curves->end();
   uint_t i= 0;
   uint_t err = 0;
   for( i= 0 ; i < size && _it != _itEnd && !stream->eof(); i++ )
@@ -1875,7 +1875,7 @@ bool BinaryParser::readSwung()
     return false;
   }
   else if( err > 0 ){
-    curves = Curve2DArrayPtr(new Curve2DArray(curves->getBegin(),_it));
+    curves = Curve2DArrayPtr(new Curve2DArray(curves->begin(),_it));
   }
 
   Swung * obj = new Swung(curves,angles,slices,ccw,degree,stride);

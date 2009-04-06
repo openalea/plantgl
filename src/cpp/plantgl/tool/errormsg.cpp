@@ -159,12 +159,18 @@ void pglErrorEx(PglErrorType errtype, const char* file, int line, const std::str
 
 /* ----------------------------------------------------------------------- */
 
+#ifdef _MSC_VER
+#define pglvsprintf vsprintf_s
+#else
+#define pglvsprintf vsprintf
+#endif
+
 void pglDebug(const char* msg ...){
   va_list args;         // man vprintf
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglDebugEx("",-1,std::string(fullmsg));
 
@@ -176,7 +182,7 @@ void pglWarning(const char* msg ...){
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglWarningEx("",-1,std::string(fullmsg));
 
@@ -188,7 +194,7 @@ void pglError(const char* msg ...){
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglErrorEx("",-1,std::string(fullmsg));
 
@@ -200,7 +206,7 @@ void pglError(PglErrorType errtype, const char* msg ...){
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglErrorEx(errtype,"",-1,std::string(fullmsg));
 
@@ -214,7 +220,7 @@ void pglDebugEx(const char* file, int line,const char* msg ...){
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglDebugEx(file,line,std::string(fullmsg));
 
@@ -226,7 +232,7 @@ void pglWarningEx(const char* file, int line,const char* msg ...){
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglWarningEx(file,line,std::string(fullmsg));
 
@@ -238,7 +244,7 @@ void pglErrorEx(const char* file, int line,const char* msg ...){
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglErrorEx(file,line,std::string(fullmsg));
 
@@ -250,7 +256,7 @@ void pglErrorEx(PglErrorType errtype, const char* file, int line,const char* msg
   va_start(args, msg);
 
   char fullmsg[1000];
-  vsprintf(fullmsg,msg,args);
+  pglvsprintf(fullmsg,msg,args);
 
   pglErrorEx(errtype, file,line, std::string(fullmsg));
 

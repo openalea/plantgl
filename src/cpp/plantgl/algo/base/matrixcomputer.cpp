@@ -197,9 +197,9 @@ bool MatrixComputer::process( IFS * ifs ) {
   GEOM_ASSERT(transfos);
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
-  Matrix4Array::const_iterator matrix= matrixList->getBegin();
+  Matrix4Array::const_iterator matrix= matrixList->begin();
 
-  while( matrix != matrixList->getEnd() )
+  while( matrix != matrixList->end() )
     {
 	  pushMatrix();
 	  transform(*matrix);

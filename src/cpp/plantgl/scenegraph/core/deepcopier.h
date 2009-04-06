@@ -160,7 +160,7 @@ public:
 		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
 	  }
 	  T * ptr = new T(*att);
-	  for(TIterator itGeom = att->getBegin();itGeom != att->getEnd(); ++itGeom)
+	  for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
 		   { copy_attribute(*itGeom); }
 	  if(!att->unique())set(att.get(),ptr);
 	  return RCPtr<T>(ptr);
@@ -175,7 +175,7 @@ public:
 		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
 	  }
 	  T * ptr = new T(*att);
-	  for(TIterator itGeom = att->getBegin();itGeom != att->getEnd(); ++itGeom)
+	  for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
 		   { copy_object_attribute(*itGeom); }
 	  if(!att->unique())set(att.get(),ptr);
 	  return RCPtr<T>(ptr);

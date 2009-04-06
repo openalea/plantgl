@@ -168,16 +168,16 @@ public:
   void clear( );
 
   /// Returns a const iterator at the beginning of \e self.
-  const_iterator getBegin( ) const;
+  inline const_iterator begin( ) const { return __shapeList.begin(); }
 
   /// Returns an iterator at the beginning of \e self.
-  iterator getBegin( );
+  inline iterator begin( ) { return __shapeList.begin(); }
 
   /// Returns a const iterator at the end of \e self.
-  const_iterator getEnd( ) const;
+  inline const_iterator end( ) const { return __shapeList.end(); }
 
   /// Returns an iterator at the end of \e self.
-  iterator getEnd( );
+  inline iterator end( ) { return __shapeList.end(); }
 
   /// Returns the \e i-th element of \e self.
   const Shape3DPtr getAt(uint_t i ) const ;
@@ -192,13 +192,13 @@ public:
   const Shape3DPtr getSceneObjectId(uint_t id ) const ;
 
   /// Returns the size of \e self.
-  uint_t getSize( ) const ;
+  uint_t size( ) const ;
 
   /// Resize  \e self.
-  void Resize(const uint_t size );
+  void resize(const uint_t size );
 
   /// Returns whether \e self is empty.
-  bool isEmpty( ) const ;
+  bool empty( ) const ;
 
   /// Returns whether \e self is valid.
   bool isValid( ) const ;
@@ -219,6 +219,26 @@ public:
 
   void sort();
 
+#ifndef PGL_NO_DEPRECATED
+  /// Returns a const iterator at the beginning of \e self.
+  inline attribute_deprecated const_iterator getBegin( ) const { return begin(); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline attribute_deprecated iterator getBegin( ) { return begin(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline attribute_deprecated const_iterator getEnd( ) const { return end(); }
+
+  /// Returns an iterator at the end of \e self.
+  inline attribute_deprecated iterator getEnd( ) { return end(); }
+
+  /// Return size of this
+  inline attribute_deprecated uint_t getSize() const { return size(); }
+
+  inline attribute_deprecated bool isEmpty() const { return empty(); }
+
+  inline attribute_deprecated void Resize(const uint_t size ) { return resize(size); }
+#endif
 protected:
 
   /// The list of shapes constituting the subScene.

@@ -148,7 +148,7 @@ bool SurfComputer::process( AmapSymbol * amapSymbol ) {
   uint_t _iSize = amapSymbol->getIndexListSize();
   for (uint_t _i = 0; _i < _iSize; _i++) {
     const Index& _index = amapSymbol->getIndexList()->getAt(_i);
-    uint_t _jSize = _index.getSize();
+    uint_t _jSize = _index.size();
     for (uint_t _j = 1; _j < _jSize - 1; _j++) {
       /* Vector3 _vi = amapSymbol->getPointAt(_i,_j) -
                     amapSymbol->getPointAt(_i,0);
@@ -309,7 +309,7 @@ bool SurfComputer::process( FaceSet * faceSet ) {
   uint_t _iSize = faceSet->getIndexListSize();
   for (uint_t _i = 0; _i < _iSize; _i++) {
     const Index& _index = faceSet->getIndexList()->getAt(_i);
-    uint_t _jSize = _index.getSize();
+    uint_t _jSize = _index.size();
     for (uint_t _j = 1; _j < _jSize - 1; _j++) {
 	  __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
     };
@@ -389,8 +389,8 @@ bool SurfComputer::process( Group * group ) {
   __result = 0;
   real_t _surface = 0;
   const GeometryArrayPtr& _geometryList = group->getGeometryList();
-  for (GeometryArray::const_iterator _i = _geometryList->getBegin();
-       _i != _geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = _geometryList->begin();
+       _i != _geometryList->end();
        _i++) {
     (*_i)->apply(*this);
     _surface += __result;
@@ -578,7 +578,7 @@ bool SurfComputer::process( Disc * disc ) {
 /* ----------------------------------------------------------------------- */
 
 bool SurfComputer::process(const ScenePtr scene){
-  if(!scene || scene->isEmpty()){
+  if(!scene || scene->empty()){
     return false;
   }
   Cache<real_t>::Iterator _it = __cache.find((size_t)scene.get());
@@ -588,8 +588,8 @@ bool SurfComputer::process(const ScenePtr scene){
   }
   __result = 0;
   real_t surface = 0;
-  for(Scene::const_iterator _it2=scene->getBegin();
-      _it2!=scene->getEnd();
+  for(Scene::const_iterator _it2=scene->begin();
+      _it2!=scene->end();
       _it2++)
     if((*_it2)->apply(*this))
       surface+=__result;
@@ -599,7 +599,7 @@ bool SurfComputer::process(const ScenePtr scene){
 }
 
 bool SurfComputer::process(const Scene& scene){
-  if(scene.isEmpty()){
+  if(scene.empty()){
     return false;
   }
   Cache<real_t>::Iterator _it = __cache.find((size_t)&scene);
@@ -609,8 +609,8 @@ bool SurfComputer::process(const Scene& scene){
   }
   __result = 0;
   real_t surface = 0;
-  for(Scene::const_iterator _it2=scene.getBegin();
-      _it2!=scene.getEnd();
+  for(Scene::const_iterator _it2=scene.begin();
+      _it2!=scene.end();
       _it2++)
     if((*_it2)->apply(*this))
       surface+=__result;

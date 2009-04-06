@@ -118,7 +118,7 @@ class ALGO_API OctreeNode : public Voxel {
   }
 
   virtual uint_t getGeometrySize()  {
-    return __objects->getSize();
+    return __objects->size();
   }
 
   virtual bool isDecomposed() const;

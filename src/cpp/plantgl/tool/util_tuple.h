@@ -54,6 +54,238 @@ TOOLS_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
+/**
+   \class Tuple
+   \brief A N-D tuple of numeric elements of Type T.
+   \pre
+   - T must be a model of \b Assignable;
+   - T must be a model of \b Default \b Constructible;
+   - T must be a model of \b Equality \b Comparable;
+   - T must be a model of \b LessThan \b Comparable;
+*/
+
+template <class T, int N>
+class Tuple
+{
+
+public:
+
+  /// A const iterator used to iterate through an Tuple.
+  typedef const T * const_iterator;
+
+  /// An iterator used to iterate through an Tuple.
+  typedef T * iterator;
+
+  /// A const iterator used to iterate through an Tuple.
+  typedef const T * const_reverse_iterator;
+
+  /// An iterator used to iterate through an Tuple.
+  typedef T * reverse_iterator;
+
+  // The value type
+  typedef T value_type;
+
+  static const size_t SIZE = N;
+
+  inline Tuple( ) { } 
+
+  /// Constructs an Tuple with each values initialized to \e v .
+  inline explicit Tuple( const T& v ) {
+	  for (iterator it = begin(); it != end(); ++it)
+			*it = v; 
+  }
+
+  /// Constructs an Tuple from the elements in \e t
+  inline Tuple( const T * t ) {
+	  for (iterator it = begin(); it != end(); ++it,++t)
+			*it = *t; 
+  }
+
+  /// Constructs an Tuple from value between beg and end
+  template<class Iterator>
+  inline Tuple( Iterator beg_source, Iterator end_source ) {
+	  assert(std::distance(beg_source, end_source) == N);
+	  for (iterator it = begin(), Iterator itsrc = beg_source; it != end(); ++it,++itsrc)
+			*it = *itsrc; 
+  }
+
+  /// Constructs an Tuple with each values initialized to \e v .
+  inline explicit Tuple( const T& v0, const T& v1 ) {
+	  assert(N >= 2);
+	  __T[0] = v0; __T[1] = v1; 
+	  for (iterator it = begin()+2; it != end(); ++it) *it = T(); 
+  }
+
+  /// Constructs an Tuple with each values initialized to \e v .
+  inline explicit Tuple( const T& v0, const T& v1, const T& v2  ) {
+	  assert(N >= 3);
+	  __T[0] = v0; __T[1] = v1; __T[2] = v2; 
+	  for (iterator it = begin()+3; it != end(); ++it) *it = T(); 
+  }
+
+  /// Constructs an Tuple with each values initialized to \e v .
+  inline explicit Tuple( const T& v0, const T& v1, const T& v2, const T& v3  ) {
+	  assert(N >= 4);
+	  __T[0] = v0; __T[1] = v1; __T[2] = v2; ; __T[3] = v3; 
+	  for (iterator it = begin()+4; it != end(); ++it) *it = T(); 
+  }
+
+  /// Constructs a Tuple from the elements 
+/*  inline Tuple( const T& first, ... ) {
+	iterator it = begin();
+	va_list values;
+	*it = first; ++it;
+	va_start( values );     // Initialize variable arguments.
+	for (; it != end(); ++it)
+	{  *it = va_arg( values, T );  }
+    va_end( values );              // Reset variable arguments.
+  }*/
+
+  /// Returns whether \e self is equal to \e t.
+  bool operator==( const Tuple& t ) const {
+	const_iterator it2 = t.begin();
+	for (const_iterator it = begin(); it != end() ; ++it, ++it2)
+		if( *it != *it2) return false; 
+    return true;
+  }
+
+  /// Returns whether \e self is equal to \e t.
+  bool operator!=( const Tuple& t ) const {
+    const_iterator it2 = t.begin();
+	for (const_iterator it = begin(); it != end() ; ++it, ++it2)
+		if( *it != *it2) return true; 
+    return false;
+  }
+
+  /// Returns whether \e self contain \e t.
+  inline bool contains( const T& t ) const {
+	for (const_iterator it = begin(); it != end() ; ++it)
+		if (*it == t) return true;
+    return false;
+  }
+
+  /// Return size of this
+  static inline size_t size() { return SIZE; }
+
+  /** Returns a const reference to the \e i-th element of \e self.
+      \pre
+      - \e i must belong to the range [0,2). */
+  inline const T& getAt( uchar_t i ) const {
+    GEOM_ASSERT(i < SIZE);
+    return __T[i];
+  }
+
+  inline const T& operator[]( uchar_t i ) const { return getAt( i ); }
+
+  /** Returns a const reference to the \e i-th element of \e self.
+      \pre
+      - \e i must belong to the range [0,2). */
+  inline T& getAt( uchar_t i ) {
+    GEOM_ASSERT(i < SIZE);
+    return __T[i];
+  }
+
+  inline T& operator[]( uchar_t i ) { return getAt( i ); }
+
+  /// Returns a const iterator at the beginning of \e self.
+  inline const_iterator begin( ) const { return __T; }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline iterator begin( ) { return __T; }
+
+  /// Returns a const iterator at the end of \e self.
+  inline const_iterator end( ) const { return __T + N; }
+
+  /// Returns an iterator at the end of \e self.
+  inline iterator end( ) { return __T + N; }
+  
+  /// Returns a const iterator at the beginning of \e self.
+  inline const_reverse_iterator rbegin( ) const { return __T+(N-1); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline reverse_iterator rbegin( ) { return __T+(N-1); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline const_reverse_iterator rend( ) const { return __T - 1; }
+
+  /// Returns an iterator at the end of \e self.
+  inline reverse_iterator rend( ) { return __T - 1; }
+  
+  /// Returns an iterator at the maximum value of \e self.
+  const_iterator getMax( ) const {
+    const_iterator mvalue = __T;
+	for (const_iterator it = begin()+1; it != end() ; ++it)
+		if (*it > *mvalue) mvalue = it;
+    return mvalue;
+  }
+
+  /// Returns an iterator at the minimum value of \e self.
+  const_iterator getMin( ) const {
+    const_iterator mvalue = __T;
+	for (const_iterator it = begin()+1; it != end() ; ++it)
+		if (*it < *mvalue) mvalue = it;
+    return mvalue;
+  }
+
+  /// Returns whether \e self contain unique elements.
+  inline bool isUnique( ) const {
+	for (const_iterator it = begin(); it != end() ; ++it)
+		for (const_iterator it2 = it+1; it2 != end() ; ++it2)
+			if (*it == *it2) return false;
+	return true;
+  }
+
+  /// Prints \e self to the output stream \e stream.
+  std::ostream& print( std::ostream& stream, 
+		  char delimiter = ',', 
+		  char beg_sign = '<', 
+		  char end_sign = '>' ) const {
+    stream << beg_sign << __T[0];
+	for (const_iterator it = begin()+1; it != end() ; ++it)
+		stream << delimiter << *it;
+    return stream  << end_sign ;
+  }
+
+  /// Prints \e self to the output stream \e stream.
+  friend std::ostream& operator<<(std::ostream& stream, const Tuple<T,N> a){
+      return a.print(stream);
+  }
+
+ /** Sets the \e i-th element of \e self with \e t.
+      \pre
+      - \e i must belong to the range [0,N). */
+  void setAt( uchar_t i, const T& t ) {
+    GEOM_ASSERT(i < SIZE);
+    __T[i] = t;
+  }  
+
+#ifndef PGL_NO_DEPRECATED
+  /// Returns a const iterator at the beginning of \e self.
+  inline attribute_deprecated const_iterator getBegin( ) const { return begin(); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline attribute_deprecated iterator getBegin( ) { return begin(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline attribute_deprecated const_iterator getEnd( ) const { return end(); }
+
+  /// Returns an iterator at the end of \e self.
+  inline attribute_deprecated iterator getEnd( ) { return end(); }
+
+  inline attribute_deprecated bool contain( const T& t ) const { return contains(t); }
+
+  /// Return size of this
+  static inline attribute_deprecated uint_t getSize() { return size(); }
+#endif
+
+protected:
+
+  /// The tuple of value.
+  T __T[N];
+
+}; // Tuple
+
+/*  --------------------------------------------------------------------- */
 
 /**
    \class Tuple2
@@ -65,19 +297,13 @@ TOOLS_BEGIN_NAMESPACE
    - T must be a model of \b LessThan \b Comparable;
 */
 
+// template <class T> class Tuple<T,2> { };
+
 template <class T>
-class Tuple2
+class Tuple2 : public Tuple<T,2>
 {
 
 public:
-
-  /// A const iterator used to iterate through an Tuple2.
-  typedef const T * const_iterator;
-
-  /// An iterator used to iterate through an Tuple2.
-  typedef T * iterator;
-
-  typedef T value_type;
 
   /// Constructs an Tuple2 with \e to and \e t1.
   inline explicit Tuple2( const T& t0 = T(), const T& t1 = T() ) {
@@ -100,57 +326,10 @@ public:
   }
 
   /// Returns whether \e self contain \e t.
-  inline bool contain( const T& t ) const {
+  inline bool contains( const T& t ) const {
     return (__T[0] == t) || (__T[1] == t);
   }
 
-  /// Return size of this
-  static inline uint_t getSize() { return 2; }
-
-  /** Returns a const reference to the \e i-th element of \e self.
-      \pre
-      - \e i must belong to the range [0,2). */
-  inline const T& getAt( uchar_t i ) const {
-    GEOM_ASSERT(i < 2);
-    return __T[i];
-  }
-
-  inline const T& operator[]( uchar_t i ) const {
-    return getAt( i );
-  }
-
-  /** Returns a const reference to the \e i-th element of \e self.
-      \pre
-      - \e i must belong to the range [0,2). */
-  inline T& getAt( uchar_t i ) {
-    GEOM_ASSERT(i < 2);
-    return __T[i];
-  }
-
-  inline T& operator[]( uchar_t i ) {
-    return getAt( i );
-  }
-
-  /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator getBegin( ) const {
-    return __T;
-  }
-
-  /// Returns an iterator at the beginning of \e self.
-  inline iterator getBegin( ) {
-    return __T;
-  }
-
-  /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEnd( ) const {
-    return __T + 2;
-  }
-
-  /// Returns an iterator at the end of \e self.
-  inline iterator getEnd( ) {
-    return __T + 2;
-  }
-  
   /// Returns an iterator at the maximum value of \e self.
   const_iterator getMax( ) const {
     return __T[0] < __T[1] ? __T + 1 : __T;
@@ -166,39 +345,12 @@ public:
     return ! (__T[0] == __T[1]);
   }
 
-  /// Prints \e self to the output stream \e stream.
-  std::ostream& print( std::ostream& stream, 
-		  char delimiter = ',', 
-		  char begin = '<', 
-		  char end = '>' ) const {
-    stream << begin << __T[0];
-    stream << delimiter << __T[1];
-    return stream << end;
-  }
-
-  /// Prints \e self to the output stream \e stream.
-  friend std::ostream& operator<<(std::ostream& stream, const Tuple2<T> a){
-      return a.print(stream);
-  }
-
- /** Sets the \e i-th element of \e self with \e t.
-      \pre
-      - \e i must belong to the range [0,2). */
-  void setAt( uchar_t i, const T& t ) {
-    GEOM_ASSERT(i < 2);
-    __T[i] = t;
-  }  
 
  /** Sets the elements of \e self. */
   void set( const T& t1, const T& t2  ) {
     __T[0] = t1;
     __T[1] = t2;
   }  
-
-protected:
-
-  /// The tuple of value.
-  T __T[2];
 
 }; // Tuple2
 
@@ -233,18 +385,10 @@ typedef Tuple2<uint_t> UintTuple2;
 
 
 template <class T>
-class Tuple3
+class Tuple3 : public Tuple<T,3>
 {
 
 public:
-
-  /// A const iterator used to iterate through an Tuple3.
-  typedef const T * const_iterator;
-
-  /// An iterator used to iterate through an Tuple3.
-  typedef T * iterator;
-
-  typedef T value_type;
 
   /// Constructs an Tuple3 with \e to, \e t1 and \e t2.
   inline explicit Tuple3( const T& t0 = T(),
@@ -269,55 +413,8 @@ public:
   }
 
   /// Returns whether \e self contain \e t.
-  inline bool contain( const T& t ) const {
+  inline bool contains( const T& t ) const {
     return (__T[0] == t) || (__T[1] == t) || (__T[2] == t);
-  }
-
-  /// Return size of this
-  static inline uint_t getSize() { return 3; }
-
-  /** Returns a const reference to the \e i-th element of \e self.
-      \pre
-      - \e i must belong to the range [0,3). */
-  inline const T& getAt( uchar_t i ) const {
-    GEOM_ASSERT(i < 3);
-    return __T[i];
-  }
-
-  const T& operator[]( uchar_t i ) const {
-    return getAt( i );
-  }
-
-  /** Returns a reference to the \e i-th element of \e self.
-      \pre
-      - \e i must belong to the range [0,3). */
-  inline T& getAt( uchar_t i ) {
-    GEOM_ASSERT(i < 3);
-    return __T[i];
-  }
-
-  T& operator[]( uchar_t i ) {
-    return getAt( i );
-  }
-
-  /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator getBegin( ) const {
-    return __T;
-  }
-
-  /// Returns an iterator at the beginning of \e self.
-  inline iterator getBegin( ) {
-    return __T;
-  }
-
-  /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEnd( ) const {
-    return __T + 3;
-  }
-
-  /// Returns an iterator at the end of \e self.
-  inline iterator getEnd( ) {
-    return __T + 3;
   }
 
   /// Returns an iterator at the maximum value of \e self.
@@ -339,41 +436,12 @@ public:
     return ! ((__T[0] == __T[1]) || (__T[0] == __T[2]) || (__T[1] == __T[2]));
   }
 
-  /// Prints \e self to the output stream \e stream.
-  std::ostream& print( std::ostream& stream, 
-		  char delimiter = ',', 
-		  char begin = '<', 
-		  char end = '>' ) const {
-    stream << begin << __T[0];
-    stream << delimiter << __T[1];
-    stream << delimiter << __T[2];
-    return stream << end;
-  }
-
-  /// Prints \e self to the output stream \e stream.
-  friend std::ostream& operator<<(std::ostream& stream, const Tuple3<T> a){
-      return a.print(stream);
-  }
-
-  /** Sets the \e i-th element of \e self with \e t.
-      \pre
-      - \e i must belong to the range [0,3). */
-  void setAt( uchar_t i, const T& t ) {
-    GEOM_ASSERT(i < 3);
-    __T[i] = t;
-  }  
-
  /** Sets the elements of \e self. */
   void set( const T& t1, const T& t2, const T& t3  ) {
     __T[0] = t1;
     __T[1] = t2;
     __T[2] = t3;
   }  
-
-protected:
-
-  /// The 3D value tuple.
-  T __T[3];
 
 }; // Tuple3
 
@@ -407,18 +475,10 @@ typedef Tuple3<uint_t> UintTuple3;
 */
 
 template <class T>
-class Tuple4
+class Tuple4 : public Tuple<T,4>
 {
 
 public:
-  
-  /// A const iterator used to iterate through an Tuple4.
-  typedef const T * const_iterator;
-
-  /// An iterator used to iterate through an Tuple4.
-  typedef T * iterator;
-
-  typedef T value_type;
 
   /// Constructs a Tuple4 with \e to, \e t1, \e t2 and \e t3.
   inline explicit Tuple4( const T& t0 = T(), 
@@ -448,56 +508,8 @@ public:
   }
 
   /// Returns whether \e self contain \e t.
-  inline bool contain( const T& t ) const {
+  inline bool contains( const T& t ) const {
     return (__T[0] == t) || (__T[1] == t) || (__T[2] == t) || (__T[3] == t);
-  }
-
-  /// Return size of this
-  static inline uint_t getSize() { return 4; }
-
-  /** Returns a const reference to the \e i-th element of \e self.
-      \pre
-      - \e i must belong to the range [0,4). */
-  inline const T& getAt( uchar_t i ) const {
-    GEOM_ASSERT(i < 4);
-    return __T[i];
-  }
-
-  const T& operator[]( uchar_t i ) const {
-    return getAt( i );
-  }
-
-  /** Returns a reference to the \e i-th element of \e self.
-      \pre
-      - \e i must belong to the range [0,4). */
-  inline T& getAt( uchar_t i ) {
-    GEOM_ASSERT(i < 4);
-    return __T[i];
-  }
-
-  T& operator[]( uchar_t i ) {
-    return getAt( i );
-  }
-
-  /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator getBegin( ) const {
-    return __T;
-  }
-
-  /// Returns an iterator at the beginning of \e self.
-  inline iterator getBegin( ) {
-    return __T;
-  }
-
-
-  /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEnd( ) const {
-    return __T + 4;
-  }
-
-  /// Returns an iterator at the end of \e self.
-  inline iterator getEnd( ) {
-    return __T + 4;
   }
 
   /// Returns an iterator at the maximum value of \e self.
@@ -528,31 +540,6 @@ public:
 	      (__T[1] == __T[2]) || (__T[1] == __T[3]) || (__T[2] == __T[3]));
   }
 
-  /// Prints \e self to the output stream \e stream.
-  std::ostream& print( std::ostream& stream, 
-		  char delimiter = ',', 
-		  char begin = '<', 
-		  char end = '>' ) const {
-    stream << begin << __T[0];
-    stream << delimiter << __T[1];
-    stream << delimiter << __T[2];
-    stream << delimiter << __T[3];
-    return stream << end;
-  }
-
-  /// Prints \e self to the output stream \e stream.
-  friend std::ostream& operator<<(std::ostream& stream, const Tuple4<T> a){
-      return a.print(stream);
-  }
-
- /** Sets the \e i-th element of \e self with \e t.
-      \pre
-      - \e i must belong to the range [0,4). */
-  void setAt( uchar_t i, const T& t ) {
-    GEOM_ASSERT(i < 4);
-    __T[i] = t;
-  }  
-
  /** Sets the elements of \e self. */
   void set( const T& t1, const T& t2, const T& t3, const T& t4  ) {
     __T[0] = t1;
@@ -560,10 +547,6 @@ public:
     __T[2] = t3;
     __T[3] = t4;
   }  
-protected:
-
-  /// The 4D value tuple.
-  T __T[4];
 
 }; // Tuple4
 
@@ -582,9 +565,27 @@ typedef Tuple4<uint_t> UintTuple4;
 
 /*  ---------------------------------------------------------------------- */
 
-// typedef Tuple2<string> StringTuple2;
-// typedef Tuple3<string> StringTuple3;
-// typedef Tuple4<string> StringTuple4;
+template<class T, int I>
+inline T reduce(const Tuple<T,I>& t, T (* functor )(const T&, const T&)) 
+{ 
+	T res = t[0];
+	for (Tuple<T,I>::const_iterator it = t.begin()+1; it != t.end(); ++it)
+		res = *functor(res,*it);
+}
+
+template<class T, int I>
+inline T product(const Tuple<T,I>& t) { 
+	template<class T>
+	inline T mult(const T& a, const T& b) { return a*b; }
+	return reduce<T,I>(t,&mult<T>);
+}
+
+template<class T, int I>
+inline T sum(const Tuple<T,I>& t) { 
+	template<class T>
+	inline T add(const T& a, const T& b) { return a-b; }
+	return reduce<T,I>(t,&add<T>);
+}
 
 /*  ---------------------------------------------------------------------- */
 

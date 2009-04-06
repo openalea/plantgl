@@ -91,9 +91,9 @@ using namespace std;
 
 
 #define GEOM_VRMLPRINT_ARRAY(val,type){ \
-   for(uint_t _i = 0;_i < val->getSize();_i++){ \
+   for(uint_t _i = 0;_i < val->size();_i++){ \
     GEOM_VRMLPRINT_##type(val->getAt(_i)); \
-    if(_i != (val->getSize()-1)){ \
+    if(_i != (val->size()-1)){ \
       __geomStream << ", "; \
       if(_i != 0 && _i % 3 == 0 )__geomStream << endl << __indent; \
     } \
@@ -107,7 +107,7 @@ using namespace std;
   __geomStream << val.getAt(0) << ", " << val.getAt(1) << ", " << val.getAt(2) << ", " << val.getAt(3) << ", -1"; \
 
 #define GEOM_VRMLPRINT_INDEX(val) \
-   for(Index::const_iterator _j = val.getBegin() ; _j != val.getEnd() ; _j++) \
+   for(Index::const_iterator _j = val.begin() ; _j != val.end() ; _j++) \
       __geomStream << (*_j) << ", "; \
    __geomStream << ", -1"; \
 

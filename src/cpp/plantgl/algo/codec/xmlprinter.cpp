@@ -112,9 +112,9 @@ using namespace std;
   __stream << val;
 
 #define GEOM_XMLPRINT_ARRAY(val,type){ \
-   for(uint_t _i = 0;_i < val->getSize();_i++){ \
+   for(uint_t _i = 0;_i < val->size();_i++){ \
     GEOM_XMLPRINT_##type(val->getAt(_i)); \
-    if(_i != (val->getSize()-1)){ \
+    if(_i != (val->size()-1)){ \
       __stream << " "; \
     } \
    } \
@@ -130,7 +130,7 @@ using namespace std;
   __stream << val.getAt(0) << " " << val.getAt(1) << " " << val.getAt(2) << " " << val.getAt(3); \
 
 #define GEOM_XMLPRINT_INDEX(val) \
-   for(Index::const_iterator _j = val.getBegin() ; _j != val.getEnd() ; _j++) \
+   for(Index::const_iterator _j = val.begin() ; _j != val.end() ; _j++) \
       __stream << (*_j) << ", "; \
    __stream << ", -1"; \
 

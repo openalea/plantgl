@@ -95,10 +95,10 @@ std::string PREFIX##_str( ARRAY * a ) \
   assert (a); \
   std::stringstream ss; \
   ss << #ARRAY << "(";  \
-  if(!a->isEmpty()){ \
+  if(!a->empty()){ \
     ss << '['; \
-    for(ARRAY::const_iterator it = a->getBegin(); it != a->getEnd(); ++it){ \
-        if (it != a->getBegin()) ss << ","; \
+    for(ARRAY::const_iterator it = a->begin(); it != a->end(); ++it){ \
+        if (it != a->begin()) ss << ","; \
         ss << extract<std::string>(boost::python::str(boost::python::object(*it)))(); \
     } \
 	ss << ']'; } \
@@ -109,45 +109,45 @@ std::string PREFIX##_str( ARRAY * a ) \
 template<class T>
 typename T::element_type array_bt_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -a->getSize() ) return a->getAt( a->getSize() + pos );
-  else if( pos < a->getSize() ) return a->getAt( pos );
+  if( pos < 0 && pos >= -a->size() ) return a->getAt( a->size() + pos );
+  else if( pos < a->size() ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 typename T::element_type& array_ct_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -(int)a->getSize() ) return a->getAt( a->getSize() + pos );
-  else if( pos < a->getSize() ) return a->getAt( pos );
+  if( pos < 0 && pos >= -(int)a->size() ) return a->getAt( a->size() + pos );
+  else if( pos < a->size() ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 typename T::element_type array_ptr_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -(int)a->getSize() ) return a->getAt( a->getSize() + pos );
-  else if( pos < a->getSize() ) return a->getAt( pos );
+  if( pos < 0 && pos >= -(int)a->size() ) return a->getAt( a->size() + pos );
+  else if( pos < a->size() ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 T * array_getslice( T * array, int beg, int end ) 
 { 
-  if( beg >= -(int)array->getSize() && beg < 0  )  beg += array->getSize(); 
-  else if( beg >= array->getSize() ) throw PythonExc_IndexError(); 
-  if( end >= -(int)array->getSize() && end < 0  )  end += array->getSize(); 
-  else if( end > array->getSize() ) throw PythonExc_IndexError(); 
-  return new T(array->getBegin()+beg,array->getBegin()+end);
+  if( beg >= -(int)array->size() && beg < 0  )  beg += array->size(); 
+  else if( beg >= array->size() ) throw PythonExc_IndexError(); 
+  if( end >= -(int)array->size() && end < 0  )  end += array->size(); 
+  else if( end > array->size() ) throw PythonExc_IndexError(); 
+  return new T(array->begin()+beg,array->begin()+end);
 }
 
 template<class T>
 typename T::element_type array_popitem( T * a, int pos )
 { 
-  if (a->isEmpty()) throw PythonExc_IndexError();
-  if( pos < 0 && pos >= -(int)a->getSize() ) pos = a->getSize() + pos;
-  else if( pos >= a->getSize() ) throw PythonExc_IndexError();
+  if (a->empty()) throw PythonExc_IndexError();
+  if( pos < 0 && pos >= -(int)a->size() ) pos = a->size() + pos;
+  else if( pos >= a->size() ) throw PythonExc_IndexError();
   typename T::element_type elem =  a->getAt( pos );
-  a->Erase(a->getBegin() + pos);
+  a->erase(a->begin() + pos);
   return elem;
 }
 
@@ -159,35 +159,35 @@ typename T::element_type array_poplastitem( T * a)
 template<class T>
 void array_setitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -(int)array->getSize() ) array->setAt( array->getSize() + pos, v );
-  else if( pos < array->getSize() ) array->setAt( pos, v );
+  if( pos < 0 && pos >= -(int)array->size() ) array->setAt( array->size() + pos, v );
+  else if( pos < array->size() ) array->setAt( pos, v );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 void array_insertitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -(int)array->getSize() ) array->insert( array->getBegin() + (array->getSize() + pos), v );
-  else if( pos < array->getSize() ) array->insert( array->getBegin() + pos, v );
+  if( pos < 0 && pos >= -(int)array->size() ) array->insert( array->begin() + (array->size() + pos), v );
+  else if( pos < array->size() ) array->insert( array->begin() + pos, v );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 void array_delitem( T * array, int pos )
 {
-  if( pos < 0 && pos >= -(int)array->getSize() ) array->Erase( array->getBegin() + (array->getSize() + pos) );
-  else if( pos < array->getSize() ) array->Erase( array->getBegin() + pos );
+  if( pos < 0 && pos >= -(int)array->size() ) array->erase( array->begin() + (array->size() + pos) );
+  else if( pos < array->size() ) array->erase( array->begin() + pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 void array_delslice( T * array, int beg, int end ) 
 { 
-  if( beg >= -(int)array->getSize() && beg < 0  )  beg += array->getSize(); 
-  else if( beg >= array->getSize() ) throw PythonExc_IndexError(); 
-  if( end >= -(int)array->getSize() && end < 0  )  end += array->getSize(); 
-  else if( end > array->getSize() ) throw PythonExc_IndexError(); 
-  array->Erase( array->getBegin()+beg,array->getBegin()+end); 
+  if( beg >= -(int)array->size() && beg < 0  )  beg += array->size(); 
+  else if( beg >= array->size() ) throw PythonExc_IndexError(); 
+  if( end >= -(int)array->size() && end < 0  )  end += array->size(); 
+  else if( end > array->size() ) throw PythonExc_IndexError(); 
+  array->erase( array->begin()+beg,array->begin()+end); 
 }
 
 template<class T>
@@ -199,32 +199,32 @@ bool array_contains( T * array, typename T::element_type v )
 template<class T>
 T * array_additem( T * array, typename T::element_type v ) 
 { 
-	T * array2 = new T(array->getBegin(),array->getEnd());
-	array2->pushBack(v);
+	T * array2 = new T(array->begin(),array->end());
+	array2->push_back(v);
 	return array2; 
 }
 
 template<class T>
 T * array_iadditem( T * array, typename T::element_type v ) 
 { 
-	array->pushBack(v); 
+	array->push_back(v); 
 	return array; 
 }
 
 template<class T>
 void array_appenditem( T * array, typename T::element_type v ) 
-{ array->pushBack(v); }
+{ array->push_back(v); }
 
 template<class T>
-T * array_iaddarray( T * array, RCPtr<T> array2 ) 
+T * array_iaddarray( T * array, T * array2 ) 
 { 
-	array->insert(array->getEnd(),array2->getBegin(),array2->getEnd()); 
+	array->insert(array->end(),array2->begin(),array2->end()); 
 	return array; 
 }
 
 template<class T>
 size_t array_len( T * a )
-{  return a->getSize();}
+{  return a->size();}
 
 template<class T>
 size_t array_id( T * a )
@@ -237,7 +237,7 @@ struct array_pickle_suite : boost::python::pickle_suite
     static boost::python::tuple getinitargs(T const& ar) 
 	{ 
 		boost::python::list l; 
-		for(typename T::const_iterator it = ar.getBegin(); it != ar.getEnd(); ++it) 
+		for(typename T::const_iterator it = ar.begin(); it != ar.end(); ++it) 
 			l.append(*it); 
 		return boost::python::make_tuple(l);  
 	} 

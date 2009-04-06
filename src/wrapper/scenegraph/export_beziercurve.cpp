@@ -54,7 +54,7 @@ std::string gbc_repr( BezierCurve* p )
   std::stringstream ss;
   Point4ArrayPtr ctrl= p->getCtrlPoints();
   uint_t stride= p->getStride();
-  uint_t n= ctrl->getSize();
+  uint_t n= ctrl->size();
   if( n == 0 )
     {
       ss << "BezierCurve(Point4Array([])," << stride << ")";
@@ -115,7 +115,7 @@ std::string gbc2_repr( BezierCurve2D* p )
   std::stringstream ss;
   Point3ArrayPtr ctrl= p->getCtrlPoints();
   uint_t stride= p->getStride();
-  uint_t n= ctrl->getSize();
+  uint_t n= ctrl->size();
   if( n == 0 )
     {
       ss << "BezierCurve2D(Point3Array([])," << stride << ")";

@@ -789,6 +789,18 @@ PGLMATH_API real_t sum( const Vector4& v );
 PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector4& v );
 PGLMATH_API bool operator<(const Vector4& v1, const Vector4& v2);
 
+/*  --------------------------------------------------------------------- */
+
+template<class T> class Dimension  {};
+
+template<> class Dimension<TOOLS::Vector2> 
+{ public: static const int Nb = 2; };
+
+template<> class Dimension<TOOLS::Vector3> 
+{ public: static const int Nb = 3; };
+
+template<> class Dimension<TOOLS::Vector4> 
+{ public: static const int Nb = 4; };
 
 /*  --------------------------------------------------------------------- */
 TOOLS_END_NAMESPACE

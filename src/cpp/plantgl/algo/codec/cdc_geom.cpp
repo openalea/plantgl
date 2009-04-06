@@ -138,7 +138,7 @@ ScenePtr GeomCodec::read(const std::string& fname)
 	bool b = geom_read(_file,table,scene,fname);
     if(!b) return ScenePtr();
 	else {
-		if(scene && !scene->isEmpty()) return scene;
+		if(scene && !scene->empty()) return scene;
 		else return ScenePtr(new Scene(table));
 	}
   }

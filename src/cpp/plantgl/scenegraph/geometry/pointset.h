@@ -114,12 +114,12 @@ public:
 
 /*  /// Returns an iterator at the beginning of \b PointList.
   Point3Array::const_iterator getPointListBegin( ) const {
-     return __pointList->getBegin();   
+     return __pointList->begin();   
   }
 
   /// Returns an iterator at the end of \b PointList.
   Point3Array::const_iterator getPointListEnd( ) const {
-     return __pointList->getEnd();   
+     return __pointList->end();   
   }*/
 
   virtual bool isACurve( ) const ;
@@ -201,12 +201,12 @@ public:
 
   /// Returns an iterator at the beginning of \b PointList.
 /*  Point2Array::const_iterator getPointListBegin( ) const {
-     return __pointList->getBegin();   
+     return __pointList->begin();   
   }
 
   /// Returns an iterator at the end of \b PointList.
   Point2Array::const_iterator getPointListEnd( ) const {
-     return __pointList->getEnd();   
+     return __pointList->end();   
   }
 */
   /// Returns \b PointList value.

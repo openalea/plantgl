@@ -34,6 +34,7 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 
 #include <plantgl/python/tuple_converter.h>
+#include <plantgl/python/extract_list.h>
 #include "arrays_macro.h"
 
 #include <boost/python.hpp>
@@ -47,36 +48,36 @@ PGL_USING_NAMESPACE
 
 Index * ind_fromlist( boost::python::object l ) 
 { 
-  return extract_pgllist<Index >(l)();
+	return new Index(extract_vec<Index::element_type,extract,Index>(l)());
 }
 
 Index * ind_fromvalue3( uint_t a, uint_t b, uint_t c) 
 { 
   Index * ind = new Index();
-  ind->pushBack(a);
-  ind->pushBack(b);
-  ind->pushBack(c);
+  ind->push_back(a);
+  ind->push_back(b);
+  ind->push_back(c);
   return ind;
 }
 
 Index * ind_fromvalue4( uint_t a, uint_t b, uint_t c, uint_t d) 
 { 
   Index * ind = new Index();
-  ind->pushBack(a);
-  ind->pushBack(b);
-  ind->pushBack(c);
-  ind->pushBack(d);
+  ind->push_back(a);
+  ind->push_back(b);
+  ind->push_back(c);
+  ind->push_back(d);
   return ind;
 }
 
 Index * ind_fromvalue5( uint_t a, uint_t b, uint_t c, uint_t d, uint_t e) 
 { 
   Index * ind = new Index();
-  ind->pushBack(a);
-  ind->pushBack(b);
-  ind->pushBack(c);
-  ind->pushBack(d);
-  ind->pushBack(e);
+  ind->push_back(a);
+  ind->push_back(b);
+  ind->push_back(c);
+  ind->push_back(d);
+  ind->push_back(e);
   return ind;
 }
 
@@ -131,9 +132,9 @@ struct index_from_tuple {
 	vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
 	void* memory_chunk = the_storage->storage.bytes;
 	boost::python::object py_sequence( handle<>( borrowed( obj ) ) );
-	Index * result = extract_pgllist<Index>(py_sequence);
-    new (memory_chunk) Index (*result);
-	delete result;
+	Index result = extract_vec<Index::element_type,extract,Index>(py_sequence);
+    new (memory_chunk) Index (result);
+	// delete result;
 	data->convertible = memory_chunk;
   }
 };

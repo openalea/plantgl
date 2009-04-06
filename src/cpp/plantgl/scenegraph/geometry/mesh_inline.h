@@ -126,7 +126,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   // Size check
   std::string classname = MeshType::getClassName();
 
-  uint_t _pointListSize = (*PointList)->getSize();
+  uint_t _pointListSize = (*PointList)->size();
   if (_pointListSize < 3) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),classname.c_str(),"PointList","Must have more than 2 Points.");
     return false;
@@ -139,17 +139,17 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
     return false;
   };
   // Size check
-  uint_t _indexListSize = (*IndexList)->getSize();
+  uint_t _indexListSize = (*IndexList)->size();
   if (_indexListSize < 1) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_SIZE_sss),classname.c_str(),"IndexList","Number of Index must be greater than 0.");
     return false;
   };
 
   // Indices check
-  typename MeshIndexArrayType::iterator _it = (*IndexList)->getBegin();
+  typename MeshIndexArrayType::iterator _it = (*IndexList)->begin();
   for (uint_t _i = 0; _i < _indexListSize; ++_i,++_it) {
     // Max index check
-	  if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _pointListSize) {
+	  if (*(std::max_element(_it->begin(),_it->end())) >= _pointListSize) {
 	pglErrorEx
 	    (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"IndexList",number(_i+1).c_str(),"Do not represent any point of the list.");
       }
@@ -162,7 +162,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   };
   
   if (NormalList) {
-	  uint_t _normalListSize = (*NormalList)->getSize();
+	  uint_t _normalListSize = (*NormalList)->size();
 	  if (!NormalIndexList){
 		  if(NormalPerVertex && !*NormalPerVertex){
 			  if(_normalListSize != _indexListSize){
@@ -179,7 +179,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 		  }
 	  }
 	  else {
-		  uint_t _normalIndexListSize = (*NormalIndexList)->getSize();
+		  uint_t _normalIndexListSize = (*NormalIndexList)->size();
 		  if(NormalPerVertex && !*NormalPerVertex){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"NormalPerVertex","If NormalIndexList is specified, NormalPerVertex should be True.");
 			return false;
@@ -192,16 +192,16 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 			  }
 		  }
 		  // NormalIndexList values check
-		  typename MeshIndexArrayType::iterator _it = (*NormalIndexList)->getBegin();
+		  typename MeshIndexArrayType::iterator _it = (*NormalIndexList)->begin();
 		  for (uint_t _i = 0; _i < _normalIndexListSize; ++_i,++_it) {
 			// Max index check
-			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _normalListSize) {
+			  if (*std::max_element(_it->begin(),_it->end()) >= _normalListSize) {
 				pglErrorEx
 					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"NormalIndexList",number(_i+1).c_str(),"Do not represent any normal of the list.");
 				return false;
 			}
 			// Size index check
-			if (_it->getSize() != (*IndexList)->getAt(_i).getSize()) {
+			if (_it->size() != (*IndexList)->getAt(_i).size()) {
 				pglErrorEx
 					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"NormalIndexList",number(_i+1).c_str(),"Normal indice size do no reflect actual polygon indice size.");
 				return false;
@@ -219,7 +219,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   }
 
   if (ColorList) {
-	  uint_t _colorListSize = (*ColorList)->getSize();
+	  uint_t _colorListSize = (*ColorList)->size();
 	  if (!ColorIndexList){
 		  if(ColorPerVertex && !*ColorPerVertex){
 			  if(_colorListSize != _indexListSize){
@@ -236,7 +236,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 		  }
 	  }
 	  else {
-		  uint_t _colorIndexListSize = (*ColorIndexList)->getSize();
+		  uint_t _colorIndexListSize = (*ColorIndexList)->size();
 		  if(ColorPerVertex && !*ColorPerVertex){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"ColorPerVertex","If ColorIndexList is specified, ColorPerVertex should be True.");
 			return false;
@@ -249,16 +249,16 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 			  }
 		  }
 		  // ColorIndexList values check
-		  typename MeshIndexArrayType::iterator _it = (*ColorIndexList)->getBegin();
+		  typename MeshIndexArrayType::iterator _it = (*ColorIndexList)->begin();
 		  for (uint_t _i = 0; _i < _colorIndexListSize; ++_i,++_it) {
 			// Max index check
-			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _colorListSize) {
+			if (*(std::max_element(_it->begin(),_it->end())) >= _colorListSize) {
 				pglErrorEx
 					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"ColorIndexList",number(_i+1).c_str(),"Do not represent any color of the list.");
 				return false;
 			}
 			// Size index check
-			if (_it->getSize() != (*IndexList)->getAt(_i).getSize()) {
+			if (_it->size() != (*IndexList)->getAt(_i).size()) {
 				pglErrorEx
 					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"ColorIndexList",number(_i+1).c_str(),"Color indice size do no reflect actual polygon indice size.");
 				return false;
@@ -276,7 +276,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   }
 
   if (TexCoordList) {
-	  uint_t _texCoordListSize = (*TexCoordList)->getSize();
+	  uint_t _texCoordListSize = (*TexCoordList)->size();
 	  if (!TexCoordIndexList){
 		  if(_texCoordListSize != _pointListSize){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"TexCoordList","Number of TexCoord must be compatible to PointList size.");
@@ -284,22 +284,22 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 		  }
 	  }
 	  else {
-		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->getSize();
+		  uint_t _texCoordIndexListSize = (*TexCoordIndexList)->size();
 		  if(_texCoordIndexListSize != _indexListSize){
 			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),classname.c_str(),"TexCoordIndexList","Number of TexCoord indices must be compatible to IndexList size.");
 			return false;
 		  }
 		  // TexCoordIndexList values check
-		  typename MeshIndexArrayType::iterator _it = (*TexCoordIndexList)->getBegin();
+		  typename MeshIndexArrayType::iterator _it = (*TexCoordIndexList)->begin();
 		  for (uint_t _i = 0; _i < _texCoordIndexListSize; ++_i,++_it) {
 			// Max index check
-			if (*(std::max_element(_it->getBegin(),_it->getEnd())) >= _texCoordListSize) {
+			if (*(std::max_element(_it->begin(),_it->end())) >= _texCoordListSize) {
 				pglErrorEx
 					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"TexCoordIndexList",number(_i+1).c_str(),"Do not represent any TexCoord of the list.");
 				return false;
 			}
 			// Size index check
-			if (_it->getSize() != (*IndexList)->getAt(_i).getSize()) {
+			if (_it->size() != (*IndexList)->getAt(_i).size()) {
 				pglErrorEx
 					(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"TexCoordIndexList",number(_i+1).c_str(),"TexCoord indice size do no reflect actual polygon indice size.");
 				return false;

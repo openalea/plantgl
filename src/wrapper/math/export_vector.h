@@ -64,19 +64,19 @@ template<class V>
 void vec_setw(V * v, real_t val){ v->w() = val; }
 
 template <class V>
-real_t vec_size(V * v){ return v->getSize(); }
+real_t vec_size(V * v){ return v->size(); }
 
 template <class V>
 real_t vec_getAt(V * v, size_t i)
 { 
-  if (i < v->getSize()) return v->getAt(i); 
+  if (i < v->size()) return v->getAt(i); 
   else throw PythonExc_IndexError(); 
 } 
 
 template <class V>
 void vec_setAt(V * v, size_t i, real_t val)
 { 
-  if (i < v->getSize()) v->setAt(i,val); 
+  if (i < v->size()) v->setAt(i,val); 
   else throw PythonExc_IndexError(); 
 } 
 

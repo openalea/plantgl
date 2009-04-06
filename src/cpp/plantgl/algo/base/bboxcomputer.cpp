@@ -444,7 +444,7 @@ bool BBoxComputer::process( Group * group ) {
   GEOM_BBOXCOMPUTER_CHECK_CACHE(group);
 
   const GeometryArrayPtr& _group = group->getGeometryList();
-  uint_t _size = _group->getSize();
+  uint_t _size = _group->size();
   uint_t _first = 0;
   do {
 	_group->getAt(_first)->apply(*this);
@@ -486,12 +486,12 @@ bool BBoxComputer::process( IFS * ifs ) {
 	
 	Vector3 _ll = __bbox->getLowerLeftCorner();
 	Vector3 _ur = __bbox->getUpperRightCorner();
-	Matrix4Array::const_iterator matrix= matrixList->getBegin();
+	Matrix4Array::const_iterator matrix= matrixList->begin();
 	BoundingBox UnionBox( _ll, _ur);
 	UnionBox.transform(*matrix);
 	matrix++;
 	
-	while( matrix != matrixList->getEnd() )
+	while( matrix != matrixList->end() )
     {
 	  BoundingBox bbox( _ll, _ur);
 	  bbox.transform(*matrix);
@@ -627,13 +627,13 @@ bool BBoxComputer::process( Revolution * revolution ) {
 
   const Point3ArrayPtr& _pointList = __discretizer.getDiscretization()->getPointList();
 
-  Point3Array::const_iterator it = _pointList->getBegin();
+  Point3Array::const_iterator it = _pointList->begin();
 
   real_t _yMin = it->y();
   real_t _yMax = it->y();
   real_t _xMax = it->x();
   
-  for (++it; it < _pointList->getEnd(); ++it) {
+  for (++it; it < _pointList->end(); ++it) {
     const real_t& _x = it->x();
     const real_t& _y = it->y();
     if (_x > _xMax)
@@ -673,7 +673,7 @@ bool BBoxComputer::process( Swung * swung )
   Vector3 _ur= __bbox->getUpperRightCorner();
 
   uint_t i= 0;
-  uint_t size = p->getSize();
+  uint_t size = p->size();
   for( i= 1; i < size; i++ )
     {
     p->getAt(i)->apply(*this);
@@ -959,14 +959,14 @@ bool BBoxComputer::process(const ScenePtr& scene){
 
     // Computes the global bounding box
     BoundingBoxPtr _bbox = BoundingBoxPtr();
-    if (scene && (! scene->isEmpty())) {
-        Scene::const_iterator _i = scene->getBegin();
-        while ((_i != scene->getEnd())&&(!((*(_i++))->applyGeometryOnly(*this))));
+    if (scene && (! scene->empty())) {
+        Scene::const_iterator _i = scene->begin();
+        while ((_i != scene->end())&&(!((*(_i++))->applyGeometryOnly(*this))));
         if(__bbox){
             _bbox = BoundingBoxPtr(new BoundingBox(*__bbox));
         }
         else return false;
-        while (_i != scene->getEnd()) {
+        while (_i != scene->end()) {
             if((*(_i++))->applyGeometryOnly(*this)){
                 _bbox->extend(__bbox);
             }
@@ -981,14 +981,14 @@ bool BBoxComputer::process(const Scene& scene){
 
     // Computes the global bounding box
     BoundingBoxPtr _bbox = BoundingBoxPtr();
-    if (! scene.isEmpty()) {
-        Scene::const_iterator _i = scene.getBegin();
-        while ((_i != scene.getEnd())&&(!((*(_i++))->applyGeometryOnly(*this))));
+    if (! scene.empty()) {
+        Scene::const_iterator _i = scene.begin();
+        while ((_i != scene.end())&&(!((*(_i++))->applyGeometryOnly(*this))));
         if(__bbox){
             _bbox = BoundingBoxPtr(new BoundingBox(*__bbox));
         }
         else return false;
-        while (_i != scene.getEnd()) {
+        while (_i != scene.end()) {
             if((*(_i++))->applyGeometryOnly(*this)){
                 _bbox->extend(__bbox);
             }

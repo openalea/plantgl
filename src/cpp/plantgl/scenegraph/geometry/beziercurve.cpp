@@ -67,7 +67,7 @@ BezierCurve::Builder::~Builder( ) {
 SceneObjectPtr BezierCurve::Builder::build( ) const {
     if (isValid()){
 #ifdef GEOM_DEBUG
-        if(!Degree)cout << "Degree value assign to " << ((*CtrlPointList)->getSize() - 1) << endl;
+        if(!Degree)cout << "Degree value assign to " << ((*CtrlPointList)->size() - 1) << endl;
 #endif
         return SceneObjectPtr(new BezierCurve(*CtrlPointList,(Stride ? *Stride : DEFAULT_STRIDE)));
     }
@@ -89,7 +89,7 @@ bool BezierCurve::Builder::isValid( ) const {
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Curve","CtrlPointList");
         return false;
     }
-    uint_t _size = (*CtrlPointList)->getSize();
+    uint_t _size = (*CtrlPointList)->size();
     if (_size < 3 ) {
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Curve","CtrlPointList","Must have more than 2 control points.");
         return false;
@@ -198,7 +198,7 @@ BezierCurve::isStrideToDefault( ) const{
 
 const uint_t
 BezierCurve::getDegree( ) const {
-  return __ctrlPointList->getSize() - 1;
+  return __ctrlPointList->size() - 1;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -208,7 +208,7 @@ Vector3 BezierCurve::getPointAt(real_t u) const{
 
   uint_t _deg = getDegree();
 
-  vector<Vector4> Q(__ctrlPointList->getBegin(),__ctrlPointList->getEnd());
+  vector<Vector4> Q(__ctrlPointList->begin(),__ctrlPointList->end());
 
   real_t u1 = real_t(1.0) - u;
   for (uint_t k = 1; k <= _deg ; k++)
@@ -240,7 +240,7 @@ BezierCurve::copy(DeepCopier& copier) const
 Vector3 BezierCurve::getPointAt2(real_t u) const{
     GEOM_ASSERT(!( (u < 0) || (u > 1) ));
     if(u==0)return __ctrlPointList->getAt(0).project();
-    else if(u==1)return __ctrlPointList->getAt(__ctrlPointList->getSize()).project();
+    else if(u==1)return __ctrlPointList->getAt(__ctrlPointList->size()).project();
     vector<real_t> _allBernstein=all_bernstein(getDegree(),u);
     Vector4 C(0.0,0.0,0.0,0.0);
     for(uint_t i=0;i<=getDegree();i++){
@@ -262,7 +262,7 @@ Vector3 BezierCurve::getTangentAt(real_t u) const{
       else return res.project();
     }
     else if(u ==1){
-      Vector4 res(__ctrlPointList->getAt(__ctrlPointList->getSize()-1)-__ctrlPointList->getAt(__ctrlPointList->getSize()-2));
+      Vector4 res(__ctrlPointList->getAt(__ctrlPointList->size()-1)-__ctrlPointList->getAt(__ctrlPointList->size()-2));
       if(!res.w()) return Vector3(res.x(),res.y(),res.z());
       else return res.project();
     }
@@ -335,7 +335,7 @@ bool BezierCurve2D::Builder::isValid( ) const {
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"BezierCurve2D","CtrlPointList");
         return false;
     }
-    uint_t _size = (*CtrlPointList)->getSize();
+    uint_t _size = (*CtrlPointList)->size();
     if (_size < 3 ) {
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"BezierCurve2D","CtrlPointList","Must have more than 2 control points.");
         return false;
@@ -436,7 +436,7 @@ BezierCurve2D::isStrideToDefault( ) const{
 
 const uint_t
 BezierCurve2D::getDegree( ) const {
-  return __ctrlPointList->getSize() - 1;
+  return __ctrlPointList->size() - 1;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -454,7 +454,7 @@ Vector2 BezierCurve2D::getPointAt(real_t u) const{
 
   uint_t _deg = getDegree();
 
-  vector<Vector3> Q(__ctrlPointList->getBegin(),__ctrlPointList->getEnd());
+  vector<Vector3> Q(__ctrlPointList->begin(),__ctrlPointList->end());
 
   real_t u1 = real_t(1.0) - u;
   for (uint_t k = 1; k <= _deg ; k++)

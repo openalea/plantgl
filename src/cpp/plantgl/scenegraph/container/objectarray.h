@@ -85,7 +85,7 @@ public:
   virtual bool isValid( ) const
   {
     const_iterator _i;
-    for ( _i= this->getBegin(); _i != this->getEnd(); _i++ )
+    for ( _i= this->begin(); _i != this->end(); _i++ )
       {
       if( ! (*_i) )
         return false;

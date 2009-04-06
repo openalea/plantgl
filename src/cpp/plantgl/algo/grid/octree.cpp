@@ -171,7 +171,7 @@ void Octree::build1()
                 intersection.setVoxel(node);
                 bool filled = false;
                 Scene::iterator _it;
-                for( _it = s->getBegin(); _it!=s->getEnd() /* || filled */; _it++)
+                for( _it = s->begin(); _it!=s->end() /* || filled */; _it++)
                   {
                   if((*_it)->apply(intersection))
                   n->add(*_it);
@@ -188,7 +188,7 @@ void Octree::build1()
                     max_count-= suppnb;
                     }
                   }
-                else if (n->isEmpty()){
+                else if (n->empty()){
                     node->getType() = Tile::Empty;
                         int maxsc = (int)__maxscale;
                         int cscale = (int)node->getScale();
@@ -262,15 +262,15 @@ void Octree::build3()
                 ScenePtr n(new Scene());
                 Scene::iterator _it;
                 uint_t nb_triangles= 0;
-                for( _it = s->getBegin(); _it!=s->getEnd(); _it++ )
+                for( _it = s->begin(); _it!=s->end(); _it++ )
                   {
                   if((*_it)->apply(discretizer))
                     {
                     TriangleSetPtr ts= discretizer.getTriangulation( );
                     Index3ArrayPtr triangles= intersect( ts, node);
-                    if( ! triangles->isEmpty() )
+                    if( ! triangles->empty() )
                       {
-                      nb_triangles+= triangles->getSize();
+                      nb_triangles+= triangles->size();
                       TriangleSetPtr tri(new TriangleSet( ts->getPointList(),
                                                           triangles,
 														  ts->getNormalPerVertex(),
@@ -392,7 +392,7 @@ void Octree::build2()
           // on parcourt tous les triangles du noeud complex (pere)
           // on les repartit dans le fils adequat
           Scene::iterator _it;
-          for( _it = s->getBegin(); _it!=s->getEnd(); _it++ )
+          for( _it = s->begin(); _it!=s->end(); _it++ )
             {
             if((*_it)->apply(discretizer))
               {
@@ -403,9 +403,9 @@ void Octree::build2()
               topDown(Complex, ts, triangles, _xm, _ym, _zm);
               for( i = 0 ; i <  8 ; i++ )
                 {
-                if( ! triangles[i]->isEmpty() )
+                if( ! triangles[i]->empty() )
                   {
-                  nb_triangles[i]+= triangles[i]->getSize();
+                  nb_triangles[i]+= triangles[i]->size();
                   xm[i]+= _xm[i]; ym[i]+= _ym[i]; zm[i]+= _zm[i];
                   TriangleSetPtr tri(new TriangleSet( ts->getPointList(),
                                                       triangles[i],
@@ -565,17 +565,17 @@ Index3ArrayPtr Octree::intersect( const TriangleSetPtr& mesh,
   Index3ArrayPtr indices(mesh->getIndexList());
 
   Index3ArrayPtr result( new Index3Array());
-  result->reserve(mesh->getIndexList()->getSize());
+  result->reserve(mesh->getIndexList()->size());
 
 /*
-  for(Point3Array::iterator _it1 = points->getBegin();
-      _it1 != points->getEnd();
+  for(Point3Array::iterator _it1 = points->begin();
+      _it1 != points->end();
       _it1++)
     if(__voxel->intersect( *_it1))return true;
 */
 
   Index3Array::iterator _it;
-  for( _it = indices->getBegin(); _it != indices->getEnd(); _it++ )
+  for( _it = indices->begin(); _it != indices->end(); _it++ )
     {
     Vector3 p0= points->getAt(_it->getAt(0));
     Vector3 p1= points->getAt(_it->getAt(1));
@@ -583,19 +583,19 @@ Index3ArrayPtr Octree::intersect( const TriangleSetPtr& mesh,
 
     if( voxel->intersect( p0 ) || voxel->intersect( p1 ) ||
         voxel->intersect( p2 ) || voxel->intersect( (p0+p1+p2)/3.) )
-      result->pushBack(*_it);
+      result->push_back(*_it);
     else
     if( voxel->intersect( p0, p1 ) )
-      result->pushBack(*_it);
+      result->push_back(*_it);
     else
     if( voxel->intersect( p1, p2 ) )
-      result->pushBack(*_it);
+      result->push_back(*_it);
     else
     if( voxel->intersect( p2, p0 ) )
-      result->pushBack(*_it);
+      result->push_back(*_it);
     else
     if( voxel->intersect( p0, p1, p2 ) )
-      result->pushBack(*_it);
+      result->push_back(*_it);
     }
 
   return result;
@@ -712,13 +712,13 @@ bool Octree::intersect( const Ray& ray,
     // liste des points, prendre le plus proche
     real_t dist= REAL_MAX;
     Point3ArrayPtr pts= actionRay.getIntersection();
-    assert(!pts->isEmpty());
+    assert(!pts->empty());
 #ifdef CPL_DEBUG
-    cerr<<"nb pts: "<<pts->getSize()<<endl;
+    cerr<<"nb pts: "<<pts->size()<<endl;
 #endif
 
-    Point3Array::const_iterator it= pts->getBegin();
-    for( ; it != pts->getEnd(); it++ )
+    Point3Array::const_iterator it= pts->begin();
+    for( ; it != pts->end(); it++ )
       {
       real_t d_cur= normSquared(P-(*it));
 #ifdef CPL_DEBUG
@@ -796,7 +796,7 @@ bool Octree::topDown( const OctreeNode* voxel,
   Vector3 h0, h1, h2;
   bool x0, x1, x2, y0, y1, y2, z0, z1, z2;
   Index3Array::iterator _it;
-  for( _it = indices->getBegin(); _it != indices->getEnd(); _it++ )
+  for( _it = indices->begin(); _it != indices->end(); _it++ )
     {
     p0= points->getAt(_it->getAt(0));
     p1= points->getAt(_it->getAt(1));
@@ -822,7 +822,7 @@ bool Octree::topDown( const OctreeNode* voxel,
       if(x0) l |= 1;
       if(z0) l |= 2;
       if(y0) l |= 4;
-      triangles[l]->pushBack(*_it);
+      triangles[l]->push_back(*_it);
       xm[l]+= max_x; ym[l]+= max_y; zm[l]+= max_z;
       }
     else
@@ -836,8 +836,8 @@ bool Octree::topDown( const OctreeNode* voxel,
         if( y_cst && y0 ) { l1|= 4; l2|= 4; }
 
         l2|= (yz) ? 1 : (xy) ? 2 : 4;
-        triangles[l1]->pushBack(*_it);
-        triangles[l2]->pushBack(*_it);
+        triangles[l1]->push_back(*_it);
+        triangles[l2]->push_back(*_it);
         xm[l1]+= max_x; ym[l1]+= max_y; zm[l1]+= max_z;
         xm[l2]+= max_x; ym[l2]+= max_y; zm[l2]+= max_z;
         }
@@ -852,10 +852,10 @@ bool Octree::topDown( const OctreeNode* voxel,
         if( x_cst ) { l2|= 2; l4|= 2; l3|= 4; l4|= 4; }
         if( y_cst ) { l2|= 1; l4|= 1; l3|= 2; l4|= 2; }
         if( z_cst ) { l2|= 1; l4|= 1; l3|= 4; l4|= 4; }
-        triangles[l1]->pushBack(*_it);
-        triangles[l2]->pushBack(*_it);
-        triangles[l3]->pushBack(*_it);
-        triangles[l4]->pushBack(*_it);
+        triangles[l1]->push_back(*_it);
+        triangles[l2]->push_back(*_it);
+        triangles[l3]->push_back(*_it);
+        triangles[l4]->push_back(*_it);
         xm[l1]+= max_x; ym[l1]+= max_y; zm[l1]+= max_z;
         xm[l2]+= max_x; ym[l2]+= max_y; zm[l2]+= max_z;
         xm[l3]+= max_x; ym[l3]+= max_y; zm[l3]+= max_z;
@@ -867,7 +867,7 @@ bool Octree::topDown( const OctreeNode* voxel,
         // todo
         for( i= 0; i < 8; i++ )
           {
-          triangles[i]->pushBack(*_it);
+          triangles[i]->push_back(*_it);
           xm[i]+= max_x; ym[i]+= max_y; zm[i]+= max_z;
           }
         }
@@ -876,7 +876,7 @@ bool Octree::topDown( const OctreeNode* voxel,
 
   for( i= 0; i < 8; i++ )
     {
-    real_t n= real_t(triangles[i]->getSize());
+    real_t n= real_t(triangles[i]->size());
     xm[i]/= n; ym[i]/= n; zm[i]/= n;
     }
 

@@ -902,8 +902,8 @@ ViewCameraGL::setPosition(const Vector3& position, double az, double el){
   __azimuth = az;
   __elevation = -el;
   __translation = __eye - pos;
- // qWarning(QString("**>")+QSV(pos)+" , "+QString::number(__azimuth)+" , "+QString::number(__elevation));
- // qWarning(QString("-->")+QSV(getPosition()));
+ // qWarning((QString("**>")+QSV(pos)+" , "+QString::number(__azimuth)+" , "+QString::number(__elevation)).toAscii());
+ // qWarning((QString("-->")+QSV(getPosition())).toAscii());
  emit azimuthChanged(__azimuth);
  emit elevationChanged(__elevation);
  emit zoomChanged(__translation.x());

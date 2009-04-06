@@ -153,17 +153,17 @@ bool WireComputer::process( AmapSymbol * amapSymbol ) {
   GEOM_ASSERT(amapSymbol);
   // nothing to do as amapSymbol has a cached representation of type of Mesh.
   GeometryArrayPtr polys(new GeometryArray);
-  for(IndexArray::const_iterator _it = amapSymbol->getIndexList()->getBegin();
-  _it != amapSymbol->getIndexList()->getEnd(); _it++){
+  for(IndexArray::const_iterator _it = amapSymbol->getIndexList()->begin();
+  _it != amapSymbol->getIndexList()->end(); _it++){
 	Point3ArrayPtr points(new Point3Array);
-	for(Index::const_iterator _i = _it->getBegin(); _i != _it->getEnd(); _i++){
-	  points->pushBack(amapSymbol->getPointList()->getAt(*_i));
+	for(Index::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+	  points->push_back(amapSymbol->getPointList()->getAt(*_i));
 	}
-	points->pushBack(amapSymbol->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new Polyline(points)));
+	points->push_back(amapSymbol->getPointList()->getAt(*(_it->begin())));
+	polys->push_back(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr();
-  else if(polys->getSize() == 1)__wire = polys->getAt(0);
+  if(polys->empty())__wire = GeometryPtr();
+  else if(polys->size() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
 }
@@ -172,17 +172,17 @@ bool WireComputer::process( FaceSet * faceSet ) {
   GEOM_ASSERT(faceSet);
   // nothing to do as faceSet is already an ExplicitModel
   GeometryArrayPtr polys(new GeometryArray);
-  for(IndexArray::const_iterator _it = faceSet->getIndexList()->getBegin();
-  _it != faceSet->getIndexList()->getEnd(); _it++){
+  for(IndexArray::const_iterator _it = faceSet->getIndexList()->begin();
+  _it != faceSet->getIndexList()->end(); _it++){
 	Point3ArrayPtr points(new Point3Array);
-	for(Index::const_iterator _i = _it->getBegin(); _i != _it->getEnd(); _i++){
-	  points->pushBack(faceSet->getPointList()->getAt(*_i));
+	for(Index::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+	  points->push_back(faceSet->getPointList()->getAt(*_i));
 	}
-	points->pushBack(faceSet->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new Polyline(points)));
+	points->push_back(faceSet->getPointList()->getAt(*(_it->begin())));
+	polys->push_back(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr();
-  else if(polys->getSize() == 1)__wire = polys->getAt(0);
+  if(polys->empty())__wire = GeometryPtr();
+  else if(polys->size() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
 }
@@ -205,17 +205,17 @@ bool WireComputer::process( QuadSet * quadSet ) {
   GEOM_ASSERT(quadSet);
   // nothing to do as quadSet is already an ExplicitModel
   GeometryArrayPtr polys(new GeometryArray);
-  for(Index4Array::const_iterator _it = quadSet->getIndexList()->getBegin();
-  _it != quadSet->getIndexList()->getEnd(); _it++){
+  for(Index4Array::const_iterator _it = quadSet->getIndexList()->begin();
+  _it != quadSet->getIndexList()->end(); _it++){
 	Point3ArrayPtr points(new Point3Array);
-	for(Index4::const_iterator _i = _it->getBegin(); _i != _it->getEnd(); _i++){
-	  points->pushBack(quadSet->getPointList()->getAt(*_i));
+	for(Index4::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+	  points->push_back(quadSet->getPointList()->getAt(*_i));
 	}
-	points->pushBack(quadSet->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new Polyline(points)));
+	points->push_back(quadSet->getPointList()->getAt(*(_it->begin())));
+	polys->push_back(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr();
-  else if(polys->getSize() == 1)__wire = polys->getAt(0);
+  if(polys->empty())__wire = GeometryPtr();
+  else if(polys->size() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
 }
@@ -223,17 +223,17 @@ bool WireComputer::process( QuadSet * quadSet ) {
 bool WireComputer::process( TriangleSet * triangleSet ) {
   GEOM_ASSERT(triangleSet);
   GeometryArrayPtr polys(new GeometryArray);
-  for(Index3Array::const_iterator _it = triangleSet->getIndexList()->getBegin();
-  _it != triangleSet->getIndexList()->getEnd(); _it++){
+  for(Index3Array::const_iterator _it = triangleSet->getIndexList()->begin();
+  _it != triangleSet->getIndexList()->end(); _it++){
 	Point3ArrayPtr points(new Point3Array);
-	for(Index3::const_iterator _i = _it->getBegin(); _i != _it->getEnd(); _i++){
-	  points->pushBack(triangleSet->getPointList()->getAt(*_i));
+	for(Index3::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+	  points->push_back(triangleSet->getPointList()->getAt(*_i));
 	}
-	points->pushBack(triangleSet->getPointList()->getAt(*(_it->getBegin())));
-	polys->pushBack(GeometryPtr(new Polyline(points)));
+	points->push_back(triangleSet->getPointList()->getAt(*(_it->begin())));
+	polys->push_back(GeometryPtr(new Polyline(points)));
   }
-  if(polys->isEmpty())__wire = GeometryPtr();
-  else if(polys->getSize() == 1)__wire = polys->getAt(0);
+  if(polys->empty())__wire = GeometryPtr();
+  else if(polys->size() == 1)__wire = polys->getAt(0);
   else __wire = GeometryPtr(new Group(polys));
   return true;
 }

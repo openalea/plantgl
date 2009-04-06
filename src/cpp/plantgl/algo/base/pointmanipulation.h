@@ -51,10 +51,10 @@ RCPtr<PointListType> compress_point(RCPtr<PointListType> points, real_t radius)
 
 	LocalPointGrid grid(radius,points);
 	
-	RCPtr<PointListType> result(new PointListType(points->getSize()));
-	typename PointListType::iterator _itresult = result->getBegin();
-	for(typename PointListType::const_iterator _itsource = points->getBegin();
-		_itsource != points->getEnd(); ++_itsource, ++_itresult)
+	RCPtr<PointListType> result(new PointListType(points->size()));
+	typename PointListType::iterator _itresult = result->begin();
+	for(typename PointListType::const_iterator _itsource = points->begin();
+		_itsource != points->end(); ++_itsource, ++_itresult)
 	{
 	  PointIndexList pointindices = grid.query_ball_point(*_itsource,radius);
 	  VectorType center;

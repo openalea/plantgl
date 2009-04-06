@@ -60,8 +60,8 @@ std::string nc_repr( NurbsCurve* p )
   RealArrayPtr knot= p->getKnotList();
   uint_t d= p->getDegree();
   uint_t stride= p->getStride();
-  uint_t n= ctrl->getSize();
-  uint_t nk= knot->getSize();
+  uint_t n= ctrl->size();
+  uint_t nk= knot->size();
   if( n == 0 )
     {
       ss << "NurbsCurve(Point4Array([]))," << stride << ")";
@@ -78,7 +78,7 @@ std::string nc_repr( NurbsCurve* p )
       ss << ", (" << v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << ")";
   }
   ss << "],"<< d << ",[";
-  if (knot && !knot->isEmpty()) {
+  if (knot && !knot->empty()) {
     ss << knot->getAt(0);
 	for( i = 1 ; i < nk ; ++i )
 	{
@@ -154,8 +154,8 @@ std::string nc2_repr( NurbsCurve2D* p )
   RealArrayPtr knot= p->getKnotList();
   uint_t d= p->getDegree();
   uint_t stride= p->getStride();
-  uint_t n= ctrl->getSize();
-  uint_t nk= knot->getSize();
+  uint_t n= ctrl->size();
+  uint_t nk= knot->size();
   if( n == 0 )
     {
       ss << "NurbsCurve2D(Point3Array([]),RealArray([])," << stride << ")";
@@ -172,7 +172,7 @@ std::string nc2_repr( NurbsCurve2D* p )
       ss << ", Vector3(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
   }
   ss << "),RealArray([";
-  if (knot && !knot->isEmpty()) {
+  if (knot && !knot->empty()) {
     ss << knot->getAt(0);
 	for( i = 1 ; i < nk ; ++i )
 	{
@@ -189,10 +189,10 @@ object convert_lc(const LineicModelPtr& res)
 	else {
 		NurbsCurvePtr c = dynamic_pointer_cast<NurbsCurve>(res);		
 		if(c){
-			Point3ArrayPtr cpts(new Point3Array(c->getCtrlPointList()->getSize()));
-			Point3Array::iterator _it = cpts->getBegin();
-			for (Point4Array::const_iterator _it2 = c->getCtrlPointList()->getBegin();
-				_it2 != c->getCtrlPointList()->getEnd(); _it2++){
+			Point3ArrayPtr cpts(new Point3Array(c->getCtrlPointList()->size()));
+			Point3Array::iterator _it = cpts->begin();
+			for (Point4Array::const_iterator _it2 = c->getCtrlPointList()->begin();
+				_it2 != c->getCtrlPointList()->end(); _it2++){
 					*_it = Vector3(_it2->x(),_it2->y(),_it2->w());
 					_it++;
 				}
@@ -202,10 +202,10 @@ object convert_lc(const LineicModelPtr& res)
 		else {
 			BezierCurvePtr bc = dynamic_pointer_cast<BezierCurve>(res);
 			if (bc){
-				Point3ArrayPtr cpts(new Point3Array(bc->getCtrlPointList()->getSize()));
-				Point3Array::iterator _it = cpts->getBegin();
-				for (Point4Array::const_iterator _it2 = bc->getCtrlPointList()->getBegin();
-					_it2 != bc->getCtrlPointList()->getEnd(); _it2++){
+				Point3ArrayPtr cpts(new Point3Array(bc->getCtrlPointList()->size()));
+				Point3Array::iterator _it = cpts->begin();
+				for (Point4Array::const_iterator _it2 = bc->getCtrlPointList()->begin();
+					_it2 != bc->getCtrlPointList()->end(); _it2++){
 						*_it = Vector3(_it2->x(),_it2->y(),_it2->w());
 						_it++;
 					}
@@ -215,10 +215,10 @@ object convert_lc(const LineicModelPtr& res)
 			else {
 				PolylinePtr pc = dynamic_pointer_cast<Polyline>(res);
 				if(pc){
-					Point2ArrayPtr cpts(new Point2Array(pc->getPointList()->getSize()));
-					Point2Array::iterator _it = cpts->getBegin();
-					for (Point3Array::const_iterator _it2 = pc->getPointList()->getBegin();
-						_it2 != pc->getPointList()->getEnd(); _it2++){
+					Point2ArrayPtr cpts(new Point2Array(pc->getPointList()->size()));
+					Point2Array::iterator _it = cpts->begin();
+					for (Point3Array::const_iterator _it2 = pc->getPointList()->begin();
+						_it2 != pc->getPointList()->end(); _it2++){
 							*_it = Vector2(_it2->x(),_it2->y());
 							_it++;
 						}

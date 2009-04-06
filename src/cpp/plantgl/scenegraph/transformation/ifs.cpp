@@ -74,10 +74,10 @@ void IT::init()
 /////////////////////////////////////////////////////////////////////////////
 {
   // compute all transformations with an iterative system
-  uint_t n= __transfoList->getSize();
+  uint_t n= __transfoList->size();
   uint_t size= IFS::power( n , __depth );
   __transfoNodes= Matrix4ArrayPtr( new Matrix4Array( size ));
-  Matrix4Array::iterator it= __transfoNodes->getBegin();
+  Matrix4Array::iterator it= __transfoNodes->begin();
   apply( __depth, it, size );
 }
 
@@ -88,7 +88,7 @@ void IT::apply( uchar_t depth, Matrix4Array::iterator& it, uint_t size )
   if( depth < 1 )
     return;
 
-  uint_t n= __transfoList->getSize();
+  uint_t n= __transfoList->size();
   uint_t step= size / n;
 
   Matrix4 transfo= *it;
@@ -106,7 +106,7 @@ void IT::apply( uchar_t depth, Matrix4Array::iterator& it, uint_t size )
 bool IT::isValid( ) const
 /////////////////////////////////////////////////////////////////////////////
 {
-  if( (__transfoList->getSize() == 0) || (!__transfoList->isValid()) )
+  if( (__transfoList->size() == 0) || (!__transfoList->isValid()) )
     {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","TransfoList","Must be a list of valid transformations");
     return false;
@@ -126,18 +126,18 @@ Point3ArrayPtr IT::transform( const Point3ArrayPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->size();
 
-  Point3ArrayPtr _tPoints(new Point3Array(n*points->getSize()));
+  Point3ArrayPtr _tPoints(new Point3Array(n*points->size()));
 
-  Point3Array::iterator _ti = _tPoints->getBegin();
+  Point3Array::iterator _ti = _tPoints->begin();
 
-  Matrix4Array::const_iterator _mi= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mib= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mie= __transfoNodes->getEnd();
-  Point3Array::const_iterator _i = points->getBegin();
-  Point3Array::const_iterator _ib = points->getBegin();
-  Point3Array::const_iterator _ie = points->getEnd();
+  Matrix4Array::const_iterator _mi= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mib= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mie= __transfoNodes->end();
+  Point3Array::const_iterator _i = points->begin();
+  Point3Array::const_iterator _ib = points->begin();
+  Point3Array::const_iterator _ie = points->end();
 
   for( _mi= _mib; _mi != _mie; _mi++ )
     for( _i = _ib; _i != _ie; _i++ )
@@ -151,18 +151,18 @@ Point4ArrayPtr IT::transform( const Point4ArrayPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->size();
 
-  Point4ArrayPtr _tPoints(new Point4Array(n*points->getSize()));
+  Point4ArrayPtr _tPoints(new Point4Array(n*points->size()));
 
-  Point4Array::iterator _ti = _tPoints->getBegin();
+  Point4Array::iterator _ti = _tPoints->begin();
 
-  Matrix4Array::const_iterator _mi= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mib= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mie= __transfoNodes->getEnd();
-  Point4Array::const_iterator _i = points->getBegin();
-  Point4Array::const_iterator _ib = points->getBegin();
-  Point4Array::const_iterator _ie = points->getEnd();
+  Matrix4Array::const_iterator _mi= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mib= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mie= __transfoNodes->end();
+  Point4Array::const_iterator _i = points->begin();
+  Point4Array::const_iterator _ib = points->begin();
+  Point4Array::const_iterator _ie = points->end();
 
   for( _mi= _mib; _mi != _mie; _mi++ )
     for( _i = _ib; _i != _ie; _i++ )
@@ -176,18 +176,18 @@ Point3MatrixPtr IT::transform( const Point3MatrixPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->size();
 
-  Point3MatrixPtr _tPoints(new Point3Matrix(n*points->getSize()));
+  Point3MatrixPtr _tPoints(new Point3Matrix(n*points->size()));
 
-  Point3Matrix::iterator _ti = _tPoints->getBegin();
+  Point3Matrix::iterator _ti = _tPoints->begin();
 
-  Matrix4Array::const_iterator _mi= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mib= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mie= __transfoNodes->getEnd();
-  Point3Matrix::const_iterator _i = points->getBegin();
-  Point3Matrix::const_iterator _ib = points->getBegin();
-  Point3Matrix::const_iterator _ie = points->getEnd();
+  Matrix4Array::const_iterator _mi= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mib= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mie= __transfoNodes->end();
+  Point3Matrix::const_iterator _i = points->begin();
+  Point3Matrix::const_iterator _ib = points->begin();
+  Point3Matrix::const_iterator _ie = points->end();
 
   for( _mi= _mib; _mi != _mie; _mi++ )
     for( _i = _ib; _i != _ie; _i++ )
@@ -201,18 +201,18 @@ Point4MatrixPtr IT::transform( const Point4MatrixPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  uint_t n= __transfoNodes->getSize();
+  uint_t n= __transfoNodes->size();
 
-  Point4MatrixPtr _tPoints(new Point4Matrix(n*points->getSize()));
+  Point4MatrixPtr _tPoints(new Point4Matrix(n*points->size()));
 
-  Point4Matrix::iterator _ti = _tPoints->getBegin();
+  Point4Matrix::iterator _ti = _tPoints->begin();
 
-  Matrix4Array::const_iterator _mi= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mib= __transfoNodes->getBegin();
-  Matrix4Array::const_iterator _mie= __transfoNodes->getEnd();
-  Point4Matrix::const_iterator _i = points->getBegin();
-  Point4Matrix::const_iterator _ib = points->getBegin();
-  Point4Matrix::const_iterator _ie = points->getEnd();
+  Matrix4Array::const_iterator _mi= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mib= __transfoNodes->begin();
+  Matrix4Array::const_iterator _mie= __transfoNodes->end();
+  Point4Matrix::const_iterator _i = points->begin();
+  Point4Matrix::const_iterator _ib = points->begin();
+  Point4Matrix::const_iterator _ie = points->end();
 
   for( _mi= _mib; _mi != _mie; _mi++ )
     for( _i = _ib; _i != _ie; _i++ )
@@ -300,7 +300,7 @@ bool IFS::Builder::isValid( ) const
     return false;
     }
 
-  if( ((*TransfoList)->getSize() == 0) || (!(*TransfoList)->isValid()) )
+  if( ((*TransfoList)->size() == 0) || (!(*TransfoList)->isValid()) )
     {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","TransfoList","Must be a list of valid transformations");
     return false;
@@ -314,7 +314,7 @@ bool IFS::Builder::isValid( ) const
 
   if( Depth )
     {
-    uint_t n= (*TransfoList)->getSize();
+    uint_t n= (*TransfoList)->size();
     uint_t size= IFS::power( n , *Depth );
 
     if( size > MAX_OBJECTS )

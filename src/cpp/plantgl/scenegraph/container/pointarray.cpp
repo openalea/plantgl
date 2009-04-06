@@ -229,10 +229,10 @@ Point3Array::Point3Array( const Vector3& a, const Vector3& b ) :
 }
 
 Point3Array::Point3Array( const Point2Array& a, real_t z ) :
-   Array1<Vector3>(a.getSize()){
+   Array1<Vector3>(a.size()){
    GEOM_ASSERT(a.isValid());
-   Point3Array::iterator it3 = getBegin();
-   for(Point2Array::const_iterator it2 = a.getBegin();it2 != a.getEnd();++it2,++it3)
+   Point3Array::iterator it3 = begin();
+   for(Point2Array::const_iterator it2 = a.begin();it2 != a.end();++it2,++it3)
         *it3 = Vector3(*it2,z);
    GEOM_ASSERT(isValid());
 }
@@ -241,11 +241,11 @@ Point3Array::Point3Array( const Point2ArrayPtr& a, real_t z ) :
    Array1<Vector3>(){
    if(!a) return;
    GEOM_ASSERT(a->isValid());
-   size_t size = a->getSize();
+   size_t size = a->size();
    __A.reserve(size);
    __A.resize(size);
-   Point3Array::iterator it3 = getBegin();
-   for(Point2Array::const_iterator it2 = a->getBegin();it2 != a->getEnd();++it2,++it3)
+   Point3Array::iterator it3 = begin();
+   for(Point2Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it3)
         *it3 = Vector3(*it2,z);
    GEOM_ASSERT(isValid());
 }
@@ -401,7 +401,7 @@ bool Point3Array::isValid( ) const {
 
 Point2ArrayPtr Point3Array::project( ) const {
   Point2ArrayPtr _points2(new Point2Array(__A.size()));
-  Point2Array::iterator _i2 = _points2->getBegin();
+  Point2Array::iterator _i2 = _points2->begin();
   for (const_iterator _i3 = __A.begin(); _i3 != __A.end(); _i3++)
     *_i2++ = Vector2(_i3->project());
   return _points2;
@@ -445,9 +445,9 @@ Point4Array::Point4Array( uint_t size ) :
 }
 
 Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
-    Array1<Vector4>(a.getSize()){
-        Point4Array::iterator it4 = getBegin();
-        for(Point2Array::const_iterator it2 = a.getBegin();it2 != a.getEnd();++it2,++it4)
+    Array1<Vector4>(a.size()){
+        Point4Array::iterator it4 = begin();
+        for(Point2Array::const_iterator it2 = a.begin();it2 != a.end();++it2,++it4)
                 *it4 = Vector4(*it2,z,w);
   GEOM_ASSERT(isValid());
 }
@@ -455,18 +455,18 @@ Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
 Point4Array::Point4Array( const Point2ArrayPtr& a, real_t z, real_t w  ) :
     Array1<Vector4>(){
 	if (!a) return;
-	__A.reserve(getSize());
-	__A.resize(getSize());
-    Point4Array::iterator it4 = getBegin();
-    for(Point2Array::const_iterator it2 = a->getBegin();it2 != a->getEnd();++it2,++it4)
+	__A.reserve(size());
+	__A.resize(size());
+    Point4Array::iterator it4 = begin();
+    for(Point2Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it4)
         *it4 = Vector4(*it2,z,w);
     GEOM_ASSERT(isValid());
 }
 
 Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
-    Array1<Vector4>(a.getSize()){
-        Point4Array::iterator it4 = getBegin();
-        for(Point3Array::const_iterator it3 = a.getBegin();it3 != a.getEnd();++it3,++it4)
+    Array1<Vector4>(a.size()){
+        Point4Array::iterator it4 = begin();
+        for(Point3Array::const_iterator it3 = a.begin();it3 != a.end();++it3,++it4)
                 *it4 = Vector4(*it3,w);
   GEOM_ASSERT(isValid());
 }
@@ -474,10 +474,10 @@ Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
 Point4Array::Point4Array( const Point3ArrayPtr& a, real_t w  ) :
     Array1<Vector4>(){
 	if (!a) return;
-	__A.reserve(getSize());
-	__A.resize(getSize());
-    Point4Array::iterator it4 = getBegin();
-    for(Point3Array::const_iterator it2 = a->getBegin();it2 != a->getEnd();++it2,++it4)
+	__A.reserve(size());
+	__A.resize(size());
+    Point4Array::iterator it4 = begin();
+    for(Point3Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it4)
         *it4 = Vector4(*it2,w);
     GEOM_ASSERT(isValid());
 }
@@ -667,7 +667,7 @@ bool Point4Array::isValid( ) const {
 
 Point3ArrayPtr Point4Array::project( ) const {
   Point3ArrayPtr _points3(new Point3Array(__A.size()));
-  Point3Array::iterator _i3 = _points3->getBegin();
+  Point3Array::iterator _i3 = _points3->begin();
   for (const_iterator _i4 = __A.begin(); _i4 != __A.end(); _i4++)
     *_i3++ = Vector3(_i4->project());
   return _points3;

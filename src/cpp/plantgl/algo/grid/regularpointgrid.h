@@ -48,7 +48,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-template<class T> class Dimension {} ;
+template<class T> class Dimension  {};
 
 template<> class Dimension<TOOLS::Vector2> 
 { public: static const int Nb = 2; };
@@ -93,12 +93,12 @@ public:
 	typedef typename PointContainer::iterator PointIterator;
 	typedef typename PointContainer::const_iterator PointConstIterator;
 	
-	typedef size_t PointContainerIndex;
+	typedef size_t PointIndex;
 	typedef size_t VoxelCoordinate;
 	typedef std::vector<VoxelCoordinate> VoxelCoordinates;
 	typedef size_t VoxelId;
 	typedef std::vector<VoxelId> VoxelIdList;
-	typedef std::vector<PointContainerIndex> PointIndexList;
+	typedef std::vector<PointIndex> PointIndexList;
 
 	typedef std::vector<PointIndexList> VoxelList;
 	typedef typename VoxelList::iterator VoxelIterator;
@@ -209,7 +209,7 @@ public:
 		size_t len = __voxels[vid].size();
 		if (len == 0) return new PointContainer();
 		PointContainerPtr pts(new PointContainer(len));
-		PointIterator itpoints = pts->getBegin();
+		PointIterator itpoints = pts->begin();
 		for(PointIndexList::const_iterator itindex = __voxels[vid].begin(); 
 			itindex != __voxels[vid].end(); ++itindex){
 			*itpoints = points()[*itindex];
@@ -279,9 +279,39 @@ public:
 		return res;
 	}
 
+	bool disable_point(PointIndex pid) {
+		VectorType point = points().getAt(pid);
+		PointIndexList& voxelpointlist = __voxels[getVoxelIdFromPoint(point)];
+		typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
+		if (itPointIndex != voxelpointlist.end()) { voxelpointlist.erase(itPointIndex); return true; }
+		return false;
+	}
+
+	bool enable_point(PointIndex pid) {
+		VectorType point = points().getAt(pid);
+		PointIndexList& voxelpointlist = __voxels[getVoxelIdFromPoint(point)];
+		typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
+		if (itPointIndex == voxelpointlist.end()) { voxelpointlist.push_back(pid); return true; }
+		return false;
+	}
+
+	void disable_points(const PointIndexList& pids) {
+			for(typename PointIndexList::const_iterator itPointIndex = pids.begin(); 
+				itPointIndex != pids.end(); ++itPointIndex){
+					disable_point(*itPointIndex);
+			}
+	}
+
+	void enable_points(const PointIndexList& pids) {
+			for(typename PointIndexList::const_iterator itPointIndex = pids.begin(); 
+				itPointIndex != pids.end(); ++itPointIndex){
+					enable_point(*itPointIndex);
+			}
+	}
+
 protected:
 	template<class Iterator>
-	inline void registerData(Iterator beg, Iterator end, PointContainerIndex startingindex){
+	inline void registerData(Iterator beg, Iterator end, PointIndex startingindex){
 		for(Iterator it = beg; it != end; ++it){
 			VoxelId vid = getVoxelIdFromPoint(*it);
 			__voxels[vid].push_back(startingindex);
@@ -289,8 +319,8 @@ protected:
 		}
 	}
 
-	inline  void registerData(const PointContainerPtr& data, PointContainerIndex startingindex){
-		registerData(data->getBegin(),data->getEnd(),startingindex);
+	inline  void registerData(const PointContainerPtr& data, PointIndex startingindex){
+		registerData(data->begin(),data->end(),startingindex);
 	}
 
 	void initialize(const VectorType& minpoint, 

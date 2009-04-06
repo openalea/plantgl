@@ -158,7 +158,7 @@ bool
 ViewGeomSceneGL::addProperties(QTabWidget * tab)
 {
   QWidget * tab2 = new QWidget( tab );
-  if(__scene && !__scene->isEmpty()){
+  if(__scene && !__scene->empty()){
     real_t surface = getSceneSurface();
     real_t volume = getSceneVolume();
     QFrame * Line = new QFrame( tab2 );
@@ -181,7 +181,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     TextLabel2->setReadOnly(true);
     TextLabel2->setAlignment(Qt::AlignHCenter);
     TextLabel2->setGeometry( QRect( 178, 35, 190, 31 ) );
-    TextLabel2->setText(  QString::number(comp.getSize())+"  ( "+QString::number(__scene->getSize())+" "+tr("shape(s)")+" )" );
+    TextLabel2->setText(  QString::number(comp.getSize())+"  ( "+QString::number(__scene->size())+" "+tr("shape(s)")+" )" );
 
     TextLabel = new QLabel( tab2 );
     TextLabel->setGeometry( QRect( 20, 120, 130, 31 ) );
@@ -327,7 +327,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setReadOnly(true);
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 55, 190, 30 ) );
-	  TextLabel2->setText( QString::number(comp.getSize())+"  ( "+QString::number(selection->getSize())+" "+tr("shape(s)")+" )" );
+	  TextLabel2->setText( QString::number(comp.getSize())+"  ( "+QString::number(selection->size())+" "+tr("shape(s)")+" )" );
 	  
 	  TextLabel = new QLabel( tab2 );
 	  TextLabel->setGeometry( QRect( 150, 90, 120, 31 ) );

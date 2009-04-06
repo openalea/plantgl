@@ -288,14 +288,14 @@ void GeomListViewBuilder::addArray(const QString& name, const T& _array, const Q
   addAttrPtr(name,
 			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"NULL"),
 //			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array):"NULL"),
-			 "Array<"+type+">["+QString::number(_array?_array->getSize():0)+']');
+			 "Array<"+type+">["+QString::number(_array?_array->size():0)+']');
 
   if(__fullmode && _array){ 
 	  pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-    for(uint_t it = 0; it < _array->getSize() ; it++) { 
+    for(uint_t it = 0; it < _array->size() ; it++) { 
 		addAttr('['+QString::number(it)+']',_array->getAt(it));
     }
 	popItems();
@@ -307,14 +307,14 @@ void GeomListViewBuilder::addArrayAngle(const QString& name, const RealArrayPtr&
   addAttrPtr(name,
 			 (_array?QString("ptr=0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"ptr=NULL"),
 //			 (_array?QString("ptr=0x%1").arg(ptr_to_uint32(_array)):"ptr=NULL"),
-			 "Array<Angle>["+QString::number(_array?_array->getSize():0)+']');
+			 "Array<Angle>["+QString::number(_array?_array->size():0)+']');
 
   if(__fullmode && _array){ 
 	  pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-    for(uint_t it = 0; it < _array->getSize() ; it++) { 
+    for(uint_t it = 0; it < _array->size() ; it++) { 
 		addAttrAngle('['+QString::number(it)+']',_array->getAt(it));
     }
 	popItems();
@@ -327,14 +327,14 @@ void GeomListViewBuilder::addArrayNode(const QString& name, const T& _array, con
   addAttrPtr(name,
 			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array),8,16,QChar('0')):"NULL"),
 //			 "ptr="+(_array?QString("0x%1").arg(ptr_to_uint32(_array)):"NULL"),
-			 "Array<"+type+">["+QString::number(_array?_array->getSize():0)+']');
+			 "Array<"+type+">["+QString::number(_array?_array->size():0)+']');
 
   if( _array){ 
 	pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-    for(uint_t it = 0; it < _array->getSize() ; it++) { 
+    for(uint_t it = 0; it < _array->size() ; it++) { 
 		_array->getAt(it)->apply(*this);
     }
 	popItems();

@@ -64,10 +64,18 @@ TOOLS_BEGIN_NAMESPACE
 static string PLANTGL_DIR;
 static string OPENALEA_DIR;
 
+inline char * pglgetenv(char * name) { 
+#ifdef _MSC_VER
+	return getenv(name);
+#else
+	return getenv(name);
+#endif
+}
+
 string getHome(){
-        char * home = getenv("HOME");
+        char * home = pglgetenv("HOME");
 #ifdef _WIN32
-        if(!home)home = getenv("USERPROFILE");
+        if(!home)home = pglgetenv("USERPROFILE");
         if(!home)home = "C:\\";
 #else
         if(!home)home = "/";
@@ -77,7 +85,7 @@ string getHome(){
 
 string getOpenAleaDir(){
 		if(!OPENALEA_DIR.empty())return OPENALEA_DIR;
-        char * dir = getenv("OPENALEADIR");
+        char * dir = pglgetenv("OPENALEADIR");
         if(!dir)
 #ifdef _WIN32
 			dir = "C:\\openalea";
@@ -90,7 +98,7 @@ string getOpenAleaDir(){
 
 string getPlantGLDir(){
 	if(!PLANTGL_DIR.empty())return PLANTGL_DIR;
-    char * dir = getenv("PLANTGLDIR");
+    char * dir = pglgetenv("PLANTGLDIR");
     if(!dir)PLANTGL_DIR = getOpenAleaDir();
 	else PLANTGL_DIR = string(dir);
 	return PLANTGL_DIR;

@@ -53,51 +53,51 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-#define GEOM_PLY_MESH(obj,gindex,size) \
+#define GEOM_PLY_MESH(obj,gindex,len) \
   if( __pass == 1 ){ \
-    __vertex += obj->getPointList()->getSize(); \
-    __face += obj->getIndexList()->getSize(); \
+    __vertex += obj->getPointList()->size(); \
+    __face += obj->getIndexList()->size(); \
   } \
   else if( __pass == 2 ){ \
-    for(Point3Array::const_iterator _it = obj->getPointList()->getBegin(); \
-        _it != obj->getPointList()->getEnd(); _it++){ \
+    for(Point3Array::const_iterator _it = obj->getPointList()->begin(); \
+        _it != obj->getPointList()->end(); _it++){ \
          stream << _it->x() << ' ' <<_it->y()  << ' ' << _it->z()  << ' ' << __red   << ' ' << __green   << ' ' << __blue << endl; \
     } \
   } \
   else if( __pass == 3 ){ \
-    for(gindex##Array::const_iterator _it = obj->getIndexList()->getBegin(); \
-        _it != obj->getIndexList()->getEnd(); _it++){ \
-       stream << size; \
-       for(gindex::const_iterator _it2 = _it->getBegin(); \
-          _it2 != _it->getEnd(); _it2++) \
+    for(gindex##Array::const_iterator _it = obj->getIndexList()->begin(); \
+        _it != obj->getIndexList()->end(); _it++){ \
+       stream << len; \
+       for(gindex::const_iterator _it2 = _it->begin(); \
+          _it2 != _it->end(); _it2++) \
           stream << ' ' << ((*_it2)+__index); \
        stream << endl; \
     } \
-    __index += obj->getPointList()->getSize(); \
+    __index += obj->getPointList()->size(); \
   } \
   return true; \
 
 
-#define GEOM_PLYB_MESH(obj,gindex,size) \
+#define GEOM_PLYB_MESH(obj,gindex,len) \
   if( __pass == 1 ){ \
-    __vertex += obj->getPointList()->getSize(); \
-    __face += obj->getIndexList()->getSize(); \
+    __vertex += obj->getPointList()->size(); \
+    __face += obj->getIndexList()->size(); \
   } \
   else if( __pass == 2 ){ \
-    for(Point3Array::const_iterator _it = obj->getPointList()->getBegin(); \
-        _it != obj->getPointList()->getEnd(); _it++){ \
+    for(Point3Array::const_iterator _it = obj->getPointList()->begin(); \
+        _it != obj->getPointList()->end(); _it++){ \
       stream << (float)_it->x() << (float)_it->y()  << (float)_it->z() << (uchar_t)__red  << (uchar_t)__green  << (uchar_t)__blue; \
     } \
   } \
   else if( __pass == 3 ){ \
-    for(gindex##Array::const_iterator _it = obj->getIndexList()->getBegin(); \
-        _it != obj->getIndexList()->getEnd(); _it++){ \
-       stream << (uchar_t)size; \
-       for(gindex::const_iterator _it2 = _it->getBegin(); \
-          _it2 != _it->getEnd(); _it2++) \
+    for(gindex##Array::const_iterator _it = obj->getIndexList()->begin(); \
+        _it != obj->getIndexList()->end(); _it++){ \
+       stream << (uchar_t)len; \
+       for(gindex::const_iterator _it2 = _it->begin(); \
+          _it2 != _it->end(); _it2++) \
          stream << (int)((*_it2)+__index); \
     } \
-    __index += obj->getPointList()->getSize(); \
+    __index += obj->getPointList()->size(); \
   } \
   return true; \
 
@@ -259,7 +259,7 @@ bool
 PlyPrinter::process( AmapSymbol * amapSymbol )
 {
   GEOM_ASSERT( amapSymbol );
-  GEOM_PLY_MESH( amapSymbol ,Index,_it->getSize() );
+  GEOM_PLY_MESH( amapSymbol ,Index,_it->size() );
 }
 
 
@@ -391,7 +391,7 @@ bool
 PlyPrinter::process( FaceSet * faceSet )
 {
   GEOM_ASSERT( faceSet );
-  GEOM_PLY_MESH( faceSet ,Index,_it->getSize() );
+  GEOM_PLY_MESH( faceSet ,Index,_it->size() );
 }
 
 
@@ -795,7 +795,7 @@ bool
 PlyBinaryPrinter::process( AmapSymbol * amapSymbol )
 {
   GEOM_ASSERT( amapSymbol );
-  GEOM_PLYB_MESH( amapSymbol ,Index,_it->getSize() );
+  GEOM_PLYB_MESH( amapSymbol ,Index,_it->size() );
 }
 
 
@@ -806,7 +806,7 @@ bool
 PlyBinaryPrinter::process( FaceSet * faceSet )
 {
   GEOM_ASSERT( faceSet );
-  GEOM_PLYB_MESH( faceSet ,Index,_it->getSize() );
+  GEOM_PLYB_MESH( faceSet ,Index,_it->size() );
 }
 
 

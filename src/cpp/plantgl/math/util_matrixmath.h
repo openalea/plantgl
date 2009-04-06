@@ -132,7 +132,7 @@ public:
     //  lu = a;  must do it by copying or LUFACT will be recursively called !
 
     this->__rowsNb = n;
-    this->__A = std::vector<T>(a.getBegin(),a.getEnd());
+    this->__A = std::vector<T>(a.begin(),a.end());
     pivot_.resize(n);
 
     /*  for(i=0;i<n;++i)

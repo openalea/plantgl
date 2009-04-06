@@ -836,7 +836,7 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
 						  new Point3Array(points.begin(),points.end()))));
   Point2ArrayPtr radius(new Point2Array(radiusList.size()));
-  Point2Array::iterator it2 = radius->getBegin();
+  Point2Array::iterator it2 = radius->begin();
   for (std::vector<real_t>::const_iterator it = radiusList.begin();
 		it != radiusList.end(); it++){
 		  *it2 = Vector2(*it,*it); it2++;

@@ -194,8 +194,8 @@ uint_t
 ViewGeomSceneGL::translateId(uint_t id) const
 {
     Shape3DPtr ptr;
-    for(Scene::iterator _it = __scene->getBegin();
-        _it != __scene->getEnd(); _it++){
+    for(Scene::iterator _it = __scene->begin();
+        _it != __scene->end(); _it++){
       if( (ptr = dynamic_pointer_cast<Shape3D>(*_it)) && (ptr->SceneObject::getId() == id))
 	    return ptr->getId();
     }
@@ -218,7 +218,7 @@ ViewGeomSceneGL::getNotSelection( ) const
 {
   ScenePtr scene(new Scene);
   uint_t id;
-  for(Scene::const_iterator _it = __scene->getBegin(); _it !=__scene->getEnd(); _it++){
+  for(Scene::const_iterator _it = __scene->begin(); _it !=__scene->end(); _it++){
 	id = (*_it)->SceneObject::getId();
 	if(__selectedShapes.find(id)==__selectedShapes.end())
 	  scene->add(*_it);
@@ -341,11 +341,11 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
   __scene = scene;
 
   // Computes the global bounding box
-  if (! __scene->isEmpty()) {
+  if (! __scene->empty()) {
     if(__bboxComputer.process(__scene))
       __bbox = __bboxComputer.getBoundingBox();
     QString _msg(tr("Display")+" ");
-    _msg+=QString::number(__scene->getSize());
+    _msg+=QString::number(__scene->size());
     _msg+=(" "+tr("geometric shapes."));
     status(_msg,10000);
 
@@ -382,7 +382,7 @@ void
 ViewGeomSceneGL::paintGL()
 {
 
-    if (__scene && !__scene->isEmpty()){
+    if (__scene && !__scene->empty()){
 
     switch (__renderingMode) {
     case 1:
@@ -395,11 +395,11 @@ ViewGeomSceneGL::paintGL()
 			__scene->apply(__renderer);
 		else {
 			int cur = 0;
-			int tot = __scene->getSize();
+			int tot = __scene->size();
 			int tenpercent = max(1,tot / 10);
 			int cpercent = 0;
 			__renderer.beginProcess();
-			for(Scene::iterator it = __scene->getBegin();it != __scene->getEnd(); it++){
+			for(Scene::iterator it = __scene->begin();it != __scene->end(); it++){
 				(*it)->apply(__renderer);
 				cur++;
 				if(cur / tenpercent > cpercent){ 
@@ -517,8 +517,8 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
   }
   else {
     Shape3DPtr ptr;
-    for(Scene::iterator _it = __scene->getBegin();
-        _it != __scene->getEnd(); _it++){
+    for(Scene::iterator _it = __scene->begin();
+        _it != __scene->end(); _it++){
       if((ptr = dynamic_pointer_cast<Shape>(*_it)) && 
 		(ptr->SceneObject::getId() == id)){
         __selectedShapes[id]=ptr;
@@ -548,8 +548,8 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 	}
 	else {
 	  Shape3DPtr ptr;
-	  for(Scene::iterator _it = __scene->getBegin();
-	  _it != __scene->getEnd(); _it++){
+	  for(Scene::iterator _it = __scene->begin();
+	  _it != __scene->end(); _it++){
 		if((ptr= dynamic_pointer_cast<Shape>(*_it)) && ptr->SceneObject::getId() == *_id){
 		  __selectedShapes[*_id]=ptr;
 		  selected++;
@@ -585,8 +585,8 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint_t>& id)
   uint_t selected = 0;
   for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
 	  __scene->lock();
-	  for(Scene::const_iterator _it = __scene->getBegin() ; 
-					  _it != __scene->getEnd(); 
+	  for(Scene::const_iterator _it = __scene->begin() ; 
+					  _it != __scene->end(); 
 					  _it++){
 		ShapePtr ptr = dynamic_pointer_cast<Shape>(*_it);
 		if(ptr && ptr->getId() == *_id){
@@ -617,8 +617,8 @@ ViewGeomSceneGL::selectionEvent(Q3ListViewItem * item)
   if(item && item->text(2) == "Shape"){
 	string name = item->text(0).toAscii().constData();
 	bool found = false;
-    for(Scene::iterator _it = __scene->getBegin();
-	!found && _it != __scene->getEnd(); _it++){
+    for(Scene::iterator _it = __scene->begin();
+	!found && _it != __scene->end(); _it++){
 	  if((*_it)->getName() == name){
 		uint_t id = (*_it)->getId();
         if((*_it)->getId() == Shape::NOID){
@@ -786,7 +786,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
     GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
     __renderer.setRenderingMode(GLRenderer::Selection);
 	ScenePtr nsc(new Scene());
-	size_t tot = sc->getSize();
+	size_t tot = sc->size();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
 	bool autoredraw = frame->isRedrawEnabled();
@@ -794,7 +794,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		frame->activatePBuffer(true);
 		if(autoredraw)frame->activateRedraw(false);
 	}
-	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
+	for(Scene::const_iterator it = sc->begin(); it != sc->end(); it++){
 		nsc->clear();
 		nsc->add(*it);
 		setScene(nsc);
@@ -831,7 +831,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	double b_el = -el;
 
 	ScenePtr nsc(new Scene());
-	size_t tot = sc->getSize();
+	size_t tot = sc->size();
 	size_t per = max(size_t( 1 ),(size_t)((double)tot / 100.0));
 	size_t cur = 0;
 	bool autoredraw = frame->isRedrawEnabled();
@@ -843,7 +843,7 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 	if(mode)frame->getCamera()->setOrthographicMode();
     GLRenderer::RenderingMode rtype = __renderer.getRenderingMode();
     __renderer.setRenderingMode(GLRenderer::Dynamic);
-	for(Scene::const_iterator it = sc->getBegin(); it != sc->getEnd(); it++){
+	for(Scene::const_iterator it = sc->begin(); it != sc->end(); it++){
 		nsc->clear();
 		nsc->add(*it);
 		uint_t id = (*it)->getId();
@@ -905,7 +905,7 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 		// custom scene creation : color represent id
 		ScenePtr nsc(new Scene());
 		QHash<uint_t,uint_t> coloridmap;
-		for(Scene::const_iterator it = __scene->getBegin(); it != __scene->getEnd(); it++){
+		for(Scene::const_iterator it = __scene->begin(); it != __scene->end(); it++){
 			uint_t id = (*it)->getId();
 			Color4 c = Color4::fromUint(id);
 			MaterialPtr mat = new Material(Color3(c),1);

@@ -137,12 +137,12 @@ public:
 
   /// Returns a const iterator to the beginning of \b Reflectance.
 /*  RealArray::const_iterator getReflectanceBegin( ) const {
-    return __reflectance->getBegin();
+    return __reflectance->begin();
   }
 
   /// Returns a const iterator to the beginning of \b Reflectance.
   RealArray::const_iterator getReflectanceEnd( ) const {
-    return __reflectance->getEnd();
+    return __reflectance->end();
   }
 */
 
@@ -167,12 +167,12 @@ public:
 
   /// Returns a const iterator to the beginning of \b Transmittance.
 /*  RealArray::const_iterator getTransmittanceBegin( ) const {
-    return __transmittance->getBegin();
+    return __transmittance->begin();
   }
 
   /// Returns a const iterator to the beginning of \b Transmittance.
   RealArray::const_iterator getTransmittanceEnd( ) const {
-    return __transmittance->getEnd();
+    return __transmittance->end();
   }*/
 
   /// Returns the size of \b Transmittance.

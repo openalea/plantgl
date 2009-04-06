@@ -68,10 +68,10 @@ bool Scaling::isValid( ) const {
 
 Point3ArrayPtr Scaling::transform( const Point3ArrayPtr& points ) const {
   GEOM_ASSERT(points);
-  Point3ArrayPtr _tPoints(new Point3Array(points->getSize()));
-  Point3Array::iterator _ti = _tPoints->getBegin();
-  for (Point3Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point3ArrayPtr _tPoints(new Point3Array(points->size()));
+  Point3Array::iterator _ti = _tPoints->begin();
+  for (Point3Array::const_iterator _i = points->begin();
+       _i != points->end();
        _i++)
     *_ti++ = Vector3(_i->x() * __factors.x(),
                      _i->y() * __factors.y(),
@@ -82,10 +82,10 @@ Point3ArrayPtr Scaling::transform( const Point3ArrayPtr& points ) const {
 
 Point4ArrayPtr Scaling::transform( const Point4ArrayPtr& points ) const {
   GEOM_ASSERT(points);
-  Point4ArrayPtr _tPoints(new Point4Array(points->getSize()));
-  Point4Array::iterator _ti = _tPoints->getBegin();
-  for (Point4Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point4ArrayPtr _tPoints(new Point4Array(points->size()));
+  Point4Array::iterator _ti = _tPoints->begin();
+  for (Point4Array::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = Vector4(_i->x() * __factors.x(),
                      _i->y() * __factors.y(),
@@ -97,10 +97,10 @@ Point4ArrayPtr Scaling::transform( const Point4ArrayPtr& points ) const {
 
 Point3MatrixPtr Scaling::transform( const Point3MatrixPtr& points ) const {
   GEOM_ASSERT(points);
-  Point3MatrixPtr _tPoints(new Point3Matrix(points->getSize()));
-  Point3Matrix::iterator _ti = _tPoints->getBegin();
-  for (Point3Matrix::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point3MatrixPtr _tPoints(new Point3Matrix(points->size()));
+  Point3Matrix::iterator _ti = _tPoints->begin();
+  for (Point3Matrix::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = Vector3(_i->x() * __factors.x(),
                      _i->y() * __factors.y(),
@@ -111,10 +111,10 @@ Point3MatrixPtr Scaling::transform( const Point3MatrixPtr& points ) const {
 
 Point4MatrixPtr Scaling::transform( const Point4MatrixPtr& points ) const {
   GEOM_ASSERT(points);
-  Point4MatrixPtr _tPoints(new Point4Matrix(points->getSize()));
-  Point4Matrix::iterator _ti = _tPoints->getBegin();
-  for (Point4Matrix::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point4MatrixPtr _tPoints(new Point4Matrix(points->size()));
+  Point4Matrix::iterator _ti = _tPoints->begin();
+  for (Point4Matrix::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = Vector4(_i->x() * __factors.x(),
                      _i->y() * __factors.y(),
@@ -249,10 +249,10 @@ bool Scaling2D::isValid( ) const {
 
 Point2ArrayPtr Scaling2D::transform( const Point2ArrayPtr& points ) const {
   GEOM_ASSERT(points);
-  Point2ArrayPtr _tPoints(new Point2Array(points->getSize()));
-  Point2Array::iterator _ti = _tPoints->getBegin();
-  for (Point2Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point2ArrayPtr _tPoints(new Point2Array(points->size()));
+  Point2Array::iterator _ti = _tPoints->begin();
+  for (Point2Array::const_iterator _i = points->begin();
+       _i != points->end();
        _i++)
     *_ti++ = Vector2(_i->x() * __factors.x(),
                      _i->y() * __factors.y());
@@ -262,10 +262,10 @@ Point2ArrayPtr Scaling2D::transform( const Point2ArrayPtr& points ) const {
 
 Point3ArrayPtr Scaling2D::transform( const Point3ArrayPtr& points ) const {
   GEOM_ASSERT(points);
-  Point3ArrayPtr _tPoints(new Point3Array(points->getSize()));
-  Point3Array::iterator _ti = _tPoints->getBegin();
-  for (Point3Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point3ArrayPtr _tPoints(new Point3Array(points->size()));
+  Point3Array::iterator _ti = _tPoints->begin();
+  for (Point3Array::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = Vector3(_i->x() * __factors.x(),
                      _i->y() * __factors.y(),
@@ -276,10 +276,10 @@ Point3ArrayPtr Scaling2D::transform( const Point3ArrayPtr& points ) const {
 
 Point2MatrixPtr Scaling2D::transform( const Point2MatrixPtr& points ) const {
   GEOM_ASSERT(points);
-  Point2MatrixPtr _tPoints(new Point2Matrix(points->getSize()));
-  Point2Matrix::iterator _ti = _tPoints->getBegin();
-  for (Point2Matrix::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point2MatrixPtr _tPoints(new Point2Matrix(points->size()));
+  Point2Matrix::iterator _ti = _tPoints->begin();
+  for (Point2Matrix::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = Vector2(_i->x() * __factors.x(),
                      _i->y() * __factors.y());
@@ -289,10 +289,10 @@ Point2MatrixPtr Scaling2D::transform( const Point2MatrixPtr& points ) const {
 
 Point3MatrixPtr Scaling2D::transform( const Point3MatrixPtr& points ) const {
   GEOM_ASSERT(points);
-  Point3MatrixPtr _tPoints(new Point3Matrix(points->getSize()));
-  Point3Matrix::iterator _ti = _tPoints->getBegin();
-  for (Point3Matrix::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point3MatrixPtr _tPoints(new Point3Matrix(points->size()));
+  Point3Matrix::iterator _ti = _tPoints->begin();
+  for (Point3Matrix::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = Vector3(_i->x() * __factors.x(),
                      _i->y() * __factors.y(),

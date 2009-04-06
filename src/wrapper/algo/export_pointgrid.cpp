@@ -77,6 +77,16 @@ typename PointGrid::VectorType py_getVoxelCenterFromId(PointGrid * grid,  typena
 }
 
 template<class PointGrid>
+void py_enablepoints(PointGrid * grid, object plist ){
+	 return grid->enable_points(extract_vec<typename PointGrid::PointIndex>(plist));
+}
+
+template<class PointGrid>
+void py_disablepoints(PointGrid * grid, object plist ){
+	 return grid->disable_points(extract_vec<typename PointGrid::PointIndex>(plist));
+}
+
+template<class PointGrid>
 class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGrid> >
 {
     friend class boost::python::def_visitor_access;
@@ -94,6 +104,10 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("getVoxelCenter",&py_getVoxelCenter<PointGrid>)
 	 .def("getVoxelCenterFromId",&py_getVoxelCenterFromId<PointGrid>)
 	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
+	 .def("enable_point",&PointGrid::enable_point)
+	 .def("disable_point",&PointGrid::disable_point)
+	 .def("enable_points",&py_enablepoints<PointGrid>)
+	 .def("disable_points",&py_disablepoints<PointGrid>)
          ;
     }
 };
@@ -115,6 +129,7 @@ void export_PointGrid()
      ( "Construct a regular grid from a set of 4D points." ))
 	 .def(pointgrid_func<Point4Grid>())
     ;
+  
 }
 
 /* ----------------------------------------------------------------------- */

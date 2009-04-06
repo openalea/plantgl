@@ -165,42 +165,42 @@ RayIntersection::process( AmapSymbol * amapSymbol )
   Vector3 intersect;
   Point3ArrayPtr points(amapSymbol->getPointList());
 
-  for(IndexArray::iterator _it = amapSymbol->getIndexList()->getBegin();
-      _it != amapSymbol->getIndexList()->getEnd();
+  for(IndexArray::iterator _it = amapSymbol->getIndexList()->begin();
+      _it != amapSymbol->getIndexList()->end();
       _it++){
-    if( _it->getSize() == 4 &&
+    if( _it->size() == 4 &&
         __ray.intersect( points->getAt(_it->getAt(0)),
                          points->getAt(_it->getAt(1)),
                          points->getAt(_it->getAt(2)),
                          points->getAt(_it->getAt(3)),
                          intersect) == 1){
       bool contained = false;
-      for(Point3Array::const_iterator _i = __result->getBegin(); _i != __result->getEnd() && !contained ; _i++){
+      for(Point3Array::const_iterator _i = __result->begin(); _i != __result->end() && !contained ; _i++){
         if( fabs(_i->x() - intersect.x()) < GEOM_EPSILON &&
             fabs(_i->y() - intersect.y()) < GEOM_EPSILON &&
             fabs(_i->z() - intersect.z()) < GEOM_EPSILON )contained = true;
       }
       if(!contained){
-        __result->pushBack(intersect);
+        __result->push_back(intersect);
       }
     }
-    else if( _it->getSize() == 3 &&
+    else if( _it->size() == 3 &&
              __ray.intersect( points->getAt(_it->getAt(0)),
                               points->getAt(_it->getAt(1)),
                               points->getAt(_it->getAt(2)),
                               intersect) == 1){
       bool contained = false;
-      for(Point3Array::const_iterator _i = __result->getBegin(); _i != __result->getEnd() && !contained ; _i++){
+      for(Point3Array::const_iterator _i = __result->begin(); _i != __result->end() && !contained ; _i++){
         if( fabs(_i->x() - intersect.x()) < GEOM_EPSILON &&
             fabs(_i->y() - intersect.y()) < GEOM_EPSILON &&
             fabs(_i->z() - intersect.z()) < GEOM_EPSILON )contained = true;
       }
       if(!contained){
-        __result->pushBack(intersect);
+        __result->push_back(intersect);
       }
     }
   }
-  if(__result->isEmpty())
+  if(__result->empty())
     return false;
   else return true;
 }
@@ -327,42 +327,42 @@ RayIntersection::process( FaceSet * faceSet )
   Vector3 intersect;
   Point3ArrayPtr points(faceSet->getPointList());
 
-  for(IndexArray::iterator _it = faceSet->getIndexList()->getBegin();
-      _it != faceSet->getIndexList()->getEnd();
+  for(IndexArray::iterator _it = faceSet->getIndexList()->begin();
+      _it != faceSet->getIndexList()->end();
       _it++){
-    if( _it->getSize() == 4 &&
+    if( _it->size() == 4 &&
         __ray.intersect( points->getAt(_it->getAt(0)),
                          points->getAt(_it->getAt(1)),
                          points->getAt(_it->getAt(2)),
                          points->getAt(_it->getAt(3)),
                          intersect) == 1){
       bool contained = false;
-      for(Point3Array::const_iterator _i = __result->getBegin(); _i != __result->getEnd() && !contained ; _i++){
+      for(Point3Array::const_iterator _i = __result->begin(); _i != __result->end() && !contained ; _i++){
         if( fabs(_i->x() - intersect.x()) < GEOM_EPSILON &&
             fabs(_i->y() - intersect.y()) < GEOM_EPSILON &&
             fabs(_i->z() - intersect.z()) < GEOM_EPSILON )contained = true;
       }
       if(!contained){
-        __result->pushBack(intersect);
+        __result->push_back(intersect);
       }
     }
-    else if( _it->getSize() == 3 &&
+    else if( _it->size() == 3 &&
              __ray.intersect( points->getAt(_it->getAt(0)),
                               points->getAt(_it->getAt(1)),
                               points->getAt(_it->getAt(2)),
                               intersect) == 1){
       bool contained = false;
-      for(Point3Array::const_iterator _i = __result->getBegin(); _i != __result->getEnd() && !contained ; _i++){
+      for(Point3Array::const_iterator _i = __result->begin(); _i != __result->end() && !contained ; _i++){
         if( fabs(_i->x() - intersect.x()) < GEOM_EPSILON &&
             fabs(_i->y() - intersect.y()) < GEOM_EPSILON &&
             fabs(_i->z() - intersect.z()) < GEOM_EPSILON )contained = true;
       }
       if(!contained){
-        __result->pushBack(intersect);
+        __result->push_back(intersect);
       }
     }
   }
-  if(__result->isEmpty())
+  if(__result->empty())
     return false;
   else return true;
 }
@@ -447,10 +447,10 @@ RayIntersection::process( PointSet * pointSet )
   GEOM_ASSERT( pointSet );
   __result = Point3ArrayPtr(new Point3Array());
   Point3ArrayPtr points(pointSet->getPointList());
-  for(Point3Array::const_iterator _it = points->getBegin(); _it != points->getEnd(); _it++)
+  for(Point3Array::const_iterator _it = points->begin(); _it != points->end(); _it++)
     if(__ray.intersect(*_it))
-      __result->pushBack(*_it);
-  return (!__result->isEmpty());
+      __result->push_back(*_it);
+  return (!__result->empty());
 }
 
 
@@ -464,10 +464,10 @@ RayIntersection::process( Polyline * polyline )
   Vector3 intersect;
   __result = Point3ArrayPtr(new Point3Array());
   Point3ArrayPtr points(polyline->getPointList());
-  for(Point3Array::const_iterator _it = points->getBegin(); _it != (points->getEnd()-1); _it++)
+  for(Point3Array::const_iterator _it = points->begin(); _it != (points->end()-1); _it++)
     if(__ray.intersect(*_it,*(_it+1),intersect) == 1)
-      __result->pushBack(intersect);
-  return (!__result->isEmpty());
+      __result->push_back(intersect);
+  return (!__result->empty());
 }
 
 
@@ -492,8 +492,8 @@ RayIntersection::process( QuadSet * quadSet )
   Vector3 intersect;
   Point3ArrayPtr points(quadSet->getPointList());
 
-  for(Index4Array::iterator _it = quadSet->getIndexList()->getBegin();
-      _it != quadSet->getIndexList()->getEnd();
+  for(Index4Array::iterator _it = quadSet->getIndexList()->begin();
+      _it != quadSet->getIndexList()->end();
       _it++){
     if(__ray.intersect( points->getAt(_it->getAt(0)),
                         points->getAt(_it->getAt(1)),
@@ -501,17 +501,17 @@ RayIntersection::process( QuadSet * quadSet )
                         points->getAt(_it->getAt(3)),
                         intersect) == 1){
       bool contained = false;
-      for(Point3Array::const_iterator _i = __result->getBegin(); _i != __result->getEnd() && !contained ; _i++){
+      for(Point3Array::const_iterator _i = __result->begin(); _i != __result->end() && !contained ; _i++){
         if( fabs(_i->x() - intersect.x()) < GEOM_EPSILON &&
             fabs(_i->y() - intersect.y()) < GEOM_EPSILON &&
             fabs(_i->z() - intersect.z()) < GEOM_EPSILON )contained = true;
       }
       if(!contained){
-        __result->pushBack(intersect);
+        __result->push_back(intersect);
       }
     }
   }
-  if(__result->isEmpty())
+  if(__result->empty())
     return false;
   else return true;
 }
@@ -585,25 +585,25 @@ RayIntersection::process( TriangleSet * triangleSet )
   Vector3 intersect;
   Point3ArrayPtr points(triangleSet->getPointList());
 
-  for(Index3Array::iterator _it = triangleSet->getIndexList()->getBegin();
-      _it != triangleSet->getIndexList()->getEnd();
+  for(Index3Array::iterator _it = triangleSet->getIndexList()->begin();
+      _it != triangleSet->getIndexList()->end();
       _it++){
     if(__ray.intersect( points->getAt(_it->getAt(0)),
                         points->getAt(_it->getAt(1)),
                         points->getAt(_it->getAt(2)),
                         intersect) == 1){
       bool contained = false;
-      for(Point3Array::const_iterator _i = __result->getBegin(); _i != __result->getEnd() && !contained ; _i++){
+      for(Point3Array::const_iterator _i = __result->begin(); _i != __result->end() && !contained ; _i++){
         if( fabs(_i->x() - intersect.x()) < GEOM_EPSILON &&
             fabs(_i->y() - intersect.y()) < GEOM_EPSILON &&
             fabs(_i->z() - intersect.z()) < GEOM_EPSILON )contained = true;
       }
       if(!contained){
-        __result->pushBack(intersect);
+        __result->push_back(intersect);
       }
     }
   }
-  if(__result->isEmpty())
+  if(__result->empty())
     return false;
   else return true;
 }

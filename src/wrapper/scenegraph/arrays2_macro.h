@@ -214,8 +214,8 @@ std::string array2_str( T * a, const char * name )
     for(uint_t i= 0; i < r; i++ )
     {
         ss << "[";
-        for(typename T::const_iterator it = a->getBeginRow(i); it != a->getEndRow(i); ++it){
-            if (it != a->getBeginRow(i)) ss << ",";
+        for(typename T::const_iterator it = a->beginRow(i); it != a->endRow(i); ++it){
+            if (it != a->beginRow(i)) ss << ",";
             ss << boost::python::extract<std::string>(boost::python::str(boost::python::object(*it)))();
         }
         ss << "]";
@@ -227,7 +227,7 @@ std::string array2_str( T * a, const char * name )
 
 template<class T>
 RCPtr<T> array2_to_T(Array2<typename T::element_type> a)
-{ return RCPtr<T>(new T(a.getBegin(),a.getEnd(),a.getRowsNb())); }
+{ return RCPtr<T>(new T(a.begin(),a.end(),a.getRowsNb())); }
 
 template<class T>
 RCPtr<T> array2_transpose( T * array)
@@ -252,7 +252,7 @@ struct array2_pickle_suite : boost::python::pickle_suite
 		boost::python::list args; 
         for(uint_t i= 0; i < ar.getRowsNb(); i++ ){
 		    boost::python::list l; 
-		    for(typename T::const_iterator it = ar.getBeginRow(i); it != ar.getEndRow(i); ++it) 
+		    for(typename T::const_iterator it = ar.beginRow(i); it != ar.endRow(i); ++it) 
 			    l.append(*it); 
 			args.append(l); 
         }
@@ -272,7 +272,7 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "__setitem__", &array2_setitem<ARRAY> )				
          .def( "__len__", &array2_rownb<ARRAY> )					
          .def( "__contains__", &ARRAY::contains )					
-         .def( "empty", &ARRAY::isEmpty )					
+         .def( "empty", &ARRAY::empty )					
          .def( "clear", &ARRAY::clear )					
          .def( "isUnique", &ARRAY::isUnique )					
          .def( "getRow", &array2_getrow<ARRAY>  ) 

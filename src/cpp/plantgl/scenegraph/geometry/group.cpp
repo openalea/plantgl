@@ -83,7 +83,7 @@ bool Group::Builder::isValid( ) const {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Group","GeometryList");
     return false;
   };
-  uint_t _size = (*GeometryList)->getSize();
+  uint_t _size = (*GeometryList)->size();
   if (_size < 1) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Group","GeometryList","Must be greater than 1.");
     return false;
@@ -130,13 +130,13 @@ Group::~Group( ) {
 
 const GeometryPtr&
 Group::getGeometryListAt( uint_t i ) const {
-  GEOM_ASSERT(i < __geometryList->getSize());
+  GEOM_ASSERT(i < __geometryList->size());
   return __geometryList->getAt(i);
 }
 
 GeometryPtr& 
 Group::getGeometryListAt( uint_t i ) {
-  GEOM_ASSERT(i < __geometryList->getSize());
+  GEOM_ASSERT(i < __geometryList->size());
   return __geometryList->getAt(i);
 }
 
@@ -151,7 +151,7 @@ Group::getGeometryList( ) {
 
 uint_t 
 Group::getGeometryListSize( ) const {
-  return __geometryList->getSize();
+  return __geometryList->size();
 }
 
 /* ----------------------------------------------------------------------- */
@@ -174,8 +174,8 @@ Group::isSkeletonToDefault( ) const {
 /* ----------------------------------------------------------------------- */
 
 bool Group::isACurve( ) const {
-  for (GeometryArray::const_iterator _i = __geometryList->getBegin();
-       _i != __geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = __geometryList->begin();
+       _i != __geometryList->end();
        _i++)
     if (! (*_i)->isACurve()) return false;
   return true;
@@ -183,8 +183,8 @@ bool Group::isACurve( ) const {
 
 
 bool Group::isASurface( ) const {
-  for (GeometryArray::const_iterator _i = __geometryList->getBegin();
-       _i != __geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = __geometryList->begin();
+       _i != __geometryList->end();
        _i++)
     if (! (*_i)->isASurface()) return false;
   return true;
@@ -192,8 +192,8 @@ bool Group::isASurface( ) const {
 
 
 bool Group::isAVolume( ) const {
-  for (GeometryArray::const_iterator _i = __geometryList->getBegin();
-       _i != __geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = __geometryList->begin();
+       _i != __geometryList->end();
        _i++)
     if (! (*_i)->isAVolume()) return false;
   return true;
@@ -201,8 +201,8 @@ bool Group::isAVolume( ) const {
 
 
 bool Group::isExplicit( ) const {
-  for (GeometryArray::const_iterator _i = __geometryList->getBegin();
-       _i != __geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = __geometryList->begin();
+       _i != __geometryList->end();
        _i++)
     if (! (*_i)->isExplicit()) return false;
   return true;
@@ -215,7 +215,7 @@ bool Group::isValid( ) const {
   _builder.GeometryList = const_cast<GeometryArrayPtr *>(&__geometryList);
   _builder.Skeleton = const_cast<PolylinePtr *>(&__skeleton);
   if(!_builder.isValid())return false;
-  uint_t _size = __geometryList->getSize();
+  uint_t _size = __geometryList->size();
   for (uint_t _i = 0; _i < _size ; _i++) {
       const GeometryPtr& _geometry = __geometryList->getAt(_i);
       if (! (_geometry) && (_geometry->isValid())) {

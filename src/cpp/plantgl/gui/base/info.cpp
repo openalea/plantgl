@@ -666,6 +666,10 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     item1b->setPixmap( 0, wheel_pix );
     item1b->setOpen( FALSE );
 
+#if defined (_MSC_VER)
+#define getpid _getpid
+#endif
+
     item = new Q3ListViewItem( item1b );
     item->setOpen( FALSE );
     item->setText( 0, tr( "Id" ) );

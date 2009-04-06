@@ -69,7 +69,7 @@ using namespace std;
       rintersect.setRay(ray); \
       if(!obj->apply(rintersect))return false; \
       else if ( rintersect.getIntersection() && \
-                rintersect.getIntersection()->getSize() % 2 == 1 ){ \
+                rintersect.getIntersection()->size() % 2 == 1 ){ \
         __filled = true; \
         return true; \
       } \
@@ -217,14 +217,14 @@ bool VoxelIntersection::process( AmapSymbol * amapSymbol ){
     __filled = false;
     Point3ArrayPtr points(amapSymbol->getPointList());
     /// Intersection of the facet Vertex.
-    for(Point3Array::iterator _it1 = points->getBegin();
-        _it1 != points->getEnd();
+    for(Point3Array::iterator _it1 = points->begin();
+        _it1 != points->end();
         _it1++)
         if(__voxel->intersect( *_it1))return true;
 
     /// Intersection of the facet edge.
-    for(IndexArray::iterator _it2 = amapSymbol->getIndexList()->getBegin();
-        _it2 != amapSymbol->getIndexList()->getEnd()-1;
+    for(IndexArray::iterator _it2 = amapSymbol->getIndexList()->begin();
+        _it2 != amapSymbol->getIndexList()->end()-1;
         _it2++){
         if(__voxel->intersect( points->getAt(_it2->getAt(0)),
                                points->getAt(_it2->getAt(1))))
@@ -232,7 +232,7 @@ bool VoxelIntersection::process( AmapSymbol * amapSymbol ){
         if(__voxel->intersect( points->getAt(_it2->getAt(1)),
                                points->getAt(_it2->getAt(2))))
             return true;
-        if(_it2->getSize() == 4){
+        if(_it2->size() == 4){
             if(__voxel->intersect( points->getAt(_it2->getAt(2)),
                                    points->getAt(_it2->getAt(3))))
                 return true;
@@ -240,23 +240,23 @@ bool VoxelIntersection::process( AmapSymbol * amapSymbol ){
                                    points->getAt(_it2->getAt(0))))
                 return true;
         }
-        else if(_it2->getSize() == 3) {
+        else if(_it2->size() == 3) {
             if(__voxel->intersect( points->getAt(_it2->getAt(2)),
                                    points->getAt(_it2->getAt(0))))
                 return true;
         }
     }
     /// Intersection of the voxel edge.
-    for(IndexArray::iterator _it = amapSymbol->getIndexList()->getBegin();
-        _it != amapSymbol->getIndexList()->getEnd();
+    for(IndexArray::iterator _it = amapSymbol->getIndexList()->begin();
+        _it != amapSymbol->getIndexList()->end();
         _it++){
-        if(_it->getSize() == 3){
+        if(_it->size() == 3){
             if(__voxel->intersect( points->getAt(_it->getAt(0)),
                                    points->getAt(_it->getAt(1)),
                                    points->getAt(_it->getAt(2))))
                 return true;
         }
-        else if(_it->getSize() == 4)
+        else if(_it->size() == 4)
             if(__voxel->intersect( points->getAt(_it->getAt(0)),
                                    points->getAt(_it->getAt(1)),
                                    points->getAt(_it->getAt(2)),
@@ -528,18 +528,18 @@ bool VoxelIntersection::process( ExtrudedHull * extrudedHull ) {
   bool _horcond = false;
   bool _insidehorcond = false;
 
-  for(Point3Array::iterator _it = _hor->getPointList()->getBegin();
-      _it != polyline->getPointList()->getEnd() && !_horcond;
+  for(Point3Array::iterator _it = _hor->getPointList()->begin();
+      _it != polyline->getPointList()->end() && !_horcond;
       _it++){
     if(__voxel->intersect( *_it))horcond = true;
     if(_it->x() > ur.x
-  for(Point3Array::iterator _it = _hor->getPointList()->getBegin();
-      _it != _hor->getPointList()->getEnd()-1 && !_horcond;
+  for(Point3Array::iterator _it = _hor->getPointList()->begin();
+      _it != _hor->getPointList()->end()-1 && !_horcond;
       _it++)
     if(__voxel->intersect(*_it,*(_it+1)))_horcond = true;
   if(!horcond){
 
-    if(__voxel->intersect(*(_hor->getPointList()->getEnd()-1),_hor->getPointListAt(0)))
+    if(__voxel->intersect(*(_hor->getPointList()->end()-1),_hor->getPointListAt(0)))
   }
   if(extrudedHull->getVertical()->apply(__bboxComputer.getDiscretizer()))return false;
   PolylinePtr ver = PolylinePtr(__bboxComputer.getDiscretizer().getDiscretization());
@@ -554,14 +554,14 @@ bool VoxelIntersection::process( FaceSet * faceSet ) {
     __filled = false;
     Point3ArrayPtr points(faceSet->getPointList());
     /// Intersection of the facet Vertex.
-    for(Point3Array::iterator _it1 = points->getBegin();
-        _it1 != points->getEnd();
+    for(Point3Array::iterator _it1 = points->begin();
+        _it1 != points->end();
         _it1++)
         if(__voxel->intersect( *_it1))return true;
 
   /// Intersection of the facet edge.
-    for(IndexArray::iterator _it2 = faceSet->getIndexList()->getBegin();
-        _it2 != faceSet->getIndexList()->getEnd()-1;
+    for(IndexArray::iterator _it2 = faceSet->getIndexList()->begin();
+        _it2 != faceSet->getIndexList()->end()-1;
         _it2++){
         if(__voxel->intersect( points->getAt(_it2->getAt(0)),
                                points->getAt(_it2->getAt(1))))
@@ -569,7 +569,7 @@ bool VoxelIntersection::process( FaceSet * faceSet ) {
         if(__voxel->intersect( points->getAt(_it2->getAt(1)),
                                points->getAt(_it2->getAt(2))))
             return true;
-        if(_it2->getSize() == 4){
+        if(_it2->size() == 4){
             if(__voxel->intersect( points->getAt(_it2->getAt(2)),
                                    points->getAt(_it2->getAt(3))))
                 return true;
@@ -577,23 +577,23 @@ bool VoxelIntersection::process( FaceSet * faceSet ) {
                                    points->getAt(_it2->getAt(0))))
                 return true;
         }
-        else if(_it2->getSize() == 3) {
+        else if(_it2->size() == 3) {
             if(__voxel->intersect( points->getAt(_it2->getAt(2)),
                                    points->getAt(_it2->getAt(0))))
                 return true;
         }
     }
     /// Intersection of the voxel edge.
-    for(IndexArray::iterator _it = faceSet->getIndexList()->getBegin();
-        _it != faceSet->getIndexList()->getEnd();
+    for(IndexArray::iterator _it = faceSet->getIndexList()->begin();
+        _it != faceSet->getIndexList()->end();
         _it++){
-        if(_it->getSize() == 3){
+        if(_it->size() == 3){
             if(__voxel->intersect( points->getAt(_it->getAt(0)),
                                    points->getAt(_it->getAt(1)),
                                    points->getAt(_it->getAt(2))))
                 return true;
         }
-        else if(_it->getSize() == 4)
+        else if(_it->size() == 4)
             if(__voxel->intersect( points->getAt(_it->getAt(0)),
                                    points->getAt(_it->getAt(1)),
                                    points->getAt(_it->getAt(2)),
@@ -708,7 +708,7 @@ bool VoxelIntersection::process( Group * group ) {
       _it1 != __transformstack.rend(); _it1++)
     _matrix *= *_it1;
 
-  for(GeometryArray::const_iterator _it = _l->getBegin() ; _it != _l->getEnd() && ! __filled ; _it++){
+  for(GeometryArray::const_iterator _it = _l->begin() ; _it != _l->end() && ! __filled ; _it++){
 //    cerr << "Apply to '" << (*_it)->getName() << '\'' << endl;
     // b = b || (*_it)->apply(*this);
     (*_it)->apply(__bboxComputer);
@@ -747,7 +747,7 @@ GEOM_TRACE("process IFS");
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
 
-  Matrix4Array::const_iterator m_it= matrixList->getBegin();
+  Matrix4Array::const_iterator m_it= matrixList->begin();
   __transformstack.push_back(*m_it);
   m_it++;
 
@@ -755,7 +755,7 @@ GEOM_TRACE("process IFS");
   bool b = false;
   GEOM_TEST_CLASS((ifs->getGeometry()),b);
 
-  while( m_it != matrixList->getEnd() )
+  while( m_it != matrixList->end() )
     {
     __transformstack[size]= *m_it;
 
@@ -877,8 +877,8 @@ bool VoxelIntersection::process( Paraboloid * paraboloid ) {
 bool VoxelIntersection::process( PointSet * pointSet ) {
     GEOM_ASSERT(pointSet);GEOM_TRACE_F("pointSet",pointSet);
     __filled = false;
-    for(Point3Array::iterator _it = pointSet->getPointList()->getBegin();
-        _it != pointSet->getPointList()->getEnd();
+    for(Point3Array::iterator _it = pointSet->getPointList()->begin();
+        _it != pointSet->getPointList()->end();
         _it++)
         if(intersection(*__voxel, *_it))return true;
     return false;
@@ -890,12 +890,12 @@ bool VoxelIntersection::process( PointSet * pointSet ) {
 bool VoxelIntersection::process( Polyline * polyline ) {
     GEOM_ASSERT(polyline);GEOM_TRACE_F("polyline",polyline);
     __filled = false;
-    for(Point3Array::iterator _it1 = polyline->getPointList()->getBegin();
-        _it1 != polyline->getPointList()->getEnd();
+    for(Point3Array::iterator _it1 = polyline->getPointList()->begin();
+        _it1 != polyline->getPointList()->end();
         _it1++)
         if(__voxel->intersect( *_it1))return true;
-    for(Point3Array::iterator _it = polyline->getPointList()->getBegin();
-        _it != polyline->getPointList()->getEnd()-1;
+    for(Point3Array::iterator _it = polyline->getPointList()->begin();
+        _it != polyline->getPointList()->end()-1;
         _it++)
         if(__voxel->intersect(*_it,*(_it+1)))return true;
     return false;
@@ -911,7 +911,7 @@ bool VoxelIntersection::process( Revolution * revolution ) {
   if(!curve->apply(__bboxComputer.getDiscretizer())) return false;
   const Point3ArrayPtr& points = __bboxComputer.getDiscretizer().getDiscretization()->getPointList();
   if(points->getAt(0).x() == 0.0 ||
-     (points->getEnd()-1)->x() == 0.0) {
+     (points->end()-1)->x() == 0.0) {
       /// revolution represent a volume.
     if(!revolution->apply(__bboxComputer.getDiscretizer()))return false; \
     else return __bboxComputer.getDiscretizer().getDiscretization()->apply(*this); \
@@ -930,8 +930,8 @@ bool VoxelIntersection::process( Revolution * revolution ) {
       if(ur.y() > 0 && ll.y() < 0) vmin.y() = 0;
       real_t rmin = norm(vmin);
 
-      for(Point3Array::iterator _it = points->getBegin();
-          _it != points->getEnd();
+      for(Point3Array::iterator _it = points->begin();
+          _it != points->end();
           _it++)
           if(_it->y() <= ztop && _it->y() >= zbottom &&
              _it->x() <= rmax && _it->x() >= rmin )return true;
@@ -946,14 +946,14 @@ bool VoxelIntersection::process( QuadSet * quadSet ) {
   GEOM_ASSERT(quadSet);GEOM_TRACE_F("quadSet",quadSet);
   __filled = false;
   Point3ArrayPtr points(quadSet->getPointList());
-  for(Point3Array::iterator _it1 = points->getBegin();
-      _it1 != points->getEnd();
+  for(Point3Array::iterator _it1 = points->begin();
+      _it1 != points->end();
       _it1++)
     if(__voxel->intersect( *_it1)){
       return true;
     }
-  for(Index4Array::iterator _it2 = quadSet->getIndexList()->getBegin();
-      _it2 != quadSet->getIndexList()->getEnd()-1;
+  for(Index4Array::iterator _it2 = quadSet->getIndexList()->begin();
+      _it2 != quadSet->getIndexList()->end()-1;
       _it2++){
     if(__voxel->intersect( points->getAt(_it2->getAt(0)),
                            points->getAt(_it2->getAt(1)))){
@@ -972,8 +972,8 @@ bool VoxelIntersection::process( QuadSet * quadSet ) {
       return true;
     }
   }
-  for(Index4Array::iterator _it = quadSet->getIndexList()->getBegin();
-      _it != quadSet->getIndexList()->getEnd();
+  for(Index4Array::iterator _it = quadSet->getIndexList()->begin();
+      _it != quadSet->getIndexList()->end();
       _it++){
     if(__voxel->intersect( points->getAt(_it->getAt(0)),
                            points->getAt(_it->getAt(1)),
@@ -1090,12 +1090,12 @@ bool VoxelIntersection::process( TriangleSet * triangleSet ) {
   __filled = false;
   Point3ArrayPtr points(triangleSet->getPointList());
 #ifndef GEOM_DEBUG
-  for(Point3Array::iterator _it1 = points->getBegin();
-      _it1 != points->getEnd();
+  for(Point3Array::iterator _it1 = points->begin();
+      _it1 != points->end();
       _it1++)
     if(__voxel->intersect( *_it1))return true;
-  for(Index3Array::iterator _it2 = triangleSet->getIndexList()->getBegin();
-      _it2 != triangleSet->getIndexList()->getEnd()-1;
+  for(Index3Array::iterator _it2 = triangleSet->getIndexList()->begin();
+      _it2 != triangleSet->getIndexList()->end()-1;
       _it2++){
     if(__voxel->intersect( points->getAt(_it2->getAt(0)),
                            points->getAt(_it2->getAt(1))))
@@ -1111,8 +1111,8 @@ bool VoxelIntersection::process( TriangleSet * triangleSet ) {
 #ifdef GEOM_DEBUG
   cerr << "Test edges of the voxel in the triangle" << endl;
 #endif
-  for(Index3Array::iterator _it = triangleSet->getIndexList()->getBegin();
-      _it != triangleSet->getIndexList()->getEnd();
+  for(Index3Array::iterator _it = triangleSet->getIndexList()->begin();
+      _it != triangleSet->getIndexList()->end();
       _it++){
     if(__voxel->intersect( points->getAt(_it->getAt(0)),
                            points->getAt(_it->getAt(1)),
@@ -1170,8 +1170,8 @@ bool VoxelIntersection::process( PointSet2D * pointSet ) {
   GEOM_ASSERT(pointSet);GEOM_TRACE_F("pointSet",pointSet);
   // if(__ll.z() > 0 || __ur.z() < 0) return false;
     __filled = false;
-    for(Point2Array::iterator _it = pointSet->getPointList()->getBegin();
-        _it != pointSet->getPointList()->getEnd();
+    for(Point2Array::iterator _it = pointSet->getPointList()->begin();
+        _it != pointSet->getPointList()->end();
         _it++)
         if(__voxel->intersect( *_it))return true;
     return false;}
@@ -1183,12 +1183,12 @@ bool VoxelIntersection::process( Polyline2D * polyline ) {
   GEOM_ASSERT(polyline);GEOM_TRACE_F("polyline",polyline);
 //  if(__ll.z() > 0 || __ur.z() < 0) return false;
   __filled = false;
-  for(Point2Array::iterator _it1 = polyline->getPointList()->getBegin();
-      _it1 != polyline->getPointList()->getEnd();
+  for(Point2Array::iterator _it1 = polyline->getPointList()->begin();
+      _it1 != polyline->getPointList()->end();
       _it1++)
     if(__voxel->intersect( *_it1))return true;
-  for(Point2Array::iterator _it = polyline->getPointList()->getBegin();
-      _it != polyline->getPointList()->getEnd()-1;
+  for(Point2Array::iterator _it = polyline->getPointList()->begin();
+      _it != polyline->getPointList()->end()-1;
       _it++)
     if(__voxel->intersect(*_it,*(_it+1)))return true;
   return false;

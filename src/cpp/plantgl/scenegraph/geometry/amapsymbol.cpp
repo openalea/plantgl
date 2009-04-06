@@ -224,12 +224,12 @@ beifstream& AmapSymbol::read( beifstream& stream ){
 AmapSymbol::AmapSymbol( const FaceSetPtr& faceSet ) :
   FaceSet(*faceSet),
   __fileName(),
-  __texCoord3List((faceSet->getTexCoordList())? new Point3Array(faceSet->getTexCoordList()->getSize()):0)
+  __texCoord3List((faceSet->getTexCoordList())? new Point3Array(faceSet->getTexCoordList()->size()):0)
   {
 	if(faceSet->getTexCoordList()){
-	Point2Array::const_iterator _it = faceSet->getTexCoordList()->getBegin();
-	for(Point3Array::iterator _it2 = __texCoord3List->getBegin();
-		_it2 != __texCoord3List->getEnd(); _it2++)
+	Point2Array::const_iterator _it = faceSet->getTexCoordList()->begin();
+	for(Point3Array::iterator _it2 = __texCoord3List->begin();
+		_it2 != __texCoord3List->end(); _it2++)
 		  *_it2 = Vector3(0,_it->x(),_it->y());
 	}
 }
@@ -246,8 +246,8 @@ bool AmapSymbol::isValid( ) const {
 
 bofstream& AmapSymbol::write( bofstream& stream ) const {
   GEOM_ASSERT(stream);
-  uint_t _facesCount = __indexList->getSize();
-  uint_t _pointsCount = __pointList->getSize();
+  uint_t _facesCount = __indexList->size();
+  uint_t _pointsCount = __pointList->size();
 
   stream << _facesCount << _pointsCount;
 
@@ -267,7 +267,7 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
   // Writes the faces
   for (uint_t _i = 0; _i < _facesCount; _i++) {
 
-    _indicesCount = __indexList->getAt(_i).getSize();
+    _indicesCount = __indexList->getAt(_i).size();
     stream << _indicesCount << _faceInfo[0] << _faceInfo[1];
 
     for (uint_t _k = 0; _k < _indicesCount; _k++) {
@@ -296,15 +296,15 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
 
 /* ----------------------------------------------------------------------- */
 
-const Vector3& AmapSymbol::getTexCoord3At( uint_t i, uint_t j ) const {
-  GEOM_ASSERT(i < __indexList->getSize());
-  GEOM_ASSERT(j < __indexList->getAt(i).getSize());
+const Vector3& AmapSymbol::getFaceTexCoord3At( uint_t i, uint_t j ) const {
+  GEOM_ASSERT(i < __indexList->size());
+  GEOM_ASSERT(j < __indexList->getAt(i).size());
   return __texCoord3List->getAt(__indexList->getAt(i).getAt(j));
 }
 
-Vector3& AmapSymbol::getTexCoord3At( uint_t i, uint_t j ){
-  GEOM_ASSERT(i < __indexList->getSize());
-  GEOM_ASSERT(j < __indexList->getAt(i).getSize());
+Vector3& AmapSymbol::getFaceTexCoord3At( uint_t i, uint_t j ){
+  GEOM_ASSERT(i < __indexList->size());
+  GEOM_ASSERT(j < __indexList->getAt(i).size());
   return __texCoord3List->getAt(__indexList->getAt(i).getAt(j));
 }
 

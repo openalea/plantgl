@@ -70,7 +70,7 @@ real_t ProfileTransformation::getUMin() const {
 }
 
 real_t ProfileTransformation::getUMax() const {
-    return (__knotList ? __knotList->getAt((__knotList->getSize())-1) : 1 );
+    return (__knotList ? __knotList->getAt((__knotList->size())-1) : 1 );
 }
 
 const Point2ArrayPtr& ProfileTransformation::getScale() const {
@@ -92,7 +92,7 @@ RealArrayPtr& ProfileTransformation::getOrientation(){
 const RealArrayPtr ProfileTransformation::getKnotList() const {
     if(__knotList)return __knotList;
     else {
-        uint_t _size = max(__scalingList->getSize(),__orientationList->getSize());
+        uint_t _size = max(__scalingList->size(),__orientationList->size());
         if(_size<1)_size = 2;
         RealArrayPtr a(new RealArray(_size));
         a->setAt(0,0.0);
@@ -114,20 +114,20 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
     uint_t _i = 0;
     real_t _t = 0;
 
-    if((!__scalingList)||__scalingList->isEmpty() ||(__scalingList==DEFAULT_SCALE_LIST));
-    else if(__scalingList->getSize() == 1){
+    if((!__scalingList)||__scalingList->empty() ||(__scalingList==DEFAULT_SCALE_LIST));
+    else if(__scalingList->size() == 1){
         val = Matrix3TransformationPtr(new Scaling2D(__scalingList->getAt(0)));
     }
     else if(__knotList){
         if(u <= __knotList->getAt(0)){
             val = Matrix3TransformationPtr(new Scaling2D(__scalingList->getAt(0)));
         }
-        else if (u >= __knotList->getAt((__knotList->getSize())-1)){
-            val = Matrix3TransformationPtr(new Scaling2D(__scalingList->getAt((__knotList->getSize())-1)));
+        else if (u >= __knotList->getAt((__knotList->size())-1)){
+            val = Matrix3TransformationPtr(new Scaling2D(__scalingList->getAt((__knotList->size())-1)));
         }
         else {
-            for(RealArray::iterator _it = __knotList->getBegin();
-                ((_it!=__knotList->getEnd())&&(*_it < u )) ;
+            for(RealArray::iterator _it = __knotList->begin();
+                ((_it!=__knotList->end())&&(*_it < u )) ;
                 _it++)_i++;
             if(__knotList->getAt(_i) == u)val = Matrix3TransformationPtr(new Scaling2D(__scalingList->getAt(_i)));
             else{
@@ -141,10 +141,10 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
             val = Matrix3TransformationPtr(new Scaling2D(__scalingList->getAt(0)));
         }
         else if (u >= 1 ){
-            val = Matrix3TransformationPtr(new Scaling2D(*(__scalingList->getEnd()-1)));
+            val = Matrix3TransformationPtr(new Scaling2D(*(__scalingList->end()-1)));
         }
         else {
-            real_t _interval = (real_t)(__scalingList->getSize() - 1);
+            real_t _interval = (real_t)(__scalingList->size() - 1);
             _i = (int)(u * _interval);
             _t = u*_interval - ((real_t)(_i));
 //                      printf("u = %f - i = %i - t = %f - interval = %f \n",u,_i,_t,_interval);
@@ -156,8 +156,8 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
     }
 
     Matrix3TransformationPtr val2;
-    if((!__orientationList) ||__orientationList->isEmpty() ||(__orientationList==DEFAULT_ORIENTATION_LIST));
-    else if(__orientationList->getSize() == 1){
+    if((!__orientationList) ||__orientationList->empty() ||(__orientationList==DEFAULT_ORIENTATION_LIST));
+    else if(__orientationList->size() == 1){
         real_t _c = cos(__orientationList->getAt(0));
         real_t _s = sin(__orientationList->getAt(0));
         val2 = Matrix3TransformationPtr(new OrthonormalBasis2D(Matrix2(_c,_s,-_s,_c)));
@@ -169,15 +169,15 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
             real_t _s = sin(__orientationList->getAt(0));
             val2 = Matrix3TransformationPtr(new OrthonormalBasis2D(Matrix2(_c,_s,-_s,_c)));
         }
-        else if (u >= __knotList->getAt((__knotList->getSize())-1)){
-            real_t _c = cos(__orientationList->getAt((__knotList->getSize())-1));
-            real_t _s = sin(__orientationList->getAt((__knotList->getSize())-1));
+        else if (u >= __knotList->getAt((__knotList->size())-1)){
+            real_t _c = cos(__orientationList->getAt((__knotList->size())-1));
+            real_t _s = sin(__orientationList->getAt((__knotList->size())-1));
             val2 = Matrix3TransformationPtr(new OrthonormalBasis2D(Matrix2(_c,_s,-_s,_c)));
         }
         else {
             _i = 0;
-            for(RealArray::iterator _it = __knotList->getBegin();
-                ((_it!=__knotList->getEnd())&&(*_it < u )) ;
+            for(RealArray::iterator _it = __knotList->begin();
+                ((_it!=__knotList->end())&&(*_it < u )) ;
                 _it++)_i++;
             real_t _angle;
             if(__knotList->getAt(_i) == u){
@@ -199,13 +199,13 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
             val2 = Matrix3TransformationPtr(new OrthonormalBasis2D(Matrix2(_c,_s,-_s,_c)));
         }
         else if (u >= 1){
-            real_t _c = cos(*(__orientationList->getEnd()-1));
-            real_t _s = sin(*(__orientationList->getEnd()-1));
+            real_t _c = cos(*(__orientationList->end()-1));
+            real_t _s = sin(*(__orientationList->end()-1));
             val2 = Matrix3TransformationPtr(new OrthonormalBasis2D(Matrix2(_c,_s,-_s,_c)));
         }
         else {
 
-            real_t _interval = (real_t)(__orientationList->getSize() - 1);
+            real_t _interval = (real_t)(__orientationList->size() - 1);
             _i = (int)(u / _interval);
             _t = u - (real_t)_i;
             real_t _angle;
@@ -242,8 +242,8 @@ Transformation2DPtr ProfileTransformation::operator() (real_t u) const {
 const bool
 ProfileTransformation::isKnotListToDefault() const{
     if(!__knotList)return true;
-    uint_t _size = max((__scalingList == NULL || __scalingList->isEmpty()?0:__scalingList->getSize()),
-					   (__orientationList == NULL ||__orientationList->isEmpty()?0:__orientationList->getSize()));
+    uint_t _size = max((__scalingList == NULL || __scalingList->empty()?0:__scalingList->size()),
+					   (__orientationList == NULL ||__orientationList->empty()?0:__orientationList->size()));
     if(__knotList->getAt(0) > GEOM_EPSILON )return false;
     for(uint_t _i = 1; _i < _size; _i++)
         if(fabs(__knotList->getAt(_i) - ((real_t)_i /(real_t)(_size - 1))) > GEOM_EPSILON ) return false;
@@ -260,21 +260,21 @@ bool ProfileTransformation::isValid( ) const{
             pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
             return false;
         };
-        if((__scalingList)->getSize() == 0 ){
+        if((__scalingList)->size() == 0 ){
             pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
             return false;
         }
     }
     if(__orientationList)
-        if((__orientationList)->getSize() == 0 ){
+        if((__orientationList)->size() == 0 ){
             pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
             return false;
         }
 
     if( (__scalingList) && (__orientationList) &&
-        (__scalingList->getSize() !=1) &&
-        (__orientationList->getSize() !=1) &&
-        (__scalingList->getSize()!=__orientationList->getSize()) ){
+        (__scalingList->size() !=1) &&
+        (__orientationList->size() !=1) &&
+        (__scalingList->size()!=__orientationList->size()) ){
         pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
                    "Must specifie Scale and Orientation with the same number of value.");
         return false;
@@ -282,9 +282,9 @@ bool ProfileTransformation::isValid( ) const{
 
     if((__knotList) && ((__scalingList) || (__orientationList))){
         uint_t _size = 0;
-        if(__scalingList) _size = __scalingList->getSize();
-        if(__orientationList) _size = max(_size,__orientationList->getSize());
-        if(_size > 1 && __knotList->getSize() != _size){
+        if(__scalingList) _size = __scalingList->size();
+        if(__orientationList) _size = max(_size,__orientationList->size());
+        if(_size > 1 && __knotList->size() != _size){
             pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
                        "Must specifie Scale or Orientation with more than one value.");
             return false;
@@ -399,7 +399,7 @@ bool ProfileInterpolation::Builder::isValid( ) const
                 "*ProfileList" );
     return false;
     }
-  if( (*ProfileList)->getSize() == 0 )
+  if( (*ProfileList)->size() == 0 )
     {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),
                "ProfileInterpolation",
@@ -432,8 +432,8 @@ bool ProfileInterpolation::Builder::isValid( ) const
     return false;
     }
 
-  uint_t nbKnots= (*KnotList)->getSize();
-  uint_t nbProfiles= (*ProfileList)->getSize();
+  uint_t nbKnots= (*KnotList)->size();
+  uint_t nbProfiles= (*ProfileList)->size();
   if( nbKnots != nbProfiles )
     {
     pglErrorEx( PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),
@@ -538,7 +538,7 @@ real_t ProfileInterpolation::getUMin() const
 
 real_t ProfileInterpolation::getUMax() const
 {
-  return ( (__knotList) ? __knotList->getAt((__knotList->getSize())-1) : 1 );
+  return ( (__knotList) ? __knotList->getAt((__knotList->size())-1) : 1 );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -554,13 +554,13 @@ const Point2ArrayPtr& ProfileInterpolation::getSection2DAt(real_t u) const
 
   GEOM_ASSERT( __is2D );
   GEOM_ASSERT( __evalPt2D && __fctList2D );
-  GEOM_ASSERT( __evalPt2D->getSize() == __fctList2D->getSize() );
+  GEOM_ASSERT( __evalPt2D->size() == __fctList2D->size() );
 
-  Curve2DArray::const_iterator itBegin= __fctList2D->getBegin();
-  Curve2DArray::const_iterator itEnd=   __fctList2D->getEnd();
+  Curve2DArray::const_iterator itBegin= __fctList2D->begin();
+  Curve2DArray::const_iterator itEnd=   __fctList2D->end();
   Curve2DArray::const_iterator it= itBegin;
 
-  Point2Array::iterator itPt= __evalPt2D->getBegin();
+  Point2Array::iterator itPt= __evalPt2D->begin();
 
   for( it= itBegin; it < itEnd; it++, itPt++ )
     {
@@ -586,13 +586,13 @@ const Point3ArrayPtr& ProfileInterpolation::getSection3DAt(real_t u) const
 
   GEOM_ASSERT( !__is2D );
   GEOM_ASSERT( __evalPt3D && __fctList3D );
-  GEOM_ASSERT( __evalPt3D->getSize() == __fctList3D->getSize() );
+  GEOM_ASSERT( __evalPt3D->size() == __fctList3D->size() );
 
-  CurveArray::const_iterator itBegin= __fctList3D->getBegin();
-  CurveArray::const_iterator itEnd=   __fctList3D->getEnd();
+  CurveArray::const_iterator itBegin= __fctList3D->begin();
+  CurveArray::const_iterator itEnd=   __fctList3D->end();
   CurveArray::const_iterator it= itBegin;
 
-  Point3Array::iterator itPt= __evalPt3D->getBegin();
+  Point3Array::iterator itPt= __evalPt3D->begin();
 
   for( it= itBegin; it < itEnd; it++, itPt++ )
     {
@@ -671,16 +671,16 @@ bool ProfileInterpolation::interpol()
 cout<<"-> interpol"<<endl;
 #endif
 
-  uint_t n= __profileList->getSize();
+  uint_t n= __profileList->size();
 
   // uint_t i= 0;
   if( __stride <= 2 )
     {
     __stride= 0;
 
-    Curve2DArray::const_iterator itBegin= __profileList->getBegin();
+    Curve2DArray::const_iterator itBegin= __profileList->begin();
     Curve2DArray::const_iterator it= itBegin;
-    Curve2DArray::const_iterator itEnd= __profileList->getEnd();
+    Curve2DArray::const_iterator itEnd= __profileList->end();
 
     for( it= itBegin; it != itEnd; it++ )
       {
@@ -788,7 +788,7 @@ cout<<"is2D? "<<__is2D<<endl;
     {
    __fctList2D= Curve2DArrayPtr( new Curve2DArray(__stride+1) );
     Point2ArrayPtr pts;
-    Point2Array::iterator itpBegin= allPts2D->getBegin();
+    Point2Array::iterator itpBegin= allPts2D->begin();
     Point2Array::iterator itpEnd= itpBegin + n;
     for(uint_t i= 0; i <= __stride; i++ )
       {
@@ -799,7 +799,7 @@ cout<<"is2D? "<<__is2D<<endl;
 cout<<"get2DCurve "<<i<<endl;
 #endif
       __fctList2D->getAt(i)= local.get2DCurve();
-      if(itpEnd != allPts2D->getEnd()){ itpBegin+= n; itpEnd+= n; }
+      if(itpEnd != allPts2D->end()){ itpBegin+= n; itpEnd+= n; }
       }
     __evalPt2D= Point2ArrayPtr( new Point2Array( __stride+1 ) );
     __evalPt3D= Point3ArrayPtr();
@@ -810,7 +810,7 @@ cout<<"get2DCurve "<<i<<endl;
   {
 	  __fctList3D= CurveArrayPtr( new CurveArray(__stride+1) );
 	  Point3ArrayPtr pts;
-	  Point3Array::iterator itpBegin= allPts3D->getBegin();
+	  Point3Array::iterator itpBegin= allPts3D->begin();
 	  Point3Array::iterator itpEnd= itpBegin + n;
 	  for(uint_t i= 0; i <= __stride; i++ )
 	  {
@@ -820,7 +820,7 @@ cout<<"get2DCurve "<<i<<endl;
 		  cout<<"get3DCurve "<<i<<endl;
 #endif
 		  __fctList3D->getAt(i)= local.get3DCurve();
-		  if(itpEnd != allPts3D->getEnd()){ itpBegin+= n; itpEnd+= n; }
+		  if(itpEnd != allPts3D->end()){ itpBegin+= n; itpEnd+= n; }
 	  }
 	  __evalPt3D= Point3ArrayPtr(new Point3Array( __stride ));
 	  __fctList2D= Curve2DArrayPtr();

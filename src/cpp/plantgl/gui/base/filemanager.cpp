@@ -231,7 +231,7 @@ ViewFileManager::initialize(){
   addSeparator();
 
   // Configuration
-  act = addAction(saveIcon,tr("Save Configuration"),this,SLOT(saveConfig()));
+  act = addAction(saveIcon,tr("Save Configuration"),parent(),SLOT(saveConfig()));
   act->setWhatsThis("<b>Save Configuration</b><br><br> Save the current configuration in the init file<br>");
 
   // Exit icon

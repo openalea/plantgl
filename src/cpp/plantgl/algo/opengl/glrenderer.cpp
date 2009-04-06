@@ -434,8 +434,8 @@ bool GLRenderer::process(Inline * geomInline) {
             glGeomScale(_scale);
         }
         bool _result = true;
-        for (Scene::iterator _i = geomInline->getScene()->getBegin();
-             _i != geomInline->getScene()->getEnd();
+        for (Scene::iterator _i = geomInline->getScene()->begin();
+             _i != geomInline->getScene()->end();
              _i++) {
             if (! (*_i)->applyAppearanceFirst(*this)) _result = false;
         };
@@ -472,7 +472,7 @@ bool GLRenderer::process( AmapSymbol * amapSymbol ) {
   amapSymbol->checkNormalList();
 
 #ifndef WITH_VERTEXARRAY
-  uint_t _sizei = _indexList->getSize();
+  uint_t _sizei = _indexList->size();
   GLfloat _rgba[4];
   for (uint_t _i = 0; _i < _sizei; _i++) {
     glBegin(GL_POLYGON);
@@ -487,16 +487,16 @@ bool GLRenderer::process( AmapSymbol * amapSymbol ) {
 	}
 
     const Index& _index = _indexList->getAt(_i);
-    uint_t _sizej = _index.getSize();
+    uint_t _sizej = _index.size();
     for (uint_t _j = 0; _j < _sizej; _j++){
-      glGeomNormal(amapSymbol->getNormalAt(_i,_j));
+      glGeomNormal(amapSymbol->getFaceNormalAt(_i,_j));
       if(tex){
-		Vector3& tex = amapSymbol->getTexCoord3At(_i,_j);
+		Vector3& tex = amapSymbol->getFaceTexCoord3At(_i,_j);
 		glTexCoord2d(tex.y(),tex.z());
 	  }
 	  else if ( color && colorV)
         {
-          const Color4& _ambient = amapSymbol->getColorAt( _i, _j );
+          const Color4& _ambient = amapSymbol->getFaceColorAt( _i, _j );
           _rgba[0] = (GLfloat)_ambient.getRedClamped();
           _rgba[1] = (GLfloat)_ambient.getGreenClamped();
           _rgba[2] = (GLfloat)_ambient.getBlueClamped();
@@ -525,10 +525,10 @@ bool GLRenderer::process( AmapSymbol * amapSymbol ) {
 	glTexCoordPointer( 2, GL_GEOM_REAL, sizeof(real_t) ,&texCoord[1]);
   }
 
-  for(IndexArray::const_iterator it = amapSymbol->getIndexList()->getBegin();
-      it != amapSymbol->getIndexList()->getEnd(); it++)
+  for(IndexArray::const_iterator it = amapSymbol->getIndexList()->begin();
+      it != amapSymbol->getIndexList()->end(); it++)
     {
-      glDrawElements( GL_POLYGON, it->getSize() , GL_UNSIGNED_INT, ( const GLvoid* )( &*( it->getBegin() ) ));
+      glDrawElements( GL_POLYGON, it->size() , GL_UNSIGNED_INT, ( const GLvoid* )( &*( it->begin() ) ));
     }
 
   glDisableClientState(GL_VERTEX_ARRAY);
@@ -702,7 +702,7 @@ bool GLRenderer::process( FaceSet * faceSet ) {
   faceSet->checkNormalList();
 
 #ifndef WITH_VERTEXARRAY
-  uint_t _sizei = _indexList->getSize();
+  uint_t _sizei = _indexList->size();
   GLfloat _rgba[4];
   for (uint_t _i = 0; _i < _sizei; _i++) {
     glBegin(GL_POLYGON);
@@ -718,13 +718,13 @@ bool GLRenderer::process( FaceSet * faceSet ) {
 	}
 
     const Index& _index = _indexList->getAt(_i);
-    uint_t _sizej = _index.getSize();
+    uint_t _sizej = _index.size();
     for (uint_t _j = 0; _j < _sizej; _j++){
-      if (normalV)glGeomNormal(faceSet->getNormalAt(_i,_j));
-	  if(tex)glGeomTexCoord(faceSet->getTexCoordAt(_i,_j));
+      if (normalV)glGeomNormal(faceSet->getFaceNormalAt(_i,_j));
+	  if(tex)glGeomTexCoord(faceSet->getFaceTexCoordAt(_i,_j));
 	  else if ( color && colorV)
         {
-          const Color4& _ambient = faceSet->getColorAt( _i, _j );
+          const Color4& _ambient = faceSet->getFaceColorAt( _i, _j );
           _rgba[0] = (GLfloat)_ambient.getRedClamped();
           _rgba[1] = (GLfloat)_ambient.getGreenClamped();
           _rgba[2] = (GLfloat)_ambient.getBlueClamped();
@@ -758,13 +758,13 @@ bool GLRenderer::process( FaceSet * faceSet ) {
   }
 
   size_t _i = 0;
-  for(IndexArray::const_iterator it = faceSet->getIndexList()->getBegin();
-      it != faceSet->getIndexList()->getEnd(); it++)
+  for(IndexArray::const_iterator it = faceSet->getIndexList()->begin();
+      it != faceSet->getIndexList()->end(); it++)
     {
       if(!normalV)
         glGeomNormal(faceSet->getNormalAt(_i));
       _i++;
-      glDrawElements( GL_POLYGON, it->getSize() , GL_UNSIGNED_INT, ( const GLvoid* )( &*( it->getBegin() )) );
+      glDrawElements( GL_POLYGON, it->size() , GL_UNSIGNED_INT, ( const GLvoid* )( &*( it->begin() )) );
     }
 
   glDisableClientState(GL_VERTEX_ARRAY);
@@ -833,8 +833,8 @@ bool GLRenderer::process( IFS * ifs ) {
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
 
-  Matrix4Array::const_iterator matrix= matrixList->getBegin();
-  while( matrix != matrixList->getEnd() )
+  Matrix4Array::const_iterator matrix= matrixList->begin();
+  while( matrix != matrixList->end() )
     {
     glPushMatrix();
     glGeomMultMatrix(*matrix);
@@ -1105,15 +1105,15 @@ bool GLRenderer::process( PointSet * pointSet ) {
   const Point3ArrayPtr& points = pointSet->getPointList();
   if (!points) return false;
   bool color = pointSet->hasColorList() && 
-			 (pointSet->getColorList()->getSize() == points->getSize());
+			 (pointSet->getColorList()->size() == points->size());
 
 #ifndef WITH_VERTEXARRAY
   Color4Array::const_iterator _itCol;
-  if(color) _itCol = pointSet->getColorList()->getBegin();
+  if(color) _itCol = pointSet->getColorList()->begin();
   GLfloat _rgba[4];
   glBegin(GL_POINTS);
-  for (Point3Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  for (Point3Array::const_iterator _i = points->begin();
+       _i != points->end();
 	   _i++){
 		if(color){ 
           const Color4& _ambient = *_itCol;
@@ -1136,7 +1136,7 @@ bool GLRenderer::process( PointSet * pointSet ) {
     glEnableClientState( GL_COLOR_ARRAY );
     glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), points->getColorList()->toUcharArray() );
   }  
-  glDrawArrays(GL_POINTS, 0 , points->getSize() );
+  glDrawArrays(GL_POINTS, 0 , points->size() );
   glDisableClientState(GL_VERTEX_ARRAY);
   delete [] vertices;
 #endif
@@ -1156,15 +1156,15 @@ bool GLRenderer::process( PGL(Polyline) * polyline ) {
 
   const Point3ArrayPtr& points = polyline->getPointList();
   bool color = polyline->hasColorList() && 
-			 (polyline->getColorList()->getSize() == points->getSize());
+			 (polyline->getColorList()->size() == points->size());
 
 #ifndef WITH_VERTEXARRAY
   Color4Array::const_iterator _itCol;
-  if(color) _itCol = polyline->getColorList()->getBegin();
+  if(color) _itCol = polyline->getColorList()->begin();
   GLfloat _rgba[4];
   glBegin(GL_LINE_STRIP);
-  for (Point3Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  for (Point3Array::const_iterator _i = points->begin();
+       _i != points->end();
 	   _i++){
 		if(color){ 
           const Color4& _ambient = *_itCol;
@@ -1187,7 +1187,7 @@ bool GLRenderer::process( PGL(Polyline) * polyline ) {
     glEnableClientState( GL_COLOR_ARRAY );
     glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), polyline->getColorList()->toUcharArray() );
   }  
-  glDrawArrays(GL_LINE_STRIP, 0 , points->getSize() );
+  glDrawArrays(GL_LINE_STRIP, 0 , points->size() );
   glDisableClientState(GL_VERTEX_ARRAY);
   delete [] vertices;
 #endif
@@ -1237,11 +1237,11 @@ bool GLRenderer::process( QuadSet * quadSet ) {
           glColor4fv(_rgba);
 	}
 	for (uint_t _j = 0; _j < 4; _j++) {
-	  if (normalV) glGeomNormal(quadSet->getNormalAt(_i,_j));
-	  if(tex)glGeomTexCoord(quadSet->getTexCoordAt(_i,_j));
+	  if (normalV) glGeomNormal(quadSet->getFaceNormalAt(_i,_j));
+	  if(tex)glGeomTexCoord(quadSet->getFaceTexCoordAt(_i,_j));
       else if ( color && colorV)
         {
-          const Color4& _ambient = quadSet->getColorAt( _i, _j );
+          const Color4& _ambient = quadSet->getFaceColorAt( _i, _j );
           _rgba[0] = (GLfloat)_ambient.getRedClamped();
           _rgba[1] = (GLfloat)_ambient.getGreenClamped();
           _rgba[2] = (GLfloat)_ambient.getBlueClamped();
@@ -1279,17 +1279,17 @@ bool GLRenderer::process( QuadSet * quadSet ) {
   }
 
   if (normalV){
-	size_t si = quadSet->getIndexList()->getSize();
+	size_t si = quadSet->getIndexList()->size();
 	uint_t * indices = quadSet->getIndexList()->data();
 	glDrawElements(	GL_QUADS, 4*si , GL_UNSIGNED_INT, indices);
 	delete [] indices;
   }
   else {
 	size_t _i = 0;
-	for(Index4Array::const_iterator it = quadSet->getIndexList()->getBegin();
-	it != quadSet->getIndexList()->getEnd(); it++){
+	for(Index4Array::const_iterator it = quadSet->getIndexList()->begin();
+	it != quadSet->getIndexList()->end(); it++){
 		  glGeomNormal(quadSet->getNormalAt(_i));_i++;
-		  glDrawElements(	GL_QUADS, 4 , GL_UNSIGNED_INT, it->getBegin());
+		  glDrawElements(	GL_QUADS, 4 , GL_UNSIGNED_INT, it->begin());
 	 }
 
   }
@@ -1445,12 +1445,12 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
 	}
     for (uint_t _j = 0; _j < 3; _j++) {
       if (normalV)
-        glGeomNormal(triangleSet->getNormalAt(_i,_j));
+        glGeomNormal(triangleSet->getFaceNormalAt(_i,_j));
       if(tex)
-        glGeomTexCoord(triangleSet->getTexCoordAt(_i,_j));
+        glGeomTexCoord(triangleSet->getFaceTexCoordAt(_i,_j));
       else if ( color  && colorV)
         {
-          const Color4& _ambient = triangleSet->getColorAt( _i, _j );
+          const Color4& _ambient = triangleSet->getFaceColorAt( _i, _j );
           _rgba[0] = (GLfloat)_ambient.getRedClamped();
           _rgba[1] = (GLfloat)_ambient.getGreenClamped();
           _rgba[2] = (GLfloat)_ambient.getBlueClamped();
@@ -1467,7 +1467,7 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
   glEnableClientState(GL_VERTEX_ARRAY);
   real_t * vertices = triangleSet->getPointList()->data();
   glVertexPointer( 3, GL_GEOM_REAL,0,vertices);
-  size_t si = triangleSet->getIndexList()->getSize();
+  size_t si = triangleSet->getIndexList()->size();
 
   real_t * normals = NULL;
   if (normalV) {
@@ -1495,10 +1495,10 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
   }
   else {
 	size_t _i = 0;
-	for(Index3Array::const_iterator it = triangleSet->getIndexList()->getBegin();
-	it != triangleSet->getIndexList()->getEnd(); it++){
+	for(Index3Array::const_iterator it = triangleSet->getIndexList()->begin();
+	it != triangleSet->getIndexList()->end(); it++){
 		  glGeomNormal(triangleSet->getNormalAt(_i));_i++;
-		  glDrawElements(	GL_TRIANGLES, 3 , GL_UNSIGNED_INT, it->getBegin());
+		  glDrawElements(	GL_TRIANGLES, 3 , GL_UNSIGNED_INT, it->begin());
 		  }
 
   }

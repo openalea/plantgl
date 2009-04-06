@@ -162,53 +162,49 @@ public:
     return _col;
   }
 
+  /// Returns the size of \e self.
+  inline uint_t size( ) const { return __A.size(); }
+
+  /// Returns whether \e self is empty.
+  inline bool empty( ) const { return __A.empty(); }
+
+  /// Clear \e self.
+  inline void clear( ) { __A.clear(); __rowsNb = 0; }
+
   /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator getBegin( ) const {
-    return __A.begin();
-  }
+  inline const_iterator begin( ) const { return __A.begin(); }
 
   /// Returns an iterator at the beginning of \e self.
-  inline iterator getBegin( ) {
-    return __A.begin();
-  }
+  inline iterator begin( ) { return __A.begin(); }
 
   /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEnd( ) const {
-    return __A.end();
-  }
+  inline const_iterator end( ) const { return __A.end(); }
 
   /// Returns a const iterator at the end of \e self.
-  inline iterator getEnd( ) {
-    return __A.end();
-  }
+  inline iterator end( ) { return __A.end(); }
 
   /// Returns a const iterator at the beginning of the row \e row of\e self.
-  inline const_iterator getBeginRow(uint_t row ) const {
+  inline const_iterator beginRow(uint_t row ) const {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+(row*(__A.size()/__rowsNb)));
   }
 
   /// Returns an iterator at the beginning of \e self.
-  inline iterator getBeginRow(uint_t row ) {
+  inline iterator beginRow(uint_t row ) {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+(row*(__A.size()/__rowsNb)));
   }
 
   /// Returns a const iterator at the end of \e self.
-  inline const_iterator getEndRow(uint_t row ) const {
+  inline const_iterator endRow(uint_t row ) const {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+((row+1)*(__A.size()/__rowsNb)));
   }
 
   /// Returns a const iterator at the end of \e self.
-  inline iterator getEndRow(uint_t row ) {
+  inline iterator endRow( uint_t row ) {
       GEOM_ASSERT(__rowsNb!= 0 );
     return (__A.begin()+((row+1)*(__A.size()/__rowsNb)));
-  }
-
-  /// Returns the size of \e self.
-  inline uint_t getSize( ) const {
-    return __A.size();
   }
 
   /// Returns the size of each rows of \e self.
@@ -292,15 +288,7 @@ public:
   template <class InIterator>
   inline void pushColumn(std::vector<T>& t ){ pushColumn(t.begin(),t.end()); }
 
-  /// Returns whether \e self is empty.
-  inline bool isEmpty( ) {
-    return __A.empty();
-  }
 
-  /// Clear \e self.
-  inline void clear( ) {
-    __A.clear(); __rowsNb = 0;
-  }
   /// Returns whether \e self contain unique elements.
   bool isUnique( ) const {
     if (__A.empty()) return true;
@@ -354,8 +342,8 @@ public:
   friend Array2<T> transpose( const Array2<T>& m ) {
       Array2<T> n(m.getColsNb(),m.getRowsNb());
       uint_t _i = 0, _j = 0;
-      for(typename Array2<T>::const_iterator _it = m.getBegin();
-          _it != m.getEnd();_it++){
+      for(typename Array2<T>::const_iterator _it = m.begin();
+          _it != m.end();_it++){
           n.setAt(_i,_j,*_it);
           _i++;
           if(_i % n.__rowsNb == 0){ _i = 0; _j++; }
@@ -379,6 +367,37 @@ public:
       return diag;
   }
 
+#ifndef PGL_NO_DEPRECATED
+  /// Returns a const iterator at the beginning of \e self.
+  inline attribute_deprecated const_iterator getBegin( ) const { return begin(); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline attribute_deprecated iterator getBegin( ) { return begin(); }
+
+  /// Returns a const iterator at the beginning of \e self.
+  inline attribute_deprecated const_iterator getBeginRow(uint_t row  ) const { return beginRow(row); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline attribute_deprecated iterator getBeginRow(uint_t row  ) { return beginRow(row); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline attribute_deprecated const_iterator getEnd( ) const { return end(); }
+
+  /// Returns an iterator at the end of \e self.
+  inline attribute_deprecated iterator getEnd( ) { return end(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline attribute_deprecated const_iterator getEndRow(uint_t row ) const { return endRow(row); }
+
+  /// Returns an iterator at the end of \e self.
+  inline attribute_deprecated iterator getEndRow(uint_t row ) { return endRow(row); }
+
+  /// Return size of this
+  inline attribute_deprecated uint_t getSize() const { return size(); }
+
+  inline attribute_deprecated bool isEmpty() const { return empty(); }
+
+#endif
 
 protected:
 
@@ -473,8 +492,8 @@ public:
   friend NumericArray2<T> transpose( const NumericArray2<T>& m ) {
       NumericArray2<T> n(m.getColsNb(),m.getRowsNb());
       uint_t _i = 0, _j = 0;
-      for(typename NumericArray2<T>::const_iterator _it = m.getBegin();
-          _it != m.getEnd();_it++){
+      for(typename NumericArray2<T>::const_iterator _it = m.begin();
+          _it != m.end();_it++){
           n.setAt(_i,_j,*_it);
           _i++;
           if(_i % n.__rowsNb == 0){ _i = 0; _j++; }
@@ -487,10 +506,10 @@ public:
       NumericArray2<T> result(this->getRowsNb(),m.getColsNb());
       for(uint_t _i = 0; _i < this->getRowsNb(); _i++){
           for(uint_t _j = 0; _j < m.getColsNb(); _j++){
-              typename NumericArray2<T>::const_iterator _it1 = this->getBeginRow(_i);
-              typename NumericArray2<T>::const_iterator _it2 = m.getBegin() + _j;
+              typename NumericArray2<T>::const_iterator _it1 = this->beginRow(_i);
+              typename NumericArray2<T>::const_iterator _it2 = m.begin() + _j;
               T sum = (*_it1)*(*_it2);
-              while(_it1 != this->getEndRow(_i)-1){
+              while(_it1 != this->endRow(_i)-1){
                   _it1++;
                   _it2+=m.getColsNb();
                   sum += (*_it1)*(*_it2);
@@ -502,8 +521,8 @@ public:
   }
   /// Addition of the 2 matrix.
   NumericArray2<T>& operator+=(const NumericArray2<T>&a){
-      GEOM_ASSERT(a.getRowsNb()!=getRowsNb() && a.getSize()!=getSize());
-      typename NumericArray2<T>::const_iterator _i1 = a.getBegin();
+      GEOM_ASSERT(a.getRowsNb()!=getRowsNb() && a.size()!=getSize());
+      typename NumericArray2<T>::const_iterator _i1 = a.begin();
       for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
           _i2 != this->__A.end();
           _i2++){
@@ -521,8 +540,8 @@ public:
 
   /// Minus operation of 2 matrix.
   NumericArray2<T>& operator-=(const NumericArray2<T>& a){
-      GEOM_ASSERT(a.getRowsNb()!=getRowsNb() && a.getSize()!=getSize());
-      typename NumericArray2<T>::const_iterator _i1 = a.getBegin();
+      GEOM_ASSERT(a.getRowsNb()!=getRowsNb() && a.size()!=getSize());
+      typename NumericArray2<T>::const_iterator _i1 = a.begin();
       for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
           _i2 != this->__A.end(); _i2++){
           *_i2 -= *_i1;

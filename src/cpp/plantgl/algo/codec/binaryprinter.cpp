@@ -373,7 +373,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_INDEXN(val) { \
-    uint_t _sizej = val.getSize(); \
+    uint_t _sizej = val.size(); \
     writeUint32(_sizej); \
     for (uchar_t _j = 0; _j < _sizej; _j++) \
        writeUint32(val.getAt(_j)); \
@@ -422,7 +422,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_FIELD_ARRAY(obj,field,type) { \
-    uint_t _sizei = (obj->get##field()?obj->get##field()->getSize():0); \
+    uint_t _sizei = (obj->get##field()?obj->get##field()->size():0); \
     writeUint32(_sizei); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i)); \
@@ -432,7 +432,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 #define GEOM_PRINT_FIELD_MATRIX(obj,field,type) { \
     uint_t _cols =obj->get##field()->getColsNb(); \
-    uint_t _sizei = obj->get##field()->getSize(); \
+    uint_t _sizei = obj->get##field()->size(); \
     writeUint32( _sizei/ _cols); writeUint32(_cols); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i / _cols ,_i % _cols)); \
@@ -533,9 +533,9 @@ bool BinaryPrinter::print(ScenePtr scene,const char * comment){
     __tokens.setStatistic(_sc);
     __tokens.printAll(__outputStream );
 #ifdef GEOM_DEBUG
-    cerr << "Print scene of " << scene->getSize() << " objects (" << _sc.getNamed() << " named )." << endl;
+    cerr << "Print scene of " << scene->size() << " objects (" << _sc.getNamed() << " named )." << endl;
 #endif
-    writeUint32(scene->getSize());
+    writeUint32(scene->size());
 //    __outputStream << _sc.getNamed();
     return scene->apply(*this);
 }
@@ -655,7 +655,7 @@ bool BinaryPrinter::process(Inline * geomInline){
     Vector3 _trans = geomInline->getTranslation();
     Vector3 _scale = geomInline->getScale();
     if(_trans == Vector3::ORIGIN && _scale == Vector3(1,1,1)){
-      for(Scene::iterator _it = geomInline->getScene()->getBegin();_it != geomInline->getScene()->getEnd();_it++ )
+      for(Scene::iterator _it = geomInline->getScene()->begin();_it != geomInline->getScene()->end();_it++ )
         (*_it)->apply(*this);
     }
     else {
@@ -676,7 +676,7 @@ bool BinaryPrinter::process(Inline * geomInline){
         _transf = GeometryPtr(new Translated(_trans,_s2));
       }
 
-      for(Scene::iterator _it = geomInline->getScene()->getBegin();_it != geomInline->getScene()->getEnd();_it++ ){
+      for(Scene::iterator _it = geomInline->getScene()->begin();_it != geomInline->getScene()->end();_it++ ){
         ShapePtr shape = dynamic_pointer_cast<Shape>(*_it);
         if(shape){
 		  DEBUG_INFO("Shape",shape->getName(),shape->SceneObject::getId());

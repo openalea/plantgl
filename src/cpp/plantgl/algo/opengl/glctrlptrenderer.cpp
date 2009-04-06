@@ -65,8 +65,8 @@ TOOLS_USING_NAMESPACE
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINE(Point4A) { \
     glBegin(GL_LINE_STRIP); \
-    for (Point4Array::const_iterator _i = Point4A->getBegin(); \
-         _i != Point4A->getEnd(); \
+    for (Point4Array::const_iterator _i = Point4A->begin(); \
+         _i != Point4A->end(); \
          _i++) \
       glGeomVertex(_i->x(), \
                    _i->y(), \
@@ -76,8 +76,8 @@ TOOLS_USING_NAMESPACE
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINE3(Point3A) { \
     glBegin(GL_LINE_STRIP); \
-    for (Point3Array::const_iterator _i = Point3A->getBegin(); \
-         _i != Point3A->getEnd(); \
+    for (Point3Array::const_iterator _i = Point3A->begin(); \
+         _i != Point3A->end(); \
          _i++) \
       glGeomVertex(_i->x(), \
                    _i->y(), \
@@ -87,8 +87,8 @@ TOOLS_USING_NAMESPACE
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_LINE2D(Point3A) { \
     glBegin(GL_LINE_STRIP); \
-    for (Point3Array::const_iterator _i = Point3A->getBegin(); \
-         _i != Point3A->getEnd(); \
+    for (Point3Array::const_iterator _i = Point3A->begin(); \
+         _i != Point3A->end(); \
          _i++) \
       glGeomVertex(_i->x(), \
                    _i->y(), \
@@ -98,25 +98,25 @@ TOOLS_USING_NAMESPACE
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(Point3A) { \
     glBegin(GL_LINE_STRIP); \
-    for (Point3Array::const_iterator _i = Point3A->getBegin(); \
-         _i != Point3A->getEnd(); \
+    for (Point3Array::const_iterator _i = Point3A->begin(); \
+         _i != Point3A->end(); \
          _i++) \
       glGeomVertex(_i->x(), \
                    _i->y(), \
                    0); \
-    glGeomVertex(Point3A->getBegin()->x(),Point3A->getBegin()->y(),0); \
+    glGeomVertex(Point3A->begin()->x(),Point3A->begin()->y(),0); \
     glEnd(); \
   };
 
 #define GEOM_GLCTRLPOINTRENDERER_DRAW_VERTLINE2D(Point3A) { \
     glBegin(GL_LINE_STRIP); \
-    for (Point3Array::const_iterator _i = Point3A->getBegin(); \
-         _i != Point3A->getEnd(); \
+    for (Point3Array::const_iterator _i = Point3A->begin(); \
+         _i != Point3A->end(); \
          _i++) \
       glGeomVertex(_i->x(), \
                    0, \
                    _i->y()); \
-    glGeomVertex(Point3A->getBegin()->x(),0,Point3A->getBegin()->y()); \
+    glGeomVertex(Point3A->begin()->x(),0,Point3A->begin()->y()); \
     glEnd(); \
   };
 
@@ -281,9 +281,9 @@ bool GLCtrlPointRenderer::process( Tapered * tapered ) {
           if(extrudedHull->getVertical()->apply(__discretizer)){
             PolylinePtr p = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
             Point3ArrayPtr points(new Point3Array(*(p->getPointList())));
-            points->pushBack(points->getAt(0));
-            for(Point3Array::iterator _it = points->getBegin();
-                _it != points->getEnd();
+            points->push_back(points->getAt(0));
+            for(Point3Array::iterator _it = points->begin();
+                _it != points->end();
                 _it++){ _it->z() = _it->y();_it->y() = 0;}
             Transformation3DPtr _taper=tapered->getTransformation();
             _taper->transform(points);

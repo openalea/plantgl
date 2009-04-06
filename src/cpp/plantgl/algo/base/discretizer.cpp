@@ -382,8 +382,8 @@ bool Discretizer::process( AsymmetricHull * asymmetricHull ) {
   _pointList->setAt(_pointCount++,_botPoint);
   _pointList->setAt(_pointCount++,_topPoint);
 
-  GEOM_ASSERT(_pointCount == _pointList->getSize());
-  GEOM_ASSERT(_indexCount == _indexList->getSize());
+  GEOM_ASSERT(_pointCount == _pointList->size());
+  GEOM_ASSERT(_indexCount == _indexList->size());
 
   PolylinePtr _skeleton(new Polyline(_botPoint,_topPoint));
 
@@ -896,12 +896,12 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
   real_t _xcenter = (_xMinAndMax.second->x() + _xMinAndMax.first->x())/2;
   real_t _ycenter = (_yMinAndMax.second->y() + _yMinAndMax.first->y())/2;
 
-  uint_t _hSize = _horizontal->getSize();
-  uint_t _vSize = _vertical->getSize();
+  uint_t _hSize = _horizontal->size();
+  uint_t _vSize = _vertical->size();
 
 
   // Computes the position of the top
-  Point3Array::const_iterator _begin = _vertical->getBegin();
+  Point3Array::const_iterator _begin = _vertical->begin();
   pair<Point3Array::const_iterator,Point3Array::const_iterator>
     _minAndMax = _vertical->getYMinAndMax();
   uint_t _ndxBot = distance(_begin,_minAndMax.first);
@@ -1062,8 +1062,8 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
                                           _ycenter,
                                           _vertical->getAt(_ndxTop).y()));
 
-  GEOM_ASSERT(_pointCount == _pointList->getSize());
-  GEOM_ASSERT(_indexCount == _indexList->getSize());
+  GEOM_ASSERT(_pointCount == _pointList->size());
+  GEOM_ASSERT(_indexCount == _indexList->size());
 
   PolylinePtr _skeleton(new Polyline(Vector3::ORIGIN,
                                      Vector3::ORIGIN));
@@ -1101,12 +1101,12 @@ bool Discretizer::process( Extrusion * extrusion ){
 
     Point3ArrayPtr _crossPoints = _explicitCrossSection->getPointList();
 	bool closed = false;
-	if(!(norm(_crossPoints->getAt(0) - _crossPoints->getAt(_crossPoints->getSize()-1)) > GEOM_EPSILON)){
-	  _crossPoints = Point3ArrayPtr(new Point3Array(_crossPoints->getBegin(),_crossPoints->getEnd() -1));
+	if(!(norm(_crossPoints->getAt(0) - _crossPoints->getAt(_crossPoints->size()-1)) > GEOM_EPSILON)){
+	  _crossPoints = Point3ArrayPtr(new Point3Array(_crossPoints->begin(),_crossPoints->end() -1));
 	  closed = true;
 	}
 
-    uint_t _nbPoints = _crossPoints->getSize();
+    uint_t _nbPoints = _crossPoints->size();
 
     LineicModelPtr _axis = extrusion->getAxis();
 
@@ -1174,8 +1174,8 @@ bool Discretizer::process( Extrusion * extrusion ){
         }
         else _newPoint =  _transf.transform(_crossPoints);
 		float _idPoint = 0;
-        for(Point3Array::iterator _it = _newPoint->getBegin();
-            _it != _newPoint->getEnd();
+        for(Point3Array::iterator _it = _newPoint->begin();
+            _it != _newPoint->end();
             ++_it,++_idPoint,++_j,++_j2){
             _pointList->setAt(_j,((*_it)+_center));
 			if(__computeTexCoord){
@@ -1218,8 +1218,8 @@ bool Discretizer::process( Extrusion * extrusion ){
     }
     else _newPoint =  _transf.transform(_crossPoints);
 	float _idPoint = 0;
-    for(Point3Array::iterator _it = _newPoint->getBegin();
-        _it != _newPoint->getEnd();
+    for(Point3Array::iterator _it = _newPoint->begin();
+        _it != _newPoint->end();
         ++_it,++_idPoint,++_j,++_j2){
         _pointList->setAt(_j,((*_it)+_center));
 		if(__computeTexCoord)_texList->setAt(_j2,Vector2(_start,texumapping->getValue(_idPoint)));
@@ -1235,11 +1235,11 @@ bool Discretizer::process( Extrusion * extrusion ){
         _indexList2->setAt(1,range<Index>(_nbPoints,_size*_nbPoints,1));
         Index3ArrayPtr _cap = _indexList2->triangulate();
 
-        _indexList2 = IndexArrayPtr(new IndexArray(_cap->getSize()+_indexList->getSize()));
+        _indexList2 = IndexArrayPtr(new IndexArray(_cap->size()+_indexList->size()));
 		uint_t _f =0;
-        for(Index3Array::iterator _it2 = _cap->getBegin(); _it2 != _cap->getEnd() ; ++_it2, ++_f)
+        for(Index3Array::iterator _it2 = _cap->begin(); _it2 != _cap->end() ; ++_it2, ++_f)
             _indexList2->setAt(_f,*_it2);      
-        for(Index4Array::iterator _it3 = _indexList->getBegin(); _it3 != _indexList->getEnd() ; ++_it3,++_f)
+        for(Index4Array::iterator _it3 = _indexList->begin(); _it3 != _indexList->end() ; ++_it3,++_f)
             _indexList2->setAt(_f,*_it3);
 
 		FaceSet * f = new FaceSet(_pointList,_indexList2,true,extrusion->getCCW(),true,_skeleton);
@@ -1252,11 +1252,11 @@ bool Discretizer::process( Extrusion * extrusion ){
 				_cap = _indexList2->triangulate();
 			}
 
-			IndexArrayPtr _texIndexList2 = IndexArrayPtr(new IndexArray(_cap->getSize()+_texIndexList->getSize()));
+			IndexArrayPtr _texIndexList2 = IndexArrayPtr(new IndexArray(_cap->size()+_texIndexList->size()));
 			_f =0;
-			for(Index3Array::iterator _it2 = _cap->getBegin(); _it2 != _cap->getEnd() ; ++_it2,++_f)
+			for(Index3Array::iterator _it2 = _cap->begin(); _it2 != _cap->end() ; ++_it2,++_f)
 				_texIndexList2->setAt(_f,*_it2);     
-			for(Index4Array::iterator _it3 = _texIndexList->getBegin(); _it3 != _texIndexList->getEnd() ; ++_it3,++_f)
+			for(Index4Array::iterator _it3 = _texIndexList->begin(); _it3 != _texIndexList->end() ; ++_it3,++_f)
 				_texIndexList2->setAt(_f,*_it3);	
 			f->getTexCoordIndexList() = _texIndexList2;
 		}
@@ -1414,21 +1414,21 @@ bool Discretizer::process( Group * group )  {
   GEOM_ASSERT(group);
   GEOM_DISCRETIZER_CHECK_CACHE(group);
   const GeometryArrayPtr& _geometryList = group->getGeometryList();
-  (*(_geometryList->getBegin()))->apply(*this);
+  (*(_geometryList->begin()))->apply(*this);
   if(!__discretization)
   {
     GEOM_DISCRETIZER_UPDATE_CACHE(group);
     return false;
   }
   ExplicitModelPtr basegeom;
-  if (__discretization  == *_geometryList->getBegin())
+  if (__discretization  == *_geometryList->begin())
 	  basegeom = __discretization->casted_deepcopy<ExplicitModel>();
   else basegeom = __discretization;
   Merge fusion(*this,basegeom);
 
   GeometryPtr geom2;
-  for (GeometryArray::const_iterator _i = _geometryList->getBegin()+1;
-       _i != _geometryList->getEnd();
+  for (GeometryArray::const_iterator _i = _geometryList->begin()+1;
+       _i != _geometryList->end();
        _i++) {
       geom2 = *_i;
       if(!fusion.apply(geom2)){
@@ -1474,9 +1474,9 @@ bool Discretizer::process( IFS * ifs )  {
   chrono.start();
 #endif
 
-  uint_t size= matrixList->getSize();
+  uint_t size= matrixList->size();
 
-  Matrix4Array::const_iterator matrix= matrixList->getBegin();
+  Matrix4Array::const_iterator matrix= matrixList->begin();
   Transform4Ptr t(new Transform4(*matrix));
 
   ExplicitModelPtr bigD = __discretization->transform(dynamic_pointer_cast<Transformation3D>(t));
@@ -1486,7 +1486,7 @@ bool Discretizer::process( IFS * ifs )  {
 
   ExplicitModelPtr tmpD;
   matrix++;
-  while( matrix != matrixList->getEnd() )
+  while( matrix != matrixList->end() )
     {
     t->getMatrix()= *matrix;
     tmpD= __discretization->transform(dynamic_pointer_cast<Transformation3D>(t));
@@ -1696,8 +1696,8 @@ bool Discretizer::process( Paraboloid * paraboloid ) {
 
   _pointList->setAt(_pointCount++,Vector3(0,0,_height));
 
-  GEOM_ASSERT(_pointCount == _pointList->getSize());
-  GEOM_ASSERT(_indexCount == _indexList->getSize());
+  GEOM_ASSERT(_pointCount == _pointList->size());
+  GEOM_ASSERT(_indexCount == _indexList->size());
 
   PolylinePtr _skeleton(new Polyline(_pointList->getAt(_bot),
                                      _pointList->getAt(_top)));
@@ -1733,7 +1733,7 @@ bool Discretizer::process( Revolution * revolution ) {
   }
 
   const Point3ArrayPtr& _curve = __discretization->getPointList();
-  uint_t _curveSize = _curve->getSize();
+  uint_t _curveSize = _curve->size();
   uint_t _slices = revolution->getSlices();
 
   Point3ArrayPtr _pointList(new Point3Array(_slices * _curveSize));
@@ -1813,7 +1813,7 @@ bool Discretizer::process( Swung * swung )
 
   const real_t angleMin= section->getUMin();
   const real_t angleMax= section->getUMax();
-  uint_t nbKnots= section->getKnotList()->getSize();
+  uint_t nbKnots= section->getKnotList()->size();
   const real_t range=
     ( nbKnots > 1 ) ? ( angleMax - angleMin ) : GEOM_TWO_PI;
 #ifdef TEST_CLOSURE
@@ -2040,8 +2040,8 @@ bool Discretizer::process( Sphere * sphere ) {
   _pointList->setAt(_pointCount++,Vector3(0,0,-_radius));
   _pointList->setAt(_pointCount++,Vector3(0,0,_radius));
 
-  GEOM_ASSERT(_pointCount == _pointList->getSize());
-  GEOM_ASSERT(_indexCount == _indexList->getSize());
+  GEOM_ASSERT(_pointCount == _pointList->size());
+  GEOM_ASSERT(_indexCount == _indexList->size());
 
   PolylinePtr _skeleton(new Polyline(Vector3(_pointList->getAt(_bot)),
                                      Vector3(_pointList->getAt(_top))));

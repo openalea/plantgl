@@ -148,7 +148,7 @@ using namespace std;
 
 #define GEOM_PRINT_INDEXN(stream,val) { \
     stream << "["; \
-    uint_t _sizej = val.getSize(); \
+    uint_t _sizej = val.size(); \
     for (uint_t _j = 0; _j < _sizej; _j++) \
       stream << val.getAt(_j) << (_j == (_sizej - 1) ? "]" : ","); \
   }
@@ -241,7 +241,7 @@ using namespace std;
     stream << __indent << #field << " [ " << endl; \
     GEOM_PRINT_INCREMENT_INDENT; \
     stream << __indent; \
-    uint_t _sizei = obj->get##field()->getSize(); \
+    uint_t _sizei = obj->get##field()->size(); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(stream,obj->get##field()->getAt(_i)); \
       if (_i != (_sizei - 1)) stream << ", " << endl << __indent ; \
@@ -256,7 +256,7 @@ using namespace std;
     stream << __indent << #field << " [" << endl; \
     GEOM_PRINT_INCREMENT_INDENT; \
     stream << __indent << " [ " ; \
-    uint_t _sizei = obj->get##field()->getSize(); \
+    uint_t _sizei = obj->get##field()->size(); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(stream,obj->get##field()->getAt(_i / _cols ,_i % _cols)); \
       if (_i != (_sizei - 1)){ \

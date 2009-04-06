@@ -240,10 +240,10 @@ void Scene::add( const Shape3DPtr& shape ) {
       - shape must be non null and valid. */
 void Scene::remove( const Shape3DPtr& shape )
 {
-	Scene::iterator it = getBegin();
+	Scene::iterator it = begin();
     lock();
-	while(it != getEnd() && *it != shape)++it;
-	if(it != getEnd())remove(it);
+	while(it != end() && *it != shape)++it;
+	if(it != end())remove(it);
     unlock();
 }
 
@@ -324,40 +324,20 @@ bool Scene::applyAppearanceOnly( Action& action ) {
 }
 
 /* ----------------------------------------------------------------------- */
-Scene::const_iterator
-Scene::getBegin( ) const {
-  return __shapeList.begin();
-}
-
-Scene::iterator
-Scene::getBegin( ) {
-  return __shapeList.begin();
-}
-
-Scene::const_iterator
-Scene::getEnd( ) const {
-  return __shapeList.end();
-}
-
-Scene::iterator
-Scene::getEnd( ) {
-  return __shapeList.end();
-}
-
-uint_t Scene::getSize( ) const {
+uint_t Scene::size( ) const {
   lock();
   uint_t s = __shapeList.size();
   unlock();
   return s;
 }
 
-void Scene::Resize(const uint_t size ) {
+void Scene::resize(const uint_t size ) {
   lock();
   __shapeList.resize(size);
   unlock();
 }
 
-bool Scene::isEmpty( ) const {
+bool Scene::empty( ) const {
   lock();
   bool b = __shapeList.empty();
   unlock();
@@ -415,7 +395,7 @@ Scene::getSceneObjectId(uint_t id ) const {
 ScenePtr Scene::deepcopy(DeepCopier& copier) const {
   ScenePtr ptr(new Scene(*this));
   lock();
-  for(Scene::iterator _it = ptr->getBegin() ; _it != ptr->getEnd(); _it++)
+  for(Scene::iterator _it = ptr->begin() ; _it != ptr->end(); _it++)
 	  copier.copy_object_attribute(*_it);
   unlock();
   return ptr;
@@ -459,7 +439,7 @@ void Scene::merge( const ScenePtr& scene ) {
   GEOM_ASSERT((scene) && (scene->isValid()));
   lock();
   scene->lock();
-  __shapeList.insert(__shapeList.end(),scene->getBegin(),scene->getEnd());
+  __shapeList.insert(__shapeList.end(),scene->begin(),scene->end());
   scene->unlock();
   unlock();
 }

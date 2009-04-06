@@ -134,7 +134,7 @@ QuantisedFunctionPtr LineicModel::getArcLengthToUMapping() const
   }
   points->setAt(j-1,Vector2(1.0,lk));
   if (j != stride+1){
-      points = Point2ArrayPtr(new Point2Array(points->getBegin(),points->getBegin()+j));
+      points = Point2ArrayPtr(new Point2Array(points->begin(),points->begin()+j));
   }
   return QuantisedFunctionPtr(new QuantisedFunction(points,5*stride));
 }

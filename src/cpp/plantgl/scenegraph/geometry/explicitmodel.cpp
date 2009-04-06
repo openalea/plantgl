@@ -80,12 +80,12 @@ bool ExplicitModel::Builder::EMValid( ) const
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"ExplicitModel","PointList");
     return false;
   };
-  if ((*PointList)->getSize() < 1) {
+  if ((*PointList)->size() < 1) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"ExplicitModel","PointList","Number of points must be greater than 1.");
     return false;
   };
 
-  uint_t _pointListSize = (*PointList)->getSize();
+  uint_t _pointListSize = (*PointList)->size();
   for (uint_t _i = 0; _i < _pointListSize; _i++)
     if (! (*PointList)->getAt(_i).isValid()) {
       const Vector3& p = (*PointList)->getAt(_i);
@@ -130,7 +130,7 @@ ExplicitModel::getPointList( ) {
 
 uint_t
 ExplicitModel::getPointListSize( ) const {
-  return __pointList->getSize();
+  return __pointList->size();
 }
 
 Color4ArrayPtr& 

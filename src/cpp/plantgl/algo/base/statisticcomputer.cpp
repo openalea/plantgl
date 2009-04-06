@@ -587,9 +587,9 @@ GEOM_TRACE("process IFS");
 //todo OK
 
   const Transform4ArrayPtr& tList= ifs->getTransfoList();
-  Transform4Ptr t4= *(tList->getBegin());
+  Transform4Ptr t4= *(tList->begin());
 
-  for( uchar_t i= 0; i < tList->getSize(); i++ )
+  for( uchar_t i= 0; i < tList->size(); i++ )
     __memsize += sizeof(*t4) * sizeof(*(ifs->getTransfoList()));
 
   GEOM_APPLY(ifs,Geometry);

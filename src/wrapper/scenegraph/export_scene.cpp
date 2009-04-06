@@ -85,8 +85,8 @@ ScenePtr sc_fromlist( boost::python::list l )
 
 Shape3DPtr sc_getitem( Scene* s, int pos )
 {
-  if( pos < 0 && pos > -(int)s->getSize() ) return s->getAt( s->getSize() + pos );
-  else if (pos < s->getSize()) return s->getAt( pos );
+  if( pos < 0 && pos > -(int)s->size() ) return s->getAt( s->size() + pos );
+  else if (pos < s->size()) return s->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
@@ -108,16 +108,16 @@ Shape3DPtr sc_findSceneObject( Scene* s, size_t id )
 
 void sc_setitem( Scene* s, int pos, Shape3DPtr v )
 {
-  if( pos < 0 && pos > -(int)s->getSize() ) return s->setAt( s->getSize() + pos, v );
-  if (pos < s->getSize()) s->setAt( pos ,v );
+  if( pos < 0 && pos > -(int)s->size() ) return s->setAt( s->size() + pos, v );
+  if (pos < s->size()) s->setAt( pos ,v );
   else throw PythonExc_IndexError();
 }
 
 void sc_delitem( Scene* s, int pos )
 {
   Scene::iterator it;
-  if( pos < 0 && pos > -(int)s->getSize() ) { it = s->getEnd()+pos;  return s->remove( it ); }
-  if (pos < s->getSize()) { it = s->getBegin() + pos; s->remove(it ); } 
+  if( pos < 0 && pos > -(int)s->size() ) { it = s->end()+pos;  return s->remove( it ); }
+  if (pos < s->size()) { it = s->begin() + pos; s->remove(it ); } 
   else throw PythonExc_IndexError();
 }
 
@@ -169,10 +169,10 @@ void sc_save2(Scene* s ,const std::string& fname,const std::string& format){
 uint_t sc_index( Scene* sc, Shape3DPtr sh)
 {
   sc->lock();
-  Scene::iterator it = std::find(sc->getBegin(),sc->getEnd(),sh);
-  if (it ==  sc->getEnd())
+  Scene::iterator it = std::find(sc->begin(),sc->end(),sh);
+  if (it ==  sc->end())
 	{sc->unlock(); throw PythonExc_ValueError(); }
-  uint_t dist = std::distance(sc->getBegin(),it);
+  uint_t dist = std::distance(sc->begin(),it);
   sc->unlock();
   return dist;
 }
@@ -180,8 +180,8 @@ uint_t sc_index( Scene* sc, Shape3DPtr sh)
 void sc_remove( Scene* sc, Shape3DPtr sh)
 {
   sc->lock();
-  Scene::iterator it = std::find(sc->getBegin(),sc->getEnd(),sh);
-  if (it ==  sc->getEnd())
+  Scene::iterator it = std::find(sc->begin(),sc->end(),sh);
+  if (it ==  sc->end())
 	{sc->unlock(); throw PythonExc_ValueError(); }
   sc->remove(it);
   sc->unlock();
@@ -215,7 +215,7 @@ void export_Scene()
 	sc.def("add", &sc_add2);
     sc.def("add", &Scene::merge);
     sc.def("merge", &Scene::merge);
-    sc.def("__len__", &Scene::getSize);
+    sc.def("__len__", &Scene::size);
     sc.def("__getitem__", &sc_getitem);
     sc.def("__setitem__", &sc_setitem);
     sc.def("__delitem__", &sc_delitem);

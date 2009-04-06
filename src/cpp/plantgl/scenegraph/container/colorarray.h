@@ -68,9 +68,9 @@ public:
   }
 
   inline uchar_t * toUcharArray() const {
-	  size_t size = getSize();
-	  uchar_t * data = new uchar_t[3*size];
-	  for( size_t i = 0 ; i < size; ++i )
+	  size_t len = size();
+	  uchar_t * data = new uchar_t[3*len];
+	  for( size_t i = 0 ; i < len; ++i )
       {
         const Color3& color = getAt( i );
         data[ 3*i ] = color.getRed();
@@ -109,9 +109,9 @@ public:
   }
 
   inline uchar_t * toUcharArray() const {
-	  size_t size = getSize();
-	  uchar_t * data = new uchar_t[4*size];
-	  for( size_t i = 0 ; i < size; ++i )
+	  size_t len = size();
+	  uchar_t * data = new uchar_t[4*len];
+	  for( size_t i = 0 ; i < len; ++i )
       {
         const Color4& color = getAt( i );
         data[ 4*i ] = color.getRed();

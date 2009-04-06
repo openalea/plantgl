@@ -213,6 +213,7 @@ public:
   /// @name Cast operation
   //@{
 
+#ifndef PGL_NO_DEPRECATED
   /// Cast operation
   template <class U>
   attribute_deprecated inline RefCountPtr& cast( const RefCountPtr<U>& ptr )
@@ -234,7 +235,7 @@ public:
     if (ptr.get() != NULL)return rptr.cast(ptr);
     return rptr;
   }
-
+#endif
 
   //@}
 
@@ -292,22 +293,23 @@ public:
   /// @name Conversion operators
   //@{
 
-  /// Returns true if and only if \e self is not null.
-  //  operator bool( ) const { return __ptr != 0; }
-  
-  /// Return a conversion of \e self into bool
-  attribute_deprecated bool toBool( ) const { return __ptr != 0; }
-
   /// Implicit conversion into normal pointer.
   operator T * ( ) const { return __ptr; }
   
   /// Return a conversion of \e self into T *
-  attribute_deprecated T * toPtr( ) const { return __ptr; }
   T * get( ) const { return __ptr; }
+
+  
+#ifndef PGL_NO_DEPRECATED
+  /// Return a conversion of \e self into bool
+  attribute_deprecated bool toBool( ) const { return __ptr != 0; }
+
+  /// Return a conversion of \e self into T *
+  attribute_deprecated T * toPtr( ) const { return __ptr; }
 
   /// Return a conversion of \e self into size_t
   attribute_deprecated size_t toSizeT( ) const { return (size_t)__ptr; }
-  
+
   /// Return a conversion of \e self into uint_t
   attribute_deprecated uint32_t toUint32( ) const 
 #if __WORDSIZE == 64
@@ -315,20 +317,23 @@ public:
 #else
   { return (uint32_t)__ptr; }
 #endif
+#endif
   
   
   //@}
   /// @name Nullness testing operators
   //@{
 
+  /// Returns true if and only if \e self is null.
+  bool operator!( ) const { return __ptr == 0; }
+
+#ifndef PGL_NO_DEPRECATED
   /// Returns true if and only if \e self is not null.
   attribute_deprecated bool isValid( ) const { return __ptr != 0; }
 
   /// Returns true if and only if \e self is null.
-  bool operator!( ) const { return __ptr == 0; }
-
-  /// Returns true if and only if \e self is null.
   attribute_deprecated bool isNull( ) const { return __ptr == 0; }
+#endif
 
   //@}
 
@@ -453,13 +458,21 @@ public:
   }
 
   /// Returns the number of reference to \e self.
-  attribute_deprecated inline size_t getReferenceCount( ) const 
+  inline size_t use_count( ) const 
   {
     return _ref_count;
   }
 
+
+  /// Returns whether \e self is shared.
+  inline bool unique( ) const
+  {
+    return _ref_count == 1;
+  }
+
+#ifndef PGL_NO_DEPRECATED
   /// Returns the number of reference to \e self.
-  inline size_t use_count( ) const 
+  attribute_deprecated inline size_t getReferenceCount( ) const 
   {
     return _ref_count;
   }
@@ -469,12 +482,7 @@ public:
   {
     return _ref_count > 1;
   }
-
-  /// Returns whether \e self is shared.
-  inline bool unique( ) const
-  {
-    return _ref_count == 1;
-  }
+#endif
 
   /// Decrements the reference counter.  
   inline void removeReference( )

@@ -48,8 +48,8 @@ TOOLS_USING_NAMESPACE
 #define GEOM_GLSKELRENDERER_DRAW_SKEL(skel) { \
     glBegin(GL_LINE_STRIP); \
     const Point3ArrayPtr& points = skel->getPointList(); \
-    for (Point3Array::const_iterator _i = points->getBegin(); \
-         _i != points->getEnd(); \
+    for (Point3Array::const_iterator _i = points->begin(); \
+         _i != points->end(); \
          _i++) \
       glGeomVertex(*_i); \
     glEnd(); \
@@ -407,8 +407,8 @@ bool GLSkelRenderer::process( Polyline2D * polyline ) {
 
   glBegin(GL_LINE_STRIP);
   const Point2ArrayPtr& points = polyline->getPointList();
-  for (Point2Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  for (Point2Array::const_iterator _i = points->begin();
+       _i != points->end();
        _i++){
      glGeomVertex(_i->x(),_i->y(),0);
   }

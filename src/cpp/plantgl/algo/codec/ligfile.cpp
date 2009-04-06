@@ -482,9 +482,9 @@ ScenePtr PGL(readLineTree)(string ligFile,
     // (*SceneObject::commentStream) << "Read Line Tree on " << ligFile << " , " << dtaFile << " and on " << smbpath << endl;
     Dtafile d(dtaFile,smbpath);
     if(d.isValid()){
-      // (*SceneObject::commentStream) << "Dta File read (" << d.getSize() << ") - Valid"  << endl;
+      // (*SceneObject::commentStream) << "Dta File read (" << d.size() << ") - Valid"  << endl;
       Ligfile l(ligFile,bigendian);
-      // (*SceneObject::commentStream) << "Lig File read (" << l.getSize() << ") - " << (l.isValid()?"Valid":"Invalid") << endl;
+      // (*SceneObject::commentStream) << "Lig File read (" << l.size() << ") - " << (l.isValid()?"Valid":"Invalid") << endl;
       if(!l.isValid()){
 		   pglError("Error : Invalid Lig File !");
            result = d.getScene();
@@ -497,7 +497,7 @@ ScenePtr PGL(readLineTree)(string ligFile,
         }
     chg_dir(p);
     if(!result->isValid())pglError("Error : Invalid Scene !");
-    // else (*SceneObject::commentStream) << "Scene of " << result->getSize() << " element(s)" << endl;
+    // else (*SceneObject::commentStream) << "Scene of " << result->size() << " element(s)" << endl;
     return result;
 }
 

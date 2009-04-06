@@ -78,21 +78,21 @@ bool Taper::isValid( ) const {
 
 Point3ArrayPtr Taper::transform( const Point3ArrayPtr& points ) const {
   GEOM_ASSERT(points);
-  Point3ArrayPtr _tPoints(new Point3Array(points->getSize()));
+  Point3ArrayPtr _tPoints(new Point3Array(points->size()));
 
-  if (points->getSize()) {
+  if (points->size()) {
 
     pair<Point3Array::const_iterator,Point3Array::const_iterator> _zMinMax;
     _zMinMax = points->getZMinAndMax();
 
     real_t _deltaZ = _zMinMax.second->z() - _zMinMax.first->z();
 
-    Point3Array::iterator _ti = _tPoints->getBegin();
+    Point3Array::iterator _ti = _tPoints->begin();
 
     if (_deltaZ > GEOM_EPSILON)
 
-      for (Point3Array::iterator _i = points->getBegin();
-           _i != points->getEnd();
+      for (Point3Array::iterator _i = points->begin();
+           _i != points->end();
            _i++) {
 
         real_t _dZ = _i->z() - _zMinMax.first->z();
@@ -113,21 +113,21 @@ Point3ArrayPtr Taper::transform( const Point3ArrayPtr& points ) const {
 
 Point4ArrayPtr Taper::transform( const Point4ArrayPtr& points ) const {
   GEOM_ASSERT(points);
-  Point4ArrayPtr _tPoints(new Point4Array(points->getSize()));
+  Point4ArrayPtr _tPoints(new Point4Array(points->size()));
 
-  if (points->getSize()) {
+  if (points->size()) {
 
     pair<Point4Array::const_iterator,Point4Array::const_iterator> _zMinMax;
     _zMinMax = points->getZMinAndMax();
 
     real_t _deltaZ = _zMinMax.second->z() - _zMinMax.first->z();
 
-    Point4Array::iterator _ti = _tPoints->getBegin();
+    Point4Array::iterator _ti = _tPoints->begin();
 
     if (_deltaZ > GEOM_EPSILON)
 
-      for (Point4Array::iterator _i = points->getBegin();
-           _i != points->getEnd();
+      for (Point4Array::iterator _i = points->begin();
+           _i != points->end();
            _i++) {
 
         real_t _dZ = _i->z() - _zMinMax.first->z();
@@ -149,21 +149,21 @@ Point4ArrayPtr Taper::transform( const Point4ArrayPtr& points ) const {
 
 Point3MatrixPtr Taper::transform( const Point3MatrixPtr& points ) const {
   GEOM_ASSERT(points);
-  Point3MatrixPtr _tPoints(new Point3Matrix(points->getSize()));
+  Point3MatrixPtr _tPoints(new Point3Matrix(points->size()));
 
-  if (points->getSize()) {
+  if (points->size()) {
 
     pair<Point3Matrix::const_iterator,Point3Matrix::const_iterator> _zMinMax;
     _zMinMax = points->getZMinAndMax();
 
     real_t _deltaZ = _zMinMax.second->z() - _zMinMax.first->z();
 
-    Point3Matrix::iterator _ti = _tPoints->getBegin();
+    Point3Matrix::iterator _ti = _tPoints->begin();
 
     if (_deltaZ > GEOM_EPSILON)
 
-      for (Point3Matrix::iterator _i = points->getBegin();
-           _i != points->getEnd();
+      for (Point3Matrix::iterator _i = points->begin();
+           _i != points->end();
            _i++) {
 
         real_t _dZ = _i->z() - _zMinMax.first->z();
@@ -184,21 +184,21 @@ Point3MatrixPtr Taper::transform( const Point3MatrixPtr& points ) const {
 
 Point4MatrixPtr Taper::transform( const Point4MatrixPtr& points ) const {
   GEOM_ASSERT(points);
-  Point4MatrixPtr _tPoints(new Point4Matrix(points->getSize()));
+  Point4MatrixPtr _tPoints(new Point4Matrix(points->size()));
 
-  if (points->getSize()) {
+  if (points->size()) {
 
     pair<Point4Matrix::const_iterator,Point4Matrix::const_iterator> _zMinMax;
     _zMinMax = points->getZMinAndMax();
 
     real_t _deltaZ = _zMinMax.second->z() - _zMinMax.first->z();
 
-    Point4Matrix::iterator _ti = _tPoints->getBegin();
+    Point4Matrix::iterator _ti = _tPoints->begin();
 
     if (_deltaZ > GEOM_EPSILON)
 
-      for (Point4Matrix::iterator _i = points->getBegin();
-           _i != points->getEnd();
+      for (Point4Matrix::iterator _i = points->begin();
+           _i != points->end();
            _i++) {
 
         real_t _dZ = _i->z() - _zMinMax.first->z();

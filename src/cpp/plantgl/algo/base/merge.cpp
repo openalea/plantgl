@@ -144,7 +144,7 @@ GEOM_TRACE("setIsoModel "<<nbObjects);
   if( (__model ) && __type != OTHER )
     {
     Point3ArrayPtr& points= __model->getPointList();
-    uint_t sizeP= points->getSize();
+    uint_t sizeP= points->size();
     points->reserve( sizeP * nbObjects );
 
     if( __type != POLYLINE && __type != POINT_SET )
@@ -245,9 +245,9 @@ GEOM_TRACE("apply PointSet");
   Point3ArrayPtr pts= geom.getPointList();
 
   Point3Array::iterator _it;
-  for( _it= pts->getEnd()-2; _it != pts->getBegin()-1; _it++ )
+  for( _it= pts->end()-2; _it != pts->begin()-1; _it++ )
     if( !points->contains(*_it) )
-      points->pushBack(*_it);
+      points->push_back(*_it);
 
   return true;
 }
@@ -280,9 +280,9 @@ if( __type != QUAD_SET ){
 
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
-  uint_t size = points->getSize();
+  uint_t size = points->size();
 
-  points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
+  points->insert( points->end(),pts->begin(),pts->end());
 
   QuadSetPtr model = dynamic_pointer_cast<QuadSet>(__model);
   GEOM_ASSERT(model);
@@ -291,7 +291,7 @@ if( __type != QUAD_SET ){
   Point3ArrayPtr& normals= model->getNormalList();
   Point3ArrayPtr n= geom.getNormalList();
 
-  if(n)normals->insert( normals->getEnd(),n->getBegin(),n->getEnd());
+  if(n)normals->insert( normals->end(),n->begin(),n->end());
 
   Index4ArrayPtr& index= model->getIndexList();
   Index4ArrayPtr index1= geom.getIndexList();
@@ -302,17 +302,17 @@ if( __type != QUAD_SET ){
   Index4Array::const_iterator _it;
   if( ccw == ccw1 )
     {
-    for( _it= index1->getBegin(); _it != index1->getEnd(); _it++ )
+    for( _it= index1->begin(); _it != index1->end(); _it++ )
       {
-      index->pushBack( Index4( _it->getAt(0)+size,
+      index->push_back( Index4( _it->getAt(0)+size,
                                _it->getAt(1)+size,
                                _it->getAt(2)+size,
                                _it->getAt(3)+size ) );
       }
     }
   else
-    for( _it= index1->getBegin(); _it != index1->getEnd(); _it++ )
-      index->pushBack( Index4( _it->getAt(3)+size,
+    for( _it= index1->begin(); _it != index1->end(); _it++ )
+      index->push_back( Index4( _it->getAt(3)+size,
                                _it->getAt(2)+size,
                                _it->getAt(1)+size,
                                _it->getAt(0)+size ) );
@@ -337,9 +337,9 @@ GEOM_TRACE("apply TriangleSet");
 
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
-  uint_t size = points->getSize();
+  uint_t size = points->size();
 
-  points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
+  points->insert( points->end(),pts->begin(),pts->end());
 
   TriangleSetPtr model = dynamic_pointer_cast<TriangleSet>(__model);
   GEOM_ASSERT(model);
@@ -348,7 +348,7 @@ GEOM_TRACE("apply TriangleSet");
   Point3ArrayPtr& normals= model->getNormalList();
   Point3ArrayPtr n= geom.getNormalList();
 
-  if(n)normals->insert( normals->getEnd(),n->getBegin(),n->getEnd());
+  if(n)normals->insert( normals->end(),n->begin(),n->end());
 
   Index3ArrayPtr& index= model->getIndexList();
   Index3ArrayPtr index1= geom.getIndexList();
@@ -358,13 +358,13 @@ GEOM_TRACE("apply TriangleSet");
 
   Index3Array::const_iterator _it;
   if( ccw == ccw1 )
-    for( _it= index1->getBegin(); _it != index1->getEnd(); _it++ )
-      index->pushBack( Index3( _it->getAt(0)+size,
+    for( _it= index1->begin(); _it != index1->end(); _it++ )
+      index->push_back( Index3( _it->getAt(0)+size,
                                _it->getAt(1)+size,
                                _it->getAt(2)+size ) );
   else
-    for( _it= index1->getBegin(); _it != index1->getEnd(); _it++ )
-      index->pushBack( Index3( _it->getAt(3)+size,
+    for( _it= index1->begin(); _it != index1->end(); _it++ )
+      index->push_back( Index3( _it->getAt(3)+size,
                                _it->getAt(2)+size,
                                _it->getAt(1)+size ) );
   return true;
@@ -387,9 +387,9 @@ bool Merge::apply( FaceSet& geom )
 
   Point3ArrayPtr& points= __model->getPointList();
   Point3ArrayPtr pts= geom.getPointList();
-  uint_t size = points->getSize();
+  uint_t size = points->size();
 
-  points->insert( points->getEnd(),pts->getBegin(),pts->getEnd());
+  points->insert( points->end(),pts->begin(),pts->end());
 
   FaceSetPtr model = dynamic_pointer_cast<FaceSet>(__model);
   GEOM_ASSERT(model);
@@ -397,7 +397,7 @@ bool Merge::apply( FaceSet& geom )
   checkNormals(geom);
   Point3ArrayPtr& normals= model->getNormalList();
   Point3ArrayPtr n= geom.getNormalList();
-  if(n)normals->insert( normals->getEnd(),n->getBegin(),n->getEnd());
+  if(n)normals->insert( normals->end(),n->begin(),n->end());
 
   IndexArrayPtr& index= model->getIndexList();
   IndexArrayPtr index1= geom.getIndexList();
@@ -408,16 +408,16 @@ bool Merge::apply( FaceSet& geom )
   IndexArray::const_iterator _it;
   Index::const_iterator _it2;
 
-  for( _it= index1->getBegin(); _it != index1->getEnd(); _it++ )
+  for( _it= index1->begin(); _it != index1->end(); _it++ )
     {
-    register uint_t n= _it->getSize();
+    register uint_t n= _it->size();
     Index _new(n);
     uint_t idi= ( ccw == ccw1 ) ? 0 : n-1;
-    for( _it2=_it->getBegin();
-         _it2 != _it->getEnd();
+    for( _it2=_it->begin();
+         _it2 != _it->end();
          _it2++, ( ccw == ccw1 ) ? idi++ : idi--)
        _new.setAt(idi,*_it2+size);
-    index->pushBack(_new);
+    index->push_back(_new);
     }
 
   return true;

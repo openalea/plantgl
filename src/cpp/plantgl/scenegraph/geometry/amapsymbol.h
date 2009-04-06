@@ -126,9 +126,15 @@ public:
       in stream. */
   virtual TOOLS(beifstream)& read( TOOLS(beifstream)& stream );
 
-  const TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j ) const;
-  
-  TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j );
+#ifndef PGL_NO_DEPRECATED
+  attribute_deprecated inline const TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j ) const
+  { return getFaceTexCoord3At(i,j); }
+  attribute_deprecated inline TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j )
+  { return getFaceTexCoord3At(i,j); }
+#endif
+
+  const TOOLS(Vector3)& getFaceTexCoord3At( uint_t i, uint_t j ) const;  
+  TOOLS(Vector3)& getFaceTexCoord3At( uint_t i, uint_t j );
 
   const Point3ArrayPtr& getTexCoord3List() const{
 	return __texCoord3List; }

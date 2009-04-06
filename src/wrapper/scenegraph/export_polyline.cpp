@@ -58,21 +58,21 @@ DEF_POINTEE( Polyline )
 
 Vector3 gpl_getitem( Polyline* p, size_t pos )
 {
-  if (p->getPointList() && pos < p->getPointList()->getSize())
+  if (p->getPointList() && pos < p->getPointList()->size())
 	return p->getPointListAt( pos );
   else throw PythonExc_IndexError();
 }
 
 void gpl_setitem( Polyline* p, size_t pos, Vector3* v )
 {
-  if (p->getPointList() && pos < p->getPointList()->getSize())
+  if (p->getPointList() && pos < p->getPointList()->size())
 	p->getPointListAt( pos ) = *v;
   else throw PythonExc_IndexError();
 }
 
 size_t gpl_size( Polyline* pl )
 {
-  return (pl->getPointList()?pl->getPointList()->getSize():0);
+  return (pl->getPointList()?pl->getPointList()->size():0);
 }
 
 std::string gpl_repr( Polyline* p )
@@ -107,14 +107,14 @@ DEF_POINTEE( Polyline2D )
 
 Vector2 gpl2_getitem( Polyline2D* p, size_t pos )
 {
-  if (p->getPointList() && pos < p->getPointList()->getSize())
+  if (p->getPointList() && pos < p->getPointList()->size())
 	return p->getPointListAt( pos );
   else throw PythonExc_IndexError();
 }
 
 void gpl2_setitem( Polyline2D* p, size_t pos, Vector2* v )
 {
-  if (p->getPointList() && pos < p->getPointList()->getSize())
+  if (p->getPointList() && pos < p->getPointList()->size())
 	p->getPointListAt( pos ) = *v;
   else throw PythonExc_IndexError();
 }
@@ -122,7 +122,7 @@ void gpl2_setitem( Polyline2D* p, size_t pos, Vector2* v )
 
 size_t gpl2_size( Polyline2D* pl )
 {
-  return (pl->getPointList()?pl->getPointList()->getSize():0);
+  return (pl->getPointList()?pl->getPointList()->size():0);
 }
 
 std::string gpl2_repr( Polyline2D* p )

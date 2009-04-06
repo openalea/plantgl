@@ -166,10 +166,10 @@ bool GeneralMatrix3Transformation::isValid() const {
 Point2ArrayPtr
 GeneralMatrix3Transformation::transform( const Point2ArrayPtr& points ) const{
   GEOM_ASSERT(points);
-  Point2ArrayPtr _tPoints(new Point2Array(points->getSize()));
-  Point2Array::iterator _ti = _tPoints->getBegin();
-  for (Point2Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point2ArrayPtr _tPoints(new Point2Array(points->size()));
+  Point2Array::iterator _ti = _tPoints->begin();
+  for (Point2Array::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = (__matrix * Vector3(*_i,1.0)).project();
   return _tPoints;
@@ -178,10 +178,10 @@ GeneralMatrix3Transformation::transform( const Point2ArrayPtr& points ) const{
 Point3ArrayPtr
 GeneralMatrix3Transformation::transform( const Point3ArrayPtr& points ) const{
   GEOM_ASSERT(points);
-  Point3ArrayPtr _tPoints(new Point3Array(points->getSize()));
-  Point3Array::iterator _ti = _tPoints->getBegin();
-  for (Point3Array::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point3ArrayPtr _tPoints(new Point3Array(points->size()));
+  Point3Array::iterator _ti = _tPoints->begin();
+  for (Point3Array::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = __matrix * (*_i);
   return _tPoints;
@@ -190,10 +190,10 @@ GeneralMatrix3Transformation::transform( const Point3ArrayPtr& points ) const{
 Point2MatrixPtr
 GeneralMatrix3Transformation::transform( const Point2MatrixPtr& points ) const{
   GEOM_ASSERT(points);
-  Point2MatrixPtr _tPoints(new Point2Matrix(points->getSize()));
-  Point2Matrix::iterator _ti = _tPoints->getBegin();
-  for (Point2Matrix::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point2MatrixPtr _tPoints(new Point2Matrix(points->size()));
+  Point2Matrix::iterator _ti = _tPoints->begin();
+  for (Point2Matrix::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = (__matrix * Vector3(*_i,1.0)).project();
   return _tPoints;
@@ -202,10 +202,10 @@ GeneralMatrix3Transformation::transform( const Point2MatrixPtr& points ) const{
 Point3MatrixPtr
 GeneralMatrix3Transformation::transform( const Point3MatrixPtr& points ) const{
   GEOM_ASSERT(points);
-  Point3MatrixPtr _tPoints(new Point3Matrix(points->getSize()));
-  Point3Matrix::iterator _ti = _tPoints->getBegin();
-  for (Point3Matrix::const_iterator _i = points->getBegin();
-       _i != points->getEnd();
+  Point3MatrixPtr _tPoints(new Point3Matrix(points->size()));
+  Point3Matrix::iterator _ti = _tPoints->begin();
+  for (Point3Matrix::const_iterator _i = points->begin();
+       _i != points->end();
          _i++)
     *_ti++ = __matrix * (*_i);
   return _tPoints;
@@ -318,10 +318,10 @@ Point3ArrayPtr Transform4::transform( const Point3ArrayPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  Point3ArrayPtr _tPoints(new Point3Array(points->getSize()));
-  Point3Array::iterator _ti = _tPoints->getBegin();
-  Point3Array::const_iterator _i = points->getBegin();
-  for ( _i = points->getBegin(); _i != points->getEnd(); _i++ )
+  Point3ArrayPtr _tPoints(new Point3Array(points->size()));
+  Point3Array::iterator _ti = _tPoints->begin();
+  Point3Array::const_iterator _i = points->begin();
+  for ( _i = points->begin(); _i != points->end(); _i++ )
     *_ti++ = __matrix * (*_i);
   return _tPoints;
 }
@@ -331,10 +331,10 @@ Point4ArrayPtr Transform4::transform( const Point4ArrayPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  Point4ArrayPtr _tPoints(new Point4Array(points->getSize()));
-  Point4Array::iterator _ti = _tPoints->getBegin();
-  Point4Array::const_iterator _i = points->getBegin();
-  for ( _i = points->getBegin(); _i != points->getEnd(); _i++ )
+  Point4ArrayPtr _tPoints(new Point4Array(points->size()));
+  Point4Array::iterator _ti = _tPoints->begin();
+  Point4Array::const_iterator _i = points->begin();
+  for ( _i = points->begin(); _i != points->end(); _i++ )
     *_ti++ = __matrix * (*_i);
   return _tPoints;
 }
@@ -344,10 +344,10 @@ Point3MatrixPtr Transform4::transform( const Point3MatrixPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  Point3MatrixPtr _tPoints(new Point3Matrix(points->getSize()));
-  Point3Matrix::iterator _ti = _tPoints->getBegin();
-  Point3Matrix::const_iterator _i = points->getBegin();
-  for ( _i = points->getBegin(); _i != points->getEnd(); _i++ )
+  Point3MatrixPtr _tPoints(new Point3Matrix(points->size()));
+  Point3Matrix::iterator _ti = _tPoints->begin();
+  Point3Matrix::const_iterator _i = points->begin();
+  for ( _i = points->begin(); _i != points->end(); _i++ )
     *_ti++ = __matrix * (*_i);
   return _tPoints;
 }
@@ -357,10 +357,10 @@ Point4MatrixPtr Transform4::transform( const Point4MatrixPtr& points ) const
 /////////////////////////////////////////////////////////////////////////////
 {
   GEOM_ASSERT(points);
-  Point4MatrixPtr _tPoints(new Point4Matrix(points->getSize()));
-  Point4Matrix::iterator _ti = _tPoints->getBegin();
-  Point4Matrix::const_iterator _i = points->getBegin();
-  for ( _i = points->getBegin(); _i != points->getEnd(); _i++ )
+  Point4MatrixPtr _tPoints(new Point4Matrix(points->size()));
+  Point4Matrix::iterator _ti = _tPoints->begin();
+  Point4Matrix::const_iterator _i = points->begin();
+  for ( _i = points->begin(); _i != points->end(); _i++ )
     *_ti++ = __matrix * (*_i);
   return _tPoints;
 }
