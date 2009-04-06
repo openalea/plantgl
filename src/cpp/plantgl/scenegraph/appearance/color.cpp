@@ -41,10 +41,10 @@ TOOLS_USING_NAMESPACE
 /*  --------------------------------------------------------------------- */
 
 
-#define __RED __T[0]
-#define __GREEN __T[1]
-#define __BLUE __T[2]
-#define __ALPHA __T[3]
+#define __RED getAt(0)
+#define __GREEN getAt(1)
+#define __BLUE getAt(2)
+#define __ALPHA getAt(3)
 
 /* ----------------------------------------------------------------------- */
 

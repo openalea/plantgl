@@ -303,13 +303,13 @@ public:
   /// Constructs an Array1 of size \e size
   Array1( size_t size = 0 ) :
     RefCountObject(),
-    PglVector(size) {
+    PglVector<T>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
   Array1( size_t size, const T& t ) :
     RefCountObject(),
-    PglVector(size,t) {
+    PglVector<T>(size,t) {
   }
 
 
@@ -317,12 +317,12 @@ public:
   template <class InIterator>
   Array1( InIterator begin, InIterator end ) :
     RefCountObject(),
-    PglVector(begin,end) {
+    PglVector<T>(begin,end) {
   }
 
   /// Inserts \e t into \e self before the position pointed by \e it.
   Array1& operator+=( const Array1& t ) {
-    __A.insert(__A.end(),t.begin(),t.end());
+    PglVector<T>::__A.insert(PglVector<T>::end(),t.begin(),t.end());
 	return *this;
   }
 };

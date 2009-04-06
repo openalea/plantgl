@@ -613,7 +613,7 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
       \post
       - \e self is valid. */
   inline Vector4( const real_t * v4 ):
-  Tuple4<real_t>(v4) {
+  	Tuple4<real_t>(v4) {
   }
 
   /** Constructs a Vector4 with a Vector2 \e v and \e z and \e w.
