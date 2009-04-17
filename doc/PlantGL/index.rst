@@ -56,3 +56,39 @@ how to use VPlants.Plantgl see :ref:`PlantGL_user`.
     openalea_plantgl_algo__pglalgo.rst
     openalea_plantgl_math__pglmath.rst
     openalea_plantgl_gui__pglgui.rst
+
+
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+            
+    openalea_plantgl_algo_mesh_grid_shape_src.rst
+    openalea_plantgl_algo_mesh_refine_src.rst
+    openalea_plantgl_ext_absolute_shapes_src.rst
+    openalea_plantgl_ext_color_src.rst
+    openalea_plantgl_ext_dresser_src.rst
+    openalea_plantgl_ext_geom_box_src.rst
+    openalea_plantgl_ext_geom_color_src.rst
+    openalea_plantgl_ext_geom_geometrical_concept_src.rst
+    openalea_plantgl_ext_geom_interface_abstract_geometry_src.rst
+    openalea_plantgl_ext_geom_nvector_src.rst
+    openalea_plantgl_ext_geom_point_src.rst
+    openalea_plantgl_ext_geom_polygon_src.rst
+    openalea_plantgl_ext_geom_polyhedra_src.rst
+    openalea_plantgl_ext_geom_segment_src.rst
+    openalea_plantgl_ext_geom_sphere_src.rst
+    openalea_plantgl_ext_geom_text_src.rst
+    openalea_plantgl_ext_geom_tools_src.rst
+    openalea_plantgl_ext_interactive_mode_src.rst
+    openalea_plantgl_ext_mesh_src.rst
+    openalea_plantgl_ext_pgl_utils_src.rst
+    openalea_plantgl_ext_shape_database_src.rst
+    openalea_plantgl_scenegraph_cspline_src.rst
+    openalea_plantgl_scenegraph_nurbspatch_nd_src.rst
+    openalea_plantgl_wralea_objects_objectgenerator_src.rst
+    openalea_plantgl_wralea_operator_frog_src.rst
+    openalea_plantgl_wralea_visualization_viewernode_src.rst
+    openalea_plantgl_scenegraph__pglsg.rst
+    openalea_plantgl_algo__pglalgo.rst
+    openalea_plantgl_math__pglmath.rst
+    openalea_plantgl_gui__pglgui.rst
