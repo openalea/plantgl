@@ -59,13 +59,13 @@ public:
 	SpatialArrayN(const VectorType& voxelsize,
 				  const VectorType& minpoint, 
 			      const VectorType& maxpoint):
-		 ArrayN(gridSize(minpoint,maxpoint,voxelsize)),
+		 Base(gridSize(minpoint,maxpoint,voxelsize)),
 	     __origin(minpoint),
 		 __voxelsize(voxelsize)
 		 { }
 
 	SpatialArrayN(const VectorType& voxelsize = VectorType()):
-		 ArrayN(),
+		 Base(),
 	     __origin(),
 		 __voxelsize(voxelsize)
 		 { }

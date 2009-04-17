@@ -136,24 +136,24 @@ public:
 		return getVoxelPoints(cellId(coord));
 	}
 
-	PointContainerPtr getVoxelPoints(const CellId& vid) const{
-		size_t len = __voxels[vid].size();
+	PointContainerPtr getVoxelPoints(const VoxelId& vid) const{
+		size_t len = Base::getAt(vid).size();
 		if (len == 0) return new PointContainer();
 		PointContainerPtr pts(new PointContainer(len));
 		PointIterator itpoints = pts->begin();
-		for(PointIndexList::const_iterator itindex = __voxels[vid].begin(); 
-			itindex != __voxels[vid].end(); ++itindex){
+		for(PointIndexList::const_iterator itindex = Base::getAt(vid).begin(); 
+			itindex != Base::getAt(vid).end(); ++itindex){
 			*itpoints = points()[*itindex];
 		}
 		return pts;
 	}
 
 	inline const PointIndexList& getVoxelPointIndices(const Index& coord) const{
-		return __voxels[cellId(coord)];
+		return Base::getAt(cellId(coord));
 	}
 
-	inline const PointIndexList& getVoxelPointIndices(const CellId& vid) const{
-		return __voxels[vid];
+	inline const PointIndexList& getVoxelPointIndices(const VoxelId& vid) const{
+		return Base::getAt(vid);
 	}
 
 	VoxelIdList get_voxel_around_point(const VectorType& point, real_t radius, bool filterEmpty = true) const {
@@ -162,19 +162,19 @@ public:
 		// discretize radius in term of voxel size
 		Index radiusvoxelsize;
 		for (size_t i = 0; i < NbDimension; ++i){
-			radiusvoxelsize[i] = 1+(radius/__voxelsize[i]);
+			radiusvoxelsize[i] = 1+(radius/SpatialBase::getVoxelSize()[i]);
 		}
 
 		// find min and max voxel coordinates
 		Index mincoord, maxcoord, dim;
 		for (size_t i = 0; i < NbDimension; ++i){
 			mincoord[i] = (centervxl[i] < radiusvoxelsize[i]?0:centervxl[i]-radiusvoxelsize[i]);
-			maxcoord[i] = std::min<size_t>(dimensions()[i]-1,centervxl[i]+radiusvoxelsize[i]);
+			maxcoord[i] = std::min<size_t>(Base::dimensions()[i]-1,centervxl[i]+radiusvoxelsize[i]);
 			dim[i] = maxcoord[i] - mincoord[i];
 		}
 
 		// Index coord = mincoord;
-		real_t r = radius + norm(__voxelsize);
+		real_t r = radius + norm(SpatialBase::getVoxelSize());
 		const_partial_iterator itvoxel = getSubArray(mincoord,dim);
 		while(!itvoxel.atEnd()){
 			// Check whether coord is in ball
@@ -191,8 +191,8 @@ public:
 	PointIndexList query_ball_point(const VectorType& point, real_t radius) const{
 		VoxelIdList voxels = get_voxel_around_point(point,radius);
 		PointIndexList res;
-		for(VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
-			const PointIndexList& voxelpointlist = getAt(*itvoxel);
+		for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
+			const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
 			if(!voxelpointlist.empty()){
 			  for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
 			    // Check whether point i is in the ball

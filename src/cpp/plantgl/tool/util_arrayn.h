@@ -46,7 +46,7 @@ TOOLS_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 template<class ArrayT>
-struct const_partial_iterator {
+struct const_partial_iteratorT {
 public:
     // friend class  ArrayT;
 	typedef typename ArrayT::Index Index;
@@ -73,11 +73,11 @@ protected:
 		}
 
 public:
-	const_partial_iterator(const Index& minindex, const Index& maxindex, const ArrayT * array):
+	const_partial_iteratorT(const Index& minindex, const Index& maxindex, const ArrayT * array):
 			__current(minindex), __minindex(minindex), __maxindex(maxindex), __array(array) {}
 
-    const_partial_iterator<ArrayT>& operator++() { increment(); return *this; }
-    const_partial_iterator<ArrayT> operator++(int i) { const_partial_iterator<ArrayT> t = *this; for (int j =0; j < i; j++)increment(); return t; }
+    const_partial_iteratorT<ArrayT>& operator++() { increment(); return *this; }
+    const_partial_iteratorT<ArrayT> operator++(int i) { const_partial_iteratorT<ArrayT> t = *this; for (int j =0; j < i; j++)increment(); return t; }
 
 	const element_type& value() const { return __array->getAt(__current); }
 	const Index& index() const { return __current; }
@@ -116,7 +116,7 @@ public:
 	typedef std::vector<T> Container;
 	typedef typename Container::iterator iterator;
 	typedef typename Container::const_iterator const_iterator;
-	typedef const_partial_iterator<ArrayN<T,N> > const_partial_iterator;
+	typedef const_partial_iteratorT<ArrayN<T,N> > const_partial_iterator;
 	typedef Tuple<size_t,N> Index;
 	typedef size_t CellId;
 
@@ -169,7 +169,7 @@ public:
 	}
 
 	inline T& getAt(const Index& ind) {
-		return __data[cellId(ind)];
+		return __values[cellId(ind)];
 	}
 
 	inline T& getAt(const CellId& cid) {
