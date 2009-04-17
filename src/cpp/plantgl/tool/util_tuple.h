@@ -263,6 +263,15 @@ public:
     __data[i] = t;
   }  
 
+ /** Sets the \e i-th element of \e self with \e t.
+      \pre
+      - \e i must belong to the range [0,N). */
+  inline void setAll( const T& t ) {
+    GEOM_ASSERT(i < SIZE);
+	for (iterator it = begin(); it != end() ; ++it)
+       *it = t;
+  }  
+
 #ifndef PGL_NO_DEPRECATED
   /// Returns a const iterator at the beginning of \e self.
   inline attribute_deprecated const_iterator getBegin( ) const { return begin(); }
@@ -613,7 +622,8 @@ inline T reduce(const Tuple<T,I>& t, T (* functor )(const T&, const T&))
 { 
 	T res = t[0];
 	for (typename Tuple<T,I>::const_iterator it = t.begin()+1; it != t.end(); ++it)
-		res = *functor(res,*it);
+		res = (*functor)(res,*it);
+	return res;
 }
 
 namespace internal {
@@ -630,6 +640,26 @@ template<class T, int I>
 inline T sum(const Tuple<T,I>& t) { 
 	
 	return reduce<T,I>(t,&internal::add<T>);
+}
+
+/*  ---------------------------------------------------------------------- */
+
+template<class Tuple>
+inline Tuple add(const Tuple& t1, const Tuple& t2) { 
+	Tuple res(t1);
+	typename Tuple::const_iterator it2 = t2.begin();
+	for (typename Tuple::iterator it = res.begin(); it != res.end(); ++it,++it2 )
+		*it += *it2;
+	return res;
+}
+
+template<class Tuple>
+inline Tuple sub(const Tuple& t1, const Tuple& t2) { 
+	Tuple res(t1);
+	typename Tuple::const_iterator it2 = t2.begin();
+	for (typename Tuple::iterator it = res.begin(); it != res.end(); ++it,++it2 )
+		*it -= *it2;
+	return res;
 }
 
 /*  ---------------------------------------------------------------------- */

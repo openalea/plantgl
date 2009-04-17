@@ -30,6 +30,7 @@
  */
 
 #include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_tuple.h>
 #include <plantgl/python/extract_list.h>
 #include <plantgl/algo/grid/regularpointgrid.h>
 #include <boost/python.hpp>
@@ -42,38 +43,59 @@ using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
+
 template<class PointGrid>
  object py_query_ball_point(PointGrid * grid, typename PointGrid::VectorType point, real_t radius) 
  { return make_list(grid->query_ball_point(point,radius))(); }
 
 template<class PointGrid>
- object py_getVoxelCoordFromPoint(PointGrid * grid, typename PointGrid::VectorType v){
-	 return make_list(grid->getVoxelCoordFromPoint(v))();
+ object py_indexFromPoint(PointGrid * grid, typename PointGrid::VectorType v){
+	 return make_pgl_tuple(grid->indexFromPoint(v))();
  }
 
 template<class PointGrid>
-typename PointGrid::VoxelId py_getVoxelIdFromCoord(PointGrid * grid, object c){
-	 return grid->getVoxelIdFromCoord(extract_vec<typename PointGrid::VoxelCoordinate>(c));
+typename PointGrid::VoxelId py_cellId(PointGrid * grid, object c){
+	 return grid->cellId(extract_tuple<typename PointGrid::Index>(c));
  }
 
 template<class PointGrid>
-object  py_getVoxelCoordFromId(PointGrid * grid, typename PointGrid::VoxelId c){
-	 return make_list(grid->getVoxelCoordFromId(c))();
+object  py_index(PointGrid * grid, typename PointGrid::VoxelId c){
+	 return make_pgl_tuple(grid->index(c))();
  }
 
 template<class PointGrid>
-bool py_isValidCoord(PointGrid * grid, object c){
-	 return grid->isValidCoord(extract_vec<typename PointGrid::VoxelCoordinate>(c));
+bool py_isValidIndex(PointGrid * grid, object c){
+	return grid->isValidIndex(extract_tuple<typename PointGrid::Index>(c));
 }
 
 template<class PointGrid>
 typename PointGrid::VectorType py_getVoxelCenter(PointGrid * grid, object c){
-	 return grid->getVoxelCenter(extract_vec<typename PointGrid::VoxelCoordinate>(c));
+	 return grid->getVoxelCenter(extract_tuple<typename PointGrid::Index>(c));
 }
 
 template<class PointGrid>
 typename PointGrid::VectorType py_getVoxelCenterFromId(PointGrid * grid,  typename PointGrid::VoxelId vid){
 	 return grid->getVoxelCenter(vid);
+}
+
+template<class PointGrid>
+typename PointGrid::VectorType py_getVoxelLowerPoint(PointGrid * grid, object c){
+	 return grid->getVoxelLowerPoint(extract_tuple<typename PointGrid::Index>(c));
+}
+
+template<class PointGrid>
+typename PointGrid::VectorType py_getVoxelLowerPointFromId(PointGrid * grid,  typename PointGrid::VoxelId vid){
+	 return grid->getVoxelLowerPoint(vid);
+}
+
+template<class PointGrid>
+typename PointGrid::VectorType py_getVoxelUpperPoint(PointGrid * grid, object c){
+	 return grid->getVoxelUpperPoint(extract_tuple<typename PointGrid::Index>(c));
+}
+
+template<class PointGrid>
+typename PointGrid::VectorType py_getVoxelUpperPointFromId(PointGrid * grid,  typename PointGrid::VoxelId vid){
+	 return grid->getVoxelUpperPoint(vid);
 }
 
 template<class PointGrid>
@@ -94,20 +116,26 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
     template <class classT>
     void visit(classT& c) const
     {
-		c.def(init<real_t,typename PointGrid::PointContainerPtr>())
-	 .def("getVoxelCoordFromPoint",&py_getVoxelCoordFromPoint<PointGrid>)
-	 .def("getVoxelIdFromPoint",&PointGrid::getVoxelIdFromPoint)
-	 .def("getVoxelIdFromCoord",&py_getVoxelIdFromCoord<PointGrid>)
-	 .def("getVoxelCoordFromId",&py_getVoxelCoordFromId<PointGrid>)
+	c.def(init<real_t,typename PointGrid::PointContainerPtr>())
+	 .def(init<typename PointGrid::VectorType,typename PointGrid::VectorType,typename PointGrid::VectorType,typename PointGrid::PointContainerPtr>())
+	 .def("indexFromPoint",&py_indexFromPoint<PointGrid>)
+	 .def("cellIdFromPoint",&PointGrid::cellIdFromPoint)
+	 .def("cellId",&py_cellId<PointGrid>)
+	 .def("index",&py_index<PointGrid>)
 	 .def("isValidId",&PointGrid::isValidId)
-	 .def("isValidCoord",&py_isValidCoord<PointGrid>)
+	 .def("isValidIndex",&py_isValidIndex<PointGrid>)
 	 .def("getVoxelCenter",&py_getVoxelCenter<PointGrid>)
 	 .def("getVoxelCenterFromId",&py_getVoxelCenterFromId<PointGrid>)
+	 .def("getVoxelLowerPoint",&py_getVoxelLowerPoint<PointGrid>)
+	 .def("getVoxelLowerPointFromId",&py_getVoxelLowerPointFromId<PointGrid>)
+	 .def("getVoxelUpperPoint",&py_getVoxelUpperPoint<PointGrid>)
+	 .def("getVoxelUpperPointFromId",&py_getVoxelUpperPointFromId<PointGrid>)
 	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
 	 .def("enable_point",&PointGrid::enable_point)
 	 .def("disable_point",&PointGrid::disable_point)
 	 .def("enable_points",&py_enablepoints<PointGrid>)
 	 .def("disable_points",&py_disablepoints<PointGrid>)
+	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)
          ;
     }
 };

@@ -69,6 +69,19 @@ std::ostream& print_array( Iterator beg, Iterator end,
     return stream << end_sign;
 }
 
+  /// Returns whether \e self contain unique elements.
+template<class Iterator>
+bool isUnique(Iterator beg, Iterator end ) {
+    if (distance(beg,end) == 0) return true;
+    Iterator _first = beg;
+    Iterator _last  = end - 1;
+    while (_first != _last) {
+      if (std::find(_first + 1,end,*_first) != end) return false;
+      _first++;
+    };
+    return true;
+}
+
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -201,14 +214,7 @@ public:
 
   /// Returns whether \e self contain unique elements.
   bool isUnique( ) const {
-    if (__A.empty()) return true;
-    const_iterator _first = __A.begin();
-    const_iterator _last = __A.end() - 1;
-    while (_first != _last) {
-      if (std::find(_first + 1,__A.end(),*_first) != __A.end()) return false;
-      _first++;
-    };
-    return true;
+	  return TOOLS::isUnique(__A.begin(),__A.end());
   }
 
   /// Prints \e self to the output stream \e stream.

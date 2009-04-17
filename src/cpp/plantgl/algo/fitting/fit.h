@@ -211,6 +211,11 @@ class ALGO_API Fit
     */
     static Point2ArrayPtr convexPolyline(const Point2ArrayPtr& _points);
 
+    /*!
+      Fit the 2D points \e points with a bounding circle.
+    */
+	static bool boundingCircle(const Point2ArrayPtr& _points, TOOLS::Vector2& center, real_t& radius);
+
 /* ----------------------------------------------------------------------- */
     /*!
       Fit the points with an extrusion.

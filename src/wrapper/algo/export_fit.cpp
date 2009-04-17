@@ -79,6 +79,14 @@ boost::python::object inertiaAxis2d(Point2Array * points){
 	else return make_tuple(u,v,s);
 }
 
+boost::python::object py_boundingCircle(Point2Array * points){
+	Vector2 center;
+	real_t radius;
+	bool res = Fit::boundingCircle(Point2ArrayPtr(points),center,radius);
+	if (!res) return object();
+	else return make_tuple(center,radius);
+}
+
 /* ----------------------------------------------------------------------- */
 
 void export_Fit()
@@ -123,6 +131,8 @@ void export_Fit()
 	.def("inertiaAxis",inertiaAxis,args("points"))
 	.def("inertiaAxis",inertiaAxis2d,args("points"))
     .staticmethod("inertiaAxis")
+	.def("boundingCircle",py_boundingCircle,args("points"))
+    .staticmethod("boundingCircle")
     ;
   
   

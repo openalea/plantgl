@@ -254,6 +254,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util_arrayn.h"
+				>
+			</File>
+			<File
 				RelativePath=".\util_assert.h"
 				>
 			</File>

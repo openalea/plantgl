@@ -48,6 +48,14 @@ struct make_object {
     boost::python::object operator()() const { return boost::python::object(__c_obj); }
 };
 
+template <class Iterator, class Translator>
+static boost::python::object list_convert(Iterator beg, Iterator end)  {
+        boost::python::list l;
+        for (Iterator it = beg; it != end; ++it)
+            l.append(Translator(*it)());
+        return l;
+    }
+
 template <class T, class Translator = make_object<typename T::value_type> >
 struct list_converter {
 	typedef T list_type;
@@ -62,12 +70,10 @@ struct list_converter {
               const list_const_iterator& c_list_end): 
             __c_list_begin(c_list_begin),__c_list_end(c_list_end){}
 
-    boost::python::object operator()() const {
-        boost::python::list l;
-        for (list_const_iterator it = __c_list_begin; it != __c_list_end; ++it)
-            l.append(Translator(*it)());
-        return l;
-    }
+
+	inline boost::python::object convert() const { return list_convert<list_const_iterator,Translator>(__c_list_begin,__c_list_end); }
+	inline boost::python::object operator()() const { return convert(); }
+	inline operator boost::python::object () const { return convert(); }
 };
 
 template <class T, class Translator>
@@ -75,6 +81,35 @@ list_converter<T,Translator> make_list(const T& c_list) { return list_converter<
 
 template <class T>
 list_converter<T> make_list(const T& c_list) { return list_converter<T>(c_list); }
+
+/* ----------------------------------------------------------------------- */
+
+template <class T, class Translator = make_object<typename T::value_type> >
+struct tuple_converter {
+	typedef T list_type;
+    typedef typename T::const_iterator list_const_iterator;
+    typedef typename T::value_type list_element_type;
+
+    list_const_iterator __c_list_begin;
+    list_const_iterator __c_list_end;
+
+    tuple_converter(const T& c_list): __c_list_begin(c_list.begin()),__c_list_end(c_list.end()){}
+    tuple_converter(const list_const_iterator& c_list_begin,
+              const list_const_iterator& c_list_end): 
+            __c_list_begin(c_list_begin),__c_list_end(c_list_end){}
+
+	inline boost::python::object convert() const {
+		return boost::python::tuple(list_convert<list_const_iterator,Translator>(__c_list_begin,__c_list_end)); 
+	}
+	inline boost::python::object operator()() const { return convert(); }
+	inline operator boost::python::object () const { return convert(); }
+};
+
+template <class T, class Translator>
+tuple_converter<T> make_pgl_tuple(const T& c_tuple) { return tuple_converter<T,Translator>(c_tuple); }
+
+template <class T>
+tuple_converter<T> make_pgl_tuple(const T& c_tuple) { return tuple_converter<T>(c_tuple); }
 
 /* ----------------------------------------------------------------------- */
 
@@ -103,12 +138,14 @@ struct dict_converter {
     dict_converter(const dict_const_iterator& c_dict_begin,const dict_const_iterator& c_dict_end): 
         __c_dict_begin(c_dict_begin),__c_dict_end(c_dict_end){}
 
-    boost::python::object operator()() const {
+    boost::python::object convert() const {
         boost::python::dict d;
         for (dict_const_iterator it = __c_dict_begin; it != __c_dict_end; ++it)
             d[KeyTranslator(it->first)()] = ValueTranslator(it->second)();
         return d;
     }
+	inline boost::python::object operator()() const { return convert(); }
+	inline operator boost::python::object () const { return convert(); }
 };
 
 template <class T, class KeyTranslator, class ValueTranslator>

@@ -327,6 +327,45 @@ GeometryPtr Fit::bsphere(){
 
 /* ----------------------------------------------------------------------- */
 
+#ifdef WITH_CGAL
+#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
+#include <CGAL/Min_circle_2.h>
+#include <CGAL/Min_circle_2_traits_2.h>
+#endif
+/*!
+  Fit the 2D points \e points with a bounding circle.
+ */
+bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t& radius)
+{
+#ifdef WITH_CGAL
+
+	// typedefs
+	typedef  CGAL::Exact_predicates_exact_constructions_kernel K;
+	typedef  CGAL::Min_circle_2_traits_2<K>  Traits;
+	typedef  CGAL::Min_circle_2<Traits>      Min_circle;
+	typedef  Min_circle::Circle				Circle;
+
+	typedef  K::Point_2                      Point;
+
+	std::vector<Point> pointlist(_points->size());
+	std::vector<Point>::iterator it2 = pointlist.begin();
+	for(Point2Array::const_iterator it = _points->begin(); it != _points->end(); ++it, ++it2)
+		*it2 = Point(it->x(),it->y());
+
+    Min_circle  mc( pointlist.begin(), pointlist.end(), true); 
+	if (mc.is_degenerate()) return false;
+	Circle circle = mc.circle();
+    center = Vector2(to_double(circle.center()[0]),to_double(circle.center()[1]));
+	radius = sqrt(to_double(circle.squared_radius()));
+
+    return true;
+#else
+	return false;
+#endif
+
+}
+
+/* ----------------------------------------------------------------------- */
 
 GeometryPtr Fit::cylinder(){
     if(! __pointstofit )return GeometryPtr();

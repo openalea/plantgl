@@ -156,6 +156,8 @@ inline int trunc(double x){
 	return res;
 }
 
+#define hypot _hypot
+
 #endif
 
 /* ----------------------------------------------------------------------- */
