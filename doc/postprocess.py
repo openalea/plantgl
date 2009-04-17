@@ -19,19 +19,24 @@ import os
 import sys
 sys.path.append('../../misc')
 sys.path.append('../../../openalea/misc')
-import sphinx_tools
+from openalea.misc import sphinx_tools
 
 
 
-filenames = ['PlantGL/openalea_plantgl_codec_asc_ref.rst']
+filenames = ['PlantGL/openalea_plantgl_codec_asc_ref.rst', 
+            'PlantGL/openalea_plantgl_codec_gts_ref.rst',
+            'PlantGL/openalea_versionreader_ref.rst'
+            ]
 for file in filenames:
     process = sphinx_tools.PostProcess(file)
     process.remove_inheritance()
+
 
 filenames = ['PlantGL/openalea_versionreader_ref.rst']
 for file in filenames:
     process = sphinx_tools.PostProcess(file)
     process.no_namespace_in_automodule()
+    process.remove_header(nline=2, start=4)
 
 
 print 'Try python setup.py build_sphinx now.'
