@@ -423,6 +423,23 @@ real_t hausdorff_distance(const RCPtr<T> pts1,
 	return (dist1+dist2)/(pts1->size()+pts2->size());
 }
 
+// filter redundant successive value and homogenize value according to 
+template <class Array>
+void filterAndHomogenize(Array& array){
+	typedef typename Array::iterator iterator;
+	typedef typename Array::value_type value_type;
+	if (array.empty()) return;
+	value_type ref = array[0];
+	for(iterator it = array.begin()+1; it != array.end(); ){
+		if (false) { // if current 
+			iterator todelete = it; 
+			++it;
+			array.erase(todelete);
+		}
+		else ++it;
+	}
+}
+
 // __geom_pointarray.h__
 /* ----------------------------------------------------------------------- */
 

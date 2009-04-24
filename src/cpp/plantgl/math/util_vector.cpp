@@ -237,14 +237,19 @@ ostream& operator<<( ostream& stream, const Vector2& v ) {
 
 bool operator<(const Vector2& v1, const Vector2& v2)
 {
-  if(v1.__X < v2.__X)
-    {
-      return true;
-    }
-  if(v1.__X > v2.__X)
-    {
-      return false;
-    }
+  if (v1.__X < (v2.__X - GEOM_TOLERANCE)) return true;
+  if (v1.__X > (v2.__X + GEOM_TOLERANCE)) return false;
+  return v1.__Y < (v2.__Y- GEOM_TOLERANCE);
+}
+
+bool strictly_eq( const Vector2& v1, const Vector2& v2 ) {
+  return normLinf(v1 - v2) ==0;
+}
+
+bool strictly_inf(const Vector2& v1, const Vector2& v2)
+{
+  if (v1.__X < v2.__X) return true;
+  if (v1.__X > v2.__X) return false;
   return v1.__Y < v2.__Y;
 }
 
@@ -610,25 +615,27 @@ ostream& operator<<( ostream& stream, const Vector3& v ) {
   return stream << "<" << v.__X << "," << v.__Y << "," << v.__Z << ">";
 }
 
+
 bool operator<(const Vector3& v1, const Vector3& v2)
 {
-  if(v1.__X < v2.__X)
-    {
-      return true;
-    }
-  if(v1.__X > v2.__X)
-    {
-      return false;
-    }
-  if(v1.__Y < v2.__Y)
-    {
-      return true;
-    }
-  if(v1.__Y > v2.__Y)
-    {
-      return false;
-    }
-  return v1.__Z < v2.__Z;
+  if (v1.__X < (v2.__X - GEOM_TOLERANCE)) return true;
+  if (v1.__X > (v2.__X + GEOM_TOLERANCE)) return false;
+  if (v1.__Y < (v2.__Y - GEOM_TOLERANCE)) return true;
+  if (v1.__Y > (v2.__Y + GEOM_TOLERANCE)) return false;
+  return v1.__Z < (v2.__Z - GEOM_TOLERANCE);
+}
+
+bool strictly_eq( const Vector3& v1, const Vector3& v2 )  {
+  return normLinf(v1 - v2) == 0;
+}
+
+bool strictly_inf(const Vector3& v1, const Vector3& v2)
+{
+  if (v1.__X < v2.__X) return true;
+  if (v1.__X > v2.__X) return false;
+  if (v1.__Y < v2.__Y) return true;
+  if (v1.__Y > v2.__Y) return false;
+  return v1.__Z < v2.__Z ;
 }
 
 Vector3 abs( const Vector3& v ) {
@@ -938,31 +945,28 @@ ostream& operator<<( ostream& stream, const Vector4& v ) {
 
 bool operator<(const Vector4& v1, const Vector4& v2)
 {
-  if(v1.__X < v2.__X)
-    {
-      return true;
-    }
-  if(v1.__X > v2.__X)
-    {
-      return false;
-    }
-  if(v1.__Y < v2.__Y)
-    {
-      return true;
-    }
-  if(v1.__Y > v2.__Y)
-    {
-      return false;
-    }
-  if(v1.__Z < v2.__Z)
-    {
-      return true;
-    }
-  if(v1.__Z > v2.__Z)
-    {
-      return false;
-    }
-  return v1.__W < v2.__W;
+  if (v1.__X < (v2.__X - GEOM_TOLERANCE)) return true;
+  if (v1.__X > (v2.__X + GEOM_TOLERANCE)) return false;
+  if (v1.__Y < (v2.__Y - GEOM_TOLERANCE)) return true;
+  if (v1.__Y > (v2.__Y + GEOM_TOLERANCE)) return false;
+  if (v1.__Z < (v2.__Z - GEOM_TOLERANCE)) return true;
+  if (v1.__Z > (v2.__Z + GEOM_TOLERANCE)) return false;
+  return v1.__W < (v2.__W - GEOM_TOLERANCE);
+}
+
+bool strictly_eq( const Vector4& v1, const Vector4& v2 )  {
+  return normLinf(v1 - v2) == 0;
+}
+
+bool strictly_inf(const Vector4& v1, const Vector4& v2)
+{
+  if (v1.__X < v2.__X) return true;
+  if (v1.__X > v2.__X) return false;
+  if (v1.__Y < v2.__Y) return true;
+  if (v1.__Y > v2.__Y) return false;
+  if (v1.__Z < v2.__Z) return true;
+  if (v1.__Z > v2.__Z) return false;
+  return v1.__W < v2.__W ;
 }
 
 Vector4 abs( const Vector4& v ) {

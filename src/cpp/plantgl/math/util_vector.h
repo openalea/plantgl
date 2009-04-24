@@ -245,6 +245,10 @@ class PGLMATH_API Vector2 : public Tuple2<real_t>
   /// Defines an order relation in order to use this class in a sorted container
   friend PGLMATH_API bool operator<(const Vector2& v1, const Vector2& v2);
 
+  /// Comparison operators whitout use of epsilon for numerical precision
+  friend PGLMATH_API bool strictly_equal(const Vector2& v1, const Vector2& v2);
+  friend PGLMATH_API bool strictly_inf(const Vector2& v1, const Vector2& v2);
+
 }; // Vector2
 
 PGLMATH_API Vector2 abs( const Vector2& v ) ;
@@ -266,6 +270,8 @@ PGLMATH_API Vector2 Min( const Vector2& v1, const Vector2& v2 );
 PGLMATH_API real_t angle( const Vector2& v1, const Vector2& v2 );
 PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector2& v );
 PGLMATH_API bool operator<(const Vector2& v1, const Vector2& v2);
+PGLMATH_API bool strictly_equal(const Vector2& v1, const Vector2& v2);
+PGLMATH_API bool strictly_inf(const Vector2& v1, const Vector2& v2);
 
 
 /*  --------------------------------------------------------------------- */
@@ -546,6 +552,9 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Defines an order relation in order to use this class in a sorted container
   friend PGLMATH_API bool operator<(const Vector3& v1, const Vector3& v2);
 
+  /// Comparison operators whitout use of epsilon for numerical precision
+  friend PGLMATH_API bool strictly_equal(const Vector3& v1, const Vector3& v2);
+  friend PGLMATH_API bool strictly_inf(const Vector3& v1, const Vector3& v2);
 }; // Vector3
 
 PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
@@ -568,6 +577,8 @@ PGLMATH_API real_t angle( const Vector3& v1, const Vector3& v2 );
 PGLMATH_API real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis );
 PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector3& v );
 PGLMATH_API bool operator<(const Vector3& v1, const Vector3& v2);
+PGLMATH_API bool strictly_equal(const Vector3& v1, const Vector3& v2);
+PGLMATH_API bool strictly_inf(const Vector3& v1, const Vector3& v2);
 
 
 
@@ -769,6 +780,9 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
   /// Defines an order relation in order to use this class in a sorted container
   friend PGLMATH_API bool operator<(const Vector4& v1, const Vector4& v2);
 
+  /// Comparison operators whitout use of epsilon for numerical precision
+  friend PGLMATH_API bool strictly_equal(const Vector4& v1, const Vector4& v2);
+  friend PGLMATH_API bool strictly_inf(const Vector4& v1, const Vector4& v2);
 }; // Vector4
 
 
@@ -788,6 +802,8 @@ PGLMATH_API real_t normSquared( const Vector4& v ) ;
 PGLMATH_API real_t sum( const Vector4& v );
 PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Vector4& v );
 PGLMATH_API bool operator<(const Vector4& v1, const Vector4& v2);
+PGLMATH_API bool strictly_equal(const Vector4& v1, const Vector4& v2);
+PGLMATH_API bool strictly_inf(const Vector4& v1, const Vector4& v2);
 
 /*  --------------------------------------------------------------------- */
 
