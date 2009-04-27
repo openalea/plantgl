@@ -376,7 +376,7 @@ Point3Array::const_iterator Point3Array::getZMax( ) const {
 Point3Array::const_iterator Point3Array::getZMin( ) const {
   const_iterator _result = __A.begin();
   for (const_iterator _i = __A.begin() + 1; _i != __A.end(); _i++)
-    if (_i->x() < _result->x()) _result = _i;
+    if (_i->z() < _result->z()) _result = _i;
   return _result;
 }
 
@@ -615,7 +615,7 @@ Point4Array::const_iterator Point4Array::getZMax( ) const {
 Point4Array::const_iterator Point4Array::getZMin( ) const {
   const_iterator _result = __A.begin();
   for (const_iterator _i = __A.begin() + 1; _i != __A.end(); _i++)
-    if (_i->x() < _result->x()) _result = _i;
+    if (_i->z() < _result->z()) _result = _i;
   return _result;
 }
 
