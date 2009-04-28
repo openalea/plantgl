@@ -80,12 +80,12 @@ public:
       \post
       - \e self is valid. */
   TriangleSet( const Point3ArrayPtr& points,
-	           const Index3ArrayPtr& indices,
-			   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-			   bool ccw = DEFAULT_CCW,
-			   bool solid = DEFAULT_SOLID,
-			   const PolylinePtr& skeleton = DEFAULT_SKELETON );
-
+	       const Index3ArrayPtr& indices,
+	       bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+	       bool ccw = DEFAULT_CCW,
+	       bool solid = DEFAULT_SOLID,
+	       const PolylinePtr& skeleton = DEFAULT_SKELETON );
+  
 
   /** Constructs a TriangleSet with the points \e points, the triangles 
       indices \e indices, the face ordering \e ccw, the solid flag \e solid,
@@ -101,19 +101,19 @@ public:
       \post
       - \e self is valid. */
   TriangleSet( const Point3ArrayPtr& points,
-	           const Index3ArrayPtr& indices,
-			   const Point3ArrayPtr& normals ,
-	           const Index3ArrayPtr& nomalIndices = Index3ArrayPtr(),
-			   const Color4ArrayPtr& colors  = Color4ArrayPtr(),
-	           const Index3ArrayPtr& colorIndices = Index3ArrayPtr(),
-			   const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
-	           const Index3ArrayPtr& texCoordIndices = Index3ArrayPtr(),
-			   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-			   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
-			   bool CCW = DEFAULT_CCW,
-			   bool solid = DEFAULT_SOLID,
-			   const PolylinePtr& skeleton = DEFAULT_SKELETON);
-
+	       const Index3ArrayPtr& indices,
+	       const Point3ArrayPtr& normals ,
+	       const Index3ArrayPtr& nomalIndices = Index3ArrayPtr(),
+	       const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+	       const Index3ArrayPtr& colorIndices = Index3ArrayPtr(),
+	       const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
+	       const Index3ArrayPtr& texCoordIndices = Index3ArrayPtr(),
+	       bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+	       bool colorPerVertex = DEFAULT_COLORPERVERTEX,
+	       bool CCW = DEFAULT_CCW,
+	       bool solid = DEFAULT_SOLID,
+	       const PolylinePtr& skeleton = DEFAULT_SKELETON);
+  
   /// Destructor
   virtual ~TriangleSet( );
 

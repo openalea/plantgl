@@ -98,14 +98,17 @@ class PglVector
 
 public:
 
-  /// A const iterator used to iterate through an Array1.
-  typedef typename std::vector<T>::const_iterator const_iterator;
-
-  /// An iterator used to iterate through an Array1.
-  typedef typename std::vector<T>::iterator iterator;
-
   /// The element type.
   typedef T element_type;
+
+  /// A const iterator used to iterate through an Array1.
+  typedef typename std::vector<element_type>::const_iterator const_iterator;
+
+  /// An iterator used to iterate through an Array1.
+  typedef typename std::vector<element_type>::iterator iterator;
+
+//   /// The element type.
+//   typedef T element_type;
 
   /// Constructs an Array1 of size \e size
   PglVector( size_t size = 0 ) :

@@ -94,8 +94,11 @@ void module_algo()
     export_Octree();
 	export_PointGrid();
 
-	// Overlay export
-	export_Overlay();
+    // Overlay export
+    export_Overlay();
+
+    // Skeleton export
+    export_Skeleton();
 
 	// Point manip
 	export_PointManip();

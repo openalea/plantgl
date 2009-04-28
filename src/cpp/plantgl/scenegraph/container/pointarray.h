@@ -40,6 +40,8 @@
 
 /* ----------------------------------------------------------------------- */
 
+#include <set>
+
 #include "../sg_config.h"
 #include <plantgl/tool/util_array.h>
 #include <plantgl/math/util_vector.h>
@@ -425,19 +427,27 @@ real_t hausdorff_distance(const RCPtr<T> pts1,
 
 // filter redundant successive value and homogenize value according to 
 template <class Array>
-void filterAndHomogenize(Array& array){
-	typedef typename Array::iterator iterator;
-	typedef typename Array::value_type value_type;
-	if (array.empty()) return;
-	value_type ref = array[0];
-	for(iterator it = array.begin()+1; it != array.end(); ){
-		if (false) { // if current 
-			iterator todelete = it; 
-			++it;
-			array.erase(todelete);
-		}
-		else ++it;
+void filterAndHomogenize(Array& array)
+{
+  typedef typename Array::iterator iterator;
+  typedef typename Array::element_type element_type;
+  typedef typename std::set<element_type> value_set;
+  typedef typename std::set<element_type>::iterator value_set_iterator;
+
+  if (array.empty()) return;
+  value_set points;
+  for (iterator it = array.begin() ; it != array.end() ; it++)
+    {
+      std::pair<value_set_iterator,bool> res;
+      element_type v = *it;
+      res = points.insert(v);
+      if (!res.second)
+	{
+	  iterator it_prec = it - 1;
+	  if ((*it_prec != v) && (*it_prec != *res.first))
+	    *it = *res.first;
 	}
+    }
 }
 
 // __geom_pointarray.h__

@@ -25,7 +25,8 @@ how to use VPlants.Plantgl see :ref:`PlantGL_user`.
 
 .. toctree::
     :maxdepth: 1
-            
+
+
     openalea_plantgl_algo_mesh_grid_shape_ref.rst
     openalea_plantgl_algo_mesh_refine_ref.rst
     openalea_plantgl_ext_absolute_shapes_ref.rst
