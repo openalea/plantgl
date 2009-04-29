@@ -32,54 +32,23 @@
 #ifndef __actn_skeleton_h__
 #define __actn_skeleton_h__
 
-#include <plantgl/algo/codec/printer.h>
-#include <plantgl/algo/base/discretizer.h>
-#include <set>
-#include <stack>
-#include <map>
-
-#include <plantgl/scenegraph/transformation/scaled.h>
-#include <plantgl/scenegraph/transformation/translated.h>
-#include <plantgl/scenegraph/transformation/oriented.h>
-#include <plantgl/scenegraph/geometry/cylinder.h>
-#include <plantgl/scenegraph/geometry/sphere.h>
-#include <plantgl/scenegraph/geometry/triangleset.h>
-#include <plantgl/scenegraph/geometry/extrudedhull.h>
-#include <plantgl/scenegraph/geometry/asymmetrichull.h>
-#include <plantgl/scenegraph/geometry/cone.h>
-#include <plantgl/scenegraph/geometry/box.h>
-#include <plantgl/scenegraph/geometry/frustum.h>
-#include <plantgl/scenegraph/geometry/extrusion.h>
-#include <plantgl/scenegraph/geometry/nurbscurve.h>
-#include <plantgl/scenegraph/container/indexarray.h>
-#include <plantgl/tool/util_string.h>
-#include <plantgl/tool/dirnames.h>
-
-#include <plantgl/math/util_matrixmath.h>
-#include "miniball.h"
-#include "eigenvector.h"
-
-// #define WITHOUT_QHULL
-
-#ifndef WITHOUT_QHULL
-extern "C" {
-#include <qhull/qhull_a.h>
-}
-#endif
-
-TOOLS_USING_NAMESPACE
 
 
-#define GEOM_DEBUG
+// #define GEOM_DEBUG
 
 /* ----------------------------------------------------------------------- */
 #include <string>
 #include "../algo_config.h"
+
+
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/geometry/triangleset.h>
 
 /* ----------------------------------------------------------------------- */
+
+TOOLS_USING(Vector2)
 
 PGL_BEGIN_NAMESPACE
 
@@ -89,17 +58,18 @@ class SkelTriangle;
 //typedef RCPtr<SkelTriangle> SkelTrianglePtr;
 typedef SkelTriangle* SkelTriangleWeakPtr;
 
-class ShapePoint
+class ALGO_API ShapePoint
 {
 public:
   Vector2 m_vec;
   int m_ind;
 
-  ShapePoint(Vector2 vec = Vector2(), int ind = -1) : m_vec(vec), m_ind(ind) {}
+  ShapePoint(Vector2 vec, int ind = -1) : m_vec(vec), m_ind(ind) {}
   ShapePoint(double x = 0, double y = 0, int ind = -1) : m_vec(Vector2(x,y)), m_ind(ind){}
   double x() const {return m_vec.x();}
   double y() const {return m_vec.y();}
   Vector2 operator()() {return m_vec;}
+
   bool operator<(const ShapePoint& sp) const
   {
     //std::cerr << "operator < shapepoint" << std::endl;
@@ -123,7 +93,7 @@ typedef ShapePoint* ShapePointWeakPtr;
 class Skeleton;
 class SkelTriangleSet;
 class SkelEdgeSet;
-class SkelEdge : public TOOLS::RefCountObject
+class ALGO_API SkelEdge : public TOOLS::RefCountObject
 {
 public:
   friend class PGL::SkelTriangle;
@@ -179,7 +149,7 @@ public:
 
 typedef RCPtr<SkelEdge> SkelEdgePtr;
 
-class SkelTriangle : public TOOLS::RefCountObject
+class ALGO_API SkelTriangle : public TOOLS::RefCountObject
 {
 public:
   friend class PGL::SkelEdge;
@@ -211,7 +181,7 @@ public:
 
 };
 
-class CompareTrianglePtr
+class ALGO_API CompareTrianglePtr
 {
 public:
   bool operator()(const SkelTriangleWeakPtr tleft, const SkelTriangleWeakPtr tright) const
@@ -220,7 +190,7 @@ public:
   }
 };
 
-class CompareSkelEdgePtr
+class ALGO_API CompareSkelEdgePtr
 {
 public:
   bool operator()(const SkelEdgePtr eleft, const SkelEdgePtr eright) const
@@ -229,7 +199,7 @@ public:
   }
 };
 
-class CompareVector2
+class ALGO_API CompareVector2
 {
 public:
   bool operator()(const Vector2 v1, const Vector2 v2) const
@@ -241,7 +211,7 @@ public:
   }
 };
 
-class SkelTriangleSet : public std::set<SkelTriangleWeakPtr , CompareTrianglePtr>
+class ALGO_API SkelTriangleSet : public std::set<SkelTriangleWeakPtr , CompareTrianglePtr>
 {
 public:
   typedef std::set<SkelTriangleWeakPtr , CompareTrianglePtr>::iterator iterator;
@@ -251,7 +221,7 @@ public:
   bool skelErase(SkelTriangleWeakPtr toErase);
 };
 
-class SkelEdgeSet : public std::set<SkelEdgePtr, CompareSkelEdgePtr>
+class ALGO_API SkelEdgeSet : public std::set<SkelEdgePtr, CompareSkelEdgePtr>
 {
 public:
   typedef std::set<SkelEdgePtr, CompareSkelEdgePtr>::iterator iterator;
@@ -264,7 +234,7 @@ class SkelBranch;
 typedef RCPtr<SkelBranch> SkelBranchPtr;
 class ShapePointSet;
 
-class SkelBranch : public TOOLS::RefCountObject
+class ALGO_API SkelBranch : public TOOLS::RefCountObject
 {
   friend class Skeleton;
 public:
@@ -292,7 +262,7 @@ public:
   double area();
 };
 
-class SkelJonction : public Vector2, public TOOLS::RefCountObject
+class ALGO_API SkelJonction : public Vector2, public TOOLS::RefCountObject
 {
   friend class Skeleton;
 protected:
@@ -310,7 +280,7 @@ public:
 };
 typedef RCPtr<SkelJonction> SkelJonctionPtr;
 
-class CompareSkelJonctionPtr
+class ALGO_API CompareSkelJonctionPtr
 {
 public:
   bool operator()(const SkelJonctionPtr jleft, const SkelJonctionPtr jright) const
@@ -319,13 +289,13 @@ public:
   }
 };
 
-class SkelJonctionSet : public std::set<SkelJonctionPtr, CompareSkelJonctionPtr>
+class ALGO_API SkelJonctionSet : public std::set<SkelJonctionPtr, CompareSkelJonctionPtr>
 {
 public:
   typedef std::set<SkelJonctionPtr, CompareSkelJonctionPtr>::iterator iterator;
 };
 
-class CompareShapePointWeakPtr
+class ALGO_API CompareShapePointWeakPtr
 {
 public:
   bool operator()(const ShapePointWeakPtr pleft, const ShapePointWeakPtr pright) const
@@ -337,20 +307,21 @@ public:
   }
 };
 
-class ShapePointSet : public std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>
+class ALGO_API ShapePointSet : public std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>
 {
 public:
   typedef std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>::iterator iterator;
+  typedef std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>::const_iterator const_iterator;
 
   ~ShapePointSet();
-  iterator findVec(const Vector2& v) const;
-  iterator findInd(const int indice) const;
+  const_iterator findVec(const Vector2& v) const;
+  const_iterator findInd(const int indice) const;
 };
 
 /*----------------------------------------------------------------------- */
 
 
-class Skeleton
+class ALGO_API Skeleton
 {
   ShapePointSet m_shape;
   SkelEdgeSet m_allEdges;

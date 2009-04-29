@@ -37,6 +37,7 @@
 
 #include <iostream>
 #include <string>
+#include <stack>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -116,9 +117,9 @@ public:
   }
 };
 
-ShapePointSet::iterator ShapePointSet::findVec(const Vector2& v) const
+ShapePointSet::const_iterator ShapePointSet::findVec(const Vector2& v) const
 {
-  ShapePointSet::iterator it;
+  ShapePointSet::const_iterator it;
   for(it = begin(); it != end(); it++)
     {
       if (*(*it) == v)
@@ -129,10 +130,10 @@ ShapePointSet::iterator ShapePointSet::findVec(const Vector2& v) const
   return end();
 }
 
-ShapePointSet::iterator ShapePointSet::findInd(const int indice) const
+ShapePointSet::const_iterator ShapePointSet::findInd(const int indice) const
 {
   ShapePointWeakPtr ptr = new ShapePoint(0,0,indice);
-  ShapePointSet::iterator it = find(ptr);
+  ShapePointSet::const_iterator it = find(ptr);
   delete ptr;
   return it; 
 }
@@ -378,7 +379,7 @@ SkelTriangle::SkelTriangle(SkelEdgePtr e1 , SkelEdgePtr e2 , SkelEdgePtr e3, boo
 	  return;
 	}
 
-      int nbBoundaryEdges;
+      int nbBoundaryEdges = 0;
       if (m_e1->m_type == SkelEdge::UNDEFINED || m_e2->m_type == SkelEdge::UNDEFINED || m_e3->m_type == SkelEdge::UNDEFINED)
 	{
 	  std::cerr << "one edge is null !!!!!!!!" << std::endl;
@@ -476,7 +477,7 @@ int SkelTriangle::getMiddleSummitForTerm()
 	}
       else
 	{
-	  std::cerr << "SkelTriangle, getMiddleSummitForTerm(), problems with types" << std::endl;
+	  pglError("SkelTriangle, getMiddleSummitForTerm(), problems with types");
 	  return -1;
 	}
     }
@@ -723,7 +724,9 @@ bool SkelEdgeSet::skelErase(SkelEdgePtr toErase)
   if (it != end())
     {
       erase(it);
+	  return true;
     }
+  return false;
 }
 
 SkelEdgeSet::~SkelEdgeSet()
@@ -747,7 +750,9 @@ bool SkelTriangleSet::skelErase(SkelTriangleWeakPtr toErase)
       (*it)->m_e3->rmAdjTri(*(*it));
       delete (*it);
       erase(it);
+	  return true;
     }
+  return false;
 }
 
 SkelTriangleSet::~SkelTriangleSet()
@@ -839,7 +844,7 @@ SkelBranch::SkelBranch(std::list<Vector2> points,
 
 double SkelBranch::area()
 {
-  ShapePointSet::iterator it1, it2, it3;
+  ShapePointSet::const_iterator it1, it2, it3;
   it1 = m_pointSet->findInd(m_beginBumpIndice); 
   it2 = m_pointSet->findInd(m_endBumpIndice); 
   if ((it1 == m_pointSet->end())||(it2 == m_pointSet->end()))
@@ -935,15 +940,16 @@ PGL::Skeleton::Skeleton(const Polyline2DPtr discretizedShape)
   for (int i = 0; i < discretizedShape->getPointListSize(); ++i)
     {
       Vector2 v = discretizedShape->getPointListAt(i);
-      ShapePointSet::iterator it = m_shape.findVec(v);
+      ShapePointSet::const_iterator it = m_shape.findVec(v);
       if (it == m_shape.end())
-	m_shape.insert(new ShapePoint(v,i));
+		m_shape.insert(new ShapePoint(v,i));
       else
 	Debug::debug("ALREADY INSERTED POINT : continue...",10,10);
     }
   init(discretizedShape);
 }
 
+#ifdef WITH_CGAL
 CDTplus getCGALTriangulation(const Polyline2DPtr discretizedShape)
 {
   CDTplus cdt;
@@ -984,7 +990,7 @@ V_handle getEdgeTarget(TDS::Edge ed, V_handle src)
     return edge.first;
   else
     {
-      std::cerr << "Skeleton.cpp getEdgeTarget : problem, the second parameter should be one point of the edge" << std::endl;
+      pglError("Skeleton.cpp getEdgeTarget : problem, the second parameter should be one point of the edge");
     } 
 }
 
@@ -992,12 +998,17 @@ void filterLoopsInShape(CDTplus cdt, ShapePointSet& blabla)
 {
 
 }
+#endif
 
 void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
 {
+#ifndef WITH_CGAL
+      pglError("Skeleton::init : Cannot compute skeleton without CGAL!");
+      return;
+#else
   if(discretizedShape->getPointListSize() < 3)
     {
-      std::cerr << "Skeleton::init : Are you kidding me ? Give me more than 3 points to process, because I feel that you insult my intelligence !" << std::endl;
+      pglError("Skeleton::init : Are you kidding me ? Give me more than 3 points to process, because I feel that you insult my intelligence !");
       return;
     }
   CDTplus cdt = getCGALTriangulation(discretizedShape); 
@@ -1023,7 +1034,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
 	  do
 	    {
 	      ShapePointWeakPtr shPtr1, shPtr2;
-	      ShapePointSet::iterator point_it = m_shape.findVec(toVec2((cdt.segment(ec)).target()));
+	      ShapePointSet::const_iterator point_it = m_shape.findVec(toVec2((cdt.segment(ec)).target()));
 	      if (point_it == m_shape.end())
 		{
 		  shPtr1 = infiniteVertexPtr;
@@ -1282,6 +1293,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
       m_allTriangles.skelErase(toErase);
     }
   Debug::debug("number of triangles : ",(int)m_allTriangles.size(),10);
+#endif
 }
 
 
@@ -2226,20 +2238,20 @@ void PGL::Skeleton::filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemo
 	  SkelBranchPtr branch = (*it)->m_branches[i];
 	  int branch_size = ((branch->m_branch)->getPointListSize())-1;
 	  int bumpMiddle = branch->m_middleBumpIndice;
-	  ShapePointSet::iterator it_sps = m_shape.findInd(bumpMiddle);
+	  ShapePointSet::const_iterator it_sps = m_shape.findInd(bumpMiddle);
 	  if ((branch->m_firstEnd == SkelBranch::TERMINATION)||(branch->m_secondEnd == SkelBranch::TERMINATION))
 	    {
 	      if (it_sps != m_shape.end())
 		{
 		  it_sps--;
-		  ShapePointSet::iterator prec_sps = it_sps;
+		  ShapePointSet::const_iterator prec_sps = it_sps;
 		  if (it_sps == m_shape.end())
 		    prec_sps = (--m_shape.end());
 		  else
 		    prec_sps = it_sps;
 		  it_sps++;
 		  it_sps++;
-		  ShapePointSet::iterator next_sps;
+		  ShapePointSet::const_iterator next_sps;
 		  if (it_sps == m_shape.end())
 		    next_sps = m_shape.begin();
 		  else

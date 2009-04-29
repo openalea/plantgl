@@ -248,6 +248,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_skeleton.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_surfcomputer.cpp"
 				>
 			</File>

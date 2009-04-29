@@ -571,6 +571,14 @@
 				RelativePath=".\fitting\miniball_config.h"
 				>
 			</File>
+			<File
+				RelativePath=".\fitting\skeleton.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fitting\skeleton.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="OpenGL"
