@@ -38,6 +38,10 @@
 #include <iostream>
 #include <string>
 #include <stack>
+#include <iostream>
+#include <iterator>
+#include <vector>
+
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -55,6 +59,13 @@ TOOLS_USING_NAMESPACE
 #include <CGAL/Arrangement_2.h>
 #include <CGAL/Arr_overlay.h>
 #include <CGAL/Arr_default_overlay_traits.h>
+#include <CGAL/Cartesian.h>
+#include <CGAL/MP_Float.h>
+#include <CGAL/Quotient.h>
+#include <CGAL/Arr_segment_traits_2.h>
+#include <CGAL/Sweep_line_2_algorithms.h>
+#include <list>
+
 
 #ifdef CGAL_USE_GMP
 // GMP is installed. Use the GMP rational number-type.
@@ -78,9 +89,16 @@ typedef CGAL::Constrained_triangulation_plus_2<CDT>       CDTplus;
 typedef CDTplus::Point                                    Point_2;
 typedef CDTplus::Segment                                  Segment_2;
 typedef TDS::Vertex_handle                                V_handle;
+typedef CGAL::Quotient<CGAL::MP_Float>                    NT;
+typedef CGAL::Cartesian<NT>                               Kernel;
+typedef Kernel::Point_2                                   Point_intersections;
+typedef CGAL::Arr_segment_traits_2<Kernel>                Traits_2;
+typedef Traits_2::Curve_2                                 Segment_intersections;
 
 Vector2 toVec2(const Point_2& p) { return Vector2(to_double(p.x()),to_double(p.y())); }
 Point_2 toPoint2(const Vector2 &v) {  return Point_2(v.x(),v.y());}
+Vector2 toVec2(const Point_intersections& p) { return Vector2(to_double(p.x()),to_double(p.y())); }
+Point_intersections toPoint_intersections(const Vector2 &v) {  return Point_intersections(v.x(),v.y());}
 
 #endif
 
@@ -173,7 +191,7 @@ SkelEdge::SkelEdge(ShapePointWeakPtr p1 ,ShapePointWeakPtr p2 , TypeEdge type , 
 {
   if ((p1 == 0) || (p2 == 0))
     {
-      std::cerr << "Invalid parameters for SkelEdge constructor : cannot build an edge with null pointers" << std::endl;
+      pglError( "Invalid parameters for SkelEdge constructor : cannot build an edge with null pointers");
       return;
     }
   if (*p1 < *p2)
@@ -210,7 +228,7 @@ SkelEdge::SkelEdge(ShapePointWeakPtr p1 ,
 {
   if ((p1 == 0) || (p2 == 0))
     {
-      std::cerr << "Invalid parameters for SkelEdge constructor : cannot build an edge with null pointers" << std::endl;
+      pglError( "Invalid parameters for SkelEdge constructor : cannot build an edge with null pointers" );
       return;
     }
   if (*p1 < *p2)
@@ -255,7 +273,7 @@ void SkelEdge::addAdjTri(SkelTriangleWeakPtr t)
 {
   if (t==0)
     {
-      std::cerr << "param is a null pointer" << std::endl;
+      pglError( "param is a null pointer" );
       return;
     }
   if (m_adjTri1 == 0)
@@ -284,7 +302,7 @@ Vector2 SkelEdge::getMiddle() const
 {
   if ((m_p1 == 0) || (m_p2 == 0))
     {
-      std::cerr << "SkelEdge, getMiddle : uninitialized edge" << std::endl;
+      pglError( "SkelEdge, getMiddle : uninitialized edge" );
       return Vector2();
     }
   return 0.5*((*m_p1)()+(*m_p2)());
@@ -337,7 +355,7 @@ SkelTriangle::SkelTriangle(SkelEdgePtr e1 , SkelEdgePtr e2 , SkelEdgePtr e3, boo
 {
   if ((e1 == 0) || (e2 == 0) || (e3 == 0))
     {
-      std::cerr << "one edge is null !!!!!!!!" << std::endl;
+      pglError( "one edge is null !!!!!!!!" );
       m_type = UNDEFINED;
     }
   else
@@ -365,24 +383,24 @@ SkelTriangle::SkelTriangle(SkelEdgePtr e1 , SkelEdgePtr e2 , SkelEdgePtr e3, boo
       // *m_e1 < *m_e2 < *m_e3
       if (!(*(m_e1->m_p1) == *(m_e2->m_p1)))
 	{
-	  std::cerr << "SkelTriangle, constructor : invalid configuration 1" << std::endl;
+	  pglError( "SkelTriangle, constructor : invalid configuration 1" );
 	  return;
 	}
       if (!(*(m_e1->m_p2) == *(m_e3->m_p1)))
 	{
-	  std::cerr << "SkelTriangle, constructor : invalid configuration 2" << std::endl;
+	  pglError( "SkelTriangle, constructor : invalid configuration 2" );
 	  return;
 	}
       if (!(*(m_e2->m_p2) ==*(m_e3->m_p2)))
 	{
-	  std::cerr << "SkelTriangle, constructor : invalid configuration 3" << std::endl;
+	  pglError( "SkelTriangle, constructor : invalid configuration 3" );
 	  return;
 	}
 
       int nbBoundaryEdges = 0;
       if (m_e1->m_type == SkelEdge::UNDEFINED || m_e2->m_type == SkelEdge::UNDEFINED || m_e3->m_type == SkelEdge::UNDEFINED)
 	{
-	  std::cerr << "one edge is null !!!!!!!!" << std::endl;
+	  pglError( "one edge is null !!!!!!!!" );
 	  m_type = UNDEFINED;
 	}
       else
@@ -411,7 +429,7 @@ SkelTriangle::SkelTriangle(SkelEdgePtr e1 , SkelEdgePtr e2 , SkelEdgePtr e3, boo
 	      m_type = TERMINATION;
 	      break;
 	    default:
-	      std::cerr << "one edge is null !!!!!!!!" << std::endl;
+	      pglError( "one edge is null !!!!!!!!" );
 	      m_type = UNDEFINED;
 	      break;
 	    }
@@ -487,7 +505,7 @@ bool SkelTriangle::operator==(const SkelTriangle& t) const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
-      std::cerr << "SkelTriangle, operator==, problem : deprecated or uninitialized triangle" << std::endl;
+      pglError( "SkelTriangle, operator==, problem : deprecated or uninitialized triangle" );
       return false;
     }
   if ((*m_e1 == *(t.m_e1)) && (*m_e2 == *(t.m_e2)))
@@ -500,14 +518,14 @@ double SkelTriangle::area() const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
-      std::cerr << "SkelTriangle, area : uninitialized or deprecated triangle" << std::endl;
+      pglError( "SkelTriangle, area : uninitialized or deprecated triangle" );
       return 0.0;
     }
 
   // infinite face
   if ((m_e1->m_p1 == 0)||(m_e1->m_p2 == 0)||(m_e2->m_p1 == 0)||(m_e2->m_p2 == 0))
     {
-      std::cerr << "SkelTriangle, area : edges have null shapepoint" << std::endl;
+      pglError( "SkelTriangle, area : edges have null shapepoint" );
       return -1.0;
     }
 
@@ -525,7 +543,7 @@ double SkelTriangle::area() const
 
   if (toTest < 0)
     {
-      std::cerr << "pb : we're gonna calculate a negative nb sqrt" << std::endl;
+      pglError( "pb : we're gonna calculate a negative nb sqrt" );
     }
   double area = (0.5*sqrt(toTest));
 
@@ -547,7 +565,7 @@ bool SkelTriangle::operator<(const SkelTriangle& t) const
     { 
       if ((m_e1->m_p1 == 0)||(m_e1->m_p2 == 0)||(m_e2->m_p1 == 0)||(m_e2->m_p2 == 0))
 	{
-	  std::cerr << "SkelTriangle, operator < : uninitialized or deprecated triangle" << std::endl;
+	  pglError( "SkelTriangle, operator < : uninitialized or deprecated triangle" );
 	  return true;
 	}
       if (*m_e1 == *t.m_e1)
@@ -563,7 +581,7 @@ Vector2 SkelTriangle::getGravityCenter () const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
-      std::cerr << "SkelTriangle, getGravityCenter, problem : deprecated or uninitialized triangle" << std::endl;
+      pglError( "SkelTriangle, getGravityCenter, problem : deprecated or uninitialized triangle" );
       return Vector2();
     }
   Vector2 p1, p2, p3;
@@ -580,7 +598,7 @@ Vector2 SkelTriangle::getCircumCenter() const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
-      std::cerr << "SkelTriangle, getCircumCenter, problem : deprecated or uninitialized triangle" << std::endl;
+      pglError( "SkelTriangle, getCircumCenter, problem : deprecated or uninitialized triangle" );
       return Vector2();
     }
   // the circumcenter is at the intersection of the orthogonal bissectors
@@ -628,13 +646,13 @@ bool SkelTriangle::isAcuteAngleTriangle() const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
-      std::cerr << "SkelTriangle, isAcuteTriangle, problem : deprecated or uninitialized triangle" << std::endl;
+      pglError( "SkelTriangle, isAcuteTriangle, problem : deprecated or uninitialized triangle" );
       return false;
     }
   double lengthBiggerSide, length1, length2;
   if ((m_e1->m_p1 == 0)||(m_e1->m_p2 == 0)||(m_e2->m_p1 == 0)||(m_e2->m_p2 == 0))
     {
-      std::cerr << "SkelTriangle, isAcuteTriangle, problem : deprecated or uninitialized triangle" << std::endl;
+      pglError( "SkelTriangle, isAcuteTriangle, problem : deprecated or uninitialized triangle" );
       return false;
     }
   Vector2 side1 = (*(m_e1->m_p1))() - (*(m_e1->m_p2))();
@@ -666,7 +684,7 @@ Vector2 SkelTriangle::getPseudoCircumCenter()
 {
   if (area() == 0)
     {
-      std::cerr << "Skeleton, SkelTriangle, getPseudoCircumCenter : deprecated or uninitialized triangle" << std::endl;
+      pglError( "Skeleton, SkelTriangle, getPseudoCircumCenter : deprecated or uninitialized triangle" );
       return Vector2();
     }
   if (isAcuteAngleTriangle())
@@ -693,7 +711,7 @@ ShapePointWeakPtr SkelTriangle::getOppositePoint (const SkelEdge& e) const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
-      std::cerr << "SkelTriangle, getOppositePoint, problem : deprecated or uninitialized triangle" << std::endl;
+      pglError( "SkelTriangle, getOppositePoint, problem : deprecated or uninitialized triangle" );
       return 0;
     }
   if (*m_e1 == e)
@@ -799,7 +817,7 @@ SkelTriangleWeakPtr SkelTriangleSet::find_next()
       if (current_tri == 0) 
 	current_tri = *(begin());
       if (current_tri == 0)
-	std::cerr << "SkelTriangleSet, find_next : Interesting ! null pointers in allTriangles !" << std::endl;
+	pglError( "SkelTriangleSet, find_next : Interesting ! null pointers in allTriangles !" );
       return current_tri;
     }
 }
@@ -994,9 +1012,100 @@ V_handle getEdgeTarget(TDS::Edge ed, V_handle src)
     } 
 }
 
-void filterLoopsInShape(CDTplus cdt, ShapePointSet& blabla)
+void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 {
-
+  CDTplus::Finite_vertices_iterator it;
+  for (it = cdt->finite_vertices_begin(); it != cdt->finite_vertices_end(); it++)
+    {
+      // If this point is not in the shape, it must have been added by CGAL, 
+      // so this means that there is an intersection between constrained edges.
+      if (shape->findVec(toVec2((*it).point())) == shape->end())
+	{
+	  CDTplus::Vertex_circulator ec = (*it).incident_vertices();
+	  CDTplus::Vertex_circulator end = --ec;
+	  ec++;
+	  ShapePointSet::iterator it_n = shape->end(), 
+	    it_n_1 = shape->end(),
+	    it_r = shape->end(), 
+	    it_r_1 = shape->end();
+	  int i = 0;
+	  while (ec != end)
+	    {
+	      if (ec != cdt->infinite_vertex())
+		{
+		  if (it_n == shape->end())
+		    {
+		      it_n = shape->findVec(toVec2((*ec).point()));
+		    }
+		  else
+		    {
+		      ShapePointSet::iterator ittemp = shape->findVec(toVec2((*ec).point()));
+		      if (((*ittemp)->m_ind == (*it_n)->m_ind +1)||
+			  (((*ittemp)->m_ind == 0)&&((*it_n)->m_ind == shape->size()-1)))
+			{
+			  it_n_1 = ittemp;
+			}
+		      else if (((*ittemp)->m_ind == (*it_n)->m_ind - 1)||
+			       (((*ittemp)->m_ind == shape->size()-1)&&((*it_n)->m_ind == 0)))
+			{
+			  it_n_1 = it_n;
+			  it_n = ittemp;
+			}
+		      else
+			{
+			  if (it_r == shape->end())
+			    {
+			      it_r = shape->findVec(toVec2((*ec).point()));
+			    }
+			  else
+			    {
+			      ShapePointSet::iterator ittemp2 = shape->findVec(toVec2((*ec).point()));		      
+			      if (((*ittemp2)->m_ind == (*it_r)->m_ind +1)||
+				  (((*ittemp2)->m_ind == 0)&&((*it_r)->m_ind == shape->size()-1)))
+				{
+				  it_r_1 = ittemp2;
+				}
+			      else if (((*ittemp2)->m_ind == (*it_r)->m_ind - 1)||
+				       (((*ittemp2)->m_ind == shape->size()-1)&&((*it_r)->m_ind == 0)))
+				{
+				  it_r_1 = it_r;
+				  it_r = ittemp2;
+				}
+			      else
+				{
+				  pglError( "filterLoops Aaaaaaargh" );
+				}
+			    }
+			}
+		    }
+		}
+	      ec++;
+	      i++;
+	    }
+	  if (it_n == shape->end() ||it_n_1 == shape->end() ||it_r == shape->end() ||it_r_1 == shape->end())
+	    pglError( "filterLoops : Well, there might be a problem, trying to access end iterator" );
+	  else
+	    {
+	      // okay, now we have organized the beginnings and end of loops
+	      // we must calculate the criteria for suppressing one loop
+	      std::list<Vector2> empty_list;
+	      SkelBranch firstLoop = SkelBranch(empty_list, 
+						shape, 
+						SkelBranch::UNDEFINED, 
+						SkelBranch::UNDEFINED,
+						(*it_n)->m_ind,
+						(*it_r_1)->m_ind + 1,
+						(*it_r_1)->m_ind);
+	      SkelBranch secondLoop = SkelBranch(empty_list, 
+						 shape, 
+						 SkelBranch::UNDEFINED, 
+						 SkelBranch::UNDEFINED,
+						 (*it_r)->m_ind,
+						 (*it_n_1)->m_ind + 1,
+						 (*it_n_1)->m_ind);
+	    }
+	}
+    }
 }
 #endif
 
@@ -1013,12 +1122,10 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
     }
   CDTplus cdt = getCGALTriangulation(discretizedShape); 
 
-  std::cerr << "nb de vertex introduits : " << m_shape.size() << std::endl;
-  std::cerr << "nb de vertex après triangulation : " << cdt.number_of_vertices() << std::endl;
-
-
-//   if (m_shape.size() != cdt.number_of_vertices())
-//     return;
+  if (m_shape.size() != cdt.number_of_vertices())
+    { 
+      //filterLoopsInShape(&cdt,&m_shape);
+    }
 
   // We get back the result of the triangulation
   std::stack<SkelTriangleWeakPtr> outOfTheShapeTriangles;
@@ -1310,6 +1417,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
       SkelBranch::EndType lastEndType;
       int bumpBeg, bumpEnd, bumpMid;
       SkelTriangleWeakPtr current_tri = m_allTriangles.find_next();
+      int size_allTriangles = m_allTriangles.size();
+      SkelTriangleWeakPtr prec_tri = current_tri;
+      bool terminationIsFirstEnd;
       if (current_tri != 0)
 	{
 	  switch(current_tri->m_type)
@@ -1390,7 +1500,7 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			}
 		    }
   		}
-  	      std::cerr << "Skeleton, Chordal Axis Transform : error, uninitialized or deprecated triangle" << std::endl;
+  	      pglError( "Skeleton, Chordal Axis Transform : error, uninitialized or deprecated triangle" );
   	    }
   	  else
   	    {
@@ -1400,6 +1510,8 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   	      switch (current_tri->m_type)
   		{
   		case SkelTriangle::SLEEVE:
+ 		  size_allTriangles = m_allTriangles.size();
+ 		  prec_tri = current_tri;
   		  // In that case we had to the list the middles of the
   		  // two internal edges
   		  if (current_tri->m_e1->m_type == SkelEdge::BOUNDARY)
@@ -1408,11 +1520,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			{
   			  mid1 = current_tri->m_e2->getMiddle();
   			  mid2 = current_tri->m_e3->getMiddle();
+			  if (polyline.empty())
+			    polyline.push_back(mid1);
+			  polyline.push_back(mid2);
   			  current_tri->m_e3->m_visited = true;
 			  if ((current_tri->m_e3->m_adjTri1 == 0)&&(current_tri->m_e3->m_adjTri2 == 0))
 			    {
 			      if (!polyline.empty())
-				m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				{
+				  m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				}
 			      polyline.clear();
 			      lastEndType = SkelBranch::UNDEFINED;
 			      m_allTriangles.skelErase(current_tri);
@@ -1445,18 +1562,12 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
 			  else
 			    {
-			      if (polyline.empty())
-				polyline.push_back(mid1);
-			      polyline.push_back(mid2);
+			      current_tri->m_e3->m_visited = true;
 			      if ((current_tri->m_e3->m_adjTri1 != 0) && (*current_tri == *(current_tri->m_e3->m_adjTri1)))
 				{
 				  SkelTriangleWeakPtr temp = current_tri->m_e3->m_adjTri1;
 				  current_tri = (current_tri->m_e3->m_adjTri2);
 				  m_allTriangles.skelErase(temp);
-				}
-			      else if (current_tri->m_e3->m_adjTri1 == 0)
-				{
-				  current_tri = (current_tri->m_e3->m_adjTri2);
 				}
 			      else
 				{
@@ -1470,11 +1581,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			{
   			  mid2 = current_tri->m_e2->getMiddle();
   			  mid1 = current_tri->m_e3->getMiddle();
+			  if (polyline.empty())
+			    polyline.push_back(mid1);
+			  polyline.push_back(mid2);
   			  current_tri->m_e2->m_visited = true;
 			  if ((current_tri->m_e2->m_adjTri1 == 0)&&(current_tri->m_e2->m_adjTri2 == 0))
 			    {
 			      if (!polyline.empty())
-				m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				{
+				  m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				}
 			      polyline.clear();
 			      lastEndType = SkelBranch::UNDEFINED;
 			      m_allTriangles.skelErase(current_tri);
@@ -1507,18 +1623,12 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
 			  else
 			    {
-			      if (polyline.empty())
-				polyline.push_back(mid1);
-			      polyline.push_back(mid2);
+			      current_tri->m_e2->m_visited = true;
 			      if ((current_tri->m_e2->m_adjTri1 != 0)&&(*current_tri == *(current_tri->m_e2->m_adjTri1)))
 				{
 				  SkelTriangleWeakPtr temp = current_tri->m_e2->m_adjTri1;
 				  current_tri = (current_tri->m_e2->m_adjTri2);
 				  m_allTriangles.skelErase(temp);
-				}
-			      else if (current_tri->m_e2->m_adjTri1 == 0)
-				{
-				  current_tri = (current_tri->m_e2->m_adjTri2);
 				}
 			      else
 				{
@@ -1535,11 +1645,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			{
   			  mid1 = current_tri->m_e1->getMiddle();
   			  mid2 = current_tri->m_e3->getMiddle();
+			  if (polyline.empty())
+			    polyline.push_back(mid1);
+			  polyline.push_back(mid2);
   			  current_tri->m_e3->m_visited = true;
 			  if ((current_tri->m_e3->m_adjTri1 == 0)&&(current_tri->m_e3->m_adjTri2 == 0))
 			    {
 			      if (!polyline.empty())
-				m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				{
+				  m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				}
 			      polyline.clear();
 			      lastEndType = SkelBranch::UNDEFINED;
 			      m_allTriangles.skelErase(current_tri);
@@ -1572,18 +1687,12 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
 			  else
 			    {
-			      if (polyline.empty())
-				polyline.push_back(mid1);
-			      polyline.push_back(mid2);
+			      current_tri->m_e3->m_visited = true;
 			      if ((current_tri->m_e3->m_adjTri1 != 0)&&(*current_tri == *(current_tri->m_e3->m_adjTri1)))
 				{
 				  SkelTriangleWeakPtr temp = current_tri->m_e3->m_adjTri1;
 				  current_tri = (current_tri->m_e3->m_adjTri2);
 				  m_allTriangles.skelErase(temp);
-				}
-			      else if (current_tri->m_e3->m_adjTri1 == 0)
-				{
-				  current_tri = (current_tri->m_e3->m_adjTri2);
 				}
 			      else
 				{
@@ -1597,11 +1706,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			{
   			  mid2 = current_tri->m_e1->getMiddle();
   			  mid1 = current_tri->m_e3->getMiddle();
+			  if (polyline.empty())
+			    polyline.push_back(mid1);
+			  polyline.push_back(mid2);
   			  current_tri->m_e1->m_visited = true;
 			  if ((current_tri->m_e1->m_adjTri1 == 0)&&(current_tri->m_e1->m_adjTri2 == 0))
 			    {
 			      if (!polyline.empty())
-				m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				{
+				  m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				}
 			      polyline.clear();
 			      lastEndType = SkelBranch::UNDEFINED;
 			      m_allTriangles.skelErase(current_tri);
@@ -1634,18 +1748,12 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
 			  else
 			    {
-			      if (polyline.empty())
-				polyline.push_back(mid1);
-			      polyline.push_back(mid2);
+			      current_tri->m_e1->m_visited = true;
 			      if ((current_tri->m_e1->m_adjTri1 != 0)&&(*current_tri == *(current_tri->m_e1->m_adjTri1)))
 				{
 				  SkelTriangleWeakPtr temp = current_tri->m_e1->m_adjTri1;
 				  current_tri = (current_tri->m_e1->m_adjTri2);
 				  m_allTriangles.skelErase(temp);
-				}
-			      else if (current_tri->m_e1->m_adjTri1 == 0)
-				{
-				  current_tri = (current_tri->m_e1->m_adjTri2);
 				}
 			      else
 				{
@@ -1662,11 +1770,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			{
   			  mid1 = current_tri->m_e1->getMiddle();
   			  mid2 = current_tri->m_e2->getMiddle();
+			  if (polyline.empty())
+			    polyline.push_back(mid1);
+			  polyline.push_back(mid2);
   			  current_tri->m_e2->m_visited = true;
 			  if ((current_tri->m_e2->m_adjTri1 == 0)&&(current_tri->m_e2->m_adjTri2 == 0))
 			    {
 			      if (!polyline.empty())
-				m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				{
+				  m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				}
 			      polyline.clear();
 			      lastEndType = SkelBranch::UNDEFINED;
 			      m_allTriangles.skelErase(current_tri);
@@ -1699,18 +1812,12 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
 			  else
 			    {
-			      if (polyline.empty())
-				polyline.push_back(mid1);
-			      polyline.push_back(mid2);
+			      current_tri->m_e2->m_visited = true;
 			      if ((current_tri->m_e2->m_adjTri1 != 0)&&(*current_tri == *(current_tri->m_e2->m_adjTri1)))
 				{
 				  SkelTriangleWeakPtr temp = current_tri->m_e2->m_adjTri1;
 				  current_tri = (current_tri->m_e2->m_adjTri2);
 				  m_allTriangles.skelErase(temp);
-				}
-			      else if (current_tri->m_e2->m_adjTri1 == 0)
-				{
-				  current_tri = (current_tri->m_e2->m_adjTri2);
 				}
 			      else
 				{
@@ -1722,13 +1829,21 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			}
   		      else
   			{
+			  // m_e1 not visited
   			  mid2 = current_tri->m_e1->getMiddle();
   			  mid1 = current_tri->m_e2->getMiddle();
+			  if (polyline.empty())
+			    polyline.push_back(mid1);
+			  polyline.push_back(mid2);
   			  current_tri->m_e1->m_visited = true;
 			  if ((current_tri->m_e1->m_adjTri1 == 0)&&(current_tri->m_e1->m_adjTri2 == 0))
 			    {
+			      // this case should only happen if the skeleton performs a loop,
+			      // which seems quite impossible if the shape is defined by a polyline only
 			      if (!polyline.empty())
-				m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				{
+				  m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+				}
 			      polyline.clear();
 			      lastEndType = SkelBranch::UNDEFINED;
 			      if (!leftTriangles.empty())
@@ -1760,18 +1875,13 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
 			  else
 			    {
-			      if (polyline.empty())
-				polyline.push_back(mid1);
-			      polyline.push_back(mid2);
+			      // now we pass through edge 1
+			      current_tri->m_e1->m_visited = true;
 			      if ((current_tri->m_e1->m_adjTri1 != 0)&&(*current_tri == *(current_tri->m_e1->m_adjTri1)))
 				{
 				  SkelTriangleWeakPtr temp = current_tri->m_e1->m_adjTri1;
 				  current_tri = (current_tri->m_e1->m_adjTri2);
 				  m_allTriangles.skelErase(temp);
-				}
-			      else if (current_tri->m_e1->m_adjTri1 == 0)
-				{
-				  current_tri = (current_tri->m_e1->m_adjTri2);
 				}
 			      else
 				{
@@ -1782,87 +1892,206 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
   			}
   		    }
+		  if (m_allTriangles.size() == size_allTriangles)
+		    {
+		      std::cerr << "on n'a pas supprimé de triangle" << std::endl;
+		      //m_allTriangles.skelErase(prec_tri);
+		    }
   		  break;
   		case SkelTriangle::TERMINATION:
   		  // here we add the middle of interior edge and gravity center
   		  if (current_tri->m_e1->m_type == SkelEdge::INTERIOR)
   		    {
   		      mid1 = current_tri->m_e1->getMiddle();
+		      terminationIsFirstEnd = !current_tri->m_e1->m_visited;
+		      current_tri->m_e1->m_visited = true;
   		    }
   		  else if (current_tri->m_e2->m_type == SkelEdge::INTERIOR)
   		    {
   		      mid1 = current_tri->m_e2->getMiddle();
+		      terminationIsFirstEnd = !current_tri->m_e2->m_visited;
+		      current_tri->m_e2->m_visited = true;
   		    }
   		  else
   		    {
   		      mid1 = current_tri->m_e3->getMiddle();
+		      terminationIsFirstEnd = !current_tri->m_e3->m_visited;
+		      current_tri->m_e3->m_visited = true;
   		    }
-  		  polyline.push_back(mid1);
-  		  polyline.push_back(current_tri->getGravityCenter());
 		
   		  // As we are at the end of a branch, we save the polyline realised
   		  // And begin with a new one
-		  bumpMid = current_tri->getMiddleSummitForTerm();
-		  branch = new SkelBranch(polyline, &m_shape, lastEndType, SkelBranch::TERMINATION, bumpBeg, bumpEnd, bumpMid);
-  		  m_skeleton.push_back(branch);
-		  it_jonction = (m_jonctions.insert(new SkelJonction(*(polyline.begin())))).first;
-		  if ((it_jonction != m_jonctions.end()))
+		  if (terminationIsFirstEnd)
 		    {
-		      (*it_jonction)->addBranch(branch);
-		    }
-  		  m_allTriangles.skelErase(current_tri);
-  		  polyline.clear();
-  		  // Now we begin a new polyline
-  		  // So we search the last jonction not completely explored
-  		  // Or a new jonction
-  		  if (!leftTriangles.empty())
-  		    {
-  		      current_tri = (leftTriangles.top());
-  		      leftTriangles.pop();
-		      lastEndType = SkelBranch::JONCTION;
-  		    }
-  		  else
-  		    {
-  		      // This should not happen in real life
-  		      // As the skeleton is supposed to be connex
-  		      current_tri = m_allTriangles.find_next();
-		      if (current_tri != 0)
+		      if (!polyline.empty())
 			{
-			  switch(current_tri->m_type)
+			  polyline.push_back(mid1);
+			  polyline.push_back(current_tri->getGravityCenter());
+			  bumpMid = current_tri->getMiddleSummitForTerm();
+			  branch = new SkelBranch(polyline, &m_shape, lastEndType, SkelBranch::TERMINATION, bumpBeg, bumpEnd, bumpMid);
+			  m_skeleton.push_back(branch);
+			  it_jonction = (m_jonctions.insert(new SkelJonction(*(polyline.begin())))).first;
+			  if ((it_jonction != m_jonctions.end()))
 			    {
+			      (*it_jonction)->addBranch(branch);
+			    }
+			  m_allTriangles.skelErase(current_tri);
+			  polyline.clear();
+			  // Now we begin a new polyline
+			  // So we search the last jonction not completely explored
+			  // Or a new jonction
+			  if (!leftTriangles.empty())
+			    {
+			      current_tri = (leftTriangles.top());
+			      leftTriangles.pop();
+			      lastEndType = SkelBranch::JONCTION;
+			    }
+			  else
+			    {
+			      // This should not happen in real life
+			      // As the skeleton is supposed to be connex
+			      current_tri = m_allTriangles.find_next();
+			      if (current_tri != 0)
+				{
+				  switch(current_tri->m_type)
+				    {
+				    case SkelTriangle::TERMINATION:
+				      bumpMid = current_tri->getMiddleSummitForTerm();
+				      lastEndType = SkelBranch::TERMINATION;
+				      break;
+				    case SkelTriangle::JONCTION:
+				      lastEndType = SkelBranch::JONCTION;
+				      break;
+				    default:
+				      lastEndType = SkelBranch::UNDEFINED;
+				      break;
+				    }
+				}
+			      else
+				lastEndType = SkelBranch::UNDEFINED;
+			    }
+			  if (current_tri == 0)
+			    {
+			      lastEndType = SkelBranch::UNDEFINED;
+			    }
+			  else
+			    {
+			      switch (current_tri->m_type)
+				{
+				case SkelTriangle::JONCTION:
+				  lastEndType = SkelBranch::JONCTION;
+				  break;
+				case SkelTriangle::TERMINATION:
+				  bumpMid = current_tri->getMiddleSummitForTerm();
+				  lastEndType = SkelBranch::TERMINATION;
+				  break;
+				default:
+				  lastEndType = SkelBranch::UNDEFINED;
+				  break;
+				}
+			    }
+			  pglError("getChordalAxisTransform : this should be the first end, why polyline isn't empty ?");
+			}
+		      else
+			{
+			  polyline.push_back(current_tri->getGravityCenter());
+			  polyline.push_back(mid1);
+			  lastEndType = SkelBranch::TERMINATION;
+			  if (current_tri->m_e1->m_type == SkelEdge::INTERIOR)
+			    {
+			      bumpBeg = current_tri->m_e1->m_p1->m_ind;
+			      bumpEnd = current_tri->m_e1->m_p2->m_ind;
+			      if (*(current_tri->m_e1->m_adjTri1) == *current_tri)
+				current_tri = current_tri->m_e1->m_adjTri2;
+			      else
+				current_tri = current_tri->m_e1->m_adjTri1;
+			    }
+			  else if (current_tri->m_e2->m_type == SkelEdge::INTERIOR)
+			    {
+			      bumpBeg = current_tri->m_e2->m_p1->m_ind;
+			      bumpEnd = current_tri->m_e2->m_p2->m_ind;
+			      if (*(current_tri->m_e2->m_adjTri1) == *current_tri)
+				current_tri = current_tri->m_e2->m_adjTri2;
+			      else
+				current_tri = current_tri->m_e2->m_adjTri1;
+			    }
+			  else
+			    {
+			      bumpBeg = current_tri->m_e3->m_p1->m_ind;
+			      bumpEnd = current_tri->m_e3->m_p2->m_ind;
+			      if (*(current_tri->m_e3->m_adjTri1) == *current_tri)
+				current_tri = current_tri->m_e3->m_adjTri2;
+			      else
+				current_tri = current_tri->m_e3->m_adjTri1;
+			    }
+			}
+		    }
+		  else
+		    {
+		      polyline.push_back(mid1);
+		      polyline.push_back(current_tri->getGravityCenter());
+		      bumpMid = current_tri->getMiddleSummitForTerm();
+		      branch = new SkelBranch(polyline, &m_shape, lastEndType, SkelBranch::TERMINATION, bumpBeg, bumpEnd, bumpMid);
+		      m_skeleton.push_back(branch);
+		      it_jonction = (m_jonctions.insert(new SkelJonction(*(polyline.begin())))).first;
+		      if ((it_jonction != m_jonctions.end()))
+			{
+			  (*it_jonction)->addBranch(branch);
+			}
+		      m_allTriangles.skelErase(current_tri);
+		      polyline.clear();
+		      // Now we begin a new polyline
+		      // So we search the last jonction not completely explored
+		      // Or a new jonction
+		      if (!leftTriangles.empty())
+			{
+			  current_tri = (leftTriangles.top());
+			  leftTriangles.pop();
+			  lastEndType = SkelBranch::JONCTION;
+			}
+		      else
+			{
+			  // This should not happen in real life
+			  // As the skeleton is supposed to be connex
+			  current_tri = m_allTriangles.find_next();
+			  if (current_tri != 0)
+			    {
+			      switch(current_tri->m_type)
+				{
+				case SkelTriangle::TERMINATION:
+				  bumpMid = current_tri->getMiddleSummitForTerm();
+				  lastEndType = SkelBranch::TERMINATION;
+				  break;
+				case SkelTriangle::JONCTION:
+				  lastEndType = SkelBranch::JONCTION;
+				  break;
+				default:
+				  lastEndType = SkelBranch::UNDEFINED;
+				  break;
+				}
+			    }
+			  else
+			    lastEndType = SkelBranch::UNDEFINED;
+			}
+		      if (current_tri == 0)
+			{
+			  lastEndType = SkelBranch::UNDEFINED;
+			}
+		      else
+			{
+			  switch (current_tri->m_type)
+			    {
+			    case SkelTriangle::JONCTION:
+			      lastEndType = SkelBranch::JONCTION;
+			      break;
 			    case SkelTriangle::TERMINATION:
 			      bumpMid = current_tri->getMiddleSummitForTerm();
 			      lastEndType = SkelBranch::TERMINATION;
-			      break;
-			    case SkelTriangle::JONCTION:
-			      lastEndType = SkelBranch::JONCTION;
 			      break;
 			    default:
 			      lastEndType = SkelBranch::UNDEFINED;
 			      break;
 			    }
-			}
-		      else
-			lastEndType = SkelBranch::UNDEFINED;
-  		    }
-		  if (current_tri == 0)
-		    {
-		      lastEndType = SkelBranch::UNDEFINED;
-		    }
-		  else
-		    {
-		      switch (current_tri->m_type)
-			{
-			case SkelTriangle::JONCTION:
-			  lastEndType = SkelBranch::JONCTION;
-			  break;
-			case SkelTriangle::TERMINATION:
-			  bumpMid = current_tri->getMiddleSummitForTerm();
-			  lastEndType = SkelBranch::TERMINATION;
-			  break;
-			default:
-			  lastEndType = SkelBranch::UNDEFINED;
-			  break;
 			}
 		    }
   		  break;
@@ -1938,7 +2167,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			  // So we have to end the polyline if it is not empty
 			  // And get to the next thing
 			  if (!polyline.empty())
-			    m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+			    {
+			      m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+			    }
 			  polyline.clear();
 			  if (!leftTriangles.empty())
 			    {
@@ -2005,7 +2236,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			  // So we have to end the polyline if it is not empty
 			  // And get to the next thing
 			  if (!polyline.empty())
-			    m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+			    {
+			      m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+			    }
 			  polyline.clear();
 			  if (!leftTriangles.empty())
 			    {
@@ -2071,7 +2304,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			  // So we have to end the polyline if it is not empty
 			  // And get to the next thing
 			  if (!polyline.empty())
-			    m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+			    {
+			      m_skeleton.push_back(new SkelBranch(polyline, &m_shape));
+			    }
 			  polyline.clear();
 			  if (!leftTriangles.empty())
 			    {
@@ -2158,14 +2393,13 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 				}
 			    }
   			}
-  		      std::cerr << "Skeleton, ChordalAxisTransform : we should not be there... Triangle done !" << std::endl;
+  		      pglError( "Skeleton, ChordalAxisTransform : we should not be there... Triangle done !" );
   		    }
   		  break;
   		default:
-  		  std::cerr << "Skeleton, Chordal Axis Transform : Type of Triangle is undefined" << std::endl;
+  		  pglError( "Skeleton, Chordal Axis Transform : Type of Triangle is undefined" );
   		}
   	    }
-	  //Debug::debug("getChordalAxisTransform 5");
   	}
       while ((!m_allTriangles.empty())||(!leftTriangles.empty()));
       if (!polyline.empty())
@@ -2185,7 +2419,7 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
     }
   else
     {
-      std::cerr << "Skeleton, Chordal Axis Transform : Triangulation is empty" << std::endl;
+      pglError( "Skeleton, Chordal Axis Transform : Triangulation is empty" );
       assert(!m_allTriangles.empty());
     }
   return SkelBranch::getListPolylines(m_skeleton);
@@ -2258,7 +2492,7 @@ void PGL::Skeleton::filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemo
 		    next_sps = it_sps;
 		  it_sps--;
 		  if ((it_sps == m_shape.end())||(prec_sps == m_shape.end())||(next_sps == m_shape.end()))
-		    std::cerr << "there might be a pb trying to access end iterator ! " << std::endl; 
+		    pglError( "there might be a pb trying to access end iterator ! " ); 
 		  SkelTriangle tr = SkelTriangle(*it_sps,*(prec_sps),(*next_sps));
 		  if (tr.area() < areaMaxTrianglesToRemove)
 		    {
@@ -2330,46 +2564,208 @@ TriangleSetPtr PGL::Skeleton::getTriangleSet()
   return res;
 }
 
-class MyCompareVector2
+typedef std::pair<Point_intersections,int> Pts_counter;
+static bool operator<(const Pts_counter p1, const Pts_counter p2)
+{
+  return (p1.first < p2.first);
+};
+
+class Compare_Pts_counter
 {
 public:
-  bool operator()(const Vector2& v1, const Vector2& v2)
+  bool operator()(const Pts_counter p1, const Pts_counter p2) const
   {
-    if (v1 == v2)
-      return false;
-    else
-      {
-	return v1 < v2;
-      }
+    return p1.first < p2.first;
   }
 };
 
-Polyline2DPtr PGL::Skeleton::rediscretize(const Polyline2DPtr discretizedShape)
+bool isInside(Vector2 p, Vector2 seg_src, Vector2 seg_tgt)
 {
-  std::list<Vector2> polyline;
-  std::set<Vector2, MyCompareVector2> points;
-  for (int i = 0; i < discretizedShape->getPointListSize(); i++)
+  Vector2 seg = seg_tgt - seg_src;
+  Vector2 toTest = p - seg_src;
+  if ((p == seg_src) || (p == seg_tgt))
+    return false;
+  // determinant : if not null vectors are not colinear,
+  // and p is not within seg_src and seg_tgt
+  double determinant = seg.x()*toTest.y() - seg.y()*toTest.x();
+  if ((determinant > GEOM_TOLERANCE) || (determinant < -GEOM_TOLERANCE))
+    return false;
+  if ((toTest.x()*seg.x()+toTest.y()*seg.y()) < 0)
+    return false;
+  toTest = seg_tgt - p;
+  if ((toTest.x()*seg.x()+toTest.y()*seg.y()) < 0)
+    return false;
+  return true;
+}
+
+Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_intersections> pts_intersection)
+{
+  if (pts_intersection.size() == 0)
     {
-      std::pair<std::set<Vector2, MyCompareVector2>::iterator, bool> res;
-      Vector2 v = discretizedShape->getPointListAt(i);
-      res = points.insert(v);
-      if (res.second)
+      std::vector<Vector2> v_polyline; 
+      v_polyline.assign(polyline.begin(), polyline.end());
+      return new Polyline2D(new Point2Array(v_polyline.begin(),v_polyline.end()));
+    }
+  bool found = false;
+  bool new_point = false;
+  std::list<Vector2>::iterator polyline_it, it1 = polyline.end(), it2 = polyline.end();
+  std::list<Point_intersections>::iterator it, it_begin, it_end;
+  it_begin = pts_intersection.begin();
+  it_end = pts_intersection.end();
+  // we find the place within the polyline where are the intersections points
+  // to get the indices for both segments giving the intersection
+  // and the type of the intersection : new point or polyline point
+  for (polyline_it = polyline.begin(); (polyline_it != polyline.end()) && (!found); polyline_it++)
+    {
+      for (it = it_begin ; it != it_end ; it++)
 	{
-	  polyline.push_back(v);
-	}
-      else
-	{
-	  if ((polyline.back() != v) && (polyline.back() != *res.first))
-	    polyline.push_back(*res.first);
+	  if (*polyline_it == toVec2(*it))
+	    {
+	      new_point = false;
+	      if (it1 == polyline.end())
+		{
+		  it1 = polyline_it;
+		  it_begin = it;
+		  it_end = it;
+		  it_end++;
+		}
+	      else if ((it2 == polyline.end()) && (it1 != polyline_it))
+		it2 = polyline_it;
+	      found == (it1 != polyline.end()) && (it2 != polyline.end());
+	    }
+	  else
+	    {
+	      std::list<Vector2>::iterator polyline_suiv = polyline_it;
+	      polyline_suiv ++;
+	      if (polyline_suiv == polyline.end())
+		polyline_suiv = polyline.begin();
+	      if (isInside(toVec2(*it), *polyline_it, *polyline_suiv))
+		{
+		  new_point = true;
+		  // insertion of intersection point in the polyline
+		  polyline.insert(polyline_suiv, toVec2(*it));
+		  if (it1 == polyline.end())
+		    {
+		      it1 = polyline_it;
+		      it1++;
+		      it_begin = it;
+		      it_end = it;
+		      it_end++;
+		    }
+		  else if ((it2 == polyline.end()) && (it1 != polyline_it))
+		    {
+		      it2 = polyline_it;
+		      it2++;
+		    }
+		  found == (it1 != polyline.end()) && (it2 != polyline.end());
+		}
+	    }
 	}
     }
-  return new Polyline2D(new Point2Array(polyline.begin(),polyline.end()));
+
+  pts_intersection.erase(it_begin);
+
+  // Now we have an intersection point and the two segments intersecting it
+  // We must therefore calculate the lengths of the 2 loops departing from 
+  // the intersection point
+  double length1 = 0.0, length2 = 0.0;
+  bool shorterLoopFound = false;
+  bool loop1Completed = false;
+  bool loop2Completed = false;
+  bool loop2includesEnd = false;
+  std::list<Vector2>::iterator it1_save = it1, it2_save = it2;
+  while(!shorterLoopFound)
+    {
+      if (!loop1Completed)
+	{
+	  std::list<Vector2>::iterator iti_prec = it1;
+	  it1++;
+	  length1 += norm(*it1 - *iti_prec);
+	  if (it1 == it2_save)
+	    loop1Completed = true;
+	}
+      if (!loop2Completed)
+	{
+	  std::list<Vector2>::iterator iti_prec = it2;
+	  it2++;
+	  if (it2 == polyline.end())
+	    {
+	      it2 = polyline.begin();
+	      loop2includesEnd = true;
+	    }
+	  length2 += norm(*it2 - *iti_prec);
+	  if (it2 == it1_save)
+	    loop2Completed = true;
+	}
+      if (loop1Completed && (length1 < length2))
+	shorterLoopFound = true;
+      if (loop2Completed && (length2 < length1))
+	shorterLoopFound = true;
+      if (loop1Completed && loop2Completed)
+	shorterLoopFound = true;
+    }
+
+  // Now we know which loop is the shortest
+  // And we have to suppress it
+  if (length1 <= length2)
+    {
+      polyline.erase(it1_save, it1);
+    }
+  else
+    {
+      if (loop2includesEnd)
+	{
+	  polyline.erase(it2_save, polyline.end());
+	  polyline.erase(polyline.begin(), it2);
+	}
+      else 
+	{
+	  polyline.erase(it2_save, it2);
+	}
+    }
+  return removeOneLoop(polyline, pts_intersection);
+}
+
+Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
+{
+  std::list<Point_intersections> pts_intersection;
+  std::list<Segment_intersections> pts_shape;
+  std::list<Vector2> polyline; 
+  std::set<Pts_counter, Compare_Pts_counter> pts;
+  Point_intersections p_last = toPoint_intersections(shape->getPointListAt(0)), p_cur;
+  polyline.push_back(shape->getPointListAt(0));
+  pts.insert(std::pair<Point_intersections,int>(p_last,1));
+  int n_max = shape->getPointListSize();
+  if (shape->getPointListAt(0) == shape->getPointListAt(n_max-1))
+    n_max--;
+  int nb_intersections = 0;
+  for (int i = 1; i < n_max; i++)
+    {
+      polyline.push_back(shape->getPointListAt(i));
+      p_cur = toPoint_intersections(shape->getPointListAt(i));
+      pts_shape.push_back(Segment_intersections(p_last, p_cur));
+      std::pair<std::set<Pts_counter, Compare_Pts_counter>::iterator,bool> res = pts.insert(std::pair<Point_intersections,int>(p_cur,i));
+      if (!res.second)
+	{
+	  // we have an intersection point
+	  // we may suppress at once one loop
+	  pts_intersection.push_back((*(res.first)).first);
+	}
+      p_last = p_cur;
+    }
+
+  if (toPoint_intersections(shape->getPointListAt(0)) != p_last)
+    pts_shape.push_back(Segment_intersections(p_last,toPoint_intersections(shape->getPointListAt(0))));
+
+  //std::list<Segment_intersections>::iterator return_it = 
+  CGAL::get_intersection_points(pts_shape.begin(), pts_shape.end(),
+				std::back_inserter (pts_intersection));
+
+  return removeOneLoop(polyline, pts_intersection);
 }
 
 std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform(const Polyline2DPtr discretizedShape, double areaMaxFilter)
 {
-  // Polyline2DPtr new_polyline = Skeleton::rediscretize(discretizedShape);
-//   Skeleton skel(new_polyline);
   filterAndHomogenize(*(discretizedShape->getPointList()));
   Skeleton skel(discretizedShape);
   skel.getChordalAxisTransform();
@@ -2379,6 +2775,8 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform(const Polyline2D
 
 TriangleSetPtr PGL::Skeleton::getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape)
 {
-  Skeleton skel(Skeleton::rediscretize(discretizedShape));
+  filterAndHomogenize(*(discretizedShape->getPointList()));
+  removeLoopsInShape(discretizedShape);
+  Skeleton skel(discretizedShape);
   return skel.getTriangleSet();
 }

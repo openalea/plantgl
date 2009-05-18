@@ -38,7 +38,8 @@
 
 /* ----------------------------------------------------------------------- */
 #include <string>
-#include <list> 
+#include <list>
+#include <set>
 #include "../algo_config.h"
 
 
@@ -73,7 +74,6 @@ public:
 
   bool operator<(const ShapePoint& sp) const
   {
-    //std::cerr << "operator < shapepoint" << std::endl;
     if (x() == sp.x())
       return y() < sp.y();
     else
@@ -85,7 +85,6 @@ public:
   }
   bool operator==(const Vector2& v) const
   {
-    //std::cerr << "comp vector2 with pointshape" << std::endl;
     return m_vec == v;
   }
 };
@@ -113,7 +112,6 @@ protected:
   bool m_infinite;
 
 public:
-  // TODDO : add constructors from vector2
   SkelEdge(Vector2 p1,
 	   Vector2 p2);
 
@@ -334,7 +332,6 @@ class ALGO_API Skeleton
   Skeleton() {};
   Skeleton(Polyline2DPtr discretizedShape);
 
-  //void filterLoops(CDTplus cdt);
   void init(Polyline2DPtr discretizedShape);
   TriangleSetPtr getTriangleSet();
   std::list<Polyline2DPtr> getChordalAxisTransform();
@@ -342,7 +339,7 @@ class ALGO_API Skeleton
   void filterLittleBranchesOnBranchAreaSize(double areaMaxBranchesToRemove);
   void filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemove);
 
-  static  Polyline2DPtr rediscretize(const Polyline2DPtr discretizedShape);
+  static Polyline2DPtr removeLoopsInShape(Polyline2DPtr shape);
   static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape, double areaMaxFilter);
   static TriangleSetPtr getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape);
 
