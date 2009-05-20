@@ -431,6 +431,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 {
 /* ----------------------------------------------------------------------- */
 	if(name)setObjectName(name);
+    QString qname = name;
 	setModal(modal);
     QPixmap image0( ( const char** ) info_logo );
     resize( 563, 503 );
@@ -460,7 +461,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
         font1.setPointSize( 15 );
         font1.setBold( TRUE );
         Title->setFont( font1 );
-		Title->setText( (name ? name : tr( "PlantGL Viewer" ) ) );
+		Title->setText( (name ? qname : tr( "PlantGL Viewer" ) ) );
 
         Icon = new QLabel( this );
         Icon->setGeometry( QRect( 10, 10, 60, 60 ) );
@@ -474,7 +475,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     AttView->addColumn( tr( "Values" ) );
 
     RootItem = new Q3ListViewItem( AttView, 0 );
-    RootItem->setText( 0, (name ? name : tr( "PlantGL Viewer" ) ) );
+    RootItem->setText( 0, (name ? qname : tr( "PlantGL Viewer" ) ) );
     RootItem->setOpen( TRUE );
 
 /* ----------------------------------------------------------------------- */

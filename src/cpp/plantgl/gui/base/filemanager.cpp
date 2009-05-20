@@ -125,16 +125,17 @@ ViewFileManager::initialize(){
   QPixmap copyPicIcon( ViewerIcon::getPixmap(ViewerIcon::camera) );
   QPixmap printIcon(ViewerIcon::getPixmap(ViewerIcon::fileprint) );
   
-  
+  QAction* act=0; 
   
    addMenu( __OpenFileMenu );
   __OpenFileMenu->setIcon(openIcon);
   __OpenFileMenu->setTitle(tr("Open"));
-  __OpenFileMenu->setWhatsThis("<b>Open Menu</b><br>Menu related to file loading<br>");
+  act = __OpenFileMenu->defaultAction();
+  act->setWhatsThis("<b>Open Menu</b><br>Menu related to file loading<br>");
 
   // Open File Menu
   __OpenFileMenu->clear();
-  QAction * act = __OpenFileMenu->addAction( openIcon , tr("&Open File"),this,SLOT(openFile()),Qt::CTRL+Qt::Key_O);
+  act = __OpenFileMenu->addAction( openIcon , tr("&Open File"),this,SLOT(openFile()),Qt::CTRL+Qt::Key_O);
   act->setWhatsThis("<b>Open File</b><br><br>Load 3D scene from a file.<br>");
   
   scene->addOpenEntries(__OpenFileMenu);
@@ -146,7 +147,8 @@ ViewFileManager::initialize(){
   if(scene->addImportEntries(__ImportFileMenu)){
     __ImportFileMenu->setTitle(tr("Import"));
 	__ImportFileMenu->setIcon(openIcon);
-	__ImportFileMenu->setWhatsThis("<b>Import Menu</b><br>Importing scene from various file format<br>");
+    act = __ImportFileMenu->defaultAction();
+	act->setWhatsThis("<b>Import Menu</b><br>Importing scene from various file format<br>");
     addMenu(__ImportFileMenu );
     addSeparator();
   }
@@ -155,7 +157,8 @@ ViewFileManager::initialize(){
   __SaveFileMenu->clear();
   __SaveFileMenu->setIcon(openIcon);
   __SaveFileMenu->setTitle(tr("Save"));
-  __SaveFileMenu->setWhatsThis("<b>Save Menu</b><br>Menu related to file saving<br>");
+  act = __SaveFileMenu->defaultAction();
+  act->setWhatsThis("<b>Save Menu</b><br>Menu related to file saving<br>");
   addMenu( __SaveFileMenu );
  
   act = __SaveFileMenu->addAction( saveIcon , tr("&Save"),scene,SLOT(save()),Qt::CTRL+Qt::Key_S);
@@ -177,7 +180,8 @@ ViewFileManager::initialize(){
   QMenu * __screenshot = new QMenu(this);
   __screenshot->setTitle(tr("ScreenShot"));
   __screenshot->setIcon(copyPicIcon);
-  __screenshot->setWhatsThis("<b>ScreenShot Menu</b><br>Menu related to screenshot<br>");
+  act = __screenshot->defaultAction();
+  act->setWhatsThis("<b>ScreenShot Menu</b><br>Menu related to screenshot<br>");
   addMenu( __screenshot );
 
   act = __screenshot->addAction( savePicIcon , tr("Save as Bitmap"),this,SLOT(saveImage()),Qt::CTRL+Qt::Key_B);
@@ -198,7 +202,8 @@ ViewFileManager::initialize(){
   __RecentFilesMenu->setIcon(openIcon);
   __RecentFilesMenu->setTitle(tr("Recents"));
   addMenu(__RecentFilesMenu );
-  __RecentFilesMenu->setWhatsThis("<b>History Menu</b><br>This Menu contains all the file names previously opened<br>");
+  act = __RecentFilesMenu->defaultAction();
+  act->setWhatsThis("<b>History Menu</b><br>This Menu contains all the file names previously opened<br>");
   
   
   drawRecentFilesMenu();

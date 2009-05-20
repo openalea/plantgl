@@ -477,8 +477,13 @@ void Viewer::initializeRenderer()
     __EditMenu->clear();
     delete __EditMenu;
   }
+
+
+
   __ToolsMenu = __GLFrame->createToolsMenu(__MainMenu);
-  __ToolsMenu->setWhatsThis(tr("The Tools Menu"));
+  QAction *act=0;
+  act = __ToolsMenu->defaultAction();
+  act->setWhatsThis(tr("The Tools Menu"));
 
   __EditMenu  = __GLFrame->createEditMenu(__MainMenu);
   __FileMenu->setTitle(tr("&File"));
