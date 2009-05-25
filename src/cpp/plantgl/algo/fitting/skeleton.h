@@ -60,6 +60,7 @@ class SkelTriangle;
 //typedef RCPtr<SkelTriangle> SkelTrianglePtr;
 typedef SkelTriangle* SkelTriangleWeakPtr;
 
+//! A class that associate a vector2 and an index, to get the position of a point within a polyline
 class ALGO_API ShapePoint
 {
 public:
@@ -93,6 +94,16 @@ typedef ShapePoint* ShapePointWeakPtr;
 class Skeleton;
 class SkelTriangleSet;
 class SkelEdgeSet;
+//! A class for an edge, defined by a pair of points
+/**
+ *  This is a class specific to Skeleton. It allows quick travel
+ *  through adjacent triangles. Therefore we point to the two adjacent
+ *  triangles, we have a marker to say if we came through this edge while
+ *  trying to cover all triangles, a type to say if we have a boundary edge
+ *  or not, and a boolean infinite for correspondance with CGAL infinite edges
+ *  and faces.
+ *  The pair of points used to define the edge are sorted within the class.
+ */
 class ALGO_API SkelEdge : public TOOLS::RefCountObject
 {
 public:
@@ -103,51 +114,102 @@ public:
   enum TypeEdge{UNDEFINED, BOUNDARY, INTERIOR};
 
 protected:
+  //! first point
   ShapePointWeakPtr m_p1;
+  //! second point, with first point < second point
   ShapePointWeakPtr m_p2;
+  //! type of edge : boundary, interior, or undefined
   TypeEdge m_type;
+  //! marker for algorithms of covering
   bool m_visited;
+  //! first adjacent triangle
   SkelTriangleWeakPtr m_adjTri1;
+  //! second adjacent triangle
   SkelTriangleWeakPtr m_adjTri2;
+  //! CGAL infinite edge indicator
   bool m_infinite;
 
 public:
+  //! basic constructor from 2 points
   SkelEdge(Vector2 p1,
 	   Vector2 p2);
 
+  //! constructor from two ShapePoints
   SkelEdge(ShapePointWeakPtr p1 ,
 	   ShapePointWeakPtr p2 , 
 	   TypeEdge type = UNDEFINED, 
 	   bool infinite = false, 
 	   bool visited = false);
 
+  //! constructor from two ShapePoints, with a boolean indicating if edge is boundary or interior
   SkelEdge(ShapePointWeakPtr p1 ,
 	   ShapePointWeakPtr p2 , 
 	   bool boundary , 
 	   bool infinite = false,
 	   bool visited = false);
 
+  //! copy constructor
   SkelEdge(const SkelEdge& e);
 
+  //! destructor
   ~SkelEdge();
 
+  //! calculates the length
+  /*!
+   * \return length of the segment defined by the two points
+   */
   double length() const;
 
+  //! calculates the square length
+  /*!
+   * \return square length of the segment defined by the two points
+   */
   double squareLength() const;
 
+  //! add an adjacent triangle to the edge
+  /*!
+   * \param t pointer to the SkelTriangle to add
+   */
   void addAdjTri(SkelTriangleWeakPtr t);
 
+  //! removes triangle t from adjacent triangles
+  /*!
+   * \param t the triangle that is to be removed 
+   */
   void rmAdjTri(SkelTriangle& t);
 
+  //! operator==
+  /*!
+   * \return length of the segment defined by the two points
+   */
   bool operator==(const SkelEdge& e) const;
 
+  //! calculates the middle of the segment
+  /*!
+   *  \return a Vector2 which is the middle of the edge : this is to say the middle of the segment p1-p2
+   */
   Vector2 getMiddle() const;
 
+  //!operator<
   bool operator<(const SkelEdge& e) const;
 };
 
+//! Clever pointer type to SkelEdge
 typedef RCPtr<SkelEdge> SkelEdgePtr;
 
+//! Class SkelTriangle that describes a triangle with 3 edges
+/*!
+ *  describing with 3 edges allows to cover the triangulation getting through the edges
+ *  more easily, but as we do have redundant information, we have some constraints on the
+ *  edges used to make the triangle. Only 3 points can form the 3 edges, and each point must
+ *  be used twice. In the creation of the type Triangle, we sort the 3 edges, and we can get 
+ *  the 3 points of the triangle by getting p1 and p2 on the first edge, and p2 on the second
+ *  edge. (the points are also sorted such as p1 < p2 in an edge) (e1 < e2 < e3 in the triangle)
+ *  We also give some information on the type of the triangle (depending on how much edges are
+ *  on the borders of the shape) and on the infinite type of the triangle (infinite triangles
+ *  are on a CGAL triangulation those who are adjacent to the infinite vertex and therefore
+ *  describe the space unoccupied by our shapes) 
+ */
 class ALGO_API SkelTriangle : public TOOLS::RefCountObject
 {
 public:
@@ -155,31 +217,84 @@ public:
   friend class PGL::Skeleton;
   friend class PGL::SkelTriangleSet;
 
+  //! enum for giving a type to the triangle
+  /*!
+   *  Triangle can be of type SLEEVE if only one side of the triangle is boundary to the shape
+   *  Triangle can be of type TERMINATION if two sides of the triangle are boundary to the shape
+   *  Triangle can be of type JONCTION if no side of the triangle is boundary to the shape
+   *  Triangle is UNDEFINED eitherway.
+   */
   enum TypeTriangle{UNDEFINED, SLEEVE, TERMINATION, JONCTION};
 protected:
+  //! first edge
   SkelEdgePtr m_e1;
+  //! second edge, with first edge < second edge
   SkelEdgePtr m_e2;
+  //! third edge, with second edge < third edge
   SkelEdgePtr m_e3;
+  //! type of triangle
   TypeTriangle m_type;
+  //! triangle infinite or not
   bool m_infinite;
 
 public:
+  //! constructor
+  /*!
+   *  \param SkelEdgePtr e1 one edge/segment we want as a side of the triangle
+   *  \param SkelEdgePtr e2 another edge/segment we want as a side of the triangle
+   *  \param SkelEdgePtr e3 another edge/segment we want as a side of the triangle
+   *  \param bool infinite whether we have an infinite face or not
+   *  \return a SkelTriangle of type defined by the types of the given edges, with the three given
+   *          edges sorted automatically
+   */
   SkelTriangle(SkelEdgePtr e1 = 0, SkelEdgePtr e2 = 0, SkelEdgePtr e3 = 0, bool infinite = false);
+  //! copy constructor
   SkelTriangle(const SkelTriangle& t);
+  //! constructor
+  /*!
+   *  \param ShapePointWeakPtr p1 one point to define the triangle
+   *  \param ShapePointWeakPtr p2 another point to define the triangle
+   *  \param ShapePointWeakPtr p3 another point to define the triangle
+   *  \return a SkelTriangle finite, of UNDEFINED type, with three edges defined 
+   *          by the three given points to get a triangle
+   */
   SkelTriangle(ShapePointWeakPtr p1, ShapePointWeakPtr p2, ShapePointWeakPtr p3);
+  //! destructor
   ~SkelTriangle();
+  //! for TERMINATION Triangles only - calculates the index of the point defining the wing tip
+  /*!
+   *  This function must be called on TERMINATION SkelTriangles or it will return -1
+   *  \return the index given in the ShapePoint of the point which is adjacent to two boundary edges
+   */
   int getMiddleSummitForTerm();
+  //! operator==
   bool operator==(const SkelTriangle& t) const;
+  //! calculate the area of the triangle
   double area() const;
+  //! operator<
   bool operator<(const SkelTriangle& t) const;
+  //! calculate gravity center of the triangle
   Vector2 getGravityCenter () const;
+  //! calculate the circumcenter of the triangle
   Vector2 getCircumCenter() const;
+  //! check if the triangle is acute (i.e. hes 3 acute angles)
   bool isAcuteAngleTriangle() const;
+  //! calculate pseudo-circumcenter 
+  /*!
+   *  The pseudo circumcenter is the circumcenter itself if the triangle is acute
+   *  Otherwise it is the middle of the biggest side
+   *  \return the pseudocircumcenter
+   */
   Vector2 getPseudoCircumCenter();
+  //! calculate opposite point to SkelEdge e
+  /*!
+   *  \return the point opposite to SkelEdge e in the triangle, this is to say the point not in e in the triangle
+   */
   ShapePointWeakPtr getOppositePoint (const SkelEdge& e) const;
 
 };
 
+//! class to compare triangle pointers, but to compare what they point rather than adresses
 class ALGO_API CompareTrianglePtr
 {
 public:
@@ -189,6 +304,7 @@ public:
   }
 };
 
+//! class to compare edge pointers, but to compare what they point rather than adresses
 class ALGO_API CompareSkelEdgePtr
 {
 public:
@@ -198,6 +314,7 @@ public:
   }
 };
 
+//! class to compare Vector2
 class ALGO_API CompareVector2
 {
 public:
@@ -299,7 +416,6 @@ class ALGO_API CompareShapePointWeakPtr
 public:
   bool operator()(const ShapePointWeakPtr pleft, const ShapePointWeakPtr pright) const
   {
-    //std::cerr << "class compareshapepoint"<< std::endl;
     if ((pleft == 0)||(pright == 0))
       return pleft == pright;
     return ((pleft->m_ind) < (pright->m_ind));

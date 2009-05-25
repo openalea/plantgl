@@ -2564,6 +2564,7 @@ TriangleSetPtr PGL::Skeleton::getTriangleSet()
   return res;
 }
 
+#ifdef WITH_CGAL
 typedef std::pair<Point_intersections,int> Pts_counter;
 static bool operator<(const Pts_counter p1, const Pts_counter p2)
 {
@@ -2578,6 +2579,7 @@ public:
     return p1.first < p2.first;
   }
 };
+#endif
 
 bool isInside(Vector2 p, Vector2 seg_src, Vector2 seg_tgt)
 {
@@ -2598,6 +2600,8 @@ bool isInside(Vector2 p, Vector2 seg_src, Vector2 seg_tgt)
   return true;
 }
 
+
+#ifdef WITH_CGAL
 Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_intersections> pts_intersection)
 {
   if (pts_intersection.size() == 0)
@@ -2726,6 +2730,7 @@ Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_interse
   return removeOneLoop(polyline, pts_intersection);
 }
 
+
 Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
 {
   std::list<Point_intersections> pts_intersection;
@@ -2763,6 +2768,8 @@ Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
 
   return removeOneLoop(polyline, pts_intersection);
 }
+#endif
+
 
 std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform(const Polyline2DPtr discretizedShape, double areaMaxFilter)
 {
