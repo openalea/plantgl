@@ -50,17 +50,17 @@ PGL_BEGIN_NAMESPACE
 template<class PointContainer>
 class ContainerReferencePolicy {
 public:
-	ContainerReferencePolicy(const PointContainer& data) : __points(data) {}
+    ContainerReferencePolicy(const PointContainer& data) : __points(data) {}
 protected:
- 	const PointContainer& __points;
+    const PointContainer& __points;
 };
 
 template<class PointContainer>
 class LocalContainerPolicy {
 public:
-	LocalContainerPolicy(const PointContainer& data) : __points(data) {}
+    LocalContainerPolicy(const PointContainer& data) : __points(data) {}
 protected:
-	const PointContainer __points;
+    const PointContainer __points;
 };
 
 
@@ -68,211 +68,211 @@ protected:
 
 template <class PointContainer,
         class ContainerPolicy = LocalContainerPolicy<PointContainer>,
-		int NbDimension = TOOLS::Dimension<typename PointContainer::element_type>::Nb >
-class PointGrid : public ContainerPolicy, public TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> 
+        int NbDimension = TOOLS::Dimension<typename PointContainer::element_type>::Nb >
+class PointGrid : public ContainerPolicy, public TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension>
 {
 public:
-	typedef TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
-	typedef typename SpatialBase::Base Base;
+    typedef TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
+    typedef typename SpatialBase::Base Base;
 
-	typedef PointContainer ContainerType;
-	typedef typename PointContainer::element_type VectorType;
-	typedef RCPtr<PointContainer> PointContainerPtr;
+    typedef PointContainer ContainerType;
+    typedef typename PointContainer::element_type VectorType;
+    typedef RCPtr<PointContainer> PointContainerPtr;
 
-	typedef typename PointContainer::iterator PointIterator;
-	typedef typename PointContainer::const_iterator PointConstIterator;
-	
-	typedef size_t PointIndex;
-	typedef std::vector<PointIndex> PointIndexList;
+    typedef typename PointContainer::iterator PointIterator;
+    typedef typename PointContainer::const_iterator PointConstIterator;
 
-	typedef typename SpatialBase::Index Index;
-	typedef std::vector<Index> IndexList;
+    typedef size_t PointIndex;
+    typedef std::vector<PointIndex> PointIndexList;
 
-	typedef typename SpatialBase::CellId VoxelId;
-	typedef std::vector<VoxelId> VoxelIdList;
+    typedef typename SpatialBase::Index Index;
+    typedef std::vector<Index> IndexList;
 
-	typedef typename SpatialBase::iterator VoxelIterator;
-	typedef typename SpatialBase::const_iterator VoxelConstIterator;
+    typedef typename SpatialBase::CellId VoxelId;
+    typedef std::vector<VoxelId> VoxelIdList;
 
-	typedef typename Base::const_partial_iterator const_partial_iterator;
+    typedef typename SpatialBase::iterator VoxelIterator;
+    typedef typename SpatialBase::const_iterator VoxelConstIterator;
 
-	PointGrid(const VectorType& voxelsize,
-			  const VectorType& minpoint, 
-			  const VectorType& maxpoint,
-			  const PointContainerPtr& data):
-	  ContainerPolicy(*data),
-	  SpatialBase(voxelsize,minpoint,maxpoint){
-		  registerData(data,0);
-	}
+    typedef typename Base::const_partial_iterator const_partial_iterator;
 
-	PointGrid(const VectorType& voxelsize,
-			  const PointContainerPtr& data):
-	  ContainerPolicy(*data),
-	  SpatialBase(voxelsize){
-		  for(size_t i = 0; i < NbDimension; ++i) 
-			  assert(__voxelsize[i] > GEOM_EPSILON);
-		  std::pair<VectorType,VectorType> bounds = data->getBounds();
-		  SpatialBase::initialize(bounds.first,bounds.second,voxelsize);
-		  registerData(data,0);
-	}
+    PointGrid(const VectorType& voxelsize,
+              const VectorType& minpoint,
+              const VectorType& maxpoint,
+              const PointContainerPtr& data):
+      ContainerPolicy(*data),
+      SpatialBase(voxelsize,minpoint,maxpoint){
+          registerData(data,0);
+    }
 
-	PointGrid(const real_t& voxelsize,
-			  const PointContainerPtr& data):
-	  ContainerPolicy(*data),
-		SpatialBase(){
-		  assert(voxelsize > GEOM_EPSILON);
-		  VectorType _voxelsize;
-		  for(size_t i = 0; i < NbDimension; ++i)
-			  _voxelsize[i] = voxelsize;
-		  std::pair<VectorType,VectorType> bounds = data->getBounds();
-		  SpatialBase::initialize(bounds.first,bounds.second,_voxelsize);
-		  registerData(data,0);
-	}
+    PointGrid(const VectorType& voxelsize,
+              const PointContainerPtr& data):
+      ContainerPolicy(*data),
+      SpatialBase(voxelsize){
+          /*for(size_t i = 0; i < NbDimension; ++i)
+              assert(__voxelsize[i] > GEOM_EPSILON);*/
+          std::pair<VectorType,VectorType> bounds = data->getBounds();
+          SpatialBase::initialize(bounds.first,bounds.second,voxelsize);
+          registerData(data,0);
+    }
+
+    PointGrid(const real_t& voxelsize,
+              const PointContainerPtr& data):
+      ContainerPolicy(*data),
+        SpatialBase(){
+          assert(voxelsize > GEOM_EPSILON);
+          VectorType _voxelsize;
+          for(size_t i = 0; i < NbDimension; ++i)
+              _voxelsize[i] = voxelsize;
+          std::pair<VectorType,VectorType> bounds = data->getBounds();
+          SpatialBase::initialize(bounds.first,bounds.second,_voxelsize);
+          registerData(data,0);
+    }
 
     const PointContainer& points() const { return ContainerPolicy::__points; }
 
 
-	inline  PointContainerPtr getVoxelPoints(const Index& coord) const {
-		return getVoxelPoints(cellId(coord));
-	}
+    inline  PointContainerPtr getVoxelPoints(const Index& coord) const {
+        return getVoxelPoints(cellId(coord));
+    }
 
-	PointContainerPtr getVoxelPoints(const VoxelId& vid) const{
-		size_t len = Base::getAt(vid).size();
-		if (len == 0) return new PointContainer();
-		PointContainerPtr pts(new PointContainer(len));
-		PointIterator itpoints = pts->begin();
-		for(PointIndexList::const_iterator itindex = Base::getAt(vid).begin(); 
-			itindex != Base::getAt(vid).end(); ++itindex){
-			*itpoints = points()[*itindex];
-		}
-		return pts;
-	}
+    PointContainerPtr getVoxelPoints(const VoxelId& vid) const{
+        size_t len = Base::getAt(vid).size();
+        if (len == 0) return new PointContainer();
+        PointContainerPtr pts(new PointContainer(len));
+        PointIterator itpoints = pts->begin();
+        for(PointIndexList::const_iterator itindex = Base::getAt(vid).begin();
+            itindex != Base::getAt(vid).end(); ++itindex){
+            *itpoints = points()[*itindex];
+        }
+        return pts;
+    }
 
-	inline const PointIndexList& getVoxelPointIndices(const Index& coord) const{
-		return Base::getAt(cellId(coord));
-	}
+    inline const PointIndexList& getVoxelPointIndices(const Index& coord) const{
+        return Base::getAt(cellId(coord));
+    }
 
-	inline const PointIndexList& getVoxelPointIndices(const VoxelId& vid) const{
-		return Base::getAt(vid);
-	}
+    inline const PointIndexList& getVoxelPointIndices(const VoxelId& vid) const{
+        return Base::getAt(vid);
+    }
 
-	VoxelIdList get_voxel_around_point(const VectorType& point, real_t radius, bool filterEmpty = true) const {
-		VoxelIdList res;
-		Index centervxl = indexFromPoint(point);
-		// discretize radius in term of voxel size
-		Index radiusvoxelsize;
-		for (size_t i = 0; i < NbDimension; ++i){
-			radiusvoxelsize[i] = 1+(radius/SpatialBase::getVoxelSize()[i]);
-		}
+    VoxelIdList get_voxel_around_point(const VectorType& point, real_t radius, bool filterEmpty = true) const {
+        VoxelIdList res;
+        Index centervxl = indexFromPoint(point);
+        // discretize radius in term of voxel size
+        Index radiusvoxelsize;
+        for (size_t i = 0; i < NbDimension; ++i){
+            radiusvoxelsize[i] = 1+(radius/SpatialBase::getVoxelSize()[i]);
+        }
 
-		// find min and max voxel coordinates
-		Index mincoord, maxcoord, dim;
-		for (size_t i = 0; i < NbDimension; ++i){
-			mincoord[i] = (centervxl[i] < radiusvoxelsize[i]?0:centervxl[i]-radiusvoxelsize[i]);
-			maxcoord[i] = std::min<size_t>(Base::dimensions()[i]-1,centervxl[i]+radiusvoxelsize[i]);
-			dim[i] = maxcoord[i] - mincoord[i];
-		}
+        // find min and max voxel coordinates
+        Index mincoord, maxcoord, dim;
+        for (size_t i = 0; i < NbDimension; ++i){
+            mincoord[i] = (centervxl[i] < radiusvoxelsize[i]?0:centervxl[i]-radiusvoxelsize[i]);
+            maxcoord[i] = std::min<size_t>(Base::dimensions()[i]-1,centervxl[i]+radiusvoxelsize[i]);
+            dim[i] = maxcoord[i] - mincoord[i];
+        }
 
-		// Index coord = mincoord;
-		real_t r = radius + norm(SpatialBase::getVoxelSize());
-		const_partial_iterator itvoxel = getSubArray(mincoord,dim);
-		while(!itvoxel.atEnd()){
-			// Check whether coord is in ball
-			if (!(norm(getVoxelCenter(itvoxel.index())-point) > r) ){
-				VoxelId vxlid = itvoxel.cellId();
-				if(!filterEmpty || !itvoxel->empty())
-					res.push_back(vxlid);
-			}
-			++itvoxel;
-		}
-		return res;
-	}
+        // Index coord = mincoord;
+        real_t r = radius + norm(SpatialBase::getVoxelSize());
+        const_partial_iterator itvoxel = getSubArray(mincoord,dim);
+        while(!itvoxel.atEnd()){
+            // Check whether coord is in ball
+            if (!(norm(getVoxelCenter(itvoxel.index())-point) > r) ){
+                VoxelId vxlid = itvoxel.cellId();
+                if(!filterEmpty || !itvoxel->empty())
+                    res.push_back(vxlid);
+            }
+            ++itvoxel;
+        }
+        return res;
+    }
 
-	PointIndexList query_ball_point(const VectorType& point, real_t radius) const{
-		VoxelIdList voxels = get_voxel_around_point(point,radius);
-		PointIndexList res;
-		for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
-			const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
-			if(!voxelpointlist.empty()){
-			  for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
-			    // Check whether point i is in the ball
-				if (!(norm(points().getAt(*itPointIndex)-point) > radius))
-					res.push_back(*itPointIndex);
-			  }
-			}
-		}
-		return res;
-	}
+    PointIndexList query_ball_point(const VectorType& point, real_t radius) const{
+        VoxelIdList voxels = get_voxel_around_point(point,radius);
+        PointIndexList res;
+        for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
+            const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
+            if(!voxelpointlist.empty()){
+              for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
+                // Check whether point i is in the ball
+                if (!(norm(points().getAt(*itPointIndex)-point) > radius))
+                    res.push_back(*itPointIndex);
+              }
+            }
+        }
+        return res;
+    }
 
-	bool disable_point(PointIndex pid) {
-		VectorType point = points().getAt(pid);
-		PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
-		typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
-		if (itPointIndex != voxelpointlist.end()) { voxelpointlist.erase(itPointIndex); return true; }
-		return false;
-	}
+    bool disable_point(PointIndex pid) {
+        VectorType point = points().getAt(pid);
+        PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
+        typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
+        if (itPointIndex != voxelpointlist.end()) { voxelpointlist.erase(itPointIndex); return true; }
+        return false;
+    }
 
-	bool enable_point(PointIndex pid) {
-		VectorType point = points().getAt(pid);
-		PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
-		typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
-		if (itPointIndex == voxelpointlist.end()) { voxelpointlist.push_back(pid); return true; }
-		return false;
-	}
+    bool enable_point(PointIndex pid) {
+        VectorType point = points().getAt(pid);
+        PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
+        typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
+        if (itPointIndex == voxelpointlist.end()) { voxelpointlist.push_back(pid); return true; }
+        return false;
+    }
 
-	void disable_points(const PointIndexList& pids) {
-			for(typename PointIndexList::const_iterator itPointIndex = pids.begin(); 
-				itPointIndex != pids.end(); ++itPointIndex){
-					disable_point(*itPointIndex);
-			}
-	}
+    void disable_points(const PointIndexList& pids) {
+            for(typename PointIndexList::const_iterator itPointIndex = pids.begin();
+                itPointIndex != pids.end(); ++itPointIndex){
+                    disable_point(*itPointIndex);
+            }
+    }
 
-	void enable_points(const PointIndexList& pids) {
-			for(typename PointIndexList::const_iterator itPointIndex = pids.begin(); 
-				itPointIndex != pids.end(); ++itPointIndex){
-					enable_point(*itPointIndex);
-			}
-	}
+    void enable_points(const PointIndexList& pids) {
+            for(typename PointIndexList::const_iterator itPointIndex = pids.begin();
+                itPointIndex != pids.end(); ++itPointIndex){
+                    enable_point(*itPointIndex);
+            }
+    }
 
-	size_t nbFilledVoxels() const {
-		size_t count = 0;
-		for(typename Base::const_iterator it = Base::begin(); it != Base::end(); ++it)
-			if(!it->empty())++count;
-		return count;
-	}
+    size_t nbFilledVoxels() const {
+        size_t count = 0;
+        for(typename Base::const_iterator it = Base::begin(); it != Base::end(); ++it)
+            if(!it->empty())++count;
+        return count;
+    }
 
 protected:
-	template<class Iterator>
-	inline void registerData(Iterator beg, Iterator end, PointIndex startingindex){
-		for(Iterator it = beg; it != end; ++it){
-			VoxelId vid = cellIdFromPoint(*it);
-			getAt(vid).push_back(startingindex);
-			startingindex++;
-		}
-	}
+    template<class Iterator>
+    inline void registerData(Iterator beg, Iterator end, PointIndex startingindex){
+        for(Iterator it = beg; it != end; ++it){
+            VoxelId vid = cellIdFromPoint(*it);
+            getAt(vid).push_back(startingindex);
+            startingindex++;
+        }
+    }
 
-	inline  void registerData(const PointContainerPtr& data, PointIndex startingindex){
-		registerData(data->begin(),data->end(),startingindex);
-	}
+    inline  void registerData(const PointContainerPtr& data, PointIndex startingindex){
+        registerData(data->begin(),data->end(),startingindex);
+    }
 
-	/*void initialize(const VectorType& minpoint, 
-					const VectorType& maxpoint)
-	{
-		for (size_t i = 0; i < NbDimension; ++i)
-			if(__voxelsize[i] < GEOM_EPSILON)
-				pglError("Bad voxelSize value for dimension %i : %f",i,__voxelsize[i]);
-		for (size_t i = 0; i < NbDimension; ++i){
-			__origin[i] = std::min(minpoint[i],maxpoint[i]);
-			maxpoint[i] = std::max(minpoint[i],maxpoint[i]);
-		}
-		VectorType m = maxpoint-__origin;
-		size_t totdim=1;
-		for (size_t i = 0; i < NbDimension; ++i){
-			__dimension[i] = (m[i]/__voxelsize[i])+1;
-			totdim *= __dimension[i];
-		}
-		__voxels = VoxelList(totdim);
-	}*/
+    /*void initialize(const VectorType& minpoint,
+                    const VectorType& maxpoint)
+    {
+        for (size_t i = 0; i < NbDimension; ++i)
+            if(__voxelsize[i] < GEOM_EPSILON)
+                pglError("Bad voxelSize value for dimension %i : %f",i,__voxelsize[i]);
+        for (size_t i = 0; i < NbDimension; ++i){
+            __origin[i] = std::min(minpoint[i],maxpoint[i]);
+            maxpoint[i] = std::max(minpoint[i],maxpoint[i]);
+        }
+        VectorType m = maxpoint-__origin;
+        size_t totdim=1;
+        for (size_t i = 0; i < NbDimension; ++i){
+            __dimension[i] = (m[i]/__voxelsize[i])+1;
+            totdim *= __dimension[i];
+        }
+        __voxels = VoxelList(totdim);
+    }*/
 
 };
 
@@ -280,29 +280,29 @@ template <class PointContainer, int NbDimension = TOOLS::Dimension<typename Poin
 class PointRefGrid : public PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>,  NbDimension>
 {
 public:
-	typedef typename PointContainer::element_type VectorType;
-	typedef RCPtr<PointContainer> PointContainerPtr;
-	typedef PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>, NbDimension> ParentGridType;
+    typedef typename PointContainer::element_type VectorType;
+    typedef RCPtr<PointContainer> PointContainerPtr;
+    typedef PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>, NbDimension> ParentGridType;
 
-	PointRefGrid(const VectorType& voxelsize,
-			  const VectorType& minpoint, 
-			  const VectorType& maxpoint,
-			  const PointContainerPtr& data):
-		ParentGridType(voxelsize, minpoint, maxpoint, data)
-	{
-	}
+    PointRefGrid(const VectorType& voxelsize,
+              const VectorType& minpoint,
+              const VectorType& maxpoint,
+              const PointContainerPtr& data):
+        ParentGridType(voxelsize, minpoint, maxpoint, data)
+    {
+    }
 
-	PointRefGrid(const VectorType& voxelsize,
-			  const PointContainerPtr& data):
-		ParentGridType(voxelsize,data)
-	{
-	}
+    PointRefGrid(const VectorType& voxelsize,
+              const PointContainerPtr& data):
+        ParentGridType(voxelsize,data)
+    {
+    }
 
-	PointRefGrid(const real_t& voxelsize,
-			  const PointContainerPtr& data):
-		ParentGridType(voxelsize, data)
-	{
-	}
+    PointRefGrid(const real_t& voxelsize,
+              const PointContainerPtr& data):
+        ParentGridType(voxelsize, data)
+    {
+    }
 };
 
 /* ----------------------------------------------------------------------- */
