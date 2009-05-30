@@ -106,6 +106,21 @@ public:
     inline uint_t getId() const
 	{ return id; }
     
+    inline const TOOLS(Vector3)& getTropism() const
+	{ return __params->tropism; }
+
+	inline void setTropism(const TOOLS(Vector3)& val)
+	{ __params->tropism= val.normed(); }
+
+	inline void setTropism(real_t x = 0, real_t y = 0, real_t z = 1)
+	{ __params->tropism= TOOLS(Vector3)(x,y,z).normed(); }
+
+    inline const real_t& getElasticity() const
+	{ return __params->elasticity; }
+	
+	void setElasticity(real_t val = 0) 
+	{ __params->elasticity = val; }
+
 	/// push the current turtle state on a stack
     virtual void push();
 
@@ -287,20 +302,16 @@ public:
     inline void sphere()
 	{ _sphere(getWidth()); }
 
-    inline void sphere(real_t radius )
-	{ _sphere(radius); }
+    void sphere(real_t radius );
     
     inline void circle()
 	{ _circle(getWidth()); }
 
-    inline void circle(real_t radius )
-	{ _circle(radius); }
+    void circle(real_t radius );
     
-    virtual void label(const std::string& text )
-	{ if(!text.empty())_label(text); }
+    virtual void label(const std::string& text );
 
-    virtual void surface(const std::string& name, real_t scale=1)
-	{ if (!name.empty()) _surface(name,(scale > GEOM_EPSILON ? scale : 1)); }
+    virtual void surface(const std::string& name, real_t scale=1);
 
 	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }
@@ -319,7 +330,6 @@ public:
 
     void setCrossSection(const Curve2DPtr& curve);
 	void setDefaultCrossSection(size_t slicenb = 16);
-
     
     virtual void error(const std::string& error_string);
     virtual void warning(const std::string& error_string);
@@ -345,6 +355,8 @@ protected:
 
     TurtleParam& getParameters()
 	  { return *__params; }
+
+	void _applyTropism();
 
     uint_t popId();
 

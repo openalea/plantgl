@@ -113,6 +113,7 @@ class vector_base_func : public boost::python::def_visitor<vector_base_func<V> >
          .def( self /= other< real_t >() )
          .def( self - self )
          .def( "normalize", & V::normalize, "Normalizes self and returns the norm before." )
+         .def( "normed", & V::normed, "Return a normed version of self." )
          .def( "isNormalized", & V::isNormalized, "Returns whether self is normalized." )
          .def( "isOrthogonalTo", & V::isOrthogonalTo, args("v"), "Returns whether self is orthogonal to v." )
          .def( "isValid", & V::isValid , "Returns whether self is valid.")

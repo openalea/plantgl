@@ -182,6 +182,9 @@ class PGLMATH_API Vector2 : public Tuple2<real_t>
   /// Normalizes \e self and returns the norm before.
   real_t normalize( ) ;
 
+  /// Return a normed version of this
+  Vector2 normed( ) const;
+
   /// Returns whether \e self is normalized.
   bool isNormalized( ) const;
 
@@ -488,6 +491,9 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Normalizes \e self and returns the norm before.
   real_t normalize( );
 
+  /// Return a normed version of this
+  Vector3 normed( ) const;
+
   /// Returns whether \e self is normalized.
   bool isNormalized( ) const;
 
@@ -738,6 +744,9 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
 
   /// Normalizes \e self and returns the norm before.
   real_t normalize( );
+
+  /// Return a normed version of this
+  Vector4 normed( ) const;
 
   /** Returns the Vector3 corresponding to the projection of \e self.
       The \c x, \c y and \c z  coordinates are divided by the \c w

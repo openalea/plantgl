@@ -5,7 +5,7 @@
  *
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): Ch. Godin (christophe.godin@cirad.fr)
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -68,6 +68,9 @@ typedef void (* error_msg_handler_func) ( const std::string&, const char*, int )
 TOOLS_API void register_error_handler(error_msg_handler_func f = NULL);
 TOOLS_API void register_warning_handler(error_msg_handler_func f = NULL);
 TOOLS_API void register_debug_handler(error_msg_handler_func f = NULL);
+inline void reset_error_handler() { register_error_handler(); }
+inline void reset_warning_handler() { register_warning_handler(); }
+inline void reset_debug_handler() { register_debug_handler(); }
 
 TOOLS_API void pglDebug(const char* msg ...);
 TOOLS_API void pglWarning(const char* msg ...);

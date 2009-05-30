@@ -5,7 +5,7 @@
  *
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): Ch. Godin (christophe.godin@cirad.fr)
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *

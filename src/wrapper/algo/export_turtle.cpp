@@ -30,6 +30,7 @@
  */
 
 #include <plantgl/algo/modelling/turtle.h>
+#include <plantgl/python/export_property.h>
 
 #include <boost/python.hpp>
 using namespace boost::python;
@@ -159,6 +160,9 @@ void export_Turtle()
 	.def("setDefaultCrossSection", &Turtle::setDefaultCrossSection, args("slices"))
 	.def("setDefaultCrossSection", &setDefaultCrossSection0)
 
+	.add_property("elasticity",&get_prop_bt_from_class<real_t,Turtle,&Turtle::getElasticity>,&Turtle::setElasticity)
+	.add_property("tropism",&get_prop_bt_from_class<Vector3,Turtle,&Turtle::getTropism>,(void(Turtle::*)(const Vector3&))&Turtle::setTropism)
+	.def("setTropism", (void(Turtle::*)(real_t,real_t,real_t))&Turtle::setTropism)
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

@@ -41,11 +41,15 @@ public:
     { 
         /** It seems mandatory to acquire the GIL to call python 
             from C++ internal (during GUI process for instance) */
+#ifndef __APPLE__
         gstate = PyGILState_Ensure(); 
+#endif
     }
     ~PythonInterpreterAcquirer()
     { 
+#ifndef __APPLE__
         PyGILState_Release(gstate); 
+#endif
     }
 
 protected:

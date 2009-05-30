@@ -94,6 +94,8 @@ TurtleParam::TurtleParam() :
   color(1),
   texture(0),
   width(0.1f),
+  tropism(0,0,1),
+  elasticity(0),
   __polygon(false),
   __generalizedCylinder(false),
   customId(Shape::NOID),
@@ -116,6 +118,8 @@ TurtleParam::reset(){
   color = 1;
   texture = 0;
   width = 0.1f;
+  tropism = Vector3(0,0,1);
+  elasticity = 0;
   __polygon = false;
   __generalizedCylinder = false;
   pointList.clear();
@@ -126,28 +130,9 @@ TurtleParam::reset(){
 }
     
 TurtleParam * TurtleParam::copy(){
-  TurtleParam * t = new TurtleParam();
-  t->position = position;
-  t->heading = heading;
-  t->left = left;
-  t->up = up;
-  t->scale = scale;
-  t->lastId = lastId;
-  t->customId = customId;
-  t->customParentId = customParentId;
-  t->color = color;
-  t->texture = texture;
-  t->width = width;
+  TurtleParam * t = new TurtleParam(*this);
   t->pointList = vector<Vector3>(pointList.begin(),pointList.end());
   t->radiusList = vector<real_t>(radiusList.begin(),radiusList.end());
-  t->crossSection = crossSection;
-  t->initialCrossSection = initialCrossSection;
-  t->initialColor = initialColor;
-  t->__polygon = __polygon;
-  t->__generalizedCylinder = __generalizedCylinder;
-  // t->polygon(__polygon);
-  // t->generalizedCylinder(__generalizedCylinder);
-
   return t;
 }
     
@@ -341,6 +326,9 @@ void Turtle::stop(){
   
   void Turtle::f(real_t length){
       if(length > 0){
+		  if (__params->elasticity > GEOM_EPSILON){
+			  _applyTropism();
+		  }
           __params->position += __params->heading*length*getScale().z();
           if (__params->isGeneralizedCylinderOn() ||
               __params->isPolygonOn())
@@ -352,6 +340,9 @@ void Turtle::stop(){
   
   void Turtle::F(real_t length,real_t topdiam){
       if(length > 0){
+		  if (__params->elasticity > GEOM_EPSILON){
+			  _applyTropism();
+		  }
           if (!__params->isGeneralizedCylinderOn() && 
               ! __params->isPolygonOn()){
                   if (topdiam < GEOM_EPSILON) _cylinder(length);
@@ -522,6 +513,46 @@ void Turtle::setCrossSection(const Curve2DPtr& curve)
 void Turtle::setDefaultCrossSection(size_t slices)
 {
 	setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)));
+}
+
+void Turtle::_applyTropism() {
+	Vector3 cp = cross(getHeading(),getTropism());
+	real_t sinus = norm( cp );
+	if (sinus > GEOM_EPSILON){
+		cp /= sinus;
+		real_t cosinus = dot( getHeading(),getTropism() );
+		real_t ang = atan2( sinus, cosinus );
+		transform(Matrix3::axisRotation(cp,ang*getElasticity()));
+	}
+}
+
+void Turtle::sphere(real_t radius )
+{ 
+  if (radius < GEOM_EPSILON)
+  { warning("Invalid radius for sphere"); }
+  else _sphere(radius); 
+}
+
+void Turtle::circle(real_t radius )
+{ 
+  if (radius < GEOM_EPSILON)
+  { warning("Invalid radius for circle"); }
+  else _circle(radius); 
+}
+
+void Turtle::label(const std::string& text )
+{ 
+	if(!text.empty())_label(text); 
+	else warning("Invalid text for label");
+}
+
+void Turtle::surface(const std::string& name, real_t scale)
+{ 
+	if (!name.empty() && scale > GEOM_EPSILON) _surface(name,scale); 
+	else {
+		if(name.empty()) warning("Invalid name for surface");
+		if(scale > GEOM_EPSILON) warning("Invalid scale for surface");
+	}
 }
 
 /*----------------------------------------------------------*/
@@ -792,6 +823,8 @@ GeometryPtr PglTurtle::getCircle(real_t radius) const{
     
 void 
 PglTurtle::_circle(real_t radius){
+  if (radius < GEOM_EPSILON)
+  { warning("Invalid radius for circle"); return; }
   real_t rad = radius;
   if ( getScale() !=  Vector3(1,1,1) &&
 		(getScale().x() == getScale().y() && 
@@ -854,3 +887,4 @@ PglTurtle::_label(const string& text ){
      obj = GeometryPtr(new Translated(getPosition(),obj));
   _addToScene(obj);
 }
+

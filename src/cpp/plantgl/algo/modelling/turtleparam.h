@@ -128,6 +128,9 @@ public:
   Curve2DPtr initialCrossSection;
   int initialColor;
 
+  TOOLS(Vector3) tropism;
+  real_t elasticity;
+
 protected:
   bool __polygon;
   bool __generalizedCylinder;

@@ -35,9 +35,48 @@
 #include <plantgl/python/exception_core.h>
 #include <plantgl/scenegraph/pgl_version.h>
 #include <plantgl/scenegraph/scene/factory.h>
+#include <plantgl/python/pyinterpreter.h>
 #include <iostream>
 
 using namespace boost::python;
+TOOLS_USING_NAMESPACE
+
+void py_error_handler(const std::string& msg, const char * fname, int lineno){
+	PythonInterpreterAcquirer py;
+	PyErr_SetString(PyExc_ValueError, msg.c_str() );
+	PyErr_Print();
+}
+
+void py_warning_handler(const std::string& msg, const char * fname, int lineno){
+    PythonInterpreterAcquirer py;
+    PyErr_WarnExplicit(PyExc_Warning,msg.c_str(),"openalea.plantgl",lineno,fname,NULL);
+}
+
+void py_debug_handler(const std::string& msg, const char * fname, int lineno){
+    PythonInterpreterAcquirer py;
+    PyErr_WarnExplicit(PyExc_Warning,msg.c_str(),"openalea.plantgl",lineno,fname,NULL);
+}
+
+static bool py_error_style = false;
+
+void set_python_error_style(bool value = true)
+{
+	if (py_error_style != value){
+		py_error_style = value;
+		if (value == true) {
+			register_error_handler(&py_error_handler);
+			register_warning_handler(&py_warning_handler);
+			register_debug_handler(&py_debug_handler);
+		}
+		else {
+			reset_error_handler();
+			reset_warning_handler();
+			reset_debug_handler();
+		}
+	}
+}
+bool get_python_error_style() { return py_error_style; }
+
 
 void module_sg()
 {
@@ -45,6 +84,9 @@ void module_sg()
 	PGL_LIB_VERSION_CHECK
 			
     define_stl_exceptions();
+#ifndef __APPLE__
+	set_python_error_style(true);
+#endif
 
     export_arrays();
     export_arrays2();
@@ -155,6 +197,8 @@ void module_sg()
 	scope().attr("PGL_VERSION") = PGL_VERSION;
 	scope().attr("PGL_SVNREVISION") = getPGLSvnRevision();
 	def("getPGLVersion",&getPGLVersion);
+	def("get_pgl_python_error_style",&get_python_error_style);
+	def("set_pgl_python_error_style",&set_python_error_style);
 
 };
 

@@ -221,6 +221,10 @@ Vector2::normalize( ) {
   return _norm;
 }
 
+Vector2 Vector2::normed( ) const {
+  return direction(*this);
+}
+
 /*  --------------------------------------------------------------------- */
 
 Vector2 operator*( const Vector2& v, const real_t& s ) {
@@ -573,6 +577,10 @@ Vector3::normalize( )  {
   return _norm;
 }
 
+Vector3 Vector3::normed( ) const {
+  return direction(*this);
+}
+
 Vector2 
 Vector3::project( ) const {
   return Vector2(__X / __Z,__Y / __Z);
@@ -706,16 +714,13 @@ real_t angle( const Vector3& v1 , const Vector3& v2 ) {
 
 real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis )
 {
-  double x,y;
-  Vector3 vy;
-  x = dot( v1,v2 );
-  vy = cross( v1, v2 );
-  y = norm( vy );
-  if( dot( vy, axis ) < 0 )
-    {
-    return atan2( -y, x );
-    }
-  return atan2( y, x );
+  double cosinus = dot( v1,v2 );
+  Vector3 vy = cross( v1, v2 );
+  double sinus = norm( vy );
+  if( dot( vy, axis ) < 0 ){
+    return atan2( -sinus, cosinus );
+  }
+  return atan2( sinus, cosinus );
 }
 
 
@@ -917,6 +922,10 @@ real_t Vector4::normalize( ) {
   real_t _norm = norm(*this);
   if (_norm > GEOM_TOLERANCE) *this /= _norm;
   return _norm;
+}
+
+Vector4 Vector4::normed( ) const {
+  return direction(*this);
 }
 
 Vector3 Vector4::project( ) const {
