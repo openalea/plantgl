@@ -43,7 +43,6 @@ public:
     { 
         /** It seems mandatory to acquire the GIL to call python 
             from C++ internal (during GUI process for instance) */
-        assert(PyEval_ThreadsInitialized());
         gstate = PyGILState_Ensure(); 
     }
     ~PythonInterpreterAcquirer()
@@ -64,18 +63,18 @@ public:
 
     void pushState () { 
       if(!_state) {
-        assert(PyEval_ThreadsInitialized());
         _gstate = PyGILState_Ensure();
-	_state = PyEval_SaveThread(); 
+        if(PyEval_ThreadsInitialized())
+	      _state = PyEval_SaveThread(); 
       }
     }
     void popState () 
     { 
         if(_state){
             PyEval_RestoreThread(_state); 
-             PyGILState_Release(_gstate); 
             _state = NULL; 
         }
+        if(_gstate)PyGILState_Release(_gstate); 
     }
  
 protected:

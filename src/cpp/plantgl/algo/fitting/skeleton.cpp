@@ -1024,7 +1024,7 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 	  CDTplus::Vertex_circulator ec = (*it).incident_vertices();
 	  CDTplus::Vertex_circulator end = --ec;
 	  ec++;
-	  ShapePointSet::iterator it_n = shape->end(), 
+	  ShapePointSet::const_iterator it_n = shape->end(), 
 	    it_n_1 = shape->end(),
 	    it_r = shape->end(), 
 	    it_r_1 = shape->end();
@@ -1039,7 +1039,7 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 		    }
 		  else
 		    {
-		      ShapePointSet::iterator ittemp = shape->findVec(toVec2((*ec).point()));
+		      ShapePointSet::const_iterator ittemp = shape->findVec(toVec2((*ec).point()));
 		      if (((*ittemp)->m_ind == (*it_n)->m_ind +1)||
 			  (((*ittemp)->m_ind == 0)&&((*it_n)->m_ind == shape->size()-1)))
 			{
@@ -1059,7 +1059,7 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 			    }
 			  else
 			    {
-			      ShapePointSet::iterator ittemp2 = shape->findVec(toVec2((*ec).point()));		      
+			      ShapePointSet::const_iterator ittemp2 = shape->findVec(toVec2((*ec).point()));		      
 			      if (((*ittemp2)->m_ind == (*it_r)->m_ind +1)||
 				  (((*ittemp2)->m_ind == 0)&&((*it_r)->m_ind == shape->size()-1)))
 				{
