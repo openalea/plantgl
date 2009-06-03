@@ -75,12 +75,22 @@ public:
     virtual ThreadStateSaver * produceStateSaver() = 0;
 };
 
+
 template<class T>
 class ThreadStateSaverTFactory : public ThreadStateSaverFactory {
+  template<class U>
+  class TSSEncapsuler : public ThreadStateSaver {
+    public:
+    TSSEncapsuler() : ThreadStateSaver(), _value() {}
+    U _value;
+    virtual void pushState() { _value.pushState(); }
+    virtual void popState()  { _value.popState();  }   
+  };
+
 public:
     ThreadStateSaverTFactory() {}
     virtual ~ThreadStateSaverTFactory() {}
-    virtual ThreadStateSaver * produceStateSaver() { return new T; }
+    virtual ThreadStateSaver * produceStateSaver() { return new TSSEncapsuler<T>(); }
 };
 
 #endif

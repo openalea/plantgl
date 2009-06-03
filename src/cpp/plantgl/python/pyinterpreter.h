@@ -34,6 +34,8 @@
 
 #include <Python.h>
 
+/* ----------------------------------------------------------------------- */
+
 class PythonInterpreterAcquirer {
 public:
 
@@ -41,40 +43,47 @@ public:
     { 
         /** It seems mandatory to acquire the GIL to call python 
             from C++ internal (during GUI process for instance) */
-#ifndef __APPLE__
+        assert(PyEval_ThreadsInitialized());
         gstate = PyGILState_Ensure(); 
-#endif
     }
     ~PythonInterpreterAcquirer()
     { 
-#ifndef __APPLE__
-        PyGILState_Release(gstate); 
-#endif
+      if(gstate)PyGILState_Release(gstate); 
     }
 
 protected:
     PyGILState_STATE gstate;
 };
 
+/* ----------------------------------------------------------------------- */
+
 class PyStateSaver {
 public:
-    PyStateSaver() : _state(0) { pushState ();}
+  PyStateSaver() : _state(0) { }
     ~PyStateSaver() { if (_state) popState(); }
 
-    virtual void pushState () { 
-		// if(PyEval_ThreadsInitialized()) 
-			_state = PyEval_SaveThread(); 
+    void pushState () { 
+      if(!_state) {
+        assert(PyEval_ThreadsInitialized());
+        _gstate = PyGILState_Ensure();
+	_state = PyEval_SaveThread(); 
+      }
     }
-    virtual void popState () 
+    void popState () 
     { 
         if(_state){
             PyEval_RestoreThread(_state); 
+             PyGILState_Release(_gstate); 
             _state = NULL; 
         }
     }
-
+ 
 protected:
+    PyGILState_STATE _gstate;
     PyThreadState *_state;
 
 };
+
+/* ----------------------------------------------------------------------- */
+
 #endif

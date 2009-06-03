@@ -32,6 +32,7 @@
 #include "export_viewer.h"
 #include <plantgl/python/extract_list.h>
 #include <plantgl/python/extract_widget.h>
+#include <plantgl/python/pyinterpreter.h>
 
 #include <boost/python.hpp>
 
@@ -45,28 +46,6 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-
-class PyStateSaver : public ThreadStateSaver{
-public:
-    PyStateSaver() : ThreadStateSaver(), _state(0) {}
-    ~PyStateSaver() { if (_state) popState(); }
-
-    virtual void pushState () { 
-		if(PyEval_ThreadsInitialized()) 
-			_state = PyEval_SaveThread(); 
-    }
-    virtual void popState () 
-    { 
-        if(_state){
-            PyEval_RestoreThread(_state); 
-            _state = NULL; 
-        }
-    }
-
-protected:
-    PyThreadState *_state;
-
-};
 
 boost::python::list selection(){
   std::vector<uint_t> sel = ViewerApplication::getSelection();

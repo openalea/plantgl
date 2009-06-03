@@ -84,9 +84,7 @@ void module_sg()
 	PGL_LIB_VERSION_CHECK
 			
     define_stl_exceptions();
-#ifndef __APPLE__
-	set_python_error_style(true);
-#endif
+    set_python_error_style(true);
 
     export_arrays();
     export_arrays2();

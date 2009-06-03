@@ -2783,7 +2783,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform(const Polyline2D
 TriangleSetPtr PGL::Skeleton::getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape)
 {
   filterAndHomogenize(*(discretizedShape->getPointList()));
+#ifdef WITH_CGAL
   removeLoopsInShape(discretizedShape);
+#endif
   Skeleton skel(discretizedShape);
   return skel.getTriangleSet();
 }

@@ -40,6 +40,7 @@
 #include "event.h"
 #include "object.h"
 #include "util_serializedobj.h"
+#include <Python.h>
 
 
 TOOLS_USING_NAMESPACE
@@ -78,6 +79,7 @@ void initViewerAppli(){
 	if(VIEWER_APPLI == NULL){
 #ifdef QT_THREAD_SUPPORT
 		if(qApp == NULL && MODE){
+		  if(!PyEval_ThreadsInitialized())PyEval_InitThreads();
 			if(!DestroyedAppli)
 				VIEWER_APPLI = new ViewerThreadedAppli();
 			else
