@@ -9,9 +9,11 @@
 /* ----------------------------------------------------------------------- */
 
 #if BOOST_VERSION < 103400
+namespace boost { namespace python {
 inline size_t len(bp::object t) {
 	return boost::python::extract<size_t>(t.attr("__len__")())();
 }
+  } }
 
 #endif
 
