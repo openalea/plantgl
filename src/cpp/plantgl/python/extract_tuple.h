@@ -32,7 +32,7 @@
 #ifndef __extract_tuple_h__
 #define __extract_tuple_h__
 
-#include <boost/python.hpp>
+#include "boost_python.h"
 #include <plantgl/tool/util_tuple.h>
 #include "exception.h"
 

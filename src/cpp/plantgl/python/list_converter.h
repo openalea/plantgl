@@ -34,11 +34,11 @@
 
 #include "exception.h"
 #include "extract_list.h"
-#include <boost/python.hpp>
+#include "boost_python.h"
 
 template<class T>
 T * extract_pgllist_from_list_at(const boost::python::list& t, void * addr = NULL){
-	int size = boost::python::extract<int>(t.attr("__len__")())();
+  int size = len(t);
 	T * result = new (addr)T();
 	for(int i = 0; i < size; ++i)
 		result->push_back(boost::python::extract<typename T::value_type>(t[i]));

@@ -34,11 +34,11 @@
 
 #include "exception.h"
 #include "extract_list.h"
-#include <boost/python.hpp>
+#include "boost_python.h"
 
 template<class T, int tuplesize>
 T * extract_pgltuple_from_tuple_at(const boost::python::tuple& t, void * addr = NULL){
-	int size = boost::python::extract<int>(t.attr("__len__")())();
+	int size = len(t);
 	if (size != tuplesize)throw PythonExc_IndexError();
 	else { 
 		T * result = new (addr)T();
@@ -58,10 +58,10 @@ struct pgltuple_from_tuple {
     if( !PySequence_Check( py_obj ) ) return 0;
 	if( !PyObject_HasAttrString( py_obj, "__len__" ) ) return 0;
 	boost::python::object py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
-    int len = 0;
-    try { len = boost::python::extract<int>(py_sequence.attr("__len__")())(); }
+    int _len = 0;
+    try { _len = len(py_sequence); }
     catch ( boost::python::error_already_set ){ PyErr_Clear(); return 0; }
-	if( len != tuplesize ) return 0;
+	if( _len != tuplesize ) return 0;
 	return py_obj;
   }
 
