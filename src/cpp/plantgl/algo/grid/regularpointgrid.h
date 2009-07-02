@@ -215,9 +215,17 @@ public:
     bool enable_point(PointIndex pid) {
         VectorType point = points().getAt(pid);
         PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
-        typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
+        typename PointIndexList::const_iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
         if (itPointIndex == voxelpointlist.end()) { voxelpointlist.push_back(pid); return true; }
         return false;
+    }
+
+    bool is_point_enabled(PointIndex pid) const {
+        VectorType point = points().getAt(pid);
+        const PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
+        typename PointIndexList::const_iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
+        if (itPointIndex == voxelpointlist.end()) { return false; }
+        return true;
     }
 
     void disable_points(const PointIndexList& pids) {
@@ -233,6 +241,16 @@ public:
                     enable_point(*itPointIndex);
             }
     }
+
+    PointContainerPtr get_enabled_points() const {
+		PointContainerPtr result(new PointContainer());
+        for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
+				if(is_point_enabled(itPointIndex)){
+					result->push_back(points()[itPointIndex]);
+				}
+        }
+		return result; 
+	}
 
     size_t nbFilledVoxels() const {
         size_t count = 0;

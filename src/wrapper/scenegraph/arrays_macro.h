@@ -109,43 +109,48 @@ std::string PREFIX##_str( ARRAY * a ) \
 template<class T>
 typename T::element_type array_bt_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -a->size() ) return a->getAt( a->size() + pos );
-  else if( pos < a->size() ) return a->getAt( pos );
+  size_t len = a->size();
+  if( pos < 0 && pos >= -(int)len ) return a->getAt( len + pos );
+  else if( pos < len ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 typename T::element_type& array_ct_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -(int)a->size() ) return a->getAt( a->size() + pos );
-  else if( pos < a->size() ) return a->getAt( pos );
+  size_t len = a->size();
+  if( pos < 0 && pos >= -(int)len ) return a->getAt( len + pos );
+  else if( pos < len ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 typename T::element_type array_ptr_getitem( T * a, int pos )
 { 
-  if( pos < 0 && pos >= -(int)a->size() ) return a->getAt( a->size() + pos );
-  else if( pos < a->size() ) return a->getAt( pos );
+  size_t len = a->size();
+  if( pos < 0 && pos >= -(int)len ) return a->getAt( len + pos );
+  else if( pos < len ) return a->getAt( pos );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 T * array_getslice( T * array, int beg, int end ) 
 { 
-  if( beg >= -(int)array->size() && beg < 0  )  beg += array->size(); 
-  else if( beg >= array->size() ) throw PythonExc_IndexError(); 
-  if( end >= -(int)array->size() && end < 0  )  end += array->size(); 
-  else if( end > array->size() ) throw PythonExc_IndexError(); 
+  size_t len = array->size();
+  if( beg >= -(int)len && beg < 0  )  beg += len; 
+  else if( beg >= len ) throw PythonExc_IndexError(); 
+  if( end >= -(int)len && end < 0  )  end += len; 
+  else if( end > len ) throw PythonExc_IndexError(); 
   return new T(array->begin()+beg,array->begin()+end);
 }
 
 template<class T>
 typename T::element_type array_popitem( T * a, int pos )
 { 
+  size_t len = a->size();
   if (a->empty()) throw PythonExc_IndexError();
-  if( pos < 0 && pos >= -(int)a->size() ) pos = a->size() + pos;
-  else if( pos >= a->size() ) throw PythonExc_IndexError();
+  if( pos < 0 && pos >= -(int)len ) pos = len + pos;
+  else if( pos >= len ) throw PythonExc_IndexError();
   typename T::element_type elem =  a->getAt( pos );
   a->erase(a->begin() + pos);
   return elem;
@@ -159,16 +164,19 @@ typename T::element_type array_poplastitem( T * a)
 template<class T>
 void array_setitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -(int)array->size() ) array->setAt( array->size() + pos, v );
-  else if( pos < array->size() ) array->setAt( pos, v );
+  size_t len = array->size();
+  if( pos < 0 && pos >= -(int)len ) array->setAt( len + pos, v );
+  else if( pos < len ) array->setAt( pos, v );
   else throw PythonExc_IndexError();
 }
 
 template<class T>
 void array_insertitem( T * array, int pos, typename T::element_type v )
 {
-  if( pos < 0 && pos >= -(int)array->size() ) array->insert( array->begin() + (array->size() + pos), v );
-  else if( pos < array->size() ) array->insert( array->begin() + pos, v );
+  size_t len = array->size();
+  if( pos < 0 && pos >= -(int)len ) array->insert( array->begin() + (len + pos), v );
+  else if( pos < len ) array->insert( array->begin() + pos, v );
+  else if( pos == len ) array->push_back( v );
   else throw PythonExc_IndexError();
 }
 
@@ -183,10 +191,11 @@ void array_delitem( T * array, int pos )
 template<class T>
 void array_delslice( T * array, int beg, int end ) 
 { 
-  if( beg >= -(int)array->size() && beg < 0  )  beg += array->size(); 
-  else if( beg >= array->size() ) throw PythonExc_IndexError(); 
-  if( end >= -(int)array->size() && end < 0  )  end += array->size(); 
-  else if( end > array->size() ) throw PythonExc_IndexError(); 
+	size_t len = array->size();
+  if( beg >= -(int)len && beg < 0  )  beg += len; 
+  else if( beg >= len ) throw PythonExc_IndexError(); 
+  if( end >= -(int)len && end < 0  )  end += len; 
+  else if( end > len ) throw PythonExc_IndexError(); 
   array->erase( array->begin()+beg,array->begin()+end); 
 }
 

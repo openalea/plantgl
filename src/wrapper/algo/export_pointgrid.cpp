@@ -133,6 +133,8 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
 	 .def("enable_point",&PointGrid::enable_point)
 	 .def("disable_point",&PointGrid::disable_point)
+	 .def("is_point_enabled",&PointGrid::is_point_enabled)
+	 .def("get_enabled_points",&PointGrid::get_enabled_points)
 	 .def("enable_points",&py_enablepoints<PointGrid>)
 	 .def("disable_points",&py_disablepoints<PointGrid>)
 	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)

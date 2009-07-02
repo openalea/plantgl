@@ -10,9 +10,7 @@
 
 #if BOOST_VERSION < 103400
 namespace boost { namespace python {
-inline size_t len(bp::object t) {
-	return boost::python::extract<size_t>(t.attr("__len__")())();
-}
+inline size_t len(bp::object t) { return (size_t)PySequence_Size(t.ptr()); }
   } }
 
 #endif
