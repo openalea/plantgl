@@ -293,7 +293,9 @@ GLRenderer::beginSceneList()
 		  printf("Debut Scene DisplayList\n");
 #endif
 		}
+#ifdef GEOM_DLDEBUG
 		else printf("Failed to create global display list");
+#endif
 		return true;
 	  }
 	  else {

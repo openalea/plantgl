@@ -78,7 +78,10 @@ ViewerSimpleAppli::launch(){
 		if (qApp->thread() != QThread::currentThread()){
 			v->moveToThread(qApp->thread());
 			if (v->thread() == QThread::currentThread()){
+
+#ifdef GEOM_DLDEBUG
 				printf("Viewer did not move to graphic thread. This will certainly lead to crash.\n");
+#endif
 				v->show();
 			}
 			else v->post(new ViewShowEvent());

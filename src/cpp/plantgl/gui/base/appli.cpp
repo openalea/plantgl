@@ -55,7 +55,11 @@ Viewer * ViewerAppliInternal::getViewer() {
 
 void ViewerAppliInternal::deleteViewer() {
 	if (VIEWER.get()->thread() != QThread::currentThread() && VIEWER.get()->thread()->isRunning())
+
+#ifdef GEOM_DLDEBUG
 		printf("Cannot delete Viewer from other thread ...\n");
+#endif
+
 	VIEWER.deleteData();
 	VIEWER = NULL; 
 }
