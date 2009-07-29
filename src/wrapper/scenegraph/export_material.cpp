@@ -56,22 +56,22 @@ std::string mat_str(Material * m){
   ss << "Material(";
   if(m->isNamed()) ss << "'" << m->getName() << "',";
   ss << COL3PRINT(m->getAmbient()) << ','
-     << m->getDiffuse() << ','
-	 << COL3PRINT(m->getSpecular()) << ','
-	 << COL3PRINT(m->getEmission()) << ','
-     << m->getShininess() << ','
-     << m->getTransparency() << ')'
-	  ;
+      << m->getDiffuse() << ','
+      << COL3PRINT(m->getSpecular()) << ','
+      << COL3PRINT(m->getEmission()) << ','
+      << m->getShininess() << ','
+      << m->getTransparency() << ')'
+      ;
   return ss.str();
 }
 
 struct mat_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Material const& m)
-	{
-		return make_tuple(m.getName(),m.getAmbient(),m.getDiffuse(),
-						  m.getSpecular(),m.getEmission(),m.getShininess(),m.getTransparency());
-	}
+  static tuple getinitargs(Material const& m)
+    {
+      return make_tuple(m.getName(),m.getAmbient(),m.getDiffuse(),
+                        m.getSpecular(),m.getEmission(),m.getShininess(),m.getTransparency());
+    }
 };
 
 MaterialPtr getDefaultMaterial() { return dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL); }
@@ -79,45 +79,45 @@ MaterialPtr getDefaultMaterial() { return dynamic_pointer_cast<Material>(Materia
 void export_Material()
 {
   class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > 
-	  ("Material", 
-	   "The material of an object. It determine the way light reflect off an object to create color.", 
-	   init< const Material & >())
+        ("Material", 
+         "The material of an object. It determine the way light reflect off an object to create color.", 
+         init< const Material & >())
     .def(init< optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
-	 ("Material( ambient=(160,160,160),diffuse=1,specular=(40,40,40),emission=(0,0,0),shininess=1,transparency=0)",
-	 (bp::arg("ambient")=Material::DEFAULT_AMBIENT,
-	  bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
-	  bp::arg("specular")=Material::DEFAULT_SPECULAR,
-	  bp::arg("emission")=Material::DEFAULT_EMISSION,
-	  bp::arg("shininess")=Material::DEFAULT_SHININESS,
-	  bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
-	  ))
+         ("Material( ambient=(160,160,160),diffuse=1,specular=(40,40,40),emission=(0,0,0),shininess=1,transparency=0)",
+          (bp::arg("ambient")=Material::DEFAULT_AMBIENT,
+           bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
+           bp::arg("specular")=Material::DEFAULT_SPECULAR,
+           bp::arg("emission")=Material::DEFAULT_EMISSION,
+           bp::arg("shininess")=Material::DEFAULT_SHININESS,
+           bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
+         ))
     .def(init< const string&, 
-	 optional< const Color3&, const real_t&, 
-	           const Color3&, const Color3&, const real_t&, const real_t&> >
-	 ("Material( name, ambient=(160,160,160), diffuse=1, specular=(40,40,40), emission=(0,0,0), shininess=1, transparency=0)",
-	 (bp::arg("name"),
-	  bp::arg("ambient")=Material::DEFAULT_AMBIENT,
-	  bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
-	  bp::arg("specular")=Material::DEFAULT_SPECULAR,
-	  bp::arg("emission")=Material::DEFAULT_EMISSION,
-	  bp::arg("shininess")=Material::DEFAULT_SHININESS,
-	  bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
-	  ))
-  .DEF_PGLBASE(Material)
-  .def( "__str__", mat_str )
-  .def( "__repr__", mat_str )
-  .def( "isSimilar", &Material::isSimilar)
-  .DEC_CT_PROPERTY_WDV(ambient,Material,Ambient,Color3,DEFAULT_AMBIENT)
-  .DEC_BT_PROPERTY_WDV(diffuse,Material,Diffuse,real_t,DEFAULT_DIFFUSE)
-  .DEC_CT_PROPERTY_WDV(specular,Material,Specular,Color3,DEFAULT_SPECULAR)
-  .DEC_CT_PROPERTY_WDV(emission,Material,Emission,Color3,DEFAULT_EMISSION)
-  .DEC_BT_PROPERTY_WDV(shininess,Material,Shininess,real_t,DEFAULT_SHININESS)
-  .DEC_BT_PROPERTY_WDV(transparency,Material,Transparency,real_t,DEFAULT_TRANSPARENCY)
-  .add_static_property("DEFAULT_MATERIAL",&getDefaultMaterial)
-  .def_pickle(mat_pickle_suite());
-    ;
+         optional< const Color3&, const real_t&, 
+         const Color3&, const Color3&, const real_t&, const real_t&> >
+         ("Material( name, ambient=(160,160,160), diffuse=1, specular=(40,40,40), emission=(0,0,0), shininess=1, transparency=0)",
+          (bp::arg("name"),
+           bp::arg("ambient")=Material::DEFAULT_AMBIENT,
+           bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
+           bp::arg("specular")=Material::DEFAULT_SPECULAR,
+           bp::arg("emission")=Material::DEFAULT_EMISSION,
+           bp::arg("shininess")=Material::DEFAULT_SHININESS,
+           bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
+         ))
+    .DEF_PGLBASE(Material)
+    .def( "__str__", mat_str )
+    .def( "__repr__", mat_str )
+    .def( "isSimilar", &Material::isSimilar)
+    .DEC_CT_PROPERTY_WDV(ambient,Material,Ambient,Color3,DEFAULT_AMBIENT)
+    .DEC_BT_PROPERTY_WDV(diffuse,Material,Diffuse,real_t,DEFAULT_DIFFUSE)
+    .DEC_CT_PROPERTY_WDV(specular,Material,Specular,Color3,DEFAULT_SPECULAR)
+    .DEC_CT_PROPERTY_WDV(emission,Material,Emission,Color3,DEFAULT_EMISSION)
+    .DEC_BT_PROPERTY_WDV(shininess,Material,Shininess,real_t,DEFAULT_SHININESS)
+    .DEC_BT_PROPERTY_WDV(transparency,Material,Transparency,real_t,DEFAULT_TRANSPARENCY)
+    .add_static_property("DEFAULT_MATERIAL",&getDefaultMaterial)
+    .def_pickle(mat_pickle_suite());
+  ;
 
-   implicitly_convertible<MaterialPtr, AppearancePtr >();
+  implicitly_convertible<MaterialPtr, AppearancePtr >();
 }
 
 std::string tex_str(ImageTexture * m){
@@ -127,11 +127,11 @@ std::string tex_str(ImageTexture * m){
   ss << "'" << m->getFilename() << "'," << (m->getMipmaping()?"True":"False") << ','
      << COL3PRINT(m->getAmbient()) << ','
      << m->getDiffuse() << ','
-	 << COL3PRINT(m->getSpecular()) << ','
-	 << COL3PRINT(m->getEmission()) << ','
+     << COL3PRINT(m->getSpecular()) << ','
+     << COL3PRINT(m->getEmission()) << ','
      << m->getShininess() << ','
      << m->getTransparency() << ')'
-	  ;
+     ;
   return ss.str();
 }
 
@@ -140,17 +140,18 @@ void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  Material >, boost::noncopyable >
     ( "ImageTexture", "The material of a textured object.", init< const ImageTexture & >())
-	.def(init< string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
-  	 (args("filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
-	  "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
-	.def(init< string,string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
-  	 (args("name","filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
-	  "ImageTexture(name, filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
-      .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
-	  .DEC_BT_NR_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
-     .def( "__str__", tex_str )
+    .def(init< string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
+         (args("filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
+          "ImageTexture(filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
+    .def(init< string,string, optional< bool, const Color3 &, real_t, const Color3 &, const Color3 &, real_t, real_t> >
+         (args("name","filename","mipmaping","ambient","diffuse","specular","emission","shininess","transparency"),
+          "ImageTexture(name, filename [,mipmaping, ambient, diffuse, specular, emission, shininess, transparency])"))
+    .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
+    .DEC_BT_NR_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
+    .def( "__str__", tex_str )
     .def( "__repr__", tex_str )
     ;
 
   implicitly_convertible<ImageTexturePtr, MaterialPtr >();
 }
+

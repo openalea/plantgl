@@ -96,99 +96,98 @@ EXPORT(col4,Color4,Alpha)
 
 struct col3_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Color3 const& c)
-	{
-		return make_tuple(c.getRed(),c.getGreen(),c.getBlue());
-	}
+  static tuple getinitargs(Color3 const& c)
+    {
+      return make_tuple(c.getRed(),c.getGreen(),c.getBlue());
+    }
 };
 
 struct col4_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Color4 const& c)
-	{
-		return make_tuple(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
-	}
+  static tuple getinitargs(Color4 const& c)
+    {
+      return make_tuple(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
+    }
 };
 
 void export_Color3()
 {
-	class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >(args("other")))
-    .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",
-	(bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0)))
-	.def(init< optional< unsigned char > >(bp::arg("value")=0))
-    .def(init< const Color4& >(args("other")))
-    .def( self == self )
-    .def( self != self )
-    .add_property( "red", col3_getRed, col3_setRed )
-    .add_property( "green", col3_getGreen, col3_setGreen  )
-    .add_property( "blue", col3_getBlue, col3_setBlue  )
-    .def( "clampedRed", col3_getRedClamped)
-	.def( "setClampedRed", col3_setRedClamped )
-    .def( "clampedGreen", col3_getGreenClamped)
-	.def( "setClampedGreen", col3_setGreenClamped )
-    .def( "clampedBlue", col3_getBlueClamped)
-	.def( "setClampedBlue", col3_setBlueClamped )
-    .def( "getAverage", &Color3::getAverage )
-    .def( "getAverageClamped", &Color3::getAverageClamped )
-	.def( "toUint", &Color3::toUint )
-	.def( "__int__", &Color3::toUint )
-	.def( "fromUint", &Color3::fromUint )
-	.staticmethod("fromUint")
-    .def( "__repr__", col3_str )
-    .def( "__str__", col3_str )
-    .def( "__repr__", col3_str )
-    .add_static_property("BLACK",make_getter(&Color3::BLACK))
-    .add_static_property("BLUE",make_getter(&Color3::BLUE))
-    .add_static_property("CYAN",make_getter(&Color3::CYAN))
-    .add_static_property("GREEN",make_getter(&Color3::GREEN))
-    .add_static_property("RED",make_getter(&Color3::RED))
-    .add_static_property("WHITE",make_getter(&Color3::WHITE))
-    .add_static_property("YELLOW",make_getter(&Color3::YELLOW))
-    .def_pickle(col3_pickle_suite());
-    ;
+  class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >(args("other")))
+      .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",
+            (bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0)))
+      .def(init< optional< unsigned char > >(bp::arg("value")=0))
+      .def(init< const Color4& >(args("other")))
+      .def( self == self )
+      .def( self != self )
+      .add_property( "red", col3_getRed, col3_setRed )
+      .add_property( "green", col3_getGreen, col3_setGreen  )
+      .add_property( "blue", col3_getBlue, col3_setBlue  )
+      .def( "clampedRed", col3_getRedClamped)
+      .def( "setClampedRed", col3_setRedClamped )
+      .def( "clampedGreen", col3_getGreenClamped)
+      .def( "setClampedGreen", col3_setGreenClamped )
+      .def( "clampedBlue", col3_getBlueClamped)
+      .def( "setClampedBlue", col3_setBlueClamped )
+      .def( "getAverage", &Color3::getAverage )
+      .def( "getAverageClamped", &Color3::getAverageClamped )
+      .def( "toUint", &Color3::toUint )
+      .def( "__int__", &Color3::toUint )
+      .def( "fromUint", &Color3::fromUint )
+      .staticmethod("fromUint")
+      .def( "__repr__", col3_str )
+      .def( "__str__", col3_str )
+      .add_static_property("BLACK",make_getter(&Color3::BLACK))
+      .add_static_property("BLUE",make_getter(&Color3::BLUE))
+      .add_static_property("CYAN",make_getter(&Color3::CYAN))
+      .add_static_property("GREEN",make_getter(&Color3::GREEN))
+      .add_static_property("RED",make_getter(&Color3::RED))
+      .add_static_property("WHITE",make_getter(&Color3::WHITE))
+      .add_static_property("YELLOW",make_getter(&Color3::YELLOW))
+      .def_pickle(col3_pickle_suite());
 
-	pgltuple_from_tuple<Color3,3>();
+  pgltuple_from_tuple<Color3,3>();
 }
 
 void export_Color4()
 {
   class_< Color4 >("Color4", "A 4 component color expressed in red, green, blue and alpha.", init< const Color4 & >(args("other")))
-	 .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",
-	                                     (bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0,bp::arg("alpha")=0)))
-	 .def(init< optional< unsigned char > >(bp::arg("value")=0))
-	 .def(init< const Color3&, optional< unsigned char > >((bp::arg("other")=0,bp::arg("alpha")=0)))
-    .def( self == self )
-    .def( self != self )
-    .add_property( "red", col4_getRed, col4_setRed )
-    .add_property( "green", col4_getGreen, col4_setGreen  )
-    .add_property( "blue", col4_getBlue, col4_setBlue  )
-    .add_property( "alpha", col4_getAlpha, col4_setAlpha  )
-    .def( "clampedRed", col4_getRedClamped)
-	.def( "setClampedRed", col4_setRedClamped )
-    .def( "clampedGreen", col4_getGreenClamped)
-	.def( "setClampedGreen", col4_setGreenClamped )
-    .def( "clampedBlue", col4_getBlueClamped)
-	.def( "setClampedBlue", col4_setBlueClamped )
-    .def( "clampedAlpha", col4_getAlphaClamped)
-	.def( "setClampedAlpha", col4_setAlphaClamped )
-    .def( "getAverage", &Color4::getAverage )
-    .def( "getAverageClamped", &Color4::getAverageClamped )
-    .def( "getRGBAverage", &Color4::getAverage )
-    .def( "getRGBAverageClamped", &Color4::getAverageClamped )
-	.def( "toUint", &Color4::toUint )
-	.def( "__int__", &Color4::toUint )
-	.def( "fromUint", &Color4::fromUint )
-	.staticmethod("fromUint")
-    .def( "__str__", col4_str )
-    .def( "__repr__", col4_str )
-    .add_static_property("BLACK",make_getter(&Color4::BLACK))
-    .add_static_property("BLUE",make_getter(&Color4::BLUE))
-    .add_static_property("CYAN",make_getter(&Color4::CYAN))
-    .add_static_property("GREEN",make_getter(&Color4::GREEN))
-    .add_static_property("RED",make_getter(&Color4::RED))
-    .add_static_property("WHITE",make_getter(&Color4::WHITE))
-    .add_static_property("YELLOW",make_getter(&Color4::YELLOW))
-	.def_pickle(col4_pickle_suite());
-    ;
-	pgltuple_from_tuple<Color4,4>();
+      .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",
+            (bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0,bp::arg("alpha")=0)))
+      .def(init< optional< unsigned char > >(bp::arg("value")=0))
+      .def(init< const Color3&, optional< unsigned char > >((bp::arg("other")=0,bp::arg("alpha")=0)))
+      .def( self == self )
+      .def( self != self )
+      .add_property( "red", col4_getRed, col4_setRed )
+      .add_property( "green", col4_getGreen, col4_setGreen  )
+      .add_property( "blue", col4_getBlue, col4_setBlue  )
+      .add_property( "alpha", col4_getAlpha, col4_setAlpha  )
+      .def( "clampedRed", col4_getRedClamped)
+      .def( "setClampedRed", col4_setRedClamped )
+      .def( "clampedGreen", col4_getGreenClamped)
+      .def( "setClampedGreen", col4_setGreenClamped )
+      .def( "clampedBlue", col4_getBlueClamped)
+      .def( "setClampedBlue", col4_setBlueClamped )
+      .def( "clampedAlpha", col4_getAlphaClamped)
+      .def( "setClampedAlpha", col4_setAlphaClamped )
+      .def( "getAverage", &Color4::getAverage )
+      .def( "getAverageClamped", &Color4::getAverageClamped )
+      .def( "getRGBAverage", &Color4::getAverage )
+      .def( "getRGBAverageClamped", &Color4::getAverageClamped )
+      .def( "toUint", &Color4::toUint )
+      .def( "__int__", &Color4::toUint )
+      .def( "fromUint", &Color4::fromUint )
+      .staticmethod("fromUint")
+      .def( "__str__", col4_str )
+      .def( "__repr__", col4_str )
+      .add_static_property("BLACK",make_getter(&Color4::BLACK))
+      .add_static_property("BLUE",make_getter(&Color4::BLUE))
+      .add_static_property("CYAN",make_getter(&Color4::CYAN))
+      .add_static_property("GREEN",make_getter(&Color4::GREEN))
+      .add_static_property("RED",make_getter(&Color4::RED))
+      .add_static_property("WHITE",make_getter(&Color4::WHITE))
+      .add_static_property("YELLOW",make_getter(&Color4::YELLOW))
+      .def_pickle(col4_pickle_suite());
+
+    pgltuple_from_tuple<Color4,4>();
 }
+

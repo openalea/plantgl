@@ -33,7 +33,7 @@
 
 #include "material.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
-#include <math.h>
+#include <cmath>
 
 PGL_USING_NAMESPACE
 
@@ -101,9 +101,9 @@ bool Material::Builder::MaterialValidity( ) const {
 
   /// Diffuse
   if (Diffuse && Ambient)
-    if ((((*Diffuse) * Ambient->getRed())> 255) || ((((*Diffuse) * Ambient->getRed()))<0) ||
-        (((*Diffuse) * Ambient->getGreen())> 255) || ((((*Diffuse) * Ambient->getGreen()))<0) ||
-        (((*Diffuse) * Ambient->getBlue())> 255) || ((((*Diffuse) * Ambient->getBlue()))<0)) {
+    if (((floor( (*Diffuse) * Ambient->getRed()) )> 255) || ((((*Diffuse) * Ambient->getRed()))<0) ||
+        ((floor( (*Diffuse) * Ambient->getGreen()) )> 255) || ((((*Diffuse) * Ambient->getGreen()))<0) ||
+        ((floor( (*Diffuse) * Ambient->getBlue()) )> 255) || ((((*Diffuse) * Ambient->getBlue()))<0)) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Diffuse","Don't give a valid Diffuse Color.");
       return false;
   };
@@ -147,9 +147,12 @@ Material::Material( const Color3& ambient,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
-	if(__diffuse*real_t(ambient.getRed())>255) __diffuse = 255./real_t(ambient.getRed());
-	if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = 255./real_t(ambient.getGreen());
-	if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = 255./real_t(ambient.getBlue());
+	if(__diffuse*real_t(ambient.getRed())>255) 
+		__diffuse = min(__diffuse,255./real_t(ambient.getRed()));
+	if(__diffuse*real_t(ambient.getGreen())>255) 
+		__diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
+	if(__diffuse*real_t(ambient.getBlue())>255) 
+		__diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
   GEOM_ASSERT(isValid());
 }
 
@@ -167,9 +170,9 @@ Material::Material( const string& name,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
-	if(__diffuse*real_t(ambient.getRed())>255) __diffuse = 255./real_t(ambient.getRed());
-	if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = 255./real_t(ambient.getGreen());
-	if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = 255./real_t(ambient.getBlue());
+	if(__diffuse*real_t(ambient.getRed())>255) __diffuse = min(__diffuse, 255./real_t(ambient.getRed()));
+	if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
+	if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
   setName(name);
   GEOM_ASSERT(isValid());
 }
@@ -213,9 +216,9 @@ real_t& Material::getDiffuse( ) {
 }
 
 Color3 Material::getDiffuseColor( ) const {
-  return Color3(__ambient.getRed()*__diffuse,
-		__ambient.getGreen()*__diffuse,
-		__ambient.getBlue()*__diffuse);
+  return Color3(uchar_t( floor( __ambient.getRed()*__diffuse ) ),
+                uchar_t( floor( __ambient.getGreen()*__diffuse ) ),
+                uchar_t( floor( __ambient.getBlue()*__diffuse) ) );
 }
 
 /// Returns \b Specular value.
