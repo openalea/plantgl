@@ -31,11 +31,11 @@ def test_bbox_on_default_object():
     for v in defaultobj_func_generator(bbox_application):
         yield v
 
-def test_bbox_on_random_object():
+def _test_bbox_on_random_object():
     for v in randomobj_func_generator(bbox_application):
         yield v
 
-def test_bbox_on_random_shape():
+def _test_bbox_on_random_shape():
     for v in randomshape_func_generator(lambda x : bbox_application(x,testshape = True)):
         yield v
 

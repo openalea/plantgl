@@ -41,7 +41,7 @@ def test_projpershape_nullid():
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
     
-def test_projpershape_bigid():
+def _test_projpershape_bigid():
     s = Shape(Sphere())
     s.id = 0x0f0f0f0f
     Viewer.display(s)    

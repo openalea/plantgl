@@ -24,7 +24,7 @@ def test_point3grid_construct3():
     p3list = [random_point() for i in xrange(nbpoint)]
     p3grid = Point3Grid((0.5,0.5,0.5),(0,0,0),(10,10,10),p3list)
 
-def test_point3grid_ball():
+def _test_point3grid_ball():
     nbpoint = 6000
     p3list = [random_point() for i in xrange(nbpoint)]
     p3grid = Point3Grid((0.5,0.5,0.5),p3list)
