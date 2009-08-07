@@ -1,7 +1,18 @@
 from openalea.plantgl.all import *
 import sys
+from nose import with_setup
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
+def setup_func():
+    import warnings
+    if not QCoreApplication.instance() is None:
+        warnings.warn("A QApplication is already running")
+    else:
+        app = QApplication([])
+    Viewer.start()
 
+@with_setup(setup_func)
 def test_projpershape():
     sc = Scene()
     s = Shape(Sphere())
@@ -19,7 +30,6 @@ def test_projpershape():
     keys2 = pixpershape.keys()
     keys2.sort()
     assert keys1 == keys2
-
 
 def test_projpershape_nullid():
     s = Shape(Sphere())

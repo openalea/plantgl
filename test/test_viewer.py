@@ -4,31 +4,18 @@ import os
 import openalea.plantgl.all as pgl
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from nose import with_setup
 
-
-#app = QApplication([])
-
-#def setup_func():
-#    sc = pgl.Scene()
-#    return sc
-
-#def teardown_func():
-#   pass
-
-#@with_setup(setup_func, teardown_func)
-#def test_setup():
-#  sc = setup_func()
-#  pgl.Viewer.display(sc)
-  
-  
-def test_start():
+def setup_func():
     import warnings
     if not QCoreApplication.instance() is None:
         warnings.warn("A QApplication is already running")
     else:
         app = QApplication([])
     Viewer.start()
-  
+
+   
+#with_setup(setup_func)
 def test_display():
     Viewer.display(Sphere())
     Viewer.display(Shape(Sphere(),Material()))
@@ -43,6 +30,7 @@ def test_add():
     Viewer.add(Scene([Shape(Sphere(),Material())]))
     assert len(Viewer.getCurrentScene()) == 4, "Size of displayed scene of the viewer is not valid. Viewer.add failed."
 
+@with_setup(setup_func)
 def test_update():
     s = Scene([Shape(Sphere(),Material())])
     Viewer.display(s)
@@ -55,6 +43,7 @@ def test_selection():
     Viewer.selection = [1]
     assert len(Viewer.selection) == 1 and Viewer.selection[0] == 1, "Invalid Viewer.selection"
 
+@with_setup(setup_func)
 def test_scene_interaction():
     s = Scene()
     s += Sphere()
@@ -145,6 +134,8 @@ def _test_image():
     if not imgsizetest :
         raise Exception( "Viewer.frameGL.setSize failed %s" % str((rw,rh)))
     os.remove(fname)
+
+
 
 def test_state():
     import warnings, time    
