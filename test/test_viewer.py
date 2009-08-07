@@ -1,12 +1,32 @@
 from openalea.plantgl.all import *
 from math import *
 import os
+import openalea.plantgl.all as pgl
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
+
+#app = QApplication([])
+
+#def setup_func():
+#    sc = pgl.Scene()
+#    return sc
+
+#def teardown_func():
+#   pass
+
+#@with_setup(setup_func, teardown_func)
+#def test_setup():
+#  sc = setup_func()
+#  pgl.Viewer.display(sc)
+  
+  
 def test_start():
-    from PyQt4.QtCore import QCoreApplication
     import warnings
     if not QCoreApplication.instance() is None:
         warnings.warn("A QApplication is already running")
+    else:
+        app = QApplication([])
     Viewer.start()
   
 def test_display():
@@ -104,7 +124,7 @@ def test_camera_light():
     assert Viewer.position == pos, "Viewer.light.position do not set the good value"
  
 
-def test_image():
+def _test_image():
     w = 400
     h = 400
     rw, rh = w,h
