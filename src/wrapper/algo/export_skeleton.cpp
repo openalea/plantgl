@@ -48,6 +48,7 @@ using namespace boost::python;
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
+
 object 
 pyGetChordalAxisTransform
 (Polyline2DPtr shape, double areaMaxFilter)
@@ -63,14 +64,50 @@ pyGetDelaunayConstrained2DTriangulation
   return Skeleton::getDelaunayConstrained2DTriangulation(shape);
 }
 
+Polyline2DPtr 
+pyRemoveLoopsInShape 
+(Polyline2DPtr shape)
+{
+  return Skeleton::removeLoopsInShape(shape);
+}
+
+object 
+pyGetSkeletonInformation 
+(Polyline2DPtr shape, double areaMaxFilter)
+{
+  std::list<Vector2> ends;
+  std::list<Vector2> end_tgts;
+  std::list<Vector2> bumps_ends;
+  std::list<Vector2> bumps_tgts;
+  std::list<Polyline2DPtr> polyline_bumps;
+  std::list<Polyline2DPtr> skeleton;
+  skeleton = Skeleton::getSkeletonInformation(shape,
+					      areaMaxFilter,
+					      &ends,
+					      &end_tgts,
+					      &bumps_ends,
+					      &bumps_tgts,
+					      &polyline_bumps);
+  return make_tuple(make_list< std::list<Polyline2DPtr> >(skeleton)(),
+		    make_list< std::list<Vector2> >(ends)(),
+		    make_list< std::list<Vector2> >(end_tgts)(),
+		    make_list< std::list<Vector2> >(bumps_ends)(),
+		    make_list< std::list<Vector2> >(bumps_tgts)(),
+		    make_list< std::list<Polyline2DPtr> >(polyline_bumps)());
+  //  return make_list< std::list<Polyline2DPtr> >(skeleton)();
+}
 
 void export_Skeleton()
 {
   class_<Skeleton, boost::noncopyable>("Skeleton",
 				       "Skeleton defines a static method to get the skeleton of a shape defined by a polyline with chordal axis transform. See prasad 97 for details on chordal axis transform\n" )
-    .def("getChordalAxisTransform", &pyGetChordalAxisTransform)
-    .staticmethod("getChordalAxisTransform")
-    .def("getDelaunayConstrained2DTriangulation", &pyGetDelaunayConstrained2DTriangulation)
+    .def("getChordalAxisTransform", &pyGetChordalAxisTransform) 
+    .staticmethod("getChordalAxisTransform") 
+    .def("getSkeletonInformation", &pyGetSkeletonInformation) 
+    .staticmethod("getSkeletonInformation") 
+    .def("removeLoopsInShape", &pyRemoveLoopsInShape) 
+    .staticmethod("removeLoopsInShape") 
+    .def("getDelaunayConstrained2DTriangulation", &pyGetDelaunayConstrained2DTriangulation) 
     .staticmethod("getDelaunayConstrained2DTriangulation");
 }
 
