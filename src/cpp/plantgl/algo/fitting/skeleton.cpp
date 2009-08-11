@@ -150,20 +150,20 @@ ShapePointSet::const_iterator ShapePointSet::findVec(const Vector2& v) const
 
 ShapePointSet::const_iterator ShapePointSet::findInd(const int indice) const
 {
-  ShapePointWeakPtr ptr = new ShapePoint(0,0,indice);
+  ShapePointPtr ptr = new ShapePoint(0,0,indice);
   ShapePointSet::const_iterator it = find(ptr);
-  delete ptr;
   return it; 
 }
 
 ShapePointSet::~ShapePointSet()
 {
-  ShapePointSet::iterator it = begin();
-  while(it!= end())
-    {
-      delete *it;
-      it++;
-    }
+  clear();
+//   ShapePointSet::iterator it = begin();
+//   while(it!= end())
+//     {
+//       delete *it;
+//       it++;
+//     }
 }
 
 SkelEdge::SkelEdge(Vector2 p1,
@@ -184,7 +184,7 @@ SkelEdge::SkelEdge(Vector2 p1,
     }
 }
 
-SkelEdge::SkelEdge(ShapePointWeakPtr p1 ,ShapePointWeakPtr p2 , TypeEdge type , bool infinite, bool visited )
+SkelEdge::SkelEdge(ShapePointPtr p1 ,ShapePointPtr p2 , TypeEdge type , bool infinite, bool visited )
   :m_type(type),
    m_visited(visited),
    m_infinite(infinite)
@@ -218,8 +218,8 @@ SkelEdge::SkelEdge(const SkelEdge& e):m_p1(e.m_p1),
 {
 }
 
-SkelEdge::SkelEdge(ShapePointWeakPtr p1 ,
-		   ShapePointWeakPtr p2 , 
+SkelEdge::SkelEdge(ShapePointPtr p1 ,
+		   ShapePointPtr p2 , 
 		   bool boundary , 
 		   bool infinite,
 		   bool visited )
@@ -437,11 +437,11 @@ SkelTriangle::SkelTriangle(SkelEdgePtr e1 , SkelEdgePtr e2 , SkelEdgePtr e3, boo
     }
 }
 
-SkelTriangle::SkelTriangle(ShapePointWeakPtr p1, ShapePointWeakPtr p2, ShapePointWeakPtr p3)
+SkelTriangle::SkelTriangle(ShapePointPtr p1, ShapePointPtr p2, ShapePointPtr p3)
   :m_type(SkelTriangle::UNDEFINED),
    m_infinite(false)
 {
-  ShapePointWeakPtr p = 0;
+  ShapePointPtr p = 0;
   if (*p2 < *p1)
     {
       p = p1;
@@ -544,14 +544,10 @@ double SkelTriangle::area() const
   if (toTest < 0)
     {
       pglError( "pb : we're gonna calculate a negative nb sqrt" );
+      return 0.0;
     }
   double area = (0.5*sqrt(toTest));
 
-  if (area == 0)
-    {
-      std::cerr << "side1 : (" << side1.x() << ", " << side1.y() << ")" << std::endl;
-      std::cerr << "side2 : (" << side2.x() << ", " << side2.y() << ")" << std::endl;
-    }
   return area;
 }
 
@@ -707,7 +703,7 @@ Vector2 SkelTriangle::getPseudoCircumCenter()
     }
 }
 
-ShapePointWeakPtr SkelTriangle::getOppositePoint (const SkelEdge& e) const
+ShapePointPtr SkelTriangle::getOppositePoint (const SkelEdge& e) const
 {
   if ((m_e1 == 0)||(m_e2 == 0)||(m_e3 == 0))
     {
@@ -742,7 +738,7 @@ bool SkelEdgeSet::skelErase(SkelEdgePtr toErase)
   if (it != end())
     {
       erase(it);
-	  return true;
+      return true;
     }
   return false;
 }
@@ -750,14 +746,19 @@ bool SkelEdgeSet::skelErase(SkelEdgePtr toErase)
 SkelEdgeSet::~SkelEdgeSet()
 {
   iterator clear_edges_it;
-  for (clear_edges_it = begin(); clear_edges_it != end(); clear_edges_it++)
-    {
-      erase(clear_edges_it);
-    }
+//   for (clear_edges_it = begin(); clear_edges_it != end(); clear_edges_it++)
+//     {
+//       erase(clear_edges_it);
+//     }
+//   while (!empty())
+//     {
+//       //*begin() = 0;
+//       erase(begin());
+//     }
   clear();
 }
 
-bool SkelTriangleSet::skelErase(SkelTriangleWeakPtr toErase)
+bool SkelTriangleSet::skelErase(SkelTrianglePtr toErase)
 {
   iterator it;
   it = find(toErase);
@@ -766,24 +767,29 @@ bool SkelTriangleSet::skelErase(SkelTriangleWeakPtr toErase)
       (*it)->m_e1->rmAdjTri(*(*it));
       (*it)->m_e2->rmAdjTri(*(*it));
       (*it)->m_e3->rmAdjTri(*(*it));
-      delete (*it);
+      //delete (*it);
       erase(it);
-	  return true;
+      return true;
     }
   return false;
 }
 
 SkelTriangleSet::~SkelTriangleSet()
 {
-  iterator it;
-  for (it = begin(); it != end(); it++)
-    {
-      erase(it);
-    }
+//   iterator it;
+//   for (it = begin(); it != end(); it++)
+//     {
+//       erase(it);
+//     }
+//   while (!empty())
+//     {
+//       delete *begin();
+//       erase(begin());
+//     }
   clear();
 }
 
-SkelTriangleWeakPtr SkelTriangleSet::find_next()
+SkelTrianglePtr SkelTriangleSet::find_next()
 {
   // try to get the first jonction
   // in default of a jonction, try to get a termination
@@ -795,7 +801,7 @@ SkelTriangleWeakPtr SkelTriangleSet::find_next()
   else
     {
       iterator tri_it = begin();
-      SkelTriangleWeakPtr current_tri = 0;
+      SkelTrianglePtr current_tri = 0;
       bool join_found = false;
       while (tri_it != end() && !join_found)
 	{
@@ -817,7 +823,10 @@ SkelTriangleWeakPtr SkelTriangleSet::find_next()
       if (current_tri == 0) 
 	current_tri = *(begin());
       if (current_tri == 0)
-	pglError( "SkelTriangleSet, find_next : Interesting ! null pointers in allTriangles !" );
+	{
+	  pglError( "SkelTriangleSet, find_next : Interesting ! null pointers in allTriangles !" );
+	  return 0;
+	}
       return current_tri;
     }
 }
@@ -833,32 +842,56 @@ SkelBranch::SkelBranch(std::list<Vector2> points,
 		       EndType secondEnd,
 		       int begin,
 		       int end, 
-		       int middle)
+		       int middle,
+		       int jjbeg2,
+		       int jjend2)
   :m_firstEnd(firstEnd), 
    m_secondEnd(secondEnd),
    m_pointSet(ptr),
    m_beginBumpIndice(begin),
    m_endBumpIndice(end),
-   m_middleBumpIndice(middle)  
+   m_middleBumpIndice(middle),
+   m_joncjoncBegInd2(jjbeg2),
+   m_joncjoncEndInd2(jjend2)  
 {
   m_branch = new Polyline2D(new Point2Array(points.begin(), points.end()));
-  if ((m_beginBumpIndice < m_middleBumpIndice) && (m_endBumpIndice < m_middleBumpIndice))
+  if (m_middleBumpIndice != -1)
     {
-      if (m_beginBumpIndice < m_endBumpIndice)
+      if ((m_beginBumpIndice < m_middleBumpIndice) && (m_endBumpIndice < m_middleBumpIndice))
+	{
+	  if (m_beginBumpIndice < m_endBumpIndice)
+	    {
+	      int temp = m_beginBumpIndice;
+	      m_beginBumpIndice = m_endBumpIndice;
+	      m_endBumpIndice = temp;
+	    }
+	  return;
+	}
+      if ((m_beginBumpIndice > m_middleBumpIndice) && (m_endBumpIndice < m_middleBumpIndice))
 	{
 	  int temp = m_beginBumpIndice;
 	  m_beginBumpIndice = m_endBumpIndice;
 	  m_endBumpIndice = temp;
 	}
-      return;
-    }
-  if ((m_beginBumpIndice > m_middleBumpIndice) && (m_endBumpIndice < m_middleBumpIndice))
-    {
-	  int temp = m_beginBumpIndice;
-	  m_beginBumpIndice = m_endBumpIndice;
-	  m_endBumpIndice = temp;
     }
 }
+
+Polyline2DPtr SkelBranch::getPolylineForAssociatedBump()
+{
+  std::vector<Vector2> polyline;
+  ShapePointSet::iterator it;
+  ShapePointSet::iterator end_it = m_pointSet->findInd(m_endBumpIndice);
+  if (end_it == m_pointSet->begin())
+    end_it = m_pointSet->end();
+  for (it = m_pointSet->findInd(m_beginBumpIndice); it != end_it; it++)
+    {
+      if (it == m_pointSet->end())
+	it = m_pointSet->begin();
+      polyline.push_back((*it)->m_vec);
+    }
+  return new Polyline2D(new Point2Array(polyline.begin(), polyline.end()));
+}
+
 
 double SkelBranch::area()
 {
@@ -1009,6 +1042,7 @@ V_handle getEdgeTarget(TDS::Edge ed, V_handle src)
   else
     {
       pglError("Skeleton.cpp getEdgeTarget : problem, the second parameter should be one point of the edge");
+      return edge.first;
     } 
 }
 
@@ -1073,7 +1107,8 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 				}
 			      else
 				{
-				  pglError( "filterLoops Aaaaaaargh" );
+				  pglError( "Skeleton, filterLoops Aaaaaaargh" );
+				  return;
 				}
 			    }
 			}
@@ -1083,7 +1118,10 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 	      i++;
 	    }
 	  if (it_n == shape->end() ||it_n_1 == shape->end() ||it_r == shape->end() ||it_r_1 == shape->end())
-	    pglError( "filterLoops : Well, there might be a problem, trying to access end iterator" );
+	    {
+	      pglError( "Skeleton, filterLoops : Well, there might be a problem, trying to access end iterator" );
+	      return;
+	    }
 	  else
 	    {
 	      // okay, now we have organized the beginnings and end of loops
@@ -1128,9 +1166,9 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
     }
 
   // We get back the result of the triangulation
-  std::stack<SkelTriangleWeakPtr> outOfTheShapeTriangles;
+  std::stack<SkelTrianglePtr> outOfTheShapeTriangles;
   CDT::Finite_vertices_iterator it;
-  ShapePointWeakPtr infiniteVertexPtr = new ShapePoint(toVec2((cdt.infinite_vertex())->point()));
+  ShapePointPtr infiniteVertexPtr = new ShapePoint(toVec2((cdt.infinite_vertex())->point()));
   for (it = cdt.finite_vertices_begin(); it != cdt.finite_vertices_end() ; ++it)
     {
       CDT::Edge_circulator ec = cdt.incident_edges(it);
@@ -1140,7 +1178,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
 	  SkelEdgePtr prev_ed, cur_ed;
 	  do
 	    {
-	      ShapePointWeakPtr shPtr1, shPtr2;
+	      ShapePointPtr shPtr1, shPtr2;
 	      ShapePointSet::const_iterator point_it = m_shape.findVec(toVec2((cdt.segment(ec)).target()));
 	      if (point_it == m_shape.end())
 		{
@@ -1298,20 +1336,20 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
 			      inserted = res_insertion.second;
 			      SkelEdgePtr last_ed_ptr = *edge_it;
 			      
-			      SkelTriangleWeakPtr toInsertTriangle = new SkelTriangle(prev_ed_ptr,
-										      last_ed_ptr,
-										      cur_ed_ptr,
-										      cdt.is_infinite(face_handle3));
+			      SkelTrianglePtr toInsertTriangle = new SkelTriangle(prev_ed_ptr,
+										  last_ed_ptr,
+										  cur_ed_ptr,
+										  cdt.is_infinite(face_handle3));
 			      std::pair<SkelTriangleSet::iterator, bool> res_insertion_triangle;
 			      SkelTriangleSet::iterator tria_it;
 			      res_insertion_triangle = (m_allTriangles.insert(toInsertTriangle));
 			      tria_it = res_insertion_triangle.first;
 			      inserted =  res_insertion_triangle.second;
-			      SkelTriangleWeakPtr tri_ptr = *tria_it;
+			      SkelTrianglePtr tri_ptr = *tria_it;
 			      
-			      prev_ed_ptr->addAdjTri(tri_ptr);
-			      last_ed_ptr->addAdjTri(tri_ptr);
-			      cur_ed_ptr ->addAdjTri(tri_ptr);
+			      prev_ed_ptr->addAdjTri(tri_ptr.get());
+			      last_ed_ptr->addAdjTri(tri_ptr.get());
+			      cur_ed_ptr ->addAdjTri(tri_ptr.get());
 			      if (inserted && tri_ptr->m_infinite)
 				outOfTheShapeTriangles.push(tri_ptr);
 			    }
@@ -1332,7 +1370,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
 
   while (!outOfTheShapeTriangles.empty())
     {
-      SkelTriangleWeakPtr toErase = outOfTheShapeTriangles.top();
+      SkelTrianglePtr toErase = outOfTheShapeTriangles.top();
       outOfTheShapeTriangles.pop();
       if ((!toErase->m_e1->m_infinite) && (toErase->m_e1->m_type == SkelEdge::INTERIOR))
 	{
@@ -1409,16 +1447,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   // Now we have a set of Triangles and Edges, with their relationships
   // We can go through all of them to generate the skeleton
   std::list<Vector2> polyline;
-  std::stack<SkelTriangleWeakPtr> leftTriangles;
+  std::stack<SkelTrianglePtr> leftTriangles;
   
   SkelTriangleSet::iterator tri_it;
   if (!m_allTriangles.empty())
     {
       SkelBranch::EndType lastEndType;
       int bumpBeg, bumpEnd, bumpMid;
-      SkelTriangleWeakPtr current_tri = m_allTriangles.find_next();
+      SkelTrianglePtr current_tri = m_allTriangles.find_next();
       int size_allTriangles = m_allTriangles.size();
-      SkelTriangleWeakPtr prec_tri = current_tri;
+      SkelTrianglePtr prec_tri = current_tri;
       bool terminationIsFirstEnd;
       if (current_tri != 0)
 	{
@@ -1501,6 +1539,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 		    }
   		}
   	      pglError( "Skeleton, Chordal Axis Transform : error, uninitialized or deprecated triangle" );
+	      std::list<Polyline2DPtr> empty_CAT_list;
+	      empty_CAT_list.clear();
+	      return empty_CAT_list;
   	    }
   	  else
   	    {
@@ -1894,7 +1935,7 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   		    }
 		  if (m_allTriangles.size() == size_allTriangles)
 		    {
-		      std::cerr << "on n'a pas supprimé de triangle" << std::endl;
+		      pglError("on n'a pas supprimé de triangle");
 		      //m_allTriangles.skelErase(prec_tri);
 		    }
   		  break;
@@ -1928,7 +1969,13 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			  polyline.push_back(mid1);
 			  polyline.push_back(current_tri->getGravityCenter());
 			  bumpMid = current_tri->getMiddleSummitForTerm();
-			  branch = new SkelBranch(polyline, &m_shape, lastEndType, SkelBranch::TERMINATION, bumpBeg, bumpEnd, bumpMid);
+			  branch = new SkelBranch(polyline, 
+						  &m_shape, 
+						  lastEndType, 
+						  SkelBranch::TERMINATION, 
+						  bumpBeg, 
+						  bumpEnd, 
+						  bumpMid);
 			  m_skeleton.push_back(branch);
 			  it_jonction = (m_jonctions.insert(new SkelJonction(*(polyline.begin())))).first;
 			  if ((it_jonction != m_jonctions.end()))
@@ -1990,12 +2037,15 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 				  break;
 				}
 			    }
-			  pglError("getChordalAxisTransform : this should be the first end, why polyline isn't empty ?");
+			  pglError("Skeleton, getChordalAxisTransform : this should be the first end, why polyline isn't empty ?");
+			  std::list<Polyline2DPtr> empty_CAT_list;
+			  empty_CAT_list.clear();
+			  return empty_CAT_list;
 			}
 		      else
 			{
 			  polyline.push_back(current_tri->getGravityCenter());
-			  polyline.push_back(mid1);
+			  //polyline.push_back(mid1);
 			  lastEndType = SkelBranch::TERMINATION;
 			  if (current_tri->m_e1->m_type == SkelEdge::INTERIOR)
 			    {
@@ -2028,10 +2078,16 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 		    }
 		  else
 		    {
-		      polyline.push_back(mid1);
+		      //polyline.push_back(mid1);
 		      polyline.push_back(current_tri->getGravityCenter());
 		      bumpMid = current_tri->getMiddleSummitForTerm();
-		      branch = new SkelBranch(polyline, &m_shape, lastEndType, SkelBranch::TERMINATION, bumpBeg, bumpEnd, bumpMid);
+		      branch = new SkelBranch(polyline, 
+					      &m_shape, 
+					      lastEndType, 
+					      SkelBranch::TERMINATION, 
+					      bumpBeg, 
+					      bumpEnd, 
+					      bumpMid);
 		      m_skeleton.push_back(branch);
 		      it_jonction = (m_jonctions.insert(new SkelJonction(*(polyline.begin())))).first;
 		      if ((it_jonction != m_jonctions.end()))
@@ -2102,7 +2158,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 		  if (!polyline.empty())
 		    {
 		      jonc = *it_jonction;
-		      polyline.push_back(mid1);
+		      //polyline.push_back(mid1);
+		      int bumpBeg2 = -1;
+		      int bumpEnd2 = -1;
 		      if (lastEndType == SkelBranch::TERMINATION)
 			{
 			  if ((current_tri->m_e1->m_p1->m_ind < bumpMid) && (current_tri->m_e1->m_p2->m_ind > bumpMid))
@@ -2136,8 +2194,93 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			      bumpEnd = current_tri->m_e3->m_p1->m_ind;
 			    }
 			}
+		      else if (lastEndType == SkelBranch::JONCTION)
+			{
+			  bumpMid = -1;
+			  int triInd1 = current_tri->m_e1->m_p1->m_ind;
+			  int triInd2 = current_tri->m_e1->m_p2->m_ind;
+			  int triInd3 = current_tri->m_e2->m_p2->m_ind;
+			  // now let's order those 3 indices : bumpBeg2 < triInd3 < bumpEnd2
+			  if (triInd2 < triInd1)
+			    {
+			      int temp = triInd2;
+			      triInd2 = triInd1;
+			      triInd1 = temp;
+			    }
+			  if (triInd2 > triInd3)
+			    {
+			      int temp = triInd2;
+			      triInd2 = triInd3;
+			      triInd3 = temp;
+			    }
+			  if (triInd2 < triInd1)
+			    {
+			      int temp = triInd2;
+			      triInd2 = triInd1;
+			      triInd1 = temp;
+			    }
+			  // Now we search which pair of those indices respect bumpBeg < bumpBeg2 < bumpEnd2 < bumpEnd
+			  // or bumpBeg2 < bumpBeg < bumpEnd < bumpEnd2
+			  if (bumpBeg > bumpEnd)
+			    {
+			      int temp = bumpBeg;
+			      bumpBeg = bumpEnd;
+			      bumpEnd = temp;
+			    }
+			  if ( bumpBeg <= triInd1 )
+			    {
+			      if (bumpEnd <= triInd1)
+				{
+				  bumpBeg2 = triInd1;
+				  bumpEnd2 = triInd3;
+				}
+			      else if ( bumpEnd >= triInd3 )
+				{
+				  bumpBeg2 = triInd1;
+				  bumpEnd2 = triInd3;
+				}
+			      else if ((bumpBeg == triInd1) && (bumpEnd <= triInd2))
+				{
+				  bumpBeg2 = triInd1;
+				  bumpEnd2 = triInd2;
+				}
+			      else
+				{
+				  pglError("fffffffffffffffffffffffffffffffffffffffffffff #1");
+				  std::cout << "indices : "<< triInd1 << ", " << triInd2 << ", " << triInd3 << std::endl;
+				  std::cout << "bumps beg and end : " << bumpBeg << ", " << bumpEnd << std::endl;
+				  bumpBeg2 = -1;
+				  bumpEnd2 = -1;
+				}
+			    }
+			  else if (bumpBeg >= triInd3)
+			    {
+			      bumpBeg2 = triInd1;
+			      bumpEnd2 = triInd3;
+			    }
+			  else if ( (bumpBeg <= triInd2) && (bumpEnd <= triInd2) )
+			    {
+			      bumpBeg2 = triInd1;
+			      bumpEnd2 = triInd2;
+			    }
+			  else if ( (bumpBeg >= triInd2) && (bumpBeg <= triInd3) 
+				    && (bumpEnd >= triInd2) && (bumpEnd <= triInd3) )
+			    {
+			      bumpBeg2 = triInd2;
+			      bumpEnd2 = triInd3;
+			    }
+			  else
+			    {
+			      pglError("ffffffffffffffffffffffffffffffffffff #2");
+			      std::cout << "indices : "<< triInd1 << ", " << triInd2 << ", " << triInd3 << std::endl;
+			      std::cout << "bumps beg and end : " << bumpBeg << ", " << bumpEnd << std::endl;
+			      bumpBeg2 = -1;
+			      bumpEnd2 = -1;
+			    }
+			}
 		      else
 			{
+			  pglError("ffffffffffffffffffffffffffffffffffff #3");
 			  bumpBeg = -1;
 			  bumpEnd = -1;
 			}
@@ -2147,7 +2290,9 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 					      SkelBranch::JONCTION, 
 					      bumpBeg, 
 					      bumpEnd, 
-					      bumpMid);
+					      bumpMid,
+					      bumpBeg2,
+					      bumpEnd2);
 		      lastEndType = SkelBranch::JONCTION;
 		      jonc->addBranch(branch);
 		      m_skeleton.push_back(branch);
@@ -2299,7 +2444,6 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   		      current_tri->m_e3->m_visited = true;
   		      if ((current_tri->m_e3->m_adjTri1 == 0)&&(current_tri->m_e3->m_adjTri2 == 0))
   			{
-			  //Debug::debug("getChordalAxisTransform jonction 13");
 			  // We might have met a suppressed triangle for smoothing
 			  // So we have to end the polyline if it is not empty
 			  // And get to the next thing
@@ -2372,6 +2516,7 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   			  current_tri = leftTriangles.top();
   			  leftTriangles.pop();
 			  lastEndType = SkelBranch::JONCTION;
+			  polyline.push_back(mid1);
   			}
   		      else
   			{
@@ -2394,17 +2539,30 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    }
   			}
   		      pglError( "Skeleton, ChordalAxisTransform : we should not be there... Triangle done !" );
+		      std::list<Polyline2DPtr> empty_CAT_list;
+		      empty_CAT_list.clear();
+		      return empty_CAT_list;
   		    }
   		  break;
   		default:
   		  pglError( "Skeleton, Chordal Axis Transform : Type of Triangle is undefined" );
+		  std::list<Polyline2DPtr> empty_CAT_list;
+		  empty_CAT_list.clear();
+		  return empty_CAT_list;
+		  break;
   		}
   	    }
   	}
       while ((!m_allTriangles.empty())||(!leftTriangles.empty()));
       if (!polyline.empty())
 	{
-	  SkelBranchPtr branch = new SkelBranch(polyline, &m_shape, lastEndType, SkelBranch::TERMINATION, bumpBeg, bumpEnd, bumpMid);
+	  SkelBranchPtr branch = new SkelBranch(polyline, 
+						&m_shape, 
+						lastEndType, 
+						SkelBranch::TERMINATION, 
+						bumpBeg, 
+						bumpEnd, 
+						bumpMid);
 	  m_skeleton.push_back(branch);
 	  if (lastEndType == SkelBranch::JONCTION)
 	    {
@@ -2420,12 +2578,15 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
   else
     {
       pglError( "Skeleton, Chordal Axis Transform : Triangulation is empty" );
+      std::list<Polyline2DPtr> empty_CAT_list;
+      empty_CAT_list.clear();
+      return empty_CAT_list;
       assert(!m_allTriangles.empty());
     }
   return SkelBranch::getListPolylines(m_skeleton);
 }
 
-void PGL::Skeleton::filterLittleBranchesOnBranchSize(double sizeMaxBranchesToRemove)
+void PGL::Skeleton::filterLittleBranchesOnBranchSize(const double sizeMaxBranchesToRemove)
 {
   SkelJonctionSet::iterator it;
   for (it = m_jonctions.begin(); it != m_jonctions.end();it ++)
@@ -2462,7 +2623,7 @@ void PGL::Skeleton::filterLittleBranchesOnBranchSize(double sizeMaxBranchesToRem
     }
 }
 
-void PGL::Skeleton::filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemove)
+void PGL::Skeleton::filterLittleBranchesOnAreaSize(const double areaMaxTrianglesToRemove)
 {
   SkelJonctionSet::iterator it;
   for (it = m_jonctions.begin(); it != m_jonctions.end();it ++)
@@ -2492,7 +2653,11 @@ void PGL::Skeleton::filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemo
 		    next_sps = it_sps;
 		  it_sps--;
 		  if ((it_sps == m_shape.end())||(prec_sps == m_shape.end())||(next_sps == m_shape.end()))
-		    pglError( "there might be a pb trying to access end iterator ! " ); 
+		    {
+		      pglError( "Skeleton, filterLittleBranchOnAreaSize : "
+				"there might be a pb trying to access end iterator ! " );
+		      return;
+		    } 
 		  SkelTriangle tr = SkelTriangle(*it_sps,*(prec_sps),(*next_sps));
 		  if (tr.area() < areaMaxTrianglesToRemove)
 		    {
@@ -2512,30 +2677,361 @@ void PGL::Skeleton::filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemo
     }
 }
 
-void PGL::Skeleton::filterLittleBranchesOnBranchAreaSize(double areaMaxBranchesToRemove)
+void PGL::Skeleton::filterLittleBranchesOnBranchAreaSize(const double areaMaxBranchesToRemove)
 {
   SkelJonctionSet::iterator it;
-  for (it = m_jonctions.begin(); it != m_jonctions.end();it ++)
+  SkelJonctionSet::iterator toErase = m_jonctions.end();
+  int i = 0;
+  for (it = m_jonctions.begin(); it != m_jonctions.end(); it ++)
     {
+      std::cout << "jonction nb : " << ++i << std::endl;
+      if (toErase != m_jonctions.end())
+	{
+	  std::cout << "erasing" << std::endl;
+	  m_jonctions.erase(toErase);
+	  toErase = m_jonctions.end();
+	}
       for (int i = (*it)->m_nbBranches-1 ; i >= 0 ; --i)
 	{
+	  std::cout << "branch nb : " << i << std::endl;
 	  SkelBranchPtr branch = (*it)->m_branches[i];
-	  int branch_size = ((branch->m_branch)->getPointListSize())-1;
 	  if ((branch->m_firstEnd == SkelBranch::TERMINATION)||(branch->m_secondEnd == SkelBranch::TERMINATION))
 	    {
+	      std::cout << "branch with a termination : we might suppress it" << std::endl;
 	      if (branch->area() < areaMaxBranchesToRemove)
 		{
+		  std::cout << "Well, we DO suppress it, nb branches to remain : " << (*it)->m_nbBranches << std::endl;
+		  // then we must remove that branch, and give its info to the other branches
+		  reorganizeBranchesAndJonctionsAfterFiltering((*it)->m_branches, i);
+		  std::cout << "end reorganization, suppression" << std::endl;
 		  m_skeleton.remove((*it)->m_branches[i]);
-		  if (i != (*it)->m_nbBranches-1)
+		  if (i == 0)
 		    {
-		      (*it)->m_branches[i] = (*it)->m_branches[i+1];
-		      (*it)->m_branches[i+1] = 0;
+ 		      (*it)->m_branches[i] = (*it)->m_branches[i+1];
+ 		      (*it)->m_branches[i+1] = (*it)->m_branches[i+2];
+		      (*it)->m_branches[i+2] = 0;
 		    }
-		  else
+		  else if (i == 1)
+		    {
+ 		      (*it)->m_branches[i] = (*it)->m_branches[i+1];
+ 		      (*it)->m_branches[i+1] = 0;
+		    }
+		  else if (i == 2)
 		    (*it)->m_branches[i] = 0;
+		  else
+		    pglError ("Skeleton, filterLittleBranchesOnBranchAreaSize, pb of index");
 		  (*it)->m_nbBranches --;
+		  if ((*it)->m_nbBranches == 0)
+		    {
+		      std::cout << "all branches on this jonction are suppressed, suppressing jonction" << std::endl;
+		      toErase = it;
+		    }
 		}
 	    }
+	}
+    }
+}
+
+void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr branches[3], int indexBranchToRemove)
+{
+  std::cout << "reorganizeBranchesAndJonctionsAfterFiltering" << std::endl;
+  if (indexBranchToRemove < 0 && indexBranchToRemove > 2)
+    {
+      pglError("Error in paramaters of reorganizeBranchesAndJonctionsAfterFiltering : index out of range");
+      return;
+    }
+  else
+    {
+      int nbBranchesToRemain = 0;
+      if (branches[((indexBranchToRemove + 1) % 3)] != 0)
+	nbBranchesToRemain ++;
+      if (branches[((indexBranchToRemove + 2) % 3)] != 0)
+	nbBranchesToRemain ++;
+      std::cout << "nb branches to remain in reorganize : " << nbBranchesToRemain << std::endl;
+      if (nbBranchesToRemain == 0)
+	{
+	  pglError("\n ***********************************************************"
+		   "\n this scenario should not happen, unless programming mistake"
+		   "\n ***********************************************************");
+	  return;
+	}
+      else if (nbBranchesToRemain == 1)
+	{
+	  if (branches[((indexBranchToRemove + 1) % 3)] == 0)
+	    {
+	      if (branches[((indexBranchToRemove + 2) % 3)] == 0)
+		std::cout << "??????????????????? #1" << std::endl;
+	      int indexToModify = ((indexBranchToRemove + 2) % 3);
+	      if ( (branches[indexToModify]->m_secondEnd == SkelBranch::TERMINATION)
+		  || (branches[indexToModify]->m_firstEnd == SkelBranch::TERMINATION) )
+		{
+		  std::cout << "modifying a terminating branch" << std::endl;
+		  // now looking at the indexes bumpBeg and bumpEnd to modify them, including in
+		  // the new bump the bump of the suppressed branch. the middle is unchanged
+		  int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+		  int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+		  if (index1 == (branches[indexToModify]->m_beginBumpIndice))
+		    {
+		      branches[indexToModify]->m_beginBumpIndice = index2;
+		    }
+		  else if (index1 == (branches[indexToModify]->m_endBumpIndice))
+		    {
+		      branches[indexToModify]->m_endBumpIndice = index2;
+		    }
+		  else if (index2 == (branches[indexToModify]->m_beginBumpIndice))
+		    {
+		      branches[indexToModify]->m_beginBumpIndice = index1;
+		    }
+		  else if (index2 == (branches[indexToModify]->m_endBumpIndice)) 
+		    {
+		      branches[indexToModify]->m_endBumpIndice = index1;
+		    }
+		  else
+		    {
+		      pglError("Mmmmmh... Are you sure that these are neighbouring branches ???");
+		    } 
+		}
+	      else
+		{
+		  std::cout << "modifying a jonction - jonction" << std::endl;
+		  branches[indexToModify]->m_middleBumpIndice 
+		    = branches[indexBranchToRemove]->m_middleBumpIndice;
+		  int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+		  int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+		  if ( (index1 == branches[indexToModify]->m_beginBumpIndice)
+		       || (index1 == branches[indexToModify]->m_endBumpIndice)
+		       || (index2 == branches[indexToModify]->m_beginBumpIndice)
+		       || (index2 == branches[indexToModify]->m_endBumpIndice) )
+		    {
+		      std::cout << "******** 4th configuration *************" << std::endl;
+		      std::cout << "extremites branche a supprimer : " 
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
+				<< std::endl;
+		      std::cout << "extremites branche a modifier : " 
+				<< branches[indexToModify]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
+				<< std::endl;
+		      branches[indexToModify]->m_beginBumpIndice
+			= branches[indexToModify]->m_joncjoncBegInd2;
+		      branches[indexToModify]->m_endBumpIndice
+			= branches[indexToModify]->m_joncjoncEndInd2;
+		      branches[indexToModify]->m_joncjoncBegInd2 = -1;
+		      branches[indexToModify]->m_joncjoncEndInd2 = -1;
+		      branches[indexToModify]->m_firstEnd = SkelBranch::TERMINATION;
+		    }
+		  else
+		    {
+		      std::cout << "******** 3rd configuration *************" << std::endl;
+		      std::cout << "extremites branche a supprimer : " 
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
+				<< std::endl;
+		      std::cout << "extremites branche a modifier : " 
+				<< branches[indexToModify]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
+				<< std::endl;
+		      branches[indexToModify]->m_joncjoncBegInd2 = -1;
+		      branches[indexToModify]->m_joncjoncEndInd2 = -1;
+		      branches[indexToModify]->m_secondEnd = SkelBranch::TERMINATION;
+		    }
+		}
+	    }
+	  else if (branches[((indexBranchToRemove + 2) % 3)] == 0)
+	    {
+	      if (branches[((indexBranchToRemove + 1) % 3)] == 0)
+		std::cout << "??????????????????? #2" << std::endl;
+	      int indexToModify = ((indexBranchToRemove + 1) % 3);
+	      if ( (branches[indexToModify]->m_secondEnd == SkelBranch::TERMINATION)
+		  || (branches[indexToModify]->m_secondEnd == SkelBranch::TERMINATION) )
+		{
+		  // now looking at the indexes bumpBeg and bumpEnd to modify them, including in
+		  // the new bump the bump of the suppressed branch. the middle is unchanged
+		  int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+		  int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+		  if (index1 == (branches[indexToModify]->m_beginBumpIndice))
+		    {
+		      branches[indexToModify]->m_beginBumpIndice = index2;
+		    }
+		  else if (index1 == (branches[indexToModify]->m_endBumpIndice))
+		    {
+		      branches[indexToModify]->m_endBumpIndice = index2;
+		    }
+		  else if (index2 == (branches[indexToModify]->m_beginBumpIndice))
+		    {
+		      branches[indexToModify]->m_beginBumpIndice = index1;
+		    }
+		  else if (index2 == (branches[indexToModify]->m_endBumpIndice)) 
+		    {
+		      branches[indexToModify]->m_endBumpIndice = index1;
+		    }
+		  else
+		    {
+		      pglError("Mmmmmh... Are you sure that these are neighbouring branches ???");
+		    } 
+		}
+	      else
+		{
+		  branches[indexToModify]->m_middleBumpIndice 
+		    = branches[indexBranchToRemove]->m_middleBumpIndice;
+		  int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+		  int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+		  if ( (index1 == branches[indexToModify]->m_beginBumpIndice)
+		       || (index1 == branches[indexToModify]->m_endBumpIndice)
+		       || (index2 == branches[indexToModify]->m_beginBumpIndice)
+		       || (index2 == branches[indexToModify]->m_endBumpIndice) )
+		    {
+		      std::cout << "******** 1st configuration *************" << std::endl;
+		      std::cout << "extremites branche a supprimer : " 
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
+				<< std::endl;
+		      std::cout << "extremites branche a modifier : " 
+				<< branches[indexToModify]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
+				<< std::endl;
+		      branches[indexToModify]->m_beginBumpIndice
+			= branches[indexToModify]->m_joncjoncBegInd2;
+		      branches[indexToModify]->m_endBumpIndice
+			= branches[indexToModify]->m_joncjoncEndInd2;
+		      branches[indexToModify]->m_joncjoncBegInd2 = -1;
+		      branches[indexToModify]->m_joncjoncEndInd2 = -1;
+		      branches[indexToModify]->m_firstEnd = SkelBranch::TERMINATION;
+		    }
+		  else
+		    {
+		      std::cout << "******** 2nd configuration *************" << std::endl;
+		      std::cout << "extremites branche a supprimer : " 
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
+				<< std::endl;
+		      std::cout << "extremites branche a modifier : " 
+				<< branches[indexToModify]->m_branch->getPointListAt(0) 
+				<< ", "
+				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
+				<< std::endl;
+		      branches[indexToModify]->m_joncjoncBegInd2 = -1;
+		      branches[indexToModify]->m_joncjoncEndInd2 = -1;
+		      branches[indexToModify]->m_secondEnd = SkelBranch::TERMINATION;
+		    }
+		}
+	    }
+	  else
+	    {
+	      pglError(" ?????????????????? ok, weird indeed ????????????????????????");
+	      return;
+	    }
+	}
+      else if (nbBranchesToRemain == 2)
+	{
+	  // branches suppressed are only TERMINATION-JONCTION or TERMINATION-TERMINATION ( last case
+	  // is very highly improbable, especially as we are linked to a jonction with 2 other branches )
+	  if ( (branches[indexBranchToRemove]->m_firstEnd == SkelBranch::TERMINATION) 
+	       && (branches[indexBranchToRemove]->m_secondEnd == SkelBranch::TERMINATION) )
+	    {
+	      pglError("Mmmm, this is difficult to explain ! Programming Error, this means");
+	      return;
+	    }
+	  // first we will look if there is one other jonction-termination
+	  if ( (branches[((indexBranchToRemove + 1) % 3)]->m_firstEnd == SkelBranch::TERMINATION) 
+	       || (branches[((indexBranchToRemove + 1) % 3)]->m_secondEnd == SkelBranch::TERMINATION) )
+	    {
+	      // now looking at the indexes bumpBeg and bumpEnd to modify them, including in
+	      // the new bump the bump of the suppressed branch. the middle is unchanged
+	      int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+	      int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+	      if (index1 == (branches[((indexBranchToRemove + 1) % 3)]->m_beginBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 1) % 3)]->m_beginBumpIndice = index2;
+		}
+	      else if (index1 == (branches[((indexBranchToRemove + 1) % 3)]->m_endBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 1) % 3)]->m_endBumpIndice = index2;
+		}
+	      else if (index2 == (branches[((indexBranchToRemove + 1) % 3)]->m_beginBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 1) % 3)]->m_beginBumpIndice = index1;
+		}
+	      else if (index2 == (branches[((indexBranchToRemove + 1) % 3)]->m_endBumpIndice)) 
+		{
+		  branches[((indexBranchToRemove + 1) % 3)]->m_endBumpIndice = index1;
+		}
+	      else
+		{
+		  pglError("Mmmmmh... Are you sure that these are neighbouring branches ???");
+		}
+	    }
+	  else if ( (branches[((indexBranchToRemove + 2) % 3)]->m_firstEnd == SkelBranch::TERMINATION) 
+		    || (branches[((indexBranchToRemove + 2) % 3)]->m_secondEnd == SkelBranch::TERMINATION) )
+	    {
+	      // now looking at the indexes bumpBeg and bumpEnd to modify them, including in
+	      // the new bump the bump of the suppressed branch. the middle is unchanged
+	      int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+	      int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+	      if (index1 == (branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice = index2;
+		}
+	      else if (index1 == (branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice = index2;
+		}
+	      else if (index2 == (branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice = index1;
+		}
+	      else if (index2 == (branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice)) 
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice = index1;
+		}
+	      else
+		{
+		  pglError("Mmmmmh... Are you sure that these are neighbouring branches ???");
+		} 
+	    }
+	  else
+	    {
+	      // We have two jonction-jonction branches leaving from this jonction
+	      // But we do not really care about that case : we will probably not need information
+	      // from a branch jonction-jonction
+	      // If possible, we should suppress that jonction and make one new branch
+	      // But not now, structures do not allow that
+	      // Anyway, randomly choosing one branch...
+	      int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
+	      int index2 = branches[indexBranchToRemove]->m_endBumpIndice ;
+	      if (index1 == (branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice = index2;
+		}
+	      else if (index1 == (branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice = index2;
+		}
+	      else if (index2 == (branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice))
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_beginBumpIndice = index1;
+		}
+	      else if (index2 == (branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice)) 
+		{
+		  branches[((indexBranchToRemove + 2) % 3)]->m_endBumpIndice = index1;
+		}
+	      else
+		{
+		  pglError("Mmmmmh... Are you sure that these are neighbouring branches ???");
+		}
+	    }
+	}
+      else
+	{
+	  pglError("Interesting... Incrementing twice at best from 0, but still having a number other than 0, 1, 2");
+	  return;
 	}
     }
 }
@@ -2771,12 +3267,82 @@ Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
 #endif
 
 
-std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform(const Polyline2DPtr discretizedShape, double areaMaxFilter)
+std::list<Polyline2DPtr> 
+PGL::Skeleton::getChordalAxisTransform
+(const Polyline2DPtr discretizedShape, const double areaMaxFilter)
 {
   filterAndHomogenize(*(discretizedShape->getPointList()));
   Skeleton skel(discretizedShape);
   skel.getChordalAxisTransform();
   skel.filterLittleBranchesOnBranchAreaSize(areaMaxFilter);
+  return SkelBranch::getListPolylines(skel.m_skeleton);
+}
+
+std::list<Polyline2DPtr> 
+PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape, 
+				      const double areaMaxFilter,
+				      std::list<Vector2> * ends,
+				      std::list<Vector2> * end_tgts,
+				      std::list<Vector2> * bump_ends,
+				      std::list<Vector2> * bump_tgts,
+				      std::list<Polyline2DPtr> * bumps)
+{
+  filterAndHomogenize(*(discretizedShape->getPointList()));
+  Skeleton skel(discretizedShape);
+  skel.getChordalAxisTransform();
+  skel.filterLittleBranchesOnBranchAreaSize(areaMaxFilter);
+  // here we must get back information on skeleton
+  std::list<SkelBranchPtr>::iterator it;
+  std::cout << "taille m_skeleton : " << skel.m_skeleton.size() << std::endl;
+  for (it = skel.m_skeleton.begin(); it != skel.m_skeleton.end(); it ++)
+    {
+      int pol_branch_size = (*it)->m_branch->getPointListSize();
+      if (pol_branch_size < 2)
+	continue;
+      if ((*it)->m_firstEnd == SkelBranch::TERMINATION)
+	{
+	  ends->push_back((*it)->m_branch->getPointListAt(0));
+	  end_tgts->push_back((*it)->m_branch->getPointListAt(1)-(*it)->m_branch->getPointListAt(0));
+	      std::cout << "values used to calculate the tgts : " << (*it)->m_branch->getPointListAt(1) << " , " << (*it)->m_branch->getPointListAt(0) << std::endl;
+	      std::cout << "youpi dansons la carioca" << std::endl;
+	  if ((*it)->m_secondEnd == SkelBranch::TERMINATION)
+	    {
+	      ends->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
+	      std::cout << "values used to calculate the tgts : " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2) << " , " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1) << std::endl;
+	      std::cout << "youpi dansons la carioca" << std::endl;
+	      end_tgts->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2)
+				  - (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
+	    }
+	}
+      else if ((*it)->m_secondEnd == SkelBranch::TERMINATION)
+	{
+	  ends->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
+	  std::cout << "values used to calculate the tgts : " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2) << " , " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1) << std::endl;
+	  std::cout << "youpi dansons la carioca" << std::endl;
+	  end_tgts->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2)
+			     - (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
+	}
+      else
+	continue;
+      int shape_size = skel.m_shape.size();
+      bump_ends->push_back((*(skel.m_shape.findInd((*it)->m_middleBumpIndice)))->m_vec);
+      if ((*it)->m_middleBumpIndice == 0)
+	{
+	  bump_tgts->push_back((*(skel.m_shape.findInd(shape_size - 1)))->m_vec 
+			       - (*(skel.m_shape.findInd((*it)->m_middleBumpIndice + 1)))->m_vec);
+	}
+      else if ((*it)->m_middleBumpIndice == (shape_size - 1))
+	{
+	  bump_tgts->push_back((*(skel.m_shape.findInd((*it)->m_middleBumpIndice - 1)))->m_vec 
+			       - (*(skel.m_shape.findInd(0)))->m_vec);
+	}
+      else
+	{
+	  bump_tgts->push_back((*(skel.m_shape.findInd((*it)->m_middleBumpIndice - 1)))->m_vec 
+			       - (*(skel.m_shape.findInd((*it)->m_middleBumpIndice + 1)))->m_vec);
+	}
+      bumps->push_back((*it)->getPolylineForAssociatedBump());
+    }
   return SkelBranch::getListPolylines(skel.m_skeleton);
 }
 

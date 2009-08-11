@@ -57,11 +57,11 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 class SkelTriangle;
-//typedef RCPtr<SkelTriangle> SkelTrianglePtr;
+typedef RCPtr<SkelTriangle> SkelTrianglePtr;
 typedef SkelTriangle* SkelTriangleWeakPtr;
 
 //! A class that associate a vector2 and an index, to get the position of a point within a polyline
-class ALGO_API ShapePoint
+class ALGO_API ShapePoint : public TOOLS::RefCountObject
 {
 public:
   Vector2 m_vec;
@@ -90,7 +90,9 @@ public:
   }
 };
 
-typedef ShapePoint* ShapePointWeakPtr;
+typedef RCPtr<ShapePoint> ShapePointPtr;
+//typedef ShapePoint* ShapePointWeakPtr;
+
 class Skeleton;
 class SkelTriangleSet;
 class SkelEdgeSet;
@@ -115,9 +117,9 @@ public:
 
 protected:
   //! first point
-  ShapePointWeakPtr m_p1;
+  ShapePointPtr m_p1;
   //! second point, with first point < second point
-  ShapePointWeakPtr m_p2;
+  ShapePointPtr m_p2;
   //! type of edge : boundary, interior, or undefined
   TypeEdge m_type;
   //! marker for algorithms of covering
@@ -135,15 +137,15 @@ public:
 	   Vector2 p2);
 
   //! constructor from two ShapePoints
-  SkelEdge(ShapePointWeakPtr p1 ,
-	   ShapePointWeakPtr p2 , 
+  SkelEdge(ShapePointPtr p1 ,
+	   ShapePointPtr p2 , 
 	   TypeEdge type = UNDEFINED, 
 	   bool infinite = false, 
 	   bool visited = false);
 
   //! constructor from two ShapePoints, with a boolean indicating if edge is boundary or interior
-  SkelEdge(ShapePointWeakPtr p1 ,
-	   ShapePointWeakPtr p2 , 
+  SkelEdge(ShapePointPtr p1 ,
+	   ShapePointPtr p2 , 
 	   bool boundary , 
 	   bool infinite = false,
 	   bool visited = false);
@@ -252,13 +254,13 @@ public:
   SkelTriangle(const SkelTriangle& t);
   //! constructor
   /*!
-   *  \param ShapePointWeakPtr p1 one point to define the triangle
-   *  \param ShapePointWeakPtr p2 another point to define the triangle
-   *  \param ShapePointWeakPtr p3 another point to define the triangle
+   *  \param ShapePointPtr p1 one point to define the triangle
+   *  \param ShapePointPtr p2 another point to define the triangle
+   *  \param ShapePointPtr p3 another point to define the triangle
    *  \return a SkelTriangle finite, of UNDEFINED type, with three edges defined 
    *          by the three given points to get a triangle
    */
-  SkelTriangle(ShapePointWeakPtr p1, ShapePointWeakPtr p2, ShapePointWeakPtr p3);
+  SkelTriangle(ShapePointPtr p1, ShapePointPtr p2, ShapePointPtr p3);
   //! destructor
   ~SkelTriangle();
   //! for TERMINATION Triangles only - calculates the index of the point defining the wing tip
@@ -290,7 +292,7 @@ public:
   /*!
    *  \return the point opposite to SkelEdge e in the triangle, this is to say the point not in e in the triangle
    */
-  ShapePointWeakPtr getOppositePoint (const SkelEdge& e) const;
+  ShapePointPtr getOppositePoint (const SkelEdge& e) const;
 
 };
 
@@ -298,7 +300,7 @@ public:
 class ALGO_API CompareTrianglePtr
 {
 public:
-  bool operator()(const SkelTriangleWeakPtr tleft, const SkelTriangleWeakPtr tright) const
+  bool operator()(const SkelTrianglePtr tleft, const SkelTrianglePtr tright) const
   {
     return (*tleft < *tright);
   }
@@ -327,14 +329,14 @@ public:
   }
 };
 
-class ALGO_API SkelTriangleSet : public std::set<SkelTriangleWeakPtr , CompareTrianglePtr>
+class ALGO_API SkelTriangleSet : public std::set<SkelTrianglePtr , CompareTrianglePtr>
 {
 public:
-  typedef std::set<SkelTriangleWeakPtr , CompareTrianglePtr>::iterator iterator;
+  typedef std::set<SkelTrianglePtr , CompareTrianglePtr>::iterator iterator;
 
   ~SkelTriangleSet();
-  SkelTriangleWeakPtr find_next();
-  bool skelErase(SkelTriangleWeakPtr toErase);
+  SkelTrianglePtr find_next();
+  bool skelErase(SkelTrianglePtr toErase);
 };
 
 class ALGO_API SkelEdgeSet : public std::set<SkelEdgePtr, CompareSkelEdgePtr>
@@ -364,6 +366,8 @@ protected:
   int m_beginBumpIndice;
   int m_endBumpIndice;
   int m_middleBumpIndice;
+  int m_joncjoncBegInd2;
+  int m_joncjoncEndInd2;
 
 public:
   SkelBranch();
@@ -373,8 +377,11 @@ public:
 	     EndType secondEnd = UNDEFINED, 
 	     int begin = -1, 
 	     int end = -1, 
-	     int middle = -1);
+	     int middle = -1,
+	     int jjbeg2 = -1,
+	     int jjend2 = -1);
   static std::list<Polyline2DPtr> getListPolylines(std::list<SkelBranchPtr> lb);
+  Polyline2DPtr getPolylineForAssociatedBump();
   double area();
 };
 
@@ -411,10 +418,10 @@ public:
   typedef std::set<SkelJonctionPtr, CompareSkelJonctionPtr>::iterator iterator;
 };
 
-class ALGO_API CompareShapePointWeakPtr
+class ALGO_API CompareShapePointPtr
 {
 public:
-  bool operator()(const ShapePointWeakPtr pleft, const ShapePointWeakPtr pright) const
+  bool operator()(const ShapePointPtr pleft, const ShapePointPtr pright) const
   {
     if ((pleft == 0)||(pright == 0))
       return pleft == pright;
@@ -422,11 +429,11 @@ public:
   }
 };
 
-class ALGO_API ShapePointSet : public std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>
+class ALGO_API ShapePointSet : public std::set<ShapePointPtr, CompareShapePointPtr>
 {
 public:
-  typedef std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>::iterator iterator;
-  typedef std::set<ShapePointWeakPtr, CompareShapePointWeakPtr>::const_iterator const_iterator;
+  typedef std::set<ShapePointPtr, CompareShapePointPtr>::iterator iterator;
+  typedef std::set<ShapePointPtr, CompareShapePointPtr>::const_iterator const_iterator;
 
   ~ShapePointSet();
   const_iterator findVec(const Vector2& v) const;
@@ -438,25 +445,42 @@ public:
 
 class ALGO_API Skeleton
 {
+ protected:
   ShapePointSet m_shape;
   SkelEdgeSet m_allEdges;
   SkelTriangleSet m_allTriangles;
   SkelJonctionSet m_jonctions;
   std::list<Polyline2DPtr> m_triangulation;
   std::list<SkelBranchPtr> m_skeleton;
+
  public:
   Skeleton() {};
   Skeleton(Polyline2DPtr discretizedShape);
 
+ protected:
   void init(Polyline2DPtr discretizedShape);
   TriangleSetPtr getTriangleSet();
   std::list<Polyline2DPtr> getChordalAxisTransform();
-  void filterLittleBranchesOnBranchSize(double sizeMaxBranchesToRemove);
-  void filterLittleBranchesOnBranchAreaSize(double areaMaxBranchesToRemove);
-  void filterLittleBranchesOnAreaSize(double areaMaxTrianglesToRemove);
+  void filterLittleBranchesOnBranchSize(const double sizeMaxBranchesToRemove);
+  void filterLittleBranchesOnBranchAreaSize(const double areaMaxBranchesToRemove);
+  void filterLittleBranchesOnAreaSize(const double areaMaxTrianglesToRemove);
+  void reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr branches[3], int indexBranchToRemove);
+
+ public:
 
   static Polyline2DPtr removeLoopsInShape(Polyline2DPtr shape);
-  static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape, double areaMaxFilter);
+
+  static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape, 
+							  const double areaMaxFilter);
+
+  static std::list<Polyline2DPtr> getSkeletonInformation(const Polyline2DPtr discretizedShape, 
+							 const double areaMaxFilter,
+							 std::list<Vector2> * ends,
+							 std::list<Vector2> * end_tgts,
+							 std::list<Vector2> * bump_ends,
+							 std::list<Vector2> * bump_tgts,
+							 std::list<Polyline2DPtr> * bumps);
+ 
   static TriangleSetPtr getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape);
 
 };
