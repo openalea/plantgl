@@ -64,8 +64,10 @@ class SG_API LineicModel :  public virtual Primitive {
 
 public:
 
+  static const uchar_t DEFAULT_WIDTH;
+
   /// constructor
-  LineicModel();
+  LineicModel(uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~LineicModel();
@@ -115,6 +117,15 @@ public:
   
   QuantisedFunctionPtr getArcLengthToUMapping() const;
   QuantisedFunctionPtr getUToArcLengthMapping() const;
+
+  // Get the width value of the curve
+  inline const uchar_t getWidth() const { return __width; }
+  inline uchar_t& getWidth() { return __width; }
+  inline bool isWidthToDefault( ) const { return __width == DEFAULT_WIDTH; }
+
+
+protected:
+  uchar_t __width;
 
 };
 

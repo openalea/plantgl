@@ -38,8 +38,12 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-LineicModel::LineicModel() :
-  Primitive(){
+const uchar_t LineicModel::DEFAULT_WIDTH = 1;
+
+/* ----------------------------------------------------------------------- */
+
+LineicModel::LineicModel(uchar_t width) :
+  Primitive(),__width(width) {
 }
 
 LineicModel::~LineicModel(){

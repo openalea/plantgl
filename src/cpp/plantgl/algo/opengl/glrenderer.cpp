@@ -99,6 +99,17 @@ bool GLRenderer::discretize_and_render(T * geom){
 #define GEOM_GLRENDERER_DISCRETIZE_RENDER(geom) \
   return discretize_and_render(geom); \
 
+
+#define BEGIN_LINE_WIDTH(obj) \
+  if(!obj->isWidthToDefault()){ \
+    glPushAttrib (GL_LINE_BIT); \
+    int globalwidth = 1; \
+	glGetIntegerv(GL_LINE_WIDTH,&globalwidth); \
+	glLineWidth(float(obj->getWidth()+globalwidth-1)); \
+  } \
+
+#define END_LINE_WIDTH(obj) if(!obj->isWidthToDefault()){ glPopAttrib(); }
+
 /* ----------------------------------------------------------------------- */
 
 
@@ -1151,11 +1162,12 @@ bool GLRenderer::process( PointSet * pointSet ) {
 
 /* ----------------------------------------------------------------------- */
 
-
 bool GLRenderer::process( PGL(Polyline) * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_GLRENDERER_CHECK_CACHE(polyline);
 
+  BEGIN_LINE_WIDTH(polyline)
+	
   const Point3ArrayPtr& points = polyline->getPointList();
   bool color = polyline->hasColorList() && 
 			 (polyline->getColorList()->size() == points->size());
@@ -1193,6 +1205,8 @@ bool GLRenderer::process( PGL(Polyline) * polyline ) {
   glDisableClientState(GL_VERTEX_ARRAY);
   delete [] vertices;
 #endif
+  
+  END_LINE_WIDTH(polyline)
 
   GEOM_GLRENDERER_UPDATE_CACHE(polyline);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);

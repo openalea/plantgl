@@ -427,7 +427,7 @@ bool Discretizer::process( BezierCurve * bezierCurve ) {
     _start += _step;
   };
 
-  __discretization = ExplicitModelPtr(new Polyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList,bezierCurve->getWidth()));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(bezierCurve);
   return true;
@@ -1532,7 +1532,7 @@ bool Discretizer::process( NurbsCurve * nurbsCurve ) {
 
   _pointList->setAt(_size, nurbsCurve->getPointAt(nurbsCurve->getLastKnot()));
 
-  __discretization = ExplicitModelPtr(new Polyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList,nurbsCurve->getWidth()));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(nurbsCurve);
   return true;
@@ -2141,7 +2141,7 @@ bool Discretizer::process( BezierCurve2D * bezierCurve ) {
     _start += _step;
   };
 
-  __discretization = ExplicitModelPtr(new Polyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList,bezierCurve->getWidth()));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(bezierCurve);
   return true;
@@ -2225,7 +2225,7 @@ bool Discretizer::process( NurbsCurve2D * nurbsCurve ) {
 
   _pointList->setAt(_size, Vector3(nurbsCurve->getPointAt(nurbsCurve->getLastKnot()),0));
 
-  __discretization = ExplicitModelPtr(new Polyline(_pointList));
+  __discretization = ExplicitModelPtr(new Polyline(_pointList,nurbsCurve->getWidth()));
 
   GEOM_DISCRETIZER_UPDATE_CACHE(nurbsCurve);
   return true;
@@ -2251,7 +2251,7 @@ bool Discretizer::process( Polyline2D * polyline ){
 
   GEOM_DISCRETIZER_CHECK_CACHE( polyline );
   Point3ArrayPtr a (new Point3Array(*(polyline->getPointList()),0));
-  __discretization = ExplicitModelPtr(new Polyline(a));
+  __discretization = ExplicitModelPtr(new Polyline(a,polyline->getWidth()));
   GEOM_DISCRETIZER_UPDATE_CACHE(polyline);
   return true;
 }

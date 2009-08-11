@@ -112,9 +112,13 @@ class SG_API Curve2D : public PlanarModel
 {
 
 public:
+  static const uchar_t DEFAULT_WIDTH;
 
   /// A structure which helps to build an object of type of Curve.
   struct SG_API Builder : public PlanarModel::Builder {
+
+    /// A pointer to the \b Width field.
+ 	uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -122,14 +126,15 @@ public:
     /// Destructor.
     ~Builder( );
 
+    void cdestroy( );
   };
 
 
   /// Constructor.
-  Curve2D( );
+  Curve2D(uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
-  virtual ~Curve2D( );
+  virtual ~Curve2D();
 
   /// Returns the \e fist knots value.
   virtual const real_t getFirstKnot() const = 0;
@@ -163,7 +168,14 @@ public:
   QuantisedFunctionPtr getArcLengthToUMapping() const;
   QuantisedFunctionPtr getUToArcLengthMapping() const;
 
+  // Get the width value of the curve
+  inline const uchar_t getWidth() const { return __width; }
+  inline uchar_t& getWidth() { return __width; }
+  inline bool isWidthToDefault( ) const { return __width == DEFAULT_WIDTH; }
 
+
+protected:
+  uchar_t __width;
 };
 
 /// Curve2D Pointer

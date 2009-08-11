@@ -126,6 +126,10 @@ ViewGLFrame * ViewGLFrame::LAST_GL_FRAME = NULL;
 
 #endif
 
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE                    0x809D
+#endif
+
 static PFNGLGENQUERIESARBPROC          glGenQueriesARB = NULL;
 static PFNGLDELETEQUERIESARBPROC       glDeleteQueriesARB = NULL;
 static PFNGLBEGINQUERYARBPROC          glBeginQueryARB = NULL;
@@ -447,7 +451,8 @@ ViewGLFrame::setLineWidth(int i)
 {
   __linewidth = (GLfloat)float(i);
   status(QString(tr("Set Line Width to")+" %1").arg(i),2000);
-  redrawGL();
+  __scene->refreshDisplay();
+  // redrawGL();
 }
 
 void
@@ -616,6 +621,8 @@ void ViewGLFrame::reinitializeGL()
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_GREATER,0.01);
+
+  glEnable(GL_MULTISAMPLE);
 
   glEnable(GL_LIGHTING);
 //  __light->enable();

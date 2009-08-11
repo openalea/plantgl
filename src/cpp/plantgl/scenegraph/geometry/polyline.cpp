@@ -45,7 +45,8 @@ TOOLS_USING_NAMESPACE
 
 
 Polyline::Builder::Builder( ) :
-  ExplicitModel::Builder(){
+  ExplicitModel::Builder(),
+  Width(0){
 }
 
 
@@ -56,13 +57,14 @@ Polyline::Builder::~Builder( ) {
 
 SceneObjectPtr Polyline::Builder::build( ) const {
   if (isValid())
-    return SceneObjectPtr(new Polyline(*PointList,ColorList?*ColorList:Color4ArrayPtr()));
+    return SceneObjectPtr(new Polyline(*PointList,ColorList?*ColorList:Color4ArrayPtr(),Width?*Width:DEFAULT_WIDTH));
   return SceneObjectPtr();
 }
 
 
 void Polyline::Builder::destroy( ) {
   EMDestroy();
+  if (Width) delete Width;
 }
 
 
@@ -83,20 +85,29 @@ bool Polyline::Builder::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-Polyline::Polyline( ) :
-  ExplicitModel(){
+Polyline::Polyline( uchar_t width ) :
+  ExplicitModel(),
+  LineicModel(width){
 }
 
-Polyline::Polyline( const Vector3& point1, const Vector3& point2 ) :
-  ExplicitModel(Point3ArrayPtr(new Point3Array(2))){
+Polyline::Polyline( const Vector3& point1, const Vector3& point2, uchar_t width ) :
+  ExplicitModel(Point3ArrayPtr(new Point3Array(2))),
+  LineicModel(width){
   __pointList->setAt(0,point1);
   __pointList->setAt(1,point2);
   GEOM_ASSERT(isValid());
 }
 
 
-Polyline::Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors ) :
-  ExplicitModel(points, colors){
+Polyline::Polyline( const Point3ArrayPtr& points, uchar_t width ) :
+  ExplicitModel(points),
+  LineicModel(width) {
+  GEOM_ASSERT(isValid());
+}
+
+Polyline::Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors, uchar_t width ) :
+  ExplicitModel(points, colors),
+  LineicModel(width) {
   GEOM_ASSERT(isValid());
 }
 
@@ -217,7 +228,7 @@ Polyline2DPtr Polyline2D::Circle(real_t radius,
 
 Polyline2D::Builder::Builder( ) :
   Curve2D::Builder(),
-  PointList(0) {
+  PointList(0){
 }
 
 
@@ -228,12 +239,13 @@ Polyline2D::Builder::~Builder( ) {
 
 SceneObjectPtr Polyline2D::Builder::build( ) const {
   if (isValid())
-    return SceneObjectPtr(new Polyline2D(*PointList));
+	  return SceneObjectPtr(new Polyline2D(*PointList,Width?*Width:DEFAULT_WIDTH));
   return SceneObjectPtr();
 }
 
 
 void Polyline2D::Builder::destroy( ) {
+  cdestroy( );
   if (PointList) delete PointList;
 }
 
@@ -257,13 +269,13 @@ bool Polyline2D::Builder::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-Polyline2D::Polyline2D( ) :
-  Curve2D(),
+Polyline2D::Polyline2D(uchar_t width) :
+  Curve2D(width),
   __pointList() {
 }
 
-Polyline2D::Polyline2D( const Vector2& point1, const Vector2& point2 ) :
-  Curve2D(),
+Polyline2D::Polyline2D( const Vector2& point1, const Vector2& point2, uchar_t width ) :
+  Curve2D(width),
   __pointList(new Point2Array(2)) {
   __pointList->setAt(0,point1);
   __pointList->setAt(1,point2);
@@ -271,8 +283,8 @@ Polyline2D::Polyline2D( const Vector2& point1, const Vector2& point2 ) :
 }
 
 
-Polyline2D::Polyline2D( const Point2ArrayPtr& points ) :
-  Curve2D(),
+Polyline2D::Polyline2D( const Point2ArrayPtr& points, uchar_t width ) :
+  Curve2D(width),
   __pointList(points) {
   GEOM_ASSERT(isValid());
 }

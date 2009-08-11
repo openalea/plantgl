@@ -73,6 +73,9 @@ public:
   /// A structure which helps to build a Polyline when parsing.
   struct SG_API Builder : public ExplicitModel::Builder {
 
+    /// A pointer to the \b Width field.
+ 	uchar_t * Width;
+
     /// Constructor.
     Builder( );
 
@@ -88,20 +91,27 @@ public:
   };
 
   /// Default Constructor. Build object is invalid.
-  Polyline();
+  Polyline(uchar_t width = DEFAULT_WIDTH);
 
   /** Constructs a Polyline with the segment defined by \e point1 and
      \e point2.
      \post
      - \e self is valid. */
-  Polyline( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 );
+  Polyline( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, uchar_t width = DEFAULT_WIDTH);
 
   /** Constructs a Polyline with the points \e points.
       \pre
       - \e points must contain at least 2 points.
       \post
       - \e self is valid. */
-  Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = Color4ArrayPtr() );
+  Polyline( const Point3ArrayPtr& points, uchar_t width = DEFAULT_WIDTH);
+
+  /** Constructs a Polyline with the points \e points.
+      \pre
+      - \e points must contain at least 2 points.
+      \post
+      - \e self is valid. */
+  Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors, uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~Polyline( );
@@ -178,23 +188,23 @@ public:
 
     virtual bool isValid( ) const;
 
-  };
+ };
 
   /// Default Constructor. Build object is invalid.
-  Polyline2D( );
+  Polyline2D(uchar_t width = DEFAULT_WIDTH);
 
   /** Constructs a Polyline2D with the segment defined by \e point1 and
      \e point2.
      \post
      - \e self is valid. */
-  Polyline2D( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2 );
+  Polyline2D( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2, uchar_t width = DEFAULT_WIDTH );
 
   /** Constructs a Polyline2D with the points \e points.
       \pre
       - \e points must contain at least 2 points.
       \post
       - \e self is valid. */
-  Polyline2D( const Point2ArrayPtr& points );
+  Polyline2D( const Point2ArrayPtr& points, uchar_t width = DEFAULT_WIDTH );
 
   /// Destructor
   virtual ~Polyline2D( );

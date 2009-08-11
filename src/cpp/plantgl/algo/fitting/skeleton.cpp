@@ -879,8 +879,8 @@ SkelBranch::SkelBranch(std::list<Vector2> points,
 Polyline2DPtr SkelBranch::getPolylineForAssociatedBump()
 {
   std::vector<Vector2> polyline;
-  ShapePointSet::iterator it;
-  ShapePointSet::iterator end_it = m_pointSet->findInd(m_endBumpIndice);
+  ShapePointSet::const_iterator it;
+  ShapePointSet::const_iterator end_it = m_pointSet->findInd(m_endBumpIndice);
   if (end_it == m_pointSet->begin())
     end_it = m_pointSet->end();
   for (it = m_pointSet->findInd(m_beginBumpIndice); it != end_it; it++)

@@ -62,9 +62,14 @@ Curve::Curve( ) :
 */
 /* ----------------------------------------------------------------------- */
 
+const uchar_t Curve2D::DEFAULT_WIDTH = 1;
+
+/* ----------------------------------------------------------------------- */
+
 
 Curve2D::Builder::Builder() :
-    PlanarModel::Builder() {
+    PlanarModel::Builder(),
+    Width(0)  {
 }
 
 
@@ -72,12 +77,15 @@ Curve2D::Builder::~Builder() {
   // nothing to do
 }
 
+void Curve2D::Builder::cdestroy( ) {
+  if (Width) delete Width;
+}
 
 /* ----------------------------------------------------------------------- */
 
 
-Curve2D::Curve2D( ) :
-    PlanarModel () {
+Curve2D::Curve2D(uchar_t width) :
+    PlanarModel (), __width(width) {
 }
 
 Curve2D::~Curve2D( ) {

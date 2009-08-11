@@ -78,6 +78,7 @@ U getCurveDerivativeValue(const T * lm, real_t u){
    return (lm->*func)(u);
 }
 
+inline uchar_t py_get_lc_width(LineicModel * ln) { return ln->getWidth(); }
 
 void export_LineicModel()
 {
@@ -85,7 +86,7 @@ void export_LineicModel()
     .add_property( "firstKnot", &LineicModel::getFirstKnot )
     .add_property( "lastKnot", &LineicModel::getLastKnot )
     .add_property( "stride", &LineicModel::getStride )
-    .def( "getStride", &LineicModel::getStride )
+    // .def( "getStride", &LineicModel::getStride )
     .def( "getPointAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getPointAt>, args("u") )
     .def( "getTangentAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
     .def( "getNormalAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
@@ -95,6 +96,12 @@ void export_LineicModel()
     .def( "getLength", (real_t (LineicModel::*)(real_t,real_t)const)&LineicModel::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
     .def( "getArcLengthToUMapping", &LineicModel::getArcLengthToUMapping,"getArcLengthToUMapping() : Return a function that gives for each arc length the u parametrization of the curve." )
     .def( "getUToArcLengthMapping", &LineicModel::getUToArcLengthMapping,"getUToArcLengthMapping() : Return a function that gives for each u the arc length parametrization of the curve." )
+    .DEC_BT_NR_PROPERTY_WDV(width,LineicModel,Width,uchar_t,DEFAULT_WIDTH)
+    /*.add_property("width",//&py_get_lc_width, 
+						  &get_prop_bt_from_class<uchar_t,LineicModel,(uchar_t (LineicModel::*)()const)&LineicModel::getWidth>,
+	                      &set_prop_bt_from_class<uchar_t,LineicModel,&LineicModel::getWidth>) 
+	DEC_DEFAULTVALTEST(LineicModel,Width)
+	DEC_DEFAULTVAL(LineicModel,DEFAULT_WIDTH)*/
     ;
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
@@ -110,7 +117,8 @@ void export_Curve2D()
     .add_property( "firstKnot", &Curve2D::getFirstKnot )
     .add_property( "lastKnot", &Curve2D::getLastKnot )
     .add_property( "stride", &Curve2D::getStride )
-    .def( "getStride", &Curve2D::getStride )
+    .DEC_BT_NR_PROPERTY_WDV(width,Curve2D,Width,uchar_t,DEFAULT_WIDTH)
+    // .def( "getStride", &Curve2D::getStride )
     .def( "getPointAt", &getCurveValue<Curve2D,Vector2,&Curve2D::getPointAt>, args("u") )
     .def( "getLength", (real_t (Curve2D::*)() const)&Curve2D::getLength )
     .def( "getLength", (real_t (Curve2D::*)(real_t) const)&Curve2D::getLength, args("begin") )
