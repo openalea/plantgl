@@ -36,8 +36,11 @@ class AscCodec (sg.SceneCodec):
                     if not isptsfile : col.append(sg.Color4(int(values[3]),int(values[4]),int(values[5]),0))
                     else : col.append(sg.Color4(int(values[4]),int(values[5]),int(values[6]),0))
             except Exception,e:
-                warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))
-                raise e
+                if isptsfile and len(values) == 1:
+                    warnings.warn("Skip line "+str(i+isptsfile)+" in file '"+fname+"'.")
+                else:
+                    warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))
+                    raise e
         f.close()
         pts = sg.Point3Array(pts)
         center = pts.getCenter()
