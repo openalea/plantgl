@@ -988,20 +988,26 @@ void SkelJonction::addBranch(SkelBranchPtr branch)
 
 PGL::Skeleton::Skeleton(const Polyline2DPtr discretizedShape)
 {
+  float xmax = (discretizedShape->getPointListAt(0)).x(), ymax = (discretizedShape->getPointListAt(0)).y();
   for (int i = 0; i < discretizedShape->getPointListSize(); ++i)
     {
       Vector2 v = discretizedShape->getPointListAt(i);
+      if (v.x() > xmax)
+	xmax = v.x();
+      if (v.y() > ymax)
+	ymax = v.y();
       ShapePointSet::const_iterator it = m_shape.findVec(v);
       if (it == m_shape.end())
 		m_shape.insert(new ShapePoint(v,i));
       else
 	Debug::debug("ALREADY INSERTED POINT : continue...",10,10);
     }
-  init(discretizedShape);
+  init(discretizedShape, Vector2(xmax + 0.5, ymax + 0.5));
 }
 
 #ifdef WITH_CGAL
-CDTplus getCGALTriangulation(const Polyline2DPtr discretizedShape)
+CDTplus getCGALTriangulation(const Polyline2DPtr discretizedShape, 
+			     const Vector2 infinite_vertex)
 {
   CDTplus cdt;
   cdt.clear();
@@ -1147,7 +1153,7 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 }
 #endif
 
-void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
+void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 infinite_vertex)
 {
 #ifndef WITH_CGAL
       pglError("Skeleton::init : Cannot compute skeleton without CGAL!");
@@ -1158,7 +1164,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape)
       pglError("Skeleton::init : Are you kidding me ? Give me more than 3 points to process, because I feel that you insult my intelligence !");
       return;
     }
-  CDTplus cdt = getCGALTriangulation(discretizedShape); 
+  CDTplus cdt = getCGALTriangulation(discretizedShape, infinite_vertex); 
 
   if (m_shape.size() != cdt.number_of_vertices())
     { 
@@ -1982,6 +1988,10 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			    {
 			      (*it_jonction)->addBranch(branch);
 			    }
+			  else
+			    {
+			      pglError("How strange that we get a end() iterator there !");
+			    }
 			  m_allTriangles.skelErase(current_tri);
 			  polyline.clear();
 			  // Now we begin a new polyline
@@ -2052,27 +2062,51 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			      bumpBeg = current_tri->m_e1->m_p1->m_ind;
 			      bumpEnd = current_tri->m_e1->m_p2->m_ind;
 			      if (*(current_tri->m_e1->m_adjTri1) == *current_tri)
-				current_tri = current_tri->m_e1->m_adjTri2;
+				{
+				  SkelTrianglePtr temp = current_tri;
+				  current_tri = current_tri->m_e1->m_adjTri2;
+				  m_allTriangles.skelErase(temp);				
+				}
 			      else
-				current_tri = current_tri->m_e1->m_adjTri1;
+				{
+				  SkelTrianglePtr temp = current_tri;
+				  current_tri = current_tri->m_e1->m_adjTri1;
+				  m_allTriangles.skelErase(temp);				
+				}
 			    }
 			  else if (current_tri->m_e2->m_type == SkelEdge::INTERIOR)
 			    {
 			      bumpBeg = current_tri->m_e2->m_p1->m_ind;
 			      bumpEnd = current_tri->m_e2->m_p2->m_ind;
 			      if (*(current_tri->m_e2->m_adjTri1) == *current_tri)
-				current_tri = current_tri->m_e2->m_adjTri2;
+				{			
+				  SkelTrianglePtr temp = current_tri;
+				  current_tri = current_tri->m_e2->m_adjTri2;
+				  m_allTriangles.skelErase(temp);				
+				}
 			      else
-				current_tri = current_tri->m_e2->m_adjTri1;
+				{
+				  SkelTrianglePtr temp = current_tri;
+				  current_tri = current_tri->m_e2->m_adjTri1;
+				  m_allTriangles.skelErase(temp);				
+				}
 			    }
 			  else
 			    {
 			      bumpBeg = current_tri->m_e3->m_p1->m_ind;
 			      bumpEnd = current_tri->m_e3->m_p2->m_ind;
 			      if (*(current_tri->m_e3->m_adjTri1) == *current_tri)
-				current_tri = current_tri->m_e3->m_adjTri2;
+				{
+				  SkelTrianglePtr temp = current_tri;
+				  current_tri = current_tri->m_e3->m_adjTri2;
+				  m_allTriangles.skelErase(temp);
+				}
 			      else
-				current_tri = current_tri->m_e3->m_adjTri1;
+				{
+				  SkelTrianglePtr temp = current_tri;
+				  current_tri = current_tri->m_e3->m_adjTri1;
+				  m_allTriangles.skelErase(temp);
+				}
 			    }
 			}
 		    }
@@ -2093,6 +2127,10 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 		      if ((it_jonction != m_jonctions.end()))
 			{
 			  (*it_jonction)->addBranch(branch);
+			}
+		      else
+			{
+			  pglError("How strange thet we get an end iterator there ! #2");
 			}
 		      m_allTriangles.skelErase(current_tri);
 		      polyline.clear();
@@ -2158,7 +2196,7 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 		  if (!polyline.empty())
 		    {
 		      jonc = *it_jonction;
-		      //polyline.push_back(mid1);
+		      polyline.push_back(mid1);
 		      int bumpBeg2 = -1;
 		      int bumpEnd2 = -1;
 		      if (lastEndType == SkelBranch::TERMINATION)
@@ -2247,8 +2285,6 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			      else
 				{
 				  pglError("fffffffffffffffffffffffffffffffffffffffffffff #1");
-				  std::cout << "indices : "<< triInd1 << ", " << triInd2 << ", " << triInd3 << std::endl;
-				  std::cout << "bumps beg and end : " << bumpBeg << ", " << bumpEnd << std::endl;
 				  bumpBeg2 = -1;
 				  bumpEnd2 = -1;
 				}
@@ -2272,8 +2308,6 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 			  else
 			    {
 			      pglError("ffffffffffffffffffffffffffffffffffff #2");
-			      std::cout << "indices : "<< triInd1 << ", " << triInd2 << ", " << triInd3 << std::endl;
-			      std::cout << "bumps beg and end : " << bumpBeg << ", " << bumpEnd << std::endl;
 			      bumpBeg2 = -1;
 			      bumpEnd2 = -1;
 			    }
@@ -2293,6 +2327,18 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 					      bumpMid,
 					      bumpBeg2,
 					      bumpEnd2);
+		      if (lastEndType == SkelBranch::JONCTION)
+			{
+			  it_jonction = (m_jonctions.insert(new SkelJonction(*(polyline.begin())))).first;
+			  if ((it_jonction != m_jonctions.end()))
+			    {
+			      (*it_jonction)->addBranch(branch);
+			    }
+			  else
+			    {
+			      pglError("How strange that we get a end() iterator there !");
+			    }
+			}
 		      lastEndType = SkelBranch::JONCTION;
 		      jonc->addBranch(branch);
 		      m_skeleton.push_back(branch);
@@ -2572,6 +2618,10 @@ std::list<Polyline2DPtr> PGL::Skeleton::getChordalAxisTransform()
 		{
 		  (*it_jonction)->addBranch(branch);
 		}
+	      else
+		{
+		  pglError("How strange to get ann end() iterator there ! #3");
+		}
 	    }
 	}
     }
@@ -2684,26 +2734,20 @@ void PGL::Skeleton::filterLittleBranchesOnBranchAreaSize(const double areaMaxBra
   int i = 0;
   for (it = m_jonctions.begin(); it != m_jonctions.end(); it ++)
     {
-      std::cout << "jonction nb : " << ++i << std::endl;
       if (toErase != m_jonctions.end())
 	{
-	  std::cout << "erasing" << std::endl;
 	  m_jonctions.erase(toErase);
 	  toErase = m_jonctions.end();
 	}
       for (int i = (*it)->m_nbBranches-1 ; i >= 0 ; --i)
 	{
-	  std::cout << "branch nb : " << i << std::endl;
 	  SkelBranchPtr branch = (*it)->m_branches[i];
 	  if ((branch->m_firstEnd == SkelBranch::TERMINATION)||(branch->m_secondEnd == SkelBranch::TERMINATION))
 	    {
-	      std::cout << "branch with a termination : we might suppress it" << std::endl;
 	      if (branch->area() < areaMaxBranchesToRemove)
 		{
-		  std::cout << "Well, we DO suppress it, nb branches to remain : " << (*it)->m_nbBranches << std::endl;
 		  // then we must remove that branch, and give its info to the other branches
 		  reorganizeBranchesAndJonctionsAfterFiltering((*it)->m_branches, i);
-		  std::cout << "end reorganization, suppression" << std::endl;
 		  m_skeleton.remove((*it)->m_branches[i]);
 		  if (i == 0)
 		    {
@@ -2723,7 +2767,6 @@ void PGL::Skeleton::filterLittleBranchesOnBranchAreaSize(const double areaMaxBra
 		  (*it)->m_nbBranches --;
 		  if ((*it)->m_nbBranches == 0)
 		    {
-		      std::cout << "all branches on this jonction are suppressed, suppressing jonction" << std::endl;
 		      toErase = it;
 		    }
 		}
@@ -2734,7 +2777,6 @@ void PGL::Skeleton::filterLittleBranchesOnBranchAreaSize(const double areaMaxBra
 
 void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr branches[3], int indexBranchToRemove)
 {
-  std::cout << "reorganizeBranchesAndJonctionsAfterFiltering" << std::endl;
   if (indexBranchToRemove < 0 && indexBranchToRemove > 2)
     {
       pglError("Error in paramaters of reorganizeBranchesAndJonctionsAfterFiltering : index out of range");
@@ -2747,7 +2789,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 	nbBranchesToRemain ++;
       if (branches[((indexBranchToRemove + 2) % 3)] != 0)
 	nbBranchesToRemain ++;
-      std::cout << "nb branches to remain in reorganize : " << nbBranchesToRemain << std::endl;
       if (nbBranchesToRemain == 0)
 	{
 	  pglError("\n ***********************************************************"
@@ -2759,13 +2800,10 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 	{
 	  if (branches[((indexBranchToRemove + 1) % 3)] == 0)
 	    {
-	      if (branches[((indexBranchToRemove + 2) % 3)] == 0)
-		std::cout << "??????????????????? #1" << std::endl;
 	      int indexToModify = ((indexBranchToRemove + 2) % 3);
 	      if ( (branches[indexToModify]->m_secondEnd == SkelBranch::TERMINATION)
 		  || (branches[indexToModify]->m_firstEnd == SkelBranch::TERMINATION) )
 		{
-		  std::cout << "modifying a terminating branch" << std::endl;
 		  // now looking at the indexes bumpBeg and bumpEnd to modify them, including in
 		  // the new bump the bump of the suppressed branch. the middle is unchanged
 		  int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
@@ -2793,7 +2831,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 		}
 	      else
 		{
-		  std::cout << "modifying a jonction - jonction" << std::endl;
 		  branches[indexToModify]->m_middleBumpIndice 
 		    = branches[indexBranchToRemove]->m_middleBumpIndice;
 		  int index1 = branches[indexBranchToRemove]->m_beginBumpIndice ;
@@ -2803,17 +2840,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 		       || (index2 == branches[indexToModify]->m_beginBumpIndice)
 		       || (index2 == branches[indexToModify]->m_endBumpIndice) )
 		    {
-		      std::cout << "******** 4th configuration *************" << std::endl;
-		      std::cout << "extremites branche a supprimer : " 
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
-				<< std::endl;
-		      std::cout << "extremites branche a modifier : " 
-				<< branches[indexToModify]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
-				<< std::endl;
 		      branches[indexToModify]->m_beginBumpIndice
 			= branches[indexToModify]->m_joncjoncBegInd2;
 		      branches[indexToModify]->m_endBumpIndice
@@ -2824,17 +2850,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 		    }
 		  else
 		    {
-		      std::cout << "******** 3rd configuration *************" << std::endl;
-		      std::cout << "extremites branche a supprimer : " 
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
-				<< std::endl;
-		      std::cout << "extremites branche a modifier : " 
-				<< branches[indexToModify]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
-				<< std::endl;
 		      branches[indexToModify]->m_joncjoncBegInd2 = -1;
 		      branches[indexToModify]->m_joncjoncEndInd2 = -1;
 		      branches[indexToModify]->m_secondEnd = SkelBranch::TERMINATION;
@@ -2843,8 +2858,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 	    }
 	  else if (branches[((indexBranchToRemove + 2) % 3)] == 0)
 	    {
-	      if (branches[((indexBranchToRemove + 1) % 3)] == 0)
-		std::cout << "??????????????????? #2" << std::endl;
 	      int indexToModify = ((indexBranchToRemove + 1) % 3);
 	      if ( (branches[indexToModify]->m_secondEnd == SkelBranch::TERMINATION)
 		  || (branches[indexToModify]->m_secondEnd == SkelBranch::TERMINATION) )
@@ -2885,17 +2898,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 		       || (index2 == branches[indexToModify]->m_beginBumpIndice)
 		       || (index2 == branches[indexToModify]->m_endBumpIndice) )
 		    {
-		      std::cout << "******** 1st configuration *************" << std::endl;
-		      std::cout << "extremites branche a supprimer : " 
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
-				<< std::endl;
-		      std::cout << "extremites branche a modifier : " 
-				<< branches[indexToModify]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
-				<< std::endl;
 		      branches[indexToModify]->m_beginBumpIndice
 			= branches[indexToModify]->m_joncjoncBegInd2;
 		      branches[indexToModify]->m_endBumpIndice
@@ -2906,17 +2908,6 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 		    }
 		  else
 		    {
-		      std::cout << "******** 2nd configuration *************" << std::endl;
-		      std::cout << "extremites branche a supprimer : " 
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexBranchToRemove]->m_branch->getPointListAt(branches[indexBranchToRemove]->m_branch->getPointListSize())
-				<< std::endl;
-		      std::cout << "extremites branche a modifier : " 
-				<< branches[indexToModify]->m_branch->getPointListAt(0) 
-				<< ", "
-				<< branches[indexToModify]->m_branch->getPointListAt(branches[indexToModify]->m_branch->getPointListSize())
-				<< std::endl;
 		      branches[indexToModify]->m_joncjoncBegInd2 = -1;
 		      branches[indexToModify]->m_joncjoncEndInd2 = -1;
 		      branches[indexToModify]->m_secondEnd = SkelBranch::TERMINATION;
@@ -3225,10 +3216,11 @@ Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_interse
     }
   return removeOneLoop(polyline, pts_intersection);
 }
-
+#endif
 
 Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
 {
+#ifdef WITH_CGAL
   std::list<Point_intersections> pts_intersection;
   std::list<Segment_intersections> pts_shape;
   std::list<Vector2> polyline; 
@@ -3263,18 +3255,23 @@ Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
 				std::back_inserter (pts_intersection));
 
   return removeOneLoop(polyline, pts_intersection);
-}
+#else
+  return shape;
 #endif
+}
+
 
 
 std::list<Polyline2DPtr> 
 PGL::Skeleton::getChordalAxisTransform
 (const Polyline2DPtr discretizedShape, const double areaMaxFilter)
 {
+  std::cout << "getChordalAxisTransform" << std::endl;
   filterAndHomogenize(*(discretizedShape->getPointList()));
   Skeleton skel(discretizedShape);
   skel.getChordalAxisTransform();
   skel.filterLittleBranchesOnBranchAreaSize(areaMaxFilter);
+  std::cout << "fin getChordalAxisTransform" << std::endl;
   return SkelBranch::getListPolylines(skel.m_skeleton);
 }
 
@@ -3287,13 +3284,13 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 				      std::list<Vector2> * bump_tgts,
 				      std::list<Polyline2DPtr> * bumps)
 {
+  std::cout << "getSkeletonInformation" << std::endl;
   filterAndHomogenize(*(discretizedShape->getPointList()));
   Skeleton skel(discretizedShape);
   skel.getChordalAxisTransform();
   skel.filterLittleBranchesOnBranchAreaSize(areaMaxFilter);
   // here we must get back information on skeleton
   std::list<SkelBranchPtr>::iterator it;
-  std::cout << "taille m_skeleton : " << skel.m_skeleton.size() << std::endl;
   for (it = skel.m_skeleton.begin(); it != skel.m_skeleton.end(); it ++)
     {
       int pol_branch_size = (*it)->m_branch->getPointListSize();
@@ -3303,13 +3300,9 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 	{
 	  ends->push_back((*it)->m_branch->getPointListAt(0));
 	  end_tgts->push_back((*it)->m_branch->getPointListAt(1)-(*it)->m_branch->getPointListAt(0));
-	      std::cout << "values used to calculate the tgts : " << (*it)->m_branch->getPointListAt(1) << " , " << (*it)->m_branch->getPointListAt(0) << std::endl;
-	      std::cout << "youpi dansons la carioca" << std::endl;
 	  if ((*it)->m_secondEnd == SkelBranch::TERMINATION)
 	    {
 	      ends->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
-	      std::cout << "values used to calculate the tgts : " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2) << " , " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1) << std::endl;
-	      std::cout << "youpi dansons la carioca" << std::endl;
 	      end_tgts->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2)
 				  - (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
 	    }
@@ -3317,8 +3310,6 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
       else if ((*it)->m_secondEnd == SkelBranch::TERMINATION)
 	{
 	  ends->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
-	  std::cout << "values used to calculate the tgts : " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2) << " , " << (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1) << std::endl;
-	  std::cout << "youpi dansons la carioca" << std::endl;
 	  end_tgts->push_back((*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 2)
 			     - (*it)->m_branch->getPointListAt((*it)->m_branch->getPointListSize() - 1));
 	}
@@ -3343,6 +3334,7 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 	}
       bumps->push_back((*it)->getPolylineForAssociatedBump());
     }
+  std::cout << "fin getSkeletonInformation" << std::endl;
   return SkelBranch::getListPolylines(skel.m_skeleton);
 }
 
