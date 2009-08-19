@@ -1861,7 +1861,6 @@ bool Discretizer::process( Swung * swung )
     ref_pt_down = crv3D->getAt(sectionSize - 1);
   }
 
-
   for( i= 0; i < slices; i++ )
     {
     if(is2D)
@@ -1924,7 +1923,6 @@ if( i != slices-1 )
       }
 
     cur= next;
-//    next= (next + sectionSize ) % (sectionSize * slices);
     next= (next + sectionSize ) % (sectionSize * slices);
     angle+= angleStep;
 
@@ -1932,8 +1930,6 @@ if( i != slices-1 )
 
   PolylinePtr skeleton(new Polyline(Vector3(0,0,0),
                                     Vector3(0,0,1)));
-
-  // to do: gerer la fermeture (solid, volume)
 
   if( closed)
   {
