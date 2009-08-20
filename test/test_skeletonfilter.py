@@ -23,10 +23,8 @@ def test_filter_one_point_branch(visual = False):
     if visual:
       Viewer.display(p)
       Viewer.add(Scene([Shape(i,Material((randint(0,255),randint(0,255),randint(0,255)))) for i in skel]))
-    print len(skel)
-    print skel
-    assert skel[1].isValid()
-    assert len(skel[1].pointList) > 1
+    assert skel[len(skel)-1].isValid()
+    assert len(skel[len(skel)-1].pointList) > 1
 
 def test_filter_branch(visual = False):
     p = Polyline2D([(0,0),(0.5,0.3),(1,0),(0.7,0.5),(1,1),(0,2),(-1,2),(0,1.75),(-1,1.5),(0,1.3),(0.3,0.5),(0,0)])
@@ -40,7 +38,7 @@ def test_filter_branch(visual = False):
 def test_filter_information(visual = False):
     p = Polyline2D([(0,0),(0.5,0.3),(1,0),(0.7,0.5),(1,1),(0,2),(-1,2),(0,1.75),(-1,1.5),(0,1.3),(0.3,0.5),(0,0)])
     resample(p,50)
-    res = Skeleton.getSkeletonInformation(p,0.0)
+    res = Skeleton.getSkeletonInformation(p,0.5)
     if visual:
       Viewer.display(p)
       Viewer.add(Scene([Shape(i,Material((randint(0,255),randint(0,255),randint(0,255)))) for i in res[0]]))
@@ -59,6 +57,6 @@ def test_filter(visual = False):
 
     
 if __name__ == '__main__':
-    #test_triangulation()
-    #test_filter_one_point_branch()
-    test_filter()
+    test_triangulation()
+    test_filter_one_point_branch()
+    test_filter_information()

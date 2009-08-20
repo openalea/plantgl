@@ -13,6 +13,18 @@ shape3 = Polyline2D([((r1*(i%2)-r2*((i%2)-1))*cos(i*pi/(1.0*N)),(r1*(i%2)-r2*((i
 shape4 = Polyline2D([(r2*cos(i*pi/(0.5*N)),r2*sin(i*pi/(0.5*N))) for i in range(N+1)])
 shape5 = Polyline2D([(0,0),(2,2),(3,-1),(6,-2),(7,1),(4,2),(2,-2),(0,0)])
 shape6 = Polyline2D([(0,0),(1,1),(2,1),(3,0),(2,-1),(1,-1),(0,0)])
+shape7 = Polyline2D([(0,0),(1,1),(0,2),(-1,1),(0,0),(1,-1),(0,-2),(-1,-1),(0,0)])
+#shape7 = Polyline2D([(-1,-1),(0,0),(1,1),(0,2),(-1,1),(0,0),(1,-1),(0,-2)])
+#shape7 = Polyline2D([(1,1),(0,2),(-1,1),(1,-1),(0,-2),(-1,-1)])
+#shape8 = Polyline2D([(2.8,-0.4),(3,-1),(6,-2),(7,1),(4,2)])
+
+shape1 = Skeleton.removeLoopsInShape(shape1)
+shape2 = Skeleton.removeLoopsInShape(shape2)
+shape3 = Skeleton.removeLoopsInShape(shape3)
+shape4 = Skeleton.removeLoopsInShape(shape4)
+shape5 = Skeleton.removeLoopsInShape(shape5)
+shape6 = Skeleton.removeLoopsInShape(shape6)
+shape7 = Skeleton.removeLoopsInShape(shape7)
 
 red = Material(Color3(255,0,0))
 green = Material(Color3(0,255,0))
@@ -20,54 +32,74 @@ blue = Material(Color3(0,0,255))
 
 colors = [Color4(0,0,255,255),Color4(255,0,255,255),Color4(0,255,255,255)]
 
-geometries = [Shape(shape1,green),Shape(Translated (-10,-10,0,shape2),green), Shape(Translated(10,10,0,shape3),green),Shape(Translated(10,-10,0,shape4),green),Shape(Translated (-10,10,0,shape5),green),Shape(Translated(10,0,0,shape6),green)]
-
+geometries = [Shape(Translated(-10,+10,0,(shape1)),green),
+              Shape(Translated(-10,-10,0,(shape2)),green), 
+              Shape(Translated(+10,+10,0,(shape3)),green),
+              Shape(Translated(+10,-10,0,(shape4)),green),
+              Shape(Translated(+00,+00,0,(shape5)),green),
+              Shape(Translated(+10,+00,0,(shape6)),green), 
+              Shape(Translated(-10,+00,0,(shape7)),green)]
+#
 #geometries = [Shape(Translated (10,10,0,shape3),blue),Shape(Translated (10,-10,0,shape4),green)]
 
 filter = 0.0
 
-polylines = Skeleton.getChordalAxisTransform(shape1,filter)
-triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape1)
-triangulation.colorList = colors
-triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
-geometries += [Shape(a,red) for a in polylines]
-#geometries += [Shape(triangulation)]
-
-polylines = Skeleton.getChordalAxisTransform(shape2,filter)
-triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape2)
-triangulation.colorList = colors
-triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
-geometries += [Shape(Translated (-10,-10,0,a),red) for a in polylines]
+if True:
+   polylines = Skeleton.getChordalAxisTransform(shape1,filter)
+   triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape1)
+   triangulation.colorList = colors
+   triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+   geometries += [Shape(Translated(-10,10,0,a),red) for a in polylines]
+   #geometries += [Shape(Translated(-10,10,0,triangulation))]
+   
+   polylines = Skeleton.getChordalAxisTransform(shape2,filter)
+   triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape2)
+   triangulation.colorList = colors
+   triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+   geometries += [Shape(Translated (-10,-10,0,a),red) for a in polylines]
 #geometries += [Shape(Translated (-10,-10,0,triangulation))]
-
-polylines = Skeleton.getChordalAxisTransform(shape3,filter)
-triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape3)
-triangulation.colorList = colors
-triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
-geometries += [Shape(Translated (10,10,0,a),red) for a in polylines]
+   
+   polylines = Skeleton.getChordalAxisTransform(shape3,filter)
+   triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape3)
+   triangulation.colorList = colors
+   triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+   geometries += [Shape(Translated (10,10,0,a),red) for a in polylines]
 #geometries += [Shape(Translated (10,10,0,triangulation))]
+   
+   polylines = Skeleton.getChordalAxisTransform(shape4,filter)
+   triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape4)
+   triangulation.colorList = [Color4(randint(0,255),randint(0,255),randint(0,255),255) for i in xrange(len(triangulation.indexList))]#colors
+   triangulation.colorPerVertex = False
+   triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+   geometries += [Shape(Translated (10,-10,0,a),red) for a in polylines]
+#geometries += [Shape(Translated (10,-10,0,triangulation))]
+   
+   # premier huit
+   polylines = Skeleton.getChordalAxisTransform(shape5,filter)
+   triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape5)
+   triangulation.colorList = colors
+   triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+   geometries += [Shape(Translated (0,0,0,a),red) for a in polylines]
+   #geometries += [Shape(Translated (0,0,0,triangulation),blue)]
 
-polylines = Skeleton.getChordalAxisTransform(shape4,filter)
-triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape4)
-triangulation.colorList = [Color4(randint(0,255),randint(0,255),randint(0,255),255) for i in xrange(len(triangulation.indexList))]#colors
-triangulation.colorPerVertex = False
-#triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
-#geometries += [Shape(Translated (10,-10,0,a),red) for a in polylines]
-geometries += [Shape(Translated (10,-10,0,triangulation))]
 
-polylines = Skeleton.getChordalAxisTransform(shape5,filter)
-triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape5)
-triangulation.colorList = colors
-triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
-#geometries += [Shape(Translated (-10,10,0,a),red) for a in polylines]
-geometries += [Shape(Translated (-10,10,0,triangulation),blue)]
-
+print "ok on va faire le CAT !!!"   
 polylines = Skeleton.getChordalAxisTransform(shape6,filter)
-triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape6)
-triangulation.colorList = colors
-triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+#triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape6)
+#triangulation.colorList = colors
+#triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
 geometries += [Shape(Translated (10,0,0,a),red) for a in polylines]
 #geometries += [Shape(Translated (10,0,0,triangulation))]
+
+if True:   
+# deuxieme huit
+   polylines = Skeleton.getChordalAxisTransform(shape7,filter)
+   triangulation = Skeleton.getDelaunayConstrained2DTriangulation(shape7)
+   triangulation.colorList = colors
+   triangulation.colorIndexList = [(0,1,2) for i in range(len(triangulation.indexList))]
+   geometries += [Shape(Translated (-10,0,0,a),red) for a in polylines]
+#geometries += [Shape(Translated (-10,0,0,triangulation))]
+
 
 scene = Scene (geometries)
 Viewer.display(scene)

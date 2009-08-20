@@ -1171,6 +1171,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
       //filterLoopsInShape(&cdt,&m_shape);
     }
 
+
   // We get back the result of the triangulation
   std::stack<SkelTrianglePtr> outOfTheShapeTriangles;
   CDT::Finite_vertices_iterator it;
@@ -1189,7 +1190,8 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 	      if (point_it == m_shape.end())
 		{
 		  shPtr1 = infiniteVertexPtr;
-		  if ((cdt.segment(ec)).target() != ((cdt.infinite_vertex())->point()))
+		  Point_2 ppp = (cdt.segment(ec)).target();
+		  if (cdt.is_infinite((V_handle)&ppp))
 		    {
 		      Vector2 vvv = toVec2((cdt.segment(ec)).target());
 		      shPtr1 = new ShapePoint(vvv, m_shape.size());
@@ -1205,7 +1207,8 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 	      if (point_it == m_shape.end())
 		{
 		  shPtr2 = infiniteVertexPtr;
-		  if ((cdt.segment(ec)).source() != ((cdt.infinite_vertex())->point()))
+		  Point_2 ppp = (cdt.segment(ec)).source();
+		  if (cdt.is_infinite((V_handle)&ppp))
 		    {
 		      Vector2 vvv = toVec2((cdt.segment(ec)).source());
 		      shPtr2 = new ShapePoint(vvv, m_shape.size());
@@ -1231,7 +1234,8 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 		  if (point_it == m_shape.end())
 		    {
 		      shPtr1 = infiniteVertexPtr; // infinite vertex
-		      if ((cdt.segment(ec_p)).target() != ((cdt.infinite_vertex())->point()))
+		      Point_2 ppp = (cdt.segment(ec_p)).target();
+		      if (cdt.is_infinite((V_handle)&ppp))
 			{
  			  Vector2 vvv = toVec2((cdt.segment(ec_p)).target());
 			  shPtr1 = new ShapePoint(vvv, m_shape.size());
@@ -1247,7 +1251,8 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 		  if (point_it == m_shape.end())
 		    {
 		      shPtr2 = infiniteVertexPtr;
-		      if ((cdt.segment(ec_p)).source() != ((cdt.infinite_vertex())->point()))
+		      Point_2 ppp = (cdt.segment(ec_p)).source();
+		      if (cdt.is_infinite((V_handle)&ppp))
 			{
 			  Vector2 vvv = toVec2((cdt.segment(ec_p)).source());
 			  shPtr2 = new ShapePoint(vvv, m_shape.size());
@@ -1283,7 +1288,8 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 			  if (point_it == m_shape.end())
 			    {
 			      shPtr1 = infiniteVertexPtr; // infinite vertex
-			      if ((cdt.segment(ec_opp2)).target() != ((cdt.infinite_vertex())->point()))
+			      Point_2 ppp = (cdt.segment(ec_opp2)).target();
+			      if (cdt.is_infinite((V_handle)&ppp)) 
 				{
 				  Vector2 vvv = toVec2((cdt.segment(ec_opp2)).target());
 				  shPtr1 = new ShapePoint(vvv, m_shape.size());
@@ -1299,7 +1305,8 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 			  if (point_it == m_shape.end())
 			    {
 			      shPtr2 = infiniteVertexPtr;
-			      if ((cdt.segment(ec_opp2)).source() != ((cdt.infinite_vertex())->point()))
+			      Point_2 ppp = (cdt.segment(ec_opp2)).source();
+			      if (cdt.is_infinite((V_handle)&ppp))
 				{
 				  Vector2 vvv = toVec2((cdt.segment(ec_opp2)).source());
 				  shPtr2 = new ShapePoint(vvv, m_shape.size());
@@ -3035,7 +3042,13 @@ TriangleSetPtr PGL::Skeleton::getTriangleSet()
   for (it = m_allTriangles.begin(); it != m_allTriangles.end(); it ++)
     {
       Index3 i;
-      i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e1->m_p2->m_ind, (*it)->m_e2->m_p2->m_ind);
+      Vector2 e1 = (*it)->m_e1->m_p1->m_vec - (*it)->m_e1->m_p2->m_vec ;
+      Vector2 e2 = (*it)->m_e1->m_p1->m_vec - (*it)->m_e2->m_p2->m_vec ;
+      float cp = e1.x()*e2.y() - e2.x() * e1.y();
+      if (cp > 0) 
+	i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e1->m_p2->m_ind, (*it)->m_e2->m_p2->m_ind);
+      else
+	i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e2->m_p2->m_ind, (*it)->m_e1->m_p2->m_ind);
       indices_list.push_back(i);
     }
   Index3ArrayPtr indices = new Index3Array(indices_list.begin(), indices_list.end()); 
@@ -3266,12 +3279,10 @@ std::list<Polyline2DPtr>
 PGL::Skeleton::getChordalAxisTransform
 (const Polyline2DPtr discretizedShape, const double areaMaxFilter)
 {
-  std::cout << "getChordalAxisTransform" << std::endl;
   filterAndHomogenize(*(discretizedShape->getPointList()));
   Skeleton skel(discretizedShape);
   skel.getChordalAxisTransform();
   skel.filterLittleBranchesOnBranchAreaSize(areaMaxFilter);
-  std::cout << "fin getChordalAxisTransform" << std::endl;
   return SkelBranch::getListPolylines(skel.m_skeleton);
 }
 
@@ -3284,7 +3295,6 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 				      std::list<Vector2> * bump_tgts,
 				      std::list<Polyline2DPtr> * bumps)
 {
-  std::cout << "getSkeletonInformation" << std::endl;
   filterAndHomogenize(*(discretizedShape->getPointList()));
   Skeleton skel(discretizedShape);
   skel.getChordalAxisTransform();
@@ -3334,7 +3344,6 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 	}
       bumps->push_back((*it)->getPolylineForAssociatedBump());
     }
-  std::cout << "fin getSkeletonInformation" << std::endl;
   return SkelBranch::getListPolylines(skel.m_skeleton);
 }
 
