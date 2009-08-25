@@ -271,7 +271,7 @@ def create_random_scene():
     return s
 
 def test_create_random_objects():
-    s = create_default_scene()
+    s = create_random_scene()
     d = Discretizer()
     s.apply(d)
     
@@ -282,5 +282,5 @@ def view_create_random_objects(nb = 5):
     Viewer.stop()
     
 if __name__ == '__main__':
-    view_create_random_objects()
+    test_create_random_objects()
         
