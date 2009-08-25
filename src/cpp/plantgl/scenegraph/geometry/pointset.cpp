@@ -41,9 +41,14 @@ TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+const uchar_t PointSet::DEFAULT_WIDTH = 1;
+
+/* ----------------------------------------------------------------------- */
+
 
 PointSet::Builder::Builder( ) :
-  ExplicitModel::Builder(){
+  ExplicitModel::Builder(),
+  Width(0){
 }
 
 
@@ -54,7 +59,7 @@ PointSet::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet::Builder::build( ) const {
   if (isValid())
-    return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr()));
+	  return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr(),Width?*Width:DEFAULT_WIDTH));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -62,6 +67,7 @@ SceneObjectPtr PointSet::Builder::build( ) const {
 
 void PointSet::Builder::destroy( ) {
   EMDestroy();
+  if (Width) delete Width;
 }
 
 
@@ -84,11 +90,11 @@ bool PointSet::Builder::isValid( ) const {
 
 
 PointSet::PointSet( ) :
-  ExplicitModel(){
+  ExplicitModel(),__width(DEFAULT_WIDTH){
 }
 
-PointSet::PointSet( const Point3ArrayPtr& points, const Color4ArrayPtr& colors ) :
-  ExplicitModel(points,colors){
+PointSet::PointSet( const Point3ArrayPtr& points, const Color4ArrayPtr& colors, uchar_t width ) :
+  ExplicitModel(points,colors),__width(width){
   GEOM_ASSERT(isValid());
 }
 
@@ -149,7 +155,8 @@ PointSet::copy(DeepCopier& copier) const
 
 PointSet2D::Builder::Builder( ) :
   PlanarModel::Builder(),
-  PointList(0) {
+  PointList(0),
+  Width(0){
 }
 
 
@@ -160,7 +167,7 @@ PointSet2D::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet2D::Builder::build( ) const {
   if (isValid())
-    return SceneObjectPtr(new PointSet2D(*PointList));
+	  return SceneObjectPtr(new PointSet2D(*PointList,Width?*Width:PointSet::DEFAULT_WIDTH));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -168,6 +175,7 @@ SceneObjectPtr PointSet2D::Builder::build( ) const {
 
 void PointSet2D::Builder::destroy( ) {
   if (PointList) delete PointList;
+  if (Width) delete Width;
 }
 
 
@@ -190,15 +198,16 @@ bool PointSet2D::Builder::isValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 
-PointSet2D::PointSet2D( const Point2ArrayPtr& points ) :
+PointSet2D::PointSet2D( const Point2ArrayPtr& points, uchar_t width ) :
   PlanarModel(),
-  __pointList(points) {
+  __pointList(points), __width(width) {
   GEOM_ASSERT(isValid());
 }
 
 PointSet2D::PointSet2D(  ) :
   PlanarModel(),
-  __pointList() {
+  __pointList(),
+  __width(PointSet::DEFAULT_WIDTH) {
 }
 
 PointSet2D::~PointSet2D( ) {

@@ -106,13 +106,14 @@ void export_NurbsCurve()
 	  "It is defined from a list of control points Pi, a knots vector and a degree p."
 	  "It uses the parametric equation C(u) = Sum(i=0,n)(Ri,p(u)Pi with u in [a,b]"
       "where the Ri,p(u) are p-th degree rational basis functions defined on the knot vector.", 
-	  init<Point4ArrayPtr, optional< uint_t, RealArrayPtr, uint_t > >(
+	  init<Point4ArrayPtr, optional< uint_t, RealArrayPtr, uint_t, uchar_t > >(
 	  "NurbsCurve(ctrlPointList[,degree,knotList,strides])",(
 		  bp::arg("ctrlPointList"),
 		  bp::arg("degree")  = NurbsCurve::DEFAULT_NURBS_DEGREE,
 		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
-		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE)) )
-	 .def(init<Point4ArrayPtr,  RealArrayPtr, optional< uint_t, uint_t > >())
+		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE,
+		  bp::arg("width") =  NurbsCurve::DEFAULT_WIDTH)) )
+	 .def(init<Point4ArrayPtr,  RealArrayPtr, optional< uint_t, uint_t, uchar_t > >())
      .DEF_PGLBASE(NurbsCurve)
      .DEC_BT_NR_PROPERTY_WDV(degree,NurbsCurve,Degree,uint_t,DEFAULT_NURBS_DEGREE)
      .DEC_PTR_PROPERTY_WD(knotList,NurbsCurve,KnotList,RealArrayPtr)
@@ -254,13 +255,14 @@ void export_NurbsCurve2D()
 {
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
      ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree. See NurbsCurve.",
-	   init<Point3ArrayPtr,  optional<uint_t, RealArrayPtr, uint_t > >(
+	   init<Point3ArrayPtr,  optional<uint_t, RealArrayPtr, uint_t, uchar_t > >(
 	   "NurbsCurve2D(ctrlPointList[,degree,knotList,strides])",
 		 ( bp::arg("ctrlPointList"),
 		  bp::arg("degree")  = NurbsCurve::DEFAULT_NURBS_DEGREE,
 		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
-		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE)) )
-	 .def(init<Point3ArrayPtr, RealArrayPtr, optional<  uint_t, uint_t > >(args("ctrlPointList","knotList","degree","strides")) )
+		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE,
+		  bp::arg("width") = NurbsCurve2D::DEFAULT_WIDTH)) )
+	 .def(init<Point3ArrayPtr, RealArrayPtr, optional<  uint_t, uint_t, uchar_t > >(args("ctrlPointList","knotList","degree","strides","width")) )
      .DEF_PGLBASE(NurbsCurve2D)
      .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )

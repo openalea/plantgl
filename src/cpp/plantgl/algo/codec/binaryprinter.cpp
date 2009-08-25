@@ -442,7 +442,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(2.0f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(2.1f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -978,11 +978,24 @@ bool BinaryPrinter::process( BezierCurve * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
   GEOM_PRINT_BEGIN(BezierCurve,bezierCurve);
 
+  uchar_t _default(0);
+  if (bezierCurve->isStrideToDefault())
+      _default =1;
+
+  if(__tokens.getVersion() >= 2.1f){
+	if (bezierCurve->isWidthToDefault()) _default +=2;
+  }
+  writeUchar(_default);
+
   if (! bezierCurve->isStrideToDefault()){
-      writeUchar(0);
       GEOM_PRINT_FIELD(bezierCurve,Stride,UINT32);
   }
-  else writeUchar(1);
+
+  if(__tokens.getVersion() >= 2.1f){
+	if (! bezierCurve->isWidthToDefault()){
+      GEOM_PRINT_FIELD(bezierCurve,Width,UCHAR);
+    }
+  }
 
   GEOM_PRINT_FIELD_ARRAY(bezierCurve,CtrlPointList,VECTOR4);
 
@@ -1440,6 +1453,9 @@ bool BinaryPrinter::process( NurbsCurve * nurbsCurve ) {
       _default += 2;
   if (nurbsCurve->isStrideToDefault())
       _default += 4;
+  if(__tokens.getVersion() >= 2.1f){
+	if (nurbsCurve->isWidthToDefault()) _default +=8;
+  }
   writeUchar(_default);
 
   if (! nurbsCurve->isDegreeToDefault())
@@ -1451,6 +1467,11 @@ bool BinaryPrinter::process( NurbsCurve * nurbsCurve ) {
   if (! nurbsCurve->isStrideToDefault())
     GEOM_PRINT_FIELD(nurbsCurve,Stride,UINT32);
 
+  if(__tokens.getVersion() >= 2.1f){
+	if (! nurbsCurve->isWidthToDefault()){
+      GEOM_PRINT_FIELD(nurbsCurve,Width,UCHAR);
+    }
+  }
   GEOM_PRINT_FIELD_ARRAY(nurbsCurve,CtrlPointList,VECTOR4);
 
   return true;
@@ -1586,6 +1607,9 @@ bool BinaryPrinter::process( PointSet * pointSet ) {
 
   GEOM_PRINT_FIELD_ARRAY(pointSet,PointList,VECTOR3);
   GEOM_PRINT_FIELD_ARRAY(pointSet,ColorList,COLOR4);
+  if(__tokens.getVersion() >= 2.1f){
+      GEOM_PRINT_FIELD(pointSet,Width,UCHAR);
+  }
 
   return true;
 }
@@ -1600,6 +1624,9 @@ bool BinaryPrinter::process( Polyline * polyline ) {
 
   GEOM_PRINT_FIELD_ARRAY(polyline,PointList,VECTOR3);
   GEOM_PRINT_FIELD_ARRAY(polyline,ColorList,COLOR4);
+  if(__tokens.getVersion() >= 2.1f){
+      GEOM_PRINT_FIELD(polyline,Width,UCHAR);
+  }
 
   return true;
 }
@@ -1977,11 +2004,24 @@ bool BinaryPrinter::process( BezierCurve2D * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
   GEOM_PRINT_BEGIN(BezierCurve2D,bezierCurve);
 
+  uchar_t _default(0);
+  if (bezierCurve->isStrideToDefault())
+      _default =1;
+
+  if(__tokens.getVersion() >= 2.1f){
+	if (bezierCurve->isWidthToDefault()) _default +=2;
+  }
+  writeUchar(_default);
+
   if (! bezierCurve->isStrideToDefault()){
-      writeUchar(0);
       GEOM_PRINT_FIELD(bezierCurve,Stride,UINT32);
   }
-  else  writeUchar(1);
+
+  if(__tokens.getVersion() >= 2.1f){
+	if (! bezierCurve->isWidthToDefault()){
+      GEOM_PRINT_FIELD(bezierCurve,Width,UCHAR);
+    }
+  }
 
   GEOM_PRINT_FIELD_ARRAY(bezierCurve,CtrlPointList,VECTOR3);
 
@@ -2027,6 +2067,9 @@ bool BinaryPrinter::process( NurbsCurve2D * nurbsCurve ) {
       _default += 2;
   if (nurbsCurve->isStrideToDefault())
       _default += 4;
+  if(__tokens.getVersion() >= 2.1f){
+	if (nurbsCurve->isWidthToDefault()) _default +=8;
+  }
   writeUchar(_default);
 
   if (! nurbsCurve->isDegreeToDefault())
@@ -2038,6 +2081,11 @@ bool BinaryPrinter::process( NurbsCurve2D * nurbsCurve ) {
   if (! nurbsCurve->isStrideToDefault())
     GEOM_PRINT_FIELD(nurbsCurve,Stride,UINT32);
 
+  if(__tokens.getVersion() >= 2.1f){
+	if (! nurbsCurve->isWidthToDefault()){
+      GEOM_PRINT_FIELD(nurbsCurve,Width,UCHAR);
+    }
+  }
   GEOM_PRINT_FIELD_ARRAY(nurbsCurve,CtrlPointList,VECTOR3);
 
   return true;
@@ -2051,6 +2099,7 @@ bool BinaryPrinter::process( PointSet2D * pointSet ) {
   GEOM_PRINT_BEGIN(PointSet2D,pointSet);
 
   GEOM_PRINT_FIELD_ARRAY(pointSet,PointList,VECTOR2);
+  GEOM_PRINT_FIELD(pointSet,Width,UCHAR);
 
   return true;
 }
@@ -2064,6 +2113,7 @@ bool BinaryPrinter::process( Polyline2D * polyline ) {
   GEOM_PRINT_BEGIN(Polyline2D,polyline);
 
   GEOM_PRINT_FIELD_ARRAY(polyline,PointList,VECTOR2);
+  GEOM_PRINT_FIELD(polyline,Width,UCHAR);
 
   return true;
 }

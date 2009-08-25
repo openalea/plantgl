@@ -629,6 +629,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokXSpacing
 //%token TokYDim
 %token TokYSpacing
+%token TokWidth
 
 // %token TokRotation
 %token TokAxisRotation
@@ -1613,6 +1614,9 @@ BezierCurveFieldList:
  | BezierCurveFieldList TokStride Uint32 {
      GEOM_PARSER_SET_FIELD($1,Stride,$3); $$=$1;
    }
+ | BezierCurveFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
+   }
  | BezierCurveFieldList TokCtrlPointList CtrlPointArray {
      GEOM_PARSER_SET_FIELD($1,CtrlPointList,$3); $$=$1;
    }
@@ -1624,6 +1628,9 @@ BezierCurve2DFieldList:
    }
  | BezierCurve2DFieldList TokStride Uint32 {
      GEOM_PARSER_SET_FIELD($1,Stride,$3); $$=$1;
+   }
+ | BezierCurve2DFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
    }
  | BezierCurve2DFieldList TokCtrlPointList CtrlPointArray2D {
      GEOM_PARSER_SET_FIELD($1,CtrlPointList,$3); $$=$1;
@@ -1857,6 +1864,9 @@ NurbsCurveFieldList:
  | NurbsCurveFieldList TokStride Uint32 {
      GEOM_PARSER_SET_FIELD($1,Stride,$3); $$=$1;
    }
+ | NurbsCurveFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
+   }
  | NurbsCurveFieldList TokCtrlPointList CtrlPointArray {
      GEOM_PARSER_SET_FIELD($1,CtrlPointList,$3); $$=$1;
    }
@@ -1871,6 +1881,9 @@ NurbsCurve2DFieldList:
    }
  | NurbsCurve2DFieldList TokStride Uint32 {
      GEOM_PARSER_SET_FIELD($1,Stride,$3); $$=$1;
+   }
+ | NurbsCurve2DFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
    }
  | NurbsCurve2DFieldList TokCtrlPointList CtrlPointArray2D {
      GEOM_PARSER_SET_FIELD($1,CtrlPointList,$3); $$=$1;
@@ -1950,11 +1963,17 @@ PointSetFieldList:
  | PointSetFieldList TokColorList Color4Array {
      GEOM_PARSER_SET_FIELD($1,ColorList,$3);  $$=$1;
    }
+ | PointSetFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
+   }
  | { $$ = new PointSet::Builder; };
 
 PointSet2DFieldList:
    PointSet2DFieldList TokPointList Point2Array {
      GEOM_PARSER_SET_FIELD($1,PointList,$3);  $$=$1;
+   }
+ | PointSet2DFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
    }
  | { $$ = new PointSet2D::Builder; };
 
@@ -1965,11 +1984,17 @@ PolylineFieldList:
  | PolylineFieldList TokColorList Color4Array {
      GEOM_PARSER_SET_FIELD($1,ColorList,$3);  $$=$1;
    }
+ | PolylineFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
+   }
  | { $$ = new Polyline::Builder; };
 
 Polyline2DFieldList:
    Polyline2DFieldList TokPointList Point2Array {
      GEOM_PARSER_SET_FIELD($1,PointList,$3);  $$=$1;
+   }
+ | Polyline2DFieldList TokWidth Uchar {
+     GEOM_PARSER_SET_FIELD($1,Width,$3); $$=$1;
    }
  | { $$ = new Polyline2D::Builder; };
 

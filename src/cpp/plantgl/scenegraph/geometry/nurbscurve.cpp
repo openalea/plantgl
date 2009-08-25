@@ -86,21 +86,19 @@ SceneObjectPtr NurbsCurve::Builder::build( ) const {
     if( ! KnotList ){
       _knots = new RealArrayPtr(NurbsCurve::defaultKnotList((*CtrlPointList)->size(), _degree));
 
-      SceneObjectPtr myNurbsPtr(new NurbsCurve(  *CtrlPointList , *_knots ,_degree, (Stride ? *Stride : DEFAULT_STRIDE) ));
+      SceneObjectPtr myNurbsPtr(new NurbsCurve(  *CtrlPointList , *_knots ,_degree, (Stride ? *Stride : DEFAULT_STRIDE),  (Width ? *Width : DEFAULT_WIDTH)));
       delete _knots;
       return myNurbsPtr;
     }
-    else return  SceneObjectPtr(new NurbsCurve(  *CtrlPointList , *KnotList,_degree,(Stride ? *Stride : DEFAULT_STRIDE) ) );
+    else return  SceneObjectPtr(new NurbsCurve(  *CtrlPointList , *KnotList,_degree,(Stride ? *Stride : DEFAULT_STRIDE),  (Width ? *Width : DEFAULT_WIDTH) ) );
   }
   return SceneObjectPtr();
 }
 
 
 void NurbsCurve::Builder::destroy( ) {
-  if (CtrlPointList) delete CtrlPointList;
+  BCdestroy();
   if (KnotList) delete KnotList;
-  if (Degree) delete Degree;
-  if (Stride) delete Stride;
 }
 
 
@@ -196,8 +194,9 @@ NurbsCurve::NurbsCurve(  ) :
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          const RealArrayPtr  knots,
                          uint_t degree,
-                         uint_t stride ) :
-  BezierCurve(ctrlPoints, stride),
+                         uint_t stride, 
+		                 uchar_t width ) :
+  BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
   {
@@ -209,8 +208,9 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride ) :
-  BezierCurve(ctrlPoints, stride),
+                         uint_t stride, 
+		                 uchar_t width ) :
+  BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
   {
@@ -222,8 +222,9 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point3ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride ) :
-  BezierCurve(ctrlPoints, stride),
+                         uint_t stride, 
+		                 uchar_t width ) :
+  BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
   {
@@ -724,11 +725,11 @@ SceneObjectPtr NurbsCurve2D::Builder::build( ) const {
 
     if( ! KnotList ){
       _knots = new RealArrayPtr(NurbsCurve::defaultKnotList((*CtrlPointList)->size(),_degree));
-      SceneObjectPtr myNurbsPtr(new NurbsCurve2D(  *CtrlPointList , *_knots , _degree, (Stride ? *Stride : NurbsCurve::DEFAULT_STRIDE) ));
+      SceneObjectPtr myNurbsPtr(new NurbsCurve2D(  *CtrlPointList , *_knots , _degree, (Stride ? *Stride : NurbsCurve::DEFAULT_STRIDE), (Width ? *Width : DEFAULT_WIDTH) ));
       delete _knots;
       return myNurbsPtr;
     }
-    else return  SceneObjectPtr(new NurbsCurve2D(  *CtrlPointList , *KnotList, _degree, (Stride ? *Stride : NurbsCurve::DEFAULT_STRIDE) ) );
+    else return  SceneObjectPtr(new NurbsCurve2D(  *CtrlPointList , *KnotList, _degree, (Stride ? *Stride : NurbsCurve::DEFAULT_STRIDE), (Width ? *Width : DEFAULT_WIDTH) ) );
   }
   return SceneObjectPtr();
 }
@@ -739,6 +740,7 @@ void NurbsCurve2D::Builder::destroy( ) {
   if (KnotList) delete KnotList;
   if (Degree) delete Degree;
   if (Stride) delete Stride;
+  if (Width) delete Width;
 }
 
 
@@ -828,8 +830,8 @@ NurbsCurve2D::NurbsCurve2D(   ) :
     __knotList(){
 }
 
-NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPtr  knots, uint_t degree, uint_t stride ) :
-  BezierCurve2D(ctrlPoints, stride),
+NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPtr  knots, uint_t degree, uint_t stride, uchar_t width ) :
+  BezierCurve2D(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
   {
@@ -838,8 +840,8 @@ NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, const RealArrayPt
   GEOM_ASSERT(isValid());
 }
 
-NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, uint_t degree, const RealArrayPtr  knots, uint_t stride ) :
-  BezierCurve2D(ctrlPoints, stride),
+NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, uint_t degree, const RealArrayPtr  knots, uint_t stride , uchar_t width ) :
+  BezierCurve2D(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
   {
@@ -848,8 +850,8 @@ NurbsCurve2D::NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, uint_t degree, co
   GEOM_ASSERT(isValid());
 }
 
-  NurbsCurve2D::NurbsCurve2D(  const Point2ArrayPtr& ctrlPoints, uint_t degree, const RealArrayPtr  knots, uint_t stride ) :
-  BezierCurve2D(ctrlPoints, stride),
+  NurbsCurve2D::NurbsCurve2D(  const Point2ArrayPtr& ctrlPoints, uint_t degree, const RealArrayPtr  knots, uint_t stride, uchar_t width ) :
+  BezierCurve2D(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
   {

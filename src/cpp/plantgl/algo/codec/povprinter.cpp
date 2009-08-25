@@ -817,7 +817,9 @@ bool PovPrinter::process( Polyline * polyline ) {
     GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
     __geomStream << ", ";
     GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
-    __geomStream << ", LineWidth" << endl;
+    __geomStream << ", LineWidth";
+	if(!polyline->isWidthToDefault()) __geomStream << "*" << polyline->getWidth();
+	__geomStream << endl;
 	GEOM_POVPRINT_TEXTURE;
 	GEOM_POVPRINT_END_(__geomStream);
 	}

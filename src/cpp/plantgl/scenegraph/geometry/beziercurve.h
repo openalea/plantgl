@@ -85,6 +85,9 @@ public:
     /// A pointer to the \b Stride field.
     uint_t * Stride;
 
+    /// A pointer to the \b Width field.
+    uchar_t * Width;
+
     /// Constructor.
     Builder( );
 
@@ -94,6 +97,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
+    void BCdestroy( );
 
     virtual bool isValid( ) const;
 
@@ -109,8 +113,8 @@ public:
       - the number of \e control points must be equal to \e degree + 1.
       \post
       - \e self is valid. */
-  BezierCurve( const Point4ArrayPtr& ctrlPoints ,uint_t stride = DEFAULT_STRIDE );
-  BezierCurve( const Point3ArrayPtr& ctrlPoints ,uint_t stride = DEFAULT_STRIDE );
+  BezierCurve( const Point4ArrayPtr& ctrlPoints, uint_t stride = DEFAULT_STRIDE, uchar_t width = DEFAULT_WIDTH);
+  BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride = DEFAULT_STRIDE, uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~BezierCurve( ); 
@@ -231,8 +235,8 @@ public:
       - the number of \e control points must be equal to \e degree + 1.
       \post
       - \e self is valid. */
-  BezierCurve2D( const Point3ArrayPtr& ctrlPoints ,uint_t stride = BezierCurve::DEFAULT_STRIDE );
-  BezierCurve2D( const Point2ArrayPtr& ctrlPoints ,uint_t stride = BezierCurve::DEFAULT_STRIDE );
+  BezierCurve2D( const Point3ArrayPtr& ctrlPoints, uint_t stride = BezierCurve::DEFAULT_STRIDE, uchar_t width = DEFAULT_WIDTH);
+  BezierCurve2D( const Point2ArrayPtr& ctrlPoints, uint_t stride = BezierCurve::DEFAULT_STRIDE, uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~BezierCurve2D( ) ;

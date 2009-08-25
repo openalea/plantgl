@@ -119,7 +119,7 @@
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				WarnAsError="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

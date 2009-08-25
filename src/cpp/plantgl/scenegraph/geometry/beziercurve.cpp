@@ -55,7 +55,8 @@ BezierCurve::Builder::Builder( ) :
     ParametricModel::Builder(),
     CtrlPointList(0),
     Degree(0),
-    Stride(0){
+    Stride(0),
+	Width(0){
 }
 
 
@@ -69,16 +70,23 @@ SceneObjectPtr BezierCurve::Builder::build( ) const {
 #ifdef GEOM_DEBUG
         if(!Degree)cout << "Degree value assign to " << ((*CtrlPointList)->size() - 1) << endl;
 #endif
-        return SceneObjectPtr(new BezierCurve(*CtrlPointList,(Stride ? *Stride : DEFAULT_STRIDE)));
+        return SceneObjectPtr(new BezierCurve(*CtrlPointList,
+			                                  (Stride ? *Stride : DEFAULT_STRIDE),
+											  (Width ? *Width : DEFAULT_WIDTH)));
     }
     return SceneObjectPtr();
 }
 
 
 void BezierCurve::Builder::destroy( ) {
+  BCdestroy();
+}
+
+void BezierCurve::Builder::BCdestroy( ) {
   if (CtrlPointList) delete CtrlPointList;
   if (Degree) delete Degree;
   if (Stride) delete Stride;
+  if (Width) delete Width;
 }
 
 
@@ -130,20 +138,20 @@ bool BezierCurve::Builder::isValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 BezierCurve::BezierCurve() :
-    ParametricModel(),
+    ParametricModel(), LineicModel(),
     __ctrlPointList(),
     __stride(DEFAULT_STRIDE){
 }
 
-BezierCurve::BezierCurve( const Point4ArrayPtr& ctrlPoints, uint_t stride ) :
-    ParametricModel(),
+BezierCurve::BezierCurve( const Point4ArrayPtr& ctrlPoints, uint_t stride, uchar_t width ) :
+    ParametricModel(), LineicModel(width),
     __ctrlPointList(ctrlPoints),
     __stride(stride){
     GEOM_ASSERT(isValid());
 }
 
-BezierCurve::BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride ) :
-    ParametricModel(),
+BezierCurve::BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride, uchar_t width ) :
+    ParametricModel(), LineicModel(width),
     __ctrlPointList(),
     __stride(stride){
 	if (ctrlPoints) __ctrlPointList = Point4ArrayPtr(new Point4Array(*ctrlPoints,1));
@@ -315,7 +323,9 @@ BezierCurve2D::Builder::~Builder( ) {
 
 SceneObjectPtr BezierCurve2D::Builder::build( ) const {
     if (isValid()){
-        return SceneObjectPtr(new BezierCurve2D(*CtrlPointList,(Stride ? *Stride : BezierCurve::DEFAULT_STRIDE)));
+        return SceneObjectPtr(new BezierCurve2D(*CtrlPointList,
+												(Stride ? *Stride : BezierCurve::DEFAULT_STRIDE),
+												(Width ? *Width : DEFAULT_WIDTH)));
     }
     return SceneObjectPtr();
 }
@@ -325,6 +335,7 @@ void BezierCurve2D::Builder::destroy( ) {
   if (CtrlPointList) delete CtrlPointList;
   if (Degree) delete Degree;
   if (Stride) delete Stride;
+  if (Width) delete Width;
 }
 
 
@@ -374,15 +385,15 @@ BezierCurve2D::BezierCurve2D( ) :
     GEOM_ASSERT(isValid());
 }
 
-BezierCurve2D::BezierCurve2D( const Point3ArrayPtr& ctrlPoints, uint_t stride ) :
-    Curve2D(),
+BezierCurve2D::BezierCurve2D( const Point3ArrayPtr& ctrlPoints, uint_t stride, uchar_t width ) :
+    Curve2D(width),
     __ctrlPointList(ctrlPoints),
     __stride(stride){
     GEOM_ASSERT(isValid());
 }
 
-BezierCurve2D::BezierCurve2D( const Point2ArrayPtr& ctrlPoints, uint_t stride ) :
-    Curve2D(),
+BezierCurve2D::BezierCurve2D( const Point2ArrayPtr& ctrlPoints, uint_t stride, uchar_t width  ) :
+    Curve2D(width),
     __ctrlPointList(),
     __stride(stride){
 	if (ctrlPoints) __ctrlPointList = Point3ArrayPtr(new Point3Array(*ctrlPoints,1));

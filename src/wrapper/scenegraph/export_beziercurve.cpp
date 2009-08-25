@@ -42,6 +42,7 @@
 #include <sstream>
 
 using namespace boost::python;
+#define bp boost::python
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -88,8 +89,9 @@ void export_BezierCurve()
 	"It is defined by a degree n and a list of control Points Pi\n"
 	"and using the parametric equation C(u) = Sum(i=0,n)(Bi,n(u)Pi) with u in [0,1]\n"
 	"where Bi,n(u) are the classical n-th degree Bernstein polynomials.",
-	init<Point3ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride") ) )
-    .def(init< Point4ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points.",args("ctrlPointList","stride")))
+	init<Point3ArrayPtr, optional< uint_t, uchar_t > >(args("ctrlPointList","stride","width") ) )
+    .def(init< Point4ArrayPtr, optional< uint_t, uchar_t > >("Create a BezierCurve from a list of 3d points.",
+	(bp::arg("ctrlPointList"),bp::arg("stride")=BezierCurve::DEFAULT_STRIDE,bp::arg("width")=BezierCurve::DEFAULT_WIDTH)))
     .def( "__repr__", gbc_repr )
     .DEC_BT_NR_PROPERTY_WDV(stride,BezierCurve,Stride,uint_t,DEFAULT_STRIDE)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve,CtrlPointList,Point4ArrayPtr)
@@ -139,8 +141,9 @@ void export_BezierCurve2D()
 {
    class_<BezierCurve2D, BezierCurve2DPtr, bases<Curve2D>, boost::noncopyable>
     ( "BezierCurve2D", "BezierCurve2D describes rational and non rational 2D Bezier curve.\n It is represented by a degree and a list of control Points.\n See BezierCurve.", 
-	  init<Point2ArrayPtr, optional< uint_t > >(args("ctrlPointList","stride")) )
-    .def(init< Point3ArrayPtr, optional< uint_t > >("Create a BezierCurve from a list of 3d points.",args("ctrlPointList","stride")))
+	  init<Point2ArrayPtr, optional< uint_t,uchar_t > >(args("ctrlPointList","stride","width")) )
+    .def(init< Point3ArrayPtr, optional< uint_t, uchar_t > >("Create a BezierCurve from a list of 3d points.",
+	(bp::arg("ctrlPointList"),bp::arg("stride")=BezierCurve::DEFAULT_STRIDE,bp::arg("width")=BezierCurve2D::DEFAULT_WIDTH)))
     .def( "__repr__", gbc2_repr )
     .DEC_BT_NR_PROPERTY_WD(stride,BezierCurve2D,Stride,uint_t)
     .DEC_PTR_PROPERTY(ctrlPointList,BezierCurve2D,CtrlPointList,Point3ArrayPtr)

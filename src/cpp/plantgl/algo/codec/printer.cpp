@@ -643,6 +643,9 @@ bool Printer::process( BezierCurve * bezierCurve ) {
   if (! bezierCurve->isStrideToDefault())
     GEOM_PRINT_FIELD(__geomStream,bezierCurve,Stride,INTEGER);
 
+  if (! bezierCurve->isWidthToDefault())
+    GEOM_PRINT_FIELD(__geomStream,bezierCurve,Width,INTEGER);
+
   GEOM_PRINT_END(__geomStream);
   return true;
 }
@@ -980,6 +983,9 @@ bool Printer::process( NurbsCurve * nurbsCurve ) {
   if (! nurbsCurve->isStrideToDefault())
     GEOM_PRINT_FIELD(__geomStream,nurbsCurve,Stride,INTEGER);
 
+  if (! nurbsCurve->isWidthToDefault())
+    GEOM_PRINT_FIELD(__geomStream,nurbsCurve,Width,INTEGER);
+
   GEOM_PRINT_END(__geomStream);
   return true;
 }
@@ -1077,6 +1083,9 @@ bool Printer::process( PointSet * pointSet ) {
   if(! pointSet->isColorListToDefault())
 	GEOM_PRINT_FIELD_ARRAY(__geomStream,pointSet,ColorList,COLOR4);
 
+  if(! pointSet->isWidthToDefault())
+	GEOM_PRINT_FIELD(__geomStream,pointSet,Width,INTEGER);
+
   GEOM_PRINT_END(__geomStream);
   return true;
 }
@@ -1093,6 +1102,9 @@ bool Printer::process( Polyline * polyline ) {
 
   if(! polyline->isColorListToDefault())
 	GEOM_PRINT_FIELD_ARRAY(__geomStream,polyline,ColorList,COLOR4);
+
+  if(! polyline->isWidthToDefault())
+	GEOM_PRINT_FIELD(__geomStream,polyline,Width,INTEGER);
 
   GEOM_PRINT_END(__geomStream);
   return true;
@@ -1333,6 +1345,9 @@ bool Printer::process( BezierCurve2D * bezierCurve ) {
   if (! bezierCurve->isStrideToDefault())
     GEOM_PRINT_FIELD(__geomStream,bezierCurve,Stride,INTEGER);
 
+  if (! bezierCurve->isWidthToDefault())
+    GEOM_PRINT_FIELD(__geomStream,bezierCurve,Width,INTEGER);
+
   GEOM_PRINT_END(__geomStream);
   return true;
 }
@@ -1374,6 +1389,9 @@ bool Printer::process( NurbsCurve2D * nurbsCurve ) {
   if (! nurbsCurve->isStrideToDefault())
     GEOM_PRINT_FIELD(__geomStream,nurbsCurve,Stride,INTEGER);
 
+  if (! nurbsCurve->isWidthToDefault())
+    GEOM_PRINT_FIELD(__geomStream,nurbsCurve,Width,INTEGER);
+
   GEOM_PRINT_END(__geomStream);
   return true;
 }
@@ -1386,6 +1404,9 @@ bool Printer::process( PointSet2D * pointSet ) {
   GEOM_PRINT_BEGIN(__geomStream,"PointSet2D",pointSet);
 
   GEOM_PRINT_FIELD_ARRAY(__geomStream,pointSet,PointList,VECTOR2);
+
+  if (! pointSet->isWidthToDefault())
+    GEOM_PRINT_FIELD(__geomStream,pointSet,Width,INTEGER);
 
   GEOM_PRINT_END(__geomStream);
   return true;
@@ -1400,6 +1421,9 @@ bool Printer::process( Polyline2D * polyline ) {
   GEOM_PRINT_BEGIN(__geomStream,"Polyline2D",polyline);
 
   GEOM_PRINT_FIELD_ARRAY(__geomStream,polyline,PointList,VECTOR2);
+
+  if (! polyline->isWidthToDefault())
+    GEOM_PRINT_FIELD(__geomStream,polyline,Width,INTEGER);
 
   GEOM_PRINT_END(__geomStream);
   return true;

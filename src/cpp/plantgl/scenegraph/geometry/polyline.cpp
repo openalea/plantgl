@@ -143,6 +143,8 @@ Polyline::getStride() const{
 
 Vector3 Polyline::getPointAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+	if (fabs(u - getFirstKnot()) < GEOM_EPSILON) u = getFirstKnot();
+	else if (fabs(u - getLastKnot()) < GEOM_EPSILON) u = getLastKnot();
     real_t u1 = (int)u;
     if(u1 == u)return __pointList->getAt((uint_t)u1);
     else return ((__pointList->getAt((uint_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint_t)(u1+1)) * (u-u1));
@@ -351,6 +353,8 @@ Polyline2D::getStride() const{
 Vector2 
 Polyline2D::getPointAt(real_t u) const{
   GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+  if (fabs(u - getFirstKnot()) < GEOM_EPSILON) u = getFirstKnot();
+  else if (fabs(u - getLastKnot()) < GEOM_EPSILON) u = getLastKnot();
   real_t u1 = (int)u;
   if(u1 == u)return __pointList->getAt((uint_t)u1);
     else return ((__pointList->getAt((uint_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint_t)(u1+1)) * (u-u1));

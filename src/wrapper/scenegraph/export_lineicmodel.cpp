@@ -97,11 +97,6 @@ void export_LineicModel()
     .def( "getArcLengthToUMapping", &LineicModel::getArcLengthToUMapping,"getArcLengthToUMapping() : Return a function that gives for each arc length the u parametrization of the curve." )
     .def( "getUToArcLengthMapping", &LineicModel::getUToArcLengthMapping,"getUToArcLengthMapping() : Return a function that gives for each u the arc length parametrization of the curve." )
     .DEC_BT_NR_PROPERTY_WDV(width,LineicModel,Width,uchar_t,DEFAULT_WIDTH)
-    /*.add_property("width",//&py_get_lc_width, 
-						  &get_prop_bt_from_class<uchar_t,LineicModel,(uchar_t (LineicModel::*)()const)&LineicModel::getWidth>,
-	                      &set_prop_bt_from_class<uchar_t,LineicModel,&LineicModel::getWidth>) 
-	DEC_DEFAULTVALTEST(LineicModel,Width)
-	DEC_DEFAULTVAL(LineicModel,DEFAULT_WIDTH)*/
     ;
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();

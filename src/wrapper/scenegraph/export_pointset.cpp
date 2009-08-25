@@ -44,6 +44,7 @@
 #include <sstream>
 
 using namespace boost::python;
+#define bp boost::python
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -66,10 +67,12 @@ void export_PointSet()
 {
   class_< PointSet, PointSetPtr, bases<ExplicitModel>, boost::noncopyable>( "PointSet",
 	  "PointSet describes an explicit set of points",
-	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("PointSet(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
+	  init<Point3ArrayPtr, optional<Color4ArrayPtr, uchar_t> >("PointSet(Point3Array pointList, Color4Array colorList = None)",
+	  (bp::arg("pointList"),bp::arg("colorList")=Color4ArrayPtr(),bp::arg("width") = PointSet::DEFAULT_WIDTH))) 
     .DEF_PGLBASE(PointSet)
     .def( "__repr__", gps_repr )
     .def( "transform", &PointSet::transform )
+    .DEC_BT_NR_PROPERTY_WDV(width,PointSet,Width,uchar_t,DEFAULT_WIDTH)
     ;
   implicitly_convertible<PointSetPtr, ExplicitModelPtr>();
 }
@@ -88,10 +91,12 @@ void export_PointSet2D()
 {
   class_< PointSet2D, PointSet2DPtr, bases<PlanarModel>, boost::noncopyable>( 
 	  "PointSet2D", "PointSet2D describes an explicit set of 2D points. See PointSet.",
-	  init<Point2ArrayPtr>() )
+	  init<Point2ArrayPtr,optional<uchar_t> >("PointSet2D(pointList[,width])",(bp::arg("pointList"),bp::arg("width") = PointSet::DEFAULT_WIDTH)) )
     .DEF_PGLBASE(PointSet2D)
     .def( "__repr__", gps2d_repr )
 	.DEC_PTR_PROPERTY(pointList,PointSet2D,PointList,Point2ArrayPtr)
+    .DEC_BT_NR_PROPERTY(width,PointSet2D,Width,uchar_t)
+    DEC_DEFAULTVALTEST(PointSet2D,Width)
     ;
   implicitly_convertible<PointSet2DPtr, PlanarModelPtr>();
 }

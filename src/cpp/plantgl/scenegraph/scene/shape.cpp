@@ -156,7 +156,7 @@ void Shape::setComputedName(){
         if (! geometry->isNamed()) {
           string _name;
           if(id != NOID)
-            _name = "GEOMID_"+number(id);
+            _name = "GEOMID_"+number(id)+"_"+number(geometry->getId());
           else
             _name = "GEOM_"+number(geometry->getId());
           geometry->setName(_name);
@@ -167,7 +167,7 @@ void Shape::setComputedName(){
       if (! appearance->isNamed()) {
         string _name;
         if(id != NOID)
-          _name = "APPID_"+number(id);
+          _name = "APPID_"+number(id)+"_"+number(geometry->getId());
         else
           _name = "APP_"+number(appearance->getId());
         appearance->setName(_name);
@@ -176,9 +176,7 @@ void Shape::setComputedName(){
     // Sets the label to the self
     if ( __name.empty() ) {
       if(id != NOID)
-        __name = "ID_"+number(id);
-      else if (geometry)
-        __name = "SHAPE_"+number(geometry->getId());
+        __name = "SHAPEID_"+number(id)+"_"+number(SceneObject::getId());
       else
         __name = "SHAPE_"+number(SceneObject::getId());
     };

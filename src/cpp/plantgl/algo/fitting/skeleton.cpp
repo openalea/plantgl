@@ -1374,6 +1374,7 @@ void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 inf
 	}
       
     }
+  printf("test0\n");
 
   Debug::debug("size outOfTheShapeTriangles : ",(int)outOfTheShapeTriangles.size(),10);
   Debug::debug("size m_allTriangles : ",(int)m_allTriangles.size(),10);

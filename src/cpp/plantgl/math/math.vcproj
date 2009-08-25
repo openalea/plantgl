@@ -114,6 +114,7 @@
 				PreprocessorDefinitions="PGLMATH_MAKEDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

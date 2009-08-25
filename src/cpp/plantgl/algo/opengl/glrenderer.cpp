@@ -1115,6 +1115,13 @@ bool GLRenderer::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
   GEOM_GLRENDERER_CHECK_CACHE(pointSet);
 
+  if(!pointSet->isWidthToDefault()){ 
+    glPushAttrib (GL_POINT_BIT); 
+    int globalwidth = 1; 
+	glGetIntegerv(GL_POINT_SIZE,&globalwidth); 
+	glPointSize(float(pointSet->getWidth()+globalwidth-1)); 
+  } 
+
   const Point3ArrayPtr& points = pointSet->getPointList();
   if (!points) return false;
   bool color = pointSet->hasColorList() && 
@@ -1153,6 +1160,8 @@ bool GLRenderer::process( PointSet * pointSet ) {
   glDisableClientState(GL_VERTEX_ARRAY);
   delete [] vertices;
 #endif
+
+  if(!pointSet->isWidthToDefault()){ glPopAttrib(); }
 
   GEOM_GLRENDERER_UPDATE_CACHE(pointSet);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);

@@ -433,6 +433,7 @@ VKnotList         {TRACE; return TokVKnotList;}
 VStride           {TRACE; return TokVStride;}
 XSpacing          {TRACE; return TokXSpacing;}
 YSpacing          {TRACE; return TokYSpacing;}
+Width             {TRACE; return TokWidth;}
 
 AxisRotation      {TRACE; return TokAxisRotation;}
 EulerRotation     {TRACE; return TokEulerRotation;}

@@ -110,17 +110,20 @@ public:
   NurbsCurve(  const Point4ArrayPtr& ctrlPoints, 
 	       const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
 	       uint_t degree = DEFAULT_NURBS_DEGREE, 
-	       uint_t stride = DEFAULT_STRIDE );
+	       uint_t stride = DEFAULT_STRIDE, 
+		   uchar_t width = DEFAULT_WIDTH );
 
   NurbsCurve(  const Point4ArrayPtr& ctrlPoints, 
 			   uint_t degree, 
 	           const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
-	           uint_t stride = DEFAULT_STRIDE );
+	           uint_t stride = DEFAULT_STRIDE, 
+		       uchar_t width = DEFAULT_WIDTH  );
 
   NurbsCurve(  const Point3ArrayPtr& ctrlPoints, 
 			   uint_t degree = DEFAULT_NURBS_DEGREE, 
 	           const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
-	           uint_t stride = DEFAULT_STRIDE );
+	           uint_t stride = DEFAULT_STRIDE, 
+		       uchar_t width = DEFAULT_WIDTH  );
 
   /// Destructor
   virtual ~NurbsCurve( );
@@ -295,17 +298,20 @@ public:
   NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, 
 		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
 		 uint_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
-		 uint_t stride = BezierCurve::DEFAULT_STRIDE );
+		 uint_t stride = BezierCurve::DEFAULT_STRIDE, 
+		 uchar_t width = DEFAULT_WIDTH );
 
   NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, 
 		 uint_t degree, 
 		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
-		 uint_t stride = BezierCurve::DEFAULT_STRIDE );
+		 uint_t stride = BezierCurve::DEFAULT_STRIDE, 
+		 uchar_t width = DEFAULT_WIDTH );
 
   NurbsCurve2D(  const Point2ArrayPtr& ctrlPoints, 
 		 uint_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
 		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
-		 uint_t stride = BezierCurve::DEFAULT_STRIDE );
+		 uint_t stride = BezierCurve::DEFAULT_STRIDE, 
+		 uchar_t width = DEFAULT_WIDTH );
 
   /// Destructor
   virtual ~NurbsCurve2D( );

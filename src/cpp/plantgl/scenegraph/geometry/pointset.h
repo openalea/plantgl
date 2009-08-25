@@ -68,9 +68,13 @@ class SG_API PointSet : public ExplicitModel
 
 public:
 
+  static const uchar_t DEFAULT_WIDTH;
 
   /// A structure which helps to build a PointSet when parsing. 
   struct SG_API Builder : public ExplicitModel::Builder { 
+
+    /// A pointer to the \b Width field.
+ 	uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -95,7 +99,9 @@ public:
     
       \postt
       - \e self is valid. */
-  PointSet( const Point3ArrayPtr& points, const Color4ArrayPtr& colors = Color4ArrayPtr() );
+  PointSet( const Point3ArrayPtr& points, 
+	        const Color4ArrayPtr& colors = Color4ArrayPtr(),
+			uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~PointSet( );
@@ -112,16 +118,6 @@ public:
       - \e i must belong to the range [0,size of \b PointList). */
   TOOLS(Vector3)& getPointListAt( uint_t i );
 
-/*  /// Returns an iterator at the beginning of \b PointList.
-  Point3Array::const_iterator getPointListBegin( ) const {
-     return __pointList->begin();   
-  }
-
-  /// Returns an iterator at the end of \b PointList.
-  Point3Array::const_iterator getPointListEnd( ) const {
-     return __pointList->end();   
-  }*/
-
   virtual bool isACurve( ) const ;
 
   virtual bool isASurface( ) const;
@@ -132,6 +128,16 @@ public:
 
   virtual ExplicitModelPtr
   transform( const Transformation3DPtr& transformation ) const;
+
+  // Get the width value of the points
+  inline const uchar_t getWidth() const { return __width; }
+  inline uchar_t& getWidth() { return __width; }
+  inline bool isWidthToDefault( ) const { return __width == DEFAULT_WIDTH; }
+
+
+protected:
+  /// The \b width field
+  uchar_t __width;
 
 }; // PointSet
 
@@ -160,6 +166,9 @@ public:
     /// A pointer to the \b PointList field.
     Point2ArrayPtr * PointList;
 
+    /// A pointer to the \b Width field.
+ 	uchar_t * Width;
+
     /// Constructor.
     Builder( );
 
@@ -182,7 +191,7 @@ public:
       - \e points must contain at leat 3 points.    
       \post
       - \e self is valid. */
-  PointSet2D( const Point2ArrayPtr& points );
+  PointSet2D( const Point2ArrayPtr& points, uchar_t width = PointSet::DEFAULT_WIDTH );
 
   /// Destructor
   virtual ~PointSet2D( ) ;
@@ -229,10 +238,20 @@ public:
 /*  virtual ExplicitModelPtr
   transform( const Transformation2DPtr& transformation ) const;
 */
+
+  // Get the width value of the points
+  inline const uchar_t getWidth() const { return __width; }
+  inline uchar_t& getWidth() { return __width; }
+  inline bool isWidthToDefault( ) const { return __width == PointSet::DEFAULT_WIDTH; }
+
+
 protected:
   
   /// The \b PointList field.
   Point2ArrayPtr __pointList;
+
+  /// The \b width field
+  uchar_t __width;
 
 }; // Point2DSet
 

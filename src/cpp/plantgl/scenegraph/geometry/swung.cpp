@@ -201,7 +201,6 @@ Swung::Swung( const Curve2DArrayPtr& profileList,
   _builder.Stride= const_cast<uint_t *>(&stride);
 
   GEOM_ASSERT(_builder.isValid());
-
   __profiles= ProfileInterpolationPtr(_builder.build( ));
 
   GEOM_ASSERT(isValid());

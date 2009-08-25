@@ -1801,7 +1801,7 @@ bool Discretizer::process( Swung * swung )
 
   const ProfileInterpolationPtr& section= swung->getProfileInterpolation();
   GEOM_ASSERT(section);
-  uint_t sectionSize= section->getStride();
+  uint_t sectionSize= section->getStride()+1;
   uint_t slices = swung->getSlices();
 
   Point3ArrayPtr pointList(new Point3Array(slices * sectionSize));
@@ -1840,7 +1840,7 @@ bool Discretizer::process( Swung * swung )
   real_t epsilon = 0.01;
 /*the swung will be closed if all slices have the same first and last point, as a reference ref_pt_up and ref_pt_down are generated from the first slice*/
   
-  if(is2D)
+   if(is2D)
   {
     crv2D= section->getSection2DAt(angleMin);
     cosa= cos(angle);
@@ -1891,10 +1891,11 @@ bool Discretizer::process( Swung * swung )
       {
       if( is2D )
         {
-        rad= crv2D->getAt(j).x();
+		Vector2& p2d = crv2D->getAt(j);
+        rad= p2d.x();
         pt.x()= rad * cosa;
         pt.y()= rad * sina;
-        pt.z()= crv2D->getAt(j).y();
+        pt.z()= p2d.y();
         }
       else
         pt= crv3D->getAt(j);
@@ -2233,7 +2234,8 @@ bool Discretizer::process( PointSet2D * pointSet ){
   GEOM_ASSERT(pointSet);
 
   GEOM_DISCRETIZER_CHECK_CACHE(pointSet);
-  __discretization = ExplicitModelPtr(new PointSet(Point3ArrayPtr(new Point3Array(*(pointSet->getPointList()),0))));
+  __discretization = ExplicitModelPtr(new PointSet(Point3ArrayPtr(new Point3Array(*(pointSet->getPointList()),0)),
+												   Color4ArrayPtr(),pointSet->getWidth()));
   GEOM_DISCRETIZER_UPDATE_CACHE(pointSet);
   return true;
 }

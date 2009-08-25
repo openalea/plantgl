@@ -92,8 +92,8 @@ void export_Polyline()
 	  "A Polyline describes a curve formed by connected segments.\n"
 	  "It is defined by a set of points. A color can be associated to each point for visualisation.",
 	  init<Point3ArrayPtr, optional<Color4ArrayPtr> >("Polyline(Point3Array pointList, Color4Array colorList = None)",args("pointList","colorList")) )
-	.def(init<Point3ArrayPtr, Color4ArrayPtr, uchar_t >("Polyline(Point3Array pointList, Color4Array colorList = None, width = 1)",(bp::arg("pointList"),bp::arg("colorList"),bp::arg("width"))))
-	.def(init<Point3ArrayPtr, uchar_t >("Polyline(Point3Array pointList, width = 1)",(bp::arg("pointList"),bp::arg("width"))))
+	.def(init<Point3ArrayPtr, Color4ArrayPtr, uchar_t >("Polyline(Point3Array pointList, Color4Array colorList = None, width = 1)",(bp::arg("pointList"),bp::arg("colorList"),bp::arg("width")=Polyline::DEFAULT_WIDTH)))
+	.def(init<Point3ArrayPtr, uchar_t >("Polyline(Point3Array pointList, width = 1)",(bp::arg("pointList"),bp::arg("width")=Polyline::DEFAULT_WIDTH)))
     .DEF_PGLBASE(Polyline)
     .def( "__getitem__", gpl_getitem /*, return_internal_reference<1>() */)
     .def( "__setitem__", gpl_setitem )
@@ -140,7 +140,7 @@ void export_Polyline2D()
 	  "Polyline2D", 
 	  "A Polyline2D describes a curve formed by connected 2D segments.\n"
 	  "It is defined by a set of 2D points. See Polyline.",
-	  init<Point2ArrayPtr,optional<uchar_t> >() )
+	  init<Point2ArrayPtr,optional<uchar_t> >("Polyline2D(pointList[,width])",(bp::arg("pointList"),bp::arg("width") = Polyline2D::DEFAULT_WIDTH)) )
     .DEF_PGLBASE(Polyline2D)
     .def( "__getitem__", gpl2_getitem )
     .def( "__setitem__", gpl2_setitem )

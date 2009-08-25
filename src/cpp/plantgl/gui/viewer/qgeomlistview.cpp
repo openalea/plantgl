@@ -457,6 +457,7 @@ bool GeomListViewBuilder::process( BezierCurve * bezierCurve ) {
   addNode(bezierCurve,"BezierCurve");
   addAttr("Degree",bezierCurve->getDegree());
   addAttr("Stride",bezierCurve->getStride());
+  addAttr("Width",bezierCurve->getWidth());
   addArray("CtrlPointList",bezierCurve->getCtrlPointList(),"Vector4");
   endNode();
   return true;
@@ -712,6 +713,7 @@ bool GeomListViewBuilder::process( NurbsCurve * nurbsCurve ) {
   addNode(nurbsCurve,"NurbsCurve");
   addAttr("Degree",nurbsCurve->getDegree());
   addAttr("Stride",nurbsCurve->getStride());
+  addAttr("Width",nurbsCurve->getWidth());
   addArray("CtrlPointList",nurbsCurve->getCtrlPointList(),"Vector4");
   addArray("KnotList",nurbsCurve->getKnotList(),"Real");
 
@@ -782,6 +784,7 @@ bool GeomListViewBuilder::process( PointSet * pointSet ) {
   addNode(pointSet,"PointSet");
   addArray("PointList",pointSet->getPointList(),"Vector3");
   addArray("ColorList",pointSet->getColorList(),"Color4");
+  addAttr("Width",pointSet->getWidth());
 
   endNode();
   return true;
@@ -797,7 +800,7 @@ bool GeomListViewBuilder::process( Polyline * polyline ) {
   addNode(polyline,"Polyline");
   addArray("PointList",polyline->getPointList(),"Vector3");
   addArray("ColorList",polyline->getColorList(),"Color4");
-
+  addAttr("Width",polyline->getWidth());
   endNode();
   return true;
 }
@@ -934,6 +937,7 @@ bool GeomListViewBuilder::process( BezierCurve2D * bezierCurve  ) {
   addNode(bezierCurve,"BezierCurve2D");
   addAttr("Degree",bezierCurve->getDegree());
   addAttr("Stride",bezierCurve->getStride());
+  addAttr("Width",bezierCurve->getWidth());
   addArray("CtrlPointList",bezierCurve->getCtrlPointList(),"Vector3");
  
   endNode();
@@ -965,6 +969,7 @@ bool GeomListViewBuilder::process( NurbsCurve2D * nurbsCurve  ) {
   addNode(nurbsCurve,"NurbsCurve2D");
   addAttr("Degree",nurbsCurve->getDegree());
   addAttr("Stride",nurbsCurve->getStride());
+  addAttr("Width",nurbsCurve->getWidth());
   addArray("CtrlPointList",nurbsCurve->getCtrlPointList(),"Vector3");
   addArray("KnotList",nurbsCurve->getKnotList(),"Real");
 
@@ -982,6 +987,7 @@ bool GeomListViewBuilder::process( PointSet2D *  pointSet ) {
 
   addNode(pointSet,"PointSet2D");
   addArray("PointList",pointSet->getPointList(),"Vector2");
+  addAttr("Width",pointSet->getWidth());
 
   endNode();
   return true;
@@ -997,6 +1003,7 @@ bool GeomListViewBuilder::process( Polyline2D * polyline  ) {
 
   addNode(polyline,"Polyline2D");
   addArray("PointList",polyline->getPointList(),"Vector2");
+  addAttr("Width",polyline->getWidth());
 
   endNode();
   return true;

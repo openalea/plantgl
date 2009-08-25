@@ -1043,6 +1043,9 @@ bool BinaryParser::readBezierCurve() {
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Stride,Uint32);
 
+    IF_GEOM_NOTDEFAULT(_default,1)
+        GEOM_READ_FIELD(obj,Width,Uchar);
+
     GEOM_READ_ARRAY(obj->getCtrlPointList(),Point4Array,Vector4);
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,BezierCurve);
@@ -1536,6 +1539,9 @@ bool BinaryParser::readNurbsCurve() {
     IF_GEOM_NOTDEFAULT(_default,2)
         GEOM_READ_FIELD(obj,Stride,Uint32);
 
+    IF_GEOM_NOTDEFAULT(_default,3)
+        GEOM_READ_FIELD(obj,Width,Uchar);
+
     GEOM_READ_ARRAY(obj->getCtrlPointList(),Point4Array,Vector4);
 
     if(!GEOM_NOTDEFAULT_COND(_default,1))
@@ -1664,6 +1670,9 @@ bool BinaryParser::readPointSet() {
     if( version >= 1.7f){
         GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
     }
+    if( version >= 2.1f){
+        GEOM_READ_FIELD(obj,Width,Uchar);
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,PointSet);
     return true;
@@ -1682,6 +1691,10 @@ bool BinaryParser::readPolyline() {
     float version =  __tokens->getVersion();
     if( version >= 1.7f){
         GEOM_READ_ARRAY(obj->getColorList(),Color4Array,Color4);
+    }
+
+    if( version >= 2.1f){
+        GEOM_READ_FIELD(obj,Width,Uchar);
     }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,Polyline);
@@ -2074,6 +2087,9 @@ bool BinaryParser::readBezierCurve2D() {
     IF_GEOM_NOTDEFAULT(_default,0)
         GEOM_READ_FIELD(obj,Stride,Uint32);
 
+    IF_GEOM_NOTDEFAULT(_default,1)
+        GEOM_READ_FIELD(obj,Width,Uchar);
+
     GEOM_READ_ARRAY(obj->getCtrlPointList(),Point3Array,Vector3);
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,BezierCurve2D);
@@ -2117,6 +2133,9 @@ bool BinaryParser::readNurbsCurve2D() {
     IF_GEOM_NOTDEFAULT(_default,2)
         GEOM_READ_FIELD(obj,Stride,Uint32);
 
+    IF_GEOM_NOTDEFAULT(_default,3)
+        GEOM_READ_FIELD(obj,Width,Uchar);
+
     GEOM_READ_ARRAY(obj->getCtrlPointList(),Point3Array,Vector3);
 
     if(!GEOM_NOTDEFAULT_COND(_default,1))
@@ -2135,6 +2154,11 @@ bool BinaryParser::readPointSet2D() {
 
     GEOM_READ_ARRAY(obj->getPointList(),Point2Array,Vector2);
 
+    float version =  __tokens->getVersion();
+    if( version >= 2.1f){
+        GEOM_READ_FIELD(obj,Width,Uchar);
+    }
+
     GEOM_PARSER_SETNAME(_name,_ident,obj,PointSet2D);
     return true;
 }
@@ -2148,6 +2172,11 @@ bool BinaryParser::readPolyline2D() {
     GEOM_INIT_OBJ(obj, 36,Polyline2D);
 
     GEOM_READ_ARRAY(obj->getPointList(),Point2Array,Vector2);
+
+    float version =  __tokens->getVersion();
+    if( version >= 2.1f){
+        GEOM_READ_FIELD(obj,Width,Uchar);
+    }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,Polyline2D);
     return true;

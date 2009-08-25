@@ -117,6 +117,7 @@
 				PreprocessorDefinitions="ALGO_MAKEDLL;WITH_CGAL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
