@@ -299,9 +299,20 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
     EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
 
 
+template<class T>
+bool has_refcountlistener( const T * a )
+{  return a->getRefCountListener() != NULL; }
+
+
+
 #define EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING )\
 class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") ) ) \
     .def( "__init__", make_constructor( &extract_array_from_list<ARRAY> ), STRING ) \
+	.def("getPglReferenceCount",&RefCountObject::use_count) \
+	.def("getPglId",&RefCountObject::uid) \
+	.def("__hasPythonRefCountLink",&has_refcountlistener<ARRAY>) \
+	.def("__removePglReference",&RefCountObject::removeReference) \
+	.def("__addPglReference",&RefCountObject::addReference) \
 
 
 /* --------------------

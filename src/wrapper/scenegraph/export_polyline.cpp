@@ -48,7 +48,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 template<class T>
-object py_poly_plit(T * polyline, real_t u){
+object py_poly_split(T * polyline, real_t u){
     std::pair<RCPtr<T>,RCPtr<T> > res = polyline->split(u);
 	return boost::python::make_tuple(res.first,res.second);
 }
@@ -99,7 +99,7 @@ void export_Polyline()
     .def( "__setitem__", gpl_setitem )
     .def( "__len__", gpl_size )
     .def( "__repr__", gpl_repr )
-    .def( "split", &py_poly_plit<Polyline>, arg("u") )
+    .def( "split", &py_poly_split<Polyline>, arg("u") )
     ;
   implicitly_convertible<PolylinePtr, ExplicitModelPtr>();
   implicitly_convertible<PolylinePtr, LineicModelPtr>();
@@ -148,7 +148,7 @@ void export_Polyline2D()
     .def( "__repr__", gpl2_repr )
     .def( "getTangentAt", &Polyline2D::getTangentAt, args("u") )
     .def( "getNormalAt", &Polyline2D::getNormalAt, args("u") )
-    .def( "split", &py_poly_plit<Polyline2D>, arg("u") )
+    .def( "split", &py_poly_split<Polyline2D>, arg("u") )
 	.DEC_PTR_PROPERTY(pointList,Polyline2D,PointList,Point2ArrayPtr)
 	.def("Circle",&Polyline2D::Circle,(bp::arg("radius")=Disc::DEFAULT_RADIUS,bp::arg("slices")=SOR::DEFAULT_SLICES))
     .staticmethod("Circle")

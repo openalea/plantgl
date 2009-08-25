@@ -32,7 +32,8 @@
 #ifndef __extract_pgl_h__
 #define __extract_pgl_h__
 
-#include <boost/python.hpp>
+// #include <boost/python.hpp>
+#include "export_refcountptr.h"
 #include <plantgl/tool/rcobject.h>
 #include "exception.h"
 
