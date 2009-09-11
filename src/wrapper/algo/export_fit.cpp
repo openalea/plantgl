@@ -133,6 +133,8 @@ void export_Fit()
     .staticmethod("inertiaAxis")
 	.def("boundingCircle",py_boundingCircle,args("points"))
     .staticmethod("boundingCircle")
+	.def("fitShapeFactor",Fit::fitShapeFactor,args("x","r","y","h"))
+    .staticmethod("fitShapeFactor")
     ;
   
   

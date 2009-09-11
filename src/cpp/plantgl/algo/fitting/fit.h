@@ -403,6 +403,13 @@ class ALGO_API Fit
 	static bool inertiaAxis(const Point2ArrayPtr& points, 
 						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s);
 
+	/*!
+		Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.
+		Use a second order polynomium approximation of this equation :
+		- a = x / r, b = y / h, e = - ln(a.b) / ( ln²a + ln²b ).
+	*/
+	static double fitShapeFactor(double x, double r, double y, double h);
+
 protected:
 
   /// The points to fit.
@@ -417,14 +424,6 @@ protected:
   /// Level of optimisation
   uchar_t __optimization;
 };
-
-
-/*!
-  Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.
-  Use a second order polynomium approximation of this equation :
-  - a = x / r, b = y / h, e = - ln(a.b) / ( ln²a + ln²b ).
-*/
-double findfactor(double x, double r, double y, double h);
 
 
 

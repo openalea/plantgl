@@ -134,6 +134,8 @@
 				OutputFile="../../../../bin/pglalgo.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;&quot;C:\Python25\Lib\site-packages\qhull-2003.1-py2.5-win32.egg\lib&quot;;&quot;$(CGALROOT)\lib&quot;;&quot;$(CGALROOT)\auxiliary\gmp\lib&quot;"
 				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile="../../../../bin/$(TargetName).pdb"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool

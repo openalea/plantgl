@@ -53,25 +53,13 @@ DEF_POINTEE( BezierCurve2D )
 std::string gbc_repr( BezierCurve* p )
 {
   std::stringstream ss;
-  Point4ArrayPtr ctrl= p->getCtrlPoints();
-  uint_t stride= p->getStride();
-  uint_t n= ctrl->size();
-  if( n == 0 )
-    {
-      ss << "BezierCurve(Point4Array([])," << stride << ")";
-      return ss.str();
-    }
-
-  Vector4 v = ctrl->getAt( 0 );
-  ss << "BezierCurve(Point4Array([Vector4(" << v.x() << ", " << v.y()
-     << ", " << v.z() << ", " << v.w() << ")";
-  size_t i;
-  for( i = 1 ; i < n ; ++i )
-    {
-      v = ctrl->getAt( i );
-      ss << ", Vector4(" << v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << ")";
-    }
-  ss << "])," << stride <<")";
+  ss << "BezierCurve(";
+  ss << extract<std::string>(str(object(p->getCtrlPoints())))();
+  if (!p->isStrideToDefault())
+	  ss << ", stride = " << p->getStride();
+  if (!p->isWidthToDefault())
+	  ss << ", width = " << p->getWidth();
+  ss << ")";
   return ss.str();
 }
 
@@ -115,25 +103,13 @@ void export_BezierCurve()
 std::string gbc2_repr( BezierCurve2D* p )
 {
   std::stringstream ss;
-  Point3ArrayPtr ctrl= p->getCtrlPoints();
-  uint_t stride= p->getStride();
-  uint_t n= ctrl->size();
-  if( n == 0 )
-    {
-      ss << "BezierCurve2D(Point3Array([])," << stride << ")";
-      return ss.str();
-    }
-
-  Vector3 v = ctrl->getAt( 0 );
-  ss << "BezierCurve2D(Point3Array([Vector3(" << v.x() << ", " << v.y()
-     << ", " << v.z() <<  ")";
-  size_t i;
-  for( i = 1 ; i < n ; ++i )
-    {
-      v = ctrl->getAt( i );
-      ss << ", Vector3(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
-    }
-  ss << "])," << stride <<")";
+  ss << "BezierCurve2D(";
+  ss << extract<std::string>(str(object(p->getCtrlPoints())))();
+  if (!p->isStrideToDefault())
+	  ss << ", stride = " << p->getStride();
+  if (!p->isWidthToDefault())
+	  ss << ", width = " << p->getWidth();
+  ss << ")";
   return ss.str();
 }
 

@@ -131,6 +131,8 @@
 				AdditionalDependencies="boost_python-vc80-mt-1_35.lib"
 				OutputFile="../../plantgl/math/_pglmath.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile="../../plantgl/math/$(TargetName).pdb"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool

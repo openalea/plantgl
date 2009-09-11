@@ -70,6 +70,8 @@ class CurveAccessor:
         pass
     def findClosest(self,p):
         pass
+    def bounds(self):
+        pass
 
 class BezierAccessor (CurveAccessor):
     def __init__(self,curve):
@@ -102,6 +104,9 @@ class BezierAccessor (CurveAccessor):
         return 3
     def setKnotList(self):
         pass
+    def bounds(self):
+        minp,maxp = self.curve.ctrlPointList.getBounds()
+        return minp.project(),maxp.project()
 
 class NurbsAccessor (BezierAccessor):
     def __init__(self,curve):
@@ -109,7 +114,7 @@ class NurbsAccessor (BezierAccessor):
     def checkType(self,curve):
         assert type(curve) == NurbsCurve2D
     def minpointnb(self):
-        return self.degree +1
+        return self.curve.degree +1
     def setKnotList(self):
         self.curve.setKnotListToDefault()
         
@@ -135,15 +140,18 @@ class PolylineAccessor (CurveAccessor):
         ctrlpolyline = Polyline(Point3Array(self.curve.pointList,0))
         lp,u = ctrlpolyline.findClosest(Vector3(p,0))
         return u
+    def bounds(self):
+        return self.curve.pointList.getBounds()
 
         
 class CurveEditor (QGLViewer):
-    def __init__(self,parent,constraints=FuncConstraint()):
+    def __init__(self,parent,constraints=CurveConstraint()):
         QGLViewer.__init__(self,parent)
         self.selection = -1
         nbP = 4
         points = [(float(i)/(nbP-1),0) for i in xrange(nbP)]
-        self.defaultMaterial = Material()
+        self.defaultMaterial = Material((255,255,255),1)
+        self.sphere = Sphere(radius=0.02)
         self.curveshape = Shape()
         self.curveshape.appearance = self.defaultMaterial
         self.pointsConstraints = constraints
@@ -155,8 +163,7 @@ class CurveEditor (QGLViewer):
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
         self.setStateFileName('.curveeditor.xml')
     def init(self):
-        b = BoundingBox(self.curveshape)
-        self.setSceneBoundingBox(Vec(*b.lowerLeftCorner),Vec(*b.upperRightCorner))
+        self.updateSceneDimension()
         self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
         self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
         self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.ControlModifier)
@@ -178,6 +185,10 @@ class CurveEditor (QGLViewer):
     def getCurve(self):
         """ Get the edited curve """
         return self.curveshape.geometry
+    def updateSceneDimension(self):
+        minp,maxp = self.curveAccessor.bounds()
+        minp,maxp = Vector3(minp,0),Vector3(maxp,0)
+        self.setSceneBoundingBox(Vec(*minp),Vec(*maxp))
     def setCurve(self,curve):
         """ Set the edited curve """
         self.curveshape.geometry = curve
@@ -185,7 +196,12 @@ class CurveEditor (QGLViewer):
         self.curveAccessor = self.accessorType[type(curve)](curve)
         self.pointsConstraints.checkInitialCurve(self.curveAccessor)
         self.createControlPointsRep()
+        self.updateSceneDimension()
+        self.showEntireScene()
     def draw(self):
+        self.start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
+        self.end = self.pointOnEditionPlane(QPoint(self.width()-1,0))
+        self.sphere.radius = (self.end[0]-self.start[0])/80
         self.discretizer.clear()
         self.curveshape.apply(self.renderer)
         glColor4f(0.5,0.5,0.0,0.0)
@@ -193,52 +209,50 @@ class CurveEditor (QGLViewer):
         self.ctrlpts.apply(self.renderer)
         self.drawGrid()
     def drawGrid(self):
-        start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
-        end = self.pointOnEditionPlane(QPoint(self.width()-1,0))
-        xr = end[0] - start[0]
-        xy = end[1] - start[1]
+        xr = self.end[0] - self.start[0]
+        xy = self.end[1] - self.start[1]
         nbdigit = max(int(round(log(xr,10))),int(round(log(xy,10))))
         xdelta = pow(10,nbdigit)/10
-        fxval = round(start[0]/xdelta)
-        lxval = round(end[0]/xdelta)
+        fxval = round(self.start[0]/xdelta)
+        lxval = round(self.end[0]/xdelta)
         cxval = fxval*xdelta
         nbiter = int((lxval-fxval))
         glColor4f(0.2,0.2,0.2,0.0)
         glLineWidth(1)
         glBegin(GL_LINES)
         for i in xrange(nbiter+1):
-            glVertex3f(cxval,start[1],0)
-            glVertex3f(cxval,end[1],0)
+            glVertex3f(cxval,self.start[1],0)
+            glVertex3f(cxval,self.end[1],0)
             cxval += xdelta
         glEnd()
         glLineWidth(2)
         glColor4f(0.4,0.4,0.4,0.0)
-        cxval = round(start[0]/(10*xdelta))*(10*xdelta)
+        cxval = round(self.start[0]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
         for i in xrange((nbiter/10)+1):
-            glVertex3f(cxval,start[1],0)
-            glVertex3f(cxval,end[1],0)
+            glVertex3f(cxval,self.start[1],0)
+            glVertex3f(cxval,self.end[1],0)
             cxval += (10*xdelta)
         glEnd()
-        fyval = round(start[1]/xdelta)
-        lyval = round(end[1]/xdelta)
+        fyval = round(self.start[1]/xdelta)
+        lyval = round(self.end[1]/xdelta)
         cyval = fyval*xdelta
         nbiter = int((lyval-fyval))
         glColor4f(0.2,0.2,0.2,0.0)
         glLineWidth(1)
         glBegin(GL_LINES)
         for i in xrange(nbiter+1):
-            glVertex3f(start[0],cyval,0)
-            glVertex3f(end[0],cyval,0)
+            glVertex3f(self.start[0],cyval,0)
+            glVertex3f(self.end[0],cyval,0)
             cyval += xdelta
         glEnd()
         glLineWidth(2)
         glColor4f(0.4,0.4,0.4,0.0)
-        cyval = round(start[1]/(10*xdelta))*(10*xdelta)
+        cyval = round(self.start[1]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
         for i in xrange((nbiter/10)+1):
-            glVertex3f(start[0],cyval,0)
-            glVertex3f(end[0],cyval,0)
+            glVertex3f(self.start[0],cyval,0)
+            glVertex3f(self.end[0],cyval,0)
             cyval += (10*xdelta)
         glEnd()
     def drawWithNames(self):
@@ -281,21 +295,21 @@ class CurveEditor (QGLViewer):
                     if res:
                         index,npoint = res
                         self.curveAccessor.insertPoint(index,npoint)
+                        self.emit(SIGNAL('valueChanged()'))
             elif event.button()  == Qt.RightButton:
                 self.select(event.pos())
                 selection = self.selectedName()
                 if selection != -1 :
                     self.curveAccessor.delPoint(selection)
+                    self.emit(SIGNAL('valueChanged()'))
             self.createControlPointsRep()
             self.updateGL()
         else:
             QGLViewer.mouseDoubleClickEvent(self,event)
     def mouseReleaseEvent(self,event):
-        self.updatePoints()
         self.selection = -1
         self.createControlPointsRep()
-        b = BoundingBox(self.curveshape)
-        self.setSceneBoundingBox(Vec(*b.lowerLeftCorner),Vec(*b.upperRightCorner))
+        self.updateSceneDimension()
         self.updateGL()
         QGLViewer.mouseReleaseEvent(self,event)
     def updatePoints(self):
@@ -307,11 +321,11 @@ class CurveEditor (QGLViewer):
             self.curveAccessor.setPoint(self.selection,p)
             self.createControlPointsRep()
             self.updateGL()
+            self.emit(SIGNAL('valueChanged()'))
     def createControlPointsRep(self):
-        sp = Sphere(radius=0.02)
-        m = Material((150,30,30),1)
-        self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),sp),m,id=i) for i,p in enumerate(self.curveAccessor.points())])
-        m2 = Material((30,150,30),1)
+        m = Material((250,30,30),1)
+        self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),m,id=i) for i,p in enumerate(self.curveAccessor.points())])
+        m2 = Material((30,250,30),1)
         if self.selection != -1:
             self.ctrlpts[self.selection].appearance = m2
         

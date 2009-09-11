@@ -56,36 +56,17 @@ DEF_POINTEE( NurbsCurve2D )
 std::string nc_repr( NurbsCurve* p )
 {
   std::stringstream ss;
-  Point4ArrayPtr ctrl= p->getCtrlPoints();
-  RealArrayPtr knot= p->getKnotList();
-  uint_t d= p->getDegree();
-  uint_t stride= p->getStride();
-  uint_t n= ctrl->size();
-  uint_t nk= knot->size();
-  if( n == 0 )
-    {
-      ss << "NurbsCurve(Point4Array([]))," << stride << ")";
-      return ss.str();
-    }
-
-  Vector4 v = ctrl->getAt( 0 );
-  ss << "NurbsCurve([(" << v.x() << ", " << v.y()
-     << ", " << v.z() << ", " << v.w() << ")";
-  size_t i;
-  for( i = 1 ; i < n ; ++i )
-  {
-      v = ctrl->getAt( i );
-      ss << ", (" << v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << ")";
-  }
-  ss << "],"<< d << ",[";
-  if (knot && !knot->empty()) {
-    ss << knot->getAt(0);
-	for( i = 1 ; i < nk ; ++i )
-	{
-      ss << ", " << knot->getAt( i );
-	}
-  }
-  ss << "]," << stride <<")";
+  ss << "NurbsCurve(";
+  ss << extract<std::string>(str(object(p->getCtrlPoints())))();
+  if (!p->isDegreeToDefault())
+	  ss << ", degree = " << p->getDegree();
+  if (!p->isKnotListToDefault())
+	  ss << ", knotList = " << extract<std::string>(str(object(p->getKnotList())))();
+  if (!p->isStrideToDefault())
+	  ss << ", stride = " << p->getStride();
+  if (!p->isWidthToDefault())
+	  ss << ", width = " << p->getWidth();
+  ss << ")";
   return ss.str();
 }
 
@@ -107,11 +88,11 @@ void export_NurbsCurve()
 	  "It uses the parametric equation C(u) = Sum(i=0,n)(Ri,p(u)Pi with u in [a,b]"
       "where the Ri,p(u) are p-th degree rational basis functions defined on the knot vector.", 
 	  init<Point4ArrayPtr, optional< uint_t, RealArrayPtr, uint_t, uchar_t > >(
-	  "NurbsCurve(ctrlPointList[,degree,knotList,strides])",(
+	  "NurbsCurve(ctrlPointList[,degree,knotList,stride])",(
 		  bp::arg("ctrlPointList"),
 		  bp::arg("degree")  = NurbsCurve::DEFAULT_NURBS_DEGREE,
 		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
-		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE,
+		  bp::arg("stride") = NurbsCurve::DEFAULT_STRIDE,
 		  bp::arg("width") =  NurbsCurve::DEFAULT_WIDTH)) )
 	 .def(init<Point4ArrayPtr,  RealArrayPtr, optional< uint_t, uint_t, uchar_t > >())
      .DEF_PGLBASE(NurbsCurve)
@@ -151,36 +132,17 @@ void export_NurbsCurve()
 std::string nc2_repr( NurbsCurve2D* p )
 {
   std::stringstream ss;
-  Point3ArrayPtr ctrl= p->getCtrlPoints();
-  RealArrayPtr knot= p->getKnotList();
-  uint_t d= p->getDegree();
-  uint_t stride= p->getStride();
-  uint_t n= ctrl->size();
-  uint_t nk= knot->size();
-  if( n == 0 )
-    {
-      ss << "NurbsCurve2D(Point3Array([]),RealArray([])," << stride << ")";
-      return ss.str();
-    }
-
-  Vector3 v = ctrl->getAt( 0 );
-  ss << "NurbsCurve2D(Point3Array([Vector3(" << v.x() << ", " << v.y()
-     << ", " << v.z()  << ")";
-  size_t i;
-  for( i = 1 ; i < n ; ++i )
-  {
-      v = ctrl->getAt( i );
-      ss << ", Vector3(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
-  }
-  ss << "),RealArray([";
-  if (knot && !knot->empty()) {
-    ss << knot->getAt(0);
-	for( i = 1 ; i < nk ; ++i )
-	{
-      ss << ", " << knot->getAt( i );
-	}
-  }
-  ss << "])," << d << ',' << stride <<")";
+  ss << "NurbsCurve2D(";
+  ss << extract<std::string>(str(object(p->getCtrlPoints())))();
+  if (!p->isDegreeToDefault())
+	  ss << ", degree = " << p->getDegree();
+  if (!p->isKnotListToDefault())
+	  ss << ", knotList = " << extract<std::string>(str(object(p->getKnotList())))();
+  if (!p->isStrideToDefault())
+	  ss << ", stride = " << p->getStride();
+  if (!p->isWidthToDefault())
+	  ss << ", width = " << p->getWidth();
+  ss << ")";
   return ss.str();
 }
 
@@ -256,13 +218,13 @@ void export_NurbsCurve2D()
    class_<NurbsCurve2D, NurbsCurve2DPtr, bases<BezierCurve2D>, boost::noncopyable>
      ( "NurbsCurve2D", "A 2D NURBS Curve represented by an array of control Points, a knots list and a degree. See NurbsCurve.",
 	   init<Point3ArrayPtr,  optional<uint_t, RealArrayPtr, uint_t, uchar_t > >(
-	   "NurbsCurve2D(ctrlPointList[,degree,knotList,strides])",
+	   "NurbsCurve2D(ctrlPointList[,degree,knotList,stride])",
 		 ( bp::arg("ctrlPointList"),
 		  bp::arg("degree")  = NurbsCurve::DEFAULT_NURBS_DEGREE,
 		  bp::arg("knotList")= TOOLS(RealArrayPtr()) ,
-		  bp::arg("strides") = NurbsCurve::DEFAULT_STRIDE,
+		  bp::arg("stride") = NurbsCurve::DEFAULT_STRIDE,
 		  bp::arg("width") = NurbsCurve2D::DEFAULT_WIDTH)) )
-	 .def(init<Point3ArrayPtr, RealArrayPtr, optional<  uint_t, uint_t, uchar_t > >(args("ctrlPointList","knotList","degree","strides","width")) )
+	 .def(init<Point3ArrayPtr, RealArrayPtr, optional<  uint_t, uint_t, uchar_t > >(args("ctrlPointList","knotList","degree","stride","width")) )
      .DEF_PGLBASE(NurbsCurve2D)
      .def( "__repr__", nc2_repr )
      .def( "fit", nurbs2_fit1, args("points") )

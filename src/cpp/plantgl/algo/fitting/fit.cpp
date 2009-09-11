@@ -1151,28 +1151,28 @@ GeometryPtr Fit::asymmetricHull(){
 	  Vector3 a = *_it - center;
 	  if(a.x() < bottom.x() && a.z() <  negXHeight){
 		botshape = max(botshape,
-		  (real_t)findfactor(bottom.x()-a.x(),
+		  (real_t)fitShapeFactor(bottom.x()-a.x(),
 						   negXBotRadius,
 						   negXHeight-a.z(),
 						   negXBotHeight )); 
 	  }
 	  else if(a.x() > bottom.x()  && a.z() <  posXHeight){
 		botshape = max(botshape,
-		  (real_t)findfactor(a.x()-bottom.x(),
+		  (real_t)fitShapeFactor(a.x()-bottom.x(),
 						   posXBotRadius,
 						   posXHeight-a.z(),
 						   posXBotHeight )); 
 	  }
 	  else if(a.x() < top.x() && a.z() >  negXHeight){
 		topshape = max(topshape,
-		  (real_t)findfactor(top.x()-a.x(),
+		  (real_t)fitShapeFactor(top.x()-a.x(),
 						   negXTopRadius,
 						   a.z()-negXHeight,
 						   negXTopHeight )); 
 	  }
 	  else if(a.x() > top.x()  && a.z() >  posXHeight){
 		topshape = max(topshape,
-		  (real_t)findfactor(a.x()-top.x(),
+		  (real_t)fitShapeFactor(a.x()-top.x(),
 						   posXTopRadius,
 						   a.z()-posXHeight,
 						   posXTopHeight )); 
@@ -1180,28 +1180,28 @@ GeometryPtr Fit::asymmetricHull(){
 	  
 	  if(a.y() < bottom.y() && a.z() <  negYHeight){
 		botshape = max(botshape,
-		  (real_t)findfactor(bottom.y()-a.y(),
+		  (real_t)fitShapeFactor(bottom.y()-a.y(),
 						   negYBotRadius,
 						   negYHeight-a.z(),
 						   negYBotHeight )); 
 	  }
 	  else if(a.y() > bottom.y()  && a.z() <  posYHeight){
 		botshape = max(botshape,
-		  (real_t)findfactor(a.y()-bottom.y(),
+		  (real_t)fitShapeFactor(a.y()-bottom.y(),
 						   posYBotRadius,
 						   posYHeight-a.z(),
 						   posYBotHeight )); 
 	  }
 	  else if(a.y() < top.y() && a.z() >  negYHeight){
 		topshape = max(topshape,
-		  (real_t)findfactor(top.y()-a.y(),
+		  (real_t)fitShapeFactor(top.y()-a.y(),
 						   negYTopRadius,
 						   a.z()-negYHeight,
 						   negYTopHeight )); 
 	  }
 	  else if(a.y() > top.y()  && a.z() >  posYHeight){
 		topshape = max(topshape,
-		  (real_t)findfactor(a.y()-top.y(),
+		  (real_t)fitShapeFactor(a.y()-top.y(),
 						   posYTopRadius,
 						   a.z()-posYHeight,
 						   posYTopHeight )); 
@@ -1234,7 +1234,7 @@ GeometryPtr Fit::asymmetricHull(){
 }
 
 
-double PGL(findfactor)(double x, double r, double y, double h){
+double Fit::fitShapeFactor(double x, double r, double y, double h){
     assert(r !=0 && h != 0);
 	if(x == 0 || y == 0)return 0;
 	if(x >= r || y >= h) return 0;

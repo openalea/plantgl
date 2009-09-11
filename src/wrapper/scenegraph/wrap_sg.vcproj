@@ -132,6 +132,7 @@
 				AdditionalDependencies="boost_python-vc80-mt-1_35.lib QtCore4.lib"
 				OutputFile="../../plantgl/scenegraph/_pglsg.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
+				GenerateDebugInformation="false"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
@@ -457,6 +458,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\cpp\plantgl\python\extract_tuple.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\cpp\plantgl\python\extract_widget.h"
 				>
 			</File>
@@ -474,6 +479,10 @@
 			</File>
 			<File
 				RelativePath="..\..\cpp\plantgl\python\pyobj_reference.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\cpp\plantgl\python\pyobj_reference_core.h"
 				>
 			</File>
 			<File

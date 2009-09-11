@@ -133,6 +133,8 @@
 				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib"
 				OutputFile="../../../../bin/pglsg.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile="../../../../bin/$(TargetName).pdb"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool

@@ -129,6 +129,8 @@
 				Name="VCLinkerTool"
 				OutputFile="../../../../bin/pglmath.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				GenerateDebugInformation="false"
+				ProgramDatabaseFile="../../../../bin/$(TargetName).pdb"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
