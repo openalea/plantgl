@@ -22,6 +22,8 @@ class CurveConstraint:
             return int(u)+1,newpoint
         else:
             return nbPoints,newpoint
+    def defaultCurve(self,nbP=4):
+        return NurbsCurve2D(Point3Array([(-0.5+float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
 
 class FuncConstraint:
     def __init__(self,bounds=(0,1)):
@@ -54,6 +56,8 @@ class FuncConstraint:
                     return i,newpoint
         else:
             return None
+    def defaultCurve(self,nbP=4):
+        return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
         
 class CurveAccessor:
     def __init__(self):
@@ -148,20 +152,20 @@ class CurveEditor (QGLViewer):
     def __init__(self,parent,constraints=CurveConstraint()):
         QGLViewer.__init__(self,parent)
         self.selection = -1
-        nbP = 4
-        points = [(float(i)/(nbP-1),0) for i in xrange(nbP)]
         self.defaultMaterial = Material((255,255,255),1)
         self.sphere = Sphere(radius=0.02)
         self.curveshape = Shape()
         self.curveshape.appearance = self.defaultMaterial
         self.pointsConstraints = constraints
         self.accessorType = { NurbsCurve2D : NurbsAccessor, BezierCurve2D : BezierAccessor, Polyline2D : PolylineAccessor }
-        self.setCurve(NurbsCurve2D(Point3Array(points,1)))
+        self.setCurve(self.newDefaultCurve())
         self.discretizer = Discretizer()
         self.renderer = GLRenderer(self.discretizer)
         self.renderer.renderingMode = GLRenderer.Dynamic
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
         self.setStateFileName('.curveeditor.xml')
+    def newDefaultCurve(self):
+        return self.pointsConstraints.defaultCurve()
     def init(self):
         self.updateSceneDimension()
         self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
