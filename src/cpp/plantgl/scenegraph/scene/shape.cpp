@@ -167,7 +167,7 @@ void Shape::setComputedName(){
       if (! appearance->isNamed()) {
         string _name;
         if(id != NOID)
-          _name = "APPID_"+number(id)+"_"+number(geometry->getId());
+          _name = "APPID_"+number(id)+"_"+number(appearance->getId());
         else
           _name = "APP_"+number(appearance->getId());
         appearance->setName(_name);
