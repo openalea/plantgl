@@ -33,7 +33,7 @@ def create_default_objects():
     yield QuadSet([(0,0,0),(1,0,0),(1,1,0),(0,1,0)],[range(4)])
     yield Revolution(bc2)
     yield Sphere()
-    yield Swung([bc2],[0])
+#`    yield Swung([bc2],[0])
     yield Text('test')
     yield TriangleSet([(0,0,0),(1,0,0),(0,1,0)],[range(3)])
 
@@ -172,7 +172,7 @@ def create_random_objects():
     anglist = [2*pi*sum(ang[0:i+1])/sa for i in xrange(dim)]
     nbpts = randint(5,10)
     pflist = [randhalfcircle(nbpts) for i in xrange(dim)]
-    yield Swung(pflist,anglist)
+#    yield Swung(pflist,anglist)
     yield Text('test2',position=randtuple(),screencoordinates=randbool(),fontstyle=Font(family="courrier new",size=randint(6,20),bold=randbool(),italic=randbool()))
     dim = randint(10,maxelem)
     yield TriangleSet([randtuple() for i in xrange(dim)],

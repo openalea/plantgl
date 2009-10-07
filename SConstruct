@@ -8,17 +8,17 @@ from sconsx_ext.mpfr import create as mpfr_create
 pj= os.path.join
 ALEASolution = config.ALEASolution
 
-options = Options( ['../options.py', 'options.py'], ARGUMENTS )
-options.Add(EnumOption('QT_VERSION','Qt major version to use','4',allowed_values=('3','4')))
-options.Add(BoolOption('WITH_CGAL','Use CGAL',False))
-options.Add(BoolOption('USE_DOUBLE','Use Double Floating Precision',True))
+options = Variables( ['../options.py', 'options.py'], ARGUMENTS )
+options.Add(EnumVariable('QT_VERSION','Qt major version to use','4',allowed_values=('3','4')))
+options.Add(BoolVariable('WITH_CGAL','Use CGAL',False))
+options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 
 # Create an environment to access qt option values
 env = Environment(options=options, tools=[])
 qt_env = env
 qt_version = int(qt_env['QT_VERSION'])
 
-cpp_tools = ['bison', 'flex', 'bison','opengl','readline', 'install', 'qhull','boost_python','cgal','mpfr']
+cpp_tools = ['bison', 'flex', 'opengl','readline', 'install', 'qhull','boost_python','cgal','mpfr']
 if qt_version == 3:
     qt_tools = ['qt']
 else:

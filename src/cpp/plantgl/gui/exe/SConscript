@@ -18,7 +18,9 @@ LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 exe_env.Append( CPPPATH = '#/share/plantgl/pixmap')
 
 if isinstance( platform, Win32 ):
-    res=exe_env.RES('icon.rc')
+    # We limit the cpppath to the pixmap to prevent a bug in windres 
+    # with MinGW 5.4.3
+    res=exe_env.RES('icon.rc', CPPPATH = '#/share/plantgl/pixmap')
     source.append(res)
 
 LINKFLAGS = list( exe_env['LINKFLAGS'] )

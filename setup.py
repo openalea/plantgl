@@ -31,14 +31,15 @@ license= 'Cecill-C'
 # Scons build directory
 build_prefix= "build-scons"
 
-if sys.platform.startswith('win'):
+if 'win' in sys.platform:
     install_requires = ["boostpython", "qhull", "qt4"]
-    setup_requires = install_requires + ["bisonflex"]
+    setup_requires = install_requires +['qt4-dev'] 
     install_requires = [ binary_deps(i) for i in install_requires ]
 else:
     install_requires = []
     setup_requires = []
-    
+if sys.platform.startswith('win'): 
+    setup_requires.append(["bisonflex"])
 
 # Main setup
 setup(

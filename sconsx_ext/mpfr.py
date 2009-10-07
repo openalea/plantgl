@@ -70,11 +70,11 @@ class MPFR:
 
       self.default()
 
-      opts.AddOptions(PathOption('mpfr_includes', 
+      opts.AddVariables(PathVariable('mpfr_includes', 
                      'MPFR include files', 
                      self._default['include']),
 
-         PathOption('mpfr_libpath', 
+         PathVariable('mpfr_libpath', 
                      'MPFR libraries path', 
                      self._default['libpath']),
 
@@ -90,7 +90,7 @@ class MPFR:
            'MPFR defines', 
            self._default['defines']),
 
-         BoolOption('WITH_MPFR', 
+         BoolVariable('WITH_MPFR', 
            'Specify whether you want to compile your project with MPFR', True)
      )
 

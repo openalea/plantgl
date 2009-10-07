@@ -167,9 +167,9 @@ def mangoLeaf(length = 1, alpha=0, color = __niceGreen):
   #idxList.append(pgl.Index(len(list)-2, 0, 2))
   #idxList.append(pgl.Index(len(list)-1, 3*(len(x)-1), 3*(len(x)-1)+1))
   #idxList.append(pgl.Index(len(list)-1, 3*(len(x)-1)+2, 3*(len(x)-1)))
-  p3r = pgl.Point3Array(list)
-  ir = pgl.IndexArray(idxList)
-  fs = pgl.FaceSet(p3r, ir)
+  #p3r = pgl.Point3Array(list)
+  #ir = pgl.IndexArray(idxList)
+  fs = pgl.FaceSet(list,idxList)
   return pgl.Shape(fs, color)
 
 __myLeaf = mangoLeaf(alpha = 20)
