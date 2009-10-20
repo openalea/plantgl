@@ -2,7 +2,7 @@
 
 
 import os, sys
-from setuptools import setup
+from setuptools import setup, find_packages
 from openalea.deploy.binary_deps import binary_deps
 
 pj = os.path.join
@@ -40,6 +40,8 @@ else:
     setup_requires = []
 if sys.platform.startswith('win'): 
     setup_requires.append(["bisonflex"])
+
+pylint_dir = os.path.join('src', 'plantgl')
 
 # Main setup
 setup(
@@ -112,6 +114,8 @@ setup(
     setup_requires = setup_requires + ['openalea.deploy'],
     install_requires = install_requires,
     dependency_links = ['http://openalea.gforge.inria.fr/pi'],
+    pylint_packages = [ pylint_dir + os.sep + x.replace('.', os.sep) for x in find_packages(pylint_dir) if x not in ['gui']],
+
    )
 
 
