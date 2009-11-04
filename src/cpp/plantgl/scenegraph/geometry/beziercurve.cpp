@@ -487,6 +487,50 @@ bool BezierCurve2D::isValid( ) const {
 }
 
 
+Vector2 BezierCurve2D::getTangentAt(real_t u) const{
+    GEOM_ASSERT(u>=0.0&&u<=1.0);
+    if(u < GEOM_EPSILON){
+      Vector3 res(__ctrlPointList->getAt(1)-__ctrlPointList->getAt(0));
+      res.normalize();
+      if(!res.z()) return Vector2(res.x(),res.y());
+      else return res.project();
+    }
+    else if(u ==1){
+      Vector3 res(__ctrlPointList->getAt(__ctrlPointList->size()-1)-__ctrlPointList->getAt(__ctrlPointList->size()-2));
+      if(!res.z()) return Vector2(res.x(),res.y());
+      else return res.project();
+    }
+
+    Vector3 _tangent(0.0,0.0,0.0);
+    uint_t _deg = getDegree();
+    vector<real_t> derBernstein=all_bernstein(_deg-1,u);
+    for(uint_t i=0;i<_deg;i++)
+        _tangent+=(__ctrlPointList->getAt(i+1)-__ctrlPointList->getAt(i))*derBernstein[i];
+    _tangent=_tangent*_deg;
+    if(!_tangent.z())
+        return Vector2(_tangent.x(),_tangent.y());
+    else return _tangent.project();
+}
+
+
+Vector2 BezierCurve2D::getNormalAt(real_t u) const{
+    GEOM_ASSERT(u>=0.0&&u<=1.0);
+    Vector3 _normal(0.0,0.0,0.0);
+    uint_t _deg = getDegree();
+    vector<real_t> derBernstein=all_bernstein(_deg-2,u);
+    for(uint_t i=0;i<(_deg-1);i++)
+        _normal+=(__ctrlPointList->getAt(i+2)-(__ctrlPointList->getAt(i+1)*2)+__ctrlPointList->getAt(i))*derBernstein[i];
+    _normal=_normal*(_deg*(_deg-1));
+    Vector2 _tangent = getTangentAt(u);
+    _normal.normalize();
+    Vector2 _normal2;
+    if(!_normal.z())
+        _normal2 = Vector2(_normal.x(),_normal.y());
+    else _normal2 = _normal.project();
+
+    Vector3 nml = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
+	return Vector2(nml[0],nml[1]);
+}
 
 /* ----------------------------------------------------------------------- */
 

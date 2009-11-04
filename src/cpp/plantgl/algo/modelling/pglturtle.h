@@ -47,6 +47,9 @@ PGL_BEGIN_NAMESPACE
 class ALGO_API PglTurtle : public Turtle {
 public:
     // static Polyline2DPtr DEFAULT_CROSS_SECTION;
+	static AppearancePtr HEADING_FRAME_MATERIAL;
+	static AppearancePtr UP_FRAME_MATERIAL;
+	static AppearancePtr LEFT_FRAME_MATERIAL;
 
     typedef pgl_hash_map_string<GeometryPtr> SurfaceMap;
 
@@ -112,7 +115,7 @@ protected:
 
     GeometryPtr transform(const GeometryPtr& obj, bool scaled = true) const;
 
-    virtual void _addToScene(const GeometryPtr geom, bool customid = false);
+    virtual void _addToScene(const GeometryPtr geom, bool customid = false, AppearancePtr app = NULL);
 
 	/// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
     virtual void _frustum(real_t length,real_t topdiam);
@@ -124,6 +127,7 @@ protected:
     virtual void _polygon(const std::vector<TOOLS(Vector3)>& points);
     
     virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
+									  const std::vector<TOOLS(Vector3)>& left,
                                       const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection);
 
@@ -137,6 +141,7 @@ protected:
 
     virtual void _label(const std::string& text );
  
+	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio);
 
 	SurfaceMap __surfList;
     std::vector<AppearancePtr> __appList;

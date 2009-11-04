@@ -45,12 +45,15 @@
 #include <plantgl/scenegraph/geometry/cone.h>
 #include <plantgl/scenegraph/geometry/sphere.h>
 #include <plantgl/scenegraph/geometry/disc.h>
+#include <plantgl/scenegraph/geometry/group.h>
 #include <plantgl/scenegraph/geometry/text.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/container/geometryarray2.h>
 #include <plantgl/scenegraph/scene/shape.h>
 #include <plantgl/math/util_math.h>
 #include <plantgl/tool/util_types.h>
+#include <plantgl/tool/util_string.h>
 
 #include <sstream>
 
@@ -123,6 +126,7 @@ TurtleParam::reset(){
   __polygon = false;
   __generalizedCylinder = false;
   pointList.clear();
+  leftList.clear();
   radiusList.clear();
   crossSection = Curve2DPtr();
   initialCrossSection = Curve2DPtr();
@@ -131,8 +135,6 @@ TurtleParam::reset(){
     
 TurtleParam * TurtleParam::copy(){
   TurtleParam * t = new TurtleParam(*this);
-  t->pointList = vector<Vector3>(pointList.begin(),pointList.end());
-  t->radiusList = vector<real_t>(radiusList.begin(),radiusList.end());
   return t;
 }
     
@@ -171,12 +173,15 @@ bool TurtleParam::isValid() const{
 void TurtleParam::keepLastPoint(){
   if(!pointList.empty())
 	pointList = vector<Vector3>(1,*(pointList.end()-1));
+  if(!leftList.empty())
+	leftList = vector<Vector3>(1,*(leftList.end()-1));
   if(!radiusList.empty())
     radiusList = vector<real_t>(1,*(radiusList.end()-1));
 }
     
 void TurtleParam::removePoints(){
   pointList.clear();
+  leftList.clear();
   radiusList.clear();
 }
     
@@ -207,8 +212,10 @@ void TurtleParam::generalizedCylinder(bool t){
     
 void TurtleParam::pushPosition(){
   pointList.push_back(position);
-  if(__generalizedCylinder)
+  if(__generalizedCylinder) {
+	leftList.push_back(left);
 	radiusList.push_back(width);
+  }
 }
 
 /*----------------------------------------------------------*/
@@ -287,6 +294,7 @@ void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
 	  if(__params->pointList.size() > 1){
 		_generalizedCylinder(__params->pointList,
+						   __params->leftList,
 						   __params->radiusList,
 						   __params->initialCrossSection);
 	  }
@@ -309,6 +317,7 @@ void Turtle::stop(){
 	if (__params->isGeneralizedCylinderOn()){
 		if(__params->pointList.size() > 1){
 			_generalizedCylinder(__params->pointList,
+							    __params->leftList,
 							    __params->radiusList,
 							    __params->initialCrossSection);
 		}
@@ -497,6 +506,7 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 void Turtle::stopGC(){
 	if(__params->pointList.size() > 1){
 		_generalizedCylinder(__params->pointList,
+							 __params->leftList,
 							 __params->radiusList,
 							 __params->initialCrossSection);
 	}
@@ -551,7 +561,17 @@ void Turtle::surface(const std::string& name, real_t scale)
 	if (!name.empty() && scale > GEOM_EPSILON) _surface(name,scale); 
 	else {
 		if(name.empty()) warning("Invalid name for surface");
-		if(scale > GEOM_EPSILON) warning("Invalid scale for surface");
+		if(scale < GEOM_EPSILON) warning("Invalid scale for surface");
+	}
+}
+
+void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_ratio )
+{
+	if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _frame(scale,cap_heigth_ratio,cap_radius_ratio); 
+	else {
+		if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
+		if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
+		if(cap_radius_ratio < GEOM_EPSILON) warning("Invalid cap_radius_ratio for frame. Should be positive.");
 	}
 }
 
@@ -736,13 +756,13 @@ PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
   return obj;
 }
 
-void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid)
+void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePtr app)
 {
    if (custompid)
-     __scene->add(Shape3DPtr(new Shape(geom,getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
+	   __scene->add(Shape3DPtr(new Shape(geom,app?app:getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
    else{
      uint_t pid = parentId;
-     __scene->add(Shape3DPtr(new Shape(geom,getCurrentMaterial(),popId(),pid)));
+     __scene->add(Shape3DPtr(new Shape(geom,app?app:getCurrentMaterial(),popId(),pid)));
    }
 }
 
@@ -864,6 +884,7 @@ PglTurtle::_polygon(const vector<Vector3>& pointList){
 
 void 
 PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
+								const vector<Vector3>& leftList,
 								const vector<real_t>& radiusList,
 								const Curve2DPtr& crossSection){
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
@@ -877,7 +898,9 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
   if (!crossSection)
 	  error("Invalid cross section");
   assert (crossSection);
-  _addToScene(GeometryPtr(new Extrusion(axis,crossSection,radius)),true);
+  Extrusion * extrusion = new Extrusion(axis,crossSection,radius);
+  extrusion->getInitialNormal() = leftList[0];
+  _addToScene(GeometryPtr(extrusion),true);
 }
 
 void
@@ -888,3 +911,30 @@ PglTurtle::_label(const string& text ){
   _addToScene(obj);
 }
 
+AppearancePtr PglTurtle::HEADING_FRAME_MATERIAL(new Material("HEADING_FRAME_MATERIAL",Color3(250,50,50),1));
+AppearancePtr PglTurtle::UP_FRAME_MATERIAL(new Material("UP_FRAME_MATERIAL",Color3(50,50,250),1));
+AppearancePtr PglTurtle::LEFT_FRAME_MATERIAL(new Material("LEFT_FRAME_MATERIAL",Color3(50,250,50),1));
+
+void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) {
+  GeometryPtr arrow;
+  GroupPtr group;
+  real_t lengthstick = heigth*(1-cap_heigth_ratio);
+  if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
+	 GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio));
+	 if ( cap_heigth_ratio < 1) {
+		 group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
+		 group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
+		 arrow = group;
+	 }
+	 else arrow = cap;
+  }
+  if ( lengthstick > GEOM_EPSILON) {
+	 GeometryPtr stick(new Cylinder(getWidth(),lengthstick));
+	 if (group) group->getGeometryList()->setAt(1,stick);
+	 else arrow = stick;
+  }
+  arrow->setName("Frame_"+number(arrow->getId()));
+  _addToScene(transform(arrow,false),false,HEADING_FRAME_MATERIAL);
+  _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,LEFT_FRAME_MATERIAL);
+  _addToScene(transform(GeometryPtr(new Oriented(Vector3(-1,0,0),Vector3(0,0,1),arrow)),false),false,UP_FRAME_MATERIAL);
+}

@@ -44,6 +44,7 @@
 #include "lineicmodel.h"
 #include "curve.h"
 #include "disc.h"
+#include <plantgl/math/util_math.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -169,6 +170,17 @@ class SG_API Polyline2D : public Curve2D
 public:
 
     static Polyline2DPtr Circle(real_t radius = Disc::DEFAULT_RADIUS, uchar_t slices = SOR::DEFAULT_SLICES);
+    static Polyline2DPtr ArcOfCircle(real_t radius = Disc::DEFAULT_RADIUS,
+									 real_t starting_angle = 0,
+									 real_t angle_range = GEOM_PI,
+									 uchar_t slices = SOR::DEFAULT_SLICES);
+
+    static Polyline2DPtr SuperEllipsis(real_t radius = Disc::DEFAULT_RADIUS,
+									   real_t heigth = Disc::DEFAULT_RADIUS,
+									   real_t degree = 2,
+									   real_t starting_angle = 0,
+									   real_t angle_range = GEOM_TWO_PI,
+									   uchar_t slices = SOR::DEFAULT_SLICES);
 
   /// A structure which helps to build a Polyline when parsing.
   struct SG_API Builder : public Curve2D::Builder {

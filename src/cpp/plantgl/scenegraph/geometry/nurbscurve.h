@@ -356,11 +356,57 @@ public:
   */
   uint_t findSpan(real_t u) const ;  
 
+  /*! \brief Compute the Basis Functions Values 
+    Algo 2.2 From The Nurbs Book p70
+  */
+  TOOLS(RealArrayPtr) computeBasisFunctions(uint_t span, real_t u) const ;
+
+  /*!
+    \brief Compute the Derivates Basis Functions Values 
+    Algo A2.3 p72 Nurbs Book 
+    \author Philippe Lavoie     
+  */
+  TOOLS(RealArray2Ptr) computeDerivatesBasisFunctions(int n, real_t u, int span) const ;
+
+  /*!
+    \brief Computes the derivative of degree \a d of the 
+    curve at parameter \a u in the homonegeous domain
+    \author Philippe Lavoie     
+  */
+  Point3ArrayPtr deriveAtH(real_t u, int d, int span ) const;
+  
+  /*!
+    \brief Computes the derivative of the curve at the parameter \a u
+    \author Philippe Lavoie     
+  */  
+  Point3ArrayPtr deriveAt(real_t  u, int d, int span  ) const;
+  
+  /*! Returns the \e derivative of degree \e d for u = \e u.
+     \pre 
+     - \e u must be in [0,1];*/
+  virtual TOOLS(Vector3) getDerivativeAt(real_t u, int d) const;
+
+  /*! Returns the \e derivative of degree \e d for u = \e u.
+     \pre 
+     - \e u must be in [0,1];*/
+  virtual Point3ArrayPtr getDerivativesAt(real_t u) const;
+
   /*! 
      Compute point on the NURBS for u = \b u
      From the NURBS Book A4.1 p 124.
   */
   virtual TOOLS(Vector2) getPointAt(real_t u) const;
+
+  /* Returns the \e Tangent for u = \e u.
+      (see the Nurbs book p.12) 
+     \pre 
+      - \e u must be in [0,1];*/
+  virtual TOOLS(Vector2) getTangentAt(real_t u) const;
+
+  /* Returns the principal \e Normal for u = \e u.
+     \pre 
+      - \e u must be in [0,1];*/
+  virtual TOOLS(Vector2) getNormalAt(real_t u) const;
 
 protected:
 

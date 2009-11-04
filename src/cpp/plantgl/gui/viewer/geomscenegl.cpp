@@ -60,6 +60,7 @@
 #include <qclipboard.h>
 #include <qgl.h>
 #include <QHash>
+#include <QSet>
 #include <QtGui/QImage>
 #include <QtOpenGL/QGLPixelBuffer>
 
@@ -540,6 +541,7 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
   SelectionCache::iterator _it;
   uint_t selected = 0;
   uint_t unselected = 0;
+  QSet<uint_t> selection;
   for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
 	_it =__selectedShapes.find(*_id);
 	if(_it!=__selectedShapes.end()){
@@ -547,15 +549,15 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 	  unselected++;
 	}
 	else {
-	  Shape3DPtr ptr;
-	  for(Scene::iterator _it = __scene->begin();
-	  _it != __scene->end(); _it++){
-		if((ptr= dynamic_pointer_cast<Shape>(*_it)) && ptr->SceneObject::getId() == *_id){
-		  __selectedShapes[*_id]=ptr;
+		selection.insert(*_id);
+	}
+  }
+
+  Shape3DPtr ptr;
+  for(Scene::iterator _it = __scene->begin(); _it != __scene->end(); _it++){
+	if((ptr= dynamic_pointer_cast<Shape>(*_it)) && selection.find(ptr->SceneObject::getId())!=selection.end()){
+		  __selectedShapes[ptr->SceneObject::getId()]=ptr;
 		  selected++;
-		  break;
-		}
-	  }
 	}
   }
 

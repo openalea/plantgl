@@ -226,6 +226,40 @@ Polyline2DPtr Polyline2D::Circle(real_t radius,
    return Polyline2DPtr(new Polyline2D(pts));
 }
 
+Polyline2DPtr Polyline2D::ArcOfCircle(real_t radius, real_t starting_angle, real_t angle_range, uchar_t slices)
+{
+   Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices + 1));
+   real_t angle_delta = angle_range / slices;
+   real_t angle = starting_angle;
+   for (int i = 0; i <= slices; ++i){
+     pts->setAt(i,Vector2(radius*cos(angle),radius*sin(angle)));
+	 angle += angle_delta;
+   }
+   return Polyline2DPtr(new Polyline2D(pts));
+}
+
+Polyline2DPtr Polyline2D::SuperEllipsis(real_t radius,
+									   real_t heigth,
+									   real_t degree,
+									   real_t starting_angle, 
+									   real_t angle_range,
+									   uchar_t slices)
+{
+   Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices + 1));
+   real_t angle_delta = angle_range / slices;
+   real_t angle = starting_angle;
+   for (int i = 0; i <= slices; ++i){
+	 real_t cosa = cos(angle);
+	 real_t sina = sin(angle);
+	 int sign_cosa = cosa >= 0 ? 1 : -1;
+	 int sign_sina = sina >= 0 ? 1 : -1;
+     pts->setAt(i,Vector2(radius*pow(fabs(cosa),2/degree)*sign_cosa,heigth*pow(fabs(sina),2/degree)*sign_sina));
+	 angle += angle_delta;
+   }
+   return Polyline2DPtr(new Polyline2D(pts));
+
+}
+
 /* ----------------------------------------------------------------------- */
 
 Polyline2D::Builder::Builder( ) :

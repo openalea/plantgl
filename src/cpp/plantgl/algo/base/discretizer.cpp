@@ -1137,27 +1137,14 @@ bool Discretizer::process( Extrusion * extrusion ){
     uint_t _k = 0;
 
     Vector3 _oldBinormal;
-    Vector3 _normal;( _axis->getNormalAt(_start) );
-    _normal= ( _axis->getNormalAt(_start) );
-    if( normSquared(_normal) < GEOM_EPSILON )
-      {
-      // normal==0 : curve is locally like a line
-      Vector3 tg( _axis->getTangentAt(_start) );
-      Vector3 U=
-        ( tg.x() < tg.y() ) ? ( ( tg.z() < tg.x() ) ? Vector3::OZ
-                                                    : Vector3::OX )
-                            : ( ( tg.z() < tg.y() ) ? Vector3::OZ
-                                                    : Vector3::OY );
-
-      _normal= cross(tg,U);
-      }
+    Vector3 _normal( extrusion->getInitialNormalValue() );
 
     for (uint_t _i = 0; _i < _size; _i++) {
         Vector3 _center = _axis->getPointAt(_start);
         Vector3 _velocity = _axis->getTangentAt(_start);
         if(_i!=0)
             _normal = cross(_oldBinormal,_velocity);
-        else _normal = _axis->getNormalAt(_start);
+        // else _normal = _axis->getNormalAt(_start);
         _velocity.normalize();
         _normal.normalize();
         Vector3 _binormal = cross(_velocity,_normal);

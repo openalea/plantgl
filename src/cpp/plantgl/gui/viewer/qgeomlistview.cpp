@@ -613,6 +613,7 @@ bool GeomListViewBuilder::process( Extrusion * extrusion ){
 	  addArrayAngle("Orientation",prof->getOrientation());
 	  addArray("KnotList",prof->getKnotList(),"Real");
   }
+  addAttr("InitialNormal",extrusion->getInitialNormal());
 
   endNode();
   return true;

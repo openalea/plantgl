@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="wrapGui"
 	ProjectGUID="{4E64F6F6-E87D-4C1E-8270-C918F690776F}"
 	RootNamespace="wrapGui"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -39,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python26\include"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -56,11 +57,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_35.lib QtGuid4.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_39.lib QtGuid4.lib"
 				OutputFile="../../plantgl_d/gui/_pglgui_d.pyd"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
-				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_35.lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
@@ -80,9 +83,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python26\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -128,9 +128,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_35.lib QtGui4.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_39.lib QtGui4.lib"
 				OutputFile="../../plantgl/gui/_pglgui.pyd"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
@@ -150,9 +152,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

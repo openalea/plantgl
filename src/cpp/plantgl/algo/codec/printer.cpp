@@ -839,6 +839,8 @@ bool Printer::process( Extrusion * extrusion ) {
   if(! extrusion->isCCWToDefault() )
       GEOM_PRINT_FIELD(__geomStream,extrusion,CCW,BOOLEAN);
 
+  if(! extrusion->isInitialNormalToDefault() )
+      GEOM_PRINT_FIELD(__geomStream,extrusion,InitialNormal,VECTOR3);
 
   GEOM_PRINT_END(__geomStream);
 

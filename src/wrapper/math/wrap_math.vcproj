@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="9,00"
 	Name="wrapMath"
 	ProjectGUID="{0F5CB473-0099-404D-BC85-44F425DB5279}"
 	RootNamespace="wrapMath"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -39,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python26\include"
 				PreprocessorDefinitions="PGL_DEBUG"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -56,11 +57,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_35.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_39.lib"
 				OutputFile="../../plantgl_d/math/_pglmath_d.pyd"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
-				IgnoreDefaultLibraryNames="boost_python-vc80-mt-gd-1_35.lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
@@ -80,9 +83,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python25\include"
+				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python26\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -128,11 +128,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc80-mt-1_35.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_39.lib"
 				OutputFile="../../plantgl/math/_pglmath.pyd"
-				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python25\libs;$(BOOSTDIR)\lib"
+				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="../../plantgl/math/$(TargetName).pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"
 			/>
 			<Tool
@@ -152,9 +154,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

@@ -119,6 +119,7 @@ public:
   int texture;
   real_t width;
   std::vector<TOOLS(Vector3)> pointList;
+  std::vector<TOOLS(Vector3)> leftList;
   std::vector<real_t> radiusList;
   Curve2DPtr crossSection;
 

@@ -40,6 +40,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "parametricmodel.h"
+#include <plantgl/math/util_vector.h>
 
 #ifndef GEOM_FWDEF
 
@@ -100,6 +101,8 @@ class SG_API Extrusion : public ParametricModel
 
   static const bool DEFAULT_SOLID;
 
+  static const TOOLS(Vector3) DEFAULT_INITIAL_NORMAL;
+
     /// A structure which helps to build a Extrusion when parsing.
     struct SG_API Builder : public ParametricModel::Builder { 
 
@@ -123,7 +126,10 @@ class SG_API Extrusion : public ParametricModel
 	    
 	    /// A pointee to the \b CCW field.
 	    bool * CCW;
-	    
+
+	    /// A pointee to the \b InitialNormal field.
+	    TOOLS(Vector3) * InitialNormal;
+
 	    /// Constructor.
 	    Builder( );
 
@@ -145,14 +151,16 @@ class SG_API Extrusion : public ParametricModel
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
 	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW);
+	    const bool _ccw = DEFAULT_CCW,
+		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
     
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
 	    const Curve2DPtr& _crossSection, 
 	    const ProfileTransformationPtr _profile, 
 	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW);
+	    const bool _ccw = DEFAULT_CCW,
+		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
 
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
@@ -161,7 +169,8 @@ class SG_API Extrusion : public ParametricModel
 	    const TOOLS(RealArrayPtr)& _orientation = DEFAULT_ORIENTATION_LIST,
 	    const TOOLS(RealArrayPtr)& _knot = TOOLS(RealArrayPtr(0)),
 	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW);
+	    const bool _ccw = DEFAULT_CCW,
+		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
     
    /// Constructor
   Extrusion(const LineicModelPtr& _axis,
@@ -169,7 +178,8 @@ class SG_API Extrusion : public ParametricModel
 	    const TOOLS(RealArrayPtr)& _knot,
 	    const Point2ArrayPtr& _scale,
 	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW);
+	    const bool _ccw = DEFAULT_CCW,
+		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL);
     
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
@@ -177,7 +187,8 @@ class SG_API Extrusion : public ParametricModel
 	    const TOOLS(RealArrayPtr)& _orientation,
 	    const TOOLS(RealArrayPtr)& _knot = TOOLS(RealArrayPtr(0)),
 	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW); 
+	    const bool _ccw = DEFAULT_CCW,
+		const TOOLS(Vector3)& initialNormal = DEFAULT_INITIAL_NORMAL); 
     
   /// Destructor
   virtual ~Extrusion();
@@ -255,6 +266,20 @@ class SG_API Extrusion : public ParametricModel
   /// return whether KnotList is set to its default value.
   virtual bool isKnotListToDefault() const;
   
+  /// return the initial normal
+  inline const TOOLS(Vector3)& getInitialNormal() const
+  { return __initialNormal; }
+
+  /// return the initial normal
+  inline TOOLS(Vector3)& getInitialNormal()
+  { return __initialNormal; }
+
+  // return whether initial normal is to default
+  inline bool isInitialNormalToDefault()
+  { return __initialNormal == TOOLS(Vector3()); }
+
+  // Get the value of initial normal
+  TOOLS(Vector3) getInitialNormalValue() const ;
 
 protected:
     
@@ -272,6 +297,9 @@ protected:
 
     /// The CCW Field.
     bool __ccw;
+
+	/// The initial normal
+	TOOLS(Vector3) __initialNormal;
 
 }; // Extrusion
 

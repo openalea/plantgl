@@ -575,6 +575,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokId
 %token TokItalic
 %token TokIndexList
+%token TokInitialNormal
 %token TokKnotList
 %token TokMipmaping
 %token TokNegXHeight
@@ -1771,8 +1772,11 @@ ExtrusionFieldList:
      GEOM_PARSER_SET_FIELD($1,Solid,$3); $$=$1;
  }
  | ExtrusionFieldList TokCCW TokBool {
-     GEOM_PARSER_SET_FIELD($1,CCW,$3); $$=$1;
+     GEOM_PARSER_SET_FIELD($1,CCW,$3); $$=$1;     
  }
+ | ExtrusionFieldList TokInitialNormal Vector3 {
+     GEOM_PARSER_SET_FIELD($1,InitialNormal,$3); $$=$1;  
+ } 
  | {$$ = new Extrusion::Builder; };
 
 

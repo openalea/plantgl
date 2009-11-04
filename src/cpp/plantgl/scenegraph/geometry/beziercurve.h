@@ -283,7 +283,12 @@ public:
       (see the Nurbs book p.22) 
      \pre 
       - \e u must be in [0,1];*/
-  //virtual Vector3 getTangentAt(real_t u) const;
+  virtual TOOLS(Vector2) getTangentAt(real_t u) const;
+
+  /** Returns the principal \e Normal for u = \e u.
+     \pre 
+      - \e u must be in [0,1];*/
+  virtual TOOLS(Vector2) getNormalAt(real_t u) const;
 
   virtual bool isValid( ) const;
 

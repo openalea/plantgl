@@ -313,6 +313,9 @@ public:
 
     virtual void surface(const std::string& name, real_t scale=1);
 
+	inline void frame() { frame(default_step); }
+    virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2);
+
 	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }
 
@@ -342,6 +345,7 @@ protected:
     virtual void _polygon(const std::vector<TOOLS(Vector3)>& points){}
     
     virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
+									  const std::vector<TOOLS(Vector3)>& left,
 									  const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection){}
 
@@ -350,6 +354,8 @@ protected:
     virtual void _circle(real_t radius){}
 
     virtual void _surface(const std::string& name, real_t scale){}
+
+	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) { }
 
     virtual void _label(const std::string& text ){}
 

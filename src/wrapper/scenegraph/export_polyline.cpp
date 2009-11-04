@@ -152,6 +152,18 @@ void export_Polyline2D()
 	.DEC_PTR_PROPERTY(pointList,Polyline2D,PointList,Point2ArrayPtr)
 	.def("Circle",&Polyline2D::Circle,(bp::arg("radius")=Disc::DEFAULT_RADIUS,bp::arg("slices")=SOR::DEFAULT_SLICES))
     .staticmethod("Circle")
+	.def("ArcOfCircle",&Polyline2D::ArcOfCircle,(bp::arg("radius")=Disc::DEFAULT_RADIUS,
+												 bp::arg("starting_angle")=0,
+												 bp::arg("angle_range")=GEOM_PI,
+												 bp::arg("slices")=SOR::DEFAULT_SLICES))
+    .staticmethod("ArcOfCircle")
+	.def("SuperEllipsis",&Polyline2D::SuperEllipsis,(bp::arg("radius")=Disc::DEFAULT_RADIUS,
+												     bp::arg("height")=Disc::DEFAULT_RADIUS,
+												     bp::arg("degree")=2,
+												     bp::arg("starting_angle")=0,
+												     bp::arg("angle_range")=GEOM_TWO_PI,
+												     bp::arg("slices")=SOR::DEFAULT_SLICES))
+    .staticmethod("SuperEllipsis")
     ;
   implicitly_convertible<Polyline2DPtr, Curve2DPtr>();
 }

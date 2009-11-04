@@ -964,4 +964,94 @@ Vector2 NurbsCurve2D::getPointAt(real_t u) const{
   return Cw.project();
 }
 
+/* Algo A2.3 p72 Nurbs Book */
+RealArray2Ptr NurbsCurve2D::computeDerivatesBasisFunctions(int n,real_t u, int span ) const {
+    return derivatesBasisFunctions(n,u,span,__degree,__knotList);
+}
+
+Point3ArrayPtr  NurbsCurve2D::deriveAtH(real_t u, int d, int span ) const {
+    int du = ( d < (int)__degree ? d : __degree);
+    Point3ArrayPtr ders(new Point3Array(d+1));
+    RealArray2Ptr derF = computeDerivatesBasisFunctions(du,u,span) ;
+
+    for(int k=du;k>=0;--k){
+        ders->setAt(k,Vector3(0,0,0)) ;
+        for(int j=__degree;j>=0;--j){
+            ders->setAt(k, ders->getAt(k) + __ctrlPointList->getAt(span-__degree+j)*derF->getAt(k,j)) ;
+        }
+    }
+    return ders;
+}
+
+Point3ArrayPtr NurbsCurve2D::deriveAt(real_t  u, int d, int span ) const{
+    Point3ArrayPtr ders(new Point3Array(d+1));
+    Point3ArrayPtr dersW = deriveAtH(u,d,span) ;
+    Vector3 v ;
+    int k,i ;
+
+    RealArray2 Bin(d+1,d+1);
+    int n,l ;
+    // compute a Binomial Coefficient Matrix
+    // Setup the first line
+    Bin.setAt(0,0,1.0) ;
+    for( l = d ; l > 0 ; --l )
+        Bin.setAt( 0 , l , 0.0 ) ;
+    // Setup the other lines
+    for( n = 0 ; n < d ; n++ ){
+        Bin.setAt( n+1 , 0 , 1.0 );
+        for( l = 1 ; l < d+1 ; l++ )
+            if( n+1 < l )
+                Bin.setAt( n , l , 0.0 ) ;
+            else
+                Bin.setAt( n+1 , l , Bin.getAt( n , l ) + Bin.getAt( n , l-1 ) ) ;
+    }
+
+
+    // Compute the derivative at the parmeter u
+
+    for( k = 0 ; k <= d ; k++ ){
+        v.x() = dersW->getAt(k).x() ;
+        v.y() = dersW->getAt(k).y() ;
+        v.z() = dersW->getAt(k).z() ;
+        for(i=k ;i>0 ;--i){
+            v -= ders->getAt(k-i)*(Bin.getAt(k,i)*dersW->getAt(i).z()) ;
+        }
+        ders->setAt(k,v) ;
+        ders->setAt(k, ders->getAt(k) / dersW->getAt(0).z()) ;
+    }
+    return ders;
+}
+
+
+Vector3 NurbsCurve2D::getDerivativeAt(real_t u, int d) const {
+    if (d > __degree) return Vector3(0,0,0);
+    int span = findSpan(u) ;
+    Point3ArrayPtr ders = deriveAt(u,d, span) ;
+    return ders->getAt(d) ;
+}
+
+
+Point3ArrayPtr NurbsCurve2D::getDerivativesAt(real_t u) const {
+    int span = findSpan(u) ;
+    return deriveAt(u,__degree, span) ;
+}
+Vector2 NurbsCurve2D::getTangentAt(real_t u) const {
+    GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+    Vector3 _derivate = getDerivativeAt( u, 1 );
+    if(!_derivate.z())
+        return Vector2(_derivate.x(),_derivate.y());
+    else return _derivate.project();
+}
+
+Vector2 NurbsCurve2D::getNormalAt(real_t u) const{
+    GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
+    Vector2 _tangent = getTangentAt(u);
+    Vector3 _derivate = getDerivativeAt( u, 2 );
+    Vector2 _normal2;
+    if(!_derivate.z())
+        _normal2 = Vector2(_derivate.x(),_derivate.y());
+    else _normal2 = _derivate.project();
+    Vector3 nml3 = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
+	return Vector2(nml3[0],nml3[1]);
+}
 /* ----------------------------------------------------------------------- */

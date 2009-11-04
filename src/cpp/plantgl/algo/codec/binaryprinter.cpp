@@ -442,7 +442,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(2.1f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(2.2f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -1225,6 +1225,11 @@ bool BinaryPrinter::process( Extrusion * extrusion ) {
           _default += 16;
   }
   else _default += 28;
+  if(__tokens.getVersion() >= 2.2f){
+	if(extrusion->isInitialNormalToDefault() )
+		 _default += 32;
+  }
+
   writeUchar(_default);
 
   if(! extrusion->isSolidToDefault() )
@@ -1244,6 +1249,10 @@ bool BinaryPrinter::process( Extrusion * extrusion ) {
       if( ! extrusion->isKnotListToDefault() )
           GEOM_PRINT_FIELD_ARRAY( _p,KnotList,REAL);
 
+  }
+  if(__tokens.getVersion() >= 2.2f){
+    if(! extrusion->isInitialNormalToDefault() )
+      GEOM_PRINT_FIELD(extrusion,InitialNormal,VECTOR3);
   }
 
   GEOM_PRINT_FIELD(extrusion,Axis,GEOMETRY);

@@ -380,6 +380,7 @@ HeightList        {TRACE; return TokHeightList;}
 Horizontal        {TRACE; return TokHorizontal;}
 Id                {TRACE; return TokId;}
 IndexList         {TRACE; return TokIndexList;}
+InitialNormal     {TRACE; return TokInitialNormal;}
 Italic			  {TRACE; return TokItalic;}
 KnotList          {TRACE; return TokKnotList;}
 Mipmaping         {TRACE; return TokMipmaping;}

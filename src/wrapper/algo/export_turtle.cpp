@@ -34,6 +34,7 @@
 
 #include <boost/python.hpp>
 using namespace boost::python;
+#define bp boost::python
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
@@ -149,6 +150,8 @@ void export_Turtle()
     .def("circle", (void (Turtle::*) (real_t))   &Turtle::circle )
     .def("surface", &Turtle::surface )
     .def("label", &Turtle::label )
+	.def("frame", (void (Turtle::*) ())&Turtle::frame )
+	.def("frame", (void (Turtle::*) (real_t,real_t,real_t))&Turtle::frame, (bp::arg("heigth"),bp::arg("cap_heigth_ratio")=0.2,bp::arg("cap_radius_ratio")=2) )
 
     .def("setDefaultStep",    &Turtle::setDefaultStep )
     .def("setAngleIncrement", &Turtle::setAngleIncrement )

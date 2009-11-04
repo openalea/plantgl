@@ -1264,6 +1264,11 @@ bool BinaryParser::readExtrusion() {
       }
 
     }
+	if( __tokens->getVersion() >= 2.2f){
+		IF_GEOM_NOTDEFAULT(_default,5){
+			GEOM_READ_ARRAY(obj->getProfileTransformation()->getKnotList(),RealArray,Real);
+		}
+    }
 
     if(readNext()){
       obj->getAxis() = dynamic_pointer_cast<LineicModel>(__result);

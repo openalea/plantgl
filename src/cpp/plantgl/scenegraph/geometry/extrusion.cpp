@@ -55,6 +55,7 @@ const RealArrayPtr Extrusion::DEFAULT_ORIENTATION_LIST(ProfileTransformation::DE
 const Point2ArrayPtr Extrusion::DEFAULT_SCALE_LIST(ProfileTransformation::DEFAULT_SCALE_LIST);
 const bool Extrusion::DEFAULT_CCW(Mesh::DEFAULT_CCW);
 const bool Extrusion::DEFAULT_SOLID(Mesh::DEFAULT_SOLID);
+const Vector3 Extrusion::DEFAULT_INITIAL_NORMAL(Vector3::ORIGIN);
 
 Extrusion::Builder::Builder() :
     ParametricModel::Builder(),
@@ -64,7 +65,8 @@ Extrusion::Builder::Builder() :
     Orientation(0),
     KnotList(0),
     Solid(0),
-    CCW(0){
+    CCW(0),
+	InitialNormal(0){
 }
 
 Extrusion::Builder::~Builder(){
@@ -77,7 +79,8 @@ SceneObjectPtr Extrusion::Builder::build( ) const {
 	if((!Scale) && (!Orientation))
 	    return SceneObjectPtr(new Extrusion(*Axis,*CrossSection,
 						( Solid ? *Solid : Mesh::DEFAULT_SOLID ), 
-						( CCW ? *CCW : Mesh::DEFAULT_CCW )));
+						( CCW ? *CCW : Mesh::DEFAULT_CCW ),
+						( InitialNormal ? *InitialNormal : DEFAULT_INITIAL_NORMAL )));
 
 	ProfileTransformationPtr _profile;
 	if(KnotList)_profile = ProfileTransformationPtr(new ProfileTransformation(( Scale ? *Scale : DEFAULT_SCALE_LIST),
@@ -88,7 +91,8 @@ SceneObjectPtr Extrusion::Builder::build( ) const {
 	}
 	return SceneObjectPtr(new Extrusion(*Axis,*CrossSection,_profile,
 					    ( Solid ? *Solid : Mesh::DEFAULT_SOLID ), 
-					    ( CCW ? *CCW : Mesh::DEFAULT_CCW )));
+					    ( CCW ? *CCW : Mesh::DEFAULT_CCW ),
+						( InitialNormal ? *InitialNormal : DEFAULT_INITIAL_NORMAL )));
     }
     return SceneObjectPtr();
 }
@@ -101,6 +105,7 @@ void Extrusion::Builder::destroy() {
     if (KnotList) delete KnotList;
     if (Solid) delete Solid;
     if (CCW) delete CCW;
+    if (InitialNormal) delete InitialNormal;
 }
 
 bool Extrusion::Builder::isValid( ) const {
@@ -195,28 +200,33 @@ Extrusion::Extrusion( ) :
     __crossSection(),
     __profile(new ProfileTransformation()),
     __solid(Mesh::DEFAULT_SOLID),
-    __ccw(Mesh::DEFAULT_CCW){
+    __ccw(Mesh::DEFAULT_CCW),
+	__initialNormal(DEFAULT_INITIAL_NORMAL){
 }
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection, 
-		     const ProfileTransformationPtr _profile, const bool _solid, const bool _ccw  ) :
+		     const ProfileTransformationPtr _profile, const bool _solid, const bool _ccw,
+		     const Vector3& initialNormal  ) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(_profile),
     __solid(_solid),
-    __ccw(_ccw){
+    __ccw(_ccw),
+	__initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection,
-		     const bool _solid, const bool _ccw ) :
+		     const bool _solid, const bool _ccw,
+		     const Vector3& initialNormal ) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation()),
     __solid(_solid),
-    __ccw(_ccw){
+    __ccw(_ccw),
+	__initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
@@ -226,13 +236,15 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,
 		       const RealArrayPtr& _orientation,
 		       const RealArrayPtr& _knot,
 		       const bool _solid,
-		       const bool _ccw) :
+		       const bool _ccw,
+		     const Vector3& initialNormal) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation(_scale,_orientation,_knot)),
     __solid(_solid),
-    __ccw(_ccw){
+    __ccw(_ccw),
+	__initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
@@ -241,13 +253,15 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,
 		       const RealArrayPtr& _knot,
 		       const Point2ArrayPtr& _scale,
 		       const bool _solid,
-		       const bool _ccw) :
+		       const bool _ccw,
+		     const Vector3& initialNormal) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation(_scale,DEFAULT_ORIENTATION_LIST,_knot)),
     __solid(_solid),
-    __ccw(_ccw){
+    __ccw(_ccw),
+	__initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
@@ -257,13 +271,15 @@ Extrusion::Extrusion(const LineicModelPtr& _axis,
 		       const RealArrayPtr& _orientation,
 		       const RealArrayPtr& _knot,
 		       const bool _solid,
-		       const bool _ccw) :
+		       const bool _ccw,
+		     const Vector3& initialNormal) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation(DEFAULT_SCALE_LIST,_orientation,_knot)),
     __solid(_solid),
-    __ccw(_ccw){
+    __ccw(_ccw),
+	__initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
@@ -425,6 +441,29 @@ Extrusion::copy(DeepCopier& copier) const {
     ptr->getProfileTransformation() = ProfileTransformationPtr(new ProfileTransformation(scale,orientation,knot));
   }
   return SceneObjectPtr(ptr);
+}
+
+/* ----------------------------------------------------------------------- */
+
+// Get the value of initial normal
+TOOLS(Vector3) Extrusion::getInitialNormalValue() const {
+    Vector3 _normal( __initialNormal );
+    if( normSquared(_normal) > GEOM_EPSILON )
+    { return _normal; }
+	_normal = __axis->getNormalAt(__axis->getFirstKnot());
+    if( normSquared(_normal) < GEOM_EPSILON )
+    {
+      // normal==0 : curve is locally like a line
+      Vector3 tg( __axis->getTangentAt(__axis->getFirstKnot()) );
+      Vector3 U=
+        ( tg.x() < tg.y() ) ? ( ( tg.z() < tg.x() ) ? Vector3::OZ
+                                                    : Vector3::OX )
+                            : ( ( tg.z() < tg.y() ) ? Vector3::OZ
+                                                    : Vector3::OY );
+
+      _normal= cross(tg,U);
+      }
+	return _normal;
 }
 
 

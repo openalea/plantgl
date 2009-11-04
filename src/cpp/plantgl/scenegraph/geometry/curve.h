@@ -150,6 +150,17 @@ public:
       - \e u must be in [FirstKnot,LastKnot];*/
   virtual TOOLS(Vector2) getPointAt(real_t u) const = 0;
 
+  /*! Returns the \e Tangent for u = \e u.
+    \pre 
+    - \e u must be in [FirstKnot,LastKnot];*/
+  virtual TOOLS(Vector2) getTangentAt(real_t u) const = 0;
+  
+  
+  /*! Returns the principal \e Normal for u = \e u.
+    \pre 
+    - \e u must be in [FirstKnot,LastKnot];*/
+  virtual TOOLS(Vector2) getNormalAt(real_t u) const = 0;
+
   virtual bool isACurve( ) const;
 
   virtual bool isASurface( ) const;

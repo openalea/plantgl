@@ -33,6 +33,8 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/transformation/transformed.h>
 #include <plantgl/scenegraph/geometry/mesh.h>
+#include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/scenegraph/appearance/material.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
@@ -62,6 +64,22 @@ std::string gps_repr( PointSet* p )
   return ss.str();
 }
 
+ScenePtr convertPointSetToShapes(PointSet * ps, Vector3 translation = Vector3(0,0,0)) {
+	Point3ArrayPtr points = ps->getPointList();
+	Color4ArrayPtr colors = ps->getColorList();
+	Color4Array::const_iterator itColor;
+	if(colors) itColor = colors->begin();
+	ScenePtr result(new Scene());
+	size_t id = 0;
+	AppearancePtr mat(new Material("DefaultPointSetMat"));
+	for(Point3Array::const_iterator itPoint = points->begin(); itPoint != points->end(); ++itPoint,++id){
+		result->add(Shape3DPtr(new Shape(GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,(*itPoint)+translation)),
+			                                                      Color4ArrayPtr(colors?new Color4Array(1,*itColor):NULL))),
+						                  mat,id)));		
+		if(colors) ++itColor;
+	}
+	return result;
+}
 
 void export_PointSet()
 {
@@ -73,6 +91,7 @@ void export_PointSet()
     .def( "__repr__", gps_repr )
     .def( "transform", &PointSet::transform )
     .DEC_BT_NR_PROPERTY_WDV(width,PointSet,Width,uchar_t,DEFAULT_WIDTH)
+	.def("convertToShapes",&convertPointSetToShapes,(bp::arg("translation")=Vector3(0,0,0)))
     ;
   implicitly_convertible<PointSetPtr, ExplicitModelPtr>();
 }
