@@ -65,7 +65,7 @@ void export_Extrusion()
 	.DEC_PTR_PROPERTY(crossSection,Extrusion,CrossSection,Curve2DPtr)
 	.DEC_BT_NR_PROPERTY_WDV(solid,Extrusion,Solid,bool,DEFAULT_SOLID)
 	.DEC_BT_NR_PROPERTY_WDV(ccw, Extrusion,CCW,bool,DEFAULT_CCW)
-	.DEC_BT_NR_PROPERTY_WDV(initialNormal, Extrusion,InitialNormal,bool,DEFAULT_INITIAL_NORMAL)
+	.DEC_BT_PROPERTY_WDV(initialNormal, Extrusion,InitialNormal,Vector3,DEFAULT_INITIAL_NORMAL)
 
 	.DEC_PTR_PROPERTY_WDV(scaleList,Extrusion,Scale,Point2ArrayPtr,DEFAULT_SCALE_LIST)
 	.DEC_PTR_PROPERTY_WDV(orientationList,Extrusion,Orientation,RealArrayPtr,DEFAULT_ORIENTATION_LIST)
