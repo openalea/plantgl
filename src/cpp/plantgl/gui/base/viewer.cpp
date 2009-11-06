@@ -227,6 +227,7 @@ void Viewer::initialize()
 
   setGeometry(50,50,780,675);
   __isFullScreen = false;
+  __focusAtRefresh = true;
 
   __GLFrame->setGeometry(0,58,724,574);
   __GLFrame->setWhatsThis(tr("<b>The 3D Display</b><br><br>"
@@ -407,6 +408,7 @@ void Viewer::initialize()
     qDebug("Restore State");
   }
   else qDebug("Cannot restore State");
+  __focusAtRefresh = settings.value("FocusAtRefresh",__focusAtRefresh).toBool();
   settings.endGroup();
 }
 
@@ -636,8 +638,7 @@ void  Viewer::customEvent(QEvent *e){
     // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
     __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
     if(!isHidden()&&!__GLFrame->isRedrawEnabled()){
-        if(!isActiveWindow())
-          activateWindow();
+        if(!isActiveWindow() && __focusAtRefresh) activateWindow();
     }
   }
   else if(e->type() == ViewEvent::eEnd){
@@ -885,7 +886,9 @@ Viewer::saveConfig() const
   settings.setValue("StateVersion",version);
   settings.setValue("State",saveState(version));
   settings.setValue("Geometry",geometry());
+  settings.setValue("FocusAtRefresh",__focusAtRefresh);
   settings.endGroup();
+
   __GLFrame->endEvent();
   __HelpMenu->endEvent();
 }

@@ -35,6 +35,7 @@
 #include "scenegl.h"
 #include "camera.h"
 #include "glframe.h"
+#include "viewer.h"
 #include "filemanager.h"
 #include "controlpanel.h"
 #include "translator.h"
@@ -199,7 +200,19 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
 
     QLabel * lbl = new QLabel( tr("Note: Language change takes effect only at next startup."), LangGroup );
     lbl->setGeometry( QRect( 10, 40, 300, 20 ) );
+
+	Viewer * viewer = dynamic_cast<Viewer *>(g->parent());
+
+	if (viewer) {
+		QCheckBox * focus = new QCheckBox( "Focus on display", tab );
+		focus->setChecked(viewer->hasFocusAtRefresh());
+		focus->setGeometry( QRect( 30, 120, 320, 31 ) );
+		QObject::connect( focus,SIGNAL(toggled(bool)),viewer,SLOT(setFocusAtRefresh(bool)));
+	}
+
 	lang->setEnabled(false);
+
+
 }
 
 /*

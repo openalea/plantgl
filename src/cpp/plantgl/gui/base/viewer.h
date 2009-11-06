@@ -145,6 +145,8 @@ public:
   
   void animation(bool);
 
+  inline bool hasFocusAtRefresh() const { return __focusAtRefresh; }
+
 public slots:
  
   /// (Un)Display Menu Bar.
@@ -185,6 +187,8 @@ public slots:
   void setCustomFrameGLSize();
 
   void displayTrayIcon(bool);
+
+  void setFocusAtRefresh(bool value) { __focusAtRefresh = value; }
 
 protected:
   /// This event handler is called when a key is pressed for this widget. 
@@ -274,6 +278,7 @@ private:
 
   ViewerDaemon * __service;
 
+  bool __focusAtRefresh;
 
 #ifdef QT_THREAD_SUPPORT
   QMutex send_event_mutex;
