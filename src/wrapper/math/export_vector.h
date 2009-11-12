@@ -158,9 +158,15 @@ class vector_dim2_func : public boost::python::def_visitor<vector_dim2_func<V> >
         c.def(vector_base_func<V>())
          .add_property( "x", vec_getx<V>, vec_setx<V> )
          .add_property( "y", vec_gety<V>, vec_sety<V> )
+#ifdef STATIC_PROPERTY
          .add_static_property( "ORIGIN", make_getter(V::ORIGIN))
          .add_static_property( "OX", make_getter(V::OX))
          .add_static_property( "OY", make_getter(V::OY))
+#else
+         .add_property( "ORIGIN", make_getter(&V::ORIGIN))
+         .add_property( "OX", make_getter(&V::OX))
+         .add_property( "OY", make_getter(&V::OY))
+#endif
         ;
     }
 };
@@ -175,7 +181,11 @@ class vector_dim3_func : public boost::python::def_visitor<vector_dim3_func<V> >
     {
         c.def(vector_dim2_func<V>())
          .add_property( "z", vec_getz<V>, vec_setz<V> )
+#ifdef STATIC_PROPERTY
          .add_static_property( "OZ", make_getter(V::OZ))
+#else
+         .add_property( "OZ", make_getter(V::OZ))
+#endif
          .def("project",&V::project)
         ;
     }
@@ -191,7 +201,11 @@ class vector_dim4_func : public boost::python::def_visitor<vector_dim4_func<V> >
     {
         c.def(vector_dim3_func<V>())
          .add_property( "w", vec_getw<V>, vec_setw<V> )
+#ifdef STATIC_PROPERTY
          .add_static_property( "OW", make_getter(V::OW))
+#else
+         .add_property( "OW", make_getter(V::OW))
+#endif
         ;
     }
 };

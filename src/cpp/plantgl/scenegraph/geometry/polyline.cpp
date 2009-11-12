@@ -211,6 +211,8 @@ std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
 
 /* ----------------------------------------------------------------------- */
 
+const real_t Polyline2D::DEFAULT_ANGLE(GEOM_PI);
+
 Polyline2DPtr Polyline2D::Circle(real_t radius, 
                                  uchar_t slices)
 {

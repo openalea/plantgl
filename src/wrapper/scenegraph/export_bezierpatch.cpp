@@ -69,7 +69,11 @@ void export_BezierPatch()
     .DEC_BT_PROPERTY_WD(vstride,BezierPatch,VStride,uint_t)
     .add_property("udegree",&BezierPatch::getUDegree)
     .add_property("vdegree",&BezierPatch::getVDegree)
+#ifdef STATIC_PROPERTY
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
+#else
+    .add_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
+#endif
     .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     .def("getPointAt",&BezierPatch::getPointAt)
     .def("getUSection",&BezierPatch::getUSection,args("u"),"Compute a section line of the patch corresponding to a constant u value.")

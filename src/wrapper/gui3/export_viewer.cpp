@@ -348,8 +348,8 @@ public :
 void export_viewer()
 {
   scope viewer = class_< PGLViewerApplication3 >("Viewer", no_init )
-	.add_static_property("selection",&selection,&setMSelection)
-	.add_static_property("threaded",&ViewerApplication3::isThreadUsed,&ViewerApplication3::useThread)
+	.add_property("selection",&selection,&setMSelection)
+	.add_property("threaded",&ViewerApplication3::isThreadUsed,&ViewerApplication3::useThread)
 
 	.def("setBashMode", &ViewerApplication3::setBashMode,"setBashMode(bool enable) : No blocking message from the Viewer.",args("enable"))
     .staticmethod("setBashMode")

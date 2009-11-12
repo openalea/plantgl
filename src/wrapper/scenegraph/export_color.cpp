@@ -136,6 +136,7 @@ void export_Color3()
       .staticmethod("fromUint")
       .def( "__repr__", col3_str )
       .def( "__str__", col3_str )
+#ifdef STATIC_PROPERTY
       .add_static_property("BLACK",make_getter(&Color3::BLACK))
       .add_static_property("BLUE",make_getter(&Color3::BLUE))
       .add_static_property("CYAN",make_getter(&Color3::CYAN))
@@ -143,6 +144,15 @@ void export_Color3()
       .add_static_property("RED",make_getter(&Color3::RED))
       .add_static_property("WHITE",make_getter(&Color3::WHITE))
       .add_static_property("YELLOW",make_getter(&Color3::YELLOW))
+#else
+      .add_property("BLACK",make_getter(&Color3::BLACK))
+      .add_property("BLUE",make_getter(&Color3::BLUE))
+      .add_property("CYAN",make_getter(&Color3::CYAN))
+      .add_property("GREEN",make_getter(&Color3::GREEN))
+      .add_property("RED",make_getter(&Color3::RED))
+      .add_property("WHITE",make_getter(&Color3::WHITE))
+      .add_property("YELLOW",make_getter(&Color3::YELLOW))
+#endif
       .def_pickle(col3_pickle_suite());
 
   pgltuple_from_tuple<Color3,3>();
@@ -179,6 +189,7 @@ void export_Color4()
       .staticmethod("fromUint")
       .def( "__str__", col4_str )
       .def( "__repr__", col4_str )
+#ifdef STATIC_PROPERTY
       .add_static_property("BLACK",make_getter(&Color4::BLACK))
       .add_static_property("BLUE",make_getter(&Color4::BLUE))
       .add_static_property("CYAN",make_getter(&Color4::CYAN))
@@ -186,6 +197,15 @@ void export_Color4()
       .add_static_property("RED",make_getter(&Color4::RED))
       .add_static_property("WHITE",make_getter(&Color4::WHITE))
       .add_static_property("YELLOW",make_getter(&Color4::YELLOW))
+#else
+      .add_property("BLACK",make_getter(&Color4::BLACK))
+      .add_property("BLUE",make_getter(&Color4::BLUE))
+      .add_property("CYAN",make_getter(&Color4::CYAN))
+      .add_property("GREEN",make_getter(&Color4::GREEN))
+      .add_property("RED",make_getter(&Color4::RED))
+      .add_property("WHITE",make_getter(&Color4::WHITE))
+      .add_property("YELLOW",make_getter(&Color4::YELLOW))
+#endif
       .def_pickle(col4_pickle_suite());
 
     pgltuple_from_tuple<Color4,4>();

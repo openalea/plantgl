@@ -111,7 +111,11 @@ class vector_matrix_func : public boost::python::def_visitor<vector_matrix_func<
          .def( "trace", &matrix_trace<Matrix> )
          .def( "__getitem__", matrix_getElt<Matrix> )
          .def( "__setitem__", matrix_setElt<Matrix> )
+#ifdef STATIC_PROPERTY
          .add_static_property( "IDENTITY", make_getter(Matrix::IDENTITY))
+#else
+         .add_property( "IDENTITY", make_getter(Matrix::IDENTITY))
+#endif
          ;
     }
 };

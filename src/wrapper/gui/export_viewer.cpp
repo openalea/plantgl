@@ -505,9 +505,9 @@ void export_viewer()
   def("editMaterialInDialog", pyEditMaterialInDialog, pyEditMaterialInDialog_overloads());
 
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
-	.add_static_property("selection",&selection,&setMSelection)
-	.add_static_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
-	.add_static_property("redrawPolicy",&ViewerApplication::getRedrawPolicy,&ViewerApplication::setRedrawPolicy)
+	.add_property("selection",&selection,&setMSelection)
+	.add_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
+	.add_property("redrawPolicy",&ViewerApplication::getRedrawPolicy,&ViewerApplication::setRedrawPolicy)
 
 	.def("setBatchMode", &ViewerApplication::setBatchMode,"setBatchMode(bool enable) : No blocking message from the Viewer.",args("enable"))
     .staticmethod("setBatchMode")
@@ -584,7 +584,7 @@ void export_camera(){
     .staticmethod("getPosition")
     .def("setPosition",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::setCamera)
     .staticmethod("setPosition")
-	.add_static_property("position",&getCameraPosition,&setCameraPosition)
+	.add_property("position",&getCameraPosition,&setCameraPosition)
     .def("set",(void(*)(const TOOLS(Vector3)&,real_t,real_t))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
     .staticmethod("set")
     .def("lookAt",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 target)",args("target"))
@@ -703,11 +703,11 @@ void export_widgetgeometry(){
 
 void export_light(){
 	class_<PyViewLight >("light", no_init )
-    .add_static_property("enabled",&ViewerApplication::isLightEnabled,&ViewerApplication::setLightEnabled )
-    .add_static_property("position",&ViewerApplication::getLightPosition,&ViewerApplication::setLightPosition )
-    .add_static_property("ambient",&getLightAmbient,&setLightAmbient)
-    .add_static_property("diffuse",&getLightDiffuse,&setLightDiffuse)
-    .add_static_property("specular",&getLightSpecular,&setLightSpecular)
+    .add_property("enabled",&ViewerApplication::isLightEnabled,&ViewerApplication::setLightEnabled )
+    .add_property("position",&ViewerApplication::getLightPosition,&ViewerApplication::setLightPosition )
+    .add_property("ambient",&getLightAmbient,&setLightAmbient)
+    .add_property("diffuse",&getLightDiffuse,&setLightDiffuse)
+    .add_property("specular",&getLightSpecular,&setLightSpecular)
 	;
 }
 void initViewer()
