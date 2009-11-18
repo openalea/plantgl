@@ -3265,8 +3265,12 @@ Polyline2DPtr PGL::Skeleton::removeLoopsInShape(Polyline2DPtr shape)
     pts_shape.push_back(Segment_intersections(p_last,toPoint_intersections(shape->getPointListAt(0))));
 
   //std::list<Segment_intersections>::iterator return_it = 
-  CGAL::compute_intersection_points(pts_shape.begin(), pts_shape.end(),
-				std::back_inserter (pts_intersection));
+#if CGAL_VERSION_NR > 1030401000
+  CGAL::compute_intersection_points
+#else
+  CGAL::get_intersection_points
+#endif
+	  (pts_shape.begin(), pts_shape.end(), std::back_inserter (pts_intersection));
 
   return removeOneLoop(polyline, pts_intersection);
 #else
