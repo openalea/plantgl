@@ -113,12 +113,7 @@ void export_Material()
     .DEC_CT_PROPERTY_WDV(emission,Material,Emission,Color3,DEFAULT_EMISSION)
     .DEC_BT_PROPERTY_WDV(shininess,Material,Shininess,real_t,DEFAULT_SHININESS)
     .DEC_BT_PROPERTY_WDV(transparency,Material,Transparency,real_t,DEFAULT_TRANSPARENCY)
-#ifdef STATIC_PROPERTY
-
     .add_static_property("DEFAULT_MATERIAL",&getDefaultMaterial)
-#else
-    .add_property("DEFAULT_MATERIAL",&getDefaultMaterial)
-#endif
     .def_pickle(mat_pickle_suite());
   ;
 

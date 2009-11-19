@@ -80,11 +80,7 @@ void export_Shape()
 				 bp::arg("appearance") = Material::DEFAULT_MATERIAL, 
 				 bp::arg("id")         = Shape::NOID,
 				 bp::arg("parentId")   = Shape::NOID )))
-#ifdef STATIC_PROPERTY
    .add_static_property("NOID",make_getter(&Shape::NOID))
-#else
-   .add_property("NOID",make_getter(&Shape::NOID))
-#endif
     .DEF_PGLBASE(Shape)
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)

@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc90-mt-1_39.lib QtCored4.lib "
+				AdditionalDependencies="boost_python-vc90-mt-1_41.lib QtCored4.lib "
 				OutputFile="../../plantgl_d/scenegraph/_pglsg_d.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
 				IgnoreDefaultLibraryNames=""
@@ -129,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc90-mt-1_39.lib QtCore4.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_41.lib QtCore4.lib"
 				OutputFile="../../plantgl/scenegraph/_pglsg.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
 				GenerateDebugInformation="false"

@@ -113,11 +113,7 @@ void export_GLCtrlPointRenderer()
 {
 	class_< GLCtrlPointRenderer,bases< GLRenderer >,boost::noncopyable >
     ( "GLCtrlPointRenderer", init<Discretizer& >("GLCtrlPointRenderer(Discretizer d) An action which display the Control Points of Geometry objects."))
-#ifdef STATIC_PROPERTY
 	.add_static_property("DEFAULT_APPEARANCE",&get_default_app,&set_default_app)
-#else
-	.add_property("DEFAULT_APPEARANCE",&get_default_app,&set_default_app)
-#endif
 	;
 }
 

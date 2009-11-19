@@ -77,24 +77,15 @@ T retrieve_static_ptr_property() { return *static_property; }
 #define DEC_DEFAULTVALTEST(_CLASS,PROP) \
   .def("is"#PROP"ToDefault",&_CLASS::is##PROP##ToDefault,return_value_policy<return_by_value>()) \
 
-#ifdef STATIC_PROPERTY
 #define DEC_DEFAULTVAL(_CLASS,DEFAULTVAL) \
    .add_static_property(#DEFAULTVAL,make_getter(&_CLASS::DEFAULTVAL))
-#else
-#define DEC_DEFAULTVAL(_CLASS,DEFAULTVAL) \
-   .add_property(#DEFAULTVAL,make_getter(&_CLASS::DEFAULTVAL))
-#endif
 
 /* In case of Null SmartPtr, make_getter do not translate correctly the value.
    We thus create the wrapping function 'retrieve_static_ptr_property' 
    to get the static value which will be translate correctly as normal function result */
-#ifdef STATIC_PROPERTY
 #define DEC_DEFAULTVAL_PTR(_CLASS,DEFAULTVAL,TYPE) \
    .add_static_property(#DEFAULTVAL,&retrieve_static_ptr_property<TYPE,&_CLASS::DEFAULTVAL>)
-#else
-#define DEC_DEFAULTVAL_PTR(_CLASS,DEFAULTVAL,TYPE) \
-   .add_property(#DEFAULTVAL,&retrieve_static_ptr_property<TYPE,&_CLASS::DEFAULTVAL>)
-#endif
+
 #define DEC_BT_PROPERTY(PROPNAME,_CLASS,PROP,TYPE) \
     add_property(#PROPNAME,&get_prop_bt_from_class<TYPE,_CLASS,&_CLASS::get##PROP>, \
                            &set_prop_bt_from_class<TYPE,_CLASS,&_CLASS::get##PROP>) 
