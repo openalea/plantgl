@@ -53,15 +53,11 @@ object py_query_AttractPoints(ConePerception* self, const typename ConePerceptio
 							  const typename ConePerception::PointContainerPtr points, 
 							  const typename ConePerception::VectorType u, const real_t di, const real_t alpha)						  
 { 
-	ConePerception::PointsDict result = self->query_AttractPoints(start_point, points, u, di, alpha);
-	return dict_converter<ConePerception::PointsDict,make_object<ConePerception::PointsDict::key_type>,
-		                                            list_converter<ConePerception::PointsDict::
-#if (defined(USING_UNORDERED_MAP)) || defined(WIN32_STL_EXTENSION)
-          mapped_type
-#else
-          data_type
-#endif
-													>  >(result)();
+	typedef typename ConePerception::PointsDict PointsDict;
+	PointsDict result = self->query_AttractPoints(start_point, points, u, di, alpha);
+	return dict_converter<PointsDict,make_object<typename PointsDict::key_type>,
+		                         list_converter<typename PointsDict::mapped_type>,
+					 typename PointsDict::mapped_type>(result)();
 }
 
 void export_ConePerception()

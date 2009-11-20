@@ -49,15 +49,11 @@ object py_create_newnode(SpaceColonization* self, const typename SpaceColonizati
 {
      //SpaceColonization::NodeInfo info = self->create_NewNode(neighbornodes, treenode, directionV, D, di, dk, alpha);
 	 //return make_tuple(make_tuple(info.first.first,info.first.second), make_list(info.second)());
-	SpaceColonization::NodeInfo result = self->create_NewNode(neighbornodes, treenode, directionV, D, di, dk, alpha);
-	return dict_converter<SpaceColonization::NodeInfo,make_object<SpaceColonization::NodeInfo::key_type>,
-		                                            list_converter<SpaceColonization::NodeInfo::
-#if (defined(USING_UNORDERED_MAP)) || defined(WIN32_STL_EXTENSION)
-          mapped_type
-#else
-          data_type
-#endif
-													>  >(result)();
+	typedef typename SpaceColonization::NodeInfo NodeInfo;
+	NodeInfo result = self->create_NewNode(neighbornodes, treenode, directionV, D, di, dk, alpha);
+	return dict_converter<NodeInfo,make_object<typename NodeInfo::key_type>,
+		              list_converter<typename NodeInfo::mapped_type>,
+		              typename NodeInfo::mapped_type>(result)();
  }
 
 

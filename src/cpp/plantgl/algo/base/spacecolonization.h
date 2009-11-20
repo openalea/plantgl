@@ -46,6 +46,7 @@ public:
 	typedef typename PointContainer::element_type VectorType;
 	typedef PointRefGrid<PointContainer> LocalPointGrid;
 	typedef RCPtr<PointContainer> PointContainerPtr;
+	typedef RCPtr<LocalPointGrid> LocalPointGridPtr;
 	typedef typename PointContainer::const_iterator const_iterator;
 	typedef typename LocalPointGrid::PointIndexList PointIndexList;
 	typedef std::map<uint_t, std::vector<VectorType> > AxisDict;
@@ -61,7 +62,7 @@ public:
 
 /* ------------------------------------------------------------------------------------------------ */
 	// Free memory
-	void free() { delete grid; }
+	void free() { /*delete grid;*/ }
 
 /* ------------------------------------------------------------------------------------------------ */
 
@@ -132,15 +133,15 @@ public:
 
 	VectorType compute_NewNode(std::vector<VectorType> attraction_point, const VectorType treenode, const real_t D)
 	{
-		VectorType vector_n = VectorType(0,0,0);
-		for(std::vector<VectorType>::iterator _itsource = attraction_point.begin();
+		VectorType vector_n = VectorType::ORIGIN;
+		for(typename std::vector<VectorType>::iterator _itsource = attraction_point.begin();
 			_itsource != attraction_point.end(); ++_itsource)
 		{
 			if(*_itsource != treenode)
 				vector_n += (*_itsource - treenode)/norm(*_itsource - treenode);
 		}
 
-		if (vector_n == VectorType(0,0,0)) return treenode;
+		if (norm(vector_n) < GEOM_EPSILON) return treenode;
 
 		VectorType unitvector_n = vector_n/norm(vector_n);
 		return treenode + (unitvector_n * D);
@@ -161,13 +162,13 @@ public:
 		AxisDict axis = _coneperception.query_AttractPoints(treenode, query_point, directionV, di, alpha);
 
 		NodeInfo result;		
-		for (AxisDict::const_iterator iter=axis.begin(); iter != axis.end(); ++iter)
+		for (typename AxisDict::const_iterator iter=axis.begin(); iter != axis.end(); ++iter)
 		{
 			std::vector<VectorType> p, attraction_point;
 			p = iter->second;
 			if(p.size() > 2) // to protect a lot of twig
 			{
-				for(std::vector<VectorType>::const_iterator _it = p.begin(); _it != p.end(); ++_it)
+				for(typename std::vector<VectorType>::const_iterator _it = p.begin(); _it != p.end(); ++_it)
 				{
 					if(is_NearestNeighbor(neighbornodes, treenode, *_it))
 						attraction_point.push_back(*_it);
@@ -185,14 +186,8 @@ public:
 	NodeInfo nullSpace()
 	{
 		// no available space -> return {Vector3(-1,-1,-1): [Vector3(-1,-1,-1)]}
-
-		std::vector<VectorType> null_attraction;
-		NodeInfo result;
 		
-		null_attraction.push_back(Vector3(-1,-1,-1));
-		result[Vector3(-1,-1,-1)] = null_attraction;
-
-		return result;
+		return NodeInfo();
 	}
 
 /* ------------------------------------------------------------------------------------------------ */
@@ -221,7 +216,7 @@ public:
 /* ------------------------------------------------------------------------------------------------ */
 
 protected:	
-	LocalPointGrid *grid;
+	LocalPointGridPtr grid;
 
 
 }; // end SpaceColonization class

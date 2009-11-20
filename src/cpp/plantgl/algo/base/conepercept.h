@@ -37,6 +37,7 @@
 #include <plantgl/math/util_math.h>
 #include <plantgl/math/util_matrix.h>
 
+TOOLS_USING(Matrix3)
 
 PGL_BEGIN_NAMESPACE
 
@@ -54,9 +55,9 @@ public:
 
 	std::vector<VectorType> get_ConeAxis(const VectorType u, const real_t alpha)
 	{
-		VectorType v = cross(u, VectorType.OX);
-		if (v == VectorType(0,0,0))
-			v = cross(u, VectorType.OY);
+		VectorType v = cross(u, VectorType::OX);
+		if (v == VectorType::ORIGIN)
+			v = cross(u, VectorType::OY);
 
 		std::vector<VectorType> _uvector;
 		_uvector.push_back(u);
@@ -64,11 +65,11 @@ public:
 		real_t _polar = alpha;
 		while(_polar < M_PI/2)
 		{
-			VectorType vu = Matrix3().axisRotation(v,_polar) * u;
+			VectorType vu = Matrix3::axisRotation(v,_polar) * u;
 			real_t _azimuthal = 0;
 			while(_azimuthal < 2*M_PI)
 			{
-				VectorType vv = Matrix3().axisRotation(u,_azimuthal) * vu;
+				VectorType vv = Matrix3::axisRotation(u,_azimuthal) * vu;
 				_uvector.push_back(vv);
 				_azimuthal += alpha;
 			}
@@ -132,7 +133,7 @@ public:
 		if (pd.count(idx)>0)
 		{
 			std::vector<VectorType> plst = pd.find(idx)->second;   // obtained list of points
-			for(std::vector<VectorType>::iterator _itp = plst.begin();
+			for(typename std::vector<VectorType>::iterator _itp = plst.begin();
 				_itp != plst.end(); ++_itp)
 			{
 				_attractPointsList.push_back(*_itp);  // assign it back

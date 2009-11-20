@@ -120,16 +120,18 @@ template <class T,
 #else
           class ValueTranslator = make_object<typename T::data_type>
 #endif
+         ,
+#if (defined(USING_UNORDERED_MAP)) || defined(WIN32_STL_EXTENSION)
+          class ValueType = typename T::mapped_type
+#else
+          class ValueType = typename T::data_type
+#endif
          >
 struct dict_converter {
 	typedef T dict_type;
     typedef typename T::const_iterator dict_const_iterator;
     typedef typename T::key_type dict_key_type;
-#if (defined(USING_UNORDERED_MAP)) || defined(WIN32_STL_EXTENSION)
-    typedef typename T::mapped_type dict_value_type;
-#else
-    typedef typename T::data_type dict_value_type;
-#endif
+    typedef ValueType dict_value_type;
 
     dict_const_iterator __c_dict_begin;
     dict_const_iterator __c_dict_end;
