@@ -15,7 +15,7 @@ inline size_t len(bp::object t) { return (size_t)PySequence_Size(t.ptr()); }
 
 #endif
 
-#if (BOOST_VERSION) < 104100 && (PY_VERSION_HEX > 020602)
+#if (BOOST_VERSION < 104100) && (PY_VERSION_HEX > 020602)
 #ifdef __GNUC__
 #warning "Upgrade your version of boost python (recommanded >=1.41)."
 #else
