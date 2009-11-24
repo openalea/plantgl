@@ -102,7 +102,8 @@ TurtleParam::TurtleParam() :
   __polygon(false),
   __generalizedCylinder(false),
   customId(Shape::NOID),
-  customParentId(Shape::NOID)
+  customParentId(Shape::NOID),
+  sectionResolution(Cylinder::DEFAULT_SLICES)
 {        
 }
 
@@ -118,6 +119,7 @@ TurtleParam::reset(){
   lastId = Shape::NOID;
   customId = Shape::NOID;
   customParentId = Shape::NOID;
+  sectionResolution = Cylinder::DEFAULT_SLICES;
   color = 1;
   texture = 0;
   width = 0.1f;
@@ -775,11 +777,11 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
 	  (getScale().x() == getScale().y() ))
 	   width *= getScale().x();
 	if (FABS(taper) < GEOM_EPSILON)
-	  a = GeometryPtr(new Cone(width,length*getScale().z(),false));
+	  a = GeometryPtr(new Cone(width,length*getScale().z(),false,getParameters().sectionResolution));
 	else if (FABS(taper-1.0) < GEOM_EPSILON)
-	  a = GeometryPtr(new Cylinder(width,length*getScale().z(),false));
+	  a = GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution));
 	else
-	  a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false));
+	  a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false,getParameters().sectionResolution));
 	_addToScene(transform(a));
   }
   else {
@@ -794,7 +796,7 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
 		  (getScale().x() == getScale().y() && 
 		  getScale().y() == getScale().z() ))
 		  topdiam *= getScale().x();
-	  a = GeometryPtr(new Cone(_topdiam,length*getScale().z(),false));
+	  a = GeometryPtr(new Cone(_topdiam,length*getScale().z(),false,getParameters().sectionResolution));
 	  if (getLeft() != Vector3::OX || 
 		  getUp() != -Vector3::OY)
         a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
@@ -815,7 +817,7 @@ void PglTurtle::_cylinder(real_t length){
 	if ( getScale() !=  Vector3(1,1,1) &&
 		(getScale().x() == getScale().y() ))
 		width *= getScale().x();
-	_addToScene(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false))));
+	_addToScene(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution))));
   }
 }
     
@@ -825,18 +827,19 @@ void PglTurtle::_sphere(real_t radius){
 		(getScale().x() == getScale().y() && 
 		 getScale().y() == getScale().z() ))
 		rad *= getScale().x();
-  _addToScene(transform(GeometryPtr(new Sphere(rad))));
+  _addToScene(transform(GeometryPtr(new Sphere(rad,getParameters().sectionResolution,getParameters().sectionResolution))));
 }
 
 GeometryPtr PglTurtle::getCircle(real_t radius) const{
-   Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(17,Vector3(0,1,0)));
-   real_t angdelta = GEOM_PI/8.0;
+   int res = getParameters().sectionResolution;
+   Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(res+1,Vector3(0,1,0)));
+   real_t angdelta = (2*GEOM_PI)/res;
    real_t angle = 0;
-   for (int i = 1; i < 16; i++){
+   for (int i = 1; i < res; i++){
 	 angle += angdelta;
      pts->setAt(i,Vector3(0,cos(angle),sin(angle)));
    }
-   pts->setAt(16,Vector3(0,1,0));
+   pts->setAt(res,Vector3(0,1,0));
    Vector3 scale = getScale()* radius;
    return GeometryPtr(new Scaled(scale,GeometryPtr(new Polyline(pts))));
 }
@@ -850,7 +853,7 @@ PglTurtle::_circle(real_t radius){
 		(getScale().x() == getScale().y() && 
 		 getScale().y() == getScale().z() ))
 		rad *= getScale().x();
-  _addToScene(transform(GeometryPtr(new AxisRotated(Vector3::OX,GEOM_HALF_PI,GeometryPtr(new Disc(rad))))));
+  _addToScene(transform(GeometryPtr(new AxisRotated(Vector3::OX,GEOM_HALF_PI,GeometryPtr(new Disc(rad,getParameters().sectionResolution))))));
 //   __scene->add(Shape(transform(getCircle(radius),false),getCurrentMaterial()));
 }
     
@@ -920,7 +923,7 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
   GroupPtr group;
   real_t lengthstick = heigth*(1-cap_heigth_ratio);
   if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
-	 GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio));
+	 GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
 	 if ( cap_heigth_ratio < 1) {
 		 group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
 		 group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
@@ -929,7 +932,7 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
 	 else arrow = cap;
   }
   if ( lengthstick > GEOM_EPSILON) {
-	 GeometryPtr stick(new Cylinder(getWidth(),lengthstick));
+	 GeometryPtr stick(new Cylinder(getWidth(),lengthstick,true,getParameters().sectionResolution));
 	 if (group) group->getGeometryList()->setAt(1,stick);
 	 else arrow = stick;
   }

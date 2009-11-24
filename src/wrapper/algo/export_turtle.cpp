@@ -167,6 +167,8 @@ void export_Turtle()
 	.add_property("tropism",&get_prop_bt_from_class<Vector3,Turtle,&Turtle::getTropism>,(void(Turtle::*)(const Vector3&))&Turtle::setTropism)
 	.def("setTropism", (void(Turtle::*)(real_t,real_t,real_t))&Turtle::setTropism)
 
+	.add_property("sectionResolution",&get_prop_bt_from_class<uint_t,Turtle,&Turtle::getSectionResolution>,&Turtle::setSectionResolution)
+
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )
 //    .def("_polygon",&Turtle::_polygon )

@@ -319,20 +319,38 @@ public:
 	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }
 
+	inline real_t getDefaultStep() const
+	{ return default_step ; }
+
 	inline void setAngleIncrement(real_t val)
 	{ angle_increment = (val > 0 ? val : - val); }
-    
+
+	inline real_t getAngleIncrement() const 
+	{ return angle_increment; }
+
 	inline void setWidthIncrement(real_t val)
 	{ width_increment = (val > 0 ? val : - val); }
     
+	inline real_t getWidthIncrement() const
+	{ return width_increment; }
+    
 	inline void setColorIncrement(int val)
 	{ color_increment = (val > 0 ? val : - val); }
-    
+
+	inline int getColorIncrement() const
+	{ return color_increment; }
+
 	inline void setScaleMultiplier(real_t val)
 	{ scale_multiplier = (val > 0 ? val : - val); }
 
     void setCrossSection(const Curve2DPtr& curve);
 	void setDefaultCrossSection(size_t slicenb = 16);
+
+	inline void setSectionResolution(uint_t resolution) 
+	{ getParameters().sectionResolution = resolution; }
+
+	inline const uint_t& getSectionResolution() const
+	{ return getParameters().sectionResolution; }
     
     virtual void error(const std::string& error_string);
     virtual void warning(const std::string& error_string);

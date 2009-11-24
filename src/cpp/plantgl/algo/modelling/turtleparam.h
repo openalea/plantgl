@@ -126,6 +126,8 @@ public:
   uint_t customId;
   uint_t customParentId;
 
+  uint_t sectionResolution;
+
   Curve2DPtr initialCrossSection;
   int initialColor;
 
