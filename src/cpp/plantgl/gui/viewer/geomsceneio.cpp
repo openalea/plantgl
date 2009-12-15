@@ -66,15 +66,15 @@
 #include "interface/importselection.h"
 
 /// Qt
-#include <qlabel.h>
-#include <qcombobox.h>
-#include <qgroupbox.h>
-#include <qmessagebox.h>
-#include <qfiledialog.h>
-#include <qslider.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qapplication.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qcombobox.h>
+#include <QtGui/qgroupbox.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qslider.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qradiobutton.h>
+#include <QtGui/qapplication.h>
 
 
 #ifdef QT_THREAD_SUPPORT

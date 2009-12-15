@@ -45,7 +45,7 @@
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/math/util_vector.h>
 
-#include <qmenu.h>
+#include <QtGui/qmenu.h>
 
 
 /* ----------------------------------------------------------------------- */

@@ -40,15 +40,15 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qevent.h>
-#include <qcolor.h>
-#include <qstringlist.h>
+#include <QtCore/QEvent>
+#include <QtGui/QColor>
+#include <QtCore/qstringlist.h>
 #include <vector>
 #include "../gui_config.h"
 #include <plantgl/math/util_vector.h>
 
 #ifdef QT_THREAD_SUPPORT
-#include <qthread.h>
+#include <QtCore/qthread.h>
 #endif
 
 TOOLS_USING(Vector3)

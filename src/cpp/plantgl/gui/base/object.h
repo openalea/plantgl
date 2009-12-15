@@ -45,8 +45,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qobject.h>
-#include <qpoint.h>
+#include <QtCore/QObject>
+#include <QtCore/QPoint>
 class QGLWidget;
 class QMenu;
 class QToolBar;

@@ -37,9 +37,9 @@
 #include <GL/glu.h>
 #include <assert.h>
 #include <iostream>
-#include <qtoolbar.h>
-#include <qtoolbutton.h>
-#include <qwhatsthis.h>
+#include <QtGui/qtoolbar.h>
+#include <QtGui/qtoolbutton.h>
+#include <QtGui/qwhatsthis.h>
 #include "icons.h"
 #include "configuration.h"
 

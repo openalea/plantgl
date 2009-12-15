@@ -33,7 +33,7 @@
 #include <plantgl/scenegraph/scene/factory.h>
 #include <string>
 #include <sstream>
-#include <qthread.h>
+#include <QtCore/qthread.h>
 
 #include <plantgl/python/pyobj_reference.h>
 #include <plantgl/python/pyinterpreter.h>

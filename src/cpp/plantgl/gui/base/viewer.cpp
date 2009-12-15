@@ -37,25 +37,26 @@
 #endif
 
 // #include <qdragobject.h>
-#include <qapplication.h>
-#include <qstatusbar.h>
-#include <qprogressbar.h>
-#include <qspinbox.h>
-#include <qmenu.h>
-#include <qmenubar.h>
-#include <qtoolbar.h>
-#include <qfileinfo.h>
-#include <qfiledialog.h>
-#include <qmessagebox.h>
-#include <qlabel.h>
-#include <qwhatsthis.h>
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qclipboard.h>
-#include <qinputdialog.h>
-#include <qsystemtrayicon.h>
-#include <qurl.h>
-#include <qdesktopwidget.h>
+#include <QtGui/qapplication.h>
+#include <QtGui/qstatusbar.h>
+#include <QtGui/qprogressbar.h>
+#include <QtGui/qspinbox.h>
+#include <QtGui/qmenu.h>
+#include <QtGui/qmenubar.h>
+#include <QtGui/qtoolbar.h>
+#include <QtCore/qfileinfo.h>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qtextstream.h>
+#include <QtGui/qclipboard.h>
+#include <QtGui/qinputdialog.h>
+#include <QtGui/qsystemtrayicon.h>
+#include <QtCore/qurl.h>
+#include <QtGui/qdesktopwidget.h>
+#include <QtGui/QDragEnterEvent>
 
 #include "viewer.h"
 #include "event.h"

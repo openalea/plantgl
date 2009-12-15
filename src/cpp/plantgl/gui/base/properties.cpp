@@ -41,23 +41,23 @@
 #include "translator.h"
 #include <plantgl/tool/util_enviro.h>
 
-#include <qframe.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qtabwidget.h>
-#include <qwidget.h>
-#include <qlayout.h>
-#include <qvariant.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qdir.h>
-#include <qgroupbox.h>
-#include <qcheckbox.h>
-#include <qmessagebox.h>
-#include <qcombobox.h>
+#include <QtGui/qframe.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qtabwidget.h>
+#include <QtGui/qwidget.h>
+#include <QtGui/qlayout.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qfileinfo.h>
+#include <QtCore/qdir.h>
+#include <QtGui/qgroupbox.h>
+#include <QtGui/qcheckbox.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qcombobox.h>
 
 #define XBEG_1 20
 #define WIDTH_1 80

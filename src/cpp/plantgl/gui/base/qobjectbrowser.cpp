@@ -32,22 +32,22 @@
 */
 
 
-#include <qpainter.h>
+#include <QtGui/qpainter.h>
 
 #include "qobjectbrowser.h"
 #include "interface/qbrowser.h"
 #include "icons.h"
 
-#include <qlistview.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qpixmap.h>
+#include <QtGui/qlistview.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qcheckbox.h>
+#include <QtGui/qpixmap.h>
 
-#include <qapplication.h>
-#include <qmetaobject.h>
-#include <qbitmap.h>
-#include <qcursor.h>
-#include <qevent.h>
+#include <QtGui/qapplication.h>
+#include <QtCore/qmetaobject.h>
+#include <QtGui/qbitmap.h>
+#include <QtGui/qcursor.h>
+#include <QtGui/qevent.h>
 
 
 /* ----------------------------------------------------------------------- */

@@ -32,8 +32,8 @@
 #include "simpleappli.h"
 #include "viewer.h"
 #include "event.h"
-#include <qapplication.h>
-#include <qthread.h>
+#include <QtGui/qapplication.h>
+#include <QtCore/qthread.h>
 
 ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppliInternal(), __ownappli(false) { 
 	// printf("Create Simple appli\n");

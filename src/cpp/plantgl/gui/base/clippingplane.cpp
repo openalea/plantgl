@@ -32,10 +32,10 @@
  */				
 
 
-#include <qcheckbox.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qgl.h>
+#include <QtGui/qcheckbox.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qpushbutton.h>
+#include <QtOpenGL/qgl.h>
    
 #include "clippingplane.h"
 #include "event.h"

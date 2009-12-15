@@ -41,7 +41,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <qdockwidget.h>
+#include <QtGui/qdockwidget.h>
 namespace Ui {  class QBrowser; }
 
 /* ----------------------------------------------------------------------- */

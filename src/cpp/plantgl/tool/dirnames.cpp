@@ -33,9 +33,9 @@
 #include "dirnames.h"
 #include "util_types.h"
 
-#include <qfile.h>
-#include <qdir.h>
-#include <qfileinfo.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qdir.h>
+#include <QtCore/qfileinfo.h>
 
 #ifdef _WIN32
 #include <windows.h>

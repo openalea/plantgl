@@ -38,8 +38,8 @@
 #ifndef __view_fog_h__
 #define __view_fog_h__
 
-#include <qstring.h>
-#include <qcolor.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qcolor.h>
 #include "object.h"
 #include <plantgl/tool/util_types.h>
 

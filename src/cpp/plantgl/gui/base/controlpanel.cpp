@@ -33,18 +33,18 @@
 
 
 
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qcolordialog.h>
-#include <qslider.h>
-#include <qlineedit.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qbuttongroup.h>
-#include <qdial.h>
-#include <qspinbox.h>
-#include <qlayout.h>
-#include <qmainwindow.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qcheckbox.h>
+#include <QtGui/qcolordialog.h>
+#include <QtGui/qslider.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qgroupbox.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qbuttongroup.h>
+#include <QtGui/qdial.h>
+#include <QtGui/qspinbox.h>
+#include <QtGui/qlayout.h>
+#include <QtGui/qmainwindow.h>
 
 #include "controlpanel.h"
 #include "glframe.h"

@@ -32,14 +32,14 @@
  */				
 
 #include "util_qwidget.h"
-#include <qtoolbutton.h>
-#include <qmenu.h>
-#include <qpainter.h>
-#include <qprogressbar.h>
-#include <qpen.h>
-#include <qevent.h>
-#include <qpushbutton.h>
-#include <qbrush.h>
+#include <QtGui/qtoolbutton.h>
+#include <QtGui/qmenu.h>
+#include <QtGui/qpainter.h>
+#include <QtGui/qprogressbar.h>
+#include <QtGui/qpen.h>
+#include <QtGui/qevent.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qbrush.h>
 #include <stdio.h>
 
 

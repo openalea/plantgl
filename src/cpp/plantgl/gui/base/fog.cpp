@@ -31,13 +31,13 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include <qmenu.h>
-#include <qcombobox.h>
-#include <qpushbutton.h>
-#include <qslider.h>
-#include <qlineedit.h>
-#include <qcolordialog.h>
-#include <qgl.h>
+#include <QtGui/qmenu.h>
+#include <QtGui/qcombobox.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qslider.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qcolordialog.h>
+#include <QtOpenGL/qgl.h>
 #include <plantgl/algo/opengl/util_appegl.h>
 #include "fog.h"
 #include "icons.h"

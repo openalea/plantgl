@@ -42,13 +42,13 @@
 #include <plantgl/tool/bfstream.h>
 #include <plantgl/tool/dirnames.h>
 
-#include <qglobal.h>
+#include <QtCore/qglobal.h>
 #include <algorithm>
 
 #ifdef QT_THREAD_SUPPORT
-#include <qthread.h>
+#include <QtCore/qthread.h>
 #if QT_VERSION >= 300
-#include <qmutex.h>
+#include <QtCore/qmutex.h>
 #endif
 #endif
 

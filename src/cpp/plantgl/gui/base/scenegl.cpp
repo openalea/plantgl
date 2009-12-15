@@ -36,10 +36,10 @@
 #include "light.h"
 #include "filemanager.h"
 #include "event.h"
-#include <qfile.h>
-#include <qfiledialog.h>
-#include <qgl.h>
-#include <qmessagebox.h>
+#include <QtCore/qfile.h>
+#include <QtGui/qfiledialog.h>
+#include <QtOpenGL/qgl.h>
+#include <QtGui/qmessagebox.h>
 
 /* ----------------------------------------------------------------------- */
 

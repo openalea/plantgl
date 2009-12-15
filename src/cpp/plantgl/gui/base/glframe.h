@@ -43,7 +43,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qtoolbutton.h>
+#include <QtGui/QToolButton>
 class QToolBar;
 class ViewStatusBar;
 class QMenu;
@@ -53,7 +53,7 @@ class QTabWidget;
 
 /* ----------------------------------------------------------------------- */
 
-#include <qgl.h>
+#include <QtOpenGL/qgl.h>
 #ifdef QT_NO_OPENGL
 #warning Qt compiled without openGL support
 #endif

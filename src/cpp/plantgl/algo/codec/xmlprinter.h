@@ -43,7 +43,7 @@
 #include <plantgl/scenegraph/core/action.h>
 #include <plantgl/tool/util_types.h>
 #include <plantgl/tool/util_hashset.h>
-#include <qstring.h>
+#include <QtCore/qstring.h>
 
 class QTextStream;
 

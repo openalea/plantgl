@@ -38,9 +38,9 @@
 #include <plantgl/math/util_math.h>
 #include <plantgl/algo/opengl/util_glut.h>
 #include <plantgl/algo/opengl/util_appegl.h>
-#include <qfile.h>
-#include <qtoolbar.h>
-#include <qstring.h>
+#include <QtCore/qfile.h>
+#include <QtGui/qtoolbar.h>
+#include <QtCore/qstring.h>
 
 TOOLS_USING_NAMESPACE
 

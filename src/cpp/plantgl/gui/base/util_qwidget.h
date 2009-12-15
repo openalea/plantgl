@@ -38,9 +38,9 @@
 #ifndef _util_qwidget_h__
 #define _util_qwidget_h__
 
-#include <qtoolbar.h>
-#include <qdialog.h>
-#include <qstatusbar.h>
+#include <QtGui/qtoolbar.h>
+#include <QtGui/qdialog.h>
+#include <QtGui/qstatusbar.h>
 #include "../gui_config.h"
 class QToolButton;
 class QMenu;

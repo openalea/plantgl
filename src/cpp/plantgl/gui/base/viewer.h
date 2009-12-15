@@ -42,16 +42,16 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qmainwindow.h>
+#include <QtGui/qmainwindow.h>
 #include <plantgl/tool/util_types.h>
 #include <vector>
 
 #ifdef QT_THREAD_SUPPORT
-#include <qwaitcondition.h>
+#include <QtCore/qwaitcondition.h>
 #if QT_VERSION >= 300
-#include <qmutex.h>
+#include <QtCore/qmutex.h>
 #else
-#include <qthread.h>
+#include <QtCore/qthread.h>
 #endif
 #endif
 

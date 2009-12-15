@@ -40,8 +40,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qcolor.h>
-#include <qmenu.h>
+#include <QtGui/qcolor.h>
+#include <QtGui/qmenu.h>
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include "object.h"
 

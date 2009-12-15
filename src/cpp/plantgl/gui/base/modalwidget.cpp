@@ -36,8 +36,8 @@
 #include "light.h"
 #include "icons.h"
 
-#include <qmenu.h>
-#include <qtoolbar.h>
+#include <QtGui/qmenu.h>
+#include <QtGui/qtoolbar.h>
 
 ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * renderer, const char * name):
   QObject(renderer)

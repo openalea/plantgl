@@ -39,7 +39,7 @@
 #include <plantgl/algo/opengl/glctrlptrenderer.h>
 #include <plantgl/scenegraph/appearance/texture.h>
 
-#include <qgl.h>
+#include <QtOpenGL/qgl.h>
 
 /* ----------------------------------------------------------------------- */
 

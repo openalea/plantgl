@@ -44,9 +44,9 @@
 #include <plantgl/scenegraph/core/sceneobject.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 
-#include <qpixmap.h>
-#include <qstack.h>
-#include <qpair.h>
+#include <QtGui/qpixmap.h>
+#include <QtCore/qstack.h>
+#include <QtCore/qpair.h>
 
 /* ----------------------------------------------------------------------- */
 

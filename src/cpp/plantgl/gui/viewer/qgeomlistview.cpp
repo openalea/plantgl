@@ -30,8 +30,8 @@
  *  -------------------------------------------------------------------------
  */
 
-#include <qpainter.h>
-#include <q3listview.h>
+#include <QtGui/qpainter.h>
+#include <Qt3Support/q3listview.h>
 
 #include "qgeomlistview.h"
 

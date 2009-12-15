@@ -31,8 +31,8 @@
  */
 
 
-#include <qapplication.h>
-#include <qcolor.h>
+#include <QtGui/qapplication.h>
+#include <QtGui/qcolor.h>
 #include <plantgl/tool/dirnames.h>
 #include "application.h"
 #include "simpleappli.h"
@@ -48,7 +48,7 @@ using namespace std;
 
 #ifdef QT_THREAD_SUPPORT
 
-#include <qthread.h>
+#include <QtCore/qthread.h>
 #include "threadedappli.h"
 
 #endif

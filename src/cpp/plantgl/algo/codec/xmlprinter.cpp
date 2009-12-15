@@ -34,7 +34,7 @@
 
 
 #include "xmlprinter.h"
-#include <qtextstream.h>
+#include <QtCore/qtextstream.h>
 
 #include <plantgl/pgl_scene.h>
 #include <plantgl/pgl_appearance.h>

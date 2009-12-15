@@ -40,8 +40,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qvariant.h>
-#include <qdialog.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
 #include "../gui_config.h"
 
 class QVBoxLayout; 

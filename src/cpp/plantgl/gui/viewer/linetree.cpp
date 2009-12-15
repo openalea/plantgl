@@ -36,20 +36,20 @@
 #include <plantgl/algo/codec/ligfile.h>
 #include <plantgl/tool/util_enviro.h>
 
-#include <qfiledialog.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qtoolbutton.h>
-#include <qlayout.h>
-#include <qvariant.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qcheckbox.h>
-#include <qtextstream.h>
-#include <qmessagebox.h>
-#include <qregexp.h>
-#include <qevent.h>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qtoolbutton.h>
+#include <QtGui/qlayout.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qcheckbox.h>
+#include <QtCore/qtextstream.h>
+#include <QtGui/qmessagebox.h>
+#include <QtCore/qregexp.h>
+#include <QtGui/qevent.h>
 
 #include <stdlib.h>
 

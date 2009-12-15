@@ -33,10 +33,10 @@
 
 
 
-#include <qpixmap.h>
-#include <qpixmapcache.h>
-#include <qfileinfo.h>
-#include <qfile.h>
+#include <QtGui/qpixmap.h>
+#include <QtGui/qpixmapcache.h>
+#include <QtCore/qfileinfo.h>
+#include <QtCore/qfile.h>
 
 #include "icons.h"
 #include "plantgl/tool/util_types.h"

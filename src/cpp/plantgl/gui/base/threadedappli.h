@@ -43,9 +43,9 @@
 #else
 
 #include "appli.h"
-#include <qthread.h>
-#include <qmutex.h>
-#include <qwaitcondition.h>
+#include <QtCore/qthread.h>
+#include <QtCore/qmutex.h>
+#include <QtCore/qwaitcondition.h>
 
 class QApplication;
 class Viewer;

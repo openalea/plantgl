@@ -34,23 +34,23 @@
 #include "info.h"
 #include <plantgl/tool/util_types.h>
 
-#include <qlabel.h>
-#include <qpainter.h>
-#include <q3listview.h>
-#include <qpushbutton.h>
-#include <qlayout.h>
-#include <qvariant.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <qfile.h>
-#include <qtextstream.h>
-#include <qfiledialog.h>
-#include <qapplication.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qpainter.h>
+#include <Qt3Support/q3listview.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qlayout.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qimage.h>
+#include <QtGui/qpixmap.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qtextstream.h>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qapplication.h>
 #include <QtCore/QSysInfo>
-#include <qtextcodec.h>
-#include <qevent.h>
+#include <QtCore/qtextcodec.h>
+#include <QtGui/qevent.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,7 +68,7 @@
 #include <unistd.h>
 #endif
 #endif
-#include <qgl.h>
+#include <QtOpenGL/qgl.h>
 #include <GL/gl.h>
 
 #ifdef  __GNUC__

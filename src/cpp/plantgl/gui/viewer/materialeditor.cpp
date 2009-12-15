@@ -35,17 +35,17 @@
 #include "materialeditor.h"
 #include "../base/util_qwidget.h"
 
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qslider.h>
-#include <qtoolbutton.h>
-#include <qlayout.h>
-#include <qvariant.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qfont.h>
-#include <qcolordialog.h>
-#include <qevent.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qslider.h>
+#include <QtGui/qtoolbutton.h>
+#include <QtGui/qlayout.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qfont.h>
+#include <QtGui/qcolordialog.h>
+#include <QtGui/qevent.h>
 
 PGL_USING_NAMESPACE
 using namespace std;

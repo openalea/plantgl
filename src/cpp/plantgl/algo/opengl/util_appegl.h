@@ -40,7 +40,7 @@
 
 #include "util_gl.h"
 #include <plantgl/scenegraph/appearance/color.h>
-#include <qcolor.h>
+#include <QtGui/QColor>
 
 /* ----------------------------------------------------------------------- */
 

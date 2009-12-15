@@ -40,11 +40,11 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qmainwindow.h>
-#include <qmenu.h>
-#include <qtoolbar.h>
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QtGui/qmainwindow.h>
+#include <QtGui/qmenu.h>
+#include <QtGui/qtoolbar.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qstringlist.h>
 
 #include "../gui_config.h"
 

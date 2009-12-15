@@ -31,26 +31,26 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include <qstring.h>
-#include <qmessagebox.h>
-#include <qapplication.h> 
-#include <qdesktopwidget.h> 
-#include <qlabel.h>
-#include <qpainter.h>
-#include <q3listview.h> 
-#include <q3textbrowser.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qtextstream.h>
-#include <qurl.h>
-#include <qevent.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qapplication.h> 
+#include <QtGui/qdesktopwidget.h> 
+#include <QtGui/qlabel.h>
+#include <QtGui/qpainter.h>
+#include <Qt3Support/q3listview.h> 
+#include <Qt3Support/q3textbrowser.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qfileinfo.h>
+#include <QtCore/qtextstream.h>
+#include <QtCore/qurl.h>
+#include <QtGui/qevent.h>
 #include <plantgl/tool/util_enviro.h>
 
 /*  ------------------------------------------------------------------------ */
 
 
-#include <qstyle.h>
-#include <qstylefactory.h>
+#include <QtGui/QStyle>
+#include <QtGui/qstylefactory.h>
 
 
 /*  ------------------------------------------------------------------------ */

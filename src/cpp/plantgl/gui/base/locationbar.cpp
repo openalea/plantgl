@@ -33,11 +33,11 @@
 #include "locationbar.h"
 #include "icons.h"
 
-#include <qcombobox.h>
-#include <qtoolbutton.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qcursor.h>
+#include <QtGui/qcombobox.h>
+#include <QtGui/qtoolbutton.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qpixmap.h>
+#include <QtGui/qcursor.h>
 
 /*----------------------------------------------------------------------------*/
 

@@ -40,7 +40,7 @@
 
 #ifndef SYSTEM_IS__CYGWIN
 
-#include <qstringlist.h>
+#include <QtCore/qstringlist.h>
 /* ----------------------------------------------------------------------- */
 
 void removeTranslator();

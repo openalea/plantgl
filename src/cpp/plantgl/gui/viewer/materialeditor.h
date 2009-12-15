@@ -44,11 +44,11 @@
 #include <plantgl/algo/opengl/glrenderer.h>
 #include "moduleeditor.h"
 
-#include <qvariant.h>
-#include <qwidget.h>
-#include <qpushbutton.h>
-#include <qslider.h>
-#include <qgl.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qwidget.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qslider.h>
+#include <QtOpenGL/qgl.h>
 #include <GL/glu.h>
 class QVBoxLayout; 
 class QHBoxLayout; 

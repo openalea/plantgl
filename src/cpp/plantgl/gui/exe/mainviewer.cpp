@@ -33,9 +33,9 @@
  
 
 
-#include <qapplication.h>
-#include <qgl.h>
-#include <qpixmap.h>
+#include <QtGui/qapplication.h>
+#include <QtOpenGL/qgl.h>
+#include <QtGui/qpixmap.h>
 
 #include "../viewer/pglviewer.h"
 #include "../base/daemon.h"

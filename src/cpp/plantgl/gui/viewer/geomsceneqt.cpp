@@ -54,20 +54,20 @@
 #include <plantgl/tool/util_string.h>
 
 /// Qt
-#include <qmenu.h>
-#include <qframe.h>
-#include <qlineedit.h>
-#include <qlabel.h>
-#include <qtabwidget.h>
-#include <qslider.h>
-#include <qmessagebox.h>
-#include <qapplication.h>
-#include <qclipboard.h>
-#include <qfileinfo.h> 
-#include <qmainwindow.h> 
-#include <qmimedata.h> 
-#include <qurl.h>
-#include <qmap.h> 
+#include <QtGui/qmenu.h>
+#include <QtGui/qframe.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qtabwidget.h>
+#include <QtGui/qslider.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qapplication.h>
+#include <QtGui/qclipboard.h>
+#include <QtCore/qfileinfo.h> 
+#include <QtGui/qmainwindow.h> 
+#include <QtCore/qmimedata.h> 
+#include <QtCore/qurl.h>
+#include <QtCore/qmap.h> 
 
 
 #ifdef QT_THREAD_SUPPORT

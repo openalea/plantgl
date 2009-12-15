@@ -46,9 +46,9 @@
 #include <plantgl/scenegraph/container/geometryarray2.h>
 #include <plantgl/math/util_math.h>
 
-#include <qgl.h>
-#include <qimage.h>
-#include <qfont.h>
+#include <QtOpenGL/QGLWidget>
+#include <QtGui/QImage>
+#include <QtGui/QFont>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

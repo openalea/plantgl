@@ -41,9 +41,9 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <qstringlist.h>
-#include <qdockwidget.h>
-#include <qmutex.h>
+#include <QtCore/qstringlist.h>
+#include <QtGui/qdockwidget.h>
+#include <QtCore/qmutex.h>
 
 /* ----------------------------------------------------------------------- */
 

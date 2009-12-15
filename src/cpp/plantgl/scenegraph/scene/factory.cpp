@@ -220,7 +220,7 @@ void SceneFactory::unregisterCodec(const SceneCodecPtr& codec)
 	if(it != __codecs.end())__codecs.erase(it);
 }
 
-#include <qlibrary.h>
+#include <QtCore/QLibrary>
 
 bool SceneFactory::installDefaultLib()
 {

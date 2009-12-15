@@ -38,7 +38,7 @@
 #include <plantgl/math/util_vector.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/appearance/color.h>
-#include <qstring.h>
+#include <QtCore/qstring.h>
 
 /// Transform a Color3 to QString
 inline QString toQString(const PGL(Color3)& a){

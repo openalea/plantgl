@@ -34,16 +34,16 @@
 #include "errordialog.h"
 #include "configuration.h"
 #include "interface/messagedisplayer.h"
-#include <qevent.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qapplication.h>
-#include <qclipboard.h>
-#include <qmime.h>
-#include <qstringlist.h>
-#include <qregexp.h>
-#include <qwhatsthis.h>
-#include <qtextbrowser.h>
+#include <QtGui/qevent.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qradiobutton.h>
+#include <QtGui/qapplication.h>
+#include <QtGui/qclipboard.h>
+#include <QtGui/qmime.h>
+#include <QtCore/qstringlist.h>
+#include <QtCore/qregexp.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qtextbrowser.h>
 
 #include <iostream>
 

@@ -36,7 +36,7 @@
 
 #include "../gui_config.h"
 #include <plantgl/scenegraph/core/sceneobject.h>
-#include <qwidget.h>
+#include <QtGui/qwidget.h>
 
 class QMenuBar;
 class QToolBar;

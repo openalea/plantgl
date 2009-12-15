@@ -35,17 +35,17 @@
 /* ----------------------------------------------------------------------- */
 
 #include "daemon.h"
-#include <qhostaddress.h>
-#include <qtextstream.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qapplication.h>
-// #include <qtextview.h>
-#include <qtcpsocket.h>
-#include <qfileinfo.h>
-#include <qregexp.h>
-#include <qtimer.h>
-#include <qurl.h>
+#include <QtNetwork/qhostaddress.h>
+#include <QtCore/qtextstream.h>
+#include <QtGui/qlabel.h>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qapplication.h>
+// #include <QtGui/qtextview.h>
+#include <QtNetwork/qtcpsocket.h>
+#include <QtCore/qfileinfo.h>
+#include <QtCore/qregexp.h>
+#include <QtCore/qtimer.h>
+#include <QtCore/qurl.h>
 
 
 /* ----------------------------------------------------------------------- */

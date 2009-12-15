@@ -52,15 +52,15 @@
 #include "geomevent.h"
 
 /// Qt
-#include <qslider.h>
-#include <qpainter.h>
-#include <q3listview.h>
-#include <qmessagebox.h>
-#include <qapplication.h>
-#include <qclipboard.h>
-#include <qgl.h>
-#include <QHash>
-#include <QSet>
+#include <QtGui/qslider.h>
+#include <QtGui/qpainter.h>
+#include <Qt3Support/q3listview.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qapplication.h>
+#include <QtGui/qclipboard.h>
+#include <QtOpenGL/qgl.h>
+#include <QtCore/QHash>
+#include <QtCore/QSet>
 #include <QtGui/QImage>
 #include <QtOpenGL/QGLPixelBuffer>
 

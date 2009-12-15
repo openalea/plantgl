@@ -52,8 +52,8 @@
 #endif
 #else
 
-#include <qthread.h>
-#include <qstring.h>
+#include <QtCore/qthread.h>
+#include <QtCore/qstring.h>
 #include <plantgl/scenegraph/scene/scene.h>
 
 /* ----------------------------------------------------------------------- */

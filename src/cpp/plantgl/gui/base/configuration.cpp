@@ -33,8 +33,8 @@
 
 
 #include "configuration.h"
-#include <qapplication.h>
-#include <qfileinfo.h>
+#include <QtGui/qapplication.h>
+#include <QtCore/qfileinfo.h>
 
 /*--------------------------------------------------------------*/
 

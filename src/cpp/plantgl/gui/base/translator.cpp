@@ -35,8 +35,8 @@
 
 #ifndef SYSTEM_IS__CYGWIN
 
-#include <qtranslator.h>
-#include <qapplication.h>
+#include <QtCore/qtranslator.h>
+#include <QtGui/qapplication.h>
 #include <plantgl/tool/util_enviro.h>
 
 static QTranslator * fr = NULL;

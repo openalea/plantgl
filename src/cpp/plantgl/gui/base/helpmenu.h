@@ -41,9 +41,9 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <qmenu.h>
-#include <qdialog.h>
-#include <qtimer.h>
+#include <QtGui/qmenu.h>
+#include <QtGui/qdialog.h>
+#include <QtCore/qtimer.h>
 #include <vector>
 class QGLWidget;
 class ViewAboutDialog;

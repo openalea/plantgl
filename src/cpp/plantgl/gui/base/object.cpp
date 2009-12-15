@@ -33,9 +33,9 @@
 
 #include "object.h"
 
-#include <qpoint.h>
-#include <qmessagebox.h>
-#include <qgl.h>
+#include <QtCore/qpoint.h>
+#include <QtGui/qmessagebox.h>
+#include <QtOpenGL/qgl.h>
 
 #include "camera.h"
 #include "errordialog.h"

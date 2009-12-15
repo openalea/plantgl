@@ -31,18 +31,17 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <qpainter.h>
-#include <q3listview.h>
-#include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qevent.h>
+#include <QtGui/qpainter.h>
+#include <Qt3Support/Q3ScrollView>
+#include <QtGui/qpushbutton.h>
+#include <QtGui/qcheckbox.h>
+#include <QtGui/qevent.h>
 
 #include "browser.h"
 #include "scenegl.h"
 #include "interface/qbrowser.h"
 
 /* ----------------------------------------------------------------------- */
-
 
 
 ViewBrowser::ViewBrowser(QWidget * parent, const QString& title)

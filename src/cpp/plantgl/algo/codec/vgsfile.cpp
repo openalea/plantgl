@@ -43,9 +43,9 @@
 
 
 #include <fstream>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qregexp.h>
+#include <QtCore/qstring.h>
+#include <QtCore/qstringlist.h>
+#include <QtCore/qregexp.h>
 
 /* ----------------------------------------------------------------------- */
 

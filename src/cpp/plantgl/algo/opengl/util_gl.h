@@ -51,8 +51,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include <qpoint.h>
-#include <qrect.h>
+#include <QtCore/qpoint.h>
+#include <QtCore/qrect.h>
 
 #include <plantgl/math/util_math.h>
 #include <plantgl/math/util_vector.h>

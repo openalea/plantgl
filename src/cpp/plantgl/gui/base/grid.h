@@ -43,8 +43,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <qstring.h>
-#include <qmenu.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qmenu.h>
 #include "object.h"
 #include <plantgl/algo/opengl/util_gl.h>
 

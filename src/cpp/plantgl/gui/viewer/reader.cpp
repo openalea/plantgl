@@ -36,7 +36,7 @@
 
 #ifdef QT_THREAD_SUPPORT
 
-#include <qapplication.h>
+#include <QtGui/qapplication.h>
 
 #include "geomevent.h"
 #include "geomscenegl.h"

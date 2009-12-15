@@ -41,8 +41,8 @@
 /* ----------------------------------------------------------------------- */
 
 #include "glframe.h"
-#include <qvariant.h>
-#include <qdialog.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qdialog.h>
 
 /* ----------------------------------------------------------------------- */
 

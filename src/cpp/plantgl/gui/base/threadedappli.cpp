@@ -35,7 +35,7 @@
 
 #ifdef QT_THREAD_SUPPORT
 
-#include <qapplication.h>
+#include <QtGui/qapplication.h>
 #include "viewer.h"
 #include "event.h"
 #include <plantgl/tool/dirnames.h>

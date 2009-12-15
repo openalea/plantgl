@@ -35,8 +35,8 @@
 
 
 #include "../gui_config.h"
-#include <qstringlist.h>
-#include <qsettings.h>
+#include <QtCore/qstringlist.h>
+#include <QtCore/qsettings.h>
 
 
 /*--------------------------------------------------------------*/

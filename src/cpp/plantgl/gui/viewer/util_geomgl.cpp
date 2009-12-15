@@ -32,7 +32,7 @@
  */
 
 #include "util_geomgl.h"
-#include <qapplication.h>
+#include <QtGui/qapplication.h>
 #include "geomevent.h"
 #include "../base/scenegl.h"
 

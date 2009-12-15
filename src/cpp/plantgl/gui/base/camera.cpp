@@ -36,18 +36,18 @@
 #include <plantgl/math/util_math.h>
 #include <plantgl/gui/viewer/util_qstring.h>
 
-#include <qtextstream.h>
-#include <qtabwidget.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qfile.h>
-#include <qtoolbutton.h>
-#include <qtoolbar.h>
-#include <qfiledialog.h>
-#include <qwhatsthis.h>
-#include <qmessagebox.h>
-#include <qbitmap.h>
+#include <QtCore/qtextstream.h>
+#include <QtGui/qtabwidget.h>
+#include <QtGui/qlineedit.h>
+#include <QtGui/qcombobox.h>
+#include <QtGui/qlabel.h>
+#include <QtCore/qfile.h>
+#include <QtGui/qtoolbutton.h>
+#include <QtGui/qtoolbar.h>
+#include <QtGui/qfiledialog.h>
+#include <QtGui/qwhatsthis.h>
+#include <QtGui/qmessagebox.h>
+#include <QtGui/qbitmap.h>
 
 #include "filemanager.h"
 #include "camera.h"

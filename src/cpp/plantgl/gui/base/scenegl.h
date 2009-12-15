@@ -44,7 +44,7 @@
 #include "glframe.h"
 #include <plantgl/tool/util_types.h>
 #include <plantgl/scenegraph/geometry/boundingbox.h>
-#include <qdatetime.h>
+#include <QtCore/qdatetime.h>
 
 /* ----------------------------------------------------------------------- */
 

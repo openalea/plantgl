@@ -45,9 +45,9 @@ class QLabel;
 class QTextView;
 class QPushButton;
 class QSocket;
-#include <qtcpserver.h>
-#include <qhttp.h>
-#include <qdialog.h>
+#include <QtNetwork/qtcpserver.h>
+#include <QtNetwork/qhttp.h>
+#include <QtGui/qdialog.h>
 #include "../gui_config.h"
 /* ----------------------------------------------------------------------- */
 
