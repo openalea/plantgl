@@ -350,14 +350,14 @@ class Color (object):
 #		predefined colors
 #
 # ##########################################################
-red=Color(1.,0.,0.)
-green=Color(0.,1.,0.)
-blue=Color(0.,0.,1.)
-yellow=Color(1.,1.,0.)
-magenta=Color(1.,0.,1.)
-cyan=Color(0.,1.,1.)
-white=Color(1.,1.,1.)
-black=Color(0.,0.,0.)
+red = Color(1.,0.,0.)
+green = Color(0.,1.,0.)
+blue = Color(0.,0.,1.)
+yellow = Color(1.,1.,0.)
+magenta = Color(1.,0.,1.)
+cyan = Color(0.,1.,1.)
+white = Color(1.,1.,1.)
+black = Color(0.,0.,0.)
 
 color_list=[Color(0.,0.,0.),
 			Color(1.,0.,0.),
@@ -419,14 +419,45 @@ def gauss (mean=0.5, sd=0.2) :
 		sd=[sd]*3
 	return Color(gauss_bound(mean[0],sd[0]),gauss_bound(mean[1],sd[1]),gauss_bound(mean[2],sd[2]),1.)
 
-class ColorRange (object) :
+class ColorMap (object) :
+	"""Functor used to associate a color to
+	a set of values.
+	"""
+	
+	def __init__ (self) :
+		pass
+	
+	def get_color (self, value) :
+		"""Return the color corresponding
+		to this value in the color map.
+		
+		value: float or int or whatever
+		return: Color
+		"""
+		pass
+	
+	def __call__ (self, value) :
+		"""Magic alias for `get_color`		"""
+		return self.get_color(value)
+	
+	def invert (self, color) :
+		"""ompute the value that will give color
+		using this color range
+		invert function of get_color
+		"""
+		pass
+
+class ColorRange (ColorMap) :
 	"""Usefull class for creating a range of colors
 	like degrade of photoshop
 	
 	:author: Jerome Chopard
 	:license: don't touch"""
 	
-	def __init__ (self, value_range=(0.0,1.0), color_list=[blue,green,red], position_list=None, outside_values=False) :
+	def __init__ (self, value_range=(0.0,1.0),
+	                    color_list=[blue,green,red],
+	                    position_list=None,
+	                    outside_values=False) :
 		"""
 		constructor
 		
@@ -441,6 +472,7 @@ class ColorRange (object) :
 			- `position_list` : list of float
 			- `outside_values` : bool
 		"""
+		ColorMap.__init__(self)
 		self.set_value_range( value_range )
 		
 		if len(color_list)<=1 :
@@ -463,7 +495,6 @@ class ColorRange (object) :
 		
 		:Parameters:
 			- `value_range` : value range in which we pick values
-
 		:Types:
 			- `value_range` : (float,float)
 		
@@ -547,40 +578,62 @@ class ColorRange (object) :
 #		predefined color_maps
 #
 ##########################
+class IntMap (ColorMap) :
+	def get_color (self, value) :
+		return color_list[value % len(color_list)]
+	
+	def invert (self, color) :
+		raise NotImplementedError("")
+
 class GrayMap (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., **keys) :
-		ColorRange.__init__(self,(val_min,val_max),
-				[black,white])
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [black,white],
+		                    **keys)
 
 class JetMap (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., **keys) :
-		ColorRange.__init__(self,(val_min,val_max),
-			[Color(0.,0.,0.3),blue,green,
-			yellow,red,Color(0.3,0.,0.)],
-			(0.,0.15,0.3,0.7,0.85,1.), **keys)
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [Color(0.,0.,0.3),blue,green,
+		                     yellow,red,Color(0.3,0.,0.)],
+		                    (0.,0.15,0.3,0.7,0.85,1.),
+		                    **keys)
 
 class TerrainMap (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., **key) :
-		ColorRange.__init__(self,(val_min,val_max),
-			[Color(0.,0.651,0.),Color(0.902,0.902,0.),
-			Color(0.925,0.694,0.463),Color(0.949,0.949,0.949)],
-			(0.,0.4,0.8,1.))
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [Color(0.,0.651,0.),Color(0.902,0.902,0.),
+		                     Color(0.925,0.694,0.463),Color(0.949,0.949,0.949)],
+		                    (0.,0.4,0.8,1.),
+		                    **keys)
 
 class HeatMap (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., **keys) :
-		ColorRange.__init__(self,(val_min,val_max),
-			[Color(0.2,0.,0.),red,yellow,white,Color(0.3,0.3,1.)],
-			(0.,0.3,0.6,0.9,1.), **keys)
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [Color(0.2,0.,0.),red,
+		                     yellow,white,Color(0.3,0.3,1.)],
+		                    (0.,0.3,0.6,0.9,1.),
+		                    **keys)
 
 class JetMapWithoutRed (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., **keys) :
-		ColorRange.__init__(self,(val_min,val_max),
-			[Color(0.,0.,0.3),blue,green,
-			yellow,magenta],
-			(0.,0.2,0.5,0.8,1.), **keys)
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [Color(0.,0.,0.3),blue,green,
+		                     yellow,magenta],
+		                    (0.,0.2,0.5,0.8,1.),
+		                    **keys)
 
 class GreenMap (ColorRange) :
 	def __init__ (self, val_min=0., val_max=1., **keys) :
-		ColorRange.__init__(self,(val_min,val_max),
-			[Color(0.,0.,0.),Color(0.,0.1,0.),green],
-			(0.,.5,1.), **keys)
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [Color(0.,0.,0.),Color(0.,0.1,0.),green],
+		                    (0.,.5,1.),
+		                    **keys)
+
+
