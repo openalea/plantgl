@@ -57,7 +57,7 @@ TOOLS_USING_NAMESPACE
 #include <CGAL/Cartesian.h>
 #include <CGAL/Arr_segment_traits_2.h>
 #include <CGAL/Arrangement_2.h>
-#include <CGAL/Arr_overlay.h>
+#include <CGAL/Arr_overlay_2.h>
 #include <CGAL/Arr_default_overlay_traits.h>
 #include <CGAL/Cartesian.h>
 #include <CGAL/MP_Float.h>
