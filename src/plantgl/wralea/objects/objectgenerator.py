@@ -1,3 +1,4 @@
+from openalea.core import ScriptLibrary
 from openalea.core.external import *
 import openalea.core.interface as intface
 from openalea.plantgl import math as mt
@@ -83,6 +84,17 @@ class PglNode(Node):
         obj = self.pgltype(**args)
         obj.name = name
         return (obj,)
+    
+    def to_script (self) :
+        lib = ScriptLibrary()
+        obj, = self.outputs
+        pgltype = str(self.pgltype).split(".")[-1][:-2]
+        obj = lib.register(obj,"pglobj")
+        
+        script = "from vplants.plantgl.scenegraph import %s\n" % pgltype
+        script += "%s = %s()\n" % (obj,pgltype)
+        
+        return script
 
 
 
