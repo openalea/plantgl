@@ -30,7 +30,7 @@ Documentation
     :maxdepth: 1
 
     User Guide<user/index.rst>   
-    Reference Guide<PlantGL/index.rst>
+    Reference Guide<user/autosum.rst>
 
 - A `PDF <../latex/PlantGL.pdf>`_ version of |PlantGL| documentation is 
   available.

@@ -1,32 +1,23 @@
 # -*- coding: iso-8859-15 -*-
-
-
 import os, sys
 from setuptools import setup, find_packages
 from openalea.deploy.binary_deps import binary_deps
-
 pj = os.path.join
 
 import versionreader
 
+from openalea.deploy.metainfo import read_metainfo
+metadata = read_metainfo('metainfo.ini', verbose=True)
+for key,value in zip(metadata.keys(), metadata.values()):
+    exec("%s = '%s'" % (key, value))
+
+
 # Setup script
-
-name = 'plantgl'
-namespace = 'openalea'
-pkg_name = 'openalea.plantgl'
+meta_version = version 
 version = versionreader.getPGLVersionString()
+if meta_version != version:
+    print 'Warning:: Update the version in metainfo.ini !!'
 print pkg_name,': version =',version
-
-description= 'PlantGL package for OpenAlea.' 
-long_description= '''
-Plant Geometric Library is a powerfull library to create and display vegetal 3D scene.
-'''
-
-author= 'Frederic Boudon, Christophe Pradal'
-author_email= 'frederic.boudon@cirad.fr, christophe.pradal@cirad.fr'
-url= 'http://openalea.gforge.inria.fr/dokuwiki/doku.php?id=packages:visualization:plantgl:plantgl'
-
-license= 'Cecill-C' 
 
 # Scons build directory
 build_prefix= "build-scons"
@@ -45,15 +36,15 @@ pylint_dir = os.path.join('src', 'plantgl')
 
 # Main setup
 setup(
-    name="VPlants.PlantGL",
+    name=name,
     version=version,
     description=description,
     long_description=long_description,
-    author=author,
-    author_email=author_email,
+    author=authors,
+    author_email=authors_email,
     url=url,
     license=license,
-    
+
     # Define what to execute with scons
     # scons is responsible to put compiled library in the write place
     # ( lib/, package/, etc...)
@@ -82,7 +73,7 @@ setup(
                 ],
     
     # python packages directory
-    package_dir= { pkg_name : pj('src',name),
+    package_dir= { pkg_name : pj('src','plantgl'),
                    '' : 'src',
                    },
 
