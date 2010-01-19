@@ -5,7 +5,8 @@ import bezier_nurbs
 import warnings
 
 NurbsCurve.CSpline = staticmethod(cspline.cspline)
-NurbsCurve2D.CBezier = staticmethod(bezier_nurbs.cubic_bezier)
+NurbsCurve2D.CBezier = staticmethod(bezier_nurbs.cubic_bezier2D)
+NurbsCurve.CBezier = staticmethod(bezier_nurbs.cubic_bezier3D)
 
 def deprecated(func):
     """This is a decorator which can be used to mark functions
