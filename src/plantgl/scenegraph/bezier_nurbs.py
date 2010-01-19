@@ -23,7 +23,7 @@ http://www.w3.org/TR/SVG/paths.html#PathDataCurveCommands
 __license__= "Cecill-C"
 __revision__=" $Id: $ "
 
-from openalea.plantgl.math import Vector3,norm
+from openalea.plantgl.math import Vector2,Vector3,norm
 from openalea.plantgl.scenegraph import NurbsCurve2D
 
 def cubic_bezier (ctrl_points, uniform = False, stride = 60) :
@@ -48,9 +48,11 @@ def cubic_bezier (ctrl_points, uniform = False, stride = 60) :
 	
 	:Returns Type: :class:NurbsCurve2D
 	"""
-	degree = 3
 	#TODO work in 3D too
-	nb_pts = len(ctrl_pts)
+	degree = 3
+	ctrl_points = [Vector2(*vec) for vec in ctrl_points]
+	
+	nb_pts = len(ctrl_points)
 	nb_arc = (nb_pts - 1) / degree
 	nb_knots = degree + nb_pts
 	p = 0.
@@ -59,7 +61,8 @@ def cubic_bezier (ctrl_points, uniform = False, stride = 60) :
 		if uniform :
 			p += 1
 		else :
-			p += norm(ctrl_pts[degree*i]-ctrl_pts[degree*(i+1)])
+			p += norm(ctrl_points[degree * i] \
+			        - ctrl_points[degree * (i + 1)])
 		param.append(p)
 	kv = [param[0]]
 	for p in param :
@@ -68,7 +71,7 @@ def cubic_bezier (ctrl_points, uniform = False, stride = 60) :
 	kv.append(param[-1])
 	
 	#curve
-	return NurbsCurve2D([Vector3(v[0],v[1],1.) for v in ctrl_pts],
+	return NurbsCurve2D([Vector3(v[0],v[1],1.) for v in ctrl_points],
 	                    kv,
 	                    degree,
 	                    stride)
