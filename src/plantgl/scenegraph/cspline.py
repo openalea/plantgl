@@ -8,7 +8,7 @@
 
 """
 Class Cardinal Spline.
-A cradinal spline is a spline passing through a set of points.
+A cardinal spline is a spline passing through a set of points.
 """
 
 import os, math

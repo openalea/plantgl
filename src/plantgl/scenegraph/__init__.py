@@ -1,9 +1,11 @@
 from _pglsg import *
 
 import cspline
+import bezier_nurbs
 import warnings
 
 NurbsCurve.CSpline = staticmethod(cspline.cspline)
+NurbsCurve2D.CBezier = staticmethod(bezier_nurbs.cubic_bezier)
 
 def deprecated(func):
     """This is a decorator which can be used to mark functions
