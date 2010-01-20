@@ -263,6 +263,7 @@ public:
 
   /// Transform all the points of the array with a matrix
   void transform(const TOOLS(Matrix4)&);
+
 };
 
 /// Point3Array Pointer
@@ -448,6 +449,22 @@ void filterAndHomogenize(Array& array)
 	    *it = *res.first;
 	}
     }
+}
+
+  /// find the closest point to point in the array
+template <class Array>
+typename Array::const_iterator findClosest(const Array& array, const typename Array::element_type& point)
+{
+	typename Array::const_iterator closest = array.begin();
+	real_t dist = norm(*closest-point);
+	for (typename Array::const_iterator it = closest+1; it != array.end(); ++it){
+		real_t d = norm(*it-point);
+		if (d < dist) {
+			closest = it;
+			dist = d;
+		}
+	}
+	return closest;
 }
 
 // __geom_pointarray.h__

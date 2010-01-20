@@ -113,6 +113,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,&quot;$(BOOSTDIR)&quot;;..\.."
 				PreprocessorDefinitions="SG_MAKEDLL"
 				RuntimeLibrary="2"
@@ -135,6 +137,7 @@
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="../../../../bin/$(TargetName).pdb"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"

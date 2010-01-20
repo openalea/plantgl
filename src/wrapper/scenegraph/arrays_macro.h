@@ -214,9 +214,24 @@ T * array_additem( T * array, typename T::element_type v )
 }
 
 template<class T>
+T * array_addarray( T * array, T * array2 )  
+{ 
+	T * array3 = new T(array->begin(),array->end());
+	array3->insert(array3->end(),array2->begin(),array2->end()); 
+	return array3;
+}
+
+template<class T>
 T * array_iadditem( T * array, typename T::element_type v ) 
 { 
 	array->push_back(v); 
+	return array; 
+}
+
+template<class T>
+T * array_iaddarray( T * array, T * array2 ) 
+{ 
+	array->insert(array->end(),array2->begin(),array2->end()); 
 	return array; 
 }
 
@@ -225,11 +240,18 @@ void array_appenditem( T * array, typename T::element_type v )
 { array->push_back(v); }
 
 template<class T>
-T * array_iaddarray( T * array, T * array2 ) 
-{ 
-	array->insert(array->end(),array2->begin(),array2->end()); 
-	return array; 
-}
+void array_appendarray( T * array, T * array2 ) 
+{ 	array->insert(array->end(),array2->begin(),array2->end()); }
+
+
+template<class T>
+void array_prependitem( T * array, typename T::element_type v ) 
+{ array->insert(array->begin(),v); }
+
+template<class T>
+void array_prependarray( T * array, T * array2 ) 
+{ 	array->insert(array->begin(),array2->begin(),array2->end()); }
+
 
 template<class T>
 size_t array_len( T * a )
@@ -266,6 +288,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "__delslice__", &array_delslice<ARRAY>  ) \
         .def( "__contains__", &array_contains<ARRAY>  ) \
         .def( "__add__",      &array_additem<ARRAY>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "__add__",      &array_addarray<ARRAY>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "__iadd__",     &array_iadditem<ARRAY>  , boost::python::return_internal_reference<1>() ) \
         .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \
         .def( "__len__",      &array_len<ARRAY> ) \
@@ -273,6 +296,9 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "clear",        &ARRAY::clear ) \
         .def( "insert",       &array_insertitem<ARRAY> ) \
         .def( "append",       &array_appenditem<ARRAY> ) \
+        .def( "append",       &array_appendarray<ARRAY> ) \
+        .def( "prepend",      &array_prependitem<ARRAY> ) \
+        .def( "prepend",      &array_prependarray<ARRAY> ) \
         .def( "pop",          &array_popitem<ARRAY> ) \
         .def( "pop",          &array_poplastitem<ARRAY> ) \
         .def( "getId",        &array_id<ARRAY> ) \

@@ -53,6 +53,12 @@ TOOLS_USING_NAMESPACE
 
 DEF_POINTEE( PointSet )
 
+object ps_findclosest(PointSet * lm, Vector3 point)
+{
+    uint_t u;
+    Vector3 res = lm->findClosest(point,&u);
+    return make_tuple(res,u);
+}
 
 std::string gps_repr( PointSet* p )
 {
@@ -92,11 +98,19 @@ void export_PointSet()
     .def( "transform", &PointSet::transform )
     .DEC_BT_NR_PROPERTY_WDV(width,PointSet,Width,uchar_t,DEFAULT_WIDTH)
 	.def("convertToShapes",&convertPointSetToShapes,(bp::arg("translation")=Vector3(0,0,0)))
+	.def("findClosest",&ps_findclosest,"Find closest point in the PointSet from arg",args("point"))
     ;
   implicitly_convertible<PointSetPtr, ExplicitModelPtr>();
 }
 
 DEF_POINTEE( PointSet2D )
+
+object ps2_findclosest(PointSet2D * lm, Vector2 point)
+{
+    uint_t u;
+    Vector2 res = lm->findClosest(point,&u);
+    return make_tuple(res,u);
+}
 
 std::string gps2d_repr( PointSet2D* p )
 {
@@ -116,6 +130,7 @@ void export_PointSet2D()
 	.DEC_PTR_PROPERTY(pointList,PointSet2D,PointList,Point2ArrayPtr)
     .DEC_BT_NR_PROPERTY(width,PointSet2D,Width,uchar_t)
     DEC_DEFAULTVALTEST(PointSet2D,Width)
+	.def("findClosest",&ps2_findclosest,"Find closest point in the PointSet from arg",args("point"))
     ;
   implicitly_convertible<PointSet2DPtr, PlanarModelPtr>();
 }

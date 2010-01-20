@@ -134,6 +134,7 @@ public:
   inline uchar_t& getWidth() { return __width; }
   inline bool isWidthToDefault( ) const { return __width == DEFAULT_WIDTH; }
 
+  TOOLS(Vector3) findClosest(const TOOLS(Vector3)& point, uint_t * index = 0) const;
 
 protected:
   /// The \b width field
@@ -244,6 +245,7 @@ public:
   inline uchar_t& getWidth() { return __width; }
   inline bool isWidthToDefault( ) const { return __width == PointSet::DEFAULT_WIDTH; }
 
+  TOOLS(Vector2) findClosest(const TOOLS(Vector2)& point, uint_t * index = 0) const;
 
 protected:
   

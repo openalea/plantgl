@@ -57,7 +57,11 @@ TOOLS_USING_NAMESPACE
 #include <CGAL/Cartesian.h>
 #include <CGAL/Arr_segment_traits_2.h>
 #include <CGAL/Arrangement_2.h>
+#if CGAL_VERSION_NR >= 1030401000
 #include <CGAL/Arr_overlay_2.h>
+#else
+#include <CGAL/Arr_overlay.h>
+#endif
 #include <CGAL/Arr_default_overlay_traits.h>
 #include <CGAL/Cartesian.h>
 #include <CGAL/MP_Float.h>

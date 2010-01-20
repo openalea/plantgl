@@ -104,6 +104,7 @@ void py_sort_w(T * pts){
     std::stable_sort(pts->begin(),pts->end(),py_comp_w<typename T::element_type>);
 }
 
+
 template <class T>
 boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     boost::python::list rlist;
@@ -122,6 +123,13 @@ boost::python::list py_partition(T * pts, boost::python::object cmp_method){
         else { c_pointset->push_back(*it); }
     }
     return rlist;
+}
+
+template<class Array>
+object pa_findclosest(Array * array, typename Array::element_type point)
+{
+    typename Array::const_iterator res = findClosest(*array,point);
+	return make_tuple(*res,std::distance<typename Array::const_iterator>(array->begin(),res));
 }
 
 EXPORT_FUNCTION( p2a, Point2Array )
@@ -222,6 +230,7 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point2Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>)
     .def( "transform", &Point2Array::transform)
+    .def( "findClosest", &pa_findclosest<Point2Array>,"Find closest point in the PointArray2 from arg",args("point"))
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -250,6 +259,7 @@ void export_pointarrays()
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>)
     .def( "transform", (void(Point3Array::*)(const Matrix3&))&Point3Array::transform)
     .def( "transform", (void(Point3Array::*)(const Matrix4&))&Point3Array::transform)
+    .def( "findClosest", &pa_findclosest<Point3Array>,"Find closest point in the PointArray3 from arg",args("point"))
     DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
@@ -282,6 +292,7 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point4Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>)
     .def( "transform", &Point4Array::transform)
+    .def( "findClosest", &pa_findclosest<Point4Array>,"Find closest point in the PointArray4 from arg",args("point"))
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 
