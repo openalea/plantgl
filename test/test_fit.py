@@ -6,6 +6,11 @@ pointrange = (0,10)
 def random_point2(pointrange = pointrange) : return Vector2(uniform(*pointrange),uniform(*pointrange))
 
 def test_fit_circle(verbose = False):
+    if not Overlay.supportCGAL():
+        print 'Do not have CGAL support for Overlay. Test not performed'
+        return
+    else:
+        print 'CGAL on'
     nbpoint = 2
     p2list = Point2Array([random_point2() for i in xrange(nbpoint)])
     res = Fit.boundingCircle(p2list)

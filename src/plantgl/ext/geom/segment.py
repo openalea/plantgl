@@ -19,7 +19,7 @@ This module provide a set of geometrical concepts to express tissue geometry
 """
 
 __license__= "Cecill-C"
-__revision__=" $Id: graph.py 116 2007-02-07 17:44:59Z tyvokka $ "
+__revision__=" $Id$ "
 
 from interface.abstract_geometry import AbstractPolyhedra
 from tools import Vmean

@@ -4,15 +4,13 @@ from nose import with_setup
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-def setup_func():
-    import warnings
-    if not QCoreApplication.instance() is None:
-        warnings.warn("A QApplication is already running")
-    else:
-        app = QApplication([])
-    Viewer.start()
+import warnings
+if not QCoreApplication.instance() is None:
+    warnings.warn("A QApplication is already running")
+else:
+    app = QApplication([])
+Viewer.start()
 
-@with_setup(setup_func)
 def test_projpershape():
     sc = Scene()
     s = Shape(Sphere())
@@ -41,7 +39,7 @@ def test_projpershape_nullid():
     assert len(pixpershape) == 1
     assert pixpershape[0][0] == s.id
     
-def _test_projpershape_bigid():
+def test_projpershape_bigid():
     s = Shape(Sphere())
     s.id = 0x0f0f0f0f
     Viewer.display(s)    

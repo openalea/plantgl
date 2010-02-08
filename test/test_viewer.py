@@ -6,16 +6,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from nose import with_setup
 
-def setup_func():
-    import warnings
-    if not QCoreApplication.instance() is None:
-        warnings.warn("A QApplication is already running")
-    else:
-        app = QApplication([])
-    Viewer.start()
+import warnings
+if not QCoreApplication.instance() is None:
+    warnings.warn("A QApplication is already running")
+else:
+    app = QApplication([])
+Viewer.start()
 
    
-#with_setup(setup_func)
 def test_display():
     Viewer.display(Sphere())
     Viewer.display(Shape(Sphere(),Material()))
@@ -30,7 +28,6 @@ def test_add():
     Viewer.add(Scene([Shape(Sphere(),Material())]))
     assert len(Viewer.getCurrentScene()) == 4, "Size of displayed scene of the viewer is not valid. Viewer.add failed."
 
-@with_setup(setup_func)
 def test_update():
     s = Scene([Shape(Sphere(),Material())])
     Viewer.display(s)
@@ -43,7 +40,7 @@ def test_selection():
     Viewer.selection = [1]
     assert len(Viewer.selection) == 1 and Viewer.selection[0] == 1, "Invalid Viewer.selection"
 
-@with_setup(setup_func)
+#@with_setup(setup_func)
 def test_scene_interaction():
     s = Scene()
     s += Sphere()
@@ -113,7 +110,7 @@ def test_camera_light():
     assert Viewer.position == pos, "Viewer.light.position do not set the good value"
  
 
-def _test_image():
+def test_image():
     w = 400
     h = 400
     rw, rh = w,h
@@ -154,11 +151,11 @@ def test_state():
     
 
 if __name__=='__main__':
+
     try:
         import avoid_display
         print 'Avoid display.'
     except:
-        test_start()
         test_display()
         test_add()
         test_update()
@@ -167,5 +164,4 @@ if __name__=='__main__':
         test_camera_lookat()
         test_camera_set()
         test_camera_light()
-        test_image()
         test_state()

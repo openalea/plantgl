@@ -18,6 +18,10 @@ def test_triangulation(visual = False):
       Viewer.add(tr)
 
 def test_filter_one_point_branch(visual = False):
+    if not Overlay.supportCGAL():
+        print 'Not compiled with CGAL. Test not performed'
+        return
+
     p = Polyline2D([(1,1),(0,2),(-1,1.5),(-0.9,1.4),(-0.85,1.3),(-0.8,1.2),(-0.7,1.3),(0,1.3)])
     skel = Skeleton.getChordalAxisTransform(p,0.0005)
     if visual:
@@ -57,6 +61,6 @@ def test_filter(visual = False):
 
     
 if __name__ == '__main__':
-    test_triangulation()
+    #test_triangulation()
     test_filter_one_point_branch()
-    test_filter_information()
+    #test_filter_information()
