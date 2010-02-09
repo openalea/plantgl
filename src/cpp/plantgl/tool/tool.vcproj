@@ -112,6 +112,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,&quot;$(BOOSTDIR)&quot;;..\.."
 				PreprocessorDefinitions="TOOLS_MAKEDLL"
 				RuntimeLibrary="2"
@@ -131,6 +133,7 @@
 				AdditionalDependencies="Qt3Support4.lib QtOpenGL4.lib QtCore4.lib QtGui4.lib Advapi32.lib"
 				OutputFile="../../../../bin/pgltool.dll"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"

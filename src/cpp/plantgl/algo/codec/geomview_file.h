@@ -83,7 +83,6 @@ public :
 	Color4  readColor4();
 	Color3  readColor3();
 	Index readIndex();
-	Index readColoredIndex();
 
 
 	static ScenePtr Parse(const std::string& filename, std::ostream& output);

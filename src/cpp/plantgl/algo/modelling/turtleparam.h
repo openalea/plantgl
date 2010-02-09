@@ -37,9 +37,65 @@
 #include <plantgl/math/util_vector.h>
 #include <plantgl/math/util_matrix.h>
 #include <plantgl/scenegraph/geometry/curve.h>
+#include <plantgl/scenegraph/geometry/lineicmodel.h>
+#include <plantgl/scenegraph/function/function.h>
 #include <vector>
 
 PGL_BEGIN_NAMESPACE
+
+
+class TurtlePath;
+typedef RCPtr<TurtlePath> TurtlePathPtr;
+
+/// Class that contains a path parameter that should be followed by the turtle
+class ALGO_API TurtlePath : public TOOLS(RefCountObject){
+public:
+	TurtlePath(real_t totalLength) : __totalLength(totalLength), __actualT(0)  { }
+	virtual ~TurtlePath();
+
+	virtual bool is2D() const { return true; }
+
+	virtual TurtlePathPtr copy() const = 0;
+
+	virtual void setPosition(real_t t)  = 0;
+
+	real_t __totalLength;
+	QuantisedFunctionPtr __arclengthParam;
+	real_t __actualT;
+};
+
+/// Class that contains a 2D path parameter that should be followed by the turtle
+class ALGO_API Turtle2DPath : public TurtlePath {
+public:
+	Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation = false);
+
+	virtual TurtlePathPtr copy() const;
+	virtual void setPosition(real_t t) ;
+	
+	Curve2DPtr __path;
+	bool __orientation;
+	TOOLS(Vector2) __lastPosition;
+	TOOLS(Vector2) __lastDirection;
+};
+
+/// Class that contains a 2D path parameter that should be followed by the turtle
+class ALGO_API Turtle3DPath : public TurtlePath {
+public:
+	Turtle3DPath(LineicModelPtr curve, real_t totalLength);
+
+	virtual TurtlePathPtr copy() const;
+	virtual void setPosition(real_t t) ;
+	
+	virtual bool is2D() const { return false; }
+
+	LineicModelPtr __path;
+	TOOLS(Vector3) __lastPosition;
+	// TOOLS(Vector3) __lastDirection;
+	TOOLS(Vector3) __lastNormal;
+	TOOLS(Vector3) __lastBinormal;
+
+};
+
 
 /**! Class that contains all the parameters needed by the turtle :
 	 position, orientation [heading,left,up] vectors
@@ -133,6 +189,8 @@ public:
 
   TOOLS(Vector3) tropism;
   real_t elasticity;
+
+  TurtlePathPtr guide;
 
 protected:
   bool __polygon;

@@ -1114,34 +1114,48 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
 	__selectionRect = new QRect(__mouse.x(),__mouse.y(),0,0);
   }
   else if(__mode == Rotation){
-	  if(event->modifiers() & Qt::ControlModifier )
+	  if(event->modifiers() & Qt::AltModifier )
       {
 		QBitmap bm = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_BITS,QImage::Format_MonoLSB );
         QBitmap mask = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_MASK,QImage::Format_MonoLSB);
         setCursor(QCursor(bm,mask));
       }
-	  else if(event->modifiers() & Qt::ShiftModifier)
+	  else if (event->modifiers() & Qt::ShiftModifier)
       {
 		setLastSelectionMode();
 		if(__mode == Selection)selectGL();
       }
-	else if(event->button()==Qt::LeftButton)
-      {
-        QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_BITS,QImage::Format_MonoLSB);
-        QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_MASK,QImage::Format_MonoLSB);
-        setCursor(QCursor(bm,mask));
-      }
-    else if(event->button()==Qt::MidButton)
-      {
-        QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_BITS,QImage::Format_MonoLSB);
-        QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_MASK,QImage::Format_MonoLSB);
-        setCursor(QCursor(bm,mask));
-      }
-
-    else if(event->button()==Qt::RightButton)
-      {
-		  setCursor(Qt::SizeAllCursor);
-      }
+	  else if (event->modifiers() & Qt::ControlModifier)
+	  {
+		  if (event->button()==Qt::LeftButton)
+		  {
+			  setCursor(Qt::SizeAllCursor);
+		  }
+		  else 
+		  {
+			  QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_BITS,QImage::Format_MonoLSB);
+			  QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_MASK,QImage::Format_MonoLSB);
+			  setCursor(QCursor(bm,mask));
+		  }
+	  }
+	  else { 
+		  if (event->button()==Qt::LeftButton)
+		  {
+			  QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_BITS,QImage::Format_MonoLSB);
+			  QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ROTATE_MASK,QImage::Format_MonoLSB);
+			  setCursor(QCursor(bm,mask));
+		  }
+		  else if (event->button()==Qt::MidButton)
+		  {
+			  QBitmap bm= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_BITS,QImage::Format_MonoLSB);
+			  QBitmap mask= QBitmap::fromData(QSize(32,32),ViewerIcon::ZOOM_MASK,QImage::Format_MonoLSB);
+			  setCursor(QCursor(bm,mask));
+		  }
+		  else if(event->button()==Qt::RightButton)
+		  {
+			  setCursor(Qt::SizeAllCursor);
+		  }
+	  }
   }
   updateGL();
 }
@@ -1200,7 +1214,7 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
 	  __mouse = mouse;
 	  updateGL();
     }
-  else if(event->modifiers() & Qt::ControlModifier)
+  else if(event->modifiers() & Qt::AltModifier)
     {
       if(event->buttons() & Qt::LeftButton)
         {
@@ -1217,6 +1231,23 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
 	__mouse = mouse;
 	updateGL();
     }
+  else if(event->modifiers() & Qt::ControlModifier)
+  {
+	  if(event->buttons() & Qt::LeftButton)
+      {
+        __camera->move(__mouse-mouse);
+      }
+      else if(event->buttons() & Qt::RightButton)
+      {
+        __camera->zoom(__mouse-mouse);
+      }
+      else if(event->buttons() & Qt::MidButton)
+      {
+        __camera->zoom(__mouse-mouse);
+      }
+	  __mouse = mouse;
+	  updateGL();
+  }
   else {
 	  if(event->buttons() & Qt::LeftButton)
       {
@@ -1267,7 +1298,7 @@ ViewGLFrame::wheelEvent ( QWheelEvent * e){
       // __scene->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
   }
-  else if(e->modifiers() & Qt::ControlModifier){
+  else if(e->modifiers() & Qt::AltModifier){
       __light->zooming(0,e->delta()/WHEEL_DELTA);
       // __light->rotating(0,e->delta()*20/WHEEL_DELTA);
       e->accept();
@@ -1311,27 +1342,28 @@ ViewGLFrame::keyPressEvent ( QKeyEvent * e)
   }
   else if(e->modifiers() & Qt::ControlModifier){
     if( e->key() == Qt::Key_Up){
-      __light->rotating(0,4);
-      updateGL();
+      __camera->move(QPoint(0,4));
+      // __light->rotating(0,4);
     }
     else if( e->key() == Qt::Key_Down){
-      __light->rotating(0,-4);
-      updateGL();
+      __camera->move(QPoint(0,-4));
+      // __light->rotating(0,-4);
     }
     else if( e->key() == Qt::Key_Left){
-      __light->rotating(4,0);
-      updateGL();
+      __camera->move(QPoint(4,0));
+      // __light->rotating(4,0);
     }
     else if( e->key() == Qt::Key_Right){
-      __light->rotating(-4,0);
-      updateGL();
+      __camera->move(QPoint(-4,0));
+      // __light->rotating(-4,0);
     }
     else  {
-	 QBitmap bm = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_BITS,QImage::Format_MonoLSB);
+	 /*QBitmap bm = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_BITS,QImage::Format_MonoLSB);
      QBitmap mask = QBitmap::fromData(QSize(32,32),ViewerIcon::LIGHT_MASK,QImage::Format_MonoLSB);
-     setCursor(QCursor(bm,mask));
-	 e->accept();
+     setCursor(QCursor(bm,mask));*/
 	}
+    updateGL();
+	e->accept();
   }
   else {
     if( e->key() == Qt::Key_Up){
@@ -1393,7 +1425,7 @@ ViewGLFrame::keyReleaseEvent ( QKeyEvent * e)
     setRotationMode();
     e->accept();
   }
-  else if(e->modifiers() & Qt::ControlModifier){
+  else if(e->modifiers() & Qt::AltModifier){
 	setCursor(Qt::ArrowCursor);
 	e->accept();
   }

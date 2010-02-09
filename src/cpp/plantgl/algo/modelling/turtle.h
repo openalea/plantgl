@@ -207,18 +207,51 @@ public:
     inline void move(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ move(TOOLS(Vector3)(x,y,z)); }
     
-	/// Decal the position of pos
-    virtual void decal(const TOOLS(Vector3) & pos);
+	/// Shift the position of pos
+    virtual void shift(const TOOLS(Vector3) & pos);
     
-    inline void decal(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ decal(TOOLS(Vector3)(x,y,z)); }
+    inline void shift(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ shift(TOOLS(Vector3)(x,y,z)); }
+
+	/// Trace line to v without changing the orientation
+    virtual void lineTo(const TOOLS(Vector3) & v);
+
+	/// Trace line to pos+v without changing the orientation
+    virtual void lineRel(const TOOLS(Vector3) & v);
+
+	/// Change the orientation to pinpoint v
+    inline void pinpoint(const TOOLS(Vector3) & v)
+	{ pinpointRel(v - getPosition()); }
+
+	/// Change the orientation to pinpoint pos+v
+    virtual void pinpointRel(const TOOLS(Vector3) & v);
+
+	/// Trace line toward v and change the orientation
+    inline void oLineTo(const TOOLS(Vector3)& v)
+	{ oLineRel(v - getPosition()); }
+
+	/// Trace line toward pos+v and change the orientation
+    virtual void oLineRel(const TOOLS(Vector3)& v);
+
+	inline void lineTo(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ lineTo(TOOLS(Vector3)(x,y,z)); }
+
+	inline void pinpoint(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ pinpoint(TOOLS(Vector3)(x,y,z)); }
+
+	inline void oLineTo(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ oLineTo(TOOLS(Vector3)(x,y,z)); }
+
+	inline void lineRel(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ lineRel(TOOLS(Vector3)(x,y,z)); }
+
+	inline void pinpointRel(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ pinpointRel(TOOLS(Vector3)(x,y,z)); }
+
+	inline void oLineRel(real_t x = 0, real_t y = 0, real_t z = 0)
+	{ oLineRel(TOOLS(Vector3)(x,y,z)); }
 
     virtual void transform(const TOOLS(Matrix3)& matrix);
-
-    inline void traceTo(real_t x, real_t y, real_t z)
-	{ traceTo(TOOLS(Vector3)(x,y,z)); }
-
-    virtual void traceTo(const TOOLS(Vector3)& v);
 
 	virtual void scale(const TOOLS(Vector3)&);
 
@@ -351,9 +384,25 @@ public:
 
 	inline const uint_t& getSectionResolution() const
 	{ return getParameters().sectionResolution; }
-    
+
+	inline void setGuide(const Curve2DPtr& path, real_t length, bool orientation = false)
+	{ getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,orientation)); }
+
+	inline void setGuide(const LineicModelPtr& path, real_t length)
+	{ getParameters().guide = TurtlePathPtr(new Turtle3DPath(path,length)); }
+
+	inline void clearGuide()
+	{ getParameters().guide = TurtlePathPtr(); }
+
+	void setPositionOnGuide(real_t t);
+
     virtual void error(const std::string& error_string);
     virtual void warning(const std::string& error_string);
+
+	bool warn_on_error;
+
+	inline void setWarnOnError(bool b) { warn_on_error = b; }
+	inline bool warnOnError() const { return warn_on_error; }
 
 protected:
 	virtual void _frustum(real_t length, real_t topdiam){}
@@ -382,6 +431,10 @@ protected:
 
 	void _applyTropism();
 
+	void _applyGuide(real_t l);
+
+	void _tendTo(const TOOLS(Vector3)& h,const TOOLS(Vector3)& t, real_t strength = 1.0);
+
     uint_t popId();
 
     TurtleParam *        __params;
@@ -395,6 +448,7 @@ protected:
 	real_t scale_multiplier;
     uint_t id;
     uint_t parentId;
+
 
 };
 

@@ -112,6 +112,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="&quot;$(QTDIR)\include&quot;;&quot;$(QTDIR)\include\Qt&quot;;..\..\cpp;&quot;$(BOOSTDIR)&quot;;C:\Python26\include"
 				PreprocessorDefinitions=""
 				RuntimeLibrary="2"
@@ -131,6 +133,7 @@
 				AdditionalDependencies="boost_python-vc90-mt-1_41.lib QtGui4.lib"
 				OutputFile="../../plantgl/gui/_pglgui.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="../../../../lib/$(TargetName).lib"

@@ -597,12 +597,7 @@ Index GeomViewBuilder::readIndex()
 	return ind;
 }
 
-Index GeomViewBuilder::readColoredIndex()
-{
-	Index ind = readIndex();
-	readline();
-	return ind;
-}
+
 
 
 /* ----------------------------------------------------------------------- */
@@ -800,10 +795,15 @@ OffBuilder::parse(){
 	bool valid = true;
 	Point3ArrayPtr points(new Point3Array(NVertices));
 	Point3ArrayPtr normals;
+	Color4ArrayPtr colors;
 	if(__normals)normals = Point3ArrayPtr(new Point3Array(NVertices));
+	if(__colored)colors = Color4ArrayPtr(new Color4Array(NVertices));
 	for(int i = 0 ; valid && i < NVertices ; i++){
 		if(__data.endObject())
-		{ valid = false; break; }
+		{ 
+			__data.output() << "*** Error : OffBuilder : End of file after " << i << " points of " << NVertices <<"."  << endl;
+			valid = false; break; 
+		}
 		if(__dim4){
 			if(__n != -1)
 				p = __data.readVector4(__n).project();
@@ -818,7 +818,9 @@ OffBuilder::parse(){
 			__data.output() << "*** Error : OffBuilder : Point not valid " << endl;
 			points->setAt(i,Vector3::ORIGIN);
 		}
-		else points->setAt(i,p);
+		else {
+			points->setAt(i,p);
+		}
 		
 		if(__data.endObject())
 		{ valid = false; break; }
@@ -834,6 +836,7 @@ OffBuilder::parse(){
 		{ valid = false; break; }
 		if(__colored){
 			c = __data.readColor4();
+			colors->setAt(i,c);
 		}
 		if(__data.endObject())
 		{ valid = false; break; }
@@ -845,8 +848,13 @@ OffBuilder::parse(){
 	if(__data.endObject()){ valid = false; }
 	IndexArrayPtr indices(new IndexArray(NFaces));
 	for(int j = 0 ; valid && j < NFaces ; j++){
-		if(__data.endObject()){ valid = false; break; }
-		Index ind = __data.readColoredIndex();
+		if(__data.endObject()){ 
+			__data.output() << "*** Error : OffBuilder : End of file after " << j << " faces of " << NFaces <<"."  << endl;
+			indices = IndexArrayPtr(new IndexArray(indices->begin(),indices->begin()+j));
+			break; 
+		}
+		Index ind = __data.readIndex();
+		// if(__colored) __data.readColor4();
 		indices->setAt(j,ind);
 	}
 	if(valid){
