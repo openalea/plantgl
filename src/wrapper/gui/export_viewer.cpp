@@ -45,6 +45,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
+#define bp boost::python
 
 
 boost::python::list selection(){
@@ -440,7 +441,38 @@ int pyEditMaterialInDialog(Material * initial,
 
 BOOST_PYTHON_FUNCTION_OVERLOADS(pyEditMaterialInDialog_overloads, pyEditMaterialInDialog, 1, 3)
 
+static boost::python::object * __PYABORTFUNC = NULL;
 
+bool pyDialogAbortFunc() {
+	if(!__PYABORTFUNC)return false;
+	else {
+        PythonInterpreterAcquirer py;
+        try{
+			return extract<bool>((*__PYABORTFUNC)());
+        }
+        catch(bp::error_already_set) { PyErr_Print(); PyErr_Clear(); }
+		return false;
+	}
+}
+
+void pySetDialogAbortFunc(boost::python::object func) {
+	if(__PYABORTFUNC) delete __PYABORTFUNC;
+	if (func == boost::python::object()) {
+		__PYABORTFUNC = NULL;
+		ViewerApplication::setAborter(NULL);
+	}
+	else {
+		__PYABORTFUNC = new boost::python::object(func);
+		ViewerApplication::setAborter(&pyDialogAbortFunc);
+	}
+}
+
+boost::python::object PyWaitSelection(const std::string& message) {
+	uint_t res = ViewerApplication::waitSelection(message);
+	if (res == UINT32_MAX) return boost::python::object();
+	else return boost::python::object(res);
+
+}
 
 #define LIGHTFUNCWRAP(COLNAME) \
 void setLight##COLNAME(boost::python::object o){ \
@@ -514,6 +546,8 @@ void export_viewer()
 	.def("wait", &ViewerApplication::wait, "wait(long timeout = MAXLONG) : wait for the viewer ending.", args("timeout"))
     .def("wait", &viewer_wait)
     .staticmethod("wait")
+	.def("waitSelection", &PyWaitSelection,(bp::arg("caption")=std::string("")),"Wait for a selection in the viewer. Return selected id.")
+    .staticmethod("waitSelection")
     .def("isRunning", &ViewerApplication::running,"Tell if viewer is curently running.")
     .staticmethod("isRunning")
     .def("stop", &ViewerApplication::stop,"Hide the Viewer")
@@ -524,6 +558,8 @@ void export_viewer()
     .staticmethod("start")
     .def("show", &ViewerApplication::start,"Show the Viewer")
     .staticmethod("show")
+	.def("showMessage", &ViewerApplication::showMessage,(bp::arg("message"),bp::arg("timeout")=0),"Show a message in the viewer. args: message and timeout")
+    .staticmethod("showMessage")
     .def("exit", &ViewerApplication::exit,"Exit from Viewer Application. Cannot be restarted after.")
     .staticmethod("exit")
 	.def("display",(void (*)(const ScenePtr&))&PGLViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
@@ -543,6 +579,8 @@ void export_viewer()
     .staticmethod("animation") 
 	.def("winId",&ViewerApplication::viewerId)
     .staticmethod("winId") 
+	.def("setDialogAbortFunc",&pySetDialogAbortFunc,args("func"),"Set a function that return true if dialog should abort")
+    .staticmethod("setDialogAbortFunc") 
     ;
 
   export_camera();

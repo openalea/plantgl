@@ -95,11 +95,15 @@ public :
 
   static ViewZBuffer * grabZBuffer();
 
+  static void showMessage(const std::string& caption, int timeout = 0);
+
   static int question(const std::string& caption,
 					   const std::string& text,
 					   const std::string& but0txt = "",
 					   const std::string& but1txt = "",
 					   const std::string& but2txt = "");
+  typedef bool(*AbortFunc)();
+  static void setAborter(AbortFunc);
 
   static std::string itemSelection(const std::string& caption,
 					   const std::string& text,
@@ -134,6 +138,7 @@ public :
   /// Get the selection.
   static std::vector<uint_t> getSelection();
   static void setSelection(const std::vector<uint_t>&);
+  static uint_t waitSelection(const std::string& caption = "");
 
   /// Get the redraw mode.
   static bool getRedrawPolicy();

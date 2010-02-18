@@ -91,6 +91,8 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   /// Destructor.
   virtual ~ViewGeomSceneGL();
 
+  virtual bool isEmpty() const ;
+
   virtual void selectGL();
 
   /// Scene change Event.

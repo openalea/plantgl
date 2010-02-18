@@ -118,6 +118,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GR"
+				Optimization="3"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,..\..\..,$(BOOSTDIR)"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -138,6 +140,7 @@
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;"
 				IgnoreDefaultLibraryNames=""
 				SubSystem="2"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary=""

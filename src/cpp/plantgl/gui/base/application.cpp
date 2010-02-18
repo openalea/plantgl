@@ -127,6 +127,7 @@ ViewerApplication::getSelection() {
   else return vector<uint_t>();
 }
 
+
 int
 ViewerApplication::question(const std::string& caption,
 					   const std::string& text,
@@ -269,9 +270,25 @@ void ViewerApplication::cleanThreadStateSaverFatory()
     ViewerAppliInternal::cleanThreadStateSaverFatory();
 }
 
+void ViewerApplication::showMessage(const std::string& caption, int timeout)
+{  _sendAnEvent(new ViewShowMessageEvent(QString(caption.c_str()),timeout)); }
+
 void
 ViewerApplication::setSelection(const vector<uint_t>& sel) {
   _sendAnEvent(new ViewSelectionSet(sel));
+}
+
+uint_t 
+ViewerApplication::waitSelection(const std::string& caption)
+{
+   uint_t res; 
+   _sendAnEvent(new ViewWaitSelection(&res,QString(caption.c_str())));
+   return res;
+}
+
+void ViewerApplication::setAborter(AbortFunc func)
+{
+   _sendAnEvent(new ViewSetAborterEvent(func));
 }
 
 bool ViewerApplication::getRedrawPolicy(){

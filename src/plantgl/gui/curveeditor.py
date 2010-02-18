@@ -232,7 +232,7 @@ class CurveEditor (QGLViewer):
         cxval = fxval*xdelta
         glColor4f(1.0,1.0,1.0,1.0)
         for i in xrange(nbiter+1):
-            self.renderText(cxval,self.start[1],0,'%.2f' % cxval)
+            self.renderText(cxval,self.start[1],0,'%.1f' % cxval)
             cxval += xdelta
         glLineWidth(2)
         glColor4f(0.4,0.4,0.4,0.0)
@@ -260,7 +260,7 @@ class CurveEditor (QGLViewer):
         glColor4f(1.0,1.0,1.0,1.0)
         for i in xrange(nbiter+1):
             glVertex3f(self.end[0],cyval,0)
-            self.renderText(self.start[0],cyval,0,'%.2f' % cyval)
+            self.renderText(self.start[0],cyval,0,'%.1f' % cyval)
             cyval += xdelta
         glLineWidth(2)
         glColor4f(0.4,0.4,0.4,0.0)
@@ -320,6 +320,14 @@ class CurveEditor (QGLViewer):
                     self.emit(SIGNAL('valueChanged()'))
             self.createControlPointsRep()
             self.updateGL()
+        elif event.modifiers() == Qt.ShiftModifier:
+            self.select(event.pos())
+            selection = self.selectedName()
+            if selection != -1 :
+                self.curveAccessor.delPoint(selection)
+                self.emit(SIGNAL('valueChanged()'))
+                self.createControlPointsRep()
+                self.updateGL()
         else:
             QGLViewer.mouseDoubleClickEvent(self,event)
     def mouseReleaseEvent(self,event):

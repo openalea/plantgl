@@ -105,4 +105,6 @@ void export_Skeleton();
 // Point manip export
 void export_PointManip();
 
+void export_Mesher();
+
 #endif

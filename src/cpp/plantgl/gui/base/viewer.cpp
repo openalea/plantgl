@@ -656,6 +656,29 @@ void  Viewer::customEvent(QEvent *e){
     ViewSelectionSet * k = ( ViewSelectionSet * )e;
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->arg1);
   }
+  else if(e->type() == ViewEvent::eWaitSelection){
+	  ViewWaitSelection * k = (ViewWaitSelection *)e;
+	  if( !__GLFrame->getSceneRenderer()->isEmpty() ) {
+		  if(!k->arg1.isEmpty()){
+			  __GLFrame->showMessage(k->arg1,0);
+			  statusBar()->showMessage(k->arg1);
+		  }
+		  SelectionListener s;
+		  QObject::connect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
+		  QObject::connect(this,SIGNAL(closing()),&s,SLOT(finalize()));
+		  bool aborted = false;
+		  while(!s.done && !(aborted = shouldAbortDialog())){
+			  if(!isVisible())show();
+			  qApp->processEvents();
+		  }
+		  QObject::disconnect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
+		  QObject::disconnect(this,SIGNAL(closing()),&s,SLOT(finalize()));
+		  __GLFrame->showMessage(k->arg1,600);
+		  if (!aborted) *k->result = s.selection;
+		  else *k->result = UINT32_MAX;
+	  }
+	  else *k->result = UINT32_MAX;
+  }
   else if(e->type() == ViewEvent::eGetRedrawPolicy){
     ViewGetRedrawEvent * k = ( ViewGetRedrawEvent * )e;
     *k->result = __GLFrame->isRedrawEnabled();
@@ -667,6 +690,10 @@ void  Viewer::customEvent(QEvent *e){
   else if(e->type() == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
     saveImage(k->arg1,k->arg2.toAscii().constData(),k->arg3);
+  }
+  else if(e->type() == ViewEvent::eShowMessage){
+    ViewShowMessageEvent * k = ( ViewShowMessageEvent * )e;
+	__GLFrame->showMessage(k->arg1,k->arg2);
   }
   else if(e->type() == ViewEvent::eQuestion){
     ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
@@ -757,6 +784,10 @@ void  Viewer::customEvent(QEvent *e){
   else if(e->type() == ViewEvent::eCameraProj){
     ViewCameraProjEvent * k = ( ViewCameraProjEvent * )e;
     __GLFrame->getCamera()->setProjectionMode(k->arg1);
+  }
+  else if(e->type() == ViewEvent::eSetAborter){
+    ViewSetAborterEvent * k = ( ViewSetAborterEvent * )e;
+    setAborter(k->arg1);
   }
   else if(e->type() >= ViewGeomEvent::eFirstGeomEvent && e->type() <= ViewGeomEvent::eLastGeomEvent){
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
@@ -854,6 +885,7 @@ void Viewer::closeEvent ( QCloseEvent * e)
   saveConfig();
   __ErrorDialog->registerQtMsg(false);
   e->accept();
+  emit closing();
 }
 
 void Viewer::showEvent ( QShowEvent * e)
@@ -1072,6 +1104,7 @@ public:
   }
 
   virtual void done ( int res ){
+    printf("done\n");
     if(__result)*__result = res;
     if(!__messageBoxPos)__messageBoxPos = new QPoint(pos());
     else *__messageBoxPos = pos();
@@ -1091,7 +1124,16 @@ Viewer::question(const QString& caption, const QString& text,
 
   activateWindow();
   ViewerMessageBox->show();
-  while(ViewerMessageBox->isVisible())qApp->processEvents();
+  bool aborting = false;
+  while(ViewerMessageBox->isVisible()) {
+	  qApp->processEvents();
+	  if (!aborting){
+		  aborting = shouldAbortDialog();
+		  if(aborting) {
+			  ViewerMessageBox->reject();
+		  }
+	  }
+  }
   delete ViewerMessageBox;
   ViewerMessageBox = NULL;
 }

@@ -62,6 +62,7 @@
 #include <QtCore/QHash>
 #include <QtOpenGL/QGLPixelBuffer>
 #include <QtGui/QMouseEvent>
+#include <QtCore/QTimer>
 
 #include "glframe.h"
 #include "icons.h"
@@ -707,6 +708,67 @@ void ViewGLFrame::paintGL()
 		  glEnd();
 		  glDisable (GL_LINE_STIPPLE);
 	  }
+	  if (!__message.isEmpty()) {
+		  __light->switchOff();
+		  glMatrixMode(GL_PROJECTION);
+		  glLoadIdentity();
+		  int w = width();
+		  int h = height();
+		  int minw = w * 0.52, maxw = w * 0.98;
+		  int minh = h * 0.1;
+		  int deltaw = w * 0.4;
+		  QFontMetrics fm(font());
+		  QStringList msglines = __message.split('\n');
+		  int nblines = 0;
+		  for(QStringList::const_iterator itline = msglines.begin(); itline != msglines.end(); ++itline){
+			  int size = fm.width(*itline);
+		      nblines += 1+(size/deltaw);
+		  }
+		  int fmheigth = fm.height();
+		  int htext = nblines * fmheigth;
+		  int maxh = max(h * 0.3, h * 0.2 + htext);
+
+		  glOrtho(0,w,0,h,-50,50);
+		  glMatrixMode(GL_MODELVIEW);
+		  glLoadIdentity();
+		  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+		  glBegin(GL_QUADS);
+		  glColor4f(0.5,0.1,0.1,0.5*__msg_transparency);
+		  glVertex3f(minw,minh,0);
+		  glColor4f(0.9,0.1,0.1,0.9*__msg_transparency);
+		  glVertex3f(maxw,minh,0);
+		  glColor4f(0.5,0.1,0.1,0.5*__msg_transparency);
+		  glVertex3f(maxw,maxh,0);
+		  glColor4f(0.2,0.2,0.2,0.1*__msg_transparency);
+		  glVertex3f(minw,maxh,0);
+		  glEnd();
+		  glColor4f(1,1,1,0.5+0.5*__msg_transparency);
+		  int avgWidth = fm.averageCharWidth();
+		  int hmargin = (maxh-minh-htext)/2;
+		  int currenth = maxh - hmargin - fm.ascent();
+		  for(QStringList::const_iterator itline = msglines.begin(); itline != msglines.end(); ++itline){
+			  int size = fm.width(*itline);
+			  int cw = 0;
+			  int nbsubline = 1 + size/deltaw;
+			  int len = itline->size();
+			  if (nbsubline == 1){
+				renderText(w * 0.55, currenth,1, *itline);
+			    currenth -= fmheigth;
+			  }
+			  else {
+				  for (int subline = 0; subline < nbsubline; ++subline){
+					  int lastw = cw + deltaw / avgWidth;
+					  if (lastw > len) lastw = len;
+					  renderText(w * 0.55, currenth,1, QString( itline->begin()+cw, lastw-cw));				
+					  currenth -= fmheigth;
+					  cw = lastw;
+				  }
+			  }
+		  }
+		  __light->switchOn();
+
+	  }
   }
   // glFinish();
 
@@ -778,7 +840,7 @@ void ViewGLFrame::selectGL()
       for(unsigned int j = 0 ; j < names ; j++)ptr++;
     }
     __scene->selectionEvent(selectedval);
-    emit selectedShape(selectedval);
+    emit selectedShape(__scene->translateId(selectedval));
   }
 #ifdef GEOM_DEBUG
   else warning("*** WARNING : hit miss all shapes");
@@ -840,7 +902,7 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
       ptr++;        //    cerr << "z2 = " << *ptr << endl;
       ptr++;
       val = (uint_t)*ptr;
-	  vals.push_back(val);
+	  vals.push_back(__scene->translateId(val));
       for(unsigned int j = 0 ; j < names ; j++)ptr++;
     }
 	if(!vals.empty()){
@@ -1784,6 +1846,34 @@ void ViewGLFrame::useOcclusionQuery(bool b)
 }
 
 void ViewGLFrame::usePixelBuffer(bool b) { __usePBuffer = b; }
+
+
+void ViewGLFrame::showMessage(const QString message, int timeout)
+{
+	__msg_transparency = 1.0;
+	__message = message;
+	updateGL();
+	if(timeout > 0){
+		__msg_transparency_step = min(1.0,200. / timeout);
+		QTimer::singleShot(200,this,SLOT(updateMessage()));
+	}
+}
+
+void ViewGLFrame::updateMessage()
+{
+	__msg_transparency -= __msg_transparency_step;
+	if (__msg_transparency > 0){
+		updateGL();
+		QTimer::singleShot(200,this,SLOT(updateMessage()));
+	}
+	else cleanMessage();
+}
+
+void ViewGLFrame::cleanMessage()
+{
+	__message.clear();
+	updateGL();
+}
 
 
 ViewDoubleToolButton::ViewDoubleToolButton( const QPixmap & pm,

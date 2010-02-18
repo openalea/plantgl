@@ -156,6 +156,8 @@ ViewGeomSceneGL::clear()
   clearCache();
 }
 
+bool ViewGeomSceneGL::isEmpty() const { return is_null_ptr(__scene) || __scene->empty(); }
+
 void
 ViewGeomSceneGL::clearCache()
 {

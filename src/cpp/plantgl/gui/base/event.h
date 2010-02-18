@@ -65,12 +65,14 @@ public:
 		eRefresh,
 		eGetSelection,
 		eSetSelection,
+		eWaitSelection,
 		eGetRedrawPolicy,
 		eSetRedrawPolicy,
 		eShow,
 		eEnd,
 		eFullScreen,
 		eGLFrameOnly,
+		eShowMessage,
 		eQuestion,
 		eItemSelection,
 		eFileSelection,
@@ -90,6 +92,7 @@ public:
 		eProjSize,
 		eCameraProj,
 		eSceneChange,
+		eSetAborter,
 		eLastEvent
 	} ;
 
@@ -440,10 +443,12 @@ typedef TPViewEvent<ViewEvent::eImageSave,QString,QString,bool> ViewImageSaveEve
 typedef TPViewEvent<ViewEvent::eRefresh> ViewRefreshEvent;
 typedef TViewEvent<ViewEvent::eGetSelection,std::vector<uint_t> > ViewSelectRecoverEvent;
 typedef TPViewEvent<ViewEvent::eSetSelection,std::vector<uint_t> > ViewSelectionSet;
+typedef TViewEvent<ViewEvent::eWaitSelection,uint_t,QString> ViewWaitSelection;
 typedef TPViewEvent<ViewEvent::eEnd> ViewEndEvent;
 typedef TPViewEvent<ViewEvent::eShow> ViewShowEvent;
 typedef TPViewEvent<ViewEvent::eFullScreen,bool> ViewFullScreenEvent;
 typedef TPViewEvent<ViewEvent::eGLFrameOnly,bool> ViewGLFrameOnlyEvent;
+typedef TPViewEvent<ViewEvent::eShowMessage,QString,int> ViewShowMessageEvent;
 typedef TViewEvent<ViewEvent::eQuestion,int,QString,QString,QString,QString,QString> ViewQuestionEvent;
 typedef TViewEvent<ViewEvent::eItemSelection,QString,QString,QString,QStringList,bool,bool *> ViewItemSelectionEvent;
 typedef TViewEvent<ViewEvent::eDoubleSelection,double,QString,QString,double,double,double,bool *> ViewDoubleSelectionEvent;
@@ -463,6 +468,8 @@ typedef TViewEvent<ViewEvent::eZBuff,ViewZBuffer *> ViewZBuffEvent;
 typedef TViewEvent<ViewEvent::eProjSize,double,int *,double *> ViewProjSizeEvent;
 typedef TPViewEvent<ViewEvent::eCameraProj,bool> ViewCameraProjEvent;
 typedef TPViewEvent<ViewEvent::eSetRedrawPolicy,bool> ViewSetRedrawEvent;
+typedef bool (*DialogAborterFunc)();
+typedef TPViewEvent<ViewEvent::eSetAborter,DialogAborterFunc> ViewSetAborterEvent;
 typedef TViewEvent<ViewEvent::eGetRedrawPolicy,bool> ViewGetRedrawEvent;
 
 

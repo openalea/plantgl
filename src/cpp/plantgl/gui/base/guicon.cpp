@@ -1,7 +1,11 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <fcntl.h>
+#if defined (_MSC_VER)
+#include <io.h>
+#else
 #include <cstdio>
+#endif
 #include <iostream>
 
 #ifndef _USE_OLD_IOSTREAMS

@@ -172,6 +172,8 @@ public :
   /// Get the global Bounding Box.
   virtual const PGL::BoundingBoxPtr getGlobalBoundingBox() const;
 
+  virtual bool isEmpty() const;
+
 public slots:
 
   /// Try to open filename. call open(filename).

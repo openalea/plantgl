@@ -147,6 +147,13 @@ public:
 
   inline bool hasFocusAtRefresh() const { return __focusAtRefresh; }
 
+ 
+  typedef bool (* DialogAborter)();
+  inline void setAborter(DialogAborter aborter) { __aborter = aborter; }
+
+signals:
+  void closing();
+
 public slots:
  
   /// (Un)Display Menu Bar.
@@ -229,6 +236,8 @@ private:
   /// Initializer.
   void initialize();
 
+  inline bool shouldAbortDialog() const { return (__aborter && __aborter()); }
+
   /// The Open GL Frame : To display 3D Object.
   ViewGLFrame * __GLFrame;
  
@@ -280,6 +289,8 @@ private:
 
   bool __focusAtRefresh;
 
+  DialogAborter __aborter;
+
 #ifdef QT_THREAD_SUPPORT
   QMutex send_event_mutex;
   QMutex send_lock_mutex;
@@ -287,6 +298,20 @@ private:
 #endif
 };
 
+
+class SelectionListener : public QObject
+{
+  Q_OBJECT
+public:
+	SelectionListener() : done(false) {}
+
+	uint_t selection;
+	bool done;
+
+public slots:
+	void selectionMade(uint_t s) { selection = s; done = true; }
+	void finalize() { done = true; }
+};
 
 /* ----------------------------------------------------------------------- */
 

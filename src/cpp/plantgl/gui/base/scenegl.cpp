@@ -54,6 +54,7 @@ ViewRendererGL::~ViewRendererGL()
 {
 }
 
+bool ViewRendererGL::isEmpty() const { return true; }
 
 void 
 ViewRendererGL::connectTo(QGLWidget *g)

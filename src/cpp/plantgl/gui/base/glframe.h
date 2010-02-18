@@ -271,6 +271,10 @@ public slots:
 
   void usePixelBuffer(bool b);
 
+  void showMessage(const QString message, int timeout = 0);
+
+  void cleanMessage();
+
 signals:
 
   /// Emit when renderer change.
@@ -346,6 +350,9 @@ signals:
   virtual void wheelEvent ( QWheelEvent * );
   virtual void focusInEvent ( QFocusEvent * ) ;
 
+  protected slots:
+  void updateMessage();
+
   public:
 
   virtual void gridEvent ( ViewEvent * ) ;
@@ -405,6 +412,10 @@ signals:
   bool __usePBuffer;
 
   bool __redrawEnabled;
+
+  QString __message;
+  float __msg_transparency;
+  float __msg_transparency_step;
 };
 
 class VIEW_API ViewDoubleToolButton : public QToolButton {
