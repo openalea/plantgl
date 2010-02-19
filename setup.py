@@ -95,7 +95,8 @@ setup(
     # Scripts
     #entry_points = { 'gui_scripts': [ 'pglviewer = openalea.plantgl:start_viewer',]},
     entry_points = {
-        "wralea": ['plantgl.objects = openalea.plantgl.wralea.objects', 
+        "wralea": ['plantgl.edition = openalea.plantgl.wralea.edition', 
+                   'plantgl.objects = openalea.plantgl.wralea.objects', 
                    'plantgl.visualization = openalea.plantgl.wralea.visualization', 
                    'plantgl.operator = openalea.plantgl.wralea.operator', 
                    'plantgl.ext = openalea.plantgl.ext',
