@@ -1,6 +1,6 @@
 from openalea.core import *
 from pgl_interface import *
-
+from pgl_interface_widget import *
 
 __name__ = "vplants.plantgl.edition"
 
@@ -22,8 +22,10 @@ curve2d = Factory( name= "Curve2D",
                   widgetclass = "Curve2DWidget",
                   inputs=(dict(name="curve", interface=ICurve2D,),),
                   outputs=(dict(name="curve", interface=ICurve2D,),),
-                  #lazy = False
+                  lazy = False
                   )
+
+
 
 
 

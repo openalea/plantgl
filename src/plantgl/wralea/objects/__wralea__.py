@@ -1,5 +1,5 @@
 
-# This file has been generated at Thu Nov 19 10:23:33 2009
+# This file has been generated at Fri Feb 19 16:21:40 2010
 
 from openalea.core import *
 
@@ -16,7 +16,7 @@ __url__ = 'http://openalea.gforge.inria.fr'
 __institutes__ = 'INRIA/CIRAD'
 
 
-__all__ = ['objectgenerator_TextNode', 'objectgenerator_BezierPatchNode', 'objectgenerator_MaterialNode', 'objectgenerator_EulerRotatedNode', 'objectgenerator_BoxNode', 'objectgenerator_AsymmetricHullNode', 'objectgenerator_SceneNode', 'objectgenerator_ExtrudedHullNode', 'objectgenerator_BezierCurve2DNode', 'objectgenerator_GroupNode', 'objectgenerator_QuadSetNode', 'objectgenerator_AxisRotatedNode', 'objectgenerator_TranslatedNode', 'objectgenerator_PolylineNode', 'objectgenerator_TriangleSetNode', 'objectgenerator_ScaledNode', 'objectgenerator_Polyline2DNode', 'objectgenerator_NurbsCurveNode', 'objectgenerator_OrientedNode', 'objectgenerator_ExtrusionNode', 'objectgenerator_MonoSpectralNode', 'objectgenerator_CylinderNode', 'objectgenerator_ConeNode', 'objectgenerator_FrustumNode', 'objectgenerator_PointSetNode', 'objectgenerator_FaceSetNode', 'objectgenerator_RevolutionNode', 'objectgenerator_SwungNode', 'objectgenerator_ImageTextureNode', 'objectgenerator_ParaboloidNode', 'objectgenerator_BezierCurveNode', 'objectgenerator_MultiSpectralNode', 'objectgenerator_NurbsPatchNode', 'objectgenerator_PointSet2DNode', 'objectgenerator_NurbsCurve2DNode', 'objectgenerator_DiscNode', 'objectgenerator_TaperedNode', 'objectgenerator_AmapSymbolNode', 'objectgenerator_ShapeNode', 'objectgenerator_ElevationGridNode', 'objectgenerator_SphereNode', 'objectgenerator_IFSNode']
+__all__ = ['objectgenerator_TextNode', 'objectgenerator_BezierPatchNode', 'objectgenerator_MaterialNode', 'objectgenerator_EulerRotatedNode', 'objectgenerator_BoxNode', 'objectgenerator_AsymmetricHullNode', 'objectgenerator_SceneNode', 'objectgenerator_ExtrudedHullNode', 'objectgenerator_BezierCurve2DNode', 'objectgenerator_GroupNode', 'objectgenerator_QuadSetNode', 'objectgenerator_QuantisedFunctionNode', 'objectgenerator_AxisRotatedNode', 'objectgenerator_TranslatedNode', 'objectgenerator_PolylineNode', 'objectgenerator_TriangleSetNode', 'objectgenerator_ScaledNode', 'objectgenerator_Polyline2DNode', 'objectgenerator_NurbsCurveNode', 'objectgenerator_OrientedNode', 'objectgenerator_ExtrusionNode', 'objectgenerator_MonoSpectralNode', 'objectgenerator_CylinderNode', 'objectgenerator_ConeNode', 'objectgenerator_FrustumNode', 'objectgenerator_PointSetNode', 'objectgenerator_FaceSetNode', 'objectgenerator_RevolutionNode', 'objectgenerator_SwungNode', 'objectgenerator_ImageTextureNode', 'objectgenerator_ParaboloidNode', 'objectgenerator_BezierCurveNode', 'objectgenerator_MultiSpectralNode', 'objectgenerator_NurbsPatchNode', 'objectgenerator_PointSet2DNode', 'objectgenerator_NurbsCurve2DNode', 'objectgenerator_DiscNode', 'objectgenerator_TaperedNode', 'objectgenerator_AmapSymbolNode', 'objectgenerator_ShapeNode', 'objectgenerator_ElevationGridNode', 'objectgenerator_SphereNode', 'objectgenerator_IFSNode']
 
 
 
@@ -165,6 +165,20 @@ objectgenerator_QuadSetNode = Factory(name='QuadSet',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
                 nodeclass='QuadSetNode',
+                inputs=None,
+                outputs=None,
+                widgetmodule=None,
+                widgetclass=None,
+               )
+
+
+
+
+objectgenerator_QuantisedFunctionNode = Factory(name='QuantisedFunction',
+                description='Create a QuantisedFunction',
+                category='scene.PGL Object Generator',
+                nodemodule='objectgenerator',
+                nodeclass='QuantisedFunctionNode',
                 inputs=None,
                 outputs=None,
                 widgetmodule=None,

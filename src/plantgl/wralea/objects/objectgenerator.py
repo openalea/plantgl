@@ -3,6 +3,7 @@ from openalea.core.external import *
 import openalea.core.interface as intface
 from openalea.plantgl import math as mt
 from openalea.plantgl import scenegraph as sg
+from openalea.plantgl.wralea.edition.pgl_interface import ICurve2D
  
 
 
@@ -96,6 +97,27 @@ class PglNode(Node):
         
         return script
 
+class QuantisedFunctionNode(Node):
+    pgltype =sg.QuantisedFunction
+    def __init__(self):        
+        Node.__init__(self)
+        self.add_output( name='obj', interface=None)
+        self.add_input(name='curve', interface=ICurve2D(func_constraint=True))
+        try:
+            defvalue = sg.QuantisedFunction.DEFAULT_SAMPLING
+        except:
+            defvalue = 100
+        self.add_input(name='sampling', interface=IInt(min = 3),value = defvalue)
+        self.add_input(name='clamped', interface=IBool,value = sg.QuantisedFunction.DEFAULT_CLAMPED)
+    def __call__(self, inputs):
+        args = {}
+        for desc in self.input_desc:
+            key = desc['name']
+            x = self.get_input(key)
+            if x is not None:  # selects the input arguments
+                args[key] = x
+        obj = sg.QuantisedFunction(**args)
+        return (obj,)
 
 
 from new import classobj
@@ -131,3 +153,5 @@ PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))
 #sg.EulerRotated, sg.Oriented, sg.Scaled, sg.Translated, sg.Tapered, sg.Shape, sg.Material, sg.ImageTexture]
 
 map(lambda x : generatePglNode(x),PGLCLASS)
+
+PGLCLASS+=[sg.QuantisedFunction]

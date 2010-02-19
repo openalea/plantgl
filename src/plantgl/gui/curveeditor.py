@@ -153,6 +153,8 @@ class CurveEditor (QGLViewer):
         QGLViewer.__init__(self,parent)
         self.selection = -1
         self.defaultMaterial = Material((255,255,255),1)
+        self.pointColor = Material((250,30,30),1)
+        self.selectedPointColor = Material((30,250,30),1)
         self.sphere = Sphere(radius=0.02)
         self.curveshape = Shape()
         self.curveshape.appearance = self.defaultMaterial
@@ -167,6 +169,7 @@ class CurveEditor (QGLViewer):
     def newDefaultCurve(self):
         return self.pointsConstraints.defaultCurve()
     def init(self):
+        self.defaultColor = self.backgroundColor()
         self.updateSceneDimension()
         self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
         self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
@@ -203,6 +206,10 @@ class CurveEditor (QGLViewer):
         self.updateSceneDimension()
         self.showEntireScene()
     def draw(self):
+        if self.isEnabled():
+            self.setBackgroundColor(self.defaultColor)
+        else:
+            self.setBackgroundColor(QColor(150,150,150))
         self.start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
         self.end = self.pointOnEditionPlane(QPoint(self.width()-1,0))
         self.sphere.radius = (self.end[0]-self.start[0])/80
@@ -336,6 +343,14 @@ class CurveEditor (QGLViewer):
         self.updateSceneDimension()
         self.updateGL()
         QGLViewer.mouseReleaseEvent(self,event)
+    def changeEvent(self,event):
+        if event.type() == QEvent.EnabledChange:
+            if self.isEnabled():
+                self.pointColor = Material((250,30,30),1)
+            else:
+                self.pointColor = Material((30,30,30),1)                
+            self.createControlPointsRep()
+        QGLViewer.changeEvent(self,event)
     def updatePoints(self):
         sel = self.selection
         if sel != -1:
@@ -347,16 +362,15 @@ class CurveEditor (QGLViewer):
             self.updateGL()
             self.emit(SIGNAL('valueChanged()'))
     def createControlPointsRep(self):
-        m = Material((250,30,30),1)
-        self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),m,id=i) for i,p in enumerate(self.curveAccessor.points())])
-        m2 = Material((30,250,30),1)
+        self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),self.pointColor,id=i) for i,p in enumerate(self.curveAccessor.points())])
         if self.selection != -1:
-            self.ctrlpts[self.selection].appearance = m2
+            self.ctrlpts[self.selection].appearance = self.selectedPointColor
         
 
 if __name__ == '__main__':
     qapp = QApplication([])
     mv = CurveEditor(None,FuncConstraint())
+    mv.setEnabled(True)
     #mv.setCurve(Polyline2D([(0,0),(1,1)]))
     mv.show()
     qapp.exec_()

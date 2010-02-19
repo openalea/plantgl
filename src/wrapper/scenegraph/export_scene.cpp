@@ -239,6 +239,7 @@ void export_Scene()
     sc.def("save", &sc_save2);
     sc.def("sort", &Scene::sort);
 	sc.def("getId",&RefCountObject::uid);
+	sc.def("getPglReferenceCount",&RefCountObject::use_count);
   	sc.enable_pickling();
   ;
 

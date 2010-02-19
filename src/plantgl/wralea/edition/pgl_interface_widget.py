@@ -24,7 +24,7 @@ from PyQt4 import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
-from openalea.plantgl.gui.curveeditor import CurveEditor
+from openalea.plantgl.gui.curveeditor import CurveEditor, CurveConstraint, FuncConstraint
 from pgl_interface import ICurve2D
 
 class ICurve2DWidget(IInterfaceWidget, CurveEditor):
@@ -41,7 +41,7 @@ class ICurve2DWidget(IInterfaceWidget, CurveEditor):
         @param parameter_str : the parameter key the widget is associated to
         @param interface : instance of interface object
         """
-        CurveEditor.__init__(self, parent)
+        CurveEditor.__init__(self, parent, FuncConstraint() if interface.func_constraint else CurveConstraint())
         IInterfaceWidget.__init__(self, node, parent, parameter_str, interface)
         
         self.notify(node, None)
@@ -52,7 +52,8 @@ class ICurve2DWidget(IInterfaceWidget, CurveEditor):
     @lock_notify      
     def valueChanged(self):
         """ update value """
-        self.node.set_input(self.param_str, self.getCurve())
+        from copy import deepcopy
+        self.node.set_input(self.param_str, deepcopy(self.getCurve()))
 
     def notify(self, sender, event):
         """ Notification sent by node """
@@ -64,6 +65,8 @@ class ICurve2DWidget(IInterfaceWidget, CurveEditor):
             crv = ICurve2D.default()
             
         self.setCurve(crv)
+
+
 
 class Curve2DWidget(NodeWidget, CurveEditor):
     """
@@ -77,24 +80,36 @@ class Curve2DWidget(NodeWidget, CurveEditor):
         CurveEditor.__init__(self, parent)
         NodeWidget.__init__(self, node)
         
-        self.notify(node, None)
+        self.notify(node, ('input_modified',))
         
         self.connect(self, QtCore.SIGNAL("valueChanged()"), \
                      self.valueChanged)
+        
+        self.window().setWindowTitle(node.get_caption())
 
     @lock_notify      
     def valueChanged(self):
         """ update value """
         crv = self.getCurve()
         self.node.set_input(0, crv)
-        self.node.set_output(0, crv)
 
     def notify(self, sender, event):
         """ Notification sent by node """
-        try:
-            crv = self.node.get_input(0)
-        except:
-            crv = ICurve2D.default()
+        if event[0] == 'caption_modified':
+            self.window().setWindowTitle(event[1])
             
-        self.setCurve(crv)
+        if event[0] == 'input_modified':
+            state = self.node.get_input_state(0)
+            try:
+                notconnected = bool(state != "connected")
+                self.setEnabled(notconnected)
+            except:
+                pass
+            
+            try:
+                crv = self.node.get_input(0)
+            except:
+                crv = ICurve2D.default()
+        
+            self.setCurve(crv)
         

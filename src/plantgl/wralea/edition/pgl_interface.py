@@ -25,13 +25,17 @@ class ICurve2D(IInterface) :
     """
     __metaclass__ = IInterfaceMetaClass
     __pytype__ = Curve2D
-    def __init__ (self,**kargs) :
+    def __init__ (self,func_constraint = False, **kargs) :
         IInterface.__init__(self, **kargs)
+        self.func_constraint = func_constraint
         
     @classmethod
     def default(cls):
         return NurbsCurve2D([(0.,0.,1.),(1/3.,0.,1.),(2/3.,0.,1.),(1.,0.,1.)])
 
+
+    def __repr__(self):
+        return 'ICurve2D(func_constraint=%s)' % self.func_constraint
 
 
 

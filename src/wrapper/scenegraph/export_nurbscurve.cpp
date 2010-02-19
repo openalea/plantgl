@@ -65,7 +65,7 @@ std::string nc_repr( NurbsCurve* p )
   if (!p->isStrideToDefault())
 	  ss << ", stride = " << p->getStride();
   if (!p->isWidthToDefault())
-	  ss << ", width = " << p->getWidth();
+	  ss << ", width = " << (int)p->getWidth();
   ss << ")";
   return ss.str();
 }
@@ -141,7 +141,7 @@ std::string nc2_repr( NurbsCurve2D* p )
   if (!p->isStrideToDefault())
 	  ss << ", stride = " << p->getStride();
   if (!p->isWidthToDefault())
-	  ss << ", width = " << p->getWidth();
+	  ss << ", width = " << (int)p->getWidth();
   ss << ")";
   return ss.str();
 }

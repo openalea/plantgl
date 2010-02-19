@@ -1,5 +1,8 @@
+from openalea.plantgl.scenegraph import QuantisedFunction
 
 
 def curve2D(curve):
     """ A curve 2D """
-    return curve
+    from copy import deepcopy        
+    return deepcopy(curve)
+
