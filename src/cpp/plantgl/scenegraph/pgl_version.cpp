@@ -73,3 +73,41 @@ std::string getPGLVersionString(){
 int getPGLVersionNumber() { return PGL_VERSION; }
 std::string getPGLRevisionString() { return PGL_SVNREVISION; }
 
+#define ADD_EXTENSION(EXT) res.push_back(std::string(#EXT));
+
+std::vector<std::string> __getPGLSupportedExtensions() {
+	std::vector<std::string> res;
+#ifdef PGL_USE_DOUBLE
+	ADD_EXTENSION(DOUBLE)
+#endif
+#ifdef USE_GLUT
+	ADD_EXTENSION(GLUT)
+#endif
+#ifdef QT_THREAD_SUPPORT
+	ADD_EXTENSION(THREAD)
+#endif
+#ifndef NO_NAMESPACE
+	ADD_EXTENSION(NAMESPACE)
+#endif
+#ifdef USING_UNORDERED_MAP
+	ADD_EXTENSION(USING_UNORDERED_MAP)
+#endif
+#ifdef WITH_CGAL
+	ADD_EXTENSION(CGAL)
+#endif
+#ifdef MAINTAIN_PYTHON_OBJECT_ID
+	ADD_EXTENSION(MAINTAIN_PYTHON_OBJECT_ID)
+#endif
+   return res;
+}
+
+std::vector<std::string> PGL_EXTENSIONS = __getPGLSupportedExtensions();
+
+const std::vector<std::string>& get_pgl_supported_extensions() { return PGL_EXTENSIONS; }
+
+bool pgl_support_extension(const std::string& ext) {
+	for(std::vector<std::string>::const_iterator it = PGL_EXTENSIONS.begin();
+		it != PGL_EXTENSIONS.end(); ++it)
+		if (*it == ext) return true;
+	return false;
+}

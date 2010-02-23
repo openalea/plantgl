@@ -54,7 +54,6 @@ void export_StrPrinter()
   class_< PyStrPrinter, boost::noncopyable > ("StrPrinter", no_init  )
 	.def("str",    &PyStrPrinter::str,  "str() : return string")
 	.def("__str__",&PyStrPrinter::str,  "__str__() : return string")
-	.def("clear",  &PyStrPrinter::clear,  "clear() : clear the buffer")
 	.add_property("result", &PyStrPrinter::str)
     ;
 }
@@ -65,6 +64,7 @@ void export_FilePrinter()
 		("FilePrinter", no_init )
     ;
 }
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -90,7 +90,7 @@ void print_header(Printer * p, const std::string comment)
 void export_PglPrinter()
 {
  class_< Printer, bases< Action >, boost::noncopyable > ( "PglPrinter" , no_init )
-    .def("clearCache",&Printer::clear)
+    .def("clear",&Printer::clear)
     .def("addIndent",&Printer::addIndent)
     .def("isPrinted",&Printer::isPrinted)
     .def("header",&print_header0)
@@ -98,7 +98,8 @@ void export_PglPrinter()
     ;
 
   class_< PyStrPGLPrinter , bases< PyStrPrinter, Printer > , boost::noncopyable> 
-	  ("PglStrPrinter",init<>("String Printer in PGL format" ));
+	  ("PglStrPrinter",init<>("String Printer in PGL format" ))
+	  .def(str_printer_clear<>());
 
   class_< PyFilePGLPrinter , bases< PyFilePrinter, Printer > , boost::noncopyable> 
 	  ("PglFilePrinter",init<const std::string&>("File Printer in PGL format",args("filename")) );

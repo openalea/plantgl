@@ -1836,7 +1836,7 @@ ViewGLFrame::glNormalization(bool b){
 void
 ViewGLFrame::animation(bool b){
   ViewSceneRendererGL * r = dynamic_cast<ViewSceneRendererGL *>(__scene);
-  if(r)r->useDisplayList(!b);
+  if(r)r->setAnimation(b);
   __camera->lockDim(b);
 }
 

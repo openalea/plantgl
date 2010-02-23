@@ -80,6 +80,8 @@ void export_GLRenderer()
   enum_<GLRenderer::RenderingMode>("RenderingMode")
 	  .value("Normal",GLRenderer::Normal)
 	  .value("Selection",GLRenderer::Selection)
+	  .value("DynamicPrimitive",GLRenderer::DynamicPrimitive)
+	  .value("DynamicScene",GLRenderer::DynamicScene)
 	  .value("Dynamic",GLRenderer::Dynamic)
 	  .export_values()
 	  ;

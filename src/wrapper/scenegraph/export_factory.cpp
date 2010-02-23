@@ -177,7 +177,9 @@ SceneFormatList * make_sformatlist(bp::list formats)
 { return new SceneFormatList(extract_vec<SceneFormat>(formats)()); }
 
 void pydel_scenecodec (PySceneCodec * c) { 
+#ifdef MAINTAIN_PYTHON_OBJECT_ID
 	boost::intrusive_ptr_clear_pyobject(c);
+#endif
 	SceneFactory::get().unregisterCodec(PGL(SceneCodecPtr)(c));
 }
 

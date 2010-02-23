@@ -65,6 +65,7 @@ void export_VrmlPrinter()
 
   class_< PyStrVrmlPrinter, bases< PyStrPrinter, VrmlPrinter >, boost::noncopyable > 
 	  ("StrVrmlPrinter", init<Discretizer&>("String Printer in Vrml format", args("t")) )
+	  .def(str_printer_clear<>());
     ;
 
   class_< PyFileVrmlPrinter, bases< PyFilePrinter, VrmlPrinter >, boost::noncopyable > 

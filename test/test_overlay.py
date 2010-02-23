@@ -1,7 +1,8 @@
 from openalea.plantgl.all import *
 
-if not Overlay.supportCGAL():
-  print 'Do not have CGAL support for Overlay'
+if not pgl_support_extension('CGAL'):
+    import warnings
+    warnings.warn("Not supported CGAL extension. Skip overlay tests.")
 else:
   def overlay_with_cirle(p2i, visual = False):
     p1 = Polyline2D.Circle(2,32)

@@ -55,7 +55,7 @@ class PyStrPrinter {
 		/// resulting string
 		std::string str() { return _mystream.str(); }
 		/// clear the buffer
-        void clear() { return _mystream.clear(); }
+        void clear() { 	_mystream.str(""); }
 };
 
 /* ----------------------------------------------------------------------- */
@@ -72,6 +72,23 @@ class PyFilePrinter {
 
 		/// The output stream
 		std::ofstream _mystream;
+};
+
+#include <plantgl/python/boost_python.h>
+
+template <class T, class Base>
+void py_clear_all(T * printer) {
+	printer->Base::clear();
+	printer->PyStrPrinter::clear();
+}
+
+template <class Base = Printer>
+class str_printer_clear : public boost::python::def_visitor<str_printer_clear<Base> >
+{
+    friend class boost::python::def_visitor_access;
+    template <class classT>
+    void visit(classT& c) const
+	{ c.def( "clear",        &py_clear_all<classT::wrapped_type,Base> ) ; }
 };
 
 /* ----------------------------------------------------------------------- */

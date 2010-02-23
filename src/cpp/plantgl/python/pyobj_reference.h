@@ -9,8 +9,11 @@
 
 #include <plantgl/tool/rcobject.h>
 
-#ifdef WITH_REFCOUNTLISTENER
+#ifndef WITH_REFCOUNTLISTENER
+#undef MAINTAIN_PYTHON_OBJECT_ID
+#endif
 
+#ifdef MAINTAIN_PYTHON_OBJECT_ID
 //
 #include <Python.h>
 #include <iostream>
@@ -89,6 +92,11 @@ namespace boost { namespace python { namespace detail {
 // A helper template function to define __del__ python function
 template<class T>
 void pydel(T * obj) {  boost::intrusive_ptr_clear_pyobject(obj); }
+
+#else
+
+#define BOOST_INITIALIZE_WRAPPER_FIX_DECLARE(T) 
+#define BOOST_INITIALIZE_WRAPPER_FIX(T) 
 
 #endif
 

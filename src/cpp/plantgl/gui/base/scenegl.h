@@ -264,14 +264,20 @@ public :
   /// Set the light.
   void setLight(ViewLightGL *); 
 
+  inline bool isAnimated() const { return __animated; }
+
 public slots:
 
   virtual void computeCamera();
 
   virtual void useDisplayList(bool);
 
+  void setAnimation(bool b) { __animated = b;  animationChangedEvent(b); }
+
 
 protected :
+
+  virtual void animationChangedEvent(bool) { }
 
   /// The camera.
   ViewCameraGL * __camera;
@@ -279,6 +285,7 @@ protected :
   /// The light.
   ViewLightGL * __light;
 
+  bool __animated;
 };
 
 /* ----------------------------------------------------------------------- */

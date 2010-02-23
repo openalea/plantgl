@@ -25,6 +25,11 @@
 //   (3) Otherwise, the python object is created as usual, and a pointer to
 //       the python object is saved in the T object.
 
+#ifndef WITH_REFCOUNTLISTENER
+#undef MAINTAIN_PYTHON_OBJECT_ID
+#endif
+
+#ifdef MAINTAIN_PYTHON_OBJECT_ID
 
 namespace boost { namespace python { namespace objects { 
 
@@ -50,7 +55,6 @@ struct make_instance_impl<
           return incref(intrusive_ptr_get_pyobject(x.get()));
         }
 #endif
-
         BOOST_STATIC_ASSERT(is_class<T>::value);
 
         PyTypeObject* type = Derived::get_class_object(x);
@@ -79,7 +83,7 @@ struct make_instance_impl<
             // Save a pointer to the pyobject for future reference
             intrusive_ptr_set_pyobject(x.get(), raw_result);
 #endif
-            // Release ownership of the python object
+			// Release ownership of the python object
             protect.cancel();
         }
         return raw_result;
@@ -130,7 +134,7 @@ struct intrusive_ptr_from_python
 };
 
 }}} // namespace boost::python::converter
-
+#endif 
 
 #endif // INTRUSIVE_PTR_PYTHON_HELPER_HPP
 

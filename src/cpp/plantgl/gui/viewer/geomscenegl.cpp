@@ -252,7 +252,7 @@ ViewGeomSceneGL::getSelectionBoundingBox()
 /* ----------------------------------------------------------------------- */
 void
 ViewGeomSceneGL::changeDisplayListUse(){
-  if(__renderer.getRenderingMode() == GLRenderer::Dynamic){
+  if(__renderer.getRenderingMode() & GLRenderer::Dynamic){
 	__renderer.setRenderingMode(GLRenderer::Normal);
 	emit displayList(true);
   }
@@ -271,7 +271,7 @@ ViewGeomSceneGL::useDisplayList(bool b){
 
 bool 
 ViewGeomSceneGL::getDisplayListUse() const {
-  return __renderer.getRenderingMode() != GLRenderer::Dynamic;
+  return !(__renderer.getRenderingMode() & GLRenderer::Dynamic);
 }
 
 void 
@@ -280,6 +280,12 @@ ViewGeomSceneGL::refreshDisplay() {
 }
 
 void ViewGeomSceneGL::enableBlending(bool b) { __blending = b; emit valueChanged(); }
+
+void ViewGeomSceneGL::animationChangedEvent(bool a)
+{
+	if(a) __renderer.setRenderingMode(GLRenderer::DynamicScene);
+	else __renderer.setRenderingMode(GLRenderer::Normal);
+}
 
 /* ----------------------------------------------------------------------- */
 int
@@ -336,27 +342,31 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
   }
 
   // Clears all the actions
-  __scene = ScenePtr();
-  __bbox= BoundingBoxPtr();
-  clearCache();
+  if (!isAnimated()){
+    __scene = ScenePtr();
+    __bbox= BoundingBoxPtr();
+    clearCache();
+  }
+  else { __selectedShapes.clear(); }
 
   // Sets the scene
   __scene = scene;
 
-  // Computes the global bounding box
-  if (! __scene->empty()) {
-    if(__bboxComputer.process(__scene))
-      __bbox = __bboxComputer.getBoundingBox();
-    QString _msg(tr("Display")+" ");
-    _msg+=QString::number(__scene->size());
-    _msg+=(" "+tr("geometric shapes."));
-    status(_msg,10000);
-
+  if (is_null_ptr(__bbox)){
+	  // Computes the global bounding box
+	  if (! __scene->empty()) {
+		  if(__bboxComputer.process(__scene))
+			  __bbox = __bboxComputer.getBoundingBox();
+		  QString _msg(tr("Display")+" ");
+		  _msg+=QString::number(__scene->size());
+		  _msg+=(" "+tr("geometric shapes."));
+		  status(_msg,10000);
+	 }
+	 else{
+		 status(tr("Display empty scene."));
+    }
+    __camera->buildCamera(__bbox);
   }
-  else{
-    status(tr("Display empty scene."));
-  }
-  __camera->buildCamera(__bbox);
   emit sceneChanged();
   if(__frame != NULL && __frame->isVisible())emit valueChanged();
   return 1;
@@ -394,7 +404,7 @@ ViewGeomSceneGL::paintGL()
       else glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
-		if(__renderer.getRenderingMode() == GLRenderer::Dynamic)
+		if(__renderer.getRenderingMode() & GLRenderer::Dynamic)
 			__scene->apply(__renderer);
 		else {
 			int cur = 0;

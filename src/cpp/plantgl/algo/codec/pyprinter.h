@@ -18,6 +18,14 @@ public:
 	PyPrinter(std::ostream& stream);
 	virtual ~PyPrinter();
 
+	  /// @name Pre and Post Processing
+	//@{
+	virtual bool beginProcess();
+
+	virtual bool endProcess();
+	//@}
+
+
 	/// @name Shape
     //@{	
 	virtual bool process( Shape * shape );
@@ -96,7 +104,7 @@ public:
 
 protected:
 
-	
+	std::string scene_name;
 
 };
 

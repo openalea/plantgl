@@ -50,6 +50,7 @@ public:
 	static AppearancePtr HEADING_FRAME_MATERIAL;
 	static AppearancePtr UP_FRAME_MATERIAL;
 	static AppearancePtr LEFT_FRAME_MATERIAL;
+	static GeometryPtr DEFAULT_SPHERE;
 
     typedef pgl_hash_map_string<GeometryPtr> SurfaceMap;
 

@@ -6,11 +6,16 @@ printer = PyStrPrinter()
 def eval_code(sceneobj):
   if len(sceneobj.name) == 0:
 	  sceneobj.name = 'testedobject'
+  printer.clear()
   sceneobj.apply(printer)
   code = printer.str()
-  print code
+  #print code
   dic = {}
-  exec code in globals(),dic
+  try:
+    exec(code,globals(),dic)
+  except Exception, e:
+    print code
+    raise e
   assert dic.has_key(sceneobj.name) and "evaluated object not found"
   eval_object = dic[sceneobj.name]
   assert type(eval_object) == type(sceneobj) and eval_object.name == sceneobj.name

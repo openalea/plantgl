@@ -3,7 +3,9 @@
 
 template<class T>
 RCPtr<T> py_recast(T * obj) { 
+#ifdef MAINTAIN_PYTHON_OBJECT_ID
 	boost::intrusive_ptr_clear_pyobject(obj);
+#endif
 	return RCPtr<T>(obj); 
 }
 

@@ -36,7 +36,7 @@ def test_polyline_as_result():
     try:
         Group([s],s2).isValid()
     except:
-        warnings.warn( "Disretizer return value type mixup")
+        warnings.warn( "Discretizer return value type mixup")
     sc = Scene()
     sc += s
     sc += s2

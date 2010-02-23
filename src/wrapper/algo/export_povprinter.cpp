@@ -66,6 +66,7 @@ void export_PovPrinter()
 
   class_< PyStrPovPrinter, bases< PyStrPrinter, PovPrinter >, boost::noncopyable > 
 	  ("PovStrPrinter", init<Tesselator&>("String Printer in Povray format", args("t")) )
+	  .def(str_printer_clear<>());
     ;
 
   class_< PyFilePovPrinter, bases< PyFilePrinter, PovPrinter >, boost::noncopyable > 

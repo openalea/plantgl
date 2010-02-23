@@ -193,7 +193,7 @@ void GLRenderer::clear( )
 
 
 bool GLRenderer::check(uint_t id, GLuint& displaylist){
-  if(__Mode != Dynamic){ 
+  if(__Mode != DynamicPrimitive){ 
 	Cache<GLuint>::Iterator _it = __cache.find(id); 
 	if (_it != __cache.end()) { 
 	  displaylist = _it->second;
@@ -223,7 +223,7 @@ bool GLRenderer::check(uint_t id, GLuint& displaylist){
 }
 
 bool GLRenderer::call(uint_t id){
-  if(__Mode != Dynamic){ 
+  if(__Mode != DynamicPrimitive){ 
 	Cache<GLuint>::Iterator _it = __cache.find(id); 
 	if (_it != __cache.end()) { 
 	  glCallList(_it->second); 
@@ -238,7 +238,7 @@ bool GLRenderer::call(uint_t id){
 }
 
 void GLRenderer::update(uint_t id, GLuint displaylist){
-  if(__Mode != Dynamic && displaylist != 0 && __currentdisplaylist){ 
+  if(__Mode != DynamicPrimitive && displaylist != 0 && __currentdisplaylist){ 
 #ifdef GEOM_DLDEBUG
 	  printf("End Display List %i for obj %i\n",displaylist,id);
 #endif
@@ -275,10 +275,13 @@ void
 GLRenderer::setRenderingMode(RenderingMode mode)
 {
   if(__Mode != mode){
-    if((__Mode == Normal || __Mode == Selection) && mode ==  Dynamic){
+    if(!(__Mode & DynamicPrimitive) && (mode & DynamicPrimitive)){
       clear();
     }
-    if(mode ==  Dynamic)__compil = -1;
+    if(!(__Mode & Dynamic) && (mode & DynamicScene)){
+      clearSceneList();
+    }
+    if(mode &  DynamicPrimitive)__compil = -1;
 	else if(__compil == -1)__compil = 0;
     __Mode = mode;
   }
@@ -346,10 +349,7 @@ GLRenderer::clearSceneList()
 
 
 bool GLRenderer::beginProcess(){
-  if(__Mode == Dynamic){
-//    clear();
-  }
-  else if(__Mode == Selection){
+  if(__Mode == Selection){
     glInitNames();
   }
   else {
@@ -396,7 +396,7 @@ bool GLRenderer::processAppereance(Shape * geomshape){
 
 bool GLRenderer::processGeometry(Shape * geomshape){
   GEOM_ASSERT(geomshape);
-  if(__Mode == Dynamic)return geomshape->geometry->apply(*this);
+  if(__Mode & Dynamic)return geomshape->geometry->apply(*this);
 
   if(__Mode == Selection){
       if(__selectMode == ShapeId && geomshape->getId()!=Shape::NOID){

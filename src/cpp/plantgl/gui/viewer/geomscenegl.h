@@ -329,6 +329,8 @@ protected :
 
   virtual void customEvent(QEvent *); 
 
+  virtual void animationChangedEvent(bool);
+
   /// The scene object (which contains all the geometric shape and appereance to display).
   PGL(ScenePtr) __scene;
 

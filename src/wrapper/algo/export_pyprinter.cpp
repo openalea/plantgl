@@ -59,7 +59,9 @@ void export_PyPrinter()
     ;
 
   class_< PyStrPyPrinter , bases< PyStrPrinter, PyPrinter > , boost::noncopyable> 
-	  ("PyStrPrinter",init<>("String Printer in python format" ));
+	  ("PyStrPrinter",init<>("String Printer in python format" ))
+	  .def(str_printer_clear<>());
+	  ;
 
   class_< PyFilePyPrinter , bases< PyFilePrinter, PyPrinter > , boost::noncopyable> 
 	  ("PyFilePrinter",init<const std::string&>("File Printer in python format",args("filename")) );

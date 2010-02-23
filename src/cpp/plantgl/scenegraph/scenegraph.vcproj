@@ -116,7 +116,7 @@
 				Optimization="3"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="$(QTDIR)\include,$(QTDIR)\include\Qt,&quot;$(BOOSTDIR)&quot;;..\.."
-				PreprocessorDefinitions="SG_MAKEDLL"
+				PreprocessorDefinitions="SG_MAKEDLL;WITH_CGAL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				DebugInformationFormat="0"

@@ -36,6 +36,7 @@
 #include <plantgl/scenegraph/pgl_version.h>
 #include <plantgl/scenegraph/scene/factory.h>
 #include <plantgl/python/pyinterpreter.h>
+#include <plantgl/python/export_list.h>
 #include <iostream>
 
 using namespace boost::python;
@@ -77,6 +78,9 @@ void set_python_error_style(bool value = true)
 }
 bool get_python_error_style() { return py_error_style; }
 
+boost::python::object py_get_pgl_supported_extensions() {
+	return make_list(get_pgl_supported_extensions());
+}
 
 void module_sg()
 {
@@ -195,6 +199,8 @@ void module_sg()
 	scope().attr("PGL_VERSION") = PGL_VERSION;
 	scope().attr("PGL_SVNREVISION") = getPGLSvnRevision();
 	def("getPGLVersion",&getPGLVersion);
+	def("get_pgl_supported_extensions",&py_get_pgl_supported_extensions,"Gives all extensions supported by current version of PlantGL.");
+	def("pgl_support_extension",&pgl_support_extension, args("ext"),"Tell wether PlantGL support a given extension");
 	def("get_pgl_python_error_style",&get_python_error_style);
 	def("set_pgl_python_error_style",&set_python_error_style);
 

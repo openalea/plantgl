@@ -94,9 +94,11 @@ public:
     Rendering of dynamic object. Not using display list.
   */
   enum RenderingMode {
-    Normal,
-    Selection,
-    Dynamic
+    Normal = 0x0001,
+    Selection = 0x0002,
+    DynamicScene = 0x0004,
+	DynamicPrimitive = 0x0008,
+    Dynamic = DynamicPrimitive | DynamicScene,
   };
 
 

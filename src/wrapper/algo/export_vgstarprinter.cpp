@@ -63,6 +63,7 @@ void export_VgstarPrinter()
 
   class_< PyStrVgstarPrinter, bases< PyStrPrinter, VgstarPrinter >, boost::noncopyable > 
 	  ("VgStarStrPrinter", init<Tesselator&>("String Printer in VgStar format", args("t")) )
+	  .def(str_printer_clear<VgstarPrinter>());
     ;
 
   class_< PyFileVgstarPrinter, bases< PyFilePrinter, VgstarPrinter >, boost::noncopyable > 

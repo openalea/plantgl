@@ -41,10 +41,8 @@ using namespace boost::python;
 void export_Overlay()
 {
   class_< Overlay > ("Overlay", no_init)
-    .def("process",&Overlay::process, "compute the overlay between 2 closed polylines.")
+    .def("process",&Overlay::process, "compute the overlay between 2 closed polylines. Requires CGAL extension.")
 	.staticmethod("process")
-	.def("supportCGAL",&Overlay::supportCGAL)
-	.staticmethod("supportCGAL")
     ;
  
  

@@ -43,6 +43,7 @@
 
 #include "sg_config.h"
 #include <string>
+#include <vector>
 
 /// PGL Version
 extern SG_API float getPGLVersion();
@@ -57,6 +58,9 @@ extern SG_API std::string getPGLRevisionString();
 #define PGL_LIB_VERSION_CHECK \
 	 assert( PGL_VERSION == getPGLVersionNumber() && \
              "PlantGL version of the loaded library is different from the one at linking.");
+
+extern SG_API const std::vector<std::string>& get_pgl_supported_extensions();
+extern SG_API bool pgl_support_extension(const std::string& ext);
 
 #endif
 

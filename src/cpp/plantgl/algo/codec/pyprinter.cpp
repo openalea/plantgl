@@ -13,6 +13,23 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace std;
 
+template<class T>
+inline string compute_name(T * obj) {  
+	if(obj->isNamed()) return obj->getName();
+	
+	string _name;
+	_name = "PGL_"+number(obj->getId());
+	if(obj->use_count() > 1){
+		obj->setName(_name);
+	}
+	return _name;
+
+}
+
+template<class T>
+inline string compute_name(RCPtr<T> obj)
+{ return compute_name(obj.get()); }
+
 template <typename T>
 ostream& print_field(ostream& os, string name, string str, const T& value)
 {
@@ -95,28 +112,37 @@ inline ostream& print_value(ostream& os, const Color3& value)
 	return os;
 } 
 
-
-ostream& print_value(ostream& os, const Color4ArrayPtr& value)
+inline ostream& print_value(ostream& os, const Color4& value)
 {	
-	os << "Color4Array([";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		Color4 c = value->getAt(_i);
-		os << "(" << (uint16_t)c.getRed() 
-			<< ", " << (uint16_t)c.getGreen() 
-			<< ", " << (uint16_t)c.getBlue()
-			<< ", " << (uint16_t)c.getAlpha() << "), ";
-	}
-	os << "])";
+	os << "Color4(" << (uint16_t)value.getRed() 
+         << "," << (uint16_t)value.getGreen() 
+         << "," << (uint16_t)value.getBlue()
+         << "," << (uint16_t)value.getAlpha() << ")";
+	
+	return os;
+} 
+
+inline ostream& print_value(ostream& os, const Index3& value)
+{	
+	os << "(" << value[0]  << "," << value[1]  << "," << value[2] << ")";
+	return os;
+} 
+
+inline ostream& print_value(ostream& os, const Index4& value)
+{	
+	os << "(" << value[0]  << "," << value[1]  << "," << value[2] << "," << value[3] << ")";
 	return os;
 } 
 
 ostream& print_value(ostream& os, const Curve2DArrayPtr& value)
 {
 	os << "[";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << value->getAt(_i)->getName() << ", ";
+	if (!value->empty()){
+		uint_t _sizei = value->size();
+		os << compute_name(value->getAt(0));
+		for (uint_t _i = 1; _i < _sizei; _i++) {
+			os << ", " << compute_name(value->getAt(_i));
+		}
 	}
 	os << "]";
 	return os;
@@ -125,137 +151,136 @@ ostream& print_value(ostream& os, const Curve2DArrayPtr& value)
 ostream& print_value(ostream& os, const GeometryArrayPtr& value)
 {
 	os << "[";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << value->getAt(_i)->getName() << ", ";
+	if (!value->empty()){
+		uint_t _sizei = value->size();
+		os << compute_name(value->getAt(0));
+		for (uint_t _i = 1; _i < _sizei; _i++) {
+			os << ", " << compute_name(value->getAt(_i));
+		}
 	}
 	os << "]";
+	return os;
+}
+
+template<class array>
+ostream& print_value_array(ostream& os, const array& value)
+{
+	os << "([";
+	if (!value->empty()){
+		uint_t _sizei = value->size();
+		print_value(os,value->getAt(0));
+		for (uint_t _i = 1; _i < _sizei; _i++) {
+			os << ','; print_value(os,value->getAt(_i));
+		}
+	}
+	os << "])";
 	return os;
 }
 
 ostream& print_value(ostream& os, const Index3ArrayPtr& value)
 {
-	os << "Index3Array([";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << "(" 
-			<< value->getAt(_i).getAt(0) << "," << value->getAt(_i).getAt(1) << ","
-			<< value->getAt(_i).getAt(2) << "), ";
-	}
-	os << "])";
+	os << "Index3Array";
+	print_value_array(os,value);
 	return os;
 }
 
 ostream& print_value(ostream& os, const Index4ArrayPtr& value)
 {
-	os << "Index4Array([";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << "(" 
-			<< value->getAt(_i).getAt(0) << "," << value->getAt(_i).getAt(1) << ","
-			<< value->getAt(_i).getAt(2) << "," << value->getAt(_i).getAt(3)
-			<< "), ";
-	}
-	os << "])";
+	os << "Index4Array";
+	print_value_array(os,value);
 	return os;
 }
 
 ostream& print_value(ostream& os, const RealArrayPtr& value)
 {
-	//os << "RealArray([";
-	os << "[";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << value->getAt(_i) << ", ";
-	}
-	os << "]";
+	os << "RealArray";
+	print_value_array(os,value);
 	return os;
 }
 
-ostream& print_value(ostream& os, const RealArray2Ptr& value)
-{
-	uint_t _cols = value->getColsNb();
-	os << "[[";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _sizei; _i++) {
-		os << value->getAt(_i / _cols ,_i % _cols) << ",";
-		if (_i != (_sizei - 1)){ 
-          if (_i !=0 && (_i+1) % (_cols) ==0){ 
-			  os << "], ";
-              os << "[";} 
-          else  os << ", "; 
-		}
-	}
-	os << "]]";
+ostream& print_value(ostream& os, const Color4ArrayPtr& value)
+{	
+	os << "Color4Array";
+	print_value_array(os,value);
 	return os;
-}
+} 
+
 
 ostream& print_value(ostream& os, const Point2ArrayPtr& value)
 {
-	os << "Point2Array([";
-	uint_t _sizei = value->size();
-        for(Point2Array::const_iterator it = value->begin(); it != value->end(); ++it)
-		print_value(os,*it) << ',';
-	os << "])";
+	os << "Point2Array";
+	print_value_array(os,value);
 	return os;
 }
 
 ostream& print_value(ostream& os, const Point3ArrayPtr& value)
 {
-	os << "Point3Array([";
-	uint_t _sizei = value->size();
-        for(Point3Array::const_iterator it = value->begin(); it != value->end(); ++it)
-		print_value(os,*it) << ',';
-	os << "])";
+	os << "Point3Array";
+	print_value_array(os,value);
 	return os;
 }
 
 ostream& print_value(ostream& os, const Point4ArrayPtr& value)
 {
-	os << "Point4Array([";
-	uint_t _sizei = value->size();
-        for(Point4Array::const_iterator it = value->begin(); it != value->end(); ++it)
-		print_value(os,*it) << ',';
-	os << "])";
+	os << "Point4Array";
+	print_value_array(os,value);
 	return os;
 }
+
+template<class array>
+ostream& print_value_array2(ostream& os, const array& value)
+{
+	os << "([[";
+	if (!value->empty()){
+		uint_t _sizei = value->size();
+		uint_t _cols = value->getColsNb();
+		for (uint_t _i = 0; _i < _sizei; _i++) {
+			print_value(os,value->getAt(_i / _cols ,_i % _cols)) ;
+			if (_i != (_sizei - 1)){ 
+				if (_i !=0 && (_i+1) % (_cols) ==0){ 
+					os << "], [";
+				} 
+				else  os << ", "; 
+			}
+		}
+	}
+	os << "]])";
+	return os;
+}
+
+
+ostream& print_value(ostream& os, const RealArray2Ptr& value)
+{
+	os << "RealArray2";
+	print_value_array2(os,value);
+	return os;
+}
+
 
 ostream& print_value(ostream& os, const Point4MatrixPtr& value)
 {
-	uint_t _cols = value->getColsNb();
-	uint_t _rows = value->getRowsNb();
-	os << "[";
-	uint_t _sizei = value->size();
-	for (uint_t _i = 0; _i < _rows; ++_i) {
-           os << "[";
-   	   for (uint_t _j = 0; _j < _cols; ++_j) 
-		print_value(os,value->getAt(_i ,_j)) << ',';
- 	   os << "], ";
-	}
-	os << "]";
+	os << "Point4Matrix";
+	print_value_array2(os,value);
 	return os;
 }
 
 
-template<class T>
-inline string compute_name(T * obj) {  
-	if(obj->isNamed()) return obj->getName();
-	
-	if(obj->use_count() > 1){
-		string _name;
-		_name = "PGL_"+number(obj->getId());
-		obj->setName(_name);
-	}
-	else return "anobject";
-
-	return obj->getName();
+inline ostream& print_value(ostream& os, SceneObjectPtr value)
+{
+	return os << compute_name(value);
 }
 
-template<class T>
-inline string compute_name(RCPtr<T> obj)
-{ return compute_name(obj.get()); }
+inline ostream& print_value(ostream& os, GeometryPtr value)
+{
+	return os << compute_name(value);
+}
 
-inline ostream& print_value(ostream& os, SceneObjectPtr value)
+inline ostream& print_value(ostream& os, AppearancePtr value)
+{
+	return os << compute_name(value);
+}
+
+inline ostream& print_value(ostream& os, PolylinePtr value)
 {
 	return os << compute_name(value);
 }
@@ -282,13 +307,55 @@ inline void print_end(ostream& os)
 	os << endl;
 }
 
-PyPrinter::PyPrinter(ostream& stream) : Printer(stream)
+
+#define GEOM_BEGIN(obj) \
+	GEOM_ASSERT(obj) \
+    if (obj->use_count() > 1) { \
+		if (! __cache.insert(obj->getId()).second) return true; \
+	} \
+
+
+
+PyPrinter::PyPrinter(ostream& stream) : Printer(stream), scene_name()
 {
 }
 
 PyPrinter::~PyPrinter()
 {
 }
+
+bool PyPrinter::beginProcess()
+{
+	scene_name = "result";
+	__shapeStream << "result = Scene()\n";
+	return true;
+}
+
+bool PyPrinter::endProcess()
+{
+	scene_name.clear();
+	return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+#define PYPRINT_ARG(stream,obj, name, pyattribute, cattribute,in_constructor) \
+  if (! obj->is##cattribute##ToDefault()){ \
+	print_field (stream, name, #pyattribute, obj->get##cattribute(),in_constructor); \
+  } \
+  else if (in_constructor) { \
+	print_cons_end (stream, obj, name); \
+	in_constructor = false; \
+  } \
+
+#define PYPRINT_ARG_WITHCOND(stream,obj, name, pyattribute, cattribute, cond, in_constructor) \
+  if (cond){ \
+	print_field (stream, name, #pyattribute, obj->get##cattribute(),in_constructor); \
+  } \
+  else if (in_constructor) { \
+	print_cons_end (stream, obj, name); \
+	in_constructor = false; \
+  } \
 
 /* ----------------------------------------------------------------------- */
 
@@ -307,62 +374,28 @@ bool PyPrinter::process(Shape * shape)
 		shape->appearance->apply(*this);
 	}
 
+	bool in_constructor = true; // tell if the constructor of the object is still described.
+
 	print_cons_begin(__shapeStream, name, "Shape");
 
-	if( shape->geometry ){
-		print_arg_field (__shapeStream, "geometry", SceneObjectPtr(shape->geometry));
-		if( shape->appearance )
-		{
-			print_arg_field (__shapeStream, "appearance", SceneObjectPtr(shape->appearance));
-			if(shape->id != Shape::NOID)
-			{
-				print_arg_field (__shapeStream, "id", (shape->id));
-				if(shape->parentId != Shape::NOID)
-					print_arg_field (__shapeStream, "parentId", (shape->parentId));
-			}
-			else
-			{
-				if(shape->parentId != Shape::NOID)
-				{
-					print_cons_end(__shapeStream, shape, name);
-					print_field (__shapeStream, name, "parentId", (shape->parentId));
-					print_end(__shapeStream);
-					return true;
-				}
-			}
-		}
-		print_cons_end(__shapeStream, shape, name);
-	}
-	
-	else
-	{
-		print_cons_end(__shapeStream, shape, name);
-		if( shape->appearance )
-			print_field (__shapeStream, name, "appearance", SceneObjectPtr(shape->appearance));
-		if(shape->id != Shape::NOID)
-			print_field (__shapeStream, name, "id", (shape->id));
-		if(shape->parentId != Shape::NOID)
-			print_field (__shapeStream, name, "parentId", (shape->parentId));
-	}
-	
-	print_end(__shapeStream);
+	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, geometry,  Geometry,  is_valid_ptr(shape->getGeometry()), in_constructor)
+	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, appearance,  Appearance,  is_valid_ptr(shape->getAppearance()), in_constructor)
+	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, id, Id, shape->getId() !=  Shape::NOID, in_constructor)
+	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, parentId, ParentId, shape->getParentId() !=  Shape::NOID, in_constructor)
+
+	if (in_constructor) print_cons_end (__shapeStream, shape, name);
+
+	if (!scene_name.empty()) __shapeStream  << scene_name << ".add(" << name << ")" << std::endl;
+
+
 	return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
-#define PYPRINT_ARG(stream,obj, name, pyattribute, cattribute,in_constructor) \
-  if (! obj->is##cattribute##ToDefault()){ \
-	print_field (stream, name, #pyattribute, obj->get##cattribute(),in_constructor); \
-  } \
-  else if (in_constructor) { \
-	print_cons_end (stream, obj, name); \
-	in_constructor = false; \
-  } \
-
 
 bool PyPrinter::process( Material * material ) {
-  GEOM_ASSERT(material);
+  GEOM_BEGIN(material);
   
   string name = compute_name(material);
   bool in_constructor = true; // tell if the constructor of the object is still described.
@@ -386,7 +419,7 @@ bool PyPrinter::process( Material * material ) {
 
 
 bool PyPrinter::process( ImageTexture * texture ) {
-  GEOM_ASSERT(texture);
+  GEOM_BEGIN(texture);
   
   string name = compute_name(texture);
   print_cons_begin(__geomStream, name, "ImageTexture");
@@ -415,324 +448,32 @@ bool PyPrinter::process( ImageTexture * texture ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( AsymmetricHull * asymmetricHull ) {
-  GEOM_ASSERT(asymmetricHull);
+  GEOM_BEGIN(asymmetricHull);
 
   string name = compute_name(asymmetricHull);
-  print_cons_begin(__geomStream, name, "AsymmetricHull");
-  if (! asymmetricHull->isNegXRadiusToDefault())
-  {
-	print_arg_field (__geomStream, "negXRadius", asymmetricHull->getNegXRadius());
-	if (! asymmetricHull->isPosXRadiusToDefault())
-	{
-		print_arg_field (__geomStream, "posXRadius", asymmetricHull->getPosXRadius());
-		if (! asymmetricHull->isNegYRadiusToDefault())
-		{
-			print_arg_field (__geomStream, "negYRadius", asymmetricHull->getNegYRadius());
-			if (! asymmetricHull->isPosYRadiusToDefault())
-			{
-				print_arg_field (__geomStream, "posYRadius", asymmetricHull->getPosYRadius());
-				if (! asymmetricHull->isNegXHeightToDefault())
-				{
-					print_arg_field (__geomStream, "negXHeight", asymmetricHull->getNegXHeight());
-					if (! asymmetricHull->isPosXHeightToDefault())
-					{
-						print_arg_field (__geomStream, "posXHeight", asymmetricHull->getPosXHeight());
-						if (! asymmetricHull->isNegYHeightToDefault())
-						{
-							print_arg_field (__geomStream, "negYHeight", asymmetricHull->getNegYHeight());
-							if (! asymmetricHull->isPosYHeightToDefault())
-							{
-								print_arg_field (__geomStream, "posYHeight", asymmetricHull->getPosYHeight());
-								if (! asymmetricHull->isBottomToDefault())
-								{
-									print_arg_field (__geomStream, "bottom", asymmetricHull->getBottom());
-									if (! asymmetricHull->isTopToDefault())
-									{
-										print_arg_field (__geomStream, "top", asymmetricHull->getTop());
-										if (! asymmetricHull->isBottomShapeToDefault())
-										{
-											print_arg_field (__geomStream, "bottomShape", asymmetricHull->getBottomShape());
-											if (! asymmetricHull->isTopShapeToDefault())
-											{
-												print_arg_field (__geomStream, "topShape", asymmetricHull->getTopShape());
-												if (! asymmetricHull->isSlicesToDefault())
-												{
-													print_arg_field (__geomStream, "slices", asymmetricHull->getSlices());
-													if (! asymmetricHull->isStacksToDefault())
-														print_arg_field (__geomStream, "stacks", asymmetricHull->getStacks());
-												}
-												else  // Slices is default
-												{
-													print_cons_end(__geomStream, asymmetricHull, name);	
-													if (! asymmetricHull->isStacksToDefault())
-														print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-													print_end(__geomStream);
-													return true;
-												}
-											}
-											else  // TopShape is default
-											{
-												print_cons_end(__geomStream, asymmetricHull, name);	
-												if (! asymmetricHull->isSlicesToDefault())
-													print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-												if (! asymmetricHull->isStacksToDefault())
-													print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-												print_end(__geomStream);
-												return true;
-											}
-										}
-										else  // BottomShape is default
-										{
-											print_cons_end(__geomStream, asymmetricHull, name);						
-											if (! asymmetricHull->isTopShapeToDefault())
-												print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-											if (! asymmetricHull->isSlicesToDefault())
-												print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-											if (! asymmetricHull->isStacksToDefault())
-												print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-											print_end(__geomStream);
-											return true;
-										}
-									}
-									else  // Top is default
-									{
-										print_cons_end(__geomStream, asymmetricHull, name);						
-										if (! asymmetricHull->isBottomShapeToDefault())
-											print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-										if (! asymmetricHull->isTopShapeToDefault())
-											print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-										if (! asymmetricHull->isSlicesToDefault())
-											print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-										if (! asymmetricHull->isStacksToDefault())
-											print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-										print_end(__geomStream);
-										return true;
-									}
-								}
-								else  // Bottom is default
-								{
-									print_cons_end(__geomStream, asymmetricHull, name);
-									if (! asymmetricHull->isTopToDefault())
-										print_field (__geomStream, name, "top", asymmetricHull->getTop());
-									if (! asymmetricHull->isBottomShapeToDefault())
-										print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-									if (! asymmetricHull->isTopShapeToDefault())
-										print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-									if (! asymmetricHull->isSlicesToDefault())
-										print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-									if (! asymmetricHull->isStacksToDefault())
-										print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-									print_end(__geomStream);
-									return true;
-								}
-							}
-							else  // PosYHeight is default
-							{
-								print_cons_end(__geomStream, asymmetricHull, name);
-								if (! asymmetricHull->isBottomToDefault())
-									print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-								if (! asymmetricHull->isTopToDefault())
-									print_field (__geomStream, name, "top", asymmetricHull->getTop());
-								if (! asymmetricHull->isBottomShapeToDefault())
-									print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-								if (! asymmetricHull->isTopShapeToDefault())
-									print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-								if (! asymmetricHull->isSlicesToDefault())
-									print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-								if (! asymmetricHull->isStacksToDefault())
-									print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-								print_end(__geomStream);
-								return true;
-							}
-						}
-						else  // NegYHeight is dedault
-						{
-							print_cons_end(__geomStream, asymmetricHull, name);
-							if (! asymmetricHull->isPosYHeightToDefault())
-								print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-							if (! asymmetricHull->isBottomToDefault())
-								print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-							if (! asymmetricHull->isTopToDefault())
-								print_field (__geomStream, name, "top", asymmetricHull->getTop());
-							if (! asymmetricHull->isBottomShapeToDefault())
-								print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-							if (! asymmetricHull->isTopShapeToDefault())
-								print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-							if (! asymmetricHull->isSlicesToDefault())
-								print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-							if (! asymmetricHull->isStacksToDefault())
-								print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-							print_end(__geomStream);
-							return true;
-						}
-					}
-					else  // PosXHeight is default
-					{
-						print_cons_end(__geomStream, asymmetricHull, name);
-						if (! asymmetricHull->isNegYHeightToDefault())
-							print_field (__geomStream, name, "negYHeight", asymmetricHull->getNegYHeight());
-						if (! asymmetricHull->isPosYHeightToDefault())
-							print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-						if (! asymmetricHull->isBottomToDefault())
-							print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-						if (! asymmetricHull->isTopToDefault())
-							print_field (__geomStream, name, "top", asymmetricHull->getTop());
-						if (! asymmetricHull->isBottomShapeToDefault())
-							print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-						if (! asymmetricHull->isTopShapeToDefault())
-							print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-						if (! asymmetricHull->isSlicesToDefault())
-							print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-						if (! asymmetricHull->isStacksToDefault())
-							print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-						print_end(__geomStream);
-						return true;
-					}
-				}
-				else  // NegXHeight is default
-				{
-					print_cons_end(__geomStream, asymmetricHull, name);
-					if (! asymmetricHull->isPosXHeightToDefault())
-						print_field (__geomStream, name, "posXHeight", asymmetricHull->getPosXHeight());
-					if (! asymmetricHull->isNegYHeightToDefault())
-						print_field (__geomStream, name, "negYHeight", asymmetricHull->getNegYHeight());
-					if (! asymmetricHull->isPosYHeightToDefault())
-						print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-					if (! asymmetricHull->isBottomToDefault())
-						print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-					if (! asymmetricHull->isTopToDefault())
-						print_field (__geomStream, name, "top", asymmetricHull->getTop());
-					if (! asymmetricHull->isBottomShapeToDefault())
-						print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-					if (! asymmetricHull->isTopShapeToDefault())
-						print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-					if (! asymmetricHull->isSlicesToDefault())
-						print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-					if (! asymmetricHull->isStacksToDefault())
-						print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-					print_end(__geomStream);
-					return true;
-				}
-			}
-			else  // PosYRadius is default
-			{
-				print_cons_end(__geomStream, asymmetricHull, name);
-				if (! asymmetricHull->isNegXHeightToDefault())
-					print_field (__geomStream, name, "negXHeight", asymmetricHull->getNegXHeight());
-				if (! asymmetricHull->isPosXHeightToDefault())
-					print_field (__geomStream, name, "posXHeight", asymmetricHull->getPosXHeight());
-				if (! asymmetricHull->isNegYHeightToDefault())
-					print_field (__geomStream, name, "negYHeight", asymmetricHull->getNegYHeight());
-				if (! asymmetricHull->isPosYHeightToDefault())
-					print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-				if (! asymmetricHull->isBottomToDefault())
-					print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-				if (! asymmetricHull->isTopToDefault())
-					print_field (__geomStream, name, "top", asymmetricHull->getTop());
-				if (! asymmetricHull->isBottomShapeToDefault())
-					print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-				if (! asymmetricHull->isTopShapeToDefault())
-					print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-				if (! asymmetricHull->isSlicesToDefault())
-					print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-				if (! asymmetricHull->isStacksToDefault())
-					print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-				print_end(__geomStream);
-				return true;
-			}
-		}
-		else  // NegYRadius is default
-		{
-			print_cons_end(__geomStream, asymmetricHull, name);
-			if (! asymmetricHull->isPosYRadiusToDefault())
-			    print_field (__geomStream, name, "posYRadius", asymmetricHull->getPosYRadius());
-			if (! asymmetricHull->isNegXHeightToDefault())
-				print_field (__geomStream, name, "negXHeight", asymmetricHull->getNegXHeight());
-			if (! asymmetricHull->isPosXHeightToDefault())
-				print_field (__geomStream, name, "posXHeight", asymmetricHull->getPosXHeight());
-			if (! asymmetricHull->isNegYHeightToDefault())
-				print_field (__geomStream, name, "negYHeight", asymmetricHull->getNegYHeight());
-			if (! asymmetricHull->isPosYHeightToDefault())
-				print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-			if (! asymmetricHull->isBottomToDefault())
-				print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-			if (! asymmetricHull->isTopToDefault())
-				print_field (__geomStream, name, "top", asymmetricHull->getTop());
-			if (! asymmetricHull->isBottomShapeToDefault())
-				print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-			if (! asymmetricHull->isTopShapeToDefault())
-				print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-			if (! asymmetricHull->isSlicesToDefault())
-				print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-			if (! asymmetricHull->isStacksToDefault())
-				print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-			print_end(__geomStream);
-			return true;
-		}		
-	}
-	else // PosXRadius is default
-	{
-	  print_cons_end(__geomStream, asymmetricHull, name);
-	  if (! asymmetricHull->isNegYRadiusToDefault())
-		  print_field (__geomStream, name, "negYRadius", asymmetricHull->getNegYRadius());
-	  if (! asymmetricHull->isPosYRadiusToDefault())
-		  print_field (__geomStream, name, "posYRadius", asymmetricHull->getPosYRadius());
-	  if (! asymmetricHull->isNegXHeightToDefault())
-		  print_field (__geomStream, name, "negXHeight", asymmetricHull->getNegXHeight());
-	  if (! asymmetricHull->isPosXHeightToDefault())
-		  print_field (__geomStream, name, "posXHeight", asymmetricHull->getPosXHeight());
-	  if (! asymmetricHull->isNegYHeightToDefault())
-		  print_field (__geomStream, name, "negYHeight", asymmetricHull->getNegYHeight());
-	  if (! asymmetricHull->isPosYHeightToDefault())
-		  print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-	  if (! asymmetricHull->isBottomToDefault())
-		  print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-	  if (! asymmetricHull->isTopToDefault())
-		  print_field (__geomStream, name, "top", asymmetricHull->getTop());
-	  if (! asymmetricHull->isBottomShapeToDefault())
-		  print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-	  if (! asymmetricHull->isTopShapeToDefault())
-		  print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-	  if (! asymmetricHull->isSlicesToDefault())
-		  print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-	  if (! asymmetricHull->isStacksToDefault())
-		  print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-	  print_end(__geomStream);
-	  return true;
-	}
+  bool in_constructor = true; // tell if the constructor of the object is still described.
 
-	print_cons_end(__geomStream, asymmetricHull, name);
-  }
-  else // NegXRadius is default
-  {
-	  print_cons_end(__geomStream, asymmetricHull, name);
-	  if (! asymmetricHull->isPosXRadiusToDefault())
-		  print_field (__geomStream, name, "posXRadius", asymmetricHull->getPosXRadius());
-	  if (! asymmetricHull->isNegYRadiusToDefault())
-		  print_field (__geomStream, name, "negYRadius", asymmetricHull->getNegYRadius());
-	  if (! asymmetricHull->isPosYRadiusToDefault())
-		  print_field (__geomStream, name, "posYRadius", asymmetricHull->getPosYRadius());
-	  if (! asymmetricHull->isNegXHeightToDefault())
-		  print_field (__geomStream, name, "negXHeight", asymmetricHull->getNegXHeight());
-	  if (! asymmetricHull->isPosXHeightToDefault())
-		  print_field (__geomStream, name, "posXHeight", asymmetricHull->getPosXHeight());
-	  if (! asymmetricHull->isNegYHeightToDefault())
-		  print_field (__geomStream, name, "negYHeight", asymmetricHull->getNegYHeight());
-	  if (! asymmetricHull->isPosYHeightToDefault())
-		  print_field (__geomStream, name, "posYHeight", asymmetricHull->getPosYHeight());
-	  if (! asymmetricHull->isBottomToDefault())
-		  print_field (__geomStream, name, "bottom", asymmetricHull->getBottom());
-	  if (! asymmetricHull->isTopToDefault())
-		  print_field (__geomStream, name, "top", asymmetricHull->getTop());
-	  if (! asymmetricHull->isBottomShapeToDefault())
-		  print_field (__geomStream, name, "bottomShape", asymmetricHull->getBottomShape());
-	  if (! asymmetricHull->isTopShapeToDefault())
-		  print_field (__geomStream, name, "topShape", asymmetricHull->getTopShape());
-	  if (! asymmetricHull->isSlicesToDefault())
-		  print_field (__geomStream, name, "slices", asymmetricHull->getSlices());
-	  if (! asymmetricHull->isStacksToDefault())
-		  print_field (__geomStream, name, "stacks", asymmetricHull->getStacks());
-  }
+  print_cons_begin(__geomStream, name, "AsymmetricHull");
+
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, negXRadius,  NegXRadius,  in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, posXRadius,  PosXRadius,  in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, negYRadius, NegYRadius, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, posYRadius, PosYRadius, in_constructor)
+
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, negXHeight, NegXHeight, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, posXHeight, PosXHeight, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, negYHeight, NegYHeight, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, posYHeight, PosYHeight, in_constructor)
+
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, bottom, Bottom, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, top, Top, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, bottomShape, BottomShape, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, topShape, TopShape, in_constructor)
+
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, slices, Slices, in_constructor)
+  PYPRINT_ARG(__geomStream, asymmetricHull, name, stacks, Stacks, in_constructor)
+
+  if (in_constructor) print_cons_end (__geomStream, asymmetricHull, name);
 
   print_end(__geomStream);
   return true;
@@ -742,7 +483,7 @@ bool PyPrinter::process( AsymmetricHull * asymmetricHull ) {
 
 
 bool PyPrinter::process( AxisRotated * axisRotated ) {
-  GEOM_ASSERT(axisRotated);
+  GEOM_BEGIN(axisRotated);
   
   string name = compute_name(axisRotated);
 
@@ -756,31 +497,6 @@ bool PyPrinter::process( AxisRotated * axisRotated ) {
   print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
   print_cons_end(__geomStream, axisRotated, name);
   
-  /*
-  if (! axisRotated->isAxisToDefault())
-  {
-	print_arg_field (__geomStream, "axis", axisRotated->getAxis());
-    if (! axisRotated->isAngleToDefault())
-	{
-		print_arg_field (__geomStream, "angle", axisRotated->getAngle());
-		print_arg_field (__geomStream, "geometry", geometryname);
-	}
-	else  // angle is default
-	{
-		print_cons_end(__geomStream, axisRotated, name);
-		print_field (__geomStream, name, "geometry", geometryname);
-		print_end(__geomStream);
-		return true;
-	}
-    print_cons_end(__geomStream, axisRotated, name);
-  }
-  else // axis is default
-  {
-	print_cons_end(__geomStream, axisRotated, name);
-	if (! axisRotated->isAngleToDefault())
-		print_field (__geomStream, name, "angle", axisRotated->getAngle());
-	print_field (__geomStream, name, "geometry", geometryname);
-  }*/
   
   print_end(__geomStream);
   return true;
@@ -792,7 +508,7 @@ bool PyPrinter::process( AxisRotated * axisRotated ) {
 
 
 bool PyPrinter::process( BezierCurve * bezierCurve ) {
-  GEOM_ASSERT(bezierCurve);
+  GEOM_BEGIN(bezierCurve);
   
   string name = compute_name(bezierCurve);
   print_cons_begin(__geomStream, name, "BezierCurve");
@@ -810,7 +526,7 @@ bool PyPrinter::process( BezierCurve * bezierCurve ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( BezierPatch * bezierPatch ) {
-  GEOM_ASSERT(bezierPatch);
+  GEOM_BEGIN(bezierPatch);
   
   string name = compute_name(bezierPatch);
   print_cons_begin(__geomStream, name, "BezierPatch");
@@ -820,26 +536,6 @@ bool PyPrinter::process( BezierPatch * bezierPatch ) {
   print_cons_end(__geomStream, bezierPatch, name);
   print_end(__geomStream);
   
-  /*
-  GEOM_PRINT_BEGIN(__geomStream,"BezierPatch",bezierPatch);
-
-  GEOM_PRINT_FIELD(__geomStream,bezierPatch,UDegree,INTEGER);
-
-  GEOM_PRINT_FIELD(__geomStream,bezierPatch,VDegree,INTEGER);
-
-  GEOM_PRINT_FIELD_MATRIX(__geomStream,bezierPatch,CtrlPointMatrix,VECTOR4);
-
-  if (! bezierPatch->isUStrideToDefault())
-    GEOM_PRINT_FIELD(__geomStream,bezierPatch,UStride,INTEGER);
-
-  if (! bezierPatch->isVStrideToDefault())
-    GEOM_PRINT_FIELD(__geomStream,bezierPatch,VStride,INTEGER);
-
-  if (! bezierPatch->isCCWToDefault())
-    GEOM_PRINT_FIELD(__geomStream, bezierPatch,CCW,BOOLEAN);
-
-  GEOM_PRINT_END(__geomStream);
-  */
   return true;
 }
 
@@ -848,7 +544,7 @@ bool PyPrinter::process( BezierPatch * bezierPatch ) {
 
 bool PyPrinter::process( Box * box )
 {
-  GEOM_ASSERT(box);
+  GEOM_BEGIN(box);
 
   string name = compute_name(box);
   print_cons_begin(__geomStream, name, "Box");
@@ -866,7 +562,7 @@ bool PyPrinter::process( Box * box )
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( Cone * cone ) {
-  GEOM_ASSERT(cone);
+  GEOM_BEGIN(cone);
   
   string name = compute_name(cone);
   print_cons_begin(__geomStream, name, "Cone");
@@ -922,7 +618,7 @@ bool PyPrinter::process( Cone * cone ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( Cylinder * cylinder ) {
-  GEOM_ASSERT(cylinder);
+  GEOM_BEGIN(cylinder);
 
   string name = compute_name(cylinder);
   print_cons_begin(__geomStream, name, "Cylinder");
@@ -978,7 +674,7 @@ bool PyPrinter::process( Cylinder * cylinder ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( ElevationGrid * elevationGrid ) {
-  GEOM_ASSERT(elevationGrid);
+  GEOM_BEGIN(elevationGrid);
   
   string name = compute_name(elevationGrid);
   print_cons_begin(__geomStream, name, "ElevationGrid");
@@ -1002,7 +698,7 @@ bool PyPrinter::process( ElevationGrid * elevationGrid ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( EulerRotated * eulerRotated ) {
-  GEOM_ASSERT(eulerRotated);
+  GEOM_BEGIN(eulerRotated);
   
   string name = compute_name(eulerRotated);
 
@@ -1026,7 +722,7 @@ bool PyPrinter::process( EulerRotated * eulerRotated ) {
 
 
 bool PyPrinter::process( ExtrudedHull * extrudedHull ) {
-  GEOM_ASSERT(extrudedHull);
+  GEOM_BEGIN(extrudedHull);
   
   Curve2DPtr vertical_obj = extrudedHull->getVertical();
   Curve2DPtr horizontal_obj = extrudedHull->getHorizontal();
@@ -1052,27 +748,23 @@ bool PyPrinter::process( ExtrudedHull * extrudedHull ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( Group * group  ) {
-  GEOM_ASSERT(group);
+  GEOM_BEGIN(group);
 
   string name = compute_name(group);
 
   GeometryArrayPtr obj = group->getGeometryList();
   obj->apply(*this);
 
+  if (! group->isSkeletonToDefault())
+	group->getSkeleton()->apply(*this);
+
   print_cons_begin(__geomStream, name, "Group");
-    print_arg_field (__geomStream, "geometryList", group->getGeometryList());
+  print_arg_field (__geomStream, "geometryList", group->getGeometryList());
+  if (! group->isSkeletonToDefault())
+    print_arg_field(__geomStream, "skeleton", group->getSkeleton());
   print_cons_end(__geomStream, group, name);
   print_end(__geomStream);
 
-  /*
-  GEOM_PRINT_BEGIN(__geomStream,"Group",group);
-
-  GEOM_PRINT_FIELD_ARRAY(__geomStream,group,GeometryList,GEOMETRY);
-
-  if (! group->isSkeletonToDefault())
-    GEOM_PRINT_FIELD(__geomStream,group,Skeleton,GEOMETRY);
-
-  GEOM_PRINT_END(__geomStream);*/
 
   return true;
 }
@@ -1081,7 +773,7 @@ bool PyPrinter::process( Group * group  ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( NurbsCurve * nurbsCurve ) {
-  GEOM_ASSERT(nurbsCurve);
+  GEOM_BEGIN(nurbsCurve);
   
   string name = compute_name(nurbsCurve);
 
@@ -1123,7 +815,7 @@ bool PyPrinter::process( NurbsCurve * nurbsCurve ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
-  GEOM_ASSERT(nurbsPatch);
+  GEOM_BEGIN(nurbsPatch);
 
   string name = compute_name(nurbsPatch);
   print_cons_begin(__geomStream, name, "NurbsPatch");
@@ -1241,7 +933,7 @@ bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( PointSet * pointSet ) {
-  GEOM_ASSERT(pointSet);
+  GEOM_BEGIN(pointSet);
 
   string name = compute_name(pointSet);
   print_cons_begin(__geomStream, name, "PointSet");
@@ -1258,7 +950,7 @@ bool PyPrinter::process( PointSet * pointSet ) {
 
 
 bool PyPrinter::process( Polyline * polyline ) {
-  GEOM_ASSERT(polyline);
+  GEOM_BEGIN(polyline);
   
   string name = compute_name(polyline);
   print_cons_begin(__geomStream, name, "Polyline");
@@ -1276,7 +968,7 @@ bool PyPrinter::process( Polyline * polyline ) {
 
 bool PyPrinter::process(Sphere * sphere)
 {
-  GEOM_ASSERT(sphere);
+  GEOM_BEGIN(sphere);
   
   string name = compute_name(sphere);
   print_cons_begin(__geomStream, name, "Sphere");
@@ -1320,7 +1012,7 @@ bool PyPrinter::process(Sphere * sphere)
 
 
 bool PyPrinter::process( Scaled * scaled ) {
-  GEOM_ASSERT(scaled);
+  GEOM_BEGIN(scaled);
 
   string name = compute_name(scaled);
 
@@ -1342,7 +1034,7 @@ bool PyPrinter::process( Scaled * scaled ) {
 
 bool PyPrinter::process( Swung * swung )
 {
-  GEOM_ASSERT(swung);
+  GEOM_BEGIN(swung);
   
   Curve2DArrayPtr obj = swung->getProfileList();
   obj->apply(*this);
@@ -1407,7 +1099,7 @@ bool PyPrinter::process( Swung * swung )
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( QuadSet * quadSet ) {
-  GEOM_ASSERT(quadSet);
+  GEOM_BEGIN(quadSet);
   
   string name = compute_name(quadSet);
   
@@ -1447,7 +1139,7 @@ bool PyPrinter::process( QuadSet * quadSet ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( Translated * translated ) {
-  GEOM_ASSERT(translated);
+  GEOM_BEGIN(translated);
   
   string name = compute_name(translated);
 
@@ -1470,7 +1162,7 @@ bool PyPrinter::process( Translated * translated ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( TriangleSet * triangleSet ) {
-  GEOM_ASSERT(triangleSet);
+  GEOM_BEGIN(triangleSet);
 
   string name = compute_name(triangleSet);
   
@@ -1509,7 +1201,7 @@ bool PyPrinter::process( TriangleSet * triangleSet ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( BezierCurve2D * bezierCurve ) {
-  GEOM_ASSERT(bezierCurve);
+  GEOM_BEGIN(bezierCurve);
 
   string name = compute_name(bezierCurve);
   print_cons_begin(__geomStream, name, "BezierCurve2D");
@@ -1528,7 +1220,7 @@ bool PyPrinter::process( BezierCurve2D * bezierCurve ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( Disc * disc ) {
-  GEOM_ASSERT(disc);
+  GEOM_BEGIN(disc);
   
   string name = compute_name(disc);
   print_cons_begin(__geomStream, name, "Disc");
@@ -1555,7 +1247,7 @@ bool PyPrinter::process( Disc * disc ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( NurbsCurve2D * nurbsCurve ) {
-  GEOM_ASSERT(nurbsCurve);
+  GEOM_BEGIN(nurbsCurve);
 
   string name = compute_name(nurbsCurve);
   print_cons_begin(__geomStream, name, "NurbsCurve2D");
@@ -1599,7 +1291,7 @@ bool PyPrinter::process( NurbsCurve2D * nurbsCurve ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( PointSet2D * pointSet ) {
-  GEOM_ASSERT(pointSet);
+  GEOM_BEGIN(pointSet);
 
   string name = compute_name(pointSet);
   print_cons_begin(__geomStream, name, "PointSet2D");
@@ -1614,7 +1306,7 @@ bool PyPrinter::process( PointSet2D * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 bool PyPrinter::process( Polyline2D * polyline ) {
-  GEOM_ASSERT(polyline);
+  GEOM_BEGIN(polyline);
 
   string name = compute_name(polyline);
   print_cons_begin(__geomStream, name, "Polyline2D");

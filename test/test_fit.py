@@ -5,12 +5,11 @@ from random import uniform, randint
 pointrange = (0,10)
 def random_point2(pointrange = pointrange) : return Vector2(uniform(*pointrange),uniform(*pointrange))
 
-def test_fit_circle(verbose = False):
-    if not Overlay.supportCGAL():
-        print 'Do not have CGAL support for Overlay. Test not performed'
-        return
-    else:
-        print 'CGAL on'
+if not pgl_support_extension('CGAL'):
+    import warnings
+    warnings.warn("Not supported CGAL extension. Skip overlay tests.")
+else:
+  def test_fit_circle(verbose = False):
     nbpoint = 2
     p2list = Point2Array([random_point2() for i in xrange(nbpoint)])
     res = Fit.boundingCircle(p2list)
@@ -25,5 +24,5 @@ def test_fit_circle(verbose = False):
             assert False, "Bounding circle do not encapsulates all points"
         
 
-if __name__ == '__main__':
+  if __name__ == '__main__':
     test_fit_circle(True)

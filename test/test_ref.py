@@ -2,7 +2,11 @@ from openalea.plantgl.all import *
 import sys
 import gc
 
-def test_consistant_sh(verbose = True):
+if not pgl_support_extension('MAINTAIN_PYTHON_OBJECT_ID'):
+    import warnings
+    warnings.warn("Not supported extension. Skip tests.")
+else:
+  def test_consistant_sh(verbose = True):
     """ Test if the python image of a created shape stay consistant throw manipulation """
     s = Scene()
     sh = Shape(Sphere(),Material())
@@ -35,7 +39,7 @@ def test_consistant_sh(verbose = True):
     assert s[0].toto == True and '"property persistence failed'
     del s
 
-def test_consistant_sh2():
+  def test_consistant_sh2():
     """ Test if the python image of a shape created in c++ stay consistant throw manipulation """
     s = Scene()
     s += Sphere()
@@ -49,7 +53,7 @@ def test_consistant_sh2():
     assert s[0].toto == True
     del s
 
-def test_consistant_sphere():
+  def test_consistant_sphere():
     """ Test if the python image of a sphere stay consistant throw manipulation """
     sp = Sphere()
     s = Scene()
@@ -58,7 +62,7 @@ def test_consistant_sphere():
     assert s[0].geometry is s[0].geometry
     assert s[0].geometry is sp
 
-def test_consistant_extrusion():
+  def test_consistant_extrusion():
     """ Test if the python image of a extrusion stay consistant throw manipulation """
     axis = Polyline([(0,0,0),(1,2,1),(0,5,3)])
     cross_section = Polyline2D.Circle(1,16)
@@ -74,7 +78,7 @@ def test_consistant_extrusion():
 
 
     
-if __name__ == '__main__':
+  if __name__ == '__main__':
     test_consistant_sh()
     test_consistant_sh2()
     test_consistant_sphere()
