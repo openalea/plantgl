@@ -38,6 +38,10 @@
 #include <fstream>
 #include <sstream>
 
+#include <plantgl/algo/codec/printer.h>
+
+PGL_USING( Printer )
+
 /* ----------------------------------------------------------------------- */
 
 /**
@@ -88,7 +92,7 @@ class str_printer_clear : public boost::python::def_visitor<str_printer_clear<Ba
     friend class boost::python::def_visitor_access;
     template <class classT>
     void visit(classT& c) const
-	{ c.def( "clear",        &py_clear_all<classT::wrapped_type,Base> ) ; }
+	{ c.def( "clear", &py_clear_all<typename classT::wrapped_type,Base> ) ; }
 };
 
 /* ----------------------------------------------------------------------- */
