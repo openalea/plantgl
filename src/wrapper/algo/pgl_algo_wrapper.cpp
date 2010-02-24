@@ -70,14 +70,14 @@ void module_algo()
     export_VgstarPrinter();
     export_PyPrinter();
 
-	// reader export
-	export_PglReader();
+    // reader export
+    export_PglReader();
 
-	// gl export
-	export_GLRenderer();
-	export_GLSkelRenderer();
-	export_GLBBoxRenderer();
-	export_GLCtrlPointRenderer();
+    // gl export
+    export_GLRenderer();
+    export_GLSkelRenderer();
+    export_GLBBoxRenderer();
+    export_GLCtrlPointRenderer();
 
     // Turtle export
     export_TurtleParam();
@@ -92,7 +92,7 @@ void module_algo()
     // Grid export
     export_Mvs();
     export_Octree();
-	export_PointGrid();
+    export_PointGrid();
 
     // Overlay export
     export_Overlay();
@@ -100,10 +100,10 @@ void module_algo()
     // Skeleton export
     export_Skeleton();
 
-	// Point manip
-	export_PointManip();
+    // Point manip
+    export_PointManip();
 
-	export_Mesher();
+    //export_Mesher();
 };
 
 /* ----------------------------------------------------------------------- */
