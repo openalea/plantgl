@@ -53,7 +53,7 @@ def shp_to_blender (shp, bld_mesh = None) :
 	nb = len(bld_mesh.verts)
 	faces = [tuple(nb + i for i in tup) for tup in geom.indexList]
 	
-	bld_meshverts.extend(pts)
+	bld_mesh.verts.extend(pts)
 	nb = len(bld_mesh.faces)
 	bld_mesh.faces.extend(faces)
 	
