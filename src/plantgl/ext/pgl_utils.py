@@ -342,7 +342,7 @@ def pointsByShape(scene): #aka ptdiscretize
     if i.apply(d) == True:
       pts = d.getDiscretization().pointList #yield a pgl.Point3Array
       if pts:
-  	pbs[i.id] = pts
+          pbs[i.id] = pts
   return pbs
 
 def centerByShape(pointsbyshape):#aka centers
