@@ -67,13 +67,14 @@ public:
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle2DPath : public TurtlePath {
 public:
-	Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation = false);
+	Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation = false, bool ccw = false);
 
 	virtual TurtlePathPtr copy() const;
 	virtual void setPosition(real_t t) ;
 	
 	Curve2DPtr __path;
 	bool __orientation;
+	bool __ccw;
 	TOOLS(Vector2) __lastPosition;
 	TOOLS(Vector2) __lastDirection;
 };
@@ -178,6 +179,7 @@ public:
   std::vector<TOOLS(Vector3)> leftList;
   std::vector<real_t> radiusList;
   Curve2DPtr crossSection;
+  bool crossSectionCCW;
 
   uint_t customId;
   uint_t customParentId;
@@ -185,6 +187,7 @@ public:
   uint_t sectionResolution;
 
   Curve2DPtr initialCrossSection;
+  bool initialCrossSectionCCW;
   int initialColor;
 
   TOOLS(Vector3) tropism;

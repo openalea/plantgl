@@ -154,6 +154,7 @@ class CurveEditor (QGLViewer):
         self.selection = -1
         self.defaultMaterial = Material((255,255,255),1)
         self.pointColor = Material((250,30,30),1)
+        self.firstPointColor = Material((250,30,250),1)
         self.selectedPointColor = Material((30,250,30),1)
         self.sphere = Sphere(radius=0.02)
         self.curveshape = Shape()
@@ -365,7 +366,8 @@ class CurveEditor (QGLViewer):
         self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),self.pointColor,id=i) for i,p in enumerate(self.curveAccessor.points())])
         if self.selection != -1:
             self.ctrlpts[self.selection].appearance = self.selectedPointColor
-        
+        if self.selection != 0:
+            self.ctrlpts[0].appearance = self.firstPointColor
 
 if __name__ == '__main__':
     qapp = QApplication([])

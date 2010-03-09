@@ -88,14 +88,50 @@ void Turtle::warning(const std::string& msg){
 
 
 /*----------------------------------------------------------*/
+/*
+bool curve_orientation(Curve2DPtr curve) {
+  real_t _firstK = curve->getFirstKnot();
+  real_t _lastK = curve->getLastKnot();
+  Vector2 firstPosition = curve->getPointAt(_firstK);
+  Vector2 lastPosition  = curve->getPointAt(_lastK);
+  uint_t _size = curve->getStride();
+  real_t _step =  (_lastK-_firstK) / (real_t) _size;
+  Vector2 deltaPosition1, deltaPosition2;
+  if (norm(firstPosition - lastPosition) < GEOM_EPSILON) {
+	  // closed contour
+	  lastPosition   = curve->getPointAt(_lastK - _step);
+	  _size -= 1;
+
+  }
+  Vector2 midPosition   = firstPosition+lastPosition;
+  _firstK += _step;
+  for (uint_t _i = 1; _i < _size-1; _i++) {
+     midPosition += curve->getPointAt(_firstK);
+     _firstK += _step;
+  }
+  midPosition /= _size;
+  deltaPosition1   = firstPosition - midPosition;
+  deltaPosition2   = lastPosition - midPosition;
+  real_t cp = cross(deltaPosition1,deltaPosition2);
+  printf("cp=%f\n",cp);
+  if (fabs(cp) > GEOM_EPSILON) return cp > 0;
+  else return (deltaPosition2.x() - deltaPosition1.x()) > 0;
+
+}
+*/
+/*----------------------------------------------------------*/
 
 TurtlePath::~TurtlePath() { }
 
-Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation) : TurtlePath(totalLength), 
+Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation, bool ccw) : TurtlePath(totalLength), 
 __path(curve),__orientation(orientation), __lastDirection(orientation?0:1,orientation?1:0) 
 { 
 	  __arclengthParam = curve->getArcLengthToUMapping(); 
-	  __lastPosition = curve->getPointAt(0.0);
+	  __lastPosition = curve->getPointAt(curve->getFirstKnot());
+	  __ccw = ccw;
+	  if (__ccw) 
+		  if(orientation) __lastDirection = Vector2(0,-1);
+	      else __lastDirection = Vector2(-1,0);
 }
 
 TurtlePathPtr Turtle2DPath::copy() const
@@ -116,7 +152,7 @@ Turtle3DPath::Turtle3DPath(LineicModelPtr curve, real_t totalLength) :
 	TurtlePath(totalLength), __path(curve), __lastNormal(1,0,0), __lastBinormal(0,1,0) 
 { 
 	__arclengthParam = curve->getArcLengthToUMapping(); 
-	__lastPosition = curve->getPointAt(0.0);
+	__lastPosition = curve->getPointAt(curve->getFirstKnot());
 }
 
 void Turtle3DPath::setPosition(real_t t)
@@ -257,6 +293,7 @@ void TurtleParam::generalizedCylinder(bool t){
   removePoints();
   if (t){
 	initialCrossSection = crossSection;
+	initialCrossSectionCCW = crossSectionCCW;
 	initialColor = color;
   }
   else {
@@ -353,7 +390,8 @@ void Turtle::stop(){
 		_generalizedCylinder(__params->pointList,
 						   __params->leftList,
 						   __params->radiusList,
-						   __params->initialCrossSection);
+						   __params->initialCrossSection,
+						   __params->initialCrossSectionCCW);
 	  }
     __params->removePoints();
   }
@@ -374,9 +412,10 @@ void Turtle::stop(){
 	if (__params->isGeneralizedCylinderOn()){
 		if(__params->pointList.size() > 1){
 			_generalizedCylinder(__params->pointList,
-							    __params->leftList,
-							    __params->radiusList,
-							    __params->initialCrossSection);
+							     __params->leftList,
+							     __params->radiusList,
+							     __params->initialCrossSection,
+							     __params->initialCrossSectionCCW);
 		}
 	}
 	if(!__paramstack.empty()){
@@ -582,21 +621,23 @@ void Turtle::stopGC(){
 		_generalizedCylinder(__params->pointList,
 							 __params->leftList,
 							 __params->radiusList,
-							 __params->initialCrossSection);
+							 __params->initialCrossSection,
+							 __params->initialCrossSectionCCW);
 	}
     __params->generalizedCylinder(false);
     __params->customId = Shape::NOID;
     __params->customParentId = Shape::NOID;
   }
   
-void Turtle::setCrossSection(const Curve2DPtr& curve)
+void Turtle::setCrossSection(const Curve2DPtr& curve, bool ccw)
 {
 	__params->crossSection = curve;
+	__params->crossSectionCCW = ccw;
 }
 
 void Turtle::setDefaultCrossSection(size_t slices)
 {
-	setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)));
+	setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true);
 }
 
 void Turtle::setPositionOnGuide(real_t t)
@@ -622,6 +663,7 @@ void Turtle::_applyGuide(real_t l) {
 			tangent.normalize();
 			// Estimate deviation and turn left accordingly
 			real_t deviation = angle(guide->__lastDirection,tangent);
+			if (guide->__ccw) deviation *= -1;
 			if (guide->__orientation == false){
 				Matrix3 m = Matrix3::axisRotation(__params->left,-deviation);
 				__params->heading = m*__params->heading;
@@ -1043,7 +1085,8 @@ void
 PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
 								const vector<Vector3>& leftList,
 								const vector<real_t>& radiusList,
-								const Curve2DPtr& crossSection){
+								const Curve2DPtr& crossSection,
+								bool crossSectionCCW){
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
 						  new Point3Array(points.begin(),points.end()))));
   Point2ArrayPtr radius(new Point2Array(radiusList.size()));
@@ -1056,6 +1099,7 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
 	  error("Invalid cross section");
   assert (crossSection);
   Extrusion * extrusion = new Extrusion(axis,crossSection,radius);
+  extrusion->getCCW() = crossSectionCCW;
   extrusion->getInitialNormal() = leftList[0];
   _addToScene(GeometryPtr(extrusion),true);
 }

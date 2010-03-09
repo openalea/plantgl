@@ -376,7 +376,7 @@ public:
 	inline void setScaleMultiplier(real_t val)
 	{ scale_multiplier = (val > 0 ? val : - val); }
 
-    void setCrossSection(const Curve2DPtr& curve);
+    void setCrossSection(const Curve2DPtr& curve, bool ccw = false);
 	void setDefaultCrossSection(size_t slicenb = 16);
 
 	inline void setSectionResolution(uint_t resolution) 
@@ -385,8 +385,8 @@ public:
 	inline const uint_t& getSectionResolution() const
 	{ return getParameters().sectionResolution; }
 
-	inline void setGuide(const Curve2DPtr& path, real_t length, bool orientation = false)
-	{ getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,orientation)); }
+	inline void setGuide(const Curve2DPtr& path, real_t length, bool yorientation = false, bool ccw = false)
+	{ getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,yorientation,ccw)); }
 
 	inline void setGuide(const LineicModelPtr& path, real_t length)
 	{ getParameters().guide = TurtlePathPtr(new Turtle3DPath(path,length)); }
@@ -414,7 +414,8 @@ protected:
     virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
 									  const std::vector<TOOLS(Vector3)>& left,
 									  const std::vector<real_t>& radius,
-									  const Curve2DPtr& crossSection){}
+									  const Curve2DPtr& crossSection,
+									  bool crossSectionCCW){}
 
     virtual void _sphere(real_t radius){}
     

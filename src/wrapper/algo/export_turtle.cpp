@@ -173,7 +173,7 @@ void export_Turtle()
 	.def("setDefaultCrossSection", &setDefaultCrossSection0)
 
 	.def("setGuide",   (void(Turtle::*)(const LineicModelPtr&, real_t))&Turtle::setGuide, args("curve","length"))
-	.def("setGuide",   (void(Turtle::*)(const Curve2DPtr&, real_t, bool))&Turtle::setGuide, (bp::arg("curve"),bp::arg("length"),bp::arg("orientation")=false))
+	.def("setGuide",   (void(Turtle::*)(const Curve2DPtr&, real_t, bool, bool))&Turtle::setGuide, (bp::arg("curve"),bp::arg("length"),bp::arg("yorientation")=false,bp::arg("ccw")=false))
 	.def("clearGuide", &Turtle::clearGuide)
 	.def("setPositionOnGuide", &Turtle::setPositionOnGuide)
 

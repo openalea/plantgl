@@ -130,7 +130,8 @@ protected:
     virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
 									  const std::vector<TOOLS(Vector3)>& left,
                                       const std::vector<real_t>& radius,
-									  const Curve2DPtr& crossSection);
+									  const Curve2DPtr& crossSection,
+									  bool crossSectionCCW);
 
     virtual void _sphere(real_t radius);
         

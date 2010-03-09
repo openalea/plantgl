@@ -37,6 +37,7 @@
     \brief Utility for hashset with std::string.
 */
 #include "tools_config.h"
+#include "util_types.h"
 
 #ifdef USING_UNORDERED_MAP
 #ifdef GNU_STL_EXTENSION
