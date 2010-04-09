@@ -7,7 +7,7 @@ from PyQt4.Qt import *
 from math import pow,log
 
 
-class CurveConstraint:
+class Curve2DConstraint:
     def __init__(self):
         pass
     def checkInitialCurve(self,curve):
@@ -59,7 +59,7 @@ class FuncConstraint:
     def defaultCurve(self,nbP=4):
         return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
         
-class CurveAccessor:
+class Curve2DAccessor:
     def __init__(self):
         pass
     def nbPoints(self):
@@ -77,8 +77,9 @@ class CurveAccessor:
     def bounds(self):
         pass
 
-class BezierAccessor (CurveAccessor):
+class Bezier2DAccessor (Curve2DAccessor):
     def __init__(self,curve):
+        Curve2DAccessor.__init__(self)
         self.checkType(curve)
         self.curve = curve
     def checkType(self,curve):
@@ -112,9 +113,9 @@ class BezierAccessor (CurveAccessor):
         minp,maxp = self.curve.ctrlPointList.getBounds()
         return minp.project(),maxp.project()
 
-class NurbsAccessor (BezierAccessor):
+class Nurbs2DAccessor (Bezier2DAccessor):
     def __init__(self,curve):
-        BezierAccessor.__init__(self,curve)
+        Bezier2DAccessor.__init__(self,curve)
     def checkType(self,curve):
         assert type(curve) == NurbsCurve2D
     def minpointnb(self):
@@ -122,7 +123,7 @@ class NurbsAccessor (BezierAccessor):
     def setKnotList(self):
         self.curve.setKnotListToDefault()
         
-class PolylineAccessor (CurveAccessor):
+class Polyline2DAccessor (Curve2DAccessor):
     def __init__(self,curve):
         assert type(curve) == Polyline2D
         self.curve = curve
@@ -148,8 +149,8 @@ class PolylineAccessor (CurveAccessor):
         return self.curve.pointList.getBounds()
 
         
-class CurveEditor (QGLViewer):
-    def __init__(self,parent,constraints=CurveConstraint()):
+class Curve2DEditor (QGLViewer):
+    def __init__(self,parent,constraints=Curve2DConstraint()):
         QGLViewer.__init__(self,parent)
         self.selection = -1
         self.defaultMaterial = Material((255,255,255),1)
@@ -160,7 +161,7 @@ class CurveEditor (QGLViewer):
         self.curveshape = Shape()
         self.curveshape.appearance = self.defaultMaterial
         self.pointsConstraints = constraints
-        self.accessorType = { NurbsCurve2D : NurbsAccessor, BezierCurve2D : BezierAccessor, Polyline2D : PolylineAccessor }
+        self.accessorType = { NurbsCurve2D : Nurbs2DAccessor, BezierCurve2D : Bezier2DAccessor, Polyline2D : Polyline2DAccessor }
         self.setCurve(self.newDefaultCurve())
         self.discretizer = Discretizer()
         self.renderer = GLRenderer(self.discretizer)
@@ -371,7 +372,7 @@ class CurveEditor (QGLViewer):
 
 if __name__ == '__main__':
     qapp = QApplication([])
-    mv = CurveEditor(None,FuncConstraint())
+    mv = Curve2DEditor(None,FuncConstraint())
     mv.setEnabled(True)
     #mv.setCurve(Polyline2D([(0,0),(1,1)]))
     mv.show()

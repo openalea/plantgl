@@ -726,7 +726,9 @@ ViewCameraGL::glPushProjectionMatrix()
   if( __geomsys) glGeomLookAt(__eye,__center,Vector3::OZ);
   else           glGeomLookAt(geom2gl(__eye),geom2gl(__center),Vector3::OY);
 
+#ifndef Q_OS_MAC
   GEOM_GL_ERROR;
+#endif
 }
 
 

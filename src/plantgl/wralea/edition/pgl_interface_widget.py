@@ -24,10 +24,10 @@ from PyQt4 import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
-from openalea.plantgl.gui.curveeditor import CurveEditor, CurveConstraint, FuncConstraint
+from openalea.plantgl.gui.curvee2Dditor import Curve2DEditor, Curve2DConstraint, FuncConstraint
 from pgl_interface import ICurve2D
 
-class ICurve2DWidget(IInterfaceWidget, CurveEditor):
+class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):
     """
     Curve2D Interface widget
     """
@@ -41,7 +41,7 @@ class ICurve2DWidget(IInterfaceWidget, CurveEditor):
         @param parameter_str : the parameter key the widget is associated to
         @param interface : instance of interface object
         """
-        CurveEditor.__init__(self, parent, FuncConstraint() if interface.func_constraint else CurveConstraint())
+        Curve2DEditor.__init__(self, parent, FuncConstraint() if interface.func_constraint else Curve2DConstraint())
         IInterfaceWidget.__init__(self, node, parent, parameter_str, interface)
         
         self.notify(node, None)
@@ -68,7 +68,7 @@ class ICurve2DWidget(IInterfaceWidget, CurveEditor):
 
 
 
-class Curve2DWidget(NodeWidget, CurveEditor):
+class Curve2DWidget(NodeWidget, Curve2DEditor):
     """
     Curve2D  widget
     """
@@ -77,7 +77,7 @@ class Curve2DWidget(NodeWidget, CurveEditor):
     def __init__(self, node, parent):
         """
         """
-        CurveEditor.__init__(self, parent)
+        Curve2DEditor.__init__(self, parent)
         NodeWidget.__init__(self, node)
         
         self.notify(node, ('input_modified',))

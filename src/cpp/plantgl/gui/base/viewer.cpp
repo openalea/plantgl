@@ -96,7 +96,8 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
       __ToolsMenu(0),
       __service(0),
       __toolbarsvisibility(0),
-      __trayIcon(0)
+      __trayIcon(0),
+	  __aborter(0)
 {
     setObjectName(name);
 #ifdef _WIN32
@@ -121,7 +122,8 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
       __ToolsMenu(0),
       __service(0),
       __toolbarsvisibility(0),
-      __trayIcon(0)
+      __trayIcon(0),
+	  __aborter(0)
 {
   // if(QMessageBox::information(this,"Language","Select Language","English","French")==1)
   if(TOOLS(getLanguage()) == "French")
@@ -1104,7 +1106,7 @@ public:
   }
 
   virtual void done ( int res ){
-    printf("done\n");
+    // printf("done\n");
     if(__result)*__result = res;
     if(!__messageBoxPos)__messageBoxPos = new QPoint(pos());
     else *__messageBoxPos = pos();
@@ -1126,6 +1128,7 @@ Viewer::question(const QString& caption, const QString& text,
   ViewerMessageBox->show();
   bool aborting = false;
   while(ViewerMessageBox->isVisible()) {
+	  assert(qApp != NULL);
 	  qApp->processEvents();
 	  if (!aborting){
 		  aborting = shouldAbortDialog();
