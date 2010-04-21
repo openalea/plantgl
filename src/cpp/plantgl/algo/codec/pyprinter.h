@@ -102,10 +102,43 @@ public:
 
 	//@}
 
+	inline void setIndentation(const std::string& tab) { __indentation = tab; }
+	inline const std::string& getIndentation() const { return __indentation; }
+
+	inline void setIndentationIncrement(const std::string& tab) { __indentation_increment = tab; }
+	inline const std::string& getIndentationIncrement() const { return __indentation_increment; }
+
+	inline void incrementIndentation() { __indentation += __indentation_increment; }
+	inline void decrementIndentation() { __indentation.erase(__indentation.end() - __indentation_increment.size(),__indentation.end());; }
+
+	inline void setPglNamespace(const std::string& pglnamespace ) { __pglnamespace  = pglnamespace ; }
+	inline const std::string& getPglNamespace() const { return __pglnamespace ; }
+
 protected:
+
+	void print_constructor_begin(std::ostream& os, const std::string& name, const std::string& type);
+	void print_constructor_end(std::ostream& os, SceneObjectPtr obj, const std::string& name);
+	void print_object_end(std::ostream& os);
+
+	template <typename T>
+	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value);
+
+	template <typename T>
+	std::ostream& print_arg_field(std::ostream& os, const std::string& field, const T& value);
+
+	template <typename T>
+	std::ostream& print_arg_field(std::ostream& os, const T& value);
+
+	template <typename T>
+	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool in_constructor);
+
+	inline std::string PyPrinter::pgltype(const std::string& pgltypename);
 
 	std::string scene_name;
 
+	std::string __indentation;
+	std::string __indentation_increment;
+	std::string __pglnamespace;
 };
 
 /* ----------------------------------------------------------------------- */

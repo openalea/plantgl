@@ -608,7 +608,8 @@ class NurbsPatchEditor(QGLViewer):
           sh.apply(self.glrenderer)
           ogl.glPopName()
     
-    def newDefaultNurbsPatch(self):
+    @staticmethod
+    def newDefaultNurbsPatch():
         """ return a default nurbs patch """
         return NurbsPatch([[Vector4(j-1.5,i-1.5,0,1) for j in range(4)] for i in range(4)])
 

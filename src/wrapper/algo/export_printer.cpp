@@ -91,7 +91,7 @@ void export_PglPrinter()
 {
  class_< Printer, bases< Action >, boost::noncopyable > ( "PglPrinter" , no_init )
     .def("clear",&Printer::clear)
-    .def("addIndent",&Printer::addIndent)
+    .def("incrementIndentation",&Printer::addIndent)
     .def("isPrinted",&Printer::isPrinted)
     .def("header",&print_header0)
     .def("header",&print_header)

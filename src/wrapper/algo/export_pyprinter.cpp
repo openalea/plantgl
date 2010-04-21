@@ -53,9 +53,17 @@ public:
 
 /* ----------------------------------------------------------------------- */
 
+// std::string get
+
 void export_PyPrinter()
 {
  class_< PyPrinter, bases< Printer >, boost::noncopyable > ( "PyPrinter" , no_init )
+	.add_property("indentation", make_function(&PyPrinter::getIndentation,return_value_policy<return_by_value>()), &PyPrinter::setIndentation )
+	.add_property("indentation_increment", make_function(&PyPrinter::getIndentationIncrement,return_value_policy<return_by_value>()), &PyPrinter::setIndentationIncrement )
+	.add_property("pglnamespace", make_function(&PyPrinter::getPglNamespace,return_value_policy<return_by_value>()), &PyPrinter::setPglNamespace )
+    .def("incrementIndentation",&PyPrinter::incrementIndentation)
+    .def("decrementIndentation",&PyPrinter::decrementIndentation)
+
     ;
 
   class_< PyStrPyPrinter , bases< PyStrPrinter, PyPrinter > , boost::noncopyable> 

@@ -22,7 +22,8 @@ class Curve2DConstraint:
             return int(u)+1,newpoint
         else:
             return nbPoints,newpoint
-    def defaultCurve(self,nbP=4):
+    @staticmethod
+    def defaultCurve(nbP=4):
         return NurbsCurve2D(Point3Array([(-0.5+float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
 
 class FuncConstraint:
@@ -56,7 +57,8 @@ class FuncConstraint:
                     return i,newpoint
         else:
             return None
-    def defaultCurve(self,nbP=4):
+    @staticmethod
+    def defaultCurve(nbP=4):
         return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
         
 class Curve2DAccessor:

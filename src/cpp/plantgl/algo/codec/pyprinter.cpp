@@ -30,91 +30,73 @@ template<class T>
 inline string compute_name(RCPtr<T> obj)
 { return compute_name(obj.get()); }
 
-template <typename T>
-ostream& print_field(ostream& os, string name, string str, const T& value)
+/* ----------------------------------------------------------------------- */
+
+inline std::string _pgltype(const std::string& pglnamespace, const std::string& pgltypename)
 {
-	os << name << '.' << str << " = ";
-	print_value(os,value);
-	return os << endl;
+	if (pglnamespace.empty()) return pgltypename;
+	else return pglnamespace+"."+pgltypename;
 }
 
-template <typename T>
-ostream& print_arg_field(ostream& os, string str, const T& value)
+inline std::string PyPrinter::pgltype(const std::string& pgltypename)
 {
-	os << '\t' << str << " = ";
-	print_value(os,value);
-	os << " , ";
-	return os << endl;
+	return _pgltype(__pglnamespace,pgltypename);
 }
 
-template <typename T>
-ostream& print_arg_field(ostream& os, const T& value)
-{
-	os << '\t';
-	print_value(os,value);
-	os << " , ";
-	return os << endl;
-}
+/* ----------------------------------------------------------------------- */
 
-template <typename T>
-ostream& print_field(ostream& os, string name, string str, const T& value, bool in_constructor)
-{
-	if (in_constructor) return print_arg_field(os,str,value);
-	else return print_field(os,name, str,value);
-}
-
-inline ostream& print_value(ostream& os, const bool& value)
+inline ostream& print_value(ostream& os, const bool& value, const std::string& pglnamespace)
 {
 	return os << (value ? "True" : "False");
 }
 
-inline  ostream& print_value(ostream& os, const int_t& value)
+inline  ostream& print_value(ostream& os, const int_t& value, const std::string& pglnamespace)
 {
 	return os << value;
 }
 
-inline ostream& print_value(ostream& os, const uint_t& value)
+inline ostream& print_value(ostream& os, const uint_t& value, const std::string& pglnamespace)
 {
 	return os << value;
 }
 
-inline ostream& print_value(ostream& os, const real_t& value)
+inline ostream& print_value(ostream& os, const real_t& value, const std::string& pglnamespace)
 {
 	return os << value;
 } 
 
-inline ostream& print_value(ostream& os, const string& value)
+inline ostream& print_value(ostream& os, const string& value, const std::string& pglnamespace)
 {
 	return os << "\"" << value << "\"";
 } 
 
-inline ostream& print_value(ostream& os, const Vector2& value)
+inline ostream& print_value(ostream& os, const Vector2& value, const std::string& pglnamespace)
 {
-	return os << "Vector2(" << value.x() << ", " << value.y() <<  ")";
+	return os << "(" << value.x() << ", " << value.y() <<  ")";
 } 
 
-inline ostream& print_value(ostream& os, const Vector3& value)
+inline ostream& print_value(ostream& os, const Vector3& value, const std::string& pglnamespace)
 {
-	return os << "Vector3(" << value.x() << ", " << value.y() << ", " << value.z() << ")";
+	return os << "(" << value.x() << ", " << value.y() << ", " << value.z() << ")";
 } 
 
-inline ostream& print_value(ostream& os, const Vector4& value)
+inline ostream& print_value(ostream& os, const Vector4& value, const std::string& pglnamespace)
 {
-	return os << "Vector4(" << value.x() << ", " << value.y() << ", " << value.z() << ", " << value.w() << ")";
+	return os << "(" << value.x() << ", " << value.y() << ", " << value.z() << ", " << value.w() << ")";
 } 
 
-inline ostream& print_value(ostream& os, const Color3& value)
+inline ostream& print_value(ostream& os, const Color3& value, const std::string& pglnamespace)
 {	
-	os << "Color3(" << (uint16_t)value.getRed() 
+	os << "(" << (uint16_t)value.getRed() 
          << "," << (uint16_t)value.getGreen() 
          << "," << (uint16_t)value.getBlue() << ")";
 	
 	return os;
 } 
 
-inline ostream& print_value(ostream& os, const Color4& value)
+inline ostream& print_value(ostream& os, const Color4& value, const std::string& pglnamespace)
 {	
-	os << "Color4(" << (uint16_t)value.getRed() 
+	os << "(" << (uint16_t)value.getRed() 
          << "," << (uint16_t)value.getGreen() 
          << "," << (uint16_t)value.getBlue()
          << "," << (uint16_t)value.getAlpha() << ")";
@@ -122,19 +104,19 @@ inline ostream& print_value(ostream& os, const Color4& value)
 	return os;
 } 
 
-inline ostream& print_value(ostream& os, const Index3& value)
+inline ostream& print_value(ostream& os, const Index3& value, const std::string& pglnamespace)
 {	
 	os << "(" << value[0]  << "," << value[1]  << "," << value[2] << ")";
 	return os;
 } 
 
-inline ostream& print_value(ostream& os, const Index4& value)
+inline ostream& print_value(ostream& os, const Index4& value, const std::string& pglnamespace)
 {	
 	os << "(" << value[0]  << "," << value[1]  << "," << value[2] << "," << value[3] << ")";
 	return os;
 } 
 
-ostream& print_value(ostream& os, const Curve2DArrayPtr& value)
+ostream& print_value(ostream& os, const Curve2DArrayPtr& value, const std::string& pglnamespace)
 {
 	os << "[";
 	if (!value->empty()){
@@ -148,7 +130,7 @@ ostream& print_value(ostream& os, const Curve2DArrayPtr& value)
 	return os;
 }
 
-ostream& print_value(ostream& os, const GeometryArrayPtr& value)
+ostream& print_value(ostream& os, const GeometryArrayPtr& value, const std::string& pglnamespace)
 {
 	os << "[";
 	if (!value->empty()){
@@ -163,79 +145,79 @@ ostream& print_value(ostream& os, const GeometryArrayPtr& value)
 }
 
 template<class array>
-ostream& print_value_array(ostream& os, const array& value)
+ostream& print_value_array(ostream& os, const array& value, const std::string& pglnamespace)
 {
 	os << "([";
 	if (!value->empty()){
 		uint_t _sizei = value->size();
-		print_value(os,value->getAt(0));
+		print_value(os,value->getAt(0),pglnamespace);
 		for (uint_t _i = 1; _i < _sizei; _i++) {
-			os << ','; print_value(os,value->getAt(_i));
+			os << ','; print_value(os,value->getAt(_i),pglnamespace);
 		}
 	}
 	os << "])";
 	return os;
 }
 
-ostream& print_value(ostream& os, const Index3ArrayPtr& value)
+ostream& print_value(ostream& os, const Index3ArrayPtr& value, const std::string& pglnamespace)
 {
-	os << "Index3Array";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"Index3Array");
+	print_value_array(os,value,pglnamespace);
 	return os;
 }
 
-ostream& print_value(ostream& os, const Index4ArrayPtr& value)
+ostream& print_value(ostream& os, const Index4ArrayPtr& value, const std::string& pglnamespace)
 {
-	os << "Index4Array";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"Index4Array");
+	print_value_array(os,value,pglnamespace);
 	return os;
 }
 
-ostream& print_value(ostream& os, const RealArrayPtr& value)
+ostream& print_value(ostream& os, const RealArrayPtr& value, const std::string& pglnamespace)
 {
-	os << "RealArray";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"RealArray");
+	print_value_array(os,value,pglnamespace);
 	return os;
 }
 
-ostream& print_value(ostream& os, const Color4ArrayPtr& value)
+ostream& print_value(ostream& os, const Color4ArrayPtr& value, const std::string& pglnamespace)
 {	
-	os << "Color4Array";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"Color4Array");
+	print_value_array(os,value,pglnamespace);
 	return os;
 } 
 
 
-ostream& print_value(ostream& os, const Point2ArrayPtr& value)
+ostream& print_value(ostream& os, const Point2ArrayPtr& value, const std::string& pglnamespace)
 {
-	os << "Point2Array";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"Point2Array");
+	print_value_array(os,value,pglnamespace);
 	return os;
 }
 
-ostream& print_value(ostream& os, const Point3ArrayPtr& value)
+ostream& print_value(ostream& os, const Point3ArrayPtr& value, const std::string& pglnamespace)
 {
-	os << "Point3Array";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"Point3Array");
+	print_value_array(os,value,pglnamespace);
 	return os;
 }
 
-ostream& print_value(ostream& os, const Point4ArrayPtr& value)
+ostream& print_value(ostream& os, const Point4ArrayPtr& value, const std::string& pglnamespace)
 {
-	os << "Point4Array";
-	print_value_array(os,value);
+	os << _pgltype(pglnamespace,"Point4Array");
+	print_value_array(os,value,pglnamespace);
 	return os;
 }
 
 template<class array>
-ostream& print_value_array2(ostream& os, const array& value)
+ostream& print_value_array2(ostream& os, const array& value, const std::string& pglnamespace)
 {
 	os << "([[";
 	if (!value->empty()){
 		uint_t _sizei = value->size();
 		uint_t _cols = value->getColsNb();
 		for (uint_t _i = 0; _i < _sizei; _i++) {
-			print_value(os,value->getAt(_i / _cols ,_i % _cols)) ;
+			print_value(os,value->getAt(_i / _cols ,_i % _cols),pglnamespace) ;
 			if (_i != (_sizei - 1)){ 
 				if (_i !=0 && (_i+1) % (_cols) ==0){ 
 					os << "], [";
@@ -249,64 +231,107 @@ ostream& print_value_array2(ostream& os, const array& value)
 }
 
 
-ostream& print_value(ostream& os, const RealArray2Ptr& value)
+ostream& print_value(ostream& os, const RealArray2Ptr& value,const std::string& pglnamespace)
 {
-	os << "RealArray2";
-	print_value_array2(os,value);
+	os << _pgltype(pglnamespace,"RealArray2");
+	print_value_array2(os,value,pglnamespace);
 	return os;
 }
 
 
-ostream& print_value(ostream& os, const Point4MatrixPtr& value)
+ostream& print_value(ostream& os, const Point4MatrixPtr& value,const std::string& pglnamespace)
 {
-	os << "Point4Matrix";
-	print_value_array2(os,value);
+	os << _pgltype(pglnamespace,"Point4Matrix");
+	print_value_array2(os,value,pglnamespace);
 	return os;
 }
 
 
-inline ostream& print_value(ostream& os, SceneObjectPtr value)
+inline ostream& print_value(ostream& os, SceneObjectPtr value,const std::string& pglnamespace)
 {
 	return os << compute_name(value);
 }
 
-inline ostream& print_value(ostream& os, GeometryPtr value)
+inline ostream& print_value(ostream& os, GeometryPtr value,const std::string& pglnamespace)
 {
 	return os << compute_name(value);
 }
 
-inline ostream& print_value(ostream& os, AppearancePtr value)
+inline ostream& print_value(ostream& os, AppearancePtr value,const std::string& pglnamespace)
 {
 	return os << compute_name(value);
 }
 
-inline ostream& print_value(ostream& os, PolylinePtr value)
+inline ostream& print_value(ostream& os, PolylinePtr value,const std::string& pglnamespace)
 {
 	return os << compute_name(value);
 }
 
+/* ----------------------------------------------------------------------- */
 
-inline void print_begin(ostream& os, string name, string type)
+
+template <typename T>
+ostream& PyPrinter::print_field(ostream& os, const string& name, const string& field, const T& value)
 {
-	os << name << " = " << type << "()" << endl;
+	os << __indentation << name << '.' << field << " = ";
+	print_value(os,value,__pglnamespace);
+	return os << endl;
 }
 
-inline void print_cons_begin(ostream& os, string name, string type)
+template <typename T>
+ostream& PyPrinter::print_arg_field(ostream& os, const string& field, const T& value)
 {
-	os << name << " = " << type << "(" << endl;
+	os << __indentation << field << " = ";
+	print_value(os,value,__pglnamespace);
+	os << " , ";
+	return os << endl;
 }
-inline void print_cons_end(ostream& os, SceneObjectPtr obj, string name)
+
+
+template <typename T>
+ostream& PyPrinter::print_arg_field(ostream& os, const T& value)
+{
+	os << __indentation;
+	print_value(os,value,__pglnamespace);
+	os << " , ";
+	return os << endl;
+}
+
+template <typename T>
+ostream& PyPrinter::print_field(ostream& os, const string& name, const string& str, const T& value, bool in_constructor)
+{
+	if (in_constructor) return print_arg_field(os,str,value);
+	else return print_field(os,name, str,value);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
+inline void PyPrinter::print_constructor_begin(ostream& os, const string& name, const string& type)
+{
+	os << __indentation << name << " = " << pgltype(type) << "(" << endl;
+	// increment tabulation
+	incrementIndentation();
+}
+
+inline void PyPrinter::print_constructor_end(ostream& os, SceneObjectPtr obj, const string& name)
 {
 	os << ")" << endl;
+	// decrement tabulation
+	decrementIndentation();
+	// if obj is named, set property name to this value.
 	if ( obj->isNamed())
 		print_field (os, name, "name", obj->getName());
 }
 
-inline void print_end(ostream& os)
+inline void PyPrinter::print_object_end(ostream& os)
 {
-	os << endl;
+	os << __indentation << endl;
 }
 
+
+/* ----------------------------------------------------------------------- */
 
 #define GEOM_BEGIN(obj) \
 	GEOM_ASSERT(obj) \
@@ -314,9 +339,9 @@ inline void print_end(ostream& os)
 		if (! __cache.insert(obj->getId()).second) return true; \
 	} \
 
+/* ----------------------------------------------------------------------- */
 
-
-PyPrinter::PyPrinter(ostream& stream) : Printer(stream), scene_name()
+PyPrinter::PyPrinter(ostream& stream) : Printer(stream), scene_name(), __indentation_increment("    "), __pglnamespace() 
 {
 }
 
@@ -324,15 +349,21 @@ PyPrinter::~PyPrinter()
 {
 }
 
+
 bool PyPrinter::beginProcess()
 {
 	scene_name = "result";
-	__shapeStream << "result = Scene()\n";
+	__shapeStream << __indentation << "def create_scene():";
+	incrementIndentation();
+	__shapeStream << __indentation << "result = Scene()\n";
 	return true;
 }
 
 bool PyPrinter::endProcess()
 {
+	__shapeStream << __indentation << "return result\n";
+	decrementIndentation();
+	__shapeStream << __indentation << "result = create_scene()\n";
 	scene_name.clear();
 	return true;
 }
@@ -344,7 +375,7 @@ bool PyPrinter::endProcess()
 	print_field (stream, name, #pyattribute, obj->get##cattribute(),in_constructor); \
   } \
   else if (in_constructor) { \
-	print_cons_end (stream, obj, name); \
+	print_constructor_end (stream, obj, name); \
 	in_constructor = false; \
   } \
 
@@ -353,7 +384,7 @@ bool PyPrinter::endProcess()
 	print_field (stream, name, #pyattribute, obj->get##cattribute(),in_constructor); \
   } \
   else if (in_constructor) { \
-	print_cons_end (stream, obj, name); \
+	print_constructor_end (stream, obj, name); \
 	in_constructor = false; \
   } \
 
@@ -376,14 +407,14 @@ bool PyPrinter::process(Shape * shape)
 
 	bool in_constructor = true; // tell if the constructor of the object is still described.
 
-	print_cons_begin(__shapeStream, name, "Shape");
+	print_constructor_begin(__shapeStream, name, "Shape");
 
 	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, geometry,  Geometry,  is_valid_ptr(shape->getGeometry()), in_constructor)
 	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, appearance,  Appearance,  is_valid_ptr(shape->getAppearance()), in_constructor)
 	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, id, Id, shape->getId() !=  Shape::NOID, in_constructor)
 	PYPRINT_ARG_WITHCOND(__shapeStream, shape, name, parentId, ParentId, shape->getParentId() !=  Shape::NOID, in_constructor)
 
-	if (in_constructor) print_cons_end (__shapeStream, shape, name);
+	if (in_constructor) print_constructor_end (__shapeStream, shape, name);
 
 	if (!scene_name.empty()) __shapeStream  << scene_name << ".add(" << name << ")" << std::endl;
 
@@ -400,7 +431,7 @@ bool PyPrinter::process( Material * material ) {
   string name = compute_name(material);
   bool in_constructor = true; // tell if the constructor of the object is still described.
 
-  print_cons_begin(__matStream, name, "Material");
+  print_constructor_begin(__matStream, name, "Material");
 
   PYPRINT_ARG(__matStream, material, name, ambient,  Ambient,  in_constructor)
   PYPRINT_ARG(__matStream, material, name, diffuse,  Diffuse,  in_constructor)
@@ -409,9 +440,9 @@ bool PyPrinter::process( Material * material ) {
   PYPRINT_ARG(__matStream, material, name, shininess, Shininess, in_constructor)
   PYPRINT_ARG(__matStream, material, name, transparency, Transparency, in_constructor)
 
-  if (in_constructor) print_cons_end (__matStream, material, name);
+  if (in_constructor) print_constructor_end (__matStream, material, name);
   
-  print_end(__matStream);
+  print_object_end(__matStream);
   return true;
 }
 
@@ -422,9 +453,9 @@ bool PyPrinter::process( ImageTexture * texture ) {
   GEOM_BEGIN(texture);
   
   string name = compute_name(texture);
-  print_cons_begin(__geomStream, name, "ImageTexture");
+  print_constructor_begin(__geomStream, name, "ImageTexture");
     print_arg_field(__geomStream, name, texture->getFilename());
-  print_cons_end (__geomStream, texture, name);
+  print_constructor_end (__geomStream, texture, name);
 
   if (! texture->isMipmapingToDefault())
 	print_field (__geomStream, name, "mipmaping", texture->getMipmaping());
@@ -441,7 +472,7 @@ bool PyPrinter::process( ImageTexture * texture ) {
   if (! texture->isTransparencyToDefault())
     print_field (__geomStream, name, "transparency", texture->getTransparency());
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -453,7 +484,7 @@ bool PyPrinter::process( AsymmetricHull * asymmetricHull ) {
   string name = compute_name(asymmetricHull);
   bool in_constructor = true; // tell if the constructor of the object is still described.
 
-  print_cons_begin(__geomStream, name, "AsymmetricHull");
+  print_constructor_begin(__geomStream, name, "AsymmetricHull");
 
   PYPRINT_ARG(__geomStream, asymmetricHull, name, negXRadius,  NegXRadius,  in_constructor)
   PYPRINT_ARG(__geomStream, asymmetricHull, name, posXRadius,  PosXRadius,  in_constructor)
@@ -473,9 +504,9 @@ bool PyPrinter::process( AsymmetricHull * asymmetricHull ) {
   PYPRINT_ARG(__geomStream, asymmetricHull, name, slices, Slices, in_constructor)
   PYPRINT_ARG(__geomStream, asymmetricHull, name, stacks, Stacks, in_constructor)
 
-  if (in_constructor) print_cons_end (__geomStream, asymmetricHull, name);
+  if (in_constructor) print_constructor_end (__geomStream, asymmetricHull, name);
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -491,14 +522,14 @@ bool PyPrinter::process( AxisRotated * axisRotated ) {
   obj->apply(*this);
 
 
-  print_cons_begin(__geomStream, name, "AxisRotated");
+  print_constructor_begin(__geomStream, name, "AxisRotated");
   print_arg_field (__geomStream, "axis", axisRotated->getAxis());
   print_arg_field (__geomStream, "angle", axisRotated->getAngle());
   print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
-  print_cons_end(__geomStream, axisRotated, name);
+  print_constructor_end(__geomStream, axisRotated, name);
   
   
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -511,14 +542,14 @@ bool PyPrinter::process( BezierCurve * bezierCurve ) {
   GEOM_BEGIN(bezierCurve);
   
   string name = compute_name(bezierCurve);
-  print_cons_begin(__geomStream, name, "BezierCurve");
+  print_constructor_begin(__geomStream, name, "BezierCurve");
   print_arg_field (__geomStream, bezierCurve->getCtrlPointList());
   if (! bezierCurve->isStrideToDefault())
 	  print_arg_field (__geomStream, "stride", bezierCurve->getStride());
 
-  print_cons_end(__geomStream, bezierCurve, name);
+  print_constructor_end(__geomStream, bezierCurve, name);
   print_field (__geomStream, name, "degree", bezierCurve->getDegree());
-  print_end(__geomStream);
+  print_object_end(__geomStream);
 
   return true;
 }
@@ -529,12 +560,12 @@ bool PyPrinter::process( BezierPatch * bezierPatch ) {
   GEOM_BEGIN(bezierPatch);
   
   string name = compute_name(bezierPatch);
-  print_cons_begin(__geomStream, name, "BezierPatch");
+  print_constructor_begin(__geomStream, name, "BezierPatch");
 
   print_arg_field (__geomStream, bezierPatch->getCtrlPointMatrix());
 
-  print_cons_end(__geomStream, bezierPatch, name);
-  print_end(__geomStream);
+  print_constructor_end(__geomStream, bezierPatch, name);
+  print_object_end(__geomStream);
   
   return true;
 }
@@ -547,14 +578,14 @@ bool PyPrinter::process( Box * box )
   GEOM_BEGIN(box);
 
   string name = compute_name(box);
-  print_cons_begin(__geomStream, name, "Box");
+  print_constructor_begin(__geomStream, name, "Box");
 
   if (! box->isSizeToDefault())
     print_arg_field (__geomStream, "size", box->getSize());
 
-  print_cons_end(__geomStream, box, name);
+  print_constructor_end(__geomStream, box, name);
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   
   return true;
 }
@@ -565,7 +596,7 @@ bool PyPrinter::process( Cone * cone ) {
   GEOM_BEGIN(cone);
   
   string name = compute_name(cone);
-  print_cons_begin(__geomStream, name, "Cone");
+  print_constructor_begin(__geomStream, name, "Cone");
   if (! cone->isRadiusToDefault())
   {
 	print_arg_field (__geomStream, "radius", cone->getRadius());
@@ -580,28 +611,28 @@ bool PyPrinter::process( Cone * cone ) {
 		} 
 		else // solid is default
 		{
-			print_cons_end (__geomStream, cone, name);
+			print_constructor_end (__geomStream, cone, name);
 			if (! cone->isSlicesToDefault())
 				print_field (__geomStream, name, "slices", cone->getSlices());
-			print_end(__geomStream);
+			print_object_end(__geomStream);
 			return true;
 		}
 	}
 	else  // height is default
 	{
-		print_cons_end (__geomStream, cone, name);
+		print_constructor_end (__geomStream, cone, name);
 		if (! cone->isSolidToDefault())
 			print_field (__geomStream, name, "solid", cone->getSolid());
 		if (! cone->isSlicesToDefault())
 			print_field (__geomStream, name, "slices", cone->getSlices());
-		print_end(__geomStream);
+		print_object_end(__geomStream);
 		return true;
 	}
-	print_cons_end (__geomStream, cone, name);
+	print_constructor_end (__geomStream, cone, name);
   }
   else // radius is default
   {
-    print_cons_end(__geomStream, cone, name);
+    print_constructor_end(__geomStream, cone, name);
 	if (! cone->isHeightToDefault())
 		print_field (__geomStream, name, "height", cone->getHeight());
 	if (! cone->isSolidToDefault())
@@ -610,7 +641,7 @@ bool PyPrinter::process( Cone * cone ) {
 		print_field (__geomStream, name, "slices", cone->getSlices());
   }
  
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -621,7 +652,7 @@ bool PyPrinter::process( Cylinder * cylinder ) {
   GEOM_BEGIN(cylinder);
 
   string name = compute_name(cylinder);
-  print_cons_begin(__geomStream, name, "Cylinder");
+  print_constructor_begin(__geomStream, name, "Cylinder");
   if (! cylinder->isRadiusToDefault())
   {
 	print_arg_field (__geomStream, "radius", cylinder->getRadius());
@@ -636,28 +667,28 @@ bool PyPrinter::process( Cylinder * cylinder ) {
 		} 
 		else // solid is default
 		{
-			print_cons_end (__geomStream, cylinder, name);
+			print_constructor_end (__geomStream, cylinder, name);
 			if (! cylinder->isSlicesToDefault())
 				print_field (__geomStream, name, "slices", cylinder->getSlices());
-			print_end(__geomStream);
+			print_object_end(__geomStream);
 			return true;
 		}
 	}
 	else  // height is default
 	{
-		print_cons_end (__geomStream, cylinder, name);
+		print_constructor_end (__geomStream, cylinder, name);
 		if (! cylinder->isSolidToDefault())
 			print_field (__geomStream, name, "solid", cylinder->getSolid());
 		if (! cylinder->isSlicesToDefault())
 			print_field (__geomStream, name, "slices", cylinder->getSlices());
-		print_end(__geomStream);
+		print_object_end(__geomStream);
 		return true;
 	}
-	print_cons_end (__geomStream, cylinder, name);
+	print_constructor_end (__geomStream, cylinder, name);
   }
   else // radius is default
   {
-    print_cons_end(__geomStream, cylinder, name);
+    print_constructor_end(__geomStream, cylinder, name);
 	if (! cylinder->isHeightToDefault())
 		print_field (__geomStream, name, "height", cylinder->getHeight());
 	if (! cylinder->isSolidToDefault())
@@ -666,7 +697,7 @@ bool PyPrinter::process( Cylinder * cylinder ) {
 		print_field (__geomStream, name, "slices", cylinder->getSlices());
   }
  
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -677,11 +708,11 @@ bool PyPrinter::process( ElevationGrid * elevationGrid ) {
   GEOM_BEGIN(elevationGrid);
   
   string name = compute_name(elevationGrid);
-  print_cons_begin(__geomStream, name, "ElevationGrid");
+  print_constructor_begin(__geomStream, name, "ElevationGrid");
   
   print_arg_field (__geomStream, "heightList", elevationGrid->getHeightList());
   
-  print_cons_end (__geomStream, elevationGrid, name);
+  print_constructor_end (__geomStream, elevationGrid, name);
   if (! elevationGrid->isXSpacingToDefault())
 	  print_field(__geomStream, name, "xspacing", elevationGrid->getXSpacing());
   if (! elevationGrid->isYSpacingToDefault())
@@ -689,7 +720,7 @@ bool PyPrinter::process( ElevationGrid * elevationGrid ) {
   if (! elevationGrid->isCCWToDefault())
 	  print_field(__geomStream, name, "ccw", elevationGrid->getCCW());
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
 
   return true;
 }
@@ -705,14 +736,14 @@ bool PyPrinter::process( EulerRotated * eulerRotated ) {
   GeometryPtr obj = eulerRotated->getGeometry();
   obj->apply(*this);
 
-  print_cons_begin(__geomStream, name, "EulerRotated");
+  print_constructor_begin(__geomStream, name, "EulerRotated");
   print_arg_field (__geomStream, "azimuth", eulerRotated->getAzimuth());
   print_arg_field (__geomStream, "elevation", eulerRotated->getElevation());
   print_arg_field (__geomStream, "roll", eulerRotated->getRoll());
   print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
 
-  print_cons_end(__geomStream, eulerRotated, name);
-  print_end(__geomStream);
+  print_constructor_end(__geomStream, eulerRotated, name);
+  print_object_end(__geomStream);
 
   return true;
 }
@@ -731,16 +762,16 @@ bool PyPrinter::process( ExtrudedHull * extrudedHull ) {
   
   string name = compute_name(extrudedHull);
  
-  print_cons_begin(__geomStream, name, "ExtrudedHull");
+  print_constructor_begin(__geomStream, name, "ExtrudedHull");
 
   print_arg_field(__geomStream,SceneObjectPtr(vertical_obj));
   print_arg_field(__geomStream,SceneObjectPtr(horizontal_obj));
   if (! extrudedHull->isCCWToDefault())
 	  print_arg_field(__geomStream, extrudedHull->getCCW());
 
-  print_cons_end(__geomStream, extrudedHull, name);
+  print_constructor_end(__geomStream, extrudedHull, name);
   
-  print_end(__geomStream);
+  print_object_end(__geomStream);
 
   return true;
 }
@@ -758,12 +789,12 @@ bool PyPrinter::process( Group * group  ) {
   if (! group->isSkeletonToDefault())
 	group->getSkeleton()->apply(*this);
 
-  print_cons_begin(__geomStream, name, "Group");
+  print_constructor_begin(__geomStream, name, "Group");
   print_arg_field (__geomStream, "geometryList", group->getGeometryList());
   if (! group->isSkeletonToDefault())
     print_arg_field(__geomStream, "skeleton", group->getSkeleton());
-  print_cons_end(__geomStream, group, name);
-  print_end(__geomStream);
+  print_constructor_end(__geomStream, group, name);
+  print_object_end(__geomStream);
 
 
   return true;
@@ -777,7 +808,7 @@ bool PyPrinter::process( NurbsCurve * nurbsCurve ) {
   
   string name = compute_name(nurbsCurve);
 
-  print_cons_begin(__geomStream, name, "NurbsCurve");
+  print_constructor_begin(__geomStream, name, "NurbsCurve");
   print_arg_field (__geomStream, "ctrlPointList", nurbsCurve->getCtrlPointList());
   if (! nurbsCurve->isKnotListToDefault())
   {
@@ -790,24 +821,24 @@ bool PyPrinter::process( NurbsCurve * nurbsCurve ) {
 	  }
 	  else  // degree is default
 	  {
-		print_cons_end(__geomStream, nurbsCurve, name);
+		print_constructor_end(__geomStream, nurbsCurve, name);
 		if (! nurbsCurve->isStrideToDefault())
 			print_field (__geomStream, name, "strides", nurbsCurve->getStride());
-		print_end(__geomStream);
+		print_object_end(__geomStream);
 		return true;
 	  }
-	  print_cons_end(__geomStream, nurbsCurve, name);
+	  print_constructor_end(__geomStream, nurbsCurve, name);
   }
   else  // knotlist is default
   {
-	print_cons_end(__geomStream, nurbsCurve, name);
+	print_constructor_end(__geomStream, nurbsCurve, name);
 	if (! nurbsCurve->isDegreeToDefault())
 		print_field (__geomStream, name, "degree", nurbsCurve->getDegree());
 	if (! nurbsCurve->isStrideToDefault())
 		print_field (__geomStream, name, "strides", nurbsCurve->getStride());
   }
   
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -818,7 +849,7 @@ bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
   GEOM_BEGIN(nurbsPatch);
 
   string name = compute_name(nurbsPatch);
-  print_cons_begin(__geomStream, name, "NurbsPatch");
+  print_constructor_begin(__geomStream, name, "NurbsPatch");
   
   print_arg_field (__geomStream, nurbsPatch->getCtrlPointMatrix()); 
   if (! nurbsPatch->isUKnotListToDefault())
@@ -844,40 +875,40 @@ bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
 					}
 					else  // Vstride is default
 					{
-						print_cons_end(__geomStream, nurbsPatch, name);
+						print_constructor_end(__geomStream, nurbsPatch, name);
 						if (! nurbsPatch->isCCWToDefault())
 							print_field (__geomStream, name, "ccw", nurbsPatch->getCCW());
-						print_end(__geomStream);
+						print_object_end(__geomStream);
 						return true;
 					}
 				}
 				else  // Ustride is default
 				{
-					print_cons_end(__geomStream, nurbsPatch, name);
+					print_constructor_end(__geomStream, nurbsPatch, name);
 					if (! nurbsPatch->isVStrideToDefault())
 						print_field (__geomStream, name, "vstride", nurbsPatch->getVStride());
 					if (! nurbsPatch->isCCWToDefault())
 						print_field (__geomStream, name, "ccw", nurbsPatch->getCCW());
-					print_end(__geomStream);
+					print_object_end(__geomStream);
 					return true;
 				}
 			}
 			else  // VDegree is default
 			{
-				print_cons_end(__geomStream, nurbsPatch, name);
+				print_constructor_end(__geomStream, nurbsPatch, name);
 				if (! nurbsPatch->isUStrideToDefault())
 					print_field (__geomStream, name, "ustride", nurbsPatch->getUStride());
 				if (! nurbsPatch->isVStrideToDefault())
 					print_field (__geomStream, name, "vstride", nurbsPatch->getVStride());
 				if (! nurbsPatch->isCCWToDefault())
 					print_field (__geomStream, name, "ccw", nurbsPatch->getCCW());
-				print_end(__geomStream);
+				print_object_end(__geomStream);
 				return true;
 			}
 		}
 		else  // UDegree is default
 		{
-			print_cons_end(__geomStream, nurbsPatch, name);
+			print_constructor_end(__geomStream, nurbsPatch, name);
 			if (! nurbsPatch->isVDegreeToDefault())
 				print_field (__geomStream, name, "vdegree", nurbsPatch->getVDegree());
 			if (! nurbsPatch->isUStrideToDefault())
@@ -886,13 +917,13 @@ bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
 				print_field (__geomStream, name, "vstride", nurbsPatch->getVStride());
 			if (! nurbsPatch->isCCWToDefault())
 				print_field (__geomStream, name, "ccw", nurbsPatch->getCCW());
-			print_end(__geomStream);
+			print_object_end(__geomStream);
 			return true;
 		}
 	}
 	else  // VKnotList is default
 	{
-		print_cons_end(__geomStream, nurbsPatch, name);
+		print_constructor_end(__geomStream, nurbsPatch, name);
 		if (! nurbsPatch->isUDegreeToDefault())
 			print_field (__geomStream, name, "udegree", nurbsPatch->getUDegree());
 		if (! nurbsPatch->isVDegreeToDefault())
@@ -903,14 +934,14 @@ bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
 			print_field (__geomStream, name, "vstride", nurbsPatch->getVStride());
 		if (! nurbsPatch->isCCWToDefault())
 			print_field (__geomStream, name, "ccw", nurbsPatch->getCCW());
-		print_end(__geomStream);
+		print_object_end(__geomStream);
 		return true;
 	}
-	print_cons_end(__geomStream, nurbsPatch, name);
+	print_constructor_end(__geomStream, nurbsPatch, name);
   }
   else // UKnotList is default
   {
-	print_cons_end(__geomStream, nurbsPatch, name);
+	print_constructor_end(__geomStream, nurbsPatch, name);
 	if (! nurbsPatch->isVKnotListToDefault())
 		print_field (__geomStream, name, "vknotList", nurbsPatch->getUKnotList()); 
 	if (! nurbsPatch->isUDegreeToDefault())
@@ -925,7 +956,7 @@ bool PyPrinter::process( NurbsPatch * nurbsPatch ) {
 		print_field (__geomStream, name, "ccw", nurbsPatch->getCCW());
   }
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -936,13 +967,13 @@ bool PyPrinter::process( PointSet * pointSet ) {
   GEOM_BEGIN(pointSet);
 
   string name = compute_name(pointSet);
-  print_cons_begin(__geomStream, name, "PointSet");
+  print_constructor_begin(__geomStream, name, "PointSet");
   print_arg_field (__geomStream, "pointList", pointSet->getPointList());
   if(! pointSet->isColorListToDefault())
 	  print_arg_field (__geomStream, "colorList", pointSet->getColorList());
-  print_cons_end(__geomStream, pointSet, name);
+  print_constructor_end(__geomStream, pointSet, name);
   
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -953,13 +984,13 @@ bool PyPrinter::process( Polyline * polyline ) {
   GEOM_BEGIN(polyline);
   
   string name = compute_name(polyline);
-  print_cons_begin(__geomStream, name, "Polyline");
+  print_constructor_begin(__geomStream, name, "Polyline");
   print_arg_field (__geomStream, "pointList", polyline->getPointList());
   if(! polyline->isColorListToDefault())
 	  print_arg_field (__geomStream, "colorList", polyline->getColorList());
-  print_cons_end(__geomStream, polyline, name);
+  print_constructor_end(__geomStream, polyline, name);
   
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -971,7 +1002,7 @@ bool PyPrinter::process(Sphere * sphere)
   GEOM_BEGIN(sphere);
   
   string name = compute_name(sphere);
-  print_cons_begin(__geomStream, name, "Sphere");
+  print_constructor_begin(__geomStream, name, "Sphere");
 
   if (! sphere->isRadiusToDefault())
   {
@@ -986,17 +1017,17 @@ bool PyPrinter::process(Sphere * sphere)
 	{
 		if (! sphere->isStacksToDefault())
 		{
-			print_cons_end(__geomStream, sphere, name);
+			print_constructor_end(__geomStream, sphere, name);
 			print_field (__geomStream, name, "stacks", sphere->getStacks());
-			print_end(__geomStream);
+			print_object_end(__geomStream);
 			return true;
 		}
 	}
-	print_cons_end(__geomStream, sphere, name);
+	print_constructor_end(__geomStream, sphere, name);
   }
   else
   {
-	print_cons_end(__geomStream, sphere, name);
+	print_constructor_end(__geomStream, sphere, name);
  
 	if (! sphere->isSlicesToDefault())
 		print_field<int_t> (__geomStream, name, "slices", sphere->getSlices());
@@ -1004,7 +1035,7 @@ bool PyPrinter::process(Sphere * sphere)
 		print_field<int_t> (__geomStream, name, "stacks", sphere->getStacks());
   }
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1019,13 +1050,13 @@ bool PyPrinter::process( Scaled * scaled ) {
   GeometryPtr obj = scaled->getGeometry();
   obj->apply(*this);
 
-  print_cons_begin(__geomStream, name, "Scaled");
+  print_constructor_begin(__geomStream, name, "Scaled");
   print_arg_field (__geomStream, "scale", scaled->getScale());
   print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
 
-  print_cons_end(__geomStream, scaled, name);
+  print_constructor_end(__geomStream, scaled, name);
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1041,7 +1072,7 @@ bool PyPrinter::process( Swung * swung )
 
   string name = compute_name(swung);
 
-  print_cons_begin(__geomStream, name, "Swung");
+  print_constructor_begin(__geomStream, name, "Swung");
 
   print_arg_field (__geomStream, "profileList", swung->getProfileList());
   print_arg_field (__geomStream, "angleList", swung->getAngleList());
@@ -1060,28 +1091,28 @@ bool PyPrinter::process( Swung * swung )
 		}
 		else  // degree is default
 		{
-			print_cons_end(__geomStream, swung, name);
+			print_constructor_end(__geomStream, swung, name);
 			if (! swung->isStrideToDefault())
 				print_field (__geomStream, name, "stride", swung->getStride());
-			print_end(__geomStream);
+			print_object_end(__geomStream);
 			return true;
 		}
 	}
 	else  // ccw is default
 	{
-		print_cons_end(__geomStream, swung, name);
+		print_constructor_end(__geomStream, swung, name);
 		if (! swung->isDegreeToDefault())
 			print_field (__geomStream, name, "degree", swung->getDegree());
 		if (! swung->isStrideToDefault())
 			print_field (__geomStream, name, "stride", swung->getStride());
-		print_end(__geomStream);
+		print_object_end(__geomStream);
 		return true;
 	}
-	print_cons_end(__geomStream, swung, name);
+	print_constructor_end(__geomStream, swung, name);
   }
   else  // slices is default
   {
-	print_cons_end(__geomStream, swung, name);
+	print_constructor_end(__geomStream, swung, name);
 	if(! swung->isCCWToDefault() )
 		print_field (__geomStream, name, "ccw", swung->getCCW());
 	if (! swung->isDegreeToDefault())
@@ -1090,7 +1121,7 @@ bool PyPrinter::process( Swung * swung )
 		print_field (__geomStream, name, "stride", swung->getStride());
   }
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1103,11 +1134,11 @@ bool PyPrinter::process( QuadSet * quadSet ) {
   
   string name = compute_name(quadSet);
   
-  print_cons_begin(__geomStream, name, "QuadSet");
+  print_constructor_begin(__geomStream, name, "QuadSet");
   print_arg_field (__geomStream, "pointList", quadSet->getPointList());
   print_arg_field (__geomStream, "indexList", quadSet->getIndexList());
 
-  print_cons_end(__geomStream, quadSet, name);
+  print_constructor_end(__geomStream, quadSet, name);
   if (!quadSet->isNormalPerVertexToDefault())
 	print_field (__geomStream, name, "normalPerVertex", quadSet->getNormalPerVertex());
   if (!quadSet->isNormalListToDefault())
@@ -1130,7 +1161,7 @@ bool PyPrinter::process( QuadSet * quadSet ) {
     print_field (__geomStream, name, "solid", quadSet->getSolid());
   //if (! quadSet->isSkeletonToDefault()){
 	
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;  
 }
 
@@ -1148,14 +1179,14 @@ bool PyPrinter::process( Translated * translated ) {
 
   // string geometryname = compute_name(obj);
   
-  print_cons_begin(__geomStream, name, "Translated");
+  print_constructor_begin(__geomStream, name, "Translated");
   print_arg_field (__geomStream, "translation", translated->getTranslation());
   print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
 
-  print_cons_end(__geomStream, translated, name);
+  print_constructor_end(__geomStream, translated, name);
 
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1166,11 +1197,11 @@ bool PyPrinter::process( TriangleSet * triangleSet ) {
 
   string name = compute_name(triangleSet);
   
-  print_cons_begin(__geomStream, name, "TriangleSet");
+  print_constructor_begin(__geomStream, name, "TriangleSet");
   print_arg_field (__geomStream, "pointList", triangleSet->getPointList());
   print_arg_field (__geomStream, "indexList", triangleSet->getIndexList());
 
-  print_cons_end(__geomStream, triangleSet, name);
+  print_constructor_end(__geomStream, triangleSet, name);
   if (!triangleSet->isNormalPerVertexToDefault())
 	print_field (__geomStream, name, "normalPerVertex", triangleSet->getNormalPerVertex());
   if (!triangleSet->isNormalListToDefault())
@@ -1193,7 +1224,7 @@ bool PyPrinter::process( TriangleSet * triangleSet ) {
     print_field (__geomStream, name, "solid", triangleSet->getSolid());
   //if (! quadSet->isSkeletonToDefault()){
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1204,14 +1235,14 @@ bool PyPrinter::process( BezierCurve2D * bezierCurve ) {
   GEOM_BEGIN(bezierCurve);
 
   string name = compute_name(bezierCurve);
-  print_cons_begin(__geomStream, name, "BezierCurve2D");
+  print_constructor_begin(__geomStream, name, "BezierCurve2D");
   print_arg_field (__geomStream, bezierCurve->getCtrlPointList());
   if (! bezierCurve->isStrideToDefault())
 	  print_arg_field (__geomStream, "stride", bezierCurve->getStride());
 
-  print_cons_end(__geomStream, bezierCurve, name);
+  print_constructor_end(__geomStream, bezierCurve, name);
   print_field (__geomStream, name, "degree", bezierCurve->getDegree());
-  print_end(__geomStream);
+  print_object_end(__geomStream);
 
   return true;
 }
@@ -1223,23 +1254,23 @@ bool PyPrinter::process( Disc * disc ) {
   GEOM_BEGIN(disc);
   
   string name = compute_name(disc);
-  print_cons_begin(__geomStream, name, "Disc");
+  print_constructor_begin(__geomStream, name, "Disc");
 
   if (! disc->isRadiusToDefault())
   {
 	print_arg_field (__geomStream, "radius", disc->getRadius());
 	if (! disc->isSlicesToDefault())
 		print_arg_field (__geomStream, "slices", disc->getSlices());
-	print_cons_end(__geomStream, disc, name);
+	print_constructor_end(__geomStream, disc, name);
   }
   else
   {
-	print_cons_end(__geomStream, disc, name);
+	print_constructor_end(__geomStream, disc, name);
 	if (! disc->isSlicesToDefault())
 		print_field (__geomStream, name, "slices", disc->getSlices());
   }
 
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1250,7 +1281,7 @@ bool PyPrinter::process( NurbsCurve2D * nurbsCurve ) {
   GEOM_BEGIN(nurbsCurve);
 
   string name = compute_name(nurbsCurve);
-  print_cons_begin(__geomStream, name, "NurbsCurve2D");
+  print_constructor_begin(__geomStream, name, "NurbsCurve2D");
   print_arg_field (__geomStream, "ctrlPointList", nurbsCurve->getCtrlPointList());
 
   if (! nurbsCurve->isKnotListToDefault())
@@ -1266,24 +1297,24 @@ bool PyPrinter::process( NurbsCurve2D * nurbsCurve ) {
 	{
 		if (! nurbsCurve->isStrideToDefault())
 		{
-			print_cons_end(__geomStream, nurbsCurve, name);
+			print_constructor_end(__geomStream, nurbsCurve, name);
 			print_field (__geomStream, name, "stride", nurbsCurve->getStride());
-			print_end(__geomStream);
+			print_object_end(__geomStream);
 			return true;
 		}
 	}
-	print_cons_end(__geomStream, nurbsCurve, name);
+	print_constructor_end(__geomStream, nurbsCurve, name);
   }
   else
   {
-	print_cons_end(__geomStream, nurbsCurve, name);
+	print_constructor_end(__geomStream, nurbsCurve, name);
 	if (! nurbsCurve->isDegreeToDefault())
 		print_field (__geomStream, name, "degree", nurbsCurve->getDegree());
 	if (! nurbsCurve->isStrideToDefault())
 		print_field (__geomStream, name, "stride", nurbsCurve->getStride());
   }
   
-  print_end(__geomStream);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1294,11 +1325,11 @@ bool PyPrinter::process( PointSet2D * pointSet ) {
   GEOM_BEGIN(pointSet);
 
   string name = compute_name(pointSet);
-  print_cons_begin(__geomStream, name, "PointSet2D");
+  print_constructor_begin(__geomStream, name, "PointSet2D");
   print_arg_field (__geomStream, pointSet->getPointList());
   
-  print_cons_end(__geomStream, pointSet, name);
-  print_end(__geomStream);
+  print_constructor_end(__geomStream, pointSet, name);
+  print_object_end(__geomStream);
   return true;
 }
 
@@ -1309,11 +1340,11 @@ bool PyPrinter::process( Polyline2D * polyline ) {
   GEOM_BEGIN(polyline);
 
   string name = compute_name(polyline);
-  print_cons_begin(__geomStream, name, "Polyline2D");
+  print_constructor_begin(__geomStream, name, "Polyline2D");
   print_arg_field (__geomStream, polyline->getPointList());
   
-  print_cons_end(__geomStream, polyline, name); 
-  print_end(__geomStream);
+  print_constructor_end(__geomStream, polyline, name); 
+  print_object_end(__geomStream);
   return true;
 }
 

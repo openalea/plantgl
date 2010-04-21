@@ -93,3 +93,38 @@ def __pol2D_deepcopy__(self,memo):
 
 Polyline2D.__deepcopy__ = __pol2D_deepcopy__
 del __pol2D_deepcopy__
+
+""" Copy functions for Patch types """
+def __bzpth_copy__(self):
+    res = BezierPatch(self.ctrlPointMatrix, self.ustride, self.vstride, self.ccw)
+    if self.isNamed() : res.name = self.name
+    return res
+
+BezierPatch.__copy__ = __bzpth_copy__
+del __bzpth_copy__
+
+def __bzpth_deepcopy__(self,memo):
+    from copy import deepcopy
+    res = NurbsPatch(deepcopy(self.ctrlPointMatrix,memo), self.ustride, self.vstride, self.ccw)
+    if self.isNamed() : res.name = self.name
+    return res
+
+BezierPatch.__deepcopy__ = __bzpth_deepcopy__
+del __bzpth_deepcopy__
+
+def __nbpth_copy__(self):
+    res = NurbsPatch(self.ctrlPointMatrix,self.udegree, self.vdegree, self.uknotList, self.vknotList, self.ustride, self.vstride, self.ccw)
+    if self.isNamed() : res.name = self.name
+    return res
+
+NurbsPatch.__copy__ = __nbpth_copy__
+del __nbpth_copy__
+
+def __nbpth_deepcopy__(self,memo):
+    from copy import deepcopy
+    res = NurbsPatch(deepcopy(self.ctrlPointMatrix,memo),self.udegree, self.vdegree, deepcopy(self.uknotList,memo),deepcopy(self.vknotList,memo), self.ustride,self.vstride, self.ccw)
+    if self.isNamed() : res.name = self.name
+    return res
+
+NurbsPatch.__deepcopy__ = __nbpth_deepcopy__
+del __nbpth_deepcopy__

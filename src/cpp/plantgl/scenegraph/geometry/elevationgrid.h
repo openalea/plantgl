@@ -163,6 +163,9 @@ public:
   /// Returns the (i,j)th point of the grid
   TOOLS(Vector3) getPointAt(uint_t i, uint_t j) const;
 
+  ///  Returns the field of \b HeightList at the position pos. If pos is outside grid, return 0
+  real_t getHeightAt(const TOOLS(Vector2) pos) const;
+
   /// Returns whether \b XSpacing is set to its default value.
   bool isXSpacingToDefault( ) const;
 

@@ -248,5 +248,32 @@ ElevationGrid::isValid( ) const {
 }
 
 
+real_t ElevationGrid::getHeightAt(const TOOLS(Vector2) pos) const
+{
+    int xind = int(pos.x() / __xSpacing);
+    float xres = pos.x() -  (xind * __xSpacing);
+    if (xind < 0 || xind >= __heightList->getColsNb()) return 0;
+    int yind = int(pos.y() / __ySpacing);
+    float yres = pos.y() -  (yind * __ySpacing);
+    if (yind < 0 || yind >= __heightList->getRowsNb()) return 0;
+    float refelevation, refelev1, refelev2;
+    if (xres+yres > 1.0){
+        refelevation = getPointAt(xind+1,yind+1).z();
+        refelev1 = getPointAt(xind,yind+1).z();
+        refelev2 = getPointAt(xind+1,yind).z();
+        xres = 1 - xres;
+        yres = 1 - yres;
+    }
+    else {
+        refelevation = getPointAt(xind,yind).z();
+        refelev1 = getPointAt(xind+1,yind).z();
+        refelev2 = getPointAt(xind,yind+1).z();
+    }
+    refelev1 = refelev1-refelevation;
+    refelev2 = refelev2-refelevation;
+    return refelevation + (refelev1* xres) + (refelev2 * yres);
+}
+
+
 /* ----------------------------------------------------------------------- */
 
