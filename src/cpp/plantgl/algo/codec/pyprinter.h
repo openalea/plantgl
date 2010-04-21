@@ -132,7 +132,7 @@ protected:
 	template <typename T>
 	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool in_constructor);
 
-	inline std::string PyPrinter::pgltype(const std::string& pgltypename);
+	inline std::string pgltype(const std::string& pgltypename) const;
 
 	std::string scene_name;
 

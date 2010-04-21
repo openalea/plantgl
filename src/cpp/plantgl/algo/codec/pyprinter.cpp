@@ -38,7 +38,7 @@ inline std::string _pgltype(const std::string& pglnamespace, const std::string& 
 	else return pglnamespace+"."+pgltypename;
 }
 
-inline std::string PyPrinter::pgltype(const std::string& pgltypename)
+inline std::string PyPrinter::pgltype(const std::string& pgltypename) const
 {
 	return _pgltype(__pglnamespace,pgltypename);
 }
