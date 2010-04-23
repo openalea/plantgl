@@ -91,7 +91,8 @@ using namespace std;
 // using namespace STDEXT;
 
 #define MS_EDITION
-#define GL_ERROR glError(__FILE__,__LINE__)
+#define GL_ERROR ViewObjectGL::glError(this,__FILE__,__LINE__)
+// glError(__FILE__,__LINE__)
 
 /*  ------------------------------------------------------------------------ */
 
@@ -600,6 +601,7 @@ void ViewGLFrame::initializeGL(){
   __rotCenter->initializeGL();
   __clippingPlane->initializeGL();
   __fog->initializeGL();
+  GL_ERROR;
 }
 
 void ViewGLFrame::reinitializeGL()
@@ -642,7 +644,10 @@ void ViewGLFrame::reinitializeGL()
 
 void ViewGLFrame::resizeGL( int w, int h )
 {
+  GL_ERROR;
+  if (w == 0 || h == 0) { return; }
   __camera->resizeGL(w,h);
+  GL_ERROR;
 }
 
 
@@ -654,6 +659,9 @@ void ViewGLFrame::resizeGL( int w, int h )
 
 void ViewGLFrame::paintGL()
 {
+#ifndef Q_OS_MAC
+  if (width() == 0 || height() == 0) { return; }
+#endif
   if(__pBufferActivated) {
 	  if (!__pixelbuffer || __pixelbuffer->size() != size()){
 		  if(__pixelbuffer) delete __pixelbuffer;
