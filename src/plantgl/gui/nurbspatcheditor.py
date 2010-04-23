@@ -42,7 +42,7 @@ class CtrlPoint(ManipulatedFrame):
         The user can grab them and move them dynamically. 
         Change of value is automatically propagate to the initial structure using the position_setter function """   
 
-    def __init__(self, position, position_setter):
+    def __init__(self, position, position_setter, color = (30,30,250)):
         """Constructor 
            :param position: initial position of the control point
            :param position_setter: makes it possible to propagate position change to initial structure
@@ -55,6 +55,7 @@ class CtrlPoint(ManipulatedFrame):
         # point selection or focus
         self.selected = False
         self.hasFocus = False
+        self.color = color
         
         # previous position to compute displacement
         self.previousPosition=self.position()
@@ -94,15 +95,15 @@ class CtrlPoint(ManipulatedFrame):
         self.setPosition(self.position()+tr)
         self.__push_position__()
     
-    def representation(self) :
+    def representation(self, pointsize = 0.05) :
         """ Compute representation of the control points as PlantGL Spheres"""
         p=self.position()
         #we change the color of the point if it is selected or has focus
-        if self.hasFocus:   m=Material((250,30,30),1)
-        else:               m=Material((30,30,250),1)
-        if self.selected : m.ambient.green+=200
+        if self.hasFocus:    m = Material((250,30,30),1) # red
+        elif self.selected : m = Material((250,250,30),1) #yellow
+        else:               m=Material(self.color,1)
         #the point is represented by a PlantGl Sphere
-        return Shape(Translated(Vector3(p.x,p.y,p.z),Sphere(0.05)),m)
+        return Shape(Translated(Vector3(p.x,p.y,p.z),Sphere(pointsize)),m)
     
     def getx(self):
         """ Get the x coordinate """
@@ -169,14 +170,14 @@ class SelectionAxis (ManipulatedFrame):
         QObject.connect(self,SIGNAL("manipulated()"),self.__emit_translation__)
     
    
-    def representation(self):
+    def representation(self, pointsize = 0.05):
         """ Compute representation of the SelectionAxis as line and sphere. """
         p=self.position()
         p2 = p - self.direction * SelectionAxis.AxisLength
         if self.hasFocus : material = self.selectionMaterial
         else: material = self.material
         sh  =[Shape(Polyline([Vector3(*p2),Vector3(*p)]),material)]
-        sh +=[Shape(Translated(Vector3(*p),Sphere(0.05)),material)]
+        sh +=[Shape(Translated(Vector3(*p),Sphere(pointsize)),material)]
         return sh
 
     def __emit_translation__(self):
@@ -264,12 +265,12 @@ class SelectionManipulator (ManipulatedFrame):
         self.setPosition(self.centralPoint)
         self.__push_position__()
     
-    def representation(self):
+    def representation(self, pointsize = 0.05):
         """ define the representation of this manipulator """
         shapes = []
-        shapes+=self.axis[0].representation()
-        shapes+=self.axis[1].representation()
-        shapes+=self.axis[2].representation()    
+        shapes+=self.axis[0].representation(pointsize)
+        shapes+=self.axis[1].representation(pointsize)
+        shapes+=self.axis[2].representation(pointsize)    
         return shapes
     
     def empty(self):
@@ -543,18 +544,19 @@ class NurbsPatchEditor(QGLViewer):
         If some of them are selected, a medium axis will be drawn by lines and little spheres, 
         allowing us to grab one of them to perform a constrained move
         """
-    
+        scradius = self.sceneRadius()
+        pointsize = scradius/30.
        
         shapes=[]
         #define the nurbsShape and the control points geometry
         #self.p=[] 
         for ctrlPointLine in self.ctrlPointMatrix:
             for ctrlPoint in ctrlPointLine:
-                shapes.append(ctrlPoint.representation())
+                shapes.append(ctrlPoint.representation(pointsize))
 
         # draw the frame of multiple selection
         if self.selectionManipulator:
-            shapes+=self.selectionManipulator.representation()
+            shapes+=self.selectionManipulator.representation(pointsize*1.2)
 
         shapes.append(self.nurbsShape)
         sc=Scene(shapes)
@@ -622,10 +624,12 @@ class NurbsPatchEditor(QGLViewer):
         self.clear()
         self.nurbsPatch=nurbsPatch
         self.nurbsShape.geometry=self.nurbsPatch
+        nbLines = float(len(self.nurbsPatch.ctrlPointMatrix))
         for j,linePoint in enumerate(self.nurbsPatch.ctrlPointMatrix):
             lineCtrlPoint = []
-            for i in range(len(linePoint)):
-                ctrlPoint = CtrlPoint(linePoint[i].project(), Pos4Setter(self.nurbsPatch.ctrlPointMatrix,(j,i)))
+            nbCols =  len(linePoint)
+            for i in range(nbCols):
+                ctrlPoint = CtrlPoint(linePoint[i].project(), Pos4Setter(self.nurbsPatch.ctrlPointMatrix,(j,i)),color=(30+int(220*j/nbLines),30+int(220*i/nbCols),250))
                 QObject.connect(ctrlPoint,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
                 lineCtrlPoint.append(ctrlPoint)
             self.ctrlPointMatrix.append(lineCtrlPoint)
