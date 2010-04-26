@@ -1266,7 +1266,7 @@ bool BinaryParser::readExtrusion() {
     }
 	if( __tokens->getVersion() >= 2.2f){
 		IF_GEOM_NOTDEFAULT(_default,5){
-			GEOM_READ_ARRAY(obj->getProfileTransformation()->getKnotList(),RealArray,Real);
+			GEOM_READ_FIELD(obj,InitialNormal,Vector3);
 		}
     }
 
