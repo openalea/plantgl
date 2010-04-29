@@ -332,18 +332,27 @@ Mesh::getFaceCenter( uint_t i ) const
 
 Point3ArrayPtr 
 Mesh::computeNormalPerVertex() const {
+    std::vector<bool> hasNormal(__pointList->size(),false);
     Point3ArrayPtr normalList(new Point3Array(__pointList->size()));
-    for(uint_t j=0; j < getIndexListSize(); j++){
+    uint_t i = 0;
+    uint_t j = 0;
+    for(j=0; j < getIndexListSize(); j++){
         Vector3 _norm = cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0),
                               getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0));
-        for(uint_t i = 0; i < getFaceSize(j); i++){
+        for(i = 0; i < getFaceSize(j); i++){
             uint_t _index = getFacePointIndexAt(j,i);
-            _index,normalList->getAt(_index)+=_norm;
+            normalList->getAt(_index)+=_norm;
+            hasNormal[_index] = true;
         }
+    }
+    for(i=0; i < __pointList->size(); i++) {
+        if(!hasNormal[i] )
+            normalList->setAt(i,Vector3( 1,0,0 ) );
     }
     for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
         _it->normalize();
-	return normalList;
+
+    return normalList;
 }
 
 Point3ArrayPtr 
