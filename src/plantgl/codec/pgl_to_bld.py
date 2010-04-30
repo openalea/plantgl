@@ -1,6 +1,6 @@
 #!BPY
 """ 
-Name: 'PlantGL single mesh'
+Name: 'PlantGL multi shp'
 Blender: 244
 Group: 'Import'
 Tooltip: 'Import from PlantGL scene (.geom)'
