@@ -20,12 +20,13 @@ and vice versa.
 __license__ = "Cecill-C"
 __revision__ = " $Id: $ "
 
-import sys
+import sys, time
+from numpy import array
 import Blender
 from Blender import Scene,Mesh,Material
 from vplants.plantgl.algo import Discretizer
 
-def shp_to_blender (shp, bld_mesh = None) :
+def shp_to_blender (shp, bld_mesh = None, discretizer = None) :
 	"""Create a blender mesh with faces painted with the right color
 	
 	:Parameters:
@@ -41,7 +42,10 @@ def shp_to_blender (shp, bld_mesh = None) :
 		bld_mesh.vertexColors = True
 	
 	#geometry (mesh)
-	d = Discretizer()
+	if discretizer is None:
+		d = Discretizer()
+	else:
+		d = discretizer 
 	shp.geometry.apply(d)
 	geom = d.result
 	
@@ -49,13 +53,13 @@ def shp_to_blender (shp, bld_mesh = None) :
 	ambient = shp.appearance.ambient
 	
 	#append mesh
-	pts = [tuple(vec) for vec in geom.pointList]
+	pts = array(geom.pointList)
 	nb = len(bld_mesh.verts)
-	faces = [tuple(nb + i for i in tup) for tup in geom.indexList]
+	faces = nb + array(geom.indexList)
 	
 	bld_mesh.verts.extend(pts)
 	nb = len(bld_mesh.faces)
-	bld_mesh.faces.extend(faces)
+	bld_mesh.faces.extend(faces.tolist())
 	
 	#set colors
 	for fid in xrange(nb,len(bld_mesh.faces) ) :
@@ -85,11 +89,15 @@ def sc_to_blender (sc) :
 	m.vertexColors = True
 	
 	#fill with shapes
+	t = time.time()	
+	d = Discretizer()
 	for ind,shp in enumerate(sc) :
 		if ind % 10 == 0 :
 			print ind,
 			sys.stdout.flush()
-		shp_to_blender(shp,m)
+		shp_to_blender(shp,m,d)
+	print
+	print 'Time :', time.time() - t
 	
 	#create object
 	bldsc = Scene.GetCurrent()
