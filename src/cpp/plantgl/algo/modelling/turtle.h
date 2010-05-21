@@ -182,7 +182,15 @@ public:
 
 	/// Roll in the right direction of angle degrees
     virtual void rollR(real_t angle)  { rollL(-angle); }
-    
+
+	/// Roll intrinsically in the left direction of angle degrees
+    virtual void iRollL(real_t angle);
+    inline void iRollL() { iRollL(angle_increment); }
+
+	/// Roll intrinsically in the rigth direction of angle degrees
+	virtual void iRollR(real_t angle) { iRollL(-angle); }
+    inline void iRollR() { iRollL(-angle_increment); }
+
 	/// Turn Around turtle
 	inline void turnAround() { left(180); }
 
@@ -432,7 +440,8 @@ protected:
 
 	void _applyTropism();
 
-	void _applyGuide(real_t l);
+	void _applyGuide(real_t& l);
+	void _ajustToGuide();
 
 	void _tendTo(const TOOLS(Vector3)& h,const TOOLS(Vector3)& t, real_t strength = 1.0);
 

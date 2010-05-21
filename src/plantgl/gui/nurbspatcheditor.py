@@ -294,6 +294,7 @@ class NurbsPatchEditor(QGLViewer):
         # patch and control point shpere rendering
         ogl.glPolygonMode(ogl.GL_FRONT_AND_BACK,ogl.GL_FILL)
         ogl.glEnable(ogl.GL_LIGHTING)
+        ogl.glLightModeli(ogl.GL_LIGHT_MODEL_TWO_SIDE, ogl.GL_TRUE)
         ogl.glEnable(ogl.GL_BLEND)
         ogl.glBlendFunc(ogl.GL_SRC_ALPHA,ogl.GL_ONE_MINUS_SRC_ALPHA)
         sc.apply(self.glrenderer)
@@ -353,6 +354,7 @@ class NurbsPatchEditor(QGLViewer):
                 QObject.connect(ctrlPoint,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
                 lineCtrlPoint.append(ctrlPoint)
             self.ctrlPointMatrix.append(lineCtrlPoint)
+        self.setSceneBoundingBox(*self.getBounds())
     
     def clear(self):
         """ clear current edition """

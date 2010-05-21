@@ -640,8 +640,11 @@ void  Viewer::customEvent(QEvent *e){
     ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
     // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
     __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
-    if(!isHidden()&&!__GLFrame->isRedrawEnabled()){
-        if(!isActiveWindow() && __focusAtRefresh) activateWindow();
+    if(!isHidden()&&__GLFrame->isRedrawEnabled()){
+		if(__focusAtRefresh) {
+			activateWindow();
+			raise();
+		}
     }
   }
   else if(e->type() == ViewEvent::eEnd){

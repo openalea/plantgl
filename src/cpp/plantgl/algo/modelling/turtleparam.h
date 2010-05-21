@@ -50,7 +50,7 @@ typedef RCPtr<TurtlePath> TurtlePathPtr;
 /// Class that contains a path parameter that should be followed by the turtle
 class ALGO_API TurtlePath : public TOOLS(RefCountObject){
 public:
-	TurtlePath(real_t totalLength) : __totalLength(totalLength), __actualT(0)  { }
+	TurtlePath(real_t totalLength, real_t actualLength) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __actualT(0)  { }
 	virtual ~TurtlePath();
 
 	virtual bool is2D() const { return true; }
@@ -60,6 +60,8 @@ public:
 	virtual void setPosition(real_t t)  = 0;
 
 	real_t __totalLength;
+	real_t __actualLength;
+	real_t __scale;
 	QuantisedFunctionPtr __arclengthParam;
 	real_t __actualT;
 };
@@ -72,11 +74,17 @@ public:
 	virtual TurtlePathPtr copy() const;
 	virtual void setPosition(real_t t) ;
 	
+	// Path to follow
 	Curve2DPtr __path;
+	// Tell whether path is oriented with Y as first heading or X
 	bool __orientation;
+	// Tell whether the resulting structure is in CCW
 	bool __ccw;
+
+	// Position on the curve
 	TOOLS(Vector2) __lastPosition;
-	TOOLS(Vector2) __lastDirection;
+	// Last direction on the curve
+	TOOLS(Vector2) __lastHeading;
 };
 
 /// Class that contains a 2D path parameter that should be followed by the turtle
@@ -89,11 +97,16 @@ public:
 	
 	virtual bool is2D() const { return false; }
 
+	// 3D Path to follow
 	LineicModelPtr __path;
+
+	// Position on the curve
 	TOOLS(Vector3) __lastPosition;
-	// TOOLS(Vector3) __lastDirection;
-	TOOLS(Vector3) __lastNormal;
-	TOOLS(Vector3) __lastBinormal;
+
+	// Reference frame on the curve
+	TOOLS(Vector3) __lastHeading;
+	TOOLS(Vector3) __lastUp;
+	TOOLS(Vector3) __lastLeft;
 
 };
 

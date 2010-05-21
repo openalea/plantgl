@@ -105,7 +105,7 @@ del __bzpth_copy__
 
 def __bzpth_deepcopy__(self,memo):
     from copy import deepcopy
-    res = NurbsPatch(deepcopy(self.ctrlPointMatrix,memo), self.ustride, self.vstride, self.ccw)
+    res = BezierPatch(deepcopy(self.ctrlPointMatrix,memo), self.ustride, self.vstride, self.ccw)
     if self.isNamed() : res.name = self.name
     return res
 
