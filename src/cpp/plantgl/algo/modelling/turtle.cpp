@@ -672,25 +672,41 @@ void Turtle::_applyTropism() {
 
 void Turtle::_applyGuide(real_t& l) {
 		bool local_ajustement = (fabs(l) < GEOM_EPSILON);
+		real_t current = __params->guide->__actualT;
+		if( current >= 1.0 && !local_ajustement) { 
+			__params->guide = TurtlePathPtr();
+			return;
+		}
 		if(__params->guide->is2D()){ 
 			Turtle2DPath * guide = (Turtle2DPath *)__params->guide.get();
 			// compute position parameter
-			real_t current = guide->__actualT;
 			Vector2 tangent;
 			if (local_ajustement) {
 				// In case of length 0, local tangent is used for redirection.
+				// assert(current < (1.0+GEOM_EPSILON));
 				tangent = guide->__path->getTangentAt(guide->__arclengthParam->getValue(current));
 			}
 			else {
 				// In case of displacement with significant length, direction to next point is used as new direction
 				real_t next = current + (l/guide->__totalLength);
-				if (next > 1.0) { next = 1.0 ; }
+				real_t reminder = next - 1.0;
+				if (reminder > GEOM_EPSILON) { next = 1.0 ; }
+				real_t nextU = guide->__arclengthParam->getValue(next);
 				Vector2 lastpos = guide->__lastPosition;			
-				Vector2 nextpos = guide->__path->getPointAt(guide->__arclengthParam->getValue(next));
-				tangent = nextpos - lastpos;
+				Vector2 nextpos = guide->__path->getPointAt(nextU);
+				// look if an offset is required to take into account the extra length out of the guide
+				real_t offset_length = 0;
+				Vector2 offset;
+				if (reminder > GEOM_EPSILON) {
+					offset_length = l * reminder ;
+					Vector2 endTangent = guide->__path->getTangentAt(nextU) ;
+					endTangent.normalize();
+					offset = endTangent * offset_length; 
+				}
+				tangent = (nextpos + offset) - lastpos ;
 
 				// resize the length to be the equal to euclidian distance between the 2 points on the curve
-				l = tangent.normalize() * guide->__scale;
+				l = (tangent.normalize() * guide->__scale) + offset_length;
 
 				current = next;
 				// save position parameter
@@ -711,11 +727,8 @@ void Turtle::_applyGuide(real_t& l) {
 				__params->heading = m*__params->heading;
 				__params->left = m*__params->left;
 			}
-			if (current <= 1.0){
-				// save position parameter
-				guide->__lastHeading = tangent;
-			}
-			else __params->guide = TurtlePathPtr();
+			// save position parameter
+			guide->__lastHeading = tangent;
 		}
 		else {
 			Turtle3DPath * guide = (Turtle3DPath *)__params->guide.get();
@@ -730,14 +743,25 @@ void Turtle::_applyGuide(real_t& l) {
 			else {
 				// In case of displacement with significant length, direction to next point is used as new direction
 				real_t next = current + (l/guide->__totalLength);
-				if (next > 1.0) { next = 1.0 ; }
+				real_t reminder = next - 1.0;
+				if (reminder > GEOM_EPSILON) { next = 1.0 ; }
 				Vector3 lastpos = guide->__lastPosition;
 				real_t nextU = guide->__arclengthParam->getValue(next);
 				Vector3 nextpos = guide->__path->getPointAt(nextU);
-				tangent =  nextpos - lastpos; 
+				// look if an offset is required to take into account the extra length out of the guide
+				real_t offset_length = 0;
+				Vector3 offset;
+				if (reminder > GEOM_EPSILON) {
+					offset_length = l * reminder ;
+					Vector3 endTangent = guide->__path->getTangentAt(nextU) ;
+					endTangent.normalize();
+					offset = endTangent * offset_length; 
+				}
+
+				tangent =  (nextpos + offset) - lastpos; 
 
 				// resize the length to be the equal to euclidian distance between the 2 points on the curve
-				l = tangent.normalize() * guide->__scale;
+				l = (tangent.normalize() * guide->__scale) + offset_length;
 
 				current = next;
 				// save position parameter
@@ -781,12 +805,9 @@ void Turtle::_applyGuide(real_t& l) {
 				guide->__lastUp.normalize();
 			}
 			
-			if (current <= 1.0) {
-				// save curve parameter
-				guide->__lastHeading = tangent;
-				guide->__actualT = current;
-			}
-			else { __params->guide = TurtlePathPtr(); }
+			// save curve parameter
+			guide->__lastHeading = tangent;
+			guide->__actualT = current;
 		}
 }
 
@@ -904,11 +925,11 @@ void PglTurtle::defaultValue(){
   __appList.push_back(AppearancePtr(new Material("Yellow",Color3(60,60,15),3)));// Yellow
   Point3ArrayPtr points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
   points->setAt(1,Vector3(0,0,0));
-  points->setAt(2,Vector3(-0.25,0,1./3));
-  points->setAt(3,Vector3(-0.25,0,2./3));
+  points->setAt(2,Vector3(0,-0.25,1./3));
+  points->setAt(3,Vector3(0,-0.25,2./3));
   points->setAt(4,Vector3(0,0,1));
-  points->setAt(5,Vector3(0.25,0,2./3.));
-  points->setAt(6,Vector3(0.25,0,1./3.));
+  points->setAt(5,Vector3(0,0.25,2./3.));
+  points->setAt(6,Vector3(0,0.25,1./3.));
   Index3ArrayPtr indices= Index3ArrayPtr(new Index3Array(6));
   indices->setAt(0,Index3(0,2,1));
   indices->setAt(1,Index3(0,3,2));
@@ -917,15 +938,6 @@ void PglTurtle::defaultValue(){
   indices->setAt(4,Index3(0,6,5));
   indices->setAt(5,Index3(0,1,6));
   __surfList["l"] = GeometryPtr(new TriangleSet(points, indices));
-  points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
-  points->setAt(1,Vector3(0,0,0));
-  points->setAt(2,Vector3(0,-0.25,1./3));
-  points->setAt(3,Vector3(0,-0.25,2./3));
-  points->setAt(4,Vector3(0,0,1));
-  points->setAt(5,Vector3(0,0.25,2./3.));
-  points->setAt(6,Vector3(0,0.25,1./3.));
-  __surfList["s"] = GeometryPtr(new TriangleSet(points, indices));
-
 }
 
 /*
@@ -1026,7 +1038,7 @@ PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
        obj = GeometryPtr(new Scaled(getScale(),obj));
   if ( getLeft() != Vector3::OX || 
 	   getUp()   != Vector3::OY )
-       obj = GeometryPtr(new Oriented(getLeft(),getUp(),obj));
+       obj = GeometryPtr(new Oriented(getUp(),-getLeft(),obj));
   if ( getPosition() != Vector3::ORIGIN )
        obj = GeometryPtr(new Translated(getPosition(),obj));
   return obj;
