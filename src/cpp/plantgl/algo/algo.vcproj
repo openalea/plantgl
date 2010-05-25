@@ -198,6 +198,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\base\curvemanipulation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\base\curvemanipulation.h"
+				>
+			</File>
+			<File
 				RelativePath=".\base\discretizer.cpp"
 				>
 			</File>
@@ -219,14 +227,6 @@
 			</File>
 			<File
 				RelativePath=".\base\merge.h"
-				>
-			</File>
-			<File
-				RelativePath=".\base\overlay.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\base\overlay.h"
 				>
 			</File>
 			<File

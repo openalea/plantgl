@@ -94,8 +94,8 @@ void export_Octree();
 void export_PointGrid();
 
 /* ----------------------------------------------------------------------- */
-// Overlay export
-void export_Overlay();
+// CurveManipulation export
+void export_CurveManipulation();
 
 /* ----------------------------------------------------------------------- */
 // Skeleton export
@@ -104,7 +104,5 @@ void export_Skeleton();
 /* ----------------------------------------------------------------------- */
 // Point manip export
 void export_PointManip();
-
-void export_Mesher();
 
 #endif

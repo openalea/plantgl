@@ -8,6 +8,11 @@ def resample(self,nb = 100):
     deltau = self.lastKnot - fk
     self.pointList = [self.getPointAt(fk + deltau*i/nbm1) for i in range(nb)]
 
+def create_loop(a = 0.5,b = 0.2,c = 1,d = 1):
+    p = NurbsCurve2D([(0,0,1),(-c,0,1),(-c,d,1),(a,d,1),(a,b,1),(-a,b,1),(-a,d,1),(c,d,1),(c,0,1),(0,0,1)],stride=100)
+    l = discretize(p)    
+    return  Polyline2D([Vector2(i.x,i.y) for i in l.pointList])
+    
 if not pgl_support_extension('CGAL'):
     import warnings
     warnings.warn("Not supported CGAL extension. Skip skeleton filtering tests.")
@@ -21,7 +26,15 @@ else:
       Viewer.display(p)
       Viewer.add(tr)
 
-
+  def test_removeLoops(visual = False):
+    p = create_loop()
+    res = Skeleton.removeLoopsInShape(p)
+    res.width = 2
+    if visual:
+      Viewer.display(p)
+      Viewer.add(Shape(res,Material((randint(0,255),randint(0,255),randint(0,255)))))
+      
+    
   def test_filter_one_point_branch(visual = False):
     p = Polyline2D([(1,1),(0,2),(-1,1.5),(-0.9,1.4),(-0.85,1.3),(-0.8,1.2),(-0.7,1.3),(0,1.3)])
     skel = Skeleton.getChordalAxisTransform(p,0.0005)

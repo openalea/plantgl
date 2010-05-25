@@ -1,11 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -29,50 +29,47 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file overlay.h
-    \brief Some algorithms to compute overlay between  Geometric Model on points.
-*/
+#include <plantgl/algo/base/curvemanipulation.h>
+#include <plantgl/python/extract_list.h>
 
 /* ----------------------------------------------------------------------- */
 
-#ifndef __actn_overlay_h__
-#define __actn_overlay_h__
+PGL_USING_NAMESPACE
+using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-#include "../algo_config.h"
-#include <plantgl/scenegraph/geometry/polyline.h>
+std::vector<Polyline2DPtr> convert(boost::python::object obj){
+	std::vector<Polyline2DPtr> res;
+	boost::python::extract<Polyline2DPtr> pol_e(obj);
+	if(pol_e.check()) res.push_back(pol_e());
+	else {
+		return extract_vec<Polyline2DPtr>(obj)();
+	}
+}
+
+Point2ArrayPtr py_CurveIntersection_compute(boost::python::object arg){
+	return CurveIntersection::compute(convert(arg));
+}
+
+bool py_CurveIntersection_check(boost::python::object arg){
+	return CurveIntersection::check(convert(arg));
+}
+
+void export_CurveManipulation()
+{
+  class_< Overlay > ("Overlay", no_init)
+    .def("process",&Overlay::process, "compute the overlay between 2 closed polylines. Requires CGAL extension.")
+	.staticmethod("process")
+    ;
+ 
+  class_< CurveIntersection > ("CurveIntersection", no_init)
+    .def("compute",&py_CurveIntersection_compute, "compute the interesection between polylines. Requires CGAL extension.")
+	.staticmethod("compute")
+    .def("check",&py_CurveIntersection_check, "check whether an interesection between polylines exists. Requires CGAL extension.")
+	.staticmethod("check")
+    ;
+ 
+}
 
 /* ----------------------------------------------------------------------- */
-
-PGL_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-
-/**
-   \class Overlay
-   \brief An action which compute overlay between two a \e Geometry objects.
-*/
-
-
-
-class ALGO_API Overlay {
-public:
-	/// Compute the overlay between 2 closed planar polylines.
-	static GeometryPtr process(const Polyline2DPtr&, const Polyline2DPtr&);
-
-};
-
-
-
-
-/* ----------------------------------------------------------------------- */
-
-PGL_END_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-// __actn_overlay_h__
-#endif
-

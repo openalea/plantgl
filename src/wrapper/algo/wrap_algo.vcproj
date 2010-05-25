@@ -182,6 +182,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_curvemanip.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_discretizer.cpp"
 				>
 			</File>
@@ -207,10 +211,6 @@
 			</File>
 			<File
 				RelativePath=".\export_octree.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\export_overlay.cpp"
 				>
 			</File>
 			<File

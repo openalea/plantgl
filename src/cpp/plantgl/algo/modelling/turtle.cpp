@@ -1146,7 +1146,7 @@ PglTurtle::_circle(real_t radius){
 		(getScale().x() == getScale().y() && 
 		 getScale().y() == getScale().z() ))
 		rad *= getScale().x();
-  _addToScene(transform(GeometryPtr(new AxisRotated(Vector3::OX,GEOM_HALF_PI,GeometryPtr(new Disc(rad,getParameters().sectionResolution))))));
+  _addToScene(transform(GeometryPtr(new AxisRotated(Vector3::OY,GEOM_HALF_PI,GeometryPtr(new Disc(rad,getParameters().sectionResolution)) )) ));
 //   __scene->add(Shape(transform(getCircle(radius),false),getCurrentMaterial()));
 }
     

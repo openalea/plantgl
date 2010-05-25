@@ -1,11 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: The Plant Graphic Library
+ *       PlantGL: Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon
  *
  *  ----------------------------------------------------------------------------
  *
@@ -29,23 +29,58 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/algo/base/overlay.h>
-#include <boost/python.hpp>
+/*! \file overlay.h
+    \brief Some algorithms to compute overlay between  Geometric Model on points.
+*/
 
 /* ----------------------------------------------------------------------- */
 
-PGL_USING_NAMESPACE
-using namespace boost::python;
+#ifndef __actn_overlay_h__
+#define __actn_overlay_h__
 
 /* ----------------------------------------------------------------------- */
-void export_Overlay()
-{
-  class_< Overlay > ("Overlay", no_init)
-    .def("process",&Overlay::process, "compute the overlay between 2 closed polylines. Requires CGAL extension.")
-	.staticmethod("process")
-    ;
- 
- 
-}
+
+#include "../algo_config.h"
+#include <plantgl/scenegraph/geometry/polyline.h>
 
 /* ----------------------------------------------------------------------- */
+
+PGL_BEGIN_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+
+
+/**
+   \class Overlay
+   \brief An action which compute overlay between two a \e Geometry objects.
+*/
+
+
+
+class ALGO_API Overlay {
+public:
+	/// Compute the overlay between 2 closed planar polylines.
+	static GeometryPtr process(const Polyline2DPtr&, const Polyline2DPtr&);
+
+};
+
+
+class ALGO_API CurveIntersection {
+public:
+	/// Compute intersection between polylines.
+	static Point2ArrayPtr compute(const std::vector<Polyline2DPtr>& polylines);
+	static bool check(const std::vector<Polyline2DPtr>& polylines);
+};
+
+
+
+
+/* ----------------------------------------------------------------------- */
+
+PGL_END_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
+
+// __actn_overlay_h__
+#endif
+
