@@ -107,6 +107,7 @@ class vector_base_func : public boost::python::def_visitor<vector_base_func<V> >
          .def( -self )
          .def( self / other< real_t >() )
          .def( self * other< real_t >() )
+         .def( other< real_t >() * self )
          .def( self == self )
          .def( self != self )
          .def( self += self )
