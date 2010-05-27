@@ -164,6 +164,7 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 #else
 #warning "CGAL not included. Overlay routine will not work."
 #endif
+	pglError("CGAL not included. Overlay routine will not work.");
 	return GeometryPtr();
 #endif
 
@@ -174,6 +175,7 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 Point2ArrayPtr 
 CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
 {
+#ifdef WITH_CGAL
    // Construct the first arrangement, containing a polyline 1.
 	std::list<Segment_2>   arrs;
    // std::vector<Segment_2> segments;
@@ -191,12 +193,21 @@ CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
    for(std::list<Point_2>::const_iterator itPoints = pts.begin(); itPoints != pts.end(); ++itPoints)
 	   respts->push_back(toVec2(*itPoints));
    return respts;
-
+#else
+#ifdef _MSC_VER
+#pragma message("CGAL not included. CurveIntersection routine will not work.")
+#else
+#warning "CGAL not included. CurveIntersection routine will not work."
+#endif
+	pglError("CGAL not included. CurveIntersection routine will not work.");
+	return Point2ArrayPtr();
+#endif
 }
 
 bool 
 CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 {
+#ifdef WITH_CGAL
    // Construct the first arrangement, containing a polyline 1.
 	std::list<Segment_2>   arrs;
    // std::vector<Segment_2> segments;
@@ -210,5 +221,14 @@ CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
    std::list<Point_2>     pts;
    // check whether an intersection exists
    return CGAL::do_curves_intersect (arrs.begin(), arrs.end());
+#else
+#ifdef _MSC_VER
+#pragma message("CGAL not included. CurveIntersection routine will not work.")
+#else
+#warning "CGAL not included. CurveIntersection routine will not work."
+#endif
+	pglError("CGAL not included. CurveIntersection routine will not work.");
+	return false;
+#endif
 
 }
