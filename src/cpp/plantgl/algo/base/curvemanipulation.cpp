@@ -170,7 +170,9 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 
 }
 
+#ifdef WITH_CGAL
 #include <CGAL/Sweep_line_2_algorithms.h>
+#endif
 
 Point2ArrayPtr 
 CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
