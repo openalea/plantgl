@@ -185,7 +185,8 @@ CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
 	  // Arrangement_2   arr;
       for (Point2Array::const_iterator it1 = (*itLines)->getPointList()->begin()+1; it1 != (*itLines)->getPointList()->end(); ++it1)
 	     // insert_non_intersecting_curve(arrs,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
-		 arrs.push_back(toSegment(*(it1-1),*it1));
+		 if (norm(*(it1-1)-*it1) > GEOM_EPSILON)
+			arrs.push_back(toSegment(*(it1-1),*it1));
 	}
 	
    std::list<Point_2>     pts;
@@ -217,7 +218,8 @@ CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 	  // Arrangement_2   arr;
       for (Point2Array::const_iterator it1 = (*itLines)->getPointList()->begin()+1; it1 != (*itLines)->getPointList()->end(); ++it1)
 	     // insert_non_intersecting_curve(arrs,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
-		 arrs.push_back(toSegment(*(it1-1),*it1));
+		 if (norm(*(it1-1)-*it1) > GEOM_EPSILON)
+			arrs.push_back(toSegment(*(it1-1),*it1));
 	}
 	
    std::list<Point_2>     pts;
