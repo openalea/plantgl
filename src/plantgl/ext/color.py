@@ -499,9 +499,9 @@ class ColorRange (ColorMap) :
 			- `value_range` : (float,float)
 		
 		"""
-		self._value_min=value_range[0]
-		self._value_max=value_range[1]
-		if self._value_min>=self._value_max :
+		self._value_min = float(value_range[0])
+		self._value_max = float(value_range[1])
+		if self._value_min >= self._value_max :
 			raise ValueError("max==min %f" % self._value_max)
 
 	
