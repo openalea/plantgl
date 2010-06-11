@@ -105,8 +105,11 @@ def geometry_to_blender (geom, bld_mesh = None, discretizer = None) :
 		bld_mesh.vertexColors = True
 		
 		#create material to render mesh colors
-		mat = Material.New('toto')
-		mat.mode += Material.Modes['VCOL_PAINT']
+		try :
+			mat = Material.Get("default_vtx_mat")
+		except NameError :
+			mat = Material.New("default_vtx_mat")
+			mat.mode += Material.Modes['VCOL_PAINT']
 		
 		bld_mesh.materials = [mat]
 		
@@ -171,6 +174,12 @@ def shp_to_blender (shp, discretizer = None, mats = {}) :
 	
 	:Returns Type: Object
 	"""
+	#name
+	if shp.isNamed() :
+		name = shp.getName()
+	else :
+		name = "pglshp%d" % shp.getId()
+	
 	#create material
 	app = shp.appearance
 	try :
@@ -183,7 +192,7 @@ def shp_to_blender (shp, discretizer = None, mats = {}) :
 	mesh,mmat = geometry_to_blender(shp.geometry)
 	
 	#create object
-	ob = Object.New('Mesh',"pglshp%d" % shp.getId() )
+	ob = Object.New('Mesh',name)
 	ob.link(mesh)
 	ob.setMaterials([mat])
 	if mmat is None :
