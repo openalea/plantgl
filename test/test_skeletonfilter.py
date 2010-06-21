@@ -18,14 +18,24 @@ if not pgl_support_extension('CGAL'):
     warnings.warn("Not supported CGAL extension. Skip skeleton filtering tests.")
 else:
   def test_triangulation(visual = False):
+    p = Polyline2D([(0,0),(1,0),(0.5,0.5),(1,1),(0,2),(-1,1.5),(-0.9,1.4),(-0.85,1.3),(-0.8,1.2),(-0.7,1.3),(0,1.3),(0,0)])
+    tr = Skeleton.getDelaunayConstrained2DTriangulation(p)
+    print tr.pointList,tr.indexList
+    if visual:
+      p.width = 5
+      Viewer.display(Shape(p,Material((255,0,0))))
+      Viewer.add(tr)
+
+  def test_triangulation_with_default_infinite(visual = False):
     # error with 3rd point as 0.5,0.5 (infinite point for cgal). use 0.4999,0.5 instead
     p = Polyline2D([(0,0),(1,0),(0.5,0.5),(1,1),(0,2),(-1,1.5),(-0.9,1.4),(-0.85,1.3),(-0.8,1.2),(-0.7,1.3),(0,1.3),(0,0)])
     tr = Skeleton.getDelaunayConstrained2DTriangulation(p)
     print tr.pointList,tr.indexList
     if visual:
-      Viewer.display(p)
+      p.width = 5
+      Viewer.display(Shape(p,Material((255,0,0))))
       Viewer.add(tr)
-
+      
   def test_removeLoops(visual = False):
     p = create_loop()
     res = Skeleton.removeLoopsInShape(p)
@@ -75,6 +85,7 @@ else:
 
     
 if __name__ == '__main__':
-    #test_triangulation()
-    test_filter_one_point_branch()
+    test_triangulation(True)
+    #test_removeLoops(True)
+    #test_filter_one_point_branch()
     #test_filter_information()

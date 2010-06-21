@@ -151,7 +151,7 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
     // Max index check
 	  if (*(std::max_element(_it->begin(),_it->end())) >= _pointListSize) {
 	pglErrorEx
-	    (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"IndexList",number(_i+1).c_str(),"Do not represent any point of the list.");
+	    (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),classname.c_str(),"IndexList",number(_i+1).c_str(),(number(*std::max_element(_it->begin(),_it->end()))+" do not represent any point of the list.").c_str());
       }
       // Unique elements check
       else if (! _it->isUnique()) {

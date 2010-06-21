@@ -47,6 +47,9 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 #ifdef WITH_CGAL
+
+// #define CGAL_TRIANGULATION_NO_PRECONDITIONS 1
+
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Triangulation_2.h>
@@ -109,34 +112,19 @@ Point_intersections toPoint_intersections(const Vector2 &v) {  return Point_inte
 class Debug
 {
 public:
+  static const int LEVEL = 3;
 
   static inline void debug(std::string msg, int i = 1)
-  {
-    int N = 3;
-    if (i < N)
-      std::cout << msg << std::endl;
-  }
+  { if (i < LEVEL) std::cout << msg << std::endl; }
 
   static inline void debug(std::string msg, double valueToCheck, int i = 1)
-  {
-    int N = 3;
-    if (i < N)
-      std::cout << msg << " " << valueToCheck << std::endl;
-  }
+  { if (i < LEVEL) std::cout << msg << " " << valueToCheck   << std::endl; }
 
   static inline void debug(std::string msg, int valueToCheck, int i = 1)
-  {
-    int N = 3;
-    if (i < N)
-      std::cout << msg << " " << valueToCheck << std::endl;
-  }
+  { if (i < LEVEL) std::cout << msg << " " << valueToCheck   << std::endl; }
 
   static inline void debug(std::string msg, void* pointerToCheck, int i = 1)
-  {
-    int N = 3;
-    if (i < N)
-      std::cout << msg << " " << pointerToCheck << std::endl;
-  }
+  { if (i < LEVEL) std::cout << msg << " " << pointerToCheck << std::endl; }
 };
 
 ShapePointSet::const_iterator ShapePointSet::findVec(const Vector2& v) const
@@ -992,44 +980,61 @@ void SkelJonction::addBranch(SkelBranchPtr branch)
 
 PGL::Skeleton::Skeleton(const Polyline2DPtr discretizedShape)
 {
-  float xmax = (discretizedShape->getPointListAt(0)).x(), ymax = (discretizedShape->getPointListAt(0)).y();
-  for (int i = 0; i < discretizedShape->getPointListSize(); ++i)
-    {
-      Vector2 v = discretizedShape->getPointListAt(i);
-      if (v.x() > xmax)
-	xmax = v.x();
-      if (v.y() > ymax)
-	ymax = v.y();
-      ShapePointSet::const_iterator it = m_shape.findVec(v);
-      if (it == m_shape.end())
-		m_shape.insert(new ShapePoint(v,i));
-      else
-	Debug::debug("ALREADY INSERTED POINT : continue...",10,10);
-    }
-  init(discretizedShape, Vector2(xmax + 0.5, ymax + 0.5));
+	float xmax = (discretizedShape->getPointListAt(0)).x(); 
+	float ymax = (discretizedShape->getPointListAt(0)).y();
+	for (int i = 0; i < discretizedShape->getPointListSize(); ++i)
+	{
+		Vector2 v = discretizedShape->getPointListAt(i);
+		if (v.x() > xmax) xmax = v.x();
+		if (v.y() > ymax) ymax = v.y();
+		ShapePointSet::const_iterator it = m_shape.findVec(v);
+		if (it == m_shape.end())
+			m_shape.insert(new ShapePoint(v,i));
+		else
+			Debug::debug("ALREADY INSERTED POINT : continue...",10,10);
+	}
+	init(discretizedShape, Vector2(xmax + 0.5, ymax + 0.5));
 }
 
 #ifdef WITH_CGAL
 CDTplus getCGALTriangulation(const Polyline2DPtr discretizedShape, 
-			     const Vector2 infinite_vertex)
+							const Vector2& infinite_vertex)
 {
-  CDTplus cdt;
-  cdt.clear();
-  V_handle va = cdt.insert(toPoint2(discretizedShape->getPointListAt(0)));
-  V_handle vfirst = va;
-  for (int i = 1; i < discretizedShape->getPointListSize(); ++i)
-    {
-      V_handle vb = cdt.insert(toPoint2(discretizedShape->getPointListAt(i)));
-      cdt.insert_constraint(va, vb);
-      va = vb;
-    }
-  if (toPoint2(discretizedShape->getPointListAt(0)) 
-      != toPoint2(discretizedShape->getPointListAt(discretizedShape->getPointListSize()-1)))
-    {
-      cdt.insert_constraint(vfirst,va);
-    }
-  assert(cdt.is_valid());    
-  return cdt;
+	CDTplus cdt;
+	// cdt.clear();
+
+	// insert points and segments as constraints
+	Point2ArrayPtr pointList = discretizedShape->getPointList();
+	V_handle va = cdt.insert(toPoint2(pointList->getAt(0)));
+	V_handle vfirst = va;
+	for(Point2Array::const_iterator itPglPoint = pointList->begin(); 
+		itPglPoint != pointList->end()-1; ++itPglPoint)
+	{
+		V_handle vb = cdt.insert(toPoint2(*itPglPoint));
+		cdt.insert_constraint(va, vb);
+		va = vb;
+	}
+
+	// Check if last point is repeating first one or not
+	Vector2 lastPoint = pointList->getAt(pointList->size()-1);
+	if (norm(pointList->getAt(0) - lastPoint) < GEOM_EPSILON)
+	{   // if first and last are the same, we just connect last-1 to first one
+		cdt.insert_constraint(va,vfirst);
+	}
+	else{
+		// insert last point and connect it to first one
+		V_handle vb = cdt.insert(toPoint2(lastPoint));
+		cdt.insert_constraint(va, vb);
+		va = vb;
+		cdt.insert_constraint(va,vfirst);
+	}
+
+	// infinite vertex
+	// V_handle infinite = cdt.insert(toPoint2(infinite_vertex));
+	// cdt.set_infinite_vertex(infinite);
+
+	assert(cdt.is_valid());    
+	return cdt;
 }
 
 std::pair<V_handle,V_handle> getCGALVerticesDefinedEdge(CDT::Edge ed)
@@ -1157,305 +1162,242 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 }
 #endif
 
-void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2 infinite_vertex)
+inline ShapePointPtr toShapePoint(const Point_2& ppp, 
+								  CDTplus& cdt, 
+								  ShapePointSet& m_shape, 
+								  const ShapePointPtr& infiniteVertexPtr) 
 {
+	ShapePointPtr result = infiniteVertexPtr;
+	Vector2 vvv = toVec2(ppp);
+	ShapePointSet::const_iterator point_it = m_shape.findVec(vvv);
+	if (point_it == m_shape.end())
+	{
+		if (!cdt.is_infinite((V_handle)&ppp))
+		{
+			result = new ShapePoint(vvv, m_shape.size());
+			m_shape.insert(result);
+		}
+	}
+	else result = *point_it;
+	return result;
+}
+
+template<class CgalEdge>
+inline SkelEdgePtr toSkelEdge(const CgalEdge& edge, 
+							  CDTplus& cdt, 
+							  ShapePointSet& m_shape, 
+							  const ShapePointPtr& infiniteVertexPtr)
+{
+
+	ShapePointPtr shPtr1, shPtr2;
+	if(!cdt.is_infinite(edge)){
+		Segment_2 segment = cdt.segment(edge);
+		shPtr1 = toShapePoint(segment.target(), cdt, m_shape, infiniteVertexPtr);
+		shPtr2 = toShapePoint(segment.source(), cdt, m_shape, infiniteVertexPtr);
+	}
+	else
+	 {  // look for one of the vertex being the infinite vertex.
+		V_handle p1 = edge.first->vertex(cdt.ccw(edge.second));
+		if (cdt.is_infinite(p1))
+			shPtr1 =  infiniteVertexPtr;
+		else shPtr1 =  toShapePoint(p1->point(), cdt, m_shape, infiniteVertexPtr);
+		// same test for second vertex of the edge
+		V_handle p2 = edge.first->vertex(cdt.cw(edge.second));
+		if (cdt.is_infinite(p2))
+			shPtr2 =  infiniteVertexPtr;
+		else shPtr2 =  toShapePoint(p2->point(), cdt, m_shape, infiniteVertexPtr);
+		
+	}
+
+	return new SkelEdge(shPtr1, shPtr2, cdt.is_constrained(edge), cdt.is_infinite(edge));
+}
+
+void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2& infinite_vertex)
+{
+
 #ifndef WITH_CGAL
-      pglError("Skeleton::init : Cannot compute skeleton without CGAL!");
-      return;
+	pglError("Skeleton::init : Cannot compute skeleton without CGAL!");
+	return;
 #else
-  if(discretizedShape->getPointListSize() < 3)
-    {
-      pglError("Skeleton::init : Are you kidding me ? Give me more than 3 points to process, because I feel that you insult my intelligence !");
-      return;
-    }
-  CDTplus cdt = getCGALTriangulation(discretizedShape, infinite_vertex); 
-
-  if (m_shape.size() != cdt.number_of_vertices())
-    { 
-      //filterLoopsInShape(&cdt,&m_shape);
-    }
-
-
-  // We get back the result of the triangulation
-  std::stack<SkelTrianglePtr> outOfTheShapeTriangles;
-  CDT::Finite_vertices_iterator it;
-  ShapePointPtr infiniteVertexPtr = new ShapePoint(toVec2((cdt.infinite_vertex())->point()));
-  for (it = cdt.finite_vertices_begin(); it != cdt.finite_vertices_end() ; ++it)
-    {
-      CDT::Edge_circulator ec = cdt.incident_edges(it);
-      CDT::Edge_circulator done = ec;
-      if (ec != 0)
+	if(discretizedShape->getPointListSize() < 3)
 	{
-	  SkelEdgePtr prev_ed, cur_ed;
-	  do
-	    {
-	      ShapePointPtr shPtr1, shPtr2;
-	      ShapePointSet::const_iterator point_it = m_shape.findVec(toVec2((cdt.segment(ec)).target()));
-	      if (point_it == m_shape.end())
-		{
-		  shPtr1 = infiniteVertexPtr;
-		  Point_2 ppp = (cdt.segment(ec)).target();
-		  if (cdt.is_infinite((V_handle)&ppp))
-		    {
-		      Vector2 vvv = toVec2((cdt.segment(ec)).target());
-		      shPtr1 = new ShapePoint(vvv, m_shape.size());
-		      m_shape.insert(shPtr1);
-		    }
-		}
-	      else
-		{
-		  shPtr1 = *point_it;
-		}
-	      
-	      point_it = m_shape.findVec(toVec2((cdt.segment(ec)).source()));
-	      if (point_it == m_shape.end())
-		{
-		  shPtr2 = infiniteVertexPtr;
-		  Point_2 ppp = (cdt.segment(ec)).source();
-		  if (cdt.is_infinite((V_handle)&ppp))
-		    {
-		      Vector2 vvv = toVec2((cdt.segment(ec)).source());
-		      shPtr2 = new ShapePoint(vvv, m_shape.size());
-		      m_shape.insert(shPtr2);
-		    }		
-		}
-	      else
-		{
-		  shPtr2 = *point_it;
-		}
-	      cur_ed = new SkelEdge(shPtr1,
-				    shPtr2,
-				    cdt.is_constrained(*ec),
-				    cdt.is_infinite(ec));
+		pglError("Skeleton::init : Are you kidding me ? Give me more than 3 points to process, because I feel that you insult my intelligence !");
+		return;
+	}
+	CDTplus cdt = getCGALTriangulation(discretizedShape, infinite_vertex); 
 
-	      V_handle opp_p2_vhandle = getEdgeTarget(*ec,it);
-	      Point_2 opp_p2 = opp_p2_vhandle->point();
 
-	      CDT::Edge_circulator ec_p = ec;
-	      while (++ec_p != done)
+	// We get back the result of the triangulation
+	std::stack<SkelTrianglePtr> outOfTheShapeTriangles;
+
+	// ShapePointPtr infiniteVertexPtr = new ShapePoint(toVec2((cdt.infinite_vertex())->point()));
+	ShapePointPtr infiniteVertexPtr = new ShapePoint(infinite_vertex);
+	// m_shape.insert(infiniteVertexPtr);
+
+	CDT::Finite_vertices_iterator it;
+	for (it = cdt.finite_vertices_begin(); 
+		 it != cdt.finite_vertices_end() ; ++it)
+	{
+		CDT::Edge_circulator ec = cdt.incident_edges(it);
+		CDT::Edge_circulator done = ec;
+		if (ec != 0)
 		{
-		  point_it = m_shape.findVec(toVec2((cdt.segment(ec_p)).target()));
-		  if (point_it == m_shape.end())
-		    {
-		      shPtr1 = infiniteVertexPtr; // infinite vertex
-		      Point_2 ppp = (cdt.segment(ec_p)).target();
-		      if (cdt.is_infinite((V_handle)&ppp))
+			SkelEdgePtr previous_edge, current_edge, last_edge ;
+			do
 			{
- 			  Vector2 vvv = toVec2((cdt.segment(ec_p)).target());
-			  shPtr1 = new ShapePoint(vvv, m_shape.size());
-			  m_shape.insert(shPtr1);
-			}
-		    }
-		  else
-		    {
-		      shPtr1 = *point_it;
-		    }
-		  
-		  point_it = m_shape.findVec(toVec2((cdt.segment(ec_p)).source()));
-		  if (point_it == m_shape.end())
-		    {
-		      shPtr2 = infiniteVertexPtr;
-		      Point_2 ppp = (cdt.segment(ec_p)).source();
-		      if (cdt.is_infinite((V_handle)&ppp))
-			{
-			  Vector2 vvv = toVec2((cdt.segment(ec_p)).source());
-			  shPtr2 = new ShapePoint(vvv, m_shape.size());
-			  m_shape.insert(shPtr2);
-			}
-		    }
-		  else
-		    {
-		      shPtr2 = *point_it;
-		    }
+				// first edge of the skeleton
+				current_edge = toSkelEdge(*ec, cdt, m_shape, infiniteVertexPtr);
 
-		  prev_ed = new SkelEdge(shPtr1,
-					 shPtr2,
-					 cdt.is_constrained(*ec_p),
-					 cdt.is_infinite(ec_p));
-		  
-		  V_handle opp_p1_vhandle = getEdgeTarget(*ec_p,it);
-		  Point_2 opp_p1 = opp_p1_vhandle->point();
-		  
-		  TDS::Face_handle face_handle3;
-		  if (cdt.is_face(opp_p1_vhandle, opp_p2_vhandle, it, face_handle3))
-		    {
-		      // so a triangle does exist with 
-		      // edges prev_ed, cur_ed, and SkelEdge(opp_p1,opp_p2)
-		      TDS::Face_handle fh_ed;
-		      int i_ed;
-		      if (cdt.is_edge(opp_p1_vhandle, opp_p2_vhandle, fh_ed, i_ed))
-			{
-			  TDS::Edge ec_opp2 ;
-			  ec_opp2.first = fh_ed;
-			  ec_opp2.second = i_ed;
-			  point_it = m_shape.findVec(toVec2((cdt.segment(ec_opp2)).target()));
-			  if (point_it == m_shape.end())
-			    {
-			      shPtr1 = infiniteVertexPtr; // infinite vertex
-			      Point_2 ppp = (cdt.segment(ec_opp2)).target();
-			      if (cdt.is_infinite((V_handle)&ppp)) 
+				// get opposite point of it of edge ec_p
+				V_handle opp_p2_vhandle = getEdgeTarget(*ec,it);
+				Point_2 opp_p2 = opp_p2_vhandle->point();
+
+				CDT::Edge_circulator ec_p = ec;
+				while (++ec_p != done)
 				{
-				  Vector2 vvv = toVec2((cdt.segment(ec_opp2)).target());
-				  shPtr1 = new ShapePoint(vvv, m_shape.size());
-				  m_shape.insert(shPtr1);
+					// second edge of the skeleton
+					previous_edge = toSkelEdge(*ec_p, cdt,  m_shape, infiniteVertexPtr);
+
+					// get opposite point of it of edge ec_p
+					V_handle opp_p1_vhandle = getEdgeTarget(*ec_p,it);
+					Point_2 opp_p1 = opp_p1_vhandle->point();
+
+					TDS::Face_handle face_handle3;
+					if (cdt.is_face(opp_p1_vhandle, opp_p2_vhandle, it, face_handle3))
+					{
+						// so a triangle does exist with 
+						// edges prev_ed, cur_ed, and SkelEdge(opp_p1,opp_p2)
+
+						TDS::Face_handle fh_ed;
+						int i_ed;
+						if (cdt.is_edge(opp_p1_vhandle, opp_p2_vhandle, fh_ed, i_ed))
+						{
+							TDS::Edge ec_opp2 ;
+							ec_opp2.first = fh_ed;
+							ec_opp2.second = i_ed;
+
+							// last edge of the skeleton
+							SkelEdgePtr last_edge = toSkelEdge(ec_opp2, cdt,  m_shape, infiniteVertexPtr);
+
+							SkelTriangle cur_tri = SkelTriangle(previous_edge, current_edge, last_edge);
+
+							if ((cur_tri.area() != 0))
+							{
+
+								/// Insert edges
+								current_edge  = *(m_allEdges.insert(current_edge).first);
+								previous_edge = *(m_allEdges.insert(previous_edge).first);
+								last_edge     = *(m_allEdges.insert(last_edge).first);
+
+								/// Create Triangle
+								SkelTrianglePtr triangle = new SkelTriangle(previous_edge,
+																			current_edge,
+																			last_edge,
+																			cdt.is_infinite(face_handle3));
+
+								/// Insert triangle
+								std::pair<SkelTriangleSet::iterator, bool> 
+								     res_insertion_triangle = (m_allTriangles.insert(triangle));
+
+								triangle = *res_insertion_triangle.first;
+								bool inserted =  res_insertion_triangle.second;
+
+								/// Connect triangle to edge
+								previous_edge->addAdjTri(triangle.get());
+								last_edge->addAdjTri(triangle.get());
+								current_edge ->addAdjTri(triangle.get());
+
+								// If it is infinite, should be start of removal
+								if (inserted && triangle->m_infinite)
+									outOfTheShapeTriangles.push(triangle);
+							}
+						}
+					}
 				}
-			    }
-			  else
-			    {
-			      shPtr1 = *point_it;
-			    }
-			  
-			  point_it = m_shape.findVec(toVec2((cdt.segment(ec_opp2)).source()));
-			  if (point_it == m_shape.end())
-			    {
-			      shPtr2 = infiniteVertexPtr;
-			      Point_2 ppp = (cdt.segment(ec_opp2)).source();
-			      if (cdt.is_infinite((V_handle)&ppp))
-				{
-				  Vector2 vvv = toVec2((cdt.segment(ec_opp2)).source());
-				  shPtr2 = new ShapePoint(vvv, m_shape.size());
-				  m_shape.insert(shPtr2);
-				}			   
-			    }
-			  else
-			    {
-			      shPtr2 = *point_it;
-			    }
-
-			  SkelEdgePtr last_ed = new SkelEdge(shPtr1,
-							     shPtr2,
-							     cdt.is_constrained(ec_opp2),
-							     cdt.is_infinite(ec_opp2));
-			  SkelTriangle cur_tri = SkelTriangle(prev_ed, cur_ed, last_ed);
-			  
-			  if ((cur_tri.area() != 0))
-			    {
-			      SkelEdgeSet::iterator edge_it;
-			      std::pair<SkelEdgeSet::iterator, bool> res_insertion;
-			      SkelEdgePtr toInsert = new SkelEdge(*cur_ed);
-			      res_insertion = (m_allEdges.insert(toInsert));
-			      edge_it = res_insertion.first;
-			      bool inserted = res_insertion.second;
-			      SkelEdgePtr cur_ed_ptr = *edge_it;
-			      
-			      toInsert = new SkelEdge(*prev_ed);
-			      
-			      res_insertion = (m_allEdges.insert(toInsert));
-			      
-			      edge_it = res_insertion.first;
-			      inserted = res_insertion.second;
-			      
-			      SkelEdgePtr prev_ed_ptr = *edge_it;
-			      
-			      toInsert = new SkelEdge(*last_ed);
-			      res_insertion = (m_allEdges.insert(toInsert));
-			      edge_it = res_insertion.first;
-			      inserted = res_insertion.second;
-			      SkelEdgePtr last_ed_ptr = *edge_it;
-			      
-			      SkelTrianglePtr toInsertTriangle = new SkelTriangle(prev_ed_ptr,
-										  last_ed_ptr,
-										  cur_ed_ptr,
-										  cdt.is_infinite(face_handle3));
-			      std::pair<SkelTriangleSet::iterator, bool> res_insertion_triangle;
-			      SkelTriangleSet::iterator tria_it;
-			      res_insertion_triangle = (m_allTriangles.insert(toInsertTriangle));
-			      tria_it = res_insertion_triangle.first;
-			      inserted =  res_insertion_triangle.second;
-			      SkelTrianglePtr tri_ptr = *tria_it;
-			      
-			      prev_ed_ptr->addAdjTri(tri_ptr.get());
-			      last_ed_ptr->addAdjTri(tri_ptr.get());
-			      cur_ed_ptr ->addAdjTri(tri_ptr.get());
-			      if (inserted && tri_ptr->m_infinite)
-				outOfTheShapeTriangles.push(tri_ptr);
-			    }
 			}
-		    }
+			while (++ec != done);
 		}
-	    }
-	  while (++ec != done);
-	}
-      
-    }
-  printf("test0\n");
 
-  Debug::debug("size outOfTheShapeTriangles : ",(int)outOfTheShapeTriangles.size(),10);
-  Debug::debug("size m_allTriangles : ",(int)m_allTriangles.size(),10);
+	}
 
-  // We must eliminate all the faces and edges outside our shape 
-  // We will check on infinite edges 
+	Debug::debug("size outOfTheShapeTriangles : ",(int)outOfTheShapeTriangles.size(),10);
+	Debug::debug("size m_allTriangles : ",(int)m_allTriangles.size(),10);
 
-  while (!outOfTheShapeTriangles.empty())
-    {
-      SkelTrianglePtr toErase = outOfTheShapeTriangles.top();
-      outOfTheShapeTriangles.pop();
-      if ((!toErase->m_e1->m_infinite) && (toErase->m_e1->m_type == SkelEdge::INTERIOR))
+	// We must eliminate all the faces and edges outside our shape 
+	// We will check on infinite edges 
+
+
+	while (!outOfTheShapeTriangles.empty())
 	{
-	  if ((((toErase->m_e1)->m_adjTri1) != 0)&&(*((toErase->m_e1)->m_adjTri1) == *toErase))
-	    {
-	      if ((toErase->m_e1)->m_adjTri2 != 0 )
+		SkelTrianglePtr toErase = outOfTheShapeTriangles.top();
+		outOfTheShapeTriangles.pop();
+		if ((!toErase->m_e1->m_infinite) && (toErase->m_e1->m_type == SkelEdge::INTERIOR))
 		{
-		  if ((m_allTriangles.find((toErase->m_e1)->m_adjTri2) != m_allTriangles.end())
-		      && !(((toErase->m_e1)->m_adjTri2)->m_infinite))
-		    outOfTheShapeTriangles.push((toErase->m_e1)->m_adjTri2);
+			if ((((toErase->m_e1)->m_adjTri1) != 0)&&(*((toErase->m_e1)->m_adjTri1) == *toErase))
+			{
+				if ((toErase->m_e1)->m_adjTri2 != 0 )
+				{
+					if ((m_allTriangles.find((toErase->m_e1)->m_adjTri2) != m_allTriangles.end())
+						&& !(((toErase->m_e1)->m_adjTri2)->m_infinite))
+						outOfTheShapeTriangles.push((toErase->m_e1)->m_adjTri2);
+				}
+			}
+			else 
+			{
+				if ((toErase->m_e1)->m_adjTri1 != 0 )
+				{
+					if ((m_allTriangles.find((toErase->m_e1)->m_adjTri1) != m_allTriangles.end())
+						&& !(((toErase->m_e1)->m_adjTri1)->m_infinite))
+						outOfTheShapeTriangles.push((toErase->m_e1)->m_adjTri1);
+				}
+			}
 		}
-	    }
-	  else 
-	    {
-	      if ((toErase->m_e1)->m_adjTri1 != 0 )
+		if ((!toErase->m_e2->m_infinite) && (toErase->m_e2->m_type == SkelEdge::INTERIOR))
 		{
-		  if ((m_allTriangles.find((toErase->m_e1)->m_adjTri1) != m_allTriangles.end())
-		      && !(((toErase->m_e1)->m_adjTri1)->m_infinite))
-		    outOfTheShapeTriangles.push((toErase->m_e1)->m_adjTri1);
+			if ((((toErase->m_e2)->m_adjTri1)!=0)&&(*((toErase->m_e2)->m_adjTri1) == *toErase))
+			{
+				if ((toErase->m_e2)->m_adjTri2 != 0 )
+				{
+					if ((m_allTriangles.find((toErase->m_e2)->m_adjTri2) != m_allTriangles.end())
+						&& !(((toErase->m_e2)->m_adjTri2)->m_infinite))
+						outOfTheShapeTriangles.push((toErase->m_e2)->m_adjTri2);
+				}
+			}
+			else 
+			{
+				if ((toErase->m_e2)->m_adjTri1 != 0 )
+				{
+					if ((m_allTriangles.find((toErase->m_e2)->m_adjTri1) != m_allTriangles.end())
+						&& !(((toErase->m_e2)->m_adjTri1)->m_infinite))
+						outOfTheShapeTriangles.push((toErase->m_e2)->m_adjTri1);
+				}
+			}
 		}
-	    }
+		if ((!toErase->m_e3->m_infinite) && (toErase->m_e3->m_type == SkelEdge::INTERIOR))
+		{
+			if ((((toErase->m_e3)->m_adjTri1) != 0)&&(*((toErase->m_e3)->m_adjTri1) == *toErase))
+			{
+				if ((toErase->m_e3)->m_adjTri2 != 0 )
+				{
+					if ((m_allTriangles.find((toErase->m_e3)->m_adjTri2) != m_allTriangles.end())
+						&& !(((toErase->m_e3)->m_adjTri2)->m_infinite))
+						outOfTheShapeTriangles.push((toErase->m_e3)->m_adjTri2);
+				}
+			}
+			else
+			{
+				if ((toErase->m_e3)->m_adjTri1 != 0 )
+				{
+					if ((m_allTriangles.find((toErase->m_e3)->m_adjTri1) != m_allTriangles.end())
+						&& !(((toErase->m_e3)->m_adjTri1)->m_infinite))
+						outOfTheShapeTriangles.push((toErase->m_e3)->m_adjTri1);
+				}
+			}
+		}
+		m_allTriangles.skelErase(toErase);
 	}
-      if ((!toErase->m_e2->m_infinite) && (toErase->m_e2->m_type == SkelEdge::INTERIOR))
-	{
-	  if ((((toErase->m_e2)->m_adjTri1)!=0)&&(*((toErase->m_e2)->m_adjTri1) == *toErase))
-	    {
-	      if ((toErase->m_e2)->m_adjTri2 != 0 )
-		{
-		  if ((m_allTriangles.find((toErase->m_e2)->m_adjTri2) != m_allTriangles.end())
-		      && !(((toErase->m_e2)->m_adjTri2)->m_infinite))
-		    outOfTheShapeTriangles.push((toErase->m_e2)->m_adjTri2);
-		}
-	    }
-	  else 
-	    {
-	      if ((toErase->m_e2)->m_adjTri1 != 0 )
-		{
-		  if ((m_allTriangles.find((toErase->m_e2)->m_adjTri1) != m_allTriangles.end())
-		      && !(((toErase->m_e2)->m_adjTri1)->m_infinite))
-		    outOfTheShapeTriangles.push((toErase->m_e2)->m_adjTri1);
-		}
-	    }
-	}
-      if ((!toErase->m_e3->m_infinite) && (toErase->m_e3->m_type == SkelEdge::INTERIOR))
-	{
-	  if ((((toErase->m_e3)->m_adjTri1) != 0)&&(*((toErase->m_e3)->m_adjTri1) == *toErase))
-	    {
-	      if ((toErase->m_e3)->m_adjTri2 != 0 )
-		{
-		  if ((m_allTriangles.find((toErase->m_e3)->m_adjTri2) != m_allTriangles.end())
-		      && !(((toErase->m_e3)->m_adjTri2)->m_infinite))
-		    outOfTheShapeTriangles.push((toErase->m_e3)->m_adjTri2);
-		}
-	    }
-	  else
-	    {
-	      if ((toErase->m_e3)->m_adjTri1 != 0 )
-		{
-		  if ((m_allTriangles.find((toErase->m_e3)->m_adjTri1) != m_allTriangles.end())
-		      && !(((toErase->m_e3)->m_adjTri1)->m_infinite))
-		    outOfTheShapeTriangles.push((toErase->m_e3)->m_adjTri1);
-		}
-	    }
-	}
-      m_allTriangles.skelErase(toErase);
-    }
-  Debug::debug("number of triangles : ",(int)m_allTriangles.size(),10);
+	
+	Debug::debug("number of triangles : ",(int)m_allTriangles.size(),10);
 #endif
 }
 
@@ -3042,31 +2984,31 @@ void PGL::Skeleton::reorganizeBranchesAndJonctionsAfterFiltering(SkelBranchPtr b
 
 TriangleSetPtr PGL::Skeleton::getTriangleSet()
 {
-  SkelTriangleSet::iterator it;
-  std::list<Index3> indices_list;
-  for (it = m_allTriangles.begin(); it != m_allTriangles.end(); it ++)
-    {
-      Index3 i;
-      Vector2 e1 = (*it)->m_e1->m_p1->m_vec - (*it)->m_e1->m_p2->m_vec ;
-      Vector2 e2 = (*it)->m_e1->m_p1->m_vec - (*it)->m_e2->m_p2->m_vec ;
-      float cp = e1.x()*e2.y() - e2.x() * e1.y();
-      if (cp > 0) 
-	i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e1->m_p2->m_ind, (*it)->m_e2->m_p2->m_ind);
-      else
-	i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e2->m_p2->m_ind, (*it)->m_e1->m_p2->m_ind);
-      indices_list.push_back(i);
-    }
-  Index3ArrayPtr indices = new Index3Array(indices_list.begin(), indices_list.end()); 
+	SkelTriangleSet::iterator it;
+	std::list<Index3> indices_list;
+	for (it = m_allTriangles.begin(); it != m_allTriangles.end(); it ++)
+	{
+		Index3 i;
+		Vector2 e1 = (*it)->m_e1->m_p1->m_vec - (*it)->m_e1->m_p2->m_vec ;
+		Vector2 e2 = (*it)->m_e1->m_p1->m_vec - (*it)->m_e2->m_p2->m_vec ;
+		float cp = e1.x()*e2.y() - e2.x() * e1.y();
+		if (cp > 0) 
+			i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e1->m_p2->m_ind, (*it)->m_e2->m_p2->m_ind);
+		else
+			i = Index3((*it)->m_e1->m_p1->m_ind, (*it)->m_e2->m_p2->m_ind, (*it)->m_e1->m_p2->m_ind);
+		indices_list.push_back(i);
+	}
+	Index3ArrayPtr indices = new Index3Array(indices_list.begin(), indices_list.end()); 
 
-  std::list<Vector3> point_list;
-  ShapePointSet::iterator iitt;
-  for(iitt = m_shape.begin(); iitt != m_shape.end(); iitt++ )
-    {
-      Vector3 v = Vector3((*iitt)->x(), (*iitt)->y(), 0);
-      point_list.push_back(v);
-    }
-  TriangleSetPtr res = new TriangleSet(new Point3Array(point_list.begin(),point_list.end()),indices);
-  return res;
+	std::list<Vector3> point_list;
+	ShapePointSet::iterator iitt;
+	for(iitt = m_shape.begin(); iitt != m_shape.end(); iitt++ )
+	{
+		Vector3 v = Vector3((*iitt)->x(), (*iitt)->y(), 0);
+		point_list.push_back(v);
+	}
+	TriangleSetPtr res = new TriangleSet(new Point3Array(point_list.begin(),point_list.end()),indices);
+	return res;
 }
 
 #ifdef WITH_CGAL

@@ -20,7 +20,7 @@ def addRowToPatch(patch,row,decal):
     r = cpoints.getRow(row)
     r = [p+decal for p in r]
     cpoints2 = Point4Matrix(cpoints)
-    cpoints2.insertRow(row,r)
+    cpoints2.insertRow(row+1,r)
     return NurbsPatch(cpoints2)
 
 def addColumnToPatch(patch,col,decal):
@@ -29,7 +29,7 @@ def addColumnToPatch(patch,col,decal):
     r = cpoints.getColumn(col)
     r = [p+decal for p in r]
     cpoints2 = Point4Matrix(cpoints)
-    cpoints2.insertColumn(col,r)
+    cpoints2.insertColumn(col+1,r)
     return NurbsPatch(cpoints2)
 
 
@@ -212,6 +212,8 @@ class NurbsPatchEditor(QGLViewer):
                 self.createSelectionManipulator()
                 for index in selectedPoints:
                     self.selectionManipulator.add(self.ctrlPointMatrix[index[0]][index[1]])
+            else:
+                self.clearSelectionManipulator()                
                 
     def mouseMoveEvent(self,event):
         """ mouseMoveEvent """ 
@@ -360,7 +362,8 @@ class NurbsPatchEditor(QGLViewer):
         """ clear current edition """
         for ctrlPointRow in self.ctrlPointMatrix:
             for cCtrlPoint in ctrlPointRow:
-                QObject.disconnect(cCtrlPoint,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
+                if not cCtrlPoint is None:
+                    QObject.disconnect(cCtrlPoint,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
         self.ctrlPointMatrix = []
         self.clearSelectionManipulator()
 

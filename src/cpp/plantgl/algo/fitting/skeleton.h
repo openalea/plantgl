@@ -458,7 +458,7 @@ class ALGO_API Skeleton
   Skeleton(Polyline2DPtr discretizedShape);
 
  protected:
-  void init(const Polyline2DPtr discretizedShape, const Vector2 infinite_vertex);
+  void init(const Polyline2DPtr discretizedShape, const Vector2& infinite_vertex);
   TriangleSetPtr getTriangleSet();
   std::list<Polyline2DPtr> getChordalAxisTransform();
   void filterLittleBranchesOnBranchSize(const double sizeMaxBranchesToRemove);
