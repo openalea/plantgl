@@ -1160,7 +1160,6 @@ void filterLoopsInShape(CDTplus * cdt, ShapePointSet * shape)
 	}
     }
 }
-#endif
 
 inline ShapePointPtr toShapePoint(const Point_2& ppp, 
 								  CDTplus& cdt, 
@@ -1211,6 +1210,8 @@ inline SkelEdgePtr toSkelEdge(const CgalEdge& edge,
 
 	return new SkelEdge(shPtr1, shPtr2, cdt.is_constrained(edge), cdt.is_infinite(edge));
 }
+#endif
+
 
 void PGL::Skeleton::init(const Polyline2DPtr discretizedShape, const Vector2& infinite_vertex)
 {
