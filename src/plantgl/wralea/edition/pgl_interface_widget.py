@@ -24,8 +24,9 @@ from PyQt4 import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
-from openalea.plantgl.gui.curvee2Dditor import Curve2DEditor, Curve2DConstraint, FuncConstraint
-from pgl_interface import ICurve2D
+from openalea.plantgl.gui.curve2deditor import Curve2DEditor, Curve2DConstraint, FuncConstraint
+from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
+from pgl_interface import ICurve2D, INurbsPatch
 
 class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):
     """
@@ -112,4 +113,95 @@ class Curve2DWidget(NodeWidget, Curve2DEditor):
                 crv = ICurve2D.default()
         
             self.setCurve(crv)
+        
+
+#####################################################################
+# NurbsPatch Editor
+
+class INurbsPatchWidget(IInterfaceWidget, NurbsPatchEditor):
+    """
+    NurbsPatch Interface widget
+    """
+
+    # Corresponding Interface & Metaclass
+    __interface__ = INurbsPatch
+    __metaclass__ = make_metaclass()
+
+    def __init__(self, node, parent, parameter_str, interface):
+        """
+        @param parameter_str : the parameter key the widget is associated to
+        @param interface : instance of interface object
+        """
+        NurbsPatchEditor.__init__(self, parent)
+        IInterfaceWidget.__init__(self, node, parent, parameter_str, interface)
+        
+        self.notify(node, None)
+        
+        self.connect(self, QtCore.SIGNAL("valueChanged()"), \
+                     self.valueChanged)
+
+    @lock_notify      
+    def valueChanged(self):
+        """ update value """
+        from copy import deepcopy
+        self.node.set_input(self.param_str, deepcopy(self.getNurbsPatch()))
+
+    def notify(self, sender, event):
+        """ Notification sent by node """
+        try:
+            crv = self.node.get_input(self.param_str)
+            if crv is None:
+                crv = INurbsPatch.default()
+        except:
+            crv = INurbsPatch.default()
+            
+        self.setNurbsPatch(crv)
+
+
+
+class NurbsPatchWidget(NodeWidget, NurbsPatchEditor):
+    """
+    NurbsPatchEditor widget
+    """
+
+
+    def __init__(self, node, parent):
+        """
+        """
+        NurbsPatchEditor.__init__(self, parent)
+        NodeWidget.__init__(self, node)
+        
+        self.notify(node, ('input_modified',))
+        
+        self.connect(self, QtCore.SIGNAL("valueChanged()"), \
+                     self.valueChanged)
+        
+        self.window().setWindowTitle(node.get_caption())
+
+    @lock_notify      
+    def valueChanged(self):
+        """ update value """
+        patch = self.getNurbsPatch()
+        self.node.set_input(0, patch)
+
+    def notify(self, sender, event):
+        """ Notification sent by node """
+        if event[0] == 'caption_modified':
+            self.window().setWindowTitle(event[1])
+            
+        if event[0] == 'input_modified':
+            state = self.node.get_input_state(0)
+            try:
+                notconnected = bool(state != "connected")
+                self.setEnabled(notconnected)
+            except:
+                pass
+            
+            try:
+                crv = self.node.get_input(0)
+            except:
+                crv = INurbsPatch.default()
+            if not crv:
+                crv = INurbsPatch.default()
+            self.setNurbsPatch(crv)
         

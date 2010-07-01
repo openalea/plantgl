@@ -11,7 +11,7 @@ __institutes__ = 'INRIA/CIRAD'
 __description__ = 'PlantGL Edition nodes.'
 __url__ =  'http://openalea.gforge.inria.fr'
 
-__all__ = ['curve2d']
+__all__ = ['curve2d', 'nurbs']
 
 curve2d = Factory( name= "Curve2D", 
                   description= "Display and edition of a curve 2D", 
@@ -22,6 +22,18 @@ curve2d = Factory( name= "Curve2D",
                   widgetclass = "Curve2DWidget",
                   inputs=(dict(name="curve", interface=ICurve2D,),),
                   outputs=(dict(name="curve", interface=ICurve2D,),),
+                  lazy = False
+                  )
+
+nurbs= Factory( name= "NurbsPatch", 
+                  description= "Display and edition of a Nurbs Patch", 
+                  category = "Visualisation, Edition", 
+                  nodemodule = "pgl_edition_node",
+                  nodeclass = "nurbs",
+                  widgetmodule = "pgl_interface_widget",
+                  widgetclass = "NurbsPatchWidget",
+                  inputs=(dict(name="nurbs", interface=INurbsPatch,),),
+                  outputs=(dict(name="nurbs",),),
                   lazy = False
                   )
 

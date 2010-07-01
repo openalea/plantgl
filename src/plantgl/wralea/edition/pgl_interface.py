@@ -1,7 +1,7 @@
 # -*- python -*-
 #
 #
-#       Copyright 2006-2009 INRIA - CIRAD - INRA  
+#       Copyright 2006-2010 INRIA - CIRAD - INRA  
 #
 #       File author(s): Pradal, Boudon, Barbeau 
 #
@@ -11,19 +11,18 @@
 # 
 #       OpenAlea WebSite : http://openalea.gforge.inria.fr
 #
-"""declaration of pix interface and its widget """
+"""declaration of curve2D interface and its widget """
 
 __license__ = "Cecill-C"
 __revision__ = " $Id: interface.py 2245 2010-02-08 17:11:34Z cokelaer $"
 
 from openalea.core.interface import IInterface, IInterfaceMetaClass
-from openalea.plantgl.scenegraph import Curve2D, NurbsCurve2D
+from openalea.plantgl.scenegraph import Curve2D, NurbsCurve2D, NurbsPatch
 
 class ICurve2D(IInterface) :
     """
     interface for different curves 2D
     """
-    __metaclass__ = IInterfaceMetaClass
     __pytype__ = Curve2D
     def __init__ (self,func_constraint = False, **kargs) :
         IInterface.__init__(self, **kargs)
@@ -37,6 +36,23 @@ class ICurve2D(IInterface) :
     def __repr__(self):
         return 'ICurve2D(func_constraint=%s)' % self.func_constraint
 
+
+class INurbsPatch(IInterface) :
+    """
+    interface for Nurbs
+    """
+    __pytype__ = NurbsPatch
+    def __init__ (self,nurbs= None, **kargs) :
+        IInterface.__init__(self, **kargs)
+        self.nurbs=nurbs 
+        
+    @classmethod
+    def default(cls):
+        return NurbsPatch([[(j-1.5,i-1.5,0,1) for j in range(4)] for i in range(4)])
+
+
+    def __repr__(self):
+        return 'INurbsPatch(nurbs=%s)' % self.nurbs
 
 
 
