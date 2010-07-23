@@ -56,7 +56,8 @@ DEF_POINTEE(MultiSpectral)
 void export_Appearance()
 {
   class_< Appearance, AppearancePtr, bases< SceneObject >,  boost::noncopyable >
-    ("Appearance", "Abstract base class for all appearance objects.", no_init);
+    ("Appearance", "Abstract base class for all appearance objects.", no_init)
+	.def("isTexture",&Appearance::isTexture,"Tell wether self is of type texture");
 }
 
 void export_Spectrum()

@@ -126,8 +126,8 @@ ImageTexture::ImageTexture(   const std::string& filename,
   GEOM_ASSERT(isValid());
 }
 
-  ImageTexture::ImageTexture( const std::string& filename,
-                    const std::string& name,
+  ImageTexture::ImageTexture( const std::string& name,
+                    const std::string& filename,
                     bool mipmaping,
                     const Color3& ambient,
                     const real_t& diffuse,
@@ -174,4 +174,14 @@ string& ImageTexture::getFilename( ) {
 
 bool ImageTexture::isTexture() const {
   return true;
+}
+
+bool ImageTexture::isSimilar(const Material& other) const
+{
+	if (!other.isTexture()) return false;
+	if (!Material::isSimilar(other)) return false;
+	ImageTexture * texture = (ImageTexture *)&other;
+	if (__filename != texture->__filename) return false;
+	if (__mipmaping != texture->__mipmaping) return false;
+	return true;
 }

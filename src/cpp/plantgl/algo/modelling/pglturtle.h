@@ -82,6 +82,8 @@ public:
     
     void setMaterial(size_t pos, const AppearancePtr& mat);
 
+    void insertMaterial(size_t pos, const AppearancePtr& mat);
+
     AppearancePtr getMaterial(size_t pos);
 
     void appendColor(uint_t red, uint_t green, uint_t blue);

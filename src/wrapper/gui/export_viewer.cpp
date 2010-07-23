@@ -581,6 +581,10 @@ void export_viewer()
     .staticmethod("winId") 
 	.def("setDialogAbortFunc",&pySetDialogAbortFunc,args("func"),"Set a function that return true if dialog should abort")
     .staticmethod("setDialogAbortFunc") 
+    .def("saveSnapshot",&saveImage1)
+    .def("saveSnapshot",&saveImage2)
+    .def("saveSnapshot",&ViewerApplication::saveImage,"saveImage(str filename, str type='PNG', bool withAlpha = False). Compatibility with PyQGLViewer.", args("filename","type","withAlpha"))
+    .staticmethod("saveSnapshot")
     ;
 
   export_camera();

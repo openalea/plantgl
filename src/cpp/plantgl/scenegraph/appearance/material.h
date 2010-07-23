@@ -202,7 +202,7 @@ public:
   /// Returns whether \e self id valid.
   virtual bool isValid( ) const;
 
-  bool isSimilar(const Material&) const;
+  virtual bool isSimilar(const Material&) const;
 
 protected:
 

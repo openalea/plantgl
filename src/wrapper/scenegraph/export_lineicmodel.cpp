@@ -49,14 +49,16 @@ DEF_POINTEE( LineicModel )
 DEF_POINTEE( Curve2D )
 DEF_POINTEE( Disc )
 
-object lm_findclosest(LineicModel * lm, Vector3 point)
+template<class CurveT, class VectorT>
+object lm_findclosest(CurveT * lm, VectorT point)
 {
     real_t u;
-    Vector3 res = lm->findClosest(point,&u);
+    VectorT res = lm->findClosest(point,&u);
     return make_tuple(res,u);
 }
 
-object seg_findclosest(Vector3 point, Vector3 segA, Vector3 segB)
+template<class VectorT>
+object seg_findclosest(VectorT point, VectorT segA, VectorT segB)
 {
     real_t u;
     real_t dist = closestPointToSegment(point,segA,segB,&u);
@@ -90,7 +92,7 @@ void export_LineicModel()
     .def( "getPointAt", &getCurveValue<LineicModel,Vector3,&LineicModel::getPointAt>, args("u") )
     .def( "getTangentAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getTangentAt>, args("u") )
     .def( "getNormalAt", &getCurveDerivativeValue<LineicModel,Vector3,&LineicModel::getNormalAt>, args("u") )
-	.def( "findClosest", &lm_findclosest, args("point"), "findClosest(point) : return closestpoint, u" )
+	.def( "findClosest", &lm_findclosest<LineicModel,Vector3>, args("point"), "findClosest(point) : return closestpoint, u" )
     .def( "getLength", (real_t (LineicModel::*)()const)&LineicModel::getLength )
     .def( "getLength", (real_t (LineicModel::*)(real_t)const)&LineicModel::getLength, args("begin") )
     .def( "getLength", (real_t (LineicModel::*)(real_t,real_t)const)&LineicModel::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
@@ -101,7 +103,7 @@ void export_LineicModel()
 
   implicitly_convertible<LineicModelPtr, PrimitivePtr>();
 
-  def("closestPointToSegment",&seg_findclosest, args("point","segA","segB"));
+  def("closestPointToSegment",&seg_findclosest<Vector3>, args("point","segA","segB"));
 }
 
 
@@ -122,8 +124,10 @@ void export_Curve2D()
     .def( "getLength", (real_t (Curve2D::*)(real_t,real_t) const)&Curve2D::getLength, args("begin","end"), "getLength([begin,end]) : Return length of the curve from u = begin to u = end." )
     .def( "getArcLengthToUMapping", &Curve2D::getArcLengthToUMapping,"getArcLengthToUMapping() : Return a function that gives for each arc length the u parametrization of the curve." )
     .def( "getUToArcLengthMapping", &Curve2D::getUToArcLengthMapping,"getUToArcLengthMapping() : Return a function that gives for each u the arc length parametrization of the curve." )
+	.def( "findClosest", &lm_findclosest<Curve2D,Vector2>, args("point"), "findClosest(point) : return closestpoint, u" )
     ;
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();
 
+  def("closestPointToSegment",&seg_findclosest<Vector2>, args("point","segA","segB"));
 }

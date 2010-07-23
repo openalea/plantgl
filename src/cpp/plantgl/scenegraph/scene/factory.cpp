@@ -152,6 +152,7 @@ SceneFactory::read(const std::string& fname)
 				}
 			}
 	}
+	pglError("Cannot find codec to read scene in '%s'.",fname.c_str());
 	if(get_cwd() != cwd) chg_dir(cwd);
 	return ScenePtr();
 }
@@ -159,15 +160,18 @@ SceneFactory::read(const std::string& fname)
 void SceneFactory::write(const std::string& fname,const ScenePtr& scene)
 {
 	std::string cwd = get_cwd();
+	bool done = false;
 	for(CodecList::reverse_iterator it = __codecs.rbegin();
 		it !=__codecs.rend(); ++it){
 			if ((*it)->__mode & SceneCodec::Write){
 				if((*it)->test(fname,SceneCodec::Write)){
 					(*it)->write(fname,scene);
+					done = true;
 					break;
 				}
 			}
 	}
+	if (!done) pglError("Cannot find codec to write scene in '%s'.",fname.c_str());
 	if(get_cwd() != cwd) chg_dir(cwd);
 }
 
@@ -188,8 +192,9 @@ SceneFactory::read(const std::string& fname, const std::string& codecname)
 	if (codec) // && codec->test(fname,SceneCodec::Read))
 		return codec->read(fname);
     else {
-        if (!codec) std::cerr << "Cannot find codec : '" << codecname << "'" << std::endl;
-        else std::cerr << "Incompatible codec : '" << codecname << "'" << std::endl;
+        // if (!codec) 
+			pglError("Cannot find codec : '%s'.",codecname.c_str());
+        // else std::cerr << "Incompatible codec : '" << codecname << "'" << std::endl;
         return ScenePtr();
     }
 }
@@ -201,8 +206,9 @@ SceneFactory::write(const std::string& fname,const ScenePtr& scene, const std::s
 	if (codec) // && codec->test(fname,SceneCodec::Write))
 		codec->write(fname,scene);
     else {
-        if (!codec) std::cerr << "Cannot find codec : '" << codecname << "'" << std::endl;
-        else std::cerr << "Incompatible codec : '" << codecname << "'" << std::endl;
+        // if (!codec) 
+		pglError("Cannot find codec : '%s'.",codecname.c_str() );
+        // else std::cerr << "Incompatible codec : '" << codecname << "'" << std::endl;
     }
 }
 

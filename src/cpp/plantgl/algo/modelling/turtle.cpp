@@ -918,11 +918,11 @@ PglTurtle::getSurfaceList() const {
 void PglTurtle::defaultValue(){
   __appList.clear();
   __surfList.clear();
-  __appList.push_back(AppearancePtr(new Material("default")));
-  __appList.push_back(AppearancePtr(new Material("Brown",Color3(65,45,15),3))); // Brown
-  __appList.push_back(AppearancePtr(new Material("Green",Color3(30,60,10),3))); // Green
-  __appList.push_back(AppearancePtr(new Material("Red",Color3(60,0,0),3)));     // Red
-  __appList.push_back(AppearancePtr(new Material("Yellow",Color3(60,60,15),3)));// Yellow
+  __appList.push_back(AppearancePtr(new Material("Color_0")));
+  __appList.push_back(AppearancePtr(new Material("Color_1",Color3(65,45,15),3))); // Brown
+  __appList.push_back(AppearancePtr(new Material("Color_2",Color3(30,60,10),3))); // Green
+  __appList.push_back(AppearancePtr(new Material("Color_3",Color3(60,0,0),3)));     // Red
+  __appList.push_back(AppearancePtr(new Material("Color_4",Color3(60,60,15),3)));// Yellow
   Point3ArrayPtr points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
   points->setAt(1,Vector3(0,0,0));
   points->setAt(2,Vector3(0,-0.25,1./3));
@@ -949,9 +949,12 @@ void PglTurtle::plot() const{
 void PglTurtle::appendMaterial(const AppearancePtr& mat)
 { if(mat)__appList.push_back(mat); }
 
+void PglTurtle::insertMaterial(size_t pos, const AppearancePtr& mat)
+{ if(mat)__appList.insert(__appList.begin()+pos,mat); }
+
 void PglTurtle::setMaterial(size_t pos, const AppearancePtr& mat){
   while (__appList.size() < pos)
-    __appList.push_back(AppearancePtr(new Material("Default")));
+    __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(pos)))));
   if (__appList.size() == pos)
     __appList.push_back(mat);
   else __appList[pos] = mat;
@@ -959,18 +962,20 @@ void PglTurtle::setMaterial(size_t pos, const AppearancePtr& mat){
 
 AppearancePtr PglTurtle::getMaterial(size_t pos){
     if (pos >= __appList.size()) {
-        while (__appList.size() <= pos)
-        __appList.push_back(AppearancePtr(new Material("Default")));
+		size_t i = __appList.size();
+		while (i <= pos)
+			__appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
     }
     return __appList[pos];
 }
 
 void PglTurtle::setColorAt(size_t pos, const Color3& mat){
-  while (__appList.size() < pos)
-    __appList.push_back(AppearancePtr(new Material("Default")));
+  size_t i = __appList.size();
+  while (i < pos)
+    __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
   if (__appList.size() == pos)
-    __appList.push_back(AppearancePtr(new Material(mat)));
-  else __appList[pos] = AppearancePtr(new Material(mat));
+    __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(__appList.size())),mat)));
+  else __appList[pos] = AppearancePtr(new Material("Color_"+TOOLS(number(pos)),mat));
 }
 
 void 
@@ -1014,13 +1019,13 @@ GeometryPtr PglTurtle::getSurface(const string& name){
 AppearancePtr PglTurtle::getCurrentMaterial() const{
    if (getColor() < __appList.size())
             return __appList[getColor()];
-   else return AppearancePtr(new Material("Default"));
+   else return AppearancePtr(new Material("Color_"+TOOLS(number(getColor()))));
 }
 
 AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
    if (__params->initialColor < __appList.size())
             return __appList[__params->initialColor];
-   else return AppearancePtr(new Material("Default"));
+   else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initialColor))));
 }
 
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)

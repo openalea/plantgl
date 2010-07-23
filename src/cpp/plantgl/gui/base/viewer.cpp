@@ -37,6 +37,7 @@
 #endif
 
 // #include <qdragobject.h>
+#include <QtCore/QPointer>
 #include <QtGui/qapplication.h>
 #include <QtGui/qstatusbar.h>
 #include <QtGui/qprogressbar.h>
@@ -878,11 +879,11 @@ void Viewer::post(QEvent * e) {
 }
 
 
-QMessageBox * ViewerMessageBox = 0;
+QPointer<QMessageBox> ViewerMessageBox = 0;
 
 void Viewer::closeEvent ( QCloseEvent * e)
 {
-  if(ViewerMessageBox&&ViewerMessageBox->isVisible()){
+  if(!ViewerMessageBox.isNull()&&ViewerMessageBox->isVisible()){
         ViewerMessageBox->close();
         // in case python thread is locked
         send_lock_mutex.unlock();
@@ -1130,18 +1131,20 @@ Viewer::question(const QString& caption, const QString& text,
   activateWindow();
   ViewerMessageBox->show();
   bool aborting = false;
-  while(ViewerMessageBox->isVisible()) {
+  while(!ViewerMessageBox.isNull() && ViewerMessageBox->isVisible()) {
 	  assert(qApp != NULL);
 	  qApp->processEvents();
 	  if (!aborting){
 		  aborting = shouldAbortDialog();
 		  if(aborting) {
 			  ViewerMessageBox->reject();
+			  qApp->processEvents();
 		  }
 	  }
   }
-  delete ViewerMessageBox;
-  ViewerMessageBox = NULL;
+  if(!ViewerMessageBox.isNull()){
+	  delete ViewerMessageBox;
+  }
 }
 
 void

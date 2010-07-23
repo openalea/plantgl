@@ -70,12 +70,10 @@ real_t QuantisedFunction::getValue(real_t x) const
     if (x < __firstx) x = __firstx;
     else if (x > __lastx) x = __lastx;
   if (!(x > __firstx - GEOM_EPSILON)){
-     std::cerr << x << ' ' << __firstx << std::endl;
-     assert( x > __firstx - GEOM_EPSILON );
+	  pglError("QuantisedFunction : x=%f < firstX=%f.",x,__firstx);
   }
   if (!(x < __lastx + GEOM_EPSILON)){
-      std::cerr << x << ' ' << __lastx << std::endl;
-      assert(x < __lastx + GEOM_EPSILON);
+	  pglError("QuantisedFunction : x=%f > lastX=%f.",x,__lastx);
   }
 
 
@@ -94,7 +92,7 @@ real_t QuantisedFunction::getValue(real_t x) const
 real_t QuantisedFunction::findX(real_t y, bool& found, real_t startingX) const 
 {
   assert(isValid());
-  assert(__firstx <= startingX && startingX < __lastx);
+  pglError("QuantisedFunction : x=%f not in [%f, %f].",startingX,__firstx,__lastx);
   uint_t startingI = getIndex(startingX) + 1;
   if (startingI >= __sampling) return -1;
   for(uint_t i = startingI; i < __sampling; ++i)
@@ -173,7 +171,7 @@ void QuantisedFunction::computeCache(const Curve2DPtr& curve)
 
 real_t QuantisedFunction::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
 {
-    assert(check(curve));
+	if (!check(curve)) pglError("QuantisedFunction : not a valid curve to quantized.");
     return _computeValue(curve,x,maxerror);
 }
 

@@ -215,3 +215,56 @@ QuantisedFunctionPtr Curve2D::getUToArcLengthMapping() const
 
 /* ----------------------------------------------------------------------- */
 
+Vector2 
+Curve2D::findClosest(const Vector2& p, real_t* ui) const{
+  real_t u0 = getFirstKnot();
+  real_t u1 = getLastKnot();
+  real_t deltau = (u1 - u0)/getStride();
+  Vector2 p1 = getPointAt(u0);
+  Vector2 res = p1;
+  real_t dist = normSquared(p-res);
+  Vector2 p2, pt;
+  real_t lu;
+  for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
+    p2 = getPointAt(u);
+	pt = p;
+	real_t d = closestPointToSegment(pt,p1,p2,&lu);
+	if(d < dist){
+	  dist = d;
+	  res = pt;
+      if (ui != NULL) *ui = u + deltau * (lu -1);
+	}
+    p1 = p2;
+  }
+  return res;
+}
+
+real_t 
+PGL(closestPointToSegment)(Vector2& p, 
+					       const Vector2& segA,
+					       const Vector2& segB,
+                           real_t* u)
+{
+  Vector2 diff = p - segA;
+  Vector2 M = segB - segA;
+  real_t t = dot(M,diff);
+  if(t > 0){
+	real_t dotMM = dot(M,M);
+	if(t < dotMM){
+	  t = t / dotMM;
+	  diff -= M*t;
+	  p = segA + M*t;
+	}
+	else {
+	  t = 1;
+	  diff -= M;
+	  p = segB;
+	}
+  }
+  else {
+	t = 0;
+	p = segA;
+  }
+  if (u != NULL) *u = t;
+  return dot(diff,diff);
+}

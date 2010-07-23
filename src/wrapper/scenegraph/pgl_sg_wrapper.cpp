@@ -46,6 +46,7 @@ void py_error_handler(const std::string& msg, const char * fname, int lineno){
 	PythonInterpreterAcquirer py;
 	PyErr_SetString(PyExc_ValueError, msg.c_str() );
 	PyErr_Print();
+	// boost::python::throw_error_already_set();
 }
 
 void py_warning_handler(const std::string& msg, const char * fname, int lineno){

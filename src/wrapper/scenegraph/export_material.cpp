@@ -54,14 +54,14 @@ DEF_POINTEE(ImageTexture)
 std::string mat_str(Material * m){
   std::stringstream ss;
   ss << "Material(";
-  if(m->isNamed()) ss << "'" << m->getName() << "',";
-  ss << COL3PRINT(m->getAmbient()) << ','
-      << m->getDiffuse() << ','
-      << COL3PRINT(m->getSpecular()) << ','
-      << COL3PRINT(m->getEmission()) << ','
-      << m->getShininess() << ','
-      << m->getTransparency() << ')'
-      ;
+  if(m->isNamed()) ss << "name='" << m->getName() << "',";
+  if(!m->isAmbientToDefault())  ss << "ambient=" << COL3PRINT(m->getAmbient()) << ',';
+  if(!m->isDiffuseToDefault())  ss << "diffuse=" << m->getDiffuse() << ',';
+  if(!m->isSpecularToDefault()) ss << "specular=" << COL3PRINT(m->getSpecular()) << ',';
+  if(!m->isEmissionToDefault()) ss << "emission=" << COL3PRINT(m->getEmission()) << ',';
+  if(!m->isShininessToDefault()) ss << "shininess=" << m->getShininess() << ',';
+  if(!m->isTransparencyToDefault()) ss << "transparency=" << m->getTransparency() ;
+  ss << ')' ;
   return ss.str();
 }
 
@@ -123,14 +123,16 @@ void export_Material()
 std::string tex_str(ImageTexture * m){
   std::stringstream ss;
   ss << "ImageTexture(";
-  if(m->isNamed()) ss << "'" << m->getName() << "',";
-  ss << "'" << m->getFilename() << "'," << (m->getMipmaping()?"True":"False") << ','
-     << COL3PRINT(m->getAmbient()) << ','
-     << m->getDiffuse() << ','
-     << COL3PRINT(m->getSpecular()) << ','
-     << COL3PRINT(m->getEmission()) << ','
-     << m->getShininess() << ','
-     << m->getTransparency() << ')'
+  if(m->isNamed()) ss << "name='" << m->getName() << "',";
+  ss << "filename='''" << m->getFilename() << "'''";
+  if(!m->isMipmapingToDefault())  ss << ", mipmaping=" << (m->getMipmaping()?"True":"False");
+  if(!m->isAmbientToDefault())  ss << ", ambient=" << COL3PRINT(m->getAmbient());
+  if(!m->isDiffuseToDefault())  ss << ", diffuse=" << m->getDiffuse();
+  if(!m->isSpecularToDefault()) ss << ", specular=" << COL3PRINT(m->getSpecular());
+  if(!m->isEmissionToDefault()) ss << ", emission=" << COL3PRINT(m->getEmission());
+  if(!m->isShininessToDefault()) ss << ", shininess=" << m->getShininess();
+  if(!m->isTransparencyToDefault()) ss << ", transparency=" << m->getTransparency() ;
+  ss << ')' ;
      ;
   return ss.str();
 }

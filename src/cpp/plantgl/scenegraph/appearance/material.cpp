@@ -292,10 +292,11 @@ bool Material::isTransparencyToDefault( ) const {
 
 bool Material::isSimilar(const Material& other) const
 {
-    return __ambient == other.__ambient    &&
-           __diffuse == other.__diffuse   &&
-           __specular == other.__specular &&
-           __emission == other.__emission &&
+    return isTexture() == other.isTexture() &&
+		   __ambient == other.__ambient     &&
+           __diffuse == other.__diffuse     &&
+           __specular == other.__specular   &&
+           __emission == other.__emission   &&
            __shininess == other.__shininess &&
            __transparency == other.__transparency;
 }

@@ -102,8 +102,8 @@ public:
             const real_t& transparency = DEFAULT_TRANSPARENCY);
 
   /// constructor.
-  ImageTexture(  const std::string& filename,
-            const std::string& name,
+  ImageTexture(  const std::string& name,
+            const std::string& filename,
             bool mipmaping = DEFAULT_MIPMAPING,
             const Color3& ambient = DEFAULT_AMBIENT,
             const real_t& diffuse = DEFAULT_DIFFUSE,
@@ -136,6 +136,8 @@ public:
   virtual bool isValid( ) const;
 
   virtual bool isTexture() const;
+
+  virtual bool isSimilar(const Material&) const;
 
 protected:
 
