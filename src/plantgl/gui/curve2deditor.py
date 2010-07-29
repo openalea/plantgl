@@ -103,6 +103,7 @@ class Bezier2DAccessor (Curve2DAccessor):
         if  nbp > self.minpointnb() and not index in [0,nbp-1]:
             del self.curve.ctrlPointList[index]
             self.setKnotList()
+            self.strides = len(self.curve.ctrlPointList) * 10
     def findClosest(self,p):
         ctrlpolyline = Polyline(self.curve.ctrlPointList)
         lp,u = ctrlpolyline.findClosest(Vector3(p,1))
@@ -175,13 +176,13 @@ class Curve2DEditor (QGLViewer):
     def init(self):
         self.defaultColor = self.backgroundColor()
         self.updateSceneDimension()
-        self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
-        self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
-        self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.ControlModifier)
-        self.setMouseBinding(Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-        self.setMouseBinding(Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
-        self.setMouseBinding(Qt.ControlModifier + Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
-        self.setMouseBinding(Qt.ControlModifier + Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+        #self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
+        #self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
+        #self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.ControlModifier)
+        self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+        self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+        self.setMouseBinding(Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+        self.setMouseBinding(Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
         self.camera().setUpVector(Vec(0,1,0))
         self.camera().setType(Camera.ORTHOGRAPHIC)
         self.camConstraint = WorldConstraint()
@@ -297,7 +298,19 @@ class Curve2DEditor (QGLViewer):
     def pointOnEditionPlane(self,pos):
         orig,direction = self.camera().convertClickToLine(pos)
         npoint = orig+direction*(orig[2]/(-direction[2]))
-        return (npoint[0],npoint[1])        
+        return (npoint[0],npoint[1])
+    def setInteractionMode(self,frame=True):
+        if frame:
+                self.setMouseBinding(Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+        else:
+                self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+            
     def mousePressEvent(self,event):
         if event.modifiers()  != Qt.ControlModifier:
             self.select(event.pos())
@@ -307,8 +320,11 @@ class Curve2DEditor (QGLViewer):
                 self.manipulator.setPosition(Vec(p[0],p[1],0))
                 self.setManipulatedFrame(self.manipulator)
                 self.createControlPointsRep()
+                self.setInteractionMode(True)
                 self.updateGL()
-            QGLViewer.mousePressEvent(self,event)
+                QGLViewer.mousePressEvent(self,event)
+            else:
+                QGLViewer.mousePressEvent(self,event)
         else:
             return QGLViewer.mousePressEvent(self,event)
     def mouseDoubleClickEvent(self,event):
@@ -342,7 +358,9 @@ class Curve2DEditor (QGLViewer):
         else:
             QGLViewer.mouseDoubleClickEvent(self,event)
     def mouseReleaseEvent(self,event):
-        self.selection = -1
+        if self.selection != -1:
+                self.selection = -1
+                self.setInteractionMode(False)
         self.createControlPointsRep()
         self.updateSceneDimension()
         self.updateGL()

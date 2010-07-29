@@ -45,7 +45,6 @@ using namespace boost::python;
 DEF_POINTEE(Transformed)
 DEF_POINTEE(MatrixTransformed)
 DEF_POINTEE(OrthoTransformed)
-DEF_POINTEE(IFS)
 
 template<class T>
 GeometryPtr tr_geometry(T * obj) { return obj->getGeometry(); }
