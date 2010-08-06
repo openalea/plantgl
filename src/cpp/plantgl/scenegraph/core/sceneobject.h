@@ -210,6 +210,17 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
     virtual SceneObjectPtr copy(DeepCopier&) const; \
 	public: \
 
+#define PGL_OBJECT_PROPERTY(PROPNAME,PROPTYPE) \
+	inline const PROPTYPE& get##PROPNAME() const { return __##PROPNAME; } \
+	inline PROPTYPE& get##PROPNAME() { return __##PROPNAME; } \
+	protected: \
+    PROPTYPE __##PROPNAME; \
+	public:
+
+#define PGL_OBJECT_PROPERTY_WITH_DEFAULT(PROPNAME,PROPTYPE,DEFAULTPROPVALUE) \
+	PGL_OBJECT_PROPERTY(PROPNAME,PROPTYPE) \
+	inline bool is##PROPNAME##ToDefault() const { return __##PROPNAME == DEFAULTPROPVALUE; }
+
 /* ------------------------------------------------------------------------- */
 
 PGL_END_NAMESPACE;

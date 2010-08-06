@@ -383,7 +383,8 @@ bool PovPrinter::process( Material * material ) {
 
 
 /* ----------------------------------------------------------------------- */
-bool PovPrinter::process( ImageTexture * texture ) {
+bool PovPrinter::process( Texture2D * texture ) {
+
   GEOM_ASSERT(texture);
 
   __texture = texture->getName();
@@ -394,17 +395,47 @@ bool PovPrinter::process( ImageTexture * texture ) {
 
   GEOM_POVPRINT_BEG_(__matStream,"pigment");
 
-  GEOM_POVPRINT_BEG_(__matStream,"uv_mapping image_map");
+  if(texture->getImage())
+	texture->getImage()->apply(*this);
 
-  __matStream << __indent << "png \"" << texture->getFilename() << '"' << endl;;
-
-  GEOM_POVPRINT_END_(__matStream);
+  if(texture->getTransformation())
+	  texture->getTransformation()->apply(*this);
 
   GEOM_POVPRINT_END_(__matStream);
 
   GEOM_POVPRINT_END_(__matStream);
 
   __tesselator.computeTexCoord(true);
+
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+bool PovPrinter::process( ImageTexture * texture ) {
+
+  GEOM_ASSERT(texture);
+
+  GEOM_POVPRINT_BEG_(__matStream,"uv_mapping image_map");
+
+  __matStream << __indent << "png \"" << texture->getFilename() << '"' << endl;;
+
+  GEOM_POVPRINT_END_(__matStream);
+
+
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+bool PovPrinter::process( Texture2DTransformation * texturetransfo ) {
+
+  GEOM_ASSERT(texturetransfo);
+
+  __matStream << __indent << "scale ";
+  Vector2 sc = texturetransfo->getScale();
+  GEOM_POVPRINT_VECTOR3(__matStream,Vector3(1,sc.x(),sc.y()));
+
 
   return true;
 }

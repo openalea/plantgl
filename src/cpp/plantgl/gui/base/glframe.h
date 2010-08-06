@@ -73,6 +73,7 @@ class ViewRendererGL;
 class ViewErrorDialog;
 class ViewEvent;
 #include "util_qwidget.h"
+#include "flags.h"
 // #include "zbuffer.h"
 class ViewRayBuffer;
 class ViewZBuffer;
@@ -139,6 +140,8 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   /// return the current background color.
   const QColor& getBackGroundColor() const;
+
+  /// return the current line width.
   real_t getLineWidth() const { return __linewidth; }
 
   /// Create Edit menu that reflect the functionality of this.
@@ -265,7 +268,7 @@ public slots:
 
   void glNormalization(bool b);
 
-  void animation(bool b);
+  void setAnimation(eAnimationFlag b);
 
   void useOcclusionQuery(bool b);
 

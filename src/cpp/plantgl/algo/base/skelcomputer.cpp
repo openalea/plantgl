@@ -592,6 +592,20 @@ bool SkelComputer::process( ImageTexture * texture ) {
   return false;
 }
 
+bool SkelComputer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __skeleton = PolylinePtr();
+  return false;
+}
+
+bool SkelComputer::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __skeleton = PolylinePtr();
+  return false;
+}
+
 bool SkelComputer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   // nothing to do

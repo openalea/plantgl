@@ -112,7 +112,7 @@ ViewGeomSceneGL::getSelectionSurface()
   real_t surface = 0;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(_it.value()->apply(_sfc))
+	  if(get_item_value(_it)->apply(_sfc))
 		surface += _sfc.getSurface();
   return surface;
 }
@@ -124,7 +124,7 @@ real_t ViewGeomSceneGL::getSelectionVolume()
   real_t volume = 0;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(_it.value()->apply(_vfc))
+	  if(get_item_value(_it)->apply(_vfc))
 		volume += _vfc.getVolume();
   return volume;
 }
@@ -313,10 +313,11 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 	  TextLabel2->setAlignment(Qt::AlignHCenter);
 	  TextLabel2->setGeometry( QRect( 178, 20, 190, 30 ) );
 	  SelectionCache::const_iterator _it = __selectedShapes.begin();
-      QString listid = QString::number(_it.value()->getId()==Shape::NOID?_it.key():_it.value()->getId());
+  
+	  QString listid = QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
 	  for(_it++;_it != __selectedShapes.end();_it++)
-			listid += ','+QString::number(_it.value()->getId()==Shape::NOID?_it.key():_it.value()->getId());
-		  
+			listid += ','+QString::number(get_item_value(_it)->getId()==Shape::NOID?get_item_key(_it):get_item_value(_it)->getId());
+
 	  TextLabel2->setText( listid );
 
 	  TextLabel = new QLabel( tab2 );
@@ -488,6 +489,7 @@ ViewGeomSceneGL::createToolsMenu(QWidget * parent)
   menu->addSeparator();
   QMenu * __displayMenu = new QMenu(menu);
   QAction * act = __displayMenu->addAction(tr("Enable"),    this,SLOT(changeDisplayListUse()));
+  act->setCheckable(true);
   act->setChecked(getDisplayListUse());
   QObject::connect(this,SIGNAL(displayList(bool)),act,SLOT(setChecked(bool)));
   __displayMenu->addSeparator();

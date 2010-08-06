@@ -142,6 +142,32 @@ Shape::Shape( const string& name,
     setName(name);
 }
 
+Shape::Shape( const GeometryPtr& _geom,
+                      const ImageTexturePtr& _app,
+                      uint_t _id,
+                      uint_t _parentId) :
+    Shape3D(),
+    appearance(new Texture2D(_app)),
+    geometry(_geom),
+    id(_id),
+    parentId(_parentId){
+    if(id == NOID)id = getSceneObjectId();
+    setComputedName();
+}
+
+Shape::Shape( const string& name,
+					  const GeometryPtr& _geom,
+                      const ImageTexturePtr& _app,
+                      uint_t _id,
+                      uint_t _parentId) :
+    Shape3D(),
+    appearance(new Texture2D(_app)),
+    geometry(_geom),
+    id(_id),
+    parentId(_parentId) {
+    if(id == NOID)id = getSceneObjectId();
+    setName(name);
+}
 Shape::~Shape() {
 #ifdef GEOM_DEBUG
     cerr <<"Shape " <<  __name << " destroyed" << endl;

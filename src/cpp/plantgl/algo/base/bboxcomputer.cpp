@@ -923,6 +923,20 @@ bool BBoxComputer::process( ImageTexture * texture ) {
   return false;
 }
 
+bool BBoxComputer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do as it cannot compute the bounding box of such an object
+  __bbox = BoundingBoxPtr();
+  return false;
+}
+
+bool BBoxComputer::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do as it cannot compute the bounding box of such an object
+  __bbox = BoundingBoxPtr();
+  return false;
+}
+
 bool BBoxComputer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   // nothing to do as it cannot compute the bounding box of such an object

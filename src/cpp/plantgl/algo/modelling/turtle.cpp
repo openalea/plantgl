@@ -178,16 +178,36 @@ TurtlePathPtr Turtle3DPath::copy() const
 { return TurtlePathPtr(new Turtle3DPath(*this)); }
 
 /*----------------------------------------------------------*/
+TurtleDrawParameter::TurtleDrawParameter():
+  color(1),
+  crossSection(),
+  crossSectionCCW(true),
+  texCoordScale(1,1),
+  texCoordTranslation(0,0),
+  texCoordRotCenter(0.5,0.5),
+  texCoordRotAngle(0)
+{
+}
+
+void TurtleDrawParameter::reset(){
+  color = 1;
+  texCoordScale = Vector2(1,1);
+  texCoordTranslation = Vector2(0,0);
+  texCoordRotCenter = Vector2(0.5,0.5);
+  texCoordRotAngle = 0;
+  crossSection = Curve2DPtr();
+  crossSectionCCW = true;
+}
+
 
 TurtleParam::TurtleParam() :
+  TurtleDrawParameter(),
   position(0,0,0),
   heading(0,0,1),
   left(0,-1,0),
   up(1,0,0),
   scale(1,1,1),
   lastId(Shape::NOID),
-  color(1),
-  texture(0),
   width(0.1f),
   tropism(0,0,1),
   elasticity(0),
@@ -195,7 +215,8 @@ TurtleParam::TurtleParam() :
   __generalizedCylinder(false),
   customId(Shape::NOID),
   customParentId(Shape::NOID),
-  sectionResolution(Cylinder::DEFAULT_SLICES)
+  sectionResolution(Cylinder::DEFAULT_SLICES),
+  initial()
 {        
 }
 
@@ -203,6 +224,7 @@ TurtleParam::~TurtleParam() {}
 
 void 
 TurtleParam::reset(){
+  TurtleDrawParameter::reset();
   position = Vector3(0,0,0);
   heading  = Vector3(0,0,1);
   left     = Vector3(0,-1,0);
@@ -212,8 +234,6 @@ TurtleParam::reset(){
   customId = Shape::NOID;
   customParentId = Shape::NOID;
   sectionResolution = Cylinder::DEFAULT_SLICES;
-  color = 1;
-  texture = 0;
   width = 0.1f;
   tropism = Vector3(0,0,1);
   elasticity = 0;
@@ -222,9 +242,7 @@ TurtleParam::reset(){
   pointList.clear();
   leftList.clear();
   radiusList.clear();
-  crossSection = Curve2DPtr();
-  initialCrossSection = Curve2DPtr();
-  initialColor = -1;
+  initial.reset();
   guide = TurtlePathPtr();
 }
     
@@ -285,10 +303,10 @@ void TurtleParam::polygon(bool t){
   __polygon = t;
   removePoints();
   if (t){
-	initialColor = color;
+	initial.color = color;
   }
   else {
-	initialColor = -1;
+	initial.reset();
   }
 }
     
@@ -296,13 +314,10 @@ void TurtleParam::generalizedCylinder(bool t){
   __generalizedCylinder = t;
   removePoints();
   if (t){
-	initialCrossSection = crossSection;
-	initialCrossSectionCCW = crossSectionCCW;
-	initialColor = color;
+    initial = TurtleDrawParameter(*this);
   }
   else {
-	initialCrossSection = Curve2DPtr();
-	initialColor = -1;
+	initial.reset();
   }
 
 }
@@ -394,8 +409,8 @@ void Turtle::stop(){
 		_generalizedCylinder(__params->pointList,
 						   __params->leftList,
 						   __params->radiusList,
-						   __params->initialCrossSection,
-						   __params->initialCrossSectionCCW);
+						   __params->initial.crossSection,
+						   __params->initial.crossSectionCCW);
 	  }
     __params->removePoints();
   }
@@ -418,8 +433,8 @@ void Turtle::stop(){
 			_generalizedCylinder(__params->pointList,
 							     __params->leftList,
 							     __params->radiusList,
-							     __params->initialCrossSection,
-							     __params->initialCrossSectionCCW);
+							     __params->initial.crossSection,
+							     __params->initial.crossSectionCCW);
 		}
 	}
 	if(!__paramstack.empty()){
@@ -562,18 +577,35 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 	  return;
 	}
   }
-  
-  void Turtle::setTexture(int v){
-	if (0 <= v && v < getTextureListSize())
-	  __params->texture = v;
-	else {
-      stringstream st;
-      st << "Invalid Texture value " << v << " in setTexture (maximum is " << getTextureListSize() - 1 << ')' << std::flush;
-      warning(st.str());
-	  __params->texture = 0;
-	  return;
-	}
-  }
+
+void Turtle::setTextureScale(real_t u, real_t v)
+{ __params->texCoordScale = Vector2(u,v); }
+
+void Turtle::setTextureUScale(real_t u)
+{ __params->texCoordScale.x() = u; }
+
+void Turtle::setTextureVScale(real_t v)
+{ __params->texCoordScale.y() = v; }
+
+void Turtle::setTextureRotation(real_t angle, 
+								real_t ucenter, 
+								real_t vcenter)
+{ 
+	__params->texCoordRotAngle = angle; 
+	__params->texCoordRotCenter = Vector2(ucenter,vcenter);
+}
+
+void Turtle::setTextureTranslation(real_t u, real_t v)
+{ 	__params->texCoordTranslation = Vector2(u,v); }
+
+void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling, 
+									      real_t utranslation, real_t vtranslation, 
+										  real_t angle, real_t urotcenter, real_t vrotcenter)
+{ 
+	setTextureScale(uscaling,vscaling);
+	setTextureTranslation(utranslation,vtranslation);
+	setTextureRotation(angle,urotcenter,vrotcenter);
+}
   
   void Turtle::setWidth(real_t v){
     if (v > GEOM_EPSILON)
@@ -641,8 +673,8 @@ void Turtle::stopGC(){
 		_generalizedCylinder(__params->pointList,
 							 __params->leftList,
 							 __params->radiusList,
-							 __params->initialCrossSection,
-							 __params->initialCrossSectionCCW);
+							 __params->initial.crossSection,
+							 __params->initial.crossSectionCCW);
 	}
     __params->generalizedCylinder(false);
     __params->customId = Shape::NOID;
@@ -1017,15 +1049,42 @@ GeometryPtr PglTurtle::getSurface(const string& name){
 }
     
 AppearancePtr PglTurtle::getCurrentMaterial() const{
-   if (getColor() < __appList.size())
-            return __appList[getColor()];
+	if (getColor() < __appList.size()){
+		AppearancePtr res = __appList[getColor()];
+		if (res->isTexture() && ( __params->texCoordScale != Vector2(1,1) || 
+								  __params->texCoordTranslation != Vector2(0,0) ||
+								  __params->texCoordRotAngle != 0)){
+			Texture2DPtr tex = new Texture2D(
+				dynamic_pointer_cast<Texture2D>(res)->getImage(),
+				new Texture2DTransformation(__params->texCoordScale,
+											__params->texCoordTranslation,
+											__params->texCoordRotCenter,
+											__params->texCoordRotAngle*GEOM_RAD));
+			return tex;
+		}
+        return res;
+	}
    else return AppearancePtr(new Material("Color_"+TOOLS(number(getColor()))));
 }
 
 AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
-   if (__params->initialColor < __appList.size())
-            return __appList[__params->initialColor];
-   else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initialColor))));
+	if (__params->initial.color < __appList.size()){
+		AppearancePtr res = __appList[__params->initial.color];
+		if (res->isTexture() && (__params->initial.texCoordScale != Vector2(1,1) || 
+								__params->initial.texCoordTranslation != Vector2(0,0) ||
+								__params->initial.texCoordRotAngle != 0)){
+			Texture2DPtr tex = new Texture2D(
+				dynamic_pointer_cast<Texture2D>(res)->getImage(),
+				new Texture2DTransformation(__params->initial.texCoordScale,
+											__params->initial.texCoordTranslation,
+											__params->initial.texCoordRotCenter,
+											__params->initial.texCoordRotAngle*GEOM_RAD)
+											);
+			return tex;
+		}
+        return res;
+	}
+   else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
 }
 
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)

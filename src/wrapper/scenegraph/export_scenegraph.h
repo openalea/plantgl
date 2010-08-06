@@ -43,7 +43,9 @@ void export_geometryarrays();
 
 void export_Appearance();
 void export_Material();
+void export_Texture2D();
 void export_ImageTexture();
+void export_Texture2DTransformation();
 void export_Spectrum();
 void export_MonoSpectral();
 void export_MultiSpectral();

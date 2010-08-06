@@ -316,14 +316,6 @@ public:
     inline void decWidth()
 	{ setWidth( getWidth() - width_increment ); }	
 
-    virtual void setTexture(int val);
-
-    inline void incTexture()
-	{ setTexture( getColor() + color_increment ); }
-    
-    inline void decTexture()
-	{ setTexture( getColor() - color_increment ); }
-    
     virtual void startPolygon();
     
     virtual void stopPolygon();
@@ -337,9 +329,6 @@ public:
     virtual size_t getColorListSize() const
 	  { return 0; }
     
-    virtual size_t getTextureListSize() const
-	  { return 0; }
-
     inline void sphere()
 	{ _sphere(getWidth()); }
 
@@ -356,6 +345,17 @@ public:
 
 	inline void frame() { frame(default_step); }
     virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2);
+
+    virtual void setTextureScale(real_t u, real_t v);
+    virtual void setTextureVScale(real_t v);
+    virtual void setTextureUScale(real_t u);
+
+    virtual void setTextureRotation(real_t angle, real_t ucenter = 0.5, real_t vcenter = 0.5);
+    virtual void setTextureTranslation(real_t u = 0.5, real_t v = 0.5);
+
+    virtual void setTextureTransformation(real_t uscaling, real_t vscaling, 
+									      real_t utranslation, real_t vtranslation, 
+										  real_t angle, real_t urotcenter, real_t vrotcenter);
 
 	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }

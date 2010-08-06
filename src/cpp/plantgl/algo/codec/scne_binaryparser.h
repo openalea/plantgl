@@ -140,13 +140,20 @@ public:
   /// Read a Material.
   virtual bool readMaterial();
 
-  virtual bool readImageTexture();
-
   /// Read a MonoSpectral.
   virtual bool readMonoSpectral();
 
   /// Read a MultiSpectral
   virtual bool readMultiSpectral();
+
+  /// Read a Texture2D.
+  virtual bool readTexture2D();
+
+  /// Read a ImageTexture.
+  virtual bool readImageTexture();
+
+  /// Read a Texture2DTransformation.
+  virtual bool readTexture2DTransformation();
 
   //@}
 

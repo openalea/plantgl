@@ -344,7 +344,8 @@ Font			  {TRACE; return TokFont;}
 Material          {TRACE; return TokMaterial;}
 MonoSpectral      {TRACE; return TokMonoSpectral;}
 MultiSpectral     {TRACE; return TokMultiSpectral;}
-Texture           {TRACE; return TokImageTexture;}
+Texture2D         {TRACE; return TokTexture2D;}
+Texture2DTransformation         {TRACE; return TokTexture2DTransformation;}
 ImageTexture      {TRACE; return TokImageTexture;}
 
 Appearance        {TRACE; return TokAppearance;}
@@ -379,6 +380,7 @@ Height            {TRACE; return TokHeight;}
 HeightList        {TRACE; return TokHeightList;}
 Horizontal        {TRACE; return TokHorizontal;}
 Id                {TRACE; return TokId;}
+Image             {TRACE; return TokImage;}
 IndexList         {TRACE; return TokIndexList;}
 InitialNormal     {TRACE; return TokInitialNormal;}
 Italic			  {TRACE; return TokItalic;}
@@ -404,6 +406,10 @@ Primitive         {TRACE; return TokPrimitive;}
 Profile			  {TRACE; return TokProfile;}
 ProfileList       {TRACE; return TokProfileList;}
 Radius            {TRACE; return TokRadius;}
+RepeatS           {TRACE; return TokRepeatS;}
+RepeatT           {TRACE; return TokRepeatT;}
+RotationCenter    {TRACE; return TokRotationCenter;}
+RotationAngle     {TRACE; return TokRotationAngle;}
 Roll              {TRACE; return TokRoll;}
 Scale             {TRACE; return TokScale;}
 ScreenCoordinates {TRACE; return TokScreenCoordinates;}
@@ -421,6 +427,7 @@ Top               {TRACE; return TokTop;}
 TopShape          {TRACE; return TokTopShape;}
 TopRadius         {TRACE; return TokTopRadius;}
 Transfo           {TRACE; return TokTransfo;}
+Transformation    {TRACE; return TokTransfo;}
 TransfoList       {TRACE; return TokTransfoList;}
 Translation       {TRACE; return TokTranslation;}
 TexCoordList      {TRACE; return TokTexCoordList;}

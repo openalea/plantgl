@@ -408,6 +408,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\export_texture.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\export_transformation.cpp"
 				>
 			</File>

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- *
+ * 
  *                      GNU General Public Licence
- *
+ *           
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,20 +29,25 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */
+ */				
 
-/*! \file version.h
-    \brief File for accessing to PGL version.
+/*! \file view_flag.h
+    \brief Definition of some useful flags.
 */
 
+#ifndef __view_flag_h__
+#define __view_flag_h__
 
-#ifndef __plantgl_version_h__
-#define __plantgl_version_h__
+/* ----------------------------------------------------------------------- */
 
-/// PGL Version macro
-#define PGL_VERSION 0x020D00
-#define PGL_SVNREVISION "$Revision$"
 
+
+enum eAnimationFlag {
+	eAnimatedPrimitives,
+	eAnimatedScene,
+	eStatic
+}  ;
+
+/* ----------------------------------------------------------------------- */
 #endif
-
 

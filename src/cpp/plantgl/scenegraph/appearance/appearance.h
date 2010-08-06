@@ -87,6 +87,9 @@ public:
   /// Default constructor.
   Appearance( ) ;
 
+  /// Default constructor.
+  Appearance(const std::string& name) ;
+
   /// Destructor
   virtual ~Appearance( );
 

@@ -731,7 +731,7 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(e->type() == ViewEvent::eAnimation){
     ViewAnimationEvent * k = ( ViewAnimationEvent * )e;
-    __GLFrame->animation(k->arg1);
+    __GLFrame->setAnimation(k->arg1);
   }
   else if(e->type() == ViewEvent::eBgColor){
     ViewBgColorEvent * k = ( ViewBgColorEvent * )e;
@@ -1184,6 +1184,6 @@ Viewer::doubleSelection(const QString& caption, const QString& text, double valu
 }
 
 void
-Viewer::animation(bool b){
-  __GLFrame->animation(b);
+Viewer::setAnimation(eAnimationFlag b){
+  __GLFrame->setAnimation(b);
 }

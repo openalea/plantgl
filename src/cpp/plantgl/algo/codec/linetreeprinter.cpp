@@ -383,7 +383,18 @@ bool LinetreePrinter::process( Material * material ) {
 
 bool LinetreePrinter::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
-  __mat = MaterialPtr(texture);
+  return true;
+}
+
+bool LinetreePrinter::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_ASSERT(texturetransfo);
+  return true;
+}
+
+
+bool LinetreePrinter::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  __mat = dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL);
   return true;
 }
 

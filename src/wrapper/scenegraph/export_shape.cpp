@@ -80,7 +80,13 @@ void export_Shape()
 				 bp::arg("appearance") = Material::DEFAULT_MATERIAL, 
 				 bp::arg("id")         = Shape::NOID,
 				 bp::arg("parentId")   = Shape::NOID )))
-   .add_static_property("NOID",make_getter(&Shape::NOID))
+    .def(init< optional<const GeometryPtr&, const ImageTexturePtr &, uint_t, uint_t > >
+	        ("Shape( geometry, appearance, id, parentId )",
+				(bp::arg("geometry"),
+				 bp::arg("appearance"), 
+				 bp::arg("id")         = Shape::NOID,
+				 bp::arg("parentId")   = Shape::NOID )))
+    .add_static_property("NOID",make_getter(&Shape::NOID))
     .DEF_PGLBASE(Shape)
     .DEC_PTR_PROPERTY(appearance, Shape,Appearance, AppearancePtr)
     .DEC_PTR_PROPERTY(geometry, Shape, Geometry,GeometryPtr)

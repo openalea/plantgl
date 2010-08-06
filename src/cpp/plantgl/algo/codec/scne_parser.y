@@ -412,7 +412,12 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   Material::Builder *          material_b;
   MonoSpectral::Builder *      monoSpectral_b;
   MultiSpectral::Builder *     multiSpectral_b;
+  Texture2D::Builder *         texture2D_b;
   ImageTexture::Builder *      imageTexture_b;
+  ImageTexturePtr *            imageTexture_o;
+  Texture2DTransformation::Builder * texture2DTransformation_b;
+  Texture2DTransformationPtr * texture2DTransformation_o;
+  
   // Geometry objects
   GeometryPtr *                geometry_o;
   GeometryArrayPtr *           geometry_a;
@@ -451,8 +456,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   Paraboloid::Builder *        paraboloid_b;
   PointSet::Builder *          pointSet_b;
   PointSet2D::Builder *        pointSet2D_b;
-  Polyline::Builder *      polyline_b;
-  Polyline2D::Builder *    polyline2D_b;
+  Polyline::Builder *          polyline_b;
+  Polyline2D::Builder *        polyline2D_b;
   QuadSet::Builder *           quadSet_b;
   Revolution::Builder *        revolution_b;
   Swung::Builder *             swung_b;
@@ -481,7 +486,9 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokMaterial
 %token TokMonoSpectral
 %token TokMultiSpectral
+%token TokTexture2D
 %token TokImageTexture
+%token TokTexture2DTransformation
 
 %token TokAmapSymbol
 %token TokAsymmetricHull
@@ -535,6 +542,12 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokSpecular
 %token TokTransmittance
 %token TokTransparency
+%token TokMipmaping
+%token TokRepeatS
+%token TokRepeatT
+%token TokRotationCenter
+%token TokRotationAngle
+%token TokImage
 
 %token TokBlack
 %token TokBlue
@@ -577,7 +590,6 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokIndexList
 %token TokInitialNormal
 %token TokKnotList
-%token TokMipmaping
 %token TokNegXHeight
 %token TokNegXRadius
 %token TokNegYHeight
@@ -689,7 +701,9 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %type <appearance_o>        MonoSpectralObj
 %type <appearance_o>        MultiSpectralObj
 %type <appearance_o>        PhysicalModelObj
-%type <appearance_o>        TextureObj
+%type <appearance_o>        Texture2DObj
+%type <imageTexture_o>      ImageTextureObj
+%type <texture2DTransformation_o> Texture2DTransformationObj
 
 /* Primitives */
 %type <geometry_o>          AmapSymbolObj
@@ -742,7 +756,9 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %type <material_b>          MaterialFieldList
 %type <monoSpectral_b>      MonoSpectralFieldList
 %type <multiSpectral_b>     MultiSpectralFieldList
+%type <texture2D_b>         Texture2DFieldList 
 %type <imageTexture_b>      ImageTextureFieldList
+%type <texture2DTransformation_b> Texture2DTransformationFieldList
 
 /* Geom builders */
 %type <amapSymbol_b>        AmapSymbolFieldList
@@ -960,7 +976,7 @@ SceneObj:
 
 AppearanceObj:
    MaterialObj { $$ = $1; }
- | TextureObj {  $$ = $1; }
+ | Texture2DObj {  $$ = $1; }
  | PhysicalModelObj {  $$ = $1; }
  | AppearanceRef { $$ = $1; };
 
@@ -1087,6 +1103,10 @@ ShapeFieldList:
    }
  | ShapeFieldList TokAppearance AppearanceObj {
      GEOM_PARSER_SET_FIELD($1,Appearance,$3); $$=$1;
+   }
+ | ShapeFieldList TokAppearance ImageTextureObj {
+	 AppearancePtr * tr = new AppearancePtr(new Texture2D(*$3));
+     GEOM_PARSER_SET_FIELD($1,Appearance,tr); $$=$1;
    }
  | { $$ = new Shape::Builder;
 #ifdef USE_READLINE
@@ -1286,9 +1306,19 @@ MaterialObj:
     GEOM_PARSER_BUILD_OBJECT(Appearance,$$,name,a);
  };
 
-TextureObj:
-  TokImageTexture Name '{' ImageTextureFieldList '}' {
+Texture2DObj:
+  TokTexture2D Name '{' Texture2DFieldList '}' {
     GEOM_PARSER_BUILD_OBJECT(Appearance,$$,$2,$4);
+  };
+
+ImageTextureObj:
+  TokImageTexture Name '{' ImageTextureFieldList '}' {
+    GEOM_PARSER_BUILD_OBJECT(ImageTexture,$$,$2,$4);
+  };
+
+Texture2DTransformationObj:
+  TokTexture2DTransformation Name '{' Texture2DTransformationFieldList '}' {
+    GEOM_PARSER_BUILD_OBJECT(Texture2DTransformation,$$,$2,$4);
   };
 
 MonoSpectralObj:
@@ -2219,6 +2249,15 @@ MaterialFieldList:
    }
  | { $$ = new Material::Builder; };
 
+Texture2DFieldList:
+   Texture2DFieldList TokImage ImageTextureObj {
+     GEOM_PARSER_SET_FIELD($1,Image,$3); $$=$1;
+   }
+ | Texture2DFieldList TokTransfo Texture2DTransformationObj {
+     GEOM_PARSER_SET_FIELD($1,Transformation,$3); $$=$1;
+   }
+ | { $$ = new Texture2D::Builder; };
+
 ImageTextureFieldList:
    ImageTextureFieldList TokFileName Filename {
      if($3)*$3 = TOOLS(absolute_filename)(*$3);
@@ -2228,24 +2267,46 @@ ImageTextureFieldList:
      GEOM_PARSER_SET_FIELD($1,Mipmaping,$3); $$=$1;
    }
  | ImageTextureFieldList TokAmbient Color3 {
-     GEOM_PARSER_SET_FIELD($1,Ambient,$3); $$=$1;
+     /* GEOM_PARSER_SET_FIELD($1,Ambient,$3); */ $$=$1;
    }
  | ImageTextureFieldList TokDiffuse Real {
-     GEOM_PARSER_SET_FIELD($1,Diffuse,$3); $$=$1;
+     /* GEOM_PARSER_SET_FIELD($1,Diffuse,$3);*/ $$=$1;
    }
  | ImageTextureFieldList TokSpecular Color3 {
-     GEOM_PARSER_SET_FIELD($1,Specular,$3); $$=$1;
+     /* GEOM_PARSER_SET_FIELD($1,Specular,$3);*/ $$=$1;
    }
  | ImageTextureFieldList TokEmission Color3 {
-     GEOM_PARSER_SET_FIELD($1,Emission,$3); $$=$1;
+     /* GEOM_PARSER_SET_FIELD($1,Emission,$3); */ $$=$1;
    }
  | ImageTextureFieldList TokShininess Real {
-     GEOM_PARSER_SET_FIELD($1,Shininess,$3); $$=$1;
+     /* GEOM_PARSER_SET_FIELD($1,Shininess,$3);*/ $$=$1;
    }
  | ImageTextureFieldList TokTransparency Real {
      GEOM_PARSER_SET_FIELD($1,Transparency,$3); $$=$1;
    }
+ | ImageTextureFieldList TokRepeatS TokBool {
+     GEOM_PARSER_SET_FIELD($1,RepeatS,$3); $$=$1;
+   }
+ | ImageTextureFieldList TokRepeatT TokBool {
+     GEOM_PARSER_SET_FIELD($1,RepeatT,$3); $$=$1;
+   }
  | { $$ = new ImageTexture::Builder; };
+
+Texture2DTransformationFieldList:
+   Texture2DTransformationFieldList TokScale Vector2 {
+     GEOM_PARSER_SET_FIELD($1,Scale,$3); $$=$1;
+   }
+ | Texture2DTransformationFieldList TokTranslation Vector2 {
+     GEOM_PARSER_SET_FIELD($1,Translation,$3); $$=$1;
+   }
+ | Texture2DTransformationFieldList TokRotationCenter Vector2 {
+     GEOM_PARSER_SET_FIELD($1,RotationCenter,$3); $$=$1;
+   }
+ | Texture2DTransformationFieldList TokRotationAngle Angle {
+     GEOM_PARSER_SET_FIELD($1,RotationAngle,$3); $$=$1;
+   }
+ | { $$ = new Texture2DTransformation::Builder; };
+
 
 MonoSpectralFieldList:
    MonoSpectralFieldList TokReflectance Real {

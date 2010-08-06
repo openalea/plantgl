@@ -452,6 +452,24 @@ bool Printer::process( Material * material ) {
 
 /* ----------------------------------------------------------------------- */
 
+bool Printer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  GEOM_PRINT_BEGIN(__matStream,"Texture2D",texture);
+
+  if (texture->getImage()){
+	  GEOM_PRINT_FIELD(__matStream,texture,Image,APPEARANCE);
+  }
+
+  if (! texture->isTransformationToDefault()){
+	  GEOM_PRINT_FIELD(__matStream,texture,Transformation,APPEARANCE);
+  }
+
+  GEOM_PRINT_END(__matStream);
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool Printer::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
   GEOM_PRINT_BEGIN(__matStream,"ImageTexture",texture);
@@ -461,23 +479,36 @@ bool Printer::process( ImageTexture * texture ) {
   if (! texture->isMipmapingToDefault())
     GEOM_PRINT_FIELD(__matStream,texture,Mipmaping,BOOLEAN);
 
-  if (! texture->isAmbientToDefault())
-    GEOM_PRINT_FIELD(__matStream,texture,Ambient,COLOR3);
+  if (! texture->isRepeatSToDefault())
+    GEOM_PRINT_FIELD(__matStream,texture,RepeatS,BOOLEAN);
 
-  if (! texture->isDiffuseToDefault())
-    GEOM_PRINT_FIELD(__matStream,texture,Diffuse,REAL);
-
-  if (! texture->isSpecularToDefault())
-    GEOM_PRINT_FIELD(__matStream,texture,Specular,COLOR3);
-
-  if (! texture->isEmissionToDefault())
-    GEOM_PRINT_FIELD(__matStream,texture,Emission,COLOR3);
-
-  if (! texture->isShininessToDefault())
-    GEOM_PRINT_FIELD(__matStream,texture,Shininess,REAL);
+  if (! texture->isRepeatTToDefault())
+    GEOM_PRINT_FIELD(__matStream,texture,RepeatT,BOOLEAN);
 
   if (! texture->isTransparencyToDefault())
     GEOM_PRINT_FIELD(__matStream,texture,Transparency,REAL);
+
+  GEOM_PRINT_END(__matStream);
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool Printer::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_ASSERT(texture);
+  GEOM_PRINT_BEGIN(__matStream,"Texture2DTransformation",texturetransfo);
+
+  if (! texturetransfo->isScaleToDefault())
+    GEOM_PRINT_FIELD(__matStream,texturetransfo,Scale,VECTOR2);
+
+  if (! texturetransfo->isTranslationToDefault())
+    GEOM_PRINT_FIELD(__matStream,texturetransfo,Translation,VECTOR2);
+
+  if (! texturetransfo->isRotationCenterToDefault())
+    GEOM_PRINT_FIELD(__matStream,texturetransfo,RotationCenter,VECTOR2);
+
+  if (! texturetransfo->isRotationAngleToDefault())
+    GEOM_PRINT_FIELD(__matStream,texturetransfo,RotationAngle,REAL);
 
   GEOM_PRINT_END(__matStream);
   return true;

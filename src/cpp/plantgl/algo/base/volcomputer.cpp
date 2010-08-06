@@ -622,6 +622,20 @@ bool VolComputer::process( ImageTexture * texture ) {
   return false;
 }
 
+bool VolComputer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __result = 0;
+  return false;
+}
+
+bool VolComputer::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __result = 0;
+  return false;
+}
+
 bool VolComputer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   // nothing to do

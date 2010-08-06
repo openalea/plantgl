@@ -173,7 +173,11 @@ public:
 
   virtual bool process( MultiSpectral * multiSpectral );
 
+  virtual bool process( Texture2D * texture );
+
   virtual bool process( ImageTexture * texture );
+
+  virtual bool process( Texture2DTransformation * texturetransfo );
 
   //@}
 

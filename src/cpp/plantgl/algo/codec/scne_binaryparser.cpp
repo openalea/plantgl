@@ -260,12 +260,12 @@ BinaryParser::BinaryParser(ostream& output,int max_errors) :
     __errors_count(0),
     shape_nb(0),
     __comment(),
-    __sizes(39,uint_t(0)),
-    __currents(39,uint_t(0)),
+    __sizes(44,uint_t(0)),
+    __currents(44,uint_t(0)),
     __result(),
     __assigntime(0),
     __double_precision(false){
-    for(uint_t i=0;i<39;i++)__mem[i]=NULL;
+    for(uint_t i=0;i<44;i++)__mem[i]=NULL;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -296,7 +296,8 @@ BinaryParser::~BinaryParser( ) {
   GEOM_CLEAN_MEM(35,PointSet2D,_reservedsize);  GEOM_CLEAN_MEM(36,Polyline2D,_reservedsize);
   GEOM_CLEAN_MEM(37,Swung,_reservedsize); GEOM_CLEAN_MEM(38,IFS,_reservedsize);
   GEOM_CLEAN_MEM(39,TextureImage,_reservedsize);GEOM_CLEAN_MEM(40,Text,_reservedsize);
-  GEOM_CLEAN_MEM(41,Font,_reservedsize);
+  GEOM_CLEAN_MEM(41,Font,_reservedsize);GEOM_CLEAN_MEM(42,Texture2D,_reservedsize);
+  GEOM_CLEAN_MEM(43,Texture2DTransformation,_reservedsize);
 #ifdef MEMORY_MANAGEMENT
   if(_reservedsize > 0)
       __outputStream << "Delete unused reserved memory ... done (" << (_reservedsize > 1024 ? _reservedsize/1024 : _reservedsize )
@@ -569,7 +570,8 @@ bool BinaryParser::readHeader(){
   GEOM_INIT_MEM(35,PointSet2D,_reservedsize);  GEOM_INIT_MEM(36,Polyline2D,_reservedsize);
   GEOM_INIT_MEM(37,Swung,_reservedsize); GEOM_INIT_MEM(38,IFS,_reservedsize);
   GEOM_INIT_MEM(39,TextureImage,_reservedsize);GEOM_INIT_MEM(40,Text,_reservedsize);
-  GEOM_INIT_MEM(41,Font,_reservedsize);
+  GEOM_INIT_MEM(41,Font,_reservedsize);GEOM_INIT_MEM(42,Texture2D,_reservedsize);
+  GEOM_INIT_MEM(43,Texture2DTransformation,_reservedsize);
 #ifdef MEMORY_MANAGEMENT
   __outputStream  << "done ("<< (_reservedsize > 1024 ? _reservedsize/1024 : _reservedsize )
                   << (_reservedsize > 1024 ? " K" : " " ) << "bytes)." << endl;
@@ -623,7 +625,9 @@ bool BinaryParser::readNext(){
 #endif
   if(_classname == "Shape")                   return readShape ();
   else if(_classname == "Material")           return readMaterial  ();
+  else if(_classname == "Texture2D")          return readTexture2D ();
   else if(_classname == "ImageTexture")       return readImageTexture ();
+  else if(_classname == "Texture2DTransformation")return readTexture2DTransformation();
   else if(_classname == "MonoSpectral")       return readMonoSpectral ();
   else if(_classname == "MultiSpectral")      return readMultiSpectral();
   else if(_classname == "AmapSymbol")         return readAmapSymbol ();
@@ -717,8 +721,15 @@ bool BinaryParser::readShape(){
 
     if(readNext())
        a->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
-    if(readNext())
+	if(readNext()){
         a->getAppearance() = dynamic_pointer_cast<Appearance>(__result);
+		if (!a->getAppearance() && __tokens->getVersion() <= 2.3f){
+			ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
+			if(imgtex) {
+				a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
+			}
+		}
+	}
 
     if((a->getGeometry()) && (a->getAppearance())){
         if(!_name.empty())a->setName(_name);
@@ -785,6 +796,39 @@ bool BinaryParser::readMaterial() {
 
 /* ----------------------------------------------------------------------- */
 
+bool BinaryParser::readTexture2D() {
+    GEOM_BEGIN(_name,_ident);
+
+    GEOM_READ_DEFAULT(_default);
+
+    GEOM_INIT_OBJ(texture, 42, Texture2D);
+
+    if(readNext())
+        texture->getImage() = dynamic_pointer_cast<ImageTexture>(__result);
+    if(!texture->getImage()){
+        __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Image not valid." << endl;
+        GEOM_DEL_OBJ(texture,42) ;
+        return false;
+    }
+
+    IF_GEOM_NOTDEFAULT(_default,0)
+	{
+		if(readNext())
+			texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
+		if(!texture->getTransformation()){
+			__outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
+			GEOM_DEL_OBJ(texture,42) ;
+			return false;
+		}
+	}
+
+    GEOM_PARSER_SETNAME(_name,_ident,texture,Texture2D);
+    return true;
+
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool BinaryParser::readImageTexture() {
     GEOM_BEGIN(_name,_ident);
 
@@ -798,26 +842,39 @@ bool BinaryParser::readImageTexture() {
             FileName = absolute_filename(FileName);
             mat->getFilename() = FileName;
     }
-
-    IF_GEOM_NOTDEFAULT(_default,0)
-        GEOM_READ_FIELD(mat,Ambient,Color3) ;
-
-    IF_GEOM_NOTDEFAULT(_default,1)
-        GEOM_READ_FIELD(mat,Diffuse,Real);
-
-    IF_GEOM_NOTDEFAULT(_default,2)
-        GEOM_READ_FIELD(mat,Specular,Color3);
-
-    IF_GEOM_NOTDEFAULT(_default,3)
-        GEOM_READ_FIELD(mat,Emission,Color3);
-
-    IF_GEOM_NOTDEFAULT(_default,4)
-        GEOM_READ_FIELD(mat,Shininess,Real);
-
-    IF_GEOM_NOTDEFAULT(_default,5)
-        GEOM_READ_FIELD(mat,Transparency,Real);
-
     float version =  __tokens->getVersion();
+
+    if( version >= 2.3f){
+		IF_GEOM_NOTDEFAULT(_default,0)
+			GEOM_READ_FIELD(mat,RepeatS,Bool) ;
+
+		IF_GEOM_NOTDEFAULT(_default,1)
+			GEOM_READ_FIELD(mat,RepeatT,Real);
+
+		IF_GEOM_NOTDEFAULT(_default,2)
+			GEOM_READ_FIELD(mat,Transparency,Real);
+	}
+	else {
+		MaterialPtr oldmat(new Material());
+		IF_GEOM_NOTDEFAULT(_default,0)
+			GEOM_READ_FIELD(oldmat,Ambient,Color3) ;
+
+		IF_GEOM_NOTDEFAULT(_default,1)
+			GEOM_READ_FIELD(oldmat,Diffuse,Real);
+
+		IF_GEOM_NOTDEFAULT(_default,2)
+			GEOM_READ_FIELD(oldmat,Specular,Color3);
+
+		IF_GEOM_NOTDEFAULT(_default,3)
+			GEOM_READ_FIELD(oldmat,Emission,Color3);
+
+		IF_GEOM_NOTDEFAULT(_default,4)
+			GEOM_READ_FIELD(oldmat,Shininess,Real);
+
+		IF_GEOM_NOTDEFAULT(_default,5)
+			GEOM_READ_FIELD(mat,Transparency,Real);
+	}
+
     if( version >= 1.8f){
         IF_GEOM_NOTDEFAULT(_default,6)
             GEOM_READ_FIELD(mat,Mipmaping,Bool);
@@ -826,12 +883,39 @@ bool BinaryParser::readImageTexture() {
     if (FileName.empty() || !exists(FileName.c_str())) {
         string label = "ImageTexture : " + string((_name.empty() ? "(unamed)" : _name));
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),label.c_str(),"FileName");
-        MaterialPtr mat2(new Material(*mat));
-        GEOM_PARSER_SETNAME(_name,_ident,mat,Material);
+        MaterialPtr defmat(new Material());
+        GEOM_PARSER_SETNAME(_name,_ident,defmat,Material);
     }
     else {
       GEOM_PARSER_SETNAME(_name,_ident,mat,ImageTexture);
     }
+
+    return true;
+
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool BinaryParser::readTexture2DTransformation() {
+    GEOM_BEGIN(_name,_ident);
+
+    GEOM_READ_DEFAULT(_default);
+
+    GEOM_INIT_OBJ(obj, 43, Texture2DTransformation);
+
+	IF_GEOM_NOTDEFAULT(_default,0)
+		GEOM_READ_FIELD(obj,Scale,Vector2) ;
+
+	IF_GEOM_NOTDEFAULT(_default,1)
+		GEOM_READ_FIELD(obj,Translation,Vector2);
+
+	IF_GEOM_NOTDEFAULT(_default,2)
+		GEOM_READ_FIELD(obj,RotationCenter,Vector2);
+
+	IF_GEOM_NOTDEFAULT(_default,3)
+		GEOM_READ_FIELD(obj,RotationAngle,Real);
+
+    GEOM_PARSER_SETNAME(_name,_ident,obj,ImageTexture);
 
     return true;
 

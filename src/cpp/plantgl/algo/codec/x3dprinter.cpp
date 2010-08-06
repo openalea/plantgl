@@ -276,55 +276,33 @@ X3DPrinter::process( Material * material )
 
 /* ----------------------------------------------------------------------- */
 
-
 bool
-X3DPrinter::process( ImageTexture * material )
+X3DPrinter::process( Texture2D * texture )
 {
-  GEOM_ASSERT( material );
-
-  if (material->isNamed()) {
-    if (! __cache.insert(material->getId()).second) {
-      __geomStream  <<  __indent << "<Appearance USE " << material->getName().c_str() << " > " << endl;
-      return true;
-    }
-    else {
-      __geomStream  <<  __indent << "<Appearance DEF " << material->getName().c_str() << " >  " << endl;
-      GEOM_VRMLPRINT_INCREMENT_INDENT;
-      __geomStream  <<  __indent << "<material>" << endl;
-      GEOM_VRMLPRINT_INCREMENT_INDENT;
-    }
-  }
-  __geomStream  <<  __indent << "<Material " << endl;
-  GEOM_VRMLPRINT_INCREMENT_INDENT;
-
-  Color3 a(uchar_t(material->getDiffuse()*material->getAmbient().getRed()),
-           uchar_t(material->getDiffuse()*material->getAmbient().getGreen()),
-           uchar_t(material->getDiffuse()*material->getAmbient().getBlue()));
-  __geomStream  <<__indent;
-  GEOM_VRMLPRINT_FIELD("diffuseColor",a,COLOR3);
-  __geomStream  << endl << __indent;
-  real_t b = 0.0;
-  if(fabs(material->getDiffuse())>GEOM_EPSILON) b = (real_t)1.0 / (real_t)material->getDiffuse();
-  GEOM_VRMLPRINT_FIELD("ambientIntensity",b,REAL);
-  __geomStream  << endl << __indent;
-  GEOM_VRMLPRINT_FIELD("specularColor",material->getSpecular(),COLOR3);
-  __geomStream  << endl << __indent;
-  GEOM_VRMLPRINT_FIELD("emissiveColor",material->getEmission(),COLOR3);
-  __geomStream  << endl << __indent;
-  GEOM_VRMLPRINT_FIELD("shininess",material->getShininess(),REAL);
-  __geomStream  << endl << __indent;
-  GEOM_VRMLPRINT_FIELD("transparency",material->getTransparency(),REAL);
-  __geomStream  << "/>" << endl;
-  GEOM_VRMLPRINT_DECREMENT_INDENT;
-  if (material->isNamed()) {
-    GEOM_VRMLPRINT_DECREMENT_INDENT;
-    __geomStream << __indent << "</material>" << endl;
-    GEOM_VRMLPRINT_DECREMENT_INDENT;
-    __geomStream << __indent << "</Appearance>  " << endl;
-  }
-  return true;
+  GEOM_ASSERT( texture );
+  cerr << "Not Yet Implemented" << endl;
+  return false;
 }
 
+/* ----------------------------------------------------------------------- */
+
+bool
+X3DPrinter::process( ImageTexture * texture )
+{
+  GEOM_ASSERT( texture );
+  cerr << "Not Yet Implemented" << endl;
+  return false;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool
+X3DPrinter::process( Texture2DTransformation * texturetransfo )
+{
+  GEOM_ASSERT( texturetransfo );
+  cerr << "Not Yet Implemented" << endl;
+  return false;
+}
 
 /* ----------------------------------------------------------------------- */
 

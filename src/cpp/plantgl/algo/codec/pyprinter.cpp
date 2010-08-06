@@ -449,30 +449,63 @@ bool PyPrinter::process( Material * material ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool PyPrinter::process( Texture2D * texture ) {
+  GEOM_BEGIN(texture);
+  
+  if(texture->getImage())
+	  texture->getImage()->apply(*this);
+
+  if(texture->getTransformation())
+	  texture->getTransformation()->apply(*this);
+
+  string name = compute_name(texture);
+  print_constructor_begin(__matStream, name, "Texture2D");
+	if(texture->getImage())
+		print_arg_field (__matStream, "image", SceneObjectPtr(texture->getImage()));
+    if(texture->getTransformation())
+		print_arg_field (__matStream, "transformation", SceneObjectPtr(texture->getTransformation()));
+  print_constructor_end (__matStream, texture, name);
+
+  print_object_end(__matStream);
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool PyPrinter::process( ImageTexture * texture ) {
   GEOM_BEGIN(texture);
   
+  bool in_constructor = true; // tell if the constructor of the object is still described.
   string name = compute_name(texture);
-  print_constructor_begin(__geomStream, name, "ImageTexture");
-    print_arg_field(__geomStream, name, texture->getFilename());
-  print_constructor_end (__geomStream, texture, name);
 
-  if (! texture->isMipmapingToDefault())
-	print_field (__geomStream, name, "mipmaping", texture->getMipmaping());
-  if (! texture->isAmbientToDefault())
-    print_field (__geomStream, name, "ambient", texture->getAmbient());
-  if (! texture->isDiffuseToDefault())
-    print_field (__geomStream, name, "diffuse", texture->getDiffuse());
-  if (! texture->isSpecularToDefault())
-    print_field (__geomStream, name, "specular", texture->getSpecular());
-  if (! texture->isEmissionToDefault())
-    print_field (__geomStream, name, "emission", texture->getEmission());
-  if (! texture->isShininessToDefault())
-    print_field (__geomStream, name, "shininess", texture->getShininess());
-  if (! texture->isTransparencyToDefault())
-    print_field (__geomStream, name, "transparency", texture->getTransparency());
+  print_constructor_begin(__matStream, name, "ImageTexture");
+    print_arg_field(__matStream, name, texture->getFilename());
+	PYPRINT_ARG(__matStream, texture, name, mipmaping,  Mipmaping,  in_constructor)
+	PYPRINT_ARG(__matStream, texture, name, repeatS,  RepeatS,  in_constructor)
+	PYPRINT_ARG(__matStream, texture, name, repeatT,  RepeatT,  in_constructor)
+	PYPRINT_ARG(__matStream, texture, name, transparency,  Transparency,  in_constructor)
+  print_constructor_end (__matStream, texture, name);
 
-  print_object_end(__geomStream);
+  print_object_end(__matStream);
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool PyPrinter::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_BEGIN(texturetransfo);
+  
+  bool in_constructor = true; // tell if the constructor of the object is still described.
+  string name = compute_name(texturetransfo);
+
+  print_constructor_begin(__matStream, name, "TextureTransformation");
+	PYPRINT_ARG(__matStream, texturetransfo, name, scale,  Scale,  in_constructor)
+	PYPRINT_ARG(__matStream, texturetransfo, name, translation,  Translation,  in_constructor)
+	PYPRINT_ARG(__matStream, texturetransfo, name, rotationCenter,  RotationCenter,  in_constructor)
+	PYPRINT_ARG(__matStream, texturetransfo, name, rotationAngle,  RotationAngle,  in_constructor)
+  print_constructor_end (__matStream, texturetransfo, name);
+
+  print_object_end(__matStream);
   return true;
 }
 

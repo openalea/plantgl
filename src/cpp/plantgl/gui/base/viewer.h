@@ -54,6 +54,7 @@
 #include <QtCore/qthread.h>
 #endif
 #endif
+#include "flags.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -143,7 +144,7 @@ public:
   void  doubleSelection(const QString& caption, const QString& text, double value,
 					    double minvalue, double maxvalue, double* result, bool * ok);
   
-  void animation(bool);
+  void setAnimation(eAnimationFlag);
 
   inline bool hasFocusAtRefresh() const { return __focusAtRefresh; }
 

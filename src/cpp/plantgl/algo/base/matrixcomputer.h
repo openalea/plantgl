@@ -97,6 +97,14 @@ public:
   virtual bool process( ImageTexture * texture ){
       return false;
   }
+ 
+  virtual bool process( Texture2D * texture ){
+      return false;
+  }
+
+  virtual bool process( Texture2DTransformation * texturetransformation ){
+      return false;
+  }
 
   //@}
 

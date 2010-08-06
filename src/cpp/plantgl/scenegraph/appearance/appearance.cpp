@@ -55,6 +55,10 @@ Appearance::Appearance( ) :
   SceneObject() {
 }
 
+  Appearance::Appearance(const std::string& name ) :
+  SceneObject(name) {
+}
+
 Appearance::~Appearance( ) {
 }
 

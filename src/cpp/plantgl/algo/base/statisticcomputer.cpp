@@ -77,7 +77,7 @@ StatisticComputer::StatisticComputer( ) :
   __cache(),
   __element(0),
   __named(0),
-  __shape((unsigned int)42,0),
+  __shape((unsigned int)44,0),
   __memsize(0){
 }
 
@@ -108,10 +108,10 @@ StatisticComputer::getElements() const{
 /* ----------------------------------------------------------------------- */
 
 
-bool StatisticComputer::process(Shape * Shape){
-    GEOM_COMPUTE(Shape,0);
-    GEOM_APPLY(Shape,Geometry);
-    GEOM_APPLY(Shape,Appearance);
+bool StatisticComputer::process(Shape * shape){
+    GEOM_COMPUTE(shape,0);
+    GEOM_APPLY(shape,Geometry);
+    GEOM_APPLY(shape,Appearance);
     return true;
 }
 
@@ -130,8 +130,22 @@ bool StatisticComputer::process( Material * material ) {
 bool StatisticComputer::process( ImageTexture * texture ) {
     GEOM_COMPUTE(texture,39);
     return true;
+}
 
+/* ----------------------------------------------------------------------- */
 
+bool StatisticComputer::process( Texture2D * texture ) {
+    GEOM_COMPUTE(texture,42);
+    GEOM_APPLY(texture,Image);
+    GEOM_APPLY(texture,Transformation);
+    return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool StatisticComputer::process( Texture2DTransformation * texture ) {
+    GEOM_COMPUTE(texture,43);
+    return true;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -784,5 +798,13 @@ const uint_t StatisticComputer::getText() const {
 
 const uint_t StatisticComputer::getFont() const {
   return __shape[41];
+}
+
+const uint_t StatisticComputer::getTexture2D() const {
+  return __shape[42];
+}
+
+const uint_t StatisticComputer::getTexture2DTransformation() const {
+  return __shape[43];
 }
 

@@ -133,7 +133,7 @@ using namespace std;
    __geomStream << __indent << "appearance Appearance {" << endl; \
    if(__app){ \
    GEOM_VRMLPRINT_INCREMENT_INDENT; \
-   __geomStream << __indent << "material "; \
+   /*__geomStream << __indent << "material ";*/ \
    __app->apply(*this); \
    GEOM_VRMLPRINT_DECREMENT_INDENT \
    } \
@@ -514,11 +514,21 @@ bool VrmlPrinter::process(Shape * Shape) {
 
 /* ----------------------------------------------------------------------- */
 
+#define GEOM_VRMLPRINT_BEGINAPP(app) \
+   __geomStream << __indent << "Appearance {" << endl; \
+   if(__app){ \
+   GEOM_VRMLPRINT_INCREMENT_INDENT; 
+
+
+#define GEOM_VRMLPRINT_ENDAPP  GEOM_VRMLPRINT_DECREMENT_INDENT  } 
+
 
 bool VrmlPrinter::process( Material * material ) {
   GEOM_ASSERT(material);
 
   bool shapeused = false;
+  GEOM_VRMLPRINT_BEGINAPP(material);
+  __geomStream << __indent << "material "; \
   GEOM_VRMLPRINT_BEGINOBJ("Material",material);
   Color3 a(uchar_t(material->getDiffuse()*material->getAmbient().getRed()),
            uchar_t(material->getDiffuse()*material->getAmbient().getGreen()),
@@ -533,27 +543,40 @@ bool VrmlPrinter::process( Material * material ) {
   GEOM_VRMLPRINT_FIELD("transparency",material->getTransparency(),REAL);
 
   GEOM_VRMLPRINT_ENDOBJ;
+  GEOM_VRMLPRINT_ENDAPP;
+
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+bool VrmlPrinter::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+
+  bool used = false;
+
+  GEOM_VRMLPRINT_BEGINAPP(material);
+
+  GEOM_VRMLPRINT_FIELD("texture",texture->getImage(),SUBNODE);
+  if(texture->isTransformationToDefault())
+	GEOM_VRMLPRINT_FIELD("textureTransform",texture->getTransformation(),SUBNODE);
+  
+  
+  GEOM_VRMLPRINT_ENDAPP;
 
   return true;
 }
 
 
 /* ----------------------------------------------------------------------- */
+
 bool VrmlPrinter::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
 
   bool shapeused = false;
-  GEOM_VRMLPRINT_BEGINOBJ("Material",texture);
-  Color3 a(uchar_t(texture->getDiffuse()*texture->getAmbient().getRed()),
-           uchar_t(texture->getDiffuse()*texture->getAmbient().getGreen()),
-           uchar_t(texture->getDiffuse()*texture->getAmbient().getBlue()));
-  GEOM_VRMLPRINT_FIELD("diffuseColor",a,COLOR3);
-  real_t b = 0.0;
-  if(fabs(texture->getDiffuse())>GEOM_EPSILON) b = (real_t)1.0 / (real_t)texture->getDiffuse();
-  GEOM_VRMLPRINT_FIELD("ambientIntensity",b,REAL);
-  GEOM_VRMLPRINT_FIELD("specularColor",texture->getSpecular(),COLOR3);
-  GEOM_VRMLPRINT_FIELD("emissiveColor",texture->getEmission(),COLOR3);
-  GEOM_VRMLPRINT_FIELD("shininess",texture->getShininess(),REAL);
+  GEOM_VRMLPRINT_BEGINOBJ("ImageTexture",texture);
+  GEOM_VRMLPRINT_FIELD("url",texture->getFilename(),STRING);
+  GEOM_VRMLPRINT_FIELD("repeatS",texture->getRepeatS(),BOOLEAN);
+  GEOM_VRMLPRINT_FIELD("repeatT",texture->getRepeatT(),BOOLEAN);
   GEOM_VRMLPRINT_FIELD("transparency",texture->getTransparency(),REAL);
 
   GEOM_VRMLPRINT_ENDOBJ;
@@ -561,6 +584,22 @@ bool VrmlPrinter::process( ImageTexture * texture ) {
   return true;
 }
 
+/* ----------------------------------------------------------------------- */
+
+bool VrmlPrinter::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_ASSERT(texturetransfo);
+
+  bool shapeused = false;
+  GEOM_VRMLPRINT_BEGINOBJ("TextureTransform",texturetransfo);
+  GEOM_VRMLPRINT_FIELD("center",texturetransfo->getRotationCenter(),VECTOR2);
+  GEOM_VRMLPRINT_FIELD("rotation",texturetransfo->getRotationAngle(),REAL);
+  GEOM_VRMLPRINT_FIELD("scale",texturetransfo->getScale(),VECTOR2);
+  GEOM_VRMLPRINT_FIELD("translation",texturetransfo->getTranslation(),VECTOR2);
+
+  GEOM_VRMLPRINT_ENDOBJ;
+
+  return true;
+}
 
 /* ----------------------------------------------------------------------- */
 

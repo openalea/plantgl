@@ -841,11 +841,11 @@ void ViewGLFrame::selectGL()
       ptr++;
       val = (uint_t)*ptr;
       if(i == 0)selectedval = val;
-      else if(z < zmin){
-	selectedval = val;
-	zmin = z;
-      }
-      for(unsigned int j = 0 ; j < names ; j++)ptr++;
+	  else if(z < zmin){
+		  selectedval = val;
+		  zmin = z;
+	  }
+	  for(unsigned int j = 0 ; j < names ; j++)ptr++;
     }
     __scene->selectionEvent(selectedval);
     emit selectedShape(__scene->translateId(selectedval));
@@ -902,6 +902,7 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
   float z;
 
   vector<uint_t> vals;
+  vector<uint_t> actualvals;
   if(hits > 0){
     for(uint_t i = 0 ; i < (uint_t)hits ; i++){
       names = *ptr; //    cerr << "Number of names for this hits = " << names << endl;
@@ -911,15 +912,17 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
       ptr++;
       val = (uint_t)*ptr;
 	  vals.push_back(__scene->translateId(val));
+	  actualvals.push_back(val);
       for(unsigned int j = 0 ; j < names ; j++)ptr++;
     }
+
 	if(!vals.empty()){
 	  if(vals.size()==1){
-		__scene->selectionEvent(vals[0]);
+		__scene->selectionEvent(actualvals[0]);
 		emit selectedShape(vals[0]);
 	  }
 	  else {
-		__scene->selectionEvent(vals);
+		__scene->selectionEvent(actualvals);
 		emit selectedShapes(vals);
 	  }
 	}
@@ -1173,6 +1176,7 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 
 void ViewGLFrame::mousePressEvent( QMouseEvent* event)
 {
+  printf("mousePressEvent\n");
 
   __mouse = event->pos();
 
@@ -1180,7 +1184,7 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
     selectGL();
   }
   else if(__mode == MultipleSelection){
-	status(QString(tr("Mouse on")+"(%1,%1)").arg(__mouse.x()).arg(__mouse.y()),2000);
+	status(QString(tr("Mouse on")+"(%1,%2)").arg(__mouse.x()).arg(__mouse.y()),2000);
 	__selectionRect = new QRect(__mouse.x(),__mouse.y(),0,0);
   }
   else if(__mode == Rotation){
@@ -1232,6 +1236,7 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
 
 void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
 {
+  printf("mouseReleaseEvent\n");
   if(__mode == Selection){
 	if(!__scene->endSelect())setRotationMode();
   }
@@ -1239,6 +1244,9 @@ void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
 	delete __selectionRect;
 	__selectionRect = 0;
 	QPoint mouse = event->pos();
+	status(QString(tr("Selection from")+" (%1,%2) "+tr("to")+" (%3,%4)")
+			.arg(__mouse.x()).arg(__mouse.y()).arg(mouse.x()).arg(mouse.y()),2000);
+	printf("mouseReleaseEvent : multipleSelectGL\n");
 	multipleSelectGL(mouse);
 	setRotationMode();
   }
@@ -1251,7 +1259,7 @@ void ViewGLFrame::mouseMoveEvent( QMouseEvent* event)
 {
   QPoint mouse = event->pos();
   if(__mode == MultipleSelection){
-	status(QString(tr("Selection from")+" (%1,%1) "+tr("to")+" (%1,%1)")
+	status(QString(tr("Selection from")+" (%1,%2) "+tr("to")+" (%3,%4)")
 			.arg(__mouse.x()).arg(__mouse.y()).arg(mouse.x()).arg(mouse.y()),2000);
 	if(__selectionRect)
 	  *__selectionRect = QRect(min(__mouse.x(),mouse.x()),
@@ -1842,7 +1850,7 @@ ViewGLFrame::glNormalization(bool b){
 }
 
 void
-ViewGLFrame::animation(bool b){
+ViewGLFrame::setAnimation(eAnimationFlag b){
   ViewSceneRendererGL * r = dynamic_cast<ViewSceneRendererGL *>(__scene);
   if(r)r->setAnimation(b);
   __camera->lockDim(b);

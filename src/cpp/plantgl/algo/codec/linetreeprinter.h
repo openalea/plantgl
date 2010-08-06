@@ -129,6 +129,10 @@ public:
 
   virtual bool process( ImageTexture * texture );
 
+  virtual bool process( Texture2D * texture );
+
+  virtual bool process( Texture2DTransformation * texturetransformation );
+
   //@}
 
 

@@ -84,6 +84,15 @@ public:
 
     void insertMaterial(size_t pos, const AppearancePtr& mat);
 
+    inline void appendMaterial(const ImageTexturePtr& mat)
+	{ appendMaterial(AppearancePtr(new Texture2D(mat))); }
+    
+    void setMaterial(size_t pos, const ImageTexturePtr& mat)
+	{ setMaterial(pos,AppearancePtr(new Texture2D(mat))); }
+
+    void insertMaterial(size_t pos, const ImageTexturePtr& mat)
+	{ insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
+
     AppearancePtr getMaterial(size_t pos);
 
     void appendColor(uint_t red, uint_t green, uint_t blue);

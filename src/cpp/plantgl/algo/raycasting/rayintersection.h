@@ -125,7 +125,13 @@ public :
       - \e multiSpectral must be non null and valid. */
   virtual bool process( MultiSpectral * multiSpectral );
 
+  virtual bool process( Texture2D * texture )
+       { return false; }
+
   virtual bool process( ImageTexture * texture )
+       { return false; }
+
+  virtual bool process( Texture2DTransformation * texture )
        { return false; }
   //@}
 

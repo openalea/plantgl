@@ -36,13 +36,18 @@ public:
     //@{
 	virtual bool process( Material * material );
 
-	virtual bool process( ImageTexture * texture ); //
+	virtual bool process( Texture2D * texture );
+
+	virtual bool process( ImageTexture * texture );
+
+	virtual bool process( Texture2DTransformation * texturetransfo );
 
 	//@}
 	
 	/// @name Geom3D
     //@{
-	//virtual bool process( AmapSymbol * amapSymbol );
+	// virtual bool process( AmapSymbol * amapSymbol );
+
 	virtual bool process( AsymmetricHull * asymmetricHull );
 
 	virtual bool process( AxisRotated * axisRotated );

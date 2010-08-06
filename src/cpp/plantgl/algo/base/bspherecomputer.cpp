@@ -211,6 +211,26 @@ BSphereComputer::process( ImageTexture * texture )
 
 
 bool
+BSphereComputer::process( Texture2D * texture )
+{
+  GEOM_ASSERT( texture );
+  return false;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool
+BSphereComputer::process( Texture2DTransformation * texture )
+{
+  GEOM_ASSERT( texture );
+  return false;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool
 BSphereComputer::process( MonoSpectral * monoSpectral )
 {
   GEOM_ASSERT( monoSpectral );

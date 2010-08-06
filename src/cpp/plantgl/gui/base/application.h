@@ -42,6 +42,7 @@
 
 #include "../gui_config.h"
 #include "appbuilder.h"
+#include "flags.h"
 #include <plantgl/math/util_vector.h>
 #include <vector>
 #include <string>
@@ -132,7 +133,7 @@ public :
   static void fullScreen(bool b = true);
   static void glFrameOnly(bool b = true);
 
-  static void animation(bool b = true);
+  static void setAnimation(eAnimationFlag b = eStatic);
   static void setBgColor(int red, int green, int blue);
 
   /// Get the selection.

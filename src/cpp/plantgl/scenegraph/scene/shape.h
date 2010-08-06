@@ -44,6 +44,7 @@
 
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/appearance/material.h>
+#include <plantgl/scenegraph/appearance/texture.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -181,6 +182,21 @@ public:
   Shape( const std::string&   name,
 		 const GeometryPtr&   geom,
 	     const AppearancePtr& app = Material::DEFAULT_MATERIAL,
+         uint_t id = NOID,
+         uint_t parent_id = NOID );
+
+  /** Constructs a Shape with the Geometry \e geom, the Appearance
+      \e app and the id \e id. */
+  Shape( const GeometryPtr&  geom,
+         const ImageTexturePtr& app,
+         uint_t id = NOID,
+         uint_t parent_id = NOID);
+
+  /** Constructs a Shape with the Geometry \e geom, the Appearance
+      \e app and the id \e id. */
+  Shape( const std::string&   name,
+		 const GeometryPtr&   geom,
+	     const ImageTexturePtr& app,
          uint_t id = NOID,
          uint_t parent_id = NOID );
 

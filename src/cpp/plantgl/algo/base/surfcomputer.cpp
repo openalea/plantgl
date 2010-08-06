@@ -653,6 +653,20 @@ bool SurfComputer::process( ImageTexture * texture ) {
   return false;
 }
 
+bool SurfComputer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __result = 0;
+  return false;
+}
+
+bool SurfComputer::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __result = 0;
+  return false;
+}
+
 bool SurfComputer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
   // nothing to do

@@ -214,12 +214,32 @@ PlyPrinter::process( Material * material )
 /* ----------------------------------------------------------------------- */
 
 bool
+PlyPrinter::process( Texture2D * texture )
+{
+  GEOM_ASSERT( texture );
+  __red = 0;
+  __green = 0;
+  __blue = 0;
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool
 PlyPrinter::process( ImageTexture * texture )
 {
   GEOM_ASSERT( texture );
-  __red = int(texture->getAmbient().getRed());
-  __green = int(texture->getAmbient().getGreen());
-  __blue = int(texture->getAmbient().getBlue());
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool
+PlyPrinter::process( Texture2DTransformation * texture )
+{
+  GEOM_ASSERT( texture );
   return true;
 }
 

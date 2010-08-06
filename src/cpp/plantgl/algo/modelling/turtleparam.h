@@ -110,12 +110,28 @@ public:
 
 };
 
+class TurtleDrawParameter {
+public:
+
+  TurtleDrawParameter();
+
+  int color;
+  Curve2DPtr crossSection;
+  bool crossSectionCCW;
+
+  TOOLS(Vector2) texCoordScale;
+  TOOLS(Vector2) texCoordTranslation;
+  TOOLS(Vector2) texCoordRotCenter;
+  real_t texCoordRotAngle;
+
+  void reset();
+};
 
 /**! Class that contains all the parameters needed by the turtle :
 	 position, orientation [heading,left,up] vectors
      color id, width, polygon and generalized cylinder flag */
 
-class ALGO_API TurtleParam {
+class ALGO_API TurtleParam  : public TurtleDrawParameter {
 
 public:
 	/// Constructor
@@ -184,24 +200,28 @@ public:
   TOOLS(Vector3) left;
   TOOLS(Vector3) up;
   TOOLS(Vector3) scale;
+
   uint_t lastId;
-  int color;
-  int texture;
   real_t width;
+
   std::vector<TOOLS(Vector3)> pointList;
   std::vector<TOOLS(Vector3)> leftList;
   std::vector<real_t> radiusList;
-  Curve2DPtr crossSection;
-  bool crossSectionCCW;
 
   uint_t customId;
   uint_t customParentId;
 
   uint_t sectionResolution;
 
+  TurtleDrawParameter initial;
+
   Curve2DPtr initialCrossSection;
   bool initialCrossSectionCCW;
   int initialColor;
+  TOOLS(Vector2) initialTexCoordScale;
+  TOOLS(Vector2) initialTexCoordTranslation;
+  TOOLS(Vector2) initialTexCoordRotCenter;
+  real_t initialTexCoordRotAngle;
 
   TOOLS(Vector3) tropism;
   real_t elasticity;

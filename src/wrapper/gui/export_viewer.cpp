@@ -215,13 +215,14 @@ void glFrameOnly1(int b){
   ViewerApplication::glFrameOnly(b);
 }
 
-void animation1(int b){
-  ViewerApplication::animation(b);
+void setAnimation1(eAnimationFlag b){
+  ViewerApplication::setAnimation(b);
 }
 
-void animation0(){
-  ViewerApplication::animation(true);
+void animation1(bool b){
+	ViewerApplication::setAnimation(b?eAnimatedScene:eStatic);
 }
+
 
 void setBGColorO(boost::python::object o){
   int r = extract<int>(o.attr("red"))();
@@ -531,6 +532,13 @@ public :
 
 void export_viewer()
 {
+  enum_<eAnimationFlag>("eAnimationFlag")
+	  .value("eStatic",eStatic)
+	  .value("eAnimatedPrimitives",eAnimatedPrimitives)
+	  .value("eAnimatedScene",eAnimatedScene)
+	  .export_values()
+	  ;
+ 
   ViewerApplication::registerThreadStateSaver<PyStateSaver>();
 
   def("getMaterialFromDialog", pyGetMaterialFromDialog, pyGetMaterialFromDialog_overloads());
@@ -574,8 +582,9 @@ void export_viewer()
     .staticmethod("getCurrentScene")
 	.def("update",&ViewerApplication::update,"update() : update the current visualization.")
     .staticmethod("update")
-	.def("animation",&animation1,"animation(bool enable = True) : Set viewer in animation mode [No display list, No camera adjutement]",args("enable"))
-    .def("animation",&animation0)
+	.def("setAnimation",&setAnimation1,"setAnimation(flag = eStatic[|eAnimatedScene|eAnimatedPrimitives]) : Set viewer in animation mode [Minimal/No display list, No camera adjutement]. eAnimatedScene supposed that the number of element changes but previous primitives stay the same. eAnimatedPrimitives supposed that even individual primitives can changed and thus cache/display list are not reused.",(bp::arg("flag")=eStatic))
+    .staticmethod("setAnimation") 
+    .def("animation",&animation1,"deprecated",(bp::arg("enabled")=true))
     .staticmethod("animation") 
 	.def("winId",&ViewerApplication::viewerId)
     .staticmethod("winId") 

@@ -289,9 +289,27 @@ XMLPrinter::process( Material * material )
 /* ----------------------------------------------------------------------- */
 
 bool
-XMLPrinter::process( ImageTexture * material )
+XMLPrinter::process( Texture2D * texture)
 {
-  GEOM_ASSERT( material );
+  GEOM_ASSERT( texture );
+  return false;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool
+XMLPrinter::process( ImageTexture * texture )
+{
+  GEOM_ASSERT( texture );
+  return false;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool
+XMLPrinter::process( Texture2DTransformation * texture )
+{
+  GEOM_ASSERT( texture );
   return false;
 }
 

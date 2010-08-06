@@ -51,7 +51,7 @@
 #include <plantgl/algo/opengl/gltransitionrenderer.h>
 #include <plantgl/algo/opengl/glskelrenderer.h>
 #include <plantgl/algo/opengl/glctrlptrenderer.h>
-//#include <plantgl/tool/util_hashmap.h>
+// #include <plantgl/tool/util_hashmap.h>
 #include <vector>
 #include <QtCore/QHash>
 /* ----------------------------------------------------------------------- */
@@ -329,7 +329,7 @@ protected :
 
   virtual void customEvent(QEvent *); 
 
-  virtual void animationChangedEvent(bool);
+  virtual void animationChangedEvent(eAnimationFlag);
 
   /// The scene object (which contains all the geometric shape and appereance to display).
   PGL(ScenePtr) __scene;
@@ -359,8 +359,12 @@ protected :
   PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
-  typedef QHash<uint_t,PGL(Shape3DPtr)> SelectionCache;
+  typedef QHash<uint_t,PGL(Shape3DPtr)> SelectionCache; 
+  // typedef pgl_hash_map<uint_t,PGL(Shape3DPtr)> SelectionCache;
   SelectionCache __selectedShapes;
+
+  inline uint_t get_item_key(SelectionCache::const_iterator it) const { return it.key(); }
+  inline PGL(Shape3DPtr) get_item_value(SelectionCache::const_iterator it) const { return it.value(); }
 
   /// Do some blending
   bool __blending;

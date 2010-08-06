@@ -133,6 +133,20 @@ bool WireComputer::process( ImageTexture * texture ) {
   return false;
 }
 
+bool WireComputer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __wire = GeometryPtr();
+  return false;
+}
+
+bool WireComputer::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __wire = GeometryPtr();
+  return false;
+}
+
 bool WireComputer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
     // nothing to do

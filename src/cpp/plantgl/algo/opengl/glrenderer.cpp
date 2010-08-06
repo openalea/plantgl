@@ -375,6 +375,7 @@ bool GLRenderer::endProcess(){
   glDisable( GL_TEXTURE_2D );
   glBindTexture(GL_TEXTURE_2D, 0);
   __appearance = AppearancePtr();
+  // __discretizer.computeTexCoord(false);
   return true;
 }
 
@@ -914,38 +915,6 @@ bool GLRenderer::process( Material * material ) {
 /* ----------------------------------------------------------------------- */
 bool GLRenderer::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
-  GEOM_GLRENDERER_CHECK_APPEARANCE(texture);
-
-  GLfloat _rgba[4];
-  const Color3& _ambient = texture->getAmbient();
-  _rgba[0] = (GLfloat)_ambient.getRedClamped();
-  _rgba[1] = (GLfloat)_ambient.getGreenClamped();
-  _rgba[2] = (GLfloat)_ambient.getBlueClamped();
-  _rgba[3] = 1.0f-texture->getTransparency();
-  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
-
-  const real_t& _diffuse = texture->getDiffuse();
-  _rgba[0] *= _diffuse;
-  _rgba[1] *= _diffuse;
-  _rgba[2] *= _diffuse;
-  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,_rgba);
-
- /// We set the current color in the case of disabling the lighting
-  glColor4fv(_rgba);
-
-  const Color3& _specular = texture->getSpecular();
-  _rgba[0] = (GLfloat)_specular.getRedClamped();
-  _rgba[1] = (GLfloat)_specular.getGreenClamped();
-  _rgba[2] = (GLfloat)_specular.getBlueClamped();
-  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,_rgba);
-
-  const Color3& _emission = texture->getEmission();
-  _rgba[0] = (GLfloat)_emission.getRedClamped();
-  _rgba[1] = (GLfloat)_emission.getGreenClamped();
-  _rgba[2] = (GLfloat)_emission.getBlueClamped();
-  glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,_rgba);
-
-  glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,texture->getShininess());
 
   Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
   if(it != __cachetexture.end()){
@@ -968,6 +937,14 @@ bool GLRenderer::process( ImageTexture * texture ) {
 //	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL  );
 //	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND  );
 	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
+
+	  glTexParameterf( GL_TEXTURE_2D, 
+					   GL_TEXTURE_WRAP_S, 
+					   texture->getRepeatS() ? GL_REPEAT : GL_CLAMP);
+
+	  glTexParameterf( GL_TEXTURE_2D, 
+					   GL_TEXTURE_WRAP_T, 
+					   texture->getRepeatT() ? GL_REPEAT : GL_CLAMP);
 
 	  glTexParameterf( GL_TEXTURE_2D, 
 					   GL_TEXTURE_MAG_FILTER, 
@@ -997,12 +974,68 @@ bool GLRenderer::process( ImageTexture * texture ) {
 	}
   }
 
+  GEOM_ASSERT(glGetError() == GL_NO_ERROR);
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool GLRenderer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  GEOM_GLRENDERER_CHECK_APPEARANCE(texture);
+
+  if(texture->getImage()){
+	  // load image
+	  texture->getImage()->apply(*this);
+
+	  // apply texture transformation
+	  if(texture->getTransformation())
+			texture->getTransformation()->apply(*this);
+	  else {
+		// Set Texture transformation to Id if no transformation is specified
+		glMatrixMode(GL_TEXTURE);
+		glLoadIdentity();
+		glMatrixMode(GL_MODELVIEW);
+	  }
+  }
   GEOM_GLRENDERER_UPDATE_APPEARANCE(texture);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
   return true;
 }
 
+/* ----------------------------------------------------------------------- */
+
+bool GLRenderer::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_ASSERT(texturetransfo);
+
+  glMatrixMode(GL_TEXTURE);
+  glLoadIdentity();
+
+  if (!texturetransfo->isTranslationToDefault()){
+	  Vector2& value = texturetransfo->getTranslation();
+	  glGeomTranslate(value.x(),value.y(),0.0);
+  }
+
+  if (!texturetransfo->isRotationAngleToDefault()){
+	  Vector2& rotationCenter = texturetransfo->getRotationCenter();
+	  glGeomTranslate(rotationCenter.x(),rotationCenter.y(),0.0);
+
+	  real_t& value = texturetransfo->getRotationAngle();
+	  glGeomRadRotate(0,0,1,value);
+
+	  glGeomTranslate(-rotationCenter.x(),-rotationCenter.y(),0.0);
+  }
+
+  if (!texturetransfo->isScaleToDefault()){
+	  Vector2& value = texturetransfo->getScale();
+	  glGeomScale(value.x(),value.y(),1.0);
+  }
+
+  glMatrixMode(GL_MODELVIEW);
+  return true;
+}
 
 /* ----------------------------------------------------------------------- */
 

@@ -104,7 +104,10 @@ void module_sg()
 
 	export_Appearance();
     export_Material();
+	export_Texture2D();
     export_ImageTexture();
+	export_Texture2DTransformation();
+
     export_Spectrum();
     export_MonoSpectral();
     export_MultiSpectral();

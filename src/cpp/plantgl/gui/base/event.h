@@ -46,6 +46,7 @@
 #include <vector>
 #include "../gui_config.h"
 #include <plantgl/math/util_vector.h>
+#include "flags.h"
 
 #ifdef QT_THREAD_SUPPORT
 #include <QtCore/qthread.h>
@@ -453,7 +454,7 @@ typedef TViewEvent<ViewEvent::eQuestion,int,QString,QString,QString,QString,QStr
 typedef TViewEvent<ViewEvent::eItemSelection,QString,QString,QString,QStringList,bool,bool *> ViewItemSelectionEvent;
 typedef TViewEvent<ViewEvent::eDoubleSelection,double,QString,QString,double,double,double,bool *> ViewDoubleSelectionEvent;
 typedef TViewEvent<ViewEvent::eFileSelection,QString,QString,QString,QString,bool,bool> ViewFileSelEvent;
-typedef TPViewEvent<ViewEvent::eAnimation,bool> ViewAnimationEvent;
+typedef TPViewEvent<ViewEvent::eAnimation,eAnimationFlag> ViewAnimationEvent;
 typedef TPViewEvent<ViewEvent::eBgColor,QColor> ViewBgColorEvent;
 typedef TPViewEvent<ViewEvent::eGrid,bool,bool,bool,bool,int,int,int> ViewGridEvent;
 typedef TPViewEvent<ViewEvent::eCameraSet,Vector3,Vector3,float,float,int> ViewCameraSetEvent;

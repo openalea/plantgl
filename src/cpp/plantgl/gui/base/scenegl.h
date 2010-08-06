@@ -69,6 +69,10 @@ class ViewSceneChangeEvent;
 
 /* ----------------------------------------------------------------------- */
 
+#include "flags.h"
+
+/* ----------------------------------------------------------------------- */
+
 /**   
    \class ViewRendererGL
    \brief An abstract class for Display Manager.
@@ -264,7 +268,7 @@ public :
   /// Set the light.
   void setLight(ViewLightGL *); 
 
-  inline bool isAnimated() const { return __animated; }
+  inline eAnimationFlag isAnimated() const { return __animated; }
 
 public slots:
 
@@ -272,12 +276,12 @@ public slots:
 
   virtual void useDisplayList(bool);
 
-  void setAnimation(bool b) { __animated = b;  animationChangedEvent(b); }
+  void setAnimation(eAnimationFlag flag) { __animated = flag;  animationChangedEvent(flag); }
 
 
 protected :
 
-  virtual void animationChangedEvent(bool) { }
+  virtual void animationChangedEvent(eAnimationFlag flag) { }
 
   /// The camera.
   ViewCameraGL * __camera;
@@ -285,7 +289,7 @@ protected :
   /// The light.
   ViewLightGL * __light;
 
-  bool __animated;
+  eAnimationFlag __animated;
 };
 
 /* ----------------------------------------------------------------------- */

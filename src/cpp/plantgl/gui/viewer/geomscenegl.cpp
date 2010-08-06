@@ -189,7 +189,7 @@ ViewGeomSceneGL::getSelectionIds() const
   std::vector<uint_t> res;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  res.push_back(_it.value()->getId());
+	  res.push_back(get_item_value(_it)->getId());
   return res;
 }
 
@@ -212,7 +212,7 @@ ViewGeomSceneGL::getSelection( ) const
   ScenePtr scene(new Scene);
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  scene->add(_it.value());
+	  scene->add(get_item_value(_it));
   return scene;
 }
 
@@ -241,7 +241,7 @@ ViewGeomSceneGL::getSelectionBoundingBox()
   BoundingBoxPtr bbox;
   for(SelectionCache::const_iterator _it = __selectedShapes.begin();
   _it !=__selectedShapes.end(); _it++)
-	  if(_it.value()->apply(__bboxComputer)){
+	  if(get_item_value(_it)->apply(__bboxComputer)){
 		if(bbox)bbox->extend(__bboxComputer.getBoundingBox());
 		else bbox = BoundingBoxPtr(new BoundingBox(*__bboxComputer.getBoundingBox()));
 	  }
@@ -281,9 +281,10 @@ ViewGeomSceneGL::refreshDisplay() {
 
 void ViewGeomSceneGL::enableBlending(bool b) { __blending = b; emit valueChanged(); }
 
-void ViewGeomSceneGL::animationChangedEvent(bool a)
+void ViewGeomSceneGL::animationChangedEvent(eAnimationFlag a)
 {
-	if(a) __renderer.setRenderingMode(GLRenderer::DynamicScene);
+	if(a == eAnimatedScene) __renderer.setRenderingMode(GLRenderer::DynamicScene);
+	else if(a == eAnimatedPrimitives) __renderer.setRenderingMode(GLRenderer::Dynamic);
 	else __renderer.setRenderingMode(GLRenderer::Normal);
 }
 
@@ -342,12 +343,15 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
   }
 
   // Clears all the actions
-  if (!isAnimated()){
+  if (isAnimated() == eStatic){
     __scene = ScenePtr();
     __bbox= BoundingBoxPtr();
     clearCache();
   }
-  else { __selectedShapes.clear(); }
+  else { 
+	  __selectedShapes.clear(); 
+	  if(isAnimated() == eAnimatedPrimitives) clearCache();
+  }
 
   // Sets the scene
   __scene = scene;
@@ -494,7 +498,7 @@ ViewGeomSceneGL::paintGL()
 	  glGeomColor(Color3(64,64,64));
       for(SelectionCache::iterator _it = __selectedShapes.begin();
           _it !=__selectedShapes.end(); _it++)
-        _it.value()->apply(__bboxRenderer);
+        get_item_value(_it)->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
     }
   }
@@ -520,7 +524,7 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
 {
   SelectionCache::iterator _it =__selectedShapes.find(id);
   if(_it!=__selectedShapes.end()){
-    Shape3DPtr ptr = _it.value();
+    Shape3DPtr ptr = get_item_value(_it);
 	__selectedShapes.erase(_it);
     uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 	info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("unselected")+".");
@@ -550,46 +554,56 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
 void
 ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 {
-  SelectionCache::iterator _it;
-  uint_t selected = 0;
-  uint_t unselected = 0;
-  QSet<uint_t> selection;
-  for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
-	_it =__selectedShapes.find(*_id);
-	if(_it!=__selectedShapes.end()){
-	  __selectedShapes.erase(_it);
-	  unselected++;
-	}
-	else {
-		selection.insert(*_id);
-	}
-  }
+	SelectionCache::iterator _it;
+	uint_t selected = 0;
+	uint_t unselected = 0;
+	QSet<uint_t> selection;
+	printf("selection size %i.\n",id.size());
 
-  Shape3DPtr ptr;
-  for(Scene::iterator _it = __scene->begin(); _it != __scene->end(); _it++){
-	if((ptr= dynamic_pointer_cast<Shape>(*_it)) && selection.find(ptr->SceneObject::getId())!=selection.end()){
-		  __selectedShapes[ptr->SceneObject::getId()]=ptr;
-		  selected++;
+	for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
+		printf("look for %i.\n",*_id);
+		_it =__selectedShapes.find(*_id);
+		if(_it != __selectedShapes.end()){
+			printf("unselected %i.\n",_id);
+			__selectedShapes.erase(_it);
+			unselected++;
+		}
+		else {
+			printf("keep %i.\n",*_id);
+			selection.insert(*_id);
+		}
 	}
-  }
+	printf("selection size %i.\n",selection.size());
 
-  QString mess;
-  if(selected > 0){
-	mess = "shape";
-	if(selected != 1)mess +='s';
-	mess +=" "+tr("selected");
-	mess = QString::number(selected) + " "+ mess;
-  }
-  if(selected > 0 && unselected > 0)mess += " "+tr("and")+" ";
-  if(unselected > 0){
-	QString mess2 = "shape";
-	if(unselected != 1)mess2 +='s';
-	mess2 +=" unselected";
-	mess += mess + QString::number(unselected)+ " " + mess2;
-  }
-  mess +='.';
-  info("*** Comment : " +mess);
-  status(mess,20000);
+	Shape3DPtr ptr;
+	for(Scene::iterator _it = __scene->begin(); _it != __scene->end(); _it++){
+		printf("test %i.\n",(*_it)->getId());
+		if( (ptr = dynamic_pointer_cast<Shape>(*_it)) && 
+			selection.find(ptr->SceneObject::getId()) != selection.end()){
+			printf("selected %i.\n",ptr->SceneObject::getId());
+
+			__selectedShapes[ptr->SceneObject::getId()]=ptr;
+			selected++;
+		}
+	}
+
+	QString mess;
+	if(selected > 0){
+		mess = "shape";
+		if(selected != 1)mess +='s';
+		mess +=" "+tr("selected");
+		mess = QString::number(selected) + " "+ mess;
+	}
+	if(selected > 0 && unselected > 0)mess += " "+tr("and")+" ";
+	if(unselected > 0){
+		QString mess2 = "shape";
+		if(unselected != 1)mess2 +='s';
+		mess2 +=" unselected";
+		mess += mess + QString::number(unselected)+ " " + mess2;
+	}
+	mess +='.';
+	info("*** Comment : " +mess);
+	status(mess,20000);
 }
 
 void
@@ -710,7 +724,7 @@ ViewGeomSceneGL::wireSelection()
   SelectionCache selection;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(_it.value());
+	ShapePtr sh = dynamic_pointer_cast<Shape>(get_item_value(_it));
 	if(sh){
 	  if(sh->apply(wire)){
 		sh->geometry = wire.getWire();
@@ -739,7 +753,7 @@ ViewGeomSceneGL::discretizeSelection()
   SelectionCache selection;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(_it.value());
+	ShapePtr sh = dynamic_pointer_cast<Shape>(get_item_value(_it));
 	if(sh){
 	  if(sh->apply(__discretizer)){
 		sh->geometry = GeometryPtr(__discretizer.getDiscretization());
@@ -769,7 +783,7 @@ ViewGeomSceneGL::triangulateSelection()
   SelectionCache selection;
   for(SelectionCache::iterator _it = __selectedShapes.begin();
 	  _it != __selectedShapes.end();_it++){
-	ShapePtr sh = dynamic_pointer_cast<Shape>(_it.value());
+	ShapePtr sh = dynamic_pointer_cast<Shape>(get_item_value(_it));
 	Tesselator t;
 	if(sh){
 	  if(sh->apply(t)){
@@ -1098,7 +1112,7 @@ ViewMultiGeomSceneGL::paintGL()
         glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
         for(SelectionCache::iterator _it = __selectedShapes.begin();
             _it !=__selectedShapes.end(); _it++)
-          _it.value()->apply(__bboxRenderer);
+          get_item_value(_it)->apply(__bboxRenderer);
       }
     }
   }

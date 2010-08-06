@@ -323,7 +323,7 @@ ViewerApplication::glFrameOnly(bool b){
   _sendAnEvent(new ViewGLFrameOnlyEvent(b));
 }
 
-void ViewerApplication::animation(bool anim){
+void ViewerApplication::setAnimation(eAnimationFlag anim){
   _sendAnEvent(new ViewAnimationEvent(anim));
 }
 

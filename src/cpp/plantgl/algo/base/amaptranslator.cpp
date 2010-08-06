@@ -127,6 +127,26 @@ bool AmapTranslator::process( ImageTexture * texture ) {
 
 /* ----------------------------------------------------------------------- */
 
+bool AmapTranslator::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __symbol = AmapSymbolPtr();
+  return false;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool AmapTranslator::process( Texture2DTransformation * texturetransformation ) {
+  GEOM_ASSERT(texturetransformation);
+  // nothing to do
+  __symbol = AmapSymbolPtr();
+  return false;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
 
 bool AmapTranslator::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);

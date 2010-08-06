@@ -69,9 +69,17 @@ void export_Turtle()
     .def("setWidth", &Turtle::setWidth )
     .def("incWidth", &Turtle::incWidth )
     .def("decWidth", &Turtle::decWidth )
-    .def("setTexture", &Turtle::setTexture )
-    .def("incTexture", &Turtle::incTexture )
-    .def("decTexture", &Turtle::decTexture )
+
+    .def("setTextureScale", &Turtle::setTextureScale )
+    .def("setTextureVScale", &Turtle::setTextureVScale )
+    .def("setTextureUScale", &Turtle::setTextureUScale )
+	.def("setTextureRotation", &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("ucenter")=0.5,bp::arg("vcenter")=0.5))
+	.def("setTextureTranslation", &Turtle::setTextureTranslation ,(bp::arg("u")=0,bp::arg("v")=0))
+	.def("setTextureTransformation", &Turtle::setTextureTransformation ,
+		(bp::arg("uscaling")=1,bp::arg("vscaling")=1,
+		 bp::arg("utranslation")=0,bp::arg("vtranslation")=0,
+		 bp::arg("angle")=0,bp::arg("urotcenter")=0.5,bp::arg("vrotcenter")=0.5))
+    
     .def("setId", &Turtle::setId )
     .def("incId", &Turtle::incId )
     .def("decId", &Turtle::decId )
@@ -96,7 +104,6 @@ void export_Turtle()
     .def("getTransformationMatrix", &Turtle::getTransformationMatrix)
 
     .def("getColorListSize",  &Turtle::getColorListSize )
-    .def("getTextureListSize",&Turtle::getTextureListSize )
     
     .def("reset", &Turtle::reset)
     .def("resetValues", &Turtle::resetValues)

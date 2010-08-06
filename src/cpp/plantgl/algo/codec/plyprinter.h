@@ -160,7 +160,20 @@ public :
       - \e multiSpectral must be non null and valid. */
   virtual bool process( MultiSpectral * multiSpectral );
 
+  /** Applies \e self to an object of type of Texture2D.
+    \warning
+      - \e texture must be non null and valid. */
+  virtual bool process( Texture2D * texture );
+
+  /** Applies \e self to an object of type of ImageTexture.
+    \warning
+      - \e texture must be non null and valid. */
   virtual bool process( ImageTexture * texture );
+
+  /** Applies \e self to an object of type of Texture2DTransformation.
+    \warning
+      - \e texture must be non null and valid. */
+  virtual bool process( Texture2DTransformation * texture );
 
   //@}
 

@@ -106,6 +106,8 @@ TokenCode::TokenCode(const float version ):
   __code[uchar_t(41)] = pair<string,uint_t>(string("ImageTexture"),0);
   __code[uchar_t(42)] = pair<string,uint_t>(string("Text"),0);
   __code[uchar_t(43)] = pair<string,uint_t>(string("Font"),0);
+  __code[uchar_t(44)] = pair<string,uint_t>(string("Texture2D"),0);
+  __code[uchar_t(45)] = pair<string,uint_t>(string("Texture2DTransformation"),0);
 }
 
 TokenCode::~TokenCode(){
@@ -128,7 +130,7 @@ bool TokenCode::setStatistic(const StatisticComputer& a){
 
 
 vector<uint_t> TokenCode::getCounts(){
-    vector<uint_t> counts((unsigned int)42,0);
+    vector<uint_t> counts((unsigned int)44,0);
     for(pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
         _it != __code.end();_it++){
         if(_it->second.first == "Shape") counts[0]+=_it->second.second;
@@ -173,6 +175,8 @@ vector<uint_t> TokenCode::getCounts(){
         else if(_it->second.first == "ImageTexture" ) counts[39]+=_it->second.second;
         else if(_it->second.first == "Text" ) counts[40]+=_it->second.second;
         else if(_it->second.first == "Font" ) counts[41]+=_it->second.second;
+        else if(_it->second.first == "Texture2D" ) counts[42]+=_it->second.second;
+        else if(_it->second.first == "Texture2DTransformation" ) counts[43]+=_it->second.second;
     }
     return counts;
 }
@@ -442,7 +446,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(2.2f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(2.3f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -741,22 +745,23 @@ bool BinaryPrinter::process( Material * material ) {
 /* ----------------------------------------------------------------------- */
 
 bool BinaryPrinter::process( ImageTexture * texture ) {
-  GEOM_ASSERT(material);
+  GEOM_ASSERT(texture);
   GEOM_PRINT_BEGIN(ImageTexture,texture);
 
   uchar_t _default(0);
-  if (texture->isAmbientToDefault())
-      _default+=1;
-  if (texture->isDiffuseToDefault())
-      _default+=2;
-  if (texture->isSpecularToDefault())
-      _default+=4;
-  if (texture->isEmissionToDefault())
-      _default+=8;
-  if (texture->isShininessToDefault())
-      _default+=16;
-  if (texture->isTransparencyToDefault())
-      _default+=32;
+
+  if(__tokens.getVersion() < 2.3f) {
+	  _default = 63;
+  }
+  else {
+	  if (texture->isRepeatSToDefault())
+		  _default+=1;
+	  if (texture->isRepeatTToDefault())
+		  _default+=2;
+	  if (texture->isTransparencyToDefault())
+		  _default+=4;
+  }
+
   if(__tokens.getVersion() >= 1.8f)
     if (texture->isMipmapingToDefault())
         _default+=64;
@@ -764,23 +769,16 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
 
   printFile(texture->getFilename());
 
-  if (! texture->isAmbientToDefault())
-    GEOM_PRINT_FIELD(texture,Ambient,COLOR3);
+  if(__tokens.getVersion() > 2.3f) {
+	  if (! texture->isRepeatSToDefault())
+		GEOM_PRINT_FIELD(texture,RepeatS,BOOLEAN);
 
-  if (! texture->isDiffuseToDefault())
-    GEOM_PRINT_FIELD(texture,Diffuse,REAL);
+	  if (! texture->isRepeatTToDefault())
+		GEOM_PRINT_FIELD(texture,RepeatT,BOOLEAN);
 
-  if (! texture->isSpecularToDefault())
-    GEOM_PRINT_FIELD(texture,Specular,COLOR3);
-
-  if (! texture->isEmissionToDefault())
-    GEOM_PRINT_FIELD(texture,Emission,COLOR3);
-
-  if (! texture->isShininessToDefault())
-    GEOM_PRINT_FIELD(texture,Shininess,REAL);
-
-  if (! texture->isTransparencyToDefault())
-    GEOM_PRINT_FIELD(texture,Transparency,REAL);
+	  if (! texture->isTransparencyToDefault())
+		GEOM_PRINT_FIELD(texture,Transparency,REAL);
+  }
 
   if(__tokens.getVersion() >= 1.8f){
       if (! texture->isMipmapingToDefault())
@@ -792,6 +790,60 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
 
 /* ----------------------------------------------------------------------- */
 
+bool BinaryPrinter::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  GEOM_PRINT_BEGIN(Texture2D,texture);
+
+  uchar_t _default(0);
+  if (texture->isTransformationToDefault())
+      _default+=1;
+  writeUchar(_default);
+
+  texture->getImage()->apply(*this);
+
+  if (!texture->isTransformationToDefault())
+	texture->getTransformation()->apply(*this);
+
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool BinaryPrinter::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_ASSERT(texturetransfo);
+  GEOM_PRINT_BEGIN(Texture2DTransformation,texturetransfo);
+
+  uchar_t _default(0);
+  if (texturetransfo->isScaleToDefault())
+      _default+=1;
+
+  if (texturetransfo->isTranslationToDefault())
+      _default+=2;
+
+  if (texturetransfo->isRotationCenterToDefault())
+      _default+=4;
+
+  if (texturetransfo->isRotationAngleToDefault())
+      _default+=8;
+
+  writeUchar(_default);
+
+  if (!texturetransfo->isScaleToDefault())
+        GEOM_PRINT_FIELD(texturetransfo,Scale,VECTOR2);
+
+  if (!texturetransfo->isTranslationToDefault())
+        GEOM_PRINT_FIELD(texturetransfo,Translation,VECTOR2);
+
+  if (!texturetransfo->isRotationCenterToDefault())
+        GEOM_PRINT_FIELD(texturetransfo,RotationCenter,VECTOR2);
+
+  if (!texturetransfo->isRotationAngleToDefault())
+        GEOM_PRINT_FIELD(texturetransfo,RotationAngle,REAL);
+
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
 
 bool BinaryPrinter::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);

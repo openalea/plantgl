@@ -119,6 +119,16 @@ public:
 
   /// Get the number of ImageTexture.
   const uint_t getImageTexture() const;
+
+  virtual bool process( Texture2D * texture );
+
+  /// Get the number of Texture2D.
+  const uint_t getTexture2D() const;
+
+  virtual bool process( Texture2DTransformation * texturetransformation );
+
+  /// Get the number of Texture2DTransformation.
+  const uint_t getTexture2DTransformation() const;
   //@}
 
   /// @name Geom3D

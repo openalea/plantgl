@@ -666,16 +666,24 @@ bool GeomListViewBuilder::process( Material * material ) {
 
 /* ----------------------------------------------------------------------- */
 
+bool GeomListViewBuilder::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  addNode(texture,"Texture2D",2);
+  addAttrNode("Image",SceneObjectPtr(texture->getImage()),"ImageTexture");
+  addAttrNode("Transformation",SceneObjectPtr(texture->getTransformation()),"Texture2DTransformation");
+  endNode();
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool GeomListViewBuilder::process( ImageTexture * texture ) {
-  GEOM_ASSERT(material);
+  GEOM_ASSERT(texture);
   addNode(texture,"ImageTexture",2);
   addAttr("Filename",QString(texture->getFilename().c_str()),"String");
   addAttr("Mipmaping",texture->getMipmaping());
-  addAttr("Ambient",texture->getAmbient());
-  addAttr("Diffuse",texture->getDiffuse());
-  addAttr("Specular",texture->getSpecular());
-  addAttr("Emission",texture->getEmission());
-  addAttr("Shininess",texture->getShininess());
+  addAttr("RepeatS",texture->getRepeatS());
+  addAttr("RepeatT",texture->getRepeatT());
   addAttr("Transparency",texture->getTransparency());
 
   endNode();
@@ -684,6 +692,20 @@ bool GeomListViewBuilder::process( ImageTexture * texture ) {
 
 /* ----------------------------------------------------------------------- */
 
+
+bool GeomListViewBuilder::process( Texture2DTransformation * texturetransfo ) {
+  GEOM_ASSERT(texturetransfo);
+  addNode(texturetransfo,"Texture2DTransformation",2);
+  addAttr("Scale",texturetransfo->getScale());
+  addAttr("Translation",texturetransfo->getTranslation());
+  addAttr("RotationCenter",texturetransfo->getRotationCenter());
+  addAttr("RotationAngle",texturetransfo->getRotationAngle());
+
+  endNode();
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
 
 bool GeomListViewBuilder::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);

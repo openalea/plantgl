@@ -176,6 +176,20 @@ class ALGO_API VoxelIntersection : public Action {
      return false;
    }
 
+   virtual bool process( Texture2D * texture ) {
+       GEOM_ASSERT(texture);
+     // nothing to do.
+     __filled = false;
+     return false;
+   }
+
+   virtual bool process( Texture2DTransformation * texture ) {
+       GEOM_ASSERT(texture);
+     // nothing to do.
+     __filled = false;
+     return false;
+   }
+
    virtual bool process( MonoSpectral * monoSpectral ) {
        GEOM_ASSERT(monoSpectral);
      // nothing to do.

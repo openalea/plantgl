@@ -163,9 +163,23 @@ bool VgstarPrinter::process( Material * material ) {
 
 /* ----------------------------------------------------------------------- */
 
+bool VgstarPrinter::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  __color = Color3::BLACK;;
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool VgstarPrinter::process( ImageTexture * texture ) {
   GEOM_ASSERT(texture);
-  __color = texture->getAmbient();
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+bool VgstarPrinter::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
   return true;
 }
 

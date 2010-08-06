@@ -160,6 +160,20 @@ bool Discretizer::process( ImageTexture * texture ) {
   return false;
 }
 
+bool Discretizer::process( Texture2D * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __discretization = ExplicitModelPtr();
+  return false;
+}
+
+bool Discretizer::process( Texture2DTransformation * texture ) {
+  GEOM_ASSERT(texture);
+  // nothing to do
+  __discretization = ExplicitModelPtr();
+  return false;
+}
+
 bool Discretizer::process( MonoSpectral * monoSpectral ) {
   GEOM_ASSERT(monoSpectral);
     // nothing to do
@@ -719,7 +733,7 @@ bool Discretizer::process( Cylinder * cylinder ) {
 	if(__computeTexCoord){
 		real_t u = real_t(_i)/_slices;
 		_texCoordList->setAt(_texCoordCount++,Vector2(u,0));
-		_texCoordList->setAt(_texCoordCount++,Vector2(u,1));
+		_texCoordList->setAt(_texCoordCount++,Vector2(u,_height));
 		if (_solid)
 			_texCoordList->setAt(_texCoordCount++,Vector2(0.5 * cosa + 0.5 , 0.5 * sina + 0.5));
 	}
@@ -749,7 +763,7 @@ bool Discretizer::process( Cylinder * cylinder ) {
 	
   if(__computeTexCoord){
 		_texCoordList->setAt(_texCoordCount++,Vector2(1,0));
-		_texCoordList->setAt(_texCoordCount++,Vector2(1,1));
+		_texCoordList->setAt(_texCoordCount++,Vector2(1,_height));
 		if (_solid)
 			_texCoordList->setAt(_texCoordCount++,Vector2(1.0, 0.5));
   }
@@ -1087,13 +1101,13 @@ bool Discretizer::process( Extrusion * extrusion ){
     GEOM_ASSERT(extrusion);
     GEOM_DISCRETIZER_CHECK_CACHE_WITH_TEX(extrusion);
     if(!(extrusion->getCrossSection()->apply(*this))){
-        cerr << "Warning ! could not perform discretization on Cross Section of " << extrusion->getName() << endl;
+        pglError("Warning ! could not perform discretization on Cross Section of %s\n",extrusion->getName().c_str());
         __discretization = ExplicitModelPtr();
         return false;
     }
     ExplicitModelPtr _explicitCrossSection(__discretization);
     if(!_explicitCrossSection){
-        cerr << "Warning ! could not perform discretization on Cross Section of " << extrusion->getName() << endl;
+        pglError("Warning ! could not perform discretization on Cross Section of %s\n",extrusion->getName().c_str());
         GEOM_ASSERT(_explicitCrossSection);
         __discretization = ExplicitModelPtr();
         return false;
@@ -1119,7 +1133,7 @@ bool Discretizer::process( Extrusion * extrusion ){
     real_t _step =  (_axis->getLastKnot()-_start) / (real_t) _size;
     real_t _starttransf = 0;
     real_t _steptransf = 0;
-	QuantisedFunctionPtr texumapping = extrusion->getCrossSection()->getUToArcLengthMapping();
+	QuantisedFunctionPtr texumapping = dynamic_pointer_cast<Polyline>(_explicitCrossSection)->getUToArcLengthMapping();
 
     if(_useTransf){
         _starttransf = _profileTransf->getUMin();
@@ -1166,18 +1180,19 @@ bool Discretizer::process( Extrusion * extrusion ){
             ++_it,++_idPoint,++_j,++_j2){
             _pointList->setAt(_j,((*_it)+_center));
 			if(__computeTexCoord){
-				_texList->setAt(_j2,Vector2(_start,texumapping->getValue(_idPoint)));
+				_texList->setAt(_j2,Vector2(texumapping->getValue(_idPoint),_start));
 			}
             if((_j+1)%(_nbPoints)!=0){                
 				_indexList->setAt(_k,Index4(_j,_j+1,_j+_nbPoints+1,_j+_nbPoints));
-				if(__computeTexCoord && closed)_texIndexList->setAt(_k,Index4(_j2,_j2+1,_j2+_nbPoints+1+(closed?1:0),_j2+_nbPoints+(closed?1:0)));
+				if(__computeTexCoord && closed)
+					_texIndexList->setAt(_k,Index4(_j2,_j2+1,_j2+_nbPoints+1+(closed?1:0),_j2+_nbPoints+(closed?1:0)));
 				_k++;
             }
 			else if (closed){
 				_indexList->setAt(_k,Index4(_j,_j-_nbPoints+1,_j+1,_j+_nbPoints));
 				if(__computeTexCoord){
 					_texIndexList->setAt(_k,Index4(_j2,_j2+1,_j2+_nbPoints+2,_j2+_nbPoints+1));
-					++_j2;_texList->setAt(_j2,Vector2(_start,1.0));
+					++_j2;_texList->setAt(_j2,Vector2(1.0,_start));
 				}
 				_k++;
 			}
@@ -1209,9 +1224,11 @@ bool Discretizer::process( Extrusion * extrusion ){
         _it != _newPoint->end();
         ++_it,++_idPoint,++_j,++_j2){
         _pointList->setAt(_j,((*_it)+_center));
-		if(__computeTexCoord)_texList->setAt(_j2,Vector2(_start,texumapping->getValue(_idPoint)));
+		if(__computeTexCoord){
+			_texList->setAt(_j2,Vector2(texumapping->getValue(_idPoint),_start));
+		}
     }
-	if(__computeTexCoord && closed){ _texList->setAt(_j2,Vector2(_start,1.0)); }
+	if(__computeTexCoord && closed){ _texList->setAt(_j2,Vector2(1.0,_start)); }
 	PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
                                      Vector3(0,0,0)));
 
@@ -2246,43 +2263,47 @@ bool Discretizer::process( Polyline2D * polyline ){
 
 Point2ArrayPtr 
 Discretizer::gridTexCoord(Point3ArrayPtr pts, int gw, int gh) const {
-  Point2ArrayPtr _texList = Point2ArrayPtr(new Point2Array(gw * gh));
-  for ( int _u = 0 ; _u < gw ; _u ++){
-	real_t length = 0;
-	Vector3 p1 = pts->getAt(_u*gh);
-	_texList->setAt(_u*gh,Vector2(0,0));
-	{for (int _v = 1; _v < gh; _v ++) {
-	  Vector3 p2 = pts->getAt(_u*gh+_v);
-	  length += norm(p2-p1);
-	  p1 = p2;
-	}}
-	real_t length2 = 0;
-	p1 = pts->getAt(_u*gh);
-	for (int _v = 1; _v < gh; _v ++) {
-	  Vector3 p2 = pts->getAt(_u*gh+_v);
-	  length2 += norm(p2-p1);
-	  p1 = p2;
-	  _texList->setAt(_u*gh+_v,Vector2(0,length2/length));
+	Point2ArrayPtr _texList = Point2ArrayPtr(new Point2Array(gw * gh));
+	for ( int _u = 0 ; _u < gw ; _u ++){
+		real_t length = 0;
+		Vector3 p1 = pts->getAt(_u*gh);
+		_texList->setAt(_u*gh,Vector2(0,0));
+		{
+			for (int _v = 1; _v < gh; _v ++) {
+				Vector3 p2 = pts->getAt(_u*gh+_v);
+				length += norm(p2-p1);
+				p1 = p2;
+			}
+		}
+		real_t length2 = 0;
+		p1 = pts->getAt(_u*gh);
+		for (int _v = 1; _v < gh; _v ++) {
+			Vector3 p2 = pts->getAt(_u*gh+_v);
+			length2 += norm(p2-p1);
+			p1 = p2;
+			_texList->setAt(_u*gh+_v,Vector2(length2/length,0));
+		}
 	}
-  }
-  for (int _v = 0; _v < gh; _v ++) {
-	real_t length = 0;
-	Vector3 p1 = pts->getAt(_v);
-	{for ( int _u = 1 ; _u < gw ; _u ++){
-	  Vector3 p2 = pts->getAt(_u*gh+_v);
-	  length += norm(p2-p1);
-	  p1 = p2;
-	}}
-	real_t length2 = 0;
-	p1 = pts->getAt(_v);
-	for ( int _u = 1 ; _u < gw ; _u ++){
-	  Vector3 p2 = pts->getAt(_u*gh+_v);
-	  length2 += norm(p2-p1);
-	  p1 = p2;
-	  _texList->getAt(_v+_u*gh).x() = length2/length;
+	for (int _v = 0; _v < gh; _v ++) {
+		real_t length = 0;
+		Vector3 p1 = pts->getAt(_v);
+		{
+			for ( int _u = 1 ; _u < gw ; _u ++){
+				Vector3 p2 = pts->getAt(_u*gh+_v);
+				length += norm(p2-p1);
+				p1 = p2;
+			}
+		}
+		real_t length2 = 0;
+		p1 = pts->getAt(_v);
+		for ( int _u = 1 ; _u < gw ; _u ++){
+			Vector3 p2 = pts->getAt(_u*gh+_v);
+			length2 += norm(p2-p1);
+			p1 = p2;
+			_texList->getAt(_v+_u*gh).y() = length2/length;
+		}
 	}
-  }
-  return _texList;
+	return _texList;
 }
 
 /* ----------------------------------------------------------------------- */

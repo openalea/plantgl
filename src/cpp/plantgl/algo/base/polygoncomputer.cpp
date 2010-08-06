@@ -314,6 +314,14 @@ bool PolygonComputer::process( ImageTexture * texture ){
   __polygon = 0;
   return false;
 };
+bool PolygonComputer::process( Texture2D * texture ){
+  __polygon = 0;
+  return false;
+};
+bool PolygonComputer::process( Texture2DTransformation * texture ){
+  __polygon = 0;
+  return false;
+};
 bool PolygonComputer::process( MonoSpectral * monoSpectral ){
   __polygon = 0;
   return false;

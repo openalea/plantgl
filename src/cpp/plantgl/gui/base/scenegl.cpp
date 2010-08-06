@@ -340,7 +340,7 @@ ViewSceneRendererGL::ViewSceneRendererGL(ViewCameraGL * camera,
   ViewRendererGL(parent,name),
   __camera(camera),
   __light(light),
-  __animated(false)
+  __animated(eStatic)
 {
   if(camera)
 	QObject::connect(camera,SIGNAL(needReDim()),this,SLOT(computeCamera()));  
