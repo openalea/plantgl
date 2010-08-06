@@ -86,10 +86,10 @@ void export_ImageTexture()
           "ImageTexture(name, filename [, transparency, repeatS, repeatT, mipmaping])"))
 
     .DEC_BT_PROPERTY(filename,ImageTexture,Filename,std::string )
-    .DEC_BT_NR_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
-    .DEC_BT_NR_PROPERTY_WDV(repeatS,ImageTexture, RepeatS, bool, DEFAULT_REPEATS)
-    .DEC_BT_NR_PROPERTY_WDV(repeatT,ImageTexture, RepeatT, bool, DEFAULT_REPEATT)
-    .DEC_BT_NR_PROPERTY_WDV(transparency,ImageTexture, Transparency, real_t, DEFAULT_TRANSPARENCY)
+    .DEC_BT_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
+    .DEC_BT_PROPERTY_WDV(repeatS,ImageTexture, RepeatS, bool, DEFAULT_REPEATS)
+    .DEC_BT_PROPERTY_WDV(repeatT,ImageTexture, RepeatT, bool, DEFAULT_REPEATT)
+    .DEC_BT_PROPERTY_WDV(transparency,ImageTexture, Transparency, real_t, DEFAULT_TRANSPARENCY)
     .def( "__str__", imgtex_str )
     .def( "__repr__", imgtex_str )
     ;
@@ -124,14 +124,14 @@ void export_Texture2DTransformation()
 		  bp::arg("rotationAngle")=Texture2DTransformation::DEFAULT_ROTATIONANGLE),
           "Texture2D([name,scale,translation,rotationCenter,rotationAngle])"))
 
-    .DEC_BT_NR_PROPERTY_WDV(scale,Texture2DTransformation, 
+    .DEC_BT_PROPERTY_WDV(scale,Texture2DTransformation, 
 							Scale, Vector2,DEFAULT_SCALE)
 
-    .DEC_BT_NR_PROPERTY_WDV(translation,Texture2DTransformation, 
+    .DEC_BT_PROPERTY_WDV(translation,Texture2DTransformation, 
 							Translation, Vector2,DEFAULT_TRANSLATION)
-    .DEC_BT_NR_PROPERTY_WDV(rotationCenter,Texture2DTransformation, 
+    .DEC_BT_PROPERTY_WDV(rotationCenter,Texture2DTransformation, 
 							RotationCenter, Vector2,DEFAULT_ROTATIONCENTER)
-    .DEC_BT_NR_PROPERTY_WDV(rotationAngle,Texture2DTransformation, 
+    .DEC_BT_PROPERTY_WDV(rotationAngle,Texture2DTransformation, 
 							RotationAngle, real_t,DEFAULT_ROTATIONANGLE)
     .def( "__str__", textr_str )
     .def( "__repr__", textr_str )
@@ -161,8 +161,8 @@ void export_Texture2D()
        .def(init< string, ImageTexturePtr, optional<Texture2DTransformationPtr> >
          (args("name","image","transformation"),
           "Texture2D(name, image [,transformation])"))
-    .DEC_BT_PROPERTY(image,Texture2D,Image,ImageTexturePtr )
-    .DEC_BT_NR_PROPERTY_WDV(transformation,Texture2D, Transformation, Texture2DTransformationPtr,DEFAULT_TRANSFORMATION)
+    .DEC_PTR_PROPERTY(image,Texture2D,Image,ImageTexturePtr )
+    .DEC_PTR_PROPERTY_WDV(transformation,Texture2D, Transformation, Texture2DTransformationPtr,DEFAULT_TRANSFORMATION)
     .def( "__str__", tex_str )
     .def( "__repr__", tex_str )
     ;
