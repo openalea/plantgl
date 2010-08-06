@@ -22,12 +22,14 @@ class CtrlPoint(ManipulatedFrame):
         The user can grab them and move them dynamically. 
         Change of value is automatically propagate to the initial structure using the position_setter function """   
 
-    def __init__(self, position, position_setter, color = (30,30,250)):
+    def __init__(self, position, position_setter, color = (30,30,250),id = 0):
         """Constructor 
            :param position: initial position of the control point
            :param position_setter: makes it possible to propagate position change to initial structure
         """
         ManipulatedFrame.__init__(self)
+        self.id = id
+        
         # current position and method to propagate displacement on original structure
         self.setPosition(Vec(position[0],position[1],position[2]))
         self.position_setter = position_setter
@@ -48,7 +50,13 @@ class CtrlPoint(ManipulatedFrame):
         # signal to propagate displacement
         QObject.connect(self,SIGNAL('modified()'),self.__propagate_position_change__)
         QObject.connect(self,SIGNAL('manipulated()'),self.__emit_translation__)
-    
+        
+        # manipulated call back
+        self.callback = None
+        
+    def setCallBack(self,callback):
+        self.callback = callback
+        
     def __push_position__(self):
         """ push current position status as previous position """
         self.previousPosition=self.position()
@@ -68,7 +76,9 @@ class CtrlPoint(ManipulatedFrame):
         pos = self.position()
         tr = pos - self.previousPosition
         self.emit(SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self,tr)
-        self.emit(SIGNAL("valueChanged()"))
+        self.emit(SIGNAL("valueChanged(int)"),self.id)
+        if self.callback:
+            self.callback(self.id)
      
     def apply_translation(self,tr):
         """ apply a displacement. USefull when point is part of selection and a displacement  occur on another point """

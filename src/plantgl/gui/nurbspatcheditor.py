@@ -81,7 +81,7 @@ class NurbsPatchEditor(QGLViewer):
             self.setNurbsPatch(self.newDefaultNurbsPatch())
             
   
-    def __propagate_valuechanged__(self):
+    def __propagate_valuechanged__(self,pid):
         """ emit a signal every time a value changed """
         self.setSceneBoundingBox(*self.getBounds())
         self.emit(SIGNAL("valueChanged()"))
@@ -348,22 +348,25 @@ class NurbsPatchEditor(QGLViewer):
         self.nurbsPatch=nurbsPatch
         self.nurbsShape.geometry=self.nurbsPatch
         nbLines = float(len(self.nurbsPatch.ctrlPointMatrix))
+        pid = 1
         for j,linePoint in enumerate(self.nurbsPatch.ctrlPointMatrix):
             lineCtrlPoint = []
             nbCols =  len(linePoint)
             for i in range(nbCols):
-                ctrlPoint = CtrlPoint(linePoint[i].project(), Pos4Setter(self.nurbsPatch.ctrlPointMatrix,(j,i)),color=(30+int(220*j/nbLines),30+int(220*i/nbCols),250))
-                QObject.connect(ctrlPoint,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
+                ctrlPoint = CtrlPoint(linePoint[i].project(), Pos4Setter(self.nurbsPatch.ctrlPointMatrix,(j,i)),color=(30+int(220*j/nbLines),30+int(220*i/nbCols),250),id=pid)
+                pid += 1
+                ctrlPoint.setCallBack(self.__propagate_valuechanged__)
+                #QObject.connect(ctrlPoint,SIGNAL("valueChanged(int)"),self.__propagate_valuechanged__)
                 lineCtrlPoint.append(ctrlPoint)
             self.ctrlPointMatrix.append(lineCtrlPoint)
         self.setSceneBoundingBox(*self.getBounds())
     
     def clear(self):
         """ clear current edition """
-        for ctrlPointRow in self.ctrlPointMatrix:
-            for cCtrlPoint in ctrlPointRow:
-                if not cCtrlPoint is None:
-                    QObject.disconnect(cCtrlPoint,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
+        # for ctrlPointRow in self.ctrlPointMatrix:
+            # for cCtrlPoint in ctrlPointRow:
+                # if not cCtrlPoint is None:
+                    # QObject.disconnect(cCtrlPoint,SIGNAL("valueChanged(int)"),self.__propagate_valuechanged__)
         self.ctrlPointMatrix = []
         self.clearSelectionManipulator()
 

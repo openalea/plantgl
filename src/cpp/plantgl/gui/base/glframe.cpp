@@ -1176,8 +1176,6 @@ ViewGLFrame::getProjectionPixelPerColor(double* pixelwidth)
 
 void ViewGLFrame::mousePressEvent( QMouseEvent* event)
 {
-  printf("mousePressEvent\n");
-
   __mouse = event->pos();
 
   if(__mode == Selection){
@@ -1236,7 +1234,6 @@ void ViewGLFrame::mousePressEvent( QMouseEvent* event)
 
 void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
 {
-  printf("mouseReleaseEvent\n");
   if(__mode == Selection){
 	if(!__scene->endSelect())setRotationMode();
   }
@@ -1246,7 +1243,6 @@ void ViewGLFrame::mouseReleaseEvent( QMouseEvent* event)
 	QPoint mouse = event->pos();
 	status(QString(tr("Selection from")+" (%1,%2) "+tr("to")+" (%3,%4)")
 			.arg(__mouse.x()).arg(__mouse.y()).arg(mouse.x()).arg(mouse.y()),2000);
-	printf("mouseReleaseEvent : multipleSelectGL\n");
 	multipleSelectGL(mouse);
 	setRotationMode();
   }
