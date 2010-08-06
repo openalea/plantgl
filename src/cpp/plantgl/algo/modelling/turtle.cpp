@@ -1060,7 +1060,7 @@ AppearancePtr PglTurtle::getCurrentMaterial() const{
 											__params->texCoordTranslation,
 											__params->texCoordRotCenter,
 											__params->texCoordRotAngle*GEOM_RAD));
-			return tex;
+			return AppearancePtr(tex);
 		}
         return res;
 	}
@@ -1080,7 +1080,7 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 											__params->initial.texCoordRotCenter,
 											__params->initial.texCoordRotAngle*GEOM_RAD)
 											);
-			return tex;
+			return AppearancePtr(tex);
 		}
         return res;
 	}
