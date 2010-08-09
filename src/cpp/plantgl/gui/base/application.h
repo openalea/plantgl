@@ -134,6 +134,11 @@ public :
   static void glFrameOnly(bool b = true);
 
   static void setAnimation(eAnimationFlag b = eStatic);
+
+  // previous deprecated version
+  attribute_deprecated inline static void animation(bool b = true)
+  { setAnimation(b?eAnimatedPrimitives:eStatic); }
+
   static void setBgColor(int red, int green, int blue);
 
   /// Get the selection.

@@ -543,7 +543,7 @@ bool BinaryParser::readHeader(){
   __outputStream << "Must find a scene of " << _size << " objects." << endl;
 #endif
   __scene->resize(_size);
-  __sizes = __tokens->getCounts();
+  // __sizes = __tokens->getCounts();
 #ifdef MEMORY_MANAGEMENT
   uint_t _reservedsize(0);
   __outputStream << "Initialisation of memory management ... " << flush;
@@ -723,7 +723,7 @@ bool BinaryParser::readShape(){
        a->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
 	if(readNext()){
         a->getAppearance() = dynamic_pointer_cast<Appearance>(__result);
-		if (!a->getAppearance() && __tokens->getVersion() <= 2.3f){
+		if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() >= 2.3f && is_valid_ptr(__result)){
 			ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
 			if(imgtex) {
 				a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
