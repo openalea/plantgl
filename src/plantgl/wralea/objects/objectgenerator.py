@@ -155,3 +155,17 @@ PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))
 map(lambda x : generatePglNode(x),PGLCLASS)
 
 PGLCLASS+=[sg.QuantisedFunction]
+
+
+
+from openalea.plantgl.scenegraph._pglsg import Color4    
+from openalea.core.external import add_docstring
+@add_docstring(Color4)
+def Color4Node(input):
+    return [Color4(input)]
+
+from openalea.plantgl.scenegraph._pglsg import Color3
+from openalea.core.external import add_docstring
+@add_docstring(Color3)
+def Color3Node(input):
+    return [Color3(input)]

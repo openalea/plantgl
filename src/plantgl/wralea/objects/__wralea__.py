@@ -622,3 +622,28 @@ objectgenerator_IFSNode = Factory(name='IFS',
 
 
 
+Color4_Color4 = Factory(name='Color4',
+                authors='Thomas Cokelaer',
+                description='',
+                category='Unclassified',
+                nodemodule='objectgenerator',
+                nodeclass='Color4Node',
+                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [150, 0, 0, 155], 'desc': ''}],
+                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
+                widgetmodule=None,
+                widgetclass=None,
+               )
+__all__.append('Color4_Color4')
+
+Color3_Color3 = Factory(name='Color3',
+                authors='Thomas Cokelaer',
+                description='',
+                category='Unclassified',
+                nodemodule='objectgenerator',
+                nodeclass='Color3Node',
+                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [0,150, 0], 'desc': ''}],
+                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
+                widgetmodule=None,
+                widgetclass=None,
+               )
+__all__.append('Color3_Color3')
