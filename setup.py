@@ -100,6 +100,7 @@ setup(
                    'plantgl.visualization = openalea.plantgl.wralea.visualization', 
                    'plantgl.operator = openalea.plantgl.wralea.operator', 
                    'plantgl.ext = openalea.plantgl.ext',
+                   'plantgl.demos = openalea.plantgl.wralea.demos',
                    ]
               },
 
