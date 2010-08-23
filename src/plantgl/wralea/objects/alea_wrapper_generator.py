@@ -35,7 +35,32 @@ for x in objectgenerator.PGLCLASS:
     name = x.__name__
     pkg.add_factory(generate_factory(name))
 
+Color4_Color4 = Factory(name='Color4',
+                authors='Thomas Cokelaer',
+                description='',
+                category='Unclassified',
+                nodemodule='objectgenerator',
+                nodeclass='Color4Node',
+                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [150, 0, 0, 155], 'desc': ''}],
+                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
+                widgetmodule=None,
+                widgetclass=None,
+               )
+pkg.add_factory(Color4_Color4)
 
+Color3_Color3 = Factory(name='Color3',
+                authors='Thomas Cokelaer',
+                description='',
+                category='Unclassified',
+                nodemodule='objectgenerator',
+                nodeclass='Color3Node',
+                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [0,150, 0], 'desc': ''}],
+                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
+                widgetmodule=None,
+                widgetclass=None,
+               )
+pkg.add_factory(Color3_Color3)
+    
 writer = package.PyPackageWriter(pkg)
 fn = __file__
 fn = path(fn)

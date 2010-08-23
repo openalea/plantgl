@@ -18,7 +18,7 @@ class SceneNode(Node):
         self.add_output( name = "scene", interface = None) 
 
     def __call__(self, inputs):
-        """ inputs is the list of input values """		
+        """ inputs is the list of input values """
         scene= inputs[0]
         if scene:
             return (sg.Scene(scene),)
@@ -144,7 +144,7 @@ def getSceneGraphNodes(baseclass):
     cl.sort(lambda x,y : cmp(x.__name__,y.__name__))
     return cl
     
-PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))
+PGLCLASS = getSceneGraphNodes((sg.Geometry,sg.Shape3D,sg.Appearance))+[sg.Texture2DTransformation,sg.ImageTexture]
 
 #[sg.Sphere,sg.Cylinder,sg.Cone,sg.Frustum,sg.Paraboloid,sg.AsymmetricHull,sg.ExtrudedHull,sg.FaceSet,
 #sg.AmapSymbol, sg.QuadSet, sg.TriangleSet, sg.PointSet, sg.Polyline, sg.Group, sg.BezierCurve, sg.NurbsCurve,

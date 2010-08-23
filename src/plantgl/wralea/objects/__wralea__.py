@@ -1,5 +1,5 @@
 
-# This file has been generated at Fri Feb 19 16:21:40 2010
+# This file has been generated at Mon Aug 23 11:36:04 2010
 
 from openalea.core import *
 
@@ -16,11 +16,12 @@ __url__ = 'http://openalea.gforge.inria.fr'
 __institutes__ = 'INRIA/CIRAD'
 
 
-__all__ = ['objectgenerator_TextNode', 'objectgenerator_BezierPatchNode', 'objectgenerator_MaterialNode', 'objectgenerator_EulerRotatedNode', 'objectgenerator_BoxNode', 'objectgenerator_AsymmetricHullNode', 'objectgenerator_SceneNode', 'objectgenerator_ExtrudedHullNode', 'objectgenerator_BezierCurve2DNode', 'objectgenerator_GroupNode', 'objectgenerator_QuadSetNode', 'objectgenerator_QuantisedFunctionNode', 'objectgenerator_AxisRotatedNode', 'objectgenerator_TranslatedNode', 'objectgenerator_PolylineNode', 'objectgenerator_TriangleSetNode', 'objectgenerator_ScaledNode', 'objectgenerator_Polyline2DNode', 'objectgenerator_NurbsCurveNode', 'objectgenerator_OrientedNode', 'objectgenerator_ExtrusionNode', 'objectgenerator_MonoSpectralNode', 'objectgenerator_CylinderNode', 'objectgenerator_ConeNode', 'objectgenerator_FrustumNode', 'objectgenerator_PointSetNode', 'objectgenerator_FaceSetNode', 'objectgenerator_RevolutionNode', 'objectgenerator_SwungNode', 'objectgenerator_ImageTextureNode', 'objectgenerator_ParaboloidNode', 'objectgenerator_BezierCurveNode', 'objectgenerator_MultiSpectralNode', 'objectgenerator_NurbsPatchNode', 'objectgenerator_PointSet2DNode', 'objectgenerator_NurbsCurve2DNode', 'objectgenerator_DiscNode', 'objectgenerator_TaperedNode', 'objectgenerator_AmapSymbolNode', 'objectgenerator_ShapeNode', 'objectgenerator_ElevationGridNode', 'objectgenerator_SphereNode', 'objectgenerator_IFSNode']
+__all__ = ['objectgenerator_TextNode', 'objectgenerator_BezierPatchNode', 'objectgenerator_MaterialNode', 'objectgenerator_Color3Node', 'objectgenerator_EulerRotatedNode', 'objectgenerator_BoxNode', 'objectgenerator_AsymmetricHullNode', 'objectgenerator_SceneNode', 'objectgenerator_Texture2DTransformationNode', 'objectgenerator_ExtrudedHullNode', 'objectgenerator_BezierCurve2DNode', 'objectgenerator_GroupNode', 'objectgenerator_QuadSetNode', 'objectgenerator_QuantisedFunctionNode', 'objectgenerator_AxisRotatedNode', 'objectgenerator_Color4Node', 'objectgenerator_ImageTextureNode', 'objectgenerator_PolylineNode', 'objectgenerator_TriangleSetNode', 'objectgenerator_ScaledNode', 'objectgenerator_Polyline2DNode', 'objectgenerator_NurbsCurveNode', 'objectgenerator_OrientedNode', 'objectgenerator_ExtrusionNode', 'objectgenerator_MonoSpectralNode', 'objectgenerator_CylinderNode', 'objectgenerator_ConeNode', 'objectgenerator_FrustumNode', 'objectgenerator_PointSetNode', 'objectgenerator_FaceSetNode', 'objectgenerator_RevolutionNode', 'objectgenerator_SwungNode', 'objectgenerator_Texture2DNode', 'objectgenerator_ParaboloidNode', 'objectgenerator_BezierCurveNode', 'objectgenerator_MultiSpectralNode', 'objectgenerator_NurbsPatchNode', 'objectgenerator_PointSet2DNode', 'objectgenerator_NurbsCurve2DNode', 'objectgenerator_DiscNode', 'objectgenerator_TaperedNode', 'objectgenerator_AmapSymbolNode', 'objectgenerator_ShapeNode', 'objectgenerator_TranslatedNode', 'objectgenerator_ElevationGridNode', 'objectgenerator_SphereNode', 'objectgenerator_IFSNode']
 
 
 
 objectgenerator_TextNode = Factory(name='Text',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Text',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -35,6 +36,7 @@ objectgenerator_TextNode = Factory(name='Text',
 
 
 objectgenerator_BezierPatchNode = Factory(name='BezierPatch',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a BezierPatch',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -49,6 +51,7 @@ objectgenerator_BezierPatchNode = Factory(name='BezierPatch',
 
 
 objectgenerator_MaterialNode = Factory(name='Material',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Material',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -62,7 +65,23 @@ objectgenerator_MaterialNode = Factory(name='Material',
 
 
 
+objectgenerator_Color3Node = Factory(name='Color3',
+                authors='Thomas Cokelaer',
+                description='',
+                category='Unclassified',
+                nodemodule='objectgenerator',
+                nodeclass='Color3Node',
+                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [0, 150, 0], 'desc': ''}],
+                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
+                widgetmodule=None,
+                widgetclass=None,
+               )
+
+
+
+
 objectgenerator_EulerRotatedNode = Factory(name='EulerRotated',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a EulerRotated',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -77,6 +96,7 @@ objectgenerator_EulerRotatedNode = Factory(name='EulerRotated',
 
 
 objectgenerator_BoxNode = Factory(name='Box',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Box',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -91,6 +111,7 @@ objectgenerator_BoxNode = Factory(name='Box',
 
 
 objectgenerator_AsymmetricHullNode = Factory(name='AsymmetricHull',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a AsymmetricHull',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -105,6 +126,7 @@ objectgenerator_AsymmetricHullNode = Factory(name='AsymmetricHull',
 
 
 objectgenerator_SceneNode = Factory(name='Scene',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Scene',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -118,7 +140,23 @@ objectgenerator_SceneNode = Factory(name='Scene',
 
 
 
+objectgenerator_Texture2DTransformationNode = Factory(name='Texture2DTransformation',
+                authors='F. Boudon, C. Pradal (wralea authors)',
+                description='Create a Texture2DTransformation',
+                category='scene.PGL Object Generator',
+                nodemodule='objectgenerator',
+                nodeclass='Texture2DTransformationNode',
+                inputs=None,
+                outputs=None,
+                widgetmodule=None,
+                widgetclass=None,
+               )
+
+
+
+
 objectgenerator_ExtrudedHullNode = Factory(name='ExtrudedHull',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a ExtrudedHull',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -133,6 +171,7 @@ objectgenerator_ExtrudedHullNode = Factory(name='ExtrudedHull',
 
 
 objectgenerator_BezierCurve2DNode = Factory(name='BezierCurve2D',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a BezierCurve2D',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -147,6 +186,7 @@ objectgenerator_BezierCurve2DNode = Factory(name='BezierCurve2D',
 
 
 objectgenerator_GroupNode = Factory(name='Group',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Group',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -161,6 +201,7 @@ objectgenerator_GroupNode = Factory(name='Group',
 
 
 objectgenerator_QuadSetNode = Factory(name='QuadSet',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a QuadSet',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -175,6 +216,7 @@ objectgenerator_QuadSetNode = Factory(name='QuadSet',
 
 
 objectgenerator_QuantisedFunctionNode = Factory(name='QuantisedFunction',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a QuantisedFunction',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -189,6 +231,7 @@ objectgenerator_QuantisedFunctionNode = Factory(name='QuantisedFunction',
 
 
 objectgenerator_AxisRotatedNode = Factory(name='AxisRotated',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a AxisRotated',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -202,11 +245,27 @@ objectgenerator_AxisRotatedNode = Factory(name='AxisRotated',
 
 
 
-objectgenerator_TranslatedNode = Factory(name='Translated',
-                description='Create a Translated',
+objectgenerator_Color4Node = Factory(name='Color4',
+                authors='Thomas Cokelaer',
+                description='',
+                category='Unclassified',
+                nodemodule='objectgenerator',
+                nodeclass='Color4Node',
+                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [150, 0, 0, 155], 'desc': ''}],
+                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
+                widgetmodule=None,
+                widgetclass=None,
+               )
+
+
+
+
+objectgenerator_ImageTextureNode = Factory(name='ImageTexture',
+                authors='F. Boudon, C. Pradal (wralea authors)',
+                description='Create a ImageTexture',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
-                nodeclass='TranslatedNode',
+                nodeclass='ImageTextureNode',
                 inputs=None,
                 outputs=None,
                 widgetmodule=None,
@@ -217,6 +276,7 @@ objectgenerator_TranslatedNode = Factory(name='Translated',
 
 
 objectgenerator_PolylineNode = Factory(name='Polyline',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Polyline',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -231,6 +291,7 @@ objectgenerator_PolylineNode = Factory(name='Polyline',
 
 
 objectgenerator_TriangleSetNode = Factory(name='TriangleSet',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a TriangleSet',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -245,6 +306,7 @@ objectgenerator_TriangleSetNode = Factory(name='TriangleSet',
 
 
 objectgenerator_ScaledNode = Factory(name='Scaled',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Scaled',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -259,6 +321,7 @@ objectgenerator_ScaledNode = Factory(name='Scaled',
 
 
 objectgenerator_Polyline2DNode = Factory(name='Polyline2D',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Polyline2D',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -273,6 +336,7 @@ objectgenerator_Polyline2DNode = Factory(name='Polyline2D',
 
 
 objectgenerator_NurbsCurveNode = Factory(name='NurbsCurve',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a NurbsCurve',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -287,6 +351,7 @@ objectgenerator_NurbsCurveNode = Factory(name='NurbsCurve',
 
 
 objectgenerator_OrientedNode = Factory(name='Oriented',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Oriented',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -301,6 +366,7 @@ objectgenerator_OrientedNode = Factory(name='Oriented',
 
 
 objectgenerator_ExtrusionNode = Factory(name='Extrusion',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Extrusion',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -315,6 +381,7 @@ objectgenerator_ExtrusionNode = Factory(name='Extrusion',
 
 
 objectgenerator_MonoSpectralNode = Factory(name='MonoSpectral',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a MonoSpectral',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -329,6 +396,7 @@ objectgenerator_MonoSpectralNode = Factory(name='MonoSpectral',
 
 
 objectgenerator_CylinderNode = Factory(name='Cylinder',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Cylinder',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -343,6 +411,7 @@ objectgenerator_CylinderNode = Factory(name='Cylinder',
 
 
 objectgenerator_ConeNode = Factory(name='Cone',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Cone',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -357,6 +426,7 @@ objectgenerator_ConeNode = Factory(name='Cone',
 
 
 objectgenerator_FrustumNode = Factory(name='Frustum',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Frustum',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -371,6 +441,7 @@ objectgenerator_FrustumNode = Factory(name='Frustum',
 
 
 objectgenerator_PointSetNode = Factory(name='PointSet',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a PointSet',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -385,6 +456,7 @@ objectgenerator_PointSetNode = Factory(name='PointSet',
 
 
 objectgenerator_FaceSetNode = Factory(name='FaceSet',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a FaceSet',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -399,6 +471,7 @@ objectgenerator_FaceSetNode = Factory(name='FaceSet',
 
 
 objectgenerator_RevolutionNode = Factory(name='Revolution',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Revolution',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -413,6 +486,7 @@ objectgenerator_RevolutionNode = Factory(name='Revolution',
 
 
 objectgenerator_SwungNode = Factory(name='Swung',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Swung',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -426,11 +500,12 @@ objectgenerator_SwungNode = Factory(name='Swung',
 
 
 
-objectgenerator_ImageTextureNode = Factory(name='ImageTexture',
-                description='Create a ImageTexture',
+objectgenerator_Texture2DNode = Factory(name='Texture2D',
+                authors='F. Boudon, C. Pradal (wralea authors)',
+                description='Create a Texture2D',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
-                nodeclass='ImageTextureNode',
+                nodeclass='Texture2DNode',
                 inputs=None,
                 outputs=None,
                 widgetmodule=None,
@@ -441,6 +516,7 @@ objectgenerator_ImageTextureNode = Factory(name='ImageTexture',
 
 
 objectgenerator_ParaboloidNode = Factory(name='Paraboloid',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Paraboloid',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -455,6 +531,7 @@ objectgenerator_ParaboloidNode = Factory(name='Paraboloid',
 
 
 objectgenerator_BezierCurveNode = Factory(name='BezierCurve',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a BezierCurve',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -469,6 +546,7 @@ objectgenerator_BezierCurveNode = Factory(name='BezierCurve',
 
 
 objectgenerator_MultiSpectralNode = Factory(name='MultiSpectral',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a MultiSpectral',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -483,6 +561,7 @@ objectgenerator_MultiSpectralNode = Factory(name='MultiSpectral',
 
 
 objectgenerator_NurbsPatchNode = Factory(name='NurbsPatch',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a NurbsPatch',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -497,6 +576,7 @@ objectgenerator_NurbsPatchNode = Factory(name='NurbsPatch',
 
 
 objectgenerator_PointSet2DNode = Factory(name='PointSet2D',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a PointSet2D',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -511,6 +591,7 @@ objectgenerator_PointSet2DNode = Factory(name='PointSet2D',
 
 
 objectgenerator_NurbsCurve2DNode = Factory(name='NurbsCurve2D',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a NurbsCurve2D',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -525,6 +606,7 @@ objectgenerator_NurbsCurve2DNode = Factory(name='NurbsCurve2D',
 
 
 objectgenerator_DiscNode = Factory(name='Disc',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Disc',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -539,6 +621,7 @@ objectgenerator_DiscNode = Factory(name='Disc',
 
 
 objectgenerator_TaperedNode = Factory(name='Tapered',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Tapered',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -553,6 +636,7 @@ objectgenerator_TaperedNode = Factory(name='Tapered',
 
 
 objectgenerator_AmapSymbolNode = Factory(name='AmapSymbol',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a AmapSymbol',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -567,6 +651,7 @@ objectgenerator_AmapSymbolNode = Factory(name='AmapSymbol',
 
 
 objectgenerator_ShapeNode = Factory(name='Shape',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Shape',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -580,7 +665,23 @@ objectgenerator_ShapeNode = Factory(name='Shape',
 
 
 
+objectgenerator_TranslatedNode = Factory(name='Translated',
+                authors='F. Boudon, C. Pradal (wralea authors)',
+                description='Create a Translated',
+                category='scene.PGL Object Generator',
+                nodemodule='objectgenerator',
+                nodeclass='TranslatedNode',
+                inputs=None,
+                outputs=None,
+                widgetmodule=None,
+                widgetclass=None,
+               )
+
+
+
+
 objectgenerator_ElevationGridNode = Factory(name='ElevationGrid',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a ElevationGrid',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -595,6 +696,7 @@ objectgenerator_ElevationGridNode = Factory(name='ElevationGrid',
 
 
 objectgenerator_SphereNode = Factory(name='Sphere',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a Sphere',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -609,6 +711,7 @@ objectgenerator_SphereNode = Factory(name='Sphere',
 
 
 objectgenerator_IFSNode = Factory(name='IFS',
+                authors='F. Boudon, C. Pradal (wralea authors)',
                 description='Create a IFS',
                 category='scene.PGL Object Generator',
                 nodemodule='objectgenerator',
@@ -622,28 +725,3 @@ objectgenerator_IFSNode = Factory(name='IFS',
 
 
 
-Color4_Color4 = Factory(name='Color4',
-                authors='Thomas Cokelaer',
-                description='',
-                category='Unclassified',
-                nodemodule='objectgenerator',
-                nodeclass='Color4Node',
-                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [150, 0, 0, 155], 'desc': ''}],
-                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
-                widgetmodule=None,
-                widgetclass=None,
-               )
-__all__.append('Color4_Color4')
-
-Color3_Color3 = Factory(name='Color3',
-                authors='Thomas Cokelaer',
-                description='',
-                category='Unclassified',
-                nodemodule='objectgenerator',
-                nodeclass='Color3Node',
-                inputs=[{'interface': ISequence, 'name': 'IN1', 'value': [0,150, 0], 'desc': ''}],
-                outputs=[{'interface': None, 'name': 'OUT1', 'desc': ''}],
-                widgetmodule=None,
-                widgetclass=None,
-               )
-__all__.append('Color3_Color3')
