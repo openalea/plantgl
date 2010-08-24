@@ -125,6 +125,13 @@ public:
 	inline VectorType getVoxelSize() const { return __voxelsize; }
 	inline void setVoxelSize(const VectorType& v) const { __voxelsize = v; }
 
+	inline VectorType getGridSize() const { 
+		VectorType res = __voxelsize;
+		for (size_t i = 0; i < NbDimension; ++i)
+			res[i] *= __dimensions[i];
+		return res;
+	}
+
 	inline void initialize(const VectorType& minpoint, 
 				   const VectorType& maxpoint,
 				   const VectorType& voxelsize) 
@@ -134,6 +141,48 @@ public:
 		Base::initialize(gridSize(minpoint,maxpoint,voxelsize));
 	}
 
+	inline VectorType getLowerCorner() const {
+		return __origin;
+	}
+
+	inline VectorType getUpperCorner() const {
+		return __origin + getGridSize();
+	}
+
+	inline real_t getMaxDistanceToBorder(const VectorType& v) const { 
+		VectorType minpoint = __origin;
+		VectorType maxpoint = getUpperCorner();
+		VectorType dist;
+		for (size_t i = 0; i < NbDimension; ++i)
+			dist[i] = std::max(fabs(v[i]-minpoint[i]),fabs(v[i]-maxpoint[i]));
+		return norm(dist); 
+	}
+
+	inline Index getMaxIndexDistanceToBorder(const Index& v) const { 
+		Index maxindex = __dimensions;
+		Index res;
+		for (size_t i = 0; i < NbDimension; ++i)
+			res[i] = std::max(v[i],maxindex[i]-v[i]);
+		return res; 
+	}
+
+	typename std::vector<VectorType> getCorners() const {
+		VectorType minpoint = getLowerCorner();
+		VectorType maxpoint = getUpperCorner();
+		typename std::vector<VectorType> res;
+		res.push_back(minpoint);
+		for (size_t i = 0; i < NbDimension; ++i){
+			typename std::vector<VectorType>::const_iterator beg = res.begin();
+			typename std::vector<VectorType>::const_iterator end = res.end();
+			for(typename std::vector<VectorType>::const_iterator it = beg; it != end; ++it){
+				VectorType oppositepoint = *it;
+				oppositepoint[i] = maxpoint[i];
+				res.push_back(oppositepoint);
+			}
+		}
+		return res;
+	}
+	
 protected:
 	static Index gridSize(const VectorType& minpoint, 
 				   const VectorType& maxpoint,

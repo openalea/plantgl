@@ -156,7 +156,8 @@ public:
         return Base::getAt(vid);
     }
 
-    VoxelIdList get_voxel_around_point(const VectorType& point, real_t radius, bool filterEmpty = true) const {
+    VoxelIdList get_voxels_around_point(const VectorType& point, real_t radius, 
+										real_t minradius = 0, bool filterEmpty = true) const {
         VoxelIdList res;
         Index centervxl = indexFromPoint(point);
         // discretize radius in term of voxel size
@@ -174,11 +175,14 @@ public:
         }
 
         // Index coord = mincoord;
-        real_t r = radius + norm(SpatialBase::getVoxelSize());
+		real_t normvoxelsize = norm(SpatialBase::getVoxelSize());
+        real_t r = radius + normvoxelsize;
+		real_t minr = std::max<real_t>(0,minradius - normvoxelsize);
         const_partial_iterator itvoxel = getSubArray(mincoord,dim);
         while(!itvoxel.atEnd()){
             // Check whether coord is in ball
-            if (!(norm(getVoxelCenter(itvoxel.index())-point) > r) ){
+			real_t voxeldist = norm(getVoxelCenter(itvoxel.index())-point);
+            if (voxeldist < r && voxeldist >= minr ){
                 VoxelId vxlid = itvoxel.cellId();
                 if(!filterEmpty || !itvoxel->empty())
                     res.push_back(vxlid);
@@ -188,8 +192,53 @@ public:
         return res;
     }
 
+    VoxelIdList get_voxels_box(const Index& center, 
+							   const Index& maxradius, 
+							   const Index& minradius = Index(0), 
+							   bool filterEmpty = true) const {
+        VoxelIdList res;
+
+        // find min and max voxel coordinates for minradius
+        Index begminradius, endminradius;
+        for (size_t i = 0; i < NbDimension; ++i){
+            begminradius[i] = (center[i] < minradius[i]?0:center[i]-minradius[i]);
+            endminradius[i] = std::min<size_t>(Base::dimensions()[i]-1,center[i]+minradius[i]);
+        }
+
+        // find min and max voxel coordinates for maxradius
+        Index begmaxradius, endmaxradius, dim;
+        for (size_t i = 0; i < NbDimension; ++i){
+            begmaxradius[i] = (center[i] < maxradius[i]?0:center[i]-maxradius[i]);
+            endmaxradius[i] = std::min<size_t>(Base::dimensions()[i]-1,center[i]+maxradius[i]);
+
+			// if (begminradius[i] == minmaxradius[i]) minmaxradius[i] = maxminradius[i];
+			// else if (maxminradius[i] == maxmaxradius[i]) maxmaxradius[i] = minminradius[i];
+
+            dim[i] = endmaxradius[i] - begmaxradius[i];
+        }
+
+
+        // Index coord = mincoord;
+        const_partial_iterator itvoxel = getSubArray(begmaxradius,dim);
+        while(!itvoxel.atEnd()){
+            VoxelId vxlid = itvoxel.cellId();
+            // Check whether coord is not in min box
+			bool toconsider = false;
+			for (size_t i = 0; i < NbDimension; ++i){
+				if (itvoxel.index()[i] <= begminradius[i] || itvoxel.index()[i] >= endminradius[i]) 
+				{ toconsider = true; break; }
+			}
+            if ( toconsider ){
+                if(!filterEmpty || !itvoxel->empty())
+                    res.push_back(vxlid);
+            }
+			++itvoxel;
+        }
+        return res;
+    }
+
     PointIndexList query_ball_point(const VectorType& point, real_t radius) const{
-        VoxelIdList voxels = get_voxel_around_point(point,radius);
+        VoxelIdList voxels = get_voxels_around_point(point,radius);
         PointIndexList res;
         for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
             const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
@@ -203,6 +252,62 @@ public:
         }
         return res;
     }
+
+    bool closest_point(const VectorType& point, PointIndex& result) const{
+        Index centervxl = indexFromPoint(point);
+		real_t radius = REAL_MAX;
+		Index maxindexdist = SpatialBase::getMaxIndexDistanceToBorder(centervxl);
+		size_t maxiter = *maxindexdist.getMax();
+		size_t iter = 0;
+
+        while (radius == REAL_MAX && iter < maxiter){
+			// iter throught box layers of voxels
+			VoxelIdList voxelids = get_voxels_box(centervxl,Index(iter),Index(iter));
+            for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin(); 
+					itVoxel != voxelids.end(); ++itVoxel){
+				// iter throught points
+				const PointIndexList& voxelpointlist = getVoxelPointIndices(*itVoxel);
+				for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); 
+						itPointIndex != voxelpointlist.end(); ++itPointIndex){
+					// Find closest point in voxel
+					real_t dist = norm(points().getAt(*itPointIndex)-point);
+					if (dist < radius){
+						radius = dist;
+						result = *itPointIndex;
+					}
+				}
+			}
+			if (radius < REAL_MAX){
+				VectorType borderdist = getVoxelSize()/2 - abs(point-getVoxelCenter(centervxl));
+				real_t initialvoxelenclosedballradius = *(borderdist.getMin());
+				// check what is the enclosed ball by the box and if point is inside
+				real_t enclosedballradius = (*getVoxelSize().getMin()*iter)+initialvoxelenclosedballradius;
+				if (radius > enclosedballradius){
+					// other points not in the box but in the sphere can be closer
+					VoxelIdList voxels = get_voxels_around_point(point,radius,enclosedballradius);
+					for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); 
+						itvoxel != voxels.end(); ++itvoxel){
+						const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
+						if(!voxelpointlist.empty()){
+							for(typename PointIndexList::const_iterator itPointIndex = 
+								voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); 
+								++itPointIndex){
+									// Find closest point in voxel
+									real_t dist = norm(points().getAt(*itPointIndex)-point);
+									if (dist < radius){
+										radius = dist;
+										result = *itPointIndex;
+									}
+							}
+						}
+					}
+				}
+			}
+			iter += 1;
+		}
+		return radius < REAL_MAX;
+	}
+
 
     bool disable_point(PointIndex pid) {
         VectorType point = points().getAt(pid);
@@ -273,24 +378,17 @@ protected:
         registerData(data->begin(),data->end(),startingindex);
     }
 
-    /*void initialize(const VectorType& minpoint,
-                    const VectorType& maxpoint)
-    {
-        for (size_t i = 0; i < NbDimension; ++i)
-            if(__voxelsize[i] < GEOM_EPSILON)
-                pglError("Bad voxelSize value for dimension %i : %f",i,__voxelsize[i]);
-        for (size_t i = 0; i < NbDimension; ++i){
-            __origin[i] = std::min(minpoint[i],maxpoint[i]);
-            maxpoint[i] = std::max(minpoint[i],maxpoint[i]);
-        }
-        VectorType m = maxpoint-__origin;
-        size_t totdim=1;
-        for (size_t i = 0; i < NbDimension; ++i){
-            __dimension[i] = (m[i]/__voxelsize[i])+1;
-            totdim *= __dimension[i];
-        }
-        __voxels = VoxelList(totdim);
-    }*/
+	/*
+	inline void print_index(const std::string& before, 
+					   const Index& index,
+					   const std::string& after = "\n") const{
+		printf("%s (",before.c_str());
+		for (size_t i = 0; i < NbDimension-1; ++i){
+			printf("%i,",index[i]);
+		}
+		printf("%i) %s",index[NbDimension-1],after.c_str());
+	}*/
+		
 
 };
 

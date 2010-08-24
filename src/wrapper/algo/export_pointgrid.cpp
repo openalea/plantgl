@@ -49,6 +49,14 @@ template<class PointGrid>
  { return make_list(grid->query_ball_point(point,radius))(); }
 
 template<class PointGrid>
+ object py_closest_point(PointGrid * grid, typename PointGrid::VectorType point) 
+ { 
+	typename PointGrid::PointIndex res;
+	 if (grid->closest_point(point,res)) return object(res);
+	 else return object();
+ }
+
+template<class PointGrid>
  object py_indexFromPoint(PointGrid * grid, typename PointGrid::VectorType v){
 	 return make_pgl_tuple(grid->indexFromPoint(v))();
  }
@@ -109,6 +117,18 @@ void py_disablepoints(PointGrid * grid, object plist ){
 }
 
 template<class PointGrid>
+object py_getCorners(PointGrid * grid){
+	 return make_list(grid->getCorners())();
+}
+
+template<class PointGrid>
+object py_getMaxIndexDistanceToBorder(PointGrid * grid, object c){
+	 return make_pgl_tuple(grid->getMaxIndexDistanceToBorder(extract_tuple<typename PointGrid::Index>(c)));
+}
+
+
+
+template<class PointGrid>
 class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGrid> >
 {
     friend class boost::python::def_visitor_access;
@@ -118,6 +138,7 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
     {
 	c.def(init<real_t,typename PointGrid::PointContainerPtr>())
 	 .def(init<typename PointGrid::VectorType,typename PointGrid::VectorType,typename PointGrid::VectorType,typename PointGrid::PointContainerPtr>())
+	 .def("size",&PointGrid::size)
 	 .def("indexFromPoint",&py_indexFromPoint<PointGrid>)
 	 .def("cellIdFromPoint",&PointGrid::cellIdFromPoint)
 	 .def("cellId",&py_cellId<PointGrid>)
@@ -131,6 +152,7 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("getVoxelUpperPoint",&py_getVoxelUpperPoint<PointGrid>)
 	 .def("getVoxelUpperPointFromId",&py_getVoxelUpperPointFromId<PointGrid>)
 	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
+	 .def("closest_point",&py_closest_point<PointGrid>)
 	 .def("enable_point",&PointGrid::enable_point)
 	 .def("disable_point",&PointGrid::disable_point)
 	 .def("is_point_enabled",&PointGrid::is_point_enabled)
@@ -138,6 +160,14 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("enable_points",&py_enablepoints<PointGrid>)
 	 .def("disable_points",&py_disablepoints<PointGrid>)
 	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)
+	 .def("getGridSize",&PointGrid::getGridSize)
+	 .def("getLowerCorner",&PointGrid::getLowerCorner)
+	 .def("getUpperCorner",&PointGrid::getUpperCorner)
+	 .def("getCorners",&py_getCorners<PointGrid>)
+	 .def("getMaxIndexDistanceToBorder",&py_getMaxIndexDistanceToBorder<PointGrid>)
+	 .def("getMaxDistanceToBorder",&PointGrid::getMaxDistanceToBorder)
+	 
+	 
          ;
     }
 };
