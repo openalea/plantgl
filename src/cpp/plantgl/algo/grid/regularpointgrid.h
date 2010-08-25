@@ -278,10 +278,10 @@ public:
 				}
 			}
 			if (radius < REAL_MAX){
-				VectorType borderdist = getVoxelSize()/2 - abs(point-getVoxelCenter(centervxl));
+				VectorType borderdist = SpatialBase::getVoxelSize()/2 - abs(point-SpatialBase::getVoxelCenter(centervxl));
 				real_t initialvoxelenclosedballradius = *(borderdist.getMin());
 				// check what is the enclosed ball by the box and if point is inside
-				real_t enclosedballradius = (*getVoxelSize().getMin()*iter)+initialvoxelenclosedballradius;
+				real_t enclosedballradius = (*SpatialBase::getVoxelSize().getMin()*iter)+initialvoxelenclosedballradius;
 				if (radius > enclosedballradius){
 					// other points not in the box but in the sphere can be closer
 					VoxelIdList voxels = get_voxels_around_point(point,radius,enclosedballradius);

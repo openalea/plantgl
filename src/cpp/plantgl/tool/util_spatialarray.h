@@ -128,7 +128,7 @@ public:
 	inline VectorType getGridSize() const { 
 		VectorType res = __voxelsize;
 		for (size_t i = 0; i < NbDimension; ++i)
-			res[i] *= __dimensions[i];
+			res[i] *= Base::dimensions()[i];
 		return res;
 	}
 
@@ -159,7 +159,7 @@ public:
 	}
 
 	inline Index getMaxIndexDistanceToBorder(const Index& v) const { 
-		Index maxindex = __dimensions;
+		Index maxindex = Base::dimensions();
 		Index res;
 		for (size_t i = 0; i < NbDimension; ++i)
 			res[i] = std::max(v[i],maxindex[i]-v[i]);
