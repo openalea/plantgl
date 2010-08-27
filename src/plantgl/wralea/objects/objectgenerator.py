@@ -158,7 +158,7 @@ PGLCLASS+=[sg.QuantisedFunction]
 
 
 
-from openalea.plantgl.scenegraph._pglsg import Color4    
+from openalea.plantgl.scenegraph._pglsg import Color4
 from openalea.core.external import add_docstring
 @add_docstring(Color4)
 def Color4Node(input):
