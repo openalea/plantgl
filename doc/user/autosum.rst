@@ -292,7 +292,6 @@ Class Inheritance diagram
 =======================================
 
 
-
 .. automodule:: openalea.plantgl.ext.mesh
     :members:
     :undoc-members:
@@ -320,7 +319,6 @@ Class Inheritance diagram
 =================================================
 
 
-
 .. automodule:: openalea.plantgl.ext.shape_database
     :members:
     :undoc-members:
@@ -333,8 +331,6 @@ Class Inheritance diagram
 :mod:`openalea.plantgl.scenegraph.cspline` module
 =================================================
 
-
-
 .. automodule:: openalea.plantgl.scenegraph.cspline
     :members:
     :undoc-members:
@@ -346,8 +342,6 @@ Class Inheritance diagram
 
 :mod:`openalea.plantgl.scenegraph.nurbspatch_nd` module
 =======================================================
-
-
 
 .. automodule:: openalea.plantgl.scenegraph.nurbspatch_nd
     :members:
