@@ -128,3 +128,8 @@ def __nbpth_deepcopy__(self,memo):
 
 NurbsPatch.__deepcopy__ = __nbpth_deepcopy__
 del __nbpth_deepcopy__
+
+
+
+import doc
+AmapSymbol.__doc__ += doc.AmapSymbol

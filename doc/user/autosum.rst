@@ -39,7 +39,6 @@ Class Inheritance diagram
 :mod:`openalea.plantgl.algo.mesh.grid_shape` module
 ===================================================
 
-Download the source file :download:`../../src/openalea/plantgl/algo/mesh/grid_shape.py`.
 
 
 .. automodule:: openalea.plantgl.algo.mesh.grid_shape
@@ -54,7 +53,6 @@ Download the source file :download:`../../src/openalea/plantgl/algo/mesh/grid_sh
 :mod:`openalea.plantgl.algo.mesh.refine` module
 ===============================================
 
-Download the source file :download:`../../src/openalea/plantgl/algo/mesh/refine.py`.
 
 
 .. automodule:: openalea.plantgl.algo.mesh.refine
@@ -69,7 +67,6 @@ Download the source file :download:`../../src/openalea/plantgl/algo/mesh/refine.
 :mod:`openalea.plantgl.ext.absolute_shapes` module
 ==================================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/absolute_shapes.py`.
 
 
 .. automodule:: openalea.plantgl.ext.absolute_shapes
@@ -84,7 +81,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/absolute_shap
 :mod:`openalea.plantgl.ext.color` module
 ========================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/color.py`.
 
 
 .. automodule:: openalea.plantgl.ext.color
@@ -99,7 +95,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/color.py`.
 :mod:`openalea.plantgl.ext.dresser` module
 ==========================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/dresser.py`.
 
 
 .. automodule:: openalea.plantgl.ext.dresser
@@ -114,7 +109,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/dresser.py`.
 :mod:`openalea.plantgl.ext.geom.box` module
 ===========================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/box.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.box
@@ -129,7 +123,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/box.py`.
 :mod:`openalea.plantgl.ext.geom.color` module
 =============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/color.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.color
@@ -144,7 +137,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/color.py
 :mod:`openalea.plantgl.ext.geom.geometrical_concept` module
 ===========================================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/geometrical_concept.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.geometrical_concept
@@ -159,7 +151,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/geometri
 :mod:`openalea.plantgl.ext.geom.interface.abstract_geometry` module
 ===================================================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/interface/abstract_geometry.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.interface.abstract_geometry
@@ -174,7 +165,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/interfac
 :mod:`openalea.plantgl.ext.geom.nvector` module
 ===============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/nvector.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.nvector
@@ -189,7 +179,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/nvector.
 :mod:`openalea.plantgl.ext.geom.point` module
 =============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/point.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.point
@@ -204,7 +193,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/point.py
 :mod:`openalea.plantgl.ext.geom.polygon` module
 ===============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/polygon.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.polygon
@@ -219,7 +207,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/polygon.
 :mod:`openalea.plantgl.ext.geom.polyhedra` module
 =================================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/polyhedra.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.polyhedra
@@ -234,7 +221,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/polyhedr
 :mod:`openalea.plantgl.ext.geom.segment` module
 ===============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/segment.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.segment
@@ -249,7 +235,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/segment.
 :mod:`openalea.plantgl.ext.geom.sphere` module
 ==============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/sphere.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.sphere
@@ -264,7 +249,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/sphere.p
 :mod:`openalea.plantgl.ext.geom.text` module
 ============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/text.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.text
@@ -279,7 +263,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/text.py`
 :mod:`openalea.plantgl.ext.geom.tools` module
 =============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/geom/tools.py`.
 
 
 .. automodule:: openalea.plantgl.ext.geom.tools
@@ -294,7 +277,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/geom/tools.py
 :mod:`openalea.plantgl.ext.interactive_mode` module
 ===================================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/interactive_mode.py`.
 
 
 .. automodule:: openalea.plantgl.ext.interactive_mode
@@ -309,7 +291,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/interactive_m
 :mod:`openalea.plantgl.ext.mesh` module
 =======================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/mesh.py`.
 
 
 .. automodule:: openalea.plantgl.ext.mesh
@@ -324,7 +305,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/mesh.py`.
 :mod:`openalea.plantgl.ext.pgl_utils` module
 ============================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/pgl_utils.py`.
 
 
 .. automodule:: openalea.plantgl.ext.pgl_utils
@@ -339,7 +319,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/pgl_utils.py`
 :mod:`openalea.plantgl.ext.shape_database` module
 =================================================
 
-Download the source file :download:`../../src/openalea/plantgl/ext/shape_database.py`.
 
 
 .. automodule:: openalea.plantgl.ext.shape_database
@@ -354,7 +333,6 @@ Download the source file :download:`../../src/openalea/plantgl/ext/shape_databas
 :mod:`openalea.plantgl.scenegraph.cspline` module
 =================================================
 
-Download the source file :download:`../../src/openalea/plantgl/scenegraph/cspline.py`.
 
 
 .. automodule:: openalea.plantgl.scenegraph.cspline
@@ -369,7 +347,6 @@ Download the source file :download:`../../src/openalea/plantgl/scenegraph/csplin
 :mod:`openalea.plantgl.scenegraph.nurbspatch_nd` module
 =======================================================
 
-Download the source file :download:`../../src/openalea/plantgl/scenegraph/nurbspatch_nd.py`.
 
 
 .. automodule:: openalea.plantgl.scenegraph.nurbspatch_nd
@@ -384,12 +361,9 @@ Download the source file :download:`../../src/openalea/plantgl/scenegraph/nurbsp
 :mod:`openalea.plantgl.scenegraph._pglsg` module
 ================================================
 
-Download the source file :download:`../../src/openalea/plantgl/scenegraph/_pglsg.py`.
-
-
 .. automodule:: openalea.plantgl.scenegraph._pglsg
-..    :members:
-..    :undoc-members:
+    :members:
+    :undoc-members:
 
 ..    :inherited-members:
     :synopsis: synopsis to be provided
