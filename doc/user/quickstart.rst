@@ -1,41 +1,77 @@
 
+.. testsetup::
 
+        from PyQt4 import QtGui
+        app = QtGui.QApplication([])
+
+.. topic:: Overview
+
+    Create a colored shape, add it to a scene and view the results
+
+    :Author: Thomas Cokelaer <Thomas.Cokelaer@sophia.inria.fr>
+
+.. contents::
 
 Quickstart
 ===========
 
-:Author: Thomas Cokelaer <Thomas.Cokelaer@sophia.inria.fr>
+Scene creation
+--------------
 
-First, create a scene::
+First, create a scene:
+
+
+.. doctest::
 
     >>> from vplants.plantgl.all import *
     >>> scene = Scene()
 
-Then, create a colored shaped, let us say a Cylinder::
+Create a shape
+---------------
+
+Then, create a colored shaped, let us say a Cylinder:
+
+.. doctest::
 
     >>> c = Cylinder(1, 10)
     >>> color = Material(Color3(255,0,0),0,Color3(0,0,0),Color3(0,0,0),1,0)
     >>> shape = Shape(c, color)
 
-The colored shape may now be added to the scene and visualize via the Viewer::
+Visualize the scene
+-------------------
+
+The colored shape may now be added to the scene and visualize via the Viewer:
+
+.. doctest::
 
     >>> scene.add(shape)
     >>> Viewer.display(scene)
 
-.. warning:: to run these commands in ipython, you must use the -q4thread option::
+.. warning:: to run the folling commands in ipython, you must use the -q4thread option::
 
-        >>> ipython -q4thread
+        ipython -q4thread
 
-.. note:: another solution is to type::
+.. doctest::
+    :options: +SKIP
 
         >>> from PyQt4 import QtGui
         >>> app = QtGui.QApplication([])
+        >>> Viewer.start()
 
-Finally, it is time to save the results in a PNG file::
+Output
+------
 
-    >>> Viewer.frameGL.saveImage("result.png")
+Finally, it is time to save the results in a PNG file. First, we set the background color and grids:
 
+.. doctest::
 
+    >>> Viewer.frameGL.setBgColor(255,255,200)
+    >>> Viewer.grids.setXYPlane(True)
+    >>> Viewer.grids.setYZPlane(False)
+    >>> Viewer.grids.setXZPlane(False)
+    >>> Viewer.frameGL.saveImage("user/result.png")
 
+.. image:: result.png
+    :width: 50%
 
 

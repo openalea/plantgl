@@ -350,6 +350,7 @@ Class Inheritance diagram
     :synopsis: synopsis to be provided
 
 
+
 .. currentmodule:: openalea.plantgl.scenegraph._pglsg
 
 :mod:`openalea.plantgl.scenegraph._pglsg` module
