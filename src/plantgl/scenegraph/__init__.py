@@ -131,5 +131,4 @@ del __nbpth_deepcopy__
 
 
 
-import doc
-AmapSymbol.__doc__ += doc.AmapSymbol
+import __docufy
