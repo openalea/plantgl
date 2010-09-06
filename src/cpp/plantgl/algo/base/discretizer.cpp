@@ -1113,6 +1113,19 @@ bool Discretizer::process( Extrusion * extrusion ){
         return false;
     }
 
+    if(!(extrusion->getAxis()->apply(*this))){
+        pglError("Warning ! could not perform discretization on Axis of %s\n",extrusion->getName().c_str());
+        __discretization = ExplicitModelPtr();
+        return false;
+    }
+    PolylinePtr _explicitAxis = dynamic_pointer_cast<Polyline>(__discretization);
+    if(!_explicitAxis){
+        pglError("Warning ! could not perform discretization on Axis of %s\n",extrusion->getName().c_str());
+        GEOM_ASSERT(_explicitCrossSection);
+        __discretization = ExplicitModelPtr();
+        return false;
+    }
+
     Point3ArrayPtr _crossPoints = _explicitCrossSection->getPointList();
 	bool closed = false;
 	if(!(norm(_crossPoints->getAt(0) - _crossPoints->getAt(_crossPoints->size()-1)) > GEOM_EPSILON)){
@@ -1133,7 +1146,9 @@ bool Discretizer::process( Extrusion * extrusion ){
     real_t _step =  (_axis->getLastKnot()-_start) / (real_t) _size;
     real_t _starttransf = 0;
     real_t _steptransf = 0;
-	QuantisedFunctionPtr texumapping = dynamic_pointer_cast<Polyline>(_explicitCrossSection)->getUToArcLengthMapping();
+	QuantisedFunctionPtr texumapping = __computeTexCoord ? dynamic_pointer_cast<Polyline>(_explicitCrossSection)->getUToArcLengthMapping() : NULL;
+	QuantisedFunctionPtr texvmapping = __computeTexCoord ? _axis->getUToArcLengthMapping() : NULL;
+	real_t axislength = __computeTexCoord ? _axis->getLength() : 0;
 
     if(_useTransf){
         _starttransf = _profileTransf->getUMin();
@@ -1175,12 +1190,14 @@ bool Discretizer::process( Extrusion * extrusion ){
         }
         else _newPoint =  _transf.transform(_crossPoints);
 		float _idPoint = 0;
+		real_t texv; 
+		if(__computeTexCoord) texv = texvmapping->getValue(_start) * axislength;
         for(Point3Array::iterator _it = _newPoint->begin();
             _it != _newPoint->end();
             ++_it,++_idPoint,++_j,++_j2){
             _pointList->setAt(_j,((*_it)+_center));
 			if(__computeTexCoord){
-				_texList->setAt(_j2,Vector2(texumapping->getValue(_idPoint),_start));
+				_texList->setAt(_j2,Vector2(texumapping->getValue(_idPoint),texv));
 			}
             if((_j+1)%(_nbPoints)!=0){                
 				_indexList->setAt(_k,Index4(_j,_j+1,_j+_nbPoints+1,_j+_nbPoints));
@@ -1192,7 +1209,7 @@ bool Discretizer::process( Extrusion * extrusion ){
 				_indexList->setAt(_k,Index4(_j,_j-_nbPoints+1,_j+1,_j+_nbPoints));
 				if(__computeTexCoord){
 					_texIndexList->setAt(_k,Index4(_j2,_j2+1,_j2+_nbPoints+2,_j2+_nbPoints+1));
-					++_j2;_texList->setAt(_j2,Vector2(1.0,_start));
+					++_j2;_texList->setAt(_j2,Vector2(1.0,texv));
 				}
 				_k++;
 			}
@@ -1225,12 +1242,11 @@ bool Discretizer::process( Extrusion * extrusion ){
         ++_it,++_idPoint,++_j,++_j2){
         _pointList->setAt(_j,((*_it)+_center));
 		if(__computeTexCoord){
-			_texList->setAt(_j2,Vector2(texumapping->getValue(_idPoint),_start));
+			_texList->setAt(_j2,Vector2(texumapping->getValue(_idPoint),axislength));
 		}
     }
-	if(__computeTexCoord && closed){ _texList->setAt(_j2,Vector2(1.0,_start)); }
-	PolylinePtr _skeleton(new Polyline(Vector3(0,0,0),
-                                     Vector3(0,0,0)));
+	if(__computeTexCoord && closed){ _texList->setAt(_j2,Vector2(1.0,axislength)); }
+	PolylinePtr _skeleton = _explicitAxis;
 
 	Mesh * m;
     if(extrusion->getSolid()){

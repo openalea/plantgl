@@ -182,10 +182,12 @@ TurtleDrawParameter::TurtleDrawParameter():
   color(1),
   crossSection(),
   crossSectionCCW(true),
+  defaultSection(true),
   texCoordScale(1,1),
   texCoordTranslation(0,0),
   texCoordRotCenter(0.5,0.5),
-  texCoordRotAngle(0)
+  texCoordRotAngle(0),
+  axialLength(0)
 {
 }
 
@@ -197,6 +199,8 @@ void TurtleDrawParameter::reset(){
   texCoordRotAngle = 0;
   crossSection = Curve2DPtr();
   crossSectionCCW = true;
+  defaultSection = true;
+  axialLength = 0;
 }
 
 
@@ -330,6 +334,10 @@ void TurtleParam::pushPosition(){
   }
 }
 
+void TurtleParam::pushRadius(){
+	*(radiusList.end()-1) = width;
+}
+
 /*----------------------------------------------------------*/
 
 Turtle::Turtle(TurtleParam * params):
@@ -343,8 +351,7 @@ Turtle::Turtle(TurtleParam * params):
   parentId(Shape::NOID),
   warn_on_error(true)
 {
-	if (!__params->crossSection)
-		setDefaultCrossSection();
+	if (!__params->crossSection) setDefaultCrossSection();
 	assert (__params->crossSection && "Failed to initialize cross section");
 }
 
@@ -367,8 +374,7 @@ void Turtle::reset(){
 
 void Turtle::resetValues(){
 	__params->reset();
-	if (!__params->crossSection)
-		setDefaultCrossSection();
+	if (!__params->crossSection) setDefaultCrossSection();
 	__paramstack = stack<TurtleParam *>();
 }
   
@@ -455,6 +461,7 @@ void Turtle::stop(){
 			  _applyTropism();
 		  }
           __params->position += __params->heading*length*getScale().z();
+		  // __params->axialLength += length;
 		  if (length > 0 && __params->guide) _ajustToGuide();
       // }
       // else if(fabs(length) < GEOM_EPSILON) warning("f length should be non null.");
@@ -469,15 +476,19 @@ void Turtle::stop(){
 		  }
           if (!__params->isGeneralizedCylinderOn() && 
               ! __params->isPolygonOn()){
-                  if (topdiam < GEOM_EPSILON) _cylinder(length);
-                  else _frustum(length,topdiam);
+				  if(__params->defaultSection){
+					if (topdiam < GEOM_EPSILON) _cylinder(length);
+					else _frustum(length,topdiam);
+				  }
+				  else { _sweep(length,topdiam < GEOM_EPSILON?getWidth():topdiam); }
           }
-          if (topdiam > GEOM_EPSILON ) setWidth(topdiam);
           __params->position += __params->heading*length*getScale().z();
+		  __params->axialLength += length;
 		  if (length > 0 && __params->guide) _ajustToGuide();
           if (__params->isGeneralizedCylinderOn() ||
               __params->isPolygonOn())
               __params->pushPosition();
+          if (topdiam > GEOM_EPSILON ) setWidth(topdiam);
       }
       else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
       else error("F length should be positive.");
@@ -568,8 +579,11 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   }
   
   void Turtle::setColor(int v){
-	if (0 <= v && v < getColorListSize())
-	  __params->color = v;
+	  if (0 <= v && v < getColorListSize()){
+		__params->color = v;
+		__params->axialLength = 0;
+		if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
+	  }
 	else {
       stringstream st;
       st << "Invalid Color value " << v << " in setColor (maximum is " << getColorListSize() - 1 << ')' <<  std::flush;
@@ -579,13 +593,22 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   }
 
 void Turtle::setTextureScale(real_t u, real_t v)
-{ __params->texCoordScale = Vector2(u,v); }
+{ 
+	__params->texCoordScale = Vector2(u,v); 
+	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale = Vector2(u,v);
+}
 
 void Turtle::setTextureUScale(real_t u)
-{ __params->texCoordScale.x() = u; }
+{ 
+	__params->texCoordScale.x() = u; 
+	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.x() = u; 
+}
 
 void Turtle::setTextureVScale(real_t v)
-{ __params->texCoordScale.y() = v; }
+{ 
+	__params->texCoordScale.y() = v; 
+	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.y() = v; 
+}
 
 void Turtle::setTextureRotation(real_t angle, 
 								real_t ucenter, 
@@ -593,10 +616,19 @@ void Turtle::setTextureRotation(real_t angle,
 { 
 	__params->texCoordRotAngle = angle; 
 	__params->texCoordRotCenter = Vector2(ucenter,vcenter);
+	if(__params->isGCorPolygonOnInit()){
+		__params->initial.texCoordRotAngle = angle; 
+		__params->initial.texCoordRotCenter = Vector2(ucenter,vcenter);
+	}
 }
 
 void Turtle::setTextureTranslation(real_t u, real_t v)
-{ 	__params->texCoordTranslation = Vector2(u,v); }
+{ 	
+	__params->texCoordTranslation = Vector2(u,v); 
+	if(__params->isGCorPolygonOnInit()){
+		__params->initial.texCoordTranslation = Vector2(u,v); 
+	}
+}
 
 void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling, 
 									      real_t utranslation, real_t vtranslation, 
@@ -608,8 +640,11 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
 }
   
   void Turtle::setWidth(real_t v){
-    if (v > GEOM_EPSILON)
-	  __params->width = v;
+	  if (v > GEOM_EPSILON){
+		__params->width = v;
+		if(__params->isGeneralizedCylinderOn())
+			__params->pushRadius();
+	  }
 	else {
  	  error("Invalid width value in setWidth. Must be positive");
 	}
@@ -683,14 +718,27 @@ void Turtle::stopGC(){
   
 void Turtle::setCrossSection(const Curve2DPtr& curve, bool ccw)
 {
-	__params->crossSection = curve;
-	__params->crossSectionCCW = ccw;
+	_setCrossSection(curve, ccw, false);
 }
 
 void Turtle::setDefaultCrossSection(size_t slices)
 {
-	setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true);
+	_setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true,true);
 }
+
+void Turtle::_setCrossSection(const Curve2DPtr& curve, bool ccw, bool defaultSection)
+{
+	__params->crossSection = curve;
+	__params->crossSectionCCW = ccw;
+	__params->defaultSection = defaultSection;
+	if(__params->isGeneralizedCylinderOnInit())
+	{
+		__params->initial.crossSection = curve;
+		__params->initial.crossSectionCCW = ccw;
+		__params->initial.defaultSection = defaultSection;
+	}
+}
+
 
 void Turtle::setPositionOnGuide(real_t t)
 { 
@@ -904,6 +952,22 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
 	}
 }
 
+void Turtle::_sweep(real_t length, real_t topdiam)
+{
+	// default sweep
+	std::vector<TOOLS(Vector3)> points;
+	points.push_back(getPosition());
+	points.push_back(getPosition()+getHeading()*length);
+	std::vector<TOOLS(Vector3)> left;
+	left.push_back(getLeft());
+	left.push_back(getLeft());
+	std::vector<real_t> radius;
+	radius.push_back(getWidth());
+	radius.push_back(topdiam);
+	_generalizedCylinder(points, left, radius,
+						 __params->crossSection,
+						 __params->crossSectionCCW, true);
+}
 /*----------------------------------------------------------*/
 
 //Polyline2DPtr PglTurtle::DEFAULT_CROSS_SECTION(0);
@@ -1051,16 +1115,25 @@ GeometryPtr PglTurtle::getSurface(const string& name){
 AppearancePtr PglTurtle::getCurrentMaterial() const{
 	if (getColor() < __appList.size()){
 		AppearancePtr res = __appList[getColor()];
-		if (res->isTexture() && ( __params->texCoordScale != Vector2(1,1) || 
-								  __params->texCoordTranslation != Vector2(0,0) ||
-								  __params->texCoordRotAngle != 0)){
-			Texture2DPtr tex = new Texture2D(
+		if (res->isTexture()){
+			real_t texshiftY = __params->axialLength;
+			Vector2 texshift(0,texshiftY*__params->texCoordScale.y());
+			// texshift -= __params->texCoordRotCenter;
+			// texshift = Matrix2::rotation(-__params->texCoordRotAngle) * texshift;
+			// texshift += __params->texCoordRotCenter;
+			// texshift += __params->texCoordTranslation;
+			// texshiftY = fmod(texshift.y(),1.0);
+			if ( norm(texshift) > GEOM_EPSILON || __params->texCoordScale != Vector2(1,1) || 
+				 __params->texCoordTranslation != Vector2(0,0) ||
+				 __params->texCoordRotAngle != 0){
+			    Texture2DPtr tex = new Texture2D(
 				dynamic_pointer_cast<Texture2D>(res)->getImage(),
 				new Texture2DTransformation(__params->texCoordScale,
-											__params->texCoordTranslation,
+											__params->texCoordTranslation + texshift, 
 											__params->texCoordRotCenter,
 											__params->texCoordRotAngle*GEOM_RAD));
 			return AppearancePtr(tex);
+			}
 		}
         return res;
 	}
@@ -1100,8 +1173,8 @@ PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
 	  (getScale().x() != getScale().y() || 
 	   getScale().y() != getScale().z() ))
        obj = GeometryPtr(new Scaled(getScale(),obj));
-  if ( getLeft() != Vector3::OX || 
-	   getUp()   != Vector3::OY )
+  if ( getUp() != Vector3::OX || 
+	   getLeft()   != -Vector3::OY )
        obj = GeometryPtr(new Oriented(getUp(),-getLeft(),obj));
   if ( getPosition() != Vector3::ORIGIN )
        obj = GeometryPtr(new Translated(getPosition(),obj));
@@ -1247,7 +1320,8 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
 								const vector<Vector3>& leftList,
 								const vector<real_t>& radiusList,
 								const Curve2DPtr& crossSection,
-								bool crossSectionCCW){
+								bool crossSectionCCW,
+								bool currentcolor){
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
 						  new Point3Array(points.begin(),points.end()))));
   Point2ArrayPtr radius(new Point2Array(radiusList.size()));
@@ -1256,13 +1330,17 @@ PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
 		it != radiusList.end(); it++){
 		  *it2 = Vector2(*it,*it); it2++;
   }
-  if (!crossSection)
-	  error("Invalid cross section");
-  assert (crossSection);
-  Extrusion * extrusion = new Extrusion(axis,crossSection,radius);
+  Curve2DPtr mcrossSection = crossSection;
+  if (!mcrossSection) {
+	  mcrossSection = Curve2DPtr(Polyline2D::Circle(1,__params->sectionResolution));
+	  crossSectionCCW = true;
+	  // error("Invalid cross section");
+  }
+  assert (mcrossSection);
+  Extrusion * extrusion = new Extrusion(axis,mcrossSection,radius);
   extrusion->getCCW() = crossSectionCCW;
   extrusion->getInitialNormal() = leftList[0];
-  _addToScene(GeometryPtr(extrusion),true);
+  _addToScene(GeometryPtr(extrusion),!currentcolor);
 }
 
 void

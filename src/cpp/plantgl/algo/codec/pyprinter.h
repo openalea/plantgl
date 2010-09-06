@@ -119,31 +119,41 @@ public:
 	inline void setPglNamespace(const std::string& pglnamespace ) { __pglnamespace  = pglnamespace ; }
 	inline const std::string& getPglNamespace() const { return __pglnamespace ; }
 
+	inline void setReferenceDir(const std::string& dir) { __referencedir  = dir ; }
+	inline const std::string& getReferenceDir() const { return __referencedir ; }
+
+	inline void setLineBetweenObject(size_t nbline) { __line_between_object  = nbline ; }
+	inline const size_t& getLineBetweenObject() const { return __line_between_object ; }
+
 protected:
 
-	void print_constructor_begin(std::ostream& os, const std::string& name, const std::string& type);
-	void print_constructor_end(std::ostream& os, SceneObjectPtr obj, const std::string& name);
+	void print_constructor_begin(std::ostream& os, const std::string& name, const std::string& type, bool newline = true);
+	void print_constructor_end(std::ostream& os, SceneObjectPtr obj, const std::string& name, bool newline = true);
 	void print_object_end(std::ostream& os);
 
 	template <typename T>
-	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value);
+	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool newline = true);
 
 	template <typename T>
-	std::ostream& print_arg_field(std::ostream& os, const std::string& field, const T& value);
+	std::ostream& print_arg_field(std::ostream& os, const std::string& field, const T& value, bool newline = true);
 
 	template <typename T>
-	std::ostream& print_arg_field(std::ostream& os, const T& value);
+	std::ostream& print_unamed_arg_field(std::ostream& os, const T& value, bool newline = true);
 
 	template <typename T>
-	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool in_constructor);
+	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool in_constructor, bool newline = false);
 
 	inline std::string pgltype(const std::string& pgltypename) const;
+	std::string getfilename(const std::string& filename) const;
+
 
 	std::string scene_name;
 
 	std::string __indentation;
 	std::string __indentation_increment;
 	std::string __pglnamespace;
+	std::string __referencedir;
+	size_t __line_between_object;
 };
 
 /* ----------------------------------------------------------------------- */

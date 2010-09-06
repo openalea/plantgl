@@ -413,9 +413,12 @@ public:
 	inline bool warnOnError() const { return warn_on_error; }
 
 protected:
+    void _setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
+
 	virtual void _frustum(real_t length, real_t topdiam){}
-    
     virtual void _cylinder(real_t length){}
+
+    virtual void _sweep(real_t length, real_t topdiam);
 
     virtual void _polygon(const std::vector<TOOLS(Vector3)>& points){}
     
@@ -423,7 +426,8 @@ protected:
 									  const std::vector<TOOLS(Vector3)>& left,
 									  const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection,
-									  bool crossSectionCCW){}
+									  bool crossSectionCCW,
+									  bool currentcolor = false){}
 
     virtual void _sphere(real_t radius){}
     

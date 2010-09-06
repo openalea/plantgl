@@ -17,18 +17,19 @@ class AscCodec (sg.SceneCodec):
 
     def formats(self):
         """ return formats """
-        return [ sg.SceneFormat("Asc Codec",["asc","pts"],"The Ascii point file format") ]
+        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz"],"The Ascii point file format") ]
 
     def read(self,fname):
         """ read an ascii point file """
         import warnings
-        pts = []
-        col = []
+        pts = sg.Point3Array([])
+        col = sg.Color4Array([])
         isptsfile = ('.pts' in fname)
         f = file(fname,"r")
         if isptsfile:
             f.readline()
-        for i,line in enumerate(f.readlines()):
+        i = 0
+        for line in f.readlines():
             values = line.split()
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
@@ -41,8 +42,8 @@ class AscCodec (sg.SceneCodec):
                 else:
                     warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))
                     raise e
+            i+=1
         f.close()
-        pts = sg.Point3Array(pts)
         center = pts.getCenter()
         if len(col) == len(pts) :
             pointset = sg.PointSet(pts,col)

@@ -142,7 +142,8 @@ protected:
 									  const std::vector<TOOLS(Vector3)>& left,
                                       const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection,
-									  bool crossSectionCCW);
+									  bool crossSectionCCW,
+									  bool currentcolor = false);
 
     virtual void _sphere(real_t radius);
         

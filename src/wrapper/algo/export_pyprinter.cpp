@@ -61,6 +61,8 @@ void export_PyPrinter()
 	.add_property("indentation", make_function(&PyPrinter::getIndentation,return_value_policy<return_by_value>()), &PyPrinter::setIndentation )
 	.add_property("indentation_increment", make_function(&PyPrinter::getIndentationIncrement,return_value_policy<return_by_value>()), &PyPrinter::setIndentationIncrement )
 	.add_property("pglnamespace", make_function(&PyPrinter::getPglNamespace,return_value_policy<return_by_value>()), &PyPrinter::setPglNamespace )
+	.add_property("reference_dir", make_function(&PyPrinter::getReferenceDir,return_value_policy<return_by_value>()), &PyPrinter::setReferenceDir )
+	.add_property("line_between_object", make_function(&PyPrinter::getLineBetweenObject,return_value_policy<return_by_value>()), &PyPrinter::setLineBetweenObject )
     .def("incrementIndentation",&PyPrinter::incrementIndentation)
     .def("decrementIndentation",&PyPrinter::decrementIndentation)
 

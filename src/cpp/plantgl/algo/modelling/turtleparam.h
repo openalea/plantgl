@@ -116,13 +116,17 @@ public:
   TurtleDrawParameter();
 
   int color;
+
   Curve2DPtr crossSection;
   bool crossSectionCCW;
+  bool defaultSection;
 
   TOOLS(Vector2) texCoordScale;
   TOOLS(Vector2) texCoordTranslation;
   TOOLS(Vector2) texCoordRotCenter;
   real_t texCoordRotAngle;
+
+  real_t axialLength;
 
   void reset();
 };
@@ -176,6 +180,14 @@ public:
     bool isGeneralizedCylinderOn() const
 	{ return __generalizedCylinder; }
     
+	/// test if generalized cylinder flag is on but no drawing has been made
+    bool isGeneralizedCylinderOnInit() const
+	{ return __generalizedCylinder && pointList.size() <= 1; }
+    
+	/// test if generalized cylinder flag is on but no drawing has been made
+    bool isGCorPolygonOnInit() const
+	{ return (__generalizedCylinder||__polygon) && pointList.size() <= 1; }
+    
 	/// set polygon flag
     void polygon(bool);
     
@@ -184,6 +196,9 @@ public:
 
 	/// push the current position in the polygon points list
     void pushPosition();
+
+	/// push the current position in the polygon points list
+    void pushRadius();
     
     void setPosition(const TOOLS(Vector3)& pos){
 	  position = pos;
@@ -214,14 +229,6 @@ public:
   uint_t sectionResolution;
 
   TurtleDrawParameter initial;
-
-  Curve2DPtr initialCrossSection;
-  bool initialCrossSectionCCW;
-  int initialColor;
-  TOOLS(Vector2) initialTexCoordScale;
-  TOOLS(Vector2) initialTexCoordTranslation;
-  TOOLS(Vector2) initialTexCoordRotCenter;
-  real_t initialTexCoordRotAngle;
 
   TOOLS(Vector3) tropism;
   real_t elasticity;
