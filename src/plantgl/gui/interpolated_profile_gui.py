@@ -154,6 +154,8 @@ class ProfileViewer (QGLViewer):
         glDisable(GL_LIGHTING)
         glEnable(GL_LINE_SMOOTH)
         glEnable(GL_BLEND)
+        glEnable(GL_ALPHA_TEST)
+        glAlphaFunc ( GL_GREATER, 0.1 )
         glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
 
@@ -652,7 +654,7 @@ if __name__ == '__main__':
     #                       360, crsSect3)
 
     qapp = QtGui.QApplication([])
-    w = ProfileEditor(editingCentral=True)
+    w = ProfileEditor(editingCentral=False)
     w.set_profile_interpolation(tc)
     w.show()
     qapp.exec_()
