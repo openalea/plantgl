@@ -57,7 +57,8 @@ class NurbsMethod:
             return self.nPatch.getVSection(v).ctrlPointList
         def getUSection(self, u):
             return self.nPatch.getUSection(u).ctrlPointList
-
+        def real(self):
+            return self.nPatch
     @staticmethod
     def make_interpolation(curves, *args, **kargs):
         curves  = map(sg.Point4Array, curves)
@@ -77,6 +78,8 @@ class CSplineMethod:
             return [ x.getPointAt(v) for x in self._vs ]
         def getUSection(self, u):
             return [ x.getPointAt(u) for x in self._us ]
+        def real(self):
+            return self
     @staticmethod
     def make_interpolation(curves, *args, **kargs):
         curves  = map(sg.Point3Array,
@@ -242,7 +245,7 @@ class InterpolatedProfile( dict ):
     @property
     def interpolating_surface(self):
         """Returns the NurbsPatch used for interpolation"""
-        return self.__patch
+        return self.__patch.real()
 
     def get_interpolated_section(self, parameter, curve=True):
         """Returns a Curve corresponding to a V section
@@ -339,12 +342,20 @@ class InterpolatedProfile( dict ):
 
         The abscissa is expressed in the get_abscissa_range() range.
         """
+        abscissa = self.normalised_abscissa(abscissa)
+        if abscissa == 1.0 or abscissa == 0.0:
+            return
         if self.__patch:
-            abscissa = self.normalised_abscissa(abscissa)
-            section = self.__patch.getUSection(abscissa)
-            index = self.__find_index_in_polyline(abscissa, self.itervalues().next())
-            ptList = [i for i in section]
-            self.insert_column_before(index, ptList)
+            rows = self.itervalues()
+            afterId  = InterpolatedProfile.__find_index_in_polyline(abscissa,
+                                                                    self.itervalues().next(),
+                                                                    is_abscissa=True)
+            beforeId = afterId-1
+            ptPairs = [(c[afterId], c[beforeId]) for c in rows]
+
+            ptList = [ Vector4(abscissa, self.__lin_interpolation(abscissa, before, after), after[2], 1) \
+                       for after, before in ptPairs ]
+            self.insert_column_before(afterId, ptList)
 
     def insert_column_before(self, index, controlPoints):
         """Inserts a control point from controlPoints
@@ -360,7 +371,6 @@ class InterpolatedProfile( dict ):
                 xsection.insert(index, controlPoints[lineCount])
                 newSections += [t,xsection]
             self.add_cross_sections(*newSections, normalised=True)
-
 
     def create_cross_section(self, parameter):
         """Adds a interpolated cross section to the set of cross
