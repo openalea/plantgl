@@ -60,7 +60,7 @@ class FuncConstraint:
     @staticmethod
     def defaultCurve(nbP=4):
         return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
-        
+
 class Curve2DAccessor:
     def __init__(self):
         pass
@@ -125,7 +125,9 @@ class Nurbs2DAccessor (Bezier2DAccessor):
         return self.curve.degree +1
     def setKnotList(self):
         self.curve.setKnotListToDefault()
-        
+
+
+
 class Polyline2DAccessor (Curve2DAccessor):
     def __init__(self,curve):
         assert type(curve) == Polyline2D
@@ -151,7 +153,7 @@ class Polyline2DAccessor (Curve2DAccessor):
     def bounds(self):
         return self.curve.pointList.getBounds()
 
-        
+
 class Curve2DEditor (QGLViewer):
     def __init__(self,parent,constraints=Curve2DConstraint()):
         QGLViewer.__init__(self,parent)
@@ -164,15 +166,19 @@ class Curve2DEditor (QGLViewer):
         self.curveshape = Shape()
         self.curveshape.appearance = self.defaultMaterial
         self.pointsConstraints = constraints
-        self.accessorType = { NurbsCurve2D : Nurbs2DAccessor, BezierCurve2D : Bezier2DAccessor, Polyline2D : Polyline2DAccessor }
+        self.accessorType = { NurbsCurve2D : Nurbs2DAccessor,
+                              BezierCurve2D : Bezier2DAccessor,
+                              Polyline2D : Polyline2DAccessor,}
         self.setCurve(self.newDefaultCurve())
         self.discretizer = Discretizer()
         self.renderer = GLRenderer(self.discretizer)
         self.renderer.renderingMode = GLRenderer.Dynamic
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
         self.setStateFileName('.curveeditor.xml')
+
     def newDefaultCurve(self):
         return self.pointsConstraints.defaultCurve()
+
     def init(self):
         self.defaultColor = self.backgroundColor()
         self.updateSceneDimension()
@@ -194,13 +200,16 @@ class Curve2DEditor (QGLViewer):
         self.manipulator = ManipulatedFrame()
         self.setManipulatedFrame(self.manipulator)
         QObject.connect(self.manipulator,SIGNAL('manipulated()'),self.updatePoints)
+
     def getCurve(self):
         """ Get the edited curve """
         return self.curveshape.geometry
+
     def updateSceneDimension(self):
         minp,maxp = self.curveAccessor.bounds()
         minp,maxp = Vector3(minp,0),Vector3(maxp,0)
         self.setSceneBoundingBox(Vec(*minp),Vec(*maxp))
+
     def setCurve(self,curve):
         """ Set the edited curve """
         self.curveshape.geometry = curve
@@ -210,6 +219,7 @@ class Curve2DEditor (QGLViewer):
         self.createControlPointsRep()
         self.updateSceneDimension()
         self.showEntireScene()
+
     def draw(self):
         if self.isEnabled():
             self.setBackgroundColor(self.defaultColor)
@@ -224,9 +234,12 @@ class Curve2DEditor (QGLViewer):
         self.curveshape.apply(self.ctrlrenderer)
         self.ctrlpts.apply(self.renderer)
         self.drawGrid()
+
     def drawGrid(self):
         xr = self.end[0] - self.start[0]
         xy = self.end[1] - self.start[1]
+        if xr <= 0 or xy <= 0:
+            return
         nbdigit = max(int(round(log(xr,10))),int(round(log(xy,10))))
         xdelta = pow(10,nbdigit)/10
         fxval = round(self.start[0]/xdelta)
@@ -283,8 +296,9 @@ class Curve2DEditor (QGLViewer):
             glVertex3f(self.end[0],cyval,0)
             cyval += (10*xdelta)
         glEnd()
+
     def drawWithNames(self):
-        self.renderer.clear()            
+        self.renderer.clear()
         for sh in self.ctrlpts:
           glPushName(sh.id)
           sh.apply(self.renderer)
@@ -295,10 +309,12 @@ class Curve2DEditor (QGLViewer):
         # self.ctrlpts.apply(self.renderer)
         # self.renderer.endProcess()
         # self.renderer.renderingMode = GLRenderer.Dynamic
+
     def pointOnEditionPlane(self,pos):
         orig,direction = self.camera().convertClickToLine(pos)
         npoint = orig+direction*(orig[2]/(-direction[2]))
         return (npoint[0],npoint[1])
+
     def setInteractionMode(self,frame=True):
         if frame:
                 self.setMouseBinding(Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
@@ -310,7 +326,7 @@ class Curve2DEditor (QGLViewer):
                 self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
                 self.setMouseBinding(Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
                 self.setMouseBinding(Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
-            
+
     def mousePressEvent(self,event):
         if event.modifiers()  != Qt.ControlModifier:
             self.select(event.pos())
@@ -327,6 +343,7 @@ class Curve2DEditor (QGLViewer):
                 QGLViewer.mousePressEvent(self,event)
         else:
             return QGLViewer.mousePressEvent(self,event)
+
     def mouseDoubleClickEvent(self,event):
         if event.modifiers() == Qt.NoModifier:
             if event.button()  == Qt.LeftButton:
@@ -357,6 +374,7 @@ class Curve2DEditor (QGLViewer):
                 self.updateGL()
         else:
             QGLViewer.mouseDoubleClickEvent(self,event)
+
     def mouseReleaseEvent(self,event):
         if self.selection != -1:
                 self.selection = -1
@@ -365,14 +383,16 @@ class Curve2DEditor (QGLViewer):
         self.updateSceneDimension()
         self.updateGL()
         QGLViewer.mouseReleaseEvent(self,event)
+
     def changeEvent(self,event):
         if event.type() == QEvent.EnabledChange:
             if self.isEnabled():
                 self.pointColor = Material((250,30,30),1)
             else:
-                self.pointColor = Material((30,30,30),1)                
+                self.pointColor = Material((30,30,30),1)
             self.createControlPointsRep()
         QGLViewer.changeEvent(self,event)
+
     def updatePoints(self):
         sel = self.selection
         if sel != -1:
@@ -383,6 +403,7 @@ class Curve2DEditor (QGLViewer):
             self.createControlPointsRep()
             self.updateGL()
             self.emit(SIGNAL('valueChanged()'))
+
     def createControlPointsRep(self):
         self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),self.pointColor,id=i) for i,p in enumerate(self.curveAccessor.points())])
         if self.selection != -1:
