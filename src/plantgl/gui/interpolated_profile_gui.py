@@ -527,7 +527,7 @@ class ProfileEditor(QtGui.QSplitter):
             return u
     # -----------------------------------------------------------------------
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, editingCentral=False):
         QtGui.QSplitter.__init__(self,QtCore.Qt.Vertical, parent)
         self.__splitter = QtGui.QSplitter(QtCore.Qt.Horizontal, self)
 
@@ -563,14 +563,14 @@ class ProfileEditor(QtGui.QSplitter):
 
         # -- layout --
         l = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom)
-        l.addWidget(self.__profileExplorer)
+        l.addWidget(self.__profileExplorer if not editingCentral else self.__curvePanel)
         l.addWidget(self.__curveOverview)
         l.setContentsMargins(0,0,0,0)
         explorerAndCurveOverview = QtGui.QWidget(self.__splitter)
         explorerAndCurveOverview.setLayout(l)
         self.__splitter.addWidget(self.__addonConf)
         self.__splitter.addWidget(explorerAndCurveOverview)
-        self.__splitter.addWidget(self.__curvePanel)
+        self.__splitter.addWidget(self.__curvePanel if not editingCentral else self.__profileExplorer)
         self.__splitter.setSizes([0, explorerAndCurveOverview.width(), 0])
         self.addWidget(self.__splitter)
 
@@ -652,7 +652,7 @@ if __name__ == '__main__':
     #                       360, crsSect3)
 
     qapp = QtGui.QApplication([])
-    w = ProfileEditor()
+    w = ProfileEditor(editingCentral=True)
     w.set_profile_interpolation(tc)
     w.show()
     qapp.exec_()
