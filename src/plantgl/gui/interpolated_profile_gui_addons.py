@@ -49,7 +49,7 @@
 from OpenGL.GL import *
 from math import pow,log, exp, e
 import weakref
-
+from PyQt4 import QtCore
 
 
 def simpleAssignment(meth):
@@ -57,14 +57,14 @@ def simpleAssignment(meth):
     on attribute assignement inside the decorated
     function. """
     def wr(self, *args, **kwargs):
-        self._simpleAssignment = True
+        object.__setattr__(self, "_simpleAssignment", True)
         meth(self, *args, **kwargs)
-        self._simpleAssignment = False
+        object.__setattr__(self, "_simpleAssignment", False)
     return wr
 
 
 class EditorAddOn(object):
-    __specials__ = {}
+    __specials__ = {"recomputeDelay" : lambda x: x._reconfigure_timer()}
     __gl_pushed_attribs__ = 0
     __hidden_vars__ = []
 
@@ -72,9 +72,13 @@ class EditorAddOn(object):
         assert editor is not None
         editor._addons.append(self)
         self._simpleAssignment = True
+        self._interpolator     = None
         self._callbacks        = {}
-        self.editor            = weakref.proxy(editor)
+        self._recomputeTimout  = QtCore.QTimer()
+        self._recomputeTimout.timeout.connect(self._differed_compute)
+        self._editor            = weakref.proxy(editor)
         self.enabled           = False
+        self.recomputeDelay    = 0
         self.init()
         self._simpleAssignment = False
 
@@ -86,8 +90,7 @@ class EditorAddOn(object):
 
     def variable_dict(self):
         return dict( (k, (type(v), v)) for k, v, in self.__dict__.iteritems() if \
-                     not k.startswith("_") and \
-                     not k=="editor" )
+                     not k.startswith("_") )
 
     def __nonzero__(self):
         return self.enabled
@@ -105,7 +108,7 @@ class EditorAddOn(object):
                 else:
                     for act in actions:
                         act(self)
-            self.editor.update_displayed_geometry()
+            self._editor.update_displayed_geometry()
             if k in self._callbacks:
                 calls = self._callbacks[k]
                 path = self.name()+"."+k
@@ -122,10 +125,22 @@ class EditorAddOn(object):
         self.draw(renderer)
         glPopAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT|self.__gl_pushed_attribs__)
 
+    @simpleAssignment
     def _compute(self, interpolator):
         if not self.enabled:
             return
-        self.compute(interpolator)
+        self._interpolator = interpolator
+        if self.recomputeDelay == 0:
+            self.compute()
+        else:
+            if self._recomputeTimout.isActive():
+                self._recomputeTimout.stop()
+            self._recomputeTimout.start()
+
+    def _differed_compute(self):
+        self._recomputeTimout.stop()
+        self.compute()
+        self._editor.update()
 
     @simpleAssignment
     def _interpolation_changed(self):
@@ -133,13 +148,15 @@ class EditorAddOn(object):
         self.interpolation_changed()
         self._simpleAssignment = False
 
+    def _reconfigure_timer(self):
+        self._recomputeTimout.setInterval(self.recomputeDelay)
     ##################
     # Override these #
     ##################
     def draw(self, renderer):
         pass
 
-    def compute(self, interpolator):
+    def compute(self):
         pass
 
     def clear_caches(self):
@@ -157,8 +174,8 @@ class UserSlicesAddOn(EditorAddOn):
     def draw(self, renderer):
         glDisable(GL_LINE_SMOOTH)
         glLineWidth(2)
-        cursor = self.editor.position()
-        pos = self.editor.normalised_parameter(cursor)
+        cursor = self._editor.position()
+        pos = self._editor.normalised_parameter(cursor)
         for k, s in self.__userSlices.iteritems():
             if abs(k - pos) < self.highlightEps:
                 glColor4f(1., 0.0, 0.0, 1.0)
@@ -166,8 +183,9 @@ class UserSlicesAddOn(EditorAddOn):
                 glColor4f(0.9, 0.9, 1.0, 0.5)
             s.apply(renderer)
 
-    def compute(self, interpolator):
+    def compute(self):
         # -- recompute the user slices --
+        interpolator = self._interpolator
         for k, v in interpolator.iteritems():
             self.__userSlices[k] = interpolator.Method.make_section(v)
 
@@ -175,15 +193,17 @@ class UserSlicesAddOn(EditorAddOn):
         self.__userSlices.clear()
 
     def interpolation_changed(self):
-        self.highlightEps = self.editor.normalised_parameter(self.editor.increment,
+        self.highlightEps = self._editor.normalised_parameter(self._editor.increment,
                                                              is_distance=True)
 
 
 
 class VisualCrossSectionsAddOn(EditorAddOn):
 
-    __specials__ = {"rate": lambda x:x.clear_caches(),
-                    "width": lambda x:x.fix_width()}
+
+    __specials__ = EditorAddOn.__specials__.copy()
+    __specials__["rate"] = lambda x:x.clear_caches()
+    __specials__["width"] = lambda x:x.fix_width()
 
     @staticmethod
     def linIntensityF(x, range):
@@ -207,15 +227,15 @@ class VisualCrossSectionsAddOn(EditorAddOn):
     def draw(self, renderer):
         glLineWidth(0.5)
 
-        position = self.editor.position()
-        _min, _max = self.editor.range()
+        position = self._editor.position()
+        _min, _max = self._editor.range()
         diff     = float(_max-_min)
         if diff == 0:
             return
         alphaRange = 1.0-self.baseAlpha
 
         for p, s in self._sections.iteritems():
-            delta = self.editor.normalised_parameter(p-position, is_distance=True)
+            delta = self._editor.normalised_parameter(p-position, is_distance=True)
             alpha = self.baseAlpha
             if abs(delta) < self.width:
                 if delta == 0.0:
@@ -232,9 +252,10 @@ class VisualCrossSectionsAddOn(EditorAddOn):
             s.apply(renderer)
 
 
-    def compute(self, interpolator):
+    def compute(self):
+        interpolator = self._interpolator
         if interpolator and len(self._sections)==0:
-            min_, max_ = self.editor.range()
+            min_, max_ = self._editor.range()
             samples = int((max_-min_)/self.rate)
             for i in range(1, samples):
                 par = min_+i*self.rate
@@ -245,9 +266,9 @@ class VisualCrossSectionsAddOn(EditorAddOn):
         self._sections.clear()
 
     def interpolation_changed(self):
-        min_, max_ = self.editor.range()
-        self.rate  = self.editor.increment*2
-        self.width = self.editor.normalised_parameter( (max_-min_)/4,
+        min_, max_ = self._editor.range()
+        self.rate  = self._editor.increment*2
+        self.width = self._editor.normalised_parameter( (max_-min_)/4,
                                                        is_distance=True)
 
     @simpleAssignment
@@ -286,7 +307,7 @@ class GridAddOn(EditorAddOn):
 
     def _draw_grids(self):
         rate = self.gridStep
-        cameraVec = self.editor.camera().viewDirection()
+        cameraVec = self._editor.camera().viewDirection()
         levels = 1
         m0 = abs(glGetIntegerv(GL_PROJECTION_MATRIX)[0][0])
         levels = min(levels+int(log(m0+1,10)), GridAddOn.__max_grid_levels__)
@@ -319,8 +340,8 @@ class GridAddOn(EditorAddOn):
                     pass
                 if self.zScale:
                     z = str(self.minimum+self._range*pos)
-                    self.editor.renderText(x, 0., pos, z)
-                    self.editor.renderText(xp, 0., pos, z)
+                    self._editor.renderText(x, 0., pos, z)
+                    self._editor.renderText(xp, 0., pos, z)
                 glEnable(GL_DEPTH_TEST)
 
                 glColor4f(0.2,0.2,0.2,1.0)
@@ -353,7 +374,7 @@ class GridAddOn(EditorAddOn):
 
             # x axis
             glColor4f(1.0,0.,0.,1.)
-            self.editor.renderText(0.2,0.,0.,"x")
+            self._editor.renderText(0.2,0.,0.,"x")
             glBegin(GL_LINES)
             glVertex3f(0.,  0., 0)
             glVertex3f(0.2, 0., 0)
@@ -361,7 +382,7 @@ class GridAddOn(EditorAddOn):
 
             # y axis
             glColor4f(0.,1.0,0.,1.)
-            self.editor.renderText(0.,0.2,0.,"y")
+            self._editor.renderText(0.,0.2,0.,"y")
             glBegin(GL_LINES)
             glVertex3f(0., 0.,  0)
             glVertex3f(0., 0.2, 0)
@@ -369,7 +390,7 @@ class GridAddOn(EditorAddOn):
 
             # z axis
             glColor4f(0.,0.,1.0,1.)
-            self.editor.renderText(0.,0.,0.2,"z")
+            self._editor.renderText(0.,0.,0.2,"z")
             glBegin(GL_LINES)
             glVertex3f(0., 0., 0.0)
             glVertex3f(0., 0., 0.2)
@@ -379,10 +400,10 @@ class GridAddOn(EditorAddOn):
 
     @simpleAssignment
     def grid_count_changed(self):
-        min_, max_ = self.editor.range()
+        min_, max_ = self._editor.range()
         diff = max(max_-min_, 1e-4) #prevent zero division down the line
         self.gridCount = max(self.gridCount, 2) #prevent zero division
-        self.gridStep = float(self.editor.normalised_parameter( diff / (self.gridCount-1),
+        self.gridStep = float(self._editor.normalised_parameter( diff / (self.gridCount-1),
                                                                 is_distance=True))
 
     @simpleAssignment
@@ -392,10 +413,10 @@ class GridAddOn(EditorAddOn):
         self.gridCount  = int(round((1+self.gridStep) / self.gridStep))
 
     def interpolation_changed(self):
-        min_, max_ = self.editor.range()
+        min_, max_ = self._editor.range()
         self.minimum = min_
         self.maximum = max_
         self._range     = max(max_ - min_, 1e-4) #prevent zero division down the line
-        self.gridStep  = self.editor.normalised_parameter(self._range/ 10,
+        self.gridStep  = self._editor.normalised_parameter(self._range/ 10,
                                                           is_distance=True)
         self.gridCount = 11

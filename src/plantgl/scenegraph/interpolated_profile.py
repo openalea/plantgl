@@ -133,6 +133,7 @@ class InterpolatedProfile( dict ):
         self.__epsilon         = None
         self.__cachedSections  = {}
         self.__normToReal      = {}
+        self.__sortedTuples    = []
         self.update_interpolation()
 
     @staticmethod
@@ -145,6 +146,9 @@ class InterpolatedProfile( dict ):
     def real(self):
         real = dict((self.__normToReal[k],v) for k,v in self.iteritems())
         return real
+
+    def as_sorted_tuples(self):
+        return self.__sortedTuples
 
     ############
     # Dict API #
@@ -211,10 +215,10 @@ class InterpolatedProfile( dict ):
             self.__normToReal = dict( (k, self.unnormalised_parameter(k)) for k in self.iterkeys() )
 
             # -- make a list of tuples out of the items,
-            curves  = map(list, self.iteritems())
+            self.__sortedTuples = map(list, self.iteritems())
             # -- sort according to key,
-            curves.sort()
-            curves  = map(lambda x: x[1], curves)
+            self.__sortedTuples.sort()
+            curves  = map(lambda x: x[1], self.__sortedTuples)
             unorm = self._get_u_distances
             normalisedUDistances=[unorm(c) for c in curves]
             # -- and transpose since we are specifying rows, not columns
@@ -267,14 +271,15 @@ class InterpolatedProfile( dict ):
         norm = self.normalised_abscissa
         if len(crv) < 2:
             return []
-        return map(norm, map(sum, ( (x[0],-y[0]) for x,y in zip(crv[1:], crv[:-1]))))
+        diffPairs = zip(crv[1:], crv[:-1])
+        return map(norm, map(sum, ( (x[0],-y[0]) for x,y in diffPairs)))
 
     def _get_v_distances(self):
-        steps = sorted(self.keys())
+        steps = self.as_sorted_tuples()
         if len(steps) < 2:
             return []
-        return map(sum, ( (x,-y) for x,y in zip(steps[1:], steps[:-1])))
-
+        diffPairs = zip(steps[1:], steps[:-1])
+        return map(sum, ( (x[0],-y[0]) for x,y in diffPairs))
 
     #################
     # Functor style #

@@ -102,16 +102,15 @@ class CSpline:
         a = 1./3
 
         n = len(self)
-        self.ctrl_pts = []
+        self.ctrl_pts = [0]*(3*n-2)
         for i in xrange(0,n-1):
             p, q = self.points[i:i+2]
             dp, dq = self.der[i:i+2]
-            self.ctrl_pts.append(p)
-            self.ctrl_pts.append(p+dp*a)
-            self.ctrl_pts.append(q-dq*a)
+            self.ctrl_pts[i*3]   = p
+            self.ctrl_pts[i*3+1] = p+dp*a
+            self.ctrl_pts[i*3+2] = q-dq*a
         # last point
-        self.ctrl_pts.append(self.points[-1])
-
+        self.ctrl_pts[-1]=self.points[-1]
         if self.is_closed:
             self.ctrl_pts[1] = self.ctrl_pts[2]
             self.ctrl_pts[-2] = self.ctrl_pts[-3]

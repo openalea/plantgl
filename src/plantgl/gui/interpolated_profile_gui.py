@@ -277,7 +277,7 @@ class AddOnControlWidget(QtGui.QScrollArea):
 
         # -- reference to the profile explorer
         self.__exp = weakref.proxy(explorer)
-
+        self.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Maximum)
         # -- Layout --
         self.__subWidget = QtGui.QWidget() # A QScrollArea needs an inner widget to scroll.
         self.__layout = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom)
@@ -594,7 +594,8 @@ class ProfileEditor(QtGui.QSplitter):
 
     def __push_user_sections_to_overview(self):
         prof = self.__profileExplorer.interpolator()
-        real = sorted((k, NurbsCurve(v)) for k, v, in prof.real().iteritems())
+        l = prof.as_sorted_tuples()
+        real = [(prof.unnormalised_parameter(k),NurbsCurve(v)) for k,v in l]
         self.__curveOverview.set_curves(real)
 
     def __push_section_to_curve_panel(self, section):
