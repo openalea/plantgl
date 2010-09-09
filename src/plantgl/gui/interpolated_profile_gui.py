@@ -410,8 +410,20 @@ class CurvePanel( QtGui.QScrollArea ):
         self.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         self.__curveViews = []
         self.__curveLabels = []
+        self.__refreshTimout = QtCore.QTimer()
+        self.__refreshTimout.setInterval(500)
+        self.__refreshTimout.timeout.connect(self.__set_curves)
+        self.__crvs = None
 
     def set_curves(self, crvs):
+        self.__crvs = crvs
+        if self.__refreshTimout.isActive():
+            self.__refreshTimout.stop()
+        self.__refreshTimout.start()
+
+    def __set_curves(self):
+        self.__refreshTimout.stop()
+        crvs = self.__crvs
         if len(crvs)==len(self.__curveViews): #refresh the existing views
             for i in range(len(crvs)):
                 pos, c = crvs[i]
