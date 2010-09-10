@@ -59,10 +59,11 @@ class ProfileViewer (QGLViewer):
     _posCurveColorF = [0.0,1.0,0.0]
 
     positionChanged = QtCore.pyqtSignal(int)
+    userSectionHighlighted = QtCore.pyqtSignal(object, object)
 
     def __init__(self,parent, profile=None):
         QGLViewer.__init__(self,parent)
-        self.__profileInterpolator  = None
+        self.__profile  = None
         self.__position = 0
         self.__positionCurve = None
         self.increment = 0.01
@@ -92,17 +93,22 @@ class ProfileViewer (QGLViewer):
         self.camera().setZClippingCoefficient(4) #arbitrary.
         self.showEntireScene()
 
-    def set_profile_interpolation(self, profile):
+    def set_profile(self, profile):
         if profile is not None:
-            self.__profileInterpolator = profile
-            profile.add_update_callback(self.__interpolatorChanged)
-            self.__interpolatorChanged()
+            profile.add_update_callback(self.__profileChanged)
+            self.__profile = profile
+            # -- recompute stuff --
+            self.__param_min,self.__param_max=profile.get_param_range()
+            self.increment = (self.__param_max - self.__param_min)/100
+            for addon in self._addons:
+                addon._init_from_profile(profile)
             self.set_position(self.range()[0])
         else:
             self.__clearCaches()
+            self.__profile = None
 
-    def interpolator(self):
-        return self.__profileInterpolator
+    def profile(self):
+        return self.__profile
 
     def range(self):
         return self.__param_min, self.__param_max
@@ -118,9 +124,13 @@ class ProfileViewer (QGLViewer):
         self.__position=position
         self.update_displayed_geometry()
         self.positionChanged.emit(position)
+        if position not in self.__profile:
+            position = self.round_within_increment(position)
+        if position in self.__profile:
+            self.userSectionHighlighted.emit(position, self.__profile[position])
 
     def round_within_increment(self, pos):
-        keys = map(self.unnormalised_parameter, self.__profileInterpolator.iterkeys())
+        keys = map(self.unnormalised_parameter, self.__profile.iterkeys())
         for k in keys:
             if abs(k-pos) <= self.increment:
                 return k
@@ -131,20 +141,20 @@ class ProfileViewer (QGLViewer):
     # Normalisation Helpers #
     #########################
     def normalised_parameter(self, par, **kwargs):
-        if self.__profileInterpolator:
-            return self.__profileInterpolator.normalised_parameter(par, **kwargs)
+        if self.__profile:
+            return self.__profile.normalised_parameter(par, **kwargs)
 
     def normalised_abscissa(self, par, **kwargs):
-        if self.__profileInterpolator:
-            return self.__profileInterpolator.normalised_abscissa(par, **kwargs)
+        if self.__profile:
+            return self.__profile.normalised_abscissa(par, **kwargs)
 
     def unnormalised_parameter(self, par, **kwargs):
-        if self.__profileInterpolator:
-            return self.__profileInterpolator.unnormalised_parameter(par, **kwargs)
+        if self.__profile:
+            return self.__profile.unnormalised_parameter(par, **kwargs)
 
     def unnormalised_abscissa(self, par, **kwargs):
-        if self.__profileInterpolator:
-            return self.__profileInterpolator.unnormalised_abscissa(par, **kwargs)
+        if self.__profile:
+            return self.__profile.unnormalised_abscissa(par, **kwargs)
 
     #################
     # Painting code #
@@ -168,7 +178,7 @@ class ProfileViewer (QGLViewer):
         mat[15] = 1.
         glMultMatrixd(mat)
 
-        if self.__profileInterpolator is not None:
+        if self.__profile is not None:
             self.discretizer.clear()
             if self.__positionCurve:
                 for addon in self._addons:
@@ -211,32 +221,32 @@ class ProfileViewer (QGLViewer):
     def keyPressEvent(self, event):
         key = event.key()
         if key in [QtCore.Qt.Key_Return,QtCore.Qt.Key_Return]:
-            self.__profileInterpolator.create_cross_section(self.__position)
+            self.__profile.create_cross_section(self.__position)
         elif key == QtCore.Qt.Key_Delete:
             position = self.round_within_increment(self.__position)
-            if position in self.__profileInterpolator:
-                del self.__profileInterpolator[position]
+            if position in self.__profile:
+                del self.__profile[position]
 
     ##############################
     # Internal State Maintenance #
     ##############################
     def update_displayed_geometry(self):
-        if self.__profileInterpolator:
+        if self.__profile:
             # -- 'add-ons' --
             for addon in self._addons:
-                addon._compute(self.__profileInterpolator)
-            self.__positionCurve = self.__profileInterpolator(self.__position)
+                addon._compute(self.__profile)
+            self.__positionCurve = self.__profile(self.__position)
             self.update()
 
     def __clearCaches(self):
         for addon in self._addons:
             addon.clear_caches()
 
-    def __interpolatorChanged(self):
+    def __profileChanged(self):
         # -- cleanup caches --
         self.__clearCaches()
         # -- recompute stuff --
-        self.__param_min,self.__param_max=self.__profileInterpolator.get_param_range()
+        self.__param_min,self.__param_max=self.__profile.get_param_range()
         self.increment = (self.__param_max - self.__param_min)/100
         for addon in self._addons:
             addon._interpolation_changed()
@@ -359,7 +369,11 @@ class AddOnControlWidget(QtGui.QScrollArea):
         addon, key = path.split(".")
         addon = self.__addOns[addon]
         if typ == tuple:
-            value = eval(str(value))
+            try:
+                value = eval(str(value))
+            except:
+                pass
+        addon.set(key, value)
         setattr(addon, key, value)
 
     def __on_addon_changed(self, path, value):
@@ -383,8 +397,17 @@ class CurvePanel( QtGui.QScrollArea ):
             self.pos = pos
             self.accessorType[NurbsCurve]=ProfileEditor.NurbsAccessor
             self.setFixedSize(100, 90)
-            self.setCurve(curve)
             self.setEnabled(True)
+            self.setAutoFillBackground(True)
+            self.bkgdColor = self.backgroundColor()
+            if curve:
+                self.setCurve(curve)
+        def highlight(self, val):
+            if val:
+                self.defaultColor = QtGui.QColor(100,200,100)
+            else:
+                self.defaultColor = self.bkgdColor
+            self.update()
         def drawGrid(self):
             return
         def mousePressEvent(self,event):
@@ -410,7 +433,7 @@ class CurvePanel( QtGui.QScrollArea ):
         QtGui.QScrollArea.__init__(self, parent)
         self.orientation = orientation
         self.setSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
-        self.__curveViews = []
+        self.__curveViews  = []
         self.__curveLabels = []
         self.__refreshTimout = QtCore.QTimer()
         self.__refreshTimout.setInterval(500)
@@ -422,6 +445,10 @@ class CurvePanel( QtGui.QScrollArea ):
         if self.__refreshTimout.isActive():
             self.__refreshTimout.stop()
         self.__refreshTimout.start()
+
+    def get_curve(self, id):
+        w= self.widget().layout().itemAt(id).widget()
+        return w.getCurve()
 
     def __set_curves(self):
         self.__refreshTimout.stop()
@@ -472,10 +499,16 @@ class CurvePanel( QtGui.QScrollArea ):
                 self.__curveLabels.append(label)
             self.setWidget(scrolledWidget)
 
-    def get_curve(self, id):
-        w= self.widget().layout().itemAt(id).widget()
-        return w.getCurve()
+    def highlight_curve_at_position(self, pos, crv):
+        for cv in self.__curveViews:
+            if cv.pos == pos:
+                cv.highlight(True)
+            else:
+                cv.highlight(False)
 
+    #################
+    # Private stuff #
+    #################
     def __on_label_changed(self, sender, value, typ):
         try:
             i = self.__curveLabels.index(sender.inner)
@@ -496,24 +529,24 @@ class ProfileEditor(QtGui.QSplitter):
         """Direct manipulation of the InterpolatedProfile"""
         def __init__(self,curve):
             Nurbs2DAccessor.__init__(self,curve)
-            self.interpolator = None
+            self.profile = None
             self.position = None
         def checkType(self,curve):
             assert type(curve) == NurbsCurve
         def insertPoint(self,index,npoint):
-            if self.interpolator is not None:
+            if self.profile is not None:
                 pt, u = self.curve.findClosest(Vector3(*npoint))
-                self.interpolator.create_control_point(u)
+                self.profile.create_control_point(u)
         def setPoint(self,index,npoint):
             crv = self.curve
             pi = crv.ctrlPointList[index]
             crv.ctrlPointList[index] = Vector4(npoint[0],
                                                npoint[1],
                                                pi[2] ,1)
-            if self.interpolator is not None and \
+            if self.profile is not None and \
                    crv is not None and \
-                   self.position in self.interpolator:
-                self.interpolator[self.position] = interpolated_profile.CrossSection(*crv.ctrlPointList)
+                   self.position in self.profile:
+                self.profile[self.position] = interpolated_profile.CrossSection(*crv.ctrlPointList)
         def bounds(self):
             minp,maxp = self.curve.ctrlPointList.getBounds()
             vmin, vmax = self.verticalBounds()
@@ -535,14 +568,14 @@ class ProfileEditor(QtGui.QSplitter):
 
         self.__profileExplorer = ProfileViewer(None)
         self.__curveOverview   = CurvePanel ()
-        self.__curvePanel      = Curve2DEditor(self.__splitter)
-        self.__curvePanel.position = 0.0 #additional attribute needed to refresh the edited curve.
+        self.__curveEdit      = Curve2DEditor(self.__splitter)
+        self.__curveEdit.position = 0.0 #additional attribute needed to refresh the edited curve.
 
         self.__addonConf       = AddOnControlWidget(self.__profileExplorer, self)
 
         # -- curve panel conf --
-        self.__curvePanel.sphere = interpolated_profile.sg.Sphere(radius=0.002)
-        self.__curvePanel.accessorType[NurbsCurve]=ProfileEditor.NurbsAccessor
+        self.__curveEdit.sphere = interpolated_profile.sg.Sphere(radius=0.002)
+        self.__curveEdit.accessorType[NurbsCurve]=ProfileEditor.NurbsAccessor
 
         # -- profile explorer conf --
         self.__profileExplorer.factor = [1,1,2]
@@ -558,82 +591,84 @@ class ProfileEditor(QtGui.QSplitter):
         self.__curveOverview.curveDeleteRequested.connect(self.__on_curve_delete_request)
         self.__curveOverview.curveMoveRequested.connect(self.__on_curve_move_request)
         self.__profileExplorer.positionChanged.connect(self.__on_position_changed)
+        self.__profileExplorer.userSectionHighlighted.connect(self.__on_user_section_highlight)
+        self.__profileExplorer.userSectionHighlighted.connect(self.__curveOverview.highlight_curve_at_position)
         # !!! Do not bind this one as valueChanged can be anything
         # !!! and that our custom curvePanel.curveAccessor directly
         # !!! edits the interpolated profile.
-        # self.__curvePanel.connect(self.__curvePanel, QtCore.SIGNAL("valueChanged()"), self.__on_curve_edited)
+        # self.__curveEdit.connect(self.__curveEdit, QtCore.SIGNAL("valueChanged()"), self.__on_curve_edited)
 
         # -- layout --
         l = QtGui.QBoxLayout(QtGui.QBoxLayout.TopToBottom)
-        l.addWidget(self.__profileExplorer if not editingCentral else self.__curvePanel)
+        l.addWidget(self.__profileExplorer if not editingCentral else self.__curveEdit)
         l.addWidget(self.__curveOverview)
         l.setContentsMargins(0,0,0,0)
         explorerAndCurveOverview = QtGui.QWidget(self.__splitter)
         explorerAndCurveOverview.setLayout(l)
         self.__splitter.addWidget(self.__addonConf)
         self.__splitter.addWidget(explorerAndCurveOverview)
-        self.__splitter.addWidget(self.__curvePanel if not editingCentral else self.__profileExplorer)
+        self.__splitter.addWidget(self.__curveEdit if not editingCentral else self.__profileExplorer)
         self.__splitter.setSizes([0, explorerAndCurveOverview.width(), 0])
         self.addWidget(self.__splitter)
 
-        # -- latest position of profile explorer cursor that matched a user defined curve.
+        # -- latest position of profile explorer
+        # -- cursor that matched a user defined curve.
         self.__editedPosition = None
 
-    def set_profile_interpolation(self, prof):
+    def set_profile(self, prof):
         prof.add_update_callback(self.__on_interpolation_changed)
-        self.__profileExplorer.set_profile_interpolation(prof)
+        self.__profileExplorer.set_profile(prof)
         self.__push_user_sections_to_overview()
         self.__on_position_changed(self.__profileExplorer.position(), self)
         self.__addonConf.init()
 
+    def get_profile(self):
+        return self.__profileExplorer.profile()
+
     def __on_interpolation_changed(self):
         self.__push_user_sections_to_overview()
         # -- refresh curve panel with new curve
-        interpol = self.__profileExplorer.interpolator()
-        pos = self.__curvePanel.position
+        interpol = self.get_profile()
+        pos = self.__curveEdit.position
         if pos in interpol:
             self.__push_section_to_curve_panel(interpol[pos])
 
     def __push_user_sections_to_overview(self):
-        prof = self.__profileExplorer.interpolator()
+        prof = self.get_profile()
         l = prof.as_sorted_tuples()
         real = [(prof.unnormalised_parameter(k),NurbsCurve(v)) for k,v in l]
         self.__curveOverview.set_curves(real)
 
     def __push_section_to_curve_panel(self, section):
         section = NurbsCurve(section) if isinstance(section, list) else section
-        self.__curvePanel.setCurve(section)
-        self.__curvePanel.curveAccessor.interpolator = self.__profileExplorer.interpolator()
+        self.__curveEdit.setCurve(section)
+        self.__curveEdit.curveAccessor.profile = self.get_profile()
         if self.__editedPosition is not None:
-            self.__curvePanel.position = self.__editedPosition
-            self.__curvePanel.curveAccessor.position = self.__editedPosition
+            self.__curveEdit.position = self.__editedPosition
+            self.__curveEdit.curveAccessor.position = self.__editedPosition
 
     def __on_position_changed(self, position, sender=None ):
-        interpolator = self.__profileExplorer.interpolator()
-        if position not in interpolator:
-            position = self.__profileExplorer.round_within_increment(position)
-        if position in interpolator and sender==self: #intialisation
-            self.__push_section_to_curve_panel( interpolator[position] )
+        pass
+
+    def __on_user_section_highlight(self, position, crv ):
+        self.__editedPosition = position
+        self.__push_section_to_curve_panel( crv )
 
     def __on_curve_edit_request(self, position, curve):
-        interpolator = self.__profileExplorer.interpolator()
-        if position not in interpolator:
-            position = self.__profileExplorer.round_within_increment(position)
-        if position in interpolator:
-            self.__editedPosition = position
-            self.__push_section_to_curve_panel(curve)
-            self.__profileExplorer.set_position(position)
+        # -- following call makes the profileExplorer
+        # -- send userSectionHighlighted.
+        self.__profileExplorer.set_position(position)
 
     def __on_curve_delete_request(self, position, curve):
-        interpolator = self.__profileExplorer.interpolator()
-        if position not in interpolator:
+        profile = self.get_profile()
+        if position not in profile:
             position = self.__profileExplorer.round_within_increment(position)
-        if position in interpolator:
-            del interpolator[position]
+        if position in profile:
+            del profile[position]
 
     def __on_curve_move_request(self, oldPos, newPos):
-        interpolator = self.__profileExplorer.interpolator()
-        interpolator[oldPos] = newPos
+        profile = self.get_profile()
+        profile[oldPos] = newPos
 
 
 
@@ -648,14 +683,10 @@ if __name__ == '__main__':
     tc.add_cross_sections(-180, crsSect1,
                              0, crsSect2,
                            180, crsSect3)
-    # tc.set_param_range(0.0, 360.0)
-    # tc.add_cross_sections(0, crsSect1,
-    #                       180, crsSect2,
-    #                       360, crsSect3)
 
     qapp = QtGui.QApplication([])
     w = ProfileEditor(editingCentral=False)
-    w.set_profile_interpolation(tc)
+    w.set_profile(tc)
     w.show()
     qapp.exec_()
 

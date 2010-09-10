@@ -52,16 +52,6 @@ import weakref
 from PyQt4 import QtCore
 
 
-def simpleAssignment(meth):
-    """ A decorator that disables notification
-    on attribute assignement inside the decorated
-    function. """
-    def wr(self, *args, **kwargs):
-        object.__setattr__(self, "_simpleAssignment", True)
-        meth(self, *args, **kwargs)
-        object.__setattr__(self, "_simpleAssignment", False)
-    return wr
-
 
 class EditorAddOn(object):
     __specials__ = {"recomputeDelay" : lambda x: x._reconfigure_timer()}
@@ -71,8 +61,7 @@ class EditorAddOn(object):
     def __init__(self, editor):
         assert editor is not None
         editor._addons.append(self)
-        self._simpleAssignment = True
-        self._interpolator     = None
+        self._profile     = None
         self._callbacks        = {}
         self._recomputeTimout  = QtCore.QTimer()
         self._recomputeTimout.timeout.connect(self._differed_compute)
@@ -80,7 +69,6 @@ class EditorAddOn(object):
         self.enabled           = False
         self.recomputeDelay    = 0
         self.init()
-        self._simpleAssignment = False
 
     def init(self, renderer):
         raise NotImplementedError
@@ -98,22 +86,21 @@ class EditorAddOn(object):
     def add_callback(self, key, call):
         self._callbacks.setdefault(key, []).append(call)
 
-    def __setattr__(self, k, v):
+    def set(self, k, v):
         object.__setattr__(self, k, v)
-        if not self._simpleAssignment:
-            if k in self.__specials__:
-                actions = self.__specials__[k]
-                if not hasattr(actions, "__getitem__"):
-                    actions(self)
-                else:
-                    for act in actions:
-                        act(self)
-            self._editor.update_displayed_geometry()
-            if k in self._callbacks:
-                calls = self._callbacks[k]
-                path = self.name()+"."+k
-                for c in calls:
-                    c(path, v)
+        if k in self.__specials__:
+            actions = self.__specials__[k]
+            if not hasattr(actions, "__getitem__"):
+                actions(self)
+            else:
+                for act in actions:
+                    act(self)
+        self._editor.update_displayed_geometry()
+        if k in self._callbacks:
+            calls = self._callbacks[k]
+            path = self.name()+"."+k
+            for c in calls:
+                c(path, v)
 
     #################################################
     # Calls used by the editor, not to be overriden #
@@ -125,11 +112,10 @@ class EditorAddOn(object):
         self.draw(renderer)
         glPopAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT|self.__gl_pushed_attribs__)
 
-    @simpleAssignment
-    def _compute(self, interpolator):
+    def _compute(self, profile):
         if not self.enabled:
             return
-        self._interpolator = interpolator
+        self._profile = profile
         if self.recomputeDelay == 0:
             self.compute()
         else:
@@ -142,11 +128,12 @@ class EditorAddOn(object):
         self.compute()
         self._editor.update()
 
-    @simpleAssignment
+    def _init_from_profile(self, profile):
+        object.__setattr__(self, "_profile", profile)
+        self.init_from_profile()
+
     def _interpolation_changed(self):
-        self._simpleAssignment = True
         self.interpolation_changed()
-        self._simpleAssignment = False
 
     def _reconfigure_timer(self):
         self._recomputeTimout.setInterval(self.recomputeDelay)
@@ -160,6 +147,9 @@ class EditorAddOn(object):
         pass
 
     def clear_caches(self):
+        pass
+
+    def init_from_profile(self):
         pass
 
     def interpolation_changed(self):
@@ -185,16 +175,16 @@ class UserSlicesAddOn(EditorAddOn):
 
     def compute(self):
         # -- recompute the user slices --
-        interpolator = self._interpolator
-        for k, v in interpolator.iteritems():
-            self.__userSlices[k] = interpolator.Method.make_section(v)
+        profile = self._profile
+        for k, v in profile.iteritems():
+            self.__userSlices[k] = profile.Method.make_section(v)
 
     def clear_caches(self):
         self.__userSlices.clear()
 
-    def interpolation_changed(self):
+    def init_from_profile(self):
         self.highlightEps = self._editor.normalised_parameter(self._editor.increment,
-                                                             is_distance=True)
+                                                              is_distance=True)
 
 
 
@@ -253,25 +243,24 @@ class VisualCrossSectionsAddOn(EditorAddOn):
 
 
     def compute(self):
-        interpolator = self._interpolator
-        if interpolator and len(self._sections)==0:
+        profile = self._profile
+        if profile and len(self._sections)==0:
             min_, max_ = self._editor.range()
             samples = int((max_-min_)/self.rate)
             for i in range(1, samples):
                 par = min_+i*self.rate
-                crv = interpolator(par)
+                crv = profile(par)
                 self._sections[par] =  crv
 
     def clear_caches(self):
         self._sections.clear()
 
-    def interpolation_changed(self):
+    def init_from_profile(self):
         min_, max_ = self._editor.range()
         self.rate  = self._editor.increment*2
         self.width = self._editor.normalised_parameter( (max_-min_)/4,
                                                        is_distance=True)
 
-    @simpleAssignment
     def fix_width(self):
         self.width = min(max(self.width, 1e-4), 1.0) #prevent zero division
 
@@ -339,9 +328,9 @@ class GridAddOn(EditorAddOn):
                 if self.yScale:
                     pass
                 if self.zScale:
-                    z = str(self.minimum+self._range*pos)
-                    self._editor.renderText(x, 0., pos, z)
-                    self._editor.renderText(xp, 0., pos, z)
+                    zstr = str(self.minimum+self._range*pos)
+                    self._editor.renderText(x, 0., pos, zstr)
+                    self._editor.renderText(xp, 0., pos, zstr)
                 glEnable(GL_DEPTH_TEST)
 
                 glColor4f(0.2,0.2,0.2,1.0)
@@ -398,7 +387,6 @@ class GridAddOn(EditorAddOn):
 
         glEnable(GL_DEPTH_TEST)
 
-    @simpleAssignment
     def grid_count_changed(self):
         min_, max_ = self._editor.range()
         diff = max(max_-min_, 1e-4) #prevent zero division down the line
@@ -406,13 +394,13 @@ class GridAddOn(EditorAddOn):
         self.gridStep = float(self._editor.normalised_parameter( diff / (self.gridCount-1),
                                                                 is_distance=True))
 
-    @simpleAssignment
     def grid_step_changed(self):
         self.gridStep = max(1e-4, self.gridStep) #prevent zero division
         # note : range is one as grid step is in normalised space.
         self.gridCount  = int(round((1+self.gridStep) / self.gridStep))
 
-    def interpolation_changed(self):
+
+    def init_from_profile(self):
         min_, max_ = self._editor.range()
         self.minimum = min_
         self.maximum = max_
