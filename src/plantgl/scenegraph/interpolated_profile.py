@@ -218,7 +218,7 @@ class InterpolatedProfile( dict ):
             self.__normToReal = dict( (k, self.unnormalised_parameter(k)) for k in self.iterkeys() )
 
             # -- make a list of tuples out of the items,
-            self.__sortedTuples = map(list, self.iteritems())
+            self.__sortedTuples = map(tuple, self.iteritems())
             # -- sort according to key,
             self.__sortedTuples.sort()
             curves  = map(lambda x: x[1], self.__sortedTuples)
@@ -384,12 +384,17 @@ class InterpolatedProfile( dict ):
             nparameter = self.normalised_parameter(parameter)
             if dict.__contains__(self, nparameter):
                 return
-            columns = zip(*self.itervalues())
+
+            # -- retreive ordered cross sections --
+            sortedTups = self.as_sorted_tuples()
+            # -- transpose to columns to compute the linear interpolation --
+            columns = zip(*zip(*sortedTups)[1])
+            # -- compute new cross section --
             afterId  = InterpolatedProfile.__find_index_in_polyline(nparameter,
                                                                     iter(columns).next(),
                                                                     is_abscissa=False)
             beforeId = afterId-1
-            ptPairs = ((c[afterId], c[beforeId]) for c in columns)
+            ptPairs = [(c[afterId], c[beforeId]) for c in columns]
             section = CrossSection(*[ (after[0], self.__lin_interpolation(nparameter, before,
                                                                           after, xid=2)) \
                                       for after, before in ptPairs ])
