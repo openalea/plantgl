@@ -48,7 +48,7 @@ from openalea.plantgl.scenegraph import NurbsCurve, interpolated_profile
 from openalea.plantgl.math import Vector4, Vector3
 from openalea.plantgl.algo import GLRenderer, Discretizer
 from OpenGL.GL import *
-
+from math import cos, sin, sqrt, pi, atan, atan2
 from PyQt4 import QtCore, QtGui
 from interpolated_profile_gui_addons import UserSlicesAddOn, VisualCrossSectionsAddOn, GridAddOn
 
@@ -67,13 +67,18 @@ class ProfileViewer (QGLViewer):
         self.__position = 0
         self.__positionCurve = None
         self.increment = 0.01
-        self.__oldY = None
+        self._axisScaleTolerance = abs(pi/8.) # (radians)
 
+        #states
+        self.__oldY = None
+        self.__scalingDirection = None
+
+        #ranges
         self.__param_min = 0.0
         self.__param_max = 1.0
 
         # --rendering components --
-        self.factor = 1., 1., 1. #x, y, z scene scaling factors.
+        self.factor = [1., 1., 1.] #x, y, z scene scaling factors.
         self.discretizer = Discretizer()
         self.renderer    = GLRenderer(self.discretizer)
         self.renderer.renderingMode = GLRenderer.Dynamic
@@ -92,6 +97,9 @@ class ProfileViewer (QGLViewer):
         self.camera().frame().setConstraint(self.camConstraint)
         self.camera().setZClippingCoefficient(4) #arbitrary.
         self.showEntireScene()
+
+    def set_axis_scale_tolerance(self, tolerance):
+        self._axisScaleTolerance = abs(tolerance)
 
     def set_profile(self, profile):
         if profile is not None:
@@ -194,27 +202,92 @@ class ProfileViewer (QGLViewer):
     ###############################
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MidButton:
+            self.__oldX = event.x()
             self.__oldY = event.y()
         else:
             QGLViewer.mousePressEvent(self, event)
 
     def mouseReleaseEvent(self, event):
-        if event.button() == QtCore.Qt.MidButton:
-            self.__oldY = None
+        self.__oldX = None
+        self.__oldY = None
+        self.__scalingDirection = None
         QGLViewer.mouseReleaseEvent(self, event)
 
     def mouseMoveEvent(self, event):
         if self.__oldY is not None:
             pos = self.__position
-            newY = event.y()
-            delta =  newY - self.__oldY
-            if delta > 0:
-                pos += self.increment
-            elif delta < 0:
-                pos -= self.increment
-            self.__oldY = newY
 
-            self.set_position(pos)
+            #some values that are used a bit everywhere
+            newX, newY = event.x(), event.y()
+            xDiff = float(newX-self.__oldX)
+            yDiff = float(newY-self.__oldY)
+            cartDist = sqrt(yDiff**2+xDiff**2)
+
+            mod = event.modifiers()
+            if mod != QtCore.Qt.ControlModifier:
+                delta =  newY - self.__oldY
+                if delta > 0:
+                    pos += self.increment
+                elif delta < 0:
+                    pos -= self.increment
+                self.__oldY = newY
+
+                self.set_position(pos)
+            elif self.__scalingDirection is None:
+                if cartDist < 50 : #pixels
+                    return
+
+                #compute direction coefficient of the mouse pointer to the screen center
+                if xDiff==0.0:
+                    return
+                pA = atan2(yDiff,xDiff)
+                tol = self._axisScaleTolerance
+
+                #compute projected direction coefficients of axes
+                camera = self.camera()
+                origin = camera.getProjectedCoordinatesOf(Vec(0.,0.,0.))
+                xProj  = camera.getProjectedCoordinatesOf(Vec(1.,0.,0.))
+                yProj  = camera.getProjectedCoordinatesOf(Vec(0.,1.,0.))
+                zProj  = camera.getProjectedCoordinatesOf(Vec(0.,0.,1.))
+
+                xVec = (xProj[0] - origin[0]),(xProj[1] - origin[1])
+                yVec = (yProj[0] - origin[0]),(yProj[1] - origin[1])
+                zVec = (zProj[0] - origin[0]),(zProj[1] - origin[1])
+
+                #angles
+                if xVec[0]==0.0 or yVec[0]==0.0 or zVec[0]==0.0:
+                    return
+
+                xA = atan(xVec[1]/xVec[0])
+                yA = atan(yVec[1]/yVec[0])
+                zA = atan(zVec[1]/zVec[0])
+
+                dire = min( ( abs(xA%pi-pA%pi),0,pA,xVec),
+                            ( abs(yA%pi-pA%pi),1,pA,yVec),
+                            ( abs(zA%pi-pA%pi),2,pA,zVec) )
+                self.__scalingDirection = dire if (dire[0] <= tol) else None
+
+            elif self.__scalingDirection is not None:
+                angD, dire, angle, vec = self.__scalingDirection
+
+                #cartDist is used to obtain a significant difference
+                #or else computations are screwed.
+                if xDiff != 0.0 and yDiff != 0 and cartDist > 5 :
+                    pA = atan2(yDiff,xDiff)
+                    if pA < 0: pA += 2*pi
+                    if angle < 0: angle +=2*pi
+                    angleDiv = int(angle/pi*2)
+                    mouseDiv = int(pA/pi*2)
+                    positive = angleDiv == mouseDiv
+
+                    f = self.factor[dire]
+                    f = f*1.02 if positive else f*0.98
+                    self.factor[dire] = f
+
+                    self.__oldY = newY
+                    self.__oldX = newX
+                    self.update()
+
         else:
             QGLViewer.mouseMoveEvent(self, event)
 
@@ -517,6 +590,7 @@ class CurvePanel( QtGui.QScrollArea ):
         oldPosition = self.__curveViews[i].pos
         newPosition = value
         self.curveMoveRequested.emit(oldPosition, newPosition)
+
 
 ##############################################################################
 # -------------------------------------------------------------------------- #

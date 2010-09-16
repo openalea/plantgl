@@ -211,8 +211,8 @@ class VisualCrossSectionsAddOn(EditorAddOn):
         self.rate      = 0.05 #real parameter
         self._sections  = {}
         self.baseAlpha = 0.2
-        self.infColor  = (0.,1.,0.)
-        self.supColor  = (1.,0.,0.)
+        self.infColor  = (0.,1.,1.)
+        self.supColor  = (0.,1.,1.)
 
     def draw(self, renderer):
         glLineWidth(0.5)
