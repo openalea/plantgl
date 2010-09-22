@@ -344,7 +344,7 @@ public:
     virtual void surface(const std::string& name, real_t scale=1);
 
 	inline void frame() { frame(default_step); }
-    virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2);
+    virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t color = 1.0, real_t transparency = 0.0);
 
     virtual void setTextureScale(real_t u, real_t v);
     virtual void setTextureVScale(real_t v);
@@ -435,7 +435,7 @@ protected:
 
     virtual void _surface(const std::string& name, real_t scale){}
 
-	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) { }
+	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
 
     virtual void _label(const std::string& text ){}
 

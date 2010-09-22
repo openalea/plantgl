@@ -155,7 +155,7 @@ protected:
 
     virtual void _label(const std::string& text );
  
-	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio);
+	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);
 
 	SurfaceMap __surfList;
     std::vector<AppearancePtr> __appList;

@@ -558,30 +558,22 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 	uint_t selected = 0;
 	uint_t unselected = 0;
 	QSet<uint_t> selection;
-	printf("selection size %i.\n",id.size());
 
 	for(vector<uint_t>::const_iterator _id = id.begin();_id != id.end();_id++){
-		printf("look for %i.\n",*_id);
 		_it =__selectedShapes.find(*_id);
 		if(_it != __selectedShapes.end()){
-			printf("unselected %i.\n",_id);
 			__selectedShapes.erase(_it);
 			unselected++;
 		}
 		else {
-			printf("keep %i.\n",*_id);
 			selection.insert(*_id);
 		}
 	}
-	printf("selection size %i.\n",selection.size());
 
 	Shape3DPtr ptr;
 	for(Scene::iterator _it = __scene->begin(); _it != __scene->end(); _it++){
-		printf("test %i.\n",(*_it)->getId());
 		if( (ptr = dynamic_pointer_cast<Shape>(*_it)) && 
 			selection.find(ptr->SceneObject::getId()) != selection.end()){
-			printf("selected %i.\n",ptr->SceneObject::getId());
-
 			__selectedShapes[ptr->SceneObject::getId()]=ptr;
 			selected++;
 		}

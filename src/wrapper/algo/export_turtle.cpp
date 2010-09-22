@@ -171,7 +171,7 @@ void export_Turtle()
     .def("surface", &Turtle::surface )
     .def("label", &Turtle::label )
 	.def("frame", (void (Turtle::*) ())&Turtle::frame )
-	.def("frame", (void (Turtle::*) (real_t,real_t,real_t))&Turtle::frame, (bp::arg("heigth"),bp::arg("cap_heigth_ratio")=0.2,bp::arg("cap_radius_ratio")=2) )
+	.def("frame", (void (Turtle::*) (real_t,real_t,real_t,real_t,real_t))&Turtle::frame, (bp::arg("heigth"),bp::arg("cap_heigth_ratio")=0.2,bp::arg("cap_radius_ratio")=2,bp::arg("color")=1.0,bp::arg("transparency")=0.0) )
 
     .def("setDefaultStep",    &Turtle::setDefaultStep )
     .def("setAngleIncrement", &Turtle::setAngleIncrement )

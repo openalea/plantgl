@@ -942,9 +942,11 @@ void Turtle::surface(const std::string& name, real_t scale)
 	}
 }
 
-void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_ratio )
+void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency )
 {
-	if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _frame(scale,cap_heigth_ratio,cap_radius_ratio); 
+	color = max<real_t>(0,min<real_t>(1,color));
+	transparency = max<real_t>(0,min<real_t>(1,transparency));
+	if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _frame(scale,cap_heigth_ratio,cap_radius_ratio,color, transparency); 
 	else {
 		if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
 		if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
@@ -1355,7 +1357,7 @@ AppearancePtr PglTurtle::HEADING_FRAME_MATERIAL(new Material("HEADING_FRAME_MATE
 AppearancePtr PglTurtle::UP_FRAME_MATERIAL(new Material("UP_FRAME_MATERIAL",Color3(50,50,250),1));
 AppearancePtr PglTurtle::LEFT_FRAME_MATERIAL(new Material("LEFT_FRAME_MATERIAL",Color3(50,250,50),1));
 
-void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio) {
+void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) {
   GeometryPtr arrow;
   GroupPtr group;
   real_t lengthstick = heigth*(1-cap_heigth_ratio);
@@ -1374,7 +1376,15 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
 	 else arrow = stick;
   }
   arrow->setName("Frame_"+number(arrow->getId()));
-  _addToScene(transform(arrow,false),false,HEADING_FRAME_MATERIAL);
-  _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,LEFT_FRAME_MATERIAL);
-  _addToScene(transform(GeometryPtr(new Oriented(Vector3(-1,0,0),Vector3(0,0,1),arrow)),false),false,UP_FRAME_MATERIAL);
+  AppearancePtr hmat(HEADING_FRAME_MATERIAL);
+  AppearancePtr umat(UP_FRAME_MATERIAL);
+  AppearancePtr lmat(LEFT_FRAME_MATERIAL);
+  if( color < (1.0- GEOM_EPSILON) || transparency > GEOM_EPSILON){
+	  hmat = new Material(Color3(int(250 * color),int(50*color),int(50*color)),transparency);
+	  umat = new Material(Color3(int(50*color),int(50*color),int(250 * color)),transparency);
+	  lmat = new Material(Color3(int(50*color),int(250 * color),int(50*color)),transparency);
+  }
+  _addToScene(transform(arrow,false),false,hmat);
+  _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,lmat);
+  _addToScene(transform(GeometryPtr(new Oriented(Vector3(-1,0,0),Vector3(0,0,1),arrow)),false),false,umat);
 }

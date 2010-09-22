@@ -1849,7 +1849,7 @@ void
 ViewGLFrame::setAnimation(eAnimationFlag b){
   ViewSceneRendererGL * r = dynamic_cast<ViewSceneRendererGL *>(__scene);
   if(r)r->setAnimation(b);
-  __camera->lockDim(b);
+  __camera->lockDim(b != eStatic);
 }
 
 void ViewGLFrame::useOcclusionQuery(bool b)
