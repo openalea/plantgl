@@ -236,3 +236,33 @@ CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 #endif
 
 }
+
+#ifdef WITH_CGAL
+
+typedef Kernel::Ray_3 CGALRay3;
+typedef Kernel::Point_3 CGALPoint_3 ;
+typedef Kernel::Direction_3 CGALDirection_3 ;
+typedef Kernel::Segment_3 CGALSegment_3 ;
+
+inline CGALPoint_3 toPoint3(const Vector3& v) { return CGALPoint_3(v.x(),v.y(),v.z()); }
+inline CGALDirection_3 toDirection3(const Vector3& v) { return CGALDirection_3(v.x(),v.y(),v.z()); }
+inline CGALSegment_3 toSegment3(const Vector3& u, const Vector3& v) { return CGALSegment_3(toPoint3(u),toPoint3(v)); }
+#endif
+
+real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& segB)
+{
+#ifdef WITH_CGAL
+	Kernel::Compute_squared_distance_3 distcomputer;
+	return to_double(distcomputer(CGALRay3(toPoint3(ray.getOrigin()),toDirection3(ray.getDirection())),toSegment3(segA,segB)));
+
+#else
+#ifdef _MSC_VER
+#pragma message("CGAL not included. CurveIntersection routine will not work.")
+#else
+#warning "CGAL not included. CurveIntersection routine will not work."
+#endif
+	pglError("CGAL not included. CurveIntersection routine will not work.");
+	return false;
+#endif
+
+}

@@ -42,6 +42,7 @@
 
 #include "../algo_config.h"
 #include <plantgl/scenegraph/geometry/polyline.h>
+#include "../raycasting/ray.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -72,7 +73,9 @@ public:
 	static bool check(const std::vector<Polyline2DPtr>& polylines);
 };
 
-
+real_t raySegmentDistance(const Ray& ray, 
+						  const TOOLS(Vector3)& segA,
+						  const TOOLS(Vector3)& segB);
 
 
 /* ----------------------------------------------------------------------- */
