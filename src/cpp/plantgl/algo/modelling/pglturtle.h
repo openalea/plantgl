@@ -61,6 +61,8 @@ public:
     virtual void reset();
     
     void clear();
+
+	ScenePtr partialView();
     
     void clearColorList();
     

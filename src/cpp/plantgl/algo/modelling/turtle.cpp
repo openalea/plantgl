@@ -1388,3 +1388,21 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
   _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,lmat);
   _addToScene(transform(GeometryPtr(new Oriented(Vector3(-1,0,0),Vector3(0,0,1),arrow)),false),false,umat);
 }
+
+
+ScenePtr PglTurtle::partialView(){
+	ScenePtr currentscene = new Scene(*__scene);
+    if(__params->isGeneralizedCylinderOn()){
+	  if(__params->pointList.size() > 1){
+		_generalizedCylinder(__params->pointList,
+						   __params->leftList,
+						   __params->radiusList,
+						   __params->initial.crossSection,
+						   __params->initial.crossSectionCCW);
+	  }
+    }
+	frame();
+	ScenePtr result = __scene;
+	__scene = currentscene;
+	return result;
+}
