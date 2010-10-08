@@ -529,6 +529,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\codec\cdc_vrml.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\codec\cdc_vrml.h"
+					>
+				</File>
+				<File
 					RelativePath=".\codec\codecs.cpp"
 					>
 				</File>

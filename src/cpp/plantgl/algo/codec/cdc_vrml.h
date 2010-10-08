@@ -31,35 +31,38 @@
  *  ----------------------------------------------------------------------------
  */
 
+
+/*! \file cdc_pov.h
+    \brief Definition of the pov codec.
+*/
+
+#ifndef __cdc_vrml_h__
+#define __cdc_vrml_h__
+
 /* ----------------------------------------------------------------------- */
 
-#include "codecs.h"
-#include "cdc_geom.h"
-#include "cdc_vgstar.h"
-#include "cdc_pov.h"
-#include "cdc_vrml.h"
+#include "codec_config.h"
 #include <plantgl/scenegraph/scene/factory.h>
 
 /* ----------------------------------------------------------------------- */
 
-PGL_USING_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
-class CodecInstaller {
-public:
-	CodecInstaller() { installCodecs(); }
+/* ----------------------------------------------------------------------- */
+
+class CODEC_API VrmlCodec : public SceneCodec {
+public :
+
+	VrmlCodec();
+
+	virtual SceneFormatList formats() const;
+
+	virtual void write(const std::string& fname,const ScenePtr&	scene);
+
 };
 
-static CodecInstaller MyCodecInstaller;
 
-void installCodecs(){
-	static bool installed = false;
-	if(!installed){
-		installed = true;
-		SceneFactory::get().registerCodec(SceneCodecPtr(new GeomCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new BGeomCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new VrmlCodec()));
-	}
-}
+PGL_END_NAMESPACE
 
+#endif
 

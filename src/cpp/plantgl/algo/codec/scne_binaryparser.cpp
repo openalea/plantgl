@@ -474,6 +474,7 @@ bool BinaryParser::readHeader(){
   }
   float _version;
   *stream >> _version;
+  printf("File version : %f\n",_version);
   if(_version > BinaryPrinter::BINARY_FORMAT_VERSION){
       __outputStream << "*** ERROR: Binary Format Version invalid  (File=" << _version << ";Current=" << BinaryPrinter::BINARY_FORMAT_VERSION << "). Upgrade."<< endl;
       return false;
@@ -723,7 +724,7 @@ bool BinaryParser::readShape(){
        a->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
 	if(readNext()){
         a->getAppearance() = dynamic_pointer_cast<Appearance>(__result);
-		if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() >= 2.3f && is_valid_ptr(__result)){
+		if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() <= 2.3f && is_valid_ptr(__result)){
 			ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
 			if(imgtex) {
 				a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
@@ -1831,9 +1832,9 @@ bool BinaryParser::readQuadSet() {
             IF_GEOM_NOTDEFAULT(_default,4){
                 GEOM_READ_FIELD(obj,NormalPerVertex,Bool);
             }
-            else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+            else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?!Mesh::DEFAULT_NORMALPERVERTEX:Mesh::DEFAULT_NORMALPERVERTEX);
         }
-        else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?Mesh::DEFAULT_NORMALPERVERTEX:!Mesh::DEFAULT_NORMALPERVERTEX);
+        else obj->getNormalPerVertex() = (GEOM_DEFAULT_COND(_default,4)?!Mesh::DEFAULT_NORMALPERVERTEX:Mesh::DEFAULT_NORMALPERVERTEX);
 
         IF_GEOM_NOTDEFAULT(_default,3)
             GEOM_READ_ARRAY(obj->getNormalList(),Point3Array,Vector3);

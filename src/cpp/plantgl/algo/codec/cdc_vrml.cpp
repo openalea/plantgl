@@ -33,33 +33,47 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "codecs.h"
-#include "cdc_geom.h"
-#include "cdc_vgstar.h"
-#include "cdc_pov.h"
 #include "cdc_vrml.h"
-#include <plantgl/scenegraph/scene/factory.h>
+
+#include "vrmlprinter.h"
+#include <fstream>
+#include <plantgl/algo/base/discretizer.h>
+
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+
+
+using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
-class CodecInstaller {
-public:
-	CodecInstaller() { installCodecs(); }
-};
+/* ----------------------------------------------------------------------- */
 
-static CodecInstaller MyCodecInstaller;
+VrmlCodec::VrmlCodec() : 
+	SceneCodec("VRML", Write ) 
+	{}
 
-void installCodecs(){
-	static bool installed = false;
-	if(!installed){
-		installed = true;
-		SceneFactory::get().registerCodec(SceneCodecPtr(new GeomCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new BGeomCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new VrmlCodec()));
-	}
+SceneFormatList VrmlCodec::formats() const
+{
+	SceneFormat _format;
+	_format.name = "VRML";
+	_format.suffixes.push_back("wrl");
+	_format.comment = "The VRML format.";
+	SceneFormatList _formats;
+	_formats.push_back(_format);
+	return _formats;
 }
 
-
+void VrmlCodec::write(const std::string& fname,const ScenePtr& scene)
+{
+	std::ofstream stream(fname.c_str());
+	if(stream){
+		Discretizer t;
+		VrmlPrinter p(stream,t);
+		p.header();
+		scene->apply(p);
+	}
+}

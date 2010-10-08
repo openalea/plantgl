@@ -404,13 +404,16 @@ Texture2D::~Texture2D( ) {
 
 bool Texture2D::isValid( ) const {
   Builder _builder;
-  _builder.Image = const_cast<ImageTexturePtr *>(&__Image);
-  _builder.Transformation = const_cast<Texture2DTransformationPtr *>(&__Transformation);
+  if(__Image)_builder.Image = const_cast<ImageTexturePtr *>(&__Image);
+  if(__Transformation)_builder.Transformation = const_cast<Texture2DTransformationPtr *>(&__Transformation);
   return _builder.isValid();
 }
 
 SceneObjectPtr Texture2D::copy(DeepCopier& copier) const
 {
-  return SceneObjectPtr(new Texture2D(*this));
+  Texture2D * ptr = new Texture2D(*this);
+  copier.copy_object_attribute(ptr->getImage());
+  copier.copy_object_attribute(ptr->getTransformation());
+  return SceneObjectPtr(ptr);
 }
 /* ----------------------------------------------------------------------- */

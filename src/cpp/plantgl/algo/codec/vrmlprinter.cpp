@@ -557,8 +557,10 @@ bool VrmlPrinter::process( Texture2D * texture ) {
   GEOM_VRMLPRINT_BEGINAPP(material);
 
   GEOM_VRMLPRINT_FIELD("texture",texture->getImage(),SUBNODE);
-  if(texture->isTransformationToDefault())
+  if(!texture->isTransformationToDefault()){
 	GEOM_VRMLPRINT_FIELD("textureTransform",texture->getTransformation(),SUBNODE);
+  }
+  
   
   
   GEOM_VRMLPRINT_ENDAPP;
