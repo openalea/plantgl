@@ -59,7 +59,8 @@ class AscCodec (sg.SceneCodec):
         print("Write "+fname)
         d = alg.Discretizer()
         f = file(fname,'w')
-        isptsfile = ('.pts' in fname)        
+        isptsfile = ('.pts' in fname)
+        isxyz = ('.xyz' in fname)
         for i in scene:
             if i.apply(d):
                 p = d.discretization
@@ -68,11 +69,13 @@ class AscCodec (sg.SceneCodec):
                     col = i.appearance.ambient
                     for i,pt in enumerate(p.pointList):
                         f.write(str(pt.x)+' '+str(pt.y)+' '+str(pt.z)+' ')                        
-                        if hasColor:                          
-                            col = p.colorList[i]
-                        if isptsfile:
-                            f.write(str(rgb2intensity(col)))
-                        f.write(str(col.red)+' '+str(col.green)+' '+str(col.blue)+'\n')
+                        if not isxyz:
+                            if hasColor:                          
+                                col = p.colorList[i]
+                            if isptsfile:
+                                f.write(str(rgb2intensity(col)))
+                            f.write(str(col.red)+' '+str(col.green)+' '+str(col.blue)+'\n')
+                        else: f.write('\n')
         f.close()
     
 
