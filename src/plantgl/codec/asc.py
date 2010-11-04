@@ -17,19 +17,30 @@ class AscCodec (sg.SceneCodec):
 
     def formats(self):
         """ return formats """
-        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz"],"The Ascii point file format") ]
-
+        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn"],"The Ascii point file format") ]
+        # pts format :
+        #         first line : nb of points 
+        #          then x y z w r g b
+        # pwn format :
+        #         first line : nb of points 
+        #          then x y z
+        # asc format :
+        #          lines : x y z [r g b]
+        # xyz format :
+        #          lines : x y z
     def read(self,fname):
         """ read an ascii point file """
         import warnings
         pts = sg.Point3Array([])
         col = sg.Color4Array([])
         isptsfile = ('.pts' in fname)
+        ispwnfile = ('.pwn' in fname)
         f = file(fname,"r")
-        if isptsfile:
-            f.readline()
+        if isptsfile or ispwnfile:
+            f.readline() # skip line number
         i = 0
         for line in f.readlines():
+            if line[0] == '#': continue
             values = line.split()
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
@@ -60,7 +71,16 @@ class AscCodec (sg.SceneCodec):
         d = alg.Discretizer()
         f = file(fname,'w')
         isptsfile = ('.pts' in fname)
+        ispwnfile = ('.pwn' in fname)
         isxyz = ('.xyz' in fname)
+        if isptsfile or ispwnfile:
+            nbpoints =  0
+            for i in scene:
+                if i.apply(d):
+                    p = d.discretization
+                    if isinstance(p,sg.PointSet) :
+                        nbpoints += len(p.pointList)
+            f.write(str(nbpoints)+'\n')
         for i in scene:
             if i.apply(d):
                 p = d.discretization
@@ -69,7 +89,7 @@ class AscCodec (sg.SceneCodec):
                     col = i.appearance.ambient
                     for i,pt in enumerate(p.pointList):
                         f.write(str(pt.x)+' '+str(pt.y)+' '+str(pt.z)+' ')                        
-                        if not isxyz:
+                        if not isxyz and not ispwnfile:
                             if hasColor:                          
                                 col = p.colorList[i]
                             if isptsfile:
