@@ -1,0 +1,24 @@
+vplants-plantgl (2.13.0-1~ppa4) lucid; urgency=low
+
+  * fix namespace problem with vplants (aml)
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Mon, 27 Sep 2010 18:26:56 +0200
+
+vplants-plantgl (2.13.0-1~ppa3) lucid; urgency=low
+
+  * repace libglut-dev by libglut3-dev 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 24 Sep 2010 16:11:29 +0200
+
+vplants-plantgl (2.13.0-1~ppa2) lucid; urgency=low
+
+  * add libglut-dev as dependency 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 24 Sep 2010 16:01:15 +0200
+
+vplants-plantgl (2.13.0-1~ppa1) lucid; urgency=low
+
+  * source package automatically created by stdeb 0.6.0
+  * debianize
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Thu, 23 Sep 2010 17:17:20 +0200

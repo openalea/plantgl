@@ -25,7 +25,7 @@ print pkg_name,': version =',version
 build_prefix= "build-scons"
 
 if 'win' in sys.platform:
-    install_requires = ["boostpython", "qhull", "qt4"]
+    install_requires = ["boost", "qhull"]#, "qt4"]
     #setup_requires = install_requires +['qt4-dev'] 
     install_requires = [ binary_deps(i) for i in install_requires ]
 #else:
@@ -53,7 +53,7 @@ setup(
     scons_scripts = ['SConstruct'],
     scons_parameters = ["build_prefix="+build_prefix],
 
-    namespace_packages = ["openalea"],
+    namespace_packages = ["openalea", "vplants"],
     create_namespaces = True,
 
     py_modules = ["pgl_postinstall",],

@@ -102,7 +102,7 @@ class Planter(Node):
         shapes= self.get_input( 'shapes' )
         if not (shapes and transfos):
             return ( None, )
-        if not hasattr(shapes, "__iter__"):
+        if not hasattr(shapes, "__iter__") and not hasattr(shapes, "__len__") :
             shapes= [shapes]
         return ( multiply( transfos, shapes ), )
 
