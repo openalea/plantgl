@@ -93,7 +93,8 @@ class CtrlPoint(ManipulatedFrame):
         elif self.selected : m = Material((250,250,30),1) #yellow
         else:               m=Material(self.color,1)
         #the point is represented by a PlantGl Sphere
-        return Shape(Translated(Vector3(p.x,p.y,p.z),Sphere(pointsize)),m)
+        primitive = Sphere(pointsize) if type(pointsize) is int else pointsize
+        return Shape(Translated(Vector3(p.x,p.y,p.z),primitive),m,self.id)
     
     def getx(self):
         """ Get the x coordinate """
