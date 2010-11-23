@@ -155,16 +155,18 @@ class Polyline2DAccessor (Curve2DAccessor):
 
 
 class Curve2DEditor (QGLViewer):
+    BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
+    WHITE_THEME = {'Curve' : (255,0,0), 'BackGround' : (255,255,255), 'Text' : (0,0,0), 'CtrlCurve' : (25,0,25), 'GridStrong' : (102,102,102), 'GridFade' : (153,153,153) , 'Points' : (30,250,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150)}
+    
     def __init__(self,parent,constraints=Curve2DConstraint()):
         QGLViewer.__init__(self,parent)
         self.selection = -1
-        self.defaultMaterial = Material((255,255,255),1)
-        self.pointColor = Material((250,30,30),1)
-        self.firstPointColor = Material((250,30,250),1)
-        self.selectedPointColor = Material((30,250,30),1)
+        self.setStateFileName('.curveeditor.xml')
+        
         self.sphere = Sphere(radius=0.02)
         self.curveshape = Shape()
-        self.curveshape.appearance = self.defaultMaterial
+        self.setTheme() #Color theme
+        
         self.pointsConstraints = constraints
         self.accessorType = { NurbsCurve2D : Nurbs2DAccessor,
                               BezierCurve2D : Bezier2DAccessor,
@@ -174,13 +176,28 @@ class Curve2DEditor (QGLViewer):
         self.renderer = GLRenderer(self.discretizer)
         self.renderer.renderingMode = GLRenderer.Dynamic
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
-        self.setStateFileName('.curveeditor.xml')
+    def setTheme(self,theme = BLACK_THEME):
+        self.curveMaterial = Material(theme['Curve'],1)
+        self.defaultColor = QColor(*theme['BackGround'])
+        self.disabledBGColor = QColor(*theme['DisabledBackGround'])
+        self.textColor = [v/255. for v in theme['Text']]+[1.0]
+        self.ctrlCurveColor = [v/255. for v in theme['CtrlCurve']]+[0.0]
+        self.gridColor = [v/255. for v in theme['GridStrong']]+[0.0]
+        self.gridColor2 = [v/255. for v in theme['GridFade']]+[0.0]
+        self.pointColor = Material(theme['Points'],1)
+        self.firstPointColor = Material(theme['FirstPoint'],1)
+        self.selectedPointColor = Material(theme['SelectedPoint'],1)
+        self.curveshape.appearance = self.curveMaterial
+    def applyTheme(self,theme = BLACK_THEME):
+        self.setTheme(theme)
+        if self.isVisible(): 
+            self.createControlPointsRep()
+            self.updateGL()
 
     def newDefaultCurve(self):
         return self.pointsConstraints.defaultCurve()
 
     def init(self):
-        self.defaultColor = self.backgroundColor()
         self.updateSceneDimension()
         #self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
         #self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
@@ -224,13 +241,13 @@ class Curve2DEditor (QGLViewer):
         if self.isEnabled():
             self.setBackgroundColor(self.defaultColor)
         else:
-            self.setBackgroundColor(QColor(150,150,150))
+            self.setBackgroundColor(self.disabledBGColor)
         self.start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
         self.end = self.pointOnEditionPlane(QPoint(self.width()-1,0))
         self.sphere.radius = (self.end[0]-self.start[0])/80
         self.discretizer.clear()
         self.curveshape.apply(self.renderer)
-        glColor4f(0.5,0.5,0.0,0.0)
+        glColor4fv(self.ctrlCurveColor)
         self.curveshape.apply(self.ctrlrenderer)
         self.ctrlpts.apply(self.renderer)
         self.drawGrid()
@@ -246,7 +263,7 @@ class Curve2DEditor (QGLViewer):
         lxval = round(self.end[0]/xdelta)
         cxval = fxval*xdelta
         nbiter = int((lxval-fxval))
-        glColor4f(0.2,0.2,0.2,0.0)
+        glColor4fv(self.gridColor2)
         glLineWidth(1)
         glBegin(GL_LINES)
         for i in xrange(nbiter+1):
@@ -255,12 +272,12 @@ class Curve2DEditor (QGLViewer):
             cxval += xdelta
         glEnd()
         cxval = fxval*xdelta
-        glColor4f(1.0,1.0,1.0,1.0)
+        glColor4fv(self.textColor)
         for i in xrange(nbiter+1):
             self.renderText(cxval,self.start[1],0,'%.1f' % cxval)
             cxval += xdelta
         glLineWidth(2)
-        glColor4f(0.4,0.4,0.4,0.0)
+        glColor4fv(self.gridColor)
         cxval = round(self.start[0]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
         for i in xrange((nbiter/10)+1):
@@ -273,7 +290,7 @@ class Curve2DEditor (QGLViewer):
         firstcyval = fyval*xdelta
         cyval = firstcyval
         nbiter = int((lyval-fyval))
-        glColor4f(0.2,0.2,0.2,0.0)
+        glColor4fv(self.gridColor2)
         glLineWidth(1)
         glBegin(GL_LINES)
         for i in xrange(nbiter+1):
@@ -282,13 +299,13 @@ class Curve2DEditor (QGLViewer):
             cyval += xdelta
         glEnd()
         cyval = firstcyval
-        glColor4f(1.0,1.0,1.0,1.0)
+        glColor4fv(self.textColor)
         for i in xrange(nbiter+1):
             glVertex3f(self.end[0],cyval,0)
             self.renderText(self.start[0],cyval,0,'%.1f' % cyval)
             cyval += xdelta
         glLineWidth(2)
-        glColor4f(0.4,0.4,0.4,0.0)
+        glColor4fv(self.gridColor)
         cyval = round(self.start[1]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
         for i in xrange((nbiter/10)+1):

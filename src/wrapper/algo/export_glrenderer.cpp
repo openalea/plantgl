@@ -30,6 +30,7 @@
  */
   
 #include <boost/python.hpp>
+#include <plantgl/python/extract_widget.h>
 
 #include <plantgl/algo/opengl/glskelrenderer.h>
 #include <plantgl/algo/base/discretizer.h>
@@ -60,14 +61,19 @@ QGLWidget * get_fgl_mode(GLRenderer * rd)
 { return rd->getGLFrame();}
 */
 
+void py_setGLFrame(GLRenderer * rd, boost::python::object widget){
+	rd->setGLFrame(extract_widget<QGLWidget>(widget)());
+}
+
 void export_GLRenderer()
 {
   scope glrenderer = class_< GLRenderer,bases< Action >,boost::noncopyable >
-    ( "GLRenderer", init<Discretizer&, optional<QGLWidget *> >("GLRenderer(Discretizer d [, QGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
+    ( "GLRenderer", init<Discretizer& >("GLRenderer(Discretizer d [, QGLWidget *]) An action which draws objects of type of Geometry or of type of Material to the current GL context."))
 	.def("clear",&GLRenderer::clear)
     .def("beginSceneList",&GLRenderer::beginSceneList)
     .def("endSceneList",&GLRenderer::endSceneList)
     .def("clearSceneList",&GLRenderer::clearSceneList)
+	.def("setGLFrame",&py_setGLFrame)
 	.add_property("renderingMode",&get_rd_mode,&GLRenderer::setRenderingMode)
 	.add_property("selectionMode",&get_sel_mode,&GLRenderer::setSelectionMode)
 	// .add_property("frameGL",&get_fgl_mode,&GLRenderer::setGLFrame)

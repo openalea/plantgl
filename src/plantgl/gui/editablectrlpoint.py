@@ -91,9 +91,9 @@ class CtrlPoint(ManipulatedFrame):
         #we change the color of the point if it is selected or has focus
         if self.hasFocus:    m = Material((250,30,30),1) # red
         elif self.selected : m = Material((250,250,30),1) #yellow
-        else:               m=Material(self.color,1)
+        else:                m = Material(self.color,1)
         #the point is represented by a PlantGl Sphere
-        primitive = Sphere(pointsize) if type(pointsize) is int else pointsize
+        primitive = pointsize  if isinstance(pointsize,Geometry)  else Sphere(pointsize)
         return Shape(Translated(Vector3(p.x,p.y,p.z),primitive),m,self.id)
     
     def getx(self):

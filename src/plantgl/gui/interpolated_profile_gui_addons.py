@@ -110,7 +110,7 @@ class EditorAddOn(object):
             return
         glPushAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT|self.__gl_pushed_attribs__)
         self.draw(renderer)
-        glPopAttrib(GL_CURRENT_BIT|GL_ENABLE_BIT|self.__gl_pushed_attribs__)
+        glPopAttrib()
 
     def _compute(self, profile):
         if not self.enabled:
@@ -196,12 +196,12 @@ class VisualCrossSectionsAddOn(EditorAddOn):
     __specials__["width"] = lambda x:x.fix_width()
 
     @staticmethod
-    def linIntensityF(x, range):
+    def linearIntensityF(x, range):
         assert x>=-1 and x<=1
         return range*(-(abs(x))+1)
 
     @staticmethod
-    def gauIntensityF(x, range):
+    def gaussianIntensityF(x, range):
         b = 0
         c = (1/e)
         return range*exp(-((x-b)**2)/(c**2))
@@ -232,7 +232,7 @@ class VisualCrossSectionsAddOn(EditorAddOn):
                     alpha = 1.0
                 else:
                     d= delta/self.width
-                    alphaBoost = VisualCrossSectionsAddOn.gauIntensityF(d,alphaRange)
+                    alphaBoost = VisualCrossSectionsAddOn.gaussianIntensityF(d,alphaRange)
                     alpha += alphaBoost
             if delta >=0:
                 r,g,b = self.supColor

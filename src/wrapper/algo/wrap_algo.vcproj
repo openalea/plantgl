@@ -57,7 +57,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc90-mt-1_41.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_41.lib   QtGuid4.lib"
 				OutputFile="../../plantgl_d/algo/_pglalgo_d.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
 				IgnoreDefaultLibraryNames=""
@@ -130,7 +130,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="boost_python-vc90-mt-1_41.lib"
+				AdditionalDependencies="boost_python-vc90-mt-1_41.lib  QtGui4.lib"
 				OutputFile="../../plantgl/algo/_pglalgo.pyd"
 				AdditionalLibraryDirectories="&quot;$(QTDIR)/lib/&quot;;C:\Python26\libs;$(BOOSTDIR)\lib"
 				LinkTimeCodeGeneration="1"
