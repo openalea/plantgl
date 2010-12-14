@@ -79,6 +79,7 @@ def viewMesures( file):
 def asymetric_swung( obj , **kwds ):
   X_attr = kwds.get('X_attr', 'X')
   Y_attr = kwds.get('Y_attr', 'Y')
+  Z_attr = kwds.get('Z_attr', None)
   pos_dist = kwds.get('dist', 'Distance')
   pos_az = kwds.get('az', 'Azimuth')
   circ_attr = kwds.get('circ_attr', 'Circonference')
@@ -95,6 +96,8 @@ def asymetric_swung( obj , **kwds ):
   rd_kz.sort()
   az_kz = [ k for k in obj.__dict__.keys() if azimuthHoup_prefix in k]
   az_kz.sort()
+  if len(rd_kz) != len(az_kz):
+    print  obj.__dict__[X_attr], obj.__dict__[Y_attr]
   assert( len(rd_kz) == len(az_kz) and "directional canopy length and azimuth are not the same size" )
 
   houppier=[ ( obj.__dict__[rd_kz[i]], houppier2geomAZ(obj.__dict__[az_kz[i]]) ) for i in range( len(rd_kz) ) ]
@@ -110,12 +113,16 @@ def asymetric_swung( obj , **kwds ):
       obj.posX = obj.__dict__[X_attr]
       obj.posY = obj.__dict__[Y_attr]
 
-    
+  if Z_attr == None:
+    obj.posZ = 0
+  else:
+    obj.posZ = obj.__dict__[Z_attr]
+
   mc = float(midCrown)
   radii = list(houppier)
-  ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
-  h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100), createSwung(ht*mc,ht,radii) )
-  tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
+  ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr]) 
+  h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100+ obj.posZ), createSwung(ht*mc,ht,radii) )
+  tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, obj.posZ), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
   
   if rgb == None:
     s_h = pgl.Shape(h, stand_material(spec_name=spec_name))
@@ -148,7 +155,7 @@ def spheres( obj , **kwds ):
   height_attr = kwds.get('height_attr', 'Haut')
   botHoup_attr = kwds.get('botHoup', 'BaseHoup')
   radiusHoup_prefix = kwds.get('radiusHoup_prefix', 'r_houp')
-  radiusHoup = kwds.get('radiusHoup', None)
+  radiusHoup = kwds.get('radiusHoup', 'Mean')
   wood = kwds.get( 'wood', True )
   rgb = kwds.get('rgb', None)
   spec_name = kwds.get('spec_name', 'houppier_mat')
@@ -165,12 +172,19 @@ def spheres( obj , **kwds ):
 
 
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
+
+  rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+  radii=[ obj.__dict__[k] for k in rd_kz ]
+
   if radiusHoup :
-    sph_radius = obj.__dict__[radiusHoup]
-  else :
-    rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
-    radii=[ obj.__dict__[k] for k in rd_kz ]
+    if radiusHoup == 'Max':
+      sph_radius = 1.0*max(radii)
+    else:
+      sph_radius = obj.__dict__[radiusHoup]
+  else:
     sph_radius = 1.0*sum(radii)/len(radii)
+
+
     #sph_radius = ht/2.
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 + sph_radius), pgl.Sphere(sph_radius,10,5) )
   tr = pgl.Translated(pgl.Vector3(obj.posX, obj.posY, 0), pgl.Cylinder( obj.__dict__[circ_attr]/(2*pi), obj.__dict__[botHoup_attr]*100 + ht*0.1) )
@@ -214,11 +228,16 @@ def cones( obj , **kwds ):
 
 
   ht = 100* (obj.__dict__[height_attr] - obj.__dict__[botHoup_attr])
+
+  rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
+  radii=[ obj.__dict__[k] for k in rd_kz ]
+
   if radiusHoup :
-    cone_radius = obj.__dict__[radiusHoup]
-  else :
-    rd_kz = [ k for k in obj.__dict__.keys() if radiusHoup_prefix in k]
-    radii=[ obj.__dict__[k] for k in rd_kz ]
+    if radiusHoup == 'Max':
+      cone_radius = 1.0*max(radii)
+    else:
+      cone_radius = obj.__dict__[radiusHoup]
+  else:
     cone_radius = 1.0*sum(radii)/len(radii)
     #cone_radius = ht/2.
   h = pgl.Translated( pgl.Vector3(obj.posX, obj.posY, obj.__dict__[botHoup_attr]*100 ), pgl.Cone(cone_radius,ht,1,12) )
