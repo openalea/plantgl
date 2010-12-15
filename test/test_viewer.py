@@ -114,6 +114,7 @@ def test_image():
     w = 400
     h = 400
     rw, rh = w,h
+    Viewer.display(Scene())
     Viewer.widgetGeometry.setSize(w,h)
     Viewer.frameGL.maximize(True)
     Viewer.frameGL.setSize(w, h)
@@ -128,9 +129,9 @@ def test_image():
         rw, rh = q.size[0], q.size[1]
         imgsizetest = (rw == w) and (rh == h)
         del q
+    os.remove(fname)
     if not imgsizetest :
         raise Exception( "Viewer.frameGL.setSize failed %s" % str((rw,rh)))
-    os.remove(fname)
 
 
 
