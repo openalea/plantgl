@@ -86,7 +86,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 			result->add(Shape3DPtr(new Shape(s,AppearancePtr(),id)));
 	    }
 		else { 		
-		  pglWarning("Cannot find symbol %s in %s. Default Geometry will be used." , name , file );
+		  pglWarning("Cannot find symbol %s in %s. Default Geometry will be used." , name.c_str() , file.c_str() );
   		  result->add(Shape3DPtr(new Shape(GeometryPtr(),AppearancePtr(),id)));
 		}
 
@@ -95,7 +95,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 	    string name;
 	    stream >> name;
 		while(name != "Symbole") {
-			pglError("Error with Token '%s' when parsing '%s'.", name, fileName);
+			pglError("Error with Token '%s' when parsing '%s'.", name.c_str(), fileName.c_str());
 		    stream >> name;
 		}
 	    int id;
@@ -157,7 +157,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 		    stream >> a;
 		    shininess = a / 20;
 		}
-		else pglError("Error with Token field '%s' when parsing %s.",field,fileName);
+		else pglError("Error with Token field '%s' when parsing %s.",field.c_str(),fileName.c_str());
 	    }
 		if(interpol != -1){
 		    Color3 emission2;
@@ -201,7 +201,7 @@ ScenePtr readDtaFile(const string& fileName,  const string& symbol_path){
 				shininess2 = a / 20;
 				shininess = (shininess * interpol + shininess2 * (100-interpol))/100;
 			}
-			else pglError("Error with Token field '%s' when parsing %s.",field,fileName);
+			else pglError("Error with Token field '%s' when parsing %s.",field.c_str(),fileName.c_str());
 			}
 		}
 
