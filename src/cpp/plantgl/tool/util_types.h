@@ -89,6 +89,9 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 #define __uint_t_defined
 #endif // __MINGW32__
 #endif
+#if defined(_WIN32)
+#include <stdint.h>
+#endif
 
 #include <climits>
 /// type uchar_t (unsigned char)

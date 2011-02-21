@@ -48,10 +48,10 @@ struct extract_widget {
     result_type extract() const
     {
         boost::python::object pyid = pyobj.attr("winId")();
-        int id = boost::python::extract<int>(pyid.attr("__int__")())();
+        WId id = boost::python::extract<WId>(pyid)();
         Widget * widgetptr = NULL;
         if(id != 0){
-            QWidget * widget = QWidget::find(WId(id));
+            QWidget * widget = QWidget::find(id);
             if (widget) {
 #ifdef Q_CC_MSVC
                 // By default qmake do not compile project with rtti information when

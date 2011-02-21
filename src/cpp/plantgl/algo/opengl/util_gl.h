@@ -41,7 +41,7 @@
 #include "../algo_config.h"
 #ifdef _WIN32
 #ifndef WINGDIAPI
-#include <qgl.h>
+#include <QtOpenGL/qgl.h>
 #ifdef QT_NO_OPENGL
 #pragma message "Qt compiled without openGL support"
 #endif
