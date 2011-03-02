@@ -33,7 +33,7 @@
 #ifdef __GNUC__
 #include <getopt.h>
 #else
-#include <qstring.h>
+#include <QtCore/qstring.h>
 #endif
 
 // #include <qdragobject.h>

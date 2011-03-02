@@ -650,26 +650,36 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
 	}
   }
   
-  void Turtle::lineTo(const TOOLS(Vector3) & v){
-	  TurtleParam * params = __params->copy();
-	  oLineTo(v);
-	  __params = params;
-	  __params->position = v;
+  void Turtle::lineTo(const TOOLS(Vector3) & v, real_t topdiam){
+	 TOOLS(Vector3) heading = __params->heading;
+	 TOOLS(Vector3) left = __params->left;
+	 TOOLS(Vector3) up = __params->up;
+
+	  oLineTo(v,topdiam);
+
+	  __params->heading = heading;
+	  __params->left = left;
+	  __params->up = up;
   }
 
-  void Turtle::lineRel(const TOOLS(Vector3) & v){
-	  TurtleParam * params = __params->copy();
-	  oLineRel(v);
-	  __params = params;
-	  __params->position += v;
+  void Turtle::lineRel(const TOOLS(Vector3) & v, real_t topdiam){
+	 TOOLS(Vector3) heading = __params->heading;
+	 TOOLS(Vector3) left = __params->left;
+	 TOOLS(Vector3) up = __params->up;
+
+	  oLineRel(v,topdiam);
+
+	  __params->heading = heading;
+	  __params->left = left;
+	  __params->up = up;
   }
 
-  void Turtle::oLineRel(const Vector3& v){
+  void Turtle::oLineRel(const Vector3& v, real_t topdiam){
     Vector3 h = v;
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
 	  _tendTo(getHeading(),h);
-      F(l);
+      F(l,topdiam);
 	}
   }
 

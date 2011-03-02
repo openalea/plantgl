@@ -222,10 +222,10 @@ public:
 	{ shift(TOOLS(Vector3)(x,y,z)); }
 
 	/// Trace line to v without changing the orientation
-    virtual void lineTo(const TOOLS(Vector3) & v);
+    virtual void lineTo(const TOOLS(Vector3) & v, real_t topdiam = -1.0);
 
 	/// Trace line to pos+v without changing the orientation
-    virtual void lineRel(const TOOLS(Vector3) & v);
+    virtual void lineRel(const TOOLS(Vector3) & v, real_t topdiam = -1.0);
 
 	/// Change the orientation to pinpoint v
     inline void pinpoint(const TOOLS(Vector3) & v)
@@ -235,29 +235,29 @@ public:
     virtual void pinpointRel(const TOOLS(Vector3) & v);
 
 	/// Trace line toward v and change the orientation
-    inline void oLineTo(const TOOLS(Vector3)& v)
-	{ oLineRel(v - getPosition()); }
+    inline void oLineTo(const TOOLS(Vector3)& v, real_t topdiam = -1.0)
+	{ oLineRel(v - getPosition(),topdiam); }
 
 	/// Trace line toward pos+v and change the orientation
-    virtual void oLineRel(const TOOLS(Vector3)& v);
+    virtual void oLineRel(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
 
-	inline void lineTo(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ lineTo(TOOLS(Vector3)(x,y,z)); }
+	inline void lineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
+	{ lineTo(TOOLS(Vector3)(x,y,z),topdiam); }
 
 	inline void pinpoint(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ pinpoint(TOOLS(Vector3)(x,y,z)); }
 
-	inline void oLineTo(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ oLineTo(TOOLS(Vector3)(x,y,z)); }
+	inline void oLineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
+	{ oLineTo(TOOLS(Vector3)(x,y,z),topdiam); }
 
-	inline void lineRel(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ lineRel(TOOLS(Vector3)(x,y,z)); }
+	inline void lineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
+	{ lineRel(TOOLS(Vector3)(x,y,z),topdiam); }
 
 	inline void pinpointRel(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ pinpointRel(TOOLS(Vector3)(x,y,z)); }
 
-	inline void oLineRel(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ oLineRel(TOOLS(Vector3)(x,y,z)); }
+	inline void oLineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
+	{ oLineRel(TOOLS(Vector3)(x,y,z),topdiam); }
 
     virtual void transform(const TOOLS(Matrix3)& matrix);
 

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="linearalgebra.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_deformation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_math.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_matrix.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_matrixmath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_polymath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util_vector.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math_config.h" />
+    <ClInclude Include="..\pgl_math.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="util_math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util_matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util_vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

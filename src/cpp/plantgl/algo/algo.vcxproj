@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>libAlgo</ProjectName>
+    <ProjectGuid>{C5FB2683-C861-4FB0-90AA-47D4656CEF42}</ProjectGuid>
+    <RootNamespace>libAlgo</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ALGO_MAKEDLL;PGL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Qt3Supportd4.lib;QtOpenGLd4.lib;QtCored4.lib;QtGuid4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;cgal-vc80-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../../bin/pglalgo-d.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>../../../../lib/$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ALGO_MAKEDLL;WITH_CGAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>boost_thread-vc100-mt-1_44.lib;Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../../bin/pglalgo.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(CGAL_DIR)\auxiliary\gmp\lib;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../../bin/$(TargetName).pdb</ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>../../../../lib/pglalgo.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="base\amaptranslator.cpp" />
+    <ClCompile Include="base\bboxcomputer.cpp" />
+    <ClCompile Include="base\bspherecomputer.cpp" />
+    <ClCompile Include="base\curvemanipulation.cpp" />
+    <ClCompile Include="base\discretizer.cpp" />
+    <ClCompile Include="base\matrixcomputer.cpp" />
+    <ClCompile Include="base\merge.cpp" />
+    <ClCompile Include="base\polygoncomputer.cpp" />
+    <ClCompile Include="base\skelcomputer.cpp" />
+    <ClCompile Include="base\statisticcomputer.cpp" />
+    <ClCompile Include="base\surfcomputer.cpp" />
+    <ClCompile Include="base\tesselator.cpp" />
+    <ClCompile Include="base\volcomputer.cpp" />
+    <ClCompile Include="base\wirecomputer.cpp" />
+    <ClCompile Include="codec\binaryprinter.cpp" />
+    <ClCompile Include="codec\linetreeprinter.cpp" />
+    <ClCompile Include="codec\plyprinter.cpp" />
+    <ClCompile Include="codec\povprinter.cpp" />
+    <ClCompile Include="codec\printer.cpp" />
+    <ClCompile Include="codec\pyprinter.cpp" />
+    <ClCompile Include="codec\vgstarprinter.cpp" />
+    <ClCompile Include="codec\vrmlprinter.cpp" />
+    <ClCompile Include="codec\x3dprinter.cpp" />
+    <ClCompile Include="codec\xmlprinter.cpp" />
+    <ClCompile Include="codec\dtafile.cpp" />
+    <ClCompile Include="codec\geomview_file.cpp" />
+    <ClCompile Include="codec\ligfile.cpp" />
+    <ClCompile Include="codec\scne_binaryparser.cpp" />
+    <ClCompile Include="codec\scne_parser.cpp" />
+    <ClCompile Include="codec\scne_scanner.cpp" />
+    <ClCompile Include="codec\vgsfile.cpp" />
+    <ClCompile Include="codec\cdc_geom.cpp" />
+    <ClCompile Include="codec\cdc_pov.cpp" />
+    <ClCompile Include="codec\cdc_vgstar.cpp" />
+    <ClCompile Include="codec\cdc_vrml.cpp" />
+    <ClCompile Include="codec\codecs.cpp" />
+    <ClCompile Include="fitting\branchcompressor.cpp" />
+    <ClCompile Include="fitting\eigenvector.cpp" />
+    <ClCompile Include="fitting\fit.cpp" />
+    <ClCompile Include="fitting\miniball.cpp" />
+    <ClCompile Include="fitting\skeleton.cpp" />
+    <ClCompile Include="opengl\glbboxrenderer.cpp" />
+    <ClCompile Include="opengl\glctrlptrenderer.cpp" />
+    <ClCompile Include="opengl\glrenderer.cpp" />
+    <ClCompile Include="opengl\glskelrenderer.cpp" />
+    <ClCompile Include="opengl\gltransitionrenderer.cpp" />
+    <ClCompile Include="opengl\util_glut.cpp" />
+    <ClCompile Include="raycasting\ray.cpp" />
+    <ClCompile Include="raycasting\rayintersection.cpp" />
+    <ClCompile Include="raycasting\util_intersection.cpp" />
+    <ClCompile Include="modelling\turtle.cpp" />
+    <ClCompile Include="grid\mvs.cpp" />
+    <ClCompile Include="grid\octree.cpp" />
+    <ClCompile Include="grid\octreenode.cpp" />
+    <ClCompile Include="grid\tile.cpp" />
+    <ClCompile Include="grid\voxel.cpp" />
+    <ClCompile Include="grid\voxelintersection.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="base\amaptranslator.h" />
+    <ClInclude Include="base\bboxcomputer.h" />
+    <ClInclude Include="base\bspherecomputer.h" />
+    <ClInclude Include="base\curvemanipulation.h" />
+    <ClInclude Include="base\discretizer.h" />
+    <ClInclude Include="base\matrixcomputer.h" />
+    <ClInclude Include="base\merge.h" />
+    <ClInclude Include="base\pointmanipulation.h" />
+    <ClInclude Include="base\polygoncomputer.h" />
+    <ClInclude Include="base\skelcomputer.h" />
+    <ClInclude Include="base\statisticcomputer.h" />
+    <ClInclude Include="base\surfcomputer.h" />
+    <ClInclude Include="base\tesselator.h" />
+    <ClInclude Include="base\volcomputer.h" />
+    <ClInclude Include="base\wirecomputer.h" />
+    <ClInclude Include="codec\codec_config.h" />
+    <ClInclude Include="codec\binaryprinter.h" />
+    <ClInclude Include="codec\linetreeprinter.h" />
+    <ClInclude Include="codec\plyprinter.h" />
+    <ClInclude Include="codec\povprinter.h" />
+    <ClInclude Include="codec\printer.h" />
+    <ClInclude Include="codec\pyprinter.h" />
+    <ClInclude Include="codec\vgstarprinter.h" />
+    <ClInclude Include="codec\vrmlprinter.h" />
+    <ClInclude Include="codec\x3dprinter.h" />
+    <ClInclude Include="codec\xmlprinter.h" />
+    <ClInclude Include="codec\dtafile.h" />
+    <ClInclude Include="codec\geomview_file.h" />
+    <ClInclude Include="codec\ligfile.h" />
+    <ClInclude Include="codec\scne_binaryparser.h" />
+    <ClInclude Include="codec\scne_parser.h" />
+    <ClInclude Include="codec\scne_parser.hpp" />
+    <ClInclude Include="codec\scne_scanner.h" />
+    <ClInclude Include="codec\vgsfile.h" />
+    <ClInclude Include="codec\cdc_geom.h" />
+    <ClInclude Include="codec\cdc_pov.h" />
+    <ClInclude Include="codec\cdc_vgstar.h" />
+    <ClInclude Include="codec\cdc_vrml.h" />
+    <ClInclude Include="codec\codecs.h" />
+    <ClInclude Include="fitting\branchcompressor.h" />
+    <ClInclude Include="fitting\eigenvector.h" />
+    <ClInclude Include="fitting\fit.h" />
+    <ClInclude Include="fitting\miniball.h" />
+    <ClInclude Include="fitting\miniball_config.h" />
+    <ClInclude Include="fitting\skeleton.h" />
+    <ClInclude Include="opengl\glbboxrenderer.h" />
+    <ClInclude Include="opengl\glctrlptrenderer.h" />
+    <ClInclude Include="opengl\glrenderer.h" />
+    <ClInclude Include="opengl\glskelrenderer.h" />
+    <ClInclude Include="opengl\gltransitionrenderer.h" />
+    <ClInclude Include="opengl\util_appegl.h" />
+    <ClInclude Include="opengl\util_gl.h" />
+    <ClInclude Include="opengl\util_glut.h" />
+    <ClInclude Include="raycasting\ray.h" />
+    <ClInclude Include="raycasting\rayintersection.h" />
+    <ClInclude Include="raycasting\util_intersection.h" />
+    <ClInclude Include="modelling\pglturtle.h" />
+    <ClInclude Include="modelling\turtle.h" />
+    <ClInclude Include="modelling\turtleparam.h" />
+    <ClInclude Include="grid\mvs.h" />
+    <ClInclude Include="grid\octree.h" />
+    <ClInclude Include="grid\octreenode.h" />
+    <ClInclude Include="grid\regularpointgrid.h" />
+    <ClInclude Include="grid\tile.h" />
+    <ClInclude Include="grid\voxel.h" />
+    <ClInclude Include="grid\voxelintersection.h" />
+    <ClInclude Include="algo_config.h" />
+    <ClInclude Include="..\pgl_algo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="codec\scne_parser.y">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Bison on %(Filename).y ...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe -dv -p scne_yy  "%(FullPath)" -o "%(RootDir)%(Directory)/%(Filename).cpp"
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)/%(Filename).hpp;%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing Bison on %(Filename).y ...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe -dv -p scne_yy  "%(FullPath)" -o "%(RootDir)%(Directory)/%(Filename).cpp"
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)/%(Filename).hpp;%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="codec\scne_scanner.l">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Flex on %(Filename).l ...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe -Pscene_yy  -o"%(RootDir)%(Directory)/%(Filename).cpp" "%(FullPath)"
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing Flex on %(Filename).l ...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe -Pscene_yy  -o"%(RootDir)%(Directory)/%(Filename).cpp" "%(FullPath)"
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\math\math.vcxproj">
+      <Project>{c0e9458d-0972-4195-87a7-54fdcb1e5fb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\scenegraph\scenegraph.vcxproj">
+      <Project>{b89c61af-ba60-4a6e-9d5a-d20d0285a5d9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\tool\tool.vcxproj">
+      <Project>{3e4228c3-782d-4ad7-bec5-4e56ee28158d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

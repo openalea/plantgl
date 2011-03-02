@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{ee3f14bf-f2eb-41ac-befd-88e16c4861eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Appearance">
+      <UniqueIdentifier>{87688cf5-7bde-41ec-87ca-f2a8c9298eab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Container">
+      <UniqueIdentifier>{7df23177-83cf-479b-aad9-b6cd181b23e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{c5d05fc4-bdd5-4352-951c-f50c16641aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{0f2c7137-8fd7-4a4c-87dd-2cc2b980d7cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Transformation">
+      <UniqueIdentifier>{c6a1405d-3384-407a-a9cf-74b226032096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c051378e-d98c-4513-8ed1-5579f9a1897b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Function">
+      <UniqueIdentifier>{a7d86e1a-3a0a-4223-8e88-fba5911c4815}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="core\action.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\deepcopier.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\pgl_messages.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="core\sceneobject.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\appearance.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\color.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\material.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\monospectral.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\multispectral.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\spectrum.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="appearance\texture.cpp">
+      <Filter>Appearance</Filter>
+    </ClCompile>
+    <ClCompile Include="container\geometryarray.cpp">
+      <Filter>Container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\indexarray.cpp">
+      <Filter>Container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\pointarray.cpp">
+      <Filter>Container</Filter>
+    </ClCompile>
+    <ClCompile Include="container\pointmatrix.cpp">
+      <Filter>Container</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\amapsymbol.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\asymmetrichull.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\beziercurve.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\bezierpatch.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\boundingbox.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\boundingsphere.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\box.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\cone.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\curve.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\cylinder.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\disc.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\elevationgrid.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\explicitmodel.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\extrudedhull.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\extrusion.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\faceset.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\frustum.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\geometry.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\group.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\hull.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\interpol.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\lineicmodel.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\mesh.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\nurbscurve.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\nurbspatch.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\paraboloid.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\parametricmodel.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\patch.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\planarmodel.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\pointset.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\polyline.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\primitive.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\profile.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\quadset.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\revolution.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\sor.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\sphere.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\swung.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\text.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry\triangleset.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\factory.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\inline.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\shape.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\axisrotated.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\deformed.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\eulerrotated.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\ifs.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\mattransformed.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\oriented.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\orthotransformed.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\scaled.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\tapered.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\transformed.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="transformation\translated.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
+    <ClCompile Include="function\function.cpp">
+      <Filter>Function</Filter>
+    </ClCompile>
+    <ClCompile Include="pgl_version.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\action.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\deepcopier.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\pgl_messages.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\sceneobject.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="core\smbtable.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\appearance.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\color.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\material.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\monospectral.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\multispectral.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\spectrum.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="appearance\texture.h">
+      <Filter>Appearance</Filter>
+    </ClInclude>
+    <ClInclude Include="container\colorarray.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="container\geometryarray.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="container\geometryarray2.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="container\indexarray.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="container\objectarray.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="container\pointarray.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="container\pointmatrix.h">
+      <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\amapsymbol.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\asymmetrichull.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\beziercurve.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\bezierpatch.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\boundingbox.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\boundingsphere.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\box.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\cone.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\curve.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\cylinder.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\disc.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\elevationgrid.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\explicitmodel.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\extrudedhull.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\extrusion.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\faceset.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\frustum.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\geometry.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\group.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\hull.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\interpol.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\lineicmodel.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\mesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\mesh_inline.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\nurbscurve.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\nurbspatch.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\paraboloid.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\parametricmodel.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\patch.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\planarmodel.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\pointset.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\polyline.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\primitive.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\profile.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\quadset.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\revolution.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\sor.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\sphere.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\swung.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\text.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\triangleset.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\factory.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\inline.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\shape.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\axisrotated.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\deformed.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\eulerrotated.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\ifs.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\mattransformed.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\oriented.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\orthotransformed.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\scaled.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\tapered.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\transformed.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\translated.h">
+      <Filter>Transformation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_appearance.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_container.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_geometry.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_scene.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_scenegraph.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_transformation.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="function\function.h">
+      <Filter>Function</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pgl_config.h" />
+    <ClInclude Include="pgl_version.h" />
+    <ClInclude Include="sg_config.h" />
+    <ClInclude Include="..\version.h" />
+  </ItemGroup>
+</Project>

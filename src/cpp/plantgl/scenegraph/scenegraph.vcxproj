@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>libSceneGraph</ProjectName>
+    <ProjectGuid>{B89C61AF-BA60-4A6E-9D5A-D20D0285A5D9}</ProjectGuid>
+    <RootNamespace>libSceneGraph</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;$(BOOSTDIR);..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SG_MAKEDLL;PGL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Qt3Supportd4.lib;QtOpenGLd4.lib;QtCored4.lib;QtGuid4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../../bin/pglsg-d.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>../../../../lib/$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;$(BOOSTDIR);..\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>SG_MAKEDLL;WITH_CGAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <WarningLevel>Level4</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../../bin/pglsg.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ProgramDatabaseFile>../../../../bin/$(TargetName).pdb</ProgramDatabaseFile>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>../../../../lib/pglsg.lib</ImportLibrary>
+      <NoEntryPoint>false</NoEntryPoint>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="core\action.cpp" />
+    <ClCompile Include="core\deepcopier.cpp" />
+    <ClCompile Include="core\pgl_messages.cpp" />
+    <ClCompile Include="core\sceneobject.cpp" />
+    <ClCompile Include="appearance\appearance.cpp" />
+    <ClCompile Include="appearance\color.cpp" />
+    <ClCompile Include="appearance\material.cpp" />
+    <ClCompile Include="appearance\monospectral.cpp" />
+    <ClCompile Include="appearance\multispectral.cpp" />
+    <ClCompile Include="appearance\spectrum.cpp" />
+    <ClCompile Include="appearance\texture.cpp" />
+    <ClCompile Include="container\geometryarray.cpp" />
+    <ClCompile Include="container\indexarray.cpp" />
+    <ClCompile Include="container\pointarray.cpp" />
+    <ClCompile Include="container\pointmatrix.cpp" />
+    <ClCompile Include="geometry\amapsymbol.cpp" />
+    <ClCompile Include="geometry\asymmetrichull.cpp" />
+    <ClCompile Include="geometry\beziercurve.cpp" />
+    <ClCompile Include="geometry\bezierpatch.cpp" />
+    <ClCompile Include="geometry\boundingbox.cpp" />
+    <ClCompile Include="geometry\boundingsphere.cpp" />
+    <ClCompile Include="geometry\box.cpp" />
+    <ClCompile Include="geometry\cone.cpp" />
+    <ClCompile Include="geometry\curve.cpp" />
+    <ClCompile Include="geometry\cylinder.cpp" />
+    <ClCompile Include="geometry\disc.cpp" />
+    <ClCompile Include="geometry\elevationgrid.cpp" />
+    <ClCompile Include="geometry\explicitmodel.cpp" />
+    <ClCompile Include="geometry\extrudedhull.cpp" />
+    <ClCompile Include="geometry\extrusion.cpp" />
+    <ClCompile Include="geometry\faceset.cpp" />
+    <ClCompile Include="geometry\frustum.cpp" />
+    <ClCompile Include="geometry\geometry.cpp" />
+    <ClCompile Include="geometry\group.cpp" />
+    <ClCompile Include="geometry\hull.cpp" />
+    <ClCompile Include="geometry\interpol.cpp" />
+    <ClCompile Include="geometry\lineicmodel.cpp" />
+    <ClCompile Include="geometry\mesh.cpp" />
+    <ClCompile Include="geometry\nurbscurve.cpp" />
+    <ClCompile Include="geometry\nurbspatch.cpp" />
+    <ClCompile Include="geometry\paraboloid.cpp" />
+    <ClCompile Include="geometry\parametricmodel.cpp" />
+    <ClCompile Include="geometry\patch.cpp" />
+    <ClCompile Include="geometry\planarmodel.cpp" />
+    <ClCompile Include="geometry\pointset.cpp" />
+    <ClCompile Include="geometry\polyline.cpp" />
+    <ClCompile Include="geometry\primitive.cpp" />
+    <ClCompile Include="geometry\profile.cpp" />
+    <ClCompile Include="geometry\quadset.cpp" />
+    <ClCompile Include="geometry\revolution.cpp" />
+    <ClCompile Include="geometry\sor.cpp" />
+    <ClCompile Include="geometry\sphere.cpp" />
+    <ClCompile Include="geometry\swung.cpp" />
+    <ClCompile Include="geometry\text.cpp" />
+    <ClCompile Include="geometry\triangleset.cpp" />
+    <ClCompile Include="scene\factory.cpp" />
+    <ClCompile Include="scene\inline.cpp" />
+    <ClCompile Include="scene\scene.cpp" />
+    <ClCompile Include="scene\shape.cpp" />
+    <ClCompile Include="transformation\axisrotated.cpp" />
+    <ClCompile Include="transformation\deformed.cpp" />
+    <ClCompile Include="transformation\eulerrotated.cpp" />
+    <ClCompile Include="transformation\ifs.cpp" />
+    <ClCompile Include="transformation\mattransformed.cpp" />
+    <ClCompile Include="transformation\oriented.cpp" />
+    <ClCompile Include="transformation\orthotransformed.cpp" />
+    <ClCompile Include="transformation\scaled.cpp" />
+    <ClCompile Include="transformation\tapered.cpp" />
+    <ClCompile Include="transformation\transformed.cpp" />
+    <ClCompile Include="transformation\translated.cpp" />
+    <ClCompile Include="function\function.cpp" />
+    <ClCompile Include="pgl_version.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\action.h" />
+    <ClInclude Include="core\deepcopier.h" />
+    <ClInclude Include="core\pgl_messages.h" />
+    <ClInclude Include="core\sceneobject.h" />
+    <ClInclude Include="core\smbtable.h" />
+    <ClInclude Include="appearance\appearance.h" />
+    <ClInclude Include="appearance\color.h" />
+    <ClInclude Include="appearance\material.h" />
+    <ClInclude Include="appearance\monospectral.h" />
+    <ClInclude Include="appearance\multispectral.h" />
+    <ClInclude Include="appearance\spectrum.h" />
+    <ClInclude Include="appearance\texture.h" />
+    <ClInclude Include="container\colorarray.h" />
+    <ClInclude Include="container\geometryarray.h" />
+    <ClInclude Include="container\geometryarray2.h" />
+    <ClInclude Include="container\indexarray.h" />
+    <ClInclude Include="container\objectarray.h" />
+    <ClInclude Include="container\pointarray.h" />
+    <ClInclude Include="container\pointmatrix.h" />
+    <ClInclude Include="geometry\amapsymbol.h" />
+    <ClInclude Include="geometry\asymmetrichull.h" />
+    <ClInclude Include="geometry\beziercurve.h" />
+    <ClInclude Include="geometry\bezierpatch.h" />
+    <ClInclude Include="geometry\boundingbox.h" />
+    <ClInclude Include="geometry\boundingsphere.h" />
+    <ClInclude Include="geometry\box.h" />
+    <ClInclude Include="geometry\cone.h" />
+    <ClInclude Include="geometry\curve.h" />
+    <ClInclude Include="geometry\cylinder.h" />
+    <ClInclude Include="geometry\disc.h" />
+    <ClInclude Include="geometry\elevationgrid.h" />
+    <ClInclude Include="geometry\explicitmodel.h" />
+    <ClInclude Include="geometry\extrudedhull.h" />
+    <ClInclude Include="geometry\extrusion.h" />
+    <ClInclude Include="geometry\faceset.h" />
+    <ClInclude Include="geometry\frustum.h" />
+    <ClInclude Include="geometry\geometry.h" />
+    <ClInclude Include="geometry\group.h" />
+    <ClInclude Include="geometry\hull.h" />
+    <ClInclude Include="geometry\interpol.h" />
+    <ClInclude Include="geometry\lineicmodel.h" />
+    <ClInclude Include="geometry\mesh.h" />
+    <ClInclude Include="geometry\mesh_inline.h" />
+    <ClInclude Include="geometry\nurbscurve.h" />
+    <ClInclude Include="geometry\nurbspatch.h" />
+    <ClInclude Include="geometry\paraboloid.h" />
+    <ClInclude Include="geometry\parametricmodel.h" />
+    <ClInclude Include="geometry\patch.h" />
+    <ClInclude Include="geometry\planarmodel.h" />
+    <ClInclude Include="geometry\pointset.h" />
+    <ClInclude Include="geometry\polyline.h" />
+    <ClInclude Include="geometry\primitive.h" />
+    <ClInclude Include="geometry\profile.h" />
+    <ClInclude Include="geometry\quadset.h" />
+    <ClInclude Include="geometry\revolution.h" />
+    <ClInclude Include="geometry\sor.h" />
+    <ClInclude Include="geometry\sphere.h" />
+    <ClInclude Include="geometry\swung.h" />
+    <ClInclude Include="geometry\text.h" />
+    <ClInclude Include="geometry\triangleset.h" />
+    <ClInclude Include="scene\factory.h" />
+    <ClInclude Include="scene\inline.h" />
+    <ClInclude Include="scene\scene.h" />
+    <ClInclude Include="scene\shape.h" />
+    <ClInclude Include="transformation\axisrotated.h" />
+    <ClInclude Include="transformation\deformed.h" />
+    <ClInclude Include="transformation\eulerrotated.h" />
+    <ClInclude Include="transformation\ifs.h" />
+    <ClInclude Include="transformation\mattransformed.h" />
+    <ClInclude Include="transformation\oriented.h" />
+    <ClInclude Include="transformation\orthotransformed.h" />
+    <ClInclude Include="transformation\scaled.h" />
+    <ClInclude Include="transformation\tapered.h" />
+    <ClInclude Include="transformation\transformed.h" />
+    <ClInclude Include="transformation\translated.h" />
+    <ClInclude Include="..\pgl_appearance.h" />
+    <ClInclude Include="..\pgl_container.h" />
+    <ClInclude Include="..\pgl_geometry.h" />
+    <ClInclude Include="..\pgl_scene.h" />
+    <ClInclude Include="..\pgl_scenegraph.h" />
+    <ClInclude Include="..\pgl_transformation.h" />
+    <ClInclude Include="function\function.h" />
+    <ClInclude Include="..\pgl_config.h" />
+    <ClInclude Include="pgl_version.h" />
+    <ClInclude Include="sg_config.h" />
+    <ClInclude Include="..\version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\math\math.vcxproj">
+      <Project>{c0e9458d-0972-4195-87a7-54fdcb1e5fb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\tool\tool.vcxproj">
+      <Project>{3e4228c3-782d-4ad7-bec5-4e56ee28158d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

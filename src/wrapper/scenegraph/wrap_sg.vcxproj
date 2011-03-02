@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>wrapSceneGraph</ProjectName>
+    <ProjectGuid>{5B10C38E-6F13-4D27-B7F7-05D4151DCED3}</ProjectGuid>
+    <RootNamespace>wrapSceneGraph</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PGL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>boost_python$(BOOST_LIB_EXT).lib;QtCored4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../plantgl_d/scenegraph/_pglsg_d.pyd</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\libs;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>../../../../lib/$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>boost_python$(BOOST_LIB_EXT).lib;QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../plantgl/scenegraph/_pglsg.pyd</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\libs;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>../../../../lib/$(TargetName).lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="arrays2_macro.h" />
+    <ClInclude Include="arrays_macro.h" />
+    <ClInclude Include="export_mesh.h" />
+    <ClInclude Include="export_sceneobject.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\boost_python.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\exception.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\exception_core.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\export_list.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\export_property.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\export_refcountptr.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\extract_list.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\extract_pgl.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\extract_tuple.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\extract_widget.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\intrusive_ptr_python_helper.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\list_converter.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\pyinterpreter.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\pyobj_reference.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\pyobj_reference_core.h" />
+    <ClInclude Include="..\..\cpp\plantgl\python\tuple_converter.h" />
+    <ClInclude Include="export_scenegraph.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="export_amapsymbol.cpp" />
+    <ClCompile Include="export_appearance.cpp" />
+    <ClCompile Include="export_arrays.cpp" />
+    <ClCompile Include="export_arrays2.cpp" />
+    <ClCompile Include="export_asymmetrichull.cpp" />
+    <ClCompile Include="export_axisrotated.cpp" />
+    <ClCompile Include="export_beziercurve.cpp" />
+    <ClCompile Include="export_bezierpatch.cpp" />
+    <ClCompile Include="export_bounding.cpp" />
+    <ClCompile Include="export_box.cpp" />
+    <ClCompile Include="export_color.cpp" />
+    <ClCompile Include="export_cone.cpp" />
+    <ClCompile Include="export_cylinder.cpp" />
+    <ClCompile Include="export_deepcopier.cpp" />
+    <ClCompile Include="export_disc.cpp" />
+    <ClCompile Include="export_elevationgrid.cpp" />
+    <ClCompile Include="export_eulerrotated.cpp" />
+    <ClCompile Include="export_explicitmodel.cpp" />
+    <ClCompile Include="export_extrudedhull.cpp" />
+    <ClCompile Include="export_extrusion.cpp" />
+    <ClCompile Include="export_faceset.cpp" />
+    <ClCompile Include="export_factory.cpp" />
+    <ClCompile Include="export_frustum.cpp" />
+    <ClCompile Include="export_function.cpp" />
+    <ClCompile Include="export_geometry.cpp" />
+    <ClCompile Include="export_geometryarray.cpp" />
+    <ClCompile Include="export_group.cpp" />
+    <ClCompile Include="export_hull.cpp" />
+    <ClCompile Include="export_ifs.cpp" />
+    <ClCompile Include="export_index.cpp" />
+    <ClCompile Include="export_lineicmodel.cpp" />
+    <ClCompile Include="export_material.cpp" />
+    <ClCompile Include="export_mesh.cpp" />
+    <ClCompile Include="export_nurbscurve.cpp" />
+    <ClCompile Include="export_nurbspatch.cpp" />
+    <ClCompile Include="export_oriented.cpp" />
+    <ClCompile Include="export_paraboloid.cpp" />
+    <ClCompile Include="export_parametricmodel.cpp" />
+    <ClCompile Include="export_patch.cpp" />
+    <ClCompile Include="export_planarmodel.cpp" />
+    <ClCompile Include="export_pointarrays.cpp" />
+    <ClCompile Include="export_pointset.cpp" />
+    <ClCompile Include="export_polyline.cpp" />
+    <ClCompile Include="export_primitive.cpp" />
+    <ClCompile Include="export_quadset.cpp" />
+    <ClCompile Include="export_revolution.cpp" />
+    <ClCompile Include="export_scaled.cpp" />
+    <ClCompile Include="export_scene.cpp" />
+    <ClCompile Include="export_sceneobject.cpp" />
+    <ClCompile Include="export_shape.cpp" />
+    <ClCompile Include="export_sor.cpp" />
+    <ClCompile Include="export_sphere.cpp" />
+    <ClCompile Include="export_swung.cpp" />
+    <ClCompile Include="export_tapered.cpp" />
+    <ClCompile Include="export_text.cpp" />
+    <ClCompile Include="export_texture.cpp" />
+    <ClCompile Include="export_transformation.cpp" />
+    <ClCompile Include="export_transformed.cpp" />
+    <ClCompile Include="export_translated.cpp" />
+    <ClCompile Include="export_triangleset.cpp" />
+    <ClCompile Include="pgl_sg_wrapper.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\cpp\plantgl\algo\algo.vcxproj">
+      <Project>{c5fb2683-c861-4fb0-90aa-47d4656cef42}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\cpp\plantgl\math\math.vcxproj">
+      <Project>{c0e9458d-0972-4195-87a7-54fdcb1e5fb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\cpp\plantgl\scenegraph\scenegraph.vcxproj">
+      <Project>{b89c61af-ba60-4a6e-9d5a-d20d0285a5d9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\cpp\plantgl\tool\tool.vcxproj">
+      <Project>{3e4228c3-782d-4ad7-bec5-4e56ee28158d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

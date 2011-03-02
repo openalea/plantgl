@@ -1,0 +1,498 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Base">
+      <UniqueIdentifier>{f10a1dc8-190d-4c85-8e2a-a9870abd33a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Interface">
+      <UniqueIdentifier>{870fc401-687c-4723-bbfd-0c0493f3c822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Interface\Generated Files">
+      <UniqueIdentifier>{bf800788-978d-4632-b9d4-fc2e278132cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\ViewObjectGL">
+      <UniqueIdentifier>{bcc2cbb3-f259-4e7d-8d8c-508a4f5fd286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Applications">
+      <UniqueIdentifier>{021b983e-652b-4e22-9c95-94190f3242f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Core">
+      <UniqueIdentifier>{1f296596-9b98-4b79-8919-dd6dc0adc6bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Moc Files">
+      <UniqueIdentifier>{b64c575e-cc67-47c4-81a0-47feba00c702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer">
+      <UniqueIdentifier>{0fde99c5-1a13-4ef6-a744-feae2e22482c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\Interface">
+      <UniqueIdentifier>{e7080ce0-9d01-4afa-a075-0a5d0566d277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\Interface\Generated Files">
+      <UniqueIdentifier>{485aa876-385d-43fd-aa60-a506c0b5e566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\Edition">
+      <UniqueIdentifier>{c1850ccd-fc49-4b0b-84d5-56d3d58ae707}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\Application">
+      <UniqueIdentifier>{53fad2b5-4109-40ba-aad5-e41c91a2be7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\Core">
+      <UniqueIdentifier>{a9911d92-c1f8-497d-b1b0-2abe5f9c7673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Viewer\Moc Files">
+      <UniqueIdentifier>{118ebe9f-d96a-4c66-90c3-74a8d68ca098}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="base\interface\cameraqt.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\cameraqt2.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\clippingplanewidget.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\controlpanelwidget.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\fogwidget.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\frameglsizedialog.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\gloptions.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\linewidthcontrol.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\messagedisplayer.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\qbrowser.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\interface\rotcenteredit.h">
+      <Filter>Base\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="base\appbuilder.h">
+      <Filter>Base\Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="base\appli.h">
+      <Filter>Base\Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="base\application.h">
+      <Filter>Base\Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="base\simpleappli.h">
+      <Filter>Base\Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="base\threadedappli.h">
+      <Filter>Base\Applications</Filter>
+    </ClInclude>
+    <ClInclude Include="base\configuration.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="base\event.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="base\guicon.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="base\icons.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="base\translator.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="base\util_serializedobj.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="base\zbuffer.h">
+      <Filter>Base\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\interface\approximation.h">
+      <Filter>Viewer\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\interface\codecview.h">
+      <Filter>Viewer\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\interface\importselection.h">
+      <Filter>Viewer\Interface\Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\pglapplication.h">
+      <Filter>Viewer\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\geomevent.h">
+      <Filter>Viewer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\pglviewer.h">
+      <Filter>Viewer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\qgeomlistview.h">
+      <Filter>Viewer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\reader.h">
+      <Filter>Viewer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\util_geomgl.h">
+      <Filter>Viewer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer\util_qstring.h">
+      <Filter>Viewer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="gui_config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="base\camera.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\clippingplane.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\fog.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\grid.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\light.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\modalscenegl.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\modalwidget.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\object.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\rotcenter.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\scenegl.cpp">
+      <Filter>Base\ViewObjectGL</Filter>
+    </ClCompile>
+    <ClCompile Include="base\appli.cpp">
+      <Filter>Base\Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="base\application.cpp">
+      <Filter>Base\Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="base\simpleappli.cpp">
+      <Filter>Base\Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="base\threadedappli.cpp">
+      <Filter>Base\Applications</Filter>
+    </ClCompile>
+    <ClCompile Include="base\browser.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\configuration.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\controlpanel.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\daemon.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\errordialog.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\event.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\filemanager.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\glframe.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\guicon.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\helpmenu.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\icons.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\info.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\locationbar.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\properties.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\qobjectbrowser.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\translator.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\util_qwidget.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\viewer.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\zbuffer.cpp">
+      <Filter>Base\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_browser.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_camera.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_clippingplane.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_controlpanel.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_daemon.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_errordialog.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_filemanager.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_fog.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_glframe.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_grid.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_helpmenu.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_info.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_light.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_locationbar.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_modalscenegl.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_modalwidget.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_object.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_properties.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_qobjectbrowser.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_rotcenter.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_scenegl.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_util_qwidget.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="base\moc\moc_viewer.cpp">
+      <Filter>Base\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\materialeditor.cpp">
+      <Filter>Viewer\Edition</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\pglapplication.cpp">
+      <Filter>Viewer\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\editgeomscenegl.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\geomevent.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\geomscenegl.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\geomsceneio.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\geomsceneqt.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\linetree.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\pglviewer.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\qgeomlistview.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\reader.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\util_geomgl.cpp">
+      <Filter>Viewer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\moc\moc_editgeomscenegl.cpp">
+      <Filter>Viewer\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\moc\moc_geomscenegl.cpp">
+      <Filter>Viewer\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\moc\moc_linetree.cpp">
+      <Filter>Viewer\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\moc\moc_materialeditor.cpp">
+      <Filter>Viewer\Moc Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer\moc\moc_moduleeditor.cpp">
+      <Filter>Viewer\Moc Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="base\interface\cameraqt.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\cameraqt2.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\clippingplanewidget.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\controlpanelwidget.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\fogwidget.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\frameglsizedialog.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\gloptions.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\linewidthcontrol.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\messagedisplayer.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\qbrowser.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\interface\rotcenteredit.ui">
+      <Filter>Base\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\camera.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\clippingplane.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\fog.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\grid.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\light.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\modalscenegl.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\modalwidget.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\object.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\rotcenter.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\scenegl.h">
+      <Filter>Base\ViewObjectGL</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\browser.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\controlpanel.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\daemon.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\errordialog.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\filemanager.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\glframe.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\helpmenu.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\info.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\locationbar.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\properties.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\qobjectbrowser.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\util_qwidget.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="base\viewer.h">
+      <Filter>Base\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\interface\approximation.ui">
+      <Filter>Viewer\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\interface\codecview.ui">
+      <Filter>Viewer\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\interface\importselection.ui">
+      <Filter>Viewer\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\materialeditor.h">
+      <Filter>Viewer\Edition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\moduleeditor.h">
+      <Filter>Viewer\Edition</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\editgeomscenegl.h">
+      <Filter>Viewer\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\geomscenegl.h">
+      <Filter>Viewer\Core</Filter>
+    </CustomBuild>
+    <CustomBuild Include="viewer\linetree.h">
+      <Filter>Viewer\Core</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
