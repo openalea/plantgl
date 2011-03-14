@@ -217,6 +217,7 @@ TurtleParam::TurtleParam() :
   elasticity(0),
   __polygon(false),
   __generalizedCylinder(false),
+  pointList(new Point3Array()),
   customId(Shape::NOID),
   customParentId(Shape::NOID),
   sectionResolution(Cylinder::DEFAULT_SLICES),
@@ -243,7 +244,7 @@ TurtleParam::reset(){
   elasticity = 0;
   __polygon = false;
   __generalizedCylinder = false;
-  pointList.clear();
+  pointList->clear();
   leftList.clear();
   radiusList.clear();
   initial.reset();
@@ -253,6 +254,7 @@ TurtleParam::reset(){
 TurtleParam * TurtleParam::copy(){
   TurtleParam * t = new TurtleParam(*this);
   if(t->guide)t->guide = t->guide->copy();
+  if(!__polygon)t->pointList = new Point3Array(*t->pointList);
   return t;
 }
     
@@ -289,8 +291,13 @@ bool TurtleParam::isValid() const{
 }
     
 void TurtleParam::keepLastPoint(){
-  if(!pointList.empty())
-	pointList = vector<Vector3>(1,*(pointList.end()-1));
+  if(!pointList->empty()){
+	Vector3 lastp = *(pointList->end()-1);
+	pointList->clear();
+	pointList->push_back(lastp);
+    // pointList = vector<Vector3>(1,*(pointList.end()-1));
+	// pointList = vector<Vector3>(1,*(pointList.end()-1));
+  }
   if(!leftList.empty())
 	leftList = vector<Vector3>(1,*(leftList.end()-1));
   if(!radiusList.empty())
@@ -298,7 +305,7 @@ void TurtleParam::keepLastPoint(){
 }
     
 void TurtleParam::removePoints(){
-  pointList.clear();
+  pointList->clear();
   leftList.clear();
   radiusList.clear();
 }
@@ -327,7 +334,7 @@ void TurtleParam::generalizedCylinder(bool t){
 }
     
 void TurtleParam::pushPosition(){
-  pointList.push_back(position);
+  pointList->push_back(position);
   if(__generalizedCylinder) {
 	leftList.push_back(left);
 	radiusList.push_back(width);
@@ -411,7 +418,7 @@ uint_t Turtle::popId()
 
 void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
-	  if(__params->pointList.size() > 1){
+	  if(__params->pointList->size() > 1){
 		_generalizedCylinder(__params->pointList,
 						   __params->leftList,
 						   __params->radiusList,
@@ -435,7 +442,7 @@ void Turtle::stop(){
   
   void Turtle::pop(){
 	if (__params->isGeneralizedCylinderOn()){
-		if(__params->pointList.size() > 1){
+		if(__params->pointList->size() > 1){
 			_generalizedCylinder(__params->pointList,
 							     __params->leftList,
 							     __params->radiusList,
@@ -674,7 +681,21 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
 	  __params->up = up;
   }
 
+/// Trace line toward v and change the orientation
+void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topdiam )
+{
+    Vector3 h = v - getPosition();
+	real_t l = h.normalize();
+	if (l > GEOM_EPSILON){
+	  _tendTo(getHeading(),h);
+      F(l,topdiam);
+	}
+}
+
+
+
   void Turtle::oLineRel(const Vector3& v, real_t topdiam){
+	// Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
     Vector3 h = v;
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
@@ -683,7 +704,16 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
 	}
   }
 
+  void  Turtle::pinpoint(const TOOLS(Vector3) & v){
+	Vector3 h = v - getPosition();
+	real_t l = h.normalize();
+	if (l > GEOM_EPSILON){
+	  _tendTo(getHeading(),h);
+	}
+  }
+
   void Turtle::pinpointRel(const TOOLS(Vector3) & v){
+	// Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
     Vector3 h = v;
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
@@ -699,10 +729,14 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
   }
   
   void Turtle::stopPolygon(){
-	if(__params->pointList.size() > 2)_polygon(__params->pointList);
+	if(__params->pointList->size() > 2)_polygon(__params->pointList);
 	__params->polygon(false);
     __params->customId = Shape::NOID;
     __params->customParentId = Shape::NOID;
+  }
+  
+  void Turtle::polygonPoint(){
+	__params->pushPosition();
   }
   
   void Turtle::startGC(){
@@ -714,7 +748,7 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
   }
   
 void Turtle::stopGC(){
-	if(__params->pointList.size() > 1){
+	if(__params->pointList->size() > 1){
 		_generalizedCylinder(__params->pointList,
 							 __params->leftList,
 							 __params->radiusList,
@@ -967,9 +1001,7 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
 void Turtle::_sweep(real_t length, real_t topdiam)
 {
 	// default sweep
-	std::vector<TOOLS(Vector3)> points;
-	points.push_back(getPosition());
-	points.push_back(getPosition()+getHeading()*length);
+	Point3ArrayPtr points(new Point3Array(getPosition(),getPosition()+getHeading()*length));
 	std::vector<TOOLS(Vector3)> left;
 	left.push_back(getLeft());
 	left.push_back(getLeft());
@@ -1309,15 +1341,15 @@ void PglTurtle::_surface(const string& name,real_t scale){
 }
     
 void 
-PglTurtle::_polygon(const vector<Vector3>& pointList){
-  size_t s = pointList.size();
+PglTurtle::_polygon(const Point3ArrayPtr& pointList){
+  size_t s = pointList->size();
   Point3ArrayPtr points ;
-  if (norm(pointList[0] - pointList[s-1]) < GEOM_EPSILON){
-	points = Point3ArrayPtr(new Point3Array(getParameters().pointList.begin(),getParameters().pointList.end()-1));
+  if (norm(pointList->getAt(0) - pointList->getAt(s-1)) < GEOM_EPSILON){
+	  points = Point3ArrayPtr(new Point3Array(pointList->begin(),pointList->end()-1));
 	s -= 1;
   }
   else 
-	points = Point3ArrayPtr(new Point3Array(getParameters().pointList.begin(),getParameters().pointList.end()));
+	points = Point3ArrayPtr(new Point3Array(*pointList));
   if (s > 2){
 	Index3ArrayPtr ind(new Index3Array(s-2));
 	for (int i=0; i < s-2; i++) 
@@ -1328,14 +1360,14 @@ PglTurtle::_polygon(const vector<Vector3>& pointList){
 }
 
 void 
-PglTurtle::_generalizedCylinder(const vector<Vector3>& points,
+PglTurtle::_generalizedCylinder(const Point3ArrayPtr& points,
 								const vector<Vector3>& leftList,
 								const vector<real_t>& radiusList,
 								const Curve2DPtr& crossSection,
 								bool crossSectionCCW,
 								bool currentcolor){
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
-						  new Point3Array(points.begin(),points.end()))));
+						  new Point3Array(*points))));
   Point2ArrayPtr radius(new Point2Array(radiusList.size()));
   Point2Array::iterator it2 = radius->begin();
   for (std::vector<real_t>::const_iterator it = radiusList.begin();
@@ -1403,7 +1435,7 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
 ScenePtr PglTurtle::partialView(){
 	ScenePtr currentscene = new Scene(*__scene);
     if(__params->isGeneralizedCylinderOn()){
-	  if(__params->pointList.size() > 1){
+	  if(__params->pointList->size() > 1){
 		_generalizedCylinder(__params->pointList,
 						   __params->leftList,
 						   __params->radiusList,

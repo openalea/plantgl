@@ -163,6 +163,7 @@ void export_Turtle()
 
     .def("startPolygon", &Turtle::startPolygon )
     .def("stopPolygon",  &Turtle::stopPolygon )
+    .def("polygonPoint",  &Turtle::polygonPoint )
     .def("startGC",      &Turtle::startGC )
     .def("stopGC",       &Turtle::stopGC )
 

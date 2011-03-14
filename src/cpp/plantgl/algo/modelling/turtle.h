@@ -228,15 +228,13 @@ public:
     virtual void lineRel(const TOOLS(Vector3) & v, real_t topdiam = -1.0);
 
 	/// Change the orientation to pinpoint v
-    inline void pinpoint(const TOOLS(Vector3) & v)
-	{ pinpointRel(v - getPosition()); }
+    void pinpoint(const TOOLS(Vector3) & v);
 
 	/// Change the orientation to pinpoint pos+v
     virtual void pinpointRel(const TOOLS(Vector3) & v);
 
 	/// Trace line toward v and change the orientation
-    inline void oLineTo(const TOOLS(Vector3)& v, real_t topdiam = -1.0)
-	{ oLineRel(v - getPosition(),topdiam); }
+    inline void oLineTo(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
 
 	/// Trace line toward pos+v and change the orientation
     virtual void oLineRel(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
@@ -320,11 +318,14 @@ public:
     
     virtual void stopPolygon();
     
+    virtual void polygonPoint();
+    
 	/// start Generalized Cylinder
     virtual void startGC();
     
 	/// stop Generalized Cylinder
     virtual void stopGC();
+    
     
     virtual size_t getColorListSize() const
 	  { return 0; }
@@ -420,9 +421,9 @@ protected:
 
     virtual void _sweep(real_t length, real_t topdiam);
 
-    virtual void _polygon(const std::vector<TOOLS(Vector3)>& points){}
+    virtual void _polygon(const Point3ArrayPtr& points){}
     
-    virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
+    virtual void _generalizedCylinder(const Point3ArrayPtr& points,
 									  const std::vector<TOOLS(Vector3)>& left,
 									  const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection,

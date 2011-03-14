@@ -182,11 +182,11 @@ public:
     
 	/// test if generalized cylinder flag is on but no drawing has been made
     bool isGeneralizedCylinderOnInit() const
-	{ return __generalizedCylinder && pointList.size() <= 1; }
+	{ return __generalizedCylinder && pointList->size() <= 1; }
     
 	/// test if generalized cylinder flag is on but no drawing has been made
     bool isGCorPolygonOnInit() const
-	{ return (__generalizedCylinder||__polygon) && pointList.size() <= 1; }
+	{ return (__generalizedCylinder||__polygon) && pointList->size() <= 1; }
     
 	/// set polygon flag
     void polygon(bool);
@@ -219,7 +219,7 @@ public:
   uint_t lastId;
   real_t width;
 
-  std::vector<TOOLS(Vector3)> pointList;
+  Point3ArrayPtr pointList;
   std::vector<TOOLS(Vector3)> leftList;
   std::vector<real_t> radiusList;
 

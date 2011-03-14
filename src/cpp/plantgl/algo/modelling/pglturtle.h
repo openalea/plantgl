@@ -138,9 +138,9 @@ protected:
     virtual void _cylinder(real_t length);
 
 	/// draw the polygon with current polygon points
-    virtual void _polygon(const std::vector<TOOLS(Vector3)>& points);
+    virtual void _polygon(const Point3ArrayPtr& points);
     
-    virtual void _generalizedCylinder(const std::vector<TOOLS(Vector3)>& points,
+    virtual void _generalizedCylinder(const Point3ArrayPtr& points,
 									  const std::vector<TOOLS(Vector3)>& left,
                                       const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection,

@@ -56,7 +56,7 @@
     </ProjectReference>
     <Link>
       <AdditionalDependencies>pglgui-d.lib;Qt3Supportd4.lib;QtOpenGLd4.lib;qtmaind.lib;QtCored4.lib;QtGuid4.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../../bin/PlantGLViewer-d.exe</OutputFile>
+      <OutputFile>../../../../../bin/pglviewer-d.exe</OutputFile>
       <AdditionalLibraryDirectories>../../../../../lib;$(QTDIR)/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -79,8 +79,8 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libSceneGraph.lib;libTool.lib;Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;qtmain.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>../../../../../bin/PlantGLViewer.exe</OutputFile>
+      <AdditionalDependencies>Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;qtmain.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>../../../../../bin/pglviewer.exe</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)/lib/;../../../../../lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
