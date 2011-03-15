@@ -234,7 +234,7 @@ public:
     virtual void pinpointRel(const TOOLS(Vector3) & v);
 
 	/// Trace line toward v and change the orientation
-    inline void oLineTo(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
+    void oLineTo(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
 
 	/// Trace line toward pos+v and change the orientation
     virtual void oLineRel(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
