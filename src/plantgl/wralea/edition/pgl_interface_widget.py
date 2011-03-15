@@ -28,14 +28,19 @@ from openalea.plantgl.gui.curve2deditor import Curve2DEditor, Curve2DConstraint,
 from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
 from pgl_interface import ICurve2D, INurbsPatch
 
+'''
 class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):
     """
     Curve2D Interface widget
     """
-
+    print 'ICurve2DWidget'
     # Corresponding Interface & Metaclass
     __interface__ = ICurve2D
-    __metaclass__ = make_metaclass()
+    try:
+        toto = make_metaclass()
+        __metaclass__ = toto
+    except TypeError:
+        pass
 
     def __init__(self, node, parent, parameter_str, interface):
         """
@@ -66,14 +71,18 @@ class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):
             crv = ICurve2D.default()
             
         self.setCurve(crv)
-
+'''
 
 
 class Curve2DWidget(NodeWidget, Curve2DEditor):
     """
     Curve2D  widget
     """
+    default_crv = ICurve2D.default()
 
+    @staticmethod
+    def isDefault(crv):
+        return list(crv.ctrlPointList) == list(Curve2DWidget.default_crv.ctrlPointList)
 
     def __init__(self, node, parent):
         """
@@ -91,8 +100,10 @@ class Curve2DWidget(NodeWidget, Curve2DEditor):
     @lock_notify      
     def valueChanged(self):
         """ update value """
+        print 'value '
         crv = self.getCurve()
-        self.node.set_input(0, crv)
+        if crv and not self.isDefault(crv):
+            self.node.set_input(0, crv)
 
     def notify(self, sender, event):
         """ Notification sent by node """
@@ -107,17 +118,22 @@ class Curve2DWidget(NodeWidget, Curve2DEditor):
             except:
                 pass
             
-            try:
-                crv = self.node.get_input(0)
-            except:
+            crv = self.node.get_input(0)
+            if not crv:
+                print 'notify curve 2'
+                crv = self.node.get_input(1)
+            if not crv:
+                print 'default'
                 crv = ICurve2D.default()
-        
+            if not crv: 
+                crv = self.newDefaultCurve()
+
             self.setCurve(crv)
         
 
 #####################################################################
 # NurbsPatch Editor
-
+'''
 class INurbsPatchWidget(IInterfaceWidget, NurbsPatchEditor):
     """
     NurbsPatch Interface widget
@@ -156,7 +172,7 @@ class INurbsPatchWidget(IInterfaceWidget, NurbsPatchEditor):
             crv = INurbsPatch.default()
             
         self.setNurbsPatch(crv)
-
+'''
 
 
 class NurbsPatchWidget(NodeWidget, NurbsPatchEditor):

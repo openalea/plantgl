@@ -20,8 +20,8 @@ curve2d = Factory( name= "Curve2D",
                   nodeclass = "curve2D",
                   widgetmodule = "pgl_interface_widget",
                   widgetclass = "Curve2DWidget",
-                  inputs=(dict(name="curve", interface=ICurve2D,),),
-                  outputs=(dict(name="curve", interface=ICurve2D,),),
+                  inputs=(dict(name="curve", interface=None,),dict(name="curve", interface=None,)),
+                  outputs=(dict(name="curve", interface=None,),),
                   lazy = False
                   )
 
@@ -32,7 +32,7 @@ nurbs= Factory( name= "NurbsPatch",
                   nodeclass = "nurbs",
                   widgetmodule = "pgl_interface_widget",
                   widgetclass = "NurbsPatchWidget",
-                  inputs=(dict(name="nurbs", interface=INurbsPatch,),),
+                  inputs=(dict(name="nurbs", interface=None,),),
                   outputs=(dict(name="nurbs",),),
                   lazy = False
                   )
