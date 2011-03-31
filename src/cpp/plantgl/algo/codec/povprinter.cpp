@@ -350,6 +350,7 @@ bool PovPrinter::process( Material * material ) {
   GEOM_ASSERT(material);
 
   __texture = material->getName();
+  __appearance = material;
 
   GEOM_POVPRINT_DECLARE(__matStream,material);
 
@@ -388,6 +389,7 @@ bool PovPrinter::process( Texture2D * texture ) {
   GEOM_ASSERT(texture);
 
   __texture = texture->getName();
+  __appearance = texture;
 
   GEOM_POVPRINT_DECLARE(__matStream,texture);
 
@@ -432,9 +434,9 @@ bool PovPrinter::process( Texture2DTransformation * texturetransfo ) {
 
   GEOM_ASSERT(texturetransfo);
 
-  __matStream << __indent << "scale ";
+ /* __matStream << __indent << "scale ";
   Vector2 sc = texturetransfo->getScale();
-  GEOM_POVPRINT_VECTOR3(__matStream,Vector3(1,sc.x(),sc.y()));
+  GEOM_POVPRINT_VECTOR3(__matStream,Vector3(1,sc.x(),sc.y())); */
 
 
   return true;
@@ -1076,14 +1078,19 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 	  }
 	  if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
 	  {
+		  Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
+		  if (__appearance->isTexture()){
+			  Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
+			  if (transform)  newtexcoord = transform->transform(newtexcoord);
+		  }
 		  __geomStream << " uv_vectors ";
-		  const Vector2& _vertex1 = triangleSet->getFaceTexCoordAt(_i,0);
+		  const Vector2& _vertex1 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,0));
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
 		  __geomStream << ", ";
-		  const Vector2& _vertex2 = triangleSet->getFaceTexCoordAt(_i,1);
+		  const Vector2& _vertex2 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,1));
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
 		  __geomStream << ", ";
-		  const Vector2& _vertex3 = triangleSet->getFaceTexCoordAt(_i,2);
+		  const Vector2& _vertex3 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,2));
 		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
 	  }
     __geomStream << "}" << endl;

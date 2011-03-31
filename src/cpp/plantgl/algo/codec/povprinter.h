@@ -45,6 +45,7 @@
 #include <plantgl/tool/rcobject.h>
 #include "printer.h"
 #include <plantgl/scenegraph/appearance/color.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -250,6 +251,7 @@ protected:
 
   /// The name of the current texture is cached using a string.
   std::string __texture;
+  AppearancePtr __appearance;
 
   real_t __linewidth;
 

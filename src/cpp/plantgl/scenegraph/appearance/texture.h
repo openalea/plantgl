@@ -44,9 +44,15 @@
 #include <plantgl/math/util_vector.h>
 
 
+
 /* ----------------------------------------------------------------------- */
 
 PGL_BEGIN_NAMESPACE
+
+class Point2Array;
+class Point3Array;
+typedef RCPtr<Point2Array> Point2ArrayPtr;
+typedef RCPtr<Point3Array> Point3ArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
@@ -125,6 +131,13 @@ public:
 
   // The rotationAngle property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationAngle,real_t,DEFAULT_ROTATIONANGLE);
+
+  virtual Point3ArrayPtr transform( const Point3ArrayPtr& points ) const;
+
+  virtual Point2ArrayPtr transform( const Point2ArrayPtr& points ) const;
+
+  TOOLS(Vector2) transform( const TOOLS(Vector2)& point ) const;
+
 
 };
 

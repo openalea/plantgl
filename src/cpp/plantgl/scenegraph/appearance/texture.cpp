@@ -34,12 +34,17 @@
 #include "texture.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
 #include <plantgl/math/util_math.h>
+#include <plantgl/math/util_matrix.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+
 
 #include <iostream>
 #include <fstream>
 
 PGL_USING_NAMESPACE
 TOOLS_USING(Vector2)
+TOOLS_USING(Vector3)
+TOOLS_USING(Matrix2)
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
@@ -175,6 +180,54 @@ SceneObjectPtr Texture2DTransformation::copy(DeepCopier& copier) const
 {
   return SceneObjectPtr(new Texture2DTransformation(*this));
 }
+
+Point3ArrayPtr Texture2DTransformation::transform( const Point3ArrayPtr& points ) const {
+  GEOM_ASSERT(points);
+  Point3ArrayPtr _tPoints(new Point3Array(points->size()));
+  Point3Array::iterator _ti = _tPoints->begin();
+  Matrix2 rotationOp = Matrix2::rotation(__RotationAngle);
+  for (Point3Array::const_iterator _i = points->begin();
+       _i != points->end();
+       _i++){
+	Vector2 res(_i->x() * __Scale.x(), _i->y() * __Scale.y()) ;
+	res -= __RotationCenter;
+	res = rotationOp * res;
+	res += __RotationCenter;
+	res += __Translation;
+    *_ti++ = Vector3(res.x() , res.y() , _i->z());
+  }
+  return _tPoints;
+}
+
+
+Point2ArrayPtr Texture2DTransformation::transform( const Point2ArrayPtr& points ) const {
+  GEOM_ASSERT(points);
+  Point2ArrayPtr _tPoints(new Point2Array(points->size()));
+  Point2Array::iterator _ti = _tPoints->begin();
+  Matrix2 rotationOp = Matrix2::rotation(__RotationAngle);
+  for (Point2Array::const_iterator _i = points->begin();
+       _i != points->end();
+         _i++){
+	Vector2 res(_i->x() * __Scale.x(), _i->y() * __Scale.y()) ;
+	res -= __RotationCenter;
+	res = rotationOp * res;
+	res += __RotationCenter;
+	res += __Translation;
+    *_ti++ = res;
+  }
+  return _tPoints;
+}
+
+TOOLS(Vector2) Texture2DTransformation::transform( const TOOLS(Vector2)& point ) const
+{
+	Vector2 res(point.x() * __Scale.x(), point.y() * __Scale.y()) ;
+	res -= __RotationCenter;
+	res =  Matrix2::rotation(__RotationAngle) * res;
+	res += __RotationCenter;
+	res += __Translation;
+	return res;
+}
+
 /* ----------------------------------------------------------------------- */
 
 const bool ImageTexture::DEFAULT_MIPMAPING(true);

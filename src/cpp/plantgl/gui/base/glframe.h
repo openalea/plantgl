@@ -57,6 +57,7 @@ class QTabWidget;
 #ifdef QT_NO_OPENGL
 #warning Qt compiled without openGL support
 #endif
+#include <QtCore/QTimer>
 
 #include <plantgl/tool/util_types.h>
 #include <vector>
@@ -419,6 +420,8 @@ signals:
   QString __message;
   float __msg_transparency;
   float __msg_transparency_step;
+
+  QTimer __timer;
 };
 
 class VIEW_API ViewDoubleToolButton : public QToolButton {

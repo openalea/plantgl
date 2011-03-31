@@ -193,7 +193,8 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __pixelbuffer(0),
   __usePBuffer(false),
   __pBufferActivated(false),
-  __redrawEnabled(true)
+  __redrawEnabled(true),
+  __timer(this)
 {
 	if(name)setObjectName(name);
   /// Creation
@@ -231,6 +232,10 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __usePBuffer = settings.value("PixelBuffer",__usePBuffer).toBool();
   setBackGroundColor(__BgColor);
   settings.endGroup();
+
+  __timer.setInterval(200);
+  __timer.setSingleShot(false);
+  QObject::connect(&__timer,SIGNAL(timeout()),this,SLOT(updateMessage()));
 
 }
 
@@ -1862,12 +1867,13 @@ void ViewGLFrame::usePixelBuffer(bool b) { __usePBuffer = b; }
 
 void ViewGLFrame::showMessage(const QString message, int timeout)
 {
+	__timer.stop();
 	__msg_transparency = 1.0;
 	__message = message;
 	updateGL();
 	if(timeout > 0){
 		__msg_transparency_step = min(1.0,200. / timeout);
-		QTimer::singleShot(200,this,SLOT(updateMessage()));
+		__timer.start();
 	}
 }
 
@@ -1876,13 +1882,13 @@ void ViewGLFrame::updateMessage()
 	__msg_transparency -= __msg_transparency_step;
 	if (__msg_transparency > 0){
 		updateGL();
-		QTimer::singleShot(200,this,SLOT(updateMessage()));
 	}
 	else cleanMessage();
 }
 
 void ViewGLFrame::cleanMessage()
 {
+	__timer.stop();
 	__message.clear();
 	updateGL();
 }
