@@ -31,6 +31,7 @@
 
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/appearance/texture.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/export_property.h>
@@ -135,9 +136,9 @@ void export_Texture2DTransformation()
 							RotationAngle, real_t,DEFAULT_ROTATIONANGLE)
     .def( "__str__", textr_str )
     .def( "__repr__", textr_str )
-    .def( "transform", &(Point3ArrayPtr (Texture2DTransformation::*)( const Point3ArrayPtr& points ) const)Texture2DTransformation::transform,bp::args("points3"))
-    .def( "transform", &(Point2ArrayPtr (Texture2DTransformation::*)( const Point2ArrayPtr& points ) const)Texture2DTransformation::transform,bp::args("points2"))
-    .def( "transform", &(Vector2 (Texture2DTransformation::*)( const Vector2& point ) const)Texture2DTransformation::transform,bp::args("point"))
+    .def( "transform", (Point3ArrayPtr (Texture2DTransformation::*)( const Point3ArrayPtr& points ) const)&Texture2DTransformation::transform,bp::args("points3"))
+    .def( "transform", (Point2ArrayPtr (Texture2DTransformation::*)( const Point2ArrayPtr& points ) const)&Texture2DTransformation::transform,bp::args("points2"))
+    .def( "transform", (Vector2 (Texture2DTransformation::*)( const Vector2& point ) const)&Texture2DTransformation::transform,bp::args("point"))
     ;
 
   implicitly_convertible<Texture2DTransformationPtr, SceneObjectPtr >();
