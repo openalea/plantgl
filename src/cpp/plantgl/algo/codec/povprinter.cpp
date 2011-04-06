@@ -388,8 +388,20 @@ bool PovPrinter::process( Texture2D * texture ) {
 
   GEOM_ASSERT(texture);
 
+  if(texture->getImage()){
+    TextureNameMap::const_iterator it = __texturenamemap.find(ptr_to_size_t(texture->getImage()));
+    if (it != __texturenamemap.end()){
+      __texture = it->second;
+      __appearance = texture;
+      return true;
+    }
+  }
+  
   __texture = texture->getName();
+  if(texture->getImage())
+    __texturenamemap[ptr_to_size_t(texture->getImage())] = __texture;
   __appearance = texture;
+  
 
   GEOM_POVPRINT_DECLARE(__matStream,texture);
 
@@ -398,7 +410,7 @@ bool PovPrinter::process( Texture2D * texture ) {
   GEOM_POVPRINT_BEG_(__matStream,"pigment");
 
   if(texture->getImage())
-	texture->getImage()->apply(*this);
+    texture->getImage()->apply(*this);
 
   if(texture->getTransformation())
 	  texture->getTransformation()->apply(*this);

@@ -252,6 +252,8 @@ protected:
   /// The name of the current texture is cached using a string.
   std::string __texture;
   AppearancePtr __appearance;
+  typedef pgl_hash_map<size_t,std::string> TextureNameMap;
+  TextureNameMap __texturenamemap;
 
   real_t __linewidth;
 
