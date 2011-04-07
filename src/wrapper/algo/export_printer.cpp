@@ -127,5 +127,7 @@ void export_PglBinaryPrinter()
   class_< PyFileBinaryPrinter, bases< Printer >, boost::noncopyable> 
 	  ("PglBinaryPrinter",init<const std::string&>("Binary Pgl Printer",args("filename")))
     .def("print",abp_print)
+	.def("getCanonicalFilename",BinaryPrinter::getCanonicalFilename,args("filename"))
+	.staticmethod("getCanonicalFilename");
     ;
 }

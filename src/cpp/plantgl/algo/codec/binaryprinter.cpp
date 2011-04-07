@@ -578,20 +578,24 @@ void BinaryPrinter::printType(const string& _string){
 /* ----------------------------------------------------------------------- */
 void 
 BinaryPrinter::printFile(const std::string& FileName){
+	writeFile(getCanonicalFilename(FileName));
+}
+
+std::string 
+BinaryPrinter::getCanonicalFilename(const std::string& FileName){
   if(FileName.empty()){
-	writeFile("");
-	return;
+	return "";
   }
   string plantgl_dir = getPlantGLDir();
   string f = FileName;
   string pref = short_dirname(get_dirname(f));
   if(pref.empty() || pref[0] == '.'){
-	  GEOM_PRINT_FILE(f);return;
+	  return f;
   }
   string pref1 = pref;
   string cwd = short_dirname(get_cwd());
   if(cwd.empty() || cwd == "."){
-	  GEOM_PRINT_FILE(f); return;	
+	  return f;	
   }
   if(pref1.size() > cwd.size())
     pref1 = string(pref1.begin(),pref1.begin()+cwd.size());
@@ -610,11 +614,14 @@ BinaryPrinter::printFile(const std::string& FileName){
 	  if(*_j == '\\' || *_j == '/')_j++;
 	  string suffix = string(_j,f.end());
       // cerr << "Print '" << suffix << "' " << endl;
-	  GEOM_PRINT_FILE(suffix);	
+	  return suffix;	
   }
   else  {
-	if(pref.size() > plantgl_dir.size())
+    // printf("compare '%s' '%s'\n",plantgl_dir.c_str(),pref.c_str());
+	if(pref.size() > plantgl_dir.size()){
 	  pref = string(pref.begin(),pref.begin()+plantgl_dir.size());
+	}
+	  
 	
 	if(similar_dir(pref,plantgl_dir)){
 	  int count = 0;
@@ -628,9 +635,9 @@ BinaryPrinter::printFile(const std::string& FileName){
 	  string suffix = string(_j,f.end());
 	  //      f.reserve(suffix.size()+15);
 	  f = "PLANTGL_DIR"+suffix;
-	  GEOM_PRINT_FILE(f);
+	  return f;
 	}
-	else  GEOM_PRINT_FILE(FileName);
+	else  return FileName;
   }
 }
 

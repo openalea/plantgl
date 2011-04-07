@@ -186,7 +186,8 @@ bool exists(const string & filename){
 bool similar_dir(const std::string& filename,const std::string& filename2){
         string f1 = short_dirname(absolute_filename(filename));
         string f2 = short_dirname(absolute_filename(filename2));
-        if(f1.size() != f2.size()) return false;
+		if(f1.size() != f2.size()) return false;
+		if(f1.size() == 0) return false;
         for(size_t i = 0 ; i < f1.size(); i++)
            if(f1[i] != f2[i] && f1[i] != '\\' && f2[i] != '\\' && f1[i] != '/' && f2[i] != '/' ) return false;
         return true;

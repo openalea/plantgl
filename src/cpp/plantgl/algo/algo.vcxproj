@@ -73,10 +73,10 @@
       </DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>boost_thread-vc100-mt-1_44.lib;Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;libgmp-10.lib;libmpfr-4.lib%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../bin/pglalgo.dll</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(CGAL_DIR)\auxiliary\gmp\lib;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libmpfr-4.libkernel32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>../../../../bin/$(TargetName).pdb</ProgramDatabaseFile>
       <OptimizeReferences>true</OptimizeReferences>
@@ -85,6 +85,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>../../../../lib/pglalgo.lib</ImportLibrary>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

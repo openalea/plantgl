@@ -270,6 +270,8 @@ public:
 
   void printFile(const std::string&);
 
+  static std::string getCanonicalFilename(const std::string&);
+
   /// Print the scene \e scene in the file \e filename in binary format.
   static bool print(ScenePtr scene,std::string filename,const char * comment = NULL);
 
