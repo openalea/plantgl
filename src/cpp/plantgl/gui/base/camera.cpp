@@ -1202,7 +1202,8 @@ ViewCameraGL::fillToolBar(QToolBar * toolBar)
   QPixmap eye(ViewerIcon::getPixmap(ViewerIcon::eye));
   QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
   drawArrow(&eye,2);
-  drawArrow(&eye.mask(),2);
+  QBitmap mask=eye.mask();
+  drawArrow(&mask,2);
   QAction * bt = toolBar->addAction(home,tr("Home Position"),this, SLOT(home()));
   bt->setWhatsThis(tr("<b>Home Position</b><br><br>"
 	"Set the view to the Initial Position.<br>"

@@ -666,6 +666,7 @@ GeometryPtr Fit::aellipsoid(){
 
 
 #ifdef WITH_CGAL
+#include <CGAL/Cartesian.h>
 #include <CGAL/Cartesian_d.h>
 #include <CGAL/MP_Float.h>
 #include <CGAL/Approximate_min_ellipsoid_d.h>
