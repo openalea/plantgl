@@ -1,7 +1,7 @@
 .. _plantgl_ext_reference:
 
-Extension 
-###############
+Extension library
+####################
 
 The `ext` module contains simple Python extension of PlantGL.
 

@@ -18,6 +18,8 @@ how to use VPlants.Plantgl see :ref:`PlantGL_user`.
     :maxdepth: 1
     :numbered:
 
-    autosum.rst
-    autosum_ext.rst
-
+    math.rst
+    scenegraph.rst
+    algo.rst
+    gui.rst
+    ext.rst
