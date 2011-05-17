@@ -399,7 +399,7 @@ def int_create (red=0,green=0,blue=0,alpha=255) :
 
 def random () :
 	"""create a random color with alpha=1
-	color channels are uniforly reparted"""
+	color channels are uniformly reparted"""
 	return Color(rd.random(),rd.random(),rd.random(),1)
 
 def gauss_bound (mean, sd) :
@@ -437,11 +437,12 @@ class ColorMap (object) :
 		pass
 	
 	def __call__ (self, value) :
-		"""Magic alias for `get_color`		"""
+		"""Magic alias for `get_color`
+		"""
 		return self.get_color(value)
 	
 	def invert (self, color) :
-		"""ompute the value that will give color
+		"""Compute the value that will give color
 		using this color range
 		invert function of get_color
 		"""
@@ -532,7 +533,7 @@ class ColorRange (ColorMap) :
 	def __call__ (self, value) :
 		"""magic alias for `get_color`
 		
-		:param value: the value for wich you need a color
+		:param value: the value for which you need a color
 		:type value: float
 		:rtype: Color"""
 		return self.get_color(value)
@@ -635,5 +636,18 @@ class GreenMap (ColorRange) :
 		                    [Color(0.,0.,0.),Color(0.,0.1,0.),green],
 		                    (0.,.5,1.),
 		                    **keys)
+
+
+
+class BlueMap (ColorRange) :
+	"""Created by Michael Walker 16/05/2011. If Jerome has a problem he can sue me.
+	"""
+	def __init__ (self, val_min=0., val_max=1., **keys) :
+		ColorRange.__init__(self,
+		                    (val_min,val_max),
+		                    [Color(.7,.7,1.),Color(0.5,0.5,.9),Color(.1,.1,.7)],
+		                    (0.,.5,1.),
+		                    **keys)
+
 
 
