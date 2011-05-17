@@ -29,4 +29,5 @@ how to use VPlants.Plantgl see :ref:`PlantGL_reference`.
 
     tutorial.rst
     quickstart.rst
+    turtle.rst
 

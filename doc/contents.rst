@@ -27,10 +27,10 @@ Documentation
 =============
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     User Guide<user/index.rst>   
-    Reference Guide<user/autosum.rst>
+    Reference Guide<user/reference.rst>
 
 - A `PDF <../latex/main.pdf>`_ version of |PlantGL| documentation is 
   available.
