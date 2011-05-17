@@ -6,11 +6,11 @@ PlantGL Library
 
 .. contents::
 
-.. Class Inheritance diagram
-.. =========================
-.. .. inheritance-diagram:: openalea.plantgl.scenegraph.cspline
-.. .. inheritance-diagram:: openalea.plantgl.scenegraph.nurbspatch_nd
-.. .. inheritance-diagram:: openalea.plantgl.scenegraph._pglsg
+Class Inheritance diagram
+=========================
+.. inheritance-diagram:: openalea.plantgl.scenegraph.cspline
+.. inheritance-diagram:: openalea.plantgl.scenegraph.nurbspatch_nd
+.. inheritance-diagram:: openalea.plantgl.scenegraph._pglsg
 .. .. inheritance-diagram:: openalea.plantgl.algo._pglalgo
 .. .. inheritance-diagram:: openalea.plantgl.math._pglmath
 .. .. inheritance-diagram:: openalea.plantgl.gui._pglgui
