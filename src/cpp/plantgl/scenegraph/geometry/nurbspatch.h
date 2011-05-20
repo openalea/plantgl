@@ -40,6 +40,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include "bezierpatch.h"
+#include "nurbscurve.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -47,6 +48,8 @@ TOOLS_BEGIN_NAMESPACE
 
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
+class RealArray2;
+typedef RCPtr<RealArray2> RealArray2Ptr;
 
 TOOLS_END_NAMESPACE
 
@@ -207,20 +210,59 @@ public:
       - \e v must be in [0,1];*/
   virtual TOOLS(Vector3) getPointAt(real_t u,real_t v) const;
 
+
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+      (see the Nurbs book p.12) 
+     \pre 
+      - \e u, \e v must be in [0,1];*/
+  virtual TOOLS(Vector3) getUTangentAt(real_t u,real_t v) const;
+
+  /* Returns the \e Tangent for u = \e u and v = \e v.
+      (see the Nurbs book p.12) 
+     \pre 
+      - \e u, \e v must be in [0,1];*/
+  virtual TOOLS(Vector3) getVTangentAt(real_t u,real_t v) const;
+
+  /* Returns the principal \e Normal for u,v = \e u, \e v.
+     \pre 
+      - \e u, \e v must be in [0,1];*/
+  virtual TOOLS(Vector3) getNormalAt(real_t u,real_t v) const;
+
+  /*!
+    \brief Computes the derivative of degree \a d of the 
+    curve at parameters \a u and \a v in the homogeneous domain
+    \author Michael Walker
+  */
+  Point4MatrixPtr deriveAtH(real_t u, real_t v, int d, int uspan, int vspan) const;
+  
+  /*!
+    \brief Computes the derivatives of the curve at the parameter \a u, \a v
+    \author Michael Walker
+  */  
+  Point4MatrixPtr deriveAt(real_t  u, real_t v, int d, int uspan , int vspan  ) const;
+  
+  
+  /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
+     \pre 
+     - \e u, \e v must be in [0,1];*/
+  virtual TOOLS(Vector4) getDerivativeAt(real_t u, real_t v, int du, int dv) const;
+
+  /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
+     \pre 
+     - \e u, \e v must be in [0,1];*/
+  virtual Point4MatrixPtr getDerivativesAt(real_t u, real_t v) const;
+
+
+
   /* Computational Algorithms */
 
   /*!
     Determine the knot Span index.
     From the Nurbs Book : A2.1 p68
   */
-  uint_t findSpan(uint_t deg, const TOOLS(RealArrayPtr)& U,  real_t u) const;  
-
-  /*!
-    Compute the Basis Functions Values 
-    From the Nurbs Book : A2.1 p68
-  */
-  //RealArrayPtr computeBasisFunctions(uint_t span, real_t u, uint_t deg,const RealArrayPtr& U ) const;
-
+  
+  uint_t findSpan(real_t u, const uint_t deg, const TOOLS(RealArrayPtr)& U) const;  
+  
   /*!
     Compute a section line of the patch corresponding to a constant u value
    */

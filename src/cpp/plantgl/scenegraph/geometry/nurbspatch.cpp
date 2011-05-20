@@ -49,8 +49,7 @@ using namespace std;
 
 /* ----------------------------------------------------------------------- */
 
-const uint_t
-NurbsPatch::DEFAULT_NURBS_DEGREE(NurbsCurve::DEFAULT_NURBS_DEGREE);
+const uint_t NurbsPatch::DEFAULT_NURBS_DEGREE(NurbsCurve::DEFAULT_NURBS_DEGREE);
 
 /* ----------------------------------------------------------------------- */
 
@@ -412,13 +411,115 @@ bool NurbsPatch::isVKnotListToDefault( ) const{
 }
 
 
+Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int vspan ) const {
+    int du = ( d < (int)__udegree ? d : __udegree);
+    int dv = ( d < (int)__vdegree ? d : __vdegree);
+    Point4MatrixPtr patchders(new Point4Matrix(d+1,d+1));
+    RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
+    RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
+
+    int k, j = 0;
+    for(k=__udegree;k>=0;--k){
+        for(j=0;j<=d-k;++j){
+            patchders[k,j] = 0.0 ;
+        }
+    }
+    for(j=__vdegree;j>=0;--j){
+        for(k=0;k<=d-j;++k){
+            patchders[k,j] = 0.0 ;
+        }
+    }
+    Vector4 temp;
+    Vector4 tempPM ;
+    //int temp(dv+1) ; // Point4MatrixPtr  
+    for(int k=0;k<=du;++k){
+        for(int s=0;s<=__vdegree;++s){
+            temp[s,0] = 0.0 ;
+            for(int r=0;r<=__udegree;++r){
+                tempPM = __ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s);
+		temp[s] += tempPM[s] * UderF->getAt(k,r);
+	        //temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ; //check
+            }
+        }
+        int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
+        for(int r=0;r<=dd;++r){
+            patchders[k,r] = 0.0 ;
+            for(int s=0;s<=__vdegree;++s)
+	        patchders->getAt(k,r) += patchders->getAt(k,r) ; //+ VderF->getAt(r,s)*temp[s] ;	//
+        }
+    }
+    return patchders;
+}
+
+Point4MatrixPtr NurbsPatch::deriveAt(real_t  u, real_t  v, int d, int uspan, int vspan ) const{
+    Point4MatrixPtr patchders(new Point4Matrix(d+1));
+    Point4MatrixPtr dersW = deriveAtH(u,v,d,uspan,vspan) ;
+    Vector4 vec;
+    int k,i ;
+
+    RealArray2 Bin(d+1,d+1);
+    int n,l ;
+    // compute a Binomial Coefficient Matrix
+    // Setup the first line
+    Bin.setAt(0,0,1.0) ;
+    for( l = d ; l > 0 ; --l )
+        Bin.setAt( 0 , l , 0.0 ) ;
+    // Setup the other lines
+    for( n = 0 ; n < d ; n++ ){
+        Bin.setAt( n+1 , 0 , 1.0 );
+        for( l = 1 ; l < d+1 ; l++ )
+            if( n+1 < l )
+                Bin.setAt( n , l , 0.0 ) ;
+            else
+                Bin.setAt( n+1 , l , Bin.getAt( n , l ) + Bin.getAt( n , l-1 ) ) ;
+    }
+    // Compute the derivative at the parmeter u
+    for( k = 0 ; k <= d ; k++ ){
+        for( l = 0 ; l <= d-k ; l++){
+            vec.x() = dersW->getAt(k,l).x() ;
+            vec.y() = dersW->getAt(k,l).y() ;
+            vec.z() = dersW->getAt(k,l).z() ;
+            for(i=1 ; i<=l ;i++)
+                vec -= patchders->getAt(k,l-i)*Bin.getAt(l,i)*dersW->getAt(0,i).w() ;
+            for (int j = 1 ; j <= k ; j++){
+                vec += patchders->getAt(k-j,l)*Bin.getAt(k,j)*dersW->getAt(j,0).w() ;
+                Vector4 v2 = Vector4(0,0,0,0) ;
+                for ( i = 1 ; i <= l ; i++ )
+                    v2 += patchders->getAt(k-j,l-i)*Bin.getAt(l,i)*dersW->getAt(j,i).w() ;
+                vec -= Bin.getAt(k,j)*v2 ;
+            }
+            patchders->getAt(k,l) = vec/dersW->getAt(0.0,0.0).w();
+        }
+    }
+    return patchders;
+}
+
+
+Vector4 NurbsPatch::getDerivativeAt(real_t u, real_t v, int du, int dv) const {
+    int d = max(du,dv) ;
+    if (d > min(__udegree,__vdegree)) return Vector4(0,0,0,0);
+    int uspan = findSpan(u,__udegree,__uKnotList) ;
+    int vspan = findSpan(v,__vdegree,__vKnotList) ;
+    Point4MatrixPtr ders = deriveAt(u,v,d,uspan,vspan) ;
+    return ders->getAt(du,dv) ;
+}
+
+
+Point4MatrixPtr NurbsPatch::getDerivativesAt(real_t u,real_t v) const {
+    int uspan = findSpan(u,__udegree,__uKnotList) ;
+    int vspan = findSpan(v,__vdegree,__vKnotList) ;
+    int degree = min(__udegree,__vdegree) ;
+    return deriveAt(u,v,degree,uspan,vspan) ;
+}
+
+
 
 Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
   GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
 
-  uint_t uspan = findSpan(__udegree,__uKnotList,u);
+  uint_t uspan = findSpan(u,__udegree,__uKnotList);
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
-  uint_t vspan = findSpan(__vdegree,__vKnotList,v);
+  uint_t vspan = findSpan(v,__vdegree,__vKnotList);
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
   Point4Array temp(__vdegree+1);
   for (uint_t l = 0 ; l <= __vdegree ; l++ ){
@@ -427,9 +528,39 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
           vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,vspan - __vdegree +l) *  (Nu->getAt(k))) ;
 	  temp.setAt(l,vec);
   }
+}
+
+Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
+    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+    uint_t uspan = findSpan(u,__udegree,__uKnotList);
+    uint_t vspan = findSpan(v,__vdegree,__vKnotList);
+    Vector4 _derivate = getDerivativeAt( u, v, 1, 0);
+    if(!_derivate.w())
+        return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
+    else return _derivate.project();
+}
+
+Vector3 NurbsPatch::getVTangentAt(real_t u, real_t v) const {
+    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+    uint_t uspan = findSpan(u,__udegree,__uKnotList);
+    uint_t vspan = findSpan(v,__vdegree,__vKnotList);
+    Vector4 _derivate = getDerivativeAt( u, v, 0, 1);
+    if(!_derivate.w())
+        return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
+    else return _derivate.project();
+}
+
+Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
+    GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+    Vector3 _utangent = getUTangentAt(u,v);
+    _utangent /= norm(_utangent);
+    Vector3 _vtangent = getVTangentAt(u,v);
+    _vtangent /= norm(_vtangent);
+    return cross(_utangent,_vtangent);
+}
 
 
-  Vector4 Sw( 0 , 0 , 0 ,0 );
+  /*Vector4 Sw( 0 , 0 , 0 ,0 );
 
   for (uint_t l2 = 0; l2 <= __vdegree ; l2++)
       Sw = Sw + (temp.getAt(l2) * Nv->getAt(l2));
@@ -438,7 +569,8 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
     return Vector3(Sw.x(),Sw.y(),Sw.z());
 
   return Sw.project();
-}
+}*/
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -446,7 +578,7 @@ LineicModelPtr NurbsPatch::getUSection(real_t u) const
 {
   GEOM_ASSERT( u >= 0.0 && u <= 1.0 );
 
-  uint_t uspan = findSpan(__udegree,__uKnotList,u);
+  uint_t uspan = findSpan(u,__udegree,__uKnotList);
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
   uint_t vdim = __ctrlPointMatrix->getColsNb();
   Point4ArrayPtr temp(new Point4Array(vdim));
@@ -463,7 +595,7 @@ LineicModelPtr NurbsPatch::getVSection(real_t v) const
 {
   GEOM_ASSERT(  v>= 0.0 && v<=1.0 );
 
-  uint_t vspan = findSpan(__vdegree,__vKnotList,v);
+  uint_t vspan = findSpan(v,__vdegree,__vKnotList);
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
   uint_t udim = __ctrlPointMatrix->getRowsNb();
   Point4ArrayPtr temp(new Point4Array(udim));
@@ -497,8 +629,9 @@ bool NurbsPatch::isValid( ) const {
 
   /* Computational Algorithms */
 
-uint_t NurbsPatch::findSpan(uint_t deg, const RealArrayPtr& U, real_t u)  const  {
+uint_t NurbsPatch::findSpan(real_t u, uint_t deg, const RealArrayPtr& U)  const  {
     return PGL::findSpan(u,deg,U);
 }
+
 
 
