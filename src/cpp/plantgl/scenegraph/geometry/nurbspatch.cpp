@@ -528,7 +528,17 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
           vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,vspan - __vdegree +l) *  (Nu->getAt(k))) ;
 	  temp.setAt(l,vec);
   }
+ Vector4 Sw( 0 , 0 , 0 ,0 );
+
+  for (uint_t l2 = 0; l2 <= __vdegree ; l2++)
+      Sw = Sw + (temp.getAt(l2) * Nv->getAt(l2));
+
+  if (fabs(Sw.w()) < GEOM_TOLERANCE)
+    return Vector3(Sw.x(),Sw.y(),Sw.z());
+
+  return Sw.project();
 }
+
 
 Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
     GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
@@ -560,16 +570,6 @@ Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
 }
 
 
-  /*Vector4 Sw( 0 , 0 , 0 ,0 );
-
-  for (uint_t l2 = 0; l2 <= __vdegree ; l2++)
-      Sw = Sw + (temp.getAt(l2) * Nv->getAt(l2));
-
-  if (fabs(Sw.w()) < GEOM_TOLERANCE)
-    return Vector3(Sw.x(),Sw.y(),Sw.z());
-
-  return Sw.project();
-}*/
 
 
 /* ----------------------------------------------------------------------- */
