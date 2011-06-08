@@ -1,3 +1,9 @@
+vplants-plantgl (2.13.0-1~ppa7) natty; urgency=low
+
+  * Port to natty and remove deps to python 2.6
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Mon, 27 Sep 2010 18:26:56 +0200
+
 vplants-plantgl (2.13.0-1~ppa4) lucid; urgency=low
 
   * fix namespace problem with vplants (aml)

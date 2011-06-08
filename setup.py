@@ -67,9 +67,11 @@ setup(
                 pkg_name+'.gui', 
                 pkg_name+'.gui3',
                 pkg_name+'.wralea',
+                pkg_name+'.wralea.demos', 
+                pkg_name+'.wralea.edition', 
                 pkg_name+'.wralea.objects', 
-                pkg_name+'.wralea.visualization', 
                 pkg_name+'.wralea.operator', 
+                pkg_name+'.wralea.visualization', 
                 pkg_name+'.ext',
                 pkg_name+'.codec'
                 ],

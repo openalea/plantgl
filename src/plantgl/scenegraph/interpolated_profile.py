@@ -545,8 +545,8 @@ if __name__ == "__main__":
 
     tc = InterpolatedProfile()
     tc.add_cross_sections(0.0, crsSect1,
-                          0.5, crsSect2,
-                          1.0, crsSect3)
+    #0.5, crsSect2,
+                          1.0, crsSect2)
 
     from PyQt4 import QtGui
     app=QtGui.QApplication([])
@@ -556,11 +556,11 @@ if __name__ == "__main__":
 
 
     scene += tc.interpolating_surface
-    tc.create_control_point(0.25)
-    scene += tc.interpolating_surface
-    tc.create_cross_section(0.75)
-    scene += tc.interpolating_surface
-
+#X     tc.create_control_point(0.25)
+#X     scene += tc.interpolating_surface
+#X     tc.create_cross_section(0.75)
+#X     scene += tc.interpolating_surface
+#X 
     Viewer.update()
     # slice_patch(scene, tc, slices = 11)
 
