@@ -254,14 +254,6 @@ public:
 
 
 
-  /* Computational Algorithms */
-
-  /*!
-    Determine the knot Span index.
-    From the Nurbs Book : A2.1 p68
-  */
-  
-  uint_t findSpan(real_t u, const uint_t deg, const TOOLS(RealArrayPtr)& U) const;  
   
   /*!
     Compute a section line of the patch corresponding to a constant u value

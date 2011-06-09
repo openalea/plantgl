@@ -437,8 +437,8 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
             temp[s,0] = 0.0 ;
             for(int r=0;r<=__udegree;++r){
                 tempPM = __ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s);
-		temp[s] += tempPM[s] * UderF->getAt(k,r);
-	        //temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ; //check
+		        temp[s] += tempPM[s] * UderF->getAt(k,r);
+	          //temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ; //check
             }
         }
         int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
@@ -542,8 +542,6 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 
 Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
     GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
-    uint_t uspan = findSpan(u,__udegree,__uKnotList);
-    uint_t vspan = findSpan(v,__vdegree,__vKnotList);
     Vector4 _derivate = getDerivativeAt( u, v, 1, 0);
     if(!_derivate.w())
         return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
@@ -552,8 +550,6 @@ Vector3 NurbsPatch::getUTangentAt(real_t u, real_t v) const {
 
 Vector3 NurbsPatch::getVTangentAt(real_t u, real_t v) const {
     GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
-    uint_t uspan = findSpan(u,__udegree,__uKnotList);
-    uint_t vspan = findSpan(v,__vdegree,__vKnotList);
     Vector4 _derivate = getDerivativeAt( u, v, 0, 1);
     if(!_derivate.w())
         return Vector3(_derivate.x(),_derivate.y(),_derivate.z());
@@ -563,9 +559,9 @@ Vector3 NurbsPatch::getVTangentAt(real_t u, real_t v) const {
 Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
     GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
     Vector3 _utangent = getUTangentAt(u,v);
-    _utangent /= norm(_utangent);
+    _utangent.normalize();
     Vector3 _vtangent = getVTangentAt(u,v);
-    _vtangent /= norm(_vtangent);
+    _vtangent.normalize();
     return cross(_utangent,_vtangent);
 }
 
@@ -626,12 +622,6 @@ bool NurbsPatch::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-
-  /* Computational Algorithms */
-
-uint_t NurbsPatch::findSpan(real_t u, uint_t deg, const RealArrayPtr& U)  const  {
-    return PGL::findSpan(u,deg,U);
-}
 
 
 

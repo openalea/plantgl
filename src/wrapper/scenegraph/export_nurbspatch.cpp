@@ -78,6 +78,12 @@ void export_NurbsPatch()
     .DEC_PTR_PROPERTY_WD(vknotList,NurbsPatch,VKnotList,RealArrayPtr)
     .def("setVKnotListToDefault",&NurbsPatch::setVKnotListToDefault)
     .def("setUKnotListToDefault",&NurbsPatch::setUKnotListToDefault)
+    .def("getUTangentAt",&NurbsPatch::getUTangentAt,bp::args("u","v"))
+    .def("getVTangentAt",&NurbsPatch::getVTangentAt,bp::args("u","v"))
+    .def("getNormalAt",&NurbsPatch::getNormalAt,bp::args("u","v"))
+    .def("deriveAt",&NurbsPatch::deriveAt,bp::args("u","v","d","uspan","vspan"))
+    .def("getDerivativeAt",&NurbsPatch::getDerivativeAt,bp::args("u","v","du","dv"),"Return the derivative at u and v. du and dv specify how many time you want to derive with respect to u and v.")
+    .def("getDerivativesAt",&NurbsPatch::getDerivativesAt,bp::args("u","v"))
     ;
 
   implicitly_convertible< NurbsPatchPtr,BezierPatchPtr >();
