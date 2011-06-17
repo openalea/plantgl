@@ -35,6 +35,8 @@
 #include <plantgl/python/export_list.h>
 
 using namespace boost::python;
+#define bp boost::python
+
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
@@ -81,6 +83,6 @@ void export_PglTurtle()
 							  &PglTurtle::appendColor )
     .def("getColorList",      &getTurtleColorList )
     .def("getSurfaceList",    &getTurtleSurfaceList )
-    .def("customGeometry",    &PglTurtle::customGeometry )
+    .def("customGeometry",    &PglTurtle::customGeometry, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1) )
 	;
 }
