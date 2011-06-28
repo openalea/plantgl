@@ -138,7 +138,7 @@ protected:
     virtual void _cylinder(real_t length);
 
 	/// draw the polygon with current polygon points
-    virtual void _polygon(const Point3ArrayPtr& points);
+    virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false);
     
     virtual void _generalizedCylinder(const Point3ArrayPtr& points,
 									  const std::vector<TOOLS(Vector3)>& left,

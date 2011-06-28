@@ -41,6 +41,8 @@
 
 #include "discretizer.h"
 #include <plantgl/tool/rcobject.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -127,7 +129,20 @@ public:
 
 };
 
- 
+enum TriangulationMethod {
+    eStarTriangulation,
+    eConvexTriangulation,
+    eGreeneTriangulation,
+    eOptimalTriangulation,
+    eYMonotonePartitioning
+};
+
+ALGO_API bool is_simple_polygon(Point2ArrayPtr contour);
+
+ALGO_API IndexArrayPtr polygonization(Point2ArrayPtr contour, TriangulationMethod method = eStarTriangulation);
+
+ALGO_API Index3ArrayPtr triangulation(Point2ArrayPtr contour, TriangulationMethod method = eStarTriangulation);
+
 /* ------------------------------------------------------------------------*/
   
 // __actn_tesselator_h__

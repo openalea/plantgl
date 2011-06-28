@@ -43,7 +43,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
-
+#define bp boost::python
 /* ----------------------------------------------------------------------- */
 
 ExplicitModelPtr d_getDiscretization( Discretizer* d )
@@ -92,17 +92,38 @@ TriangleSetPtr py_tesselate( const GeometryPtr& obj) {
 	else return t.getTriangulation();
 }
 
+TriangleSetPtr py_triangulation( const GeometryPtr& obj) {
+	if (!obj)throw PythonExc_ValueError("Cannot tesselate empty object.");
+	Tesselator t;
+	if (!obj->apply(t))throw PythonExc_ValueError("Error in tesselation.");
+	else return t.getTriangulation();
+}
+
 
 /* ----------------------------------------------------------------------- */
 
 void export_Tesselator()
 {
+
   class_< Tesselator,bases< Discretizer >,boost::noncopyable >
     ("Tesselator", init<>("Tesselator() -> Compute tobjects triangulation. " ))
     .add_property("triangulation",t_getTriangulation,"Return the last computed triangulation.")
     .add_property("result",t_getTriangulation)
     ;
    def("tesselate",&py_tesselate);
+
+   enum_<TriangulationMethod>("TriangulationMethod")
+    .value("eStarTriangulation",eStarTriangulation)
+    .value("eConvexTriangulation",eConvexTriangulation)
+    .value("eGreeneTriangulation",eGreeneTriangulation)
+    .value("eOptimalTriangulation", eOptimalTriangulation)
+    .value("eYMonotonePartitioning", eYMonotonePartitioning)
+	  .export_values()
+	  ;
+
+   def("polygonization",&PGL::polygonization,(bp::arg("contour"),bp::arg("method")=eConvexTriangulation));
+   def("triangulation",&PGL::triangulation,(bp::arg("contour"),bp::arg("method")=eConvexTriangulation));
+   def("is_simple_polygon",&PGL::is_simple_polygon,(bp::arg("contour")));
 
 }
 

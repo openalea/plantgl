@@ -40,6 +40,7 @@
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/geometry/extrusion.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
+#include <plantgl/scenegraph/geometry/faceset.h>
 #include <plantgl/scenegraph/geometry/cylinder.h>
 #include <plantgl/scenegraph/geometry/frustum.h>
 #include <plantgl/scenegraph/geometry/cone.h>
@@ -728,8 +729,8 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topdiam )
 	__params->pushPosition();
   }
   
-  void Turtle::stopPolygon(){
-	if(__params->pointList->size() > 2)_polygon(__params->pointList);
+  void Turtle::stopPolygon(bool concavetest){
+	if(__params->pointList->size() > 2)_polygon(__params->pointList,concavetest);
 	__params->polygon(false);
     __params->customId = Shape::NOID;
     __params->customParentId = Shape::NOID;
@@ -1340,14 +1341,10 @@ void PglTurtle::_surface(const string& name,real_t scale){
   _addToScene(transform(obj,false));
 }
 
-// #define WITH_CONCAVE_TEST
-
-#ifdef WITH_CONCAVE_TEST
-#include "plantgl/algo/fitting/skeleton.h"
-#endif
+#include "plantgl/algo/base/tesselator.h"
 
 void 
-PglTurtle::_polygon(const Point3ArrayPtr& pointList){
+PglTurtle::_polygon(const Point3ArrayPtr& pointList, bool concavetest){
   size_t s = pointList->size();
   Point3ArrayPtr points ;
   if (norm(pointList->getAt(0) - pointList->getAt(s-1)) < GEOM_EPSILON){
@@ -1356,10 +1353,9 @@ PglTurtle::_polygon(const Point3ArrayPtr& pointList){
   }
   else 	points = Point3ArrayPtr(new Point3Array(*pointList));
 
-  if (s > 2){
-#ifdef WITH_CONCAVE_TEST
+  if (s > 2 && concavetest){
       Vector3 v0 = points->getAt(0), v1 = points->getAt(1), v2 = points->getAt(2);
-      Vector3 normal = cross(v1-v0,v2-v0);
+      Vector3 normal = - cross(v1-v0,v2-v0); // - is for clockwise orientation
       normal.normalize();
       assert(fabs(norm(normal) - 1.0) < GEOM_EPSILON);
       Vector3 i = v1 - v0;
@@ -1376,16 +1372,15 @@ PglTurtle::_polygon(const Point3ArrayPtr& pointList){
             if( itP2 != points2->begin()) 
                 assert(norm(*itP2-*(itP2-1)) > GEOM_EPSILON);
       }
-      // points2->push_back(Vector2(0,0));
-      TriangleSetPtr tr = Skeleton::getDelaunayConstrained2DTriangulation(Polyline2DPtr(new Polyline2D(points2)));
-      tr->getPointList() = points;
-      GeometryPtr t = GeometryPtr(tr);
-#else
+      IndexArrayPtr iarray = polygonization(points2,eConvexTriangulation);
+      GeometryPtr t = GeometryPtr(new FaceSet(points,iarray));
+      _addToScene(t,true);
+  }
+  else {
 	Index3ArrayPtr ind(new Index3Array(s-2));
 	for (int i=0; i < s-2; i++) 
 	    ind->setAt(i,Index3(0,i+1,i+2));
 	GeometryPtr t = GeometryPtr(new TriangleSet(points,ind));
-#endif
     _addToScene(t,true);
   }
 }

@@ -162,7 +162,7 @@ void export_Turtle()
     .def("divScale", (void (Turtle::*) (real_t))          &Turtle::divScale )
 
     .def("startPolygon", &Turtle::startPolygon )
-    .def("stopPolygon",  &Turtle::stopPolygon )
+    .def("stopPolygon",  &Turtle::stopPolygon, (bp::arg("concavetest")=false) )
     .def("polygonPoint",  &Turtle::polygonPoint )
     .def("startGC",      &Turtle::startGC )
     .def("stopGC",       &Turtle::stopGC )

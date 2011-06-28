@@ -316,7 +316,7 @@ public:
 
     virtual void startPolygon();
     
-    virtual void stopPolygon();
+    virtual void stopPolygon(bool concavetest = false);
     
     virtual void polygonPoint();
     
@@ -421,7 +421,7 @@ protected:
 
     virtual void _sweep(real_t length, real_t topdiam);
 
-    virtual void _polygon(const Point3ArrayPtr& points){}
+    virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
     
     virtual void _generalizedCylinder(const Point3ArrayPtr& points,
 									  const std::vector<TOOLS(Vector3)>& left,

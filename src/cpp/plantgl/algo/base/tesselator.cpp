@@ -723,3 +723,118 @@ bool Tesselator::process( Polyline2D * polyline ){
   __discretization = ExplicitModelPtr();
   return false;
 }
+
+/* ------------------------------------------------------------------------*/
+#ifdef WITH_CGAL
+
+#include <CGAL/basic.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Partition_traits_2.h>
+#include <CGAL/partition_2.h>
+#include <CGAL/point_generators_2.h>
+#include <CGAL/random_polygon_2.h>
+#include <cassert>
+#include <list>
+
+
+typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
+typedef CGAL::Partition_traits_2<K>                         Traits;
+typedef Traits::Point_2                                     Point_2;
+typedef Traits::Polygon_2                                   Polygon_2;
+typedef Polygon_2::Vertex_iterator                          Vertex_iterator;
+typedef std::list<Polygon_2>                                Polygon_list;
+typedef CGAL::Creator_uniform_2<int, Point_2>               Creator;
+typedef CGAL::Random_points_in_square_2<Point_2, Creator>   Point_generator;
+
+
+#endif
+
+
+bool PGL(is_simple_polygon)(Point2ArrayPtr contour){
+   Polygon_2    polygon;
+   for(Point2Array::const_iterator it = contour->begin(); it != contour->end(); ++it)
+        polygon.push_back(Point_2(it->x(), it->y()));
+   return polygon.is_simple();
+}
+
+IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod method)
+{
+#ifdef WITH_CGAL
+    if (method == eStarTriangulation) {
+#endif
+        size_t s = contour->size();
+	    IndexArrayPtr iarray(new IndexArray(1));
+        Index ind(s);
+	    for (int i=0; i < s; i++)  ind.setAt(i,i);
+        iarray->setAt(0,ind);
+        return iarray;
+#ifdef WITH_CGAL
+    }
+    else {
+   Polygon_2    polygon;
+   Polygon_list partition_polys;
+
+
+   for(Point2Array::const_iterator it = contour->begin(); it != contour->end(); ++it)
+        polygon.push_back(Point_2(it->x(), it->y()));
+
+   if (!polygon.is_simple()) {
+        pglWarningEx(__FILE__,__LINE__,"Provided contour auto intersect. Cannot apply triangulation");
+        return polygonization(contour,eStarTriangulation);
+   }
+    
+   if (!polygon.is_counterclockwise_oriented()){
+        polygon.reverse_orientation();
+   }
+
+   if (method == eConvexTriangulation || method == eGreeneTriangulation || method == eOptimalTriangulation){
+        if (method == eConvexTriangulation)
+            CGAL::approx_convex_partition_2(polygon.vertices_begin(),
+            polygon.vertices_end(),
+            std::back_inserter(partition_polys));
+        else if(method == eGreeneTriangulation)
+            CGAL::greene_approx_convex_partition_2(polygon.vertices_begin(),
+            polygon.vertices_end(),
+            std::back_inserter(partition_polys));
+        else if(method == eOptimalTriangulation)
+            CGAL::optimal_convex_partition_2(polygon.vertices_begin(),
+            polygon.vertices_end(),
+            std::back_inserter(partition_polys));
+        assert(CGAL::convex_partition_is_valid_2(polygon.vertices_begin(),
+                                            polygon.vertices_end(),
+                                            partition_polys.begin(),
+                                            partition_polys.end()));
+    }
+    else if(method == eYMonotonePartitioning) {
+       CGAL::y_monotone_partition_2(polygon.vertices_begin(),
+                                       polygon.vertices_end(),
+                                       std::back_inserter(partition_polys));
+        assert(CGAL::partition_is_valid_2(polygon.vertices_begin(),
+                                          polygon.vertices_end(),
+                                          partition_polys.begin(),
+                                          partition_polys.end()));
+
+    }
+
+
+
+   IndexArrayPtr iarray(new IndexArray());
+   for(Polygon_list::const_iterator pollistit =  partition_polys.begin(); pollistit  !=  partition_polys.end(); ++pollistit)
+   {
+       Index ind;
+       for(Polygon_2::Vertex_iterator polit = pollistit->vertices_begin(); polit != pollistit->vertices_end(); ++polit){            
+            ind.push_back(std::distance(contour->begin(),std::find(contour->begin(),contour->end(),Vector2(polit->x(),polit->y()))));
+       }
+       iarray->push_back(ind);
+   }
+   return iarray;
+   }
+#endif   
+}
+
+Index3ArrayPtr PGL(triangulation)(Point2ArrayPtr contour, TriangulationMethod method)
+{
+    return polygonization(contour,method)->triangulate();
+}
+
+/* ------------------------------------------------------------------------*/

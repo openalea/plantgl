@@ -3301,9 +3301,9 @@ PGL::Skeleton::getSkeletonInformation(const Polyline2DPtr discretizedShape,
 
 TriangleSetPtr PGL::Skeleton::getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape)
 {
-  filterAndHomogenize(*(discretizedShape->getPointList()));
+//  filterAndHomogenize(*(discretizedShape->getPointList()));
 #ifdef WITH_CGAL
-  removeLoopsInShape(discretizedShape);
+//   removeLoopsInShape(discretizedShape);
 #endif
   Skeleton skel(discretizedShape);
   return skel.getTriangleSet();
