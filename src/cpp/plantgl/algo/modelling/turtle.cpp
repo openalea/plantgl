@@ -1339,22 +1339,53 @@ void PglTurtle::_surface(const string& name,real_t scale){
   GeometryPtr obj(new Scaled(getScale()*scale,it->second));
   _addToScene(transform(obj,false));
 }
-    
+
+// #define WITH_CONCAVE_TEST
+
+#ifdef WITH_CONCAVE_TEST
+#include "plantgl/algo/fitting/skeleton.h"
+#endif
+
 void 
 PglTurtle::_polygon(const Point3ArrayPtr& pointList){
   size_t s = pointList->size();
   Point3ArrayPtr points ;
   if (norm(pointList->getAt(0) - pointList->getAt(s-1)) < GEOM_EPSILON){
 	  points = Point3ArrayPtr(new Point3Array(pointList->begin(),pointList->end()-1));
-	s -= 1;
+	  s -= 1;
   }
-  else 
-	points = Point3ArrayPtr(new Point3Array(*pointList));
+  else 	points = Point3ArrayPtr(new Point3Array(*pointList));
+
   if (s > 2){
+#ifdef WITH_CONCAVE_TEST
+      Vector3 v0 = points->getAt(0), v1 = points->getAt(1), v2 = points->getAt(2);
+      Vector3 normal = cross(v1-v0,v2-v0);
+      normal.normalize();
+      assert(fabs(norm(normal) - 1.0) < GEOM_EPSILON);
+      Vector3 i = v1 - v0;
+      i.normalize();
+      assert(fabs(norm(i) - 1.0) < GEOM_EPSILON);
+      Vector3 j = cross(normal,i);
+      assert(fabs(norm(j) - 1.0) < GEOM_EPSILON);
+      Point2ArrayPtr points2(new Point2Array(points->size()));
+      points2->setAt(0,Vector2(0,0));
+      Point2Array::iterator itP2 = points2->begin()+1;
+      for(Point3Array::const_iterator itP = points->begin()+1; itP != points->end(); ++itP, ++itP2){
+            Vector3 res = *itP - v0;
+            *itP2 = Vector2(dot(res,i),dot(res,j));
+            if( itP2 != points2->begin()) 
+                assert(norm(*itP2-*(itP2-1)) > GEOM_EPSILON);
+      }
+      // points2->push_back(Vector2(0,0));
+      TriangleSetPtr tr = Skeleton::getDelaunayConstrained2DTriangulation(Polyline2DPtr(new Polyline2D(points2)));
+      tr->getPointList() = points;
+      GeometryPtr t = GeometryPtr(tr);
+#else
 	Index3ArrayPtr ind(new Index3Array(s-2));
 	for (int i=0; i < s-2; i++) 
-	  ind->setAt(i,Index3(0,i+1,i+2));
+	    ind->setAt(i,Index3(0,i+1,i+2));
 	GeometryPtr t = GeometryPtr(new TriangleSet(points,ind));
+#endif
     _addToScene(t,true);
   }
 }
