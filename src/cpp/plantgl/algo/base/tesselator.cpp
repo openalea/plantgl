@@ -751,10 +751,14 @@ typedef CGAL::Random_points_in_square_2<Point_2, Creator>   Point_generator;
 
 
 bool PGL(is_simple_polygon)(Point2ArrayPtr contour){
+#ifdef WITH_CGAL
    Polygon_2    polygon;
    for(Point2Array::const_iterator it = contour->begin(); it != contour->end(); ++it)
         polygon.push_back(Point_2(it->x(), it->y()));
    return polygon.is_simple();
+#else
+    return true;
+#endif
 }
 
 IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod method)
