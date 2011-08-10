@@ -210,6 +210,37 @@ public:
       - \e v must be in [0,1];*/
   virtual TOOLS(Vector3) getPointAt(real_t u,real_t v) const;
 
+  /* Returns the \e Metric for  u = \e u and v = \e v.
+      (see Differential Geometry, Kreyszig p. 82)
+     \author Michael Walker
+     \pre 
+      - \e u must be in [0,1];
+      - \e v must be in [0,1];*/
+  Point4MatrixPtr getMetric(real_t u, real_t v) const;
+
+  /* Returns the determinant of the metric for u = \e u and v = \e v.
+      (see Differential Geometry, Kreyszig p. 82)
+     \author Michael Walker
+     \pre 
+      - \e u must be in [0,1];
+      - \e v must be in [0,1];*/
+  real_t getDetMetric(real_t u, real_t v) const;
+
+  /* Returns the \e Inverse \e Metric for  u = \e u and v = \e v.
+      (see Differential Geometry, Kreyszig p. 104)
+     \author Michael Walker
+     \pre 
+      - \e u must be in [0,1];
+      - \e v must be in [0,1];*/
+  Point4MatrixPtr getInvMetric(real_t u, real_t v) const;
+
+  /* Returns the \e Connection \e Coefficients for  u = \e u and v = \e v.
+      (see Differential Geometry, Kreyszig p. 140)
+     \author Michael Walker
+     \pre 
+      - \e u must be in [0,1];
+      - \e v must be in [0,1];*/
+  Point4MatrixPtr getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
       (see the Nurbs book p.12) 
