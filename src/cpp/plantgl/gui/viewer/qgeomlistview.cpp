@@ -348,16 +348,16 @@ void GeomListViewBuilder::addMatrix(const QString& name, const T& _matrix, const
   addAttrPtr(name,
 			 "ptr="+(_matrix?QString("0x%1").arg(ptr_to_uint32(_matrix),8,16,QChar('0')):"NULL"),
 //			 "ptr="+(_matrix?QString("0x%1").arg(ptr_to_uint32(_matrix)):"NULL"),
-			 "Matrix<"+type+">["+QString::number(_matrix?_matrix->getColsSize():0)+','+
-			 QString::number(_matrix?_matrix->getRowsSize():0)+']');
+			 "Matrix<"+type+">["+QString::number(_matrix?_matrix->getColumnSize():0)+','+
+			 QString::number(_matrix?_matrix->getRowSize():0)+']');
 
   if(__fullmode && _matrix){ 
 	  pushItems();
 	__currentNodeItem = __currentAttrItem;
 	__currentAttrItem = NULL;
 
-	for(uint_t it1 = 0; it1 < _matrix->getColsSize() ; it1++) { 
-		for(uint_t it2 = 0; it2 < _matrix->getRowsSize() ; it2++) { 
+	for(uint_t it1 = 0; it1 < _matrix->getColumnSize() ; it1++) { 
+		for(uint_t it2 = 0; it2 < _matrix->getRowSize() ; it2++) { 
 			addAttr('['+QString::number(it1)+','+QString::number(it2)+']',_matrix->getAt(it1,it2));
 		}
 	}

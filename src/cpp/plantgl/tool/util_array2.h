@@ -77,7 +77,7 @@ public:
   Array2( uint_t row = 0, uint_t col = 0 ) :
     RefCountObject(),
       __A(col*row),
-      __rowsNb(row)
+      __rowSize(col)
       {
  }
 
@@ -85,16 +85,16 @@ public:
   Array2( uint_t row, uint_t col, const T& t ) :
     RefCountObject(),
       __A((unsigned int)(col*row),t),
-      __rowsNb(row)
+      __rowSize(col)
       {
   }
 
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
-  Array2( InIterator begin, InIterator end, uint_t rowsNb ) :
+  Array2( InIterator begin, InIterator end, uint_t rowsSize ) :
     RefCountObject(),
       __A(begin,end),
-      __rowsNb(rowsNb)
+      __rowSize(rowsSize)
       {
   }
 
@@ -105,14 +105,20 @@ public:
   /// assignement operator.
   Array2<T>& operator=(const Array2<T>& m){
     __A = std::vector<T>(m.__A);
-    __rowsNb = m.getRowsNb();
+    __rowSize = m.getRowSize();
     return *this;
   }
 
   /// Changes the matrix dimensions.
   virtual void resize(const uint_t nr, const uint_t nc){
       __A = std::vector<T> (nr * nc);
-      __rowsNb = nr;
+      __rowSize = nc;
+  }
+
+  /// Changes the matrix dimensions.
+  virtual void reshape(const uint_t nr, const uint_t nc){
+      assert(__A.size() == nr*nc);
+      __rowSize = nc;
   }
 
   /// Returns whether \e self contain \e t.
@@ -125,8 +131,8 @@ public:
       - \e r must be strictly less than the number of rows of \e self.
       - \e c must be strictly less than the number of columns of \e self. */
   inline const T& getAt( uint_t r, uint_t c ) const {
-    GEOM_ASSERT(__A.size() !=0 && r < __rowsNb&& c <(__A.size()/__rowsNb) );
-    return __A[((r*(__A.size()/__rowsNb))+c)];
+    GEOM_ASSERT(__A.size() !=0 && r < getRowNb() && c < getColumnNb() );
+    return __A[(r*getRowSize())+c];
   }
 
   /** Returns the \e c-th element of \e r row of \e self
@@ -134,30 +140,31 @@ public:
       - \e r must be strictly less than the number of rows of \e self.
       - \e c must be strictly less than the number of columns of \e self. */
   inline T& getAt( uint_t r, uint_t c ) {
-    GEOM_ASSERT(__A.size() !=0 && r < __rowsNb&& c <(__A.size()/__rowsNb) );
-    return __A[((r*(__A.size()/__rowsNb))+c)];
+    GEOM_ASSERT(__A.size() !=0 && r < getRowNb() && c < getColumnNb() );
+    return __A[(r*getRowSize())+c];
   }
 
   /** Returns the \e j-th row of \e self
       \pre
       - \e j must be strictly less than the number of the rows of \e self. */
   inline std::vector<T> getRow( uint_t r) const {
-    GEOM_ASSERT( r < __rowsNb);
-    return std::vector<T>(__A.begin()+(r*(__A.size()/__rowsNb)),__A.begin()+((r+1)*(__A.size()/__rowsNb)));
+    GEOM_ASSERT( r < getRowNb());
+    return std::vector<T>(__A.begin()+(r*getRowSize()),__A.begin()+((r+1)*getRowSize()));
   }
 
   /** Returns the \e i-th column of \e self
       \pre
       - \e j must be strictly less than the dimension of the columns of \e self. */
   inline std::vector<T> getColumn( uint_t c) const {
-    GEOM_ASSERT( __rowsNb!= 0 && c < (__A.size()/__rowsNb) );
-    std::vector<T> _col(__rowsNb);
-    const_iterator _it = __A.begin()+c;
-    size_t rowsize = __A.size()/__rowsNb;
-    _col[0]=*_it;
-    for ( uint_t k = 1 ; k < __rowsNb ; k++){
-        _it+=rowsize;
-        _col[k]=*_it;
+    GEOM_ASSERT( c < getColumnNb() );
+    std::vector<T> _col(getRowNb());
+    if (getRowNb() > 0) {
+        const_iterator _it = __A.begin()+c;
+        _col[0]=*_it;
+        for ( uint_t k = 1 ; k < getRowNb() ; k++){
+            _it+= getRowSize();
+            _col[k]=*_it;
+        }
     }
     return _col;
   }
@@ -169,7 +176,7 @@ public:
   inline bool empty( ) const { return __A.empty(); }
 
   /// Clear \e self.
-  inline void clear( ) { __A.clear(); __rowsNb = 0; }
+  inline void clear( ) { __A.clear(); __rowSize = 0; }
 
   /// Returns a const iterator at the beginning of \e self.
   inline const_iterator begin( ) const { return __A.begin(); }
@@ -185,49 +192,42 @@ public:
 
   /// Returns a const iterator at the beginning of the row \e row of\e self.
   inline const_iterator beginRow(uint_t row ) const {
-      GEOM_ASSERT(__rowsNb!= 0 );
-    return (__A.begin()+(row*(__A.size()/__rowsNb)));
+      return (__A.begin()+(row*getRowSize())); 
   }
 
   /// Returns an iterator at the beginning of \e self.
   inline iterator beginRow(uint_t row ) {
-      GEOM_ASSERT(__rowsNb!= 0 );
-    return (__A.begin()+(row*(__A.size()/__rowsNb)));
+      return (__A.begin()+(row*getRowSize()));
   }
 
   /// Returns a const iterator at the end of \e self.
   inline const_iterator endRow(uint_t row ) const {
-      GEOM_ASSERT(__rowsNb!= 0 );
-    return (__A.begin()+((row+1)*(__A.size()/__rowsNb)));
+      return (__A.begin()+((row+1)*getRowSize()));
   }
 
   /// Returns a const iterator at the end of \e self.
   inline iterator endRow( uint_t row ) {
-      GEOM_ASSERT(__rowsNb!= 0 );
-    return (__A.begin()+((row+1)*(__A.size()/__rowsNb)));
+      return (__A.begin()+((row+1)*getRowSize()));
   }
 
   /// Returns the size of each rows of \e self.
-  inline uint_t getRowsSize( ) const {
-    if(__rowsNb != 0)return (__A.size()/__rowsNb);
-    else return uint_t(0);
-  }
+  inline attribute_deprecated uint_t getRowsSize( ) const { return getRowSize(); }
+  inline uint_t getRowSize( ) const { return __rowSize;  }
 
   /// Returns the size of each cols \e self.
-  inline uint_t getColsSize( ) const {
-    return __rowsNb;
+  inline attribute_deprecated uint_t getColsSize( ) const { return getColumnSize(); }
+  inline uint_t getColumnSize( ) const {
+    if(__rowSize != 0) return (__A.size() / __rowSize);
+    else return uint_t(0);
   }
 
   /// Returns the number of rows of \e self.
-  inline uint_t getRowsNb( ) const {
-    return __rowsNb;
-  }
+  inline attribute_deprecated uint_t getRowsNb( ) const { return getRowNb(); }
+  inline uint_t getRowNb( ) const { return getColumnSize(); }
 
-  /// Returns the number of columns \e self.7
-  inline uint_t getColsNb( ) const {
-    if(__rowsNb != 0)return (__A.size()/__rowsNb);
-    else return uint_t(0);
-  }
+  /// Returns the number of columns \e self.
+  inline attribute_deprecated uint_t getColsNb( ) const { return getColumnNb(); }
+  inline uint_t getColumnNb( ) const { return __rowSize;  }
 
 
   /// Insert the line \e t before the line \e i.
@@ -238,13 +238,13 @@ public:
   /// Inserts the line \e t before the line \e j.
   template <class InIterator>
   inline void insertRow( uint_t j,InIterator begin, InIterator end ) {
-      GEOM_ASSERT( j <= __rowsNb);
-      GEOM_ASSERT((j == 0 && __rowsNb == 0) || distance(begin,end) == (__A.size()/__rowsNb));
+      GEOM_ASSERT( j <= getRowNb());
+      size_t nrsize = distance(begin,end);
+      GEOM_ASSERT((j == 0 && __rowSize == 0) || (nrsize == getRowSize()));
       iterator _pos;
-      if(!__rowsNb)_pos = __A.begin();
-      else _pos = (__A.begin()+(j*(__A.size()/__rowsNb)));
+      if(!__rowSize) { _pos = __A.begin(); __rowSize = nrsize; }
+      else _pos = beginRow(j); 
       __A.insert(_pos, begin,end);
-      __rowsNb++;
   }
 
   /// Insert \e t into \e self before the position pointed by \e i.
@@ -255,23 +255,27 @@ public:
   /// Insert from \e begin to \e end into \e self before the position pointed by \e i.
   template <class InIterator>
   inline void insertColumn( uint_t i, InIterator begin, InIterator end) {
-      size_t rowsize = getRowsSize();
-      GEOM_ASSERT(  (i == 0 && __rowsNb == 0) || (i  <= rowsize) );
-      GEOM_ASSERT(__rowsNb ==0 || distance(begin,end) ==  __rowsNb);
-      rowsize += 1;
-      iterator _pos = __A.begin()+i;
-      for(InIterator _k = begin; _k != end; _k++,_pos+=rowsize){
-           _pos = __A.insert(_pos,*_k);
-       };
-      if(!__rowsNb)__rowsNb = distance(begin,end);
+      GEOM_ASSERT(  (i == 0 && getRowSize() == 0) || (i  <= getColumnNb()) );
+      GEOM_ASSERT(  getColumnSize() == 0 || distance(begin,end) ==  getColumnSize());
+      if (__rowSize == 0) {
+          __A.insert(__A.begin(),begin,end);
+          __rowSize = 1;
+      }
+      else {
+          __rowSize += 1;
+          iterator _pos = __A.begin()+i;
+          for(InIterator _k = begin; _k != end; _k++,_pos+=__rowSize){
+               _pos = __A.insert(_pos,*_k);
+          };
+      }
   }
 
   /// Inserts a row \e t at the end.
   template <class InIterator>
   inline void pushRow(InIterator begin, InIterator end ){
-    GEOM_ASSERT(__rowsNb == 0 || distance(begin,end) == (__A.size() /__rowsNb) );
+    GEOM_ASSERT( __rowSize == 0 || distance(begin,end) == getRowSize() );
     __A.insert(__A.end(),begin,end);
-    __rowsNb++;
+    if (__rowSize == 0) __rowSize = __A.size();
    }
 
   /// Inserts a row \e t at the end.
@@ -281,7 +285,7 @@ public:
   /// Inserts a row \e t at the end.
   template <class InIterator>
   inline void pushColumn(InIterator begin, InIterator end ){
-      insertColumn(getColsNb(),begin,end);
+      insertColumn(getColumnNb(),begin,end);
    }
 
   /// Inserts a row \e t at the end.
@@ -306,8 +310,8 @@ public:
       - \e r must be strictly less than the number of rows of \e self.
       - \e c must be strictly less than the number of columns of \e self. */
   void setAt( uint_t r, uint_t c, const T& t ) {
-      GEOM_ASSERT(r < __rowsNb&& c <(__A.size()/__rowsNb) );
-      __A[((r*(__A.size()/__rowsNb))+c)] = t;
+      GEOM_ASSERT(r < getRowNb() && c < getColumnNb() );
+      __A[((r*getRowSize())+c)] = t;
   }
 
   /** returns the matrix of size \e (nr,nc) starting at \e (rw,cl).
@@ -323,11 +327,11 @@ public:
   **/
   Array2<T> get( uint_t rw, uint_t cl,
                    uint_t nr, uint_t nc) const {
-    if(rw + nr > __rowsNb || cl + nc > getColsNb( ))
-      return Array2<T>(0,0);
+    if(rw + nr > getRowNb() || cl + nc > getColumnNb( ))
+            return Array2<T>(0,0);
     Array2<T> result(nr,nc);
     for(uint_t _i = 0; _i < nr ; _i++){
-      typename std::vector<T>::const_iterator _it = __A.begin()+((_i+rw)*(__A.size()/__rowsNb) + cl);
+      typename std::vector<T>::const_iterator _it = beginRow(_i+rw) + cl;
       typename std::vector<T>::const_iterator _itend = _it + nc;
       uint_t _j =0;
       for(;_it != _itend; _it++){
@@ -340,27 +344,28 @@ public:
 
   /// returns the transpose of the matrix.
   friend Array2<T> transpose( const Array2<T>& m ) {
-      Array2<T> n(m.getColsNb(),m.getRowsNb());
+      size_t rownb = m.getRowNb();
+      Array2<T> n(m.getColumnNb(),rownb);
       uint_t _i = 0, _j = 0;
       for(typename Array2<T>::const_iterator _it = m.begin();
           _it != m.end();_it++){
           n.setAt(_i,_j,*_it);
           _i++;
-          if(_i % n.__rowsNb == 0){ _i = 0; _j++; }
+          if(_i % rownb == 0){ _i = 0; _j++; }
       }
       return n;
   }
 
   /// Set \e val to the diagonal of \e self.
   inline void setDiagonal(const T& val) {
-      uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
+      uint_t s = std::min<uint_t>(getRowNb(),getColumnNb());
       for(uint_t _i = 0; _i < s ; _i++)
           setAt(_i,_i,val);
   }
 
   /// Get the Diagonal of \e self.
   inline std::vector<T> getDiagonal() const {
-      uint_t s = std::min<uint_t>(getRowsNb(),getColsNb());
+      uint_t s = std::min<uint_t>(getRowNb(),getColumnNb());
       std::vector<T> diag(s);
       for(uint_t _i = 0; _i < s ; _i++)
           diag[_i] = getAt(_i,_i);
@@ -405,7 +410,7 @@ protected:
   std::vector<T> __A;
 
   /// The number of row of \e self.
-  uint_t __rowsNb;
+  uint_t __rowSize;
 };
 
 
@@ -430,8 +435,8 @@ public:
 
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
-  NumericArray2( InIterator begin, InIterator end, uint_t rowsNb ) :
-    Array2<T>(begin,end,rowsNb)
+  NumericArray2( InIterator begin, InIterator end, uint_t rowsSize ) :
+    Array2<T>(begin,end,rowsSize)
       {
    }
 
@@ -473,11 +478,11 @@ public:
   **/
   NumericArray2<T> get( uint_t rw, uint_t cl,
                    uint_t nr, uint_t nc) const {
-    if(rw + nr > this->__rowsNb || cl + nc > this->getColsNb( ))
-      return NumericArray2<T>(0,0);
+    if(rw + nr > this->getRowNb() || cl + nc > this->getColumnNb( ))
+              return NumericArray2<T>(0,0);
     NumericArray2<T> result(nr,nc);
     for(uint_t _i = 0; _i < nr ; _i++){
-      typename std::vector<T>::const_iterator _it = this->__A.begin()+((_i+rw)*(this->__A.size()/this->__rowsNb) + cl);
+      typename std::vector<T>::const_iterator _it = this->beginRow(_i+rw) + cl;
       typename std::vector<T>::const_iterator _itend = _it + nc;
       uint_t _j =0;
       for(;_it != _itend; _it++){
@@ -490,28 +495,29 @@ public:
 
   /// returns the transpose of the matrix.
   friend NumericArray2<T> transpose( const NumericArray2<T>& m ) {
-      NumericArray2<T> n(m.getColsNb(),m.getRowsNb());
+      size_t rownb = m.getRowNb();
+      NumericArray2<T> n(m.getColumnNb(),rownb);
       uint_t _i = 0, _j = 0;
       for(typename NumericArray2<T>::const_iterator _it = m.begin();
           _it != m.end();_it++){
           n.setAt(_i,_j,*_it);
           _i++;
-          if(_i % n.__rowsNb == 0){ _i = 0; _j++; }
+          if(_i % rownb == 0){ _i = 0; _j++; }
       }
       return n;
   }
   /// Multiplication of 2 matrix.
   NumericArray2<T> operator*( const NumericArray2<T>& m ) const {
-      if(this->getColsNb() != m.getRowsNb()) return NumericArray2<T>(0,0);
-      NumericArray2<T> result(this->getRowsNb(),m.getColsNb());
-      for(uint_t _i = 0; _i < this->getRowsNb(); _i++){
-          for(uint_t _j = 0; _j < m.getColsNb(); _j++){
+      if(this->getColumnNb() != m.getRowNb()) return NumericArray2<T>(0,0);
+      NumericArray2<T> result(this->getRowNb(),m.getColumnNb());
+      for(uint_t _i = 0; _i < this->getRowNb(); _i++){
+          for(uint_t _j = 0; _j < m.getColumnNb(); _j++){
               typename NumericArray2<T>::const_iterator _it1 = this->beginRow(_i);
               typename NumericArray2<T>::const_iterator _it2 = m.begin() + _j;
               T sum = (*_it1)*(*_it2);
               while(_it1 != this->endRow(_i)-1){
                   _it1++;
-                  _it2+=m.getColsNb();
+                  _it2+=m.getRowSize();
                   sum += (*_it1)*(*_it2);
               };
               result.setAt(_i,_j,sum);
@@ -521,7 +527,7 @@ public:
   }
   /// Addition of the 2 matrix.
   NumericArray2<T>& operator+=(const NumericArray2<T>&a){
-      GEOM_ASSERT(a.getRowsNb()!=getRowsNb() && a.size()!=getSize());
+      GEOM_ASSERT(a.getRowSize()!=getRowSize() && a.size()!=getSize());
       typename NumericArray2<T>::const_iterator _i1 = a.begin();
       for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
           _i2 != this->__A.end();
@@ -540,7 +546,7 @@ public:
 
   /// Minus operation of 2 matrix.
   NumericArray2<T>& operator-=(const NumericArray2<T>& a){
-      GEOM_ASSERT(a.getRowsNb()!=getRowsNb() && a.size()!=getSize());
+      GEOM_ASSERT(a.getRowSize()!=getRowSize() && a.size()!=getSize());
       typename NumericArray2<T>::const_iterator _i1 = a.begin();
       for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
           _i2 != this->__A.end(); _i2++){
@@ -690,8 +696,8 @@ public:
 
   /// Constructs an Array2 with the range [\e begin, \e end).
   template <class InIterator>
-  RealArray2( InIterator begin, InIterator end, uint_t rowsNb ) :
-   NumericArray2<real_t>( begin, end, rowsNb ) {
+  RealArray2( InIterator begin, InIterator end, uint_t rowsSize ) :
+   NumericArray2<real_t>( begin, end, rowsSize ) {
   }
 
   /// Destructor

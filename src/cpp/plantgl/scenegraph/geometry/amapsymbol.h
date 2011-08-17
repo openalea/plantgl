@@ -143,7 +143,7 @@ public:
 	return __texCoord3List; }
 
   bool hasTexCoord3List() const {
-	return (__texCoord3List); }
+	return is_valid_ptr(__texCoord3List); }
 
   protected:
 

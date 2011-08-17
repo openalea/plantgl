@@ -75,8 +75,8 @@ SceneObjectPtr NurbsPatch::Builder::build( ) const {
         RealArrayPtr _vknots ;
 
         if( ! UDegree ){
-            if( ! UKnotList )_udegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE,(*CtrlPointMatrix)->getRowsNb() - 1) ;
-            else _udegree = (*UKnotList)->size() - (*CtrlPointMatrix)->getRowsNb() - 1;
+            if( ! UKnotList )_udegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE,(*CtrlPointMatrix)->getRowSize() - 1) ;
+            else _udegree = (*UKnotList)->size() - (*CtrlPointMatrix)->getRowSize() - 1;
 #ifdef GEOM_DEBUG
             //cout << "UDegree value assign to " <<  _udegree << endl;
 #endif
@@ -84,23 +84,17 @@ SceneObjectPtr NurbsPatch::Builder::build( ) const {
         else _udegree = (*UDegree);
 
         if( ! VDegree ){
-            if( ! VKnotList ) _vdegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE, (*CtrlPointMatrix)->getColsNb() - 1);
-            else _vdegree = (*VKnotList)->size() - (*CtrlPointMatrix)->getColsNb() - 1;
+            if( ! VKnotList ) _vdegree = min ( NurbsCurve::DEFAULT_NURBS_DEGREE, (*CtrlPointMatrix)->getColumnSize() - 1);
+            else _vdegree = (*VKnotList)->size() - (*CtrlPointMatrix)->getColumnSize() - 1;
 #ifdef GEOM_DEBUG
             //cout << "VDegree value assign to " <<  _vdegree  << endl;
 #endif
         }
         else _vdegree = (*VDegree);
 
-        if( ! UKnotList ){
-            _uknots = NurbsCurve::defaultKnotList((*CtrlPointMatrix)->getRowsNb(),_udegree);
-        }
-        else { _uknots = *UKnotList; }
+        if( UKnotList ){ _uknots = *UKnotList; }
+        if( VKnotList ){ _vknots = *VKnotList; }
 
-        if( ! VKnotList ){
-            _vknots = NurbsCurve::defaultKnotList((*CtrlPointMatrix)->getColsNb(),_vdegree);
-        }
-        else { _vknots = *VKnotList; }
         return SceneObjectPtr(new NurbsPatch(*CtrlPointMatrix,_uknots,_vknots, _udegree,
                                                      _vdegree, (UStride ? *UStride : DEFAULT_STRIDE),
                                                      (VStride ? *VStride : DEFAULT_STRIDE),
@@ -129,49 +123,49 @@ bool NurbsPatch::Builder::isValid( ) const {
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Nurbs Patch","CtrlPointMatrix");
         return false;
     }
-    uint_t _usize = (*CtrlPointMatrix)->getRowsNb();
-    uint_t _vsize = (*CtrlPointMatrix)->getColsNb();
+    uint_t _usize = (*CtrlPointMatrix)->getColumnSize();
+    uint_t _vsize = (*CtrlPointMatrix)->getRowSize();
 
     if (_usize < 2 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Rows must be greater than 1.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Size of Columnsmust be greater than 1.");
         return false;
     }
 
     if (_vsize < 2 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Columns must be greater than 1.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","CtrlPointMatrix","Size of Rows  must be greater than 1.");
         return false;
     }
 
-    for(uint_t i=0; i < _usize;i++)
-        for(uint_t j=0; j < _vsize;j++){
+    for(uint_t i=0; i < _usize;i++){
+        for(uint_t j=0; j < _vsize;j++)
             if(fabs((*CtrlPointMatrix)->getAt(i,j).w()) < GEOM_TOLERANCE) {
-                string _ith = '(' + number(i + 1) + " , " + number(j+1) + ')';
+                string _ith = '(' + number(i) + " , " + number(j) + ')';
                 pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Nurbs Patch","CtrlPointMatrix",_ith.c_str(),"Weight must be not null");
                 return false;
             }
         }
 
     // UDegree field
-    if (UDegree!=NULL && (*UDegree < 1 || *UDegree >= (*CtrlPointMatrix)->getRowsNb())) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","UDegree","Must be greater than 0 and smaller than the number of control points in a row.");
+    if (UDegree!=NULL && (*UDegree < 1 || *UDegree >= _usize)) {
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","UDegree","Must be greater than 0 and smaller than the number of control points in a column.");
         return false;
     };
 
     // uknot list
     if( UKnotList != NULL && (*UKnotList)->size() < _usize + 2 ){
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be greater than the number of control points in a row.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be greater than the number of control points in a column.");
         return false;
     };
 
     // vknot list
     if( VKnotList != NULL && (*VKnotList)->size() < _vsize + 2 ){
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be greater than the number of control points in a column.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be greater than the number of control points in a row.");
         return false;
     };
 
     // VDegree field
-    if (VDegree && (*VDegree < 1 || *VDegree >= (*CtrlPointMatrix)->getColsNb()) ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","VDegree","Must be greater than 0 and smaller than the number of control points in a column.");
+    if (VDegree && (*VDegree < 1 || *VDegree >= _vsize) ) {
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Nurbs Patch","VDegree","Must be greater than 0 and smaller than the number of control points in a row.");
         return false;
     };
 
@@ -234,13 +228,13 @@ bool NurbsPatch::Builder::isValid( ) const {
     if (  UDegree != NULL &&
           UKnotList != NULL  &&
            _usize != ( (*UKnotList)->size() -  *UDegree - 1)) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be coherent with degree and number of control points in a row.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","UKnotList","Number of knots must be coherent with degree and number of control points in a column.");
         return false;
     };
     if (  VDegree != NULL &&
           VKnotList != NULL  &&
           _vsize != ( (*VKnotList)->size() -  *VDegree - 1)) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be coherent with degree and number of control points in a columns.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Nurbs Patch","VKnotList","Number of knots must be coherent with degree and number of control points in a row.");
         return false;
     };
 
@@ -268,6 +262,8 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
+    if (__udegree >= ctrlPoints->getRowSize()) __udegree = ctrlPoints->getColumnSize() -1;
+    if (__vdegree >= ctrlPoints->getColumnSize()) __vdegree = ctrlPoints->getRowSize() -1;
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
     GEOM_ASSERT(isValid());
@@ -283,6 +279,8 @@ NurbsPatch::NurbsPatch( const Point4MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
+    if (__udegree >= ctrlPoints->getRowSize()) __udegree = ctrlPoints->getColumnSize() -1;
+    if (__vdegree >= ctrlPoints->getColumnSize()) __vdegree = ctrlPoints->getRowSize() -1;
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
     GEOM_ASSERT(isValid());
@@ -298,6 +296,8 @@ NurbsPatch::NurbsPatch( const Point3MatrixPtr& ctrlPoints,
     __vKnotList(vKnotList),
     __udegree(uDegree),
     __vdegree(vDegree){
+    if (__udegree >= ctrlPoints->getRowSize()) __udegree = ctrlPoints->getColumnSize() -1;
+    if (__vdegree >= ctrlPoints->getColumnSize()) __vdegree = ctrlPoints->getRowSize() -1;
     if (!uKnotList) setUKnotListToDefault();
     if (!vKnotList) setVKnotListToDefault();
     GEOM_ASSERT(isValid());
@@ -392,23 +392,23 @@ NurbsPatch::getLastVKnot( ) const {
 
 bool NurbsPatch::setUKnotListToDefault( ){
     if(!__ctrlPointMatrix) return false;
-    __uKnotList = NurbsCurve::defaultKnotList(__ctrlPointMatrix->getRowsNb(),__udegree);
+    __uKnotList = NurbsCurve::defaultKnotList(__ctrlPointMatrix->getColumnSize(),__udegree);
     return true;
 }
 
 bool NurbsPatch::isUKnotListToDefault( ) const{
-    return NurbsCurve::defaultKnotListTest(getUKnotList(),__ctrlPointMatrix->getRowsNb(),__udegree);
+    return NurbsCurve::defaultKnotListTest(getUKnotList(),__ctrlPointMatrix->getColumnSize(),__udegree);
 }
 
 
 bool NurbsPatch::setVKnotListToDefault( ){
     if(!__ctrlPointMatrix) return false;
-    __vKnotList = NurbsCurve::defaultKnotList(__ctrlPointMatrix->getColsNb(),__vdegree);
+    __vKnotList = NurbsCurve::defaultKnotList(__ctrlPointMatrix->getRowSize(),__vdegree);
     return true;
 }
 
 bool NurbsPatch::isVKnotListToDefault( ) const{
-    return NurbsCurve::defaultKnotListTest(getVKnotList(),__ctrlPointMatrix->getColsNb(),__vdegree);
+    return NurbsCurve::defaultKnotListTest(getVKnotList(),__ctrlPointMatrix->getRowSize(),__vdegree);
 }
 
 
@@ -514,23 +514,32 @@ Point4MatrixPtr NurbsPatch::getDerivativesAt(real_t u,real_t v) const {
 
 
 Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
-  GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
+  GEOM_ASSERT( u >= getFirstUKnot() && u <= getLastUKnot() && v>= getFirstVKnot() && v<= getLastVKnot());
 
   uint_t uspan = findSpan(u,__udegree,__uKnotList);
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
   uint_t vspan = findSpan(v,__vdegree,__vKnotList);
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
-  Point4Array temp(__vdegree+1);
-  for (uint_t l = 0 ; l <= __vdegree ; l++ ){
-    Vector4 vec(0.0,0.0,0.0,0.0);
-    for (uint_t k = 0 ; k <= __udegree ; k++ )
-      vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,vspan - __vdegree +l) *  (Nu->getAt(k))) ;
-    temp.setAt(l,vec);
-  }
- Vector4 Sw( 0 , 0 , 0 ,0 );
+  Vector4 Sw( 0 , 0 , 0 ,0 );
 
-  for (uint_t l2 = 0; l2 <= __vdegree ; l2++)
-      Sw = Sw + (temp.getAt(l2) * Nv->getAt(l2));
+  uint_t uind = uspan - __udegree;
+  for (uint_t l = 0 ; l <= __vdegree ; l++ ){
+	  Vector4 temp( 0 , 0 , 0 ,0 );
+      uint_t vind = vspan - __vdegree +l;
+      for (uint_t k = 0 ; k <= __udegree ; k++ ) {
+           /*
+             Note that ctrlPointMatrix access is inverted:
+             Row of ctrlpoint represent variation in v
+             Thus, in getAt(row,col), constant row should be used to make v vary.
+             Indices are similar between ctrlPointMatrix.getAt and
+             NurbsPatch.getPointAt which is  coherent.
+           */
+          temp += (__ctrlPointMatrix->getAt(uind+k,vind) *  (Nu->getAt(k))) ;
+      }
+      Sw += temp * Nv->getAt(l);
+  }
+
+
 
   if (fabs(Sw.w()) < GEOM_TOLERANCE)
     return Vector3(Sw.x(),Sw.y(),Sw.z());
@@ -626,13 +635,13 @@ Vector3 NurbsPatch::getNormalAt(real_t u, real_t v) const{
 
 /* ----------------------------------------------------------------------- */
 
-LineicModelPtr NurbsPatch::getUSection(real_t u) const
+LineicModelPtr NurbsPatch::getIsoUSectionAt(real_t u) const
 {
   GEOM_ASSERT( u >= 0.0 && u <= 1.0 );
 
   uint_t uspan = findSpan(u,__udegree,__uKnotList);
   RealArrayPtr Nu = basisFunctions(uspan, u, __udegree, __uKnotList);
-  uint_t vdim = __ctrlPointMatrix->getColsNb();
+  uint_t vdim = __ctrlPointMatrix->getColumnNb();
   Point4ArrayPtr temp(new Point4Array(vdim));
   for (uint_t l = 0 ; l < vdim ; l++ ){
       Vector4 vec;
@@ -643,13 +652,13 @@ LineicModelPtr NurbsPatch::getUSection(real_t u) const
   return LineicModelPtr(new NurbsCurve(temp,__vKnotList,__vdegree,__vstride));
 }
 
-LineicModelPtr NurbsPatch::getVSection(real_t v) const
+LineicModelPtr NurbsPatch::getIsoVSectionAt(real_t v) const
 {
   GEOM_ASSERT(  v>= 0.0 && v<=1.0 );
 
   uint_t vspan = findSpan(v,__vdegree,__vKnotList);
   RealArrayPtr Nv = basisFunctions(vspan, v, __vdegree, __vKnotList);
-  uint_t udim = __ctrlPointMatrix->getRowsNb();
+  uint_t udim = __ctrlPointMatrix->getRowNb();
   Point4ArrayPtr temp(new Point4Array(udim));
   for (uint_t l = 0 ; l < udim ; l++ ){
 	  Vector4 vec;

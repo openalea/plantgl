@@ -484,7 +484,7 @@ void Turtle::stop(){
 		  }
           if (!__params->isGeneralizedCylinderOn() && 
               ! __params->isPolygonOn()){
-				  if(__params->defaultSection){
+                  if(__params->defaultSection && __params->width > GEOM_EPSILON){
 					if (topdiam < GEOM_EPSILON) _cylinder(length);
 					else _frustum(length,topdiam);
 				  }
@@ -654,7 +654,7 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
 			__params->pushRadius();
 	  }
 	else {
- 	  error("Invalid width value in setWidth. Must be positive");
+ 	  warning("Invalid width value in setWidth. Must be positive");
 	}
   }
   
@@ -1453,8 +1453,8 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
 	  lmat = new Material(Color3(int(50*color),int(250 * color),int(50*color)),transparency);
   }
   _addToScene(transform(arrow,false),false,hmat);
-  _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,lmat);
-  _addToScene(transform(GeometryPtr(new Oriented(Vector3(-1,0,0),Vector3(0,0,1),arrow)),false),false,umat);
+  _addToScene(transform(GeometryPtr(new Oriented(Vector3(1,0,0),Vector3(0,0,1),arrow)),false),false,lmat);
+  _addToScene(transform(GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),arrow)),false),false,umat);
 }
 
 

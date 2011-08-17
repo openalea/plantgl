@@ -81,9 +81,9 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 ViewRayPointHitBuffer& ViewRayPointHitBuffer::operator+=(const ViewRayPointHitBuffer& buff)
 {
   //arrays must have identical size
-  int w = getRowsSize();
-  int h = getColsSize();
-  assert(buff.getRowsSize() == w && buff.getColsSize() == h && "Size of self and buff must be identical.");
+  int w = getRowSize();
+  int h = getColumnSize();
+  assert(buff.getRowSize() == w && buff.getColumnSize() == h && "Size of self and buff must be identical.");
   for(int r=0; r<h; ++r)
   {
       for(int c=0; c<w; ++c)
@@ -146,8 +146,8 @@ ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 ViewZBuffer* ViewZBuffer::importglZBuffer(bool alldepth)
 {	
 	ViewZBuffer * buffer = importglDepthBuffer(alldepth);
-	int width = buffer->getRowsSize();
-	int height = buffer->getColsSize();
+	int width = buffer->getRowSize();
+	int height = buffer->getColumnSize();
 	uchar  * colvalues = new uchar[4*width*height];
 	// std::cerr << "Read Color Buffer ... ";
 	glReadPixels(0,0,width,height,GL_RGBA, GL_UNSIGNED_BYTE, colvalues);

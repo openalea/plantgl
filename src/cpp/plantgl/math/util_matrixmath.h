@@ -97,7 +97,7 @@ public:
 
   /// Constructor.
   LUMatrix(const NumericArray2<T>& a) :
-    NumericArray2<T>(a.getRowsNb(),a.getColsNb()){
+    NumericArray2<T>(a.getRowNb(),a.getColumnNb()){
     decompose(a) ;
   }
 
@@ -125,13 +125,13 @@ public:
     T t, q;
     double den, ten;
 
-    n = a.getRowsNb();
+    n = a.getRowNb();
 
-    GEOM_ASSERT(a.getRowsNb()!=a.getColsNb());
+    GEOM_ASSERT(a.getRowNb()!=a.getColumnNb());
 
     //  lu = a;  must do it by copying or LUFACT will be recursively called !
 
-    this->__rowsNb = n;
+    this->__rowSize = a.getRowSize();
     this->__A = std::vector<T>(a.begin(),a.end());
     pivot_.resize(n);
 
@@ -237,9 +237,9 @@ public:
     \date 22 October 1997
   */
   NumericArray2<T> inverse(){
-    GEOM_ASSERT( getRowsNb() != getColsNb() );
+    GEOM_ASSERT( getRowNb() != getColumnNb() );
 
-    NumericArray2<T> inverse(this->getRowsNb(),this->getColsNb()) ;
+    NumericArray2<T> inverse(this->getRowNb(),this->getColumnNb()) ;
     inverseIn(inverse) ;
 
     return inverse;
@@ -259,9 +259,9 @@ public:
     T ten;
     int i, j, k, l, kb, kp1, nm1, n, coln;
 
-    GEOM_ASSERT( getRowsNb() != getColsNb() );
+    GEOM_ASSERT( getRowNb() != getColumnNb() );
 
-    n = coln = this->getRowsNb();
+    n = coln = this->getRowNb();
 
 
     inv = *this ;
@@ -479,8 +479,8 @@ public:
     \date 22 October 1997
   */
   int decompose(const NumericArray2<T>& A){
-    M = A.getRowsNb() ;
-    N = A.getColsNb() ;
+    M = A.getRowNb() ;
+    N = A.getColumnNb() ;
 
     GEOM_ASSERT( M < N );
 
@@ -563,11 +563,11 @@ public:
     minMax(min_sig,max_sig) ;
 
     if(tau==0)
-      tau = V_.getRowsNb() * max_sig * FLT_EPSILON ;
+      tau = V_.getRowNb() * max_sig * FLT_EPSILON ;
 
     GEOM_ASSERT(min_sig<tau);
 
-    NumericArray2<T> S(V_.getColsNb(),U_.getRowsNb()) ;
+    NumericArray2<T> S(V_.getColumnNb(),U_.getRowNb()) ;
 
     for(int i=0;i<sig_.size();++i)
       S.setAt(i,i,(T)1/sig_[i]) ;
@@ -621,21 +621,21 @@ public:
 
     GEOM_ASSERT(B.rows() != U.rows());
 
-    X.resize(V_.getRowsNb(),B.getColsNb()) ;
+    X.resize(V_.getRowNb(),B.getColumnNb()) ;
 
     if(tau==0)
-      tau = V_.getRowsNb()*max_sig*FLT_EPSILON ;
+      tau = V_.getRowNb()*max_sig*FLT_EPSILON ;
     int stable = 1 ;
 
     std::vector<T> S(sig_.size()) ;
 
     // doing one column from B at a time
     uint_t i,j,k ;
-    for(j=0;j<B.getColsNb();++j){
-      for(i=0;i<V_.getColsNb();++i){
+    for(j=0;j<B.getColumnNb();++j){
+      for(i=0;i<V_.getColumnNb();++i){
         T s = 0 ;
         if(sig_[i]>tau){
-          for(k=0;k<U_.getColsNb();++k)
+          for(k=0;k<U_.getColumnNb();++k)
             s += U_.getAt(k,i)*B.getAt(k,j);
           s /= sig_[i] ;
         }
@@ -643,9 +643,9 @@ public:
           stable = 0 ;
         S[i] = s ;
       }
-      for(i=0;i<V_.getRowsNb();++i){
+      for(i=0;i<V_.getRowNb();++i){
         X.setAt(i,j, (T) 0 ) ;
-        for(k=0;k<V_.getRowsNb();++k)
+        for(k=0;k<V_.getRowNb();++k)
           X.setAt(i,j,X.getAt(i,j)+ V_.getAt(i,k)*S[k]) ;
       }
     }
@@ -931,7 +931,7 @@ protected:
        */
   void rotate(NumericArray2<T>& Mu, const int i, const int j,
               const double cos_ph, const double sin_ph){
-    for(uint_t l=0; l<Mu.getRowsNb(); l++)
+    for(uint_t l=0; l<Mu.getRowNb(); l++)
       {
         T Uil = Mu.getAt(l,i);
         T Ujl = Mu.getAt(l,j);
@@ -1063,7 +1063,7 @@ protected:
         if( sig_[k] < 0 )               // Correct the sign of the sing number
           {
             sig_[k] = -sig_[k];
-            for(register int j=0; j<(int)V_.getRowsNb(); j++)
+            for(register int j=0; j<(int)V_.getRowNb(); j++)
               V_.setAt(j,k,V_.getAt(j,k) -V_.getAt(j,k));
           }
       }
@@ -1090,7 +1090,7 @@ protected:
 */
 template <class T>
 int solve(const NumericArray2<T>& A, const NumericArray2<T>& B, NumericArray2<T>& X){
-  if(A.getRowsNb()==A.getColsNb()){
+  if(A.getRowNb()==A.getColumnNb()){
     // use LU decomposition to solve the problem
     LUMatrix<T> lu(A) ;
     X = lu.inverse()*B ;
@@ -1121,7 +1121,7 @@ int solve(const NumericArray2<T>& A, const NumericArray2<T>& B, NumericArray2<T>
 template <class T>
 NumericArray2<T> inverse(const NumericArray2<T>&A){
   NumericArray2<T> inv ;
-  if(A.getRowsNb()==A.getColsNb()){
+  if(A.getRowNb()==A.getColumnNb()){
     LUMatrix<T> lu(A) ;
     lu.inverseIn(inv) ;
   }

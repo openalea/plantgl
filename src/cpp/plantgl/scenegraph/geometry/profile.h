@@ -274,7 +274,11 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   /// Returns whether \e self is valid.
   virtual bool isValid( ) const;
 
+  // Compute the interpolation
   virtual bool interpol();
+
+  // check if interpolation has been made
+  virtual bool check_interpolation();
 
   virtual ProfileInterpolationPtr deepcopy(DeepCopier& copier) const;
 

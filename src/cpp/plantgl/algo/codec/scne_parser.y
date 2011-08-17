@@ -297,7 +297,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
     if (matrix) { \
       result = new type##Ptr(new type(matrix->begin(), \
                                       matrix->end(), \
-                                      matrix->getRowsNb())); \
+                                      matrix->getRowSize())); \
       delete matrix; \
     } \
     else result = NULL; \

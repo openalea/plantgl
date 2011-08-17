@@ -265,9 +265,9 @@ std::string getDirectory1(const std::string& caption){
 
 boost::python::object raybuf_to_python(ViewRayBuffer * buf) {
 	boost::python::list res;
-	for(size_t i = 0; i < buf->getColsSize();i++){
+	for(size_t i = 0; i < buf->getColumnSize();i++){
 		boost::python::list row;
-		for(size_t j = 0; j < buf->getRowsSize();j++){
+		for(size_t j = 0; j < buf->getRowSize();j++){
 			boost::python::list zlist;
 			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
 				const RayHit& inter = buf->getAt(i,j)[k];
@@ -294,9 +294,9 @@ boost::python::object castRays(const TOOLS(Vector3)& pos,
 
 boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
 	boost::python::list res;
-	for(size_t i = 0; i < buf->getColsSize();i++){
+	for(size_t i = 0; i < buf->getColumnSize();i++){
 		boost::python::list row;
-		for(size_t j = 0; j < buf->getRowsSize();j++){
+		for(size_t j = 0; j < buf->getRowSize();j++){
 			const ZBufferUnit& unit = buf->getAt(i,j);
 			if (allvalues || (0.0 < unit.depth && unit.depth < 1.0))
 				row.append(make_tuple(unit.pos,unit.color,unit.depth));
@@ -357,9 +357,9 @@ boost::python::object getProjectionPerShape(){
 
 boost::python::object raypointhitbuf_to_python(ViewRayPointHitBuffer * buf) {
 	boost::python::list res;
-	for(size_t i = 0; i < buf->getColsSize();i++){
+	for(size_t i = 0; i < buf->getColumnSize();i++){
 		boost::python::list row;
-		for(size_t j = 0; j < buf->getRowsSize();j++){
+		for(size_t j = 0; j < buf->getRowSize();j++){
 			boost::python::list zlist;
 			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
 				const RayPointHit& inter = buf->getAt(i,j)[k];

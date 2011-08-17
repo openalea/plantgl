@@ -435,7 +435,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 
 
 #define GEOM_PRINT_FIELD_MATRIX(obj,field,type) { \
-    uint_t _cols =obj->get##field()->getColsNb(); \
+    uint_t _cols =obj->get##field()->getColumnNb(); \
     uint_t _sizei = obj->get##field()->size(); \
     writeUint32( _sizei/ _cols); writeUint32(_cols); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \

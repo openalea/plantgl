@@ -567,7 +567,7 @@ inline uint32_t ptr_to_uint32( const RCPtr<U>& p )
 
 /// Returns true if and only if \e ptr is not null.
 template <class U>
-inline bool is_valid_ptr( const RCPtr<U>& p ) { return (p); }
+inline bool is_valid_ptr( const RCPtr<U>& p ) { return p.get() != 0; }
 
 /// Returns true if and only if \e ptr is null.
 template <class U>

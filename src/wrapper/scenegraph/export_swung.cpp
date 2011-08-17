@@ -57,7 +57,8 @@ DEF_POINTEE(ProfileInterpolation)
 
 object pi_getSectionAt(ProfileInterpolation * pi, real_t u){
     if (u < pi->getUMin() | u > pi->getUMax())
-       throw PythonExc_ValueError();
+       throw PythonExc_IndexError();
+    if (!pi->check_interpolation()) pi->interpol();
     if (pi->is2DInterpolMode())return object(pi->getSection2DAt(u));
     else return object(pi->getSection3DAt(u));
 }
@@ -79,6 +80,7 @@ void export_ProfileInterpolation()
 	.DEC_BT_PROPERTY_WDV(stride,   ProfileInterpolation,Stride,          uint_t ,DEFAULT_STRIDE)
 	.DEC_PTR_PROPERTY(knotList,   ProfileInterpolation,KnotList,         RealArrayPtr)
 	.DEC_PTR_PROPERTY(profileList, ProfileInterpolation,ProfileList,     Curve2DArrayPtr)
+    .def("interpol",&ProfileInterpolation::interpol)
   ;
 }
 

@@ -33,6 +33,7 @@
 #include <plantgl/python/extract_list.h>
 #include <plantgl/math/util_matrixmath.h>
 #include <boost/python.hpp>
+#include <sstream>
 
 template<class T>
 RCPtr<T> extract_array2_from_list( boost::python::object l )
@@ -114,33 +115,66 @@ struct array2_ptr_from_list {
 template<class T>
 typename T::element_type array2_bt_getitem( T * array, boost::python::tuple indices )
 {
-  size_t i = boost::python::extract<size_t>(indices[0])(), j = boost::python::extract<size_t>(indices[1])();
-  if( i < array->getRowsNb() && j < array->getColsNb() )
+  size_t i = boost::python::extract<size_t>(indices[0])();
+  size_t j = boost::python::extract<size_t>(indices[1])();
+  if( i < array->getRowNb() && j < array->getColumnNb() )
     return array->getAt( i, j );
-  else throw PythonExc_IndexError();
+  else {
+      std::stringstream ss;
+      ss << (int)i << "," << (int)j << " should be in [0," << array->getRowNb() << "]x[0," << array->getColumnNb() << "]";
+      throw PythonExc_IndexError(ss.str().c_str());
+  }
 }
 
 template<class T>
 typename T::element_type& array2_ct_getitem( T * array, boost::python::tuple indices )
 {
-  size_t i = boost::python::extract<size_t>(indices[0])(), j = boost::python::extract<size_t>(indices[1])();
-  if( i < array->getRowsNb() && j < array->getColsNb() )
+  size_t i = boost::python::extract<size_t>(indices[0])();
+  size_t j = boost::python::extract<size_t>(indices[1])();
+  if( i < array->getRowNb() && j < array->getColumnNb() )
     return array->getAt( i, j );
-  else throw PythonExc_IndexError();
+  else {
+      std::stringstream ss;
+      ss << (int)i << "," << (int)j << " should be in [0," << array->getRowNb() << "]x[0," << array->getColumnNb() << "]";
+      throw PythonExc_IndexError(ss.str().c_str());
+  }
 }
+
 
 template<class T>
 boost::python::object array2_getrow( T * array, size_t i)
 {
-  if( i < array->getRowsNb() )
+  if( i < array->getRowNb() )
     return make_list<std::vector<typename T::element_type> >(array->getRow( i ))();
   else throw PythonExc_IndexError();
 }
 
+
+template<class T>
+class Array2Iter {
+public:
+    T * __array;
+    size_t __current;
+
+    Array2Iter(T* a) : __array(a), __current(0) { }
+
+    boost::python::object next() {
+        if( __current < __array->getRowNb() ){
+            return make_list<std::vector<typename T::element_type> >(__array->getRow( __current++ ))();
+        }
+        else throw PythonExc_StopIteration();
+    }
+    inline void nothing() {  }
+};
+
+template<class T>
+Array2Iter<T> array2_getiter( T * array) { return Array2Iter<T>(array); }
+
+
 template<class T>
 boost::python::object array2_getcolumn( T * array, size_t j)
 {
-  if( j < array->getColsNb() )
+  if( j < array->getColumnNb() )
     return make_list<std::vector<typename T::element_type> >(array->getColumn( j ))();
   else throw PythonExc_IndexError();
 }
@@ -155,7 +189,7 @@ template<class T>
 void array2_setitem( T * array, boost::python::tuple indices, typename T::element_type v )
 {
   size_t i = boost::python::extract<size_t>(indices[0])(), j = boost::python::extract<size_t>(indices[1])();
-  if( i < array->getRowsNb() && j < array->getColsNb() )
+  if( i < array->getRowNb() && j < array->getColumnNb() )
     array->setAt( i, j, v );
   else throw PythonExc_IndexError();
 }
@@ -164,8 +198,8 @@ template<class T>
 void array2_insertRow( T * array, size_t i, boost::python::object v )
 {
   std::vector<typename T::element_type> row = extract_vec<typename T::element_type>(v)();
-  if( row.size() != array->getRowsSize() ) throw PythonExc_ValueError();
-  if( i <= array->getRowsNb() )
+  if( row.size() != array->getRowSize() ) throw PythonExc_ValueError();
+  if( i <= array->getRowNb() )
     array->insertRow( i, row );
   else throw PythonExc_IndexError();
 }
@@ -174,16 +208,16 @@ template<class T>
 void array2_pushRow( T * array, boost::python::object v )
 {
   std::vector<typename T::element_type> row = extract_vec<typename T::element_type>(v)();
-  if( row.size() != array->getRowsSize() ) throw PythonExc_ValueError();
-  array->insertRow(array->getRowsNb(), row );
+  if( row.size() != array->getRowSize() ) throw PythonExc_ValueError();
+  array->insertRow(array->getRowNb(), row );
 }
 
 template<class T>
 void array2_insertColumn( T * array, size_t i, boost::python::object v )
 {
   std::vector<typename T::element_type> col = extract_vec<typename T::element_type>(v)();
-  if( col.size() != array->getColsSize() ) throw PythonExc_ValueError();
-  if( i <= array->getColsNb() )
+  if( col.size() != array->getColumnSize() ) throw PythonExc_ValueError();
+  if( i <= array->getColumnNb() )
     array->insertColumn( i, col.begin(),col.end() );
   else throw PythonExc_IndexError();
 }
@@ -192,23 +226,39 @@ template<class T>
 void array2_pushColumn( T * array, boost::python::object v )
 {
   std::vector<typename T::element_type> col = extract_vec<typename T::element_type>(v)();
-  if( col.size() != array->getColsSize() ) throw PythonExc_ValueError();
-  array->insertColumn( array->getColsNb(), col );
+  if( col.size() != array->getColumnSize() ) throw PythonExc_ValueError();
+  array->insertColumn( array->getColumnNb(), col );
 }
 
 template<class T>
 size_t array2_rownb( T * a )
-{  return a->getRowsNb();}
+{  return a->getRowNb();}
 
 template<class T>
 size_t array2_colnb( T * a )
-{  return a->getColsNb();}
+{  return a->getColumnNb();}
+
+template<class T>
+size_t array2_rowsize( T * a )
+{  return a->getRowSize();}
+
+template<class T>
+size_t array2_colsize( T * a )
+{  return a->getColumnSize();}
+
+template<class T>
+boost::python::object array2_sizes( T * a )
+{  return make_tuple(a->getRowNb(),a->getColumnNb()); }
+
+template<class T>
+size_t array2_size( T * a )
+{  return a->size(); }
 
 
 template<class T>
 std::string array2_str( T * a, const char * name )
 {
-    uint_t r= a->getRowsNb();
+    uint_t r= a->getRowNb();
     std::stringstream ss;
     ss << name <<"([";
     for(uint_t i= 0; i < r; i++ )
@@ -227,7 +277,7 @@ std::string array2_str( T * a, const char * name )
 
 template<class T>
 RCPtr<T> array2_to_T(Array2<typename T::element_type> a)
-{ return RCPtr<T>(new T(a.begin(),a.end(),a.getRowsNb())); }
+{ return RCPtr<T>(new T(a.begin(),a.end(),a.getRowSize())); }
 
 template<class T>
 RCPtr<T> array2_transpose( T * array)
@@ -238,10 +288,19 @@ RCPtr<T> array2_transpose( T * array)
 template<class T>
 RCPtr<T> array2_submatrix( T * array, uint_t rw, uint_t cl, uint_t nr, uint_t nc)
 {
-  if( (rw + nr) < array->getRowsNb() && (cl + nc) < array->getColsNb() )
+  if( (rw + nr) < array->getRowNb() && (cl + nc) < array->getColumnNb() )
       return array2_to_T<T>(array->get(rw,cl,nr,nc));
   else throw PythonExc_IndexError();
 }
+
+template<class T>
+void array2_reshape( T * array, size_t nbrow, size_t nbcol)
+{
+  if( nbrow * nbcol != array->size() )
+     array->reshape(nbrow,nbcol);
+  else throw PythonExc_ValueError();
+}
+
 
 
 template<class T>
@@ -250,7 +309,7 @@ struct array2_pickle_suite : boost::python::pickle_suite
     static boost::python::tuple getinitargs(T const& ar) 
 	{ 
 		boost::python::list args; 
-        for(uint_t i= 0; i < ar.getRowsNb(); i++ ){
+        for(uint_t i= 0; i < ar.getRowNb(); i++ ){
 		    boost::python::list l; 
 		    for(typename T::const_iterator it = ar.beginRow(i); it != ar.endRow(i); ++it) 
 			    l.append(*it); 
@@ -268,28 +327,40 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
     template <class classT>
     void visit(classT& c) const
     {
-        c.def( "__getitem__", &array2_getrow<ARRAY>  ) 
+        c // .def( "__getitem__", &array2_getrow<ARRAY>  ) 
          .def( "__setitem__", &array2_setitem<ARRAY> )				
          .def( "__len__", &array2_rownb<ARRAY> )					
          .def( "__contains__", &ARRAY::contains )					
          .def( "empty", &ARRAY::empty )					
+         .def( "reshape", &array2_reshape<ARRAY>, boost::python::args("nbrow","nbcol") )					
          .def( "clear", &ARRAY::clear )					
          .def( "isUnique", &ARRAY::isUnique )					
          .def( "getRow", &array2_getrow<ARRAY>  ) 
          .def( "getRowNb", &array2_rownb<ARRAY>  ) 
+         .def( "getRowSize", &array2_rowsize<ARRAY>  ) 
          .def( "getColumn", &array2_getcolumn<ARRAY>  ) 
          .def( "getColumnNb", &array2_colnb<ARRAY>  ) 
+         .def( "getColumnSize", &array2_colsize<ARRAY>  ) 
          .def( "getDiagonal", &array2_getdiag<ARRAY>  ) 
          .def( "transpose", &array2_transpose<ARRAY>  ) 
 	     .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","col","nbrow","nbcol") ) 
          .def( "insertRow", &array2_insertRow<ARRAY>  ) 
          .def( "insertColumn", &array2_insertColumn<ARRAY>  ) 
          .def( "pushRow", &array2_pushRow<ARRAY>  ) 
-         .def( "pushColumn", &array2_pushColumn<ARRAY>  ) 
-	    .def_pickle(array2_pickle_suite<ARRAY>());
+         .def( "pushColumn", &array2_pushColumn<ARRAY>  )
+         .def( "sizes", &array2_sizes<ARRAY>  )
+         .def( "size", &array2_size<ARRAY>  )
+         .def( "__iter__", &array2_getiter<ARRAY> )					
+ 	    .def_pickle(array2_pickle_suite<ARRAY>());
+
+        class_<Array2Iter<ARRAY> >("Iterator",no_init)
+         .def("next",&Array2Iter<ARRAY>::next)
+         .def("__iter__",&Array2Iter<ARRAY>::nothing,return_self<>())
         ;
     }
 };
+
+
 
 template<class T>
 RCPtr<T> array2_iadd( T * array, T * array2)
@@ -310,7 +381,7 @@ RCPtr<T> array2_sub( T * array, T * array2)
 template<class T>
 RCPtr<T> array2_mul( T * array, T * array2)
 {
-  if(array->getColsNb() != array2->getRowsNb())
+  if(array->getColumnNb() != array2->getRowNb())
       throw PythonExc_ValueError("Incompatible sizes of matrices.");
   return array2_to_T<T>( (*array) * (*array2));
 }
@@ -342,7 +413,7 @@ RCPtr<T> array2_imule( T * array, typename T::element_type el)
 template<class T>
 RCPtr<T> array2_inverse( T * array )
 {
-  if(array->getColsNb() <= array->getRowsNb())
+  if(array->getColumnNb() <= array->getRowNb())
       throw PythonExc_ValueError("Incompatible sizes of matrices.");
   return array2_to_T<T>( inverse(*array));
 }
@@ -399,6 +470,11 @@ std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
     .def(array2_func<ARRAY>()) \
     .def( "__repr__",     &PREFIX##_str ) \
     .def( "__str__",      &PREFIX##_str ) \
+
+#define EXPORT_ARRAYITERATOR( ARRAY ) \
+    class_<Array2Iter<ARRAY> >(#ARRAY "Iterator",no_init) \
+    .def("next",&Array2Iter<ARRAY>::next) \
+    .def("__iter__",&Array2Iter<ARRAY>::nothing,return_self<>()); \
 
 #define EXPORT_ARRAY_BT( PREFIX, ARRAY ) \
     EXPORT_CLASS_ARRAY( PREFIX, ARRAY ) \

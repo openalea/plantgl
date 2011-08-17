@@ -141,7 +141,7 @@ protected:
 	std::ostream& print_unamed_arg_field(std::ostream& os, const T& value, bool newline = true);
 
 	template <typename T>
-	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool in_constructor, bool newline = false);
+	std::ostream& print_field(std::ostream& os, const std::string& name, const std::string& field, const T& value, bool in_constructor, bool newline);
 
 	inline std::string pgltype(const std::string& pgltypename) const;
 	std::string getfilename(const std::string& filename) const;

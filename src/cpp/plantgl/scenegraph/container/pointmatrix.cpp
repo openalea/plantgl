@@ -164,28 +164,23 @@ Point3Matrix::Point3Matrix( uint_t rows, uint_t cols ) :
   GEOM_ASSERT(isValid());
 }
 
-
+  
 Point3Matrix::Point3Matrix( const Point2MatrixPtr& points2, const real_t& z ) :
   Array2<Vector3>() {
-  if(!points2)return;
-  GEOM_ASSERT(points2);
-  uint_t _size = points2->size();
-  __A.reserve(_size);
-  __A.resize(_size);
+  if(!points2) return;
+  resize(points2->getRowNb(),points2->getColumnNb());
   Point2Matrix::const_iterator _i2 = points2->begin();
   for (iterator _i3 = __A.begin(); _i3 != __A.end(); _i3++)
     *_i3 = Vector3(*_i2++,z);
-  __rowsNb=points2->getRowsNb();
   GEOM_ASSERT(isValid());
 }
 
 Point3Matrix::Point3Matrix( const Point2Matrix& points2, const real_t& z ) :
-  Array2<Vector3>(points2.size()) {
+  Array2<Vector3>(points2.getRowNb(),points2.getColumnNb()) {
   GEOM_ASSERT(points2);
   Point2Matrix::const_iterator _i2 = points2.begin();
   for (iterator _i3 = __A.begin(); _i3 != __A.end(); _i3++)
     *_i3 = Vector3(*_i2++,z);
-  __rowsNb=points2.getRowsNb();
   GEOM_ASSERT(isValid());
 }
 
@@ -323,7 +318,7 @@ bool Point3Matrix::isValid( ) const {
 
 
 Point2MatrixPtr Point3Matrix::project( ) const {
-  Point2MatrixPtr _points2(new Point2Matrix(__rowsNb,(__A.size()/__rowsNb)));
+  Point2MatrixPtr _points2(new Point2Matrix(getRowNb(),getColumnNb()));
   Point2Matrix::iterator _i2 = _points2->begin();
   for (const_iterator _i3 = __A.begin(); _i3 != __A.end(); _i3++)
     *_i2++ = Vector2(_i3->project());
@@ -350,23 +345,19 @@ Point4Matrix::Point4Matrix( const Point3MatrixPtr& points3, const real_t& z ) :
   Array2<Vector4>() {
   if(!points3) return;
   GEOM_ASSERT(points3);
-  uint_t _size = points3->size();
-  __A.reserve(_size);
-  __A.resize(_size);
+  resize(points3->getRowNb(),points3->getColumnNb());
   Point3Matrix::const_iterator _i3 = points3->begin();
   for (iterator _i4 = __A.begin(); _i4 != __A.end(); _i4++)
     *_i4 = Vector4(*_i3++,z);
-  __rowsNb=points3->getRowsNb();
   GEOM_ASSERT(isValid());
 }
 
 Point4Matrix::Point4Matrix( const Point3Matrix& points3, const real_t& z ) :
-  Array2<Vector4>(points3.size()) {
+  Array2<Vector4>(points3.getRowNb(),points3.getColumnNb()) {
   GEOM_ASSERT(points3);
   Point3Matrix::const_iterator _i3 = points3.begin();
   for (iterator _i4 = __A.begin(); _i4 != __A.end(); _i4++)
     *_i4 = Vector4(*_i3++,z);
-  __rowsNb=points3.getRowsNb();
   GEOM_ASSERT(isValid());
 }
 
@@ -534,7 +525,7 @@ bool Point4Matrix::isValid( ) const {
 
 
 Point3MatrixPtr Point4Matrix::project( ) const {
-  Point3MatrixPtr _points3(new Point3Matrix(__rowsNb,(__A.size()/__rowsNb)));
+  Point3MatrixPtr _points3(new Point3Matrix(getRowNb(),getColumnNb()));
   Point3Matrix::iterator _i3 = _points3->begin();
   for (const_iterator _i4 = __A.begin(); _i4 != __A.end(); _i4++)
     *_i3++ = Vector3(_i4->project());

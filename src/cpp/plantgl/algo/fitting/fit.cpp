@@ -2165,7 +2165,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
     // only 2 points.
     if(n-2>0){ 
 	DoubleArray2 X(n-2,3),B(uint_t(n-2),uint_t(3),double(0));
-	for(uint_t i=0;i<B.getRowsNb();i++){
+	for(uint_t i=0;i<B.getRowNb();i++){
 //	    cerr << "B(" << i << ",0)=" << R->getAt(i+1).x() << endl;
 	    B.setAt(i,0,(double)(R->getAt(i+1).x()) );
 //	    cerr << "B(" << i << ",1)=" << R->getAt(i+1).y() << endl;
@@ -2186,7 +2186,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 //	cerr << "B : " << B << endl;
 	solve(TNs*Ns,B,X) ;
 
-	for(uint_t i3=0;i3<X.getRowsNb();i3++){
+	for(uint_t i3=0;i3<X.getRowNb();i3++){
 	    P->setAt(i3+1,Vector4((real_t)X.getAt(i3,0),(real_t)X.getAt(i3,1),(real_t)X.getAt(i3,2),1.0));
 	}
     }

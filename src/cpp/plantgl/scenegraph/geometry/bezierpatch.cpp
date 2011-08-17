@@ -67,8 +67,8 @@ BezierPatch::Builder::~Builder( ) {
 SceneObjectPtr BezierPatch::Builder::build( ) const {
     if (isValid()){
 #ifdef GEOM_DEBUG
-        if(!UDegree)cout << "UDegree value assign to " << ((*CtrlPointMatrix)->getColsNb() - 1) << endl;
-        if(!VDegree)cout << "VDegree value assign to " << ((*CtrlPointMatrix)->getRowsNb() - 1) << endl;
+        if(!UDegree)cout << "UDegree value assign to " << ((*CtrlPointMatrix)->getColumnSize() - 1) << endl;
+        if(!VDegree)cout << "VDegree value assign to " << ((*CtrlPointMatrix)->getRowSize() - 1) << endl;
 #endif
         return SceneObjectPtr(
             new BezierPatch(*CtrlPointMatrix,(UStride ? *UStride : DEFAULT_STRIDE),
@@ -95,23 +95,21 @@ bool BezierPatch::Builder::isValid( ) const {
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Bezier Patch","CtrlPointMatrix");
         return false;
     }
-    uint_t _usize = (*CtrlPointMatrix)->getColsNb();
-    uint_t _vsize = (*CtrlPointMatrix)->getRowsNb();
+    uint_t _usize = (*CtrlPointMatrix)->getRowSize();
+    uint_t _vsize = (*CtrlPointMatrix)->getColumnSize();
 
     if (_usize < 2 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Rows must be greater than 1.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Size of rows must be greater than 1.");
         return false;
 
     }    if (_vsize < 2 ) {
-        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Columns must be greater than 1.");
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Bezier Patch","CtrlPointMatrix","Size of columns must be greater than 1.");
         return false;
     }
 
     for(uint_t i=0; i < _usize;i++)
       for(uint_t j=0; j < _vsize;j++)
         {
-// getAt( rows, columns ) => getAt(j,i) !!!
-//        if(fabs((*CtrlPointMatrix)->getAt(i,j).w()) < GEOM_TOLERANCE) {
         if(fabs((*CtrlPointMatrix)->getAt(j,i).w()) < GEOM_TOLERANCE) {
             string _ith =  "( " + number(i + 1) + " , " + number(j+1) + ")";
             pglErrorEx
@@ -243,12 +241,12 @@ BezierPatch::isVStrideToDefault( ) const{
 
 const uint_t
 BezierPatch::getUDegree( ) const {
-  return __ctrlPointMatrix->getColsNb() - 1;
+  return __ctrlPointMatrix->getRowSize() - 1;
 }
 
 const uint_t
 BezierPatch::getVDegree( ) const {
-  return __ctrlPointMatrix->getRowsNb() - 1;
+  return __ctrlPointMatrix->getColumnSize() - 1;
 }
 
 
@@ -309,7 +307,7 @@ Vector3 BezierPatch::getPointAt(real_t u, real_t v) const{
 }
 
 
-LineicModelPtr BezierPatch::getUSection(real_t u) const
+LineicModelPtr BezierPatch::getIsoUSectionAt(real_t u) const
 {
     GEOM_ASSERT( u >= 0.0 && u <= 1.0);
 
@@ -331,7 +329,7 @@ LineicModelPtr BezierPatch::getUSection(real_t u) const
 }
 
 
-LineicModelPtr BezierPatch::getVSection(real_t v) const
+LineicModelPtr BezierPatch::getIsoVSectionAt(real_t v) const
 {
     GEOM_ASSERT( u >= 0.0 && u <= 1.0);
 

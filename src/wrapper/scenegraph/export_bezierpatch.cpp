@@ -72,8 +72,8 @@ void export_BezierPatch()
     .add_static_property("DEFAULT_STRIDE",make_getter(&BezierPatch::DEFAULT_STRIDE))
     .DEC_PTR_PROPERTY(ctrlPointMatrix,BezierPatch,CtrlPointMatrix,Point4MatrixPtr)
     .def("getPointAt",&BezierPatch::getPointAt)
-    .def("getUSection",&BezierPatch::getUSection,args("u"),"Compute a section line of the patch corresponding to a constant u value.")
-    .def("getVSection",&BezierPatch::getVSection,args("v"),"Compute a section line of the patch corresponding to a constant v value.")
+    .def("getIsoUSectionAt",&BezierPatch::getIsoUSectionAt,args("u"),"Compute a section line of the patch corresponding to a constant u value.")
+    .def("getIsoVSectionAt",&BezierPatch::getIsoVSectionAt,args("v"),"Compute a section line of the patch corresponding to a constant v value.")
     ;
 
   implicitly_convertible< BezierPatchPtr,PatchPtr >();

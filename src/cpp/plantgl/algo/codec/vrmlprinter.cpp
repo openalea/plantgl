@@ -309,7 +309,7 @@ using namespace std;
       GEOM_VRMLPRINT_REAL(*_i); \
       if(_i!=val->end()-1){ \
         __geomStream << " , "; \
-        if(_j == val->getColsNb() ){ \
+        if(_j == val->getRowSize() ){ \
             _j = 0; \
             __geomStream << endl << __indent; \
         } \

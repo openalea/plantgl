@@ -1567,8 +1567,8 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   uint_t _uStride = nurbsPatch->getUStride();
   uint_t _vStride = nurbsPatch->getVStride();
 
-  real_t _uStride1 = nurbsPatch->getUStride() - real_t(1);
-  real_t _vStride1 = nurbsPatch->getVStride() - real_t(1);
+  real_t _uStride1 = _uStride - real_t(1);
+  real_t _vStride1 = _vStride - real_t(1);
 
 
   Point3ArrayPtr _pointList(new Point3Array(_uStride * _vStride));
@@ -1578,9 +1578,11 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
 
   uint_t _pointCount = 0;
   uint_t _indexCount = 0;
+
   real_t _ufirst=nurbsPatch->getFirstUKnot();
   real_t _ulast=nurbsPatch->getLastUKnot();
   real_t _uinter=_ulast-_ufirst;
+
   real_t _vfirst=nurbsPatch->getFirstVKnot();
   real_t _vlast=nurbsPatch->getLastVKnot();
   real_t _vinter=_vlast-_vfirst;
@@ -1588,15 +1590,11 @@ bool Discretizer::process( NurbsPatch * nurbsPatch ) {
   for ( real_t _u = 0 ; _u < _uStride1 - GEOM_EPSILON ; ++_u) {
     for (real_t _v = 0; _v < _vStride1 - GEOM_EPSILON ; ++_v) {
       _pointList->setAt(_pointCount++,
-                        nurbsPatch->getPointAt(_ufirst +
-                                                (_u * _uinter) / _uStride1,
-                                               _vfirst +
-                                                (_v * _vinter) / _vStride1));
+                        nurbsPatch->getPointAt(_ufirst + (_u * _uinter) / _uStride1,
+                                               _vfirst + (_v * _vinter) / _vStride1));
       _indexList->setAt(_indexCount++,
-                        Index4(_cur,
-                               _cur + 1,
-                               _cur + _vStride + 1,
-                               _cur + _vStride));
+                        Index4(_cur,                _cur + 1,
+                               _cur + _vStride + 1, _cur + _vStride));
 
       _cur++;
     };

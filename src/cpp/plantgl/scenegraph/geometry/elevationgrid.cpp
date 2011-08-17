@@ -90,8 +90,8 @@ bool ElevationGrid::Builder::isValid( ) const {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Elevation Grid","HeightList");
     return false;
   };
- for (uint_t _i = 0 ; _i< (*HeightList)->getRowsNb() ; _i++)
-     for (uint_t _j = 0 ; _j< (*HeightList)->getColsNb() ; _j++)
+ for (uint_t _i = 0 ; _i< (*HeightList)->getRowNb() ; _i++)
+     for (uint_t _j = 0 ; _j< (*HeightList)->getColumnNb() ; _j++)
          if (! finite((*HeightList)->getAt(_i,_j))) {
              string _ith = '(' + TOOLS(number)(_i + 1) + '-' + TOOLS(number)(_j + 1) + ')';
              pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
@@ -163,12 +163,12 @@ ElevationGrid::getHeightList( ) {
 
 const uint_t
 ElevationGrid::getXDim( ) const {
-  return __heightList->getColsNb();
+  return __heightList->getColumnNb();
 }
 
 const real_t
 ElevationGrid::getXSize( ) const {
-  return (real_t)((__heightList->getColsNb()-1) * __xSpacing);
+  return (real_t)((__heightList->getColumnNb()-1) * __xSpacing);
 }
 
 const real_t&
@@ -183,12 +183,12 @@ ElevationGrid::getXSpacing( ) {
 
 const uint_t
 ElevationGrid::getYDim( ) const {
-  return __heightList->getRowsNb();
+  return __heightList->getRowNb();
 }
 
 const real_t
 ElevationGrid::getYSize( ) const {
-  return (real_t)((__heightList->getRowsNb()-1) * __ySpacing);
+  return (real_t)((__heightList->getRowNb()-1) * __ySpacing);
 }
 
 const real_t&
@@ -223,16 +223,16 @@ ElevationGrid::copy(DeepCopier& copier) const {
 
 Vector3
 ElevationGrid::getPointAt(uint_t i, uint_t j) const{
-    GEOM_ASSERT(i<__heightList->getColsNb());
-    GEOM_ASSERT(j<__heightList->getRowsNb());
+    GEOM_ASSERT(i<__heightList->getColumnNb());
+    GEOM_ASSERT(j<__heightList->getRowNb());
     return Vector3(i*__xSpacing,j*__ySpacing,__heightList->getAt(j,i));
 }
 
 Point4MatrixPtr
 ElevationGrid::getCtrlPoints( ) const {
-    Point4MatrixPtr theCtrlPoint(new Point4Matrix(__heightList->getRowsNb(),__heightList->getColsNb()));
-    for(uint_t _i=0;_i<__heightList->getRowsNb();_i++)
-        for(uint_t _j=0;_j<__heightList->getColsNb();_j++)
+    Point4MatrixPtr theCtrlPoint(new Point4Matrix(__heightList->getRowNb(),__heightList->getColumnNb()));
+    for(uint_t _i=0;_i<__heightList->getRowNb();_i++)
+        for(uint_t _j=0;_j<__heightList->getColumnNb();_j++)
             theCtrlPoint->setAt(_i,_j,Vector4(_i*__xSpacing,_j*__ySpacing,__heightList->getAt(_i,_j),1));
     return theCtrlPoint;
 }
@@ -252,10 +252,10 @@ real_t ElevationGrid::getHeightAt(const TOOLS(Vector2) pos) const
 {
     int xind = int(pos.x() / __xSpacing);
     float xres = pos.x() -  (xind * __xSpacing);
-    if (xind < 0 || xind >= __heightList->getColsNb()) return 0;
+    if (xind < 0 || xind >= __heightList->getColumnNb()) return 0;
     int yind = int(pos.y() / __ySpacing);
     float yres = pos.y() -  (yind * __ySpacing);
-    if (yind < 0 || yind >= __heightList->getRowsNb()) return 0;
+    if (yind < 0 || yind >= __heightList->getRowNb()) return 0;
     float refelevation, refelev1, refelev2;
     if (xres+yres > 1.0){
         refelevation = getPointAt(xind+1,yind+1).z();

@@ -252,7 +252,7 @@ using namespace std;
 
 
 #define GEOM_PRINT_FIELD_MATRIX(stream,obj,field,type) { \
-    uint_t _cols =obj->get##field()->getColsNb(); \
+    uint_t _cols =obj->get##field()->getRowSize(); \
     stream << __indent << #field << " [" << endl; \
     GEOM_PRINT_INCREMENT_INDENT; \
     stream << __indent << " [ " ; \

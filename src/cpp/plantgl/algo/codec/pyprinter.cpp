@@ -216,7 +216,7 @@ ostream& print_value_array2(ostream& os, const array& value, const std::string& 
 	os << "([[";
 	if (!value->empty()){
 		uint_t _sizei = value->size();
-		uint_t _cols = value->getColsNb();
+		uint_t _cols = value->getRowSize();
 		for (uint_t _i = 0; _i < _sizei; _i++) {
 			print_value(os,value->getAt(_i / _cols ,_i % _cols),pglnamespace) ;
 			if (_i != (_sizei - 1)){ 
@@ -306,8 +306,8 @@ ostream& PyPrinter::print_unamed_arg_field(ostream& os, const T& value, bool new
 template <typename T>
 ostream& PyPrinter::print_field(ostream& os, const string& name, const string& str, const T& value, bool in_constructor, bool newline)
 {
-	if (in_constructor) return print_arg_field(os,str,value);
-	else return print_field(os,name, str,value);
+	if (in_constructor) return print_arg_field(os,str,value,newline);
+	else return print_field(os,name, str,value,newline);
 }
 
 
@@ -620,6 +620,10 @@ bool PyPrinter::process( BezierPatch * bezierPatch ) {
   print_constructor_begin(__geomStream, name, "BezierPatch");
 
   print_unamed_arg_field (__geomStream, bezierPatch->getCtrlPointMatrix());
+  if (! bezierPatch->isUStrideToDefault())
+	  print_arg_field (__geomStream, "ustride", bezierPatch->getUStride());
+  if (! bezierPatch->isVStrideToDefault())
+	  print_arg_field (__geomStream, "vstride", bezierPatch->getVStride(),false);
 
   print_constructor_end(__geomStream, bezierPatch, name);
   print_object_end(__geomStream);
@@ -920,7 +924,8 @@ bool PyPrinter::process( Scaled * scaled ) {
 
   GeometryPtr obj = scaled->getGeometry();
   obj->apply(*this);
-
+
+
   print_constructor_begin(__geomStream, name, "Scaled");
   print_arg_field (__geomStream, "scale", scaled->getScale());
   print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));

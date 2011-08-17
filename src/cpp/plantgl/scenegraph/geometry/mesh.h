@@ -355,7 +355,7 @@ public:
   Point3ArrayPtr computeNormalPerVertex() const;
   Point3ArrayPtr computeNormalPerFace() const;
 
-  inline bool hasNormalList() const { return (__normalList); }
+  inline bool hasNormalList() const { return is_valid_ptr(__normalList); }
   inline void checkNormalList() { if(!hasNormalList())computeNormalList(); }
   inline void computeNormalList() { computeNormalList(__normalPerVertex); };
 

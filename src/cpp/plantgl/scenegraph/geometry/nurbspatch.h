@@ -289,12 +289,12 @@ public:
   /*!
     Compute a section line of the patch corresponding to a constant u value
    */
-  LineicModelPtr getUSection(real_t u) const;
+  LineicModelPtr getIsoUSectionAt(real_t u) const;
 
   /*!
     Compute a section line of the patch corresponding to a constant v value
    */
-  LineicModelPtr getVSection(real_t v) const;
+  LineicModelPtr getIsoVSectionAt(real_t v) const;
 
   virtual bool isValid( ) const;
 
