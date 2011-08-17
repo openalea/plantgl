@@ -332,7 +332,7 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "__len__", &array2_rownb<ARRAY> )					
          .def( "__contains__", &ARRAY::contains )					
          .def( "empty", &ARRAY::empty )					
-         .def( "reshape", &array2_reshape<ARRAY>, boost::python::args("nbrow","nbcol") )					
+         .def( "reshape", &array2_reshape<ARRAY>, boost::python::args("nbrow","nbcolumn") )					
          .def( "clear", &ARRAY::clear )					
          .def( "isUnique", &ARRAY::isUnique )					
          .def( "getRow", &array2_getrow<ARRAY>  ) 
@@ -343,7 +343,7 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "getColumnSize", &array2_colsize<ARRAY>  ) 
          .def( "getDiagonal", &array2_getdiag<ARRAY>  ) 
          .def( "transpose", &array2_transpose<ARRAY>  ) 
-	     .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","col","nbrow","nbcol") ) 
+	     .def( "submatrix", &array2_submatrix<ARRAY>, boost::python::args("row","column","nbrow","nbcolumn") ) 
          .def( "insertRow", &array2_insertRow<ARRAY>  ) 
          .def( "insertColumn", &array2_insertColumn<ARRAY>  ) 
          .def( "pushRow", &array2_pushRow<ARRAY>  ) 
@@ -353,9 +353,9 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "__iter__", &array2_getiter<ARRAY> )					
  	    .def_pickle(array2_pickle_suite<ARRAY>());
 
-        class_<Array2Iter<ARRAY> >("Iterator",no_init)
+        boost::python::class_<Array2Iter<ARRAY> >("Iterator",boost::python::no_init)
          .def("next",&Array2Iter<ARRAY>::next)
-         .def("__iter__",&Array2Iter<ARRAY>::nothing,return_self<>())
+         .def("__iter__",&Array2Iter<ARRAY>::nothing,boost::python::return_self<>())
         ;
     }
 };

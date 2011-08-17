@@ -36,6 +36,11 @@ if env['USE_DOUBLE']:
 else:
     env.AppendUnique( CPPDEFINES = ['PGL_USE_FLOAT'] )
 
+#if 'linux' in sys.platform:
+    # By default for linux, use unordered map
+    # env.AppendUnique( CPPDEFINES = ['USING_UNORDERED_MAP'] )
+
+
 # Build stage
 prefix= env['build_prefix']
 SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
