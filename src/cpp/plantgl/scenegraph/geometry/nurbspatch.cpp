@@ -556,7 +556,9 @@ Point4MatrixPtr NurbsPatch::getMetric(real_t u, real_t v) const{
       for (uint_t k = 0 ; k <= 1 ; k++ ){
         // CPL: This line do not compile
         //_metric->setAt(l,k,_utangent(l) * _vtangent(v))
-        #warning implement the function with a valid code.
+#ifdef __GNUC__
+#warning implement the function with a valid code.
+#endif
       }
     }
     return _metric;
@@ -578,7 +580,9 @@ Point4MatrixPtr NurbsPatch::getInvMetric(real_t u, real_t v) const{
     for (uint_t l = 0 ; l <= 1 ; l++ ){
       for (uint_t k = 0 ; k <= 1 ; k++ ){
         //_invmetric->setAt(l,k,_utangent(l)*_vtangent(v)/(_utangent[0]*_vtangent[1] - _utangent[1]*_vtangent[0]))
-        #warning implement the function with a valid code.
+#ifdef __GNUC__
+    #warning implement the function with a valid code.
+#endif
       }
     }
     return _invmetric;
