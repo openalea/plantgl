@@ -240,7 +240,7 @@ public:
      \pre 
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  Point4MatrixPtr getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const;
+  //Point4MatrixPtr getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
       (see the Nurbs book p.12) 

@@ -545,10 +545,12 @@ Point4MatrixPtr NurbsPatch::getMetric(real_t u, real_t v) const{
     Vector3 _vtangent = getVTangentAt(u,v);
     for (uint_t l = 0 ; l <= 1 ; l++ ){
       for (uint_t k = 0 ; k <= 1 ; k++ ){
-        _metric->setAt(l,k,_utanget(l) * _vtangent(v))
+        // CPL: This line do not compile
+        //_metric->setAt(l,k,_utangent(l) * _vtangent(v))
+        #warning implement the function with a valid code.
       }
     }
-    return _metric
+    return _metric;
 }
 
 real_t NurbsPatch::getDetMetric(real_t u, real_t v) const{
@@ -556,7 +558,7 @@ real_t NurbsPatch::getDetMetric(real_t u, real_t v) const{
     Vector3 _utangent = getUTangentAt(u,v);
     Vector3 _vtangent = getVTangentAt(u,v);
     real_t _det = _utangent[0] * _vtangent[1] - _utangent[1] * _vtangent[0];
-    return _det
+    return _det;
 }
 
 Point4MatrixPtr NurbsPatch::getInvMetric(real_t u, real_t v) const{
@@ -566,27 +568,29 @@ Point4MatrixPtr NurbsPatch::getInvMetric(real_t u, real_t v) const{
     Vector3 _vtangent = getVTangentAt(u,v);
     for (uint_t l = 0 ; l <= 1 ; l++ ){
       for (uint_t k = 0 ; k <= 1 ; k++ ){
-        _invmetric->setAt(l,k,_utanget(l)*_vtangent(v)/(_utangent[0]*_vtangent[1] - _utangent[1]*_vtangent[0]))
+        //_invmetric->setAt(l,k,_utangent(l)*_vtangent(v)/(_utangent[0]*_vtangent[1] - _utangent[1]*_vtangent[0]))
+        #warning implement the function with a valid code.
       }
     }
-    return _invmetric
+    return _invmetric;
 }
 
-def connect_coeffs
+// This function is not finished yet...
+/*
 Point4MatrixPtr NurbsPatch::getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const{
     //cout<<"NurbsPatch.deriveAt"<<endl;
     Point4MatrixPtr _drvecoord = nurbsPatch::getDerivativesAt(u,v) ;
     Point4MatrixPtr _christoffel(new Point4Matrix(d+1,d+1));
-    Vector3 _chvec = Vector3::ORIGIN
-    _coord_contra = coord_contra()
+    Vector3 _chvec = Vector3::ORIGIN;
+    _coord_contra = coord_contra();
     for (uint_t l = 0 ; l <= 1 ; l++ ){
       for (uint_t k = 0 ; k <= 1 ; k++ ){
-        _chvec = _drve_coord->getAt(l,k)
+        _chvec = _drve_coord->getAt(l,k);
         for (uint_t j = 0 ; j <= 1 ; j++ ){
-          _connect_coeffs[(l,k,j)] = _coord_contra[j] *  
+          //_connect_coeffs[(l,k,j)] = _coord_contra[j] * 
                 pass
     return _connect_coeffs
-
+*/
 
 
 
@@ -631,10 +635,10 @@ LineicModelPtr NurbsPatch::getUSection(real_t u) const
   uint_t vdim = __ctrlPointMatrix->getColsNb();
   Point4ArrayPtr temp(new Point4Array(vdim));
   for (uint_t l = 0 ; l < vdim ; l++ ){
-	  Vector4 vec;
+      Vector4 vec;
       for (uint_t k = 0 ; k <= __udegree ; k++ )
           vec += (__ctrlPointMatrix->getAt(uspan - __udegree +k,l) *  (Nu->getAt(k))) ;
-	  temp->setAt(l,vec);
+      temp->setAt(l,vec);
   }
   return LineicModelPtr(new NurbsCurve(temp,__vKnotList,__vdegree,__vstride));
 }
