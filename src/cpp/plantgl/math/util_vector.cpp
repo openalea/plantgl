@@ -706,6 +706,16 @@ real_t sum( const Vector3& v ) {
   return v.__X + v.__Y + v.__Z;
 }
 
+real_t radialAnisotropicNorm( const Vector3& v, const Vector3& t, real_t alpha, real_t beta ){ 
+    real_t a = dot(v,t);
+    Vector3 b = v - a*t;
+    return sqrt(a*a*alpha+beta*normSquared(b));
+}
+
+real_t anisotropicNorm( const Vector3& v, const Vector3& factors  ) {
+    return sqrt(factors.x()*v.x()*v.x()+factors.y()*v.y()*v.y()+factors.z()*v.z()*v.z());
+}
+
 real_t angle( const Vector3& v1 , const Vector3& v2 ) {
 	real_t n = norm(v1)*norm(v2);
 	if(n < GEOM_EPSILON)return 0;

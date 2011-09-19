@@ -531,6 +531,10 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Returns the square of the norm of \e v.
   friend PGLMATH_API real_t normSquared( const Vector3& v );
 
+  /// Anisotropic norm of \e v.
+  friend PGLMATH_API real_t radialAnisotropicNorm( const Vector3& v, const Vector3& t, real_t alpha, real_t beta );
+  friend PGLMATH_API real_t anisotropicNorm( const Vector3& v, const Vector3& factors  );
+
   /// Returns the sum of all the values of \e self.
   friend PGLMATH_API real_t sum( const Vector3& v );
 
@@ -573,6 +577,8 @@ PGLMATH_API real_t normL1( const Vector3& v );
 PGLMATH_API real_t normLinf( const Vector3& v );
 PGLMATH_API real_t normSquared( const Vector3& v );
 PGLMATH_API real_t sum( const Vector3& v );
+PGLMATH_API real_t radialAnisotropicNorm( const Vector3& v, const Vector3& t, real_t alpha, real_t beta );
+PGLMATH_API real_t anisotropicNorm( const Vector3& v, const Vector3& factors  );
 PGLMATH_API Vector3 cross( const Vector3& v1, const Vector3& v2 );
 PGLMATH_API Vector3 operator^( const Vector3& v1, const Vector3& v2 );
 PGLMATH_API real_t dot( const Vector3& v1, const Vector3& v2 );

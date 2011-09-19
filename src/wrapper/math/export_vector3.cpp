@@ -144,7 +144,9 @@ void export_Vector3()
     .def( "__repr__", v3_repr )
     .def(vector_dim3_func<Vector3>())
     .def(vector_crossdot<Vector3>())
-	.def_pickle(v3_pickle_suite());
+	.def_pickle(v3_pickle_suite())
+    .def("radialAnisotropicNorm",&radialAnisotropicNorm)
+    .def("anisotropicNorm",&anisotropicNorm)
 	;
 
    pgltuple_from_tuple<Vector3,3>();
