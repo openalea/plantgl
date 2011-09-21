@@ -38,13 +38,13 @@ from vplants.plantgl.scenegraph import Scene as PGLScene
 from vplants.plantgl.codec.blender import sc_to_blender
 
 def load_scene (filename) :
-	sc = PGLScene()
-	sc.read(filename)
-	print "loaded",len(sc)
-	
-	return sc_to_blender(sc)
+    sc = PGLScene()
+    sc.read(filename)
+    print "loaded",len(sc)
+    
+    return sc_to_blender(sc)
 
 if __name__ == '__main__' :
-	Window.FileSelector(load_scene, 'Import scene', '*.geom,*.bgeom')
+    Window.FileSelector(load_scene, 'Import scene', '*.geom,*.bgeom')
 
 
