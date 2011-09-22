@@ -1,4 +1,5 @@
 from openalea.plantgl.all import *
+from openalea.plantgl.codec import obj
 
 class DummyCodec (SceneCodec):
     def __init__(self):
@@ -18,3 +19,15 @@ def test_codec():
     s = Scene()
     s.read('toto.test','Test')
     assert type(s[0].geometry) == Sphere
+
+def test_obj():
+    s = Scene()
+    s.read('./data/icosahedron.obj')
+    assert len(s) == 2
+    assert s.isValid()
+    s.read('./data/humanoid_tri.obj')
+    assert len(s) == 3
+    assert s.isValid()
+    s.read('./data/trumpet.obj')
+    assert len(s) == 0
+    
