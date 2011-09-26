@@ -348,6 +348,28 @@ bool BoundingBox::include( const BoundingBox& bbox ) const {
   return true;
 }
 
+real_t BoundingBox::distance(const BoundingBox& bbox) const {
+    Vector3 dist(0,0,0);
+    if (bbox.__ur.x() < __ll.x()) dist.x() = __ll.x() - bbox.__ur.x();
+    else if (bbox.__ll.x() > __ur.x()) dist.x() = __ur.x() - bbox.__ll.x();
+    if (bbox.__ur.y() < __ll.y()) dist.y() = __ll.y() - bbox.__ur.y();
+    else if (bbox.__ll.y() > __ur.y()) dist.y() = __ur.y() - bbox.__ll.y();
+    if (bbox.__ur.z() < __ll.z()) dist.z() = __ll.z() - bbox.__ur.z();
+    else if (bbox.__ll.z() > __ur.z()) dist.z() = __ur.z() - bbox.__ll.z();
+    return norm(dist);
+}
+
+real_t BoundingBox::distance(const Vector3& pt) const {
+    Vector3 dist(0,0,0);
+    if (pt.x() < __ll.x()) dist.x() = __ll.x() - pt.x();
+    else if (pt.x() > __ur.x()) dist.x() = __ur.x() - pt.x();
+    if (pt.y() < __ll.y()) dist.y() = __ll.y() - pt.y();
+    else if (pt.y() > __ur.y()) dist.y() = __ur.y() - pt.y();
+    if (pt.z() < __ll.z()) dist.z() = __ll.z() - pt.z();
+    else if (pt.z() > __ur.z()) dist.z() = __ur.z() - pt.z();
+    return norm(dist);
+}
+
 /* ----------------------------------------------------------------------- */
 void BoundingBox::set( const Vector3& lowLeft, const Vector3& upRight ){
   __ll = lowLeft;

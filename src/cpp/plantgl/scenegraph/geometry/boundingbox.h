@@ -180,6 +180,20 @@ public:
       - \e point1 and point2 must be valid. */
    bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 ) const;
 
+   /** \brief Compute distance between \e self and another bbox.
+
+      \pre
+      - \e self must be valid;
+      - \e bbox  must be valid. */
+   real_t distance(const BoundingBox& bbox) const;
+
+   /** \brief Compute distance between \e self and a point.
+
+      \pre
+      - \e self must be valid;
+      - \e point  must be valid. */
+   real_t distance(const TOOLS(Vector3)& point) const;
+
    /// Set new values.
   void set( const TOOLS(Vector3)& lowLeft, const TOOLS(Vector3)& upRight );
 

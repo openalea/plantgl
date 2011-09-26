@@ -62,12 +62,33 @@ std::string bbox_str(BoundingBox * bbox){
 }
 
 bool contains_bbox(BoundingBox * bbox, BoundingBox * bbox2){
-	return intersection(*bbox,*bbox2);
+	return bbox->include(*bbox2);
 }
 
 bool contains_v3(BoundingBox * bbox, Vector3 v){
 	return intersection(*bbox,v);
 }
+
+bool intersect_bbox(BoundingBox * bbox, BoundingBox * bbox2){
+	return bbox->intersect(*bbox2);
+}
+
+void extend_bbox(BoundingBox * bbox, BoundingBox * bbox2){
+	bbox->extend(*bbox2);
+}
+
+void extend_bbox_v3(BoundingBox * bbox, Vector3 v){
+	bbox->extend(v);
+}
+
+real_t distance_to_bbox(BoundingBox * bbox, BoundingBox * bbox2){
+	return bbox->distance(*bbox2);
+}
+
+real_t distance_to_bbox_v3(BoundingBox * bbox, Vector3 v){
+	return bbox->distance(v);
+}
+
 
 BoundingBoxPtr  bbx_fromobj( boost::python::object o ) 
 { 
@@ -128,6 +149,11 @@ void export_BoundingBox()
     .def( self & self )
 	.def("contains",&contains_bbox)	 
 	.def("contains",&contains_v3)
+	.def("intersect",&intersect_bbox) 
+	.def("extend",&extend_bbox) 
+	.def("extend",&extend_bbox_v3) 
+	.def("distance",&distance_to_bbox) 
+	.def("distance",&distance_to_bbox_v3) 
     .def("getId",&RefCountObject::uid) 
 	 ;
 

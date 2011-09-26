@@ -414,16 +414,16 @@ real_t hausdorff_distance(const RCPtr<T> pts1,
 		real_t dist1a = REAL_MAX;
 		for(typename T::const_iterator it2 = pts2->begin(); it2 != pts2->end();++it2)
             dist1a = std::min(dist1a,norm((*it1)-(*it2)));
-		dist1 += dist1a;
+		dist1 = std::max(dist1,dist1a);
 	}
 	real_t dist2 = 0;
 	for(typename T::const_iterator it2 = pts2->begin(); it2 != pts2->end();++it2){
 		real_t dist2a = REAL_MAX;
 		for(typename T::const_iterator it1 = pts1->begin(); it1 != pts1->end();++it1)
 			dist2a = std::min(dist2a,norm((*it1)-(*it2)));
-		dist2 += dist2a;
+		dist2 = std::max(dist2,dist2a);
 	}
-	return (dist1+dist2)/(pts1->size()+pts2->size());
+	return std::max(dist1,dist2);
 }
 
 // filter redundant successive value and homogenize value according to 
