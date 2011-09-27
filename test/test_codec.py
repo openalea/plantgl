@@ -20,14 +20,34 @@ def test_codec():
     s.read('toto.test','Test')
     assert type(s[0].geometry) == Sphere
 
-def test_obj():
+def test_read_obj():
     s = Scene()
     s.read('./data/icosahedron.obj')
-    assert len(s) == 2
+    assert len(s) == 1, len(s)
     assert s.isValid()
     s.read('./data/humanoid_tri.obj')
-    assert len(s) == 3
+    assert len(s) == 2, len(s)
     assert s.isValid()
     s.read('./data/trumpet.obj')
-    assert len(s) == 0
+    assert s.isValid()
     
+def test_write_obj():
+    s = Scene()
+    s.read('./data/icosahedron.obj')
+    s.save('./data/test_icosahedron.obj')
+    s.clear()
+    s.read('./data/test_icosahedron.obj')
+    assert len(s) == 1, len(s)
+    assert s.isValid()
+
+    s.read('./data/humanoid_tri.obj')
+    s.save('./data/test_humanoid_tri.obj')
+    s.clear()
+    s.read('./data/test_humanoid_tri.obj')
+    assert len(s) == 2, len(s)
+    assert s.isValid()
+    s.read('./data/trumpet.obj')
+    s.save('./data/test_trumpet.obj')
+    s.clear()
+    s.read('./data/test_trumpet.obj')
+    assert s.isValid()
