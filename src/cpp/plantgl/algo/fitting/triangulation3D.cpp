@@ -52,13 +52,15 @@ typedef Triangulation::Locate_type    Locate_type;
 typedef Triangulation::Point          Point;
 typedef Triangulation::Segment        Segment;
 
-PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
+
 
 inline Point toPoint(const Vector3& v) { return Point(v.x(),v.y(),v.z()); }
 inline Vector3 toVector3(const Point& v) { return Vector3(v.x(),v.y(),v.z()); }
 
 #endif
+
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 Index3ArrayPtr 
 PGL::delaunay_triangulation3D(const Point3ArrayPtr points)
