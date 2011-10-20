@@ -51,6 +51,8 @@ void export_PointManip()
     def("k_closest_points_from_delaunay",&k_closest_points_from_delaunay,args("points","k"));
     def("r_neighboorhood",&r_neighboorhood,args("pid","points","adjacencies","radius"));
     def("r_neighboorhoods",&r_neighboorhoods,args("points","adjacencies","radii"));
+    def("r_anisotropic_neighboorhood",&r_anisotropic_neighboorhood,args("pid","points","adjacencies","radius","direction","alpha","beta"));
+    def("r_anisotropic_neighboorhoods",&r_anisotropic_neighboorhoods,args("points","adjacencies","radii","directions","alpha","beta"));
 
 }
 

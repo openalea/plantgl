@@ -163,7 +163,7 @@ struct PointAnisotropicDistance {
 
 
 Index
-PGL::r_anisotopic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius, 
+PGL::r_anisotropic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius, 
 					 const Vector3& direction, 
 					 const real_t alpha, const real_t beta)
 {
@@ -178,7 +178,7 @@ PGL::r_anisotopic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const
 }
 
 IndexArrayPtr 
-PGL::r_anisotopic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii, 
+PGL::r_anisotropic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii, 
 			         const Point3ArrayPtr directions,
 				 const real_t alpha, const real_t beta)
 {
