@@ -34,8 +34,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-// #include <plantgl/tool/util_hashmap.h>
 #include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/indexarray.h>
 #include "../algo_config.h"
 #include <vector>
 
@@ -45,9 +45,8 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-typedef std::vector<std::vector<uint32_t> > PointConnectionMap;
 
-ALGO_API PointConnectionMap 
+ALGO_API Index3ArrayPtr 
 delaunay_triangulation3D(const Point3ArrayPtr points);
 
 

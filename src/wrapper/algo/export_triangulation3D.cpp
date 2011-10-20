@@ -41,15 +41,11 @@ using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-boost::python::object py_delaunay_triangulation3D(const Point3ArrayPtr points){
-    return make_list_of_list(delaunay_triangulation3D(points))();
-}
-
-
-
 
 void export_Triangulation3D()
 {
-  def("delaunay_triangulation3D",&py_delaunay_triangulation3D,args("points"));
+  def("delaunay_triangulation3D",&delaunay_triangulation3D,args("points"));
 
 }
+
+/* ----------------------------------------------------------------------- */

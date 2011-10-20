@@ -60,7 +60,7 @@ inline Vector3 toVector3(const Point& v) { return Vector3(v.x(),v.y(),v.z()); }
 
 #endif
 
-PointConnectionMap 
+Index3ArrayPtr 
 PGL::delaunay_triangulation3D(const Point3ArrayPtr points)
 {
 #ifdef WITH_CGAL
@@ -69,18 +69,18 @@ PGL::delaunay_triangulation3D(const Point3ArrayPtr points)
     for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it)
         triangulation.insert(toPoint(*it))->info() = pointCount++;
 
-
-    PointConnectionMap result;
-    result.resize(points->size());
-    for(Triangulation::Finite_edges_iterator it = triangulation.finite_edges_begin();
-        it != triangulation.finite_edges_end(); ++it){
-            uint32_t source = it->first->vertex(it->second)->info();
-            uint32_t target = it->first->vertex(it->third)->info();
-            result[source].push_back(target);
-            result[target].push_back(source);
+    Index3ArrayPtr result(new Index3Array(points->size()));
+    for(Triangulation::Finite_facets_iterator it = triangulation.finite_facets_begin();
+        it != triangulation.finite_facets_end(); ++it){
+            const Cell_handle cell = it->first;
+            const int& index = it->second;
+	        const int index1 = cell->vertex(triangulation.vertex_triple_index(index, 0))->info();
+	        const int index2 = cell->vertex(triangulation.vertex_triple_index(index, 1))->info();
+	        const int index3 = cell->vertex(triangulation.vertex_triple_index(index, 2))->info();
+            result->push_back(Index3(index1,index2,index3));
     } 
 #else
-    PointConnectionMap result;
+    Index3ArrayPtr result;
 #endif
     return result;
 }
