@@ -272,7 +272,7 @@ public:
 		Index maxindexdist = SpatialBase::getMaxIndexDistanceToBorder(centervxl);
         if (maxdist < REAL_MAX){
 		    for (size_t i = 0; i < NbDimension; ++i){
-                real_t maxinddist = std::max<real_t>(1,maxdist / __voxelsize[i]);
+                real_t maxinddist = std::max<real_t>(1,maxdist / SpatialBase::__voxelsize[i]);
                 if (real_t(maxindexdist[i]) > maxinddist)
 			        maxindexdist[i] =  size_t(maxinddist);
             }

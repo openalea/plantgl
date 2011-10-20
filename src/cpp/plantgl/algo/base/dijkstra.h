@@ -1,46 +1,3 @@
-
-
-
-
-#include <queue>
-#include <memory>
-
-/**
-  my priority queue for comparing node
-*/
-class node_priority_queue {
-public:
-    struct nodecompare {
-       const real_t * distances;
-       nodecompare(const real_t * _distances) : distances(_distances) {}
-       bool operator()(const uint32_t& a,const uint32_t& b) { return distances[a] > distances[b]; }
-    };
-
-    std::deque<uint32_t> c;
-    struct nodecompare comp;
-
-    node_priority_queue(const real_t * distances): comp(distances) { }
-
-	bool empty() const { return (c.empty()); }
-	size_t size() const { return (c.size()); }
-
-	void push(uint32_t _Val)
-		{	
- 	    	c.push_back(_Val);
-		    push_heap(c.begin(), c.end(), comp);
-		}
-
-	uint32_t pop()
-	{
-        uint32_t topvalue = c.front(); 
-		pop_heap(c.begin(), c.end(), comp);
-		c.pop_back();
-        return topvalue;
-	}
-
-    void update() { make_heap(c.begin(),c.end()); }
-};
-
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
@@ -80,7 +37,47 @@ public:
 #include "../algo_config.h"
 #include <plantgl/scenegraph/container/indexarray.h>
 
+
+#include <queue>
+#include <memory>
+
 PGL_BEGIN_NAMESPACE
+
+/**
+  my priority queue for comparing node
+*/
+class node_priority_queue {
+public:
+    struct nodecompare {
+       const real_t * distances;
+       nodecompare(const real_t * _distances) : distances(_distances) {}
+       bool operator()(const uint32_t& a,const uint32_t& b) { return distances[a] > distances[b]; }
+    };
+
+    std::deque<uint32_t> c;
+    struct nodecompare comp;
+
+    node_priority_queue(const real_t * distances): comp(distances) { }
+
+	bool empty() const { return (c.empty()); }
+	size_t size() const { return (c.size()); }
+
+	void push(uint32_t _Val)
+		{	
+ 	    	c.push_back(_Val);
+		    push_heap(c.begin(), c.end(), comp);
+		}
+
+	uint32_t pop()
+	{
+        uint32_t topvalue = c.front(); 
+		pop_heap(c.begin(), c.end(), comp);
+		c.pop_back();
+        return topvalue;
+	}
+
+    void update() { make_heap(c.begin(),c.end()); }
+};
 
 struct Node {
     uint32_t id;
@@ -95,7 +92,7 @@ typedef std::vector<Node> NodeList;
 template<class EdgeWeigthEvaluation>
 NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
                                    uint32_t root, 
-                                   EdgeWeigthEvaluation distevaluator,
+                                   EdgeWeigthEvaluation& distevaluator,
                                    real_t maxdist = REAL_MAX)
  {
 

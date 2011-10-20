@@ -116,14 +116,15 @@ PGL::k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k)
 
 #include "dijkstra.h"
 
-Index
-PGL::r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius)
-{
-    struct PointDistance {
+struct PointDistance {
         const Point3ArrayPtr points;
         real_t operator()(uint32_t a, uint32_t b) const { return norm(points->getAt(a)-points->getAt(b)); }
         PointDistance(const Point3ArrayPtr _points) : points(_points) {}
-    };
+};
+
+Index
+PGL::r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius)
+{
 
     struct PointDistance pdevaluator(points);
 
@@ -137,16 +138,56 @@ PGL::r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArray
 IndexArrayPtr 
 PGL::r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii)
 {
-    struct PointDistance {
-        const Point3ArrayPtr points;
-        real_t operator()(uint32_t a, uint32_t b) const { return norm(points->getAt(a)-points->getAt(b)); }
-        PointDistance(const Point3ArrayPtr _points) : points(_points) {}
-    };
-
     struct PointDistance pdevaluator(points);
+
     uint32_t current = 0;
     IndexArrayPtr result(new IndexArray(points->size()));
     for(RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii) {
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,*itradii);
+        Index lres;
+        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+            lres.push_back(itn->id);
+        result->setAt(current,lres);
+    }
+    return result;
+}
+
+struct PointAnisotropicDistance {
+        const Point3ArrayPtr points;
+	Vector3 direction;
+	real_t alpha, beta;
+        real_t operator()(uint32_t a, uint32_t b) const { return radialAnisotropicNorm(points->getAt(a)-points->getAt(b),direction,alpha,beta); }
+        PointAnisotropicDistance(const Point3ArrayPtr _points, const Vector3& _direction, real_t _alpha, real_t _beta) 
+		: points(_points), direction(_direction), alpha(_alpha), beta(_beta) {}
+};
+
+
+Index
+PGL::r_anisotopic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius, 
+					 const Vector3& direction, 
+					 const real_t alpha, const real_t beta)
+{
+
+    struct PointAnisotropicDistance pdevaluator(points,direction,alpha,beta);
+
+    NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,pid,pdevaluator,radius);
+    Index result;
+    for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+          result.push_back(itn->id);
+    return result;
+}
+
+IndexArrayPtr 
+PGL::r_anisotopic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii, 
+			         const Point3ArrayPtr directions,
+				 const real_t alpha, const real_t beta)
+{
+
+    uint32_t current = 0;
+    IndexArrayPtr result(new IndexArray(points->size()));
+
+    for(RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii) {
+	struct PointAnisotropicDistance pdevaluator(points,directions->getAt(current),alpha,beta);
         NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,*itradii);
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)

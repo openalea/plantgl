@@ -89,6 +89,21 @@ r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr a
 ALGO_API IndexArrayPtr 
 r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const TOOLS(RealArrayPtr) radii);
 
+ALGO_API Index 
+r_anisotopic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, 
+					 const IndexArrayPtr adjacencies, 
+					 const real_t radius, 
+					 const TOOLS(Vector3)& direction, 
+					 const real_t alpha, const real_t beta);
+
+ALGO_API IndexArrayPtr 
+r_anisotopic_neighboorhoods(const Point3ArrayPtr points, 
+			    const IndexArrayPtr adjacencies, 
+			    const TOOLS(RealArrayPtr) radii, 
+			    const Point3ArrayPtr directions, 
+		            const real_t alpha, 
+		            const real_t beta);
+
 PGL_END_NAMESPACE
 
 #endif
