@@ -89,7 +89,7 @@ public :
 
 	virtual ScenePtr read(const std::string& fname) { return ScenePtr(); }
 
-	virtual void write(const std::string& fname,const ScenePtr&	scene) { }
+	virtual bool write(const std::string& fname,const ScenePtr&	scene) { return false; }
 
     void setName(const std::string& name) { __name = name; }
     const std::string& getName() const { return __name; }
@@ -121,10 +121,10 @@ public:
     bool isWritable(const std::string& fname);
 
     ScenePtr read(const std::string& fname);
-	void write(const std::string& fname,const ScenePtr&	scene);
+	bool write(const std::string& fname,const ScenePtr&	scene);
 
 	ScenePtr read(const std::string& fname, const std::string& codecname);
-	void write(const std::string& fname,const ScenePtr&	scene, const std::string& codecname);
+	bool write(const std::string& fname,const ScenePtr&	scene, const std::string& codecname);
 
 	void registerCodec(const SceneCodecPtr& codec);
 	void unregisterCodec(const SceneCodecPtr& codec);

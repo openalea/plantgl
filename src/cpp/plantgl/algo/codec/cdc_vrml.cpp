@@ -67,7 +67,7 @@ SceneFormatList VrmlCodec::formats() const
 	return _formats;
 }
 
-void VrmlCodec::write(const std::string& fname,const ScenePtr& scene)
+bool VrmlCodec::write(const std::string& fname,const ScenePtr& scene)
 {
 	std::ofstream stream(fname.c_str());
 	if(stream){
@@ -75,5 +75,7 @@ void VrmlCodec::write(const std::string& fname,const ScenePtr& scene)
 		VrmlPrinter p(stream,t);
 		p.header();
 		scene->apply(p);
+        return true;
 	}
+    return false;
 }

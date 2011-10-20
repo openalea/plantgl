@@ -102,7 +102,7 @@ void module_algo()
 
     // Point manip
     export_PointManip();
-
+    export_Triangulation3D();
 };
 
 /* ----------------------------------------------------------------------- */

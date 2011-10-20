@@ -145,19 +145,22 @@ ScenePtr GeomCodec::read(const std::string& fname)
   
 }
 
-void GeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+bool GeomCodec::write(const std::string& fname,const ScenePtr&	scene)
 {
 	std::string ext = get_suffix(fname);
 	ext = toUpper(ext);
 	if(ext == "BGEOM"){
 		BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
+        return true;
 	}
 	else{
 		std::ofstream stream(fname.c_str());
 		if(stream){
 			Printer p(stream,stream,stream);
 			scene->apply(p);
+            return true;
 		}
+        else return false;
 	}
 }
 
@@ -188,8 +191,9 @@ ScenePtr BGeomCodec::read(const std::string& fname)
   else return ScenePtr();
 }
 
-void BGeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+bool BGeomCodec::write(const std::string& fname,const ScenePtr&	scene)
 {
     BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
+    return true;
 }
 /* ----------------------------------------------------------------------- */

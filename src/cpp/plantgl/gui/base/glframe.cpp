@@ -519,11 +519,11 @@ ViewGLFrame::setMode(Mode i)
     }
     else if(__mode == Selection){
       setCursor(QCursor( Qt::PointingHandCursor ));
-      status(tr("Mode Selection"),2000);
+      status(tr("Continue Selection"),2000);
     }
     else if(__mode == MultipleSelection){
       setCursor(QCursor(Qt::CrossCursor  ));
-      status(tr("Mode Multiple Selection"),2000);
+      status(tr("Continue Multiple Selection"),2000);
     }
     __scene->changeModeEvent(__mode);
     emit modeChanged(__mode);
@@ -865,8 +865,8 @@ void ViewGLFrame::multipleSelectGL(const QPoint& p)
   makeCurrent();
 
   GLint hits;
-  GLsizei bufsize = 40960;
-  GLuint selectBuf[40960];
+  GLsizei bufsize = 400000;
+  GLuint selectBuf[400000];
 
   glSelectBuffer(bufsize,selectBuf);
   (void)glRenderMode(GL_SELECT);

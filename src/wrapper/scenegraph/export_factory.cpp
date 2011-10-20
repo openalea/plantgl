@@ -51,7 +51,8 @@ BOOST_INITIALIZE_WRAPPER_FIX_DECLARE(PySceneCodec)
 #include <boost/python/make_constructor.hpp>
 
 // PGL_USING_NAMESPACE
-// TOOLS_USING_NAMESPACE
+// TOOLS_USING_NAMESPACE
+
 // using namespace std;
 #define bp boost::python
 PGL_USING(SceneFormat)
@@ -119,17 +120,19 @@ public:
         return default_read(fname);
     }
 
-	void default_write(const std::string& fname,const ScenePtr&	scene) 
-    {SceneCodec::write(fname,scene); }
-	virtual void write(const std::string& fname,const ScenePtr&	scene)
+	bool default_write(const std::string& fname,const ScenePtr&	scene) 
+    { return SceneCodec::write(fname,scene); }
+	virtual bool write(const std::string& fname,const ScenePtr&	scene)
     {
         {
             PythonInterpreterAcquirer py;
             if (bp::override func = this->get_override("write")){
                 try{
-                    return bp::call<void>(func.ptr(),bp::object(fname),bp::object(scene)); 
+                     boost::python::object res = bp::call<boost::python::object>(func.ptr(),bp::object(fname),bp::object(scene)); 
+                     if (res == boost::python::object()) return true;
+                     return boost::python::extract<bool>(res)();
                 }
-                catch(bp::error_already_set) { PyErr_Print(); }
+                catch(bp::error_already_set) { PyErr_Print(); return false; }
             }
         }
         return default_write(fname,scene);
@@ -248,8 +251,8 @@ void export_SceneFactory()
       .def("isWritable", &SceneFactory::isWritable)
       .def("read", (ScenePtr(SceneFactory::*)(const std::string&))&SceneFactory::read)
       .def("read", (ScenePtr(SceneFactory::*)(const std::string&,const std::string&))&SceneFactory::read)
-      .def("write", (void(SceneFactory::*)(const std::string&,const ScenePtr&))&SceneFactory::write)
-      .def("write", (void(SceneFactory::*)(const std::string&,const ScenePtr&,const std::string&))&SceneFactory::write)
+      .def("write", (bool(SceneFactory::*)(const std::string&,const ScenePtr&))&SceneFactory::write)
+      .def("write", (bool(SceneFactory::*)(const std::string&,const ScenePtr&,const std::string&))&SceneFactory::write)
   ;
 
 }

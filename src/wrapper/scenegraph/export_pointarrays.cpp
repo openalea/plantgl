@@ -210,6 +210,12 @@ object pa_bounds(const T * pts){
     return make_tuple(bounds.first,bounds.second); 
 }
 
+template<class T>
+void pa_translate(T * pts, typename T::element_type value){ 
+    for(T::iterator iter = pts->begin(); iter != pts->end(); ++iter)
+        *iter += value;
+}
+
 void export_pointarrays()
 {
   EXPORT_ARRAY_CT( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
@@ -230,6 +236,7 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point2Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>)
     .def( "transform", &Point2Array::transform)
+    .def( "translate", &pa_translate<Point2Array>)
     .def( "findClosest", &pa_findclosest<Point2Array>,"Find closest point in the PointArray2 from arg",args("point"))
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
@@ -259,6 +266,7 @@ void export_pointarrays()
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>)
     .def( "transform", (void(Point3Array::*)(const Matrix3&))&Point3Array::transform)
     .def( "transform", (void(Point3Array::*)(const Matrix4&))&Point3Array::transform)
+    .def( "translate", &pa_translate<Point3Array>)
     .def( "findClosest", &pa_findclosest<Point3Array>,"Find closest point in the PointArray3 from arg",args("point"))
     DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
@@ -292,6 +300,7 @@ void export_pointarrays()
     .def( "partition", &py_partition<Point4Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>)
     .def( "transform", &Point4Array::transform)
+    .def( "translate", &pa_translate<Point4Array>)
     .def( "findClosest", &pa_findclosest<Point4Array>,"Find closest point in the PointArray4 from arg",args("point"))
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);

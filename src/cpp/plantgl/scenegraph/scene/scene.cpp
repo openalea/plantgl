@@ -134,7 +134,7 @@ Scene::Scene(const SceneObjectSymbolTable& table) :
   GEOM_ASSERT(isValid());
 }
 
-void Scene::read( const std::string& filename,
+bool Scene::read( const std::string& filename,
 				  const std::string& format,
 				  std::ostream& errlog, 
 				  int max_error ){
@@ -142,13 +142,14 @@ void Scene::read( const std::string& filename,
 	ScenePtr scne;
 	if(format.empty())scne = SceneFactory::get().read(filename);
 	else scne = SceneFactory::get().read(filename,format);
-	if(scne)merge(scne);
+    if(scne) { merge(scne); return true; }
+    else return false;
 }
 
 
-void Scene::save( const std::string& fname, const std::string& format)  {
-	if(format.empty())SceneFactory::get().write(fname,ScenePtr(this));
-	else SceneFactory::get().write(fname,ScenePtr(this),format);
+bool Scene::save( const std::string& fname, const std::string& format)  {
+	if(format.empty()) return SceneFactory::get().write(fname,ScenePtr(this));
+	else return SceneFactory::get().write(fname,ScenePtr(this),format);
 }
 
 void Scene::convert( const SceneObjectSymbolTable& table ){

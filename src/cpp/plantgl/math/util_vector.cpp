@@ -323,8 +323,8 @@ real_t angle( const Vector2& v1 , const Vector2& v2 ) {
 	return acos(dot(v1,v2)/n);
 */
 real_t angle( const Vector2& v1 , const Vector2& v2 ) {
-  real_t cosinus = v1*v2;
-  real_t sinus = v1^v2;
+  real_t cosinus = v1*v2; //dot(v1,v2)
+  real_t sinus = v1^v2;   // cross(v1,v2)
   return atan2( sinus, cosinus );
 }
 

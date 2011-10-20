@@ -977,7 +977,13 @@ ViewGeomSceneGL::saveScene(const QString& shape,
   else if(extension == "BGEOM" ){
 	  return BinaryPrinter::print(__scene,shape.toStdString(),tr("File Generated with PlantGL 3D Viewer").toAscii().data());
   }
-  else return false;
+  else { 
+      if (!__scene->save(shape.toStdString())){
+        QMessageBox::warning(__frame,tr("Cannot save"),QString(tr("Problem with saving file.")),1,0,0);
+        return false;
+      }
+      return true;
+  }
 }
 
 

@@ -108,9 +108,9 @@ public:
 
   Scene& operator=( const Scene& );
 
-  void save( const std::string& fname , const std::string& format = "" );
+  bool save( const std::string& fname , const std::string& format = "" );
 
-  void read( const std::string& fname,
+  bool read( const std::string& fname,
 			 const std::string& format = "",
 			 std::ostream& errlog=std::cerr, 
 			 int max_error = -1 );

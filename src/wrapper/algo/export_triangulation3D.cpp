@@ -1,13 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al.
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -31,58 +29,27 @@
  *  ----------------------------------------------------------------------------
  */
 
-
-/*! \file cdc_geom.h
-    \brief Definition of the geom codec.
-*/
-
-#ifndef __cdc_geom_h__
-#define __cdc_geom_h__
+#include <plantgl/algo/fitting/triangulation3D.h>
+#include <plantgl/python/boost_python.h>
+#include <plantgl/python/export_list.h>
 
 /* ----------------------------------------------------------------------- */
 
-#include "codec_config.h"
-#include <plantgl/scenegraph/scene/factory.h>
-#include <iostream>
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
-PGL_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
-
-CODEC_API bool geom_read(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname = "");
-
-/* ----------------------------------------------------------------------- */
-
-class CODEC_API GeomCodec : public SceneCodec {
-public :
-
-	GeomCodec();
-
-	virtual SceneFormatList formats() const;
-
-	virtual ScenePtr read(const std::string& fname);
-
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
-
-};
-
-class CODEC_API BGeomCodec : public SceneCodec {
-public :
-
-	BGeomCodec();
-
-	virtual SceneFormatList formats() const;
-
-	virtual ScenePtr read(const std::string& fname);
-
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
-
-};
+boost::python::object py_delaunay_triangulation3D(const Point3ArrayPtr points){
+    return make_list_of_list(delaunay_triangulation3D(points))();
+}
 
 
-PGL_END_NAMESPACE
 
-#endif
 
+void export_Triangulation3D()
+{
+  def("delaunay_triangulation3D",&py_delaunay_triangulation3D,args("points"));
+
+}

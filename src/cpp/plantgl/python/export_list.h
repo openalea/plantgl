@@ -82,6 +82,12 @@ list_converter<T,Translator> make_list(const T& c_list) { return list_converter<
 template <class T>
 list_converter<T> make_list(const T& c_list) { return list_converter<T>(c_list); }
 
+template<class T>
+list_converter<T, list_converter<typename T::value_type> > 
+make_list_of_list(const T& l){
+    return list_converter<T, list_converter<typename T::value_type> >(l);
+}
+
 /* ----------------------------------------------------------------------- */
 
 template <class T, class Translator = make_object<typename T::value_type> >

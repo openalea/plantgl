@@ -293,6 +293,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "__iadd__",     &array_iaddarray<ARRAY> , boost::python::return_internal_reference<1>() ) \
         .def( "__len__",      &array_len<ARRAY> ) \
 		.def( "__iter__",     boost::python::iterator<ARRAY>() ) \
+        .def( "empty",        &ARRAY::empty ) \
         .def( "reverse",      &ARRAY::reverse ) \
         .def( "clear",        &ARRAY::clear ) \
         .def( "insert",       &array_insertitem<ARRAY> ) \

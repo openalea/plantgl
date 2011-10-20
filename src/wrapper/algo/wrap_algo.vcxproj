@@ -102,6 +102,7 @@
     <ClCompile Include="export_sequencer.cpp" />
     <ClCompile Include="export_skeleton.cpp" />
     <ClCompile Include="export_surfcomputer.cpp" />
+    <ClCompile Include="export_triangulation3D.cpp" />
     <ClCompile Include="export_turtle.cpp" />
     <ClCompile Include="export_turtleparam.cpp" />
     <ClCompile Include="export_vgstarprinter.cpp" />

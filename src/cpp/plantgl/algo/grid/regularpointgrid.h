@@ -129,6 +129,19 @@ public:
           registerData(data,0);
     }
 
+    PointGrid(const PointContainerPtr& data,
+              const real_t& voxelsizeratiofromglobal):
+      ContainerPolicy(*data),
+        SpatialBase(){
+          assert(voxelsizeratiofromglobal > 1);
+          std::pair<VectorType,VectorType> bounds = data->getBounds();
+          VectorType _voxelsize;
+          for(size_t i = 0; i < NbDimension; ++i)
+              _voxelsize[i] = (bounds.second[i] - bounds.first[i]) / voxelsizeratiofromglobal;
+          SpatialBase::initialize(bounds.first,bounds.second,_voxelsize);
+          registerData(data,0);
+    }
+
     const PointContainer& points() const { return ContainerPolicy::__points; }
 
 
@@ -253,14 +266,21 @@ public:
         return res;
     }
 
-    bool closest_point(const VectorType& point, PointIndex& result) const{
+    bool closest_point(const VectorType& point, PointIndex& result, real_t maxdist = REAL_MAX) const{
         Index centervxl = indexFromPoint(point);
-		real_t radius = REAL_MAX;
+		real_t radius = maxdist;
 		Index maxindexdist = SpatialBase::getMaxIndexDistanceToBorder(centervxl);
+        if (maxdist < REAL_MAX){
+		    for (size_t i = 0; i < NbDimension; ++i){
+                real_t maxinddist = std::max<real_t>(1,maxdist / __voxelsize[i]);
+                if (real_t(maxindexdist[i]) > maxinddist)
+			        maxindexdist[i] =  size_t(maxinddist);
+            }
+        }
 		size_t maxiter = *maxindexdist.getMax();
 		size_t iter = 0;
 
-        while (radius == REAL_MAX && iter < maxiter){
+        while (radius == maxdist && iter < maxiter){
 			// iter throught box layers of voxels
 			VoxelIdList voxelids = get_voxels_box(centervxl,Index(iter),Index(iter));
             for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin(); 
@@ -277,7 +297,7 @@ public:
 					}
 				}
 			}
-			if (radius < REAL_MAX){
+			if (radius < maxdist){
 				VectorType borderdist = SpatialBase::getVoxelSize()/2 - abs(point-SpatialBase::getVoxelCenter(centervxl));
 				real_t initialvoxelenclosedballradius = *(borderdist.getMin());
 				// check what is the enclosed ball by the box and if point is inside
@@ -305,7 +325,7 @@ public:
 			}
 			iter += 1;
 		}
-		return radius < REAL_MAX;
+		return radius < maxdist;
 	}
 
 

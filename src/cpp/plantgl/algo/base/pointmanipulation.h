@@ -34,9 +34,12 @@
 #ifndef __pointmanipulation_h__
 #define __pointmanipulation_h__
 
+#include "../algo_config.h"
 #include <plantgl/math/util_math.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/algo/grid/regularpointgrid.h>
+#include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/tool/util_array.h>
 
 
 PGL_BEGIN_NAMESPACE
@@ -70,6 +73,21 @@ RCPtr<PointListType> compress_point(RCPtr<PointListType> points, real_t radius)
 
 	return result;
 }
+
+
+// typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
+
+ALGO_API IndexArrayPtr 
+delaunay_point_connection(const Point3ArrayPtr points);
+
+ALGO_API IndexArrayPtr 
+k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k);
+
+ALGO_API Index 
+r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
+
+ALGO_API IndexArrayPtr 
+r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const TOOLS(RealArrayPtr) radii);
 
 PGL_END_NAMESPACE
 

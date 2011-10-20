@@ -96,6 +96,7 @@
     <ClCompile Include="base\discretizer.cpp" />
     <ClCompile Include="base\matrixcomputer.cpp" />
     <ClCompile Include="base\merge.cpp" />
+    <ClCompile Include="base\pointmanipulation.cpp" />
     <ClCompile Include="base\polygoncomputer.cpp" />
     <ClCompile Include="base\skelcomputer.cpp" />
     <ClCompile Include="base\statisticcomputer.cpp" />
@@ -130,6 +131,7 @@
     <ClCompile Include="fitting\fit.cpp" />
     <ClCompile Include="fitting\miniball.cpp" />
     <ClCompile Include="fitting\skeleton.cpp" />
+    <ClCompile Include="fitting\triangulation3D.cpp" />
     <ClCompile Include="opengl\glbboxrenderer.cpp" />
     <ClCompile Include="opengl\glctrlptrenderer.cpp" />
     <ClCompile Include="opengl\glrenderer.cpp" />
@@ -152,6 +154,7 @@
     <ClInclude Include="base\bboxcomputer.h" />
     <ClInclude Include="base\bspherecomputer.h" />
     <ClInclude Include="base\curvemanipulation.h" />
+    <ClInclude Include="base\dijkstra.h" />
     <ClInclude Include="base\discretizer.h" />
     <ClInclude Include="base\matrixcomputer.h" />
     <ClInclude Include="base\merge.h" />
@@ -193,6 +196,7 @@
     <ClInclude Include="fitting\miniball.h" />
     <ClInclude Include="fitting\miniball_config.h" />
     <ClInclude Include="fitting\skeleton.h" />
+    <ClInclude Include="fitting\triangulation3D.h" />
     <ClInclude Include="opengl\glbboxrenderer.h" />
     <ClInclude Include="opengl\glctrlptrenderer.h" />
     <ClInclude Include="opengl\glrenderer.h" />

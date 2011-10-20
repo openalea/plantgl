@@ -75,7 +75,7 @@ ScenePtr VgStarCodec::read(const std::string& fname)
   return VegeStarFile::read(fname,*PglErrorStream::error);
 }
 
-void VgStarCodec::write(const std::string& fname,const ScenePtr& scene)
+bool VgStarCodec::write(const std::string& fname,const ScenePtr& scene)
 {
 	std::ofstream stream(fname.c_str());
 	if(stream){
@@ -83,5 +83,7 @@ void VgStarCodec::write(const std::string& fname,const ScenePtr& scene)
 		VgstarPrinter p(stream,t);
 		p.header();
 		scene->apply(p);
+        return true;
 	}
+    return false;
 }

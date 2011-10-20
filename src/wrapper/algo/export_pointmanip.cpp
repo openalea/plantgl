@@ -40,11 +40,18 @@ using namespace boost::python;
 
 /* ----------------------------------------------------------------------- */
 
+
 void export_PointManip()
 {
 	def("compress_point2",&compress_point<Point2Array>,args("points","radius"));
 	def("compress_point3",&compress_point<Point3Array>,args("points","radius"));
 	def("compress_point4",&compress_point<Point4Array>,args("points","radius"));
+
+    def("delaunay_point_connection",&delaunay_point_connection,args("points"));
+    def("k_closest_points_from_delaunay",&k_closest_points_from_delaunay,args("points","k"));
+    def("r_neighboorhood",&r_neighboorhood,args("pid","points","adjacencies","radius"));
+    def("r_neighboorhoods",&r_neighboorhoods,args("points","adjacencies","radii"));
+
 }
 
 /* ----------------------------------------------------------------------- */

@@ -207,6 +207,12 @@
     <ClCompile Include="grid\voxelintersection.cpp">
       <Filter>Grid</Filter>
     </ClCompile>
+    <ClCompile Include="fitting\triangulation3D.cpp">
+      <Filter>Fitting</Filter>
+    </ClCompile>
+    <ClCompile Include="base\pointmanipulation.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\amaptranslator.h">
@@ -409,6 +415,12 @@
     </ClInclude>
     <ClInclude Include="algo_config.h" />
     <ClInclude Include="..\pgl_algo.h" />
+    <ClInclude Include="fitting\triangulation3D.h">
+      <Filter>Fitting</Filter>
+    </ClInclude>
+    <ClInclude Include="base\dijkstra.h">
+      <Filter>Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="codec\scne_parser.y">

@@ -821,6 +821,8 @@ bool PovPrinter::process( PointSet * pointSet ) {
   }
 
   GEOM_POVPRINT_BEGIN(__geomStream,"union",pointSet);
+  Color4Array::const_iterator itColor;
+  if (pointSet->hasColorList()) itColor = pointSet->getColorList()->begin();
   for (Point3Array::const_iterator _i = pointSet->getPointList()->begin();
 	_i != pointSet->getPointList()->end(); _i++) {
     const Vector3& _vertex1 = *_i;
@@ -828,7 +830,13 @@ bool PovPrinter::process( PointSet * pointSet ) {
 	__geomStream << __indent;
     GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
     __geomStream << ", PointWidth" << endl;
-	GEOM_POVPRINT_TEXTURE;
+    if (pointSet->hasColorList()){
+        const Color4& color = *(itColor++);
+        __geomStream <<  "texture { pigment { color rgbt ";
+        GEOM_POVPRINT_COLOR4(__geomStream,color) 
+        __geomStream  << "  } finish { ambient 1 diffuse 1 } } " << endl;
+    }
+    else { GEOM_POVPRINT_TEXTURE; }
 	GEOM_POVPRINT_END_(__geomStream);
   };
   // nothing to do

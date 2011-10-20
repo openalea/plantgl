@@ -59,7 +59,7 @@ public :
 
 	virtual ScenePtr read(const std::string& fname);
 
-	virtual void write(const std::string& fname,const ScenePtr&	scene);
+	virtual bool write(const std::string& fname,const ScenePtr&	scene);
 
 };
 

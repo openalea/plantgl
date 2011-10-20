@@ -40,7 +40,7 @@
  PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
-
+#define bp boost::python
 /* ----------------------------------------------------------------------- */
 
 
@@ -49,10 +49,10 @@ template<class PointGrid>
  { return make_list(grid->query_ball_point(point,radius))(); }
 
 template<class PointGrid>
- object py_closest_point(PointGrid * grid, typename PointGrid::VectorType point) 
+ object py_closest_point(PointGrid * grid, typename PointGrid::VectorType point, real_t maxdist = REAL_MAX) 
  { 
 	typename PointGrid::PointIndex res;
-	 if (grid->closest_point(point,res)) return object(res);
+	 if (grid->closest_point(point,res,maxdist)) return object(res);
 	 else return object();
  }
 
@@ -136,8 +136,12 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
     template <class classT>
     void visit(classT& c) const
     {
-	c.def(init<real_t,typename PointGrid::PointContainerPtr>())
-	 .def(init<typename PointGrid::VectorType,typename PointGrid::VectorType,typename PointGrid::VectorType,typename PointGrid::PointContainerPtr>())
+	c.def(init<real_t,typename PointGrid::PointContainerPtr>(args("voxelsize","points")))
+	 .def(init<typename PointGrid::PointContainerPtr,real_t>(args("points","voxelsizeratiofromglobal")))
+	 .def(init<typename PointGrid::VectorType,
+               typename PointGrid::VectorType,
+               typename PointGrid::VectorType,
+               typename PointGrid::PointContainerPtr>(args("voxelsize","minpoint","maxpoint","points")))
 	 .def("size",&PointGrid::size)
 	 .def("indexFromPoint",&py_indexFromPoint<PointGrid>)
 	 .def("cellIdFromPoint",&PointGrid::cellIdFromPoint)
@@ -152,7 +156,7 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("getVoxelUpperPoint",&py_getVoxelUpperPoint<PointGrid>)
 	 .def("getVoxelUpperPointFromId",&py_getVoxelUpperPointFromId<PointGrid>)
 	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
-	 .def("closest_point",&py_closest_point<PointGrid>)
+	 .def("closest_point",&py_closest_point<PointGrid>,(bp::arg("point"),bp::arg("maxdist")=REAL_MAX))
 	 .def("enable_point",&PointGrid::enable_point)
 	 .def("disable_point",&PointGrid::disable_point)
 	 .def("is_point_enabled",&PointGrid::is_point_enabled)
@@ -177,16 +181,16 @@ void export_PointGrid()
 {
 
   class_< Point2Grid > ("Point2Grid", init<Vector2, Point2ArrayPtr>
-     ( "Construct a regular grid from a set of 2D points." ))
+     ( "Construct a regular grid from a set of 2D points.", args("voxelsize","points") ))
 	 .def(pointgrid_func<Point2Grid>())
     ;
   
   class_< Point3Grid > ("Point3Grid", init<Vector3, Point3ArrayPtr>
-     ( "Construct a regular grid from a set of 3D points." ))
+     ( "Construct a regular grid from a set of 3D points.", args("voxelsize","points") ))
 	 .def(pointgrid_func<Point3Grid>())
     ;
   class_< Point4Grid > ("Point4Grid", init<Vector4, Point4ArrayPtr>
-     ( "Construct a regular grid from a set of 4D points." ))
+     ( "Construct a regular grid from a set of 4D points.", args("voxelsize","points") ))
 	 .def(pointgrid_func<Point4Grid>())
     ;
   

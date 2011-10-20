@@ -67,7 +67,7 @@ SceneFormatList PovCodec::formats() const
 	return _formats;
 }
 
-void PovCodec::write(const std::string& fname,const ScenePtr& scene)
+bool PovCodec::write(const std::string& fname,const ScenePtr& scene)
 {
 	std::ofstream stream(fname.c_str());
 	if(stream){
@@ -75,5 +75,7 @@ void PovCodec::write(const std::string& fname,const ScenePtr& scene)
 		PovPrinter p(stream,t);
 		p.header();
 		scene->apply(p);
+        return true;
 	}
+    else return false;
 }
