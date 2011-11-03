@@ -45,12 +45,16 @@ TOOLS_USING_NAMESPACE
 
 using namespace boost::python;
 
+typedef Uint32Array1 UIntArray;
+typedef Uint32Array1Ptr UIntArrayPtr;
+
 EXPORT_FUNCTION( c3a,  Color3Array )
 EXPORT_FUNCTION( c4a,  Color4Array )
 EXPORT_FUNCTION( i3a,  Index3Array )
 EXPORT_FUNCTION( i4a,  Index4Array )
 EXPORT_FUNCTION( inda, IndexArray )
 EXPORT_FUNCTION( ra,   RealArray )
+EXPORT_FUNCTION( uia,  UIntArray )
 
 EXPORT_NUMPY( c3a, Color3, Color3Array, 0, 3, uchar_t )
 EXPORT_NUMPY( c4a, Color4, Color4Array, 0, 4, uchar_t )
@@ -58,6 +62,7 @@ EXPORT_NUMPY( i3a, Index3, Index3Array, 0, 3, uint_t )
 EXPORT_NUMPY( i4a, Index4, Index4Array, 0, 4, uint_t )
 EXPORT_NUMPY( inda, Index, IndexArray, 0, 0, uint_t )
 EXPORT_NUMPY_1DIM( ra, real_t, RealArray, 0, real_t )
+EXPORT_NUMPY_1DIM( uia, uint32_t, UIntArray, 0, uint32_t)
 
 void export_arrays()
 {
@@ -82,6 +87,10 @@ void export_arrays()
   EXPORT_ARRAY_BT( ra, RealArray,  "IndexArray([a,b,...])" )
     DEFINE_NUMPY( ra );
   EXPORT_CONVERTER(RealArray);
+
+  EXPORT_ARRAY_BT( uia, UIntArray,  "UIntArray([a,b,...])" )
+    DEFINE_NUMPY( uia );
+  EXPORT_CONVERTER(UIntArray);
 }
 
 

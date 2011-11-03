@@ -98,6 +98,9 @@ std::vector<std::string> __getPGLSupportedExtensions() {
 #ifdef MAINTAIN_PYTHON_OBJECT_ID
 	ADD_EXTENSION(MAINTAIN_PYTHON_OBJECT_ID)
 #endif
+#ifdef WITH_ANN
+	ADD_EXTENSION(ANN)
+#endif
    return res;
 }
 

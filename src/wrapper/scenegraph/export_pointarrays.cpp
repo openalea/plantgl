@@ -216,6 +216,29 @@ void pa_translate(T * pts, typename T::element_type value){
         *iter += value;
 }
 
+template<class T>
+void pa_swap_coordinates(T * pts, int i, int j){ 
+    size_t len = typename T::element_type::size();
+    if( i >= -(int)len && i < 0  )  i += len; 
+    if( i >= len || i < 0) throw PythonExc_IndexError(); 
+    if( j >= -(int)len && j < 0  )  j += len; 
+    if( j > len || j < 0) throw PythonExc_IndexError(); 
+    if( i == j)throw PythonExc_IndexError();
+    for(typename T::iterator iter = pts->begin(); iter != pts->end(); ++iter){
+        real_t tmp = iter->getAt(i);
+        iter->getAt(i) = iter->getAt(j);
+        iter->getAt(j) = tmp;
+    }
+}
+
+void pa_swap_2D_coordinates(Point2Array * pts){ 
+    for(Point2Array::iterator iter = pts->begin(); iter != pts->end(); ++iter){
+        real_t tmp = iter->getAt(0);
+        iter->getAt(0) = iter->getAt(1);
+        iter->getAt(1) = tmp;
+    }
+}
+
 void export_pointarrays()
 {
   EXPORT_ARRAY_CT( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
@@ -238,6 +261,7 @@ void export_pointarrays()
     .def( "transform", &Point2Array::transform)
     .def( "translate", &pa_translate<Point2Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
     .def( "findClosest", &pa_findclosest<Point2Array>,"Find closest point in the PointArray2 from arg",args("point"))
+    .def( "swapCoordinates", &pa_swap_2D_coordinates,"Swap the two coordinates of the points. This is done INPLACE.")
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -268,6 +292,7 @@ void export_pointarrays()
     .def( "transform", (void(Point3Array::*)(const Matrix4&))&Point3Array::transform)
     .def( "translate", &pa_translate<Point3Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
     .def( "findClosest", &pa_findclosest<Point3Array>,"Find closest point in the PointArray3 from arg",args("point"))
+    .def( "swapCoordinates", &pa_swap_coordinates<Point3Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
@@ -302,6 +327,7 @@ void export_pointarrays()
     .def( "transform", &Point4Array::transform)
     .def( "translate", &pa_translate<Point4Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
     .def( "findClosest", &pa_findclosest<Point4Array>,"Find closest point in the PointArray4 from arg",args("point"))
+    .def( "swapCoordinates", &pa_swap_coordinates<Point4Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 

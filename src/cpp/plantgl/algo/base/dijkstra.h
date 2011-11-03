@@ -36,7 +36,7 @@
 
 #include "../algo_config.h"
 #include <plantgl/scenegraph/container/indexarray.h>
-
+#include <plantgl/tool/util_array.h>
 
 #include <queue>
 #include <memory>
@@ -46,37 +46,61 @@ PGL_BEGIN_NAMESPACE
 /**
   my priority queue for comparing node
 */
+
+#define DIJKSTRA_WITH_SORTED_VECTOR
+
+template<class DistArray>
 class node_priority_queue {
 public:
+    template<class DistArray>
     struct nodecompare {
-       const real_t * distances;
-       nodecompare(const real_t * _distances) : distances(_distances) {}
+       const DistArray& distances;
+       nodecompare(const DistArray& _distances) : distances(_distances) {}
        bool operator()(const uint32_t& a,const uint32_t& b) { return distances[a] > distances[b]; }
     };
 
+#ifdef DIJKSTRA_WITH_SORTED_VECTOR
+    std::vector<uint32_t> c;
+#else
     std::deque<uint32_t> c;
-    struct nodecompare comp;
+#endif
+    struct nodecompare<DistArray> comp;
 
-    node_priority_queue(const real_t * distances): comp(distances) { }
+    node_priority_queue(const DistArray& distances): comp(distances) { }
 
 	bool empty() const { return (c.empty()); }
 	size_t size() const { return (c.size()); }
 
 	void push(uint32_t _Val)
 		{	
- 	    	c.push_back(_Val);
+#ifdef DIJKSTRA_WITH_SORTED_VECTOR
+            c.insert(lower_bound(c.begin(),c.end(),_Val,comp),_Val);
+#else
+            c.push_back(_Val);
 		    push_heap(c.begin(), c.end(), comp);
+#endif
 		}
 
 	uint32_t pop()
 	{
+#ifdef DIJKSTRA_WITH_SORTED_VECTOR
+        uint32_t topvalue = c.back(); 
+        c.pop_back();
+#else
         uint32_t topvalue = c.front(); 
 		pop_heap(c.begin(), c.end(), comp);
 		c.pop_back();
+#endif
         return topvalue;
 	}
 
-    void update() { make_heap(c.begin(),c.end()); }
+    void update() { 
+#ifdef DIJKSTRA_WITH_SORTED_VECTOR
+        sort(c.begin(),c.end(), comp); 
+#else
+        sort_heap(c.begin(),c.end(), comp); 
+#endif
+    }
 };
 
 struct Node {
@@ -107,7 +131,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
      std::vector<bool> colored(nbnodes,false);
 
-     node_priority_queue Q(distances);
+     node_priority_queue<real_t *> Q(distances);
      Q.push(root);
 
      while(!Q.empty()){
@@ -133,9 +157,51 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
              }
          }
      }
+     delete [] parents;
      return result;
  }
 
+template<class EdgeWeigthEvaluation>
+std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
+                                   uint32_t root, 
+                                   EdgeWeigthEvaluation& distevaluator)
+ {
+
+
+     size_t nbnodes = connections->size();
+     TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+     distances->setAt(root,0);
+     TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,root));
+
+     std::vector<bool> colored(nbnodes,false);
+
+     node_priority_queue<RealArray> Q(*distances);
+     Q.push(root);
+
+     while(!Q.empty()){
+         uint32_t current = Q.pop();
+         const Index& nextchildren = connections->getAt(current);
+         for (Index::const_iterator itchildren = nextchildren.begin();
+             itchildren != nextchildren.end(); ++itchildren)
+         {
+             uint32_t v = *itchildren;
+             real_t weigthuv = distevaluator(current,v); 
+             real_t distance = weigthuv+distances->getAt(current);
+             if (distance < distances->getAt(v)){
+                 distances->setAt(v,distance);
+                 parents->setAt(v,current);
+                 if (!colored[v]){
+                     colored[v] = true;
+                     Q.push(v);
+                 }
+                 else {
+                     Q.update();
+                 }
+             }
+         }
+     }
+     return std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>(parents,distances);
+ }
  /*
  DIJKSTRA(G, s, w)
   for each vertex u in V

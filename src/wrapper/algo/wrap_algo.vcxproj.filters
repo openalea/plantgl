@@ -91,6 +91,9 @@
     <ClCompile Include="export_triangulation3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="export_dijkstra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export_printer.h">

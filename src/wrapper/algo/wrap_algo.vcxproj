@@ -65,7 +65,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_CGAL;WITH_ANN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -85,6 +85,7 @@
     <ClCompile Include="export_amaptranslator.cpp" />
     <ClCompile Include="export_bboxcomputer.cpp" />
     <ClCompile Include="export_curvemanip.cpp" />
+    <ClCompile Include="export_dijkstra.cpp" />
     <ClCompile Include="export_discretizer.cpp" />
     <ClCompile Include="export_fit.cpp" />
     <ClCompile Include="export_glrenderer.cpp" />

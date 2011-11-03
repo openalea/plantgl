@@ -65,18 +65,18 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ALGO_MAKEDLL;WITH_CGAL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);$(ANN_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ALGO_MAKEDLL;WITH_CGAL;WITH_ANN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>
       </DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;libgmp-10.lib;libmpfr-4.lib%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;libgmp-10.lib;libmpfr-4.lib;ANN.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../bin/pglalgo.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(CGAL_DIR)\auxiliary\gmp\lib;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libmpfr-4.libkernel32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(CGAL_DIR)\auxiliary\gmp\lib;$(BOOSTDIR)\lib;$(ANN_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>../../../../bin/$(TargetName).pdb</ProgramDatabaseFile>
       <OptimizeReferences>true</OptimizeReferences>

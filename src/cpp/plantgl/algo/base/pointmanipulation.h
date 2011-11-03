@@ -77,17 +77,25 @@ RCPtr<PointListType> compress_point(RCPtr<PointListType> points, real_t radius)
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 
+/// K-Neighborhood computation
 ALGO_API IndexArrayPtr 
 delaunay_point_connection(const Point3ArrayPtr points);
 
 ALGO_API IndexArrayPtr 
 k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k);
 
+ALGO_API IndexArrayPtr 
+k_closest_points_from_ann(const Point3ArrayPtr points, size_t k);
+
+/// R-Neighborhood computation
 ALGO_API Index 
 r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
 
 ALGO_API IndexArrayPtr 
 r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const TOOLS(RealArrayPtr) radii);
+
+ALGO_API IndexArrayPtr 
+r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius);
 
 ALGO_API Index 
 r_anisotropic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, 
@@ -101,8 +109,90 @@ r_anisotropic_neighboorhoods(const Point3ArrayPtr points,
 			    const IndexArrayPtr adjacencies, 
 			    const TOOLS(RealArrayPtr) radii, 
 			    const Point3ArrayPtr directions, 
-		            const real_t alpha, 
-		            const real_t beta);
+                const real_t alpha, 
+	            const real_t beta);
+
+ALGO_API IndexArrayPtr 
+r_anisotropic_neighboorhoods(const Point3ArrayPtr points, 
+			    const IndexArrayPtr adjacencies, 
+			    const real_t radius, 
+			    const Point3ArrayPtr directions, 
+                const real_t alpha, 
+	            const real_t beta);
+
+
+/// Density computation
+ALGO_API real_t
+density_from_r_neighboorhood(  uint32_t pid,
+                               const Point3ArrayPtr points, 
+			                   const IndexArrayPtr adjacencies, 
+                               const real_t radius);
+
+ALGO_API TOOLS(RealArrayPtr)
+densities_from_r_neighboorhood(const Point3ArrayPtr points, 
+			                   const IndexArrayPtr adjacencies, 
+                               const real_t radius);
+
+
+
+ALGO_API real_t
+max_neighboorhood_distance(  uint32_t pid,
+                                        const Point3ArrayPtr points, 
+			                            const Index& adjacency);
+
+
+ALGO_API real_t
+density_from_k_neighboorhood(  uint32_t pid,
+                               const Point3ArrayPtr points, 
+			                   const IndexArrayPtr adjacencies);
+
+ALGO_API TOOLS(RealArrayPtr)
+densities_from_k_neighboorhood(const Point3ArrayPtr points, 
+			                   const IndexArrayPtr adjacencies);
+
+
+/// Orientation estimations
+ALGO_API TOOLS(Vector3) 
+pointset_orientation(const Point3ArrayPtr points, const Index& group);
+
+ALGO_API Point3ArrayPtr 
+pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups);
+
+
+/// Shortest path
+ALGO_API std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
+points_dijkstra_shortest_path(const Point3ArrayPtr points, 
+			         const IndexArrayPtr adjacencies, 
+                     uint32_t root);
+
+ALGO_API Index 
+get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
+
+
+// Return groups of points
+ALGO_API IndexArrayPtr 
+quotient_points_from_adjacency_graph(const real_t binsize,
+                        const Point3ArrayPtr points, 
+			            const IndexArrayPtr adjacencies, 
+			            const TOOLS(RealArrayPtr) distances_to_root);
+
+// Return adjacencies between groups
+ALGO_API IndexArrayPtr 
+quotient_adjacency_graph(const IndexArrayPtr adjacencies, 
+			                    const IndexArrayPtr groups);
+
+ALGO_API TOOLS(Vector3) 
+centroid_of_group(const Point3ArrayPtr points, 
+			        const Index& group);
+
+ALGO_API Point3ArrayPtr 
+centroids_of_groups(const Point3ArrayPtr points, 
+			        const IndexArrayPtr groups);
+
+// Xu 07 method for main branching system
+ALGO_API Point3ArrayPtr
+skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,  TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, bool verbose = false);
+
 
 PGL_END_NAMESPACE
 
