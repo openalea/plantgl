@@ -32,6 +32,8 @@
 
 #include "pointmanipulation.h"
 
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 #ifdef WITH_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
@@ -62,8 +64,7 @@ inline Vector3 toVector3(const CGALPoint& v) { return Vector3(v.x(),v.y(),v.z())
 
 #endif
 
-PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
+
 
 IndexArrayPtr 
 PGL::delaunay_point_connection(const Point3ArrayPtr points)
@@ -121,7 +122,6 @@ PGL::k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k)
 
 #ifdef WITH_ANN
 #include <ANN/ANN.h>
-#endif
 
 inline void toANNPoint(const Vector3& v, ANNpoint& point)
 {
@@ -130,6 +130,8 @@ inline void toANNPoint(const Vector3& v, ANNpoint& point)
     point[1] = v.y();
     point[2] = v.z();
 }
+
+#endif
 
 IndexArrayPtr 
 PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k)

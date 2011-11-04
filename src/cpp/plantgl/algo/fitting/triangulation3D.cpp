@@ -32,6 +32,9 @@
 
 #include "triangulation3D.h"
 
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+
 #ifdef WITH_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Triangulation_vertex_base_with_info_3.h>
@@ -58,9 +61,6 @@ inline Point toPoint(const Vector3& v) { return Point(v.x(),v.y(),v.z()); }
 inline Vector3 toVector3(const Point& v) { return Vector3(v.x(),v.y(),v.z()); }
 
 #endif
-
-PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 Index3ArrayPtr 
 PGL::delaunay_triangulation3D(const Point3ArrayPtr points)

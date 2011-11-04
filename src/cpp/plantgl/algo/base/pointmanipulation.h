@@ -41,7 +41,6 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/tool/util_array.h>
 
-
 PGL_BEGIN_NAMESPACE
 
 

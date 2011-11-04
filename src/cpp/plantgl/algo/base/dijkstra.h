@@ -50,14 +50,16 @@ PGL_BEGIN_NAMESPACE
 #define DIJKSTRA_WITH_SORTED_VECTOR
 
 template<class DistArray>
-class node_priority_queue {
-public:
-    template<class DistArray>
-    struct nodecompare {
+struct nodecompare {
        const DistArray& distances;
        nodecompare(const DistArray& _distances) : distances(_distances) {}
        bool operator()(const uint32_t& a,const uint32_t& b) { return distances[a] > distances[b]; }
-    };
+};
+	
+template<class DistArray>
+class node_priority_queue {
+public:
+
 
 #ifdef DIJKSTRA_WITH_SORTED_VECTOR
     std::vector<uint32_t> c;
