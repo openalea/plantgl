@@ -76,7 +76,7 @@ PGL::delaunay_point_connection(const Point3ArrayPtr points)
         triangulation.insert(toPoint<TPoint>(*it))->info() = pointCount++;
 
 
-    IndexArrayPtr result(new IndexArray(points->size()));
+    IndexArrayPtr result(new IndexArray(points->size(),Index()));
     for(Triangulation::Finite_edges_iterator it = triangulation.finite_edges_begin();
         it != triangulation.finite_edges_end(); ++it){
             uint32_t source = it->first->vertex(it->second)->info();
@@ -148,11 +148,11 @@ PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k)
     }
 
     // The resulting structure that will contains the K closest points of each point
-    IndexArrayPtr res(new IndexArray(nbPoints));
+    IndexArrayPtr res(new IndexArray(nbPoints,Index()));
 
     // KDTree
     ANNkd_tree kdtree(pointdata,nbPoints,dim);
-
+	
     size_t kk = k+(ANN_ALLOW_SELF_MATCH?1:0);
 
     /// ANN data structure for query
@@ -528,7 +528,7 @@ PGL::quotient_adjacency_graph(const IndexArrayPtr adjacencies,
             group[*itg] = cgroup;
         }
     }
-    IndexArrayPtr macroadjacencies(new IndexArray(groups->size()));
+    IndexArrayPtr macroadjacencies(new IndexArray(groups->size(),Index()));
     uint32_t cnode = 0;
     for(IndexArray::const_iterator itn = adjacencies->begin(); itn != adjacencies->end(); ++itn, ++cnode)
     {

@@ -160,6 +160,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
          }
      }
      delete [] parents;
+	 delete [] distances;
      return result;
  }
 

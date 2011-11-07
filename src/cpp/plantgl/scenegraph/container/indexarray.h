@@ -174,7 +174,7 @@ public:
   /** Constructs an IndexArray of size of \e size.
       \post
       - \e self is valid. */
-  IndexArray( uint_t size = 0, const Index& defaultvalue = Index(3) );
+  IndexArray( uint_t size = 0, const Index& defaultvalue = Index() );
 
   /** Constructs an IndexArray from an Index3Array.
       \post
