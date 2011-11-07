@@ -218,7 +218,8 @@ void pa_translate(T * pts, typename T::element_type value){
 
 template<class T>
 void pa_swap_coordinates(T * pts, int i, int j){ 
-    size_t len = typename T::element_type::size();
+	typedef typename T::element_type VectorType;
+    size_t len = VectorType::size();
     if( i >= -(int)len && i < 0  )  i += len; 
     if( i >= len || i < 0) throw PythonExc_IndexError(); 
     if( j >= -(int)len && j < 0  )  j += len; 
