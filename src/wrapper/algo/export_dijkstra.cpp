@@ -50,7 +50,8 @@ object py_dijkstra_shortest_paths(const IndexArrayPtr& connections,
                                    uint32_t root, 
                                    boost::python::object distevaluator)
 {
-    std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> result = dijkstra_shortest_paths(connections,root,PyDistance(distevaluator));
+    PyDistance mydist( distevaluator );
+    std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> result = dijkstra_shortest_paths(connections,root,mydist);
     return make_tuple(result.first,result.second);
 }
 
@@ -59,7 +60,8 @@ object py_dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              boost::python::object distevaluator,
                                              real_t maxdist)
 {
-    NodeList result = dijkstra_shortest_paths_in_a_range(connections,root,PyDistance(distevaluator),maxdist);
+    PyDistance mydist( distevaluator );
+    NodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist);
     boost::python::list pyresult;
     for(NodeList::const_iterator itres = result.begin(); itres != result.end(); ++itres)
         pyresult.append(make_tuple(itres->id,itres->parent,itres->distance));

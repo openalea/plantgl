@@ -70,31 +70,31 @@ public:
 
     node_priority_queue(const DistArray& distances): comp(distances) { }
 
-	bool empty() const { return (c.empty()); }
-	size_t size() const { return (c.size()); }
+    bool empty() const { return (c.empty()); }
+    size_t size() const { return (c.size()); }
 
-	void push(uint32_t _Val)
-		{	
+    void push(uint32_t _Val)
+      {	
 #ifdef DIJKSTRA_WITH_SORTED_VECTOR
             c.insert(lower_bound(c.begin(),c.end(),_Val,comp),_Val);
 #else
             c.push_back(_Val);
-		    push_heap(c.begin(), c.end(), comp);
+            push_heap(c.begin(), c.end(), comp);
 #endif
-		}
+      }
 
-	uint32_t pop()
-	{
+    uint32_t pop()
+      {
 #ifdef DIJKSTRA_WITH_SORTED_VECTOR
         uint32_t topvalue = c.back(); 
         c.pop_back();
 #else
         uint32_t topvalue = c.front(); 
-		pop_heap(c.begin(), c.end(), comp);
-		c.pop_back();
+        pop_heap(c.begin(), c.end(), comp);
+        c.pop_back();
 #endif
         return topvalue;
-	}
+      }
 
     void update() { 
 #ifdef DIJKSTRA_WITH_SORTED_VECTOR
@@ -178,7 +178,7 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
 
      std::vector<bool> colored(nbnodes,false);
 
-     node_priority_queue<RealArray> Q(*distances);
+     node_priority_queue<TOOLS(RealArray)> Q(*distances);
      Q.push(root);
 
      while(!Q.empty()){
