@@ -64,7 +64,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);$(ANN_DIR)\include;C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WITH_CGAL;WITH_ANN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -90,6 +90,7 @@
     <ClCompile Include="export_fit.cpp" />
     <ClCompile Include="export_glrenderer.cpp" />
     <ClCompile Include="export_intersect.cpp" />
+    <ClCompile Include="export_kdtree.cpp" />
     <ClCompile Include="export_matrixcomputer.cpp" />
     <ClCompile Include="export_merge.cpp" />
     <ClCompile Include="export_octree.cpp" />

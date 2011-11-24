@@ -213,6 +213,9 @@
     <ClCompile Include="base\pointmanipulation.cpp">
       <Filter>Base</Filter>
     </ClCompile>
+    <ClCompile Include="grid\kdtree.cpp">
+      <Filter>Grid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\amaptranslator.h">
@@ -420,6 +423,9 @@
     </ClInclude>
     <ClInclude Include="base\dijkstra.h">
       <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="grid\kdtree.h">
+      <Filter>Grid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

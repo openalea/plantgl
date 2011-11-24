@@ -86,6 +86,9 @@ k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k);
 ALGO_API IndexArrayPtr 
 k_closest_points_from_ann(const Point3ArrayPtr points, size_t k);
 
+ALGO_API IndexArrayPtr 
+k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k);
+
 /// R-Neighborhood computation
 ALGO_API Index 
 r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
@@ -119,6 +122,27 @@ r_anisotropic_neighboorhoods(const Point3ArrayPtr points,
                 const real_t alpha, 
 	            const real_t beta);
 
+/// Extended K-Neighborhood computation
+ALGO_API Index 
+k_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
+
+ALGO_API IndexArrayPtr
+k_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
+
+// Useful function
+
+/// Find the k closest point from the set of adjacencies
+ALGO_API Index get_k_closest_from_n(const Index& adjacencies, const uint32_t k, uint32_t pid, const Point3ArrayPtr points);
+
+
+ALGO_API real_t
+max_neighboorhood_distance(  uint32_t pid,
+                             const Point3ArrayPtr points, 
+			                 const Index& adjacency);
+
+ALGO_API Index 
+get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
+
 
 /// Density computation
 ALGO_API real_t
@@ -133,21 +157,17 @@ densities_from_r_neighboorhood(const Point3ArrayPtr points,
                                const real_t radius);
 
 
-
-ALGO_API real_t
-max_neighboorhood_distance(  uint32_t pid,
-                                        const Point3ArrayPtr points, 
-			                            const Index& adjacency);
-
-
+// if k == 0, then k is directly the nb of point given in adjacencies.
 ALGO_API real_t
 density_from_k_neighboorhood(  uint32_t pid,
                                const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies);
+			                   const IndexArrayPtr adjacencies,
+                               const uint32_t k = 0);
 
 ALGO_API TOOLS(RealArrayPtr)
 densities_from_k_neighboorhood(const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies);
+			                   const IndexArrayPtr adjacencies,
+                               const uint32_t k = 0);
 
 
 /// Orientation estimations
@@ -163,9 +183,6 @@ ALGO_API std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
 points_dijkstra_shortest_path(const Point3ArrayPtr points, 
 			         const IndexArrayPtr adjacencies, 
                      uint32_t root);
-
-ALGO_API Index 
-get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
 
 
 // Return groups of points

@@ -37,6 +37,8 @@
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
+#define bp boost::python
+
 using namespace std;
 
 struct PyDistance {
@@ -58,7 +60,8 @@ object py_dijkstra_shortest_paths(const IndexArrayPtr& connections,
 object py_dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
                                              uint32_t root, 
                                              boost::python::object distevaluator,
-                                             real_t maxdist)
+                                             real_t maxdist = REAL_MAX,
+                                             uint32_t maxnbelements = UINT32_MAX)
 {
     PyDistance mydist( distevaluator );
     NodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist);
@@ -75,7 +78,7 @@ void export_Dijkstra()
         "Return the parent and distance to the root for each node."
         "connections is an array that should contains at the ith place all nodes connected to the ith node."
         "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes.");
-	def("dijkstra_shortest_paths_in_a_range", &py_dijkstra_shortest_paths_in_a_range,args("connections","root","edgeweigthevaluator","maxdist"),
+	def("dijkstra_shortest_paths_in_a_range", &py_dijkstra_shortest_paths_in_a_range,(bp::arg("connections"),bp::arg("root"),bp::arg("edgeweigthevaluator"),bp::arg("maxdist")=REAL_MAX,bp::arg("maxnbelements")=UINT32_MAX),
         "Return list of id, parent and distance to the root for node with distance < maxdist. "
         "connections is an array that should contains at the ith place all nodes connected to the ith node."
         "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes.");

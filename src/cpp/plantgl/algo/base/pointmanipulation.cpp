@@ -120,65 +120,85 @@ PGL::k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k)
 }
 
 
-#ifdef WITH_ANN
-#include <ANN/ANN.h>
-
-inline void toANNPoint(const Vector3& v, ANNpoint& point)
-{
-//    ANNpoint point = new ANNcoord[3];
-    point[0] = v.x();
-    point[1] = v.y();
-    point[2] = v.z();
-}
-
-#endif
+#include <plantgl/algo/grid/kdtree.h>
 
 IndexArrayPtr 
 PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k)
 {
 #ifdef WITH_ANN
-    uint32_t nbPoints = points->size();
-    int dim = 3;
-    ANNpointArray pointdata = annAllocPts(nbPoints,dim);
-    uint32_t pointid = 0;
-
-    // Converting Point3Array into ANNpointArray
-    for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pointid) {
-        toANNPoint(*itp,pointdata[pointid]);
-    }
-
-    // The resulting structure that will contains the K closest points of each point
-    IndexArrayPtr res(new IndexArray(nbPoints,Index()));
-
-    // KDTree
-    ANNkd_tree kdtree(pointdata,nbPoints,dim);
-	
-    size_t kk = k+(ANN_ALLOW_SELF_MATCH?1:0);
-
-    /// ANN data structure for query
-    ANNidxArray nn_idx = new ANNidx[kk];
-    ANNdistArray dists = new ANNdist[kk];
-
-
-    /// For each point, ask k closest point to  kdtree
-    for (pointid = 0; pointid < nbPoints; ++pointid){
-        kdtree.annkSearch(pointdata[pointid],kk,nn_idx,dists);
-        Index& pointres = res->getAt(pointid);
-        for(uint32_t i = 0; i < kk; ++i) 
-            if (nn_idx[i] != pointid)
-                pointres.push_back(nn_idx[i]);
-    }
-
-    /// delete all allocated structures
-    delete [] nn_idx;
-    delete [] dists;
-    annDeallocPts(pointdata);
-
-    return res;
+    ANNKDTree3 kdtree(points);
+    return kdtree.k_nearest_neighbors(k);
 #else
     return IndexArrayPtr();
 #endif
 }
+
+#ifdef WITH_CGAL
+#include <CGAL/Cartesian.h>
+
+typedef CGAL::Cartesian<double>   CK;
+typedef CK::Point_3               CPoint;
+typedef boost::tuple<CPoint,int>  CPoint_and_int;
+
+//definition of the property map
+struct My_point_property_map{
+  typedef CPoint value_type;
+  typedef const value_type& reference;
+  typedef const CPoint_and_int& key_type;
+  typedef boost::readable_property_map_tag category;
+};
+
+//get function for the property map
+My_point_property_map::reference 
+get(My_point_property_map,My_point_property_map::key_type p)
+{return boost::get<0>(p);}
+
+#include <CGAL/Orthogonal_k_neighbor_search.h>
+#include <CGAL/Search_traits_3.h>
+#include <CGAL/Search_traits_adapter.h>
+
+typedef CGAL::Search_traits_3<CK>                                                   Traits_base;
+typedef CGAL::Search_traits_adapter<CPoint_and_int,My_point_property_map,Traits_base>    Traits;
+
+
+typedef CGAL::Orthogonal_k_neighbor_search<Traits>                      K_neighbor_search;
+typedef K_neighbor_search::Tree                                         Tree;
+typedef K_neighbor_search::Distance                                     Distance;
+
+
+// typedef CGAL::Search_traits_3<K> TreeTraits;
+// typedef CGAL::Orthogonal_k_neighbor_search<TreeTraits> Neighbor_search;
+// typedef Neighbor_search::Tree Tree;
+
+#endif
+
+IndexArrayPtr 
+PGL::k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k)
+{
+    size_t nbPoints = points->size();
+    IndexArrayPtr result(new IndexArray(nbPoints,Index(0)));
+
+    std::list<CPoint_and_int> pointdata;
+    size_t pid = 0;
+	for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it, ++pid)
+		pointdata.push_back(CPoint_and_int(toPoint<CPoint>(*it),pid));
+
+   Tree tree(pointdata.begin(), pointdata.end());
+
+   std::list<CPoint_and_int>::const_iterator piter = pointdata.begin();
+   for(pid = 0; pid < nbPoints && piter != pointdata.end(); ++pid, ++piter){
+       K_neighbor_search search(tree, piter->get<0>(), k+1);
+       Index& cindex = result->getAt(pid);
+       for(K_neighbor_search::iterator it = search.begin(); it != search.end(); ++it){
+           size_t ngpid = it->first.get<1>();
+           if (ngpid != pid) cindex.push_back(ngpid);
+        }
+   }
+
+
+    return result;
+}
+
 
 #include "dijkstra.h"
 
@@ -349,7 +369,63 @@ PGL::densities_from_r_neighboorhood(const Point3ArrayPtr points,
     return result;
 }
 
-ALGO_API real_t
+Index PGL::get_k_closest_from_n(const Index& adjacencies, const uint32_t k, uint32_t pid, const Point3ArrayPtr points)
+{
+        uint32_t nbnbg = adjacencies.size();
+        if (nbnbg <= k) return adjacencies;
+        RealArrayPtr distances(new RealArray(nbnbg));
+        Vector3 self = points->getAt(pid);
+        for(size_t pnid = 0; pnid < nbnbg; ++pnid)
+                distances->setAt(pnid,norm(self-points->getAt(pnid)));
+        Index sorted = get_sorted_element_order(distances);
+        return Index(sorted.begin(),sorted.begin()+k);
+}
+
+Index PGL::k_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
+{
+    GEOM_ASSERT(points->size() == adjacencies->size());
+
+    Index result;
+    uint32_t nbnbg = adjacencies->getAt(pid).size();
+    if (k <= nbnbg) {
+        result = get_k_closest_from_n(adjacencies->getAt(pid),k,pid,points);
+    }
+    else {
+        struct PointDistance pdevaluator(points);
+
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,pid,pdevaluator,REAL_MAX,k);
+        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+              result.push_back(itn->id);
+    }
+    return result;
+}
+
+IndexArrayPtr
+PGL::k_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
+{
+    uint32_t nbPoints = points->size();
+    GEOM_ASSERT(nbPoints == adjacencies->size());
+    GEOM_ASSERT(nbPoints == radii->size());
+    struct PointDistance pdevaluator(points);
+    
+    IndexArrayPtr result(new IndexArray(nbPoints));
+    for(uint32_t current = 0; current < nbPoints; ++current) {
+        Index lres;
+        const Index& candidates = adjacencies->getAt(current);
+        if (k <= candidates.size()) {
+            lres = get_k_closest_from_n(candidates,k,current,points);
+        }
+        else {
+            NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,REAL_MAX,k);
+            for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+                lres.push_back(itn->id);
+        }
+        result->setAt(current,lres);
+    }
+    return result;
+}
+
+real_t
 PGL::max_neighboorhood_distance(  uint32_t pid,
                                         const Point3ArrayPtr points, 
 			                            const Index& adjacency)
@@ -363,9 +439,10 @@ PGL::max_neighboorhood_distance(  uint32_t pid,
 real_t
 PGL::density_from_k_neighboorhood(  uint32_t pid,
                                const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies)
+			                   const IndexArrayPtr adjacencies,
+                               const uint32_t k)
 {
-    const Index& adjacency = adjacencies->getAt(pid);
+    Index adjacency = (k == 0 ? adjacencies->getAt(pid) : k_neighboorhood(pid, points, adjacencies, k ));
     real_t radius = max_neighboorhood_distance(pid, points, adjacency);
     return adjacency.size() / (radius * radius);
 }
@@ -373,7 +450,8 @@ PGL::density_from_k_neighboorhood(  uint32_t pid,
 
 TOOLS(RealArrayPtr)
 PGL::densities_from_k_neighboorhood(const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies)
+			                   const IndexArrayPtr adjacencies,
+                               const uint32_t k)
 {
     uint32_t nbPoints = points->size();
     GEOM_ASSERT(nbPoints == adjacencies->size());
@@ -381,19 +459,15 @@ PGL::densities_from_k_neighboorhood(const Point3ArrayPtr points,
     RealArrayPtr result(new RealArray(nbPoints));
     uint32_t current = 0;
     for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres){
-        *itres = density_from_k_neighboorhood(current, points,adjacencies);
+        *itres = density_from_k_neighboorhood(current, points,adjacencies,k);
         ++current;
     }
     return result;
 }
 
 #ifdef WITH_CGAL
-#include <CGAL/Cartesian.h>
 #include <CGAL/linear_least_squares_fitting_3.h>
 
-typedef CGAL::Cartesian<double>   CK;
-typedef CK::Line_3                CLine;
-typedef CK::Point_3               CPoint;
 typedef CK::Line_3                CLine;
 #endif
 
@@ -402,7 +476,8 @@ Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index& grou
 #ifdef WITH_CGAL
 	std::list<CPoint> pointdata;
 	for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
-		pointdata.push_back(toPoint<CPoint>(*it));
+	for (Index::const_iterator it = group.begin(); it != group.end() ; ++it)
+		pointdata.push_back(toPoint<CPoint>(points->getAt(*it)));
 
 	CLine line;
 	linear_least_squares_fitting_3(pointdata.begin(), pointdata.end(), line, CGAL::Dimension_tag<0>());

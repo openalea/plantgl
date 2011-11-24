@@ -119,12 +119,14 @@ template<class EdgeWeigthEvaluation>
 NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
                                    uint32_t root, 
                                    EdgeWeigthEvaluation& distevaluator,
-                                   real_t maxdist = REAL_MAX)
+                                   real_t maxdist = REAL_MAX,
+                                   uint32_t maxnbelements = UINT32_MAX)
  {
 
      NodeList result;
 
      size_t nbnodes = connections->size();
+     size_t nbprocessednodes = 0;
      real_t * distances = new real_t [nbnodes];
      for(real_t * it = distances; it != distances+nbnodes; ++it) *it = REAL_MAX;
      distances[root] = 0;
@@ -136,9 +138,10 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
      node_priority_queue<real_t *> Q(distances);
      Q.push(root);
 
-     while(!Q.empty()){
+     while(!Q.empty() && nbprocessednodes < maxnbelements){
          uint32_t current = Q.pop();
          result.push_back(Node(current,parents[current],distances[current])); 
+         nbprocessednodes += 1;
          const Index& nextchildren = connections->getAt(current);
          for (Index::const_iterator itchildren = nextchildren.begin();
              itchildren != nextchildren.end(); ++itchildren)

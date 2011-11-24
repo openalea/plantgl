@@ -93,6 +93,7 @@ void module_algo()
     export_Mvs();
     export_Octree();
     export_PointGrid();
+    export_KDtree();
 
     // CurveManipulation export
     export_CurveManipulation();

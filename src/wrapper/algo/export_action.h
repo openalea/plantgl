@@ -92,6 +92,7 @@ void export_RayIntersection();
 void export_Mvs();
 void export_Octree();
 void export_PointGrid();
+void export_KDtree();
 
 /* ----------------------------------------------------------------------- */
 // CurveManipulation export

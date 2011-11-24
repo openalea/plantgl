@@ -94,6 +94,9 @@
     <ClCompile Include="export_dijkstra.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="export_kdtree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export_printer.h">
