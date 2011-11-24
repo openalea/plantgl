@@ -18,7 +18,7 @@ env = Environment(options=options, tools=[])
 qt_env = env
 qt_version = int(qt_env['QT_VERSION'])
 
-cpp_tools = ['bison', 'flex', 'opengl','readline', 'install', 'qhull','boost_python','cgal','mpfr']
+cpp_tools = ['bison', 'flex', 'opengl','readline', 'install', 'qhull','boost_python','cgal','mpfr','ann']
 if qt_version == 3:
     qt_tools = ['qt']
 else:
