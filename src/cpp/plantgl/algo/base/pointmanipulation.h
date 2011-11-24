@@ -86,8 +86,8 @@ k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k);
 ALGO_API IndexArrayPtr 
 k_closest_points_from_ann(const Point3ArrayPtr points, size_t k);
 
-ALGO_API IndexArrayPtr 
-k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k);
+// ALGO_API IndexArrayPtr 
+// k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k);
 
 /// R-Neighborhood computation
 ALGO_API Index 

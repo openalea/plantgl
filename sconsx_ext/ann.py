@@ -43,10 +43,10 @@ class ANN:
          self._default['defines'] = ''
 
          try:
-            cgalroot = os.environ['ANN_DIR']
-            self._default['include'] = pj(cgalroot,'auxiliary','gmp','include')
-            self._default['libpath'] = pj(cgalroot,'auxiliary','gmp','lib')
-            self._default['libs'] = 'mpfr-vc80-mt'            
+            annroot = os.environ['ANN_DIR']
+            self._default['include'] = pj(annroot,'include')
+            self._default['libpath'] = pj(annroot,'lib')
+            self._default['libs'] = 'ANN'            
          except:
             try:
                import openalea.config as conf
@@ -61,7 +61,7 @@ class ANN:
       elif isinstance(platform, Posix):
          self._default['include'] = '/usr/include'
          self._default['libpath'] = '/usr/lib'
-         self._default['libs'] = 'ANN'
+         self._default['libs'] = 'ann'
          self._default['flags'] = ''
          self._default['defines'] = ''
 
@@ -99,10 +99,8 @@ class ANN:
       """ Update the environment with specific flags """
       if env['WITH_ANN'] :
         ann_inc = env['ann_includes']
-        if type(ann_inc) == str:
-          ann_inc = ann_inc.split()
-        ann_inc = ann_inc[0]
-        if not os.path.exists(os.path.join(ann_inc,'ANN''ANN.h')):
+        ann_header = os.path.join(ann_inc,'ANN','ANN.h')
+        if not os.path.exists(ann_header):
           import warnings
           warnings.warn("Error: ANN headers not found. ANN disabled ...")
           env['WITH_ANN'] = False      

@@ -139,7 +139,8 @@ PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k)
 typedef CGAL::Cartesian<double>   CK;
 typedef CK::Point_3               CPoint;
 typedef boost::tuple<CPoint,int>  CPoint_and_int;
-
+#endif
+/*
 //definition of the property map
 struct My_point_property_map{
   typedef CPoint value_type;
@@ -198,7 +199,7 @@ PGL::k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k)
 
     return result;
 }
-
+*/
 
 #include "dijkstra.h"
 
