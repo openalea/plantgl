@@ -64,6 +64,8 @@ inline Vector3 toVector3(const CGALPoint& v) { return Vector3(v.x(),v.y(),v.z())
 
 #endif
 
+#include <stack>
+#include <iostream>
 
 
 IndexArrayPtr 
@@ -653,24 +655,24 @@ PGL::centroids_of_groups(const Point3ArrayPtr points,
 ALGO_API Point3ArrayPtr
 PGL::skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k, TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, bool verbose)
 {
-    if(verbose)printf("Compute Remanian graph.\n");
+    if(verbose)std::cout << "Compute Remanian graph." << std::endl;
 #ifdef WITH_ANN
     IndexArrayPtr remaniangraph =  k_closest_points_from_ann(points, k);
 #else
     IndexArrayPtr remaniangraph =  k_closest_points_from_delaunay(points, k);
 #endif
-    if(verbose)printf("Compute distance to root.\n");
+    if(verbose)std::cout << "Compute distance to root." << std::endl;
     std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> shortest_pathes = points_dijkstra_shortest_path(points, remaniangraph, root);
     Uint32Array1Ptr parents = shortest_pathes.first;
     RealArrayPtr distances_to_root = shortest_pathes.second;
-    if(verbose)printf("Compute cluster according to distance to root.\n");
+    if(verbose)std::cout << "Compute cluster according to distance to root." << std::endl;
     group_components =  quotient_points_from_adjacency_graph(binsize, points, remaniangraph, distances_to_root);
-    printf("Nb of groups : %i \n",group_components->size());
-    if(verbose)printf("Compute adjacency graph of groups.\n");
+    std::cout << "Nb of groups : " << group_components->size() << std::endl;
+    if(verbose)std::cout << "Compute adjacency graph of groups." << std::endl;
     IndexArrayPtr group_adjacencies = quotient_adjacency_graph(remaniangraph, group_components);
-    if(verbose)printf("Compute centroid of groups.\n");
+    if(verbose)std::cout << "Compute centroid of groups." << std::endl;
     Point3ArrayPtr group_centroid =  centroids_of_groups(points,group_components);
-    if(verbose)printf("Compute spanning tree of groups.\n");
+    if(verbose)std::cout << "Compute spanning tree of groups." << std::endl;
     shortest_pathes = points_dijkstra_shortest_path(group_centroid, group_adjacencies, 0);
     group_parents = shortest_pathes.first;
     return group_centroid;
