@@ -267,7 +267,9 @@ Vector2 abs( const Vector2& v ) {
 }
 
 Vector2 direction( const Vector2& v ) {
-  return v / norm(v);
+  real_t n = norm(v);
+  if (n < GEOM_EPSILON) return v;
+  return v / n;
 }
 
 real_t cross( const Vector2& v1,const Vector2& v2) 
@@ -663,7 +665,9 @@ Vector3 operator^( const Vector3& v1, const Vector3& v2 ) {
 }
 
 Vector3 direction( const Vector3& v ) {
-  return v / norm(v);
+  real_t n = norm(v);
+  if (n < GEOM_EPSILON) return v;
+  return v / n;
 }
 
 real_t dot( const Vector3& v1, const Vector3& v2 ) {
@@ -994,7 +998,9 @@ Vector4 abs( const Vector4& v ) {
 }
 
 Vector4 direction( const Vector4& v ) {
-  return v / norm(v);
+  real_t n = norm(v);
+  if (n < GEOM_EPSILON) return v;
+  return v / n;
 }
 
 real_t dot( const Vector4& v1, const Vector4& v2 ) {

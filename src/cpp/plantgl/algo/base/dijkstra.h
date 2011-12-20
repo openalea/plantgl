@@ -47,7 +47,7 @@ PGL_BEGIN_NAMESPACE
   my priority queue for comparing node
 */
 
-#define DIJKSTRA_WITH_SORTED_VECTOR
+// #define DIJKSTRA_WITH_SORTED_VECTOR
 
 template<class DistArray>
 struct nodecompare {
@@ -68,41 +68,53 @@ public:
 #endif
     struct nodecompare<DistArray> comp;
 
-    node_priority_queue(const DistArray& distances): comp(distances) { }
+    node_priority_queue(const DistArray& distances): 
+        comp(distances) 
+        {
+#ifndef DIJKSTRA_WITH_SORTED_VECTOR
+            make_heap(c.begin(),c.end(), comp); 
+#endif
+        }
 
     bool empty() const { return (c.empty()); }
     size_t size() const { return (c.size()); }
 
+#ifndef DIJKSTRA_WITH_SORTED_VECTOR
     void push(uint32_t _Val)
       {	
-#ifdef DIJKSTRA_WITH_SORTED_VECTOR
-            c.insert(lower_bound(c.begin(),c.end(),_Val,comp),_Val);
-#else
             c.push_back(_Val);
             push_heap(c.begin(), c.end(), comp);
-#endif
       }
 
     uint32_t pop()
       {
-#ifdef DIJKSTRA_WITH_SORTED_VECTOR
+            uint32_t topvalue = c.front(); 
+            pop_heap(c.begin(), c.end(), comp);
+            c.pop_back();
+            return topvalue;
+      }
+
+    void update(uint32_t _Val) { 
+            make_heap(c.begin(),c.end(), comp); 
+    }
+
+#else
+    void push(uint32_t _Val)
+      {	
+            c.insert(lower_bound(c.begin(),c.end(),_Val,comp),_Val);
+      }
+
+    uint32_t pop()
+      {
         uint32_t topvalue = c.back(); 
         c.pop_back();
-#else
-        uint32_t topvalue = c.front(); 
-        pop_heap(c.begin(), c.end(), comp);
-        c.pop_back();
-#endif
         return topvalue;
       }
 
-    void update() { 
-#ifdef DIJKSTRA_WITH_SORTED_VECTOR
+    void update(uint32_t _Val) { 
         sort(c.begin(),c.end(), comp); 
-#else
-        sort_heap(c.begin(),c.end(), comp); 
-#endif
     }
+#endif
 };
 
 struct Node {
@@ -157,7 +169,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                      Q.push(v);
                  }
                  else {
-                     Q.update();
+                     Q.update(v);
                  }
              }
          }
@@ -177,7 +189,8 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
      size_t nbnodes = connections->size();
      TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
      distances->setAt(root,0);
-     TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,root));
+     TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,UINT32_MAX));
+     parents->setAt(root,root);
 
      std::vector<bool> colored(nbnodes,false);
 
@@ -201,7 +214,7 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
                      Q.push(v);
                  }
                  else {
-                     Q.update();
+                     Q.update(v);
                  }
              }
          }

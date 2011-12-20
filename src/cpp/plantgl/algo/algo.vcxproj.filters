@@ -427,6 +427,9 @@
     <ClInclude Include="grid\kdtree.h">
       <Filter>Grid</Filter>
     </ClInclude>
+    <ClInclude Include="grid\annkdtree_p.h">
+      <Filter>Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="codec\scne_parser.y">

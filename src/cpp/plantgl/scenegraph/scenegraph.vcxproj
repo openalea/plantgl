@@ -162,6 +162,7 @@
     <ClCompile Include="pgl_version.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="container\indexarray_iterator.h" />
     <ClInclude Include="core\action.h" />
     <ClInclude Include="core\deepcopier.h" />
     <ClInclude Include="core\pgl_messages.h" />

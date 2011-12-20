@@ -78,9 +78,9 @@ public:
     virtual ~KDTree() { }
 
 
-    virtual Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX) const = 0;
+    virtual Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX) = 0;
 
-    virtual IndexArrayPtr k_nearest_neighbors(size_t k) const = 0;
+    virtual IndexArrayPtr k_nearest_neighbors(size_t k) = 0;
 
 };
 
@@ -109,8 +109,8 @@ class ANNKDTree4Internal;
         ANN##basename(const PointContainerPtr& points); \
         virtual ~ANN##basename(); \
         \
-        virtual Index k_closest_points(const VectorType& pointclass, size_t k, real_t maxdist = REAL_MAX) const;  \
-        virtual IndexArrayPtr k_nearest_neighbors(size_t k) const ; \
+        virtual Index k_closest_points(const VectorType& pointclass, size_t k, real_t maxdist = REAL_MAX);  \
+        virtual IndexArrayPtr k_nearest_neighbors(size_t k) ; \
         protected: \
         ANN##basename##Internal * __internal; \
     }; 

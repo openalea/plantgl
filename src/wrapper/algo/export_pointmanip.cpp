@@ -51,44 +51,70 @@ object py_points_dijkstra_shortest_path(const Point3ArrayPtr points,
 }
 
 object
-py_skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k, bool verbose = false)
+py_skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k, bool connect_all_points = false, bool verbose = false)
 {
     TOOLS(Uint32Array1Ptr) group_parents; IndexArrayPtr group_components;
-    Point3ArrayPtr group_centroids = skeleton_from_distance_to_root_clusters(points, root, binsize, k, group_parents, group_components, verbose );
+    Point3ArrayPtr group_centroids = skeleton_from_distance_to_root_clusters(points, root, binsize, k, group_parents, group_components, connect_all_points, verbose );
     return make_tuple(group_centroids, group_parents, group_components);
+}
+
+object
+py_remove_nodes(const Index& toremove,
+                Point3ArrayPtr nodes,
+                Uint32Array1Ptr parents, 
+                RealArrayPtr radii)
+{
+    remove_nodes(toremove,nodes,parents,radii);
+    return make_tuple(nodes,parents,radii);
+}
+
+
+object
+py_determine_children(const TOOLS(Uint32Array1Ptr) parents)
+{
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents,root);
+    return make_tuple(children,root);
 }
 
 void export_PointManip()
 {
-	def("compress_point2",&compress_point<Point2Array>,args("points","radius"));
-	def("compress_point3",&compress_point<Point3Array>,args("points","radius"));
-	def("compress_point4",&compress_point<Point4Array>,args("points","radius"));
+	def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
+	def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
+	def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));
     def("k_closest_points_from_delaunay",&k_closest_points_from_delaunay,args("points","k"));
 #endif
 #ifdef WITH_ANN
-    def("k_closest_points_from_ann",&k_closest_points_from_ann,args("points","k"));
+    def("k_closest_points_from_ann",&k_closest_points_from_ann,(bp::arg("points"),bp::arg("k"),bp::arg("symmetric")=false));
 #endif
 
+    def("symmetrize_connections",&symmetrize_connections,(bp::arg("adjacencies")));
+    def("connect_all_connex_components",&connect_all_connex_components,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("verbose")=false));
 
-    def("r_neighboorhood",&r_neighboorhood,args("pid","points","adjacencies","radius"));
-    def("r_neighboorhoods",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr))&r_neighboorhoods,args("points","adjacencies","radius"));
-    def("r_neighboorhoods",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, real_t))&r_neighboorhoods,args("points","adjacencies","radii"));
-    def("r_anisotropic_neighboorhood",&r_anisotropic_neighboorhood,args("pid","points","adjacencies","radius","direction","alpha","beta"));
-    def("r_anisotropic_neighboorhoods",
-        (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr, const Point3ArrayPtr, const real_t, const real_t ))&r_anisotropic_neighboorhoods,
+
+    def("r_neighborhood",&r_neighborhood,args("pid","points","adjacencies","radius"));
+    def("r_neighborhoods",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr))&r_neighborhoods,args("points","adjacencies","radii"));
+    def("r_neighborhoods",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, real_t, bool))&r_neighborhoods,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("verbose")=false));
+    def("r_anisotropic_neighborhood",&r_anisotropic_neighborhood,args("pid","points","adjacencies","radius","direction","alpha","beta"));
+    def("r_anisotropic_neighborhoods",
+        (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr, const Point3ArrayPtr, const real_t, const real_t ))&r_anisotropic_neighborhoods,
         args("points","adjacencies","radii","directions","alpha","beta"));
-    def("r_anisotropic_neighboorhoods",
-        (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const real_t, const Point3ArrayPtr, const real_t, const real_t ))&r_anisotropic_neighboorhoods,
+    def("r_anisotropic_neighborhoods",
+        (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const real_t, const Point3ArrayPtr, const real_t, const real_t ))&r_anisotropic_neighborhoods,
         args("points","adjacencies","radius","directions","alpha","beta"));
 
-    def("density_from_r_neighboorhood",&density_from_r_neighboorhood,args("pid","points","adjacencies","radius"));
-    def("densities_from_r_neighboorhood",&densities_from_r_neighboorhood,args("points","adjacencies","radius"));
-    def("max_neighboorhood_distance",&max_neighboorhood_distance,args("pid","points","adjacency"));
-    def("density_from_k_neighboorhood",&density_from_k_neighboorhood,args("pid","points","adjacencies"));
-    def("densities_from_k_neighboorhood",&densities_from_k_neighboorhood,args("points","adjacencies"));
+    def("k_neighborhood",&k_neighborhood,args("pid","points","adjacencies","k"));
+    def("k_neighborhoods",&k_neighborhoods,args("points","adjacencies","k"));
+
+    def("density_from_r_neighborhood",&density_from_r_neighborhood,args("pid","points","adjacencies","radius"));
+    def("densities_from_r_neighborhood",&densities_from_r_neighborhood,args("points","adjacencies","radius"));
+    def("max_neighborhood_distance",&max_neighborhood_distance,args("pid","points","adjacency"));
+
+    def("density_from_k_neighborhood",&density_from_k_neighborhood,(bp::arg("pid"),bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute density of a point according to its k neighboordhood. If k is 0, its value is deduced from adjacencies.");
+    def("densities_from_k_neighborhood",&densities_from_k_neighborhood,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute local densities of a set of points according to their k neighboordhood. If k is 0, its value is deduced from adjacencies.");
 
 #ifdef WITH_CGAL
     def("pointset_orientation",&pointset_orientation,args("points","group"));
@@ -98,11 +124,30 @@ void export_PointManip()
     def("centroid_of_group",&centroid_of_group,args("points","group"));
     def("centroids_of_groups",&centroids_of_groups,args("points","groups"));
 
+
+    def("adaptive_radii",&adaptive_radii,(bp::arg("density"),bp::arg("minradius"),bp::arg("maxradius"),bp::arg("densityradiusmap")=NULL),"Compute a radius for each density value");
+    def("adaptive_contration",&adaptive_contration,(bp::arg("points"),bp::arg("orientations"),bp::arg("adjacencies"),
+                                                    bp::arg("density"),bp::arg("minradius"),bp::arg("maxradius"),
+                                                    bp::arg("densityradiusmap")=NULL,
+                                                    bp::arg("alpha")=1.0,bp::arg("beta")=1.0),"Contract the pointset with an adptive radius of contraction");
+
     def("get_sorted_element_order",&get_sorted_element_order,args("elements"));
     def("points_dijkstra_shortest_path",&py_points_dijkstra_shortest_path,args("points","adjacencies","root"));
     def("quotient_points_from_adjacency_graph",&quotient_points_from_adjacency_graph,args("binsize","points","adjacencies","distances_to_root"));
     def("quotient_adjacency_graph",&quotient_points_from_adjacency_graph,args("adjacencies","groups"));
-    def("skeleton_from_distance_to_root_clusters",&py_skeleton_from_distance_to_root_clusters,(bp::arg("points"),bp::arg("root"),bp::arg("binsize"),bp::arg("k")=10,bp::arg("verbose")=false),"Implementation of Xu et al. 07 method for main branching system");
+    def("skeleton_from_distance_to_root_clusters",&py_skeleton_from_distance_to_root_clusters,
+        (bp::arg("points"),bp::arg("root"),bp::arg("binsize"),bp::arg("k")=10,bp::arg("connect_all_points")=false,bp::arg("verbose")=false),"Implementation of Xu et al. 07 method for main branching system");
+
+    def("determine_children", &py_determine_children);
+    def("carried_length",&carried_length,bp::args("points","parents"));
+    def("optimize_orientations",&optimize_orientations,bp::args("points","parents","weights"));
+    def("optimize_positions",&optimize_positions,bp::args("points","orientations","parents","weights"));
+
+    def("average_radius",&average_radius,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("maxclosestnodes")=10));
+    def("estimate_radii",&estimate_radii,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
+
+    def("filter_short_nodes",&filter_short_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("edgelengthfilter")=0.1,bp::arg("overlapfilter")=0.5));
+    def("remove_nodes",&py_remove_nodes,(bp::arg("toremove"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii")));
 
 }
 

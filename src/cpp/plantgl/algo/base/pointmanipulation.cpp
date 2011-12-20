@@ -125,11 +125,13 @@ PGL::k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k)
 #include <plantgl/algo/grid/kdtree.h>
 
 IndexArrayPtr 
-PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k)
+PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symmetric)
 {
 #ifdef WITH_ANN
     ANNKDTree3 kdtree(points);
-    return kdtree.k_nearest_neighbors(k);
+    IndexArrayPtr result = kdtree.k_nearest_neighbors(k);
+    if(symmetric) result = symmetrize_connections(result);
+    return result;
 #else
     return IndexArrayPtr();
 #endif
@@ -203,7 +205,137 @@ PGL::k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k)
 }
 */
 
+IndexArrayPtr 
+PGL::symmetrize_connections(const IndexArrayPtr adjacencies)
+{
+    IndexArrayPtr newadjacencies(new IndexArray(*adjacencies));
+    size_t pid = 0;
+    for(IndexArray::const_iterator itpc = newadjacencies->begin(); itpc != newadjacencies->end(); ++itpc, ++pid)
+    {
+        for(Index::const_iterator itc = itpc->begin(); itc != itpc->end(); ++itc)
+        {
+            Index& target = newadjacencies->getAt(*itc);
+            if(find(target.begin(),target.end(),pid) == target.end())
+                target.push_back(pid);
+        }
+    }
+
+    return newadjacencies;
+}
+
 #include "dijkstra.h"
+#include <plantgl/tool/util_hashset.h>
+#include <plantgl/tool/util_hashmap.h>
+#include <list>
+
+struct OneDistance {
+        inline real_t operator()(uint32_t a, uint32_t b) const { return 1; }
+        OneDistance() {}
+};
+
+ALGO_API IndexArrayPtr 
+PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose)
+{
+
+    // ids of points not accessible from the root connex component
+    pgl_hash_set_uint32 nonconnected;
+
+    size_t nbtotalpoints = points->size();
+
+    // connected points. they are not inserted in the same order than points
+    Point3ArrayPtr refpoints(new Point3Array());
+    // nb of connected points. store to not recompute each time
+    uint32_t nbrefpoints = 0;
+    // map of point id from 'refpoints' to 'points' structure
+    pgl_hash_map<uint32_t,uint32_t> pidmap;
+
+    // connections to add to connect all connex components
+    std::list<std::pair<uint32_t,uint32_t> > addedconnections;
+    // root to consider for next connex component
+    uint32_t next_root = 0;
+
+    while (true){
+
+        // find all points accessible from next_root
+        std::pair<Uint32Array1Ptr,RealArrayPtr> root_connections = dijkstra_shortest_paths(adjacencies,next_root,OneDistance());
+        Uint32Array1Ptr parents = root_connections.first;
+
+        // update set of refpoints (point connected) and non connnected.
+        if(next_root == 0) { // if it is the first round, add nonconnected
+            uint32_t pid = 0;
+            for (Uint32Array1::const_iterator itParent = parents->begin(); itParent != parents->end(); ++itParent, ++pid)
+            {
+                if (*itParent == UINT32_MAX) {
+                    nonconnected.insert(pid);
+                }
+                else {
+                    refpoints->push_back(points->getAt(pid));
+                    pidmap[nbrefpoints] = pid;
+                    ++nbrefpoints;
+                }
+            }
+        }
+        else
+        {   // iter on nonconnected and remove a point from this set if it has a parent.
+            std::list<uint32_t> toerase;
+            for(pgl_hash_set_uint32::const_iterator itncpid = nonconnected.begin();
+                itncpid != nonconnected.end(); ++itncpid)
+            {
+                if(parents->getAt(*itncpid) != UINT32_MAX)
+                {
+                    uint32_t pid = *itncpid;
+                    refpoints->push_back(points->getAt(pid));
+                    pidmap[nbrefpoints] = pid;
+                    ++nbrefpoints;
+                    toerase.push_back(pid);
+                }
+            }
+            for(std::list<uint32_t>::const_iterator iterase = toerase.begin(); iterase != toerase.end(); ++iterase)
+                nonconnected.erase(*iterase);
+        }
+        if (verbose) printf("\x0dNb points processed %i (%.2f%%) [left : %i (%.2f%%)].\n",nbrefpoints,100 * nbrefpoints /float(nbtotalpoints), nonconnected.size(), 100 * nonconnected.size()/float(nbtotalpoints),next_root);
+        // if no more non connected point, break
+        if (nonconnected.empty()) break;
+
+        // create kdtree from connected points
+        ANNKDTree3 kdtree(refpoints);
+        real_t dist = REAL_MAX;
+        std::pair<uint32_t,uint32_t> connection;
+        bool allempty = true;
+
+        // find shortest connections between a non connected point and a connected one
+        for(pgl_hash_set_uint32::const_iterator itncpid = nonconnected.begin(); itncpid != nonconnected.end(); ++itncpid){
+            Index cp = kdtree.k_closest_points(points->getAt(*itncpid),1,dist);
+            if (!cp.empty()){
+                uint32_t refpoint = pidmap[cp[0]];
+                real_t newdist = norm(points->getAt(refpoint)-points->getAt(*itncpid));
+                if (newdist < dist ){
+                    connection = std::pair<uint32_t,uint32_t>(refpoint,*itncpid);
+                    dist = newdist;
+                }
+                allempty = false;
+            }
+        }
+        assert(!allempty);
+        // add the found connections into addedconnections and consider non connected point as next_root
+        addedconnections.push_back(connection);
+        next_root = connection.second;               
+    }
+
+    // copy adjacencies and update it with addedconnections
+    IndexArrayPtr newadjacencies(new IndexArray(*adjacencies));
+    for(std::list<std::pair<uint32_t,uint32_t> >::const_iterator itc = addedconnections.begin();
+            itc != addedconnections.end(); ++itc)
+    {
+            newadjacencies->getAt(itc->first).push_back(itc->second);
+            newadjacencies->getAt(itc->second).push_back(itc->first);
+    }
+
+    return newadjacencies;
+
+}
+
+
 
 struct PointDistance {
         const Point3ArrayPtr points;
@@ -212,7 +344,7 @@ struct PointDistance {
 };
 
 Index
-PGL::r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius)
+PGL::r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius)
 {
     GEOM_ASSERT(points->size() == adjacencies->size());
 
@@ -226,7 +358,7 @@ PGL::r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArray
 }
 
 IndexArrayPtr 
-PGL::r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii)
+PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii)
 {
     uint32_t nbPoints = points->size();
     GEOM_ASSERT(nbPoints == adjacencies->size());
@@ -248,7 +380,7 @@ PGL::r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacenci
 }
 
 IndexArrayPtr 
-PGL::r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius)
+PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose)
 {
     uint32_t nbPoints = points->size();
     GEOM_ASSERT(nbPoints == adjacencies->size());
@@ -256,12 +388,20 @@ PGL::r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacenci
     struct PointDistance pdevaluator(points);
     
     IndexArrayPtr result(new IndexArray(nbPoints));
+    real_t cpercent = 0;
     for(uint32_t current = 0; current < nbPoints; ++current) {
         NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius);
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
             lres.push_back(itn->id);
         result->setAt(current,lres);
+        if (verbose){
+            real_t ncpercent = 100 * current / float(nbPoints);
+            if(cpercent + 5 <= ncpercent ) {
+                printf("density computed for %.2f%% of points.\n",ncpercent);
+                cpercent = ncpercent;
+            }
+        }
     }
     return result;
 }
@@ -277,7 +417,7 @@ struct PointAnisotropicDistance {
 
 
 Index
-PGL::r_anisotropic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius, 
+PGL::r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius, 
 					 const Vector3& direction, 
 					 const real_t alpha, const real_t beta)
 {
@@ -295,7 +435,7 @@ PGL::r_anisotropic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, cons
 }
 
 IndexArrayPtr 
-PGL::r_anisotropic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii, 
+PGL::r_anisotropic_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii, 
 			         const Point3ArrayPtr directions,
 				 const real_t alpha, const real_t beta)
 {
@@ -321,7 +461,7 @@ PGL::r_anisotropic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayP
 
 
 IndexArrayPtr 
-PGL::r_anisotropic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, 
+PGL::r_anisotropic_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, 
 			                      const Point3ArrayPtr directions,
 				                  const real_t alpha, const real_t beta)
 {
@@ -345,18 +485,18 @@ PGL::r_anisotropic_neighboorhoods(const Point3ArrayPtr points, const IndexArrayP
 
 
 real_t
-PGL::density_from_r_neighboorhood(  uint32_t pid,
+PGL::density_from_r_neighborhood(  uint32_t pid,
                                const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies, 
                                const real_t radius)
 {
-    Index r_neighboorhood_value = r_neighboorhood(pid, points, adjacencies, radius);
-    return r_neighboorhood_value.size()/ (radius * radius);
+    Index r_neighborhood_value = r_neighborhood(pid, points, adjacencies, radius);
+    return r_neighborhood_value.size()/ (radius * radius);
 }
 
 
 TOOLS(RealArrayPtr)
-PGL::densities_from_r_neighboorhood(const Point3ArrayPtr points, 
+PGL::densities_from_r_neighborhood(const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies, 
                                const real_t radius)
 {
@@ -366,7 +506,7 @@ PGL::densities_from_r_neighboorhood(const Point3ArrayPtr points,
     RealArrayPtr result(new RealArray(nbPoints));
     uint32_t current = 0;
     for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres){
-        *itres = density_from_r_neighboorhood(current, points,adjacencies,radius);
+        *itres = density_from_r_neighborhood(current, points,adjacencies,radius);
         ++current;
     }
     return result;
@@ -384,7 +524,7 @@ Index PGL::get_k_closest_from_n(const Index& adjacencies, const uint32_t k, uint
         return Index(sorted.begin(),sorted.begin()+k);
 }
 
-Index PGL::k_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
+Index PGL::k_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
 {
     GEOM_ASSERT(points->size() == adjacencies->size());
 
@@ -404,7 +544,7 @@ Index PGL::k_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const Inde
 }
 
 IndexArrayPtr
-PGL::k_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
+PGL::k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
 {
     uint32_t nbPoints = points->size();
     GEOM_ASSERT(nbPoints == adjacencies->size());
@@ -415,21 +555,22 @@ PGL::k_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacenci
     for(uint32_t current = 0; current < nbPoints; ++current) {
         Index lres;
         const Index& candidates = adjacencies->getAt(current);
-        if (k <= candidates.size()) {
+        /*if (k <= candidates.size()) {
             lres = get_k_closest_from_n(candidates,k,current,points);
         }
-        else {
+        else {*/
             NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,REAL_MAX,k);
             for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
                 lres.push_back(itn->id);
-        }
+        // }
         result->setAt(current,lres);
     }
     return result;
 }
 
+
 real_t
-PGL::max_neighboorhood_distance(  uint32_t pid,
+PGL::max_neighborhood_distance(  uint32_t pid,
                                         const Point3ArrayPtr points, 
 			                            const Index& adjacency)
 {
@@ -440,19 +581,19 @@ PGL::max_neighboorhood_distance(  uint32_t pid,
 }
 
 real_t
-PGL::density_from_k_neighboorhood(  uint32_t pid,
+PGL::density_from_k_neighborhood(  uint32_t pid,
                                const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies,
                                const uint32_t k)
 {
-    Index adjacency = (k == 0 ? adjacencies->getAt(pid) : k_neighboorhood(pid, points, adjacencies, k ));
-    real_t radius = max_neighboorhood_distance(pid, points, adjacency);
+    Index adjacency = (k == 0 ? adjacencies->getAt(pid) : k_neighborhood(pid, points, adjacencies, k ));
+    real_t radius = max_neighborhood_distance(pid, points, adjacency);
     return adjacency.size() / (radius * radius);
 }
 
 
 TOOLS(RealArrayPtr)
-PGL::densities_from_k_neighboorhood(const Point3ArrayPtr points, 
+PGL::densities_from_k_neighborhood(const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies,
                                const uint32_t k)
 {
@@ -461,9 +602,16 @@ PGL::densities_from_k_neighboorhood(const Point3ArrayPtr points,
     GEOM_ASSERT(nbPoints == radii->size());
     RealArrayPtr result(new RealArray(nbPoints));
     uint32_t current = 0;
+    real_t cpercent = 0;
     for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres){
-        *itres = density_from_k_neighboorhood(current, points,adjacencies,k);
+        *itres = density_from_k_neighborhood(current, points,adjacencies,k);
         ++current;
+        real_t ncpercent = 100 * current / float(nbPoints);
+        if(cpercent + 5 <= ncpercent ) {
+            printf("density computed for %.2f%% of points.\n",ncpercent);
+            cpercent = ncpercent;
+
+        }
     }
     return result;
 }
@@ -478,7 +626,7 @@ Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index& grou
 {
 #ifdef WITH_CGAL
 	std::list<CPoint> pointdata;
-	for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
+	// for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
 	for (Index::const_iterator it = group.begin(); it != group.end() ; ++it)
 		pointdata.push_back(toPoint<CPoint>(points->getAt(*it)));
 
@@ -501,6 +649,42 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
         *itRes = pointset_orientation(points,*itNbrhd);
 
 	return result;
+}
+
+
+RealArrayPtr
+PGL::adaptive_radii( const RealArrayPtr density,
+                 real_t minradius, real_t maxradius,
+                 QuantisedFunctionPtr densityradiusmap)
+{
+    RealArrayPtr radii(new RealArray(density->size()));
+    real_t mindensity = *density->getMin();
+    real_t maxdensity = *density->getMax();
+    real_t deltadensity = maxdensity-mindensity;
+    real_t deltaradius = maxradius - minradius;
+    RealArray::iterator itradius = radii->begin();
+    for(RealArray::const_iterator itDensity = density->begin(); itDensity != density->end(); ++itDensity, ++itradius)
+    {
+        real_t normedDensity = (*itDensity-mindensity)/deltadensity;
+        *itradius = minradius  + deltaradius * (densityradiusmap ? densityradiusmap->getValue(normedDensity) : normedDensity ) ; 
+    }
+    return radii;
+
+}
+
+Point3ArrayPtr
+PGL::adaptive_contration(const Point3ArrayPtr points, 
+                     const Point3ArrayPtr orientations,
+                     const IndexArrayPtr adjacencies, 
+                     const RealArrayPtr density,
+                     real_t minradius, real_t maxradius,
+                     QuantisedFunctionPtr densityradiusmap,
+                     const real_t alpha, 
+	                 const real_t beta)
+{
+    RealArrayPtr radii = adaptive_radii(density, minradius, maxradius, densityradiusmap);
+    IndexArrayPtr neighborhoods = r_anisotropic_neighborhoods(points,  adjacencies, radii, orientations, alpha, beta);    
+    return centroids_of_groups(points, neighborhoods);
 }
 
 std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
@@ -630,7 +814,7 @@ PGL::quotient_adjacency_graph(const IndexArrayPtr adjacencies,
 
 ALGO_API TOOLS(Vector3) 
 PGL::centroid_of_group(const Point3ArrayPtr points, 
-			        const Index& group)
+			           const Index& group)
 {
         Vector3 gcentroid; real_t nbpoints = 0;
         for(Index::const_iterator itn = group.begin(); itn != group.end(); ++itn,++nbpoints){
@@ -641,7 +825,7 @@ PGL::centroid_of_group(const Point3ArrayPtr points,
 
 Point3ArrayPtr 
 PGL::centroids_of_groups(const Point3ArrayPtr points, 
-			           const IndexArrayPtr groups)
+			             const IndexArrayPtr groups)
 {
     Point3ArrayPtr result(new Point3Array(groups->size()));
     uint32_t cgroup = 0;
@@ -652,15 +836,21 @@ PGL::centroids_of_groups(const Point3ArrayPtr points,
     return result;
 }
 
-ALGO_API Point3ArrayPtr
-PGL::skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k, TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, bool verbose)
+Point3ArrayPtr
+PGL::skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k, 
+                                             TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, 
+                                             bool connect_all_points, bool verbose)
 {
     if(verbose)std::cout << "Compute Remanian graph." << std::endl;
 #ifdef WITH_ANN
-    IndexArrayPtr remaniangraph =  k_closest_points_from_ann(points, k);
+    IndexArrayPtr remaniangraph =  k_closest_points_from_ann(points, k, connect_all_points);
 #else
     IndexArrayPtr remaniangraph =  k_closest_points_from_delaunay(points, k);
 #endif
+    if (connect_all_points){
+        if(verbose)std::cout << "Connect all components of Riemanian graph." << std::endl;
+        remaniangraph =  connect_all_connex_components(points, remaniangraph, verbose);
+    }
     if(verbose)std::cout << "Compute distance to root." << std::endl;
     std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> shortest_pathes = points_dijkstra_shortest_path(points, remaniangraph, root);
     Uint32Array1Ptr parents = shortest_pathes.first;
@@ -676,4 +866,331 @@ PGL::skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32
     shortest_pathes = points_dijkstra_shortest_path(group_centroid, group_adjacencies, 0);
     group_parents = shortest_pathes.first;
     return group_centroid;
+}
+
+// Livny stuff
+
+// compute parent-children relation from child-parent relation
+IndexArrayPtr PGL::determine_children(const Uint32Array1Ptr parents, uint32_t& root)
+{
+    IndexArrayPtr result(new IndexArray(parents->size(),Index()));
+    uint32_t pid = 0;
+    for(Uint32Array1::const_iterator it = parents->begin(); it != parents->end(); ++it, ++pid){
+         if (pid == *it) root = pid;
+         else result->getAt(*it).push_back(pid);
+    }
+    return result;
+}
+
+#include <plantgl/scenegraph/container/indexarray_iterator.h>
+
+RealArrayPtr PGL::carried_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents)
+{
+    RealArrayPtr result(new RealArray(points->size()));
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents,root);
+
+
+    IndexArrayPostOrderConstIterator piterator(children, root);
+
+    // look to the node in post order and for each node compute its weigth as sum of children weigth + length of segment to children.
+    for(;!piterator.atEnd(); ++piterator)
+    {
+        Index& nextgroup = children->getAt(*piterator);
+        real_t sumw = 0;
+        Vector3& refpoint = points->getAt(*piterator);
+        for (Index::const_iterator itchildren = nextgroup.begin(); itchildren != nextgroup.end(); ++itchildren)
+            sumw += result->getAt(*itchildren) + norm(refpoint-points->getAt(*itchildren));
+        result->setAt(*piterator,sumw);
+    }
+
+    return result;
+}
+
+
+
+Point3ArrayPtr PGL::optimize_orientations(const Point3ArrayPtr points, 
+                                          const Uint32Array1Ptr parents, 
+                                          const RealArrayPtr weights)
+{
+    uint32_t nbPoints = points->size();
+    Point3ArrayPtr result( new Point3Array(nbPoints));
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    // Compute first orientation as average direction to children weighted with 'weights'
+    Vector3 firstorientation;
+    real_t sumw = 0.0;
+    for(Index::const_iterator itRChildren = children->getAt(root).begin(); 
+        itRChildren != children->getAt(root).end(); ++itRChildren){
+          real_t cv = weights->getAt(*itRChildren);
+          firstorientation += cv * direction(points->getAt(*itRChildren)-points->getAt(root));
+          sumw += cv;
+
+    }
+    result->setAt(root,firstorientation / sumw);
+
+    // compute direction of all points as compromive between orientation of parent and direction(node-parent)
+    IndexArrayPreOrderConstIterator piterator(children,root);
+    for(++piterator; !piterator.atEnd(); ++piterator){
+        uint32_t pid = *piterator;
+        real_t cv = weights->getAt(pid);
+        const Vector3& cpos = points->getAt(pid);
+        uint32_t parent = parents->getAt(pid);
+        real_t cvp_cv = (weights->getAt(parent) + cv) / 2;
+        const Vector3& ppos = points->getAt(parent);
+        Vector3 dp = direction(cpos-ppos);
+        // assert (weights->getAt(parent) > cv);
+        Vector3 ov = (cvp_cv* result->getAt(parent) + cv * dp) / (cvp_cv + cv);
+        assert (ov.isValid());
+        result->getAt(pid) = direction(ov);
+    }
+    return result;
+
+}
+
+Point3ArrayPtr PGL::optimize_positions(const Point3ArrayPtr points, 
+                                           const Point3ArrayPtr orientations, 
+                                           const TOOLS(Uint32Array1Ptr) parents, 
+                                           const TOOLS(RealArrayPtr) weights)
+{
+    uint32_t nbPoints = points->size();
+    Point3ArrayPtr result( new Point3Array(nbPoints));
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+    result->setAt(root,points->getAt(root));
+
+    // compute position of all points as compromive between orientation and previous position
+    IndexArrayPreOrderConstIterator piterator(children,root);
+    for(++piterator; !piterator.atEnd(); ++piterator){
+        uint32_t pid = *piterator;
+        real_t cv = weights->getAt(pid);
+        const Vector3& cpos = points->getAt(pid);
+
+        uint32_t parent = parents->getAt(pid);
+        real_t cvp_cv = (weights->getAt(parent) + cv)/2;
+        const Vector3& ppos = points->getAt(parent);
+
+        Vector3 relpos = cpos - ppos;
+        real_t pdist = norm(relpos);
+
+        const Vector3& corient = orientations->getAt(pid);
+        const Vector3& porient = orientations->getAt(parent);
+
+        // this position comes from the constraint of having edges coherent with orientation
+        Vector3 relidealpos = result->getAt(parent) +  direction(corient+porient)*pdist;
+
+        // this position comes from the constraint of having center of edges preserved
+        Vector3 relt2pos = cpos+ppos-result->getAt(parent);
+
+        // computes the new position from the compromise of the two previous positions
+        Vector3 newpos = ( relt2pos* cv  + relidealpos * cvp_cv ) / (cv + cvp_cv);
+        result->setAt(pid,newpos);
+    }
+
+    return result;
+}
+
+#include <plantgl/scenegraph/geometry/lineicmodel.h>
+
+real_t 
+PGL::average_radius(const Point3ArrayPtr points, 
+                      const Point3ArrayPtr nodes,
+                      const TOOLS(Uint32Array1Ptr) parents,
+                      uint32_t maxclosestnode)
+{
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    real_t sum_min_dist = 0;
+    uint32_t nb_samples = 0;
+    ANNKDTree3 tree(nodes);
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
+    {
+        real_t minpdist = REAL_MAX;
+        Index nids = tree.k_closest_points(*itp,10);
+        for(Index::const_iterator nit = nids.begin(); nit != nids.end(); ++nit){
+            Vector3 point(*itp);
+            real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
+            if (d < minpdist) minpdist = d;
+            for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
+                Vector3 mpoint(*itp);
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
+                if (d < minpdist) minpdist = d;
+            }
+        }
+        if (minpdist != REAL_MAX) {
+            sum_min_dist += minpdist;
+            nb_samples += 1;
+        }
+    }
+    return sum_min_dist / nb_samples;
+}
+
+TOOLS(RealArrayPtr) 
+PGL::estimate_radii(const Point3ArrayPtr nodes,
+                    const TOOLS(Uint32Array1Ptr) parents, 
+                    const TOOLS(RealArrayPtr) weights,
+                    real_t averageradius,
+                    real_t pipeexponent)
+{
+    uint32_t nbNodes = nodes->size();
+    RealArrayPtr result( new RealArray(nbNodes,0));
+
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    result->setAt(root,1);
+    real_t cr = weights->getAt(root);
+    real_t totalcu = cr;
+    real_t totalcu_cr = cr;
+
+    // compute position of all points as compromive between orientation and previous position
+    IndexArrayPreOrderConstIterator piterator(children,root);
+    for(++piterator; !piterator.atEnd(); ++piterator){
+        real_t cu = weights->getAt(*piterator);
+        totalcu += cu;
+        totalcu_cr += cu * pow(cu/cr,pipeexponent);
+    }
+
+    real_t radiusroot = totalcu * averageradius / totalcu_cr;
+    // real_t radiusroot = pow(totalcu * averageradius / totalcu_cr,1.0/pipeexponent);
+
+    uint32_t nid = 0;
+    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++nid)
+        *itres = radiusroot * weights->getAt(nid) / cr;
+
+    return result;
+}
+
+
+bool intersection_test(const Vector3& root, real_t rootradius, 
+                       const Vector3& p1, real_t radius1, 
+                       const Vector3& p2, real_t radius2,
+                       real_t overlapfilter)
+{
+    // We check if mid central point of cylinder 2 is in cylinder 1
+    Vector3 midp1 = (p1-root) * overlapfilter;
+    Vector3 rp2 = p2-root;
+    real_t normp2 = norm(rp2);
+    Vector3 drp2 = rp2/normp2;
+    real_t corespu = dot(midp1,drp2);
+    real_t corespt = corespu / normp2;
+    Vector3 crp2 = drp2 * corespu;
+    real_t radatcrp2 = rootradius + (radius2 -  rootradius) * corespt;
+    return norm(midp1-crp2) < radatcrp2;
+
+}
+
+
+ALGO_API Index PGL::filter_short_nodes(const Point3ArrayPtr nodes,
+                            const TOOLS(Uint32Array1Ptr) parents, 
+                            const TOOLS(RealArrayPtr) radii,
+                            real_t edgelengthfilter,
+                            real_t overlapfilter)
+{
+    Index toremove;
+
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    IndexArrayPostOrderConstIterator piterator(children,root);
+    for(; !piterator.atEnd(); ++piterator){
+        // printf("vid : %i\n",*piterator);
+        const Index& pchildren = children->getAt(*piterator);
+        const Vector3& rpos = nodes->getAt(*piterator);
+        Index fpchildren;
+        for (Index::const_iterator itch = pchildren.begin(); itch != pchildren.end();  ++itch)
+        {
+            if (norm(rpos-nodes->getAt(*itch)) < edgelengthfilter) toremove.push_back(*itch);
+            else fpchildren.push_back(*itch);
+        }
+        switch (fpchildren.size()){
+        case 0:
+            break;
+        case 1:
+            if (*piterator != root)
+                if (norm(direction(rpos-nodes->getAt(parents->getAt(*piterator)))- direction(nodes->getAt(fpchildren[0])-rpos)) < 0.1){
+                    printf("continuity\n");
+                    toremove.push_back(*piterator);
+                }
+            break;
+        default:
+            for (Index::const_iterator itch = fpchildren.begin(); itch != fpchildren.end();  ++itch)
+                for (Index::const_iterator itch2 = itch+1; itch2 != fpchildren.end();  ++itch2)
+                {
+                    if (intersection_test(rpos, radii->getAt(*piterator),
+                                               nodes->getAt(*itch), radii->getAt(*itch),
+                                               nodes->getAt(*itch2), radii->getAt(*itch2),
+                                               overlapfilter))
+                    {
+                        toremove.push_back(*itch2);
+                    }
+                    else if (intersection_test(rpos, radii->getAt(*piterator),
+                                               nodes->getAt(*itch2), radii->getAt(*itch2),
+                                               nodes->getAt(*itch), radii->getAt(*itch),
+                                               overlapfilter))
+                    {
+                        toremove.push_back(*itch);
+                    }
+                }
+            break;
+        }
+    }
+    return toremove;
+}
+
+void PGL::remove_nodes(const Index& toremove,
+                       Point3ArrayPtr& nodes,
+                       TOOLS(Uint32Array1Ptr)& parents, 
+                       TOOLS(RealArrayPtr)& radii)
+{
+    Index sortedtoremove(toremove);
+    std::sort(sortedtoremove.begin(),sortedtoremove.end());
+    uint32_t nbNodes = nodes->size();
+    uint32_t *  idmap = new uint32_t[nbNodes];
+    uint32_t noid = UINT32_MAX;
+
+    uint32_t pid = 0;
+    uint32_t * itid = idmap;
+    Index::const_iterator itdel = sortedtoremove.begin();
+    for (uint32_t cid = 0;  cid < nbNodes; ++cid, ++itid){
+        if (itdel != sortedtoremove.end() && cid == *itdel) { 
+                *itid = noid; 
+                while(itdel != sortedtoremove.end() && *itdel <= cid) ++itdel; 
+        }
+        else { 
+            *itid = pid; 
+            ++pid; 
+        }
+    }
+    uint32_t nbNewNodes = pid;
+
+    Point3ArrayPtr newnodes(new Point3Array(*nodes));
+    RealArrayPtr newradii(new RealArray(*radii));
+    uint32_t lastdelid = UINT32_MAX;
+    for(Index::const_reverse_iterator itdel2 = sortedtoremove.rbegin(); itdel2 != sortedtoremove.rend(); ++itdel2){
+        if (*itdel2 != lastdelid){
+            newnodes->erase(newnodes->begin()+*itdel2);
+            newradii->erase(newradii->begin()+*itdel2);
+            lastdelid = *itdel2;
+        }
+    }
+
+    Uint32Array1Ptr newparents(new Uint32Array1(nbNewNodes));
+    pid = 0;
+    for(Uint32Array1::iterator itParent = newparents->begin(); itParent != newparents->end(); ++itParent)
+    {
+            ++pid; while (idmap[pid] == noid) ++pid;
+            uint32_t parent = parents->getAt(pid);
+            while(idmap[parent] == noid) parent = parents->getAt(parent);
+            *itParent = idmap[parent];
+    }
+
+    delete [] idmap;
+
+    nodes = newnodes;
+    radii = newradii;
+    parents = newparents;
+
 }

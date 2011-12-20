@@ -187,6 +187,19 @@ void sc_remove( Scene* sc, Shape3DPtr sh)
   sc->unlock();
 }
 
+
+boost::python::dict sc2dict(Scene * sc) {
+    boost::python::dict result;
+    for(Scene::const_iterator it = sc->begin(); it != sc->end(); ++it)
+    {
+        uint32_t sid = (*it)->getId();
+        boost::python::list clist(result.get(sid,boost::python::list()));
+        clist.append(*sc);
+        result[sid] = clist;
+    }
+    return result;
+}
+
 object sp_scenes(Scene::Pool * pool){
     return make_list(pool->getScenes())();
 }
@@ -197,6 +210,8 @@ bool scene_is_valid(Scene * sc){
 	PyStateSaver s;
 	return sc->isValid();
 }
+
+
 
 void export_Scene()
 {
@@ -210,6 +225,7 @@ void export_Scene()
 	sc.def("__iadd__", &sc_iadd2);
 	sc.def("__iadd__", &sc_iadd3);
 	sc.def("__add__", &sc_add);
+	sc.def("todict", &sc2dict);
     sc.def("add", (void (Scene::*)(const ShapePtr &) ) &Scene::add );
     sc.def("add", (void (Scene::*)(const Shape3DPtr &) )&Scene::add);
 	sc.def("add", &sc_add2);

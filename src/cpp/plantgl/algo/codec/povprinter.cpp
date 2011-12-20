@@ -164,6 +164,11 @@ using namespace std;
          << "," << val.z() \
          << "," << val.w()<< ">";
 
+#define GEOM_POVPRINT_INDEX3(stream,val) \
+  stream << "<" << val.getAt(0) \
+         << "," << val.getAt(1) \
+         << "," << val.getAt(2) << ">";
+
 
 #define GEOM_POVPRINT_TRANSLATE(stream,vector) \
   stream << __indent << "translate "; \
@@ -1056,7 +1061,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
     GEOM_POVPRINT_END(__geomStream,triangleSet);
     return true;
   }
-
+  /*
   GEOM_POVPRINT_BEGIN(__geomStream,"mesh",triangleSet);
 
   triangleSet->checkNormalList();
@@ -1115,7 +1120,205 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
 	  }
     __geomStream << "}" << endl;
     }
-  };
+  }; */
+    size_t nbFaces = triangleSet->getIndexList()->size();
+
+    GEOM_POVPRINT_BEGIN(__geomStream,"mesh2",triangleSet);
+
+    __geomStream << __indent << "vertex_vectors { " << triangleSet->getPointList()->size() << endl << __indent;
+    size_t pointperline = 5;
+    size_t cpid = 0;
+    Point3Array::const_iterator endpoints = triangleSet->getPointList()->end();
+
+    for (Point3Array::const_iterator itPoints = triangleSet->getPointList()->begin(); itPoints != endpoints; ++itPoints, ++cpid) 
+    {
+		    GEOM_POVPRINT_VECTOR3(__geomStream,(*itPoints));
+		    if (itPoints != endpoints -1){
+                __geomStream << ", ";
+                if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+            }
+            else __geomStream << '}' << endl ;
+    }
+
+    triangleSet->checkNormalList();
+
+    __geomStream << __indent << "normal_vectors { " << triangleSet->getNormalList()->size() << endl << __indent;
+
+    cpid = 0;
+    endpoints = triangleSet->getNormalList()->end();
+
+    for (Point3Array::const_iterator itPoints = triangleSet->getNormalList()->begin(); itPoints != endpoints; ++itPoints, ++cpid) 
+    {
+		    GEOM_POVPRINT_VECTOR3(__geomStream,(*itPoints));
+		    if (itPoints != endpoints -1){
+                __geomStream << ", ";
+                if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+            }
+            else __geomStream << '}' << endl ;
+    }
+    if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
+    {
+	    Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
+	    if (__appearance->isTexture()){
+		    Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
+		    if (transform)  newtexcoord = transform->transform(newtexcoord);
+	    }
+
+        __geomStream << __indent << "uv_vectors  { " << newtexcoord->size() << endl << __indent;
+
+        cpid = 0;
+        Point2Array::const_iterator endtex = newtexcoord->end();
+
+        for (Point2Array::const_iterator itTex = newtexcoord->begin(); itTex != endtex; ++itTex, ++cpid) 
+        {
+		        GEOM_POVPRINT_VECTOR2(__geomStream,(*itTex));
+		        if (itTex != endtex -1){
+                    __geomStream << ", ";
+                    if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+                }
+                else __geomStream << '}' << endl ;
+        }
+
+    }
+
+    if(triangleSet->hasColorList()) {
+        __geomStream << __indent << "texture_list  { " << triangleSet->getColorList()->size() << endl << __indent;
+
+        cpid = 0;
+        Color4Array::const_iterator endColor = triangleSet->getColorList()->end();
+
+        for (Color4Array::const_iterator itColor = triangleSet->getColorList()->begin(); itColor != endColor; ++itColor, ++cpid) 
+        {
+		        __geomStream << "texture { pigment { rgbt ";
+                GEOM_POVPRINT_COLOR4(__geomStream,(*itColor));
+                __geomStream << "}}";
+		        if (itColor != endColor -1){
+                    __geomStream << ", ";
+                    if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+                }
+                else __geomStream << '}' << endl ;
+        }
+    }
+     
+    __geomStream << __indent << "face_indices  { " << nbFaces << endl << __indent;
+
+    cpid = 0;
+    Index3Array::const_iterator endIndex = triangleSet->getIndexList()->end();
+
+    for (Index3Array::const_iterator itIndex = triangleSet->getIndexList()->begin(); itIndex != endIndex; ++itIndex, ++cpid) 
+    {
+		    GEOM_POVPRINT_INDEX3(__geomStream,(*itIndex));
+            if (triangleSet->hasColorList()){
+                __geomStream << ", ";
+                if(!triangleSet->getColorPerVertex()){
+                    __geomStream << cpid << ", " << cpid << ", " << cpid;
+                }
+                else {
+                    Index3& ind = (is_null_ptr(triangleSet->getColorIndexList()) ? triangleSet->getIndexList()->getAt(cpid) : triangleSet->getColorIndexList()->getAt(cpid));
+                    __geomStream << ind.getAt(0) << ", " << ind.getAt(1) << ", " << ind.getAt(2) ;
+                }
+            }
+		    if (itIndex != endIndex -1){
+                __geomStream << ", ";
+                if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+            }
+            else __geomStream << '}' << endl ;
+    }
+
+    if (!(triangleSet->getNormalPerVertex() && is_null_ptr(triangleSet->getNormalIndexList()))) { 
+
+        __geomStream << __indent << "normal_indices  { " << nbFaces << endl << __indent;
+
+        for (cpid = 0; cpid < nbFaces;  ++cpid) 
+        {
+                if(!triangleSet->getNormalPerVertex()){
+                    Index3 findex(cpid,cpid,cpid);
+                    GEOM_POVPRINT_INDEX3(__geomStream,findex);
+                }
+                else {
+                    GEOM_POVPRINT_INDEX3(__geomStream,triangleSet->getNormalIndexList()->getAt(cpid));
+                }
+                if (cpid != nbFaces -1){
+                    __geomStream << ", ";
+                    if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+                }
+                else __geomStream << '}' << endl ;
+        }
+    }
+
+    if (__tesselator.texCoordComputed() && triangleSet->getTexCoordIndexList()){
+
+        __geomStream << __indent << "uv_indices  { " << nbFaces << endl << __indent;
+
+        for (cpid = 0; cpid < nbFaces;  ++cpid) 
+        {
+                GEOM_POVPRINT_INDEX3(__geomStream,triangleSet->getTexCoordIndexList()->getAt(cpid));
+                if (cpid != nbFaces -1){
+                    __geomStream << ", ";
+                    if ((cpid+1) % 5 == 0) __geomStream << endl << __indent;
+                }
+                else __geomStream << '}' << endl ;
+        }
+    }
+
+    /*
+  bool normalV = triangleSet->getNormalPerVertex();
+  for (uint_t _i = 0; _i < triangleSet->getIndexListSize(); _i++) {
+    if (triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,1) && 
+        triangleSet->getFacePointAt(_i,0) != triangleSet->getFacePointAt(_i,2) && 
+        triangleSet->getFacePointAt(_i,1) != triangleSet->getFacePointAt(_i,2)){
+	  if(normalV){
+		  __geomStream << __indent << "smooth_triangle { ";
+		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+		  __geomStream << ", ";
+		  const Vector3& _normal1 = triangleSet->getFaceNormalAt(_i,0);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal1);
+		  __geomStream << ", ";
+		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+		  __geomStream << ", ";
+		  const Vector3& _normal2 = triangleSet->getFaceNormalAt(_i,1);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal2);
+		  __geomStream << ", ";
+		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
+		  __geomStream << ", ";
+		  const Vector3& _normal3 = triangleSet->getFaceNormalAt(_i,2);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_normal3);
+	  }
+	  else {
+		  __geomStream << __indent << "triangle { ";
+		  const Vector3& _vertex1 = triangleSet->getFacePointAt(_i,0);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+		  __geomStream << ", ";
+		  const Vector3& _vertex2 = triangleSet->getFacePointAt(_i,1);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+		  __geomStream << ", ";
+		  const Vector3& _vertex3 = triangleSet->getFacePointAt(_i,2);
+		  GEOM_POVPRINT_VECTOR3(__geomStream,_vertex3);
+	  }
+	  if (__tesselator.texCoordComputed() && triangleSet->getTexCoordList())
+	  {
+		  Point2ArrayPtr newtexcoord = triangleSet->getTexCoordList();
+		  if (__appearance->isTexture()){
+			  Texture2DTransformationPtr transform = dynamic_pointer_cast<Texture2D>(__appearance)->getTransformation();
+			  if (transform)  newtexcoord = transform->transform(newtexcoord);
+		  }
+		  __geomStream << " uv_vectors ";
+		  const Vector2& _vertex1 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,0));
+		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex1);
+		  __geomStream << ", ";
+		  const Vector2& _vertex2 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,1));
+		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex2);
+		  __geomStream << ", ";
+		  const Vector2& _vertex3 = newtexcoord->getAt(triangleSet->getFaceTexCoordIndexAt(_i,2));
+		  GEOM_POVPRINT_VECTOR2(__geomStream,_vertex3);
+	  }
+    __geomStream << "}" << endl;
+    }
+  };*/
+
   GEOM_POVPRINT_TEXTURE;
 
   GEOM_POVPRINT_END(__geomStream, triangleSet);

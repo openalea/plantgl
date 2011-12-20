@@ -40,12 +40,12 @@ TOOLS_USING_NAMESPACE
 
 /// Constructs an Array1 of size \e size
 RealArray::RealArray( uint_t size  ) :
-    Array1<real_t>( size ) {
+    NumericArray1<real_t>( size ) {
 }
 
 /// Constructs an Array1 with \e size copies of \e t.
 RealArray::RealArray(uint_t size, const real_t& t ) :
-    Array1<real_t>( size, t ){
+    NumericArray1<real_t>( size, t ){
 }
 
 /// Destructor

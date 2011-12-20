@@ -198,6 +198,7 @@
     <ClInclude Include="fitting\miniball_config.h" />
     <ClInclude Include="fitting\skeleton.h" />
     <ClInclude Include="fitting\triangulation3D.h" />
+    <ClInclude Include="grid\annkdtree_p.h" />
     <ClInclude Include="grid\kdtree.h" />
     <ClInclude Include="opengl\glbboxrenderer.h" />
     <ClInclude Include="opengl\glctrlptrenderer.h" />

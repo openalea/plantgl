@@ -493,5 +493,8 @@
     <ClInclude Include="pgl_version.h" />
     <ClInclude Include="sg_config.h" />
     <ClInclude Include="..\version.h" />
+    <ClInclude Include="container\indexarray_iterator.h">
+      <Filter>Container</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

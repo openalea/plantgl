@@ -102,6 +102,12 @@ public:
   typedef T element_type;
 
   /// A const iterator used to iterate through an Array1.
+  typedef typename std::vector<element_type>::const_reverse_iterator const_reverse_iterator ;
+
+  /// An iterator used to iterate through an Array1.
+  typedef typename std::vector<element_type>::reverse_iterator reverse_iterator ;
+
+  /// A const iterator used to iterate through an Array1.
   typedef typename std::vector<element_type>::const_iterator const_iterator;
 
   /// An iterator used to iterate through an Array1.
@@ -166,6 +172,18 @@ public:
 
   /// Returns a const iterator at the end of \e self.
   inline iterator end( ) { return __A.end(); }
+
+  /// Returns a const iterator at the beginning of \e self.
+  inline const_reverse_iterator rbegin( ) const { return __A.rbegin(); }
+
+  /// Returns an iterator at the beginning of \e self.
+  inline reverse_iterator rbegin( ) { return __A.rbegin(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline const_reverse_iterator rend( ) const { return __A.rend(); }
+
+  /// Returns a const iterator at the end of \e self.
+  inline reverse_iterator rend( ) { return __A.rend(); }
 
   /// Returns the size of \e self.
   inline uint_t size( ) const { return __A.size(); }
@@ -336,6 +354,156 @@ public:
   }
 };
 
+template <class T>
+class NumericArray1 : public Array1<T>
+{
+
+public:
+  typedef typename Array1<T>::const_iterator const_iterator;
+
+  /// Constructs an NumericArray1 
+  NumericArray1( size_t size = 0 ) :
+      Array1<T>( size )
+      {
+     }
+
+  /// Constructs an NumericArray1 with \e size copies of \e t.
+  NumericArray1( size_t size, const T& t ) :
+    Array1<T>( size, t )
+      {
+       }
+
+  /// Constructs an NumericArray1 with the range [\e begin, \e end).
+  template <class InIterator>
+  NumericArray1( InIterator begin, InIterator end) :
+    Array1<T>(begin,end)
+      {
+   }
+
+  /// Destructor
+  virtual ~NumericArray1( ) {
+  }
+
+  /// Returns an iterator at the maximum value of \e self.
+  inline const_iterator getMax( ) const {
+      return std::max_element(this->__A.begin(),this->__A.end());
+  }
+
+  /// Returns an iterator at the minimum value of \e self.
+  inline const_iterator getMin( ) const {
+    return std::min_element(this->__A.begin(),this->__A.end());
+  }
+
+  /** Returns an iterator first at the minimum value, second at the
+      maximum value of \e self. */
+ inline std::pair<const_iterator,const_iterator> getMinAndMax( ) const {
+    const_iterator _min = this->__A.begin();
+    const_iterator _max = this->__A.begin();
+    for (const_iterator _i = this->__A.begin() + 1; _i != this->__A.end(); _i++)
+      if (*_i < *_min) _min = _i;
+      else if (*_i > *_max) _max = _i;
+    return std::pair<const_iterator,const_iterator>(_min,_max);
+  }
+
+  /// Addition of the 2 matrix.
+  NumericArray1<T>& operator+=(const NumericArray1<T>&a){
+      GEOM_ASSERT(a.size() == size());
+      typename NumericArray1<T>::const_iterator _i1 = a.begin();
+      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
+          _i2 != this->__A.end();
+          _i2++){
+          *_i2 += *_i1;
+          _i1++;
+      }
+      return *this;
+  }
+
+  /// Addition of the 2 arrays.
+  NumericArray1<T> operator+( const NumericArray1<T>& m ) const {
+      NumericArray1<T> sum(*this);
+      return sum+=m;
+  }
+
+  /// Minus operation of 2 arrays.
+  NumericArray1<T>& operator-=(const NumericArray1<T>& a){
+      GEOM_ASSERT(a.size() == getSize());
+      typename NumericArray1<T>::const_iterator _i1 = a.begin();
+      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
+          _i2 != this->__A.end(); _i2++){
+          *_i2 -= *_i1;
+          _i1++;
+      }
+      return *this;
+  }
+
+  /// Subtraction of 2 arrays.
+  NumericArray1<T> operator-(const NumericArray1<T>& m) const {
+      NumericArray1<T> sum(*this);
+      return sum-=m;
+  }
+
+  /// Addition of an array and a value.
+  NumericArray1<T>& operator+=(T val){
+      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
+          _i2 != this->__A.end(); _i2++){
+          *_i2 += val;
+      }
+      return *this;
+  }
+
+
+  /// Addition of an array and a value.
+  NumericArray1<T>operator+( T val ) const {
+      NumericArray1<T> sum(*this);
+      return sum+=val;
+  }
+  /// Subtraction of an array and a value.
+  NumericArray1<T>& operator -= ( T val ){
+      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
+          _i2 != this->__A.end(); _i2++){
+          *_i2 -= val;
+      }
+      return *this;
+  }
+
+  /// Subtraction of an array and a value.
+  NumericArray1<T>operator - ( T val ) const {
+      NumericArray1<T> sum(*this);
+      return sum-=val;
+  }
+
+  /// Multiplication of an array and a value.
+  NumericArray1<T>& operator *= (T val){
+      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
+          _i2 != this->__A.end(); _i2++){
+          *_i2 *= val;
+      }
+      return *this;
+  }
+
+  /// Multiplication of an array and a value.
+  NumericArray1<T>operator * ( T val ) const {
+      NumericArray1<T> sum(*this);
+      return sum*=val;
+  }
+
+  /// Division of an array and a value.
+  NumericArray1<T>& operator /= (T val){
+      for(typename std::vector<T>::iterator  _i2 = this->__A.begin();
+          _i2 != this->__A.end(); _i2++){
+          *_i2 /= val;
+      }
+      return *this;
+  }
+
+  /// Division of an array and a value.
+  NumericArray1<T>operator /( T val ) const {
+      NumericArray1<T> sum(*this);
+      return sum/=val;
+  }
+
+};
+
 /// Constructs an Array1 with \e size copies of \e t.
 template<class U, class T = typename U::element_type>
 struct range {
@@ -357,6 +525,7 @@ struct range {
     }
 };
 
+
 /// Array of bool
 typedef Array1<bool> BoolArray1;
 /// Array of bool pointer
@@ -366,31 +535,31 @@ typedef Array1<char> CharArray1;
 /// Array of char pointer
 typedef RCPtr<CharArray1> CharArray1Ptr;
 /// Array of int16_t
-typedef Array1<int16_t> Int16Array1;
+typedef NumericArray1<int16_t> Int16Array1;
 /// Array of int16_t pointer
 typedef RCPtr<Int16Array1> Int16Array1Ptr;
 /// Array of int32_t
-typedef Array1<int32_t> Int32Array1;
+typedef NumericArray1<int32_t> Int32Array1;
 /// Array of int32_t pointer
 typedef RCPtr<Int32Array1> Int32Array1Ptr;
 /// Array of int_t
-typedef Array1<int_t> IntArray1;
+typedef NumericArray1<int_t> IntArray1;
 /// Array of int_t pointer
 typedef RCPtr<IntArray1> IntArray1Ptr;
 /// Array of uchar
-typedef Array1<uchar_t> UCharArray1;
+typedef NumericArray1<uchar_t> UCharArray1;
 /// Array of uchar_t pointer
 typedef RCPtr<UCharArray1> UCharArray1Ptr;
 /// Array of uint16_t
-typedef Array1<uint16_t> Uint16Array1;
+typedef NumericArray1<uint16_t> Uint16Array1;
 /// Array of uint16_t pointer
 typedef RCPtr<Uint16Array1> Uint16Array1Ptr;
 /// Array of uint_t
-typedef Array1<uint32_t> Uint32Array1;
+typedef NumericArray1<uint32_t> Uint32Array1;
 /// Array of uint_t pointer
 typedef RCPtr<Uint32Array1> Uint32Array1Ptr;
 /// Array of uint_t
-typedef Array1<uint_t> UintArray1;
+typedef NumericArray1<uint_t> UintArray1;
 /// Array of uint_t pointer
 typedef RCPtr<UintArray1> UintArray1Ptr;
 
@@ -404,11 +573,15 @@ typedef RCPtr<UintArray1> UintArray1Ptr;
 
 // GEOM_TEMPLATE_API(Array1<real_t>)
 
+class RealArray;
+/// Real Array Pointer
+typedef RCPtr<RealArray> RealArrayPtr;
+
 /**
    \class RealArray
    \brief A mono dimensional array of real of non fixed size.
 */
-class TOOLS_API RealArray : public Array1<real_t>
+class TOOLS_API RealArray : public NumericArray1<real_t>
 {
 
 public:
@@ -422,16 +595,160 @@ public:
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
   RealArray(InIterator begin, InIterator end ) :
-    Array1<real_t>( begin, end ) {
+    NumericArray1<real_t>( begin, end ) {
   }
 
   /// Destructor
   virtual ~RealArray( ); 
 
+  RealArrayPtr log() const { 
+      RealArrayPtr result(new RealArray(*this));
+      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::log(*it);
+      return result;
+  }
+
+  RealArrayPtr log(real_t base ) const { 
+      RealArrayPtr result(new RealArray(*this));
+      float logbase = ::log(base);
+      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::log(*it) / logbase;
+      return result;
+  }
+
+  RealArrayPtr pow(real_t exponent) const { 
+      RealArrayPtr result(new RealArray(*this));
+      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::pow(*it,exponent);
+      return result;
+  }
+
+  RealArrayPtr exp() const { 
+      RealArrayPtr result(new RealArray(*this));
+      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::exp(*it);
+      return result;
+  }
+
+  RealArrayPtr sqrt() const { 
+      RealArrayPtr result(new RealArray(*this));
+      for(iterator it = result->begin(); it != result->end(); ++it) *it = ::sqrt(*it);
+      return result;
+  }
+
+  /// Addition of the 2 matrix.
+  RealArray& operator+=(const RealArray&a){
+      GEOM_ASSERT(a.size() == getSize());
+      RealArray::const_iterator _i1 = a.begin();
+      for(iterator  _i2 = __A.begin();  _i2 != __A.end();  _i2++){
+          *_i2 += *_i1;
+          _i1++;
+      }
+      return *this;
+  }
+
+  /// Addition of the 2 arrays.
+  RealArray operator+( const RealArray& m ) const {
+      RealArray sum(*this);
+      return sum+=m;
+  }
+
+  /// Minus operation of 2 arrays.
+  RealArray& operator-=(const RealArray& a){
+      GEOM_ASSERT(a.size() == size());
+
+      const_iterator _i1 = a.begin();
+      for(iterator  _i2 = __A.begin(); _i2 != __A.end(); _i2++){
+          *_i2 -= *_i1;
+          _i1++;
+      }
+      return *this;
+  }
+
+  /// Subtraction of 2 arrays.
+  RealArray operator-(const RealArray& m) const {
+      RealArray sum(*this);
+      return sum-=m;
+  }
+
+  /// Addition of an array and a value.
+  RealArray& operator+=(real_t val){
+      for(iterator  _i2 = __A.begin();  _i2 != __A.end(); _i2++){
+          *_i2 += val;
+      }
+      return *this;
+  }
+
+
+  /// Addition of an array and a value.
+  RealArray operator+(real_t val ) const {
+      RealArray sum(*this);
+      return sum+=val;
+  }
+  /// Subtraction of an array and a value.
+  RealArray& operator -= (real_t val ){
+      for(iterator  _i2 = __A.begin();  _i2 != __A.end(); _i2++){
+          *_i2 -= val;
+      }
+      return *this;
+  }
+
+  /// Subtraction of an array and a value.
+  RealArray operator - (real_t val ) const {
+      RealArray sum(*this);
+      return sum-=val;
+  }
+
+  /// Multiplication of an array and a value.
+  RealArray& operator *= (real_t val){
+      for(iterator  _i2 = __A.begin();  _i2 != __A.end(); _i2++){
+          *_i2 *= val;
+      }
+      return *this;
+  }
+
+  /// Multiplication of an array and a value.
+  RealArray operator * (real_t val ) const {
+      RealArray sum(*this);
+      return sum*=val;
+  }
+
+  /// Division of an array and a value.
+  RealArray& operator /= (real_t val){
+      for(iterator  _i2 =__A.begin(); _i2 != __A.end(); _i2++){
+          *_i2 /= val;
+      }
+      return *this;
+  }
+
+  /// Division of an array and a value.
+  RealArray operator /(real_t val ) const {
+      RealArray sum(*this);
+      return sum/=val;
+  }
 };
 
 /// Real Array Pointer
 typedef RCPtr<RealArray> RealArrayPtr;
+
+template<class NumericArray>
+Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins, 
+                          typename NumericArray::element_type& minvalue, 
+                          typename NumericArray::element_type& maxvalue, 
+                          real_t& binrange)
+{
+    typedef typename NumericArray::element_type ValueType;
+    typedef typename NumericArray::const_iterator ValueConstIterator;
+    Uint32Array1Ptr result(new Uint32Array1(nbbins,0));
+    std::pair<ValueConstIterator,ValueConstIterator> minmax = values->getMinAndMax();
+    minvalue = *minmax.first;
+    maxvalue = *minmax.second;
+    binrange = (*minmax.second - minvalue) / real_t(nbbins);
+    for(ValueConstIterator itVal = values->begin(); itVal != values->end(); ++itVal)
+    {
+        uint32_t binid = std::min(nbbins-1,uint32_t((*itVal-minvalue)/binrange));
+        result->setAt(binid,result->getAt(binid)+1);
+    }
+    return result;
+
+
+}
 
 /*  --------------------------------------------------------------------- */
 

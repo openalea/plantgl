@@ -105,16 +105,15 @@ Vector2 Point2Array::getExtent( ) const {
 
 
 real_t Point2Array::getLength( ) const {
+  if (__A.empty()) return 0.0;
   real_t _length = 0.0;
 
-  Point2Array::const_iterator _pi = __A.begin();
-  Point2Array::const_iterator _pj = __A.begin();
+  const_iterator _pi = __A.begin();
+  const_iterator _pj = __A.begin()+1;
   while (_pj != __A.end()) {
-    _pj++;
-    Vector2 _vpi(*_pi);
-    Vector2 _vpj(*_pj);
-    _length += norm(_vpj-_vpi);
+    _length += norm(*_pi - *_pj);
     _pi = _pj;
+    _pj++;
   };
 
   return _length;
@@ -297,14 +296,15 @@ Vector3 Point3Array::getExtent( ) const {
 
 
 real_t Point3Array::getLength( ) const {
+  if (__A.empty()) return 0.0;
   real_t _length = 0.0;
 
   const_iterator _pi = __A.begin();
-  const_iterator _pj = __A.begin();
+  const_iterator _pj = __A.begin()+1;
   while (_pj != __A.end()) {
-    _pj++;
     _length += norm(*_pi - *_pj);
     _pi = _pj;
+    _pj++;
   };
 
   return _length;
@@ -536,14 +536,15 @@ Vector4 Point4Array::getExtent( ) const {
 
 
 real_t Point4Array::getLength( ) const {
+  if (__A.empty()) return 0.0;
   real_t _length = 0.0;
 
   const_iterator _pi = __A.begin();
-  const_iterator _pj = __A.begin();
+  const_iterator _pj = __A.begin()+1;
   while (_pj != __A.end()) {
-    _pj++;
     _length += norm(*_pi - *_pj);
     _pi = _pj;
+    _pj++;
   };
 
   return _length;

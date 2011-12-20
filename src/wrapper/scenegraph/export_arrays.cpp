@@ -33,6 +33,7 @@
 #include <plantgl/tool/util_tuple.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/container/colorarray.h>
+#include <plantgl/scenegraph/container/indexarray_iterator.h>
 
 #include <plantgl/python/exception.h>
 #include <plantgl/python/export_refcountptr.h>
@@ -64,6 +65,37 @@ EXPORT_NUMPY( inda, Index, IndexArray, 0, 0, uint_t )
 EXPORT_NUMPY_1DIM( ra, real_t, RealArray, 0, real_t )
 EXPORT_NUMPY_1DIM( uia, uint32_t, UIntArray, 0, uint32_t)
 
+
+template<class NumericArray>
+object py_histogram(RCPtr<NumericArray> array, uint32_t nbbins)
+{
+    typedef typename NumericArray::element_type ValueType;
+    ValueType minvalue, maxvalue;
+    real_t binrange;
+    Uint32Array1Ptr result = histogram<NumericArray>(array,nbbins,minvalue,maxvalue,binrange);
+    return make_tuple(result,minvalue,maxvalue,binrange);
+}
+
+template<class Iterator>
+int py_next_iter(Iterator * iter) {
+    if (iter->atEnd()) {
+         PyErr_SetString(PyExc_StopIteration, "index out of range");
+         boost::python::throw_error_already_set();
+    }
+    int value = *(*iter);
+    ++(*iter);
+    return value;
+}
+
+template<class Iterator>
+inline void nullfunc(Iterator * ) { }
+
+typedef RealArray (RealArray::* Array2ArrayFunc) (const RealArray&) const;
+
+template <Array2ArrayFunc func>
+RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
+    return new RealArray(array->func(v)); }
+
 void export_arrays()
 {
   EXPORT_ARRAY_CT( c3a, Color3Array, "Color3Array([Index3(i,j,k),...])" )
@@ -84,13 +116,41 @@ void export_arrays()
     .def( "triangulate", &IndexArray::triangulate)
     DEFINE_NUMPY( inda );
   EXPORT_CONVERTER(IndexArray);
-  EXPORT_ARRAY_BT( ra, RealArray,  "IndexArray([a,b,...])" )
+
+  EXPORT_ARRAY_BT( ra, RealArray,  "RealArray([a,b,...])" )
+    .def("log",(RealArrayPtr(RealArray::*)()const)&RealArray::log)
+    .def("log",(RealArrayPtr(RealArray::*)(real_t)const)&RealArray::log,args("base"))
+    .def("exp",&RealArray::exp)
+    .def("sqrt",&RealArray::sqrt)
+    .def("pow",&RealArray::pow,args("exponent"))
+    // .def( "__add__",      &wrap_array_func<TOOLS::RealArray::operator + >   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
+    // .def( "__add__",      (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
+    // .def( "add",          &wrap_array_func<(RealArray(RealArray::*)(const RealArray&)const) &RealArray::operator+>   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
+    // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
+    .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() ) 
+    .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() ) 
+
+
     DEFINE_NUMPY( ra );
   EXPORT_CONVERTER(RealArray);
 
   EXPORT_ARRAY_BT( uia, UIntArray,  "UIntArray([a,b,...])" )
     DEFINE_NUMPY( uia );
   EXPORT_CONVERTER(UIntArray);
+
+ def("histogram",&py_histogram<RealArray>);
+
+  class_<IndexArrayPreOrderConstIterator>("IndexArrayPreOrderConstIterator",init<IndexArrayPtr,uint32_t>())
+    .def("next",&py_next_iter<IndexArrayPreOrderConstIterator>)
+    .def("atEnd",&IndexArrayPreOrderConstIterator::atEnd)
+    .def("__iter__",&nullfunc<IndexArrayPreOrderConstIterator>, return_self<>())
+    ;
+
+   class_<IndexArrayPostOrderConstIterator>("IndexArrayPostOrderConstIterator",init<IndexArrayPtr,uint32_t>())
+    .def("next",&py_next_iter<IndexArrayPostOrderConstIterator>)
+    .def("atEnd",&IndexArrayPostOrderConstIterator::atEnd)
+    .def("__iter__",&nullfunc<IndexArrayPostOrderConstIterator>, return_self<>())
+    ;
 }
 
 

@@ -30,6 +30,7 @@
  */
 
 #include <plantgl/scenegraph/appearance/color.h>
+#include <plantgl/scenegraph/container/colorarray.h>
 #include <plantgl/python/tuple_converter.h>
 #include <boost/python.hpp>
 
@@ -189,5 +190,10 @@ void export_Color4()
       .def_pickle(col4_pickle_suite());
 
     pgltuple_from_tuple<Color4,4>();
+
+    def("apply_colormap",(Color3ArrayPtr(*)(const Color3ArrayPtr, const RealArrayPtr))&apply_colormap<Color3Array>,bp::args("colormap","values"));
+    def("apply_colormap",(Color3ArrayPtr(*)(const Color3ArrayPtr, const RealArrayPtr, real_t, real_t))&apply_colormap<Color3Array>,bp::args("colormap","values","minvalue","maxvalue"));
+    def("apply_colormap",(Color4ArrayPtr(*)(const Color4ArrayPtr, const RealArrayPtr))&apply_colormap<Color4Array>,bp::args("colormap","values"));
+    def("apply_colormap",(Color4ArrayPtr(*)(const Color4ArrayPtr, const RealArrayPtr, real_t, real_t))&apply_colormap<Color4Array>,bp::args("colormap","values","minvalue","maxvalue"));
 }
 

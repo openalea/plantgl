@@ -124,6 +124,33 @@ public:
 
 typedef RCPtr<Color4Array> Color4ArrayPtr;
 
+template <class ColorArray>
+RCPtr<ColorArray>
+apply_colormap(const RCPtr<ColorArray> colormap, const TOOLS(RealArrayPtr) values)
+{  
+    std::pair<TOOLS(RealArray)::const_iterator,TOOLS(RealArray)::const_iterator> minmax = values->getMinAndMax();
+    return apply_colormap(colormap, values, *minmax.first, *minmax.second);
+}
+
+template <class ColorArray>
+RCPtr<ColorArray>
+apply_colormap(const RCPtr<ColorArray> colormap, const TOOLS(RealArrayPtr) values, real_t minvalue, real_t maxvalue)
+{
+    size_t nbcolor = colormap->size();
+    real_t valuerange = maxvalue - minvalue;
+    real_t valuestep = valuerange / nbcolor;
+    RCPtr<ColorArray> result = new ColorArray(values->size());
+    typename ColorArray::iterator itresult = result->begin();
+    for(TOOLS(RealArray)::const_iterator itv = values->begin(); itv != values->end(); ++itv, ++itresult){
+        int colorid = int((*itv - minvalue) / valuestep);
+        if (colorid < 0) colorid = 0;
+        else if (colorid >= nbcolor) colorid = nbcolor -1;
+        *itresult = colormap->getAt( colorid );
+    }
+    return result;
+}
+
+
 PGL_END_NAMESPACE
 
 #endif // UTIL_COLORARRAY_H

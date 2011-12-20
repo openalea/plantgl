@@ -39,13 +39,14 @@
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/algo/grid/regularpointgrid.h>
 #include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/function/function.h>
 #include <plantgl/tool/util_array.h>
 
 PGL_BEGIN_NAMESPACE
 
 
 template <class PointListType>
-RCPtr<PointListType> compress_point(RCPtr<PointListType> points, real_t radius)
+RCPtr<PointListType> contract_point(RCPtr<PointListType> points, real_t radius)
 {
 	typedef typename PointListType::element_type VectorType;
 	typedef PointRefGrid<PointListType> LocalPointGrid;
@@ -84,30 +85,37 @@ ALGO_API IndexArrayPtr
 k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k);
 
 ALGO_API IndexArrayPtr 
-k_closest_points_from_ann(const Point3ArrayPtr points, size_t k);
+k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symmetric = false);
 
 // ALGO_API IndexArrayPtr 
 // k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k);
 
+ALGO_API IndexArrayPtr 
+symmetrize_connections(const IndexArrayPtr adjacencies);
+
+/// Reconnect all connex components of an adjacency graph
+ALGO_API IndexArrayPtr 
+connect_all_connex_components(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose = false);
+
 /// R-Neighborhood computation
 ALGO_API Index 
-r_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
+r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
 
 ALGO_API IndexArrayPtr 
-r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const TOOLS(RealArrayPtr) radii);
+r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const TOOLS(RealArrayPtr) radii);
 
 ALGO_API IndexArrayPtr 
-r_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius);
+r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose = false);
 
 ALGO_API Index 
-r_anisotropic_neighboorhood(uint32_t pid, const Point3ArrayPtr points, 
+r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points, 
 					 const IndexArrayPtr adjacencies, 
 					 const real_t radius, 
 					 const TOOLS(Vector3)& direction, 
 					 const real_t alpha, const real_t beta);
 
 ALGO_API IndexArrayPtr 
-r_anisotropic_neighboorhoods(const Point3ArrayPtr points, 
+r_anisotropic_neighborhoods(const Point3ArrayPtr points, 
 			    const IndexArrayPtr adjacencies, 
 			    const TOOLS(RealArrayPtr) radii, 
 			    const Point3ArrayPtr directions, 
@@ -115,7 +123,7 @@ r_anisotropic_neighboorhoods(const Point3ArrayPtr points,
 	            const real_t beta);
 
 ALGO_API IndexArrayPtr 
-r_anisotropic_neighboorhoods(const Point3ArrayPtr points, 
+r_anisotropic_neighborhoods(const Point3ArrayPtr points, 
 			    const IndexArrayPtr adjacencies, 
 			    const real_t radius, 
 			    const Point3ArrayPtr directions, 
@@ -124,10 +132,12 @@ r_anisotropic_neighboorhoods(const Point3ArrayPtr points,
 
 /// Extended K-Neighborhood computation
 ALGO_API Index 
-k_neighboorhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
+k_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
 
 ALGO_API IndexArrayPtr
-k_neighboorhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
+k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
+
+
 
 // Useful function
 
@@ -136,7 +146,7 @@ ALGO_API Index get_k_closest_from_n(const Index& adjacencies, const uint32_t k, 
 
 
 ALGO_API real_t
-max_neighboorhood_distance(  uint32_t pid,
+max_neighborhood_distance(  uint32_t pid,
                              const Point3ArrayPtr points, 
 			                 const Index& adjacency);
 
@@ -146,28 +156,29 @@ get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
 
 /// Density computation
 ALGO_API real_t
-density_from_r_neighboorhood(  uint32_t pid,
+density_from_r_neighborhood(  uint32_t pid,
                                const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies, 
                                const real_t radius);
 
 ALGO_API TOOLS(RealArrayPtr)
-densities_from_r_neighboorhood(const Point3ArrayPtr points, 
+densities_from_r_neighborhood(const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies, 
                                const real_t radius);
 
 
 // if k == 0, then k is directly the nb of point given in adjacencies.
 ALGO_API real_t
-density_from_k_neighboorhood(  uint32_t pid,
+density_from_k_neighborhood(  uint32_t pid,
                                const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies,
                                const uint32_t k = 0);
 
 ALGO_API TOOLS(RealArrayPtr)
-densities_from_k_neighboorhood(const Point3ArrayPtr points, 
+densities_from_k_neighborhood(const Point3ArrayPtr points, 
 			                   const IndexArrayPtr adjacencies,
                                const uint32_t k = 0);
+
 
 
 /// Orientation estimations
@@ -177,6 +188,22 @@ pointset_orientation(const Point3ArrayPtr points, const Index& group);
 ALGO_API Point3ArrayPtr 
 pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups);
 
+// adaptive contraction
+ALGO_API TOOLS(RealArrayPtr)
+adaptive_radii( const TOOLS(RealArrayPtr) density,
+                 real_t minradius, real_t maxradius,
+                 QuantisedFunctionPtr densityradiusmap = NULL);
+
+// Adaptive contraction
+ALGO_API Point3ArrayPtr
+adaptive_contration(const Point3ArrayPtr points, 
+                     const Point3ArrayPtr orientations,
+                     const IndexArrayPtr adjacencies, 
+                     const TOOLS(RealArrayPtr) densities,
+                     real_t minradius, real_t maxradius,
+                     QuantisedFunctionPtr densityradiusmap = NULL,
+                     const real_t alpha = 1, 
+	                 const real_t beta = 1);
 
 /// Shortest path
 ALGO_API std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
@@ -207,8 +234,54 @@ centroids_of_groups(const Point3ArrayPtr points,
 
 // Xu 07 method for main branching system
 ALGO_API Point3ArrayPtr
-skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,  TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, bool verbose = false);
+skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,  
+                                        TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, 
+                                        bool connect_all_points = false, bool verbose = false);
 
+
+// Livny method procedures
+// compute parent-children relation from child-parent relation
+ALGO_API IndexArrayPtr determine_children(const TOOLS(Uint32Array1Ptr) parents, uint32_t& root);
+
+// compute a weigth to each points as sum of length of carried segments
+ALGO_API TOOLS(RealArrayPtr) carried_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
+
+// optimize orientation
+ALGO_API Point3ArrayPtr optimize_orientations(const Point3ArrayPtr points, 
+                                              const TOOLS(Uint32Array1Ptr) parents,
+                                              const TOOLS(RealArrayPtr) weights);
+
+// optimize orientation
+ALGO_API Point3ArrayPtr optimize_positions(const Point3ArrayPtr points, 
+                                           const Point3ArrayPtr orientations,
+                                           const TOOLS(Uint32Array1Ptr) parents, 
+                                           const TOOLS(RealArrayPtr) weights);
+
+// estimate average radius around edges
+ALGO_API real_t average_radius(const Point3ArrayPtr points, 
+                               const Point3ArrayPtr nodes,
+                               const TOOLS(Uint32Array1Ptr) parents,
+                               uint32_t maxclosestnodes = 10);
+
+
+// estimate radius for each node
+ALGO_API TOOLS(RealArrayPtr) estimate_radii(const Point3ArrayPtr nodes,
+                                            const TOOLS(Uint32Array1Ptr) parents, 
+                                            const TOOLS(RealArrayPtr) weights,
+                                            real_t averageradius,
+                                            real_t pipeexponent = 2.5);
+
+// determine nodes to filter
+ALGO_API Index filter_short_nodes(const Point3ArrayPtr nodes,
+                            const TOOLS(Uint32Array1Ptr) parents, 
+                            const TOOLS(RealArrayPtr) radii,
+                            real_t edgelengthfilter = 0.1,
+                            real_t overlapfilter = 0.5);
+
+ALGO_API void remove_nodes(const Index& toremove,
+                                Point3ArrayPtr& nodes,
+                                TOOLS(Uint32Array1Ptr)& parents, 
+                                TOOLS(RealArrayPtr)& radii);
 
 PGL_END_NAMESPACE
 
