@@ -161,24 +161,31 @@ protected:
         typedef typename BaseType::NodeList NodeList;
 
 protected:
+	using BaseType::__root_given;
+	using BaseType::__root;
+	using BaseType::__current;
+	using BaseType::__current_end;
+	using BaseType::__children;
+	using BaseType::__stack;
+
         // advance in the traversal
         virtual void increment() {
-            if (!BaseType::__root_given) {
-                BaseType::__root_given = true;
+            if (!__root_given) {
+                __root_given = true;
             }
             else {
-                value_t currentid = *BaseType::__current;
-                const NodeList& childlist = (*BaseType::__children)[currentid];
+                value_t currentid = *__current;
+                const NodeList& childlist = (*__children)[currentid];
                 if (!childlist.empty()){
                     BaseType::push();
-                    BaseType::__current = childlist.begin();
-                    BaseType::__current_end = childlist.end();
+                    __current = childlist.begin();
+                    __current_end = childlist.end();
                 }
                 else {
-                    if (BaseType::__current != BaseType::__current_end) ++BaseType::__current;
-                    while (BaseType::__current == BaseType::__current_end && !BaseType::__stack.empty()) {
+                    if (__current != __current_end) ++__current;
+                    while (__current == __current_end && !__stack.empty()) {
                         BaseType::pop(); 
-                        if (BaseType::__current != BaseType::__current_end) ++BaseType::__current;
+                        if (__current != __current_end) ++__current;
                     }
                 }
             }
@@ -197,15 +204,15 @@ public:
         // value access operator for iterator
         inline value_t operator*() const 
         { 
-            if (!BaseType::__root_given) return BaseType::__root;
-            else return *BaseType::__current; 
+            if (!__root_given) return __root;
+            else return *__current; 
         }
 
         // return pointer to node
         inline pointer_t operator->() const
 		{	
-            if (!BaseType::__root_given) return &BaseType::__root;
-            else return BaseType::__current.operator->(); 
+            if (!__root_given) return &__root;
+            else return __current.operator->(); 
         }
 
         // pre increment operator for iterator
@@ -250,16 +257,23 @@ public:
 protected:
         typedef typename BaseType::NodeList NodeList;
 protected:
+	using BaseType::__root_given;
+	using BaseType::__root;
+	using BaseType::__current;
+	using BaseType::__current_end;
+	using BaseType::__children;
+	using BaseType::__stack;
+
         // find first ascendant
         void first_ascendant() {
-            if (BaseType::__current != BaseType::__current_end) {
+            if (__current != __current_end) {
                 while (true) {
-                    const NodeList& childlist = (*BaseType::__children)[*BaseType::__current];
+                    const NodeList& childlist = (*__children)[*__current];
                     // if a node has some children, register it in the stack and point to the first children
                     if (!childlist.empty()) {
                         BaseType::push();
-                        BaseType::__current = childlist.begin();
-                        BaseType::__current_end = childlist.end();
+                        __current = childlist.begin();
+                        __current_end = childlist.end();
                     }
                     else break;
                 }
@@ -268,13 +282,13 @@ protected:
 
         // advance in the traversal
         virtual void increment() {
-            if (BaseType::__current != BaseType::__current_end) ++BaseType::__current;
+            if (__current != __current_end) ++__current;
             // if end of stack, go to ultimate parent : root
-            else if (BaseType::__stack.empty()) BaseType::__root_given = true;
+            else if (__stack.empty()) __root_given = true;
 
-            if (BaseType::__current == BaseType::__current_end) {
+            if (__current == __current_end) {
                 // if node was last of the sibling, go to the parent
-                if (!BaseType::__stack.empty()) BaseType::pop();
+                if (!__stack.empty()) BaseType::pop();
              }
             // if node has children, go to its first ascendant
             else first_ascendant();
@@ -294,15 +308,15 @@ public:
         // value access operator for iterator
         inline value_t operator*() const 
         { 
-            if (BaseType::__atEnd()) return BaseType::__root;
-            else return *BaseType::__current; 
+            if (BaseType::__atEnd()) return __root;
+            else return *__current; 
         }
 
         // return pointer to node
         inline pointer_t operator->() const
 		{	
-            if (BaseType::__atEnd()) return &BaseType::__root;
-            else return BaseType::__current.operator->(); 
+            if (BaseType::__atEnd()) return &__root;
+            else return __current.operator->(); 
         }
 
          // pre increment operator for iterator
