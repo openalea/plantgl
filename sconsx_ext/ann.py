@@ -108,7 +108,7 @@ class ANN:
         env.AppendUnique(CPPPATH=[env['ann_includes']])
         env.AppendUnique(LIBPATH=[env['ann_libpath']])
         env.Append(CPPDEFINES='$ann_defines')
-        #env.Append(CPPDEFINES='WITH_ANN')
+        env.Append(CPPDEFINES='WITH_ANN')
         env.Append(CPPFLAGS='$ann_flags')
 
         env.AppendUnique(LIBS=env['ann_libs'])

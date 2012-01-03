@@ -354,6 +354,12 @@ public:
   }
 };
 
+TOOLS_END_NAMESPACE
+
+#include <math.h>
+
+TOOLS_BEGIN_NAMESPACE
+
 template <class T>
 class NumericArray1 : public Array1<T>
 {

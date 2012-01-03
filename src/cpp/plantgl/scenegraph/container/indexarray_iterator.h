@@ -52,17 +52,16 @@ PGL_BEGIN_NAMESPACE
 */
 template<class ListOfNodeList, class ListOfNodeListPtr = const ListOfNodeList*>
 class NodeListConstIterator  {
-protected:
+public:
         typedef typename ListOfNodeList::element_type NodeList;
         typedef typename NodeList::const_iterator NodeIterator;
 
-public:
         typedef typename NodeList::element_type value_t ;
         typedef const value_t * pointer_t;
 
 protected:
         // A TreeGraph representation as a root id and list of children for each node.
-        uint32_t __root;
+        value_t __root;
         ListOfNodeListPtr __children;
         bool __root_given;
 
@@ -101,7 +100,7 @@ protected:
 
 public:
 
-        NodeListConstIterator(ListOfNodeListPtr children, uint32_t root):
+        NodeListConstIterator(ListOfNodeListPtr children, value_t root):
             __children(children), 
             __root(root),
             __root_given(false),
@@ -154,28 +153,32 @@ protected:
 
 template<class ListOfNodeList, class ListOfNodeListPtr = const ListOfNodeList*>
 class PreOrderConstIterator  : public NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr> {
+public: 
+        typedef NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr>  BaseType;
+        typedef typename BaseType::value_t value_t;
+        typedef typename BaseType::pointer_t pointer_t;
 protected:
-        typedef typename NodeListConstIterator::NodeList NodeList;
+        typedef typename BaseType::NodeList NodeList;
 
 protected:
         // advance in the traversal
         virtual void increment() {
-            if (!__root_given) {
-                __root_given = true;
+            if (!BaseType::__root_given) {
+                BaseType::__root_given = true;
             }
             else {
-                value_t currentid = *__current;
-                const NodeList& childlist = (*__children)[currentid];
+                value_t currentid = *BaseType::__current;
+                const NodeList& childlist = (*BaseType::__children)[currentid];
                 if (!childlist.empty()){
-                    push();
-                    __current = childlist.begin();
-                    __current_end = childlist.end();
+                    BaseType::push();
+                    BaseType::__current = childlist.begin();
+                    BaseType::__current_end = childlist.end();
                 }
                 else {
-                    if (__current != __current_end) ++__current;
-                    while (__current == __current_end && !__stack.empty()) {
-                        pop(); 
-                        if (__current != __current_end) ++__current;
+                    if (BaseType::__current != BaseType::__current_end) ++BaseType::__current;
+                    while (BaseType::__current == BaseType::__current_end && !BaseType::__stack.empty()) {
+                        BaseType::pop(); 
+                        if (BaseType::__current != BaseType::__current_end) ++BaseType::__current;
                     }
                 }
             }
@@ -194,15 +197,15 @@ public:
         // value access operator for iterator
         inline value_t operator*() const 
         { 
-            if (!__root_given) return __root;
-            else return *__current; 
+            if (!BaseType::__root_given) return BaseType::__root;
+            else return *BaseType::__current; 
         }
 
         // return pointer to node
         inline pointer_t operator->() const
 		{	
-            if (!__root_given) return &__root;
-            else return __current.operator->(); 
+            if (!BaseType::__root_given) return &BaseType::__root;
+            else return BaseType::__current.operator->(); 
         }
 
         // pre increment operator for iterator
@@ -216,14 +219,14 @@ public:
         inline PreOrderConstIterator operator++(int i) 
         { 
             PreOrderConstIterator original = *this; 
-            multi_increment(i); 
+            BaseType::multi_increment(i); 
             return original; 
         }
 
 
         inline PreOrderConstIterator& operator+=(int i)
 		{	// increment by an integer
-            multi_increment(i);
+            BaseType::multi_increment(i);
             return *this;
         }
 
@@ -240,19 +243,23 @@ typedef PreOrderConstIterator<IndexArray,IndexArrayPtr> IndexArrayPreOrderConstI
 
 template<class ListOfNodeList, class ListOfNodeListPtr = const ListOfNodeList*>
 class PostOrderConstIterator  : public NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr> {
+public: 
+        typedef NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr>  BaseType;
+        typedef typename BaseType::value_t value_t;
+        typedef typename BaseType::pointer_t pointer_t;
 protected:
-        typedef typename NodeListConstIterator::NodeList NodeList;
+        typedef typename BaseType::NodeList NodeList;
 protected:
         // find first ascendant
         void first_ascendant() {
-            if (__current != __current_end) {
+            if (BaseType::__current != BaseType::__current_end) {
                 while (true) {
-                    const NodeList& childlist = (*__children)[*__current];
+                    const NodeList& childlist = (*BaseType::__children)[*BaseType::__current];
                     // if a node has some children, register it in the stack and point to the first children
                     if (!childlist.empty()) {
-                        push();
-                        __current = childlist.begin();
-                        __current_end = childlist.end();
+                        BaseType::push();
+                        BaseType::__current = childlist.begin();
+                        BaseType::__current_end = childlist.end();
                     }
                     else break;
                 }
@@ -261,13 +268,13 @@ protected:
 
         // advance in the traversal
         virtual void increment() {
-            if (__current != __current_end) ++__current;
+            if (BaseType::__current != BaseType::__current_end) ++BaseType::__current;
             // if end of stack, go to ultimate parent : root
-            else if (__stack.empty()) __root_given = true;
+            else if (BaseType::__stack.empty()) BaseType::__root_given = true;
 
-            if (__current == __current_end) {
+            if (BaseType::__current == BaseType::__current_end) {
                 // if node was last of the sibling, go to the parent
-                if (!__stack.empty()) pop();
+                if (!BaseType::__stack.empty()) BaseType::pop();
              }
             // if node has children, go to its first ascendant
             else first_ascendant();
@@ -287,15 +294,15 @@ public:
         // value access operator for iterator
         inline value_t operator*() const 
         { 
-            if (__atEnd()) return __root;
-            else return *__current; 
+            if (BaseType::__atEnd()) return BaseType::__root;
+            else return *BaseType::__current; 
         }
 
         // return pointer to node
         inline pointer_t operator->() const
 		{	
-            if (__atEnd()) return &__root;
-            else return __current.operator->(); 
+            if (BaseType::__atEnd()) return &BaseType::__root;
+            else return BaseType::__current.operator->(); 
         }
 
          // pre increment operator for iterator
@@ -309,14 +316,14 @@ public:
         inline PostOrderConstIterator operator++(int i) 
         { 
             PostOrderConstIterator original = *this; 
-            multi_increment(i); 
+            BaseType::multi_increment(i); 
             return original; 
         }
 
 
         inline PostOrderConstIterator& operator+=(int i)
 		{	// increment by an integer
-            multi_increment(i);
+            BaseType::multi_increment(i);
             return *this;
         }
 

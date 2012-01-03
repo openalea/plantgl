@@ -236,7 +236,7 @@ struct OneDistance {
 ALGO_API IndexArrayPtr 
 PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose)
 {
-
+#ifdef WITH_ANN
     // ids of points not accessible from the root connex component
     pgl_hash_set_uint32 nonconnected;
 
@@ -254,10 +254,11 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
     // root to consider for next connex component
     uint32_t next_root = 0;
 
+    OneDistance distcomputer;
     while (true){
 
         // find all points accessible from next_root
-        std::pair<Uint32Array1Ptr,RealArrayPtr> root_connections = dijkstra_shortest_paths(adjacencies,next_root,OneDistance());
+        std::pair<Uint32Array1Ptr,RealArrayPtr> root_connections = dijkstra_shortest_paths(adjacencies,next_root,distcomputer);
         Uint32Array1Ptr parents = root_connections.first;
 
         // update set of refpoints (point connected) and non connnected.
@@ -332,7 +333,9 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
     }
 
     return newadjacencies;
-
+#else
+    return adjacencies;
+#endif
 }
 
 
@@ -999,6 +1002,7 @@ PGL::average_radius(const Point3ArrayPtr points,
                       const TOOLS(Uint32Array1Ptr) parents,
                       uint32_t maxclosestnode)
 {
+#ifdef WITH_ANN
     uint32_t root;
     IndexArrayPtr children = determine_children(parents, root);
 
@@ -1025,6 +1029,9 @@ PGL::average_radius(const Point3ArrayPtr points,
         }
     }
     return sum_min_dist / nb_samples;
+#else
+    return 0;
+#endif
 }
 
 TOOLS(RealArrayPtr) 

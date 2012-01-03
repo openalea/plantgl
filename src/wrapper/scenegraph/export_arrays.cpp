@@ -92,9 +92,9 @@ inline void nullfunc(Iterator * ) { }
 
 typedef RealArray (RealArray::* Array2ArrayFunc) (const RealArray&) const;
 
-template <Array2ArrayFunc func>
+/*template <Array2ArrayFunc func>
 RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
-    return new RealArray(array->func(v)); }
+    return new RealArray(array->*func(v)); }*/
 
 void export_arrays()
 {
