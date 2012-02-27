@@ -476,7 +476,7 @@ void Turtle::stop(){
 	  // else error("f length should be positive.");
   }
   
-  void Turtle::F(real_t length,real_t topdiam){
+  void Turtle::F(real_t length,real_t topradius){
       if(length > 0){
 		  if (__params->guide) _applyGuide(length);
 		  if (__params->elasticity > GEOM_EPSILON){
@@ -485,10 +485,10 @@ void Turtle::stop(){
           if (!__params->isGeneralizedCylinderOn() && 
               ! __params->isPolygonOn()){
                   if(__params->defaultSection && __params->width > GEOM_EPSILON){
-					if (topdiam < GEOM_EPSILON) _cylinder(length);
-					else _frustum(length,topdiam);
+					if (topradius < GEOM_EPSILON) _cylinder(length);
+					else _frustum(length,topradius);
 				  }
-				  else { _sweep(length,topdiam < GEOM_EPSILON?getWidth():topdiam); }
+				  else { _sweep(length,topradius < GEOM_EPSILON?getWidth():topradius); }
           }
           __params->position += __params->heading*length*getScale().z();
 		  __params->axialLength += length;
@@ -496,12 +496,43 @@ void Turtle::stop(){
           if (__params->isGeneralizedCylinderOn() ||
               __params->isPolygonOn())
               __params->pushPosition();
-          if (topdiam > GEOM_EPSILON ) setWidth(topdiam);
+          if (topradius > GEOM_EPSILON ) setWidth(topradius);
       }
       else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
       else error("F length should be positive.");
   }
 
+void Turtle::nF(real_t length, real_t dl)
+{
+    uint32_t nbSteps = uint32_t(length / dl);
+    real_t deltaStep = length - nbSteps * dl;
+    for (uint32_t i = 1; i <= nbSteps; ++i){ F(dl); }
+    if(deltaStep > GEOM_EPSILON) F(deltaStep);
+}
+
+void Turtle::nF(real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation)
+{
+    uint32_t nbSteps = uint32_t(length / dl);
+    real_t deltaStep = length - nbSteps * dl;
+    if (!is_null_ptr(radiusvariation)){
+        real_t fx = radiusvariation->getFirstX(), lx = radiusvariation->getLastX();
+        real_t du = (dl / length) * (lx-fx);
+        real_t uiter = fx;
+        setWidth(radiusvariation->getValue(uiter)*radius);
+        for (uint32_t i = 1; i <= nbSteps; ++i){
+            uiter += du;
+            F(dl,radiusvariation->getValue(uiter)*radius);
+        }
+        if(deltaStep > GEOM_EPSILON) F(deltaStep,radius*radiusvariation->getValue(lx));
+    }
+    else {
+        real_t w = getWidth();
+        real_t dw = (radius - w) / length;
+        real_t cw = w;
+        for (uint32_t i = 1; i <= nbSteps; ++i){ cw += dw*dl; F(dl, cw); }
+        if(deltaStep > GEOM_EPSILON) F(deltaStep, radius);
+    }
+}
 
 void Turtle::left(real_t angle){
   real_t ra = angle * GEOM_RAD;
@@ -594,7 +625,8 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 	  }
 	else {
       stringstream st;
-      st << "Invalid Color value " << v << " in setColor (maximum is " << getColorListSize() - 1 << ')' <<  std::flush;
+      int maxcolor = getColorListSize();
+      st << "Invalid Color value " << v << " in setColor (maximum is " <<  maxcolor - 1 << ')' <<  std::flush;
       warning(st.str());
 	  return;
 	}
@@ -658,24 +690,24 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
 	}
   }
   
-  void Turtle::lineTo(const TOOLS(Vector3) & v, real_t topdiam){
+  void Turtle::lineTo(const TOOLS(Vector3) & v, real_t topradius){
 	 TOOLS(Vector3) heading = __params->heading;
 	 TOOLS(Vector3) left = __params->left;
 	 TOOLS(Vector3) up = __params->up;
 
-	  oLineTo(v,topdiam);
+	  oLineTo(v,topradius);
 
 	  __params->heading = heading;
 	  __params->left = left;
 	  __params->up = up;
   }
 
-  void Turtle::lineRel(const TOOLS(Vector3) & v, real_t topdiam){
+  void Turtle::lineRel(const TOOLS(Vector3) & v, real_t topradius){
 	 TOOLS(Vector3) heading = __params->heading;
 	 TOOLS(Vector3) left = __params->left;
 	 TOOLS(Vector3) up = __params->up;
 
-	  oLineRel(v,topdiam);
+	  oLineRel(v,topradius);
 
 	  __params->heading = heading;
 	  __params->left = left;
@@ -683,25 +715,25 @@ void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling,
   }
 
 /// Trace line toward v and change the orientation
-void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topdiam )
+void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
 {
     Vector3 h = v - getPosition();
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
 	  _tendTo(getHeading(),h);
-      F(l,topdiam);
+      F(l,topradius);
 	}
 }
 
 
 
-  void Turtle::oLineRel(const Vector3& v, real_t topdiam){
+  void Turtle::oLineRel(const Vector3& v, real_t topradius){
 	// Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
     Vector3 h = v;
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
 	  _tendTo(getHeading(),h);
-      F(l,topdiam);
+      F(l,topradius);
 	}
   }
 
@@ -999,7 +1031,18 @@ void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_rati
 	}
 }
 
-void Turtle::_sweep(real_t length, real_t topdiam)
+void Turtle::sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation)
+{
+    setGuide(path,length); setCrossSection(section); nF(length,dl,radius,radiusvariation);
+}
+
+void Turtle::sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation)
+{
+    setGuide(path,length); setCrossSection(section); nF(length,dl,radius,radiusvariation);
+}
+
+
+void Turtle::_sweep(real_t length, real_t topradius)
 {
 	// default sweep
 	Point3ArrayPtr points(new Point3Array(getPosition(),getPosition()+getHeading()*length));
@@ -1008,7 +1051,7 @@ void Turtle::_sweep(real_t length, real_t topdiam)
 	left.push_back(getLeft());
 	std::vector<real_t> radius;
 	radius.push_back(getWidth());
-	radius.push_back(topdiam);
+	radius.push_back(topradius);
 	_generalizedCylinder(points, left, radius,
 						 __params->crossSection,
 						 __params->crossSectionCCW, true);
@@ -1236,11 +1279,11 @@ void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePt
    }
 }
 
-void PglTurtle::_frustum(real_t length, real_t topdiam){
+void PglTurtle::_frustum(real_t length, real_t topradius){
   GeometryPtr a;
   real_t width = getWidth();
   if(FABS(width) > GEOM_EPSILON){
-	real_t taper = topdiam/width;
+	real_t taper = topradius/width;
   if ( getScale() !=  Vector3(1,1,1) &&
 	  (getScale().x() == getScale().y() ))
 	   width *= getScale().x();
@@ -1253,18 +1296,18 @@ void PglTurtle::_frustum(real_t length, real_t topdiam){
 	_addToScene(transform(a));
   }
   else {
-	if (FABS(topdiam) < GEOM_EPSILON){
+	if (FABS(topradius) < GEOM_EPSILON){
 	  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
 	  pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
 	  a = GeometryPtr(new Polyline(pts));
 	}
 	else {
-	  real_t _topdiam = topdiam;
+	  real_t _topradius = topradius;
 	  if ( getScale() !=  Vector3(1,1,1) &&
 		  (getScale().x() == getScale().y() && 
 		  getScale().y() == getScale().z() ))
-		  topdiam *= getScale().x();
-	  a = GeometryPtr(new Cone(_topdiam,length*getScale().z(),false,getParameters().sectionResolution));
+		  topradius *= getScale().x();
+	  a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
 	  if (getLeft() != Vector3::OX || 
 		  getUp() != -Vector3::OY)
         a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));

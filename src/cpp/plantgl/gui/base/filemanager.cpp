@@ -523,7 +523,7 @@ void ViewFileManager::saveImage(bool withAlpha)
 
     for(uint it=0;it<_formatList.count();it++){
         QString format=_formatList[it];
-        if(format == "PNG"){
+        if(format == "png"){
             first_format=format.toLower();
             format=format+" "+tr("Files")+" (*."+(format.toLower())+")";
             _formats.prepend(format);

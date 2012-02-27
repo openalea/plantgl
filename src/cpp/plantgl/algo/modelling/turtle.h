@@ -136,11 +136,14 @@ public:
     inline void f() { f(default_step); }
     virtual void f(real_t length);
 
-    /// Move of l step in heading direction and draw a cylinder (or a frustum if topdiam is given)
+    /// Move of l step in heading direction and draw a cylinder (or a frustum if topradius is given)
     inline void F() { F(default_step,-1); }
     inline void F(real_t length) { F(length,-1); }
-    virtual void F(real_t length, real_t topdiam);
+    virtual void F(real_t length, real_t topradius);
     
+    void nF(real_t length, real_t dl);
+    void nF(real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation = NULL);
+
     /// Rotate on the left of default angle
     inline void left()
 	{ left(angle_increment); }
@@ -222,10 +225,10 @@ public:
 	{ shift(TOOLS(Vector3)(x,y,z)); }
 
 	/// Trace line to v without changing the orientation
-    virtual void lineTo(const TOOLS(Vector3) & v, real_t topdiam = -1.0);
+    virtual void lineTo(const TOOLS(Vector3) & v, real_t topradius = -1.0);
 
 	/// Trace line to pos+v without changing the orientation
-    virtual void lineRel(const TOOLS(Vector3) & v, real_t topdiam = -1.0);
+    virtual void lineRel(const TOOLS(Vector3) & v, real_t topradius = -1.0);
 
 	/// Change the orientation to pinpoint v
     void pinpoint(const TOOLS(Vector3) & v);
@@ -234,28 +237,28 @@ public:
     virtual void pinpointRel(const TOOLS(Vector3) & v);
 
 	/// Trace line toward v and change the orientation
-    void oLineTo(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
+    void oLineTo(const TOOLS(Vector3)& v, real_t topradius = -1.0);
 
 	/// Trace line toward pos+v and change the orientation
-    virtual void oLineRel(const TOOLS(Vector3)& v, real_t topdiam = -1.0);
+    virtual void oLineRel(const TOOLS(Vector3)& v, real_t topradius = -1.0);
 
-	inline void lineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
-	{ lineTo(TOOLS(Vector3)(x,y,z),topdiam); }
+	inline void lineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
+	{ lineTo(TOOLS(Vector3)(x,y,z),topradius); }
 
 	inline void pinpoint(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ pinpoint(TOOLS(Vector3)(x,y,z)); }
 
-	inline void oLineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
-	{ oLineTo(TOOLS(Vector3)(x,y,z),topdiam); }
+	inline void oLineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
+	{ oLineTo(TOOLS(Vector3)(x,y,z),topradius); }
 
-	inline void lineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
-	{ lineRel(TOOLS(Vector3)(x,y,z),topdiam); }
+	inline void lineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
+	{ lineRel(TOOLS(Vector3)(x,y,z),topradius); }
 
 	inline void pinpointRel(real_t x = 0, real_t y = 0, real_t z = 0)
 	{ pinpointRel(TOOLS(Vector3)(x,y,z)); }
 
-	inline void oLineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topdiam = -1.0)
-	{ oLineRel(TOOLS(Vector3)(x,y,z),topdiam); }
+	inline void oLineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
+	{ oLineRel(TOOLS(Vector3)(x,y,z),topradius); }
 
     virtual void transform(const TOOLS(Matrix3)& matrix);
 
@@ -405,6 +408,9 @@ public:
 
 	void setPositionOnGuide(real_t t);
 
+    void sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius = 1.0, const QuantisedFunctionPtr radiusvariation = NULL);
+    void sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius = 1.0, const QuantisedFunctionPtr radiusvariation = NULL);
+
     virtual void error(const std::string& error_string);
     virtual void warning(const std::string& error_string);
 
@@ -416,10 +422,10 @@ public:
 protected:
     void _setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);
 
-	virtual void _frustum(real_t length, real_t topdiam){}
+	virtual void _frustum(real_t length, real_t topradius){}
     virtual void _cylinder(real_t length){}
 
-    virtual void _sweep(real_t length, real_t topdiam);
+    virtual void _sweep(real_t length, real_t topradius);
 
     virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
     

@@ -497,4 +497,7 @@
       <Filter>Container</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\TODO.txt" />
+  </ItemGroup>
 </Project>
