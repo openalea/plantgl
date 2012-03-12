@@ -26,7 +26,9 @@ from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget
 from openalea.plantgl.gui.curve2deditor import Curve2DEditor, Curve2DConstraint, FuncConstraint
 from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
+from openalea.plantgl.scenegraph import NurbsCurve2D
 from pgl_interface import ICurve2D, INurbsPatch
+from cPickle import loads
 
 '''
 class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):
@@ -100,7 +102,6 @@ class Curve2DWidget(NodeWidget, Curve2DEditor):
     @lock_notify      
     def valueChanged(self):
         """ update value """
-        print 'value '
         crv = self.getCurve()
         if crv and not self.isDefault(crv):
             self.node.set_input(0, crv)
@@ -120,10 +121,10 @@ class Curve2DWidget(NodeWidget, Curve2DEditor):
             
             crv = self.node.get_input(0)
             if not crv:
-                print 'notify curve 2'
-                crv = self.node.get_input(1)
+                pts = self.node.get_input(1)
+                if pts:
+                    crv = NurbsCurve2D(loads(pts))
             if not crv:
-                print 'default'
                 crv = ICurve2D.default()
             if not crv: 
                 crv = self.newDefaultCurve()
