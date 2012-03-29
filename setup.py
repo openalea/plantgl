@@ -24,7 +24,7 @@ print pkg_name,': version =',version
 # Scons build directory
 build_prefix= "build-scons"
 
-if 'win' in sys.platform:
+if sys.platform.startswith('win'):
     install_requires = ["boost", "qhull"]#, "qt4"]
     #setup_requires = install_requires +['qt4-dev'] 
     install_requires = [ binary_deps(i) for i in install_requires ]

@@ -59,7 +59,11 @@
 
 #ifndef WITHOUT_QHULL
 extern "C" {
+#ifndef WITH_QHULL_2011
 #include <qhull/qhull_a.h>
+#else
+#include <libqhull/qhull_a.h>
+#endif
 }
 #endif
 

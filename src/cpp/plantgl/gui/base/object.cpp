@@ -36,6 +36,7 @@
 #include <QtCore/qpoint.h>
 #include <QtGui/qmessagebox.h>
 #include <QtOpenGL/qgl.h>
+#include <GL/glu.h>
 
 #include "camera.h"
 #include "errordialog.h"
