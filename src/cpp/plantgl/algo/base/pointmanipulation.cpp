@@ -671,6 +671,7 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
 {
       std::vector<std::pair<real_t, TOOLS(Vector3)> > result;
 #ifdef WITH_CGAL
+#ifdef WITH_LAPACK
       size_t d_fitting = 4;
       size_t d_monge = 4;
 
@@ -690,6 +691,7 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
           a.second = toVector3(monge_fit.pca_basis(i).second);
           result.push_back(a);
       }
+#endif
 #endif
       return result;
 

@@ -15,10 +15,11 @@ options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 
 # Create an environment to access qt option values
 env = Environment(options=options, tools=[])
+
 qt_env = env
 qt_version = int(qt_env['QT_VERSION'])
 
-cpp_tools = ['bison', 'flex', 'opengl','readline', 'install', 'qhull','boost_python','cgal','mpfr','ann']
+cpp_tools = ['bison', 'flex', 'opengl','readline', 'install', 'qhull','boost_python','cgal','mpfr','lapack', 'ann']
 if qt_version == 3:
     qt_tools = ['qt']
 else:
