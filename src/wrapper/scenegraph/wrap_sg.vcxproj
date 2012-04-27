@@ -44,7 +44,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>PGL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -53,7 +53,7 @@
     <Link>
       <AdditionalDependencies>boost_python$(BOOST_LIB_EXT).lib;QtCored4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../plantgl_d/scenegraph/_pglsg_d.pyd</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\libs;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python27\libs;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -64,7 +64,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python26\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..\cpp;$(BOOSTDIR);C:\Python27\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -74,7 +74,7 @@
     <Link>
       <AdditionalDependencies>boost_python$(BOOST_LIB_EXT).lib;QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../plantgl/scenegraph/_pglsg.pyd</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\libs;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python27\libs;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>

@@ -50,6 +50,7 @@ const bool Mesh::DEFAULT_SOLID(false);
 const bool Mesh::DEFAULT_NORMALPERVERTEX(true);
 const bool Mesh::DEFAULT_COLORPERVERTEX(true);
 
+const Vector3 Mesh::DEFAULT_NORMAL_VALUE(0,0,1);
 const PolylinePtr Mesh::DEFAULT_SKELETON;
 
 
@@ -350,7 +351,10 @@ Mesh::computeNormalPerVertex() const {
             normalList->setAt(i,Vector3( 1,0,0 ) );
     }
     for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
-        _it->normalize();
+    {
+	    _it->normalize();
+        if (fabs(norm(*_it) - 1.0) > GEOM_EPSILON) *_it = DEFAULT_NORMAL_VALUE;
+    }
 
     return normalList;
 }
@@ -362,8 +366,13 @@ Mesh::computeNormalPerFace() const {
 	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
 			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
     }
+    bool hasinvalid = false;
     for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
-	_it->normalize();
+    {
+	    _it->normalize();
+        if (fabs(norm(*_it) - 1.0) > GEOM_EPSILON) *_it = DEFAULT_NORMAL_VALUE;
+    }
+
 	return normalList;
 }
 

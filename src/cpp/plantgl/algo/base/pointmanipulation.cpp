@@ -654,6 +654,70 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
 	return result;
 }
 
+#ifdef WITH_CGAL
+#include <CGAL/Cartesian.h>
+#include <CGAL/Monge_via_jet_fitting.h>
+
+typedef CGAL::Cartesian<real_t>  Data_Kernel;
+typedef Data_Kernel::Point_3     DPoint;
+typedef CGAL::Monge_via_jet_fitting<Data_Kernel> My_Monge_via_jet_fitting;
+typedef My_Monge_via_jet_fitting::Monge_form     My_Monge_form;
+
+#endif
+
+
+std::vector<std::pair<real_t, TOOLS(Vector3)> >
+PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group)
+{
+      std::vector<std::pair<real_t, TOOLS(Vector3)> > result;
+#ifdef WITH_CGAL
+      size_t d_fitting = 4;
+      size_t d_monge = 4;
+
+      std::vector<DPoint> in_points;
+      in_points.push_back(toPoint<DPoint>(points->getAt(pid)));
+
+      for(Index::const_iterator itNg = group.begin(); itNg != group.end(); ++itNg)
+          if (*itNg != pid) in_points.push_back(toPoint<DPoint>(points->getAt(*itNg)));
+
+      My_Monge_form monge_form;
+      My_Monge_via_jet_fitting monge_fit;
+      monge_form = monge_fit(in_points.begin(), in_points.end(), d_fitting, d_monge);
+
+      for (int i = 0 ; i < 3; ++i){
+          std::pair<real_t, TOOLS(Vector3)> a;
+          a.first = monge_fit.pca_basis(i).first;
+          a.second = toVector3(monge_fit.pca_basis(i).second);
+          result.push_back(a);
+      }
+#endif
+      return result;
+
+}
+
+std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
+PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups)
+{
+    std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > result;
+    uint32_t i = 0;
+    for(IndexArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++i)
+        result.push_back(principal_curvatures(points,i,*it));
+    return result;
+}
+
+std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
+PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius)
+{
+    std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > result;
+    uint32_t nbPoints = points->size();
+
+    for(uint32_t i = 0; i < nbPoints; ++i){
+        Index ng = r_neighborhood(i,points, adjacencies, radius);
+        result.push_back(principal_curvatures(points,i,ng));
+    }
+    return result;
+
+}
 
 RealArrayPtr
 PGL::adaptive_radii( const RealArrayPtr density,
@@ -1070,6 +1134,28 @@ PGL::estimate_radii(const Point3ArrayPtr nodes,
     return result;
 }
 
+/*
+bool intersection_test2(const Vector3& root, real_t rootradius, 
+                       const Vector3& p1, real_t radius1, 
+                       const Vector3& p2, real_t radius2,
+                       real_t overlapfilter)
+{
+    Vector3 p1c = p1-root;
+    Vector3 p2c = p2-root;
+    Vector3 cmpplannormal = direction(cross(p1c,p2c));
+    real_t diffangle = angle(p1c,p2c,cmpplannormal);
+    Vector3 v1 = direction(cross(p1c,cmpplannormal));
+    Vector3 v2 = direction(cross(p2c,cmpplannormal));
+    Vector3 p1a = v1*rootradius;
+    Vector3 p2a = v2*rootradius;
+    Vector3 p1b = p1c + v1*radius1;
+    Vector3 p2b = p2c + v2*radius2;
+    Ray r(Vector3::ORIGIN,direction(p2a));
+    if(r.intersect(p1a,p1b)){
+    }
+
+}
+*/
 
 bool intersection_test(const Vector3& root, real_t rootradius, 
                        const Vector3& p1, real_t radius1, 

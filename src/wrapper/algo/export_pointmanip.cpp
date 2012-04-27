@@ -77,11 +77,49 @@ py_determine_children(const TOOLS(Uint32Array1Ptr) parents)
     return make_tuple(children,root);
 }
 
+bp::object
+translate_eigen_vectors(const std::vector<std::pair<real_t, TOOLS(Vector3)> > egv)
+{
+    boost::python::list res;
+    for (std::vector<std::pair<real_t, TOOLS(Vector3)> >::const_iterator it = egv.begin(); it != egv.end();  ++it)
+        res.append(make_tuple(it->first,it->second));
+    return res;
+}
+
+bp::object
+translate_eigen_vectors_set(const std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > egvs)
+{
+    boost::python::list res;
+    for (std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >::const_iterator it = egvs.begin(); it != egvs.end();  ++it)
+        res.append(translate_eigen_vectors(*it));
+    return res;
+}
+
+bp::object
+py_principal_curvatures_0(const Point3ArrayPtr points, uint32_t pid, const Index& group)
+{
+    return translate_eigen_vectors(principal_curvatures(points,pid,group));
+}
+
+bp::object
+py_principal_curvatures_1(const Point3ArrayPtr points, const IndexArrayPtr groups)
+{
+    return translate_eigen_vectors_set(principal_curvatures(points,groups));
+}
+
+bp::object
+py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius)
+{
+    return translate_eigen_vectors_set(principal_curvatures(points,adjacencies,radius));
+}
+
+
 void export_PointManip()
 {
 	def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
 	def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
 	def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
+
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));
@@ -119,6 +157,10 @@ void export_PointManip()
 #ifdef WITH_CGAL
     def("pointset_orientation",&pointset_orientation,args("points","group"));
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
+
+    def("principal_curvatures",&py_principal_curvatures_0,args("points","pid","group"));
+	def("principal_curvatures",&py_principal_curvatures_1,args("points","groups"));
+	def("principal_curvatures",&py_principal_curvatures_2,args("points","adjacencies","radius"));
 #endif
 
     def("centroid_of_group",&centroid_of_group,args("points","group"));

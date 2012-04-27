@@ -132,12 +132,19 @@ inline bool isPowerOfTwo(int val){
 #ifdef _MSC_VER
 
 /// On win32, redirect finite on _finite.
+#ifndef HAVE_FINITE
+
 #define finite _finite
+
+#define HAVE_FINITE
+#endif
 
 /// On win32, redefine cubic root.
 inline double cbrt(double x){
 	return pow(x,1/3);
 }
+
+#ifndef HAVE_ROUND
 
 /// On win32, redefine round double to int.
 inline int rint(double x){
@@ -148,6 +155,9 @@ inline int rint(double x){
 
 /// On win32, redefine round double to int.
 #define round rint
+// needed to avoid to include round by python C API (%PYTHONROOT%\include\pymath.h)
+#define HAVE_ROUND
+#endif
 
 /// On win32, redefine truncate double to int.
 inline int trunc(double x){
@@ -156,7 +166,12 @@ inline int trunc(double x){
 	return res;
 }
 
+#ifndef HAVE_HYPOT
+
 #define hypot _hypot
+
+#define HAVE_HYPOT
+#endif
 
 #endif
 

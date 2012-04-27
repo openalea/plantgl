@@ -79,6 +79,8 @@ public:
   /// The default \b Skeleton field value.
   static const PolylinePtr DEFAULT_SKELETON;
 
+  /// The default normal value
+  static const TOOLS(Vector3) DEFAULT_NORMAL_VALUE;
 
   /// A structure which helps to build an object of type of Mesh.
   struct SG_API Builder : public ExplicitModel::Builder {

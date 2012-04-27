@@ -108,14 +108,14 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
   Arrangement_2          arr2;
 
   for (Point2Array::const_iterator it2 = p2->getPointList()->begin()+1; it2 != p2->getPointList()->end(); ++it2)
-	 	insert_curve(arr2,toSegment(*(it2-1),*it2));
+	 	insert(arr2,toSegment(*(it2-1),*it2));
 
   // to be a closed face, first and last point should be exactly the same.
   // However we should not duplicate the same point twice at the end.
   Vector2& fp2 = p2->getPointList()->getAt(0);
   Vector2& lp2 = *(p2->getPointList()->end()-1);
   if (fp2.x() != lp2.x() || fp2.y() != lp2.y())
-	insert_curve(arr2,toSegment(lp2,fp2)); 
+	insert(arr2,toSegment(lp2,fp2)); 
 
   // std::cerr << arr2.number_of_vertices() << " " << arr2.number_of_edges() << " " << arr2.number_of_faces() << std::endl;
 

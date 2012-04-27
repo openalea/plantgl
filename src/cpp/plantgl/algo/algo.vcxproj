@@ -45,7 +45,7 @@
     <ClCompile>
       <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python27\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python27\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ALGO_MAKEDLL;PGL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -54,7 +54,7 @@
     <Link>
       <AdditionalDependencies>Qt3Supportd4.lib;QtOpenGLd4.lib;QtCored4.lib;QtGuid4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;cgal-vc80-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../bin/pglalgo-d.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python27\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(BOOSTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
@@ -65,8 +65,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/GR %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);$(ANN_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ALGO_MAKEDLL;WITH_CGAL;WITH_ANN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;$(QTDIR)\include\Qt;..\..;C:\Python27\Lib\site-packages\qhull-2003.1-win32.egg\include;C:\Python27\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\include;$(CGAL_DIR)\include;$(CGAL_DIR)\include\CGAL\config\msvc;$(CGAL_DIR)\auxiliary\gmp\include;$(BOOSTDIR);$(ANN_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>ALGO_MAKEDLL;WITH_CGAL;WITH_ANN;YY_NO_UNISTD_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>
@@ -75,7 +75,7 @@
     <Link>
       <AdditionalDependencies>Qt3Support4.lib;QtOpenGL4.lib;QtCore4.lib;QtGui4.lib;opengl32.lib;glu32.lib;qhull-vc80.lib;libgmp-10.lib;libmpfr-4.lib;ANN.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../../../../bin/pglalgo.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python26\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(CGAL_DIR)\auxiliary\gmp\lib;$(BOOSTDIR)\lib;$(ANN_DIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)/lib/;C:\Python27\Lib\site-packages\qhull-2003.1-win32.egg\lib;$(CGAL_DIR)\lib;$(CGAL_DIR)\auxiliary\gmp\lib;$(BOOSTDIR)\lib;$(ANN_DIR)\lib;$(CGAL_DIR)\auxiliary\taucs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>../../../../bin/$(TargetName).pdb</ProgramDatabaseFile>
@@ -227,13 +227,12 @@
   <ItemGroup>
     <CustomBuild Include="codec\scne_parser.y">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing Bison on %(Filename).y ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe -dv -p scne_yy  "%(FullPath)" -o "%(RootDir)%(Directory)/%(Filename).cpp"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cmd /C C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe -dv -p scne_yy  "%(FullPath)" -o "%(RootDir)%(Directory)/%(Filename).cpp"
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)/%(Filename).hpp;%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing Bison on %(Filename).y ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe -dv -p scne_yy  "%(FullPath)" -o "%(RootDir)%(Directory)/%(Filename).cpp"
-</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">REM C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe -dv -p scne_yy  "%(FullPath)" -o "%(RootDir)%(Directory)/%(Filename).cpp"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\bison.exe;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)/%(Filename).hpp;%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
@@ -244,9 +243,9 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing Flex on %(Filename).l ...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe -Pscene_yy  -o"%(RootDir)%(Directory)/%(Filename).cpp" "%(FullPath)"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">REM C:\Python27\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe -Pscene_yy  -o"%(RootDir)%(Directory)/%(Filename).cpp" "%(FullPath)"
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python26\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Python27\Lib\site-packages\bisonflex-2.4.1_2.5.35-win32.egg\bin\flex.exe;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)/%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
