@@ -61,7 +61,7 @@ class LAPACK:
       elif isinstance(platform, Posix):
          self._default['include'] = '/usr/include'
          self._default['libpath'] = '/usr/lib'
-         self._default['libs'] = ['CGAL','gmpxx','lapack']
+         self._default['libs'] = ['lapack','blas']
          self._default['flags'] = ''
          self._default['defines'] = ['LAPACK_USE_F2C','CGAL_USE_F2C','BLAS_USE_F2C']
 
@@ -106,7 +106,6 @@ class LAPACK:
         if sum( map(lambda x: os.path.exists(os.path.join(lapack_lib,x)),libnames) ) > 0 :
           import warnings
           warnings.warn("Error: LAPACK lib not found. LAPACK disabled ...")
-          # For now LAPACK is disabled
           env['WITH_LAPACK'] = False      
       if env['WITH_LAPACK']:
         env.AppendUnique(CPPPATH=[env['lapack_includes']])
