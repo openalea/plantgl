@@ -364,7 +364,13 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 
     return true;
 #else
-	return false;
+    #ifdef _MSC_VER
+    #pragma message("function 'boundingCircle' disabled. CGAL needed.")
+    #else
+    #warning "function 'boundingCircle' disabled. CGAL needed"
+    #endif
+    
+    return false;
 #endif
 
 }

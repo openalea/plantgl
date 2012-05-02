@@ -98,21 +98,21 @@ translate_eigen_vectors_set(const std::vector<std::vector<std::pair<real_t, TOOL
 }
 
 bp::object
-py_principal_curvatures_0(const Point3ArrayPtr points, uint32_t pid, const Index& group)
+py_principal_curvatures_0(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree = 4, size_t monge_degree = 4)
 {
-    return translate_eigen_vectors(principal_curvatures(points,pid,group));
+    return translate_eigen_vectors(principal_curvatures(points,pid,group,fitting_degree,monge_degree));
 }
 
 bp::object
-py_principal_curvatures_1(const Point3ArrayPtr points, const IndexArrayPtr groups)
+py_principal_curvatures_1(const Point3ArrayPtr points, const IndexArrayPtr groups, size_t fitting_degree = 4, size_t monge_degree = 4)
 {
-    return translate_eigen_vectors_set(principal_curvatures(points,groups));
+    return translate_eigen_vectors_set(principal_curvatures(points,groups,fitting_degree,monge_degree));
 }
 
 bp::object
-py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius)
+py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree = 4, size_t monge_degree = 4)
 {
-    return translate_eigen_vectors_set(principal_curvatures(points,adjacencies,radius));
+    return translate_eigen_vectors_set(principal_curvatures(points,adjacencies,radius,fitting_degree,monge_degree));
 }
 #endif
 #endif
@@ -162,9 +162,9 @@ void export_PointManip()
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
 
 #ifdef WITH_LAPACK
-    def("principal_curvatures",&py_principal_curvatures_0,args("points","pid","group"));
-    def("principal_curvatures",&py_principal_curvatures_1,args("points","groups"));
-    def("principal_curvatures",&py_principal_curvatures_2,args("points","adjacencies","radius"));
+    def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::("fitting_degree")=4,bp::("monge_degree")=4));
+    def("principal_curvatures",&py_principal_curvatures_1,(bp::arg(("points"),bp::arg("groups"),bp::("fitting_degree")=4,bp::("monge_degree")=4));
+    def("principal_curvatures",&py_principal_curvatures_2,(bp::arg(("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::("fitting_degree")=4,bp::("monge_degree")=4));
 #endif
 #endif
 

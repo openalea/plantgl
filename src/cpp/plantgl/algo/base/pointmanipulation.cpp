@@ -87,6 +87,12 @@ PGL::delaunay_point_connection(const Point3ArrayPtr points)
             result->getAt(target).push_back(source);
     } 
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'delaunay_point_connection' disabled. CGAL needed.")
+    #else
+    #warning "function 'delaunay_point_connection' disabled. CGAL needed"
+    #endif
+
     IndexArrayPtr result;
 #endif
     return result;
@@ -133,6 +139,12 @@ PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symme
     if(symmetric) result = symmetrize_connections(result);
     return result;
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'k_closest_points_from_ann' disabled. ANN needed.")
+    #else
+    #warning "function 'k_closest_points_from_ann' disabled. ANN needed"
+    #endif
+
     return IndexArrayPtr();
 #endif
 }
@@ -334,6 +346,12 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
 
     return newadjacencies;
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'connect_all_connex_components' disabled. ANN needed.")
+    #else
+    #warning "function 'connect_all_connex_components' disabled. ANN needed"
+    #endif
+
     return adjacencies;
 #endif
 }
@@ -638,6 +656,12 @@ Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index& grou
 
 	return toVector3(line.to_vector());
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'pointset_orientation' disabled. CGAL needed.")
+    #else
+    #warning "function 'pointset_orientation' disabled. CGAL needed"
+    #endif
+
     return Vector3(0,0,0);
 #endif
 }
@@ -667,13 +691,12 @@ typedef My_Monge_via_jet_fitting::Monge_form     My_Monge_form;
 
 
 std::vector<std::pair<real_t, TOOLS(Vector3)> >
-PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group)
+PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree , size_t monge_degree)
 {
       std::vector<std::pair<real_t, TOOLS(Vector3)> > result;
 #ifdef WITH_CGAL
 #ifdef WITH_LAPACK
-      size_t d_fitting = 4;
-      size_t d_monge = 4;
+
 
       std::vector<DPoint> in_points;
       in_points.push_back(toPoint<DPoint>(points->getAt(pid)));
@@ -683,7 +706,7 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
 
       My_Monge_form monge_form;
       My_Monge_via_jet_fitting monge_fit;
-      monge_form = monge_fit(in_points.begin(), in_points.end(), d_fitting, d_monge);
+      monge_form = monge_fit(in_points.begin(), in_points.end(), fitting_degree, monge_degree);
 
       for (int i = 0 ; i < 3; ++i){
           std::pair<real_t, TOOLS(Vector3)> a;
@@ -691,31 +714,44 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
           a.second = toVector3(monge_fit.pca_basis(i).second);
           result.push_back(a);
       }
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'principal_curvatures' disabled. LAPACK needed.")
+    #else
+    #warning "function 'principal_curvatures' disabled. LAPACK needed"
+    #endif
 #endif
+
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'principal_curvatures' disabled. CGAL needed.")
+    #else
+    #warning "function 'principal_curvatures' disabled. CGAL needed"
+    #endif
 #endif
       return result;
 
 }
 
 std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
-PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups)
+PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups, size_t fitting_degree , size_t monge_degree)
 {
     std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > result;
     uint32_t i = 0;
     for(IndexArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++i)
-        result.push_back(principal_curvatures(points,i,*it));
+        result.push_back(principal_curvatures(points,i,*it,fitting_degree,monge_degree));
     return result;
 }
 
 std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
-PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius)
+PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree , size_t monge_degree)
 {
     std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > result;
     uint32_t nbPoints = points->size();
 
     for(uint32_t i = 0; i < nbPoints; ++i){
         Index ng = r_neighborhood(i,points, adjacencies, radius);
-        result.push_back(principal_curvatures(points,i,ng));
+        result.push_back(principal_curvatures(points,i,ng,fitting_degree,monge_degree));
     }
     return result;
 
@@ -1096,6 +1132,12 @@ PGL::average_radius(const Point3ArrayPtr points,
     }
     return sum_min_dist / nb_samples;
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'average_radius' disabled. ANN needed.")
+    #else
+    #warning "function 'average_radius' disabled. ANN needed"
+    #endif
+
     return 0;
 #endif
 }

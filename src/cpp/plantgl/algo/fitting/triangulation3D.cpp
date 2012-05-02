@@ -82,6 +82,12 @@ PGL::delaunay_triangulation3D(const Point3ArrayPtr points)
             result->push_back(Index3(index1,index2,index3));
     } 
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'delaunay_triangulation3D' disabled. CGAL needed.")
+    #else
+    #warning "function 'delaunay_triangulation3D' disabled. CGAL needed"
+    #endif
+
     Index3ArrayPtr result;
 #endif
     return result;

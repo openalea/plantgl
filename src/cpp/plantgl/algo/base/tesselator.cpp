@@ -757,6 +757,12 @@ bool PGL(is_simple_polygon)(Point2ArrayPtr contour){
         polygon.push_back(Point_2(it->x(), it->y()));
    return polygon.is_simple();
 #else
+    #ifdef _MSC_VER
+    #pragma message("function 'is_simple_polygon' disabled. CGAL needed.")
+    #else
+    #warning "function 'is_simple_polygon' disabled. CGAL needed"
+    #endif
+
     return true;
 #endif
 }
@@ -833,6 +839,13 @@ IndexArrayPtr PGL(polygonization)(Point2ArrayPtr contour, TriangulationMethod me
    }
    return iarray;
    }
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'polygonization' disabled. CGAL needed.")
+    #else
+    #warning "function 'polygonization' disabled. CGAL needed"
+    #endif
+
 #endif   
 }
 
