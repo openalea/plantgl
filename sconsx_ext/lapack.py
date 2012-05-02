@@ -61,9 +61,9 @@ class LAPACK:
       elif isinstance(platform, Posix):
          self._default['include'] = '/usr/include'
          self._default['libpath'] = '/usr/lib'
-         self._default['libs'] = ['gmpxx','lapack','blas']
+         self._default['libs'] = ['CGAL_Core','gmpxx','lapack','f2c','cblas','f77blas','f2c']
          self._default['flags'] = ''
-         self._default['defines'] = ''
+         self._default['defines'] = ['LAPACK_USE_F2C','CGAL_USE_F2C','BLAS_USE_F2C']
 
 
    def option( self, opts):
@@ -111,7 +111,7 @@ class LAPACK:
       if env['WITH_LAPACK']:
         env.AppendUnique(CPPPATH=[env['lapack_includes']])
         env.AppendUnique(LIBPATH=[env['lapack_libpath']])
-        env.Append(CPPDEFINES='$lapack_defines')
+        env.AppendUnique(CPPDEFINES=[env['lapack_defines']])
         env.Append(CPPDEFINES='WITH_LAPACK')
         env.Append(CPPFLAGS='$lapack_flags')
 
