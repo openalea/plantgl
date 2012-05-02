@@ -101,6 +101,9 @@ std::vector<std::string> __getPGLSupportedExtensions() {
 #ifdef WITH_ANN
 	ADD_EXTENSION(ANN)
 #endif
+#ifdef WITH_LAPACK
+	ADD_EXTENSION(LAPACK)
+#endif
    return res;
 }
 

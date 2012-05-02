@@ -77,6 +77,8 @@ py_determine_children(const TOOLS(Uint32Array1Ptr) parents)
     return make_tuple(children,root);
 }
 
+#ifdef WITH_CGAL
+#ifdef WITH_LAPACK
 bp::object
 translate_eigen_vectors(const std::vector<std::pair<real_t, TOOLS(Vector3)> > egv)
 {
@@ -112,7 +114,8 @@ py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjac
 {
     return translate_eigen_vectors_set(principal_curvatures(points,adjacencies,radius));
 }
-
+#endif
+#endif
 
 void export_PointManip()
 {
@@ -158,9 +161,11 @@ void export_PointManip()
     def("pointset_orientation",&pointset_orientation,args("points","group"));
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
 
+#ifdef WITH_LAPACK
     def("principal_curvatures",&py_principal_curvatures_0,args("points","pid","group"));
-	def("principal_curvatures",&py_principal_curvatures_1,args("points","groups"));
-	def("principal_curvatures",&py_principal_curvatures_2,args("points","adjacencies","radius"));
+    def("principal_curvatures",&py_principal_curvatures_1,args("points","groups"));
+    def("principal_curvatures",&py_principal_curvatures_2,args("points","adjacencies","radius"));
+#endif
 #endif
 
     def("centroid_of_group",&centroid_of_group,args("points","group"));
