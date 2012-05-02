@@ -4,7 +4,7 @@
 #       OpenAlea.SConsX: SCons extension package for building platform
 #                        independant packages.
 #
-#       Copyright 2006-2009 INRIA - CIRAD - INRA  
+#       Copyright 2006-2012 INRIA - CIRAD - INRA  
 #
 #       File author(s): Frederic Boudon
 #
@@ -61,7 +61,7 @@ class LAPACK:
       elif isinstance(platform, Posix):
          self._default['include'] = '/usr/include'
          self._default['libpath'] = '/usr/lib'
-         self._default['libs'] = ['CGAL_Core','gmpxx','lapack','f2c','cblas','f77blas','f2c']
+         self._default['libs'] = ['CGAL','gmpxx','lapack']
          self._default['flags'] = ''
          self._default['defines'] = ['LAPACK_USE_F2C','CGAL_USE_F2C','BLAS_USE_F2C']
 
@@ -106,12 +106,13 @@ class LAPACK:
         if sum( map(lambda x: os.path.exists(os.path.join(lapack_lib,x)),libnames) ) > 0 :
           import warnings
           warnings.warn("Error: LAPACK lib not found. LAPACK disabled ...")
-        # For now LAPACK is disabled
-        env['WITH_LAPACK'] = False      
+          # For now LAPACK is disabled
+          env['WITH_LAPACK'] = False      
       if env['WITH_LAPACK']:
         env.AppendUnique(CPPPATH=[env['lapack_includes']])
         env.AppendUnique(LIBPATH=[env['lapack_libpath']])
-        env.AppendUnique(CPPDEFINES=[env['lapack_defines']])
+        for define in env['lapack_defines']:
+            env.AppendUnique(CPPDEFINES=define)
         env.Append(CPPDEFINES='WITH_LAPACK')
         env.Append(CPPFLAGS='$lapack_flags')
 
