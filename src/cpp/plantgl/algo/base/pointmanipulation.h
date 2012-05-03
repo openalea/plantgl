@@ -188,13 +188,22 @@ pointset_orientation(const Point3ArrayPtr points, const Index& group);
 ALGO_API Point3ArrayPtr 
 pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups);
 
-ALGO_API std::vector<std::pair<real_t, TOOLS(Vector3)> >
+struct CurvatureInfo {
+    TOOLS(Vector3) origin;
+    TOOLS(Vector3) maximal_principal_direction;
+    real_t maximal_curvature;
+    TOOLS(Vector3) minimal_principal_direction;
+    real_t minimal_curvature;
+    TOOLS(Vector3) normal;
+};
+
+ALGO_API CurvatureInfo
 principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree = 4, size_t monge_degree = 4);
 
-ALGO_API std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
+ALGO_API std::vector<CurvatureInfo>
 principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups, size_t fitting_degree = 4, size_t monge_degree = 4);
 
-ALGO_API std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
+ALGO_API std::vector<CurvatureInfo>
 principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree = 4, size_t monge_degree = 4);
 
 // adaptive contraction

@@ -80,39 +80,39 @@ py_determine_children(const TOOLS(Uint32Array1Ptr) parents)
 #ifdef WITH_CGAL
 #ifdef WITH_LAPACK
 bp::object
-translate_eigen_vectors(const std::vector<std::pair<real_t, TOOLS(Vector3)> > egv)
+translate_pc_info(const CurvatureInfo& egv)
 {
-    boost::python::list res;
-    for (std::vector<std::pair<real_t, TOOLS(Vector3)> >::const_iterator it = egv.begin(); it != egv.end();  ++it)
-        res.append(make_tuple(it->first,it->second));
-    return res;
+    return make_tuple(egv.origin,
+                      make_tuple(egv.maximal_principal_direction,egv.maximal_curvature),
+                      make_tuple(egv.minimal_principal_direction,egv.minimal_curvature),
+                      egv.normal);
 }
 
 bp::object
-translate_eigen_vectors_set(const std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > egvs)
+translate_pc_info_set(const std::vector<CurvatureInfo> egvs)
 {
     boost::python::list res;
-    for (std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >::const_iterator it = egvs.begin(); it != egvs.end();  ++it)
-        res.append(translate_eigen_vectors(*it));
+    for (std::vector<CurvatureInfo>::const_iterator it = egvs.begin(); it != egvs.end();  ++it)
+        res.append(translate_pc_info(*it));
     return res;
 }
 
 bp::object
 py_principal_curvatures_0(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree = 4, size_t monge_degree = 4)
 {
-    return translate_eigen_vectors(principal_curvatures(points,pid,group,fitting_degree,monge_degree));
+    return translate_pc_info(principal_curvatures(points,pid,group,fitting_degree,monge_degree));
 }
 
 bp::object
 py_principal_curvatures_1(const Point3ArrayPtr points, const IndexArrayPtr groups, size_t fitting_degree = 4, size_t monge_degree = 4)
 {
-    return translate_eigen_vectors_set(principal_curvatures(points,groups,fitting_degree,monge_degree));
+    return translate_pc_info_set(principal_curvatures(points,groups,fitting_degree,monge_degree));
 }
 
 bp::object
 py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree = 4, size_t monge_degree = 4)
 {
-    return translate_eigen_vectors_set(principal_curvatures(points,adjacencies,radius,fitting_degree,monge_degree));
+    return translate_pc_info_set(principal_curvatures(points,adjacencies,radius,fitting_degree,monge_degree));
 }
 #endif
 #endif
@@ -162,7 +162,8 @@ void export_PointManip()
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
 
 #ifdef WITH_LAPACK
-    def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
+    def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4),
+        "Compute principal curvature information. Return a tuple with folowin informations: (origin,(maximal_curvature_direction,maximal_curvature),(minimal_curvature_direction,minimal_curvature),normal)");
     def("principal_curvatures",&py_principal_curvatures_1,(bp::arg("points"),bp::arg("groups"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
     def("principal_curvatures",&py_principal_curvatures_2,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
 #endif

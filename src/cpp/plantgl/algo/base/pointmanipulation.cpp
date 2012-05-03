@@ -690,10 +690,10 @@ typedef My_Monge_via_jet_fitting::Monge_form     My_Monge_form;
 #endif
 
 
-std::vector<std::pair<real_t, TOOLS(Vector3)> >
+CurvatureInfo
 PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree , size_t monge_degree)
 {
-      std::vector<std::pair<real_t, TOOLS(Vector3)> > result;
+      CurvatureInfo result;
 #ifdef WITH_CGAL
 #ifdef WITH_LAPACK
 
@@ -708,12 +708,13 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
       My_Monge_via_jet_fitting monge_fit;
       monge_form = monge_fit(in_points.begin(), in_points.end(), fitting_degree, monge_degree);
 
-      for (int i = 0 ; i < 3; ++i){
-          std::pair<real_t, TOOLS(Vector3)> a;
-          a.first = monge_fit.pca_basis(i).first;
-          a.second = toVector3(monge_fit.pca_basis(i).second);
-          result.push_back(a);
-      }
+      result.origin = toVector3(monge_form.origin());
+      result.maximal_principal_direction = toVector3(monge_form.maximal_principal_direction());
+      result.maximal_curvature = monge_form.principal_curvatures(0);
+      result.minimal_principal_direction = toVector3(monge_form.minimal_principal_direction());
+      result.minimal_curvature = monge_form.principal_curvatures(1);
+      result.normal = toVector3(monge_form.normal_direction());
+
 #else
     #ifdef _MSC_VER
     #pragma message("function 'principal_curvatures' disabled. LAPACK needed.")
@@ -733,20 +734,20 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
 
 }
 
-std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
+std::vector<CurvatureInfo>
 PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups, size_t fitting_degree , size_t monge_degree)
 {
-    std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > result;
+    std::vector<CurvatureInfo> result;
     uint32_t i = 0;
     for(IndexArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++i)
         result.push_back(principal_curvatures(points,i,*it,fitting_degree,monge_degree));
     return result;
 }
 
-std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > >
+std::vector<CurvatureInfo>
 PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree , size_t monge_degree)
 {
-    std::vector<std::vector<std::pair<real_t, TOOLS(Vector3)> > > result;
+    std::vector<CurvatureInfo> result;
     uint32_t nbPoints = points->size();
 
     for(uint32_t i = 0; i < nbPoints; ++i){
