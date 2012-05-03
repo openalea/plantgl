@@ -162,9 +162,9 @@ void export_PointManip()
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
 
 #ifdef WITH_LAPACK
-    def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::("fitting_degree")=4,bp::("monge_degree")=4));
-    def("principal_curvatures",&py_principal_curvatures_1,(bp::arg(("points"),bp::arg("groups"),bp::("fitting_degree")=4,bp::("monge_degree")=4));
-    def("principal_curvatures",&py_principal_curvatures_2,(bp::arg(("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::("fitting_degree")=4,bp::("monge_degree")=4));
+    def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
+    def("principal_curvatures",&py_principal_curvatures_1,(bp::arg("points"),bp::arg("groups"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
+    def("principal_curvatures",&py_principal_curvatures_2,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
 #endif
 #endif
 
