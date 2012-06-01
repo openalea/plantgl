@@ -31,7 +31,9 @@
  */
 
 #include <QtGui/qpainter.h>
-#include <Qt3Support/q3listview.h>
+#include <QtGui/QTreeWidget>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QWidget>
 
 #include "qgeomlistview.h"
 
@@ -77,17 +79,12 @@ GeomListViewBuilder::GeomListViewBuilder(QWidget * parent, char * name ) :
   __pixatt(ViewerIcon::getPixmap(ViewerIcon::attribut)),
   __pixattptr(ViewerIcon::getPixmap(ViewerIcon::attributptr))
 {
-  __qListView = new Q3ListView(parent,name);
-  __qListView->addColumn( "Name" );
-  __qListView->addColumn( "Value" );
-  __qListView->addColumn( "Type" );
-//  __qListView->addColumn( "Comment" );
-  __qListView->setTreeStepSize( 20 );
-  __qListView->setSorting(-1,TRUE);
+  __qListView = new QTreeWidget(parent);
+  setHeader();
   init();
 }
 
-GeomListViewBuilder::GeomListViewBuilder( Q3ListView * l ) :
+GeomListViewBuilder::GeomListViewBuilder( QTreeWidget * l ) :
   Action(),
   __fullmode(true),
   __qListView(l),
@@ -97,11 +94,7 @@ GeomListViewBuilder::GeomListViewBuilder( Q3ListView * l ) :
   __pixtransf(ViewerIcon::getPixmap(ViewerIcon::transformed)),
   __pixatt(ViewerIcon::getPixmap(ViewerIcon::attribut)),
   __pixattptr(ViewerIcon::getPixmap(ViewerIcon::attributptr)){
-  __qListView->addColumn( "Name" );
-  __qListView->addColumn( "Value" );
-  __qListView->addColumn( "Type" );
-  __qListView->setTreeStepSize( 20 );
-  __qListView->setSorting(-1,TRUE);
+  setHeader();
   init();
 }
 
@@ -110,27 +103,35 @@ GeomListViewBuilder::~GeomListViewBuilder( ) {
 
 /* ----------------------------------------------------------------------- */
 
+void GeomListViewBuilder::setHeader( ){
+      QStringList header;
+      header << "Name" << "Value" << "Type";
+      __qListView->setHeaderLabels(header);
+      __qListView->setSortingEnabled(false);
+
+      // __qListView->setTreeStepSize( 20 );
+      // __qListView->setSorting(-1,TRUE);
+}
+
 void GeomListViewBuilder::clear( ){
     __qListView->clear();
     init();
 
 }
 
-Q3ListView * 
-GeomListViewBuilder::getQ3ListView(){
-  return __qListView;
-}
-
 /* ----------------------------------------------------------------------- */
 
 void GeomListViewBuilder::init( ){
-   __rootItem = new Q3ListViewItem(__qListView,"Global Scene","Root","Scene","The Global Scene");
-   __rootItem->setPixmap(0,__pixgeom);
-   __rootItem->setOpen(TRUE);
+    QStringList labels;
+   labels << "Global Scene" << "Root" << "Scene";
+   __rootItem = new QTreeWidgetItem(__qListView, labels);
+   __rootItem->setIcon(0,__pixgeom);
+   __qListView->addTopLevelItem(__rootItem);
+   __qListView->expandItem(__rootItem);
+
    __currentNodeItem     = __rootItem;
    __currentSiblingItem  = NULL;
    __currentAttrItem     = NULL;
-   __qListView->insertItem(__rootItem);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -141,26 +142,28 @@ void GeomListViewBuilder::addNode(const SceneObject * node,
 
    QString ptrid = QString("ptr=0x%1").arg(node->SceneObject::getId(),8,16,QChar('0'));
    QString name = QString(node->getName().c_str());
+   QStringList labels;
+   labels << name << ptrid << type;
    if (name.isEmpty()) name = type.toLower()+"_"+QString::number(node->getId());
-   Q3ListViewItem * item = new Q3ListViewItem(__currentNodeItem,__currentSiblingItem,name,ptrid,type);
+   QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,labels);
    switch (pixmaptouse){
 	default:
 	case 0:
-		item->setPixmap(0,__pixgeom);
+		item->setIcon(0,__pixgeom);
 		break;
 	case 1:
-		item->setPixmap(0,__pixshape);
+		item->setIcon(0,__pixshape);
 		break;
 	case 2:
-		item->setPixmap(0,__pixappe);
+		item->setIcon(0,__pixappe);
 		break;
 	case 3:
-		item->setPixmap(0,__pixtransf);
+		item->setIcon(0,__pixtransf);
 		break;
 	}
 
 
-   __currentNodeItem->insertItem(item);
+   __currentNodeItem->addChild(item);
    pushItems();
    __currentNodeItem = item;
    __currentAttrItem = NULL;
@@ -180,7 +183,7 @@ void GeomListViewBuilder::pushItems()
 
 void GeomListViewBuilder::popItems()
 {
-  QPair<Q3ListViewItem *,Q3ListViewItem *> items = __stackItem.pop();
+  QPair<QTreeWidgetItem *,QTreeWidgetItem *> items = __stackItem.pop();
   __currentNodeItem = items.first;
   __currentAttrItem = items.second;
 }
@@ -244,9 +247,11 @@ void GeomListViewBuilder::addAttr(const QString& name, const Index4& value){
 void GeomListViewBuilder::addAttr(const QString& name,
 								  const QString& value,
 								  const QString& type ){
-   Q3ListViewItem * item = new Q3ListViewItem(__currentNodeItem,__currentAttrItem,name,value,type);
-   item->setPixmap(0,__pixatt);
-   __currentNodeItem->insertItem(item);
+   QStringList labels;
+   labels << name << value << type;
+   QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,labels);
+   item->setIcon(0,__pixatt);
+   __currentNodeItem->addChild(item);
    __currentAttrItem = item;
 
 }
@@ -274,11 +279,12 @@ void GeomListViewBuilder::addAttr(const QString& name, const Transform4Ptr& valu
 void GeomListViewBuilder::addAttrPtr(const QString& name,
 								     const QString& value,
 									 const QString& type ){
-   Q3ListViewItem * item = new Q3ListViewItem(__currentNodeItem,
-											  __currentAttrItem,
-											  name,value,type);
-   item->setPixmap(0,__pixattptr);
-   __currentNodeItem->insertItem(item);
+   QStringList labels; labels << name << value << type;
+   QTreeWidgetItem * item = new QTreeWidgetItem(__currentNodeItem,
+											   // __currentAttrItem,
+											  labels);
+   item->setIcon(0,__pixattptr);
+   __currentNodeItem->addChild(item);
    __currentAttrItem = item;
 }
 

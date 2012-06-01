@@ -32,10 +32,12 @@
  */
 
 #include <QtGui/qpainter.h>
-#include <Qt3Support/Q3ScrollView>
+#include <QtGui/QScrollArea>
 #include <QtGui/qpushbutton.h>
 #include <QtGui/qcheckbox.h>
 #include <QtGui/qevent.h>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QTreeWidget>
 
 #include "browser.h"
 #include "scenegl.h"
@@ -56,6 +58,8 @@ ViewBrowser::ViewBrowser(QWidget * parent, const QString& title)
   __browser = new Ui::QBrowser();
   __browser->setupUi(mwidget);
   QObject::connect(__browser->__FullMode,SIGNAL(clicked()),this,SLOT(clear()));
+  __browser->__list->setColumnCount(3);
+  __browser->__list->setSortingEnabled(false);
 }
 
 
@@ -66,16 +70,17 @@ void
 ViewBrowser::setRenderer(ViewRendererGL * r)
 {
   if(__scene!=NULL){
-    QObject::disconnect(__browser->__list,SIGNAL(doubleClicked(Q3ListViewItem *)),
-                        __scene,SLOT(selectionEvent(Q3ListViewItem *)));
+    QObject::disconnect(__browser->__list,SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+                        __scene,SLOT(selectionEvent(QTreeWidgetItem *)));
     QObject::disconnect(__scene,SIGNAL(selectionChanged(const QString&)),
                         this,SLOT(setSelection(const QString&)));
   }
+
   __scene = r;
   if(__scene){
     QObject::connect(__scene,SIGNAL(sceneChanged()),this,SLOT(clear()));
-    QObject::connect(__browser->__list,SIGNAL(doubleClicked(Q3ListViewItem *)),
-            __scene,SLOT(selectionEvent(Q3ListViewItem *)));
+    QObject::connect(__browser->__list,SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)),
+            __scene,SLOT(selectionEvent(QTreeWidgetItem *)));
     QObject::connect(__scene,SIGNAL(selectionChanged(const QString&)),
                         this,SLOT(setSelection(const QString&)));
   }
@@ -83,34 +88,35 @@ ViewBrowser::setRenderer(ViewRendererGL * r)
 
 void
 ViewBrowser::setSelection(const QString& name){
-  Q3ListViewItem * i = __browser->__list->firstChild();
-  if(i){
-    i = i->firstChild();
-    if(i){
+  QTreeWidgetItem * root = __browser->__list->topLevelItem(0);
+  if(root){
+    int chnb = 0;
+    QTreeWidgetItem * item = root->child(chnb);
+    if(item){
       bool select = false;
-      while(i!=NULL&&!select){
-        if(i->text(0) == name)select = true;
-        else i = i->nextSibling();
+      while(chnb < root->childCount() && item!=NULL &&!select){
+            if(item->text(0) == name)select = true;
+            else ++chnb; item = root->child(chnb);
       }
       if(select){
-        qDebug("Found Selection.");
-        __browser->__list->clearSelection();
-        __browser->__list->setSelected(i,true);
-        if(isVisible())repaint();
+            qDebug("Found Selection.");
+            __browser->__list->clearSelection();
+            item->setSelected(true);
+            if(isVisible()) __browser->__list->scrollToItem(item);
       }
       else qDebug("Selection not Found.");
-    }
+    } 
     else qDebug("First child of root node not found.");
-  }
+   }
 }
 
 void
 ViewBrowser::clear()
 {
   __browser->__list->clear();
-  for(int i = __browser->__list->columns()-1; i >= 0 ; i--){
+  /*for(int i = __browser->__list->columnCount()-1; i >= 0 ; i--){
     __browser->__list->removeColumn(i);
-  }
+  }*/
   __empty = true;
   if(isVisible())refresh();
 }
@@ -119,7 +125,9 @@ void
 ViewBrowser::refresh(bool b)
 {
   if(__empty && b){
-    if(__scene)__scene->browse(__browser->__list,__browser->__FullMode->isChecked() );
+    if(__scene) {
+          __scene->browse(__browser->__list,__browser->__FullMode->isChecked() );
+    }
     __empty = false;
   }
 }

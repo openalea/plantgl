@@ -1,19 +1,20 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="utf-8"?>
+<ui version="4.0">
  <class>ViewImporterSelection</class>
- <widget class="QDialog" name="ViewImporterSelection" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ViewImporterSelection">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
+    <width>399</width>
     <height>160</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Importer Selection</string>
   </property>
-  <widget class="QLabel" name="FileMsg" >
-   <property name="geometry" >
+  <widget class="QLabel" name="FileMsg">
+   <property name="geometry">
     <rect>
      <x>80</x>
      <y>30</y>
@@ -21,7 +22,7 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="font" >
+   <property name="font">
     <font>
      <family>Arial</family>
      <pointsize>11</pointsize>
@@ -29,15 +30,15 @@
      <bold>true</bold>
     </font>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>File :</string>
    </property>
-   <property name="wordWrap" >
+   <property name="wordWrap">
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="TypeMsg" >
-   <property name="geometry" >
+  <widget class="QLabel" name="TypeMsg">
+   <property name="geometry">
     <rect>
      <x>80</x>
      <y>50</y>
@@ -45,7 +46,7 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="font" >
+   <property name="font">
     <font>
      <family>Arial</family>
      <pointsize>11</pointsize>
@@ -53,15 +54,15 @@
      <bold>true</bold>
     </font>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Type :</string>
    </property>
-   <property name="wordWrap" >
+   <property name="wordWrap">
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="Type" >
-   <property name="geometry" >
+  <widget class="QLabel" name="Type">
+   <property name="geometry">
     <rect>
      <x>140</x>
      <y>50</y>
@@ -69,15 +70,15 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>GEOM</string>
    </property>
-   <property name="wordWrap" >
+   <property name="wordWrap">
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="ImporterMsg" >
-   <property name="geometry" >
+  <widget class="QLabel" name="ImporterMsg">
+   <property name="geometry">
     <rect>
      <x>80</x>
      <y>70</y>
@@ -85,7 +86,7 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="font" >
+   <property name="font">
     <font>
      <family>Arial</family>
      <pointsize>11</pointsize>
@@ -93,15 +94,15 @@
      <bold>true</bold>
     </font>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Choose Importer :</string>
    </property>
-   <property name="wordWrap" >
+   <property name="wordWrap">
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="File" >
-   <property name="geometry" >
+  <widget class="QLabel" name="File">
+   <property name="geometry">
     <rect>
      <x>140</x>
      <y>30</y>
@@ -109,15 +110,15 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>file.geom</string>
    </property>
-   <property name="wordWrap" >
+   <property name="wordWrap">
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="OkButton" >
-   <property name="geometry" >
+  <widget class="QPushButton" name="OkButton">
+   <property name="geometry">
     <rect>
      <x>80</x>
      <y>120</y>
@@ -125,12 +126,12 @@
      <height>32</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Ok</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="CancelButton" >
-   <property name="geometry" >
+  <widget class="QPushButton" name="CancelButton">
+   <property name="geometry">
     <rect>
      <x>210</x>
      <y>120</y>
@@ -138,12 +139,12 @@
      <height>32</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Cancel</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="ImporterCombo" >
-   <property name="geometry" >
+  <widget class="QComboBox" name="ImporterCombo">
+   <property name="geometry">
     <rect>
      <x>80</x>
      <y>90</y>
@@ -151,45 +152,45 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="font" >
+   <property name="font">
     <font>
      <family>Arial</family>
      <pointsize>10</pointsize>
     </font>
    </property>
    <item>
-    <property name="text" >
+    <property name="text">
      <string>GEOM</string>
     </property>
    </item>
    <item>
-    <property name="text" >
+    <property name="text">
      <string>Amap Symbol</string>
     </property>
    </item>
    <item>
-    <property name="text" >
+    <property name="text">
      <string>Linetree</string>
     </property>
    </item>
    <item>
-    <property name="text" >
+    <property name="text">
      <string>VegeStar</string>
     </property>
    </item>
    <item>
-    <property name="text" >
+    <property name="text">
      <string>VegeStar Symbol</string>
     </property>
    </item>
    <item>
-    <property name="text" >
+    <property name="text">
      <string>GeomView</string>
     </property>
    </item>
   </widget>
-  <widget class="QLabel" name="GeneralMsg" >
-   <property name="geometry" >
+  <widget class="QLabel" name="GeneralMsg">
+   <property name="geometry">
     <rect>
      <x>80</x>
      <y>10</y>
@@ -197,7 +198,7 @@
      <height>20</height>
     </rect>
    </property>
-   <property name="font" >
+   <property name="font">
     <font>
      <family>Arial</family>
      <pointsize>11</pointsize>
@@ -205,10 +206,10 @@
      <bold>true</bold>
     </font>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>File Format not recognized !</string>
    </property>
-   <property name="wordWrap" >
+   <property name="wordWrap">
     <bool>false</bool>
    </property>
   </widget>

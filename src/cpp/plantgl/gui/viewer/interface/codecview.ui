@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CodecView</class>
- <widget class="QWidget" name="CodecView" >
-  <property name="geometry" >
+ <widget class="QWidget" name="CodecView">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,30 +10,30 @@
     <height>367</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>6</number>
    </property>
+   <property name="margin">
+    <number>9</number>
+   </property>
    <item>
-    <widget class="QTreeWidget" name="treeWidget" >
+    <widget class="QTreeWidget" name="treeWidget">
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Codec</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Files</string>
       </property>
      </column>
      <column>
-      <property name="text" >
+      <property name="text">
        <string>Comments</string>
       </property>
      </column>

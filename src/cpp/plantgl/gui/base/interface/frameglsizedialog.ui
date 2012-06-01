@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="utf-8"?>
+<ui version="4.0">
  <class>FrameGLDialog</class>
- <widget class="QDialog" name="FrameGLDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="FrameGLDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,124 +10,118 @@
     <height>98</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Frame GL Size</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
-  <property name="modal" >
+  <property name="modal">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="Layout1" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>60</y>
-     <width>200</width>
-     <height>33</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>0</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
-    <item>
-     <widget class="QPushButton" name="buttonOk" >
-      <property name="text" >
-       <string>&amp;OK</string>
-      </property>
-      <property name="shortcut" >
-       <string/>
-      </property>
-      <property name="autoDefault" >
-       <bool>true</bool>
-      </property>
-      <property name="default" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="buttonCancel" >
-      <property name="text" >
-       <string>&amp;Cancel</string>
-      </property>
-      <property name="shortcut" >
-       <string/>
-      </property>
-      <property name="autoDefault" >
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QLabel" name="textLabel1" >
-   <property name="geometry" >
-    <rect>
-     <x>130</x>
-     <y>30</y>
-     <width>16</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>x</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="textLabel2" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>130</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>Century Gothic</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Frame GL Size</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="width" >
-   <property name="geometry" >
-    <rect>
-     <x>57</x>
-     <y>30</y>
-     <width>60</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="height" >
-   <property name="geometry" >
-    <rect>
-     <x>147</x>
-     <y>30</y>
-     <width>60</width>
-     <height>20</height>
-    </rect>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="textLabel2">
+     <property name="font">
+      <font>
+       <family>Century Gothic</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Frame GL Size</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>51</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>91</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1">
+    <widget class="QSpinBox" name="width"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLabel" name="textLabel1">
+     <property name="text">
+      <string>x</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QSpinBox" name="height"/>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <layout class="QHBoxLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="buttonOk">
+       <property name="text">
+        <string>&amp;OK</string>
+       </property>
+       <property name="shortcut">
+        <string/>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel">
+       <property name="text">
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut">
+        <string/>
+       </property>
+       <property name="autoDefault">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
  <connections>
@@ -136,11 +131,11 @@
    <receiver>FrameGLDialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -152,11 +147,11 @@
    <receiver>FrameGLDialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>

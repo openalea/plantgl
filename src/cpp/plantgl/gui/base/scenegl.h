@@ -56,8 +56,8 @@ class QTabWidget;
 class QPopupmenu;
 class QMenuBar;
 class QMainWindow;
-class Q3ListView;
-class Q3ListViewItem;
+class QTreeWidget;
+class QTreeWidgetItem;
 class QGLWidget;
 class QEvent;
 
@@ -143,7 +143,7 @@ public :
   virtual bool addOtherToolBar(QMainWindow * menu);
 
   /// Fill the list for browsing.
-  virtual bool browse(Q3ListView *,bool);
+  virtual bool browse(QTreeWidget *,bool);
 
   /// Try to open file. Return true if ok.
   virtual bool open(const QString& filename);
@@ -205,7 +205,7 @@ public slots:
   virtual void selectionEvent(uint_t);
   virtual void selectionEvent(const std::vector<uint_t>&);
   virtual void selectionIdEvent(const std::vector<uint_t>&);
-  virtual void selectionEvent(Q3ListViewItem *);
+  virtual void selectionEvent(QTreeWidgetItem *);
 
   virtual void checkFileModification();
 

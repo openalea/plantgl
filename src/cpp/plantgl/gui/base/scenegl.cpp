@@ -121,9 +121,9 @@ ViewRendererGL::selectionIdEvent(const std::vector<uint_t>& i)
 }
 
 void
-ViewRendererGL::selectionEvent(Q3ListViewItem *)
+ViewRendererGL::selectionEvent(QTreeWidgetItem *)
 {
-  qDebug("selectionEvent(Q3ListViewItem *) not implemented in current Renderer");
+  qDebug("selectionEvent(QTreeWidgetItem *) not implemented in current Renderer");
 }
 
 std::vector<uint_t> 
@@ -203,7 +203,7 @@ ViewRendererGL::addOtherToolBar(QMainWindow * menu)
   return false;
 }
 
-bool ViewRendererGL::browse(Q3ListView *,bool)
+bool ViewRendererGL::browse(QTreeWidget *,bool)
 {
   return false;
 }

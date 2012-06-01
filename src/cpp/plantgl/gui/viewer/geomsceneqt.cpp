@@ -473,7 +473,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
 }
 
 bool
-ViewGeomSceneGL::browse(Q3ListView * l,bool b)
+ViewGeomSceneGL::browse(QTreeWidget * l,bool b)
 {
   if(!__scene)return false;
   GeomListViewBuilder builder(l);

@@ -50,11 +50,10 @@ class QVBoxLayout;
 class QHBoxLayout; 
 class QGridLayout; 
 class QLabel;
-class Q3ListView;
-class Q3ListViewItem;
+class QTreeWidget;
+class QTreeWidgetItem;
 class QPushButton;
 class QGLWidget;
-class Q3ListViewItem;
 
 /* ----------------------------------------------------------------------- */
 
@@ -90,9 +89,9 @@ public:
    */
   ~ViewSysInfo();
 
-  Q3ListViewItem* addItem(const QString& name = QString::null, const QString& val = QString::null);
+  QTreeWidgetItem* addItem(const QString& name = QString::null, const QString& val = QString::null);
 
-  Q3ListViewItem* addItem(const QPixmap& pix, const QString& name = QString::null, const QString& val = QString::null);
+  QTreeWidgetItem* addItem(const QPixmap& pix, const QString& name = QString::null, const QString& val = QString::null);
 
   static const char * tools_logo[34];
 
@@ -115,13 +114,13 @@ protected:
   QPushButton* OkButton;
 
   /// List of Attributes of the system.
-  Q3ListView* AttView;
+  QTreeWidget * AttView;
 
   /// Set of Attributes of the system.
-  Q3ListViewItem* RootItem;
+  QTreeWidgetItem* RootItem;
 
   /// Last Attribut of the system.
-  Q3ListViewItem* LastItem;
+  QTreeWidgetItem* LastItem;
 
   /// Label of the Dialog.
   QLabel* Title;

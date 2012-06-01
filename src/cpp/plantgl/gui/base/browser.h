@@ -47,6 +47,7 @@ namespace Ui {  class QBrowser; }
 /* ----------------------------------------------------------------------- */
 
 class ViewRendererGL;
+class QStandardItemModel;
 
 /* ----------------------------------------------------------------------- */
 
@@ -99,7 +100,8 @@ private:
   
   /// Scene empty.
   bool __empty;
-   
+
+  
 };
 
 

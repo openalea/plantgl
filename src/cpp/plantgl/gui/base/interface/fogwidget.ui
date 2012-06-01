@@ -1,286 +1,203 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>FogWidget</class>
- <widget class="QWidget" name="FogWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="FogWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>537</width>
-    <height>152</height>
+    <width>441</width>
+    <height>153</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form1</string>
   </property>
-  <widget class="QLabel" name="FogLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>90</x>
-     <y>0</y>
-     <width>130</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>16</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Fog</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="StartLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>90</y>
-     <width>70</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Start</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="HintsLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>60</y>
-     <width>70</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Hints</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ModeLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>70</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Mode</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="HintsCombo" >
-   <property name="geometry" >
-    <rect>
-     <x>80</x>
-     <y>64</y>
-     <width>140</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text" >
-     <string>GL_DONT_CARE</string>
-    </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
+    <widget class="QLabel" name="FogLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>16</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Fog</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text" >
-     <string>GL_FASTEST</string>
-    </property>
+   <item row="1" column="0">
+    <widget class="QLabel" name="ModeLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Mode</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text" >
-     <string>GL_NICEST</string>
-    </property>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="ModeCombo">
+     <item>
+      <property name="text">
+       <string>GL_LINEAR</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>GL_EXP</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>GL_EXP2</string>
+      </property>
+     </item>
+    </widget>
    </item>
-  </widget>
-  <widget class="QLineEdit" name="StartEdit" >
-   <property name="geometry" >
-    <rect>
-     <x>80</x>
-     <y>94</y>
-     <width>140</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ColorLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>230</x>
-     <y>30</y>
-     <width>70</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Color</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="ModeCombo" >
-   <property name="geometry" >
-    <rect>
-     <x>80</x>
-     <y>34</y>
-     <width>140</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text" >
-     <string>GL_LINEAR</string>
-    </property>
+   <item row="1" column="2">
+    <widget class="QLabel" name="ColorLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Color</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text" >
-     <string>GL_EXP</string>
-    </property>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="ColorButton">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
-   <item>
-    <property name="text" >
-     <string>GL_EXP2</string>
-    </property>
+   <item row="2" column="0">
+    <widget class="QLabel" name="HintsLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Hints</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
-  </widget>
-  <widget class="QLabel" name="DensityLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>230</x>
-     <y>60</y>
-     <width>70</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>Density</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QSlider" name="DensitySlider" >
-   <property name="geometry" >
-    <rect>
-     <x>300</x>
-     <y>65</y>
-     <width>230</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="minimum" >
-    <number>1</number>
-   </property>
-   <property name="maximum" >
-    <number>100</number>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="EndLabel" >
-   <property name="geometry" >
-    <rect>
-     <x>230</x>
-     <y>90</y>
-     <width>70</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="font" >
-    <font>
-     <family>adobe-courier</family>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text" >
-    <string>End</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="EndEdit" >
-   <property name="geometry" >
-    <rect>
-     <x>350</x>
-     <y>90</y>
-     <width>140</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="ColorButton" >
-   <property name="geometry" >
-    <rect>
-     <x>350</x>
-     <y>30</y>
-     <width>140</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string/>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="OkButton" >
-   <property name="geometry" >
-    <rect>
-     <x>420</x>
-     <y>120</y>
-     <width>104</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>&amp;Ok</string>
-   </property>
-  </widget>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="HintsCombo">
+     <item>
+      <property name="text">
+       <string>GL_DONT_CARE</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>GL_FASTEST</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>GL_NICEST</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="DensityLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Density</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QSlider" name="DensitySlider">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="StartLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Start</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="StartEdit"/>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="EndLabel">
+     <property name="font">
+      <font>
+       <family>adobe-courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>End</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="EndEdit"/>
+   </item>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="OkButton">
+     <property name="text">
+      <string>&amp;Ok</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>

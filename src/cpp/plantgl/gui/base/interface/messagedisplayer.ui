@@ -1,10 +1,9 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>F Boudon</author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>MessageDisplayer</class>
- <widget class="QWidget" name="MessageDisplayer" >
-  <property name="geometry" >
+ <widget class="QWidget" name="MessageDisplayer">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -12,35 +11,35 @@
     <height>150</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Error Log</string>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
+  <layout class="QGridLayout">
+   <property name="margin">
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="2" >
-    <widget class="QRadioButton" name="mAutoClearButton" >
-     <property name="text" >
+   <item row="1" column="2">
+    <widget class="QRadioButton" name="mAutoClearButton">
+     <property name="text">
       <string>Auto Clear</string>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>true</bool>
      </property>
-     <property name="autoExclusive" >
+     <property name="autoExclusive">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="3" >
+   <item row="1" column="3">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>171</width>
        <height>23</height>
@@ -48,57 +47,47 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="4" >
-    <widget class="QPushButton" name="ClearButton" >
-     <property name="text" >
+   <item row="1" column="4">
+    <widget class="QPushButton" name="ClearButton">
+     <property name="text">
       <string>Cl&amp;ear</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="5" >
-    <widget class="Q3TextBrowser" name="__text" />
+   <item row="0" column="0" colspan="5">
+    <widget class="QTextBrowser" name="__text"/>
    </item>
-   <item row="1" column="1" >
-    <widget class="QRadioButton" name="__popupButton" >
-     <property name="windowTitle" >
+   <item row="1" column="1">
+    <widget class="QRadioButton" name="__popupButton">
+     <property name="windowTitle">
       <string/>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Popup when Errors</string>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>true</bool>
      </property>
-     <property name="autoExclusive" >
+     <property name="autoExclusive">
       <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QRadioButton" name="VerboseButton" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QRadioButton" name="VerboseButton">
+     <property name="text">
       <string>Verbose</string>
      </property>
-     <property name="checked" >
+     <property name="checked">
       <bool>false</bool>
      </property>
-     <property name="autoExclusive" >
+     <property name="autoExclusive">
       <bool>false</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3TextBrowser</class>
-   <extends>QWidget</extends>
-   <header>q3textbrowser.h</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

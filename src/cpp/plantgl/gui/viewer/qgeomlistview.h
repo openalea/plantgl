@@ -52,8 +52,8 @@
 
 
 class QWidget;
-class Q3ListView;
-class Q3ListViewItem;
+class QTreeWidgetItem;
+class QTreeWidget;
 class QString;
 
 /* ----------------------------------------------------------------------- */
@@ -89,7 +89,7 @@ class VIEW_API GeomListViewBuilder : public Action
   GeomListViewBuilder( QWidget * parent = 0 , char * name = 0 );
 
   /** Constructs a GeomListViewBuilder with the parent widget \e parent and the name \e name */
-  GeomListViewBuilder( Q3ListView * list );
+  GeomListViewBuilder( QTreeWidget * list );
 
   /// Destructor
   virtual ~GeomListViewBuilder( );
@@ -101,7 +101,7 @@ class VIEW_API GeomListViewBuilder : public Action
   void addNode(const QString& name, const QString& type = QString::null, const QString& id = QString::null);
 
   /// Returns the resulting Q3ListView when applying \e self for the last time.
-  Q3ListView * getQ3ListView();
+  inline QTreeWidget * getListView() { return __qListView; }
 
   void setFullMode(bool b){
 	__fullmode = b;
@@ -217,6 +217,7 @@ class VIEW_API GeomListViewBuilder : public Action
   private:
 
   /// Initialize the Q3ListView.
+  void setHeader();
   void init();
 
   protected:
@@ -259,19 +260,19 @@ class VIEW_API GeomListViewBuilder : public Action
   bool __fullmode;
 
   /// The Q3ListView to Create
-  Q3ListView * __qListView;
+  QTreeWidget * __qListView;
 
-  /// The Q3ListViewItem at the root of the scene tree.
-  Q3ListViewItem * __rootItem;
+  /// The QTreeWidgetItem at the root of the scene tree.
+  QTreeWidgetItem * __rootItem;
 
-  /// The current Q3ListViewItem node in the Schape List for the build of the list.
-  Q3ListViewItem * __currentNodeItem;
-  Q3ListViewItem * __currentSiblingItem;
+  /// The current QTreeWidgetItem node in the Schape List for the build of the list.
+  QTreeWidgetItem * __currentNodeItem;
+  QTreeWidgetItem * __currentSiblingItem;
 
-  /// The current Attribute Q3ListViewItem in the build of the list.
-  Q3ListViewItem * __currentAttrItem;
+  /// The current Attribute QTreeWidgetItem in the build of the list.
+  QTreeWidgetItem * __currentAttrItem;
 
-  QStack<QPair<Q3ListViewItem *,Q3ListViewItem *> > __stackItem;
+  QStack<QPair<QTreeWidgetItem *,QTreeWidgetItem *> > __stackItem;
 
   QPixmap __pixgeom;
   QPixmap __pixappe;

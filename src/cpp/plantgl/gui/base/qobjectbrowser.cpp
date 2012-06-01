@@ -52,32 +52,34 @@
 
 /* ----------------------------------------------------------------------- */
 
+
 class QObjectListBuilder {
   
 public :
-  QObjectListBuilder (Q3ListView * qListView): __current(NULL),
+  QObjectListBuilder (QTreeWidget * qListView): __current(NULL),
 	__pixgeom(ViewerIcon::getPixmap(ViewerIcon::geometry)),
 	__pixappe(ViewerIcon::getPixmap(ViewerIcon::appearance)),
 	__pixshape(ViewerIcon::getPixmap(ViewerIcon::shape)),
 	__pixtransf(ViewerIcon::getPixmap(ViewerIcon::transformed)),
 	__pixatt(ViewerIcon::getPixmap(ViewerIcon::attribut)),
 	__pixattptr(ViewerIcon::getPixmap(ViewerIcon::attributptr)){
-	qListView->addColumn( "Name" );
-	qListView->addColumn( "Value" );
-	qListView->addColumn( "Type" );
-	qListView->setTreeStepSize( 20 );
-	qListView->setSorting(-1,TRUE);
-	__current = new Q3ListViewItem(qListView,"Root","Qt Workspace");
-	__current->setPixmap(0,__pixgeom);
-	__current->setOpen(TRUE);
+    QStringList header;
+    header << "Name" << "Value" << "Type";
+    qListView->setHeaderLabels(header);
+	qListView->setSortingEnabled(false);
+    QStringList labels;
+    labels << "Root" << "Qt Workspace";
+	__current = new QTreeWidgetItem(qListView,labels);
+	__current->setIcon(0,__pixgeom);
+    qListView->expandItem(__current);
   }
   
   void build(){
-	//           Q3ListViewItem * cur = __current;
-	Q3ListViewItem * qt_list = new Q3ListViewItem(__current,"Basic Qt Object");
-	qt_list->setPixmap(0,__pixattptr);
-	Q3ListViewItem * other_list = new Q3ListViewItem(__current,"Custom Qt Object");
-	other_list->setPixmap(0,__pixattptr);
+	//           QTreeWidgetItem * cur = __current;
+	QTreeWidgetItem * qt_list = new QTreeWidgetItem(__current,QStringList("Basic Qt Object"));
+	qt_list->setIcon(0,__pixattptr);
+	QTreeWidgetItem * other_list = new QTreeWidgetItem(__current,QStringList("Custom Qt Object"));
+	other_list->setIcon(0,__pixattptr);
 	/*const QObjectList * roots = QObject::objectTrees();
 	if(roots != NULL){
 	  uint size = roots->count();
@@ -97,68 +99,72 @@ public :
   
   void process(const QObject * obj){
 	if(obj != NULL){
-	  Q3ListViewItem * buf = __current;
+	  QTreeWidgetItem * buf = __current;
 	  const QMetaObject* _m = obj->metaObject();
-	  __current = new Q3ListViewItem(__current,_m->className(),QString(obj->objectName()));
-	  __current->setPixmap(0,__pixgeom);
-	  Q3ListViewItem * att = NULL;
+      QStringList labels; labels << _m->className() << QString(obj->objectName());
+	  __current = new QTreeWidgetItem(__current,labels);
+	  __current->setIcon(0,__pixgeom);
+	  QTreeWidgetItem * att = NULL;
 	  if(_m != NULL){
 	    const QMetaObject* _meta = _m->superClass();
 		if(_meta != NULL){
 		  QString _superclass(_meta->className());
-		  att = new Q3ListViewItem(__current,"Inherit",_superclass);
-		  att->setPixmap(0,__pixattptr);
-		  Q3ListViewItem * att4 = NULL;
+          labels.clear(); labels << "Inherit" << _superclass;
+		  att = new QTreeWidgetItem(__current,labels);
+		  att->setIcon(0,__pixattptr);
+		  QTreeWidgetItem * att4 = NULL;
 		  while((_meta = _meta->superClass())!= NULL){
-			att4 = new Q3ListViewItem(att,att4,QString(_meta->className()));
-			att4->setPixmap(0,__pixatt);
+			att4 = new QTreeWidgetItem(att,QStringList(QString(_meta->className())));
+            att->addChild(att4);
+			att4->setIcon(0,__pixatt);
 		  }
 		}
-		att = new Q3ListViewItem(__current,att,"Widget",(obj->isWidgetType()?"True":"False"));
-		att->setPixmap(0,__pixatt);
+        labels.clear(); labels << "Widget" << (obj->isWidgetType()?"True":"False");
+		att = new QTreeWidgetItem(__current,labels);
+		att->setIcon(0,__pixatt);
 /*		QStringList _slots = _m->slotNames(true);
 		if(!_slots.isEmpty()){
-		  att = new Q3ListViewItem(__current,att,"Slots");
+		  att = new QTreeWidgetItem(__current,att,"Slots");
 		  att->setPixmap(0,__pixtransf);
 		  uint sl_size = _slots.count();
-		  Q3ListViewItem * att2 = NULL;
+		  QTreeWidgetItem * att2 = NULL;
 		  for(uint j = 0; j < sl_size; j++ ){
-			att2 = new Q3ListViewItem(att,att2,_slots.at(j));
+			att2 = new QTreeWidgetItem(att,att2,_slots.at(j));
 			att2->setPixmap(0,__pixatt);
 		  }
 		}
 		QStrList _signals = _m->signalNames(true);
 		if(!_signals.isEmpty()){
-		  att = new Q3ListViewItem(__current,att,"Signals");
+		  att = new QTreeWidgetItem(__current,att,"Signals");
 		  att->setPixmap(0,__pixtransf);
 		  uint si_size = _signals.count();
-		  Q3ListViewItem * att2 = NULL;
+		  QTreeWidgetItem * att2 = NULL;
 		  for(uint j = 0; j < si_size; j++ ){
-			att2 = new Q3ListViewItem(att,att2,_signals.at(j));
+			att2 = new QTreeWidgetItem(att,att2,_signals.at(j));
 			att2->setPixmap(0,__pixatt);
 		  }
 		}
 		int numCInfo = _m->numClassInfo(true);
 		if(numCInfo !=0){
-		  att = new Q3ListViewItem(__current,att,"ClassInfo","List<Info>["+QString::number(numCInfo)+']');
+		  att = new QTreeWidgetItem(__current,att,"ClassInfo","List<Info>["+QString::number(numCInfo)+']');
 		  att->setPixmap(0,__pixtransf);
-		  Q3ListViewItem * att2 = NULL;
+		  QTreeWidgetItem * att2 = NULL;
 		  for(int j = 0; j < numCInfo; j++ ){
 			const QClassInfo * _inf = _m->classInfo(j);
 			if(_inf != NULL){
-			  att2 = new Q3ListViewItem(att,att2,QString(_inf->name),QString(_inf->value));
+			  att2 = new QTreeWidgetItem(att,att2,QString(_inf->name),QString(_inf->value));
 			  att2->setPixmap(0,__pixatt);
 			}
 		  }
 		}
 		QStrList _props = _m->propertyNames(true);
 		if(!_props.isEmpty()){
-		  att = new Q3ListViewItem(__current,att,"Properties");
+		  att = new QTreeWidgetItem(__current,att,"Properties");
 		  att->setPixmap(0,__pixtransf);
 		  uint p_size = _props.count();
-		  Q3ListViewItem * att2 = NULL;
+		  QTreeWidgetItem * att2 = NULL;
 		  for(uint j = 0; j < p_size; j++ ){
-			att2 = new Q3ListViewItem(att,att2,_props.at(j));
+			att2 = new QTreeWidgetItem(att,att2,_props.at(j));
 			att2->setPixmap(0,__pixatt);
 			
 			QVariant val;
@@ -266,8 +272,10 @@ public :
 	   const QObjectList& roots = obj->children();
 	   if(!roots.empty()){
 		 uint size = roots.count();
-		 __current = new Q3ListViewItem(__current,att,"children","", "List<QObject>["+QString::number(size)+"]");
-		 __current->setPixmap(0,__pixappe);
+         QStringList labels;
+         labels << "children" << "" << "List<QObject>["+QString::number(size)+"]";
+		 __current = new QTreeWidgetItem(__current,labels);
+		 __current->setIcon(0,__pixappe);
 		 for(uint i = 0; i < size; i++ ){
 		   QObject * _obj = roots[i];
 		   process(_obj);
@@ -278,8 +286,8 @@ public :
     }
 		
 protected :
-  
-  Q3ListViewItem * __current;
+
+  QTreeWidgetItem * __current;
   QPixmap __pixgeom;
   QPixmap __pixappe;
   QPixmap __pixshape;
@@ -304,7 +312,6 @@ ViewQObjectBrowser::ViewQObjectBrowser(QWidget * parent,
   __browser->__FullMode->hide();
   QObjectListBuilder b(__browser->__list);
   b.build();
-  
 }
 
 
@@ -318,4 +325,3 @@ ViewQObjectBrowser::keyPressEvent ( QKeyEvent * e)
 	if( e->key() == Qt::Key_Escape ||
 	e->key() == Qt::Key_Home) hide();
 }
-

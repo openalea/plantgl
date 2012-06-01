@@ -54,7 +54,8 @@
 /// Qt
 #include <QtGui/qslider.h>
 #include <QtGui/qpainter.h>
-#include <Qt3Support/q3listview.h>
+//#include <Qt3Support/q3listview.h>
+#include <QtGui/QTreeWidgetItem>
 #include <QtGui/qmessagebox.h>
 #include <QtGui/qapplication.h>
 #include <QtGui/qclipboard.h>
@@ -629,13 +630,15 @@ ViewGeomSceneGL::selectionIdEvent(const vector<uint_t>& id)
   status(mess,20000);
   emit valueChanged();
 }
-
+ 
 
 void
-ViewGeomSceneGL::selectionEvent(Q3ListViewItem * item)
+ViewGeomSceneGL::selectionEvent(QTreeWidgetItem * item)
 {
+  if (!item) return;
   if(item && item->text(2) == "Shape"){
-	string name = item->text(0).toAscii().constData();
+    QString qname = item->text(0);
+	string name = qname.toStdString();
 	bool found = false;
     for(Scene::iterator _it = __scene->begin();
 	!found && _it != __scene->end(); _it++){
@@ -661,8 +664,8 @@ ViewGeomSceneGL::selectionEvent(Q3ListViewItem * item)
 	  }
 	}
 	if(!found){
-	  warning("*** Warning : "+tr("Shape")+" \"" +item->text(0)+ "\" "+tr("not found")+".");
-	  status(tr("Shape")+" \"" +item->text(0)+ "\" "+tr("not found")+".",20000);
+	  warning("*** Warning : "+tr("Shape")+" \"" +qname+ "\" "+tr("not found")+".");
+	  status(tr("Shape")+" \"" +qname+ "\" "+tr("not found")+".",20000);
 	}
   }
 }

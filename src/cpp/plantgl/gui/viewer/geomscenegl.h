@@ -115,7 +115,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
 
   virtual bool addProperties(QTabWidget * tab);
 
-  virtual bool browse(Q3ListView *,bool);
+  virtual bool browse(QTreeWidget *,bool);
 
   /// Create a Popup menu that reflect the functionality of this.
   virtual QMenu * createToolsMenu(QWidget * parent);
@@ -307,7 +307,7 @@ public slots:
   virtual void selectionEvent(uint_t);
   virtual void selectionEvent(const std::vector<uint_t>&);
   virtual void selectionIdEvent(const std::vector<uint_t>&);
-  virtual void selectionEvent(Q3ListViewItem *);
+  virtual void selectionEvent(QTreeWidgetItem *);
 
   void removeSelection();
   void keepSelectionOnly();

@@ -52,7 +52,6 @@
 #include <QtGui/qtoolbutton.h>
 #include <QtGui/qcombobox.h>
 #include <QtOpenGL/qgl.h>
-#include <Qt3Support/q3tabdialog.h>
 #include <QtGui/qlabel.h>
 #include <QtGui/qstatusbar.h>
 #include <QtGui/qapplication.h>

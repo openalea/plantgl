@@ -47,6 +47,9 @@ class Group(object):
         self.nindex = []
         self.tindex = []
         self.material = sg.Material()
+        self.lvindex = []
+        self.lnindex = []
+        self.pvindex = []
 
     def add_face(self, vindex, nindex=None, tindex=None):
         vi = self.vindex 
@@ -59,6 +62,12 @@ class Group(object):
             ti = self.tindex 
             ti.append(tindex)
 
+    def add_line(self,  vindex, nindex = None):
+        self.lvindex.append(vindex)
+        self.lnindex.append(nindex)
+
+    def add_pointset(self,  vindex):
+        self.pvindex.append(vindex)
 
     def shape(self, vertices, normals, textures):
         # Create tset, qset and FaceSet
@@ -83,8 +92,33 @@ class Group(object):
                 tset = sg.FaceSet(pointList=pointList, indexList=indexList)
         except:
             return 
+        
+        glines = sg.Group([])
+        if len(self.lvindex) > 0:
+            for line in self.lvindex:
+               glines.geometryList.append(sg.Polyline(pointList=[pointList[i] for i in line]))
+        
+        gpoints = sg.Group([])
+        if len(self.pvindex) > 0:
+            for points in self.pvindex:
+               gpoints.geometryList.append(sg.PointSet(pointList=[pointList[i] for i in points]))
+        
+        if len(glines) == 0:
+            if len(gpoints) == 0:
+                geom = tset
+            else:
+                geom = sg.Group([tset,gpoints])
+        elif len(gpoints) == 0:
+            if tset is None:
+                geom = glines
+            else:
+                geom = sg.Group([tset,glines]) 
+        elif tset is None:
+            geom = sg.Group([glines,gpoints])
+        else:
+            geom = sg.Group([tset,glines,gpoints])
 
-        _shape =  sg.Shape(tset, self.material)
+        _shape =  sg.Shape(geom, self.material)
         _shape.name = self.name
         return _shape
 
@@ -175,6 +209,8 @@ class ObjCodec (sg.SceneCodec):
         parser['vt'] = self._vertex_texture
         parser['vn'] = self._vertex_normal
         parser['f'] = self._face
+        parser['l'] = self._line
+        parser['p'] = self._pointset
         parser['mtllib'] = self._material
         parser['o'] = self._object_name
         parser['g'] = self._group_name
@@ -210,6 +246,7 @@ class ObjCodec (sg.SceneCodec):
             if g:
                 s = g.shape(self.vertices, self.normals, self.textures)
                 if s and s.geometry: scene.add(s)
+        scene.add(sg.Shape(sg.PointSet(self.vertices)))
 
         return scene
 
@@ -262,6 +299,30 @@ class ObjCodec (sg.SceneCodec):
             indices = tuple(int(s)-1 for s in args)
 
         self.current_group.add_face(vindex=indices, nindex=normals, tindex=texts)
+
+    def _line(self, args):
+        """ Parse a line."""
+        arg = args[0]
+        indices = normals = None
+        case = 'vertex' # l v1 v2 v3
+        if '//' in arg:
+            case ="vertex/normal"
+            l = [s.split('//') for s in args]
+            indices = tuple(int(v[0]) -1 for v in l)
+            normals = tuple(int(v[1])-1 for v in l)
+        else:
+            case = "vertex"
+            indices = tuple(int(s)-1 for s in args)
+
+        self.current_group.add_line(vindex=indices, nindex=normals)
+
+    def _pointset(self, args):
+        """ Parse a point set."""
+        arg = args[0]
+        indices = normals = None
+        indices = tuple(int(s)-1 for s in args)
+
+        self.current_group.add_pointset(vindex=indices)
 
     def _material(self, args):
         # modify the path for local file

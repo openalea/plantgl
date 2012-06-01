@@ -98,6 +98,8 @@
 #define VIEW_TEMPLATE_API(T) 
 #endif
 
+// #define QT_NO_DEPRECATED
+
 
 /* ----------------------------------------------------------------------- */
 

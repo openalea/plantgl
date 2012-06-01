@@ -194,12 +194,14 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
     int id  = -1;
     lang->addItem("English",0);
     lang->addItem("French",1);
-    if(langname == "English")lang->setCurrentIndex(0);
-    if(langname == "French")lang->setCurrentIndex(1);
+    // if(langname == "English")
+        lang->setCurrentIndex(0);
+    // if(langname == "French")lang->setCurrentIndex(1);
     // QObject::connect(lang,SIGNAL(activated(const QString&)),this,SLOT(setLanguage(const QString&)));
 
     QLabel * lbl = new QLabel( tr("Note: Language change takes effect only at next startup."), LangGroup );
     lbl->setGeometry( QRect( 10, 40, 300, 20 ) );
+    LangGroup->setEnabled(false);
 
 	Viewer * viewer = dynamic_cast<Viewer *>(g->parent());
 

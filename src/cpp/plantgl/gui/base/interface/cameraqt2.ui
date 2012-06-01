@@ -1,428 +1,177 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CameraProp2</class>
- <widget class="QWidget" name="CameraProp2" >
-  <property name="geometry" >
+ <widget class="QWidget" name="CameraProp2">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>381</width>
-    <height>418</height>
+    <height>285</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form1</string>
   </property>
-  <widget class="QLabel" name="Label" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>100</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Projection Matrix</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA00" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA01" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>50</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA02" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>50</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA10" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>80</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA11" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>80</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA12" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>80</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA03" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>50</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA13" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>80</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA20" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA21" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>110</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA22" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>110</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA23" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>110</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA30" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>140</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA31" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>140</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA32" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>140</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MA33" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>140</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB00" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>240</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB01" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>240</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB02" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>240</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB03" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>240</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB10" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>270</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB11" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>270</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB12" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>270</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB13" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>270</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB23" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>300</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB22" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>300</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB21" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>300</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB20" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>300</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB30" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>330</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB31" >
-   <property name="geometry" >
-    <rect>
-     <x>110</x>
-     <y>330</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB32" >
-   <property name="geometry" >
-    <rect>
-     <x>200</x>
-     <y>330</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="MB33" >
-   <property name="geometry" >
-    <rect>
-     <x>290</x>
-     <y>330</y>
-     <width>70</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="Line" name="Line21" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>30</y>
-     <width>340</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="frameShape" >
-    <enum>QFrame::HLine</enum>
-   </property>
-   <property name="frameShadow" >
-    <enum>QFrame::Sunken</enum>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="Line" name="Line22" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>170</y>
-     <width>340</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="frameShape" >
-    <enum>QFrame::HLine</enum>
-   </property>
-   <property name="frameShadow" >
-    <enum>QFrame::Sunken</enum>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="Line" name="Line23" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>220</y>
-     <width>340</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="frameShape" >
-    <enum>QFrame::HLine</enum>
-   </property>
-   <property name="frameShadow" >
-    <enum>QFrame::Sunken</enum>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="Label2" >
-   <property name="geometry" >
-    <rect>
-     <x>20</x>
-     <y>200</y>
-     <width>100</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text" >
-    <string>Model View Matrix</string>
-   </property>
-   <property name="wordWrap" >
-    <bool>false</bool>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="Label">
+     <property name="text">
+      <string>Projection Matrix</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="4">
+    <widget class="Line" name="Line21">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLineEdit" name="MA00"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="MA01"/>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="MA02"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLineEdit" name="MA03"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLineEdit" name="MA10"/>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="MA11"/>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="MA12"/>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLineEdit" name="MA13"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLineEdit" name="MA20"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="MA21"/>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="MA22"/>
+   </item>
+   <item row="4" column="3">
+    <widget class="QLineEdit" name="MA23"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLineEdit" name="MA30"/>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="MA31"/>
+   </item>
+   <item row="5" column="2">
+    <widget class="QLineEdit" name="MA32"/>
+   </item>
+   <item row="5" column="3">
+    <widget class="QLineEdit" name="MA33"/>
+   </item>
+   <item row="6" column="0" colspan="4">
+    <widget class="Line" name="Line22">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="QLabel" name="Label2">
+     <property name="text">
+      <string>Model View Matrix</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="4">
+    <widget class="Line" name="Line23">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLineEdit" name="MB00"/>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="MB01"/>
+   </item>
+   <item row="9" column="2">
+    <widget class="QLineEdit" name="MB02"/>
+   </item>
+   <item row="9" column="3">
+    <widget class="QLineEdit" name="MB03"/>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLineEdit" name="MB10"/>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLineEdit" name="MB11"/>
+   </item>
+   <item row="10" column="2">
+    <widget class="QLineEdit" name="MB12"/>
+   </item>
+   <item row="10" column="3">
+    <widget class="QLineEdit" name="MB13"/>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLineEdit" name="MB20"/>
+   </item>
+   <item row="11" column="1">
+    <widget class="QLineEdit" name="MB21"/>
+   </item>
+   <item row="11" column="2">
+    <widget class="QLineEdit" name="MB22"/>
+   </item>
+   <item row="11" column="3">
+    <widget class="QLineEdit" name="MB23"/>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLineEdit" name="MB30"/>
+   </item>
+   <item row="12" column="1">
+    <widget class="QLineEdit" name="MB31"/>
+   </item>
+   <item row="12" column="2">
+    <widget class="QLineEdit" name="MB32"/>
+   </item>
+   <item row="12" column="3">
+    <widget class="QLineEdit" name="MB33"/>
+   </item>
+  </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
  <connections/>

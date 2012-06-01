@@ -37,8 +37,11 @@
 #include <QtGui/qdesktopwidget.h> 
 #include <QtGui/qlabel.h>
 #include <QtGui/qpainter.h>
-#include <Qt3Support/q3listview.h> 
-#include <Qt3Support/q3textbrowser.h>
+
+// #include <Qt3Support/q3listview.h> 
+// #include <Qt3Support/q3textbrowser.h>
+#include <QtGui/QTreeWidgetItem>
+#include <QtGui/qtextbrowser.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qtextstream.h>
@@ -92,7 +95,7 @@ ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * 
     // addAction(QPixmap(ViewSysInfo::qt_logo),tr("About &QGLViewer"),glwidget,SLOT(aboutQGLViewer()));
     addSeparator();
     addAction(QPixmap(ViewSysInfo::info_logo),tr("Technical Characteristics"),this,SLOT(generalInfo()));
-    addAction(QPixmap(ViewSysInfo::qt_logo),tr("Qt Hierarchy"),this,SLOT(qtbrowse()));
+    // addAction(QPixmap(ViewSysInfo::qt_logo),tr("Qt Hierarchy"),this,SLOT(qtbrowse()));
     addSeparator();
     __style = new QMenu(this);
 	__style->setTitle(tr("Style"));
@@ -196,10 +199,12 @@ ViewHelpMenu::checkItem(int i)
 void ViewHelpMenu::showHelp()
 {
   const char* message ="<h3>How to use Viewer</h3><br>"
-    "<p><b>Left button       :</b> Rotation <br>"
-    "<b>Right button      :</b> Translation <br>"
+    "<p><b>Left button    :</b> Rotation <br>"
+    "<b>Right button      :</b> Pan <br>"
     "<b>Middle button     :</b> Zoom <br>"
-    "<b>Ctrl + click      :</b> Light <br>"
+    "<b>Ctrl + Left click :</b> Pan <br>"
+    "<b>Ctrl + Right click :</b> Zoom <br>"
+    "<b>Alt + click        :</b> Light <br>"
     "<b>Shift + click     :</b> Selection <br>"
     "<b>x-move</b> -> Azimuth control <br>"
     "<b>y-move</b> -> Elevation control <br></p>";
@@ -230,7 +235,7 @@ void ViewHelpMenu::showLicense()
   llogo->setPixmap(logo);
   b.setMinimumSize(QSize(logo.width()*4,logo.height()));
   b.setWindowTitle("License");
-  Q3TextBrowser * lictext = new Q3TextBrowser(&b);
+  QTextBrowser * lictext = new QTextBrowser(&b);
   QFont f("Courrier", 8);
   lictext->setFont( f );
   lictext->setGeometry(QRect(logo.width(),0,logo.width()*3,logo.height()));
@@ -283,14 +288,14 @@ ViewHelpMenu::generalInfo()
   std::string text2 = getPGLVersionString();
   QString text;
   ViewSysInfo a (this,__glwidget,(tr("PlantGL Viewer")+" "+QString(text2.c_str())).toAscii(),true);
-  Q3ListViewItem * itemF = a.addItem(tr("PlantGL Library"));
-  Q3ListViewItem *item = new Q3ListViewItem( itemF );
+  QTreeWidgetItem * itemF = a.addItem(tr("PlantGL Library"));
+  QTreeWidgetItem *item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
   item->setText( 1, QString(text2.c_str()) );
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Binary Format Version" ) );
   item->setText( 1, QString::number(BinaryPrinter::BINARY_FORMAT_VERSION) );
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Real Type Precision" ) );
 #ifdef PGL_USE_DOUBLE
   text = "Double";
@@ -298,13 +303,13 @@ ViewHelpMenu::generalInfo()
   text = "Simple";
 #endif
   item->setText( 1, text  );
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Using Threads" ) );
   if(ViewGeomSceneGL::useThread()) text = "True";
   else text = "False";
   item->setText( 1, tr( text.toAscii() ) );
 
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL Namespace" ) );
 #ifndef PGL_NAMESPACE_NAME
   text = "False";
@@ -312,7 +317,7 @@ ViewHelpMenu::generalInfo()
   text = "True";
 #endif
   item->setText( 1, tr( text.toAscii() ) );
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL Debug" ) );
 #ifdef PGL_DEBUG
   text = "True";
@@ -321,7 +326,7 @@ ViewHelpMenu::generalInfo()
 #endif
   item->setText( 1, tr( text.toAscii() ) );
 #ifdef _WIN32
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL DLLs" ) );
 #ifdef VIEW_DLL
   text = "True";
@@ -330,7 +335,7 @@ ViewHelpMenu::generalInfo()
 #endif
   item->setText( 1, tr( text.toAscii() ) );
 #endif
-  item = new Q3ListViewItem( itemF, item );
+  item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Using Glut" ) );
 #ifdef WITH_GLUT
   text = "True";
@@ -339,7 +344,7 @@ ViewHelpMenu::generalInfo()
 #endif
   item->setText( 1, tr( text.toAscii() ) );
   itemF = a.addItem(tr("Tools Library"));
-  item = new Q3ListViewItem( itemF );
+  item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Tools Namespace" ) );
 #ifndef TOOLS_NAMESPACE_NAME
   text = "False";
@@ -347,13 +352,13 @@ ViewHelpMenu::generalInfo()
   text = "True";
 #endif
   item->setText( 1, tr( text.toAscii() ) );
-  itemF = a.addItem(tr("PlantGL"));
-  item = new Q3ListViewItem( itemF );
-  item->setText( 0, tr( "Install Path" ) );
-  string p = TOOLS(getPlantGLDir());
-  if(!p.empty())item->setText( 1, QString(p.c_str()) );
+  //itemF = a.addItem(tr("PlantGL"));
+  //item = new QTreeWidgetItem( itemF );
+  //item->setText( 0, tr( "Install Path" ) );
+  //string p = TOOLS(getPlantGLDir());
+  //if(!p.empty())item->setText( 1, QString(p.c_str()) );
   itemF = a.addItem(tr("Flex"));
-  item = new Q3ListViewItem( itemF );
+  item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
   item->setText( 1, QString(lexerVersion().c_str())  );
   a.exec();
