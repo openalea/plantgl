@@ -693,11 +693,9 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     QTreeWidgetItem * item2 = new QTreeWidgetItem( RootItem, item1b );
     item2->setText( 0, tr( "Compilation" ) );
     item2->setIcon( 0, wheel_pix );
-    // item2->setOpen( FALSE );
     AttView->collapseItem(item2);
 
     item = new QTreeWidgetItem( item2 );
-    // item->setOpen( FALSE );
     AttView->collapseItem(item);
     item->setText( 0, tr( "Date" ) );
     item->setText( 1, tr(( QString(c_date) + " "+tr("at")+" " +  QString(c_time) ).toAscii().data()) );
@@ -1083,7 +1081,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     QTreeWidgetItem * item7 = new QTreeWidgetItem( RootItem, item6 );
     item7->setText( 0, tr( "OpenGL Utility Toolkit Library (Glut)" ) );
     item7->setIcon( 0, opengl_pix );
-    item7->setOpen( FALSE );
+    AttView->collapseItem(item7);
 
     item = new QTreeWidgetItem( item7 );
     item->setText( 0, tr( "Version" ) );
@@ -1147,13 +1145,13 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     QTreeWidgetItem * item8 = new QTreeWidgetItem( RootItem, LastItem );
     item8->setText( 0, tr( "OpenGL X Extension (GLX)" ) );
     item8->setIcon( 0, opengl_pix );
-    item8->setOpen( FALSE );
+    AttView->collapseItem(item8);
 
 /* ----------------------------------------------------------------------- */
 
     QTreeWidgetItem * item81 = new QTreeWidgetItem( item8 );
     item81->setText( 0, tr( "Client" ) );
-    item81->setOpen( FALSE );
+    AttView->collapseItem(item81);
 
 
     const char * msg = glXGetClientString(dpy,GLX_VERSION);
@@ -1169,7 +1167,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     QTreeWidgetItem * item81bis = new QTreeWidgetItem( item81, item );
     item81bis->setText( 0, tr( "Extension(s)" ) );
-        item81bis->setOpen( FALSE );
+    AttView->collapseItem(item81bis);
 
     msg = glXGetClientString(dpy,GLX_EXTENSIONS);
     ext = QString(msg).split ( ' ' );
@@ -1187,7 +1185,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     QTreeWidgetItem * item82 = new QTreeWidgetItem( item8, item81 );
     item82->setText( 0, tr( "Server" ) );
-    item82->setOpen( FALSE );
+    AttView->collapseItem(item82);
 
 
     QTreeWidgetItem * itemscreen = item82;
@@ -1198,7 +1196,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                 QTreeWidgetItem * itemscreen = new QTreeWidgetItem( item82, itemscreen );
                 itemscreen->setText( 0, tr( "Screen") +" " + QString::number(screennumber));
                 itemscreen->setText( 1, ( screennumber == DefaultScreen(dpy) ? tr("Default") : "") );
-                itemscreen->setOpen( FALSE );
+                AttView->collapseItem(itemscreen);
 
                 msg = glXQueryServerString(dpy,screennumber,GLX_VERSION);
                 item = new QTreeWidgetItem( itemscreen );
@@ -1213,7 +1211,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                 msg = glXQueryServerString(dpy,screennumber,GLX_EXTENSIONS);
                 QTreeWidgetItem * itemscreenbis = new QTreeWidgetItem( itemscreen, item );
                 itemscreenbis->setText( 0, tr( "Extension(s)" ) );
-                itemscreenbis->setOpen( FALSE );
+                AttView->collapseItem(itemscreenbis);
 
                 ext = QString(msg).split ( ' ' );
                 if(!ext.isEmpty()){
@@ -1236,7 +1234,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     QTreeWidgetItem * item9 = new QTreeWidgetItem( RootItem, item8 );
     item9->setIcon( 0, x_pix );
     item9->setText( 0, tr( "Server" ) );
-    item9->setOpen( FALSE );
+    AttView->collapseItem(item9);
 
     item = new QTreeWidgetItem( item9 );
     item->setText( 0, tr( "Display Name" ) );
@@ -1254,7 +1252,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     item91->setText( 0, tr( "Protocol" ) );
     item91->setText( 1, QString::number(ProtocolVersion(dpy))+ '.' +
                                                         QString::number(ProtocolRevision(dpy)) ) ;
-    item91->setOpen( FALSE );
+    AttView->collapseItem(item91);
 
     item = new QTreeWidgetItem( item91 );
     item->setText( 0, tr( "Version" ) );
@@ -1269,7 +1267,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     QTreeWidgetItem * item92 = new QTreeWidgetItem( item9, item );
     item92->setText( 0, tr( "Screens" ) );
-    item92->setOpen( FALSE );
+    AttView->collapseItem(item92);
 
     itemscreen =  NULL ;
 
@@ -1317,7 +1315,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                 item93 = new QTreeWidgetItem( item9, item93 );
                 item93->setText( 0, tr( "Pixmap Format" ) );
                 item93->setText( 1, QString::number(*count_return) );
-                item93->setOpen( FALSE );
+                AttView->collapseItem(item93);
 
                 QTreeWidgetItem * item931 = NULL;
                 for(int u = 0 ; u < *count_return ; u++ ){
@@ -1325,7 +1323,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                         else item931 = new QTreeWidgetItem( item93);
 
                         item931->setText( 0, tr( "Format")+ " " + QString::number(u) );
-                        item931->setOpen( FALSE );
+                        AttView->collapseItem(item931);
 
                         item = new QTreeWidgetItem( item931 );
                         item->setText( 0, tr( "Depth" ) );
@@ -1375,7 +1373,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
   QTreeWidgetItem * item10 = new QTreeWidgetItem( RootItem, LastItem );
   item10->setText( 0, tr( "Readline" ) );
   item10->setIcon( 0, tools_pix );
-  item10->setOpen( FALSE );
+  AttView->collapseItem(item10);
 
   item = new QTreeWidgetItem( item10 );
   item->setText( 0, tr( "Version" ) );
