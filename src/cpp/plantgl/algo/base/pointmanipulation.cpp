@@ -66,6 +66,7 @@ inline Vector3 toVector3(const CGALPoint& v) { return Vector3(v.x(),v.y(),v.z())
 
 #include <stack>
 #include <iostream>
+#include <cstdio>
 
 
 IndexArrayPtr 
