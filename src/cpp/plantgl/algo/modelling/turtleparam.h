@@ -39,6 +39,7 @@
 #include <plantgl/scenegraph/geometry/curve.h>
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 #include <plantgl/scenegraph/function/function.h>
+#include <plantgl/scenegraph/appearance/appearance.h>
 #include <vector>
 
 PGL_BEGIN_NAMESPACE
@@ -116,6 +117,7 @@ public:
   TurtleDrawParameter();
 
   int color;
+  AppearancePtr customMaterial;
 
   Curve2DPtr crossSection;
   bool crossSectionCCW;

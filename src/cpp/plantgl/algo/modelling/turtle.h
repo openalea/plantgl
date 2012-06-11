@@ -309,6 +309,9 @@ public:
     inline void decColor()
 	{  setColor( getColor() - color_increment ); }
     
+    void setCustomAppearance(const AppearancePtr app);
+    inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }
+    
     virtual void setWidth(real_t val);
     
     inline void incWidth()

@@ -67,6 +67,7 @@ void export_Turtle()
     .def("nF", (void (Turtle::*) (real_t,real_t,real_t,const QuantisedFunctionPtr))&Turtle::nF, (bp::arg("length"),bp::arg("dlength"),bp::arg("radius")=1.0,bp::arg("radiusvariation")=QuantisedFunctionPtr()))
 
 	.def("setColor", &Turtle::setColor )
+	.def("setCustomAppearance", &Turtle::setCustomAppearance )
     .def("incColor", &Turtle::incColor )
     .def("decColor", &Turtle::decColor )
     .def("setWidth", &Turtle::setWidth )

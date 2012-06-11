@@ -181,6 +181,7 @@ TurtlePathPtr Turtle3DPath::copy() const
 /*----------------------------------------------------------*/
 TurtleDrawParameter::TurtleDrawParameter():
   color(1),
+  customMaterial(),
   crossSection(),
   crossSectionCCW(true),
   defaultSection(true),
@@ -194,6 +195,7 @@ TurtleDrawParameter::TurtleDrawParameter():
 
 void TurtleDrawParameter::reset(){
   color = 1;
+  customMaterial = AppearancePtr();
   texCoordScale = Vector2(1,1);
   texCoordTranslation = Vector2(0,0);
   texCoordRotCenter = Vector2(0.5,0.5);
@@ -316,6 +318,7 @@ void TurtleParam::polygon(bool t){
   removePoints();
   if (t){
 	initial.color = color;
+    initial.customMaterial = customMaterial;
   }
   else {
 	initial.reset();
@@ -620,6 +623,7 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   void Turtle::setColor(int v){
 	  if (0 <= v && v < getColorListSize()){
 		__params->color = v;
+        __params->customMaterial = AppearancePtr();
 		__params->axialLength = 0;
 		if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
 	  }
@@ -631,6 +635,16 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 	  return;
 	}
   }
+
+void Turtle::setCustomAppearance(const AppearancePtr app)
+{
+    __params->customMaterial = app;
+	__params->axialLength = 0;
+	if(__params->isGCorPolygonOnInit()) {        
+        if (is_valid_ptr(app)) __params->initial.customMaterial = app;
+        else __params->initial.color = __params->color;
+    }
+}
 
 void Turtle::setTextureScale(real_t u, real_t v)
 { 
@@ -1201,6 +1215,7 @@ GeometryPtr PglTurtle::getSurface(const string& name){
 }
     
 AppearancePtr PglTurtle::getCurrentMaterial() const{
+    if (__params->customMaterial) return __params->customMaterial;
 	if (getColor() < __appList.size()){
 		AppearancePtr res = __appList[getColor()];
 		if (res->isTexture()){
@@ -1229,6 +1244,7 @@ AppearancePtr PglTurtle::getCurrentMaterial() const{
 }
 
 AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
+    if (__params->initial.customMaterial) return __params->initial.customMaterial;
 	if (__params->initial.color < __appList.size()){
 		AppearancePtr res = __appList[__params->initial.color];
 		if (res->isTexture() && (__params->initial.texCoordScale != Vector2(1,1) || 

@@ -102,8 +102,8 @@ class LAPACK:
         if type(lapack_lib) == str:
           lapack_lib = lapack_lib.split()
         lapack_lib = lapack_lib[0]
-        libnames = ['liblapack.so','liblapack.a', 'lapack.lib', 'liblapack.dylib']
-        if sum( map(lambda x: os.path.exists(os.path.join(lapack_lib,x)),libnames) ) > 0 :
+        libnames = ['liblapack.so','liblapack.a', 'lapack.lib', 'liblapack.lib', 'liblapack.dylib']
+        if sum( map(lambda x: os.path.exists(os.path.join(lapack_lib,x)),libnames) ) == 0 :
           import warnings
           warnings.warn("Error: LAPACK lib not found. LAPACK disabled ...")
           env['WITH_LAPACK'] = False      
