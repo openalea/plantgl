@@ -98,7 +98,7 @@ class LAPACK:
    def update(self, env):
       """ Update the environment with specific flags """
       if env['WITH_LAPACK'] :
-        lapack_lib = env['lapack_includes']
+        lapack_lib = env['lapack_libpath']
         if type(lapack_lib) == str:
           lapack_lib = lapack_lib.split()
         lapack_lib = lapack_lib[0]
