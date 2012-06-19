@@ -170,4 +170,3 @@ from openalea.core.external import add_docstring
 def Color3Node(input):
     return [Color3(input)]
 
-print sg.AmapSymbol.__doc__

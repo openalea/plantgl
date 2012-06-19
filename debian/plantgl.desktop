@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=PlantGL Viewer
+Comment=3D PlantGL Viewer
+Exec=pglviewer
+Icon=flower
+Terminal=false
+Type=Application
+Categories=Education;Science;Biology;
+StartupNotify=true

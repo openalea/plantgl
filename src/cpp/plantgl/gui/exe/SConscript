@@ -8,7 +8,7 @@ pj= os.path.join
 Import( "env" )
 
 exe_env= env.Clone()
-exe_env.EnableQt4Modules([ 'Qt3Support', 'QtOpenGL', 'QtCore', 'QtGui', 'QtNetwork' ])
+exe_env.EnableQt4Modules([ 'QtOpenGL', 'QtCore', 'QtGui', 'QtNetwork' ])
 
 source= ["mainviewer.cpp"]
 

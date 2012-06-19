@@ -68,7 +68,6 @@ inline Vector3 toVector3(const CGALPoint& v) { return Vector3(v.x(),v.y(),v.z())
 #include <iostream>
 #include <cstdio>
 
-
 IndexArrayPtr 
 PGL::delaunay_point_connection(const Point3ArrayPtr points)
 {

@@ -2,12 +2,12 @@ Source: vplants-plantgl
 Maintainer: Christophe Pradal <christophe.pradal@cirad.fr>
 Section: python
 Priority: optional
-Build-Depends: python-setuptools (>= 0.6b3), python-dev, debhelper (>= 7), python-support (>= 0.8.4), python-openalea.deploy, python-openalea.sconsx, libqt4-dev, libqt4-opengl-dev, libcgal-dev, libboost-python-dev, bison, flex, libqhull-dev, libreadline-dev, pkg-config, libglut3-dev
-Standards-Version: 3.8.4
+Build-Depends: python-setuptools (>= 0.6b3), python-dev, debhelper (>= 7), python-support (>= 0.8.4), python-openalea.deploy, python-openalea.sconsx, libqt4-dev, libqt4-opengl-dev, libcgal-dev, libboost-python-dev, bison, flex, libqhull-dev, libreadline-dev, pkg-config, freeglut3-dev, libann-dev
+Standards-Version: 3.9.1
 
 Package: python-vplants.plantgl
 Architecture: any
-Depends: ${misc:Depends}, ${python:Depends}, ${shlibs:Depends}, python-openalea
+Depends: ${misc:Depends}, ${python:Depends}, ${shlibs:Depends}
 XB-Python-Version: ${python:Versions}
 Provides: ${python:Provides}
 Description: PlantGL package for OpenAlea and VPlants.

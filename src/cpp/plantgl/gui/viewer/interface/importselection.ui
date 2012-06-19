@@ -214,7 +214,6 @@
    </property>
   </widget>
  </widget>
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <resources/>
  <connections/>
 </ui>

@@ -1,3 +1,33 @@
+vplants-plantgl (2.16.1~ppa2) precise; urgency=low
+
+  * Remove python-openalea as deps of PlantGL 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 06 Apr 2012 11:02:12 +0200
+
+vplants-plantgl (2.16.1~ppa1) precise; urgency=low
+
+  * Add a bugfix for building on mac and linux 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Thu, 05 Apr 2012 17:41:38 +0200
+
+vplants-plantgl (2.16.0~ppa1) precise; urgency=low
+
+  * Release 1.0 on precise 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Sun, 25 Mar 2012 16:32:41 +0200
+
+vplants-plantgl (2.15.0-1~ppa4) oneiric; urgency=low
+
+  * Replace libglut3 by freeglut3 
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Fri, 06 Jan 2012 17:35:01 +0100
+
+vplants-plantgl (2.15.0-1~ppa1) oneiric; urgency=low
+
+  * Release 1.0
+
+ -- Christophe Pradal <christophe.pradal@cirad.fr>  Tue, 06 Dec 2011 10:36:44 +0100
+
 vplants-plantgl (2.13.0-1~ppa7) natty; urgency=low
 
   * Port to natty and remove deps to python 2.6
