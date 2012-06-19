@@ -205,7 +205,7 @@ ViewFogGL::setColor(const QColor& m){
     QPixmap col(__fogw->ColorButton->size());
     col.fill(__color);
     __fogw->ColorButton->setIcon(QIcon(col));  
-    emit valueChanged();
+    if(__frame->isVisible())emit valueChanged();
   }
 }
 

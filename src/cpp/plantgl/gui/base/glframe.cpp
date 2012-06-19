@@ -207,6 +207,13 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
 
   LAST_GL_FRAME = this;
 
+  ViewerSettings settings;
+  settings.beginGroup("FrameGL");
+  __BgColor = settings.value("BgColor",__BgColor).value<QColor>();
+  __usePBuffer = settings.value("PixelBuffer",__usePBuffer).toBool();
+  setBackGroundColor(__BgColor);
+  settings.endGroup();
+  
   /// Connexion
   rendererStatus();
   __scene->connectTo(this);
@@ -226,17 +233,11 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   setAcceptDrops(TRUE);
   setFocusPolicy(Qt::StrongFocus);
 
-  ViewerSettings settings;
-  settings.beginGroup("FrameGL");
-  __BgColor = settings.value("BgColor",__BgColor).value<QColor>();
-  __usePBuffer = settings.value("PixelBuffer",__usePBuffer).toBool();
-  setBackGroundColor(__BgColor);
-  settings.endGroup();
 
   __timer.setInterval(200);
   __timer.setSingleShot(false);
   QObject::connect(&__timer,SIGNAL(timeout()),this,SLOT(updateMessage()));
-
+  
 }
 
 
@@ -446,8 +447,10 @@ ViewGLFrame::setBackGroundColor(const QColor& color)
   __BgColor=color;
   qglClearColor(__BgColor);
   __fog->setColor(color);
-  redrawGL();
-  status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
+  if(isVisible()){
+	  redrawGL();
+      status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
+  }
 }
 
 bool ViewGLFrame::glError(const char * file , int line ){
@@ -561,6 +564,7 @@ ViewGLFrame::clearSelection()
 void ViewGLFrame::activatePBuffer(bool b){
 	static bool PBufferSupport = QGLPixelBuffer::hasOpenGLPbuffers();
 	if(PBufferSupport && __usePBuffer) __pBufferActivated = b;
+	printf("activated pixel buffer : %i\n",__pBufferActivated);	
     if(__pBufferActivated) {
 	  if (!__pixelbuffer || __pixelbuffer->size() != size()){
 		  if(__pixelbuffer) delete __pixelbuffer;
