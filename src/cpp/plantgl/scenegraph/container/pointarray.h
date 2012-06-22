@@ -289,6 +289,11 @@ public:
       - \e self is valid. */
   Point4Array( uint_t size = 0 );
 
+  /** Constructs a Point4Array of size of \e size.
+      \post
+      - \e self is valid. */
+  Point4Array( uint_t size, const TOOLS(Vector4)& value);
+
   /** Constructs a Point4Array with the range of points [\e first, \e last).
       \post
       - \e self is valid. */

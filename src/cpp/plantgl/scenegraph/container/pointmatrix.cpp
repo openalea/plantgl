@@ -41,7 +41,12 @@ using namespace std;
 
 Point2Matrix::Point2Matrix( uint_t rows , uint_t cols ) :
   Array2<Vector2>(rows,cols) {
-  __A.reserve(rows*cols);
+  // __A.reserve(rows*cols);
+  GEOM_ASSERT(isValid());
+}
+
+Point2Matrix::Point2Matrix( uint_t rows , uint_t cols, const Vector2& value ) :
+  Array2<Vector2>(rows,cols,value) {
   GEOM_ASSERT(isValid());
 }
 
@@ -160,7 +165,13 @@ void Point2Matrix::normalize(){
 
 Point3Matrix::Point3Matrix( uint_t rows, uint_t cols ) :
   Array2<Vector3>(rows,cols) {
-  __A.reserve(rows*cols);
+//  __A.reserve(rows*cols);
+  GEOM_ASSERT(isValid());
+}
+
+Point3Matrix::Point3Matrix( uint_t rows, uint_t cols, const Vector3& value ) :
+  Array2<Vector3>(rows,cols, value) {
+//  __A.reserve(rows*cols);
   GEOM_ASSERT(isValid());
 }
 
@@ -336,7 +347,14 @@ void Point3Matrix::normalize(){
 
 Point4Matrix::Point4Matrix( uint_t rows,uint_t cols ) :
   Array2<Vector4>(rows,cols) {
-  __A.reserve(rows*cols);
+  // __A.reserve(rows*cols);
+  GEOM_ASSERT(isValid());
+}
+
+
+Point4Matrix::Point4Matrix( uint_t rows, uint_t cols, const Vector4& value ) :
+  Array2<Vector4>(rows,cols, value) {
+  // __A.reserve(rows*cols);
   GEOM_ASSERT(isValid());
 }
 

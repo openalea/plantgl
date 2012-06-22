@@ -440,9 +440,16 @@ void Point3Array::transform(const Matrix4& m) {
 
 Point4Array::Point4Array( uint_t size ) :
   Array1<Vector4>(size) {
-  __A.reserve(size);
+  // __A.reserve(size);
   GEOM_ASSERT(isValid());
 }
+
+Point4Array::Point4Array( uint_t size, const TOOLS(Vector4)& value):
+  Array1<Vector4>(size, value) {
+  // __A.reserve(size);
+  GEOM_ASSERT(isValid());
+}
+
 
 Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
     Array1<Vector4>(a.size()){

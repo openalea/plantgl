@@ -65,6 +65,11 @@ public:
       - \e self is valid. */
   Point2Matrix( uint_t rows = 0, uint_t cols =0 );
 
+  /** Constructs a Point2Matrix of size of \e size.
+      \post
+      - \e self is valid. */
+  Point2Matrix( uint_t rows, uint_t cols, const TOOLS(Vector2)& value);
+
   /** Constructs a PointMatrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
@@ -141,6 +146,11 @@ public:
       \post
       - \e self is valid. */
   Point3Matrix( uint_t rows = 0,uint_t cols = 0 );
+
+  /** Constructs a Point3Matrix of rows \e rows and columns \e cols.
+      \post
+      - \e self is valid. */
+  Point3Matrix( uint_t rows, uint_t cols, const  TOOLS(Vector3)& value);
 
   /** Constructs a Point3Matrix with the range of points [\e first, \e last).
       \post
@@ -239,6 +249,11 @@ public:
       \post
       - \e self is valid. */
   Point4Matrix( uint_t rows = 0, uint_t cols = 0);
+
+  /** Constructs a Point4Matrix with \e rows rows and \e cols columns.
+      \post
+      - \e self is valid. */
+  Point4Matrix( uint_t rows, uint_t cols, const TOOLS(Vector4)& value);
 
   /** Constructs a Point4Matrix with the range of points [\e first, \e last).
       \post
