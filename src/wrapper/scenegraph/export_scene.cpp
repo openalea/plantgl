@@ -194,7 +194,7 @@ boost::python::dict sc2dict(Scene * sc) {
     {
         uint32_t sid = (*it)->getId();
         boost::python::list clist(result.get(sid,boost::python::list()));
-        clist.append(*sc);
+        clist.append(*it);
         result[sid] = clist;
     }
     return result;
