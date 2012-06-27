@@ -93,6 +93,7 @@ void export_Mvs();
 void export_Octree();
 void export_PointGrid();
 void export_KDtree();
+void export_PyGrid();
 
 /* ----------------------------------------------------------------------- */
 // CurveManipulation export

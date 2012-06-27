@@ -105,30 +105,71 @@ public:
 
 };
 
-template <class T, int N>
-class ArrayN : public RefCountObject
-{
-public:
 
-	static const int NbDimension  = N;
+template<class T>
+class VectorContainer {
+protected:
 
 	typedef T element_type;
-	typedef std::vector<T> Container;
-	typedef typename Container::iterator iterator;
-	typedef typename Container::const_iterator const_iterator;
-	typedef const_partial_iteratorT<ArrayN<T,N> > const_partial_iterator;
+	typedef std::vector<T> container_type;
+	typedef size_t CellId;  
+	typedef typename container_type::iterator iterator;
+	typedef typename container_type::const_iterator const_iterator;
+protected:
+
+    VectorContainer(size_t size = 0) : __values(size) {}
+    // size_t valuesize() const { return __values.size(); }
+    container_type __values;
+
+public:
+
+	inline const element_type& getAt(const CellId& cid) const
+    { return __values[cid]; }
+
+	inline element_type& getAt(const CellId& cid)
+    { return __values[cid]; }
+
+    inline void setAt(const CellId& cid, const element_type& value) 
+    { __values[cid] = value; }
+
+    /// Return the size of the container
+	inline size_t valuesize() const { return __values.size(); }
+
+    /// Returns whether \e self is empty.
+    inline bool empty( ) const { return __values.empty(); }
+
+    /// Returns a const iterator at the beginning of \e self.
+    inline const_iterator begin( ) const { return __values.begin(); }
+
+    /// Returns an iterator at the beginning of \e self.
+    inline iterator begin( ) { return __values.begin(); }
+
+    /// Returns a const iterator at the end of \e self.
+    inline const_iterator end( ) const { return __values.end(); }
+
+    /// Returns a const iterator at the end of \e self.
+    inline iterator end( ) { return __values.end(); }
+
+    /// Clear \e self.
+    inline void clear( ) { __values.clear(); }
+
+    void initialize(const size_t size) { 
+		__values = container_type(size);
+	}
+};
+
+template <int N>
+class ArrayNIndexing {
+public:
+	static const int NbDimension  = N;
 	typedef Tuple<size_t,N> Index;
-	typedef size_t CellId;
+    typedef size_t CellId;
 
-	explicit ArrayN(const Index& size):
-	  __dimensions(size),
-	  __values(product(size)){
-	}
+	explicit ArrayNIndexing(const Index& size):
+	  __dimensions(size){ }
 
-	ArrayN():
-	  __dimensions(),
-	  __values(){
-	}
+	ArrayNIndexing():
+	  __dimensions(){ }
 
 	CellId cellId(const Index& coord) const {
 		size_t offset = 1;
@@ -151,8 +192,6 @@ public:
 		return v;		
 	}
 
-	inline bool isValidId(const CellId& cid) const { return cid < __values.size(); }
-
 	inline bool isValidIndex(const Index& ind) const {
 		for (size_t i = 0; i < N; ++i){
 			if (ind[i] >= __dimensions[i]) return false;
@@ -160,59 +199,9 @@ public:
 		return true;
 	}
 
-	inline const T& getAt(const Index& ind) const{
-		return __values[cellId(ind)];
-	}
-
-	inline const T& getAt(const CellId& cid) const{
-		return __values[cid];
-	}
-
-	inline T& getAt(const Index& ind) {
-		return __values[cellId(ind)];
-	}
-
-	inline T& getAt(const CellId& cid) {
-		return __values[cid];
-	}
-
-	inline void setAt(const Index& ind, const T& value ) {
-		__values[cellId(ind)] = value;
-	}
-
-	inline void getAt(const CellId& cid, const T& value) {
-		__values[cid] = value;
-	}
-
-  /// Returns whether \e self is empty.
-  inline bool empty( ) const { return __values.empty(); }
-
-  /// Clear \e self.
-  inline void clear( ) { __values.clear(); __dimensions = Index(0); }
-
-  /// Returns a const iterator at the beginning of \e self.
-  inline const_iterator begin( ) const { return __values.begin(); }
-
-  /// Returns an iterator at the beginning of \e self.
-  inline iterator begin( ) { return __values.begin(); }
-
-  /// Returns a const iterator at the end of \e self.
-  inline const_iterator end( ) const { return __values.end(); }
-
-  /// Returns a const iterator at the end of \e self.
-  inline iterator end( ) { return __values.end(); }
-
-
-	const_partial_iterator getSubArray(const Index& first, const Index dimension) const {
-		for (size_t i = 0; i < N; ++i)
-			assert(first[i]+dimension[i] < __dimensions[i] && "invalid dimension for subarray.");
-		return const_partial_iterator(first,add(first,dimension), this);
-	}
-
 	static Index offsets(const Index& value) { 
 		Index offsets;
 		size_t offsetcount = 1;
-		size_t NbDimension = value.size();
 		for (size_t i = 0; i < NbDimension; ++i){
 			size_t j = NbDimension-1-i;
 			offsets[j] = offsetcount;
@@ -223,17 +212,85 @@ public:
 
 
 	inline Index dimensions() const { return __dimensions; }
-	inline size_t size() const { return __values.size(); }
-protected:
-	void initialize(const Index& dim) { 
-		__values = Container(product(dim));
-		__dimensions = dim;
-	}
 
+    /// Return the size of the grid
+	inline size_t size() const { return product(__dimensions); }
+
+protected:
 	inline void setDimensions(const Index& dim) { __dimensions = dim; }
 
 	Index  __dimensions;
-	Container __values;
+};
+
+template <class T, int N, class ContainerType = VectorContainer<T> >
+class ArrayN : public RefCountObject, public ArrayNIndexing<N>,  public ContainerType
+{
+public:
+
+	static const int NbDimension  = N;
+
+	typedef T element_type;
+	typedef ContainerType container_type;
+    typedef typename container_type::CellId CellId;
+	typedef const_partial_iteratorT<ArrayN<T,N> > const_partial_iterator;
+	typedef Tuple<size_t,N> Index;
+
+	explicit ArrayN(const Index& size):
+	  ArrayNIndexing<N>(size),
+	  ContainerType(product(size)){
+	}
+
+	ArrayN():
+	  ArrayNIndexing<N>(),
+	  ContainerType(){
+	}
+
+
+	inline bool isValidId(const CellId& cid) const { return cid < container_type::valuesize(); }
+
+
+	inline const T& getAt(const Index& ind) const{
+        return container_type::getAt(cellId(ind));
+	}
+
+	inline const T& getAt(const CellId& cid) const{
+        return container_type::getAt(cid);
+	}
+
+	inline T& getAt(const Index& ind) {
+        return container_type::getAt(cellId(ind));
+	}
+
+	inline T& getAt(const CellId& cid) {
+        return container_type::getAt(cid);
+	}
+
+	inline void setAt(const Index& ind, const T& value ) {
+        container_type::setAt(cellId(ind),value);
+	}
+
+	inline void setAt(const CellId& cid, const T& value) {
+        container_type::setAt(cid,value);
+	}
+
+
+    /// Clear \e self.
+    inline void clear( ) { container_type::clear(); ArrayNIndexing<N>::setDimensions(Index(0)); }
+
+
+
+	const_partial_iterator getSubArray(const Index& first, const Index dimension) const {
+		for (size_t i = 0; i < N; ++i)
+			assert(first[i]+dimension[i] < __dimensions[i] && "invalid dimension for subarray.");
+		return const_partial_iterator(first,add(first,dimension), this);
+	}
+
+
+protected:
+	void initialize(const Index& dim) { 
+		container_type::initialize(product(dim));
+		ArrayNIndexing<N>::setDimensions(dim);
+	}
 };
 
 

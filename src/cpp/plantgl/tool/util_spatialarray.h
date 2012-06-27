@@ -45,16 +45,17 @@ TOOLS_BEGIN_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */
-
-
-template <class T, class VectorT, int NbDimension = Dimension<VectorT>::Nb>
-class SpatialArrayN : public ArrayN<T,NbDimension>
+template <class T, class VectorT, int NbDimension = Dimension<VectorT>::Nb, class ContainerType = VectorContainer<T>>
+class SpatialArrayN : public ArrayN<T,NbDimension,ContainerType>
 {
 public:
 	typedef VectorT VectorType;
-	typedef ArrayN<T,NbDimension> Base;
+	typedef ArrayN<T,NbDimension,ContainerType> Base;
 	typedef typename Base::Index Index;
 	typedef typename Base::CellId CellId;
+
+    typedef std::vector<CellId> CellIdList;
+
 
 	SpatialArrayN(const VectorType& voxelsize,
 				  const VectorType& minpoint, 
@@ -182,7 +183,88 @@ public:
 		}
 		return res;
 	}
-	
+
+    CellIdList get_voxels_around_point(const VectorType& point, real_t radius, 
+										real_t minradius = 0, bool filterEmpty = true) const {
+        CellIdList res;
+        Index centervxl = indexFromPoint(point);
+        // discretize radius in term of voxel size
+        Index radiusvoxelsize;
+        for (size_t i = 0; i < NbDimension; ++i){
+            radiusvoxelsize[i] = 1+(radius/getVoxelSize()[i]);
+        }
+
+        // find min and max voxel coordinates
+        Index mincoord, maxcoord, dim;
+        for (size_t i = 0; i < NbDimension; ++i){
+            mincoord[i] = (centervxl[i] < radiusvoxelsize[i]?0:centervxl[i]-radiusvoxelsize[i]);
+            maxcoord[i] = std::min<size_t>(Base::dimensions()[i]-1,centervxl[i]+radiusvoxelsize[i]);
+            dim[i] = maxcoord[i] - mincoord[i];
+        }
+
+        // Index coord = mincoord;
+		real_t normvoxelsize = norm(getVoxelSize());
+        real_t r = radius + normvoxelsize;
+		real_t minr = std::max<real_t>(0,minradius - normvoxelsize);
+        const_partial_iterator itvoxel = getSubArray(mincoord,dim);
+        while(!itvoxel.atEnd()){
+            // Check whether coord is in ball
+			real_t voxeldist = norm(getVoxelCenter(itvoxel.index())-point);
+            if (voxeldist < r && voxeldist >= minr ){
+                CellId vxlid = itvoxel.cellId();
+                if(!filterEmpty || !itvoxel->empty())
+                    res.push_back(vxlid);
+            }
+            ++itvoxel;
+        }
+        return res;
+    }
+
+    CellIdList get_voxels_box(const Index& center, 
+							   const Index& maxradius, 
+							   const Index& minradius = Index(0), 
+							   bool filterEmpty = true) const {
+        CellIdList res;
+
+        // find min and max voxel coordinates for minradius
+        Index begminradius, endminradius;
+        for (size_t i = 0; i < NbDimension; ++i){
+            begminradius[i] = (center[i] < minradius[i]?0:center[i]-minradius[i]);
+            endminradius[i] = std::min<size_t>(Base::dimensions()[i]-1,center[i]+minradius[i]);
+        }
+
+        // find min and max voxel coordinates for maxradius
+        Index begmaxradius, endmaxradius, dim;
+        for (size_t i = 0; i < NbDimension; ++i){
+            begmaxradius[i] = (center[i] < maxradius[i]?0:center[i]-maxradius[i]);
+            endmaxradius[i] = std::min<size_t>(Base::dimensions()[i]-1,center[i]+maxradius[i]);
+
+			// if (begminradius[i] == minmaxradius[i]) minmaxradius[i] = maxminradius[i];
+			// else if (maxminradius[i] == maxmaxradius[i]) maxmaxradius[i] = minminradius[i];
+
+            dim[i] = endmaxradius[i] - begmaxradius[i];
+        }
+
+
+        // Index coord = mincoord;
+        const_partial_iterator itvoxel = getSubArray(begmaxradius,dim);
+        while(!itvoxel.atEnd()){
+            CellId vxlid = itvoxel.cellId();
+            // Check whether coord is not in min box
+			bool toconsider = false;
+			for (size_t i = 0; i < NbDimension; ++i){
+				if (itvoxel.index()[i] <= begminradius[i] || itvoxel.index()[i] >= endminradius[i]) 
+				{ toconsider = true; break; }
+			}
+            if ( toconsider ){
+                if(!filterEmpty || !itvoxel->empty())
+                    res.push_back(vxlid);
+            }
+			++itvoxel;
+        }
+        return res;
+    }
+
 protected:
 	static Index gridSize(const VectorType& minpoint, 
 				   const VectorType& maxpoint,

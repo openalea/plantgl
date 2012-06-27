@@ -99,6 +99,7 @@
     <ClCompile Include="export_pointmanip.cpp" />
     <ClCompile Include="export_povprinter.cpp" />
     <ClCompile Include="export_printer.cpp" />
+    <ClCompile Include="export_pygrid.cpp" />
     <ClCompile Include="export_pyprinter.cpp" />
     <ClCompile Include="export_reader.cpp" />
     <ClCompile Include="export_sequencer.cpp" />
@@ -113,6 +114,7 @@
     <ClCompile Include="pgl_algo_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export_grid.h" />
     <ClInclude Include="export_printer.h" />
     <ClInclude Include="export_action.h" />
   </ItemGroup>

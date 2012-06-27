@@ -94,6 +94,7 @@ void module_algo()
     export_Octree();
     export_PointGrid();
     export_KDtree();
+    export_PyGrid();
 
     // CurveManipulation export
     export_CurveManipulation();

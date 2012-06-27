@@ -97,11 +97,17 @@
     <ClCompile Include="export_kdtree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="export_pygrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export_printer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="export_action.h" />
+    <ClInclude Include="export_grid.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
