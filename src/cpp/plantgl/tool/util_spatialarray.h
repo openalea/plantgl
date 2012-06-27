@@ -45,7 +45,7 @@ TOOLS_BEGIN_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */
-template <class T, class VectorT, int NbDimension = Dimension<VectorT>::Nb, class ContainerType = VectorContainer<T>>
+template <class T, class VectorT, int NbDimension = Dimension<VectorT>::Nb, class ContainerType = VectorContainer<T> >
 class SpatialArrayN : public ArrayN<T,NbDimension,ContainerType>
 {
 public:
@@ -53,6 +53,7 @@ public:
 	typedef ArrayN<T,NbDimension,ContainerType> Base;
 	typedef typename Base::Index Index;
 	typedef typename Base::CellId CellId;
+	typedef typename Base::const_partial_iterator const_partial_iterator;
 
     typedef std::vector<CellId> CellIdList;
 
