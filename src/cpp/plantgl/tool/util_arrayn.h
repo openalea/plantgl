@@ -281,7 +281,7 @@ public:
 
 	const_partial_iterator getSubArray(const Index& first, const Index dimension) const {
 		for (size_t i = 0; i < N; ++i)
-			assert(first[i]+dimension[i] < __dimensions[i] && "invalid dimension for subarray.");
+			assert(first[i]+dimension[i] < ArrayNIndexing<N>::__dimensions[i] && "invalid dimension for subarray.");
 		return const_partial_iterator(first,add(first,dimension), this);
 	}
 
