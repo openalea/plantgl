@@ -94,6 +94,7 @@
     <ClCompile Include="base\bspherecomputer.cpp" />
     <ClCompile Include="base\curvemanipulation.cpp" />
     <ClCompile Include="base\discretizer.cpp" />
+    <ClCompile Include="base\intersection.cpp" />
     <ClCompile Include="base\matrixcomputer.cpp" />
     <ClCompile Include="base\merge.cpp" />
     <ClCompile Include="base\pointmanipulation.cpp" />
@@ -154,9 +155,11 @@
     <ClInclude Include="base\amaptranslator.h" />
     <ClInclude Include="base\bboxcomputer.h" />
     <ClInclude Include="base\bspherecomputer.h" />
+    <ClInclude Include="base\cgalwrap.h" />
     <ClInclude Include="base\curvemanipulation.h" />
     <ClInclude Include="base\dijkstra.h" />
     <ClInclude Include="base\discretizer.h" />
+    <ClInclude Include="base\intersection.h" />
     <ClInclude Include="base\matrixcomputer.h" />
     <ClInclude Include="base\merge.h" />
     <ClInclude Include="base\pointmanipulation.h" />

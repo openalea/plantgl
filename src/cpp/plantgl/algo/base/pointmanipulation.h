@@ -40,6 +40,7 @@
 #include <plantgl/algo/grid/regularpointgrid.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/function/function.h>
+#include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/tool/util_array.h>
 
 PGL_BEGIN_NAMESPACE
@@ -289,10 +290,17 @@ ALGO_API TOOLS(RealArrayPtr) estimate_radii(const Point3ArrayPtr nodes,
                                             real_t averageradius,
                                             real_t pipeexponent = 2.5);
 
+ALGO_API bool node_intersection_test(const TOOLS(Vector3)& root, real_t rootradius, 
+                                     const TOOLS(Vector3)& p1,   real_t radius1, 
+                                     const TOOLS(Vector3)& p2,   real_t radius2,
+                                     real_t overlapfilter,
+                                     bool verbose = false, ScenePtr * visu = NULL);
+
 // determine nodes to filter
 ALGO_API Index filter_short_nodes(const Point3ArrayPtr nodes,
                             const TOOLS(Uint32Array1Ptr) parents, 
-                            const TOOLS(RealArrayPtr) radii,
+                            const TOOLS(RealArrayPtr) radii, 
+                            const TOOLS(RealArrayPtr) weights,
                             real_t edgelengthfilter = 0.1,
                             real_t overlapfilter = 0.5);
 

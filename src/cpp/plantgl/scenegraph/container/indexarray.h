@@ -225,6 +225,18 @@ public:
 /// IndexArray Pointer
 typedef RCPtr<IndexArray> IndexArrayPtr;
 
+template<class IndexArrayType>
+void shift_all_indices(RCPtr<IndexArrayType> indices, int shift)
+{
+    typedef typename IndexArrayType::iterator ArrayIterator;
+    typedef typename IndexArrayType::element_type Index;
+    typedef typename Index::iterator IndexIterator;
+    for (ArrayIterator it = indices->begin(); it != indices->end(); ++it){
+        for(IndexIterator itv = it->begin(); itv != it->end(); ++itv){
+            *itv += shift;
+        }
+    }
+}
 
 /* ----------------------------------------------------------------------- */
 

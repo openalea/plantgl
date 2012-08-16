@@ -42,7 +42,7 @@ protected:
 	typedef size_t CellId;  
 protected:
 
-    NumpyContainer(size_t size = 0) : __values(element_type()) { __values.resize(size); }
+    NumpyContainer(size_t size = 0) : __values(element_type()) { initialize(size); }
     container_type __values;
 
 public:
@@ -63,19 +63,21 @@ public:
     inline bool empty( ) const { return len(__values) == 0; }
 
     /// Clear \e self.
-    inline void clear( ) { /*__values = container_type(size);*/ }
+    inline void clear( ) { initialize(0); }
 
     void initialize(const size_t size) { 
+        printf("initialize %i\n", size);
 		__values = container_type(element_type());
-        __values.resize(size);
+        if (size > 0) __values.resize(size);
 	}
 
     container_type get_array() const { return __values; }
 };
 
-typedef SpatialArrayN<bp::object, Vector2, 2, NumpyContainer<bp::object> > Py2Grid;
-typedef SpatialArrayN<bp::object, Vector3, 3, NumpyContainer<bp::object> > Py3Grid;
-typedef SpatialArrayN<bp::object, Vector4, 4, NumpyContainer<bp::object> > Py4Grid;
+#define DEFAULT_PYTHON_OBJ_TYPE real_t
+typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector2, 2, NumpyContainer<DEFAULT_PYTHON_OBJ_TYPE> > Py2Grid;
+typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector3, 3, NumpyContainer<DEFAULT_PYTHON_OBJ_TYPE> > Py3Grid;
+typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector4, 4, NumpyContainer<DEFAULT_PYTHON_OBJ_TYPE> > Py4Grid;
 
 template<class T>
 class NoneContainer {
@@ -118,7 +120,7 @@ typedef SpatialArrayN<bp::object, Vector4, 4, NoneContainer<bp::object> > Py4Gri
 
 void export_PyGrid()
 {
-
+    boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
   class_< Py2Grid > ("Grid2", init<Vector2, Vector2, Vector2>
      ( "Construct a regular 2D grid.", args("voxelsize","minpoint","maxpoint") ))
  	 .def(spatialarray_func<Py2Grid>())

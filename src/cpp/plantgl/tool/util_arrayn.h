@@ -108,7 +108,7 @@ public:
 
 template<class T>
 class VectorContainer {
-protected:
+public:
 
 	typedef T element_type;
 	typedef std::vector<T> container_type;

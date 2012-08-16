@@ -216,6 +216,9 @@
     <ClCompile Include="grid\kdtree.cpp">
       <Filter>Grid</Filter>
     </ClCompile>
+    <ClCompile Include="base\intersection.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\amaptranslator.h">
@@ -429,6 +432,12 @@
     </ClInclude>
     <ClInclude Include="grid\annkdtree_p.h">
       <Filter>Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="base\intersection.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\cgalwrap.h">
+      <Filter>Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1115,14 +1115,16 @@ PGL::average_radius(const Point3ArrayPtr points,
     for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
     {
         real_t minpdist = REAL_MAX;
-        Index nids = tree.k_closest_points(*itp,10);
+        Index nids = tree.k_closest_points(*itp,maxclosestnode);
         for(Index::const_iterator nit = nids.begin(); nit != nids.end(); ++nit){
+
             Vector3 point(*itp);
             real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
             if (d < minpdist) minpdist = d;
+
             for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
                 Vector3 mpoint(*itp);
-                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc));
                 if (d < minpdist) minpdist = d;
             }
         }
@@ -1156,59 +1158,138 @@ PGL::estimate_radii(const Point3ArrayPtr nodes,
     uint32_t root;
     IndexArrayPtr children = determine_children(parents, root);
 
-    result->setAt(root,1);
     real_t cr = weights->getAt(root);
     real_t totalcu = cr;
-    real_t totalcu_cr = cr;
+    real_t totalcu_cr = cr * pow(cr, pipeexponent);
 
-    // compute position of all points as compromive between orientation and previous position
+    // estimate radius of each nodes
     IndexArrayPreOrderConstIterator piterator(children,root);
     for(++piterator; !piterator.atEnd(); ++piterator){
         real_t cu = weights->getAt(*piterator);
         totalcu += cu;
-        totalcu_cr += cu * pow(cu/cr,pipeexponent);
+        totalcu_cr += cu * pow(cu,pipeexponent);
     }
 
-    real_t radiusroot = totalcu * averageradius / totalcu_cr;
+    real_t radiusroot =  averageradius * pow(cr, pipeexponent) * totalcu / totalcu_cr;
     // real_t radiusroot = pow(totalcu * averageradius / totalcu_cr,1.0/pipeexponent);
 
     uint32_t nid = 0;
     for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++nid)
-        *itres = radiusroot * weights->getAt(nid) / cr;
+        *itres = radiusroot * pow(weights->getAt(nid) / cr, pipeexponent);
 
     return result;
 }
 
-/*
-bool intersection_test2(const Vector3& root, real_t rootradius, 
+#include <plantgl/algo/base/intersection.h>
+#include <plantgl/algo/base/surfcomputer.h>
+#include <plantgl/pgl_scenegraph.h>
+
+bool PGL::node_intersection_test(const Vector3& root, real_t rootradius, 
                        const Vector3& p1, real_t radius1, 
                        const Vector3& p2, real_t radius2,
-                       real_t overlapfilter)
+                       real_t overlapfilter,
+                       bool verbose, ScenePtr * visu)
 {
-    Vector3 p1c = p1-root;
-    Vector3 p2c = p2-root;
-    Vector3 cmpplannormal = direction(cross(p1c,p2c));
-    real_t diffangle = angle(p1c,p2c,cmpplannormal);
-    Vector3 v1 = direction(cross(p1c,cmpplannormal));
-    Vector3 v2 = direction(cross(p2c,cmpplannormal));
-    Vector3 p1a = v1*rootradius;
-    Vector3 p2a = v2*rootradius;
-    Vector3 p1b = p1c + v1*radius1;
-    Vector3 p2b = p2c + v2*radius2;
-    Ray r(Vector3::ORIGIN,direction(p2a));
-    if(r.intersect(p1a,p1b)){
+    Point2ArrayPtr cone1(new Point2Array(radius1 > GEOM_EPSILON? 4 : 3));
+    Point2ArrayPtr cone2(new Point2Array(radius2 > GEOM_EPSILON? 4 : 3));
+
+    Vector3 np1 = p1 - root; real_t l1 = np1.normalize();
+    Vector3 np2 = p2 - root; real_t l2 = np2.normalize();
+    Vector3 medium = (np1 + np2) / 2;
+
+    Vector3 normalvec = cross(np1, np2);
+    if (norm(normalvec) < GEOM_EPSILON) {
+
+        uint32_t ipos = 0;
+        cone1->setAt(ipos++,Vector2(rootradius,0));
+        if (radius1 > GEOM_EPSILON){
+            cone1->setAt(ipos++, Vector2(radius1,l1));
+            cone1->setAt(ipos++, Vector2(-radius1,l1));
+        }
+        else cone1->setAt(ipos++, Vector2(0,l1));
+        cone1->setAt(ipos++,Vector2(-rootradius,0));
+
+        ipos = 0;
+        cone2->setAt(ipos++,Vector2(rootradius,0));
+        if (radius2 > GEOM_EPSILON){
+            cone2->setAt(ipos++, Vector2(radius2,l2));
+            cone2->setAt(ipos++, Vector2(-radius2,l2));
+        }
+        else cone2->setAt(ipos++, Vector2(0,l2));
+        cone2->setAt(ipos++,Vector2(-rootradius,0));
+    }
+    else {
+        normalvec.normalize();
+        Vector3 horizontalvec = cross(medium, normalvec);
+        Vector3 horizontalvec1 = cross(np1, normalvec);
+        Vector3 horizontalvec2 = cross(np2, normalvec);
+
+        Vector2 hvec12D(dot(horizontalvec,horizontalvec1),dot(medium,horizontalvec1));
+        Vector2 hvec22D(dot(horizontalvec,horizontalvec2),dot(medium,horizontalvec2));
+
+        Vector2 pvec12D(dot(horizontalvec,np1),dot(medium,np1));
+        Vector2 pvec22D(dot(horizontalvec,np2),dot(medium,np2));
+
+        uint32_t ipos = 0;
+        cone1->setAt(ipos++,rootradius * hvec12D);
+        if (radius1 > GEOM_EPSILON){
+            cone1->setAt(ipos++, l1 * pvec12D + radius1 * hvec12D);
+            cone1->setAt(ipos++, l1 * pvec12D - radius1 * hvec12D);
+        }
+        else cone1->setAt(ipos++, l1 * pvec12D);
+        cone1->setAt(ipos++, - rootradius * hvec12D);
+
+        ipos = 0;
+        cone2->setAt(ipos++, rootradius * hvec22D);
+        if (radius2 > GEOM_EPSILON){
+            cone2->setAt(ipos++, l2 * pvec22D + radius2 * hvec22D);
+            cone2->setAt(ipos++, l2 * pvec22D - radius2 * hvec22D);
+        }
+        else cone2->setAt(ipos++, l2 * pvec22D);
+        cone2->setAt(ipos++, - rootradius * hvec22D);
     }
 
-}
-*/
+    if(verbose) {
+        printf("a = [");
+        for(Point2Array::const_iterator it = cone1->begin(); it != cone1->end(); ++it)
+            printf("(%f,%f),", it->x(),it->y());
+        printf("]\n");
 
-bool intersection_test(const Vector3& root, real_t rootradius, 
-                       const Vector3& p1, real_t radius1, 
-                       const Vector3& p2, real_t radius2,
-                       real_t overlapfilter)
-{
+        printf("b = [");
+        for(Point2Array::const_iterator it = cone2->begin(); it != cone2->end(); ++it)
+            printf("(%f,%f),", it->x(),it->y());
+        printf("]\n");
+
+        *visu = ScenePtr(new Scene());
+        (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone1,3)),AppearancePtr(new Material(Color3(0,255,0))))));
+        (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone2,3)),AppearancePtr(new Material(Color3(0,0,255))))));
+    }
+
+    std::pair<Point2ArrayPtr, IndexArrayPtr> intersection = polygon_intersection(cone1,cone2);
+
+    if(verbose) {
+        printf("res = [");
+        for(Point2Array::const_iterator it = intersection.first->begin(); it != intersection.first->end(); ++it)
+            printf("(%f,%f),", it->x(),it->y());
+        printf("]\n"); 
+        (*visu)->add(ShapePtr(new Shape(GeometryPtr(new FaceSet(Point3ArrayPtr(new Point3Array(intersection.first,0)),intersection.second)),AppearancePtr(new Material(Color3(255,0,0))))));
+    }
+
+    real_t intersection_surface = 0;
+    Index3ArrayPtr triangles = intersection.second->triangulate();
+    for (Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it){
+        intersection_surface += surface(intersection.first->getAt(it->getAt(0)),intersection.first->getAt(it->getAt(1)),intersection.first->getAt(it->getAt(2)));
+    }
+
+    real_t surface1 = l1 * (rootradius + radius1) /2 ;
+    real_t surface2 = l2 * (rootradius + radius2) /2 ;
+    
+    if(verbose) printf("%f, %f, %f\n", intersection_surface, surface1, surface2);
+
+    return ( (intersection_surface / surface1 > overlapfilter) || (intersection_surface / surface2 > overlapfilter));
+
     // We check if mid central point of cylinder 2 is in cylinder 1
-    Vector3 midp1 = (p1-root) * overlapfilter;
+ /*   Vector3 midp1 = (p1-root) * overlapfilter;
     Vector3 rp2 = p2-root;
     real_t normp2 = norm(rp2);
     Vector3 drp2 = rp2/normp2;
@@ -1216,14 +1297,16 @@ bool intersection_test(const Vector3& root, real_t rootradius,
     real_t corespt = corespu / normp2;
     Vector3 crp2 = drp2 * corespu;
     real_t radatcrp2 = rootradius + (radius2 -  rootradius) * corespt;
-    return norm(midp1-crp2) < radatcrp2;
+    return norm(midp1-crp2) < radatcrp2; */
 
 }
 
 
-ALGO_API Index PGL::filter_short_nodes(const Point3ArrayPtr nodes,
+
+ Index PGL::filter_short_nodes(const Point3ArrayPtr nodes,
                             const TOOLS(Uint32Array1Ptr) parents, 
-                            const TOOLS(RealArrayPtr) radii,
+                            const TOOLS(RealArrayPtr) radii, 
+                            const TOOLS(RealArrayPtr) weights,
                             real_t edgelengthfilter,
                             real_t overlapfilter)
 {
@@ -1234,7 +1317,6 @@ ALGO_API Index PGL::filter_short_nodes(const Point3ArrayPtr nodes,
 
     IndexArrayPostOrderConstIterator piterator(children,root);
     for(; !piterator.atEnd(); ++piterator){
-        // printf("vid : %i\n",*piterator);
         const Index& pchildren = children->getAt(*piterator);
         const Vector3& rpos = nodes->getAt(*piterator);
         Index fpchildren;
@@ -1249,29 +1331,40 @@ ALGO_API Index PGL::filter_short_nodes(const Point3ArrayPtr nodes,
         case 1:
             if (*piterator != root)
                 if (norm(direction(rpos-nodes->getAt(parents->getAt(*piterator)))- direction(nodes->getAt(fpchildren[0])-rpos)) < 0.1){
-                    printf("continuity\n");
+                    // printf("continuity\n");
                     toremove.push_back(*piterator);
                 }
             break;
         default:
-            for (Index::const_iterator itch = fpchildren.begin(); itch != fpchildren.end();  ++itch)
-                for (Index::const_iterator itch2 = itch+1; itch2 != fpchildren.end();  ++itch2)
-                {
-                    if (intersection_test(rpos, radii->getAt(*piterator),
-                                               nodes->getAt(*itch), radii->getAt(*itch),
-                                               nodes->getAt(*itch2), radii->getAt(*itch2),
-                                               overlapfilter))
-                    {
-                        toremove.push_back(*itch2);
-                    }
-                    else if (intersection_test(rpos, radii->getAt(*piterator),
-                                               nodes->getAt(*itch2), radii->getAt(*itch2),
-                                               nodes->getAt(*itch), radii->getAt(*itch),
-                                               overlapfilter))
-                    {
-                        toremove.push_back(*itch);
-                    }
-                }
+            {
+              // std::set<uint32_t> processed;
+              for (Index::const_iterator itch = fpchildren.begin(); itch != fpchildren.end();  ++itch)
+              {
+                  // if(processed.find(*itch) != processed.end()){
+                      for (Index::const_iterator itch2 = itch+1; itch2 != fpchildren.end();  ++itch2)
+                      {
+                        // if(processed.find(*itch2) != processed.end())
+                        // {
+                              if (node_intersection_test(rpos, radii->getAt(*piterator),
+                                  nodes->getAt(*itch), radii->getAt(*itch),
+                                  nodes->getAt(*itch2), radii->getAt(*itch2),
+                                  overlapfilter))
+                              {
+                                  if(weights->getAt(*itch) > weights->getAt(*itch2)){
+                                      toremove.push_back(*itch2);
+                           //           processed.insert(*itch2);
+                                  }
+                                  else {
+                                      toremove.push_back(*itch);
+                           //           processed.insert(*itch);
+                                      break;
+                                  }
+                              }
+                         // }
+                      }
+                  // }
+              }
+            }
             break;
         }
     }
@@ -1292,20 +1385,21 @@ void PGL::remove_nodes(const Index& toremove,
     uint32_t pid = 0;
     uint32_t * itid = idmap;
     Index::const_iterator itdel = sortedtoremove.begin();
+
     for (uint32_t cid = 0;  cid < nbNodes; ++cid, ++itid){
         if (itdel != sortedtoremove.end() && cid == *itdel) { 
                 *itid = noid; 
                 while(itdel != sortedtoremove.end() && *itdel <= cid) ++itdel; 
         }
         else { 
-            *itid = pid; 
-            ++pid; 
+            *itid = pid++; 
         }
     }
     uint32_t nbNewNodes = pid;
 
     Point3ArrayPtr newnodes(new Point3Array(*nodes));
     RealArrayPtr newradii(new RealArray(*radii));
+
     uint32_t lastdelid = UINT32_MAX;
     for(Index::const_reverse_iterator itdel2 = sortedtoremove.rbegin(); itdel2 != sortedtoremove.rend(); ++itdel2){
         if (*itdel2 != lastdelid){
@@ -1319,10 +1413,11 @@ void PGL::remove_nodes(const Index& toremove,
     pid = 0;
     for(Uint32Array1::iterator itParent = newparents->begin(); itParent != newparents->end(); ++itParent)
     {
-            ++pid; while (idmap[pid] == noid) ++pid;
+            while (idmap[pid] == noid) ++pid;
             uint32_t parent = parents->getAt(pid);
             while(idmap[parent] == noid) parent = parents->getAt(parent);
             *itParent = idmap[parent];
+            ++pid;
     }
 
     delete [] idmap;

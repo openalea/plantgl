@@ -117,6 +117,19 @@ py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjac
 #endif
 #endif
 
+object
+py_node_intersection_test(const TOOLS(Vector3)& root, real_t rootradius, 
+                                     const TOOLS(Vector3)& p1,   real_t radius1, 
+                                     const TOOLS(Vector3)& p2,   real_t radius2,
+                                     real_t overlapfilter,
+                                     bool verbose = false)
+{
+    ScenePtr * visu = NULL;
+    if (verbose) visu = new ScenePtr();
+    bool res = node_intersection_test(root,rootradius,p1, radius1, p2, radius2, overlapfilter, verbose, visu );
+    return make_tuple(res,visu);
+}
+
 void export_PointManip()
 {
 	def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
@@ -194,6 +207,7 @@ void export_PointManip()
     def("average_radius",&average_radius,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("maxclosestnodes")=10));
     def("estimate_radii",&estimate_radii,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
 
+    def("node_intersection_test",&py_node_intersection_test,(bp::arg("parent"),bp::arg("parentradius"),bp::arg("node1"),bp::arg("radius1"),bp::arg("node2"),bp::arg("radius2"),bp::arg("overlapfilter")=0.5,bp::arg("verbose")=false));
     def("filter_short_nodes",&filter_short_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("edgelengthfilter")=0.1,bp::arg("overlapfilter")=0.5));
     def("remove_nodes",&py_remove_nodes,(bp::arg("toremove"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii")));
 

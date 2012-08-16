@@ -214,7 +214,11 @@ protected:
 
 /// Compute the surface of a triangle
 static inline real_t surface(const TOOLS(Vector3)& i, const TOOLS(Vector3)& j, const TOOLS(Vector3)& k)
-{ return 0.5f * TOOLS(norm)( TOOLS(cross)(j-i,k-i)); }
+{ return TOOLS(norm)( TOOLS(cross)(j-i,k-i)) / 2; }
+
+/// Compute the surface of a triangle
+static inline real_t surface(const TOOLS(Vector2)& i, const TOOLS(Vector2)& j, const TOOLS(Vector2)& k)
+{ return ((j.x()-i.x()) * (k.y()-i.y()) - (k.x()-i.x()) * (j.y() - i.y())) / 2; }
 
 /// Compute the surface of the objects in the scene \e _scene
 real_t ALGO_API sceneSurface(const ScenePtr scene);
