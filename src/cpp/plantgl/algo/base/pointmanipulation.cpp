@@ -1184,6 +1184,74 @@ PGL::estimate_radii(const Point3ArrayPtr nodes,
 #include <plantgl/algo/base/surfcomputer.h>
 #include <plantgl/pgl_scenegraph.h>
 
+bool PGL::node_continuity_test(const Vector3& node, real_t noderadius, 
+                               const Vector3& parent, real_t parentradius,
+                               const Vector3& child, real_t childradius,
+                               real_t overlapfilter,
+                               bool verbose)
+{
+
+    Vector3 np1 = node - parent; real_t l1 = np1.normalize();
+    Vector3 np2 = child - node; real_t l2 = np2.normalize();
+    Vector3 medium = (np1 + np2) / 2;
+
+    Vector3 normalvec = cross(np1, np2);
+    if (norm(normalvec) < GEOM_EPSILON) {
+        real_t estimated_rad = parentradius + (parentradius-childradius)*l1/(l1+l2);
+        if (((estimated_rad+(parentradius-estimated_rad)*overlapfilter/2) > noderadius) &&
+            ((estimated_rad-(estimated_rad-childradius)*overlapfilter/2) < noderadius))
+            return true;
+        else return false;
+    }
+    else {
+        normalvec.normalize();
+        Vector3 horizontalvec = cross(medium, normalvec);
+        Vector3 horizontalvec1 = cross(np1, normalvec);
+        Vector3 horizontalvec2 = cross(np2, normalvec);
+
+        Vector2 hvec12D(dot(horizontalvec,horizontalvec1),dot(medium,horizontalvec1));
+        Vector2 hvec22D(dot(horizontalvec,horizontalvec2),dot(medium,horizontalvec2));
+
+        Vector2 pvec12D(dot(horizontalvec,np1),dot(medium,np1));
+        Vector2 pvec22D(dot(horizontalvec,np2),dot(medium,np2));
+
+        Point2ArrayPtr cone1(new Point2Array(childradius > GEOM_EPSILON? 4 : 3));
+        uint32_t ipos = 0;
+        cone1->setAt(ipos++,parentradius * hvec12D);
+        if (childradius > GEOM_EPSILON){
+            cone1->setAt(ipos++, 2 * l1 * pvec12D + childradius * hvec12D);
+            cone1->setAt(ipos++, 2 * l1 * pvec12D - childradius * hvec12D);
+        }
+        else cone1->setAt(ipos++, 2 * l1 * pvec12D);
+        cone1->setAt(ipos++, - parentradius * hvec12D);
+
+        Point2ArrayPtr cone2(new Point2Array(childradius > GEOM_EPSILON? 4 : 3));
+        ipos = 0;
+        cone2->setAt(ipos++, noderadius * hvec22D);
+        if (childradius > GEOM_EPSILON){
+            cone2->setAt(ipos++, l2 * pvec22D + childradius * hvec22D);
+            cone2->setAt(ipos++, l2 * pvec22D - childradius * hvec22D);
+        }
+        else cone2->setAt(ipos++, l2 * pvec22D);
+        cone2->setAt(ipos++, - noderadius * hvec22D);
+
+        std::pair<Point2ArrayPtr, IndexArrayPtr> intersection = polygon_intersection(cone1,cone2);
+
+        real_t intersection_surface = 0;
+        Index3ArrayPtr triangles = intersection.second->triangulate();
+        for (Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it){
+            intersection_surface += surface(intersection.first->getAt(it->getAt(0)),intersection.first->getAt(it->getAt(1)),intersection.first->getAt(it->getAt(2)));
+        }
+
+        real_t surface1 = l1 * (parentradius + childradius)  ;
+        real_t surface2 = l2 * (noderadius + childradius) / 2 ;
+    
+        if(verbose) printf("%f, %f, %f\n", intersection_surface, surface1, surface2);
+
+        return ( (intersection_surface / surface1 > overlapfilter) || (intersection_surface / surface2 > overlapfilter));
+    }
+}
+
 bool PGL::node_intersection_test(const Vector3& root, real_t rootradius, 
                        const Vector3& p1, real_t radius1, 
                        const Vector3& p2, real_t radius2,
@@ -1316,7 +1384,16 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
     IndexArrayPtr children = determine_children(parents, root);
 
     IndexArrayPostOrderConstIterator piterator(children,root);
-    for(; !piterator.atEnd(); ++piterator){
+    uint32_t nbNodes = nodes->size();
+    uint32_t cpercent = 0;
+    uint32_t current  = 0;
+    for(; !piterator.atEnd(); ++piterator, ++current){
+        real_t ncpercent = 100 * current / float(nbNodes);
+        if(cpercent + 5 <= ncpercent ) {
+            printf("filtering computed for %.2f%% of nodes.\n",ncpercent);
+            cpercent = ncpercent;
+        }
+
         const Index& pchildren = children->getAt(*piterator);
         const Vector3& rpos = nodes->getAt(*piterator);
         Index fpchildren;

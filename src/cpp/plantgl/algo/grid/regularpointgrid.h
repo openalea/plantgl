@@ -186,6 +186,27 @@ public:
         return res;
     }
 
+    PointIndexList query_points_in_cone(const VectorType& point, const VectorType& direction,
+                                       real_t coneradius,  real_t coneangle = GEOM_HALF_PI) const{
+        VectorType mdirection = direction.normed(); 
+        VoxelIdList voxels = get_voxels_in_cone(point,mdirection,coneradius,coneangle);
+        PointIndexList res;
+        real_t cosconeangle = cos(coneangle / 2);
+        for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
+            const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
+            if(!voxelpointlist.empty()){
+              for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
+                // Check whether point i is in the cone
+                VectorType pointtoconeinit = points().getAt(*itPointIndex)-point;
+                real_t dist = pointtoconeinit.normalize();
+                if ((dist <= coneradius + GEOM_EPSILON) && (dot(pointtoconeinit,mdirection) > cosconeangle - GEOM_EPSILON))
+                    res.push_back(*itPointIndex);
+              }
+            }
+        }
+        return res;
+    }
+
     bool closest_point(const VectorType& point, PointIndex& result, real_t maxdist = REAL_MAX) const{
         Index centervxl = indexFromPoint(point);
 		real_t radius = maxdist;

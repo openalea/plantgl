@@ -290,6 +290,12 @@ ALGO_API TOOLS(RealArrayPtr) estimate_radii(const Point3ArrayPtr nodes,
                                             real_t averageradius,
                                             real_t pipeexponent = 2.5);
 
+ALGO_API bool node_continuity_test(const TOOLS(Vector3)& node, real_t noderadius, 
+                                   const TOOLS(Vector3)& parent, real_t parentradius,
+                                   const TOOLS(Vector3)& child, real_t childradius,
+                                   real_t overlapfilter = 0.5,
+                                   bool verbose = false);
+
 ALGO_API bool node_intersection_test(const TOOLS(Vector3)& root, real_t rootradius, 
                                      const TOOLS(Vector3)& p1,   real_t radius1, 
                                      const TOOLS(Vector3)& p2,   real_t radius2,

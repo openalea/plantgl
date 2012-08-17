@@ -73,5 +73,6 @@ void export_SurfComputer()
   def("surface",(real_t(*)(const ScenePtr))&sceneSurface,"Compute surface of a scene");
   def("surface",&surf_geom,"Compute surface of a geometry");
   def("surface",&surf_sh,"Compute surface of a shape");
+  def("surface",(real_t(*)(const TOOLS(Vector2)&,const TOOLS(Vector2)&,const TOOLS(Vector2)&))&surface,"Compute surface of a 2D triangle");
   def("surface",(real_t(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&surface,"Compute surface of a triangle");
 }

@@ -49,6 +49,10 @@ template<class PointGrid>
  { return make_list(grid->query_ball_point(point,radius))(); }
 
 template<class PointGrid>
+ object py_query_points_in_cone(PointGrid * grid, typename PointGrid::VectorType point, typename PointGrid::VectorType direction, real_t radius, real_t angle) 
+ { return make_list(grid->query_points_in_cone(point,direction,radius,angle))(); }
+
+template<class PointGrid>
  object py_closest_point(PointGrid * grid, typename PointGrid::VectorType point, real_t maxdist = REAL_MAX) 
  { 
 	typename PointGrid::PointIndex res;
@@ -112,6 +116,16 @@ object py_getCorners(PointGrid * grid){
 }
 
 template<class PointGrid>
+object py_getVoxelCorners(PointGrid * grid, object c){
+	 return make_list(grid->getVoxelCorners(extract_tuple<typename PointGrid::Index>(c)))();
+}
+
+template<class PointGrid>
+object py_getVoxelCornersFromId(PointGrid * grid, typename PointGrid::CellId vid){
+	 return make_list(grid->getVoxelCorners(vid))();
+}
+
+template<class PointGrid>
 object py_getMaxIndexDistanceToBorder(PointGrid * grid, object c){
 	 return make_pgl_tuple(grid->getMaxIndexDistanceToBorder(extract_tuple<typename PointGrid::Index>(c)));
 }
@@ -158,6 +172,8 @@ class spatialarray_func : public boost::python::def_visitor<spatialarray_func<Sp
 	 .def("getLowerCorner",&SpatialArray::getLowerCorner)
 	 .def("getUpperCorner",&SpatialArray::getUpperCorner)
 	 .def("getCorners",&py_getCorners<SpatialArray>)
+	 .def("getVoxelCorners",&py_getVoxelCorners<SpatialArray>)
+	 .def("getVoxelCornersFromId",&py_getVoxelCornersFromId<SpatialArray>)
 	 .def("getMaxIndexDistanceToBorder",&py_getMaxIndexDistanceToBorder<SpatialArray>)
 	 .def("getMaxDistanceToBorder",&SpatialArray::getMaxDistanceToBorder) /**/
      .def("cellId",&py_cellId<SpatialArray>)
@@ -184,6 +200,7 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
                typename PointGrid::PointContainerPtr>(args("voxelsize","minpoint","maxpoint","points")))
 	 .def(spatialarray_func<PointGrid>())
 	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
+	 .def("query_points_in_cone",&py_query_points_in_cone<PointGrid>)
 	 .def("closest_point",&py_closest_point<PointGrid>,(bp::arg("point"),bp::arg("maxdist")=REAL_MAX))
 	 .def("enable_point",&PointGrid::enable_point)
 	 .def("disable_point",&PointGrid::disable_point)

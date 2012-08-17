@@ -185,6 +185,28 @@ public:
 		return res;
 	}
 
+	typename std::vector<VectorType> getVoxelCorners(const Index& coord) const {
+		VectorType minpoint = getVoxelLowerPoint(coord);
+		VectorType maxpoint = getVoxelUpperPoint(coord);
+		typename std::vector<VectorType> res;
+		res.push_back(minpoint);
+		for (size_t i = 0; i < NbDimension; ++i){
+			typename std::vector<VectorType>::const_iterator beg = res.begin();
+			typename std::vector<VectorType>::const_iterator end = res.end();
+			for(typename std::vector<VectorType>::const_iterator it = beg; it != end; ++it){
+				VectorType oppositepoint = *it;
+				oppositepoint[i] = maxpoint[i];
+				res.push_back(oppositepoint);
+			}
+		}
+		return res;
+	}
+
+	typename std::vector<VectorType> getVoxelCorners(const CellId& cid) const {
+        return getVoxelCorners(Base::index(cid));
+    }
+
+
     CellIdList get_voxels_around_point(const VectorType& point, real_t radius, 
 										real_t minradius = 0, bool filterEmpty = true) const {
         CellIdList res;
@@ -262,6 +284,63 @@ public:
                     res.push_back(vxlid);
             }
 			++itvoxel;
+        }
+        return res;
+    }
+
+    CellIdList get_voxels_in_cone(const VectorType& point, const VectorType& direction,
+                                  real_t radius,  real_t coneangle = GEOM_HALF_PI, 
+                                  bool filterEmpty = true) const {
+
+        CellIdList res;
+        Index centervxl = indexFromPoint(point);
+        VectorType mdirection = direction.normed();
+
+        // examine all voxels which are in bbox of the sphere around point with radius radius
+
+        // discretize radius in term of voxel size
+        Index radiusvoxelsize;
+        for (size_t i = 0; i < NbDimension; ++i){
+            radiusvoxelsize[i] = 1+(radius/getVoxelSize()[i]);
+        }
+
+        // find min and max voxel coordinates
+        Index mincoord, maxcoord, dim;
+        for (size_t i = 0; i < NbDimension; ++i){
+            mincoord[i] = (centervxl[i] < radiusvoxelsize[i]?0:centervxl[i]-radiusvoxelsize[i]);
+            maxcoord[i] = std::min<size_t>(Base::dimensions()[i]-1,centervxl[i]+radiusvoxelsize[i]);
+            dim[i] = maxcoord[i] - mincoord[i];
+        }
+
+		real_t normvoxelsize = norm(getVoxelSize());
+        real_t r = radius + normvoxelsize;
+        const_partial_iterator itvoxel = getSubArray(mincoord,dim);
+
+        real_t halfconeangle = coneangle / 2;
+        real_t cosconeangle = cos(halfconeangle);
+        real_t coslargeconeangle = cos(halfconeangle+ GEOM_HALF_PI/2);
+        while(!itvoxel.atEnd()){
+            // Check whether coord is in ball
+            VectorType voxelcentertoconeinit = getVoxelCenter(itvoxel.index())-point;
+			real_t voxeldist = voxelcentertoconeinit.normalize();
+            if (voxeldist < r ){
+                CellId vxlid = itvoxel.cellId();
+                if(!filterEmpty || !itvoxel->empty()){
+                    // Check first for center point of the voxel respect the angle condition
+                    real_t a = dot(voxelcentertoconeinit,mdirection);
+                    if (a > cosconeangle) res.push_back(vxlid);
+                    // if the angle is not too big, we check if one of the corner is inside the cone
+                    else if(a < coslargeconeangle){
+                        std::vector<VectorType> corners = getVoxelCorners(vxlid);
+                        for(std::vector<VectorType>::const_iterator itcorner = corners.begin(); itcorner != corners.end(); ++itcorner)
+                            if (dot(*itcorner - point,mdirection) > cosconeangle){
+                                res.push_back(vxlid);
+                                break;
+                            }
+                    }
+                }
+            }
+            ++itvoxel;
         }
         return res;
     }
