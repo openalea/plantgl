@@ -332,7 +332,7 @@ public:
                     // if the angle is not too big, we check if one of the corner is inside the cone
                     else if(a < coslargeconeangle){
                         std::vector<VectorType> corners = getVoxelCorners(vxlid);
-                        for(std::vector<VectorType>::const_iterator itcorner = corners.begin(); itcorner != corners.end(); ++itcorner)
+                        for(typename std::vector<VectorType>::const_iterator itcorner = corners.begin(); itcorner != corners.end(); ++itcorner)
                             if (dot(*itcorner - point,mdirection) > cosconeangle){
                                 res.push_back(vxlid);
                                 break;
