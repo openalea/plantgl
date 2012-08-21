@@ -49,8 +49,8 @@ template<class PointGrid>
  { return make_list(grid->query_ball_point(point,radius))(); }
 
 template<class PointGrid>
- object py_query_points_in_cone(PointGrid * grid, typename PointGrid::VectorType point, typename PointGrid::VectorType direction, real_t radius, real_t angle) 
- { return make_list(grid->query_points_in_cone(point,direction,radius,angle))(); }
+ object py_query_points_in_cone(PointGrid * grid, typename PointGrid::VectorType origin, typename PointGrid::VectorType direction, real_t radius, real_t angle) 
+ { return make_list(grid->query_points_in_cone(origin,direction,radius,angle))(); }
 
 template<class PointGrid>
  object py_closest_point(PointGrid * grid, typename PointGrid::VectorType point, real_t maxdist = REAL_MAX) 
@@ -59,6 +59,23 @@ template<class PointGrid>
 	 if (grid->closest_point(point,res,maxdist)) return object(res);
 	 else return object();
  }
+
+template<class PointGrid>
+ object py_query_voxels_in_cone(PointGrid * grid, typename PointGrid::VectorType origin, typename PointGrid::VectorType direction, real_t radius, real_t angle) 
+ {   return make_list(grid->query_voxels_in_cone(origin,direction,radius,angle))();  }
+
+template<class PointGrid>
+ object py_query_voxels_around_point(PointGrid * grid, typename PointGrid::VectorType center, real_t radius) 
+ { return make_list(grid->query_voxels_around_point(center,radius))(); }
+
+template<class PointGrid>
+ object py_query_voxels_in_box(PointGrid * grid, const typename PointGrid::Index center, object maxradius, object minradius = object()) 
+ {   
+     int v = 0;
+     typename PointGrid::Index cminradius(v);
+     if (minradius != object())cminradius =  extract_tuple<typename PointGrid::Index>(minradius);
+     return make_list(grid->query_voxels_in_box(center,extract_tuple<typename PointGrid::Index>(maxradius),cminradius))(); }
+
 
 template<class PointGrid>
 object  py_index(PointGrid * grid, typename PointGrid::CellId c){
@@ -178,6 +195,10 @@ class spatialarray_func : public boost::python::def_visitor<spatialarray_func<Sp
 	 .def("getMaxDistanceToBorder",&SpatialArray::getMaxDistanceToBorder) /**/
      .def("cellId",&py_cellId<SpatialArray>)
  	 .def("index",&py_index<SpatialArray>)
+     .def("query_voxels_in_cone",&py_query_voxels_in_cone<SpatialArray>,bp::args("origin","direction","radius","angle"))
+     .def("query_voxels_around_point",&py_query_voxels_around_point<SpatialArray>,bp::args("center","radius"))
+     .def("query_voxels_in_box",&py_query_voxels_in_box<SpatialArray>,(bp::arg("center"),bp::arg("maxradius"),bp::arg("minradius")=bp::object()))
+     
          ;
     }
 };
@@ -199,8 +220,8 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
                typename PointGrid::VectorType,
                typename PointGrid::PointContainerPtr>(args("voxelsize","minpoint","maxpoint","points")))
 	 .def(spatialarray_func<PointGrid>())
-	 .def("query_ball_point",&py_query_ball_point<PointGrid>)
-	 .def("query_points_in_cone",&py_query_points_in_cone<PointGrid>)
+	 .def("query_ball_point",&py_query_ball_point<PointGrid>,bp::args("center","radius"))
+	 .def("query_points_in_cone",&py_query_points_in_cone<PointGrid>,bp::args("origin","direction","radius","angle"))
 	 .def("closest_point",&py_closest_point<PointGrid>,(bp::arg("point"),bp::arg("maxdist")=REAL_MAX))
 	 .def("enable_point",&PointGrid::enable_point)
 	 .def("disable_point",&PointGrid::disable_point)

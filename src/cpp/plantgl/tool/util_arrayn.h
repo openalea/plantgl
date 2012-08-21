@@ -107,6 +107,18 @@ public:
 
 
 template<class T>
+class IsEmptyPolicy {
+public:
+    static inline bool is_empty(const T& value) { return value.empty(); }
+};
+
+template<class T>
+class NoIsEmptyPolicy {
+public:
+    static inline bool is_empty(const T& value) { return false; }
+};
+
+template<class T, class EmptyPolicy = IsEmptyPolicy<T> >
 class VectorContainer {
 public:
 
@@ -118,7 +130,8 @@ public:
 protected:
 
     VectorContainer(size_t size = 0) : __values(size) {}
-    // size_t valuesize() const { return __values.size(); }
+
+    // The actual container
     container_type __values;
 
 public:
@@ -132,6 +145,9 @@ public:
     inline void setAt(const CellId& cid, const element_type& value) 
     { __values[cid] = value; }
 
+    inline bool is_empty(const CellId& cid) const
+    { return EmptyPolicy::is_empty(__values[cid]); }
+        
     /// Return the size of the container
 	inline size_t valuesize() const { return __values.size(); }
 
@@ -156,6 +172,7 @@ public:
     void initialize(const size_t size) { 
 		__values = container_type(size);
 	}
+
 };
 
 template <int N>
@@ -231,9 +248,9 @@ public:
 
 	typedef T element_type;
 	typedef ContainerType container_type;
-    typedef typename container_type::CellId CellId;
-	typedef const_partial_iteratorT<ArrayN<T,N> > const_partial_iterator;
-	typedef Tuple<size_t,N> Index;
+    typedef typename ContainerType::CellId CellId;
+	typedef const_partial_iteratorT<ArrayN<T,N,ContainerType> > const_partial_iterator;
+	typedef typename ArrayNIndexing<N>::Index Index;
 
 	explicit ArrayN(const Index& size):
 	  ArrayNIndexing<N>(size),

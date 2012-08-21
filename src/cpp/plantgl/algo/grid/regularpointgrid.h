@@ -64,6 +64,20 @@ protected:
 };
 
 
+template<class VectorType>
+bool is_point_in_cone(const VectorType& point, 
+                      const VectorType& coneorigin, const VectorType& conedirection,
+                      real_t coneradius,  real_t coneangle = GEOM_HALF_PI) 
+{
+    VectorType mconedirection = conedirection.normed(); 
+    real_t cosconeangle = cos(coneangle / 2);
+    VectorType pointtoconeorigin = point-coneorigin;
+    real_t dist = pointtoconeorigin.normalize();
+    if ((dist <= coneradius + GEOM_EPSILON) && (dot(pointtoconeorigin,mconedirection) > (cosconeangle - GEOM_EPSILON)))
+        return true;
+    return false;
+}
+
 /* ----------------------------------------------------------------------- */
 
 template <class PointContainer,
@@ -171,7 +185,7 @@ public:
 
 
     PointIndexList query_ball_point(const VectorType& point, real_t radius) const{
-        VoxelIdList voxels = get_voxels_around_point(point,radius);
+        VoxelIdList voxels = query_voxels_around_point(point,radius);
         PointIndexList res;
         for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
             const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
@@ -186,10 +200,10 @@ public:
         return res;
     }
 
-    PointIndexList query_points_in_cone(const VectorType& point, const VectorType& direction,
+    PointIndexList query_points_in_cone(const VectorType& coneorigin, const VectorType& conedirection,
                                        real_t coneradius,  real_t coneangle = GEOM_HALF_PI) const{
-        VectorType mdirection = direction.normed(); 
-        VoxelIdList voxels = get_voxels_in_cone(point,mdirection,coneradius,coneangle);
+        VectorType mdirection = conedirection.normed(); 
+        VoxelIdList voxels = query_voxels_in_cone(coneorigin,mdirection,coneradius,coneangle);
         PointIndexList res;
         real_t cosconeangle = cos(coneangle / 2);
         for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
@@ -197,9 +211,9 @@ public:
             if(!voxelpointlist.empty()){
               for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); ++itPointIndex){
                 // Check whether point i is in the cone
-                VectorType pointtoconeinit = points().getAt(*itPointIndex)-point;
-                real_t dist = pointtoconeinit.normalize();
-                if ((dist <= coneradius + GEOM_EPSILON) && (dot(pointtoconeinit,mdirection) > cosconeangle - GEOM_EPSILON))
+                VectorType pointtoconeorigin = points().getAt(*itPointIndex)-coneorigin;
+                real_t dist = pointtoconeorigin.normalize();
+                if ((dist <= coneradius + GEOM_EPSILON) && (dot(pointtoconeorigin,mdirection) > (cosconeangle - GEOM_EPSILON)))
                     res.push_back(*itPointIndex);
               }
             }
@@ -223,7 +237,7 @@ public:
 
         while (radius == maxdist && iter < maxiter){
 			// iter throught box layers of voxels
-			VoxelIdList voxelids = get_voxels_box(centervxl,Index(iter),Index(iter));
+			VoxelIdList voxelids = query_voxels_in_box(centervxl,Index(iter),Index(iter));
             for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin(); 
 					itVoxel != voxelids.end(); ++itVoxel){
 				// iter throught points
@@ -245,7 +259,7 @@ public:
 				real_t enclosedballradius = (*SpatialBase::getVoxelSize().getMin()*iter)+initialvoxelenclosedballradius;
 				if (radius > enclosedballradius){
 					// other points not in the box but in the sphere can be closer
-					VoxelIdList voxels = get_voxels_around_point(point,radius,enclosedballradius);
+					VoxelIdList voxels = query_voxels_around_point(point,radius,enclosedballradius);
 					for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); 
 						itvoxel != voxels.end(); ++itvoxel){
 						const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);

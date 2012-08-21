@@ -56,6 +56,8 @@ public:
     inline void setAt(const CellId& cid, const T& value) 
     { __values[cid] = value; }
 
+    /// Returns whether \e self is empty.
+    static inline bool is_empty(const CellId& cid) { return false; }
 
 	inline size_t valuesize() const { return len(__values); }
 
@@ -100,6 +102,17 @@ public:
 
     inline void setAt(const CellId& cid, const T& value) { }
 */
+	inline element_type getAt(const CellId& cid) const
+    { return boost::python::object(); }
+
+	inline element_type getAt(const CellId& cid)
+    { return boost::python::object(); }
+
+    inline void setAt(const CellId& cid, const T& value) { }
+
+
+    /// Returns whether \e self is empty.
+    static inline bool is_empty(const CellId& cid) { return false; }
 
 
 	inline size_t valuesize() const { return 0; }
@@ -120,7 +133,8 @@ typedef SpatialArrayN<bp::object, Vector4, 4, NoneContainer<bp::object> > Py4Gri
 
 void export_PyGrid()
 {
-    boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
+
+  boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
   class_< Py2Grid > ("Grid2", init<Vector2, Vector2, Vector2>
      ( "Construct a regular 2D grid.", args("voxelsize","minpoint","maxpoint") ))
  	 .def(spatialarray_func<Py2Grid>())
@@ -143,6 +157,10 @@ void export_PyGrid()
      ( "Construct a regular 3D grid indexing.", args("voxelsize","minpoint","maxpoint") ))
  	 .def(spatialarray_func<Py3GridIndexing>())
     ;
+
+  def("is_point_in_cone",&is_point_in_cone<Vector2>);
+  def("is_point_in_cone",&is_point_in_cone<Vector3>);
+  def("is_point_in_cone",&is_point_in_cone<Vector4>);
 }
 
 /* ----------------------------------------------------------------------- */

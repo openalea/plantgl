@@ -207,7 +207,7 @@ public:
     }
 
 
-    CellIdList get_voxels_around_point(const VectorType& point, real_t radius, 
+    CellIdList query_voxels_around_point(const VectorType& point, real_t radius, 
 										real_t minradius = 0, bool filterEmpty = true) const {
         CellIdList res;
         Index centervxl = indexFromPoint(point);
@@ -235,7 +235,7 @@ public:
 			real_t voxeldist = norm(getVoxelCenter(itvoxel.index())-point);
             if (voxeldist < r && voxeldist >= minr ){
                 CellId vxlid = itvoxel.cellId();
-                if(!filterEmpty || !itvoxel->empty())
+                if(!filterEmpty || !ContainerType::is_empty(vxlid))
                     res.push_back(vxlid);
             }
             ++itvoxel;
@@ -243,7 +243,7 @@ public:
         return res;
     }
 
-    CellIdList get_voxels_box(const Index& center, 
+    CellIdList query_voxels_in_box(const Index& center, 
 							   const Index& maxradius, 
 							   const Index& minradius = Index(0), 
 							   bool filterEmpty = true) const {
@@ -280,7 +280,7 @@ public:
 				{ toconsider = true; break; }
 			}
             if ( toconsider ){
-                if(!filterEmpty || !itvoxel->empty())
+                if(!filterEmpty || !ContainerType::is_empty(vxlid))
                     res.push_back(vxlid);
             }
 			++itvoxel;
@@ -288,13 +288,12 @@ public:
         return res;
     }
 
-    CellIdList get_voxels_in_cone(const VectorType& point, const VectorType& direction,
-                                  real_t radius,  real_t coneangle = GEOM_HALF_PI, 
-                                  bool filterEmpty = true) const {
-
+    CellIdList query_voxels_in_cone(const VectorType& coneorigin, const VectorType& conedirection,
+                                  real_t radius,  real_t coneangle = GEOM_HALF_PI, bool filterEmpty = true
+                                  ) const {
         CellIdList res;
-        Index centervxl = indexFromPoint(point);
-        VectorType mdirection = direction.normed();
+        Index centervxl = indexFromPoint(coneorigin);
+        VectorType mdirection = conedirection.normed();
 
         // examine all voxels which are in bbox of the sphere around point with radius radius
 
@@ -318,27 +317,29 @@ public:
 
         real_t halfconeangle = coneangle / 2;
         real_t cosconeangle = cos(halfconeangle);
-        real_t coslargeconeangle = cos(halfconeangle+ GEOM_HALF_PI/2);
+        real_t coslargeconeangle = cos(std::min<real_t>(halfconeangle+ GEOM_HALF_PI/2,GEOM_PI));
         while(!itvoxel.atEnd()){
             // Check whether coord is in ball
-            VectorType voxelcentertoconeinit = getVoxelCenter(itvoxel.index())-point;
-			real_t voxeldist = voxelcentertoconeinit.normalize();
+            VectorType voxelcentertoconeorigin = getVoxelCenter(itvoxel.index())-coneorigin;
+			real_t voxeldist = voxelcentertoconeorigin.normalize();
             if (voxeldist < r ){
                 CellId vxlid = itvoxel.cellId();
-                if(!filterEmpty || !itvoxel->empty()){
+                 if(!filterEmpty || !ContainerType::is_empty(vxlid)){
                     // Check first for center point of the voxel respect the angle condition
-                    real_t a = dot(voxelcentertoconeinit,mdirection);
+                    real_t a = dot(voxelcentertoconeorigin,mdirection);
                     if (a > cosconeangle) res.push_back(vxlid);
                     // if the angle is not too big, we check if one of the corner is inside the cone
-                    else if(a < coslargeconeangle){
+                    else if(a > coslargeconeangle) {
                         std::vector<VectorType> corners = getVoxelCorners(vxlid);
-                        for(typename std::vector<VectorType>::const_iterator itcorner = corners.begin(); itcorner != corners.end(); ++itcorner)
-                            if (dot(*itcorner - point,mdirection) > cosconeangle){
+                        for(typename std::vector<VectorType>::const_iterator itcorner = corners.begin(); itcorner != corners.end(); ++itcorner){
+                            real_t b = dot(direction(*itcorner - coneorigin),mdirection);
+                            if (b > cosconeangle){
                                 res.push_back(vxlid);
                                 break;
                             }
+                        }
                     }
-                }
+                 }
             }
             ++itvoxel;
         }
