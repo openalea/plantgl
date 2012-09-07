@@ -31,6 +31,7 @@
 
 #include <plantgl/algo/base/pointmanipulation.h>
 #include <boost/python.hpp>
+#include <plantgl/python/export_list.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -46,8 +47,7 @@ object py_points_dijkstra_shortest_path(const Point3ArrayPtr points,
 			                            const IndexArrayPtr adjacencies, 
                                         uint32_t root)
 {
-    std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> result = points_dijkstra_shortest_path(points,adjacencies,root);
-    return make_tuple(result.first,result.second);
+    return make_pair_tuple(points_dijkstra_shortest_path(points,adjacencies,root));
 }
 
 object
@@ -65,6 +65,17 @@ py_remove_nodes(const Index& toremove,
                 RealArrayPtr radii)
 {
     remove_nodes(toremove,nodes,parents,radii);
+    return make_tuple(nodes,parents,radii);
+}
+
+object
+py_merge_nodes(IndexArrayPtr tomerge,
+                Point3ArrayPtr nodes,
+                Uint32Array1Ptr parents, 
+                RealArrayPtr radii,
+                RealArrayPtr weights)
+{
+    merge_nodes(tomerge,nodes,parents,radii,weights);
     return make_tuple(nodes,parents,radii);
 }
 
@@ -130,6 +141,41 @@ py_node_intersection_test(const TOOLS(Vector3)& root, real_t rootradius,
     return make_tuple(res,visu);
 }
 
+object
+py_node_continuity_test(const TOOLS(Vector3)& node, real_t radius, 
+                        const TOOLS(Vector3)& parent,   real_t parentradius, 
+                        const TOOLS(Vector3)& child,   real_t childradius,
+                        real_t overlapfilter, bool verbose = false)
+{
+    ScenePtr * visu = NULL;
+    if (verbose) visu = new ScenePtr();
+    bool res = node_continuity_test(node,radius,parent, parentradius, child, childradius, overlapfilter, verbose, visu );
+    return make_tuple(res,visu);
+}
+
+object py_estimate_pointset_circle(const Point3ArrayPtr points, const Index&  group, bp::object direction, bool bounding = false)
+{
+    std::pair<TOOLS(Vector3),real_t> res;
+    if(direction == bp::object()) res = pointset_circle(points, group, bounding);
+    else res = pointset_circle(points, group, extract<Vector3>(direction)(), bounding);
+    return make_pair_tuple(res);
+}
+
+object py_estimate_pointsets_circles(const Point3ArrayPtr points, const IndexArrayPtr  groups, const Point3ArrayPtr directions = Point3ArrayPtr(0), bool bounding = false)
+{
+    return make_pair_tuple(pointsets_circles(points, groups, directions, bounding));
+}
+
+object py_estimate_pointsets_section_circles(const Point3ArrayPtr points, const IndexArrayPtr  adjacencies, const Point3ArrayPtr directions, real_t width, bool bounding = false)
+{
+    return make_pair_tuple(pointsets_section_circles(points, adjacencies, directions, width, bounding));
+}
+
+object py_findClosestFromSubset(const Vector3& o, Point3ArrayPtr pts, const Index& index)
+{
+    return make_pair_tuple(findClosestFromSubset(o, pts, index));
+}
+
 void export_PointManip()
 {
 	def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
@@ -165,7 +211,11 @@ void export_PointManip()
 
     def("density_from_r_neighborhood",&density_from_r_neighborhood,args("pid","points","adjacencies","radius"));
     def("densities_from_r_neighborhood",&densities_from_r_neighborhood,args("points","adjacencies","radius"));
-    def("max_neighborhood_distance",&max_neighborhood_distance,args("pid","points","adjacency"));
+
+    def("pointset_max_distance",(real_t (*)(uint32_t, const Point3ArrayPtr, const Index&))&pointset_max_distance,args("pid","points","adjacency"));
+    def("pointset_max_distance",(real_t (*)(const Vector3&, const Point3ArrayPtr, const Index&))&pointset_max_distance,args("center","points","adjacency"));
+    def("pointset_mean_distance",&pointset_mean_distance,args("center","points","adjacency"));
+    def("pointset_mean_radial_distance",&pointset_mean_radial_distance,args("center","direction","points","adjacency"));
 
     def("density_from_k_neighborhood",&density_from_k_neighborhood,(bp::arg("pid"),bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute density of a point according to its k neighboordhood. If k is 0, its value is deduced from adjacencies.");
     def("densities_from_k_neighborhood",&densities_from_k_neighborhood,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute local densities of a set of points according to their k neighboordhood. If k is 0, its value is deduced from adjacencies.");
@@ -181,6 +231,14 @@ void export_PointManip()
     def("principal_curvatures",&py_principal_curvatures_2,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
 #endif
 #endif
+
+    def("point_section",&point_section,args("pid","points","adjacencies","direction","width"));
+    def("points_sections",&points_sections,args("points","adjacencies","directions","width"));
+    
+    def("pointset_circle",&py_estimate_pointset_circle,(bp::arg("points"),bp::arg("group"),bp::arg("direction")=bp::object(),bp::arg("bounding")=false));
+    def("pointsets_circles",&py_estimate_pointsets_circles,(arg("points"),bp::arg("groups"),bp::arg("directions")=Point3ArrayPtr(0),bp::arg("bounding")=false));
+
+    def("pointsets_section_circles",&py_estimate_pointsets_section_circles,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("width"),bp::arg("bounding")=false));
 
     def("centroid_of_group",&centroid_of_group,args("points","group"));
     def("centroids_of_groups",&centroids_of_groups,args("points","groups"));
@@ -206,11 +264,19 @@ void export_PointManip()
 
     def("average_radius",&average_radius,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("maxclosestnodes")=10));
     def("estimate_radii",&estimate_radii,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
+    
+    def("min_max_mean_edge_length",&min_max_mean_edge_length,(bp::arg("points"),bp::arg("parents")));
 
+    def("node_continuity_test",&py_node_continuity_test,(bp::arg("node"),bp::arg("radius"),bp::arg("parent"),bp::arg("parentradius"),bp::arg("child"),bp::arg("radius"),bp::arg("overlapfilter")=0.5,bp::arg("verbose")=false));
     def("node_intersection_test",&py_node_intersection_test,(bp::arg("parent"),bp::arg("parentradius"),bp::arg("node1"),bp::arg("radius1"),bp::arg("node2"),bp::arg("radius2"),bp::arg("overlapfilter")=0.5,bp::arg("verbose")=false));
-    def("filter_short_nodes",&filter_short_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("edgelengthfilter")=0.1,bp::arg("overlapfilter")=0.5));
+    def("detect_short_nodes",&detect_short_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("edgelengthfilter")=0.001));
     def("remove_nodes",&py_remove_nodes,(bp::arg("toremove"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii")));
+    def("detect_similar_nodes",&detect_similar_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("weight"),bp::arg("overlapfilter")=0.5));
+    def("merge_nodes",&py_merge_nodes,(bp::arg("tomerge"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("weight")));
 
+    def("pointset_mean_direction",&pointset_mean_direction,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
+    def("pointset_direction",&pointset_directions,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
+    def("findClosestFromSubset",&py_findClosestFromSubset,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
 }
 
 /* ----------------------------------------------------------------------- */

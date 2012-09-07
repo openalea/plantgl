@@ -92,6 +92,92 @@ inline void nullfunc(Iterator * ) { }
 
 typedef RealArray (RealArray::* Array2ArrayFunc) (const RealArray&) const;
 
+
+
+#define LOADTYPE(type) if (classname == #type) result.append(boost::python::object(_bp.readArray<type>()));
+
+object pgl_load_data(const std::string& fname)
+{
+    std::string cwd = get_cwd();
+	chg_dir(get_dirname(fname));
+    BinaryParser _bp(*PglErrorStream::error);
+    boost::python::list result;
+    if ( _bp.open(fname) && _bp.readHeader()){
+        uint32_t nbelem = _bp.readUint32();
+        // printf("Should read %i element.\n",nbelem);
+        for(uint32_t elem = 0 ; elem < nbelem && !_bp.eof() ; ++elem){
+            std::string classname = _bp.readString();
+            // printf("Should read '%s'.\n",classname.c_str());
+            LOADTYPE(RealArray)
+            else LOADTYPE(Point2Array)
+            else LOADTYPE(Point3Array)
+            else LOADTYPE(Point4Array)
+            else LOADTYPE(Index3Array)
+            else LOADTYPE(Index4Array)
+            else LOADTYPE(Index3Array)
+            else LOADTYPE(IndexArray)
+            else LOADTYPE(Uint32Array1)
+        }
+        _bp.close();
+    }
+	chg_dir(cwd);
+    if (len(result) == 1) return result[0];
+    return boost::python::tuple(result);
+
+}
+
+
+#define SAVETYPE(type) if (extract<type *>(a).check()) bp.dumpArray<type>(*extract<type *>(a)());
+
+void pgl_save_one_data(const boost::python::object& a, BinaryPrinter& bp)
+{
+            SAVETYPE(RealArray)
+            else SAVETYPE(Point2Array)
+            else SAVETYPE(Point3Array)
+            else SAVETYPE(Point4Array)
+            else SAVETYPE(Index3Array)
+            else SAVETYPE(Index4Array)
+            else SAVETYPE(Index3Array)
+            else SAVETYPE(IndexArray)
+            else SAVETYPE(Uint32Array1)
+            else {
+
+                 PyErr_SetString(PyExc_ValueError, extract<char *>("Cannot save element "+str(a))());
+                 boost::python::throw_error_already_set();
+            }
+}
+
+bool pgl_save_data(const boost::python::object& a, const std::string& fname)
+{
+    leofstream stream(fname.c_str());
+    if(!stream)return false;
+    else {
+	    std::string cwd = get_cwd();
+		chg_dir(get_dirname(fname));
+        BinaryPrinter _bp(stream);
+        _bp.header();
+        if (extract<RefCountObject *>(a).check()){
+            _bp.writeUint32(1);
+            pgl_save_one_data(a,_bp);
+        }
+        else {
+            _bp.writeUint32(len(a));
+            
+		    boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( a.ptr() ) ) );
+		    while( true )
+		    {
+			    boost::python::object obj; 
+			    try  {  obj = iter_obj.attr( "next" )(); }
+			    catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+                pgl_save_one_data(obj,_bp);
+		    }
+        }
+		chg_dir(cwd);
+        return true;
+    }
+}
+
+
 /*template <Array2ArrayFunc func>
 RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
     return new RealArray(array->*func(v)); }*/
@@ -129,13 +215,14 @@ void export_arrays()
     // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() ) 
-
+    EXPORT_ARRAY_IO_FUNC( RealArray )
 
     DEFINE_NUMPY( ra );
   EXPORT_CONVERTER(RealArray);
 
   EXPORT_ARRAY_BT( uia, UIntArray,  "UIntArray([a,b,...])" )
-    DEFINE_NUMPY( uia );
+  // EXPORT_ARRAY_IO_FUNC( UIntArray )
+  DEFINE_NUMPY( uia );
   EXPORT_CONVERTER(UIntArray);
 
  def("histogram",&py_histogram<RealArray>);
@@ -151,6 +238,9 @@ void export_arrays()
     .def("atEnd",&IndexArrayPostOrderConstIterator::atEnd)
     .def("__iter__",&nullfunc<IndexArrayPostOrderConstIterator>, return_self<>())
     ;
+
+   def("pgl_load_data",&pgl_load_data);
+   def("pgl_save_data",&pgl_save_data);
 }
 
 

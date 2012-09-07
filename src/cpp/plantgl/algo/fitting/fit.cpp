@@ -335,6 +335,7 @@ GeometryPtr Fit::bsphere(){
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Min_circle_2.h>
 #include <CGAL/Min_circle_2_traits_2.h>
+#include <plantgl/algo/base/cgalwrap.h>
 #endif
 /*!
   Fit the 2D points \e points with a bounding circle.
@@ -351,15 +352,15 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 
 	typedef  K::Point_2                      Point;
 
-	std::vector<Point> pointlist(_points->size());
-	std::vector<Point>::iterator it2 = pointlist.begin();
+	std::list<Point> pointlist(_points->size());
+	std::list<Point>::iterator it2 = pointlist.begin();
 	for(Point2Array::const_iterator it = _points->begin(); it != _points->end(); ++it, ++it2)
 		*it2 = Point(it->x(),it->y());
 
     Min_circle  mc( pointlist.begin(), pointlist.end(), true); 
 	if (mc.is_degenerate()) return false;
 	Circle circle = mc.circle();
-    center = Vector2(to_double(circle.center()[0]),to_double(circle.center()[1]));
+    center = toVector2(circle.center());
 	radius = sqrt(to_double(circle.squared_radius()));
 
     return true;
@@ -374,6 +375,38 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 #endif
 
 }
+
+/* ----------------------------------------------------------------------- */
+#ifdef WITH_CGAL
+#include <CGAL/Cartesian.h>
+#include <CGAL/linear_least_squares_fitting_3.h>
+#endif
+/*
+      Fit the 3D points \e points with a plane.
+*/
+bool Fit::plane(const Point3ArrayPtr& _points, TOOLS::Vector3& center, Plane3& plane, const Index& subset)
+{
+#ifdef WITH_CGAL
+    typedef real_t               FT;
+    typedef CGAL::Cartesian<FT>  K;
+    typedef K::Plane_3           Plane;
+    typedef K::Point_3           Point;
+
+    std::list<Point> cgpts = (subset.size() == 0 ? toPoint3List<Point>(_points) : toPoint3List<Point>(_points, subset));
+
+    Plane cgplane;
+    Point centroid;
+    linear_least_squares_fitting_3(cgpts.begin(), cgpts.end(), cgplane, centroid, CGAL::Dimension_tag<0>());
+
+    center = toVector3(centroid);
+    plane = Plane3(cgplane.a(),cgplane.b(),cgplane.c(),cgplane.d());
+
+    return true;
+#else
+    return false;
+#endif
+}
+
 
 /* ----------------------------------------------------------------------- */
 

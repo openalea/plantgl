@@ -52,6 +52,7 @@ PGL_BEGIN_NAMESPACE
 
 typedef TOOLS(Array1)<TOOLS(Matrix4)> Matrix4Array;
 typedef RCPtr<Matrix4Array> Matrix4ArrayPtr;
+PGL_DECLARE_TYPE(Matrix4Array)
 
 class Transform4;
 typedef RCPtr<Transform4> Transform4Ptr;

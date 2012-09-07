@@ -128,8 +128,10 @@ boost::python::list py_partition(T * pts, boost::python::object cmp_method){
 template<class Array>
 object pa_findclosest(Array * array, typename Array::element_type point)
 {
-    typename Array::const_iterator res = findClosest(*array,point);
-	return make_tuple(*res,std::distance<typename Array::const_iterator>(array->begin(),res));
+    std::pair<typename Array::const_iterator,real_t> res = findClosest(*array,point);
+	return make_tuple(*res.first,
+                        std::distance<typename Array::const_iterator>(array->begin(),res.first),
+                        res.second);
 }
 
 EXPORT_FUNCTION( p2a, Point2Array )
@@ -263,6 +265,7 @@ void export_pointarrays()
     .def( "translate", &pa_translate<Point2Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
     .def( "findClosest", &pa_findclosest<Point2Array>,"Find closest point in the PointArray2 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_2D_coordinates,"Swap the two coordinates of the points. This is done INPLACE.")
+    .def( "isValid", &Point2Array::isValid)
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -294,6 +297,7 @@ void export_pointarrays()
     .def( "translate", &pa_translate<Point3Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
     .def( "findClosest", &pa_findclosest<Point3Array>,"Find closest point in the PointArray3 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_coordinates<Point3Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
+    .def( "isValid", &Point3Array::isValid)
     DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
@@ -329,6 +333,7 @@ void export_pointarrays()
     .def( "translate", &pa_translate<Point4Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
     .def( "findClosest", &pa_findclosest<Point4Array>,"Find closest point in the PointArray4 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_coordinates<Point4Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
+    .def( "isValid", &Point4Array::isValid)
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 

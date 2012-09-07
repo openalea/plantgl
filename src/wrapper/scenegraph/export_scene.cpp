@@ -215,7 +215,7 @@ bool scene_is_valid(Scene * sc){
 
 void export_Scene()
 {
-  class_<Scene,ScenePtr, boost::noncopyable> sc("Scene",
+  class_<Scene,ScenePtr, bases<RefCountObject>, boost::noncopyable> sc("Scene",
 	  "A 3D Scene defined as a list of objects of type of Shape.",
 	  init<const std::string&>("Read a scene from file."));
    scope scsc = sc.def(init< optional< unsigned int > >("Create a scene with n empty elements."));

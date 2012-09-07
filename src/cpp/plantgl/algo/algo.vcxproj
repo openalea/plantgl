@@ -97,6 +97,7 @@
     <ClCompile Include="base\intersection.cpp" />
     <ClCompile Include="base\matrixcomputer.cpp" />
     <ClCompile Include="base\merge.cpp" />
+    <ClCompile Include="base\planeclipping.cpp" />
     <ClCompile Include="base\pointmanipulation.cpp" />
     <ClCompile Include="base\polygoncomputer.cpp" />
     <ClCompile Include="base\skelcomputer.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="base\bboxcomputer.h" />
     <ClInclude Include="base\bspherecomputer.h" />
     <ClInclude Include="base\cgalwrap.h" />
+    <ClInclude Include="base\planeclipping.h" />
     <ClInclude Include="base\curvemanipulation.h" />
     <ClInclude Include="base\dijkstra.h" />
     <ClInclude Include="base\discretizer.h" />
@@ -203,6 +205,7 @@
     <ClInclude Include="fitting\triangulation3D.h" />
     <ClInclude Include="grid\annkdtree_p.h" />
     <ClInclude Include="grid\kdtree.h" />
+    <ClInclude Include="grid\triangleingrid.h" />
     <ClInclude Include="opengl\glbboxrenderer.h" />
     <ClInclude Include="opengl\glctrlptrenderer.h" />
     <ClInclude Include="opengl\glrenderer.h" />

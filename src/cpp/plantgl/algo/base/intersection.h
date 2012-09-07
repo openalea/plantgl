@@ -43,6 +43,7 @@
 #include "../algo_config.h"
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/geometry/plane.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -51,10 +52,23 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-std::pair<Point2ArrayPtr, IndexArrayPtr> polygon_intersection(Point2ArrayPtr polygon1, Point2ArrayPtr polygon2);
+ALGO_API std::pair<Point2ArrayPtr, IndexArrayPtr> polygon2ds_intersection(Point2ArrayPtr polygon1, Point2ArrayPtr polygon2);
 
-std::pair<Point2ArrayPtr, IndexArrayPtr> polygon_intersection(Point2ArrayPtr points, Index polygon1, Index polygon2);
+ALGO_API std::pair<Point2ArrayPtr, IndexArrayPtr> polygon2ds_intersection(Point2ArrayPtr points, Index polygon1, Index polygon2);
 
+
+
+// Check if a plane and segment intersect. result contains intersection if true.
+ALGO_API bool plane_segment_intersection(const Plane3& plane, 
+                                         const TOOLS(Vector3)& p1, 
+                                         const TOOLS(Vector3)& p2,
+                                         TOOLS(Vector3)& result);
+
+// Compute the actual intersection
+TOOLS(Vector3) _plane_segment_intersection(const Plane3& plane, 
+                                    real_t d1,
+                                    const TOOLS(Vector3)& p1, 
+                                    const TOOLS(Vector3)& p2);
 
 /* ----------------------------------------------------------------------- */
 

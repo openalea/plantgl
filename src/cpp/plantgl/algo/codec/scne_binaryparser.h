@@ -50,6 +50,7 @@
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/math/util_math.h>
 #include <plantgl/math/util_vector.h>
+#include <plantgl/math/util_matrix.h>
 #include <plantgl/tool/util_cache.h>
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/container/indexarray.h>
@@ -106,6 +107,11 @@ public:
   /// The parsing function.
   virtual bool parse(const std::string& filename);
 
+  /// open the file.
+  bool open(const std::string& filename);
+  bool close();
+  bool eof();
+
   /// return the header comment.
   const std::string& getComment() const;
 
@@ -118,10 +124,11 @@ public:
   /// A null result.
   static const SceneObjectPtr NULLPTR;
 
- protected:
-
   /// read header of GEOM binary File.
   virtual bool readHeader();
+
+  /// read header of scene description.
+  virtual bool readSceneHeader();
 
   /// read tokens of GEOM binary File.
   virtual bool readNext();
@@ -280,8 +287,6 @@ public:
 
   SceneObject * getNext(uint_t _class);
 
-  protected :
-
   /// read a char value from stream
   char readChar();
 
@@ -324,6 +329,15 @@ public:
   /// read a Vector4 value from stream
   TOOLS(Vector4) readVector4();
 
+  /// read a Matrix2 value from stream
+  TOOLS(Matrix2) readMatrix2();
+
+  /// read a Matrix3 value from stream
+  TOOLS(Matrix3) readMatrix3();
+
+  /// read a Matrix4 value from stream
+  TOOLS(Matrix4) readMatrix4();
+
   /// read a Index3 value from stream
   PGL(Index3) readIndex3();
 
@@ -333,6 +347,103 @@ public:
   /// read a Index value from stream
   PGL(Index) readIndex();
 
+  template<class T>
+  T read();
+
+  template<>
+  char read<char>() { return readChar(); }
+
+  template<>
+  uchar_t read<uchar_t>() { return readUchar(); }
+
+  template<>
+  bool read<bool>() { return readBool(); }
+
+  template<>
+  real_t read<real_t>() { return readReal(); }
+
+  template<>
+  uint32_t read<uint32_t>() { return readUint32(); }
+
+  template<>
+  int32_t read<int32_t>() { return readInt32(); }
+
+  template<>
+  uint16_t read<uint16_t>() { return readUint16(); }
+  
+  template<>
+  std::string read<std::string>() { return readString(); }
+  
+
+  template<>
+  TOOLS(Vector2) read<TOOLS(Vector2)>() { return readVector2(); }
+
+  template<>
+  TOOLS(Vector3) read<TOOLS(Vector3)>() { return readVector3(); }
+
+  template<>
+  TOOLS(Vector4) read<TOOLS(Vector4)>() { return readVector4(); }
+
+  template<>
+  TOOLS(Matrix2) read<TOOLS(Matrix2)>() { return readMatrix2(); }
+
+  template<>
+  TOOLS(Matrix3) read<TOOLS(Matrix3)>() { return readMatrix3(); }
+
+  template<>
+  TOOLS(Matrix4) read<TOOLS(Matrix4)>() { return readMatrix4(); }
+
+  template<>
+  PGL(Color3) read<PGL(Color3)>() { return readColor3(); }
+
+  template<>
+  PGL(Color4) read<PGL(Color4)>() { return readColor4(); }
+
+  template<>
+  PGL(Index) read<PGL(Index)>() { return readIndex(); }
+
+  template<>
+  PGL(Index4) read<PGL(Index4)>() { return readIndex4(); }
+
+  template<>
+  PGL(Index3) read<PGL(Index3)>() { return readIndex3(); }
+
+  template <class Array>
+  RCPtr<Array> readArray() {
+      uint32_t _sizei = readUint32();
+      RCPtr<Array> result(new Array(_sizei));
+      uint32_t pid = 0;
+      for(typename Array::iterator it = result->begin(); it != result->end(); ++it, ++pid){
+          *it = read<typename Array::element_type>();
+      }
+      return result;
+  }
+
+  template <class Array>
+  RCPtr<Array> loadArray() {
+      std::string classname = read<std::string>();
+      if (classname == PglClassInfo<Array>::name()) return readArray<Array>();
+      else return RCPtr<Array>();
+  }
+
+  template <class Array2>
+  RCPtr<Array2> readMatrix() {
+      uint32_t _rows = readUint32();
+      uint32_t _cols = readUint32();
+      RCPtr<Array2> result(new Array2(_rows, _cols));
+      for(typename Array::iterator it = result->begin(); it != result->end(); ++it)
+          *it = read<typename Array::element_type>();
+      return result;
+  }
+
+  template <class Array2>
+  RCPtr<Array2> loadMatrix() {
+      std::string classname = read<std::string>();
+      if (classname == PglClassInfo<Array2>::name()) return readArray<Array2>();
+      else return RCPtr<Array2>();
+  }
+
+  protected :
   /// The resulting scene.
   ScenePtr __scene;
 

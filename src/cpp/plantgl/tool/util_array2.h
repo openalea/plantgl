@@ -44,7 +44,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-
+#include "classinfo.h"
 /* ----------------------------------------------------------------------- */
 
 TOOLS_BEGIN_NAMESPACE

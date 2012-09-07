@@ -503,6 +503,9 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Returns whether \e self is valid.
   bool isValid( ) const ;
 
+  /// Return an orthogonal vector. Should be not null
+  Vector3 anOrthogonalVector() const;
+
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
   friend PGLMATH_API Vector3 operator*( const real_t& s, const Vector3& v );

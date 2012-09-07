@@ -168,6 +168,11 @@ template <class T>
 dict_converter<T> make_dict(const T& c_dict) 
 { return dict_converter<T>(c_dict); }
 
+
+template<class T, class U>
+inline boost::python::object make_pair_tuple(const std::pair<T,U>& value) { return boost::python::make_tuple(value.first, value.second); }
+
 #endif
+
 
 /* ----------------------------------------------------------------------- */

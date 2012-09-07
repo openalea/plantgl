@@ -32,7 +32,7 @@
 #include <plantgl/tool/util_spatialarray.h>
 
 /* ----------------------------------------------------------------------- */
-
+/*
 template<class T>
 class NumpyContainer {
 protected:
@@ -74,12 +74,18 @@ public:
 	}
 
     container_type get_array() const { return __values; }
+};*/
+
+
+class IsNone {
+public:
+    static inline bool is_empty(const boost::python::object& value) { return value == boost::python::object(); }
 };
 
-#define DEFAULT_PYTHON_OBJ_TYPE real_t
-typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector2, 2, NumpyContainer<DEFAULT_PYTHON_OBJ_TYPE> > Py2Grid;
-typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector3, 3, NumpyContainer<DEFAULT_PYTHON_OBJ_TYPE> > Py3Grid;
-typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector4, 4, NumpyContainer<DEFAULT_PYTHON_OBJ_TYPE> > Py4Grid;
+#define DEFAULT_PYTHON_OBJ_TYPE boost::python::object
+typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector2, 2, VectorContainer<DEFAULT_PYTHON_OBJ_TYPE, IsNone> > Py2Grid;
+typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector3, 3, VectorContainer<DEFAULT_PYTHON_OBJ_TYPE, IsNone> > Py3Grid;
+typedef SpatialArrayN<DEFAULT_PYTHON_OBJ_TYPE, Vector4, 4, VectorContainer<DEFAULT_PYTHON_OBJ_TYPE, IsNone> > Py4Grid;
 
 template<class T>
 class NoneContainer {
@@ -134,23 +140,22 @@ typedef SpatialArrayN<bp::object, Vector4, 4, NoneContainer<bp::object> > Py4Gri
 void export_PyGrid()
 {
 
-  boost::python::numeric::array::set_module_and_type("numpy", "ndarray");
   class_< Py2Grid > ("Grid2", init<Vector2, Vector2, Vector2>
      ( "Construct a regular 2D grid.", args("voxelsize","minpoint","maxpoint") ))
  	 .def(spatialarray_func<Py2Grid>())
-     .def("get_array",&Py2Grid::get_array)
+     // .def("get_array",&Py2Grid::get_array)
     ;
   
   class_< Py3Grid > ("Grid3", init<Vector3, Vector3, Vector3>
      ( "Construct a regular 3D grid.", args("voxelsize","minpoint","maxpoint") ))
  	 .def(spatialarray_func<Py3Grid>())
-     .def("get_array",&Py3Grid::get_array)
+     // .def("get_array",&Py3Grid::get_array)
     ;
   
   class_< Py4Grid > ("Grid4", init<Vector4, Vector4, Vector4>
      ( "Construct a regular 4D grid.", args("voxelsize","minpoint","maxpoint") ))
  	 .def(spatialarray_func<Py4Grid>())
-     .def("get_array",&Py4Grid::get_array)
+     // .def("get_array",&Py4Grid::get_array)
     ;
   
   class_< Py3GridIndexing > ("Grid3Indexing", init<Vector3, Vector3, Vector3>

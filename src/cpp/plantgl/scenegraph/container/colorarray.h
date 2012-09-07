@@ -81,12 +81,12 @@ public:
 };
 
 typedef RCPtr<Color3Array> Color3ArrayPtr;
+PGL_DECLARE_TYPE(Color3Array)
 
 class Color4Array : public TOOLS(Array1)<Color4>
 {
 
 public:
-
 
   /// Constructs an Array1 of size \e size
   Color4Array( uint_t size = 0 ) :
@@ -123,6 +123,7 @@ public:
 };
 
 typedef RCPtr<Color4Array> Color4ArrayPtr;
+PGL_DECLARE_TYPE(Color4Array)
 
 template <class ColorArray>
 RCPtr<ColorArray>

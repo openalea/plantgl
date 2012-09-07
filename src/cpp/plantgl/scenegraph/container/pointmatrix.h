@@ -126,6 +126,7 @@ public:
 
 /// Point2Matrix Pointer
 typedef RCPtr<Point2Matrix> Point2MatrixPtr;
+PGL_DECLARE_TYPE(Point2Matrix)
 
 
 /* ----------------------------------------------------------------------- */
@@ -229,6 +230,7 @@ public:
 
 /// Point3Matrix Pointer
 typedef RCPtr<Point3Matrix> Point3MatrixPtr;
+PGL_DECLARE_TYPE(Point3Matrix)
 
 
 /* ----------------------------------------------------------------------- */
@@ -348,6 +350,7 @@ public:
 
 /// Point4Matrix Pointer
 typedef RCPtr<Point4Matrix> Point4MatrixPtr;
+PGL_DECLARE_TYPE(Point4Matrix)
 
 
 /* ----------------------------------------------------------------------- */

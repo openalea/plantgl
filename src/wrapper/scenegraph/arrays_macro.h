@@ -39,7 +39,8 @@ RCPtr<T> extract_array_from_list( boost::python::object l )
   boost::python::extract<int> e_int( l ); 
   if( e_int.check() )
     { return RCPtr<T>(new T( e_int() ));  }
-  return extract_pgllist<T>(l).toRCPtr();
+
+  return extract_pgllist<T>(l).toRCPtr(true);
 } 
 
 template<class T>
@@ -56,9 +57,9 @@ struct array_from_list {
    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data ); 
    void* memory_chunk = the_storage->storage.bytes;
    if (obj != Py_None){
-    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
-    RCPtr<T> result= extract_array_from_list<T>(py_sequence); 
-    new (memory_chunk) T (*result); 
+        boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) ); 
+        RCPtr<T> result= extract_array_from_list<T>(py_sequence); 
+        new (memory_chunk) T (*result); 
    }
    else { new (memory_chunk) T(0); }
    data->convertible = memory_chunk; 
@@ -247,6 +248,91 @@ template<class T>
 size_t array_id( T * a )
 { return (size_t)a; }
 
+template <class T>
+boost::python::object py_split(T * pts, boost::python::object split_method){
+    T * set_true (new T());
+    T * set_false(new T());
+    for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it) {
+        if (split_method(object(*it)) == 0) 
+            set_false->push_back(*it);
+        else  set_true->push_back(*it);
+    }
+    return make_tuple(object(set_true), object(set_false));
+}
+
+template <class T>
+boost::python::object py_split_indices(T * pts, boost::python::object split_method){
+    boost::python::list set_true;
+    boost::python::list set_false;
+    uint32_t pid = 0;
+    for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it, ++pid) {
+        if (split_method(object(*it)) == 0) 
+            set_false.append(pid);
+        else  set_true.append(pid);
+    }
+    return make_tuple(set_true, set_false);
+}
+
+template <class T>
+T * py_subset(T * pts, boost::python::object subsetindices){
+    T * subobj = new T();
+    size_t nbelem = pts->size();
+	boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
+	while( true )
+	{
+		boost::python::object obj; 
+		try  {  obj = iter_obj.attr( "next" )(); }
+		catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+		uint32_t val = extract<uint32_t>( obj )();
+        if (val < 0) val += nbelem;
+        if (val < 0 || val >= nbelem) {
+            delete subobj;
+            throw PythonExc_IndexError(extract<char *>(str(val)+" out of range")()); 
+        }
+		subobj->push_back( pts->getAt(val) );
+	}
+    return subobj;
+}
+
+
+#include <plantgl/tool/dirnames.h>
+#include <plantgl/tool/bfstream.h>
+#include <plantgl/tool/util_enviro.h>
+#include <plantgl/algo/codec/binaryprinter.h>
+
+template<class T>
+bool save(T * a, std::string fname)
+{
+    leofstream stream(fname.c_str());
+    if(!stream)return false;
+    else {
+	    std::string cwd = get_cwd();
+		chg_dir(get_dirname(fname));
+        BinaryPrinter _bp(stream);
+        _bp.header();
+        _bp.writeUint32(1);
+        _bp.dumpArray(*a);
+		chg_dir(cwd);
+        return true;
+    }
+}
+
+#include <plantgl/algo/codec/scne_binaryparser.h>
+
+template<class T>
+RCPtr<T> load(std::string fname)
+{
+	    std::string cwd = get_cwd();
+		chg_dir(get_dirname(fname));
+        BinaryParser _bp(*PglErrorStream::error);
+        RCPtr<T> result;
+        if ( _bp.open(fname) && _bp.readHeader()) {            
+            uint32_t nbelem = _bp.readUint32();
+            if (nbelem > 1) result = _bp.loadArray<T>();
+        }
+		chg_dir(cwd);
+        return result;
+}
 
 template<class T>
 struct array_pickle_suite : boost::python::pickle_suite 
@@ -288,10 +374,18 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "pop",          &array_popitem<ARRAY> ) \
         .def( "pop",          &array_poplastitem<ARRAY> ) \
         .def( "getId",        &array_id<ARRAY> ) \
-	    .def_pickle(array_pickle_suite<ARRAY>());
+        .def( "split",        &py_split<ARRAY>, "Split the list into 2. Each element is tested with the split method that should return True or False" ) \
+        .def( "split_indices", &py_split_indices<ARRAY>, "Split the list into 2. Return list of indices of elements of the 2 subsets. Each element is tested with the split method that should return True or False" ) \
+        .def( "subset",        &py_subset<ARRAY>, "Return a subset of the list. Should gives the indices of the subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+	    .def_pickle(array_pickle_suite<ARRAY>())
         ;
     }
 };
+
+#define EXPORT_ARRAY_IO_FUNC( ARRAY ) \
+    .def( "save",         &save<ARRAY> ) \
+    .def( "load",         &load<ARRAY> ) \
+    .staticmethod("load")
 
 #define EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
     .def(array_func<ARRAY>()) \
@@ -305,26 +399,18 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
 #define EXPORT_ARRAY_FUNC_CT( ARRAY, PREFIX ) \
     .def( "__getitem__",  &array_ct_getitem<ARRAY>, return_internal_reference<1>() ) \
     EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
+    EXPORT_ARRAY_IO_FUNC( ARRAY )
 
 #define EXPORT_ARRAY_FUNC_PTR( ARRAY, PREFIX ) \
     .def( "__getitem__",  &array_ptr_getitem<ARRAY> ) \
     EXPORT_ARRAY_FUNC_COMMON( ARRAY, PREFIX ) \
 
 
-template<class T>
-bool has_refcountlistener( const T * a )
-{  return a->getRefCountListener() != NULL; }
-
 
 
 #define EXPORT_CLASS_ARRAY( PREFIX, ARRAY, STRING )\
-class_< ARRAY, ARRAY##Ptr, boost::noncopyable>( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") ) ) \
+class_< ARRAY, ARRAY##Ptr, bases<RefCountObject> >( #ARRAY , init<size_t>(#ARRAY "(int size)", args("size") ) ) \
     .def( "__init__", make_constructor( &extract_array_from_list<ARRAY> ), STRING ) \
-	.def("getPglReferenceCount",&RefCountObject::use_count) \
-	.def("getPglId",&RefCountObject::uid) \
-	.def("__hasPythonRefCountLink",&has_refcountlistener<ARRAY>) \
-	.def("__removePglReference",&RefCountObject::removeReference) \
-	.def("__addPglReference",&RefCountObject::addReference) \
 
 
 /* --------------------

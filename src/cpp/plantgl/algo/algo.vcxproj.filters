@@ -219,6 +219,9 @@
     <ClCompile Include="base\intersection.cpp">
       <Filter>Base</Filter>
     </ClCompile>
+    <ClCompile Include="base\planeclipping.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\amaptranslator.h">
@@ -438,6 +441,12 @@
     </ClInclude>
     <ClInclude Include="base\cgalwrap.h">
       <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\planeclipping.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="grid\triangleingrid.h">
+      <Filter>Grid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

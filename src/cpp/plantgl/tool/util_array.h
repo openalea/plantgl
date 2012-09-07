@@ -47,6 +47,7 @@
 
 #include "rcobject.h"
 #include "tools_config.h"
+#include "classinfo.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -575,6 +576,14 @@ typedef RCPtr<UintArray1> UintArray1Ptr;
 // typedef RCPtr<StringArray1> StringArray1Ptr;
 
 
+TOOLS_DECLARE_TYPE(Uint32Array1)
+TOOLS_DECLARE_TYPE(Int32Array1)
+TOOLS_DECLARE_TYPE(Uint16Array1)
+TOOLS_DECLARE_TYPE(Int16Array1)
+TOOLS_DECLARE_TYPE(UCharArray1)
+TOOLS_DECLARE_TYPE(CharArray1)
+TOOLS_DECLARE_TYPE(BoolArray1)
+
 /*  --------------------------------------------------------------------- */
 
 // GEOM_TEMPLATE_API(Array1<real_t>)
@@ -732,6 +741,7 @@ public:
 
 /// Real Array Pointer
 typedef RCPtr<RealArray> RealArrayPtr;
+TOOLS_DECLARE_TYPE(RealArray)
 
 template<class NumericArray>
 Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins, 
@@ -755,6 +765,7 @@ Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins,
 
 
 }
+
 
 /*  --------------------------------------------------------------------- */
 

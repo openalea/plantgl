@@ -159,7 +159,7 @@ class ANNKDTreeInternal
 
             size_t kres = k;
             if (maxdist != REAL_MAX)
-                kres = __kdtree.annkFRSearch(queryPoint,maxdist*maxdist,k,nn_idx,dists);
+                kres = std::min<size_t>(k,__kdtree.annkFRSearch(queryPoint,maxdist*maxdist,k,nn_idx,dists));
             else 
                 __kdtree.annkSearch(queryPoint,k,nn_idx,dists);
 
@@ -179,7 +179,7 @@ class ANNKDTreeInternal
             return k_nearest_neighbors_of_kdtree_points(__kdtree,k);
         }
 
-
+        inline size_t size() { return __kdtree.nPoints(); }
 };
 
 

@@ -91,6 +91,8 @@ void module_sg()
     define_stl_exceptions();
     set_python_error_style(true);
 
+    export_SceneObject();
+
     export_arrays();
     export_arrays2();
     export_index();
@@ -98,7 +100,6 @@ void module_sg()
     export_Color4();
     export_pointarrays();
 
-    export_SceneObject();
 
 	export_BoundingBox();
 
@@ -198,6 +199,8 @@ void module_sg()
     export_DeepCopier();
 
     export_Function();
+
+    export_Plane();
 
 	scope().attr("PGL_VERSION_STR") = getPGLVersionString();
 	scope().attr("PGL_VERSION") = PGL_VERSION;

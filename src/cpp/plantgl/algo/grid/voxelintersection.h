@@ -73,6 +73,8 @@ class ALGO_API VoxelIntersection : public Action {
     /// set the Voxel to test to \e voxel.
     void setVoxel(Voxel * voxel);
 
+    /// set the Voxel coordinates to test.
+    // void setVoxel(const TOOLS(Vector3)& lowerleftCorner, const TOOLS(Vector3)& upperRightCorner);
 
     /// Returns the BBoxComputer attached to \e self.
     BBoxComputer& getBBoxComputer( ) {
@@ -245,6 +247,8 @@ class ALGO_API VoxelIntersection : public Action {
 
    /// The octree in which we insert the GEOM objetcs.
    Voxel * __voxel;
+   // TOOLS(Vector3) __ll;
+   // TOOLS(Vector3) __ur;
 
    /** A BBoxComputer is used to compute the bounding box of objects and compute a first
        value of intersection. */

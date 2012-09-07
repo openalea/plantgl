@@ -308,30 +308,30 @@ BinaryParser::~BinaryParser( ) {
 /* ----------------------------------------------------------------------- */
 
 /// read an bool value from stream
-inline bool BinaryParser::readBool()
+bool BinaryParser::readBool()
 { bool val;  *stream >> val; return val; }
 
 /// read an int32_t value from stream
-inline uint32_t BinaryParser::readUint32()
+uint32_t BinaryParser::readUint32()
 { uint32_t val;  *stream >> val; return val; }
 
 /// read an uint_t value from stream
-inline int32_t BinaryParser::readInt32()
+int32_t BinaryParser::readInt32()
 { int32_t val;  *stream >> val; return val; }
 
 /// read a uint16_t value from stream
-inline uint16_t BinaryParser::readUint16()
+uint16_t BinaryParser::readUint16()
 { uint16_t val;  *stream >> val; return val; }
 
 /// read a uchar_t value from stream
-inline uchar_t BinaryParser::readUchar()
+uchar_t BinaryParser::readUchar()
 { uchar_t val;  *stream >> val; return val; }
 
-inline char BinaryParser::readChar()
+char BinaryParser::readChar()
 { char val;  *stream >> val; return val; }
 
 /// read a real_t value from stream
-inline real_t BinaryParser::readReal()
+real_t BinaryParser::readReal()
 {
  if (__double_precision)
  { double val;  *stream >> val; return val; }
@@ -340,7 +340,7 @@ inline real_t BinaryParser::readReal()
 }
 
 /// read a string value from stream
-inline std::string BinaryParser::readString()
+std::string BinaryParser::readString()
 {
   std::string val;
   uint16_t _sizes = readUint16();
@@ -357,7 +357,7 @@ inline std::string BinaryParser::readString()
 #define MAXFILELENGTH 1000
 
 /// read a file name value from stream
-inline std::string BinaryParser::readFile()
+std::string BinaryParser::readFile()
 {
   std::string val;
   char c[MAXFILELENGTH+1];
@@ -389,43 +389,56 @@ inline std::string BinaryParser::readFile()
 }
 
 /// read a Color3 value from stream
-inline Color3 BinaryParser::readColor3()
+Color3 BinaryParser::readColor3()
 { Color3 val; val.getRed() = readUchar(); val.getGreen() = readUchar();
   val.getBlue() = readUchar(); return val; }
 
 /// read a Color4 value from stream
-inline Color4 BinaryParser::readColor4()
+Color4 BinaryParser::readColor4()
 { Color4 val; val.getRed() = readUchar(); val.getGreen() = readUchar();
   val.getBlue() = readUchar(); val.getAlpha() = readUchar(); return val; }
 
 /// read a Vector2 value from stream
-inline Vector2 BinaryParser::readVector2()
+Vector2 BinaryParser::readVector2()
 { Vector2 val; val.x() = readReal(); val.y() = readReal(); return val; }
 
 /// read a Vector3 value from stream
-inline Vector3 BinaryParser::readVector3()
+Vector3 BinaryParser::readVector3()
 { Vector3 val; val.x() = readReal(); val.y() = readReal();
   val.z() = readReal(); return val; }
 
 /// read a Vector4 value from stream
-inline Vector4 BinaryParser::readVector4()
+Vector4 BinaryParser::readVector4()
 { Vector4 val; val.x() = readReal(); val.y() = readReal();
   val.z() = readReal(); val.w() = readReal(); return val; }
 
+/// read a Vector2 value from stream
+Matrix2 BinaryParser::readMatrix2()
+{ Matrix2 val; for(Matrix2::iterator it = val.begin(); it != val.end(); ++it) *it = readReal(); return val; }
+
+/// read a Vector2 value from stream
+Matrix3 BinaryParser::readMatrix3()
+{ Matrix3 val; for(Matrix3::iterator it = val.begin(); it != val.end(); ++it) *it = readReal(); return val; }
+
+/// read a Vector2 value from stream
+Matrix4 BinaryParser::readMatrix4()
+{ Matrix4 val; for(Matrix4::iterator it = val.begin(); it != val.end(); ++it) *it = readReal(); return val; }
+
 /// read a Index3 value from stream
-inline Index3 BinaryParser::readIndex3()
+Index3 BinaryParser::readIndex3()
 { Index3 val; for(uchar_t it = 0; it < 3; ++it) val.setAt(it,readUint32());  return val; }
 
 /// read a Index4 value from stream
-inline Index4 BinaryParser::readIndex4()
+Index4 BinaryParser::readIndex4()
 { Index4 val; for(uchar_t it = 0; it < 4; ++it) val.setAt(it,readUint32());  return val; }
 
 /// read a Index value from stream
-inline Index BinaryParser::readIndex()
+Index BinaryParser::readIndex()
 {
   uint_t size = readUint32();
   Index val(size);
-  for(uchar_t it = 0; it < size; ++it) val.setAt(it,readUint32());
+  for(Index::iterator it = val.begin(); it != val.end(); ++it)
+      *it = readUint32();
   return val;
 }
 
@@ -474,7 +487,9 @@ bool BinaryParser::readHeader(){
   }
   float _version;
   *stream >> _version;
+#ifdef GEOM_DEBUG
   printf("File version : %f\n",_version);
+#endif
   if(_version > BinaryPrinter::BINARY_FORMAT_VERSION){
       __outputStream << "*** ERROR: Binary Format Version invalid  (File=" << _version << ";Current=" << BinaryPrinter::BINARY_FORMAT_VERSION << "). Upgrade."<< endl;
       return false;
@@ -533,7 +548,11 @@ bool BinaryParser::readHeader(){
 #ifdef GEOM_DEBUG
   cerr << std::endl;
 #endif
-    if(!__tokens->initTokens(*stream,__outputStream)){
+  return true;
+}
+
+bool BinaryParser::readSceneHeader(){
+  if(!__tokens->initTokens(*stream,__outputStream)){
           __outputStream << "*** ERROR: Token initialization failed !" <<  endl;
           __outputStream << "*** ERROR: Abort." <<  endl;
           return false;
@@ -581,15 +600,42 @@ bool BinaryParser::readHeader(){
 }
 
 /* ----------------------------------------------------------------------- */
-
-  /// The parsing function.
-bool BinaryParser::parse(const string& filename){
+bool BinaryParser::open(const std::string& filename)
+{
     stream = new leifstream(filename.c_str());
     if(!*stream){
         pglErrorEx(PGLERRORMSG(C_FILE_OPEN_ERR_s),filename.c_str());
+        delete stream;
+        stream = 0;
         return false;
     }
+    return true;
+}
+
+bool BinaryParser::close()
+{
+    if(stream) {
+        delete stream;
+        stream = 0;
+        return true;
+    }
+    else return false;
+}
+
+bool BinaryParser::eof()
+{
+
+    if(stream) {
+        return stream->eof();
+    }
+    else return true;
+}
+
+/// The parsing function.
+bool BinaryParser::parse(const string& filename){
+    if(!open(filename)) return false;
     if(!readHeader())return false;
+    if(!readSceneHeader())return false;
 	PglErrorStream::Binder psb(__outputStream);
     string p = get_cwd();
     chg_dir(get_dirname(filename));
@@ -608,8 +654,7 @@ bool BinaryParser::parse(const string& filename){
       cerr << "Parse file in " << t.elapsedTime() << " sec (" << __assigntime << ")." << endl;
     }
 #endif
-    delete stream;
-    stream = 0;
+    close();
     chg_dir(p);
     return true;
 }

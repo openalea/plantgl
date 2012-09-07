@@ -132,6 +132,7 @@
     <ClCompile Include="geometry\parametricmodel.cpp" />
     <ClCompile Include="geometry\patch.cpp" />
     <ClCompile Include="geometry\planarmodel.cpp" />
+    <ClCompile Include="geometry\plane.cpp" />
     <ClCompile Include="geometry\pointset.cpp" />
     <ClCompile Include="geometry\polyline.cpp" />
     <ClCompile Include="geometry\primitive.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="geometry\parametricmodel.h" />
     <ClInclude Include="geometry\patch.h" />
     <ClInclude Include="geometry\planarmodel.h" />
+    <ClInclude Include="geometry\plane.h" />
     <ClInclude Include="geometry\pointset.h" />
     <ClInclude Include="geometry\polyline.h" />
     <ClInclude Include="geometry\primitive.h" />

@@ -96,6 +96,7 @@ public:
 
 /// Index3Array Pointer
 typedef RCPtr<Index3Array> Index3ArrayPtr;
+PGL_DECLARE_TYPE(Index3Array)
 
 /* ----------------------------------------------------------------------- */
 
@@ -115,7 +116,6 @@ class SG_API Index4Array : public TOOLS(Array1)<Index4>
 {
 
 public:
-
   /** Constructs an Index4Array of size of \e size.
       \post
       - \e self is valid. */
@@ -150,7 +150,7 @@ public:
 
 /// Index4Array Pointer
 typedef RCPtr<Index4Array> Index4ArrayPtr;
-
+PGL_DECLARE_TYPE(Index4Array)
 /* ----------------------------------------------------------------------- */
 
 /// Index of non fixed size
@@ -169,7 +169,7 @@ typedef TOOLS(PglVector<uint_t>) Index;
 class SG_API IndexArray : public TOOLS(Array1)<Index>
 {
 
-public:
+public:  
 
   /** Constructs an IndexArray of size of \e size.
       \post
@@ -224,6 +224,7 @@ public:
 
 /// IndexArray Pointer
 typedef RCPtr<IndexArray> IndexArrayPtr;
+PGL_DECLARE_TYPE(IndexArray)
 
 template<class IndexArrayType>
 void shift_all_indices(RCPtr<IndexArrayType> indices, int shift)

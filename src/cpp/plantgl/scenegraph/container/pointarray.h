@@ -146,6 +146,7 @@ public:
 
 /// Point2Array Pointer
 typedef RCPtr<Point2Array> Point2ArrayPtr;
+PGL_DECLARE_TYPE(Point2Array)
 
 
 /* ----------------------------------------------------------------------- */
@@ -268,7 +269,7 @@ public:
 
 /// Point3Array Pointer
 typedef RCPtr<Point3Array> Point3ArrayPtr;
-
+PGL_DECLARE_TYPE(Point3Array)
 
 /* ----------------------------------------------------------------------- */
 
@@ -404,7 +405,7 @@ public:
 
 /// Point4Array Pointer
 typedef RCPtr<Point4Array> Point4ArrayPtr;
-
+PGL_DECLARE_TYPE(Point4Array)
 
 /* ----------------------------------------------------------------------- */
 
@@ -458,7 +459,7 @@ void filterAndHomogenize(Array& array)
 
   /// find the closest point to point in the array
 template <class Array>
-typename Array::const_iterator findClosest(const Array& array, const typename Array::element_type& point)
+std::pair<typename Array::const_iterator,real_t> findClosest(const Array& array, const typename Array::element_type& point)
 {
 	typename Array::const_iterator closest = array.begin();
 	real_t dist = norm(*closest-point);
@@ -469,7 +470,7 @@ typename Array::const_iterator findClosest(const Array& array, const typename Ar
 			dist = d;
 		}
 	}
-	return closest;
+	return std::pair<typename Array::const_iterator,real_t>(closest,dist);
 }
 
 // __geom_pointarray.h__

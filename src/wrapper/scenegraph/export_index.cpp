@@ -140,7 +140,6 @@ struct index_from_tuple {
 };
 
 
-
 void export_index()
 {
   class_<Index3>( "Index3", "A set of 3 indices", init<optional<size_t,size_t,size_t> >() )

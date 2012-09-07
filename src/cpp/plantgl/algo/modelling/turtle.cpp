@@ -601,8 +601,13 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
  	}
 	Vector3 l = cross(u,h);
 	if (norm(l) < GEOM_EPSILON){
- 	  error("Heading and Up Vector in setHead is NULL");
+ 	  error("Heading and Up Vector in setHead are colinear.");
 	}
+
+    if(!h.isOrthogonalTo(u)) {
+        u = cross(h,l);
+        warning("Re-Orthogonalizing Up vector in setHead");
+    }
 	__params->heading = h;
 	__params->up = u;
 	__params->left = l;
@@ -646,10 +651,10 @@ void Turtle::setCustomAppearance(const AppearancePtr app)
     }
 }
 
-void Turtle::setTextureScale(real_t u, real_t v)
+void Turtle::setTextureScale(const Vector2& t)
 { 
-	__params->texCoordScale = Vector2(u,v); 
-	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale = Vector2(u,v);
+	__params->texCoordScale = t; 
+	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale = t;
 }
 
 void Turtle::setTextureUScale(real_t u)
@@ -665,32 +670,30 @@ void Turtle::setTextureVScale(real_t v)
 }
 
 void Turtle::setTextureRotation(real_t angle, 
-								real_t ucenter, 
-								real_t vcenter)
+								const Vector2& center)
 { 
 	__params->texCoordRotAngle = angle; 
-	__params->texCoordRotCenter = Vector2(ucenter,vcenter);
+	__params->texCoordRotCenter = center;
 	if(__params->isGCorPolygonOnInit()){
 		__params->initial.texCoordRotAngle = angle; 
-		__params->initial.texCoordRotCenter = Vector2(ucenter,vcenter);
+		__params->initial.texCoordRotCenter = center;
 	}
 }
 
-void Turtle::setTextureTranslation(real_t u, real_t v)
+void Turtle::setTextureTranslation(const Vector2& t)
 { 	
-	__params->texCoordTranslation = Vector2(u,v); 
+	__params->texCoordTranslation = t; 
 	if(__params->isGCorPolygonOnInit()){
-		__params->initial.texCoordTranslation = Vector2(u,v); 
+		__params->initial.texCoordTranslation = t; 
 	}
 }
 
-void Turtle::setTextureTransformation(real_t uscaling, real_t vscaling, 
-									      real_t utranslation, real_t vtranslation, 
-										  real_t angle, real_t urotcenter, real_t vrotcenter)
+void Turtle::setTextureTransformation(const Vector2& scaling, const Vector2& translation, 
+									  real_t angle, const Vector2& rotcenter)
 { 
-	setTextureScale(uscaling,vscaling);
-	setTextureTranslation(utranslation,vtranslation);
-	setTextureRotation(angle,urotcenter,vrotcenter);
+	setTextureScale(scaling);
+	setTextureTranslation(translation);
+	setTextureRotation(angle,rotcenter);
 }
   
   void Turtle::setWidth(real_t v){

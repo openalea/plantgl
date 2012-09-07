@@ -100,10 +100,13 @@ public :
 
 /// GeometryArrayPtr Pointer
 typedef RCPtr<GeometryArray> GeometryArrayPtr;
+PGL_DECLARE_TYPE(GeometryArray)
 /// Curve2DArrayPtr Pointer
 typedef RCPtr<Curve2DArray> Curve2DArrayPtr;
+PGL_DECLARE_TYPE(Curve2DArray)
 /// CurveArrayPtr Pointer
 typedef RCPtr<CurveArray> CurveArrayPtr;
+PGL_DECLARE_TYPE(CurveArray)
 
 
 /* ----------------------------------------------------------------------- */

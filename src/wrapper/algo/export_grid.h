@@ -164,6 +164,21 @@ template<class SpatialArray>
  }
 
 template<class SpatialArray>
+size_t py_indexFromCoord1(SpatialArray * grid, typename SpatialArray::VectorType v, size_t dim){
+	 return grid->indexFromCoord(v,dim);
+ }
+
+template<class SpatialArray>
+size_t  py_indexFromCoord2(SpatialArray * grid, real_t v, size_t dim){
+	 return grid->indexFromCoord(v,dim);
+ }
+
+ template<class SpatialArray>
+ size_t py_nbDim(SpatialArray * grid){
+	 return grid->nbDimensions();
+ }
+
+template<class SpatialArray>
 class spatialarray_func : public boost::python::def_visitor<spatialarray_func<SpatialArray> >
 {
     friend class boost::python::def_visitor_access;
@@ -175,6 +190,7 @@ class spatialarray_func : public boost::python::def_visitor<spatialarray_func<Sp
 	 .def("valuesize",&SpatialArray::valuesize,"Return the size of the value container. Should be equal to size.")
 	 .def("dimensions",&py_getDimensions<SpatialArray>, "Return the dimensions of the grid in each axis")
 	 .def("getVoxelSize",&SpatialArray::getVoxelSize, "Return the size of the voxels of the grid.")
+	 .def("getOrigin",&SpatialArray::getOrigin, "Return the origin of the grid.")
 	 .def("indexFromPoint",&py_indexFromPoint<SpatialArray>)
 	 .def("cellIdFromPoint",&SpatialArray::cellIdFromPoint)
 	 .def("isValidId",&SpatialArray::isValidId)
@@ -198,7 +214,10 @@ class spatialarray_func : public boost::python::def_visitor<spatialarray_func<Sp
      .def("query_voxels_in_cone",&py_query_voxels_in_cone<SpatialArray>,bp::args("origin","direction","radius","angle"))
      .def("query_voxels_around_point",&py_query_voxels_around_point<SpatialArray>,bp::args("center","radius"))
      .def("query_voxels_in_box",&py_query_voxels_in_box<SpatialArray>,(bp::arg("center"),bp::arg("maxradius"),bp::arg("minradius")=bp::object()))
-     
+	 .def("indexFromCoord",&py_indexFromCoord1<SpatialArray>)
+	 .def("indexFromCoord",&py_indexFromCoord2<SpatialArray>)
+	 .def("nbDimensions",&py_nbDim<SpatialArray>, "Return the number of dimensions of the grid")
+
          ;
     }
 };
@@ -227,6 +246,7 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("disable_point",&PointGrid::disable_point)
 	 .def("is_point_enabled",&PointGrid::is_point_enabled)
 	 .def("get_enabled_points",&PointGrid::get_enabled_points)
+	 .def("get_disabled_points",&PointGrid::get_disabled_points)
 	 .def("enable_points",&py_enablepoints<PointGrid>)
 	 .def("disable_points",&py_disablepoints<PointGrid>)
 	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)	 

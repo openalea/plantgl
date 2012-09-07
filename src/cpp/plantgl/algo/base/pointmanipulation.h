@@ -147,9 +147,25 @@ ALGO_API Index get_k_closest_from_n(const Index& adjacencies, const uint32_t k, 
 
 
 ALGO_API real_t
-max_neighborhood_distance(  uint32_t pid,
-                             const Point3ArrayPtr points, 
-			                 const Index& adjacency);
+pointset_max_distance(  uint32_t pid,
+                        const Point3ArrayPtr points, 
+			            const Index& adjacency);
+
+ALGO_API real_t
+pointset_max_distance( const TOOLS(Vector3)& origin,
+                       const Point3ArrayPtr points, 
+			           const Index& adjacency);
+
+ALGO_API real_t
+pointset_mean_distance(  const TOOLS(Vector3)& origin,
+                         const Point3ArrayPtr points, 
+			             const Index& adjacency);
+
+ALGO_API real_t
+pointset_mean_radial_distance(  const TOOLS(Vector3)& origin,
+                                const TOOLS(Vector3)& direction,
+                                const Point3ArrayPtr points, 
+			                    const Index& adjacency);
 
 ALGO_API Index 
 get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
@@ -207,6 +223,45 @@ principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups, si
 ALGO_API std::vector<CurvatureInfo>
 principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree = 4, size_t monge_degree = 4);
 
+// Compute the set of points that are at a distance < width from the plane at point pid in direction
+ALGO_API Index
+point_section( uint32_t pid,
+               const Point3ArrayPtr points,
+               const IndexArrayPtr adjacencies, 
+               const TOOLS(Vector3)& direction, 
+               real_t width);
+
+ALGO_API IndexArrayPtr
+points_sections( const Point3ArrayPtr points,
+                 const IndexArrayPtr adjacencies, 
+                 const Point3ArrayPtr directions, 
+                 real_t width);
+
+/// Compute a circle from a point set
+ALGO_API std::pair<TOOLS(Vector3),real_t>
+pointset_circle( const Point3ArrayPtr points,
+                 const Index&  group,
+                 bool bounding = false);
+
+ALGO_API std::pair<TOOLS(Vector3),real_t>
+pointset_circle( const Point3ArrayPtr points,
+                 const Index&  group,
+                 const TOOLS(Vector3)& direction,
+                 bool bounding = false);
+
+ALGO_API std::pair<Point3ArrayPtr,TOOLS(RealArrayPtr)>
+pointsets_circles( const Point3ArrayPtr points,
+                   const IndexArrayPtr  groups,
+                   const Point3ArrayPtr directions = Point3ArrayPtr(0),
+                   bool bounding = false);
+
+ALGO_API std::pair<Point3ArrayPtr,TOOLS(RealArrayPtr)>
+pointsets_section_circles( const Point3ArrayPtr points,
+                           const IndexArrayPtr  adjacencies,
+                           const Point3ArrayPtr directions,
+                           real_t width,
+                           bool bounding = false);
+
 // adaptive contraction
 ALGO_API TOOLS(RealArrayPtr)
 adaptive_radii( const TOOLS(RealArrayPtr) density,
@@ -262,7 +317,7 @@ skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t ro
 // compute parent-children relation from child-parent relation
 ALGO_API IndexArrayPtr determine_children(const TOOLS(Uint32Array1Ptr) parents, uint32_t& root);
 
-// compute a weigth to each points as sum of length of carried segments
+// compute a weight to each points as sum of length of carried segments
 ALGO_API TOOLS(RealArrayPtr) carried_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
 
 // optimize orientation
@@ -294,26 +349,48 @@ ALGO_API bool node_continuity_test(const TOOLS(Vector3)& node, real_t noderadius
                                    const TOOLS(Vector3)& parent, real_t parentradius,
                                    const TOOLS(Vector3)& child, real_t childradius,
                                    real_t overlapfilter = 0.5,
-                                   bool verbose = false);
+                                   bool verbose = false, ScenePtr * visu = NULL);
 
 ALGO_API bool node_intersection_test(const TOOLS(Vector3)& root, real_t rootradius, 
                                      const TOOLS(Vector3)& p1,   real_t radius1, 
                                      const TOOLS(Vector3)& p2,   real_t radius2,
                                      real_t overlapfilter,
                                      bool verbose = false, ScenePtr * visu = NULL);
+// compute the minimum maximum and  mean edge length
+ALGO_API TOOLS(Vector3) min_max_mean_edge_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
 
 // determine nodes to filter
-ALGO_API Index filter_short_nodes(const Point3ArrayPtr nodes,
-                            const TOOLS(Uint32Array1Ptr) parents, 
-                            const TOOLS(RealArrayPtr) radii, 
-                            const TOOLS(RealArrayPtr) weights,
-                            real_t edgelengthfilter = 0.1,
-                            real_t overlapfilter = 0.5);
+ALGO_API Index detect_short_nodes(const Point3ArrayPtr nodes,
+                                  const TOOLS(Uint32Array1Ptr) parents, 
+                                  real_t edgelengthfilter = 0.001);
 
 ALGO_API void remove_nodes(const Index& toremove,
-                                Point3ArrayPtr& nodes,
-                                TOOLS(Uint32Array1Ptr)& parents, 
-                                TOOLS(RealArrayPtr)& radii);
+                           Point3ArrayPtr& nodes,
+                           TOOLS(Uint32Array1Ptr)& parents, 
+                           TOOLS(RealArrayPtr)& radii);
+
+// determine nodes to filter
+ALGO_API IndexArrayPtr detect_similar_nodes(const Point3ArrayPtr nodes,
+                                            const TOOLS(Uint32Array1Ptr) parents, 
+                                            const TOOLS(RealArrayPtr) radii, 
+                                            const TOOLS(RealArrayPtr) weights, 
+                                            real_t overlapfilter = 0.5);
+
+ALGO_API void merge_nodes(const IndexArrayPtr tomerge,
+                          Point3ArrayPtr& nodes,
+                          TOOLS(Uint32Array1Ptr)& parents, 
+                          TOOLS(RealArrayPtr)& radii, 
+                          TOOLS(RealArrayPtr) weights);
+
+
+// determine mean direction of a set of points
+ALGO_API TOOLS(Vector3) pointset_mean_direction(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
+
+// determine all directions of a set of points
+ALGO_API Point3ArrayPtr pointset_directions(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
+
+// find the closest point from a group
+ALGO_API std::pair<uint32_t,real_t> findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
 
 PGL_END_NAMESPACE
 

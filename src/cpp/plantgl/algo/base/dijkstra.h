@@ -89,6 +89,7 @@ public:
     uint32_t pop()
       {
             uint32_t topvalue = c.front(); 
+            // set the last element at the end
             pop_heap(c.begin(), c.end(), comp);
             c.pop_back();
             return topvalue;

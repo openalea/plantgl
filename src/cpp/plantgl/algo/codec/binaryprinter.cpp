@@ -347,41 +347,52 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
   writeBool(val);
 
 
-#define GEOM_PRINT_COLOR3(val) \
+#define GEOM_PRINT_COLOR3(val) write(val);
+
+void BinaryPrinter::write(const Color3& val) {
   writeUchar(val.getRed()); \
   writeUchar(val.getGreen()); \
   writeUchar(val.getBlue()); 
+}
 
-#define GEOM_PRINT_COLOR4(val) \
+#define GEOM_PRINT_COLOR4(val) write(val);
+
+void BinaryPrinter::write(const Color4& val) {
   writeUchar(val.getRed()); \
   writeUchar(val.getGreen()); \
   writeUchar(val.getBlue()); \
   writeUchar(val.getAlpha());
-
+}
 
 #define GEOM_PRINT_GEOMETRY(val) \
   val->apply(*this);
 
 
-#define GEOM_PRINT_INDEX3(val) \
+#define GEOM_PRINT_INDEX3(val) write(val);
+
+void BinaryPrinter::write(const Index3& val) {
   writeUint32(val.getAt(0)); \
   writeUint32(val.getAt(1)); \
   writeUint32(val.getAt(2));
+}
 
+#define GEOM_PRINT_INDEX4(val) write(val);
 
-#define GEOM_PRINT_INDEX4(val) \
+void BinaryPrinter::write(const Index4& val) {
   writeUint32(val.getAt(0)); \
   writeUint32(val.getAt(1)); \
   writeUint32(val.getAt(2)); \
   writeUint32(val.getAt(3));
+}
 
+#define GEOM_PRINT_INDEXN(val) write(val);
 
-#define GEOM_PRINT_INDEXN(val) { \
-    uint_t _sizej = val.size(); \
-    writeUint32(_sizej); \
-    for (uchar_t _j = 0; _j < _sizej; _j++) \
-       writeUint32(val.getAt(_j)); \
-  };
+void BinaryPrinter::write(const Index& val) {
+    uint_t _sizej = val.size(); 
+    writeUint32(_sizej); 
+    for(Index::const_iterator it = val.begin(); it != val.end(); ++it)
+        writeUint32(*it); 
+};
 
 
 #define GEOM_PRINT_UINT32(val) \
@@ -401,17 +412,40 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
 #define GEOM_PRINT_FILE(val) \
   writeFile(val);
 
-#define GEOM_PRINT_VECTOR2(val) \
- writeReal(val.x()); writeReal(val.y());
+#define GEOM_PRINT_VECTOR2(val) write(val);
+
+void BinaryPrinter::write(const Vector2& val) {
+    writeReal(val.x()); writeReal(val.y());
+}
 
 
-#define GEOM_PRINT_VECTOR3(val) \
+#define GEOM_PRINT_VECTOR3(val) write(val);
+
+void BinaryPrinter::write(const Vector3& val) {
  writeReal(val.x()); writeReal(val.y()); writeReal(val.z());
+}
 
+#define GEOM_PRINT_VECTOR4(val) write(val);
 
-#define GEOM_PRINT_VECTOR4(val) \
+void BinaryPrinter::write(const Vector4& val) {
  writeReal(val.x()); writeReal(val.y()); \
  writeReal(val.z()); writeReal(val.w());
+}
+
+void BinaryPrinter::write(const Matrix2& val) {
+    for (Matrix2::const_iterator it = val.begin(); it != val.end(); ++it)
+        writeReal(*it);
+}
+
+void BinaryPrinter::write(const Matrix3& val) {
+    for (Matrix3::const_iterator it = val.begin(); it != val.end(); ++it)
+        writeReal(*it);
+}
+
+void BinaryPrinter::write(const Matrix4& val) {
+    for (Matrix4::const_iterator it = val.begin(); it != val.end(); ++it)
+        writeReal(*it);
+}
 
 #define GEOM_PRINT_TRANSFO4(obj) { \
     Matrix4 m= obj->getMatrix(); \
@@ -425,13 +459,16 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
   };
 
 
-#define GEOM_PRINT_FIELD_ARRAY(obj,field,type) { \
+#define GEOM_PRINT_FIELD_ARRAY(obj,field,type) if(obj->get##field()) writeArray(*obj->get##field()); else writeUint32(0);
+#define GEOM_PRINT_FIELD_MATRIX(obj,field,type) if(obj->get##field()) writeMatrix(*obj->get##field()); else writeUint32(0);
+
+/* { \
     uint_t _sizei = (obj->get##field()?obj->get##field()->size():0); \
     writeUint32(_sizei); \
     for (uint_t _i = 0; _i < _sizei; _i++) { \
       GEOM_PRINT_##type(obj->get##field()->getAt(_i)); \
     }; \
-  };
+  }; 
 
 
 #define GEOM_PRINT_FIELD_MATRIX(obj,field,type) { \
@@ -442,7 +479,7 @@ leofstream& operator<<( leofstream& stream, TokenCode& c ){
       GEOM_PRINT_##type(obj->get##field()->getAt(_i / _cols ,_i % _cols)); \
     }; \
   };
-
+  */
 
 /* ----------------------------------------------------------------------- */
 
@@ -476,7 +513,7 @@ inline void BinaryPrinter::writeBool(bool var)
 
 
 /// write an uint_t value from stream
-inline void BinaryPrinter::writeUint32(uint_t var)
+void BinaryPrinter::writeUint32(uint_t var)
 /*#if __WORDSIZE == 64
 #ifdef __GNUC__
 #warning "Approximate uint64 to uint32 for Binary output"
@@ -487,7 +524,7 @@ inline void BinaryPrinter::writeUint32(uint_t var)
 // #endif
 
   /// write an int32_t value from stream
-inline void BinaryPrinter::writeInt32(int_t var)
+void BinaryPrinter::writeInt32(int_t var)
 /*#if __WORDSIZE == 64
 { __outputStream << (intptr_t)var; }
 #else */

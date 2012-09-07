@@ -233,6 +233,8 @@ public:
     /// Return the size of the grid
 	inline size_t size() const { return product(__dimensions); }
 
+    static size_t nbDimensions() { return NbDimension; }
+
 protected:
 	inline void setDimensions(const Index& dim) { __dimensions = dim; }
 

@@ -35,6 +35,53 @@
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
+
+
+
+
+
+
+class ProgressStatus {
+public:    
+    ProgressStatus (uint32_t _nbsteps, char * _message =" %.2f processed.", float _percenttoprint = 5):
+            nbsteps(_nbsteps), 
+            percenttoprint(_percenttoprint), 
+            message(_message),
+            current(1),
+            cpercent(-_percenttoprint) { }
+    
+     inline ProgressStatus & operator ++()  { increment(); return *this; }
+
+protected:
+
+    void increment() { 
+        ++current; 
+        if (current <= nbsteps){
+            if (current == nbsteps){
+                    std::string msg("\x0d");
+                    msg += message;
+                    msg += "\n";
+                    printf(msg.c_str(),100.0);
+            }
+            else {
+                real_t ncpercent = 100 * current / float(nbsteps);
+                if(cpercent +  percenttoprint <= ncpercent ) {
+                    std::string msg("\x0d");
+                    msg += message;
+                    printf(msg.c_str(),ncpercent);
+                    cpercent = ncpercent;
+                }
+            }
+        }
+    }
+    uint32_t current;
+    uint32_t nbsteps;
+    real_t cpercent;
+    real_t percenttoprint;
+    char * message;
+};
+
+
 #ifdef WITH_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Triangulation_vertex_base_with_info_3.h>
@@ -409,20 +456,14 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
     struct PointDistance pdevaluator(points);
     
     IndexArrayPtr result(new IndexArray(nbPoints));
-    real_t cpercent = 0;
+    ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
     for(uint32_t current = 0; current < nbPoints; ++current) {
         NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius);
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
             lres.push_back(itn->id);
         result->setAt(current,lres);
-        if (verbose){
-            real_t ncpercent = 100 * current / float(nbPoints);
-            if(cpercent + 5 <= ncpercent ) {
-                printf("density computed for %.2f%% of points.\n",ncpercent);
-                cpercent = ncpercent;
-            }
-        }
+        if (verbose) ++st;
     }
     return result;
 }
@@ -591,15 +632,51 @@ PGL::k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 
 
 real_t
-PGL::max_neighborhood_distance(  uint32_t pid,
-                                        const Point3ArrayPtr points, 
-			                            const Index& adjacency)
+PGL::pointset_max_distance(  const Vector3& origin,
+                                 const Point3ArrayPtr points, 
+			                     const Index& adjacency)
 {
     real_t max_distance = 0;
     for(Index::const_iterator itad = adjacency.begin(); itad != adjacency.end(); ++itad)
-        max_distance = std::max(max_distance,norm(points->getAt(pid)-points->getAt(*itad)));
+        max_distance = std::max(max_distance,norm(origin-points->getAt(*itad)));
     return max_distance;
 }
+
+real_t
+PGL::pointset_max_distance(  uint32_t pid,
+                                 const Point3ArrayPtr points, 
+			                     const Index& adjacency)
+{
+    return pointset_max_distance(points->getAt(pid), points, adjacency);
+}
+
+ALGO_API real_t
+PGL::pointset_mean_distance(  const Vector3& origin,
+                const Point3ArrayPtr points, 
+			    const Index& adjacency)
+{
+    if (adjacency.empty()) return 0;
+    real_t sum_distance = 0;
+    for(Index::const_iterator itad = adjacency.begin(); itad != adjacency.end(); ++itad)
+        sum_distance += norm(origin-points->getAt(*itad));
+    return sum_distance / adjacency.size();
+}
+
+
+ALGO_API real_t
+PGL::pointset_mean_radial_distance(  const Vector3& origin,
+                                     const Vector3& direction,
+                                     const Point3ArrayPtr points, 
+			                         const Index& adjacency)
+{
+    if (adjacency.empty()) return 0;
+    real_t sum_distance = 0;
+    for(Index::const_iterator itad = adjacency.begin(); itad != adjacency.end(); ++itad)
+        sum_distance += radialAnisotropicNorm(origin-points->getAt(*itad), direction, 1, 0);
+    return sum_distance / adjacency.size();
+}
+
+
 
 real_t
 PGL::density_from_k_neighborhood(  uint32_t pid,
@@ -608,7 +685,7 @@ PGL::density_from_k_neighborhood(  uint32_t pid,
                                const uint32_t k)
 {
     Index adjacency = (k == 0 ? adjacencies->getAt(pid) : k_neighborhood(pid, points, adjacencies, k ));
-    real_t radius = max_neighborhood_distance(pid, points, adjacency);
+    real_t radius = pointset_max_distance(pid, points, adjacency);
     return adjacency.size() / (radius * radius);
 }
 
@@ -622,17 +699,10 @@ PGL::densities_from_k_neighborhood(const Point3ArrayPtr points,
     GEOM_ASSERT(nbPoints == adjacencies->size());
     GEOM_ASSERT(nbPoints == radii->size());
     RealArrayPtr result(new RealArray(nbPoints));
+    ProgressStatus  st(nbPoints, "density computed for %.2f%% of points.");
     uint32_t current = 0;
-    real_t cpercent = 0;
-    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres){
+    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++current, ++st){
         *itres = density_from_k_neighborhood(current, points,adjacencies,k);
-        ++current;
-        real_t ncpercent = 100 * current / float(nbPoints);
-        if(cpercent + 5 <= ncpercent ) {
-            printf("density computed for %.2f%% of points.\n",ncpercent);
-            cpercent = ncpercent;
-
-        }
     }
     return result;
 }
@@ -671,8 +741,9 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
 	size_t nbPoints = points->size();
 	Point3ArrayPtr result(new Point3Array(nbPoints));
 
+    ProgressStatus st(nbPoints, "orientations computed for %.2f%% of points.");
     IndexArray::const_iterator itNbrhd = groups->begin();
-    for(Point3Array::iterator itRes = result->begin(); itRes != result->end(); ++itRes, ++itNbrhd)
+    for(Point3Array::iterator itRes = result->begin(); itRes != result->end(); ++itRes, ++itNbrhd, ++st)
         *itRes = pointset_orientation(points,*itNbrhd);
 
 	return result;
@@ -757,6 +828,201 @@ PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjac
     return result;
 
 }
+
+
+Index
+PGL::point_section( uint32_t pid,
+                    const Point3ArrayPtr points,
+                    const IndexArrayPtr adjacencies, 
+                    const Vector3& direction, 
+                    real_t width)
+{
+    Vector3& pt = points->getAt(pid); 
+    Vector3& dir = direction.normed();
+    Index result;
+    result.push_back(pid);
+
+    std::set<uint32_t> considered;
+    considered.insert(pid);
+    std::deque<uint32_t> toprocess;
+    toprocess.push_back(pid);
+    while ( !toprocess.empty() )
+    {
+        uint32_t cid = toprocess.front();
+        toprocess.pop_front();
+        
+        const Index& padjacency = adjacencies->getAt(cid);
+        for(Index::const_iterator it = padjacency.begin(); it != padjacency.end(); ++it)
+               if(considered.find(*it) == considered.end()){
+                   considered.insert(*it);
+                   if (radialAnisotropicNorm(points->getAt(*it)-pt,dir,1,0) < width) {
+                       result.push_back(*it);
+                       toprocess.push_back(*it);
+                   }
+               }
+    }
+    return result;
+}
+
+ALGO_API IndexArrayPtr
+PGL::points_sections( const Point3ArrayPtr points,
+                          const IndexArrayPtr adjacencies, 
+                          const Point3ArrayPtr directions, 
+                          real_t width)
+{
+    uint32_t nbPoints = points->size();
+    IndexArrayPtr result(new IndexArray(nbPoints));
+    uint32_t i = 0;
+    ProgressStatus st(nbPoints, "sections computed for %.2f%% of points.");
+    Point3Array::const_iterator itd = directions->begin();
+
+    for(IndexArray::iterator it = result->begin(); it != result->end(); ++it, ++i, ++itd, ++st){
+        *it = point_section(i,points, adjacencies, *itd,  width);
+    }
+    return result;
+}
+
+#include <plantgl/algo/fitting/fit.h>
+
+/*    Vector3 u,v, w, s;
+    if (Fit::inertiaAxis(lpoints, u, v, w, s)){
+        Vector3 a,b;
+        if (s[0] <= s[1] && s[0] <= s[2]) { a = v; b = w; }
+        else if (s[1] <= s[0] && s[1] <= s[2]) { a = u; b = w; }
+        else if (s[2] <= s[0] && s[2] <= s[1]) { a = u; b = v; }
+*/
+
+std::pair<Vector3,real_t>
+PGL::pointset_circle( const Point3ArrayPtr points,
+                      const Index&  group,
+                      bool bounding)
+{
+    size_t gsize = group.size();
+    if (gsize == 0) return std::pair<Vector3,real_t>(Vector3(0,0,0),0);
+    else if (gsize == 1) return std::pair<Vector3,real_t>(points->getAt(group[0]),0);
+
+    Vector3 center; 
+    Plane3 plane;
+
+    if(Fit::plane(points, center, plane, group)){
+        Vector3 a = plane.base1(); Vector3 b = plane.base2();
+        a.normalize(); b.normalize();
+
+        if (bounding) {
+            Point2ArrayPtr lpoints2(new Point2Array(group.size()));
+            Point2Array::iterator  itp2 = lpoints2->begin();
+            for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg, ++itp2){
+                Vector3 p = points->getAt(*itg)-center;
+                *itp2 = Vector2(dot(p,a),dot(p,b));
+            }
+
+
+            Vector2 center2;
+            real_t radius;
+            if(Fit::boundingCircle(lpoints2,center2,radius)){
+                Vector3 center3 = center + a * center2.x() + b * center2.y();
+                return std::pair<Vector3,real_t>(center3,radius);
+            }
+            else 
+                return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center, plane.getNormal(), points, group));
+        }
+        else return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center, plane.getNormal(), points, group));
+    }
+    else {
+        center = centroid_of_group(points,group); 
+        return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center, plane.getNormal(), points, group));
+    }
+}
+
+std::pair<Vector3,real_t>
+PGL::pointset_circle( const Point3ArrayPtr points,
+                      const Index&  group,
+                      const Vector3& direction,
+                      bool bounding)
+{
+    size_t gsize = group.size();
+    if (gsize == 0) return std::pair<Vector3,real_t>(Vector3(0,0,0),0);
+    else if (gsize == 1) return std::pair<Vector3,real_t>(points->getAt(group[0]),0);
+
+    Vector3 center = centroid_of_group(points,group); 
+
+    if (bounding){
+        Plane3 plane(direction,0);
+        Vector3 a = plane.base1(); Vector3 b = plane.base2();
+        a.normalize(); b.normalize();
+
+        Point2ArrayPtr lpoints2(new Point2Array(group.size()));
+        Point2Array::iterator  itp2 = lpoints2->begin();
+        for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg, ++itp2){
+                Vector3 p = points->getAt(*itg)-center;
+                *itp2 = Vector2(dot(p,a),dot(p,b));
+        }
+
+        Vector2 center2;
+        real_t radius;
+        if(Fit::boundingCircle(lpoints2,center2,radius)){
+            Vector3 center3 = center + a * center2.x() + b * center2.y();
+            return std::pair<Vector3,real_t>(center3,radius);
+        }
+        else return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center,direction,points, group));
+    }
+    else 
+        return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center,direction,points, group));
+}
+
+std::pair<Point3ArrayPtr,RealArrayPtr>
+PGL::pointsets_circles( const Point3ArrayPtr points,
+                        const IndexArrayPtr  groups,
+                        const Point3ArrayPtr directions,
+                        bool bounding)
+{
+    size_t nbpoints = points->size();
+    Point3ArrayPtr respoints(new Point3Array(nbpoints));
+    RealArrayPtr   resradius(new RealArray(nbpoints,0));
+    Point3Array::iterator itrp = respoints->begin();
+    RealArray::iterator itrr = resradius->begin();
+    size_t pid = 0;
+
+    ProgressStatus st(nbpoints, "circles computed for %.2f%% of points.");
+
+    for (IndexArray::const_iterator itg = groups->begin(); itg != groups->end(); ++itg, ++itrp, ++itrr, ++st){
+        std::pair<Vector3,real_t> lres ;
+        if (directions) lres = pointset_circle(points,*itg, directions->getAt(pid++),bounding);
+        else lres = pointset_circle(points,*itg,bounding);
+        *itrp = lres.first; *itrr = lres.second;
+    }
+    return std::pair<Point3ArrayPtr,RealArrayPtr>(respoints, resradius);
+
+}
+
+
+std::pair<Point3ArrayPtr,RealArrayPtr>
+PGL::pointsets_section_circles( const Point3ArrayPtr points,
+                                const IndexArrayPtr  adjacencies,
+                                const Point3ArrayPtr directions,
+                                real_t width,
+                                bool bounding)
+{
+    size_t nbpoints = points->size();
+    Point3ArrayPtr respoints(new Point3Array(nbpoints));
+    RealArrayPtr   resradius(new RealArray(nbpoints,0));
+    Point3Array::iterator itrp = respoints->begin();
+    RealArray::iterator itrr = resradius->begin();
+    size_t pid = 0;
+
+    ProgressStatus st(nbpoints, "section and circles computed for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itd = directions->begin(); itd != directions->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
+        Index section = point_section(pid, points, adjacencies, *itd, width);
+        // if(section.size() == 0) printf("Pb with %i\n",pid);
+        std::pair<Vector3,real_t> lres ;
+        lres = pointset_circle(points,section, *itd,bounding);
+        *itrp = lres.first; *itrr = lres.second;
+    }
+    return std::pair<Point3ArrayPtr,RealArrayPtr>(respoints, resradius);
+
+}
+
 
 RealArrayPtr
 PGL::adaptive_radii( const RealArrayPtr density,
@@ -999,7 +1265,7 @@ RealArrayPtr PGL::carried_length(const Point3ArrayPtr points, const Uint32Array1
 
     IndexArrayPostOrderConstIterator piterator(children, root);
 
-    // look to the node in post order and for each node compute its weigth as sum of children weigth + length of segment to children.
+    // look to the node in post order and for each node compute its weight as sum of children weight + length of segment to children.
     for(;!piterator.atEnd(); ++piterator)
     {
         Index& nextgroup = children->getAt(*piterator);
@@ -1097,6 +1363,7 @@ Point3ArrayPtr PGL::optimize_positions(const Point3ArrayPtr points,
     return result;
 }
 
+
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 
 real_t 
@@ -1180,15 +1447,96 @@ PGL::estimate_radii(const Point3ArrayPtr nodes,
     return result;
 }
 
+
+Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents)
+{
+    real_t minl  = REAL_MAX;
+    real_t maxl  = 0;
+    real_t suml  = 0;
+    uint32_t nbp = 0;
+    uint32_t pid = 0;
+    for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it, ++pid){
+        uint32_t parent = parents->getAt(pid);
+        if (parent != pid){
+            real_t edgelength = norm(*it-points->getAt(parent));
+            if (edgelength < minl) minl = edgelength;
+            if (edgelength > maxl) maxl = edgelength;
+            suml += edgelength;
+            nbp += 1;
+        }
+    }
+    return Vector3(minl, maxl,suml/nbp);
+}
+
+ Index PGL::detect_short_nodes(const Point3ArrayPtr nodes,
+                               const TOOLS(Uint32Array1Ptr) parents, 
+                               real_t edgelengthfilter)
+{
+    Index toremove;
+    uint32_t pid = 0;
+    for (Point3Array::const_iterator it = nodes->begin(); it != nodes->end(); ++it, ++pid){
+        uint32_t parent = parents->getAt(pid);
+        if (parent != pid){
+            real_t edgelength = norm(*it-nodes->getAt(parent));
+            if (edgelength < edgelengthfilter) toremove.push_back(pid);
+        }
+    }
+    return toremove;
+
+ }
+
 #include <plantgl/algo/base/intersection.h>
+#include <plantgl/algo/base/curvemanipulation.h>
+#include <plantgl/algo/base/tesselator.h>
 #include <plantgl/algo/base/surfcomputer.h>
 #include <plantgl/pgl_scenegraph.h>
+
+
+std::pair<Point2ArrayPtr, IndexArrayPtr> my_polygon2ds_intersection(Point2ArrayPtr P, Point2ArrayPtr Q)
+{
+  IndexArrayPtr indexresult(new IndexArray());
+  Point2ArrayPtr pointresult(new Point2Array());
+
+  // Compute the intersection of P and Q.
+  GeometryPtr result = Overlay::process(Polyline2DPtr(new Polyline2D(P)),Polyline2DPtr(new Polyline2D(Q)));
+  GroupPtr group;
+  if (!is_null_ptr(group = dynamic_pointer_cast<Group>(result))){
+      for(GeometryArray::const_iterator  itph = group->getGeometryList()->begin(); itph != group->getGeometryList()->end(); ++itph){
+          Polyline2DPtr resi = dynamic_pointer_cast<Polyline2D>(*itph);
+          if (resi){
+              Point2ArrayPtr lpointresult(resi->getPointList());
+              lpointresult->erase(lpointresult->end()-1);
+              IndexArrayPtr lindexresult = polygonization(lpointresult, eConvexTriangulation);
+              size_t nbpoints = pointresult->size();
+              if (nbpoints > 0) shift_all_indices(lindexresult, nbpoints);
+              indexresult->insert(indexresult->end(),lindexresult->begin(),lindexresult->end());
+              pointresult->insert(pointresult->end(),lpointresult->begin(),lpointresult->end());
+          }
+      }
+      return std::pair<Point2ArrayPtr, IndexArrayPtr>(pointresult,indexresult);
+  }
+  else {
+       Polyline2DPtr resi = dynamic_pointer_cast<Polyline2D>(result);
+       if (resi){
+            Point2ArrayPtr lpointresult(resi->getPointList());
+            lpointresult->erase(lpointresult->end()-1);
+            IndexArrayPtr lindexresult = polygonization(lpointresult, eConvexTriangulation);
+            return std::pair<Point2ArrayPtr, IndexArrayPtr>(lpointresult,lindexresult);
+        }
+       else { return std::pair<Point2ArrayPtr, IndexArrayPtr>(); }
+  }
+}
+/*
+std::pair<Point2ArrayPtr, IndexArrayPtr> my_polygon2ds_intersection(Point2ArrayPtr P, Point2ArrayPtr Q)
+{
+    return polygon2ds_intersection(P, Q);
+} */
 
 bool PGL::node_continuity_test(const Vector3& node, real_t noderadius, 
                                const Vector3& parent, real_t parentradius,
                                const Vector3& child, real_t childradius,
                                real_t overlapfilter,
-                               bool verbose)
+                               bool verbose, ScenePtr * visu)
 {
 
     Vector3 np1 = node - parent; real_t l1 = np1.normalize();
@@ -1197,9 +1545,9 @@ bool PGL::node_continuity_test(const Vector3& node, real_t noderadius,
 
     Vector3 normalvec = cross(np1, np2);
     if (norm(normalvec) < GEOM_EPSILON) {
-        real_t estimated_rad = parentradius + (parentradius-childradius)*l1/(l1+l2);
-        if (((estimated_rad+(parentradius-estimated_rad)*overlapfilter/2) > noderadius) &&
-            ((estimated_rad-(estimated_rad-childradius)*overlapfilter/2) < noderadius))
+        real_t estimated_rad = parentradius + (childradius-parentradius)*l1/(l1+l2);
+        if (((estimated_rad+(parentradius-estimated_rad)*overlapfilter) >= noderadius) &&
+            (  noderadius >= (estimated_rad-(estimated_rad-childradius)*overlapfilter)  ))
             return true;
         else return false;
     }
@@ -1207,13 +1555,19 @@ bool PGL::node_continuity_test(const Vector3& node, real_t noderadius,
         normalvec.normalize();
         Vector3 horizontalvec = cross(medium, normalvec);
         Vector3 horizontalvec1 = cross(np1, normalvec);
+        horizontalvec1.normalize();
         Vector3 horizontalvec2 = cross(np2, normalvec);
+        horizontalvec2.normalize();
 
         Vector2 hvec12D(dot(horizontalvec,horizontalvec1),dot(medium,horizontalvec1));
+        hvec12D.normalize();
         Vector2 hvec22D(dot(horizontalvec,horizontalvec2),dot(medium,horizontalvec2));
+        hvec22D.normalize();
 
         Vector2 pvec12D(dot(horizontalvec,np1),dot(medium,np1));
+        pvec12D.normalize();
         Vector2 pvec22D(dot(horizontalvec,np2),dot(medium,np2));
+        pvec22D.normalize();
 
         Point2ArrayPtr cone1(new Point2Array(childradius > GEOM_EPSILON? 4 : 3));
         uint32_t ipos = 0;
@@ -1227,15 +1581,15 @@ bool PGL::node_continuity_test(const Vector3& node, real_t noderadius,
 
         Point2ArrayPtr cone2(new Point2Array(childradius > GEOM_EPSILON? 4 : 3));
         ipos = 0;
-        cone2->setAt(ipos++, noderadius * hvec22D);
+        cone2->setAt(ipos++, l1 * pvec12D + noderadius * hvec22D);
         if (childradius > GEOM_EPSILON){
-            cone2->setAt(ipos++, l2 * pvec22D + childradius * hvec22D);
-            cone2->setAt(ipos++, l2 * pvec22D - childradius * hvec22D);
+            cone2->setAt(ipos++, l1 * pvec12D + l2 * pvec22D + childradius * hvec22D);
+            cone2->setAt(ipos++, l1 * pvec12D + l2 * pvec22D - childradius * hvec22D);
         }
-        else cone2->setAt(ipos++, l2 * pvec22D);
-        cone2->setAt(ipos++, - noderadius * hvec22D);
+        else cone2->setAt(ipos++, l1 * pvec12D + l2 * pvec22D);
+        cone2->setAt(ipos++, l1 * pvec12D - noderadius * hvec22D);
 
-        std::pair<Point2ArrayPtr, IndexArrayPtr> intersection = polygon_intersection(cone1,cone2);
+        std::pair<Point2ArrayPtr, IndexArrayPtr> intersection = my_polygon2ds_intersection(cone1,cone2);
 
         real_t intersection_surface = 0;
         Index3ArrayPtr triangles = intersection.second->triangulate();
@@ -1243,10 +1597,21 @@ bool PGL::node_continuity_test(const Vector3& node, real_t noderadius,
             intersection_surface += surface(intersection.first->getAt(it->getAt(0)),intersection.first->getAt(it->getAt(1)),intersection.first->getAt(it->getAt(2)));
         }
 
-        real_t surface1 = l1 * (parentradius + childradius)  ;
-        real_t surface2 = l2 * (noderadius + childradius) / 2 ;
+        real_t surface1 = l1 * (parentradius + childradius) * 2 ;
+        real_t surface2 = l2 * (noderadius + childradius)  ;
     
-        if(verbose) printf("%f, %f, %f\n", intersection_surface, surface1, surface2);
+        if(verbose) {
+            printf("%f, %f, %f\n", intersection_surface, surface1, surface2);
+            printf("%f, %f, %f\n", noderadius, childradius, l2);
+            printf("esurface1 = %f vs %f\n", surface(cone1->getAt(0),cone1->getAt(1),cone1->getAt(2))+surface(cone1->getAt(0),cone1->getAt(2),cone1->getAt(3)), surface1);
+            printf("esurface2 = %f vs %f\n", surface(cone2->getAt(0),cone2->getAt(1),cone2->getAt(2))+surface(cone2->getAt(0),cone2->getAt(2),cone2->getAt(3)), surface2);
+            if(visu){
+                *visu = ScenePtr(new Scene());
+                (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone1,3)),AppearancePtr(new Material(Color3(0,255,0))))));
+                (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone2,3)),AppearancePtr(new Material(Color3(0,0,255))))));
+                (*visu)->add(ShapePtr(new Shape(GeometryPtr(new FaceSet(Point3ArrayPtr(new Point3Array(intersection.first,0)),intersection.second)),AppearancePtr(new Material(Color3(255,0,0))))));
+           }
+        }
 
         return ( (intersection_surface / surface1 > overlapfilter) || (intersection_surface / surface2 > overlapfilter));
     }
@@ -1258,6 +1623,7 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
                        real_t overlapfilter,
                        bool verbose, ScenePtr * visu)
 {
+    if (verbose) printf("node_intersection_test\n");
     Point2ArrayPtr cone1(new Point2Array(radius1 > GEOM_EPSILON? 4 : 3));
     Point2ArrayPtr cone2(new Point2Array(radius2 > GEOM_EPSILON? 4 : 3));
 
@@ -1289,14 +1655,21 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
     else {
         normalvec.normalize();
         Vector3 horizontalvec = cross(medium, normalvec);
+        horizontalvec.normalize();
         Vector3 horizontalvec1 = cross(np1, normalvec);
+        horizontalvec1.normalize();
         Vector3 horizontalvec2 = cross(np2, normalvec);
+        horizontalvec2.normalize();
 
         Vector2 hvec12D(dot(horizontalvec,horizontalvec1),dot(medium,horizontalvec1));
+        hvec12D.normalize();
         Vector2 hvec22D(dot(horizontalvec,horizontalvec2),dot(medium,horizontalvec2));
+        hvec22D.normalize();
 
         Vector2 pvec12D(dot(horizontalvec,np1),dot(medium,np1));
+        pvec12D.normalize();
         Vector2 pvec22D(dot(horizontalvec,np2),dot(medium,np2));
+        pvec22D.normalize();
 
         uint32_t ipos = 0;
         cone1->setAt(ipos++,rootradius * hvec12D);
@@ -1328,19 +1701,22 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
             printf("(%f,%f),", it->x(),it->y());
         printf("]\n");
 
-        *visu = ScenePtr(new Scene());
-        (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone1,3)),AppearancePtr(new Material(Color3(0,255,0))))));
-        (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone2,3)),AppearancePtr(new Material(Color3(0,0,255))))));
+        if (visu){
+            *visu = ScenePtr(new Scene());
+            (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone1,3)),AppearancePtr(new Material(Color3(0,255,0))))));
+            (*visu)->add(ShapePtr(new Shape(GeometryPtr(new Polyline2D(cone2,3)),AppearancePtr(new Material(Color3(0,0,255))))));
+        }
     }
 
-    std::pair<Point2ArrayPtr, IndexArrayPtr> intersection = polygon_intersection(cone1,cone2);
+    std::pair<Point2ArrayPtr, IndexArrayPtr> intersection = my_polygon2ds_intersection(cone1,cone2);
 
     if(verbose) {
         printf("res = [");
         for(Point2Array::const_iterator it = intersection.first->begin(); it != intersection.first->end(); ++it)
             printf("(%f,%f),", it->x(),it->y());
         printf("]\n"); 
-        (*visu)->add(ShapePtr(new Shape(GeometryPtr(new FaceSet(Point3ArrayPtr(new Point3Array(intersection.first,0)),intersection.second)),AppearancePtr(new Material(Color3(255,0,0))))));
+        if (visu)
+            (*visu)->add(ShapePtr(new Shape(GeometryPtr(new FaceSet(Point3ArrayPtr(new Point3Array(intersection.first,0)),intersection.second)),AppearancePtr(new Material(Color3(255,0,0))))));
     }
 
     real_t intersection_surface = 0;
@@ -1349,8 +1725,8 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
         intersection_surface += surface(intersection.first->getAt(it->getAt(0)),intersection.first->getAt(it->getAt(1)),intersection.first->getAt(it->getAt(2)));
     }
 
-    real_t surface1 = l1 * (rootradius + radius1) /2 ;
-    real_t surface2 = l2 * (rootradius + radius2) /2 ;
+    real_t surface1 = l1 * (rootradius + radius1)  ;
+    real_t surface2 = l2 * (rootradius + radius2)  ;
     
     if(verbose) printf("%f, %f, %f\n", intersection_surface, surface1, surface2);
 
@@ -1371,22 +1747,26 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
 
 
 
- Index PGL::filter_short_nodes(const Point3ArrayPtr nodes,
+
+IndexArrayPtr
+PGL::detect_similar_nodes(const Point3ArrayPtr nodes,
                             const TOOLS(Uint32Array1Ptr) parents, 
                             const TOOLS(RealArrayPtr) radii, 
-                            const TOOLS(RealArrayPtr) weights,
-                            real_t edgelengthfilter,
+                            const TOOLS(RealArrayPtr) weights, 
                             real_t overlapfilter)
 {
-    Index toremove;
+    typedef std::pair<uint32_t,uint32_t> Pair;
+    IndexArrayPtr tomerge(new IndexArray());
 
     uint32_t root;
     IndexArrayPtr children = determine_children(parents, root);
 
-    IndexArrayPostOrderConstIterator piterator(children,root);
+    IndexArrayPreOrderConstIterator piterator(children,root);
     uint32_t nbNodes = nodes->size();
     uint32_t cpercent = 0;
     uint32_t current  = 0;
+    std::set<uint32_t> toavoidtomergebycontinuity;
+
     for(; !piterator.atEnd(); ++piterator, ++current){
         real_t ncpercent = 100 * current / float(nbNodes);
         if(cpercent + 5 <= ncpercent ) {
@@ -1396,56 +1776,68 @@ bool PGL::node_intersection_test(const Vector3& root, real_t rootradius,
 
         const Index& pchildren = children->getAt(*piterator);
         const Vector3& rpos = nodes->getAt(*piterator);
-        Index fpchildren;
-        for (Index::const_iterator itch = pchildren.begin(); itch != pchildren.end();  ++itch)
-        {
-            if (norm(rpos-nodes->getAt(*itch)) < edgelengthfilter) toremove.push_back(*itch);
-            else fpchildren.push_back(*itch);
-        }
-        switch (fpchildren.size()){
+
+        switch (pchildren.size()){
         case 0:
             break;
         case 1:
-            if (*piterator != root)
-                if (norm(direction(rpos-nodes->getAt(parents->getAt(*piterator)))- direction(nodes->getAt(fpchildren[0])-rpos)) < 0.1){
-                    // printf("continuity\n");
-                    toremove.push_back(*piterator);
+            if (*piterator != root && toavoidtomergebycontinuity.find(*piterator) == toavoidtomergebycontinuity.end()){
+                if(node_continuity_test(rpos, radii->getAt(*piterator), 
+                                        nodes->getAt(parents->getAt(*piterator)),radii->getAt(parents->getAt(*piterator)),
+                                        nodes->getAt(pchildren[0]), radii->getAt(pchildren[0]),
+                                        overlapfilter)) { 
+                       size_t nbmerges = tomerge->size();
+                       bool newmerge = true;
+                       if (nbmerges != 0) {
+                           Index& lastmerge = tomerge->getAt(nbmerges-1);
+                           size_t nbnodes = lastmerge.size();
+                           if (lastmerge[nbnodes-1] == *piterator) {
+                               lastmerge.push_back(pchildren[0]);
+                               newmerge = false;
+                           }
+                       }
+                       if(newmerge){
+                            Index m; m.push_back(*piterator); m.push_back(pchildren[0]);
+                            tomerge->push_back(m);
+                       }
                 }
+            }
             break;
         default:
             {
-              // std::set<uint32_t> processed;
-              for (Index::const_iterator itch = fpchildren.begin(); itch != fpchildren.end();  ++itch)
+             Index fpchildren(pchildren);
+             std::sort(fpchildren.begin(),fpchildren.end(),DistanceCmp(weights));
+
+              std::set<uint32_t> processed;
+              for (Index::const_reverse_iterator itch = fpchildren.rbegin(); itch != fpchildren.rend();  ++itch)
               {
-                  // if(processed.find(*itch) != processed.end()){
-                      for (Index::const_iterator itch2 = itch+1; itch2 != fpchildren.end();  ++itch2)
+                  if (processed.find(*itch) == processed.end()){
+
+                      Index m; m.push_back(*itch); 
+                      for (Index::const_reverse_iterator itch2 = itch+1; itch2 != fpchildren.rend();  ++itch2)
                       {
-                        // if(processed.find(*itch2) != processed.end())
-                        // {
-                              if (node_intersection_test(rpos, radii->getAt(*piterator),
+                              if (processed.find(*itch2) == processed.end() &&
+                                  node_intersection_test(rpos, radii->getAt(*piterator),
                                   nodes->getAt(*itch), radii->getAt(*itch),
                                   nodes->getAt(*itch2), radii->getAt(*itch2),
                                   overlapfilter))
                               {
-                                  if(weights->getAt(*itch) > weights->getAt(*itch2)){
-                                      toremove.push_back(*itch2);
-                           //           processed.insert(*itch2);
-                                  }
-                                  else {
-                                      toremove.push_back(*itch);
-                           //           processed.insert(*itch);
-                                      break;
-                                  }
+                                  m.push_back(*itch2);
+                                  processed.insert(*itch2);
                               }
-                         // }
                       }
-                  // }
+                      if (m.size() > 1) { 
+                          tomerge->push_back(m);
+                          for (Index::const_iterator itch3 = m.begin(); itch3 != m.end(); ++itch3)
+                              if(children->getAt(*itch3).size() == 1) toavoidtomergebycontinuity.insert(*itch3);
+                      }
+                  }
               }
             }
             break;
         }
     }
-    return toremove;
+    return tomerge;
 }
 
 void PGL::remove_nodes(const Index& toremove,
@@ -1453,6 +1845,7 @@ void PGL::remove_nodes(const Index& toremove,
                        TOOLS(Uint32Array1Ptr)& parents, 
                        TOOLS(RealArrayPtr)& radii)
 {
+
     Index sortedtoremove(toremove);
     std::sort(sortedtoremove.begin(),sortedtoremove.end());
     uint32_t nbNodes = nodes->size();
@@ -1504,3 +1897,171 @@ void PGL::remove_nodes(const Index& toremove,
     parents = newparents;
 
 }
+
+void PGL::merge_nodes(const IndexArrayPtr tomerge,
+                       Point3ArrayPtr& nodes,
+                       TOOLS(Uint32Array1Ptr)& parents, 
+                       TOOLS(RealArrayPtr)& radii, 
+                       TOOLS(RealArrayPtr) weight)
+{
+    uint32_t nbNodes = nodes->size();    
+    size_t nbfinalnodes = nbNodes;
+    
+    typedef pgl_hash_map<uint32_t,uint32_t> MergeMapType;
+    MergeMapType mergemap;
+
+    for(IndexArray::const_iterator it = tomerge->begin(); it != tomerge->end(); ++it){
+        nbfinalnodes -= it->size()-1;
+
+        uint32_t fid = *it->begin(); // std::min_element(it->begin(),it->end());
+        for(Index::const_iterator itidx = it->begin(); itidx != it->end(); ++itidx)
+            mergemap[*itidx] = fid;
+    }
+    
+    uint32_t *  idmap = new uint32_t[nbNodes];
+
+    uint32_t pid = 0;
+    uint32_t * itid = idmap;
+
+    for (uint32_t cid = 0;  cid < nbNodes; ++cid, ++itid){
+        MergeMapType::const_iterator itm = mergemap.find(cid);
+        if (itm != mergemap.end() && itm->second != cid) { 
+                *itid = idmap[itm->second]; 
+        }
+        else { 
+            *itid = pid++; 
+        }
+    }
+
+    Point3ArrayPtr newnodes(new Point3Array(nbfinalnodes));
+    RealArrayPtr newradii(new RealArray(nbfinalnodes));
+
+    for (uint32_t cid = 0;  cid < nbNodes; ++cid){
+        if (mergemap.find(cid) == mergemap.end()){
+            newnodes->getAt(idmap[cid]) = nodes->getAt(cid);
+            newradii->getAt(idmap[cid]) = radii->getAt(cid);
+        }
+    }
+
+    for(IndexArray::const_iterator it = tomerge->begin(); it != tomerge->end(); ++it){
+        Vector3 mp(0,0,0);
+        real_t mradius = 0;
+        real_t sweights = 0;
+        for(Index::const_iterator itidx = it->begin(); itidx != it->end(); ++itidx){
+            real_t w = weight->getAt(*itidx);
+            mp += nodes->getAt(*itidx) * w;
+            mradius += radii->getAt(*itidx) * w;
+            sweights += w;
+        }
+        size_t pid = idmap[*it->begin()];
+        /*if (pid == 3607) {
+            for(Index::const_iterator itidx = it->begin(); itidx != it->end(); ++itidx)
+                printf("%i - %f %f %f - %f\n",*itidx,nodes->getAt(*itidx).x(),nodes->getAt(*itidx).y(), nodes->getAt(*itidx).z(), weight->getAt(*itidx));
+            printf("M %i - %f %f %f - %f\n",pid,mp.x(),mp.y(), mp.z(), sweights);
+        }*/
+        if (sweights < GEOM_EPSILON) {
+            sweights = 0;   
+            for(Index::const_iterator itidx = it->begin(); itidx != it->end(); ++itidx){
+                mp += nodes->getAt(*itidx);
+                mradius += radii->getAt(*itidx);
+                sweights += 1;
+            }
+        }
+        newnodes->getAt(pid) = mp / sweights;
+        newradii->getAt(pid) = mradius / sweights;
+    }
+
+
+
+    Uint32Array1Ptr newparents(new Uint32Array1(nbfinalnodes));
+    pid = 0;
+    for(Uint32Array1::iterator itParent = parents->begin(); itParent != parents->end(); ++itParent, ++pid)
+    {
+        // if (idmap[pid] == 1148) printf("pid = %i\n", pid);
+        MergeMapType::const_iterator itm = mergemap.find(pid);
+        if(itm == mergemap.end() || itm->second == pid)
+        {
+            // if (idmap[pid] == 1148) printf("merged (%i)\n", itm->second);
+            uint32_t oparent = *itParent;
+            // if (idmap[pid] == 1148) printf("parent = %i\n", oparent);
+            MergeMapType::const_iterator itpm = mergemap.find(oparent);
+            if (itpm != mergemap.end()) {
+                oparent = itpm->second;
+                // if (idmap[pid] == 1148) printf("merged parent = %i\n", oparent);
+            }
+
+            newparents->getAt(idmap[pid]) = idmap[oparent];
+            // if (idmap[pid] == 1148) printf("new parent = %i\n", idmap[oparent]);
+        }
+        else {
+            // if (idmap[pid] == 1148) printf("parent = %i\n", *itParent);
+        }
+    }
+
+    delete [] idmap;
+
+    nodes = newnodes;
+    radii = newradii;
+    parents = newparents;
+
+}
+
+Vector3 
+PGL::pointset_mean_direction(const Vector3& origin, const Point3ArrayPtr points, const Index& group)
+{
+    Vector3 result(0,0,0);
+    size_t nbpoints = group.size();
+    if(nbpoints != 0) {
+        for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg)
+            result += direction(points->getAt(*itg)-origin);
+        result /= nbpoints;
+    }
+    else {
+        nbpoints = points->size();
+        for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
+            result += direction(*itp-origin);
+        result /= nbpoints;
+    }
+    return result.normed();
+}
+
+// determine all directions of a set of points
+Point3ArrayPtr 
+PGL::pointset_directions(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
+{
+    Point3ArrayPtr result(new Point3Array());
+    size_t nbpoints = group.size();
+    if(nbpoints != 0) {
+        for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg)
+            result->push_back(direction(points->getAt(*itg)-origin));
+    }
+    else {
+        for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
+            result->push_back(direction(*itp-origin));
+    }
+    return result;
+}
+
+
+std::pair<uint32_t,real_t> 
+PGL::findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
+{
+   size_t nbpoints = group.size();
+    if(nbpoints != 0) {
+        Index::const_iterator itg = group.begin();
+        real_t dist  = norm(origin-points->getAt(*itg));
+        uint32_t pid = *itg;
+        for(++itg; itg != group.end(); ++itg){
+            real_t ldist  = norm(origin-points->getAt(*itg));
+            if (ldist < dist){
+                dist = ldist;
+                pid = *itg;
+            }
+        }
+        return std::pair<uint32_t,real_t>(pid,dist);
+    }
+    else {
+        std::pair<Point3Array::const_iterator,real_t> res = findClosest(*points,origin);
+        return std::pair<uint32_t,real_t>(std::distance<Point3Array::const_iterator>(points->begin(),res.first),res.second);
+    }
+ }

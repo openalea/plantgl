@@ -84,6 +84,7 @@
     <ClCompile Include="export_action.cpp" />
     <ClCompile Include="export_amaptranslator.cpp" />
     <ClCompile Include="export_bboxcomputer.cpp" />
+    <ClCompile Include="export_planeclip.cpp" />
     <ClCompile Include="export_curvemanip.cpp" />
     <ClCompile Include="export_dijkstra.cpp" />
     <ClCompile Include="export_discretizer.cpp" />

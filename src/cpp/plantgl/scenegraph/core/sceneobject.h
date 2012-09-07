@@ -213,6 +213,7 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 #define PGL_OBJECT_PROPERTY(PROPNAME,PROPTYPE) \
 	inline const PROPTYPE& get##PROPNAME() const { return __##PROPNAME; } \
 	inline PROPTYPE& get##PROPNAME() { return __##PROPNAME; } \
+	inline void set##PROPNAME(const PROPTYPE& value) { __##PROPNAME = value; } \
 	protected: \
     PROPTYPE __##PROPNAME; \
 	public:

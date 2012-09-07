@@ -153,9 +153,10 @@ PointSet::copy(DeepCopier& copier) const
 Vector3 
 PointSet::findClosest(const Vector3& point, uint_t * index) const
 {
-	Point3Array::const_iterator res = PGL::findClosest(*__pointList,point);
-	if(index) *index = std::distance<Point3Array::const_iterator>(__pointList->begin(),res);
-	return *res;
+
+	std::pair<Point3Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
+	if(index) *index = std::distance<Point3Array::const_iterator>(__pointList->begin(),res.first);
+	return *res.first;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -286,9 +287,9 @@ PointSet2D::transform( const Transformation2DPtr& transformation ) const {
 Vector2 
 PointSet2D::findClosest(const Vector2& point, uint_t * index) const
 {
-	Point2Array::const_iterator res = PGL::findClosest(*__pointList,point);
-	if(index) *index = std::distance<Point2Array::const_iterator>(__pointList->begin(),res);
-	return *res;
+	std::pair<Point2Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
+	if(index) *index = std::distance<Point2Array::const_iterator>(__pointList->begin(),res.first);
+	return *res.first;
 }
 
 /* ----------------------------------------------------------------------- */

@@ -42,13 +42,29 @@ template<class CgalPoint2>
 inline CgalPoint2 toPoint2(const TOOLS(Vector2)& v) { return CgalPoint2(v.x(),v.y()); }
 
 template<class CgalPoint2>
-inline Vector2 toVector2(const CgalPoint2& v) { return TOOLS(Vector2)(to_double(v.x()),to_double(v.y())); }
+inline Vector2 toVector2(const CgalPoint2& v) { return TOOLS(Vector2)(CGAL::to_double(v.x()),CGAL::to_double(v.y())); }
 
 template<class CgalPoint3>
 inline CgalPoint3 toPoint3(const Vector3& v) { return CgalPoint3(v.x(),v.y(),v.z()); }
 
 template<class CgalPoint3>
-inline TOOLS(Vector3) toVector3(const CgalPoint3& v) { return TOOLS(Vector3)(to_double(v.x()),to_double(v.y()),to_double(v.z())); }
+inline TOOLS(Vector3) toVector3(const CgalPoint3& v) { return TOOLS(Vector3)(CGAL::to_double(v.x()),CGAL::to_double(v.y()),CGAL::to_double(v.z())); }
+
+template<class CgalPoint3>
+inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v) { 
+    std::list<CgalPoint3> res;
+    for(Point3Array::const_iterator it = v->begin(); it != v->end(); ++it)
+        res.push_back(toPoint3<CgalPoint3>(*it));
+    return res;
+}
+
+template<class CgalPoint3>
+inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v, const Index& subset) { 
+    std::list<CgalPoint3> res;
+    for(Index::const_iterator it = subset.begin(); it != subset.end(); ++it)
+        res.push_back(toPoint3<CgalPoint3>(v->getAt(*it)));
+    return res;
+}
 
 
 #endif

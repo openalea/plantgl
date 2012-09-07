@@ -606,6 +606,17 @@ Vector3::getMinAbsCoord() const
     return ( fabs(__Y) < fabs(__Z) ) ? 1 : 2;
 }
 
+
+Vector3 Vector3::anOrthogonalVector() const
+{
+      if (fabs(__X) < GEOM_EPSILON) return Vector3(1,0,0);
+      else if (fabs(__Y) < GEOM_EPSILON) return Vector3(0,1,0);
+      else if (fabs(__Z) < GEOM_EPSILON) return Vector3(0,0,1);
+      real_t _norm = norm(*this);
+      if (_norm < GEOM_TOLERANCE) return Vector3(0,0,0);;
+      return TOOLS(Vector3)(-__Y/_norm,__X/_norm,0);
+}
+
 /*  --------------------------------------------------------------------- */
 
 Vector3 operator*( const Vector3& v, const real_t& s ) {

@@ -46,11 +46,22 @@ DEF_POINTEE(SceneObject)
 std::string get_sco_name(SceneObject * obj){ return obj->getName(); } 
 void set_sco_name(SceneObject * obj, std::string v){ obj->setName(v); } 
 
+bool has_refcountlistener( const RefCountObject * a )
+{  return a->getRefCountListener() != NULL; }
+
+
 
 void export_SceneObject()
 {
+  class_< RefCountObject,RefCountObjectPtr, boost::noncopyable >("PglObject", no_init)
+	.def("getPglReferenceCount",&RefCountObject::use_count)
+	.def("getPglId",&RefCountObject::uid) \
+	.def("__hasPythonRefCountLink",&has_refcountlistener) \
+	.def("__removePglReference",&RefCountObject::removeReference) \
+	.def("__addPglReference",&RefCountObject::addReference) \
+    ;
 
-  class_< SceneObject,SceneObjectPtr, boost::noncopyable >(
+  class_< SceneObject,SceneObjectPtr, bases< RefCountObject > , boost::noncopyable >(
 	  "SceneObject", 
 	  "Abstract base class for all objects of the scenegraph.\n"
 	  "It is named, has unique id and support reference counting.\n"
@@ -64,7 +75,8 @@ void export_SceneObject()
     .def("isValid", &SceneObject::isValid)
     .def("apply", &SceneObject::apply)
     .def("getId", &SceneObject::getId)
-	.def("getPglReferenceCount",&RefCountObject::use_count)
     ;
+
+  implicitly_convertible<SceneObjectPtr, RefCountObjectPtr >();
 }
 

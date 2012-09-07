@@ -332,6 +332,16 @@ public:
 		return result; 
 	}
 
+    PointContainerPtr get_disabled_points() const {
+		PointContainerPtr result(new PointContainer());
+        for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
+				if(!is_point_enabled(itPointIndex)){
+					result->push_back(points()[itPointIndex]);
+				}
+        }
+		return result; 
+	}
+
     size_t nbFilledVoxels() const {
         size_t count = 0;
         for(typename Base::const_iterator it = Base::begin(); it != Base::end(); ++it)

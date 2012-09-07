@@ -88,6 +88,7 @@ void module_algo()
     export_SegIntersection();
     export_Ray();
     export_RayIntersection();
+    export_Intersection();
 
     // Grid export
     export_Mvs();
@@ -95,6 +96,7 @@ void module_algo()
     export_PointGrid();
     export_KDtree();
     export_PyGrid();
+    export_PlaneClip();
 
     // CurveManipulation export
     export_CurveManipulation();

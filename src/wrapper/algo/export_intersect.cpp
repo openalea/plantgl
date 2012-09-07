@@ -33,6 +33,7 @@
 #include <plantgl/algo/raycasting/util_intersection.h>
 #include <plantgl/algo/raycasting/rayintersection.h>
 #include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/base/intersection.h>
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/container/pointarray.h>
 
@@ -43,7 +44,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
-
+#define bp boost::python
 
 
 void export_SegIntersection()
@@ -159,3 +160,23 @@ void export_RayIntersection()
     ;
 }
 
+
+object py_polygon2ds_intersection_1(Point2ArrayPtr polygon1, Point2ArrayPtr polygon2)
+{
+    std::pair<Point2ArrayPtr, IndexArrayPtr> result = polygon2ds_intersection(polygon1, polygon2);
+    return make_tuple(result.first,result.second);
+}
+
+object py_polygon2ds_intersection_2(Point2ArrayPtr points, Index polygon1, Index polygon2)
+{
+    std::pair<Point2ArrayPtr, IndexArrayPtr> result = polygon2ds_intersection(points, polygon1, polygon2);
+    return make_tuple(result.first,result.second);
+}
+
+
+
+void export_Intersection()
+{
+    def("polygon2ds_intersection",&py_polygon2ds_intersection_1, "Compute intersection between two 2D polygons.", bp::args("polygon1", "polygon1"));
+    def("polygon2ds_intersection",&py_polygon2ds_intersection_2, "Compute intersection between two 2D polygons.", bp::args("points", "polygon1", "polygon1"));
+}

@@ -121,5 +121,5 @@ void export_SceneFactory();
 void export_DeepCopier();
 
 void export_Function();
-
+void export_Plane();
 #endif

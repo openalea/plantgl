@@ -74,15 +74,23 @@ void export_Turtle()
     .def("incWidth", &Turtle::incWidth )
     .def("decWidth", &Turtle::decWidth )
 
-    .def("setTextureScale", &Turtle::setTextureScale )
+    .def("setTextureScale", (void (Turtle::*)(real_t,real_t))&Turtle::setTextureScale )
+    .def("setTextureScale", (void (Turtle::*)(const Vector2&))&Turtle::setTextureScale )
     .def("setTextureVScale", &Turtle::setTextureVScale )
     .def("setTextureUScale", &Turtle::setTextureUScale )
-	.def("setTextureRotation", &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("ucenter")=0.5,bp::arg("vcenter")=0.5))
-	.def("setTextureTranslation", &Turtle::setTextureTranslation ,(bp::arg("u")=0,bp::arg("v")=0))
-	.def("setTextureTransformation", &Turtle::setTextureTransformation ,
+
+	.def("setTextureRotation",(void (Turtle::*)(real_t,real_t,real_t)) &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("ucenter")=0.5,bp::arg("vcenter")=0.5))
+	.def("setTextureRotation",(void (Turtle::*)(real_t,const Vector2&)) &Turtle::setTextureRotation ,(bp::arg("angle")=0,bp::arg("center")=Vector2(0.5,0.5)))
+	.def("setTextureTranslation", (void (Turtle::*)(real_t,real_t))&Turtle::setTextureTranslation ,(bp::arg("u")=0,bp::arg("v")=0))
+	.def("setTextureTranslation", (void (Turtle::*)(const Vector2&))&Turtle::setTextureTranslation ,(bp::arg("t")))
+	.def("setTextureTransformation", (void (Turtle::*)(real_t,real_t,real_t,real_t,real_t,real_t,real_t))&Turtle::setTextureTransformation ,
 		(bp::arg("uscaling")=1,bp::arg("vscaling")=1,
 		 bp::arg("utranslation")=0,bp::arg("vtranslation")=0,
 		 bp::arg("angle")=0,bp::arg("urotcenter")=0.5,bp::arg("vrotcenter")=0.5))
+	.def("setTextureTransformation", (void (Turtle::*)(const Vector2&,const Vector2&,real_t,const Vector2&))&Turtle::setTextureTransformation ,
+		(bp::arg("scaling")=Vector2(1,1),
+		 bp::arg("translation")=Vector2(0,0),
+		 bp::arg("angle")=0,bp::arg("rotcenter")=Vector2(0.5,0.5)))
     
     .def("setId", &Turtle::setId )
     .def("incId", &Turtle::incId )

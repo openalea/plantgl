@@ -37,6 +37,7 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
+#define bp boost::python
 
 template<class KDTreeN>
 class kdtree_func : public boost::python::def_visitor<kdtree_func<KDTreeN> >
@@ -46,8 +47,10 @@ class kdtree_func : public boost::python::def_visitor<kdtree_func<KDTreeN> >
     template <class classT>
     void visit(classT& c) const
     {
-	    c.def("k_closest_points", &KDTreeN::k_closest_points)
-	     .def("k_nearest_neighbors", &KDTreeN::k_nearest_neighbors)
+	    c.def("k_closest_points", &KDTreeN::k_closest_points, (bp::arg("point"),bp::arg("k"),bp::arg("maxdist")= REAL_MAX),"Return the k closest points of point") 
+	     .def("k_nearest_neighbors", &KDTreeN::k_nearest_neighbors,args("k"), "Return the k closest points for each point in the kdtree")
+	     .def("size", &KDTreeN::size, "Return the number of point in the kdtree.")
+	     .def("__len__", &KDTreeN::size, "Return the number of point in the kdtree.")
         ;
     }
 };

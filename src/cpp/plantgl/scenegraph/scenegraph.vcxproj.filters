@@ -241,6 +241,9 @@
       <Filter>Function</Filter>
     </ClCompile>
     <ClCompile Include="pgl_version.cpp" />
+    <ClCompile Include="geometry\plane.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\action.h">
@@ -495,6 +498,9 @@
     <ClInclude Include="..\version.h" />
     <ClInclude Include="container\indexarray_iterator.h">
       <Filter>Container</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry\plane.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

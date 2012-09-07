@@ -147,6 +147,7 @@
     <ClCompile Include="export_parametricmodel.cpp" />
     <ClCompile Include="export_patch.cpp" />
     <ClCompile Include="export_planarmodel.cpp" />
+    <ClCompile Include="export_plane.cpp" />
     <ClCompile Include="export_pointarrays.cpp" />
     <ClCompile Include="export_pointset.cpp" />
     <ClCompile Include="export_polyline.cpp" />

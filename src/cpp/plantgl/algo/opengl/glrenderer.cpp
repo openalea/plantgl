@@ -1148,6 +1148,9 @@ bool GLRenderer::process( PointSet * pointSet ) {
   GEOM_ASSERT(pointSet);
   GEOM_GLRENDERER_CHECK_CACHE(pointSet);
 
+  glPushAttrib (GL_LIGHTING_BIT);
+  glDisable(GL_LIGHTING);
+
   if(!pointSet->isWidthToDefault()){ 
     glPushAttrib (GL_POINT_BIT); 
     int globalwidth = 1; 
@@ -1195,6 +1198,7 @@ bool GLRenderer::process( PointSet * pointSet ) {
 #endif
 
   if(!pointSet->isWidthToDefault()){ glPopAttrib(); }
+  glPopAttrib();
 
   GEOM_GLRENDERER_UPDATE_CACHE(pointSet);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
@@ -1207,6 +1211,9 @@ bool GLRenderer::process( PointSet * pointSet ) {
 bool GLRenderer::process( PGL(Polyline) * polyline ) {
   GEOM_ASSERT(polyline);
   GEOM_GLRENDERER_CHECK_CACHE(polyline);
+
+  glPushAttrib (GL_LIGHTING_BIT);
+  glDisable(GL_LIGHTING);
 
   BEGIN_LINE_WIDTH(polyline)
 	
@@ -1249,6 +1256,7 @@ bool GLRenderer::process( PGL(Polyline) * polyline ) {
 #endif
   
   END_LINE_WIDTH(polyline)
+  glPopAttrib();
 
   GEOM_GLRENDERER_UPDATE_CACHE(polyline);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);

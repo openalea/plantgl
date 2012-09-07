@@ -46,7 +46,7 @@
 
 #include <plantgl/tool/util_hashmap.h>
 #include <plantgl/tool/util_types.h>
-
+#include <plantgl/pgl_container.h>
 #include <vector>
 
 TOOLS_BEGIN_NAMESPACE
@@ -277,32 +277,85 @@ public:
 
 //private :
 
-  protected:
+
 
   /// write an bool value from stream
   void writeBool(bool var);
+  inline void write(bool var) { writeBool(var); }
 
   /// write an int32_t value from stream
   void writeUint32(uint_t var);
+  inline void write(uint_t var) { writeUint32(var); }
 
   /// write an uint_t value from stream
   void writeInt32(int_t var);
+  inline void write(int_t var) { writeInt32(var); }
 
   /// write a uint16_t value from stream
   void writeUint16(uint16_t var);
+  inline void write(uint16_t var) { writeUint16(var); }
 
   /// write a uchar_t value from stream
   void writeUchar(uchar_t var);
+  inline void write(uchar_t var) { writeUchar(var); }
 
   /// write a real_t value from stream
   void writeReal(real_t var);
+  inline void write(real_t var) { writeReal(var); }
 
   /// write a string value from stream
   void writeString(const std::string& var);
+  inline void write(const std::string& var) { writeString(var); }
 
   /// write a file name value from stream
   void writeFile(const std::string& var);
 
+  void write(const Color3& var);
+  void write(const Color4& var);
+  void write(const Index3& var);
+  void write(const Index4& var);
+  void write(const Index& var);
+  void write(const TOOLS(Vector2)& var);
+  void write(const TOOLS(Vector3)& var);
+  void write(const TOOLS(Vector4)& var);
+  void write(const TOOLS(Matrix2)& var);
+  void write(const TOOLS(Matrix3)& var);
+  void write(const TOOLS(Matrix4)& var);
+
+  template<class Array>
+  void writeArray(const Array& array){
+    uint_t _sizei = array.size();
+    writeUint32(_sizei);
+    for (typename Array::const_iterator it = array.begin(); it != array.end(); ++it) { 
+      write(*it);
+    };
+  }
+
+  template<class Array>
+  void dumpArray(const Array& array){
+      writeString(PglClassInfo<Array>::name());
+      writeArray(array);
+  }
+
+
+  template<class Array2>
+  void writeMatrix(const Array2& array){
+    uint_t _rows = array.getColumnNb(); 
+    uint_t _cols = array.getColumnNb(); 
+    writeUint32( _rows ); 
+    writeUint32( _cols ); 
+    for (typename Array2::const_iterator it = array.begin(); it != array.end(); ++it) { 
+        write(*it);
+    };
+  }
+
+  template<class Array2>
+  void dumpMatrix(const Array2& array){
+      writeString(PglClassInfo<Array2>::name());
+      writeMatrix(array);
+  }
+
+protected:
   /// Return a Token Number for the string \e _string.
   void printType(const std::string& _string);
 

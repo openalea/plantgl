@@ -207,6 +207,24 @@ public:
                                       const Vector2& i2,
                                       const Vector2& j2);
 
+  typedef real_t * iterator;
+  typedef real_t * reverse_iterator;
+
+  typedef const real_t * const_iterator;
+  typedef const real_t * const_reverse_iterator;
+
+  iterator begin() { return __M; }
+  iterator end()   { return __M + 4; }
+
+  const_iterator begin() const { return __M; }
+  const_iterator end()   const { return __M + 4; }
+
+  reverse_iterator rbegin() { return __M+3; }
+  reverse_iterator rend()   { return __M-1; }
+
+  const_reverse_iterator rbegin() const { return __M+3; }
+  const_reverse_iterator rend()   const { return __M-1; }
+
 protected:
 
   /// The matrix values.
@@ -459,6 +477,24 @@ public:
       \warning angle must be in radians.
   */
   static Matrix3 axisRotation( const Vector3& axis, const real_t& angle );
+
+  typedef real_t * iterator;
+  typedef real_t * reverse_iterator;
+
+  typedef const real_t * const_iterator;
+  typedef const real_t * const_reverse_iterator;
+
+  iterator begin() { return __M; }
+  iterator end()   { return __M + 9; }
+
+  const_iterator begin() const { return __M; }
+  const_iterator end()   const { return __M + 9; }
+
+  reverse_iterator rbegin() { return __M+8; }
+  reverse_iterator rend()   { return __M-1; }
+
+  const_reverse_iterator rbegin() const { return __M+8; }
+  const_reverse_iterator rend()   const { return __M-1; }
 
 protected:
 
@@ -723,6 +759,23 @@ public:
   void getTransformationB( Vector3& scale,
                           Vector3& rotate,
                           Vector3& translate ) const;
+
+  typedef real_t * iterator;
+  typedef real_t * reverse_iterator;
+  typedef const real_t * const_iterator;
+  typedef const real_t * const_reverse_iterator;
+
+  iterator begin() { return __M; }
+  iterator end()   { return __M + 16; }
+
+  const_iterator begin() const { return __M; }
+  const_iterator end()   const { return __M + 16; }
+
+  reverse_iterator rbegin() { return __M+15; }
+  reverse_iterator rend()   { return __M-1; }
+
+  const_reverse_iterator rbegin() const { return __M+15; }
+  const_reverse_iterator rend()   const { return __M-1; }
 
 protected:
 

@@ -93,9 +93,12 @@ struct extract_pgllist {
         else return extract_list();
     }
 
-	inline RCPtr<T> toRCPtr() const {
+	inline RCPtr<T> toRCPtr(bool copy = false) const {
         RCPtr<T> exact_list = extract_rcptr();
-        if (exact_list) return exact_list;
+        if (exact_list) {
+            if (!copy) return exact_list;
+            else return RCPtr<T>(new T(*exact_list));
+        }
         else return RCPtr<T>(extract_list()); 
     }
  

@@ -86,6 +86,7 @@ void export_PglTurtle();
 void export_SegIntersection();
 void export_Ray();
 void export_RayIntersection();
+void export_Intersection();
 
 /* ----------------------------------------------------------------------- */
 // Grid export
@@ -94,6 +95,7 @@ void export_Octree();
 void export_PointGrid();
 void export_KDtree();
 void export_PyGrid();
+void export_PlaneClip();
 
 /* ----------------------------------------------------------------------- */
 // CurveManipulation export

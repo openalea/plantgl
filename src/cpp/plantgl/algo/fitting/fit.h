@@ -43,7 +43,9 @@
 #include "../algo_config.h"
 #include <plantgl/scenegraph/geometry/geometry.h>
 #include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/geometry/plane.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -215,6 +217,11 @@ class ALGO_API Fit
       Fit the 2D points \e points with a bounding circle.
     */
 	static bool boundingCircle(const Point2ArrayPtr& _points, TOOLS::Vector2& center, real_t& radius);
+
+    /*
+      Fit the 3D points \e points with a bounding circle.
+    */
+	static bool plane(const Point3ArrayPtr& _points, TOOLS::Vector3& center, Plane3& plane, const Index& subset = Index(0));
 
 /* ----------------------------------------------------------------------- */
     /*!

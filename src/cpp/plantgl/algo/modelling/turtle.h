@@ -204,7 +204,7 @@ public:
     virtual void rollToVert(const TOOLS(Vector3)& top);
     
 	/// set Heading and Up vectors
-    virtual void setHead(const TOOLS(Vector3)& h, const TOOLS(Vector3)& u);
+    virtual void setHead(const TOOLS(Vector3)& h, const TOOLS(Vector3)& u = TOOLS(Vector3::OX));
 
 	/// set Heading and Up vectors
     inline void setHead(real_t hx = 0, real_t hy = 0, real_t hz = 1, 
@@ -353,16 +353,29 @@ public:
 	inline void frame() { frame(default_step); }
     virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t color = 1.0, real_t transparency = 0.0);
 
-    virtual void setTextureScale(real_t u, real_t v);
+    inline void setTextureScale(real_t u, real_t v) { setTextureScale(TOOLS(Vector2)(u,v)); }
+    virtual void setTextureScale(const TOOLS(Vector2)& s);
+
     virtual void setTextureVScale(real_t v);
     virtual void setTextureUScale(real_t u);
 
-    virtual void setTextureRotation(real_t angle, real_t ucenter = 0.5, real_t vcenter = 0.5);
-    virtual void setTextureTranslation(real_t u = 0.5, real_t v = 0.5);
+    inline void setTextureRotation(real_t angle, real_t ucenter = 0.5, real_t vcenter = 0.5) 
+    { setTextureRotation(angle, TOOLS(Vector2)(ucenter,vcenter)); }
+    virtual void setTextureRotation(real_t angle, const TOOLS(Vector2)& center);
 
-    virtual void setTextureTransformation(real_t uscaling, real_t vscaling, 
-									      real_t utranslation, real_t vtranslation, 
-										  real_t angle, real_t urotcenter, real_t vrotcenter);
+    inline void setTextureTranslation(real_t u = 0.5, real_t v = 0.5)
+    { setTextureTranslation(TOOLS(Vector2)(u,v)); }
+
+    virtual void setTextureTranslation(const TOOLS(Vector2)& t);
+
+    virtual void setTextureTransformation(const  TOOLS(Vector2)& scaling, 
+									      const TOOLS(Vector2)&  translation, 
+										  real_t angle, const TOOLS(Vector2)& rotcenter);
+
+    inline void setTextureTransformation(real_t uscaling, real_t vscaling, 
+								  real_t utranslation, real_t vtranslation, 
+								  real_t angle, real_t urotcenter, real_t vrotcenter)
+    { setTextureTransformation(TOOLS(Vector2)(uscaling,vscaling),TOOLS(Vector2)(utranslation,vtranslation), angle, TOOLS(Vector2)(urotcenter, vrotcenter)); }
 
 	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }

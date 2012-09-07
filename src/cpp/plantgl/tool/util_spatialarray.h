@@ -81,6 +81,14 @@ public:
 		return index;
 	}
 
+	size_t indexFromCoord(const VectorType& point, size_t dimension) const {
+		return size_t((point[dimension] -__origin[dimension]) / __voxelsize[dimension]) ;
+	}
+
+	size_t indexFromCoord(real_t coord, size_t dimension) const {
+		return size_t((coord -__origin[dimension]) / __voxelsize[dimension]) ;
+	}
+
 	inline CellId cellIdFromPoint(const VectorType& point) const {
 		return Base::cellId(indexFromPoint(point));
 	}
@@ -345,6 +353,7 @@ public:
         }
         return res;
     }
+
 
 protected:
 	static Index gridSize(const VectorType& minpoint, 

@@ -147,6 +147,7 @@ void export_Vector3()
 	.def_pickle(v3_pickle_suite())
     .def("radialAnisotropicNorm",&radialAnisotropicNorm)
     .def("anisotropicNorm",&anisotropicNorm)
+    .def("anOrthogonalVector",&Vector3::anOrthogonalVector)
 	;
 
    pgltuple_from_tuple<Vector3,3>();

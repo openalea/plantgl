@@ -62,6 +62,9 @@ PGL_USING_NAMESPACE
     \
     IndexArrayPtr PGL::ANN##basename::k_nearest_neighbors(size_t k)  \
     { return __internal->k_nearest_neighbors(k); } \
+    \
+    size_t PGL::ANN##basename::size()  const \
+    { return __internal->size(); } \
 
         // virtual ~ANN##basename##Internal() {printf("delete internal 0\n"); } \
 

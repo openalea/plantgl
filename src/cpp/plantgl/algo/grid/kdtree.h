@@ -82,6 +82,8 @@ public:
 
     virtual IndexArrayPtr k_nearest_neighbors(size_t k) = 0;
 
+    virtual size_t size() const = 0;
+
 };
 
 typedef KDTree<Point2Array>  KDTree2;
@@ -111,6 +113,7 @@ class ANNKDTree4Internal;
         \
         virtual Index k_closest_points(const VectorType& pointclass, size_t k, real_t maxdist = REAL_MAX);  \
         virtual IndexArrayPtr k_nearest_neighbors(size_t k) ; \
+        virtual size_t size() const; \
         protected: \
         ANN##basename##Internal * __internal; \
     }; 
