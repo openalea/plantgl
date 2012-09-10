@@ -737,7 +737,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
     Vector3 h = v - getPosition();
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
-	  _tendTo(getHeading(),h);
+	  _tendTo(h);
       F(l,topradius);
 	}
 }
@@ -749,7 +749,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
     Vector3 h = v;
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
-	  _tendTo(getHeading(),h);
+	  _tendTo(h);
       F(l,topradius);
 	}
   }
@@ -758,7 +758,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
 	Vector3 h = v - getPosition();
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
-	  _tendTo(getHeading(),h);
+	  _tendTo(h);
 	}
   }
 
@@ -767,7 +767,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
     Vector3 h = v;
 	real_t l = h.normalize();
 	if (l > GEOM_EPSILON){
-	  _tendTo(getHeading(),h);
+	  _tendTo(h);
 	}
   }
 
@@ -841,7 +841,7 @@ void Turtle::setPositionOnGuide(real_t t)
 }
 
 void Turtle::_applyTropism() {
-	_tendTo(getHeading(),getTropism(),getElasticity());
+	_tendTo(getTropism(),getElasticity());
 }
 
 void Turtle::_applyGuide(real_t& l) {
@@ -994,8 +994,9 @@ void Turtle::_ajustToGuide()
 }
 
 
-void Turtle::_tendTo(const TOOLS(Vector3)& h, const TOOLS(Vector3)& t, real_t strength)
+void Turtle::_tendTo(const TOOLS(Vector3)& t, real_t strength)
 {
+    Vector3 h = getHeading();
 	Vector3 cp = cross(h,t);
 	real_t sinus = norm( cp );
 	if (sinus > GEOM_EPSILON){
@@ -1004,6 +1005,13 @@ void Turtle::_tendTo(const TOOLS(Vector3)& h, const TOOLS(Vector3)& t, real_t st
 		real_t ang = atan2( sinus, cosinus );
 		transform(Matrix3::axisRotation(cp,ang*strength));
 	}
+    else {
+        real_t cosinus = dot( h,t );
+        if (cosinus < GEOM_EPSILON){
+		    real_t ang = GEOM_PI;
+		    transform(Matrix3::axisRotation(getUp(),ang*strength));
+        }
+    }
 }
 
 

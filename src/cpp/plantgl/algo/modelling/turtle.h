@@ -470,7 +470,7 @@ protected:
 	void _applyGuide(real_t& l);
 	void _ajustToGuide();
 
-	void _tendTo(const TOOLS(Vector3)& h,const TOOLS(Vector3)& t, real_t strength = 1.0);
+	void _tendTo(const TOOLS(Vector3)& t, real_t strength = 1.0);
 
     uint_t popId();
 
