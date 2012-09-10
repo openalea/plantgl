@@ -350,63 +350,6 @@ public:
   template<class T>
   T read();
 
-  template<>
-  char read<char>() { return readChar(); }
-
-  template<>
-  uchar_t read<uchar_t>() { return readUchar(); }
-
-  template<>
-  bool read<bool>() { return readBool(); }
-
-  template<>
-  real_t read<real_t>() { return readReal(); }
-
-  template<>
-  uint32_t read<uint32_t>() { return readUint32(); }
-
-  template<>
-  int32_t read<int32_t>() { return readInt32(); }
-
-  template<>
-  uint16_t read<uint16_t>() { return readUint16(); }
-  
-  template<>
-  std::string read<std::string>() { return readString(); }
-  
-
-  template<>
-  TOOLS(Vector2) read<TOOLS(Vector2)>() { return readVector2(); }
-
-  template<>
-  TOOLS(Vector3) read<TOOLS(Vector3)>() { return readVector3(); }
-
-  template<>
-  TOOLS(Vector4) read<TOOLS(Vector4)>() { return readVector4(); }
-
-  template<>
-  TOOLS(Matrix2) read<TOOLS(Matrix2)>() { return readMatrix2(); }
-
-  template<>
-  TOOLS(Matrix3) read<TOOLS(Matrix3)>() { return readMatrix3(); }
-
-  template<>
-  TOOLS(Matrix4) read<TOOLS(Matrix4)>() { return readMatrix4(); }
-
-  template<>
-  PGL(Color3) read<PGL(Color3)>() { return readColor3(); }
-
-  template<>
-  PGL(Color4) read<PGL(Color4)>() { return readColor4(); }
-
-  template<>
-  PGL(Index) read<PGL(Index)>() { return readIndex(); }
-
-  template<>
-  PGL(Index4) read<PGL(Index4)>() { return readIndex4(); }
-
-  template<>
-  PGL(Index3) read<PGL(Index3)>() { return readIndex3(); }
 
   template <class Array>
   RCPtr<Array> readArray() {
@@ -431,8 +374,8 @@ public:
       uint32_t _rows = readUint32();
       uint32_t _cols = readUint32();
       RCPtr<Array2> result(new Array2(_rows, _cols));
-      for(typename Array::iterator it = result->begin(); it != result->end(); ++it)
-          *it = read<typename Array::element_type>();
+      for(typename Array2::iterator it = result->begin(); it != result->end(); ++it)
+          *it = read<typename Array2::element_type>();
       return result;
   }
 
@@ -492,6 +435,62 @@ public:
 
 };
 
+template<>
+inline char BinaryParser::read<char>() { return readChar(); }
+
+template<>
+inline uchar_t BinaryParser::read<uchar_t>() { return readUchar(); }
+
+template<>
+inline bool BinaryParser::read<bool>() { return readBool(); }
+
+template<>
+inline real_t BinaryParser::read<real_t>() { return readReal(); }
+
+template<>
+inline uint32_t BinaryParser::read<uint32_t>() { return readUint32(); }
+
+template<>
+inline int32_t BinaryParser::read<int32_t>() { return readInt32(); }
+
+template<>
+inline uint16_t BinaryParser::read<uint16_t>() { return readUint16(); }
+
+template<>
+inline std::string BinaryParser::read<std::string>() { return readString(); }
+
+template<>
+inline TOOLS(Vector2) BinaryParser::read<TOOLS(Vector2)>() { return readVector2(); }
+
+template<>
+inline TOOLS(Vector3) BinaryParser::read<TOOLS(Vector3)>() { return readVector3(); }
+
+template<>
+inline TOOLS(Vector4) BinaryParser::read<TOOLS(Vector4)>() { return readVector4(); }
+
+template<>
+inline TOOLS(Matrix2) BinaryParser::read<TOOLS(Matrix2)>() { return readMatrix2(); }
+
+template<>
+inline TOOLS(Matrix3) BinaryParser::read<TOOLS(Matrix3)>() { return readMatrix3(); }
+
+template<>
+inline TOOLS(Matrix4) BinaryParser::read<TOOLS(Matrix4)>() { return readMatrix4(); }
+
+template<>
+inline PGL(Color3) BinaryParser::read<PGL(Color3)>() { return readColor3(); }
+
+template<>
+inline PGL(Color4) BinaryParser::read<PGL(Color4)>() { return readColor4(); }
+
+template<>
+inline PGL(Index) BinaryParser::read<PGL(Index)>() { return readIndex(); }
+
+template<>
+inline PGL(Index4) BinaryParser::read<PGL(Index4)>() { return readIndex4(); }
+
+template<>
+inline PGL(Index3) BinaryParser::read<PGL(Index3)>() { return readIndex3(); }
 
 /* ------------------------------------------------------------------------- */
 

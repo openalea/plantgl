@@ -36,7 +36,6 @@
 #include <plantgl/python/export_property.h>
 #include "export_sceneobject.h"
 
-
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
@@ -49,7 +48,7 @@ DEF_POINTEE(Plane3)
 
 void export_Plane()
 {
-  class_< Plane3, Plane3Ptr, bases<RefCountObject>>
+  class_< Plane3, Plane3Ptr, bases<RefCountObject> >
     ("Plane3", "A 3D plane",
 	init<optional<const Vector3&,real_t> > ("Plane3(normal, d)",(bp::arg("normal")=Vector3::OZ, bp::arg("d")=0)))
   .def(init<const Vector3&, const Vector3& > ("Plane3(normal, origin)",(bp::arg("normal")=Vector3::OZ, bp::arg("origin")=Vector3::ORIGIN)))

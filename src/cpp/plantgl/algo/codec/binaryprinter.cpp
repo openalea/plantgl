@@ -508,7 +508,7 @@ BinaryPrinter::endProcess(){
 }
 
 /// write an bool value from stream
-inline void BinaryPrinter::writeBool(bool var)
+void BinaryPrinter::writeBool(bool var)
 { __outputStream << var; }
 
 
@@ -532,23 +532,23 @@ void BinaryPrinter::writeInt32(int_t var)
 // #endif
 
 /// write a uint16_t value from stream
-inline void BinaryPrinter::writeUint16(uint16_t var)
+void BinaryPrinter::writeUint16(uint16_t var)
 { __outputStream << var; }
 
   /// write a uchar_t value from stream
-inline void BinaryPrinter::writeUchar(uchar_t var)
+void BinaryPrinter::writeUchar(uchar_t var)
 { __outputStream << var; }
 
 /// write a real_t value from stream
-inline void BinaryPrinter::writeReal(real_t var)
+void BinaryPrinter::writeReal(real_t var)
 { __outputStream << var; }
 
 /// write a string value from stream
-inline void BinaryPrinter::writeString(const std::string& var)
+void BinaryPrinter::writeString(const std::string& var)
 { writeUint16(var.length()); if(var.length() != 0)__outputStream << var.c_str(); }
 
 /// write a file name value from stream
-inline void BinaryPrinter::writeFile(const std::string& var)
+void BinaryPrinter::writeFile(const std::string& var)
 { __outputStream << '!' << var.c_str() << '!';  }
 
 

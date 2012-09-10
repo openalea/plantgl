@@ -31,6 +31,7 @@
 
 
 #include "pointmanipulation.h"
+#include <stdio.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -838,7 +839,8 @@ PGL::point_section( uint32_t pid,
                     real_t width)
 {
     Vector3& pt = points->getAt(pid); 
-    Vector3& dir = direction.normed();
+    //Vector3& dir = direction.normed();
+    Vector3 dir = direction.normed();
     Index result;
     result.push_back(pid);
 

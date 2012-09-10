@@ -253,11 +253,11 @@ boost::python::object py_split(T * pts, boost::python::object split_method){
     T * set_true (new T());
     T * set_false(new T());
     for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it) {
-        if (split_method(object(*it)) == 0) 
+        if (split_method(boost::python::object(*it)) == 0) 
             set_false->push_back(*it);
         else  set_true->push_back(*it);
     }
-    return make_tuple(object(set_true), object(set_false));
+    return boost::python::make_tuple(boost::python::object(set_true), boost::python::object(set_false));
 }
 
 template <class T>
@@ -266,11 +266,11 @@ boost::python::object py_split_indices(T * pts, boost::python::object split_meth
     boost::python::list set_false;
     uint32_t pid = 0;
     for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it, ++pid) {
-        if (split_method(object(*it)) == 0) 
+        if (split_method(boost::python::object(*it)) == 0) 
             set_false.append(pid);
         else  set_true.append(pid);
     }
-    return make_tuple(set_true, set_false);
+    return boost::python::make_tuple(set_true, set_false);
 }
 
 template <class T>
@@ -283,11 +283,11 @@ T * py_subset(T * pts, boost::python::object subsetindices){
 		boost::python::object obj; 
 		try  {  obj = iter_obj.attr( "next" )(); }
 		catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-		uint32_t val = extract<uint32_t>( obj )();
+		uint32_t val = boost::python::extract<uint32_t>( obj )();
         if (val < 0) val += nbelem;
         if (val < 0 || val >= nbelem) {
             delete subobj;
-            throw PythonExc_IndexError(extract<char *>(str(val)+" out of range")()); 
+            throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")()); 
         }
 		subobj->push_back( pts->getAt(val) );
 	}
@@ -308,7 +308,7 @@ bool save(T * a, std::string fname)
     else {
 	    std::string cwd = get_cwd();
 		chg_dir(get_dirname(fname));
-        BinaryPrinter _bp(stream);
+        PGL(BinaryPrinter) _bp(stream);
         _bp.header();
         _bp.writeUint32(1);
         _bp.dumpArray(*a);
@@ -324,7 +324,7 @@ RCPtr<T> load(std::string fname)
 {
 	    std::string cwd = get_cwd();
 		chg_dir(get_dirname(fname));
-        BinaryParser _bp(*PglErrorStream::error);
+        PGL(BinaryParser) _bp(*PglErrorStream::error);
         RCPtr<T> result;
         if ( _bp.open(fname) && _bp.readHeader()) {            
             uint32_t nbelem = _bp.readUint32();

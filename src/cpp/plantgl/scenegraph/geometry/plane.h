@@ -43,6 +43,7 @@
 #include <plantgl/math/util_vector.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/scenegraph/core/sceneobject.h>
+#include <plantgl/math/util_math.h>
 
 /* ----------------------------------------------------------------------- */
 

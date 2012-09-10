@@ -44,6 +44,7 @@
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/math/util_vector.h>
 #include <plantgl/tool/util_cache.h>
+#include <plantgl/math/util_math.h>
 
 /* ----------------------------------------------------------------------- */
 
