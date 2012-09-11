@@ -2031,19 +2031,46 @@ PGL::pointset_mean_direction(const Vector3& origin, const Point3ArrayPtr points,
 Point3ArrayPtr 
 PGL::pointset_directions(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
 {
-    Point3ArrayPtr result(new Point3Array());
+    Point3ArrayPtr result;
     size_t nbpoints = group.size();
     if(nbpoints != 0) {
+        result = Point3ArrayPtr(new Point3Array(nbpoints));
+        Point3Array::iterator it = result->begin();
         for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg)
-            result->push_back(direction(points->getAt(*itg)-origin));
+            *it = direction(points->getAt(*itg)-origin);
     }
     else {
+        result = Point3ArrayPtr(new Point3Array(points->size()));
+        Point3Array::iterator it = result->begin();
         for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
-            result->push_back(direction(*itp-origin));
+            *it = direction(*itp-origin);
     }
     return result;
 }
 
+Point2ArrayPtr 
+PGL::pointset_angulardirections(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
+{
+    Point2ArrayPtr result;
+    size_t nbpoints = group.size();
+    if(nbpoints != 0) {
+        result = Point2ArrayPtr(new Point2Array(nbpoints));
+        Point2Array::iterator it = result->begin();
+        for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg, ++it){
+            Vector3::Spherical s(direction(points->getAt(*itg)-origin));
+            *it = Vector2(s.theta,s.phi);
+        }
+    }
+    else {
+        result = Point2ArrayPtr(new Point2Array(nbpoints));
+        Point2Array::iterator it = result->begin();
+        for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++it){
+            Vector3::Spherical s(direction(*itp-origin));
+            *it = Vector2(s.theta,s.phi);
+        }
+    }
+    return result;
+}
 
 std::pair<uint32_t,real_t> 
 PGL::findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)

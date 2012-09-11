@@ -342,6 +342,26 @@ public:
 		return result; 
 	}
 
+    PointIndexList get_enabled_point_indices() const {
+		PointIndexList result;
+        for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
+				if(is_point_enabled(itPointIndex)){
+					result.push_back(itPointIndex);
+				}
+        }
+		return result; 
+	}
+
+    PointIndexList get_disabled_point_indices() const {
+		PointIndexList result;
+        for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
+				if(!is_point_enabled(itPointIndex)){
+					result.push_back(itPointIndex);
+				}
+        }
+		return result; 
+	}
+
     size_t nbFilledVoxels() const {
         size_t count = 0;
         for(typename Base::const_iterator it = Base::begin(); it != Base::end(); ++it)

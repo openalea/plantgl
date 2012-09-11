@@ -389,6 +389,9 @@ ALGO_API TOOLS(Vector3) pointset_mean_direction(const TOOLS(Vector3)& origin, co
 // determine all directions of a set of points
 ALGO_API Point3ArrayPtr pointset_directions(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
 
+// determine all directions of a set of points
+ALGO_API Point2ArrayPtr pointset_angulardirections(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
+
 // find the closest point from a group
 ALGO_API std::pair<uint32_t,real_t> findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
 

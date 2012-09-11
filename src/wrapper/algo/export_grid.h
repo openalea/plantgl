@@ -76,6 +76,13 @@ template<class PointGrid>
      if (minradius != object())cminradius =  extract_tuple<typename PointGrid::Index>(minradius);
      return make_list(grid->query_voxels_in_box(center,extract_tuple<typename PointGrid::Index>(maxradius),cminradius))(); }
 
+template<class PointGrid>
+object py_get_enabled_point_indices(PointGrid * grid) 
+{ return make_list(grid->get_enabled_point_indices())(); }
+ 
+template<class PointGrid>
+object py_get_disabled_point_indices(PointGrid * grid) 
+{ return make_list(grid->get_disabled_point_indices())(); }
 
 template<class PointGrid>
 object  py_index(PointGrid * grid, typename PointGrid::CellId c){
@@ -247,6 +254,8 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("is_point_enabled",&PointGrid::is_point_enabled)
 	 .def("get_enabled_points",&PointGrid::get_enabled_points)
 	 .def("get_disabled_points",&PointGrid::get_disabled_points)
+	 .def("get_enabled_point_indices",&py_get_enabled_point_indices<PointGrid>)
+	 .def("get_disabled_point_indices",&py_get_disabled_point_indices<PointGrid>)
 	 .def("enable_points",&py_enablepoints<PointGrid>)
 	 .def("disable_points",&py_disablepoints<PointGrid>)
 	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)	 

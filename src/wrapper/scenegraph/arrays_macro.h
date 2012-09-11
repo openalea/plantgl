@@ -250,27 +250,35 @@ size_t array_id( T * a )
 
 template <class T>
 boost::python::object py_split(T * pts, boost::python::object split_method){
-    T * set_true (new T());
-    T * set_false(new T());
+    boost::python::dict result;
     for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it) {
-        if (split_method(boost::python::object(*it)) == 0) 
-            set_false->push_back(*it);
-        else  set_true->push_back(*it);
+        boost::python::object svalue = split_method(boost::python::object(*it));
+        if (result.has_key(svalue)) {
+            boost::python::extract<T *>(result[svalue])()->push_back(*it);
+        }
+        else {
+            T * newset = new T(); newset->push_back(*it);
+            result[svalue] = boost::python::object(newset);
+        }
     }
-    return boost::python::make_tuple(boost::python::object(set_true), boost::python::object(set_false));
+    return result;
 }
 
 template <class T>
 boost::python::object py_split_indices(T * pts, boost::python::object split_method){
-    boost::python::list set_true;
-    boost::python::list set_false;
+    boost::python::dict result;
     uint32_t pid = 0;
     for(typename T::const_iterator it = pts->begin()+1; it != pts->end(); ++it, ++pid) {
-        if (split_method(boost::python::object(*it)) == 0) 
-            set_false.append(pid);
-        else  set_true.append(pid);
+        boost::python::object svalue = split_method(boost::python::object(*it));
+        if (result.has_key(svalue)) {
+            boost::python::extract<boost::python::list>(result[svalue])().append(pid);
+        }
+        else {
+            boost::python::list newset; newset.append(pid);
+            result[svalue] = newset;
+        }
     }
-    return boost::python::make_tuple(set_true, set_false);
+    return result;
 }
 
 template <class T>

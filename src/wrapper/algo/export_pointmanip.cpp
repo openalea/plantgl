@@ -275,7 +275,8 @@ void export_PointManip()
     def("merge_nodes",&py_merge_nodes,(bp::arg("tomerge"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("weight")));
 
     def("pointset_mean_direction",&pointset_mean_direction,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
-    def("pointset_direction",&pointset_directions,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
+    def("pointset_directions",&pointset_directions,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
+    def("pointset_angulardirections",&pointset_angulardirections,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
     def("findClosestFromSubset",&py_findClosestFromSubset,(bp::arg("origin"),bp::arg("points"),bp::arg("group")=Index()));
 }
 
