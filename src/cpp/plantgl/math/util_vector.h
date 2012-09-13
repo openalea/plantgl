@@ -371,6 +371,7 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
     /// Returns whether \e self is valid.
     bool isValid( ) const;
 
+    real_t spherical_distance(real_t theta2, real_t phi2) const;
   };
 
 
@@ -568,6 +569,7 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Comparison operators whitout use of epsilon for numerical precision
   friend PGLMATH_API bool strictly_equal(const Vector3& v1, const Vector3& v2);
   friend PGLMATH_API bool strictly_inf(const Vector3& v1, const Vector3& v2);
+
 }; // Vector3
 
 PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
@@ -595,7 +597,7 @@ PGLMATH_API bool operator<(const Vector3& v1, const Vector3& v2);
 PGLMATH_API bool strictly_equal(const Vector3& v1, const Vector3& v2);
 PGLMATH_API bool strictly_inf(const Vector3& v1, const Vector3& v2);
 
-
+PGLMATH_API real_t spherical_distance(real_t theta1, real_t phi1, real_t theta2, real_t phi2, real_t radius);
 
 /*  --------------------------------------------------------------------- */
 

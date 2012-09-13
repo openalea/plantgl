@@ -364,6 +364,28 @@ Vector3::Cylindrical::isValid( ) const {
 
 /*  --------------------------------------------------------------------- */
 
+real_t TOOLS(spherical_distance)(real_t theta1, real_t phi1, real_t theta2, real_t phi2, real_t radius)
+{
+    // return radius * acos(sin(theta1)sin(theta2) + cos(theta1)cos(theta2)cos(phi2-phi1));
+
+    real_t costheta1 = cos(theta1);
+    real_t costheta2 = cos(theta2);
+
+    real_t sintheta1 = sin(theta1);
+    real_t sintheta2 = sin(theta2);
+
+    real_t deltaphi = phi2-phi1;
+    real_t cosdeltaphi = cos(deltaphi);
+
+
+    real_t a = (costheta2*sin(deltaphi));
+    real_t b = (costheta1*sintheta2 - sintheta1*costheta2*cosdeltaphi);
+    real_t c = sqrt(a*a+b*b);
+    real_t d = sintheta1 * sintheta2 + costheta1 * costheta2 * cosdeltaphi;
+
+    return radius * atan2(c,d);
+}
+
 Vector3::Spherical::Spherical( const real_t& radius, const real_t& theta, const real_t& phi ) :
   radius(radius),
   theta(theta),
@@ -387,6 +409,9 @@ Vector3::Spherical::isValid( ) const {
     finite(phi);
 }
 
+real_t Vector3::Spherical::spherical_distance(real_t theta2, real_t phi2) const {
+    return TOOLS(spherical_distance)(theta,phi, theta2,phi2, radius);
+}
 /*  --------------------------------------------------------------------- */
 
 Vector3::Vector3( const real_t& x,
@@ -732,10 +757,10 @@ real_t anisotropicNorm( const Vector3& v, const Vector3& factors  ) {
 }
 
 real_t angle( const Vector3& v1 , const Vector3& v2 ) {
-	real_t n = norm(v1)*norm(v2);
-	if(n < GEOM_EPSILON)return 0;
-	return acos(dot(v1,v2)/n);
-}
+  double cosinus = dot( v1,v2 );
+  Vector3 vy = cross( v1, v2 );
+  double sinus = norm( vy );
+  return atan2( sinus, cosinus );}
 
 real_t angle( const Vector3& v1, const Vector3& v2, const Vector3& axis )
 {

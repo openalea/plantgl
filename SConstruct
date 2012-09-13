@@ -10,7 +10,7 @@ ALEASolution = config.ALEASolution
 
 options = Variables( ['../options.py', 'options.py'], ARGUMENTS )
 options.Add(EnumVariable('QT_VERSION','Qt major version to use','4',allowed_values=('3','4')))
-options.Add(BoolVariable('WITH_CGAL','Use CGAL',False))
+options.Add(BoolVariable('WITH_CGAL','Use CGAL',True))
 options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 
 # Create an environment to access qt option values

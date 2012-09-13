@@ -169,6 +169,7 @@ void export_Vector3()
     .def("isValid",&Vector3::Spherical::isValid, "Returns whether self is valid.")
     .def("__str__",&sph_repr)
     .def("__repr__",&sph_repr)
+    .def("spherical_distance",&Vector3::Spherical::spherical_distance)
     .add_property("radius",make_getter(&Vector3::Spherical::radius),make_setter(&Vector3::Spherical::radius))
     .add_property("theta",make_getter(&Vector3::Spherical::theta),make_setter(&Vector3::Spherical::theta))
     .add_property("phi",make_getter(&Vector3::Spherical::phi),make_setter(&Vector3::Spherical::phi))
@@ -179,6 +180,8 @@ void export_Vector3()
 def("angle",(real_t (*)   ( const Vector3&, const Vector3&)) &angle , args("v1","v2"), "The angle between v1 and v2");
 def("angle",(real_t (*)   ( const Vector3&, const Vector3&, const Vector3&)) &angle , args("v1","v2","axis"), "The angle around axis between v1 and v2 ");
 def("cross",(Vector3 (*) ( const Vector3&, const Vector3&))  &cross, args("v1","v2"), "The cross product of v1 and v2"  );
+def("cross",(Vector3 (*) ( const Vector3&, const Vector3&))  &cross, args("v1","v2"), "The cross product of v1 and v2"  );
+def("spherical_distance",(real_t (*) ( real_t, real_t , real_t, real_t, real_t))  &spherical_distance, args("theta1","phi1","theta2","phi2","radius"), "The distance on a unit sphere of the 2 directions given by v1 and v2"  );
 
 
 }
