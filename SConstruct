@@ -38,6 +38,9 @@ if env['USE_DOUBLE']:
 else:
     env.AppendUnique( CPPDEFINES = ['PGL_USE_FLOAT'] )
 
+if env['WITH_CGAL']:
+    env.AppendUnique( CPPDEFINES = ['WITH_CGAL'] )
+    
 #if 'linux' in sys.platform:
     # By default for linux, use unordered map
     # env.AppendUnique( CPPDEFINES = ['USING_UNORDERED_MAP'] )
