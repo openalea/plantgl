@@ -113,12 +113,14 @@ struct array2_ptr_from_list {
 
 
 template<class T>
-typename T::element_type array2_bt_getitem( T * array, boost::python::tuple indices )
+boost::python::object array2_bt_getitem( T * array, boost::python::object indices )
 {
+  boost::python::extract<size_t> sext(indices);
+  if(sext.check()) return array2_getrow(array,sext());
   size_t i = boost::python::extract<size_t>(indices[0])();
   size_t j = boost::python::extract<size_t>(indices[1])();
   if( i < array->getRowNb() && j < array->getColumnNb() )
-    return array->getAt( i, j );
+    return boost::python::object(array->getAt( i, j ));
   else {
       std::stringstream ss;
       ss << (int)i << "," << (int)j << " should be in [0," << array->getRowNb() << "]x[0," << array->getColumnNb() << "]";
@@ -301,6 +303,44 @@ void array2_reshape( T * array, size_t nbrow, size_t nbcol)
   else throw PythonExc_ValueError();
 }
 
+#include <plantgl/tool/dirnames.h>
+#include <plantgl/tool/bfstream.h>
+#include <plantgl/tool/util_enviro.h>
+#include <plantgl/algo/codec/binaryprinter.h>
+
+template<class T>
+bool save(T * a, std::string fname)
+{
+    leofstream stream(fname.c_str());
+    if(!stream)return false;
+    else {
+	    std::string cwd = get_cwd();
+		chg_dir(get_dirname(fname));
+        PGL(BinaryPrinter) _bp(stream);
+        _bp.header();
+        _bp.writeUint32(1);
+        _bp.dumpMatrix(*a);
+		chg_dir(cwd);
+        return true;
+    }
+}
+
+#include <plantgl/algo/codec/scne_binaryparser.h>
+
+template<class T>
+RCPtr<T> load(std::string fname)
+{
+	    std::string cwd = get_cwd();
+		chg_dir(get_dirname(fname));
+        PGL(BinaryParser) _bp(*PglErrorStream::error);
+        RCPtr<T> result;
+        if ( _bp.open(fname) && _bp.readHeader()) {            
+            uint32_t nbelem = _bp.readUint32();
+            if (nbelem > 1) result = _bp.loadMatrix<T>();
+        }
+		chg_dir(cwd);
+        return result;
+}
 
 
 template<class T>
@@ -318,6 +358,12 @@ struct array2_pickle_suite : boost::python::pickle_suite
 		return boost::python::make_tuple(args);  
 	} 
 }; 
+
+#define EXPORT_ARRAY_IO_FUNC( ARRAY ) \
+    .def( "save",         &save<ARRAY> ) \
+    .def( "load",         &load<ARRAY> ) \
+    .staticmethod("load")
+
 
 template<class ARRAY>
 class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
@@ -350,7 +396,8 @@ class array2_func : public boost::python::def_visitor<array2_func<ARRAY> >
          .def( "pushColumn", &array2_pushColumn<ARRAY>  )
          .def( "sizes", &array2_sizes<ARRAY>  )
          .def( "size", &array2_size<ARRAY>  )
-         .def( "__iter__", &array2_getiter<ARRAY> )					
+         .def( "__iter__", &array2_getiter<ARRAY> )
+         EXPORT_ARRAY_IO_FUNC(ARRAY)
  	    .def_pickle(array2_pickle_suite<ARRAY>());
 
         boost::python::class_<Array2Iter<ARRAY> >("Iterator",boost::python::no_init)
@@ -454,6 +501,7 @@ class numarray2_func : public boost::python::def_visitor<numarray2_func<ARRAY> >
     }
 };
 
+
 #define EXPORT_FUNCTION2( PREFIX, ARRAY ) \
 std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
 
@@ -470,6 +518,7 @@ std::string PREFIX##_str(ARRAY * a) { return array2_str<ARRAY>(a, #ARRAY); }
     .def(array2_func<ARRAY>()) \
     .def( "__repr__",     &PREFIX##_str ) \
     .def( "__str__",      &PREFIX##_str ) \
+
 
 #define EXPORT_ARRAYITERATOR( ARRAY ) \
     class_<Array2Iter<ARRAY> >(#ARRAY "Iterator",no_init) \

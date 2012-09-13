@@ -219,6 +219,19 @@ void pa_translate(T * pts, typename T::element_type value){
 }
 
 template<class T>
+void pa_scale1(T * pts, typename T::element_type value){ 
+    for(typename T::iterator iter = pts->begin(); iter != pts->end(); ++iter)
+        for(uchar_t i = 0; i < iter->size(); ++i) iter->getAt(i) *= value[i];
+}
+
+template<class T>
+void pa_scale2(T * pts, real_t value){ 
+    for(typename T::iterator iter = pts->begin(); iter != pts->end(); ++iter)
+        *iter *= value;
+}
+
+
+template<class T>
 void pa_swap_coordinates(T * pts, int i, int j){ 
 	typedef typename T::element_type VectorType;
     size_t len = VectorType::size();
@@ -263,6 +276,8 @@ void export_pointarrays()
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>)
     .def( "transform", &Point2Array::transform)
     .def( "translate", &pa_translate<Point2Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
+    .def( "scale", &pa_scale1<Point2Array>,"Scale the PointArray. This is done INPLACE.",args("scaling"))
+    .def( "scale", &pa_scale2<Point2Array>,"Scale the PointArray. This is done INPLACE.",args("scaling"))
     .def( "findClosest", &pa_findclosest<Point2Array>,"Find closest point in the PointArray2 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_2D_coordinates,"Swap the two coordinates of the points. This is done INPLACE.")
     .def( "isValid", &Point2Array::isValid)
@@ -295,6 +310,8 @@ void export_pointarrays()
     .def( "transform", (void(Point3Array::*)(const Matrix3&))&Point3Array::transform)
     .def( "transform", (void(Point3Array::*)(const Matrix4&))&Point3Array::transform)
     .def( "translate", &pa_translate<Point3Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
+    .def( "scale", &pa_scale1<Point3Array>,"Scale the PointArray. This is done INPLACE.",args("scaling"))
+    .def( "scale", &pa_scale2<Point3Array>,"Scale the PointArray. This is done INPLACE.",args("scaling"))
     .def( "findClosest", &pa_findclosest<Point3Array>,"Find closest point in the PointArray3 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_coordinates<Point3Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     .def( "isValid", &Point3Array::isValid)
@@ -331,6 +348,8 @@ void export_pointarrays()
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>)
     .def( "transform", &Point4Array::transform)
     .def( "translate", &pa_translate<Point4Array>,"Translate the PointArray from translation. This is done INPLACE.",args("translation"))
+    .def( "scale", &pa_scale1<Point4Array>,"Scale the PointArray. This is done INPLACE.",args("scaling"))
+    .def( "scale", &pa_scale2<Point4Array>,"Scale the PointArray. This is done INPLACE.",args("scaling"))
     .def( "findClosest", &pa_findclosest<Point4Array>,"Find closest point in the PointArray4 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_coordinates<Point4Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     .def( "isValid", &Point4Array::isValid)

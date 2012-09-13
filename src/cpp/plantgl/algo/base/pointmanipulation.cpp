@@ -635,32 +635,32 @@ PGL::k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 real_t
 PGL::pointset_max_distance(  const Vector3& origin,
                                  const Point3ArrayPtr points, 
-			                     const Index& adjacency)
+			                     const Index& group)
 {
     real_t max_distance = 0;
-    for(Index::const_iterator itad = adjacency.begin(); itad != adjacency.end(); ++itad)
-        max_distance = std::max(max_distance,norm(origin-points->getAt(*itad)));
+    for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
+        max_distance = std::max(max_distance,norm(origin-points->getAt(*it)));
     return max_distance;
 }
 
 real_t
 PGL::pointset_max_distance(  uint32_t pid,
                                  const Point3ArrayPtr points, 
-			                     const Index& adjacency)
+			                     const Index& group)
 {
-    return pointset_max_distance(points->getAt(pid), points, adjacency);
+    return pointset_max_distance(points->getAt(pid), points, group);
 }
 
 ALGO_API real_t
 PGL::pointset_mean_distance(  const Vector3& origin,
                 const Point3ArrayPtr points, 
-			    const Index& adjacency)
+			    const Index& group)
 {
-    if (adjacency.empty()) return 0;
+    if (group.empty()) return 0;
     real_t sum_distance = 0;
-    for(Index::const_iterator itad = adjacency.begin(); itad != adjacency.end(); ++itad)
-        sum_distance += norm(origin-points->getAt(*itad));
-    return sum_distance / adjacency.size();
+    for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
+        sum_distance += norm(origin-points->getAt(*it));
+    return sum_distance / group.size();
 }
 
 
@@ -668,13 +668,13 @@ ALGO_API real_t
 PGL::pointset_mean_radial_distance(  const Vector3& origin,
                                      const Vector3& direction,
                                      const Point3ArrayPtr points, 
-			                         const Index& adjacency)
+			                         const Index& group)
 {
-    if (adjacency.empty()) return 0;
+    if (group.empty()) return 0;
     real_t sum_distance = 0;
-    for(Index::const_iterator itad = adjacency.begin(); itad != adjacency.end(); ++itad)
-        sum_distance += radialAnisotropicNorm(origin-points->getAt(*itad), direction, 1, 0);
-    return sum_distance / adjacency.size();
+    for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
+        sum_distance += radialAnisotropicNorm(origin-points->getAt(*it), direction, 0, 1);
+    return sum_distance / group.size();
 }
 
 
@@ -839,7 +839,6 @@ PGL::point_section( uint32_t pid,
                     real_t width)
 {
     Vector3& pt = points->getAt(pid); 
-    //Vector3& dir = direction.normed();
     Vector3 dir = direction.normed();
     Index result;
     result.push_back(pid);
@@ -858,6 +857,43 @@ PGL::point_section( uint32_t pid,
                if(considered.find(*it) == considered.end()){
                    considered.insert(*it);
                    if (radialAnisotropicNorm(points->getAt(*it)-pt,dir,1,0) < width) {
+                       result.push_back(*it);
+                       toprocess.push_back(*it);
+                   }
+               }
+    }
+    return result;
+}
+
+Index
+PGL::point_section( uint32_t pid,
+                    const Point3ArrayPtr points,
+                    const IndexArrayPtr adjacencies, 
+                    const Vector3& direction, 
+                    real_t width,
+                    real_t maxradius)
+{
+    Vector3& pt = points->getAt(pid); 
+    Vector3 dir = direction.normed();
+    Index result;
+    result.push_back(pid);
+
+    std::set<uint32_t> considered;
+    considered.insert(pid);
+    std::deque<uint32_t> toprocess;
+    toprocess.push_back(pid);
+    while ( !toprocess.empty() )
+    {
+        uint32_t cid = toprocess.front();
+        toprocess.pop_front();
+        
+        const Index& padjacency = adjacencies->getAt(cid);
+        for(Index::const_iterator it = padjacency.begin(); it != padjacency.end(); ++it)
+               if(considered.find(*it) == considered.end()){
+                   considered.insert(*it);
+                   Vector3 lpoint = points->getAt(*it)-pt;
+                   real_t a = dot(lpoint,dir); real_t b = norm(lpoint - a*dir);
+                   if ((fabs(a) < width)&& (b < maxradius)){
                        result.push_back(*it);
                        toprocess.push_back(*it);
                    }
@@ -885,14 +921,6 @@ PGL::points_sections( const Point3ArrayPtr points,
 }
 
 #include <plantgl/algo/fitting/fit.h>
-
-/*    Vector3 u,v, w, s;
-    if (Fit::inertiaAxis(lpoints, u, v, w, s)){
-        Vector3 a,b;
-        if (s[0] <= s[1] && s[0] <= s[2]) { a = v; b = w; }
-        else if (s[1] <= s[0] && s[1] <= s[2]) { a = u; b = w; }
-        else if (s[2] <= s[0] && s[2] <= s[1]) { a = u; b = v; }
-*/
 
 std::pair<Vector3,real_t>
 PGL::pointset_circle( const Point3ArrayPtr points,
@@ -969,7 +997,7 @@ PGL::pointset_circle( const Point3ArrayPtr points,
         else return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center,direction,points, group));
     }
     else 
-        return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center,direction,points, group));
+        return std::pair<Vector3,real_t>(center,pointset_mean_radial_distance(center, direction, points, group));
 }
 
 std::pair<Point3ArrayPtr,RealArrayPtr>
@@ -1025,22 +1053,91 @@ PGL::pointsets_section_circles( const Point3ArrayPtr points,
 
 }
 
+std::pair<Point3ArrayPtr,RealArrayPtr>
+PGL::adaptive_section_circles(const Point3ArrayPtr points, 
+                             const IndexArrayPtr adjacencies, 
+                             const Point3ArrayPtr orientations,
+                             const RealArrayPtr widths,
+                             const RealArrayPtr maxradii)
+{
+ 
+    size_t nbpoints = points->size();
+    Point3ArrayPtr respoints(new Point3Array(nbpoints));
+    RealArrayPtr   resradius(new RealArray(nbpoints,0));
+    Point3Array::iterator itrp = respoints->begin();
+    RealArray::iterator itrr = resradius->begin();
+    size_t pid = 0;
+
+    ProgressStatus st(nbpoints, "Adaptive section contraction computed for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itd = orientations->begin(); itd != orientations->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
+        Index section = point_section(pid, points, adjacencies, *itd,  widths->getAt(pid), maxradii->getAt(pid) );
+        std::pair<Vector3,real_t> lres = pointset_circle(points,section, *itd);
+        *itrp = lres.first; *itrr = lres.second;
+    }
+    return std::pair<Point3ArrayPtr,RealArrayPtr>(respoints, resradius);
+}
+
+
+struct AdaptiveRadiiIterator {
+public:
+    AdaptiveRadiiIterator(const RealArrayPtr _densities,
+                 real_t _minradius, real_t _maxradius,
+                 QuantisedFunctionPtr _densityradiusmap):
+        densities(_densities), 
+        minradius(_minradius), 
+        maxradius(_maxradius), 
+        densityradiusmap(_densityradiusmap),
+        mindensity(*_densities->getMin()),
+        maxdensity(*_densities->getMax()),
+        deltaradius(_maxradius - _minradius),
+        itdensity(_densities->begin()),
+        cvalue(0)
+    {
+        deltadensity = maxdensity-mindensity;
+        compute_current_value();
+    }
+
+     inline AdaptiveRadiiIterator & operator ++()  { 
+         if(itdensity != densities->end()){
+             ++itdensity; 
+             if(itdensity != densities->end())
+                 compute_current_value(); 
+         }
+         return *this; }
+
+     real_t operator*() const { return cvalue; }
+
+
+protected:
+    void compute_current_value() {
+        real_t normedDensity = (*itdensity-mindensity)/deltadensity;
+        cvalue = minradius  + deltaradius * (densityradiusmap ? densityradiusmap->getValue(normedDensity) : normedDensity ) ; 
+    }
+
+    RealArrayPtr densities;
+    RealArray::const_iterator itdensity;
+    real_t minradius; real_t maxradius;
+    QuantisedFunctionPtr densityradiusmap;
+    real_t mindensity;
+    real_t maxdensity;
+    real_t deltadensity;
+    real_t deltaradius;
+
+    real_t cvalue;
+};
 
 RealArrayPtr
 PGL::adaptive_radii( const RealArrayPtr density,
                  real_t minradius, real_t maxradius,
                  QuantisedFunctionPtr densityradiusmap)
 {
+    AdaptiveRadiiIterator itC(density,minradius,maxradius,densityradiusmap);
     RealArrayPtr radii(new RealArray(density->size()));
-    real_t mindensity = *density->getMin();
-    real_t maxdensity = *density->getMax();
-    real_t deltadensity = maxdensity-mindensity;
-    real_t deltaradius = maxradius - minradius;
-    RealArray::iterator itradius = radii->begin();
-    for(RealArray::const_iterator itDensity = density->begin(); itDensity != density->end(); ++itDensity, ++itradius)
+
+    for(RealArray::iterator itradius = radii->begin(); itradius != radii->end(); ++itC, ++itradius)
     {
-        real_t normedDensity = (*itDensity-mindensity)/deltadensity;
-        *itradius = minradius  + deltaradius * (densityradiusmap ? densityradiusmap->getValue(normedDensity) : normedDensity ) ; 
+        *itradius = *itC ; 
     }
     return radii;
 
@@ -1056,9 +1153,40 @@ PGL::adaptive_contration(const Point3ArrayPtr points,
                      const real_t alpha, 
 	                 const real_t beta)
 {
+ 
     RealArrayPtr radii = adaptive_radii(density, minradius, maxradius, densityradiusmap);
     IndexArrayPtr neighborhoods = r_anisotropic_neighborhoods(points,  adjacencies, radii, orientations, alpha, beta);    
     return centroids_of_groups(points, neighborhoods);
+}
+
+std::pair<Point3ArrayPtr,RealArrayPtr>
+PGL::adaptive_section_contration(const Point3ArrayPtr points, 
+                     const Point3ArrayPtr orientations,
+                     const IndexArrayPtr adjacencies, 
+                     const RealArrayPtr density,
+                     real_t minradius, real_t maxradius,
+                     QuantisedFunctionPtr densityradiusmap,
+                     const real_t alpha, 
+	                 const real_t beta)
+{
+ 
+    AdaptiveRadiiIterator itRadiusCcontractor(density,minradius,maxradius,densityradiusmap);
+
+    size_t nbpoints = points->size();
+    Point3ArrayPtr respoints(new Point3Array(nbpoints));
+    RealArrayPtr   resradius(new RealArray(nbpoints,0));
+    Point3Array::iterator itrp = respoints->begin();
+    RealArray::iterator itrr = resradius->begin();
+    size_t pid = 0;
+
+    ProgressStatus st(nbpoints, "Adaptive section contraction computed for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itd = orientations->begin(); itd != orientations->end(); ++itd, ++itrp, ++itrr, ++pid, ++st, ++itRadiusCcontractor){
+        Index section = r_anisotropic_neighborhood(pid, points,  adjacencies, *itRadiusCcontractor, *itd, alpha, beta);            
+        std::pair<Vector3,real_t> lres = pointset_circle(points,section, *itd);
+        *itrp = lres.first; *itrr = lres.second;
+    }
+    return std::pair<Point3ArrayPtr,RealArrayPtr>(respoints, resradius);
 }
 
 std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
@@ -2049,7 +2177,7 @@ PGL::pointset_directions(const TOOLS(Vector3)& origin, const Point3ArrayPtr poin
 }
 
 Point2ArrayPtr 
-PGL::pointset_angulardirections(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
+PGL::pointset_angulardirections(const Point3ArrayPtr points, const TOOLS(Vector3)& origin, const Index& group)
 {
     Point2ArrayPtr result;
     size_t nbpoints = group.size();
@@ -2062,6 +2190,7 @@ PGL::pointset_angulardirections(const TOOLS(Vector3)& origin, const Point3ArrayP
         }
     }
     else {
+        size_t nbpoints = points->size();
         result = Point2ArrayPtr(new Point2Array(nbpoints));
         Point2Array::iterator it = result->begin();
         for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++it){
@@ -2071,6 +2200,7 @@ PGL::pointset_angulardirections(const TOOLS(Vector3)& origin, const Point3ArrayP
     }
     return result;
 }
+
 
 std::pair<uint32_t,real_t> 
 PGL::findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
@@ -2094,3 +2224,65 @@ PGL::findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr po
         return std::pair<uint32_t,real_t>(std::distance<Point3Array::const_iterator>(points->begin(),res.first),res.second);
     }
  }
+
+
+RealArray2Ptr PGL::orientations_distances(const Point3ArrayPtr orientations, const Index& group )
+{
+   RealArray2Ptr result;
+   size_t nbpoints = group.size();
+   if(nbpoints != 0) {
+       result = RealArray2Ptr(new RealArray2(nbpoints,nbpoints,0));
+       uint32_t i = 0, j = 0;
+       for (Index::const_iterator it = group.begin(); it != group.end()-1; ++it, ++i){
+            // result->setAt(i,i,0);
+            j = i+1;
+            for (Index::const_iterator it2 = it+1; it2 != group.end(); ++it2, ++j){
+                real_t a = angle(orientations->getAt(*it),orientations->getAt(*it2));
+                result->setAt(i,j,a); result->setAt(j,i,a);
+            }
+       }
+   }
+   else {
+       size_t nbpoints = orientations->size();
+       result = RealArray2Ptr(new RealArray2(nbpoints,nbpoints,0));
+       for (uint32_t i = 0; i < nbpoints-1; ++i){
+            // result->setAt(i,i,0);            
+            for (uint32_t j = i+1; j < nbpoints;++j){
+                real_t a = angle(orientations->getAt(i),orientations->getAt(j));
+                result->setAt(i,j,a); result->setAt(j,i,a);
+            }
+       }
+   }
+   return result;
+}
+
+RealArray2Ptr PGL::orientations_similarities(const Point3ArrayPtr orientations, const Index& group )
+{
+   RealArray2Ptr result;
+   size_t nbpoints = group.size();
+   if(nbpoints != 0) {
+       result = RealArray2Ptr(new RealArray2(nbpoints,nbpoints,1));
+       uint32_t i = 0, j = 0;
+       for (Index::const_iterator it = group.begin(); it != group.end()-1; ++it, ++i){
+            // result->setAt(i,i,0);
+            j = i+1;
+            for (Index::const_iterator it2 = it+1; it2 != group.end(); ++it2, ++j){
+                real_t a = 1 - (angle(orientations->getAt(*it),orientations->getAt(*it2)) / GEOM_PI);
+                result->setAt(i,j,a); 
+                result->setAt(j,i,a);
+            }
+       }
+   }
+   else {
+       size_t nbpoints = orientations->size();
+       result = RealArray2Ptr(new RealArray2(nbpoints,nbpoints,1));
+       for (uint32_t i = 0; i < nbpoints-1; ++i){
+            // result->setAt(i,i,0);            
+            for (uint32_t j = i+1; j < nbpoints;++j){
+                real_t a = 1 - (angle(orientations->getAt(i),orientations->getAt(j)) / GEOM_PI);
+                result->setAt(i,j,a); result->setAt(j,i,a);
+            }
+       }
+   }
+   return result;
+}

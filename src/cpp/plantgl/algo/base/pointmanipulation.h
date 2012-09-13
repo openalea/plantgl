@@ -42,6 +42,7 @@
 #include <plantgl/scenegraph/function/function.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/tool/util_array.h>
+#include <plantgl/tool/util_array2.h>
 
 PGL_BEGIN_NAMESPACE
 
@@ -149,23 +150,23 @@ ALGO_API Index get_k_closest_from_n(const Index& adjacencies, const uint32_t k, 
 ALGO_API real_t
 pointset_max_distance(  uint32_t pid,
                         const Point3ArrayPtr points, 
-			            const Index& adjacency);
+			            const Index& group);
 
 ALGO_API real_t
 pointset_max_distance( const TOOLS(Vector3)& origin,
                        const Point3ArrayPtr points, 
-			           const Index& adjacency);
+			           const Index& group);
 
 ALGO_API real_t
 pointset_mean_distance(  const TOOLS(Vector3)& origin,
                          const Point3ArrayPtr points, 
-			             const Index& adjacency);
+			             const Index& group);
 
 ALGO_API real_t
 pointset_mean_radial_distance(  const TOOLS(Vector3)& origin,
                                 const TOOLS(Vector3)& direction,
                                 const Point3ArrayPtr points, 
-			                    const Index& adjacency);
+			                    const Index& group);
 
 ALGO_API Index 
 get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
@@ -231,6 +232,14 @@ point_section( uint32_t pid,
                const TOOLS(Vector3)& direction, 
                real_t width);
 
+ALGO_API Index
+point_section( uint32_t pid,
+               const Point3ArrayPtr points,
+               const IndexArrayPtr adjacencies, 
+               const TOOLS(Vector3)& direction, 
+               real_t width,
+               real_t maxradius);
+
 ALGO_API IndexArrayPtr
 points_sections( const Point3ArrayPtr points,
                  const IndexArrayPtr adjacencies, 
@@ -262,6 +271,15 @@ pointsets_section_circles( const Point3ArrayPtr points,
                            real_t width,
                            bool bounding = false);
 
+
+// Adaptive contraction
+ALGO_API std::pair<Point3ArrayPtr,TOOLS(RealArrayPtr)>
+adaptive_section_circles(const Point3ArrayPtr points, 
+                         const IndexArrayPtr adjacencies,
+                         const Point3ArrayPtr orientations,
+                         const TOOLS(RealArrayPtr) widths, 
+                         const TOOLS(RealArrayPtr) maxradii);
+
 // adaptive contraction
 ALGO_API TOOLS(RealArrayPtr)
 adaptive_radii( const TOOLS(RealArrayPtr) density,
@@ -278,6 +296,17 @@ adaptive_contration(const Point3ArrayPtr points,
                      QuantisedFunctionPtr densityradiusmap = NULL,
                      const real_t alpha = 1, 
 	                 const real_t beta = 1);
+
+// Adaptive contraction
+ALGO_API std::pair<Point3ArrayPtr,TOOLS(RealArrayPtr)>
+adaptive_section_contration(const Point3ArrayPtr points, 
+                            const Point3ArrayPtr orientations,
+                            const IndexArrayPtr adjacencies, 
+                            const TOOLS(RealArrayPtr) densities,
+                            real_t minradius, real_t maxradius,
+                            QuantisedFunctionPtr densityradiusmap = NULL,
+                            const real_t alpha = 1, 
+	                        const real_t beta = 1);
 
 /// Shortest path
 ALGO_API std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
@@ -390,10 +419,16 @@ ALGO_API TOOLS(Vector3) pointset_mean_direction(const TOOLS(Vector3)& origin, co
 ALGO_API Point3ArrayPtr pointset_directions(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
 
 // determine all directions of a set of points
-ALGO_API Point2ArrayPtr pointset_angulardirections(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
+ALGO_API Point2ArrayPtr pointset_angulardirections(const Point3ArrayPtr points, const TOOLS(Vector3)& origin = TOOLS(Vector3::ORIGIN), const Index& group = Index());
 
 // find the closest point from a group
 ALGO_API std::pair<uint32_t,real_t> findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group = Index());
+
+// compute the pair wise distance between orientation (in angular domain)
+ALGO_API TOOLS(RealArray2Ptr) orientations_distances(const Point3ArrayPtr orientations, const Index& group = Index());
+
+// compute the pair wise similarity between orientation (in angular domain) 
+ALGO_API TOOLS(RealArray2Ptr) orientations_similarities(const Point3ArrayPtr orientations, const Index& group = Index());
 
 PGL_END_NAMESPACE
 
