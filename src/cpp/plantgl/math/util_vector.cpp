@@ -364,7 +364,7 @@ Vector3::Cylindrical::isValid( ) const {
 
 /*  --------------------------------------------------------------------- */
 
-real_t TOOLS(spherical_distance)(real_t theta1, real_t phi1, real_t theta2, real_t phi2, real_t radius)
+real_t spherical_distance(real_t theta1, real_t phi1, real_t theta2, real_t phi2, real_t radius)
 {
     // return radius * acos(sin(theta1)sin(theta2) + cos(theta1)cos(theta2)cos(phi2-phi1));
 
