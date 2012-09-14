@@ -284,6 +284,9 @@ void export_PointManip()
 
     def("determine_children", &py_determine_children);
     def("carried_length",&carried_length,bp::args("points","parents"));
+    def("subtrees_size",(Uint32Array1Ptr(*)(const Uint32Array1Ptr))&subtrees_size,bp::args("parents"));
+    def("subtrees_size",(Uint32Array1Ptr(*)(const IndexArrayPtr, uint32_t))&subtrees_size,bp::args("children","root"));
+
     def("optimize_orientations",&optimize_orientations,bp::args("points","parents","weights"));
     def("optimize_positions",&optimize_positions,bp::args("points","orientations","parents","weights"));
 

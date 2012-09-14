@@ -82,6 +82,10 @@ void export_Turtle();
 void export_PglTurtle();
 
 /* ----------------------------------------------------------------------- */
+// Modeling
+void export_SpaceColonization();
+
+/* ----------------------------------------------------------------------- */
 // RayCasting export
 void export_SegIntersection();
 void export_Ray();

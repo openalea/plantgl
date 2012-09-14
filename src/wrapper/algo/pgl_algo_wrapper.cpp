@@ -84,6 +84,9 @@ void module_algo()
     export_Turtle();
     export_PglTurtle();
 
+    // Modeling
+    export_SpaceColonization();
+
     // RayCasting export
     export_SegIntersection();
     export_Ray();

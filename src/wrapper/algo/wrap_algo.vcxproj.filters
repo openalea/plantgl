@@ -103,6 +103,9 @@
     <ClCompile Include="export_planeclip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="export_spacecolonization.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export_printer.h">

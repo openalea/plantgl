@@ -105,6 +105,7 @@
     <ClCompile Include="export_reader.cpp" />
     <ClCompile Include="export_sequencer.cpp" />
     <ClCompile Include="export_skeleton.cpp" />
+    <ClCompile Include="export_spacecolonization.cpp" />
     <ClCompile Include="export_surfcomputer.cpp" />
     <ClCompile Include="export_triangulation3D.cpp" />
     <ClCompile Include="export_turtle.cpp" />

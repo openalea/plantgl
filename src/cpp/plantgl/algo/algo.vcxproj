@@ -135,6 +135,7 @@
     <ClCompile Include="fitting\skeleton.cpp" />
     <ClCompile Include="fitting\triangulation3D.cpp" />
     <ClCompile Include="grid\kdtree.cpp" />
+    <ClCompile Include="modelling\spacecolonization.cpp" />
     <ClCompile Include="opengl\glbboxrenderer.cpp" />
     <ClCompile Include="opengl\glctrlptrenderer.cpp" />
     <ClCompile Include="opengl\glrenderer.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="grid\annkdtree_p.h" />
     <ClInclude Include="grid\kdtree.h" />
     <ClInclude Include="grid\triangleingrid.h" />
+    <ClInclude Include="modelling\spacecolonization.h" />
     <ClInclude Include="opengl\glbboxrenderer.h" />
     <ClInclude Include="opengl\glctrlptrenderer.h" />
     <ClInclude Include="opengl\glrenderer.h" />

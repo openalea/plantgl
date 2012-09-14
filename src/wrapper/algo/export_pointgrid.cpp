@@ -29,6 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
+#include <plantgl/python/export_refcountptr.h>
 #include "export_grid.h"
 #include <plantgl/algo/grid/regularpointgrid.h>
 
@@ -38,16 +39,16 @@
 void export_PointGrid()
 {
 
-  class_< Point2Grid > ("Point2Grid", init<Vector2, Point2ArrayPtr>
+  class_< Point2Grid, Point2GridPtr, boost::noncopyable > ("Point2Grid", init<Vector2, Point2ArrayPtr>
      ( "Construct a regular grid from a set of 2D points.", args("voxelsize","points") ))
 	 .def(pointgrid_func<Point2Grid>())
     ;
   
-  class_< Point3Grid > ("Point3Grid", init<Vector3, Point3ArrayPtr>
+  class_< Point3Grid, Point3GridPtr, boost::noncopyable > ("Point3Grid", init<Vector3, Point3ArrayPtr>
      ( "Construct a regular grid from a set of 3D points.", args("voxelsize","points") ))
 	 .def(pointgrid_func<Point3Grid>())
     ;
-  class_< Point4Grid > ("Point4Grid", init<Vector4, Point4ArrayPtr>
+  class_< Point4Grid, Point4GridPtr, boost::noncopyable > ("Point4Grid", init<Vector4, Point4ArrayPtr>
      ( "Construct a regular grid from a set of 4D points.", args("voxelsize","points") ))
 	 .def(pointgrid_func<Point4Grid>())
     ;

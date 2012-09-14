@@ -1409,6 +1409,31 @@ RealArrayPtr PGL::carried_length(const Point3ArrayPtr points, const Uint32Array1
     return result;
 }
 
+Uint32Array1Ptr PGL::subtrees_size(const TOOLS(Uint32Array1Ptr) parents)
+{
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents,root);
+    return subtrees_size(children,root);
+}
+
+Uint32Array1Ptr PGL::subtrees_size(const IndexArrayPtr children,  uint32_t root)
+{
+    
+    Uint32Array1Ptr result(new Uint32Array1(children->size()));
+    IndexArrayPostOrderConstIterator piterator(children, root);
+
+    // look to the node in post order and for each node compute its weight as sum of children weight + 1.
+    for(;!piterator.atEnd(); ++piterator)
+    {
+        Index& nextgroup = children->getAt(*piterator);
+        uint32_t sumw = 1;
+        for (Index::const_iterator itchildren = nextgroup.begin(); itchildren != nextgroup.end(); ++itchildren)
+            sumw += result->getAt(*itchildren);
+        result->setAt(*piterator,sumw);
+    }
+
+    return result;
+}
 
 
 Point3ArrayPtr PGL::optimize_orientations(const Point3ArrayPtr points, 

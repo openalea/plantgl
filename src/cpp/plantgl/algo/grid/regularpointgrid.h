@@ -431,11 +431,17 @@ public:
 typedef PointGrid<Point2Array> Point2Grid;
 typedef PointGrid<Point3Array> Point3Grid;
 typedef PointGrid<Point4Array> Point4Grid;
+typedef RCPtr<Point2Grid> Point2GridPtr;
+typedef RCPtr<Point3Grid> Point3GridPtr;
+typedef RCPtr<Point4Grid> Point4GridPtr;
 
 typedef PointRefGrid<Point2Array> Point2RefGrid;
 typedef PointRefGrid<Point3Array> Point3RefGrid;
 typedef PointRefGrid<Point4Array> Point4RefGrid;
 
+typedef RCPtr<Point2RefGrid> Point2RefGridPtr;
+typedef RCPtr<Point3RefGrid> Point3RefGridPtr;
+typedef RCPtr<Point4RefGrid> Point4RefGridPtr;
 
 /* ----------------------------------------------------------------------- */
 

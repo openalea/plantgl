@@ -349,6 +349,10 @@ ALGO_API IndexArrayPtr determine_children(const TOOLS(Uint32Array1Ptr) parents, 
 // compute a weight to each points as sum of length of carried segments
 ALGO_API TOOLS(RealArrayPtr) carried_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
 
+// compute a weight to each points as number of node in their 
+ALGO_API TOOLS(Uint32Array1Ptr) subtrees_size(const TOOLS(Uint32Array1Ptr) parents);
+ALGO_API TOOLS(Uint32Array1Ptr) subtrees_size(const IndexArrayPtr children,  uint32_t root);
+
 // optimize orientation
 ALGO_API Point3ArrayPtr optimize_orientations(const Point3ArrayPtr points, 
                                               const TOOLS(Uint32Array1Ptr) parents,
