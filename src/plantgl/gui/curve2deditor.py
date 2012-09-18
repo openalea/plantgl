@@ -176,6 +176,8 @@ class Curve2DEditor (QGLViewer):
         self.renderer = GLRenderer(self.discretizer)
         self.renderer.renderingMode = GLRenderer.Dynamic
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
+        self.bgimage = None
+        
     def setTheme(self,theme = BLACK_THEME):
         self.curveMaterial = Material(theme['Curve'],1)
         self.defaultColor = QColor(*theme['BackGround'])
@@ -237,9 +239,22 @@ class Curve2DEditor (QGLViewer):
         self.updateSceneDimension()
         self.showEntireScene()
 
+    def setBackGroundImage(self, image = None):
+        self.bgimage = image
+        self.initBackGround()
+    
+    def initBackground(self):
+        pass
+        
+    def drawBackGround(self):
+        self.startScreenCoordinatesSystem(self)
+        
     def draw(self):
         if self.isEnabled():
-            self.setBackgroundColor(self.defaultColor)
+            if self.bgimage is None:
+                self.setBackgroundColor(self.defaultColor)
+            else:
+                self.drawBackGround()
         else:
             self.setBackgroundColor(self.disabledBGColor)
         self.start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
