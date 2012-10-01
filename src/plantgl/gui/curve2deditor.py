@@ -176,7 +176,7 @@ class Curve2DEditor (QGLViewer):
         self.renderer = GLRenderer(self.discretizer)
         self.renderer.renderingMode = GLRenderer.Dynamic
         self.ctrlrenderer = GLCtrlPointRenderer(self.discretizer)
-        self.bgimage = None
+        self.bgimage = False
         
     def setTheme(self,theme = BLACK_THEME):
         self.curveMaterial = Material(theme['Curve'],1)
@@ -219,7 +219,13 @@ class Curve2DEditor (QGLViewer):
         self.manipulator = ManipulatedFrame()
         self.setManipulatedFrame(self.manipulator)
         QObject.connect(self.manipulator,SIGNAL('manipulated()'),self.updatePoints)
-
+        # set texturing for background image
+        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        # Nice texture coordinate interpolation
+        glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        self.setBackgroundImage("test.png") #self.openImage() # QQQ 
+        
     def getCurve(self):
         """ Get the edited curve """
         return self.curveshape.geometry
@@ -238,23 +244,118 @@ class Curve2DEditor (QGLViewer):
         self.createControlPointsRep()
         self.updateSceneDimension()
         self.showEntireScene()
-
-    def setBackGroundImage(self, image = None):
-        self.bgimage = image
-        self.initBackGround()
-    
-    def initBackground(self):
-        pass
         
-    def drawBackGround(self):
-        self.startScreenCoordinatesSystem(self)
+    def openImage(self):
+        name = QFileDialog.getOpenFileName(self, "Select an image", ".", "Images (*.png *.xpm *.jpg)");
+
+        # In case of Cancel
+        if name.isEmpty() :  return
+        
+        self.setBackgroundImage(name)
+    
+        return
+        
+    def closeImage(self):
+        self.bgimage = False
+
+    def setBackgroundImage(self, imagefilename):
+        # code taken from the backgroundImage.cpp file that is part of the QGLViewer library
+        
+        self.u_max = 1.0
+        self.v_max = 1.0
+         
+        # load image
+        img = QImage(imagefilename)
+        
+        if img.isNull():
+            qWarning("Unable to load file, unsupported file format")
+            return
+
+        # qWarning("Loading " + imagefilename + " " + str(img.width()) + "x" + str(img.height()) +" pixels")
+
+        self.imageWidth = float(img.width())
+        self.imageHeight = float(img.height())
+        # QQQ qWarning(str(self.imageWidth) + " " + str(self.imageHeight))
+
+        # 1E-3 needed. Just try with width=128 and see !
+        newWidth  = 1<<(int)(1+log(img.width() -1+1E-3) / log(2.0))
+        newHeight = 1<<(int)(1+log(img.height()-1+1E-3) / log(2.0))
+        
+        self.u_max = img.width()  / float(newWidth)
+        self.v_max = img.height() / float(newHeight)
+
+        if ((img.width()!=newWidth) or (img.height()!=newHeight)):
+            #qWarning("Image size set to " + str(newWidth) + "x" + str(newHeight) + " pixels")
+            img = img.copy(0, 0, newWidth, newHeight)
+
+        glImg = QImage(QGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
+
+        # Bind the img texture...
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,
+	       GL_RGBA, GL_UNSIGNED_BYTE, glImg.bits().asstring(glImg.numBytes()))
+        # Another way to bind img texture:
+        # if self.textureId:
+            # self.deleteTexture(self.textureId)
+            # self.textureId = None
+        # self.textureId = self.bindTexture(img,GL_TEXTURE_2D,GL_RGBA)
+        # if self.textureId :
+            # glBindTexture(GL_TEXTURE_2D, self.textureId)
+               
+        self.bgimage = True
+        
+    def drawBackground(self):
+        # code taken from the backgroundImage.cpp file that is part of the QGLViewer library
+
+        glDisable(GL_LIGHTING)
+        glEnable(GL_TEXTURE_2D)
+        glColor3f(1,1,1)
+        
+        # to draw texture in entire window:
+        # self.startScreenCoordinatesSystem(True)
+        # # Draws the background quad
+        # glNormal3f(0.0, 0.0, 1.0)
+        # glBegin(GL_QUADS)
+        # glTexCoord2f(0.0, 1.0-self.v_max)
+        # glVertex2i(0,0)
+        # glTexCoord2f(0.0, 1.0)
+        # glVertex2i(0,self.height())
+        # glTexCoord2f(self.u_max, 1.0)
+        # glVertex2i(self.width(),self.height())
+        # glTexCoord2f(self.u_max, 1.0-self.v_max)
+        # glVertex2i(self.width(),0)
+        # glEnd()
+        # self.stopScreenCoordinatesSystem()
+        
+        # Draws the quad in (0,0) to (1.0,imageHeight/imageWidth)
+        self.startScreenCoordinatesSystem(True)
+        centre_x = self.width() * 0.5 - self.imageWidth*0.5
+        centre_y = self.height() * 0.5 - self.imageHeight*0.5
+
+        glNormal3f(0.0, 0.0, 1.0)
+        glBegin(GL_QUADS)
+        glTexCoord2f(0.0, 1.0-self.v_max)
+        glVertex2f(centre_x,centre_y)
+        glTexCoord2f(0.0, 1.0)
+        glVertex2f(centre_x,centre_y+self.imageHeight)
+        glTexCoord2f(self.u_max, 1.0)
+        glVertex2f(centre_x+self.imageWidth,centre_y+self.imageHeight)
+        glTexCoord2f(self.u_max, 1.0-self.v_max)
+        glVertex2f(centre_x+self.imageWidth,centre_y)
+        glEnd()
+        self.stopScreenCoordinatesSystem()
+        
+        # Depth clear is not absolutely needed. An other option would have been to draw the
+        # QUAD with a 0.999 z value (z ranges in [0, 1[ with startScreenCoordinatesSystem()).
+        glClear(GL_DEPTH_BUFFER_BIT)
+        glDisable(GL_TEXTURE_2D)
+        glEnable(GL_LIGHTING)
         
     def draw(self):
         if self.isEnabled():
-            if self.bgimage is None:
+            if self.bgimage == False:
                 self.setBackgroundColor(self.defaultColor)
             else:
-                self.drawBackGround()
+                self.drawBackground()
         else:
             self.setBackgroundColor(self.disabledBGColor)
         self.start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
