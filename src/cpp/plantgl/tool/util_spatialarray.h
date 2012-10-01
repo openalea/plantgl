@@ -237,7 +237,7 @@ public:
 		real_t normvoxelsize = norm(getVoxelSize());
         real_t r = radius + normvoxelsize;
 		real_t minr = std::max<real_t>(0,minradius - normvoxelsize);
-        const_partial_iterator itvoxel = getSubArray(mincoord,dim);
+        const_partial_iterator itvoxel = this->getSubArray(mincoord,dim);
         while(!itvoxel.atEnd()){
             // Check whether coord is in ball
 			real_t voxeldist = norm(getVoxelCenter(itvoxel.index())-point);
@@ -321,7 +321,7 @@ public:
 
 		real_t normvoxelsize = norm(getVoxelSize());
         real_t r = radius + normvoxelsize;
-        const_partial_iterator itvoxel = getSubArray(mincoord,dim);
+        const_partial_iterator itvoxel = this->getSubArray(mincoord,dim);
 
         real_t halfconeangle = coneangle / 2;
         real_t cosconeangle = cos(halfconeangle);

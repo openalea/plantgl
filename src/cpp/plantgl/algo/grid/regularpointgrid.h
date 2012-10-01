@@ -185,7 +185,7 @@ public:
 
 
     PointIndexList query_ball_point(const VectorType& point, real_t radius) const{
-        VoxelIdList voxels = query_voxels_around_point(point,radius);
+        VoxelIdList voxels = this->query_voxels_around_point(point,radius);
         PointIndexList res;
         for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
             const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
@@ -203,7 +203,7 @@ public:
     PointIndexList query_points_in_cone(const VectorType& coneorigin, const VectorType& conedirection,
                                        real_t coneradius,  real_t coneangle = GEOM_HALF_PI) const{
         VectorType mdirection = conedirection.normed(); 
-        VoxelIdList voxels = query_voxels_in_cone(coneorigin,mdirection,coneradius,coneangle);
+        VoxelIdList voxels = this->query_voxels_in_cone(coneorigin,mdirection,coneradius,coneangle);
         PointIndexList res;
         real_t cosconeangle = cos(coneangle / 2);
         for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); itvoxel != voxels.end(); ++itvoxel){
@@ -286,7 +286,7 @@ public:
 
     bool disable_point(PointIndex pid) {
         VectorType point = points().getAt(pid);
-        PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
+        PointIndexList& voxelpointlist = this->getAt(this->cellIdFromPoint(point));
         typename PointIndexList::iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
         if (itPointIndex != voxelpointlist.end()) { voxelpointlist.erase(itPointIndex); return true; }
         return false;
@@ -302,7 +302,7 @@ public:
 
     bool is_point_enabled(PointIndex pid) const {
         VectorType point = points().getAt(pid);
-        const PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
+        const PointIndexList& voxelpointlist = this->getAt(this->cellIdFromPoint(point));
         typename PointIndexList::const_iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
         if (itPointIndex == voxelpointlist.end()) { return false; }
         return true;
@@ -398,8 +398,8 @@ protected:
     template<class Iterator>
     inline void registerData(Iterator beg, Iterator end, PointIndex startingindex){
         for(Iterator it = beg; it != end; ++it){
-            VoxelId vid = cellIdFromPoint(*it);
-            getAt(vid).push_back(startingindex);
+            VoxelId vid = this->cellIdFromPoint(*it);
+            this->getAt(vid).push_back(startingindex);
             startingindex++;
         }
     }
