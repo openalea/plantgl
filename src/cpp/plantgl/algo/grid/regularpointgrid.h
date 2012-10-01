@@ -308,16 +308,22 @@ public:
         return true;
     }
 
-    void disable_points(const PointIndexList& pids) {
-            for(typename PointIndexList::const_iterator itPointIndex = pids.begin();
-                itPointIndex != pids.end(); ++itPointIndex){
+    inline void disable_points(const PointIndexList& pids) 
+    { disable_points(pids.begin(), pids.end()); }
+
+    template<class ConstIterator>
+    void disable_points(ConstIterator begin, ConstIterator end) {
+            for(ConstIterator itPointIndex = begin; itPointIndex != end; ++itPointIndex){
                     disable_point(*itPointIndex);
             }
     }
 
-    void enable_points(const PointIndexList& pids) {
-            for(typename PointIndexList::const_iterator itPointIndex = pids.begin();
-                itPointIndex != pids.end(); ++itPointIndex){
+    inline void enable_points(const PointIndexList& pids) 
+    {  enable_points(pids.begin(), pids.end()); }
+
+    template<class ConstIterator>
+    void enable_points(ConstIterator begin, ConstIterator end) {
+            for(ConstIterator itPointIndex = begin; itPointIndex != end; ++itPointIndex){
                     enable_point(*itPointIndex);
             }
     }
@@ -358,6 +364,25 @@ public:
 				if(!is_point_enabled(itPointIndex)){
 					result.push_back(itPointIndex);
 				}
+        }
+		return result; 
+	}
+
+
+    template<class Array>
+    Array filter_disabled(const Array& pointlist) const {
+		Array result;
+        for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
+				if(is_point_enabled(*itp)) result.push_back(*itp);
+        }
+		return result; 
+	}
+
+    template<class Array>
+    Array filter_enabled(const Array& pointlist) const {
+		Array result;
+        for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
+				if(!is_point_enabled(*itp)) result.push_back(*itp);
         }
 		return result; 
 	}

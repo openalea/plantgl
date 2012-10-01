@@ -65,7 +65,8 @@ py_remove_nodes(const Index& toremove,
                 RealArrayPtr radii)
 {
     remove_nodes(toremove,nodes,parents,radii);
-    return make_tuple(nodes,parents,radii);
+    if (is_valid_ptr(radii)) return make_tuple(nodes,parents,radii);
+    else return make_tuple(nodes,parents);
 }
 
 object
@@ -194,6 +195,22 @@ object py_findClosestFromSubset(const Vector3& o, Point3ArrayPtr pts, const Inde
     return make_pair_tuple(findClosestFromSubset(o, pts, index));
 }
 
+
+object py_next_quotient_points_from_adjacency_graph(const real_t initiallevel,
+                                            const real_t binsize,
+                                            const Index& currents,
+			                                const IndexArrayPtr adjacencies, 
+			                                const TOOLS(RealArrayPtr) distances_to_root)
+{
+    return make_pair_tuple(next_quotient_points_from_adjacency_graph(initiallevel,binsize,currents,adjacencies,distances_to_root));
+}
+
+object  py_cluster_junction_points(const IndexArrayPtr pointtoppology, const Index& group1, const Index& group2)
+{
+    return make_pair_tuple(cluster_junction_points(pointtoppology, group1,group2));
+}
+
+
 void export_PointManip()
 {
 	def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
@@ -278,10 +295,13 @@ void export_PointManip()
     def("get_sorted_element_order",&get_sorted_element_order,args("elements"));
     def("points_dijkstra_shortest_path",&py_points_dijkstra_shortest_path,args("points","adjacencies","root"));
     def("quotient_points_from_adjacency_graph",&quotient_points_from_adjacency_graph,args("binsize","points","adjacencies","distances_to_root"));
-    def("quotient_adjacency_graph",&quotient_points_from_adjacency_graph,args("adjacencies","groups"));
+    def("quotient_adjacency_graph",&quotient_adjacency_graph,args("adjacencies","groups"));
     def("skeleton_from_distance_to_root_clusters",&py_skeleton_from_distance_to_root_clusters,
         (bp::arg("points"),bp::arg("root"),bp::arg("binsize"),bp::arg("k")=10,bp::arg("connect_all_points")=false,bp::arg("verbose")=false),"Implementation of Xu et al. 07 method for main branching system");
 
+    def("points_in_range_from_root",&points_in_range_from_root,args("initiallevel","binsize","distances_to_root"));
+    def("next_quotient_points_from_adjacency_graph",&py_next_quotient_points_from_adjacency_graph,args("initiallevel","binsize","current","adjacencies","distances_to_root"));
+    
     def("determine_children", &py_determine_children);
     def("carried_length",&carried_length,bp::args("points","parents"));
     def("subtrees_size",(Uint32Array1Ptr(*)(const Uint32Array1Ptr))&subtrees_size,bp::args("parents"));
@@ -291,14 +311,19 @@ void export_PointManip()
     def("optimize_positions",&optimize_positions,bp::args("points","orientations","parents","weights"));
 
     def("average_radius",&average_radius,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("maxclosestnodes")=10));
+    def("distance_to_shape",&distance_to_shape,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("maxclosestnodes")=10));
+    def("average_distance_to_shape",&average_distance_to_shape,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("maxclosestnodes")=10));
+    def("points_at_distance_from_skeleton",&points_at_distance_from_skeleton,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("distance"),bp::arg("maxclosestnodes")=10),"Return indices of all point which are below a given distance ot the skeleton. If distance is negative, return point above a distance");
+
     def("estimate_radii",&estimate_radii,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
     
-    def("min_max_mean_edge_length",&min_max_mean_edge_length,(bp::arg("points"),bp::arg("parents")));
+    def("min_max_mean_edge_length",(Vector3 (*)(const Point3ArrayPtr, Uint32Array1Ptr))&min_max_mean_edge_length,(bp::arg("points"),bp::arg("parents")));
+    def("min_max_mean_edge_length",(Vector3 (*)(const Point3ArrayPtr, IndexArrayPtr))&min_max_mean_edge_length,(bp::arg("points"),bp::arg("graph")));
 
     def("node_continuity_test",&py_node_continuity_test,(bp::arg("node"),bp::arg("radius"),bp::arg("parent"),bp::arg("parentradius"),bp::arg("child"),bp::arg("radius"),bp::arg("overlapfilter")=0.5,bp::arg("verbose")=false));
     def("node_intersection_test",&py_node_intersection_test,(bp::arg("parent"),bp::arg("parentradius"),bp::arg("node1"),bp::arg("radius1"),bp::arg("node2"),bp::arg("radius2"),bp::arg("overlapfilter")=0.5,bp::arg("verbose")=false));
     def("detect_short_nodes",&detect_short_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("edgelengthfilter")=0.001));
-    def("remove_nodes",&py_remove_nodes,(bp::arg("toremove"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii")));
+    def("remove_nodes",&py_remove_nodes,(bp::arg("toremove"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii")=RealArrayPtr(0)));
     def("detect_similar_nodes",&detect_similar_nodes,(bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("weight"),bp::arg("overlapfilter")=0.5));
     def("merge_nodes",&py_merge_nodes,(bp::arg("tomerge"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("weight")));
 
@@ -310,6 +335,9 @@ void export_PointManip()
 
     def("orientations_distances",&orientations_distances,(bp::arg("orientations"),bp::arg("group")=Index()));
     def("orientations_similarities",&orientations_similarities,(bp::arg("orientations"),bp::arg("group")=Index()));
+
+    def("cluster_junction_points",&py_cluster_junction_points,(bp::arg("pointtoppology"),bp::arg("group1"),bp::arg("group2")));
 }
+
 
 /* ----------------------------------------------------------------------- */

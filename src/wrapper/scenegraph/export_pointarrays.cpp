@@ -65,6 +65,24 @@ void py_sort(T * pts, boost::python::object cmp_method){
 }
 
 template <class T>
+struct DirComparison {
+    T dir;
+
+    DirComparison(const T& _dir) : dir(_dir) { }
+
+    inline bool operator()(const T& a, const T& b){
+        return dot(dir,a) < dot(dir,b);
+    }
+};
+
+template <class T>
+void py_directional_sort(T * pts, typename T::element_type dir){
+    typedef typename T::element_type VectorType;
+    VectorType d = dir.normed();
+    std::stable_sort(pts->begin(),pts->end(),DirComparison<typename T::element_type>(d));
+}
+
+template <class T>
 bool py_comp_x(const T& a, const T& b){
     return a.x() < b.x();
 }
@@ -272,6 +290,7 @@ void export_pointarrays()
     .def( "sort", &py_sort<Point2Array>) 
     .def( "sortX", &py_sort_x<Point2Array>) 
     .def( "sortY", &py_sort_y<Point2Array>) 
+    .def( "directional_sort", &py_directional_sort<Point2Array>,"Sort the points according to the given direction. This is done INPLACE.",args("direction")) 
     .def( "partition", &py_partition<Point2Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point2Array>)
     .def( "transform", &Point2Array::transform)
@@ -305,6 +324,7 @@ void export_pointarrays()
     .def( "sortX", &py_sort_x<Point3Array>) 
     .def( "sortY", &py_sort_y<Point3Array>) 
     .def( "sortZ", &py_sort_z<Point3Array>) 
+    .def( "directional_sort", &py_directional_sort<Point3Array>,"Sort the points according to the given direction. This is done INPLACE.",args("direction")) 
     .def( "partition", &py_partition<Point3Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point3Array>)
     .def( "transform", (void(Point3Array::*)(const Matrix3&))&Point3Array::transform)
@@ -344,6 +364,7 @@ void export_pointarrays()
     .def( "sortY", &py_sort_y<Point4Array>) 
     .def( "sortZ", &py_sort_z<Point4Array>) 
     .def( "sortW", &py_sort_w<Point4Array>) 
+    .def( "directional_sort", &py_directional_sort<Point4Array>,"Sort the points according to the given direction. This is done INPLACE.",args("direction")) 
     .def( "partition", &py_partition<Point4Array>) 
     .def( "hausdorff_distance", &hausdorff_distance<Point4Array>)
     .def( "transform", &Point4Array::transform)

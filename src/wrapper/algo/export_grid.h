@@ -159,6 +159,16 @@ object py_getDimensions(PointGrid * grid){
 	 return make_pgl_tuple(grid->dimensions());
 }
 
+template<class PointGrid>
+object py_filter_enabled(PointGrid * grid, boost::python::object vidlist){
+	 return make_list(grid->filter_enabled(extract_vec<typename PointGrid::PointIndex>(vidlist)))();
+}
+
+template<class PointGrid>
+object py_filter_disabled(PointGrid * grid, boost::python::object vidlist){
+	 return make_list(grid->filter_disabled(extract_vec<typename PointGrid::PointIndex>(vidlist)))();
+}
+
 
 template<class SpatialArray>
 typename SpatialArray::CellId py_cellId(SpatialArray * grid, object c){
@@ -259,7 +269,9 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("enable_points",&py_enablepoints<PointGrid>)
 	 .def("disable_points",&py_disablepoints<PointGrid>)
 	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)	 
-         ;
+     .def("filter_disabled",&py_filter_disabled<PointGrid>)
+     .def("filter_enabled",&py_filter_enabled<PointGrid>)
+	     ;
     }
 };
 

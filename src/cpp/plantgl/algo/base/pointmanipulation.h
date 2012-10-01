@@ -311,8 +311,9 @@ adaptive_section_contration(const Point3ArrayPtr points,
 /// Shortest path
 ALGO_API std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
 points_dijkstra_shortest_path(const Point3ArrayPtr points, 
-			         const IndexArrayPtr adjacencies, 
-                     uint32_t root);
+			                  const IndexArrayPtr adjacencies, 
+                              uint32_t root,
+                              real_t powerdist = 1);
 
 
 // Return groups of points
@@ -340,6 +341,17 @@ ALGO_API Point3ArrayPtr
 skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,  
                                         TOOLS(Uint32Array1Ptr)& group_parents, IndexArrayPtr& group_components, 
                                         bool connect_all_points = false, bool verbose = false);
+
+ALGO_API Index 
+points_in_range_from_root(const real_t initialdist, const real_t binsize, const TOOLS(RealArrayPtr) distances_to_root);
+
+ALGO_API std::pair<IndexArrayPtr,TOOLS(RealArrayPtr)> 
+next_quotient_points_from_adjacency_graph(const real_t initiallevel,
+                                            const real_t binsize,
+                                            const Index& currents,
+			                                const IndexArrayPtr adjacencies, 
+			                                const TOOLS(RealArrayPtr) distances_to_root);
+
 
 
 // Livny method procedures
@@ -370,6 +382,23 @@ ALGO_API real_t average_radius(const Point3ArrayPtr points,
                                const TOOLS(Uint32Array1Ptr) parents,
                                uint32_t maxclosestnodes = 10);
 
+ALGO_API TOOLS(RealArrayPtr) distance_to_shape(const Point3ArrayPtr points, 
+                                          const Point3ArrayPtr nodes,
+                                          const TOOLS(Uint32Array1Ptr) parents,
+                                          const TOOLS(RealArrayPtr) radii,
+                                          uint32_t maxclosestnodes = 10);
+
+ALGO_API real_t average_distance_to_shape(const Point3ArrayPtr points, 
+                                          const Point3ArrayPtr nodes,
+                                          const TOOLS(Uint32Array1Ptr) parents,
+                                          const TOOLS(RealArrayPtr) radii,
+                                          uint32_t maxclosestnodes = 10);
+
+ALGO_API Index points_at_distance_from_skeleton(const Point3ArrayPtr points, 
+                                                const Point3ArrayPtr nodes,
+                                                const TOOLS(Uint32Array1Ptr) parents,
+                                                real_t distance,
+                                                uint32_t maxclosestnodes = 10);
 
 // estimate radius for each node
 ALGO_API TOOLS(RealArrayPtr) estimate_radii(const Point3ArrayPtr nodes,
@@ -391,6 +420,7 @@ ALGO_API bool node_intersection_test(const TOOLS(Vector3)& root, real_t rootradi
                                      bool verbose = false, ScenePtr * visu = NULL);
 // compute the minimum maximum and  mean edge length
 ALGO_API TOOLS(Vector3) min_max_mean_edge_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
+ALGO_API TOOLS(Vector3) min_max_mean_edge_length(const Point3ArrayPtr points, const IndexArrayPtr graph);
 
 // determine nodes to filter
 ALGO_API Index detect_short_nodes(const Point3ArrayPtr nodes,
@@ -400,7 +430,7 @@ ALGO_API Index detect_short_nodes(const Point3ArrayPtr nodes,
 ALGO_API void remove_nodes(const Index& toremove,
                            Point3ArrayPtr& nodes,
                            TOOLS(Uint32Array1Ptr)& parents, 
-                           TOOLS(RealArrayPtr)& radii);
+                           TOOLS(RealArrayPtr)& radii = TOOLS(RealArrayPtr(0)));
 
 // determine nodes to filter
 ALGO_API IndexArrayPtr detect_similar_nodes(const Point3ArrayPtr nodes,
@@ -433,6 +463,9 @@ ALGO_API TOOLS(RealArray2Ptr) orientations_distances(const Point3ArrayPtr orient
 
 // compute the pair wise similarity between orientation (in angular domain) 
 ALGO_API TOOLS(RealArray2Ptr) orientations_similarities(const Point3ArrayPtr orientations, const Index& group = Index());
+
+// compute the points that make the junction of the two group
+ALGO_API std::pair<Index,Index> cluster_junction_points(const IndexArrayPtr pointtoppology, const Index& group1, const Index& group2);
 
 PGL_END_NAMESPACE
 

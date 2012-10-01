@@ -177,7 +177,11 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
     }
 }
 
-
+bool ra_is_valid(RealArray * a) {
+    for(RealArray::const_iterator it = a->begin(); it != a->end(); ++it)
+        if (!finite(*it)) return false;
+    return true;
+}
 /*template <Array2ArrayFunc func>
 RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
     return new RealArray(array->*func(v)); }*/
@@ -215,6 +219,7 @@ void export_arrays()
     // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() ) 
+    .def("isValid",&ra_is_valid)
     EXPORT_ARRAY_IO_FUNC( RealArray )
 
     DEFINE_NUMPY( ra );

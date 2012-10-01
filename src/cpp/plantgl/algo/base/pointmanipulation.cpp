@@ -44,7 +44,7 @@ TOOLS_USING_NAMESPACE
 
 class ProgressStatus {
 public:    
-    ProgressStatus (uint32_t _nbsteps, char * _message =" %.2f processed.", float _percenttoprint = 5):
+    ProgressStatus (uint32_t _nbsteps, char * _message =" %.2f processed.", float _percenttoprint = 1):
             nbsteps(_nbsteps), 
             percenttoprint(_percenttoprint), 
             message(_message),
@@ -410,6 +410,13 @@ struct PointDistance {
         const Point3ArrayPtr points;
         real_t operator()(uint32_t a, uint32_t b) const { return norm(points->getAt(a)-points->getAt(b)); }
         PointDistance(const Point3ArrayPtr _points) : points(_points) {}
+};
+
+struct PowerPointDistance {
+        const Point3ArrayPtr points;
+        real_t power;
+        real_t operator()(uint32_t a, uint32_t b) const { return pow(norm(points->getAt(a)-points->getAt(b)),power) ; }
+        PowerPointDistance(const Point3ArrayPtr _points, real_t _power) : points(_points), power(_power) {}
 };
 
 Index
@@ -1192,10 +1199,17 @@ PGL::adaptive_section_contration(const Point3ArrayPtr points,
 std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>
 PGL::points_dijkstra_shortest_path(const Point3ArrayPtr points, 
 			         const IndexArrayPtr adjacencies, 
-                     uint32_t root)
+                     uint32_t root,
+                     real_t powerdist)
 {
-    struct PointDistance pdevaluator(points);
-    return dijkstra_shortest_paths(adjacencies,root,pdevaluator);
+    if (powerdist == 1) {
+        struct PointDistance pdevaluator(points);
+        return dijkstra_shortest_paths(adjacencies,root,pdevaluator);
+    }
+    else {
+        struct PowerPointDistance pdevaluator(points,powerdist);
+        return dijkstra_shortest_paths(adjacencies,root,pdevaluator);
+    }
 }
 
 struct DistanceCmp {
@@ -1277,6 +1291,115 @@ PGL::quotient_points_from_adjacency_graph(  const real_t binsize,
     return groups;
 }
 
+Index PGL::points_in_range_from_root(const real_t initialdist, const real_t binsize, const TOOLS(RealArrayPtr) distances_to_root)
+{
+    Index group;
+    real_t maxdist = initialdist + binsize;
+    uint32_t pid = 0;
+    for(RealArray::const_iterator it = distances_to_root->begin(); it != distances_to_root->end(); ++it, ++pid)
+        if (initialdist <= *it && *it < maxdist)
+            group.push_back(pid);
+    return group;
+}
+
+
+std::pair<IndexArrayPtr,RealArrayPtr> 
+PGL::next_quotient_points_from_adjacency_graph(const real_t initiallevel,
+                                               const real_t binsize,
+                                               const Index& currents,
+			                                   const IndexArrayPtr adjacencies, 
+			                                   const TOOLS(RealArrayPtr) distances_to_root)
+{
+    IndexArrayPtr groups(new IndexArray());
+    RealArrayPtr  binlevels(new RealArray());
+
+    pgl_hash_set_uint32 pointmap;
+    for(Index::const_iterator itc = currents.begin(); itc != currents.end(); ++itc)
+        pointmap.insert(*itc);
+
+    for(Index::const_iterator itc = currents.begin(); itc != currents.end(); ++itc){
+        // real_t cdist = initiallevel; // distances_to_root->getAt(*itc);
+        // real_t cmaxdist = cdist+binsize;
+
+        // check if it is also on the next limit
+        const Index& nbgc = adjacencies->getAt(*itc);
+        for(Index::const_iterator itfirstorder = nbgc.begin(); itfirstorder != nbgc.end(); ++itfirstorder){
+
+            real_t cdisttoroot = distances_to_root->getAt(*itfirstorder);
+            if (cdisttoroot > initiallevel){
+
+                if(pointmap.find(*itfirstorder) == pointmap.end()){
+                    // Compute bin limits
+                    real_t deltadist = cdisttoroot - initiallevel;
+                    int clevel = int(deltadist / binsize);
+                    // printf("clevel %i %f %f %f\n",clevel,cdisttoroot,initiallevel,binsize);
+
+                    /*if (clevel > 0) {
+                        printf("gap %i\n", clevel);
+                        Index sonbg = adjacencies->getAt(*itfirstorder);
+                        bool should_skip = false;
+                        for (Index::const_iterator itsonbg = sonbg.begin(); itsonbg != sonbg.end(); ++itsonbg){
+                            int llevel = int((distances_to_root->getAt(*itsonbg) - cdist)/binsize);
+                            printf("check %i for %i: %i %s\n", *itsonbg, *itfirstorder, llevel,(0 <= llevel && llevel < clevel?"True":"False"));
+                            if (0 <= llevel && llevel < clevel){
+                                printf("continue\n");
+                                should_skip = true;
+                                break;
+                                
+                            }
+                        }
+
+                        if (should_skip) continue;
+                    }*/
+
+                    if (clevel < 0) printf("Error in computing level: %f %f %i\n",cdisttoroot, initiallevel, clevel);
+                    assert (clevel >= 0);
+
+
+                    real_t mindist = initiallevel + clevel * binsize;
+                    if ( clevel > 0 && fabs(cdisttoroot-mindist) < GEOM_EPSILON) { 
+                        --clevel; 
+                        mindist = initiallevel + clevel * binsize;
+                        // printf("correct clevel %i %f %f %f\n",clevel,cdisttoroot,initiallevel,binsize);
+                    }
+
+                    real_t maxdist = initiallevel + (clevel + 1) * binsize;
+
+                    pointmap.insert(*itfirstorder);
+
+                    Index newgroup;
+                    newgroup.push_back(*itfirstorder);
+
+                    std::stack<Index> tolookat;
+                    tolookat.push(adjacencies->getAt(*itfirstorder));
+
+                    // Check in neighbor the ones which are on the same group
+                    while (!tolookat.empty()){
+                        Index sonbg = tolookat.top();
+                        tolookat.pop();
+                        for(Index::const_iterator itsonbg = sonbg.begin(); itsonbg != sonbg.end(); ++itsonbg){
+
+                            real_t pdist = distances_to_root->getAt(*itsonbg);
+                            if (mindist < pdist && pdist <= maxdist){
+
+                                if(pointmap.find(*itsonbg) == pointmap.end()){
+                                    pointmap.insert(*itsonbg);
+                                    newgroup.push_back(*itsonbg);
+
+                                    tolookat.push(adjacencies->getAt(*itsonbg));
+                                }
+                            }
+                        }
+                    }
+
+                    groups->push_back(newgroup);
+                    binlevels->push_back(maxdist);
+                }
+            }
+        }
+    }
+    return std::pair<IndexArrayPtr,RealArrayPtr> (groups, binlevels);
+}
 
 IndexArrayPtr 
 PGL::quotient_adjacency_graph(const IndexArrayPtr adjacencies, 
@@ -1531,6 +1654,9 @@ PGL::average_radius(const Point3ArrayPtr points,
     uint32_t root;
     IndexArrayPtr children = determine_children(parents, root);
 
+    uint32_t nb_nodes = nodes->size();
+    if (nb_nodes == 0) return REAL_MAX;
+    if (maxclosestnode >= nb_nodes) maxclosestnode = nb_nodes;
     real_t sum_min_dist = 0;
     uint32_t nb_samples = 0;
     ANNKDTree3 tree(nodes);
@@ -1565,6 +1691,180 @@ PGL::average_radius(const Point3ArrayPtr points,
 
     return 0;
 #endif
+}
+
+real_t PGL::average_distance_to_shape(const Point3ArrayPtr points, 
+                                          const Point3ArrayPtr nodes,
+                                          const TOOLS(Uint32Array1Ptr) parents,
+                                          const TOOLS(RealArrayPtr) radii,
+                                          uint32_t maxclosestnodes)
+{
+#ifdef WITH_ANN
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    uint32_t nb_nodes = nodes->size();
+    if (nb_nodes == 0) return REAL_MAX;
+    if (maxclosestnodes >= nb_nodes) maxclosestnodes = nb_nodes;
+    real_t sum_min_dist = 0;
+    uint32_t nb_samples = 0;
+    ANNKDTree3 tree(nodes);
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
+    {
+        real_t minpdist = REAL_MAX;
+        Index nids = tree.k_closest_points(*itp,maxclosestnodes);
+        for(Index::const_iterator nit = nids.begin(); nit != nids.end(); ++nit){
+
+            Vector3 point(*itp);
+            real_t u;
+            uint32_t parent = parents->getAt(*nit);
+            real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parent),&u);
+            real_t r = radii->getAt(parent) * u + radii->getAt(*nit) * (1 - u);
+            d -= r;
+            if (d < minpdist) minpdist = d;
+
+            for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
+                Vector3 mpoint(*itp);
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc),&u);
+                real_t r = radii->getAt(*nitc) * u + radii->getAt(*nit) * (1 - u);
+                d -= r;
+                if (d < minpdist) minpdist = d;
+            }
+        }
+        if (minpdist != REAL_MAX) {
+            sum_min_dist += minpdist;
+            nb_samples += 1;
+        }
+    }
+    return sum_min_dist / nb_samples;
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'average_distance_to_shape' disabled. ANN needed.")
+    #else
+    #warning "function 'average_distance_to_shape' disabled. ANN needed"
+    #endif
+
+    return 0;
+#endif
+}
+
+TOOLS(RealArrayPtr) PGL::distance_to_shape(const Point3ArrayPtr points, 
+                                          const Point3ArrayPtr nodes,
+                                          const TOOLS(Uint32Array1Ptr) parents,
+                                          const TOOLS(RealArrayPtr) radii,
+                                          uint32_t maxclosestnodes)
+{
+#ifdef WITH_ANN
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    uint32_t nb_nodes = nodes->size();
+    if (nb_nodes == 0) return RealArrayPtr();
+    if (maxclosestnodes >= nb_nodes) maxclosestnodes = nb_nodes;
+    uint32_t nbPoints = points->size();
+    RealArrayPtr result(new RealArray(nbPoints));
+    uint32_t pid = 0;
+    ANNKDTree3 tree(nodes);
+    ProgressStatus st(nbPoints,"distance to shape for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid, ++st)
+    {
+        real_t minpdist = REAL_MAX;
+        Index nids = tree.k_closest_points(*itp,maxclosestnodes);
+        for(Index::const_iterator nit = nids.begin(); nit != nids.end(); ++nit){
+
+            Vector3 point(*itp);
+            real_t u;
+            uint32_t parent = parents->getAt(*nit);
+            real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parent),&u);
+            real_t r = radii->getAt(parent) * u + radii->getAt(*nit) * (1 - u);
+            d = fabs(d-r);
+            if (d < minpdist) minpdist = d;
+
+            for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
+                Vector3 mpoint(*itp);
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc),&u);
+                real_t r = radii->getAt(*nitc) * u + radii->getAt(*nit) * (1 - u);
+                d = fabs(d-r);
+                if (d < minpdist) minpdist = d;
+            }
+        }
+        result->getAt(pid) = minpdist;
+    }
+    return result;
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'distance_to_shape' disabled. ANN needed.")
+    #else
+    #warning "function 'distance_to_shape' disabled. ANN needed"
+    #endif
+
+    return 0;
+#endif
+}
+
+
+inline bool distance_test ( real_t d, real_t distance, bool reversed){
+    if (reversed) return d > distance;
+    else return d < distance;
+}
+
+ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points, 
+                                                const Point3ArrayPtr nodes,
+                                                const TOOLS(Uint32Array1Ptr) parents,
+                                                real_t distance,
+                                                uint32_t maxclosestnodes)
+{
+#ifdef WITH_ANN
+    Index result;
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    uint32_t nb_nodes = nodes->size();
+    if (nb_nodes == 0) return range<Index>(0,points->size(),1);
+
+    if (maxclosestnodes >= nb_nodes) maxclosestnodes = nb_nodes;
+
+    bool reversed = false;
+    if (distance < 0) {
+        distance = - distance;
+        reversed = true;
+    }
+
+    
+    ANNKDTree3 tree(nodes);
+
+    size_t pid = 0;
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid)
+    {
+        real_t minpdist = REAL_MAX;
+        Index nids = tree.k_closest_points(*itp,maxclosestnodes);
+        bool ok = false;
+        for(Index::const_iterator nit = nids.begin(); !ok && nit != nids.end(); ++nit){
+
+            Vector3 point(*itp);
+            real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
+            if (distance_test(d, distance,reversed)) { ok = true; result.push_back(pid); continue;}
+
+            for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
+                Vector3 mpoint(*itp);
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc));
+                if (distance_test(d, distance,reversed)) { ok = true; result.push_back(pid); continue;}
+            }
+            if (ok) continue;
+        }
+    }
+    return result;
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'points_at_distance_from_skeleton' disabled. ANN needed.")
+    #else
+    #warning "function 'points_at_distance_from_skeleton' disabled. ANN needed"
+    #endif
+
+    return Index();
+#endif
+
 }
 
 TOOLS(RealArrayPtr) 
@@ -1623,7 +1923,29 @@ Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const TOOLS(U
     return Vector3(minl, maxl,suml/nbp);
 }
 
- Index PGL::detect_short_nodes(const Point3ArrayPtr nodes,
+Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const IndexArrayPtr graph)
+{
+    real_t minl  = REAL_MAX;
+    real_t maxl  = 0;
+    real_t suml  = 0;
+    uint32_t nbp = 0;
+    uint32_t pid = 0;
+    IndexArray::const_iterator itg = graph->begin();
+    for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it, ++itg, ++pid){
+        for (Index::const_iterator itnbg = itg->begin(); itnbg != itg->end(); ++itnbg){
+            if (*itnbg != pid){
+                real_t edgelength = norm(*it-points->getAt(*itnbg));
+                if (edgelength < minl) minl = edgelength;
+                if (edgelength > maxl) maxl = edgelength;
+                suml += edgelength;
+                nbp += 1;
+            }
+        }
+    }
+    return Vector3(minl, maxl,suml/nbp);
+}
+
+Index PGL::detect_short_nodes(const Point3ArrayPtr nodes,
                                const TOOLS(Uint32Array1Ptr) parents, 
                                real_t edgelengthfilter)
 {
@@ -1918,16 +2240,10 @@ PGL::detect_similar_nodes(const Point3ArrayPtr nodes,
 
     IndexArrayPreOrderConstIterator piterator(children,root);
     uint32_t nbNodes = nodes->size();
-    uint32_t cpercent = 0;
-    uint32_t current  = 0;
     std::set<uint32_t> toavoidtomergebycontinuity;
+    ProgressStatus st(nbNodes, "filtering computed for %.2f%% of nodes.");
 
-    for(; !piterator.atEnd(); ++piterator, ++current){
-        real_t ncpercent = 100 * current / float(nbNodes);
-        if(cpercent + 5 <= ncpercent ) {
-            printf("filtering computed for %.2f%% of nodes.\n",ncpercent);
-            cpercent = ncpercent;
-        }
+    for(; !piterator.atEnd(); ++piterator, ++st){
 
         const Index& pchildren = children->getAt(*piterator);
         const Vector3& rpos = nodes->getAt(*piterator);
@@ -2023,13 +2339,17 @@ void PGL::remove_nodes(const Index& toremove,
     uint32_t nbNewNodes = pid;
 
     Point3ArrayPtr newnodes(new Point3Array(*nodes));
-    RealArrayPtr newradii(new RealArray(*radii));
+
+    bool make_radii = is_valid_ptr(radii);
+    RealArrayPtr newradii;
+    if (make_radii)
+        newradii = RealArrayPtr(new RealArray(*radii));
 
     uint32_t lastdelid = UINT32_MAX;
     for(Index::const_reverse_iterator itdel2 = sortedtoremove.rbegin(); itdel2 != sortedtoremove.rend(); ++itdel2){
         if (*itdel2 != lastdelid){
             newnodes->erase(newnodes->begin()+*itdel2);
-            newradii->erase(newradii->begin()+*itdel2);
+            if (make_radii) newradii->erase(newradii->begin()+*itdel2);
             lastdelid = *itdel2;
         }
     }
@@ -2048,7 +2368,8 @@ void PGL::remove_nodes(const Index& toremove,
     delete [] idmap;
 
     nodes = newnodes;
-    radii = newradii;
+    if (make_radii)
+        radii = newradii;
     parents = newparents;
 
 }
@@ -2310,4 +2631,34 @@ RealArray2Ptr PGL::orientations_similarities(const Point3ArrayPtr orientations, 
        }
    }
    return result;
+}
+
+std::pair<Index,Index> PGL::cluster_junction_points(const IndexArrayPtr pointtoppology, const Index& _group1, const Index& _group2)
+{
+    bool sizetest = (_group1.size() >= _group2.size());
+    const Index& group1(sizetest? _group1 : _group2 );
+    const Index& group2(sizetest? _group2 : _group1 );
+
+    Index jgroup1;
+
+    pgl_hash_map<uint32_t,uint32_t> jgroup2;
+    for(Index::const_iterator it = group2.begin(); it != group2.end(); ++it)
+        jgroup2[*it] = 0;
+
+    for(Index::const_iterator it = group1.begin(); it != group1.end(); ++it){
+        const Index& inbg = pointtoppology->getAt(*it);
+        for(Index::const_iterator itnbg = inbg.begin(); itnbg != inbg.end(); ++itnbg){
+            pgl_hash_map<uint32_t,uint32_t>::iterator it2 = jgroup2.find(*itnbg);
+            if (it2 != jgroup2.end()){
+                jgroup1.push_back(*it);
+                it2->second += 1;
+            }
+        }
+    }
+
+    Index fjgroup2;
+    for(pgl_hash_map<uint32_t,uint32_t>::const_iterator it = jgroup2.begin(); it != jgroup2.end(); ++it)
+        if(it->second > 0) fjgroup2.push_back(it->first);
+
+    return std::pair<Index,Index>(jgroup1,fjgroup2);
 }

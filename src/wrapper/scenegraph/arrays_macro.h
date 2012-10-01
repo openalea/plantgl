@@ -31,6 +31,7 @@
 
 // Array Macro
 #include <plantgl/python/extract_pgl.h>
+#include <plantgl/python/extract_list.h>
 #include <boost/python/def_visitor.hpp>
 
 template<class T>
@@ -302,6 +303,26 @@ T * py_subset(T * pts, boost::python::object subsetindices){
     return subobj;
 }
 
+template <class T>
+T * py_opposite_subset(T * pts, boost::python::object subsetindices){
+    T * subobj = new T(*pts);
+    size_t nbelem = pts->size();
+    std::vector<int> csubsetindices = extract_vec<int>(subsetindices);
+    for (std::vector<int>::iterator it = csubsetindices.begin(); it != csubsetindices.end(); ++it)
+    {
+        if (*it < 0) *it += nbelem;
+        if (*it < 0 || *it >= nbelem) {
+            delete subobj;
+            throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
+        }
+    }
+    std::sort(csubsetindices.begin(), csubsetindices.end());
+
+    for(std::vector<int>::const_reverse_iterator it = csubsetindices.rbegin(); it != csubsetindices.rend(); ++it)
+        subobj->erase(subobj->begin()+*it);
+    return subobj;
+}
+
 
 #include <plantgl/tool/dirnames.h>
 #include <plantgl/tool/bfstream.h>
@@ -385,6 +406,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "split",        &py_split<ARRAY>, "Split the list into 2. Each element is tested with the split method that should return True or False" ) \
         .def( "split_indices", &py_split_indices<ARRAY>, "Split the list into 2. Return list of indices of elements of the 2 subsets. Each element is tested with the split method that should return True or False" ) \
         .def( "subset",        &py_subset<ARRAY>, "Return a subset of the list. Should gives the indices of the subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "opposite_subset",        &py_opposite_subset<ARRAY>, "Return a subset of the list. Should gives the indices that you do not want in the resulting subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
 	    .def_pickle(array_pickle_suite<ARRAY>())
         ;
     }

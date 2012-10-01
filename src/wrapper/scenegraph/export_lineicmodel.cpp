@@ -129,5 +129,5 @@ void export_Curve2D()
 
   implicitly_convertible<Curve2DPtr, PlanarModelPtr>();
 
-  def("closestPointToSegment",&seg_findclosest<Vector2>, args("point","segA","segB"));
+  def("closestPointToSegment",&seg_findclosest<Vector2>, args("point","segA","segB"),"Find the closest point from segment to a given point. Return closest point, distance, and u value of closest point on the segment");
 }

@@ -138,11 +138,14 @@ class ANNKDTreeInternal
     
     ANNpointArray __pointdata;
     ANNkd_tree __kdtree;
+    size_t __nbpoints;
 
     public:
 
         ANNKDTreeInternal(const PointContainerPtr points) : 
-            __pointdata(toANNPointArray(points)), __kdtree(__pointdata,points->size(),VectorType::size()) { }
+            __pointdata(toANNPointArray(points)), 
+                        __kdtree(__pointdata,points->size(),VectorType::size()),
+                        __nbpoints(points->size()){ }
 
         virtual ~ANNKDTreeInternal() { 
             if (__pointdata) annDeallocPts(__pointdata);
@@ -151,6 +154,8 @@ class ANNKDTreeInternal
 
         Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX) 
         {
+            if (k > __nbpoints) k = __nbpoints;
+
             /// ANN data structure for query
             ANNidxArray nn_idx = new ANNidx[k];
             ANNdistArray dists = new ANNdist[k];
@@ -179,7 +184,7 @@ class ANNKDTreeInternal
             return k_nearest_neighbors_of_kdtree_points(__kdtree,k);
         }
 
-        inline size_t size() { return __kdtree.nPoints(); }
+        inline size_t size() { return __nbpoints; }
 };
 
 

@@ -34,11 +34,16 @@
 #include "spacecolonization.h"
 #include "../base/pointmanipulation.h"
 #include <plantgl/scenegraph/container/indexarray_iterator.h>
+#include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
+/* ----------------------------------------------------------------------- */
+
 const size_t SpaceColonization::NOID(UINT32_MAX);
+
+/* ----------------------------------------------------------------------- */
 
 SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,                           
                                       real_t _nodelength,
@@ -54,12 +59,13 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     kill_radius(_kill_radius),
     perception_radius(_perception_radius),
     coneangle(GEOM_PI/2),
-    min_nb_pt(3),
+    min_nb_pt_per_bud(3),
     skeletonnodes(initialskeletonnodes), 
     skeletonparents(initialskeletonparents),
-    active_nodes(_active_nodes)
+    active_nodes(_active_nodes),
+    nbIteration(0)
 {
-    if(!is_null_ptr(skeletonnodes) && active_nodes.size() == 0)
+   if(!is_null_ptr(skeletonnodes) && active_nodes.size() == 0)
         active_nodes = range<Index>(0,skeletonnodes->size(),1);
 }
 
@@ -75,17 +81,23 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     kill_radius(_kill_radius),
     perception_radius(_perception_radius),
     coneangle(GEOM_PI/2),
-    min_nb_pt(3),
+    min_nb_pt_per_bud(3),
     skeletonnodes(), 
     skeletonparents(),
-    active_nodes()
+    active_nodes(),
+    nbIteration(0)
 {
     add_node(root);
-}
+
+    // remove closest attractors
+    attractor_grid->disable_points(attractor_grid->query_ball_point(root,kill_radius));
+ }
 
 SpaceColonization::~SpaceColonization()
 {
 }
+
+/* ----------------------------------------------------------------------- */
 
 size_t SpaceColonization::add_node(const Vector3& position, size_t parent, bool active) {
     size_t pid = 0;
@@ -109,8 +121,6 @@ size_t SpaceColonization::add_node(const Vector3& position, size_t parent, bool 
 
     if (active)  _activate_node(pid);   
 
-    // remove closest attractors
-    attractor_grid->disable_points(attractor_grid->query_ball_point(position,kill_radius));
 
     return pid;
 
@@ -171,7 +181,7 @@ bool SpaceColonization::try_to_set_bud(size_t pid, const Vector3& direction)
 {
     // find nearest attractor points in cone of perception of given radius and angle
     AttractorList neighbour_attractor_indices = attractor_grid->query_points_in_cone(node_position(pid), direction, perception_radius, coneangle);
-    if (neighbour_attractor_indices.size() >= min_nb_pt) {
+    if (neighbour_attractor_indices.size() >= min_nb_pt_per_bud) {
         // generate a bud
         add_bud(pid, direction, neighbour_attractor_indices);
         return true;
@@ -187,14 +197,45 @@ void SpaceColonization::add_bud(size_t pid, const Vector3& direction, const Attr
     register_attractors(node_position(pid), attlist);
 }
 
+void SpaceColonization::add_bud(size_t pid, const AttractorList& attractors, real_t level)
+{
+    Uint32ArrayPtr attlist(new Uint32Array1(attractors.begin(),attractors.end()));
+    budlist.push_back(Bud(pid,attlist,level));
+    register_attractors(node_position(pid), attlist);
+}
+
+void SpaceColonization::add_latent_bud(size_t pid, const AttractorList& attractors, real_t level, uint32_t latency)
+{
+    if (latency == 0) add_bud(pid, attractors, level);
+    Uint32ArrayPtr attlist(new Uint32Array1(attractors.begin(),attractors.end()));
+    latentbudlist.push_back(std::pair<Bud,uint32_t>(Bud(pid,attlist,level),latency));
+}
+
 void SpaceColonization::generate_all_buds() {
     budlist.clear();
     attractormap.clear();
+    LatentBudList previouslatentbudlist = latentbudlist;
+    latentbudlist.clear();
+
     for(Index::const_iterator it = active_nodes.begin(); it != active_nodes.end(); ++it){
         node_buds_preprocess(*it);
         generate_buds(*it);
         node_buds_postprocess(*it);
     }
+
+    if (!previouslatentbudlist.empty()) { // latent bud list is process to remove one delay step for all. If delay is zero then bud are treated as normal bud.
+        for (LatentBudList::iterator it = previouslatentbudlist.begin(); it != previouslatentbudlist.end(); ++it){
+            if (it->second <= 1) {
+                it->first.attractors = Uint32ArrayPtr(new Uint32Array1(attractor_grid->filter_disabled(*(it->first.attractors))));
+
+                budlist.push_back(it->first);
+                register_attractors(node_position(it->first.pid), it->first.attractors);
+            }
+            else latentbudlist.push_back(std::pair<Bud,uint32_t>(it->first,it->second-1));
+        }
+    }
+
+    attractormap.clear();
     active_nodes.clear();
 }
 
@@ -233,36 +274,241 @@ void SpaceColonization::register_attractors(const Vector3& pos, Uint32ArrayPtr a
         attlist->erase(attlist->begin()+*itdel);
 }
 
+void SpaceColonization::process_bud(const Bud& bud)
+{
+        Vector3 position = node_position(bud.pid);
+        Index nbg_att(bud.attractors->begin(),bud.attractors->end());
+
+        // compute new position
+        Vector3 mean_dir = pointset_mean_direction(position,attractors, nbg_att);
+        Vector3 new_position = position + mean_dir * nodelength;
+        new_position = attractors->getAt(findClosestFromSubset(new_position,attractors,nbg_att).first);
+    
+        // create new node
+        add_node(new_position,bud.pid);
+
+        // remove closest attractors
+        attractor_grid->disable_points(attractor_grid->query_ball_point(position,kill_radius));
+
+}
+
 void SpaceColonization::growth() 
 {
-    for(BudList::const_iterator itbud = budlist.begin(); itbud != budlist.end(); ++itbud)
-    {
-        if (itbud->attractors->size() > min_nb_pt){
-            Vector3 position = node_position(itbud->pid);
-            Index nbg_att(itbud->attractors->begin(),itbud->attractors->end());
-
-            // compute new position
-            Vector3 mean_dir = pointset_mean_direction(position,attractors, nbg_att);
-            Vector3 new_position = position + mean_dir * nodelength;
-            new_position = attractors->getAt(findClosestFromSubset(new_position,attractors,nbg_att).first);
-    
-            // create new node
-            add_node(new_position,itbud->pid);
+    if (!budlist.empty()){
+        size_t cparent = budlist[0].pid;
+        node_child_preprocess(cparent);
+        size_t nbactivenode = active_nodes.size();
+        for(BudList::const_iterator itbud = budlist.begin(); itbud != budlist.end(); ++itbud)
+        {
+            if(cparent != itbud->pid){
+                node_child_postprocess(cparent, Index(active_nodes.begin()+nbactivenode,active_nodes.end()));
+                size_t nbactivenode = active_nodes.size();
+                cparent = itbud->pid;
+                node_child_preprocess(cparent);
+            }
+            if (itbud->attractors->size() > min_nb_pt_per_bud){
+                process_bud(*itbud);
+            }
         }
+        node_child_postprocess(cparent, Index(active_nodes.begin()+nbactivenode,active_nodes.end()));
+        budlist.clear();
     }
-    budlist.clear();
-    attractormap.clear();
 }
 
 void SpaceColonization::step()
 {
+    StartEach();
     generate_all_buds();
     growth();
+    EndEach();
+    ++nbIteration;
 }
 void SpaceColonization::run()
 {
-    while(!active_nodes.empty())
-        step();
+    while (!atEnd()) step();
+}
+
+void SpaceColonization::iterate(size_t nbsteps)
+{
+    for(size_t i = 0; i < nbsteps & !atEnd(); ++i) step();
+}
+
+
+bool SpaceColonization::atEnd()
+{
+    return (active_nodes.empty() && latentbudlist.empty());
 }
 
 IndexArrayPtr SpaceColonization::get_children() const { uint32_t root; IndexArrayPtr ch = determine_children(skeletonparents,root); return ch; }
+
+/* ----------------------------------------------------------------------- */
+
+
+GraphColonization::GraphColonization(const Point3ArrayPtr attractors,                           
+                                               real_t perception_radius,
+                                               const IndexArrayPtr _graph,
+                                               uint32_t _root, 
+                                               real_t _powerdistance,
+                                               size_t spacetilingratio):
+    SpaceColonization(attractors,                           
+                      perception_radius, 0, perception_radius,
+                      Point3ArrayPtr(), 
+                      Uint32ArrayPtr(),  
+                      Index(), 
+                      spacetilingratio ),
+                      graph(_graph), root(_root), use_jonction_points(false), powerdistance(_powerdistance)
+
+{
+    min_nb_pt_per_bud = 0;
+     init();
+}
+
+
+GraphColonization::~GraphColonization() { }
+
+/* ----------------------------------------------------------------------- */
+
+
+
+void GraphColonization::generate_buds(size_t pid) {
+    Vector3 pos = node_position(pid);
+    Index components = node_components(pid);
+    real_t plevel = node_level(pid);
+
+    real_t level_inc =  perception_radius;
+    std::pair<IndexArrayPtr,RealArrayPtr> groups = next_quotient_points_from_adjacency_graph(plevel,level_inc, components, graph, distances_from_root);
+    size_t nbpotentialchild = groups.first->size();
+/*    size_t testedpid = 45;
+    if (pid == testedpid) {
+        printf("nbpotentialchild of %i : %i\n", testedpid, nbpotentialchild);
+    }*/
+
+    for(size_t i = 0; i < nbpotentialchild; ++i) {
+        const Index& nextcomponents = groups.first->getAt(i);
+
+     /*   if (pid == testedpid) 
+            printf("New group of %i components at level %f (from %f)\n", nextcomponents.size(), groups.second->getAt(i), plevel); */
+        
+        AttractorList nnextcomponents = attractor_grid->filter_disabled(AttractorList(nextcomponents.begin(),nextcomponents.end()));
+        if (nnextcomponents.size() >= min_nb_pt_per_bud) {
+            real_t level = groups.second->getAt(i);
+            int dist = round((level - plevel) / level_inc);
+            // printf("dist %i %f %f %f\n", dist, level, plevel, perception_radius);
+            /* if (pid == testedpid) 
+                printf("Accepted as group of %i components at delay %i\n", nnextcomponents.size(), dist); */
+
+            if (dist <= 1) add_bud(pid, nnextcomponents, level);
+            else add_latent_bud(pid, nnextcomponents, level, dist-1);
+        }
+     }
+    if (nbpotentialchild == 0 && use_jonction_points) {
+        Vector3 new_position = centroid_of_group(attractors, components);
+        uint32_t npid = add_node(new_position, plevel, components, pid, false );
+    }
+    
+}
+
+void GraphColonization::process_bud(const Bud& bud)
+{
+        Vector3 position = node_position(bud.pid);
+        Index components(bud.attractors->begin(),bud.attractors->end());
+
+        bool no_junction = false;
+        // compute new position
+        // Vector3 mean_dir = pointset_mean_direction(position,attractors, nbg_att);
+        // Vector3 new_position = position + mean_dir * nodelength;
+        // new_position = attractors->getAt(findClosestFromSubset(new_position,attractors,nbg_att).first);
+        
+        Vector3 new_position;
+        if (!use_jonction_points) new_position = centroid_of_group(attractors, components);
+        else {
+
+            Index parent_components = node_components(bud.pid);
+            std::pair<Index,Index> junctions = cluster_junction_points(graph,components,parent_components);
+
+            Index junction(junctions.first);
+            junction.insert(junction.end(), junctions.second.begin(), junctions.second.end());
+
+            // if junction is empty, it means that another group took over on the branch. To avoid missing a branch
+            // we simply use centroid.
+            if (junction.empty())  { new_position = centroid_of_group(attractors, components); no_junction = false; }
+            else  new_position = centroid_of_group(attractors, junction);
+        }
+
+        if (! no_junction){
+            // create new node
+            uint32_t pid = add_node(new_position, bud.level, components, bud.pid );
+
+            // remove closest attractors
+            attractor_grid->disable_points(bud.attractors->begin(),bud.attractors->end());
+        }
+
+      
+
+}
+
+size_t GraphColonization::add_node(const TOOLS(Vector3)& position, 
+                      real_t level,
+                      const Index& components,
+                      size_t parent, bool active)
+{
+    size_t pid = SpaceColonization::add_node(position, parent , active );
+
+    if (is_null_ptr(nodelevels))
+        nodelevels = RealArrayPtr(new RealArray(pid,0));
+    else {
+        for(size_t i = nodelevels->size(); i < pid; ++i)
+            nodelevels->push_back(0);
+    }
+
+    nodelevels->push_back(level);
+
+    if (is_null_ptr(nodecomponents))
+        nodecomponents = IndexArrayPtr(new IndexArray(pid, Index()));
+    else {
+        for(size_t i = nodecomponents->size(); i < pid; ++i)
+            nodecomponents->push_back(components);
+    }
+
+    nodecomponents->push_back(components);
+
+    return pid;
+}
+
+
+void 
+GraphColonization::init()
+{
+    std::pair<Uint32ArrayPtr,RealArrayPtr> parents_and_distances_to_root = points_dijkstra_shortest_path(attractors, graph, root, powerdistance);
+    distances_from_root = parents_and_distances_to_root.second;
+
+    real_t flevel = perception_radius;
+    Index firstgroup = points_in_range_from_root(0,flevel, distances_from_root);
+    Vector3 firstposition = centroid_of_group(attractors, firstgroup);
+    add_node(firstposition, flevel, firstgroup);
+
+    // remove closest attractors
+    attractor_grid->disable_points(firstgroup.begin(),firstgroup.end());
+}
+
+
+Index 
+GraphColonization::junction_components(size_t nid1, size_t nid2) const
+{
+    Index components1 = node_components(nid1);
+    Index components2 = node_components(nid2);
+    std::pair<Index,Index> junctions = cluster_junction_points(graph,components1,components2);
+
+    Index junction(junctions.first);
+    junction.insert(junction.end(), junctions.second.begin(), junctions.second.end());
+
+    return junction;
+
+
+}
+
+Vector3 GraphColonization::junction_point(size_t nid1, size_t nid2) const
+{
+    return centroid_of_group(attractors, junction_components(nid1,nid2));
+}
+/* ----------------------------------------------------------------------- */

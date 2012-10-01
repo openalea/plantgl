@@ -46,10 +46,44 @@ PGL_BEGIN_NAMESPACE
 
 
 class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
-
     public:
         typedef Point3Grid::PointIndexList AttractorList;
         typedef TOOLS(Uint32Array1Ptr) Uint32ArrayPtr;
+
+    protected:
+
+      void register_attractors(const TOOLS(Vector3)& pos, Uint32ArrayPtr attlist);
+
+        struct Bud {
+            size_t pid;
+            TOOLS(Vector3) direction;
+            Uint32ArrayPtr attractors;
+            real_t level;
+
+            Bud(size_t _pid, const TOOLS(Vector3)& _direction, Uint32ArrayPtr _attractors):
+                pid(_pid), direction(_direction), attractors(_attractors) {}
+
+            Bud(size_t _pid, Uint32ArrayPtr _attractors, real_t _level):
+                pid(_pid),  attractors(_attractors), level(_level){}
+        };
+
+        typedef std::vector<Bud> BudList;
+        typedef std::vector<std::pair<Bud,uint32_t> > LatentBudList;
+
+        Point3ArrayPtr attractors; 
+        Point3GridPtr attractor_grid; 
+        Point3ArrayPtr skeletonnodes; 
+        Uint32ArrayPtr skeletonparents;
+        Index active_nodes;
+
+        
+        BudList budlist;
+        LatentBudList latentbudlist;
+
+        typedef pgl_hash_map<size_t, std::pair<Uint32ArrayPtr, real_t> > AttractorMap;
+        AttractorMap attractormap;
+
+    public:
 
         static const size_t NOID;
 
@@ -87,6 +121,10 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
     bool try_to_set_bud(size_t pid, const TOOLS(Vector3)& direction);
 
     void add_bud(size_t pid, const TOOLS(Vector3)& direction, const AttractorList& attractors);
+    void add_bud(size_t pid, const AttractorList& attractors, real_t level);
+
+    void add_latent_bud(size_t pid, const AttractorList& attractors, real_t level, uint32_t latency);
+
 
     inline void activate_node(size_t nid) {
         if (find(active_nodes.begin(),active_nodes.end(), nid) == active_nodes.end())
@@ -112,11 +150,17 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
     std::vector<TOOLS(Vector3)> lateral_directions(const TOOLS(Vector3)& dir, real_t angle, int nb);
 
     virtual void generate_buds(size_t pid) ;
+    virtual void process_bud(const Bud& bud);
+
+    inline size_t nbLatentBud() const { return latentbudlist.size(); }
 
     void generate_all_buds() ;
     void growth() ;
     void step();
     void run();
+    void iterate(size_t nbsteps);
+
+    bool atEnd();
 
     const Index& get_active_nodes() const { return active_nodes; }
 
@@ -133,40 +177,76 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
     real_t kill_radius;
     real_t perception_radius;
     real_t coneangle;
-    size_t min_nb_pt;
+    size_t min_nb_pt_per_bud;
+    size_t nbIteration;
 
     virtual void node_buds_preprocess(size_t pid) { }
     virtual void node_buds_postprocess(size_t pid) { }
 
-    protected:
+    virtual void node_child_preprocess(size_t pid) { }
+    virtual void node_child_postprocess(size_t pid, const Index& children) { }
 
-   void register_attractors(const TOOLS(Vector3)& pos, Uint32ArrayPtr attlist);
+    virtual void StartEach() { }
+    virtual void EndEach()   { }
 
-        struct Bud {
-            size_t pid;
-            TOOLS(Vector3) direction;
-            Uint32ArrayPtr attractors;
-
-            Bud(size_t _pid, const TOOLS(Vector3)& _direction, Uint32ArrayPtr _attractors):
-                pid(_pid), direction(_direction), attractors(_attractors) {}
-        };
-
-        typedef std::vector<Bud> BudList;
-
-        Point3ArrayPtr attractors; 
-        Point3GridPtr attractor_grid; 
-        Point3ArrayPtr skeletonnodes; 
-        Uint32ArrayPtr skeletonparents;
-        Index active_nodes;
-
-        
-        BudList budlist;
-        typedef pgl_hash_map<size_t, std::pair<Uint32ArrayPtr, real_t> > AttractorMap;
-        AttractorMap attractormap;
 }; 
 
 
 typedef RCPtr<SpaceColonization> SpaceColonizationPtr;
+
+
+class ALGO_API GraphColonization : public SpaceColonization {
+
+    public:
+
+        GraphColonization(const Point3ArrayPtr _attractors,                           
+                               real_t perception_radius,
+                               const IndexArrayPtr graph,
+                               uint32_t root, 
+                               real_t powerdistance = 1,
+                               size_t spacetilingratio = 100);
+
+
+      virtual ~GraphColonization();
+
+      virtual void generate_buds(size_t pid) ;
+      virtual void process_bud(const Bud& bud);
+
+
+
+      IndexArrayPtr graph;
+      TOOLS(RealArrayPtr)  distances_from_root;
+      uint32_t root;
+      bool use_jonction_points;
+
+      real_t powerdistance;
+
+      IndexArrayPtr nodecomponents;
+      TOOLS(RealArrayPtr) nodelevels;
+
+      inline IndexArrayPtr get_nodecomponents() const { return nodecomponents; }
+
+      inline const real_t node_level(size_t pid) const {
+        return nodelevels->getAt(pid);
+      }
+
+      inline const Index& node_components(size_t pid) const {
+        return nodecomponents->getAt(pid);
+      }
+
+      size_t add_node(const TOOLS(Vector3)& position, 
+                      real_t level,
+                      const Index& components,
+                      size_t parent = SpaceColonization::NOID, bool active = true);
+
+      Index junction_components(size_t nid1, size_t nid2) const;
+      TOOLS(Vector3) junction_point(size_t nid1, size_t nid2) const;
+
+    protected:
+        void init();
+};
+
+typedef RCPtr<GraphColonization> GraphColonizationPtr;
 
 PGL_END_NAMESPACE
 

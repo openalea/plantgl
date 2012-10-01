@@ -40,7 +40,7 @@ using namespace boost::python;
 using namespace std;
 #define bp boost::python
 
-#define INHERIT_SIMPLE_FUNC(funcname) \
+#define INHERIT_SIMPLE_FUNC1(base, funcname) \
         virtual void funcname(size_t pid) \
         {  \
           if(bp::override f = this->get_override(#funcname)) \
@@ -49,7 +49,19 @@ using namespace std;
 	    } \
         void default_##funcname(size_t pid) \
         { \
-	      SpaceColonization::funcname(pid); \
+	      base::funcname(pid); \
+	    } \
+
+#define INHERIT_SIMPLE_FUNC0(base, funcname) \
+        virtual void funcname() \
+        {  \
+          if(bp::override f = this->get_override(#funcname)) \
+		    bp::call<void>(f.ptr()); \
+          else return default_##funcname(); \
+	    } \
+        void default_##funcname() \
+        { \
+	      base::funcname(); \
 	    } \
 
 class PySpaceColonization : public SpaceColonization, public bp::wrapper<SpaceColonization>
@@ -75,9 +87,11 @@ public:
             SpaceColonization(_attractors,nodelength, kill_radius, perception_radius, rootnode, spacetilingratio),
                 bp::wrapper<SpaceColonization>() { }
 
-            INHERIT_SIMPLE_FUNC(generate_buds);
-            INHERIT_SIMPLE_FUNC(node_buds_preprocess);
-            INHERIT_SIMPLE_FUNC(node_buds_postprocess);
+            INHERIT_SIMPLE_FUNC1(SpaceColonization,generate_buds);
+            INHERIT_SIMPLE_FUNC1(SpaceColonization,node_buds_preprocess);
+            INHERIT_SIMPLE_FUNC1(SpaceColonization,node_buds_postprocess);
+            INHERIT_SIMPLE_FUNC0(SpaceColonization,StartEach);
+            INHERIT_SIMPLE_FUNC0(SpaceColonization,EndEach);
 
 
     void py_add_bud(size_t pid, const TOOLS(Vector3)& direction, const Index& attractors){
@@ -90,8 +104,66 @@ public:
 
 };
 
-
 typedef RCPtr<PySpaceColonization> PySpaceColonizationPtr;
+
+
+class PyGraphColonization : public GraphColonization, public bp::wrapper<GraphColonization>
+{
+public:
+
+        PyGraphColonization(const Point3ArrayPtr attractors,                           
+                                  real_t perception_radius,
+                                  const IndexArrayPtr graph, 
+                                  uint32_t root, 
+                                  real_t powerdistance = 1,
+                                  size_t spacetilingratio = 100):
+            GraphColonization(attractors, perception_radius, graph, root,powerdistance, spacetilingratio),
+                bp::wrapper<GraphColonization>() { }
+
+            INHERIT_SIMPLE_FUNC1(GraphColonization,generate_buds);
+            INHERIT_SIMPLE_FUNC1(SpaceColonization,node_buds_preprocess);
+            INHERIT_SIMPLE_FUNC1(SpaceColonization,node_buds_postprocess);
+            INHERIT_SIMPLE_FUNC0(SpaceColonization,StartEach);
+            INHERIT_SIMPLE_FUNC0(SpaceColonization,EndEach);
+
+    void py_add_bud(size_t pid, const Index& attractors, real_t level){
+        add_bud(pid, AttractorList(attractors.begin(),attractors.end()),level);
+    }
+};
+
+
+typedef RCPtr<PyGraphColonization> PyGraphColonizationPtr;
+
+#define BASESCA(CLASS) \
+        .def("run",&CLASS::run, "Apply as many steps as it can") \
+        .def("iterate",&CLASS::iterate, args("nbsteps"), "Apply a given number of steps.") \
+        .def("step",&CLASS::step, "First generate all buds, and then grow them") \
+        .def("growth",&CLASS::growth, "Growth the current bud") \
+        .def("generate_all_buds",&CLASS::generate_all_buds) \
+        .add_property("nodes",&CLASS::get_nodes) \
+        .add_property("parents",&CLASS::get_parents) \
+        .def("get_children",&CLASS::get_children) \
+        .def("active_nodes",&CLASS::get_active_nodes,return_value_policy<return_by_value>()) \
+        .def("activate_node",&CLASS::activate_node) \
+        .def("activate_all",&CLASS::activate_all) \
+        .def("activate_leaves",&CLASS::activate_leaves) \
+        .def("desactivate_node",&CLASS::desactivate_node) \
+        .add_property("grid",&CLASS::get_grid) \
+        .def("try_to_set_bud", &CLASS::try_to_set_bud) \
+        .def("node_position", &CLASS::node_position,return_value_policy<return_by_value>()) \
+        .def("node_direction", &CLASS::node_direction) \
+        .def("generate_buds", &CLASS::generate_buds, &Py##CLASS::default_generate_buds) \
+        .def("node_buds_preprocess", &CLASS::node_buds_preprocess, &Py##CLASS::default_node_buds_preprocess) \
+        .def("node_buds_postprocess", &CLASS::node_buds_postprocess, &Py##CLASS::default_node_buds_postprocess) \
+        .def("StartEach", &CLASS::StartEach, &Py##CLASS::default_StartEach) \
+        .def("EndEach", &CLASS::EndEach, &Py##CLASS::default_EndEach) \
+        .def("nbLatentBud", &CLASS::nbLatentBud) \
+        .def_readwrite("nodelength",&CLASS::nodelength)  \
+        .def_readwrite("kill_radius",&CLASS::kill_radius) \
+        .def_readwrite("perception_radius",&CLASS::perception_radius) \
+        .def_readwrite("coneangle",&SpaceColonization::coneangle) \
+        .def_readwrite("min_nb_pt_per_bud_per_bud",&CLASS::min_nb_pt_per_bud) \
+        .def("setLengths", &CLASS::setLengths,(bp::arg("node_length"),bp::arg("kill_radius_ratio") = 0.9,bp::arg("perception_radius_ratio") = 2.0))
 
 void export_SpaceColonization()
 {
@@ -101,38 +173,33 @@ void export_SpaceColonization()
                            bp::arg("initialskeletonparent")=Uint32Array1Ptr(0),bp::arg("active")=Index(),bp::arg("spacetilingratio")=100) ))
         .def(init<Point3ArrayPtr, real_t , real_t , real_t , Vector3, size_t >("Construct a SpaceColonization.",
                           (bp::arg("attractors"),bp::arg("nodelength"),bp::arg("kill_radius"),bp::arg("perception_radius"),bp::arg("rootnode"),bp::arg("spacetilingratio")=100) ))
-        .def("run",&SpaceColonization::run, "Apply as many step as it can")
-        .def("step",&SpaceColonization::step, "First generate all buds, and then grow them")
-        .def("growth",&SpaceColonization::growth, "Growth the current bud")
-        .def("generate_all_buds",&SpaceColonization::generate_all_buds)
-        .add_property("nodes",&SpaceColonization::get_nodes)
-        .add_property("parents",&SpaceColonization::get_parents)
-        .def("get_children",&SpaceColonization::get_children)
+        BASESCA(SpaceColonization)
         .def("add_node",&SpaceColonization::add_node,(bp::arg("position"),bp::arg("parent")=SpaceColonization::NOID,bp::arg("active")=true))
-        .def("active_nodes",&SpaceColonization::get_active_nodes,return_value_policy<return_by_value>())
-        .def("activate_node",&SpaceColonization::activate_node)
-        .def("activate_all",&SpaceColonization::activate_all)
-        .def("activate_leaves",&SpaceColonization::activate_leaves)
-        .def("desactivate_node",&SpaceColonization::desactivate_node)
-        .add_property("grid",&SpaceColonization::get_grid)
         .def("add_bud", &PySpaceColonization::py_add_bud)
-        .def("try_to_set_bud", &SpaceColonization::try_to_set_bud)
-        .def("node_position", &SpaceColonization::node_position,return_value_policy<return_by_value>())
-        .def("node_direction", &SpaceColonization::node_direction)
-        .def("generate_buds", &SpaceColonization::generate_buds, &PySpaceColonization::default_generate_buds)
-        .def("node_buds_preprocess", &SpaceColonization::node_buds_preprocess, &PySpaceColonization::default_node_buds_preprocess)
-        .def("node_buds_postprocess", &SpaceColonization::node_buds_postprocess, &PySpaceColonization::default_node_buds_postprocess)
         .def("lateral_directions", &PySpaceColonization::py_lateral_directions)
-        
-        .add_property("nodelength",make_getter(&SpaceColonization::nodelength),make_setter(&SpaceColonization::nodelength))
-        .add_property("kill_radius",make_getter(&SpaceColonization::kill_radius),make_setter(&SpaceColonization::kill_radius))
-        .add_property("perception_radius",make_getter(&SpaceColonization::perception_radius),make_setter(&SpaceColonization::perception_radius))
-        .add_property("coneangle",make_getter(&SpaceColonization::coneangle),make_setter(&SpaceColonization::coneangle))
-        .add_property("min_nb_pt_per_bud",make_getter(&SpaceColonization::min_nb_pt),make_setter(&SpaceColonization::min_nb_pt))
-        .def("setLengths", &SpaceColonization::setLengths,(bp::arg("node_length"),bp::arg("kill_radius_ratio") = 0.9,bp::arg("perception_radius_ratio") = 2.0))
 
         ;
       
       implicitly_convertible< SpaceColonizationPtr, RefCountObjectPtr >();
+
+
+      class_< PyGraphColonization, PyGraphColonizationPtr, boost::noncopyable > 
+        ("GraphColonization", init<Point3ArrayPtr, real_t , const IndexArrayPtr, uint32_t, optional<real_t, size_t> >("Construct a GraphColonization.",
+                             bp::args("attractors","perception_radius","graph","root","powerdistance","spacetilingratio") ))
+        BASESCA(GraphColonization)
+        .def_readwrite("graph",&GraphColonization::graph)
+        .def_readwrite("use_jonction_points",&GraphColonization::use_jonction_points)
+        .def_readwrite("distances_from_root",&GraphColonization::distances_from_root)
+        .def_readwrite("root",&GraphColonization::root)
+        .add_property("nodecomponents",&GraphColonization::get_nodecomponents,make_setter(&GraphColonization::nodecomponents))
+        .def_readwrite("nodelevels",&GraphColonization::nodelevels)
+        .def_readwrite("nodelevels",&GraphColonization::nodelevels)
+        .def("add_node",&GraphColonization::add_node,(bp::arg("position"),bp::arg("level"),bp::arg("components"),bp::arg("parent")=SpaceColonization::NOID,bp::arg("active")=true))
+        .def("node_level",&GraphColonization::node_level,(bp::arg("pid")))
+        .def("node_components",&GraphColonization::node_components,(bp::arg("pid")),return_value_policy<return_by_value>())
+        .def("add_bud",&PyGraphColonization::py_add_bud,(bp::arg("pid"),bp::arg("attractors"),bp::arg("level")))
+        .def("junction_components",&GraphColonization::junction_components,(bp::arg("nodeid1"),bp::arg("nodeid2")))
+        .def("junction_point",&GraphColonization::junction_point,(bp::arg("nodeid1"),bp::arg("nodeid2")))
+        ;
 }
 

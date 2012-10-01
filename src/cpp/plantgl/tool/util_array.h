@@ -264,6 +264,9 @@ public:
   /** push back \e t to \e self. */
   void push_back( const T& t ) { __A.push_back(t); }
 
+  template <class InputIterator>
+  void push_back( InputIterator first, InputIterator last  ) { __A.push_back(first, last); }
+
   /** increase \e self capacity to size.
       */
   void reserve( uint_t size ) {
