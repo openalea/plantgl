@@ -40,33 +40,33 @@
 /* ----------------------------------------------------------------------- */
 
 template<class T, 
-	 template < typename > class extractor_t = boost::python::extract, 
-	 class result_type = std::vector<T> >
+    template < typename > class extractor_t = boost::python::extract, 
+    class result_type = std::vector<T> >
 struct extract_vec {
 
-	typedef T element_type;
-	typedef extractor_t<T> extractor_type;
+    typedef T element_type;
+    typedef extractor_t<T> extractor_type;
 
-	extract_vec(boost::python::object _pylist):pylist(_pylist) {}
-	boost::python::object pylist;
+    extract_vec(boost::python::object _pylist):pylist(_pylist) {}
+    boost::python::object pylist;
 
-	result_type extract() const {
-		result_type result;
+    result_type extract() const {
+        result_type result;
         if (pylist.ptr() == Py_None) return result;
-		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
-		while( true )
-		{
-			boost::python::object obj; 
-			try {  obj = iter_obj.attr( "next" )(); }
-			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-			element_type val = extractor_type( obj )();
-			result.push_back( val );
-		}
-		return result;
-	}
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+        while( true )
+          {
+            boost::python::object obj; 
+            try {  obj = iter_obj.attr( "next" )(); }
+            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+            element_type val = extractor_type( obj )();
+            result.push_back( val );
+          }
+        return result;
+    }
 
-	inline result_type operator()() const { return extract(); }
-	inline operator result_type () const { return extract(); }
+    inline result_type operator()() const { return extract(); }
+    inline operator result_type () const { return extract(); }
 };
 
 /* ----------------------------------------------------------------------- */

@@ -58,7 +58,7 @@ static boost::python::object list_convert(Iterator beg, Iterator end)  {
 
 template <class T, class Translator = make_object<typename T::value_type> >
 struct list_converter {
-	typedef T list_type;
+    typedef T list_type;
     typedef typename T::const_iterator list_const_iterator;
     typedef typename T::value_type list_element_type;
 
@@ -71,9 +71,9 @@ struct list_converter {
             __c_list_begin(c_list_begin),__c_list_end(c_list_end){}
 
 
-	inline boost::python::object convert() const { return list_convert<list_const_iterator,Translator>(__c_list_begin,__c_list_end); }
-	inline boost::python::object operator()() const { return convert(); }
-	inline operator boost::python::object () const { return convert(); }
+    inline boost::python::object convert() const { return list_convert<list_const_iterator,Translator>(__c_list_begin,__c_list_end); }
+    inline boost::python::object operator()() const { return convert(); }
+    inline operator boost::python::object () const { return convert(); }
 };
 
 template <class T, class Translator>

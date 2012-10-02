@@ -36,6 +36,9 @@
 #include <sstream>
 
 template<class T>
+boost::python::object array2_getrow( T * array, size_t i);
+
+template<class T>
 RCPtr<T> extract_array2_from_list( boost::python::object l )
 {
   if (l.ptr() == Py_None) return RCPtr<T>();
@@ -250,7 +253,7 @@ size_t array2_colsize( T * a )
 
 template<class T>
 boost::python::object array2_sizes( T * a )
-{  return make_tuple(a->getRowNb(),a->getColumnNb()); }
+{  return boost::python::make_tuple(a->getRowNb(),a->getColumnNb()); }
 
 template<class T>
 size_t array2_size( T * a )

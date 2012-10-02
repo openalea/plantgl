@@ -278,7 +278,7 @@ public:
 
 
         // Index coord = mincoord;
-        const_partial_iterator itvoxel = getSubArray(begmaxradius,dim);
+        const_partial_iterator itvoxel = this->getSubArray(begmaxradius,dim);
         while(!itvoxel.atEnd()){
             CellId vxlid = itvoxel.cellId();
             // Check whether coord is not in min box

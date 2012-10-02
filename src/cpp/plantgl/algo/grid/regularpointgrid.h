@@ -222,66 +222,66 @@ public:
     }
 
     bool closest_point(const VectorType& point, PointIndex& result, real_t maxdist = REAL_MAX) const{
-        Index centervxl = indexFromPoint(point);
-		real_t radius = maxdist;
-		Index maxindexdist = SpatialBase::getMaxIndexDistanceToBorder(centervxl);
+        Index centervxl = this->indexFromPoint(point);
+        real_t radius = maxdist;
+        Index maxindexdist = SpatialBase::getMaxIndexDistanceToBorder(centervxl);
         if (maxdist < REAL_MAX){
-		    for (size_t i = 0; i < NbDimension; ++i){
+            for (size_t i = 0; i < NbDimension; ++i){
                 real_t maxinddist = std::max<real_t>(1,maxdist / SpatialBase::__voxelsize[i]);
                 if (real_t(maxindexdist[i]) > maxinddist)
-			        maxindexdist[i] =  size_t(maxinddist);
+                    maxindexdist[i] =  size_t(maxinddist);
             }
         }
-		size_t maxiter = *maxindexdist.getMax();
-		size_t iter = 0;
+        size_t maxiter = *maxindexdist.getMax();
+        size_t iter = 0;
 
         while (radius == maxdist && iter < maxiter){
-			// iter throught box layers of voxels
-			VoxelIdList voxelids = query_voxels_in_box(centervxl,Index(iter),Index(iter));
+            // iter throught box layers of voxels
+            VoxelIdList voxelids = this->query_voxels_in_box(centervxl,Index(iter),Index(iter));
             for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin(); 
-					itVoxel != voxelids.end(); ++itVoxel){
-				// iter throught points
-				const PointIndexList& voxelpointlist = getVoxelPointIndices(*itVoxel);
-				for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); 
-						itPointIndex != voxelpointlist.end(); ++itPointIndex){
-					// Find closest point in voxel
-					real_t dist = norm(points().getAt(*itPointIndex)-point);
-					if (dist < radius){
-						radius = dist;
-						result = *itPointIndex;
-					}
-				}
-			}
-			if (radius < maxdist){
-				VectorType borderdist = SpatialBase::getVoxelSize()/2 - abs(point-SpatialBase::getVoxelCenter(centervxl));
-				real_t initialvoxelenclosedballradius = *(borderdist.getMin());
-				// check what is the enclosed ball by the box and if point is inside
-				real_t enclosedballradius = (*SpatialBase::getVoxelSize().getMin()*iter)+initialvoxelenclosedballradius;
-				if (radius > enclosedballradius){
-					// other points not in the box but in the sphere can be closer
-					VoxelIdList voxels = query_voxels_around_point(point,radius,enclosedballradius);
-					for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); 
-						itvoxel != voxels.end(); ++itvoxel){
-						const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
-						if(!voxelpointlist.empty()){
-							for(typename PointIndexList::const_iterator itPointIndex = 
-								voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); 
-								++itPointIndex){
-									// Find closest point in voxel
-									real_t dist = norm(points().getAt(*itPointIndex)-point);
-									if (dist < radius){
-										radius = dist;
-										result = *itPointIndex;
-									}
-							}
-						}
-					}
-				}
-			}
-			iter += 1;
-		}
-		return radius < maxdist;
-	}
+                itVoxel != voxelids.end(); ++itVoxel){
+                // iter throught points
+                const PointIndexList& voxelpointlist = getVoxelPointIndices(*itVoxel);
+                for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); 
+                    itPointIndex != voxelpointlist.end(); ++itPointIndex){
+                    // Find closest point in voxel
+                    real_t dist = norm(points().getAt(*itPointIndex)-point);
+                    if (dist < radius){
+                        radius = dist;
+                        result = *itPointIndex;
+                    }
+                }
+            }
+            if (radius < maxdist){
+                VectorType borderdist = SpatialBase::getVoxelSize()/2 - abs(point-SpatialBase::getVoxelCenter(centervxl));
+                real_t initialvoxelenclosedballradius = *(borderdist.getMin());
+                // check what is the enclosed ball by the box and if point is inside
+                real_t enclosedballradius = (*SpatialBase::getVoxelSize().getMin()*iter)+initialvoxelenclosedballradius;
+                if (radius > enclosedballradius){
+                    // other points not in the box but in the sphere can be closer
+                    VoxelIdList voxels = this->query_voxels_around_point(point,radius,enclosedballradius);
+                    for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); 
+                        itvoxel != voxels.end(); ++itvoxel){
+                        const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
+                        if(!voxelpointlist.empty()){
+                            for(typename PointIndexList::const_iterator itPointIndex = 
+                                voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); 
+                                ++itPointIndex){
+                                // Find closest point in voxel
+                                real_t dist = norm(points().getAt(*itPointIndex)-point);
+                                if (dist < radius){
+                                    radius = dist;
+                                    result = *itPointIndex;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            iter += 1;
+        }
+        return radius < maxdist;
+    }
 
 
     bool disable_point(PointIndex pid) {
@@ -294,7 +294,7 @@ public:
 
     bool enable_point(PointIndex pid) {
         VectorType point = points().getAt(pid);
-        PointIndexList& voxelpointlist = getAt(cellIdFromPoint(point));
+        PointIndexList& voxelpointlist = this->getAt(this->cellIdFromPoint(point));
         typename PointIndexList::const_iterator itPointIndex = std::find(voxelpointlist.begin(),voxelpointlist.end(),pid);
         if (itPointIndex == voxelpointlist.end()) { voxelpointlist.push_back(pid); return true; }
         return false;
@@ -371,21 +371,21 @@ public:
 
     template<class Array>
     Array filter_disabled(const Array& pointlist) const {
-		Array result;
+        Array result;
         for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
-				if(is_point_enabled(*itp)) result.push_back(*itp);
+            if(is_point_enabled(*itp)) result.push_back(*itp);
         }
-		return result; 
-	}
+        return result; 
+    }
 
     template<class Array>
     Array filter_enabled(const Array& pointlist) const {
-		Array result;
+        Array result;
         for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
-				if(!is_point_enabled(*itp)) result.push_back(*itp);
+            if(!is_point_enabled(*itp)) result.push_back(*itp);
         }
-		return result; 
-	}
+        return result; 
+    }
 
     size_t nbFilledVoxels() const {
         size_t count = 0;

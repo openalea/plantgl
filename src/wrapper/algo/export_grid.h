@@ -37,7 +37,7 @@
 
 /* ----------------------------------------------------------------------- */
 
- PGL_USING_NAMESPACE
+PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
 #define bp boost::python
@@ -161,12 +161,12 @@ object py_getDimensions(PointGrid * grid){
 
 template<class PointGrid>
 object py_filter_enabled(PointGrid * grid, boost::python::object vidlist){
-	 return make_list(grid->filter_enabled(extract_vec<typename PointGrid::PointIndex>(vidlist)))();
+	 return make_list(grid->filter_enabled(extract_vec<typename PointGrid::PointIndex>(vidlist)()))();
 }
 
 template<class PointGrid>
 object py_filter_disabled(PointGrid * grid, boost::python::object vidlist){
-	 return make_list(grid->filter_disabled(extract_vec<typename PointGrid::PointIndex>(vidlist)))();
+	 return make_list(grid->filter_disabled(extract_vec<typename PointGrid::PointIndex>(vidlist)()))();
 }
 
 

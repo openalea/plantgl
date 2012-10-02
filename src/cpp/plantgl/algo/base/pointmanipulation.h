@@ -436,7 +436,8 @@ ALGO_API inline void remove_nodes(const Index& toremove,
                            Point3ArrayPtr& nodes,
                            TOOLS(Uint32Array1Ptr)& parents)
 {
-    remove_nodes(toremove, nodes, parents, TOOLS(RealArrayPtr(0)));
+    TOOLS(RealArrayPtr) radii(0);
+    remove_nodes(toremove, nodes, parents, radii);
 }
 
 // determine nodes to filter
