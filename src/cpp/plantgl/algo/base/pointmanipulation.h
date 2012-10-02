@@ -430,7 +430,14 @@ ALGO_API Index detect_short_nodes(const Point3ArrayPtr nodes,
 ALGO_API void remove_nodes(const Index& toremove,
                            Point3ArrayPtr& nodes,
                            TOOLS(Uint32Array1Ptr)& parents, 
-                           TOOLS(RealArrayPtr)& radii = TOOLS(RealArrayPtr(0)));
+                           TOOLS(RealArrayPtr)& radii);
+
+ALGO_API inline void remove_nodes(const Index& toremove,
+                           Point3ArrayPtr& nodes,
+                           TOOLS(Uint32Array1Ptr)& parents)
+{
+    remove_nodes(toremove, nodes, parents, TOOLS(RealArrayPtr(0)));
+}
 
 // determine nodes to filter
 ALGO_API IndexArrayPtr detect_similar_nodes(const Point3ArrayPtr nodes,

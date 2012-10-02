@@ -46,7 +46,7 @@ class MPFR:
             cgalroot = os.environ['CGALROOT']
             self._default['include'] = pj(cgalroot,'auxiliary','gmp','include')
             self._default['libpath'] = pj(cgalroot,'auxiliary','gmp','lib')
-            self._default['libs'] = 'mpfr-vc80-mt'            
+            self._default['libs'] = 'libmpfr-4'            
          except:
             try:
                import openalea.config as conf
@@ -106,9 +106,10 @@ class MPFR:
       """ Update the environment with specific flags """
       if env['WITH_MPFR'] :
         mpfr_inc = env['mpfr_includes']
-        if type(mpfr_inc) == str:
-          mpfr_inc = mpfr_inc.split()
-        mpfr_inc = mpfr_inc[0]
+        # if type(mpfr_inc) == str:
+          # mpfr_inc = mpfr_inc.split()
+        # mpfr_inc = mpfr_inc[0]
+        print 'Check',os.path.join(mpfr_inc,'mpfr.h'),os.path.exists(os.path.join(mpfr_inc,'mpfr.h'))
         if not os.path.exists(os.path.join(mpfr_inc,'mpfr.h')):
           import warnings
           warnings.warn("Error: MPFR headers not found. MPFR disabled ...")
