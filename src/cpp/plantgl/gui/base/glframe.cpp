@@ -191,7 +191,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __selectionRect(0),
   __useOcclusionQuery(false),
   __pixelbuffer(0),
-  __usePBuffer(false),
+  __usePBuffer(true),
   __pBufferActivated(false),
   __redrawEnabled(true),
   __timer(this)
@@ -564,7 +564,7 @@ ViewGLFrame::clearSelection()
 void ViewGLFrame::activatePBuffer(bool b){
 	static bool PBufferSupport = QGLPixelBuffer::hasOpenGLPbuffers();
 	if(PBufferSupport && __usePBuffer) __pBufferActivated = b;
-	printf("activated pixel buffer : %i\n",__pBufferActivated);	
+	// printf("activated pixel buffer : %i\n",__pBufferActivated);	
     if(__pBufferActivated) {
 	  if (!__pixelbuffer || __pixelbuffer->size() != size()){
 		  if(__pixelbuffer) delete __pixelbuffer;

@@ -206,6 +206,22 @@ pointset_orientation(const Point3ArrayPtr points, const Index& group);
 ALGO_API Point3ArrayPtr 
 pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups);
 
+ALGO_API TOOLS(Vector3) 
+pointset_normal(const Point3ArrayPtr points, const Index& group);
+
+ALGO_API Point3ArrayPtr 
+pointsets_normals(const Point3ArrayPtr points, const IndexArrayPtr groups);
+
+
+ALGO_API Point3ArrayPtr 
+pointsets_orient_normals(const Point3ArrayPtr normals, const Point3ArrayPtr points, const IndexArrayPtr riemanian);
+
+
+ALGO_API Point3ArrayPtr 
+pointsets_orient_normals(const Point3ArrayPtr normals, uint32_t source, const IndexArrayPtr riemanian);
+
+
+
 struct CurvatureInfo {
     TOOLS(Vector3) origin;
     TOOLS(Vector3) maximal_principal_direction;
@@ -474,6 +490,10 @@ ALGO_API TOOLS(RealArray2Ptr) orientations_similarities(const Point3ArrayPtr ori
 
 // compute the points that make the junction of the two group
 ALGO_API std::pair<Index,Index> cluster_junction_points(const IndexArrayPtr pointtoppology, const Index& group1, const Index& group2);
+
+
+// from Tagliasacchi 2009
+ALGO_API TOOLS(Vector3) section_normal(const Point3ArrayPtr pointnormals, const Index& section);
 
 PGL_END_NAMESPACE
 

@@ -258,6 +258,8 @@ void export_PointManip()
 #ifdef WITH_CGAL
     def("pointset_orientation",&pointset_orientation,args("points","group"));
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
+    def("pointset_normal",&pointset_normal,(bp::arg("points"),bp::arg("groups")));
+    def("pointsets_normals",&pointsets_normals,(bp::arg("points"),bp::arg("groups")));
 
 #ifdef WITH_LAPACK
     def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4),
@@ -266,10 +268,13 @@ void export_PointManip()
     def("principal_curvatures",&py_principal_curvatures_2,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));
 #endif
 #endif
+    def("pointsets_orient_normals",(Point3ArrayPtr (*)(const Point3ArrayPtr, const Point3ArrayPtr, const IndexArrayPtr ))&pointsets_orient_normals,(bp::arg("normals"),bp::arg("points"),bp::arg("adjacencies")));
+    def("pointsets_orient_normals",(Point3ArrayPtr (*)(const Point3ArrayPtr, uint32_t, const IndexArrayPtr ))&pointsets_orient_normals,(bp::arg("normals"),bp::arg("source"),bp::arg("adjacencies")));
 
     def("point_section",(Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const TOOLS(Vector3)&, real_t))         &point_section,args("pid","points","adjacencies","direction","width"));
     def("point_section",(Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const TOOLS(Vector3)&, real_t, real_t)) &point_section,args("pid","points","adjacencies","direction","width","maxradius"));
     def("points_sections",&points_sections,args("points","adjacencies","directions","width"));
+    def("section_normal",&section_normal,args("pointnormals","section"));
     
     def("pointset_circle",&py_estimate_pointset_circle,(bp::arg("points"),bp::arg("group"),bp::arg("direction")=bp::object(),bp::arg("bounding")=false));
     def("pointsets_circles",&py_estimate_pointsets_circles,(arg("points"),bp::arg("groups"),bp::arg("directions")=Point3ArrayPtr(0),bp::arg("bounding")=false));

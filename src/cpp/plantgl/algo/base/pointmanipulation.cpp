@@ -31,6 +31,7 @@
 
 
 #include "pointmanipulation.h"
+#include <plantgl/scenegraph/container/indexarray_iterator.h>
 #include <stdio.h>
 
 PGL_USING_NAMESPACE
@@ -89,26 +90,7 @@ protected:
 #include <CGAL/Delaunay_triangulation_3.h>
 // #include <CGAL/Triangulation_3.h>
 
-typedef CGAL::Exact_predicates_inexact_constructions_kernel         TK;
-typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK>   TVb;
-typedef CGAL::Triangulation_data_structure_3<TVb>                    Tds;
-
-typedef CGAL::Delaunay_triangulation_3<TK, Tds>                      Triangulation;
-// typedef CGAL::Triangulation_3<K,Tds>      Triangulation;
-
-
-typedef Triangulation::Cell_handle    TCell_handle;
-typedef Triangulation::Vertex_handle  TVertex_handle;
-typedef Triangulation::Locate_type    TLocate_type;
-typedef Triangulation::Point          TPoint;
-typedef Triangulation::Segment        TSegment;
-
-
-template<class CGALPoint>
-inline CGALPoint toPoint(const Vector3& v) { return CGALPoint(v.x(),v.y(),v.z()); }
-
-template<class CGALPoint>
-inline Vector3 toVector3(const CGALPoint& v) { return Vector3(v.x(),v.y(),v.z()); }
+#include "cgalwrap.h"
 
 #endif
 
@@ -120,10 +102,25 @@ IndexArrayPtr
 PGL::delaunay_point_connection(const Point3ArrayPtr points)
 {
 #ifdef WITH_CGAL
+
+    typedef CGAL::Exact_predicates_inexact_constructions_kernel         TK;
+    typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK>   TVb;
+    typedef CGAL::Triangulation_data_structure_3<TVb>                    Tds;
+
+    typedef CGAL::Delaunay_triangulation_3<TK, Tds>                      Triangulation;
+    // typedef CGAL::Triangulation_3<K,Tds>      Triangulation;
+
+
+    typedef Triangulation::Cell_handle    TCell_handle;
+    typedef Triangulation::Vertex_handle  TVertex_handle;
+    typedef Triangulation::Locate_type    TLocate_type;
+    typedef Triangulation::Point          TPoint;
+    typedef Triangulation::Segment        TSegment;
+
     Triangulation triangulation;
     uint32_t pointCount = 0;
     for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it)
-        triangulation.insert(toPoint<TPoint>(*it))->info() = pointCount++;
+        triangulation.insert(toPoint3<TPoint>(*it))->info() = pointCount++;
 
 
     IndexArrayPtr result(new IndexArray(points->size(),Index()));
@@ -199,10 +196,6 @@ PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symme
 
 #ifdef WITH_CGAL
 #include <CGAL/Cartesian.h>
-
-typedef CGAL::Cartesian<double>   CK;
-typedef CK::Point_3               CPoint;
-typedef boost::tuple<CPoint,int>  CPoint_and_int;
 #endif
 /*
 //definition of the property map
@@ -717,17 +710,19 @@ PGL::densities_from_k_neighborhood(const Point3ArrayPtr points,
 
 #ifdef WITH_CGAL
 #include <CGAL/linear_least_squares_fitting_3.h>
-
-typedef CK::Line_3                CLine;
 #endif
 
 Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index& group )
 {
 #ifdef WITH_CGAL
+    typedef CGAL::Cartesian<real_t>   CK;
+    typedef CK::Point_3               CPoint;
+    typedef CK::Line_3                CLine;
+
 	std::list<CPoint> pointdata;
 	// for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
 	for (Index::const_iterator it = group.begin(); it != group.end() ; ++it)
-		pointdata.push_back(toPoint<CPoint>(points->getAt(*it)));
+		pointdata.push_back(toPoint3<CPoint>(points->getAt(*it)));
 
 	CLine line;
 	linear_least_squares_fitting_3(pointdata.begin(), pointdata.end(), line, CGAL::Dimension_tag<0>());
@@ -760,12 +755,6 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
 #ifdef WITH_CGAL
 #include <CGAL/Cartesian.h>
 #include <CGAL/Monge_via_jet_fitting.h>
-
-typedef CGAL::Cartesian<real_t>  Data_Kernel;
-typedef Data_Kernel::Point_3     DPoint;
-typedef CGAL::Monge_via_jet_fitting<Data_Kernel> My_Monge_via_jet_fitting;
-typedef My_Monge_via_jet_fitting::Monge_form     My_Monge_form;
-
 #endif
 
 
@@ -776,12 +765,16 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
 #ifdef WITH_CGAL
 #ifdef WITH_LAPACK
 
+        typedef CGAL::Cartesian<real_t>  Data_Kernel;
+        typedef Data_Kernel::Point_3     DPoint;
+        typedef CGAL::Monge_via_jet_fitting<Data_Kernel> My_Monge_via_jet_fitting;
+        typedef My_Monge_via_jet_fitting::Monge_form     My_Monge_form;
 
       std::vector<DPoint> in_points;
-      in_points.push_back(toPoint<DPoint>(points->getAt(pid)));
+      in_points.push_back(toPoint3<DPoint>(points->getAt(pid)));
 
       for(Index::const_iterator itNg = group.begin(); itNg != group.end(); ++itNg)
-          if (*itNg != pid) in_points.push_back(toPoint<DPoint>(points->getAt(*itNg)));
+          if (*itNg != pid) in_points.push_back(toPoint3<DPoint>(points->getAt(*itNg)));
 
       My_Monge_form monge_form;
       My_Monge_via_jet_fitting monge_fit;
@@ -834,6 +827,100 @@ PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjac
         result.push_back(principal_curvatures(points,i,ng,fitting_degree,monge_degree));
     }
     return result;
+
+}
+
+Vector3 PGL::pointset_normal(const Point3ArrayPtr points, const Index& group )
+{
+#ifdef WITH_CGAL
+    typedef CGAL::Cartesian<real_t>   CK;
+    typedef CK::Point_3               CPoint;
+    typedef CK::Plane_3                CPlane;
+
+	std::list<CPoint> pointdata;
+	// for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
+	for (Index::const_iterator it = group.begin(); it != group.end() ; ++it)
+		pointdata.push_back(toPoint3<CPoint>(points->getAt(*it)));
+
+	CPlane plane;
+	linear_least_squares_fitting_3(pointdata.begin(), pointdata.end(), plane, CGAL::Dimension_tag<0>());
+
+	return dir2Vector3(plane.orthogonal_direction());
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'pointset_normal' disabled. CGAL needed.")
+    #else
+    #warning "function 'pointset_normal' disabled. CGAL needed"
+    #endif
+
+    return Vector3(0,0,0);
+#endif
+}
+
+
+Point3ArrayPtr
+PGL::pointsets_normals(const Point3ArrayPtr points, const IndexArrayPtr groups)
+{
+    Point3ArrayPtr result(new Point3Array(points->size()));
+    uint32_t i = 0;
+    for(IndexArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++i){
+        result->setAt(i, pointset_normal(points,*it));
+    }
+    return result;
+}
+
+
+struct PointNormalDistance {
+        const Point3ArrayPtr normals;
+
+        real_t operator()(uint32_t a, uint32_t b) const { 
+            real_t v = 1.0 - std::abs(normals->getAt(a) * normals->getAt(b)); 
+            if (v < 0) return 0;
+            return v;
+        }
+
+        PointNormalDistance(const Point3ArrayPtr _normals) : normals(_normals) {}
+};
+
+Point3ArrayPtr 
+PGL::pointsets_orient_normals(const Point3ArrayPtr normals, const Point3ArrayPtr points, const IndexArrayPtr adjacencies)
+{
+
+    /// find first point
+    Point3Array::const_iterator topz = points->getZMax();
+    size_t source = std::distance<Point3Array::const_iterator>(points->begin(),topz);
+    Vector3& firstnormal = normals->getAt(source);
+    if (firstnormal.z() < 0) firstnormal = -firstnormal;
+    
+    return pointsets_orient_normals(normals, source, adjacencies);
+}
+
+Point3ArrayPtr 
+PGL::pointsets_orient_normals(const Point3ArrayPtr initialnormals, uint32_t source, const IndexArrayPtr adjacencies)
+{
+    const Point3ArrayPtr normals(new Point3Array(*initialnormals));
+
+    /// compute shortest pathes using normal difference
+    struct PointNormalDistance pdevaluator( normals);
+    std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> treegraph = dijkstra_shortest_paths(adjacencies,source,pdevaluator);
+
+    /// propagate normal orientation
+    TOOLS(Uint32Array1Ptr) parents = treegraph.first;
+    IndexArrayPtr children = determine_children(parents, source);
+
+    IndexArrayPreOrderConstIterator piterator(children, source);
+
+    for(++piterator; !piterator.atEnd(); ++piterator){
+        if (dot(normals->getAt(parents->getAt(*piterator)),normals->getAt(*piterator)) < 0)
+        {
+            // if not oriented similarly, reorient
+            normals->getAt(*piterator) = -normals->getAt(*piterator);
+        }
+    }
+
+    return normals;
+
+
 
 }
 
@@ -1507,7 +1594,6 @@ IndexArrayPtr PGL::determine_children(const Uint32Array1Ptr parents, uint32_t& r
     return result;
 }
 
-#include <plantgl/scenegraph/container/indexarray_iterator.h>
 
 RealArrayPtr PGL::carried_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents)
 {
@@ -2661,4 +2747,69 @@ std::pair<Index,Index> PGL::cluster_junction_points(const IndexArrayPtr pointtop
         if(it->second > 0) fjgroup2.push_back(it->first);
 
     return std::pair<Index,Index>(jgroup1,fjgroup2);
+}
+
+
+real_t mean_over(const Point3ArrayPtr points, const Index& section, int i)
+{
+    real_t v = 0;
+    for(Index::const_iterator it = section.begin(); it != section.end(); ++it)
+        v += points->getAt(*it).getAt(i);
+    return v / section.size();
+}
+
+
+real_t mean_over(const Point3ArrayPtr points, const Index& section, int i, int j)
+{
+    real_t v = 0;
+    for(Index::const_iterator it = section.begin(); it != section.end(); ++it)
+        v += points->getAt(*it).getAt(i) * points->getAt(*it).getAt(j);
+    return v / section.size();
+}
+
+#ifdef WITH_CGAL
+#include <CGAL/eigen.h>
+#endif
+TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& section)
+{
+#ifdef WITH_CGAL
+    real_t mx  = mean_over(points,section,0);
+    real_t mx2 = mean_over(points,section,0,0);
+    real_t my  = mean_over(points,section,1);
+    real_t my2 = mean_over(points,section,1,1);
+    real_t mz  = mean_over(points,section,2);
+    real_t mz2 = mean_over(points,section,2,2);
+    real_t mxy = mean_over(points,section,0,1);
+    real_t mxz = mean_over(points,section,0,2);
+    real_t myz = mean_over(points,section,1,2);
+    real_t mxyxy = 2*mxy-2*mx*my;
+    real_t mxzxz = 2*mxz - 2*mx*mz;
+    real_t myzyz = 2*myz - 2*my*mz;
+
+/*    Matrix3 M(mx2-mx*mx , mxyxy     , mxzxz,
+              mxyxy     , my2-my*my , myzyz,
+              mxzxz     , myzyz     , mz2-mz*mz);*/
+
+    real_t covariance[6];
+    covariance[0] = mx2-mx*mx;
+    covariance[1] = mxyxy;
+    covariance[2] = my2-my*my;
+    covariance[3] = mxzxz;
+    covariance[4] = myzyz;
+    covariance[5] = mz2-mz*mz;
+
+    real_t eigen_values[3];
+    real_t eigen_vectors[9];
+    CGAL::internal::eigen_symmetric<real_t>(covariance,3,eigen_vectors,eigen_values);
+
+    if (eigen_values[2] <  eigen_values[1] && eigen_values[2] <  eigen_values[0])
+        return Vector3(eigen_vectors[6],eigen_vectors[7],eigen_vectors[8]);
+    else if (eigen_values[1] <  eigen_values[0])
+        return Vector3(eigen_vectors[3],eigen_vectors[4],eigen_vectors[5]);
+    else
+        return Vector3(eigen_vectors[0],eigen_vectors[1],eigen_vectors[2]);
+
+#else
+    return Vector3.ORIGIN;
+#endif
 }

@@ -218,6 +218,10 @@ Vector3 BezierCurve::getPointAt(real_t u) const{
 
   vector<Vector4> Q(__ctrlPointList->begin(),__ctrlPointList->end());
 
+  for (vector<Vector4>::iterator it = Q.begin(); it != Q.end(); ++it){
+      it->x() *= it->w(); it->y() *= it->w(); it->z() *= it->w();
+  }
+
   real_t u1 = real_t(1.0) - u;
   for (uint_t k = 1; k <= _deg ; k++)
     for (uint_t i = 0; i <= ( _deg - k ) ; i++)

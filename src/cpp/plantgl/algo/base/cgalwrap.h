@@ -50,6 +50,9 @@ inline CgalPoint3 toPoint3(const Vector3& v) { return CgalPoint3(v.x(),v.y(),v.z
 template<class CgalPoint3>
 inline TOOLS(Vector3) toVector3(const CgalPoint3& v) { return TOOLS(Vector3)(CGAL::to_double(v.x()),CGAL::to_double(v.y()),CGAL::to_double(v.z())); }
 
+template<class CgalDirection3>
+inline TOOLS(Vector3) dir2Vector3(const CgalDirection3& v) { return TOOLS(Vector3)(CGAL::to_double(v.dx()),CGAL::to_double(v.dy()),CGAL::to_double(v.dz())); }
+
 template<class CgalPoint3>
 inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v) { 
     std::list<CgalPoint3> res;
