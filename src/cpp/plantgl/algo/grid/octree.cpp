@@ -659,7 +659,8 @@ bool Octree::intersect( const Ray& ray,
     real_t lx= (fabs(D.x()) < GEOM_EPSILON ? REAL_MAX : (Px-x)/D.x());
     real_t ly= (fabs(D.y()) < GEOM_EPSILON ? REAL_MAX : (Py-y)/D.y());
     real_t lz= (fabs(D.z()) < GEOM_EPSILON ? REAL_MAX : (Pz-z)/D.z());
-    assert(lx>=0); assert(ly>=0); assert(lz>=0); // on avance !!
+
+    assert(lx> -GEOM_EPSILON); assert(ly> -GEOM_EPSILON); assert(lz>-GEOM_EPSILON); // on avance !!
 
     real_t l= 0;
     if( lx > ly )
