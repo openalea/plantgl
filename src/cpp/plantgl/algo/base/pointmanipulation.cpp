@@ -2810,6 +2810,6 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& sec
         return Vector3(eigen_vectors[0],eigen_vectors[1],eigen_vectors[2]);
 
 #else
-    return Vector3.ORIGIN;
+    return Vector3::ORIGIN;
 #endif
 }
