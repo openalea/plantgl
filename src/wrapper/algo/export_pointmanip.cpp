@@ -44,7 +44,7 @@ using namespace boost::python;
 
 
 object py_points_dijkstra_shortest_path(const Point3ArrayPtr points, 
-			                            const IndexArrayPtr adjacencies, 
+                                        const IndexArrayPtr adjacencies, 
                                         uint32_t root)
 {
     return make_pair_tuple(points_dijkstra_shortest_path(points,adjacencies,root));
@@ -213,9 +213,9 @@ object  py_cluster_junction_points(const IndexArrayPtr pointtoppology, const Ind
 
 void export_PointManip()
 {
-	def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
-	def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
-	def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
+    def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
+    def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
+    def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
 
 
 #ifdef WITH_CGAL
