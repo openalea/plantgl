@@ -653,148 +653,148 @@ void Turtle::setCustomAppearance(const AppearancePtr app)
 
 void Turtle::setTextureScale(const Vector2& t)
 { 
-	__params->texCoordScale = t; 
-	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale = t;
+  __params->texCoordScale = t; 
+  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale = t;
 }
 
 void Turtle::setTextureUScale(real_t u)
 { 
-	__params->texCoordScale.x() = u; 
-	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.x() = u; 
+  __params->texCoordScale.x() = u; 
+  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.x() = u; 
 }
 
 void Turtle::setTextureVScale(real_t v)
 { 
-	__params->texCoordScale.y() = v; 
-	if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.y() = v; 
+  __params->texCoordScale.y() = v; 
+  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.y() = v; 
 }
 
 void Turtle::setTextureRotation(real_t angle, 
-								const Vector2& center)
+                                const Vector2& center)
 { 
-	__params->texCoordRotAngle = angle; 
-	__params->texCoordRotCenter = center;
-	if(__params->isGCorPolygonOnInit()){
-		__params->initial.texCoordRotAngle = angle; 
-		__params->initial.texCoordRotCenter = center;
-	}
+  __params->texCoordRotAngle = angle; 
+  __params->texCoordRotCenter = center;
+  if(__params->isGCorPolygonOnInit()){
+      __params->initial.texCoordRotAngle = angle; 
+      __params->initial.texCoordRotCenter = center;
+  }
 }
 
 void Turtle::setTextureTranslation(const Vector2& t)
 { 	
-	__params->texCoordTranslation = t; 
-	if(__params->isGCorPolygonOnInit()){
-		__params->initial.texCoordTranslation = t; 
-	}
+  __params->texCoordTranslation = t; 
+  if(__params->isGCorPolygonOnInit()){
+      __params->initial.texCoordTranslation = t; 
+  }
 }
 
 void Turtle::setTextureTransformation(const Vector2& scaling, const Vector2& translation, 
-									  real_t angle, const Vector2& rotcenter)
+                                      real_t angle, const Vector2& rotcenter)
 { 
-	setTextureScale(scaling);
-	setTextureTranslation(translation);
-	setTextureRotation(angle,rotcenter);
+  setTextureScale(scaling);
+  setTextureTranslation(translation);
+  setTextureRotation(angle,rotcenter);
 }
-  
-  void Turtle::setWidth(real_t v){
-	  if (v > GEOM_EPSILON){
-		__params->width = v;
-		if(__params->isGeneralizedCylinderOn())
-			__params->pushRadius();
-	  }
-	else {
- 	  warning("Invalid width value in setWidth. Must be positive");
-	}
-  }
-  
+
+void Turtle::setWidth(real_t v){
+    if (v > GEOM_EPSILON){
+        __params->width = v;
+        if(__params->isGeneralizedCylinderOn())
+            __params->pushRadius();
+    }
+    else {
+        warning("Invalid width value in setWidth. Must be positive");
+    }
+}
+
   void Turtle::lineTo(const TOOLS(Vector3) & v, real_t topradius){
-	 TOOLS(Vector3) heading = __params->heading;
-	 TOOLS(Vector3) left = __params->left;
-	 TOOLS(Vector3) up = __params->up;
+      TOOLS(Vector3) heading = __params->heading;
+      TOOLS(Vector3) left = __params->left;
+      TOOLS(Vector3) up = __params->up;
 
-	  oLineTo(v,topradius);
+      oLineTo(v,topradius);
 
-	  __params->heading = heading;
-	  __params->left = left;
-	  __params->up = up;
-  }
+      __params->heading = heading;
+      __params->left = left;
+      __params->up = up;
+}
 
   void Turtle::lineRel(const TOOLS(Vector3) & v, real_t topradius){
-	 TOOLS(Vector3) heading = __params->heading;
-	 TOOLS(Vector3) left = __params->left;
-	 TOOLS(Vector3) up = __params->up;
+      TOOLS(Vector3) heading = __params->heading;
+      TOOLS(Vector3) left = __params->left;
+      TOOLS(Vector3) up = __params->up;
 
-	  oLineRel(v,topradius);
+      oLineRel(v,topradius);
 
-	  __params->heading = heading;
-	  __params->left = left;
-	  __params->up = up;
+      __params->heading = heading;
+      __params->left = left;
+      __params->up = up;
   }
 
 /// Trace line toward v and change the orientation
 void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
 {
     Vector3 h = v - getPosition();
-	real_t l = h.normalize();
-	if (l > GEOM_EPSILON){
-	  _tendTo(h);
-      F(l,topradius);
-	}
+    real_t l = h.normalize();
+    if (l > GEOM_EPSILON){
+        _tendTo(h);
+        F(l,topradius);
+    }
 }
 
 
 
   void Turtle::oLineRel(const Vector3& v, real_t topradius){
-	// Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
-    Vector3 h = v;
-	real_t l = h.normalize();
-	if (l > GEOM_EPSILON){
-	  _tendTo(h);
-      F(l,topradius);
-	}
+      // Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
+      Vector3 h = v;
+      real_t l = h.normalize();
+      if (l > GEOM_EPSILON){
+          _tendTo(h);
+          F(l,topradius);
+      }
   }
 
   void  Turtle::pinpoint(const TOOLS(Vector3) & v){
-	Vector3 h = v - getPosition();
-	real_t l = h.normalize();
-	if (l > GEOM_EPSILON){
-	  _tendTo(h);
-	}
+      Vector3 h = v - getPosition();
+      real_t l = h.normalize();
+      if (l > GEOM_EPSILON){
+          _tendTo(h);
+      }
   }
 
   void Turtle::pinpointRel(const TOOLS(Vector3) & v){
-	// Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
+      // Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
     Vector3 h = v;
-	real_t l = h.normalize();
-	if (l > GEOM_EPSILON){
-	  _tendTo(h);
-	}
+    real_t l = h.normalize();
+    if (l > GEOM_EPSILON){
+        _tendTo(h);
+    }
   }
 
   void Turtle::startPolygon(){
-	__params->polygon(true);
-    __params->customId = popId();
-    __params->customParentId = parentId;
-	__params->pushPosition();
-  }
-  
-  void Turtle::stopPolygon(bool concavetest){
-	if(__params->pointList->size() > 2)_polygon(__params->pointList,concavetest);
-	__params->polygon(false);
-    __params->customId = Shape::NOID;
-    __params->customParentId = Shape::NOID;
-  }
-  
-  void Turtle::polygonPoint(){
-	__params->pushPosition();
-  }
-  
-  void Turtle::startGC(){
-	if (!__params->crossSection) setDefaultCrossSection();
-    __params->generalizedCylinder(true);
+      __params->polygon(true);
     __params->customId = popId();
     __params->customParentId = parentId;
     __params->pushPosition();
+  }
+
+  void Turtle::stopPolygon(bool concavetest){
+      if(__params->pointList->size() > 2)_polygon(__params->pointList,concavetest);
+      __params->polygon(false);
+      __params->customId = Shape::NOID;
+      __params->customParentId = Shape::NOID;
+  }
+  
+  void Turtle::polygonPoint(){
+      __params->pushPosition();
+  }
+
+  void Turtle::startGC(){
+      if (!__params->crossSection) setDefaultCrossSection();
+      __params->generalizedCylinder(true);
+      __params->customId = popId();
+      __params->customParentId = parentId;
+      __params->pushPosition();
   }
   
 void Turtle::stopGC(){
