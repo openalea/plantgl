@@ -489,11 +489,11 @@ void Turtle::stop(){
 		  }
           if (!__params->isGeneralizedCylinderOn() && 
               ! __params->isPolygonOn()){
-                  if(__params->defaultSection && __params->width > GEOM_EPSILON){
-					if (topradius < GEOM_EPSILON) _cylinder(length);
+                  if(__params->defaultSection && __params->width > -GEOM_EPSILON){
+					if (topradius < -GEOM_EPSILON)  _cylinder(length);
 					else _frustum(length,topradius);
 				  }
-				  else { _sweep(length,topradius < GEOM_EPSILON?getWidth():topradius); }
+				  else { _sweep(length,topradius < -GEOM_EPSILON?getWidth():topradius); }
           }
           __params->position += __params->heading*length*getScale().z();
 		  __params->axialLength += length;
@@ -501,10 +501,18 @@ void Turtle::stop(){
           if (__params->isGeneralizedCylinderOn() ||
               __params->isPolygonOn())
               __params->pushPosition();
-          if (topradius > GEOM_EPSILON ) setWidth(topradius);
+          if (topradius > -GEOM_EPSILON ) {
+
+			  setWidth(topradius);
+
+		  }
       }
-      else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
-      else error("F length should be positive.");
+      // else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
+      // else error("F length should be positive.");
+	  else if(length < -GEOM_EPSILON) {
+		  turnAround(); F(-length,topradius); turnAround();
+
+	  }
   }
 
 void Turtle::nF(real_t length, real_t dl)
@@ -699,7 +707,7 @@ void Turtle::setTextureTransformation(const Vector2& scaling, const Vector2& tra
 }
 
 void Turtle::setWidth(real_t v){
-    if (v > GEOM_EPSILON){
+    if (v > -GEOM_EPSILON){
         __params->width = v;
         if(__params->isGeneralizedCylinderOn())
             __params->pushRadius();
@@ -1048,16 +1056,16 @@ void Turtle::_tendTo(const TOOLS(Vector3)& t, real_t strength)
 
 void Turtle::sphere(real_t radius )
 { 
-  if (radius < GEOM_EPSILON)
+  if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for sphere"); }
-  else _sphere(radius); 
+  else if (radius > GEOM_EPSILON) _sphere(radius); 
 }
 
 void Turtle::circle(real_t radius )
 { 
-  if (radius < GEOM_EPSILON)
+  if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for circle"); }
-  else _circle(radius); 
+  else if (radius > GEOM_EPSILON) _circle(radius); 
 }
 
 void Turtle::label(const std::string& text )
@@ -1071,7 +1079,7 @@ void Turtle::surface(const std::string& name, real_t scale)
 	if (!name.empty() && scale > GEOM_EPSILON) _surface(name,scale); 
 	else {
 		if(name.empty()) warning("Invalid name for surface");
-		if(scale < GEOM_EPSILON) warning("Invalid scale for surface");
+		if(scale < -GEOM_EPSILON) warning("Invalid scale for surface");
 	}
 }
 
@@ -1163,6 +1171,8 @@ void PglTurtle::defaultValue(){
   __appList.push_back(AppearancePtr(new Material("Color_2",Color3(30,60,10),3))); // Green
   __appList.push_back(AppearancePtr(new Material("Color_3",Color3(60,0,0),3)));     // Red
   __appList.push_back(AppearancePtr(new Material("Color_4",Color3(60,60,15),3)));// Yellow
+  __appList.push_back(AppearancePtr(new Material("Color_5",Color3(0,0,60),3)));    // Blue
+  __appList.push_back(AppearancePtr(new Material("Color_6",Color3(60,0,60),3))); // Purple
   Point3ArrayPtr points= Point3ArrayPtr(new Point3Array(7,Vector3(0,0,0.5)));
   points->setAt(1,Vector3(0,0,0));
   points->setAt(2,Vector3(0,-0.25,1./3));
@@ -1338,41 +1348,42 @@ void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePt
 }
 
 void PglTurtle::_frustum(real_t length, real_t topradius){
-  GeometryPtr a;
-  real_t width = getWidth();
-  if(FABS(width) > GEOM_EPSILON){
-	real_t taper = topradius/width;
-  if ( getScale() !=  Vector3(1,1,1) &&
-	  (getScale().x() == getScale().y() ))
-	   width *= getScale().x();
-	if (FABS(taper) < GEOM_EPSILON)
-	  a = GeometryPtr(new Cone(width,length*getScale().z(),false,getParameters().sectionResolution));
-	else if (FABS(taper-1.0) < GEOM_EPSILON)
-	  a = GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution));
-	else
-	  a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false,getParameters().sectionResolution));
-	_addToScene(transform(a));
-  }
-  else {
-	if (FABS(topradius) < GEOM_EPSILON){
-	  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-	  pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
-	  a = GeometryPtr(new Polyline(pts));
+	GeometryPtr a;
+	real_t width = getWidth();
+	if(FABS(width) > GEOM_EPSILON){
+		real_t taper = topradius/width;
+		if ( getScale() !=  Vector3(1,1,1) &&
+			(getScale().x() == getScale().y() ))
+			width *= getScale().x();
+		if (FABS(taper) < GEOM_EPSILON)
+			a = GeometryPtr(new Cone(width,length*getScale().z(),false,getParameters().sectionResolution));
+		else if (FABS(taper-1.0) < GEOM_EPSILON)
+			a = GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution));
+		else
+			a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false,getParameters().sectionResolution));
+		_addToScene(transform(a));
 	}
 	else {
-	  real_t _topradius = topradius;
-	  if ( getScale() !=  Vector3(1,1,1) &&
-		  (getScale().x() == getScale().y() && 
-		  getScale().y() == getScale().z() ))
-		  topradius *= getScale().x();
-	  a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
-	  if (getLeft() != Vector3::OX || 
-		  getUp() != -Vector3::OY)
-        a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
-      a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
+		if (FABS(topradius) < GEOM_EPSILON){
+			Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
+			pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
+			a = GeometryPtr(new Polyline(pts));
+
+		}
+		else {
+			real_t _topradius = topradius;
+			if ( getScale() !=  Vector3(1,1,1) &&
+				(getScale().x() == getScale().y() && 
+				getScale().y() == getScale().z() ))
+				topradius *= getScale().x();
+			a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
+			if (getLeft() != Vector3::OX || 
+				getUp() != -Vector3::OY)
+				a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
+			a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
+		}
+		_addToScene(a);
 	}
-	_addToScene(transform(a));
-  }
 }
 
 void PglTurtle::_cylinder(real_t length){
