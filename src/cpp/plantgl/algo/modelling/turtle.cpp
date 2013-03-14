@@ -214,6 +214,7 @@ TurtleParam::TurtleParam() :
   left(0,-1,0),
   up(1,0,0),
   scale(1,1,1),
+  reflection(1,1,1),
   lastId(Shape::NOID),
   width(0.1f),
   tropism(0,0,1),
@@ -238,6 +239,7 @@ TurtleParam::reset(){
   left     = Vector3(0,-1,0);
   up       = Vector3(1,0,0);
   scale    = Vector3(1,1,1);
+  reflection = Vector3(1,1,1);
   lastId = Shape::NOID;
   customId = Shape::NOID;
   customParentId = Shape::NOID;
@@ -538,7 +540,7 @@ void Turtle::nF(real_t length, real_t dl, real_t radius, const QuantisedFunction
 }
 
 void Turtle::left(real_t angle){
-  real_t ra = angle * GEOM_RAD;
+  real_t ra = angle * GEOM_RAD *__params->reflection.y();
   Matrix3 m = Matrix3::axisRotation(__params->up,ra);
   __params->heading = m*__params->heading;
   __params->left = m*__params->left;
@@ -546,20 +548,20 @@ void Turtle::left(real_t angle){
   
 void Turtle::down(real_t angle){
 	real_t ra = angle * GEOM_RAD;
-	Matrix3 m = Matrix3::axisRotation(__params->left,ra);
+	Matrix3 m = Matrix3::axisRotation(__params->left,ra) *__params->reflection.z();
 	__params->heading = m*__params->heading;
 	__params->up = m*__params->up;
   }
   
 void Turtle::rollL(real_t angle){
 	real_t ra = angle * GEOM_RAD;
-	Matrix3 m = Matrix3::axisRotation(__params->heading,ra);
+	Matrix3 m = Matrix3::axisRotation(__params->heading,ra) *__params->reflection.x();
 	__params->up = m*__params->up;
 	__params->left = m*__params->left;
   }
 
 void Turtle::iRollL(real_t angle){
-	real_t ra = angle * GEOM_RAD;
+	real_t ra = angle * GEOM_RAD *__params->reflection.x();
 	Matrix3 m = Matrix3::axisRotation(__params->heading,ra);
 	__params->up = m*__params->up;
 	__params->left = m*__params->left;
@@ -833,12 +835,37 @@ void Turtle::_setCrossSection(const Curve2DPtr& curve, bool ccw, bool defaultSec
 	}
 }
 
+void  Turtle::setSectionResolution(uint_t resolution) 
+{ 
+	getParameters().sectionResolution = resolution; 
+	if ((__params->crossSection) && __params->defaultSection)
+		setDefaultCrossSection(resolution);
+
+}
 
 void Turtle::setPositionOnGuide(real_t t)
 { 
 	if(__params->guide) getParameters().guide->setPosition(t); 
 	else warning("Guide not set. Cannot set position on it.");
 }
+
+
+void Turtle::leftReflection()
+{
+	__params->reflection.y() = -__params->reflection.y();
+}
+
+void Turtle::upReflection()
+{
+	__params->reflection.z() = -__params->reflection.z();
+}
+
+void Turtle::headingReflection()
+{
+	__params->reflection.x() = -__params->reflection.x();
+	// __params->heading = - __params->heading;
+}
+
 
 void Turtle::_applyTropism() {
 	_tendTo(getTropism(),getElasticity());
@@ -862,7 +889,8 @@ void Turtle::_applyGuide(real_t& l) {
 			}
 			else {
 				// In case of displacement with significant length, direction to next point is used as new direction
-				real_t next = current + (l/guide->__totalLength);
+				real_t dt = (l/guide->__totalLength);
+				real_t next = current + dt;
 				real_t reminder = next - 1.0;
 				if (reminder > GEOM_EPSILON) { next = 1.0 ; }
 				real_t nextU = guide->__arclengthParam->getValue(next);
@@ -872,7 +900,8 @@ void Turtle::_applyGuide(real_t& l) {
 				real_t offset_length = 0;
 				Vector2 offset;
 				if (reminder > GEOM_EPSILON) {
-					offset_length = l * reminder ;
+					// we work here in the space of the curve. so we use actualLength
+					offset_length = reminder * guide->__actualLength;
 					Vector2 endTangent = guide->__path->getTangentAt(nextU) ;
 					endTangent.normalize();
 					offset = endTangent * offset_length; 
@@ -880,7 +909,7 @@ void Turtle::_applyGuide(real_t& l) {
 				tangent = (nextpos + offset) - lastpos ;
 
 				// resize the length to be the equal to euclidian distance between the 2 points on the curve
-				l = (tangent.normalize() * guide->__scale) + offset_length;
+				l = (tangent.normalize() * guide->__scale);  // we translate this length in space of turtle by multiplying by scale
 
 				current = next;
 				// save position parameter
@@ -916,7 +945,8 @@ void Turtle::_applyGuide(real_t& l) {
 			}
 			else {
 				// In case of displacement with significant length, direction to next point is used as new direction
-				real_t next = current + (l/guide->__totalLength);
+				real_t dt = (l/guide->__totalLength);
+				real_t next = current + dt;
 				real_t reminder = next - 1.0;
 				if (reminder > GEOM_EPSILON) { next = 1.0 ; }
 				Vector3 lastpos = guide->__lastPosition;
@@ -926,7 +956,8 @@ void Turtle::_applyGuide(real_t& l) {
 				real_t offset_length = 0;
 				Vector3 offset;
 				if (reminder > GEOM_EPSILON) {
-					offset_length = l * reminder ;
+					// we work here in the space of the curve. so we use actualLength
+					offset_length = reminder * guide->__actualLength ;
 					Vector3 endTangent = guide->__path->getTangentAt(nextU) ;
 					endTangent.normalize();
 					offset = endTangent * offset_length; 
@@ -935,7 +966,7 @@ void Turtle::_applyGuide(real_t& l) {
 				tangent =  (nextpos + offset) - lastpos; 
 
 				// resize the length to be the equal to euclidian distance between the 2 points on the curve
-				l = (tangent.normalize() * guide->__scale) + offset_length;
+				l = (tangent.normalize() * guide->__scale);  // we translate this length in space of turtle by multiplying by scale
 
 				current = next;
 				// save position parameter

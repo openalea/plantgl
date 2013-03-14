@@ -405,10 +405,11 @@ public:
 	{ scale_multiplier = (val > 0 ? val : - val); }
 
     void setCrossSection(const Curve2DPtr& curve, bool ccw = false);
-	void setDefaultCrossSection(size_t slicenb = 16);
+	void setDefaultCrossSection(size_t slicenb);
+	inline void setDefaultCrossSection()
+	{ setDefaultCrossSection(getParameters().sectionResolution); }
 
-	inline void setSectionResolution(uint_t resolution) 
-	{ getParameters().sectionResolution = resolution; }
+	void setSectionResolution(uint_t resolution) ;
 
 	inline const uint_t& getSectionResolution() const
 	{ return getParameters().sectionResolution; }
@@ -434,6 +435,10 @@ public:
 
 	inline void setWarnOnError(bool b) { warn_on_error = b; }
 	inline bool warnOnError() const { return warn_on_error; }
+
+	void leftReflection();
+	void upReflection();
+	void headingReflection();
 
 protected:
     void _setCrossSection(const Curve2DPtr& curve, bool ccw = false, bool defaultSection = false);

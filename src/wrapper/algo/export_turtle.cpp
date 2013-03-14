@@ -47,6 +47,7 @@ void py_warning_handler(const std::string& msg){
     PyErr_WarnEx(PyExc_Warning,msg.c_str(),1);
 }
 
+void setDefaultCrossSection1(Turtle * t, size_t slices) { t->setDefaultCrossSection(slices); }
 void setDefaultCrossSection0(Turtle * t) { t->setDefaultCrossSection(); }
 
 void export_Turtle()
@@ -195,7 +196,7 @@ void export_Turtle()
     .def("setScaleMultiplier",&Turtle::setScaleMultiplier )
 
 	.def("setCrossSection", &Turtle::setCrossSection, args("curve"))
-	.def("setDefaultCrossSection", &Turtle::setDefaultCrossSection, args("slices"))
+	.def("setDefaultCrossSection", &setDefaultCrossSection1, args("slices"))
 	.def("setDefaultCrossSection", &setDefaultCrossSection0)
 
 	.def("setGuide",   (void(Turtle::*)(const LineicModelPtr&, real_t))&Turtle::setGuide, args("curve","length"))

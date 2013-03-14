@@ -93,6 +93,7 @@ void export_Fit()
 {
   class_< Fit > ("Fit", init<>
      ( "Fit()" "fitting algorithms." ))
+	.def(init<Point3ArrayPtr>("Fit(points)",args("points")))
     .def("use",&Fit::use)
     .def("__call__",&Fit::use)
 	.add_property("points",&Fit::getPoints,&Fit::setPoints)

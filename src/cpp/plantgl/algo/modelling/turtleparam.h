@@ -217,6 +217,7 @@ public:
   TOOLS(Vector3) left;
   TOOLS(Vector3) up;
   TOOLS(Vector3) scale;
+  TOOLS(Vector3) reflection;
 
   uint_t lastId;
   real_t width;

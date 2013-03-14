@@ -340,7 +340,7 @@ public:
 
   template<class Array2>
   void writeMatrix(const Array2& array){
-    uint_t _rows = array.getColumnNb(); 
+    uint_t _rows = array.getRowNb(); 
     uint_t _cols = array.getColumnNb(); 
     writeUint32( _rows ); 
     writeUint32( _cols ); 

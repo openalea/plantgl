@@ -321,7 +321,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 #define GEOM_PARSER_INIT_MATRIX(type,first,result) { \
     if (first) { \
-      result = new type(first->begin(),first->end(),1); \
+      result = new type(first->begin(),first->end(),distance(first->begin(),first->end())); \
       delete first; \
     } \
     else result = NULL; \
