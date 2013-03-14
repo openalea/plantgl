@@ -1318,7 +1318,8 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 {
-  _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),smb)),true));
+	if( FABS(scale) > GEOM_EPSILON)
+     _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),smb)),true));
 }
 
 
