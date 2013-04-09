@@ -2,11 +2,10 @@
 :authors: Thomas cokelaer
 """
 
-
 from openalea.core.alea import *
-from PyQt4.QtGui import *
+from openalea.vpltk.qt import QtGui
 
-app = QApplication([])
+app = QtGui.QApplication([])
 
 pm = PackageManager()
 pm.init(verbose=False)

@@ -1,19 +1,18 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from openalea.vpltk.qt import QtGui, QtCore
 import openalea.plantgl.all as pgl
+import code
 
-
-class MyThread(QThread):
+class MyThread(QtCore.QThread):
     def __init__(self):
-        QThread.__init__(self)
-        self.mutex = QMutex()
-        self.waitcondition = QWaitCondition()
-        self.endmutex = QMutex()
-        self.endwaitcondition = QWaitCondition()
+        QtCore.QThread.__init__(self)
+        self.mutex = QtCore.QMutex()
+        self.waitcondition = QtCore.QWaitCondition()
+        self.endmutex = QtCore.QMutex()
+        self.endwaitcondition = QtCore.QWaitCondition()
         
     def start(self):
         self.mutex.lock()
-        QThread.start(self)
+        QtCore.QThread.start(self)
         self.waitcondition.wait(self.mutex)
         self.mutex.unlock()
     
@@ -21,7 +20,7 @@ class MyThread(QThread):
         self.endwaitcondition.wait(self.endmutex)
     
     def run(self):
-        app = QApplication([])
+        app = QtGui.QApplication([])
         while not self.mutex.tryLock():
             pass
         self.mutex.unlock()
@@ -29,7 +28,7 @@ class MyThread(QThread):
         pgl.Viewer.threaded = False
         pgl.Viewer.start()
         print "execute"
-        QThread.exec_(self)
+        QtCore.QThread.exec_(self)
         self.endwaitcondition.wakeAll()
 
     def doit(self):
@@ -43,11 +42,11 @@ class MyThread(QThread):
 # m = MyThread()
 # m.doit()
 
-class MyWidget(QWidget):
+class MyWidget(QtGui.QWidget):
     def __init__(self):
-        QWidget.__init__(self)
-        self.mutex = QMutex()
-        self.waitcondition = QWaitCondition()
+        QtGui.QWidget.__init__(self)
+        self.mutex = QtCore.QMutex()
+        self.waitcondition = QtCore.QWaitCondition()
     def customEvent(self,event):
         print "Receive Event"
         while not self.mutex.tryLock():
@@ -56,27 +55,22 @@ class MyWidget(QWidget):
         self.waitcondition.wakeAll()        
     def sendAnEvent(self,event = QEvent(QEvent.User)):
         self.mutex.lock()
-        QApplication.postEvent(self,event)
+        QtGui.QApplication.postEvent(self,event)
         self.waitcondition.wait(self.mutex)
         self.mutex.unlock()
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import openalea.plantgl.all as pgl
-import code
 
 def test():
 	pgl.Viewer.display(pgl.Sphere())
 
-class MyThread2(QThread):
+class MyThread2(QtCore.QThread):
     def __init__(self):
-        QThread.__init__(self)
+        QtCore.QThread.__init__(self)
     
     def run(self):
         code.interact("Sub thread interpretation",local=globals())
-        QApplication.quit()
+        QtGui.QApplication.quit()
     def doit(self):
-        app = QApplication([])
+        app = QtGui.QApplication([])
         # self.widget = MyWidget()
         # self.widget.show()
         pgl.Viewer.start()
@@ -86,18 +80,13 @@ class MyThread2(QThread):
 m = MyThread2()
 m.doit()
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import openalea.plantgl.all as pgl
-
-
-class MyThread3(QThread):
+class MyThread3(QtCore.QThread):
     def __init__(self):
-        QThread.__init__(self)
-        self.mutex = QMutex()
-        self.waitcondition = QWaitCondition()
+        QtCore.QThread.__init__(self)
+        self.mutex = QtCore.QMutex()
+        self.waitcondition = QtCore.QWaitCondition()
     def run(self):
-        app = QApplication([])
+        app = QtGui.QApplication([])
         while not self.mutex.tryLock():
             pass
         self.mutex.unlock()
@@ -106,7 +95,7 @@ class MyThread3(QThread):
         app.exec_()
     def start(self):
         self.mutex.lock()
-        QThread.start(self)
+        QtCore.QThread.start(self)
         self.waitcondition.wait(self.mutex)
         self.mutex.unlock()
     def doit(self):

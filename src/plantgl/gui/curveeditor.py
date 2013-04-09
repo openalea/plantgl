@@ -3,7 +3,7 @@ from openalea.plantgl.scenegraph import *
 from openalea.plantgl.algo import *
 from openalea.plantgl.math import *
 from OpenGL.GL import *
-from PyQt4.Qt import *
+from openalea.vpltk.qt import QtCore, QtGui
 from math import pow,log
 
 
@@ -172,13 +172,13 @@ class CurveEditor (QGLViewer):
     def init(self):
         self.defaultColor = self.backgroundColor()
         self.updateSceneDimension()
-        self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.AltModifier)
-        self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  Qt.NoModifier)
-        self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, Qt.ControlModifier)
-        self.setMouseBinding(Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-        self.setMouseBinding(Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
-        self.setMouseBinding(Qt.ControlModifier + Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
-        self.setMouseBinding(Qt.ControlModifier + Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
+        self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, QtCore.Qt.AltModifier)
+        self.setHandlerKeyboardModifiers(QGLViewer.FRAME,  QtCore.Qt.NoModifier)
+        self.setHandlerKeyboardModifiers(QGLViewer.CAMERA, QtCore.Qt.ControlModifier)
+        self.setMouseBinding(QtCore.Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+        self.setMouseBinding(QtCore.Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+        self.setMouseBinding(QtCore.Qt.ControlModifier + QtCore.Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+        self.setMouseBinding(QtCore.Qt.ControlModifier + QtCore.Qt.RightButton,QGLViewer.CAMERA,QGLViewer.NO_MOUSE_ACTION)
         self.camera().setUpVector(Vec(0,1,0))
         self.camera().setType(Camera.ORTHOGRAPHIC)
         self.camConstraint = WorldConstraint()
@@ -189,7 +189,7 @@ class CurveEditor (QGLViewer):
         self.setSelectRegionHeight(5)
         self.manipulator = ManipulatedFrame()
         self.setManipulatedFrame(self.manipulator)
-        QObject.connect(self.manipulator,SIGNAL('manipulated()'),self.updatePoints)
+        QtCore.QObject.connect(self.manipulator,QtCore.SIGNAL('manipulated()'),self.updatePoints)
     def getCurve(self):
         """ Get the edited curve """
         return self.curveshape.geometry
@@ -211,9 +211,9 @@ class CurveEditor (QGLViewer):
         if self.isEnabled():
             self.setBackgroundColor(self.defaultColor)
         else:
-            self.setBackgroundColor(QColor(150,150,150))
-        self.start = self.pointOnEditionPlane(QPoint(0,self.height()-1))
-        self.end = self.pointOnEditionPlane(QPoint(self.width()-1,0))
+            self.setBackgroundColor(QtGui.QColor(150,150,150))
+        self.start = self.pointOnEditionPlane(QtCore.QPoint(0,self.height()-1))
+        self.end = self.pointOnEditionPlane(QtCore.QPoint(self.width()-1,0))
         self.sphere.radius = (self.end[0]-self.start[0])/80
         self.discretizer.clear()
         self.curveshape.apply(self.renderer)
@@ -297,7 +297,7 @@ class CurveEditor (QGLViewer):
         npoint = orig+direction*(orig[2]/(-direction[2]))
         return (npoint[0],npoint[1])        
     def mousePressEvent(self,event):
-        if event.modifiers()  != Qt.ControlModifier:
+        if event.modifiers()  != QtCore.Qt.ControlModifier:
             self.select(event.pos())
             self.selection = self.selectedName()
             if self.selection != -1:
@@ -310,8 +310,8 @@ class CurveEditor (QGLViewer):
         else:
             return QGLViewer.mousePressEvent(self,event)
     def mouseDoubleClickEvent(self,event):
-        if event.modifiers() == Qt.NoModifier:
-            if event.button()  == Qt.LeftButton:
+        if event.modifiers() == QtCore.Qt.NoModifier:
+            if event.button()  == QtCore.Qt.LeftButton:
                 self.select(event.pos())
                 selection = self.selectedName()
                 if selection == -1:
@@ -320,21 +320,21 @@ class CurveEditor (QGLViewer):
                     if res:
                         index,npoint = res
                         self.curveAccessor.insertPoint(index,npoint)
-                        self.emit(SIGNAL('valueChanged()'))
-            elif event.button()  == Qt.RightButton:
+                        self.emit(QtCore.SIGNAL('valueChanged()'))
+            elif event.button()  == QtCore.Qt.RightButton:
                 self.select(event.pos())
                 selection = self.selectedName()
                 if selection != -1 :
                     self.curveAccessor.delPoint(selection)
-                    self.emit(SIGNAL('valueChanged()'))
+                    self.emit(QtCore.SIGNAL('valueChanged()'))
             self.createControlPointsRep()
             self.updateGL()
-        elif event.modifiers() == Qt.ShiftModifier:
+        elif event.modifiers() == QtCore.Qt.ShiftModifier:
             self.select(event.pos())
             selection = self.selectedName()
             if selection != -1 :
                 self.curveAccessor.delPoint(selection)
-                self.emit(SIGNAL('valueChanged()'))
+                self.emit(QtCore.SIGNAL('valueChanged()'))
                 self.createControlPointsRep()
                 self.updateGL()
         else:
@@ -346,7 +346,7 @@ class CurveEditor (QGLViewer):
         self.updateGL()
         QGLViewer.mouseReleaseEvent(self,event)
     def changeEvent(self,event):
-        if event.type() == QEvent.EnabledChange:
+        if event.type() == QtCore.QEvent.EnabledChange:
             if self.isEnabled():
                 self.pointColor = Material((250,30,30),1)
             else:
@@ -362,7 +362,7 @@ class CurveEditor (QGLViewer):
             self.curveAccessor.setPoint(self.selection,p)
             self.createControlPointsRep()
             self.updateGL()
-            self.emit(SIGNAL('valueChanged()'))
+            self.emit(QtCore.SIGNAL('valueChanged()'))
     def createControlPointsRep(self):
         self.ctrlpts = Scene([Shape(Translated(Vector3(p[0],p[1],0),self.sphere),self.pointColor,id=i) for i,p in enumerate(self.curveAccessor.points())])
         if self.selection != -1:
@@ -371,7 +371,7 @@ class CurveEditor (QGLViewer):
             self.ctrlpts[0].appearance = self.firstPointColor
 
 if __name__ == '__main__':
-    qapp = QApplication([])
+    qapp = QtGui.QApplication([])
     mv = CurveEditor(None,FuncConstraint())
     mv.setEnabled(True)
     #mv.setCurve(Polyline2D([(0,0),(1,1)]))

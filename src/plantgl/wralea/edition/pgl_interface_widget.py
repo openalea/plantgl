@@ -20,7 +20,7 @@ __license__ = "CeCILL V2"
 __revision__ = " $Id: gui_catalog.py 2244 2010-02-08 17:10:17Z cokelaer $"
 
 
-from PyQt4 import QtCore, QtGui
+from openalea.vpltk.qt import QtCore, QtGui
 from openalea.core.interface import * #IGNORE:W0614,W0401
 from openalea.core.observer import lock_notify
 from openalea.visualea.node_widget import NodeWidget

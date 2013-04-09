@@ -1,8 +1,6 @@
-
-
 from openalea.core.pkgmanager import PackageManager
 import os, sys
-from PyQt4 import QtGui
+from openalea.vpltk.qt import QtGui
 
 def test_tutorial():
     #app = QtGui.QApplication(sys.argv)

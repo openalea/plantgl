@@ -548,7 +548,7 @@ if __name__ == "__main__":
     #0.5, crsSect2,
                           1.0, crsSect2)
 
-    from PyQt4 import QtGui
+    from openalea.vpltk.qt import QtGui
     app=QtGui.QApplication([])
 
     scene = Scene()

@@ -18,9 +18,8 @@ This module generates the full documentation of the scenegraph objects.
 
 .. testsetup::
 
-    from PyQt4.QtCore import *
-    from PyQt4.QtGui import *
-    app = QApplication([])
+    from openalea.vpltk.qt import QtGui
+    app = QtGui.QApplication([])
     Viewer.start()
 
 """

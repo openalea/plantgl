@@ -2,15 +2,14 @@ from openalea.plantgl.all import *
 from math import *
 import os
 import openalea.plantgl.all as pgl
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from openalea.vpltk.qt import QtCore, QtGui
 from nose import with_setup
 
 import warnings
-if not QCoreApplication.instance() is None:
-    warnings.warn("A QApplication is already running")
+if not QtCore.QCoreApplication.instance() is None:
+    warnings.warn("A QtGui.QApplication is already running")
 else:
-    app = QApplication([])
+    app = QtGui.QApplication([])
 Viewer.start()
 
    
