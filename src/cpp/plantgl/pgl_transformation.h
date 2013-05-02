@@ -44,6 +44,7 @@
 #include "plantgl/scenegraph/transformation/ifs.h"
 #include "plantgl/scenegraph/transformation/oriented.h"
 #include "plantgl/scenegraph/transformation/scaled.h"
+#include "plantgl/scenegraph/transformation/screenprojected.h"
 #include "plantgl/scenegraph/transformation/tapered.h"
 #include "plantgl/scenegraph/transformation/translated.h"
 

@@ -446,6 +446,20 @@ bool SkelComputer::process( Scaled * scaled ) {
 
 /* ----------------------------------------------------------------------- */
 
+
+bool SkelComputer::process( ScreenProjected * scp ) {
+  GEOM_ASSERT(scp);
+
+  GEOM_SKELCOMPUTER_CHECK_CACHE(scp);
+
+  if(!(scp->getGeometry()->apply(*this)))return false;
+
+  GEOM_SKELCOMPUTER_UPDATE_CACHE(scp);
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool SkelComputer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
   real_t _r = sphere->getRadius();

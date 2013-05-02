@@ -262,6 +262,9 @@ public :
       - \e sphere must be non null and valid. */
   virtual bool process( Sphere * sphere );
 
+  virtual bool process( ScreenProjected * scp)
+  { return false; }
+
   /** Applies \e self to an object of type of Tapered.
     \warning
       - \e tapered must be non null and valid. */

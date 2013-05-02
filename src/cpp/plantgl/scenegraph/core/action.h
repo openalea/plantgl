@@ -92,6 +92,7 @@ class QuadSet;
 class Revolution;
 class Swung;
 class Scaled;
+class ScreenProjected;
 class Sphere;
 class Tapered;
 class Translated;
@@ -317,6 +318,11 @@ public:
       \warning
       - \e scaled must be non null and valid. */
   virtual bool process( Scaled * scaled ) = 0;
+
+  /** Applies \e self to an object of type Scaled.
+      \warning
+      - \e scaled must be non null and valid. */
+  virtual bool process( ScreenProjected * screenprojected ) = 0;
 
   /** Applies \e self to an object of type Sphere.
       \warning

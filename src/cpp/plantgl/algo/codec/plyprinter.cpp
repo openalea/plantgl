@@ -540,6 +540,16 @@ PlyPrinter::process( Scaled * scaled )
 
 
 bool
+PlyPrinter::process( ScreenProjected * scp )
+{
+  GEOM_ASSERT( scp );
+  return false;
+}
+
+/* ----------------------------------------------------------------------- */
+
+
+bool
 PlyPrinter::process( Sphere * sphere )
 {
   GEOM_ASSERT( sphere );

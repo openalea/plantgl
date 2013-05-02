@@ -193,6 +193,7 @@ void module_sg()
     export_AxisRotated();
     export_Oriented();
     export_Tapered();
+	export_ScreenProjected();
 
     export_SceneCodec();
     export_SceneFactory();

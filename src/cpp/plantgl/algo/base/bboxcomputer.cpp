@@ -744,6 +744,16 @@ bool BBoxComputer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool BBoxComputer::process( ScreenProjected * scp) {
+  GEOM_ASSERT(scp);
+
+  return scp->getGeometry()->apply(*this);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool BBoxComputer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 

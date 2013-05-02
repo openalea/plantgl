@@ -256,6 +256,10 @@ bool PolygonComputer::process( Scaled * scaled ){
   GEOM_TRANSFORMED(scaled,Geometry);
 }
 
+bool PolygonComputer::process( ScreenProjected * scp ){
+  GEOM_TRANSFORMED(scp,Geometry);
+}
+
 bool PolygonComputer::process( Sphere * sphere ){
   __polygon = sphere->getSlices() * 2 * (sphere->getStacks() -1) ;
   return true;

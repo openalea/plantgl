@@ -1260,6 +1260,22 @@ bool Printer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool Printer::process( ScreenProjected * scp ) {
+  GEOM_ASSERT(scp);
+  GEOM_PRINT_BEGIN(__geomStream,"ScreenProjected",scp);
+
+  GEOM_PRINT_FIELD(__geomStream,scp,KeepAspectRatio,BOOLEAN);
+
+  GEOM_PRINT_FIELD(__geomStream,scp,Geometry,GEOMETRY);
+
+  GEOM_PRINT_END(__geomStream);
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool Printer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
   GEOM_PRINT_BEGIN(__geomStream,"Sphere",sphere);

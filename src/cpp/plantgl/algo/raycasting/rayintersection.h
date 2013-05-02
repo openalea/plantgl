@@ -263,6 +263,9 @@ public :
       - \e scaled must be non null and valid. */
   virtual bool process( Scaled * scaled );
 
+  virtual bool process( ScreenProjected * scp )
+   { return false; }
+
   /** Applies \e self to an object of type of Sphere.
     \warning
       - \e sphere must be non null and valid. */

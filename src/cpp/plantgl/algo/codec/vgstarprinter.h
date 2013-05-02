@@ -191,6 +191,9 @@ public:
 
   virtual bool process( TriangleSet * triangleSet );
 
+  virtual bool process( ScreenProjected * scp)
+  { return false; }
+
   //@}
 
   /// @name Geom2D

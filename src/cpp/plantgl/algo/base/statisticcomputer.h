@@ -253,6 +253,10 @@ public:
   /// Get the number of Scaled.
   const uint_t getScaled() const ;
 
+  virtual bool process( ScreenProjected * screenprojected );
+
+  const uint_t getScreenProjected() const;
+
   virtual bool process( Sphere * sphere );
 
   /// Get the number of Sphere.

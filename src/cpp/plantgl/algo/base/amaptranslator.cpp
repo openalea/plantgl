@@ -440,6 +440,17 @@ bool AmapTranslator::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool AmapTranslator::process( ScreenProjected * scp) {
+  GEOM_ASSERT(scp);
+
+  // We do not export this object
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool AmapTranslator::process( Sphere * sphere ) {
   GEOM_TRANSLATE(sphere);
 }

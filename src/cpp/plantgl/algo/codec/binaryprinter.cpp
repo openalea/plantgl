@@ -108,6 +108,7 @@ TokenCode::TokenCode(const float version ):
   __code[uchar_t(43)] = pair<string,uint_t>(string("Font"),0);
   __code[uchar_t(44)] = pair<string,uint_t>(string("Texture2D"),0);
   __code[uchar_t(45)] = pair<string,uint_t>(string("Texture2DTransformation"),0);
+  __code[uchar_t(46)] = pair<string,uint_t>(string("ScreenProjected"),0);
 }
 
 TokenCode::~TokenCode(){
@@ -130,7 +131,7 @@ bool TokenCode::setStatistic(const StatisticComputer& a){
 
 
 vector<uint_t> TokenCode::getCounts(){
-    vector<uint_t> counts((unsigned int)44,0);
+    vector<uint_t> counts((unsigned int)45,0);
     for(pgl_hash_map<uchar_t,pair<string,uint_t> >::iterator _it = __code.begin();
         _it != __code.end();_it++){
         if(_it->second.first == "Shape") counts[0]+=_it->second.second;
@@ -177,6 +178,7 @@ vector<uint_t> TokenCode::getCounts(){
         else if(_it->second.first == "Font" ) counts[41]+=_it->second.second;
         else if(_it->second.first == "Texture2D" ) counts[42]+=_it->second.second;
         else if(_it->second.first == "Texture2DTransformation" ) counts[43]+=_it->second.second;
+        else if(_it->second.first == "ScreenProjected" ) counts[44]+=_it->second.second;
     }
     return counts;
 }
@@ -483,7 +485,7 @@ void BinaryPrinter::write(const Matrix4& val) {
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(2.3f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(2.4f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -1930,6 +1932,25 @@ bool BinaryPrinter::process( Scaled * scaled ) {
   GEOM_PRINT_FIELD(scaled,Geometry,GEOMETRY);
 
   return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
+bool BinaryPrinter::process( ScreenProjected * scp ) {
+  GEOM_ASSERT(scp);
+  if(__tokens.getVersion() >= 2.4f){
+
+	GEOM_PRINT_BEGIN(ScreenProjected,scp);
+
+    GEOM_PRINT_FIELD(scp,KeepAspectRatio,BOOLEAN);
+
+	GEOM_PRINT_FIELD(scp,Geometry,GEOMETRY);
+
+	return true;
+  }
+  else return false;
 }
 
 

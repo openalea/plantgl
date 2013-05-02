@@ -260,12 +260,12 @@ BinaryParser::BinaryParser(ostream& output,int max_errors) :
     __errors_count(0),
     shape_nb(0),
     __comment(),
-    __sizes(44,uint_t(0)),
-    __currents(44,uint_t(0)),
+    __sizes(45,uint_t(0)),
+    __currents(45,uint_t(0)),
     __result(),
     __assigntime(0),
     __double_precision(false){
-    for(uint_t i=0;i<44;i++)__mem[i]=NULL;
+    for(uint_t i=0;i<45;i++)__mem[i]=NULL;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -297,7 +297,7 @@ BinaryParser::~BinaryParser( ) {
   GEOM_CLEAN_MEM(37,Swung,_reservedsize); GEOM_CLEAN_MEM(38,IFS,_reservedsize);
   GEOM_CLEAN_MEM(39,TextureImage,_reservedsize);GEOM_CLEAN_MEM(40,Text,_reservedsize);
   GEOM_CLEAN_MEM(41,Font,_reservedsize);GEOM_CLEAN_MEM(42,Texture2D,_reservedsize);
-  GEOM_CLEAN_MEM(43,Texture2DTransformation,_reservedsize);
+  GEOM_CLEAN_MEM(43,Texture2DTransformation,_reservedsize);GEOM_CLEAN_MEM(44,ScreenProjected,_reservedsize);  
 #ifdef MEMORY_MANAGEMENT
   if(_reservedsize > 0)
       __outputStream << "Delete unused reserved memory ... done (" << (_reservedsize > 1024 ? _reservedsize/1024 : _reservedsize )
@@ -591,7 +591,7 @@ bool BinaryParser::readSceneHeader(){
   GEOM_INIT_MEM(37,Swung,_reservedsize); GEOM_INIT_MEM(38,IFS,_reservedsize);
   GEOM_INIT_MEM(39,TextureImage,_reservedsize);GEOM_INIT_MEM(40,Text,_reservedsize);
   GEOM_INIT_MEM(41,Font,_reservedsize);GEOM_INIT_MEM(42,Texture2D,_reservedsize);
-  GEOM_INIT_MEM(43,Texture2DTransformation,_reservedsize);
+  GEOM_INIT_MEM(43,Texture2DTransformation,_reservedsize);GEOM_INIT_MEM(44,ScreenProjected,_reservedsize);
 #ifdef MEMORY_MANAGEMENT
   __outputStream  << "done ("<< (_reservedsize > 1024 ? _reservedsize/1024 : _reservedsize )
                   << (_reservedsize > 1024 ? " K" : " " ) << "bytes)." << endl;
@@ -702,6 +702,7 @@ bool BinaryParser::readNext(){
   else if(_classname == "Revolution")         return readRevolution();
   else if(_classname == "Swung")              return readSwung();
   else if(_classname == "Scaled")             return readScaled();
+  else if(_classname == "ScreenProjected")    return readScreenProjected();	  
   else if(_classname == "Sphere")             return readSphere();
   else if(_classname == "Tapered")            return readTapered();
   else if(_classname == "Translated")         return readTranslated();
@@ -2052,6 +2053,28 @@ bool BinaryParser::readScaled() {
     }
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,Scaled);
+    return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
+bool BinaryParser::readScreenProjected() {
+    GEOM_BEGIN(_name,_ident);
+    GEOM_INIT_OBJ(obj, 44,ScreenProjected);
+
+    GEOM_READ_FIELD(obj,KeepAspectRatio,Bool);
+
+    if(readNext())
+        obj->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
+    if(!obj->getGeometry()){
+        __outputStream << "*** PARSER: <ScreenProjected : " << (_name.empty() ? "(unamed)" : _name ) << "> Geometry not valid." << endl;
+        GEOM_DEL_OBJ(obj,44) ;
+        return false;
+    }
+
+    GEOM_PARSER_SETNAME(_name,_ident,obj,ScreenProjected);
     return true;
 }
 

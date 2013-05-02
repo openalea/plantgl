@@ -333,6 +333,7 @@ QuadSet           {TRACE; return TokQuadSet;}
 Revolution        {TRACE; return TokRevolution;}
 Swung             {TRACE; return TokSwung;}
 Scaled            {TRACE; return TokScaled;}
+ScreenProjected   {TRACE; return TokScreenProjected;}
 Sphere            {TRACE; return TokSphere;}
 Tapered           {TRACE; return TokTapered;}
 Translated        {TRACE; return TokTranslated;}
@@ -385,6 +386,7 @@ IndexList         {TRACE; return TokIndexList;}
 InitialNormal     {TRACE; return TokInitialNormal;}
 Italic			  {TRACE; return TokItalic;}
 KnotList          {TRACE; return TokKnotList;}
+KeepAspectRatio   {TRACE; return TokKeepAspectRatio;}
 Mipmaping         {TRACE; return TokMipmaping;}
 NegXHeight        {TRACE; return TokNegXHeight;}
 NegXRadius        {TRACE; return TokNegXRadius;}

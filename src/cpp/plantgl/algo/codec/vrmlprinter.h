@@ -26,7 +26,7 @@
  *       You should have received a copy of the GNU General Public
  *       License along with this program; see the file COPYING. If not,
  *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *       Temple Place - Suite 330, Boston , MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
  */
@@ -236,6 +236,9 @@ public:
   virtual bool process( Swung * swung );
 
   virtual bool process( Scaled * scaled );
+
+  virtual bool process( ScreenProjected * scp)
+  { return false; }
 
   virtual bool process( Sphere * sphere );
 

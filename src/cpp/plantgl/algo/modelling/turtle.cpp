@@ -487,8 +487,7 @@ void Turtle::stop(){
 		  if (__params->elasticity > GEOM_EPSILON){
 			  _applyTropism();
 		  }
-          if (!__params->isGeneralizedCylinderOn() && 
-              ! __params->isPolygonOn()){
+          if (!__params->isGeneralizedCylinderOn()){
                   if(__params->defaultSection && __params->width > -GEOM_EPSILON){
 					if (topradius < -GEOM_EPSILON)  _cylinder(length);
 					else _frustum(length,topradius);
@@ -785,7 +784,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
       __params->polygon(true);
     __params->customId = popId();
     __params->customParentId = parentId;
-    __params->pushPosition();
+    // __params->pushPosition();
   }
 
   void Turtle::stopPolygon(bool concavetest){

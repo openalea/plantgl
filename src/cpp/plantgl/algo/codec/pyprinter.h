@@ -84,6 +84,8 @@ public:
 
 	virtual bool process( Scaled * scaled );
 
+    virtual bool process( ScreenProjected * screenprojected );
+
 	virtual bool process( Swung * swung );
 
 	virtual bool process( Translated * translated );

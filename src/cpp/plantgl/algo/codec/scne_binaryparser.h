@@ -245,6 +245,9 @@ public:
   /// Read a Scaled object
   virtual bool readScaled();
 
+  /// Read a Scaled object
+  virtual bool readScreenProjected();
+
   /// Read a Sphere object
   virtual bool readSphere();
 

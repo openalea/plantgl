@@ -553,6 +553,15 @@ BSphereComputer::process( Scaled * scaled )
   GEOM_BSPHERECOMPUTER_TRANSFORM( scaled );
 }
 
+/* ----------------------------------------------------------------------- */
+
+
+bool BSphereComputer::process( ScreenProjected * scp) {
+  GEOM_ASSERT(scp);
+
+  return (scp->getGeometry()?scp->getGeometry()->apply(*this):false);
+}
+
 
 /* ----------------------------------------------------------------------- */
 

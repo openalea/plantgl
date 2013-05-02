@@ -244,6 +244,9 @@
     <ClCompile Include="geometry\plane.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="transformation\screenprojected.cpp">
+      <Filter>Transformation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\action.h">
@@ -501,6 +504,9 @@
     </ClInclude>
     <ClInclude Include="geometry\plane.h">
       <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="transformation\screenprojected.h">
+      <Filter>Transformation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

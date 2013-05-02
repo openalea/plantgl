@@ -966,6 +966,16 @@ bool PovPrinter::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool PovPrinter::process( ScreenProjected * scp ) {
+  GEOM_ASSERT(scp);
+
+  return false;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool PovPrinter::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
   GEOM_POVPRINT_BEGIN(__geomStream,"sphere",sphere);

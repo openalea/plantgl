@@ -159,6 +159,8 @@ public:
 
   virtual bool process( Scaled * scaled );
 
+  virtual bool process( ScreenProjected * screenprojected );
+
   virtual bool process( Sphere * sphere );
 
   virtual bool process( Tapered * tapered );

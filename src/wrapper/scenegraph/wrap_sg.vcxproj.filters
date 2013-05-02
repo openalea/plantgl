@@ -259,5 +259,8 @@
     <ClCompile Include="export_plane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="export_screenprojected.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

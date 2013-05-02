@@ -234,6 +234,8 @@ public:
 
   virtual bool process( Scaled * scaled );
 
+  virtual bool process( ScreenProjected * scp );
+
   virtual bool process( Sphere * sphere );
 
   virtual bool process( Tapered * tapered );

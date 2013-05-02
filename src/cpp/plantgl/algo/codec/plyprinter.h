@@ -300,6 +300,11 @@ public :
       - \e scaled must be non null and valid. */
   virtual bool process( Scaled * scaled );
 
+  /** Applies \e self to an object of type of ScreenProjected.
+    \warning
+      - \e scaled must be non null and valid. */
+  virtual bool process( ScreenProjected * scp );
+
   /** Applies \e self to an object of type of Sphere.
     \warning
       - \e sphere must be non null and valid. */

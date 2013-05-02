@@ -507,6 +507,15 @@ bool SurfComputer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool SurfComputer::process( ScreenProjected * scp) {
+  GEOM_ASSERT(scp);
+  return (scp->getGeometry()?scp->getGeometry()->apply(*this):false);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool SurfComputer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 

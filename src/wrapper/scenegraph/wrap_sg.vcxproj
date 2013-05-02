@@ -157,6 +157,7 @@
     <ClCompile Include="export_scaled.cpp" />
     <ClCompile Include="export_scene.cpp" />
     <ClCompile Include="export_sceneobject.cpp" />
+    <ClCompile Include="export_screenprojected.cpp" />
     <ClCompile Include="export_shape.cpp" />
     <ClCompile Include="export_sor.cpp" />
     <ClCompile Include="export_sphere.cpp" />

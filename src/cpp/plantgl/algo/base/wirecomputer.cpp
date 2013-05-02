@@ -418,6 +418,15 @@ bool WireComputer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool WireComputer::process( ScreenProjected * scp) {
+  GEOM_ASSERT(scp);
+  return (scp->getGeometry()?scp->getGeometry()->apply(*this):false);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool WireComputer::process( Sphere * sphere ) {
   GEOM_DISCRETIZE(sphere);
 }

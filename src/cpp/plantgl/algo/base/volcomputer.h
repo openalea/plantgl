@@ -139,6 +139,9 @@ public:
 
   virtual bool process( Scaled * scaled );
 
+  virtual bool process( ScreenProjected * screenprojected )
+  { return false; }
+
   virtual bool process( Sphere * sphere );
 
   virtual bool process( Tapered * tapered );

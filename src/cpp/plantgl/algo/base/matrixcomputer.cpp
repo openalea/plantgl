@@ -293,6 +293,14 @@ bool MatrixComputer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool MatrixComputer::process( ScreenProjected * scp) {
+  return default_process(scp);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool MatrixComputer::process( Sphere * sphere ) {
   return default_process(sphere);
 }

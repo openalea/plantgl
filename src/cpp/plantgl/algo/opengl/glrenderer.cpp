@@ -1421,6 +1421,38 @@ bool GLRenderer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool GLRenderer::process( ScreenProjected * scp ) {
+	GEOM_ASSERT(scp);
+	GEOM_GLRENDERER_CHECK_CACHE(scp);
+	real_t heigthscale = 1.0;
+    if(__glframe!= NULL && scp->getKeepAspectRatio()){
+		heigthscale = float(__glframe->height()) / float(__glframe->width());
+    }
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(-1, 1,-heigthscale, heigthscale, 1, -1);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+    glLoadIdentity();
+
+	scp->getGeometry()->apply(*this);
+  
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+    GEOM_GLRENDERER_UPDATE_CACHE(scp);
+    GEOM_ASSERT(glGetError() == GL_NO_ERROR);
+    return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool GLRenderer::process( Sphere * sphere ) {
   GEOM_GLRENDERER_DISCRETIZE_RENDER(sphere);
 }

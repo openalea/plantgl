@@ -105,6 +105,7 @@ void export_BaseOrientation();
 void export_Transform4();
 void export_Transformed();
 void export_Scaled();
+void export_ScreenProjected();
 void export_Translated();
 void export_IFS();
 void export_EulerRotated();

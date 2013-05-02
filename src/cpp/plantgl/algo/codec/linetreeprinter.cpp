@@ -735,3 +735,8 @@ bool LinetreePrinter::process( Polyline2D * polyline ) {
 
 /* ----------------------------------------------------------------------- */
 
+bool LinetreePrinter::process( ScreenProjected * scp) {
+  GEOM_ASSERT(scp);
+  // nothing to do
+  return true;
+}

@@ -156,6 +156,7 @@
     <ClCompile Include="transformation\oriented.cpp" />
     <ClCompile Include="transformation\orthotransformed.cpp" />
     <ClCompile Include="transformation\scaled.cpp" />
+    <ClCompile Include="transformation\screenprojected.cpp" />
     <ClCompile Include="transformation\tapered.cpp" />
     <ClCompile Include="transformation\transformed.cpp" />
     <ClCompile Include="transformation\translated.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="transformation\oriented.h" />
     <ClInclude Include="transformation\orthotransformed.h" />
     <ClInclude Include="transformation\scaled.h" />
+    <ClInclude Include="transformation\screenprojected.h" />
     <ClInclude Include="transformation\tapered.h" />
     <ClInclude Include="transformation\transformed.h" />
     <ClInclude Include="transformation\translated.h" />

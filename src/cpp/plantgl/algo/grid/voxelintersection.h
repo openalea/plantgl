@@ -150,6 +150,9 @@ class ALGO_API VoxelIntersection : public Action {
 
    virtual bool process( Scaled * scaled );
 
+   virtual bool process( ScreenProjected * scp )
+   { return false; }
+
    virtual bool process( Sphere * sphere );
 
    virtual bool process( Swung * swung );

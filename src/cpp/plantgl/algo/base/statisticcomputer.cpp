@@ -77,7 +77,7 @@ StatisticComputer::StatisticComputer( ) :
   __cache(),
   __element(0),
   __named(0),
-  __shape((unsigned int)44,0),
+  __shape((unsigned int)45,0),
   __memsize(0){
 }
 
@@ -473,6 +473,18 @@ bool StatisticComputer::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool StatisticComputer::process( ScreenProjected * scp ) {
+  GEOM_COMPUTE(scp,44);
+
+  GEOM_APPLY(scp,Geometry);
+
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool StatisticComputer::process( Sphere * sphere ) {
   GEOM_COMPUTE(sphere,28);
 
@@ -746,6 +758,10 @@ const uint_t StatisticComputer::getRevolution() const {
 
 const uint_t StatisticComputer::getScaled() const {
   return __shape[27];
+}
+
+const uint_t StatisticComputer::getScreenProjected() const {
+  return __shape[44];
 }
 
 const uint_t StatisticComputer::getSphere() const {

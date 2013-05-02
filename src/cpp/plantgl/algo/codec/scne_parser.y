@@ -123,6 +123,7 @@ static char * sh_keyword[] = {
     "Swung",
     "Shape",
     "Scaled",
+	"ScreenProjected",
     "Sphere",
     "Tapered",
     "Translated",
@@ -462,6 +463,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   Revolution::Builder *        revolution_b;
   Swung::Builder *             swung_b;
   Scaled::Builder *            scaled_b;
+  ScreenProjected::Builder *   screenprojected_b;
   Sphere::Builder *            sphere_b;
   Tapered::Builder *           tapered_b;
   Translated::Builder *        translated_b;
@@ -521,6 +523,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokRevolution
 %token TokSwung
 %token TokScaled
+%token TokScreenProjected
 %token TokSphere
 %token TokTapered
 %token TokTranslated
@@ -590,6 +593,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokIndexList
 %token TokInitialNormal
 %token TokKnotList
+%token TokKeepAspectRatio
 %token TokNegXHeight
 %token TokNegXRadius
 %token TokNegYHeight
@@ -740,6 +744,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %type <geometry_o>          IFSObj
 %type <geometry_o>          OrientedObj
 %type <geometry_o>          ScaledObj
+%type <geometry_o>          ScreenProjectedObj
 %type <geometry_o>          TaperedObj
 %type <geometry_o>          TranslatedObj
 
@@ -792,6 +797,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %type <revolution_b>        RevolutionFieldList
 %type <swung_b>             SwungFieldList
 %type <scaled_b>            ScaledFieldList
+%type <screenprojected_b>   ScreenProjectedFieldList
 %type <sphere_b>            SphereFieldList
 %type <tapered_b>           TaperedFieldList
 %type <translated_b>        TranslatedFieldList
@@ -1229,6 +1235,7 @@ PrimitiveObj:
 TransformedObj:
    TranslatedObj { $$ = $1; }
  | ScaledObj { $$ = $1; }
+ | ScreenProjectedObj { $$ = $1; }
  | OrientedObj { $$ = $1; }
  | AxisRotatedObj { $$ = $1; }
  | EulerRotatedObj { $$ = $1; }
@@ -1507,6 +1514,11 @@ SwungObj:
 
 ScaledObj:
   TokScaled Name '{' ScaledFieldList '}' {
+    GEOM_PARSER_BUILD_OBJECT(Geometry,$$,$2,$4);
+  };
+
+ScreenProjectedObj:
+  TokScreenProjected Name '{' ScreenProjectedFieldList '}' {
     GEOM_PARSER_BUILD_OBJECT(Geometry,$$,$2,$4);
   };
 
@@ -2129,6 +2141,16 @@ ScaledFieldList:
    }
  | { $$ = new Scaled::Builder; };
 
+ScreenProjectedFieldList:
+   ScreenProjectedFieldList TokKeepAspectRatio TokBool {
+     GEOM_PARSER_SET_FIELD($1,KeepAspectRatio,$3); $$=$1;
+   }
+ | ScreenProjectedFieldList TokGeometry GeometryObj {
+     GEOM_PARSER_SET_FIELD($1,Geometry,$3); $$=$1;
+   }
+ | { $$ = new ScreenProjected::Builder; };
+
+ 
 TaperedFieldList:
    TaperedFieldList TokBaseRadius Real {
      GEOM_PARSER_SET_FIELD($1,BaseRadius,$3); $$=$1;

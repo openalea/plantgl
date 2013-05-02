@@ -939,6 +939,27 @@ bool PyPrinter::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool PyPrinter::process( ScreenProjected * scp) {
+  GEOM_BEGIN(scp);
+
+  string name = compute_name(scp);
+
+  GeometryPtr obj = scp->getGeometry();
+  obj->apply(*this);
+
+
+  print_constructor_begin(__geomStream, name, "ScreenProjected");
+  print_arg_field (__geomStream, "geometry", SceneObjectPtr(obj));
+
+  print_constructor_end(__geomStream, scp, name);
+
+  print_object_end(__geomStream);
+  return true;
+}
+
+/* ----------------------------------------------------------------------- */
+
+
 bool PyPrinter::process( Swung * swung )
 {
   GEOM_BEGIN(swung);

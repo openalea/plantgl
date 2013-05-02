@@ -875,7 +875,7 @@ bool Discretizer::process( ExtrudedHull * extrudedHull ) {
 
   if(!_horcurve->apply(*this)){
     /// Hack for bug with tesselator.
-    Discretizer second;
+                         Discretizer second;
     if(!_horcurve->apply(second)){
       cerr << "Warning ! could not perform discretization on horizontal profile of " << extrudedHull->getName() << endl;
       return false;
@@ -1983,6 +1983,17 @@ if( i != slices-1 )
 bool Discretizer::process( Scaled * scaled ) {
   GEOM_ASSERT(scaled);
   GEOM_DISCRETIZER_TRANSFORM(scaled );
+  return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
+bool Discretizer::process( ScreenProjected * screenprojected) {
+  GEOM_ASSERT(screenprojected);
+  
+  // We assume that this correspond to Id transformation 
   return true;
 }
 

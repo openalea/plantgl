@@ -170,6 +170,8 @@ public:
 
   bool process( Scaled * scaled );
 
+  bool process( ScreenProjected * screenprojected );
+
   bool process( Translated * translated );
 
   //@}

@@ -902,6 +902,22 @@ bool GeomListViewBuilder::process( Scaled * scaled ) {
 /* ----------------------------------------------------------------------- */
 
 
+bool GeomListViewBuilder::process( ScreenProjected * scp ) {
+  GEOM_ASSERT(scp);
+
+  addNode(scp,"ScreenProjected",3);
+  addAttr("KeepAspectRatio",scp->getKeepAspectRatio());
+  addAttrNode("Geometry",SceneObjectPtr(scp->getGeometry()),"GeometryPtr");
+
+
+ endNode();
+ return true;
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
 bool GeomListViewBuilder::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
