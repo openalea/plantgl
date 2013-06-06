@@ -16,7 +16,7 @@ __all__ = ['plot3d']
 plot3d = Factory( name= "plot3D", 
                   description= "Viewer Display", 
                   category = "Visualisation, plot", 
-                  nodemodule = "viewernode",
+                  nodemodule = "openalea.plantgl.wralea.visualization.viewernode",
                   nodeclass = "Plot3D",
                   #lazy = False
                   )

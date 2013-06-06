@@ -197,7 +197,7 @@ class ObjCodec (sg.SceneCodec):
 
     def formats(self):
         """ return formats """
-        return [ sg.SceneFormat("Obj Codec",["obj"],"The Obj  file format") ]
+        return [ sg.SceneFormat("Obj Codec",["obj"],"The Obj file format") ]
 
 
     def read(self,fname):
