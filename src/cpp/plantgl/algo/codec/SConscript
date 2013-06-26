@@ -9,24 +9,32 @@ Import( "env" )
 
 includes= env.ALEAGlob('*.h')
 
-src= BisonFlex( env, 
+BUILD_BISON = False 
+BUILD_BISON = True
+if BUILD_BISON:
+    src= BisonFlex( env, 
                 "scne_parser.y", 
                 "scne_scanner.l", 
                 "scne_yy" )
 
-# simple flatten implementation
-if env['compiler'] == 'mingw':
-  CXXFLAGS= env['CXXFLAGS']+['-fno-inline']
-  bison_obj= env.SharedObject(src[ 0 ], CXXFLAGS= CXXFLAGS)
-else:
-  bison_obj= env.SharedObject(src[ 0 ])
+    # simple flatten implementation
+    if env['compiler'] == 'mingw':
+      CXXFLAGS= env['CXXFLAGS']+['-fno-inline']
+      bison_obj= env.SharedObject(src[ 0 ], CXXFLAGS= CXXFLAGS)
+    else:
+      bison_obj= env.SharedObject(src[ 0 ])
 
-sources= [str( src[ 1][ 0 ] )]
+    sources= [str( src[ 1][ 0 ] )]
+else: 
+    sources = ['scne_parser.cpp', 'scne_scanner.cc']
 
-if env.get('BISON_HPP',False):
-  includes.append( 'scne_parser.hpp' )
+if BUILD_BISON:
+  if env.get('BISON_HPP',False):
+    includes.append( 'scne_parser.hpp' )
+  else:
+    includes.append( 'scne_parser.cpp.h' )
 else:
-  includes.append( 'scne_parser.cpp.h' )
+    includes.append( 'scne_parser.hpp' )
 
 # 2. Build and install the library/headers
 
@@ -34,7 +42,8 @@ inc= env.ALEAIncludes( "plantgl/algo/codec", includes )
 
 sources= map(lambda x: pj('codec',x),sources)
 
-sources.append(bison_obj)
+if BUILD_BISON:
+    sources.append(bison_obj)
 
 Return('sources')
 
