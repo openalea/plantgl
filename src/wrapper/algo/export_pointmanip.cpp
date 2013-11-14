@@ -260,6 +260,7 @@ void export_PointManip()
     def("pointsets_orientations",&pointsets_orientations,args("points","groups"));
     def("pointset_normal",&pointset_normal,(bp::arg("points"),bp::arg("groups")));
     def("pointsets_normals",&pointsets_normals,(bp::arg("points"),bp::arg("groups")));
+    def("triangleset_orientation",&triangleset_orientation,args("points","triangles"));
 
 #ifdef WITH_LAPACK
     def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4),
@@ -342,6 +343,8 @@ void export_PointManip()
     def("orientations_similarities",&orientations_similarities,(bp::arg("orientations"),bp::arg("group")=Index()));
 
     def("cluster_junction_points",&py_cluster_junction_points,(bp::arg("pointtoppology"),bp::arg("group1"),bp::arg("group2")));
+
+    def("pointset_median",&pointset_median,(bp::arg("points"),bp::arg("nbIterMax")=200));
 }
 
 

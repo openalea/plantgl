@@ -12,5 +12,29 @@ def test_compress_point3():
   
   p3compress = compress_point3(p3list, radius)
   assert len(p3list) == len(p3compress)
+
+def dist_to_points(p, plist):
+    return sum([norm(p-pi) for pi in plist])
+        
+def brute_force_pointset_median(plist):
+    dist_list = [(i,dist_to_points(pi,plist)) for i,pi in enumerate(plist)]
+    dist_list.sort(lambda x,y: cmp(x[1],y[1]))
+    return dist_list[0][0]
+    
   
-test_compress_point3()
+def test_median_point():
+   nbpoint = 100
+   p3list = Point3Array([random_point() for i in xrange(nbpoint)])
+   i = pointset_median(p3list,1000000)
+   j = brute_force_pointset_median(p3list)
+   if i != j:
+       raise ValueError(i,j,dist_to_points(p3list[i],p3list),dist_to_points(p3list[j],p3list))
+   
+   
+  
+if __name__ == '__main__':
+    for i in xrange(50):
+        test_median_point()
+
+
+    

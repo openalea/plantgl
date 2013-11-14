@@ -739,6 +739,40 @@ Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index& grou
 #endif
 }
 
+ALGO_API TOOLS(Vector3) 
+PGL::triangleset_orientation(const Point3ArrayPtr points, const Index3ArrayPtr triangles)
+{
+#ifdef WITH_CGAL
+    typedef CGAL::Cartesian<real_t>   CK;
+    typedef CK::Point_3               CPoint;
+    typedef CK::Line_3                CLine;
+	typedef CK::Triangle_3			  CTriangle;
+
+	std::list<CTriangle> cgaltriangles;
+	for (Index3Array::const_iterator it = triangles->begin(); it != triangles->end() ; ++it)
+		cgaltriangles.push_back(
+				CTriangle(toPoint3<CPoint>(points->getAt(it->getAt(0))),
+						  toPoint3<CPoint>(points->getAt(it->getAt(1))),
+				          toPoint3<CPoint>(points->getAt(it->getAt(2)))
+					));	
+
+
+	CLine line;
+	linear_least_squares_fitting_3(cgaltriangles.begin(), cgaltriangles.end(), line, CGAL::Dimension_tag<0>());
+
+	return toVector3(line.to_vector());
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'pointset_orientation' disabled. CGAL needed.")
+    #else
+    #warning "function 'pointset_orientation' disabled. CGAL needed"
+    #endif
+
+    return Vector3(0,0,0);
+#endif
+}
+
+
 Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups)
 {
 	size_t nbPoints = points->size();
@@ -2812,4 +2846,49 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& sec
 #else
     return Vector3::ORIGIN;
 #endif
+}
+
+
+uint32_t PGL::pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax)
+{
+	Vector3 center = points->getCenter();
+	std::pair<Point3Array::const_iterator,real_t> closest = findClosest<Point3Array>(*points,center);
+	Point3Array::const_iterator cpoint = closest.first;
+	real_t dist = closest.second;
+	if (dist <= GEOM_EPSILON) return std::distance<Point3Array::const_iterator>(points->begin(),cpoint);
+
+	uint32_t iternb = 0;
+	real_t lastdists[3];
+
+	while (iternb < nbIterMax){
+		Vector3 ncenter(0,0,0);
+		real_t sumw = 0;
+		real_t totdist = 0;
+		real_t mindist = REAL_MAX;
+		// compute mean point with weigth inversely proportional to distance to actual mean point.
+		for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp) {
+			real_t d = normSquared(*itp-center);
+			if (d <= GEOM_EPSILON) return std::distance<Point3Array::const_iterator>(points->begin(),itp);
+			if (d < mindist) {
+				mindist = d; cpoint = itp;
+			}
+			real_t ldist = sqrt(d);
+			ncenter += *itp / ldist;
+			sumw += 1/ldist;
+			totdist += d;
+		}
+
+		real_t lastdist = (iternb > 1?REAL_MAX:lastdists[(iternb-2) % 3]);
+		if (lastdist < totdist) {
+			// converged
+			break;
+		}
+		else {
+			lastdists[iternb % 3] = totdist;
+			center = ncenter/sumw;
+		}
+		++iternb;
+	}
+	return std::distance<Point3Array::const_iterator>(points->begin(),cpoint);
+
 }

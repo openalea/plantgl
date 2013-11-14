@@ -220,6 +220,9 @@ pointsets_orient_normals(const Point3ArrayPtr normals, const Point3ArrayPtr poin
 ALGO_API Point3ArrayPtr 
 pointsets_orient_normals(const Point3ArrayPtr normals, uint32_t source, const IndexArrayPtr riemanian);
 
+/// Orientation estimations
+ALGO_API TOOLS(Vector3) 
+triangleset_orientation(const Point3ArrayPtr points, const Index3ArrayPtr triangles);
 
 
 struct CurvatureInfo {
@@ -494,6 +497,8 @@ ALGO_API std::pair<Index,Index> cluster_junction_points(const IndexArrayPtr poin
 
 // from Tagliasacchi 2009
 ALGO_API TOOLS(Vector3) section_normal(const Point3ArrayPtr pointnormals, const Index& section);
+
+ALGO_API uint32_t pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax = 200);
 
 PGL_END_NAMESPACE
 
