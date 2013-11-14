@@ -2868,7 +2868,7 @@ uint32_t PGL::pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax)
 		// compute mean point with weigth inversely proportional to distance to actual mean point.
 		for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp) {
 			real_t d = normSquared(*itp-center);
-			if (d <= GEOM_EPSILON) return std::distance<Point3Array::const_iterator>(points->begin(),itp);
+			// if (d <= GEOM_TOLERANCE) return std::distance<Point3Array::const_iterator>(points->begin(),itp);
 			if (d < mindist) {
 				mindist = d; cpoint = itp;
 			}
@@ -2877,13 +2877,15 @@ uint32_t PGL::pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax)
 			sumw += 1/ldist;
 			totdist += d;
 		}
+		if (mindist < GEOM_TOLERANCE)  return std::distance<Point3Array::const_iterator>(points->begin(),cpoint);
 
-		real_t lastdist = (iternb > 1?REAL_MAX:lastdists[(iternb-2) % 3]);
-		if (lastdist < totdist) {
+		real_t lastdist = (iternb <= 1?REAL_MAX:lastdists[(iternb-2) % 3]);
+		if (fabs(lastdist - totdist) < GEOM_EPSILON) {
 			// converged
-			break;
+			return std::distance<Point3Array::const_iterator>(points->begin(),cpoint);
 		}
 		else {
+			// printf("%i %i %f\n",iternb, std::distance<Point3Array::const_iterator>(points->begin(),cpoint), totdist);
 			lastdists[iternb % 3] = totdist;
 			center = ncenter/sumw;
 		}
