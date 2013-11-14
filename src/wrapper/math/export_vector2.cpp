@@ -200,7 +200,7 @@ real_t pgl_py_normLinfList(real_t val1     , real_t val2     , real_t val3  = 0,
 BOOST_PYTHON_FUNCTION_OVERLOADS(pgl_py_normLinfList_overloads, pgl_py_normLinfList, 2, 15)
 
 object pgl_py_dir(object obj){
-	try { return obj.attr( "__dir__" )(); }
+	try { return obj.attr( "__direction__" )(); }
 	catch( error_already_set ){ PyErr_Clear(); }
 	real_t f = extract<real_t>(pgl_py_norm(obj));
 	list l;
@@ -297,7 +297,7 @@ void export_Vector2()
   def("normLinf",     pgl_py_normLinfList, pgl_py_normLinfList_overloads()  );
   def("normSquared",     pgl_py_normSquared , args("v") , "The square of the norm of the vector. If v.__normSquared__() exists, call it." );
   def("normSquared",     pgl_py_normSquaredList, pgl_py_normSquaredList_overloads()  );
-  def("direction",  pgl_py_dir , args("v") , "The direction of the vector. Resulting vector is normed. If v.__dir__() exists, call it."  );
+  def("direction",  pgl_py_dir , args("v") , "The direction of the vector. Resulting vector is normed. If v.__direction__() exists, call it."  );
  
 }
 

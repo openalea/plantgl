@@ -1404,17 +1404,24 @@ void PglTurtle::_cylinder(real_t length){
 GeometryPtr PglTurtle::DEFAULT_SPHERE;
 
 void PglTurtle::_sphere(real_t radius){
-  real_t rad = radius;
-  if ( getScale() !=  Vector3(1,1,1) &&
-		(getScale().x() == getScale().y() && 
-		 getScale().y() == getScale().z() ))
-		rad *= getScale().x();
   if (getParameters().sectionResolution == Cylinder::DEFAULT_SLICES){
 	  if (is_null_ptr(DEFAULT_SPHERE))DEFAULT_SPHERE = GeometryPtr(new Sphere(1));
-	  _addToScene(transform(GeometryPtr(new Scaled(getScale()*rad,DEFAULT_SPHERE))));
+	  _addToScene(transform(GeometryPtr(new Scaled(getScale() * radius,DEFAULT_SPHERE)),false));
 	  
   }
-  else _addToScene(transform(GeometryPtr(new Sphere(rad,getParameters().sectionResolution,getParameters().sectionResolution))));
+  else {
+	  bool anisotropicscaling = true;
+	  if ( getScale() !=  Vector3(1,1,1) &&
+			(getScale().x() == getScale().y() && 
+			 getScale().y() == getScale().z() ))
+	  {
+			anisotropicscaling = false;
+	  }
+	  if (anisotropicscaling)
+			_addToScene(transform(GeometryPtr(new Sphere(radius * getScale().x(),getParameters().sectionResolution,getParameters().sectionResolution)),false));
+	  else
+		  _addToScene(transform(GeometryPtr(new Sphere(radius,getParameters().sectionResolution,getParameters().sectionResolution))));
+  }
 }
 
 GeometryPtr PglTurtle::getCircle(real_t radius) const{

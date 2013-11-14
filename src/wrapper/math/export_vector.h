@@ -125,7 +125,7 @@ class vector_base_func : public boost::python::def_visitor<vector_base_func<V> >
          .def( "__normL1__",       &vec_normL1<V> ,      "Returns the L1 (Manhattan) norm of self.")
          .def( "__normLinf__",     &vec_normLinf<V> ,    "Returns the L-infinite norm of self.")
          .def( "__normSquared__",  &vec_normSquared<V> , "Returns the square of the norm of self." )
-         .def( "__dir__",          &vec_direction<V> ,   "Returns the direction of self.")
+         .def( "__direction__",          &vec_direction<V> ,   "Returns the direction of self.")
          .def( "__getitem__", &vec_getAt<V> )
          .def( "__setitem__", &vec_setAt<V> )
          .def( "__len__", &vec_size<V> )

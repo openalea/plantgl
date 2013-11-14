@@ -51,8 +51,9 @@ class AscCodec (sg.SceneCodec):
                 if isptsfile and len(values) == 1:
                     warnings.warn("Skip line "+str(i+isptsfile)+" in file '"+fname+"'.")
                 else:
-                    warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))
-                    raise e
+                    if len(values) != 0:
+                        warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))
+                        raise e
             i+=1
         f.close()
         center = pts.getCenter()
