@@ -25,10 +25,13 @@ def brute_force_pointset_median(plist):
 def test_median_point():
    nbpoint = 100
    p3list = Point3Array([random_point() for i in xrange(nbpoint)])
-   i = pointset_median(p3list,100000)
+   i = pointset_median(p3list)
    j = brute_force_pointset_median(p3list)
+   k = approx_pointset_median(p3list,100000)
    if i != j:
        raise ValueError(i,j,dist_to_points(p3list[i],p3list),dist_to_points(p3list[j],p3list),p3list[i],p3list[j])
+   if k != j:
+       raise ValueError(k,j,dist_to_points(p3list[i],p3list),dist_to_points(p3list[j],p3list),p3list[i],p3list[j])
    
    
   

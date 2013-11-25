@@ -1829,7 +1829,9 @@ real_t PGL::average_distance_to_shape(const Point3ArrayPtr points,
     real_t sum_min_dist = 0;
     uint32_t nb_samples = 0;
     ANNKDTree3 tree(nodes);
-    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp)
+    ProgressStatus st(points->size(),"distance to shape for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++st)
     {
         real_t minpdist = REAL_MAX;
         Index nids = tree.k_closest_points(*itp,maxclosestnodes);
@@ -2849,7 +2851,28 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& sec
 }
 
 
-uint32_t PGL::pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax)
+uint32_t PGL::pointset_median(const Point3ArrayPtr points)
+{
+	real_t minsumdist = 0;
+	Point3Array::const_iterator median = points->begin();
+	for(Point3Array::const_iterator itp = points->begin()+1; itp != points->end(); ++itp) {
+		minsumdist += norm(*itp-*median);
+	}
+	
+	for(Point3Array::const_iterator itmedian = points->begin()+1; itmedian != points->end(); ++itmedian) {
+		real_t sumdist = 0;
+		for(Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp) {
+			sumdist += norm(*itp-*itmedian);
+		}
+		if (sumdist < minsumdist) {
+			median = itmedian; minsumdist = sumdist;
+		}
+	}
+	return std::distance<Point3Array::const_iterator>(points->begin(),median);
+
+}
+
+uint32_t PGL::approx_pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax)
 {
 	Vector3 center = points->getCenter();
 	std::pair<Point3Array::const_iterator,real_t> closest = findClosest<Point3Array>(*points,center);

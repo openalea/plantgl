@@ -498,7 +498,15 @@ ALGO_API std::pair<Index,Index> cluster_junction_points(const IndexArrayPtr poin
 // from Tagliasacchi 2009
 ALGO_API TOOLS(Vector3) section_normal(const Point3ArrayPtr pointnormals, const Index& section);
 
-ALGO_API uint32_t pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax = 200);
+/*
+    Compute the geometric median of a point sample.
+    The geometric median coordinates will be expressed in the Spatial Image reference system (not in real world metrics).
+    We use the Weiszfeld's algorithm (http://en.wikipedia.org/wiki/Geometric_median) 
+*/
+ALGO_API uint32_t approx_pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax = 200);
+
+// brute force approach
+ALGO_API uint32_t pointset_median(const Point3ArrayPtr points);
 
 PGL_END_NAMESPACE
 

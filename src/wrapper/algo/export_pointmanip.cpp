@@ -344,7 +344,8 @@ void export_PointManip()
 
     def("cluster_junction_points",&py_cluster_junction_points,(bp::arg("pointtoppology"),bp::arg("group1"),bp::arg("group2")));
 
-    def("pointset_median",&pointset_median,(bp::arg("points"),bp::arg("nbIterMax")=200));
+    def("pointset_median",&pointset_median,(bp::arg("points")));
+    def("approx_pointset_median",&approx_pointset_median,(bp::arg("points"),bp::arg("nbIterMax")=200));
 }
 
 
