@@ -34,7 +34,7 @@
 
 #include "grid.h"
 #include "event.h"
-#include <GL/glu.h>
+#include <plantgl/algo/opengl/util_gl.h>
 #include <assert.h>
 #include <iostream>
 #include <QtGui/qtoolbar.h>

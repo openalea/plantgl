@@ -85,9 +85,9 @@ void ALGO_API geomWireCube(GLdouble size);
 /// equivalent to glutSolidCube()
 void ALGO_API geomSolidCube(GLdouble size);
 
-#ifndef WITHOUT_GLUT
-#include <GL/glut.h>
-#else
+#ifdef WITHOUT_GLUT
+//#include <GL/glut.h>
+//#else
 
 /// redirect glutWireSphere symbol for not changing code
 #define glutWireSphere geomWireSphere

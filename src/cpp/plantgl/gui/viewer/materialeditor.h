@@ -49,7 +49,6 @@
 #include <QtGui/qpushbutton.h>
 #include <QtGui/qslider.h>
 #include <QtOpenGL/qgl.h>
-#include <GL/glu.h>
 class QVBoxLayout; 
 class QHBoxLayout; 
 class QGridLayout; 

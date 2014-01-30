@@ -169,7 +169,7 @@ public:
   bool parse(GENERIC_LEXER* plexer, std::ostream& output_stream = std::cout, void* data = NULL);
 
   /// current token in the current stream
-  char* currentTokenString() {return _plexer->YYText();}
+  const char* currentTokenString() {return _plexer->YYText();}
 
   /// the symbol table is a hash map associating strings and values of type T.
   SymbolTable<T>* smbTable() {return _pst;}

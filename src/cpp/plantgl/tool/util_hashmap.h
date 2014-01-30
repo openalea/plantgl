@@ -40,17 +40,24 @@
 */
 
 #ifdef USING_UNORDERED_MAP
-#ifdef GNU_STL_EXTENSION
+
+#ifdef GNU_TR1_STL_EXTENSION
 	#include <tr1/unordered_map>
 	#define pgl_hash_map std::tr1::unordered_map
+
+	#ifndef pgl_hash
+		#define pgl_hash std::tr1::hash
+	#endif
+
 #else
 	#include <unordered_map>
-	#define pgl_hash_map unordered_map
+	#define pgl_hash_map std::unordered_map
+
+	#ifndef pgl_hash
+		#define pgl_hash std::hash
+	#endif
 #endif
 
-#ifndef pgl_hash
-#define pgl_hash std::tr1::hash
-#endif
 
 
 template <class T>
@@ -58,7 +65,7 @@ struct pgl_hash_map_string : public pgl_hash_map<std::string, T >{};
 
 #else
 
-#ifdef GNU_STL_EXTENSION
+#ifdef GNU_TR1_STL_EXTENSION
 	#include <ext/hash_map>
 #else
 	#if defined(__GNUC__)

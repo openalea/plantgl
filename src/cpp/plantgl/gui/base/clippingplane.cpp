@@ -42,7 +42,7 @@
 #include "interface/clippingplanewidget.h"
 #include "icons.h"
 #include "util_qwidget.h"
-#include "GL/gl.h"
+//#include "GL/gl.h"
 
 /* ----------------------------------------------------------------------- */
 

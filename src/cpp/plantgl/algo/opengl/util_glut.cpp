@@ -47,7 +47,6 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 #include "util_glut.h"
 
 #include <math.h>
-#include <GL/glu.h>
 
 
 /* Some <math.h> files do not define M_PI... */

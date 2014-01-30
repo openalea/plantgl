@@ -73,7 +73,7 @@
 #endif
 #endif
 #include <QtOpenGL/qgl.h>
-#include <GL/gl.h>
+//#include <GL/gl.h>
 
 #ifdef  __GNUC__
 #if defined(__MINGW32__) || defined(__APPLE__)

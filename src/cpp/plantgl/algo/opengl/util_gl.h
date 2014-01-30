@@ -39,17 +39,17 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../algo_config.h"
-#ifdef _WIN32
-#ifndef WINGDIAPI
 #include <QtOpenGL/qgl.h>
 #ifdef QT_NO_OPENGL
 #pragma message "Qt compiled without openGL support"
 #endif
-#endif
+
+#if defined(Q_WS_MAC)
+# include <OpenGL/glu.h>
+#else
+# include <GL/glu.h>
 #endif
 
-#include <GL/gl.h>
-#include <GL/glu.h>
 
 #include <QtCore/qpoint.h>
 #include <QtCore/qrect.h>

@@ -40,17 +40,24 @@
 #include "util_types.h"
 
 #ifdef USING_UNORDERED_MAP
+
 #ifdef GNU_STL_EXTENSION
 	#include <tr1/unordered_set>
 	#define pgl_hash_set std::tr1::unordered_set
+
+	#ifndef pgl_hash
+		#define pgl_hash std::tr1::hash
+	#endif
+
 #else
 	#include <unordered_set>
-	#define pgl_hash_set unordered_set
+	#define pgl_hash_set std::unordered_set
+
+	#ifndef pgl_hash
+		#define pgl_hash std::hash
+	#endif
 #endif
 
-#ifndef pgl_hash
-#define pgl_hash std::tr1::hash
-#endif
 
 typedef pgl_hash_set<std::string> pgl_hash_set_string ;
 typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;

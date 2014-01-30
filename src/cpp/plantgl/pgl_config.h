@@ -163,10 +163,11 @@
     \brief QT Macro
 */
 #ifndef QT_DLL
-#define QT_DLL
+    #define QT_DLL
 #endif
+
 #ifndef QT_THREAD_SUPPORT
-#define QT_THREAD_SUPPORT
+    #define QT_THREAD_SUPPORT
 #endif
 
 #ifndef QT3_SUPPORT
@@ -184,66 +185,73 @@
     \brief Include hash ccontainer as extension of STL
 */
 
+#define USING_UNORDERED_MAP
 
 
 #if defined(__GNUC__)
-#ifndef GNU_STL_EXTENSION
+  #ifndef GNU_STL_EXTENSION
 
-#if defined(__MINGW32__) || defined(__APPLE__)
+    #if defined(__MINGW32__) || defined(__APPLE__)
+        // do not include
+    #else
+        #include <features.h>
+    #endif
+
+    #if defined(__clang__)
+        #define STL_EXTENSION
+    #elif defined (__GNUC_PREREQ)
+      #if __GNUC_PREREQ(3,0)
+        #define GNU_TR1_STL_EXTENSION
+      #endif
+    #elif defined (__MINGW32__)
+      #define GNU_TR1_STL_EXTENSION
+    #elif defined (__APPLE__)
+      #define GNU_TR1_STL_EXTENSION
+    #elif defined (SYSTEM_IS__CYGWIN)
+      #define GNU_TR1_STL_EXTENSION
+    #endif
+    // #endif
+
+  #endif
+#endif
+
+#ifdef GNU_TR1_STL_EXTENSION
+    #define FMTFLAGS ios_base::fmtflags
 #else
-#include <features.h>
+    #define FMTFLAGS unsigned long
 #endif
 
-#if defined __GNUC_PREREQ
-#if __GNUC_PREREQ(3,0)
-#define GNU_STL_EXTENSION
-#endif
-#elif defined (__MINGW32__)
-#define GNU_STL_EXTENSION
-#elif defined (__APPLE__)
-#define GNU_STL_EXTENSION
-#elif defined (SYSTEM_IS__CYGWIN)
-#define GNU_STL_EXTENSION
-#endif
-
-#endif
-#endif
-
-#ifdef GNU_STL_EXTENSION
-#define FMTFLAGS ios_base::fmtflags
-#else
-#define FMTFLAGS unsigned long
-#endif
-
-#ifdef GNU_STL_EXTENSION
-#define STL_EXTENSION
+#ifdef GNU_TR1_STL_EXTENSION
+    #define STL_EXTENSION
 #endif
 
 #if _MSC_VER >= 1300 // Visual C++ 7
-#define WIN32_STL_EXTENSION
-#define STL_EXTENSION
+    #define WIN32_STL_EXTENSION
+    #define STL_EXTENSION
 #endif
 
 #ifdef STL_EXTENSION
-	#ifdef GNU_STL_EXTENSION
-        #define STDEXT __gnu_cxx
-	#else
-		#ifdef WIN32_STL_EXTENSION
+	#ifdef GNU_TR1_STL_EXTENSION
+            #define STDEXT __gnu_cxx
+	#elif defined (WIN32_STL_EXTENSION)
 			#define STDEXT stdext
-		#else
+	#else
 			#define STDEXT std
-		#endif
 	#endif
+
 	#define STDEXT_USING_NAMESPACE using namespace STDEXT;
+
 #else
 	#define STDEXT std
 	#define STDEXT_USING_NAMESPACE
 #endif
 
+
+
 #ifndef USING_UNORDERED_MAP  // !defined(__GNUC__)  || defined (__APPLE__)
 // Gcc use tr1 extension
 // msvc did not integrate it yet.
-#define USING_OLD_HASHMAP
+    #define USING_OLD_HASHMAP
 #endif
 
 
@@ -261,13 +269,14 @@
 
 /// deprecated attribute definition
 #ifdef __GNUC__
-#define attribute_deprecated __attribute__((deprecated))
+    #define attribute_deprecated __attribute__((deprecated))
 #elif defined( _MSC_VER )
-#define attribute_deprecated __declspec(deprecated)
+    #define attribute_deprecated __declspec(deprecated)
 #else
-#define attribute_deprecated
+    #define attribute_deprecated
 #endif
 /* ----------------------------------------------------------------------- */
 
 // __config_h__
 #endif
+
