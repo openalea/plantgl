@@ -1171,8 +1171,15 @@ bool Discretizer::process( Extrusion * extrusion ){
     for (uint_t _i = 0; _i < _size; _i++) {
         Vector3 _center = _axis->getPointAt(_start);
         Vector3 _velocity = _axis->getTangentAt(_start);
-        if(_i!=0)
+        if(_i!=0) {
             _normal = cross(_oldBinormal,_velocity);
+            real_t normnormal = norm(_normal);
+            if (normnormal == 0){
+              _normal = _velocity.anOrthogonalVector();
+              _normal.normalize();
+            }
+            else _normal /= normnormal;
+          }
         // else _normal = _axis->getNormalAt(_start);
         _velocity.normalize();
         _normal.normalize();
@@ -1189,9 +1196,9 @@ bool Discretizer::process( Extrusion * extrusion ){
             _newPoint =  _transf.transform(_newPoint);
         }
         else _newPoint =  _transf.transform(_crossPoints);
-		float _idPoint = 0;
-		real_t texv; 
-		if(__computeTexCoord) texv = texvmapping->getValue(_start) * axislength;
+	     	float _idPoint = 0;
+		    real_t texv; 
+		    if(__computeTexCoord) texv = texvmapping->getValue(_start) * axislength;
         for(Point3Array::iterator _it = _newPoint->begin();
             _it != _newPoint->end();
             ++_it,++_idPoint,++_j,++_j2){
