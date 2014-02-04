@@ -41,7 +41,7 @@
 
 #ifdef USING_UNORDERED_MAP
 
-#ifdef GNU_STL_EXTENSION
+#ifdef GNU_TR1_STL_EXTENSION
 	#include <tr1/unordered_set>
 	#define pgl_hash_set std::tr1::unordered_set
 
@@ -64,7 +64,7 @@ typedef pgl_hash_set<uint_t> pgl_hash_set_uint32;
 
 #else
 
-#ifdef GNU_STL_EXTENSION
+#ifdef GNU_TR1_STL_EXTENSION
 	#include <ext/hash_set>
 #else
 	#if defined(__GNUC__)
