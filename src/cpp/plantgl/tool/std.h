@@ -60,9 +60,7 @@
         #include <ext/hash_set>
         #include <ext/hash_map>
 #else
-	#ifndef WIN32_STL_EXTENSION
-        #include <slist>
-	#endif
+        #include <list>
         #include <hash_set> // contains also hash_multiset
         #include <hash_map> // contains also hash_multimap
 #endif
