@@ -787,8 +787,13 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
 }
 
 #ifdef WITH_CGAL
+#ifdef WITH_LAPACK
+
+#define CGAL_LAPACK_ENABLED
 #include <CGAL/Cartesian.h>
 #include <CGAL/Monge_via_jet_fitting.h>
+
+#endif
 #endif
 
 
