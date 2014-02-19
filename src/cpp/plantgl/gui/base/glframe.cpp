@@ -1755,7 +1755,7 @@ ViewGLFrame::addProperties(QTabWidget * tab)
     if(__camera)__camera->addProperties(tab);
 
 	QWidget * mtab = new QWidget( tab  );
-	Ui::ViewGLOptionsForm glform;
+	Ui::ViewGLOptionsForm  glform;
 	glform.setupUi(mtab);
 	tab->addTab( mtab, tr( "GL Options" ) );
 
@@ -1786,9 +1786,15 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 	if(glb == GL_TRUE)glform.DepthTestButton->setChecked(true);
 	QObject::connect(glform.DepthTestButton,SIGNAL(toggled(bool)),this,SLOT(glDepthTest(bool)));
 
-	glb = glIsEnabled(GL_NORMALIZE);
-	if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
-	QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
+  glb = glIsEnabled(GL_NORMALIZE);
+  if(glb == GL_TRUE)glform.NormalizationButton->setChecked(true);
+  QObject::connect(glform.NormalizationButton,SIGNAL(toggled(bool)),this,SLOT(glNormalization(bool)));
+
+  glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE,&glb);
+  if(glb == GL_TRUE)glform.TwoSideLightButton->setChecked(true);
+  QObject::connect(glform.TwoSideLightButton,SIGNAL(toggled(bool)),this,SLOT(glTwoSideShadeModel(bool)));
+
+
 
     glform.OcclusionQueryButton->setChecked(__useOcclusionQuery);
     glform.PixelBufferButton->setChecked(__usePBuffer);
@@ -1828,6 +1834,11 @@ ViewGLFrame::glSmoothShadeModel(bool b){
 void
 ViewGLFrame::glFlatShadeModel(bool b){
   if(b){ makeItCurrent(); GL_COM(glShadeModel(GL_FLAT));redrawGL();}
+}
+
+void
+ViewGLFrame::glTwoSideShadeModel(bool b){
+  makeItCurrent(); GL_COM(glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, (b?GL_TRUE:GL_FALSE)));redrawGL();
 }
 
 void
@@ -1905,7 +1916,7 @@ ViewDoubleToolButton::ViewDoubleToolButton( const QPixmap & pm,
 										 const char * slot,
 										 QToolBar * parent ):
 QToolButton(parent),
-__pm1(pm),__pm2(pm2){
+  __pm1(pm),__pm2(pm2){
   connect(this,SIGNAL(triggered(QAction *)),receiver,slot);
   PGL::drawArrow(&__pm1);
   QBitmap mask = __pm1.mask();

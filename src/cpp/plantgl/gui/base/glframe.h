@@ -262,6 +262,8 @@ public slots:
   void glSmoothShadeModel(bool b);
 
   void glFlatShadeModel(bool b);
+  
+  void glTwoSideShadeModel(bool b);
 
   void glDithering(bool b);
 
