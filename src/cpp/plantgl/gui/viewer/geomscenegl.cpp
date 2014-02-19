@@ -538,7 +538,7 @@ ViewGeomSceneGL::selectionEvent(uint_t id)
     for(Scene::iterator _it = __scene->begin();
         _it != __scene->end(); _it++){
       if((ptr = dynamic_pointer_cast<Shape>(*_it)) && 
-		(ptr->SceneObject::getId() == id)){
+		((uint_t)ptr->SceneObject::getId() == id)){
         __selectedShapes[id]=ptr;
         uint_t _id = (ptr->getId() == Shape::NOID?id:ptr->getId());
 		info("*** Comment : "+tr("Shape")+" " +QString::number(_id)+ " "+tr("selected")+".");
@@ -574,7 +574,7 @@ ViewGeomSceneGL::selectionEvent(const vector<uint_t>& id)
 	Shape3DPtr ptr;
 	for(Scene::iterator _it = __scene->begin(); _it != __scene->end(); _it++){
 		if( (ptr = dynamic_pointer_cast<Shape>(*_it)) && 
-			selection.find(ptr->SceneObject::getId()) != selection.end()){
+			selection.find((uint_t)ptr->SceneObject::getId()) != selection.end()){
 			__selectedShapes[ptr->SceneObject::getId()]=ptr;
 			selected++;
 		}

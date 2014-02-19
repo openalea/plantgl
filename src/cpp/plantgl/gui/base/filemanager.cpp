@@ -370,7 +370,7 @@ ViewFileManager::getSaveFileName( const QString& initial,
       filename = QFileInfo(filename).completeBaseName()+'.'+ext;
   }
 
-  filename = QFileDialog::getSaveFileName ( parent, caption, filename, filter+";;All Files (*.*)" );
+  filename = QFileDialog::getSaveFileName ( parent, caption, QFileInfo(filename).path(), filter+";;All Files (*.*)" );
 
   if(filename.isEmpty())return QString::null;
   else {
@@ -591,7 +591,7 @@ void ViewFileManager::saveImage(bool withAlpha)
 
 void ViewFileManager::openFile()
 {
-  QString file =  QFileDialog::getOpenFileName ( this, tr("Open"), getLastOpenFile() ,tr("All Files")+" (*.*)" );
+  QString file =  QFileDialog::getOpenFileName ( this, tr("Open"), QFileInfo(getLastOpenFile()).path() ,tr("All Files")+" (*.*)" );
   openFile(file);
 }
 
