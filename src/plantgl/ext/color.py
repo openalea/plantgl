@@ -603,7 +603,7 @@ class JetMap (ColorRange) :
 		                    **keys)
 
 class TerrainMap (ColorRange) :
-	def __init__ (self, val_min=0., val_max=1., **key) :
+	def __init__ (self, val_min=0., val_max=1., **keys) :
 		ColorRange.__init__(self,
 		                    (val_min,val_max),
 		                    [Color(0.,0.651,0.),Color(0.902,0.902,0.),
