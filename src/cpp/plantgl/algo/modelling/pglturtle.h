@@ -155,7 +155,7 @@ protected:
     /// draw the surface identified by name, scaled by a factor scale
     virtual void _surface(const std::string& name,real_t scale);
 
-    virtual void _label(const std::string& text );
+    virtual void _label(const std::string& text , int size = -1);
  
 	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);
 

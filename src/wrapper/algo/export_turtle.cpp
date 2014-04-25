@@ -185,7 +185,7 @@ void export_Turtle()
     .def("circle", (void (Turtle::*) ())       &Turtle::circle , return_self<>())
     .def("circle", (void (Turtle::*) (real_t))   &Turtle::circle , return_self<>())
     .def("surface", &Turtle::surface , return_self<>())
-    .def("label", &Turtle::label , return_self<>())
+    .def("label", &Turtle::label , (bp::arg("text"),bp::arg("size")=-1.), return_self<>())
 	.def("frame", (void (Turtle::*) ())&Turtle::frame , return_self<>())
 	.def("frame", (void (Turtle::*) (real_t,real_t,real_t,real_t,real_t))&Turtle::frame, (bp::arg("heigth"),bp::arg("cap_heigth_ratio")=0.2,bp::arg("cap_radius_ratio")=2,bp::arg("color")=1.0,bp::arg("transparency")=0.0) , return_self<>())
 
@@ -210,6 +210,8 @@ void export_Turtle()
 	.add_property("elasticity",&get_prop_bt_from_class<real_t,Turtle,&Turtle::getElasticity>,&Turtle::setElasticity)
 	.add_property("tropism",&get_prop_bt_from_class<Vector3,Turtle,&Turtle::getTropism>,(void(Turtle::*)(const Vector3&))&Turtle::setTropism)
 	.def("setTropism", (void(Turtle::*)(real_t,real_t,real_t))&Turtle::setTropism, return_self<>())
+
+    .def("setScreenCoordinatesEnabled", &Turtle::setScreenCoordinatesEnabled, (bp::arg("enabled")=true), return_self<>())
 
 	.add_property("sectionResolution",&get_prop_bt_from_class<uint_t,Turtle,&Turtle::getSectionResolution>,&Turtle::setSectionResolution)
 

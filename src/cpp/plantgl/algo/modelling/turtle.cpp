@@ -37,6 +37,7 @@
 #include <plantgl/scenegraph/transformation/oriented.h>
 #include <plantgl/scenegraph/transformation/translated.h>
 #include <plantgl/scenegraph/transformation/scaled.h>
+#include <plantgl/scenegraph/transformation/screenprojected.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/geometry/extrusion.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
@@ -219,6 +220,7 @@ TurtleParam::TurtleParam() :
   width(0.1f),
   tropism(0,0,1),
   elasticity(0),
+  screenCoordinates(false),
   __polygon(false),
   __generalizedCylinder(false),
   pointList(new Point3Array()),
@@ -247,6 +249,7 @@ TurtleParam::reset(){
   width = 0.1f;
   tropism = Vector3(0,0,1);
   elasticity = 0;
+  screenCoordinates = false;
   __polygon = false;
   __generalizedCylinder = false;
   pointList->clear();
@@ -623,11 +626,13 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
   }
   
   void Turtle::move(const Vector3& pos){
-	__params->position = pos;
+    if (__params->screenCoordinates)  __params->position = Vector3(pos.z(),pos.x(),pos.y());
+  	else  __params->position = pos;
   }
   
   void Turtle::shift(const Vector3& pos){
-	__params->position += pos;
+    if (__params->screenCoordinates)  __params->position += Vector3(pos.z(),pos.x(),pos.y());
+  	else __params->position += pos;
   }
   
   void Turtle::scale(const Vector3& s){
@@ -1067,9 +1072,9 @@ void Turtle::circle(real_t radius )
   else if (radius > GEOM_EPSILON) _circle(radius); 
 }
 
-void Turtle::label(const std::string& text )
+void Turtle::label(const std::string& text, int size )
 { 
-	if(!text.empty())_label(text); 
+	if(!text.empty())_label(text, size); 
 	else warning("Invalid text for label");
 }
 
@@ -1317,8 +1322,12 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
 
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 {
-	if( FABS(scale) > GEOM_EPSILON)
-     _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),smb)),true));
+	if( FABS(scale) > GEOM_EPSILON){
+    PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
+    if (is_valid_ptr(_2Dtest) && __params->screenCoordinates) 
+      _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),true));
+    else _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),smb)),true));
+  }
 }
 
 
@@ -1334,6 +1343,8 @@ PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
        obj = GeometryPtr(new Oriented(getUp(),-getLeft(),obj));
   if ( getPosition() != Vector3::ORIGIN )
        obj = GeometryPtr(new Translated(getPosition(),obj));
+  if (getParameters().screenCoordinates)
+      obj = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),obj)),false));
   return obj;
 }
 
@@ -1533,11 +1544,20 @@ PglTurtle::_generalizedCylinder(const Point3ArrayPtr& points,
 }
 
 void
-PglTurtle::_label(const string& text ){
-  GeometryPtr obj(new Text(text));
-  if ( getPosition() != Vector3::ORIGIN )
-     obj = GeometryPtr(new Translated(getPosition(),obj));
-  _addToScene(obj);
+PglTurtle::_label(const string& text, int size ){ 
+  FontPtr font;
+  if (size > 0) font = FontPtr(new Font("",size));
+  if (__params->screenCoordinates){
+    Vector3 p = (getPosition() + Vector3(1,1,1))*50;
+     _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)));
+    
+  }
+  else {
+    GeometryPtr obj(new Text(text, Vector3(0,0,0), false, font));
+    if ( getPosition() != Vector3::ORIGIN )
+       obj = GeometryPtr(new Translated(getPosition(),obj));
+    _addToScene(obj);
+  }
 }
 
 AppearancePtr PglTurtle::HEADING_FRAME_MATERIAL(new Material("HEADING_FRAME_MATERIAL",Color3(250,50,50),1));

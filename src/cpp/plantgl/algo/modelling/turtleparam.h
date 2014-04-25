@@ -238,6 +238,8 @@ public:
 
   TurtlePathPtr guide;
 
+  bool screenCoordinates;
+
 protected:
   bool __polygon;
   bool __generalizedCylinder;

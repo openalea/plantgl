@@ -70,6 +70,8 @@ TOOLS_USING_NAMESPACE
 #include "scne_binaryparser.h"
 
 #include <string.h>
+#include <locale.h>
+
 
 using namespace std;
 /* ----------------------------------------------------------------------- */
@@ -568,7 +570,9 @@ OZ                {TRACE; return TokOZ;}
                    VAL->int32_o = new int_t(atoi(YYText()));
                    return TokInt;
                   }
-{R}               {TRACE; VAL->real_o = new real_t(atof(YYText()));
+{R}               {TRACE; 
+                   setlocale(LC_ALL,"C");
+                   VAL->real_o = new real_t(atof(YYText()));
                    return TokReal;
                   }
 

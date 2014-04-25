@@ -1435,18 +1435,27 @@ bool GLRenderer::process( ScreenProjected * scp ) {
 	glOrtho(-1, 1,-heigthscale, heigthscale, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-    glLoadIdentity();
+  glLoadIdentity();
+
+  bool lighting = glIsEnabled(GL_LIGHTING);
+  if (lighting){
+    glPushAttrib(GL_LIGHTING_BIT);
+    glGeomLightPosition(GL_LIGHT0,Vector3(0,0,-1));
+    glGeomLightDirection(GL_LIGHT0,Vector3(0,0,1));
+  }
 
 	scp->getGeometry()->apply(*this);
   
+  if (lighting) glPopAttrib();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
-    GEOM_GLRENDERER_UPDATE_CACHE(scp);
-    GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-    return true;
+
+  GEOM_GLRENDERER_UPDATE_CACHE(scp);
+  GEOM_ASSERT(glGetError() == GL_NO_ERROR);
+  return true;
 }
 
 
@@ -1674,7 +1683,7 @@ bool GLRenderer::process( Text * text ) {
 	if(text->getFontStyle()){
 	  const FontPtr& font = text->getFontStyle();
 	  if(!font->getFamily().empty())
-		f.setFamily(font->getFamily().c_str());
+		  f.setFamily(font->getFamily().c_str());
 	  f.setPointSize(font->getSize());
 	  f.setBold(font->getBold()),
 	  f.setItalic(font->getItalic());

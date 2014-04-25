@@ -346,7 +346,7 @@ public:
 
     void circle(real_t radius );
     
-    virtual void label(const std::string& text );
+    virtual void label(const std::string& text, int size = -1 );
 
     virtual void surface(const std::string& name, real_t scale=1);
 
@@ -428,6 +428,9 @@ public:
     void sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius = 1.0, const QuantisedFunctionPtr radiusvariation = NULL);
     void sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius = 1.0, const QuantisedFunctionPtr radiusvariation = NULL);
 
+    inline void setScreenCoordinatesEnabled(bool enabled = true)
+    { getParameters().screenCoordinates = enabled; }
+
     virtual void error(const std::string& error_string);
     virtual void warning(const std::string& error_string);
 
@@ -465,7 +468,7 @@ protected:
 
 	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency) { }
 
-    virtual void _label(const std::string& text ){}
+    virtual void _label(const std::string& text, int size = -1){}
 
     TurtleParam& getParameters()
 	  { return *__params; }

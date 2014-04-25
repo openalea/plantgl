@@ -281,6 +281,7 @@ void Viewer::initialize()
 
   /// ToolBar
   __ToolBar = new ViewToolBar("View Bar",this,"ViewBar");
+  __ToolBar->setIconSize(QSize(32,32));
   addToolBar(__ToolBar);
 
 

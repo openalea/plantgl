@@ -2731,7 +2731,7 @@ Filename :
 				 }
 				 else $$ = NULL;
             }
-            else $$ = $1 
+            else $$ = $1; 
 		  }
 | Filename TokPLUS Filename { 
 		if($1 && $3){
@@ -2825,8 +2825,9 @@ Real :
  | '(' Real ')' { $$ = $2 ;};
 
 RealAtom :
-   TokInt { $$ = new real_t(*$1); delete $1; }
- | TokReal { $$ = $1; }
+ /*  TokInt { $$ = new real_t(*$1); delete $1; }
+ | */
+ TokReal { $$ = $1; }
  | TokPi { $$ = new real_t(180); };
 
 RealArray:
@@ -3040,6 +3041,7 @@ Vector3:
 Vector3Atom:
    '<' Real ',' Real ',' Real '>' {
      if (($2) && ($4) && ($6)) {
+       // printf("%f %f %f\n",*$2,*$4,*$6);
        $$ = new TOOLS(Vector3)(*$2,*$4,*$6);
        delete $2;
        delete $4;
