@@ -137,7 +137,12 @@ ImageTexture APP_11274832 {
 
 Shape SHAPE_11195732 { 
     Geometry  GEOM_11195732
-    Appearance  APP_11274832
+    Appearance  Texture2D {
+         Image APP_11274832
+         Transformation Texture2DTransformation {
+            RotationAngle 90
+         }
+       }
 }
 
 Translated GEOM_11277000 { 
@@ -253,6 +258,11 @@ ImageTexture APP_11280080 {
 
 Shape SHAPE_11280032 { 
     Geometry  GEOM_11280032
-    Appearance  APP_11280080
+    Appearance  Texture2D {
+         Image APP_11280080
+         Transformation Texture2DTransformation {
+            RotationAngle 90
+         }
+       }
 }
 

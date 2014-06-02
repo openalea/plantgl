@@ -1371,7 +1371,11 @@ void ViewGLFrame::dropEvent(QDropEvent* myevent){
 }
 
 #ifndef WHEEL_DELTA
-#define WHEEL_DELTA 120
+#ifdef Q_OS_MAC
+#define WHEEL_DELTA 30.
+#else
+#define WHEEL_DELTA 120.
+#endif
 #endif
 
 void

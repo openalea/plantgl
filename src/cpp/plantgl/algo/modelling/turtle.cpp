@@ -1157,6 +1157,11 @@ const vector<AppearancePtr>&
 PglTurtle::getColorList() const{
    return __appList;
 }
+
+void 
+PglTurtle::setColorList(const std::vector<AppearancePtr>& applist){
+    __appList = applist;
+}
     
 void PglTurtle::clearSurfaceList(){
    __surfList.clear();

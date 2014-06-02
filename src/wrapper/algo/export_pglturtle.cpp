@@ -33,6 +33,7 @@
 
 #include <boost/python.hpp>
 #include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
 
 using namespace boost::python;
 #define bp boost::python
@@ -42,6 +43,10 @@ TOOLS_USING_NAMESPACE
 
 boost::python::object getTurtleColorList(PglTurtle * turtle) {
     return make_list(turtle->getColorList())();
+}
+
+void setTurtleColorList(PglTurtle * turtle, boost::python::object applist) {
+    return turtle->setColorList(extract_vec<AppearancePtr>(applist)());
 }
 
 boost::python::object getTurtleSurfaceList(PglTurtle * turtle) {

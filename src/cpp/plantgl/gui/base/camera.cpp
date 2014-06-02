@@ -627,7 +627,7 @@ ViewCameraGL::beginSelectGL(const QRect& region)
   GLint viewport[4];
   int x = region.center().x();
   int y = region.center().y();
-  printf("%i %i %i %i\n",x,y,region.width(),region.height());
+  // printf("%i %i %i %i\n",x,y,region.width(),region.height());
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();

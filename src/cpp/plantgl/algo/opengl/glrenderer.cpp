@@ -1423,6 +1423,9 @@ bool GLRenderer::process( Scaled * scaled ) {
 
 bool GLRenderer::process( ScreenProjected * scp ) {
 	GEOM_ASSERT(scp);
+    if(__Mode == Selection) {
+        return true;
+    } 
 	GEOM_GLRENDERER_CHECK_CACHE(scp);
 	real_t heigthscale = 1.0;
     if(__glframe!= NULL && scp->getKeepAspectRatio()){
@@ -1435,27 +1438,27 @@ bool GLRenderer::process( ScreenProjected * scp ) {
 	glOrtho(-1, 1,-heigthscale, heigthscale, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-  glLoadIdentity();
+    glLoadIdentity();
 
-  bool lighting = glIsEnabled(GL_LIGHTING);
-  if (lighting){
-    glPushAttrib(GL_LIGHTING_BIT);
-    glGeomLightPosition(GL_LIGHT0,Vector3(0,0,-1));
-    glGeomLightDirection(GL_LIGHT0,Vector3(0,0,1));
-  }
+    bool lighting = glIsEnabled(GL_LIGHTING);
+    if (lighting){
+        glPushAttrib(GL_LIGHTING_BIT);
+        glGeomLightPosition(GL_LIGHT0,Vector3(0,0,-1));
+        glGeomLightDirection(GL_LIGHT0,Vector3(0,0,1));
+    }
 
 	scp->getGeometry()->apply(*this);
   
-  if (lighting) glPopAttrib();
+    if (lighting) glPopAttrib();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 
 
-  GEOM_GLRENDERER_UPDATE_CACHE(scp);
-  GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true;
+    GEOM_GLRENDERER_UPDATE_CACHE(scp);
+    GEOM_ASSERT(glGetError() == GL_NO_ERROR);
+    return true;
 }
 
 
@@ -1676,46 +1679,50 @@ bool GLRenderer::process( Polyline2D * polyline ) {
 
 bool GLRenderer::process( Text * text ) {
   GEOM_ASSERT(text);
-  glPushAttrib(GL_LIGHTING_BIT);
-  glDisable(GL_LIGHTING);
-  if(!text->getString().empty()){
-	QFont f;
-	if(text->getFontStyle()){
-	  const FontPtr& font = text->getFontStyle();
-	  if(!font->getFamily().empty())
-		  f.setFamily(font->getFamily().c_str());
-	  f.setPointSize(font->getSize());
-	  f.setBold(font->getBold()),
-	  f.setItalic(font->getItalic());
-	}
-	else {
-	  f.setPointSize(Font::DEFAULT_SIZE);
-	}
-	if(__glframe!= NULL){
-		if (text->getScreenCoordinates()) {
-			glMatrixMode(GL_PROJECTION);
-			glPushMatrix();
-			glLoadIdentity();
-			glOrtho(0,100,0,100,0,-100);
-			glMatrixMode(GL_MODELVIEW);
-			glPushMatrix();
-			glLoadIdentity();
-		}
+  if(__Mode == Selection) {
+        return true;
+  } 
+  else {
+      glPushAttrib(GL_LIGHTING_BIT);
+      glDisable(GL_LIGHTING);
+      if(!text->getString().empty()){
+    	QFont f;
+    	if(text->getFontStyle()){
+    	  const FontPtr& font = text->getFontStyle();
+    	  if(!font->getFamily().empty())
+    		  f.setFamily(font->getFamily().c_str());
+    	  f.setPointSize(font->getSize());
+    	  f.setBold(font->getBold()),
+    	  f.setItalic(font->getItalic());
+    	}
+    	else {
+    	  f.setPointSize(Font::DEFAULT_SIZE);
+    	}
+    	if(__glframe!= NULL){
+    		if (text->getScreenCoordinates()) {
+    			glMatrixMode(GL_PROJECTION);
+    			glPushMatrix();
+    			glLoadIdentity();
+    			glOrtho(0,100,0,100,0,-100);
+    			glMatrixMode(GL_MODELVIEW);
+    			glPushMatrix();
+    			glLoadIdentity();
+    		}
 
-		const Vector3& position = text->getPosition();
-		__glframe->renderText(position.x(),position.y(),position.z(),QString(text->getString().c_str()),f);
+    		const Vector3& position = text->getPosition();
+    		__glframe->renderText(position.x(),position.y(),position.z(),QString(text->getString().c_str()),f);
 
-		if (text->getScreenCoordinates()) {
-			glMatrixMode(GL_PROJECTION);
-			glPopMatrix();
-			glMatrixMode(GL_MODELVIEW);
-			glPopMatrix();
-		}
+    		if (text->getScreenCoordinates()) {
+    			glMatrixMode(GL_PROJECTION);
+    			glPopMatrix();
+    			glMatrixMode(GL_MODELVIEW);
+    			glPopMatrix();
+    		}
 
-	}
+    	}
+      }
+      glPopAttrib();
   }
-  glPopAttrib();
-  // if(l)glEnable(GL_LIGHTING);
   return true;
 }
 

@@ -68,6 +68,8 @@ public:
     
     const std::vector<AppearancePtr>& getColorList() const;
     
+    void setColorList(const std::vector<AppearancePtr>&);
+    
     void clearSurfaceList();
     
     const SurfaceMap& getSurfaceList() const;

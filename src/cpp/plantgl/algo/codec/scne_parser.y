@@ -984,6 +984,7 @@ AppearanceObj:
    MaterialObj { $$ = $1; }
  | Texture2DObj {  $$ = $1; }
  | PhysicalModelObj {  $$ = $1; }
+ | ImageTextureObj {  $$ = new AppearancePtr(new Texture2D(*$1)); (*$$)->setName((*$1)->getName()+"_texture"); } 
  | AppearanceRef { $$ = $1; };
 
 GeometryObj:
@@ -1110,10 +1111,6 @@ ShapeFieldList:
  | ShapeFieldList TokAppearance AppearanceObj {
      GEOM_PARSER_SET_FIELD($1,Appearance,$3); $$=$1;
    }
- | ShapeFieldList TokAppearance ImageTextureObj {
-	 AppearancePtr * tr = new AppearancePtr(new Texture2D(*$3));
-     GEOM_PARSER_SET_FIELD($1,Appearance,tr); $$=$1;
-   }
  | { $$ = new Shape::Builder;
 #ifdef USE_READLINE
     lexer(l);
@@ -1155,8 +1152,13 @@ AppearanceRef:
          if(_app)
              $$ = new AppearancePtr(_app);
          else{
-             pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(*(_i->second)).name());
-             $$ = NULL;
+             ImageTexturePtr _tex = dynamic_pointer_cast<ImageTexture>(_i->second);
+             if (_tex)
+              $$ = new AppearancePtr(new Texture2D(_tex));
+             else {
+                pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(*(_i->second)).name());
+                $$ = NULL;
+              }
          }
      }
      else {
@@ -1321,7 +1323,19 @@ Texture2DObj:
 ImageTextureObj:
   TokImageTexture Name '{' ImageTextureFieldList '}' {
     GEOM_PARSER_BUILD_OBJECT(ImageTexture,$$,$2,$4);
-  };
+  }
+ | AppearanceRef  {
+     ImageTexturePtr imptr = dynamic_pointer_cast<ImageTexture>(*$1);
+     if (imptr) $$ = new ImageTexturePtr(imptr);
+     else {
+       Texture2DPtr imptr = dynamic_pointer_cast<Texture2D>(*$1);
+       if (imptr) $$ = new ImageTexturePtr(imptr->getImage());
+       else {
+          pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"ImageTexture",(*$1)->getName().c_str(),typeid(*($1)).name());
+          $$ = NULL;
+        }
+     }
+ }
 
 Texture2DTransformationObj:
   TokTexture2DTransformation Name '{' Texture2DTransformationFieldList '}' {
@@ -2825,9 +2839,8 @@ Real :
  | '(' Real ')' { $$ = $2 ;};
 
 RealAtom :
- /*  TokInt { $$ = new real_t(*$1); delete $1; }
- | */
- TokReal { $$ = $1; }
+ TokInt { $$ = new real_t(*$1); delete $1; }
+ | TokReal { $$ = $1; }
  | TokPi { $$ = new real_t(180); };
 
 RealArray:
