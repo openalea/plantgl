@@ -122,7 +122,7 @@ struct extract_pair {
     boost::python::object pylist;
 
     result_type extract() const {
-        if (pylist.ptr() == Py_None) return result;
+        if (pylist.ptr() == Py_None) return result_type();
         element_type0 val0 = extractor_type0( pylist[0] )();
         element_type1 val1 = extractor_type1( pylist[1] )();
         return std::pair<element_type0,element_type1>(val0,val1);
