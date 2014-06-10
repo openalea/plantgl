@@ -56,6 +56,22 @@ bool py_CurveIntersection_check(boost::python::object arg){
 	return CurveIntersection::check(convert(arg));
 }
 
+
+IndexArrayPtr py_determine_faces_from_edges(const Point2ArrayPtr& pts, boost::python::object edges)
+{
+  std::vector< std::pair<uint32_t,uint32_t> > cedges = extract_vec_pair< uint32_t,uint32_t >(edges)();
+  return determine_faces_from_edges(pts, cedges);
+
+}
+
+IndexArrayPtr py_determine_faceedges_from_edges(const Point2ArrayPtr& pts, boost::python::object edges)
+{
+  std::vector< std::pair<uint32_t,uint32_t> > cedges = extract_vec_pair< uint32_t,uint32_t >(edges)();
+  return determine_faceedges_from_edges(pts, cedges);
+
+}
+
+
 void export_CurveManipulation()
 {
   class_< Overlay > ("Overlay", no_init)
@@ -70,6 +86,8 @@ void export_CurveManipulation()
 	.staticmethod("check")
     ;
  
+  def("determine_faces_from_edges",&py_determine_faces_from_edges,args("points","edges"),"Return list of pids that form faces");
+  def("determine_faceedges_from_edges",&py_determine_faceedges_from_edges,args("points","edges"),"Return list of edge ids that form faces");
 }
 
 /* ----------------------------------------------------------------------- */

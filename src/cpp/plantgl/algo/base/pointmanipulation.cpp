@@ -143,6 +143,55 @@ PGL::delaunay_point_connection(const Point3ArrayPtr points)
     return result;
 }
 
+Index3ArrayPtr 
+PGL::delaunay_triangulation(const Point3ArrayPtr points)
+{
+#ifdef WITH_CGAL
+
+    typedef CGAL::Exact_predicates_inexact_constructions_kernel         TK;
+    typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK>   TVb;
+    typedef CGAL::Triangulation_data_structure_3<TVb>                    Tds;
+
+    typedef CGAL::Delaunay_triangulation_3<TK, Tds>                      Triangulation;
+    // typedef CGAL::Triangulation_3<K,Tds>      Triangulation;
+
+
+    typedef Triangulation::Cell_handle    TCell_handle;
+    typedef Triangulation::Vertex_handle  TVertex_handle;
+    typedef Triangulation::Locate_type    TLocate_type;
+    typedef Triangulation::Point          TPoint;
+    typedef Triangulation::Segment        TSegment;
+
+    Triangulation triangulation;
+    uint32_t pointCount = 0;
+    for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it)
+        triangulation.insert(toPoint3<TPoint>(*it))->info() = pointCount++;
+
+
+    Index3ArrayPtr result(new Index3Array());
+    for(Triangulation::Finite_facets_iterator it = triangulation.finite_facets_begin();
+        it != triangulation.finite_facets_end(); ++it){
+			Index3 ind; int j = 0;
+			for(int i = 0; i < 4; ++i){
+				if (i != it->second){
+					ind[j] = it->first->vertex(i)->info();
+					++j;
+				}
+			}
+			result->push_back(ind);
+    } 
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'delaunay_point_connection' disabled. CGAL needed.")
+    #else
+    #warning "function 'delaunay_point_connection' disabled. CGAL needed"
+    #endif
+
+    Index3ArrayPtr result;
+#endif
+    return result;
+}
+
 
 struct PointSorter {
     PointSorter(Point3ArrayPtr _points, uint32_t _ref) : points(_points), refpoint(_points->getAt(_ref)) {}
@@ -649,6 +698,25 @@ PGL::pointset_max_distance(  uint32_t pid,
 			                     const Index& group)
 {
     return pointset_max_distance(points->getAt(pid), points, group);
+}
+
+real_t
+PGL::pointset_min_distance(  const Vector3& origin,
+                                 const Point3ArrayPtr points, 
+			                     const Index& group)
+{
+    real_t min_distance = 0;
+    for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
+        min_distance = std::min(min_distance,norm(origin-points->getAt(*it)));
+    return min_distance;
+}
+
+real_t
+PGL::pointset_min_distance(  uint32_t pid,
+                                 const Point3ArrayPtr points, 
+			                     const Index& group)
+{
+    return pointset_min_distance(points->getAt(pid), points, group);
 }
 
 ALGO_API real_t

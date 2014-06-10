@@ -43,6 +43,7 @@
 #include "../algo_config.h"
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include "../raycasting/ray.h"
+#include <plantgl/scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -73,10 +74,14 @@ public:
 	static bool check(const std::vector<Polyline2DPtr>& polylines);
 };
 
-real_t raySegmentDistance(const Ray& ray, 
+ALGO_API real_t raySegmentDistance(const Ray& ray, 
 						  const TOOLS(Vector3)& segA,
 						  const TOOLS(Vector3)& segB);
 
+
+ALGO_API IndexArrayPtr determine_faces_from_edges(const Point2ArrayPtr&, const std::vector<std::pair<uint32_t, uint32_t> >& edges);
+
+ALGO_API IndexArrayPtr determine_faceedges_from_edges(const Point2ArrayPtr&, const std::vector<std::pair<uint32_t, uint32_t> >& edges);
 
 /* ----------------------------------------------------------------------- */
 

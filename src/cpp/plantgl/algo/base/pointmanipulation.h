@@ -83,6 +83,9 @@ RCPtr<PointListType> contract_point(RCPtr<PointListType> points, real_t radius)
 ALGO_API IndexArrayPtr 
 delaunay_point_connection(const Point3ArrayPtr points);
 
+ALGO_API Index3ArrayPtr 
+delaunay_triangulation(const Point3ArrayPtr points);
+
 ALGO_API IndexArrayPtr 
 k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k);
 
@@ -154,6 +157,16 @@ pointset_max_distance(  uint32_t pid,
 
 ALGO_API real_t
 pointset_max_distance( const TOOLS(Vector3)& origin,
+                       const Point3ArrayPtr points, 
+			           const Index& group);
+
+ALGO_API real_t
+pointset_min_distance(  uint32_t pid,
+                        const Point3ArrayPtr points, 
+			            const Index& group);
+
+ALGO_API real_t
+pointset_min_distance( const TOOLS(Vector3)& origin,
                        const Point3ArrayPtr points, 
 			           const Index& group);
 

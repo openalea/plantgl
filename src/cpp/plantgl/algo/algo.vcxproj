@@ -202,6 +202,7 @@
     <ClInclude Include="fitting\fit.h" />
     <ClInclude Include="fitting\miniball.h" />
     <ClInclude Include="fitting\miniball_config.h" />
+    <ClInclude Include="fitting\planargraph.h" />
     <ClInclude Include="fitting\skeleton.h" />
     <ClInclude Include="fitting\triangulation3D.h" />
     <ClInclude Include="grid\annkdtree_p.h" />
@@ -270,6 +271,9 @@
       <Project>{3e4228c3-782d-4ad7-bec5-4e56ee28158d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fitting\planargraph.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

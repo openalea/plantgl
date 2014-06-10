@@ -71,6 +71,69 @@ struct extract_vec {
 
 /* ----------------------------------------------------------------------- */
 
+template<class T, class U = T,
+    template < typename > class extractor_t0 = boost::python::extract, 
+    template < typename > class extractor_t1 = boost::python::extract, 
+    class result_type = std::vector<std::pair<T,U> > >
+struct extract_vec_pair {
+
+    typedef T element_type0;
+    typedef U element_type1;
+    typedef extractor_t0<T> extractor_type0;
+    typedef extractor_t1<U> extractor_type1;
+
+    extract_vec_pair(boost::python::object _pylist):pylist(_pylist) {}
+    boost::python::object pylist;
+
+    result_type extract() const {
+        result_type result;
+        if (pylist.ptr() == Py_None) return result;
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+        while( true )
+          {
+            boost::python::object obj; 
+            try {  obj = iter_obj.attr( "next" )(); }
+            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+            element_type0 val0 = extractor_type0( obj[0] )();
+            element_type1 val1 = extractor_type1( obj[1] )();
+            result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
+          }
+        return result;
+    }
+
+    inline result_type operator()() const { return extract(); }
+    inline operator result_type () const { return extract(); }
+};
+
+/* ----------------------------------------------------------------------- */
+
+template<class T, class U = T,
+    template < typename > class extractor_t0 = boost::python::extract, 
+    template < typename > class extractor_t1 = boost::python::extract, 
+    class result_type = std::pair<T,U> >
+struct extract_pair {
+
+    typedef T element_type0;
+    typedef U element_type1;
+    typedef extractor_t0<T> extractor_type0;
+    typedef extractor_t1<U> extractor_type1;
+
+    extract_pair(boost::python::object _pylist):pylist(_pylist) {}
+    boost::python::object pylist;
+
+    result_type extract() const {
+        if (pylist.ptr() == Py_None) return result;
+        element_type0 val0 = extractor_type0( pylist[0] )();
+        element_type1 val1 = extractor_type1( pylist[1] )();
+        return std::pair<element_type0,element_type1>(val0,val1);
+    }
+
+    inline result_type operator()() const { return extract(); }
+    inline operator result_type () const { return extract(); }
+};
+
+/* ----------------------------------------------------------------------- */
+
 template<class key,  class value, 
 	 template < typename> class key_extractor_t = boost::python::extract, 
 	 template < typename> class value_extractor_t = boost::python::extract,

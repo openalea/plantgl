@@ -220,6 +220,7 @@ void export_PointManip()
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));
+    def("delaunay_triangulation",&delaunay_triangulation,args("points"));
     def("k_closest_points_from_delaunay",&k_closest_points_from_delaunay,args("points","k"));
 #endif
 #ifdef WITH_ANN

@@ -454,6 +454,9 @@
     <ClInclude Include="modelling\spacecolonization.h">
       <Filter>Modelling</Filter>
     </ClInclude>
+    <ClInclude Include="fitting\planargraph.h">
+      <Filter>Fitting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="codec\scne_parser.y">
@@ -462,5 +465,10 @@
     <CustomBuild Include="codec\scne_scanner.l">
       <Filter>Codec\Decoder\Resources</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fitting\planargraph.inl">
+      <Filter>Fitting</Filter>
+    </None>
   </ItemGroup>
 </Project>

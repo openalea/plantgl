@@ -266,3 +266,119 @@ real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& seg
 #endif
 
 }
+
+
+/*
+#ifdef WITH_CGAL
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Constrained_Delaunay_triangulation_2.h>
+#endif
+
+IndexArrayPtr 
+determine_faces(const Point2ArrayPtr& points, std::vector<std::pair<uint32_t, uint32_t> > edges)
+{
+#ifdef WITH_CGAL
+	typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
+	typedef CGAL::Triangulation_vertex_base_2<K> Vb;
+	typedef CGAL::Constrained_triangulation_face_base_2<K> Fb;
+	typedef CGAL::Triangulation_data_structure_2<Vb,Fb> TDS;
+	typedef CGAL::Exact_predicates_tag Itag;
+	typedef CGAL::Constrained_Delaunay_triangulation_2<K, TDS, Itag> CDT;
+	typedef CDT::Point Point;
+
+	 CDT cdt;
+	 for(std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedges = edges.begin(); itedges != edges.end(); ++itedges)
+		 cdt.insert_constraint( toPoint<Point>(points->getAt(itedges->first),toPoint<Point>(points->getAt(itedges->second));
+
+	assert(cdt.is_valid());
+	int count = 0;
+	std::vector<pgl_hash_set<uint32_t> > trgroups;
+	typedef pgl_hash_map<uint32_t,uint32_t> Tr2Map;
+	Tr2Map tr2group;
+
+
+	for (CDT::Finite_edges_iterator eit = cdt.finite_edges_begin(); eit != cdt.finite_edges_end(); ++eit){
+		TDS::Face_handle face = eit->first;
+		int vertex = eit->second;
+		TDS::Face_handle nbg face->neighbor(vertex);
+		Tr2Map::const_iterator ittrmap =  tr2group.find((uint32_t)face);
+		int groupf1 = (ittrmap == tr2group.end()?-1:*ittrmap);
+		Tr2Map::const_iterator ittrmap =  tr2group.find((uint32_t)nbg);
+		int groupf2 = (ittrmap == tr2group.end()?-1:*ittrmap);
+
+		if (cdt.is_constrained(*eit)){
+
+		}
+
+	}
+	
+
+#else
+	return IndexArrayPtr();
+#endif
+}
+
+*/
+
+#include "../fitting/planargraph.h"
+
+IndexArrayPtr PGL::determine_faces_from_edges(const Point2ArrayPtr& points, const std::vector<std::pair<uint32_t, uint32_t> >& edges)
+{
+	typedef Wm5::PlanarGraph<Vector2> Graph;
+	Graph graph;
+	int i = 0;
+	for (Point2Array::const_iterator it = points->begin(); it != points->end(); ++it)
+		graph.InsertVertex(*it,i++);
+	for (std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedge = edges.begin(); itedge != edges.end(); ++itedge)
+		graph.InsertEdge(itedge->first,itedge->second);
+
+	std::vector<Graph::Primitive*> mPrimitives;
+	graph.ExtractPrimitives(mPrimitives);
+
+
+	IndexArrayPtr result(new IndexArray());
+	for (std::vector<Graph::Primitive*>::const_iterator itPrim = mPrimitives.begin(); itPrim != mPrimitives.end(); ++itPrim){
+		if ((*itPrim)->Type == Graph::PT_MINIMAL_CYCLE){
+			Index lresult;
+			for (std::vector<std::pair<Vector2,int> >::const_iterator itSequence = (*itPrim)->Sequence.begin(); itSequence != (*itPrim)->Sequence.end(); ++itSequence)
+				lresult.push_back(itSequence->second);
+			result->push_back(lresult);
+		}
+	}
+
+	return result;
+}
+
+IndexArrayPtr PGL::determine_faceedges_from_edges(const Point2ArrayPtr& points, const std::vector<std::pair<uint32_t, uint32_t> >& edges)
+{
+	IndexArrayPtr presult = determine_faces_from_edges(points, edges);
+	pgl_hash_map<uint32_t, pgl_hash_map<uint32_t,uint32_t> > pidedgemap;
+	uint32_t eid = 0;
+	for (std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedge = edges.begin(); itedge != edges.end(); ++itedge, ++eid)
+	{
+		pgl_hash_map<uint32_t, pgl_hash_map<uint32_t,uint32_t> >::const_iterator fpid = pidedgemap.find(std::min(itedge->first,itedge->second));
+		pgl_hash_map<uint32_t,uint32_t> l;
+		if  (fpid != pidedgemap.end()) l = fpid->second;
+		l[std::max(itedge->first,itedge->second)] = eid;
+		pidedgemap[std::min(itedge->first,itedge->second)] = l;
+
+		/*fpid = pidedgemap.find(itedge->second);
+		l = (fpid == pidedgemap.end()?pgl_hash_map<uint32_t,uint32_t>():fpid->second);
+		l[itedge->first] = eid;
+		pidedgemap[itedge->second] = l;*/
+	}
+
+	IndexArrayPtr eresult(new IndexArray());
+	for(IndexArray::const_iterator itpid = presult->begin(); itpid != presult->end(); ++itpid){
+		Index leres;
+		uint32_t pidsetsize = itpid->size();
+		for (uint32_t i = 0; i < pidsetsize; ++i){
+			uint32_t p1 = itpid->getAt(i);
+			uint32_t p2 = itpid->getAt((i!=pidsetsize-1?i+1:0));
+			leres.push_back(pidedgemap[std::min(p1,p2)][std::max(p1,p2)]);
+
+		}
+		eresult->push_back(leres);
+	}
+	return eresult;
+}

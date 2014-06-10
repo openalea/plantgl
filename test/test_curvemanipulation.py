@@ -71,18 +71,24 @@ else:
     res = intersection_with_circle(Translated((-3.5,1,0),Polyline2D.Circle(1,32)),False,visual)
     assert len(res) == 0 and "intersection between 2 non overlapping circles fail. Gives not 0 point."
 
-    
+  
+  def test_determine_faces(visual = False):
+    pts = [(0,0),(1,-1),(2,0),(1,1),(-1,-1),(-1,1),(0,2)]
+    edges = [(0,1),(1,2),(2,3),(3,0),(0,4),(4,5),(5,0),(5,6),(3,6)]
+    faces = determine_faces_from_edges(pts,edges)
+    print faces
+  
   if __name__ == '__main__':
     import sys
     if '-v' in sys.argv or '--visual' in sys.argv :
         visual = True
     else:
         visual = False
-    test_two_circle(visual)
-    test_circle_beziercurve(visual)
-    test_circle_beziercurve_two_bumps(visual)
-    test_circle_beziercurve_three_bumps(visual)
-    test_non_overlapping_circles(visual)
-    test_intersect_two_circle(visual)
-    test_non_intersecting_circles(visual)
-    
+    # test_two_circle(visual)
+    # test_circle_beziercurve(visual)
+    # test_circle_beziercurve_two_bumps(visual)
+    # test_circle_beziercurve_three_bumps(visual)
+    # test_non_overlapping_circles(visual)
+    # test_intersect_two_circle(visual)
+    # test_non_intersecting_circles(visual)
+    test_determine_faces(visual)
