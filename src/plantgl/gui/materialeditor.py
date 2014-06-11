@@ -295,9 +295,12 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         nbcol,nbrow = self.getNbColRow(w,h)
         idcol, idrow = divmod(id, nbrow)
         return (idcol * (2*self.unitsize),idrow * (2*self.unitsize))
-    def mouseDoubleClickEvent(self,event):     
+    def mouseDoubleClickEvent(self,event):
         x,y = event.pos().x(),event.pos().y()
         self.edition(self.selectedColor(x,y))
+        self.initpos = None
+        event.accept()
+        self.updateGL()
     def mousePressEvent(self,event):
       if self.preview and self.preview.isVisible():
            self.preview.hide()
@@ -311,22 +314,31 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             self.setSelection(self.selectedColor(x,y))
         self.updateGL()
 
-    def mouseReleaseEvent(self,event):    
+    def mouseReleaseEvent(self,event):
       if event.button()  == qt.QtCore.Qt.LeftButton:
         x,y = event.pos().x(),event.pos().y()
+
         if event.modifiers() & qt.QtCore.Qt.ShiftModifier :
             self.selectionend = self.selectedColor(x,y)
         else:
+            initialselection = self.selectionbegin
             self.setSelection(self.selectedColor(x,y))
+
         if self.selectionbegin == self.selectionend:
-            self.showMessage("Click on color "+str(self.selectionbegin),2000)        
+            if initialselection != self.selectionbegin:
+                self.showMessage("Swap colors "+str(initialselection)+" and "+str(self.selectionbegin),2000) 
+                self.swapMaterial(initialselection,self.selectionbegin)
+                self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+            else:
+                self.showMessage("Click on color "+str(self.selectionbegin),2000) 
+
         else:
             self.selectionbegin, self.selectionend = min(self.selectionbegin, self.selectionend),max(self.selectionbegin, self.selectionend)
             self.showMessage("Selected colors from "+str(self.selectionbegin)+' to '+str(self.selectionend),2000)        
         self.initpos = None
         self.updateGL()
 
-    def mouseMoveEvent(self,event):        
+    def mouseMoveEvent(self,event):  
         self.mousepos = event.pos()
         lastcursorselection = self.cursorselection
         self.cursorselection = self.selectedColor(self.mousepos.x(),self.mousepos.y())
@@ -337,14 +349,12 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 self.previewtrigger.stop()
             if event.modifiers() & qt.QtCore.Qt.ShiftModifier :
                 self.selectionend = self.cursorselection
-            else:
-                if self.cursorselection != lastcursorselection and not lastcursorselection is None:
-                    self.swapMaterial(lastcursorselection,self.cursorselection)
-                    self.emit(qt.QtCore.SIGNAL('valueChanged()'))
-                    p1 = qt.QtCore.QPoint(*self.positionColor(lastcursorselection))
-                    p2 = qt.QtCore.QPoint(*self.positionColor(self.cursorselection))
-                    self.initpos = self.initpos - p1 + p2 
-                    self.setSelection(self.cursorselection)
+            # else:
+            #     if self.cursorselection != lastcursorselection and not lastcursorselection is None:
+            #         p1 = qt.QtCore.QPoint(*self.positionColor(lastcursorselection))
+            #         p2 = qt.QtCore.QPoint(*self.positionColor(self.cursorselection))
+            #         self.initpos = self.initpos - p1 + p2 
+            #         self.setSelection(self.cursorselection)
         elif event.buttons()  == qt.QtCore.Qt.NoButton and self.cursorselection >= 0:
             cmat = self.getMaterial(self.cursorselection)
             if cmat.isTexture():
