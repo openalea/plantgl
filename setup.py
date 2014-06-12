@@ -103,7 +103,12 @@ setup(
                    'plantgl.operator = openalea.plantgl.wralea.operator', 
                    'plantgl.ext = openalea.plantgl.ext',
                    'plantgl.demos = openalea.plantgl.wralea.demos',
-                   ]
+                   ],
+
+        'oalab.qt_control':[
+            'PluginColorListWidget = openalea.plantgl.plugins:PluginColorListWidget',
+            'PluginCurve2DWidget = openalea.plantgl.plugins:PluginCurve2DWidget',
+        ],
               },
 
  
