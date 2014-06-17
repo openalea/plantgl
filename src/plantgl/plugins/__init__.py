@@ -1,7 +1,7 @@
 
-from openalea.oalab.plugins.control import ControlWidgetPlugin
+from openalea.oalab.plugins.control import ControlWidgetSelectorPlugin
 
-class PluginColorListWidget(ControlWidgetPlugin):
+class PluginColorListWidget(ControlWidgetSelectorPlugin):
     controls = ['IColorList']
     name = 'ColorListWidget'
     edit_shape = ['large']
@@ -13,7 +13,7 @@ class PluginColorListWidget(ControlWidgetPlugin):
         return ColorListWidget
 
 
-class PluginCurve2DWidget(ControlWidgetPlugin):
+class PluginCurve2DWidget(ControlWidgetSelectorPlugin):
     controls = ['ICurve2D']
     name = 'Curve2DWidget'
     edit_shape = ['large']
