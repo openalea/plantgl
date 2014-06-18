@@ -1,9 +1,9 @@
+from openalea.vpltk.qt import QtCore, QtGui, QtOpenGL
 from PyQGLViewer import *
 from openalea.plantgl.scenegraph import *
 from openalea.plantgl.algo import *
 from openalea.plantgl.math import *
 from OpenGL.GL import *
-from openalea.vpltk.qt import QtCore, QtGui
 from math import pow,log
 
 
@@ -219,12 +219,7 @@ class Curve2DEditor (QGLViewer):
         self.manipulator = ManipulatedFrame()
         self.setManipulatedFrame(self.manipulator)
         QtCore.QObject.connect(self.manipulator,QtCore.SIGNAL('manipulated()'),self.updatePoints)
-        # set texturing for background image
-        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        # Nice texture coordinate interpolation
-        glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
-        self.setBackgroundImage("test.png") #self.openImage() # QQQ 
+        #self.setBackgroundImage("test.png") #self.openImage() # QQQ 
         
     def getCurve(self):
         """ Get the edited curve """
@@ -249,7 +244,7 @@ class Curve2DEditor (QGLViewer):
         name = QtGui.QFileDialog.getOpenFileName(self, "Select an image", ".", "Images (*.png *.xpm *.jpg)");
 
         # In case of Cancel
-        if name.isEmpty() :  return
+        if not name :  return
         
         self.setBackgroundImage(name)
     
@@ -288,7 +283,7 @@ class Curve2DEditor (QGLViewer):
             #QtCore.qWarning("Image size set to " + str(newWidth) + "x" + str(newHeight) + " pixels")
             img = img.copy(0, 0, newWidth, newHeight)
 
-        glImg = QtGui.QImage(QGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
+        glImg = QtGui.QImage(QtOpenGL.QGLWidget.convertToGLFormat(img)) # flipped 32bit RGBA
 
         # Bind the img texture...
         glTexImage2D(GL_TEXTURE_2D, 0, 4, glImg.width(), glImg.height(), 0,
@@ -305,6 +300,12 @@ class Curve2DEditor (QGLViewer):
         
     def drawBackground(self):
         # code taken from the backgroundImage.cpp file that is part of the QGLViewer library
+
+        # set texturing for background image
+        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        # Nice texture coordinate interpolation
+        glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
 
         glDisable(GL_LIGHTING)
         glEnable(GL_TEXTURE_2D)

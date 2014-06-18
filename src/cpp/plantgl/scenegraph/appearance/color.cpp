@@ -152,6 +152,189 @@ Color3 Color3::fromUint(uint_t value) {
   return res;
 }
 
+TOOLS(Tuple3)<uchar_t> Color3::toHSV8() const {
+    TOOLS(Tuple3)<uchar_t> hsv(0,0,0);
+    Color3::const_iterator itmax = getMax();
+    uchar_t rgb_max = *itmax;
+    uchar_t rgb_min = *getMin();
+    float rgb_extend = rgb_max - rgb_min;
+
+    hsv[2] = rgb_max;
+    if (hsv[2] == 0) return hsv;
+
+    hsv[1] = uchar_t(255 * rgb_extend /rgb_max);
+    if (hsv[1] == 0 ) return hsv;
+
+    switch (std::distance(begin(), itmax)){
+    case 0: // RED
+        hsv[0] = 0 + 43 * (__GREEN - __BLUE) / rgb_extend;
+        break;
+    case 1: //GREEN
+        hsv[0] = 85 + 43 * (__BLUE - __RED) / rgb_extend;
+        break;
+    default: // BLUE
+        hsv[0] = 171 + 43 * (__RED - __GREEN) / rgb_extend;
+    }
+    
+    return hsv;
+}
+
+Color3 Color3::fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv) {
+    uchar_t h = hsv[0];
+    uchar_t s = hsv[1];
+    uchar_t v = hsv[2];
+
+    if (s == 0) {
+        return Color3(v,v,v);
+    }
+
+    float nh  = h / 43.;
+    int i = int(nh);
+    float ff = nh - i; 
+
+    float sn = s / 255.;
+
+    uchar_t p = v * (1 - sn);
+    uchar_t q = v * (1 - (sn * ff));
+    uchar_t t = v * (1 - (sn * (1 - ff)));
+
+    uchar_t r   = 0;
+    uchar_t g = 0;
+    uchar_t b  = 0;
+
+    switch (i){
+        case 0:
+          r = v; g = t; b = p;
+          break;
+        case 1:
+          r = q; g = v; b = p;
+          break;
+        case 2:
+          r = p; g = v; b = t;
+          break;
+        case 3:
+          r = p; g = q; b = v;
+          break;
+        case 4:
+          r = t; g = p; b = v;
+          break;
+        case 5:
+          r = v; g = p; b = q;
+          break;
+    }
+    return Color3(r,g,b);
+
+}
+
+TOOLS(Tuple3)<real_t> Color3::toHSV() const {
+    TOOLS(Tuple3)<real_t> hsv(0,0,0);
+    Color3::const_iterator itmax = getMax();
+    real_t rgb_max = real_t(*itmax);
+
+    hsv[2] = rgb_max;
+    if (hsv[2] <= GEOM_EPSILON) return hsv;
+
+ 
+    real_t rgb_min = real_t(*getMin());
+    real_t rgb_extend = rgb_max - rgb_min;
+
+    hsv[1] = rgb_extend /rgb_max;
+    if (hsv[1] <= GEOM_EPSILON ) return hsv;
+
+    real_t r = (__RED   -  rgb_min)/ rgb_extend;
+    real_t g = (__GREEN -  rgb_min)/ rgb_extend;
+    real_t b = (__BLUE  -  rgb_min)/ rgb_extend;
+
+    switch (std::distance(begin(), itmax)){
+    case 0: // RED
+        hsv[0] = 0 + 60. * (g - b) ;
+        if (hsv[0] < 0) hsv[0] += 360;
+        break;
+    case 1: //GREEN
+        hsv[0] = 120. + 60. * (b - r) ;
+        break;
+    default: // BLUE
+        hsv[0] = 240. + 60. * (r - g) ;
+    }
+    
+    return hsv;
+}
+
+Color3 Color3::fromHSV(const TOOLS(Tuple3)<real_t>& hsv) {
+    real_t h = hsv[0];
+    real_t s = hsv[1];
+    real_t v = hsv[2];
+
+
+    if (s <= GEOM_EPSILON) {
+        return Color3(v,v,v);
+    }
+
+    float nh  = h / 60.;
+    int i = int(nh);
+    float ff = nh - i; 
+
+    uchar_t p = v * (1 - s);
+    uchar_t q = v * (1 - (s * ff));
+    uchar_t t = v * (1 - (s * (1 - ff)));
+
+    uchar_t r   = 0;
+    uchar_t g = 0;
+    uchar_t b  = 0;
+
+    switch (i){
+        case 0:
+          r = v; g = t; b = p;
+          break;
+        case 1:
+          r = q; g = v; b = p;
+          break;
+        case 2:
+          r = p; g = v; b = t;
+          break;
+        case 3:
+          r = p; g = q; b = v;
+          break;
+        case 4:
+          r = t; g = p; b = v;
+          break;
+        case 5:
+          r = v; g = p; b = q;
+          break;
+    }
+    return Color3(r,g,b);
+
+}
+
+Color3 Color3::interpolate(const Color3& c1, const Color3& c2, real_t t)
+{
+    if (t < 0) t = 0.;
+    else if(t >= 1) t = 1.;
+    real_t oneminust = 1- t;
+
+    TOOLS(Tuple3)<real_t> hsv1 = c1.toHSV();
+    TOOLS(Tuple3)<real_t> hsv2 = c2.toHSV();
+    real_t h1 = hsv1[0];
+    real_t h2 = hsv2[0];
+    real_t minhue = std::min(h1,h2);
+    real_t maxhue = std::max(h1,h2);
+    bool hzenith = (maxhue - minhue > (minhue + 360 - maxhue));
+    real_t interpolhue = h1*oneminust+h2*t;
+    if (hzenith) {
+        if (h1 > h2) h2  += 360;
+        else h1 += 360;
+        interpolhue = h1*oneminust+h2*t;
+        if (interpolhue >= 360) interpolhue -= 360;
+    }
+
+    TOOLS(Tuple3)<real_t> hsvi(interpolhue,
+                               hsv1[1]*oneminust+hsv2[1]*t,
+                               hsv1[2]*oneminust+hsv2[2]*t);
+    return Color3::fromHSV(hsvi);
+
+}
+
+
 std::ostream& PGL(operator<<( std::ostream& stream, const Color3& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," << (uint16_t)c.getBlue() << ">";
 }
@@ -260,6 +443,46 @@ Color4 Color4::fromUint(uint_t value) {
   res.__BLUE = (value & 0x000000ff);
   return res;
 }
+
+
+TOOLS(Tuple4)<uchar_t> Color4::toHSVA8() const
+{
+    TOOLS(Tuple3)<uchar_t> hsv = Color3(__RED,__GREEN,__BLUE).toHSV8();
+    return TOOLS(Tuple4)<uchar_t>(hsv[0],hsv[1],hsv[2],__ALPHA);
+}
+
+TOOLS(Tuple4)<real_t> Color4::toHSVA() const
+{
+    TOOLS(Tuple3)<uchar_t> hsv = Color3(__RED,__GREEN,__BLUE).toHSV8();
+    return TOOLS(Tuple4)<real_t>(hsv[0],hsv[1],hsv[2],__ALPHA/255);
+}
+
+Color4 Color4::fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsva)
+{
+    Color3 c = Color3::fromHSV(TOOLS(Tuple3)<uchar_t>(hsva[0],hsva[1],hsva[2]));
+    return Color4(c.getRed(),c.getGreen(),c.getBlue(),hsva[3]);
+
+}
+
+Color4 Color4::fromHSVA(const TOOLS(Tuple4)<real_t>& hsva)
+{
+    Color3 c = Color3::fromHSV(TOOLS(Tuple3)<real_t>(hsva[0],hsva[1],hsva[2]));
+    return Color4(c.getRed(),c.getGreen(),c.getBlue(),hsva[3]*255.);
+}
+
+Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
+{
+    if (t < 0) t = 0.;
+    else if(t >= 1) t = 1.;
+    real_t oneminust = 1- t;
+
+    TOOLS(Tuple4)<real_t> hsva1 = c1.toHSVA();
+    TOOLS(Tuple4)<real_t> hsva2 = c2.toHSVA();
+    TOOLS(Tuple4)<real_t> hsvai(hsva1[0]*oneminust+hsva2[0]*t,hsva1[1]*oneminust+hsva2[1]*t,hsva1[2]*oneminust+hsva2[2]*t,hsva1[3]*oneminust+hsva2[3]*t);
+    return Color4::fromHSVA(hsvai);
+
+}
+
 
 std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," 

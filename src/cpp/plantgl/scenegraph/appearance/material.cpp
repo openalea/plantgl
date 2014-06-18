@@ -300,3 +300,18 @@ bool Material::isSimilar(const Material& other) const
            __shininess == other.__shininess &&
            __transparency == other.__transparency;
 }
+
+MaterialPtr PGL::interpolate(const MaterialPtr m1, const MaterialPtr m2, real_t t) {
+    GEOM_ASSERT(is_valid_prt(m1) && is_valid_ptr(m2));
+    if (t < 0) t = 0.;
+    else if(t >= 1) t = 1.;
+    real_t oneminust = 1- t;
+
+    return MaterialPtr(new Material(
+                        Color3::interpolate(m1->getAmbient(),m2->getAmbient(),t),
+                        m1->getDiffuse()*oneminust+m2->getDiffuse()*t,
+                        Color3::interpolate(m1->getSpecular(),m2->getSpecular(),t),
+                        Color3::interpolate(m1->getEmission(),m2->getEmission(),t),
+                        m1->getShininess()*oneminust+m2->getShininess()*t,
+                        m1->getTransparency()*oneminust+m2->getTransparency()*t));
+}

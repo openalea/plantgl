@@ -308,6 +308,8 @@ public:
     
     inline void decColor()
 	{  setColor( getColor() - color_increment ); }
+
+    virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
     
     void setCustomAppearance(const AppearancePtr app);
     inline void removeCustomAppearance() { setCustomAppearance(AppearancePtr()); }

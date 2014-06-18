@@ -111,6 +111,61 @@ struct col4_pickle_suite : boost::python::pickle_suite
     }
 };
 
+bp::object py_to_hsv8(Color3 * c){
+    TOOLS(Tuple3)<uchar_t> hsv = c->toHSV8();
+    return make_tuple(hsv[0],hsv[1],hsv[2]);
+}
+
+bp::object py_to_hsv(Color3 * c){
+    TOOLS(Tuple3)<real_t> hsv = c->toHSV();
+    return make_tuple(hsv[0],hsv[1],hsv[2]);
+}
+
+Color3 py_from_hsv( bp::object hsv){
+    extract<uchar_t> ec0(hsv[0]);
+    extract<uchar_t> ec1(hsv[1]);
+    extract<uchar_t> ec2(hsv[2]);
+    if (ec0.check() && ec1.check() && ec2.check()){
+        return Color3::fromHSV(TOOLS(Tuple3)<uchar_t>(ec0(),ec1(),ec2()));
+    }
+    else {
+        return Color3::fromHSV(TOOLS(Tuple3)<real_t>(extract<real_t>(hsv[0])(),
+                                                     extract<real_t>(hsv[1])(),
+                                                     extract<real_t>(hsv[2])()));
+
+    }
+}
+
+
+bp::object py_to_hsva8(Color4 * c){
+    TOOLS(Tuple4)<uchar_t> hsv = c->toHSVA8();
+    return make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
+}
+
+bp::object py_to_hsva(Color4 * c){
+    TOOLS(Tuple4)<real_t> hsv = c->toHSVA();
+    return make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
+}
+
+Color4 py_from_hsva( bp::object hsv){
+    extract<uchar_t> ec0(hsv[0]);
+    extract<uchar_t> ec1(hsv[1]);
+    extract<uchar_t> ec2(hsv[2]);
+    extract<uchar_t> ec3(hsv[3]);
+    if (ec0.check() && ec1.check() && ec2.check() && ec3.check()){
+        return Color4::fromHSVA(TOOLS(Tuple4)<uchar_t>(ec0(),ec1(),ec2(),ec3()));
+    }
+    else {
+        return Color4::fromHSVA(TOOLS(Tuple4)<real_t>(extract<real_t>(hsv[0])(),
+                                         extract<real_t>(hsv[1])(),
+                                         extract<real_t>(hsv[2])(),
+                                         extract<real_t>(hsv[3])()));
+
+    }
+}
+
+
+
 void export_Color3()
 {
   class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >(args("other")))
@@ -137,6 +192,11 @@ void export_Color3()
       .staticmethod("fromUint")
       .def( "__repr__", col3_str )
       .def( "__str__", col3_str )
+      .def( "toHSV", py_to_hsv )
+      .def( "toHSV8", py_to_hsv8 )
+      .def( "fromHSV", py_from_hsv )
+      .staticmethod("fromHSV")
+      .def( "interpolate", Color3::interpolate, (bp::arg("c"),bp::arg("alpha")=0.5) )
       .add_static_property("BLACK",make_getter(&Color3::BLACK))
       .add_static_property("BLUE",make_getter(&Color3::BLUE))
       .add_static_property("CYAN",make_getter(&Color3::CYAN))
@@ -178,6 +238,11 @@ void export_Color4()
       .def( "__int__", &Color4::toUint )
       .def( "fromUint", &Color4::fromUint )
       .staticmethod("fromUint")
+      .def( "toHSVA", py_to_hsva )
+      .def( "toHSVA8", py_to_hsva8 )
+      .def( "fromHSVA", py_from_hsva )
+      .staticmethod("fromHSVA")
+      .def( "interpolate", Color4::interpolate, (bp::arg("c"),bp::arg("alpha")=0.5) )
       .def( "__str__", col4_str )
       .def( "__repr__", col4_str )
       .add_static_property("BLACK",make_getter(&Color4::BLACK))

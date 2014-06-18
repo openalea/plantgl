@@ -204,6 +204,7 @@ public:
 
   virtual bool isSimilar(const Material&) const;
 
+
 protected:
 
   /// The \b Ambient field.
@@ -228,6 +229,8 @@ protected:
 
 /// Material Pointer
 typedef RCPtr<Material> MaterialPtr;
+
+MaterialPtr interpolate(const MaterialPtr m1, const MaterialPtr m2, real_t t = 0.5);
 
 /* ----------------------------------------------------------------------- */
 

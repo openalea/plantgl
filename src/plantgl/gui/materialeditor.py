@@ -10,12 +10,6 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import os
 
-def interpolColor(col1,col2,p1):
-    r = col1.red * (1-p1) + col2.red *p1
-    g = col1.green * (1-p1) + col2.green *p1
-    b = col1.blue * (1-p1) + col2.blue *p1
-    return Color3(int(r),int(g),int(b))
-
     
 class MaterialPanelView (QtOpenGL.QGLWidget):
     def __init__(self,parent):
@@ -512,12 +506,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             iratio = 0
             for i in xrange(beg+1,end):
                 iratio += ratio
-                self.setMaterial(i,Material(interpolColor(fmat.ambient,lmat.ambient,iratio),
-                                                   fmat.diffuse * (1-iratio)+lmat.diffuse*iratio,
-                                                   interpolColor(fmat.specular,lmat.specular,iratio),
-                                                   interpolColor(fmat.emission,lmat.emission,iratio),
-                                                   fmat.shininess * (1-iratio)+lmat.shininess*iratio,
-                                                   fmat.transparency * (1-iratio)+lmat.transparency*iratio))
+                self.setMaterial(i,fmat.interpolate(lmat,iratio))
             self.selectionbegin,self.selectionend = None,None
             self.emit(qt.QtCore.SIGNAL('valueChanged()'))
             

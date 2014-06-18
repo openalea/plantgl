@@ -71,6 +71,8 @@ void export_Turtle()
 	.def("setCustomAppearance", &Turtle::setCustomAppearance, return_self<>() )
     .def("incColor", &Turtle::incColor, return_self<>() )
     .def("decColor", &Turtle::decColor, return_self<>() )
+    .def("interpolateColors", &Turtle::interpolateColors, return_self<>() )
+
     .def("setWidth", &Turtle::setWidth, return_self<>() )
     .def("incWidth", &Turtle::incWidth, return_self<>() )
     .def("decWidth", &Turtle::decWidth, return_self<>() )

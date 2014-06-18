@@ -76,6 +76,11 @@ struct mat_pickle_suite : boost::python::pickle_suite
 
 MaterialPtr getDefaultMaterial() { return dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL); }
 
+MaterialPtr py_interpolate(Material * m1, Material * m2, real_t t ){
+    return interpolate(MaterialPtr(m1),MaterialPtr(m2),t);
+}
+
+
 void export_Material()
 {
   class_< Material, MaterialPtr, bases < Appearance >, boost::noncopyable > 
@@ -107,6 +112,7 @@ void export_Material()
     .def( "__str__", mat_str )
     .def( "__repr__", mat_str )
     .def( "isSimilar", &Material::isSimilar)
+    .def( "interpolate", &py_interpolate, (bp::arg("m"),bp::arg("alpha")=0.5))
     .DEC_CT_PROPERTY_WDV(ambient,Material,Ambient,Color3,DEFAULT_AMBIENT)
     .DEC_BT_PROPERTY_WDV(diffuse,Material,Diffuse,real_t,DEFAULT_DIFFUSE)
     .DEC_CT_PROPERTY_WDV(specular,Material,Specular,Color3,DEFAULT_SPECULAR)

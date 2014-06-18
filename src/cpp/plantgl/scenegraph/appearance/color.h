@@ -150,6 +150,15 @@ public:
   /// Decode the rgb value from an uint
   static Color3 fromUint(uint_t);
 
+  TOOLS(Tuple3)<uchar_t> toHSV8() const;
+  TOOLS(Tuple3)<real_t> toHSV() const;
+
+  static Color3 fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv);
+  static Color3 fromHSV(const TOOLS(Tuple3)<real_t>& hsv);
+
+  static Color3 interpolate(const Color3& c1, const Color3& c2, real_t t = 0.5);
+
+ 
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color3& c );
 
@@ -270,6 +279,14 @@ public:
 
   /// Decode the argb value from an uint
   static Color4 fromUint(uint_t);
+
+  TOOLS(Tuple4)<uchar_t> toHSVA8() const;
+  TOOLS(Tuple4)<real_t> toHSVA() const;
+
+  static Color4 fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsv);
+  static Color4 fromHSVA(const TOOLS(Tuple4)<real_t>& hsv);
+
+  static Color4 interpolate(const Color4& c1, const Color4& c2, real_t t = 0.5);
 
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color4& c ) ;

@@ -655,6 +655,10 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 	}
   }
 
+void Turtle::interpolateColors(int val1, int val2, real_t alpha){
+
+}
+
 void Turtle::setCustomAppearance(const AppearancePtr app)
 {
     __params->customMaterial = app;
@@ -1147,6 +1151,16 @@ void PglTurtle::clear(){
    reset();
    __appList.clear();
    __surfList.clear();
+}
+
+void PglTurtle::interpolateColors(int val1, int val2, real_t alpha){
+    AppearancePtr a1 = getMaterial(val1);
+    AppearancePtr a2 = getMaterial(val2);
+    MaterialPtr m1 = dynamic_pointer_cast<Material>(a1);
+    MaterialPtr m2 = dynamic_pointer_cast<Material>(a2);
+    if (is_null_ptr(m1) || is_null_ptr(m2))
+        error("Can only interpolate material. Not texture.");
+    setCustomAppearance(AppearancePtr(interpolate(m1,m2,alpha)));
 }
 
 void PglTurtle::clearColorList(){
