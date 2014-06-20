@@ -38,6 +38,8 @@
 #include <QtGui/qlabel.h>
 #include <QtGui/qpixmap.h>
 #include <QtGui/qcursor.h>
+#include <QtGui/qcursor.h>
+#include <QtGui/QHBoxLayout>
 
 /*----------------------------------------------------------------------------*/
 
@@ -49,6 +51,8 @@ ViewLocationBar::ViewLocationBar(const QString &label,
 				                 QWidget *mw,const char *name)
   : ViewToolBar( label, mw ,name )
 {
+
+
     QToolButton * bt = NULL;
     QPixmap erase(ViewerIcon::getPixmap(ViewerIcon::locerase));
     bt =  new QToolButton(this);
@@ -56,25 +60,27 @@ ViewLocationBar::ViewLocationBar(const QString &label,
 	bt->setFixedSize(QSize(25,25));
 	bt->setWhatsThis("<b>"+tr("Erase Location")+"</b><br><br>"
 	"Erase the current filename to specify a new one.");
-	addWidget(bt);
-    QLabel * LocationLabel = new QLabel(this );
-    LocationLabel->setText( tr( " Location " ) );
-	LocationLabel->setFixedSize(QSize(50,25));
-    addWidget(LocationLabel);
+    addWidget(bt);
+
+    // QLabel * LocationLabel = new QLabel(this );
+    // LocationLabel->setText( tr( " Location " ) );
+	// LocationLabel->setFixedSize(QSize(50,25));
+    // addWidget(LocationLabel);
 
     __Location = new QComboBox( this );
 	__Location->setProperty("minimumHeight",25);
-//	__Location->setProperty("minimumWidth",350);
+	//__Location->setProperty("minimumWidth",50);
 	__Location->setEditable( TRUE );
 	__Location->setAutoCompletion ( TRUE );
 	__Location->setCursor( QCursor( Qt::IBeamCursor ) );
-	__Location->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+	__Location->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
+
 	addWidget(__Location);
 
 	__Location->setWhatsThis("<b>"+tr("The Filename")+"</b><br><br>"
 	"The name of the file of the current scene.");
     if(bt)QObject::connect(bt,SIGNAL(clicked()),__Location,SLOT(clearEditText()));
-}
+ }
 
 /*  
  *  Destroys the object and frees any allocated resources

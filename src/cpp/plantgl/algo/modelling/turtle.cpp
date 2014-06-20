@@ -38,13 +38,16 @@
 #include <plantgl/scenegraph/transformation/translated.h>
 #include <plantgl/scenegraph/transformation/scaled.h>
 #include <plantgl/scenegraph/transformation/screenprojected.h>
+#include <plantgl/scenegraph/transformation/tapered.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/geometry/extrusion.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
+#include <plantgl/scenegraph/geometry/quadset.h>
 #include <plantgl/scenegraph/geometry/faceset.h>
 #include <plantgl/scenegraph/geometry/cylinder.h>
 #include <plantgl/scenegraph/geometry/frustum.h>
 #include <plantgl/scenegraph/geometry/cone.h>
+#include <plantgl/scenegraph/geometry/box.h>
 #include <plantgl/scenegraph/geometry/sphere.h>
 #include <plantgl/scenegraph/geometry/disc.h>
 #include <plantgl/scenegraph/geometry/group.h>
@@ -1069,12 +1072,62 @@ void Turtle::sphere(real_t radius )
   else if (radius > GEOM_EPSILON) _sphere(radius); 
 }
 
+
 void Turtle::circle(real_t radius )
 { 
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for circle"); }
   else if (radius > GEOM_EPSILON) _circle(radius); 
 }
+
+void Turtle::box(real_t length,real_t topradius){
+      if(length > 0){
+          if (__params->guide) _applyGuide(length);
+          if (__params->elasticity > GEOM_EPSILON) _applyTropism();
+
+          _box(length, getWidth(), topradius);
+
+          __params->position += __params->heading*length*getScale().z();
+          __params->axialLength += length;
+          if (length > 0 && __params->guide) _ajustToGuide();
+
+          if (topradius > -GEOM_EPSILON ) {
+              setWidth(topradius);
+
+          }
+      }
+      // else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
+      // else error("F length should be positive.");
+      else if(length < -GEOM_EPSILON) {
+          turnAround(); box(-length,topradius); turnAround();
+
+      }
+}
+
+void Turtle::quad(real_t length,real_t topradius){
+      if(length > 0){
+          if (__params->guide) _applyGuide(length);
+          if (__params->elasticity > GEOM_EPSILON){
+              _applyTropism();
+          }
+          _quad(length, getWidth(), topradius);
+
+          __params->position += __params->heading*length*getScale().z();
+          __params->axialLength += length;
+          if (length > 0 && __params->guide) _ajustToGuide();
+
+          if (topradius > -GEOM_EPSILON ) {
+              setWidth(topradius);
+
+          }
+      }
+      // else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
+      // else error("F length should be positive.");
+      else if(length < -GEOM_EPSILON) {
+          turnAround(); quad(-length,topradius); turnAround();
+
+      }
+  }
 
 void Turtle::label(const std::string& text, int size )
 { 
@@ -1405,7 +1458,7 @@ void PglTurtle::_frustum(real_t length, real_t topradius){
 			if ( getScale() !=  Vector3(1,1,1) &&
 				(getScale().x() == getScale().y() && 
 				getScale().y() == getScale().z() ))
-				topradius *= getScale().x();
+				_topradius *= getScale().x();
 			a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
 			if (getLeft() != Vector3::OX || 
 				getUp() != -Vector3::OY)
@@ -1430,6 +1483,83 @@ void PglTurtle::_cylinder(real_t length){
 	_addToScene(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution))));
   }
 }
+
+void PglTurtle::_box(real_t length, real_t botradius,  real_t topradius){
+    GeometryPtr a;
+    if((FABS(botradius) < GEOM_EPSILON)&& (FABS(topradius) < GEOM_EPSILON)){
+            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
+            pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
+            a = GeometryPtr(new Polyline(pts));
+            _addToScene(a);
+   }
+    else{
+        if ( getScale() !=  Vector3(1,1,1) &&
+            (getScale().x() == getScale().y() )){
+            botradius *= getScale().x();
+            topradius *= getScale().x();
+        }
+
+        if (FABS(topradius-botradius) < GEOM_EPSILON){
+            real_t l = length*getScale().z()/2;
+            a = GeometryPtr(new Translated(Vector3(0,0,l),GeometryPtr(new Box(Vector3(botradius,botradius,l)))));
+        }
+        else {
+            real_t l = length*getScale().z()/2;
+            a = GeometryPtr(new Translated(Vector3(0,0,l),GeometryPtr(new Tapered(botradius, topradius,PrimitivePtr(new Box(Vector3(1,1,l)))))));
+         }
+        _addToScene(transform(a));
+    }
+}
+
+void PglTurtle::_quad(real_t length, real_t botradius,  real_t topradius){
+    GeometryPtr a;
+    if ( getScale() !=  Vector3(1,1,1) &&
+        (getScale().x() == getScale().y() )){
+        botradius *= getScale().x();
+        topradius *= getScale().x();
+    }
+    Point3ArrayPtr points(new Point3Array());
+    if (FABS(botradius) < GEOM_EPSILON){
+        points->push_back(getPosition());
+    }
+    else {
+        points->push_back(getPosition()+getLeft()*botradius);
+        points->push_back(getPosition()-getLeft()*botradius);
+
+    }
+    Vector3 toppos = getPosition()+getHeading()*length*getScale().z();
+    if (FABS(topradius) < GEOM_EPSILON){
+        points->push_back(toppos);
+    }
+    else {
+        points->push_back(toppos-getLeft()*topradius);
+        points->push_back(toppos+getLeft()*topradius);
+    }
+    
+    switch (points->size()){
+        case 2:
+            a = GeometryPtr(new Polyline(points));
+            break;
+        case 3:
+            {
+                Index3ArrayPtr ind(new Index3Array());
+                ind->push_back(Index3(0,1,2));
+                a = GeometryPtr(new TriangleSet(points,ind));
+            }
+            break;
+        default:
+        case 4:
+            {
+                Index4ArrayPtr ind(new Index4Array());
+                ind->push_back(Index4(0,1,2,3));
+                a = GeometryPtr(new QuadSet(points,ind));
+            }
+            break;
+    }
+     _addToScene(a);
+}
+
+
 
 GeometryPtr PglTurtle::DEFAULT_SPHERE;
 

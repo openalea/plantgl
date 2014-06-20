@@ -221,9 +221,12 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
     }
 }
 
+extern void qt_set_sequence_auto_mnemonic(bool b);
 
 void Viewer::initialize()
 {
+  // qt_set_sequence_auto_mnemonic (true);
+
   setWindowIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::flower)));
 
   setWhatsThis(tr("<b>The PlantGL 3D Viewer</b><br><br>"
@@ -280,9 +283,16 @@ void Viewer::initialize()
   addToolBarBreak();
 
   /// ToolBar
-  __ToolBar = new ViewToolBar("View Bar",this,"ViewBar");
-  __ToolBar->setIconSize(QSize(32,32));
-  addToolBar(__ToolBar);
+  __ViewToolBar = new ViewToolBar("View ToolBar",this,"ViewToolBar");
+  __ViewToolBar->setIconSize(QSize(32,32));
+  addToolBar(__ViewToolBar);
+
+
+
+  /// ToolBar
+  __FileToolBar = new ViewToolBar("File ToolBar",this,"FileToolBar");
+  __FileToolBar->setIconSize(QSize(32,32));
+  addToolBar(__FileToolBar);
 
 
 
@@ -316,15 +326,19 @@ void Viewer::initialize()
   __ViewMenu->addAction(_ViewMenuAction);
   _ViewMenuAction->setShortcut(Qt::Key_F7);
 
-  _ViewMenuAction = __ToolBar->toggleViewAction();
+  _ViewMenuAction = __FileToolBar->toggleViewAction();
   __ViewMenu->addAction(_ViewMenuAction);
   _ViewMenuAction->setShortcut(Qt::Key_F8);
+
+  _ViewMenuAction = __ViewToolBar->toggleViewAction();
+  __ViewMenu->addAction(_ViewMenuAction);
+  // _ViewMenuAction->setShortcut(Qt::Key_F9);
 
 
   if(__FileMenu->getLocationBar()){
     _ViewMenuAction = __FileMenu->getLocationBar()->toggleViewAction();
     __ViewMenu->addAction(_ViewMenuAction);
-    _ViewMenuAction->setShortcut(Qt::Key_F9);
+    _ViewMenuAction->setShortcut(Qt::Key_F10);
   }
 
   __ViewMenu->addSeparator();
@@ -507,11 +521,13 @@ void Viewer::initializeRenderer()
   __MainMenu->addSeparator();
   __HelpMenu->setTitle(tr("&Help"));
   __MainMenu->addMenu(__HelpMenu);
-  __ToolBar->clear();
-  // __ToolBar->setTitle("Viewer ToolBar");
-  __FileMenu->fillToolBar(__ToolBar);
-  __ToolBar->addSeparator();
-  __GLFrame->fillToolBar(__ToolBar);
+
+  __FileToolBar->clear();
+  __FileMenu->fillToolBar(__FileToolBar);
+
+  __ViewToolBar->clear();
+  __GLFrame->fillToolBar(__ViewToolBar);
+
   renderer->addOtherToolBar(this);
 }
 
@@ -586,7 +602,7 @@ Viewer::keyPressEvent ( QKeyEvent * e)
   else if( e->key() == Qt::Key_F5)  __GLFrame->getSceneRenderer()->refresh();
   else if( e->key() == Qt::Key_F6)  displayMenuBar();
   else if( e->key() == Qt::Key_F7)  __controlPanel->show();
-  else if( e->key() == Qt::Key_F8)  __ToolBar->changeVisibility();
+  else if( e->key() == Qt::Key_F8)  __ViewToolBar->changeVisibility();
   else if( e->key() == Qt::Key_F10) displayGLWidgetOnly();
   else if( e->key() == Qt::Key_F11) displayFullScreen();
   else if( e->key() == Qt::Key_Escape) {
@@ -968,7 +984,8 @@ void Viewer::displayGLWidgetOnly(){
 
   if( __MainMenu->isVisible()||
       __controlPanel->isVisible() ||
-      __ToolBar->isVisible() ||
+      __ViewToolBar->isVisible() ||
+      __FileToolBar->isVisible() ||
       __FileMenu->getLocationBar()->isVisible()){
     __toolbarsvisibility = 0;
     if(__MainMenu->isVisible()){
@@ -979,9 +996,13 @@ void Viewer::displayGLWidgetOnly(){
       __controlPanel->hide();
       __toolbarsvisibility += 2;
     }
-    if(__ToolBar->isVisible() ){
-      __ToolBar->changeVisibility();
+    if(__ViewToolBar->isVisible() ){
+      __ViewToolBar->changeVisibility();
       __toolbarsvisibility += 4;
+    }
+    if(__FileToolBar->isVisible() ){
+      __FileToolBar->hide();
+      __toolbarsvisibility += 64;
     }
     if(__FileMenu->getLocationBar()->isVisible()){
       __FileMenu->getLocationBar()->changeVisibility();
@@ -1004,7 +1025,7 @@ void Viewer::displayGLWidgetOnly(){
       __controlPanel->show();
     }
     if(!__toolbarsvisibility || __toolbarsvisibility & 4){
-      __ToolBar->changeVisibility();
+      __ViewToolBar->changeVisibility();
     }
     if(!__toolbarsvisibility || __toolbarsvisibility & 8){
       __FileMenu->getLocationBar()->changeVisibility();
@@ -1014,6 +1035,9 @@ void Viewer::displayGLWidgetOnly(){
     }
     if(!__toolbarsvisibility || __toolbarsvisibility & 32){
       __Browser->show();
+    }
+    if(!__toolbarsvisibility || __toolbarsvisibility & 64){
+      __FileToolBar->show();
     }
     __toolbarsvisibility = 0;
  }

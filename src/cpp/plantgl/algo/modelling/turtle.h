@@ -347,7 +347,15 @@ public:
 	{ _circle(getWidth()); }
 
     void circle(real_t radius );
-    
+
+    void box(real_t length, real_t topradius);
+    inline void box(real_t length) { box(length,getWidth());}
+    inline void box() { box(default_step,getWidth());}
+
+    void quad(real_t length, real_t topradius);
+    inline void quad(real_t length) { quad(length,getWidth());}
+    inline void quad() { quad(default_step,getWidth());}
+
     virtual void label(const std::string& text, int size = -1 );
 
     virtual void surface(const std::string& name, real_t scale=1);
@@ -430,6 +438,7 @@ public:
     void sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius = 1.0, const QuantisedFunctionPtr radiusvariation = NULL);
     void sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius = 1.0, const QuantisedFunctionPtr radiusvariation = NULL);
 
+
     inline void setScreenCoordinatesEnabled(bool enabled = true)
     { getParameters().screenCoordinates = enabled; }
 
@@ -465,6 +474,10 @@ protected:
     virtual void _sphere(real_t radius){}
     
     virtual void _circle(real_t radius){}
+
+    virtual void _box(real_t radius, real_t botradius, real_t topradius){}
+    
+    virtual void _quad(real_t radius, real_t botradius, real_t topradius){}
 
     virtual void _surface(const std::string& name, real_t scale){}
 

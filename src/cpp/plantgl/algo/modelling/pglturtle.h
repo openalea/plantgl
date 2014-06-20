@@ -156,6 +156,10 @@ protected:
     /// draw a circle in yz plane of radius = radius (default : current width) 
     virtual void _circle(real_t radius);
     
+    virtual void _box(real_t radius, real_t botradius, real_t topradius);
+
+    virtual void _quad(real_t radius, real_t botradius, real_t topradius);
+
     /// draw the surface identified by name, scaled by a factor scale
     virtual void _surface(const std::string& name,real_t scale);
 

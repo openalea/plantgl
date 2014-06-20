@@ -261,7 +261,10 @@ private:
   QMenuBar *        __MainMenu;
   
   /// Tool Bar
-  ViewToolBar * __ToolBar;
+  QToolBar * __FileToolBar;
+  
+  /// Tool Bar
+  ViewToolBar * __ViewToolBar;
   
   /// Control Panel.
   ViewControlPanel * __controlPanel;

@@ -77,7 +77,8 @@ ViewCameraMenu::ViewCameraMenu(ViewCameraGL * camera,QWidget * parent, const cha
   QPixmap linked(ViewerIcon::getPixmap(ViewerIcon::linked));
   QPixmap eyef(ViewerIcon::getPixmap(ViewerIcon::eyef));
 
-  addAction(home,tr("&Home"),      camera,SLOT(home()),Qt::CTRL+Qt::Key_H);
+  QAction * action = addAction(home,tr("Home"),      camera,SLOT(home()), Qt::CTRL+Qt::Key_I);
+
   addAction(tr("&Front View (YZ)"),camera,SLOT(YZView()));
   addAction(tr("&Right View (XZ)"),camera,SLOT(XZView()));
   addAction(tr("&Top View (XY)"),  camera,SLOT(XYView()));
