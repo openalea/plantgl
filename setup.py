@@ -108,7 +108,11 @@ setup(
         'oalab.qt_control':[
             'PluginColorListWidget = openalea.plantgl.oaplugins:PluginColorListWidget',
             'PluginCurve2DWidget = openalea.plantgl.oaplugins:PluginCurve2DWidget',
+            'PluginPatchWidget = openalea.plantgl.oaplugins:PluginPatchWidget',
         ],
+        'oalab.interface': [
+            'PlantGLOAInterfacePlugin = openalea.plantgl.oaplugins.interfaces:PlantGLOAInterfacePlugin',
+            ],
               },
 
  

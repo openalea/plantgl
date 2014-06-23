@@ -81,3 +81,26 @@ class Curve2DWidget(Curve2DEditor, AbstractQtControlWidget):
     def paint(self, control, shape=None):
         if shape == 'hline':
             return PainterInterfaceObject()
+
+
+from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
+class NurbsPatchWidget(NurbsPatchEditor, AbstractQtControlWidget):
+    def __init__(self):
+        AbstractQtControlWidget.__init__(self)
+        NurbsPatchEditor.__init__(self, parent=None)
+
+    def reset(self, value=None, **kwargs):
+        if value is None:
+            value = self.newDefaultNurbsPatch()()
+        self.setValue(value)
+
+    def value(self):
+        return self.getNurbsPatch()
+
+    def setValue(self, value):
+        self.setNurbsPatch(value)
+
+    @classmethod
+    def paint(self, control, shape=None):
+        if shape == 'hline':
+            return PainterInterfaceObject()

@@ -9,7 +9,7 @@ class PluginColorListWidget(ControlWidgetSelectorPlugin):
 
     @classmethod
     def load(cls):
-        from openalea.plantgl.plugins.controls import ColorListWidget
+        from openalea.plantgl.oaplugins.controls import ColorListWidget
         return ColorListWidget
 
 
@@ -21,6 +21,17 @@ class PluginCurve2DWidget(ControlWidgetSelectorPlugin):
 
     @classmethod
     def load(cls):
-        from openalea.plantgl.plugins.controls import Curve2DWidget
+        from openalea.plantgl.oaplugins.controls import Curve2DWidget
         return Curve2DWidget
+
+class PluginPatchWidget(ControlWidgetSelectorPlugin):
+    controls = ['IPatch']
+    name = 'NurbsPatchWidget'
+    edit_shape = ['large']
+    paint = True
+
+    @classmethod
+    def load(cls):
+        from openalea.plantgl.oaplugins.controls import NurbsPatchWidget
+        return NurbsPatchWidget
 
