@@ -230,7 +230,7 @@ protected:
 /// Material Pointer
 typedef RCPtr<Material> MaterialPtr;
 
-MaterialPtr interpolate(const MaterialPtr m1, const MaterialPtr m2, real_t t = 0.5);
+SG_API MaterialPtr interpolate(const MaterialPtr m1, const MaterialPtr m2, real_t t = 0.5);
 
 /* ----------------------------------------------------------------------- */
 
