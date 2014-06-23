@@ -58,8 +58,8 @@ class ProfileViewer (QGLViewer):
 
     _posCurveColorF = [0.0,1.0,0.0]
 
-    positionChanged = QtCore.pyqtSignal(int)
-    userSectionHighlighted = QtCore.pyqtSignal(object, object)
+    positionChanged = QtCore.Signal(int)
+    userSectionHighlighted = QtCore.Signal(object, object)
 
     def __init__(self,parent, profile=None):
         QGLViewer.__init__(self,parent)
@@ -333,7 +333,7 @@ class ProfileViewer (QGLViewer):
 class SenderWidget(QtCore.QObject):
     """A helper class that reemits signals from its inner widget
     with self as first argument, to identify the origin of a signal."""
-    valueChanged = QtCore.pyqtSignal(QtCore.QObject, object, object)
+    valueChanged = QtCore.Signal(QtCore.QObject, object, object)
     def __init__(self, widget, typ, parent):
         QtCore.QObject.__init__(self, parent)
         self.inner = widget
@@ -463,8 +463,8 @@ from openalea.plantgl.gui.curve2deditor import Curve2DEditor
 class CurvePanel( QtGui.QScrollArea ):
 
     class SimpleCurve2DView(Curve2DEditor):
-        clicked = QtCore.pyqtSignal(object, object)
-        deleteRequested = QtCore.pyqtSignal(object, object)
+        clicked = QtCore.Signal(object, object)
+        deleteRequested = QtCore.Signal(object, object)
         def __init__(self, pos, curve, parent):
             Curve2DEditor.__init__(self, parent)
             self.pos = pos
@@ -498,9 +498,9 @@ class CurvePanel( QtGui.QScrollArea ):
             self.deleteRequested.emit(self.pos, self.getCurve())
 
 
-    curveEditRequested   = QtCore.pyqtSignal(object, object)
-    curveDeleteRequested = QtCore.pyqtSignal(object, object)
-    curveMoveRequested   = QtCore.pyqtSignal(object, object)
+    curveEditRequested   = QtCore.Signal(object, object)
+    curveDeleteRequested = QtCore.Signal(object, object)
+    curveMoveRequested   = QtCore.Signal(object, object)
 
     def __init__(self, orientation=QtGui.QBoxLayout.LeftToRight, parent=None):
         QtGui.QScrollArea.__init__(self, parent)
