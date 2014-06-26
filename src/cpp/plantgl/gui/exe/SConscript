@@ -13,7 +13,7 @@ exe_env.EnableQt4Modules([ 'QtOpenGL', 'QtCore', 'QtGui', 'QtNetwork' ])
 source= ["mainviewer.cpp"]
 
 LIBRARIES = list( exe_env['LIBS'] )
-LIBRARIES.extend( ['gfortran','pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
+LIBRARIES.extend( ['pglgui', 'pglalgo', 'pgltool', 'pglmath','pglsg'] )
 
 exe_env.Append( CPPPATH = '#/share/plantgl/pixmap')
 
