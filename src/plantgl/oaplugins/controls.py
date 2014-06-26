@@ -65,6 +65,7 @@ class Curve2DWidget(Curve2DEditor, AbstractQtControlWidget):
     def __init__(self):
         AbstractQtControlWidget.__init__(self)
         Curve2DEditor.__init__(self, parent=None)
+        self.value_changed_signal = 'valueChanged()'
 
     def reset(self, value=None, **kwargs):
         if value is None:
@@ -76,6 +77,7 @@ class Curve2DWidget(Curve2DEditor, AbstractQtControlWidget):
 
     def setValue(self, value):
         self.setCurve(value)
+        self.updateGL()
 
     @classmethod
     def paint(self, control, shape=None):
@@ -88,6 +90,7 @@ class NurbsPatchWidget(NurbsPatchEditor, AbstractQtControlWidget):
     def __init__(self):
         AbstractQtControlWidget.__init__(self)
         NurbsPatchEditor.__init__(self, parent=None)
+        self.value_changed_signal = 'valueChanged()'
 
     def reset(self, value=None, **kwargs):
         if value is None:
@@ -99,6 +102,7 @@ class NurbsPatchWidget(NurbsPatchEditor, AbstractQtControlWidget):
 
     def setValue(self, value):
         self.setNurbsPatch(value)
+        self.updateGL()
 
     @classmethod
     def paint(self, control, shape=None):
