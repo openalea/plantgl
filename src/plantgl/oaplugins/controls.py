@@ -60,7 +60,7 @@ class ColorListWidget(MaterialEditor, AbstractQtControlWidget):
             return PainterColorList()
 
 
-from openalea.plantgl.gui.curve2deditor import Curve2DEditor
+from openalea.plantgl.gui.curve2deditor import Curve2DEditor, FuncConstraint
 class Curve2DWidget(Curve2DEditor, AbstractQtControlWidget):
     def __init__(self):
         AbstractQtControlWidget.__init__(self)
@@ -73,11 +73,34 @@ class Curve2DWidget(Curve2DEditor, AbstractQtControlWidget):
         self.setValue(value)
 
     def value(self):
-        return self.curveshape.geometry
+        return self.getCurve()
 
     def setValue(self, value):
         self.setCurve(value)
         self.updateGL()
+
+    @classmethod
+    def paint(self, control, shape=None):
+        if shape == 'hline':
+            return PainterInterfaceObject()
+
+
+class QuantisedFunctionWidget(Curve2DEditor, AbstractQtControlWidget):
+    def __init__(self):
+        AbstractQtControlWidget.__init__(self)
+        Curve2DEditor.__init__(self, parent=None,constraints=FuncConstraint())
+        self.value_changed_signal = 'valueChanged()'
+
+    def reset(self, value=None, **kwargs):
+        if value is None:
+            value = self.newDefaultCurve()
+        self.setValue(value)
+
+    def value(self):
+        return EditableQuantisedFunction(self.getCurve())
+
+    def setValue(self, value):
+        self.setCurve(value.curve)
 
     @classmethod
     def paint(self, control, shape=None):

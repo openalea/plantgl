@@ -364,7 +364,8 @@ class Curve2DEditor (QGLViewer):
         self.sphere.radius = (self.end[0]-self.start[0])/80
         self.discretizer.clear()
         self.curveshape.apply(self.renderer)
-        glColor4fv(self.ctrlCurveColor)
+        try:    glColor4fv(self.ctrlCurveColor)
+        except: pass
         self.curveshape.apply(self.ctrlrenderer)
         self.ctrlpts.apply(self.renderer)
         self.drawGrid()

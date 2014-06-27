@@ -130,5 +130,6 @@ NurbsPatch.__deepcopy__ = __nbpth_deepcopy__
 del __nbpth_deepcopy__
 
 
+from editablequantisedfunction import *
 
 import __docufy

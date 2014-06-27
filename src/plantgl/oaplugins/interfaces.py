@@ -38,11 +38,33 @@ class IPatch(IInterface):
 
 
 
+class IQuantisedFunction(IInterface):
+    """
+   
+    """
+    def __init__(self):
+        self.value = self.default()
+
+    def __repr__(self):
+        return 'IQuantisedFunction'
+
+    def default(self):
+        """
+        Reinitialize control to default value
+        """
+        from openalea.plantgl.all import EditableQuantisedFunction, NurbsCurve2D
+        nbP = 4
+        value = EditableQuantisedFunction(NurbsCurve2D([(float(i)/(nbP-1),0,1) for i in xrange(nbP)]) )
+        print value.curve.degree
+        return value
+
+
+
 
 
 class PlantGLOAInterfacePlugin(object):
 
     def __call__(self):
 
-        all = [IPatch]
+        all = [IPatch, IQuantisedFunction]
         return all
