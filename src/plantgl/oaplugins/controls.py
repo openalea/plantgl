@@ -92,7 +92,7 @@ class QuantisedFunctionWidget(Curve2DEditor, AbstractQtControlWidget):
 
     def reset(self, value=None, **kwargs):
         if value is None:
-            value = self.newDefaultCurve()
+            value = EditableQuantisedFunction(self.newDefaultCurve())
         self.setValue(value)
 
     def value(self):

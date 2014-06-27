@@ -2,20 +2,17 @@ import _pglsg
 
 class EditableQuantisedFunction (object):
     def __init__(self, curve, sampling = _pglsg.QuantisedFunction.DEFAULT_SAMPLING, clamped = _pglsg.QuantisedFunction.DEFAULT_CLAMPED):
-        self.__qfunc = _pglsg.QuantisedFunction(curve, sampling)
-        self.__qfunc.clamped = clamped
-        self.firstx, self.lastx = self.__qfunc.firstx, self.__qfunc.lastx
         self.setCurve(curve)
-        self.__up_to_date    = True
+        self.__update(sampling, clamped)
 
     def __call__(self, x):
         if not self.__up_to_date: self.__update()
         return self.__qfunc(x)
 
-    def __update(self):
-        if not self.__up_to_date:
-            clamped = self.__qfunc.clamped
-            self.__qfunc = _pglsg.QuantisedFunction(self.__originalcurve, self.__qfunc.sampling)
+    def __update(self, sampling = None, clamped = None):
+            if not clamped : clamped = self.__qfunc.clamped
+            if not sampling : sampling = self.__qfunc.sampling
+            self.__qfunc = _pglsg.QuantisedFunction(self.__originalcurve, sampling)
             self.__qfunc.clamped = clamped
             self.firstx, self.lastx = self.__qfunc.firstx, self.__qfunc.lastx
             self.__up_to_date    = True
@@ -26,10 +23,11 @@ class EditableQuantisedFunction (object):
 
     def setCurve(self, curve):
         """ Set the curve to quantify  as a function """
+        import copy
         if not isinstance(curve,_pglsg.Curve2D):
             self.__originalcurve = _pglsg.Polyline2D(curve)
         else:
-            self.__originalcurve = curve.deepcopy()
+            self.__originalcurve = copy.deepcopy(curve)
         self.__up_to_date    = False
 
     curve = property(getCurve, setCurve)
