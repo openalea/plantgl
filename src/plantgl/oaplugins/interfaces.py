@@ -23,11 +23,10 @@ class IPatch(IInterface):
     """
    
     """
+    __alias__ = 'Patch'
     def __init__(self):
         self.value = self.default()
 
-    def __repr__(self):
-        return 'IPatch'
 
     def default(self):
         """
@@ -42,11 +41,10 @@ class IQuantisedFunction(IInterface):
     """
    
     """
+    __alias__ =  'QuantisedFunction'
     def __init__(self):
         self.value = self.default()
 
-    def __repr__(self):
-        return 'IQuantisedFunction'
 
     def default(self):
         """
