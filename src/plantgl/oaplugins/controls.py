@@ -1,9 +1,8 @@
 
 from openalea.oalab.gui.control.widget import AbstractQtControlWidget
 from openalea.oalab.plugins.controls.painters import PainterColorList, PainterInterfaceObject
-
 from openalea.plantgl.gui.materialeditor import MaterialEditor
-from openalea.plantgl.all import PglTurtle
+from openalea.plantgl.all import PglTurtle, EditableQuantisedFunction
 
 def to_color(material_list):
     """
