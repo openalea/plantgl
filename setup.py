@@ -64,6 +64,7 @@ setup(
                 pkg_name+'.math', 
                 pkg_name+'.scenegraph', 
                 pkg_name+'.algo',
+                pkg_name+'.oaplugins', 
                 pkg_name+'.gui', 
                 pkg_name+'.gui3',
                 pkg_name+'.wralea',
