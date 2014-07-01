@@ -75,6 +75,7 @@ void export_SceneObject()
     .def("isValid", &SceneObject::isValid)
     .def("apply", &SceneObject::apply)
     .def("getId", &SceneObject::getId)
+    .enable_pickling()
     ;
 
   implicitly_convertible<SceneObjectPtr, RefCountObjectPtr >();

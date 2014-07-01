@@ -129,6 +129,46 @@ def __nbpth_deepcopy__(self,memo):
 NurbsPatch.__deepcopy__ = __nbpth_deepcopy__
 del __nbpth_deepcopy__
 
+def __group_copy__(self):
+    from copy import copy
+    res = Group([copy(geom) for geom in self.geometryList])
+    if self.skeleton  : res.skeleton = copy(self.skeleton)
+    if self.isNamed() : res.name = self.name
+    return res
+
+Group.__copy__ = __group_copy__
+del __group_copy__
+
+def __group_deepcopy__(self,memo):
+    from copy import deepcopy
+    res = Group([deepcopy(geom,memo) for geom in self.geometryList])
+    if self.skeleton  : res.skeleton = deepcopy(self.skeleton,memo)
+    if self.isNamed() : res.name = self.name
+    return res
+
+Group.__deepcopy__ = __group_deepcopy__
+del __group_deepcopy__
+
+def __group_getinitargs__(self):
+    if not self.skeleton: return list(self.geometryList),
+    return list(self.geometryList), self.skeleton
+
+Group.__getinitargs__ = __group_getinitargs__
+del __group_getinitargs__
+
+def __trans_getinitargs__(self):
+    return self.translation, self.geometry
+
+Translated.__getinitargs__ = __trans_getinitargs__
+del __trans_getinitargs__
+
+
+def __pol_getinitargs__(self):
+    return list(self.pointList), self.width
+
+Polyline2D.__getinitargs__ = __pol_getinitargs__
+del __pol_getinitargs__
+
 
 from editablequantisedfunction import *
 

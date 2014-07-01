@@ -13,6 +13,18 @@ class PluginColorListWidget(ControlWidgetSelectorPlugin):
         return ColorListWidget
 
 
+class PluginMaterialListWidget(ControlWidgetSelectorPlugin):
+    controls = ['IMaterialList']
+    name = 'MaterialListWidget'
+    edit_shape = ['large']
+    paint = True
+
+    @classmethod
+    def load(cls):
+        from openalea.plantgl.oaplugins.controls import MaterialListWidget
+        return MaterialListWidget
+
+
 class PluginCurve2DWidget(ControlWidgetSelectorPlugin):
     controls = ['ICurve2D']
     name = 'Curve2DWidget'

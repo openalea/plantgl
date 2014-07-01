@@ -1,6 +1,7 @@
 
 from openalea.oalab.gui.control.widget import AbstractQtControlWidget
-from openalea.oalab.plugins.controls.painters import PainterColorList, PainterInterfaceObject
+from openalea.oalab.plugins.controls.painters import PainterInterfaceObject
+from painters import PainterColorList, PainterMaterialList
 from openalea.plantgl.gui.materialeditor import MaterialEditor
 from openalea.plantgl.all import PglTurtle, EditableQuantisedFunction
 
@@ -43,20 +44,45 @@ class ColorListWidget(MaterialEditor, AbstractQtControlWidget):
         self.setValue(value)
 
     def value(self):
-        material_list = self.getTurtle().getColorList()
-        return to_color(material_list)
+        return to_color(self.getAppearanceList())
 
     def setValue(self, value):
-        turtle = PglTurtle()
-        turtle.clearColorList()
-        for color in to_material(value):
-            turtle.appendMaterial(color)
-        self.setTurtle(turtle)
+        self.setAppearanceList(to_material(value))
+        # turtle = PglTurtle()
+        # turtle.clearColorList()
+        # for color in to_material(value):
+        #     turtle.appendMaterial(color)
+        # self.setTurtle(turtle)
+
 
     @classmethod
     def paint(self, control, shape=None):
         if shape == 'hline':
             return PainterColorList()
+
+class MaterialListWidget(MaterialEditor, AbstractQtControlWidget):
+
+    def __init__(self):
+        AbstractQtControlWidget.__init__(self)
+        MaterialEditor.__init__(self, parent=None)
+
+        # Signal used by "autoapply" method
+        self.value_changed_signal = 'valueChanged()'
+
+    def reset(self, value=[], **kwargs):
+        self.setValue(value)
+
+    def value(self):
+        return self.getAppearanceList()
+
+
+    def setValue(self, value):
+        self.setAppearanceList(value)
+
+    @classmethod
+    def paint(self, control, shape=None):
+        if shape == 'hline':
+            return PainterMaterialList()
 
 
 from openalea.plantgl.gui.curve2deditor import Curve2DEditor, FuncConstraint

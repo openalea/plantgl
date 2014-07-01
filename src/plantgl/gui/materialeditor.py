@@ -71,11 +71,13 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         # if self.nbMaterial() > len(materialList):
         #     for i in xrange(self.nbMaterial()-1,len(materialList)-1,-1):
         #         self.delMaterial(i)
-        self.turtle.setAppearanceList(appList)
-        self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+        self.turtle.setColorList(appList)
+        self.cutaction = False
+        self.computeSize()
+        if self.isVisible(): self.updateGL()
 
     def getAppearanceList(self):
-        return self.turtle.getAppearanceList()
+        return self.turtle.getColorList()
 
     def resizeGL(self,w,h):
         if w == 0 or h == 0: return
