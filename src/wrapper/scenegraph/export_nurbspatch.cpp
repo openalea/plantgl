@@ -48,6 +48,28 @@ using namespace std;
 
 DEF_POINTEE(NurbsPatch)
 
+std::string np_repr( NurbsPatch* p )
+{
+  std::stringstream ss;
+  ss << "NurbsPatch(";
+  ss << extract<std::string>(str(object(p->getCtrlPoints())))();
+  if (!p->isUDegreeToDefault())
+      ss << ", udegree = " << p->getUDegree();
+  if (!p->isVDegreeToDefault())
+      ss << ", vdegree = " << p->getVDegree();
+  if (!p->isUKnotListToDefault())
+      ss << ", uknotList = " << extract<std::string>(str(object(p->getUKnotList())))();
+  if (!p->isVKnotListToDefault())
+      ss << ", vknotList = " << extract<std::string>(str(object(p->getVKnotList())))();
+  if (!p->isUStrideToDefault())
+      ss << ", ustride = " << p->getUStride();
+  if (!p->isVStrideToDefault())
+      ss << ", vstride = " << p->getVStride();
+  if (!p->isCCWToDefault())
+      ss << ", ccw = " << (p->getCCW()?"True":"False");
+  ss << ")";
+  return ss.str();
+}
 
 void export_NurbsPatch()
 {
@@ -72,6 +94,7 @@ void export_NurbsPatch()
 		   bp::arg("vstride") = BezierPatch::DEFAULT_STRIDE,
 		   bp::arg("ccw") = Patch::DEFAULT_CCW)))
     .DEF_PGLBASE(NurbsPatch)
+     .def( "__repr__", np_repr )
     .DEC_BT_NR_PROPERTY_WD(udegree,NurbsPatch,UDegree,uint_t)
     .DEC_BT_NR_PROPERTY_WD(vdegree,NurbsPatch,VDegree,uint_t)
     .DEC_PTR_PROPERTY_WD(uknotList,NurbsPatch,UKnotList,RealArrayPtr)

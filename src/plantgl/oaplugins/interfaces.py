@@ -79,6 +79,8 @@ class IMaterialList(IInterface):
         value = PglTurtle().getColorList()
         return value
 
+    def module_dependence(self):
+        return 'openalea.plantgl.all'
 
 class ICurve2D(IInterface):
     """
@@ -104,6 +106,9 @@ class ICurve2D(IInterface):
             width=2)
         return curve
 
+    def module_dependence(self):
+        return 'openalea.plantgl.all'
+
 
 class IQuantisedFunction(IInterface):
     """
@@ -123,6 +128,9 @@ class IQuantisedFunction(IInterface):
         value = EditableQuantisedFunction(NurbsCurve2D([(float(i)/(nbP-1),0,1) for i in xrange(nbP)]) )
         return value
 
+    def module_dependence(self):
+        return 'openalea.plantgl.all'
+
 
 
 class IPatch(IInterface):
@@ -141,6 +149,8 @@ class IPatch(IInterface):
         from openalea.plantgl.all import NurbsPatch 
         return NurbsPatch([[(j-1.5,i-1.5,0,1) for j in range(4)] for i in range(4)])
 
+    def module_dependence(self):
+        return 'openalea.plantgl.all'
 
 
 

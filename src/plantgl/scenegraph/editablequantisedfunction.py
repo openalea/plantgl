@@ -42,6 +42,9 @@ class EditableQuantisedFunction (object):
     def __deepcopy__(self, memo):
         return EditableQuantisedFunction(self.__originalcurve,self.__qfunc.sampling,self.__qfunc.clamped)
 
+    def __repr__(self):
+        return self.__class__.__name__+'('+repr(self.__originalcurve)+','+repr(self.__qfunc.sampling)+','+repr(self.__qfunc.clamped)+')'
+
 
 def test():
     import openalea.plantgl.scenegraph.editablequantisedfunction as eqf
