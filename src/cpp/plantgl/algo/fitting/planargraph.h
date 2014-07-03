@@ -9,6 +9,8 @@
 #ifndef WM5PLANARGRAPH_H
 #define WM5PLANARGRAPH_H
 
+#include <map>
+
 // #include "Wm5MathematicsLIB.h"
 // #include "Wm5EdgeKey.h"
 // #include "Wm5Memory.h"
