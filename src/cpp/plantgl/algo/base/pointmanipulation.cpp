@@ -855,13 +855,29 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
 }
 
 #ifdef WITH_CGAL
-#ifdef WITH_LAPACK
 
+#ifdef WITH_LAPACK 
+#   define CGAL_AND_SVD_SOLVER_ENABLED
+#else
+#ifdef WITH_EIGEN
+#   define CGAL_AND_SVD_SOLVER_ENABLED
+#endif
+
+#endif
+#endif
+
+
+#ifdef CGAL_AND_SVD_SOLVER_ENABLED
+
+#ifdef WITH_LAPACK
 #define CGAL_LAPACK_ENABLED
+#else
+#define CGAL_EIGEN3_ENABLED
+#endif
+
 #include <CGAL/Cartesian.h>
 #include <CGAL/Monge_via_jet_fitting.h>
 
-#endif
 #endif
 
 
@@ -869,8 +885,7 @@ CurvatureInfo
 PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree , size_t monge_degree)
 {
       CurvatureInfo result;
-#ifdef WITH_CGAL
-#ifdef WITH_LAPACK
+#ifdef CGAL_AND_SVD_SOLVER_ENABLED
 
         typedef CGAL::Cartesian<real_t>  Data_Kernel;
         typedef Data_Kernel::Point_3     DPoint;
@@ -896,17 +911,9 @@ PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index
 
 #else
     #ifdef _MSC_VER
-    #pragma message("function 'principal_curvatures' disabled. LAPACK needed.")
+    #pragma message("function 'principal_curvatures' disabled. CGAL and LAPACK or EIGEN needed.")
     #else
-    #warning "function 'principal_curvatures' disabled. LAPACK needed"
-    #endif
-#endif
-
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'principal_curvatures' disabled. CGAL needed.")
-    #else
-    #warning "function 'principal_curvatures' disabled. CGAL needed"
+    #warning "function 'principal_curvatures' disabled. CGAL and LAPACK or EIGEN needed"
     #endif
 #endif
       return result;

@@ -421,6 +421,10 @@ void Turtle::decId(uint_t i)
     else error("Id should be a valid positive value."); 
 }
 
+void Turtle::setNoId(){
+    setId(Shape::NOID);
+}
+
 uint_t Turtle::popId()
 {
     uint_t nid = id;

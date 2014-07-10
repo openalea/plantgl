@@ -40,6 +40,14 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 #define bp boost::python
 
+
+#ifdef WITH_LAPACK 
+#   define CGAL_AND_SVD_SOLVER_ENABLED
+#else
+#ifdef WITH_EIGEN
+#   define CGAL_AND_SVD_SOLVER_ENABLED
+#endif
+#endif
 /* ----------------------------------------------------------------------- */
 
 
@@ -89,8 +97,8 @@ py_determine_children(const TOOLS(Uint32Array1Ptr) parents)
     return make_tuple(children,root);
 }
 
-#ifdef WITH_CGAL
-#ifdef WITH_LAPACK
+#ifdef CGAL_AND_SVD_SOLVER_ENABLED
+
 bp::object
 translate_pc_info(const CurvatureInfo& egv)
 {
@@ -126,7 +134,7 @@ py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjac
 {
     return translate_pc_info_set(principal_curvatures(points,adjacencies,radius,fitting_degree,monge_degree));
 }
-#endif
+
 #endif
 
 object
@@ -211,6 +219,8 @@ object  py_cluster_junction_points(const IndexArrayPtr pointtoppology, const Ind
 }
 
 
+
+
 void export_PointManip()
 {
     def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
@@ -263,7 +273,7 @@ void export_PointManip()
     def("pointsets_normals",&pointsets_normals,(bp::arg("points"),bp::arg("groups")));
     def("triangleset_orientation",&triangleset_orientation,args("points","triangles"));
 
-#ifdef WITH_LAPACK
+#ifdef CGAL_AND_SVD_SOLVER_ENABLED
     def("principal_curvatures",&py_principal_curvatures_0,(bp::arg("points"),bp::arg("pid"),bp::arg("group"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4),
         "Compute principal curvature information. Return a tuple with folowin informations: (origin,(maximal_curvature_direction,maximal_curvature),(minimal_curvature_direction,minimal_curvature),normal)");
     def("principal_curvatures",&py_principal_curvatures_1,(bp::arg("points"),bp::arg("groups"),bp::arg("fitting_degree")=4,bp::arg("monge_degree")=4));

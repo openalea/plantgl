@@ -102,7 +102,10 @@ std::vector<std::string> __getPGLSupportedExtensions() {
 	ADD_EXTENSION(ANN)
 #endif
 #ifdef WITH_LAPACK
-	ADD_EXTENSION(LAPACK)
+    ADD_EXTENSION(LAPACK)
+#endif
+#ifdef WITH_EIGEN
+    ADD_EXTENSION(EIGEN)
 #endif
    return res;
 }
