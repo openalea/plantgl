@@ -24,7 +24,7 @@ This codec allow to read and write `OBJ`_ file format.
 """
 
 __license__ = "Cecill-C"
-__revision__ = " $Id: actor.py 2242 2010-02-08 17:03:26Z cokelaer $ "
+__revision__ = " $Id: obj.py 2242 2010-02-08 17:03:26Z cokelaer $ "
 
 import os
 import warnings
@@ -76,22 +76,22 @@ class Group(object):
         indexList = self.vindex
         normalList = normals if normals else None
         normalIndexList = self.nindex if self.nindex else None
-        textCoordList = textures if textures else None
+        textCoordList = sg.Point2Array(textures) if textures else None
         textCoordIndexList = self.tindex if self.tindex else None
 
         tset = None
-        try:
-            if normalIndexList and textCoordIndexList:
-                tset = sg.FaceSet(pointList=pointList, indexList=indexList,
-                normalList=normalList, normalIndexList=normalIndexList,
-                textCoordList=textCoordList, textCoordIndexList=textCoordIndexList)
-            elif normalIndexList:
-                tset = sg.FaceSet(pointList=pointList, indexList=indexList,
-                normalList=normalList, normalIndexList=normalIndexList)
-            else:
-                tset = sg.FaceSet(pointList=pointList, indexList=indexList)
-        except:
-            return 
+        #try:
+        if normalIndexList and textCoordIndexList:
+            tset = sg.FaceSet(pointList=pointList, indexList=indexList,
+            normalList=normalList, normalIndexList=normalIndexList,
+            texCoordList=textCoordList, texCoordIndexList=textCoordIndexList)
+        elif normalIndexList:
+            tset = sg.FaceSet(pointList=pointList, indexList=indexList,
+            normalList=normalList, normalIndexList=normalIndexList)
+        else:
+            tset = sg.FaceSet(pointList=pointList, indexList=indexList)
+        #except:
+        #    return 
         
         glines = sg.Group([])
         if len(self.lvindex) > 0:
@@ -145,8 +145,8 @@ class Faces(object):
         """ Write the faces in an obj format. """
         gen = izip_longest(self.vindex, self.tindex,self.nindex, fillvalue=None)
         offset = self.offset
-        output.write('g %s'%self.name)
-        output.write('usemtl %s'%'red')
+        output.write('g %s \n'%self.name)
+        output.write('usemtl %s \n'%'red')
         for index, texture, normal in gen:
             s = ' '.join('/'.join((str(index[i]+offset),
                                    str(texture[i]+offset) if texture else '', 
@@ -244,9 +244,14 @@ class ObjCodec (sg.SceneCodec):
         scene = sg.Scene()
         for g in self.groups:
             if g:
+                print 'NAME: ', g.name
                 s = g.shape(self.vertices, self.normals, self.textures)
-                if s and s.geometry: scene.add(s)
-        scene.add(sg.Shape(sg.PointSet(self.vertices)))
+                print 'Shape ', s
+                if s and s.geometry: 
+                    scene.add(s)
+
+
+        #scene.add(sg.Shape(sg.PointSet(self.vertices)))
 
         return scene
 
