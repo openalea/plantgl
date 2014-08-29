@@ -77,6 +77,14 @@ RCPtr<PointListType> contract_point(RCPtr<PointListType> points, real_t radius)
 }
 
 
+// to control display of progress
+typedef void (* progressstatusfunction)(const char *, float);
+
+ALGO_API void register_progressstatus_func(progressstatusfunction func);
+
+ALGO_API void unregister_progressstatus_func();
+
+
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 
 /// K-Neighborhood computation

@@ -39,13 +39,31 @@ TOOLS_USING_NAMESPACE
 
 
 
+typedef void (* progressstatusfunction)(const char *, float);
 
+void progressprint(const char * msg, float percent)
+{ printf(msg,percent); }
+
+
+static progressstatusfunction PSFUNC = progressprint;
+
+
+
+void PGL::register_progressstatus_func(progressstatusfunction func)
+{
+    PSFUNC = func;
+}
+
+void PGL::unregister_progressstatus_func()
+{
+    PSFUNC = progressprint;
+}
 
 
 
 class ProgressStatus {
 public:    
-    ProgressStatus (uint32_t _nbsteps, char * _message =" %.2f processed.", float _percenttoprint = 1):
+    ProgressStatus (uint32_t _nbsteps, const char * _message =" %.2f processed.", float _percenttoprint = 1):
             nbsteps(_nbsteps), 
             percenttoprint(_percenttoprint), 
             message(_message),
@@ -63,14 +81,14 @@ protected:
                     std::string msg("\x0d");
                     msg += message;
                     msg += "\n";
-                    printf(msg.c_str(),100.0);
+                    PSFUNC(msg.c_str(),100.0);
             }
             else {
                 real_t ncpercent = 100 * current / float(nbsteps);
                 if(cpercent +  percenttoprint <= ncpercent ) {
                     std::string msg("\x0d");
                     msg += message;
-                    printf(msg.c_str(),ncpercent);
+                    PSFUNC(msg.c_str(),ncpercent);
                     cpercent = ncpercent;
                 }
             }
@@ -80,7 +98,7 @@ protected:
     uint32_t nbsteps;
     real_t cpercent;
     real_t percenttoprint;
-    char * message;
+    const char * message;
 };
 
 

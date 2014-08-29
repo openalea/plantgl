@@ -219,10 +219,31 @@ object  py_cluster_junction_points(const IndexArrayPtr pointtoppology, const Ind
 }
 
 
+// to control display of progress
+static boost::python::object pyprogressfunction;
 
+void py_c_progressfunc(const char * msg, float percent)
+{
+    pyprogressfunction(msg,percent);
+}
+
+void py_register_progressstatus_func(boost::python::object func)
+{
+    pyprogressfunction = func;
+    register_progressstatus_func(py_c_progressfunc);
+}
+
+void py_unregister_progressstatus_func(){
+    pyprogressfunction = boost::python::object();
+    unregister_progressstatus_func();
+}
 
 void export_PointManip()
 {
+    def("pgl_register_progressstatus_func",&py_register_progressstatus_func,args("func"));
+    def("pgl_unregister_progressstatus_func",&py_unregister_progressstatus_func);
+
+
     def("contract_point2",&contract_point<Point2Array>,args("points","radius"));
     def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
     def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
