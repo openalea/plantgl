@@ -69,7 +69,7 @@ ViewLocationBar::ViewLocationBar(const QString &label,
 
     __Location = new QComboBox( this );
 	__Location->setProperty("minimumHeight",25);
-	//__Location->setProperty("minimumWidth",50);
+	__Location->setProperty("minimumWidth",50);
 	__Location->setEditable( TRUE );
 	__Location->setAutoCompletion ( TRUE );
 	__Location->setCursor( QCursor( Qt::IBeamCursor ) );
