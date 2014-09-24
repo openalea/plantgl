@@ -66,7 +66,7 @@ typedef struct yy_buffer_state* LexBufferType;
 /// Maximum depth of nested include.
 static uint_t MAX_INCLUDE_DEPTH = 10;
 /// Default prompt for default shell.
-static char * DEFAULT_PROMPT = "> ";
+static const char * DEFAULT_PROMPT = "> ";
 /// Readline input buffer size.
 static int READLINE_INPUT_BUF_SIZE = 10000;
 
@@ -205,9 +205,9 @@ public:
  returns 0 if reaches end-of-file.
  The TRUE type of lvalp is YYSTYPE.
 */
-inline int yylex(void* lvalp, void* _lexer) {
+inline int yylex(void* lvalp, GENERIC_LEXER* lexer) {
 
-  int token = ((GENERIC_LEXER*)_lexer)->yylex(lvalp); // returns 0 if reaches end-of-file
+  int token = lexer->yylex(lvalp); // returns 0 if reaches end-of-file
 
   return token;
 

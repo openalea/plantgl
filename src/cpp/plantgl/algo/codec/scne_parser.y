@@ -44,10 +44,10 @@
 #undef yyFlexLexer
 #define yyFlexLexer scne_yyFlexLexer
 
-#define scne_yyerror(_msg) {			\
+#define scne_yyerror(parser,_msg) {			\
         yyerrok; \
         yyclearin; \
-        parser(p); \
+        GenericParser<SMB_TABLE_TYPE> p = *(GenericParser<SMB_TABLE_TYPE> *)parser; \
         if (!(p.handleError(std::string(_msg), \
                       yychar, \
 			    ""))) YYABORT;\
@@ -79,10 +79,13 @@ PGL_USING_NAMESPACE
 #define SMB_TABLE_TYPE SceneObjectPtr
 
 /*  ---------------------------------------------------------------------- */
-
 #ifdef USE_READLINE
+#define PGLPARSER_WITH_READLINE
+#endif
 
-static char * sh_keyword[] = {
+#ifdef PGLPARSER_WITH_READLINE
+
+static const char * sh_keyword[] = {
     ":Echo",
     ":Include",
     ":List",
@@ -131,10 +134,10 @@ static char * sh_keyword[] = {
     NULL
 };
 
- static char *cone_att_keyword[] = { "Radius", "Height", "Solid", "Slices", NULL };
- static char *shape_att_keyword[] = { "Appearance", "Id", "Geometry", NULL };
- static char *inline_att_keyword[] = { "BBoxCenter","BBoxSize", "FileName", "Scene", NULL };
- static char *ashull_att_keyword[] = { "NegXHeight", "NegXRadius",
+ static const char *cone_att_keyword[] = { "Radius", "Height", "Solid", "Slices", NULL };
+ static const char *shape_att_keyword[] = { "Appearance", "Id", "Geometry", NULL };
+ static const char *inline_att_keyword[] = { "BBoxCenter","BBoxSize", "FileName", "Scene", NULL };
+ static const char *ashull_att_keyword[] = { "NegXHeight", "NegXRadius",
                                         "NegYRadius", "NegYHeight",
                                         "PosXRadius", "PosXHeight",
                                         "PosYRadius","PosYHeight",
@@ -178,7 +181,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
         pglErrorEx(PGLERRORMSG(DECLARED_OBJECT_ss),geomtypename.c_str(),name->c_str()); 
         shape = NULL; 
         delete name; 
-        // yyerror("Object Already declared"); 
+        // yyerror(YYPARSE_PARAM,"Object Already declared"); 
       } 
       else { 
         object->setName(*name); 
@@ -191,7 +194,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   else { 
     if(name)delete name; 
     shape = NULL; 
-    // yyerror("Object not Valid"); 
+    // yyerror(YYPARSE_PARAM,"Object not Valid"); 
   }
 }
 
@@ -211,7 +214,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
       if (_i != t.end()) { \
         pglErrorEx(PGLWARNINGMSG(DECLARED_OBJECT_ss),"Shape",name.c_str()); \
         shape = NULL; \
-        yyerror("A Shape with the same Geometry has already been declared"); \
+        yyerror(YYPARSE_PARAM,"A Shape with the same Geometry has already been declared"); \
       } \
       else { \
         t[name] = _shape; \
@@ -224,7 +227,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
         pglErrorEx(PGLWARNINGMSG(DECLARED_OBJECT_ss),typeid(*shape).name(),_name->c_str()); \
         shape = NULL; \
         delete _name; \
-        yyerror("Object Already declared"); \
+        yyerror(YYPARSE_PARAM,"Object Already declared"); \
       } \
       else { \
         _shape->setName(*_name); \
@@ -237,7 +240,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   else { \
     shape = NULL; \
     if(_name)delete _name; \
-    yyerror("Object not valid "); \
+    yyerror(YYPARSE_PARAM,"Object not valid "); \
   }
 
 
@@ -251,13 +254,13 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
       builder->field = value; \
     else { \
       pglErrorEx(PGLERRORMSG(INITIALIZED_FIELD_ss),typeid(*builder).name(),#field); \
-      yyerror("Field not valid "); \
+      yyerror(YYPARSE_PARAM,"Field not valid "); \
       delete value; \
     } \
   } \
   else { \
       pglErrorEx(PGLERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*builder).name()),#field,""); \
-      yyerror("Field not valid "); \
+      yyerror(YYPARSE_PARAM,"Field not valid "); \
     }  \
   }
 
@@ -342,8 +345,17 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 %}
 
-%pure_parser        /* asks for a reentrant parser: don't remove ! */
-%token_table        /* generates a token table (names of the tokens) */
+// %pure_parser        /* asks for a reentrant parser: don't remove ! */
+%define api.pure full
+// %locations
+
+%name-prefix "scne_yy"
+%parse-param {void * parser}
+%lex-param {GENERIC_LEXER * YYLEX_PARAM }
+
+%defines
+
+// %token_table        /* generates a token table (names of the tokens) */
 
 /* possible types of tokens returned by the lexer */
 
@@ -896,7 +908,7 @@ SceneObjList :
     if ($2) {
       if ((*$2)->isNamed()) {
 #ifdef PGL_DEBUG
-        parser(p); \
+        getparser(p); \
         Printer printer(postream(p));
         (*$2)->apply(printer);
         postream(p) << std::endl;
@@ -909,17 +921,17 @@ SceneObjList :
       };
       delete $2;
     }
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
   }
 | /* empty */{
     shape_nb = 0;
-    parser(p);
+    getparser(p);
     smbtable(p,t);
     symbolstack.push_back(&t);
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -943,7 +955,7 @@ SceneObjects :
     if ($2) {
       if ((*$2)->isNamed()) {
 #ifdef PGL_DEBUG
-        parser(p);
+        getparser(p);
         Printer printer(postream(p));
         (*$2)->apply(printer);
         postream(p) << std::endl;
@@ -961,7 +973,7 @@ SceneObjects :
     shape_nb = 0;
     SymbolTable<SMB_TABLE_TYPE> * t = new SymbolTable<SMB_TABLE_TYPE>;
     symbolstack.push_back(t);
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
     lexer(l);
     if(l.useReadline()) setKeyword(sh_keyword);
 #endif
@@ -1038,20 +1050,20 @@ InlineFieldList:
               $1->FileName = $3;
           else if ( $1->FileName) {
               pglErrorEx(PGLERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"FileName");
-              yyerror("Field not valid ");
+              yyerror(YYPARSE_PARAM,"Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
           else {
               pglErrorEx(PGLERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"Scene");
-              yyerror("Field not valid ");
+              yyerror(YYPARSE_PARAM,"Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
       }
       else {
           pglErrorEx(PGLERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*$1).name()),"Filename","");
-          yyerror("Field not valid ");
+          yyerror(YYPARSE_PARAM,"Field not valid ");
           //postream(p) << std::endl;
       }
       $$=$1;
@@ -1064,20 +1076,20 @@ InlineFieldList:
               $1->Scene = $3;
           else if ( $1->Scene) {
               pglErrorEx(PGLERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"Scene");
-              yyerror("Field not valid ");
+              yyerror(YYPARSE_PARAM,"Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
           else {
               pglErrorEx(PGLERRORMSG(INITIALIZED_FIELD_ss),typeid(*$1).name(),"FileName");
-              yyerror("Field not valid ");
+              yyerror(YYPARSE_PARAM,"Field not valid ");
               //postream(p) << std::endl;
               delete $3;
           }
       }
       else {
           pglErrorEx(PGLERRORMSG(INVALID_FIELD_VALUE_sss),(typeid(*$1).name()),"Scene","");
-          yyerror("Field not valid ");
+          yyerror(YYPARSE_PARAM,"Field not valid ");
           //postream(p) << std::endl;
       }
       $$=$1;
@@ -1091,7 +1103,7 @@ InlineFieldList:
    }
  | {
    $$ = new Inline::Builder;
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
    lexer(l);
    if(l.useReadline())setKeyword(inline_att_keyword);
 #endif
@@ -1112,7 +1124,7 @@ ShapeFieldList:
      GEOM_PARSER_SET_FIELD($1,Appearance,$3); $$=$1;
    }
  | { $$ = new Shape::Builder;
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
     lexer(l);
    if(l.useReadline())setKeyword(shape_att_keyword);
 #endif
@@ -1137,7 +1149,7 @@ ShapeShortFieldList:
 
 AppearanceRef:
  TokName {
-//     parser(p);
+//     getparser(p);
 //     smbtable(p,t);
      uint_t index = symbolstack.size()-1;
      SymbolTable<SMB_TABLE_TYPE>* t = symbolstack[index];
@@ -1171,7 +1183,7 @@ AppearanceRef:
 
 GeometryRef:
    TokName {
-//     parser(p);
+//     getparser(p);
 //     smbtable(p,t);
 
      uint_t index = symbolstack.size()-1;
@@ -1361,12 +1373,12 @@ MultiSpectralObj:
 
 Command:
  TokQuit {
-     parser(p);
+     getparser(p);
      postream(p) << "Bye ..." << std::endl;
      YYACCEPT;
    }
  | '?' {
-     parser(p);
+     getparser(p);
      cursmbtable(t);
      Printer printer(postream(p),postream(p),postream(p));
      for (SceneObjectSymbolTable::iterator _i = t.begin();_i != t.end();_i++) {
@@ -1375,7 +1387,7 @@ Command:
      };
   }
  | TokList {
-     parser(p);
+     getparser(p);
      cursmbtable(t);
      Printer printer(postream(p),postream(p),postream(p));
      for (SceneObjectSymbolTable::iterator _i = t.begin();_i != t.end();_i++) {
@@ -1384,7 +1396,7 @@ Command:
      };
   }
  | TokBinaryInclude {
-   parser(p);
+   getparser(p);
    cursmbtable(t);
    BinaryParser _bp (postream(p));
    _bp.parse(*$1);
@@ -1646,7 +1658,7 @@ AsymmetricHullFieldList:
      GEOM_PARSER_SET_FIELD($1,Stacks,$3); $$=$1;
    }
  | { $$ = new AsymmetricHull::Builder;
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
  lexer(l);
  if(l.useReadline())setKeyword(ashull_att_keyword);
 #endif
@@ -1736,7 +1748,7 @@ ConeFieldList:
    }
  | {
    $$ = new Cone::Builder;
-#ifdef USE_READLINE
+#ifdef PGLPARSER_WITH_READLINE
    lexer(l);
    if(l.useReadline()) setKeyword(cone_att_keyword);
 #endif

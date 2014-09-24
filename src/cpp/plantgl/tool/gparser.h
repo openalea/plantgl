@@ -177,6 +177,9 @@ public:
   /// value corresponding to the current token read by the lexer.
   void* lexVal() const {return _plexer->val;}
 
+  /// return the output stream.
+  std::ostream* outputStream() const {return _po;}
+
   /** This function generates an error message.
       It is usually called on an error detected by the parser by the macro yyerror().
   */
@@ -184,7 +187,7 @@ public:
 
 };
 
-typedef std::pair<void*, void*> ParserPair;
+typedef std::pair<void*, GENERIC_LEXER*> ParserPair;
 
 template <class T>
 bool GenericParser<T>::parse(GENERIC_LEXER* plexer,
@@ -319,14 +322,15 @@ bool GenericParser<T>::handleError(std::string msg, int yychar, const char* toke
 
 #define PARSER(p, type) GenericParser<type>& p = \
                           *(GenericParser<type> *) (((ParserPair*)parser)->first)
-#define SMBTABLE(p, type, t) SymbolTable<type>& t = *(p._pst)
 
-#define parser(p)      PARSER(p, SMB_TABLE_TYPE)
+#define SMBTABLE(p, type, t) SymbolTable<type>& t = *(p.smbTable())
+
+#define getparser(p)      PARSER(p, SMB_TABLE_TYPE)
 #define smbtable(p, t) SMBTABLE(p, SMB_TABLE_TYPE, t)
 #define lexer(l)       GENERIC_LEXER& l = *(GENERIC_LEXER*)(((ParserPair*)parser)->second)
 
 // parser output stream
-#define postream(p) (*(p._po))
+#define postream(p) (*(p.outputStream()))
 
 /* if defined, this means that we are in a multiple parser and it is
    up to the user to define its corresponding function prefix_yyerror */

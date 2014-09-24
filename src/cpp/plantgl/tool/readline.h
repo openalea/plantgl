@@ -50,7 +50,7 @@
 /// Init readline or do nothing.
 extern void gnu_init_readline();
 /// Set the keyword or do nothing.
-extern void setKeyword(char ** keyword);
+extern void setKeyword(const char ** keyword);
 /// Completion Function or do nothing.
 extern int readline_input(char*, const char* prompt=0);
 

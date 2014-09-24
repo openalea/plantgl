@@ -40,7 +40,7 @@
 #define ON_ERROR failwith(our_error_message());
 */
 
-static char* DEFAULT_PROMPT = ">";
+static const char* DEFAULT_PROMPT = ">";
 
 #if 0
 #define NOHISTORY
@@ -54,7 +54,7 @@ extern "C" {
 
 // int rl_blink_matching_paren = 1;
 
-typedef char* mt;
+typedef const char* mt;
 mt * key_word(NULL);
 /*[]={       
   "VOID" ,
@@ -72,11 +72,11 @@ static int list_index;
 
 */
 
-char *keyword_generator(char* text, int state) {
+const char *keyword_generator(const char* text, int state) {
 
     static int len;
 
-    char *key;
+    const char *key;
 
 //    cerr << "Text : " << text << ", State : " << state << " , index : " << list_index << endl;
     if (!state /*&& !list_index*/)
@@ -96,21 +96,21 @@ char *keyword_generator(char* text, int state) {
 	}
     }
 
-    return ((char *)NULL);
+    return ((const char *)NULL);
 
 }
 
-char **keyword_completion(char* text, int start, int end) {
+const char **keyword_completion(const char* text, int start, int end) {
 
-    char **matches;
+    const char **matches;
     // char *keyword_generator();
 
-    matches=(char **)NULL;
+    matches=(const char **)NULL;
 
 //    cerr << "Text : " << text << ", start " << start  << ", end " << end <<  endl;
     if(start == 0)
 #if defined (_RL_FUNCTION_TYPEDEF)
-      matches=rl_completion_matches(text,(rl_compentry_func_t*)keyword_generator); 
+      matches=(const char **)rl_completion_matches(text,(rl_compentry_func_t*)keyword_generator); 
 #else
       matches=completion_matches(text,(CPFunction*)keyword_generator); 
 #endif
@@ -120,7 +120,7 @@ char **keyword_completion(char* text, int start, int end) {
 
 
 
-void setKeyword(char ** keyword)
+void setKeyword(const char ** keyword)
 {
   key_word = keyword;
 }
