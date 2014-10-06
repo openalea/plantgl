@@ -345,8 +345,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 %}
 
-// %pure_parser        /* asks for a reentrant parser: don't remove ! */
-%define api.pure full
+%pure_parser        /* asks for a reentrant parser: don't remove ! */
+// %define api.pure full
 // %locations
 
 %name-prefix "scne_yy"
