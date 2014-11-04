@@ -177,6 +177,10 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
     real_t kill_radius;
     real_t perception_radius;
     real_t coneangle;
+    
+    real_t insertion_angle;
+    size_t nb_buds_per_whorl;
+
     size_t min_nb_pt_per_bud;
     size_t nbIteration;
 

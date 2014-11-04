@@ -59,6 +59,8 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     kill_radius(_kill_radius),
     perception_radius(_perception_radius),
     coneangle(GEOM_PI/2),
+    insertion_angle(GEOM_PI/2),
+    nb_buds_per_whorl(4),
     min_nb_pt_per_bud(3),
     skeletonnodes(initialskeletonnodes), 
     skeletonparents(initialskeletonparents),
@@ -81,6 +83,8 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     kill_radius(_kill_radius),
     perception_radius(_perception_radius),
     coneangle(GEOM_PI/2),
+    insertion_angle(GEOM_PI/2),
+    nb_buds_per_whorl(4),
     min_nb_pt_per_bud(3),
     skeletonnodes(), 
     skeletonparents(),
@@ -167,7 +171,7 @@ SpaceColonization::lateral_directions(const Vector3& dir, real_t angle, int nb){
 void SpaceColonization::generate_buds(size_t pid) {
     Vector3 pos = node_position(pid);
     Vector3 dir = node_direction(pid);
-    std::vector<Vector3> lateral_dirs = lateral_directions(dir, GEOM_PI/2, 4);
+    std::vector<Vector3> lateral_dirs = lateral_directions(dir, insertion_angle, nb_buds_per_whorl);
     lateral_dirs.push_back(dir);
 
     for(std::vector<Vector3>::const_iterator itldir = lateral_dirs.begin(); itldir != lateral_dirs.end(); ++itldir)

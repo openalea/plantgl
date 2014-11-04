@@ -162,7 +162,9 @@ typedef RCPtr<PyGraphColonization> PyGraphColonizationPtr;
         .def_readwrite("kill_radius",&CLASS::kill_radius) \
         .def_readwrite("perception_radius",&CLASS::perception_radius) \
         .def_readwrite("coneangle",&SpaceColonization::coneangle) \
-        .def_readwrite("min_nb_pt_per_bud_per_bud",&CLASS::min_nb_pt_per_bud) \
+        .def_readwrite("min_nb_pt_per_bud",&CLASS::min_nb_pt_per_bud) \
+        .def_readwrite("insertion_angle",&SpaceColonization::insertion_angle) \
+        .def_readwrite("nb_buds_per_whorl",&CLASS::nb_buds_per_whorl) \
         .def("setLengths", &CLASS::setLengths,(bp::arg("node_length"),bp::arg("kill_radius_ratio") = 0.9,bp::arg("perception_radius_ratio") = 2.0))
 
 void export_SpaceColonization()
