@@ -2,7 +2,7 @@ Source: vplants-plantgl
 Maintainer: Christophe Pradal <christophe.pradal@cirad.fr>
 Section: python
 Priority: optional
-Build-Depends: python-all (>= 2.6.6-3~), python-setuptools (>= 0.6b3), python-dev, debhelper (>= 7),  python-openalea.deploy, python-openalea.sconsx, libqt4-dev, libqt4-opengl-dev, libcgal-dev, libboost-python-dev, bison, flex, libqhull-dev, libreadline-dev, pkg-config, freeglut3-dev, libann-dev, liblapack-dev, libblas-dev, libmpfr-dev
+Build-Depends: python-all (>= 2.6.6-3~), python-setuptools (>= 0.6b3), python-dev, debhelper (>= 7),  python-openalea.deploy, python-openalea.sconsx, libqt4-dev, libqt4-opengl-dev, libcgal-dev, libboost-python-dev, bison, flex, libqhull-dev, libreadline-dev, pkg-config, freeglut3-dev, libann-dev, liblapack-dev, libblas-dev, libmpfr-dev, libeigen2-dev
 
 
 Package: python-vplants.plantgl
