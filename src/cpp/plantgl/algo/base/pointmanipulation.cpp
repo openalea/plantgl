@@ -39,8 +39,6 @@ TOOLS_USING_NAMESPACE
 
 
 
-typedef void (* progressstatusfunction)(const char *, float);
-
 void progressprint(const char * msg, float percent)
 { printf(msg,percent); }
 
