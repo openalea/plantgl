@@ -8,7 +8,10 @@ if system == "Linux":
     
     QTDIR="/usr"
     QT_VERSION=4
-    if name == 'fedora' and \
-        (version =='17' or version =='19'):
-        ann_libs='ANN'
-    boost_libs_suffix='-mt'
+    if name == 'fedora':
+        if version in ('17', '19'):
+            ann_libs='ANN'
+            boost_libs_suffix='-mt'
+        elif version == '20':
+            ann_libs='ANN'
+            boost_libs_suffix=''
