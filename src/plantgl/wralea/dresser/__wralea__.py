@@ -15,7 +15,7 @@
 #
 
 
-from openalea.core import *
+from openalea.core import Factory
 
 __name__ = "vplants.plantgl.dresser"
 __alias__ = ["PlantGL.Dresser"]
@@ -26,14 +26,12 @@ __authors__ = 'F. Boudon and D. Da Silva'
 __institutes__ = 'INRIA/CIRAD'
 __description__ = 'Spatial distribution module.'
 __url__ = 'http://www.scipy.org'
-    
+
 __all__ = ["dresser"]    
 
-dresser = Factory( name="PGL Dresser",
-                   description="Add Pgl geometry an object",
-                   category="scene.PGL",
-                   nodemodule="dresser",
-                   nodeclass="dresser",
-                   )
-                  
-
+dresser = Factory(name="PGL Dresser",
+                  description="Add Pgl geometry an object",
+                  category="scene.PGL",
+                  nodemodule="vplants.plantgl.ext.dresser",
+                  nodeclass="dresser",
+                  )

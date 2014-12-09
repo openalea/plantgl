@@ -1,6 +1,6 @@
 from openalea.core import *
-from pgl_interface import *
-from pgl_interface_widget import *
+#from pgl_interface import *
+#from pgl_interface_widget import *
 
 __name__ = "vplants.plantgl.edition"
 

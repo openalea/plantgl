@@ -73,7 +73,7 @@ setup(
                 pkg_name+'.wralea.objects', 
                 pkg_name+'.wralea.operator', 
                 pkg_name+'.wralea.visualization', 
-                pkg_name+'.ext',
+                pkg_name+'.wralea.ext',
                 pkg_name+'.codec'
                 ],
     
@@ -102,7 +102,7 @@ setup(
                    'plantgl.objects = openalea.plantgl.wralea.objects', 
                    'plantgl.visualization = openalea.plantgl.wralea.visualization', 
                    'plantgl.operator = openalea.plantgl.wralea.operator', 
-                   'plantgl.ext = openalea.plantgl.ext',
+                   'plantgl.dresser = openalea.plantgl.wralea.dresser',
                    'plantgl.demos = openalea.plantgl.wralea.demos',
                    ],
 
