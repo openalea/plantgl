@@ -73,7 +73,8 @@ setup(
                 pkg_name+'.wralea.objects', 
                 pkg_name+'.wralea.operator', 
                 pkg_name+'.wralea.visualization', 
-                pkg_name+'.wralea.ext',
+                pkg_name+'.wralea.dresser',
+                pkg_name+'.ext',
                 pkg_name+'.codec'
                 ],
     
