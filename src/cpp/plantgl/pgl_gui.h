@@ -38,7 +38,7 @@
 
 #include "gui/base/viewer.h"
 #include "gui/base/zbuffer.h"
-#include "gui/base/view_version.h"
+//#include "gui/base/view_version.h"
 #include "gui/base/util_qwidget.h"
 #include "gui/base/scenegl.h"
 #include "gui/base/icons.h"

@@ -36,7 +36,7 @@
 #ifndef __pgl_tool_h__
 #define __pgl_tool_h__
 
-#include "plantgl/tool/tools_version.h"
+//#include "plantgl/tool/tools_version.h"
 
 #include "plantgl/tool/bfstream.h"
 #include "plantgl/tool/dirnames.h"

@@ -112,7 +112,7 @@ const char **keyword_completion(const char* text, int start, int end) {
 #if defined (_RL_FUNCTION_TYPEDEF)
       matches=(const char **)rl_completion_matches(text,(rl_compentry_func_t*)keyword_generator); 
 #else
-      matches=completion_matches(text,(CPFunction*)keyword_generator); 
+      matches=(const char **)completion_matches(text,(CPFunction*)keyword_generator);
 #endif
 
     return(matches);
