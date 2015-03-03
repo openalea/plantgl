@@ -210,6 +210,16 @@ bool Group::isExplicit( ) const {
 
 /* ----------------------------------------------------------------------- */
 
+bool Group::hasDynamicRendering() const {
+  for (GeometryArray::const_iterator _i = __geometryList->begin();
+       _i != __geometryList->end();
+       _i++)
+    if ((*_i)->hasDynamicRendering()) return true;
+  return false;
+}
+
+/* ----------------------------------------------------------------------- */
+
 bool Group::isValid( ) const {
   Builder _builder;
   _builder.GeometryList = const_cast<GeometryArrayPtr *>(&__geometryList);

@@ -204,9 +204,17 @@ ViewerAppliInternal::castRays(const TOOLS(Vector3)& pos,
 
 ViewZBuffer * 
 ViewerAppliInternal::grabZBuffer(){
-	ViewZBuffer * res = NULL ;
-	ViewZBuffEvent * event = new ViewZBuffEvent(&res);
-	sendAnEvent(event);
-	return res;
+    ViewZBuffer * res = NULL ;
+    ViewZBuffEvent * event = new ViewZBuffEvent(&res);
+    sendAnEvent(event);
+    return res;
+}
+
+std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
+ViewerAppliInternal::grabZBufferPoints(){
+    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res ;
+    ViewZBuffPointsEvent * event = new ViewZBuffPointsEvent(&res);
+    sendAnEvent(event);
+    return res;
 }
 

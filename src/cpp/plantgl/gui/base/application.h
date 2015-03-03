@@ -44,6 +44,8 @@
 #include "appbuilder.h"
 #include "flags.h"
 #include <plantgl/math/util_vector.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/colorarray.h>
 #include <vector>
 #include <string>
 
@@ -95,6 +97,8 @@ public :
 								   int sx, int sy);
 
   static ViewZBuffer * grabZBuffer();
+
+  static std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints();
 
   static void showMessage(const std::string& caption, int timeout = 0);
 
@@ -167,6 +171,9 @@ public :
   static void lookAt(const TOOLS(Vector3)& target);
 
   static void getCamera(TOOLS(Vector3)& pos, TOOLS(Vector3)& heading, TOOLS(Vector3)& up);
+
+  static void setViewAngle(real_t angle);
+  static real_t getViewAngle();
 
   static void setLightEnabled(bool);
   static bool isLightEnabled();

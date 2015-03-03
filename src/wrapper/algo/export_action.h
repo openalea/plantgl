@@ -116,4 +116,8 @@ void export_Triangulation3D();
 
 // Dijkstra shortest path
 void export_Dijkstra();
+
+// random points algorithm
+void export_randompoints();
+
 #endif

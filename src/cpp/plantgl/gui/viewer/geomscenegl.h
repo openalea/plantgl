@@ -334,6 +334,9 @@ protected :
   /// The scene object (which contains all the geometric shape and appereance to display).
   PGL(ScenePtr) __scene;
 
+  /// a sub part of the scene that contains dynamically rendered shapes
+  PGL(ScenePtr) __dynamicscene;
+
   /// The Discretizer.
   PGL(Discretizer) __discretizer;
 

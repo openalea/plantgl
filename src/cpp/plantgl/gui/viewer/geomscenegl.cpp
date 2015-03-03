@@ -152,6 +152,7 @@ void
 ViewGeomSceneGL::clear()
 {
   __scene = ScenePtr();
+  __dynamicscene = ScenePtr();
   __bbox= BoundingBoxPtr(new BoundingBox(Vector3(-1,-1,-1),Vector3(1,1,1)));
   setFilename("");
   clearCache();
@@ -372,6 +373,11 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
     }
     __camera->buildCamera(__bbox);
   }
+  
+  __dynamicscene = ScenePtr(new Scene());
+  for (Scene::const_iterator itsh = __scene->begin(); itsh != __scene->end(); ++itsh)
+    __dynamicscene->add(*itsh);
+
   emit sceneChanged();
   if(__frame != NULL && __frame->isVisible())emit valueChanged();
   return 1;
@@ -418,18 +424,22 @@ ViewGeomSceneGL::paintGL()
 			int cpercent = 0;
 			__renderer.beginProcess();
 			for(Scene::iterator it = __scene->begin();it != __scene->end(); it++){
-				(*it)->apply(__renderer);
-				cur++;
-				if(cur / tenpercent > cpercent){ 
-					cpercent = cur / tenpercent;
-					progress(cur,tot);
-				}
+                if (!(*it)->hasDynamicRendering()){
+    				(*it)->apply(__renderer);
+    				cur++;
+    				if(cur / tenpercent > cpercent){ 
+    					cpercent = cur / tenpercent;
+    					progress(cur,tot);
+    				}
+                }
 			}
 			progress(tot,tot);
 			__renderer.endProcess();
 		}
         __renderer.endSceneList();
       }
+      // printf("render dynamic scene %i\n",__dynamicscene->size());
+      __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 2:
@@ -440,6 +450,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
+      __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 3:
@@ -449,6 +460,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__skelRenderer);
         __skelRenderer.endSceneList();
       }
+      __dynamicscene->apply(__skelRenderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 4:
@@ -459,6 +471,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
+      __dynamicscene->apply(__renderer);
       __light->switchOn();
       if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       else glBlendFunc(GL_ONE,GL_ZERO);
@@ -467,6 +480,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
+      __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     };
@@ -480,6 +494,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__bboxRenderer);
         __bboxRenderer.endSceneList();
       }
+      __dynamicscene->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
     };
     if(__renderingOption[1]){
@@ -490,6 +505,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__ctrlPtRenderer);
         __ctrlPtRenderer.endSceneList();
       }
+      __dynamicscene->apply(__ctrlPtRenderer);
       if(GEOM_GL_ERROR) clear();
     }
     if(!__selectedShapes.empty()){

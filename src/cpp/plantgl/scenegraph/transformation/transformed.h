@@ -175,6 +175,9 @@ public:
   virtual Transformation3DPtr getTransformation( ) const = 0;
 
   virtual const GeometryPtr getGeometry() const = 0;
+
+  virtual bool hasDynamicRendering() const { return getGeometry()->hasDynamicRendering(); }
+
 };
  
 /// Transformed Pointer

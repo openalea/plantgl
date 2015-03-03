@@ -46,6 +46,8 @@
 #include <vector>
 #include "../gui_config.h"
 #include <plantgl/math/util_vector.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/colorarray.h>
 #include "flags.h"
 
 #ifdef QT_THREAD_SUPPORT
@@ -86,10 +88,13 @@ public:
         eLightGet,
 		eCameraSet,
 		eCameraGet,
+        eSetViewAngle,
+        eGetViewAngle,
 		eClippingPlaneActivate,
 		eClippingPlaneSet,
 		eRayBuff,
-		eZBuff,
+        eZBuff,
+        eZBuffPoints,
 		eProjSize,
 		eCameraProj,
 		eSceneChange,
@@ -459,6 +464,8 @@ typedef TPViewEvent<ViewEvent::eBgColor,QColor> ViewBgColorEvent;
 typedef TPViewEvent<ViewEvent::eGrid,bool,bool,bool,bool,int,int,int> ViewGridEvent;
 typedef TPViewEvent<ViewEvent::eCameraSet,Vector3,Vector3,float,float,int> ViewCameraSetEvent;
 typedef TViewEvent<ViewEvent::eCameraGet,Vector3,Vector3*,Vector3*> ViewCameraGetEvent;
+typedef TPViewEvent<ViewEvent::eSetViewAngle,double> ViewSetViewAngleEvent;
+typedef TViewEvent<ViewEvent::eGetViewAngle,double> ViewGetViewAngleEvent;
 typedef TPViewEvent<ViewEvent::eClippingPlaneActivate,int,bool> ViewCPActivateEvent;
 typedef TPViewEvent<ViewEvent::eClippingPlaneSet,int,double,double,double,double> ViewCPSetEvent;
 typedef TPViewEvent<ViewEvent::ePos,int,int,int,int,int> ViewPosEvent;
@@ -466,6 +473,7 @@ class ViewRayBuffer;
 typedef TViewEvent<ViewEvent::eRayBuff,ViewRayBuffer *,Vector3,Vector3,Vector3,Vector3,int,int> ViewRayBuffEvent;
 class ViewZBuffer;
 typedef TViewEvent<ViewEvent::eZBuff,ViewZBuffer *> ViewZBuffEvent;
+typedef TViewEvent<ViewEvent::eZBuffPoints,std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> > ViewZBuffPointsEvent;
 typedef TViewEvent<ViewEvent::eProjSize,double,int *,double *> ViewProjSizeEvent;
 typedef TPViewEvent<ViewEvent::eCameraProj,bool> ViewCameraProjEvent;
 typedef TPViewEvent<ViewEvent::eSetRedrawPolicy,bool> ViewSetRedrawEvent;

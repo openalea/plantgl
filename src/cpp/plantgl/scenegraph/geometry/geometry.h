@@ -101,6 +101,9 @@ public:
   /// Returns whether \e self is explicit.
   virtual bool isExplicit( ) const = 0;
 
+  /// Return whether self should be rendered dynamically
+  virtual bool hasDynamicRendering() const { return false; }
+
 }; // class Geometry
 
 /// Geometry Pointer

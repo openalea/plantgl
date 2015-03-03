@@ -771,7 +771,8 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
 
   void Turtle::oLineRel(const Vector3& v, real_t topradius){
       // Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
-      Vector3 h = v;
+
+      Vector3 h = (__params->screenCoordinates ? Vector3(v.z(),v.x(),v.y()): v);
       real_t l = h.normalize();
       if (l > GEOM_EPSILON){
           _tendTo(h);
@@ -780,7 +781,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
   }
 
   void  Turtle::pinpoint(const TOOLS(Vector3) & v){
-      Vector3 h = v - getPosition();
+      Vector3 h = (__params->screenCoordinates ? Vector3(v.z(),v.x(),v.y()):v) - getPosition();
       real_t l = h.normalize();
       if (l > GEOM_EPSILON){
           _tendTo(h);
@@ -789,7 +790,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
 
   void Turtle::pinpointRel(const TOOLS(Vector3) & v){
       // Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
-    Vector3 h = v;
+    Vector3 h = (__params->screenCoordinates ? Vector3(v.z(),v.x(),v.y()):v);
     real_t l = h.normalize();
     if (l > GEOM_EPSILON){
         _tendTo(h);
@@ -1419,18 +1420,22 @@ PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
        obj = GeometryPtr(new Oriented(getUp(),-getLeft(),obj));
   if ( getPosition() != Vector3::ORIGIN )
        obj = GeometryPtr(new Translated(getPosition(),obj));
-  if (getParameters().screenCoordinates)
-      obj = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),obj)),false));
   return obj;
 }
 
-void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePtr app)
+
+
+void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePtr app, bool projection)
 {
+  GeometryPtr mgeom = geom;
+  if (projection && getParameters().screenCoordinates)
+      mgeom = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),mgeom)),false));
+
    if (custompid)
-	   __scene->add(Shape3DPtr(new Shape(geom,app?app:getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
+	   __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
    else{
      uint_t pid = parentId;
-     __scene->add(Shape3DPtr(new Shape(geom,app?app:getCurrentMaterial(),popId(),pid)));
+     __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentMaterial(),popId(),pid)));
    }
 }
 
@@ -1702,7 +1707,7 @@ PglTurtle::_label(const string& text, int size ){
   if (size > 0) font = FontPtr(new Font("",size));
   if (__params->screenCoordinates){
     Vector3 p = (getPosition() + Vector3(1,1,1))*50;
-     _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)));
+     _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)), false, NULL, false);
     
   }
   else {

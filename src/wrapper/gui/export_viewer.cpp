@@ -285,8 +285,7 @@ boost::python::object castRays(const TOOLS(Vector3)& pos,
 							      const TOOLS(Vector3)& dx, 
 							      const TOOLS(Vector3)& dy,
 								  int sx, int sy){
-	ViewRayBuffer * buf;
-    buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
+	ViewRayBuffer * buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
 	boost::python::object res = raybuf_to_python(buf);
 	delete buf;
 	return res;
@@ -306,9 +305,9 @@ boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
 	}
 	return res;
 }
+
 boost::python::object grabZBuffer(bool allvalues){
-	ViewZBuffer * buf;
-    buf = ViewerApplication::grabZBuffer();
+	ViewZBuffer * buf = ViewerApplication::grabZBuffer();
 	boost::python::object res = zbuf_to_python(buf,allvalues);
 	delete buf;
 	return res;
@@ -316,6 +315,11 @@ boost::python::object grabZBuffer(bool allvalues){
 
 boost::python::object grabZBuffer0(){
 	return grabZBuffer(false);
+}
+
+boost::python::object grabZBufferPoints(){
+    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> bufpoints = ViewerApplication::grabZBufferPoints();
+    return make_tuple(bufpoints.first,bufpoints.second);
 }
 
 boost::python::object getProjectionSize(){
@@ -641,6 +645,10 @@ void export_camera(){
     .def("lookAt",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 target)",args("target"))
     .def("lookAt",(void(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 pos, Vector3 target)",args("pos","target"))
     .staticmethod("lookAt")
+    .def("getViewAngle",&ViewerApplication::getViewAngle)
+    .staticmethod("getViewAngle")
+    .def("setViewAngle",&ViewerApplication::setViewAngle)
+    .staticmethod("setViewAngle")
 	;
 }
 
@@ -729,6 +737,8 @@ void export_framegl(){
     .def("grabZBuffer",&grabZBuffer0 )
     .def("grabZBuffer",&grabZBuffer  ,"grabZBuffer(allvalues = False)", args("allvalues") )
     .staticmethod("grabZBuffer")
+    .def("grabZBufferPoints",&grabZBufferPoints )
+    .staticmethod("grabZBufferPoints")
 	.def("getProjectionSize",&getProjectionSize,"return projected_size,pixel_nb,pixel_size : compute the projected size of the displayed scene onto the current camera." )
     .staticmethod("getProjectionSize")
 	.def("getProjectionSizes",&getProjectionSizes,"getProjectionSizes(Scene objects) : individual projected sizes of a set of elements.",args("objects"))

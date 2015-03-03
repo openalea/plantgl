@@ -113,6 +113,9 @@ void module_algo()
 
     // Dijkstra shortest path
     export_Dijkstra();
+
+    // random points algo
+    export_randompoints();    
 };
 
 /* ----------------------------------------------------------------------- */

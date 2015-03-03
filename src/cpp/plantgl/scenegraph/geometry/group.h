@@ -150,6 +150,8 @@ public:
 
   virtual bool isValid( ) const;
 
+  virtual bool hasDynamicRendering() const;
+  
 protected:
 
   /// The \b GeometryList field.

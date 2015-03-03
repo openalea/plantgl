@@ -162,7 +162,7 @@ SpaceColonization::lateral_directions(const Vector3& dir, real_t angle, int nb){
     Vector3 rotdir = direction(dir.anOrthogonalVector());
     Matrix3 rotmat = Matrix3::axisRotation(rotdir, angle);
     Vector3 v0 = rotmat * dir;
-    result.push_back(v0);
+    if (nb > 0) result.push_back(v0);
     for (int i = 1; i < nb; ++i)
         result.push_back(Matrix3::axisRotation(dir, i * 2*GEOM_PI/nb) *v0);
     return result;

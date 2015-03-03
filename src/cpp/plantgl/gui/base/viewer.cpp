@@ -758,7 +758,7 @@ void  Viewer::customEvent(QEvent *e){
     ViewGridEvent * k = ( ViewGridEvent * )e;
     __GLFrame->gridEvent(k);
   }
-  else if(e->type() == ViewEvent::eCameraGet || e->type() == ViewEvent::eCameraSet){
+  else if(e->type() == ViewEvent::eCameraGet || e->type() == ViewEvent::eCameraSet || e->type() == ViewEvent::eSetViewAngle || e->type() == ViewEvent::eGetViewAngle ){
     __GLFrame->cameraEvent((ViewEvent *)e);
   }
   else if(e->type() == ViewEvent::eLightGet || e->type() == ViewEvent::eLightSet){
@@ -799,6 +799,10 @@ void  Viewer::customEvent(QEvent *e){
   else if(e->type() == ViewEvent::eZBuff){
     ViewZBuffEvent * k = ( ViewZBuffEvent * )e;
     *(k->result) = __GLFrame->grabZBuffer();
+  }
+  else if(e->type() == ViewEvent::eZBuffPoints){
+    ViewZBuffPointsEvent * k = ( ViewZBuffPointsEvent * )e;
+    *(k->result) = __GLFrame->grabZBufferPoints();
   }
   else if(e->type() == ViewEvent::eProjSize){
     ViewProjSizeEvent * k = ( ViewProjSizeEvent * )e;

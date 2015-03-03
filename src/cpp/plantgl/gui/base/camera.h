@@ -101,6 +101,10 @@ class VIEW_API ViewCameraGL  : public ViewObjectGL
 
 public:
 
+   enum eCameraResizePolicy {
+     eKeepObjectSize,
+     eKeepViewAngle
+   };
 
   /// Constructor.
   ViewCameraGL(QGLWidget * parent=0, const char * name=0);
@@ -240,6 +244,9 @@ public slots:
   /// Set View Angle.
   void setViewAngle(double angle);
 
+  // Set the Policy for resizing
+  void setResizePolicy(int);
+
   /// Set Position
   void setPosition(const Vector3&);
   void setPosition(const Vector3&,double az,double el);
@@ -253,8 +260,6 @@ public slots:
   // void setElevation(const QString&);
   /// Set Zoom value.
   // void setZoom(const QString&);
-  /// Set View Angle.
-  void setViewAngle(const QString&);
   /// Set Far Plane.
   void setFarPlane(const QString&);
   /// Set Near Plane.
@@ -335,7 +340,7 @@ signals:
   /// far Plane changed.
   void farPlaneChanged(const QString&);
   ///  view Angle changed.
-  void viewAngleChanged(const QString&);
+  void viewAngleChanged(double);
   ///  current View Angle Changed.
   void currentViewAngleChanged(const QString&);
 
@@ -368,6 +373,8 @@ protected :
   /// Push Model View Matrix
   void glPushModelViewMatrix();
 
+  void updateActualViewAngle();
+
   double __azimuth;
   double __elevation;
   
@@ -390,6 +397,8 @@ protected :
   bool __projectionmode;
   bool __geomsys;
   bool __lockdim;
+
+  eCameraResizePolicy __resizePolicy;
 };
 
 /* ----------------------------------------------------------------------- */

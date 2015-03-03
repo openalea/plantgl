@@ -162,6 +162,9 @@ public:
   /// set a default name to \e this
   void setDefaultName();
 
+  /// Return whether self should be rendered dynamically
+  virtual bool hasDynamicRendering() const ;
+
 protected :
 
   /// The file name

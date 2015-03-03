@@ -214,7 +214,14 @@ ViewerApplication::grabZBuffer(){
   return NULL;
 }
 
-
+std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>
+ViewerApplication::grabZBufferPoints(){
+  
+  initViewerAppli();
+  if(VIEWER_APPLI)
+    return VIEWER_APPLI->grabZBufferPoints();
+  return std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>();
+}
 
 bool ViewerApplication::wait( unsigned long time ){
   initViewerAppli();
@@ -352,6 +359,18 @@ ViewerApplication::lookAt(const Vector3& target){
 void 
 ViewerApplication::getCamera(Vector3& pos, Vector3& heading, Vector3& up){
   _sendAnEvent(new ViewCameraGetEvent(&pos,&heading,&up));
+}
+
+
+void ViewerApplication::setViewAngle(real_t angle){
+  _sendAnEvent(new ViewSetViewAngleEvent(angle));
+}
+
+real_t ViewerApplication::getViewAngle(){
+    real_t angle;
+    _sendAnEvent(new ViewGetViewAngleEvent(&angle));
+    return angle;
+
 }
 
 void ViewerApplication::setLightEnabled(bool b)

@@ -231,6 +231,8 @@ public:
   bool isExplicit() const 
   { return false; }
 
+  bool hasDynamicRendering() const { return true; }
+
   inline const bool getScreenCoordinates() const { return __screenCoordinates; }
   inline bool& getScreenCoordinates() { return __screenCoordinates; }
   inline bool isScreenCoordinatesToDefault() { return __screenCoordinates == DEFAULT_SCREEN_COORDINATES; }

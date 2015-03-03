@@ -111,6 +111,10 @@ public:
     /// Prints \e s to the output stream \e stream.
 //    friend ostream& operator<<( ostream& stream, Shape3D& s );
 
+  /// Return whether self should be rendered dynamically
+  virtual bool hasDynamicRendering() const  = 0;
+
+
 }; // class Shape3D
 
 /// Shape3D Pointer
@@ -248,6 +252,10 @@ public:
 
   /// Return if ParentId is to default.
   bool isParentIdToDefault() { return parentId == NOID; }
+
+  /// Return whether self should be rendered dynamically
+  bool hasDynamicRendering() const  
+  { return (is_null_ptr(geometry)?false:geometry->hasDynamicRendering()); }
 
   /// The appearance of \e self.
   AppearancePtr appearance;

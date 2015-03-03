@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CameraProperties</class>
  <widget class="QWidget" name="CameraProperties">
@@ -6,14 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
-    <height>421</height>
+    <width>556</width>
+    <height>571</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Camera</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="7" column="0" colspan="3">
+    <widget class="Line" name="Line3_2">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="ZoomLabel">
      <property name="text">
@@ -24,11 +37,99 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="ZoomEdit">
-     <property name="acceptDrops">
+   <item row="9" column="0">
+    <widget class="QLabel" name="CenterLabel">
+     <property name="text">
+      <string>Center</string>
+     </property>
+     <property name="wordWrap">
       <bool>false</bool>
      </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QLineEdit" name="NearEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QLineEdit" name="FarEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="EyeLabel2">
+     <property name="text">
+      <string>Eye</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="NearLabel">
+     <property name="text">
+      <string>Near Plane</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="FarLabel">
+     <property name="text">
+      <string>Far Plane</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="AngleLabel2">
+     <property name="text">
+      <string>Current View Angle</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="1" colspan="2">
+    <widget class="QDoubleSpinBox" name="DefaultAngleEdit">
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>179.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>30.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1" colspan="2">
+    <widget class="QLineEdit" name="CurrentAngleEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="ElevationEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="YTranslationEdit">
      <property name="alignment">
       <set>Qt::AlignHCenter</set>
      </property>
@@ -44,20 +145,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="XTranslationEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="YTranslationEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="AzimuthLabel">
      <property name="text">
@@ -68,17 +155,27 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QLineEdit" name="AzimuthEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
+   <item row="12" column="1" colspan="2">
+    <widget class="QComboBox" name="CoordinatesBox">
+     <item>
+      <property name="text">
+       <string>GL</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>GEOM</string>
+      </property>
+     </item>
     </widget>
    </item>
-   <item row="2" column="2">
-    <widget class="QLineEdit" name="ElevationEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
+   <item row="12" column="0">
+    <widget class="QLabel" name="systemLabel">
+     <property name="text">
+      <string>Coordinates System</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -92,11 +189,8 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QLineEdit" name="PositionEdit">
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="AzimuthEdit">
      <property name="alignment">
       <set>Qt::AlignHCenter</set>
      </property>
@@ -104,100 +198,6 @@
    </item>
    <item row="4" column="0" colspan="3">
     <widget class="Line" name="Line3">
-     <property name="frameShape">
-      <enum>QFrame::HLine</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="NearLabel">
-     <property name="text">
-      <string>Near Plane</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLineEdit" name="NearEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="FarLabel">
-     <property name="text">
-      <string>Far Plane</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QLineEdit" name="FarEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="3">
-    <widget class="Line" name="Line3_2">
-     <property name="frameShape">
-      <enum>QFrame::HLine</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="EyeLabel2">
-     <property name="text">
-      <string>Eye</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1" colspan="2">
-    <widget class="QLineEdit" name="EyeEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="CenterLabel">
-     <property name="text">
-      <string>Center</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1" colspan="2">
-    <widget class="QLineEdit" name="CenterEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="3">
-    <widget class="Line" name="Line3_2_2">
      <property name="frameShape">
       <enum>QFrame::HLine</enum>
      </property>
@@ -219,6 +219,70 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLineEdit" name="PositionEdit">
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="3">
+    <widget class="Line" name="Line3_2_2">
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="ZoomEdit">
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0">
+    <widget class="QLabel" name="AngleLabel">
+     <property name="text">
+      <string>Default View Angle</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1" colspan="2">
+    <widget class="QLineEdit" name="CenterEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1" colspan="2">
+    <widget class="QLineEdit" name="EyeEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="XTranslationEdit">
+     <property name="alignment">
+      <set>Qt::AlignHCenter</set>
+     </property>
+    </widget>
+   </item>
    <item row="11" column="1" colspan="2">
     <widget class="QComboBox" name="ProjectionBox">
      <item>
@@ -233,62 +297,25 @@
      </item>
     </widget>
    </item>
-   <item row="12" column="0">
-    <widget class="QLabel" name="systemLabel">
-     <property name="text">
-      <string>Coordinates System</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="1" colspan="2">
-    <widget class="QComboBox" name="CoordinatesBox">
-     <item>
-      <property name="text">
-       <string>GL</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>GEOM</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="13" column="0">
-    <widget class="QLabel" name="AngleLabel">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Default View Angle</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
+      <string>Resize Policy</string>
      </property>
     </widget>
    </item>
    <item row="13" column="1" colspan="2">
-    <widget class="QLineEdit" name="DefaultAngleEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="0">
-    <widget class="QLabel" name="AngleLabel2">
-     <property name="text">
-      <string>Current View Angle</string>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="1" colspan="2">
-    <widget class="QLineEdit" name="CurrentAngleEdit">
-     <property name="alignment">
-      <set>Qt::AlignHCenter</set>
-     </property>
+    <widget class="QComboBox" name="ResizePolicyBox">
+     <item>
+      <property name="text">
+       <string>Maintain Object Size</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Use Default View Angle</string>
+      </property>
+     </item>
     </widget>
    </item>
   </layout>

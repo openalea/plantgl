@@ -34,6 +34,8 @@
 
 #include "../gui_config.h"
 #include <plantgl/math/util_vector.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/colorarray.h>
 #include "util_threadeddata.h"
 #include "appbuilder.h"
 #include <string>
@@ -118,7 +120,9 @@ public:
 									  const TOOLS(Vector3)& dx, 
 									  const TOOLS(Vector3)& dy,
 									  int sx, int sy);
-	virtual ViewZBuffer * grabZBuffer();
+    virtual ViewZBuffer * grabZBuffer();
+    
+    virtual std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)>  grabZBufferPoints();
 
 
 };

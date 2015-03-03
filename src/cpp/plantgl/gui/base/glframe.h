@@ -75,9 +75,9 @@ class ViewErrorDialog;
 class ViewEvent;
 #include "util_qwidget.h"
 #include "flags.h"
-// #include "zbuffer.h"
-class ViewRayBuffer;
-class ViewZBuffer;
+#include "zbuffer.h"
+//class ViewRayBuffer;
+//class ViewZBuffer;
 #include <plantgl/math/util_vector.h>
 
 TOOLS_USING(Vector3)
@@ -167,6 +167,10 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
   /// Grab depth buffer
   ViewZBuffer * grabDepthBuffer( bool all_values = true  ) ;
+
+  /// Grab depth and color points
+  std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints( ) ;
+
 
   ViewRayBuffer * castRays( const Vector3& position, 
 						     const Vector3& direction, 

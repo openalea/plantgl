@@ -157,7 +157,8 @@ ViewCameraGL::ViewCameraGL(QGLWidget * parent, const char * name) :
   __height(500),
   __projectionmode(true),
   __geomsys(true),
-  __lockdim(false)
+  __lockdim(false),
+  __resizePolicy(eKeepObjectSize)
 {
 	init();
 }
@@ -179,7 +180,8 @@ ViewCameraGL::ViewCameraGL(QObject * parent, const char * name) :
   __height(500),
   __projectionmode(true),
   __geomsys(true),
-  __lockdim(false)
+  __lockdim(false),
+  __resizePolicy(eKeepObjectSize)
 {
 	init();
 }
@@ -196,6 +198,7 @@ void ViewCameraGL::init()
   bool autofit = settings.value("AutoFit",!__lockdim).toBool();
   __geomsys = settings.value("PglRefSystem",__geomsys).toBool();
   lockDim(!autofit);
+  __resizePolicy = (eCameraResizePolicy)settings.value("ResizePolicy",(int)__resizePolicy).toInt();
   settings.endGroup();
 }
 
@@ -205,6 +208,7 @@ void ViewCameraGL::endEvent()
   settings.beginGroup("Camera");
   settings.setValue("AutoFit",!isDimLock());
   settings.setValue("PglRefSystem",__geomsys);
+  settings.setValue("ResizePolicy",(int)__resizePolicy);
   settings.endGroup();
 }
 
@@ -383,11 +387,7 @@ ViewCameraGL::setZoom(const QString& zoom)
   __translation.x() = zoom.toInt();
 }
 */
-void
-ViewCameraGL::setViewAngle(const QString& angle)
-{
-  __default_view_angle = (double)angle.toInt();
-}
+
 
 void
 ViewCameraGL::setFarPlane(const QString& plane)
@@ -408,7 +408,7 @@ ViewCameraGL::validViewAngle()
 {
   initialize(__radius,__center);
   glInitProjectionMatrix();
-  emit viewAngleChanged(QString::number(__default_view_angle));
+  emit viewAngleChanged(__default_view_angle);
   emit currentViewAngleChanged(QString::number(__view_angle));
   emit valueChanged();
 }
@@ -497,7 +497,7 @@ ViewCameraGL::setViewAngle(double angle)
   __default_view_angle = angle;
   initialize(__radius,__center);
   glInitProjectionMatrix();
-  emit viewAngleChanged(QString::number(__default_view_angle));
+  emit viewAngleChanged(__default_view_angle);
   emit currentViewAngleChanged(QString::number(__view_angle));
   emit valueChanged();
 }
@@ -558,12 +558,7 @@ ViewCameraGL::initialize(const double& _radius,const Vector3& center)
       __far_plane = _default_far_plane;
   __near_plane = __far_plane / 800;
 
-  /// compute the view_angle according to the size of the frame.
-  /// For 500x500 window, the view_angle is __default_view_angle (60)
-  /// Else view_angle is recomputed (OpenGL programming guide, second edition v1.1 p131)
-  /// to see a bigger part of the scene but at the same scale.
-  double rad = __radius * __height/500 ;
-  __view_angle = (2.0*atan2(rad,dist))*GEOM_DEG;
+  updateActualViewAngle();
 
   int newstep = int(__radius/10);
   if(newstep < 1)newstep =1;
@@ -584,13 +579,26 @@ ViewCameraGL::resizeGL(int w, int h)
 
   glViewport( 0, 0, (GLint)w, (GLint)h );
 
-  double dist = __eye.x();
-  double rad  = __radius;
-  rad *= __height / 500;
-  __view_angle = (2.0*atan2(rad,dist))*GEOM_DEG;
+  updateActualViewAngle();
 
   glInitProjectionMatrix();
 
+}
+
+void ViewCameraGL::updateActualViewAngle()
+{
+  if (__resizePolicy == eKeepObjectSize){
+      /// compute the view_angle according to the size of the frame.
+      /// For 500x500 window, the view_angle is __default_view_angle (60)
+      /// Else view_angle is recomputed (OpenGL programming guide, second edition v1.1 p131)
+      /// to see a bigger part of the scene but at the same scale.
+      double rad = __radius * __height/500 ;    
+      double dist = __eye.x();
+      __view_angle = (2.0*atan2(rad,dist))*GEOM_DEG;
+  }
+  else {
+      __view_angle = __default_view_angle;
+  }
 }
 
 void
@@ -938,6 +946,14 @@ ViewCameraGL::lookIn(const Vector3& position,const Vector3& dir){
 }
 
 void 
+ViewCameraGL::setResizePolicy(int value)
+{
+    __resizePolicy = (eCameraResizePolicy)value;
+    setViewAngle(__default_view_angle);
+
+}
+
+void 
 ViewCameraGL::cameraEvent(ViewEvent * ev){
 	if (ev->type() == ViewEvent::eCameraSet) {
 		ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
@@ -962,6 +978,14 @@ ViewCameraGL::cameraEvent(ViewEvent * ev){
 		*e->arg1 = getDirection();
 		*e->arg2 = getUp();
 	}
+    else if (ev->type() == ViewEvent::eSetViewAngle){
+        ViewSetViewAngleEvent * e = (ViewSetViewAngleEvent *)ev;
+        setViewAngle(e->arg1);
+    }
+    else if (ev->type() == ViewEvent::eGetViewAngle){
+        ViewGetViewAngleEvent * e = (ViewGetViewAngleEvent *)ev;
+        *e->result = getDefaultViewAngle();
+    }
 }
 
 Vector3 ViewCameraGL::getDirection(){
@@ -1085,20 +1109,21 @@ ViewCameraGL::addProperties(QTabWidget * tab)
   tab2->EyeEdit->setReadOnly(true);
   tab2->CenterEdit->setText(toQString(__center));
   tab2->CenterEdit->setReadOnly(true);
-  tab2->DefaultAngleEdit->setText(QString::number(__default_view_angle));
-  QObject::connect(tab2->DefaultAngleEdit,SIGNAL(textChanged(const QString&)),this,SLOT(setViewAngle(const QString&)));
-  QObject::connect(tab2->DefaultAngleEdit,SIGNAL(returnPressed()),this,SLOT(validViewAngle()));
+  tab2->DefaultAngleEdit->setValue(__default_view_angle);
+  QObject::connect(tab2->DefaultAngleEdit,SIGNAL(valueChanged(double)),this,SLOT(setViewAngle(double)));
+
   tab2->CurrentAngleEdit->setText(QString::number(__view_angle));
   QObject::connect(this,SIGNAL(currentViewAngleChanged(const QString&)),
                    tab2->CurrentAngleEdit,SLOT(setText(const QString&)));
-  QObject::connect(this,SIGNAL(viewAngleChanged(const QString&)),
-                   tab2->DefaultAngleEdit,SLOT(setText(const QString&)));
+  QObject::connect(this,SIGNAL(viewAngleChanged(double)),
+                   tab2->DefaultAngleEdit,SLOT(setValue(double)));
   tab2->CurrentAngleEdit->setReadOnly(true);
   tab2->ProjectionBox->setCurrentIndex(int(__projectionmode));
   QObject::connect(tab2->ProjectionBox,SIGNAL(activated(int)),this,SLOT(setProjectionMode(int)));
   tab2->CoordinatesBox->setCurrentIndex(int(__geomsys));
   QObject::connect(tab2->CoordinatesBox,SIGNAL(activated(int)),this,SLOT(setCoordSys(int)));
-
+  tab2->ResizePolicyBox->setCurrentIndex(int(__resizePolicy));
+  QObject::connect(tab2->ResizePolicyBox,SIGNAL(activated(int)),this,SLOT(setResizePolicy(int)));
   /*Matrix4 m;
   glGeomGetMatrix(GL_PROJECTION_MATRIX,m);
   CameraProp2 * tab3 = new CameraProp2( tab, "Camera Prop2" );

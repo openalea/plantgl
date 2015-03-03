@@ -640,9 +640,14 @@ void ViewGLFrame::reinitializeGL()
   glEnable(GL_LIGHTING);
 //  __light->enable();
   glEnable(GL_BLEND);
-  __scene->initializeGL();
-}
 
+  glEnable(GL_POLYGON_OFFSET_LINE);
+  glPolygonOffset(-1.0, -1.0);
+
+  __scene->initializeGL();
+
+
+}
 
 
 /*!
@@ -1030,6 +1035,27 @@ ViewGLFrame::grabDepthBuffer( bool all_values )
     makeItCurrent();
 	return ViewZBuffer::importglDepthBuffer(all_values);
 }
+
+std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> 
+ViewGLFrame::grabZBufferPoints( ) 
+{
+    bool pbufactivation = true;
+    if(!isRedrawEnabled()){
+        if (isPixelBufferUsed()){
+            pbufactivation = __pBufferActivated;
+            if(!pbufactivation){
+                activatePBuffer(true);
+                paintGL();
+            }
+            else  makeItCurrent();
+        }
+        else updateGL();
+    }
+    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> res = ViewZBuffer::importglZBufferPoints();
+    if(!pbufactivation) activatePBuffer(false);
+    return res;
+}
+
 
 double ViewGLFrame::getPixelWidth(){
 	bool mode = __camera->getProjectionMode();

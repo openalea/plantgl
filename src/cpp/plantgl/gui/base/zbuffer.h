@@ -48,6 +48,8 @@
 #include "../gui_config.h"
 #include <plantgl/math/util_vector.h>
 #include <plantgl/tool/util_array2.h>
+#include <plantgl/scenegraph/container/pointarray.h>
+#include <plantgl/scenegraph/container/colorarray.h>
 #include <plantgl/scenegraph/appearance/color.h>
 
 struct VIEW_API RayHit {
@@ -125,10 +127,14 @@ public:
 	ViewZBuffer(size_t w, size_t h): TOOLS(Array2)<ZBufferUnit>(w,h){}
 
 	/// import depth and color buffer
-	static ViewZBuffer* importglZBuffer(bool alldepth = true);
+	static ViewZBuffer* importglZBuffer(bool alldepth = true, bool invertalpha = true);
 
 	/// import depth buffer
 	static ViewZBuffer* importglDepthBuffer(bool alldepth = true);
+
+    /// import depth and color points
+    static std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> importglZBufferPoints(bool invertalpha = true);
+
 };
 
 

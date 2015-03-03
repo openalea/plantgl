@@ -209,6 +209,8 @@ public:
   /// Returns whether \e self is valid and output error on stream error, ...
   bool isValid( std::ostream& error,std::ostream& warning, std::ostream& info) const;
 
+  bool hasDynamicRendering() const;
+  
   /** Merges the Scene \e subScene to \e self.
       \pre
       - \e subScene must be valid. */

@@ -143,7 +143,7 @@ ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 	return buffer;
 }
 
-ViewZBuffer* ViewZBuffer::importglZBuffer(bool alldepth)
+ViewZBuffer* ViewZBuffer::importglZBuffer(bool alldepth, bool invertalpha)
 {	
 	ViewZBuffer * buffer = importglDepthBuffer(alldepth);
 	int width = buffer->getRowSize();
@@ -156,11 +156,53 @@ ViewZBuffer* ViewZBuffer::importglZBuffer(bool alldepth)
 	for(int i = 0; i < height; ++i){
 		for (int j = 0; j < width; ++j){
 			buffer->getAt(i,j).color = Color4(*itercolvalues,itercolvalues[1],
-				                               itercolvalues[2],itercolvalues[3]);
+				                               itercolvalues[2],invertalpha?255-itercolvalues[3]:itercolvalues[3]);
 			itercolvalues+=4;
 		}
 	}
 	delete [] colvalues;
 
 	return buffer;
+}
+
+std::pair<Point3ArrayPtr,Color4ArrayPtr> 
+ViewZBuffer::importglZBufferPoints(bool invertalpha) {
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT,viewport);
+    int width = viewport[2];
+    int height = viewport[3];
+    
+    float  * zvalues = new float[width*height];
+    uchar  * colvalues = new uchar[4*width*height];
+
+    glReadPixels(0,0,width,height,GL_DEPTH_COMPONENT, GL_FLOAT, zvalues);
+    glReadPixels(0,0,width,height,GL_RGBA, GL_UNSIGNED_BYTE, colvalues);
+
+    GLdouble modelMatrix[16], projMatrix[16];
+    glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
+    glGetDoublev(GL_PROJECTION_MATRIX,projMatrix);
+    GLdouble objx, objy, objz;
+
+    Point3ArrayPtr points(new Point3Array());
+    Color4ArrayPtr colors(new Color4Array());
+
+    float  * iterzvalues = zvalues;
+    uchar  * itercolvalues = colvalues;
+    for(int i = 0; i < height; ++i){
+        for (int j = 0; j < width; ++j){
+            if ( 0 < *iterzvalues && *iterzvalues < 1) {
+                if( gluUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) == GL_TRUE ){
+                    points->push_back(Vector3(objx,objy,objz));
+                    colors->push_back(Color4(*itercolvalues,itercolvalues[1],
+                                               itercolvalues[2],invertalpha?255-itercolvalues[3]:itercolvalues[3]));
+                }
+            }
+            ++iterzvalues;
+            itercolvalues+=4;
+        }
+    }
+    // std::cerr << "done." << std::endl;
+    delete [] zvalues;
+    delete [] colvalues;
+    return std::pair<Point3ArrayPtr,Color4ArrayPtr> (points, colors);
 }

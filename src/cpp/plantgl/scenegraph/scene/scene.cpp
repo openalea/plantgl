@@ -436,6 +436,19 @@ bool Scene::isValid( ostream& error,ostream& warning, ostream& info) const {
   return b;
 }
 
+bool Scene::hasDynamicRendering() const
+{
+  lock();
+  for (vector<Shape3DPtr>::const_iterator _i = __shapeList.begin();
+  _i != __shapeList.end();
+  _i++){
+    if((*_i)->hasDynamicRendering())return true;
+  }
+  return false;
+
+}
+
+
 void Scene::merge( const ScenePtr& scene ) {
   GEOM_ASSERT((scene) && (scene->isValid()));
   lock();
