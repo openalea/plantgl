@@ -42,10 +42,10 @@
 
 PGL_BEGIN_NAMESPACE
 
-TOOLS(Vector3) random_point_in_box(const TOOLS(Vector3)& minpt, const TOOLS(Vector3)& maxpt);
-TOOLS(Vector3) random_point_in_tetrahedron(const TOOLS(Vector3)& p0, const TOOLS(Vector3)& p1, const TOOLS(Vector3)& p2, const TOOLS(Vector3)& p3);
-Point3ArrayPtr random_points_in_tetrahedron(size_t nb, const TOOLS(Vector3)& p0, const TOOLS(Vector3)& p1, const TOOLS(Vector3)& p2, const TOOLS(Vector3)& p3);
-Point3ArrayPtr random_points_in_tetrahedra(size_t nb_per_tetra, const Point3ArrayPtr points, const Index4ArrayPtr tetraindices);
+ALGO_API TOOLS(Vector3) random_point_in_box(const TOOLS(Vector3)& minpt, const TOOLS(Vector3)& maxpt);
+ALGO_API TOOLS(Vector3) random_point_in_tetrahedron(const TOOLS(Vector3)& p0, const TOOLS(Vector3)& p1, const TOOLS(Vector3)& p2, const TOOLS(Vector3)& p3);
+ALGO_API Point3ArrayPtr random_points_in_tetrahedron(size_t nb, const TOOLS(Vector3)& p0, const TOOLS(Vector3)& p1, const TOOLS(Vector3)& p2, const TOOLS(Vector3)& p3);
+ALGO_API Point3ArrayPtr random_points_in_tetrahedra(size_t nb_per_tetra, const Point3ArrayPtr points, const Index4ArrayPtr tetraindices);
 
 
 
