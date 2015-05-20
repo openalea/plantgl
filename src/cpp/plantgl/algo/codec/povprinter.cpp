@@ -303,7 +303,7 @@ bool PovPrinter::setLight(const TOOLS(Vector3)& position, const Color3& color){
 bool PovPrinter::header(const char * comment){
     __geomStream << "/*" << endl;
 	__geomStream << " * A povray file generated with GEOM." << endl;
-    __geomStream << " * Example of use : povray -Ifile.pov -Ofile.tga +FT +H400 +W400." << endl;
+    __geomStream << " * Example of use : povray -Ifile.pov -Ofile.png +FN +H600 +W800 +A." << endl;
     if(comment) __geomStream << " * " << comment << '.' << endl;
     __geomStream << " */" << endl << endl;
     return true;
@@ -864,26 +864,49 @@ bool PovPrinter::process( Polyline * polyline ) {
 	__linecache = true;
   }
 
-  GEOM_POVPRINT_BEGIN(__geomStream,"union",polyline);
-  for (Point3Array::const_iterator _i = polyline->getPointList()->begin();
-	_i != polyline->getPointList()->end()-1; _i++) {
-    const Vector3& _vertex1 = *_i;
-    const Vector3& _vertex2 = *(_i+1);
-	if(norm(_vertex1-_vertex2) > GEOM_EPSILON){
- 	GEOM_POVPRINT_BEG_(__geomStream,"cylinder");
-	__geomStream << __indent;
-    GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
-    __geomStream << ", ";
-    GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
-    __geomStream << ", LineWidth";
-	if(!polyline->isWidthToDefault()) __geomStream << "*" << polyline->getWidth();
-	__geomStream << endl;
-	GEOM_POVPRINT_TEXTURE;
-	GEOM_POVPRINT_END_(__geomStream);
-	}
-  };
-  // nothing to do
-  GEOM_POVPRINT_END(__geomStream,polyline);
+  size_t nbpoints = polyline->getPointList()->size();
+  if (nbpoints == 2 && norm(polyline->getPointAt(0)-polyline->getPointAt(1)) <= GEOM_EPSILON) {
+      GEOM_ASSERT(sphere);
+      GEOM_POVPRINT_BEGIN(__geomStream,"sphere",polyline);
+
+       __geomStream << __indent;
+      GEOM_POVPRINT_VECTOR3(__geomStream,polyline->getPointAt(0));
+      __geomStream << ", LineWidth" << endl;
+
+      GEOM_POVPRINT_TEXTURE;
+
+      GEOM_POVPRINT_END(__geomStream,polyline);
+  }
+  else {
+      if (nbpoints > 2){
+          GEOM_POVPRINT_BEGIN(__geomStream,"union",polyline);
+      }
+      else {
+        GEOM_POVPRINT_BEGIN(__geomStream,"cylinder",polyline);
+      }
+      for (Point3Array::const_iterator _i = polyline->getPointList()->begin();
+        	_i != polyline->getPointList()->end()-1; _i++) {
+            const Vector3& _vertex1 = *_i;
+            const Vector3& _vertex2 = *(_i+1);
+        	if(norm(_vertex1-_vertex2) > GEOM_EPSILON){
+         	  if (nbpoints > 2) { GEOM_POVPRINT_BEG_(__geomStream,"cylinder"); }
+        	   __geomStream << __indent;
+                GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
+                __geomStream << ", ";
+                GEOM_POVPRINT_VECTOR3(__geomStream,_vertex2);
+                __geomStream << ", LineWidth";
+        	   if(!polyline->isWidthToDefault()) __geomStream << "*" << polyline->getWidth();
+        	   __geomStream << endl;
+        	   GEOM_POVPRINT_TEXTURE;
+        	   if (nbpoints > 2) {
+                GEOM_POVPRINT_END_(__geomStream);
+                }
+        	}
+      };
+
+      // nothing to do
+      GEOM_POVPRINT_END(__geomStream,polyline);
+  }
 
   return true;
 }

@@ -124,6 +124,10 @@ public:
 
     void customGeometry(const GeometryPtr smb, real_t scale = 1.0);
 
+    void pglShape(const GeometryPtr smb, real_t scale = 1.0);
+    void pglShape(const ShapePtr shape, real_t scale = 1.0);
+    void pglShape(const ScenePtr shape, real_t scale = 1.0);
+
 protected:
 
     AppearancePtr getCurrentMaterial() const;

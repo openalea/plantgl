@@ -90,23 +90,21 @@ real_t distance_to_bbox_v3(BoundingBox * bbox, Vector3 v){
 }
 
 
-BoundingBoxPtr  bbx_fromobj( boost::python::object o ) 
+BoundingBox *  bbx_fromobj( boost::python::object o ) 
 { 
-	extract<Scene> e(o);
+    Discretizer d;
+    BBoxComputer bbc(d);
+	extract<ScenePtr> e(o);
 	if(!e.check()){
-		Discretizer d;
-		BBoxComputer bbc(d);
 		SceneObject * geom = extract<SceneObject *>(o)();
 		geom->apply(bbc);
-//		boost::python::call_method<bool>(o.ptr(),"apply", bbc );
-		return bbc.getBoundingBox();
 	}
 	else {
-		Discretizer d;
-		BBoxComputer bbc(d);
-		bbc.process(e());
-		return bbc.getBoundingBox();
+        e()->apply(bbc);
 	}
+    // sc->apply(bbc);
+    if (is_null_ptr(bbc.getBoundingBox())) return new BoundingBox(); 
+    return new BoundingBox(*bbc.getBoundingBox());
 }
 
 void export_BoundingBox()
@@ -118,9 +116,9 @@ void export_BoundingBox()
 	   (bp::arg("lowerLeft")= TOOLS(Vector3::ORIGIN),bp::arg("upperRight")=TOOLS(Vector3::ORIGIN))
 	   ) )
     .def( "__init__", make_constructor( bbx_fromobj ), "BoundingBox(geometry|scene) Constructs a BoundingBox from some geometries.") 
-	.DEC_CT_PROPERTY(lowerLeftCorner,BoundingBox,LowerLeftCorner,Vector3)
-	.DEC_CT_PROPERTY(upperRightCorner,BoundingBox,UpperRightCorner,Vector3)
     .def("set",&BoundingBox::set,"set(lowerLeft,upperRight)")
+    .DEC_CT_PROPERTY(lowerLeftCorner,BoundingBox,LowerLeftCorner,Vector3)
+    .DEC_CT_PROPERTY(upperRightCorner,BoundingBox,UpperRightCorner,Vector3)
     .def("change",&BoundingBox::change,"change(center)")
 	.def("getCenter",&BoundingBox::getCenter)
 	.def("getSize",&BoundingBox::getSize,

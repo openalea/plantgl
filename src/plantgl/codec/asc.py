@@ -48,8 +48,9 @@ class AscCodec (sg.SceneCodec):
                     if not isptsfile : col.append(sg.Color4(int(values[3]),int(values[4]),int(values[5]),0))
                     else : col.append(sg.Color4(int(values[4]),int(values[5]),int(values[6]),0))
             except Exception,e:
-                if isptsfile and len(values) == 1:
-                    warnings.warn("Skip line "+str(i+isptsfile)+" in file '"+fname+"'.")
+                if isptsfile and len(values) == 4:
+                    #warnings.warn("Skip line "+str(i+isptsfile)+" in file '"+fname+"'.")
+                    pass
                 else:
                     if len(values) != 0:
                         warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))

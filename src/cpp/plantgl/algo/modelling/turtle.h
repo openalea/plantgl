@@ -212,6 +212,9 @@ public:
 						  real_t ux = 1, real_t uy = 0, real_t uz = 0)
 	{ setHead(TOOLS(Vector3)(hx,hy,hz),TOOLS(Vector3)(ux,uy,uz)); }	
     
+    /// Orient the turtle according to the absolute euler angles given
+    virtual void eulerAngles(real_t azimuth = 180, real_t elevation = 90, real_t roll = 0);
+
 	/// Change position to pos
     virtual void move(const TOOLS(Vector3)& pos);
     

@@ -112,7 +112,7 @@ def scene_in_grid(sc, grid):
             for idx in tr.indexList:
                 polygons = polygon_in_grid(grid,[tr.pointList[i] for i in idx])
                 for gidx,pol in polygons:
-                    groups[tuple(gidx)] = groups.get(tuple(gidx),[])+[FaceSet(pol,[range(len(pol))])]
+                    groups[tuple(gidx)] = groups.get(tuple(gidx),[])+[(sh.id,FaceSet(pol,[range(len(pol))]))]
     return groups
     
 def test():

@@ -90,5 +90,8 @@ void export_PglTurtle()
     .def("setColorList",&setTurtleColorList )
     .def("getSurfaceList",    &getTurtleSurfaceList )
     .def("customGeometry",    &PglTurtle::customGeometry, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
+    .def("pglShape",    (void(PglTurtle::*)( const GeometryPtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
+    .def("pglShape",    (void(PglTurtle::*)( const ShapePtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
+    .def("pglShape",    (void(PglTurtle::*)( const ScenePtr, real_t))&PglTurtle::pglShape, "Insert a custom plantgl primitive at the turtle position and orientation", (bp::arg("geometry"),bp::arg("scale")=1), return_self<>() )
 	;
 }
