@@ -46,6 +46,9 @@ DEF_POINTEE(ScreenProjected)
 
 void setKeepAspectRatio(ScreenProjected * obj, bool val) { obj->getKeepAspectRatio() = val; }
 
+template<class T>
+GeometryPtr tr_geometry(T * obj) { return obj->getGeometry(); }
+
 void export_ScreenProjected()
 {
   class_< ScreenProjected, ScreenProjectedPtr, bases< Transformed > , boost::noncopyable >
@@ -57,6 +60,7 @@ void export_ScreenProjected()
     .DEF_PGLBASE(ScreenProjected)
 	.add_property("keepAspectRatio",(bool(ScreenProjected::*)()const)&ScreenProjected::getKeepAspectRatio, 
                            &setKeepAspectRatio) 
+    .add_property("geometry", &tr_geometry<ScreenProjected>, &set_prop_bt_from_class<GeometryPtr,ScreenProjected,&ScreenProjected::getGeometry>)
 
 	// .DEC_CT_PROPERTY_WDV(keepAspectRatio,ScreenProjected,KeepAspectRatio,bool,DEFAULT_KEEPASPECTRATIO)
     ;

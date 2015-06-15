@@ -208,6 +208,7 @@ PovPrinter::PovPrinter( ostream& povStream,
   __linewidth(0.1),
   __linecache(false),
   __pointcache(false){
+  __geomStream << setprecision(6);
   __geomStream << "#declare CENTER = ";
   GEOM_POVPRINT_VECTOR3(__geomStream, bbox.getCenter());
   __geomStream << ';' << endl;
@@ -849,7 +850,6 @@ bool PovPrinter::process( PointSet * pointSet ) {
 
   return true;
 }
-
 
 /* ----------------------------------------------------------------------- */
 
