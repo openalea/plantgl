@@ -9,9 +9,11 @@ class PglColorMap:
         self.normalizer = Normalize(minvalue, maxvalue)
 
     def __call__(self, value):
+        return self.__topglcolor__(self.normalizer(value))
+    
+    def __topglcolor__(self, normalizedindex):
         import _pglsg as sg
-
-        color = self.pltcolormap(self.normalizer(value))
+        color = self.pltcolormap(normalizedindex)
         color = list(color)
         color[3] = 1. - color[3]
         return sg.Color4([int(255 * c) for c in color])
@@ -29,13 +31,13 @@ class PglColorMap:
             ptlist.append((position[0],position[1]+dy))
             ptlist.append((position[0]+width,position[1]+dy))
             indexlist.append((2*colid,2*colid+1,2*colid+3,2*colid+2))
-            colorlist.append(self(colid / float(nbcolors)))
+            colorlist.append(self.__topglcolor__(1.-colid / float(nbcolors)))
         dc = 1
         def sc2txt(coord) :
             return 50*(coord+1)
         return sg.Scene([sg.Shape(sg.ScreenProjected(sg.QuadSet([(px,py,0) for px,py in ptlist], indexlist, colorList=colorlist, colorPerVertex = False),keepAspectRatio=False)),
-                         sg.Shape(sg.Text(str(self.normalizer.vmin), (sc2txt(position[0]), sc2txt(position[1]+0.01) , 0 ), True ), sg.Material((0,0,0))),
-                         sg.Shape(sg.Text(str(self.normalizer.vmax), (sc2txt(position[0]), sc2txt(position[1]-length-0.05) , 0 ), True ), sg.Material((0,0,0)))])        
+                         sg.Shape(sg.Text(str(self.normalizer.vmax), (sc2txt(position[0]), sc2txt(position[1]+0.01) , 0 ), True ), sg.Material((0,0,0))),
+                         sg.Shape(sg.Text(str(self.normalizer.vmin), (sc2txt(position[0]), sc2txt(position[1]-length-0.05) , 0 ), True ), sg.Material((0,0,0)))])        
 
 
 class PglMaterialMap (PglColorMap):
