@@ -143,6 +143,8 @@ boost::python::list py_partition(T * pts, boost::python::object cmp_method){
     return rlist;
 }
 
+
+
 template<class Array>
 object pa_findclosest(Array * array, typename Array::element_type point)
 {
@@ -151,6 +153,17 @@ object pa_findclosest(Array * array, typename Array::element_type point)
                         std::distance<typename Array::const_iterator>(array->begin(),res.first),
                         res.second);
 }
+
+
+template <class T>
+RCPtr<T> py_filter_coord(T * pts, uchar_t coordid, typename T::element_type::value_type coordmin, typename T::element_type::value_type coordmax){
+    RCPtr<T> result(new T());
+    for(typename T::iterator it = pts->begin(); it != pts->end(); ++it)
+        if (!((it->getAt(coordid) < coordmin) || (it->getAt(coordid) > coordmax)))result->push_back(*it);
+    return result;
+}
+
+
 
 EXPORT_FUNCTION( p2a, Point2Array )
 EXPORT_FUNCTION( p3a, Point3Array )
@@ -273,6 +286,23 @@ void pa_swap_2D_coordinates(Point2Array * pts){
     }
 }
 
+RealArrayPtr pa3_to_polarangle(Point3Array * pts, const Vector3& center, int lateralcoord, int depthcoord)
+{
+
+    RealArrayPtr result(new RealArray(pts->size()));
+    RealArray::iterator itres = result->begin();
+
+    for (Point3Array::const_iterator itpts = pts->begin(); itpts != pts->end(); ++itpts, ++itres)
+    {
+        Vector3 diffvector = *itpts - center;
+        real_t theta = atan2(diffvector[lateralcoord], diffvector[depthcoord]);
+         // Vector2::Polar(Vector2(diffvector[rcoord1], diffvector[rcoord2])).theta;
+        *itres  = theta;
+    }
+    return result;
+}
+
+
 void export_pointarrays()
 {
   EXPORT_ARRAY_CT( p2a, Point2Array, "Point2Array([Vector2(x,y),...])")
@@ -300,6 +330,7 @@ void export_pointarrays()
     .def( "findClosest", &pa_findclosest<Point2Array>,"Find closest point in the PointArray2 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_2D_coordinates,"Swap the two coordinates of the points. This is done INPLACE.")
     .def( "isValid", &Point2Array::isValid)
+    .def( "filterCoordinates", &py_filter_coord<Point2Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
     DEFINE_NUMPY( p2a );
   EXPORT_CONVERTER(Point2Array);
 
@@ -335,7 +366,8 @@ void export_pointarrays()
     .def( "findClosest", &pa_findclosest<Point3Array>,"Find closest point in the PointArray3 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_coordinates<Point3Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     .def( "isValid", &Point3Array::isValid)
-    DEFINE_NUMPY( p3a );
+    .def( "filterCoordinates", &py_filter_coord<Point3Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
+   DEFINE_NUMPY( p3a );
   EXPORT_CONVERTER(Point3Array);
 
   EXPORT_ARRAY_CT( p4a, Point4Array, "Point4Array([Vector4(x,y,z,w),...])")
@@ -374,6 +406,7 @@ void export_pointarrays()
     .def( "findClosest", &pa_findclosest<Point4Array>,"Find closest point in the PointArray4 from arg",args("point"))
     .def( "swapCoordinates", &pa_swap_coordinates<Point4Array>,"Swap the coordinate i with coordinate j of the points. This is done INPLACE.",args("i","j"))
     .def( "isValid", &Point4Array::isValid)
+    .def( "filterCoordinates", &py_filter_coord<Point4Array>,"Filter array by looking at coordinate i.",args("i","coordmin","coordmax"))
     DEFINE_NUMPY( p4a );
   EXPORT_CONVERTER(Point4Array);
 
@@ -382,6 +415,8 @@ void export_pointarrays()
   EXPORT_CONVERTER(Transform4Array);
   EXPORT_ARRAY_CT( m4a, Matrix4Array,"Matrix4Array([Matrix4(...),...])" );
   EXPORT_CONVERTER(Matrix4Array);
+
+  def("to_polarangle",pa3_to_polarangle,args("pointarray","center", "lateralcoord","depthcoord"));
 }
 
 

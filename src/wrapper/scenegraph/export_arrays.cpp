@@ -186,6 +186,26 @@ bool ra_is_valid(RealArray * a) {
 RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
     return new RealArray(array->*func(v)); }*/
 
+IndexArrayPtr py_cut(RealArray * a, RealArrayPtr bins, bool filteremptygroups = true)
+{
+    IndexArrayPtr result(new IndexArray());
+    RealArray::const_iterator itbins = bins->begin();
+    Index current;
+    uint32_t cita = 0;
+    for (RealArray::const_iterator ita = a->begin(); ita != a->end(); ++ita, ++cita)
+    {
+        while(itbins !=  bins->end() && *ita > *itbins) {
+               if (!filteremptygroups || !current.empty()) result->push_back(current);
+               current = Index();
+               ++itbins;
+        }
+        current.push_back(cita);
+
+    }
+    if (!filteremptygroups || !current.empty()) result->push_back(current);
+    return result;
+}
+
 void export_arrays()
 {
   EXPORT_ARRAY_CT( c3a, Color3Array, "Color3Array([Index3(i,j,k),...])" )
@@ -219,6 +239,7 @@ void export_arrays()
     // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() ) 
+    .def("cut", &py_cut, (arg("bins"),arg("filteremptygroups")=true))
     .def("isValid",&ra_is_valid)
     EXPORT_ARRAY_IO_FUNC( RealArray )
 
