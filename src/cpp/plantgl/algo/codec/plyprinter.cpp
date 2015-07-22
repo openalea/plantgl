@@ -154,11 +154,11 @@ PlyPrinter::header( const char * comment ){
   stream << "property float x" << endl; /// vertex coordinates
   stream << "property float y" << endl;
   stream << "property float z" << endl;
-  stream << "property uchar_t diffuse_red" << endl; /// vertex color
-  stream << "property uchar_t diffuse_green" << endl;
-  stream << "property uchar_t diffuse_blue" << endl;
+  stream << "property uchar diffuse_red" << endl; /// vertex color
+  stream << "property uchar diffuse_green" << endl;
+  stream << "property uchar diffuse_blue" << endl;
   stream << "element face " << __face << endl;/// number of face
-  stream << "property list uchar_t int vertex_indices " << endl; /// number of vertices for each face
+  stream << "property list uchar int vertex_indices " << endl; /// number of vertices for each face
   stream << "end_header" << endl;
   return true;
 }
@@ -802,16 +802,16 @@ PlyBinaryPrinter::header( const char * comment ){
   header += '\n';
   header += "property float z";
   header += '\n';
-  header += "property uchar_t diffuse_red";
+  header += "property uchar diffuse_red";
   header += '\n';
-  header += "property uchar_t diffuse_green";
+  header += "property uchar diffuse_green";
   header += '\n';
-  header += "property uchar_t diffuse_blue";
+  header += "property uchar diffuse_blue";
   header += '\n';
   header += "element face ";
   header += number(__face);
   header += '\n';
-  header += "property list uchar_t int vertex_indices";
+  header += "property list uchar int vertex_indices";
   header += '\n';
   header += "end_header \n";
   stream << header;

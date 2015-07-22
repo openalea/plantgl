@@ -186,20 +186,34 @@ bool ra_is_valid(RealArray * a) {
 RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
     return new RealArray(array->*func(v)); }*/
 
+
+
+struct IdValueSorter {
+    const RealArray *  values;
+    IdValueSorter(const RealArray *  _values) : values(_values) { }
+
+    inline bool operator()(const uint32_t& a, const uint32_t& b){
+        return values->getAt(a) < values->getAt(b);
+    }
+};
+
+
 IndexArrayPtr py_cut(RealArray * a, RealArrayPtr bins, bool filteremptygroups = true)
 {
+    Index ids = TOOLS(range)<Index>(a->size(),0,1);
+    std::stable_sort(ids.begin(),ids.end(),IdValueSorter(a));
     IndexArrayPtr result(new IndexArray());
     RealArray::const_iterator itbins = bins->begin();
     Index current;
-    uint32_t cita = 0;
-    for (RealArray::const_iterator ita = a->begin(); ita != a->end(); ++ita, ++cita)
+
+    for (Index::const_iterator ita = ids.begin(); ita != ids.end(); ++ita)
     {
-        while(itbins !=  bins->end() && *ita > *itbins) {
+        while(itbins !=  bins->end() && a->getAt(*ita) > *itbins) {
                if (!filteremptygroups || !current.empty()) result->push_back(current);
                current = Index();
                ++itbins;
         }
-        current.push_back(cita);
+        current.push_back(*ita);
 
     }
     if (!filteremptygroups || !current.empty()) result->push_back(current);
