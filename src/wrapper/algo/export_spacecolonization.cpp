@@ -167,6 +167,9 @@ typedef RCPtr<PyGraphColonization> PyGraphColonizationPtr;
         .def_readwrite("nb_buds_per_whorl",&CLASS::nb_buds_per_whorl) \
         .def("setLengths", &CLASS::setLengths,(bp::arg("node_length"),bp::arg("kill_radius_ratio") = 0.9,bp::arg("perception_radius_ratio") = 2.0))
 
+
+void gc_nodecomponents(GraphColonization * gc, IndexArrayPtr nodecomponents) { gc->nodecomponents = nodecomponents; }
+
 void export_SpaceColonization()
 {
       class_< PySpaceColonization, PySpaceColonizationPtr, bases<RefCountObject>, boost::noncopyable > 
@@ -193,7 +196,7 @@ void export_SpaceColonization()
         .def_readwrite("use_jonction_points",&GraphColonization::use_jonction_points)
         .def_readwrite("distances_from_root",&GraphColonization::distances_from_root)
         .def_readwrite("root",&GraphColonization::root)
-        .add_property("nodecomponents",&GraphColonization::get_nodecomponents,make_setter(&GraphColonization::nodecomponents))
+        .add_property("nodecomponents",&GraphColonization::get_nodecomponents,&gc_nodecomponents)
         .def_readwrite("nodelevels",&GraphColonization::nodelevels)
         .def_readwrite("nodelevels",&GraphColonization::nodelevels)
         .def("add_node",&GraphColonization::add_node,(bp::arg("position"),bp::arg("level"),bp::arg("components"),bp::arg("parent")=SpaceColonization::NOID,bp::arg("active")=true))

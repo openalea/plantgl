@@ -187,12 +187,13 @@ void pydel_scenecodec (PySceneCodec * c) {
 }
 
 
+
 void export_SceneCodec()
 {
   bp::class_<SceneFormat>("SceneFormat", "A scene description format.", bp::no_init)
       .def( "__init__", bp::make_constructor( make_sformat ) ) 
-      .add_property("name",bp::make_getter(&SceneFormat::name),bp::make_setter(&SceneFormat::name))
-      .add_property("comment",bp::make_getter(&SceneFormat::comment),bp::make_setter(&SceneFormat::comment))
+      .def_readwrite("name",&SceneFormat::name)
+      .def_readwrite("comment",&SceneFormat::comment)
       .add_property("suffixes",&scformat_get_suffixes,&scformat_get_suffixes)
       .def("__repr__",&scformat_repr)
       ;  

@@ -50,6 +50,7 @@ void py_warning_handler(const std::string& msg){
 void setDefaultCrossSection1(Turtle * t, size_t slices) { t->setDefaultCrossSection(slices); }
 void setDefaultCrossSection0(Turtle * t) { t->setDefaultCrossSection(); }
 
+
 void export_Turtle()
 {
     Turtle::register_error_handler(&py_error_handler);
@@ -226,7 +227,7 @@ void export_Turtle()
 
 	.add_property("sectionResolution",&get_prop_bt_from_class<uint_t,Turtle,&Turtle::getSectionResolution>,&Turtle::setSectionResolution)
 
-	.add_property("warn_on_error",make_getter(&Turtle::warn_on_error),make_setter(&Turtle::warn_on_error) )
+	.def_readwrite("warn_on_error",&Turtle::warn_on_error)
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

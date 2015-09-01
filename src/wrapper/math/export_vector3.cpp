@@ -49,20 +49,6 @@ std::string v3_repr( Vector3* v )
 } 
 
 
-#define VECTOR_STRUCT_SG(PREFIX,ARRAY,MEMBER) \
-real_t PREFIX##_get##MEMBER( ARRAY* v ) \
-{  return v->MEMBER; } \
-  \
-void PREFIX##_set##MEMBER( ARRAY* v, real_t val ) \
-{  v->MEMBER = val; } \
-
-VECTOR_STRUCT_SG(cyl,Vector3::Cylindrical,radius);
-VECTOR_STRUCT_SG(cyl,Vector3::Cylindrical,theta);
-VECTOR_STRUCT_SG(cyl,Vector3::Cylindrical,z);
-VECTOR_STRUCT_SG(sph,Vector3::Spherical,radius);
-VECTOR_STRUCT_SG(sph,Vector3::Spherical,theta);
-VECTOR_STRUCT_SG(sph,Vector3::Spherical,phi);
-
 
 
 std::string sph_repr(Vector3::Spherical * v){
@@ -158,9 +144,9 @@ void export_Vector3()
     .def("isValid",&Vector3::Cylindrical::isValid , "Returns whether self is valid.")
     .def("__str__",&cyl_repr)
     .def("__repr__",&cyl_repr)
-    .add_property("radius",make_getter(&Vector3::Cylindrical::radius),make_setter(&Vector3::Cylindrical::radius))
-    .add_property("theta",make_getter(&Vector3::Cylindrical::theta),make_setter(&Vector3::Cylindrical::theta))
-    .add_property("z",make_getter(&Vector3::Cylindrical::z),make_setter(&Vector3::Cylindrical::z))
+    .def_readwrite("radius",&Vector3::Cylindrical::radius)
+    .def_readwrite("theta",&Vector3::Cylindrical::theta)
+    .def_readwrite("z",&Vector3::Cylindrical::z)
 	.def_pickle(v3cyl_pickle_suite());
     ;
 
@@ -170,9 +156,9 @@ void export_Vector3()
     .def("__str__",&sph_repr)
     .def("__repr__",&sph_repr)
     .def("spherical_distance",&Vector3::Spherical::spherical_distance)
-    .add_property("radius",make_getter(&Vector3::Spherical::radius),make_setter(&Vector3::Spherical::radius))
-    .add_property("theta",make_getter(&Vector3::Spherical::theta),make_setter(&Vector3::Spherical::theta))
-    .add_property("phi",make_getter(&Vector3::Spherical::phi),make_setter(&Vector3::Spherical::phi))
+    .def_readwrite("radius",&Vector3::Spherical::radius)
+    .def_readwrite("theta",&Vector3::Spherical::theta)
+    .def_readwrite("phi",&Vector3::Spherical::phi)
 	.def_pickle(v3sph_pickle_suite());
     ;
 

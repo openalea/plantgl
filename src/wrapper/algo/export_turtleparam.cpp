@@ -38,7 +38,9 @@ TOOLS_USING_NAMESPACE
 
 
 #define EXPORT_PROP(PROPNAME,_CLASS) \
-add_property(#PROPNAME, make_getter(&_CLASS::PROPNAME), make_setter(&_CLASS::PROPNAME)) \
+    def_readwrite(#PROPNAME, &_CLASS::PROPNAME)
+
+    //add_property(#PROPNAME, make_getter(&_CLASS::PROPNAME), make_setter(&_CLASS::PROPNAME)) \
 
 void export_TurtleParam()
 {

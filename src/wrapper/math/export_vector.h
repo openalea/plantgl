@@ -63,6 +63,7 @@ void vec_setz(V * v, real_t val){ v->z() = val; }
 template<class V>
 void vec_setw(V * v, real_t val){ v->w() = val; }
 
+
 template <class V>
 real_t vec_size(V * v){ return v->size(); }
 
@@ -202,6 +203,18 @@ class vector_dim4_func : public boost::python::def_visitor<vector_dim4_func<V> >
         ;
     }
 };
+
+template<class V>
+void vec_setradius(V * v, real_t val){ v->radius = val; }
+
+template<class V>
+void vec_settheta(V * v, real_t val){ v->theta = val; }
+
+template<class V>
+void vec_setphi(V * v, real_t val){ v->phi = val; }
+
+template<class V>
+void vecp_setz(V * v, real_t val){ v->z = val; }
 
 
 #endif

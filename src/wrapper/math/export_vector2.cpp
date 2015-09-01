@@ -279,8 +279,8 @@ void export_Vector2()
     .def("isValid",&Vector2::Polar::isValid, "Returns whether self is valid.")
     .def("__str__",&pol_repr)
     .def("__repr__",&pol_repr)
-    .add_property("radius",make_getter(&Vector2::Polar::radius),make_setter(&Vector2::Polar::radius))
-    .add_property("theta",make_getter(&Vector2::Polar::theta),make_setter(&Vector2::Polar::theta))
+    .def_readwrite("radius",&Vector2::Polar::radius)
+    .def_readwrite("theta",&Vector2::Polar::theta)
     ;
   }
 
