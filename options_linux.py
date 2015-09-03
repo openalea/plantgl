@@ -12,6 +12,6 @@ if system == "Linux":
         if version in ('17', '19'):
             ann_libs='ANN'
             boost_libs_suffix='-mt'
-        elif version == '20':
+        elif version in ('20', '21'):
             ann_libs='ANN'
             boost_libs_suffix=''
