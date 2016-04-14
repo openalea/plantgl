@@ -60,7 +60,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 template<class ContainerType>
-class ALGO_API KDTree : public TOOLS(RefCountObject)
+class ALGO_API AbstractKDTree : public TOOLS(RefCountObject)
 {
 public:   
     typedef ContainerType PointContainer;
@@ -73,26 +73,28 @@ public:
 
 
 
-    KDTree(const PointContainerPtr points) { }
+    AbstractKDTree(const PointContainerPtr points) { }
 
-    virtual ~KDTree() { }
+    virtual ~AbstractKDTree() { }
 
 
     virtual Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX) = 0;
 
     virtual IndexArrayPtr k_nearest_neighbors(size_t k) = 0;
 
+    virtual IndexArrayPtr r_nearest_neighbors(real_t radius) = 0;
+
     virtual size_t size() const = 0;
 
 };
 
-typedef KDTree<Point2Array>  KDTree2;
-typedef KDTree<Point3Array>  KDTree3;
-typedef KDTree<Point4Array>  KDTree4;
+typedef AbstractKDTree<Point2Array>  AbstractKDTree2;
+typedef AbstractKDTree<Point3Array>  AbstractKDTree3;
+typedef AbstractKDTree<Point4Array>  AbstractKDTree4;
 
-typedef RCPtr<KDTree2>       KDTree2Ptr;
-typedef RCPtr<KDTree3>       KDTree3Ptr;
-typedef RCPtr<KDTree4>       KDTree4Ptr;
+typedef RCPtr<AbstractKDTree2>       KDTree2Ptr;
+typedef RCPtr<AbstractKDTree3>       KDTree3Ptr;
+typedef RCPtr<AbstractKDTree4>       KDTree4Ptr;
 
 #ifdef WITH_ANN
 
@@ -101,18 +103,19 @@ class ANNKDTree3Internal;
 class ANNKDTree4Internal;
 
 #define ANNKDTREEDECLARATION(basename) \
-    class ALGO_API ANN##basename  : public basename \
+    class ALGO_API ANN##basename  : public Abstract##basename \
     { \
         public: \
-        typedef basename::PointContainer ContainerType; \
-        typedef basename::PointContainerPtr PointContainerPtr; \
-        typedef basename::VectorType VectorType; \
+        typedef Abstract##basename::PointContainer ContainerType; \
+        typedef Abstract##basename::PointContainerPtr PointContainerPtr; \
+        typedef Abstract##basename::VectorType VectorType; \
          \
         ANN##basename(const PointContainerPtr& points); \
         virtual ~ANN##basename(); \
         \
         virtual Index k_closest_points(const VectorType& pointclass, size_t k, real_t maxdist = REAL_MAX);  \
         virtual IndexArrayPtr k_nearest_neighbors(size_t k) ; \
+        virtual IndexArrayPtr r_nearest_neighbors(real_t radius) ; \
         virtual size_t size() const; \
         protected: \
         ANN##basename##Internal * __internal; \
@@ -125,6 +128,11 @@ ANNKDTREEDECLARATION(KDTree4)
 typedef RCPtr<ANNKDTree2>       ANNKDTree2Ptr;
 typedef RCPtr<ANNKDTree3>       ANNKDTree3Ptr;
 typedef RCPtr<ANNKDTree4>       ANNKDTree4Ptr;
+
+
+typedef ANNKDTree2 KDTree2 ;
+typedef ANNKDTree3 KDTree3 ;
+typedef ANNKDTree4 KDTree4 ;
 
 #endif
 
