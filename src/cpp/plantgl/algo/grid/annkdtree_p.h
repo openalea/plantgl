@@ -115,6 +115,40 @@ inline IndexArrayPtr k_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, si
     return res;
 }
 
+inline IndexArrayPtr r_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, real_t radius)
+{
+
+    ANNpointArray pointdata = kdtree.thePoints();
+    size_t nbPoints = kdtree.nPoints();
+    int dim = kdtree.theDim();
+
+    size_t kk = nbPoints; // k+(ANN_ALLOW_SELF_MATCH?1:0);
+
+    // The resulting structure that will contains the K closest points of each point
+    IndexArrayPtr res(new IndexArray(nbPoints,Index()));
+
+    /// ANN data structure for query
+    ANNidxArray nn_idx = new ANNidx[kk];
+    ANNdistArray dists = new ANNdist[kk];
+
+    real_t sqrRadius = radius * radius;
+
+    /// For each point, ask k closest point to  kdtree
+    for (size_t pointid = 0; pointid < nbPoints; ++pointid){
+        kdtree.annkFRSearch(pointdata[pointid],sqrRadius,kk,nn_idx,dists);
+        Index& pointres = res->getAt(pointid);
+        for(uint32_t i = 0; i < kk; ++i) 
+            if (nn_idx[i] != pointid)
+                pointres.push_back(nn_idx[i]);
+    }
+
+    /// delete all allocated structures
+    delete [] nn_idx;
+    delete [] dists;
+
+    return res;
+}
+
 template<class PointArray>
 IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k) 
 {
@@ -182,6 +216,11 @@ class ANNKDTreeInternal
         inline IndexArrayPtr k_nearest_neighbors(size_t k) 
         {
             return k_nearest_neighbors_of_kdtree_points(__kdtree,k);
+        }
+
+        inline IndexArrayPtr r_nearest_neighbors(real_t radius) 
+        {
+            return r_nearest_neighbors_of_kdtree_points(__kdtree,radius);
         }
 
         inline size_t size() { return __nbpoints; }
