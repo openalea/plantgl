@@ -376,7 +376,8 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
   
   __dynamicscene = ScenePtr(new Scene());
   for (Scene::const_iterator itsh = __scene->begin(); itsh != __scene->end(); ++itsh)
-    __dynamicscene->add(*itsh);
+    if ((*itsh)->hasDynamicRendering())
+        __dynamicscene->add(*itsh);
 
   emit sceneChanged();
   if(__frame != NULL && __frame->isVisible())emit valueChanged();
@@ -415,8 +416,9 @@ ViewGeomSceneGL::paintGL()
       else glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
-		if(__renderer.getRenderingMode() & GLRenderer::Dynamic)
+		if(__renderer.getRenderingMode() & GLRenderer::Dynamic){
 			__scene->apply(__renderer);
+        }
 		else {
 			int cur = 0;
 			int tot = __scene->size();
@@ -439,7 +441,12 @@ ViewGeomSceneGL::paintGL()
         __renderer.endSceneList();
       }
       // printf("render dynamic scene %i\n",__dynamicscene->size());
-      __dynamicscene->apply(__renderer);
+      /// Warning: This line will also call beginProcess and endProcess.
+      /// Ideally, it would require a second renderer.
+      if(!__dynamicscene->empty()) {
+        __dynamicscene->apply(__renderer);
+      }
+
       if(GEOM_GL_ERROR) clear();
       break;
     case 2:
@@ -450,7 +457,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      __dynamicscene->apply(__renderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 3:
@@ -460,7 +467,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__skelRenderer);
         __skelRenderer.endSceneList();
       }
-      __dynamicscene->apply(__skelRenderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__skelRenderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 4:
@@ -471,7 +478,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      __dynamicscene->apply(__renderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       __light->switchOn();
       if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       else glBlendFunc(GL_ONE,GL_ZERO);
@@ -480,7 +487,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      __dynamicscene->apply(__renderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     };
@@ -494,7 +501,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__bboxRenderer);
         __bboxRenderer.endSceneList();
       }
-      __dynamicscene->apply(__bboxRenderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
     };
     if(__renderingOption[1]){
@@ -505,7 +512,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__ctrlPtRenderer);
         __ctrlPtRenderer.endSceneList();
       }
-      __dynamicscene->apply(__ctrlPtRenderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__ctrlPtRenderer);
       if(GEOM_GL_ERROR) clear();
     }
     if(!__selectedShapes.empty()){

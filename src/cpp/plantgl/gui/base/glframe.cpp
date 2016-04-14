@@ -32,6 +32,7 @@
  */
 
 #include <iomanip>
+
 #include "../gui_config.h"
 
 #include <QtGui/qcolordialog.h>
@@ -194,7 +195,10 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   __usePBuffer(true),
   __pBufferActivated(false),
   __redrawEnabled(true),
-  __timer(this)
+  __timer(this),
+  __fpsDisplay(false),
+  __fps(-1),
+  __fpscounter(0)
 {
 	if(name)setObjectName(name);
   /// Creation
@@ -211,6 +215,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
   settings.beginGroup("FrameGL");
   __BgColor = settings.value("BgColor",__BgColor).value<QColor>();
   __usePBuffer = settings.value("PixelBuffer",__usePBuffer).toBool();
+  __fpsDisplay = settings.value("FPSDisplay",__fpsDisplay).toBool();
   setBackGroundColor(__BgColor);
   settings.endGroup();
   
@@ -258,6 +263,7 @@ void ViewGLFrame::endEvent()
   settings.beginGroup("FrameGL");
   settings.setValue("BgColor",__BgColor);
   settings.setValue("PixelBuffer",__usePBuffer);
+  settings.setValue("FPSDisplay",__fpsDisplay);
   settings.endGroup();
   if(__scene)__scene->endEvent();
   if(__grid)__grid->endEvent();
@@ -611,6 +617,7 @@ void ViewGLFrame::initializeGL(){
   __clippingPlane->initializeGL();
   __fog->initializeGL();
   GL_ERROR;
+  __lastdraw = clock();
 }
 
 void ViewGLFrame::reinitializeGL()
@@ -641,8 +648,8 @@ void ViewGLFrame::reinitializeGL()
 //  __light->enable();
   glEnable(GL_BLEND);
 
-  glEnable(GL_POLYGON_OFFSET_LINE);
-  glPolygonOffset(-1.0, -1.0);
+  // glEnable(GL_POLYGON_OFFSET_LINE);
+  // glPolygonOffset(0.0, 0.0);
 
   __scene->initializeGL();
 
@@ -673,6 +680,8 @@ void ViewGLFrame::resizeGL( int w, int h )
 
 void ViewGLFrame::paintGL()
 {
+  // clock_t previousdraw = clock();
+
 #ifndef Q_OS_MAC
   if (width() == 0 || height() == 0) { return; }
 #endif
@@ -684,6 +693,7 @@ void ViewGLFrame::paintGL()
 		reinitializeGL();
 	  }
   }
+
   GL_ERROR;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -791,6 +801,25 @@ void ViewGLFrame::paintGL()
 		  __light->switchOn();
 
 	  }
+      if (__fpsDisplay){
+          ++__fpscounter;
+          if (__fpscounter == 5 || __fps < 0){
+              clock_t previousdraw = __lastdraw;
+              __lastdraw = clock();
+              double elapsed_time = double(__lastdraw - previousdraw) / (__fpscounter* CLOCKS_PER_SEC);
+              __fps = 1./elapsed_time;
+              __fpscounter = 0;
+          }
+          if (__fps > 0) {
+              __light->switchOff();
+              qglColor(QColor(0,0,0));
+              QString text("FPS : %1");
+              if (__fps > 10 ) text = text.arg(int(__fps));
+              else text = text.arg(double(__fps),0,'f',2);
+              renderText(20, 20, text);
+              __light->switchOn(); 
+          }
+      }
   }
   // glFinish();
 
@@ -1824,7 +1853,8 @@ ViewGLFrame::addProperties(QTabWidget * tab)
   if(glb == GL_TRUE)glform.TwoSideLightButton->setChecked(true);
   QObject::connect(glform.TwoSideLightButton,SIGNAL(toggled(bool)),this,SLOT(glTwoSideShadeModel(bool)));
 
-
+    glform.FPSButton->setChecked(__fpsDisplay);
+    QObject::connect(glform.FPSButton,SIGNAL(toggled(bool)),this,SLOT(setFPSDisplay(bool)));
 
     glform.OcclusionQueryButton->setChecked(__useOcclusionQuery);
     glform.PixelBufferButton->setChecked(__usePBuffer);
@@ -1909,6 +1939,7 @@ void ViewGLFrame::useOcclusionQuery(bool b)
 
 void ViewGLFrame::usePixelBuffer(bool b) { __usePBuffer = b; }
 
+void ViewGLFrame::setFPSDisplay(bool b) { __fpsDisplay = b; }
 
 void ViewGLFrame::showMessage(const QString message, int timeout)
 {
