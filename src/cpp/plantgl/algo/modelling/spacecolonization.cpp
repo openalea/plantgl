@@ -334,7 +334,7 @@ void SpaceColonization::run()
 
 void SpaceColonization::iterate(size_t nbsteps)
 {
-    for(size_t i = 0; i < nbsteps & !atEnd(); ++i) step();
+    for(size_t i = 0; i < nbsteps && !atEnd(); ++i) step();
 }
 
 

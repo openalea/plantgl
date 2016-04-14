@@ -178,10 +178,31 @@ pointset_min_distance( const TOOLS(Vector3)& origin,
                        const Point3ArrayPtr points, 
 			           const Index& group);
 
-ALGO_API real_t
-pointset_mean_distance(  const TOOLS(Vector3)& origin,
+// ALGO_API
+template<class IndexGroup>
+real_t pointset_mean_distance(  const TOOLS(Vector3)& origin,
                          const Point3ArrayPtr points, 
-			             const Index& group);
+                         const IndexGroup& group)
+{
+    if (group.empty()) return 0;
+    real_t sum_distance = 0;
+    for(typename IndexGroup::const_iterator it = group.begin(); it != group.end(); ++it)
+        sum_distance += norm(origin-points->getAt(*it));
+    return sum_distance / group.size();
+}
+
+template<class IndexGroupArray>
+TOOLS(RealArrayPtr) pointset_mean_distances(  const Point3ArrayPtr origins,
+                                 const Point3ArrayPtr points, 
+                                 const RCPtr<IndexGroupArray> groups)
+{
+    TOOLS(RealArrayPtr) result(new TOOLS(RealArray)(groups->size()));
+    TOOLS(RealArray)::iterator itres = result->begin();
+    Point3Array::const_iterator itorigin = origins->begin();
+    for(typename IndexGroupArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++itorigin, ++itres )
+        *itres = pointset_mean_distance(itorigin, points, it);
+    return result;
+}
 
 ALGO_API real_t
 pointset_mean_radial_distance(  const TOOLS(Vector3)& origin,
@@ -375,6 +396,33 @@ centroid_of_group(const Point3ArrayPtr points,
 ALGO_API Point3ArrayPtr 
 centroids_of_groups(const Point3ArrayPtr points, 
 			        const IndexArrayPtr groups);
+
+
+ALGO_API 
+template<class IndexGroup>
+TOOLS(Vector3)  centroid_of_group(const Point3ArrayPtr points, 
+                                  const IndexGroup& group)
+{
+        TOOLS(Vector3) gcentroid; real_t nbpoints = 0;
+        for(typename IndexGroup::const_iterator itn = group.begin(); itn != group.end(); ++itn,++nbpoints){
+            gcentroid += points->getAt(*itn);
+        }
+        return gcentroid/nbpoints;
+}
+
+ALGO_API 
+template<class IndexGroupArray>
+Point3ArrayPtr  centroids_of_groups(const Point3ArrayPtr points, 
+                                    const RCPtr<IndexGroupArray> groups)
+{
+    Point3ArrayPtr result(new Point3Array(groups->size()));
+    uint32_t cgroup = 0;
+    for(typename IndexGroupArray::const_iterator itgs = groups->begin(); itgs != groups->end(); ++itgs, ++cgroup)
+    {
+        result->setAt(cgroup,centroid_of_group(points,*itgs));
+    }
+    return result;
+}
 
 // Xu 07 method for main branching system
 ALGO_API Point3ArrayPtr

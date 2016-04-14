@@ -735,6 +735,7 @@ PGL::pointset_min_distance(  uint32_t pid,
     return pointset_min_distance(points->getAt(pid), points, group);
 }
 
+/*
 ALGO_API real_t
 PGL::pointset_mean_distance(  const Vector3& origin,
                 const Point3ArrayPtr points, 
@@ -746,6 +747,7 @@ PGL::pointset_mean_distance(  const Vector3& origin,
         sum_distance += norm(origin-points->getAt(*it));
     return sum_distance / group.size();
 }
+*/
 
 
 ALGO_API real_t

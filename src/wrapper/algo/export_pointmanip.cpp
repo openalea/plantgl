@@ -281,7 +281,7 @@ void export_PointManip()
 
     def("pointset_max_distance",(real_t (*)(uint32_t, const Point3ArrayPtr, const Index&))&pointset_max_distance,args("pid","points","group"));
     def("pointset_max_distance",(real_t (*)(const Vector3&, const Point3ArrayPtr, const Index&))&pointset_max_distance,args("center","points","group"));
-    def("pointset_mean_distance",&pointset_mean_distance,args("center","points","group"));
+    def("pointset_mean_distance",&pointset_mean_distance<Index>,args("center","points","group"));
     def("pointset_mean_radial_distance",&pointset_mean_radial_distance,args("center","direction","points","group"));
 
     def("density_from_k_neighborhood",&density_from_k_neighborhood,(bp::arg("pid"),bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute density of a point according to its k neighboordhood. If k is 0, its value is deduced from adjacencies.");
@@ -315,8 +315,8 @@ void export_PointManip()
     def("pointsets_section_circles",&py_estimate_pointsets_section_circles,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("width"),bp::arg("bounding")=false));
     def("adaptive_section_circles",&py_adaptive_section_circles,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("widths"),bp::arg("maxradii")));
 
-    def("centroid_of_group",&centroid_of_group,args("points","group"));
-    def("centroids_of_groups",&centroids_of_groups,args("points","groups"));
+    def("centroid_of_group",&centroid_of_group<Index>,args("points","group"));
+    def("centroids_of_groups",&centroids_of_groups<IndexArray>,args("points","groups"));
 
 
     def("adaptive_radii",&adaptive_radii,(bp::arg("density"),bp::arg("minradius"),bp::arg("maxradius"),bp::arg("densityradiusmap")=QuantisedFunctionPtr(0)),"Compute a radius for each density value");
