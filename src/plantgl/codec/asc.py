@@ -17,7 +17,7 @@ class AscCodec (sg.SceneCodec):
 
     def formats(self):
         """ return formats """
-        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn"],"The Ascii point file format") ]
+        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn",'txt'],"The Ascii point file format") ]
         # pts format :
         #         first line : nb of points 
         #          then x y z w r g b
