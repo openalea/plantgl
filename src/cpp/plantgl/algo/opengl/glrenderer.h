@@ -266,9 +266,9 @@ public:
 
   virtual bool process( Font * font );
 
-  bool check(uint_t id, GLuint& displaylist);
-  bool call(uint_t id);
-  void update(uint_t id, GLuint displaylist);
+  bool check(size_t id, GLuint& displaylist);
+  bool call(size_t id);
+  void update(size_t id, GLuint displaylist);
   const AppearancePtr& getAppearanceCache() const { return __appearance; }
 
   void registerTexture(ImageTexture * texture, GLuint id, bool erasePreviousIfExists = true);
@@ -305,6 +305,12 @@ private:
   bool discretize_and_render(T * geom);
 
   bool __currentdisplaylist;
+
+  bool __dopushpop;
+  GLenum __executionmode;
+
+  int __precompildepth;
+  int __maxprecompildepth;
 };
 
 /* ----------------------------------------------------------------------- */

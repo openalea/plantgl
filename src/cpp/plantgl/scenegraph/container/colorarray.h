@@ -77,6 +77,7 @@ public:
         data[ 3*i+1 ] = color.getGreen();
         data[ 3*i+2 ] = color.getBlue();
       }
+      return data;
   }
 };
 
@@ -119,6 +120,7 @@ public:
         data[ 4*i+2 ] = color.getBlue();
         data[ 4*i+3 ] = color.getAlpha();
       }
+      return data;
   }
 };
 
