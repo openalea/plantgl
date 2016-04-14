@@ -353,11 +353,13 @@ GLRenderer::setRenderingMode(RenderingMode mode)
     if(mode &  DynamicPrimitive)__compil = -1;
 	else if(__compil == -1)__compil = 0;
     __Mode = mode;
+#ifdef GEOM_DLDEBUG
     if (mode == DynamicPrimitive) printf("Mode: DynamicPrimitive\n");
     else if (mode == DynamicScene) printf("Mode: DynamicScene\n");
     else if (mode == Dynamic) printf("Mode: Dynamic\n");
     else if (mode == Normal) printf("Mode: Normal\n");
     else if (mode == Selection) printf("Mode: Selection\n");
+#endif
   }
 }
 
