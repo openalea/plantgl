@@ -750,7 +750,7 @@ PGL::pointset_mean_distance(  const Vector3& origin,
 */
 
 
-ALGO_API real_t
+real_t
 PGL::pointset_mean_radial_distance(  const Vector3& origin,
                                      const Vector3& direction,
                                      const Point3ArrayPtr points, 
@@ -761,6 +761,43 @@ PGL::pointset_mean_radial_distance(  const Vector3& origin,
     for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
         sum_distance += radialAnisotropicNorm(origin-points->getAt(*it), direction, 0, 1);
     return sum_distance / group.size();
+}
+
+Matrix3 
+PGL::pointset_covariance(const Point3ArrayPtr points,  const Index& group)
+{
+    Matrix3 result(0,0,0,0,0,0,0,0,0);
+    if (group.empty()){
+        for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it){
+            const Vector3& v = *it;
+            result(0,0) += v.x() * v.x();
+            result(0,1) += v.x() * v.y();
+            result(0,2) += v.x() * v.z();
+            result(1,0) += v.y() * v.x();
+            result(1,1) += v.y() * v.y();
+            result(1,2) += v.y() * v.z();
+            result(2,0) += v.z() * v.x();
+            result(2,1) += v.z() * v.y();
+            result(2,2) += v.z() * v.z();
+        }
+        result /= points->size();
+    }
+    else {
+        for (Index::const_iterator it = group.begin(); it != group.end(); ++it){
+            const Vector3& v = points->getAt(*it);
+            result(0,0) += v.x() * v.x();
+            result(0,1) += v.x() * v.y();
+            result(0,2) += v.x() * v.z();
+            result(1,0) += v.y() * v.x();
+            result(1,1) += v.y() * v.y();
+            result(1,2) += v.y() * v.z();
+            result(2,0) += v.z() * v.x();
+            result(2,1) += v.z() * v.y();
+            result(2,2) += v.z() * v.z();
+        }
+        result /= group.size();
+    }
+    return result;
 }
 
 
@@ -2023,6 +2060,83 @@ TOOLS(RealArrayPtr) PGL::distance_to_shape(const Point3ArrayPtr points,
 #endif
 }
 
+TOOLS(RealArrayPtr) PGL::estimate_radii_from_points(const Point3ArrayPtr points, 
+                                                    const Point3ArrayPtr nodes,
+                                                    const TOOLS(Uint32Array1Ptr) parents,
+                                                    bool maxmethod,
+                                                    uint32_t maxclosestnodes)
+{
+#ifdef WITH_ANN
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    uint32_t nb_nodes = nodes->size();
+    if (nb_nodes == 0) return RealArrayPtr();
+    if (maxclosestnodes >= nb_nodes) maxclosestnodes = nb_nodes;
+    uint32_t nbPoints = points->size();
+    RealArrayPtr result(new RealArray(nb_nodes));
+    Uint32Array1Ptr resultnb(new Uint32Array1(nb_nodes));
+    uint32_t pid = 0;
+    ANNKDTree3 tree(nodes);
+    ProgressStatus st(nbPoints,"distance to shape for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid, ++st)
+    {
+        real_t minpdist = REAL_MAX;
+        Index nids = tree.k_closest_points(*itp,maxclosestnodes);
+        uint32_t nid1 = 0, nid2 = 0;
+        real_t posu = 0;
+        for(Index::const_iterator nit = nids.begin(); nit != nids.end(); ++nit){
+
+            Vector3 point(*itp);
+            real_t u;
+            uint32_t parent = parents->getAt(*nit);
+            real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parent),&u);
+            if (d < minpdist) {
+                minpdist = d;
+                nid1 = *nit;
+                nid2 = parent;
+                posu = u;
+            }
+
+            for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
+                Vector3 mpoint(*itp);
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc),&u);
+                if (d < minpdist) {
+                    minpdist = d;
+                    nid1 = *nit;
+                    nid2 = *nitc;
+                    posu = u;
+                }
+            }
+        }
+        if (posu > 0.5){
+            nid1 = nid2;
+        }
+        if (maxmethod)
+            result->getAt(nid1) = std::max(result->getAt(nid1),minpdist);
+        else {
+            result->getAt(nid1) += minpdist;
+            resultnb->getAt(nid1) += 1;
+        }
+    }
+    if(!maxmethod) {
+        Uint32Array1::const_iterator itresnb = resultnb->begin();
+        for (RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++itresnb)
+            *itres /= *itresnb;
+    }
+
+    return result;
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'estimate_radii_from_points' disabled. ANN needed.")
+    #else
+    #warning "function 'distance_to_shape' disabled. ANN needed"
+    #endif
+
+    return 0;
+#endif
+}
 
 inline bool distance_test ( real_t d, real_t distance, bool reversed){
     if (reversed) return d > distance;
@@ -2088,11 +2202,11 @@ ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points
 }
 
 TOOLS(RealArrayPtr) 
-PGL::estimate_radii(const Point3ArrayPtr nodes,
-                    const TOOLS(Uint32Array1Ptr) parents, 
-                    const TOOLS(RealArrayPtr) weights,
-                    real_t averageradius,
-                    real_t pipeexponent)
+PGL::estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
+                                   const TOOLS(Uint32Array1Ptr) parents, 
+                                   const TOOLS(RealArrayPtr) weights,
+                                   real_t averageradius,
+                                   real_t pipeexponent)
 {
     uint32_t nbNodes = nodes->size();
     RealArrayPtr result( new RealArray(nbNodes,0));

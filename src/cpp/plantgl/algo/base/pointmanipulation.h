@@ -36,6 +36,7 @@
 
 #include "../algo_config.h"
 #include <plantgl/math/util_math.h>
+#include <plantgl/math/util_matrix.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/algo/grid/regularpointgrid.h>
 #include <plantgl/scenegraph/container/indexarray.h>
@@ -151,7 +152,6 @@ ALGO_API IndexArrayPtr
 k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
 
 
-
 // Useful function
 
 /// Find the k closest point from the set of adjacencies
@@ -209,6 +209,10 @@ pointset_mean_radial_distance(  const TOOLS(Vector3)& origin,
                                 const TOOLS(Vector3)& direction,
                                 const Point3ArrayPtr points, 
 			                    const Index& group);
+
+
+ALGO_API TOOLS(Matrix3) pointset_covariance(const Point3ArrayPtr points,  const Index& group = Index());
+
 
 ALGO_API Index 
 get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
@@ -488,8 +492,13 @@ ALGO_API Index points_at_distance_from_skeleton(const Point3ArrayPtr points,
                                                 real_t distance,
                                                 uint32_t maxclosestnodes = 10);
 
+ALGO_API TOOLS(RealArrayPtr) estimate_radii_from_points(const Point3ArrayPtr points, 
+                                                             const Point3ArrayPtr nodes,
+                                                             const TOOLS(Uint32Array1Ptr) parents,
+                                                             bool maxmethod = false,
+                                                             uint32_t maxclosestnodes = 10);
 // estimate radius for each node
-ALGO_API TOOLS(RealArrayPtr) estimate_radii(const Point3ArrayPtr nodes,
+ALGO_API TOOLS(RealArrayPtr) estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
                                             const TOOLS(Uint32Array1Ptr) parents, 
                                             const TOOLS(RealArrayPtr) weights,
                                             real_t averageradius,
