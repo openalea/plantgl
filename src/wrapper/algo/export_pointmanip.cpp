@@ -284,6 +284,8 @@ void export_PointManip()
     def("pointset_mean_distance",&pointset_mean_distance<Index>,args("center","points","group"));
     def("pointset_mean_radial_distance",&pointset_mean_radial_distance,args("center","direction","points","group"));
 
+    def("pointset_covariance",&pointset_covariance,(arg("points"),arg("group")=Index()));
+
     def("density_from_k_neighborhood",&density_from_k_neighborhood,(bp::arg("pid"),bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute density of a point according to its k neighboordhood. If k is 0, its value is deduced from adjacencies.");
     def("densities_from_k_neighborhood",&densities_from_k_neighborhood,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute local densities of a set of points according to their k neighboordhood. If k is 0, its value is deduced from adjacencies.");
 
@@ -353,7 +355,8 @@ void export_PointManip()
     def("average_distance_to_shape",&average_distance_to_shape,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("maxclosestnodes")=10));
     def("points_at_distance_from_skeleton",&points_at_distance_from_skeleton,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("distance"),bp::arg("maxclosestnodes")=10),"Return indices of all point which are below a given distance ot the skeleton. If distance is negative, return point above a distance");
 
-    def("estimate_radii",&estimate_radii,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
+    def("estimate_radii_from_points",&estimate_radii_from_points,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("maxmethod")=false,bp::arg("maxclosestnodes")=10));
+    def("estimate_radii_from_pipemodel",&estimate_radii_from_pipemodel,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
     
     def("min_max_mean_edge_length",(Vector3 (*)(const Point3ArrayPtr, Uint32Array1Ptr))&min_max_mean_edge_length,(bp::arg("points"),bp::arg("parents")));
     def("min_max_mean_edge_length",(Vector3 (*)(const Point3ArrayPtr, IndexArrayPtr))&min_max_mean_edge_length,(bp::arg("points"),bp::arg("graph")));
