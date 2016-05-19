@@ -38,11 +38,18 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/tool/util_array.h>
 
-#include <queue>
 #include <memory>
+#include <boost/version.hpp>
 
-
-#include <boost/heap/fibonacci_heap.hpp>
+#if BOOST_VERSION >= 104900
+    #include <boost/heap/fibonacci_heap.hpp>
+    #define PGL_USE_FIBONACCI_HEAP
+#else
+    #include <queue>
+    #include <vector>
+    #define PGL_USE_PRIORITY_QUEUE
+#endif
+    
 
 PGL_BEGIN_NAMESPACE
 
@@ -97,25 +104,35 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
      color * colored = new color[nbnodes];
      for (color * it = colored ; it != colored+nbnodes ; ++it) *it = black;
 
-     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > fibheap;
-     typedef typename fibheap::handle_type handle;
-
+#ifdef PGL_USE_FIBONACCI_HEAP
+     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > heap;
+     typedef typename heap::handle_type handle;
+#else
+     typedef std::priority_queue<uint32_t, std::vector<uint32_t>, nodecompare> heap;
+#endif
      struct nodecompare comp(distances);
-     fibheap Q(comp);
+     heap Q(comp);
 
+#ifdef PGL_USE_FIBONACCI_HEAP
      handle * handles = new handle[nbnodes];
      handles[root] = Q.push(root);
+#endif
 
      for(NodeDistancePairList::const_iterator itdist = precomputed.begin(); itdist != precomputed.end(); ++itdist){
         if (itdist->second < maxdist){
             distances->setAt(itdist->first,itdist->second);
             parents[itdist->first] = root;
+#ifdef PGL_USE_FIBONACCI_HEAP
             handles[itdist->first] = Q.push(itdist->first);
+#endif
         }
      }
 
      while((!Q.empty()) && (nbprocessednodes < maxnbelements)){
          uint32_t current = Q.top(); Q.pop();
+#ifdef PGL_USE_PRIORITY_QUEUE
+         if(colored[current] == white) continue;
+#endif
          result.push_back(Node(current, parents[current], distances->getAt(current)));
          colored[current] = white;
 
@@ -136,16 +153,26 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
                 if (colored[v] == black) {
                     colored[v] = grey;
+#ifdef PGL_USE_FIBONACCI_HEAP
                     handles[v] = Q.push(v);
+#else
+                    Q.push(v);
+#endif
                 }
                 else if (colored[v] == grey){
+#ifdef PGL_USE_FIBONACCI_HEAP
                     Q.decrease(handles[v], v);
+#else
+                    Q.push(v);
+#endif
                 }
 
              }
          }
      }
+#ifdef PGL_USE_FIBONACCI_HEAP
      delete [] handles;
+#endif
      delete [] colored;
      delete [] parents;
      return result;
@@ -166,22 +193,29 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
      TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,UINT32_MAX));
      parents->setAt(root,root);
 
-     std::vector<bool> colored(nbnodes,false);
+     std::vector<color> colored(nbnodes,black);
 
-     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > fibheap;
-     typedef typename fibheap::handle_type handle;
+#ifdef PGL_USE_FIBONACCI_HEAP
+     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > heap;
+     typedef typename heap::handle_type handle;
+#else
+     typedef std::priority_queue<uint32_t, std::vector<uint32_t>, nodecompare> heap;
+#endif
 
      struct nodecompare comp(distances);
-     fibheap Q(comp);
+     heap Q(comp);
 
+#ifdef PGL_USE_FIBONACCI_HEAP
      handle * handles = new handle[nbnodes];
-
-     Q.push(root);
+     handles[root] = Q.push(root);
+#endif
 
      while(!Q.empty()){
          uint32_t current = Q.top(); Q.pop(); 
-         // printf("**** consider %i %f\n", current, distances->getAt(current));
-
+#ifdef PGL_USE_PRIORITY_QUEUE
+         if(colored[current] == white) continue;
+#endif
+         colored[current] = white;
          const Index& nextchildren = connections->getAt(current);
          for (Index::const_iterator itchildren = nextchildren.begin();
              itchildren != nextchildren.end(); ++itchildren)
@@ -193,15 +227,21 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
                  // printf("consider child %i %f %f %i\n", v, distance, (distances->getAt(v)!=REAL_MAX?distances->getAt(v):-1), int(colored[v]));
                  distances->setAt(v,distance);
                  parents->setAt(v,current);
-                 if (!colored[v]){
-                     colored[v] = true;
-                     // printf("push %lu %lu\n", Q.size(), Q.max_size());
-                     handles[v] = Q.push(v);
-                 }
-                 else {
-                     // printf("decrease\n");
-                     Q.decrease(handles[v], v);
-                 }
+                if (colored[v] == black) {
+                    colored[v] = grey;
+#ifdef PGL_USE_FIBONACCI_HEAP
+                    handles[v] = Q.push(v);
+#else
+                    Q.push(v);
+#endif
+                }
+                else if (colored[v] == grey){
+#ifdef PGL_USE_FIBONACCI_HEAP
+                    Q.decrease(handles[v], v);
+#else
+                    Q.push(v);
+#endif
+                }
              }
          }
      }

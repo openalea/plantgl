@@ -64,10 +64,11 @@ TOOLS_USING_NAMESPACE
 #define CGAL_EIGEN3_ENABLED
 # endif
 
-#include <CGAL/Cartesian.h>
 #include <CGAL/Monge_via_jet_fitting.h>
 
 #endif
+
+#include <CGAL/Cartesian.h>
 
 #endif
 
