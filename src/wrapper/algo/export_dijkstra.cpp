@@ -29,15 +29,16 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/python/boost_python.h>
 
 #include <plantgl/algo/base/dijkstra.h>
+#include <boost/python.hpp>
+// #include <plantgl/python/boost_python.h>
 // #include <plantgl/python/export_property.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 using namespace boost::python;
-#define bp boost::python
+#define bpy boost::python
 
 using namespace std;
 
@@ -64,7 +65,7 @@ object py_dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
                                              uint32_t maxnbelements = UINT32_MAX)
 {
     PyDistance mydist( distevaluator );
-    NodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist);
+    NodeList result = dijkstra_shortest_paths_in_a_range(connections,root,mydist,maxdist,maxnbelements);
     boost::python::list pyresult;
     for(NodeList::const_iterator itres = result.begin(); itres != result.end(); ++itres)
         pyresult.append(make_tuple(itres->id,itres->parent,itres->distance));
@@ -78,7 +79,7 @@ void export_Dijkstra()
         "Return the parent and distance to the root for each node."
         "connections is an array that should contains at the ith place all nodes connected to the ith node."
         "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes.");
-	def("dijkstra_shortest_paths_in_a_range", &py_dijkstra_shortest_paths_in_a_range,(bp::arg("connections"),bp::arg("root"),bp::arg("edgeweigthevaluator"),bp::arg("maxdist")=REAL_MAX,bp::arg("maxnbelements")=UINT32_MAX),
+	def("dijkstra_shortest_paths_in_a_range", &py_dijkstra_shortest_paths_in_a_range,(bpy::arg("connections"),bpy::arg("root"),bpy::arg("edgeweigthevaluator"),bpy::arg("maxdist")=REAL_MAX,bpy::arg("maxnbelements")=UINT32_MAX),
         "Return list of id, parent and distance to the root for node with distance < maxdist. "
         "connections is an array that should contains at the ith place all nodes connected to the ith node."
         "edgeweigthevaluator should be a function that takes as argument the ids of two nodes and return the weigth of the edge between these 2 nodes.");

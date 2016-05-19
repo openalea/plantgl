@@ -41,7 +41,7 @@ class AscCodec (sg.SceneCodec):
         i = 0
         for line in f.readlines():
             if line[0] == '#': continue
-            values = line.split()
+            values = line.split(' \t,;')
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
                 if len(values) > 3:
