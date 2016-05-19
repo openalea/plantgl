@@ -131,7 +131,7 @@ template <class ColorArray>
 RCPtr<ColorArray>
 apply_colormap(const RCPtr<ColorArray> colormap, const TOOLS(RealArrayPtr) values)
 {  
-    std::pair<TOOLS(RealArray)::const_iterator,TOOLS(RealArray)::const_iterator> minmax = values->getMinAndMax();
+    std::pair<TOOLS(RealArray)::const_iterator,TOOLS(RealArray)::const_iterator> minmax = values->getMinAndMax(true);
     return apply_colormap(colormap, values, *minmax.first, *minmax.second);
 }
 

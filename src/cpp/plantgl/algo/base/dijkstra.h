@@ -41,82 +41,15 @@
 #include <queue>
 #include <memory>
 
+
+#include <boost/heap/fibonacci_heap.hpp>
+
 PGL_BEGIN_NAMESPACE
 
 /**
   my priority queue for comparing node
 */
 
-// #define DIJKSTRA_WITH_SORTED_VECTOR
-
-template<class DistArray>
-struct nodecompare {
-       const DistArray& distances;
-       nodecompare(const DistArray& _distances) : distances(_distances) {}
-       bool operator()(const uint32_t& a,const uint32_t& b) { return distances[a] > distances[b]; }
-};
-	
-template<class DistArray>
-class node_priority_queue {
-public:
-
-
-#ifdef DIJKSTRA_WITH_SORTED_VECTOR
-    std::vector<uint32_t> c;
-#else
-    std::deque<uint32_t> c;
-#endif
-    struct nodecompare<DistArray> comp;
-
-    node_priority_queue(const DistArray& distances): 
-        comp(distances) 
-        {
-#ifndef DIJKSTRA_WITH_SORTED_VECTOR
-            make_heap(c.begin(),c.end(), comp); 
-#endif
-        }
-
-    bool empty() const { return (c.empty()); }
-    size_t size() const { return (c.size()); }
-
-#ifndef DIJKSTRA_WITH_SORTED_VECTOR
-    void push(uint32_t _Val)
-      {	
-            c.push_back(_Val);
-            push_heap(c.begin(), c.end(), comp);
-      }
-
-    uint32_t pop()
-      {
-            uint32_t topvalue = c.front(); 
-            // set the last element at the end
-            pop_heap(c.begin(), c.end(), comp);
-            c.pop_back();
-            return topvalue;
-      }
-
-    void update(uint32_t _Val) { 
-            make_heap(c.begin(),c.end(), comp); 
-    }
-
-#else
-    void push(uint32_t _Val)
-      {	
-            c.insert(lower_bound(c.begin(),c.end(),_Val,comp),_Val);
-      }
-
-    uint32_t pop()
-      {
-        uint32_t topvalue = c.back(); 
-        c.pop_back();
-        return topvalue;
-      }
-
-    void update(uint32_t _Val) { 
-        sort(c.begin(),c.end(), comp); 
-    }
-#endif
-};
 
 struct Node {
     uint32_t id;
@@ -128,57 +61,96 @@ struct Node {
 
 typedef std::vector<Node> NodeList;
 
+
+struct nodecompare {
+       TOOLS(RealArrayPtr) __distances;
+
+       nodecompare(const TOOLS(RealArrayPtr)& distances) : __distances(distances) {}
+       bool operator()(const uint32_t& a,const uint32_t& b) const { return __distances->getAt(a) > __distances->getAt(b); }
+};
+
+
+enum color { black, grey, white };
+
+typedef std::vector<std::pair<uint32_t, real_t> > NodeDistancePairList;
+
 template<class EdgeWeigthEvaluation>
 NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
-                                   uint32_t root, 
-                                   EdgeWeigthEvaluation& distevaluator,
-                                   real_t maxdist = REAL_MAX,
-                                   uint32_t maxnbelements = UINT32_MAX)
+                                             uint32_t root, 
+                                             EdgeWeigthEvaluation& distevaluator,
+                                             real_t maxdist = REAL_MAX,
+                                             uint32_t maxnbelements = UINT32_MAX,
+                                             const NodeDistancePairList& precomputed = NodeDistancePairList())
  {
 
      NodeList result;
 
      size_t nbnodes = connections->size();
      size_t nbprocessednodes = 0;
-     real_t * distances = new real_t [nbnodes];
-     for(real_t * it = distances; it != distances+nbnodes; ++it) *it = REAL_MAX;
-     distances[root] = 0;
+
+     TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+     distances->setAt(root,0);
+ 
      uint32_t * parents = new uint32_t[nbnodes];
      parents[root] = root;
+ 
+     color * colored = new color[nbnodes];
+     for (color * it = colored ; it != colored+nbnodes ; ++it) *it = black;
 
-     std::vector<bool> colored(nbnodes,false);
+     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > fibheap;
+     typedef typename fibheap::handle_type handle;
 
-     node_priority_queue<real_t *> Q(distances);
-     Q.push(root);
+     struct nodecompare comp(distances);
+     fibheap Q(comp);
 
-     while(!Q.empty() && nbprocessednodes < maxnbelements){
-         uint32_t current = Q.pop();
-         result.push_back(Node(current,parents[current],distances[current])); 
+     handle * handles = new handle[nbnodes];
+     handles[root] = Q.push(root);
+
+     for(NodeDistancePairList::const_iterator itdist = precomputed.begin(); itdist != precomputed.end(); ++itdist){
+        if (itdist->second < maxdist){
+            distances->setAt(itdist->first,itdist->second);
+            parents[itdist->first] = root;
+            handles[itdist->first] = Q.push(itdist->first);
+        }
+     }
+
+     while((!Q.empty()) && (nbprocessednodes < maxnbelements)){
+         uint32_t current = Q.top(); Q.pop();
+         result.push_back(Node(current, parents[current], distances->getAt(current)));
+         colored[current] = white;
+
          nbprocessednodes += 1;
+
          const Index& nextchildren = connections->getAt(current);
          for (Index::const_iterator itchildren = nextchildren.begin();
              itchildren != nextchildren.end(); ++itchildren)
          {
              uint32_t v = *itchildren;
+
              real_t weigthuv = distevaluator(current,v); 
-             real_t distance = weigthuv+distances[current];
-             if (distance < distances[v] && distance < maxdist){
-                 distances[v] = distance;
-                 parents[v] = current;
-                 if (!colored[v]){
-                     colored[v] = true;
-                     Q.push(v);
-                 }
-                 else {
-                     Q.update(v);
-                 }
+             real_t distance = weigthuv + distances->getAt(current);
+
+             if (distance <= maxdist && distance < distances->getAt(v)) {
+                distances->setAt(v,distance);
+                parents[v] = current;
+
+                if (colored[v] == black) {
+                    colored[v] = grey;
+                    handles[v] = Q.push(v);
+                }
+                else if (colored[v] == grey){
+                    Q.decrease(handles[v], v);
+                }
+
              }
          }
      }
+     delete [] handles;
+     delete [] colored;
      delete [] parents;
-	 delete [] distances;
      return result;
  }
+
 
 template<class EdgeWeigthEvaluation>
 std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
@@ -190,16 +162,26 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
      size_t nbnodes = connections->size();
      TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
      distances->setAt(root,0);
+
      TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,UINT32_MAX));
      parents->setAt(root,root);
 
      std::vector<bool> colored(nbnodes,false);
 
-     node_priority_queue<TOOLS(RealArray)> Q(*distances);
+     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > fibheap;
+     typedef typename fibheap::handle_type handle;
+
+     struct nodecompare comp(distances);
+     fibheap Q(comp);
+
+     handle * handles = new handle[nbnodes];
+
      Q.push(root);
 
      while(!Q.empty()){
-         uint32_t current = Q.pop();
+         uint32_t current = Q.top(); Q.pop(); 
+         // printf("**** consider %i %f\n", current, distances->getAt(current));
+
          const Index& nextchildren = connections->getAt(current);
          for (Index::const_iterator itchildren = nextchildren.begin();
              itchildren != nextchildren.end(); ++itchildren)
@@ -208,20 +190,24 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
              real_t weigthuv = distevaluator(current,v); 
              real_t distance = weigthuv+distances->getAt(current);
              if (distance < distances->getAt(v)){
+                 // printf("consider child %i %f %f %i\n", v, distance, (distances->getAt(v)!=REAL_MAX?distances->getAt(v):-1), int(colored[v]));
                  distances->setAt(v,distance);
                  parents->setAt(v,current);
                  if (!colored[v]){
                      colored[v] = true;
-                     Q.push(v);
+                     // printf("push %lu %lu\n", Q.size(), Q.max_size());
+                     handles[v] = Q.push(v);
                  }
                  else {
-                     Q.update(v);
+                     // printf("decrease\n");
+                     Q.decrease(handles[v], v);
                  }
              }
          }
      }
      return std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>(parents,distances);
  }
+
  /*
  DIJKSTRA(G, s, w)
   for each vertex u in V
