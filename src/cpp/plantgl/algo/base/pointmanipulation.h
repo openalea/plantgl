@@ -402,7 +402,7 @@ centroids_of_groups(const Point3ArrayPtr points,
 			        const IndexArrayPtr groups);
 
 
-ALGO_API 
+ 
 template<class IndexGroup>
 TOOLS(Vector3)  centroid_of_group(const Point3ArrayPtr points, 
                                   const IndexGroup& group)
@@ -414,7 +414,7 @@ TOOLS(Vector3)  centroid_of_group(const Point3ArrayPtr points,
         return gcentroid/nbpoints;
 }
 
-ALGO_API 
+
 template<class IndexGroupArray>
 Point3ArrayPtr  centroids_of_groups(const Point3ArrayPtr points, 
                                     const RCPtr<IndexGroupArray> groups)
