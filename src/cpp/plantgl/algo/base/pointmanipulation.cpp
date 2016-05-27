@@ -68,12 +68,10 @@ public:
             current(1),
             cpercent(-_percenttoprint) { }
     
-     inline ProgressStatus & operator ++()  { increment(); return *this; }
+    inline ProgressStatus & operator ++()  { increment(); return *this; }
 
-protected:
-
-    void increment() { 
-        ++current; 
+    void increment(uint32_t inc = 1) { 
+        current += inc; 
         if (current <= nbsteps){
             if (current == nbsteps){
                     std::string msg("\x0d");
@@ -92,6 +90,8 @@ protected:
             }
         }
     }
+
+protected:
     uint32_t current;
     uint32_t nbsteps;
     real_t cpercent;
@@ -338,7 +338,7 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             lres.push_back(itn->id);
-            if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
+            //if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
         }
         result->setAt(current,lres);
         current++;
@@ -357,21 +357,118 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
     
     IndexArrayPtr result(new IndexArray(nbPoints));
     std::vector<NodeDistancePairList> preinfo(nbPoints);
+    DijkstraReusingAllocator allocator;
+    // DijkstraAllocator allocator;
 
     ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
 
     for(uint32_t current = 0; current < nbPoints; ++current) {
-        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, preinfo[current]);
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, preinfo[current], allocator);
         preinfo[current].clear();
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             lres.push_back(itn->id);
-            if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));            
+            //if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));            
         }
         result->setAt(current,lres);
         if (verbose) ++st;
     }
     return result;
+}
+
+#include <QtCore/QtConcurrentRun>
+
+class Counter
+{
+public:
+    Counter() { n = 0; }
+
+    void increment() { QMutexLocker locker(&mutex); ++n; }
+    void decrement() { QMutexLocker locker(&mutex); --n; }
+    int value() const { QMutexLocker locker(&mutex); return n; }
+
+private:
+    mutable QMutex mutex;
+    int n;
+};
+
+void compute_nbg_i(IndexArrayPtr results, Counter * counter, std::pair<uint32_t,uint32_t> range, std::pair<const IndexArrayPtr, const Point3ArrayPtr> adjacencies_points, real_t radius){
+    uint32_t first  = range.first;
+    uint32_t last = range.second;
+
+    const IndexArrayPtr adjacencies = adjacencies_points.first;
+    const Point3ArrayPtr points = adjacencies_points.second;
+    struct PointDistance pdevaluator(points);
+
+
+    std::vector<NodeDistancePairList> preinfo(last-first);
+    DijkstraReusingAllocator allocator;
+
+    for (uint32_t current = first; current < last; ++current){
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, preinfo[current-first], allocator);
+        Index result;
+        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
+            uint32_t nid = itn->id;
+            result.push_back(nid);
+            // if (current < nid && nid < last) preinfo[nid-first].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
+        }
+        results->setAt(current,result);
+        if(counter) counter->increment();
+    }
+}
+
+
+IndexArrayPtr 
+PGL::r_neighborhoods_mt(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose)
+{
+    uint32_t nbPoints = points->size();
+    GEOM_ASSERT(nbPoints == adjacencies->size());
+    GEOM_ASSERT(nbPoints == radii->size());
+    struct PointDistance pdevaluator(points);
+    
+    IndexArrayPtr result(new IndexArray(nbPoints));
+
+    // ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
+
+
+    int maxnbthread = QThreadPool::globalInstance()->maxThreadCount()-1;
+    if (!verbose) ++maxnbthread;
+    
+    uint32_t nbPointsPerThread =  nbPoints/maxnbthread;// std::min<uint32_t>(1000,nbPoints/maxnbthread);
+    if (nbPointsPerThread * maxnbthread < nbPoints) ++nbPointsPerThread;
+
+    uint32_t nbIteration = nbPoints/nbPointsPerThread;
+    if (nbPointsPerThread * nbIteration < nbPoints) ++nbIteration;
+    if (!verbose) --nbIteration;
+
+    Counter * counter = (verbose?new Counter():NULL);
+
+    uint32_t current = 0;
+    for(; current < nbIteration; ++current) {
+        QtConcurrent::run(compute_nbg_i, result, counter, std::pair<uint32_t,uint32_t>(current * nbPointsPerThread, std::min((current+1) * nbPointsPerThread, nbPoints)), std::pair<const IndexArrayPtr, const Point3ArrayPtr>(adjacencies, points), radius);
+    }
+    if (verbose) {
+
+        ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
+        int nbprocessed = 0;
+        while(QThreadPool::globalInstance()->activeThreadCount() > 0){
+            int nnbprocessed = counter->value();
+            while(nbprocessed < nnbprocessed) 
+                { 
+                    st.increment(nnbprocessed-nbprocessed); 
+                    nbprocessed = nnbprocessed; 
+                }
+        }
+        delete counter;
+    }
+    else {
+     compute_nbg_i(result, counter, std::pair<uint32_t,uint32_t>(current * nbPointsPerThread, std::min((current+1) * nbPointsPerThread, nbPoints)), std::pair<const IndexArrayPtr, const Point3ArrayPtr>(adjacencies, points), radius);
+     QThreadPool::globalInstance()->waitForDone();
+
+    }
+
+    return  result;
+
 }
 
 struct PointAnisotropicDistance {
@@ -465,17 +562,33 @@ PGL::density_from_r_neighborhood(  uint32_t pid,
 
 TOOLS(RealArrayPtr)
 PGL::densities_from_r_neighborhood(const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies, 
+                               const IndexArrayPtr adjacencies, 
                                const real_t radius)
 {
     uint32_t nbPoints = points->size();
     GEOM_ASSERT(nbPoints == adjacencies->size());
-    GEOM_ASSERT(nbPoints == radii->size());
     RealArrayPtr result(new RealArray(nbPoints));
     uint32_t current = 0;
-    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres){
+    ProgressStatus  st(nbPoints, "Density computed for %.2f%% of points.");
+    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++st){
         *itres = density_from_r_neighborhood(current, points,adjacencies,radius);
         ++current;
+    }
+    return result;
+}
+
+
+TOOLS(RealArrayPtr)
+PGL::densities_from_r_neighborhood(const IndexArrayPtr neighborhood, 
+                                   const real_t radius)
+{
+    uint32_t nbPoints = neighborhood->size();
+    RealArrayPtr result(new RealArray(nbPoints));
+    uint32_t current = 0;
+    IndexArray::const_iterator itnbg = neighborhood->begin();
+    ProgressStatus  st(nbPoints, "Density computed for %.2f%% of points.");
+    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++itnbg, ++st){
+        *itres = itnbg->size()/ (radius * radius);
     }
     return result;
 }
@@ -666,7 +779,7 @@ PGL::densities_from_k_neighborhood(const Point3ArrayPtr points,
     GEOM_ASSERT(nbPoints == adjacencies->size());
     GEOM_ASSERT(nbPoints == radii->size());
     RealArrayPtr result(new RealArray(nbPoints));
-    ProgressStatus  st(nbPoints, "density computed for %.2f%% of points.");
+    ProgressStatus  st(nbPoints, "Density computed for %.2f%% of points.");
     uint32_t current = 0;
     for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++current, ++st){
         *itres = density_from_k_neighborhood(current, points,adjacencies,k);
@@ -813,7 +926,7 @@ PGL::points_sections( const Point3ArrayPtr points,
     uint32_t nbPoints = points->size();
     IndexArrayPtr result(new IndexArray(nbPoints));
     uint32_t i = 0;
-    ProgressStatus st(nbPoints, "sections computed for %.2f%% of points.");
+    ProgressStatus st(nbPoints, "Sections computed for %.2f%% of points.");
     Point3Array::const_iterator itd = directions->begin();
 
     for(IndexArray::iterator it = result->begin(); it != result->end(); ++it, ++i, ++itd, ++st){
@@ -915,7 +1028,7 @@ PGL::pointsets_circles( const Point3ArrayPtr points,
     RealArray::iterator itrr = resradius->begin();
     size_t pid = 0;
 
-    ProgressStatus st(nbpoints, "circles computed for %.2f%% of points.");
+    ProgressStatus st(nbpoints, "Circles computed for %.2f%% of points.");
 
     for (IndexArray::const_iterator itg = groups->begin(); itg != groups->end(); ++itg, ++itrp, ++itrr, ++st){
         std::pair<Vector3,real_t> lres ;
@@ -942,7 +1055,7 @@ PGL::pointsets_section_circles( const Point3ArrayPtr points,
     RealArray::iterator itrr = resradius->begin();
     size_t pid = 0;
 
-    ProgressStatus st(nbpoints, "section and circles computed for %.2f%% of points.");
+    ProgressStatus st(nbpoints, "Section and circles computed for %.2f%% of points.");
 
     for (Point3Array::const_iterator itd = directions->begin(); itd != directions->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
         Index section = point_section(pid, points, adjacencies, *itd, width);
@@ -974,6 +1087,31 @@ PGL::adaptive_section_circles(const Point3ArrayPtr points,
 
     for (Point3Array::const_iterator itd = orientations->begin(); itd != orientations->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
         Index section = point_section(pid, points, adjacencies, *itd,  widths->getAt(pid), maxradii->getAt(pid) );
+        std::pair<Vector3,real_t> lres = pointset_circle(points,section, *itd);
+        *itrp = lres.first; *itrr = lres.second;
+    }
+    return std::pair<Point3ArrayPtr,RealArrayPtr>(respoints, resradius);
+}
+
+std::pair<Point3ArrayPtr,RealArrayPtr>
+PGL::adaptive_section_circles(const Point3ArrayPtr points, 
+                             const IndexArrayPtr adjacencies, 
+                             const Point3ArrayPtr orientations,
+                             const real_t width,
+                             const RealArrayPtr maxradii)
+{
+ 
+    size_t nbpoints = points->size();
+    Point3ArrayPtr respoints(new Point3Array(nbpoints));
+    RealArrayPtr   resradius(new RealArray(nbpoints,0));
+    Point3Array::iterator itrp = respoints->begin();
+    RealArray::iterator itrr = resradius->begin();
+    size_t pid = 0;
+
+    ProgressStatus st(nbpoints, "Adaptive section contraction computed for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itd = orientations->begin(); itd != orientations->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
+        Index section = point_section(pid, points, adjacencies, *itd,  width, maxradii->getAt(pid) );
         std::pair<Vector3,real_t> lres = pointset_circle(points,section, *itd);
         *itrp = lres.first; *itrr = lres.second;
     }
@@ -1817,15 +1955,24 @@ ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points
 
             Vector3 point(*itp);
             real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
-            if (distance_test(d, distance,reversed)) { ok = true; result.push_back(pid); continue;}
+            if (d < distance) { 
+                ok = true; 
+                if(!reversed) result.push_back(pid); 
+                continue;
+            }
 
             for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
                 Vector3 mpoint(*itp);
                 d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc));
-                if (distance_test(d, distance,reversed)) { ok = true; result.push_back(pid); continue;}
+                if (d < distance) { 
+                    ok = true; 
+                    if(!reversed) result.push_back(pid); 
+                    continue;
+                }
             }
             if (ok) continue;
         }
+        if(!ok && reversed) result.push_back(pid); 
     }
     return result;
 #else

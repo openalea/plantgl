@@ -359,18 +359,18 @@ real_t mean_over(const Point3ArrayPtr points, const Index& section, int i, int j
 #ifdef WITH_CGAL
 #include <CGAL/eigen.h>
 #endif
-TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& section)
+TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Index& section)
 {
 #ifdef WITH_CGAL
-    real_t mx  = mean_over(points,section,0);
-    real_t mx2 = mean_over(points,section,0,0);
-    real_t my  = mean_over(points,section,1);
-    real_t my2 = mean_over(points,section,1,1);
-    real_t mz  = mean_over(points,section,2);
-    real_t mz2 = mean_over(points,section,2,2);
-    real_t mxy = mean_over(points,section,0,1);
-    real_t mxz = mean_over(points,section,0,2);
-    real_t myz = mean_over(points,section,1,2);
+    real_t mx  = mean_over(pointnormals,section,0);
+    real_t mx2 = mean_over(pointnormals,section,0,0);
+    real_t my  = mean_over(pointnormals,section,1);
+    real_t my2 = mean_over(pointnormals,section,1,1);
+    real_t mz  = mean_over(pointnormals,section,2);
+    real_t mz2 = mean_over(pointnormals,section,2,2);
+    real_t mxy = mean_over(pointnormals,section,0,1);
+    real_t mxz = mean_over(pointnormals,section,0,2);
+    real_t myz = mean_over(pointnormals,section,1,2);
     real_t mxyxy = 2*mxy-2*mx*my;
     real_t mxzxz = 2*mxz - 2*mx*mz;
     real_t myzyz = 2*myz - 2*my*mz;
@@ -401,4 +401,15 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& sec
 #else
     return Vector3::ORIGIN;
 #endif
+}
+
+Point3ArrayPtr PGL::sections_normals(const Point3ArrayPtr pointnormals, const IndexArrayPtr& sections)
+{
+    size_t nbpoints = pointnormals->size();
+    Point3ArrayPtr result(new Point3Array(nbpoints));
+    Point3Array::iterator itres = result->begin();
+    for(IndexArray::const_iterator itsection = sections->begin(); itsection != sections->end(); ++itsection){
+        *itres = section_normal(pointnormals, *itsection);
+    }
+    return result;
 }
