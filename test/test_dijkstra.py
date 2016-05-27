@@ -39,7 +39,7 @@ def test_dijkstra_shortest_paths_in_a_range():
 
 def test_dijkstra_shortest_paths_in_a_range2():
     from openalea.plantgl.all import     dijkstra_shortest_paths_in_a_range   
-    maxdist = 3.2
+    maxdist = 4.8
     results = dijkstra_shortest_paths_in_a_range(topology, 0, distance, maxdist)
     results.sort(key=lambda x:x[0])
     print 'dijkstra_shortest_paths_in_a_range'
@@ -62,8 +62,31 @@ def test_dijkstra_shortest_paths_in_a_range3():
     assert [p for i,p,d in results] == resparents[:maxnbelem]
     assert [d for i,p,d in results] == resdists[:maxnbelem]
 
+from openalea.plantgl.all import *
+
+
+# def test_dijkstra_shortest_paths_big_data():
+#     s = Scene('/Users/fboudon/Develop/oagit/plantscan3d/data/pointset/arabido-yassin-200k.bgeom')
+#     print
+#     pointList = s[0].geometry.pointList
+#     kclosests = k_closest_points_from_ann(pointList, 7, True)
+#     res = r_neighborhoods(pointList, kclosests, 0.5)
+#     #res = sorted(list(res))
+#     #print len(res)
+#     #print res
+#     ref = pgl_load_data("rnbgs-fibo.bpgl")
+#     print 'compare'
+#     i = 0
+#     for rn, rf in zip(res,ref):
+#         if list(rn) != list(rf):
+#             print i, list(rn), list(rf)
+#     return res
+
+
+
 if __name__ == '__main__':
     test_dijkstra_shortest_paths()
     test_dijkstra_shortest_paths_in_a_range()
     test_dijkstra_shortest_paths_in_a_range2()    
     test_dijkstra_shortest_paths_in_a_range3()
+    test_dijkstra_shortest_paths_big_data()

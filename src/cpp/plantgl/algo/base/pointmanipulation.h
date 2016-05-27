@@ -121,6 +121,9 @@ r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, co
 ALGO_API IndexArrayPtr 
 r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose = false);
 
+ALGO_API IndexArrayPtr 
+r_neighborhoods_mt(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose = false);
+
 ALGO_API Index 
 r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points, 
 					 const IndexArrayPtr adjacencies, 
@@ -196,11 +199,12 @@ TOOLS(RealArrayPtr) pointset_mean_distances(  const Point3ArrayPtr origins,
                                  const Point3ArrayPtr points, 
                                  const RCPtr<IndexGroupArray> groups)
 {
+    typedef typename IndexGroupArray::element_type IndexGroup;
     TOOLS(RealArrayPtr) result(new TOOLS(RealArray)(groups->size()));
     TOOLS(RealArray)::iterator itres = result->begin();
     Point3Array::const_iterator itorigin = origins->begin();
     for(typename IndexGroupArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++itorigin, ++itres )
-        *itres = pointset_mean_distance(itorigin, points, it);
+        *itres = pointset_mean_distance<IndexGroup>(*itorigin, points, *it);
     return result;
 }
 
@@ -227,8 +231,12 @@ density_from_r_neighborhood(  uint32_t pid,
 
 ALGO_API TOOLS(RealArrayPtr)
 densities_from_r_neighborhood(const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies, 
+                               const IndexArrayPtr adjacencies, 
                                const real_t radius);
+
+ALGO_API TOOLS(RealArrayPtr)
+densities_from_r_neighborhood(const IndexArrayPtr neighborhood, 
+                              const real_t radius);
 
 
 // if k == 0, then k is directly the nb of point given in adjacencies.
@@ -343,6 +351,14 @@ adaptive_section_circles(const Point3ArrayPtr points,
                          const IndexArrayPtr adjacencies,
                          const Point3ArrayPtr orientations,
                          const TOOLS(RealArrayPtr) widths, 
+                         const TOOLS(RealArrayPtr) maxradii);
+
+// Adaptive contraction
+ALGO_API std::pair<Point3ArrayPtr,TOOLS(RealArrayPtr)>
+adaptive_section_circles(const Point3ArrayPtr points, 
+                         const IndexArrayPtr adjacencies,
+                         const Point3ArrayPtr orientations,
+                         const real_t width, 
                          const TOOLS(RealArrayPtr) maxradii);
 
 // adaptive contraction
@@ -575,6 +591,7 @@ ALGO_API std::pair<Index,Index> cluster_junction_points(const IndexArrayPtr poin
 
 // from Tagliasacchi 2009
 ALGO_API TOOLS(Vector3) section_normal(const Point3ArrayPtr pointnormals, const Index& section);
+ALGO_API Point3ArrayPtr sections_normals(const Point3ArrayPtr pointnormals, const IndexArrayPtr& sections);
 
 /*
     Compute the geometric median of a point sample.

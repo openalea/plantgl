@@ -39,9 +39,15 @@ class AscCodec (sg.SceneCodec):
         if isptsfile or ispwnfile:
             f.readline() # skip line number
         i = 0
-        for line in f.readlines():
+        lines = f.readlines()
+        sep = None
+        if ';' in lines[0]: sep = ';'
+        elif ',' in lines[0]: sep = ','
+        elif '\t' in lines[0]: sep = '\t'
+
+        for line in lines:
             if line[0] == '#': continue
-            values = line.split(' \t,;')
+            values = line.split(sep)
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
                 if len(values) > 3:

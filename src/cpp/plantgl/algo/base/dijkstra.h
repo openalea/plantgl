@@ -39,24 +39,30 @@
 #include <plantgl/tool/util_array.h>
 
 #include <memory>
+
+// #define PGL_USE_PRIORITY_QUEUE
+
+#ifndef PGL_USE_PRIORITY_QUEUE
+#ifdef WITH_BOOST
 #include <boost/version.hpp>
 
 #if BOOST_VERSION >= 104900
     #include <boost/heap/fibonacci_heap.hpp>
     #define PGL_USE_FIBONACCI_HEAP
-#else
+#endif
+#endif
+#endif
+
+#ifndef PGL_USE_FIBONACCI_HEAP
     #include <queue>
     #include <vector>
-    #define PGL_USE_PRIORITY_QUEUE
+    #ifndef PGL_USE_PRIORITY_QUEUE
+        #define PGL_USE_PRIORITY_QUEUE
+    #endif
 #endif
     
 
 PGL_BEGIN_NAMESPACE
-
-/**
-  my priority queue for comparing node
-*/
-
 
 struct Node {
     uint32_t id;
@@ -70,24 +76,132 @@ typedef std::vector<Node> NodeList;
 
 
 struct nodecompare {
-       TOOLS(RealArrayPtr) __distances;
+       const TOOLS(RealArrayPtr)& __distances;
 
        nodecompare(const TOOLS(RealArrayPtr)& distances) : __distances(distances) {}
        bool operator()(const uint32_t& a,const uint32_t& b) const { return __distances->getAt(a) > __distances->getAt(b); }
 };
 
 
+#ifdef PGL_USE_FIBONACCI_HEAP
+  typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare > > dijkstraheap;
+  typedef typename dijkstraheap::handle_type dijkstrahandle;
+#else
+  typedef std::priority_queue<uint32_t, std::vector<uint32_t>, nodecompare > dijkstraheap;
+#endif
+
+
+
 enum color { black, grey, white };
+
 
 typedef std::vector<std::pair<uint32_t, real_t> > NodeDistancePairList;
 
-template<class EdgeWeigthEvaluation>
+struct DijkstraAllocator {
+    void allocate(size_t nbnodes, TOOLS(RealArrayPtr)& distances,  uint32_t *& parents, color *& colored) const {
+        distances = TOOLS(RealArrayPtr)(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+        parents = new uint32_t[nbnodes];
+        colored = new color[nbnodes];
+
+        // for (real_t * itdist = distances ; itdist != distances+nbnodes ; ++itdist) *itdist = REAL_MAX;
+        for (color * itcol = colored ; itcol != colored+nbnodes ; ++itcol) *itcol = black;
+    }
+
+    
+    void desallocate(TOOLS(RealArrayPtr) distances, uint32_t * parents, color * colored)  const {
+        delete [] parents;        
+        delete [] colored;
+    }
+
+#ifdef PGL_USE_FIBONACCI_HEAP
+    void allocate(size_t nbnodes, dijkstrahandle *& handles)  const {
+        handles = new dijkstrahandle[nbnodes];
+    }
+
+    void desallocate( dijkstrahandle * handles ) const {
+        delete [] handles;
+    }
+#endif
+
+};
+
+class DijkstraReusingAllocator {
+    class Cache {
+    public:
+        TOOLS(RealArrayPtr) distances;  
+        uint32_t * parents;
+        color * colored;
+#ifdef PGL_USE_FIBONACCI_HEAP
+        dijkstrahandle * handles
+#endif
+
+        Cache() : distances(), parents(NULL), colored(NULL)
+#ifdef PGL_USE_FIBONACCI_HEAP
+        handles(NULL)
+#endif
+        {}
+
+        ~Cache(){
+            delete [] parents;
+            delete [] colored;
+#ifdef PGL_USE_FIBONACCI_HEAP
+            delete [] handles;
+#endif
+        }
+
+    };
+
+public:
+    DijkstraReusingAllocator() : __cache(new Cache()) {}
+    ~DijkstraReusingAllocator() {
+        if (__cache) delete __cache;
+    }
+
+    void allocate(size_t nbnodes, TOOLS(RealArrayPtr)& distances,  uint32_t *& parents, color *& colored) const {
+        if (__cache->parents == NULL){
+            __cache->distances = TOOLS(RealArrayPtr)(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+            __cache->parents = new uint32_t[nbnodes];
+            __cache->colored = new color[nbnodes];
+        }
+
+        distances = __cache->distances;
+        parents = __cache->parents;
+        colored = __cache->colored;
+
+        for (TOOLS(RealArray)::iterator itdist = distances->begin() ; itdist != distances->end() ; ++itdist) *itdist = REAL_MAX;
+        for (color * itcol = colored ; itcol != colored+nbnodes ; ++itcol) *itcol = black;
+        for (uint32_t * itpar = parents ; itpar != parents+nbnodes ; ++itpar) *itpar = 0;
+    }
+
+    
+    void desallocate(TOOLS(RealArrayPtr) distances, uint32_t * parents, color * colored)  const {
+    }
+
+#ifdef PGL_USE_FIBONACCI_HEAP
+    void allocate(size_t nbnodes, dijkstrahandle *& handles)  const {
+        if (__cache->parents == NULL){
+            __cache->handles = new dijkstrahandle[nbnodes];
+        }
+        handles = __cache->handles;
+    }
+
+    void desallocate( dijkstrahandle * handles ) const {
+    }
+#endif
+
+protected:
+    Cache * __cache;
+
+};
+
+template<class EdgeWeigthEvaluation, class Allocator = DijkstraAllocator>
 NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
                                              uint32_t root, 
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist = REAL_MAX,
                                              uint32_t maxnbelements = UINT32_MAX,
-                                             const NodeDistancePairList& precomputed = NodeDistancePairList())
+                                             const NodeDistancePairList& precomputed = NodeDistancePairList(), 
+                                             const Allocator& allocator = Allocator())
  {
 
      NodeList result;
@@ -95,27 +209,30 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
      size_t nbnodes = connections->size();
      size_t nbprocessednodes = 0;
 
-     TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+     TOOLS(RealArrayPtr) distances = NULL;
+     uint32_t * parents = NULL;
+     color * colored = NULL;
+
+     allocator.allocate(nbnodes, distances, parents, colored);
+
+     assert (is_valid_ptr(distances));
+     assert (parents != NULL);
+     assert (colored != NULL);
+
      distances->setAt(root,0);
- 
-     uint32_t * parents = new uint32_t[nbnodes];
      parents[root] = root;
  
-     color * colored = new color[nbnodes];
-     for (color * it = colored ; it != colored+nbnodes ; ++it) *it = black;
 
-#ifdef PGL_USE_FIBONACCI_HEAP
-     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > heap;
-     typedef typename heap::handle_type handle;
-#else
-     typedef std::priority_queue<uint32_t, std::vector<uint32_t>, nodecompare> heap;
-#endif
      struct nodecompare comp(distances);
-     heap Q(comp);
+     dijkstraheap Q(comp);
 
 #ifdef PGL_USE_FIBONACCI_HEAP
-     handle * handles = new handle[nbnodes];
+     dijkstrahandle * handles = NULL;
+     allocator.allocate(nbnodes, handles);
+     assert (handles != NULL);
      handles[root] = Q.push(root);
+#else
+     Q.push(root);
 #endif
 
      for(NodeDistancePairList::const_iterator itdist = precomputed.begin(); itdist != precomputed.end(); ++itdist){
@@ -148,8 +265,8 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
              real_t distance = weigthuv + distances->getAt(current);
 
              if (distance <= maxdist && distance < distances->getAt(v)) {
-                distances->setAt(v,distance);
-                parents[v] = current;
+                distances->setAt(v, distance);
+                parents[v]   = current;
 
                 if (colored[v] == black) {
                     colored[v] = grey;
@@ -171,10 +288,9 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
          }
      }
 #ifdef PGL_USE_FIBONACCI_HEAP
-     delete [] handles;
+     allocator.desallocate(handles);
 #endif
-     delete [] colored;
-     delete [] parents;
+     allocator.desallocate(distances, parents, colored);
      return result;
  }
 
@@ -195,19 +311,16 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
 
      std::vector<color> colored(nbnodes,black);
 
-#ifdef PGL_USE_FIBONACCI_HEAP
-     typedef boost::heap::fibonacci_heap<uint32_t, boost::heap::compare<nodecompare> > heap;
-     typedef typename heap::handle_type handle;
-#else
-     typedef std::priority_queue<uint32_t, std::vector<uint32_t>, nodecompare> heap;
-#endif
+
 
      struct nodecompare comp(distances);
-     heap Q(comp);
+     dijkstraheap Q(comp);
 
 #ifdef PGL_USE_FIBONACCI_HEAP
      handle * handles = new handle[nbnodes];
      handles[root] = Q.push(root);
+#else
+     Q.push(root);
 #endif
 
      while(!Q.empty()){
