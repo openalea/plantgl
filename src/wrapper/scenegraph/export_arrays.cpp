@@ -179,7 +179,7 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
 
 bool ra_is_valid(RealArray * a) {
     for(RealArray::const_iterator it = a->begin(); it != a->end(); ++it)
-        if (!isfinite(*it)) return false;
+        if (!finite(*it)) return false;
     return true;
 }
 /*template <Array2ArrayFunc func>

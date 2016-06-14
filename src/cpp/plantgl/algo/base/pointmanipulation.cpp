@@ -329,12 +329,13 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 
     uint32_t current = 0;
     IndexArrayPtr result(new IndexArray(nbPoints));
-    std::vector<std::vector<std::pair<uint32_t, real_t> > > preinfo(nbPoints);
-
+    // std::vector<std::vector<std::pair<uint32_t, real_t> > > preinfo(nbPoints);
+    DijkstraReusingAllocator allocator;  
+    
     ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
     for(RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii, ++st) {
-        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii, UINT32_MAX, preinfo[current]);
-        preinfo[current].clear();
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii, UINT32_MAX, allocator);
+        // preinfo[current].clear();
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             lres.push_back(itn->id);
@@ -356,15 +357,15 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
     struct PointDistance pdevaluator(points);
     
     IndexArrayPtr result(new IndexArray(nbPoints));
-    std::vector<NodeDistancePairList> preinfo(nbPoints);
+    // std::vector<NodeDistancePairList> preinfo(nbPoints);
     DijkstraReusingAllocator allocator;
     // DijkstraAllocator allocator;
 
     ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
 
     for(uint32_t current = 0; current < nbPoints; ++current) {
-        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, preinfo[current], allocator);
-        preinfo[current].clear();
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator, radius, UINT32_MAX,  allocator);
+        // preinfo[current].clear();
         Index lres;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             lres.push_back(itn->id);
@@ -401,11 +402,11 @@ void compute_nbg_i(IndexArrayPtr results, Counter * counter, std::pair<uint32_t,
     struct PointDistance pdevaluator(points);
 
 
-    std::vector<NodeDistancePairList> preinfo(last-first);
+    // std::vector<NodeDistancePairList> preinfo(last-first);
     DijkstraReusingAllocator allocator;
 
     for (uint32_t current = first; current < last; ++current){
-        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, preinfo[current-first], allocator);
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, allocator);
         Index result;
         for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             uint32_t nid = itn->id;
