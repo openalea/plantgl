@@ -194,14 +194,13 @@ protected:
 
 };
 
-template<class EdgeWeigthEvaluation, class Allocator = DijkstraAllocator>
+template<class EdgeWeigthEvaluation, class Allocator>
 NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
                                              uint32_t root, 
                                              EdgeWeigthEvaluation& distevaluator,
-                                             real_t maxdist = REAL_MAX,
-                                             uint32_t maxnbelements = UINT32_MAX,
-                                             const NodeDistancePairList& precomputed = NodeDistancePairList(), 
-                                             const Allocator& allocator = Allocator())
+                                             real_t maxdist,
+                                             uint32_t maxnbelements,
+                                             const Allocator& allocator )
  {
 
      NodeList result;
@@ -235,6 +234,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
      Q.push(root);
 #endif
 
+/*
      for(NodeDistancePairList::const_iterator itdist = precomputed.begin(); itdist != precomputed.end(); ++itdist){
         if (itdist->second < maxdist){
             distances->setAt(itdist->first,itdist->second);
@@ -244,7 +244,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 #endif
         }
      }
-
+*/
      while((!Q.empty()) && (nbprocessednodes < maxnbelements)){
          uint32_t current = Q.top(); Q.pop();
 #ifdef PGL_USE_PRIORITY_QUEUE
@@ -295,6 +295,15 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
  }
 
 
+template<class EdgeWeigthEvaluation>
+NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
+                                             uint32_t root, 
+                                             EdgeWeigthEvaluation& distevaluator,
+                                             real_t maxdist = REAL_MAX,
+                                             uint32_t maxnbelements = UINT32_MAX)
+                                             
+ { return dijkstra_shortest_paths_in_a_range(connections,root,distevaluator,maxdist,maxnbelements,DijkstraAllocator());  }
+ 
 template<class EdgeWeigthEvaluation>
 std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
                                    uint32_t root, 
