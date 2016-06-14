@@ -444,6 +444,9 @@ Point3ArrayPtr  centroids_of_groups(const Point3ArrayPtr points,
     return result;
 }
 
+ALGO_API IndexArrayPtr cluster_points(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
+ALGO_API TOOLS(Uint32Array1Ptr) points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
+
 // Xu 07 method for main branching system
 ALGO_API Point3ArrayPtr
 skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,  

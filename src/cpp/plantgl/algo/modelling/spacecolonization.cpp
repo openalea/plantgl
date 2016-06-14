@@ -88,6 +88,7 @@ SpaceColonization::SpaceColonization(const Point3ArrayPtr _attractors,
     min_nb_pt_per_bud(3),
     skeletonnodes(), 
     skeletonparents(),
+    nodeattractors(),
     active_nodes(),
     nbIteration(0)
 {
@@ -103,7 +104,7 @@ SpaceColonization::~SpaceColonization()
 
 /* ----------------------------------------------------------------------- */
 
-size_t SpaceColonization::add_node(const Vector3& position, size_t parent, bool active) {
+size_t SpaceColonization::add_node(const Vector3& position, size_t parent, const Index& attractors, bool active) {
     size_t pid = 0;
     if(is_null_ptr(skeletonnodes)) 
         skeletonnodes = Point3ArrayPtr(new Point3Array(1, position));
@@ -118,10 +119,21 @@ size_t SpaceColonization::add_node(const Vector3& position, size_t parent, bool 
         for(size_t i = skeletonparents->size(); i < pid+1; ++i)
             skeletonparents->push_back(NOID);
     }
-
     if (parent != NOID) 
         skeletonparents->setAt(pid,parent);
     else skeletonparents->setAt(pid,pid);
+
+
+    if (is_null_ptr(nodeattractors))
+        nodeattractors = IndexArrayPtr(new IndexArray(pid+1));
+    else {
+        for(size_t i = nodeattractors->size(); i < pid+1; ++i)
+            nodeattractors->push_back(Index());        
+    }
+    nodeattractors->setAt(pid,attractors);
+
+
+
 
     if (active)  _activate_node(pid);   
 
@@ -289,7 +301,7 @@ void SpaceColonization::process_bud(const Bud& bud)
         new_position = attractors->getAt(findClosestFromSubset(new_position,attractors,nbg_att).first);
     
         // create new node
-        add_node(new_position,bud.pid);
+        add_node(new_position, bud.pid, nbg_att);
 
         // remove closest attractors
         attractor_grid->disable_points(attractor_grid->query_ball_point(position,kill_radius));

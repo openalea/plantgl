@@ -1920,7 +1920,7 @@ inline bool distance_test ( real_t d, real_t distance, bool reversed){
     else return d < distance;
 }
 
-ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points, 
+Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points, 
                                                 const Point3ArrayPtr nodes,
                                                 const TOOLS(Uint32Array1Ptr) parents,
                                                 real_t distance,
@@ -1984,7 +1984,62 @@ ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points
 
     return Index();
 #endif
+}
 
+IndexArrayPtr PGL::cluster_points(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid)
+{
+    IndexArrayPtr result(new IndexArray(clustercentroid->size()));
+
+#ifdef WITH_ANN
+    ANNKDTree3 centroids(clustercentroid);
+#else
+    Point3GridPtr centroids(new Point3Grid(_attractors,20));
+#endif   
+
+    size_t pid = 0;
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid)
+    {
+        real_t minpdist = REAL_MAX;
+#ifdef WITH_ANN
+        Index nids = centroids.k_closest_points(*itp,1);
+        result->getAt(nids[0]).push_back(pid);
+#else
+        size_t pidclosest;
+        if( closest_point(*itp, pidclosest) )
+            result->getAt(pidclosest).push_back(pid);
+#endif   
+
+    }
+
+    return result;
+}
+
+Uint32Array1Ptr PGL::points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid)
+{
+    Uint32Array1Ptr result(new Uint32Array1(points->size()));
+
+#ifdef WITH_ANN
+    ANNKDTree3 centroids(clustercentroid);
+#else
+    Point3GridPtr centroids(new Point3Grid(_attractors,20));
+#endif   
+
+    size_t pid = 0;
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid)
+    {
+        real_t minpdist = REAL_MAX;
+#ifdef WITH_ANN
+        Index nids = centroids.k_closest_points(*itp,1);
+        result->setAt(pid,nids[0]);
+#else
+        size_t pidclosest;
+        if( closest_point(*itp, pidclosest) )
+            result->setAt(pid,pidclosest);
+#endif   
+
+    }
+
+    return result;
 }
 
 TOOLS(RealArrayPtr) 

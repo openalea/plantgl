@@ -327,8 +327,10 @@ void export_PointManip()
     def("adaptive_section_circles",&py_adaptive_section_circles,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("widths"),bp::arg("maxradii")));
     def("adaptive_section_circles",&py_adaptive_section_circles2,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("widths"),bp::arg("maxradii")));
 
-    def("centroid_of_group",&centroid_of_group<Index>,args("points","group"));
+    def("centroid_of_group",&centroid_of_group<Index>,args("","group"));
     def("centroids_of_groups",&centroids_of_groups<IndexArray>,args("points","groups"));
+    def("points_clusters",&points_clusters,args("points","clustercentroid"));
+    def("cluster_points",&cluster_points,args("points","clustercentroid"));
 
 
     def("adaptive_radii",&adaptive_radii,(bp::arg("density"),bp::arg("minradius"),bp::arg("maxradius"),bp::arg("densityradiusmap")=QuantisedFunctionPtr(0)),"Compute a radius for each density value");
