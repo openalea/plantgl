@@ -212,7 +212,13 @@ ALGO_API real_t
 pointset_mean_radial_distance(  const TOOLS(Vector3)& origin,
                                 const TOOLS(Vector3)& direction,
                                 const Point3ArrayPtr points, 
-			                    const Index& group);
+                                const Index& group);
+
+ALGO_API real_t
+pointset_max_radial_distance(  const TOOLS(Vector3)& origin,
+                                const TOOLS(Vector3)& direction,
+                                const Point3ArrayPtr points, 
+                                const Index& group);
 
 
 ALGO_API TOOLS(Matrix3) pointset_covariance(const Point3ArrayPtr points,  const Index& group = Index());

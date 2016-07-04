@@ -291,6 +291,7 @@ void export_PointManip()
     def("pointset_mean_distance",&pointset_mean_distance<Index>,args("center","points","group"));
     def("pointset_mean_distances",&pointset_mean_distances<IndexArray>,args("points","groups"));
     def("pointset_mean_radial_distance",&pointset_mean_radial_distance,args("center","direction","points","group"));
+    def("pointset_max_radial_distance",&pointset_max_radial_distance,args("center","direction","points","group"));
 
     def("pointset_covariance",&pointset_covariance,(arg("points"),arg("group")=Index()));
 

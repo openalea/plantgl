@@ -711,13 +711,26 @@ real_t
 PGL::pointset_mean_radial_distance(  const Vector3& origin,
                                      const Vector3& direction,
                                      const Point3ArrayPtr points, 
-			                         const Index& group)
+                                     const Index& group)
 {
     if (group.empty()) return 0;
     real_t sum_distance = 0;
     for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
         sum_distance += radialAnisotropicNorm(origin-points->getAt(*it), direction, 0, 1);
     return sum_distance / group.size();
+}
+
+real_t
+PGL::pointset_max_radial_distance(  const Vector3& origin,
+                                     const Vector3& direction,
+                                     const Point3ArrayPtr points, 
+                                     const Index& group)
+{
+    if (group.empty()) return 0;
+    real_t max_distance = 0;
+    for(Index::const_iterator it = group.begin(); it != group.end(); ++it) 
+        max_distance = std::max(max_distance,radialAnisotropicNorm(origin-points->getAt(*it), direction, 0, 1));
+    return max_distance;
 }
 
 Matrix3 
