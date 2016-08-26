@@ -112,9 +112,9 @@ bool IT::isValid( ) const
     return false;
     }
 
-  if( __depth && (! finite(__depth)) )
+  if( __depth && (! pglfinite(__depth)) )
     {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be finite");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be pglfinite");
     return false;
     }
 
@@ -306,9 +306,9 @@ bool IFS::Builder::isValid( ) const
     return false;
     }
 
-  if( Depth && (! finite(*Depth)) )
+  if( Depth && (! pglfinite(*Depth)) )
     {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be finite");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be pglfinite");
     return false;
     }
 

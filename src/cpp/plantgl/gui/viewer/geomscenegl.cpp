@@ -751,7 +751,7 @@ ViewGeomSceneGL::wireSelection()
 	  }
 	}
 	else {
-	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Wire Transformation not yet implemented on Inline.")).toAscii().constData());
+	  qWarning("%s:%d: Wire Transformation not yet implemented on Inline.", __FILE__, __LINE__);
 	}
   }		
 
@@ -780,7 +780,7 @@ ViewGeomSceneGL::discretizeSelection()
 	  }
 	}
 	else {
-	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Discretize Transformation not yet implemented on Inline.")).toAscii().constData());
+	  qWarning("%s:%d: Discretize Transformation not yet implemented on Inline.", __FILE__, __LINE__);
 	}
   }		
 
@@ -811,7 +811,7 @@ ViewGeomSceneGL::triangulateSelection()
 	  }
 	}
 	else {
-	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Triangulation Transformation not yet implemented on Inline.")).toAscii().constData());
+	  qWarning("%s:%d: Triangulation Transformation not yet implemented on Inline.", __FILE__, __LINE__);
 	}
   }		
 
@@ -848,7 +848,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
 		cur++;
 		if(cur % per == 0){
-			printf("\x0d Projections %i%% done.",cur*100/tot);
+			printf("\x0d Projections %.0f%% done.",cur*100./tot);
 			QCoreApplication::processEvents();
 		}
 	}
@@ -926,11 +926,11 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		delete cbuff;
 		cur++;
 		if(cur % per == 0){
-			printf("\x0d Projections %i%",cur*100/tot);
+			printf("\x0d Projections %.0f%%",cur*100./tot);
 			QCoreApplication::processEvents();
 		}
 	}
-	printf("\x0d Projections 100%\n");
+	printf("\x0d Projections 100%%\n");
     __renderer.setRenderingMode(rtype);
 	// std::cerr << "\x0d Projections 100% done.\n";
 	if(frame->isPixelBufferUsed()){
@@ -1029,19 +1029,20 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 
 void 
 ViewGeomSceneGL::customEvent(QEvent * e) {
-	if(e->type() == ViewGeomEvent::eProjList){
+    int etype = e->type();
+	if(etype == ViewGeomEvent::eProjList){
 		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
 		*(myevent->result) = getProjectionSizes(myevent->arg1);
 	}
-	else if (e->type() == ViewGeomEvent::eRayBuff2){
+	else if (etype == ViewGeomEvent::eRayBuff2){
 		ViewRayBuff2Event * myevent = (ViewRayBuff2Event *)e;
 		*(myevent->result) = castRays(myevent->arg1,myevent->arg2);
 	}
-	else if (e->type() == ViewGeomEvent::eGetScene){
+	else if (etype == ViewGeomEvent::eGetScene){
 		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
 		*(myevent->result) = __scene;
 	}
-	else if (e->type() == ViewGeomEvent::eIntegratedProjList){
+	else if (etype == ViewGeomEvent::eIntegratedProjList){
 		ViewIntegratedProjListEvent * myevent = (ViewIntegratedProjListEvent *)e;
 		*(myevent->result) = getPixelPerShape(myevent->arg1);
 	}

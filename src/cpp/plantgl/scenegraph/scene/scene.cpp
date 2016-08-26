@@ -159,9 +159,9 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
   for (SceneObjectSymbolTable::const_iterator _it = table.begin();
        _it != table.end();
        _it++){
-	  if(shape = dynamic_pointer_cast<Shape3D>(_it->second)){
+	  if((shape = dynamic_pointer_cast<Shape3D>(_it->second))){
 	  added = true;
-      if(_shape = dynamic_pointer_cast<Shape>(_it->second)){
+      if((_shape = dynamic_pointer_cast<Shape>(_it->second))){
         if(!_shape->appearance)
           _shape->appearance = Material::DEFAULT_MATERIAL;
         add(Shape3DPtr(_shape));
@@ -174,7 +174,7 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
     for (SceneObjectSymbolTable::const_iterator _it = table.begin();
          _it != table.end();
          _it++){
-      if(_geom = dynamic_pointer_cast<Geometry>(_it->second)){
+      if((_geom = dynamic_pointer_cast<Geometry>(_it->second))){
         add(Shape3DPtr(new Shape(_geom,Material::DEFAULT_MATERIAL,0)));
       }
     }

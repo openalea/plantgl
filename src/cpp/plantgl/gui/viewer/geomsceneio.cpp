@@ -1067,16 +1067,16 @@ ViewGeomSceneGL::saveAsPovRay(const QString& filename)
 	_stream << "*/\n\n";
     const QGLContext * c =__frame->context();
     if(c){
-      QColor bg = c->overlayTransparentColor();
-      if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
-	  else {
+      // QColor bg = c->overlayTransparentColor();
+      // if(bg.isValid())_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
+	  //else {
 		ViewGLFrame * f = dynamic_cast<ViewGLFrame *>(__frame);
 		if(f != NULL){
-			bg = f->getBackGroundColor();
+			QColor bg = f->getBackGroundColor();
 			_printer.setBackGround(Color3(bg.red(),bg.green(),bg.blue()));
 			_printer.setLineWidth(f->getLineWidth()/10);
 		}
-	  }
+	  //}
     }
 	_printer.endHeader();
 	_stream << "\n\n";

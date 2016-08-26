@@ -422,14 +422,29 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         action = menu.addAction("Paste",self.pastematerial)
         if self.clipboard is None:
             action.setEnabled(False)
-        action = menu.addAction("Load texture",self.loadtexture)        
+        action = menu.addAction("Load texture",self.loadtexture)
         if self.lenSelection() > 1 :
             action.setEnabled(False)
+        if self.lenSelection() == 1 and self.getMaterial(self.getSelection()[0]).isTexture():
+            menu.addAction("Open repository", self.opentexturerepository)
         menu.addAction("Remove",self.removematerial)
         action = menu.addAction("Interpolate",self.interpolatematerial)
         if self.lenSelection() < 3 :
             action.setEnabled(False)
         menu.exec_(event.globalPos())
+    def opentexturerepository(self):
+        import os, sys
+        cmat = self.getMaterial(self.getSelection()[0])
+
+        fname = os.path.abspath(cmat.image.filename)
+        mdir = os.path.dirname(fname)
+        if sys.platform == 'win32':
+                import subprocess
+                subprocess.call('explorer /select,"'+fname+'"')
+        elif sys.platform == 'linux2':
+                os.system('xdg-open "'+mdir+'"')
+        else:
+                os.system('open "'+mdir+'"')
     def copymaterial(self):
         self.clipboard = [(i,self.getMaterial(i)) for i in self.getSelection()]
         self.cutaction = False

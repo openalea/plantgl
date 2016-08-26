@@ -153,6 +153,7 @@ void pglErrorEx(PglErrorType errtype, const char* file, int line, const std::str
 	case PGL_ERROR_MESSAGE : pglErrorEx(file,line,msg); break;
 	case PGL_WARNING_MESSAGE : pglWarningEx(file,line,msg); break;
 	case PGL_DEBUG_MESSAGE : pglErrorEx(file,line,msg); break;
+    default : break;
   }
 }
 

@@ -29,9 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/python/boost_python.h>
-#include <plantgl/python/export_refcountptr.h>
 #include <plantgl/algo/modelling/spacecolonization.h>
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/boost_python.h>
 #include <plantgl/python/export_list.h>
 
 PGL_USING_NAMESPACE

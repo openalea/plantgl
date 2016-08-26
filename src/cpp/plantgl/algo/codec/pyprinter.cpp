@@ -484,6 +484,7 @@ bool PyPrinter::process( Texture2D * texture ) {
 		print_arg_field (__matStream, "image", SceneObjectPtr(texture->getImage()),false);
     if(texture->getTransformation())
 		print_arg_field (__matStream, "transformation", SceneObjectPtr(texture->getTransformation()),false);
+    PYPRINT_NAMEDARG(__matStream, texture, name, baseColor,  BaseColor,  false)
   print_constructor_end (__matStream, texture, name, false);
 
   print_object_end(__matStream);
@@ -506,7 +507,6 @@ bool PyPrinter::process( ImageTexture * texture ) {
 	PYPRINT_NAMEDARG(__matStream, texture, name, mipmaping,  Mipmaping, false)
 	PYPRINT_NAMEDARG(__matStream, texture, name, repeatS,  RepeatS,  false)
 	PYPRINT_NAMEDARG(__matStream, texture, name, repeatT,  RepeatT,  false)
-	PYPRINT_NAMEDARG(__matStream, texture, name, transparency,  Transparency,  false)
   print_constructor_end (__matStream, texture, name, false);
 
   print_object_end(__matStream);

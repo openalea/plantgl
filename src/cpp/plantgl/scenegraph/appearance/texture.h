@@ -157,9 +157,6 @@ public:
   /// The default mipmaping value
   static const bool DEFAULT_MIPMAPING;
 
-  /// The default transparency value
-  static const real_t DEFAULT_TRANSPARENCY;
-
   /// The default repeatS value
   static const bool DEFAULT_REPEATS;
 
@@ -175,9 +172,6 @@ public:
 
     /// A pointer to the \b Mipmaping field.
 	bool * Mipmaping;
-
-    /// A pointer to the \b Transparency field.
-    real_t * Transparency;
 
     /// A pointer to the \b RepeatS field.
     bool * RepeatS;
@@ -204,7 +198,6 @@ public:
 
   /// constructor.
   ImageTexture(  const std::string& filename,
-				 const real_t& transparency = DEFAULT_TRANSPARENCY,
 				 bool repeatS = DEFAULT_REPEATS,
 				 bool repeatT = DEFAULT_REPEATT,
 				 bool mipmaping = DEFAULT_MIPMAPING);
@@ -212,7 +205,6 @@ public:
   /// constructor.
   ImageTexture(  const std::string& name,
 				 const std::string& filename,
-				 const real_t& transparency = DEFAULT_TRANSPARENCY,
 				 bool repeatS = DEFAULT_REPEATS,
 				 bool repeatT = DEFAULT_REPEATT,
 				 bool mipmaping = DEFAULT_MIPMAPING);
@@ -228,14 +220,12 @@ public:
   // The Mipmaping property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(Mipmaping,bool,DEFAULT_MIPMAPING);
 
-  // The Transparency property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Transparency,real_t,DEFAULT_TRANSPARENCY);
-
   // The RepeatS property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(RepeatS,bool,DEFAULT_REPEATS);
 
   // The RepeatT property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(RepeatT,bool,DEFAULT_REPEATT);
+
 
   /// Returns whether \e self id valid.
   virtual bool isValid( ) const;
@@ -258,6 +248,9 @@ public:
   /// The default transformation value
   static const Texture2DTransformationPtr DEFAULT_TRANSFORMATION;
 
+  /// The default base color value
+  static const Color4 DEFAULT_BASECOLOR;
+
   /// A structure which helps to build a Material when parsing.
   struct SG_API Builder : public Appearance::Builder {
 
@@ -266,6 +259,9 @@ public:
 
     /// A pointer to the \b Transformation field.
 	Texture2DTransformationPtr * Transformation;
+
+    /// A pointer to the \b Transparency field.
+    Color4 * BaseColor;
 
     /// Constructor.
     Builder( );
@@ -284,11 +280,13 @@ public:
   Texture2D();
 
   Texture2D(const ImageTexturePtr& image, 
-		    const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION);
+		    const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
+            const Color4& basecolor = DEFAULT_BASECOLOR);
 
   Texture2D(const std::string& name,
 			const ImageTexturePtr& image, 
-			const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION);
+			const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
+            const Color4& basecolor = DEFAULT_BASECOLOR);
 
   ~Texture2D();
 
@@ -302,6 +300,9 @@ public:
   // The Mipmaping property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(Transformation,Texture2DTransformationPtr,DEFAULT_TRANSFORMATION);
 
+  // The BaseColor property
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(BaseColor,Color4,DEFAULT_BASECOLOR);
+  
   /// Returns whether \e self id valid.
   virtual bool isValid( ) const;
 

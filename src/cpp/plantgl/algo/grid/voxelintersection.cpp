@@ -85,7 +85,7 @@ using namespace std;
 #define GEOM_INTERSECTION_TRANSF(obj)\
   GEOM_ASSERT(obj); \
   Matrix4TransformationPtr mat; \
-  if(mat = dynamic_pointer_cast<Matrix4Transformation>(obj->getTransformation())){ \
+  if((mat = dynamic_pointer_cast<Matrix4Transformation>(obj->getTransformation()))){ \
    __transformstack.push_back(mat->getMatrix()); \
    return obj->getGeometry()->apply(*this); } \
   else return false; \

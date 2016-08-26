@@ -550,7 +550,7 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 
   return Sw.project();
 }
-
+/*
 Point4MatrixPtr NurbsPatch::getMetric(real_t u, real_t v) const{
     GEOM_ASSERT( u >= 0.0 && u <= 1.0 && v>= 0.0 && v<=1.0);
     Point4MatrixPtr _metric(new Point4Matrix(2,2));
@@ -591,6 +591,7 @@ Point4MatrixPtr NurbsPatch::getInvMetric(real_t u, real_t v) const{
     }
     return _invmetric;
 }
+*/
 
 // This function is not finished yet...
 /*

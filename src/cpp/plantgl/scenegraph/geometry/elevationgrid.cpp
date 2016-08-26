@@ -92,10 +92,10 @@ bool ElevationGrid::Builder::isValid( ) const {
   };
  for (uint_t _i = 0 ; _i< (*HeightList)->getRowNb() ; _i++)
      for (uint_t _j = 0 ; _j< (*HeightList)->getColumnNb() ; _j++)
-         if (! finite((*HeightList)->getAt(_i,_j))) {
+         if (! pglfinite((*HeightList)->getAt(_i,_j))) {
              string _ith = '(' + TOOLS(number)(_i + 1) + '-' + TOOLS(number)(_j + 1) + ')';
              pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
-                        "Elevation Grid","HeightList",_ith.c_str(),"Must be finite.");
+                        "Elevation Grid","HeightList",_ith.c_str(),"Must be pglfinite.");
              return false;
          };
 

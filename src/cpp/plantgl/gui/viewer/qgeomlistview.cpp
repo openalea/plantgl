@@ -677,6 +677,7 @@ bool GeomListViewBuilder::process( Texture2D * texture ) {
   addNode(texture,"Texture2D",2);
   addAttrNode("Image",SceneObjectPtr(texture->getImage()),"ImageTexture");
   addAttrNode("Transformation",SceneObjectPtr(texture->getTransformation()),"Texture2DTransformation");
+  addAttr("BaseColor",texture->getBaseColor());
   endNode();
   return true;
 }
@@ -690,7 +691,6 @@ bool GeomListViewBuilder::process( ImageTexture * texture ) {
   addAttr("Mipmaping",texture->getMipmaping());
   addAttr("RepeatS",texture->getRepeatS());
   addAttr("RepeatT",texture->getRepeatT());
-  addAttr("Transparency",texture->getTransparency());
 
   endNode();
   return true;

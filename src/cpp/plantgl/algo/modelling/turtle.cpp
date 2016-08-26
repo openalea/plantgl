@@ -80,15 +80,17 @@ void Turtle::register_warning_handler(Turtle::error_msg_handler_func f)
 { WARNING_FUNC = f; }
 
 void Turtle::error(const std::string& msg){
-  if (warn_on_error)
-    if (ERROR_FUNC != NULL) ERROR_FUNC(msg);
-    else std::cerr << "*** ERROR : " << msg << std::endl;
+  if (warn_on_error){
+      if (ERROR_FUNC != NULL) { ERROR_FUNC(msg); }
+      else { std::cerr << "*** ERROR : " << msg << std::endl; }
+  }
 }
 
 void Turtle::warning(const std::string& msg){
-  if (warn_on_error)
-    if (WARNING_FUNC != NULL) WARNING_FUNC(msg);
-    else std::cerr << "*** WARNING : " << msg << std::endl;
+  if (warn_on_error){
+      if (WARNING_FUNC != NULL) { WARNING_FUNC(msg); }
+      else { std::cerr << "*** WARNING : " << msg << std::endl; }
+  }
 }
 
 
@@ -137,9 +139,10 @@ Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientatio
 	  __arclengthParam = curve->getArcLengthToUMapping(); 
 	  __lastPosition = curve->getPointAt(curve->getFirstKnot());
 	  __ccw = ccw;
-	  if (__ccw) 
-		  if(orientation) __lastHeading = Vector2(0,-1);
-	      else __lastHeading = Vector2(-1,0);
+	  if (__ccw) {
+		  if(orientation) { __lastHeading = Vector2(0,-1); }
+	      else { __lastHeading = Vector2(-1,0); }
+      }
 }
 
 TurtlePathPtr Turtle2DPath::copy() const
@@ -148,8 +151,8 @@ TurtlePathPtr Turtle2DPath::copy() const
 void Turtle2DPath::setPosition(real_t t)
 {
 	__actualT = t / __totalLength;
-	if  (__actualT <= 0) __actualT = 0;
-	else if (__actualT >= 1.0) __actualT = 1.0;
+	if  (__actualT <= 0) {__actualT = 0;}
+	else if (__actualT >= 1.0) {__actualT = 1.0;}
 	real_t actualU = __arclengthParam->getValue(__actualT);
 	__lastPosition = __path->getPointAt(actualU);
 	__lastHeading = __path->getTangentAt(actualU);
@@ -167,8 +170,8 @@ Turtle3DPath::Turtle3DPath(LineicModelPtr curve, real_t totalLength) :
 void Turtle3DPath::setPosition(real_t t)
 {
 	__actualT = t / __totalLength;
-	if  (__actualT <= 0) __actualT = 0;
-	else if (__actualT >= 1.0) __actualT = 1.0;
+	if  (__actualT <= 0) {__actualT = 0;}
+	else if (__actualT >= 1.0){ __actualT = 1.0;}
 	real_t actualU = __arclengthParam->getValue(__actualT);
 	__lastPosition = __path->getPointAt(actualU);
 	__lastHeading = __path->getTangentAt(actualU);
@@ -193,6 +196,7 @@ TurtleDrawParameter::TurtleDrawParameter():
   texCoordTranslation(0,0),
   texCoordRotCenter(0.5,0.5),
   texCoordRotAngle(0),
+  texBaseColor(255,255,255,0),
   axialLength(0)
 {
 }
@@ -204,6 +208,7 @@ void TurtleDrawParameter::reset(){
   texCoordTranslation = Vector2(0,0);
   texCoordRotCenter = Vector2(0.5,0.5);
   texCoordRotAngle = 0;
+  texBaseColor = Color4(255,255,255,0);
   crossSection = Curve2DPtr();
   crossSectionCCW = true;
   defaultSection = true;
@@ -590,15 +595,43 @@ void Turtle::iRollL(real_t angle){
 	else warning("No appropriate turtle embedding (Guide) specified for intrinsic roll.");
 }
 
-void Turtle::rollToVert(const Vector3& top){
-	__params->left = cross(top,__params->heading);
-	if (norm(__params->left) < GEOM_EPSILON )
-	  __params->left = Vector3(0,-1,0);
-	else{
-	  __params->left.normalize();
-	}
-	__params->up = cross(__params->heading,__params->left);
-  }
+void Turtle::rollToVert(real_t alpha, const Vector3& top){
+    if (alpha <= 0.0) return;
+    if (alpha >= 1.0) {
+    	__params->left = cross(top,__params->heading);
+    	if (norm(__params->left) < GEOM_EPSILON )
+    	  __params->left = Vector3(0,-1,0);
+    	else{
+    	  __params->left.normalize();
+    	}
+    	__params->up = cross(__params->heading,__params->left);
+    }
+    else {
+        Vector3 nleft = cross(top,__params->heading);
+        nleft.normalize();
+        real_t rotangle = angle(__params->left,nleft,__params->heading);
+        rollR(rotangle * alpha * GEOM_DEG);
+
+    }
+}
+
+    /// Roll such as head vector comes in the horizontal plane
+void Turtle::rollToHorizontal(real_t alpha, const Vector3& top) {
+    if (alpha <= 0.0) return;
+    if (alpha >= 1.0) alpha = 1.0;
+    real_t nonhorizontal = dot(__params->heading, top);
+    if (fabs(nonhorizontal) > GEOM_EPSILON){
+        Vector3 targetheading = __params->heading - nonhorizontal*top;
+        if (norm(targetheading) < GEOM_EPSILON ) targetheading = Vector3(1,0,0);
+        else targetheading.normalize();
+        Vector3 rotaxis = cross(__params->heading,targetheading);
+        rotaxis.normalize();
+        real_t rotangle = angle(__params->heading,targetheading,rotaxis);
+        Matrix3 m = Matrix3::axisRotation(rotaxis,rotangle* alpha);
+        transform(m);
+    }
+}
+
 
 void Turtle::transform(const Matrix3& matrix)
 {
@@ -726,6 +759,17 @@ void Turtle::setTextureTransformation(const Vector2& scaling, const Vector2& tra
   setTextureScale(scaling);
   setTextureTranslation(translation);
   setTextureRotation(angle,rotcenter);
+}
+
+void Turtle::setTextureBaseColor(const Color4& v)
+{
+    __params->texBaseColor = v;
+}
+
+void Turtle::setTextureBaseColor(int val1){
+}
+
+void Turtle::interpolateTextureBaseColors(int val1, int val2, real_t alpha){
 }
 
 void Turtle::setWidth(real_t v){
@@ -1228,6 +1272,31 @@ void PglTurtle::interpolateColors(int val1, int val2, real_t alpha){
     setCustomAppearance(AppearancePtr(interpolate(m1,m2,alpha)));
 }
 
+void PglTurtle::setTextureBaseColor(const Color4& v)
+{
+    __params->texBaseColor = v;
+}
+
+void PglTurtle::setTextureBaseColor(int val1){
+    AppearancePtr a1 = getMaterial(val1);
+    MaterialPtr m1 = dynamic_pointer_cast<Material>(a1);
+    if (is_null_ptr(m1))
+        error("Can only set base color from material. Not texture.");
+    setTextureBaseColor(m1->getDiffuseColor());
+}
+
+void PglTurtle::interpolateTextureBaseColors(int val1, int val2, real_t alpha){
+    AppearancePtr a1 = getMaterial(val1);
+    AppearancePtr a2 = getMaterial(val2);
+    MaterialPtr m1 = dynamic_pointer_cast<Material>(a1);
+    MaterialPtr m2 = dynamic_pointer_cast<Material>(a2);
+    if (is_null_ptr(m1) || is_null_ptr(m2))
+        error("Can only interpolate material. Not texture.");
+    Color3 icol3 = Color3::interpolate(m1->getDiffuseColor(),m2->getDiffuseColor(),alpha);
+    setTextureBaseColor(Color4(icol3,m1->getTransparency()*(1-alpha) + m2->getTransparency()*alpha ));
+}
+
+
 void PglTurtle::clearColorList(){
    __appList.clear();
 }
@@ -1361,22 +1430,27 @@ AppearancePtr PglTurtle::getCurrentMaterial() const{
 		if (res->isTexture()){
 			real_t texshiftY = __params->axialLength;
 			Vector2 texshift(0,texshiftY*__params->texCoordScale.y());
-			// texshift -= __params->texCoordRotCenter;
-			// texshift = Matrix2::rotation(-__params->texCoordRotAngle) * texshift;
-			// texshift += __params->texCoordRotCenter;
-			// texshift += __params->texCoordTranslation;
-			// texshiftY = fmod(texshift.y(),1.0);
 			if ( norm(texshift) > GEOM_EPSILON || __params->texCoordScale != Vector2(1,1) || 
 				 __params->texCoordTranslation != Vector2(0,0) ||
 				 __params->texCoordRotAngle != 0){
+
 			    Texture2DPtr tex = new Texture2D(
-				dynamic_pointer_cast<Texture2D>(res)->getImage(),
-				new Texture2DTransformation(__params->texCoordScale,
+				    dynamic_pointer_cast<Texture2D>(res)->getImage(),
+				    new Texture2DTransformation(__params->texCoordScale,
 											__params->texCoordTranslation + texshift, 
 											__params->texCoordRotCenter,
-											__params->texCoordRotAngle*GEOM_RAD));
-			return AppearancePtr(tex);
+											__params->texCoordRotAngle*GEOM_RAD),
+                    __params->texBaseColor);
+			   return AppearancePtr(tex);
 			}
+            else if(__params->texBaseColor != Texture2D::DEFAULT_BASECOLOR){
+                Texture2DPtr tex = new Texture2D(
+                    dynamic_pointer_cast<Texture2D>(res)->getImage(),
+                    Texture2DTransformationPtr(0), 
+                    __params->texBaseColor);
+               return AppearancePtr(tex);
+
+            }
 		}
         return res;
 	}
@@ -1387,17 +1461,28 @@ AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
     if (__params->initial.customMaterial) return __params->initial.customMaterial;
 	if (__params->initial.color < __appList.size()){
 		AppearancePtr res = __appList[__params->initial.color];
-		if (res->isTexture() && (__params->initial.texCoordScale != Vector2(1,1) || 
-								__params->initial.texCoordTranslation != Vector2(0,0) ||
-								__params->initial.texCoordRotAngle != 0)){
-			Texture2DPtr tex = new Texture2D(
-				dynamic_pointer_cast<Texture2D>(res)->getImage(),
-				new Texture2DTransformation(__params->initial.texCoordScale,
-											__params->initial.texCoordTranslation,
-											__params->initial.texCoordRotCenter,
-											__params->initial.texCoordRotAngle*GEOM_RAD)
-											);
-			return AppearancePtr(tex);
+		if (res->isTexture() ){
+
+            if (__params->initial.texCoordScale != Vector2(1,1) || 
+				__params->initial.texCoordTranslation != Vector2(0,0) ||
+				__params->initial.texCoordRotAngle != 0){
+        			Texture2DPtr tex = new Texture2D(
+        				dynamic_pointer_cast<Texture2D>(res)->getImage(),
+        				new Texture2DTransformation(__params->initial.texCoordScale,
+        											__params->initial.texCoordTranslation,
+        											__params->initial.texCoordRotCenter,
+        											__params->initial.texCoordRotAngle*GEOM_RAD),
+                        __params->initial.texBaseColor);
+        			return AppearancePtr(tex);
+            }
+            else if(__params->initial.texBaseColor != Texture2D::DEFAULT_BASECOLOR){
+                Texture2DPtr tex = new Texture2D(
+                    dynamic_pointer_cast<Texture2D>(res)->getImage(),
+                    Texture2DTransformationPtr(0), 
+                    __params->initial.texBaseColor);
+                return AppearancePtr(tex);
+
+            }
 		}
         return res;
 	}

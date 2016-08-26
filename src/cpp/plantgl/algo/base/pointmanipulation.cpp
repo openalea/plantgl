@@ -240,7 +240,7 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
             for(std::list<uint32_t>::const_iterator iterase = toerase.begin(); iterase != toerase.end(); ++iterase)
                 nonconnected.erase(*iterase);
         }
-        if (verbose) printf("\x0dNb points processed %i (%.2f%%) [left : %lu (%.2f%%)].\n",nbrefpoints,100 * nbrefpoints /float(nbtotalpoints), nonconnected.size(), 100 * nonconnected.size()/float(nbtotalpoints),next_root);
+        if (verbose) printf("\x0dNb points processed %i (%.2f%%) [left : %lu (%.2f%%)].\n",nbrefpoints,100 * nbrefpoints /float(nbtotalpoints), nonconnected.size(), 100 * nonconnected.size()/float(nbtotalpoints));
         // if no more non connected point, break
         if (nonconnected.empty()) break;
 

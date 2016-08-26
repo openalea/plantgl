@@ -37,6 +37,7 @@
 #include <QtGui/qmessagebox.h>
 #include <QtOpenGL/qgl.h>
 #include <plantgl/algo/opengl/util_gl.h>
+#include <plantgl/algo/opengl/util_glu.h>
 
 #include "camera.h"
 #include "errordialog.h"
@@ -207,7 +208,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 	  QString _mess = "<b>[ObjectGL] GL Error ["+QString::number(_glerror)+"] !!</b><br>";
 	  int i = 0;
 	  while(_glerror != GL_NO_ERROR && i < 10){
-		  _mess +=(char *)gluErrorString(_glerror);
+		  _mess += gluGeomErrorString(_glerror);
 		  _mess += "<br>\n";
 		  _glerror = glGetError();
 		  i++;
@@ -228,7 +229,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 			  lock = false;
 		  }
 	  }
-	  else qWarning(_mess.toAscii());
+	  else qWarning("%s",_mess.toAscii().data());
 	  return true;
   }
   return false;

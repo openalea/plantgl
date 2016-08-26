@@ -470,27 +470,28 @@ int SkelTriangle::getMiddleSummitForTerm()
     return -1;
   if (m_e1->m_type == SkelEdge::BOUNDARY)
     {
-      if (m_e2->m_type == SkelEdge::BOUNDARY)
-	{
-	  return m_e1->m_p1->m_ind;
-	}
-      else
-	{
-	  return m_e1->m_p2->m_ind;
-	}
+        if (m_e2->m_type == SkelEdge::BOUNDARY)
+    	{
+    	  return m_e1->m_p1->m_ind;
+    	}
+        else
+    	{
+    	  return m_e1->m_p2->m_ind;
+    	}
     }
   else if (m_e2->m_type == SkelEdge::BOUNDARY)
     {
       if (m_e3->m_type == SkelEdge::BOUNDARY)
-	{
-	  return m_e2->m_p2->m_ind;
-	}
+      {
+    	  return m_e2->m_p2->m_ind;
+      }
       else
-	{
-	  pglError("SkelTriangle, getMiddleSummitForTerm(), problems with types");
-	  return -1;
-	}
+      {
+    	 pglError("SkelTriangle, getMiddleSummitForTerm(), problems with types");
+	     return -1;
+	  }
     }
+   return -1;
 }
 
 bool SkelTriangle::operator==(const SkelTriangle& t) const
@@ -3075,15 +3076,15 @@ Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_interse
 	    {
 	      new_point = false;
 	      if (it1 == polyline.end())
-		{
-		  it1 = polyline_it;
-		  it_begin = it;
-		  it_end = it;
-		  it_end++;
-		}
+    		{
+    		  it1 = polyline_it;
+    		  it_begin = it;
+    		  it_end = it;
+    		  it_end++;
+    		}
 	      else if ((it2 == polyline.end()) && (it1 != polyline_it))
-		it2 = polyline_it;
-	      found == (it1 != polyline.end()) && (it2 != polyline.end());
+        	   it2 = polyline_it;
+	      found =((it1 != polyline.end()) && (it2 != polyline.end()));
 	    }
 	  else
 	    {
@@ -3109,7 +3110,7 @@ Polyline2DPtr removeOneLoop(std::list<Vector2> polyline, std::list<Point_interse
 		      it2 = polyline_it;
 		      it2++;
 		    }
-		  found == (it1 != polyline.end()) && (it2 != polyline.end());
+		  found =((it1 != polyline.end()) && (it2 != polyline.end()));
 		}
 	    }
 	}

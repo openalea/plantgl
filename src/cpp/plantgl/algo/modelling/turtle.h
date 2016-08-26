@@ -198,11 +198,11 @@ public:
 	/// Turn Around turtle
 	inline void turnAround() { left(180); }
 
-	/// Roll such as up vector comes in the Z direction
-    inline void rollToVert() { rollToVert(TOOLS(Vector3::OZ)); }
+    /// Roll such as up vector comes in the top direction
+    virtual void rollToVert(real_t alpha = 1.0, const TOOLS(Vector3)& top = TOOLS(Vector3::OZ));
     
-	/// Roll such as up vector comes in the top direction
-    virtual void rollToVert(const TOOLS(Vector3)& top);
+    /// Roll such as head vector comes in the horizontal plane
+    virtual void rollToHorizontal(real_t alpha = 1.0, const TOOLS(Vector3)& top = TOOLS(Vector3::OZ)) ;
     
 	/// set Heading and Up vectors
     virtual void setHead(const TOOLS(Vector3)& h, const TOOLS(Vector3)& u = TOOLS(Vector3::OX));
@@ -390,6 +390,10 @@ public:
 								  real_t utranslation, real_t vtranslation, 
 								  real_t angle, real_t urotcenter, real_t vrotcenter)
     { setTextureTransformation(TOOLS(Vector2)(uscaling,vscaling),TOOLS(Vector2)(utranslation,vtranslation), angle, TOOLS(Vector2)(urotcenter, vrotcenter)); }
+
+    virtual void setTextureBaseColor(const Color4& v);
+    virtual void setTextureBaseColor(int v);
+    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
 
 	inline void setDefaultStep(real_t val)
 	{ default_step = (val > 0 ? val : - val); }

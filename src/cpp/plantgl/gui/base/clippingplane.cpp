@@ -186,7 +186,8 @@ ViewClippingPlaneGL::createToolsMenu(QWidget * parent)
 
 void ViewClippingPlaneGL::clippingPlaneEvent(ViewEvent * e)
 {
-	if(e->type() ==ViewEvent::eClippingPlaneActivate)
+    int etype = e->type();
+	if(etype ==ViewEvent::eClippingPlaneActivate)
 	{
 		ViewCPActivateEvent * ev = (ViewCPActivateEvent *)e;
 		int i = ev->arg1;
@@ -196,7 +197,7 @@ void ViewClippingPlaneGL::clippingPlaneEvent(ViewEvent * e)
 			emit valueChanged();
 		}
 	}
-	else if(e->type() ==ViewEvent::eClippingPlaneSet)
+	else if(etype ==ViewEvent::eClippingPlaneSet)
 	{
 		ViewCPSetEvent * ev = (ViewCPSetEvent *)e;
 		int i = ev->arg1;

@@ -579,7 +579,6 @@ bool VrmlPrinter::process( ImageTexture * texture ) {
   GEOM_VRMLPRINT_FIELD("url",texture->getFilename(),STRING);
   GEOM_VRMLPRINT_FIELD("repeatS",texture->getRepeatS(),BOOLEAN);
   GEOM_VRMLPRINT_FIELD("repeatT",texture->getRepeatT(),BOOLEAN);
-  GEOM_VRMLPRINT_FIELD("transparency",texture->getTransparency(),REAL);
 
   GEOM_VRMLPRINT_ENDOBJ;
 

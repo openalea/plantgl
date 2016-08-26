@@ -29,13 +29,14 @@
  *  ----------------------------------------------------------------------------
  */
 
+
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/export_list.h>
 #include "export_printer.h"
 #include <plantgl/algo/codec/cdc_geom.h>
 #include <plantgl/algo/codec/scne_parser.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/scenegraph/core/smbtable.h>
-#include <plantgl/python/export_refcountptr.h>
-#include <plantgl/python/export_list.h>
 #include <sstream>
 
 /* ----------------------------------------------------------------------- */

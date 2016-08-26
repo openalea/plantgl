@@ -45,49 +45,33 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 
 
 #include "util_glut.h"
+#include <plantgl/scenegraph/geometry/sphere.h>
+#include <plantgl/algo/base/discretizer.h>
+#include <plantgl/algo/opengl/glrenderer.h>
 
-#include <math.h>
-
-
-/* Some <math.h> files do not define M_PI... */
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-static GLUquadricObj *quadObj;
-
-#define QUAD_OBJ_INIT() { if(!quadObj) geomInitQuadObj(); }
+PGL_USING_NAMESPACE
 
 static void
-geomInitQuadObj(void)
+_geomDrawSphere(GLdouble radius, GLint slices, GLint stacks)
 {
-  quadObj = gluNewQuadric();
-  if (!quadObj)exit(-1);
-    // __glutFatalError("out of memory.");
+    GeometryPtr msphere(new Sphere(radius, slices, stacks));
+    Discretizer d;
+    GLRenderer renderer(d);
+    msphere->apply(renderer);
 }
 
 void
 geomWireSphere(GLdouble radius, GLint slices, GLint stacks)
 {
-  QUAD_OBJ_INIT();
-  gluQuadricDrawStyle(quadObj, GLU_LINE);
-  gluQuadricNormals(quadObj, GLU_SMOOTH);
-  /* If we ever changed/used the texture or orientation state
-     of quadObj, we'd need to change it to the defaults here
-     with gluQuadricTexture and/or gluQuadricOrientation. */
-  gluSphere(quadObj, radius, slices, stacks);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    _geomDrawSphere(radius, slices, stacks);
 }
 
 void
 geomSolidSphere(GLdouble radius, GLint slices, GLint stacks)
 {
-  QUAD_OBJ_INIT();
-  gluQuadricDrawStyle(quadObj, GLU_FILL);
-  gluQuadricNormals(quadObj, GLU_SMOOTH);
-  /* If we ever changed/used the texture or orientation state
-     of quadObj, we'd need to change it to the defaults here
-     with gluQuadricTexture and/or gluQuadricOrientation. */
-  gluSphere(quadObj, radius, slices, stacks);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    _geomDrawSphere(radius, slices, stacks);
 }
 
 static void

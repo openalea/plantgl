@@ -66,6 +66,10 @@ public:
     
     virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
 
+    virtual void setTextureBaseColor(const Color4& v);
+    virtual void setTextureBaseColor(int v);
+    virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
+
     void clearColorList();
     
     const std::vector<AppearancePtr>& getColorList() const;

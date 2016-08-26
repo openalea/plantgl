@@ -36,6 +36,7 @@
 #include "../algo_config.h"
 #include <plantgl/math/util_vector.h>
 #include <plantgl/math/util_matrix.h>
+#include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/geometry/curve.h>
 #include <plantgl/scenegraph/geometry/lineicmodel.h>
 #include <plantgl/scenegraph/function/function.h>
@@ -127,6 +128,7 @@ public:
   TOOLS(Vector2) texCoordTranslation;
   TOOLS(Vector2) texCoordRotCenter;
   real_t texCoordRotAngle;
+  Color4 texBaseColor;
 
   real_t axialLength;
 

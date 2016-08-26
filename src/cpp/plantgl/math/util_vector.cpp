@@ -68,7 +68,7 @@ Vector2::Polar::Polar( const Vector2& v ) :
 
 bool
 Vector2::Polar::isValid( ) const {
-  return finite(radius) && finite(theta);
+  return pglfinite(radius) && pglfinite(theta);
 }
 
 /*  --------------------------------------------------------------------- */
@@ -211,7 +211,7 @@ Vector2::isOrthogonalTo( const Vector2& v ) const {
 
 bool
 Vector2::isValid( ) const {
-  return finite(__X) && finite(__Y);
+  return pglfinite(__X) && pglfinite(__Y);
 }
 
 real_t
@@ -357,9 +357,9 @@ Vector3::Cylindrical::Cylindrical( const Vector3& v ) :
 bool
 Vector3::Cylindrical::isValid( ) const {
   return
-    finite(radius) &&
-    finite(theta) &&
-    finite(z);
+    pglfinite(radius) &&
+    pglfinite(theta) &&
+    pglfinite(z);
 }
 
 /*  --------------------------------------------------------------------- */
@@ -404,9 +404,9 @@ Vector3::Spherical::Spherical( const Vector3& v ) :
 bool
 Vector3::Spherical::isValid( ) const {
   return
-    finite(radius) &&
-    finite(theta) &&
-    finite(phi);
+    pglfinite(radius) &&
+    pglfinite(theta) &&
+    pglfinite(phi);
 }
 
 real_t Vector3::Spherical::spherical_distance(real_t theta2, real_t phi2) const {
@@ -594,7 +594,7 @@ Vector3::isOrthogonalTo( const Vector3& v ) const {
 
 bool 
 Vector3::isValid( ) const {
-  return finite(__X) && finite(__Y) && finite(__Z);
+  return pglfinite(__X) && pglfinite(__Y) && pglfinite(__Z);
 }
 
 real_t 
@@ -964,8 +964,8 @@ bool Vector4::isOrthogonalTo( const Vector4& v ) const {
 
 bool Vector4::isValid( ) const {
   return
-    finite(__X) && finite(__Y) &&
-    finite(__Z) && finite(__W);
+    pglfinite(__X) && pglfinite(__Y) &&
+    pglfinite(__Z) && pglfinite(__W);
 }
 
 real_t Vector4::normalize( ) {

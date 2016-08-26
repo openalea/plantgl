@@ -494,12 +494,13 @@ void ViewFileManager::removeOpenFile(const QString& _name){
   if(!__lastOpenFiles.empty() && !_name.isEmpty()){
     QStringList::iterator _beg = __lastOpenFiles.begin();
     for(; _beg != (__lastOpenFiles.end()) && *_beg != _name ;_beg++);
-    if (_beg != (__lastOpenFiles.end()))
+    if (_beg != (__lastOpenFiles.end())){
       if(_beg == __lastOpenFiles.begin())
-    __lastOpenFiles.pop_front();
-      else if(_beg == __lastOpenFiles.end()-1)
-    __lastOpenFiles.pop_back();
+        __lastOpenFiles.pop_front();
+      else if(_beg == (__lastOpenFiles.end()-1))
+        __lastOpenFiles.pop_back();
       else  __lastOpenFiles.erase(_beg);
+    }
   }
 }
 

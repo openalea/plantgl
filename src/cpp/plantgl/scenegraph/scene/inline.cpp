@@ -188,5 +188,8 @@ Inline::applyAppearanceOnly( Action& action )
 
   /// Return whether self should be rendered dynamically
 bool Inline::hasDynamicRendering() const 
-{ if(__scene) return __scene->hasDynamicRendering(); }
+{ 
+    if(__scene) return __scene->hasDynamicRendering(); 
+    return false;
+}
 
