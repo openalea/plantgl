@@ -40,6 +40,7 @@ using namespace std;
 
 TOOLS_BEGIN_NAMESPACE
 
+
 /*  --------------------------------------------------------------------- */
 
 inline real_t GEOM_DET2(real_t m0, real_t m1,real_t m2,real_t m3) 
@@ -98,8 +99,8 @@ real_t * Matrix2::getData( ) {
 
 void Matrix2::set( const real_t& m0, const real_t& m1,
                    const real_t& m2, const real_t& m3 ) {
-  GEOM_ASSERT(std::finite(m0) && std::finite(m1) &&
-              std::finite(m2) && std::finite(m3));
+  GEOM_ASSERT(std::pglfinite(m0) && std::pglfinite(m1) &&
+              std::pglfinite(m2) && std::pglfinite(m3));
   __M[0] = m0; __M[1] = m1; __M[2] = m2; __M[3] = m3;
 }
 
@@ -171,8 +172,8 @@ bool Matrix2::isOrthogonal( ) const {
 
 bool Matrix2::isValid( ) const {
   return
-          finite(__M[0]) && finite(__M[1])  &&
-          finite(__M[2]) && finite(__M[3]);
+          pglfinite(__M[0]) && pglfinite(__M[1])  &&
+          pglfinite(__M[2]) && pglfinite(__M[3]);
 }
 
 Vector2 Matrix2::getColumn( uchar_t i ) const {
@@ -336,9 +337,9 @@ real_t * Matrix3::getData( ) {
 void Matrix3::set( const real_t& m0, const real_t& m1, const real_t& m2,
                    const real_t& m3, const real_t& m4, const real_t& m5,
                    const real_t& m6, const real_t& m7, const real_t& m8 ) {
-  GEOM_ASSERT(std::finite(m0) && std::finite(m1) && std::finite(m2) &&
-              std::finite(m3) && std::finite(m4) && std::finite(m5) &&
-              std::finite(m6) && std::finite(m7) && std::finite(m8));
+  GEOM_ASSERT(std::pglfinite(m0) && std::pglfinite(m1) && std::pglfinite(m2) &&
+              std::pglfinite(m3) && std::pglfinite(m4) && std::pglfinite(m5) &&
+              std::pglfinite(m6) && std::pglfinite(m7) && std::pglfinite(m8));
   __M[0] = m0; __M[1] = m1; __M[2] = m2;
   __M[3] = m3; __M[4] = m4; __M[5] = m5;
   __M[6] = m6; __M[7] = m7; __M[8] = m8;
@@ -445,11 +446,11 @@ bool Matrix3::isSingular( ) const {
 
 bool Matrix3::isValid( ) const {
   return
-    finite(__M[0]) && finite(__M[1]) &&
-    finite(__M[2]) && finite(__M[3]) &&
-    finite(__M[4]) && finite(__M[5]) &&
-    finite(__M[6]) && finite(__M[7]) &&
-    finite(__M[8]);
+    pglfinite(__M[0]) && pglfinite(__M[1]) &&
+    pglfinite(__M[2]) && pglfinite(__M[3]) &&
+    pglfinite(__M[4]) && pglfinite(__M[5]) &&
+    pglfinite(__M[6]) && pglfinite(__M[7]) &&
+    pglfinite(__M[8]);
 }
 
 Vector3 Matrix3::getColumn( uchar_t i ) const {
@@ -576,7 +577,7 @@ Matrix3 Matrix3::scaling( real_t s )
 
 /*inline*/ Matrix3 Matrix3::axisRotation( const Vector3& axis, const real_t& angle )
 {
-    GEOM_ASSERT(std::finite(angle));
+    GEOM_ASSERT(std::pglfinite(angle));
     GEOM_ASSERT(axis.isValid());
     register real_t _c = cos(angle);
     register real_t _s = sin(angle);
@@ -866,12 +867,12 @@ void Matrix4::set( const real_t& m0, const real_t& m1, const real_t& m2, const r
                    const real_t& m4, const real_t& m5, const real_t& m6, const real_t& m7,
                    const real_t& m8, const real_t& m9, const real_t& m10, const real_t& m11,
                    const real_t& m12, const real_t& m13, const real_t& m14, const real_t& m15 ) {
-  GEOM_ASSERT(std::finite(m0) && std::finite(m1) && std::finite(m2) &&
-              std::finite(m3) && std::finite(m4) && std::finite(m5) &&
-              std::finite(m6) && std::finite(m7) && std::finite(m8) &&
-              std::finite(m9) && std::finite(m10) && std::finite(m11) &&
-              std::finite(m12) && std::finite(m13) && std::finite(m14) &&
-              std::finite(m15));
+  GEOM_ASSERT(std::pglfinite(m0) && std::pglfinite(m1) && std::pglfinite(m2) &&
+              std::pglfinite(m3) && std::pglfinite(m4) && std::pglfinite(m5) &&
+              std::pglfinite(m6) && std::pglfinite(m7) && std::pglfinite(m8) &&
+              std::pglfinite(m9) && std::pglfinite(m10) && std::pglfinite(m11) &&
+              std::pglfinite(m12) && std::pglfinite(m13) && std::pglfinite(m14) &&
+              std::pglfinite(m15));
   __M[0]  = m0;  __M[1]  = m1;  __M[2]  = m2;  __M[3]  = m3;
   __M[4]  = m4;  __M[5]  = m5;  __M[6]  = m6;  __M[7]  = m7;
   __M[8]  = m8;  __M[9]  = m9;  __M[10] = m10; __M[11] = m11;
@@ -1020,14 +1021,14 @@ bool Matrix4::isSingular( ) const {
 
 bool Matrix4::isValid( ) const {
   return
-    finite(__M[0]) && finite(__M[1]) &&
-    finite(__M[2]) && finite(__M[3]) &&
-    finite(__M[4]) && finite(__M[5]) &&
-    finite(__M[6]) && finite(__M[7]) &&
-    finite(__M[8]) && finite(__M[9]) &&
-    finite(__M[10]) && finite(__M[11]) &&
-    finite(__M[12]) && finite(__M[13]) &&
-    finite(__M[14]) && finite(__M[15]);
+    pglfinite(__M[0]) && pglfinite(__M[1]) &&
+    pglfinite(__M[2]) && pglfinite(__M[3]) &&
+    pglfinite(__M[4]) && pglfinite(__M[5]) &&
+    pglfinite(__M[6]) && pglfinite(__M[7]) &&
+    pglfinite(__M[8]) && pglfinite(__M[9]) &&
+    pglfinite(__M[10]) && pglfinite(__M[11]) &&
+    pglfinite(__M[12]) && pglfinite(__M[13]) &&
+    pglfinite(__M[14]) && pglfinite(__M[15]);
 }
 
 

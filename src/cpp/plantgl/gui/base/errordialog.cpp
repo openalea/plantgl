@@ -354,11 +354,19 @@ void ViewErrorDialog::qtMessage(QtMsgType type, const char *msg )
 		if(__display->__popupButton->isChecked())show();
 		__append("<B>*** Qt Warning:</B> "+QString(msg)+"\n");
 		break;
+    case QtCriticalMsg:
+        std::cerr << "*** Qt Critical: " << msg << std::endl;
+        show();
+        __append("<B>*** Qt Critical:</B> "+QString(msg)+"\n");
+        break;
 	case QtFatalMsg:
 		std::cerr << "*** Qt Fatal: " << msg << std::endl;
 		show();
 		__append("<B>*** Qt Fatal:</B> "+QString(msg)+"\n");
 		abort();
+        break;
+    default:
+        break;
 	}
 }
 

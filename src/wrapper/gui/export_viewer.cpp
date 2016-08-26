@@ -423,7 +423,7 @@ bool viewer_wait(){
 
 
 PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost::python::object(),
-                                       char * caption = "", 
+                                       const char * caption = "", 
                                        MaterialPtr initial = MaterialPtr() )
 {
     QWidget * parent  = NULL;
@@ -436,7 +436,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(pyGetMaterialFromDialog_overloads, pyGetMaterial
 
 int pyEditMaterialInDialog(Material * initial,
                             boost::python::object pyparent = boost::python::object(), 
-                            char * caption = "")
+                            const char * caption = "")
 {
     QWidget * parent  = NULL;
     if (pyparent != boost::python::object())

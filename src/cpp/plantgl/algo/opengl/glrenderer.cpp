@@ -1013,6 +1013,7 @@ bool GLRenderer::process( Material * material ) {
 bool GLRenderer::process( ImageTexture * texture ) {
   GEOM_ASSERT_OBJ(texture);
 
+
   Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
   if(it != __cachetexture.end()){
 	//  printf("bind texture : %i\n", it->second);
@@ -1030,10 +1031,10 @@ bool GLRenderer::process( ImageTexture * texture ) {
 	  if (id !=0){
 	  glBindTexture(GL_TEXTURE_2D, id);
 
-//	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE  );
+	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE  );
 //	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL  );
 //	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND  );
-	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
+//	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
 
 	  glTexParameterf( GL_TEXTURE_2D, 
 					   GL_TEXTURE_WRAP_S, 
@@ -1060,8 +1061,14 @@ bool GLRenderer::process( ImageTexture * texture ) {
 		                 GL_TEXTURE_MIN_FILTER, 
 			    	     GL_LINEAR_MIPMAP_NEAREST );
 
-	    gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
-		                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+
+        glTexImage2D( GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+
+        glGenerateMipmap(GL_TEXTURE_2D);
+	    //gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
+		//                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
       }
 	  // printf("gen texture : %i\n",id);
 	  // registerTexture(texture,id);
@@ -1081,6 +1088,19 @@ bool GLRenderer::process( ImageTexture * texture ) {
 bool GLRenderer::process( Texture2D * texture ) {
   GEOM_ASSERT_OBJ(texture);
   GEOM_GLRENDERER_CHECK_APPEARANCE(texture);
+
+  GLfloat _rgba[4];
+
+  const Color4& _color = texture->getBaseColor();
+  _rgba[0] = (GLfloat)_color.getRedClamped();
+  _rgba[1] = (GLfloat)_color.getGreenClamped();
+  _rgba[2] = (GLfloat)_color.getBlueClamped();
+  _rgba[3] = 1.0f-_color.getAlphaClamped();
+
+  /// We set the current color in the case of disabling the lighting
+  glColor4fv(_rgba);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,_rgba);
 
   if(texture->getImage()){
 	  // load image

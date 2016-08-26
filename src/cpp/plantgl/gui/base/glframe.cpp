@@ -84,7 +84,7 @@
 #include "scenegl.h"
 #include "zbuffer.h"
 
-#include <plantgl/algo/opengl/util_glut.h>
+#include <plantgl/algo/opengl/util_glu.h>
 
 // PGL_USING_NAMESPACE
 
@@ -1089,19 +1089,12 @@ ViewGLFrame::grabZBufferPoints( )
 double ViewGLFrame::getPixelWidth(){
 	bool mode = __camera->getProjectionMode();
 	if(mode)__camera->setOrthographicMode();
+
 	makeItCurrent();
-	GLint viewport[4];
-	GLdouble modelMatrix[16], projMatrix[16];
-	glGetIntegerv(GL_VIEWPORT,viewport);
-	glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,projMatrix);
-	GLdouble winx = viewport[2]/2;
-	GLdouble winy = viewport[3]/2;
 	GLdouble objx,objx2,objy,objy2,objz,objz2 ;
-	if( !gluUnProject(0.0,10.0, 0.0, modelMatrix, projMatrix, viewport,
-					 &objx,&objy, &objz) == GL_TRUE  ||
-		!gluUnProject(1.0,10.0, 0.0, modelMatrix, projMatrix, viewport,
-					 &objx2,&objy2, &objz2) == GL_TRUE  )return -1;
+	if( geomUnProject(0.0,10.0, 0.0, &objx,&objy, &objz) != GL_TRUE  ||
+		geomUnProject(1.0,10.0, 0.0, &objx2,&objy2, &objz2) != GL_TRUE  ) return -1;
+
 	double pixelsize = sqrt(pow(objx-objx2,2)+pow(objy-objy2,2)+pow(objz-objz2,2));
 	if(mode)__camera->setProjectionMode(mode);
 	return pixelsize;
@@ -1586,7 +1579,8 @@ bool ViewGLFrame::event(QEvent *e){
 
 void ViewGLFrame::customEvent(QEvent *e)
 {
-	if(e->type() == ViewEvent::eSceneChange){
+    int etype = e->type();
+	if(etype == ViewEvent::eSceneChange){
     ViewSceneChangeEvent * event = (ViewSceneChangeEvent *)e;
     __scene->sceneChangeEvent(event);
   }
@@ -1827,7 +1821,9 @@ ViewGLFrame::addProperties(QTabWidget * tab)
 	  glGetIntegerv(GL_CULL_FACE_MODE ,res);
 	  if(*res == GL_BACK)glform.BackFaceButton->setChecked(true);
 	  else if(*res == GL_FRONT)glform.FrontFaceButton->setChecked(true);
-	  else qWarning(("Error with glGet(GL_CULL_FACE_MODE) : "+QString::number(*res)+'-'+QString::number(GL_BACK)).toAscii().data());
+	  else {
+        qWarning("Error with glGet(GL_CULL_FACE_MODE) : %i", *res);
+      }
 	}
 
 	glGetIntegerv(GL_SHADE_MODEL,res);

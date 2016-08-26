@@ -345,7 +345,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 %}
 
-%pure_parser        /* asks for a reentrant parser: don't remove ! */
+%pure-parser        /* asks for a reentrant parser: don't remove ! */
 // %define api.pure full
 // %locations
 
@@ -577,6 +577,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %token TokAngleList
 %token TokAxis
 %token TokAzimuth
+%token TokBaseColor
 %token TokBaseRadius
 %token TokBBoxCenter
 %token TokBBoxSize
@@ -1168,7 +1169,8 @@ AppearanceRef:
              if (_tex)
               $$ = new AppearancePtr(new Texture2D(_tex));
              else {
-                pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(*(_i->second)).name());
+                SMB_TABLE_TYPE& obj = _i->second;
+                pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"Appearance",$1->c_str(),typeid(obj).name());
                 $$ = NULL;
               }
          }
@@ -1199,7 +1201,8 @@ GeometryRef:
        if(_geom)
          $$ = new GeometryPtr(_geom);
        else{
-         pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"Geometry",$1->c_str(),typeid(*(_i->second)).name());
+         SMB_TABLE_TYPE& obj = _i->second;
+         pglErrorEx(PGLWARNINGMSG(INVALID_TYPE_sss),"Geometry",$1->c_str(),typeid(obj).name());
          $$ = NULL;
        }
 
@@ -1391,7 +1394,8 @@ Command:
      cursmbtable(t);
      Printer printer(postream(p),postream(p),postream(p));
      for (SceneObjectSymbolTable::iterator _i = t.begin();_i != t.end();_i++) {
-       const char * _cname = typeid(*(_i->second)).name();
+       SceneObject& obj = *(_i->second);
+       const char * _cname = typeid(obj).name();
        postream(p) << "<" << _cname << "> : " <<  (_i->second->isNamed() ? _i->second->getName().c_str() : "No Name") << std::endl;
      };
   }
@@ -2304,6 +2308,9 @@ Texture2DFieldList:
  | Texture2DFieldList TokTransfo Texture2DTransformationObj {
      GEOM_PARSER_SET_FIELD($1,Transformation,$3); $$=$1;
    }
+ | Texture2DFieldList TokBaseColor Color4 {
+     GEOM_PARSER_SET_FIELD($1,BaseColor,$3); $$=$1;
+   }
  | { $$ = new Texture2D::Builder; };
 
 ImageTextureFieldList:
@@ -2328,9 +2335,6 @@ ImageTextureFieldList:
    }
  | ImageTextureFieldList TokShininess Real {
      /* GEOM_PARSER_SET_FIELD($1,Shininess,$3);*/ $$=$1;
-   }
- | ImageTextureFieldList TokTransparency Real {
-     GEOM_PARSER_SET_FIELD($1,Transparency,$3); $$=$1;
    }
  | ImageTextureFieldList TokRepeatS TokBool {
      GEOM_PARSER_SET_FIELD($1,RepeatS,$3); $$=$1;

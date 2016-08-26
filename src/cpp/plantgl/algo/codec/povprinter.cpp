@@ -410,6 +410,26 @@ bool PovPrinter::process( Texture2D * texture ) {
   
 
   GEOM_POVPRINT_DECLARE(__matStream,texture);
+  if (!texture->isBaseColorToDefault()){
+    GEOM_POVPRINT_BEG_(__matStream,"texture");
+    
+      GEOM_POVPRINT_BEG_(__matStream,"pigment");
+
+      Color4 _color = texture->getBaseColor();
+      __matStream << __indent << "color rgbt ";
+      GEOM_POVPRINT_COLOR4(__matStream,_color);
+      __matStream << endl;
+      GEOM_POVPRINT_END_(__matStream);
+
+      __matStream << __indent;
+      GEOM_POVPRINT_BEG_(__matStream,"finish");
+
+      __matStream << __indent << "ambient 1" << endl;
+      __matStream << __indent << "diffuse 1" << endl;
+
+    GEOM_POVPRINT_END_(__matStream);
+    GEOM_POVPRINT_END_(__matStream);
+  }
 
   GEOM_POVPRINT_BEG_(__matStream,"texture");
 
@@ -438,7 +458,10 @@ bool PovPrinter::process( ImageTexture * texture ) {
 
   GEOM_POVPRINT_BEG_(__matStream,"uv_mapping image_map");
 
-  __matStream << __indent << "png \"" << texture->getFilename() << '"' << endl;;
+  __matStream << __indent << "png \"" << texture->getFilename() << '"' << endl;
+
+  if (!dynamic_pointer_cast<Texture2D>(__appearance)->isBaseColorToDefault())
+  __matStream << __indent << "filter all 0.5 " << endl;
 
   GEOM_POVPRINT_END_(__matStream);
 
@@ -1463,7 +1486,7 @@ bool PovPrinter::process( Text * text ) {
   GEOM_ASSERT(text);
   GEOM_ASSERT(text);
   GEOM_POVPRINT_BEGIN(__geomStream,"text",text);
-  __geomStream << __indent << "ttf \"crystal.ttf\"," << endl;
+  __geomStream << __indent << "internal 3," << endl;
   __geomStream << __indent << '"' << text->getString() << '"' << endl;
   __geomStream << __indent << "2, 0" << endl;
   GEOM_POVPRINT_END(__geomStream, text);

@@ -357,11 +357,14 @@ real_t mean_over(const Point3ArrayPtr points, const Index& section, int i, int j
 
 
 #ifdef WITH_CGAL
-#include <CGAL/eigen.h>
+//#include <CGAL/eigen.h>
+#include <CGAL/Eigen_diagonalize_traits.h>
 #endif
 TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Index& section)
 {
 #ifdef WITH_CGAL
+    typedef CGAL::Eigen_diagonalize_traits<real_t> EigenDiagonalize;
+
     real_t mx  = mean_over(pointnormals,section,0);
     real_t mx2 = mean_over(pointnormals,section,0,0);
     real_t my  = mean_over(pointnormals,section,1);
@@ -379,7 +382,7 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Inde
               mxyxy     , my2-my*my , myzyz,
               mxzxz     , myzyz     , mz2-mz*mz);*/
 
-    real_t covariance[6];
+    EigenDiagonalize::Covariance_matrix covariance;
     covariance[0] = mx2-mx*mx;
     covariance[1] = mxyxy;
     covariance[2] = my2-my*my;
@@ -387,9 +390,10 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Inde
     covariance[4] = myzyz;
     covariance[5] = mz2-mz*mz;
 
-    real_t eigen_values[3];
-    real_t eigen_vectors[9];
-    CGAL::internal::eigen_symmetric<real_t>(covariance,3,eigen_vectors,eigen_values);
+    EigenDiagonalize::Vector eigen_values;
+    EigenDiagonalize::Matrix eigen_vectors;
+    // CGAL::internal::eigen_symmetric<real_t>(covariance,3,eigen_vectors,eigen_values);
+    EigenDiagonalize::diagonalize_selfadjoint_covariance_matrix(covariance, eigen_values, eigen_vectors);
 
     if (eigen_values[2] <  eigen_values[1] && eigen_values[2] <  eigen_values[0])
         return Vector3(eigen_vectors[6],eigen_vectors[7],eigen_vectors[8]);

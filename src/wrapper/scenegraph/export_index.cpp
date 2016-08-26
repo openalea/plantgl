@@ -29,13 +29,14 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <string>
-#include <sstream>
-#include <plantgl/scenegraph/container/indexarray.h>
+#include "arrays_macro.h"
 
 #include <plantgl/python/tuple_converter.h>
 #include <plantgl/python/extract_list.h>
-#include "arrays_macro.h"
+
+#include <string>
+#include <sstream>
+#include <plantgl/scenegraph/container/indexarray.h>
 
 #include <boost/python.hpp>
 

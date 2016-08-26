@@ -349,7 +349,7 @@ std::string BinaryParser::readString()
    stream->read(label,_sizes);
    label[_sizes] = '\0';
    val = std::string(label);
-   delete label;
+   delete [] label;
   }
   return val;
 }
@@ -869,6 +869,11 @@ bool BinaryParser::readTexture2D() {
 		}
 	}
 
+    if( __tokens->getVersion() >= 2.3f){
+        IF_GEOM_NOTDEFAULT(_default,1)
+             GEOM_READ_FIELD(texture,BaseColor,Color4);
+    }
+
     GEOM_PARSER_SETNAME(_name,_ident,texture,Texture2D);
     return true;
 
@@ -898,8 +903,10 @@ bool BinaryParser::readImageTexture() {
 		IF_GEOM_NOTDEFAULT(_default,1)
 			GEOM_READ_FIELD(mat,RepeatT,Real);
 
-		IF_GEOM_NOTDEFAULT(_default,2)
-			GEOM_READ_FIELD(mat,Transparency,Real);
+        if( version < 2.4f){
+            IF_GEOM_NOTDEFAULT(_default,2)
+                real_t transparency = readReal();
+        }
 	}
 	else {
 		MaterialPtr oldmat(new Material());
@@ -919,7 +926,7 @@ bool BinaryParser::readImageTexture() {
 			GEOM_READ_FIELD(oldmat,Shininess,Real);
 
 		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_FIELD(mat,Transparency,Real);
+			GEOM_READ_FIELD(oldmat,Transparency,Real);
 	}
 
     if( version >= 1.8f){
@@ -2007,15 +2014,16 @@ bool BinaryParser::readSwung()
       _it++;
     else
       {
-      err++;
-      __outputStream << "*** PARSER: <Swung : "
-                     << ( _name.empty() ? "(unamed)" : _name )
-                     << "> A Curve2D component is not valid." << endl;
-      if(__result){
-      __outputStream << "*** PARSER: <Swung : "
-                     << ( _name.empty() ? "(unamed)" : _name )
-                     << "> Found " << typeid(*__result).name() << " instead." << endl;
-      }
+          err++;
+          __outputStream << "*** PARSER: <Swung : "
+                         << ( _name.empty() ? "(unamed)" : _name )
+                         << "> A Curve2D component is not valid." << endl;
+          if(__result){
+            SceneObject& res = *__result;
+            __outputStream << "*** PARSER: <Swung : "
+                           << ( _name.empty() ? "(unamed)" : _name )
+                           << "> Found " << typeid(res).name() << " instead." << endl;
+          }
       }
     }
 

@@ -66,7 +66,7 @@ ViewRotCenterGL::ViewRotCenterGL(ViewCameraGL *camera,
   __position(0,0,0),
   __displayList(0){
   QMainWindow * mwidget = dynamic_cast<QMainWindow *>(parent->parent());
-  __sliders= new QDockWidget(mwidget,false);
+  __sliders= new QDockWidget(mwidget);
   __sliders->setObjectName("RotCenterSliders");
   __sliders->setWindowTitle(tr("Rotating Center Coordinates"));
   QWidget * widgetContent = new QWidget(__sliders);

@@ -697,7 +697,7 @@ BranchCompressor::compress(real_t taux,
 
     timer.start();
 
-    PR("Wanted Compression rate : %.2f %\n",taux);
+    PR("Wanted Compression rate : %.2f %%\n",taux);
     PR("Wanted degree : %d\n",degre);
     if(__verbose)cout << "Error Bound for the fitting :" << ErreurBound << "\n";
 
@@ -804,7 +804,7 @@ BranchCompressor::compress(real_t taux,
 		  DataRemind-=localDataOut;
 		  real_t localrate=0;
 		  localrate=(100-((real_t)localDataOut*100.0)/((real_t)k *sizeof(real_t) * 3.0));
-		  PR("Compressed at %.2f %\n\n",localrate);
+		  PR("Compressed at %.2f %%\n\n",localrate);
 		  
 		}
 		/* Ajustement d'une ligne polygonale avec lissage*/
@@ -845,7 +845,7 @@ BranchCompressor::compress(real_t taux,
 			else addScene(scene, currentBranch,LineicModelPtr(new Polyline(pts)));
 			DataOut+=(3*pts->size()*sizeof(real_t));
 			DataRemind-=3*pts->size()*sizeof(real_t);
-			PR("Compressed at %d %\n\n",(100-(pts->size()*100/k)));
+			PR("Compressed at %d %%\n\n",(100-(pts->size()*100/k)));
 		  }
 		}
 		else if(currentBranch< indexGeometry&&currentBranch>=0){
@@ -893,7 +893,7 @@ BranchCompressor::compress(real_t taux,
 	  
       if(currentBranch < GeometryVector.size()-1&& currentBranch>=0){
 		if(!__verbose&&currentBranch>0){
-		  printf("\x0dGenerate : %.2f % ",((real_t)currentBranch*100.0/(real_t)GeometryVector.size()));
+		  printf("\x0dGenerate : %.2f %% ",((real_t)currentBranch*100.0/(real_t)GeometryVector.size()));
 		  cout <<flush;
 		}		
 		//		nbBranch--;
@@ -912,9 +912,9 @@ BranchCompressor::compress(real_t taux,
 		  //		  nbBranch=-1;
 		  first_pass = false;
 		  PR("Nb Curve Not Represented : %d - %d bytes to %d bytes\n",NbNotRep,DataIn2,DataRemind);
-		  PR("Data Out : %d - Data In : %d - Rate : %.2f %\n",DataOut,DataIn2,100.0-(100.0*(real_t)DataOut/(real_t)DataIn2));
+		  PR("Data Out : %d - Data In : %d - Rate : %.2f %%\n",DataOut,DataIn2,100.0-(100.0*(real_t)DataOut/(real_t)DataIn2));
 		  if(!__verbose){
-			printf("\x0dGenerate : 100.00 %\n");
+			printf("\x0dGenerate : 100.00 %%\n");
 		  }
 		}
 		if(NbNotRep2<NbNotRep){
@@ -935,10 +935,10 @@ BranchCompressor::compress(real_t taux,
     PR("\n##############################################\n");
     PR("# Number of Object in the list : %d\n",scene->size());
     PR("##############################################\n");
-    PR("# Input  : %d bytes - %d Point 3D.\n",DataIn,(DataIn/(3*sizeof(real_t))));
+    PR("# Input  : %d bytes - %lu Point 3D.\n",DataIn,(DataIn/(3*sizeof(real_t))));
     PR("# Output : %d bytes.\n",DataOut);
     taux=(100-((100.0*(real_t)DataOut)/((real_t)DataIn)));
-    PR("# Compression : %.2f %\n",taux);
+    PR("# Compression : %.2f %%\n",taux);
     PR("# Error Sum : %.2f .\n",SumError);
     PR("# Error Average : %.2f per Point 3D.\n",((SumError*3*sizeof(real_t))/DataIn));
     PR("#                 %.2f per Curve.\n",(SumError/GeometryVector.size()));
@@ -955,24 +955,24 @@ BranchCompressor::compress(real_t taux,
     else sprintf(time,"%.2f",timing);
     PR("# Timer : %s sec.\n",time);
     else {
-	  cerr << "Calculus Time : " << time << " sec [fit=" << fittime <<"]- Compression rate : " << taux << "% [" << DataOut << '/' << DataIn << ']' << endl;
+	  cerr << "Calculus Time : " << time << " sec [fit=" << fittime <<"]- Compression rate : " << taux << "%% [" << DataOut << '/' << DataIn << ']' << endl;
 	}
 	if(obtainedrate)*obtainedrate = taux;
 	if(computationtime)*computationtime = timing;
 	if(_fittime)*_fittime = fittime;
 
-    PR("# Number of Curve found : %d.\n",GeometryVector.size());
+    PR("# Number of Curve found : %lu.\n",GeometryVector.size());
     if((scene->size()-NbBezierCurve)!=0)
-      PR("# NURBS : %.2f % (%d : Max %d, Min %d).\n",((real_t)scene->size()-(real_t)NbBezierCurve)*100.0/(real_t)GeometryVector.size(),(scene->size()-NbBezierCurve),Nmax,Nmin);
+      PR("# NURBS : %.2f %% (%d : Max %d, Min %d).\n",((real_t)scene->size()-(real_t)NbBezierCurve)*100.0/(real_t)GeometryVector.size(),(scene->size()-NbBezierCurve),Nmax,Nmin);
     if(NbBezierCurve!=0)
-      PR("# Bezier : %.2f % (%d : Max %d, Min %d).\n",(real_t)NbBezierCurve*100.0/(real_t)GeometryVector.size(),NbBezierCurve,Bmax,Bmin);
+      PR("# Bezier : %.2f %% (%d : Max %d, Min %d).\n",(real_t)NbBezierCurve*100.0/(real_t)GeometryVector.size(),NbBezierCurve,Bmax,Bmin);
     if(NbPolyline!=0)
-      PR("# Polyline : %.2f % (%d : Max %d, Min %d).\n",(real_t)NbPolyline*100.0/(real_t)GeometryVector.size(),NbPolyline,Pmax,Pmin);
+      PR("# Polyline : %.2f %% (%d : Max %d, Min %d).\n",(real_t)NbPolyline*100.0/(real_t)GeometryVector.size(),NbPolyline,Pmax,Pmin);
     if(NbPoint!=0)
-      PR("# Point : %.2f % (%d).\n",(real_t)NbPoint*100.0/(real_t)indexGeometry,NbPoint);
+      PR("# Point : %.2f %% (%d).\n",(real_t)NbPoint*100.0/(real_t)indexGeometry,NbPoint);
     if((GeometryVector.size()-scene->size()-NbPolyline-NbPoint)!=0)
-      PR("# None : %.2f % (%d : Max %d, Min 0).\n",(real_t)(GeometryVector.size()-scene->size()-NbPolyline-NbPoint)*100.0/(real_t)GeometryVector.size(),
-	 (GeometryVector.size()-scene->size()-NbPolyline-NbPoint),Emax);
+      PR("# None : %.2f %% (%lu : Max %d, Min 0).\n",(real_t)(GeometryVector.size()-scene->size()-NbPolyline-NbPoint)*100.0/(real_t)GeometryVector.size(),
+	     (GeometryVector.size()-scene->size()-NbPolyline-NbPoint),Emax);
     PR("##############################################\n");
 	interConnection(scene);
 

@@ -105,7 +105,7 @@ void convertTable(const SymbolTable<U>& intable, SymbolTable<T>& outtable)
   typedef typename SymbolTable< U >::const_iterator const_iterator;
   for( const_iterator _it = intable.begin();
       _it != intable.end() ; ++_it){
-      if(tobject = dynamic_pointer_cast<T>(_it->second)) outtable[_it->first] = tobject;
+      if((tobject = dynamic_pointer_cast<T>(_it->second))) outtable[_it->first] = tobject;
   }
 }
 

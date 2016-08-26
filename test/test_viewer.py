@@ -110,7 +110,7 @@ def test_camera_light():
  
 
 def test_image():
-    w = 400
+    w = 600
     h = 400
     rw, rh = w,h
     Viewer.display(Scene())
@@ -130,7 +130,7 @@ def test_image():
         del q
     os.remove(fname)
     if not imgsizetest :
-        raise Exception( "Viewer.frameGL.setSize failed %s" % str((rw,rh)))
+        raise Exception( "Viewer.frameGL.setSize failed %s instead of %s" % (str((rw,rh)),str((w,h))) )
 
 
 

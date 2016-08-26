@@ -127,7 +127,7 @@ bool Texture2DTransformation::Builder::isValid( ) const {
 
   /// RotationAngle
   if (RotationAngle){
-    if (!finite(*RotationAngle) ){
+    if (!pglfinite(*RotationAngle) ){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),
 				 "Texture2DTransformation","RotationAngle","Must be valid.");
       return false;
@@ -233,7 +233,6 @@ TOOLS(Vector2) Texture2DTransformation::transform( const TOOLS(Vector2)& point )
 const bool ImageTexture::DEFAULT_MIPMAPING(true);
 const bool ImageTexture::DEFAULT_REPEATS(true);
 const bool ImageTexture::DEFAULT_REPEATT(true);
-const real_t ImageTexture::DEFAULT_TRANSPARENCY(0);
 
 /* ----------------------------------------------------------------------- */
 
@@ -242,8 +241,7 @@ ImageTexture::Builder::Builder() :
   FileName(0),
   RepeatT(0),
   RepeatS(0),
-  Mipmaping(0),
-  Transparency(0){
+  Mipmaping(0){
 }
 
 
@@ -256,7 +254,6 @@ SceneObjectPtr ImageTexture::Builder::build( ) const {
     return SceneObjectPtr
       (new ImageTexture
        (*FileName,
-         Transparency ? *Transparency : DEFAULT_TRANSPARENCY,
          RepeatS ? *RepeatS : DEFAULT_REPEATS,
          RepeatT ? *RepeatT : DEFAULT_REPEATT,
          Mipmaping ? *Mipmaping : DEFAULT_MIPMAPING));
@@ -269,18 +266,11 @@ void ImageTexture::Builder::destroy() {
   if (Mipmaping) delete Mipmaping;
   if (RepeatS) delete RepeatS;
   if (RepeatT) delete RepeatT;
-  if (Transparency) delete Transparency;
 }
 
 
 
 bool ImageTexture::Builder::isValid( ) const {
-  /// Transparency
-  if (Transparency)
-    if (*Transparency < 0 || *Transparency > 1) {
-      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Material","Transparency","Must be in [0,1].");
-      return false;
-	};
 
   /// Filename
   if (! FileName) {
@@ -306,12 +296,10 @@ ImageTexture::ImageTexture():
 	__Filename(), 
 	__Mipmaping(DEFAULT_MIPMAPING), 
 	__RepeatS(DEFAULT_REPEATS),
-	__RepeatT(DEFAULT_REPEATT),
-	__Transparency(DEFAULT_TRANSPARENCY)  {
+	__RepeatT(DEFAULT_REPEATT)  {
 }
   
 ImageTexture::ImageTexture(   const std::string& filename,
-						      const real_t& transparency,
 							  bool repeatS,
 							  bool repeatT,
 							  bool mipmaping) :
@@ -319,14 +307,12 @@ ImageTexture::ImageTexture(   const std::string& filename,
 	__Filename(filename), 
 	__Mipmaping(mipmaping), 
 	__RepeatS(repeatS),
-	__RepeatT(repeatT),
-	__Transparency(transparency) {
+	__RepeatT(repeatT) {
   GEOM_ASSERT(isValid());
 }
 
   ImageTexture::ImageTexture( const std::string& name,
 							  const std::string& filename,
-						      const real_t& transparency,
 							  bool repeatS,
 							  bool repeatT,
 							  bool mipmaping ) :
@@ -334,8 +320,7 @@ ImageTexture::ImageTexture(   const std::string& filename,
 	__Filename(filename), 
 	__Mipmaping(mipmaping), 
 	__RepeatS(repeatS),
-	__RepeatT(repeatT),
-	__Transparency(transparency) {
+	__RepeatT(repeatT) {
   GEOM_ASSERT(isValid());
 }
 
@@ -345,7 +330,6 @@ ImageTexture::~ImageTexture( ) {
 
 bool ImageTexture::isValid( ) const {
   Builder _builder;
-  _builder.Transparency = const_cast<real_t *>(&__Transparency);
   _builder.FileName = const_cast<std::string *>(&__Filename);
   return _builder.isValid();
 }
@@ -371,13 +355,16 @@ bool ImageTexture::isSimilar(const Material& other) const
 /* ----------------------------------------------------------------------- */
 
 const Texture2DTransformationPtr Texture2D::DEFAULT_TRANSFORMATION(0);
+const Color4 Texture2D::DEFAULT_BASECOLOR(255,255,255,0);
+
 
 /* ----------------------------------------------------------------------- */
 
 Texture2D::Builder::Builder() :
   Appearance::Builder(),
   Image(0),
-  Transformation(0){
+  Transformation(0),
+  BaseColor(0){
 }
 
 
@@ -390,7 +377,8 @@ SceneObjectPtr Texture2D::Builder::build( ) const {
     return SceneObjectPtr
       (new Texture2D
        (*Image,
-         Transformation ? *Transformation : DEFAULT_TRANSFORMATION));
+         Transformation ? *Transformation : DEFAULT_TRANSFORMATION,
+         BaseColor ? *BaseColor : DEFAULT_BASECOLOR));
   return SceneObjectPtr();
 }
 
@@ -398,6 +386,7 @@ SceneObjectPtr Texture2D::Builder::build( ) const {
 void Texture2D::Builder::destroy() {
   if (Image) delete Image;
   if (Transformation) delete Transformation;
+  if (BaseColor) delete BaseColor;
 }
 
 
@@ -431,23 +420,28 @@ bool Texture2D::Builder::isValid( ) const {
 Texture2D::Texture2D():
 	Appearance(),
 	__Image(), 
-	__Transformation(DEFAULT_TRANSFORMATION) {
+	__Transformation(DEFAULT_TRANSFORMATION),
+    __BaseColor(DEFAULT_BASECOLOR) {
 }
 
 Texture2D::Texture2D(const ImageTexturePtr& image, 
-					 const Texture2DTransformationPtr& transformation):
+					 const Texture2DTransformationPtr& transformation,
+                     const Color4& basecolor):
 	Appearance(),
 	__Image(image), 
-	__Transformation(transformation) {
+	__Transformation(transformation),
+    __BaseColor(basecolor) {
 }
 
 
 Texture2D::Texture2D(const std::string& name,
 					 const ImageTexturePtr& image, 
-					 const Texture2DTransformationPtr& transformation):
+					 const Texture2DTransformationPtr& transformation,
+                     const Color4& basecolor):
 	Appearance(name),
 	__Image(image), 
-	__Transformation(transformation) {
+	__Transformation(transformation),
+    __BaseColor(basecolor) {
 }
 
 
