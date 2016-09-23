@@ -2007,7 +2007,7 @@ IndexArrayPtr PGL::cluster_points(const Point3ArrayPtr points, const Point3Array
 #ifdef WITH_ANN
     ANNKDTree3 centroids(clustercentroid);
 #else
-    Point3GridPtr centroids(new Point3Grid(_attractors,20));
+    Point3GridPtr centroids(new Point3Grid(clustercentroid,20));
 #endif   
 
     size_t pid = 0;
@@ -2019,7 +2019,7 @@ IndexArrayPtr PGL::cluster_points(const Point3ArrayPtr points, const Point3Array
         result->getAt(nids[0]).push_back(pid);
 #else
         size_t pidclosest;
-        if( closest_point(*itp, pidclosest) )
+        if( centroids->closest_point(*itp, pidclosest) )
             result->getAt(pidclosest).push_back(pid);
 #endif   
 
@@ -2035,7 +2035,7 @@ Uint32Array1Ptr PGL::points_clusters(const Point3ArrayPtr points, const Point3Ar
 #ifdef WITH_ANN
     ANNKDTree3 centroids(clustercentroid);
 #else
-    Point3GridPtr centroids(new Point3Grid(_attractors,20));
+    Point3GridPtr centroids(new Point3Grid(clustercentroid,20));
 #endif   
 
     size_t pid = 0;
@@ -2047,7 +2047,7 @@ Uint32Array1Ptr PGL::points_clusters(const Point3ArrayPtr points, const Point3Ar
         result->setAt(pid,nids[0]);
 #else
         size_t pidclosest;
-        if( closest_point(*itp, pidclosest) )
+        if( centroids->closest_point(*itp, pidclosest) )
             result->setAt(pid,pidclosest);
 #endif   
 
