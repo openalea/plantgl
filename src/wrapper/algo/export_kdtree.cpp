@@ -56,9 +56,13 @@ class kdtree_func : public boost::python::def_visitor<kdtree_func<KDTreeN> >
     }
 };
 
+#ifdef WITH_ANN
+
 KDTree2Ptr init_kdtree2(const Point2ArrayPtr points) { return KDTree2Ptr(new ANNKDTree2(points)); }
 KDTree3Ptr init_kdtree3(const Point3ArrayPtr points) { return KDTree3Ptr(new ANNKDTree3(points)); }
 KDTree4Ptr init_kdtree4(const Point4ArrayPtr points) { return KDTree4Ptr(new ANNKDTree4(points)); }
+
+#endif
 
 void export_KDtree()
 {
