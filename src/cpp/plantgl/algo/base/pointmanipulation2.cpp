@@ -357,13 +357,23 @@ real_t mean_over(const Point3ArrayPtr points, const Index& section, int i, int j
 
 
 #ifdef WITH_CGAL
-//#include <CGAL/eigen.h>
-#include <CGAL/Eigen_diagonalize_traits.h>
+ #if CGAL_VERSION_NR > 1040800000
+
+    #ifdef CGAL_EIGEN3_ENABLED
+        #include <CGAL/Eigen_diagonalize_traits.h>
+    #else
+        #include <CGAL/Diagonalize_traits.h>
+    #endif
+
+ #else
+    #include <CGAL/eigen.h>
+ #endif
+
 #endif
 TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Index& section)
 {
 #ifdef WITH_CGAL
-    typedef CGAL::Eigen_diagonalize_traits<real_t> EigenDiagonalize;
+
 
     real_t mx  = mean_over(pointnormals,section,0);
     real_t mx2 = mean_over(pointnormals,section,0,0);
@@ -378,11 +388,15 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Inde
     real_t mxzxz = 2*mxz - 2*mx*mz;
     real_t myzyz = 2*myz - 2*my*mz;
 
-/*    Matrix3 M(mx2-mx*mx , mxyxy     , mxzxz,
-              mxyxy     , my2-my*my , myzyz,
-              mxzxz     , myzyz     , mz2-mz*mz);*/
 
-    EigenDiagonalize::Covariance_matrix covariance;
+  #if CGAL_VERSION_NR > 1040800000
+    #ifdef CGAL_EIGEN3_ENABLED
+        typedef CGAL::Eigen_diagonalize_traits<real_t> Diagonalize;
+    #else
+        typedef CGAL::Diagonalize_traits<real_t> Diagonalize;
+    #endif
+
+    Diagonalize::Covariance_matrix covariance;
     covariance[0] = mx2-mx*mx;
     covariance[1] = mxyxy;
     covariance[2] = my2-my*my;
@@ -390,11 +404,23 @@ TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Inde
     covariance[4] = myzyz;
     covariance[5] = mz2-mz*mz;
 
-    EigenDiagonalize::Vector eigen_values;
-    EigenDiagonalize::Matrix eigen_vectors;
-    // CGAL::internal::eigen_symmetric<real_t>(covariance,3,eigen_vectors,eigen_values);
-    EigenDiagonalize::diagonalize_selfadjoint_covariance_matrix(covariance, eigen_values, eigen_vectors);
-
+    Diagonalize::Vector eigen_values;
+    Diagonalize::Matrix eigen_vectors;
+    Diagonalize::diagonalize_selfadjoint_covariance_matrix(covariance, eigen_values, eigen_vectors);
+  #else
+    real_t covariance[6];
+    covariance[0] = mx2-mx*mx;
+    covariance[1] = mxyxy;
+    covariance[2] = my2-my*my;
+    covariance[3] = mxzxz;
+    covariance[4] = myzyz;
+    covariance[5] = mz2-mz*mz;
+ 
+    real_t eigen_values[3];
+    real_t eigen_vectors[9];
+    CGAL::internal::eigen_symmetric<real_t>(covariance,3,eigen_vectors,eigen_values);
+  #endif
+    
     if (eigen_values[2] <  eigen_values[1] && eigen_values[2] <  eigen_values[0])
         return Vector3(eigen_vectors[6],eigen_vectors[7],eigen_vectors[8]);
     else if (eigen_values[1] <  eigen_values[0])

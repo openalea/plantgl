@@ -284,6 +284,7 @@ IntersectionType  PGL(triangle_triangle_intersection)(const TOOLS(Vector3)& t11,
 std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
 PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
 {
+#ifdef WITH_ANN
     std::vector<std::pair<uint32_t,uint32_t> > intersectionpair;
     GeometryArrayPtr intersectionresult(new GeometryArray());
     Point3ArrayPtr centroids = centroids_of_groups(points, triangles);
@@ -370,7 +371,13 @@ PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
 
         }
     }
-
-
     return std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> (intersectionpair, intersectionresult);
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'auto_intersection' disabled. ANN needed.")
+    #else
+    #warning "function 'auto_intersection' disabled. ANN needed"
+    #endif
+    return std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> ();
+#endif
 }
