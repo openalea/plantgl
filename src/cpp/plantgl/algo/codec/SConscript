@@ -9,7 +9,6 @@ Import( "env" )
 
 includes= env.ALEAGlob('*.h')
 
-BUILD_BISON = False 
 BUILD_BISON = True
 if BUILD_BISON:
     src= BisonFlex( env, 

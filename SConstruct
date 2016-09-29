@@ -2,7 +2,7 @@
 
 from openalea.sconsx import config, environ
 import os, sys
-from sconsx_ext.mpfr import create as mpfr_create
+#from sconsx_ext.mpfr import create as mpfr_create
 
 
 pj= os.path.join

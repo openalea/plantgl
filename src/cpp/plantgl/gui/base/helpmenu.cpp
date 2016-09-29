@@ -84,7 +84,7 @@ ViewHelpMenu::ViewHelpMenu(QWidget * parent, QGLWidget * glwidget, const char * 
   __glwidget(glwidget)
 {
 	if(name) setObjectName(name);
-	__about = new ViewAboutDialog(this,false);
+	__about = new ViewAboutDialog(this, "About", 2000, false);
 	QObject::connect(__about,SIGNAL(licenseView()),this,SLOT(showLicense()));
 	addAction( tr("What's &This?"), parent->parent() , SLOT(whatsThis()), Qt::Key_F1);
     addAction(QPixmap(ViewSysInfo::tools_logo),tr("&Help"),this,SLOT(showHelp()),Qt::SHIFT+Qt::Key_F1);
@@ -185,7 +185,7 @@ ViewHelpMenu::setStyle(int i)
     else if (i == __ids.size()-1) QApplication::setStyle( QStyleFactory::create(default_style_name) ); 
     else {
         QApplication::setStyle( QStyleFactory::create(QStyleFactory::keys()[i])); 
-        qDebug((QString("Application.setStyle(") + (QStyleFactory::keys()[i]) +')').toAscii().data() ); 
+        qDebug("Application.setStyle(%s)", QStyleFactory::keys()[i].toAscii().data() ); 
     }
 	if(i>= 0 && i <= __ids.size())checkItem(i);
 }
@@ -215,13 +215,13 @@ void ViewHelpMenu::showHelp()
 
 void ViewHelpMenu::showAbout()
 {  
-  if(!__about)__about = new ViewAboutDialog(this,"About",false);
+  if(!__about)__about = new ViewAboutDialog(this,"About",-1,false);
   __about->display(-1);
 }
 
 void ViewHelpMenu::showInit()
 {  
-  if(!__about)__about = new ViewAboutDialog(this,"About",false);
+  if(!__about)__about = new ViewAboutDialog(this,"About",2000,false);
   __about->display(2000);
 }
 

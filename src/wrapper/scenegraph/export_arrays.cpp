@@ -179,13 +179,39 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
 
 bool ra_is_valid(RealArray * a) {
     for(RealArray::const_iterator it = a->begin(); it != a->end(); ++it)
-        if (!finite(*it)) return false;
+        if (!pglfinite(*it)) return false;
     return true;
 }
 /*template <Array2ArrayFunc func>
 RealArray * wrap_array_func(RealArray * array, const RealArray& v) {
     return new RealArray(array->*func(v)); }*/
 
+boost::python::object ra_getMinAndMax(RealArray * a, bool filterinf = false) {
+    std::pair<RealArray::const_iterator,RealArray::const_iterator> res = a->getMinAndMax(filterinf);
+    return make_tuple(*res.first,*res.second);
+}
+
+boost::python::object ra_getMinAndMaxIndex(RealArray * a, bool filterinf = false) {
+    std::pair<RealArray::const_iterator,RealArray::const_iterator> res = a->getMinAndMax(filterinf);
+    return make_tuple(std::distance<RealArray::const_iterator>(a->begin(),res.first),std::distance<RealArray::const_iterator>(a->begin(),res.second));
+}
+
+real_t ra_getMin(RealArray * a) {
+    return *a->getMin();
+}
+
+size_t ra_getMinIndex(RealArray * a) {
+    return std::distance<RealArray::const_iterator>(a->begin(),a->getMin());
+}
+
+
+real_t ra_getMax(RealArray * a) {
+    return *a->getMax();
+}
+
+size_t ra_getMaxIndex(RealArray * a) {
+    return std::distance<RealArray::const_iterator>(a->begin(),a->getMax());
+}
 
 
 struct IdValueSorter {
@@ -253,6 +279,16 @@ void export_arrays()
     // .def( "add",          (RealArray(RealArray::*)(real_t)const)           &RealArray::operator+   , boost::python::return_value_policy<boost::python::manage_new_object>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator+=  , return_self<>() ) 
     .def( "__iadd__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator+=  , return_self<>() ) 
+    .def( "__isub__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator-=  , return_self<>() ) 
+    .def( "__isub__",     (RealArray&(RealArray::*)(const RealArray&))     &RealArray::operator-=  , return_self<>() ) 
+    .def( "__imul__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator*=  , return_self<>() ) 
+    .def( "__idiv__",     (RealArray&(RealArray::*)(real_t))               &RealArray::operator/=  , return_self<>() ) 
+    .def( "getMinAndMax", &ra_getMinAndMax , (boost::python::arg("filterinf")=false))
+    .def( "getMinAndMaxIndex", &ra_getMinAndMaxIndex , (boost::python::arg("filterinf")=false))
+    .def( "getMin", &ra_getMin )
+    .def( "getMinIndex", &ra_getMinIndex )
+    .def( "getMax", &ra_getMax )
+    .def( "getMaxIndex", &ra_getMaxIndex )
     .def("cut", &py_cut, (arg("bins"),arg("filteremptygroups")=true))
     .def("isValid",&ra_is_valid)
     EXPORT_ARRAY_IO_FUNC( RealArray )

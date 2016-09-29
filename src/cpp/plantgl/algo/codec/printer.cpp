@@ -464,6 +464,9 @@ bool Printer::process( Texture2D * texture ) {
 	  GEOM_PRINT_FIELD(__matStream,texture,Transformation,APPEARANCE);
   }
 
+  if (! texture->isBaseColorToDefault())
+    GEOM_PRINT_FIELD(__matStream,texture,BaseColor,COLOR4);
+
   GEOM_PRINT_END(__matStream);
   return true;
 }
@@ -484,9 +487,6 @@ bool Printer::process( ImageTexture * texture ) {
 
   if (! texture->isRepeatTToDefault())
     GEOM_PRINT_FIELD(__matStream,texture,RepeatT,BOOLEAN);
-
-  if (! texture->isTransparencyToDefault())
-    GEOM_PRINT_FIELD(__matStream,texture,Transparency,REAL);
 
   GEOM_PRINT_END(__matStream);
   return true;

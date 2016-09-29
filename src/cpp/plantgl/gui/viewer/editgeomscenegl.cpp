@@ -166,7 +166,7 @@ void ViewEditMatDialog::importClipboard()
 /* ----------------------------------------------------------------------- */
 
 MaterialPtr getMaterialFromDialog(QWidget * parent, 
-                                  char * caption, 
+                                  const char * caption, 
                                   MaterialPtr initial)
 {
     ViewEditMatDialog dialog(parent,caption,true);
@@ -177,7 +177,7 @@ MaterialPtr getMaterialFromDialog(QWidget * parent,
 	else return MaterialPtr();
 }
 
-int editMaterialInDialog(MaterialPtr initial,QWidget * parent, char * caption)
+int editMaterialInDialog(MaterialPtr initial,QWidget * parent, const char * caption)
 {
     ViewEditMatDialog dialog(parent,caption,true);
     dialog.setWindowTitle(caption);

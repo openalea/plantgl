@@ -196,8 +196,7 @@ void PGL::drawArrow(QPixmap * pm,int s){
 	}
 	p.end();
   }
-  else qWarning((QString(__FILE__)+':'+QString::number(__LINE__)
-				+": Cannot draw on pixmap.").toAscii());
+  else qWarning("%s:%d: Cannot draw on pixmap.", __FILE__,__LINE__);
 }
 
 /* ----------------------------------------------------------------------- */

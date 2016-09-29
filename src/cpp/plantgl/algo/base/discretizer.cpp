@@ -691,11 +691,12 @@ bool Discretizer::process( Cylinder * cylinder ) {
 
   IndexArrayPtr _texIndexList;
   Index4ArrayPtr _texIndex4List;
-  if(__computeTexCoord)
+  if(__computeTexCoord) {
 	if(_solid)
       _texIndexList= IndexArrayPtr(new IndexArray(_slices * 3 ));
 	else
       _texIndex4List= Index4ArrayPtr(new Index4Array(_slices ));
+  }
 
 
   uint_t _cur = 0;
@@ -1331,11 +1332,12 @@ bool Discretizer::process( Frustum * frustum ) {
 
   IndexArrayPtr _texIndexList;
   Index4ArrayPtr _texIndex4List;
-  if(__computeTexCoord)
+  if(__computeTexCoord) {
 	if(_solid)
       _texIndexList= IndexArrayPtr(new IndexArray(_slices * 3 ));
 	else
       _texIndex4List= Index4ArrayPtr(new Index4Array(_slices ));
+  }
 
 
   uint_t _cur = 0;

@@ -110,12 +110,15 @@ def test_camera_light():
  
 
 def test_image():
-    w = 400
+    w = 600
     h = 400
     rw, rh = w,h
+    import time
+    Viewer.show()
     Viewer.display(Scene())
-    Viewer.widgetGeometry.setSize(w,h)
+    #Viewer.widgetGeometry.setSize(w,h)
     Viewer.frameGL.maximize(True)
+    Viewer.frameGL.setSize(w, h)
     Viewer.frameGL.setSize(w, h)
     Viewer.update()
     fname = 'test_framegl.png'
@@ -130,7 +133,7 @@ def test_image():
         del q
     os.remove(fname)
     if not imgsizetest :
-        raise Exception( "Viewer.frameGL.setSize failed %s" % str((rw,rh)))
+        raise Exception( "Viewer.frameGL.setSize failed %s instead of %s" % (str((rw,rh)),str((w,h))) )
 
 
 
@@ -165,3 +168,4 @@ if __name__=='__main__':
         test_camera_set()
         test_camera_light()
         test_state()
+        test_image()

@@ -17,7 +17,7 @@ class AscCodec (sg.SceneCodec):
 
     def formats(self):
         """ return formats """
-        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn"],"The Ascii point file format") ]
+        return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn",'txt'],"The Ascii point file format") ]
         # pts format :
         #         first line : nb of points 
         #          then x y z w r g b
@@ -39,9 +39,15 @@ class AscCodec (sg.SceneCodec):
         if isptsfile or ispwnfile:
             f.readline() # skip line number
         i = 0
-        for line in f.readlines():
+        lines = f.readlines()
+        sep = None
+        if ';' in lines[0]: sep = ';'
+        elif ',' in lines[0]: sep = ','
+        elif '\t' in lines[0]: sep = '\t'
+
+        for line in lines:
             if line[0] == '#': continue
-            values = line.split()
+            values = line.split(sep)
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
                 if len(values) > 3:

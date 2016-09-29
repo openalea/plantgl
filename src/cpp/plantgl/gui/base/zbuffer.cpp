@@ -32,7 +32,7 @@
  */
 
 
-#include <plantgl/algo/opengl/util_gl.h>
+#include <plantgl/algo/opengl/util_glu.h>
 #include <plantgl/tool/util_assert.h>
 #include "zbuffer.h"
 
@@ -56,8 +56,7 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 	GLdouble winx = viewport[2]/2;
 	GLdouble winy = viewport[3]/2;
 	GLdouble objx,objx2, objy,objy2, objzmin , objzmax;
-//	int gluUnProject(winx,winy, winz, modelMatrix, projMatrix, viewport,
-//                     objx,objy, objz);
+;
 
 	if(size > 0){
 		for(size_t i = 0 ; i < size ; i++){
@@ -66,10 +65,10 @@ void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const V
 			zmin = (float)*ptr; zmin2 = (GLdouble)zmin /(GLdouble)ULONG_MAX ; ptr++;
 			zmax = (float)*ptr; zmax2 = (GLdouble)zmax /(GLdouble)ULONG_MAX ;ptr++;
 			id = *ptr;
-			if( gluUnProject(winx,winy, zmin2, modelMatrix, projMatrix, viewport,
-				&objx,&objy, &objzmin) == GL_TRUE  &&
-				gluUnProject(winx,winy, zmax2, modelMatrix, projMatrix, viewport,
-				&objx2,&objy2, &objzmax) == GL_TRUE  ){
+			if( geomUnProject(winx,winy, zmin2, modelMatrix, projMatrix, viewport,
+				&objx,&objy, &objzmin)  &&
+				geomUnProject(winx,winy, zmax2, modelMatrix, projMatrix, viewport,
+				&objx2,&objy2, &objzmax) ){
 				
 				res.push_back(RayHit(id,norm(Vector3(objx,objy,objzmin)-position),norm(Vector3(objx2,objy2,objzmax)-position)));
 			}
@@ -131,7 +130,7 @@ ViewZBuffer* ViewZBuffer::importglDepthBuffer(bool alldepth)
 		for (int j = 0; j < width; ++j){
 			buffer->getAt(i,j).depth = *iterzvalues ;
 			if( alldepth ||( 0 < *iterzvalues && *iterzvalues < 1) ){
-				if( gluUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) == GL_TRUE ){
+				if( geomUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) ){
 					buffer->getAt(i,j).pos = Vector3(objx,objy,objz);
 				}
 			}
@@ -191,7 +190,7 @@ ViewZBuffer::importglZBufferPoints(bool invertalpha) {
     for(int i = 0; i < height; ++i){
         for (int j = 0; j < width; ++j){
             if ( 0 < *iterzvalues && *iterzvalues < 1) {
-                if( gluUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) == GL_TRUE ){
+                if( geomUnProject(j,i, (GLdouble)*iterzvalues, modelMatrix, projMatrix, viewport, &objx,&objy, &objz) ){
                     points->push_back(Vector3(objx,objy,objz));
                     colors->push_back(Color4(*itercolvalues,itercolvalues[1],
                                                itercolvalues[2],invertalpha?255-itercolvalues[3]:itercolvalues[3]));

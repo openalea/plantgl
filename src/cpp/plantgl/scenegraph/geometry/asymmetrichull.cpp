@@ -152,7 +152,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
 
   // NegXRadius
   if (NegXRadius && 
-      ((! finite(*NegXRadius)) /*|| 
+      ((! pglfinite(*NegXRadius)) /*|| 
        (*NegXRadius < 0)*/)) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","NegXRadius","Must be Finite and Positive.");
       return false;
@@ -160,7 +160,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
 
   // PosXRadius
   if (PosXRadius && 
-      ((! finite(*PosXRadius)) /*|| 
+      ((! pglfinite(*PosXRadius)) /*|| 
        (*PosXRadius < 0)*/)) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","PosXRadius","Must be Finite and Positive.");
       return false;
@@ -168,7 +168,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
 
   // NegYRadius
   if (NegYRadius && 
-      ((! finite(*NegYRadius)) /*||
+      ((! pglfinite(*NegYRadius)) /*||
        (*NegYRadius < 0)*/)) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","NegYRadius","Must be Finite and Positive.");
       return false;
@@ -176,7 +176,7 @@ bool AsymmetricHull::Builder::isValid( ) const {
 
   // PosYRadius
   if (PosYRadius && 
-      ((! finite(*PosYRadius)) /*||
+      ((! pglfinite(*PosYRadius)) /*||
        (*PosYRadius < 0)*/)) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Asymmetric Hull","PosYRadius","Must be Finite and Positive.");
       return false;

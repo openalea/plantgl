@@ -100,7 +100,8 @@ BoundingBox *  bbx_fromobj( boost::python::object o )
 		geom->apply(bbc);
 	}
 	else {
-        e()->apply(bbc);
+        bbc.process(e());
+        // e()->apply(bbc);
 	}
     // sc->apply(bbc);
     if (is_null_ptr(bbc.getBoundingBox())) return new BoundingBox(); 

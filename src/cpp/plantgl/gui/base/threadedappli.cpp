@@ -117,7 +117,7 @@ void
 ViewerThreadedAppli::sync() { synccond.wait(&syncmutex); syncmutex.unlock(); }
 
 void 
-ViewerThreadedAppli::join() { while(!syncmutex.tryLock()); syncmutex.unlock(); synccond.wakeAll(); }
+ViewerThreadedAppli::join() { while(!syncmutex.tryLock()){;} syncmutex.unlock(); synccond.wakeAll(); }
 
 
 void 

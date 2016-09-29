@@ -494,12 +494,13 @@ void ViewFileManager::removeOpenFile(const QString& _name){
   if(!__lastOpenFiles.empty() && !_name.isEmpty()){
     QStringList::iterator _beg = __lastOpenFiles.begin();
     for(; _beg != (__lastOpenFiles.end()) && *_beg != _name ;_beg++);
-    if (_beg != (__lastOpenFiles.end()))
+    if (_beg != (__lastOpenFiles.end())){
       if(_beg == __lastOpenFiles.begin())
-    __lastOpenFiles.pop_front();
-      else if(_beg == __lastOpenFiles.end()-1)
-    __lastOpenFiles.pop_back();
+        __lastOpenFiles.pop_front();
+      else if(_beg == (__lastOpenFiles.end()-1))
+        __lastOpenFiles.pop_back();
       else  __lastOpenFiles.erase(_beg);
+    }
   }
 }
 
@@ -533,14 +534,19 @@ void ViewFileManager::saveImage(bool withAlpha)
             _formats.append(format);
         }
     }
-
+    /*
     QPixmap icon(ViewerIcon::getPixmap(ViewerIcon::filefloppy));
     QFileDialog _fileDialog(this,"Save Image");
     _fileDialog.setModal(true);
     _fileDialog.setFileMode(QFileDialog::AnyFile);
     _fileDialog.setWindowIcon(QIcon(icon));
     _fileDialog.setFilters(_formats);
+    */
 
+    QString ext;
+    QString _filename = QFileDialog::getSaveFileName(this, "Save Image", __pictureDir, _formats.join(";;"),& ext);
+
+    /*
     if(!__pictureDir.isEmpty()){
       _fileDialog.setDirectory(__pictureDir);
     }
@@ -552,37 +558,38 @@ void ViewFileManager::saveImage(bool withAlpha)
     if(ind_ext!=-1)
         filename.replace(ind_ext+1,(filename.length()-ind_ext-1),first_format);
        // _fileDialog.setSelection(filename);
-    }
+    }    
     _fileDialog.setWindowTitle(tr("Save Image"));
     if(_fileDialog.exec()){
     QStringList _filenames=_fileDialog.selectedFiles();
     if(!_filenames.isEmpty()){
         QString _filename = _filenames[0];
+    */
+    if (!_filename.isEmpty()) {
         __pictureDir = QFileInfo(_filename).dir().absolutePath();
         QString extension=_filename.right(_filename.length()-_filename.lastIndexOf('.')-1);
         if(extension.contains('/')){
-        QString ext = _fileDialog.selectedFilter();
-        ext = ext.left(ext.indexOf(' '));
-        _filename +=  '.' +ext.toLower();
-        extension = ext;
+            // QString ext = _fileDialog.selectedFilter();
+            ext = ext.left(ext.indexOf(' '));
+            _filename +=  '.' +ext.toLower();
+            extension = ext;
         }
         extension= extension.toUpper();
-        if(TOOLS(exists)(_filename.toStdString())){
+        /*if(TOOLS(exists)(_filename.toStdString())){
           if(QMessageBox::warning(this,tr("File Exists"),_filename + tr(" already exist. Overwrite ?"),
                       tr("Yes"),tr("No"))!=0)
-        return;
-        }
+            return;
+        }*/
         uint it=0;
         for(; (it<_formatList.count()) && (extension!=(_formatList.at(it))) ; it++ );
         if(it==_formatList.count()){
-        QString ext = _fileDialog.selectedFilter();
-        ext = ext.left(ext.indexOf(' '));
-        __GLFrame->saveImage(_filename,ext.toAscii().data());
+            //QString ext = _fileDialog.selectedFilter();
+            ext = ext.left(ext.indexOf(' '));
+            __GLFrame->saveImage(_filename,ext.toAscii().data());
         }
         else {
-        __GLFrame->saveImage(_filename,extension.toAscii().data());
+            __GLFrame->saveImage(_filename,extension.toAscii().data());
         }
-    }
     }
 }
 

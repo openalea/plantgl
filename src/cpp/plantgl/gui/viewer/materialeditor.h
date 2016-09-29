@@ -75,7 +75,6 @@ protected:
   virtual void paintGL();
   virtual void paintAppearance();
 
-  GLUquadricObj* __sphereobject;
   GLuint __spheredrawlist;
   GLfloat __smoothness; 
   GLfloat __range;
@@ -87,6 +86,8 @@ protected:
   GLfloat __lightpos[4];
   GLfloat __lightmodel[4];
   GLfloat __xmin,__xmax,__ymin,__ymax;
+
+  PGL(GeometryPtr) __sphereobject;
   PGL(AppearancePtr) __M;
   PGL(Discretizer) __d;
   PGL(GLRenderer) __r;

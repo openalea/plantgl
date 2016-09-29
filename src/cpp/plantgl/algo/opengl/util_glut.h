@@ -55,13 +55,8 @@ OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 #ifndef WITH_GLUT
 #ifndef WITHOUT_GLUT
 
-#ifdef _WIN32
-/// By default on windows, we don't use glut.
+/// By default, we don't use glut.
 #define WITHOUT_GLUT
-#else
-/// Else by default, we use glut.
-#define WITH_GLUT
-#endif
 
 #endif
 #endif

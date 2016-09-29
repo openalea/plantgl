@@ -376,7 +376,8 @@ ViewGeomSceneGL::setScene( const ScenePtr& scene )
   
   __dynamicscene = ScenePtr(new Scene());
   for (Scene::const_iterator itsh = __scene->begin(); itsh != __scene->end(); ++itsh)
-    __dynamicscene->add(*itsh);
+    if ((*itsh)->hasDynamicRendering())
+        __dynamicscene->add(*itsh);
 
   emit sceneChanged();
   if(__frame != NULL && __frame->isVisible())emit valueChanged();
@@ -415,8 +416,9 @@ ViewGeomSceneGL::paintGL()
       else glBlendFunc(GL_ONE,GL_ZERO);
       glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
       if(__renderer.beginSceneList()){
-		if(__renderer.getRenderingMode() & GLRenderer::Dynamic)
+		if(__renderer.getRenderingMode() & GLRenderer::Dynamic){
 			__scene->apply(__renderer);
+        }
 		else {
 			int cur = 0;
 			int tot = __scene->size();
@@ -439,7 +441,12 @@ ViewGeomSceneGL::paintGL()
         __renderer.endSceneList();
       }
       // printf("render dynamic scene %i\n",__dynamicscene->size());
-      __dynamicscene->apply(__renderer);
+      /// Warning: This line will also call beginProcess and endProcess.
+      /// Ideally, it would require a second renderer.
+      if(!__dynamicscene->empty()) {
+        __dynamicscene->apply(__renderer);
+      }
+
       if(GEOM_GL_ERROR) clear();
       break;
     case 2:
@@ -450,7 +457,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      __dynamicscene->apply(__renderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 3:
@@ -460,7 +467,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__skelRenderer);
         __skelRenderer.endSceneList();
       }
-      __dynamicscene->apply(__skelRenderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__skelRenderer);
       if(GEOM_GL_ERROR) clear();
       break;
     case 4:
@@ -471,7 +478,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      __dynamicscene->apply(__renderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       __light->switchOn();
       if(__blending)glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
       else glBlendFunc(GL_ONE,GL_ZERO);
@@ -480,7 +487,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__renderer);
         __renderer.endSceneList();
       }
-      __dynamicscene->apply(__renderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__renderer);
       if(GEOM_GL_ERROR) clear();
       break;
     };
@@ -494,7 +501,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__bboxRenderer);
         __bboxRenderer.endSceneList();
       }
-      __dynamicscene->apply(__bboxRenderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__bboxRenderer);
       if(GEOM_GL_ERROR) clear();
     };
     if(__renderingOption[1]){
@@ -505,7 +512,7 @@ ViewGeomSceneGL::paintGL()
         __scene->apply(__ctrlPtRenderer);
         __ctrlPtRenderer.endSceneList();
       }
-      __dynamicscene->apply(__ctrlPtRenderer);
+      if(!__dynamicscene->empty()) __dynamicscene->apply(__ctrlPtRenderer);
       if(GEOM_GL_ERROR) clear();
     }
     if(!__selectedShapes.empty()){
@@ -744,7 +751,7 @@ ViewGeomSceneGL::wireSelection()
 	  }
 	}
 	else {
-	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Wire Transformation not yet implemented on Inline.")).toAscii().constData());
+	  qWarning("%s:%d: Wire Transformation not yet implemented on Inline.", __FILE__, __LINE__);
 	}
   }		
 
@@ -773,7 +780,7 @@ ViewGeomSceneGL::discretizeSelection()
 	  }
 	}
 	else {
-	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Discretize Transformation not yet implemented on Inline.")).toAscii().constData());
+	  qWarning("%s:%d: Discretize Transformation not yet implemented on Inline.", __FILE__, __LINE__);
 	}
   }		
 
@@ -804,7 +811,7 @@ ViewGeomSceneGL::triangulateSelection()
 	  }
 	}
 	else {
-	  qWarning((QString(__FILE__)+QString(":")+QString::number(__LINE__)+QString(": Triangulation Transformation not yet implemented on Inline.")).toAscii().constData());
+	  qWarning("%s:%d: Triangulation Transformation not yet implemented on Inline.", __FILE__, __LINE__);
 	}
   }		
 
@@ -841,7 +848,7 @@ ViewGeomSceneGL::getProjectionSizes(const ScenePtr& sc){
 		res.push_back(pair<uint_t,double>((*it)->getId(),frame->getProjectionSize()));
 		cur++;
 		if(cur % per == 0){
-			printf("\x0d Projections %i%% done.",cur*100/tot);
+			printf("\x0d Projections %.0f%% done.",cur*100./tot);
 			QCoreApplication::processEvents();
 		}
 	}
@@ -919,11 +926,11 @@ ViewGeomSceneGL::castRays(const ScenePtr& sc, bool back_test){
 		delete cbuff;
 		cur++;
 		if(cur % per == 0){
-			printf("\x0d Projections %i%",cur*100/tot);
+			printf("\x0d Projections %.0f%%",cur*100./tot);
 			QCoreApplication::processEvents();
 		}
 	}
-	printf("\x0d Projections 100%\n");
+	printf("\x0d Projections 100%%\n");
     __renderer.setRenderingMode(rtype);
 	// std::cerr << "\x0d Projections 100% done.\n";
 	if(frame->isPixelBufferUsed()){
@@ -1022,19 +1029,20 @@ ViewGeomSceneGL::getPixelPerShape(double* pixelwidth)
 
 void 
 ViewGeomSceneGL::customEvent(QEvent * e) {
-	if(e->type() == ViewGeomEvent::eProjList){
+    int etype = e->type();
+	if(etype == ViewGeomEvent::eProjList){
 		GeomProjListEvent * myevent = (GeomProjListEvent *)e;
 		*(myevent->result) = getProjectionSizes(myevent->arg1);
 	}
-	else if (e->type() == ViewGeomEvent::eRayBuff2){
+	else if (etype == ViewGeomEvent::eRayBuff2){
 		ViewRayBuff2Event * myevent = (ViewRayBuff2Event *)e;
 		*(myevent->result) = castRays(myevent->arg1,myevent->arg2);
 	}
-	else if (e->type() == ViewGeomEvent::eGetScene){
+	else if (etype == ViewGeomEvent::eGetScene){
 		GeomGetSceneEvent * myevent = (GeomGetSceneEvent *)e;
 		*(myevent->result) = __scene;
 	}
-	else if (e->type() == ViewGeomEvent::eIntegratedProjList){
+	else if (etype == ViewGeomEvent::eIntegratedProjList){
 		ViewIntegratedProjListEvent * myevent = (ViewIntegratedProjListEvent *)e;
 		*(myevent->result) = getPixelPerShape(myevent->arg1);
 	}

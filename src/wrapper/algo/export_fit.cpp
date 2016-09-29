@@ -80,11 +80,19 @@ boost::python::object inertiaAxis2d(Point2Array * points){
 }
 
 boost::python::object py_boundingCircle(Point2Array * points){
-	Vector2 center;
-	real_t radius;
-	bool res = Fit::boundingCircle(Point2ArrayPtr(points),center,radius);
-	if (!res) return object();
-	else return make_tuple(center,radius);
+    Vector2 center;
+    real_t radius;
+    bool res = Fit::boundingCircle(Point2ArrayPtr(points),center,radius);
+    if (!res) return object();
+    else return make_tuple(center,radius);
+}
+
+boost::python::object py_plane(Point3Array * points, const Index& subset = Index()){
+    Vector3 center;
+    Plane3 plane;
+    bool res = Fit::plane(Point3ArrayPtr(points),center,plane,subset);
+    if (!res) return object();
+    else return make_tuple(center,plane);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -132,6 +140,8 @@ void export_Fit()
 	.def("inertiaAxis",inertiaAxis,args("points"))
 	.def("inertiaAxis",inertiaAxis2d,args("points"))
     .staticmethod("inertiaAxis")
+    .def("plane",py_plane,(arg("points"),arg("subset")=Index()))
+    .staticmethod("plane")
 	.def("boundingCircle",py_boundingCircle,args("points"))
     .staticmethod("boundingCircle")
 	.def("fitShapeFactor",Fit::fitShapeFactor,args("x","r","y","h"))

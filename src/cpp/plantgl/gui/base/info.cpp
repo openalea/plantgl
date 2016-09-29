@@ -33,6 +33,7 @@
 
 #include "info.h"
 #include <plantgl/tool/util_types.h>
+#include <plantgl/algo/opengl/util_glu.h>
 
 #include <QtGui/qlabel.h>
 #include <QtGui/qpainter.h>
@@ -189,7 +190,7 @@ const char* ViewSysInfo::info_logo[24] = {
 /* ----------------------------------------------------------------------- */
 
 
-static char * x_logo[] = {
+static const char * x_logo[] = {
 /**/
 "16 16 2 1",
 /**/
@@ -216,7 +217,7 @@ static char * x_logo[] = {
 /* ----------------------------------------------------------------------- */
 
 
-static char *linux_logo[]={
+static const char *linux_logo[]={
 "16 16 141 2",
 ".h c #030305","#b c #080709","#k c #09090a",".5 c #0a090b",".O c #0a0a0f",
 ".i c #111116",".q c #121214",".W c #1b1b1c",".y c #1c1912",".j c #24232c",
@@ -268,7 +269,7 @@ static char *linux_logo[]={
 /* ----------------------------------------------------------------------- */
 
 
-static char * opengl_logo[] = {
+static const char * opengl_logo[] = {
 "33 16 110 2",
 "       c None",".      c #B5CEDE","+   c #5A94B5","@   c #296B8C","#   c #31738C",
 "$      c #317394","%   c #316B8C","&   c #4A849C","*   c #F7F7EF","=   c #6B9CB5",
@@ -383,7 +384,7 @@ const char * ViewSysInfo::tools_logo[34] = {
 /* ----------------------------------------------------------------------- */
 
 
-static char * wheel_logo[] = {
+static const char * wheel_logo[] = {
 "16 16 17 1",
 "       c None",
 ".      c #6D6810",
@@ -1055,14 +1056,14 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
 
     item = new QTreeWidgetItem( item6 );
     item->setText( 0, tr( "Version" ) );
-    item->setText( 1,  QString((char*)gluGetString(GLU_VERSION))  );
+    item->setText( 1,  QString(gluGeomGetString(GLU_VERSION))  );
 
-    QTreeWidgetItem * item6bis = new QTreeWidgetItem( item6, item );
-    item6bis->setText( 0, tr( "Extension(s)" ) );
-    AttView->collapseItem(item6bis);
-
-    ext = QString((char*)gluGetString(GLU_EXTENSIONS)).split ( ' ');
+    ext = QString(gluGeomGetString(GLU_EXTENSIONS)).split ( ' ');
     if(!ext.isEmpty()){
+                QTreeWidgetItem * item6bis = new QTreeWidgetItem( item6, item );
+                item6bis->setText( 0, tr( "Extension(s)" ) );
+                AttView->collapseItem(item6bis);
+
                 item = new QTreeWidgetItem( item6bis );
                 item->setText( 0,  ext[0]  );
                 for(uint i = 1 ; i < ext.count() ; i++){
@@ -1070,7 +1071,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
                         item->setText( 0, ext[i]  );
                 }
     }
-    else item6bis->setText( 1, tr( "None" ) );
+    // else item6bis->setText( 1, tr( "None" ) );
 
     LastItem = item6;
 

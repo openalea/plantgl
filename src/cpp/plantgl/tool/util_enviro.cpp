@@ -64,16 +64,12 @@ TOOLS_BEGIN_NAMESPACE
 static string PLANTGL_DIR;
 static string OPENALEA_DIR;
 
-inline char * pglgetenv(char * name) { 
-#ifdef _MSC_VER
+inline const char * pglgetenv(const char * name) { 
 	return getenv(name);
-#else
-	return getenv(name);
-#endif
 }
 
 string getHome(){
-        char * home = pglgetenv("HOME");
+        const char * home = pglgetenv("HOME");
 #ifdef _WIN32
         if(!home)home = pglgetenv("USERPROFILE");
         if(!home)home = "C:\\";
@@ -85,7 +81,7 @@ string getHome(){
 
 string getOpenAleaDir(){
 		if(!OPENALEA_DIR.empty())return OPENALEA_DIR;
-        char * dir = pglgetenv("OPENALEADIR");
+        const char * dir = pglgetenv("OPENALEADIR");
         if(!dir)
 #ifdef _WIN32
 			dir = "C:\\openalea";
@@ -98,7 +94,7 @@ string getOpenAleaDir(){
 
 string getPlantGLDir(){
 	if(!PLANTGL_DIR.empty())return PLANTGL_DIR;
-    char * dir = pglgetenv("PLANTGLDIR");
+    const char * dir = pglgetenv("PLANTGLDIR");
     if(!dir)PLANTGL_DIR = getOpenAleaDir();
 	else PLANTGL_DIR = string(dir);
 	return PLANTGL_DIR;
@@ -118,15 +114,11 @@ string getUserName(){
     else{
          return string("Windows User");
     }
-#elif defined(__APPLE__)
-#warning username not defined
-    return string("");
 #elif defined(__GNUC__)
-    char uname[L_cuserid]; // defined in stdio.h;
-    (char*)cuserid(uname);
-    return string(uname);
+    return string(getlogin());
+
 #else
-#warning username not defined
+#pragma "message username not defined"
 	return string("");
 #endif
 }
@@ -140,10 +132,12 @@ string getOSFamily(){
         return string("Cygwin");
 #elif _WIN32
         return string("Windows");
-#elif __APPLE__
+#elif _WIN64
+        return string("Windows");
+#elif defined(__APPLE__)
         return string("MacOSX");
 #else
-  #warning OS Family not defined
+  #pragma "message OS Family not defined"
 		return string("");
 #endif
 }
@@ -180,7 +174,7 @@ string getOSName(){
     uname(&buf);
     return string(buf.sysname);
 #else
-# warning OS Name not defined
+# pragma "message OS Name not defined"
 	return string("");
 #endif
 
@@ -198,7 +192,7 @@ string getOSVersion(){
     uname(&buf);
     return string(buf.version);
 #else
-	#warning OS Version not defined
+	#pragma "message OS Version not defined"
     return string("");
 #endif
 }
@@ -216,7 +210,7 @@ string getOSRelease(){
     uname(&buf);
     return string(buf.version);
 #else
-#warning OS Release not defined
+#pragma "message OS Release not defined"
     return string("");
 #endif
 }
@@ -233,7 +227,7 @@ string getMachineName(){
     uname(&buf);
     return string(buf.nodename);
 #else
-#warning machine name not defined
+#pragma "message machine name not defined"
     return string("");
 #endif
 }
@@ -273,7 +267,7 @@ string getCompilerName(){
 #elif __GNUC__
     c_name = "GNU C++";
 #else
-#warning compiler name not defined
+#pragma "message compiler name not defined"
 #endif
     return c_name;
 }
@@ -286,7 +280,7 @@ string getCompilerVersion(){
 #elif defined (__GNUC__)
     c_version = __VERSION__ ;
 #else
-#warning compiler version not defined
+#pragma message "compiler version not defined"
 #endif
         return c_version;
 }
@@ -299,9 +293,9 @@ string getOSLanguage(){
 	  cchData = GetLocaleInfoA(LOCALE_USER_DEFAULT,LOCALE_SENGLANGUAGE,lpLCData,cchData);
 	  lang = string(lpLCData);
 #elif __GNUC__
-#warning os language not defined
+ #pragma message "os language not defined"
 #else
-#warning os language not defined
+ #pragma message "os language not defined"
 #endif
     return lang;
 }

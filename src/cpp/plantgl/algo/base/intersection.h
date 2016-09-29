@@ -43,7 +43,9 @@
 #include "../algo_config.h"
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/indexarray.h>
+#include <plantgl/scenegraph/container/geometryarray2.h>
 #include <plantgl/scenegraph/geometry/plane.h>
+#include <vector>
 
 /* ----------------------------------------------------------------------- */
 
@@ -69,6 +71,23 @@ TOOLS(Vector3) _plane_segment_intersection(const Plane3& plane,
                                     real_t d1,
                                     const TOOLS(Vector3)& p1, 
                                     const TOOLS(Vector3)& p2);
+
+
+enum IntersectionType {
+    NoIntersection = 0,
+    Intersection   = 1,
+    CoPlanar       = 2
+} ;
+
+// Check if a plane and segment intersect. result contains intersection if true.
+ALGO_API IntersectionType triangle_triangle_intersection(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
+                                                 const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23, 
+                                                 TOOLS(Vector3)& intersectionstart, TOOLS(Vector3)& intersectionend);
+
+
+
+std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
+auto_intersection(Point3ArrayPtr points, Index3ArrayPtr triangles);
 
 /* ----------------------------------------------------------------------- */
 

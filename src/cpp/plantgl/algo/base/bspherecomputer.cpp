@@ -400,14 +400,6 @@ bool
 BSphereComputer::process( Frustum * frustum )
 {
   GEOM_BSPHERECOMPUTER_DISCRETIZE( frustum );
-
-/*  GEOM_ASSERT( frustum );
-  GEOM_BSPHERECOMPUTER_CHECK_CACHE( frustum ); */
-#ifdef __GNUC__
-#warning to do
-#endif
-  /* GEOM_BSPHERECOMPUTER_UPDATE_CACHE( frustum );
-  return true; */
 }
 
 
@@ -446,13 +438,6 @@ bool
 BSphereComputer::process( IFS * ifs )
 {
         GEOM_BSPHERECOMPUTER_DISCRETIZE( ifs );
-/*  GEOM_ASSERT( ifs );
-  GEOM_BSPHERECOMPUTER_CHECK_CACHE( ifs ); */
-#ifdef __GNUC__
-#warning to do
-#endif
-/*  GEOM_BSPHERECOMPUTER_UPDATE_CACHE( ifs );
-  return true; */
 }
 
 
@@ -493,14 +478,6 @@ bool
 BSphereComputer::process( Paraboloid * paraboloid )
 {
         GEOM_BSPHERECOMPUTER_DISCRETIZE( paraboloid );
-  /*GEOM_ASSERT( paraboloid );
-  GEOM_BSPHERECOMPUTER_CHECK_CACHE( paraboloid );
-  __result = new BoundingSphere(Vector3::ORIGIN,max(paraboloid->getRadius(),paraboloid->getHeight())); */
-#ifdef __GNUC__
-#warning to do
-#endif
-  /* GEOM_BSPHERECOMPUTER_UPDATE_CACHE( paraboloid );
-  return true;*/
 }
 
 
