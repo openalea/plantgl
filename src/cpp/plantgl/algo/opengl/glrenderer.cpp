@@ -238,13 +238,28 @@ bool GLRenderer::setGLFrameFromId(uint_t wid)
 }
 
 #ifndef PGL_OLD_MIPMAP_STYLE 
-static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
+#ifndef __APPLE__ // It is already defined on Mac Os X
+
+  typedef void (* PFNGLGENERATEMIPMAPPROC) (GLenum target);
+  static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
+  static int HasGenerateMipmap = -1;
+
+#else
+  static int HasGenerateMipmap = 1;
+
+#endif
 #endif
 
 void GLRenderer::init() {
 #ifndef PGL_OLD_MIPMAP_STYLE 
-   if (glGenerateMipmap == NULL)
+#ifndef __APPLE__
+
+   if (HasGenerateMipmap == -1) {
 	   glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)QGLContext::currentContext()->getProcAddress("glGenerateMipmap");
+       HasGenerateMipmap = (glGenerateMipmap?1:0);
+   }
+
+#endif
 #endif
 }
 
@@ -1071,7 +1086,7 @@ bool GLRenderer::process( ImageTexture * texture ) {
       }
       else{
 #ifndef PGL_OLD_MIPMAP_STYLE 
-        if (glGenerateMipmap != NULL) {
+        if (HasGenerateMipmap) {
 		    glTexParameterf( GL_TEXTURE_2D, 
 		                     GL_TEXTURE_MIN_FILTER, 
 		 	                 GL_LINEAR_MIPMAP_NEAREST );
