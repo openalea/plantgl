@@ -33,6 +33,7 @@
 
 #include "info.h"
 #include <plantgl/tool/util_types.h>
+#include <plantgl/tool/readline.h>
 #include <plantgl/algo/opengl/util_glu.h>
 
 #include <QtGui/qlabel.h>
@@ -91,14 +92,13 @@
 
 #include <plantgl/algo/opengl/util_glut.h>
 
-#if defined(__GNUC__)
-#ifndef __MINGW32__
+#ifdef USE_READLINE
 #include <stdio.h>
 extern "C" {
 #include <readline/readline.h>
 }
 #endif
-#endif
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -1369,6 +1369,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
   }
 /* ----------------------------------------------------------------------- */
 
+#ifdef USE_READLINE
   QPixmap tools_pix( ( const char** ) tools_logo );
 
   QTreeWidgetItem * item10 = new QTreeWidgetItem( RootItem, LastItem );
@@ -1381,7 +1382,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
   item->setText( 1,  QString(rl_library_version)  );
 
   LastItem = item10;
-
+#endif
 /* ---------------------------------------------------------------------- */
 #endif
 #endif
@@ -1489,7 +1490,7 @@ ViewSysInfo::saveAsFile(const QString& file) const {
                 QTextStream stream(&f);
                 QString indent;
                 QTreeWidgetItem* current = RootItem;
-                
+
                 while(current != NULL){
                         stream << indent << current->text(0) << '\t' << current->text(1);
 #ifdef _WIN32
