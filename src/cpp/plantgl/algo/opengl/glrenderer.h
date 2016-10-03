@@ -113,6 +113,8 @@ public:
   /// Clears \e self.
   void clear( );
 
+  void init();
+
   /// Returns the Discretizer attached to \e self.
   Discretizer& getDiscretizer( );
 
