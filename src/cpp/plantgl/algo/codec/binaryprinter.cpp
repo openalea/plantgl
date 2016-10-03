@@ -278,7 +278,7 @@ bool TokenCode::initTokens(leifstream& stream,ostream & output){
           stream.read(label,length);
           label[length]='\0';
           string _label = label;
-                  delete label;
+          delete [] label;
           uint_t nb(0);
           stream >> nb;
           __code[code] = pair<string,uint_t>(_label,nb);
@@ -461,8 +461,8 @@ void BinaryPrinter::write(const Matrix4& val) {
   };
 
 
-#define GEOM_PRINT_FIELD_ARRAY(obj,field,type) if(obj->get##field()) writeArray(*obj->get##field()); else writeUint32(0);
-#define GEOM_PRINT_FIELD_MATRIX(obj,field,type) if(obj->get##field()) writeMatrix(*obj->get##field()); else writeUint32(0);
+#define GEOM_PRINT_FIELD_ARRAY(obj,field,type)  if(obj->get##field()) { writeArray(*obj->get##field()); } else { writeUint32(0); }
+#define GEOM_PRINT_FIELD_MATRIX(obj,field,type) if(obj->get##field()) { writeMatrix(*obj->get##field()); } else { writeUint32(0); }
 
 /* { \
     uint_t _sizei = (obj->get##field()?obj->get##field()->size():0); \
@@ -485,7 +485,7 @@ void BinaryPrinter::write(const Matrix4& val) {
 
 /* ----------------------------------------------------------------------- */
 
-const float BinaryPrinter::BINARY_FORMAT_VERSION(2.4f);
+const float BinaryPrinter::BINARY_FORMAT_VERSION(2.5f);
 
 /* ----------------------------------------------------------------------- */
 
@@ -592,11 +592,11 @@ bool BinaryPrinter::header(const char * comment){
     __outputStream << float(BINARY_FORMAT_VERSION) << char(13) << char(10);
   if(__tokens.getVersion() >= 1.6f){
 #ifdef PGL_USE_DOUBLE
-#ifdef __GNUC__
-#warning Use double floating precision 
-#endif
 	uchar_t precision = 64 ;
 #else 
+#ifdef __GNUC__
+#warning Use simple floating precision 
+#endif
 	uchar_t precision = 32 ;
 #endif 
     // std::cerr << "Assume "<< (precision==32?"simple":"double")<< " precision." << std::endl;
@@ -804,8 +804,6 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
 		  _default+=1;
 	  if (texture->isRepeatTToDefault())
 		  _default+=2;
-	  if (texture->isTransparencyToDefault())
-		  _default+=4;
   }
 
   if(__tokens.getVersion() >= 1.8f)
@@ -821,9 +819,6 @@ bool BinaryPrinter::process( ImageTexture * texture ) {
 
 	  if (! texture->isRepeatTToDefault())
 		GEOM_PRINT_FIELD(texture,RepeatT,BOOLEAN);
-
-	  if (! texture->isTransparencyToDefault())
-		GEOM_PRINT_FIELD(texture,Transparency,REAL);
   }
 
   if(__tokens.getVersion() >= 1.8f){
@@ -843,12 +838,19 @@ bool BinaryPrinter::process( Texture2D * texture ) {
   uchar_t _default(0);
   if (texture->isTransformationToDefault())
       _default+=1;
+  if (texture->isBaseColorToDefault())
+      _default+=2;
   writeUchar(_default);
 
   texture->getImage()->apply(*this);
 
   if (!texture->isTransformationToDefault())
 	texture->getTransformation()->apply(*this);
+
+  if(__tokens.getVersion() > 2.4f) {
+      if (! texture->isBaseColorToDefault())
+         GEOM_PRINT_FIELD(texture,BaseColor,COLOR4);
+   }
 
   return true;
 }
@@ -1338,19 +1340,23 @@ bool BinaryPrinter::process( Extrusion * extrusion ) {
 
  if(extrusion->getProfileTransformation()){
       ProfileTransformationPtr _p = extrusion->getProfileTransformation();
-      if( ! extrusion->isScaleToDefault() )
+      if( ! extrusion->isScaleToDefault() ) {
           GEOM_PRINT_FIELD_ARRAY( _p,Scale,VECTOR2);
+      }
 
-      if( ! extrusion->isOrientationToDefault() )
+      if( ! extrusion->isOrientationToDefault() ){
           GEOM_PRINT_FIELD_ARRAY( _p,Orientation,ANGLE);
+      }
 
-      if( ! extrusion->isKnotListToDefault() )
+      if( ! extrusion->isKnotListToDefault() ){
           GEOM_PRINT_FIELD_ARRAY( _p,KnotList,REAL);
+      }
 
   }
   if(__tokens.getVersion() >= 2.2f){
-    if(! extrusion->isInitialNormalToDefault() )
+    if(! extrusion->isInitialNormalToDefault() ){
       GEOM_PRINT_FIELD(extrusion,InitialNormal,VECTOR3);
+    }
   }
 
   GEOM_PRINT_FIELD(extrusion,Axis,GEOMETRY);
@@ -1565,14 +1571,17 @@ bool BinaryPrinter::process( NurbsCurve * nurbsCurve ) {
   }
   writeUchar(_default);
 
-  if (! nurbsCurve->isDegreeToDefault())
+  if (! nurbsCurve->isDegreeToDefault()) {
     GEOM_PRINT_FIELD(nurbsCurve,Degree,UINT32);
+    }
 
-  if (! nurbsCurve->isKnotListToDefault())
+  if (! nurbsCurve->isKnotListToDefault()){
     GEOM_PRINT_FIELD_ARRAY(nurbsCurve,KnotList,REAL);
+    }
 
-  if (! nurbsCurve->isStrideToDefault())
+  if (! nurbsCurve->isStrideToDefault()) {
     GEOM_PRINT_FIELD(nurbsCurve,Stride,UINT32);
+    }
 
   if(__tokens.getVersion() >= 2.1f){
 	if (! nurbsCurve->isWidthToDefault()){
@@ -1609,26 +1618,27 @@ bool BinaryPrinter::process( NurbsPatch * nurbsPatch ) {
   writeUchar(_default);
 
 
-  if (! nurbsPatch->isUDegreeToDefault())
-  GEOM_PRINT_FIELD(nurbsPatch,UDegree,UINT32);
+  if (! nurbsPatch->isUDegreeToDefault()){
+    GEOM_PRINT_FIELD(nurbsPatch,UDegree,UINT32);
+  }
 
   if (! nurbsPatch->isVDegreeToDefault())
-  GEOM_PRINT_FIELD(nurbsPatch,VDegree,UINT32);
+   { GEOM_PRINT_FIELD(nurbsPatch,VDegree,UINT32);}
 
   if (! nurbsPatch->isUKnotListToDefault())
-    GEOM_PRINT_FIELD_ARRAY(nurbsPatch,UKnotList,REAL);
+    {GEOM_PRINT_FIELD_ARRAY(nurbsPatch,UKnotList,REAL);}
 
   if (! nurbsPatch->isVKnotListToDefault())
-    GEOM_PRINT_FIELD_ARRAY(nurbsPatch,VKnotList,REAL);
+    {GEOM_PRINT_FIELD_ARRAY(nurbsPatch,VKnotList,REAL);}
 
   if (! nurbsPatch->isUStrideToDefault())
-    GEOM_PRINT_FIELD(nurbsPatch,UStride,UINT32);
+    {GEOM_PRINT_FIELD(nurbsPatch,UStride,UINT32);}
 
   if (! nurbsPatch->isVStrideToDefault())
-    GEOM_PRINT_FIELD(nurbsPatch,VStride,UINT32);
+    {GEOM_PRINT_FIELD(nurbsPatch,VStride,UINT32);}
 
   if (! nurbsPatch->isCCWToDefault())
-    GEOM_PRINT_FIELD( nurbsPatch,CCW,BOOLEAN);
+    {GEOM_PRINT_FIELD( nurbsPatch,CCW,BOOLEAN);}
 
   GEOM_PRINT_FIELD_MATRIX(nurbsPatch,CtrlPointMatrix,VECTOR4);
 
@@ -2199,13 +2209,13 @@ bool BinaryPrinter::process( NurbsCurve2D * nurbsCurve ) {
   writeUchar(_default);
 
   if (! nurbsCurve->isDegreeToDefault())
-    GEOM_PRINT_FIELD(nurbsCurve,Degree,UINT32);
+    {GEOM_PRINT_FIELD(nurbsCurve,Degree,UINT32);}
 
   if (! nurbsCurve->isKnotListToDefault())
-    GEOM_PRINT_FIELD_ARRAY(nurbsCurve,KnotList,REAL);
+    {GEOM_PRINT_FIELD_ARRAY(nurbsCurve,KnotList,REAL);}
 
   if (! nurbsCurve->isStrideToDefault())
-    GEOM_PRINT_FIELD(nurbsCurve,Stride,UINT32);
+    {GEOM_PRINT_FIELD(nurbsCurve,Stride,UINT32);}
 
   if(__tokens.getVersion() >= 2.1f){
 	if (! nurbsCurve->isWidthToDefault()){

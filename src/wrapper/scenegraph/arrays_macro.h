@@ -292,7 +292,7 @@ T * py_subset(T * pts, boost::python::object subsetindices){
 		boost::python::object obj; 
 		try  {  obj = iter_obj.attr( "next" )(); }
 		catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-		uint32_t val = boost::python::extract<uint32_t>( obj )();
+		int val = boost::python::extract<int>( obj )();
         if (val < 0) val += nbelem;
         if (val < 0 || val >= nbelem) {
             delete subobj;

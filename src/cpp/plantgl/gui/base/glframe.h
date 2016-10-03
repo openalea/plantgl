@@ -61,6 +61,7 @@ class QTabWidget;
 
 #include <plantgl/tool/util_types.h>
 #include <vector>
+#include <ctime>
 
 /* ----------------------------------------------------------------------- */
 
@@ -280,6 +281,8 @@ public slots:
   void useOcclusionQuery(bool b);
 
   void usePixelBuffer(bool b);
+  
+  void setFPSDisplay(bool b);
 
   void showMessage(const QString message, int timeout = 0);
 
@@ -428,6 +431,12 @@ signals:
   float __msg_transparency_step;
 
   QTimer __timer;
+
+  bool __fpsDisplay;
+
+  clock_t __lastdraw;
+  double __fps;
+  int __fpscounter;
 };
 
 class VIEW_API ViewDoubleToolButton : public QToolButton {

@@ -173,10 +173,23 @@ object py_polygon2ds_intersection_2(Point2ArrayPtr points, Index polygon1, Index
     return make_tuple(result.first,result.second);
 }
 
+object py_triangle_triangle_intersection(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
+                                      const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23)
+{
+   Vector3 intersectionstart, intersectionend;
+   IntersectionType res = triangle_triangle_intersection(t11, t12, t13, t21, t22, t23, intersectionstart,intersectionend);
+   if (res == NoIntersection) return object();
+   if (res == Intersection) return make_tuple(intersectionstart, intersectionend);
+   else return object(1);
+
+}
+
 
 
 void export_Intersection()
 {
     def("polygon2ds_intersection",&py_polygon2ds_intersection_1, "Compute intersection between two 2D polygons.", bp::args("polygon1", "polygon1"));
     def("polygon2ds_intersection",&py_polygon2ds_intersection_2, "Compute intersection between two 2D polygons.", bp::args("points", "polygon1", "polygon1"));
+    def("triangle_triangle_intersection", &py_triangle_triangle_intersection);
 }
+

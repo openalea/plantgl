@@ -2,7 +2,7 @@
 
 from openalea.sconsx import config, environ
 import os, sys
-from sconsx_ext.mpfr import create as mpfr_create
+#from sconsx_ext.mpfr import create as mpfr_create
 
 
 pj= os.path.join
@@ -19,7 +19,7 @@ env = Environment(options=options, tools=[])
 qt_env = env
 qt_version = int(qt_env['QT_VERSION'])
 
-cpp_tools = ['bison', 'flex', 'opengl','readline', 'install', 'qhull','boost_python','boost_thread','cgal','lapack', 'eigen', 'mpfr','ann']
+cpp_tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann']
 
 if qt_version == 3:
     qt_tools = ['qt']

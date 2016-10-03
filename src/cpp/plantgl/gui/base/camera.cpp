@@ -32,7 +32,7 @@
  */
 
 #include <plantgl/algo/opengl/util_gl.h>
-#include <plantgl/algo/opengl/util_glut.h>
+#include <plantgl/algo/opengl/util_glu.h>
 #include <plantgl/math/util_math.h>
 #include <plantgl/gui/viewer/util_qstring.h>
 
@@ -604,27 +604,25 @@ void ViewCameraGL::updateActualViewAngle()
 void
 ViewCameraGL::beginSelectGL(const QPoint& point)
 {
-  beginSelectGL(point.x(),point.y());
-}
-
-void
-ViewCameraGL::beginSelectGL(int x, int y)
-{
   GEOM_GL_ERROR;
-
-  GLint viewport[4];
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
 
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y,2.0,2.0,viewport);
-  glPushProjectionMatrix();
+  geomPickMatrix(point);
 
+  glPushProjectionMatrix();
   glInitModelViewMatrix();
 
   GEOM_GL_ERROR;
+}
+
+void
+ViewCameraGL::beginSelectGL(int x, int y)
+{
+
+    beginSelectGL(QPoint(x,y));
 
 }
 
@@ -633,26 +631,15 @@ ViewCameraGL::beginSelectGL(const QRect& region)
 {
   GEOM_GL_ERROR;
 
-  GLint viewport[4];
-  int x = region.center().x();
-  int y = region.center().y();
   // printf("%i %i %i %i\n",x,y,region.width(),region.height());
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
 
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y,
-#ifdef _MSC_VER
-  (GLdouble)max(region.width(),2),
-  (GLdouble)max(region.height(),2),viewport);
-#else
-  (GLdouble)std::max(region.width(),2),
-  (GLdouble)std::max(region.height(),2),viewport);
-#endif
-  glPushProjectionMatrix();
+  geomPickMatrix(region);
 
+  glPushProjectionMatrix();
   glInitModelViewMatrix();
 
   GEOM_GL_ERROR;
@@ -714,7 +701,7 @@ ViewCameraGL::glPushProjectionMatrix()
     dep = __translation.x()+((__far_plane-__near_plane)/2) ;
 
   if(__projectionmode){
-    gluPerspective(__view_angle,__width/__height,__near_plane-dep,__far_plane-dep);
+    geomPerspective(__view_angle,__width/__height,__near_plane-dep,__far_plane-dep);
 
  
   }
@@ -955,7 +942,8 @@ ViewCameraGL::setResizePolicy(int value)
 
 void 
 ViewCameraGL::cameraEvent(ViewEvent * ev){
-	if (ev->type() == ViewEvent::eCameraSet) {
+    int evtype = ev->type();
+	if (evtype == ViewEvent::eCameraSet) {
 		ViewCameraSetEvent * e = (ViewCameraSetEvent *)ev;
 		switch(e->arg5){
 			case 0:
@@ -972,17 +960,17 @@ ViewCameraGL::cameraEvent(ViewEvent * ev){
 			break;
 		}
 	}
-	else if (ev->type() == ViewEvent::eCameraGet){
+	else if (evtype == ViewEvent::eCameraGet){
 		ViewCameraGetEvent * e = (ViewCameraGetEvent *)ev;
 		*e->result = getPosition();
 		*e->arg1 = getDirection();
 		*e->arg2 = getUp();
 	}
-    else if (ev->type() == ViewEvent::eSetViewAngle){
+    else if (evtype == ViewEvent::eSetViewAngle){
         ViewSetViewAngleEvent * e = (ViewSetViewAngleEvent *)ev;
         setViewAngle(e->arg1);
     }
-    else if (ev->type() == ViewEvent::eGetViewAngle){
+    else if (evtype == ViewEvent::eGetViewAngle){
         ViewGetViewAngleEvent * e = (ViewGetViewAngleEvent *)ev;
         *e->result = getDefaultViewAngle();
     }
@@ -1310,10 +1298,10 @@ void ViewCameraGL::read(const QString& filename)
     QTextStream stream ( &file );
 
         stream >> __azimuth >> __elevation;
-        printf("%d\n",__azimuth);
-        printf("%d\n",__elevation);
+        printf("%f\n",__azimuth);
+        printf("%f\n",__elevation);
         stream >> __stepMove;
-        printf("%i\n",__stepMove);
+        printf("%f\n",__stepMove);
 
         IV(stream,__center);
         IV(stream,__eye);

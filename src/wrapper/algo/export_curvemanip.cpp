@@ -46,6 +46,7 @@ std::vector<Polyline2DPtr> convert(boost::python::object obj){
 	else {
 		return extract_vec<Polyline2DPtr>(obj)();
 	}
+    return res;
 }
 
 Point2ArrayPtr py_CurveIntersection_compute(boost::python::object arg){

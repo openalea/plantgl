@@ -111,8 +111,7 @@ class geommacro {
                          std::string arg;
                          if(*b == '"'){
                           _nb++;b++;
-                          while (b != e && *b != '"'  ||
-                                   (*b == '"'  && b != b_ && *(b-1) == '\\'))b++;
+                          while (b != e && (*b != '"'  || (*b == '"'  && b != b_ && *(b-1) == '\\')))b++;
                          }
                          else{
                           while(b != e && *b != ' ' &&
@@ -360,6 +359,7 @@ AngleList         {TRACE; return TokAngleList;}
 Axis              {TRACE; return TokAxis;}
 Azimuth           {TRACE; return TokAzimuth;}
 BaseRadius        {TRACE; return TokBaseRadius;}
+BaseColor         {TRACE; return TokBaseColor;}
 BBoxCenter        {TRACE; return TokBBoxCenter;}
 BBoxSize          {TRACE; return TokBBoxSize;}
 Bold			  {TRACE; return TokBold;}

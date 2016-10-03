@@ -552,17 +552,8 @@ inline void glGeomGetLightDirection(GLenum light, TOOLS(Vector3)& v )
 
 inline void glGeomFrustum(const TOOLS(Vector3)& LowerLeft,const TOOLS(Vector3)& UpperRigth)
 { glFrustum(LowerLeft.y(), UpperRigth.y(), 
-			LowerLeft.z(), UpperRigth.z(), 
-			LowerLeft.x(), UpperRigth.x()); }
-	// glFrustum (GLdouble left,   GLdouble right, 
-	//			  GLdouble bottom, GLdouble top,
-	//			  GLdouble zNear,  GLdouble zFar);
-
-/// gluLookAt for GEOM
-inline void glGeomLookAt(const TOOLS(Vector3)& eye, const TOOLS(Vector3)& center, const TOOLS(Vector3)& up )
-{ gluLookAt(eye.x(),    eye.y(),    eye.z(),
-		    center.x(), center.y(), center.z(),
-			up.x(),     up.y(),     up.z()); }
+            LowerLeft.z(), UpperRigth.z(), 
+            LowerLeft.x(), UpperRigth.x()); }
 
 /// Transformation of a Vector3 in GL coordinates into a Vector3 in GEOM coordinates.
 inline TOOLS(Vector3) gl2geom(const TOOLS(Vector3)& v){

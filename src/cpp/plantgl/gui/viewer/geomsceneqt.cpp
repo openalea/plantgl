@@ -511,7 +511,7 @@ ViewGeomSceneGL::clipboard(){
 				{
 					QFileInfo f(urls[0].toLocalFile());
 					QString ext = f.suffix();
-					ext.toUpper();
+					ext = ext.toUpper();
 				    if(f.exists()&& (ext == "GEOM" ||ext == "BGEOM")){
 						open(urls[0].toLocalFile());
 					}

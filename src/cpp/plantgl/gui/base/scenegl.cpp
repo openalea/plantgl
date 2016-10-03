@@ -391,16 +391,17 @@ ViewSceneRendererGL::useDisplayList(bool)
 
 bool ViewRendererGL::event(QEvent * e)
 {
-  if(e->type() == ViewEvent::eSceneChange){
+  int etype = e->type();
+  if(etype == ViewEvent::eSceneChange){
     ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
     return sceneChangeEvent(k);
   }
-  else if(e->type() == ViewEvent::eFileChange){
+  else if(etype == ViewEvent::eFileChange){
     ViewFileChangeEvent * k = ( ViewFileChangeEvent * )e;
 	openFile(k->arg1);
     return true;
   }
-  else if(e->type() == ViewEvent::eRefresh){
+  else if(etype == ViewEvent::eRefresh){
     // ViewRefreshEvent * k = ( ViewRefreshEvent * )e;
 	refresh();
     return true;

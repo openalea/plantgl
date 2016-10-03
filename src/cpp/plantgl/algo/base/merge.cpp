@@ -257,7 +257,7 @@ bool Merge::apply( Polyline& geom )
 /////////////////////////////////////////////////////////////////////////////
 {
 #ifdef __GNUC__
-#warning: not yet implemented
+#pragma message "Polylines merging not yet implemented"
 #endif
 GEOM_TRACE("apply Poly");
   return false;

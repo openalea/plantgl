@@ -104,7 +104,7 @@ RayIntersection::process( Inline * geominline )
 {
   GEOM_ASSERT( geominline );
 #ifdef __GNUC__
-#warning to do
+#pragma message "RayIntersection with Inline not yet implemented"
 #endif
   return false;
 }

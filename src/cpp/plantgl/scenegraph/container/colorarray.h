@@ -77,6 +77,7 @@ public:
         data[ 3*i+1 ] = color.getGreen();
         data[ 3*i+2 ] = color.getBlue();
       }
+      return data;
   }
 };
 
@@ -119,6 +120,7 @@ public:
         data[ 4*i+2 ] = color.getBlue();
         data[ 4*i+3 ] = color.getAlpha();
       }
+      return data;
   }
 };
 
@@ -129,7 +131,7 @@ template <class ColorArray>
 RCPtr<ColorArray>
 apply_colormap(const RCPtr<ColorArray> colormap, const TOOLS(RealArrayPtr) values)
 {  
-    std::pair<TOOLS(RealArray)::const_iterator,TOOLS(RealArray)::const_iterator> minmax = values->getMinAndMax();
+    std::pair<TOOLS(RealArray)::const_iterator,TOOLS(RealArray)::const_iterator> minmax = values->getMinAndMax(true);
     return apply_colormap(colormap, values, *minmax.first, *minmax.second);
 }
 

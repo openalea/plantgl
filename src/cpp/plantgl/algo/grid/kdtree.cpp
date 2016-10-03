@@ -53,7 +53,7 @@ PGL_USING_NAMESPACE
     PGL_END_NAMESPACE \
     \
     PGL::ANN##basename::ANN##basename(RCPtr<pointarraytype> const & points) : \
-            basename(points), __internal(new ANN##basename##Internal(points)) { ; } \
+            Abstract##basename(points), __internal(new ANN##basename##Internal(points)) { ; } \
     \
     PGL::ANN##basename::~ANN##basename() { delete __internal; } \
     \
@@ -62,6 +62,9 @@ PGL_USING_NAMESPACE
     \
     IndexArrayPtr PGL::ANN##basename::k_nearest_neighbors(size_t k)  \
     { return __internal->k_nearest_neighbors(k); } \
+    \
+    IndexArrayPtr PGL::ANN##basename::r_nearest_neighbors(real_t radius)  \
+    { return __internal->r_nearest_neighbors(radius); } \
     \
     size_t PGL::ANN##basename::size()  const \
     { return __internal->size(); } \

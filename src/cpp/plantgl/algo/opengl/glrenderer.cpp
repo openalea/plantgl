@@ -49,17 +49,74 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QImage>
 #include <QtGui/QFont>
+ #include <typeinfo>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
-// #define GEOM_DLDEBUG
-// #define WITH_VERTEXARRAY
-// #define WITH_GPU_PRIMITIVE
+//#define GEOM_DLDEBUG
+//#define GEOM_TREECALLDEBUG
 
+#define WITH_PRECOMPILING
+
+// #define WITH_VERTEXARRAY
+// #define PGL_OLD_MIPMAP_STYLE 
+
+#ifdef GEOM_TREECALLDEBUG
+#define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s' in mode %i\n", (!obj->unique()?"shared ":""),obj->getId(), typeid(*obj).name(), __compil);
+#else
+#define GEOM_ASSERT_OBJ(obj)
+#endif
 
 /* ----------------------------------------------------------------------- */
 
+#define ePreCompileMode 1024
+#define MAXPRECOMPILDEPTH 100
+
+#ifdef WITH_PRECOMPILING
+
+#define GEOM_GLRENDERER_PRECOMPILE_INIT(sh) \
+    int prevmode = __compil; \
+    __compil = ePreCompileMode; \
+    __executionmode = GL_COMPILE; \
+    __precompildepth = 0; \
+
+#define GEOM_GLRENDERER_PRECOMPILE_INITEND \
+    __compil = prevmode; \
+    __executionmode = GL_COMPILE_AND_EXECUTE; \
+
+#define GEOM_GLRENDERER_PRECOMPILE_BEG(geom) \
+    if(__compil == ePreCompileMode) { \
+      if(!geom->unique()) { \
+         Cache<GLuint>::Iterator _it = __cache.find((uint_t)geom->getId()); \
+         if (_it != __cache.end()) return true; \
+         ++__precompildepth; \
+      } \
+
+#define GEOM_GLRENDERER_PRECOMPILE_END(geom) \
+      if(geom->unique()) return true; \
+      else __compil = 0; \
+    } \
+
+#define GEOM_GLRENDERER_PRECOMPILE_SUB(subgeom) \
+       if (__precompildepth < __maxprecompildepth) { \
+            subgeom->apply(*this); \
+            __compil = ePreCompileMode; \
+        } \
+
+#else
+
+#define GEOM_GLRENDERER_PRECOMPILE_INIT(sh) 
+#define GEOM_GLRENDERER_PRECOMPILE_INITEND 
+#define GEOM_GLRENDERER_PRECOMPILE_BEG(geom) 
+#define GEOM_GLRENDERER_PRECOMPILE_END(geom) 
+#define GEOM_GLRENDERER_PRECOMPILE_SUB(subgeom)
+
+#endif
+
+#define GEOM_GLRENDERER_PRECOMPILE(geom) \
+        GEOM_GLRENDERER_PRECOMPILE_BEG(geom) \
+        GEOM_GLRENDERER_PRECOMPILE_END(geom) \
   
 
 #define GEOM_GLRENDERER_CHECK_CACHE(geom) \
@@ -83,7 +140,7 @@ TOOLS_USING_NAMESPACE
 
 template<class T>
 bool GLRenderer::discretize_and_render(T * geom){
-  GEOM_ASSERT(geom); 
+  GEOM_ASSERT_OBJ(geom); 
   GEOM_GLRENDERER_CHECK_CACHE(geom);
   if(__appearance && __appearance->isTexture())
       __discretizer.computeTexCoord(true);
@@ -97,6 +154,8 @@ bool GLRenderer::discretize_and_render(T * geom){
 }
 
 #define GEOM_GLRENDERER_DISCRETIZE_RENDER(geom) \
+  GEOM_ASSERT_OBJ(geom); \
+  GEOM_GLRENDERER_PRECOMPILE(geom); \
   return discretize_and_render(geom); \
 
 
@@ -110,6 +169,15 @@ bool GLRenderer::discretize_and_render(T * geom){
 
 #define END_LINE_WIDTH(obj) if(!obj->isWidthToDefault()){ glPopAttrib(); }
 
+#define  GL_PUSH_MATRIX(geom) \
+   bool mypushpop = __dopushpop; \
+   if (mypushpop) glPushMatrix(); \
+   __dopushpop = is_null_ptr(dynamic_pointer_cast<Transformed>(geom)); 
+
+#define  GL_POP_MATRIX(geom) \
+   if (mypushpop) glPopMatrix(); \
+   __dopushpop = mypushpop; 
+
 /* ----------------------------------------------------------------------- */
 
 
@@ -122,7 +190,10 @@ GLRenderer::GLRenderer( Discretizer& discretizer, QGLWidget * glframe ) :
   __selectMode(ShapeId),
   __compil(0),
   __glframe(glframe),
-  __currentdisplaylist(false)
+  __currentdisplaylist(false),
+  __dopushpop(true),
+  __executionmode(GL_COMPILE_AND_EXECUTE),
+  __maxprecompildepth(MAXPRECOMPILDEPTH)
 {
 }
 
@@ -166,6 +237,32 @@ bool GLRenderer::setGLFrameFromId(uint_t wid)
     return true;
 }
 
+#ifndef PGL_OLD_MIPMAP_STYLE 
+#ifndef __APPLE__ // It is already defined on Mac Os X
+
+  typedef void (* PFNGLGENERATEMIPMAPPROC) (GLenum target);
+  static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
+  static int HasGenerateMipmap = -1;
+
+#else
+  static int HasGenerateMipmap = 1;
+
+#endif
+#endif
+
+void GLRenderer::init() {
+#ifndef PGL_OLD_MIPMAP_STYLE 
+#ifndef __APPLE__
+
+   if (HasGenerateMipmap == -1) {
+	   glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)QGLContext::currentContext()->getProcAddress("glGenerateMipmap");
+       HasGenerateMipmap = (glGenerateMipmap?1:0);
+   }
+
+#endif
+#endif
+}
+
 void GLRenderer::clear( )
 {
 #ifdef GEOM_DLDEBUG
@@ -192,9 +289,9 @@ void GLRenderer::clear( )
 }
 
 
-bool GLRenderer::check(uint_t id, GLuint& displaylist){
+bool GLRenderer::check(size_t id, GLuint& displaylist){
   if(__Mode != DynamicPrimitive){ 
-	Cache<GLuint>::Iterator _it = __cache.find(id); 
+	Cache<GLuint>::Iterator _it = __cache.find((uint_t)id); 
 	if (_it != __cache.end()) { 
 	  displaylist = _it->second;
 	  glCallList(displaylist); 
@@ -209,9 +306,9 @@ bool GLRenderer::check(uint_t id, GLuint& displaylist){
 	  if(!__currentdisplaylist){
 		displaylist = glGenLists(1); 
 		if(displaylist != 0){
-		  glNewList(displaylist,GL_COMPILE_AND_EXECUTE);
+		  glNewList(displaylist,__executionmode);
 #ifdef GEOM_DLDEBUG
-		  printf("Debut Display List %i\n",displaylist);
+		  printf("Create Display List %i for id=%zu\n",displaylist, id);
 #endif
 		  __currentdisplaylist = true;
 		}
@@ -222,9 +319,9 @@ bool GLRenderer::check(uint_t id, GLuint& displaylist){
   return false;
 }
 
-bool GLRenderer::call(uint_t id){
+bool GLRenderer::call(size_t id){
   if(__Mode != DynamicPrimitive){ 
-	Cache<GLuint>::Iterator _it = __cache.find(id); 
+	Cache<GLuint>::Iterator _it = __cache.find((uint_t)id); 
 	if (_it != __cache.end()) { 
 	  glCallList(_it->second); 
 #ifdef GEOM_DLDEBUG
@@ -237,13 +334,13 @@ bool GLRenderer::call(uint_t id){
   return false;
 }
 
-void GLRenderer::update(uint_t id, GLuint displaylist){
+void GLRenderer::update(size_t id, GLuint displaylist){
   if(__Mode != DynamicPrimitive && displaylist != 0 && __currentdisplaylist){ 
 #ifdef GEOM_DLDEBUG
-	  printf("End Display List %i for obj %i\n",displaylist,id);
+	  printf("End Display List %i for obj %zu\n",displaylist,id);
 #endif
 	  glEndList(); 
-	  __cache.insert(id,displaylist); 
+	  __cache.insert((uint_t)id,displaylist); 
 	  assert( glGetError( ) == GL_NO_ERROR); 
 	  __currentdisplaylist = false;
   }
@@ -284,6 +381,13 @@ GLRenderer::setRenderingMode(RenderingMode mode)
     if(mode &  DynamicPrimitive)__compil = -1;
 	else if(__compil == -1)__compil = 0;
     __Mode = mode;
+#ifdef GEOM_DLDEBUG
+    if (mode == DynamicPrimitive) printf("Mode: DynamicPrimitive\n");
+    else if (mode == DynamicScene) printf("Mode: DynamicScene\n");
+    else if (mode == Dynamic) printf("Mode: Dynamic\n");
+    else if (mode == Normal) printf("Mode: Normal\n");
+    else if (mode == Selection) printf("Mode: Selection\n");
+#endif
   }
 }
 
@@ -295,7 +399,10 @@ bool
 GLRenderer::beginSceneList()
 {
   if(__Mode == Normal){
-    if(__compil == 0 || __compil == 1 || __compil == -1){
+    if(__compil < 2){
+#ifdef GEOM_DLDEBUG
+          printf("No Scene DisplayList yet : %i\n", __scenecache);
+#endif
       return true;
     }
 	else {
@@ -304,7 +411,7 @@ GLRenderer::beginSceneList()
 		if(__scenecache != 0){
 		  glNewList(__scenecache,GL_COMPILE_AND_EXECUTE); 
 #ifdef GEOM_DLDEBUG
-		  printf("Debut Scene DisplayList\n");
+		  printf("Begin Scene DisplayList : %i\n", __scenecache);
 #endif
 		}
 #ifdef GEOM_DLDEBUG
@@ -314,7 +421,7 @@ GLRenderer::beginSceneList()
 	  }
 	  else {
 #ifdef GEOM_DLDEBUG
-		printf("Call Scene DisplayList\n");
+		// printf("Call Scene DisplayList : %i \n", __scenecache);
 #endif
 		glCallList(__scenecache);
 		return false;
@@ -331,7 +438,7 @@ GLRenderer::endSceneList()
 	 __scenecache != 0 && 
 	 __Mode == Normal){
 #ifdef GEOM_DLDEBUG
-	printf("Fin Scene DisplayList\n");
+	printf("End Scene DisplayList\n");
 #endif
     glEndList();
   }
@@ -353,6 +460,9 @@ bool GLRenderer::beginProcess(){
     glInitNames();
   }
   else {
+    GLint maxgllistnesting = 0;
+    glGetIntegerv(GL_MAX_LIST_NESTING, &maxgllistnesting);
+    __maxprecompildepth = std::min(maxgllistnesting, MAXPRECOMPILDEPTH);
 #ifdef GEOM_DLDEBUG
 	if(__compil == 0)printf("** Compile Geometry\n");
 	else if(__compil == 1)printf("** Compile Shape\n");
@@ -382,7 +492,7 @@ bool GLRenderer::endProcess(){
 /* ----------------------------------------------------------------------- */
 bool GLRenderer::process(Shape * geomshape)
 {
-  GEOM_ASSERT(geomshape);
+  GEOM_ASSERT_OBJ(geomshape);
   processAppereance(geomshape);
   return processGeometry(geomshape);
 }
@@ -397,7 +507,14 @@ bool GLRenderer::processAppereance(Shape * geomshape){
 
 bool GLRenderer::processGeometry(Shape * geomshape){
   GEOM_ASSERT(geomshape);
-  if(__Mode & Dynamic)return geomshape->geometry->apply(*this);
+  if(__Mode & Dynamic) {
+    if(__Mode == DynamicScene && __compil == 0){
+        GEOM_GLRENDERER_PRECOMPILE_INIT(geomshape);
+        GEOM_GLRENDERER_PRECOMPILE_SUB(geomshape->geometry);
+        GEOM_GLRENDERER_PRECOMPILE_INITEND;        
+    }
+    return geomshape->geometry->apply(*this);
+  }
 
   if(__Mode == Selection){
       if(__selectMode == ShapeId && geomshape->getId()!=Shape::NOID){
@@ -419,7 +536,14 @@ bool GLRenderer::processGeometry(Shape * geomshape){
 	  return true;
 	}
 	else {*/
+      if(__compil == 0) {
+        GEOM_GLRENDERER_PRECOMPILE_INIT(geomshape);
+        GEOM_GLRENDERER_PRECOMPILE_SUB(geomshape->geometry);
+        GEOM_GLRENDERER_PRECOMPILE_INITEND;
+      }
+
       geomshape->geometry->apply(*this);
+
 	  //update(Shape->SceneObject::getId(),_displayList);
       if(__Mode == Selection)glPopName();
 	  return true;
@@ -435,7 +559,7 @@ bool GLRenderer::processGeometry(Shape * geomshape){
 /* ----------------------------------------------------------------------- */
 
 bool GLRenderer::process(Inline * geomInline) {
-    GEOM_ASSERT(geomInline);
+    GEOM_ASSERT_OBJ(geomInline);
     if(geomInline->getScene()){
 		if(__Mode == Selection){
 			glPushName(GLuint(geomInline->getId()));
@@ -467,7 +591,8 @@ bool GLRenderer::process(Inline * geomInline) {
 /* ----------------------------------------------------------------------- */
 
 bool GLRenderer::process( AmapSymbol * amapSymbol ) {
-  GEOM_ASSERT(amapSymbol);
+  GEOM_ASSERT_OBJ(amapSymbol);
+  GEOM_GLRENDERER_PRECOMPILE(amapSymbol);
   GEOM_GLRENDERER_CHECK_CACHE(amapSymbol);
 
   const IndexArrayPtr& _indexList = amapSymbol->getIndexList();
@@ -577,16 +702,21 @@ bool GLRenderer::process( AsymmetricHull * asymmetricHull ) {
 
 
 bool GLRenderer::process( AxisRotated * axisRotated ) {
-  GEOM_ASSERT(axisRotated);
+  GEOM_ASSERT_OBJ(axisRotated);
+
+  GEOM_GLRENDERER_PRECOMPILE_BEG(axisRotated);
+  GEOM_GLRENDERER_PRECOMPILE_SUB(axisRotated->getGeometry());
+  GEOM_GLRENDERER_PRECOMPILE_END(axisRotated);
+
   GEOM_GLRENDERER_CHECK_CACHE(axisRotated);
 
   const Vector3& _axis = axisRotated->getAxis();
   const real_t& _angle = axisRotated->getAngle();
 
-  glPushMatrix();
+  GL_PUSH_MATRIX(axisRotated->getGeometry());
   glGeomRadRotate(_axis,_angle);
   axisRotated->getGeometry()->apply(*this);
-  glPopMatrix();
+  GL_POP_MATRIX(axisRotated->getGeometry());
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
   GEOM_GLRENDERER_UPDATE_CACHE(axisRotated);
@@ -627,33 +757,9 @@ bool GLRenderer::process( Cone * cone ) {
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef WITH_GPU_PRIMITIVE
-#include "gpu_primitives/GPU_cylinder.h"
-using namespace GPU_PRIMITIVES;
-#endif
 
 bool GLRenderer::process( Cylinder * cylinder ) {
-#ifndef WITH_GPU_PRIMITIVE
   GEOM_GLRENDERER_DISCRETIZE_RENDER(cylinder);
-#else
-  GEOM_ASSERT(cylinder);
-  GPU_cylinder c;
-  if(c.gpu_begin()){
-	GEOM_GL_ERROR_FROM(NULL);
-	c.gpu_float(cylinder->getRadius());
-	GEOM_GL_ERROR_FROM(NULL);
-	c.gpu_vec3f(0,0,cylinder->getHeight());
-	GEOM_GL_ERROR_FROM(NULL);
-	c.gpu_point3f(0,0,0);
-	GEOM_GL_ERROR_FROM(NULL);
-	c.gpu_end();
-	GEOM_GL_ERROR_FROM(NULL);
-	return true;
-  }
-  else {
-	GEOM_GLRENDERER_DISCRETIZE_RENDER(cylinder);
-  }
-#endif
 }
 
 
@@ -669,15 +775,18 @@ bool GLRenderer::process( ElevationGrid * elevationGrid ) {
 
 
 bool GLRenderer::process( EulerRotated * eulerRotated ) {
-  GEOM_ASSERT(eulerRotated);
+  GEOM_ASSERT_OBJ(eulerRotated);
+  GEOM_GLRENDERER_PRECOMPILE_BEG(eulerRotated);
+  GEOM_GLRENDERER_PRECOMPILE_SUB(eulerRotated->getGeometry());
+  GEOM_GLRENDERER_PRECOMPILE_END(eulerRotated);
   GEOM_GLRENDERER_CHECK_CACHE(eulerRotated);
 
-  glPushMatrix();
+  GL_PUSH_MATRIX(eulerRotated->getGeometry());
   glGeomRadEulerRotateZYX(eulerRotated->getAzimuth(),
 						  eulerRotated->getElevation(),
 						  eulerRotated->getRoll() );
   eulerRotated->getGeometry()->apply(*this);
-  glPopMatrix();
+  GL_POP_MATRIX(eulerRotated->getGeometry());
 
   GEOM_GLRENDERER_UPDATE_CACHE(eulerRotated);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
@@ -697,7 +806,8 @@ bool GLRenderer::process( ExtrudedHull * extrudedHull ) {
 
 
 bool GLRenderer::process( FaceSet * faceSet ) {
-  GEOM_ASSERT(faceSet);
+  GEOM_ASSERT_OBJ(faceSet);
+  GEOM_GLRENDERER_PRECOMPILE(faceSet);
   GEOM_GLRENDERER_CHECK_CACHE(faceSet);
 
   glFrontFace(faceSet->getCCW() ? GL_CCW : GL_CW);
@@ -782,8 +892,9 @@ bool GLRenderer::process( FaceSet * faceSet ) {
     }
 
   glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  if (normalV)glDisableClientState(GL_NORMAL_ARRAY);
+  if(tex)glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   delete [] vertices;
   if(normals)delete [] normals;
   if(texCoord)delete [] texCoord;
@@ -822,7 +933,16 @@ bool GLRenderer::process(Extrusion * extrusion ) {
 
 
 bool GLRenderer::process( Group * group ) {
-  GEOM_ASSERT(group);
+  GEOM_ASSERT_OBJ(group);
+  GEOM_GLRENDERER_PRECOMPILE_BEG(group);
+  for(GeometryArray::const_iterator it = group->getGeometryList()->begin();
+      it != group->getGeometryList()->end(); ++it){
+#ifdef GEOM_TREECALLDEBUG
+      printf("Look at child of group %zu in mode %i\n", group->getId(),  __compil);
+#endif
+      GEOM_GLRENDERER_PRECOMPILE_SUB((*it));
+     }
+  GEOM_GLRENDERER_PRECOMPILE_END(group);
   GEOM_GLRENDERER_CHECK_CACHE(group);
 
   group->getGeometryList()->apply(*this);
@@ -838,7 +958,10 @@ bool GLRenderer::process( Group * group ) {
 
 
 bool GLRenderer::process( IFS * ifs ) {
-  GEOM_ASSERT(ifs);
+  GEOM_ASSERT_OBJ(ifs);
+  GEOM_GLRENDERER_PRECOMPILE_BEG(ifs);
+  GEOM_GLRENDERER_PRECOMPILE_SUB(ifs->getGeometry());
+  GEOM_GLRENDERER_PRECOMPILE_END(ifs);
   GEOM_GLRENDERER_CHECK_CACHE(ifs);
 
   ITPtr transfos;
@@ -847,15 +970,17 @@ bool GLRenderer::process( IFS * ifs ) {
   const Matrix4ArrayPtr& matrixList= transfos->getAllTransfo();
   GEOM_ASSERT(matrixList);
 
+  __dopushpop = true;
+
   Matrix4Array::const_iterator matrix= matrixList->begin();
   while( matrix != matrixList->end() )
-    {
-    glPushMatrix();
+  {
+    GL_PUSH_MATRIX(ifs->getGeometry());
     glGeomMultMatrix(*matrix);
     ifs->getGeometry()->apply(*this);
-    glPopMatrix();
+    GL_POP_MATRIX(ifs->getGeometry());
     matrix++;
-    }
+  }
 
   GEOM_GLRENDERER_UPDATE_CACHE(ifs);
 
@@ -868,7 +993,7 @@ bool GLRenderer::process( IFS * ifs ) {
 
 
 bool GLRenderer::process( Material * material ) {
-  GEOM_ASSERT(material);
+  GEOM_ASSERT_OBJ(material);
   GEOM_GLRENDERER_CHECK_APPEARANCE(material);
 
   glDisable( GL_TEXTURE_2D );
@@ -914,7 +1039,8 @@ bool GLRenderer::process( Material * material ) {
 
 /* ----------------------------------------------------------------------- */
 bool GLRenderer::process( ImageTexture * texture ) {
-  GEOM_ASSERT(texture);
+  GEOM_ASSERT_OBJ(texture);
+
 
   Cache<GLuint>::Iterator it = __cachetexture.find(texture->getId());
   if(it != __cachetexture.end()){
@@ -933,10 +1059,10 @@ bool GLRenderer::process( ImageTexture * texture ) {
 	  if (id !=0){
 	  glBindTexture(GL_TEXTURE_2D, id);
 
-//	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE  );
+	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE  );
 //	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL  );
 //	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND  );
-	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
+//	  glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE  );
 
 	  glTexParameterf( GL_TEXTURE_2D, 
 					   GL_TEXTURE_WRAP_S, 
@@ -959,12 +1085,23 @@ bool GLRenderer::process( ImageTexture * texture ) {
 		    GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
       }
       else{
-	    glTexParameterf( GL_TEXTURE_2D, 
-		                 GL_TEXTURE_MIN_FILTER, 
-			    	     GL_LINEAR_MIPMAP_NEAREST );
+#ifndef PGL_OLD_MIPMAP_STYLE 
+        if (HasGenerateMipmap) {
+		    glTexParameterf( GL_TEXTURE_2D, 
+		                     GL_TEXTURE_MIN_FILTER, 
+		 	                 GL_LINEAR_MIPMAP_NEAREST );
 
+        	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+
+        	glTexImage2D( GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+
+        	glGenerateMipmap(GL_TEXTURE_2D);
+	    }
+#else
 	    gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
-		                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+		                   GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+#endif
       }
 	  // printf("gen texture : %i\n",id);
 	  // registerTexture(texture,id);
@@ -982,8 +1119,21 @@ bool GLRenderer::process( ImageTexture * texture ) {
 /* ----------------------------------------------------------------------- */
 
 bool GLRenderer::process( Texture2D * texture ) {
-  GEOM_ASSERT(texture);
+  GEOM_ASSERT_OBJ(texture);
   GEOM_GLRENDERER_CHECK_APPEARANCE(texture);
+
+  GLfloat _rgba[4];
+
+  const Color4& _color = texture->getBaseColor();
+  _rgba[0] = (GLfloat)_color.getRedClamped();
+  _rgba[1] = (GLfloat)_color.getGreenClamped();
+  _rgba[2] = (GLfloat)_color.getBlueClamped();
+  _rgba[3] = 1.0f-_color.getAlphaClamped();
+
+  /// We set the current color in the case of disabling the lighting
+  glColor4fv(_rgba);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,_rgba);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,_rgba);
 
   if(texture->getImage()){
 	  // load image
@@ -1008,7 +1158,7 @@ bool GLRenderer::process( Texture2D * texture ) {
 /* ----------------------------------------------------------------------- */
 
 bool GLRenderer::process( Texture2DTransformation * texturetransfo ) {
-  GEOM_ASSERT(texturetransfo);
+  GEOM_ASSERT_OBJ(texturetransfo);
 
   glMatrixMode(GL_TEXTURE);
   glLoadIdentity();
@@ -1041,7 +1191,7 @@ bool GLRenderer::process( Texture2DTransformation * texturetransfo ) {
 
 
 bool GLRenderer::process( MonoSpectral * monoSpectral ) {
-  GEOM_ASSERT(monoSpectral);
+  GEOM_ASSERT_OBJ(monoSpectral);
 
   GEOM_GLRENDERER_CHECK_APPEARANCE(monoSpectral);
 
@@ -1069,7 +1219,7 @@ bool GLRenderer::process( MonoSpectral * monoSpectral ) {
 
 
 bool GLRenderer::process( MultiSpectral * multiSpectral ) {
-  GEOM_ASSERT(multiSpectral);
+  GEOM_ASSERT_OBJ(multiSpectral);
 
   GEOM_GLRENDERER_CHECK_APPEARANCE(multiSpectral);
 
@@ -1116,16 +1266,23 @@ bool GLRenderer::process( NurbsPatch * nurbsPatch ) {
 
 
 bool GLRenderer::process( Oriented * oriented ) {
-  GEOM_ASSERT(oriented);
+  GEOM_ASSERT_OBJ(oriented);
+
+  GEOM_GLRENDERER_PRECOMPILE_BEG(oriented);
+  GEOM_GLRENDERER_PRECOMPILE_SUB(oriented->getGeometry());
+  GEOM_GLRENDERER_PRECOMPILE_END(oriented);
+
   GEOM_GLRENDERER_CHECK_CACHE(oriented);
 
-  glPushMatrix();
+  GL_PUSH_MATRIX(oriented->getGeometry());
+
   Matrix4TransformationPtr _basis;
   _basis= dynamic_pointer_cast<Matrix4Transformation>(oriented->getTransformation());
   GEOM_ASSERT(_basis);
   glGeomMultMatrix(_basis->getMatrix());
+
   oriented->getGeometry()->apply(*this);
-  glPopMatrix();
+  GL_POP_MATRIX(oriented->getGeometry());
 
   GEOM_GLRENDERER_UPDATE_CACHE(oriented);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
@@ -1145,7 +1302,8 @@ bool GLRenderer::process( Paraboloid * paraboloid ) {
 
 
 bool GLRenderer::process( PointSet * pointSet ) {
-  GEOM_ASSERT(pointSet);
+  GEOM_ASSERT_OBJ(pointSet);
+  GEOM_GLRENDERER_PRECOMPILE(pointSet);
   GEOM_GLRENDERER_CHECK_CACHE(pointSet);
 
   glPushAttrib (GL_LIGHTING_BIT);
@@ -1185,16 +1343,22 @@ bool GLRenderer::process( PointSet * pointSet ) {
   }
   glEnd();
 #else
+
   glEnableClientState(GL_VERTEX_ARRAY);
   real_t * vertices = points->data();
-  glVertexPointer( 3, GL_GEOM_REAL,0,vertices);
+  glVertexPointer( 3, GL_GEOM_REAL, 0 ,vertices);
+  uchar_t * colors = NULL;
   if( color ) {
+    colors = pointSet->getColorList()->toUcharArray();
     glEnableClientState( GL_COLOR_ARRAY );
-    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), points->getColorList()->toUcharArray() );
+    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), colors );
   }  
   glDrawArrays(GL_POINTS, 0 , points->size() );
+
+  if( color ) glDisableClientState( GL_COLOR_ARRAY );
   glDisableClientState(GL_VERTEX_ARRAY);
   delete [] vertices;
+  if(colors)delete [] colors;
 #endif
 
   if(!pointSet->isWidthToDefault()){ glPopAttrib(); }
@@ -1209,7 +1373,8 @@ bool GLRenderer::process( PointSet * pointSet ) {
 /* ----------------------------------------------------------------------- */
 
 bool GLRenderer::process( PGL(Polyline) * polyline ) {
-  GEOM_ASSERT(polyline);
+  GEOM_ASSERT_OBJ(polyline);
+  GEOM_GLRENDERER_PRECOMPILE(polyline);
   GEOM_GLRENDERER_CHECK_CACHE(polyline);
 
   glPushAttrib (GL_LIGHTING_BIT);
@@ -1246,13 +1411,19 @@ bool GLRenderer::process( PGL(Polyline) * polyline ) {
   glEnableClientState(GL_VERTEX_ARRAY);
   real_t * vertices = points->data();
   glVertexPointer( 3, GL_GEOM_REAL,0,vertices);
+
+  uchar_t * colors = NULL;
   if( color ) {
+    colors = polyline->getColorList()->toUcharArray();
     glEnableClientState( GL_COLOR_ARRAY );
-    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), polyline->getColorList()->toUcharArray() );
+    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), colors );
   }  
   glDrawArrays(GL_LINE_STRIP, 0 , points->size() );
+
+  if( color ) glDisableClientState( GL_COLOR_ARRAY );
   glDisableClientState(GL_VERTEX_ARRAY);
   delete [] vertices;
+  if(colors)delete [] colors;
 #endif
   
   END_LINE_WIDTH(polyline)
@@ -1270,7 +1441,9 @@ bool GLRenderer::process( PGL(Polyline) * polyline ) {
 
 
 bool GLRenderer::process( QuadSet * quadSet ) {
-  GEOM_ASSERT(quadSet);
+  GEOM_ASSERT_OBJ(quadSet);
+  GEOM_GLRENDERER_PRECOMPILE(quadSet);
+
   GEOM_GLRENDERER_CHECK_CACHE(quadSet);
 
   glFrontFace(quadSet->getCCW() ? GL_CCW : GL_CW);
@@ -1333,15 +1506,16 @@ bool GLRenderer::process( QuadSet * quadSet ) {
   }
 
   real_t * texCoord = NULL;
-  uchar_t * colorCoord = NULL;
+  uchar_t * colors = NULL;
   if(tex){
 	texCoord = quadSet->getTexCoordList()->data();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer( 2, GL_GEOM_REAL,0,texCoord);
   }
   else if( color ) {
+    colors = quadSet->getColorList()->toUcharArray();
     glEnableClientState( GL_COLOR_ARRAY );
-    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), quadSet->getColorList()->toUcharArray() );
+    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ),  colors );
   }
 
   if (normalV){
@@ -1361,13 +1535,14 @@ bool GLRenderer::process( QuadSet * quadSet ) {
   }
 
   glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
+  if (normalV)glDisableClientState(GL_NORMAL_ARRAY);
+  if(tex)glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  if( color )glDisableClientState(GL_COLOR_ARRAY);
+
   delete [] vertices;
-  if(normals)delete [] normals;
-  if(texCoord)delete [] texCoord;
-  if( colorCoord ) delete [] colorCoord;
+  if(normals)  delete [] normals;
+  if(texCoord) delete [] texCoord;
+  if(colors)   delete [] colors;
 
 #endif
   if(__appearance && 
@@ -1405,12 +1580,18 @@ bool GLRenderer::process( Swung * swung )
 
 
 bool GLRenderer::process( Scaled * scaled ) {
-  GEOM_ASSERT(scaled);
+  GEOM_ASSERT_OBJ(scaled);
+  GEOM_GLRENDERER_PRECOMPILE_BEG(scaled);  
+  GEOM_GLRENDERER_PRECOMPILE_SUB(scaled->getGeometry());
+  GEOM_GLRENDERER_PRECOMPILE_END(scaled);  
   GEOM_GLRENDERER_CHECK_CACHE(scaled);
-  glPushMatrix();
+
+  GL_PUSH_MATRIX(scaled->getGeometry());
+
   glGeomScale(scaled->getScale());
+
   scaled->getGeometry()->apply(*this);
-  glPopMatrix();
+  GL_POP_MATRIX(scaled->getGeometry());
 
   GEOM_GLRENDERER_UPDATE_CACHE(scaled);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
@@ -1422,10 +1603,14 @@ bool GLRenderer::process( Scaled * scaled ) {
 
 
 bool GLRenderer::process( ScreenProjected * scp ) {
-	GEOM_ASSERT(scp);
+	GEOM_ASSERT_OBJ(scp);
     if(__Mode == Selection) {
         return true;
     } 
+    GEOM_GLRENDERER_PRECOMPILE_BEG(scp);
+    GEOM_GLRENDERER_PRECOMPILE_SUB(scp->getGeometry());
+    GEOM_GLRENDERER_PRECOMPILE_END(scp);
+
 	GEOM_GLRENDERER_CHECK_CACHE(scp);
 	real_t heigthscale = 1.0;
     if(__glframe!= NULL && scp->getKeepAspectRatio()){
@@ -1474,7 +1659,11 @@ bool GLRenderer::process( Sphere * sphere ) {
 
 
 bool GLRenderer::process( Tapered * tapered ) {
-  GEOM_ASSERT(tapered);
+  GEOM_ASSERT_OBJ(tapered);
+  GEOM_GLRENDERER_PRECOMPILE_BEG(tapered);
+  GEOM_GLRENDERER_PRECOMPILE_SUB(tapered->getPrimitive());
+  GEOM_GLRENDERER_PRECOMPILE_END(tapered);
+
   GEOM_GLRENDERER_CHECK_CACHE(tapered);
 
   PrimitivePtr _primitive = tapered->getPrimitive();
@@ -1496,13 +1685,17 @@ bool GLRenderer::process( Tapered * tapered ) {
 
 
 bool GLRenderer::process( Translated * translated ) {
-  GEOM_ASSERT(translated);
+  GEOM_ASSERT_OBJ(translated);
+  GEOM_GLRENDERER_PRECOMPILE_BEG(translated);
+  GEOM_GLRENDERER_PRECOMPILE_SUB(translated->getGeometry());
+  GEOM_GLRENDERER_PRECOMPILE_END(translated);
+
   GEOM_GLRENDERER_CHECK_CACHE(translated);
 
-  glPushMatrix();
+  GL_PUSH_MATRIX(translated->getGeometry());
   glGeomTranslate(translated->getTranslation());
   translated->getGeometry()->apply(*this);
-  glPopMatrix();
+  GL_POP_MATRIX(translated->getGeometry());
 
   GEOM_GLRENDERER_UPDATE_CACHE(translated);
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
@@ -1515,7 +1708,9 @@ bool GLRenderer::process( Translated * translated ) {
 using namespace std;
 
 bool GLRenderer::process( TriangleSet * triangleSet ) {
-  GEOM_ASSERT(triangleSet);
+  GEOM_ASSERT_OBJ(triangleSet);
+  GEOM_GLRENDERER_PRECOMPILE(triangleSet);
+
   GEOM_GLRENDERER_CHECK_CACHE(triangleSet);
 
   bool normalV = triangleSet->getNormalPerVertex();
@@ -1587,15 +1782,17 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
   }
 
   real_t * texCoord = NULL;
-  uchar_t * colorCoord = NULL;
+  uchar_t * colors = NULL;
+
   if(tex){
 	texCoord = triangleSet->getTexCoordList()->data();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer( 2, GL_GEOM_REAL,0,texCoord);
   } 
   else if( color ) {
+    colors = triangleSet->getColorList()->toUcharArray();
     glEnableClientState( GL_COLOR_ARRAY );
-    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), triangleSet->getColorList()->toUcharArray() );
+    glColorPointer( 4, GL_UNSIGNED_BYTE, 4*sizeof( uchar_t ), colors );
   }
 
   if (normalV){
@@ -1606,21 +1803,23 @@ bool GLRenderer::process( TriangleSet * triangleSet ) {
   else {
 	size_t _i = 0;
 	for(Index3Array::const_iterator it = triangleSet->getIndexList()->begin();
-	it != triangleSet->getIndexList()->end(); it++){
-		  glGeomNormal(triangleSet->getNormalAt(_i));_i++;
+	it != triangleSet->getIndexList()->end(); it++, _i++){
+		  glGeomNormal(triangleSet->getNormalAt(_i));
 		  glDrawElements(	GL_TRIANGLES, 3 , GL_UNSIGNED_INT, it->begin());
 		  }
 
   }
 
   glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
+  if (normalV)glDisableClientState(GL_NORMAL_ARRAY);
+  if( color )glDisableClientState(GL_NORMAL_ARRAY);
+  if(tex)glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  if (normalV)glDisableClientState(GL_COLOR_ARRAY);
+
   delete [] vertices;
-  if(normals) delete [] normals;
+  if(normals)  delete [] normals;
   if(texCoord) delete [] texCoord;
-  if( colorCoord ) delete [] colorCoord;
+  if(colors)   delete [] colors;
 #endif
 
   if(__appearance && __appearance->isTexture() && !triangleSet->hasTexCoordList()){
@@ -1678,7 +1877,7 @@ bool GLRenderer::process( Polyline2D * polyline ) {
 #if QT_VERSION >= 300
 
 bool GLRenderer::process( Text * text ) {
-  GEOM_ASSERT(text);
+  GEOM_ASSERT_OBJ(text);
   if(__Mode == Selection) {
         return true;
   } 
@@ -1729,7 +1928,7 @@ bool GLRenderer::process( Text * text ) {
 #else
 
 bool GLRenderer::process( Text * text ) {
-  GEOM_ASSERT(text);
+  GEOM_ASSERT_OBJ(text);
   return true;
 }
 
@@ -1739,7 +1938,7 @@ bool GLRenderer::process( Text * text ) {
 /* ----------------------------------------------------------------------- */
 
 bool GLRenderer::process( Font * font ) {
-  GEOM_ASSERT(font);
+  GEOM_ASSERT_OBJ(font);
   return true;
 }
 

@@ -101,12 +101,8 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
 	  __aborter(0)
 {
     setObjectName(name);
-#ifdef _WIN32
   if(TOOLS(getLanguage()) == "French")
     setFrenchTranslator();
-#else
-  #warning No translation on Linux
-#endif
 
   // Preparation de la boite de dialog ErrorDialog
   __ErrorDialog= new ViewErrorDialog(this);
@@ -146,7 +142,7 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
     if( argc != 0 ){
 #ifdef __GNUC__
                 /// Read of calling options
-        char * optstring = "hs";
+        const char * optstring = "hs";
 
         struct option longopts [] = {
             /* name      has_arg   flag        val */
@@ -410,7 +406,7 @@ void Viewer::initialize()
 
   ViewerSettings settings;
   settings.beginGroup("Viewer");
-  qDebug(("Try to retrieve "+ViewerSettings::getAppliName()+" Application Data.").toAscii().data());
+  qDebug("Try to retrieve %s Application Data.", ViewerSettings::getAppliName().toAscii().data());
   int version = settings.value("StateVersion",-1).toInt();
   if(version != -1)
   {
@@ -418,8 +414,7 @@ void Viewer::initialize()
     QRect maxrect = QApplication::desktop()->geometry();
     if( maxrect.contains(rect) && rect.width() > 100 && rect.height() > 100){
         setGeometry(rect);
-        qDebug((QString("MainWindow.setGeometry(%1,%2,%3,%4)")
-            .arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height())).toAscii().data());
+        qDebug("MainWindow.setGeometry(%i,%i,%i,%i)", rect.x(),rect.y(),rect.width(),rect.height());
     }
 
     QByteArray b = settings.value("State").toByteArray();
@@ -433,9 +428,10 @@ void Viewer::initialize()
 
 void
 Viewer::displayTrayIcon(bool s){
-    if(__trayIcon)
-    if(s)__trayIcon->show();
-    else __trayIcon->hide();
+    if(__trayIcon) {
+        if(s)__trayIcon->show();
+        else __trayIcon->hide();
+    }
 }
 
 void
@@ -651,10 +647,11 @@ void  Viewer::customEvent(QEvent *e){
 #endif
 #ifdef QT_THREAD_SUPPORT
   bool release_mutex = false;
-  if(e->type() >= ViewEvent::eFirstEvent && e->type() < ViewGeomEvent::eLastGeomEvent)
+  int etype = e->type();
+  if(etype >= ViewEvent::eFirstEvent && etype < ViewGeomEvent::eLastGeomEvent)
       release_mutex = true;
 #endif
-  if(e->type() == ViewEvent::eSceneChange){
+  if(etype == ViewEvent::eSceneChange){
     ViewSceneChangeEvent * k = ( ViewSceneChangeEvent * )e;
     // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
     __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
@@ -665,21 +662,21 @@ void  Viewer::customEvent(QEvent *e){
 		}
     }
   }
-  else if(e->type() == ViewEvent::eEnd){
+  else if(etype == ViewEvent::eEnd){
     bye();
   }
-  else if(e->type() == ViewEvent::eShow){
+  else if(etype == ViewEvent::eShow){
     show();
   }
-  else if(e->type() == ViewEvent::eGetSelection){
+  else if(etype == ViewEvent::eGetSelection){
     ViewSelectRecoverEvent * k = ( ViewSelectRecoverEvent * )e;
     *k->result = getSelection();
   }
-  else if(e->type() == ViewEvent::eSetSelection){
+  else if(etype == ViewEvent::eSetSelection){
     ViewSelectionSet * k = ( ViewSelectionSet * )e;
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->arg1);
   }
-  else if(e->type() == ViewEvent::eWaitSelection){
+  else if(etype == ViewEvent::eWaitSelection){
 	  ViewWaitSelection * k = (ViewWaitSelection *)e;
 	  if( !__GLFrame->getSceneRenderer()->isEmpty() ) {
 		  if(!k->arg1.isEmpty()){
@@ -702,72 +699,72 @@ void  Viewer::customEvent(QEvent *e){
 	  }
 	  else *k->result = UINT32_MAX;
   }
-  else if(e->type() == ViewEvent::eGetRedrawPolicy){
+  else if(etype == ViewEvent::eGetRedrawPolicy){
     ViewGetRedrawEvent * k = ( ViewGetRedrawEvent * )e;
     *k->result = __GLFrame->isRedrawEnabled();
   }
-  else if(e->type() == ViewEvent::eSetRedrawPolicy){
+  else if(etype == ViewEvent::eSetRedrawPolicy){
     ViewSetRedrawEvent * k = ( ViewSetRedrawEvent * )e;
     __GLFrame->activateRedraw(k->arg1);
   }
-  else if(e->type() == ViewEvent::eImageSave){
+  else if(etype == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
     saveImage(k->arg1,k->arg2.toAscii().constData(),k->arg3);
   }
-  else if(e->type() == ViewEvent::eShowMessage){
+  else if(etype == ViewEvent::eShowMessage){
     ViewShowMessageEvent * k = ( ViewShowMessageEvent * )e;
 	__GLFrame->showMessage(k->arg1,k->arg2);
   }
-  else if(e->type() == ViewEvent::eQuestion){
+  else if(etype == ViewEvent::eQuestion){
     ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
     question(k->arg1,k->arg2,
              k->arg3,k->arg4,
              k->arg5,
              k->result);
   }
-  else if(e->type() == ViewEvent::eFullScreen){
+  else if(etype == ViewEvent::eFullScreen){
     ViewFullScreenEvent * k = ( ViewFullScreenEvent * )e;
     if(__isFullScreen != k->arg1)displayFullScreen();
   }
-  else if(e->type() == ViewEvent::eGLFrameOnly){
+  else if(etype == ViewEvent::eGLFrameOnly){
     ViewGLFrameOnlyEvent * k = ( ViewGLFrameOnlyEvent * )e;
     if((__toolbarsvisibility == 0) == k->arg1)displayGLWidgetOnly();
   }
-  else if(e->type() == ViewEvent::eItemSelection){
+  else if(etype == ViewEvent::eItemSelection){
     ViewItemSelectionEvent * k = ( ViewItemSelectionEvent * )e;
     itemSelection(k->arg1,k->arg2,
              k->arg3,k->arg4,
              k->result,
              k->arg5);
   }
-  else if(e->type() == ViewEvent::eDoubleSelection){
+  else if(etype == ViewEvent::eDoubleSelection){
     ViewDoubleSelectionEvent * k = ( ViewDoubleSelectionEvent * )e;
     doubleSelection(k->arg1, k->arg2,
             k->arg3,k->arg4, k->arg5,
             k->result, k->arg6);
   }
-  else if(e->type() == ViewEvent::eAnimation){
+  else if(etype == ViewEvent::eAnimation){
     ViewAnimationEvent * k = ( ViewAnimationEvent * )e;
     __GLFrame->setAnimation(k->arg1);
   }
-  else if(e->type() == ViewEvent::eBgColor){
+  else if(etype == ViewEvent::eBgColor){
     ViewBgColorEvent * k = ( ViewBgColorEvent * )e;
     __GLFrame->setBackGroundColor(k->arg1);
   }
-  else if(e->type() == ViewEvent::eGrid){
+  else if(etype == ViewEvent::eGrid){
     ViewGridEvent * k = ( ViewGridEvent * )e;
     __GLFrame->gridEvent(k);
   }
-  else if(e->type() == ViewEvent::eCameraGet || e->type() == ViewEvent::eCameraSet || e->type() == ViewEvent::eSetViewAngle || e->type() == ViewEvent::eGetViewAngle ){
+  else if(etype == ViewEvent::eCameraGet || etype == ViewEvent::eCameraSet || etype == ViewEvent::eSetViewAngle || etype == ViewEvent::eGetViewAngle ){
     __GLFrame->cameraEvent((ViewEvent *)e);
   }
-  else if(e->type() == ViewEvent::eLightGet || e->type() == ViewEvent::eLightSet){
+  else if(etype == ViewEvent::eLightGet || etype == ViewEvent::eLightSet){
     __GLFrame->getLight()->lightEvent((ViewEvent *)e);
   }
-  else if(e->type() == ViewEvent::eClippingPlaneActivate || e->type() == ViewEvent::eClippingPlaneSet){
+  else if(etype == ViewEvent::eClippingPlaneActivate || etype == ViewEvent::eClippingPlaneSet){
     __GLFrame->clippingPlaneEvent((ViewEvent *)e);
   }
-  else if(e->type() == ViewEvent::ePos){
+  else if(etype == ViewEvent::ePos){
     ViewPosEvent * k = ( ViewPosEvent * )e;
     switch(k->arg5){
     case 0:
@@ -785,43 +782,43 @@ void  Viewer::customEvent(QEvent *e){
     }
     QApplication::processEvents();
   }
-  else if(e->type() == ViewEvent::eFileSelection){
+  else if(etype == ViewEvent::eFileSelection){
     ViewFileSelEvent * k = ( ViewFileSelEvent * )e;
     if(k->arg5)
       dirSelection(k->arg1,k->arg2,k->result);
     else
       fileSelection(k->arg1,k->arg3,k->arg2,k->arg4,k->result);
   }
-  else if(e->type() == ViewEvent::eRayBuff){
+  else if(etype == ViewEvent::eRayBuff){
     ViewRayBuffEvent * k = ( ViewRayBuffEvent * )e;
     *(k->result) = __GLFrame->castRays(k->arg1,k->arg2,k->arg3,k->arg4,k->arg5,k->arg6);
   }
-  else if(e->type() == ViewEvent::eZBuff){
+  else if(etype == ViewEvent::eZBuff){
     ViewZBuffEvent * k = ( ViewZBuffEvent * )e;
     *(k->result) = __GLFrame->grabZBuffer();
   }
-  else if(e->type() == ViewEvent::eZBuffPoints){
+  else if(etype == ViewEvent::eZBuffPoints){
     ViewZBuffPointsEvent * k = ( ViewZBuffPointsEvent * )e;
     *(k->result) = __GLFrame->grabZBufferPoints();
   }
-  else if(e->type() == ViewEvent::eProjSize){
+  else if(etype == ViewEvent::eProjSize){
     ViewProjSizeEvent * k = ( ViewProjSizeEvent * )e;
     *(k->result) = __GLFrame->getProjectionSize(k->arg1,k->arg2);
   }
-  else if(e->type() == ViewEvent::eCameraProj){
+  else if(etype == ViewEvent::eCameraProj){
     ViewCameraProjEvent * k = ( ViewCameraProjEvent * )e;
     __GLFrame->getCamera()->setProjectionMode(k->arg1);
   }
-  else if(e->type() == ViewEvent::eSetAborter){
+  else if(etype == ViewEvent::eSetAborter){
     ViewSetAborterEvent * k = ( ViewSetAborterEvent * )e;
     setAborter(k->arg1);
   }
-  else if(e->type() >= ViewGeomEvent::eFirstGeomEvent && e->type() <= ViewGeomEvent::eLastGeomEvent){
+  else if(etype >= ViewGeomEvent::eFirstGeomEvent && etype <= ViewGeomEvent::eLastGeomEvent){
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
   }
   else {
-      if(e->type() < ViewEvent::eFirstEvent || e->type() > ViewGeomEvent::eLastGeomEvent)
-          qDebug(QString("Custom Event : Type=%1.").arg(e->type()).toAscii());
+      if(etype < ViewEvent::eFirstEvent || etype > ViewGeomEvent::eLastGeomEvent)
+          qDebug("Custom Event : Type=%i.", etype);
     QApplication::sendEvent(__GLFrame->getSceneRenderer(),e);
   }
 #ifdef QT_THREAD_SUPPORT
@@ -1054,7 +1051,7 @@ void Viewer::setStatusBarMsg(QString _msg){
 void
 Viewer::receiveRequest(const QString& s){
   appear();
-  qWarning(("Net Request : '"+s+"'").toAscii().data());
+  qWarning("Net Request : '%s'",s.toAscii().data());
 }
 
 void

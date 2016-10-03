@@ -417,7 +417,8 @@ ViewLightGL::fillToolBar(QToolBar * toolBar)
 
 void ViewLightGL::lightEvent(ViewEvent * event)
 {
-	if (event->type() == ViewEvent::eLightSet) {
+    int etype = event->type();
+	if (etype == ViewEvent::eLightSet) {
 		ViewLightSetEvent * e = (ViewLightSetEvent *)event;
 		switch(e->def){
             case ViewLightSetEvent::ePosition:
@@ -437,7 +438,7 @@ void ViewLightGL::lightEvent(ViewEvent * event)
 			break;
 		}
 	}
-	else if (event->type() == ViewEvent::eLightGet){
+	else if (etype == ViewEvent::eLightGet){
 		ViewLightGetEvent * e = (ViewLightGetEvent *)event;
 		switch(e->def){
             case ViewLightSetEvent::ePosition:
