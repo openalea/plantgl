@@ -401,6 +401,8 @@ ViewGeomSceneGL::initializeGL()
 	glTexGenf(GL_T,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);
 	GLfloat f2[] = { 0.,0.,1.,0.};
 	glTexGenfv(GL_T,GL_OBJECT_PLANE,f2);
+
+    __renderer.init();
 }
 
 void
