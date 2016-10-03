@@ -176,7 +176,7 @@ inline int trunc(double x){
 
 #else
 
-#define pglfinite isfinite
+#define pglfinite std::isfinite
 
 #endif
 
