@@ -58,7 +58,9 @@ TOOLS_USING_NAMESPACE
 //#define GEOM_TREECALLDEBUG
 
 #define WITH_PRECOMPILING
+
 // #define WITH_VERTEXARRAY
+// #define PGL_OLD_MIPMAP_STYLE 
 
 #ifdef GEOM_TREECALLDEBUG
 #define GEOM_ASSERT_OBJ(obj) printf("Look at %sobject %zu of type '%s' in mode %i\n", (!obj->unique()?"shared ":""),obj->getId(), typeid(*obj).name(), __compil);
@@ -233,6 +235,32 @@ bool GLRenderer::setGLFrameFromId(uint_t wid)
     if (!glwidget) return false;
     setGLFrame(glwidget);
     return true;
+}
+
+#ifndef PGL_OLD_MIPMAP_STYLE 
+#ifndef __APPLE__ // It is already defined on Mac Os X
+
+  typedef void (* PFNGLGENERATEMIPMAPPROC) (GLenum target);
+  static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
+  static int HasGenerateMipmap = -1;
+
+#else
+  static int HasGenerateMipmap = 1;
+
+#endif
+#endif
+
+void GLRenderer::init() {
+#ifndef PGL_OLD_MIPMAP_STYLE 
+#ifndef __APPLE__
+
+   if (HasGenerateMipmap == -1) {
+	   glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)QGLContext::currentContext()->getProcAddress("glGenerateMipmap");
+       HasGenerateMipmap = (glGenerateMipmap?1:0);
+   }
+
+#endif
+#endif
 }
 
 void GLRenderer::clear( )
@@ -1057,18 +1085,23 @@ bool GLRenderer::process( ImageTexture * texture ) {
 		    GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
       }
       else{
-	    glTexParameterf( GL_TEXTURE_2D, 
-		                 GL_TEXTURE_MIN_FILTER, 
-			    	     GL_LINEAR_MIPMAP_NEAREST );
+#ifndef PGL_OLD_MIPMAP_STYLE 
+        if (HasGenerateMipmap) {
+		    glTexParameterf( GL_TEXTURE_2D, 
+		                     GL_TEXTURE_MIN_FILTER, 
+		 	                 GL_LINEAR_MIPMAP_NEAREST );
 
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+        	glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
-        glTexImage2D( GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
+        	glTexImage2D( GL_TEXTURE_2D, 0, 4, img.width(), img.height(), 0,
             GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
 
-        glGenerateMipmap(GL_TEXTURE_2D);
-	    //gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
-		//                     GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+        	glGenerateMipmap(GL_TEXTURE_2D);
+	    }
+#else
+	    gluBuild2DMipmaps( GL_TEXTURE_2D, 4, img.width(), img.height(),
+		                   GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+#endif
       }
 	  // printf("gen texture : %i\n",id);
 	  // registerTexture(texture,id);

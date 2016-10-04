@@ -30,9 +30,9 @@
  */
 
 
+#include <plantgl/math/util_math.h>
 #include "asymmetrichull.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
-#include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE

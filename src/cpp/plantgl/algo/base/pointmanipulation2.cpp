@@ -46,10 +46,10 @@ TOOLS_USING_NAMESPACE
 
 #include "cgalwrap.h"
 
-# ifdef WITH_LAPACK 
+# ifdef WITH_EIGEN 
 #   define CGAL_AND_SVD_SOLVER_ENABLED
 # else
-#  ifdef WITH_EIGEN
+#  ifdef WITH_LAPACK
 #   define CGAL_AND_SVD_SOLVER_ENABLED
 #  endif
 

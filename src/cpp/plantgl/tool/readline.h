@@ -42,7 +42,7 @@
 #define __readline_h__
 
 #if defined( __GNUC__ ) && ! defined(  __MINGW32__ )
-#define USE_READLINE
+// #define USE_READLINE
 #endif
 
 #ifdef USE_READLINE
