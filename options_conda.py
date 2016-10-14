@@ -22,8 +22,8 @@ flex_bin=PREFIX+"/bin"
 gl_lib=ann_libpath=mpfr_libpath=gmp_libpath=qhull_lib=pthread_lib=termcap_lib=readline_lib=flex_libpath=PREFIX+"/lib"
 gl_include=ann_includes=mpfr_includes=gmp_includes=qhull_includes=pthread_includes=termcap_includes=readline_includes=flex_include=PREFIX+"/include"
 eigen_includes=PREFIX+"/include/eigen3"
-EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES -DWITH_QHULL_2011 --std=c++11"
-EXTRA_LINKFLAGS="--std=c++11"
+EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES -DWITH_QHULL_2011 -std=c++11"
+EXTRA_LINKFLAGS="-std=c++11"
 EXTRA_LIBS="boost_system png"
 
 WITH_NCURSES=True
