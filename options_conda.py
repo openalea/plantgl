@@ -23,6 +23,7 @@ gl_lib=ann_libpath=mpfr_libpath=gmp_libpath=qhull_lib=pthread_lib=termcap_lib=re
 gl_include=ann_includes=mpfr_includes=gmp_includes=qhull_includes=pthread_includes=termcap_includes=readline_includes=flex_include=PREFIX+"/include"
 eigen_includes=PREFIX+"/include/eigen3"
 EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES -DWITH_QHULL_2011"
+EXTRA_LIBS="boost_system png"
 
 WITH_NCURSES=True
 WITH_QHULL_2011=True
