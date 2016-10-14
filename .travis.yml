@@ -6,7 +6,9 @@ python:
 
 addons:
   apt:
-    packages:
+    packages: 
+      - gcc-5 
+      - g++-5
 
 install:
   # We do this conditionally because it saves us some downloading if the
