@@ -139,6 +139,6 @@ Revolution::getProfile( ) {
 bool
 Revolution::isAVolume( ) const {
   if(!__profile)return false;
-  return abs(__profile->getPointAt(__profile->getFirstKnot()).x() < REAL_EPSILON) &&
-    abs(__profile->getPointAt(__profile->getLastKnot()).x() < REAL_EPSILON);
+  return ((fabs(__profile->getPointAt(__profile->getFirstKnot()).x()) < REAL_EPSILON) &&
+    (fabs(__profile->getPointAt(__profile->getLastKnot()).x()) < REAL_EPSILON));
 }

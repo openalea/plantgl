@@ -36,6 +36,7 @@
 
 #include "../algo_config.h"
 #include <plantgl/math/util_math.h>
+#include <plantgl/math/util_matrix.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/algo/grid/regularpointgrid.h>
 #include <plantgl/scenegraph/container/indexarray.h>
@@ -120,6 +121,9 @@ r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, co
 ALGO_API IndexArrayPtr 
 r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose = false);
 
+ALGO_API IndexArrayPtr 
+r_neighborhoods_mt(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose = false);
+
 ALGO_API Index 
 r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points, 
 					 const IndexArrayPtr adjacencies, 
@@ -151,7 +155,6 @@ ALGO_API IndexArrayPtr
 k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k);
 
 
-
 // Useful function
 
 /// Find the k closest point from the set of adjacencies
@@ -178,16 +181,48 @@ pointset_min_distance( const TOOLS(Vector3)& origin,
                        const Point3ArrayPtr points, 
 			           const Index& group);
 
-ALGO_API real_t
-pointset_mean_distance(  const TOOLS(Vector3)& origin,
+// ALGO_API
+template<class IndexGroup>
+real_t pointset_mean_distance(  const TOOLS(Vector3)& origin,
                          const Point3ArrayPtr points, 
-			             const Index& group);
+                         const IndexGroup& group)
+{
+    if (group.empty()) return 0;
+    real_t sum_distance = 0;
+    for(typename IndexGroup::const_iterator it = group.begin(); it != group.end(); ++it)
+        sum_distance += norm(origin-points->getAt(*it));
+    return sum_distance / group.size();
+}
+
+template<class IndexGroupArray>
+TOOLS(RealArrayPtr) pointset_mean_distances(  const Point3ArrayPtr origins,
+                                 const Point3ArrayPtr points, 
+                                 const RCPtr<IndexGroupArray> groups)
+{
+    typedef typename IndexGroupArray::element_type IndexGroup;
+    TOOLS(RealArrayPtr) result(new TOOLS(RealArray)(groups->size()));
+    TOOLS(RealArray)::iterator itres = result->begin();
+    Point3Array::const_iterator itorigin = origins->begin();
+    for(typename IndexGroupArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++itorigin, ++itres )
+        *itres = pointset_mean_distance<IndexGroup>(*itorigin, points, *it);
+    return result;
+}
 
 ALGO_API real_t
 pointset_mean_radial_distance(  const TOOLS(Vector3)& origin,
                                 const TOOLS(Vector3)& direction,
                                 const Point3ArrayPtr points, 
-			                    const Index& group);
+                                const Index& group);
+
+ALGO_API real_t
+pointset_max_radial_distance(  const TOOLS(Vector3)& origin,
+                                const TOOLS(Vector3)& direction,
+                                const Point3ArrayPtr points, 
+                                const Index& group);
+
+
+ALGO_API TOOLS(Matrix3) pointset_covariance(const Point3ArrayPtr points,  const Index& group = Index());
+
 
 ALGO_API Index 
 get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
@@ -202,8 +237,12 @@ density_from_r_neighborhood(  uint32_t pid,
 
 ALGO_API TOOLS(RealArrayPtr)
 densities_from_r_neighborhood(const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies, 
+                               const IndexArrayPtr adjacencies, 
                                const real_t radius);
+
+ALGO_API TOOLS(RealArrayPtr)
+densities_from_r_neighborhood(const IndexArrayPtr neighborhood, 
+                              const real_t radius);
 
 
 // if k == 0, then k is directly the nb of point given in adjacencies.
@@ -320,6 +359,14 @@ adaptive_section_circles(const Point3ArrayPtr points,
                          const TOOLS(RealArrayPtr) widths, 
                          const TOOLS(RealArrayPtr) maxradii);
 
+// Adaptive contraction
+ALGO_API std::pair<Point3ArrayPtr,TOOLS(RealArrayPtr)>
+adaptive_section_circles(const Point3ArrayPtr points, 
+                         const IndexArrayPtr adjacencies,
+                         const Point3ArrayPtr orientations,
+                         const real_t width, 
+                         const TOOLS(RealArrayPtr) maxradii);
+
 // adaptive contraction
 ALGO_API TOOLS(RealArrayPtr)
 adaptive_radii( const TOOLS(RealArrayPtr) density,
@@ -375,6 +422,36 @@ centroid_of_group(const Point3ArrayPtr points,
 ALGO_API Point3ArrayPtr 
 centroids_of_groups(const Point3ArrayPtr points, 
 			        const IndexArrayPtr groups);
+
+
+ 
+template<class IndexGroup>
+TOOLS(Vector3)  centroid_of_group(const Point3ArrayPtr points, 
+                                  const IndexGroup& group)
+{
+        TOOLS(Vector3) gcentroid; real_t nbpoints = 0;
+        for(typename IndexGroup::const_iterator itn = group.begin(); itn != group.end(); ++itn,++nbpoints){
+            gcentroid += points->getAt(*itn);
+        }
+        return gcentroid/nbpoints;
+}
+
+
+template<class IndexGroupArray>
+Point3ArrayPtr  centroids_of_groups(const Point3ArrayPtr points, 
+                                    const RCPtr<IndexGroupArray> groups)
+{
+    Point3ArrayPtr result(new Point3Array(groups->size()));
+    uint32_t cgroup = 0;
+    for(typename IndexGroupArray::const_iterator itgs = groups->begin(); itgs != groups->end(); ++itgs, ++cgroup)
+    {
+        result->setAt(cgroup,centroid_of_group(points,*itgs));
+    }
+    return result;
+}
+
+ALGO_API IndexArrayPtr cluster_points(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
+ALGO_API TOOLS(Uint32Array1Ptr) points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
 
 // Xu 07 method for main branching system
 ALGO_API Point3ArrayPtr
@@ -440,8 +517,13 @@ ALGO_API Index points_at_distance_from_skeleton(const Point3ArrayPtr points,
                                                 real_t distance,
                                                 uint32_t maxclosestnodes = 10);
 
+ALGO_API TOOLS(RealArrayPtr) estimate_radii_from_points(const Point3ArrayPtr points, 
+                                                             const Point3ArrayPtr nodes,
+                                                             const TOOLS(Uint32Array1Ptr) parents,
+                                                             bool maxmethod = false,
+                                                             uint32_t maxclosestnodes = 10);
 // estimate radius for each node
-ALGO_API TOOLS(RealArrayPtr) estimate_radii(const Point3ArrayPtr nodes,
+ALGO_API TOOLS(RealArrayPtr) estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
                                             const TOOLS(Uint32Array1Ptr) parents, 
                                             const TOOLS(RealArrayPtr) weights,
                                             real_t averageradius,
@@ -518,6 +600,7 @@ ALGO_API std::pair<Index,Index> cluster_junction_points(const IndexArrayPtr poin
 
 // from Tagliasacchi 2009
 ALGO_API TOOLS(Vector3) section_normal(const Point3ArrayPtr pointnormals, const Index& section);
+ALGO_API Point3ArrayPtr sections_normals(const Point3ArrayPtr pointnormals, const IndexArrayPtr& sections);
 
 /*
     Compute the geometric median of a point sample.

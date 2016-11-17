@@ -29,9 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/python/boost_python.h>
-#include <plantgl/python/export_refcountptr.h>
 #include <plantgl/algo/modelling/spacecolonization.h>
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/boost_python.h>
 #include <plantgl/python/export_list.h>
 
 PGL_USING_NAMESPACE
@@ -182,7 +182,8 @@ void export_SpaceColonization()
         .def("add_node",&SpaceColonization::add_node,(bp::arg("position"),bp::arg("parent")=SpaceColonization::NOID,bp::arg("active")=true))
         .def("add_bud", &PySpaceColonization::py_add_bud)
         .def("lateral_directions", &PySpaceColonization::py_lateral_directions)
-
+        .def("node_attractors",&GraphColonization::node_attractors,(bp::arg("pid")),return_value_policy<return_by_value>())
+ 
         ;
       
       implicitly_convertible< SpaceColonizationPtr, RefCountObjectPtr >();

@@ -74,6 +74,7 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
         Point3GridPtr attractor_grid; 
         Point3ArrayPtr skeletonnodes; 
         Uint32ArrayPtr skeletonparents;
+        IndexArrayPtr nodeattractors;
         Index active_nodes;
 
         
@@ -105,7 +106,7 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
 
     virtual ~SpaceColonization();
 
-    size_t add_node(const TOOLS(Vector3)& position, size_t parent = NOID, bool active = true);
+    size_t add_node(const TOOLS(Vector3)& position, size_t parent = NOID, const Index& attractors = Index(), bool active = true);
 
     inline TOOLS(Vector3) node_direction(size_t pid) const {
         size_t parent = skeletonparents->getAt(pid);
@@ -116,6 +117,10 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
 
     inline const TOOLS(Vector3)& node_position(size_t pid) const {
         return skeletonnodes->getAt(pid);
+    }
+
+    inline const Index& node_attractors(size_t pid) const {
+        return nodeattractors->getAt(pid);
     }
 
     bool try_to_set_bud(size_t pid, const TOOLS(Vector3)& direction);

@@ -31,6 +31,10 @@
 
 #include "intersection.h"
 #include "tesselator.h"
+#include "pointmanipulation.h"
+#include <plantgl/algo/grid/kdtree.h>
+#include <plantgl/scenegraph/geometry/polyline.h>
+#include <plantgl/scenegraph/geometry/pointset.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -243,3 +247,137 @@ bool PGL(plane_segment_intersection)(const Plane3& plane,
 }
 
 
+
+
+int tri_tri_intersect_with_isectline(real_t V0[3],real_t V1[3],real_t V2[3],
+                     real_t U0[3],real_t U1[3],real_t U2[3],int *coplanar,
+                     real_t isectpt1[3],real_t isectpt2[3]);
+
+#define CONVERT(vname) \
+     double  vname##a[3]; \
+     vname##a[0] = vname.x(); \
+     vname##a[1] = vname.y(); \
+     vname##a[2] = vname.z();
+
+IntersectionType  PGL(triangle_triangle_intersection)(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
+                                          const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23, 
+                                          TOOLS(Vector3)& intersectionstart, TOOLS(Vector3)& intersectionend)
+{
+    int coplanar;
+    real_t isectpt1[3];
+    real_t isectpt2[3];
+
+    CONVERT(t11); CONVERT(t12); CONVERT(t13); 
+    CONVERT(t21); CONVERT(t22); CONVERT(t23); 
+    
+    int res = tri_tri_intersect_with_isectline(t11a,t12a,t13a,t21a,t22a,t23a, &coplanar,isectpt1, isectpt2);  
+    if (res) {
+        if (coplanar) return CoPlanar;
+        intersectionstart = Vector3(isectpt1[0],isectpt1[1],isectpt1[2]);
+        intersectionend = Vector3(isectpt2[0],isectpt2[1],isectpt2[2]);
+
+        return Intersection;
+    }
+    return NoIntersection;
+}
+
+std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
+PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
+{
+#ifdef WITH_ANN
+    std::vector<std::pair<uint32_t,uint32_t> > intersectionpair;
+    GeometryArrayPtr intersectionresult(new GeometryArray());
+    Point3ArrayPtr centroids = centroids_of_groups(points, triangles);
+    real_t maxsize = 0;
+    Point3Array::const_iterator itorigin = centroids->begin();
+    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itorigin ) 
+    {
+        real_t size = norm(*itorigin-points->getAt(it->getAt(0)));
+        if (maxsize < size) maxsize = size;
+    }
+
+    ANNKDTree3 kdtree(centroids);
+    IndexArrayPtr nbgs = kdtree.r_nearest_neighbors(2*maxsize);
+    Vector3 intersectionstart, intersectionend;
+
+    Index3Array::const_iterator ittr = triangles->begin();
+    size_t idtr = 0;
+    for (IndexArray::const_iterator itnbgs = nbgs->begin(); itnbgs != nbgs->end(); ++itnbgs, ++ittr, ++idtr)
+    {
+        for (Index::const_iterator itnbg = itnbgs->begin(); itnbg != itnbgs->end(); ++itnbg)
+        {
+            if (idtr < *itnbg){ // We want to compare only once every pair of triangles.
+                const Index3& nbg = triangles->getAt(*itnbg);
+                int intersection = triangle_triangle_intersection(points->getAt(ittr->getAt(0)), points->getAt(ittr->getAt(1)),points->getAt(ittr->getAt(2)),
+                                                                  points->getAt(nbg.getAt(0)), points->getAt(nbg.getAt(1)),points->getAt(nbg.getAt(2)),
+                                                                  intersectionstart, intersectionend);
+
+                if (intersection != NoIntersection){
+                    if (intersection == Intersection){
+                        std::vector<uint32_t> common_points;
+                        for(Index3::const_iterator ittrpt = ittr->begin(); ittrpt != ittr->end(); ++ittrpt )
+                            for (Index3::const_iterator itnbpt = nbg.begin(); itnbpt != nbg.end(); ++itnbpt )
+                                if (*ittrpt == *itnbpt) common_points.push_back(*ittrpt);
+
+                        int nbintersection = 2;
+                        if (norm(intersectionstart-intersectionend) < GEOM_EPSILON) {
+                            // it is actually one point which intersect
+                            nbintersection = 1;
+                        }
+
+                        /// We check here if it is not an edge or a vertex which is in common.
+                        /// We should not  care about such intersection in case of auto intersection 
+                        if (common_points.size() == 1 && nbintersection == 1){
+                            // We test if it is a common point
+                            if (norm(points->getAt(common_points[0]) - intersectionstart) < GEOM_EPSILON)
+                                continue;
+                            else {
+                                intersectionpair.push_back(std::pair<uint32_t,uint32_t>(idtr, *itnbg));
+                                intersectionresult->push_back(GeometryPtr(new PointSet(Point3ArrayPtr(new Point3Array(1,intersectionstart)))));
+                            }
+                        }
+
+                        if (common_points.size() == 2){
+                            // We test if it is a common edge
+                            if (nbintersection == 2){
+                                if ( norm(intersectionstart-points->getAt(common_points[0])) < GEOM_EPSILON ) {
+                                    if ( norm(intersectionend-points->getAt(common_points[1])) < GEOM_EPSILON ) 
+                                        continue;
+                                }
+                                else if ( norm(intersectionstart-points->getAt(common_points[1])) < GEOM_EPSILON ) {
+                                     if ( norm(intersectionend-points->getAt(common_points[0])) < GEOM_EPSILON ) 
+                                        continue;
+                                } 
+                            }
+                            // This case should not occur. We test if it is a common point
+                            else if (nbintersection == 1){
+                                if ( norm(intersectionstart-points->getAt(common_points[0])) < GEOM_EPSILON ||
+                                     norm(intersectionstart-points->getAt(common_points[1])) < GEOM_EPSILON )
+                                    continue;
+                            }                             
+                        }
+
+                        intersectionpair.push_back(std::pair<uint32_t,uint32_t>(idtr, *itnbg));
+                        intersectionresult->push_back(GeometryPtr(new Polyline(Point3ArrayPtr(new Point3Array(intersectionstart, intersectionend)))));
+                    }
+                    else { // coplanar
+                        intersectionpair.push_back(std::pair<uint32_t,uint32_t>(idtr, *itnbg));
+                        intersectionresult->push_back(GeometryPtr());
+
+                    }
+
+                }
+            }
+
+        }
+    }
+    return std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> (intersectionpair, intersectionresult);
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'auto_intersection' disabled. ANN needed.")
+    #else
+    #warning "function 'auto_intersection' disabled. ANN needed"
+    #endif
+    return std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> ();
+#endif
+}

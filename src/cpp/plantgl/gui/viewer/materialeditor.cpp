@@ -47,6 +47,8 @@
 #include <QtGui/qcolordialog.h>
 #include <QtGui/qevent.h>
 
+#include <plantgl/scenegraph/geometry/sphere.h>
+
 PGL_USING_NAMESPACE
 using namespace std;
 
@@ -75,7 +77,6 @@ ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget *
 }
 
 ViewColorGL::~ViewColorGL(){
-  if(__sphereobject)gluDeleteQuadric(__sphereobject);
 }
 
 void ViewColorGL::setAppearance(const AppearancePtr& mat){
@@ -97,15 +98,11 @@ void ViewColorGL::initializeGL(){
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
 
-  if(__sphereobject)gluDeleteQuadric(__sphereobject);
-  __sphereobject = gluNewQuadric();
-  gluQuadricDrawStyle(__sphereobject,GLU_FILL);
-  gluQuadricNormals(__sphereobject,GLU_SMOOTH);
+  __sphereobject = GeometryPtr(new Sphere(__radius,80,80));
 
   __spheredrawlist=glGenLists(1);
-  glNewList(__spheredrawlist,GL_COMPILE);{
-    gluSphere(__sphereobject,__radius,80,80);
-  }
+  glNewList(__spheredrawlist,GL_COMPILE);
+  __sphereobject->apply(__r);
   glEndList();
 }
 

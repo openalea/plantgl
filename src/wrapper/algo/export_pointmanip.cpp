@@ -185,6 +185,11 @@ object py_adaptive_section_circles(const Point3ArrayPtr points, const IndexArray
     return make_pair_tuple(adaptive_section_circles(points, adjacencies, directions, widths, maxradii));
 }
 
+object py_adaptive_section_circles2(const Point3ArrayPtr points, const IndexArrayPtr  adjacencies, const Point3ArrayPtr directions, const real_t widths, const RealArrayPtr maxradii)
+{
+    return make_pair_tuple(adaptive_section_circles(points, adjacencies, directions, widths, maxradii));
+}
+
 object
 py_adaptive_section_contration(const Point3ArrayPtr points, 
                      const Point3ArrayPtr orientations,
@@ -265,6 +270,7 @@ void export_PointManip()
     def("r_neighborhood",&r_neighborhood,args("pid","points","adjacencies","radius"));
     def("r_neighborhoods",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr))&r_neighborhoods,args("points","adjacencies","radii"));
     def("r_neighborhoods",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, real_t, bool))&r_neighborhoods,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("verbose")=false));
+    def("r_neighborhoods_mt",(IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, real_t, bool))&r_neighborhoods_mt,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("radius"),bp::arg("verbose")=false));
     def("r_anisotropic_neighborhood",&r_anisotropic_neighborhood,args("pid","points","adjacencies","radius","direction","alpha","beta"));
     def("r_anisotropic_neighborhoods",
         (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr, const Point3ArrayPtr, const real_t, const real_t ))&r_anisotropic_neighborhoods,
@@ -277,12 +283,17 @@ void export_PointManip()
     def("k_neighborhoods",&k_neighborhoods,args("points","adjacencies","k"));
 
     def("density_from_r_neighborhood",&density_from_r_neighborhood,args("pid","points","adjacencies","radius"));
-    def("densities_from_r_neighborhood",&densities_from_r_neighborhood,args("points","adjacencies","radius"));
+    def("densities_from_r_neighborhood",(RealArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, const real_t))&densities_from_r_neighborhood,args("points","adjacencies","radius"));
+    def("densities_from_r_neighborhood",(RealArrayPtr(*)(const IndexArrayPtr, const real_t))&densities_from_r_neighborhood,args("neighborhood","radius"));
 
     def("pointset_max_distance",(real_t (*)(uint32_t, const Point3ArrayPtr, const Index&))&pointset_max_distance,args("pid","points","group"));
     def("pointset_max_distance",(real_t (*)(const Vector3&, const Point3ArrayPtr, const Index&))&pointset_max_distance,args("center","points","group"));
-    def("pointset_mean_distance",&pointset_mean_distance,args("center","points","group"));
+    def("pointset_mean_distance",&pointset_mean_distance<Index>,args("center","points","group"));
+    def("pointset_mean_distances",&pointset_mean_distances<IndexArray>,args("points","groups"));
     def("pointset_mean_radial_distance",&pointset_mean_radial_distance,args("center","direction","points","group"));
+    def("pointset_max_radial_distance",&pointset_max_radial_distance,args("center","direction","points","group"));
+
+    def("pointset_covariance",&pointset_covariance,(arg("points"),arg("group")=Index()));
 
     def("density_from_k_neighborhood",&density_from_k_neighborhood,(bp::arg("pid"),bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute density of a point according to its k neighboordhood. If k is 0, its value is deduced from adjacencies.");
     def("densities_from_k_neighborhood",&densities_from_k_neighborhood,(bp::arg("points"),bp::arg("adjacencies"),bp::arg("k")=0),"Compute local densities of a set of points according to their k neighboordhood. If k is 0, its value is deduced from adjacencies.");
@@ -308,15 +319,19 @@ void export_PointManip()
     def("point_section",(Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const TOOLS(Vector3)&, real_t, real_t)) &point_section,args("pid","points","adjacencies","direction","width","maxradius"));
     def("points_sections",&points_sections,args("points","adjacencies","directions","width"));
     def("section_normal",&section_normal,args("pointnormals","section"));
+    def("sections_normals",&sections_normals,args("pointnormals","sections"));
     
     def("pointset_circle",&py_estimate_pointset_circle,(bp::arg("points"),bp::arg("group"),bp::arg("direction")=bp::object(),bp::arg("bounding")=false));
     def("pointsets_circles",&py_estimate_pointsets_circles,(arg("points"),bp::arg("groups"),bp::arg("directions")=Point3ArrayPtr(0),bp::arg("bounding")=false));
 
     def("pointsets_section_circles",&py_estimate_pointsets_section_circles,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("width"),bp::arg("bounding")=false));
     def("adaptive_section_circles",&py_adaptive_section_circles,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("widths"),bp::arg("maxradii")));
+    def("adaptive_section_circles",&py_adaptive_section_circles2,(arg("points"),bp::arg("adjacencies"),bp::arg("directions"),bp::arg("widths"),bp::arg("maxradii")));
 
-    def("centroid_of_group",&centroid_of_group,args("points","group"));
-    def("centroids_of_groups",&centroids_of_groups,args("points","groups"));
+    def("centroid_of_group",&centroid_of_group<Index>,args("","group"));
+    def("centroids_of_groups",&centroids_of_groups<IndexArray>,args("points","groups"));
+    def("points_clusters",&points_clusters,args("points","clustercentroid"));
+    def("cluster_points",&cluster_points,args("points","clustercentroid"));
 
 
     def("adaptive_radii",&adaptive_radii,(bp::arg("density"),bp::arg("minradius"),bp::arg("maxradius"),bp::arg("densityradiusmap")=QuantisedFunctionPtr(0)),"Compute a radius for each density value");
@@ -353,7 +368,8 @@ void export_PointManip()
     def("average_distance_to_shape",&average_distance_to_shape,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("radii"),bp::arg("maxclosestnodes")=10));
     def("points_at_distance_from_skeleton",&points_at_distance_from_skeleton,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("distance"),bp::arg("maxclosestnodes")=10),"Return indices of all point which are below a given distance ot the skeleton. If distance is negative, return point above a distance");
 
-    def("estimate_radii",&estimate_radii,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
+    def("estimate_radii_from_points",&estimate_radii_from_points,(bp::arg("points"),bp::arg("nodes"),bp::arg("parents"),bp::arg("maxmethod")=false,bp::arg("maxclosestnodes")=10));
+    def("estimate_radii_from_pipemodel",&estimate_radii_from_pipemodel,(bp::arg("nodes"),bp::arg("parents"),bp::arg("weights"),bp::arg("averageradius"),bp::arg("pipeexponent")=2.5));
     
     def("min_max_mean_edge_length",(Vector3 (*)(const Point3ArrayPtr, Uint32Array1Ptr))&min_max_mean_edge_length,(bp::arg("points"),bp::arg("parents")));
     def("min_max_mean_edge_length",(Vector3 (*)(const Point3ArrayPtr, IndexArrayPtr))&min_max_mean_edge_length,(bp::arg("points"),bp::arg("graph")));

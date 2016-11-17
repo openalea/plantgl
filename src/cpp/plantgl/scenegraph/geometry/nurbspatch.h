@@ -216,7 +216,7 @@ public:
      \pre 
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  Point4MatrixPtr getMetric(real_t u, real_t v) const;
+  // Point4MatrixPtr getMetric(real_t u, real_t v) const;
 
   /* Returns the determinant of the metric for u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 82)
@@ -224,7 +224,7 @@ public:
      \pre 
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  real_t getDetMetric(real_t u, real_t v) const;
+  // real_t getDetMetric(real_t u, real_t v) const;
 
   /* Returns the \e Inverse \e Metric for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 104)
@@ -232,7 +232,7 @@ public:
      \pre 
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  Point4MatrixPtr getInvMetric(real_t u, real_t v) const;
+  //Point4MatrixPtr getInvMetric(real_t u, real_t v) const;
 
   /* Returns the \e Connection \e Coefficients for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 140)

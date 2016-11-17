@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -66,9 +66,9 @@
 #define GL_GEOM_REAL GL_DOUBLE
 /* ----------------------------------------------------------------------- */
 
-/// glVertex for GEOM 
+/// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy) 
+						 const real_t& vy)
 { glVertex2d(vx,vy);       }
 /// glVertex for GEOM
 
@@ -137,7 +137,7 @@ inline void glGeomRotate(const real_t& vx,
 						 const real_t& angle)
 { glRotated(angle,vx,vy,vz); }
 
-/// glRotate for GEOM with angle in radians 
+/// glRotate for GEOM with angle in radians
 inline void glGeomRadRotate(const real_t& vx,
 							const real_t& vy,
 							const real_t& vz,
@@ -216,12 +216,12 @@ inline void glGeomTranslate(const TOOLS(Vector3)& v)
 inline void glGeomScale(const TOOLS(Vector3)& v)
 { glScaled(v.x(),v.y(),v.z()); }
 
-/// glRotate with angle in degree for GEOM 
+/// glRotate with angle in degree for GEOM
 inline void glGeomRotate(const TOOLS(Vector3)& v,
 						 const real_t& angle)
 { glRotated(angle,v.x(),v.y(),v.z()); }
 
-/// glRotate with angle in radians for GEOM 
+/// glRotate with angle in radians for GEOM
 inline void glGeomRadRotate(const TOOLS(Vector3)& v,
 							const real_t& angle)
 { glRotated(angle*GEOM_DEG,v.x(),v.y(),v.z()); }
@@ -229,26 +229,26 @@ inline void glGeomRadRotate(const TOOLS(Vector3)& v,
 
 /// gl command for EulerRotate around Z-axis(v.x()), then Y-axis(v.y()), and X-axis(v.z()) with angles in degree for GEOM
 inline void glGeomEulerRotateZYX(const TOOLS(Vector3)& v)
-{ glRotated(v.x(), 0.0,0.0,1.0); 
-  glRotated(v.y(), 0.0,1.0,0.0); 
+{ glRotated(v.x(), 0.0,0.0,1.0);
+  glRotated(v.y(), 0.0,1.0,0.0);
   glRotated(v.z(), 1.0,0.0,0.0); }
 
 /// gl command for EulerRotate around Z-axis(v.x()), then Y-axis(v.y()), and X-axis(v.z()) with angles in radians for GEOM
 inline void glGeomRadEulerRotateZYX(const TOOLS(Vector3)& v)
-{ glRotated(v.x()*GEOM_DEG, 0.0,0.0,1.0); 
-  glRotated(v.y()*GEOM_DEG, 0.0,1.0,0.0); 
+{ glRotated(v.x()*GEOM_DEG, 0.0,0.0,1.0);
+  glRotated(v.y()*GEOM_DEG, 0.0,1.0,0.0);
   glRotated(v.z()*GEOM_DEG, 1.0,0.0,0.0);}
 
 /// gl command for EulerRotate around X-axis(v.x()), then Y-axis(v.y()), and Z-axis(v.z()) with angles in degree for GEOM
 inline void glGeomEulerRotateXYZ(const TOOLS(Vector3)& v)
-{ glRotated(v.x(), 1.0,0.0,0.0); 
-  glRotated(v.y(), 0.0,1.0,0.0); 
+{ glRotated(v.x(), 1.0,0.0,0.0);
+  glRotated(v.y(), 0.0,1.0,0.0);
   glRotated(v.z(), 0.0,0.0,1.0); }
 
 /// gl command for EulerRotate around X-axis(v.x()), then Y-axis(v.y()), and Z-axis(v.z()) with angles in radians for GEOM
 inline void glGeomRadEulerRotateXYZ(const TOOLS(Vector3)& v)
-{ glRotated(v.x()*GEOM_DEG, 1.0,0.0,0.0); 
-  glRotated(v.y()*GEOM_DEG, 0.0,1.0,0.0); 
+{ glRotated(v.x()*GEOM_DEG, 1.0,0.0,0.0);
+  glRotated(v.y()*GEOM_DEG, 0.0,1.0,0.0);
   glRotated(v.z()*GEOM_DEG, 0.0,0.0,1.0);}
 
 /* ----------------------------------------------------------------------- */
@@ -277,30 +277,33 @@ inline void glGeomGetMatrix(GLenum pname,TOOLS(Matrix4)& m)
 
 /// glLight(GL_POSITION) for GEOM
 inline void glGeomLightPosition(GLenum light, const TOOLS(Vector4)& v )
-{ GLfloat val[] = { v.x(), v.y(), v.z(), v.w() }; 
+{ GLfloat val[] = {static_cast<GLfloat>(v.x()),
+                   static_cast<GLfloat>(v.y()),
+                   static_cast<GLfloat>(v.z()),
+                   static_cast<GLfloat>(v.w()) };
   glLightfv (light, GL_POSITION, val); }
 
 /// glLight(GL_POSITION) for GEOM
 inline void glGeomLightPosition(GLenum light, const TOOLS(Vector3)& v )
-{ GLfloat val[] = { v.x(), v.y(), v.z(), 0.0 }; 
+{ GLfloat val[] = { static_cast<GLfloat>(v.x()), static_cast<GLfloat>(v.y()), static_cast<GLfloat>(v.z()), 0.0 };
   glLightfv (light, GL_POSITION, val); }
 
 /// glLight(GL_SPOT_DIRECTION) for GEOM
 inline void glGeomLightDirection(GLenum light, const TOOLS(Vector3)& v )
-{ GLfloat val[] = { v.x(), v.y(), v.z() }; 
+{ GLfloat val[] = { static_cast<GLfloat>(v.x()), static_cast<GLfloat>(v.y()), static_cast<GLfloat>(v.z()) };
   glLightfv (light, GL_SPOT_DIRECTION, val); }
 
 /// glGetLight(GL_POSITION) for GEOM
 inline void glGeomGetLightPosition(GLenum light, TOOLS(Vector4)& v )
-{ GLfloat val[] = { 0.0 , 0.0 , 0.0 , 0.0 }; 
-  glGetLightfv (light, GL_POSITION, val); 
-  v.x() = val[0]; v.y() = val[1]; 
+{ GLfloat val[] = { 0.0 , 0.0 , 0.0 , 0.0 };
+  glGetLightfv (light, GL_POSITION, val);
+  v.x() = val[0]; v.y() = val[1];
   v.z() = val[2]; v.w() = val[3];}
 
 /// glGetLight(GL_SPOT_DIRECTION) for GEOM
 inline void glGeomGetLightDirection(GLenum light, TOOLS(Vector3)& v )
-{ GLfloat val[] = { 0.0 , 0.0 , 0.0 }; 
-  glGetLightfv (light, GL_SPOT_DIRECTION, val); 
+{ GLfloat val[] = { 0.0 , 0.0 , 0.0 };
+  glGetLightfv (light, GL_SPOT_DIRECTION, val);
   v.x() = val[0]; v.y() = val[1]; v.z() = val[2]; }
 
 
@@ -312,9 +315,9 @@ inline void glGeomGetLightDirection(GLenum light, TOOLS(Vector3)& v )
 
 #define GL_GEOM_REAL GL_FLOAT
 
-/// glVertex for GEOM 
+/// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy) 
+						 const real_t& vy)
 { glVertex2f(vx,vy);       }
 
 /// glVertex for GEOM
@@ -336,13 +339,13 @@ inline void glGeomNormal(const real_t& vx,
 						 const real_t& vz)
 { glNormal3f(vx,vy,vz);    }
 
-/// glTexCoord for GEOM 
-inline void glGeomTexCoord(const real_t& vx) 
+/// glTexCoord for GEOM
+inline void glGeomTexCoord(const real_t& vx)
 { glTexCoord1f(vx);       }
 
-/// glTexCoord for GEOM 
+/// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						 const real_t& vy) 
+						 const real_t& vy)
 { glTexCoord2f(vx,vy);       }
 
 /// glTexCoord for GEOM
@@ -384,7 +387,7 @@ inline void glGeomRotate(const real_t& vx,
 						 const real_t& angle)
 { glRotatef(angle,vx,vy,vz); }
 
-/// glRotate for GEOM with angle in radians 
+/// glRotate for GEOM with angle in radians
 inline void glGeomRadRotate(const real_t& vx,
 							const real_t& vy,
 							const real_t& vz,
@@ -463,12 +466,12 @@ inline void glGeomTranslate(const TOOLS(Vector3)& v)
 inline void glGeomScale(const TOOLS(Vector3)& v)
 { glScalef(v.x(),v.y(),v.z()); }
 
-/// glRotate with angle in degree for GEOM 
+/// glRotate with angle in degree for GEOM
 inline void glGeomRotate(const TOOLS(Vector3)& v,
 						 const real_t& angle)
 { glRotatef(angle,v.x(),v.y(),v.z()); }
 
-/// glRotate with angle in radians for GEOM 
+/// glRotate with angle in radians for GEOM
 inline void glGeomRadRotate(const TOOLS(Vector3)& v,
 							const real_t& angle)
 { glRotatef(angle*GEOM_DEG,v.x(),v.y(),v.z()); }
@@ -476,26 +479,26 @@ inline void glGeomRadRotate(const TOOLS(Vector3)& v,
 
 /// gl command for EulerRotate around Z-axis(v.x()), then Y-axis(v.y()), and X-axis(v.z()) with angles in degree for GEOM
 inline void glGeomEulerRotateZYX(const TOOLS(Vector3)& v)
-{ glRotatef(v.x(), 0.0,0.0,1.0); 
-  glRotatef(v.y(), 0.0,1.0,0.0); 
+{ glRotatef(v.x(), 0.0,0.0,1.0);
+  glRotatef(v.y(), 0.0,1.0,0.0);
   glRotatef(v.z(), 1.0,0.0,0.0);}
 
 /// gl command for EulerRotate around Z-axis(v.x()), then Y-axis(v.y()), and X-axis(v.z())  with angles in radians for GEOM
 inline void glGeomRadEulerRotateZYX(const TOOLS(Vector3)& v)
-{ glRotatef(v.x()*GEOM_DEG, 0.0,0.0,1.0); 
-  glRotatef(v.y()*GEOM_DEG, 0.0,1.0,0.0); 
+{ glRotatef(v.x()*GEOM_DEG, 0.0,0.0,1.0);
+  glRotatef(v.y()*GEOM_DEG, 0.0,1.0,0.0);
   glRotatef(v.z()*GEOM_DEG, 1.0,0.0,0.0); }
 
 /// gl command for EulerRotate around X-axis(v.x()), then Y-axis(v.y()), and Z-axis(v.z()) with angles in degree for GEOM
 inline void glGeomEulerRotateXYZ(const TOOLS(Vector3)& v)
-{ glRotatef(v.x(), 0.0,0.0,1.0); 
-  glRotatef(v.y(), 0.0,1.0,0.0); 
+{ glRotatef(v.x(), 0.0,0.0,1.0);
+  glRotatef(v.y(), 0.0,1.0,0.0);
   glRotatef(v.z(), 1.0,0.0,0.0);}
 
 /// gl command for EulerRotate around X-axis(v.x()), then Y-axis(v.y()), and Z-axis(v.z())  with angles in radians for GEOM
 inline void glGeomRadEulerRotateXYZ(const TOOLS(Vector3)& v)
-{ glRotatef(v.x()*GEOM_DEG, 1.0,0.0,0.0); 
-  glRotatef(v.y()*GEOM_DEG, 0.0,1.0,0.0); 
+{ glRotatef(v.x()*GEOM_DEG, 1.0,0.0,0.0);
+  glRotatef(v.y()*GEOM_DEG, 0.0,1.0,0.0);
   glRotatef(v.z()*GEOM_DEG, 0.0,0.0,1.0); }
 
 /* ----------------------------------------------------------------------- */
@@ -529,7 +532,7 @@ inline void glGeomLightPosition(GLenum light, const TOOLS(Vector4)& v )
 
 /// glLight(GL_POSITION) for GEOM
 inline void glGeomLightPosition(GLenum light, const TOOLS(Vector3)& v )
-{ GLfloat val[] = { v.x(), v.y(), v.z(), 0.0 }; 
+{ GLfloat val[] = { v.x(), v.y(), v.z(), 0.0 };
   glLightfv (light, GL_POSITION, val); }
 
 /// glLight(GL_SPOT_DIRECTION) for GEOM
@@ -551,18 +554,9 @@ inline void glGeomGetLightDirection(GLenum light, TOOLS(Vector3)& v )
 /* ----------------------------------------------------------------------- */
 
 inline void glGeomFrustum(const TOOLS(Vector3)& LowerLeft,const TOOLS(Vector3)& UpperRigth)
-{ glFrustum(LowerLeft.y(), UpperRigth.y(), 
-			LowerLeft.z(), UpperRigth.z(), 
-			LowerLeft.x(), UpperRigth.x()); }
-	// glFrustum (GLdouble left,   GLdouble right, 
-	//			  GLdouble bottom, GLdouble top,
-	//			  GLdouble zNear,  GLdouble zFar);
-
-/// gluLookAt for GEOM
-inline void glGeomLookAt(const TOOLS(Vector3)& eye, const TOOLS(Vector3)& center, const TOOLS(Vector3)& up )
-{ gluLookAt(eye.x(),    eye.y(),    eye.z(),
-		    center.x(), center.y(), center.z(),
-			up.x(),     up.y(),     up.z()); }
+{ glFrustum(LowerLeft.y(), UpperRigth.y(),
+            LowerLeft.z(), UpperRigth.z(),
+            LowerLeft.x(), UpperRigth.x()); }
 
 /// Transformation of a Vector3 in GL coordinates into a Vector3 in GEOM coordinates.
 inline TOOLS(Vector3) gl2geom(const TOOLS(Vector3)& v){

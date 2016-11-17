@@ -290,7 +290,7 @@ void ViewReadLinetree::checkCfg(const QString& path){
 		l = s.readLine();
 		if(l.contains("SYMBOLES =") == 1){
 		  p = l.mid(l.indexOf('=')+1);
-		  p.simplified();
+		  p = p.simplified();
 		  int i = 0;
 		  while(p[i] == ' ')i++;
 		  if(i!=0) p = p.mid(i);

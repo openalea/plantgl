@@ -40,7 +40,7 @@ TOOLS_USING_NAMESPACE
 
 
 void progressprint(const char * msg, float percent)
-{ printf(msg,percent); }
+{ printf("\x0d"); printf(msg,percent); }
 
 
 static progressstatusfunction PSFUNC = progressprint;
@@ -68,12 +68,10 @@ public:
             current(1),
             cpercent(-_percenttoprint) { }
     
-     inline ProgressStatus & operator ++()  { increment(); return *this; }
+    inline ProgressStatus & operator ++()  { increment(); return *this; }
 
-protected:
-
-    void increment() { 
-        ++current; 
+    void increment(uint32_t inc = 1) { 
+        current += inc; 
         if (current <= nbsteps){
             if (current == nbsteps){
                     std::string msg("\x0d");
@@ -92,121 +90,14 @@ protected:
             }
         }
     }
+
+protected:
     uint32_t current;
     uint32_t nbsteps;
     real_t cpercent;
     real_t percenttoprint;
     const char * message;
 };
-
-
-#ifdef WITH_CGAL
-#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
-#include <CGAL/Triangulation_vertex_base_with_info_3.h>
-#include <CGAL/Delaunay_triangulation_3.h>
-// #include <CGAL/Triangulation_3.h>
-
-#include "cgalwrap.h"
-
-#endif
-
-#include <stack>
-#include <iostream>
-#include <cstdio>
-
-IndexArrayPtr 
-PGL::delaunay_point_connection(const Point3ArrayPtr points)
-{
-#ifdef WITH_CGAL
-
-    typedef CGAL::Exact_predicates_inexact_constructions_kernel         TK;
-    typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK>   TVb;
-    typedef CGAL::Triangulation_data_structure_3<TVb>                    Tds;
-
-    typedef CGAL::Delaunay_triangulation_3<TK, Tds>                      Triangulation;
-    // typedef CGAL::Triangulation_3<K,Tds>      Triangulation;
-
-
-    typedef Triangulation::Cell_handle    TCell_handle;
-    typedef Triangulation::Vertex_handle  TVertex_handle;
-    typedef Triangulation::Locate_type    TLocate_type;
-    typedef Triangulation::Point          TPoint;
-    typedef Triangulation::Segment        TSegment;
-
-    Triangulation triangulation;
-    uint32_t pointCount = 0;
-    for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it)
-        triangulation.insert(toPoint3<TPoint>(*it))->info() = pointCount++;
-
-
-    IndexArrayPtr result(new IndexArray(points->size(),Index()));
-    for(Triangulation::Finite_edges_iterator it = triangulation.finite_edges_begin();
-        it != triangulation.finite_edges_end(); ++it){
-            uint32_t source = it->first->vertex(it->second)->info();
-            uint32_t target = it->first->vertex(it->third)->info();
-            result->getAt(source).push_back(target);
-            result->getAt(target).push_back(source);
-    } 
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'delaunay_point_connection' disabled. CGAL needed.")
-    #else
-    #warning "function 'delaunay_point_connection' disabled. CGAL needed"
-    #endif
-
-    IndexArrayPtr result;
-#endif
-    return result;
-}
-
-Index3ArrayPtr 
-PGL::delaunay_triangulation(const Point3ArrayPtr points)
-{
-#ifdef WITH_CGAL
-
-    typedef CGAL::Exact_predicates_inexact_constructions_kernel         TK;
-    typedef CGAL::Triangulation_vertex_base_with_info_3<uint32_t, TK>   TVb;
-    typedef CGAL::Triangulation_data_structure_3<TVb>                    Tds;
-
-    typedef CGAL::Delaunay_triangulation_3<TK, Tds>                      Triangulation;
-    // typedef CGAL::Triangulation_3<K,Tds>      Triangulation;
-
-
-    typedef Triangulation::Cell_handle    TCell_handle;
-    typedef Triangulation::Vertex_handle  TVertex_handle;
-    typedef Triangulation::Locate_type    TLocate_type;
-    typedef Triangulation::Point          TPoint;
-    typedef Triangulation::Segment        TSegment;
-
-    Triangulation triangulation;
-    uint32_t pointCount = 0;
-    for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it)
-        triangulation.insert(toPoint3<TPoint>(*it))->info() = pointCount++;
-
-
-    Index3ArrayPtr result(new Index3Array());
-    for(Triangulation::Finite_facets_iterator it = triangulation.finite_facets_begin();
-        it != triangulation.finite_facets_end(); ++it){
-			Index3 ind; int j = 0;
-			for(int i = 0; i < 4; ++i){
-				if (i != it->second){
-					ind[j] = it->first->vertex(i)->info();
-					++j;
-				}
-			}
-			result->push_back(ind);
-    } 
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'delaunay_point_connection' disabled. CGAL needed.")
-    #else
-    #warning "function 'delaunay_point_connection' disabled. CGAL needed"
-    #endif
-
-    Index3ArrayPtr result;
-#endif
-    return result;
-}
 
 
 struct PointSorter {
@@ -259,69 +150,6 @@ PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symme
 #endif
 }
 
-#ifdef WITH_CGAL
-#include <CGAL/Cartesian.h>
-#endif
-/*
-//definition of the property map
-struct My_point_property_map{
-  typedef CPoint value_type;
-  typedef const value_type& reference;
-  typedef const CPoint_and_int& key_type;
-  typedef boost::readable_property_map_tag category;
-};
-
-//get function for the property map
-My_point_property_map::reference 
-get(My_point_property_map,My_point_property_map::key_type p)
-{return boost::get<0>(p);}
-
-#include <CGAL/Orthogonal_k_neighbor_search.h>
-#include <CGAL/Search_traits_3.h>
-#include <CGAL/Search_traits_adapter.h>
-
-typedef CGAL::Search_traits_3<CK>                                                   Traits_base;
-typedef CGAL::Search_traits_adapter<CPoint_and_int,My_point_property_map,Traits_base>    Traits;
-
-
-typedef CGAL::Orthogonal_k_neighbor_search<Traits>                      K_neighbor_search;
-typedef K_neighbor_search::Tree                                         Tree;
-typedef K_neighbor_search::Distance                                     Distance;
-
-
-// typedef CGAL::Search_traits_3<K> TreeTraits;
-// typedef CGAL::Orthogonal_k_neighbor_search<TreeTraits> Neighbor_search;
-// typedef Neighbor_search::Tree Tree;
-
-#endif
-
-IndexArrayPtr 
-PGL::k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k)
-{
-    size_t nbPoints = points->size();
-    IndexArrayPtr result(new IndexArray(nbPoints,Index(0)));
-
-    std::list<CPoint_and_int> pointdata;
-    size_t pid = 0;
-	for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it, ++pid)
-		pointdata.push_back(CPoint_and_int(toPoint<CPoint>(*it),pid));
-
-   Tree tree(pointdata.begin(), pointdata.end());
-
-   std::list<CPoint_and_int>::const_iterator piter = pointdata.begin();
-   for(pid = 0; pid < nbPoints && piter != pointdata.end(); ++pid, ++piter){
-       K_neighbor_search search(tree, piter->get<0>(), k+1);
-       Index& cindex = result->getAt(pid);
-       for(K_neighbor_search::iterator it = search.begin(); it != search.end(); ++it){
-           size_t ngpid = it->first.get<1>();
-           if (ngpid != pid) cindex.push_back(ngpid);
-        }
-   }
-
-
-    return result;
-}
-*/
 
 IndexArrayPtr 
 PGL::symmetrize_connections(const IndexArrayPtr adjacencies)
@@ -412,7 +240,7 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
             for(std::list<uint32_t>::const_iterator iterase = toerase.begin(); iterase != toerase.end(); ++iterase)
                 nonconnected.erase(*iterase);
         }
-        if (verbose) printf("\x0dNb points processed %i (%.2f%%) [left : %i (%.2f%%)].\n",nbrefpoints,100 * nbrefpoints /float(nbtotalpoints), nonconnected.size(), 100 * nonconnected.size()/float(nbtotalpoints),next_root);
+        if (verbose) printf("\x0dNb points processed %i (%.2f%%) [left : %lu (%.2f%%)].\n",nbrefpoints,100 * nbrefpoints /float(nbtotalpoints), nonconnected.size(), 100 * nonconnected.size()/float(nbtotalpoints));
         // if no more non connected point, break
         if (nonconnected.empty()) break;
 
@@ -501,11 +329,18 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 
     uint32_t current = 0;
     IndexArrayPtr result(new IndexArray(nbPoints));
-    for(RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii) {
-        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,*itradii);
+    // std::vector<std::vector<std::pair<uint32_t, real_t> > > preinfo(nbPoints);
+    DijkstraReusingAllocator allocator;  
+    
+    ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
+    for(RealArray::const_iterator itradii = radii->begin(); itradii != radii->end(); ++itradii, ++st) {
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, *itradii, UINT32_MAX, allocator);
+        // preinfo[current].clear();
         Index lres;
-        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             lres.push_back(itn->id);
+            //if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
+        }
         result->setAt(current,lres);
         current++;
 
@@ -522,16 +357,119 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
     struct PointDistance pdevaluator(points);
     
     IndexArrayPtr result(new IndexArray(nbPoints));
+    // std::vector<NodeDistancePairList> preinfo(nbPoints);
+    DijkstraReusingAllocator allocator;
+    // DijkstraAllocator allocator;
+
     ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
+
     for(uint32_t current = 0; current < nbPoints; ++current) {
-        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius);
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator, radius, UINT32_MAX,  allocator);
+        // preinfo[current].clear();
         Index lres;
-        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn)
+        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
             lres.push_back(itn->id);
+            //if (itn->id > current) preinfo[itn->id].push_back(std::pair<uint32_t, real_t>(current, itn->distance));            
+        }
         result->setAt(current,lres);
         if (verbose) ++st;
     }
     return result;
+}
+
+#include <QtCore/QtConcurrentRun>
+
+class Counter
+{
+public:
+    Counter() { n = 0; }
+
+    void increment() { QMutexLocker locker(&mutex); ++n; }
+    void decrement() { QMutexLocker locker(&mutex); --n; }
+    int value() const { QMutexLocker locker(&mutex); return n; }
+
+private:
+    mutable QMutex mutex;
+    int n;
+};
+
+void compute_nbg_i(IndexArrayPtr results, Counter * counter, std::pair<uint32_t,uint32_t> range, std::pair<const IndexArrayPtr, const Point3ArrayPtr> adjacencies_points, real_t radius){
+    uint32_t first  = range.first;
+    uint32_t last = range.second;
+
+    const IndexArrayPtr adjacencies = adjacencies_points.first;
+    const Point3ArrayPtr points = adjacencies_points.second;
+    struct PointDistance pdevaluator(points);
+
+
+    // std::vector<NodeDistancePairList> preinfo(last-first);
+    DijkstraReusingAllocator allocator;
+
+    for (uint32_t current = first; current < last; ++current){
+        NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies,current,pdevaluator,radius, UINT32_MAX, allocator);
+        Index result;
+        for(NodeList::const_iterator itn = lneighborhood.begin(); itn != lneighborhood.end(); ++itn){
+            uint32_t nid = itn->id;
+            result.push_back(nid);
+            // if (current < nid && nid < last) preinfo[nid-first].push_back(std::pair<uint32_t, real_t>(current, itn->distance));
+        }
+        results->setAt(current,result);
+        if(counter) counter->increment();
+    }
+}
+
+
+IndexArrayPtr 
+PGL::r_neighborhoods_mt(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose)
+{
+    uint32_t nbPoints = points->size();
+    GEOM_ASSERT(nbPoints == adjacencies->size());
+    GEOM_ASSERT(nbPoints == radii->size());
+    struct PointDistance pdevaluator(points);
+    
+    IndexArrayPtr result(new IndexArray(nbPoints));
+
+    // ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
+
+
+    int maxnbthread = QThreadPool::globalInstance()->maxThreadCount()-1;
+    if (!verbose) ++maxnbthread;
+    
+    uint32_t nbPointsPerThread =  nbPoints/maxnbthread;// std::min<uint32_t>(1000,nbPoints/maxnbthread);
+    if (nbPointsPerThread * maxnbthread < nbPoints) ++nbPointsPerThread;
+
+    uint32_t nbIteration = nbPoints/nbPointsPerThread;
+    if (nbPointsPerThread * nbIteration < nbPoints) ++nbIteration;
+    if (!verbose) --nbIteration;
+
+    Counter * counter = (verbose?new Counter():NULL);
+
+    uint32_t current = 0;
+    for(; current < nbIteration; ++current) {
+        QtConcurrent::run(compute_nbg_i, result, counter, std::pair<uint32_t,uint32_t>(current * nbPointsPerThread, std::min((current+1) * nbPointsPerThread, nbPoints)), std::pair<const IndexArrayPtr, const Point3ArrayPtr>(adjacencies, points), radius);
+    }
+    if (verbose) {
+
+        ProgressStatus st(nbPoints,"R-neighborhood computed for %.2f%% of points.");
+        int nbprocessed = 0;
+        while(QThreadPool::globalInstance()->activeThreadCount() > 0){
+            int nnbprocessed = counter->value();
+            while(nbprocessed < nnbprocessed) 
+                { 
+                    st.increment(nnbprocessed-nbprocessed); 
+                    nbprocessed = nnbprocessed; 
+                }
+        }
+        delete counter;
+    }
+    else {
+     compute_nbg_i(result, counter, std::pair<uint32_t,uint32_t>(current * nbPointsPerThread, std::min((current+1) * nbPointsPerThread, nbPoints)), std::pair<const IndexArrayPtr, const Point3ArrayPtr>(adjacencies, points), radius);
+     QThreadPool::globalInstance()->waitForDone();
+
+    }
+
+    return  result;
+
 }
 
 struct PointAnisotropicDistance {
@@ -625,17 +563,33 @@ PGL::density_from_r_neighborhood(  uint32_t pid,
 
 TOOLS(RealArrayPtr)
 PGL::densities_from_r_neighborhood(const Point3ArrayPtr points, 
-			                   const IndexArrayPtr adjacencies, 
+                               const IndexArrayPtr adjacencies, 
                                const real_t radius)
 {
     uint32_t nbPoints = points->size();
     GEOM_ASSERT(nbPoints == adjacencies->size());
-    GEOM_ASSERT(nbPoints == radii->size());
     RealArrayPtr result(new RealArray(nbPoints));
     uint32_t current = 0;
-    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres){
+    ProgressStatus  st(nbPoints, "Density computed for %.2f%% of points.");
+    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++st){
         *itres = density_from_r_neighborhood(current, points,adjacencies,radius);
         ++current;
+    }
+    return result;
+}
+
+
+TOOLS(RealArrayPtr)
+PGL::densities_from_r_neighborhood(const IndexArrayPtr neighborhood, 
+                                   const real_t radius)
+{
+    uint32_t nbPoints = neighborhood->size();
+    RealArrayPtr result(new RealArray(nbPoints));
+    uint32_t current = 0;
+    IndexArray::const_iterator itnbg = neighborhood->begin();
+    ProgressStatus  st(nbPoints, "Density computed for %.2f%% of points.");
+    for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++itnbg, ++st){
+        *itres = itnbg->size()/ (radius * radius);
     }
     return result;
 }
@@ -647,9 +601,12 @@ Index PGL::get_k_closest_from_n(const Index& adjacencies, const uint32_t k, uint
         RealArrayPtr distances(new RealArray(nbnbg));
         Vector3 self = points->getAt(pid);
         for(size_t pnid = 0; pnid < nbnbg; ++pnid)
-                distances->setAt(pnid,norm(self-points->getAt(pnid)));
+                distances->setAt(pnid,norm(self-points->getAt(adjacencies.getAt(pnid))));
         Index sorted = get_sorted_element_order(distances);
-        return Index(sorted.begin(),sorted.begin()+k);
+        Index result;
+        for(Index::const_iterator its = sorted.begin(); its != sorted.end(); ++its)
+            result.push_back(adjacencies.getAt(*its));
+        return result; // Index(sorted.begin(),sorted.begin()+k);
 }
 
 Index PGL::k_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k)
@@ -735,6 +692,7 @@ PGL::pointset_min_distance(  uint32_t pid,
     return pointset_min_distance(points->getAt(pid), points, group);
 }
 
+/*
 ALGO_API real_t
 PGL::pointset_mean_distance(  const Vector3& origin,
                 const Point3ArrayPtr points, 
@@ -746,19 +704,70 @@ PGL::pointset_mean_distance(  const Vector3& origin,
         sum_distance += norm(origin-points->getAt(*it));
     return sum_distance / group.size();
 }
+*/
 
 
-ALGO_API real_t
+real_t
 PGL::pointset_mean_radial_distance(  const Vector3& origin,
                                      const Vector3& direction,
                                      const Point3ArrayPtr points, 
-			                         const Index& group)
+                                     const Index& group)
 {
     if (group.empty()) return 0;
     real_t sum_distance = 0;
     for(Index::const_iterator it = group.begin(); it != group.end(); ++it)
         sum_distance += radialAnisotropicNorm(origin-points->getAt(*it), direction, 0, 1);
     return sum_distance / group.size();
+}
+
+real_t
+PGL::pointset_max_radial_distance(  const Vector3& origin,
+                                     const Vector3& direction,
+                                     const Point3ArrayPtr points, 
+                                     const Index& group)
+{
+    if (group.empty()) return 0;
+    real_t max_distance = 0;
+    for(Index::const_iterator it = group.begin(); it != group.end(); ++it) 
+        max_distance = std::max(max_distance,radialAnisotropicNorm(origin-points->getAt(*it), direction, 0, 1));
+    return max_distance;
+}
+
+Matrix3 
+PGL::pointset_covariance(const Point3ArrayPtr points,  const Index& group)
+{
+    Matrix3 result(0,0,0,0,0,0,0,0,0);
+    if (group.empty()){
+        for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it){
+            const Vector3& v = *it;
+            result(0,0) += v.x() * v.x();
+            result(0,1) += v.x() * v.y();
+            result(0,2) += v.x() * v.z();
+            result(1,0) += v.y() * v.x();
+            result(1,1) += v.y() * v.y();
+            result(1,2) += v.y() * v.z();
+            result(2,0) += v.z() * v.x();
+            result(2,1) += v.z() * v.y();
+            result(2,2) += v.z() * v.z();
+        }
+        result /= points->size();
+    }
+    else {
+        for (Index::const_iterator it = group.begin(); it != group.end(); ++it){
+            const Vector3& v = points->getAt(*it);
+            result(0,0) += v.x() * v.x();
+            result(0,1) += v.x() * v.y();
+            result(0,2) += v.x() * v.z();
+            result(1,0) += v.y() * v.x();
+            result(1,1) += v.y() * v.y();
+            result(1,2) += v.y() * v.z();
+            result(2,0) += v.z() * v.x();
+            result(2,1) += v.z() * v.y();
+            result(2,2) += v.z() * v.z();
+        }
+        result /= group.size();
+    }
+    return result;
 }
 
 
@@ -784,7 +793,7 @@ PGL::densities_from_k_neighborhood(const Point3ArrayPtr points,
     GEOM_ASSERT(nbPoints == adjacencies->size());
     GEOM_ASSERT(nbPoints == radii->size());
     RealArrayPtr result(new RealArray(nbPoints));
-    ProgressStatus  st(nbPoints, "density computed for %.2f%% of points.");
+    ProgressStatus  st(nbPoints, "Density computed for %.2f%% of points.");
     uint32_t current = 0;
     for(RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++current, ++st){
         *itres = density_from_k_neighborhood(current, points,adjacencies,k);
@@ -792,212 +801,8 @@ PGL::densities_from_k_neighborhood(const Point3ArrayPtr points,
     return result;
 }
 
-#ifdef WITH_CGAL
-#include <CGAL/linear_least_squares_fitting_3.h>
-#endif
-
-Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index& group )
-{
-#ifdef WITH_CGAL
-    typedef CGAL::Cartesian<real_t>   CK;
-    typedef CK::Point_3               CPoint;
-    typedef CK::Line_3                CLine;
-
-	std::list<CPoint> pointdata;
-	// for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
-	for (Index::const_iterator it = group.begin(); it != group.end() ; ++it)
-		pointdata.push_back(toPoint3<CPoint>(points->getAt(*it)));
-
-	CLine line;
-	linear_least_squares_fitting_3(pointdata.begin(), pointdata.end(), line, CGAL::Dimension_tag<0>());
-
-	return toVector3(line.to_vector());
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'pointset_orientation' disabled. CGAL needed.")
-    #else
-    #warning "function 'pointset_orientation' disabled. CGAL needed"
-    #endif
-
-    return Vector3(0,0,0);
-#endif
-}
-
-ALGO_API TOOLS(Vector3) 
-PGL::triangleset_orientation(const Point3ArrayPtr points, const Index3ArrayPtr triangles)
-{
-#ifdef WITH_CGAL
-    typedef CGAL::Cartesian<real_t>   CK;
-    typedef CK::Point_3               CPoint;
-    typedef CK::Line_3                CLine;
-	typedef CK::Triangle_3			  CTriangle;
-
-	std::list<CTriangle> cgaltriangles;
-	for (Index3Array::const_iterator it = triangles->begin(); it != triangles->end() ; ++it)
-		cgaltriangles.push_back(
-				CTriangle(toPoint3<CPoint>(points->getAt(it->getAt(0))),
-						  toPoint3<CPoint>(points->getAt(it->getAt(1))),
-				          toPoint3<CPoint>(points->getAt(it->getAt(2)))
-					));	
 
 
-	CLine line;
-	linear_least_squares_fitting_3(cgaltriangles.begin(), cgaltriangles.end(), line, CGAL::Dimension_tag<0>());
-
-	return toVector3(line.to_vector());
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'pointset_orientation' disabled. CGAL needed.")
-    #else
-    #warning "function 'pointset_orientation' disabled. CGAL needed"
-    #endif
-
-    return Vector3(0,0,0);
-#endif
-}
-
-
-Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups)
-{
-	size_t nbPoints = points->size();
-	Point3ArrayPtr result(new Point3Array(nbPoints));
-
-    ProgressStatus st(nbPoints, "orientations computed for %.2f%% of points.");
-    IndexArray::const_iterator itNbrhd = groups->begin();
-    for(Point3Array::iterator itRes = result->begin(); itRes != result->end(); ++itRes, ++itNbrhd, ++st)
-        *itRes = pointset_orientation(points,*itNbrhd);
-
-	return result;
-}
-
-#ifdef WITH_CGAL
-
-#ifdef WITH_LAPACK 
-#   define CGAL_AND_SVD_SOLVER_ENABLED
-#else
-#ifdef WITH_EIGEN
-#   define CGAL_AND_SVD_SOLVER_ENABLED
-#endif
-
-#endif
-#endif
-
-
-#ifdef CGAL_AND_SVD_SOLVER_ENABLED
-
-#ifdef WITH_LAPACK
-#define CGAL_LAPACK_ENABLED
-#else
-#define CGAL_EIGEN3_ENABLED
-#endif
-
-#include <CGAL/Cartesian.h>
-#include <CGAL/Monge_via_jet_fitting.h>
-
-#endif
-
-
-CurvatureInfo
-PGL::principal_curvatures(const Point3ArrayPtr points, uint32_t pid, const Index& group, size_t fitting_degree , size_t monge_degree)
-{
-      CurvatureInfo result;
-#ifdef CGAL_AND_SVD_SOLVER_ENABLED
-
-        typedef CGAL::Cartesian<real_t>  Data_Kernel;
-        typedef Data_Kernel::Point_3     DPoint;
-        typedef CGAL::Monge_via_jet_fitting<Data_Kernel> My_Monge_via_jet_fitting;
-        typedef My_Monge_via_jet_fitting::Monge_form     My_Monge_form;
-
-      std::vector<DPoint> in_points;
-      in_points.push_back(toPoint3<DPoint>(points->getAt(pid)));
-
-      for(Index::const_iterator itNg = group.begin(); itNg != group.end(); ++itNg)
-          if (*itNg != pid) in_points.push_back(toPoint3<DPoint>(points->getAt(*itNg)));
-
-      My_Monge_form monge_form;
-      My_Monge_via_jet_fitting monge_fit;
-      monge_form = monge_fit(in_points.begin(), in_points.end(), fitting_degree, monge_degree);
-
-      result.origin = toVector3(monge_form.origin());
-      result.maximal_principal_direction = toVector3(monge_form.maximal_principal_direction());
-      result.maximal_curvature = monge_form.principal_curvatures(0);
-      result.minimal_principal_direction = toVector3(monge_form.minimal_principal_direction());
-      result.minimal_curvature = monge_form.principal_curvatures(1);
-      result.normal = toVector3(monge_form.normal_direction());
-
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'principal_curvatures' disabled. CGAL and LAPACK or EIGEN needed.")
-    #else
-    #warning "function 'principal_curvatures' disabled. CGAL and LAPACK or EIGEN needed"
-    #endif
-#endif
-      return result;
-
-}
-
-std::vector<CurvatureInfo>
-PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr groups, size_t fitting_degree , size_t monge_degree)
-{
-    std::vector<CurvatureInfo> result;
-    uint32_t i = 0;
-    for(IndexArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++i)
-        result.push_back(principal_curvatures(points,i,*it,fitting_degree,monge_degree));
-    return result;
-}
-
-std::vector<CurvatureInfo>
-PGL::principal_curvatures(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, size_t fitting_degree , size_t monge_degree)
-{
-    std::vector<CurvatureInfo> result;
-    uint32_t nbPoints = points->size();
-
-    for(uint32_t i = 0; i < nbPoints; ++i){
-        Index ng = r_neighborhood(i,points, adjacencies, radius);
-        result.push_back(principal_curvatures(points,i,ng,fitting_degree,monge_degree));
-    }
-    return result;
-
-}
-
-Vector3 PGL::pointset_normal(const Point3ArrayPtr points, const Index& group )
-{
-#ifdef WITH_CGAL
-    typedef CGAL::Cartesian<real_t>   CK;
-    typedef CK::Point_3               CPoint;
-    typedef CK::Plane_3                CPlane;
-
-	std::list<CPoint> pointdata;
-	// for (Point3Array::const_iterator it = points->begin(); it != points->end() ; ++it)
-	for (Index::const_iterator it = group.begin(); it != group.end() ; ++it)
-		pointdata.push_back(toPoint3<CPoint>(points->getAt(*it)));
-
-	CPlane plane;
-	linear_least_squares_fitting_3(pointdata.begin(), pointdata.end(), plane, CGAL::Dimension_tag<0>());
-
-	return dir2Vector3(plane.orthogonal_direction());
-#else
-    #ifdef _MSC_VER
-    #pragma message("function 'pointset_normal' disabled. CGAL needed.")
-    #else
-    #warning "function 'pointset_normal' disabled. CGAL needed"
-    #endif
-
-    return Vector3(0,0,0);
-#endif
-}
-
-
-Point3ArrayPtr
-PGL::pointsets_normals(const Point3ArrayPtr points, const IndexArrayPtr groups)
-{
-    Point3ArrayPtr result(new Point3Array(points->size()));
-    uint32_t i = 0;
-    for(IndexArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++i){
-        result->setAt(i, pointset_normal(points,*it));
-    }
-    return result;
-}
 
 
 struct PointNormalDistance {
@@ -1135,7 +940,7 @@ PGL::points_sections( const Point3ArrayPtr points,
     uint32_t nbPoints = points->size();
     IndexArrayPtr result(new IndexArray(nbPoints));
     uint32_t i = 0;
-    ProgressStatus st(nbPoints, "sections computed for %.2f%% of points.");
+    ProgressStatus st(nbPoints, "Sections computed for %.2f%% of points.");
     Point3Array::const_iterator itd = directions->begin();
 
     for(IndexArray::iterator it = result->begin(); it != result->end(); ++it, ++i, ++itd, ++st){
@@ -1237,7 +1042,7 @@ PGL::pointsets_circles( const Point3ArrayPtr points,
     RealArray::iterator itrr = resradius->begin();
     size_t pid = 0;
 
-    ProgressStatus st(nbpoints, "circles computed for %.2f%% of points.");
+    ProgressStatus st(nbpoints, "Circles computed for %.2f%% of points.");
 
     for (IndexArray::const_iterator itg = groups->begin(); itg != groups->end(); ++itg, ++itrp, ++itrr, ++st){
         std::pair<Vector3,real_t> lres ;
@@ -1264,7 +1069,7 @@ PGL::pointsets_section_circles( const Point3ArrayPtr points,
     RealArray::iterator itrr = resradius->begin();
     size_t pid = 0;
 
-    ProgressStatus st(nbpoints, "section and circles computed for %.2f%% of points.");
+    ProgressStatus st(nbpoints, "Section and circles computed for %.2f%% of points.");
 
     for (Point3Array::const_iterator itd = directions->begin(); itd != directions->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
         Index section = point_section(pid, points, adjacencies, *itd, width);
@@ -1296,6 +1101,31 @@ PGL::adaptive_section_circles(const Point3ArrayPtr points,
 
     for (Point3Array::const_iterator itd = orientations->begin(); itd != orientations->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
         Index section = point_section(pid, points, adjacencies, *itd,  widths->getAt(pid), maxradii->getAt(pid) );
+        std::pair<Vector3,real_t> lres = pointset_circle(points,section, *itd);
+        *itrp = lres.first; *itrr = lres.second;
+    }
+    return std::pair<Point3ArrayPtr,RealArrayPtr>(respoints, resradius);
+}
+
+std::pair<Point3ArrayPtr,RealArrayPtr>
+PGL::adaptive_section_circles(const Point3ArrayPtr points, 
+                             const IndexArrayPtr adjacencies, 
+                             const Point3ArrayPtr orientations,
+                             const real_t width,
+                             const RealArrayPtr maxradii)
+{
+ 
+    size_t nbpoints = points->size();
+    Point3ArrayPtr respoints(new Point3Array(nbpoints));
+    RealArrayPtr   resradius(new RealArray(nbpoints,0));
+    Point3Array::iterator itrp = respoints->begin();
+    RealArray::iterator itrr = resradius->begin();
+    size_t pid = 0;
+
+    ProgressStatus st(nbpoints, "Adaptive section contraction computed for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itd = orientations->begin(); itd != orientations->end(); ++itd, ++itrp, ++itrr, ++pid, ++st){
+        Index section = point_section(pid, points, adjacencies, *itd,  width, maxradii->getAt(pid) );
         std::pair<Vector3,real_t> lres = pointset_circle(points,section, *itd);
         *itrp = lres.first; *itrr = lres.second;
     }
@@ -2021,13 +1851,90 @@ TOOLS(RealArrayPtr) PGL::distance_to_shape(const Point3ArrayPtr points,
 #endif
 }
 
+TOOLS(RealArrayPtr) PGL::estimate_radii_from_points(const Point3ArrayPtr points, 
+                                                    const Point3ArrayPtr nodes,
+                                                    const TOOLS(Uint32Array1Ptr) parents,
+                                                    bool maxmethod,
+                                                    uint32_t maxclosestnodes)
+{
+#ifdef WITH_ANN
+    uint32_t root;
+    IndexArrayPtr children = determine_children(parents, root);
+
+    uint32_t nb_nodes = nodes->size();
+    if (nb_nodes == 0) return RealArrayPtr();
+    if (maxclosestnodes >= nb_nodes) maxclosestnodes = nb_nodes;
+    uint32_t nbPoints = points->size();
+    RealArrayPtr result(new RealArray(nb_nodes));
+    Uint32Array1Ptr resultnb(new Uint32Array1(nb_nodes));
+    uint32_t pid = 0;
+    ANNKDTree3 tree(nodes);
+    ProgressStatus st(nbPoints,"distance to shape for %.2f%% of points.");
+
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid, ++st)
+    {
+        real_t minpdist = REAL_MAX;
+        Index nids = tree.k_closest_points(*itp,maxclosestnodes);
+        uint32_t nid1 = 0, nid2 = 0;
+        real_t posu = 0;
+        for(Index::const_iterator nit = nids.begin(); nit != nids.end(); ++nit){
+
+            Vector3 point(*itp);
+            real_t u;
+            uint32_t parent = parents->getAt(*nit);
+            real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parent),&u);
+            if (d < minpdist) {
+                minpdist = d;
+                nid1 = *nit;
+                nid2 = parent;
+                posu = u;
+            }
+
+            for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
+                Vector3 mpoint(*itp);
+                d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc),&u);
+                if (d < minpdist) {
+                    minpdist = d;
+                    nid1 = *nit;
+                    nid2 = *nitc;
+                    posu = u;
+                }
+            }
+        }
+        if (posu > 0.5){
+            nid1 = nid2;
+        }
+        if (maxmethod)
+            result->getAt(nid1) = std::max(result->getAt(nid1),minpdist);
+        else {
+            result->getAt(nid1) += minpdist;
+            resultnb->getAt(nid1) += 1;
+        }
+    }
+    if(!maxmethod) {
+        Uint32Array1::const_iterator itresnb = resultnb->begin();
+        for (RealArray::iterator itres = result->begin(); itres != result->end(); ++itres, ++itresnb)
+            *itres /= *itresnb;
+    }
+
+    return result;
+#else
+    #ifdef _MSC_VER
+    #pragma message("function 'estimate_radii_from_points' disabled. ANN needed.")
+    #else
+    #warning "function 'distance_to_shape' disabled. ANN needed"
+    #endif
+
+    return 0;
+#endif
+}
 
 inline bool distance_test ( real_t d, real_t distance, bool reversed){
     if (reversed) return d > distance;
     else return d < distance;
 }
 
-ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points, 
+Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points, 
                                                 const Point3ArrayPtr nodes,
                                                 const TOOLS(Uint32Array1Ptr) parents,
                                                 real_t distance,
@@ -2062,15 +1969,24 @@ ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points
 
             Vector3 point(*itp);
             real_t d = closestPointToSegment(point,nodes->getAt(*nit),nodes->getAt(parents->getAt(*nit)));
-            if (distance_test(d, distance,reversed)) { ok = true; result.push_back(pid); continue;}
+            if (d < distance) { 
+                ok = true; 
+                if(!reversed) result.push_back(pid); 
+                continue;
+            }
 
             for (Index::const_iterator nitc = children->getAt(*nit).begin(); nitc != children->getAt(*nit).end(); ++nitc){
                 Vector3 mpoint(*itp);
                 d = closestPointToSegment(mpoint,nodes->getAt(*nit),nodes->getAt(*nitc));
-                if (distance_test(d, distance,reversed)) { ok = true; result.push_back(pid); continue;}
+                if (d < distance) { 
+                    ok = true; 
+                    if(!reversed) result.push_back(pid); 
+                    continue;
+                }
             }
             if (ok) continue;
         }
+        if(!ok && reversed) result.push_back(pid); 
     }
     return result;
 #else
@@ -2082,15 +1998,70 @@ ALGO_API Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points
 
     return Index();
 #endif
+}
 
+IndexArrayPtr PGL::cluster_points(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid)
+{
+    IndexArrayPtr result(new IndexArray(clustercentroid->size()));
+
+#ifdef WITH_ANN
+    ANNKDTree3 centroids(clustercentroid);
+#else
+    Point3GridPtr centroids(new Point3Grid(clustercentroid,20));
+#endif   
+
+    size_t pid = 0;
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid)
+    {
+        real_t minpdist = REAL_MAX;
+#ifdef WITH_ANN
+        Index nids = centroids.k_closest_points(*itp,1);
+        result->getAt(nids[0]).push_back(pid);
+#else
+        size_t pidclosest;
+        if( centroids->closest_point(*itp, pidclosest) )
+            result->getAt(pidclosest).push_back(pid);
+#endif   
+
+    }
+
+    return result;
+}
+
+Uint32Array1Ptr PGL::points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid)
+{
+    Uint32Array1Ptr result(new Uint32Array1(points->size()));
+
+#ifdef WITH_ANN
+    ANNKDTree3 centroids(clustercentroid);
+#else
+    Point3GridPtr centroids(new Point3Grid(clustercentroid,20));
+#endif   
+
+    size_t pid = 0;
+    for (Point3Array::const_iterator itp = points->begin(); itp != points->end(); ++itp, ++pid)
+    {
+        real_t minpdist = REAL_MAX;
+#ifdef WITH_ANN
+        Index nids = centroids.k_closest_points(*itp,1);
+        result->setAt(pid,nids[0]);
+#else
+        size_t pidclosest;
+        if( centroids->closest_point(*itp, pidclosest) )
+            result->setAt(pid,pidclosest);
+#endif   
+
+    }
+
+    return result;
 }
 
 TOOLS(RealArrayPtr) 
-PGL::estimate_radii(const Point3ArrayPtr nodes,
-                    const TOOLS(Uint32Array1Ptr) parents, 
-                    const TOOLS(RealArrayPtr) weights,
-                    real_t averageradius,
-                    real_t pipeexponent)
+PGL::estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
+                                   const TOOLS(Uint32Array1Ptr) parents, 
+                                   const TOOLS(RealArrayPtr) weights,
+                                   real_t averageradius,
+                                   real_t pipeexponent)
 {
     uint32_t nbNodes = nodes->size();
     RealArrayPtr result( new RealArray(nbNodes,0));
@@ -2765,6 +2736,18 @@ PGL::pointset_angulardirections(const Point3ArrayPtr points, const TOOLS(Vector3
     return result;
 }
 
+Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups)
+{
+    size_t nbPoints = points->size();
+    Point3ArrayPtr result(new Point3Array(nbPoints));
+
+    ProgressStatus st(nbPoints, "orientations computed for %.2f%% of points.");
+    IndexArray::const_iterator itNbrhd = groups->begin();
+    for(Point3Array::iterator itRes = result->begin(); itRes != result->end(); ++itRes, ++itNbrhd, ++st)
+        *itRes = pointset_orientation(points,*itNbrhd);
+
+    return result;
+}
 
 std::pair<uint32_t,real_t> 
 PGL::findClosestFromSubset(const TOOLS(Vector3)& origin, const Point3ArrayPtr points, const Index& group)
@@ -2882,69 +2865,7 @@ std::pair<Index,Index> PGL::cluster_junction_points(const IndexArrayPtr pointtop
 }
 
 
-real_t mean_over(const Point3ArrayPtr points, const Index& section, int i)
-{
-    real_t v = 0;
-    for(Index::const_iterator it = section.begin(); it != section.end(); ++it)
-        v += points->getAt(*it).getAt(i);
-    return v / section.size();
-}
 
-
-real_t mean_over(const Point3ArrayPtr points, const Index& section, int i, int j)
-{
-    real_t v = 0;
-    for(Index::const_iterator it = section.begin(); it != section.end(); ++it)
-        v += points->getAt(*it).getAt(i) * points->getAt(*it).getAt(j);
-    return v / section.size();
-}
-
-#ifdef WITH_CGAL
-#include <CGAL/eigen.h>
-#endif
-TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr points, const Index& section)
-{
-#ifdef WITH_CGAL
-    real_t mx  = mean_over(points,section,0);
-    real_t mx2 = mean_over(points,section,0,0);
-    real_t my  = mean_over(points,section,1);
-    real_t my2 = mean_over(points,section,1,1);
-    real_t mz  = mean_over(points,section,2);
-    real_t mz2 = mean_over(points,section,2,2);
-    real_t mxy = mean_over(points,section,0,1);
-    real_t mxz = mean_over(points,section,0,2);
-    real_t myz = mean_over(points,section,1,2);
-    real_t mxyxy = 2*mxy-2*mx*my;
-    real_t mxzxz = 2*mxz - 2*mx*mz;
-    real_t myzyz = 2*myz - 2*my*mz;
-
-/*    Matrix3 M(mx2-mx*mx , mxyxy     , mxzxz,
-              mxyxy     , my2-my*my , myzyz,
-              mxzxz     , myzyz     , mz2-mz*mz);*/
-
-    real_t covariance[6];
-    covariance[0] = mx2-mx*mx;
-    covariance[1] = mxyxy;
-    covariance[2] = my2-my*my;
-    covariance[3] = mxzxz;
-    covariance[4] = myzyz;
-    covariance[5] = mz2-mz*mz;
-
-    real_t eigen_values[3];
-    real_t eigen_vectors[9];
-    CGAL::internal::eigen_symmetric<real_t>(covariance,3,eigen_vectors,eigen_values);
-
-    if (eigen_values[2] <  eigen_values[1] && eigen_values[2] <  eigen_values[0])
-        return Vector3(eigen_vectors[6],eigen_vectors[7],eigen_vectors[8]);
-    else if (eigen_values[1] <  eigen_values[0])
-        return Vector3(eigen_vectors[3],eigen_vectors[4],eigen_vectors[5]);
-    else
-        return Vector3(eigen_vectors[0],eigen_vectors[1],eigen_vectors[2]);
-
-#else
-    return Vector3::ORIGIN;
-#endif
-}
 
 
 uint32_t PGL::pointset_median(const Point3ArrayPtr points)

@@ -66,9 +66,10 @@ real_t QuantisedFunction::getX(real_t i) const
 real_t QuantisedFunction::getValue(real_t x) const
 {
   assert(isValid());
-  if (!__clamped)
+  if (!__clamped) {
     if (x < __firstx) x = __firstx;
     else if (x > __lastx) x = __lastx;
+  }
   if (!(x > __firstx - GEOM_EPSILON)){
 	  pglError("QuantisedFunction : x=%f < firstX=%f.",x,__firstx);
   }

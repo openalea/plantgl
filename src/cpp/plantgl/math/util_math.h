@@ -134,9 +134,10 @@ inline bool isPowerOfTwo(int val){
 /// On win32, redirect finite on _finite.
 #ifndef HAVE_FINITE
 
-#define finite _finite
+#define pglfinite _finite
 
 #define HAVE_FINITE
+
 #endif
 
 /// On win32, redefine cubic root.
@@ -172,6 +173,10 @@ inline int trunc(double x){
 
 #define HAVE_HYPOT
 #endif
+
+#else
+
+#define pglfinite std::isfinite
 
 #endif
 

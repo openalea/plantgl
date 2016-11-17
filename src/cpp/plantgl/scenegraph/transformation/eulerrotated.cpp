@@ -72,21 +72,21 @@ void EulerRotation::Builder::destroy( )
 
 bool EulerRotation::Builder::isValid( ) const
 {
-  if( Azimuth && (! finite(*Azimuth)) )
+  if( Azimuth && (! pglfinite(*Azimuth)) )
     {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be pglfinite.");
     return false;
     }
 
-  if( Elevation && (! finite(*Elevation)) )
+  if( Elevation && (! pglfinite(*Elevation)) )
     {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be pglfinite.");
     return false;
     }
 
-  if( Roll && (! finite(*Roll)) )
+  if( Roll && (! pglfinite(*Roll)) )
     {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be pglfinite.");
     return false;
     }
 
@@ -158,18 +158,18 @@ void EulerRotated::Builder::destroy( ) {
 bool EulerRotated::Builder::isValid( ) const {
   if (! MTValid()) return false;
 
-  if (Azimuth && (! finite(*Azimuth))) {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be finite.");
+  if (Azimuth && (! pglfinite(*Azimuth))) {
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Azimuth","Must be pglfinite.");
     return false;
   };
 
-  if (Elevation && (! finite(*Elevation))) {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be finite.");
+  if (Elevation && (! pglfinite(*Elevation))) {
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Elevation","Must be pglfinite.");
     return false;
   };
 
-  if (Roll && (! finite(*Roll))) {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be finite.");
+  if (Roll && (! pglfinite(*Roll))) {
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Euler Rotated","Roll","Must be pglfinite.");
     return false;
   };
 

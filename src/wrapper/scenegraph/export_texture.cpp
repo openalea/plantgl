@@ -50,6 +50,7 @@ DEF_POINTEE(Texture2DTransformation)
 
 
 #define COL3PRINT(c) "Color3(" << (int)c.getRed() << ',' << (int)c.getGreen() << ',' << (int)c.getBlue() << ')'
+#define COL4PRINT(c) "Color4(" << (int)c.getRed() << ',' << (int)c.getGreen() << ',' << (int)c.getBlue() << ',' << (int)c.getAlpha() << ')'
 
 std::string imgtex_str(ImageTexture * m){
   std::stringstream ss;
@@ -59,7 +60,6 @@ std::string imgtex_str(ImageTexture * m){
   if(!m->isMipmapingToDefault())  ss << ", mipmaping=" << (m->getMipmaping()?"True":"False");
   if(!m->isRepeatSToDefault())  ss << ", repeatS=" << (m->getRepeatS()?"True":"False");
   if(!m->isRepeatTToDefault())  ss << ", repeatT=" << (m->getRepeatT()?"True":"False");
-  if(!m->isTransparencyToDefault()) ss << ", transparency=" << m->getTransparency() ;
   ss << ')' ;
      ;
   return ss.str();
@@ -70,17 +70,15 @@ void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  SceneObject >, boost::noncopyable >
     ( "ImageTexture", "The image of a textured object.", 
-	  init< string, optional< real_t, bool, bool, bool> >(
+	  init< string, optional< bool, bool, bool> >(
 		(bp::arg("filename"),
-		 bp::arg("transparency") = ImageTexture::DEFAULT_TRANSPARENCY,
 		 bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
 		 bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
 		 bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
           "ImageTexture(filename [, transparency, repeatS, repeatT, mipmaping])"))
-    .def(init< string,string, optional< real_t, bool, bool, bool> >(
+    .def(init< string,string, optional< bool, bool, bool> >(
 		(bp::arg("name"),
 		 bp::arg("filename"),
-		 bp::arg("transparency") = ImageTexture::DEFAULT_TRANSPARENCY,
 		 bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
 		 bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
 		 bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
@@ -90,7 +88,6 @@ void export_ImageTexture()
     .DEC_BT_PROPERTY_WDV(mipmaping,ImageTexture, Mipmaping,bool,DEFAULT_MIPMAPING)
     .DEC_BT_PROPERTY_WDV(repeatS,ImageTexture, RepeatS, bool, DEFAULT_REPEATS)
     .DEC_BT_PROPERTY_WDV(repeatT,ImageTexture, RepeatT, bool, DEFAULT_REPEATT)
-    .DEC_BT_PROPERTY_WDV(transparency,ImageTexture, Transparency, real_t, DEFAULT_TRANSPARENCY)
     .def( "__str__", imgtex_str )
     .def( "__repr__", imgtex_str )
     ;
@@ -150,6 +147,7 @@ std::string tex_str(Texture2D * m){
   if(m->isNamed()) ss << "name='" << m->getName() << "',";
   if(m->getImage())  ss << "image=" << imgtex_str(m->getImage()) << ",";
   if(!m->isTransformationToDefault())  ss << ", transformation=" << textr_str(m->getTransformation());
+  if(!m->isBaseColorToDefault())  ss << ", baseColor=" << COL4PRINT(m->getBaseColor());
   ss << ')' ;
   return ss.str();
 }
@@ -159,14 +157,15 @@ void export_Texture2D()
 {
   class_< Texture2D, Texture2DPtr, bases<  Appearance >, boost::noncopyable >
     ( "Texture2D", "The material of a textured object.", 
-	   init< ImageTexturePtr, optional<Texture2DTransformationPtr> >
-         (args("image","transformation"),
-          "Texture2D(image [,transformation])"))
-       .def(init< string, ImageTexturePtr, optional<Texture2DTransformationPtr> >
-         (args("name","image","transformation"),
-          "Texture2D(name, image [,transformation])"))
+	   init< ImageTexturePtr, optional<Texture2DTransformationPtr, Color4> >
+         (args("image","transformation","baseColor"),
+          "Texture2D(image [,transformation, baseColor])"))
+       .def(init< string, ImageTexturePtr, optional<Texture2DTransformationPtr, Color4> >
+         (args("name","image","transformation","baseColor"),
+          "Texture2D(name, image [,transformation, baseColor])"))
     .DEC_PTR_PROPERTY(image,Texture2D,Image,ImageTexturePtr )
     .DEC_PTR_PROPERTY_WDV(transformation,Texture2D, Transformation, Texture2DTransformationPtr,DEFAULT_TRANSFORMATION)
+    .DEC_BT_PROPERTY_WDV(baseColor,Texture2D, BaseColor, Color4, DEFAULT_BASECOLOR)
     .def( "__str__", tex_str )
     .def( "__repr__", tex_str )
     ;
