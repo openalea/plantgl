@@ -30,10 +30,18 @@
  *  -------------------------------------------------------------------------
  */
 
+
+#include <QtGlobal>
 #include <QtGui/qpainter.h>
-#include <QtGui/QTreeWidget>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QWidget>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/QWidget>
+    #include <QtWidgets/QTreeWidget>
+    #include <QtWidgets/QTreeWidgetItem>
+#else
+    #include <QtGui/QWidget>
+    #include <QtGui/QTreeWidget>
+    #include <QtGui/QTreeWidgetItem>
+#endif
 
 #include "qgeomlistview.h"
 

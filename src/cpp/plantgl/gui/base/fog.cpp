@@ -31,12 +31,22 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include <QtGui/qmenu.h>
-#include <QtGui/qcombobox.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qcolordialog.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qcombobox.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qcolordialog.h>
+#else
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qcombobox.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qcolordialog.h>
+#endif
 #include <QtOpenGL/qgl.h>
 #include <plantgl/algo/opengl/util_appegl.h>
 #include "fog.h"

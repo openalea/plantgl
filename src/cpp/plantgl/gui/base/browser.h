@@ -41,7 +41,13 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <QtGui/qdockwidget.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/QDockWidget>
+#else
+    #include <QtGui/QDockWidget>
+#endif
+
 namespace Ui {  class QBrowser; }
 
 /* ----------------------------------------------------------------------- */

@@ -54,21 +54,33 @@
 #include <plantgl/tool/util_string.h>
 
 /// Qt
-#include <QtGui/qmenu.h>
-#include <QtGui/qframe.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qtabwidget.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qclipboard.h>
-#include <QtCore/qfileinfo.h> 
-#include <QtGui/qmainwindow.h> 
+#include <QtGlobal>
 #include <QtCore/qmimedata.h> 
 #include <QtCore/qurl.h>
 #include <QtCore/qmap.h> 
-
+#include <QtGui/qclipboard.h>
+#include <QtCore/qfileinfo.h> 
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qframe.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qtabwidget.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qapplication.h>
+    #include <QtWidgets/qmainwindow.h> 
+#else
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qframe.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qtabwidget.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qapplication.h>
+    #include <QtGui/qmainwindow.h> 
+#endif
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef _DEBUG

@@ -60,7 +60,7 @@ class VIEW_API ViewQObjectBrowser : public ViewDialog
     /// Constructor
     ViewQObjectBrowser(  QWidget * parent=0, 
 		  const char * name=0, 
-		  bool modal=FALSE);
+		  bool modal=false);
 
     /// Destructor
     ~ViewQObjectBrowser();

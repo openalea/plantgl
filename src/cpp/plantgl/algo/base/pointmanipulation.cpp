@@ -377,7 +377,12 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
     return result;
 }
 
-#include <QtCore/QtConcurrentRun>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+   #include <QtConcurrent/QtConcurrentRun>
+#else
+    #include <QtCore/QtConcurrentRun>
+#endif
 
 class Counter
 {

@@ -41,9 +41,14 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
+#include <QtGlobal>
 #include <QtCore/qstringlist.h>
-#include <QtGui/qdockwidget.h>
 #include <QtCore/qmutex.h>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qdockwidget.h>
+#else
+    #include <QtGui/qdockwidget.h>
+#endif
 
 /* ----------------------------------------------------------------------- */
 
