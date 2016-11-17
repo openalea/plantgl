@@ -35,7 +35,7 @@ class PglColorMap:
         dc = 1
         def sc2txt(coord) :
             return 50*(coord+1)
-        return sg.Scene([sg.Shape(sg.ScreenProjected(sg.QuadSet([(px,py,0) for px,py in ptlist], indexlist, colorList=colorlist, colorPerVertex = False),keepAspectRatio=False)),
+        return sg.Scene([sg.Shape(sg.ScreenProjected(sg.QuadSet([(px,py,0) for px,py in ptlist], indexlist, colorList=colorlist, colorPerVertex = False),keepAspectRatio=False), sg.Material((255,255,255))),
                          sg.Shape(sg.Text(str(self.normalizer.vmax), (sc2txt(position[0]), sc2txt(position[1]+0.01) , 0 ), True ), sg.Material((0,0,0))),
                          sg.Shape(sg.Text(str(self.normalizer.vmin), (sc2txt(position[0]), sc2txt(position[1]-length-0.05) , 0 ), True ), sg.Material((0,0,0)))])        
 
