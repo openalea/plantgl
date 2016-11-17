@@ -36,7 +36,12 @@
 
 #include "../gui_config.h"
 #include <plantgl/scenegraph/core/sceneobject.h>
-#include <QtGui/qwidget.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qwidget.h>
+#else
+    #include <QtGui/qwidget.h>
+#endif
 
 class QMenuBar;
 class QToolBar;

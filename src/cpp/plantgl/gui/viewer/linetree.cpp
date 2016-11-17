@@ -32,25 +32,39 @@
  */
 
 #include "linetree.h"
+#include "../base/util_qt.h"
 #include <plantgl/algo/codec/linetreeprinter.h>
 #include <plantgl/algo/codec/ligfile.h>
 #include <plantgl/tool/util_enviro.h>
 
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qlayout.h>
-#include <QtCore/qvariant.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qcheckbox.h>
+#include <QtGlobal>
 #include <QtCore/qtextstream.h>
-#include <QtGui/qmessagebox.h>
 #include <QtCore/qregexp.h>
 #include <QtGui/qevent.h>
-
+#include <QtCore/qvariant.h>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qfiledialog.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qlayout.h>
+    #include <QtWidgets/qtooltip.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qcheckbox.h>
+    #include <QtWidgets/qmessagebox.h>
+#else
+    #include <QtGui/qfiledialog.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qlayout.h>
+    #include <QtGui/qtooltip.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qcheckbox.h>
+    #include <QtGui/qmessagebox.h>
+#endif
 #include <stdlib.h>
 
 static QString LIG_FILENAME;
@@ -63,7 +77,7 @@ static QString SMB_PATH;
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
+ *  true to construct a modal dialog.
  */
 
 
@@ -78,8 +92,8 @@ static QString SMB_PATH;
 			if ( e->type() == QEvent::MouseButtonDblClick ) {
 				if(_target-> echoMode() != QLineEdit::Password)_target->setEchoMode(QLineEdit::Password);
 				else _target->setEchoMode(QLineEdit::Normal);
-				return TRUE; // eat event
-			} else return FALSE;
+				return true; // eat event
+			} else return false;
 		}
 
 		QLineEdit * _target;
@@ -390,7 +404,7 @@ void ViewReadLinetree::SelectSMBPath(){
 void ViewReadLinetree::testEndianess(){
 	bool bigendian = true;
 	if(!editLig->text().isEmpty()){
-		if(!PGL(Ligfile::isBigEndian(editLig->text().toAscii().constData())))
+		if(!PGL(Ligfile::isBigEndian(toCharArray(editLig->text()))))
 			bigendian = false;
 	}
 	setEndianess(bigendian);

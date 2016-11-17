@@ -41,8 +41,14 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <QtGui/qmenu.h>
-#include <QtGui/qdialog.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qdialog.h>
+#else
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qdialog.h>
+#endif
 #include <QtCore/qtimer.h>
 #include <vector>
 class QGLWidget;
@@ -133,7 +139,7 @@ public :
   ViewAboutDialog ( QWidget * parent=0, 
 					const char * name=0, 
 					int timeout=-1,
-					bool modal=FALSE);
+					bool modal=false);
 
 	 ~ViewAboutDialog();
 

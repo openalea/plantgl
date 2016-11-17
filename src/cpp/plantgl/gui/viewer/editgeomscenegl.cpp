@@ -58,17 +58,33 @@
 #include <plantgl/tool/util_string.h>
 
 /// Qt
-#include <QtGui/qmenu.h>
-#include <QtGui/qframe.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qtabwidget.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qcombobox.h>
-#include <QtGui/qradiobutton.h>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qapplication.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qframe.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qtabwidget.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qcombobox.h>
+    #include <QtWidgets/qradiobutton.h>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qlayout.h>
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qframe.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qtabwidget.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qcombobox.h>
+    #include <QtGui/qradiobutton.h>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qlayout.h>
+    #include <QtGui/qapplication.h>
+#endif
+
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef _DEBUG
@@ -531,7 +547,7 @@ ViewMultiscaleEditGeomSceneGL::computeMultiScaleGeometry(){
 	return;
   }
   Fit approx(points);
-  GeometryPtr result = approx.use(std::string(__appform->AlgorithmBox->currentText().toAscii().constData()));
+  GeometryPtr result = approx.use( __appform->AlgorithmBox->currentText().toStdString() );
   if(!result){
     QMessageBox::warning(__frame,tr("GEOM Error"),
 	  tr("Error during Fit computation."),1,0,0);
