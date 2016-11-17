@@ -37,6 +37,7 @@
 
 #include "../viewer/pglviewer.h"
 
+
 ViewerBuilder * ViewerAppliInternal::VIEWERBUILDER(0);
 ThreadedData<Viewer> ViewerAppliInternal::VIEWER(0);
 ThreadStateSaverFactory * ViewerAppliInternal::THREADSTATESAVERFACTORY(0);
@@ -154,7 +155,7 @@ ViewerAppliInternal::itemSelection(const std::string& caption,
     ViewItemSelectionEvent * event = new ViewItemSelectionEvent(&res,
 	  caption.c_str(), text.c_str(), l, editable,&ok);
 	sendAnEvent(event);
-	return std::string(res.toAscii().constData());
+	return res.toStdString();
 }
 
 double 
@@ -187,7 +188,7 @@ ViewerAppliInternal::getFile(const std::string& caption,
 	  existing,
 	  dir);
 	sendAnEvent(event);
-	return (res.isEmpty()?std::string():std::string(res.toAscii().constData()));
+	return (res.isEmpty()?std::string():res.toStdString());
   }
 
 ViewRayBuffer * 

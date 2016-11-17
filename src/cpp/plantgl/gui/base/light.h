@@ -41,7 +41,12 @@
 /* ----------------------------------------------------------------------- */
 
 #include <QtGui/qcolor.h>
-#include <QtGui/qmenu.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+#else
+    #include <QtGui/qmenu.h>
+#endif
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include "object.h"
 

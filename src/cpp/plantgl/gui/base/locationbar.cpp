@@ -33,13 +33,20 @@
 #include "locationbar.h"
 #include "icons.h"
 
-#include <QtGui/qcombobox.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qlabel.h>
+#include <QtGlobal>
 #include <QtGui/qpixmap.h>
 #include <QtGui/qcursor.h>
-#include <QtGui/qcursor.h>
-#include <QtGui/QHBoxLayout>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qcombobox.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/QHBoxLayout>
+#else
+    #include <QtGui/qcombobox.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/QHBoxLayout>
+#endif
 
 /*----------------------------------------------------------------------------*/
 
@@ -70,8 +77,8 @@ ViewLocationBar::ViewLocationBar(const QString &label,
     __Location = new QComboBox( this );
 	__Location->setProperty("minimumHeight",25);
 	__Location->setProperty("minimumWidth",50);
-	__Location->setEditable( TRUE );
-	__Location->setAutoCompletion ( TRUE );
+	__Location->setEditable( true );
+	__Location->setAutoCompletion ( true );
 	__Location->setCursor( QCursor( Qt::IBeamCursor ) );
 	__Location->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
 
@@ -104,7 +111,7 @@ ViewComboBox::~ViewComboBox()
 
 void ViewComboBox::focusInEvent ( QFocusEvent *e )
 {
-//  setEditable( TRUE );
+//  setEditable( true );
 }
 
 void ViewComboBox::focusOutEvent ( QFocusEvent *e )
@@ -114,7 +121,7 @@ void ViewComboBox::focusOutEvent ( QFocusEvent *e )
 
 void ViewComboBox::mousePressEvent( QMouseEvent*e)
 {
-//  setEditable( TRUE );
+//  setEditable( true );
   QComboBox::mousePressEvent(e);
 }
 
@@ -128,7 +135,7 @@ void ViewComboBox::clearfocus()
 void ViewComboBox::clearedit()
 {
   clearEdit();
-//  setEditable( TRUE );
+//  setEditable( true );
 }
  
 */

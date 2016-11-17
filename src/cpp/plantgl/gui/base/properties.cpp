@@ -39,25 +39,45 @@
 #include "filemanager.h"
 #include "controlpanel.h"
 #include "translator.h"
+#include "util_qt.h"
+
 #include <plantgl/tool/util_enviro.h>
 
-#include <QtGui/qframe.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qtabwidget.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qlayout.h>
 #include <QtCore/qvariant.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qdir.h>
-#include <QtGui/qgroupbox.h>
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qcombobox.h>
+
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qframe.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qtabwidget.h>
+    #include <QtWidgets/qwidget.h>
+    #include <QtWidgets/qlayout.h>
+    #include <QtWidgets/qtooltip.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qgroupbox.h>
+    #include <QtWidgets/qcheckbox.h>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qcombobox.h>
+#else
+    #include <QtGui/qframe.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qtabwidget.h>
+    #include <QtGui/qwidget.h>
+    #include <QtGui/qlayout.h>
+    #include <QtGui/qtooltip.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qgroupbox.h>
+    #include <QtGui/qcheckbox.h>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qcombobox.h>
+#endif
+
 
 #define XBEG_1 20
 #define WIDTH_1 80
@@ -229,7 +249,7 @@ void
 ViewProperties::apply(){
   QString langname = lang->currentText();
   if(TOOLS(getLanguage()).c_str() != langname){
-    TOOLS(setLanguage(langname.toAscii().constData()));
+    TOOLS(setLanguage(toCharArray(langname)));
     if(langname == "English")removeTranslator();
     else if(langname == "French")setFrenchTranslator();
   }

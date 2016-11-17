@@ -3,9 +3,8 @@ Import( "env" )
 
 lib_env= env.Clone()
 
-qt_version = float(lib_env['QT_VERSION'])
-if qt_version == 4:
-    lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL' ])
+#qt_version = float(lib_env['QT_VERSION'])
+lib_env.EnableQtModules( [ 'QtCore' ])
 
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/scenegraph", includes )

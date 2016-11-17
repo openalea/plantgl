@@ -263,7 +263,7 @@ VegeStarFile::parseHeader(std::istream& stream)
 			attlist.push_back(Error);
 			pglError("Unrecognized header token : '%s'.\n", 
 #if QT_VERSION >= 0x040000
-			                          token.toAscii().constData()
+			                          token.toLatin1().constData()
 #else
 			                          token.data()
 #endif

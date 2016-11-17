@@ -32,10 +32,16 @@
  */				
 
 #include "object.h"
+#include "util_qt.h"
 
 #include <QtCore/qpoint.h>
-#include <QtGui/qmessagebox.h>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmessagebox.h>
+#else
+    #include <QtGui/qmessagebox.h>
+#endif
 #include <QtOpenGL/qgl.h>
+
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/algo/opengl/util_glu.h>
 
@@ -229,7 +235,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 			  lock = false;
 		  }
 	  }
-	  else qWarning("%s",_mess.toAscii().data());
+	  else qWarning("%s",toCharArray(_mess));
 	  return true;
   }
   return false;

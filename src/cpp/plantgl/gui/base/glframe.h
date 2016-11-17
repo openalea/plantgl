@@ -42,8 +42,12 @@
 #define __view_glframe_h__
 
 /* ----------------------------------------------------------------------- */
-
-#include <QtGui/QToolButton>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/QToolButton>
+#else
+    #include <QtGui/QToolButton>
+#endif
 class QToolBar;
 class ViewStatusBar;
 class QMenu;

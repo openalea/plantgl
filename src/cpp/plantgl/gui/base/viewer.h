@@ -42,17 +42,24 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <QtGui/qmainwindow.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/QMainWindow>
+#else
+    #include <QtGui/QMainWindow>
+#endif
 #include <plantgl/tool/util_types.h>
 #include <vector>
 
 #ifdef QT_THREAD_SUPPORT
 #include <QtCore/qwaitcondition.h>
+
 #if QT_VERSION >= 300
 #include <QtCore/qmutex.h>
 #else
 #include <QtCore/qthread.h>
 #endif
+
 #endif
 #include "flags.h"
 

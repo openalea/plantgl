@@ -7,9 +7,12 @@ py_dir = '../../plantgl/gui'
 # Build wrappers as shared libraries
 lib_env=env.Clone()
 
-lib_env.EnableQt4Modules( [ 'QtCore', 'QtGui', 'QtOpenGL', 'QtNetwork'])
 
-lib_env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
+qt_version = int(lib_env['QT_VERSION'])
+if qt_version == 4:
+    lib_env.EnableQtModules( [ 'QtCore', 'QtGui', 'QtOpenGL', 'QtNetwork'])
+else:
+    lib_env.EnableQtModules( [ 'QtCore', 'QtGui', 'QtWidgets', 'QtOpenGL', 'QtNetwork'])    
 
 sources= lib_env.ALEAGlob( '*.cpp' )
 target= "_pglgui"

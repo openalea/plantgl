@@ -36,10 +36,16 @@
 
 #ifdef QT_THREAD_SUPPORT
 
-#include <QtGui/qapplication.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qapplication.h>
+#endif
 
 #include "geomevent.h"
 #include "geomscenegl.h"
+#include "../base/util_qt.h"
 #include <plantgl/algo/codec/ligfile.h>
 
 #include <sstream>
@@ -89,7 +95,7 @@ void ViewGeomReader::run()
 
     if(! _filename.isEmpty()) {
 	  stringstream _errlog(ios::out) ;
-      ScenePtr scene = ScenePtr(new Scene(_filename.toAscii().constData(),"", _errlog,
+      ScenePtr scene = ScenePtr(new Scene(toCharArray(_filename),"", _errlog,
                                           maxerror));
       _errlog << std::ends;
       string _msg = _errlog.str();
@@ -165,9 +171,9 @@ void ViewMultiGeomReader::run()
 {
   if(! _filename.isEmpty() && ! __second.isEmpty()) {
     stringstream _errlog(ios::out) ;
-    ScenePtr scene1 = ScenePtr(new Scene(_filename.toAscii().constData(),"",_errlog,
+    ScenePtr scene1 = ScenePtr(new Scene(toCharArray(_filename),"",_errlog,
                                         maxerror));
-    ScenePtr scene2 = ScenePtr(new Scene(__second.toAscii().constData(),"",_errlog,
+    ScenePtr scene2 = ScenePtr(new Scene(toCharArray(__second),"",_errlog,
                                         maxerror));
     _errlog << ends;
     string _msg = _errlog.str();
@@ -239,9 +245,9 @@ void ViewLinetreeReader::run(){
 
     if(! _filename.isEmpty()) {
       stringstream _errlog(ios::out) ;
-      ScenePtr scene = readLineTree(string(_filename.toAscii().data()),
-                                    string(_dtaFile.toAscii().data()),
-                                    string(_smbPath.toAscii().data()),
+      ScenePtr scene = readLineTree(_filename.toStdString(),
+                                    _dtaFile.toStdString(),
+                                    _smbPath.toStdString(),
 									_bigendian,
                                     _errlog);
       _errlog << ends;

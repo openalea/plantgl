@@ -36,10 +36,16 @@
 #include "util_qwidget.h"
 #include "icons.h"
 
-#include <QtGui/qtoolbutton.h>
 #include <QtCore/qvariant.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qmenu.h>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qwhatsthis.h>
+#else
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qwhatsthis.h>
+#endif
 
 /* ----------------------------------------------------------------------- */
 

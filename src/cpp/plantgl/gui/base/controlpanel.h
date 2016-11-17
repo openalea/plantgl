@@ -43,8 +43,12 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../gui_config.h"
-#include <QtGui/qdockwidget.h>
-
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qdockwidget.h>
+#else
+    #include <QtGui/qdockwidget.h>
+#endif
 /* ----------------------------------------------------------------------- */
 
 class QCheckBox;

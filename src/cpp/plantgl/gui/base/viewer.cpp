@@ -36,28 +36,49 @@
 #include <QtCore/qstring.h>
 #endif
 
-// #include <qdragobject.h>
+#include <QtGlobal>
+
 #include <QtCore/QPointer>
-#include <QtGui/qapplication.h>
-#include <QtGui/qstatusbar.h>
-#include <QtGui/qprogressbar.h>
-#include <QtGui/qspinbox.h>
-#include <QtGui/qmenu.h>
-#include <QtGui/qmenubar.h>
-#include <QtGui/qtoolbar.h>
 #include <QtCore/qfileinfo.h>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qwhatsthis.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qtextstream.h>
-#include <QtGui/qclipboard.h>
-#include <QtGui/qinputdialog.h>
-#include <QtGui/qsystemtrayicon.h>
 #include <QtCore/qurl.h>
-#include <QtGui/qdesktopwidget.h>
+
 #include <QtGui/QDragEnterEvent>
+#include <QtGui/qclipboard.h>
+
+#if QT_VERSION >= 0x050000 
+    #include <QtCore/QMimeData>
+    #include <QtWidgets/qapplication.h>
+    #include <QtWidgets/qstatusbar.h>
+    #include <QtWidgets/qprogressbar.h>
+    #include <QtWidgets/qspinbox.h>
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qmenubar.h>
+    #include <QtWidgets/qtoolbar.h>
+    #include <QtWidgets/qfiledialog.h>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qinputdialog.h>
+    #include <QtWidgets/qsystemtrayicon.h>
+    #include <QtWidgets/qdesktopwidget.h>
+#else
+    #include <QtGui/qapplication.h>
+    #include <QtGui/qstatusbar.h>
+    #include <QtGui/qprogressbar.h>
+    #include <QtGui/qspinbox.h>
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qmenubar.h>
+    #include <QtGui/qtoolbar.h>
+    #include <QtGui/qfiledialog.h>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qinputdialog.h>
+    #include <QtGui/qsystemtrayicon.h>
+    #include <QtGui/qdesktopwidget.h>
+#endif
 
 #include "viewer.h"
 #include "event.h"
@@ -76,6 +97,7 @@
 #include "daemon.h"
 #include "configuration.h"
 #include "util_qwidget.h"
+#include "util_qt.h"
 #include "interface/frameglsizedialog.h"
 
 #include <plantgl/tool/util_enviro.h>
@@ -406,7 +428,7 @@ void Viewer::initialize()
 
   ViewerSettings settings;
   settings.beginGroup("Viewer");
-  qDebug("Try to retrieve %s Application Data.", ViewerSettings::getAppliName().toAscii().data());
+  qDebug("Try to retrieve %s Application Data.", toCharArray(ViewerSettings::getAppliName()));
   int version = settings.value("StateVersion",-1).toInt();
   if(version != -1)
   {
@@ -709,7 +731,7 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(etype == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
-    saveImage(k->arg1,k->arg2.toAscii().constData(),k->arg3);
+    saveImage(k->arg1,toCharArray(k->arg2),k->arg3);
   }
   else if(etype == ViewEvent::eShowMessage){
     ViewShowMessageEvent * k = ( ViewShowMessageEvent * )e;
@@ -1051,7 +1073,7 @@ void Viewer::setStatusBarMsg(QString _msg){
 void
 Viewer::receiveRequest(const QString& s){
   appear();
-  qWarning("Net Request : '%s'",s.toAscii().data());
+  qWarning("Net Request : '%s'",toCharArray(s));
 }
 
 void

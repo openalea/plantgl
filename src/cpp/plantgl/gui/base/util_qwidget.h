@@ -38,9 +38,17 @@
 #ifndef _util_qwidget_h__
 #define _util_qwidget_h__
 
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qdialog.h>
-#include <QtGui/qstatusbar.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/QToolBar>
+    #include <QtWidgets/QDialog>
+    #include <QtWidgets/QStatusbar>
+#else
+    #include <QtGui/QToolBar>
+    #include <QtGui/QDialog>
+    #include <QtGui/QStatusbar>
+#endif
+
 #include "../gui_config.h"
 class QToolButton;
 class QMenu;
@@ -115,7 +123,7 @@ public:
   /// Constructor.
   ViewDialog( QWidget * parent=0, 
 	      const char * name=0, 
-	      bool modal=FALSE, 
+	      bool modal=false, 
 	      Qt::WindowFlags f=0 );
   
   /// Destructor.
@@ -149,7 +157,7 @@ public:
   /// Constructor.
   ViewMainDialog( QWidget * parent=0,			  
 				  const char * name=0, 
-				  bool modal=FALSE, 
+				  bool modal=false, 
 				  Qt::WindowFlags f=0 );
   
   /// Destructor.

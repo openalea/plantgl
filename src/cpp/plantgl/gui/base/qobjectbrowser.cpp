@@ -32,22 +32,30 @@
 */
 
 
-#include <QtGui/qpainter.h>
 
 #include "qobjectbrowser.h"
 #include "interface/qbrowser.h"
 #include "icons.h"
 
-#include <QtGui/qlistview.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qpixmap.h>
-
-#include <QtGui/qapplication.h>
 #include <QtCore/qmetaobject.h>
+
+#include <QtGui/qpainter.h>
+#include <QtGui/qpixmap.h>
 #include <QtGui/qbitmap.h>
-#include <QtGui/qcursor.h>
 #include <QtGui/qevent.h>
+#include <QtGui/qcursor.h>
+
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qlistview.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qcheckbox.h>
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qlistview.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qcheckbox.h>
+    #include <QtGui/qapplication.h>
+#endif
 
 
 /* ----------------------------------------------------------------------- */
@@ -306,7 +314,7 @@ ViewQObjectBrowser::ViewQObjectBrowser(QWidget * parent,
 									   : ViewDialog(parent,name, modal)
 {
   setWindowTitle("QObject Browser");
-  setSizeGripEnabled(TRUE);
+  setSizeGripEnabled(true);
   Ui::QBrowser * __browser = new Ui::QBrowser();
   __browser->setupUi(this);
   __browser->__FullMode->hide();
