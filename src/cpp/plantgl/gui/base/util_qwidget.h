@@ -39,7 +39,7 @@
 #define _util_qwidget_h__
 
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/QToolBar>
     #include <QtWidgets/QDialog>
     #include <QtWidgets/QStatusbar>

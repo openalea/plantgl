@@ -46,7 +46,7 @@ class QTextView;
 class QPushButton;
 class QSocket;
 #include <QtNetwork/qtcpserver.h>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qdialog.h>
 #else
     #include <QtGui/qdialog.h>
@@ -90,14 +90,14 @@ protected:
 
 #ifdef VIEW_NETWORK_SUPPORT
 
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtNetwork/qhttp.h>
 #else
     #include <QtNetwork/QNetworkAccessManager>
 #endif
 
 class VIEW_API ViewClient : public 
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     QHttp
 #else
     QNetworkAccessManager

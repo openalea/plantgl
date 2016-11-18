@@ -60,7 +60,7 @@
 #include "../base/icons.h"
 #include "../base/glframe.h"
 #include "../base/filemanager.h"
-#include "../base/util_qt.h"
+
 
 #include "linetree.h"
 #include "reader.h"
@@ -68,7 +68,7 @@
 
 /// Qt
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qcombobox.h>
     #include <QtWidgets/qgroupbox.h>
@@ -879,7 +879,7 @@ ViewGeomSceneGL::getGeomFilenames(QString& shape,QString& geom, QString& mat)
     initial += "geom";
   }
   
-  GeomDialog dialog( initial, tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"), __frame,toLatin1(tr("Save")).data());
+  GeomDialog dialog( initial, tr("PlantGL File")+" (*.geom;*.bgeom);;"+tr("All Files (*.*)"), __frame,qPrintable(tr("Save")));
   if(dialog.exec() != QFileDialog::Rejected) shape = dialog.selectedFiles()[0];
   
   if(shape.isEmpty())return false;
@@ -949,13 +949,13 @@ ViewGeomSceneGL::saveScene(const QString& shape,
   QString extension=shape.right(shape.length()-shape.lastIndexOf('.')-1);
   extension= extension.toUpper();
   if(extension == "GEOM" ){
-	  ofstream fshape(toCharArray(shape));
+	  ofstream fshape(qPrintable(shape));
 	if(!fshape)return false;
 	fshape << " # -Geom File-\n";
 	ofstream * fgeom;
 	bool separatedgeom = false;
 	if(!geom.isEmpty()){
-	  fgeom = new ofstream(toCharArray(geom));
+	  fgeom = new ofstream(qPrintable(geom));
 	  if(!*fgeom)fgeom = &fshape;
 	  else {
 		*fgeom << " # -Geom File-\n";
@@ -967,7 +967,7 @@ ViewGeomSceneGL::saveScene(const QString& shape,
 	ofstream * fmat;
 	bool separatedmat = false;
 	if(!mat.isEmpty()){
-	  fmat = new ofstream(toCharArray(mat));
+	  fmat = new ofstream(qPrintable(mat));
 	  if(!*fmat)fmat = &fshape;
 	  else {
         *fmat << " # -Appearance File-\n";
@@ -977,19 +977,19 @@ ViewGeomSceneGL::saveScene(const QString& shape,
 	else fmat = &fshape;
 
     Printer _printer(fshape,*fgeom,*fmat);
-	_printer.header(fshape,toCharArray(shape),toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+	_printer.header(fshape,qPrintable(shape),qPrintable(tr("File Generated with PlantGL 3D Viewer")));
     if(separatedgeom){
-      _printer.header(*fgeom,toCharArray(geom),toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+      _printer.header(*fgeom,qPrintable(geom),qPrintable(tr("File Generated with PlantGL 3D Viewer")));
 	  fshape  << ":include " << geom.toStdString() << "\n\n\n";
 	}
     if(separatedmat){
-      _printer.header(*fmat,toCharArray(mat),toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+      _printer.header(*fmat,qPrintable(mat),qPrintable(tr("File Generated with PlantGL 3D Viewer")));
 	  fshape  << ":include " << mat.toStdString() << "\n\n\n";
 	}
     return scene->apply(_printer);
   }
   else if(extension == "BGEOM" ){
-	  return BinaryPrinter::print(__scene,toCharArray(shape),toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+	  return BinaryPrinter::print(__scene,qPrintable(shape),qPrintable(tr("File Generated with PlantGL 3D Viewer")));
   }
   else { 
       if (!__scene->save(shape.toStdString())){
@@ -1063,11 +1063,11 @@ ViewGeomSceneGL::saveAsLinetree(const QString& filename){
 bool
 ViewGeomSceneGL::saveAsPovRay(const QString& filename)
 {
-  ofstream _stream(toCharArray(filename));
+  ofstream _stream(qPrintable(filename));
   if(_stream){
     Tesselator _tess;
     PovPrinter _printer(_stream,_tess);
-    _printer.header(toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+    _printer.header(qPrintable(tr("File Generated with PlantGL 3D Viewer")));
 	_printer.beginHeader();
 	_printer.setCamera(__camera->getEye(),__camera->getTranslation(),__camera->getViewAngle(),__camera->getAzimuth(),__camera->getElevation());
 	const QColor& col = __light->getDiffuse();
@@ -1104,11 +1104,11 @@ ViewGeomSceneGL::saveAsPovRay(const QString& filename)
 bool
 ViewGeomSceneGL::saveAsVegeStar(const QString& filename)
 {
-  ofstream _stream(toCharArray(filename));
+  ofstream _stream(qPrintable(filename));
   if(_stream){
     Tesselator _tess;
     VgstarPrinter _printer(_stream,_tess);
-    _printer.header(toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+    _printer.header(qPrintable(tr("File Generated with PlantGL 3D Viewer")));
     __scene->apply(_printer);
     setFilename(filename);
     return true;
@@ -1126,7 +1126,7 @@ ViewGeomSceneGL::saveAsAmapSymbol(const QString& filename)
   AmapSymbolPtr result = translator.getSymbol();
 
   if(result) {
-	  beofstream _stream(toCharArray(filename));
+	  beofstream _stream(qPrintable(filename));
 	  if(_stream){
 		  result->write(_stream);
 		  setFilename(filename);
@@ -1145,19 +1145,19 @@ ViewGeomSceneGL::saveAsLinetree(const QString& lig,
 								const QString& key,
 								bool bigendian){
 	bofstream * ligstream;
-	if (bigendian) ligstream = new beofstream(toCharArray(lig));
-	else ligstream = new leofstream(toCharArray(lig));
+	if (bigendian) ligstream = new beofstream(qPrintable(lig));
+	else ligstream = new leofstream(qPrintable(lig));
 	if(!*ligstream) return false;
-	ofstream dtastream(toCharArray(dta));
+	ofstream dtastream(qPrintable(dta));
 	if(!dtastream) return false;
 	AmapTranslator t(__discretizer);
-	LinetreePrinter printer(*ligstream,dtastream,toCharArray(smb),t);
-	printer.header(toCharArray(key));
+	LinetreePrinter printer(*ligstream,dtastream,qPrintable(smb),t);
+	printer.header(qPrintable(key));
 	if(__scene->apply(printer)){
 		setFilename(lig);
 		QString inf = lig.left(lig.lastIndexOf('.')+1);
 		inf += "inf";
-		ofstream infstream(toCharArray(inf));
+		ofstream infstream(qPrintable(inf));
 		if(infstream){
 			printer.printInf(infstream,
 							 __bbox->getUpperRightCorner(),
@@ -1165,7 +1165,7 @@ ViewGeomSceneGL::saveAsLinetree(const QString& lig,
 		}
 		QString cfg = QFileInfo(lig).dir().path();
 		string _cfg;
-		if(!printer.printCfg(toCharArray(cfg),".",toCharArray(smb),_cfg)){
+		if(!printer.printCfg(qPrintable(cfg),".",qPrintable(smb),_cfg)){
 			QMessageBox::warning(__frame,tr("Cfg File"),
 			tr("Cannot write file")+" '"+QString(_cfg.c_str())+"'",
             "Ok");
@@ -1185,10 +1185,10 @@ void
 ViewGeomSceneGL::saveAsVrml()
 {
   QString filename = ViewFileManager::getSaveFileName(getFilename(),"wrl",tr("Vrml File")+" (*.wrl);;"+tr("All Files (*.*)"),__frame);
-  ofstream _stream(toCharArray(filename));
+  ofstream _stream(qPrintable(filename));
   if(_stream){
     VrmlPrinter _printer(_stream,__discretizer);
-    _printer.header(toCharArray(tr("File Generated with PlantGL 3D Viewer")));
+    _printer.header(qPrintable(tr("File Generated with PlantGL 3D Viewer")));
 	if(fabs(__camera->getAzimuth()) > GEOM_EPSILON   || 
 	   fabs(__camera->getElevation()) > GEOM_EPSILON ||
 	   __camera->getTranslation() != Vector3::ORIGIN)
@@ -1237,7 +1237,7 @@ ViewGeomSceneGL::saveAsPly()
     }
     Tesselator t;
     PlyPrinter::print(__scene,t,filename.toStdString(),
-	  toCharArray(tr("File Generated with PlantGL 3D Viewer")),_format);
+	  qPrintable(tr("File Generated with PlantGL 3D Viewer")),_format);
   }
 }
 
@@ -1270,8 +1270,8 @@ ViewMultiGeomSceneGL::openGeomFiles(const QString& filename,const QString& filen
     }
 #else
     stringstream _errlog(ios::out) ;
-    ScenePtr scene1 = ScenePtr(new Scene(toCharArray(filename),"",_errlog));
-    ScenePtr scene2 = ScenePtr(new Scene(toCharArray(filename2),"",_errlog));
+    ScenePtr scene1 = ScenePtr(new Scene(qPrintable(filename),"",_errlog));
+    ScenePtr scene2 = ScenePtr(new Scene(qPrintable(filename2),"",_errlog));
     setScene(scene1,scene2);
 	string _msg = _errlog.str();
 	if(!_msg.empty())error(_msg.c_str());

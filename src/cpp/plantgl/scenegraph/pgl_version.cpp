@@ -120,3 +120,13 @@ bool pgl_support_extension(const std::string& ext) {
 		if (*it == ext) return true;
 	return false;
 }
+
+#include <QtGlobal>
+
+int getPGLQtVersion(){
+  return  QT_VERSION;
+}
+
+std::string getPGLQtVersionString(){
+  return std::string(QT_VERSION_STR);
+}

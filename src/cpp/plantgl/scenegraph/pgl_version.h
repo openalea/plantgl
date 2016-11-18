@@ -62,6 +62,9 @@ extern SG_API std::string getPGLRevisionString();
 extern SG_API const std::vector<std::string>& get_pgl_supported_extensions();
 extern SG_API bool pgl_support_extension(const std::string& ext);
 
+extern SG_API int getPGLQtVersion();
+extern SG_API std::string getPGLQtVersionString();
+
 #endif
 
 

@@ -1874,7 +1874,7 @@ bool GLRenderer::process( Polyline2D * polyline ) {
 
 /* ----------------------------------------------------------------------- */
 
-#if QT_VERSION >= 300
+#if QT_VERSION >= QT_VERSION_CHECK(3,0,0)
 
 bool GLRenderer::process( Text * text ) {
   GEOM_ASSERT_OBJ(text);

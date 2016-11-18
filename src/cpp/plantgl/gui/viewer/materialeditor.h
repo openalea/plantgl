@@ -45,7 +45,7 @@
 #include "moduleeditor.h"
 
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qwidget.h>
     #include <QtWidgets/qpushbutton.h>
     #include <QtWidgets/qslider.h>

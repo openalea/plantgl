@@ -44,7 +44,7 @@
 #include <QtGlobal>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qmutex.h>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qdockwidget.h>
 #else
     #include <QtGui/qdockwidget.h>
