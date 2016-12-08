@@ -17,7 +17,7 @@ class DiagramPlotter:
         self.withorigin = withorigin
         self.curves = []
         self.points = []
-        self.histo = []
+        self.boxplot = []
   
     def add_curve(self, curvedata, color= (255,0,0), size = 2):
         if type(curvedata) == tuple:
@@ -31,7 +31,10 @@ class DiagramPlotter:
 
     def add_points(self,pointdata, color = (255,0,255), size = 6):
         if type(pointdata) == tuple:
-          pointdata = zip(pointdata[0],pointdata[1])
+            if isiterable(pointdata[0]):
+                pointdata = zip(pointdata[0],pointdata[1])
+            else:
+                pointdata = [pointdata]
         elif type(pointdata) == dict:
           pointdata = pointdata.items()
           pointdata.sort()
@@ -39,14 +42,14 @@ class DiagramPlotter:
         self.points.append((pointdata,color, size))
         return self
     
-    def add_histogram(self,values, color = (255,0,255)):
+    def add_boxplot(self,values, color = (255,0,255)):
         if type(values) == tuple:
           values = zip(values[0],values[1])
         elif type(values) == dict:
           values = values.items()
           values.sort()
         assert len(values) > 0
-        self.histo.append((values, color))
+        self.boxplot.append((values, color))
         return self
     
     def bbox(self):
@@ -56,7 +59,7 @@ class DiagramPlotter:
             data += curve
         for points, color, size in self.points:
             data += points
-        for values, color in self.histo:
+        for values, color in self.boxplot:
             data += values
         if len(data) > 1:
             if self.xextent:
@@ -113,25 +116,34 @@ class DiagramPlotter:
             if type(c) == Color3 or type(c) == Color4 : return False 
             return type(color[0]) != int
 
+        def limit(p):
+            x,y = p
+            if y < miny : return (x,miny)
+            if y > maxy : return (x,maxy)
+            return p
+
         for curve, color, size in self.curves:      
-            curvedata = map(projp3, curve)
+            curvedata = map(projp3, map(limit, curve))
             colorperobject = hasColorPerObject(color)
             result.append(Shape(ScreenProjected(Polyline(curvedata, width=size, colorList = None if not colorperobject else color), False), toMaterial(color) if not colorperobject else Material((255,0,0))))
 
-        for pointdata, color, size in self.points:      
-            pointdata = map(projp3, pointdata)
+        for pointdata, color, size in self.points:
+            pointdata = map(projp3, filter(lambda p : miny <= p[1] < maxy, pointdata))
             colorperobject = hasColorPerObject(color)
             result.append(Shape(ScreenProjected(PointSet(pointdata, width=size, colorList = None if not colorperobject else color), False), toMaterial(color) if not colorperobject else Material((255,0,0)) ))
 
-        y0 = projy(0)
-        for values, color in self.histo:      
+        y0 = projy(miny)
+        for values, color in self.boxplot:      
             delta = abs(projx(values[0][0])-projx(values[1][0]))/2
             colorperobject = hasColorPerObject(color)
             for i,v in enumerate(values):
-                vx, vy = projp(v)
-                p1,p2,p3,p4 = (vx-delta,y0),(vx+delta,y0),(vx+delta,vy),(vx-delta,vy) 
-                result.append(Shape(ScreenProjected(QuadSet([(x,y,0.0) for x,y in [p1,p2,p3,p4]], [range(4)]), False), toMaterial(color if not colorperobject else color[i]) ))
-                result.append(Shape(ScreenProjected(Translated(0,0,-0.01,Group([Polyline2D([pi,pj]) for pi,pj in [(p1,p4),(p1,p2),(p2,p3),(p3,p4)] ])), False), toMaterial((0,0,0)) ))
+                if miny < v[1] :
+                    if v[1] > maxy:
+                        v = (v[0],maxy)
+                    vx, vy = projp(v)
+                    p1,p2,p3,p4 = (vx-delta,y0),(vx+delta,y0),(vx+delta,vy),(vx-delta,vy) 
+                    result.append(Shape(ScreenProjected(QuadSet([(x,y,0.0) for x,y in [p1,p2,p3,p4]], [range(4)]), False), toMaterial(color if not colorperobject else color[i]) ))
+                    result.append(Shape(ScreenProjected(Translated(0,0,-0.01,Group([Polyline2D([pi,pj]) for pi,pj in [(p1,p4),(p1,p2),(p2,p3),(p3,p4)] ])), False), toMaterial((0,0,0)) ))
 
         if miny <= 0 <= maxy:
             cxtick = ((minx // self.xtick) * self.xtick)
@@ -159,10 +171,10 @@ class DiagramPlotter:
         ytagorient = -1 if maxx <= 0 else 1
 
         result.append(Shape(Group([
-            ScreenProjected(Translated(projx(0)- xlabeldecal/2, projy(0)- xtagorient * ( 2 * self.ticklength + xlabeldecal), 0, Text(str(minx))),False),
-            ScreenProjected(Translated(projx(maxx)- xlabeldecal/2, projy(0)- xtagorient * (2 * self.ticklength + xlabeldecal), 0, Text(str(maxx))),False),
-            ScreenProjected(Translated(projx(0) - ytagorient * (2 * self.ticklength + ylabeldecal), projy(miny) - ylabeldecal/2, 0, Text(str(miny))),False),
-            ScreenProjected(Translated(projx(0) - ytagorient * (2 * self.ticklength + ylabeldecal), projy(maxy) - ylabeldecal/2, 0, Text(str(maxy))),False)
+            ScreenProjected(Translated(projx(minx) - xlabeldecal/2, projy(miny)- xtagorient * ( 2 * self.ticklength + xlabeldecal), 0, Text(str(minx))),False),
+            ScreenProjected(Translated(projx(maxx) - xlabeldecal/2, projy(miny)- xtagorient * (2 * self.ticklength + xlabeldecal), 0, Text(str(maxx))),False),
+            ScreenProjected(Translated(projx(minx) - ytagorient * (2 * self.ticklength + ylabeldecal), projy(miny) - ylabeldecal/2, 0, Text(str(miny))),False),
+            ScreenProjected(Translated(projx(minx) - ytagorient * (2 * self.ticklength + ylabeldecal), projy(maxy) - ylabeldecal/2, 0, Text(str(maxy))),False)
             ]), toMaterial((0,0,0))))
 
         return Scene(result)
