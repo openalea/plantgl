@@ -990,7 +990,7 @@ protected:
         index l of the bottom piece, J[l:k,l:k] */
   int get_submatrix_to_work_on(std::vector<T>& super_diag,
                                const int k, const double eps){
-    for(register int l=k; l>0; l--)
+    for(int l=k; l>0; l--)
       if( fabs(super_diag[l]) <= eps )
         return l;                               // The breaking point: zero J[l-1,l]
       else if( fabs(sig_[l-1]) <= eps ) // Diagonal J[l,l] turns out 0
@@ -1003,7 +1003,7 @@ protected:
 
   /// Diagonalize root module
   void diagonalize(std::vector<T>& super_diag, const double eps)    {
-    for(register int k=N-1; k>=0; k--)  // QR-iterate upon J[l:k,l:k]
+    for(int k=N-1; k>=0; k--)  // QR-iterate upon J[l:k,l:k]
       {
         int l;
         //    while(l=get_submatrix_to_work_on(super_diag,k,eps),
@@ -1027,7 +1027,7 @@ protected:
             // Carry on multiplications by T2, S2, T3...
             double cos_th = 1, sin_th = 1;
             T Ji1i1 = sig_[l];  // J[i-1,i-1] at i=l+1...k
-            for(register int i=l+1; i<=k; i++)
+            for(int i=l+1; i<=k; i++)
               {
                 T Ji1i = super_diag[i], Jii = sig_[i];  // J[i-1,i] and J[i,i]
                 sin_th *= Ji1i; Ji1i *= cos_th; cos_th = shift;
@@ -1063,7 +1063,7 @@ protected:
         if( sig_[k] < 0 )               // Correct the sign of the sing number
           {
             sig_[k] = -sig_[k];
-            for(register int j=0; j<(int)V_.getRowNb(); j++)
+            for(int j=0; j<(int)V_.getRowNb(); j++)
               V_.setAt(j,k,V_.getAt(j,k) -V_.getAt(j,k));
           }
       }

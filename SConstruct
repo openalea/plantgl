@@ -8,11 +8,11 @@ import os, sys
 pj= os.path.join
 ALEASolution = config.ALEASolution
 
+
 options = Variables( ['../options.py', 'options.py'], ARGUMENTS )
 options.Add(EnumVariable('QT_VERSION','Qt major version to use','4',allowed_values=('4','5')))
 options.Add(BoolVariable('WITH_CGAL','Use CGAL',True))
 options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
-
 
 # Create an environment to access qt option values
 qt_env = Environment(options=options, tools=[])
@@ -41,6 +41,8 @@ if env['WITH_CGAL']:
 
 # Build stage
 prefix= env['build_prefix']
+print prefix
+
 SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
             exports={"env":env} )
 
@@ -48,3 +50,12 @@ SConscript( pj(prefix,"src/wrapper/SConscript"),
             exports={"env":env} )
 
 Default("build")
+
+standartprefix = 'build-scons'
+if prefix != standartprefix:
+    if os.path.exists(standartprefix):
+        if os.path.isdir(standartprefix) and not os.path.islink(standartprefix): 
+            import shutil
+            shutil.rmtree(standartprefix)
+        else: os.remove(standartprefix)
+    os.symlink(prefix, standartprefix)

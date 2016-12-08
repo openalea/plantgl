@@ -251,9 +251,9 @@ real_t pgl_py_dot(object p1, object p2){
 
 struct v2_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Vector2 const& v)
+	static boost::python::tuple getinitargs(Vector2 const& v)
 	{
-		return make_tuple(v.x(),v.y());
+		return boost::python::make_tuple(v.x(),v.y());
 	}
 };
 

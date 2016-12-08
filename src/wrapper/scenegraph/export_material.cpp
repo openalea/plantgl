@@ -67,9 +67,9 @@ std::string mat_str(Material * m){
 
 struct mat_pickle_suite : boost::python::pickle_suite
 {
-  static tuple getinitargs(Material const& m)
+  static boost::python::tuple getinitargs(Material const& m)
     {
-      return make_tuple(m.getName(),m.getAmbient(),m.getDiffuse(),
+      return boost::python::make_tuple(m.getName(),m.getAmbient(),m.getDiffuse(),
                         m.getSpecular(),m.getEmission(),m.getShininess(),m.getTransparency());
     }
 };

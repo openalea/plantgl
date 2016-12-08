@@ -60,7 +60,7 @@ void export_Shape3D()
 
 struct sh_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Shape const& sh)
+	static boost::python::tuple getinitargs(Shape const& sh)
 	{
 		return boost::python::make_tuple<GeometryPtr,AppearancePtr,uint_t,uint_t>
 					(sh.getGeometry(),sh.getAppearance(),sh.getId(),sh.getParentId());

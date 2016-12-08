@@ -505,7 +505,7 @@ private:
 #if __BYTE_ORDER == __BIG_ENDIAN
   virtual bofstream& _writeBytes( const char * data, size_t size )
   {
-    register char flipped_data[8];
+    char flipped_data[8];
     flipBytes(data,flipped_data,size);
     __stream.write(flipped_data,size);
     return *this;
@@ -550,7 +550,7 @@ private:
 #if __BYTE_ORDER == __BIG_ENDIAN
   virtual bifstream& _readBytes( char * data, size_t size )
   {
-    register char flipped_data[8];
+    char flipped_data[8];
     __stream.read(flipped_data,size);
     flipBytes(flipped_data,data,size);
     return *this;
@@ -596,7 +596,7 @@ private:
 #if __BYTE_ORDER == __LITTLE_ENDIAN
   virtual bofstream& _writeBytes( const char * data, size_t size )
   {
-    register char flipped_data[8];
+    char flipped_data[8];
     flipBytes(data,flipped_data,size);
     __stream.write(flipped_data,size);
     return *this;
@@ -641,7 +641,7 @@ private:
 #if __BYTE_ORDER == __LITTLE_ENDIAN
  virtual bifstream& _readBytes( char * data, size_t size )
   {
-    register char flipped_data[8];
+    char flipped_data[8];
     __stream.read(flipped_data,size);
     flipBytes(flipped_data,data,size);
     return *this;
