@@ -25,8 +25,8 @@ class CtrlPoint(ManipulatedFrame):
         The user can grab them and move them dynamically. 
         Change of value is automatically propagate to the initial structure using the position_setter function """   
 
-    modified = pyqtSignal() 
-    manipulated = pyqtSignal()
+    #modified = pyqtSignal() 
+    #manipulated = pyqtSignal()
     translated = pyqtSignal("PyQt_PyObject","PyQt_PyObject")
     valueChanged = pyqtSignal(int) 
 

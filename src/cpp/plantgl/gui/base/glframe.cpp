@@ -122,6 +122,7 @@ using namespace std;
 
 #define MS_EDITION
 #define GL_ERROR ViewObjectGL::glError(this,__FILE__,__LINE__)
+#define GL_SIMPLECHECK_ERROR {GLenum glerror; if((glerror = glGetError()) != GL_NO_ERROR) printf("%s:%i:%s\n", __FILE__,__LINE__,gluGeomErrorString(glerror));}
 // glError(__FILE__,__LINE__)
 
 /*  ------------------------------------------------------------------------ */
@@ -710,7 +711,7 @@ void ViewGLFrame::resizeGL( int w, int h )
 void ViewGLFrame::paintGL()
 {
   // clock_t previousdraw = clock();
-
+  if(!isVisible()) return ;
 #ifndef Q_OS_MAC
   if (width() == 0 || height() == 0) { return; }
 #endif
@@ -723,9 +724,8 @@ void ViewGLFrame::paintGL()
 	  }
   }
 
-  GL_ERROR;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  GL_SIMPLECHECK_ERROR;
   __camera->paintGL();
   __light->paintGL();
   __fog->paintGL();

@@ -225,7 +225,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 		  _mess += "<br><b>Line :</b>";
 		  _mess += QString::number(line);
 	  }
-	  if(!BATCHMODE){
+	  if(false) { // !BATCHMODE){
 		  if(!lock){
 			  lock = true;
 			  int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));

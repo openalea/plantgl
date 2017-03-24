@@ -1,36 +1,19 @@
 from openalea.plantgl.all import *
 from openalea.vpltk.qt import qt    
-from openalea.vpltk.qt import QtOpenGL    
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import os
 
-    
+from openalea.vpltk.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
+from openalea.vpltk.qt.QtGui import QCursor, QImageReader, QPixmap
+from openalea.vpltk.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
+from openalea.vpltk.qt.QtOpenGL import QGLWidget 
 
-QImageReader = qt.QtGui.QImageReader
-QWidget = qt.QtWidgets.QWidget
-Qt = qt.QtCore.Qt
-QMenu = qt.QtWidgets.QMenu
-pyqtSignal = qt.QtCore.pyqtSignal
-QApplication = qt.QtWidgets.QApplication
-QPoint = qt.QtCore.QPoint
-QFileDialog = qt.QtWidgets.QFileDialog
-QDialog = qt.QtWidgets.QDialog
-QDockWidget = qt.QtWidgets.QDockWidget
-QScrollArea = qt.QtWidgets.QScrollArea
-QMessageBox = qt.QtWidgets.QMessageBox
-QVBoxLayout = qt.QtWidgets.QVBoxLayout
-QObject = qt.QtCore.QObject
-QCursor = qt.QtGui.QCursor
-QSplashScreen = qt.QtWidgets.QSplashScreen
-QTimer = qt.QtCore.QTimer
-QPixmap = qt.QtGui.QPixmap
-
-class MaterialPanelView (QtOpenGL.QGLWidget):
+class MaterialPanelView (QGLWidget):
     valueChanged = pyqtSignal()
 
     def __init__(self,parent):
-        QtOpenGL.QGLWidget.__init__(self,parent)
+        QGLWidget.__init__(self,parent)
         self.unitsize = 30
         self.sphere = None
         self.spherelist = None
@@ -402,11 +385,11 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 self.preview.hide()
             if self.previewtrigger.isActive():
                 self.previewtrigger.stop()
-        QtOpenGL.QGLWidget.leaveEvent(self,event)
+        QGLWidget.leaveEvent(self,event)
     def enterEvent(self,event):
         self.mousepos = None
         self.setMouseTracking(True)
-        QtOpenGL.QGLWidget.enterEvent(self,event)
+        QGLWidget.enterEvent(self,event)
     def showMessage(self,msg,timeout):
         if hasattr(self,'statusBar'):
             self.statusBar.showMessage(msg,timeout)
@@ -502,7 +485,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                     self.setSelection(self.selectionbegin-iminus,self.selectionend-iminus)
             self.cutaction = None
             self.clipboard = None
-            self.emit(SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
         self.menuselection = None
         self.updateGL()
     def loadtexture(self):
@@ -517,7 +500,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             self.edittexture(i,initialfile)
         else : 
             self.setMaterial(i,ImageTexture(str(fname)))
-            self.emit(SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
     def removematerial(self):
         if not self.menuselection is None and self.nbMaterial() > self.menuselection:
             if not self.selectionend is None :
@@ -527,7 +510,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 self.selectionend = None
             else:
                 self.delMaterial(self.menuselection)
-            self.emit(SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
     def interpolatematerial(self):
         if not self.selectionend is None :
             beg = self.selectionbegin
@@ -542,7 +525,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 iratio += ratio
                 self.setMaterial(i,fmat.interpolate(lmat,iratio))
             self.selectionbegin,self.selectionend = None,None
-            self.emit(SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
             
     def dragEnterEvent(self,event):
         event.acceptProposedAction()
@@ -567,7 +550,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             format = QImageReader.imageFormat(fname)
             if len(format) != 0: 
                 self.setMaterial(pos,ImageTexture(str(fname)))
-                self.emit(SIGNAL('valueChanged()'))            
+                self.valueChanged.emit()            
 
 class MaterialPanelWidget(QWidget):
     valueChanged = pyqtSignal()
