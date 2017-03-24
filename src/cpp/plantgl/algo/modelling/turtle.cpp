@@ -130,13 +130,14 @@ bool curve_orientation(Curve2DPtr curve) {
 
 TurtlePath::~TurtlePath() { }
 
-Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation, bool ccw) : 
-	TurtlePath(totalLength,curve->getLength()), 
+Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation, bool ccw, QuantisedFunctionPtr arclengthParam) : 
+	TurtlePath(totalLength,actualLength?actualLength:curve->getLength(),arclengthParam), 
     __path(curve),
 	__orientation(orientation),
 	__lastHeading(orientation?0:1,orientation?1:0) 
 { 
-	  __arclengthParam = curve->getArcLengthToUMapping(); 
+
+	  if(is_null_ptr(arclengthParam))__arclengthParam = curve->getArcLengthToUMapping(); 
 	  __lastPosition = curve->getPointAt(curve->getFirstKnot());
 	  __ccw = ccw;
 	  if (__ccw) {
@@ -160,10 +161,10 @@ void Turtle2DPath::setPosition(real_t t)
 }
 
 
-Turtle3DPath::Turtle3DPath(LineicModelPtr curve, real_t totalLength) : 
-	TurtlePath(totalLength,curve->getLength()), __path(curve), __lastHeading(0,0,1), __lastUp(1,0,0), __lastLeft(0,-1,0) 
+Turtle3DPath::Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam) : 
+	TurtlePath(totalLength,actualLength?actualLength:curve->getLength(),arclengthParam), __path(curve), __lastHeading(0,0,1), __lastUp(1,0,0), __lastLeft(0,-1,0) 
 { 
-	__arclengthParam = curve->getArcLengthToUMapping(); 
+	if(is_null_ptr(arclengthParam))__arclengthParam = curve->getArcLengthToUMapping(); 
 	__lastPosition = curve->getPointAt(curve->getFirstKnot());
 }
 
@@ -373,7 +374,8 @@ Turtle::Turtle(TurtleParam * params):
   default_step(1),
   id(Shape::NOID),
   parentId(Shape::NOID),
-  warn_on_error(true)
+  warn_on_error(true),
+  path_info_cache_enabled(true)
 {
 	if (!__params->crossSection) setDefaultCrossSection();
 	assert (__params->crossSection && "Failed to initialize cross section");
@@ -400,6 +402,7 @@ void Turtle::resetValues(){
 	__params->reset();
 	if (!__params->crossSection) setDefaultCrossSection();
 	__paramstack = stack<TurtleParam *>();
+    __pathinfos.clear();
 }
   
 void Turtle::dump() const{
@@ -917,6 +920,43 @@ void  Turtle::setSectionResolution(uint_t resolution)
 		setDefaultCrossSection(resolution);
 
 }
+
+#define GET_PATH_INFO(curve) \
+    real_t actuallength = 0; \
+    QuantisedFunctionPtr arclengthParam; \
+    if (path_info_cache_enabled) {  \
+        size_t curveid = ptr_to_size_t(curve); \
+        PathInfoMap::const_iterator it = __pathinfos.find(curveid); \
+        if (it != __pathinfos.end()) { \
+            actuallength = it->second.length; \
+            arclengthParam = it->second.arclengthParam; \
+        } \
+        else { \
+            actuallength = curve->getLength(); \
+            arclengthParam = curve->getArcLengthToUMapping(); \
+            PathInfo pi; \
+            pi.length = actuallength; \
+            pi.arclengthParam = arclengthParam; \
+            __pathinfos[curveid] = pi; \
+        } \
+    }  \
+    else {  \
+            actuallength = curve->getLength(); \
+            arclengthParam = curve->getArcLengthToUMapping(); \
+    } \
+
+void Turtle::setGuide(const Curve2DPtr& path, real_t length, bool yorientation, bool ccw)
+{ 
+    GET_PATH_INFO(path)
+    getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,actuallength,yorientation,ccw,arclengthParam)); 
+}
+
+void Turtle::setGuide(const LineicModelPtr& path, real_t length)
+{ 
+    GET_PATH_INFO(path)
+    getParameters().guide = TurtlePathPtr(new Turtle3DPath(path,length,actuallength,arclengthParam)); 
+}
+
 
 void Turtle::setPositionOnGuide(real_t t)
 { 
@@ -1494,8 +1534,8 @@ void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 	if( FABS(scale) > GEOM_EPSILON){
     PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
     if (is_valid_ptr(_2Dtest) && __params->screenCoordinates) 
-      _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),true));
-    else _addToScene(transform(GeometryPtr(new Scaled(Vector3(scale,scale,scale),smb)),true));
+      _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
+    else _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,smb)),false));
   }
 }
 
