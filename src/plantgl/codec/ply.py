@@ -85,11 +85,13 @@ class PlyCodec (sg.SceneCodec):
                         if type(proptype) == tuple:
                             propsizetype, proptype = proptype
                             tr = asciitypes[propsizetype]
-                            nbpropv = linevalues[itv] ; itv += 1
+                            nbpropv = tr(linevalues[itv]) ; itv += 1
                             value = []
+                            tr = asciitypes[proptype]
                             for ival in xrange(nbpropv):
                                 value.append(tr(linevalues[itv])); itv += 1
                         else:
+                            tr = asciitypes[proptype]
                             value = tr(linevalues[itv]); itv += 1
                         ielement[propname] = value
                 else:
@@ -106,6 +108,7 @@ class PlyCodec (sg.SceneCodec):
                         if type(proptype) == tuple:
                             propsizetype, proptype = proptype
                             nbpropv = readnextval(stream, propsizetype)
+                            value = []
                             for ival in xrange(nbpropv):
                                 value.append(readnextval(stream, proptype))
                         else:
@@ -122,10 +125,11 @@ class PlyCodec (sg.SceneCodec):
                         colors.append(tuple(val))
                 elif elemname == 'face':
                     faces.append(ielement['vertex_indices'])
+        if colors == []: colors = None
         if len(faces) == 0:
             return sg.Scene([sg.Shape(sg.PointSet(points, colors))])
         else:
-            return Scene([sg.Shape(sg.FaceSet(points, faces, colors))])
+            return sg.Scene([sg.Shape(sg.FaceSet(points, faces, colorList=colors))])
 
 codec = PlyCodec()
 sg.SceneFactory.get().registerCodec(codec)
