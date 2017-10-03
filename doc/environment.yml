@@ -3,3 +3,4 @@ channels:
   - openalea
 dependencies:
   - openalea.misc
+  - vplants.plantgl
