@@ -1,0 +1,5 @@
+name: openalea-doc
+channels:
+  - openalea
+dependencies:
+  - openalea.misc
