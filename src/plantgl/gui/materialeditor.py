@@ -468,6 +468,7 @@ class MaterialPanelView (QGLWidget):
                         self.delMaterial(i)
                         if i < sel:
                             sel -= 1
+                print 'Copy ',self.clipboard[0][0],'to',sel
                 self.setMaterial(sel,self.clipboard[0][1].deepcopy())
                 for i,color in reversed(self.clipboard[1:]):
                     self.insertMaterial(sel+1,color.deepcopy())

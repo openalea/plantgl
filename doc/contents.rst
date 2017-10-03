@@ -5,7 +5,7 @@
 
 .. module:: PlantGL
 
-VPlants Plantgl documentation
+PlantGL : The Plant Geometric Library
 #############################
 
 Module description
@@ -16,12 +16,36 @@ Module description
     :Version: |version|
     :Release: |release|
     :Date: |today|
-    :Author: See `Authors`_ section
-    :ChangeLog: See `ChangeLog`_ section
 
 .. topic:: Overview
 
     .. include:: user/overview.txt
+
+
+Illustrations
+==============
+
+
+.. |fig1| image:: ../../user/images/frontimages/ac4-5.png
+    :scale: 30% 
+
+.. |fig2| image:: ../../user/images/frontimages/cactus.png
+    :scale: 30%
+
+.. |fig3| image:: ../../user/images/frontimages/pinecone.png
+    :scale: 30%
+
+.. |fig4| image:: ../../user/images/frontimages/tulipa.png
+    :scale: 30%
+
+.. |fig5| image:: ../../user/images/frontimages/rdstandglobala.png
+    :scale: 50%
+
+.. |fig6| image:: ../../user/images/frontimages/rdstand.png
+    :scale: 50%
+
+.. centered:: |fig1| |fig2| |fig3| |fig4|
+.. centered:: |fig5| |fig6|
 
 Documentation
 =============
@@ -30,25 +54,33 @@ Documentation
     :maxdepth: 1
 
     User Guide<user/index.rst>   
+    
     Reference Guide<user/reference.rst>
 
-- A `PDF <../latex/main.pdf>`_ version of |PlantGL| documentation is 
-  available.
-
-.. seealso::
-
-   More documentation can be found on the
-   `openalea <http://openalea.gforge.inria.fr>`__ wiki.
 
 Authors
 =======
 
 .. include:: ../AUTHORS.txt
 
-ChangeLog
-=========
 
-.. include:: ../ChangeLog.txt
+
+Related Publications
+====================
+
+- PlantGL: A Python-based geometric library for 3D plant modelling at different scales. 2009. C. Pradal & F.Boudon, C.Nouguier, J.Chopard, C.Godin. Graphical Models 71. 2009. https://doi.org/10.1016/j.gmod.2008.10.001
+
+
+- Déformation asymétrique de houppiers pour la génération de représentations paysagères réalistes, F. Boudon, G. Le Moguedec, Revue Electronique Francophone d’Informatique Graphique (REFIG), 1. 2007.
+
+
+- Estimating the fractal dimension of plants using the two-surface method. An analysis based on 3d-digitized tree foliage. 2006. F. Boudon, C. Godin, C. Pradal, O. Puech, H. Sinoquet.  Fractals, 14c(3) 2006.
+
+
+Bugs tracking
+=============
+You can find submit issues in the forum https://github.com/openalea/plantgl/issues 
+
 
 License
 =======
