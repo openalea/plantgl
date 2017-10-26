@@ -3,6 +3,7 @@ from _pglsg import *
 import cspline
 import bezier_nurbs
 import warnings
+from colormap import *
 
 NurbsCurve.CSpline = staticmethod(cspline.cspline)
 NurbsCurve2D.CBezier = staticmethod(bezier_nurbs.cubic_bezier2D)

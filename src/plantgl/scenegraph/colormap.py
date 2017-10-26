@@ -55,3 +55,14 @@ class PglMaterialMap (PglColorMap):
         color = self.pltcolormap(self.normalizer(value))
         return sg.Material([int(255 * c * self.ambientlevel) for c in color[:3]], diffuse = 1. / self.ambientlevel, transparency=  1. - color[3])
 
+def tomateriallist(values, name = 'jet', ambientlevel = 0.5):
+    cm = PglMaterialMap(min(values), max(values), name, ambientlevel)
+    return map(cm, values)
+
+
+def applymaterialmap(scene, values, name = 'jet', ambientlevel = 0.5):
+    cm = PglMaterialMap(min(values), max(values), name, ambientlevel)
+    nscene = Scene()
+    for value, shape in zip(values, scene):
+        nscene.add(Shape(shape.geometry, cm(value), shape.id, shape.parentId))
+    return nscene
