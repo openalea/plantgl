@@ -9,30 +9,23 @@ pj= os.path.join
 ALEASolution = config.ALEASolution
 
 options = Variables( ['../options.py', 'options.py'], ARGUMENTS )
-options.Add(EnumVariable('QT_VERSION','Qt major version to use','4',allowed_values=('3','4')))
+options.Add(EnumVariable('QT_VERSION','Qt major version to use','4',allowed_values=('4','5')))
 options.Add(BoolVariable('WITH_CGAL','Use CGAL',True))
 options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 
-# Create an environment to access qt option values
-env = Environment(options=options, tools=[])
 
-qt_env = env
+# Create an environment to access qt option values
+qt_env = Environment(options=options, tools=[])
 qt_version = int(qt_env['QT_VERSION'])
 
-cpp_tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann']
-
-if qt_version == 3:
-    qt_tools = ['qt']
-else:
-    qt_tools = ['qt4']
-
-tools = cpp_tools + qt_tools
+tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann', 'qt'+str(qt_version)]
 
 env = ALEASolution(options, tools)
 
 env.Prepend( CPPPATH = pj( '$build_includedir','plantgl' ) )
-if qt_version == 4:
-    env.AppendUnique( CPPPATH = ['$QT4_CPPPATH/Qt'] )
+env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH/Qt'] )
+env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH'] )
+
 if env['USE_DOUBLE']:
     env.AppendUnique( CPPDEFINES = ['PGL_USE_DOUBLE'] )
 else:

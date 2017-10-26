@@ -43,25 +43,42 @@
 
 #include <time.h>
 #include <QtCore/qtextstream.h>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qimage.h>
 #include <QtCore/qfile.h>
-#include <QtGui/qpixmap.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qcombobox.h>
-#include <QtOpenGL/qgl.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qstatusbar.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qinputdialog.h>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qregexp.h>
+
+#include <QtGui/qbitmap.h>
+#include <QtGui/qimage.h>
+#include <QtGui/qpixmap.h>
 #include <QtGui/qimagewriter.h>
-#include <QtGui/qdesktopwidget.h>
-#include <QtGui/qmainwindow.h>
+
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qfiledialog.h>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qcombobox.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qstatusbar.h>
+    #include <QtWidgets/qapplication.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qinputdialog.h>
+    #include <QtWidgets/qdesktopwidget.h>
+    #include <QtWidgets/qmainwindow.h>
+#else
+    #include <QtGui/qfiledialog.h>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qcombobox.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qstatusbar.h>
+    #include <QtGui/qapplication.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qinputdialog.h>
+    #include <QtGui/qdesktopwidget.h>
+    #include <QtGui/qmainwindow.h>
+#endif
+
+#include <QtOpenGL/qgl.h>
 
 #include "grid.h"
 #include "camera.h"
@@ -72,6 +89,7 @@
 #include "errordialog.h"
 #include "util_qwidget.h"
 #include "configuration.h"
+#include "util_qt.h"
 
 TOOLS_USING_NAMESPACE
 
@@ -585,10 +603,10 @@ void ViewFileManager::saveImage(bool withAlpha)
         if(it==_formatList.count()){
             //QString ext = _fileDialog.selectedFilter();
             ext = ext.left(ext.indexOf(' '));
-            __GLFrame->saveImage(_filename,ext.toAscii().data());
+            __GLFrame->saveImage(_filename,toCharArray(ext));
         }
         else {
-            __GLFrame->saveImage(_filename,extension.toAscii().data());
+            __GLFrame->saveImage(_filename,toCharArray(extension));
         }
     }
 }
@@ -700,16 +718,16 @@ ViewFileManager::connectTo(ViewErrorDialog *e)
 void
 ViewFileManager::properties()
 {
-  ViewProperties mb(__GLFrame ,this,__controlPanel,false,tr("Properties").toAscii(),true);
-  mb.setWindowIcon(QIcon(ViewerIcon::getPixmap(ViewerIcon::document)));
+  ViewProperties mb(__GLFrame ,this,__controlPanel,false,toCharArray(tr("Properties")),true);
+  mb.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::document))));
   mb.exec();
 }
 
 void
 ViewFileManager::configuration()
 {
-    ViewProperties mb(__GLFrame ,this,__controlPanel,true,tr("Properties").toAscii(),true);
-  mb.setWindowIcon(QIcon(ViewerIcon::getPixmap(ViewerIcon::document)));
+    ViewProperties mb(__GLFrame ,this,__controlPanel,true,toCharArray(tr("Properties")),true);
+  mb.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::document))));
   mb.exec();
 }
 

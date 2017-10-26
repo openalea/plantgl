@@ -41,7 +41,12 @@
 /* ----------------------------------------------------------------------- */
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qdialog.h>
+#else
+    #include <QtGui/qdialog.h>
+#endif
 #include "../gui_config.h"
 
 class QVBoxLayout; 
@@ -65,7 +70,7 @@ class VIEW_API ViewReadLinetree : public QDialog
 	Q_PROPERTY(bool bigEndian  READ bigEndian  WRITE setEndianess );
 
 public:
-    ViewReadLinetree( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = TRUE, Qt::WindowFlags fl = 0 );
+    ViewReadLinetree( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = true, Qt::WindowFlags fl = 0 );
     ~ViewReadLinetree();
 
     /// Get the Lig File

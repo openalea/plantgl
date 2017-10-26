@@ -1,0 +1,73 @@
+
+language: python
+
+python:
+  - "2.7"
+
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update -q
+  - sudo apt-get install gcc-5 -y
+  - sudo apt-get install g++-5 -y
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+
+addons:
+  apt:
+    sources:
+    packages: 
+
+install:
+  # We do this conditionally because it saves us some downloading if the
+  # version is the same.
+  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+  - gcc --version
+  - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
+  - source activate myenv
+
+  - conda config --add channels openalea
+  - conda install openalea.deploy
+  - conda install openalea.sconsx
+
+  # Conda dependencies for PlantGL
+  - conda install "qt<5"
+  - conda install gmp mpfr
+  - conda install boost cgal ann eigen
+  - conda install bison "flex==2.5.39"
+  - conda install qhull
+  - conda install qhull patchelf
+
+  - conda install path.py
+  - conda install coverage
+  - conda install flake8
+  - conda install mock
+  - conda install nose
+  - conda install sphinx
+  - pip install coveralls
+
+  - cp options_conda.py options.py
+
+  # Useful for debugging any issues with conda
+  - export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig
+  - scons -h
+
+  - python setup.py install
+
+  - export PATH=$PWD/build/lib/bin:$PATH
+
+script:
+  - nosetests
+
+
+after_success:
+- coveralls

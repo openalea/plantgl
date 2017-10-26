@@ -1,16 +1,13 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: Modeling Plant Geometry
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright 2000- - Cirad/Inria/Inra - Virtual Plant Team
  *
- *       File author(s) : F. Boudon (frederic.boudon@cirad.fr)
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
  *
- *       $Source$
- *       $Id$
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
+ *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
  *
@@ -34,23 +31,26 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include "util_geomgl.h"
-#include <qapplication.h>
-#include "geomevent.h"
-#include "../base/scenegl.h"
 
-PGL_USING_NAMESPACE
+#ifndef __util_qt_h__
+#define __util_qt_h__
 
-const ViewGLFrame3& operator<<(const ViewGLFrame3& frame, const ScenePtr scene)
-{
-  GeomSceneChangeEvent3 * event = new GeomSceneChangeEvent3(scene);
-  QApplication::postEvent(frame.getSceneRenderer(),event);
-  return frame;
+#include <QtGlobal>
+#include <QtCore/QString>
+
+/* ----------------------------------------------------------------------- */
+
+inline QByteArray toLatin1(const QString& str) {
+#if QT_VERSION >= 0x050000 
+    return str.toLatin1();
+#else
+    return str.toAscii();
+#endif
 }
 
-const Viewer3& operator<<(const Viewer3& viewer, const ScenePtr scene)
-{
-  GeomSceneChangeEvent3 * event = new GeomSceneChangeEvent3(scene);
-  QApplication::postEvent(viewer.getSceneRenderer(),event);
-  return viewer;
+inline const char * toCharArray(const QString& str) {
+    return toLatin1(str).constData();
 }
+/* ----------------------------------------------------------------------- */
+
+#endif

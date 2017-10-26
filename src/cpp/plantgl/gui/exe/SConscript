@@ -8,7 +8,12 @@ pj= os.path.join
 Import( "env" )
 
 exe_env= env.Clone()
-exe_env.EnableQt4Modules([ 'QtOpenGL', 'QtCore', 'QtGui', 'QtNetwork' ])
+
+qt_version = int(exe_env['QT_VERSION'])
+if qt_version == 4:
+    exe_env.EnableQtModules([ 'QtOpenGL', 'QtCore', 'QtGui'])
+else:
+    exe_env.EnableQtModules([ 'QtOpenGL', 'QtCore', 'QtGui', 'QtNetwork', 'QtWidgets' ])
 
 source= ["mainviewer.cpp"]
 

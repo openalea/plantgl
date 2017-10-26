@@ -39,10 +39,17 @@
 #define __view_filemanager_h__
 
 /* ----------------------------------------------------------------------- */
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmainwindow.h>
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qtoolbar.h>
+#else
+    #include <QtGui/qmainwindow.h>
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qtoolbar.h>
+#endif
 
-#include <QtGui/qmainwindow.h>
-#include <QtGui/qmenu.h>
-#include <QtGui/qtoolbar.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 

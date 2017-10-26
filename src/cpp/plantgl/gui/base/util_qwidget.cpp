@@ -32,14 +32,26 @@
  */				
 
 #include "util_qwidget.h"
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qmenu.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qprogressbar.h>
+
+#include <QtGlobal>
+
 #include <QtGui/qpen.h>
 #include <QtGui/qevent.h>
-#include <QtGui/qpushbutton.h>
 #include <QtGui/qbrush.h>
+#include <QtGui/qpainter.h>
+
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qprogressbar.h>
+    #include <QtWidgets/qpushbutton.h>
+#else
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qprogressbar.h>
+    #include <QtGui/qpushbutton.h>
+#endif
+
 #include <stdio.h>
 
 

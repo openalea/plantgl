@@ -44,7 +44,12 @@
 /* ----------------------------------------------------------------------- */
 
 #include <QtCore/qstring.h>
-#include <QtGui/qmenu.h>
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmenu.h>
+#else
+    #include <QtGui/qmenu.h>
+#endif
 #include "object.h"
 #include <plantgl/algo/opengl/util_gl.h>
 

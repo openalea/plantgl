@@ -31,31 +31,35 @@
  *  ----------------------------------------------------------------------------
  */				
 
-#include <QtCore/qstring.h>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qapplication.h> 
-#include <QtGui/qdesktopwidget.h> 
-#include <QtGui/qlabel.h>
-#include <QtGui/qpainter.h>
-
-// #include <Qt3Support/q3listview.h> 
-// #include <Qt3Support/q3textbrowser.h>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/qtextbrowser.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qtextstream.h>
 #include <QtCore/qurl.h>
+#include <QtCore/qstring.h>
+
 #include <QtGui/qevent.h>
-#include <plantgl/tool/util_enviro.h>
+#include <QtGui/qpainter.h>
 
-/*  ------------------------------------------------------------------------ */
-
-
-#include <QtGui/QStyle>
-#include <QtGui/qstylefactory.h>
-
-
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000 
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qapplication.h> 
+    #include <QtWidgets/qdesktopwidget.h> 
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/QTreeWidgetItem>
+    #include <QtWidgets/qtextbrowser.h>
+    #include <QtWidgets/QStyle>
+    #include <QtWidgets/qstylefactory.h>
+#else
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qapplication.h> 
+    #include <QtGui/qdesktopwidget.h> 
+    #include <QtGui/qlabel.h>
+    #include <QtGui/QTreeWidgetItem>
+    #include <QtGui/qtextbrowser.h>
+    #include <QtGui/QStyle>
+    #include <QtGui/qstylefactory.h>
+#endif
 /*  ------------------------------------------------------------------------ */
 
 #include "icons.h"
@@ -64,6 +68,7 @@
 #include "info.h"
 #include "qobjectbrowser.h"
 #include "configuration.h"
+#include "util_qt.h"
 
 #include <plantgl/scenegraph/pgl_version.h>
 
@@ -185,7 +190,7 @@ ViewHelpMenu::setStyle(int i)
     else if (i == __ids.size()-1) QApplication::setStyle( QStyleFactory::create(default_style_name) ); 
     else {
         QApplication::setStyle( QStyleFactory::create(QStyleFactory::keys()[i])); 
-        qDebug("Application.setStyle(%s)", QStyleFactory::keys()[i].toAscii().data() ); 
+        qDebug("Application.setStyle(%s)", toCharArray(QStyleFactory::keys()[i]) ); 
     }
 	if(i>= 0 && i <= __ids.size())checkItem(i);
 }
@@ -278,7 +283,7 @@ ViewHelpMenu::aboutQt()
 void
 ViewHelpMenu::qtbrowse()
 {
-  ViewQObjectBrowser a(this,"qtbrowse",TRUE);
+  ViewQObjectBrowser a(this,"qtbrowse",true);
   a.exec();
 }
 
@@ -287,7 +292,7 @@ ViewHelpMenu::generalInfo()
 {
   std::string text2 = getPGLVersionString();
   QString text;
-  ViewSysInfo a (this,__glwidget,(tr("PlantGL Viewer")+" "+QString(text2.c_str())).toAscii(),true);
+  ViewSysInfo a (this,__glwidget,toCharArray(QString(tr("PlantGL Viewer"))+" "+QString(text2.c_str())),true);
   QTreeWidgetItem * itemF = a.addItem(tr("PlantGL Library"));
   QTreeWidgetItem *item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
@@ -307,7 +312,7 @@ ViewHelpMenu::generalInfo()
   item->setText( 0, tr( "Using Threads" ) );
   if(ViewGeomSceneGL::useThread()) text = "True";
   else text = "False";
-  item->setText( 1, tr( text.toAscii() ) );
+  item->setText( 1, tr( toCharArray(text) ) );
 
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL Namespace" ) );
@@ -316,7 +321,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "True";
 #endif
-  item->setText( 1, tr( text.toAscii() ) );
+  item->setText( 1, tr( toCharArray(text) ) );
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL Debug" ) );
 #ifdef PGL_DEBUG
@@ -324,7 +329,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( text.toAscii() ) );
+  item->setText( 1, tr( toCharArray(text) ) );
 #ifdef _WIN32
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL DLLs" ) );
@@ -333,7 +338,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( text.toAscii() ) );
+  item->setText( 1, tr( toCharArray(text ) ) );
 #endif
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Using Glut" ) );
@@ -342,7 +347,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( text.toAscii() ) );
+  item->setText( 1, tr( toCharArray(text ) ) );
   itemF = a.addItem(tr("Tools Library"));
   item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Tools Namespace" ) );
@@ -351,7 +356,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "True";
 #endif
-  item->setText( 1, tr( text.toAscii() ) );
+  item->setText( 1, tr( toCharArray(text ) ) );
   //itemF = a.addItem(tr("PlantGL"));
   //item = new QTreeWidgetItem( itemF );
   //item->setText( 0, tr( "Install Path" ) );
@@ -378,13 +383,13 @@ QDialog ( parent, Qt::Tool ),
 		__license(false){
   if(name)setObjectName(name); 
   setModal(modal);
-  __logo = ViewerIcon::getPixmap( "geomviewer.png");
+  __logo = QPixmap(ViewerIcon::getPixmap( "geomviewer.png"));
   if(__logo.isNull()) {
     __style = false;
-    __logo = ViewerIcon::getPixmap( ViewerIcon::plantlogo);
+    __logo = QPixmap(ViewerIcon::getPixmap( ViewerIcon::plantlogo));
   }
   else {
-    __logo2 = ViewerIcon::getPixmap( "geomviewer2.png");
+    __logo2 = QPixmap(ViewerIcon::getPixmap( "geomviewer2.png"));
   }
   setIconPixmap(__logo);
   __licenseRect = QRect(140,180,62,110);
