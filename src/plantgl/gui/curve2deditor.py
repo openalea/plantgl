@@ -7,7 +7,7 @@ from openalea.vpltk.qt import QtCore, QtGui, QtOpenGL
 from openalea.vpltk.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
 from openalea.vpltk.qt.QtGui import QColor, QImage
 from openalea.vpltk.qt.QtOpenGL import QGLWidget
-from openalea.vpltk.qt.QtWidgets import QFileDialog
+from openalea.vpltk.qt.QtWidgets import QFileDialog, QApplication
 
 class Curve2DConstraint:
     def __init__(self):
@@ -158,6 +158,7 @@ class Polyline2DAccessor (Curve2DAccessor):
 
 from PyQGLViewer import *
 from OpenGL.GL import *
+from OpenGL.GLU import *
 
 class Curve2DEditor (QGLViewer):
     BLACK_THEME = {'Curve' : (255,255,255), 'BackGround' : (51,51,51), 'Text' : (255,255,255), 'CtrlCurve' : (122,122,0), 'GridStrong' : (102,102,102), 'GridFade' : (51,51,51) , 'Points' : (250,30,30), 'FirstPoint' : (250,30,250), 'SelectedPoint' : (30,250,30), 'DisabledBackGround' : (150,150,150) }
@@ -244,7 +245,7 @@ class Curve2DEditor (QGLViewer):
         self.pointsConstraints.checkInitialCurve(self.curveAccessor)
         self.createControlPointsRep()
         self.updateSceneDimension()
-        self.showEntireScene()
+        if self.isVisible() : self.showEntireScene()
         
     def openImage(self):
         name = QFileDialog.getOpenFileName(self, "Select an image", ".", "Images (*.png *.xpm *.jpg)");
@@ -376,6 +377,21 @@ class Curve2DEditor (QGLViewer):
         self.ctrlpts.apply(self.renderer)
         self.drawGrid()
 
+    def mRenderText(self, x, y, text):
+        #error = glGetError()
+        self.renderText(x,y, 0, text)
+        #self.drawText(x,y, text)
+        #error = glGetError()
+        #if error :  print gluErrorString(error)
+
+    def drawVLine(self, x, y1, y2):
+        glVertex3f(x,y1,0)
+        glVertex3f(x,y2,0)
+
+    def drawHLine(self, x1, x2, y):
+        glVertex3f(x1,y,0)
+        glVertex3f(x1,y,0)
+
     def drawGrid(self):
         xr = self.end[0] - self.start[0]
         xy = self.end[1] - self.start[1]
@@ -391,22 +407,20 @@ class Curve2DEditor (QGLViewer):
         glLineWidth(1)
         glBegin(GL_LINES)
         for i in xrange(nbiter+1):
-            glVertex3f(cxval,self.start[1],0)
-            glVertex3f(cxval,self.end[1],0)
+            self.drawVLine(cxval,self.start[1],self.end[1])
             cxval += xdelta
         glEnd()
         cxval = fxval*xdelta
         glColor4fv(self.textColor)
         for i in xrange(nbiter+1):
-            self.renderText(cxval,self.start[1],0,'%.1f' % cxval)
+            self.mRenderText(cxval,self.start[1],'%.1f' % cxval)
             cxval += xdelta
         glLineWidth(2)
         glColor4fv(self.gridColor)
         cxval = round(self.start[0]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
         for i in xrange((nbiter/10)+1):
-            glVertex3f(cxval,self.start[1],0)
-            glVertex3f(cxval,self.end[1],0)
+            self.drawVLine(cxval,self.start[1],self.end[1])
             cxval += (10*xdelta)
         glEnd()
         fyval = round(self.start[1]/xdelta)
@@ -418,23 +432,21 @@ class Curve2DEditor (QGLViewer):
         glLineWidth(1)
         glBegin(GL_LINES)
         for i in xrange(nbiter+1):
-            glVertex3f(self.start[0],cyval,0)
-            glVertex3f(self.end[0],cyval,0)
+            self.drawHLine(self.start[0],self.end[0], cyval)
             cyval += xdelta
         glEnd()
         cyval = firstcyval
         glColor4fv(self.textColor)
         for i in xrange(nbiter+1):
             glVertex3f(self.end[0],cyval,0)
-            self.renderText(self.start[0],cyval,0,'%.1f' % cyval)
+            self.mRenderText(self.start[0],cyval,'%.1f' % cyval)
             cyval += xdelta
         glLineWidth(2)
         glColor4fv(self.gridColor)
         cyval = round(self.start[1]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
         for i in xrange((nbiter/10)+1):
-            glVertex3f(self.start[0],cyval,0)
-            glVertex3f(self.end[0],cyval,0)
+            self.drawHLine(self.start[0],self.end[0], cyval)
             cyval += (10*xdelta)
         glEnd()
 
@@ -553,7 +565,7 @@ class Curve2DEditor (QGLViewer):
             self.ctrlpts[0].appearance = self.firstPointColor
 
 if __name__ == '__main__':
-    qapp = QtWidgets.QApplication([])
+    qapp = QApplication([])
     mv = Curve2DEditor(None,FuncConstraint())
     mv.setEnabled(True)
     #mv.setCurve(Polyline2D([(0,0),(1,1)]))
