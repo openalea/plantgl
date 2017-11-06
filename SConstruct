@@ -26,6 +26,7 @@ env.Prepend( CPPPATH = pj( '$build_includedir','plantgl' ) )
 env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH/Qt'] )
 env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH'] )
 
+
 if env['USE_DOUBLE']:
     env.AppendUnique( CPPDEFINES = ['PGL_USE_DOUBLE'] )
 else:
@@ -44,7 +45,10 @@ except KeyError, ke:
     env['WITH_BISON'] = not env['YACC'] is None and os.path.exists(env['YACC'])
     if env['WITH_BISON']: env.Append(CPPDEFINES =["WITH_BISON"])
 
-    
+if 'linux' in sys.platform:
+    # By default for linux, use unordered map
+    env.AppendUnique( EXTRA_LIBS = ['z'] )
+ 
 #if 'linux' in sys.platform:
     # By default for linux, use unordered map
     # env.AppendUnique( CPPDEFINES = ['USING_UNORDERED_MAP'] )
