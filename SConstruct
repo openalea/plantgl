@@ -47,7 +47,7 @@ except KeyError, ke:
 
 if 'linux' in sys.platform:
     # By default for linux, use unordered map
-    env.AppendUnique( EXTRA_LIBS = ['z'] )
+    env.AppendUnique( LIBS = ['z'] )
  
 #if 'linux' in sys.platform:
     # By default for linux, use unordered map
