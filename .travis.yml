@@ -39,7 +39,8 @@ install:
   - source activate myenv
 
   - conda install -c openalea openalea.deploy openalea.sconsx
-  - conda install -c conda-forge -c openalea  "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost
+  - conda install -c openalea -c conda-forge "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf
+  - conda install -c conda-forge boost
 
   - conda install path.py coverage flake8 mock nose sphinx
   - pip install coveralls
