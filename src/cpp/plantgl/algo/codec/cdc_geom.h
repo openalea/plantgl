@@ -51,7 +51,11 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+#ifdef WITH_BISONFLEX
+
 CODEC_API bool geom_read(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname = "");
+
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,6 +71,7 @@ public :
 	virtual bool write(const std::string& fname,const ScenePtr&	scene);
 
 };
+
 
 class CODEC_API BGeomCodec : public SceneCodec {
 public :

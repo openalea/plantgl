@@ -365,7 +365,11 @@ ViewHelpMenu::generalInfo()
   itemF = a.addItem(tr("Flex"));
   item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
+#ifdef WITH_BISONFLEX
   item->setText( 1, QString(lexerVersion().c_str())  );
+#else
+  item->setText( 1, "Disabled"  );
+#endif
   a.exec();
 }
 

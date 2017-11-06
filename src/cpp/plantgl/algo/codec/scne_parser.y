@@ -150,11 +150,6 @@ static const char * sh_keyword[] = {
 
 /* ----------------------------------------------------------------------- */
 
-static bool __verbose = true;
-
-static int shape_nb = 0;
-
-static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 
 #define cursmbtable(t) \
    SymbolTable<SceneObjectPtr>& t = *(symbolstack[symbolstack.size()-1]);
@@ -3177,13 +3172,3 @@ Vector4List:
 %%
 
 
-
-void parserVerbose(bool b)
-{
-  __verbose = b;
-}
-
-bool isParserVerbose()
-{
-  return (__verbose);
-}

@@ -107,6 +107,9 @@ std::vector<std::string> __getPGLSupportedExtensions() {
 #ifdef WITH_EIGEN
     ADD_EXTENSION(EIGEN)
 #endif
+#ifdef WITH_BISONFLEX
+    ADD_EXTENSION(PGL_ASCII_PARSER)
+#endif
    return res;
 }
 

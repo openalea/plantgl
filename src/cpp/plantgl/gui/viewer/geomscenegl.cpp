@@ -75,7 +75,7 @@
 #include <QtOpenGL/qgl.h>
 #include <QtOpenGL/QGLPixelBuffer>
 
-#include <plantgl/algo/codec/scne_parser.h>
+#include <plantgl/algo/codec/scne_binaryparser.h>
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef PGL_DEBUG

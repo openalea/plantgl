@@ -33,6 +33,17 @@ else:
 
 if env['WITH_CGAL']:
     env.AppendUnique( CPPDEFINES = ['WITH_CGAL'] )
+
+try:
+    # Test the whether SconsX provides FLEX and BISON flags
+    env['WITH_FLEX'] and env['WITH_BISON']
+except KeyError, ke:
+    env['WITH_FLEX']  = not env['LEX'] is None and os.path.exists(env['LEX'])
+    if env['WITH_FLEX']: env.Append(CPPDEFINES =["WITH_FLEX"])
+
+    env['WITH_BISON'] = not env['YACC'] is None and os.path.exists(env['YACC'])
+    if env['WITH_BISON']: env.Append(CPPDEFINES =["WITH_BISON"])
+
     
 #if 'linux' in sys.platform:
     # By default for linux, use unordered map
