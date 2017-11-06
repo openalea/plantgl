@@ -10,6 +10,7 @@ before_install:
   - sudo apt-get install gcc-5 -y
   - sudo apt-get install g++-5 -y
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+  - sudo apt-get install fontconfig
 
 addons:
   apt:
@@ -36,25 +37,13 @@ install:
   - source activate myenv
 
   - conda config --add channels openalea
-  - conda install openalea.deploy
-  - conda install openalea.sconsx
+  - conda install openalea.deploy openalea.sconsx
 
   # Conda dependencies for PlantGL
-  - conda install "qt<5"
-  - conda install gmp mpfr
-  - conda install boost cgal ann eigen
-  - conda install bison "flex==2.5.39"
-  - conda install qhull
-  - conda install qhull patchelf
+  - conda install "qt<5" gmp mpfr boost cgal ann eigen bison "flex==2.5.39" qhull patchelf
 
-  - conda install path.py
-  - conda install coverage
-  - conda install flake8
-  - conda install mock
-  - conda install nose
-  - conda install sphinx
+  - conda install path.py coverage flake8 mock nose sphinx
   - pip install coveralls
-
   - cp options_conda.py options.py
 
   # Useful for debugging any issues with conda
