@@ -40,7 +40,7 @@ install:
 
   - conda install -c openalea openalea.deploy openalea.sconsx
   - conda install -c openalea -c conda-forge "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf
-  - conda install -c conda-forge boost
+  - conda install -c artzet_s boost
 
   - conda install path.py coverage flake8 mock nose sphinx
   - pip install coveralls
