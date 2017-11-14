@@ -37,7 +37,8 @@ install:
   - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
   - source activate myenv
 
-  - conda install -c openalea/label/unstable -c openalea openalea.deploy openalea.sconsx
+  - conda install -c openalea openalea.sconsx
+  - conda install -c openalea/label/unstable -c openalea openalea.deploy
   - conda install -c openalea/label/unstable -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost pyqt
   - conda install -c openalea/label/unstable -c openalea path.py coverage flake8 mock nose sphinx
 
