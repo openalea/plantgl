@@ -7,12 +7,10 @@ python:
 before_install:
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
-  - sudo apt-get install gcc-5 -y
-  - sudo apt-get install g++-5 -y
+  - sudo apt-get install gcc-5 g++-5 -y
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-  - sudo apt-get install fontconfig -y
+  - sudo apt-get install fontconfig -y freeglut3-dev -y
   - sudo apt-get install bzip2 libglib2.0-0 libsm6 libxrender1 libglu1-mesa -y
-  - sudo apt-get install freeglut3-dev -y
 
 addons:
   apt:
@@ -39,8 +37,7 @@ install:
   - source activate myenv
 
   - conda install -c openalea openalea.deploy openalea.sconsx
-  - conda install -c artzet_s -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost
-
+  - conda install -c artzet_s -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost pyqt
   - conda install path.py coverage flake8 mock nose sphinx
   - pip install coveralls
   - cp options_conda.py options.py
