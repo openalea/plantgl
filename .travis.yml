@@ -9,6 +9,7 @@ before_install:
   - sudo apt-get update -q
   - sudo apt-get install gcc-5 g++-5 -y
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+  # Requirement install in ubuntu-server (already include in travis)
   - sudo apt-get install fontconfig -y freeglut3-dev -y
   - sudo apt-get install bzip2 libglib2.0-0 libsm6 libxrender1 libglu1-mesa -y
 
@@ -36,18 +37,17 @@ install:
   - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
   - source activate myenv
 
-  - conda install -c openalea/label/unstable -c openalea openalea.deploy openalea openalea.deploy openalea.sconsx
+  - conda install -c openalea/label/unstable -c openalea openalea.deploy openalea.sconsx
   - conda install -c openalea/label/unstable -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost pyqt
   - conda install -c openalea/label/unstable -c openalea path.py coverage flake8 mock nose sphinx
+
   - pip install coveralls
   - cp options_conda.py options.py
-
   # Useful for debugging any issues with conda
   - export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig
   - scons -h
 
   - python setup.py install
-
   - export PATH=$PWD/build/lib/bin:$PATH
 
 script:
