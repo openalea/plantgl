@@ -36,9 +36,9 @@ install:
   - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
   - source activate myenv
 
-  - conda install -c openalea openalea.deploy openalea.sconsx
-  - conda install -c artzet_s -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost pyqt
-  - conda install path.py coverage flake8 mock nose sphinx
+  - conda install -c openalea/label/unstable -c openalea openalea.deploy openalea openalea.deploy openalea.sconsx
+  - conda install -c openalea/label/unstable -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost pyqt
+  - conda install -c openalea/label/unstable -c openalea path.py coverage flake8 mock nose sphinx
   - pip install coveralls
   - cp options_conda.py options.py
 
@@ -51,7 +51,7 @@ install:
   - export PATH=$PWD/build/lib/bin:$PATH
 
 script:
-  - nosetests
+  - nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
 
 
 after_success:
