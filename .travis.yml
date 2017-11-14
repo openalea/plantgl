@@ -51,7 +51,7 @@ install:
   - export PATH=$PWD/build/lib/bin:$PATH
 
 script:
-  - nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
+  - cd test; nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
 
 
 after_success:
