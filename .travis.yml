@@ -34,21 +34,13 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   - gcc --version
+  - conda install conda-build
   - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
   - source activate myenv
-
-  - conda install -c openalea openalea.sconsx openalea.deploy openalea.core
-  - conda install -c openalea/label/unstable -c openalea "qt<5" gmp mpfr cgal ann eigen bison "flex==2.5.39" qhull patchelf boost pyqt
-  - conda install -c openalea/label/unstable -c openalea path.py coverage flake8 mock nose sphinx
-
-  - pip install coveralls
-  - cp options_conda.py options.py
-  # Useful for debugging any issues with conda
-  - export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig
-  - scons -h
-
-  - python setup.py install
-#  - export PATH=$PWD/build/lib/bin:$PATH
+  - cd ./conda
+  - conda build -c openalea -c openalea/label/unstable .
+  - conda install -c openalea -c openalea/label/unstable vplants.plantgl
+  - conda install nose
 
 script:
   - cd test; nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
