@@ -212,7 +212,7 @@ VegeStarFile::parse(std::istream& stream)
 #define MAXLINELENGTH 500
 
 inline QStringList splitString(const QString& t){
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return t.split(QRegExp("[ \t\n;,]"));
 #else
 	return QStringList::split(QRegExp("[ \t\n;,]"),t);
@@ -261,13 +261,7 @@ VegeStarFile::parseHeader(std::istream& stream)
 		else if(token == "Jmax")attlist.push_back(Jmax);
 		else {
 			attlist.push_back(Error);
-			pglError("Unrecognized header token : '%s'.\n", 
-#if QT_VERSION >= 0x040000
-			                          token.toAscii().constData()
-#else
-			                          token.data()
-#endif
-									  );
+			pglError("Unrecognized header token : '%s'.\n", qPrintable(token) );
 		}
 	}
 	return true;

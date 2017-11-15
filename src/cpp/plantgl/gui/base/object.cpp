@@ -33,9 +33,15 @@
 
 #include "object.h"
 
+
 #include <QtCore/qpoint.h>
-#include <QtGui/qmessagebox.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qmessagebox.h>
+#else
+    #include <QtGui/qmessagebox.h>
+#endif
 #include <QtOpenGL/qgl.h>
+
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/algo/opengl/util_glu.h>
 
@@ -219,7 +225,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 		  _mess += "<br><b>Line :</b>";
 		  _mess += QString::number(line);
 	  }
-	  if(!BATCHMODE){
+	  if(false) { // !BATCHMODE){
 		  if(!lock){
 			  lock = true;
 			  int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));
@@ -229,7 +235,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 			  lock = false;
 		  }
 	  }
-	  else qWarning("%s",_mess.toAscii().data());
+	  else qWarning("%s",qPrintable(_mess));
 	  return true;
   }
   return false;

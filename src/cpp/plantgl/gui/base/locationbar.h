@@ -40,8 +40,13 @@
 
 /* ----------------------------------------------------------------------- */
 
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qcombobox.h>
+#else
+    #include <QtGui/qcombobox.h>
+#endif
 #include "util_qwidget.h"
-#include <QtGui/qcombobox.h>
 
 /* ----------------------------------------------------------------------- */
 

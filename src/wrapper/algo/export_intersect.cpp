@@ -70,7 +70,7 @@ object ray_intersect_ray(Ray * ray, const Ray& ray2)
     Vector3 res;
     real_t t;
     int ret = ray->intersect(ray2,res,t);
-    if (ret == 1) return make_tuple(res,t);
+    if (ret == 1) return boost::python::make_tuple(res,t);
     else return object(ret);
 }
 
@@ -103,7 +103,7 @@ object ray_intersect_bs(Ray * ray, const Vector3& center, real_t radius)
     Vector3 res1, res2;
     int ret = ray->intersect(center,radius,res1,res2);
     if (ret == 1) return object(res1);
-    if (ret == 2) return make_tuple(res1,res2);
+    if (ret == 2) return boost::python::make_tuple(res1,res2);
     else return object(ret);
 }
 
@@ -111,7 +111,7 @@ object ray_intersect_bbx(Ray * ray, const BoundingBox& bbox)
 {
     real_t tnear,tfar;
     if (ray->intersect(bbox,tnear,tfar))
-        return make_tuple(tnear,tfar);
+        return boost::python::make_tuple(tnear,tfar);
     else return object();
 }
 
@@ -164,13 +164,13 @@ void export_RayIntersection()
 object py_polygon2ds_intersection_1(Point2ArrayPtr polygon1, Point2ArrayPtr polygon2)
 {
     std::pair<Point2ArrayPtr, IndexArrayPtr> result = polygon2ds_intersection(polygon1, polygon2);
-    return make_tuple(result.first,result.second);
+    return boost::python::make_tuple(result.first,result.second);
 }
 
 object py_polygon2ds_intersection_2(Point2ArrayPtr points, Index polygon1, Index polygon2)
 {
     std::pair<Point2ArrayPtr, IndexArrayPtr> result = polygon2ds_intersection(points, polygon1, polygon2);
-    return make_tuple(result.first,result.second);
+    return boost::python::make_tuple(result.first,result.second);
 }
 
 object py_triangle_triangle_intersection(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
@@ -179,7 +179,7 @@ object py_triangle_triangle_intersection(const TOOLS(Vector3)& t11, const TOOLS(
    Vector3 intersectionstart, intersectionend;
    IntersectionType res = triangle_triangle_intersection(t11, t12, t13, t21, t22, t23, intersectionstart,intersectionend);
    if (res == NoIntersection) return object();
-   if (res == Intersection) return make_tuple(intersectionstart, intersectionend);
+   if (res == Intersection) return boost::python::make_tuple(intersectionstart, intersectionend);
    else return object(1);
 
 }

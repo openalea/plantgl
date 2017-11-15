@@ -33,7 +33,12 @@
  
 
 
-#include <QtGui/qapplication.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qapplication.h>
+#endif
 #include <QtOpenGL/qgl.h>
 #include <QtGui/qpixmap.h>
 

@@ -32,11 +32,18 @@
  */				
 
 
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qpushbutton.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qcheckbox.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qpushbutton.h>
+#else
+    #include <QtGui/qcheckbox.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qpushbutton.h>
+#endif
 #include <QtOpenGL/qgl.h>
-   
+
 #include "clippingplane.h"
 #include "event.h"
 #include "interface/clippingplanewidget.h"
@@ -158,7 +165,7 @@ ViewClippingPlaneGL::~ViewClippingPlaneGL()
 
 #define PLANEMENUICON(num) \
     planeAction = menu->addAction(tr("Plane")+" " #num,this,SLOT(setPlane##num##Enable())); \
-	planeAction->setCheckable( TRUE ); \
+	planeAction->setCheckable( true ); \
 	planeAction->setChecked( isPlaneEnable(num) ); \
 	QObject::connect(this,SIGNAL(plane##num##Enabled(bool)),planeAction,SLOT(setChecked(bool))); \
 

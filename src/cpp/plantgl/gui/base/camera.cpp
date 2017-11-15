@@ -36,17 +36,31 @@
 #include <plantgl/math/util_math.h>
 #include <plantgl/gui/viewer/util_qstring.h>
 
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QTabWidget>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qcombobox.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qtoolbar.h>
+    #include <QtWidgets/qfiledialog.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qmessagebox.h>
+#else
+    #include <QtGui/QTabWidget>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qcombobox.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qtoolbar.h>
+    #include <QtGui/qfiledialog.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qmessagebox.h>
+#endif
+
 #include <QtCore/qtextstream.h>
-#include <QtGui/qtabwidget.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qcombobox.h>
-#include <QtGui/qlabel.h>
 #include <QtCore/qfile.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qmessagebox.h>
 #include <QtGui/qbitmap.h>
 
 #include "filemanager.h"

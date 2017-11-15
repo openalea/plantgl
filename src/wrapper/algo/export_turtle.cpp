@@ -227,7 +227,8 @@ void export_Turtle()
 
 	.add_property("sectionResolution",&get_prop_bt_from_class<uint_t,Turtle,&Turtle::getSectionResolution>,&Turtle::setSectionResolution)
 
-	.def_readwrite("warn_on_error",&Turtle::warn_on_error)
+    .def_readwrite("warn_on_error",&Turtle::warn_on_error)
+    .def_readwrite("path_info_cache_enabled",&Turtle::path_info_cache_enabled)
 
 /*    .def("_frustum",&Turtle::_frustum )
     .def("_cylinder",&Turtle::_cylinder )

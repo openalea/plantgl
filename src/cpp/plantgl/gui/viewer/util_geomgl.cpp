@@ -32,9 +32,15 @@
  */
 
 #include "util_geomgl.h"
-#include <QtGui/qapplication.h>
 #include "geomevent.h"
 #include "../base/scenegl.h"
+
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qapplication.h>
+#endif
 
 PGL_USING_NAMESPACE
 

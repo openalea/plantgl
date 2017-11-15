@@ -45,7 +45,12 @@
 #include <plantgl/algo/opengl/util_gl.h>
 #include <plantgl/math/util_vector.h>
 
-#include <QtGui/qmenu.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qmenu.h>
+#else
+    #include <QtGui/qmenu.h>
+#endif
 
 
 /* ----------------------------------------------------------------------- */

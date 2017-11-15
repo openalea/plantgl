@@ -35,13 +35,20 @@
 /* ----------------------------------------------------------------------- */
 
 #include "daemon.h"
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qapplication.h>
+#endif
 #include <QtNetwork/qhostaddress.h>
-#include <QtCore/qtextstream.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qapplication.h>
-// #include <QtGui/qtextview.h>
 #include <QtNetwork/qtcpsocket.h>
+
+#include <QtCore/qtextstream.h>
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qregexp.h>
 #include <QtCore/qtimer.h>

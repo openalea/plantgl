@@ -33,7 +33,12 @@
 #define __extract_widget_h__
 
 #include <boost/python.hpp>
-#include <QtGui/QWidget>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QWidget>
+#else
+    #include <QtGui/QWidget>
+#endif
 #include "exception.h"
 
 /* ----------------------------------------------------------------------- */

@@ -58,11 +58,14 @@
 #include <list>
 #include <fstream>
 
+#ifdef WITH_BISONFLEX
 #include "scne_parser.h"    /// fonction pour parser les sceneobjects.
+#endif
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
+#ifdef WITH_BISONFLEX
 /// structure de donnees pour parser les sceneobjects.
 #ifdef BISON_HPP
 #include "scne_parser.hpp"
@@ -76,6 +79,8 @@ TOOLS_USING_NAMESPACE
 #include <plantgl/tool/gparser.h>  /// Instanciation des classes de scans.
                                /// et instanciation de la classe template de parser.
 
+#endif
+
 #include "scne_binaryparser.h"
 #include <plantgl/tool/readline.h>
 
@@ -87,6 +92,8 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
+
+#ifdef WITH_BISONFLEX
 
 bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePtr& scene, const std::string& fname)
 {
@@ -100,6 +107,8 @@ bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePt
 	return b;
 }
 
+#endif
+
 /* ----------------------------------------------------------------------- */
 
 GeomCodec::GeomCodec() : 
@@ -110,7 +119,9 @@ SceneFormatList GeomCodec::formats() const
 {
 	SceneFormat _format;
 	_format.name = "GEOM";
+#ifdef WITH_BISONFLEX
 	_format.suffixes.push_back("geom");
+#endif
 	_format.suffixes.push_back("bgeom");
 	_format.comment = "The Standart PlantGL format.";
 	SceneFormatList _formats;
@@ -131,6 +142,7 @@ ScenePtr GeomCodec::read(const std::string& fname)
 	sc->add(Shape(a,Material::DEFAULT_MATERIAL));
     return sc;
   } */
+#ifdef WITH_BISONFLEX
   else {
     ifstream _file(fname.c_str());
 	SceneObjectSymbolTable table;
@@ -142,7 +154,7 @@ ScenePtr GeomCodec::read(const std::string& fname)
 		else return ScenePtr(new Scene(table));
 	}
   }
-  
+#endif  
 }
 
 bool GeomCodec::write(const std::string& fname,const ScenePtr&	scene)

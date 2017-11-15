@@ -61,6 +61,21 @@ using namespace STDEXT;
 
 // #define GEOM_DEBUG
 
+
+/* ----------------------------------------------------------------------- */
+
+static bool __verbose = true;
+
+void PGL(parserVerbose)(bool b)
+{
+  __verbose = b;
+}
+
+bool PGL(isParserVerbose)()
+{
+  return (__verbose);
+}
+
 /* ----------------------------------------------------------------------- */
 
 #define GEOM_READ_DEFAULT(_default) \

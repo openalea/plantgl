@@ -37,9 +37,15 @@
 #include "filemanager.h"
 #include "event.h"
 #include <QtCore/qfile.h>
-#include <QtGui/qfiledialog.h>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qfiledialog.h>
+    #include <QtWidgets/qmessagebox.h>
+#else
+    #include <QtGui/qfiledialog.h>
+    #include <QtGui/qmessagebox.h>
+#endif
 #include <QtOpenGL/qgl.h>
-#include <QtGui/qmessagebox.h>
 
 /* ----------------------------------------------------------------------- */
 

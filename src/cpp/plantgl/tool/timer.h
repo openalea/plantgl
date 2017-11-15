@@ -72,7 +72,8 @@ class TOOLS_API Timer
   Timer( ) :
 	 _on(true), 
 	 _start((clock_t)0), 
-	 _stop((clock_t)0)
+	 _stop((clock_t)0),
+     _elapsed((clock_t)0)
   {
   }
 
@@ -84,7 +85,7 @@ class TOOLS_API Timer
     in the running state.
   */
   inline double elapsedTime( ) const {
-	return (double)((_on ? clock() : _stop) - _start) / CLOCKS_PER_SEC;
+    return (double(_elapsed) / CLOCKS_PER_SEC) + _elapsedTime();
   }
 
   /*!
@@ -97,7 +98,8 @@ class TOOLS_API Timer
   */
   inline double reset( )
   {
-    register double laps = elapsedTime();
+    double laps = elapsedTime();
+    _elapsed = (clock_t)0;
     _start = _stop = clock();
     return laps;
   }
@@ -112,13 +114,15 @@ class TOOLS_API Timer
 
 
   /*!
-    Stops \e this. and returns the elpased time.
+    Stops \e this. and returns the elapsed time.
   */
   inline double stop( )
   {
-   register double laps = elapsedTime();
    _stop = clock();
    _on = false;
+   _elapsed += (_stop - _start);
+   double laps = _elapsedTime();
+   _start = _stop = clock();
    return laps;
   }
 
@@ -139,10 +143,19 @@ class TOOLS_API Timer
   }
 
  private:
+  /*!
+    Returns the number of seconds elpased since \e this timer is 
+    in the running state.
+  */
+  inline double _elapsedTime( ) const {
+    return  (double)((_on ? clock() : _stop) - _start) / CLOCKS_PER_SEC;
+  }
+
 
   bool _on; /// < running state flag.
   clock_t _start; /// < time at start
   clock_t _stop;  /// < time at stop
+  clock_t _elapsed;
 
 }; // class Timer
 

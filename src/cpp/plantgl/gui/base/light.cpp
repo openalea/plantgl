@@ -38,9 +38,14 @@
 #include <plantgl/math/util_math.h>
 #include <plantgl/algo/opengl/util_glut.h>
 #include <plantgl/algo/opengl/util_appegl.h>
+
 #include <QtCore/qfile.h>
-#include <QtGui/qtoolbar.h>
 #include <QtCore/qstring.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QToolBar>
+#else
+    #include <QtGui/QToolBar>
+#endif
 
 TOOLS_USING_NAMESPACE
 
@@ -387,7 +392,7 @@ ViewLightGL::createToolsMenu(QWidget * parent)
     menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
     menu->addSeparator();
     QAction * idVisibility = menu->addAction(_light,tr("Visible"),this,SLOT(changeVisibility()),Qt::CTRL+Qt::SHIFT+Qt::Key_S);
-    idVisibility->setCheckable( TRUE );
+    idVisibility->setCheckable( true );
     idVisibility->setChecked( isVisible() );
     QObject::connect(this,SIGNAL(visibilityChanged( bool)),idVisibility,SLOT(setChecked(bool)));
     menu->addSeparator();

@@ -39,9 +39,14 @@
 #define __view_camera_h__
 
 /* ----------------------------------------------------------------------- */
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qmenu.h>
+#else
+    #include <QtGui/qmenu.h>
+#endif
 
 #include <QtCore/qstring.h>
-#include <QtGui/qmenu.h>
 
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include "object.h"

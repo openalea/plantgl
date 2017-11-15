@@ -31,8 +31,13 @@
  */
 
 
-#include <QtGui/qapplication.h>
-#include <QtGui/qcolor.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QApplication>
+#else
+    #include <QtGui/QApplication>
+#endif
+#include <QtGui/QColor>
 #include <plantgl/tool/dirnames.h>
 #include "application.h"
 #include "simpleappli.h"

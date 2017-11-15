@@ -35,17 +35,33 @@
 #include "materialeditor.h"
 #include "../base/util_qwidget.h"
 
-#include <QtGui/qlabel.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qlayout.h>
+#include <QtGlobal>
 #include <QtCore/qvariant.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
+
 #include <QtGui/qfont.h>
-#include <QtGui/qcolordialog.h>
 #include <QtGui/qevent.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qlayout.h>
+    #include <QtWidgets/qtooltip.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qcolordialog.h>
+#else
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qlayout.h>
+    #include <QtGui/qtooltip.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qcolordialog.h>
+#endif
+
+#include <plantgl/scenegraph/geometry/sphere.h>
 
 #include <plantgl/scenegraph/geometry/sphere.h>
 

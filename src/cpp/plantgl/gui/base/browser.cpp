@@ -31,13 +31,23 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <QtGui/qpainter.h>
-#include <QtGui/QScrollArea>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qevent.h>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QTreeWidget>
+#include <QtGlobal>
+#include <QtCore/QEvent>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QPainter>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QScrollArea>
+    #include <QtWidgets/QPushButton>
+    #include <QtWidgets/QCheckBox>
+    #include <QtWidgets/QTreeWidgetItem>
+    #include <QtWidgets/QTreeWidget>
+#else
+    #include <QtGui/QScrollArea>
+    #include <QtGui/QPushButton>
+    #include <QtGui/QCheckBox>
+    #include <QtGui/QTreeWidgetItem>
+    #include <QtGui/QTreeWidget>
+#endif
 
 #include "browser.h"
 #include "scenegl.h"

@@ -45,9 +45,15 @@
 #include "moduleeditor.h"
 
 #include <QtCore/qvariant.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qslider.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qwidget.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qslider.h>
+#else
+    #include <QtGui/qwidget.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qslider.h>
+#endif
 #include <QtOpenGL/qgl.h>
 class QVBoxLayout; 
 class QHBoxLayout; 

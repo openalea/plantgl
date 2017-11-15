@@ -41,8 +41,13 @@
 
 #include "../gui_config.h"
 
+#include <QtGlobal>
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QDialog>
+#else
+    #include <QtGui/QDialog>
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -81,7 +86,7 @@ public:
   ViewSysInfo( QWidget* parent = 0,
 		     QGLWidget * FrameGL = 0,
 		     const char* name = 0,	      
-		     bool modal = FALSE, 
+		     bool modal = false, 
 		     Qt::WindowFlags fl = 0 );
 
   /*!  Destructor.

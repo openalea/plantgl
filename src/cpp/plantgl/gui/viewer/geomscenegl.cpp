@@ -52,20 +52,30 @@
 #include "geomevent.h"
 
 /// Qt
-#include <QtGui/qslider.h>
-#include <QtGui/qpainter.h>
-//#include <Qt3Support/q3listview.h>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/qmessagebox.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qclipboard.h>
-#include <QtOpenGL/qgl.h>
 #include <QtCore/QHash>
 #include <QtCore/QSet>
+
+#include <QtGui/qpainter.h>
+#include <QtGui/qclipboard.h>
 #include <QtGui/QImage>
+
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/QTreeWidgetItem>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qslider.h>
+    #include <QtGui/QTreeWidgetItem>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qapplication.h>
+#endif
+
+#include <QtOpenGL/qgl.h>
 #include <QtOpenGL/QGLPixelBuffer>
 
-#include <plantgl/algo/codec/scne_parser.h>
+#include <plantgl/algo/codec/scne_binaryparser.h>
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef PGL_DEBUG

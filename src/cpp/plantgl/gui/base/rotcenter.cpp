@@ -41,15 +41,27 @@
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include <plantgl/math/util_math.h>
 
-#include <QtGui/qlineedit.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qtoolbar.h>
 #include <QtCore/qfile.h>
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qtoolbar.h>
+    #include <QtWidgets/qdockwidget.h>
+    #include <QtWidgets/qmainwindow.h>
+#else
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qtoolbar.h>
+    #include <QtGui/qdockwidget.h>
+    #include <QtGui/qmainwindow.h>
+#endif
+
 #include <QtOpenGL/qgl.h>
-#include <QtGui/qdockwidget.h>
-#include <QtGui/qmainwindow.h>
 #include <plantgl/algo/opengl/util_glut.h>
 
 TOOLS_USING_NAMESPACE

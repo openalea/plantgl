@@ -35,8 +35,13 @@
 
 #ifndef SYSTEM_IS__CYGWIN
 
+#include <QtGlobal>
 #include <QtCore/qtranslator.h>
-#include <QtGui/qapplication.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qapplication.h>
+#endif
 #include <plantgl/tool/util_enviro.h>
 
 static QTranslator * fr = NULL;

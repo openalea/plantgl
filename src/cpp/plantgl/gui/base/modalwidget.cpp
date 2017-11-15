@@ -36,8 +36,13 @@
 #include "light.h"
 #include "icons.h"
 
-#include <QtGui/qmenu.h>
-#include <QtGui/qtoolbar.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qtoolbar.h>
+#else
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qtoolbar.h>
+#endif
 
 ViewRenderingModeActions::ViewRenderingModeActions(ViewModalRendererGL * renderer, const char * name):
   QObject(renderer)

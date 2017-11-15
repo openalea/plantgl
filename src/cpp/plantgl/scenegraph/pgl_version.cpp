@@ -107,6 +107,9 @@ std::vector<std::string> __getPGLSupportedExtensions() {
 #ifdef WITH_EIGEN
     ADD_EXTENSION(EIGEN)
 #endif
+#ifdef WITH_BISONFLEX
+    ADD_EXTENSION(PGL_ASCII_PARSER)
+#endif
    return res;
 }
 
@@ -119,4 +122,14 @@ bool pgl_support_extension(const std::string& ext) {
 		it != PGL_EXTENSIONS.end(); ++it)
 		if (*it == ext) return true;
 	return false;
+}
+
+#include <QtGlobal>
+
+int getPGLQtVersion(){
+  return  QT_VERSION;
+}
+
+std::string getPGLQtVersionString(){
+  return std::string(QT_VERSION_STR);
 }

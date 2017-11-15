@@ -82,7 +82,7 @@ using namespace std;
 	  if(!(__cache.insert(obj->getId()).second)){ \
 	    GEOM_POVPRINT_BEG_(stream,"object"); \
 		stream << __indent << obj->getName() << endl; \
-		GEOM_POVPRINT_TEXTURE; \
+		GEOM_POVPRINT_TEXTURE_REF; \
 		GEOM_POVPRINT_END_(stream); \
 		return true; \
 	  } \
@@ -100,6 +100,7 @@ using namespace std;
   if (obj->isNamed()){ \
 	    GEOM_POVPRINT_BEG_(stream,"object"); \
 		stream << __indent << obj->getName() << endl; \
+        GEOM_POVPRINT_TEXTURE_REF; \
 		GEOM_POVPRINT_END_(stream); \
   } \
 
@@ -109,7 +110,7 @@ using namespace std;
 	  if(!(__cache.insert(obj->getId()).second)){ \
 	    GEOM_POVPRINT_BEG_(stream,"object"); \
 		stream << __indent << obj->getName() << endl; \
-		/* GEOM_POVPRINT_TEXTURE;*/  \
+		GEOM_POVPRINT_TEXTURE_REF;  \
 		GEOM_POVPRINT_END_(stream); \
 		return true; \
 	  } \
@@ -126,8 +127,11 @@ using namespace std;
   return res; \
 
 
-#define GEOM_POVPRINT_TEXTURE \
+#define GEOM_POVPRINT_TEXTURE_REF \
   __geomStream << __indent << "texture { " << __texture << " }" << endl;
+
+#define GEOM_POVPRINT_TEXTURE(obj) \
+  if (!obj->isNamed()) GEOM_POVPRINT_TEXTURE_REF
 
 
 #define GEOM_POVPRINT_ANGLE(stream,val) \
@@ -394,15 +398,16 @@ bool PovPrinter::process( Texture2D * texture ) {
 
   GEOM_ASSERT(texture);
 
-  if(texture->getImage()){
+  /*if(texture->getImage()){
     TextureNameMap::const_iterator it = __texturenamemap.find(ptr_to_size_t(texture->getImage()));
     if (it != __texturenamemap.end()){
       __texture = it->second;
       __appearance = texture;
       return true;
     }
-  }
+  }*/
   
+  if (!texture->isNamed())texture->setDefaultName();
   __texture = texture->getName();
   if(texture->getImage())
     __texturenamemap[ptr_to_size_t(texture->getImage())] = __texture;
@@ -593,7 +598,7 @@ bool PovPrinter::process( Box * box ) {
   GEOM_POVPRINT_VECTOR3(__geomStream,_ur);
   __geomStream << endl;
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(box);
 
   GEOM_POVPRINT_END(__geomStream,box);
   return true;
@@ -619,7 +624,7 @@ bool PovPrinter::process( Cone * cone ) {
   if (! cone->getSolid())
     __geomStream << __indent << "open" << endl;
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(cone);
 
   GEOM_POVPRINT_END(__geomStream,cone);
   return true;
@@ -647,7 +652,7 @@ bool PovPrinter::process( Cylinder * cylinder ) {
   if (! cylinder->getSolid())
     __geomStream << __indent << "open" << endl;
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(cylinder);
 
   GEOM_POVPRINT_END(__geomStream,cylinder);
   return true;
@@ -719,7 +724,7 @@ bool PovPrinter::process( Frustum * frustum ) {
   if (! frustum->getSolid())
     __geomStream << __indent << "open" << endl;
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(frustum);
 
   GEOM_POVPRINT_END(__geomStream,frustum);
   return true;
@@ -865,7 +870,7 @@ bool PovPrinter::process( PointSet * pointSet ) {
         GEOM_POVPRINT_COLOR4(__geomStream,color) 
         __geomStream  << "  } finish { ambient 1 diffuse 1 } } " << endl;
     }
-    else { GEOM_POVPRINT_TEXTURE; }
+    else { GEOM_POVPRINT_TEXTURE(pointSet); }
 	GEOM_POVPRINT_END_(__geomStream);
   };
   // nothing to do
@@ -896,7 +901,7 @@ bool PovPrinter::process( Polyline * polyline ) {
       GEOM_POVPRINT_VECTOR3(__geomStream,polyline->getPointAt(0));
       __geomStream << ", LineWidth" << endl;
 
-      GEOM_POVPRINT_TEXTURE;
+      GEOM_POVPRINT_TEXTURE(polyline);
 
       GEOM_POVPRINT_END(__geomStream,polyline);
   }
@@ -920,7 +925,7 @@ bool PovPrinter::process( Polyline * polyline ) {
                 __geomStream << ", LineWidth";
         	   if(!polyline->isWidthToDefault()) __geomStream << "*" << polyline->getWidth();
         	   __geomStream << endl;
-        	   GEOM_POVPRINT_TEXTURE;
+        	   GEOM_POVPRINT_TEXTURE(polyline);
         	   if (nbpoints > 2) {
                 GEOM_POVPRINT_END_(__geomStream);
                 }
@@ -966,7 +971,7 @@ bool PovPrinter::process( Revolution * revolution ) {
 	fk += step;
   };
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(revolution);
 
   __geomStream << __indent << "rotate <90,0,0>" << endl;
 
@@ -1030,7 +1035,7 @@ bool PovPrinter::process( Sphere * sphere ) {
   GEOM_POVPRINT_VECTOR3(__geomStream,Vector3::ORIGIN);
   __geomStream << ", " << sphere->getRadius() << endl;
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(sphere);
 
   GEOM_POVPRINT_END(__geomStream,sphere);
   return true;
@@ -1112,7 +1117,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
     GEOM_POVPRINT_VECTOR3(__geomStream,triangleSet->getFacePointAt(0,0));
     __geomStream << ", 0.00000001"  << endl;
 
-    GEOM_POVPRINT_TEXTURE;
+    GEOM_POVPRINT_TEXTURE(triangleSet);
 
     GEOM_POVPRINT_END(__geomStream,triangleSet);
     return true;
@@ -1375,7 +1380,7 @@ bool PovPrinter::process( TriangleSet * triangleSet ) {
     }
   };*/
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(triangleSet);
 
   GEOM_POVPRINT_END(__geomStream, triangleSet);
 
@@ -1416,7 +1421,7 @@ bool PovPrinter::process( Disc * disc ) {
 
   __geomStream << __indent << disc->getRadius() << endl;
 
-  GEOM_POVPRINT_TEXTURE;
+  GEOM_POVPRINT_TEXTURE(disc);
 
   GEOM_POVPRINT_END_(__geomStream);
 
@@ -1462,7 +1467,7 @@ bool PovPrinter::process( PointSet2D * pointSet ) {
 	__geomStream << __indent;
     GEOM_POVPRINT_VECTOR3(__geomStream,_vertex1);
     __geomStream << ", PointWidth" << endl;
-	GEOM_POVPRINT_TEXTURE;
+	GEOM_POVPRINT_TEXTURE(pointSet);
 	GEOM_POVPRINT_END_(__geomStream);
   };
   // nothing to do

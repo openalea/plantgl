@@ -37,9 +37,16 @@
 #include <plantgl/algo/opengl/util_gl.h>
 #include <assert.h>
 #include <iostream>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qwhatsthis.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qtoolbar.h>
+#else
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qtoolbar.h>
+#endif
 #include "icons.h"
 #include "configuration.h"
 
@@ -419,10 +426,10 @@ ViewGridGL::createToolsMenu(QWidget * parent)
     menu->addSeparator();
     QAction * idAxis = menu->addAction(_axis,tr("Axis"),this,SLOT(changeAxisDisplayMode()));
 
-	idXYGrid->setCheckable( TRUE );
-    idXZGrid->setCheckable( TRUE );
-    idYZGrid->setCheckable( TRUE );
-    idAxis->setCheckable( TRUE );
+	idXYGrid->setCheckable( true );
+    idXZGrid->setCheckable( true );
+    idYZGrid->setCheckable( true );
+    idAxis->setCheckable( true );
 
 	idXYGrid->setChecked( this->getXYGrid() );
     idXZGrid->setChecked( this->getYZGrid() );

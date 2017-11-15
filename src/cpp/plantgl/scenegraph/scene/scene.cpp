@@ -47,7 +47,7 @@
 
 #ifdef QT_THREAD_SUPPORT
 #include <QtCore/qthread.h>
-#if QT_VERSION >= 300
+#if QT_VERSION >= QT_VERSION_CHECK(3,0,0)
 #include <QtCore/qmutex.h>
 #endif
 #endif

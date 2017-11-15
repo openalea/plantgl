@@ -130,7 +130,7 @@ object itemSelection(std::string caption,
   {
     res = ViewerApplication::itemSelection(caption,text,vals,ok,editable);
   }
-  tuple t = make_tuple(ok,res);
+  boost::python::tuple t = boost::python::make_tuple(ok,res);
   return t;
 }
 
@@ -140,7 +140,7 @@ object itemSelection2(std::string text,
   bool ok = false;
   std::string res;
   res = ViewerApplication::itemSelection("Select Item",text,vals,ok,false);
-  tuple t = make_tuple(ok,res);
+  boost::python::tuple t = boost::python::make_tuple(ok,res);
   return t;
 }
 
@@ -149,7 +149,7 @@ object itemSelection1(boost::python::list values){
   bool ok = false;
   std::string res;
   res = ViewerApplication::itemSelection("Select Item","Please select an item from the list",vals,ok,false);
-  tuple t = make_tuple(ok,res);
+  boost::python::tuple t = boost::python::make_tuple(ok,res);
   return t;
 }
 
@@ -271,7 +271,7 @@ boost::python::object raybuf_to_python(ViewRayBuffer * buf) {
 			boost::python::list zlist;
 			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
 				const RayHit& inter = buf->getAt(i,j)[k];
-				zlist.append(make_tuple(inter.id,inter.zmax,inter.zmin));
+				zlist.append(boost::python::make_tuple(inter.id,inter.zmax,inter.zmin));
 			}
 			row.append(zlist);
 		}
@@ -298,7 +298,7 @@ boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
 		for(size_t j = 0; j < buf->getRowSize();j++){
 			const ZBufferUnit& unit = buf->getAt(i,j);
 			if (allvalues || (0.0 < unit.depth && unit.depth < 1.0))
-				row.append(make_tuple(unit.pos,unit.color,unit.depth));
+				row.append(boost::python::make_tuple(unit.pos,unit.color,unit.depth));
 			else row.append(object());
 		}
 		res.append(row);
@@ -319,7 +319,7 @@ boost::python::object grabZBuffer0(){
 
 boost::python::object grabZBufferPoints(){
     std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> bufpoints = ViewerApplication::grabZBufferPoints();
-    return make_tuple(bufpoints.first,bufpoints.second);
+    return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }
 
 boost::python::object getProjectionSize(){
@@ -327,7 +327,7 @@ boost::python::object getProjectionSize(){
 	double pixwidth;
 	double size;
     size = ViewerApplication::getProjectionSize(&nbpix,&pixwidth);
-	return make_tuple(size,nbpix,pixwidth);
+	return boost::python::make_tuple(size,nbpix,pixwidth);
 }
 
 boost::python::object getProjectionSizes(const ScenePtr& sc){
@@ -338,7 +338,7 @@ boost::python::object getProjectionSizes(const ScenePtr& sc){
 	boost::python::list bres;
 	for(vector<std::pair<uint_t,double> >::const_iterator _it = res.begin();
 	_it != res.end(); _it++){
-	  bres.append(make_tuple(_it->first,_it->second));
+	  bres.append(boost::python::make_tuple(_it->first,_it->second));
 	}
 	return bres;
   }
@@ -353,9 +353,9 @@ boost::python::object getProjectionPerShape(){
 	boost::python::list bres;
 	for(vector<std::pair<uint_t,uint_t> >::const_iterator _it = res.begin();
 	_it != res.end(); _it++){
-	  bres.append(make_tuple(_it->first,_it->second));
+	  bres.append(boost::python::make_tuple(_it->first,_it->second));
 	}
-	return make_tuple(bres,pixelsize);
+	return boost::python::make_tuple(bres,pixelsize);
   }
 }
 
@@ -367,7 +367,7 @@ boost::python::object raypointhitbuf_to_python(ViewRayPointHitBuffer * buf) {
 			boost::python::list zlist;
 			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
 				const RayPointHit& inter = buf->getAt(i,j)[k];
-				zlist.append(make_tuple(inter.id,inter.zmax,inter.zmin));
+				zlist.append(boost::python::make_tuple(inter.id,inter.zmax,inter.zmin));
 			}
 			row.append(zlist);
 		}
@@ -623,7 +623,7 @@ void setCameraPosition(const TOOLS(Vector3)& pos){
 object getCameraPositionInfo(){
 	Vector3 pos, h, up;
 	ViewerApplication::getCamera(pos,h,up);
-	return make_tuple(pos,h,up);
+	return boost::python::make_tuple(pos,h,up);
 }
 
 void lookAt1 (const TOOLS(Vector3)& pos) { ViewerApplication::lookAt(pos); }

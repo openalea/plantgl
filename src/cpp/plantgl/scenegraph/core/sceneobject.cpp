@@ -31,8 +31,10 @@
 
 #include "sceneobject.h"
 #include "deepcopier.h"
+#include <plantgl/tool/util_string.h>
 
 PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,6 +68,10 @@ SceneObject::~SceneObject( ){
 
 void SceneObject::setName( const std::string& name ) {
   __name = name;
+}
+
+void SceneObject::setDefaultName( ) {
+  setName("OBJECT_"+number(getId()));
 }
 
 size_t SceneObject::getId( ) const {

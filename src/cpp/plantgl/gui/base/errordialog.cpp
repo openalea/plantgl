@@ -35,15 +35,27 @@
 #include "configuration.h"
 #include "interface/messagedisplayer.h"
 #include <QtGui/qevent.h>
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qradiobutton.h>
-#include <QtGui/qapplication.h>
 #include <QtGui/qclipboard.h>
-#include <QtGui/qmime.h>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qregexp.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qtextbrowser.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qradiobutton.h>
+    #include <QtWidgets/qapplication.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qtextbrowser.h>
+    #include <QtCore/QMimeData>
+    #define myQtInstallMessageHandler qInstallMessageHandler
+#else
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qradiobutton.h>
+    #include <QtGui/qapplication.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qtextbrowser.h>
+    #include <QtGui/qmime.h>
+    #define myQtInstallMessageHandler qInstallMsgHandler
+#endif
 
 #include <iostream>
 
@@ -51,19 +63,30 @@
 
 static ViewErrorDialog * QT_ERROR_MESSAGE_DISPLAY = NULL;
 
-void handleQtMessage(QtMsgType type, const char *msg){
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)     
+void handleQtMessage(QtMsgType type, const QMessageLogContext& context, const QString& qmsg)
+{
+    const char * msg = qPrintable(qmsg);
 	if(QT_ERROR_MESSAGE_DISPLAY)
 		QT_ERROR_MESSAGE_DISPLAY->qtMessage(type,msg);
 	else std::cerr << msg << std::endl;
 }
+#else
+void handleQtMessage (QtMsgType type, const char *msg)
+{
+    if(QT_ERROR_MESSAGE_DISPLAY)
+        QT_ERROR_MESSAGE_DISPLAY->qtMessage(type,msg);
+    else std::cerr << msg << std::endl;
+}
+#endif
 
 void registerForQtMessage(ViewErrorDialog * display){
   QT_ERROR_MESSAGE_DISPLAY = display;
-  qInstallMsgHandler(handleQtMessage);
+    myQtInstallMessageHandler(handleQtMessage);
 }
 
 void unregisterForQtMessage(){
-	qInstallMsgHandler(0);
+    myQtInstallMessageHandler(0);
 	QT_ERROR_MESSAGE_DISPLAY = NULL;
 }
 

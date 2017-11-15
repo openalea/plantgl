@@ -32,31 +32,48 @@
  */
 
 #include "info.h"
+
 #include <plantgl/tool/util_types.h>
 #include <plantgl/tool/readline.h>
 #include <plantgl/algo/opengl/util_glu.h>
 
-#include <QtGui/qlabel.h>
-#include <QtGui/qpainter.h>
-#ifdef QT3_SUPPORT
-#include <Qt3Support/q3listview.h>
-#endif
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qlayout.h>
 #include <QtCore/qvariant.h>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qimage.h>
-#include <QtGui/qpixmap.h>
-#include <QtCore/qfile.h>
-#include <QtCore/qtextstream.h>
-#include <QtGui/qfiledialog.h>
-#include <QtGui/qapplication.h>
 #include <QtCore/QSysInfo>
 #include <QtCore/qtextcodec.h>
+#include <QtCore/qfile.h>
+#include <QtCore/qtextstream.h>
+
+#include <QtGui/qpainter.h>
+#include <QtGui/qimage.h>
+#include <QtGui/qpixmap.h>
 #include <QtGui/qevent.h>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QTreeWidget>
+
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qlayout.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qtooltip.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qfiledialog.h>
+    #include <QtWidgets/qapplication.h>
+    #include <QtWidgets/QTreeWidgetItem>
+    #include <QtWidgets/QTreeWidget>
+#else
+    #include <QtGui/qlayout.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qtooltip.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qfiledialog.h>
+    #include <QtGui/qapplication.h>
+    #include <QtGui/QTreeWidgetItem>
+    #include <QtGui/QTreeWidget>
+#endif
+
+//#ifdef QT3_SUPPORT
+//#include <Qt3Support/q3listview.h>
+//#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -464,14 +481,14 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     QFont font1(  Title->font() );
     font1.setFamily( "adobe-helvetica" );
     font1.setPointSize( 15 );
-    font1.setBold( TRUE );
+    font1.setBold( true );
     Title->setFont( font1 );
 	Title->setText( (name ? qname : tr( "PlantGL Viewer" ) ) );
 
     Icon = new QLabel( this );
     Icon->setGeometry( QRect( 10, 10, 60, 60 ) );
     Icon->setPixmap( QPixmap(icon_memory) );
-    Icon->setScaledContents( TRUE );
+    Icon->setScaledContents( true );
 
 /* ----------------------------------------------------------------------- */
     AttView = new QTreeWidget( this );
@@ -699,7 +716,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     item = new QTreeWidgetItem( item2 );
     AttView->collapseItem(item);
     item->setText( 0, tr( "Date" ) );
-    item->setText( 1, tr(( QString(c_date) + " "+tr("at")+" " +  QString(c_time) ).toAscii().data()) );
+    item->setText( 1, tr(qPrintable( QString(c_date) + " "+tr("at")+" " +  QString(c_time) )) ) ;
 
 /* ----------------------------------------------------------------------- */
 
@@ -1421,7 +1438,7 @@ bool ViewSysInfo::event( QEvent* ev )
         QFont font(  Title->font() );
         font.setFamily( "adobe-helvetica" );
         font.setPointSize( 15 );
-        font.setBold( TRUE );
+        font.setBold( true );
         Title->setFont( font );
     }
     return ret;

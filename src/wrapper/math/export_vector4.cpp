@@ -49,9 +49,9 @@ std::string v4_repr( Vector4* v )
 
 struct v4_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Vector4 const& v)
+	static boost::python::tuple getinitargs(Vector4 const& v)
 	{
-		return make_tuple(v.x(),v.y(),v.z(),v.w());
+		return boost::python::make_tuple(v.x(),v.y(),v.z(),v.w());
 	}
 };
 

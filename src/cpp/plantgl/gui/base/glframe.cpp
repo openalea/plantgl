@@ -35,35 +35,64 @@
 
 #include "../gui_config.h"
 
-#include <QtGui/qcolordialog.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qmessagebox.h>
-// #include <qdragobject.h>
-#include <QtGui/qtoolbutton.h>
-#include <QtGui/qtoolbar.h>
-#include <QtGui/qmenu.h>
-#include <QtGui/qcursor.h>
-#include <QtGui/qbitmap.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/qstatusbar.h>
-#include <QtGui/qprogressbar.h>
-#include <QtGui/qclipboard.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qpainter.h>
-#include <QtGui/qprinter.h>
-#include <QtGui/qprintdialog.h>
 #include <QtCore/qfile.h>
-#include <QtGui/qwhatsthis.h>
-#include <QtGui/qbuttongroup.h>
-#include <QtGui/qradiobutton.h>
-#include <QtGui/qtabwidget.h>
 #include <QtCore/qvariant.h>
-#include <QtGui/qmainwindow.h>
 #include <QtCore/qurl.h>
 #include <QtCore/QHash>
-#include <QtOpenGL/QGLPixelBuffer>
-#include <QtGui/QMouseEvent>
 #include <QtCore/QTimer>
+
+
+#include <QtGui/QMouseEvent>
+#include <QtGui/qpainter.h>
+#include <QtGui/qbitmap.h>
+#include <QtGui/qclipboard.h>
+#include <QtGui/qcursor.h>
+
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qcolordialog.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qmessagebox.h>
+    #include <QtWidgets/qtoolbutton.h>
+    #include <QtWidgets/qtoolbar.h>
+    #include <QtWidgets/qmenu.h>
+    #include <QtWidgets/qapplication.h>
+    #include <QtWidgets/qstatusbar.h>
+    #include <QtWidgets/qprogressbar.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qwhatsthis.h>
+    #include <QtWidgets/qbuttongroup.h>
+    #include <QtWidgets/qradiobutton.h>
+    #include <QtWidgets/qtabwidget.h>
+    #include <QtWidgets/qmainwindow.h>
+    
+    #include <QtPrintSupport/qprinter.h>
+    #include <QtPrintSupport/qprintdialog.h>
+    
+    #include <QtCore/QMimeData>
+#else
+    #include <QtGui/qcolordialog.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qmessagebox.h>
+    #include <QtGui/qtoolbutton.h>
+    #include <QtGui/qtoolbar.h>
+    #include <QtGui/qmenu.h>
+    #include <QtGui/qapplication.h>
+    #include <QtGui/qstatusbar.h>
+    #include <QtGui/qprogressbar.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qprintdialog.h>
+    #include <QtGui/qwhatsthis.h>
+    #include <QtGui/qbuttongroup.h>
+    #include <QtGui/qradiobutton.h>
+    #include <QtGui/qtabwidget.h>
+    #include <QtGui/qmainwindow.h>
+
+    #include <QtGui/qprinter.h>
+#endif
+
+#include <QtOpenGL/QGLPixelBuffer>
 
 #include "glframe.h"
 #include "icons.h"
@@ -93,6 +122,7 @@ using namespace std;
 
 #define MS_EDITION
 #define GL_ERROR ViewObjectGL::glError(this,__FILE__,__LINE__)
+#define GL_SIMPLECHECK_ERROR {GLenum glerror; if((glerror = glGetError()) != GL_NO_ERROR) printf("%s:%i:%s\n", __FILE__,__LINE__,gluGeomErrorString(glerror));}
 // glError(__FILE__,__LINE__)
 
 /*  ------------------------------------------------------------------------ */
@@ -235,7 +265,7 @@ ViewGLFrame::ViewGLFrame( QWidget* parent, const char* name, ViewRendererGL * r,
                    this,SLOT(setBackGroundColor(const QColor&)));
 
   /// Qt Option
-  setAcceptDrops(TRUE);
+  setAcceptDrops(true);
   setFocusPolicy(Qt::StrongFocus);
 
 
@@ -451,9 +481,9 @@ void
 ViewGLFrame::setBackGroundColor(const QColor& color)
 {
   __BgColor=color;
-  qglClearColor(__BgColor);
   __fog->setColor(color);
   if(isVisible()){
+      qglClearColor(__BgColor);
 	  redrawGL();
       status(QString(tr("Set Background Color to")+" (%1,%2,%3)").arg(color.red()).arg(color.green()).arg(color.blue()),2000);
   }
@@ -681,7 +711,7 @@ void ViewGLFrame::resizeGL( int w, int h )
 void ViewGLFrame::paintGL()
 {
   // clock_t previousdraw = clock();
-
+  if(!isVisible()) return ;
 #ifndef Q_OS_MAC
   if (width() == 0 || height() == 0) { return; }
 #endif
@@ -694,9 +724,8 @@ void ViewGLFrame::paintGL()
 	  }
   }
 
-  GL_ERROR;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  GL_SIMPLECHECK_ERROR;
   __camera->paintGL();
   __light->paintGL();
   __fog->paintGL();

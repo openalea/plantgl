@@ -579,12 +579,12 @@ Matrix3 Matrix3::scaling( real_t s )
 {
     GEOM_ASSERT(std::pglfinite(angle));
     GEOM_ASSERT(axis.isValid());
-    register real_t _c = cos(angle);
-    register real_t _s = sin(angle);
-    register real_t _t = 1 - _c;
-    register real_t x= axis.x();
-    register real_t y= axis.y();
-    register real_t z= axis.z();
+    real_t _c = cos(angle);
+    real_t _s = sin(angle);
+    real_t _t = 1 - _c;
+    real_t x= axis.x();
+    real_t y= axis.y();
+    real_t z= axis.z();
 
     real_t _sx = _s * x;
     real_t _sy = _s * y;
@@ -1047,12 +1047,12 @@ Vector4 operator*( const Matrix4& m, const Vector4& v ) {
 
 Vector3 operator*( const Matrix4& m, const Vector3& v )
 {
-  register double h= m(3,0) * v.x()
+  double h= m(3,0) * v.x()
                     +m(3,1) * v.y()
                     +m(3,2) * v.z()
                     +m(3,3);
   h= 1. / h;
-  register real_t x= v.x(), y= v.y(), z= v.z();
+  real_t x= v.x(), y= v.y(), z= v.z();
   return
     Vector3( ( m(0,0) * x + m(0,1) * y + m(0,2) * z + m(0,3) ) * h,
              ( m(1,0) * x + m(1,1) * y + m(1,2) * z + m(1,3) ) * h,

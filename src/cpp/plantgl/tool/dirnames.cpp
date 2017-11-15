@@ -46,7 +46,7 @@ using namespace std;
 TOOLS_BEGIN_NAMESPACE
 
 inline std::string QString2StdString(const QString& st)
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 #ifdef PGL_DEBUG
 // On Windows, Qt can be compiled only with VC7 to have PyQt
 // Compiling then PlantGL on VC8 will cause a string compatibility pb in debug mode
@@ -60,7 +60,7 @@ inline std::string QString2StdString(const QString& st)
 #endif
 
 string get_dirname(const string & filename) {
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(QFileInfo(filename.c_str()).path()); 
 #else
 	return QString2StdString(QFileInfo(filename.c_str()).dirPath());
@@ -73,7 +73,7 @@ string get_filename(const string & filename) {
 }
 
 string absolute_dirname(const string & filename) {
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(QFileInfo(filename.c_str()).absolutePath()); 
 #else
 	return QString2StdString(QFileInfo(filename.c_str()).dirPath(true));
@@ -81,7 +81,7 @@ string absolute_dirname(const string & filename) {
 }
 
 string absolute_filename(const string & filename) {
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(QFileInfo(filename.c_str()).absoluteFilePath()); 
 #else
 	return QString2StdString(QFileInfo(filename.c_str()).absFilePath());
@@ -128,7 +128,7 @@ string short_dirname(const string& filename){
 
 
 string get_cwd() {
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(QDir::currentPath());
 #else
 	return QString2StdString(QDir::current().path());
@@ -161,7 +161,7 @@ string get_suffix(const string & filename){
 	else return std::string(filename.begin()+filename.find_last_of('.')+1,filename.end());
 #else
 	QFileInfo fi(filename.c_str());
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(fi.suffix()); 
 #else
 	return QString2StdString(fi.extension()); 
@@ -171,7 +171,7 @@ string get_suffix(const string & filename){
 
 string set_suffix(const string & filename,const string & extension){
 	QFileInfo fi(filename.c_str());
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	QString nname = fi.path()+'/'+fi.baseName()+'.'+QString(extension.c_str());
 #else
 	QString nname = fi.dirPath()+'/'+fi.baseName()+'.'+QString(extension.c_str());
@@ -203,7 +203,7 @@ bool similar_dir(const std::string& filename,const std::string& filename2){
 
 bool copy(const std::string& src,const std::string& dest){
         if(!exists(src))return false;
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
         QFile f( src.c_str() );
 		if(f.exists()) return f.copy(dest.c_str());
         else return false;

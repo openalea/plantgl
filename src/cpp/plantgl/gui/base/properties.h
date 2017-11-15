@@ -42,7 +42,12 @@
 
 #include "glframe.h"
 #include <QtCore/qvariant.h>
-#include <QtGui/qdialog.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qdialog.h>
+#else
+    #include <QtGui/qdialog.h>
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -76,7 +81,7 @@ public:
 		ViewControlPanel * controlpanel=0,
 		bool config = false,
 		const char* name = 0,
-		bool modal = FALSE, 
+		bool modal = false, 
 		Qt::WindowFlags fl = 0 );
 
   ~ViewProperties();

@@ -33,7 +33,12 @@
 
 
 #include "configuration.h"
-#include <QtGui/qapplication.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/QApplication>
+#else
+    #include <QtGui/QApplication>
+#endif
 #include <QtCore/qfileinfo.h>
 
 /*--------------------------------------------------------------*/
@@ -55,7 +60,7 @@ void ViewerSettings::setArgs(int argc, char** argv)
 			if(basename.right(2) == "-d") // Remove '-d' flag name for debug compilation
 				basename.remove(basename.length(),2);
 			setAppliName(basename);
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 			applidir = f.absolutePath();
 #else
 			applidir = f.absFilePath();
@@ -65,7 +70,7 @@ void ViewerSettings::setArgs(int argc, char** argv)
 	if(appliname.isEmpty()){
 		setAppliName("PlantGLViewer");
 	}
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	if(applidir.isEmpty())
 		applidir = QCoreApplication::applicationDirPath();
 #endif
@@ -83,7 +88,7 @@ const QString& ViewerSettings::getAppliName()
 }
 
 ViewerSettings::ViewerSettings():
-#if QT_VERSION >= 0x040000
+#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	QSettings(QSettings::IniFormat,QSettings::UserScope,"OpenAlea",getAppliName()) {}
 #else
 	QSettings(QSettings::Ini)

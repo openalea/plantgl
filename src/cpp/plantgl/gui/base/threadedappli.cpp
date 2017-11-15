@@ -34,8 +34,12 @@
 #include "threadedappli.h"
 
 #ifdef QT_THREAD_SUPPORT
-
-#include <QtGui/qapplication.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qapplication.h>
+#else
+    #include <QtGui/qapplication.h>
+#endif
 #include "viewer.h"
 #include "event.h"
 #include <plantgl/tool/dirnames.h>

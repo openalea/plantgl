@@ -64,6 +64,7 @@ class StatisticComputer;
 class Scene;
 typedef RCPtr<Scene> ScenePtr;
 
+
 /* ----------------------------------------------------------------------- */
 
 #define TokReference std::string("Reference")

@@ -41,7 +41,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include <QtGui/qaction.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qaction.h>
+#else
+    #include <QtGui/qaction.h>
+#endif
 #include "../gui_config.h"
 
 /* ----------------------------------------------------------------------- */

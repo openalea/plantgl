@@ -54,7 +54,7 @@ class VIEW_API  ViewEditMatDialog : public ViewDialog {
 public :
   ViewEditMatDialog(QWidget * parent=0, 
 					const char * name=0, 
-					bool modal=FALSE, 
+					bool modal=false, 
 					Qt::WindowFlags f=0);
   ~ViewEditMatDialog(){};
 

@@ -432,11 +432,9 @@ public:
 	inline const uint_t& getSectionResolution() const
 	{ return getParameters().sectionResolution; }
 
-	inline void setGuide(const Curve2DPtr& path, real_t length, bool yorientation = false, bool ccw = false)
-	{ getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,yorientation,ccw)); }
+	void setGuide(const Curve2DPtr& path, real_t length, bool yorientation = false, bool ccw = false);
 
-	inline void setGuide(const LineicModelPtr& path, real_t length)
-	{ getParameters().guide = TurtlePathPtr(new Turtle3DPath(path,length)); }
+	void setGuide(const LineicModelPtr& path, real_t length);
 
 	inline void clearGuide()
 	{ getParameters().guide = TurtlePathPtr(); }
@@ -457,6 +455,11 @@ public:
 
 	inline void setWarnOnError(bool b) { warn_on_error = b; }
 	inline bool warnOnError() const { return warn_on_error; }
+
+    bool path_info_cache_enabled;
+
+    inline void enablePathInfoCache(bool b) { path_info_cache_enabled = b; }
+    inline bool pathInfoCacheEnabled() const { return path_info_cache_enabled; }
 
 	void leftReflection();
 	void upReflection();
@@ -516,6 +519,8 @@ protected:
 	real_t scale_multiplier;
     uint_t id;
     uint_t parentId;
+
+    PathInfoMap __pathinfos;
 
 
 };

@@ -32,19 +32,34 @@
  */				
 
 
-
-#include <QtGui/qpushbutton.h>
-#include <QtGui/qcheckbox.h>
-#include <QtGui/qcolordialog.h>
-#include <QtGui/qslider.h>
-#include <QtGui/qlineedit.h>
-#include <QtGui/qgroupbox.h>
-#include <QtGui/qlabel.h>
-#include <QtGui/qbuttongroup.h>
-#include <QtGui/qdial.h>
-#include <QtGui/qspinbox.h>
-#include <QtGui/qlayout.h>
-#include <QtGui/qmainwindow.h>
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+    #include <QtWidgets/qpushbutton.h>
+    #include <QtWidgets/qcheckbox.h>
+    #include <QtWidgets/qcolordialog.h>
+    #include <QtWidgets/qslider.h>
+    #include <QtWidgets/qlineedit.h>
+    #include <QtWidgets/qgroupbox.h>
+    #include <QtWidgets/qlabel.h>
+    #include <QtWidgets/qbuttongroup.h>
+    #include <QtWidgets/qdial.h>
+    #include <QtWidgets/qspinbox.h>
+    #include <QtWidgets/qlayout.h>
+    #include <QtWidgets/qmainwindow.h>
+#else
+    #include <QtGui/qpushbutton.h>
+    #include <QtGui/qcheckbox.h>
+    #include <QtGui/qcolordialog.h>
+    #include <QtGui/qslider.h>
+    #include <QtGui/qlineedit.h>
+    #include <QtGui/qgroupbox.h>
+    #include <QtGui/qlabel.h>
+    #include <QtGui/qbuttongroup.h>
+    #include <QtGui/qdial.h>
+    #include <QtGui/qspinbox.h>
+    #include <QtGui/qlayout.h>
+    #include <QtGui/qmainwindow.h>
+#endif
 
 #include "controlpanel.h"
 #include "glframe.h"
