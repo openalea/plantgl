@@ -48,7 +48,7 @@ install:
   - scons -h
 
   - python setup.py install
-  - export PATH=$PWD/build/lib/bin:$PATH
+#  - export PATH=$PWD/build/lib/bin:$PATH
 
 script:
   - cd test; nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
