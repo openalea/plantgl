@@ -38,7 +38,6 @@ install:
   - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
   - source activate myenv
   - cd ./conda
-  - export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig
   - conda build -c openalea -c openalea/label/unstable .
   - conda install -c openalea -c openalea/label/unstable vplants.plantgl
   - conda install nose
