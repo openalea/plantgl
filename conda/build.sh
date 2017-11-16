@@ -1,10 +1,9 @@
 #!/bin/bash
 
-set -ve
+export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
 
-export PKG_CONFIG_PATH=$CONDA_PREFIX/lib/pkgconfig
 cp options_conda.py options.py
-scons -h
-python setup.py install
 
-set +ve
+scons -h
+
+$PYTHON setup.py scons --scons-ext-param="WITH_LAPACK=False EXTRA_LIBS='boost_system png'" install --prefix=$PREFIX
