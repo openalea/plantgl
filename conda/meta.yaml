@@ -14,7 +14,6 @@ about:
 build:
   preserve_egg_dir: True
   number: 0
-  script: cp options_conda.py options.py; python setup.py install
 
 requirements:
   build:
