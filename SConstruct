@@ -23,8 +23,8 @@ tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal'
 env = ALEASolution(options, tools)
 
 env.Prepend( CPPPATH = pj( '$build_includedir','plantgl' ) )
-# env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH/Qt'] )
-# env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH'] )
+env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH/Qt'] )
+env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH'] )
 
 
 if env['USE_DOUBLE']:

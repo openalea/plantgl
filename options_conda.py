@@ -1,7 +1,7 @@
 
 import os
 
-PREFIX = os.environ.get('CONDA_PREFIX')
+PREFIX = os.environ.get('PREFIX')
 
 
 QTDIR=PREFIX

@@ -3,7 +3,7 @@ Import( "env" )
 
 lib_env = env.Clone()
 qt_version = int(lib_env['QT_VERSION'])
-lib_env.EnableQtModules( [ 'QtCore'])
+# lib_env.EnableQtModules( [ 'QtCore'])
 
 includes= lib_env.ALEAGlob('*.h')
 sources= lib_env.ALEAGlob('*.cpp')
