@@ -38,8 +38,8 @@ install:
   - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
   - source activate myenv
   - cd ./conda
-  - conda build -c openalea -c openalea/label/unstable .
-  - conda install -c openalea -c openalea/label/unstable vplants.plantgl
+  - conda build -c openalea/label/unstable -c openalea  .
+  - conda install -c openalea/label/unstable -c openalea vplants.plantgl
   - conda install nose
   - cd ..
 
