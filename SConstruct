@@ -18,7 +18,7 @@ options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 qt_env = Environment(options=options, tools=[])
 qt_version = int(qt_env['QT_VERSION'])
 
-tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann']
+tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann', 'qt'+str(qt_version)]
 
 env = ALEASolution(options, tools)
 
