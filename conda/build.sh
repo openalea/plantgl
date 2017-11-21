@@ -15,4 +15,4 @@ export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
 #echo "ls $PREFIX/include/qt/QtCore/"
 #ls $PREFIX/include/qt/QtCore/
 
-$PYTHON setup.py scons --scons-ext-param="WITH_LAPACK=False EXTRA_LIBS='boost_system png' --debug=stacktrace" install --prefix=$PREFIX
+$PYTHON setup.py scons --scons-ext-param="WITH_LAPACK=False EXTRA_LIBS='boost_system png' --debug=stacktrace " install --prefix=$PREFIX
