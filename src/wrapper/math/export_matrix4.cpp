@@ -52,7 +52,7 @@ string m4_repr( const Matrix4& m )
   return ss.str();
 }
 
-Matrix4* m4_init( tuple t)
+Matrix4* m4_init( boost::python::tuple t)
 {
   int n= PyObject_Size(t.ptr());
   if( n == 0 ) 
@@ -79,7 +79,7 @@ Matrix4* m4_init( tuple t)
     throw PythonExc_ValueError(); 
 }
 
-void m4_set( Matrix4 & m, tuple t )
+void m4_set( Matrix4 & m, boost::python::tuple t )
 {
   if( PyObject_Size(t.ptr()) != 16 ) 
     throw PythonExc_ValueError(); 
@@ -99,25 +99,25 @@ void m4_set( Matrix4 & m, tuple t )
     throw PythonExc_TypeError(); 
 }
 
-tuple mat4_getTransformation(Matrix4 * t)
+boost::python::tuple mat4_getTransformation(Matrix4 * t)
 {
 	Vector3 scale,rotate,translate;
 	t->getTransformation(scale,rotate,translate);
-	return make_tuple(scale,rotate,translate);
+	return boost::python::make_tuple(scale,rotate,translate);
 }
 
-tuple mat4_getTransformationB(Matrix4 * t)
+boost::python::tuple mat4_getTransformationB(Matrix4 * t)
 {
 	Vector3 scale,rotate,translate;
 	t->getTransformationB(scale,rotate,translate);
-	return make_tuple(scale,rotate,translate);
+	return boost::python::make_tuple(scale,rotate,translate);
 }
 
-tuple mat4_getTransformation2(Matrix4 * t)
+boost::python::tuple mat4_getTransformation2(Matrix4 * t)
 {
 	Vector3 scale,rotate,translate;
 	t->getTransformation2(scale,rotate,translate);
-	return make_tuple(scale,rotate,translate);
+	return boost::python::make_tuple(scale,rotate,translate);
 }
 
 void export_Matrix4()

@@ -47,12 +47,6 @@
 /// function generate by bison to parse a GEOM file
 extern int CODEC_API scne_yyparse(void*);
 
-/// function to put parser on verbose mode.
-extern void CODEC_API parserVerbose(bool b);
-
-/// function to test parser verbose mode.
-extern bool CODEC_API isParserVerbose();
-
 /*  ---------------------------------------------------------------------- */
 
 // __scne_parser_h__

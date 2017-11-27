@@ -65,25 +65,25 @@ std::string cyl_repr(Vector3::Cylindrical * v){
 
 struct v3_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Vector3 const& v)
+	static boost::python::tuple getinitargs(Vector3 const& v)
 	{
-		return make_tuple(v.x(),v.y(),v.z());
+		return boost::python::make_tuple(v.x(),v.y(),v.z());
 	}
 };
 
 struct v3cyl_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Vector3::Cylindrical const& v)
+	static boost::python::tuple getinitargs(Vector3::Cylindrical const& v)
 	{
-		return make_tuple(v.radius,v.theta,v.z);
+		return boost::python::make_tuple(v.radius,v.theta,v.z);
 	}
 };
 
 struct v3sph_pickle_suite : boost::python::pickle_suite
 {
-	static tuple getinitargs(Vector3::Spherical const& v)
+	static boost::python::tuple getinitargs(Vector3::Spherical const& v)
 	{
-		return make_tuple(v.radius,v.theta,v.phi);
+		return boost::python::make_tuple(v.radius,v.theta,v.phi);
 	}
 };
 

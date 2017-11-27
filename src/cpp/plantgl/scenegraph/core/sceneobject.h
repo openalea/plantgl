@@ -171,6 +171,9 @@ public:
    /// Sets the name of \e self.
   void setName( const std::string& name );
 
+   /// Sets the name of \e self to a default value.
+  void setDefaultName();
+
   /// Deep copy of \e this.
   SceneObjectPtr deepcopy() const;
 

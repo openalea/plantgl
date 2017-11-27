@@ -2,6 +2,9 @@ from openalea.vpltk.qt import QtCore
 from PyQGLViewer import *
 from openalea.plantgl.all import *
 
+
+from openalea.vpltk.qt.QtCore import QObject,pyqtSignal
+
 class Pos3Setter:
     def __init__(self,ctrlpointset,index):
         self.ctrlpointset = ctrlpointset
@@ -21,6 +24,11 @@ class CtrlPoint(ManipulatedFrame):
     """the class CtrlPoint  represent the control points of a NurbsPatch by PlantGL Spheres. 
         The user can grab them and move them dynamically. 
         Change of value is automatically propagate to the initial structure using the position_setter function """   
+
+    #modified = pyqtSignal() 
+    #manipulated = pyqtSignal()
+    translated = pyqtSignal("PyQt_PyObject","PyQt_PyObject")
+    valueChanged = pyqtSignal(int) 
 
     def __init__(self, position, position_setter, color = (30,30,250),id = 0):
         """Constructor 
@@ -47,9 +55,9 @@ class CtrlPoint(ManipulatedFrame):
         self.constraint.setRotationConstraintType(AxisPlaneConstraint.FORBIDDEN)
         self.setConstraint(self.constraint)
         
-        # QtCore.SIGNAL to propagate displacement
-        QtCore.QObject.connect(self,QtCore.SIGNAL('modified()'),self.__propagate_position_change__)
-        QtCore.QObject.connect(self,QtCore.SIGNAL('manipulated()'),self.__emit_translation__)
+        # SIGNAL to propagate displacement
+        self.modified.connect(self.__propagate_position_change__) # QObject.connect(self,SIGNAL('modified()'),self.__propagate_position_change__)
+        self.manipulated.connect(self.__emit_translation__) # QObject.connect(self,SIGNAL('manipulated()'),self.__emit_translation__)
         
         # manipulated call back
         self.callback = None
@@ -72,11 +80,11 @@ class CtrlPoint(ManipulatedFrame):
         self.position_setter(self.position())
     
     def __emit_translation__(self):
-        """ emit a QtCore.SIGNAL when a translation has been applied to the point """
+        """ emit a SIGNAL when a translation has been applied to the point """
         pos = self.position()
         tr = pos - self.previousPosition
-        self.emit(QtCore.SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self,tr)
-        self.emit(QtCore.SIGNAL("valueChanged(int)"),self.id)
+        self.translated.emit(self,tr) # self.emit(SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self,tr) # AUTO SIGNAL TRANSLATION
+        self.valueChanged.emit(self.id) # self.emit(SIGNAL("valueChanged(int)"),self.id) # AUTO SIGNAL TRANSLATION
         if self.callback:
             self.callback(self.id)
      
@@ -125,6 +133,9 @@ class SelectionAxis (ManipulatedFrame):
     """
     O,X,Y,Z = (Vec(0,0,0), Vec(1,0,0), Vec(0,1,0),  Vec(0,0,1)) # predefined axis direction
     AxisLength = 0.2  # length of axis representation
+
+    manipulated = pyqtSignal() 
+    translated = pyqtSignal('PyQt_PyObject')
     
     def __init__(self, parent, direction= Vec(), material =Material(), selectionMaterial = Material((0,0,0),1)):
         """Constructor 
@@ -158,7 +169,7 @@ class SelectionAxis (ManipulatedFrame):
         self.constraint.setTranslationConstraint(AxisPlaneConstraint.AXIS,self.direction)
         self.setConstraint(self.constraint)
         
-        QtCore.QObject.connect(self,QtCore.SIGNAL("manipulated()"),self.__emit_translation__)
+        self.manipulated.connect(self.__emit_translation__) # QObject.connect(self,SIGNAL("manipulated()"),self.__emit_translation__)
     
    
     def representation(self, pointsize = 0.05):
@@ -172,14 +183,17 @@ class SelectionAxis (ManipulatedFrame):
         return sh
 
     def __emit_translation__(self):
-        """ emit a QtCore.SIGNAL when a translation occur on this axis """
+        """ emit a SIGNAL when a translation occur on this axis """
         tr = self.translation()
         self.setTranslation(self.initpos)
-        self.emit(QtCore.SIGNAL("translated(PyQt_PyObject)"),tr-self.initpos)
+        self.translated.emit(tr-self.initpos) # self.emit(SIGNAL("translated(PyQt_PyObject)"),tr-self.initpos) # AUTO SIGNAL TRANSLATION
     
 #############################################################
 
 class SelectionManipulator (ManipulatedFrame):
+    
+    valueChanged = pyqtSignal()
+
     def __init__(self):
         ManipulatedFrame.__init__(self)
         # set of selected point
@@ -191,9 +205,10 @@ class SelectionManipulator (ManipulatedFrame):
         
         # previous position to compute displacement
         self.previousPosition = Vec()        
-        QtCore.QObject.connect(self,QtCore.SIGNAL("manipulated()"),self.propagatePointTranslation)
+        self.manipulated = pyqtSignal() # AUTO SIGNAL TRANSLATION in class SelectionManipulator
+        self.manipulated.connect(self.propagatePointTranslation) # QObject.connect(self,SIGNAL("manipulated()"),self.propagatePointTranslation)
         for axis in self.axis:
-            QtCore.QObject.connect(axis,QtCore.SIGNAL("translated(PyQt_PyObject)"),self.propagateAxisTranslation)        
+            axis.translated.connect(self.propagateAxisTranslation) # QObject.connect(axis,SIGNAL("translated(PyQt_PyObject)"),self.propagateAxisTranslation)
     
     def __push_position__(self):
         """ push current position status as previous position """
@@ -211,7 +226,7 @@ class SelectionManipulator (ManipulatedFrame):
         self.__push_position__()
         for point in self.selection:
             point.apply_translation(displacement)
-        self.emit(QtCore.SIGNAL("valueChanged()"))
+        self.valueChanged.emit() # self.emit(SIGNAL("valueChanged()")) # AUTO SIGNAL TRANSLATION
 
     
     def propagatePointTranslation(self):
@@ -219,27 +234,28 @@ class SelectionManipulator (ManipulatedFrame):
         displacement = self.displacement()
         for point in self.selection:
             point.apply_translation(displacement)
-        self.emit(QtCore.SIGNAL("valueChanged()"))
+        self.valueChanged.emit() # self.emit(SIGNAL("valueChanged()")) # AUTO SIGNAL TRANSLATION
     
     def clear(self):
         """ remove all control points """
-        QtCore.QObject.disconnect(self,QtCore.SIGNAL("manipulated()"),self.propagatePointTranslation)
+        self.manipulated.disconnect(self.propagatePointTranslation)
         for ctrlpoint in self.selection:
             ctrlpoint.selected = False
-            QtCore.QObject.disconnect(ctrlpoint,QtCore.SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self.propagatePointTranslation)
+            ctrlpoint.translated.disconnect(self.propagatePointTranslation)
+            #QObject.disconnect(ctrlpoint,SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self.propagatePointTranslation)
         self.selection = None
             
     def add(self,ctrlpoint):
         """ add a ctrl point to the selection """
         self.selection.append(ctrlpoint)
         ctrlpoint.selected = True
-        #QtCore.QObject.connect(ctrlpoint,QtCore.SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self.propagatePointTranslation)
+        #ctrlpoint.translated.connect(self.propagatePointTranslation) # QObject.connect(ctrlpoint,SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self.propagatePointTranslation)
         self.__update__()
     
     def remove(self,ctrlpoint):
         """ remove a ctrl point to the selection """
         ctrlpoint.selected = False
-        #QtCore.QObject.connect(ctrlpoint,QtCore.SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self.propagatePointTranslation)
+        #ctrlpoint.translated.connect(self.propagatePointTranslation) # QObject.connect(ctrlpoint,SIGNAL("translated(PyQt_PyObject,PyQt_PyObject)"),self.propagatePointTranslation)
         del self.selection[self.selection.index(ctrlpoint)]
         self.__update__()
         

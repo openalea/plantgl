@@ -2,9 +2,4 @@
 - Christophe Pradal
 - Christophe Nouguier
 
-Contributors
-------------
-- Christophe Godin
-- Nicolas Dones
-- Boris Adam
-- Pierre Barbier de Reuille
+With contributions of Christophe Godin, Nicolas Dones, Boris Adam, Pierre Barbier de Reuille.

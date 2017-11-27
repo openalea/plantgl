@@ -47,7 +47,7 @@
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/qclipboard.h>
 
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtCore/QMimeData>
     #include <QtWidgets/qapplication.h>
     #include <QtWidgets/qstatusbar.h>
@@ -97,7 +97,7 @@
 #include "daemon.h"
 #include "configuration.h"
 #include "util_qwidget.h"
-#include "util_qt.h"
+
 #include "interface/frameglsizedialog.h"
 
 #include <plantgl/tool/util_enviro.h>
@@ -428,7 +428,7 @@ void Viewer::initialize()
 
   ViewerSettings settings;
   settings.beginGroup("Viewer");
-  qDebug("Try to retrieve %s Application Data.", toCharArray(ViewerSettings::getAppliName()));
+  qDebug("Try to retrieve %s Application Data.", qPrintable(ViewerSettings::getAppliName()));
   int version = settings.value("StateVersion",-1).toInt();
   if(version != -1)
   {
@@ -731,7 +731,7 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(etype == ViewEvent::eImageSave){
     ViewImageSaveEvent * k = ( ViewImageSaveEvent * )e;
-    saveImage(k->arg1,toCharArray(k->arg2),k->arg3);
+    saveImage(k->arg1,qPrintable(k->arg2),k->arg3);
   }
   else if(etype == ViewEvent::eShowMessage){
     ViewShowMessageEvent * k = ( ViewShowMessageEvent * )e;
@@ -1073,7 +1073,7 @@ void Viewer::setStatusBarMsg(QString _msg){
 void
 Viewer::receiveRequest(const QString& s){
   appear();
-  qWarning("Net Request : '%s'",toCharArray(s));
+  qWarning("Net Request : '%s'",qPrintable(s));
 }
 
 void

@@ -150,10 +150,8 @@ static const char * sh_keyword[] = {
 
 /* ----------------------------------------------------------------------- */
 
-static bool __verbose = true;
-
-static int shape_nb = 0;
-
+static int shape_nb = 0;       
+      
 static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 
 #define cursmbtable(t) \
@@ -1022,14 +1020,14 @@ GeomObj:
 ShapeObj:
   TokShape Name '{' ShapeFieldList '}' {
     GEOM_PARSER_BUILD_SHAPE($$,$2,$4);shape_nb++;
-    if(__verbose)
+    if(isParserVerbose())
       if(shape_nb%10==0)
       	printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
       // std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
   }
 | TokShape  Name '{' ShapeShortFieldList '}'{
   GEOM_PARSER_BUILD_SHAPE($$,$2,$4);shape_nb++;
-  if(__verbose)
+  if(isParserVerbose())
     if(shape_nb%10==0)
 		printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
     // std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
@@ -3177,13 +3175,3 @@ Vector4List:
 %%
 
 
-
-void parserVerbose(bool b)
-{
-  __verbose = b;
-}
-
-bool isParserVerbose()
-{
-  return (__verbose);
-}

@@ -41,16 +41,15 @@
 /* ----------------------------------------------------------------------- */
 
 inline QByteArray toLatin1(const QString& str) {
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     return str.toLatin1();
 #else
     return str.toAscii();
 #endif
 }
 
-inline const char * toCharArray(const QString& str) {
-    return toLatin1(str).constData();
-}
+#define toCharArray qPrintable
+
 /* ----------------------------------------------------------------------- */
 
 #endif

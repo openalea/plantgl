@@ -149,6 +149,10 @@
         Uncomment to use this functionnality
 */
 
+#if defined(WITH_BISON) && defined(WITH_FLEX)
+
+#define WITH_BISONFLEX
+
 #ifndef BISON_HPP
 #define BISON_HPP
 #endif
@@ -158,6 +162,9 @@
 #define BISON_HPP 1
 #endif
 #endif
+
+#endif
+
 
 /*! \def QT_DLL
     \brief QT Macro

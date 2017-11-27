@@ -5,6 +5,10 @@ import OpenGL.GL as ogl
 from editablectrlpoint import * 
 from math import cos,sin,sqrt,fabs,pi
 
+
+from openalea.vpltk.qt.QtCore import QObject, QRect, Qt, pyqtSignal
+from openalea.vpltk.qt.QtWidgets import QApplication
+
 helpstr = """<h2>N u r b s P a t c h E d i t o r</h2>
 This application allows the user to edit a nurbsPatch dynamically.
 The user can add a column or a row respectively pressing shift+RightMouseButton or shift+LeftRightButton.
@@ -38,6 +42,7 @@ class NurbsPatchEditor(QGLViewer):
     """ The class NurbsPatchEditor is the viewer of the scene, it contains all the informations about the NurbsPatch, that's why a getter and a setter have been created, the NubrsPatch is defined by a 2 dimensional Array of 3d Vectors"""
    
     Edit,Rotate = range(2)
+    valueChanged = pyqtSignal()
     
     def __init__(self,parent):
         """ Constructor 
@@ -72,7 +77,7 @@ class NurbsPatchEditor(QGLViewer):
         
         # rectangular selection
         self.selectionRect=False # for rectangular selection (with control)
-        self.__rectangle = QtCore.QRect()
+        self.__rectangle = QRect()
         self.__rectangleInit = None
     
         #creation of a default NurbsPatch
@@ -81,9 +86,9 @@ class NurbsPatchEditor(QGLViewer):
             
   
     def __propagate_valuechanged__(self,pid=None):
-        """ emit a QtCore.SIGNAL every time a value changed """
+        """ emit a SIGNAL every time a value changed """
         self.setSceneBoundingBox(*self.getBounds())
-        self.emit(QtCore.SIGNAL("valueChanged()"))
+        self.valueChanged.emit() # self.emit(SIGNAL("valueChanged()")) # AUTO SIGNAL TRANSLATION
     
     def init(self):
         """ init function """
@@ -94,9 +99,9 @@ class NurbsPatchEditor(QGLViewer):
         self.mode = NurbsPatchEditor.Edit
         self.setInteractionMode(False)
 
-        self.setMouseBindingDescription(QtCore.Qt.ShiftModifier+QtCore.Qt.LeftButton,"Rectangular selection")
-        self.setMouseBindingDescription(QtCore.Qt.LeftButton,"Camera/Control Points manipulation")
-        self.setMouseBindingDescription(QtCore.Qt.LeftButton,"When double clicking on a line, create a new line",True)
+        self.setMouseBindingDescription(Qt.ShiftModifier+Qt.LeftButton,"Rectangular selection")
+        self.setMouseBindingDescription(Qt.LeftButton,"Camera/Control Points manipulation")
+        self.setMouseBindingDescription(Qt.LeftButton,"When double clicking on a line, create a new line",True)
     
     
     def getBounds(self):
@@ -118,14 +123,14 @@ class NurbsPatchEditor(QGLViewer):
         """ clear the selection manipulator """
         if self.selectionManipulator:
             self.selectionManipulator.clear()
-            QtCore.QObject.disconnect(self.selectionManipulator,QtCore.SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
+            self.selectionManipulator.valueChanged.disconnect(self.__propagate_valuechanged__) # QObject.disconnect(self.selectionManipulator,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
             self.selectionManipulator = None
 
     def createSelectionManipulator(self):
         """ ensure that the selection manipulator is existing and valid """
         if not self.selectionManipulator:
             self.selectionManipulator = SelectionManipulator()
-            QtCore.QObject.connect(self.selectionManipulator,QtCore.SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
+            self.selectionManipulator.valueChanged.connect(self.__propagate_valuechanged__) # QObject.connect(self.selectionManipulator,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
         
     def mousePressEvent(self,event):
         """ Check for eventual operations the user asks: 
@@ -133,12 +138,12 @@ class NurbsPatchEditor(QGLViewer):
             else check for which point is selected
         """
         #Rectangular selection
-        if event.modifiers() == QtCore.Qt.ShiftModifier:
-            if event.button() == QtCore.Qt.LeftButton :
-                self.__rectangle = QtCore.QRect(event.pos(), event.pos())
+        if event.modifiers() == Qt.ShiftModifier:
+            if event.button() == Qt.LeftButton :
+                self.__rectangle = QRect(event.pos(), event.pos())
                 self.__rectangleInit = event.pos()
                 self.selectionRect=True
-            elif event.button() == QtCore.Qt.RightButton :
+            elif event.button() == Qt.RightButton :
                 self.clearSelectionManipulator()
             self.updateGL()
         else:
@@ -166,24 +171,24 @@ class NurbsPatchEditor(QGLViewer):
         if frame:
             if self.mode != NurbsPatchEditor.Edit:
                 self.mode = NurbsPatchEditor.Edit
-                self.setMouseBinding(QtCore.Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-                self.setMouseBinding(QtCore.Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
 
-                self.setMouseBinding(QtCore.Qt.ControlModifier+QtCore.Qt.LeftButton,  QGLViewer.CAMERA,QGLViewer.ROTATE)
-                self.setMouseBinding(QtCore.Qt.ControlModifier+QtCore.Qt.RightButton, QGLViewer.CAMERA,QGLViewer.TRANSLATE)
-                self.setMouseBinding(QtCore.Qt.ControlModifier+QtCore.Qt.MiddleButton,QGLViewer.CAMERA,QGLViewer.ZOOM)     
+                self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,  QGLViewer.CAMERA,QGLViewer.ROTATE)
+                self.setMouseBinding(Qt.ControlModifier+Qt.RightButton, QGLViewer.CAMERA,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.ControlModifier+Qt.MiddleButton,QGLViewer.CAMERA,QGLViewer.ZOOM)     
         else:
             if self.mode != NurbsPatchEditor.Rotate:
                 self.mode = NurbsPatchEditor.Rotate
-                self.setMouseBinding(QtCore.Qt.ControlModifier+QtCore.Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
-                self.setMouseBinding(QtCore.Qt.ControlModifier+QtCore.Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
-                self.setMouseBinding(QtCore.Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.ROTATE)
-                self.setMouseBinding(QtCore.Qt.RightButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)     
-                self.setMouseBinding(QtCore.Qt.MiddleButton,QGLViewer.CAMERA,QGLViewer.ZOOM)     
+                self.setMouseBinding(Qt.ControlModifier+Qt.LeftButton,QGLViewer.FRAME,QGLViewer.TRANSLATE)
+                self.setMouseBinding(Qt.ControlModifier+Qt.RightButton,QGLViewer.FRAME,QGLViewer.NO_MOUSE_ACTION)
+                self.setMouseBinding(Qt.LeftButton,QGLViewer.CAMERA,QGLViewer.ROTATE)
+                self.setMouseBinding(Qt.RightButton,QGLViewer.CAMERA,QGLViewer.TRANSLATE)     
+                self.setMouseBinding(Qt.MiddleButton,QGLViewer.CAMERA,QGLViewer.ZOOM)     
 
     def mouseDoubleClickEvent(self,event):
         """ mouseDoubleClickEvent: add a control point to the selection double clicking on it, empty the selection double clicking elsewhere """
-        if event.modifiers() & QtCore.Qt.ShiftModifier:
+        if event.modifiers() & Qt.ShiftModifier:
             selection=False
             #Doubleclick on a control point add/delete it from the selection array#
             for ctrlPointRow in self.ctrlPointMatrix:
@@ -225,7 +230,7 @@ class NurbsPatchEditor(QGLViewer):
         
         #rectangular selection
         if self.selectionRect:
-            self.__rectangle =  QtCore.QRect(self.__rectangleInit,event.pos()).normalized()
+            self.__rectangle =  QRect(self.__rectangleInit,event.pos()).normalized()
             self.updateGL()
         
         # by default camera or manipulated frame is manipulated
@@ -244,10 +249,10 @@ class NurbsPatchEditor(QGLViewer):
         if self.selectionRect:
             self.selectionRect=False
             # Possibly swap left/right and top/bottom to make rectangle_ valid.
-            self.__rectangle =  QtCore.QRect(self.__rectangleInit,event.pos()).normalized()
+            self.__rectangle =  QRect(self.__rectangleInit,event.pos()).normalized()
             # make rectangle with a minimal size
             if self.__rectangle.width() < 10 or self.__rectangle.height() < 10:           
-                self.__rectangle = QtCore.QRect(event.pos().x()-5,event.pos().y()-5,10,10)
+                self.__rectangle = QRect(event.pos().x()-5,event.pos().y()-5,10,10)
             self.selectionFromRect(self.__rectangle)
         self.setInteractionMode(False)
         self.updateGL()
@@ -260,7 +265,7 @@ class NurbsPatchEditor(QGLViewer):
                 if (self.__rectangle.contains(point.x,point.y)):
                     if not self.selectionManipulator:
                         self.selectionManipulator = SelectionManipulator()
-                        QtCore.QObject.connect(self.selectionManipulator,QtCore.SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
+                        self.selectionManipulator.valueChanged.connect(self.__propagate_valuechanged__) # QObject.connect(self.selectionManipulator,SIGNAL("valueChanged()"),self.__propagate_valuechanged__)
                     self.selectionManipulator.toogleSelection(cCtrlPoint)
         if self.selectionManipulator and self.selectionManipulator.empty():
             self.clearSelectionManipulator()
@@ -362,17 +367,12 @@ class NurbsPatchEditor(QGLViewer):
                 ctrlPoint = CtrlPoint(linePoint[i].project(), Pos4Setter(self.nurbsPatch.ctrlPointMatrix,(j,i)),color=(30+int(220*j/nbLines),30+int(220*i/nbCols),250),id=pid)
                 pid += 1
                 ctrlPoint.setCallBack(self.__propagate_valuechanged__)
-                #QtCore.QObject.connect(ctrlPoint,QtCore.SIGNAL("valueChanged(int)"),self.__propagate_valuechanged__)
                 lineCtrlPoint.append(ctrlPoint)
             self.ctrlPointMatrix.append(lineCtrlPoint)
         self.setSceneBoundingBox(*self.getBounds())
     
     def clear(self):
         """ clear current edition """
-        # for ctrlPointRow in self.ctrlPointMatrix:
-            # for cCtrlPoint in ctrlPointRow:
-                # if not cCtrlPoint is None:
-                    # QtCore.QObject.disconnect(cCtrlPoint,QtCore.SIGNAL("valueChanged(int)"),self.__propagate_valuechanged__)
         self.ctrlPointMatrix = []
         self.clearSelectionManipulator()
 
@@ -391,7 +391,7 @@ class NurbsPatchEditor(QGLViewer):
 
 def main():
     """the main program, here we create a NurbsPatchEditor and make it draw itself"""
-    qapp = QtGui.QApplication([])
+    qapp = QApplication([])
     viewer = NurbsPatchEditor(None)
     viewer.setWindowTitle("NurbsPatchEditor")
     viewer.show()

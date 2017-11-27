@@ -51,7 +51,7 @@ setup(
     # scons is responsible to put compiled library in the write place
     # ( lib/, package/, etc...)
     scons_scripts = ['SConstruct'],
-    scons_parameters = ["build_prefix="+build_prefix],
+    #scons_parameters = ["build_prefix="+build_prefix],
 
     namespace_packages = ["openalea", "vplants"],
     create_namespaces = True,

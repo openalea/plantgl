@@ -35,10 +35,13 @@ class PglColorMap:
         dc = 1
         def sc2txt(coord) :
             return 50*(coord+1)
-        return sg.Scene([sg.Shape(sg.ScreenProjected(sg.QuadSet([(px,py,0) for px,py in ptlist], indexlist, colorList=colorlist, colorPerVertex = False),keepAspectRatio=False)),
+        return sg.Scene([sg.Shape(sg.ScreenProjected(sg.QuadSet([(px,py,0) for px,py in ptlist], indexlist, colorList=colorlist, colorPerVertex = False),keepAspectRatio=False), sg.Material((0,0,0))),
                          sg.Shape(sg.Text(str(self.normalizer.vmax), (sc2txt(position[0]), sc2txt(position[1]+0.01) , 0 ), True ), sg.Material((0,0,0))),
                          sg.Shape(sg.Text(str(self.normalizer.vmin), (sc2txt(position[0]), sc2txt(position[1]-length-0.05) , 0 ), True ), sg.Material((0,0,0)))])        
 
+def tocolorlist(values, name = 'jet'):
+    cm = PglColorMap(min(values), max(values), name)
+    return map(cm, values)
 
 class PglMaterialMap (PglColorMap):
     def __init__(self, minvalue = 0, maxvalue = 1, name = 'jet', ambientlevel = 0.5):
@@ -52,3 +55,14 @@ class PglMaterialMap (PglColorMap):
         color = self.pltcolormap(self.normalizer(value))
         return sg.Material([int(255 * c * self.ambientlevel) for c in color[:3]], diffuse = 1. / self.ambientlevel, transparency=  1. - color[3])
 
+def tomateriallist(values, name = 'jet', ambientlevel = 0.5):
+    cm = PglMaterialMap(min(values), max(values), name, ambientlevel)
+    return map(cm, values)
+
+
+def applymaterialmap(scene, values, name = 'jet', ambientlevel = 0.5):
+    cm = PglMaterialMap(min(values), max(values), name, ambientlevel)
+    nscene = Scene()
+    for value, shape in zip(values, scene):
+        nscene.add(Shape(shape.geometry, cm(value), shape.id, shape.parentId))
+    return nscene

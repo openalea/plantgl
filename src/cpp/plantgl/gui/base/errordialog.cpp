@@ -39,7 +39,7 @@
 #include <QtCore/qstringlist.h>
 #include <QtCore/qregexp.h>
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qpushbutton.h>
     #include <QtWidgets/qradiobutton.h>
     #include <QtWidgets/qapplication.h>
@@ -63,15 +63,14 @@
 
 static ViewErrorDialog * QT_ERROR_MESSAGE_DISPLAY = NULL;
 
-#if QT_VERSION >= 0x050000     
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)     
 void handleQtMessage(QtMsgType type, const QMessageLogContext& context, const QString& qmsg)
 {
-    const char * msg = qmsg.toLatin1().constData();
+    const char * msg = qPrintable(qmsg);
 	if(QT_ERROR_MESSAGE_DISPLAY)
 		QT_ERROR_MESSAGE_DISPLAY->qtMessage(type,msg);
 	else std::cerr << msg << std::endl;
 }
-
 #else
 void handleQtMessage (QtMsgType type, const char *msg)
 {
