@@ -51,8 +51,11 @@
 
 #else
 	#include <unordered_set>
-	#define pgl_hash_set std::unordered_set
-
+	#if (_MSC_VER == 1500)
+		#define pgl_hash_set std::tr1::unordered_set
+	#else
+		#define pgl_hash_set std::unordered_set
+	#endif
 	#ifndef pgl_hash
 		#define pgl_hash std::hash
 	#endif

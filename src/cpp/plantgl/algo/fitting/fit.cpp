@@ -57,14 +57,15 @@
 
 // #define WITHOUT_QHULL
 
-#ifndef WITHOUT_QHULL
-extern "C" {
-#ifndef WITH_QHULL_2011
-#include <qhull/qhull_a.h>
-#else
-#include <libqhull/qhull_a.h>
-#endif
-}
+#ifdef WITH_QHULL
+    extern "C"
+    {
+        #ifndef WITH_QHULL_2011
+            #include <qhull/qhull_a.h>
+        #else
+            #include <libqhull/qhull_a.h>
+        #endif
+    }
 #endif
 
 
@@ -102,10 +103,10 @@ Fit::Fit(const Point3ArrayPtr& _pointstofit ):
 GeometryPtr Fit::use(const string& classname){
     if(! __pointstofit )return GeometryPtr();
 	string cl = toUpper(classname);
-#ifndef WITHOUT_QHULL
+#ifdef WITH_QHULL
     if(cl =="CONVEXHULL")
 	return convexHull();
-	else 
+	else
 #endif
 	if(cl =="EXTRUDEDHULL")
 	return extrudedHull();
@@ -150,7 +151,7 @@ GeometryPtr Fit::use(const string& classname){
 
 vector<string> Fit::getVolumeClassNames(){
     vector<string> classname;
-#ifndef WITHOUT_QHULL
+#ifdef WITH_QHULL
 	classname.push_back(string("CONVEXHULL"));
 #endif
 	classname.push_back(string("ASYMMETRICHULL"));
@@ -189,7 +190,7 @@ bool Fit::available(const std::string& name){
 }
 
 bool Fit::areRadiusNeeded(string classname){
-    return (classname == "extrusion" || classname =="EXTRUSION" 
+    return (classname == "extrusion" || classname =="EXTRUSION"
 /*	    || classname == "cylinder" || classname =="CYLINDER"
 	    || classname == "bcylinder" || classname =="BCYLINDER"*/ );
 }
@@ -197,7 +198,7 @@ bool Fit::areRadiusNeeded(string classname){
 /* ----------------------------------------------------------------------- */
 
 /// compute inertia axis
-bool Fit::inertiaAxis(const Point3ArrayPtr& points, 
+bool Fit::inertiaAxis(const Point3ArrayPtr& points,
 					  Vector3& u, Vector3& v, Vector3& w, Vector3& s)
 {
   if(points->size()>2){
@@ -206,7 +207,7 @@ bool Fit::inertiaAxis(const Point3ArrayPtr& points,
 	float vpang[3][3];
 	short vpok[3];
 	Laxi_ComputeInertia (points,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2],vpvec[2][2]/vpint[2]);
@@ -218,7 +219,7 @@ bool Fit::inertiaAxis(const Point3ArrayPtr& points,
   return false;
 }
 
-bool Fit::inertiaAxis(const Point2ArrayPtr& points, 
+bool Fit::inertiaAxis(const Point2ArrayPtr& points,
 						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s)
 {
   if(points->size()>2){
@@ -228,7 +229,7 @@ bool Fit::inertiaAxis(const Point2ArrayPtr& points,
 	short vpok[3];
 	Point3ArrayPtr npoints = Point3ArrayPtr(new Point3Array(*points,0));
 	Laxi_ComputeInertia (npoints,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpint[2]!=0 && vpint[1]!=0  ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpint[2]!=0 && vpint[1]!=0  ){
 	    u = Vector2(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1]);
 	    v = Vector2(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2]);
 	    s = Vector2(vpint[1],vpint[2]);
@@ -250,7 +251,7 @@ GeometryPtr Fit::sphere(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    w = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
@@ -283,7 +284,7 @@ GeometryPtr Fit::asphere(){
 	if(_center.x() > GEOM_EPSILON || _center.y() > GEOM_EPSILON ||_center.z() > GEOM_EPSILON  ){
 	    return GeometryPtr(
 		new Translated(
-		_center, 
+		_center,
 		GeometryPtr(new Sphere(
 		    _radius,32,32))));
 	}
@@ -299,9 +300,9 @@ GeometryPtr Fit::asphere(){
 
 
 /* ----------------------------------------------------------------------- */
-// E. Welzl. Smallest enclosing disks (balls and ellipsoids). 
+// E. Welzl. Smallest enclosing disks (balls and ellipsoids).
 // In H. Maurer, editor, New
-// Results and New Trends in Computer Science, volume 555 
+// Results and New Trends in Computer Science, volume 555
 // of Lecture Notes in Computer Science, pages 359-370. Springer Verlag, 1991.
 
 GeometryPtr Fit::bsphere(){
@@ -315,7 +316,7 @@ GeometryPtr Fit::bsphere(){
 	  if(_center.x() > GEOM_EPSILON || _center.y() > GEOM_EPSILON ||_center.z() > GEOM_EPSILON  ){
 		return GeometryPtr(
 		  new Translated(
-		  _center, 
+		  _center,
 		  GeometryPtr(new Sphere(
 		  _radius,32,32))));
 	  }
@@ -357,7 +358,7 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 	for(Point2Array::const_iterator it = _points->begin(); it != _points->end(); ++it, ++it2)
 		*it2 = Point(it->x(),it->y());
 
-    Min_circle  mc( pointlist.begin(), pointlist.end(), true); 
+    Min_circle  mc( pointlist.begin(), pointlist.end(), true);
 	if (mc.is_degenerate()) return false;
 	Circle circle = mc.circle();
     center = toVector2(circle.center());
@@ -370,7 +371,7 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
     #else
     #warning "function 'boundingCircle' disabled. CGAL needed"
     #endif
-    
+
     return false;
 #endif
 
@@ -419,7 +420,7 @@ GeometryPtr Fit::cylinder(){
 	short vpok[3];
 	Vector3 u,v,w;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpint[2]!=0){ 
+	if(vpok[2]!=0  && vpint[2]!=0){
 	  u = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
 	  if(vpok[1]!=0)
 		v = Vector3(vpvec[1][0]/vpint[1],
@@ -468,7 +469,7 @@ GeometryPtr Fit::acylinder(){
 	short vpok[3];
 	Vector3 u,v,w;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpint[2]!=0){ 
+	if(vpok[2]!=0  && vpint[2]!=0){
 	    u = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
 		u.normalize();
 	    if(vpok[1]!=0)v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
@@ -531,7 +532,7 @@ GeometryPtr Fit::bcylinder(){
 	short vpok[3];
 	Vector3 u,v,w;
 	Laxi_ComputeInertia (pts,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpint[2]!=0){ 
+	if(vpok[2]!=0  && vpint[2]!=0){
 	    u = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
 	    u.normalize();
 	    if(vpok[1]!=0)
@@ -601,7 +602,7 @@ GeometryPtr Fit::ellipsoid(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
@@ -638,7 +639,7 @@ GeometryPtr Fit::ellipsoid2(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (pts,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
@@ -671,7 +672,7 @@ GeometryPtr Fit::aellipsoid(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2],vpvec[2][2]/vpint[2]);
@@ -731,7 +732,7 @@ GeometryPtr Fit::bellipsoid(){
 	short vpok[3];
 	Vector3 u,v,w,s(0,0,0);
 	Laxi_ComputeInertia (pts,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2],vpvec[2][2]/vpint[2]);
@@ -855,7 +856,7 @@ GeometryPtr Fit::box(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0],vpvec[2][1],vpvec[2][2]);
@@ -885,7 +886,7 @@ GeometryPtr Fit::abox(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2],vpvec[2][2]/vpint[2]);
@@ -924,7 +925,7 @@ GeometryPtr Fit::bbox(){
 	short vpok[3];
 	Vector3 u,v,w,s;
 	Laxi_ComputeInertia (__pointstofit,vpvec,vpint,vpang,vpok);
-	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){ 
+	if(vpok[2]!=0  && vpok[1]!=0 && vpok[0]!=0 && vpint[2]!=0 && vpint[1]!=0 &&  vpint[0]!=0 ){
 	    u = Vector3(vpvec[0][0]/vpint[0],vpvec[0][1]/vpint[0],vpvec[0][2]/vpint[0]);
 	    v = Vector3(vpvec[1][0]/vpint[1],vpvec[1][1]/vpint[1],vpvec[1][2]/vpint[1]);
 	    w = Vector3(vpvec[2][0]/vpint[2],vpvec[2][1]/vpint[2],vpvec[2][2]/vpint[2]);
@@ -980,7 +981,7 @@ GeometryPtr Fit::frustum(){
 	Vector3 u =__pointstofit->getAt(1) -__pointstofit->getAt(0);
 	real_t height = u.normalize();
 	if(height < GEOM_EPSILON) return GeometryPtr();
-	Vector3 w,v = cross(u,Vector3::OZ);	
+	Vector3 w,v = cross(u,Vector3::OZ);
 	if(v == Vector3::ORIGIN){
 	  v = Vector3::OX;
 	}
@@ -1010,40 +1011,40 @@ GeometryPtr Fit::frustum(){
 	  else if (__radius->getAt(0) == Vector2::ORIGIN) {
 		if(v == Vector3::OX && w == Vector3::OY)
 		  return GeometryPtr(
-		  new Translated(__pointstofit->getAt(1),GeometryPtr(		    
+		  new Translated(__pointstofit->getAt(1),GeometryPtr(
 		  new Scaled(Vector3(__radius->getAt(1),1),GeometryPtr(
 		  new Cone(1,
 		  height
 		  ))))));
 		else
 		  return GeometryPtr(
-		  new Translated(__pointstofit->getAt(1),GeometryPtr(		    
+		  new Translated(__pointstofit->getAt(1),GeometryPtr(
 		  new Oriented(w,v,GeometryPtr(
 		  new Scaled(Vector3(__radius->getAt(1),1),GeometryPtr(
 		  new Cone(1,
 					     height
 						 ))))))));
-		
+
 	  }
 	  else if (__radius->getAt(1) == Vector2::ORIGIN) {
 		if(v == Vector3::OX && w == Vector3::OY)
 		  return GeometryPtr(
-		  new Translated(__pointstofit->getAt(0),GeometryPtr(		    
+		  new Translated(__pointstofit->getAt(0),GeometryPtr(
 		  new Scaled(Vector3(__radius->getAt(0),1),GeometryPtr(
 		  new Cone(1,
 					     height
 						 ))))));
 		else
 		  return GeometryPtr(
-		  new Translated(__pointstofit->getAt(0),GeometryPtr(		    
+		  new Translated(__pointstofit->getAt(0),GeometryPtr(
 		  new Oriented(v,w,GeometryPtr(
 		  new Scaled(Vector3(__radius->getAt(0),1),GeometryPtr(
 		  new Cone(1,
 					     height
 						 ))))))));
 	  }
-	  else if((__radius->getAt(0).x() != 0) && (__radius->getAt(1).x() != 0) && 
-		((__radius->getAt(0).y()/__radius->getAt(0).x()) == 
+	  else if((__radius->getAt(0).x() != 0) && (__radius->getAt(1).x() != 0) &&
+		((__radius->getAt(0).y()/__radius->getAt(0).x()) ==
 		(__radius->getAt(1).y()/__radius->getAt(1).x()))) {
 		if(__radius->getAt(0).y()==__radius->getAt(0).x()){ /// R[0] = <a,a> et R[1] = <b,b>
 		  if(__radius->getAt(0).x() == __radius->getAt(1).x()){ /// R[0] == R[1].
@@ -1198,57 +1199,57 @@ GeometryPtr Fit::asymmetricHull(){
 		  (real_t)fitShapeFactor(bottom.x()-a.x(),
 						   negXBotRadius,
 						   negXHeight-a.z(),
-						   negXBotHeight )); 
+						   negXBotHeight ));
 	  }
 	  else if(a.x() > bottom.x()  && a.z() <  posXHeight){
 		botshape = max(botshape,
 		  (real_t)fitShapeFactor(a.x()-bottom.x(),
 						   posXBotRadius,
 						   posXHeight-a.z(),
-						   posXBotHeight )); 
+						   posXBotHeight ));
 	  }
 	  else if(a.x() < top.x() && a.z() >  negXHeight){
 		topshape = max(topshape,
 		  (real_t)fitShapeFactor(top.x()-a.x(),
 						   negXTopRadius,
 						   a.z()-negXHeight,
-						   negXTopHeight )); 
+						   negXTopHeight ));
 	  }
 	  else if(a.x() > top.x()  && a.z() >  posXHeight){
 		topshape = max(topshape,
 		  (real_t)fitShapeFactor(a.x()-top.x(),
 						   posXTopRadius,
 						   a.z()-posXHeight,
-						   posXTopHeight )); 
+						   posXTopHeight ));
 	  }
-	  
+
 	  if(a.y() < bottom.y() && a.z() <  negYHeight){
 		botshape = max(botshape,
 		  (real_t)fitShapeFactor(bottom.y()-a.y(),
 						   negYBotRadius,
 						   negYHeight-a.z(),
-						   negYBotHeight )); 
+						   negYBotHeight ));
 	  }
 	  else if(a.y() > bottom.y()  && a.z() <  posYHeight){
 		botshape = max(botshape,
 		  (real_t)fitShapeFactor(a.y()-bottom.y(),
 						   posYBotRadius,
 						   posYHeight-a.z(),
-						   posYBotHeight )); 
+						   posYBotHeight ));
 	  }
 	  else if(a.y() < top.y() && a.z() >  negYHeight){
 		topshape = max(topshape,
 		  (real_t)fitShapeFactor(top.y()-a.y(),
 						   negYTopRadius,
 						   a.z()-negYHeight,
-						   negYTopHeight )); 
+						   negYTopHeight ));
 	  }
 	  else if(a.y() > top.y()  && a.z() >  posYHeight){
 		topshape = max(topshape,
 		  (real_t)fitShapeFactor(a.y()-top.y(),
 						   posYTopRadius,
 						   a.z()-posYHeight,
-						   posYTopHeight )); 
+						   posYTopHeight ));
 	  }
     }
 
@@ -1302,7 +1303,7 @@ double Fit::fitShapeFactor(double x, double r, double y, double h){
 	}
 	double n = n1;
 	double fn = fn1;
-	while(fabs(fn) > GEOM_EPSILON){	  
+	while(fabs(fn) > GEOM_EPSILON){
 	  n = n1-fn1*(n2-n1)/(fn2-fn1);//(n1+n2)/2;
 	  fn = pow(X,n)+pow(Y,n)-1;
 	  if(fn>= 0){n1 = n; fn1 = fn; }
@@ -1323,7 +1324,7 @@ double Fit::fitShapeFactor(double x, double r, double y, double h){
 
 GeometryPtr Fit::extrudedHull(){
     if(! __pointstofit )return GeometryPtr();
-  
+
     uint_t numpoints = __pointstofit->size();
     if(numpoints>3){
 
@@ -1335,7 +1336,7 @@ GeometryPtr Fit::extrudedHull(){
 	    _it != __pointstofit->end();
 	    _it++)
 	    horizontal_proj->setAt(k++,Vector2(_it->x(),_it->y()));
-	
+
 	Point2ArrayPtr horizontal_profile = convexPolyline(horizontal_proj);
 
 	/// Vertical Profile.
@@ -1345,7 +1346,7 @@ GeometryPtr Fit::extrudedHull(){
 	    _it2 != __pointstofit->end();
 	    _it2++)
 	    vertical_proj->setAt(k++,Vector2(_it2->x(),_it2->z()));
-  
+
 
 	Point2ArrayPtr vertical_profile = convexPolyline(vertical_proj);
 
@@ -1361,7 +1362,7 @@ GeometryPtr Fit::extrudedHull(){
 						Curve2DPtr(new Polyline2D(horizontal_profile)),
 						ExtrudedHull::DEFAULT_CCW));
 */
-	    
+
 /*	Vector2 average = horizontal_profile->getCenter();
 	if(fabs(average.x()) > GEOM_EPSILON || fabs(average.y()) > GEOM_EPSILON){
 	    for(Point2Array::iterator _iter = horizontal_profile->begin();
@@ -1383,7 +1384,7 @@ GeometryPtr Fit::extrudedHull(){
 	}
 	_translation.z() =  average.y();*/
 
-  
+
 	vector<Vector2> gauche(0);
 	vector<Vector2> droite(0);
 	vector<Vector2> gauche2(0);
@@ -1391,16 +1392,16 @@ GeometryPtr Fit::extrudedHull(){
 
 	Point2Array::iterator _itf,_itf2=vertical_profile->begin(),
 	    _itf3=vertical_profile->begin();
-	
+
 	for(_itf=vertical_profile->begin()+1;_itf!=vertical_profile->end();_itf++){
-	    if(_itf2->y()>_itf->y())_itf2=_itf; // min 
-	    if(_itf3->y()<_itf->y())_itf3=_itf; // max 
+	    if(_itf2->y()>_itf->y())_itf2=_itf; // min
+	    if(_itf3->y()<_itf->y())_itf3=_itf; // max
 	}
 	if(distance(_itf2,_itf3)>0){
-/*	    cerr << "Decoupage 0 - " << distance(vertical_profile->begin(),_itf2) << " - " 
-		 << distance(vertical_profile->begin(),_itf3) << " - " 
+/*	    cerr << "Decoupage 0 - " << distance(vertical_profile->begin(),_itf2) << " - "
+		 << distance(vertical_profile->begin(),_itf3) << " - "
 		 << distance(vertical_profile->begin(),vertical_profile->end())<<  endl;
-*/	    
+*/
 	    gauche.insert(gauche.begin(),_itf2,_itf3);
 //	    cerr << "Gauche set made" << endl;
 	    if(_itf3!=vertical_profile->end())
@@ -1409,8 +1410,8 @@ GeometryPtr Fit::extrudedHull(){
 		droite.insert(droite.end(),vertical_profile->begin(),_itf2);
 	}
 	else {
-/*	    cerr << "*Decoupage 0 - " << distance(vertical_profile->begin(),_itf3) << " - " 
-		 << distance(vertical_profile->begin(),_itf2) << " - " 
+/*	    cerr << "*Decoupage 0 - " << distance(vertical_profile->begin(),_itf3) << " - "
+		 << distance(vertical_profile->begin(),_itf2) << " - "
 		 << distance(vertical_profile->begin(),vertical_profile->end())<<  endl;*/
 	    vector<Vector2>::iterator _itf4=_itf2;
 	    while(_itf4!=_itf3){gauche.push_back(*_itf4);_itf4--;}
@@ -1445,8 +1446,8 @@ GeometryPtr Fit::extrudedHull(){
 	    if(_itf2->y() < _itf3->y()){
 		if(_itf3 == droite.end()-1){
 /*		    cerr << "1/Moyenne de " << *_itf3 << " et " << *(gauche.begin()) << " en " << _itf2->y() <<  endl;
-		    cerr << "Calcul : " << (_itf2->y()-gauche.begin()->y()) 
-			 << "*" << (_itf3->x()-gauche.begin()->x()) << "/" 
+		    cerr << "Calcul : " << (_itf2->y()-gauche.begin()->y())
+			 << "*" << (_itf3->x()-gauche.begin()->x()) << "/"
 			 <<  (_itf3->y()-gauche.begin()->y()) << " + " << gauche.begin()->x() << endl;*/
 		    droite2.push_back(Vector2(((_itf2->y()-gauche.begin()->y())*(_itf3->x()-gauche.begin()->x())/(_itf3->y()-gauche.begin()->y()))
 					      +gauche.begin()->x(),
@@ -1473,9 +1474,9 @@ GeometryPtr Fit::extrudedHull(){
 		}
 		else{
 /*		    cerr << "4/Moyenne de " << *_itf2 << " et " << *(_itf2-1)  << " en " << _itf3->y() << endl;
-		    cerr << "Calcul : " 
-			 << (_itf3->y()-(_itf2-1)->y()) << "*" 
-			 << (_itf2->x()-(_itf2-1)->x()) << "/" 
+		    cerr << "Calcul : "
+			 << (_itf3->y()-(_itf2-1)->y()) << "*"
+			 << (_itf2->x()-(_itf2-1)->x()) << "/"
 			 << (_itf2->y()-(_itf2-1)->y()) << "+" << (_itf2-1)->x() << endl;*/
 		    gauche2.push_back(Vector2(((_itf3->y()-(_itf2-1)->y())*(_itf2->x()-(_itf2-1)->x())/(_itf2->y()-(_itf2-1)->y()))
 					      +(_itf2-1)->x(),
@@ -1504,7 +1505,7 @@ GeometryPtr Fit::extrudedHull(){
 //		cerr << "Multiple last point !" << endl;
 		droite2.push_back(Vector2(((droite.begin())->x()+_itf3->x())/2,_itf3->y()));
 	    }
-	    else{	    
+	    else{
 //		cerr << "5/Moyenne de " << *(gauche.end()-1) << " et " << *(droite.begin())  << " en " << _itf3->y() << endl;
 		gauche2.push_back(Vector2(((_itf3->y()-(gauche.end()-1)->y())*(droite.begin()->x()-(gauche.end()-1)->x())/(droite.begin()->y()-(gauche.end()-1)->y()))
 					  +(gauche.end()-1)->x(),_itf3->y()));
@@ -1530,17 +1531,17 @@ GeometryPtr Fit::extrudedHull(){
 	    vertical_profile->insert(vertical_profile->end(),droite2.begin(),droite2.end());
 	    for(_itf3 = gauche2.end();_itf3 != gauche2.begin()+1;){
 		_itf3--;vertical_profile->push_back(*_itf3);
-	    }	  
+	    }
 	}
 //	cerr << "Fin fusion des points" << endl;
-	
+
 
 	_itf2=vertical_profile->begin();_itf3=vertical_profile->begin();
 	Point2Array::iterator _itf2bis=vertical_profile->begin(),
 	    _itf3bis=vertical_profile->begin();
-	
+
 	for(_itf=vertical_profile->begin()+1;_itf!=vertical_profile->end();_itf++){
-	    if(_itf2->y()>_itf->y())_itf2=_itf; // min 
+	    if(_itf2->y()>_itf->y())_itf2=_itf; // min
 	    else if(_itf2->y()==_itf->y())_itf2bis=_itf;
 	    if(_itf3->y()<_itf->y())_itf3=_itf; // max
 	    else if(_itf3->y()==_itf->y())_itf3bis=_itf;
@@ -1561,7 +1562,7 @@ GeometryPtr Fit::extrudedHull(){
 	    return GeometryPtr(new Translated(_translation,GeometryPtr(new ExtrudedHull(Curve2DPtr(new Polyline2D(vertical_profile)),
 											Curve2DPtr(new Polyline2D(horizontal_profile)),
 											ExtrudedHull::DEFAULT_CCW))));
-	
+
     }
     else if(numpoints==3){
 	Index3ArrayPtr topo(new Index3Array());
@@ -1569,20 +1570,20 @@ GeometryPtr Fit::extrudedHull(){
 	return GeometryPtr(new TriangleSet(__pointstofit,topo,true,
 					   true,true,
 					   PolylinePtr(new Polyline(__pointstofit->getAt(0),__pointstofit->getAt(1)))));
-	
+
     }
     else if(numpoints==2){
 	return GeometryPtr(new Polyline(__pointstofit));
     }
     else return GeometryPtr();
-    
+
 }
 
 /* ----------------------------------------------------------------------- */
 
 GeometryPtr
 Fit::convexHull(){
-#ifdef WITHOUT_QHULL
+#ifndef WITH_QHULL
 	return GeometryPtr();
 #else
   if(! __pointstofit )return GeometryPtr();
@@ -1723,7 +1724,7 @@ Fit::convexHull(){
 
 
 Point2ArrayPtr Fit::convexPolyline(const Point2ArrayPtr& _points){
-#ifdef WITHOUT_QHULL
+#ifndef WITH_QHULL
 	return Point2ArrayPtr();
 #else
 
@@ -1948,19 +1949,19 @@ GeometryPtr Fit::extrusion(){
 					     __default_crossSection));
 	}
 	else{
-	  uint_t size = 1; 
+	  uint_t size = 1;
 	  bool _double = false;
 	  bool _unique = true;
 	  for(Point2Array::iterator _it= __radius->begin()+1; _it !=__radius->end(); _it++){
 		if(*_it==*(_it-1)){
-		  if(!_double){ 
+		  if(!_double){
 			size++;
-			_double = true; 
+			_double = true;
 		  }
 		}
 		else {
 		  _unique = false;
-		  _double = false; 
+		  _double = false;
 		  size++;
 		}
 	  }
@@ -1984,7 +1985,7 @@ GeometryPtr Fit::extrusion(){
 	  else {
 		Point2ArrayPtr _radius(new Point2Array(size));
 		RealArrayPtr _knot(new RealArray(size));
-		uint_t _i = 1, _j =1; 
+		uint_t _i = 1, _j =1;
 		_double = false;
 		real_t interval = __radius->size()-1;
 		_radius->setAt(0,__radius->getAt(0));_knot->setAt(0,0.0);
@@ -2000,7 +2001,7 @@ GeometryPtr Fit::extrusion(){
 			  _knot->setAt(_i-1,((real_t)_j /interval));
 			}
 		  }
-		  else{ 
+		  else{
 			if(_double)_double = false;
 			_radius->setAt(_i,__radius->getAt(_j));
 			_knot->setAt(_i,((real_t)_j /interval));
@@ -2020,7 +2021,7 @@ GeometryPtr Fit::extrusion(){
 /* ----------------------------------------------------------------------- */
 
 
-LineicModelPtr 
+LineicModelPtr
 Fit::nurbsCurve(){
   if(!__pointstofit){
     cerr << get_filename(__FILE__) << ":" << __LINE__ << " : " << "No point to fit with a Nurbs Curve." << endl;
@@ -2194,7 +2195,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 		}
 		Vector3 a = R->getAt(i2);
 		if(
-			a.x()*a.x()<GEOM_EPSILON && 
+			a.x()*a.x()<GEOM_EPSILON &&
 			a.y()*a.y()<GEOM_EPSILON &&
 			a.z()*a.z()<GEOM_EPSILON){
 			cerr << "\x0d" <<get_filename(__FILE__) << ":" << __LINE__ << " : " << "Precision Error(" << GEOM_EPSILON << ") : " << a << endl;
@@ -2206,7 +2207,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
 
     // must check for the case where we want a curve of degree 1 having
     // only 2 points.
-    if(n-2>0){ 
+    if(n-2>0){
 	DoubleArray2 X(n-2,3),B(uint_t(n-2),uint_t(3),double(0));
 	for(uint_t i=0;i<B.getRowNb();i++){
 //	    cerr << "B(" << i << ",0)=" << R->getAt(i+1).x() << endl;

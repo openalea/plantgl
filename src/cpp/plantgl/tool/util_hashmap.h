@@ -50,9 +50,12 @@
 	#endif
 
 #else
-	#include <unordered_map>
-	#define pgl_hash_map std::unordered_map
-
+    #include <unordered_map>
+	#if (_MSC_VER == 1500)
+		#define pgl_hash_map std::tr1::unordered_map
+	#else
+		#define pgl_hash_map std::unordered_map
+	#endif
 	#ifndef pgl_hash
 		#define pgl_hash std::hash
 	#endif
