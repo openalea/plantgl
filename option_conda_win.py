@@ -36,15 +36,11 @@ flex_include = os.path.join(LIBPREFIX, "usr", "include")
 cgal_includes=DepIncPrefix
 cgal_libpath=DepLibPrefix
 gl_lib=ann_libpath=mpfr_libpath=gmp_libpath=qhull_lib=pthread_lib=termcap_lib=readline_lib=flex_libpath=DepLibPrefix
-gl_include=ann_includes=mpfr_includes=gmp_includes=qhull_includes=pthread_includes=termcap_includes=readline_includes=flex_include=DepIncPrefix
+gl_include=ann_includes=mpfr_includes=gmp_includes=qhull_includes=pthread_includes=termcap_includes=readline_includes=DepIncPrefix
 
 eigen_includes=DepIncPrefix+"/eigen3"
 EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES  -D_GLIBCXX_USE_CXX11_ABI=1"
 EXTRA_LIBS="Advapi32 glu32"
-#EXTRA_CPPPATH=[os.path.join(DepIncPrefix,'qt'), os.path.join(DepIncPrefix,'qt','QtCore'), os.path.join(DepIncPrefix,'qt','QtGui')]
 
-compiler_libs_suffix = '-vc90'
+qhull_libs_suffix = 'static'
 
-
-
-QT4_CPPPATH = os.path.join(DepIncPrefix,'qt')

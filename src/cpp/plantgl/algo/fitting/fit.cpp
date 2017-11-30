@@ -65,6 +65,7 @@
         #else
             #include <libqhull/qhull_a.h>
         #endif
+
     }
 #endif
 
@@ -1586,6 +1587,11 @@ Fit::convexHull(){
 #ifndef WITH_QHULL
 	return GeometryPtr();
 #else
+
+#ifdef QHULL_LIB_CHECK  
+  QHULL_LIB_CHECK
+#endif
+
   if(! __pointstofit )return GeometryPtr();
 
   /// Transform Point3Array in qhull format.
