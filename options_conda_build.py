@@ -1,6 +1,7 @@
 import os
 
-PREFIX = os.environ.get('CONDA_PREFIX')
+PREFIX = os.environ.get('PREFIX')
+SRC_DIR = os.environ.get('SRC_DIR')
 
 QTDIR = PREFIX
 QT4_BINPATH = PREFIX + "/bin"
@@ -15,7 +16,7 @@ boost_includes = PREFIX + "/include"
 boost_lib = PREFIX + "/lib"
 openalea_lib = PREFIX + "/lib"
 openalea_includes = PREFIX + "/include"
-build_prefix = "SRC_DIR/build-scons"
+build_prefix = SRC_DIR + "/build-scons"
 build_includedir = PREFIX + "/include"
 build_libdir = PREFIX + "/lib"
 build_bindir = PREFIX + "/bin"
@@ -35,7 +36,8 @@ gmp_includes = PREFIX + "/include"
 gmp_libpath = PREFIX + "/lib"
 WITH_GMP = True 
 mpfr_includes = PREFIX + "/include"
-mpfr_libpath = PREFIX + "/lib WITH_MPFR=True"
+mpfr_libpath = PREFIX + "/lib"
+WITH_MPFR=True
 ann_includes = PREFIX + "/include"
 ann_libpath = PREFIX + "/lib"
 WITH_LAPACK = False 
