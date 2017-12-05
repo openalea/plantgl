@@ -20,7 +20,7 @@ class AscCodec (sg.SceneCodec):
         return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn",'txt'],"The Ascii point file format") ]
         # pts format :
         #         first line : nb of points 
-        #          then x y z w r g b
+        #          then x y z i r g b
         # pwn format :
         #         first line : nb of points 
         #          then x y z
@@ -28,12 +28,15 @@ class AscCodec (sg.SceneCodec):
         #          lines : x y z [r g b]
         # xyz format :
         #          lines : x y z
+        # txt format :
+        #          lines : x y z i r g b
     def read(self,fname):
         """ read an ascii point file """
         import warnings
         pts = sg.Point3Array([])
         col = sg.Color4Array([])
         isptsfile = ('.pts' in fname)
+        istxtfile = ('.txt' in fname)
         ispwnfile = ('.pwn' in fname)
         f = file(fname,"r")
         if isptsfile or ispwnfile:
@@ -51,7 +54,7 @@ class AscCodec (sg.SceneCodec):
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
                 if len(values) > 3:
-                    if not isptsfile : col.append(sg.Color4(int(values[3]),int(values[4]),int(values[5]),0))
+                    if not isptsfile and not istxtfile: col.append(sg.Color4(int(values[3]),int(values[4]),int(values[5]),0))
                     else : col.append(sg.Color4(int(values[4]),int(values[5]),int(values[6]),0))
             except Exception,e:
                 if isptsfile and len(values) == 4:
@@ -79,6 +82,7 @@ class AscCodec (sg.SceneCodec):
         d = alg.Discretizer()
         f = file(fname,'w')
         isptsfile = ('.pts' in fname)
+        istxtfile = ('.txt' in fname)
         ispwnfile = ('.pwn' in fname)
         isxyz = ('.xyz' in fname)
         if isptsfile or ispwnfile:
@@ -100,7 +104,7 @@ class AscCodec (sg.SceneCodec):
                         if not isxyz and not ispwnfile:
                             if hasColor:                          
                                 col = p.colorList[i]
-                            if isptsfile:
+                            if isptsfile or istxtfile:
                                 f.write(str(rgb2intensity(col)))
                             f.write(str(col.red)+' '+str(col.green)+' '+str(col.blue)+'\n')
                         else: f.write('\n')

@@ -52,7 +52,7 @@ typedef RCPtr<TurtlePath> TurtlePathPtr;
 /// Class that contains a path parameter that should be followed by the turtle
 class ALGO_API TurtlePath : public TOOLS(RefCountObject){
 public:
-	TurtlePath(real_t totalLength, real_t actualLength) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __actualT(0)  { }
+	TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
 	virtual ~TurtlePath();
 
 	virtual bool is2D() const { return true; }
@@ -71,7 +71,7 @@ public:
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle2DPath : public TurtlePath {
 public:
-	Turtle2DPath(Curve2DPtr curve, real_t totalLength, bool orientation = false, bool ccw = false);
+	Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation = false, bool ccw = false, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
 
 	virtual TurtlePathPtr copy() const;
 	virtual void setPosition(real_t t) ;
@@ -92,7 +92,7 @@ public:
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle3DPath : public TurtlePath {
 public:
-	Turtle3DPath(LineicModelPtr curve, real_t totalLength);
+	Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
 
 	virtual TurtlePathPtr copy() const;
 	virtual void setPosition(real_t t) ;
@@ -111,6 +111,13 @@ public:
 	TOOLS(Vector3) __lastLeft;
 
 };
+
+struct PathInfo {
+    real_t length;
+    QuantisedFunctionPtr arclengthParam;
+}; 
+
+typedef pgl_hash_map<size_t,PathInfo> PathInfoMap;
 
 class TurtleDrawParameter {
 public:

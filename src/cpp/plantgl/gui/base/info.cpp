@@ -32,7 +32,7 @@
  */
 
 #include "info.h"
-#include "util_qt.h"
+
 #include <plantgl/tool/util_types.h>
 #include <plantgl/tool/readline.h>
 #include <plantgl/algo/opengl/util_glu.h>
@@ -49,7 +49,7 @@
 #include <QtGui/qevent.h>
 
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qlayout.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qpushbutton.h>
@@ -716,7 +716,7 @@ ViewSysInfo::ViewSysInfo( QWidget* parent, QGLWidget * frameGL, const char* name
     item = new QTreeWidgetItem( item2 );
     AttView->collapseItem(item);
     item->setText( 0, tr( "Date" ) );
-    item->setText( 1, tr(toCharArray( QString(c_date) + " "+tr("at")+" " +  QString(c_time) )) ) ;
+    item->setText( 1, tr(qPrintable( QString(c_date) + " "+tr("at")+" " +  QString(c_time) )) ) ;
 
 /* ----------------------------------------------------------------------- */
 

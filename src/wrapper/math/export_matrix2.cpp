@@ -60,7 +60,7 @@ object py_svd (const Matrix2& m){
     }
     real_t lambda1, lambda2;
     Matrix2 rot = svd(m,lambda1, lambda2);
-    return make_tuple(rot,make_tuple(lambda1, lambda2));
+    return boost::python::make_tuple(rot,make_tuple(lambda1, lambda2));
 }
 
 void export_Matrix2()

@@ -32,10 +32,10 @@
  */				
 
 #include "object.h"
-#include "util_qt.h"
+
 
 #include <QtCore/qpoint.h>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qmessagebox.h>
 #else
     #include <QtGui/qmessagebox.h>
@@ -225,7 +225,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 		  _mess += "<br><b>Line :</b>";
 		  _mess += QString::number(line);
 	  }
-	  if(!BATCHMODE){
+	  if(false) { // !BATCHMODE){
 		  if(!lock){
 			  lock = true;
 			  int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));
@@ -235,7 +235,7 @@ ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 			  lock = false;
 		  }
 	  }
-	  else qWarning("%s",toCharArray(_mess));
+	  else qWarning("%s",qPrintable(_mess));
 	  return true;
   }
   return false;

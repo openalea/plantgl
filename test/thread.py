@@ -1,4 +1,17 @@
-from openalea.vpltk.qt import QtGui, QtCore
+def get_qt():
+    qtversion = get_pgl_qt_version() >> 16
+    if qtversion == 4:
+        import PyQt4.QtCore
+        import PyQt4.QtGui 
+        return QtCore, QtGui
+    else:
+        import PyQt5.QtCore
+        import PyQt5.QtWidgets  
+        return QtCore, QtWidgets
+
+QtCore, QtGui = get_qt()
+
+
 import openalea.plantgl.all as pgl
 import code
 

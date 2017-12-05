@@ -97,28 +97,28 @@ EXPORT(col4,Color4,Alpha)
 
 struct col3_pickle_suite : boost::python::pickle_suite
 {
-  static tuple getinitargs(Color3 const& c)
+  static boost::python::tuple getinitargs(Color3 const& c)
     {
-      return make_tuple(c.getRed(),c.getGreen(),c.getBlue());
+      return boost::python::make_tuple(c.getRed(),c.getGreen(),c.getBlue());
     }
 };
 
 struct col4_pickle_suite : boost::python::pickle_suite
 {
-  static tuple getinitargs(Color4 const& c)
+  static boost::python::tuple getinitargs(Color4 const& c)
     {
-      return make_tuple(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
+      return boost::python::make_tuple(c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha());
     }
 };
 
 bp::object py_to_hsv8(Color3 * c){
     TOOLS(Tuple3)<uchar_t> hsv = c->toHSV8();
-    return make_tuple(hsv[0],hsv[1],hsv[2]);
+    return boost::python::make_tuple(hsv[0],hsv[1],hsv[2]);
 }
 
 bp::object py_to_hsv(Color3 * c){
     TOOLS(Tuple3)<real_t> hsv = c->toHSV();
-    return make_tuple(hsv[0],hsv[1],hsv[2]);
+    return boost::python::make_tuple(hsv[0],hsv[1],hsv[2]);
 }
 
 Color3 py_from_hsv( bp::object hsv){
@@ -139,12 +139,12 @@ Color3 py_from_hsv( bp::object hsv){
 
 bp::object py_to_hsva8(Color4 * c){
     TOOLS(Tuple4)<uchar_t> hsv = c->toHSVA8();
-    return make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
+    return boost::python::make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
 }
 
 bp::object py_to_hsva(Color4 * c){
     TOOLS(Tuple4)<real_t> hsv = c->toHSVA();
-    return make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
+    return boost::python::make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
 }
 
 Color4 py_from_hsva( bp::object hsv){

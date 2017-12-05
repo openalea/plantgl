@@ -59,7 +59,7 @@ object pyToAxisAngle(const Matrix3 *m)
 	Vector3 axis;
 	real_t angle;
 	m->toAxisAngle(axis,angle);
-	return make_tuple(axis,angle);
+	return boost::python::make_tuple(axis,angle);
 }
 
 void export_Matrix3()

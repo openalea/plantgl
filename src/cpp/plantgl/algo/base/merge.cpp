@@ -410,7 +410,7 @@ bool Merge::apply( FaceSet& geom )
 
   for( _it= index1->begin(); _it != index1->end(); _it++ )
     {
-    register uint_t n= _it->size();
+    uint_t n= _it->size();
     Index _new(n);
     uint_t idi= ( ccw == ccw1 ) ? 0 : n-1;
     for( _it2=_it->begin();

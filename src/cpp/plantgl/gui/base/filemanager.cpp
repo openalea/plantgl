@@ -52,7 +52,7 @@
 #include <QtGui/qpixmap.h>
 #include <QtGui/qimagewriter.h>
 
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qfiledialog.h>
     #include <QtWidgets/qmessagebox.h>
     #include <QtWidgets/qtoolbutton.h>
@@ -89,7 +89,6 @@
 #include "errordialog.h"
 #include "util_qwidget.h"
 #include "configuration.h"
-#include "util_qt.h"
 
 TOOLS_USING_NAMESPACE
 
@@ -603,10 +602,10 @@ void ViewFileManager::saveImage(bool withAlpha)
         if(it==_formatList.count()){
             //QString ext = _fileDialog.selectedFilter();
             ext = ext.left(ext.indexOf(' '));
-            __GLFrame->saveImage(_filename,toCharArray(ext));
+            __GLFrame->saveImage(_filename,qPrintable(ext));
         }
         else {
-            __GLFrame->saveImage(_filename,toCharArray(extension));
+            __GLFrame->saveImage(_filename,qPrintable(extension));
         }
     }
 }
@@ -718,7 +717,7 @@ ViewFileManager::connectTo(ViewErrorDialog *e)
 void
 ViewFileManager::properties()
 {
-  ViewProperties mb(__GLFrame ,this,__controlPanel,false,toCharArray(tr("Properties")),true);
+  ViewProperties mb(__GLFrame ,this,__controlPanel,false,qPrintable(tr("Properties")),true);
   mb.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::document))));
   mb.exec();
 }
@@ -726,7 +725,7 @@ ViewFileManager::properties()
 void
 ViewFileManager::configuration()
 {
-    ViewProperties mb(__GLFrame ,this,__controlPanel,true,toCharArray(tr("Properties")),true);
+    ViewProperties mb(__GLFrame ,this,__controlPanel,true,qPrintable(tr("Properties")),true);
   mb.setWindowIcon(QIcon(QPixmap(ViewerIcon::getPixmap(ViewerIcon::document))));
   mb.exec();
 }

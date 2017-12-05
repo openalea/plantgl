@@ -32,7 +32,7 @@
  */
 
 #include "linetree.h"
-#include "../base/util_qt.h"
+
 #include <plantgl/algo/codec/linetreeprinter.h>
 #include <plantgl/algo/codec/ligfile.h>
 #include <plantgl/tool/util_enviro.h>
@@ -42,7 +42,7 @@
 #include <QtCore/qregexp.h>
 #include <QtGui/qevent.h>
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qfiledialog.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -404,7 +404,7 @@ void ViewReadLinetree::SelectSMBPath(){
 void ViewReadLinetree::testEndianess(){
 	bool bigendian = true;
 	if(!editLig->text().isEmpty()){
-		if(!PGL(Ligfile::isBigEndian(toCharArray(editLig->text()))))
+		if(!PGL(Ligfile::isBigEndian(qPrintable(editLig->text()))))
 			bigendian = false;
 	}
 	setEndianess(bigendian);

@@ -60,7 +60,7 @@
 #include <QtGui/QImage>
 
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qslider.h>
     #include <QtWidgets/QTreeWidgetItem>
     #include <QtWidgets/qmessagebox.h>
@@ -75,7 +75,7 @@
 #include <QtOpenGL/qgl.h>
 #include <QtOpenGL/QGLPixelBuffer>
 
-#include <plantgl/algo/codec/scne_parser.h>
+#include <plantgl/algo/codec/scne_binaryparser.h>
 
 #ifdef QT_THREAD_SUPPORT
 #ifndef PGL_DEBUG

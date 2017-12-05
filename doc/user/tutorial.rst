@@ -1,14 +1,14 @@
-Tutorial 1
-==========
+Tutorial on creation of geometric content 
+=========================================
 First step
 **********
-To make these exercises, you must launch ipython with the **q4thread** option ::
+To make these exercises, you must launch ipython with the following option ::
 
-   terminal_linux:~$ ipython -q4thread
+   terminal_linux:~$ ipython --gui=qt
 
 
 .. warning::
-    If you do not use the option **q4thread**, you will have problems if you want to display your results with the viewer.
+    If you do not use this option, you will certainly have problems if you want to display your results with the viewer.
 
 
 Now you must import all modules from plantgl ::

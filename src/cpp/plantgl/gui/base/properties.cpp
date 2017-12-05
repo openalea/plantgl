@@ -39,7 +39,7 @@
 #include "filemanager.h"
 #include "controlpanel.h"
 #include "translator.h"
-#include "util_qt.h"
+
 
 #include <plantgl/tool/util_enviro.h>
 
@@ -48,7 +48,7 @@
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qdir.h>
 
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qframe.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -249,7 +249,7 @@ void
 ViewProperties::apply(){
   QString langname = lang->currentText();
   if(TOOLS(getLanguage()).c_str() != langname){
-    TOOLS(setLanguage(toCharArray(langname)));
+    TOOLS(setLanguage(qPrintable(langname)));
     if(langname == "English")removeTranslator();
     else if(langname == "French")setFrenchTranslator();
   }

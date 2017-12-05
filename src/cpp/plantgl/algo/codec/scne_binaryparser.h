@@ -65,6 +65,15 @@ TOOLS_END_NAMESPACE
 
 PGL_BEGIN_NAMESPACE
 
+
+/* ----------------------------------------------------------------------- */
+
+/// function to put parser on verbose mode.
+extern void CODEC_API parserVerbose(bool b);
+
+/// function to test parser verbose mode.
+extern bool CODEC_API isParserVerbose();
+
 /* ----------------------------------------------------------------------- */
 
 class SceneObject;

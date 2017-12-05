@@ -10,20 +10,22 @@ def eval_code(sceneobj,verbose = False):
   printer = PglStrPrinter()
   sceneobj.apply(printer)
   txt = printer.str()
-  if verbose:
-    print txt
-  b = isPglParserVerbose()
-  pglParserVerbose(False)
-  sc, dic = pgl_read(txt)
-  pglParserVerbose(b)
-  if not dic.has_key(sceneobj.name):
-    print txt
-    assert "evaluated object not found"
-  eval_object = dic[sceneobj.name]
-  assert type(eval_object) == type(sceneobj) and eval_object.name == sceneobj.name
-  if not hasname:
-	  sceneobj.name = ''
-  return eval_object
+  if verbose: print txt
+  if 'PGL_ASCII_PARSER' in get_pgl_supported_extensions():
+      b = isPglParserVerbose()
+      pglParserVerbose(False)
+      sc, dic = pgl_read(txt)
+      pglParserVerbose(b)
+      if not dic.has_key(sceneobj.name):
+        print txt
+        assert "evaluated object not found"
+      eval_object = dic[sceneobj.name]
+      assert type(eval_object) == type(sceneobj) and eval_object.name == sceneobj.name
+      if not hasname:
+         sceneobj.name = ''
+      return eval_object
+  else:
+    return sceneobj
 
   
 def test_printer_on_default_object():
@@ -57,8 +59,9 @@ def test_parser_already_declared_error():
     txt = """Group test { GeometryList [ Sphere test { } ] }"""
     b = isPglParserVerbose()
     pglParserVerbose(False)
-    sc, dic = pgl_read(txt)    
-    pglParserVerbose(b)
+    if 'PGL_ASCII_PARSER' in get_pgl_supported_extensions():
+        sc, dic = pgl_read(txt)    
+        pglParserVerbose(b)
                     
 if __name__ == '__main__':
     import traceback as tb

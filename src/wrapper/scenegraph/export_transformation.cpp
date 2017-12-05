@@ -201,11 +201,11 @@ Point3ArrayPtr t4_transform_p3( Transform4 * t, const Point3ArrayPtr& points )
   return t->transform(points);
 }
 
-tuple t4_getTransformation(Transform4 * t)
+boost::python::tuple t4_getTransformation(Transform4 * t)
 {
 	Vector3 scale,rotate,translate;
 	t->getTransformation(scale,rotate,translate);
-	return make_tuple(scale,rotate,translate);
+	return boost::python::make_tuple(scale,rotate,translate);
 }
 
 void export_Transform4()

@@ -43,7 +43,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/QMainWindow>
 #else
     #include <QtGui/QMainWindow>
@@ -54,7 +54,7 @@
 #ifdef QT_THREAD_SUPPORT
 #include <QtCore/qwaitcondition.h>
 
-#if QT_VERSION >= 300
+#if QT_VERSION >= QT_VERSION_CHECK(3,0,0)
 #include <QtCore/qmutex.h>
 #else
 #include <QtCore/qthread.h>

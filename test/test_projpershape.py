@@ -1,13 +1,18 @@
 from openalea.plantgl.all import *
 import sys
 from nose import with_setup
-from openalea.vpltk.qt import QtGui, QtCore
 
-import warnings
-if not QtCore.QCoreApplication.instance() is None:
-    warnings.warn("A QtGui.QApplication is already running")
-else:
-    app = QtGui.QApplication([])
+def get_qapp():
+    qtversion = get_pgl_qt_version() >> 16
+    if qtversion == 4:
+        from PyQt4.QtGui import qApp
+        return qApp
+    else:
+        from PyQt5.QtWidgets import qApp        
+        return qApp
+
+
+app = get_qapp()
 Viewer.start()
 
 def test_projpershape():

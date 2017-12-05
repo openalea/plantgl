@@ -1,19 +1,19 @@
 from openalea.plantgl.all import *
 from openalea.vpltk.qt import qt    
-try:
-    from PyQt4 import QtOpenGL
-except:
-    from PySide import QtOpenGL
-
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import os
 
-    
-class MaterialPanelView (QtOpenGL.QGLWidget):
+from openalea.vpltk.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
+from openalea.vpltk.qt.QtGui import QCursor, QImageReader, QPixmap
+from openalea.vpltk.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
+from openalea.vpltk.qt.QtOpenGL import QGLWidget 
+
+class MaterialPanelView (QGLWidget):
+    valueChanged = pyqtSignal()
+
     def __init__(self,parent):
-        QtOpenGL.QGLWidget.__init__(self,parent)
+        QGLWidget.__init__(self,parent)
         self.unitsize = 30
         self.sphere = None
         self.spherelist = None
@@ -31,12 +31,12 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         self.cutaction = False
         self.preview = None
         self.previewselection = None
-        self.previewtrigger = qt.QtCore.QTimer(self)
+        self.previewtrigger = QTimer(self)
         self.previewtrigger.setInterval(1000)
         self.previewtrigger.setSingleShot(True)
         self.clipboard = None
-        qt.QtCore.QObject.connect(self.previewtrigger,qt.QtCore.SIGNAL("timeout()"),self.displayPreview)
-        qt.QtCore.QObject.connect(self,qt.QtCore.SIGNAL("valueChanged()"),self.computeSize)
+        self.previewtrigger.timeout.connect(self.displayPreview)
+        self.valueChanged.connect(self.computeSize)
         
         self.lastTextureDir = '.'
         self.preview_start_show = False
@@ -300,21 +300,21 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
     def mousePressEvent(self,event):
       if self.preview and self.preview.isVisible():
            self.preview.hide()
-      if event.button()  == qt.QtCore.Qt.LeftButton:
+      if event.button()  == Qt.LeftButton:
         self.initpos = event.pos()
         self.mousepos = self.initpos
         x,y = event.pos().x(),event.pos().y()
-        if event.modifiers() & qt.QtCore.Qt.ShiftModifier :
+        if event.modifiers() & Qt.ShiftModifier :
             self.selectionend = self.selectedColor(x,y)
         else:
             self.setSelection(self.selectedColor(x,y))
         self.updateGL()
 
     def mouseReleaseEvent(self,event):
-      if event.button()  == qt.QtCore.Qt.LeftButton:
+      if event.button()  == Qt.LeftButton:
         x,y = event.pos().x(),event.pos().y()
 
-        if event.modifiers() & qt.QtCore.Qt.ShiftModifier :
+        if event.modifiers() & Qt.ShiftModifier :
             self.selectionend = self.selectedColor(x,y)
         else:
             initialselection = self.selectionbegin
@@ -324,7 +324,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             if initialselection != self.selectionbegin:
                 self.showMessage("Swap colors "+str(initialselection)+" and "+str(self.selectionbegin),2000) 
                 self.swapMaterial(initialselection,self.selectionbegin)
-                self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+                self.valueChanged.emit()
             else:
                 self.showMessage("Click on color "+str(self.selectionbegin),2000) 
 
@@ -340,18 +340,18 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         self.cursorselection = self.selectedColor(self.mousepos.x(),self.mousepos.y())
         if self.cursorselection < 0 or not self.geometry().contains(self.mousepos):
             self.cursorselection = lastcursorselection
-        if event.buttons()  == qt.QtCore.Qt.LeftButton :
+        if event.buttons()  == Qt.LeftButton :
             if self.previewtrigger.isActive():
                 self.previewtrigger.stop()
-            if event.modifiers() & qt.QtCore.Qt.ShiftModifier :
+            if event.modifiers() & Qt.ShiftModifier :
                 self.selectionend = self.cursorselection
             # else:
             #     if self.cursorselection != lastcursorselection and not lastcursorselection is None:
-            #         p1 = qt.QtCore.QPoint(*self.positionColor(lastcursorselection))
-            #         p2 = qt.QtCore.QPoint(*self.positionColor(self.cursorselection))
+            #         p1 = QPoint(*self.positionColor(lastcursorselection))
+            #         p2 = QPoint(*self.positionColor(self.cursorselection))
             #         self.initpos = self.initpos - p1 + p2 
             #         self.setSelection(self.cursorselection)
-        elif event.buttons()  == qt.QtCore.Qt.NoButton and self.cursorselection >= 0:
+        elif event.buttons()  == Qt.NoButton and self.cursorselection >= 0:
             cmat = self.getMaterial(self.cursorselection)
             if cmat.isTexture():
                 if lastcursorselection != self.cursorselection or (self.preview is None and not self.previewtrigger.isActive()):                    
@@ -361,7 +361,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                     self.previewselection = self.cursorselection
                     self.previewtrigger.start()
                 elif self.preview and self.preview.isVisible():
-                    self.preview.move(event.globalPos()+qt.QtCore.QPoint(2,2))
+                    self.preview.move(event.globalPos()+QPoint(2,2))
             else:
                 if lastcursorselection != self.cursorselection:
                     self.setToolTip('Color '+str(self.cursorselection))
@@ -372,11 +372,11 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         self.showMessage("Mouse on color "+str(self.cursorselection),2000) 
         self.updateGL()
     def displayPreview(self):
-        self.preview = qt.QtGui.QSplashScreen(self,qt.QtGui.QPixmap(self.getMaterial(self.previewselection).image.filename))
-        self.preview.move(qt.QtGui.QCursor.pos()+qt.QtCore.QPoint(2,2))
+        self.preview = QSplashScreen(self,QPixmap(self.getMaterial(self.previewselection).image.filename))
+        self.preview.move(QCursor.pos()+QPoint(2,2))
         self.preview.show()
     def leaveEvent(self,event):
-        if not self.geometry().contains(self.mapFromGlobal(qt.QtGui.QCursor.pos())):
+        if not self.geometry().contains(self.mapFromGlobal(QCursor.pos())):
             self.mousepos = None
             self.initpos = None
             self.setMouseTracking(False)
@@ -385,11 +385,11 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 self.preview.hide()
             if self.previewtrigger.isActive():
                 self.previewtrigger.stop()
-        QtOpenGL.QGLWidget.leaveEvent(self,event)
+        QGLWidget.leaveEvent(self,event)
     def enterEvent(self,event):
         self.mousepos = None
         self.setMouseTracking(True)
-        QtOpenGL.QGLWidget.enterEvent(self,event)
+        QGLWidget.enterEvent(self,event)
     def showMessage(self,msg,timeout):
         if hasattr(self,'statusBar'):
             self.statusBar.showMessage(msg,timeout)
@@ -400,8 +400,8 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             if not color.isTexture():
                 try:
                     res = editMaterialInDialog(color) # Warning Here! QLayout problem.
-                    if res is None or res == qt.QtGui.QDialog.Accepted:
-                        self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+                    if res is None or res == QDialog.Accepted:
+                        self.valueChanged.emit()
                 except Exception, e:
                     print e
                     print 'editMaterialInDialog not supported by your version of PlantGL'
@@ -416,7 +416,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         else:
             self.setSelection(self.menuselection)
             self.updateGL()
-        menu = qt.QtGui.QMenu("Color Edit",self)
+        menu = QMenu("Color Edit",self)
         menu.addAction("Copy",self.copymaterial)        
         menu.addAction("Cut",self.cutmaterial)        
         action = menu.addAction("Paste",self.pastematerial)
@@ -455,7 +455,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
         self.menuselection = None
     def pastematerial(self):
         if self.clipboard is None or not self.lenSelection() in [1,len(self.clipboard)] :
-            qt.QtGui.QMessageBox.warning(self,'Copy error','Cannot copy materials ! Source and target are inconsistents')
+            QMessageBox.warning(self,'Copy error','Cannot copy materials ! Source and target are inconsistents')
         else:
             if self.lenSelection() == 1:
                 sel = self.selectionbegin
@@ -468,6 +468,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                         self.delMaterial(i)
                         if i < sel:
                             sel -= 1
+                print 'Copy ',self.clipboard[0][0],'to',sel
                 self.setMaterial(sel,self.clipboard[0][1].deepcopy())
                 for i,color in reversed(self.clipboard[1:]):
                     self.insertMaterial(sel+1,color.deepcopy())
@@ -485,22 +486,22 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                     self.setSelection(self.selectionbegin-iminus,self.selectionend-iminus)
             self.cutaction = None
             self.clipboard = None
-            self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
         self.menuselection = None
         self.updateGL()
     def loadtexture(self):
         self.edittexture(self.menuselection)
     def edittexture(self,i,initialfile = None):
-        fname = qt.QtGui.QFileDialog.getOpenFileName(self,"Texture Selection",self.lastTextureDir if initialfile is None else initialfile,"All files (*.*)")
+        fname = QFileDialog.getOpenFileName(self,"Texture Selection",self.lastTextureDir if initialfile is None else initialfile,"All files (*.*)")
         if len(fname) == 0: return
         self.lastTextureDir = os.path.dirname(str(fname))
-        format = qt.QtGui.QImageReader.imageFormat(fname)
+        format = QImageReader.imageFormat(fname)
         if len(format) == 0: 
-            qt.QtGui.QMessageBox.warning(self,"Format error!","Format not supported !")
+            QMessageBox.warning(self,"Format error!","Format not supported !")
             self.edittexture(i,initialfile)
         else : 
             self.setMaterial(i,ImageTexture(str(fname)))
-            self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
     def removematerial(self):
         if not self.menuselection is None and self.nbMaterial() > self.menuselection:
             if not self.selectionend is None :
@@ -510,7 +511,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 self.selectionend = None
             else:
                 self.delMaterial(self.menuselection)
-            self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
     def interpolatematerial(self):
         if not self.selectionend is None :
             beg = self.selectionbegin
@@ -525,7 +526,7 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
                 iratio += ratio
                 self.setMaterial(i,fmat.interpolate(lmat,iratio))
             self.selectionbegin,self.selectionend = None,None
-            self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+            self.valueChanged.emit()
             
     def dragEnterEvent(self,event):
         event.acceptProposedAction()
@@ -545,33 +546,34 @@ class MaterialPanelView (QtOpenGL.QGLWidget):
             if len(newcolors) > 0:
                 self.setMaterials(newcolors)
             else:
-                qt.QtGui.QMessageBox.warning(self,'Data Error','Read no data from file "'+os.path.basename(fname)+'"')
+                QMessageBox.warning(self,'Data Error','Read no data from file "'+os.path.basename(fname)+'"')
         else:
-            format = qt.QtGui.QImageReader.imageFormat(fname)
+            format = QImageReader.imageFormat(fname)
             if len(format) != 0: 
                 self.setMaterial(pos,ImageTexture(str(fname)))
-                self.emit(qt.QtCore.SIGNAL('valueChanged()'))            
+                self.valueChanged.emit()            
 
-class MaterialPanelWidget(qt.QtGui.QWidget):
+class MaterialPanelWidget(QWidget):
+    valueChanged = pyqtSignal()
     def __init__(self,parent):
-        qt.QtGui.QWidget.__init__(self,parent)
+        QWidget.__init__(self,parent)
         self.setObjectName("materialPanelContents")
-        self.verticalLayout = qt.QtGui.QVBoxLayout(self)
+        self.verticalLayout = QVBoxLayout(self)
         self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setContentsMargins(0,0,0,0)
         self.verticalLayout.setObjectName("materialPanelLayout")
         
-        self.materialpanel = qt.QtGui.QScrollArea(self)
+        self.materialpanel = QScrollArea(self)
         self.view = MaterialPanelView(self.materialpanel)
         self.materialpanel.setWidget(self.view)
         self.materialpanel.setWidgetResizable(True)
         self.materialpanel.setObjectName("materialPanelArea")        
         self.verticalLayout.addWidget(self.materialpanel)
         
-        qt.QtCore.QObject.connect(self.view,qt.QtCore.SIGNAL('valueChanged()'),self.__updateStatus)
+        self.view.valueChanged.connect(self.__updateStatus)
     
     def __updateStatus(self):
-        self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+        self.valueChanged.emit()
     
     def setTurtle(self,turtle):
         self.view.setTurtle(turtle)
@@ -587,15 +589,16 @@ class MaterialPanelWidget(qt.QtGui.QWidget):
 
 MaterialEditor = MaterialPanelWidget
 
-class MaterialPanelDock (qt.QtGui.QDockWidget):
+class MaterialPanelDock (QDockWidget):
+    valueChanged = pyqtSignal()
     def __init__(self,parent,name = None):
-        qt.QtGui.QDockWidget.__init__(self,parent)
+        QDockWidget.__init__(self,parent)
         if name:
             self.setObjectName(name.replace(' ','_'))
         self.setWindowTitle('Color Map')
         self.view = MaterialPanelWidget(self)        
         self.setWidget(self.view)
-        qt.QtCore.QObject.connect(self.view,qt.QtCore.SIGNAL('valueChanged()'),self.__updateStatus)
+        self.view.valueChanged.connect(self.__updateStatus)
     
     def setStatusBar(self,st):
         self.view.statusBar = st
@@ -607,11 +610,11 @@ class MaterialPanelDock (qt.QtGui.QDockWidget):
             print(msg)
     
     def __updateStatus(self):
-        self.emit(qt.QtCore.SIGNAL('valueChanged()'))
+        self.valueChanged.emit()
 
         
 if __name__ == '__main__':
-    qapp = qt.QtGui.QApplication([])
+    qapp = QApplication([])
     m = MaterialPanelDock(None)
     m.show()
     qapp.exec_()

@@ -38,7 +38,7 @@
 #include "event.h"
 #include <QtCore/qfile.h>
 
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qfiledialog.h>
     #include <QtWidgets/qmessagebox.h>
 #else

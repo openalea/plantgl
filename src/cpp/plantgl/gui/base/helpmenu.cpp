@@ -41,7 +41,7 @@
 #include <QtGui/qpainter.h>
 
 #include <QtGlobal>
-#if QT_VERSION >= 0x050000 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
     #include <QtWidgets/qmessagebox.h>
     #include <QtWidgets/qapplication.h> 
     #include <QtWidgets/qdesktopwidget.h> 
@@ -68,7 +68,7 @@
 #include "info.h"
 #include "qobjectbrowser.h"
 #include "configuration.h"
-#include "util_qt.h"
+
 
 #include <plantgl/scenegraph/pgl_version.h>
 
@@ -190,7 +190,7 @@ ViewHelpMenu::setStyle(int i)
     else if (i == __ids.size()-1) QApplication::setStyle( QStyleFactory::create(default_style_name) ); 
     else {
         QApplication::setStyle( QStyleFactory::create(QStyleFactory::keys()[i])); 
-        qDebug("Application.setStyle(%s)", toCharArray(QStyleFactory::keys()[i]) ); 
+        qDebug("Application.setStyle(%s)", qPrintable(QStyleFactory::keys()[i]) ); 
     }
 	if(i>= 0 && i <= __ids.size())checkItem(i);
 }
@@ -292,7 +292,7 @@ ViewHelpMenu::generalInfo()
 {
   std::string text2 = getPGLVersionString();
   QString text;
-  ViewSysInfo a (this,__glwidget,toCharArray(QString(tr("PlantGL Viewer"))+" "+QString(text2.c_str())),true);
+  ViewSysInfo a (this,__glwidget,qPrintable(QString(tr("PlantGL Viewer"))+" "+QString(text2.c_str())),true);
   QTreeWidgetItem * itemF = a.addItem(tr("PlantGL Library"));
   QTreeWidgetItem *item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
@@ -312,7 +312,7 @@ ViewHelpMenu::generalInfo()
   item->setText( 0, tr( "Using Threads" ) );
   if(ViewGeomSceneGL::useThread()) text = "True";
   else text = "False";
-  item->setText( 1, tr( toCharArray(text) ) );
+  item->setText( 1, tr( qPrintable(text) ) );
 
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL Namespace" ) );
@@ -321,7 +321,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "True";
 #endif
-  item->setText( 1, tr( toCharArray(text) ) );
+  item->setText( 1, tr( qPrintable(text) ) );
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL Debug" ) );
 #ifdef PGL_DEBUG
@@ -329,7 +329,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( toCharArray(text) ) );
+  item->setText( 1, tr( qPrintable(text) ) );
 #ifdef _WIN32
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "PGL DLLs" ) );
@@ -338,7 +338,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( toCharArray(text ) ) );
+  item->setText( 1, tr( qPrintable(text ) ) );
 #endif
   item = new QTreeWidgetItem( itemF, item );
   item->setText( 0, tr( "Using Glut" ) );
@@ -347,7 +347,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "False";
 #endif
-  item->setText( 1, tr( toCharArray(text ) ) );
+  item->setText( 1, tr( qPrintable(text ) ) );
   itemF = a.addItem(tr("Tools Library"));
   item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Tools Namespace" ) );
@@ -356,7 +356,7 @@ ViewHelpMenu::generalInfo()
 #else
   text = "True";
 #endif
-  item->setText( 1, tr( toCharArray(text ) ) );
+  item->setText( 1, tr( qPrintable(text ) ) );
   //itemF = a.addItem(tr("PlantGL"));
   //item = new QTreeWidgetItem( itemF );
   //item->setText( 0, tr( "Install Path" ) );
@@ -365,7 +365,11 @@ ViewHelpMenu::generalInfo()
   itemF = a.addItem(tr("Flex"));
   item = new QTreeWidgetItem( itemF );
   item->setText( 0, tr( "Version" ) );
+#ifdef WITH_BISONFLEX
   item->setText( 1, QString(lexerVersion().c_str())  );
+#else
+  item->setText( 1, "Disabled"  );
+#endif
   a.exec();
 }
 
