@@ -1,51 +1,49 @@
+language: cpp
 
-language: python
+os:
+  - linux
+  - osx
 
-python:
-  - "2.7"
+sudo: required
 
-before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo apt-get update -q
-  - sudo apt-get install gcc-5 g++-5 -y
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5
-  # Requirement install in ubuntu-server (already include in travis)
-  - sudo apt-get install fontconfig -y freeglut3-dev -y
-  - sudo apt-get install bzip2 libglib2.0-0 libsm6 libxrender1 libglu1-mesa -y
+services:
+  - docker
 
-addons:
-  apt:
-    sources:
-    packages: 
+env:
+ - CONDA_RECIPE=conda
+   CONDA_VERSION=2
+   ANACONDA_UPLOAD=openalea
+   ANACONDA_LABEL=unstable
 
 install:
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-  - gcc --version
-  - conda install conda-build
-  - conda create -q -n myenv python=$TRAVIS_PYTHON_VERSION
-  - source activate myenv
-  - cd ./conda
-  - conda build -c openalea/label/unstable -c openalea  .
-  - conda install -c openalea/label/unstable -c openalea --use-local vplants.plantgl
-  - conda install nose
-  - cd ..
+  - git clone https://github.com/openalea/travis-ci.git
+  - cd travis-ci
+  - source install.sh
+  - conda config --add channels openalea/label/unstable
+  - conda config --add channels openalea
+
+before_script:
+  - source before_script.sh
 
 script:
-  - cd test; nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
-
+  - source script.sh
 
 after_success:
-- coveralls
+  - source after_success.sh
+
+after_failure:
+  - source after_failure.sh
+
+before_deploy:
+  - source before_deploy.sh
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash deploy_script.sh
+
+after_deploy:
+  - source after_deploy.sh
+
+after_script:
+  - source after_script.sh
