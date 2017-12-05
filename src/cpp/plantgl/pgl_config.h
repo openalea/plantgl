@@ -269,7 +269,7 @@
  #   pragma warning (disable : 4250) //  'class' : inherits 'member' via dominance
  #   pragma warning (disable : 4251) //  class 'type' needs to have dll-interface to be used by clients of class 'type2'
  #   pragma warning (disable : 4275) //  DLL-interface classkey 'identifier' used as base for DLL-interface classkey 'identifier'
- #   pragma warning (disable : 4503) //  decorated name length exceeded, name was truncated 
+ #   pragma warning (disable : 4503) //  decorated name length exceeded, name was truncated
  #   pragma warning ( 1 : 4996)      //  'function' has been declared deprecated
 #endif
 
@@ -284,6 +284,21 @@
 #endif
 /* ----------------------------------------------------------------------- */
 
-// __config_h__
+#if _WIN32 || _WIN64
+    #if _WIN64
+        #define PGL_64_ENV
+    #else
+        #define PGL_32_ENV
+    #endif
 #endif
 
+#if __GNUC__
+    #if __x86_64__ || __ppc64__
+        #define PGL_64_ENV
+    #else
+        #define PGL_32_ENV
+    #endif
+#endif
+
+// __config_h__
+#endif

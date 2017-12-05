@@ -62,6 +62,10 @@ TOOLS_USING_NAMESPACE
 #include "scne_parser.cpp.h"
 #endif
 
+#ifdef _WIN32 
+#define YY_NO_UNISTD_H
+#endif
+
 #include "scne_scanner.h"
 #include <plantgl/tool/gscanner_imp.h>
 #include <plantgl/tool/util_string.h>

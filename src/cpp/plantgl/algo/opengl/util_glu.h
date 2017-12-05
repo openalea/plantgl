@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -54,20 +54,20 @@
 */
 
 /// gluLookAt for GEOM
-void ALGO_API glGeomLookAt(const TOOLS(Vector3)& eye, const TOOLS(Vector3)& center, const TOOLS(Vector3)& up );
+ALGO_API void glGeomLookAt(const TOOLS(Vector3)& eye, const TOOLS(Vector3)& center, const TOOLS(Vector3)& up );
 
 /// gluPerspective for GEOM
-void ALGO_API geomPerspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
+ALGO_API void  geomPerspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
 
-const char * ALGO_API gluGeomErrorString(GLenum error);
-const char * ALGO_API gluGeomGetString(GLenum name);
+ALGO_API const char * gluGeomErrorString(GLenum error);
+ALGO_API const char * gluGeomGetString(GLenum name);
 
-void ALGO_API geomPickMatrix (const QRect& region);
-void ALGO_API geomPickMatrix (const QPoint& point, GLdouble delta = 2.0);
+ALGO_API void  geomPickMatrix (const QRect& region);
+ALGO_API void geomPickMatrix (const QPoint& point, GLdouble delta = 2.0);
 
-bool ALGO_API geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ);
-bool ALGO_API geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, const GLdouble *model, const GLdouble *proj, const GLint *view, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ);
+ALGO_API bool geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ);
+ALGO_API bool geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, const GLdouble *model, const GLdouble *proj, const GLint *view, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ);
 ;
 /* ----------------------------------------------------------------------- */
 
-#endif    
+#endif

@@ -41,12 +41,12 @@ TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-std::string v2_repr( Vector2* v ) 
-{ 
-  stringstream ss; 
+std::string v2_repr( Vector2* v )
+{
+  stringstream ss;
   ss << "Vector2(" << v->x() << ',' << v->y() << ')';
-  return ss.str(); 
-} 
+  return ss.str();
+}
 
 std::string pol_repr(Vector2::Polar * v){
   std::stringstream ss;
@@ -56,7 +56,7 @@ std::string pol_repr(Vector2::Polar * v){
 
 
 object pgl_py_normSquared(object obj){
-	try { 
+	try {
        return obj.attr( "__normSquared__" )();
 	}
 	catch( error_already_set ){ PyErr_Clear(); }
@@ -64,7 +64,7 @@ object pgl_py_normSquared(object obj){
 	real_t val = 0;
     while( 1 )
        {
-		object lobj; 
+		object lobj;
 		try {  lobj = iter_obj.attr( "next" )(); 		}
 		catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
@@ -122,7 +122,7 @@ object pgl_py_normL1(object obj){
 	real_t val = 0;
     while( 1 )
        {
-		object lobj; 
+		object lobj;
 		try {  lobj = iter_obj.attr( "next" )(); 		}
 		catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
@@ -163,7 +163,7 @@ object pgl_py_normLinf(object obj){
 	real_t val = 0;
     while( 1 )
        {
-		object lobj; 
+		object lobj;
 		try {  lobj = iter_obj.attr( "next" )(); 		}
 		catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = abs(boost::python::extract<real_t>( lobj ));
@@ -203,12 +203,12 @@ object pgl_py_dir(object obj){
 	try { return obj.attr( "__direction__" )(); }
 	catch( error_already_set ){ PyErr_Clear(); }
 	real_t f = extract<real_t>(pgl_py_norm(obj));
-	list l;
+	boost::python::list l;
 	object iter_obj = boost::python::object( handle<>( PyObject_GetIter( obj.ptr() ) ) );
 	real_t val = 0;
     while( 1 )
        {
-		object lobj; 
+		object lobj;
 		try {  lobj = iter_obj.attr( "next" )(); 		}
 		catch( error_already_set ){ PyErr_Clear(); break; }
 		lobj = lobj / f;
@@ -238,7 +238,7 @@ real_t pgl_py_dot(object p1, object p2){
 	    real_t val = 0;
         while( 1 )
          {
-		    object lobj1,lobj2; 
+		    object lobj1,lobj2;
 		    try {  lobj1 = iter_obj1.attr( "next" )(); lobj2 = iter_obj2.attr( "next" )(); }
 		    catch( error_already_set ){ PyErr_Clear(); break; }
             real_t lval1 = extract<real_t>( lobj1 )();
@@ -298,6 +298,5 @@ void export_Vector2()
   def("normSquared",     pgl_py_normSquared , args("v") , "The square of the norm of the vector. If v.__normSquared__() exists, call it." );
   def("normSquared",     pgl_py_normSquaredList, pgl_py_normSquaredList_overloads()  );
   def("direction",  pgl_py_dir , args("v") , "The direction of the vector. Resulting vector is normed. If v.__direction__() exists, call it."  );
- 
-}
 
+}

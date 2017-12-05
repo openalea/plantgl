@@ -5,12 +5,12 @@
  *
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier 
- *               
+ *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
+ *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -27,18 +27,18 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #ifndef __util_pgl_types_h__
 #define __util_pgl_types_h__
-/*! 
+/*!
 	\file util_types.h
     \brief File that contains some utility about type. define the type real_t.
 */
 
 #include "tools_config.h"
 
-/* -------------------------------------------------------------------------- 
+/* --------------------------------------------------------------------------
  * PRECISION OPTIONS
  * --------------------------------------------------------------------------
  */
@@ -89,6 +89,7 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 #define __uint_t_defined
 #endif // __MINGW32__
 #endif
+
 #if defined(_WIN32)
 #include <stdint.h>
 #endif
@@ -102,7 +103,7 @@ typedef unsigned char uchar_t;
 /// type int16_t (short)
 typedef short int16_t;
 /// int16_t min value
-#ifndef INT16_MIN 
+#ifndef INT16_MIN
 #define INT16_MIN SHRT_MIN
 #endif
 /// int16_t max value
@@ -126,7 +127,7 @@ typedef unsigned int uint32_t;
 #endif
 
 /// uint16_t min value
-#ifndef UINT16_MIN 
+#ifndef UINT16_MIN
 #define UINT16_MIN USHRT_MIN
 #endif
 /// uint16_t max value
@@ -134,7 +135,7 @@ typedef unsigned int uint32_t;
 #define UINT16_MAX USHRT_MAX
 #endif
 /// int32_t min value
-#ifndef INT32_MIN 
+#ifndef INT32_MIN
 #define INT32_MIN LONG_MIN
 #endif
 /// int32_t max value
@@ -142,7 +143,7 @@ typedef unsigned int uint32_t;
 #define INT32_MAX LONG_MAX
 #endif
 /// uint_t min value
-#ifndef UINT32_MIN 
+#ifndef UINT32_MIN
 #define UINT32_MIN ULONG_MIN
 #endif
 

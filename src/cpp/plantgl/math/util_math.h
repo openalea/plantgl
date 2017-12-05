@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -48,7 +48,7 @@
 /// value of a degree in radian
 #define GEOM_RAD 0.01745329252
 #define GEOM_RAD 0.01745329252
-/// value of a radian in degree 
+/// value of a radian in degree
 #define GEOM_DEG 57.295779513
 /// value of 2 pi
 #define GEOM_TWO_PI 6.2831853072
@@ -56,7 +56,7 @@
 #ifdef M_PI
 #  define GEOM_PI M_PI
 #else
-/// value of pi 
+/// value of pi
 #  define GEOM_PI 3.14159265358979323846
 /// value of pi
 #  define M_PI GEOM_PI
@@ -69,14 +69,14 @@
 /// value of pi / 2
 #  define GEOM_HALF_PI 1.5707963286
 /// value of pi / 2
-#  define M_PI_2 GEOM_HALF_PI 
+#  define M_PI_2 GEOM_HALF_PI
 #endif //M_PI_2
 
 #else
 
 /// value of a degree in radian
 #define GEOM_RAD 0.01745329252f
-/// value of a radian in degree 
+/// value of a radian in degree
 #define GEOM_DEG 57.295779513f
 /// value of 2 pi
 #define GEOM_TWO_PI 6.2831853072f
@@ -84,7 +84,7 @@
 #ifdef M_PI
 #  define GEOM_PI M_PI
 #else
-/// value of pi 
+/// value of pi
 #  define GEOM_PI 3.14159265358979323846f
 /// value of pi
 #  define M_PI GEOM_PI
@@ -97,17 +97,17 @@
 /// value of pi / 2
 #  define GEOM_HALF_PI 1.5707963286f
 /// value of pi / 2
-#  define M_PI_2 GEOM_HALF_PI 
+#  define M_PI_2 GEOM_HALF_PI
 #endif
 
 #endif
 
-/// Returns the cube value of \e v. 
+/// Returns the cube value of \e v.
 inline float cb( const float& v ) {
   return v * v * v;
 }
 
-/// Returns the cube value of \e v. 
+/// Returns the cube value of \e v.
 inline double cb( const double& v ) {
   return v * v * v;
 }
@@ -126,7 +126,7 @@ inline bool isPowerOfTwo(int val){
    long i=0;
    while ((1<<i) < val) i++;
    if (val==(1<<i)) return true;
-   return false;     
+   return false;
 }
 
 #ifdef _MSC_VER
@@ -145,6 +145,11 @@ inline double cbrt(double x){
 	return pow(x,1/3);
 }
 
+#if (_MSC_VER > 1500)
+#define HAVE_ROUND
+#define HAVE_TRUNC
+#endif
+
 #ifndef HAVE_ROUND
 
 /// On win32, redefine round double to int.
@@ -160,12 +165,15 @@ inline int rint(double x){
 #define HAVE_ROUND
 #endif
 
+#ifndef HAVE_TRUNC
+#define HAVE_TRUNC
 /// On win32, redefine truncate double to int.
 inline int trunc(double x){
 	int res = (int)x;
 	if(x-res>0.5)res++;
 	return res;
 }
+#endif
 
 #ifndef HAVE_HYPOT
 
@@ -183,4 +191,4 @@ inline int trunc(double x){
 /* ----------------------------------------------------------------------- */
 
 //__util_math_h__
-#endif 
+#endif

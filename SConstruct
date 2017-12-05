@@ -18,7 +18,7 @@ options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 qt_env = Environment(options=options, tools=[])
 qt_version = int(qt_env['QT_VERSION'])
 
-tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann', 'qt'+str(qt_version)]
+tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','cgal','eigen', 'mpfr','ann', 'qt'+str(qt_version)]
 
 env = ALEASolution(options, tools)
 
@@ -48,7 +48,7 @@ except KeyError, ke:
 if 'linux' in sys.platform:
     # By default for linux, use unordered map
     env.AppendUnique( LIBS = ['z'] )
- 
+
 #if 'linux' in sys.platform:
     # By default for linux, use unordered map
     # env.AppendUnique( CPPDEFINES = ['USING_UNORDERED_MAP'] )
@@ -69,7 +69,7 @@ Default("build")
 standartprefix = 'build-scons'
 if os.path.basename(prefix) != standartprefix:
     if os.path.exists(standartprefix):
-        if os.path.isdir(standartprefix) and not os.path.islink(standartprefix): 
+        if os.path.isdir(standartprefix) and not os.path.islink(standartprefix):
             import shutil
             shutil.rmtree(standartprefix)
         else: os.remove(standartprefix)
