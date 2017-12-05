@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -51,18 +51,15 @@ const char *  gluGeomErrorString(GLenum error)
 const char *  gluGeomGetString(GLenum error)
 { return (const char *)gluGetString(error); }
 
-#ifdef _MSC_VER
-#define MAX max
-#else
-#define MAX std::max
-#endif
+
+#include <algorithm>
 
 void geomPickMatrix (const QRect& region){
   GLint viewport[4];
   int x = region.center().x();
   int y = region.center().y();
   glGetIntegerv(GL_VIEWPORT, viewport);
-  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)MAX(region.width(),2), (GLdouble)MAX(region.height(),2) ,viewport);
+  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)std::max(region.width(),2), (GLdouble)std::max(region.height(),2) ,viewport);
 }
 
 void geomPickMatrix (const QPoint& point, GLdouble delta){
