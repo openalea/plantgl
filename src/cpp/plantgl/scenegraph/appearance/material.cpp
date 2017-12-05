@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -34,6 +34,7 @@
 #include "material.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
 #include <cmath>
+#include <algorithm>
 
 PGL_USING_NAMESPACE
 
@@ -147,11 +148,11 @@ Material::Material( const Color3& ambient,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
-	if(__diffuse*real_t(ambient.getRed())>255) 
+	if(__diffuse*real_t(ambient.getRed())>255)
 		__diffuse = min(__diffuse,255./real_t(ambient.getRed()));
-	if(__diffuse*real_t(ambient.getGreen())>255) 
+	if(__diffuse*real_t(ambient.getGreen())>255)
 		__diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
-	if(__diffuse*real_t(ambient.getBlue())>255) 
+	if(__diffuse*real_t(ambient.getBlue())>255)
 		__diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
   GEOM_ASSERT(isValid());
 }
