@@ -39,7 +39,7 @@ install:
   - source activate myenv
   - cd ./conda
   - conda build -c openalea/label/unstable -c openalea  .
-  - conda install -c openalea/label/unstable -c openalea vplants.plantgl
+  - conda install -c openalea/label/unstable -c openalea --use-local vplants.plantgl
   - conda install nose
   - cd ..
 
