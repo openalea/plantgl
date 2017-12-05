@@ -980,7 +980,7 @@ void Viewer::debugLog(){
 }
 
 void Viewer::displayMenuBar(){
-  if(!__MainMenu->isVisible()){
+  if(!__statusBar->isVisible()){
     __MainMenu->show();
     __statusBar->show();
   }
@@ -1005,13 +1005,13 @@ Viewer::displayFullScreen(){
 
 void Viewer::displayGLWidgetOnly(){
 
-  if( __MainMenu->isVisible()||
+  if( __statusBar->isVisible()||
       __controlPanel->isVisible() ||
       __ViewToolBar->isVisible() ||
       __FileToolBar->isVisible() ||
       __FileMenu->getLocationBar()->isVisible()){
-    __toolbarsvisibility = 0;
-    if(__MainMenu->isVisible()){
+      __toolbarsvisibility = 0;
+    if(__statusBar->isVisible()){
       displayMenuBar();
       __toolbarsvisibility += 1;
     }
@@ -1067,7 +1067,7 @@ void Viewer::displayGLWidgetOnly(){
 }
 
 void Viewer::setStatusBarMsg(QString _msg){
-    __statusBar->showMessage(_msg,10000);
+    if (__statusBar->isVisible())__statusBar->showMessage(_msg,10000);
 }
 
 void
