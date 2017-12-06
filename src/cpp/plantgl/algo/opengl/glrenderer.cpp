@@ -51,7 +51,6 @@
 #include <QtGui/QFont>
 #include <typeinfo>
 
-#include <algorithm>
 
 #ifndef GL_GENERATE_MIPMAP
     #define GL_GENERATE_MIPMAP 0x8191
@@ -468,7 +467,7 @@ bool GLRenderer::beginProcess(){
   else {
     GLint maxgllistnesting = 0;
     glGetIntegerv(GL_MAX_LIST_NESTING, &maxgllistnesting);
-    __maxprecompildepth = std::min(maxgllistnesting, MAXPRECOMPILDEPTH);
+    __maxprecompildepth = pglmin(maxgllistnesting, MAXPRECOMPILDEPTH);
 #ifdef GEOM_DLDEBUG
 	if(__compil == 0)printf("** Compile Geometry\n");
 	else if(__compil == 1)printf("** Compile Shape\n");

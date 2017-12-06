@@ -188,6 +188,40 @@ inline int trunc(double x){
 
 #endif
 
+
+#if defined(_MSC_VER)
+#if (_MSC_VER <= 1500)
+
+#define pglmin min
+#define pglmax max
+
+/*namespace std {
+
+template <class Type> const Type& pglmin(const Type& a, const Type& b) 
+{ return ( b < a ? b : a ); }
+
+template <class T> 
+const T& pglmax(const T& a, const T& b) 
+{ return ( a < b ? b : a ); }
+
+}
+
+*/
+#else
+
+#define pglmin std::min
+#define pglmax std::max
+
+#endif
+
+#else
+
+#define pglmin std::min
+#define pglmax std::max
+
+#endif
+
+
 /* ----------------------------------------------------------------------- */
 
 //__util_math_h__

@@ -55,8 +55,7 @@ if 'linux' in sys.platform:
 
 
 # Build stage
-prefix= env['build_prefix']
-print prefix
+prefix = env['build_prefix']
 
 SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
             exports={"env":env} )
@@ -66,11 +65,15 @@ SConscript( pj(prefix,"src/wrapper/SConscript"),
 
 Default("build")
 
-standartprefix = 'build-scons'
-if os.path.basename(prefix) != standartprefix:
-    if os.path.exists(standartprefix):
-        if os.path.isdir(standartprefix) and not os.path.islink(standartprefix):
-            import shutil
-            shutil.rmtree(standartprefix)
-        else: os.remove(standartprefix)
-    os.symlink(prefix, standartprefix)
+def generate_qtbuilddir():
+    standartprefix = 'build-scons'
+    if os.path.basename(prefix) != standartprefix:
+        if os.path.exists(standartprefix):
+            if os.path.isdir(standartprefix) and not os.path.islink(standartprefix): 
+                import shutil
+                shutil.rmtree(standartprefix)
+            else: os.remove(standartprefix)
+        os.symlink(prefix, standartprefix)
+
+if os.name == 'posix' and not 'CONDA_BUILD' in os.environ:
+    generate_qtbuilddir()

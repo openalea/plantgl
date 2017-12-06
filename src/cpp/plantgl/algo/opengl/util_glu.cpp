@@ -29,7 +29,8 @@
  *  ----------------------------------------------------------------------------
  */
 
- #include "util_glu.h"
+#include "util_glu.h"
+#include <plantgl/math/util_math.h>
 
 #ifdef __GNUC__
 #pragma GCC diagnostic push
@@ -52,14 +53,13 @@ const char *  gluGeomGetString(GLenum error)
 { return (const char *)gluGetString(error); }
 
 
-#include <algorithm>
 
 void geomPickMatrix (const QRect& region){
   GLint viewport[4];
   int x = region.center().x();
   int y = region.center().y();
   glGetIntegerv(GL_VIEWPORT, viewport);
-  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)std::max(region.width(),2), (GLdouble)std::max(region.height(),2) ,viewport);
+  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)pglmax(region.width(),2), (GLdouble)pglmax(region.height(),2) ,viewport);
 }
 
 void geomPickMatrix (const QPoint& point, GLdouble delta){

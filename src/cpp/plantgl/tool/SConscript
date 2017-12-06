@@ -12,10 +12,14 @@ sources= lib_env.ALEAGlob('*.cpp')
 DEFINES= list(lib_env['CPPDEFINES'])
 DEFINES.append('TOOLS_MAKEDLL')
 
+import os
+if os.name != 'posix':
+	lib_env.AppendUnique(LIBS = 'Advapi32')
+
 inc= lib_env.ALEAIncludes( "plantgl/tool", includes )
 
 lib = lib_env.ALEALibrary( "pgltool", 
                            sources, 
                            CPPDEFINES = DEFINES,
-                           CPPPATH = lib_env['CPPPATH']
+                           CPPPATH = lib_env['CPPPATH'],
                             )
