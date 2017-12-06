@@ -90,8 +90,10 @@ const real_t REAL_EPSILON = FLT_EPSILON;
 #endif // __MINGW32__
 #endif
 
-#if defined(_WIN32)
-#include <stdint.h>
+#if defined(_MSC_VER)
+#if (_MSC_VER > 1500)
+  #include <stdint.h>
+#endif
 #endif
 
 #include <climits>

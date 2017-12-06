@@ -25,9 +25,9 @@ exe_env.Append( CPPPATH = '#/share/plantgl/pixmap')
 if isinstance( platform, Win32 ):
     # We limit the cpppath to the pixmap to prevent a bug in windres
     # with MinGW 5.4.3
-    #res=exe_env.RES('icon.rc', CPPPATH = '#/share/plantgl/pixmap')
-    #source.append(res)
-	pass
+    res=exe_env.RES('icon.rc', CPPPATH = '#/share/plantgl/pixmap')
+    source.append(res)
+    pass
 
 LINKFLAGS = list( exe_env['LINKFLAGS'] )
 if env['compiler'] == 'mingw':
