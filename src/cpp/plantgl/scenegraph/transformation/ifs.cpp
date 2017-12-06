@@ -112,12 +112,6 @@ bool IT::isValid( ) const
     return false;
     }
 
-  if( __depth && (! pglfinite(__depth)) )
-    {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IT","Depth","Must Be pglfinite");
-    return false;
-    }
-
   return true;
 }
 
@@ -303,12 +297,6 @@ bool IFS::Builder::isValid( ) const
   if( ((*TransfoList)->size() == 0) || (!(*TransfoList)->isValid()) )
     {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","TransfoList","Must be a list of valid transformations");
-    return false;
-    }
-
-  if( Depth && (! pglfinite(*Depth)) )
-    {
-    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"IFS","Depth","Must Be pglfinite");
     return false;
     }
 
