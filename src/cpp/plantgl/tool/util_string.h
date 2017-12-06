@@ -104,7 +104,7 @@ inline std::string  number ( char i ) {
 
 #ifdef PGL_64_ENV
     /// Transform a number into a string
-    inline std::string  number ( size_t i ) {
+    inline std::string  number ( unsigned long long int i ) {
       NUMBER(i)
     }
 
