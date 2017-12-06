@@ -47,21 +47,21 @@ requirements:
    - boost
    - path.py
 
-test:
-  requires:
-    - nose
-  imports:
-    - openalea.plantgl
-  source_files:
-    - test
-    - test/*
-    - test/data
-    - test/oatest
-    - test/fileprecision
-
-  commands:
-   - pwd
-   - ls
-   - cd test
-   - ls
-   - nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
+#test:
+#  requires:
+#    - nose
+#  imports:
+#    - openalea.plantgl
+#  source_files:
+#    - test
+#    - test/*
+#    - test/data
+#    - test/oatest
+#    - test/fileprecision
+#
+#  commands:
+#   - pwd
+#   - ls
+#   - cd test
+#   - ls
+#   - nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
