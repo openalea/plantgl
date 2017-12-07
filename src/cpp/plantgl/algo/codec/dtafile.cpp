@@ -358,9 +358,7 @@ bool Dtafile::readSymbolTable(const string & mtg_filename){
                     while(c!='#')_file >> c;
                     _file >> a;
                     _file >> b;
-                    if(pglfinite(a) && pglfinite(a)){
-                        symbol_table->push_back(pair<int,int>(a,b));
-                    }
+                    symbol_table->push_back(pair<int,int>(a,b));
                 }
             }
             delete [] lineBuf;
