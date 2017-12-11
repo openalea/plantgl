@@ -7,6 +7,9 @@
 .. image:: https://ci.appveyor.com/api/projects/status/pbfi5p0bfslqij3s/branch/master?svg=true
    :target: https://ci.appveyor.com/project/fredboudon/plantgl
 
+.. image:: http://plantgl.readthedocs.io/en/latest/?badge=latest
+   :target: http://plantgl.readthedocs.io/en/latest/
+
 =======
 PlantGL
 =======
