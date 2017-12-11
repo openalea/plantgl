@@ -1,5 +1,11 @@
+.. image:: https://img.shields.io/badge/License-GPL-blue.svg
+   :https://opensource.org/licenses/GPL-3.0
+
 .. image:: https://travis-ci.org/openalea/plantgl.svg?branch=master
     :target: https://travis-ci.org/openalea/plantgl
+
+.. image:: https://ci.appveyor.com/api/projects/status/bwc7elajp21arif0/branch/master
+   :target: https://ci.appveyor.com/project/fredboudon/plantgl
 
 =======
 PlantGL
