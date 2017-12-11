@@ -16,7 +16,7 @@ PlantGL
 
 An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
-**PlantGL** is released under a GPL/LGPL license.
+**PlantGL** is released under a **CeCILL** license, which is compatible to the **GNU GPL**.
 
 
 .. contents::
