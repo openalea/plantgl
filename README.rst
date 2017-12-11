@@ -1,5 +1,5 @@
 .. image:: https://img.shields.io/badge/License-GPL-blue.svg
-   :https://opensource.org/licenses/GPL-3.0
+   :target:https://opensource.org/licenses/GPL-3.0
 
 .. image:: https://travis-ci.org/openalea/plantgl.svg?branch=master
     :target: https://travis-ci.org/openalea/plantgl
