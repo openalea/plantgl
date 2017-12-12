@@ -30,7 +30,7 @@ requirements:
    - flex 2.5.39 [unix]
    - m2-bison [win]
    - m2-flex  [win]
-   - cga [unix]l
+   - cgal [unix]
    - gmp [unix]
    - eigen
    - ann

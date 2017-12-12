@@ -44,4 +44,4 @@ WITH_LAPACK = False
 WITH_EIGEN = True 
 eigen_includes = PREFIX + "/include/eigen3"
 EXTRA_CXXFLAGS = "-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES -DWITH_QHULL_2011" 
-EXTRA_LIBS = "boost_system png" 
+EXTRA_LIBS = "boost_system boost_thread png" 
