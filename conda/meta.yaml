@@ -59,4 +59,4 @@ test:
   source_files:
     - test/test_*.py
   commands:
-   - nosetests -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
+   - nosetests -v -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py
