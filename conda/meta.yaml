@@ -58,7 +58,6 @@ test:
     - vplants.plantgl
   source_files:
     - test/test_*.py
-    - test/test_*.bgeom
     - test/data
   commands:
    - nosetests -v -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py -I test_bbox.py
