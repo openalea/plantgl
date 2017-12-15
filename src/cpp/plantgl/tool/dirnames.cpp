@@ -37,6 +37,10 @@
 #include <QtCore/qfile.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qfileinfo.h>
+#else
+#ifdef __GNUC__
+#include <unistd.h>
+#endif
 #endif
 
 #ifdef _WIN32
@@ -72,7 +76,7 @@ string get_dirname(const string & filename) {
     size_t slashit = filename.rfind("/"); 
     size_t backslashit = filename.rfind("\\"); 
     if (slashit == std::string::npos && backslashit == std::string::npos) return filename;
-    std::string::const_iterator end = slashit;
+    size_t end = slashit;
     if (slashit == std::string::npos || slashit <   backslashit)
         end = backslashit;
     return std::string(filename.begin(), filename.begin()+end);
@@ -88,7 +92,7 @@ string get_filename(const string & filename) {
     size_t slashit = filename.rfind("/"); 
     size_t backslashit = filename.rfind("\\"); 
     if (slashit == std::string::npos && backslashit == std::string::npos) return filename;
-    std::string::const_iterator begin = slashit;
+    size_t begin = slashit;
     if (slashit == std::string::npos || slashit <   backslashit)
         begin = backslashit;
     return std::string(filename.begin()+begin+1, filename.end());
@@ -97,8 +101,25 @@ string get_filename(const string & filename) {
 }
 
 string absolute_dirname(const string & filename) {
+#ifndef PGL_WITHOUT_QT
+    return QString2StdString(QFileInfo(filename.c_str()).absolutePath()); 
 
-	return QString2StdString(QFileInfo(filename.c_str()).absolutePath()); 
+#else
+#ifdef _WIN32
+    char * lpszShortPath = new char[MAXPATHLEN];
+    DWORD cchBuffer(MAXPATHLEN);
+
+    cchBuffer = GetFullPathName(filename.c_str(),lpszShortPath, cchBuffer);
+    lpszShortPath[cchBuffer] ='\0';
+    string result(lpszShortPath);
+    return result;
+#else
+    char resolved_path[PATH_MAX]; 
+    realpath(filename.c_str(), resolved_path);
+    return string(resolved_path);
+#endif
+
+#endif
 }
 
 string absolute_filename(const string & filename) {
@@ -106,17 +127,7 @@ string absolute_filename(const string & filename) {
     return QString2StdString(QFileInfo(filename.c_str()).absoluteFilePath()); 
 
 #else
-#ifdef _WIN32
-    char * lpszShortPath = new char[MAXPATHLEN];
-    DWORD cchBuffer(MAXPATHLEN);
-
-    cchBuffer = GetShortPathNameA(filename.c_str(),lpszShortPath, cchBuffer);
-    lpszShortPath[cchBuffer] ='\0';
-    string result(lpszShortPath);
-    return result;
-#else
-
-#endif
+    return absolute_dirname(filename)+"/"+get_filename(filename);
 
 #endif
 }
@@ -161,12 +172,40 @@ string short_dirname(const string& filename){
 
 
 string get_cwd() {
+#ifndef PGL_WITHOUT_QT
 	return QString2StdString(QDir::currentPath());
+
+#else
+#ifdef _WIN32
+    char * lpszShortPath = new char[MAXPATHLEN];
+    DWORD cchBuffer(MAXPATHLEN);
+
+    cchBuffer = GetCurrentDirectory(filename.c_str(),lpszShortPath, cchBuffer);
+    lpszShortPath[cchBuffer] ='\0';
+    string result(lpszShortPath);
+    return result;
+
+#else
+    char resolved_path[PATH_MAX]; 
+    getcwd(resolved_path, PATH_MAX);
+    return string(resolved_path);
+#endif
+#endif
 }
 
 bool chg_dir(const string & newdir) {
 	if(newdir == get_cwd()) return true;
+#ifndef PGL_WITHOUT_QT
     return QDir::setCurrent(newdir.c_str());
+#else
+#ifdef _WIN32
+
+    return SetCurrentDirectory(filename.c_str(),);
+
+#else
+    return chdir(newdir.c_str()) == 0;
+#endif
+#endif
 }
 
 
@@ -195,13 +234,21 @@ string get_suffix(const string & filename){
 }
 
 string set_suffix(const string & filename,const string & extension){
+#ifdef PGL_WITHOUT_QT
+    return filename+'.'+extension;
+#else
 	QFileInfo fi(filename.c_str());
 	QString nname = fi.path()+'/'+fi.baseName()+'.'+QString(extension.c_str());
 	return QString2StdString(nname);
+#endif
 }
 
 bool exists(const string & filename){
+#ifndef PGL_WITHOUT_QT
 	return QFileInfo(filename.c_str()).exists();
+#else
+    return ( access( filename.c_str(), F_OK ) != -1 );
+#endif
 }
 
 bool similar_dir(const std::string& filename,const std::string& filename2){
@@ -224,6 +271,7 @@ bool similar_dir(const std::string& filename,const std::string& filename2){
 
 bool copy(const std::string& src,const std::string& dest){
         if(!exists(src))return false;
+#ifndef PGL_WITHOUT_QT
 #if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
         QFile f( src.c_str() );
 		if(f.exists()) return f.copy(dest.c_str());
@@ -244,6 +292,14 @@ bool copy(const std::string& src,const std::string& dest){
           }
 		}
         return false;
+#endif
+
+#endif
+
+#else
+
+#ifdef LINKCOPY 
+    return link(src.c_str(),dest.c_str());
 #endif
 
 #endif

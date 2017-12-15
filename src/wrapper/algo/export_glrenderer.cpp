@@ -30,7 +30,6 @@
  */
   
 #include <boost/python.hpp>
-#include <plantgl/python/extract_widget.h>
 
 #include <plantgl/algo/opengl/glskelrenderer.h>
 #include <plantgl/algo/base/discretizer.h>
@@ -40,7 +39,10 @@
 #include <plantgl/algo/opengl/glctrlptrenderer.h>
 #include <plantgl/scenegraph/appearance/texture.h>
 
+#ifndef PGL_WITHOUT_QT
 #include <QtOpenGL/qgl.h>
+#include <plantgl/python/extract_widget.h>
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,9 +63,11 @@ QGLWidget * get_fgl_mode(GLRenderer * rd)
 { return rd->getGLFrame();}
 */
 
+#ifndef PGL_WITHOUT_QT
 void py_setGLFrame(GLRenderer * rd, boost::python::object widget){
 	rd->setGLFrame(extract_widget<QGLWidget>(widget)());
 }
+#endif
 
 void export_GLRenderer()
 {
@@ -73,12 +77,14 @@ void export_GLRenderer()
     .def("beginSceneList",&GLRenderer::beginSceneList)
     .def("endSceneList",&GLRenderer::endSceneList)
     .def("clearSceneList",&GLRenderer::clearSceneList)
+#ifndef PGL_WITHOUT_QT
 	.def("setGLFrame",&py_setGLFrame)
+     .def("setGLFrameFromId",&GLRenderer::setGLFrameFromId)
+#endif
 	.add_property("renderingMode",&get_rd_mode,&GLRenderer::setRenderingMode)
 	.add_property("selectionMode",&get_sel_mode,&GLRenderer::setSelectionMode)
 	// .add_property("frameGL",&get_fgl_mode,&GLRenderer::setGLFrame)
 	 .def("getDiscretizer",&GLRenderer::getDiscretizer, return_internal_reference<>())
-	 .def("setGLFrameFromId",&GLRenderer::setGLFrameFromId)
 	 .def("registerTexture",&GLRenderer::registerTexture, (bp::arg("texture"),bp::arg("id"),bp::arg("erasePreviousIfExists")=true))
 	 .def("getTextureId",&GLRenderer::getTextureId)
     ;

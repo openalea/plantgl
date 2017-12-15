@@ -110,6 +110,9 @@ std::vector<std::string> __getPGLSupportedExtensions() {
 #ifdef WITH_BISONFLEX
     ADD_EXTENSION(PGL_ASCII_PARSER)
 #endif
+#ifdef PGL_WITHOUT_QT
+    ADD_EXTENSION(PGL_NO_QT_GUI)
+#endif
    return res;
 }
 
@@ -124,12 +127,22 @@ bool pgl_support_extension(const std::string& ext) {
 	return false;
 }
 
+#ifndef PGL_WITHOUT_QT
 #include <QtGlobal>
+#endif
 
 int getPGLQtVersion(){
+#ifndef PGL_WITHOUT_QT
   return  QT_VERSION;
+#else
+  return 0;
+#endif
 }
 
 std::string getPGLQtVersionString(){
+#ifndef PGL_WITHOUT_QT
   return std::string(QT_VERSION_STR);
+#else
+  return std::string();
+#endif
 }
