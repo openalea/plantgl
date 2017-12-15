@@ -18,20 +18,22 @@ build:
 requirements:
   build:
    - python
-   - m4
+   #- m4
    - setuptools
    - openalea.deploy
    - scons
    - openalea.sconsx
    - qt ==4.8.6 [osx]
-   - qt <5 [linux]
+   - qt <5 [not osx]
    - boost
-   - bison
-   - flex 2.5.39
-   - cgal
-   - gmp
-   - ann
+   - bison [unix]
+   - flex 2.5.39 [unix]
+   - m2-bison [win]
+   - m2-flex  [win]
+   - cgal [unix]
+   - gmp [unix]
    - eigen
+   - ann
    - qhull
    - patchelf [linux]
   run:
@@ -39,12 +41,23 @@ requirements:
    - openalea.deploy
    - openalea.core
    - qt ==4.8.6 [osx]
-   - qt <5 [linux]
+   - qt <5 [not osx]
    - pyqt
-   - gmp
-   - mpfr
-   - cgal
+   - gmp [unix]
+   - mpfr [unix]
+   - cgal  [unix]
    - qhull
    - ann
    - boost
    - path.py
+
+test:
+  requires:
+    - nose
+  imports:
+    - vplants.plantgl
+  source_files:
+    - test/test_*.py
+    - test/data
+  commands:
+   - nosetests -v -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py -I test_bbox.py -I test_codec.py -I test_object_creation.py

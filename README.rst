@@ -1,5 +1,13 @@
+.. image:: https://img.shields.io/badge/License-GPL-blue.svg
+   :target: https://opensource.org/licenses/GPL-3.0
+
 .. image:: https://travis-ci.org/openalea/plantgl.svg?branch=master
     :target: https://travis-ci.org/openalea/plantgl
+
+.. image:: https://ci.appveyor.com/api/projects/status/pbfi5p0bfslqij3s/branch/master?svg=true
+   :target: https://ci.appveyor.com/project/fredboudon/plantgl
+
+..  Future command for readthedoc:   image:: https://readthedocs.org/projects/plantgl/badge/?version=latest  :target: http://plantgl.readthedocs.io/en/latest/
 
 =======
 PlantGL

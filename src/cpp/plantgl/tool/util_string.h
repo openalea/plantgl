@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! 
+/*!
 	\file util_string.h
     \brief File that contains some utility about string.
 */
@@ -101,6 +101,19 @@ inline std::string  number ( unsigned char i ) {
 inline std::string  number ( char i ) {
   NUMBER((int)i)
 }
+
+#ifdef PGL_64_ENV
+    /// Transform a number into a string
+    inline std::string  number ( unsigned long long int i ) {
+      NUMBER(i)
+    }
+
+
+    /// Transform a number into a string
+    inline std::string  number ( long long int i ) {
+      NUMBER(i)
+    }
+#endif
 
 /// Transform all character of the string into lower character.
 inline std::string toLower(const std::string& c){

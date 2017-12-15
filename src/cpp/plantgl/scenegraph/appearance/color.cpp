@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -34,6 +34,7 @@
 
 #include "color.h"
 #include <iostream>
+#include <algorithm>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -87,9 +88,9 @@ Color3::~Color3(){
 
 
 bool Color3::operator==( const Color3& c ) const {
-  return 
-    (__RED == c.__RED) && 
-    (__GREEN == c.__GREEN) && 
+  return
+    (__RED == c.__RED) &&
+    (__GREEN == c.__GREEN) &&
     (__BLUE == c.__BLUE);
 }
 
@@ -106,7 +107,7 @@ uchar_t& Color3::getBlue( ) {
 
 real_t Color3::getBlueClamped( ) const {
   return (real_t)__BLUE / 255;
-} 
+}
 
 uchar_t Color3::getGreen( ) const {
   return __GREEN;
@@ -114,7 +115,7 @@ uchar_t Color3::getGreen( ) const {
 
 uchar_t& Color3::getGreen( ) {
   return __GREEN;
-} 
+}
 
 real_t Color3::getGreenClamped( ) const {
   return (real_t)__GREEN / 255;
@@ -175,7 +176,7 @@ TOOLS(Tuple3)<uchar_t> Color3::toHSV8() const {
     default: // BLUE
         hsv[0] = 171 + 43 * (__RED - __GREEN) / rgb_extend;
     }
-    
+
     return hsv;
 }
 
@@ -190,7 +191,7 @@ Color3 Color3::fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv) {
 
     float nh  = h / 43.;
     int i = int(nh);
-    float ff = nh - i; 
+    float ff = nh - i;
 
     float sn = s / 255.;
 
@@ -234,7 +235,7 @@ TOOLS(Tuple3)<real_t> Color3::toHSV() const {
     hsv[2] = rgb_max;
     if (hsv[2] <= GEOM_EPSILON) return hsv;
 
- 
+
     real_t rgb_min = real_t(*getMin());
     real_t rgb_extend = rgb_max - rgb_min;
 
@@ -256,7 +257,7 @@ TOOLS(Tuple3)<real_t> Color3::toHSV() const {
     default: // BLUE
         hsv[0] = 240. + 60. * (r - g) ;
     }
-    
+
     return hsv;
 }
 
@@ -272,7 +273,7 @@ Color3 Color3::fromHSV(const TOOLS(Tuple3)<real_t>& hsv) {
 
     float nh  = h / 60.;
     int i = int(nh);
-    float ff = nh - i; 
+    float ff = nh - i;
 
     uchar_t p = v * (1 - s);
     uchar_t q = v * (1 - (s * ff));
@@ -382,9 +383,9 @@ Color4::~Color4(  )  {
 
 
 bool Color4::operator==( const Color4& c ) const {
-  return 
-    (__RED == c.__RED) && 
-    (__GREEN == c.__GREEN) && 
+  return
+    (__RED == c.__RED) &&
+    (__GREEN == c.__GREEN) &&
     (__BLUE == c.__BLUE) &&
     (__ALPHA == c.__ALPHA);
 }
@@ -402,11 +403,11 @@ uchar_t Color4::getBlue( ) const { return __BLUE;}
 
 uchar_t& Color4::getBlue( ) { return __BLUE;}
 
-real_t Color4::getBlueClamped( ) const { return (real_t)__BLUE / 255;} 
+real_t Color4::getBlueClamped( ) const { return (real_t)__BLUE / 255;}
 
 uchar_t Color4::getGreen( ) const { return __GREEN;}
 
-uchar_t& Color4::getGreen( ) { return __GREEN;} 
+uchar_t& Color4::getGreen( ) { return __GREEN;}
 
 real_t Color4::getGreenClamped( ) const { return (real_t)__GREEN / 255;}
 
@@ -485,6 +486,6 @@ Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
 
 
 std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
-  return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << "," 
+  return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << ","
 		<< (uint16_t)c.getBlue() << "," << (uint16_t)c.getAlpha() << ">";
-} 
+}
