@@ -33,9 +33,11 @@
 #include "dirnames.h"
 #include "util_types.h"
 
+#ifndef PGL_WITHOUT_QT
 #include <QtCore/qfile.h>
 #include <QtCore/qdir.h>
 #include <QtCore/qfileinfo.h>
+#endif
 
 #ifdef _WIN32
 #include <windows.h>
@@ -44,6 +46,8 @@
 
 using namespace std;
 TOOLS_BEGIN_NAMESPACE
+
+#ifndef PGL_WITHOUT_QT
 
 inline std::string QString2StdString(const QString& st)
 #if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
@@ -59,32 +63,61 @@ inline std::string QString2StdString(const QString& st)
 { return st.latin1(); }
 #endif
 
+#endif
+
 string get_dirname(const string & filename) {
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
+#ifndef PGL_WITHOUT_QT
 	return QString2StdString(QFileInfo(filename.c_str()).path()); 
 #else
-	return QString2StdString(QFileInfo(filename.c_str()).dirPath());
+    size_t slashit = filename.rfind("/"); 
+    size_t backslashit = filename.rfind("\\"); 
+    if (slashit == std::string::npos && backslashit == std::string::npos) return filename;
+    std::string::const_iterator end = slashit;
+    if (slashit == std::string::npos || slashit <   backslashit)
+        end = backslashit;
+    return std::string(filename.begin(), filename.begin()+end);
+
 #endif
 }
 
 
 string get_filename(const string & filename) {
+#ifndef PGL_WITHOUT_QT
 	return QString2StdString(QFileInfo(filename.c_str()).fileName());
-}
-
-string absolute_dirname(const string & filename) {
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
-	return QString2StdString(QFileInfo(filename.c_str()).absolutePath()); 
 #else
-	return QString2StdString(QFileInfo(filename.c_str()).dirPath(true));
+    size_t slashit = filename.rfind("/"); 
+    size_t backslashit = filename.rfind("\\"); 
+    if (slashit == std::string::npos && backslashit == std::string::npos) return filename;
+    std::string::const_iterator begin = slashit;
+    if (slashit == std::string::npos || slashit <   backslashit)
+        begin = backslashit;
+    return std::string(filename.begin()+begin+1, filename.end());
+
 #endif
 }
 
+string absolute_dirname(const string & filename) {
+
+	return QString2StdString(QFileInfo(filename.c_str()).absolutePath()); 
+}
+
 string absolute_filename(const string & filename) {
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
-	return QString2StdString(QFileInfo(filename.c_str()).absoluteFilePath()); 
+#ifndef PGL_WITHOUT_QT
+    return QString2StdString(QFileInfo(filename.c_str()).absoluteFilePath()); 
+
 #else
-	return QString2StdString(QFileInfo(filename.c_str()).absFilePath());
+#ifdef _WIN32
+    char * lpszShortPath = new char[MAXPATHLEN];
+    DWORD cchBuffer(MAXPATHLEN);
+
+    cchBuffer = GetShortPathNameA(filename.c_str(),lpszShortPath, cchBuffer);
+    lpszShortPath[cchBuffer] ='\0';
+    string result(lpszShortPath);
+    return result;
+#else
+
+#endif
+
 #endif
 }
 
@@ -128,11 +161,7 @@ string short_dirname(const string& filename){
 
 
 string get_cwd() {
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(QDir::currentPath());
-#else
-	return QString2StdString(QDir::current().path());
-#endif
 }
 
 bool chg_dir(const string & newdir) {
@@ -155,27 +184,19 @@ string cat_dir_file(const string & filename, const string & name) {
 }
 
 string get_suffix(const string & filename){
-#ifdef PGL_DEBUG
+#ifdef PGL_WITHOUT_QT
 	size_t pos = filename.find_last_of('.');
 	if (pos == std::string::npos) return string("");
 	else return std::string(filename.begin()+filename.find_last_of('.')+1,filename.end());
 #else
 	QFileInfo fi(filename.c_str());
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	return QString2StdString(fi.suffix()); 
-#else
-	return QString2StdString(fi.extension()); 
-#endif
 #endif
 }
 
 string set_suffix(const string & filename,const string & extension){
 	QFileInfo fi(filename.c_str());
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
 	QString nname = fi.path()+'/'+fi.baseName()+'.'+QString(extension.c_str());
-#else
-	QString nname = fi.dirPath()+'/'+fi.baseName()+'.'+QString(extension.c_str());
-#endif
 	return QString2StdString(nname);
 }
 

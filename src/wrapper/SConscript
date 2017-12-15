@@ -12,7 +12,7 @@ pj = os.path.join
 # 2. Call other SConscript files in sub directories
 #dirs= env.ALEAGlob( 'SConscript' , dir='*')
 subdirs = ['math','scenegraph','algo']
-if not env['QT_VERSION'] is None:
+if not eval(env['QT_VERSION']) is None:
 	subdirs += ['gui']
 
 subdirs = [ pj(i,'SConscript') for i in subdirs]
