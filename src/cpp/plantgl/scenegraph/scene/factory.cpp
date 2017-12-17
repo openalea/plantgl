@@ -248,7 +248,7 @@ bool SceneFactory::installLib(const std::string& libname)
 		 installCodecs();
 		 return true;
 	 }     
-	 else 
+	 else  return false;
 #else
         return false;
 #endif

@@ -217,7 +217,7 @@ VegeStarFile::parse(std::istream& stream)
 
 inline std::vector<std::string>  split(const std::string& t){
 
-	QStringList qres = QString(t).split(QRegExp("[ \t\n;,]"));
+	QStringList qres = QString(t.c_str()).split(QRegExp("[ \t\n;,]"));
     std::vector<std::string> res;
 
 }
