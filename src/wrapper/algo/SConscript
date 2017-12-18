@@ -7,10 +7,10 @@ py_dir = '../../plantgl/algo'
 # Build wrappers as shared libraries
 lib_env=env.Clone()
 
-qt_version = int(lib_env['QT_VERSION'])
+qt_version = eval(lib_env['QT_VERSION'])
 if qt_version == 4:
     lib_env.EnableQtModules( [ 'QtCore', 'QtGui', 'QtOpenGL' ])
-else:
+elif qt_version == 5:
     lib_env.EnableQtModules( [ 'QtCore', 'QtGui', 'QtWidgets', 'QtOpenGL' ])
 
 sources= lib_env.ALEAGlob( '*.cpp' )

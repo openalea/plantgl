@@ -40,7 +40,9 @@
 
 #include "util_gl.h"
 #include <plantgl/scenegraph/appearance/color.h>
+#ifndef PGL_WITHOUT_QT
 #include <QtGui/QColor>
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -67,6 +69,7 @@ inline void glGeomLightMaterial(GLenum light, GLenum pname, const PGL(Color4)& v
   GLfloat val[] = { (GLfloat)v.getRedClamped(), (GLfloat)v.getGreenClamped(), (GLfloat)v.getBlueClamped(), (GLfloat)v.getAlphaClamped() };
   glLightfv (light, pname, val); }
 
+#ifndef PGL_WITHOUT_QT
 /*! \fn void glGeomLightMaterial(GLenum light, GLenum pname, const QColor& v  )
     \brief  glLight for GEOM
     \param light must be GL_LIGHT0, ... , GL_LIGHT7.
@@ -91,6 +94,7 @@ inline void glGeomLightMaterial(GLenum light, GLenum pname, const QRgb& rgb )
   GLfloat val[] = { (GLfloat)(qRed(rgb))/(GLfloat)255.0,  (GLfloat)(qGreen(rgb))/(GLfloat)255.0,
                                         (GLfloat)(qBlue(rgb))/(GLfloat)255.0, (GLfloat)(qAlpha(rgb))/(GLfloat)255.0 };
   glLightfv (light, pname, val); }
+#endif
 
 /*! \fn void glGeomGetLightMaterial(GLenum light, GLenum pname,PGL(Color4)& v )
     \brief  glLight for GEOM
@@ -103,8 +107,8 @@ inline void glGeomGetLightMaterial(GLenum light, GLenum pname,PGL(Color4)& v )
 { GEOM_ASSERT(pname == GL_AMBIENT || pname == GL_DIFFUSE || pname == GL_SPECULAR );
   GLfloat val[] = { 0.0 , 0.0 , 0.0 , 0.0 };
   glGetLightfv (light, pname, val);
-  v.getRed() = uchar(val[0]*255);  v.getGreen() = uchar(val[1]*255);
-  v.getBlue() = uchar(val[2]*255); v.getAlpha() = uchar(val[3]*255);}
+  v.getRed() = uchar_t(val[0]*255);  v.getGreen() = uchar_t(val[1]*255);
+  v.getBlue() = uchar_t(val[2]*255); v.getAlpha() = uchar_t(val[3]*255);}
 
 /* ----------------------------------------------------------------------- */
 
@@ -118,6 +122,7 @@ inline void glGeomFogColor(const PGL(Color3)& v, const real_t& alpha = 1.0)
 { GLfloat val[] = { (GLfloat)v.getRedClamped(), (GLfloat)v.getGreenClamped(), (GLfloat)v.getBlueClamped(), (GLfloat)alpha };
   glFogfv ( GL_FOG_COLOR, val); }
 
+#ifndef PGL_WITHOUT_QT
 /// glFog( GL_FOG_COLOR ) for Qt
 inline void glGeomFogColor(const QColor& v)
 { QRgb rgb = v.rgb();
@@ -130,6 +135,7 @@ inline void glGeomFogColor(const QRgb& rgb)
 { GLfloat val[] = { (GLfloat)(qRed(rgb)/(GLfloat)255.0),  (GLfloat)(qGreen(rgb))/(GLfloat)255.0,
                                         (GLfloat)(qBlue(rgb))/(GLfloat)255.0, (GLfloat)(qAlpha(rgb))/(GLfloat)255.0 };
   glFogfv ( GL_FOG_COLOR, val); }
+#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -148,6 +154,7 @@ inline void glGeomColor(const PGL(Color4)& v){
   glColor4ubv(v.begin());
 }
 
+#ifndef PGL_WITHOUT_QT
 /// glColor for Qt
 inline void glGeomColor(const QColor& v)
 { QRgb rgb = v.rgb();
@@ -160,6 +167,7 @@ inline void glGeomColor(const QRgb& rgb )
 { GLfloat val[] = { (GLfloat)(qRed(rgb))/(GLfloat)255.0,  (GLfloat)(qGreen(rgb))/(GLfloat)255.0,
                                         (GLfloat)(qBlue(rgb))/(GLfloat)255.0, (GLfloat)(qAlpha(rgb))/(GLfloat)255.0 };
    glColor4fv( val ); }
+#endif
 
 /// glMaterial for GEOM
 inline void glGeomMaterial(GLenum face, GLenum pname, const PGL(Color4)& v)
@@ -171,6 +179,7 @@ inline void glGeomMaterial(GLenum face, GLenum pname, const PGL(Color3)& v, cons
 { GLfloat val[] = { (GLfloat)v.getRedClamped(), (GLfloat)v.getGreenClamped(), (GLfloat)v.getBlueClamped(), (GLfloat)alpha };
   glMaterialfv (face, pname, val);}
 
+#ifndef PGL_WITHOUT_QT
 /// glMaterial for Qt
 inline void glGeomMaterial(GLenum face, GLenum pname,const QColor& v)
 { QRgb rgb = v.rgb();
@@ -183,7 +192,7 @@ inline void glGeomMaterial(GLenum face, GLenum pname,const QRgb& rgb)
 { GLfloat val[] = { (GLfloat)(qRed(rgb))/(GLfloat)255.0,  (GLfloat)(qGreen(rgb))/(GLfloat)255.0,
                                         (GLfloat)(qBlue(rgb))/(GLfloat)255.0, (GLfloat)(qAlpha(rgb))/(GLfloat)255.0 };
   glMaterialfv (face, pname, val);}
-
+#endif
 /* ----------------------------------------------------------------------- */
 
 

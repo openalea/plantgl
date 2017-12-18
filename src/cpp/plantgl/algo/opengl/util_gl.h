@@ -39,20 +39,35 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../algo_config.h"
+
+
+#ifndef PGL_WITHOUT_QT
+
 #include <QtOpenGL/qgl.h>
 #ifdef QT_NO_OPENGL
 #pragma message "Qt compiled without openGL support"
 #endif
 
-#if defined(Q_WS_MAC)
+#else
+#if defined(__APPLE__) 
+# include <OpenGL/gl.h>
+#else
+# include <GL/gl.h>
+#endif
+
+#endif
+
+#if defined(__APPLE__) 
 # include <OpenGL/glu.h>
 #else
 # include <GL/glu.h>
 #endif
 
 
+#ifndef PGL_WITHOUT_QT
 #include <QtCore/qpoint.h>
 #include <QtCore/qrect.h>
+#endif
 
 #include <plantgl/math/util_math.h>
 #include <plantgl/math/util_vector.h>
@@ -578,6 +593,8 @@ inline TOOLS(Vector4) geom2gl(const TOOLS(Vector4)& v){
 	return TOOLS(Vector4)(v.y(),v.z(),v.x(),v.w());
 }
 
+#ifndef PGL_WITHOUT_QT
+
 inline void glQPoint(const QPoint& p){
   glVertex2i(p.x(),p.y());
 }
@@ -586,6 +603,7 @@ inline void glQRect(const QRect& r){
   glRecti(r.topLeft().x(),r.topLeft().y(),r.bottomRight().x(),r.bottomRight().y());
 }
 
+#endif
 /* ----------------------------------------------------------------------- */
 
 #endif

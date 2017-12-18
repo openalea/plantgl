@@ -75,7 +75,11 @@ class ALGO_API GLRenderer : public Action
 public:
 
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
-  GLRenderer( Discretizer& discretizer, QGLWidget * glframe = NULL );
+  GLRenderer( Discretizer& discretizer
+#ifndef PGL_WITHOUT_QT
+    , QGLWidget * glframe = NULL 
+#endif
+    );
 
 
   /*! \enum RenderingMode
@@ -137,6 +141,7 @@ public:
   /// clear the display list for all the scene.
   void clearSceneList();
 
+#ifndef PGL_WITHOUT_QT
   /// Set the gl frame in which the scene must be rendered
   void setGLFrame(QGLWidget * frame) { __glframe = frame; }
 
@@ -144,7 +149,8 @@ public:
   QGLWidget * getGLFrame() const { return __glframe; }
 
   /// Set the gl frame in which the scene must be rendered
-  bool setGLFrameFromId(uint_t);
+  bool setGLFrameFromId(WId);
+#endif
 
   /// @name Pre and Post Processing
   //@{
@@ -300,8 +306,10 @@ protected:
 
   int __compil;
 
+#ifndef PGL_WITHOUT_QT
   QGLWidget * __glframe;
-
+#endif
+  
 private:
   template<class T> 
   bool discretize_and_render(T * geom);

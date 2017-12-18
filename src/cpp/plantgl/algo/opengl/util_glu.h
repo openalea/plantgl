@@ -41,7 +41,7 @@
 
 #include "util_gl.h"
 
-#if defined(Q_WS_MAC)
+#if defined(__APPLE__)
 # include <OpenGL/glu.h>
 #else
 # include <GL/glu.h>
@@ -62,8 +62,10 @@ ALGO_API void  geomPerspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, 
 ALGO_API const char * gluGeomErrorString(GLenum error);
 ALGO_API const char * gluGeomGetString(GLenum name);
 
+#ifndef PGL_WITHOUT_QT
 ALGO_API void  geomPickMatrix (const QRect& region);
 ALGO_API void geomPickMatrix (const QPoint& point, GLdouble delta = 2.0);
+#endif
 
 ALGO_API bool geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ);
 ALGO_API bool geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, const GLdouble *model, const GLdouble *proj, const GLint *view, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ);

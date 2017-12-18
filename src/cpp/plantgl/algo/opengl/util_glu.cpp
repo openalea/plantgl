@@ -53,6 +53,7 @@ const char *  gluGeomGetString(GLenum error)
 { return (const char *)gluGetString(error); }
 
 
+#ifndef PGL_WITHOUT_QT
 
 void geomPickMatrix (const QRect& region){
   GLint viewport[4];
@@ -69,6 +70,7 @@ void geomPickMatrix (const QPoint& point, GLdouble delta){
   glGetIntegerv(GL_VIEWPORT, viewport);
   gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, delta, delta ,viewport);
 }
+#endif
 
 bool geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ){
     GLint viewport[4];

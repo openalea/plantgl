@@ -10,20 +10,18 @@ ALEASolution = config.ALEASolution
 
 
 options = Variables( ['../options.py', 'options.py'], ARGUMENTS )
-options.Add(EnumVariable('QT_VERSION','Qt major version to use','4',allowed_values=('4','5','None')))
+options.Add(EnumVariable('QT_VERSION', 'Qt major version to use','4', allowed_values=('4','5','None')))
 options.Add(BoolVariable('WITH_CGAL','Use CGAL',True))
 options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
+
 
 # Create an environment to access qt option values
 qt_env = Environment(options=options, tools=[])
 
-qt_version = qt_env['QT_VERSION']
-if qt_version in '45':   qt_version = int(qt_version)
-else:                    qt_version = None
-qt_env['QT_VERSION'] = qt_version
+qt_version = eval(qt_env['QT_VERSION'])
 
-tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','cgal','eigen', 'mpfr','ann']
-if qt_version :
+tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann']
+if not qt_version is None:
     tools += ['qt'+str(qt_version)]
 
 env = ALEASolution(options, tools)

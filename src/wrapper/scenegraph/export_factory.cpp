@@ -33,7 +33,6 @@
 #include <plantgl/scenegraph/scene/factory.h>
 #include <string>
 #include <sstream>
-#include <QtCore/qthread.h>
 
 #include <plantgl/python/pyobj_reference.h>
 #include <plantgl/python/pyinterpreter.h>
@@ -239,7 +238,6 @@ SceneFormatList sf_formats( SceneFactory * f) {
 
 void export_SceneFactory()
 {
-  // if (PythonThread == NULL) PythonThread = QThread::currentThread();
 
   bp::class_<SceneFactory,SceneFactoryPtr, boost::noncopyable>("SceneFactory","A factory of Scene that register and use SceneCodec to read scene from files.",bp::no_init)
       .def("get", &SceneFactory::get,bp::return_value_policy<bp::reference_existing_object>())

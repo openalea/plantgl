@@ -41,21 +41,10 @@
 
 #include <vector>
 #include <plantgl/tool/util_hashmap.h>
+#include <plantgl/tool/util_mutex.h>
 #include "plantgl/scenegraph/core/sceneobject.h"
 #include "shape.h"
 
-#ifdef QT_THREAD_SUPPORT
-// forward declaration of QMutex
-class QMutex;
-#else
-#ifndef QT_NO_THREAD_SUPPORT
-#ifdef _MSC_VER
-#pragma message("QT_THREAD_SUPPORT macro not defined. Don't you Forget?")
-#else
-#warning "QT_THREAD_SUPPORT macro not defined. Don't you Forget?"
-#endif
-#endif
-#endif
 
 /* ----------------------------------------------------------------------- */
 
@@ -246,8 +235,8 @@ protected:
   /// The list of shapes constituting the subScene.
   std::vector<Shape3DPtr> __shapeList;
 
-#ifdef QT_THREAD_SUPPORT
-  QMutex* __mutex;
+#ifdef PGL_THREAD_SUPPORT
+  PglMutex* __mutex;
 #endif
 public:
 
@@ -266,12 +255,14 @@ public:
     protected:
         void registerScene(Scene *);
         void unregisterScene(const Scene *);
+        void lock() const ;
+        void unlock() const;
 
         Pool();
 
         PoolList __pool;
-#ifdef QT_THREAD_SUPPORT
-        QMutex* __mutex;
+#ifdef PGL_THREAD_SUPPORT
+        PglMutex* __mutex;
 #endif
     };
 

@@ -43,10 +43,12 @@
 
 
 #include <fstream>
+
+#ifndef PGL_WITHOUT_QT
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qregexp.h>
-
+#endif
 /* ----------------------------------------------------------------------- */
 
 TOOLS_USING_NAMESPACE
@@ -211,23 +213,54 @@ VegeStarFile::parse(std::istream& stream)
 
 #define MAXLINELENGTH 500
 
-inline QStringList splitString(const QString& t){
-#if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
-	return t.split(QRegExp("[ \t\n;,]"));
-#else
-	return QStringList::split(QRegExp("[ \t\n;,]"),t);
-#endif
+#ifndef PGL_WITHOUT_QT
+
+inline std::vector<std::string>  split(const std::string& t){
+
+	QStringList qres = QString(t.c_str()).split(QRegExp("[ \t\n;,]"));
+    std::vector<std::string> res;
+
 }
+#else
+
+size_t find_next(const std::string s, size_t pos) {
+    std::string separators = "\t\n;,";
+    size_t next = std::string::npos;
+    for (std::string::const_iterator it = separators.begin(); it != separators.end(); ++it){
+        size_t npos = s.find(*it, pos);
+        if (npos != std::string::npos) {
+            if (next != std::string::npos)  next = npos;
+            else if(next > npos) next = npos;
+        }
+    }
+    return next;
+
+}
+std::vector<std::string> split(const std::string& s)
+{
+    std::vector<std::string> output;
+    std::string::size_type prev_pos = 0, pos = 0;
+    while((pos = find_next(s, pos)) != std::string::npos)
+    {
+        std::string substring( s.substr(prev_pos, pos-prev_pos) );
+        output.push_back(substring);
+        prev_pos = ++pos;
+    }
+
+    output.push_back(s.substr(prev_pos, pos-prev_pos)); // Last word
+    return output;
+}
+#endif
 
 bool 
 VegeStarFile::parseHeader(std::istream& stream)
 {
 	char line[MAXLINELENGTH]; 
 	stream.getline(line,MAXLINELENGTH);
-	QString t(line);
-	QStringList tokens = splitString(t);
+	
+	std::vector<std::string> tokens = split(line);
 	for(int it = 0; it < tokens.size(); ++it){
-		QString token = tokens[it];
+		std::string token = tokens[it];
 		if(token == "Obj")attlist.push_back(obj);
 		else if(token == "EchX")attlist.push_back(EchX);
 		else if(token == "EchY")attlist.push_back(EchY);
@@ -261,7 +294,7 @@ VegeStarFile::parseHeader(std::istream& stream)
 		else if(token == "Jmax")attlist.push_back(Jmax);
 		else {
 			attlist.push_back(Error);
-			pglError("Unrecognized header token : '%s'.\n", qPrintable(token) );
+			pglError("Unrecognized header token : '%s'.\n", token.c_str() );
 		}
 	}
 	return true;
@@ -275,11 +308,11 @@ VegeStarFile::parseLine(std::istream& stream)
 	char line[MAXLINELENGTH]; 
 	stream.getline(line,MAXLINELENGTH);
 
-	QString t(line);
-	QStringList tokens = splitString(t);
+	std::string t(line);
+	std::vector<std::string> tokens = split(t);
 
 	for(size_t i = 0; i < attlist.size() && i < tokens.size(); i++){
-		val = tokens[i].toDouble();
+		val = atof(tokens[i].c_str());
 		VgstarItem item = attlist[i];
 		if(stream.eof())return false;
 		switch(item){

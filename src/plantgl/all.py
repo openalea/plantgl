@@ -1,10 +1,9 @@
 from math import *
 from scenegraph import *
 from algo import *
-try:
+if not pgl_support_extension('PGL_NO_QT_GUI'):
     from gui import *
-except:
-    from gui3 import *
+
 import codec
 
 
