@@ -1,8 +1,7 @@
 from openalea.plantgl.all import *
-
+from os.path import join, dirname
 
 def create_default_objects():
-    yield AmapSymbol('../share/plantgl/database/amapsymbols/nentn105.smb')
     yield AsymmetricHull()
     bc = BezierCurve([(0,0,0,1),(.5,1,0,1),(1.,1,0,1),(1.5,0,0,1)])
     yield bc
@@ -36,6 +35,9 @@ def create_default_objects():
 #`    yield Swung([bc2],[0])
     yield Text('test')
     yield TriangleSet([(0,0,0),(1,0,0),(0,1,0)],[range(3)])
+    am = AmapSymbol(join(dirname(__file__),'../share/plantgl/database/amapsymbols/nentn105.smb'))
+    assert am.isValid()
+    yield am
 
 def create_default_transforms():
     ds = Sphere()
