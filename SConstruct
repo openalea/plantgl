@@ -65,6 +65,8 @@ SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
 if env.get('WITH_BOOST',True) :
     SConscript( pj(prefix,"src/wrapper/SConscript"),
                 exports={"env":env} )
+else:
+    print("IMPORTANT : Wrappers will not be build. Boost.Python not available.")
 
 Default("build")
 
