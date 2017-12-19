@@ -41,10 +41,12 @@
 
 #include <vector>
 #include <plantgl/tool/util_hashmap.h>
-#include <plantgl/tool/util_mutex.h>
 #include "plantgl/scenegraph/core/sceneobject.h"
 #include "shape.h"
 
+/* ----------------------------------------------------------------------- */
+
+class PglMutex;
 
 /* ----------------------------------------------------------------------- */
 
@@ -230,14 +232,13 @@ public:
 
   inline attribute_deprecated void Resize(const uint_t size ) { return resize(size); }
 #endif
-protected:
 
+protected:
   /// The list of shapes constituting the subScene.
   std::vector<Shape3DPtr> __shapeList;
 
-#ifdef PGL_THREAD_SUPPORT
   PglMutex* __mutex;
-#endif
+
 public:
 
     /// A Scene Pool class
@@ -261,9 +262,7 @@ public:
         Pool();
 
         PoolList __pool;
-#ifdef PGL_THREAD_SUPPORT
         PglMutex* __mutex;
-#endif
     };
 
     // Singleton access
