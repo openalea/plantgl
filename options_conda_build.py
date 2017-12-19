@@ -16,7 +16,7 @@ SRC_DIR = os.environ.get('SRC_DIR')
 
 QTDIR = PREFIX
 QT4_BINPATH = PREFIX + "/bin"
-QT4_CPPPATH = PREFIX + "/include"
+QT4_CPPPATH = PREFIX + "/include/qt"
 QT4_LIBPATH = PREFIX + "/lib"
 QT4_FRAMEWORK = False 
 gl_include = PREFIX + "/include"
