@@ -192,21 +192,13 @@ inline int trunc(double x){
 #if defined(_MSC_VER)
 #if (_MSC_VER <= 1500)
 
-#define pglmin min
-#define pglmax max
+template <typename T>
+inline const T &pglmin(const T &a, const T &b) { return (a < b) ? a : b; }
 
-/*namespace std {
+template <typename T>
+inline const T &pglmax(const T &a, const T &b) { return (a < b) ? b : a; }
 
-template <class Type> const Type& pglmin(const Type& a, const Type& b) 
-{ return ( b < a ? b : a ); }
 
-template <class T> 
-const T& pglmax(const T& a, const T& b) 
-{ return ( a < b ? b : a ); }
-
-}
-
-*/
 #else
 
 #define pglmin std::min
