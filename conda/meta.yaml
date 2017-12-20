@@ -55,7 +55,7 @@ test:
   requires:
     - nose
   imports:
-    - vplants.plantgl
+    - openalea.plantgl
   source_files:
     - test/test_*.py
     - test/data

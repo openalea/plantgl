@@ -38,25 +38,51 @@
 
 #ifndef PGL_WITHOUT_QT
 
-#include <QtCore/qglobal.h>
+    #include <QtCore/qglobal.h>
 
-#ifdef QT_THREAD_SUPPORT
-#include <QtCore/qmutex.h>
-#define PGL_THREAD_SUPPORT
-#define PglMutex QMutex
-#endif
+    #ifdef QT_THREAD_SUPPORT
+        #include <QtCore/qmutex.h>
+        #define PGL_THREAD_SUPPORT
+        #define PglMutexInternal QMutex
+
+    #endif
 
 #else
 
-#if _MSC_VER == 1500  
-// PGL_THREAD_SUPPORT not activated
-#else
+    #if _MSC_VER == 1500  
+        // PGL_THREAD_SUPPORT not activated
+    #else
 
-#include <mutex>
-#define PGL_THREAD_SUPPORT
-#define PglMutex std::mutex
+        #include <mutex>
+        #define PGL_THREAD_SUPPORT
+        #define PglMutexInternal std::mutex
+
+    #endif
 
 #endif
+
+
+#ifdef PGL_THREAD_SUPPORT
+
+    struct PglMutex {
+    public:
+        PglMutex()  {}
+        void lock() { __mutexinternal.lock(); }
+        void unlock() { __mutexinternal.unlock(); }
+        bool tryLock() { return __mutexinternal.tryLock(); }
+
+    protected:
+        PglMutexInternal __mutexinternal;
+
+    };
+#else
+    struct PglMutex {
+    public:
+        PglMutex()  {}
+        void lock() { }
+        void unlock() { }
+        bool tryLock() { return true; }
+    };
 
 #endif
 

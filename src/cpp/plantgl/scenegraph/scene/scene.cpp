@@ -41,6 +41,7 @@
 #include <plantgl/tool/util_string.h>
 #include <plantgl/tool/bfstream.h>
 #include <plantgl/tool/dirnames.h>
+#include <plantgl/tool/util_mutex.h>
 
 #include <algorithm>
 
@@ -65,10 +66,10 @@ using namespace std;
 Scene::Scene(unsigned int size ) :
   RefCountObject(),
   __shapeList(size,Shape3DPtr())
-#ifdef PGL_THREAD_SUPPORT
-  ,  __mutex(new PglMutex())
-#endif
   {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -77,10 +78,10 @@ Scene::Scene(unsigned int size ) :
 
 Scene::Scene(const Scene& scene) :
   RefCountObject()
-#ifdef PGL_THREAD_SUPPORT
-  ,  __mutex(new PglMutex())
-#endif
 {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -102,10 +103,10 @@ Scene& Scene::operator=( const Scene& scene){
 Scene::Scene(const string& filename, const std::string& format, ostream& errlog, int max_error ) :
   RefCountObject(),
   __shapeList()
-#ifdef PGL_THREAD_SUPPORT
-  ,  __mutex(new PglMutex())
-#endif
 {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -116,10 +117,10 @@ Scene::Scene(const string& filename, const std::string& format, ostream& errlog,
 Scene::Scene(const SceneObjectSymbolTable& table) :
   RefCountObject(),
   __shapeList()
-#ifdef PGL_THREAD_SUPPORT
-  , __mutex(new PglMutex())
-#endif
 {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
