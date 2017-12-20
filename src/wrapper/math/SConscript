@@ -13,4 +13,3 @@ target= "_pglmath"
 lib_env.AppendUnique(LIBS= ['pglmath'])
 lib_env.ALEAWrapper( py_dir, target, sources )
 
-print 'Ask creation of '+repr(target)+' with '+str(sources)
