@@ -476,14 +476,20 @@ bool GLRenderer::beginProcess(){
     glInitNames();
   }
   else {
+    
     GLint maxgllistnesting = 0;
     glGetIntegerv(GL_MAX_LIST_NESTING, &maxgllistnesting);
-    __maxprecompildepth =  ( maxgllistnesting < MAXPRECOMPILDEPTH? maxgllistnesting, MAXPRECOMPILDEPTH);
+    GLint maxprecompildepth = MAXPRECOMPILDEPTH;
+    __maxprecompildepth =  maxgllistnesting;
+    if ( __maxprecompildepth > maxprecompildepth)
+         __maxprecompildepth = maxprecompildepth;
+
 #ifdef GEOM_DLDEBUG
 	if(__compil == 0)printf("** Compile Geometry\n");
 	else if(__compil == 1)printf("** Compile Shape\n");
 	else if(__compil == 2)printf("** Compile Scene\n");
 #endif
+
   }
   return true;
 }
