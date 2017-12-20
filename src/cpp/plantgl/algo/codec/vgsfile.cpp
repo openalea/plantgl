@@ -44,11 +44,6 @@
 
 #include <fstream>
 
-#ifndef PGL_WITHOUT_QT
-#include <QtCore/qstring.h>
-#include <QtCore/qstringlist.h>
-#include <QtCore/qregexp.h>
-#endif
 /* ----------------------------------------------------------------------- */
 
 TOOLS_USING_NAMESPACE
@@ -213,16 +208,6 @@ VegeStarFile::parse(std::istream& stream)
 
 #define MAXLINELENGTH 500
 
-#ifndef PGL_WITHOUT_QT
-
-inline std::vector<std::string>  split(const std::string& t){
-
-	QStringList qres = QString(t.c_str()).split(QRegExp("[ \t\n;,]"));
-    std::vector<std::string> res;
-
-}
-#else
-
 size_t find_next(const std::string s, size_t pos) {
     std::string separators = "\t\n;,";
     size_t next = std::string::npos;
@@ -250,7 +235,6 @@ std::vector<std::string> split(const std::string& s)
     output.push_back(s.substr(prev_pos, pos-prev_pos)); // Last word
     return output;
 }
-#endif
 
 bool 
 VegeStarFile::parseHeader(std::istream& stream)

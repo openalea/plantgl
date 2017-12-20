@@ -10,7 +10,6 @@ if not eval(env['QT_VERSION']) is None:
 	subdirs += ['gui']
 
 subdirs = [ pj(i,'SConscript') for i in subdirs]
-print(subdirs)
 
 SConscript( subdirs, exports= { 'env' : env } )
 
