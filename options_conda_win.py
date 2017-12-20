@@ -15,3 +15,4 @@ qhull_libs_suffix = 'static'
 
 if 'CPU_COUNT' in os.environ:
 	num_jobs = os.environ['CPU_COUNT']
+    QT_VERSION = 5
