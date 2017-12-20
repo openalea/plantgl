@@ -25,7 +25,7 @@ requirements:
    - openalea.sconsx
    - qt ==4.8.6 [osx]
    - qt <5 [linux]
-   - qt [win]
+   - qt <5 [win]
    - boost
    - bison [unix]
    - flex 2.5.39 [unix]
@@ -43,7 +43,7 @@ requirements:
    - openalea.core
    - qt ==4.8.6 [osx]
    - qt <5 [linux]
-   - qt [win]
+   - qt <5 [win]
    - pyqt
    - gmp [unix]
    - mpfr [unix]
