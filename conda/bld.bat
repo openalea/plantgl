@@ -2,7 +2,7 @@ COPY options_conda_win.py options.py
 
 scons -h
 
-if errorlevel 1 exit 1
+REM if errorlevel 1 exit 1
 
 python setup.py install
 
