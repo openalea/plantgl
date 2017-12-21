@@ -23,4 +23,6 @@ try:
     qtconfig = qtconfig[i:].splitlines()[0]
     QT_VERSION = eval(qtconfig) >> 16
 except:
-    QT_VERSION = 5
+    QT_VERSION = 4
+
+EXTRA_LIBS = 'MSVCRT LIBCMT LIBC'
