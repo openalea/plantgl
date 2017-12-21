@@ -71,6 +71,9 @@ else:
 
 Default("build")
 
+print env['MSVC_VERSION']
+print env['TARGET_ARCH']
+
 def generate_qtbuilddir():
     standartprefix = 'build-scons'
     if os.path.basename(prefix) != standartprefix:
