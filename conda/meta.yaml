@@ -35,7 +35,7 @@ requirements:
    - gmp [unix]
    - eigen
    - ann
-   - qhull [unix]
+   - qhull 
    - patchelf [linux]
   run:
    - python
@@ -48,7 +48,7 @@ requirements:
    - gmp [unix]
    - mpfr [unix]
    - cgal  [unix]
-   - qhull [unix]
+   - qhull 
    - ann
    - boost
    - path.py

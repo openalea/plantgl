@@ -70,9 +70,10 @@ else:
     print("IMPORTANT : Wrappers will not be build. Boost.Python not available.")
 
 Default("build")
-
-print env['MSVC_VERSION']
-print env['TARGET_ARCH']
+if isinstance(config.platform, config.Win32):
+    print env['MSVC_VERSION']
+    print env['TARGET_ARCH']
+    os.system('cl')
 
 def generate_qtbuilddir():
     standartprefix = 'build-scons'
