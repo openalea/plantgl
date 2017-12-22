@@ -9,7 +9,7 @@ import glob
 
 compiler = 'msvc'
 
-EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES  -D_GLIBCXX_USE_CXX11_ABI=1"
+EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES "
 
 qhull_libs_suffix = 'static'
 
@@ -25,4 +25,4 @@ try:
 except:
     QT_VERSION = 4
 
-EXTRA_LIBS = 'MSVCRT LIBCMT'
+EXTRA_LINKFLAGS ='/NODEFAULTLIB:boost_python-vc140-mt-1_65_1'
