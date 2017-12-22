@@ -479,10 +479,7 @@ bool GLRenderer::beginProcess(){
     
     GLint maxgllistnesting = 0;
     glGetIntegerv(GL_MAX_LIST_NESTING, &maxgllistnesting);
-    GLint maxprecompildepth = MAXPRECOMPILDEPTH;
-    __maxprecompildepth =  maxgllistnesting;
-    if ( __maxprecompildepth > maxprecompildepth)
-         __maxprecompildepth = maxprecompildepth;
+    __maxprecompildepth =  pglMin(maxgllistnesting,MAXPRECOMPILDEPTH);
 
 #ifdef GEOM_DLDEBUG
 	if(__compil == 0)printf("** Compile Geometry\n");

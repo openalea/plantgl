@@ -60,7 +60,7 @@ void geomPickMatrix (const QRect& region){
   int x = region.center().x();
   int y = region.center().y();
   glGetIntegerv(GL_VIEWPORT, viewport);
-  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)pglmax(region.width(),2), (GLdouble)pglmax(region.height(),2) ,viewport);
+  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)pglMax(region.width(),2), (GLdouble)pglMax(region.height(),2) ,viewport);
 }
 
 void geomPickMatrix (const QPoint& point, GLdouble delta){
