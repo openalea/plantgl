@@ -56,8 +56,10 @@ def create_default_shapes():
     m = Material()
     ds = Sphere()
     yield Shape(ds,m)
-    t = ImageTexture('../share/plantgl/pixmap/geomviewer.png')
-    yield Shape(Cylinder(),t)
+    fname = join(dirname(__file__),'../share/plantgl/pixmap/geomviewer.png')
+    if exists(fname):
+        t = ImageTexture(fname)
+        yield Shape(Cylinder(),t)
 
 def create_default_scene():
     s = Scene()
