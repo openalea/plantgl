@@ -12,7 +12,6 @@ install:
   - git clone https://github.com/OpenAlea/appveyor-ci.git appveyor-ci
   - cd appveyor-ci
   - call install.bat
-  - call %HOMEDRIVE%\Miniconda\Scripts\activate.bat root
   - conda config --prepend channels msys2
 
 before_build:
