@@ -23,9 +23,7 @@ requirements:
    - openalea.deploy
    - scons
    - openalea.sconsx
-   - qt ==4.8.6 [osx]
-   - qt <5 [linux]
-   - qt <5 [win]
+   - qt {{ qt }}
    - boost
    - bison [unix]
    - flex 2.5.39 [unix]
@@ -41,9 +39,7 @@ requirements:
    - python
    - openalea.deploy
    - openalea.core
-   - qt ==4.8.6 [osx]
-   - qt <5 [linux]
-   - qt <5 [win]
+   - qt {{ qt }}
    - pyqt
    - gmp [unix]
    - mpfr [unix]
@@ -61,5 +57,6 @@ test:
   source_files:
     - test/test_*.py
     - test/data
+    - share/
   commands:
-   - nosetests -v -I test_viewer.py -I test_projpershape.py -I test_geomprinter.py -I thread.py -I test_bbox.py -I test_codec.py -I test_object_creation.py
+   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py # -I test_bbox.py -I test_codec.py  

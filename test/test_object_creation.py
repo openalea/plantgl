@@ -1,5 +1,5 @@
 from openalea.plantgl.all import *
-from os.path import join, dirname
+from os.path import join, dirname, exists
 
 def create_default_objects():
     yield AsymmetricHull()
@@ -35,9 +35,11 @@ def create_default_objects():
 #`    yield Swung([bc2],[0])
     yield Text('test')
     yield TriangleSet([(0,0,0),(1,0,0),(0,1,0)],[range(3)])
-    am = AmapSymbol(join(dirname(__file__),'../share/plantgl/database/amapsymbols/nentn105.smb'))
-    assert am.isValid()
-    yield am
+    fname = join(dirname(__file__),'../share/plantgl/database/amapsymbols/nentn105.smb')
+    if exists(fname):
+        am = AmapSymbol(fname)
+        assert am.isValid()
+        yield am
 
 def create_default_transforms():
     ds = Sphere()
@@ -54,8 +56,10 @@ def create_default_shapes():
     m = Material()
     ds = Sphere()
     yield Shape(ds,m)
-    t = ImageTexture('../share/plantgl/pixmap/geomviewer.png')
-    yield Shape(Cylinder(),t)
+    fname = join(dirname(__file__),'../share/plantgl/pixmap/geomviewer.png')
+    if exists(fname):
+        t = ImageTexture(fname)
+        yield Shape(Cylinder(),t)
 
 def create_default_scene():
     s = Scene()
