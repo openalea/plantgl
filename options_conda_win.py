@@ -23,6 +23,6 @@ try:
     qtconfig = qtconfig[i:].splitlines()[0]
     QT_VERSION = eval(qtconfig) >> 16
 except:
-    QT_VERSION = 4
+    QT_VERSION = 5
 
 EXTRA_LINKFLAGS ='/NODEFAULTLIB:boost_python-vc140-mt-1_65_1'
