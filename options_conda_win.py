@@ -33,4 +33,7 @@ except Exception, ie:
     print 'Autodetect qt error:', ie
     QT_VERSION = 4
 
+if QT_VERSION == 5:
+    QT5_CPPPATH = os.path.join(os.environ['LIBRARY_INC'],'qt')
+
 EXTRA_LINKFLAGS ='/NODEFAULTLIB:boost_python-vc140-mt-1_65_1'
