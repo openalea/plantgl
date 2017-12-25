@@ -74,6 +74,7 @@ if isinstance(config.platform, config.Win32):
     print env['MSVC_VERSION']
     print env['TARGET_ARCH']
     os.system('cl')
+    os.system('link')
 
 def generate_qtbuilddir():
     standartprefix = 'build-scons'
