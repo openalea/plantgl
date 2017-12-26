@@ -16,7 +16,7 @@ DEFINES.append('TOOLS_MAKEDLL')
 
 import os, sys
 if os.name != 'posix':
-    if  sys.maxsize.bit_length() < 63
+    if  sys.maxsize.bit_length() < 63:
         lib_env.AppendUnique(LIBS = 'Advapi32')
     else:
         lib_env.AppendUnique(LIBS = 'Advapi64')
