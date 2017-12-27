@@ -9,12 +9,12 @@ import glob
 
 compiler = 'msvc'
 
-EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES "
+EXTRA_CXXFLAGS="-DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES /Ob1"
 
 qhull_libs_suffix = 'static'
 
-if 'CPU_COUNT' in os.environ:
-    num_jobs = os.environ['CPU_COUNT']
+#if 'CPU_COUNT' in os.environ:
+#    num_jobs = os.environ['CPU_COUNT']
 
 try:
     qversionconfig = file(os.path.join(os.environ['LIBRARY_INC'],'qt','QtCore','qconfig.h'),'r').read()
