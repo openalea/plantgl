@@ -36,6 +36,7 @@ requirements:
    - ann
    - qhull [not win]
    - patchelf [linux]
+   - {{ compiler() }}
   run:
    - python
    - openalea.deploy
