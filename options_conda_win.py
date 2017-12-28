@@ -9,7 +9,7 @@ import glob
 
 compiler = 'msvc'
 
-EXTRA_CXXFLAGS="/DCGAL_CFG_NO_CPP0X_VARIADIC_TEMPLATES /DCONDA_WINDOWS"
+EXTRA_CPPDEFINES="CONDA_WINDOWS"
 
 qhull_libs_suffix = 'static'
 
