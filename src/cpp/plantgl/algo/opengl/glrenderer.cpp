@@ -46,6 +46,10 @@
 #include <plantgl/scenegraph/container/geometryarray2.h>
 #include <plantgl/math/util_math.h>
 
+#ifdef CONDA_WINDOWS
+#define PGL_WITHOUT_QT
+#endif
+
 #ifndef PGL_WITHOUT_QT
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QImage>
