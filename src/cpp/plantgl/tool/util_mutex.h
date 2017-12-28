@@ -36,7 +36,7 @@
 
 #include "tools_config.h"
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 
     #include <QtCore/qglobal.h>
 

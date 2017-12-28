@@ -44,11 +44,6 @@
 #include "util_appegl.h"
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
-#include <plantgl/math/util_math.h>
-
-#ifdef CONDA_WINDOWS
-#define PGL_WITHOUT_QT
-#endif
 
 #ifndef PGL_WITHOUT_QT
 #include <QtOpenGL/QGLWidget>
@@ -57,6 +52,7 @@
 #endif
 
 #include <typeinfo>
+#include <plantgl/math/util_math.h>
 
 
 #ifndef GL_GENERATE_MIPMAP
@@ -259,14 +255,15 @@ bool GLRenderer::setGLFrameFromId(WId wid)
 
 #ifndef PGL_OLD_MIPMAP_STYLE
 #ifndef __APPLE__ // It is already defined on Mac Os X
-
+#ifndef GL_VERSION_3_0
   typedef void (* PFNGLGENERATEMIPMAPPROC) (GLenum target);
+#endif
+
   static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
   static int HasGenerateMipmap = -1;
 
 #else
   static int HasGenerateMipmap = 1;
-
 #endif
 #endif
 
@@ -473,6 +470,18 @@ GLRenderer::clearSceneList()
     __compil = 2;
   }
 }
+
+#ifndef PGL_MIN_MAX
+#define PGL_MIN_MAX
+
+template <typename T>
+inline const T &pglMin(const T &a, const T &b) { return (a < b) ? a : b; }
+
+template <typename T>
+inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
+
+
+#endif
 
 
 bool GLRenderer::beginProcess(){
@@ -1072,7 +1081,7 @@ bool GLRenderer::process( ImageTexture * texture ) {
     glBindTexture(GL_TEXTURE_2D, it->second);
   }
   else {
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 	QImage img;
 	if(img.load(texture->getFilename().c_str())){
       bool notUsingMipmap = (!texture->getMipmaping()) && isPowerOfTwo(img.width()) && isPowerOfTwo(img.height());
@@ -1900,7 +1909,7 @@ bool GLRenderer::process( Polyline2D * polyline ) {
 
 /* ----------------------------------------------------------------------- */
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 
 bool GLRenderer::process( Text * text ) {
   GEOM_ASSERT_OBJ(text);

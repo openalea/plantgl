@@ -16,7 +16,7 @@ DEFINES.append('TOOLS_MAKEDLL')
 
 import os, sys
 if os.name != 'posix':
-    lib_env.AppendUnique(LIBS = 'Advapi32')
+    lib_env.AppendUnique(LIBS = ['Advapi32','Shlwapi'])
 
 inc= lib_env.ALEAIncludes( "plantgl/tool", includes )
 
