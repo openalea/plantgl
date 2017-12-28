@@ -41,12 +41,12 @@
 #define STRING(val) ##val
 #pragma message("_MSC_VER:" STRING(_MSC_VER))
 #ifdef _WIN64
-#pragma message("64bit ARCHITECTURE TARGETTED")
+#pragma message("64bit ARCHITECTURE TARGETED")
 #else
 #ifdef _WIN32
-#pragma message("32bit ARCHITECTURE TARGETTED")
+#pragma message("32bit ARCHITECTURE TARGETED")
 #else
-#pragma message("NO ARCHITECTURE TARGETTED")
+#pragma message("NO ARCHITECTURE TARGETED")
 #endif
 #endif
 #endif
