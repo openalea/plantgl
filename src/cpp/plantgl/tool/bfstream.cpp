@@ -37,7 +37,18 @@
 #include "bfstream.h"
 
 /* ----------------------------------------------------------------------- */
-
+#ifdef _MSC_VER
+#pragma message("_MSC_VER:" #_MSC_VER)
+#ifdef _WIN64
+#pragma message("64bit ARCHITECTURE TARGETTED")
+#else
+#ifdef _WIN32
+#pragma message("32bit ARCHITECTURE TARGETTED")
+#else
+#pragma message("NO ARCHITECTURE TARGETTED")
+#endif
+#endif
+#endif
 
 TOOLS_USING_NAMESPACE
 
