@@ -38,7 +38,8 @@
 
 /* ----------------------------------------------------------------------- */
 #ifdef _MSC_VER
-#define STRING(val) #val
+#define STRING2(val) #val
+#define STRING(val) STRING2(val)
 #pragma message("_MSC_VER:" STRING(_MSC_VER))
 #ifdef _WIN64
 #pragma message("64bit ARCHITECTURE TARGETED")
