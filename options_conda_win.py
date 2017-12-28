@@ -9,7 +9,7 @@ import glob
 
 compiler = 'msvc'
 
-EXTRA_CPPDEFINES="CONDA_WINDOWS"
+EXTRA_CPPDEFINES="CONDA_WINDOWS PGL_WITHOUT_QT"
 
 qhull_libs_suffix = 'static'
 
