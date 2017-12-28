@@ -122,7 +122,7 @@ inline void glGeomFogColor(const PGL(Color3)& v, const real_t& alpha = 1.0)
 { GLfloat val[] = { (GLfloat)v.getRedClamped(), (GLfloat)v.getGreenClamped(), (GLfloat)v.getBlueClamped(), (GLfloat)alpha };
   glFogfv ( GL_FOG_COLOR, val); }
 
-#ifndef PGL_CORE_WITHOUT_QT
+#ifndef PGL_WITHOUT_QT
 /// glFog( GL_FOG_COLOR ) for Qt
 inline void glGeomFogColor(const QColor& v)
 { QRgb rgb = v.rgb();
@@ -179,7 +179,7 @@ inline void glGeomMaterial(GLenum face, GLenum pname, const PGL(Color3)& v, cons
 { GLfloat val[] = { (GLfloat)v.getRedClamped(), (GLfloat)v.getGreenClamped(), (GLfloat)v.getBlueClamped(), (GLfloat)alpha };
   glMaterialfv (face, pname, val);}
 
-#ifndef PGL_CORE_WITHOUT_QT
+#ifndef PGL_WITHOUT_QT
 /// glMaterial for Qt
 inline void glGeomMaterial(GLenum face, GLenum pname,const QColor& v)
 { QRgb rgb = v.rgb();
