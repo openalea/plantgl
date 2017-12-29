@@ -52,7 +52,7 @@ def test_concave_selfintersecting(display = False):
             Viewer.display(FaceSet([Vector3(i,0) for i in pts2],tr))
             Viewer.dialog.question('Polygonization', 'Method : '+str(m))
 
-if not pgl_support_extension('CGAL'):
+if pgl_support_extension('CGAL'):
   def test_concave2(display = False):
     s = concavecontour()
     pts2 = s[0].geometry.pointList    
