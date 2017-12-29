@@ -9,12 +9,12 @@ import glob
 
 compiler = 'msvc'
 
-EXTRA_CPPDEFINES="CONDA_WINDOWS PGL_CORE_WITHOUT_QT"
+EXTRA_CPPDEFINES="CONDA_WINDOWS"
 
 qhull_libs_suffix = 'static'
 
-#if 'CPU_COUNT' in os.environ:
-#    num_jobs = os.environ['CPU_COUNT']
+if 'CPU_COUNT' in os.environ:
+    num_jobs = os.environ['CPU_COUNT']
 
 library_inc = os.environ.get('LIBRARY_INC',os.path.join(os.environ['CONDA_PREFIX'],'Library','include'))
 
