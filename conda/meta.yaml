@@ -33,7 +33,7 @@ requirements:
    - gmp [unix]
    - eigen
    - ann
-   - qhull [not win]
+   - qhull
    - patchelf [linux]
   run:
    - python
