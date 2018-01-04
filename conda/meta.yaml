@@ -30,7 +30,7 @@ requirements:
    - m2-bison [win]
    - m2-flex  [win]
    - cgal
-   - gmp
+   - gmp [unix]
    - eigen
    - ann
    - qhull
@@ -41,7 +41,7 @@ requirements:
    - openalea.core
    - qt <5
    - pyqt
-   - gmp
+   - gmp [unix]
    - cgal
    - qhull
    - ann
