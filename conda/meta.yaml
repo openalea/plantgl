@@ -23,30 +23,27 @@ requirements:
    - openalea.deploy
    - scons
    - openalea.sconsx
-   - qt <5 [unix]
-   - qt [win]
+   - qt <5
    - boost
    - bison [unix]
    - flex 2.5.39 [unix]
    - m2-bison [win]
    - m2-flex  [win]
-   - cgal [unix]
-   - gmp [unix]
+   - cgal
+   - gmp
    - eigen
    - ann
-   - qhull [not win]
+   - qhull
    - patchelf [linux]
   run:
    - python
    - openalea.deploy
    - openalea.core
-   - qt <5 [unix]
-   - qt [win]
+   - qt <5
    - pyqt
-   - gmp [unix]
-   - mpfr [unix]
-   - cgal  [unix]
-   - qhull [not win]
+   - gmp
+   - cgal
+   - qhull
    - ann
    - boost
    - path.py

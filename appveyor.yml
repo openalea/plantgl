@@ -13,6 +13,7 @@ install:
   - cd appveyor-ci
   - call install.bat
   - conda config --prepend channels msys2
+  - conda config --append channels conda-forge
 
 before_build:
   - call before_build.bat
