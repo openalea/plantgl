@@ -23,28 +23,27 @@ requirements:
    - openalea.deploy
    - scons
    - openalea.sconsx
-   - qt {{ qt }}
+   - qt <5
    - boost
    - bison [unix]
    - flex 2.5.39 [unix]
    - m2-bison [win]
    - m2-flex  [win]
-   - cgal [unix]
+   - cgal
    - gmp [unix]
    - eigen
    - ann
-   - qhull 
+   - qhull
    - patchelf [linux]
   run:
    - python
    - openalea.deploy
    - openalea.core
-   - qt {{ qt }}
+   - qt <5
    - pyqt
    - gmp [unix]
-   - mpfr [unix]
-   - cgal  [unix]
-   - qhull 
+   - cgal
+   - qhull
    - ann
    - boost
    - path.py
@@ -59,4 +58,4 @@ test:
     - test/data
     - share/
   commands:
-   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py # -I test_bbox.py -I test_codec.py  
+   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py # -I test_bbox.py -I test_codec.py  

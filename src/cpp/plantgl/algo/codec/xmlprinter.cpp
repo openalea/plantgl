@@ -34,7 +34,7 @@
 
 
 #include "xmlprinter.h"
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 #include <QtCore/qtextstream.h>
 #endif
 
@@ -54,7 +54,7 @@ using namespace std;
 #define GEOM_XMLPRINT_INCREMENT_INDENT \
   __indent += "    ";
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 
 #define GEOM_XMLPRINT_DECREMENT_INDENT \
   __indent.truncate(__indent.length() - 4);

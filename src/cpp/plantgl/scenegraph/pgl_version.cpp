@@ -127,12 +127,12 @@ bool pgl_support_extension(const std::string& ext) {
 	return false;
 }
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 #include <QtGlobal>
 #endif
 
 int getPGLQtVersion(){
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
   return  QT_VERSION;
 #else
   return 0;
@@ -140,7 +140,7 @@ int getPGLQtVersion(){
 }
 
 std::string getPGLQtVersionString(){
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
   return std::string(QT_VERSION_STR);
 #else
   return std::string();

@@ -71,8 +71,8 @@ else:
 
 Default("build")
 if isinstance(config.platform, config.Win32):
-    print env['MSVC_VERSION']
-    print env['TARGET_ARCH']
+    print 'MSVC_VERSION',env['MSVC_VERSION']
+    print 'TARGET_ARCH',env['TARGET_ARCH']
     os.system('cl')
 
 def generate_qtbuilddir():
