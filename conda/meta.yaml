@@ -29,7 +29,7 @@ requirements:
    - flex 2.5.39 [unix]
    - m2-bison [win]
    - m2-flex  [win]
-   - cgal
+   - cgal [unix]
    - gmp [unix]
    - eigen
    - ann
@@ -42,7 +42,7 @@ requirements:
    - qt <5
    - pyqt
    - gmp [unix]
-   - cgal
+   - cgal [unix]
    - qhull
    - ann
    - boost
