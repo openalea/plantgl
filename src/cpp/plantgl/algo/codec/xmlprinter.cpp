@@ -34,7 +34,9 @@
 
 
 #include "xmlprinter.h"
+#ifndef PGL_CORE_WITHOUT_QT
 #include <QtCore/qtextstream.h>
+#endif
 
 #include <plantgl/pgl_scene.h>
 #include <plantgl/pgl_appearance.h>
@@ -52,9 +54,17 @@ using namespace std;
 #define GEOM_XMLPRINT_INCREMENT_INDENT \
   __indent += "    ";
 
+#ifndef PGL_CORE_WITHOUT_QT
 
 #define GEOM_XMLPRINT_DECREMENT_INDENT \
   __indent.truncate(__indent.length() - 4);
+
+#else
+
+#define GEOM_XMLPRINT_DECREMENT_INDENT \
+  __indent.erase(__indent.length() - 4,4);
+
+#endif
 
 #define GEOM_XMLPRINT_COLOR3(val) \
   __stream << val.getRed() << ' ' << val.getGreen() << ' ' << val.getBlue(); \

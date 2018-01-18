@@ -41,16 +41,10 @@
 #include <plantgl/tool/util_string.h>
 #include <plantgl/tool/bfstream.h>
 #include <plantgl/tool/dirnames.h>
+#include <plantgl/tool/util_mutex.h>
 
-#include <QtCore/qglobal.h>
 #include <algorithm>
 
-#ifdef QT_THREAD_SUPPORT
-#include <QtCore/qthread.h>
-#if QT_VERSION >= QT_VERSION_CHECK(3,0,0)
-#include <QtCore/qmutex.h>
-#endif
-#endif
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -60,8 +54,8 @@ using namespace std;
 
 /*Scene::Scene() :
   RefCountObject()
-#ifdef QT_THREAD_SUPPORT
-  ,  __mutex(new QMutex())
+#ifdef PGL_THREAD_SUPPORT
+  ,  __mutex(new PglMutex())
 #endif
   {
   GEOM_ASSERT(isValid());
@@ -72,10 +66,10 @@ using namespace std;
 Scene::Scene(unsigned int size ) :
   RefCountObject(),
   __shapeList(size,Shape3DPtr())
-#ifdef QT_THREAD_SUPPORT
-  ,  __mutex(new QMutex())
-#endif
   {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -84,10 +78,10 @@ Scene::Scene(unsigned int size ) :
 
 Scene::Scene(const Scene& scene) :
   RefCountObject()
-#ifdef QT_THREAD_SUPPORT
-  ,  __mutex(new QMutex())
-#endif
 {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -109,10 +103,10 @@ Scene& Scene::operator=( const Scene& scene){
 Scene::Scene(const string& filename, const std::string& format, ostream& errlog, int max_error ) :
   RefCountObject(),
   __shapeList()
-#ifdef QT_THREAD_SUPPORT
-  ,  __mutex(new QMutex())
-#endif
 {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -123,10 +117,10 @@ Scene::Scene(const string& filename, const std::string& format, ostream& errlog,
 Scene::Scene(const SceneObjectSymbolTable& table) :
   RefCountObject(),
   __shapeList()
-#ifdef QT_THREAD_SUPPORT
-  , __mutex(new QMutex())
-#endif
 {
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
+#endif
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
@@ -185,7 +179,7 @@ Scene::~Scene( ){
 #ifdef WITH_POOL
       POOL.unregisterScene(this);
 #endif
-#ifdef QT_THREAD_SUPPORT
+#ifdef PGL_THREAD_SUPPORT
 	if (__mutex)delete __mutex;
 #endif
 #ifdef GEOM_DEBUG
@@ -195,13 +189,13 @@ Scene::~Scene( ){
 
 /* ----------------------------------------------------------------------- */
 void Scene::lock( ) const{
-#ifdef QT_THREAD_SUPPORT
+#ifdef PGL_THREAD_SUPPORT
   __mutex->lock();
 #endif
 }
 
 void Scene::unlock( ) const{
-#ifdef QT_THREAD_SUPPORT
+#ifdef PGL_THREAD_SUPPORT
   __mutex->unlock();
 #endif
 }
@@ -486,14 +480,26 @@ Scene::Pool Scene::POOL;
 
 Scene::Pool& Scene::pool() { return POOL; }
 
+void Scene::Pool::lock() const {
+#ifdef PGL_THREAD_SUPPORT
+    __mutex->lock();
+#endif    
+}
+
+void Scene::Pool::unlock() const {
+#ifdef PGL_THREAD_SUPPORT
+    __mutex->unlock();
+#endif    
+}
+
 ScenePtr Scene::Pool::get(size_t id) const
 { 
-    __mutex->lock();
+    lock();
     ScenePtr res;
     PoolList::const_iterator it = __pool.find(id);
     if(it != __pool.end())
         res = ScenePtr(it->second);
-    __mutex->unlock();
+    unlock();
     return res;
 }
 
@@ -501,35 +507,35 @@ ScenePtr Scene::Pool::get(size_t id) const
 std::vector<ScenePtr> Scene::Pool::getScenes() const
 { 
     std::vector<ScenePtr> result;
-    __mutex->lock();
+    lock();
     for (PoolList::const_iterator it = __pool.begin();it != __pool.end(); ++it)
         result.push_back(ScenePtr(it->second));
-    __mutex->unlock();
+    unlock();
     return result;
 }
 
 void Scene::Pool::registerScene(Scene * s)
 {
-  __mutex->lock();
+  lock();
   __pool[(size_t)s] = s;
-  __mutex->unlock();
+  unlock();
 }
 void Scene::Pool::unregisterScene(const Scene * s)
 {
-  __mutex->lock();
+  lock();
     PoolList::iterator it = __pool.find((size_t)s);
     if(it != __pool.end()) __pool.erase(it);
-  __mutex->unlock();
+  unlock();
 }
 
 Scene::Pool::Pool() { 
-#ifdef QT_THREAD_SUPPORT
-   __mutex = new QMutex();
+#ifdef PGL_THREAD_SUPPORT
+   __mutex = new PglMutex();
 #endif
 }
 
 Scene::Pool::~Pool() { 
-#ifdef QT_THREAD_SUPPORT
+#ifdef PGL_THREAD_SUPPORT
    delete __mutex;
 #endif
 }

@@ -32,6 +32,18 @@
 #include "util_glu.h"
 #include <plantgl/math/util_math.h>
 
+#ifndef PGL_MIN_MAX
+#define PGL_MIN_MAX
+
+template <typename T>
+inline const T &pglMin(const T &a, const T &b) { return (a < b) ? a : b; }
+
+template <typename T>
+inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
+
+
+#endif
+
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
@@ -53,13 +65,14 @@ const char *  gluGeomGetString(GLenum error)
 { return (const char *)gluGetString(error); }
 
 
+#ifndef PGL_WITHOUT_QT
 
 void geomPickMatrix (const QRect& region){
   GLint viewport[4];
   int x = region.center().x();
   int y = region.center().y();
   glGetIntegerv(GL_VIEWPORT, viewport);
-  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)pglmax(region.width(),2), (GLdouble)pglmax(region.height(),2) ,viewport);
+  gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, (GLdouble)pglMax(region.width(),2), (GLdouble)pglMax(region.height(),2) ,viewport);
 }
 
 void geomPickMatrix (const QPoint& point, GLdouble delta){
@@ -69,6 +82,7 @@ void geomPickMatrix (const QPoint& point, GLdouble delta){
   glGetIntegerv(GL_VIEWPORT, viewport);
   gluPickMatrix((GLdouble)x,(GLdouble)viewport[3]-y, delta, delta ,viewport);
 }
+#endif
 
 bool geomUnProject(GLdouble winX,  GLdouble winY,  GLdouble winZ, GLdouble* objX,  GLdouble* objY,  GLdouble* objZ){
     GLint viewport[4];

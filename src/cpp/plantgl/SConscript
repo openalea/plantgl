@@ -11,7 +11,7 @@ env.ALEAIncludes( "plantgl", includes )
 # 2. Call other SConscript files in sub directories
 #dirs= env.ALEAGlob( 'SConscript' , dir='*')
 subdirs = ['tool','math','scenegraph','algo','python']
-if not env['QT_VERSION'] is None:
+if not eval(env['QT_VERSION']) is None:
 	subdirs += ['gui']
 
 subdirs = [ pj(i,'SConscript') for i in subdirs]

@@ -177,9 +177,10 @@
     #define QT_THREAD_SUPPORT
 #endif
 
-#ifndef QT3_SUPPORT
-// #define QT3_SUPPORT
+#ifdef PGL_WITHOUT_QT
+    #define PGL_CORE_WITHOUT_QT
 #endif
+
 /*! \def GEOM_FWDEF
     \brief Use forward definition
 

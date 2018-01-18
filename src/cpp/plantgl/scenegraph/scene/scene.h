@@ -44,18 +44,9 @@
 #include "plantgl/scenegraph/core/sceneobject.h"
 #include "shape.h"
 
-#ifdef QT_THREAD_SUPPORT
-// forward declaration of QMutex
-class QMutex;
-#else
-#ifndef QT_NO_THREAD_SUPPORT
-#ifdef _MSC_VER
-#pragma message("QT_THREAD_SUPPORT macro not defined. Don't you Forget?")
-#else
-#warning "QT_THREAD_SUPPORT macro not defined. Don't you Forget?"
-#endif
-#endif
-#endif
+/* ----------------------------------------------------------------------- */
+
+class PglMutex;
 
 /* ----------------------------------------------------------------------- */
 
@@ -241,14 +232,13 @@ public:
 
   inline attribute_deprecated void Resize(const uint_t size ) { return resize(size); }
 #endif
-protected:
 
+protected:
   /// The list of shapes constituting the subScene.
   std::vector<Shape3DPtr> __shapeList;
 
-#ifdef QT_THREAD_SUPPORT
-  QMutex* __mutex;
-#endif
+  PglMutex* __mutex;
+
 public:
 
     /// A Scene Pool class
@@ -266,13 +256,13 @@ public:
     protected:
         void registerScene(Scene *);
         void unregisterScene(const Scene *);
+        void lock() const ;
+        void unlock() const;
 
         Pool();
 
         PoolList __pool;
-#ifdef QT_THREAD_SUPPORT
-        QMutex* __mutex;
-#endif
+        PglMutex* __mutex;
     };
 
     // Singleton access

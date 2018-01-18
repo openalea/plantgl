@@ -2,8 +2,10 @@
 Import( "env" )
 
 lib_env = env.Clone()
-qt_version = int(lib_env['QT_VERSION'])
-lib_env.EnableQtModules( [ 'QtCore'])
+
+qt_version = eval(lib_env['QT_VERSION'])
+if not qt_version is None:
+    lib_env.EnableQtModules( [ 'QtCore'])
 
 includes= lib_env.ALEAGlob('*.h')
 sources= lib_env.ALEAGlob('*.cpp')
@@ -12,9 +14,9 @@ sources= lib_env.ALEAGlob('*.cpp')
 DEFINES= list(lib_env['CPPDEFINES'])
 DEFINES.append('TOOLS_MAKEDLL')
 
-import os
+import os, sys
 if os.name != 'posix':
-	lib_env.AppendUnique(LIBS = 'Advapi32')
+    lib_env.AppendUnique(LIBS = ['Advapi32','Shlwapi'])
 
 inc= lib_env.ALEAIncludes( "plantgl/tool", includes )
 

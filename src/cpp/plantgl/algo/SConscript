@@ -9,10 +9,10 @@ Import( "env" )
 lib_env= env.Clone()
 lib_env.AppendUnique(CPPDEFINES= 'ALGO_MAKEDLL')
 
-qt_version = int(lib_env['QT_VERSION'])
+qt_version = eval(lib_env['QT_VERSION'])
 if qt_version == 4:
     lib_env.EnableQtModules( [ 'QtCore', 'QtGui', 'QtOpenGL' ])
-else:
+elif qt_version == 5:
     lib_env.EnableQtModules( [ 'QtCore', 'QtGui', 'QtWidgets', 'QtOpenGL' ])
 	
 
@@ -36,8 +36,9 @@ sources+= lib_env.SConscript('codec/SConscript', exports = { "env" : lib_env } )
 # Link with the following libraries
 LIBRARIES = list( lib_env['LIBS'] )
 LIBRARIES.extend( ['pgltool','pglmath','pglsg'] )
-if lib_env["WITH_CGAL"]:
-    LIBRARIES.append( lib_env['cgal_libs'] )
+
+#if lib_env["WITH_CGAL"]:
+#    LIBRARIES.append( lib_env['cgal_libs'] )
 
 lib_env.ALEALibrary( "pglalgo",
                      sources, 

@@ -31,8 +31,8 @@
 
 
 
-#ifndef __util_math_h__
-#define __util_math_h__
+#ifndef __util_pgl_math_h__
+#define __util_pgl_math_h__
 
 /*! \file util_math.h
     \brief File that contains some math utility.
@@ -42,6 +42,18 @@
 #include <algorithm> // For min, max ...
 
 /* ----------------------------------------------------------------------- */
+
+#ifndef PGL_MIN_MAX
+#define PGL_MIN_MAX
+
+template <typename T>
+inline const T &pglMin(const T &a, const T &b) { return (a < b) ? a : b; }
+
+template <typename T>
+inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
+
+
+#endif
 
 #ifdef PGL_USE_DOUBLE
 
@@ -185,39 +197,6 @@ inline int trunc(double x){
 #else
 
 #define pglfinite std::isfinite
-
-#endif
-
-
-#if defined(_MSC_VER)
-#if (_MSC_VER <= 1500)
-
-#define pglmin min
-#define pglmax max
-
-/*namespace std {
-
-template <class Type> const Type& pglmin(const Type& a, const Type& b) 
-{ return ( b < a ? b : a ); }
-
-template <class T> 
-const T& pglmax(const T& a, const T& b) 
-{ return ( a < b ? b : a ); }
-
-}
-
-*/
-#else
-
-#define pglmin std::min
-#define pglmax std::max
-
-#endif
-
-#else
-
-#define pglmin std::min
-#define pglmax std::max
 
 #endif
 

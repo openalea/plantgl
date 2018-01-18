@@ -1,6 +1,8 @@
 # -*-python-*-
 
 from openalea.sconsx import config, environ
+from openalea.sconsx.util.qt_check import detect_installed_qt_version
+from openalea.sconsx.util.buildprefix import fix_custom_buildprefix
 import os, sys
 #from sconsx_ext.mpfr import create as mpfr_create
 
@@ -10,14 +12,13 @@ ALEASolution = config.ALEASolution
 
 
 options = Variables( ['../options.py', 'options.py'], ARGUMENTS )
-options.Add(EnumVariable('QT_VERSION', 'Qt major version to use','4', allowed_values=('4','5','None')))
+options.Add(EnumVariable('QT_VERSION', 'Qt major version to use',str(detect_installed_qt_version(4)), allowed_values=('4','5','None')))
 options.Add(BoolVariable('WITH_CGAL','Use CGAL',True))
 options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 
 
 # Create an environment to access qt option values
 qt_env = Environment(options=options, tools=[])
-
 qt_version = eval(qt_env['QT_VERSION'])
 
 tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann']
@@ -56,27 +57,23 @@ if 'linux' in sys.platform:
     env.AppendUnique( LIBS = ['z'] )
 
 
-# Build stage
 prefix = env['build_prefix']
 
-SConscript( pj(prefix,"src/cpp/plantgl/SConscript"),
-            exports={"env":env} )
+
+SConscript( pj(prefix,"src/cpp/plantgl/SConscript"), exports={"env":env} )
 
 if env.get('WITH_BOOST',True) :
+    print("IMPORTANT : Wrappers will be build. Boost.Python available.")
     SConscript( pj(prefix,"src/wrapper/SConscript"),
                 exports={"env":env} )
+else:
+    print("IMPORTANT : Wrappers will not be build. Boost.Python not available.")
 
 Default("build")
 
-def generate_qtbuilddir():
-    standartprefix = 'build-scons'
-    if os.path.basename(prefix) != standartprefix:
-        if os.path.exists(standartprefix):
-            if os.path.isdir(standartprefix) and not os.path.islink(standartprefix): 
-                import shutil
-                shutil.rmtree(standartprefix)
-            else: os.remove(standartprefix)
-        os.symlink(prefix, standartprefix)
+if isinstance(config.platform, config.Win32):
+    print ('MSVC_VERSION',env['MSVC_VERSION'])
+    print ('TARGET_ARCH',env['TARGET_ARCH'])
 
-if os.name == 'posix' and qt_version and not 'CONDA_BUILD' in os.environ:
-    generate_qtbuilddir()
+
+fix_custom_buildprefix(env)

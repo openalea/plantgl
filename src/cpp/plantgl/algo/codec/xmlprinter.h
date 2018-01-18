@@ -43,9 +43,18 @@
 #include <plantgl/scenegraph/core/action.h>
 #include <plantgl/tool/util_types.h>
 #include <plantgl/tool/util_hashset.h>
-#include <QtCore/qstring.h>
 
+#ifndef PGL_CORE_WITHOUT_QT
+#include <QtCore/qstring.h>
 class QTextStream;
+#else
+#include <string>
+#include <fstream>
+#define QString std::string
+#define QTextStream std::ofstream
+
+#endif
+
 
 /* ----------------------------------------------------------------------- */
 

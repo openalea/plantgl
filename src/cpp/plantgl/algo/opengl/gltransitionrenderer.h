@@ -68,7 +68,9 @@ public:
   /** Constructs a GLRenderer with the Discretizer \e discretizer and
       the normal display type \t. */
   GLTransitionRenderer( Discretizer& discretizer, 
+#ifndef PGL_CORE_WITHOUT_QT
 						QGLWidget * widget = NULL, 
+#endif
 						uint_t step = 10);
 
   /// Destructor

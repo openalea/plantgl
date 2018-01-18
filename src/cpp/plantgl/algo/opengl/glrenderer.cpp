@@ -44,12 +44,15 @@
 #include "util_appegl.h"
 #include <plantgl/scenegraph/container/pointarray.h>
 #include <plantgl/scenegraph/container/geometryarray2.h>
-#include <plantgl/math/util_math.h>
 
+#ifndef PGL_WITHOUT_QT
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QImage>
 #include <QtGui/QFont>
+#endif
+
 #include <typeinfo>
+#include <plantgl/math/util_math.h>
 
 
 #ifndef GL_GENERATE_MIPMAP
@@ -186,7 +189,11 @@ bool GLRenderer::discretize_and_render(T * geom){
 /* ----------------------------------------------------------------------- */
 
 
-GLRenderer::GLRenderer( Discretizer& discretizer, QGLWidget * glframe ) :
+GLRenderer::GLRenderer( Discretizer& discretizer
+#ifndef PGL_WITHOUT_QT
+    , QGLWidget * glframe 
+#endif
+    ) :
   Action(),
   __scenecache(0),
   __discretizer(discretizer),
@@ -194,7 +201,9 @@ GLRenderer::GLRenderer( Discretizer& discretizer, QGLWidget * glframe ) :
   __Mode(Normal),
   __selectMode(ShapeId),
   __compil(0),
+#ifndef PGL_WITHOUT_QT
   __glframe(glframe),
+#endif
   __currentdisplaylist(false),
   __dopushpop(true),
   __executionmode(GL_COMPILE_AND_EXECUTE),
@@ -226,7 +235,8 @@ GLRenderer::SelectionId GLRenderer::getSelectionMode() const
   return __selectMode;
 }
 
-bool GLRenderer::setGLFrameFromId(uint_t wid)
+#ifndef PGL_WITHOUT_QT
+bool GLRenderer::setGLFrameFromId(WId wid)
 {
     QWidget * widget = QWidget::find(WId(wid));
     if (!widget) return false;
@@ -241,17 +251,19 @@ bool GLRenderer::setGLFrameFromId(uint_t wid)
     setGLFrame(glwidget);
     return true;
 }
+#endif
 
 #ifndef PGL_OLD_MIPMAP_STYLE
 #ifndef __APPLE__ // It is already defined on Mac Os X
-
+#ifndef GL_VERSION_3_0
   typedef void (* PFNGLGENERATEMIPMAPPROC) (GLenum target);
+#endif
+
   static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = NULL;
   static int HasGenerateMipmap = -1;
 
 #else
   static int HasGenerateMipmap = 1;
-
 #endif
 #endif
 
@@ -459,20 +471,35 @@ GLRenderer::clearSceneList()
   }
 }
 
+#ifndef PGL_MIN_MAX
+#define PGL_MIN_MAX
+
+template <typename T>
+inline const T &pglMin(const T &a, const T &b) { return (a < b) ? a : b; }
+
+template <typename T>
+inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
+
+
+#endif
+
 
 bool GLRenderer::beginProcess(){
   if(__Mode == Selection){
     glInitNames();
   }
   else {
+    
     GLint maxgllistnesting = 0;
     glGetIntegerv(GL_MAX_LIST_NESTING, &maxgllistnesting);
-    __maxprecompildepth = pglmin(maxgllistnesting, MAXPRECOMPILDEPTH);
+    __maxprecompildepth =  pglMin(maxgllistnesting,MAXPRECOMPILDEPTH);
+
 #ifdef GEOM_DLDEBUG
 	if(__compil == 0)printf("** Compile Geometry\n");
 	else if(__compil == 1)printf("** Compile Shape\n");
 	else if(__compil == 2)printf("** Compile Scene\n");
 #endif
+
   }
   return true;
 }
@@ -1054,6 +1081,7 @@ bool GLRenderer::process( ImageTexture * texture ) {
     glBindTexture(GL_TEXTURE_2D, it->second);
   }
   else {
+#ifndef PGL_CORE_WITHOUT_QT
 	QImage img;
 	if(img.load(texture->getFilename().c_str())){
       bool notUsingMipmap = (!texture->getMipmaping()) && isPowerOfTwo(img.width()) && isPowerOfTwo(img.height());
@@ -1111,9 +1139,9 @@ bool GLRenderer::process( ImageTexture * texture ) {
 	  // printf("gen texture : %i\n",id);
 	  // registerTexture(texture,id);
   	  __cachetexture.insert(texture->getId(),id);
-
 	  }
 	}
+#endif
   }
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
@@ -1618,9 +1646,11 @@ bool GLRenderer::process( ScreenProjected * scp ) {
 
 	GEOM_GLRENDERER_CHECK_CACHE(scp);
 	real_t heigthscale = 1.0;
+#ifndef PGL_WITHOUT_QT
     if(__glframe!= NULL && scp->getKeepAspectRatio()){
 		heigthscale = float(__glframe->height()) / float(__glframe->width());
     }
+#endif
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -1879,7 +1909,7 @@ bool GLRenderer::process( Polyline2D * polyline ) {
 
 /* ----------------------------------------------------------------------- */
 
-#if QT_VERSION >= QT_VERSION_CHECK(3,0,0)
+#ifndef PGL_CORE_WITHOUT_QT
 
 bool GLRenderer::process( Text * text ) {
   GEOM_ASSERT_OBJ(text);
