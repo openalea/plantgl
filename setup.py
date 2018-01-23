@@ -12,7 +12,7 @@ globals().update(getMetaInfo())
 
 # Setup script
 version = getPGLVersion().to_string()
-print (pkg_name,': version =',version)
+print (pkg_name+' : version = '+version)
 
 # Scons build directory
 build_prefix= "build-scons"
