@@ -59,6 +59,9 @@ if 'linux' in sys.platform:
 
 prefix = env['build_prefix']
 
+from versionmanager import deployconfig
+# create config files
+deployconfig(env)
 
 SConscript( pj(prefix,"src/cpp/plantgl/SConscript"), exports={"env":env} )
 

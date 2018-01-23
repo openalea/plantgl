@@ -1,6 +1,9 @@
+# do not edit the following line. It will be updated automatically
+{% set version = "2.23.1" %}
+
 package:
   name: vplants.plantgl
-  version: 2.21.1
+  version: {{ version }}
 
 source:
   path: ..
@@ -18,7 +21,6 @@ build:
 requirements:
   build:
    - python
-   #- m4
    - setuptools
    - openalea.deploy
    - scons
