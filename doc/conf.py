@@ -11,6 +11,7 @@ def getMetaInfo():
     metainfo = {}
     execfile(os.path.join(os.pardir, 'src','plantgl','__init__.py'))
     return metainfo['__metainfo__']
+
 globals().update(getMetaInfo())
 
 
