@@ -4,7 +4,7 @@ __revision__ = "$Id$"
 import os, sys
 from setuptools import setup, find_packages
 from openalea.sconsx.util.env_check import is_conda
-    from versionmanager import getPGLVersion, getMetaInfo
+from versionmanager import getPGLVersion, getMetaInfo
 pj = os.path.join
 
 
