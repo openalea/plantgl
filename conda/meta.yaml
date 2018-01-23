@@ -2,7 +2,7 @@
 {% set version = "2.23.1" %}
 
 package:
-  name: vplants.plantgl
+  name: openalea.plantgl
   version: {{ version }}
 
 source:
@@ -10,8 +10,8 @@ source:
 
 
 about:
-  home: http://openalea.gforge.inria.fr
-  license: GPL/LGPL
+  home: https://github.com/openalea/plantgl
+  license: Cecill-C
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
