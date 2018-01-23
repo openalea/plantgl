@@ -15,9 +15,8 @@ __metainfo__ = {
     'license' : 'Cecill-C'
 }
 
-from . import config as pglconfig
 
-__doc__ = __metainfo__['name']+' '+pglconfig.PGL_VERSION_STR+''' 
+__doc__ = __metainfo__['name']+''' 
 ####################################################################
 '''+__metainfo__['long_description']+'''
 --------------------------------------------------------------------
