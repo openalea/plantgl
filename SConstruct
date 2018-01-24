@@ -18,30 +18,26 @@ options.Add(BoolVariable('USE_DOUBLE','Use Double Floating Precision',True))
 
 
 # Create an environment to access qt option values
-qt_env = Environment(options=options, tools=[])
-qt_version = eval(qt_env['QT_VERSION'])
+test_env = Environment(options=options, tools=[])
+qt_version = eval(test_env['QT_VERSION'])
 
-tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','cgal','eigen', 'mpfr','ann']
+
+tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','eigen','ann']
+
 if not qt_version is None:
     tools += ['qt'+str(qt_version)]
+
+if test_env['WITH_CGAL']:
+    tools += ['cgal', 'mpfr']
 
 env = ALEASolution(options, tools)
 
 env.Prepend( CPPPATH = pj( '$build_includedir','plantgl' ) )
-if qt_version:
-    env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH/Qt'] )
-    env.AppendUnique( CPPPATH = ['$QT'+str(qt_version)+'_CPPPATH'] )
-else:
+env.AppendUnique( CPPDEFINES = ['PGL_USE_DOUBLE' if env['USE_DOUBLE'] else 'PGL_USE_FLOAT']  )
+
+if not qt_version:
     env.AppendUnique( CPPDEFINES = ['PGL_WITHOUT_QT'] )
 
-
-if env['USE_DOUBLE']:
-    env.AppendUnique( CPPDEFINES = ['PGL_USE_DOUBLE'] )
-else:
-    env.AppendUnique( CPPDEFINES = ['PGL_USE_FLOAT'] )
-
-if env['WITH_CGAL']:
-    env.AppendUnique( CPPDEFINES = ['WITH_CGAL'] )
 
 try:
     # Test the whether SconsX provides FLEX and BISON flags
