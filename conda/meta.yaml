@@ -1,14 +1,17 @@
+# do not edit the following line. It will be updated automatically
+{% set version = "2.23.2" %}
+
 package:
-  name: vplants.plantgl
-  version: 2.21.1
+  name: openalea.plantgl
+  version: {{ version }}
 
 source:
   path: ..
 
 
 about:
-  home: http://openalea.gforge.inria.fr
-  license: GPL/LGPL
+  home: https://github.com/openalea/plantgl
+  license: Cecill-C
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
@@ -18,7 +21,6 @@ build:
 requirements:
   build:
    - python
-   #- m4
    - setuptools
    - openalea.deploy
    - scons

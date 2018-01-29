@@ -4,25 +4,15 @@ __revision__ = "$Id$"
 import os, sys
 from setuptools import setup, find_packages
 from openalea.sconsx.util.env_check import is_conda
+from versionmanager import getPGLVersion, getMetaInfo
 pj = os.path.join
 
 
-from openalea.deploy.metainfo import read_metainfo
-metadata = read_metainfo('metainfo.ini', verbose=True)
-for key,value in metadata.iteritems():
-    exec("%s = '%s'" % (key, value))
-
-def getPGLVersionString():
-    from openalea.sconsx.util.versionreader import read_variable, strversion_from_hex
-    p = os.path.join('src', 'cpp', 'plantgl', 'version.h')
-    return strversion_from_hex(read_variable('PGL_VERSION',p))
+globals().update(getMetaInfo())
 
 # Setup script
-meta_version = version 
-version = getPGLVersionString()
-if meta_version != version:
-    print ('Warning:: Update the version in metainfo.ini !!')
-print (pkg_name,': version =',version)
+version = getPGLVersion().to_string()
+print (pkg_name+' : version = '+version)
 
 # Scons build directory
 build_prefix= "build-scons"

@@ -1,12 +1,6 @@
-COPY options_conda_win.py options.py
+COPY options_examples\options_conda_win.py options.py
 
-call "%VS90COMNTOOLS%vcvarsall.bat" %PROCESSOR_ARCHITECTURE%
-
-echo %PROCESSOR_ARCHITECTURE%
-
-echo %WindowsSdkDir%
-
-systeminfo
+REM systeminfo
 
 %PYTHON% setup.py install
 
