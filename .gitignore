@@ -2,8 +2,15 @@
 __pycache__/
 *.py[cod]
 
+options.py
+src/cpp/plantgl/userconfig.h
+src/plantgl/config.py
+
 # C extensions
 build-scons
+build-scons_noqt
+build-scons_qt4
+build-scons_qt5
 *.so
 *.dll
 *.dblite
@@ -58,7 +65,7 @@ test/data/test_*
 *.log
 
 # Sphinx documentation
-docs/_build/
+doc/_build/
 
 # PyBuilder
 target/

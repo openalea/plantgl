@@ -44,7 +44,7 @@
 #include <plantgl/tool/util_types.h>
 #include <plantgl/tool/util_hashset.h>
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 #include <QtCore/qstring.h>
 class QTextStream;
 #else

@@ -32,6 +32,18 @@
 #include "util_glu.h"
 #include <plantgl/math/util_math.h>
 
+#ifndef PGL_MIN_MAX
+#define PGL_MIN_MAX
+
+template <typename T>
+inline const T &pglMin(const T &a, const T &b) { return (a < b) ? a : b; }
+
+template <typename T>
+inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
+
+
+#endif
+
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"

@@ -57,6 +57,24 @@
 
 #endif
 
+#ifdef _MSC_VER
+#define STRING2(val) #val
+#define STRING(val) STRING2(val)
+#pragma message("MSVC VERSION: " STRING(_MSC_FULL_VER))
+#ifdef _MSVC_LANG 
+#pragma message("C++  VERSION: " STRING(_MSVC_LANG))
+#endif
+#ifdef _WIN64
+#pragma message("64bit ARCHITECTURE TARGETED")
+#else
+#ifdef _WIN32
+#pragma message("32bit ARCHITECTURE TARGETED")
+#else
+#pragma message("NO ARCHITECTURE TARGETED")
+#endif
+#endif
+#endif
+
 using namespace std;
 
 TOOLS_BEGIN_NAMESPACE

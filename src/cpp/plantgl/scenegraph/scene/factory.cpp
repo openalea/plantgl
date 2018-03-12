@@ -229,7 +229,7 @@ void SceneFactory::unregisterCodec(const SceneCodecPtr& codec)
 	if(it != __codecs.end())__codecs.erase(it);
 }
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 #include <QtCore/QLibrary>
 #endif
 
@@ -242,7 +242,7 @@ typedef void (*installFunc)();
 
 bool SceneFactory::installLib(const std::string& libname)
 {
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 	installFunc installCodecs = (installFunc)QLibrary::resolve(QString(libname.c_str()),"installCodecs");
 	if(installCodecs){
 		 installCodecs();

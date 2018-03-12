@@ -36,7 +36,7 @@
 
 #include "tools_config.h"
 
-#ifndef PGL_WITHOUT_QT
+#ifndef PGL_CORE_WITHOUT_QT
 
     #include <QtCore/qglobal.h>
 
@@ -44,6 +44,8 @@
         #include <QtCore/qmutex.h>
         #define PGL_THREAD_SUPPORT
         #define PglMutexInternal QMutex
+        #define PglMutexInternalTryLock(mutex) mutex.tryLock()
+
 
     #endif
 
@@ -56,6 +58,7 @@
         #include <mutex>
         #define PGL_THREAD_SUPPORT
         #define PglMutexInternal std::mutex
+        #define PglMutexInternalTryLock(mutex) mutex.try_lock()
 
     #endif
 
@@ -69,7 +72,7 @@
         PglMutex()  {}
         void lock() { __mutexinternal.lock(); }
         void unlock() { __mutexinternal.unlock(); }
-        bool tryLock() { return __mutexinternal.tryLock(); }
+        bool tryLock() { return PglMutexInternalTryLock(__mutexinternal); }
 
     protected:
         PglMutexInternal __mutexinternal;

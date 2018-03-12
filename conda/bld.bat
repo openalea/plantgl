@@ -1,4 +1,6 @@
-COPY options_conda_win.py options.py
+COPY options_examples\options_conda_win.py options.py
+
+REM systeminfo
 
 %PYTHON% setup.py install
 

@@ -1,14 +1,17 @@
+# do not edit the following line. It will be updated automatically
+{% set version = "2.23.2" %}
+
 package:
-  name: vplants.plantgl
-  version: 2.21.1
+  name: openalea.plantgl
+  version: {{ version }}
 
 source:
   path: ..
 
 
 about:
-  home: http://openalea.gforge.inria.fr
-  license: GPL/LGPL
+  home: https://github.com/openalea/plantgl
+  license: Cecill-C
   summary: An open-source graphic toolkit for the creation, simulation and analysis of 3D virtual plants.
 
 build:
@@ -18,7 +21,6 @@ build:
 requirements:
   build:
    - python
-   #- m4
    - setuptools
    - openalea.deploy
    - scons
@@ -33,7 +35,7 @@ requirements:
    - gmp [unix]
    - eigen
    - ann
-   - qhull 
+   - qhull
    - patchelf [linux]
   run:
    - python
@@ -42,9 +44,8 @@ requirements:
    - qt <5
    - pyqt
    - gmp [unix]
-   - mpfr [unix]
-   - cgal  [unix]
-   - qhull 
+   - cgal [unix]
+   - qhull
    - ann
    - boost
    - path.py
@@ -59,4 +60,4 @@ test:
     - test/data
     - share/
   commands:
-   - nosetests -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py # -I test_bbox.py -I test_codec.py  
+   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py # -I test_bbox.py -I test_codec.py  
