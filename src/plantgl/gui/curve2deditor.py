@@ -390,7 +390,7 @@ class Curve2DEditor (QGLViewer):
 
     def drawHLine(self, x1, x2, y):
         glVertex3f(x1,y,0)
-        glVertex3f(x1,y,0)
+        glVertex3f(x2,y,0)
 
     def drawGrid(self):
         xr = self.end[0] - self.start[0]
@@ -398,7 +398,8 @@ class Curve2DEditor (QGLViewer):
         if xr <= 0 or xy <= 0:
             return
         nbdigit = max(int(round(log(xr,10))),int(round(log(xy,10))))
-        xdelta = pow(10,nbdigit)/10
+        xdelta = pow(10,nbdigit)/10.
+
         fxval = round(self.start[0]/xdelta)
         lxval = round(self.end[0]/xdelta)
         cxval = fxval*xdelta
@@ -423,6 +424,7 @@ class Curve2DEditor (QGLViewer):
             self.drawVLine(cxval,self.start[1],self.end[1])
             cxval += (10*xdelta)
         glEnd()
+
         fyval = round(self.start[1]/xdelta)
         lyval = round(self.end[1]/xdelta)
         firstcyval = fyval*xdelta
