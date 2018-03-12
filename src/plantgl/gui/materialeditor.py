@@ -492,7 +492,7 @@ class MaterialPanelView (QGLWidget):
     def loadtexture(self):
         self.edittexture(self.menuselection)
     def edittexture(self,i,initialfile = None):
-        fname = QFileDialog.getOpenFileName(self,"Texture Selection",self.lastTextureDir if initialfile is None else initialfile,"All files (*.*)")
+        fname, ffilter = QFileDialog.getOpenFileName(self,"Texture Selection",self.lastTextureDir if initialfile is None else initialfile,"All files (*.*)")
         if len(fname) == 0: return
         self.lastTextureDir = os.path.dirname(str(fname))
         format = QImageReader.imageFormat(fname)
