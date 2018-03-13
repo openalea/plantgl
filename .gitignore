@@ -69,3 +69,4 @@ doc/_build/
 
 # PyBuilder
 target/
+.vs

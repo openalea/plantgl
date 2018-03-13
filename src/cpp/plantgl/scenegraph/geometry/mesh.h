@@ -146,8 +146,7 @@ public:
 
   /// Destructor
   virtual ~Mesh( );
-
-
+  
   /// Returns \b CCW value.
   const bool getCCW( ) const;
 
@@ -533,6 +532,8 @@ public:
   // Check Validity
   template<class InstanciedMesh>
   bool isAValidMesh( ) const;
+
+  void setTexCoordIndexListAsIndexList();
 
   /// Returns the size of \b IndexList.
   virtual uint_t getIndexListSize( ) const 
