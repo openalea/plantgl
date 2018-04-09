@@ -331,7 +331,7 @@ void IndexedMesh<IndexArrayType>::setTexCoordIndexListAsIndexList()
 		typename IndexArrayType::element_type current = this->__indexList->getAt(index);
 		for (int i = 0; i < current.size(); i++)
 		{
-			tmpCoordIndex[it[i]] = current[i];
+			tmpCoordIndex[it->operator[](i)] = current[i];
 		}
 		index++;
 	}
