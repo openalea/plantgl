@@ -322,14 +322,14 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
 template <class IndexArrayType>
 void IndexedMesh<IndexArrayType>::setTexCoordIndexListAsIndexList()
 {
-	if (this->__texCoordIndexList == nullptr)
+	if (!this->__texCoordIndexList)
 		return;
 	std::vector<int> tmpCoordIndex(this->__texCoordList->size());
 	int index = 0;
-	for (auto it : *this->__texCoordIndexList)
+	for (typename IndexArrayType::const_iterator it = this->__texCoordIndexList->begin(); it != this->__texCoordIndexList->end(); ++it)
 	{
-		auto current = this->__indexList->getAt(index);
-		for (auto i = 0; i < current.size(); i++)
+		typename IndexArrayType::element_type current = this->__indexList->getAt(index);
+		for (int i = 0; i < current.size(); i++)
 		{
 			tmpCoordIndex[it[i]] = current[i];
 		}
@@ -342,13 +342,13 @@ void IndexedMesh<IndexArrayType>::setTexCoordIndexListAsIndexList()
 	Point3ArrayPtr newPoint3Array(new Point3Array());
 	Point3ArrayPtr newNormalArray(new Point3Array());
 	Color4ArrayPtr newColor4Array(new Color4Array());
-	for (auto &it : tmpCoordIndex)
+	for (std::vector<int>::const_iterator it = tmpCoordIndex.begin(); it != tmpCoordIndex.end(); ++it)
 	{
-		newPoint3Array->push_back(this->__pointList->getAt(it));
+		newPoint3Array->push_back(this->__pointList->getAt(*it));
 		if (hasToModifyNormalList)
-			newNormalArray->push_back(this->__normalList->getAt(it));
+			newNormalArray->push_back(this->__normalList->getAt(*it));
 		if (hasToModifyColorList)
-			newColor4Array->push_back(this->__colorList->getAt(it));
+			newColor4Array->push_back(this->__colorList->getAt(*it));
 	}
 
 	this->__pointList = newPoint3Array;
