@@ -41,13 +41,13 @@ requirements:
    - python
    - openalea.deploy
    - openalea.core
-   - qt <5
+   - {{ pin_compatible('qt', exact=True) }}
    - pyqt
    - gmp [unix]
    - cgal [unix]
    - qhull
    - ann
-   - boost
+   - {{ pin_compatible('boost', exact=True) }}
    - path.py
 
 test:
