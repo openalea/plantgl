@@ -319,6 +319,47 @@ bool IndexedMesh<IndexArrayType>::Builder<MeshType>::IndexedMeshValidity( ) cons
   return true;
 }
 
+template <class IndexArrayType>
+void IndexedMesh<IndexArrayType>::setTexCoordIndexListAsIndexList()
+{
+	if (!this->__texCoordIndexList)
+		return;
+	std::vector<int> tmpCoordIndex(this->__texCoordList->size());
+	int index = 0;
+	for (typename IndexArrayType::const_iterator it = this->__texCoordIndexList->begin(); it != this->__texCoordIndexList->end(); ++it)
+	{
+		typename IndexArrayType::element_type current = this->__indexList->getAt(index);
+		for (int i = 0; i < current.size(); i++)
+		{
+			tmpCoordIndex[it->operator[](i)] = current[i];
+		}
+		index++;
+	}
+
+	bool hasToModifyNormalList = this->__normalList && this->__normalPerVertex;
+	bool hasToModifyColorList = this->__colorList && this->__colorPerVertex;
+
+	Point3ArrayPtr newPoint3Array(new Point3Array());
+	Point3ArrayPtr newNormalArray(new Point3Array());
+	Color4ArrayPtr newColor4Array(new Color4Array());
+	for (std::vector<int>::const_iterator it = tmpCoordIndex.begin(); it != tmpCoordIndex.end(); ++it)
+	{
+		newPoint3Array->push_back(this->__pointList->getAt(*it));
+		if (hasToModifyNormalList)
+			newNormalArray->push_back(this->__normalList->getAt(*it));
+		if (hasToModifyColorList)
+			newColor4Array->push_back(this->__colorList->getAt(*it));
+	}
+
+	this->__pointList = newPoint3Array;
+	this->__indexList = this->__texCoordIndexList;
+	this->__texCoordIndexList = IndexArrayPtr();
+	if (hasToModifyNormalList)
+		this->__normalList = newNormalArray;
+	if (hasToModifyColorList)
+		this->__colorList = newColor4Array;
+}
+
 
 // __geom_mesh_h__
 /* ----------------------------------------------------------------------- */
