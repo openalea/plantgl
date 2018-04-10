@@ -160,7 +160,7 @@ public:
 
 
     inline  PointContainerPtr getVoxelPoints(const Index& coord) const {
-        return getVoxelPoints(cellId(coord));
+        return getVoxelPoints(this->cellId(coord));
     }
 
     PointContainerPtr getVoxelPoints(const VoxelId& vid) const{
@@ -176,7 +176,7 @@ public:
     }
 
     inline const PointIndexList& getVoxelPointIndices(const Index& coord) const{
-        return Base::getAt(cellId(coord));
+        return Base::getAt(this->cellId(coord));
     }
 
     inline const PointIndexList& getVoxelPointIndices(const VoxelId& vid) const{

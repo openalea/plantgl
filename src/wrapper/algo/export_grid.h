@@ -195,6 +195,16 @@ size_t  py_indexFromCoord2(SpatialArray * grid, real_t v, size_t dim){
 	 return grid->nbDimensions();
  }
 
+ template<class PointGrid>
+ object py_getVoxelPointIndices(PointGrid * grid, object c){
+     return make_list(grid->getVoxelPointIndices(extract_tuple<typename PointGrid::Index>(c)));
+ }
+
+template<class PointGrid>
+ object py_getVoxelPointIndicesFromId(PointGrid * grid,  typename PointGrid::CellId vid){
+     return make_list(grid->getVoxelPointIndices(vid));
+ }
+
 template<class SpatialArray>
 class spatialarray_func : public boost::python::def_visitor<spatialarray_func<SpatialArray> >
 {
@@ -271,6 +281,8 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
 	 .def("nbFilledVoxels",&PointGrid::nbFilledVoxels)	 
      .def("filter_disabled",&py_filter_disabled<PointGrid>)
      .def("filter_enabled",&py_filter_enabled<PointGrid>)
+     .def("getVoxelPointIndices",&py_getVoxelPointIndices<PointGrid>,bp::args("cellindex"),"Return the enabled points contained in the voxel")
+     .def("getVoxelPointIndicesFromId",&py_getVoxelPointIndicesFromId<PointGrid>,bp::args("cellid"),"Return the enabled points contained in the voxel")
 	     ;
     }
 };
