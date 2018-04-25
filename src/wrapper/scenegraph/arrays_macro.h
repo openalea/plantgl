@@ -32,7 +32,11 @@
 // Array Macro
 #include <plantgl/python/extract_pgl.h>
 #include <plantgl/python/extract_list.h>
+#include <plantgl/tool/util_array.h>
 #include <boost/python/def_visitor.hpp>
+
+typedef TOOLS(PglVector<uint_t>) Index;
+
 
 template<class T>
 RCPtr<T> extract_array_from_list( boost::python::object l )
@@ -286,20 +290,33 @@ template <class T>
 T * py_subset(T * pts, boost::python::object subsetindices){
     T * subobj = new T();
     size_t nbelem = pts->size();
-	boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
-	while( true )
-	{
-		boost::python::object obj; 
-		try  {  obj = iter_obj.attr( "next" )(); }
-		catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-		int val = boost::python::extract<int>( obj )();
-        if (val < 0) val += nbelem;
-        if (val < 0 || val >= nbelem) {
-            delete subobj;
-            throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")()); 
+    boost::python::extract<Index> indexex(subsetindices);
+    if (indexex.check()){
+        Index index = indexex();
+        for(Index::const_iterator it = index.begin(); it != index.end(); ++it) {
+            subobj->push_back( pts->getAt(*it) );
+            if (*it >= nbelem) {
+                delete subobj; 
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
+            }
         }
-		subobj->push_back( pts->getAt(val) );
-	}
+    }
+    else {
+    	boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
+    	while( true )
+    	{
+    		boost::python::object obj; 
+    		try  {  obj = iter_obj.attr( "next" )(); }
+    		catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+    		int val = boost::python::extract<int>( obj )();
+            if (val < 0) val += nbelem;
+            if (val < 0 || val >= nbelem) {
+                delete subobj;
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")()); 
+            }
+    		subobj->push_back( pts->getAt(val) );
+    	}
+    }
     return subobj;
 }
 
@@ -321,6 +338,52 @@ T * py_opposite_subset(T * pts, boost::python::object subsetindices){
     for(std::vector<int>::const_reverse_iterator it = csubsetindices.rbegin(); it != csubsetindices.rend(); ++it)
         subobj->erase(subobj->begin()+*it);
     return subobj;
+}
+
+template <class T>
+std::pair<T *,T *> py_split_subset(T * pts, boost::python::object subsetindices){
+    T * subobj = new T();
+    T * subobjopp = new T();
+
+    size_t nbelem = pts->size();
+    std::vector<bool> insubset(nbelem, false);
+
+    boost::python::extract<Index> indexex(subsetindices);
+    if (indexex.check()){
+        Index index = indexex();
+        for(Index::const_iterator it = index.begin(); it != index.end(); ++it) {
+            subobj->push_back( pts->getAt(*it) );
+            insubset[*it] = true;
+            if (*it >= nbelem) {
+                delete subobj; delete subobjopp;
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
+            }
+        }
+    }
+    else {
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( subsetindices.ptr() ) ) );
+        while( true )
+        {
+            boost::python::object obj; 
+            try  {  obj = iter_obj.attr( "next" )(); }
+            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+            int val = boost::python::extract<int>( obj )();
+            if (val < 0) val += nbelem;
+            if (val < 0 || val >= nbelem) {
+                delete subobj; delete subobjopp;
+                throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(val)+" out of range")()); 
+            }
+            subobj->push_back( pts->getAt(val) );
+        }        
+    }
+
+    size_t itv = 0;
+    for (std::vector<bool>::const_iterator iti = insubset.begin(); iti != insubset.end(); ++iti, ++itv)
+    {
+        if (!(*iti)) { subobjopp->push_back(pts->getAt(itv)); }
+    }
+
+    return std::pair<T *,T *> (subobj,subobjopp);
 }
 
 
@@ -407,6 +470,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "split_indices", &py_split_indices<ARRAY>, "Split the list into 2. Return list of indices of elements of the 2 subsets. Each element is tested with the split method that should return True or False" ) \
         .def( "subset",        &py_subset<ARRAY>, "Return a subset of the list. Should gives the indices of the subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "opposite_subset",        &py_opposite_subset<ARRAY>, "Return a subset of the list. Should gives the indices that you do not want in the resulting subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
+        .def( "py_split_subset", &py_split_subset<ARRAY>, "Return a subset of the list and its complementay subset. Arg is the indices of the first subset.")
 	    .def_pickle(array_pickle_suite<ARRAY>())
         ;
     }
