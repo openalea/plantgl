@@ -161,7 +161,7 @@ ScenePtr AscCodec::read(const std::string& fname)
 		}
 		catch (std::exception& e)
 		{
-			if (!(isptsfile and values.size() == 4))
+			if (!(isptsfile && values.size() == 4))
 			{
 				 //warnings.warn("Error in file '"+fname+"' at line "+str(i+isptsfile))
 				std::cerr << "Error in file " << fname << " at line " << (i + (int)isptsfile) << " : " << e.what() << std::endl;
