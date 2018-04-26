@@ -89,12 +89,14 @@ ALGO_API void register_progressstatus_func(progressstatusfunction func);
 
 ALGO_API void unregister_progressstatus_func();
 
-//ALGO_API void group_info(const int &group_id);
-//ALGO_API void group_size();
-//ALGO_API void color_group(const int &group_id, const Color4 &color);
-//ALGO_API ScenePtr clean_ground(const std::string &filename, const int &coeff_angle);
-ALGO_API Index select_not_ground(const Point3ArrayPtr point, const IndexArrayPtr kclosest);
-ALGO_API Index select_wire(const Point3ArrayPtr point, const IndexArrayPtr kclosest);
+
+ALGO_API Index select_not_ground(const Point3ArrayPtr point, IndexArrayPtr &kclosest);
+
+ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const int &boundMaxPourcent);
+
+ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction);
+
+ALGO_API Index get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const std::pair<uint_t, uint_t> &bound);
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 

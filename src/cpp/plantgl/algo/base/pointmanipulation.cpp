@@ -45,7 +45,7 @@ TOOLS_USING_NAMESPACE
 
 
 void progressprint(const char * msg, float percent)
-{ printf("\x0d"); printf(msg,percent); }
+{ printf(msg,percent); }
 
 
 static progressstatusfunction PSFUNC = progressprint;
@@ -117,12 +117,12 @@ struct PowerPointDistance {
         PowerPointDistance(const Point3ArrayPtr _points, real_t _power) : points(_points), power(_power) {}
 };
 
-Index PGL::select_not_ground(const Point3ArrayPtr point, IndexArrayPtr kclosest)
+Index PGL::select_not_ground(const Point3ArrayPtr point, IndexArrayPtr &kclosest)
 {
     int pointsize = point->size();
     std::vector<bool> points_infos(pointsize, false);
 
-    if (!kclosest)
+    if (!kclosest || kclosest->size() == 0)
     {
         std::cout << "Before k closest points" << std::endl;
         kclosest = k_closest_points_from_ann(point, 10);
@@ -141,7 +141,7 @@ Index PGL::select_not_ground(const Point3ArrayPtr point, IndexArrayPtr kclosest)
 
     std::cout << "Before recursive" << std::endl;
     std::stack<int> stack;
-    Index notground(0);
+    Index notground;
 
     stack.push(maxZIndex);
     while (!stack.empty())
@@ -165,13 +165,49 @@ Index PGL::select_not_ground(const Point3ArrayPtr point, IndexArrayPtr kclosest)
     return notground;
 }
 
-Index PGL::select_wire(const Point3ArrayPtr point, IndexArrayPtr kclosest)
+ALGO_API std::pair<uint_t, uint_t> PGL::find_min_max(const Point3ArrayPtr point, const int &boundMaxPourcent)
 {
     int pointsize = point->size();
-    int minYIndex = std::distance(((const Point3Array &)(*point)).begin(), point->getYMin());
-    int maxYIndex = std::distance(((const Point3Array &)(*point)).begin(), point->getYMax());
+    Point3Array::const_iterator minYIndex = point->getYMin();
+    Point3Array::const_iterator maxYIndex = point->getYMax();
 
-    if (!kclosest)
+    float pointYwidth = maxYIndex->y() - minYIndex->y();
+    float boundmax = maxYIndex->y();
+    float boundmin = boundmax - (pointYwidth * boundMaxPourcent / 100);
+
+    maxYIndex = point->end();
+    float dist;
+
+    ProgressStatus st(pointsize, "Max Y Index search : %.2f%%");
+    for (Point3Array::const_iterator it = point->begin(); it != point->end(); ++it, ++st)
+    {
+        if (it->y() < boundmin)
+            continue;
+
+        Vector3 tmp(minYIndex->x(), it->y(), minYIndex->z());
+        float tmpDist = norm(*it - tmp);
+        if (maxYIndex == point->end()
+            || (it->y() == maxYIndex->y() && tmpDist < dist)
+            || (it->y() > maxYIndex->y() & tmpDist <= dist))
+        {
+            dist = tmpDist;
+            maxYIndex = it;
+        }
+    }
+    uint_t minY = std::distance(((const Point3Array &)(*point)).begin(), minYIndex);
+    uint_t maxY = std::distance(((const Point3Array &)(*point)).begin(), maxYIndex);
+
+    return std::pair<uint_t, uint_t>(minY, maxY);
+}
+
+ALGO_API std::pair<uint_t, uint_t> PGL::find_min_max(const Point3ArrayPtr point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction)
+{
+    return std::pair<uint_t, uint_t>(0, 0);
+}
+
+Index PGL::get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const std::pair<uint_t, uint_t> &bound)
+{
+    if (!kclosest || kclosest->size() == 0)
     {
         std::cout << "Before k closest points" << std::endl;
         kclosest = k_closest_points_from_ann(point, 30);
@@ -181,46 +217,18 @@ Index PGL::select_wire(const Point3ArrayPtr point, IndexArrayPtr kclosest)
     std::cout << "Before dijkstra shortest paths" << std::endl;
     std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> shortest;
     PointDistance evaluator(point);
-    shortest = dijkstra_shortest_paths(kclosest, minYIndex, evaluator);
+    shortest = dijkstra_shortest_paths(kclosest, bound.first, evaluator);
     std::cout << "After dijkstra shortest paths" << std::endl;
 
-    float boundmax = point->getAt(maxYIndex).y();
-    float boundmin = boundmax - 1;
-
-    maxYIndex = -1;
-    float dist;
-    const Vector3 &origin = point->getAt(minYIndex);
-    Vector3 current;
-
-    ProgressStatus st(pointsize, "Max Y Index search : %.2f%%");
-    for (int i = 0; i < pointsize; i++, ++st)
-    {
-        const Vector3 &p = point->getAt(i);
-        if (p.y() < boundmin)
-            continue;
-
-        Vector3 tmp(origin.x(), p.y(), origin.z());
-        float tmpDist = norm(p - tmp);
-        if (maxYIndex == -1
-            || (p.y() == current.y() && tmpDist < dist)
-            || (p.y() > current.y() & tmpDist <= dist))
-        {
-            maxYIndex = i;
-            dist = tmpDist;
-            current = point->getAt(i);
-        }
-    }
-    std::cout << std::endl;
-
     Index wire;
-    int c = maxYIndex;
-    while (c != minYIndex)
+    int current = bound.second;
+    while (current != bound.first)
     {
-        int tmp = shortest.first->getAt(c);
+        int tmp = shortest.first->getAt(current);
         if (tmp == UINT32_MAX)
             break;
-        wire.push_back(c);
-        c = tmp;
+        wire.push_back(current);
+        current = tmp;
     }
 
     return wire;

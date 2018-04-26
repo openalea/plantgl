@@ -32,6 +32,7 @@
 #include <plantgl/algo/base/pointmanipulation.h>
 #include <boost/python.hpp>
 #include <plantgl/python/export_list.h>
+#include <plantgl/python/extract_list.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -243,6 +244,21 @@ void py_unregister_progressstatus_func(){
     unregister_progressstatus_func();
 }
 
+boost::python::object py_find_min_max(const Point3ArrayPtr point, const int &boundMaxPourcent)
+{
+    return make_pair_tuple(find_min_max(point, boundMaxPourcent));
+}
+
+boost::python::object py_find_min_max2(const Point3ArrayPtr point, const Vector3 &center, const Vector3 &direction)
+{
+    return make_pair_tuple(find_min_max(point, center, direction));
+}
+
+Index py_get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr kclosest, const boost::python::object &bound)
+{
+    return get_shortest_path(point, kclosest, extract_pair<uint_t>(bound)());
+}
+
 void export_PointManip()
 {
     def("pgl_register_progressstatus_func",&py_register_progressstatus_func,args("func"));
@@ -254,7 +270,9 @@ void export_PointManip()
     def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
 
     def("select_not_ground", &select_not_ground, args("point", "kclosest"));
-    def("select_wire", &select_wire, args("points", "kclosest"));
+    def("find_min_max", &py_find_min_max, args("point", "boundMaxPourcent"));
+    def("find_min_max", &py_find_min_max2, args("point", "boundMaxPourcent", "direction"));
+    def("get_shortest_path", &py_get_shortest_path, args("points", "kclosest", "bound"));
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));
