@@ -25,3 +25,6 @@ version = getPGLVersionString()
 latex_documents = [('contents', 'main.tex', project + ' documentation', authors, 'manual')]
 
 project = project + '.' + package
+
+html_theme = "sphinx_rtd_theme"
+html_theme_path = ["_themes"]
