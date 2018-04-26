@@ -96,7 +96,7 @@ ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, cons
 
 ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction);
 
-ALGO_API Index get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const std::pair<uint_t, uint_t> &bound);
+ALGO_API Index get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const uint_t &point_begin, const uint_t &point_end);
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 

@@ -181,7 +181,7 @@ ScenePtr AscCodec::read(const std::string& fname)
 bool AscCodec::write(const std::string& fname,const ScenePtr& scene)
 {
 	std::cout << "Write " << fname << std::endl;
-	std::ofstream file = std::ofstream(fname.c_str());
+	std::ofstream file(fname.c_str());
 
 	if (!file)
 		return false;

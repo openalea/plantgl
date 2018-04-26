@@ -254,11 +254,6 @@ boost::python::object py_find_min_max2(const Point3ArrayPtr point, const Vector3
     return make_pair_tuple(find_min_max(point, center, direction));
 }
 
-Index py_get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr kclosest, const boost::python::object &bound)
-{
-    return get_shortest_path(point, kclosest, extract_pair<uint_t>(bound)());
-}
-
 void export_PointManip()
 {
     def("pgl_register_progressstatus_func",&py_register_progressstatus_func,args("func"));
@@ -272,7 +267,7 @@ void export_PointManip()
     def("select_not_ground", &select_not_ground, args("point", "kclosest"));
     def("find_min_max", &py_find_min_max, args("point", "boundMaxPourcent"));
     def("find_min_max", &py_find_min_max2, args("point", "boundMaxPourcent", "direction"));
-    def("get_shortest_path", &py_get_shortest_path, args("points", "kclosest", "bound"));
+    def("get_shortest_path", &get_shortest_path, args("points", "kclosest", "point_begin", "point_end"));
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));

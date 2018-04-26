@@ -205,7 +205,7 @@ ALGO_API std::pair<uint_t, uint_t> PGL::find_min_max(const Point3ArrayPtr point,
     return std::pair<uint_t, uint_t>(0, 0);
 }
 
-Index PGL::get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const std::pair<uint_t, uint_t> &bound)
+Index PGL::get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const uint_t &point_begin, const uint_t &point_end)
 {
     if (!kclosest || kclosest->size() == 0)
     {
@@ -217,12 +217,12 @@ Index PGL::get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest
     std::cout << "Before dijkstra shortest paths" << std::endl;
     std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> shortest;
     PointDistance evaluator(point);
-    shortest = dijkstra_shortest_paths(kclosest, bound.first, evaluator);
+    shortest = dijkstra_shortest_paths(kclosest, point_begin, evaluator);
     std::cout << "After dijkstra shortest paths" << std::endl;
 
     Index wire;
-    int current = bound.second;
-    while (current != bound.first)
+    int current = point_end;
+    while (current != point_begin)
     {
         int tmp = shortest.first->getAt(current);
         if (tmp == UINT32_MAX)
