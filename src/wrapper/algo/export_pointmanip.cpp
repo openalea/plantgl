@@ -253,6 +253,8 @@ void export_PointManip()
     def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
     def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
 
+    def("select_not_ground", &select_not_ground, args("point", "kclosest"));
+    def("select_wire", &select_wire, args("points", "kclosest"));
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));

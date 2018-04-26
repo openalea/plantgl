@@ -31,8 +31,13 @@
 
 
 #include "pointmanipulation.h"
+#include "dijkstra.h"
+#include <plantgl/math/util_vector.h>
 #include <plantgl/scenegraph/container/indexarray_iterator.h>
+#include <plantgl/scenegraph/transformation/transformed.h>
 #include <stdio.h>
+#include <algorithm>
+#include <stack>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -99,6 +104,127 @@ protected:
     const char * message;
 };
 
+struct PointDistance {
+        const Point3ArrayPtr points;
+        real_t operator()(uint32_t a, uint32_t b) const { return norm(points->getAt(a)-points->getAt(b)); }
+        PointDistance(const Point3ArrayPtr _points) : points(_points) {}
+};
+
+struct PowerPointDistance {
+        const Point3ArrayPtr points;
+        real_t power;
+        real_t operator()(uint32_t a, uint32_t b) const { return pow(norm(points->getAt(a)-points->getAt(b)),power) ; }
+        PowerPointDistance(const Point3ArrayPtr _points, real_t _power) : points(_points), power(_power) {}
+};
+
+Index PGL::select_not_ground(const Point3ArrayPtr point, IndexArrayPtr kclosest)
+{
+    int pointsize = point->size();
+    std::vector<bool> points_infos(pointsize, false);
+
+    if (!kclosest)
+    {
+        std::cout << "Before k closest points" << std::endl;
+        kclosest = k_closest_points_from_ann(point, 10);
+        std::cout << "After k closest points" << std::endl;
+    }
+
+    real_t a = 0;
+    for (Point3Array::const_iterator it = point->begin(); it != point->end(); ++it)
+        a += it->z();
+    a /= pointsize;
+
+    int maxZIndex = std::distance(((const Point3Array &)(*point)).begin(), point->getZMax());
+    int minZIndex = std::distance(((const Point3Array &)(*point)).begin(), point->getZMin());
+    real_t minZ = point->getAt(minZIndex).z();
+    real_t max_height = minZ + (a - minZ) * 50.0f / 100.0f;
+
+    std::cout << "Before recursive" << std::endl;
+    std::stack<int> stack;
+    Index notground(0);
+
+    stack.push(maxZIndex);
+    while (!stack.empty())
+    {
+        int index = stack.top();
+        stack.pop();
+        if (points_infos[index] || point->getAt(index).z() < max_height)
+            continue;
+        Index &neighborhood = kclosest->getAt(index);
+        for (Index::const_iterator it = neighborhood.begin(); it != neighborhood.end(); ++it)
+        {
+            if (!points_infos[*it])
+                stack.push(*it);
+        }
+        points_infos[index] = true;
+        notground.push_back(index);
+    }
+
+    std::cout << "After recursive" << std::endl;
+
+    return notground;
+}
+
+Index PGL::select_wire(const Point3ArrayPtr point, IndexArrayPtr kclosest)
+{
+    int pointsize = point->size();
+    int minYIndex = std::distance(((const Point3Array &)(*point)).begin(), point->getYMin());
+    int maxYIndex = std::distance(((const Point3Array &)(*point)).begin(), point->getYMax());
+
+    if (!kclosest)
+    {
+        std::cout << "Before k closest points" << std::endl;
+        kclosest = k_closest_points_from_ann(point, 30);
+        std::cout << "After k closest points" << std::endl;
+    }
+
+    std::cout << "Before dijkstra shortest paths" << std::endl;
+    std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)> shortest;
+    PointDistance evaluator(point);
+    shortest = dijkstra_shortest_paths(kclosest, minYIndex, evaluator);
+    std::cout << "After dijkstra shortest paths" << std::endl;
+
+    float boundmax = point->getAt(maxYIndex).y();
+    float boundmin = boundmax - 1;
+
+    maxYIndex = -1;
+    float dist;
+    const Vector3 &origin = point->getAt(minYIndex);
+    Vector3 current;
+
+    ProgressStatus st(pointsize, "Max Y Index search : %.2f%%");
+    for (int i = 0; i < pointsize; i++, ++st)
+    {
+        const Vector3 &p = point->getAt(i);
+        if (p.y() < boundmin)
+            continue;
+
+        Vector3 tmp(origin.x(), p.y(), origin.z());
+        float tmpDist = norm(p - tmp);
+        if (maxYIndex == -1
+            || (p.y() == current.y() && tmpDist < dist)
+            || (p.y() > current.y() & tmpDist <= dist))
+        {
+            maxYIndex = i;
+            dist = tmpDist;
+            current = point->getAt(i);
+        }
+    }
+    std::cout << std::endl;
+
+    Index wire;
+    int c = maxYIndex;
+    while (c != minYIndex)
+    {
+        int tmp = shortest.first->getAt(c);
+        if (tmp == UINT32_MAX)
+            break;
+        wire.push_back(c);
+        c = tmp;
+    }
+
+    return wire;
+}
 
 struct PointSorter {
     PointSorter(Point3ArrayPtr _points, uint32_t _ref) : points(_points), refpoint(_points->getAt(_ref)) {}
@@ -169,7 +295,6 @@ PGL::symmetrize_connections(const IndexArrayPtr adjacencies)
     return newadjacencies;
 }
 
-#include "dijkstra.h"
 #include <plantgl/tool/util_hashset.h>
 #include <plantgl/tool/util_hashmap.h>
 #include <list>
@@ -289,21 +414,6 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
     return adjacencies;
 #endif
 }
-
-
-
-struct PointDistance {
-        const Point3ArrayPtr points;
-        real_t operator()(uint32_t a, uint32_t b) const { return norm(points->getAt(a)-points->getAt(b)); }
-        PointDistance(const Point3ArrayPtr _points) : points(_points) {}
-};
-
-struct PowerPointDistance {
-        const Point3ArrayPtr points;
-        real_t power;
-        real_t operator()(uint32_t a, uint32_t b) const { return pow(norm(points->getAt(a)-points->getAt(b)),power) ; }
-        PowerPointDistance(const Point3ArrayPtr _points, real_t _power) : points(_points), power(_power) {}
-};
 
 Index
 PGL::r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius)
