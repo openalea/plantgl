@@ -34,8 +34,9 @@
 #include <plantgl/python/extract_list.h>
 #include <plantgl/tool/util_array.h>
 #include <boost/python/def_visitor.hpp>
+#include <plantgl/scenegraph/container/indexarray.h>
 
-typedef TOOLS(PglVector<uint_t>) Index;
+PGL_USING(Index)
 
 
 template<class T>
@@ -341,7 +342,7 @@ T * py_opposite_subset(T * pts, boost::python::object subsetindices){
 }
 
 template <class T>
-std::pair<T *,T *> py_split_subset(T * pts, boost::python::object subsetindices){
+boost::python::object py_split_subset(T * pts, boost::python::object subsetindices){
     T * subobj = new T();
     T * subobjopp = new T();
 
@@ -383,7 +384,7 @@ std::pair<T *,T *> py_split_subset(T * pts, boost::python::object subsetindices)
         if (!(*iti)) { subobjopp->push_back(pts->getAt(itv)); }
     }
 
-    return std::pair<T *,T *> (subobj,subobjopp);
+    return boost::python::make_tuple(subobj,subobjopp);
 }
 
 
@@ -470,7 +471,7 @@ class array_func : public boost::python::def_visitor<array_func<ARRAY> >
         .def( "split_indices", &py_split_indices<ARRAY>, "Split the list into 2. Return list of indices of elements of the 2 subsets. Each element is tested with the split method that should return True or False" ) \
         .def( "subset",        &py_subset<ARRAY>, "Return a subset of the list. Should gives the indices of the subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
         .def( "opposite_subset",        &py_opposite_subset<ARRAY>, "Return a subset of the list. Should gives the indices that you do not want in the resulting subset as arguments.", boost::python::return_value_policy<boost::python::manage_new_object>() ) \
-        .def( "py_split_subset", &py_split_subset<ARRAY>, "Return a subset of the list and its complementay subset. Arg is the indices of the first subset.")
+        .def( "split_subset", &py_split_subset<ARRAY>, "Return a subset of the list and its complementay subset. Arg is the indices of the first subset.")
 	    .def_pickle(array_pickle_suite<ARRAY>())
         ;
     }
