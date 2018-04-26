@@ -35,6 +35,7 @@
 
 #include "codecs.h"
 #include "cdc_geom.h"
+#include "cdc_asc.h"
 #include "cdc_vgstar.h"
 #include "cdc_pov.h"
 #include "cdc_vrml.h"
@@ -56,6 +57,7 @@ void installCodecs(){
 	if(!installed){
 		installed = true;
 		SceneFactory::get().registerCodec(SceneCodecPtr(new GeomCodec()));
+		SceneFactory::get().registerCodec(SceneCodecPtr(new AscCodec()));
 		SceneFactory::get().registerCodec(SceneCodecPtr(new BGeomCodec()));
 		SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
 		SceneFactory::get().registerCodec(SceneCodecPtr(new PovCodec()));
