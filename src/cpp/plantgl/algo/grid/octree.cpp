@@ -747,7 +747,7 @@ const OctreeNode* Octree::getLeafNode( const TOOLS(Vector3)& point,
   while( node->isDecomposed() )
     {
     Vector3 rest= point - node->getCenter();
-    register uchar_t pos= ( rest.x() > GEOM_EPSILON ) ? 1 :
+    uchar_t pos= ( rest.x() > GEOM_EPSILON ) ? 1 :
                         ( ( rest.x() < -GEOM_EPSILON ) ? 0 :
                         ( ( dir.x() >= 0 ) ? 1 : 0 ) );
     pos+= ( rest.z() > GEOM_EPSILON ) ? 2 :
