@@ -5,7 +5,7 @@ import openalea.plantgl.algo as alg
 def rgb2intensity(c) : return c.getRGBAverage()
 
 class AscCodec (sg.SceneCodec):
-    """ Ascii Point File Format 
+    """ Ascii Point File Format
 
     """
 
@@ -19,10 +19,10 @@ class AscCodec (sg.SceneCodec):
         """ return formats """
         return [ sg.SceneFormat("Asc Codec",["asc","pts","xyz","pwn",'txt'],"The Ascii point file format") ]
         # pts format :
-        #         first line : nb of points 
+        #         first line : nb of points
         #          then x y z i r g b
         # pwn format :
-        #         first line : nb of points 
+        #         first line : nb of points
         #          then x y z
         # asc format :
         #          lines : x y z [r g b]
@@ -38,18 +38,22 @@ class AscCodec (sg.SceneCodec):
         isptsfile = ('.pts' in fname)
         istxtfile = ('.txt' in fname)
         ispwnfile = ('.pwn' in fname)
+        isxyzfile = ('.xyz' in fname)
         f = file(fname,"r")
         if isptsfile or ispwnfile:
             f.readline() # skip line number
         i = 0
         lines = f.readlines()
         sep = None
-        if ';' in lines[0]: sep = ';'
-        elif ',' in lines[0]: sep = ','
-        elif '\t' in lines[0]: sep = '\t'
+        if not isxyzfile:
+            if ';' in lines[0]: sep = ';'
+            elif ',' in lines[0]: sep = ','
+            elif '\t' in lines[0]: sep = '\t'
 
         for line in lines:
             if line[0] == '#': continue
+            if sep != ',':
+                line = line.replace(',', '.')
             values = line.split(sep)
             try:
                 pts.append(mt.Vector3(float(values[0]),float(values[1]),float(values[2])))
@@ -111,5 +115,5 @@ class AscCodec (sg.SceneCodec):
         f.close()
     
 
-codec = AscCodec()
-sg.SceneFactory.get().registerCodec(codec)
+#codec = AscCodec()
+#sg.SceneFactory.get().registerCodec(codec)
