@@ -26,22 +26,22 @@ Illustrations
 ==============
 
 
-.. |fig1| image:: ../../user/images/frontimages/ac4-5.png
+.. |fig1| image:: _images/frontimages/ac4-5.png
     :scale: 30% 
 
-.. |fig2| image:: ../../user/images/frontimages/cactus.png
+.. |fig2| image:: _images/frontimages/cactus.png
     :scale: 30%
 
-.. |fig3| image:: ../../user/images/frontimages/pinecone.png
+.. |fig3| image:: _images/frontimages/pinecone.png
     :scale: 30%
 
-.. |fig4| image:: ../../user/images/frontimages/tulipa.png
+.. |fig4| image:: _images/frontimages/tulipa.png
     :scale: 30%
 
-.. |fig5| image:: ../../user/images/frontimages/rdstandglobala.png
+.. |fig5| image:: _images/frontimages/rdstandglobala.png
     :scale: 50%
 
-.. |fig6| image:: ../../user/images/frontimages/rdstand.png
+.. |fig6| image:: _images/frontimages/rdstand.png
     :scale: 50%
 
 .. centered:: |fig1| |fig2| |fig3| |fig4|

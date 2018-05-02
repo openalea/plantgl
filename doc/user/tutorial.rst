@@ -36,7 +36,7 @@ Hello World
 
 Your result should be :
 
-.. image:: images/sphere_5.png
+.. image:: ../_images/sphere_5.png
     :width: 40%
     :align: center
 
@@ -52,7 +52,7 @@ Create a shape with the previous sphere to associate a red material.
 
 Your result should be :
 
-.. image:: images/red_sphere.png
+.. image:: ../_images/red_sphere.png
     :width: 40%
     :align: center
 
@@ -67,7 +67,7 @@ Create a :class:`Sphere <openalea.plantgl.scenegraph._pglsg.Sphere>` centered at
 
 Your result should be :
 
-.. image:: images/translated_sphere.png
+.. image:: ../_images/translated_sphere.png
     :width: 40%
     :align: center
 
@@ -82,7 +82,7 @@ Display a scene with two spheres, one red, one yellow, respectively positioned a
 
 Your result should be :
 
-.. image:: images/scene.png
+.. image:: ../_images/scene.png
     :width: 40%
     :align: center
 
@@ -95,7 +95,7 @@ Instantiation
 
 In the previous scene, use the same sphere primitive for the translations. Change the radius of the sphere and observe the effect on the scene.
 
-.. image:: images/scene2.png
+.. image:: ../_images/scene2.png
     :width: 40%
     :align: center
 
@@ -109,16 +109,16 @@ Mesh
 #. Create a box with :class:`QuadSet <openalea.plantgl.scenegraph._pglsg.QuadSet>` with different colors for each face
 #. Create a box with :class:`QuadSet <openalea.plantgl.scenegraph._pglsg.QuadSet>` with a different color associated to each point in each face 
 
-.. image:: images/square.png
+.. image:: ../_images/square.png
     :width: 40%
 
-.. image:: images/color_square.png
+.. image:: ../_images/color_square.png
     :width: 40%
 
-.. image:: images/cube1.png
+.. image:: ../_images/cube1.png
     :width: 40%
 
-.. image:: images/cube2.png
+.. image:: ../_images/cube2.png
     :width: 40%
 
 
@@ -148,19 +148,19 @@ Texture and Billboard
 
 You should have as results :
 
-.. image:: images/tex1.png
+.. image:: ../_images/tex1.png
     :width: 40%
 
-.. image:: images/tex2.png
+.. image:: ../_images/tex2.png
     :width: 40%
 
-.. image:: images/tex3.png
+.. image:: ../_images/tex3.png
     :width: 40%
 
-.. image:: images/tex4.png
+.. image:: ../_images/tex4.png
     :width: 40%
 
-.. image:: images/tex5.png
+.. image:: ../_images/tex5.png
     :width: 40%
 
 
@@ -175,10 +175,10 @@ Discretisation
 
 Your results should be alike this :
 
-.. image:: images/cyl_quads.png
+.. image:: ../_images/cyl_quads.png
     :width: 40%
 
-.. image:: images/cyl_tris.png
+.. image:: ../_images/cyl_tris.png
     :width: 40%
 
 `Solution for Discretisation`_
@@ -189,44 +189,44 @@ Hulls
 
 #. Create python function to display a growing :class:`AsymmetricHull <openalea.plantgl.scenegraph._pglsg.AsymmetricHull>`
 
-    .. image:: images/asym_hull1.png
+    .. image:: ../_images/asym_hull1.png
         :width: 40%
    
-    .. image:: images/asym_hull2.png
+    .. image:: ../_images/asym_hull2.png
         :width: 40%
 
-    .. image:: images/asym_hull3.png
+    .. image:: ../_images/asym_hull3.png
         :width: 40%
 
-    .. image:: images/asym_hull4.png
+    .. image:: ../_images/asym_hull4.png
         :width: 40%
 
 #. Create profiles with positive x coordinates with :class:`Polyline2D <openalea.plantgl.scenegraph._pglsg.Polyline2D>`, :class:`BezierCurve2D <openalea.plantgl.scenegraph._pglsg.BezierCurve2D>`, :class:`NurbsCurve2D <openalea.plantgl.scenegraph._pglsg.NurbsCurve2D>`
 
-    .. image:: images/polyline.png
+    .. image:: ../_images/polyline.png
         :width: 40%
 
-    .. image:: images/beziercurve.png
+    .. image:: ../_images/beziercurve.png
         :width: 40%
 
-    .. image:: images/nurbscurve.png
+    .. image:: ../_images/nurbscurve.png
         :width: 40%
 
 #. Create a :class:`Swung <openalea.plantgl.scenegraph._pglsg.Swung>` hull with previous profiles positioned at different angles between [0;2*pi] to get something like
 
-    .. image:: images/profile_hulls.png
+    .. image:: ../_images/profile_hulls.png
         :width: 40%
         :align: center
 
 #. Create a circle with `Polyline2D.Circle` and a closed profile representing silhouette of a tree.
 
-    .. image:: images/hulls_circle.png
+    .. image:: ../_images/hulls_circle.png
         :width: 40%
         :align: center
 
 #. With these 2 profiles, create an :class:`ExtrudedHull <openalea.plantgl.scenegraph._pglsg.ExtrudedHull>` to get something looking like :
 
-    .. image:: images/extruded_hulls.png
+    .. image:: ../_images/extruded_hulls.png
         :width: 40%
         :align: center
 
@@ -238,7 +238,7 @@ Generalized Cylinder
 
 With a circle and 3D line create a branch with an :class:`Extrusion <openalea.plantgl.scenegraph._pglsg.Extrusion>`. Your result should be something like : 
 
-.. image:: images/branches.png
+.. image:: ../_images/branches.png
     :width: 40%
     :align: center
 
@@ -258,13 +258,13 @@ Positioning objects
 #. Same with a trunk with an elbow of 30 degree in the middle.
 
 
-.. image:: images/tree1.png
+.. image:: ../_images/tree1.png
     :width: 30%
 
-.. image:: images/tree2.png
+.. image:: ../_images/tree2.png
     :width: 30%
 
-.. image:: images/tree3.png
+.. image:: ../_images/tree3.png
     :width: 30%
 
 *Hints* : Take care of the order in which the transformations are performed ! 
@@ -290,7 +290,7 @@ The python script to get help on :class:`Box <openalea.plantgl.scenegraph._pglsg
 
 Thanks to the help, we see that args for initializing a :class:`Box <openalea.plantgl.scenegraph._pglsg.Box>` are the scaling in all 3 directions x, y and z. We call it and display it to obtain as a result :
 
-.. image:: images/box.png
+.. image:: ../_images/box.png
     :width: 40%
     :align: center
 
@@ -300,7 +300,7 @@ And then to create the :class:`sphere <openalea.plantgl.scenegraph._pglsg.Sphere
 
 To obtain
 
-.. image:: images/sphere_5.png
+.. image:: ../_images/sphere_5.png
     :width: 40%
     :align: center
 
@@ -314,7 +314,7 @@ To associate a red :class:`material <openalea.plantgl.scenegraph._pglsg.Sphere>`
 
 and the resulting image is :
 
-.. image:: images/red_sphere.png
+.. image:: ../_images/red_sphere.png
     :width: 40%
     :align: center
 
@@ -328,7 +328,7 @@ To :class:`translate <openalea.plantgl.scenegraph._pglsg.Translated>` a :class:`
 
 and the resulting image is :
 
-.. image:: images/translated_sphere.png
+.. image:: ../_images/translated_sphere.png
     :width: 40%
     :align: center
 
@@ -342,7 +342,7 @@ To make a :class:`scene <openalea.plantgl.scenegraph._pglsg.Scene>` with two dif
 
 and the resulting image is :
 
-.. image:: images/scene.png
+.. image:: ../_images/scene.png
     :width: 40%
     :align: center
 
@@ -356,7 +356,7 @@ To make a :class:`scene <openalea.plantgl.scenegraph._pglsg.Scene>` with two dif
 
 and the resulting image is :
 
-.. image:: images/scene2.png
+.. image:: ../_images/scene2.png
     :width: 40%
     :align: center
 
@@ -369,7 +369,7 @@ To get the :class:`square <openalea.plantgl.scenegraph._pglsg.QuadSet>` with col
 
 and the resulting image is:
 
-.. image:: images/quadset.png
+.. image:: ../_images/quadset.png
     :width: 40%
     :align: center
 
@@ -381,7 +381,7 @@ Now we compute a cube with a color for each face. The python script is:
 
 for the result :
 
-.. image:: images/cube1.png
+.. image:: ../_images/cube1.png
     :width: 40%
     :align: center
 
@@ -393,7 +393,7 @@ If we want to compute now a cube with, for each face, a color per vertex, we wil
 
 for the result :
 
-.. image:: images/cube2.png
+.. image:: ../_images/cube2.png
     :width: 40%
     :align: center
 
@@ -407,7 +407,7 @@ Here is the python script to get a :class:`textured <openalea.plantgl.scenegraph
 
 for the result :
 
-.. image:: images/tex1.png
+.. image:: ../_images/tex1.png
     :width: 40%
     :align: center
 
@@ -418,7 +418,7 @@ It is the same python script to get a :class:`textured <openalea.plantgl.scenegr
 
 for the result :
 
-.. image:: images/tex2.png
+.. image:: ../_images/tex2.png
     :width: 40%
     :align: center
 
@@ -428,7 +428,7 @@ It is nearly the same python script to have only part of the texture on the squa
 
 for the result :
 
-.. image:: images/tex3.png
+.. image:: ../_images/tex3.png
     :width: 40%
     :align: center
 
@@ -438,7 +438,7 @@ To get a textured cube, here is the python script :
 
 for the result :
 
-.. image:: images/tex4.png
+.. image:: ../_images/tex4.png
     :width: 40%
     :align: center
 
@@ -448,7 +448,7 @@ And to have a textured cross, with only part of the texture here is the script :
 
 for the result :
 
-.. image:: images/tex5.png
+.. image:: ../_images/tex5.png
     :width: 40%
     :align: center
 
@@ -462,7 +462,7 @@ Here is the python script to get a :class:`cylinder <openalea.plantgl.scenegraph
 
 for the result :
 
-.. image:: images/cyl_quads.png
+.. image:: ../_images/cyl_quads.png
     :width: 40%
     :align: center
 
@@ -472,7 +472,7 @@ Here is the python script to get a :class:`cylinder <openalea.plantgl.scenegraph
 
 for the result :
 
-.. image:: images/cyl_tris.png
+.. image:: ../_images/cyl_tris.png
     :width: 40%
     :align: center
 
@@ -490,7 +490,7 @@ You notice that we change only one arg, the topShape float argument. The hull is
 
 Results :
 
-.. image:: images/asym_hulls.png
+.. image:: ../_images/asym_hulls.png
     :width: 40%
     :align: center
 
@@ -501,7 +501,7 @@ The python script to get :class:`swung hulls <openalea.plantgl.scenegraph._pglsg
 
 to get as a result :
 
-.. image:: images/profile_hulls2.png
+.. image:: ../_images/profile_hulls2.png
     :width: 40%
     :align: center
 
@@ -513,7 +513,7 @@ The python script to get :class:`extruded hulls <openalea.plantgl.scenegraph._pg
 
 And the result is
 
-.. image:: images/extruded_hulls.png
+.. image:: ../_images/extruded_hulls.png
     :width: 40%
     :align: center
 
@@ -527,7 +527,7 @@ To get some branches with :class:`Extrusion <openalea.plantgl.scenegraph._pglsg.
 
 To get the result : 
 
-.. image:: images/branches.png
+.. image:: ../_images/branches.png
     :width: 40%
     :align: center
 
@@ -543,7 +543,7 @@ The python script to get a tree with leaves of same size is :
 
 for the result :
 
-.. image:: images/tree1.png
+.. image:: ../_images/tree1.png
     :width: 40%
     :align: center
 
@@ -554,7 +554,7 @@ The python script to get a tree with leaves of decreasing size is :
 
 for the result :
 
-.. image:: images/tree2.png
+.. image:: ../_images/tree2.png
     :width: 40%
     :align: center
 
@@ -565,6 +565,6 @@ The python script to get a tree with leaves of same size along a bowing trunk is
 
 for the result :
 
-.. image:: images/tree3.png
+.. image:: ../_images/tree3.png
     :width: 40%
     :align: center
