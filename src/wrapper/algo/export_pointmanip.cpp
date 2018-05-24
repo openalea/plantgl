@@ -249,9 +249,9 @@ boost::python::object py_find_min_max(const Point3ArrayPtr point, const int &bou
     return make_pair_tuple(find_min_max(point, boundMaxPourcent));
 }
 
-boost::python::object py_find_min_max2(const Point3ArrayPtr point, const Vector3 &center, const Vector3 &direction)
+boost::python::object py_find_min_max2(const Point3ArrayPtr point, const int &boundPourcent, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction)
 {
-    return make_pair_tuple(find_min_max(point, center, direction));
+    return make_pair_tuple(find_min_max(point, boundPourcent, center, direction));
 }
 
 void export_PointManip()
@@ -264,10 +264,15 @@ void export_PointManip()
     def("contract_point3",&contract_point<Point3Array>,args("points","radius"));
     def("contract_point4",&contract_point<Point4Array>,args("points","radius"));
 
-    def("select_not_ground", &select_not_ground, args("point", "kclosest"));
+    def("select_not_ground", &select_not_ground, args("point", "kclosest", "heightPourcent"));
     def("find_min_max", &py_find_min_max, args("point", "boundMaxPourcent"));
-    def("find_min_max", &py_find_min_max2, args("point", "boundMaxPourcent", "direction"));
+    def("find_min_max", &py_find_min_max2, args("point", "boundPourcent", "center", "direction"));
     def("get_shortest_path", &get_shortest_path, args("points", "kclosest", "point_begin", "point_end"));
+    def("get_average_radius_of_path", &get_average_radius_of_path, args("point", "kclosest", "path"));
+    def("select_point_around_line", &select_point_around_line, args("point", "center", "direction", "radius"));
+    def("select_wire_from_path", &select_wire_from_path, args("point", "kclosest", "path", "radius"));
+    def("select_isolate_points", &select_isolate_points, args("rneighborhoods", "radius", "mindensity"));
+    def("select_pole_points", &select_pole_points, args("point", "radius", "tolerance", "iterations"));
 
 #ifdef WITH_CGAL
     def("delaunay_point_connection",&delaunay_point_connection,args("points"));

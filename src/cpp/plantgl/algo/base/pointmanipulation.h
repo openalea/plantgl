@@ -90,13 +90,23 @@ ALGO_API void register_progressstatus_func(progressstatusfunction func);
 ALGO_API void unregister_progressstatus_func();
 
 
-ALGO_API Index select_not_ground(const Point3ArrayPtr point, IndexArrayPtr &kclosest);
+ALGO_API Index select_not_ground(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &topHeightPourcent);
 
-ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const int &boundMaxPourcent);
+ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr &point, const uint_t &boundMaxPourcent);
 
-ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction);
+ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr &point, const uint_t &boundPourcent, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction);
 
-ALGO_API Index get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const uint_t &point_begin, const uint_t &point_end);
+ALGO_API Index get_shortest_path(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &point_begin, const uint_t &point_end);
+
+ALGO_API real_t get_average_radius_of_path(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const Index &path);
+
+ALGO_API Index select_point_around_line(const Point3ArrayPtr &point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction, const real_t &radius);
+
+ALGO_API Index select_wire_from_path(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const Index &path, const real_t &radius);
+
+ALGO_API Index select_isolate_points(const IndexArrayPtr &rneighborhoods, const real_t &radius, const real_t &mindensity);
+
+ALGO_API Index select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const real_t &tolerance, const uint_t &iterations);
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 
