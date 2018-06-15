@@ -472,6 +472,22 @@ struct RansacCylinder {
     direction = (p1 - p2).normed();
   }
 
+  RansacCylinder(const RansacCylinder &cylinder)
+          : radius(cylinder.radius), tolerance(cylinder.tolerance) {
+    center = cylinder.center;
+    direction = cylinder.direction;
+    points = cylinder.points;
+    icount = cylinder.icount;
+  }
+
+  RansacCylinder &operator=(const RansacCylinder &cylinder) {
+    center = cylinder.center;
+    direction = cylinder.direction;
+    points = cylinder.points;
+    icount = cylinder.icount;
+    return *this;
+  }
+
   bool isInlier(const Vector3 &p) {
     Vector3 v = p - center;
     Vector3 c = cross(v, direction);
