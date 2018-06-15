@@ -458,10 +458,10 @@ Index PGL::select_k_isolate_points(const Point3ArrayPtr &point,
 }
 
 struct RansacCylinder {
-  const real_t radius;
-  const real_t tolerance;
+  const real_t &radius;
+  const real_t &tolerance;
 
-  const Vector3 center;
+  Vector3 center;
   Vector3 direction;
 
   Index points;
@@ -494,8 +494,8 @@ struct RansacCylinder {
 };
 
 class ThreadAdapterRansac {
-  const real_t radius;
-  const real_t tolerance;
+  const real_t &radius;
+  const real_t &tolerance;
 
   boost::mutex mutex;
   const Point3ArrayPtr point;
