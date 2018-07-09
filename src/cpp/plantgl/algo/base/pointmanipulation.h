@@ -78,15 +78,6 @@ PGL_BEGIN_NAMESPACE
     return result;
   }
 
-
-// to control display of progress
-  typedef void (*progressstatusfunction)(const char *, float);
-
-  ALGO_API void register_progressstatus_func(progressstatusfunction func);
-
-  ALGO_API void unregister_progressstatus_func();
-
-
   ALGO_API Index
   select_soil(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &topHeightPourcent);
 
@@ -124,8 +115,14 @@ PGL_BEGIN_NAMESPACE
   ALGO_API Index select_k_isolate_points(const Point3ArrayPtr &point, const IndexArrayPtr &kclosest, const uint32_t &k,
                                          const real_t &mindensity);
 
+  ALGO_API Index filter_min_densities(const TOOLS(RealArrayPtr) densities, const real_t &densityratio);
+  ALGO_API Index filter_max_densities(const TOOLS(RealArrayPtr) densities, const real_t &densityratio);
+
   ALGO_API std::pair<Index, real_t>
   select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance = -1.0);
+
+  ALGO_API std::pair<Index, real_t>
+  select_pole_points_mt(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance = -1.0);
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 

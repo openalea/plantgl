@@ -34,6 +34,7 @@
 #include "dijkstra.h"
 #include <plantgl/scenegraph/container/indexarray_iterator.h>
 #include <plantgl/scenegraph/transformation/transformed.h>
+#include <plantgl/tool/util_progress.h>
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -44,63 +45,6 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 static unsigned int nthreads = boost::thread::hardware_concurrency();
-
-void progressprint(const char *msg, float percent) { printf(msg, percent); }
-
-
-static progressstatusfunction PSFUNC = progressprint;
-
-
-void PGL::register_progressstatus_func(progressstatusfunction func) {
-  PSFUNC = func;
-}
-
-void PGL::unregister_progressstatus_func() {
-  PSFUNC = progressprint;
-}
-
-
-class ProgressStatus {
-public:
-  ProgressStatus(uint32_t _nbsteps, const char *_message = " %.2f processed.", float _percenttoprint = 1) :
-          nbsteps(_nbsteps),
-          percenttoprint(_percenttoprint),
-          message(_message),
-          current(1),
-          cpercent(-_percenttoprint) {}
-
-  inline ProgressStatus &operator++() {
-    increment();
-    return *this;
-  }
-
-  void increment(uint32_t inc = 1) {
-    current += inc;
-    if (current <= nbsteps) {
-      if (current == nbsteps) {
-        std::string msg("\x0d");
-        msg += message;
-        msg += "\n";
-        PSFUNC(msg.c_str(), 100.0);
-      } else {
-        real_t ncpercent = 100 * current / float(nbsteps);
-        if (cpercent + percenttoprint <= ncpercent) {
-          std::string msg("\x0d");
-          msg += message;
-          PSFUNC(msg.c_str(), ncpercent);
-          cpercent = ncpercent;
-        }
-      }
-    }
-  }
-
-protected:
-  uint32_t current;
-  uint32_t nbsteps;
-  real_t cpercent;
-  real_t percenttoprint;
-  const char *message;
-};
 
 struct PointDistance {
   const Point3ArrayPtr points;
@@ -174,101 +118,6 @@ Index PGL::select_soil(const Point3ArrayPtr &point,
   return ground;
 }
 
-static real_t min_max_score(const Vector3 &p,
-                            const Vector3 &minYIndex,
-                            const real_t &maxYValue,
-                            const real_t &pointsHeight) {
-  Vector3 tmp(minYIndex.x(), p.y(), minYIndex.z());
-  Vector3 dir = (tmp - minYIndex).normed();
-  Vector3 v = p - minYIndex;
-  Vector3 c = cross(v, dir);
-  real_t d = norm(c);
-
-  return (p.y() / maxYValue) * 0.75 + (1 - (d / pointsHeight)) * 0.25;
-}
-
-std::pair<uint_t, uint_t> PGL::find_min_max(const Point3ArrayPtr &point,
-                                            const uint_t &boundMaxPourcent) {
-  uint_t pointsize = point->size();
-  Point3Array::const_iterator minYIndex = point->getYMin();
-  Point3Array::const_iterator maxYIndex = point->getYMax();
-  Point3Array::const_iterator minZIndex = point->getZMin();
-  Point3Array::const_iterator maxZIndex = point->getZMax();
-
-  real_t pointsHeight = maxZIndex->y() - minZIndex->y();
-  real_t pointYwidth = maxYIndex->y() - minYIndex->y();
-  real_t boundmax = maxYIndex->y();
-
-  real_t boundmin = boundmax - (pointYwidth * boundMaxPourcent / 100.0);
-
-  maxYIndex = point->end();
-  real_t maxScore = -1;
-
-  ProgressStatus st(pointsize, "Max Y Index search : %.2f%%");
-  for (Point3Array::const_iterator it = point->begin(); it != point->end(); ++it, ++st) {
-    if (it->y() < boundmin)
-      continue;
-
-    real_t tmpScore = min_max_score(*it, *minYIndex, boundmax, pointsHeight);
-    if (tmpScore > maxScore) {
-      maxScore = tmpScore;
-      maxYIndex = it;
-    }
-  }
-
-  uint_t minY = std::distance(((const Point3Array &) (*point)).begin(), minYIndex);
-  uint_t maxY = std::distance(((const Point3Array &) (*point)).begin(), maxYIndex);
-
-  return std::pair<uint_t, uint_t>(minY, maxY);
-}
-
-std::pair<uint_t, uint_t> PGL::find_min_max(const Point3ArrayPtr &point,
-                                            const uint_t &boundPourcent,
-                                            const TOOLS(Vector3) &center,
-                                            const TOOLS(Vector3) &direction) {
-  uint_t pointsize = point->size();
-  Point3Array::const_iterator minYIndex = point->getYMin();
-  Point3Array::const_iterator maxYIndex = point->getYMax();
-
-  real_t pointYwidth = maxYIndex->y() - minYIndex->y();
-  real_t size_pourcent = (pointYwidth * boundPourcent / 100.0);
-  real_t boundright = maxYIndex->y() - size_pourcent;
-  real_t boundleft = minYIndex->y() + size_pourcent;
-
-  maxYIndex = point->end();
-  minYIndex = point->end();
-  real_t distleft;
-  real_t distright;
-
-  ProgressStatus st(pointsize, "MinMax Y Index search : %.2f%%");
-  for (Point3Array::const_iterator it = point->begin(); it != point->end(); ++it, ++st) {
-    if (it->y() > boundleft && it->y() < boundright)
-      continue;
-
-    Vector3 OA = *it - center;
-    real_t a = dot(OA, direction);
-    real_t tmpDist = norm(OA - direction * a);
-
-    if (it->y() <= boundleft
-        && (minYIndex == point->end()
-            || (it->y() == minYIndex->y() && tmpDist < distleft)
-            || (it->y() < minYIndex->y() && tmpDist <= distleft))) {
-      distleft = tmpDist;
-      minYIndex = it;
-    } else if (maxYIndex == point->end()
-               || (it->y() == maxYIndex->y() && tmpDist < distright)
-               || (it->y() > maxYIndex->y() && tmpDist <= distright)) {
-      distright = tmpDist;
-      maxYIndex = it;
-    }
-  }
-
-  uint_t minY = std::distance(((const Point3Array &) (*point)).begin(), minYIndex);
-  uint_t maxY = std::distance(((const Point3Array &) (*point)).begin(), maxYIndex);
-
-  return std::pair<uint_t, uint_t>(minY, maxY);
-}
-
 Index PGL::get_shortest_path(const Point3ArrayPtr &point,
                              IndexArrayPtr &kclosest,
                              const uint_t &point_begin,
@@ -334,7 +183,7 @@ TOOLS(RealArrayPtr) PGL::get_radii_of_path(const Point3ArrayPtr &point,
     real_t height = norm(vec);
     Vector3 direction = vec / height;
 
-    real_t radius = -1;
+    real_t radius = 0;
     Index neighborhoods = r_neighborhood(*it, point, kclosest, around_radius);
     for (Index::const_iterator n = neighborhoods.begin(); n != neighborhoods.end(); ++n) {
       Vector3 v = point->getAt(*n) - center;
@@ -342,49 +191,12 @@ TOOLS(RealArrayPtr) PGL::get_radii_of_path(const Point3ArrayPtr &point,
       real_t d = norm(c);
       real_t h = dot(v, direction);
 
-      if (h <= height / 2 && d > radius)
+      if (h > -height / 2 && h < height / 2 && d > radius)
         radius = d;
     }
     radii->push_back(radius);
   }
   return radii;
-}
-
-real_t PGL::get_average_radius_of_path(const Point3ArrayPtr &point,
-                                       const IndexArrayPtr &kclosest,
-                                       const Index &path) {
-  real_t avg_radius = 0;
-  ProgressStatus st(path.size(), "Get average radius of path : %.2f%%");
-  for (Index::const_iterator it = path.begin(); it != path.end(); ++it, ++st) {
-    real_t mradius = 0;
-    const Vector3 &p = point->getAt(*it);
-    const Index &neighborhoods = kclosest->getAt(*it);
-    for (Index::const_iterator n = neighborhoods.begin(); n != neighborhoods.end(); ++n) {
-      const Vector3 &pn = point->getAt(*n);
-      real_t radius = std::abs(norm(pn - p));
-      mradius += radius;
-    }
-    avg_radius += mradius / neighborhoods.size();
-  }
-  return avg_radius / path.size();
-}
-
-Index PGL::select_point_around_line(const Point3ArrayPtr &point,
-                                    const TOOLS(Vector3) &center,
-                                    const TOOLS(Vector3) &direction,
-                                    const real_t &radius) {
-  Index wire;
-  ProgressStatus st(point->size(), "Select point around line : %.2f%%");
-  for (Point3Array::iterator it = point->begin(); it != point->end(); ++it, ++st) {
-    Vector3 OA = *it - center;
-    real_t a = dot(OA, direction);
-    real_t dist = norm(OA - direction * a);
-
-    if (dist < radius)
-      wire.push_back(std::distance(point->begin(), it));
-  }
-
-  return wire;
 }
 
 Index PGL::select_wire_from_path(const Point3ArrayPtr &point,
@@ -426,40 +238,44 @@ Index PGL::select_wire_from_path(const Point3ArrayPtr &point,
   return wire;
 }
 
-Index PGL::select_r_isolate_points(const IndexArrayPtr &rneighborhoods,
-                                   const real_t &radius,
-                                   const real_t &mindensity) {
-  TOOLS(RealArrayPtr) densities = densities_from_r_neighborhood(rneighborhoods, radius);
-  Index isolate_point;
-  uint_t i = 0;
+Index PGL::filter_min_densities(const RealArrayPtr densities, const real_t &densityratio)
+{
+  std::pair<RealArray::const_iterator,RealArray::const_iterator> res = densities->getMinAndMax(true);
+  real_t mind = *res.first;
+  real_t maxd = *res.second;
+  real_t densitythreshold = mind + (maxd - mind) * densityratio / 100.0f;
 
-  ProgressStatus st(rneighborhoods->size(), "Select isolated points : %.2f%%");
-  for (TOOLS(RealArray)::iterator it = densities->begin(); it != densities->end(); ++it, i++, ++st) {
-    if (*it < mindensity)
-      isolate_point.push_back(i);
+  Index subset;
+  uint_t index = 0;
+  ProgressStatus st(densities->size(), "Point densities min filter computed at : %.2f%%");
+  for (RealArray::const_iterator it = densities->begin(); it != densities->end(); ++it, index++, ++st) {
+    if (*it < densitythreshold)
+      subset.push_back(index);
   }
-  return isolate_point;
+  return subset;
 }
 
-Index PGL::select_k_isolate_points(const Point3ArrayPtr &point,
-                                   const IndexArrayPtr &kclosest,
-                                   const uint32_t &k,
-                                   const real_t &mindensity) {
-  TOOLS(RealArrayPtr) densities = densities_from_k_neighborhood(point, kclosest, k);
-  Index isolate_point;
-  uint_t i = 0;
+Index PGL::filter_max_densities(const RealArrayPtr densities, const real_t &densityratio)
+{
+  std::pair<RealArray::const_iterator,RealArray::const_iterator> res = densities->getMinAndMax(true);
+  real_t mind = *res.first;
+  real_t maxd = *res.second;
+  real_t densitythreshold = maxd - (maxd - mind) * densityratio / 100.0f;
 
-  ProgressStatus st(kclosest->size(), "Select isolated points : %.2f%%");
-  for (TOOLS(RealArray)::iterator it = densities->begin(); it != densities->end(); ++it, i++, ++st) {
-    if (*it < mindensity)
-      isolate_point.push_back(i);
+  Index subset;
+  uint_t index = 0;
+  ProgressStatus st(densities->size(), "Point densities min filter computed at : %.2f%%");
+  for (RealArray::const_iterator it = densities->begin(); it != densities->end(); ++it, index++, ++st) {
+    if (*it > densitythreshold)
+      subset.push_back(index);
   }
-  return isolate_point;
+  return subset;
 }
+
 
 struct RansacCylinder {
-  const real_t &radius;
-  const real_t &tolerance;
+  const real_t radius;
+  const real_t tolerance;
 
   Vector3 center;
   Vector3 direction;
@@ -496,7 +312,7 @@ struct RansacCylinder {
     if (tolerance == -1.0)
       return d < radius * (1 - GEOM_EPSILON);
     else
-      return d < radius * (1 + tolerance) && d > radius * (1 - tolerance);
+      return d > radius * (1 - tolerance) && d < radius * (1 + tolerance);
   }
 
   real_t score(const uint_t &pointsize) {
@@ -509,23 +325,28 @@ struct RansacCylinder {
   }
 };
 
-class ThreadAdapterRansac {
-  const real_t &radius;
-  const real_t &tolerance;
+#include <memory>
 
-  boost::mutex mutex;
+typedef std::shared_ptr<RansacCylinder> RansacCylinderPtr;
+
+class ThreadAdapterRansac {
+  const real_t radius;
+  const real_t tolerance;
+
   const Point3ArrayPtr point;
   Point3ArrayPtr gridUp;
   Point3ArrayPtr gridDown;
   uint_t pointsize;
 
 public:
-  std::vector<RansacCylinder> cand;
-  ProgressStatus st;
+  std::vector<RansacCylinderPtr> cand;
+  uint_t taskDoneCounter;
+  boost::mutex mutex;
 
 public:
   ThreadAdapterRansac(const Point3ArrayPtr point, const real_t &radius, const real_t &tolerance)
-          : radius(radius), tolerance(tolerance), point(point), st(0) {
+          : radius(radius), tolerance(tolerance), point(point) {
+    taskDoneCounter = 0;
     pointsize = point->size();
     gridUp = Point3ArrayPtr(new Point3Array(10000));
     gridDown = Point3ArrayPtr(new Point3Array(10000));
@@ -547,22 +368,22 @@ public:
   }
 
   void operator()() {
-    RansacCylinder cylinder(gridUp->getAt(rand() % 10000u),
-                            gridDown->getAt(rand() % 10000u),
-                            radius,
-                            tolerance);
+    RansacCylinderPtr cylinder = std::make_shared<RansacCylinder>(this->gridUp->getAt(rand() % 10000u),
+                                                                  this->gridDown->getAt(rand() % 10000u),
+                                                                  radius,
+                                                                  tolerance);
     uint_t index = 0;
 
-    for (Point3Array::iterator it = point->begin(); it != point->end(); ++it, index++) {
-      if (cylinder.isInlier(*it)) {
-        cylinder.points.push_back(index);
-        cylinder.icount++;
+    for (Point3Array::iterator it = this->point->begin(); it != this->point->end(); ++it, index++) {
+      if (cylinder->isInlier(*it)) {
+        cylinder->points.push_back(index);
+        cylinder->icount++;
       }
     }
 
-    boost::unique_lock<boost::mutex> scoped_lock(mutex);
-    cand.push_back(cylinder);
-    ++st;
+    boost::unique_lock<boost::mutex> scoped_lock(this->mutex);
+    this->cand.push_back(cylinder);
+    this->taskDoneCounter++;
   }
 };
 
@@ -572,25 +393,61 @@ PGL::select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const
   const uint_t pointsize = point->size();
 
   ThreadAdapterRansac adapter(point, radius, tolerance);
-  boost::asio::thread_pool pool(nthreads);
 
-  adapter.st = ProgressStatus(iterations, "RANSAC initialize fitting : %.2f%%");
+  ProgressStatus st(iterations, "RANSAC initialize fitting : %.2f%%");
   for (uint_t i = 0; i < iterations; i++)
-    boost::asio::post(pool, boost::bind(&ThreadAdapterRansac::operator(), &adapter));
-  pool.join();
+    adapter();
 
-  std::vector<RansacCylinder>::iterator seleted;
+  std::vector<RansacCylinderPtr>::iterator seleted;
   real_t maxScore = -1;
 
-  ProgressStatus st(iterations, "RANSAC search best fit : %.2f%%");
-  for (std::vector<RansacCylinder>::iterator it = adapter.cand.begin(); it != adapter.cand.end(); ++it, ++st) {
-    real_t score = it->score(pointsize);
+  st = ProgressStatus(iterations, "RANSAC search best fit : %.2f%%");
+  for (std::vector<RansacCylinderPtr>::iterator it = adapter.cand.begin(); it != adapter.cand.end(); ++it, ++st) {
+    real_t score = (*it)->score(pointsize);
     if (score > maxScore) {
       seleted = it;
       maxScore = score;
     }
   }
-  return std::pair<Index, real_t>(seleted->points, maxScore);
+  return std::pair<Index, real_t>((*seleted)->points, maxScore);
+}
+
+std::pair<Index, real_t>
+PGL::select_pole_points_mt(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance) {
+  srand(time(0));
+  const uint_t pointsize = point->size();
+
+  ThreadAdapterRansac adapter(point, radius, tolerance);
+  boost::asio::thread_pool pool(nthreads);
+
+  ProgressStatus st(iterations, "RANSAC initialize fitting : %.2f%%");
+  for (uint_t i = 0; i < iterations; i++)
+    boost::asio::post(pool, boost::bind(&ThreadAdapterRansac::operator(), &adapter));
+  uint_t count = 0;
+  while (true) {
+    boost::unique_lock<boost::mutex> scoped_lock(adapter.mutex);
+    if (count == iterations) {
+      ++st;
+      break;
+    } else if (adapter.taskDoneCounter != count) {
+      count = adapter.taskDoneCounter;
+      ++st;
+    }
+  }
+  pool.join();
+
+  std::vector<RansacCylinderPtr>::iterator seleted;
+  real_t maxScore = -1;
+
+  st = ProgressStatus(iterations, "RANSAC search best fit : %.2f%%");
+  for (std::vector<RansacCylinderPtr>::iterator it = adapter.cand.begin(); it != adapter.cand.end(); ++it, ++st) {
+    real_t score = (*it)->score(pointsize);
+    if (score > maxScore) {
+      seleted = it;
+      maxScore = score;
+    }
+  }
+  return std::pair<Index, real_t>((*seleted)->points, maxScore);
 }
 
 struct PointSorter {
@@ -845,8 +702,8 @@ class ThreadAdapter {
   boost::mutex mutex;
   const IndexArrayPtr adjacencies;
   struct PointDistance pdevaluator;
-  const real_t &radius;
-  const bool &verbose;
+  const real_t radius;
+  const bool verbose;
 public:
   IndexArrayPtr result;
   ProgressStatus st;
@@ -857,7 +714,7 @@ public:
     result = IndexArrayPtr(new IndexArray(points->size()));
   }
 
-  void operator()(const uint32_t &current) {
+  void operator()(const uint32_t current) {
     DijkstraReusingAllocator allocator;
     NodeList lneighborhood = dijkstra_shortest_paths_in_a_range(adjacencies, current, pdevaluator, radius, UINT32_MAX,
                                                                 allocator);
