@@ -13,6 +13,7 @@
 
 #include "tools_config.h"
 #include "util_types.h"
+#include <cstdio>
 #include <string>
 
 TOOLS_BEGIN_NAMESPACE
