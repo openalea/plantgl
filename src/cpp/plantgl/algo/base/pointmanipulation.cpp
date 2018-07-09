@@ -238,9 +238,8 @@ Index PGL::select_wire_from_path(const Point3ArrayPtr &point,
   return wire;
 }
 
-Index PGL::filter_min_densities(const RealArrayPtr densities, const real_t &densityratio)
-{
-  std::pair<RealArray::const_iterator,RealArray::const_iterator> res = densities->getMinAndMax(true);
+Index PGL::filter_min_densities(const RealArrayPtr densities, const real_t &densityratio) {
+  std::pair<RealArray::const_iterator, RealArray::const_iterator> res = densities->getMinAndMax(true);
   real_t mind = *res.first;
   real_t maxd = *res.second;
   real_t densitythreshold = mind + (maxd - mind) * densityratio / 100.0f;
@@ -255,9 +254,8 @@ Index PGL::filter_min_densities(const RealArrayPtr densities, const real_t &dens
   return subset;
 }
 
-Index PGL::filter_max_densities(const RealArrayPtr densities, const real_t &densityratio)
-{
-  std::pair<RealArray::const_iterator,RealArray::const_iterator> res = densities->getMinAndMax(true);
+Index PGL::filter_max_densities(const RealArrayPtr densities, const real_t &densityratio) {
+  std::pair<RealArray::const_iterator, RealArray::const_iterator> res = densities->getMinAndMax(true);
   real_t mind = *res.first;
   real_t maxd = *res.second;
   real_t densitythreshold = maxd - (maxd - mind) * densityratio / 100.0f;
@@ -273,7 +271,7 @@ Index PGL::filter_max_densities(const RealArrayPtr densities, const real_t &dens
 }
 
 
-struct RansacCylinder {
+struct RansacCylinder : public RefCountObject {
   const real_t radius;
   const real_t tolerance;
 
@@ -327,7 +325,7 @@ struct RansacCylinder {
 
 #include <memory>
 
-typedef std::shared_ptr<RansacCylinder> RansacCylinderPtr;
+typedef RCPtr<RansacCylinder> RansacCylinderPtr;
 
 class ThreadAdapterRansac {
   const real_t radius;
@@ -368,10 +366,10 @@ public:
   }
 
   void operator()() {
-    RansacCylinderPtr cylinder = std::make_shared<RansacCylinder>(this->gridUp->getAt(rand() % 10000u),
-                                                                  this->gridDown->getAt(rand() % 10000u),
-                                                                  radius,
-                                                                  tolerance);
+    RansacCylinderPtr cylinder(new RansacCylinder(this->gridUp->getAt(rand() % 10000u),
+                                                  this->gridDown->getAt(rand() % 10000u),
+                                                  radius,
+                                                  tolerance));
     uint_t index = 0;
 
     for (Point3Array::iterator it = this->point->begin(); it != this->point->end(); ++it, index++) {
