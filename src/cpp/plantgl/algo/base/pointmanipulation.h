@@ -42,8 +42,12 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 #include <plantgl/scenegraph/function/function.h>
 #include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/scenegraph/geometry/pointset.h>
 #include <plantgl/tool/util_array.h>
 #include <plantgl/tool/util_array2.h>
+#include <plantgl/math/util_vector.h>
+#include <memory>
+#include <vector>
 
 PGL_BEGIN_NAMESPACE
 
@@ -85,6 +89,14 @@ ALGO_API void register_progressstatus_func(progressstatusfunction func);
 
 ALGO_API void unregister_progressstatus_func();
 
+
+ALGO_API Index select_not_ground(const Point3ArrayPtr point, IndexArrayPtr &kclosest);
+
+ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const int &boundMaxPourcent);
+
+ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction);
+
+ALGO_API Index get_shortest_path(const Point3ArrayPtr point, IndexArrayPtr &kclosest, const uint_t &point_begin, const uint_t &point_end);
 
 // typedef std::vector<std::vector<uint32_t> > AdjacencyMap;
 

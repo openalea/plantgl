@@ -5,6 +5,7 @@ __pycache__/
 options.py
 src/cpp/plantgl/userconfig.h
 src/plantgl/config.py
+src/openalea
 
 # C extensions
 build-scons
@@ -70,3 +71,10 @@ doc/_build/
 # PyBuilder
 target/
 .vs
+
+# JetBrains
+.idea
+
+# Doxygen Files
+doc/doxygen
+src/cpp/plantgl/doxygenFile
