@@ -41,6 +41,7 @@
 #include <plantgl/tool/dirnames.h>
 #include <plantgl/math/util_vector.h>
 #include <plantgl/tool/util_progress.h>
+#include <plantgl/tool/util_string.h>
 #include <plantgl/algo/base/discretizer.h>
 #include <fstream>
 #include <iterator>
@@ -64,28 +65,6 @@ SceneFormatList AscCodec::formats() const {
   SceneFormatList _formats;
   _formats.push_back(_format);
   return _formats;
-}
-
-std::vector<std::string> AscCodec::split(const std::string &str, const std::string &delim) const {
-  std::vector<std::string> vec;
-  std::size_t start = 0;
-  std::size_t end = 0;
-
-  do {
-    end = str.find(delim, start);
-    vec.push_back(str.substr(start, end - start));
-    start = end + delim.length();
-  } while (end != std::string::npos);
-  //vec.push_back(str.substr(start, end));
-
-  std::vector<std::string>::iterator it = vec.begin() + 1;
-  while (it != vec.end()) {
-    if (it->empty())
-      it = vec.erase(it);
-    else
-      it++;
-  }
-  return vec;
 }
 
 ScenePtr AscCodec::read(const std::string &fname) {
@@ -128,7 +107,7 @@ ScenePtr AscCodec::read(const std::string &fname) {
     if (sep != ",")
       std::replace(line->begin(), line->end(), ',', '.');
 
-    std::vector<std::string> values = this->split(*line, sep);
+    std::vector<std::string> values = TOOLS(split)(*line, sep);
     try {
       float x, y, z;
       std::stringstream(values.at(0)) >> x;
