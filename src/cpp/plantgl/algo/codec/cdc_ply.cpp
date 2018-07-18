@@ -16,6 +16,8 @@
 #include <plantgl/scenegraph/geometry/faceset.h>
 #include "plyprinter.h"
 #include <fstream>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 
 PGL_USING_NAMESPACE
 
@@ -128,12 +130,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
     }
   }
   if (colorprops.size() > 0) {
-    std::sort(colorprops.begin(), colorprops.end(), [this](const std::string &c1, const std::string &c2) {
-      size_t indexc1 = std::distance(this->knowncolortypes.begin(), std::find(this->knowncolortypes.begin(), this->knowncolortypes.end(), c1));
-      size_t indexc2 = std::distance(this->knowncolortypes.begin(), std::find(this->knowncolortypes.begin(), this->knowncolortypes.end(), c2));
-
-      return indexc1 < indexc2;
-    });
+    std::sort(colorprops.begin(), colorprops.end(), boost::bind(&PlyCodec::colorPropsSortFunction, this, _1, _2));
     assert(colorprops.size() == 3 || colorprops.size() == 4);
   }
 
@@ -143,7 +140,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
 
   for (std::vector<SpecElement>::iterator s = spec.begin(); s != spec.end(); ++s) {
     for (size_t i = 0; i < s->number; i++) {
-      std::unordered_map<std::string, std::vector<propertyType>> ielement;
+      std::map<std::string, std::vector<propertyType>> ielement;
       if (fcoding == "ascii") {
         std::vector<std::string> linevalues = TOOLS(split)(this->nextline(file));
         size_t itv = 0;
@@ -258,4 +255,11 @@ PlyCodec::propertyType PlyCodec::readnextval(std::ifstream &file, const PGL::Ply
   delete [] tmp;
   delete [] value;
   return visitor.get_res();
+}
+
+bool PlyCodec::colorPropsSortFunction(const std::string &c1, const std::string &c2) {
+  size_t indexc1 = std::distance(this->knowncolortypes.begin(), std::find(this->knowncolortypes.begin(), this->knowncolortypes.end(), c1));
+  size_t indexc2 = std::distance(this->knowncolortypes.begin(), std::find(this->knowncolortypes.begin(), this->knowncolortypes.end(), c2));
+
+  return indexc1 < indexc2;
 }

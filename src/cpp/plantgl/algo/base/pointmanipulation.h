@@ -79,7 +79,7 @@ PGL_BEGIN_NAMESPACE
   }
 
   ALGO_API Index
-  select_soil(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &topHeightPourcent);
+  select_soil(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &topHeightPourcent, const real_t &bottomThreshold);
 
   ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr &point, const uint_t &boundMaxPourcent);
 

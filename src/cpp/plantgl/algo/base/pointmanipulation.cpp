@@ -65,17 +65,13 @@ struct PowerPointDistance {
 
 Index PGL::select_soil(const Point3ArrayPtr &point,
                        IndexArrayPtr &kclosest,
-                       const uint_t &topHeightPourcent) {
+                       const uint_t &topHeightPourcent,
+                       const real_t &bottomThreshold) {
   uint_t pointsize = point->size();
   std::vector<bool> points_infos(pointsize, false);
 
   if (!kclosest || kclosest->size() == 0)
     kclosest = k_closest_points_from_ann(point, 10);
-
-  real_t a = 0;
-  for (Point3Array::const_iterator it = point->begin(); it != point->end(); ++it)
-    a += it->z();
-  a /= pointsize;
 
   Point3Array::const_iterator maxZIterator = point->getZMax();
   Point3Array::const_iterator minZIterator = point->getZMin();
@@ -83,7 +79,6 @@ Index PGL::select_soil(const Point3ArrayPtr &point,
   const real_t &minZ = minZIterator->z();
   const real_t height = std::abs(maxZ - minZ);
   const real_t boundmintop = maxZ - height * topHeightPourcent / 100.0;
-  const real_t max_height = minZ + (a - minZ) * 0.5;
 
   std::stack<uint_t> stack;
 
@@ -97,7 +92,7 @@ Index PGL::select_soil(const Point3ArrayPtr &point,
     while (!stack.empty()) {
       uint_t index = stack.top();
       stack.pop();
-      if (points_infos[index] || point->getAt(index).z() < max_height)
+      if (points_infos[index] || point->getAt(index).z() < bottomThreshold)
         continue;
       Index &neighborhood = kclosest->getAt(index);
       for (Index::const_iterator it = neighborhood.begin(); it != neighborhood.end(); ++it) {

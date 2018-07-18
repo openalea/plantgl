@@ -233,7 +233,7 @@ void export_PointManip() {
   def("contract_point3", &contract_point<Point3Array>, args("points", "radius"));
   def("contract_point4", &contract_point<Point4Array>, args("points", "radius"));
 
-  def("select_soil", &select_soil, args("point", "kclosest", "heightPourcent"));
+  def("select_soil", &select_soil, args("point", "kclosest", "topHeightPourcent", "bottomThreshold"));
   def("get_shortest_path", &get_shortest_path, args("points", "kclosest", "point_begin", "point_end"));
   def("add_baricenter_points_of_path", &py_add_baricenter_points_of_path, args("point", "kclosest", "path", "radius"));
   def("get_radii_of_path", &get_radii_of_path, args("point", "kclosest", "path", "around_radius"));
@@ -262,12 +262,8 @@ void export_PointManip() {
   def("r_neighborhoods", (IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, real_t, bool)) &r_neighborhoods, (bp::arg("points"), bp::arg("adjacencies"), bp::arg("radius"), bp::arg("verbose") = false));
   def("r_neighborhoods_mt", (IndexArrayPtr(*)(const Point3ArrayPtr, const IndexArrayPtr, real_t, bool)) &r_neighborhoods_mt, (bp::arg("points"), bp::arg("adjacencies"), bp::arg("radius"), bp::arg("verbose") = false));
   def("r_anisotropic_neighborhood", &r_anisotropic_neighborhood, args("pid", "points", "adjacencies", "radius", "direction", "alpha", "beta"));
-  def("r_anisotropic_neighborhoods",
-      (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr, const Point3ArrayPtr, const real_t, const real_t)) &r_anisotropic_neighborhoods,
-      args("points", "adjacencies", "radii", "directions", "alpha", "beta"));
-  def("r_anisotropic_neighborhoods",
-      (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const real_t, const Point3ArrayPtr, const real_t, const real_t)) &r_anisotropic_neighborhoods,
-      args("points", "adjacencies", "radius", "directions", "alpha", "beta"));
+  def("r_anisotropic_neighborhoods", (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const RealArrayPtr, const Point3ArrayPtr, const real_t, const real_t)) &r_anisotropic_neighborhoods, args("points", "adjacencies", "radii", "directions", "alpha", "beta"));
+  def("r_anisotropic_neighborhoods", (IndexArrayPtr (*)(const Point3ArrayPtr, const IndexArrayPtr, const real_t, const Point3ArrayPtr, const real_t, const real_t)) &r_anisotropic_neighborhoods, args("points", "adjacencies", "radius", "directions", "alpha", "beta"));
 
   def("k_neighborhood", &k_neighborhood, args("pid", "points", "adjacencies", "k"));
   def("k_neighborhoods", &k_neighborhoods, args("points", "adjacencies", "k"));

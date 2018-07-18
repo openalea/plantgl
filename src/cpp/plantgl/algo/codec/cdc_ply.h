@@ -15,7 +15,7 @@
 #include <plantgl/tool/util_string.h>
 #include <plantgl/scenegraph/scene/factory.h>
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <boost/variant.hpp>
 
 /* ----------------------------------------------------------------------- */
@@ -129,9 +129,10 @@ PGL_BEGIN_NAMESPACE
     std::string nextline(std::ifstream &file);
 
     propertyType readnextval(std::ifstream &file, const propertyType &type, const bool &reversebytes);
+    bool colorPropsSortFunction(const std::string &c1, const std::string &c2);
 
     std::vector<std::string> fcodingTypes;
-    std::unordered_map<std::string, propertyType> propertiesTypes;
+    std::map<std::string, propertyType> propertiesTypes;
     std::vector<std::string> knowncolortypes;
     SizeVisitor sizeVisitor;
   };
