@@ -25,39 +25,39 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
   class CODEC_API PlyCodec : public SceneCodec {
-    typedef boost::variant<
-            float,
-            int,
-            uint_t,
-            char,
-            uchar_t,
-            short,
-            u_short,
-            double> propertyType;
+    typedef boost::variant<float, int, uint_t, char, uchar_t, short, u_short, double> propertyType;
 
     struct SizeVisitor : public boost::static_visitor<> {
-      SizeVisitor() : size(0) {}
+      SizeVisitor()
+              : size(0) {
+      }
 
       template<typename T>
       void operator()(T &x) const {
         this->size = sizeof(x);
       }
 
-      std::size_t get_size() const { return size; }
+      std::size_t get_size() const {
+        return size;
+      }
 
     private:
       mutable std::size_t size;
     };
 
     struct ReadVisitor : public boost::static_visitor<> {
-      ReadVisitor(const std::string &str) : str(str) {}
+      ReadVisitor(const std::string &str)
+              : str(str) {
+      }
 
       template<typename T>
       void operator()(T &x) const {
         this->value = TOOLS(toNumber)<T>(this->str);
       }
 
-      propertyType get_value() const { return value; }
+      propertyType get_value() const {
+        return value;
+      }
 
     private:
       mutable propertyType value;
@@ -65,14 +65,18 @@ PGL_BEGIN_NAMESPACE
     };
 
     struct ReinterpretVisitor : public boost::static_visitor<> {
-      ReinterpretVisitor(const char *value) : value(value) {}
+      ReinterpretVisitor(const char *value)
+              : value(value) {
+      }
 
       template<typename T>
       void operator()(T &) const {
         res = *(T *) (this->value);
       }
 
-      propertyType get_res() const { return res; }
+      propertyType get_res() const {
+        return res;
+      }
 
     private:
       mutable propertyType res;
@@ -81,14 +85,17 @@ PGL_BEGIN_NAMESPACE
 
     template<typename U>
     struct GetVisitor : public boost::static_visitor<> {
-      GetVisitor() {}
+      GetVisitor() {
+      }
 
       template<typename T>
       void operator()(T &x) const {
         value = (U) x;
       }
 
-      U get_value() const { return value; }
+      U get_value() const {
+        return value;
+      }
 
     private:
       mutable U value;
@@ -101,17 +108,20 @@ PGL_BEGIN_NAMESPACE
       const std::string sizetype;
 
       PropertyElement(const std::string &name, const std::string &type)
-              : isList(false), name(name), type(type)
-      {}
+              : isList(false), name(name), type(type) {
+      }
 
       PropertyElement(const std::string &name, const std::string &sizetype, const std::string &type)
-              : isList(true), name(name), type(type), sizetype(sizetype)
-      {}
+              : isList(true), name(name), type(type), sizetype(sizetype) {
+      }
 
       PropertyElement(const PropertyElement &propertyElement)
-              : isList(propertyElement.isList), name(propertyElement.name),
-                type(propertyElement.type), sizetype(propertyElement.sizetype)
-      {}
+              : isList(propertyElement.isList), name(propertyElement.name), type(propertyElement.type), sizetype(propertyElement.sizetype) {
+      }
+
+      PropertyElement &operator=(const PropertyElement &propertyElement) {
+        return *this;
+      }
     };
 
     struct SpecElement {
@@ -120,12 +130,17 @@ PGL_BEGIN_NAMESPACE
       std::vector<PropertyElement> properties;
 
       SpecElement(const std::string &name, const std::size_t &number)
-              : name(name), number(number)
-      {}
+              : name(name), number(number) {
+      }
 
       SpecElement(const SpecElement &specElement)
-              : name(specElement.name), number(specElement.number), properties(specElement.properties)
-      {}
+              : name(specElement.name), number(specElement.number), properties(specElement.properties) {
+      }
+
+      SpecElement &operator=(const SpecElement &specElement) {
+        this->properties = specElement.properties;
+        return *this;
+      }
     };
 
   public:
