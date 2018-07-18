@@ -140,7 +140,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
 
   for (std::vector<SpecElement>::iterator s = spec.begin(); s != spec.end(); ++s) {
     for (size_t i = 0; i < s->number; i++) {
-      std::map<std::string, std::vector<propertyType>> ielement;
+      std::map<std::string, std::vector<propertyType> > ielement;
       if (fcoding == "ascii") {
         std::vector<std::string> linevalues = TOOLS(split)(this->nextline(file));
         size_t itv = 0;

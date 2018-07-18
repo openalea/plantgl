@@ -88,7 +88,7 @@ PGL_BEGIN_NAMESPACE
         value = (U) x;
       }
 
-      U get_value() const {return value;}
+      U get_value() const { return value; }
 
     private:
       mutable U value;
@@ -101,10 +101,17 @@ PGL_BEGIN_NAMESPACE
       const std::string sizetype;
 
       PropertyElement(const std::string &name, const std::string &type)
-              : isList(false), name(name), type(type) {}
+              : isList(false), name(name), type(type)
+      {}
 
       PropertyElement(const std::string &name, const std::string &sizetype, const std::string &type)
-              : isList(true), name(name), type(type), sizetype(sizetype) {}
+              : isList(true), name(name), type(type), sizetype(sizetype)
+      {}
+
+      PropertyElement(const PropertyElement &propertyElement)
+              : isList(propertyElement.isList), name(propertyElement.name),
+                type(propertyElement.type), sizetype(propertyElement.sizetype)
+      {}
     };
 
     struct SpecElement {
@@ -113,7 +120,12 @@ PGL_BEGIN_NAMESPACE
       std::vector<PropertyElement> properties;
 
       SpecElement(const std::string &name, const std::size_t &number)
-              : name(name), number(number) {}
+              : name(name), number(number)
+      {}
+
+      SpecElement(const SpecElement &specElement)
+              : name(specElement.name), number(specElement.number), properties(specElement.properties)
+      {}
     };
 
   public:
@@ -129,6 +141,7 @@ PGL_BEGIN_NAMESPACE
     std::string nextline(std::ifstream &file);
 
     propertyType readnextval(std::ifstream &file, const propertyType &type, const bool &reversebytes);
+
     bool colorPropsSortFunction(const std::string &c1, const std::string &c2);
 
     std::vector<std::string> fcodingTypes;
