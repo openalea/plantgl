@@ -14,12 +14,14 @@
 #include <plantgl/scenegraph/container/colorarray.h>
 #include <plantgl/scenegraph/geometry/pointset.h>
 #include <plantgl/scenegraph/geometry/faceset.h>
+#include <plantgl/tool/util_progress.h>
 #include "plyprinter.h"
 #include <fstream>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
 PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
 
 PlyCodec::PlyCodec() : SceneCodec("PLY", ReadWrite) {
   this->fcodingTypes.push_back("binary_little_endian");
@@ -88,25 +90,27 @@ ScenePtr PlyCodec::read(const std::string &fname) {
     else if (byteorder == "big" && __BYTE_ORDER == __LITTLE_ENDIAN)
       reversebytes = true;
   }
-  std::vector<SpecElement> spec;
+  std::map<std::string, SpecElement> spec;
   std::string nline = this->nextline(file);
+  std::string lastSpecName;
   while (nline != "end_header") {
     if (nline.find("element") == 0) {
       std::string elementkwd, elementname, elementnb;
-      std::vector<std::string> elements = TOOLS(split)(nline);
+      std::vector<std::string> elements = split(nline);
       elementkwd = elements[0];
       elementname = elements[1];
       elementnb = elements[2];
-      spec.push_back(SpecElement(elementname, TOOLS(toNumber)<std::size_t>(elementnb)));
+      spec[elementname] = SpecElement(toNumber<std::size_t>(elementnb));
+      lastSpecName = elementname;
     } else if (nline.find("property") == 0) {
-      std::vector<std::string> properties = TOOLS(split)(nline);
+      std::vector<std::string> properties = split(nline);
       if (properties.size() == 3) {
         std::string propkwd, proptype, propname;
         propkwd = properties[0];
         proptype = properties[1];
         propname = properties[2];
         assert(this->propertiesTypes.find(proptype) != this->propertiesTypes.end());
-        spec.rbegin()->properties.push_back(PropertyElement(propname, proptype));
+        spec[lastSpecName].properties.push_back(PropertyElement(propname, proptype));
       } else if (properties.size() == 5) {
         std::string propkwd, proplist, propsizetype, proptype, propname;
         propkwd = properties[0];
@@ -116,35 +120,44 @@ ScenePtr PlyCodec::read(const std::string &fname) {
         propname = properties[4];
         assert(this->propertiesTypes.find(propsizetype) != this->propertiesTypes.end());
         assert(this->propertiesTypes.find(proptype) != this->propertiesTypes.end());
-        spec.rbegin()->properties.push_back(PropertyElement(propname, propsizetype, proptype));
+        spec[lastSpecName].properties.push_back(PropertyElement(propname, propsizetype, proptype));
       }
     }
     nline = this->nextline(file);
   }
 
   std::vector<std::string> colorprops;
-  if (spec[0].name == "vertex") {
-    for (size_t i = 2; i < spec[0].properties.size(); i++) {
-      if (std::find(this->knowncolortypes.begin(), this->knowncolortypes.end(), spec[0].properties[i].name) != this->knowncolortypes.end())
-        colorprops.push_back(spec[0].properties[i].name);
+  if (spec.find("vertex") != spec.end()) {
+    SpecElement &specVertex = spec["vertex"];
+    for (size_t i = 2; i < specVertex.properties.size(); i++) {
+      if (std::find(this->knowncolortypes.begin(), this->knowncolortypes.end(), specVertex.properties[i].name) != this->knowncolortypes.end())
+        colorprops.push_back(specVertex.properties[i].name);
     }
   }
-  if (colorprops.size() > 0) {
+  if (!colorprops.empty()) {
     std::sort(colorprops.begin(), colorprops.end(), boost::bind(&PlyCodec::colorPropsSortFunction, this, _1, _2));
     assert(colorprops.size() == 3 || colorprops.size() == 4);
   }
 
-  Point3ArrayPtr points(new Point3Array());
-  Color4ArrayPtr colors(new Color4Array());
-  IndexArrayPtr faces(new IndexArray());
+  std::size_t vertexSize = (spec.find("vertex") != spec.end()) ? spec["vertex"].number : 0;
+  std::size_t colorSize = (!colorprops.empty()) ? vertexSize : 0;
+  std::size_t faceSize = (spec.find("face") != spec.end()) ? spec["face"].number : 0;
+  Point3ArrayPtr points(new Point3Array(vertexSize));
+  Color4ArrayPtr colors(new Color4Array(colorSize));
+  IndexArrayPtr faces(new IndexArray(faceSize));
 
-  for (std::vector<SpecElement>::iterator s = spec.begin(); s != spec.end(); ++s) {
-    for (size_t i = 0; i < s->number; i++) {
+  std::cout << "vertexSize = " << spec["vertex"].number << std::endl;
+  std::cout << "colorSize = " << colorSize << std::endl;
+  std::cout << "faceSize = " << faceSize << std::endl;
+
+  for (std::map<std::string, SpecElement>::iterator s = spec.begin(); s != spec.end(); ++s) {
+    ProgressStatus st(s->second.number, "PLY: Reading " + s->first + " part : %.2f%%");
+    for (size_t i = 0; i < s->second.number; i++, ++st) {
       std::map<std::string, std::vector<propertyType> > ielement;
       if (fcoding == "ascii") {
-        std::vector<std::string> linevalues = TOOLS(split)(this->nextline(file));
+        std::vector<std::string> linevalues = split(this->nextline(file));
         size_t itv = 0;
-        for (std::vector<PropertyElement>::iterator p = s->properties.begin(); p != s->properties.end(); ++p) {
+        for (std::vector<PropertyElement>::iterator p = s->second.properties.begin(); p != s->second.properties.end(); ++p) {
           std::vector<propertyType> values;
           propertyType type = this->propertiesTypes[p->type];
           if (p->isList) {
@@ -163,7 +176,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
           ielement[p->name] = values;
         }
       } else {
-        for (std::vector<PropertyElement>::iterator p = s->properties.begin(); p != s->properties.end(); ++p) {
+        for (std::vector<PropertyElement>::iterator p = s->second.properties.begin(); p != s->second.properties.end(); ++p) {
           std::vector<propertyType> values;
           propertyType type = this->propertiesTypes[p->type];
           if (p->isList) {
@@ -180,7 +193,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
           ielement[p->name] = values;
         }
       }
-      if (s->name == "vertex") {
+      if (s->first == "vertex") {
         GetVisitor<float> visitor;
         ielement["x"][0].apply_visitor(visitor);
         float x = visitor.get_value();
@@ -188,8 +201,8 @@ ScenePtr PlyCodec::read(const std::string &fname) {
         float y = visitor.get_value();
         ielement["z"][0].apply_visitor(visitor);
         float z = visitor.get_value();
-        points->push_back(TOOLS(Vector3)(x, y, z));
-        if (colorprops.size() > 0) {
+        points->setAt(i, TOOLS(Vector3)(x, y, z));
+        if (!colorprops.empty()) {
           uchar_t rgba[4];
           int index = 0;
 
@@ -202,9 +215,9 @@ ScenePtr PlyCodec::read(const std::string &fname) {
             rgba[3] = 255 - rgba[3];
           else
             rgba[3] = 0;
-          colors->push_back(Color4(rgba));
+          colors->setAt(i, Color4(rgba));
         }
-      } else if (s->name == "face") {
+      } else if (s->first == "face") {
         std::vector<propertyType> indices = ielement["vertex_indices"];
         GetVisitor<uint_t> visitor;
         Index index;
@@ -212,7 +225,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
           v->apply_visitor(visitor);
           index.push_back(visitor.get_value());
         }
-        faces->push_back(index);
+        faces->setAt(i, index);
       }
     }
   }
@@ -220,7 +233,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
 
   ScenePtr scene(new Scene());
   ShapePtr shape;
-  if (faces->size() == 0)
+  if (faces->empty())
     shape = new Shape(GeometryPtr(new PointSet(points, colors)));
   else
     shape = new Shape(GeometryPtr(new FaceSet(points, faces)));

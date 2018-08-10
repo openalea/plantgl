@@ -233,6 +233,8 @@ void export_PointManip() {
   def("contract_point3", &contract_point<Point3Array>, args("points", "radius"));
   def("contract_point4", &contract_point<Point4Array>, args("points", "radius"));
 
+
+  def("generate_point_color", &generate_point_color, args("point"));
   def("select_soil", &select_soil, args("point", "kclosest", "topHeightPourcent", "bottomThreshold"));
   def("get_shortest_path", &get_shortest_path, args("points", "kclosest", "point_begin", "point_end"));
   def("add_baricenter_points_of_path", &py_add_baricenter_points_of_path, args("point", "kclosest", "path", "radius"));

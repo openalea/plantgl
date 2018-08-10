@@ -125,20 +125,21 @@ PGL_BEGIN_NAMESPACE
     };
 
     struct SpecElement {
-      const std::string name;
-      const std::size_t number;
+      std::size_t number;
       std::vector<PropertyElement> properties;
 
-      SpecElement(const std::string &name, const std::size_t &number)
-              : name(name), number(number) {
+      SpecElement(const std::size_t &number = 0)
+              : number(number) {
       }
 
       SpecElement(const SpecElement &specElement)
-              : name(specElement.name), number(specElement.number), properties(specElement.properties) {
+              : number(specElement.number), properties(specElement.properties) {
       }
 
       SpecElement &operator=(const SpecElement &specElement) {
         this->properties = specElement.properties;
+        this->number = specElement.number;
+
         return *this;
       }
     };

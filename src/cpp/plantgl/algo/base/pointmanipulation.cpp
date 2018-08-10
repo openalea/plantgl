@@ -32,9 +32,13 @@
 
 #include "pointmanipulation.h"
 #include "dijkstra.h"
+#include "discretizer.h"
+#include "../../pgl_container.h"
+#include "bboxcomputer.h"
 #include <plantgl/scenegraph/container/indexarray_iterator.h>
 #include <plantgl/scenegraph/transformation/transformed.h>
 #include <plantgl/tool/util_progress.h>
+#include <plantgl/scenegraph/geometry/boundingbox.h>
 
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
@@ -62,6 +66,26 @@ struct PowerPointDistance {
 
   PowerPointDistance(const Point3ArrayPtr _points, real_t _power) : points(_points), power(_power) {}
 };
+
+Color4ArrayPtr PGL::generate_point_color(PointSet &point) {
+  const Point3ArrayPtr &points = point.getPointList();
+  Color4ArrayPtr colorList(new Color4Array(points->size()));
+  Discretizer d;
+  BBoxComputer bbc(d);
+  point.apply(bbc);
+
+  BoundingBoxPtr bbx = bbc.getBoundingBox();
+  Color4Array::iterator cit = colorList->begin();
+  ProgressStatus st(points->size(), "Generate point color : %.2f%%");
+  for (Point3Array::const_iterator pit = points->begin(); pit != points->end(); ++pit, ++cit, ++st) {
+    uchar_t r = 100 + int(100 * ((pit->x() - bbx->getXMin()) / bbx->getXRange()));
+    uchar_t g = 100 + int(100 * ((pit->y() - bbx->getYMin()) / bbx->getYRange()));
+    uchar_t b = 100 + int(100 * ((pit->z() - bbx->getZMin()) / bbx->getZRange()));
+
+    *cit = Color4(r, g, b, 0);
+  }
+  return colorList;
+}
 
 Index PGL::select_soil(const Point3ArrayPtr &point,
                        IndexArrayPtr &kclosest,

@@ -26,7 +26,7 @@ TOOLS_BEGIN_NAMESPACE
 
   class ProgressStatus {
   public:
-    ProgressStatus(uint32_t _nbsteps, const char *_message = " %.2f processed.", float _percenttoprint = 1);
+    ProgressStatus(uint32_t _nbsteps, const std::string &_message = " %.2f processed.", float _percenttoprint = 1);
 
     inline ProgressStatus &operator++() {
       increment();
@@ -40,7 +40,7 @@ TOOLS_BEGIN_NAMESPACE
     uint32_t nbsteps;
     real_t cpercent;
     real_t percenttoprint;
-    const char *message;
+    std::string message;
   };
 
 TOOLS_END_NAMESPACE

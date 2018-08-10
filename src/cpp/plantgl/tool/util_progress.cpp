@@ -24,7 +24,7 @@ void TOOLS::unregister_progressstatus_func() {
   PSFUNC = progressprint;
 }
 
-ProgressStatus::ProgressStatus(uint32_t _nbsteps, const char *_message, float _percenttoprint)
+ProgressStatus::ProgressStatus(uint32_t _nbsteps, const std::string &_message, float _percenttoprint)
         : nbsteps(_nbsteps),
           percenttoprint(_percenttoprint),
           message(_message),

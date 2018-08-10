@@ -78,6 +78,8 @@ PGL_BEGIN_NAMESPACE
     return result;
   }
 
+  ALGO_API Color4ArrayPtr generate_point_color(PointSet &point);
+
   ALGO_API Index
   select_soil(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &topHeightPourcent, const real_t &bottomThreshold);
 
