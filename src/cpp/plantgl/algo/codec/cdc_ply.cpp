@@ -146,10 +146,6 @@ ScenePtr PlyCodec::read(const std::string &fname) {
   Color4ArrayPtr colors(new Color4Array(colorSize));
   IndexArrayPtr faces(new IndexArray(faceSize));
 
-  std::cout << "vertexSize = " << spec["vertex"].number << std::endl;
-  std::cout << "colorSize = " << colorSize << std::endl;
-  std::cout << "faceSize = " << faceSize << std::endl;
-
   for (std::map<std::string, SpecElement>::iterator s = spec.begin(); s != spec.end(); ++s) {
     ProgressStatus st(s->second.number, "PLY: Reading " + s->first + " part : %.2f%%");
     for (size_t i = 0; i < s->second.number; i++, ++st) {
