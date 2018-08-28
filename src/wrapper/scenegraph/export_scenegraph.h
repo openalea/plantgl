@@ -40,6 +40,8 @@ void export_Color3();
 void export_Color4();
 void export_pointarrays();
 void export_geometryarrays();
+void export_Image();
+
 
 void export_Appearance();
 void export_Material();

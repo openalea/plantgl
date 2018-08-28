@@ -79,6 +79,8 @@ void module_algo()
     export_GLBBoxRenderer();
     export_GLCtrlPointRenderer();
 
+    export_ZBufferRenderer();
+
     // Turtle export
     export_TurtleParam();
     export_Turtle();

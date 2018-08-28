@@ -1657,7 +1657,8 @@ void ViewGLFrame::saveImage(QString _filename,const char * _format, bool withAlp
 
 void ViewGLFrame::copyImageToClipboard(){
 	if(QApplication::clipboard()){
-		QApplication::clipboard()->setImage(grabFrameBuffer(false));
+        QImage img = grabFrameBuffer(false);
+		QApplication::clipboard()->setImage(img);
 		status(tr("Copy screenshot to clipboard"),10000);
 	}
 	else QMessageBox::warning(this,tr("System Error"),tr("Cannot access global clipboard"),"Ok");
@@ -1665,7 +1666,8 @@ void ViewGLFrame::copyImageToClipboard(){
 
 void ViewGLFrame::copyImageToClipboardWithAlpha(){
 	if(QApplication::clipboard()){
-		QApplication::clipboard()->setImage(grabFrameBuffer(true));
+        QImage img = grabFrameBuffer(true);
+		QApplication::clipboard()->setImage(img);
 		status(tr("Copy screenshot to clipboard with alpha channel"),10000);
 	}
 	else QMessageBox::warning(this,tr("System Error"),tr("Cannot access global clipboard"),"Ok");

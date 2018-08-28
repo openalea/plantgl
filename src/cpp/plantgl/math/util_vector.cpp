@@ -191,12 +191,21 @@ Vector2::operator-( ) const {
   return Vector2(-__X, -__Y);
 }
 
+
 Vector2 Vector2::operator+( const Vector2& v) const {
   return Vector2(*this) += v;
 }
 
 Vector2 Vector2::operator-( const Vector2& v ) const {
   return Vector2(*this) -= v;
+}
+
+Vector2 Vector2::operator%( const Vector2& v ) const {
+  return Vector2(__X*v.__X, __Y*v.__Y);
+}
+
+Vector2 Vector2::cwiseProduct( const Vector2& v ) const {
+  return Vector2(__X*v.__X, __Y*v.__Y);
 }
 
 bool 
@@ -582,6 +591,14 @@ Vector3 Vector3::operator-( const Vector3& v ) const {
   return Vector3(*this) -= v;
 }
 
+Vector3 Vector3::operator%( const Vector3& v ) const {
+  return Vector3(__X*v.__X, __Y*v.__Y, __Z*v.__Z);
+}
+
+Vector3 Vector3::cwiseProduct( const Vector3& v ) const {
+  return Vector3(__X*v.__X, __Y*v.__Y, __Z*v.__Z);
+}
+
 bool 
 Vector3::isNormalized( ) const {
   return fabs(normSquared(*this) - 1) < GEOM_EPSILON;
@@ -953,6 +970,15 @@ Vector4 Vector4::operator+( const Vector4& v) const {
 Vector4 Vector4::operator-( const Vector4& v ) const {
   return Vector4(*this) -= v;
 }
+
+Vector4 Vector4::operator%( const Vector4& v ) const {
+  return Vector4(__X*v.__X, __Y*v.__Y, __Z*v.__Z, __W*v.__W);
+}
+
+Vector4 Vector4::cwiseProduct( const Vector4& v ) const {
+  return Vector4(__X*v.__X, __Y*v.__Y, __Z*v.__Z, __W*v.__W);
+}
+
 
 bool Vector4::isNormalized( ) const {
   return fabs(normSquared(*this) - 1) < GEOM_EPSILON;

@@ -35,6 +35,7 @@
 #include "color.h"
 #include <iostream>
 #include <algorithm>
+#include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
@@ -138,6 +139,10 @@ real_t Color3::getAverage() const {
 
 real_t Color3::getAverageClamped() const {
     return (real_t)(__RED + __GREEN +__BLUE)/(real_t)765;
+}
+
+Vector3 Color3::toClampedValues() const {
+    return Vector3(getRedClamped(), getGreenClamped(), getBlueClamped());
 }
 
 
@@ -275,13 +280,13 @@ Color3 Color3::fromHSV(const TOOLS(Tuple3)<real_t>& hsv) {
     int i = int(nh);
     float ff = nh - i;
 
-    uchar_t p = v * (1 - s);
-    uchar_t q = v * (1 - (s * ff));
-    uchar_t t = v * (1 - (s * (1 - ff)));
+    real_t p = v * (1 - s);
+    real_t q = v * (1 - (s * ff));
+    real_t t = v * (1 - (s * (1 - ff)));
 
-    uchar_t r   = 0;
-    uchar_t g = 0;
-    uchar_t b  = 0;
+    real_t r   = 0;
+    real_t g = 0;
+    real_t b  = 0;
 
     switch (i){
         case 0:
@@ -334,6 +339,67 @@ Color3 Color3::interpolate(const Color3& c1, const Color3& c2, real_t t)
     return Color3::fromHSV(hsvi);
 
 }
+
+
+Color3& Color3::operator*=(const Color3& c)
+{
+    real_t r = getRedClamped() * c.getRedClamped();
+    real_t g = getGreenClamped() * c.getGreenClamped();
+    real_t b = getBlueClamped() * c.getBlueClamped();
+    __RED = uchar_t(r * 255);
+    __GREEN = uchar_t(g * 255);
+    __BLUE = uchar_t(b * 255);
+    return *this;
+}
+
+Color3& Color3::operator*=(const real_t& v){
+    real_t r = getRedClamped() * v;
+    real_t g = getGreenClamped() * v;
+    real_t b = getBlueClamped() * v;
+    r *= 255; g *= 255; b *= 255;
+    __RED = uchar_t(pglMax(r,255.));
+    __GREEN = uchar_t(pglMax(g,255.));
+    __BLUE = uchar_t(pglMax(b,255.));
+    return *this;
+}
+
+Color3 Color3::operator*(const Color3& c) const 
+{
+    Color3 nc(*this); 
+    nc *= c;
+    return nc;
+
+}
+
+Color3 Color3::operator*(const real_t& c) const 
+{
+    Color3 nc(*this); 
+    nc *= c;
+    return nc;
+
+}
+
+Color3& Color3::operator+=(const Color3& c)
+{
+    uint16_t red = uint16_t(__RED) + c.__RED;
+    uint16_t green = uint16_t(__GREEN) + c.__GREEN;
+    uint16_t blue = uint16_t(__BLUE) + c.__BLUE;
+    __RED = (uchar_t)pglMin<uint16_t>(red, 255);
+    __GREEN = (uchar_t)pglMin<uint16_t>(green, 255);
+    __BLUE = (uchar_t)pglMin<uint16_t>(blue, 255);
+    return *this;
+
+}
+
+Color3 Color3::operator+(const Color3& c) const 
+{
+    Color3 nc(*this); 
+    nc += c;
+    return nc;
+
+}
+
+
 
 
 std::ostream& PGL(operator<<( std::ostream& stream, const Color3& c )) {
@@ -432,6 +498,10 @@ real_t Color4::getAverageClamped() const {
     return (real_t)(__RED + __GREEN +__BLUE+__ALPHA)/(real_t)1020;
 }
 
+Vector4 Color4::toClampedValues() const {
+    return Vector4(getRedClamped(), getGreenClamped(), getBlueClamped(), getAlphaClamped());
+}
+
 uint_t Color4::toUint() const {
 	return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
 }
@@ -489,3 +559,70 @@ std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << ","
 		<< (uint16_t)c.getBlue() << "," << (uint16_t)c.getAlpha() << ">";
 }
+
+
+
+Color4& Color4::operator*=(const Color4& c)
+{
+    real_t r = getRedClamped() * c.getRedClamped();
+    real_t g = getGreenClamped() * c.getGreenClamped();
+    real_t b = getBlueClamped() * c.getBlueClamped();
+    real_t a = getAlphaClamped() * c.getAlphaClamped();
+    __RED = uchar_t(r * 255);
+    __GREEN = uchar_t(g * 255);
+    __BLUE = uchar_t(b * 255);
+    __ALPHA = uchar_t(a * 255);
+    return *this;
+}
+
+Color4& Color4::operator*=(const real_t& v){
+    real_t r = getRedClamped() * v;
+    real_t g = getGreenClamped() * v;
+    real_t b = getBlueClamped() * v;
+    real_t a = getAlphaClamped() * v;
+    r *= 255; g *= 255; b *= 255; a *= 255;
+    __RED = uchar_t(pglMax(r,255.));
+    __GREEN = uchar_t(pglMax(g,255.));
+    __BLUE = uchar_t(pglMax(b,255.));
+    __ALPHA = uchar_t(pglMax(a,255.));
+    return *this;
+}
+
+Color4 Color4::operator*(const Color4& c) const 
+{
+    Color4 nc(*this); 
+    nc *= c;
+    return nc;
+
+}
+
+Color4 Color4::operator*(const real_t& c) const 
+{
+    Color4 nc(*this); 
+    nc *= c;
+    return nc;
+
+}
+
+Color4& Color4::operator+=(const Color4& c)
+{
+    uint16_t red = uint16_t(__RED) + c.__RED;
+    uint16_t green = uint16_t(__GREEN) + c.__GREEN;
+    uint16_t blue = uint16_t(__BLUE) + c.__BLUE;
+    uint16_t alpha = uint16_t(__ALPHA) + c.__ALPHA;
+    __RED = (uchar_t)pglMin<uint16_t>(red, 255);
+    __GREEN = (uchar_t)pglMin<uint16_t>(green, 255);
+    __BLUE = (uchar_t)pglMin<uint16_t>(blue, 255);
+    __ALPHA = (uchar_t)pglMin<uint16_t>(alpha, 255);
+    return *this;
+
+}
+
+Color4 Color4::operator+(const Color4& c) const 
+{
+    Color4 nc(*this); 
+    nc += c;
+    return nc;
+
+}
+

@@ -34,6 +34,7 @@
 #include <plantgl/algo/base/surfcomputer.h>
 #include <plantgl/algo/base/discretizer.h>
 #include <plantgl/scenegraph/scene/scene.h>
+#include <plantgl/scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
 
@@ -58,6 +59,15 @@ real_t surf_sh(Shape * obj){
 	return sf.getSurface();
 }
 
+RealArrayPtr surfaces(Index3Array * triangles, Point3Array * points){
+    RealArrayPtr result(new RealArray(triangles->size(),0));
+    RealArray::iterator itres = result->begin();
+    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itres){
+        *itres = surface(points->getAt(it->getAt(0)),points->getAt(it->getAt(1)),points->getAt(it->getAt(2)));
+    }
+    return result;
+}
+
 /* ----------------------------------------------------------------------- */
 
 void export_SurfComputer()
@@ -75,4 +85,5 @@ void export_SurfComputer()
   def("surface",&surf_sh,"Compute surface of a shape");
   def("surface",(real_t(*)(const TOOLS(Vector2)&,const TOOLS(Vector2)&,const TOOLS(Vector2)&))&surface,"Compute surface of a 2D triangle");
   def("surface",(real_t(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&,const TOOLS(Vector3)&))&surface,"Compute surface of a triangle");
+  def("surfaces",&surfaces,"Compute the surfaces of a set of triangles");
 }

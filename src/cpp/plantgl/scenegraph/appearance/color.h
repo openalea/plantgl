@@ -39,6 +39,7 @@
 #define __matl_color_h__
 
 #include <plantgl/tool/util_tuple.h>
+#include <plantgl/math/util_vector.h>
 #include <iostream>
 #include "../sg_config.h"
 
@@ -153,12 +154,23 @@ public:
   TOOLS(Tuple3)<uchar_t> toHSV8() const;
   TOOLS(Tuple3)<real_t> toHSV() const;
 
+  TOOLS(Vector3) toClampedValues() const;
+
   static Color3 fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv);
   static Color3 fromHSV(const TOOLS(Tuple3)<real_t>& hsv);
 
   static Color3 interpolate(const Color3& c1, const Color3& c2, real_t t = 0.5);
 
- 
+
+  Color3& operator*=(const Color3&);
+  Color3& operator*=(const real_t&);
+
+  Color3 operator*(const Color3&) const ;
+  Color3 operator*(const real_t&) const ;
+
+  Color3& operator+=(const Color3&);
+  Color3 operator+(const Color3&) const ;
+
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color3& c );
 
@@ -283,11 +295,22 @@ public:
   TOOLS(Tuple4)<uchar_t> toHSVA8() const;
   TOOLS(Tuple4)<real_t> toHSVA() const;
 
+  TOOLS(Vector4) toClampedValues() const;
+
   static Color4 fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsv);
   static Color4 fromHSVA(const TOOLS(Tuple4)<real_t>& hsv);
 
   static Color4 interpolate(const Color4& c1, const Color4& c2, real_t t = 0.5);
 
+
+  Color4& operator*=(const Color4&);
+  Color4& operator*=(const real_t&);
+
+  Color4 operator*(const Color4&) const ;
+  Color4 operator*(const real_t&) const ;
+
+  Color4& operator+=(const Color4&);
+  Color4 operator+(const Color4&) const ;
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color4& c ) ;
 

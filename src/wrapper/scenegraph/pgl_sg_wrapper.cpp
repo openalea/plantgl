@@ -38,8 +38,12 @@
 #include <plantgl/python/pyinterpreter.h>
 #include <plantgl/python/export_list.h>
 #include <iostream>
+#include <boost/python/numpy.hpp>
+
 
 using namespace boost::python;
+namespace np = boost::python::numpy;
+
 TOOLS_USING_NAMESPACE
 
 void py_error_handler(const std::string& msg, const char * fname, int lineno){
@@ -91,6 +95,8 @@ void module_sg()
     define_stl_exceptions();
     set_python_error_style(true);
 
+    np::initialize();
+
     export_SceneObject();
 
     export_arrays();
@@ -99,6 +105,7 @@ void module_sg()
     export_Color3();
     export_Color4();
     export_pointarrays();
+    export_Image();
 
 
 	export_BoundingBox();
