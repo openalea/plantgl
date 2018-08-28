@@ -203,6 +203,8 @@ void module_sg()
 
     export_Plane();
 
+  export_Progress();
+
 	scope().attr("PGL_VERSION_STR") = getPGLVersionString();
 	scope().attr("PGL_VERSION") = PGL_VERSION;
 	scope().attr("PGL_SVNREVISION") = getPGLSvnRevision();

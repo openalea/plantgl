@@ -323,9 +323,11 @@ T * py_subset(T * pts, boost::python::object subsetindices){
 
 template <class T>
 T * py_opposite_subset(T * pts, boost::python::object subsetindices){
-    T * subobj = new T(*pts);
+    T * subobj = new T();
     size_t nbelem = pts->size();
+    std::vector<bool> subsetinfo(nbelem);
     std::vector<int> csubsetindices = extract_vec<int>(subsetindices);
+
     for (std::vector<int>::iterator it = csubsetindices.begin(); it != csubsetindices.end(); ++it)
     {
         if (*it < 0) *it += nbelem;
@@ -333,11 +335,14 @@ T * py_opposite_subset(T * pts, boost::python::object subsetindices){
             delete subobj;
             throw PythonExc_IndexError(boost::python::extract<char *>(boost::python::str(*it)+" out of range")()); 
         }
+        subsetinfo[*it] = true;
     }
-    std::sort(csubsetindices.begin(), csubsetindices.end());
 
-    for(std::vector<int>::const_reverse_iterator it = csubsetindices.rbegin(); it != csubsetindices.rend(); ++it)
-        subobj->erase(subobj->begin()+*it);
+    uint_t index = 0;
+    for (std::vector<bool>::const_iterator it = subsetinfo.begin(); it != subsetinfo.end(); ++it, index++) {
+      if (!*it)
+        subobj->push_back(pts->getAt(index));
+    }
     return subobj;
 }
 

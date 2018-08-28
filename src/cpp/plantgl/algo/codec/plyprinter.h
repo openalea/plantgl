@@ -468,6 +468,11 @@ public :
       - \e triangleSet must be non null and valid. */
   virtual bool process( TriangleSet * triangleSet );
 
+  /** Applies \e self to an object of type of PointSet.
+    \warning
+      - \e pointSet must be non null and valid. */
+  virtual bool process( PointSet * pointSet );
+
   /** Applies \e self to an object of type of ScenePtr.
     \warning
       - \e scene must be non null and valid. */

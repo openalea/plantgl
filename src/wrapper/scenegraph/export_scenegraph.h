@@ -123,4 +123,7 @@ void export_DeepCopier();
 
 void export_Function();
 void export_Plane();
+
+void export_Progress();
+
 #endif
