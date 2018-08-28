@@ -39,6 +39,7 @@
 #include "cdc_vgstar.h"
 #include "cdc_pov.h"
 #include "cdc_vrml.h"
+#include "cdc_ply.h"
 #include <plantgl/scenegraph/scene/factory.h>
 
 /* ----------------------------------------------------------------------- */
@@ -62,6 +63,7 @@ void installCodecs(){
 		SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
 		SceneFactory::get().registerCodec(SceneCodecPtr(new PovCodec()));
 		SceneFactory::get().registerCodec(SceneCodecPtr(new VrmlCodec()));
+		SceneFactory::get().registerCodec(SceneCodecPtr(new PlyCodec()));
 	}
 }
 

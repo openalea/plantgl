@@ -131,5 +131,5 @@ class PlyCodec (sg.SceneCodec):
         else:
             return sg.Scene([sg.Shape(sg.FaceSet(points, faces, colorList=colors))])
 
-codec = PlyCodec()
-sg.SceneFactory.get().registerCodec(codec)
+#codec = PlyCodec()
+#sg.SceneFactory.get().registerCodec(codec)

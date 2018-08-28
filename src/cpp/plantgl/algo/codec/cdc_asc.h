@@ -55,9 +55,6 @@ public:
 	virtual ScenePtr read(const std::string& fname);
 
 	virtual bool write(const std::string& fname,const ScenePtr& scene);
-
-private:
-	std::vector<std::string> split(const std::string &str, const std::string &delim) const;
 };
 
 PGL_END_NAMESPACE

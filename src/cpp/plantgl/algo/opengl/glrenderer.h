@@ -68,6 +68,7 @@ class Discretizer;
    of Material to the current GL context.
 */
 
+#define BUFSIZE 40000000
 
 class ALGO_API GLRenderer : public Action
 {
@@ -101,14 +102,17 @@ public:
     Normal = 0x0001,
     Selection = 0x0002,
     DynamicScene = 0x0004,
-	DynamicPrimitive = 0x0008,
+  	DynamicPrimitive = 0x0008,
     Dynamic = DynamicPrimitive | DynamicScene,
   };
 
 
   enum SelectionId {
-	ShapeId,
-	SceneObjectId
+    ShapeId = 0x0001 ,
+    SceneObjectId = 0x0002,
+    PrimitiveId = 0x0004,
+    ShapeNPrimitiveIds = ShapeId | PrimitiveId,
+    SceneObjectNPrimitive = SceneObjectId | PrimitiveId
   };
 
   /// Destructor

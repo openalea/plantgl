@@ -1,0 +1,5 @@
+add_subdirectory(tool)
+add_subdirectory(math)
+add_subdirectory(scenegraph)
+add_subdirectory(algo)
+#add_subdirectory(gui)

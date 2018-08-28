@@ -124,7 +124,6 @@ PlyPrinter::~PlyPrinter()
 #define stream __geomStream
 /* ----------------------------------------------------------------------- */
 
-
 bool
 PlyPrinter::beginProcess()
 {
@@ -773,6 +772,24 @@ PlyBinaryPrinter::PlyBinaryPrinter( bofstream& stream ,
 
 PlyBinaryPrinter::~PlyBinaryPrinter()
 {
+}
+
+bool PlyBinaryPrinter::process(PGL::PointSet *pointSet) {
+  GEOM_ASSERT( pointSet );
+  if( __pass == 1 )
+    __vertex += pointSet->getPointList()->size();
+  else if( __pass == 2 ) {
+    uint_t index = 0;
+    for(Point3Array::const_iterator _it = pointSet->getPointList()->begin(); _it != pointSet->getPointList()->end(); ++_it, index++) {
+      this->stream << (float) _it->x() << (float) _it->y() << (float) _it->z();
+      if (pointSet->hasColorList()) {
+        Color4 color = pointSet->getColorList()->getAt(index);
+        this->stream << (uchar_t) color.getRed() << (uchar_t) color.getGreen() << (uchar_t) color.getBlue();
+      } else
+        this->stream << (uchar_t) __red << (uchar_t) __green << (uchar_t) __blue;
+    }
+  }
+  return true;
 }
 
 
