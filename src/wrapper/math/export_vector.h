@@ -117,6 +117,8 @@ class vector_base_func : public boost::python::def_visitor<vector_base_func<V> >
          .def( self += self )
          .def( self /= other< real_t >() )
          .def( self - self )
+         .def( self % self )
+         .def( "cwiseProduct", & V::cwiseProduct, "component wise product." )
          .def( "normalize", & V::normalize, "Normalizes self and returns the norm before." )
          .def( "normed", & V::normed, "Return a normed version of self." )
          .def( "isNormalized", & V::isNormalized, "Returns whether self is normalized." )

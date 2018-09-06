@@ -14,8 +14,8 @@ def test_image():
 
     print b[0:10,100]
     print npimg[0:10,100]
-    plot.imshow(b)
-    plot.show()
+
+    i.plot()
 
 
 def test_image2():
@@ -38,9 +38,8 @@ def test_image3():
     npimg = npimg.astype(np.uint8)
     i = Image()
     print i.from_array(npimg)
-    a = i.to_array()
-    plot.imshow(a)
-    plot.show()
+    i.plot()
+
 
 if __name__ == '__main__':
-    test_image()
+    test_image3()

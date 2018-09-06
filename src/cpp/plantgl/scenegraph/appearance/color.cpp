@@ -357,9 +357,9 @@ Color3& Color3::operator*=(const real_t& v){
     real_t g = getGreenClamped() * v;
     real_t b = getBlueClamped() * v;
     r *= 255; g *= 255; b *= 255;
-    __RED = uchar_t(pglMax(r,255.));
-    __GREEN = uchar_t(pglMax(g,255.));
-    __BLUE = uchar_t(pglMax(b,255.));
+    __RED = uchar_t(pglMin(r,255.));
+    __GREEN = uchar_t(pglMin(g,255.));
+    __BLUE = uchar_t(pglMin(b,255.));
     return *this;
 }
 
@@ -399,6 +399,9 @@ Color3 Color3::operator+(const Color3& c) const
 
 }
 
+Color3 PGL(operator*)( const real_t& s, const Color3& v ) {
+    return v * s;
+}
 
 
 
@@ -581,10 +584,10 @@ Color4& Color4::operator*=(const real_t& v){
     real_t b = getBlueClamped() * v;
     real_t a = getAlphaClamped() * v;
     r *= 255; g *= 255; b *= 255; a *= 255;
-    __RED = uchar_t(pglMax(r,255.));
-    __GREEN = uchar_t(pglMax(g,255.));
-    __BLUE = uchar_t(pglMax(b,255.));
-    __ALPHA = uchar_t(pglMax(a,255.));
+    __RED = uchar_t(pglMin(r,255.));
+    __GREEN = uchar_t(pglMin(g,255.));
+    __BLUE = uchar_t(pglMin(b,255.));
+    __ALPHA = uchar_t(pglMin(a,255.));
     return *this;
 }
 
@@ -626,3 +629,6 @@ Color4 Color4::operator+(const Color4& c) const
 
 }
 
+Color4 PGL(operator*)( const real_t& s, const Color4& v ) {
+    return v * s ;
+}

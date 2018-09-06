@@ -80,6 +80,7 @@ void module_algo()
     export_GLCtrlPointRenderer();
 
     export_ZBufferRenderer();
+    export_ZBufferEngine();
 
     // Turtle export
     export_TurtleParam();

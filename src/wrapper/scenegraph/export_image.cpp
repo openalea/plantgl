@@ -36,6 +36,8 @@
 #include <plantgl/python/export_property.h>
 #include "export_sceneobject.h"
 #include <boost/python/numpy.hpp>
+#include <QtGui/QImage>
+#include <QtCore/QResource>
 
 PGL_USING_NAMESPACE
 using namespace boost::python;
@@ -48,13 +50,29 @@ DEF_POINTEE(Image)
 np::ndarray img_to_array(Image * img)
 {
     np::dtype dt = np::dtype::get_builtin<uint8_t>();
-    np::ndarray array = np::from_data(img->toNonInterlacedData(), 
+    size_t s = sizeof(uint8_t);
+
+    ImagePtr tr = img->transpose();
+    np::ndarray array = np::from_data(tr->toNonInterlacedData(), 
                                       dt,
-                                      bp::make_tuple(img->height(),img->width(), img->nbChannels()),
-                                      bp::make_tuple(img->width()*img->nbChannels()*sizeof(uint8_t), img->nbChannels()*sizeof(uint8_t), sizeof(uint8_t)),
+                                      bp::make_tuple(tr->width(), tr->height(), tr->nbChannels()),
+                                      bp::make_tuple(s, tr->width()*s, tr->width()*tr->height()*s),
                                       bp::object());
     return array;
+}
 
+np::ndarray img_to_interlaced_array(Image * img)
+{
+    np::dtype dt = np::dtype::get_builtin<uint8_t>();
+    size_t s = sizeof(uint8_t);
+
+    ImagePtr tr = img; 
+    np::ndarray array = np::from_data(tr->toInterlacedData(), 
+                                      dt,
+                                      bp::make_tuple(tr->width(), tr->height(), tr->nbChannels()),
+                                      bp::make_tuple(tr->height()*tr->nbChannels()*s, tr->nbChannels()*s, s),
+                                      bp::object());
+    return array;
 }
 
 
@@ -63,7 +81,9 @@ bool  from_array(Image * img,  np::ndarray array) {
     np::dtype dt = np::dtype::get_builtin<uint8_t>();
     if (array.get_dtype() != dt) { return false;}
 
-    img->fromNonInterlacedData((const uchar_t *)array.get_data(), array.shape(1), array.shape(0), array.shape(2));
+    img->fromData((const uchar_t *)array.get_data(), 
+                  array.shape(1),   array.shape(0),    array.shape(2), 
+                  array.strides(1), array.strides(0),  array.strides(2));
     return true;
 }
 
@@ -73,6 +93,7 @@ Image * img_from_array(np::ndarray array){
     return img;
 
 }
+
 
 void export_Image()
 {
@@ -95,7 +116,10 @@ void export_Image()
         .def( "read", &Image::read ) 
         .def( "save", &Image::save )
         .def( "to_array", &img_to_array )
+        .def( "to_interlaced_array", &img_to_interlaced_array )
         .def( "from_array", &from_array )
+        .def( "transpose", &Image::transpose )
+       // .def( "_register_image_content_in_qt", &register_image_content_in_qt)
 
     ;
 

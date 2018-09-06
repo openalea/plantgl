@@ -53,6 +53,13 @@ Image::Image(uint_t width, uint_t height, uint_t nbChannels, const Color4& defau
 
 }
 
+Image::Image( const uchar_t * data, uint_t width, uint_t height, uint_t nbChannels):
+    RefCountObject(),
+    __data(data,data+width*height*nbChannels), __width(width), __height(height), __nbchannels(nbChannels)
+{
+}
+
+
 Image::Image(const std::string& fname) :
     RefCountObject(),
     __data(), __width(0), __height(0), __nbchannels(0)
@@ -76,8 +83,17 @@ void Image::setPixelAt(uint_t x, uint_t y, const Color4 & pixel)
     if (__nbchannels>3){++itCol; *itCol = pixel.getAlpha();}
     
 }
+
 void Image::setPixelAt(uint_t x, uint_t y, const Color3 & pixel, uchar_t alpha ){
     setPixelAt(x,y,Color4(pixel,alpha));
+}
+
+void Image::setPixelAt(uint_t x, uint_t y, const uchar_t * data){
+    GEOM_ASSERT(x < __width && y < __height);
+    std::vector<uchar_t>::iterator itCol = __data.begin();
+    itCol += __nbchannels*(y * __width + x);
+    for (uint_t c = 0; c < __nbchannels ; ++c, ++itCol)
+    { *itCol = data[c]; }
 }
 
 Color4 Image::getPixelAt(uint_t x, uint_t y) const {
@@ -85,6 +101,13 @@ Color4 Image::getPixelAt(uint_t x, uint_t y) const {
     std::vector<uchar_t>::const_iterator itCol = __data.begin();
     itCol += __nbchannels*(y * __width + x);
     return Color4(__nbchannels>0?*itCol:0,__nbchannels>1?*(itCol+1):0,__nbchannels>2?*(itCol+2):0,__nbchannels>3?*(itCol+3):0);
+}
+
+const uchar_t * Image::getPixelDataAt(uint_t x, uint_t y) const {
+    GEOM_ASSERT(x < __width && y < __height);
+    std::vector<uchar_t>::const_iterator itCol = __data.begin();
+    itCol += __nbchannels*(y * __width + x);
+    return &(*itCol);
 }
 
 void Image::fill(const Color4 & color) 
@@ -180,4 +203,38 @@ void Image::fromInterlacedData(const uchar_t * data, uint_t width, uint_t height
     uint_t size = __width*__height*nbChannels;
     __data = std::vector<uchar_t>(data, data+size);
 }
+
+
+ImagePtr Image::transpose() const
+{
+    ImagePtr result(new Image(height(),width(),nbChannels()));
+    for (uint_t i = 0 ; i < height(); ++i){
+        for (uint_t j = 0 ; j < width(); ++j){
+            result->setPixelAt(i,j,getPixelDataAt(j,i));
+        }
+    }
+    return result;
+}
+
+void Image::fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels) 
+{
+    __width = width;
+    __height = height;
+    __nbchannels = nbChannels;
+    uint_t size = __width*__height*nbChannels;
+    __data = std::vector<uchar_t>(size);
+    std::vector<uchar_t>::iterator mdata = __data.begin();
+
+    for (uint_t y = 0 ; y < height ; ++y) {
+        for (uint_t x = 0 ; x < width ; ++x) {
+            const uchar_t * it = data + x*stridewidth  + y*strideheight;
+            for (uint_t c = 0 ; c < nbChannels ; ++c) {
+                const uchar_t * value = it + c*stridechannels;
+                *mdata = *value;
+                ++mdata;
+            }
+        }
+    }
+}
+
 

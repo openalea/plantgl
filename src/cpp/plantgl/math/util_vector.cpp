@@ -659,6 +659,22 @@ Vector3 Vector3::anOrthogonalVector() const
       return TOOLS(Vector3)(-__Y/_norm,__X/_norm,0);
 }
 
+
+Vector3 Vector3::reflect(const Vector3& v) const
+{
+    return v - 2. * dot(normed(), v) * v;
+}
+
+Vector3 Vector3::refract(const Vector3& v, real_t eta) const
+{
+    Vector3 self = normed();
+
+    real_t k = 1.0 - eta * eta * (1.0 - dot(self, v) * dot(self, v));
+    if (k < 0.0) return Vector3(0.0,0.0,0.0);
+    else return eta * v - (eta * dot(self, v) + sqrt(k)) * self;
+}
+
+
 /*  --------------------------------------------------------------------- */
 
 Vector3 operator*( const Vector3& v, const real_t& s ) {

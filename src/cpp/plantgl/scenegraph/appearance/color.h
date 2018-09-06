@@ -171,11 +171,16 @@ public:
   Color3& operator+=(const Color3&);
   Color3 operator+(const Color3&) const ;
 
+  friend SG_API Color3 operator*( const real_t& s, const Color3& v );
+
+
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color3& c );
 
 }; // Color3
 
+
+SG_API Color3 operator*( const real_t& s, const Color3& v );
 
 /* ----------------------------------------------------------------------- */
 
@@ -311,11 +316,16 @@ public:
 
   Color4& operator+=(const Color4&);
   Color4 operator+(const Color4&) const ;
+
+  friend SG_API Color4 operator*( const real_t& s, const Color4& v );
+
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color4& c ) ;
 
 }; // Color4
 
+
+SG_API Color4 operator*( const real_t& s, const Color4& v );
 
 /* ----------------------------------------------------------------------- */
 

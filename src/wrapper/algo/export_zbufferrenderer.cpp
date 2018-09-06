@@ -42,24 +42,8 @@ using namespace std;
 
 void export_ZBufferRenderer()
 {
-  class_< ZBufferRenderer, boost::noncopyable > 
-      ("ZBufferRenderer", init<uint16_t, uint16_t , const Color3&>("Construct a ZBufferRenderer.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("backGroundColor")=Color3(0,0,0))) )
-      .def("setPerspectiveCamera", &ZBufferRenderer::setPerspectiveCamera)
-      .def("setFrustrumCamera", &ZBufferRenderer::setFrustrumCamera)
-      .def("setOrthographicCamera", &ZBufferRenderer::setOrthographicCamera)
-      .def("lookAt", &ZBufferRenderer::lookAt)
-      .def("setLight", &ZBufferRenderer::setLight)
-      .def("render", (void(ZBufferRenderer::*)(TriangleSetPtr, MaterialPtr, uint32_t))&ZBufferRenderer::render)
-      .def("render", (void(ZBufferRenderer::*)(PolylinePtr, MaterialPtr, uint32_t))&ZBufferRenderer::render)
-      .def("render", (void(ZBufferRenderer::*)(PointSetPtr, MaterialPtr, uint32_t))&ZBufferRenderer::render)
-      .def("getImage", &ZBufferRenderer::getImage)
-      .def("worldToCamera", &ZBufferRenderer::worldToCamera)
-      .def("cameraToNDC", &ZBufferRenderer::cameraToNDC)
-      .def("ndcToRaster", &ZBufferRenderer::ndcToRaster)
-      .def("cameraToRaster", &ZBufferRenderer::cameraToRaster)
-      .def("worldToRaster", &ZBufferRenderer::worldToRaster)
-      .def("getBoundingBoxView", &ZBufferRenderer::getBoundingBoxView)
-      .def("getWorldToCameraMatrix", &ZBufferRenderer::getWorldToCameraMatrix)
+  class_< ZBufferRenderer, bases<Action>,  boost::noncopyable > 
+      ("ZBufferRenderer", init<ZBufferEngine&, Tesselator&, Discretizer&>("Construct a ZBufferRenderer.",(bp::arg("engine"), bp::arg("tesselator"), bp::arg("discretizer"))) )
       ;
 
 }

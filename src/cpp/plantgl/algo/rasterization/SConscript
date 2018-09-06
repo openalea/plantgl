@@ -1,0 +1,8 @@
+# -*-python-*-
+Import( "env" )
+
+# 1. Select the headers and sources
+
+includes= env.ALEAGlob('*.h')
+inc= env.ALEAIncludes( "plantgl/algo/rasterization", includes )
+

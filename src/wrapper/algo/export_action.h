@@ -76,6 +76,7 @@ void export_GLBBoxRenderer();
 void export_GLCtrlPointRenderer();
 
 void export_ZBufferRenderer();
+void export_ZBufferEngine();
 
 /* ----------------------------------------------------------------------- */
 // Turtle export

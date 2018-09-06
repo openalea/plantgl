@@ -9,9 +9,9 @@ def test_teapot():
     t = Tesselator()
     s.apply(t)
     tr = t.result
-    cam = (300,0,0)
-    z = ZBufferRenderer(800,800)
-    z.setPerspectiveCamera(60,1,1,1000)
+    cam = (1000,0,0)
+    z = ZBufferEngine(800,800)
+    z.setPerspectiveCamera(60,1,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     print z.getBoundingBoxView()
     print 'render'
@@ -23,17 +23,35 @@ def test_teapot():
     plt.show()
 
 def test_sphere():
-    s = Scene([Sphere()])
+    s = Scene([Sphere(0.5,32,32)])
     t = Tesselator()
     s.apply(t)
     tr = t.result
-    cam = (300,0,0)
-    z = ZBufferRenderer(800,800)
-    z.setPerspectiveCamera(60,1,1,1000)
+    cam = (5,0,0)
+    z = ZBufferEngine(800,600)
+    z.setPerspectiveCamera(60,4/3.,0.1,1000)
     z.lookAt(cam,(0,0,0),(0,0,1))
     print z.getBoundingBoxView()
     print 'render'
-    z.render(tr, Material((0,0,200)),2)
+    z.render(tr, Material((100,50,200)),2)
+    print 'getImage'
+    i = z.getImage()
+
+    plt.imshow(i.to_interlaced_array())
+    plt.show()
+
+def test_cylinder():
+    s = Scene([Cylinder(0.5,32)])
+    t = Tesselator()
+    s.apply(t)
+    tr = t.result
+    cam = (50,0,1)
+    z = ZBufferEngine(800,600)
+    z.setPerspectiveCamera(60,1,1,1000)
+    z.lookAt(cam,(0,0,-5),(0,0,1))
+    print z.getBoundingBoxView()
+    print 'render'
+    z.render(tr, Material((100,50,200)),2)
     print 'getImage'
     i = z.getImage()
 
@@ -42,7 +60,7 @@ def test_sphere():
 
 def test_point():
     a = (0.135299,0.135299, -0.461940)
-    z = ZBufferRenderer(800,800)
+    z = ZBufferEngine(800,800)
     z.setPerspectiveCamera(60,1,1,1000)
     cam = (300,0,0)
     z.lookAt(cam,(0,0,0),(0,0,1))
@@ -60,13 +78,15 @@ def test_point():
     print 'Raster : \t', e
 
 def test_tri():
-    z = ZBufferRenderer(800,800)
+    z = ZBufferEngine(800,800)
     z.setPerspectiveCamera(60,1,1,1000)
     cam = (300,0,0)
     z.lookAt(cam,(0,0,0),(0,0,1))
     print z.getWorldToCameraMatrix()
-    pts = [[0,0,0.],[0,0,0.5],[5,0,0]]
+    pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     tr = TriangleSet(pts, [range(3)])
+    for p in pts:
+        print z.worldToCamera(p)
     for p in pts:
         print z.worldToRaster(p)
 
@@ -75,9 +95,9 @@ def test_tri():
     print 'getImage'
     i = z.getImage()
 
-    #plt.imshow(i.to_array())
-    #plt.show()
+    plt.imshow(i.to_array())
+    plt.show()
 
 
 if __name__ == '__main__':
-    test_tri()
+    test_teapot()

@@ -519,6 +519,12 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Return an orthogonal vector. Should be not null
   Vector3 anOrthogonalVector() const;
 
+  /// Return the reflection direction of v.
+  Vector3 reflect(const Vector3& v) const;
+
+  /// Return the refraction direction of v.
+  Vector3 refract(const Vector3& v, real_t eta) const;
+
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
   friend PGLMATH_API Vector3 operator*( const real_t& s, const Vector3& v );

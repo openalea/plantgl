@@ -52,6 +52,10 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
+/// Image Pointer
+class Image;
+typedef RCPtr<Image> ImagePtr;
+
 
 class Image : public TOOLS(RefCountObject){
 protected:
@@ -63,19 +67,23 @@ protected:
 
 public:
     Image(uint_t width = 800, uint_t height = 600, uint_t nbChannels = 4, const Color4& defaultColor = Color4(0,0,0,0));
+    Image(const uchar_t * data, uint_t width = 800, uint_t height = 600, uint_t nbChannels = 4);
     Image(const std::string& fname);
 
     ~Image();
 
     void setPixelAt(uint_t x, uint_t y, const Color4 & pixel);    
     void setPixelAt(uint_t x, uint_t y, const Color3 & pixel, uchar_t alpha = 0);
+    void setPixelAt(uint_t x, uint_t y, const uchar_t * alpha );
 
     Color4 getPixelAt(uint_t x, uint_t y) const;
+    const uchar_t * getPixelDataAt(uint_t x, uint_t y) const;
 
     uint_t width() const { return __width; }
     uint_t height() const { return __height; }
     uint_t nbChannels() const { return __nbchannels; }
 
+    ImagePtr transpose() const;
 
     ///\ brief Food fills the entire image with the given color.
     ///
@@ -90,11 +98,10 @@ public:
     const uchar_t * toInterlacedData() const;
     void fromInterlacedData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels = 4) ;
 
+    void fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels) ;
+
 };
 
-
-/// TriangleSet Pointer
-typedef RCPtr<Image> ImagePtr;
 
 
 /* ----------------------------------------------------------------------- */

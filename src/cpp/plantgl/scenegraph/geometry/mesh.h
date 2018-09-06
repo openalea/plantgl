@@ -242,26 +242,26 @@ public:
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFacePointIndexAt( uint_t i, uint_t j ) const = 0;
+  virtual uint_t getFacePointIndexAt( uint_t i, uint_t j ) const = 0;
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFaceNormalIndexAt( uint_t i, uint_t j ) const = 0;
+  virtual uint_t getFaceNormalIndexAt( uint_t i, uint_t j ) const = 0;
 
    
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFaceTexCoordIndexAt( uint_t i, uint_t j ) const = 0;
+  virtual uint_t getFaceTexCoordIndexAt( uint_t i, uint_t j ) const = 0;
 
   /** Returns the index of the \e j-th point of the i-th face.
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFaceColorIndexAt( uint_t i, uint_t j ) const = 0;
+  virtual uint_t getFaceColorIndexAt( uint_t i, uint_t j ) const = 0;
 
   /** Returns the \e j-th point of the \e i-th face.
       \warning
@@ -547,7 +547,7 @@ public:
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFacePointIndexAt( uint_t i, uint_t j ) const
+  virtual uint_t getFacePointIndexAt( uint_t i, uint_t j ) const
   { GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
 	return __indexList->getAt(i).getAt(j); }
@@ -556,11 +556,12 @@ public:
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFaceNormalIndexAt( uint_t i, uint_t j ) const 
+  virtual uint_t getFaceNormalIndexAt( uint_t i, uint_t j ) const 
   {
 	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
-	if( __normalIndexList) return __normalIndexList->getAt(i).getAt(j);
+    if (!__normalPerVertex) return i;
+	if ( __normalIndexList) return __normalIndexList->getAt(i).getAt(j);
 	else  return __indexList->getAt(i).getAt(j);
    }
 
@@ -568,7 +569,7 @@ public:
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFaceTexCoordIndexAt( uint_t i, uint_t j ) const 
+  virtual uint_t getFaceTexCoordIndexAt( uint_t i, uint_t j ) const 
   {
 	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
@@ -580,11 +581,12 @@ public:
       \warning
       - \e i must be belong to the range [0,size of \b IndexList]. 
 	  - \e j must belong to the range [0,getFaceSize(i)]. */
-  virtual const uint_t & getFaceColorIndexAt( uint_t i, uint_t j ) const 
+  virtual uint_t getFaceColorIndexAt( uint_t i, uint_t j ) const 
   {
 	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
-	if( __colorIndexList) return __colorIndexList->getAt(i).getAt(j);
+    if (!__colorPerVertex) return i;
+	if ( __colorIndexList) return __colorIndexList->getAt(i).getAt(j);
 	else  return __indexList->getAt(i).getAt(j);
    }
 

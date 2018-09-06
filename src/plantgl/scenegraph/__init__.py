@@ -172,6 +172,30 @@ Polyline2D.__getinitargs__ = __pol_getinitargs__
 del __pol_getinitargs__
 
 
+def _toQImage(self):
+    """ Convert self into a QImage """
+    from openalea.plantgl.config import PGL_QT_VERSION
+    if PGL_QT_VERSION == 5:
+        from PyQt5.QtGui import QImage
+    else:
+        from PyQt4.QtGui import QImage
+    npi = self.to_interlaced_array()
+    width, height,  nbchannel = npi.shape
+    bytesPerLine = nbchannel * width
+    return QImage(npi.data, width, height,  bytesPerLine, QImage.Format_RGB888)
+
+Image.toQImage = _toQImage
+del _toQImage
+
+def _img_plot(self):
+    """ plot self using maplotlib """
+    import matplotlib.pyplot as plot
+    plot.imshow(self.to_array())
+    plot.show()
+
+Image.plot = _img_plot
+del _img_plot
+
 from editablequantisedfunction import *
 
 import __docufy
