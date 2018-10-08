@@ -129,7 +129,7 @@ bool ZBufferRenderer::endProcess() {
 /* ----------------------------------------------------------------------- */
 bool ZBufferRenderer::process(Shape * geomshape) {
   GEOM_ASSERT_OBJ(geomshape);
-  __id = geomshape->getId();
+  __engine.setId(geomshape->getId());
   if (geomshape->appearance) 
     __appearance = geomshape->appearance;
   else 
@@ -143,7 +143,7 @@ bool ZBufferRenderer::process(Shape * geomshape) {
 
 bool ZBufferRenderer::process(Inline *geomInline) {
   GEOM_ASSERT_OBJ(geomInline);
-  __id = geomInline->getId();
+  __engine.setId(geomInline->getId());
   if (geomInline->getScene()) {
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
        __engine.pushModelTransformation(); 
@@ -397,10 +397,10 @@ bool ZBufferRenderer::process(Paraboloid *paraboloid) {
 bool ZBufferRenderer::process(PointSet *pointSet) {
   GEOM_ASSERT_OBJ(pointSet);
   if (__appearance->isTexture()){
-    __engine.render(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL), __id);    
+    __engine.render(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL));    
   }
   else {
-    __engine.render(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(__appearance), __id);    
+    __engine.render(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(__appearance));    
   }
   return true;
 }
@@ -411,10 +411,10 @@ bool ZBufferRenderer::process(PointSet *pointSet) {
 bool ZBufferRenderer::process(Polyline *polyline) {
   GEOM_ASSERT_OBJ(polyline);
   if (__appearance->isTexture()){
-    __engine.render(PolylinePtr(polyline), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL), __id);    
+    __engine.render(PolylinePtr(polyline), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL));    
   }
   else {
-    __engine.render(PolylinePtr(polyline), dynamic_pointer_cast<Material>(__appearance), __id);    
+    __engine.render(PolylinePtr(polyline), dynamic_pointer_cast<Material>(__appearance));
   }
   return true;
 }
@@ -493,12 +493,7 @@ bool ZBufferRenderer::process(Translated *translated) {
 
 bool ZBufferRenderer::process(TriangleSet *triangleSet) {
   GEOM_ASSERT_OBJ(triangleSet);
-  if (__appearance->isTexture()){
-    __engine.render(TriangleSetPtr(triangleSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL), __id);    
-  }
-  else {
-    __engine.render(TriangleSetPtr(triangleSet), dynamic_pointer_cast<Material>(__appearance), __id);    
-  }
+  __engine.render(TriangleSetPtr(triangleSet), __appearance);    
   return true;
 }
 

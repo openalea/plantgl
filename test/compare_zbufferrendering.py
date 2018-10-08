@@ -1,6 +1,12 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from openalea.plantgl.config import PGL_QT_VERSION
+if PGL_QT_VERSION == 5:
+    from PyQt5.QtCore import *
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import *
+else:
+    from PyQt4.QtCore import *
+    from PyQt4.QtGui import *
+
 from PyQGLViewer import *
 import OpenGL.GL as ogl
 from openalea.plantgl.all import *
@@ -67,15 +73,22 @@ class PglViewer (QGLViewer):
         self.lighManipulator = ManipulatedFrame()
         self.setManipulatedFrame(self.lighManipulator)
         self.setAnimation(eAnimatedPrimitives)
-
+        self.bufferDuplication = False
+        self.idBasedRendering = False
+        self.depthBasedRendering = False
 
     def init(self):
+        self.showEntireScene()
         self.drawCPU()
         self.setKeyDescription(Qt.Key_E, 'Toogle Camera Type (Perspective or Orthographic)')
         self.setKeyDescription(Qt.Key_L, 'Toogle Light Manipulation')
+        self.setKeyDescription(Qt.Key_P, 'Periodize Buffer')
+        self.setKeyDescription(Qt.Key_D, 'Render depths')
+        self.setKeyDescription(Qt.Key_I, 'Render Ids')
         pos = ogl.glGetLightfv(ogl.GL_LIGHT0, ogl.GL_POSITION)
         self.lighManipulator.setPosition(pos[0], pos[1], pos[2])
         self.lighManipulator.manipulated.connect(self.setLightPosition)
+        #self.restoreStateFromFile()
 
     def setLightPosition(self):
         position = list(self.lighManipulator.position())+[0]
@@ -85,12 +98,24 @@ class PglViewer (QGLViewer):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_E:
             self.toogleCameraType()
-        if event.key() == Qt.Key_L:
+            self.updateGL()
+        elif event.key() == Qt.Key_L:
             self.toogleLightManipulation()
+            self.updateGL()
+        elif event.key() == Qt.Key_P:
+            self.bufferDuplication = not self.bufferDuplication
+            self.updateGL()
+        elif event.key() == Qt.Key_D:
+            self.depthBasedRendering = not self.depthBasedRendering
+            self.updateGL()
+        elif event.key() == Qt.Key_I:
+            self.idBasedRendering = not self.idBasedRendering
+            self.updateGL()
         else:
             QGLViewer.keyPressEvent(self, event)
 
     def setScene(self, scene = None):
+        self.bbx = BoundingBox(scene)
         self.scene = scene
         radius = 1
         self.lightPoint = Point3Array([(0,0,0)])
@@ -185,24 +210,34 @@ class PglViewer (QGLViewer):
         t = time.time()  
         camera = self.camera()
         z = ZBufferEngine(self.width(),self.height(), toC3(self.backgroundColor()))
+        znear, zfar = camera.zNear(), camera.zFar()
         if self.camera().type() == Camera.PERSPECTIVE:
-            z.setPerspectiveCamera(degrees(camera.fieldOfView()),self.width()/float(self.height()),camera.zNear(),camera.zFar())
+            z.setPerspectiveCamera(degrees(camera.fieldOfView()),self.width()/float(self.height()),znear,zfar)
         else:
             halfWidth, halfHeight = camera.getOrthoWidthHeight()
-            z.setOrthographicCamera(-halfWidth, halfWidth, -halfHeight, halfHeight, camera.zNear(), camera.zFar())
+            z.setOrthographicCamera(-halfWidth, halfWidth, -halfHeight, halfHeight, znear,zfar)
         z.lookAt(camera.position(),camera.position()+camera.viewDirection(),camera.upVector())
         self.import_light_config(z)
+        if self.idBasedRendering:
+            z.setIdRendering()
         #z.setLight((0,0,100),(255,255,255))
         z.render(self.scene)
-        # for sh in self.scene:
-        #     if isinstance(sh.geometry,PointSet) :
-        #         z.render(PointSet(sh.geometry.pointList, sh.geometry.colorList, sh.geometry.width),Material(sh.appearance),sh.id)
-        #     elif isinstance(sh.geometry,Polyline):
-        #         z.render(Polyline(sh.geometry),Material(sh.appearance),sh.id)
-        #     else:
-        #         sh.apply(self.discretizer)
-        #         z.render(self.discretizer.result,Material(sh.appearance),sh.id)
-        self.label.setPixmap(QPixmap(z.getImage().toQImage()))
+        if self.bufferDuplication:
+            z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0), False)
+            z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))
+            z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0))
+            z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))
+
+        if self.depthBasedRendering:
+            import qimage2ndarray as qn
+            minz, maxz = znear, zfar
+            db = z.getDepthBuffer()
+            db.threshold_max_values(maxz)
+            db.threshold_min_values(minz)
+            img = qn.gray2qimage(db.to_array().T, (minz,maxz))
+            self.label.setPixmap(QPixmap(img))
+        else:
+            self.label.setPixmap(QPixmap(z.getImage().toQImage()))
         dtime = time.time()  - t
         print 'done in', dtime,'sec.'
         self.timeout = dtime * 1000
@@ -223,8 +258,10 @@ def main():
     
     #scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
     #scene = Scene([Shape(Cylinder(1,10),Material((100,25,50),4))])
-    #scene = Scene([Shape(TriangleSet([(0,0,0),(0,20,0),(0,0,10)], [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True))])
-    scene = Scene('data/cow.obj')
+    scene = Scene([Shape(TriangleSet([(0,0,0),(0,20,0),(0,0,10)], [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True))])
+    #scene = Scene('data/cow.obj')
+    #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
+    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     h = 600/2
     w = 800/2
 

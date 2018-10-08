@@ -94,6 +94,15 @@ Image * img_from_array(np::ndarray array){
 
 }
 
+boost::python::object py_histogram(Image * img){
+    pgl_hash_map<uint_t,uint_t> res = img->histogram();
+    boost::python::list bres;
+    for(pgl_hash_map<uint_t,uint_t>::const_iterator _it = res.begin(); _it != res.end(); ++_it){
+      bres.append(boost::python::make_tuple(_it->first,_it->second));
+    }
+    return bres;
+}
+
 
 void export_Image()
 {
@@ -119,6 +128,7 @@ void export_Image()
         .def( "to_interlaced_array", &img_to_interlaced_array )
         .def( "from_array", &from_array )
         .def( "transpose", &Image::transpose )
+        .def( "histogram", &py_histogram )
        // .def( "_register_image_content_in_qt", &register_image_content_in_qt)
 
     ;

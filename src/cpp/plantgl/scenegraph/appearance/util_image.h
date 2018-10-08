@@ -44,6 +44,7 @@
 #include "../sg_config.h"
 #include "color.h"
 #include <plantgl/tool/rcobject.h>
+#include <plantgl/tool/util_hashmap.h>
 #include <vector>
 
 /* ----------------------------------------------------------------------- */
@@ -79,9 +80,13 @@ public:
     Color4 getPixelAt(uint_t x, uint_t y) const;
     const uchar_t * getPixelDataAt(uint_t x, uint_t y) const;
 
+    Color4 getPixelAtUV(real_t u, real_t v, bool repeatu = true, bool repeatv = true) const;
+
     uint_t width() const { return __width; }
     uint_t height() const { return __height; }
     uint_t nbChannels() const { return __nbchannels; }
+
+    void setNbChannels(uint_t nb = 4);
 
     ImagePtr transpose() const;
 
@@ -100,6 +105,7 @@ public:
 
     void fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels) ;
 
+    pgl_hash_map<uint_t,uint_t> histogram() const;
 };
 
 

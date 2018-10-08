@@ -45,6 +45,7 @@
 #include <plantgl/math/util_vector.h>
 #include <plantgl/math/util_matrix.h>
 #include <plantgl/tool/util_array2.h>
+#include <plantgl/tool/util_cache.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
 #include <plantgl/scenegraph/geometry/pointset.h>
@@ -52,8 +53,10 @@
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/scenegraph/appearance/material.h>
+#include <plantgl/scenegraph/appearance/texture.h>
 #include <plantgl/scenegraph/appearance/util_image.h>
 #include "../algo_config.h"
+#include "shading.h"
 #include <stack>
 
 /* ----------------------------------------------------------------------- */
@@ -76,8 +79,10 @@ public:
    virtual ~OrthographicProjection();
 
    TOOLS(Vector3) screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
+   TOOLS(Vector3) NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;
 
    virtual TOOLS(Vector3) projecttoNDC(const TOOLS(Vector3)& vertexCamera) const ;
+   virtual TOOLS(Vector3) unprojecttoCamera(const TOOLS(Vector3)& vertexCamera) const ;
 
    bool isInZRange(real_t z) const ;
    bool isInZRange(real_t zmin, real_t zmax) const;
@@ -103,32 +108,49 @@ public:
     virtual ~PerspectiveProjection();
  
     virtual TOOLS(Vector3) projecttoNDC(const TOOLS(Vector3)& vertexCamera) const ;
+    virtual TOOLS(Vector3) unprojecttoCamera(const TOOLS(Vector3)& vertexCamera) const ;
 };
 
 typedef RCPtr<OrthographicProjection> ProjectionPtr;
 
+class FrameBufferManager;
+typedef RCPtr<FrameBufferManager> FrameBufferManagerPtr;
 
 class FrameBufferManager : public TOOLS(RefCountObject) {
 public:
-    FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor) {}
+    FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color3& backGroundColor) {}
+    FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color4& backGroundColor) {}
     virtual ~FrameBufferManager() {}
+    
     virtual void setPixelAt(uint_t x, uint_t y, const Color3& color) = 0;
     virtual Color3 getPixelAt(uint_t x, uint_t y) const = 0;
+
+    virtual void setPixel4At(uint_t x, uint_t y, const Color4& color) = 0;
+    virtual Color4 getPixel4At(uint_t x, uint_t y) const = 0;
+
     virtual uint16_t width() const = 0;
     virtual uint16_t height() const = 0;
+    virtual FrameBufferManagerPtr deepcopy() const = 0;
 };
 
-typedef RCPtr<FrameBufferManager> FrameBufferManagerPtr;
 
 
 class PglFrameBufferManager : public FrameBufferManager {
 public:
-    PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor);
+    PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color3& backGroundColor);
+    PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color4& backGroundColor);
     virtual ~PglFrameBufferManager();
+
     virtual void setPixelAt(uint_t x, uint_t y, const Color3& color);
     virtual Color3 getPixelAt(uint_t x, uint_t y) const ;
+    
+    virtual void setPixel4At(uint_t x, uint_t y, const Color4& color);
+    virtual Color4 getPixel4At(uint_t x, uint_t y) const ;
+    
     virtual uint16_t width() const;
     virtual uint16_t height() const;
+    virtual FrameBufferManagerPtr deepcopy() const;
+
     ImagePtr getImage() const { return __image; }    
 
     ImagePtr __image;
@@ -144,14 +166,39 @@ Color4 phong(const TOOLS(Vector3)& v, const TOOLS(Vector3)& n,
              const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular,
              MaterialPtr material);
 
+
+
 class ALGO_API ZBufferEngine  {
 
-    public :
+public :
+    friend class Shader;
+    friend class IdBasedShader;
+
+    enum eRenderingStyle {
+        eColorBased,
+        eIdBased,
+        eDepthOnly
+    } ;
 
   /*! Default constructor. 
   */
-  ZBufferEngine(uint16_t imageWidth = 800, uint16_t imageHeight = 600, const Color3& backGroundColor = Color3(0,0,0));
+  ZBufferEngine(uint16_t imageWidth = 800, 
+                uint16_t imageHeight = 600, 
+                const Color3& backGroundColor = Color3(0,0,0),
+                eRenderingStyle style = eColorBased);
     
+    
+  ZBufferEngine(uint16_t imageWidth = 800, 
+                uint16_t imageHeight = 600, 
+                const Color4& backGroundColor = Color4::fromUint(Shape::NOID),
+                eRenderingStyle style = eIdBased);
+    
+  ZBufferEngine(uint16_t imageWidth = 800, 
+                uint16_t imageHeight = 600, 
+                uint32_t defaultid = Shape::NOID);
+
+  ZBufferEngine(uint16_t imageWidth = 800, 
+                uint16_t imageHeight = 600);    
     
   /// Destructor
   virtual ~ZBufferEngine();
@@ -167,9 +214,11 @@ class ALGO_API ZBufferEngine  {
   void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor = Color3(255,255,255));
   void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightAmbient = Color3(255,255,255), const Color3& lightDiffuse = Color3(255,255,255), const Color3& lightSpecular = Color3(255,255,255));
   
-  void render(TriangleSetPtr triangles, MaterialPtr material, uint32_t id);
-  void render(PolylinePtr polyline, MaterialPtr material, uint32_t id);
-  void render(PointSetPtr pointset, MaterialPtr material, uint32_t id);
+  void setId(uint32_t id) { __currentId = id; }
+
+  void render(TriangleSetPtr triangles, AppearancePtr appearance );
+  void render(PolylinePtr polyline, MaterialPtr material);
+  void render(PointSetPtr pointset, MaterialPtr material);
 
   void renderTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, const Color4& c0, const Color4& c1, const Color4& c2, bool ccw = true);
   void renderPoint(const TOOLS(Vector3)& v, const Color4& c0, const uint32_t width = 1);
@@ -180,12 +229,15 @@ class ALGO_API ZBufferEngine  {
   TOOLS(Vector3) cameraToNDC(const TOOLS(Vector3)& vertexCamera) const;
   TOOLS(Vector3) ndcToRaster(const TOOLS(Vector3)& vertexNDC) const;
   TOOLS(Vector3) cameraToRaster(const TOOLS(Vector3)& vertexCamera) const;
+  TOOLS(Vector3) cameraToWorld(const TOOLS(Vector3)& vertexCamera) const;
+  TOOLS(Vector3) rasterToWorld(const TOOLS(Vector3)& raster) const;
 
-    void setFrameBufferAt(uint32_t x, uint32_t y, const Color3& rasterColor);
+   void setFrameBufferAt(uint32_t x, uint32_t y, const Color3& rasterColor);
    void setFrameBufferAt(uint32_t x, uint32_t y, const Color4& rasterColor);
    Color3 getFrameBufferAt(uint32_t x, uint32_t y);
 
    ImagePtr getImage() const;
+   TOOLS(RealArray2Ptr) getDepthBuffer() const { return __depthBuffer; }
 
    BoundingBoxPtr getBoundingBoxView() const;
 
@@ -206,9 +258,28 @@ class ALGO_API ZBufferEngine  {
 
   void render(ScenePtr scene);
 
+  ImagePtr getTexture(const ImageTexturePtr imgdef);
+
+  void renderShadedTriangle(TriangleShaderPtr shader, const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw = true);
+
+  TriangleShaderPtr getShader() const { return __triangleshader; }
+  void setShader(TriangleShaderPtr shader) { __triangleshader = shader; }
+  void setIdRendering(uint32_t defaultid = Shape::NOID) { setShader(TriangleShaderPtr(new IdBasedShader(this, defaultid)));}
+
+  void duplicateBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+  void duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+
+  void periodizeBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+  void periodizeBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+
+  void setFrameBuffer(FrameBufferManagerPtr fb) { __frameBuffer = fb; }
+  FrameBufferManagerPtr getFrameBuffer() const { return __frameBuffer; }
+
 protected :
 
-  
+  void _bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
+
+  TOOLS(Matrix4) __cameraToWorld;
   TOOLS(Matrix4) __worldToCamera;
   std::stack<TOOLS(Matrix4)> __modelMatrixStack;
   TOOLS(Matrix4) __currentModelMatrix;
@@ -228,6 +299,11 @@ protected :
   FrameBufferManagerPtr __frameBuffer;
 
   real_t __alphathreshold;
+  uint32_t __currentId;
+
+  TOOLS(Cache)<ImagePtr> __cachetexture;
+
+  TriangleShaderPtr __triangleshader;
   
 };
 

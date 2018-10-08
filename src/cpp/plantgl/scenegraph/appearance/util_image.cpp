@@ -35,6 +35,7 @@
 
 
 #include "util_image.h"
+#include <plantgl/math/util_math.h>
 
 #define cimg_display 0
 #include "CImg.h"
@@ -100,8 +101,35 @@ Color4 Image::getPixelAt(uint_t x, uint_t y) const {
     GEOM_ASSERT(x < __width && y < __height);
     std::vector<uchar_t>::const_iterator itCol = __data.begin();
     itCol += __nbchannels*(y * __width + x);
-    return Color4(__nbchannels>0?*itCol:0,__nbchannels>1?*(itCol+1):0,__nbchannels>2?*(itCol+2):0,__nbchannels>3?*(itCol+3):0);
+    return Color4(__nbchannels>0?*itCol:0,
+                  __nbchannels>1?*(itCol+1):0,
+                  __nbchannels>2?*(itCol+2):0,
+                  __nbchannels>3?*(itCol+3):0);
 }
+
+Color4 Image::getPixelAtUV(real_t u, real_t v, bool repeatu, bool repeatv) const {
+    if (u < 0 || u > 1) {
+        if (repeatu) {
+            u = fmod(u, 1.0);
+            if (u < 0) u += 1.0;
+        }
+        else if (u < 0) u = 0; 
+        else u = 1;
+    }
+    if (v < 0 || v > 1) {
+        if (repeatv) {
+            v = fmod(v, 1.0);
+            if (v < 0) v += 1.0;
+        }
+        else if (v < 0) v = 0; 
+        else v = 1;
+    }
+    uint_t x = (__width - 1) * u;
+    uint_t y = (__height - 1)* (1 - v);
+
+    return getPixelAt(x,y);
+}
+
 
 const uchar_t * Image::getPixelDataAt(uint_t x, uint_t y) const {
     GEOM_ASSERT(x < __width && y < __height);
@@ -112,10 +140,30 @@ const uchar_t * Image::getPixelDataAt(uint_t x, uint_t y) const {
 
 void Image::fill(const Color4 & color) 
 {
+    printf("< %i %i %i %i\n",color[0],color[1],color[2],color[3]);
     uint8_t i = 0;
     for (std::vector<uchar_t>::iterator itCol = __data.begin(); itCol != __data.end(); ++itCol, i = (i+1)%__nbchannels){
-        *itCol = color[i];
+        // printf("- %i/%i:%i\n",i,__nbchannels,color[i]);
+        *itCol = color[i];        
     }
+
+}
+void Image::setNbChannels(uint_t nb)
+{
+    uint_t size = __width*__height*nb;
+    std::vector<uchar_t> data(size);
+    std::vector<uchar_t>::iterator itColN = data.begin();
+    uint_t i = 0;
+    uint_t nbCommonChannel = pglMin(nb, __nbchannels);
+    for (std::vector<uchar_t>::iterator itCol = __data.begin(); itCol != __data.end(); ++itCol, ++itColN, i = (i+1)%nbCommonChannel){
+        *itCol = *itColN;
+        if (i == nbCommonChannel) {
+            if (nb > __nbchannels) { for (uint_t i = 0; i < nb-__nbchannels; ++i) {++itColN; *itColN = 0; }}
+            else if (nb < __nbchannels) { for (uint_t i = 0; i < __nbchannels -nb ; ++i) {++itCol; }}
+        }
+    }
+    __data = data;
+    __nbchannels = nb;
 
 }
 
@@ -236,5 +284,26 @@ void Image::fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t 
         }
     }
 }
+
+pgl_hash_map<uint_t,uint_t> Image::histogram() const
+{
+    pgl_hash_map<uint_t,uint_t> histo;
+
+    for (uint_t y = 0 ; y < __height ; ++y) {
+        for (uint_t x = 0 ; x < __width ; ++x) {
+            uint_t pid = getPixelAt(x,y).toUint();
+            pgl_hash_map<uint_t,uint_t>::iterator itId = histo.find(pid);
+            if (itId == histo.end()){
+                histo[pid] = 1;
+            }
+            else {
+                histo[pid] = itId->second+1;
+            }
+        }
+    }
+
+    return histo;
+}
+
 
 

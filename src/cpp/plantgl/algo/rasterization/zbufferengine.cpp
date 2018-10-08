@@ -42,9 +42,14 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 
-PglFrameBufferManager::PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor) :
-     FrameBufferManager(imageWidth, imageHeight,backGroundColor), 
-     __image(new Image(imageWidth, imageHeight, 3, backGroundColor)) 
+PglFrameBufferManager::PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannels, const Color3& backGroundColor) :
+     FrameBufferManager(imageWidth, imageHeight, nbChannels, backGroundColor), 
+     __image(new Image(imageWidth, imageHeight, nbChannels, backGroundColor)) 
+{}
+
+PglFrameBufferManager::PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannels, const Color4& backGroundColor) :
+     FrameBufferManager(imageWidth, imageHeight, nbChannels, backGroundColor), 
+     __image(new Image(imageWidth, imageHeight, nbChannels, backGroundColor)) 
 {}
 
 PglFrameBufferManager::~PglFrameBufferManager() {}
@@ -59,8 +64,26 @@ Color3 PglFrameBufferManager::getPixelAt(uint_t x, uint_t y) const
     return __image->getPixelAt(x,y); 
 }
 
+void PglFrameBufferManager::setPixel4At(uint_t x, uint_t y, const Color4& color) 
+{ 
+    __image->setPixelAt(x,y,color); 
+}
+
+Color4 PglFrameBufferManager::getPixel4At(uint_t x, uint_t y) const
+{ 
+    return __image->getPixelAt(x,y); 
+}
+
 uint16_t PglFrameBufferManager::width() const { return __image->width(); }
 uint16_t PglFrameBufferManager::height() const { return __image->height(); }
+
+FrameBufferManagerPtr PglFrameBufferManager::deepcopy() const
+{ 
+    PglFrameBufferManager * copy = new PglFrameBufferManager(*this); 
+    copy->__image = ImagePtr(new Image(*__image));
+    return FrameBufferManagerPtr(copy);
+}
+
 
 OrthographicProjection::OrthographicProjection(real_t _left, real_t _right, real_t _bottom, real_t _top, real_t _near, real_t _far):
         RefCountObject(),
@@ -85,8 +108,18 @@ Vector3 OrthographicProjection::screen2NDC(const real_t& xScreen, const real_t& 
     return vertexNDC;
 }
 
+Vector3 OrthographicProjection::NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const {
+    // now convert point from NDC space to screen space 
+    Vector3 vertexScreen((xNDC  + __xconstant) / __xscale,  (yNDC  + __yconstant) / __yscale,  -z);
+    return vertexScreen;
+}
+
 Vector3 OrthographicProjection::projecttoNDC(const Vector3& vertexCamera) const {
     return screen2NDC(vertexCamera.x(), vertexCamera.y(), vertexCamera.z());
+}
+
+Vector3 OrthographicProjection::unprojecttoCamera(const Vector3& vertexNDC) const {
+    return NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z());
 }
 
 bool OrthographicProjection::isInZRange(real_t z) const {
@@ -104,7 +137,13 @@ PerspectiveProjection::PerspectiveProjection(real_t left, real_t right, real_t b
 
 Vector3 PerspectiveProjection::projecttoNDC(const Vector3& vertexCamera) const {
     real_t z = -vertexCamera.z();
+    if (z < 0) { return screen2NDC(0, 0, vertexCamera.z()); }
     return screen2NDC(near * vertexCamera.x() / z, near * vertexCamera.y() / z, vertexCamera.z());
+}
+
+Vector3 PerspectiveProjection::unprojecttoCamera(const Vector3& vertexNDC) const {
+    real_t z = -vertexNDC.z();
+    return NDC2screen(vertexNDC.x() * z, vertexNDC.y() * z, vertexNDC.z());
 }
 
 PerspectiveProjection::~PerspectiveProjection() {}
@@ -112,7 +151,6 @@ PerspectiveProjection::~PerspectiveProjection() {}
 inline Vector3 toRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert to raster space
-    // in raster space y is down so invert direction
     Vector3 vertexRaster( 
                           ((vertexNDC.x() + 1) / 2.) * imageWidth, 
                           ((1 - vertexNDC.y()) / 2.) * imageHeight,
@@ -120,8 +158,17 @@ inline Vector3 toRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth
     return vertexRaster;
 }
 
+inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
+{
+    // convert raster to NDC space
+    Vector3 vertexNDC(  (raster.x()*2/imageWidth) - 1,
+                        1 - (raster.y()*2/imageWidth),
+                        raster.z());
+    return vertexNDC;
+}
 
-ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor):
+
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight), 
     __camera(0), 
@@ -131,11 +178,56 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
     __lightSpecular(255,255,255),
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-    __frameBuffer(new PglFrameBufferManager(imageWidth, imageHeight, backGroundColor))
+    __frameBuffer(style != eDepthOnly ? new PglFrameBufferManager(imageWidth, imageHeight, style == eIdBased ? 4 : 3, backGroundColor) : NULL),
+    __triangleshader(NULL)
+{
+    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
+    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
+    if (style != eDepthOnly) {
+        if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this));
+        else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
+    }
+}    
+
+
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color4& backGroundColor, eRenderingStyle style):
+    __imageWidth(imageWidth), 
+    __imageHeight(imageHeight), 
+    __camera(0), 
+    __lightPosition(0,0,1),  
+    __lightAmbient(255,255,255),
+    __lightDiffuse(255,255,255),
+    __lightSpecular(255,255,255),
+    __alphathreshold(0.99),
+    __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
+    __frameBuffer(style != eDepthOnly ? new PglFrameBufferManager(imageWidth, imageHeight, style == eIdBased ? 4 : 3, backGroundColor) : NULL),
+    __triangleshader(NULL)
+{
+    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
+    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
+    if (style != eDepthOnly) {
+        if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this));
+        else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
+    }
+}    
+    
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid):
+    __imageWidth(imageWidth), 
+    __imageHeight(imageHeight), 
+    __camera(0), 
+    __lightPosition(0,0,1),  
+    __lightAmbient(255,255,255),
+    __lightDiffuse(255,255,255),
+    __lightSpecular(255,255,255),
+    __alphathreshold(0.99),
+    __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
+    __frameBuffer(new PglFrameBufferManager(imageWidth, imageHeight,  4 , Color4::fromUint(defaultid))),
+    __triangleshader(new IdBasedShader(this))
 {
     setOrthographicCamera(-1, 1, -1, 1, -1, 1);
     lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
 }    
+    
     
 ZBufferEngine::~ZBufferEngine()
 {
@@ -181,8 +273,8 @@ void ZBufferEngine::setFrameBufferAt(uint32_t x, uint32_t y, const Color4& raste
 bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor)
 {
     if (isTotallyTransparent(rasterColor.getAlpha())) return false;
-
-    if (z < __depthBuffer->getAt(x, y)) {
+    real_t cz = __depthBuffer->getAt(x, y);
+    if (z < cz && (cz-z) > GEOM_EPSILON) {
         __depthBuffer->setAt(x, y, z);
         setFrameBufferAt(x,y,rasterColor);
         return true;
@@ -265,8 +357,8 @@ void ZBufferEngine::lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vect
         up = cross(forward, side);
         up.normalize();
         __cameraPosition = eyePosition3D;
-        Matrix4 camToWorld(side, up, forward, eyePosition3D);
-        __worldToCamera = inverse(camToWorld);
+        __cameraToWorld = Matrix4(side, up, forward, eyePosition3D);
+        __worldToCamera = inverse(__cameraToWorld);
         __currentWorldToCamera = __worldToCamera * __currentModelMatrix;
 }
 
@@ -315,8 +407,19 @@ TOOLS(Vector3) ZBufferEngine::ndcToRaster(const TOOLS(Vector3)& vertexNDC) const
 TOOLS(Vector3) ZBufferEngine::cameraToRaster(const TOOLS(Vector3)& vertexCamera) const
 {
     return toRasterSpace(__camera->projecttoNDC(vertexCamera), __imageWidth, __imageHeight);
-
 }
+
+TOOLS(Vector3) ZBufferEngine::cameraToWorld(const TOOLS(Vector3)& vertexCamera) const
+{
+    return __cameraToWorld * vertexCamera;
+}
+
+TOOLS(Vector3) ZBufferEngine::rasterToWorld(const TOOLS(Vector3)& raster) const
+{
+    Vector3 vertexNDC = rasterToNDC(raster, __imageWidth, __imageHeight);
+    return cameraToWorld(__camera->NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z()));
+}
+
 
 
 real_t min3(const real_t &a, const real_t &b, const real_t &c)
@@ -334,32 +437,7 @@ real_t edgeFunction(const Vector3 &a, const Vector3 &b, const Vector3 &c, bool c
 }
 
 
-Color4 PGL(phong)(const Vector3& v, const Vector3& n, 
-             const Vector3& cameraPosition, 
-             const Vector3& lightPosition, 
-             const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular, 
-             MaterialPtr material)
-{
-        Vector3 l = (lightPosition - v).normed();
-        Vector3 vd = (cameraPosition - v).normed();
-        Vector3 reflection = n.reflect(l); 
-
-        real_t diffusecoef = pglMax(0.0, dot(n, l));
-        real_t shininess = material->getShininess();
-        real_t specularcoef = pow(pglMax(0.0, dot(vd, reflection)), shininess);
-
-        Color3 ambient = material->getAmbient()      * lightAmbient;
-        Color3 diffuse = material->getDiffuseColor() * lightDiffuse;
-        Color3 specular = material->getSpecular()    * lightSpecular;
-
-        // printf("%i %i %i\n", lightAmbient.getRed(), lightAmbient.getGreen(), lightAmbient.getBlue());
-        // printf("%i %i %i\n", ambient.getRed(), ambient.getGreen(), ambient.getBlue());
-        Color3 result = ambient + diffuse * diffusecoef +  specular * specularcoef; 
-
-        return Color4(result, material->getTransparency());
-}
-
-void ZBufferEngine::render(TriangleSetPtr triangles, MaterialPtr material, uint32_t id)
+void ZBufferEngine::render(TriangleSetPtr triangles, AppearancePtr appearance)
 {
     const Point3ArrayPtr points(triangles->getPointList());
     const Index3ArrayPtr indices(triangles->getIndexList());
@@ -369,6 +447,8 @@ void ZBufferEngine::render(TriangleSetPtr triangles, MaterialPtr material, uint3
     triangles->checkNormalList();
 
     size_t nbfaces = triangles->getIndexListSize();
+    bool hasColor = triangles->hasColorList();
+
 
     for(uint32_t itidx = 0; itidx < nbfaces; ++itidx){
         //printf("triangle %i on %i\n", itidx, nbfaces);
@@ -376,26 +456,15 @@ void ZBufferEngine::render(TriangleSetPtr triangles, MaterialPtr material, uint3
         const Vector3& v1 = triangles->getFacePointAt(itidx,1);
         const Vector3& v2 = triangles->getFacePointAt(itidx,2);
 
-        const Vector3& n0 = triangles->getFaceNormalAt(itidx,0);
-        const Vector3& n1 = triangles->getFaceNormalAt(itidx,1);
-        const Vector3& n2 = triangles->getFaceNormalAt(itidx,2);
-
-        bool hasColor = triangles->hasColorList();
-
-        Color4 c0 =  hasColor? triangles->getFaceColorAt(itidx,0) : phong(v0, n0, __cameraPosition, __lightPosition, __lightAmbient, __lightDiffuse, __lightSpecular, material);
-        Color4 c1 =  hasColor? triangles->getFaceColorAt(itidx,1) : phong(v1, n1, __cameraPosition, __lightPosition, __lightAmbient, __lightDiffuse, __lightSpecular, material);
-        Color4 c2 =  hasColor? triangles->getFaceColorAt(itidx,2) : phong(v2, n2, __cameraPosition, __lightPosition, __lightAmbient, __lightDiffuse, __lightSpecular, material);
-
-        renderTriangle(v0,v1,v2,c0,c1,c2, ccw);
+        __triangleshader->init(appearance, triangles, itidx, __currentId);
+        renderShadedTriangle(__triangleshader, v0, v1, v2, ccw);
 
     }
 }
 
-void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, 
-                                     const Color4& c0,  const Color4& c1,  const Color4& c2, 
-                                     bool ccw)
-{
 
+void ZBufferEngine::renderShadedTriangle(TriangleShaderPtr shader, const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw)
+{
     // Projection in camera space
     Vector3 v0Cam = worldToCamera(v0);
     Vector3 v1Cam = worldToCamera(v1);
@@ -448,9 +517,17 @@ void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const V
     real_t area = edgeFunction(v0Raster, v1Raster, v2Raster, ccw);
 
 
+    /*if (x0 == 0 && y0 == 0){
+        printf("x range : %u %u\n", x0, x1);
+        printf("y range : %u %u\n", y0, y1);
+        printf("v0 %f %f %f\n", v0.x(), v0.y(), v0.z());
+        printf("v1 %f %f %f\n", v1.x(), v1.y(), v1.z());
+        printf("v2 %f %f %f\n", v2.x(), v2.y(), v2.z());
+        printf("r0 %f %f %f\n", v0Raster.x(), v0Raster.y(), 1/v0Raster.z());
+        printf("r1 %f %f %f\n", v1Raster.x(), v1Raster.y(), 1/v1Raster.z());
+        printf("r2 %f %f %f\n", v2Raster.x(), v2Raster.y(), 1/v2Raster.z());
+    }*/
     // Inner loop
-    // printf("x range : %u %u\n", x0, x1);
-    // printf("y range : %u %u\n", y0, y1);
     for (int32_t y = y0; y <= y1; ++y) {
         for (int32_t x = x0; x <= x1; ++x) {
 
@@ -461,8 +538,7 @@ void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const V
             real_t w1 = edgeFunction(v2Raster, v0Raster, pixelSample, ccw);
             real_t w2 = edgeFunction(v0Raster, v1Raster, pixelSample, ccw);
 
-            //printf("weight of %f %f : %f %f %f\n", x + 0.5, y + 0.5, w0, w1, w2);
-            if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+            if ((w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0)) {
                 w0 /= area;
                 w1 /= area;
                 w2 /= area;
@@ -475,14 +551,23 @@ void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const V
 
                     // Vec2f st = st0 * w0 + st1 * w1 + st2 * w2;                        
                     // st *= z;
-
-                    Color4 rasterColor = c0 * (w0 * z / z0) + c1 * (w1 * z / z1) + c2 * (w2 * z / z2);
-                    renderRaster(x, y, z, rasterColor);
-                    
+                    if (z < __depthBuffer->getAt(x, y)) {
+                        __depthBuffer->setAt(x, y, z);
+                        shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2));
+                    }                    
                 }
             }
         }
-    }    
+    }        
+}
+
+void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, 
+                                     const Color4& c0,  const Color4& c1,  const Color4& c2, 
+                                     bool ccw)
+{
+    ColorBasedShader * shader = new ColorBasedShader(this);
+    shader->setColors(c0, c1, c2);
+    renderShadedTriangle(shader, v0, v1, v2, ccw);
 }
 
 
@@ -521,11 +606,11 @@ void ZBufferEngine::renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)
 }
 
 
-void ZBufferEngine::render(PolylinePtr polyline, MaterialPtr material, uint32_t id)
+void ZBufferEngine::render(PolylinePtr polyline, MaterialPtr material)
 {
 }
 
-void ZBufferEngine::render(PointSetPtr pointset, MaterialPtr material, uint32_t id)
+void ZBufferEngine::render(PointSetPtr pointset, MaterialPtr material)
 {
     const Point3ArrayPtr points(pointset->getPointList());
     Color4 defaultcolor = Color4(material->getAmbient(),material->getTransparency());
@@ -549,3 +634,132 @@ void ZBufferEngine::render(ScenePtr scene)
     scene->apply(r);
 }
 
+ImagePtr ZBufferEngine::getTexture(const ImageTexturePtr imgdef)
+{
+    Cache<ImagePtr>::const_Iterator it = __cachetexture.find(imgdef->getId());
+    if (it != __cachetexture.end()){
+        return it->second;
+    }
+    else {
+        ImagePtr img(new Image(imgdef->getFilename()));
+        __cachetexture.insert(imgdef->getId(),img);
+        return img;
+    }
+}
+
+void ZBufferEngine::duplicateBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
+{
+    Vector3 vRasterFrom = worldToRaster(from);
+    Vector3 vRasterTo = worldToRaster(to);
+    Vector3 vDiff = vRasterTo - vRasterFrom;
+
+    duplicateBuffer(vDiff.x(), vDiff.y(), vDiff.z(), useDefaultColor, defaultcolor);
+}
+
+void ZBufferEngine::duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor, const Color3& defaultcolor){
+    if(xDiff == 0  && yDiff == 0 && fabs(zDiff) < GEOM_EPSILON) return;
+
+    uint32_t width = __frameBuffer->width();
+    uint32_t height = __frameBuffer->height();
+
+    uint32_t xStart = 0;
+    uint32_t xEnd = width;
+
+    if (xDiff > 0) { 
+        if (xDiff > width) { return; }
+        xStart += xDiff;
+    }
+    else {
+        if (-xDiff > width) { return; }
+        xEnd += xDiff;
+
+    }
+
+    uint32_t yStart = 0;
+    uint32_t yEnd = height;
+    if (yDiff > 0) { 
+        if (yDiff > height) { return; }
+        yStart += yDiff;
+    }
+    else {
+        if (-yDiff > height) { return; }
+        yEnd += yDiff;
+    }
+
+    RealArray2Ptr depthBuffer(new RealArray2(*__depthBuffer));
+    FrameBufferManagerPtr framebuffer = __frameBuffer->deepcopy();
+
+    for (uint32_t i = xStart ; i < xEnd ; ++i) {
+        for (uint32_t j = yStart ; j < yEnd ; ++j) {
+            real_t potentialz = depthBuffer->getAt(i-xDiff,j-yDiff)+zDiff;
+            if (__camera->isInZRange(potentialz))
+                renderRaster(i, j, potentialz, useDefaultColor? defaultcolor : framebuffer->getPixelAt(i-xDiff,j-yDiff));
+        }
+    }
+
+}
+
+void ZBufferEngine::periodizeBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
+{
+    Vector3 vRasterFrom = worldToRaster(from);
+    Vector3 vRasterTo = worldToRaster(to);
+    Vector3 vDiff = vRasterTo - vRasterFrom;
+
+    periodizeBuffer(vDiff.x(), vDiff.y(), vDiff.z(), useDefaultColor, defaultcolor);
+}
+
+void ZBufferEngine::periodizeBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor, const Color3& defaultcolor)
+{
+    _bufferPeriodizationStep(xDiff, yDiff, zDiff, useDefaultColor, defaultcolor);
+    _bufferPeriodizationStep(-xDiff, -yDiff, -zDiff, useDefaultColor, defaultcolor);
+
+}
+
+void ZBufferEngine::_bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor, const Color3& defaultcolor)
+{
+    if(xDiff == 0  && yDiff == 0 && fabs(zDiff) < GEOM_EPSILON) return;
+
+    uint32_t width = __frameBuffer->width();
+    uint32_t height = __frameBuffer->height();
+
+    int32_t xStart = 0;
+    int32_t xEnd = width;
+    int32_t xStep = 1;
+
+    if (fabs(xDiff) >= width) { return; }
+    if (xDiff < 0) {
+         xStart = width-1;
+         xEnd = -1;
+         xStep = -1;
+    }
+    xStart += xDiff;
+    
+    int32_t yStart = 0;
+    int32_t yEnd = height;
+    int32_t yStep = 1;
+
+    if (fabs(yDiff) >= height) { return; }
+    /*if (yDiff < 0) {
+         yStart = height-1;
+         yEnd = -1;
+         yStep = -1;
+    }*/
+    if (yDiff < 0) {
+        yEnd += yDiff;
+    }
+    else {
+        yStart += yDiff;        
+    }
+
+    printf("%i %i %f\n", xDiff, yDiff, zDiff);
+    printf("x:%i %i %i\n", xStart, xEnd, xStep);
+    printf("y:%i %i %i\n", yStart, yEnd, yStep);
+
+    for (int32_t i = xStart ; i != xEnd ; i+=xStep) {
+        for (int32_t j = yStart ; j < yEnd ; j+=yStep) {
+            real_t potentialz = __depthBuffer->getAt(i-xDiff,j-yDiff)+zDiff;
+            // if (__camera->isInZRange(potentialz))
+                renderRaster(i, j, potentialz, useDefaultColor? defaultcolor : __frameBuffer->getPixelAt(i-xDiff,j-yDiff));
+        }
+    }
+}

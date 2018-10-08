@@ -58,6 +58,15 @@ template class SG_API TOOLS(Tuple3)<uchar_t>;
    \brief A 3 component color expressed in \c red, \c green and \c blue.
 */
 
+#define PACKVALi(value,i) (value << (8 * i))
+#define UNPACKVALi(packedvalues,i) ((packedvalues & (0xff << 8*i)) >> (8*i))
+
+#define CHANNELORDER4(r,g,b,a) (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2) + PACKVALi(a,3))
+#define CHANNELORDER3(r,g,b)   (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2))
+#define CHANNELPOS(colorcode, channel) UNPACKVALi(colorcode, channel)
+
+
+
 
 class Color4;
 class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
@@ -66,6 +75,15 @@ class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
   friend class Color4;
 
 public:
+
+  enum eColorFormat {
+    eRGB = CHANNELORDER3(0,1,2),
+    eRBG = CHANNELORDER3(0,2,1),
+    eGRB = CHANNELORDER3(1,0,2),
+    eGBR = CHANNELORDER3(2,0,1),
+    eBGR = CHANNELORDER3(2,1,0),
+    eBRG = CHANNELORDER3(1,2,0)
+  };    
 
   /// The black color.
   static const Color3 BLACK;
@@ -146,10 +164,10 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the rgb value onto an uint
-  uint_t toUint() const;
+  uint_t toUint(eColorFormat format = eRGB) const;
 
   /// Decode the rgb value from an uint
-  static Color3 fromUint(uint_t);
+  static Color3 fromUint(uint_t value, eColorFormat format = eRGB);
 
   TOOLS(Tuple3)<uchar_t> toHSV8() const;
   TOOLS(Tuple3)<real_t> toHSV() const;
@@ -197,6 +215,23 @@ template class SG_API TOOLS(Tuple4)<uchar_t>;
 class SG_API Color4 : public TOOLS(Tuple4)<uchar_t>
 {
 public:
+
+  enum eColorFormat {
+    eARGB = CHANNELORDER4(1,2,3,0),
+    eARBG = CHANNELORDER4(1,3,2,0),
+    eAGRB = CHANNELORDER4(2,1,3,0),
+    eAGBR = CHANNELORDER4(3,1,2,0),
+    eABGR = CHANNELORDER4(3,2,1,0),
+    eABRG = CHANNELORDER4(2,3,1,0),
+
+    eRGBA = CHANNELORDER4(0,1,2,3),
+    eRBGA = CHANNELORDER4(0,2,1,3),
+    eGRBA = CHANNELORDER4(1,0,2,3),
+    eGBRA = CHANNELORDER4(2,0,1,3),
+    eBGRA = CHANNELORDER4(2,1,0,3),
+    eBRGA = CHANNELORDER4(1,2,0,3)
+  };
+
 
   /// The black color.
   static const Color4 BLACK;
@@ -292,10 +327,10 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the argb value onto an uint
-  uint_t toUint() const;
+  uint_t toUint(eColorFormat format = eARGB) const;
 
   /// Decode the argb value from an uint
-  static Color4 fromUint(uint_t);
+  static Color4 fromUint(uint_t, eColorFormat format = eARGB);
 
   TOOLS(Tuple4)<uchar_t> toHSVA8() const;
   TOOLS(Tuple4)<real_t> toHSVA() const;

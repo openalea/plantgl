@@ -182,7 +182,9 @@ def _toQImage(self):
     npi = self.to_interlaced_array()
     width, height,  nbchannel = npi.shape
     bytesPerLine = nbchannel * width
-    return QImage(npi.data, width, height,  bytesPerLine, QImage.Format_RGB888)
+    iformat = QImage.Format_RGB888
+    if nbchannel == 4 : iformat = QImage.Format_RGBX8888
+    return QImage(npi.data, width, height,  bytesPerLine, iformat)
 
 Image.toQImage = _toQImage
 del _toQImage

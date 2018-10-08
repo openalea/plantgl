@@ -178,6 +178,9 @@ public:
   /// Clear \e self.
   inline void clear( ) { __A.clear(); __rowSize = 0; }
 
+  /// data
+  inline const T * data( ) const { return __A.data(); }
+
   /// Returns a const iterator at the beginning of \e self.
   inline const_iterator begin( ) const { return __A.begin(); }
 

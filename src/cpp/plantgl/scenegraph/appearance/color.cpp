@@ -145,16 +145,20 @@ Vector3 Color3::toClampedValues() const {
     return Vector3(getRedClamped(), getGreenClamped(), getBlueClamped());
 }
 
-
-uint_t Color3::toUint() const {
-	return (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
+uint_t Color3::toUint(eColorFormat format) const {
+    return PACKVALi(uint_t(__RED),  CHANNELPOS(format,0)) + 
+           PACKVALi(uint_t(__GREEN),CHANNELPOS(format,1)) + 
+           PACKVALi(uint_t(__BLUE), CHANNELPOS(format,2));
 }
 
-Color3 Color3::fromUint(uint_t value) {
+Color3 Color3::fromUint(uint_t value, eColorFormat format) {
   Color3 res;
-  res.__RED = uchar_t((value & 0xff0000) >> 16);
+  for (int i = 0; i < 3; ++i)
+    res[i]   = UNPACKVALi(value, CHANNELPOS(format,i));
+  
+  /*res.__RED = uchar_t((value & 0xff0000) >> 16);
   res.__GREEN = uchar_t((value & 0x00ff00) >> 8);
-  res.__BLUE = uchar_t(value & 0x0000ff);
+  res.__BLUE = uchar_t(value & 0x0000ff);*/
   return res;
 }
 
@@ -505,16 +509,28 @@ Vector4 Color4::toClampedValues() const {
     return Vector4(getRedClamped(), getGreenClamped(), getBlueClamped(), getAlphaClamped());
 }
 
-uint_t Color4::toUint() const {
-	return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
+uint_t Color4::toUint(eColorFormat format) const {
+
+    return PACKVALi(uint_t(__RED),  CHANNELPOS(format,0)) + 
+           PACKVALi(uint_t(__GREEN),CHANNELPOS(format,1)) + 
+           PACKVALi(uint_t(__BLUE), CHANNELPOS(format,2)) + 
+           PACKVALi(uint_t(__ALPHA),CHANNELPOS(format,3));
+
+    /*if (format == eARGB)
+	   return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
+    else 
+       return (uint_t(__RED) << 24) + (uint_t(__GREEN) << 16) + (uint_t(__BLUE) << 8) + uint_t(__ALPHA);*/
 }
 
-Color4 Color4::fromUint(uint_t value) {
+Color4 Color4::fromUint(uint_t value, eColorFormat format) {
   Color4 res;
-  res.__ALPHA = ((value & 0xff000000) >> 24);
-  res.__RED = ((value & 0x00ff0000) >> 16);
-  res.__GREEN = ((value & 0x0000ff00) >> 8);
-  res.__BLUE = (value & 0x000000ff);
+  for (int i = 0; i < 4; ++i)
+    res[i]   = UNPACKVALi(value, CHANNELPOS(format,i));
+
+  /*res.__ALPHA = ((value & 0xff000000) >> (format == eARGB?24:0));
+  res.__RED = ((value & 0x00ff0000) >> (format == eARGB?16:24));
+  res.__GREEN = ((value & 0x0000ff00) >> (format == eARGB?8:16));
+  res.__BLUE = ((value & 0x000000ff) >> (format == eARGB?0:24));*/
   return res;
 }
 
