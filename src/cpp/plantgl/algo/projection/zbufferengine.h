@@ -43,21 +43,19 @@
 /* ----------------------------------------------------------------------- */
 
 #include <plantgl/math/util_vector.h>
-#include <plantgl/math/util_matrix.h>
 #include <plantgl/tool/util_array2.h>
 #include <plantgl/tool/util_cache.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/scenegraph/geometry/triangleset.h>
 #include <plantgl/scenegraph/geometry/pointset.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
-#include <plantgl/scenegraph/geometry/boundingbox.h>
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/scenegraph/appearance/material.h>
 #include <plantgl/scenegraph/appearance/texture.h>
-#include <plantgl/scenegraph/appearance/util_image.h>
 #include "../algo_config.h"
 #include "shading.h"
-#include <stack>
+#include "projectioncamera.h"
+#include "framebuffermanager.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -71,101 +69,6 @@ PGL_BEGIN_NAMESPACE
 */
 
 /* ----------------------------------------------------------------------- */
-
-class OrthographicProjection : public TOOLS(RefCountObject){
-public:
-    OrthographicProjection(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-
-   virtual ~OrthographicProjection();
-
-   TOOLS(Vector3) screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
-   TOOLS(Vector3) NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;
-
-   virtual TOOLS(Vector3) projecttoNDC(const TOOLS(Vector3)& vertexCamera) const ;
-   virtual TOOLS(Vector3) unprojecttoCamera(const TOOLS(Vector3)& vertexCamera) const ;
-
-   bool isInZRange(real_t z) const ;
-   bool isInZRange(real_t zmin, real_t zmax) const;
-
-   real_t __xscale;
-   real_t __xconstant;
-   real_t __yscale;
-   real_t __yconstant;
-
-   real_t left;
-   real_t right;
-   real_t bottom;
-   real_t top;
-   real_t near;
-   real_t far;
-
-};
-
-class PerspectiveProjection : public OrthographicProjection {
-public:
-    PerspectiveProjection(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-
-    virtual ~PerspectiveProjection();
- 
-    virtual TOOLS(Vector3) projecttoNDC(const TOOLS(Vector3)& vertexCamera) const ;
-    virtual TOOLS(Vector3) unprojecttoCamera(const TOOLS(Vector3)& vertexCamera) const ;
-};
-
-typedef RCPtr<OrthographicProjection> ProjectionPtr;
-
-class FrameBufferManager;
-typedef RCPtr<FrameBufferManager> FrameBufferManagerPtr;
-
-class FrameBufferManager : public TOOLS(RefCountObject) {
-public:
-    FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color3& backGroundColor) {}
-    FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color4& backGroundColor) {}
-    virtual ~FrameBufferManager() {}
-    
-    virtual void setPixelAt(uint_t x, uint_t y, const Color3& color) = 0;
-    virtual Color3 getPixelAt(uint_t x, uint_t y) const = 0;
-
-    virtual void setPixel4At(uint_t x, uint_t y, const Color4& color) = 0;
-    virtual Color4 getPixel4At(uint_t x, uint_t y) const = 0;
-
-    virtual uint16_t width() const = 0;
-    virtual uint16_t height() const = 0;
-    virtual FrameBufferManagerPtr deepcopy() const = 0;
-};
-
-
-
-class PglFrameBufferManager : public FrameBufferManager {
-public:
-    PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color3& backGroundColor);
-    PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color4& backGroundColor);
-    virtual ~PglFrameBufferManager();
-
-    virtual void setPixelAt(uint_t x, uint_t y, const Color3& color);
-    virtual Color3 getPixelAt(uint_t x, uint_t y) const ;
-    
-    virtual void setPixel4At(uint_t x, uint_t y, const Color4& color);
-    virtual Color4 getPixel4At(uint_t x, uint_t y) const ;
-    
-    virtual uint16_t width() const;
-    virtual uint16_t height() const;
-    virtual FrameBufferManagerPtr deepcopy() const;
-
-    ImagePtr getImage() const { return __image; }    
-
-    ImagePtr __image;
-};
-
-typedef RCPtr<PglFrameBufferManager> PglFrameBufferManagerPtr;
-
-
-
-Color4 phong(const TOOLS(Vector3)& v, const TOOLS(Vector3)& n, 
-             const TOOLS(Vector3)& cameraPosition, 
-             const TOOLS(Vector3)& lightPosition, 
-             const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular,
-             MaterialPtr material);
-
 
 
 class ALGO_API ZBufferEngine  {
@@ -195,7 +98,8 @@ public :
     
   ZBufferEngine(uint16_t imageWidth = 800, 
                 uint16_t imageHeight = 600, 
-                uint32_t defaultid = Shape::NOID);
+                uint32_t defaultid = Shape::NOID,
+                Color4::eColor4Format conversionformat = Color4::eARGB);
 
   ZBufferEngine(uint16_t imageWidth = 800, 
                 uint16_t imageHeight = 600);    
@@ -204,11 +108,8 @@ public :
   virtual ~ZBufferEngine();
   
   void setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far);
-  
-  void setFrustrumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-
+  void setFrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
   void setOrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-
   void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D);
 
   void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor = Color3(255,255,255));
@@ -224,14 +125,20 @@ public :
   void renderPoint(const TOOLS(Vector3)& v, const Color4& c0, const uint32_t width = 1);
   void renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const Color4& c0, const Color4& c1, const uint32_t width = 1);
 
-  TOOLS(Vector3) worldToRaster(const TOOLS(Vector3)& vertexWorld) const;
+  /*
   TOOLS(Vector3) worldToCamera(const TOOLS(Vector3)& vertexWorld) const;
   TOOLS(Vector3) cameraToNDC(const TOOLS(Vector3)& vertexCamera) const;
   TOOLS(Vector3) ndcToRaster(const TOOLS(Vector3)& vertexNDC) const;
   TOOLS(Vector3) cameraToRaster(const TOOLS(Vector3)& vertexCamera) const;
   TOOLS(Vector3) cameraToWorld(const TOOLS(Vector3)& vertexCamera) const;
-  TOOLS(Vector3) rasterToWorld(const TOOLS(Vector3)& raster) const;
+  */
 
+  TOOLS(Vector3) worldToRaster(const TOOLS(Vector3)& vertexWorld) const 
+  { return __camera->worldToRaster(vertexWorld, __imageWidth, __imageHeight); }
+
+  TOOLS(Vector3) rasterToWorld(const TOOLS(Vector3)& raster) const 
+  { return __camera->rasterToWorld(raster, __imageWidth, __imageHeight); }
+  
    void setFrameBufferAt(uint32_t x, uint32_t y, const Color3& rasterColor);
    void setFrameBufferAt(uint32_t x, uint32_t y, const Color4& rasterColor);
    Color3 getFrameBufferAt(uint32_t x, uint32_t y);
@@ -241,10 +148,11 @@ public :
 
    BoundingBoxPtr getBoundingBoxView() const;
 
-   TOOLS(Matrix4) getWorldToCameraMatrix() const { return __worldToCamera; }
-
    inline bool isTotallyTransparent(const Color4& c) const { return isTotallyTransparent(c.getAlpha()); }
    bool isTotallyTransparent(const real_t alpha) const ;
+
+   bool isVisible(int32_t x, int32_t y, real_t z) const;
+   bool isVisible(const TOOLS(Vector3)& pos) const;
 
    bool renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor);
 
@@ -275,20 +183,15 @@ public :
   void setFrameBuffer(FrameBufferManagerPtr fb) { __frameBuffer = fb; }
   FrameBufferManagerPtr getFrameBuffer() const { return __frameBuffer; }
 
+  ProjectionCameraPtr camera() const { return __camera; }
+
 protected :
 
   void _bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor = true, const Color3& defaultcolor = Color3(0,0,0));
 
-  TOOLS(Matrix4) __cameraToWorld;
-  TOOLS(Matrix4) __worldToCamera;
-  std::stack<TOOLS(Matrix4)> __modelMatrixStack;
-  TOOLS(Matrix4) __currentModelMatrix;
-  TOOLS(Matrix4) __currentWorldToCamera;
-
   uint16_t __imageWidth;
   uint16_t __imageHeight;
-  TOOLS(Vector3) __cameraPosition;
-  ProjectionPtr __camera;
+  ProjectionCameraPtr __camera;
 
   TOOLS(Vector3) __lightPosition;
   Color3 __lightAmbient;

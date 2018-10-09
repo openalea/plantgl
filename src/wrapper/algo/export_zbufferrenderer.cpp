@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/algo/rasterization/zbufferrenderer.h>
+#include <plantgl/algo/projection/zbufferrenderer.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/boost_python.h>
 

@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/algo/rasterization/zbufferengine.h>
+#include <plantgl/algo/projection/zbufferengine.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/boost_python.h>
 
@@ -42,12 +42,20 @@ using namespace std;
 
 void export_ZBufferEngine()
 {
+
+   enum_<ZBufferEngine::eRenderingStyle>("eRenderingStyle")
+    .value("eColorBased",ZBufferEngine::eColorBased)
+    .value("eIdBased",ZBufferEngine::eIdBased)
+    .value("eDepthOnly",ZBufferEngine::eDepthOnly)
+      .export_values()
+      ;
+    
   class_< ZBufferEngine, boost::noncopyable > 
       ("ZBufferEngine", init<uint16_t, uint16_t , const Color3&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("backGroundColor")=Color3(0,0,0), bp::arg("renderingStyle") = ZBufferEngine::eColorBased)) )
-      .def(init<uint16_t, uint16_t , const Color3&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultColor")=Color4::fromUint(Shape::NOID), bp::arg("renderingStyle") = ZBufferEngine::eIdBased)))
-      .def(init<uint16_t, uint16_t , uint32_t>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultId")=Shape::NOID)))
+      .def(init<uint16_t, uint16_t , const Color4&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultColor")=Color4::fromUint(Shape::NOID), bp::arg("renderingStyle") = ZBufferEngine::eIdBased)))
+      .def(init<uint16_t, uint16_t , uint32_t, Color4::eColor4Format>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultId")=Shape::NOID, bp::arg("conversionformat")=Color4::eARGB)))
       .def("setPerspectiveCamera", &ZBufferEngine::setPerspectiveCamera)
-      .def("setFrustrumCamera", &ZBufferEngine::setFrustrumCamera)
+      .def("setFrustumCamera", &ZBufferEngine::setFrustumCamera)
       .def("setOrthographicCamera", &ZBufferEngine::setOrthographicCamera)
       .def("lookAt", &ZBufferEngine::lookAt)
       .def("setId", &ZBufferEngine::setId)
@@ -59,6 +67,8 @@ void export_ZBufferEngine()
       .def("render", (void(ZBufferEngine::*)(ScenePtr))&ZBufferEngine::render)
       .def("getImage", &ZBufferEngine::getImage)
       .def("getDepthBuffer", &ZBufferEngine::getDepthBuffer)
+
+/*
       .def("worldToCamera", &ZBufferEngine::worldToCamera)
       .def("cameraToNDC", &ZBufferEngine::cameraToNDC)
       .def("ndcToRaster", &ZBufferEngine::ndcToRaster)
@@ -66,19 +76,16 @@ void export_ZBufferEngine()
       .def("worldToRaster", &ZBufferEngine::worldToRaster)
       .def("getBoundingBoxView", &ZBufferEngine::getBoundingBoxView)
       .def("getWorldToCameraMatrix", &ZBufferEngine::getWorldToCameraMatrix)
+*/
       .def("duplicateBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("duplicateBuffer", (void(ZBufferEngine::*)(int32_t, int32_t, real_t, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("periodizeBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::periodizeBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("periodizeBuffer", (void(ZBufferEngine::*)(int32_t, int32_t, real_t, bool, const Color3&))&ZBufferEngine::periodizeBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("setIdRendering", &ZBufferEngine::setIdRendering)
+      .def("isVisible", (bool(ZBufferEngine::*)(int32_t, int32_t, real_t) const)&ZBufferEngine::isVisible,(bp::arg("x"), bp::arg("y"), bp::arg("z")))
+      .def("isVisible", (bool(ZBufferEngine::*)(const Vector3&) const)&ZBufferEngine::isVisible,(bp::arg("position")))
       ;
 
-   enum_<ZBufferEngine::eRenderingStyle>("eRenderingStyle")
-    .value("eColorBased",ZBufferEngine::eColorBased)
-    .value("eIdBased",ZBufferEngine::eIdBased)
-    .value("eDepthOnly",ZBufferEngine::eDepthOnly)
-      .export_values()
-      ;
 
 }
 

@@ -111,7 +111,8 @@ enum eShadingStyle {
 
 class IdBasedShader : public TriangleShader {
 public:
-    IdBasedShader(ZBufferEngine * engine, uint32_t defaultid = Shape::NOID);
+    IdBasedShader(ZBufferEngine * engine, uint32_t defaultid = Shape::NOID,
+                  Color4::eColor4Format conversionformat = Color4::eARGB);
     virtual ~IdBasedShader();
 
     virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
@@ -119,6 +120,7 @@ public:
 
     uint32_t shapeid;
     uint32_t defaultid;
+    Color4::eColor4Format conversionformat;
 };
 
 class TextureShader : public TriangleShader {

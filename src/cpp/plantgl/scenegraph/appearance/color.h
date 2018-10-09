@@ -63,7 +63,8 @@ template class SG_API TOOLS(Tuple3)<uchar_t>;
 
 #define CHANNELORDER4(r,g,b,a) (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2) + PACKVALi(a,3))
 #define CHANNELORDER3(r,g,b)   (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2))
-#define CHANNELPOS(colorcode, channel) UNPACKVALi(colorcode, channel)
+#define CHANNELPOS3(colorcode, channel) UNPACKVALi(colorcode, (2-channel))
+#define CHANNELPOS4(colorcode, channel) UNPACKVALi(colorcode, (3-channel))
 
 
 
@@ -76,7 +77,7 @@ class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
 
 public:
 
-  enum eColorFormat {
+  enum eColor3Format {
     eRGB = CHANNELORDER3(0,1,2),
     eRBG = CHANNELORDER3(0,2,1),
     eGRB = CHANNELORDER3(1,0,2),
@@ -164,10 +165,10 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the rgb value onto an uint
-  uint_t toUint(eColorFormat format = eRGB) const;
+  uint_t toUint(eColor3Format format = eRGB) const;
 
   /// Decode the rgb value from an uint
-  static Color3 fromUint(uint_t value, eColorFormat format = eRGB);
+  static Color3 fromUint(uint_t value, eColor3Format format = eRGB);
 
   TOOLS(Tuple3)<uchar_t> toHSV8() const;
   TOOLS(Tuple3)<real_t> toHSV() const;
@@ -216,7 +217,7 @@ class SG_API Color4 : public TOOLS(Tuple4)<uchar_t>
 {
 public:
 
-  enum eColorFormat {
+  enum eColor4Format {
     eARGB = CHANNELORDER4(1,2,3,0),
     eARBG = CHANNELORDER4(1,3,2,0),
     eAGRB = CHANNELORDER4(2,1,3,0),
@@ -327,10 +328,10 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the argb value onto an uint
-  uint_t toUint(eColorFormat format = eARGB) const;
+  uint_t toUint(eColor4Format format = eARGB) const;
 
   /// Decode the argb value from an uint
-  static Color4 fromUint(uint_t, eColorFormat format = eARGB);
+  static Color4 fromUint(uint_t, eColor4Format format = eARGB);
 
   TOOLS(Tuple4)<uchar_t> toHSVA8() const;
   TOOLS(Tuple4)<real_t> toHSVA() const;

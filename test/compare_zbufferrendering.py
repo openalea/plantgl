@@ -74,8 +74,7 @@ class PglViewer (QGLViewer):
         self.setManipulatedFrame(self.lighManipulator)
         self.setAnimation(eAnimatedPrimitives)
         self.bufferDuplication = False
-        self.idBasedRendering = False
-        self.depthBasedRendering = False
+        self.renderingStyle = eColorBased
 
     def init(self):
         self.showEntireScene()
@@ -106,10 +105,16 @@ class PglViewer (QGLViewer):
             self.bufferDuplication = not self.bufferDuplication
             self.updateGL()
         elif event.key() == Qt.Key_D:
-            self.depthBasedRendering = not self.depthBasedRendering
+            if self.renderingStyle != eDepthOnly:
+                self.renderingStyle = eDepthOnly
+            else:
+                self.renderingStyle = eColorBased                
             self.updateGL()
         elif event.key() == Qt.Key_I:
-            self.idBasedRendering = not self.idBasedRendering
+            if self.renderingStyle != eIdBased:
+                self.renderingStyle = eIdBased
+            else:
+                self.renderingStyle = eColorBased                
             self.updateGL()
         else:
             QGLViewer.keyPressEvent(self, event)
@@ -209,7 +214,10 @@ class PglViewer (QGLViewer):
         import time
         t = time.time()  
         camera = self.camera()
-        z = ZBufferEngine(self.width(),self.height(), toC3(self.backgroundColor()))
+        if self.renderingStyle == eIdBased:
+            z = ZBufferEngine(self.width(),self.height(), toC4(self.backgroundColor()).toUint(eABGR), eABGR)
+        else:
+            z = ZBufferEngine(self.width(),self.height(), toC3(self.backgroundColor()), renderingStyle=self.renderingStyle)
         znear, zfar = camera.zNear(), camera.zFar()
         if self.camera().type() == Camera.PERSPECTIVE:
             z.setPerspectiveCamera(degrees(camera.fieldOfView()),self.width()/float(self.height()),znear,zfar)
@@ -218,8 +226,8 @@ class PglViewer (QGLViewer):
             z.setOrthographicCamera(-halfWidth, halfWidth, -halfHeight, halfHeight, znear,zfar)
         z.lookAt(camera.position(),camera.position()+camera.viewDirection(),camera.upVector())
         self.import_light_config(z)
-        if self.idBasedRendering:
-            z.setIdRendering()
+        #if self.idBasedRendering:
+        #    z.setIdRendering()
         #z.setLight((0,0,100),(255,255,255))
         z.render(self.scene)
         if self.bufferDuplication:
@@ -228,7 +236,8 @@ class PglViewer (QGLViewer):
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0))
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))
 
-        if self.depthBasedRendering:
+        if self.renderingStyle == eDepthOnly:
+            print 'draw depth img'
             import qimage2ndarray as qn
             minz, maxz = znear, zfar
             db = z.getDepthBuffer()
@@ -258,10 +267,10 @@ def main():
     
     #scene = Scene([Shape(Sphere(10),Material((200,50,100),2))])
     #scene = Scene([Shape(Cylinder(1,10),Material((100,25,50),4))])
-    scene = Scene([Shape(TriangleSet([(0,0,0),(0,20,0),(0,0,10)], [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True))])
+    #scene = Scene([Shape(TriangleSet([(0,0,0),(0,20,0),(0,0,10)], [range(3)], colorList=[(255,0,0,0),(0,255,0,0),(0,0,255,0)],colorPerVertex=True))])
     #scene = Scene('data/cow.obj')
     #scene = Scene('../share/plantgl/database/advancedgraphics/tulipa.geom')
-    #scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
+    scene = Scene('../share/plantgl/database/advancedgraphics/mango.bgeom')
     h = 600/2
     w = 800/2
 

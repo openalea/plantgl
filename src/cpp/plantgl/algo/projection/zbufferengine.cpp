@@ -42,132 +42,6 @@ PGL_USING_NAMESPACE
 TOOLS_USING_NAMESPACE
 
 
-PglFrameBufferManager::PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannels, const Color3& backGroundColor) :
-     FrameBufferManager(imageWidth, imageHeight, nbChannels, backGroundColor), 
-     __image(new Image(imageWidth, imageHeight, nbChannels, backGroundColor)) 
-{}
-
-PglFrameBufferManager::PglFrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannels, const Color4& backGroundColor) :
-     FrameBufferManager(imageWidth, imageHeight, nbChannels, backGroundColor), 
-     __image(new Image(imageWidth, imageHeight, nbChannels, backGroundColor)) 
-{}
-
-PglFrameBufferManager::~PglFrameBufferManager() {}
-
-void PglFrameBufferManager::setPixelAt(uint_t x, uint_t y, const Color3& color) 
-{ 
-    __image->setPixelAt(x,y,color); 
-}
-
-Color3 PglFrameBufferManager::getPixelAt(uint_t x, uint_t y) const
-{ 
-    return __image->getPixelAt(x,y); 
-}
-
-void PglFrameBufferManager::setPixel4At(uint_t x, uint_t y, const Color4& color) 
-{ 
-    __image->setPixelAt(x,y,color); 
-}
-
-Color4 PglFrameBufferManager::getPixel4At(uint_t x, uint_t y) const
-{ 
-    return __image->getPixelAt(x,y); 
-}
-
-uint16_t PglFrameBufferManager::width() const { return __image->width(); }
-uint16_t PglFrameBufferManager::height() const { return __image->height(); }
-
-FrameBufferManagerPtr PglFrameBufferManager::deepcopy() const
-{ 
-    PglFrameBufferManager * copy = new PglFrameBufferManager(*this); 
-    copy->__image = ImagePtr(new Image(*__image));
-    return FrameBufferManagerPtr(copy);
-}
-
-
-OrthographicProjection::OrthographicProjection(real_t _left, real_t _right, real_t _bottom, real_t _top, real_t _near, real_t _far):
-        RefCountObject(),
-        __xscale(2. / (_right - _left) ),
-        __xconstant((_right + _left) / (_right - _left)),
-        __yscale(2. / (_top - _bottom) ),
-        __yconstant((_top + _bottom) / (_top - _bottom)),
-        left(_left),
-        right(_right),
-        bottom(_bottom),
-        top(_top),
-        near(_near),
-        far(_far){
-    }
-
-OrthographicProjection::~OrthographicProjection() {}
-
-Vector3 OrthographicProjection::screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const {
-    // now convert point from screen space to NDC space (in range [-1,1])
-    Vector3 vertexNDC(__xscale * xScreen  - __xconstant, __yscale * yScreen  - __yconstant,  -z);
-
-    return vertexNDC;
-}
-
-Vector3 OrthographicProjection::NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const {
-    // now convert point from NDC space to screen space 
-    Vector3 vertexScreen((xNDC  + __xconstant) / __xscale,  (yNDC  + __yconstant) / __yscale,  -z);
-    return vertexScreen;
-}
-
-Vector3 OrthographicProjection::projecttoNDC(const Vector3& vertexCamera) const {
-    return screen2NDC(vertexCamera.x(), vertexCamera.y(), vertexCamera.z());
-}
-
-Vector3 OrthographicProjection::unprojecttoCamera(const Vector3& vertexNDC) const {
-    return NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z());
-}
-
-bool OrthographicProjection::isInZRange(real_t z) const {
-    return (z >= near && z <= far);
-}
-
-bool OrthographicProjection::isInZRange(real_t zmin, real_t zmax) const{
-    return !(zmax < near || zmin > far);
-}
-
-
-PerspectiveProjection::PerspectiveProjection(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far):
-        OrthographicProjection(left, right, bottom, top, near, far){
-}
-
-Vector3 PerspectiveProjection::projecttoNDC(const Vector3& vertexCamera) const {
-    real_t z = -vertexCamera.z();
-    if (z < 0) { return screen2NDC(0, 0, vertexCamera.z()); }
-    return screen2NDC(near * vertexCamera.x() / z, near * vertexCamera.y() / z, vertexCamera.z());
-}
-
-Vector3 PerspectiveProjection::unprojecttoCamera(const Vector3& vertexNDC) const {
-    real_t z = -vertexNDC.z();
-    return NDC2screen(vertexNDC.x() * z, vertexNDC.y() * z, vertexNDC.z());
-}
-
-PerspectiveProjection::~PerspectiveProjection() {}
-
-inline Vector3 toRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
-{
-    // convert to raster space
-    Vector3 vertexRaster( 
-                          ((vertexNDC.x() + 1) / 2.) * imageWidth, 
-                          ((1 - vertexNDC.y()) / 2.) * imageHeight,
-                          vertexNDC.z());
-    return vertexRaster;
-}
-
-inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
-{
-    // convert raster to NDC space
-    Vector3 vertexNDC(  (raster.x()*2/imageWidth) - 1,
-                        1 - (raster.y()*2/imageWidth),
-                        raster.z());
-    return vertexNDC;
-}
-
-
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight), 
@@ -200,18 +74,18 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
     __lightSpecular(255,255,255),
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-    __frameBuffer(style != eDepthOnly ? new PglFrameBufferManager(imageWidth, imageHeight, style == eIdBased ? 4 : 3, backGroundColor) : NULL),
+    __frameBuffer(style == eColorBased ? new PglFrameBufferManager(imageWidth, imageHeight, 3, backGroundColor) : NULL),
     __triangleshader(NULL)
 {
     setOrthographicCamera(-1, 1, -1, 1, -1, 1);
     lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
     if (style != eDepthOnly) {
-        if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this));
+        if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this, backGroundColor.toUint()));
         else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
     }
 }    
     
-ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid):
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid, Color4::eColor4Format conversionformat):
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight), 
     __camera(0), 
@@ -221,8 +95,8 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t 
     __lightSpecular(255,255,255),
     __alphathreshold(0.99),
     __depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
-    __frameBuffer(new PglFrameBufferManager(imageWidth, imageHeight,  4 , Color4::fromUint(defaultid))),
-    __triangleshader(new IdBasedShader(this))
+    __frameBuffer(), // will be initialized into IdBasedShader constructor
+    __triangleshader(new IdBasedShader(this, defaultid, conversionformat))
 {
     setOrthographicCamera(-1, 1, -1, 1, -1, 1);
     lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
@@ -270,11 +144,23 @@ void ZBufferEngine::setFrameBufferAt(uint32_t x, uint32_t y, const Color4& raste
     }
 }
 
+bool ZBufferEngine::isVisible(int32_t x, int32_t y, real_t z) const
+{
+    real_t cz = __depthBuffer->getAt(x, y);
+    return (z < cz && (cz-z) > GEOM_EPSILON); 
+}
+
+bool ZBufferEngine::isVisible(const TOOLS(Vector3)& pos) const
+{
+    Vector3 raster = worldToRaster(pos);
+    return isVisible(raster.x(), raster.y(), raster.z());
+}
+
+
 bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor)
 {
     if (isTotallyTransparent(rasterColor.getAlpha())) return false;
-    real_t cz = __depthBuffer->getAt(x, y);
-    if (z < cz && (cz-z) > GEOM_EPSILON) {
+    if (isVisible(x,y,z)) {
         __depthBuffer->setAt(x, y, z);
         setFrameBufferAt(x,y,rasterColor);
         return true;
@@ -286,80 +172,58 @@ bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4&
 
 void ZBufferEngine::transformModel(const TOOLS(Matrix4)& transform)
 {
-    __currentModelMatrix *= transform;
-    __currentWorldToCamera = __worldToCamera * __currentModelMatrix;
+    __camera->transformModel(transform);
 }
 
 void ZBufferEngine::pushModelTransformation()
 {
-    __modelMatrixStack.push(__currentModelMatrix);
+    __camera->pushModelTransformation();
 }
 
 void ZBufferEngine::popModelTransformation()
 {
-    if (!__modelMatrixStack.empty()){
-        __currentModelMatrix = __modelMatrixStack.top();
-        __currentWorldToCamera = __worldToCamera * __currentModelMatrix;    
-        __modelMatrixStack.pop();
-    }
-
+    __camera->popModelTransformation();
 }
 
 void ZBufferEngine::transformModelIdentity()
 {
-    __currentModelMatrix = Matrix4();
-    __currentWorldToCamera = __worldToCamera * __currentModelMatrix;    
+    __camera->transformModelIdentity();
 }
 
 void ZBufferEngine::translateModel(const Vector3& v)
 {
-    transformModel(Matrix4::translation(v));
+    __camera->translateModel(v);
 }
 
 void ZBufferEngine::scaleModel(const Vector3& v)
 {
-    transformModel(Matrix4(Matrix3::scaling(v)));
+    __camera->scaleModel(v);
 }
 
 
 void ZBufferEngine::setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far){
-    real_t top = near * tan(angleOfView * GEOM_RAD/2.);
-    real_t bottom = -top;
-    real_t right = top * aspectRatio;
-    real_t left = -right;
-    setFrustrumCamera(left, right, bottom, top, near, far);
+    __camera = ProjectionCamera::perspectiveCamera(angleOfView, aspectRatio, near, far);
 }
 
-void ZBufferEngine::setFrustrumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
+void ZBufferEngine::setFrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
 {
-    __camera = ProjectionPtr(new PerspectiveProjection(left, right, bottom, top, near, far));
+    __camera = ProjectionCamera::frustumCamera(left, right, bottom, top, near, far);
 }
 
 void ZBufferEngine::setOrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
 {
-    __camera = ProjectionPtr(new OrthographicProjection(left, right, bottom, top, near, far));
+    __camera = ProjectionCamera::orthographicCamera(left, right, bottom, top, near, far);
 }
 
 BoundingBoxPtr ZBufferEngine::getBoundingBoxView() const
 {
-    return BoundingBoxPtr(new BoundingBox(Vector3(__camera->left,__camera->bottom,__camera->near),Vector3(__camera->right,__camera->top,__camera->far)));
+    return __camera->getBoundingBoxView();
 }
 
   
 void ZBufferEngine::lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D)
 {
-        Vector3 forward = eyePosition3D - center3D;
-        forward.normalize();
-        Vector3 up(upVector3D);
-        up.normalize();
-        Vector3 side = cross(upVector3D, forward);
-        side.normalize();
-        up = cross(forward, side);
-        up.normalize();
-        __cameraPosition = eyePosition3D;
-        __cameraToWorld = Matrix4(side, up, forward, eyePosition3D);
-        __worldToCamera = inverse(__cameraToWorld);
-        __currentWorldToCamera = __worldToCamera * __currentModelMatrix;
+    __camera->lookAt(eyePosition3D, center3D, upVector3D);
 }
 
 void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor)
@@ -380,7 +244,7 @@ void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& 
     __lightSpecular = lightSpecular;
 }
 
-
+/*
 Vector3 ZBufferEngine::worldToRaster(const Vector3& vertexWorld) const
 {
 
@@ -419,6 +283,7 @@ TOOLS(Vector3) ZBufferEngine::rasterToWorld(const TOOLS(Vector3)& raster) const
     Vector3 vertexNDC = rasterToNDC(raster, __imageWidth, __imageHeight);
     return cameraToWorld(__camera->NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z()));
 }
+*/
 
 
 
@@ -456,7 +321,7 @@ void ZBufferEngine::render(TriangleSetPtr triangles, AppearancePtr appearance)
         const Vector3& v1 = triangles->getFacePointAt(itidx,1);
         const Vector3& v2 = triangles->getFacePointAt(itidx,2);
 
-        __triangleshader->init(appearance, triangles, itidx, __currentId);
+        if(is_valid_ptr(__triangleshader))__triangleshader->init(appearance, triangles, itidx, __currentId);
         renderShadedTriangle(__triangleshader, v0, v1, v2, ccw);
 
     }
@@ -466,14 +331,14 @@ void ZBufferEngine::render(TriangleSetPtr triangles, AppearancePtr appearance)
 void ZBufferEngine::renderShadedTriangle(TriangleShaderPtr shader, const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw)
 {
     // Projection in camera space
-    Vector3 v0Cam = worldToCamera(v0);
-    Vector3 v1Cam = worldToCamera(v1);
-    Vector3 v2Cam = worldToCamera(v2);
+    Vector3 v0Cam = __camera->worldToCamera(v0);
+    Vector3 v1Cam = __camera->worldToCamera(v1);
+    Vector3 v2Cam = __camera->worldToCamera(v2);
 
     // Convert the vertices of the triangle to raster space
-    Vector3 v0Raster = cameraToRaster(v0Cam);
-    Vector3 v1Raster = cameraToRaster(v1Cam);
-    Vector3 v2Raster = cameraToRaster(v2Cam);
+    Vector3 v0Raster = __camera->cameraToRaster(v0Cam,__imageWidth, __imageHeight);
+    Vector3 v1Raster = __camera->cameraToRaster(v1Cam,__imageWidth, __imageHeight);
+    Vector3 v2Raster = __camera->cameraToRaster(v2Cam,__imageWidth, __imageHeight);
 
     real_t z0 = v0Raster.z();
     real_t z1 = v1Raster.z();
@@ -551,15 +416,17 @@ void ZBufferEngine::renderShadedTriangle(TriangleShaderPtr shader, const TOOLS(V
 
                     // Vec2f st = st0 * w0 + st1 * w1 + st2 * w2;                        
                     // st *= z;
-                    if (z < __depthBuffer->getAt(x, y)) {
+                    if (isVisible(x, y, z)) {
                         __depthBuffer->setAt(x, y, z);
-                        shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2));
+                        if(is_valid_ptr(shader))shader->process(x, y, z, (w0 * z / z0), (w1 * z / z1), (w2 * z / z2));
                     }                    
                 }
             }
         }
     }        
 }
+
+
 
 void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, 
                                      const Color4& c0,  const Color4& c1,  const Color4& c2, 
@@ -573,10 +440,10 @@ void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const V
 
 void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const uint32_t width)
 {
-    Vector3 vCam = worldToCamera(v);
+    Vector3 vCam = __camera->worldToCamera(v);
 
     // Convert the vertices of the triangle to raster space
-    Vector3 vRaster = cameraToRaster(vCam);
+    Vector3 vRaster = __camera->cameraToRaster(vCam,__imageWidth, __imageHeight);
 
     // v0Raster.z() = 1. / v0Raster.z();
 
@@ -649,8 +516,8 @@ ImagePtr ZBufferEngine::getTexture(const ImageTexturePtr imgdef)
 
 void ZBufferEngine::duplicateBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
 {
-    Vector3 vRasterFrom = worldToRaster(from);
-    Vector3 vRasterTo = worldToRaster(to);
+    Vector3 vRasterFrom = __camera->worldToRaster(from,__imageWidth, __imageHeight);
+    Vector3 vRasterTo = __camera->worldToRaster(to,__imageWidth, __imageHeight);
     Vector3 vDiff = vRasterTo - vRasterFrom;
 
     duplicateBuffer(vDiff.x(), vDiff.y(), vDiff.z(), useDefaultColor, defaultcolor);
@@ -659,8 +526,8 @@ void ZBufferEngine::duplicateBuffer(const TOOLS(Vector3)& from, const TOOLS(Vect
 void ZBufferEngine::duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, bool useDefaultColor, const Color3& defaultcolor){
     if(xDiff == 0  && yDiff == 0 && fabs(zDiff) < GEOM_EPSILON) return;
 
-    uint32_t width = __frameBuffer->width();
-    uint32_t height = __frameBuffer->height();
+    uint32_t width = __imageWidth;
+    uint32_t height = __imageHeight;
 
     uint32_t xStart = 0;
     uint32_t xEnd = width;
@@ -687,13 +554,13 @@ void ZBufferEngine::duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, 
     }
 
     RealArray2Ptr depthBuffer(new RealArray2(*__depthBuffer));
-    FrameBufferManagerPtr framebuffer = __frameBuffer->deepcopy();
+    FrameBufferManagerPtr framebuffer = (is_valid_ptr(__frameBuffer) ? __frameBuffer->deepcopy() : NULL);
 
     for (uint32_t i = xStart ; i < xEnd ; ++i) {
         for (uint32_t j = yStart ; j < yEnd ; ++j) {
             real_t potentialz = depthBuffer->getAt(i-xDiff,j-yDiff)+zDiff;
             if (__camera->isInZRange(potentialz))
-                renderRaster(i, j, potentialz, useDefaultColor? defaultcolor : framebuffer->getPixelAt(i-xDiff,j-yDiff));
+                renderRaster(i, j, potentialz, useDefaultColor || is_null_ptr(framebuffer) ? defaultcolor : framebuffer->getPixelAt(i-xDiff,j-yDiff));
         }
     }
 
@@ -701,8 +568,8 @@ void ZBufferEngine::duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, 
 
 void ZBufferEngine::periodizeBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
 {
-    Vector3 vRasterFrom = worldToRaster(from);
-    Vector3 vRasterTo = worldToRaster(to);
+    Vector3 vRasterFrom = __camera->worldToRaster(from,__imageWidth, __imageHeight);
+    Vector3 vRasterTo = __camera->worldToRaster(to,__imageWidth, __imageHeight);
     Vector3 vDiff = vRasterTo - vRasterFrom;
 
     periodizeBuffer(vDiff.x(), vDiff.y(), vDiff.z(), useDefaultColor, defaultcolor);
@@ -719,8 +586,8 @@ void ZBufferEngine::_bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_
 {
     if(xDiff == 0  && yDiff == 0 && fabs(zDiff) < GEOM_EPSILON) return;
 
-    uint32_t width = __frameBuffer->width();
-    uint32_t height = __frameBuffer->height();
+    uint32_t width = __imageWidth;
+    uint32_t height = __imageHeight;
 
     int32_t xStart = 0;
     int32_t xEnd = width;
@@ -751,15 +618,15 @@ void ZBufferEngine::_bufferPeriodizationStep(int32_t xDiff, int32_t yDiff, real_
         yStart += yDiff;        
     }
 
-    printf("%i %i %f\n", xDiff, yDiff, zDiff);
-    printf("x:%i %i %i\n", xStart, xEnd, xStep);
-    printf("y:%i %i %i\n", yStart, yEnd, yStep);
+    // printf("%i %i %f\n", xDiff, yDiff, zDiff);
+    // printf("x:%i %i %i\n", xStart, xEnd, xStep);
+    // printf("y:%i %i %i\n", yStart, yEnd, yStep);
 
     for (int32_t i = xStart ; i != xEnd ; i+=xStep) {
         for (int32_t j = yStart ; j < yEnd ; j+=yStep) {
             real_t potentialz = __depthBuffer->getAt(i-xDiff,j-yDiff)+zDiff;
             // if (__camera->isInZRange(potentialz))
-                renderRaster(i, j, potentialz, useDefaultColor? defaultcolor : __frameBuffer->getPixelAt(i-xDiff,j-yDiff));
+                renderRaster(i, j, potentialz, useDefaultColor || is_null_ptr(__frameBuffer)? defaultcolor : getFrameBufferAt(i-xDiff,j-yDiff));
         }
     }
 }

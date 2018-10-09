@@ -74,7 +74,7 @@ Color4 PGL(phong)(const Vector3& v, const Vector3& n,
 Shader::Shader(ZBufferEngine * engine) : RefCountObject(), __engine(engine) {}
 Shader::~Shader() {}
 
-const TOOLS(Vector3)& Shader::cameraPosition() const { return __engine->__cameraPosition; }  
+const TOOLS(Vector3)& Shader::cameraPosition() const { return __engine->camera()->position(); }  
 const TOOLS(Vector3)& Shader::lightPosition() const { return __engine->__lightPosition; }  
 const Color3& Shader::lightAmbient() const { return __engine->__lightAmbient; }  
 const Color3& Shader::lightDiffuse() const { return __engine->__lightDiffuse; }  
@@ -84,10 +84,10 @@ TriangleShader::TriangleShader(ZBufferEngine * engine) : Shader(engine) {}
 TriangleShader::~TriangleShader() {}
 
 
-IdBasedShader::IdBasedShader(ZBufferEngine * engine, uint32_t _defaultid) : 
-    TriangleShader(engine), defaultid(_defaultid) 
+IdBasedShader::IdBasedShader(ZBufferEngine * engine, uint32_t _defaultid, Color4::eColor4Format _conversionformat) : 
+    TriangleShader(engine), defaultid(_defaultid), conversionformat(_conversionformat) 
 {
-    Color4 defcol = Color4::fromUint(_defaultid);
+    Color4 defcol = Color4::fromUint(_defaultid, conversionformat);
     engine->__frameBuffer = new PglFrameBufferManager(engine->__imageWidth, engine->__imageHeight, 4, defcol);
 
     // if(engine->getImage()->nbChannels() != 4){
@@ -100,7 +100,7 @@ void IdBasedShader::init(AppearancePtr appearance, TriangleSetPtr triangles, uin
 { shapeid = _shapeid; }
 void IdBasedShader::process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) 
 {    
- __engine->getFrameBuffer()->setPixel4At(x,y,Color4::fromUint(shapeid));   
+ __engine->getFrameBuffer()->setPixel4At(x,y,Color4::fromUint(shapeid, conversionformat));   
 }
 
 TextureShader::TextureShader(ZBufferEngine * engine) : TriangleShader(engine) {}

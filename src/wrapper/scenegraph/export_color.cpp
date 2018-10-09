@@ -168,6 +168,16 @@ Color4 py_from_hsva( bp::object hsv){
 
 void export_Color3()
 {
+   enum_<Color3::eColor3Format>("eColor3Format")
+    .value("eRGB",Color3::eRGB)
+    .value("eRBG",Color3::eRBG)
+    .value("eGRB",Color3::eGRB)
+    .value("eGBR",Color3::eGBR)
+    .value("eBGR",Color3::eBGR)
+    .value("eBRG",Color3::eBRG)
+    .export_values()
+      ;
+
   class_< Color3 >("Color3", "A 3 components color expressed in red, green and blue.", init< const Color3 & >(args("other")))
       .def(init< uchar_t, uchar_t, uchar_t >("Color3(red,green,blue)",
             (bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0)))
@@ -217,6 +227,24 @@ void export_Color3()
 
 void export_Color4()
 {
+   enum_<Color4::eColor4Format>("eColor4Format")
+    .value("eARGB",Color4::eARGB)
+    .value("eARBG",Color4::eARBG)
+    .value("eAGRB",Color4::eAGRB)
+    .value("eAGBR",Color4::eAGBR)
+    .value("eABGR",Color4::eABGR)
+    .value("eABRG",Color4::eABRG)
+
+    .value("eRGBA",Color4::eRGBA)
+    .value("eRBGA",Color4::eRBGA)
+    .value("eGRBA",Color4::eGRBA)
+    .value("eGBRA",Color4::eGBRA)
+    .value("eBGRA",Color4::eBGRA)
+    .value("eBRGA",Color4::eBRGA)
+    .export_values()
+
+    ;
+
   class_< Color4 >("Color4", "A 4 component color expressed in red, green, blue and alpha.", init< const Color4 & >(args("other")))
       .def(init< uchar_t, uchar_t, uchar_t , uchar_t>("Color4(red,green,blue,alpha)",
             (bp::arg("red")=0,bp::arg("green")=0,bp::arg("blue")=0,bp::arg("alpha")=0)))

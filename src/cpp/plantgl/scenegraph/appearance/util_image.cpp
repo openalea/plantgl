@@ -140,10 +140,8 @@ const uchar_t * Image::getPixelDataAt(uint_t x, uint_t y) const {
 
 void Image::fill(const Color4 & color) 
 {
-    printf("< %i %i %i %i\n",color[0],color[1],color[2],color[3]);
     uint8_t i = 0;
     for (std::vector<uchar_t>::iterator itCol = __data.begin(); itCol != __data.end(); ++itCol, i = (i+1)%__nbchannels){
-        // printf("- %i/%i:%i\n",i,__nbchannels,color[i]);
         *itCol = color[i];        
     }
 
