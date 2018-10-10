@@ -56,6 +56,19 @@ BoundingBox::BoundingBox( const Vector3& lowLeft, const Vector3& upRight ) :
   GEOM_ASSERT(isValid());
 }
 
+BoundingBox::BoundingBox(const Point3ArrayPtr points):
+  RefCountObject(),
+  __ll(),
+  __ur() {
+  if (is_valid_ptr(points)){
+      std::pair<Vector3,Vector3> _bounds = points->getBounds();
+      __ll = _bounds.first;
+      __ur = _bounds.second;
+      GEOM_ASSERT(isValid());
+  }
+}
+
+
 BoundingBox::~BoundingBox( ) {
 }
 

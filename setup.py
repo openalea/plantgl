@@ -39,13 +39,13 @@ setup(
     scons_scripts=['SConstruct'],
     # scons_parameters = ["build_prefix="+build_prefix],
 
-    namespace_packages=["openalea", "vplants"],
+    namespace_packages=["openalea"],
     create_namespaces=True,
 
     py_modules=["pgl_postinstall", ],
     # pure python  packages
-    packages=["vplants",
-              "vplants.plantgl",
+    packages=["openalea",
+              "openalea.plantgl",
               pkg_name,
               pkg_name + '.math',
               pkg_name + '.scenegraph',
