@@ -44,9 +44,7 @@ setup(
 
     py_modules=["pgl_postinstall", ],
     # pure python  packages
-    packages=["openalea",
-              "openalea.plantgl",
-              pkg_name,
+    packages=[pkg_name,
               pkg_name + '.math',
               pkg_name + '.scenegraph',
               pkg_name + '.algo',
