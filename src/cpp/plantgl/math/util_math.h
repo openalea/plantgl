@@ -55,6 +55,15 @@ inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
 
 #endif
 
+template <typename T>
+inline T min3(const T &a, const T &b, const T &c)
+{ return pglMin(a, pglMin(b, c)); }
+
+template <typename T>
+inline T max3(const T &a, const T &b, const T &c)
+{ return pglMax(a, pglMax(b, c)); }
+
+
 #ifdef PGL_USE_DOUBLE
 
 /// value of a degree in radian

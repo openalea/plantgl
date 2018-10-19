@@ -77,6 +77,7 @@ void export_GLCtrlPointRenderer();
 
 void export_ZBufferRenderer();
 void export_ZBufferEngine();
+void export_DepthSortEngine();
 
 /* ----------------------------------------------------------------------- */
 // Turtle export

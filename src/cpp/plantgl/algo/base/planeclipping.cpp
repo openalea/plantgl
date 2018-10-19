@@ -91,6 +91,7 @@ Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
     bool side2 = (d2 > plane.getD());
     bool side3 = (d3 > plane.getD());
     if ( side1 == side2 && side1 == side3) {
+        printf("all in the same side\n");
         if (side1) { 
             Point3ArrayPtr result(new Point3Array(3));
             result->setAt(0,p1); result->setAt(1,p2); result->setAt(2,p3);

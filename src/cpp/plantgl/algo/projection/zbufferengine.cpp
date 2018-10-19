@@ -36,6 +36,7 @@
 
 #include "zbufferengine.h"
 #include "zbufferrenderer.h"
+#include "projection_util.h"
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
@@ -287,20 +288,6 @@ TOOLS(Vector3) ZBufferEngine::rasterToWorld(const TOOLS(Vector3)& raster) const
 
 
 
-real_t min3(const real_t &a, const real_t &b, const real_t &c)
-{ return pglMin(a, pglMin(b, c)); }
-
-real_t max3(const real_t &a, const real_t &b, const real_t &c)
-{ return pglMax(a, pglMax(b, c)); }
-
-real_t edgeFunction(const Vector3 &a, const Vector3 &b, const Vector3 &c, bool ccw)
-{ 
-    if (!ccw)
-        return (c.x() - a.x()) * (b.y() - a.y()) - (c.y() - a.y()) * (b.x() - a.x()); 
-    else 
-        return (a.x() - b.x()) * (c.y() - a.y()) - (a.y() - b.y()) * (c.x() - a.x()); 
-}
-
 
 void ZBufferEngine::render(TriangleSetPtr triangles, AppearancePtr appearance)
 {
@@ -396,7 +383,7 @@ void ZBufferEngine::renderShadedTriangle(TriangleShaderPtr shader, const TOOLS(V
     for (int32_t y = y0; y <= y1; ++y) {
         for (int32_t x = x0; x <= x1; ++x) {
 
-            Vector3 pixelSample(x + 0.5, y + 0.5, 0);
+            Vector2 pixelSample(x + 0.5, y + 0.5);
 
             // find weight of pixel
             real_t w0 = edgeFunction(v1Raster, v2Raster, pixelSample, ccw);

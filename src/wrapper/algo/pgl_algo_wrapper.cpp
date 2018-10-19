@@ -81,6 +81,7 @@ void module_algo()
 
     export_ZBufferRenderer();
     export_ZBufferEngine();
+    export_DepthSortEngine();
 
     // Turtle export
     export_TurtleParam();
