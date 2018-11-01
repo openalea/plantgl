@@ -218,4 +218,3 @@ ProjectionCameraPtr ProjectionCamera::orthographicCamera(real_t left, real_t rig
     return ProjectionCameraPtr(new ProjectionCamera(left, right, bottom, top, near, far, ProjectionCamera::eOrthographic));
 }
 
-

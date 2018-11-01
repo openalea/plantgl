@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-#include <plantgl/algo/projection/zbufferrenderer.h>
+#include <plantgl/algo/projection/depthsortengine.h>
 #include <plantgl/python/export_refcountptr.h>
 #include <plantgl/python/boost_python.h>
 
@@ -40,11 +40,17 @@ using namespace std;
 #define bp boost::python
 
 
-void export_ZBufferRenderer()
+void export_DepthSortEngine()
 {
-  class_< ZBufferRenderer, bases<Action>,  boost::noncopyable > 
-      ("ZBufferRenderer", init<ZBufferEngine&, Tesselator&, Discretizer&>("Construct a ZBufferRenderer.",(bp::arg("engine"), bp::arg("tesselator"), bp::arg("discretizer"))) )
+
+
+  class_< DepthSortEngine, bases<ProjectionEngine>, boost::noncopyable > 
+      ("DepthSortEngine", init<>("Construct a DepthSortEngine.") )
+      .def("processTriangle", &DepthSortEngine::processTriangle)
+      .def("getResult", &DepthSortEngine::getResult, (bp::arg("format")=Color4::eARGB, bp::arg("cameraCoordinates")=true))
+      .def("getProjectionResult", &DepthSortEngine::getProjectionResult, (bp::arg("format")=Color4::eARGB, bp::arg("cameraCoordinates")=true))
       ;
+
 
 }
 

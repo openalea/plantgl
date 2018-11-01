@@ -50,7 +50,7 @@
 #include <plantgl/tool/util_cache.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/scenegraph/scene/scene.h>
-#include "projectioncamera.h"
+#include "projectionengine.h"
 #include <list>
 
 /* ----------------------------------------------------------------------- */
@@ -66,50 +66,49 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class ALGO_API DepthSortEngine  {
+class ALGO_API DepthSortEngine : public ProjectionEngine {
 
 public :
 
-      DepthSortEngine();
+    DepthSortEngine();
 
-      ~DepthSortEngine();
+    virtual ~DepthSortEngine();
 
-      inline void setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far)
-      { __camera = ProjectionCamera::perspectiveCamera(angleOfView, aspectRatio, near, far); }
+    void processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, uint32_t id);
 
-      inline void setFrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
-      { __camera = ProjectionCamera::frustumCamera(left, right, bottom, top, near, far); }
+    ScenePtr getResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
+    ScenePtr getProjectionResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
 
-      inline void setOrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
-      {  __camera = ProjectionCamera::orthographicCamera(left, right, bottom, top, near, far); }
-
-      inline void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D)
-      { __camera->lookAt(eyePosition3D, center3D, upVector3D); }
-
-      ProjectionCameraPtr camera() const { return __camera; }
-
-      void processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, uint32_t id);
-
-      ScenePtr getResult(Color4::eColor4Format format = Color4::eARGB) const;
-      ScenePtr getProjectionResult(Color4::eColor4Format format = Color4::eARGB) const;
+    virtual void process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id);
+    virtual void process(PolylinePtr polyline, MaterialPtr material, uint32_t id);
+    virtual void process(PointSetPtr pointset, MaterialPtr material, uint32_t id);
 
     struct PolygonInfo {
         Point3ArrayPtr points;
         TOOLS(Vector3) pmin, pmax;
         uint32_t id;
     };
+
     typedef std::list<PolygonInfo> PolygonInfoList;
+    typedef std::list<PolygonInfo> PolygonInfoSet;
+    typedef std::list<PolygonInfoSet::iterator> PolygonInfoIteratorList;
 
 protected:
+
+    void removePolygon(DepthSortEngine::PolygonInfoSet::iterator it);
+    DepthSortEngine::PolygonInfoSet::iterator appendPolygon(const PolygonInfo& polygon);
+    DepthSortEngine::PolygonInfoIteratorList appendPolygons(DepthSortEngine::PolygonInfoList::iterator begin, DepthSortEngine::PolygonInfoList::iterator end);
+    DepthSortEngine::PolygonInfoIteratorList getIntersectingPolygons(const PolygonInfo& polygon);
 
 
     PolygonInfo _toPolygonInfo(const Point3ArrayPtr& points, uint32_t id) const;
     DepthSortEngine::PolygonInfoList _toPolygonInfo(const std::vector<Point3ArrayPtr>& polygons, uint32_t id) const;
 
-    PolygonInfoList::iterator _processTriangle( PolygonInfo polygon, PolygonInfoList::iterator begin);
+    DepthSortEngine::PolygonInfoIteratorList::iterator _processTriangle( PolygonInfo polygon, 
+                                                                         DepthSortEngine::PolygonInfoIteratorList& polygonstotest, 
+                                                                         DepthSortEngine::PolygonInfoIteratorList::iterator begin);
 
     PolygonInfoList __polygonlist; 
-    ProjectionCameraPtr __camera;     
 };
 
 /* ----------------------------------------------------------------------- */

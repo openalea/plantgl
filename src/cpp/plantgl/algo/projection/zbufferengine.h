@@ -46,15 +46,9 @@
 #include <plantgl/tool/util_array2.h>
 #include <plantgl/tool/util_cache.h>
 #include <plantgl/tool/rcobject.h>
-#include <plantgl/scenegraph/geometry/triangleset.h>
-#include <plantgl/scenegraph/geometry/pointset.h>
-#include <plantgl/scenegraph/geometry/polyline.h>
-#include <plantgl/scenegraph/scene/scene.h>
-#include <plantgl/scenegraph/appearance/material.h>
-#include <plantgl/scenegraph/appearance/texture.h>
 #include "../algo_config.h"
 #include "shading.h"
-#include "projectioncamera.h"
+#include "projectionengine.h"
 #include "framebuffermanager.h"
 
 /* ----------------------------------------------------------------------- */
@@ -71,7 +65,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-class ALGO_API ZBufferEngine  {
+class ALGO_API ZBufferEngine : public ProjectionEngine {
 
 public :
     friend class Shader;
@@ -107,19 +101,12 @@ public :
   /// Destructor
   virtual ~ZBufferEngine();
   
-  void setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far);
-  void setFrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-  void setOrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-  void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D);
-
   void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor = Color3(255,255,255));
   void setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightAmbient = Color3(255,255,255), const Color3& lightDiffuse = Color3(255,255,255), const Color3& lightSpecular = Color3(255,255,255));
   
-  void setId(uint32_t id) { __currentId = id; }
-
-  void render(TriangleSetPtr triangles, AppearancePtr appearance );
-  void render(PolylinePtr polyline, MaterialPtr material);
-  void render(PointSetPtr pointset, MaterialPtr material);
+  void process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id);
+  void process(PolylinePtr polyline, MaterialPtr material, uint32_t id);
+  void process(PointSetPtr pointset, MaterialPtr material, uint32_t id);
 
   void renderTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, const Color4& c0, const Color4& c1, const Color4& c2, bool ccw = true);
   void renderPoint(const TOOLS(Vector3)& v, const Color4& c0, const uint32_t width = 1);
@@ -146,8 +133,6 @@ public :
    ImagePtr getImage() const;
    TOOLS(RealArray2Ptr) getDepthBuffer() const { return __depthBuffer; }
 
-   BoundingBoxPtr getBoundingBoxView() const;
-
    inline bool isTotallyTransparent(const Color4& c) const { return isTotallyTransparent(c.getAlpha()); }
    bool isTotallyTransparent(const real_t alpha) const ;
 
@@ -155,14 +140,6 @@ public :
    bool isVisible(const TOOLS(Vector3)& pos) const;
 
    bool renderRaster(uint32_t x, uint32_t y, real_t z, const Color4& rasterColor);
-
-  void transformModel(const TOOLS(Matrix4)& transform);
-  void pushModelTransformation();
-  void popModelTransformation();
-  void transformModelIdentity();
-
-  void translateModel(const TOOLS(Vector3)& v);
-  void scaleModel(const TOOLS(Vector3)& v);
 
   void render(ScenePtr scene);
 
@@ -183,7 +160,6 @@ public :
   void setFrameBuffer(FrameBufferManagerPtr fb) { __frameBuffer = fb; }
   FrameBufferManagerPtr getFrameBuffer() const { return __frameBuffer; }
 
-  ProjectionCameraPtr camera() const { return __camera; }
 
 protected :
 
@@ -191,7 +167,6 @@ protected :
 
   uint16_t __imageWidth;
   uint16_t __imageHeight;
-  ProjectionCameraPtr __camera;
 
   TOOLS(Vector3) __lightPosition;
   Color3 __lightAmbient;
@@ -202,7 +177,6 @@ protected :
   FrameBufferManagerPtr __frameBuffer;
 
   real_t __alphathreshold;
-  uint32_t __currentId;
 
   TOOLS(Cache)<ImagePtr> __cachetexture;
 

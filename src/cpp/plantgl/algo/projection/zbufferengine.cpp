@@ -35,7 +35,6 @@
 /* ----------------------------------------------------------------------- */
 
 #include "zbufferengine.h"
-#include "zbufferrenderer.h"
 #include "projection_util.h"
 /* ----------------------------------------------------------------------- */
 
@@ -44,9 +43,9 @@ TOOLS_USING_NAMESPACE
 
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
+    ProjectionEngine(),
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight), 
-    __camera(0), 
     __lightPosition(0,0,1),  
     __lightAmbient(255,255,255),
     __lightDiffuse(255,255,255),
@@ -56,8 +55,6 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
     __frameBuffer(style != eDepthOnly ? new PglFrameBufferManager(imageWidth, imageHeight, style == eIdBased ? 4 : 3, backGroundColor) : NULL),
     __triangleshader(NULL)
 {
-    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
-    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
     if (style != eDepthOnly) {
         if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this));
         else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
@@ -66,9 +63,9 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
 
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color4& backGroundColor, eRenderingStyle style):
+    ProjectionEngine(),
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight), 
-    __camera(0), 
     __lightPosition(0,0,1),  
     __lightAmbient(255,255,255),
     __lightDiffuse(255,255,255),
@@ -78,8 +75,6 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
     __frameBuffer(style == eColorBased ? new PglFrameBufferManager(imageWidth, imageHeight, 3, backGroundColor) : NULL),
     __triangleshader(NULL)
 {
-    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
-    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
     if (style != eDepthOnly) {
         if (style == eIdBased) __triangleshader = TriangleShaderPtr(new IdBasedShader(this, backGroundColor.toUint()));
         else __triangleshader = TriangleShaderPtr(new TriangleShaderSelector(this));
@@ -87,9 +82,9 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Co
 }    
     
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t defaultid, Color4::eColor4Format conversionformat):
+    ProjectionEngine(),
     __imageWidth(imageWidth), 
     __imageHeight(imageHeight), 
-    __camera(0), 
     __lightPosition(0,0,1),  
     __lightAmbient(255,255,255),
     __lightDiffuse(255,255,255),
@@ -99,8 +94,6 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t 
     __frameBuffer(), // will be initialized into IdBasedShader constructor
     __triangleshader(new IdBasedShader(this, defaultid, conversionformat))
 {
-    setOrthographicCamera(-1, 1, -1, 1, -1, 1);
-    lookAt(Vector3(0,1,0),Vector3(0,0,0),Vector3(0,0,1));
 }    
     
     
@@ -170,63 +163,6 @@ bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4&
 
 }
 
-
-void ZBufferEngine::transformModel(const TOOLS(Matrix4)& transform)
-{
-    __camera->transformModel(transform);
-}
-
-void ZBufferEngine::pushModelTransformation()
-{
-    __camera->pushModelTransformation();
-}
-
-void ZBufferEngine::popModelTransformation()
-{
-    __camera->popModelTransformation();
-}
-
-void ZBufferEngine::transformModelIdentity()
-{
-    __camera->transformModelIdentity();
-}
-
-void ZBufferEngine::translateModel(const Vector3& v)
-{
-    __camera->translateModel(v);
-}
-
-void ZBufferEngine::scaleModel(const Vector3& v)
-{
-    __camera->scaleModel(v);
-}
-
-
-void ZBufferEngine::setPerspectiveCamera(real_t angleOfView, real_t aspectRatio, real_t near, real_t far){
-    __camera = ProjectionCamera::perspectiveCamera(angleOfView, aspectRatio, near, far);
-}
-
-void ZBufferEngine::setFrustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
-{
-    __camera = ProjectionCamera::frustumCamera(left, right, bottom, top, near, far);
-}
-
-void ZBufferEngine::setOrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
-{
-    __camera = ProjectionCamera::orthographicCamera(left, right, bottom, top, near, far);
-}
-
-BoundingBoxPtr ZBufferEngine::getBoundingBoxView() const
-{
-    return __camera->getBoundingBoxView();
-}
-
-  
-void ZBufferEngine::lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D)
-{
-    __camera->lookAt(eyePosition3D, center3D, upVector3D);
-}
-
 void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor)
 {
     // printf("Set Light Color : %u %u %u\n", lightColor.getRed(), lightColor.getGreen(), lightColor.getBlue());
@@ -245,51 +181,9 @@ void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& 
     __lightSpecular = lightSpecular;
 }
 
-/*
-Vector3 ZBufferEngine::worldToRaster(const Vector3& vertexWorld) const
-{
-
-    Vector3 vertexCamera = __worldToCamera * vertexWorld;
-    return toRasterSpace(__camera->projecttoNDC(vertexCamera), __imageWidth, __imageHeight);
-
-}
-
-TOOLS(Vector3) ZBufferEngine::worldToCamera(const TOOLS(Vector3)& vertexWorld) const
-{
-    return __currentWorldToCamera * vertexWorld;
-}
-
-TOOLS(Vector3) ZBufferEngine::cameraToNDC(const TOOLS(Vector3)& vertexCamera) const
-{
-    return __camera->projecttoNDC(vertexCamera);
-}
-
-TOOLS(Vector3) ZBufferEngine::ndcToRaster(const TOOLS(Vector3)& vertexNDC) const
-{
-    return toRasterSpace(vertexNDC, __imageWidth, __imageHeight);
-}
-
-TOOLS(Vector3) ZBufferEngine::cameraToRaster(const TOOLS(Vector3)& vertexCamera) const
-{
-    return toRasterSpace(__camera->projecttoNDC(vertexCamera), __imageWidth, __imageHeight);
-}
-
-TOOLS(Vector3) ZBufferEngine::cameraToWorld(const TOOLS(Vector3)& vertexCamera) const
-{
-    return __cameraToWorld * vertexCamera;
-}
-
-TOOLS(Vector3) ZBufferEngine::rasterToWorld(const TOOLS(Vector3)& raster) const
-{
-    Vector3 vertexNDC = rasterToNDC(raster, __imageWidth, __imageHeight);
-    return cameraToWorld(__camera->NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z()));
-}
-*/
 
 
-
-
-void ZBufferEngine::render(TriangleSetPtr triangles, AppearancePtr appearance)
+void ZBufferEngine::process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id)
 {
     const Point3ArrayPtr points(triangles->getPointList());
     const Index3ArrayPtr indices(triangles->getIndexList());
@@ -308,7 +202,7 @@ void ZBufferEngine::render(TriangleSetPtr triangles, AppearancePtr appearance)
         const Vector3& v1 = triangles->getFacePointAt(itidx,1);
         const Vector3& v2 = triangles->getFacePointAt(itidx,2);
 
-        if(is_valid_ptr(__triangleshader))__triangleshader->init(appearance, triangles, itidx, __currentId);
+        if(is_valid_ptr(__triangleshader))__triangleshader->init(appearance, triangles, itidx, id);
         renderShadedTriangle(__triangleshader, v0, v1, v2, ccw);
 
     }
@@ -460,11 +354,11 @@ void ZBufferEngine::renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)
 }
 
 
-void ZBufferEngine::render(PolylinePtr polyline, MaterialPtr material)
+void ZBufferEngine::process(PolylinePtr polyline, MaterialPtr material, uint32_t id)
 {
 }
 
-void ZBufferEngine::render(PointSetPtr pointset, MaterialPtr material)
+void ZBufferEngine::process(PointSetPtr pointset, MaterialPtr material, uint32_t id)
 {
     const Point3ArrayPtr points(pointset->getPointList());
     Color4 defaultcolor = Color4(material->getAmbient(),material->getTransparency());
@@ -478,14 +372,6 @@ void ZBufferEngine::render(PointSetPtr pointset, MaterialPtr material)
     {
         renderPoint(*it, (colorPerPoint?*itCol:defaultcolor), pointsize);
     }
-}
-
-void ZBufferEngine::render(ScenePtr scene)
-{
-    Discretizer d;
-    Tesselator t;
-    ZBufferRenderer r(*this, t, d);
-    scene->apply(r);
 }
 
 ImagePtr ZBufferEngine::getTexture(const ImageTexturePtr imgdef)

@@ -36,13 +36,13 @@
 
 
 
-#ifndef __actn_zbufferrenderer_h__
-#define __actn_zbufferrenderer_h__
+#ifndef __actn_projectionrenderer_h__
+#define __actn_projectionrenderer_h__
 
 
 
 #include "../algo_config.h"
-#include "zbufferengine.h"
+#include "projectionengine.h"
 
 #include <plantgl/scenegraph/core/action.h>
 #include <plantgl/algo/base/tesselator.h>
@@ -64,17 +64,17 @@ PGL_BEGIN_NAMESPACE
    of Material to the current GL context.
 */
 
-class ALGO_API ZBufferRenderer : public Action
+class ALGO_API ProjectionRenderer : public Action
 {
 
 public:
 
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
-  ZBufferRenderer( ZBufferEngine&, Tesselator& tesselator, Discretizer& discretizer);
+  ProjectionRenderer( ProjectionEngine&, Tesselator& tesselator, Discretizer& discretizer);
 
 
   /// Destructor
-  virtual ~ZBufferRenderer( );
+  virtual ~ProjectionRenderer( );
 
   /// Returns the Discretizer attached to \e self.
   Discretizer& getDiscretizer( );
@@ -207,7 +207,7 @@ protected:
   Discretizer& __discretizer;
 
   // The engine used to render
-  ZBufferEngine& __engine;
+  ProjectionEngine& __engine;
 
   /// The current material
   AppearancePtr __appearance;
@@ -217,13 +217,13 @@ protected:
   
 private:
   template<class T> 
-  bool discretize_and_render(T * geom);
+  bool discretize_and_process(T * geom);
 
   template<class T> 
-  bool tesselate_and_render(T * geom);
+  bool tesselate_and_process(T * geom);
 
   template<class T> 
-  bool transform_and_render(T * geom);
+  bool transform_and_process(T * geom);
 
 };
 

@@ -32,7 +32,7 @@
 
 
 
-#include "zbufferrenderer.h"
+#include "projectionrenderer.h"
 #include <plantgl/algo/base/discretizer.h>
 
 #include <plantgl/pgl_appearance.h>
@@ -52,7 +52,7 @@ TOOLS_USING_NAMESPACE
 
 
 template<class T>
-bool ZBufferRenderer::discretize_and_render(T *geom) 
+bool ProjectionRenderer::discretize_and_process(T *geom) 
 {
   GEOM_ASSERT_OBJ(geom);
   if (__appearance && __appearance->isTexture())
@@ -66,7 +66,7 @@ bool ZBufferRenderer::discretize_and_render(T *geom)
 }
 
 template<class T>
-bool ZBufferRenderer::tesselate_and_render(T *geom) 
+bool ProjectionRenderer::tesselate_and_process(T *geom) 
 {
   GEOM_ASSERT_OBJ(geom);
   if (__appearance && __appearance->isTexture())
@@ -80,7 +80,7 @@ bool ZBufferRenderer::tesselate_and_render(T *geom)
 }
 
 template<class T> 
-bool ZBufferRenderer::transform_and_render(T * geom)
+bool ProjectionRenderer::transform_and_process(T * geom)
 {
   GEOM_ASSERT_OBJ(geom);
    __engine.pushModelTransformation(); 
@@ -96,7 +96,7 @@ bool ZBufferRenderer::transform_and_render(T * geom)
 /* ----------------------------------------------------------------------- */
 
 
-ZBufferRenderer::ZBufferRenderer(ZBufferEngine& engine, Tesselator& tesselator, Discretizer &discretizer) :
+ProjectionRenderer::ProjectionRenderer(ProjectionEngine& engine, Tesselator& tesselator, Discretizer &discretizer) :
         Action(),
         __engine(engine),
         __tesselator(tesselator),
@@ -107,29 +107,29 @@ ZBufferRenderer::ZBufferRenderer(ZBufferEngine& engine, Tesselator& tesselator, 
 }
 
 
-ZBufferRenderer::~ZBufferRenderer() {
+ProjectionRenderer::~ProjectionRenderer() {
 }
 
 Discretizer &
-ZBufferRenderer::getDiscretizer() {
+ProjectionRenderer::getDiscretizer() {
   return __discretizer;
 }
 
 
 
-bool ZBufferRenderer::beginProcess() {
+bool ProjectionRenderer::beginProcess() {
   return true;
 }
 
 
-bool ZBufferRenderer::endProcess() {
+bool ProjectionRenderer::endProcess() {
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
-bool ZBufferRenderer::process(Shape * geomshape) {
+bool ProjectionRenderer::process(Shape * geomshape) {
   GEOM_ASSERT_OBJ(geomshape);
-  __engine.setId(geomshape->getId());
+  __id = geomshape->getId();
   if (geomshape->appearance) 
     __appearance = geomshape->appearance;
   else 
@@ -141,9 +141,9 @@ bool ZBufferRenderer::process(Shape * geomshape) {
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(Inline *geomInline) {
+bool ProjectionRenderer::process(Inline *geomInline) {
   GEOM_ASSERT_OBJ(geomInline);
-  __engine.setId(geomInline->getId());
+  __id = geomInline->getId();
   if (geomInline->getScene()) {
     if (!geomInline->isTranslationToDefault() || !geomInline->isScaleToDefault()) {
        __engine.pushModelTransformation(); 
@@ -169,118 +169,118 @@ bool ZBufferRenderer::process(Inline *geomInline) {
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(AmapSymbol *amapSymbol) {
-  return tesselate_and_render(amapSymbol);
+bool ProjectionRenderer::process(AmapSymbol *amapSymbol) {
+  return tesselate_and_process(amapSymbol);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(AsymmetricHull *asymmetricHull) {
-  return tesselate_and_render(asymmetricHull);
+bool ProjectionRenderer::process(AsymmetricHull *asymmetricHull) {
+  return tesselate_and_process(asymmetricHull);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(AxisRotated *axisRotated) {
-  return transform_and_render(axisRotated);
+bool ProjectionRenderer::process(AxisRotated *axisRotated) {
+  return transform_and_process(axisRotated);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(BezierCurve *bezierCurve) {
-  return discretize_and_render(bezierCurve);
+bool ProjectionRenderer::process(BezierCurve *bezierCurve) {
+  return discretize_and_process(bezierCurve);
 }
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(BezierPatch *bezierPatch) {
-  return tesselate_and_render(bezierPatch);
-}
-
-
-/* ----------------------------------------------------------------------- */
-
-
-bool ZBufferRenderer::process(Box *box) {
-  return tesselate_and_render(box);
+bool ProjectionRenderer::process(BezierPatch *bezierPatch) {
+  return tesselate_and_process(bezierPatch);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Cone *cone) {
-  return tesselate_and_render(cone);
+bool ProjectionRenderer::process(Box *box) {
+  return tesselate_and_process(box);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Cylinder *cylinder) {
-  return tesselate_and_render(cylinder);
+bool ProjectionRenderer::process(Cone *cone) {
+  return tesselate_and_process(cone);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(ElevationGrid *elevationGrid) {
-  return tesselate_and_render(elevationGrid);
+bool ProjectionRenderer::process(Cylinder *cylinder) {
+  return tesselate_and_process(cylinder);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(EulerRotated *eulerRotated) {
-  return transform_and_render(eulerRotated);
+bool ProjectionRenderer::process(ElevationGrid *elevationGrid) {
+  return tesselate_and_process(elevationGrid);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(ExtrudedHull *extrudedHull) {
-  return tesselate_and_render(extrudedHull);
+bool ProjectionRenderer::process(EulerRotated *eulerRotated) {
+  return transform_and_process(eulerRotated);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(FaceSet *faceSet) {
-  return tesselate_and_render(faceSet);
+bool ProjectionRenderer::process(ExtrudedHull *extrudedHull) {
+  return tesselate_and_process(extrudedHull);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Frustum *frustum) {
-  return tesselate_and_render(frustum);
+bool ProjectionRenderer::process(FaceSet *faceSet) {
+  return tesselate_and_process(faceSet);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Extrusion *extrusion) {
-  return tesselate_and_render(extrusion);
+bool ProjectionRenderer::process(Frustum *frustum) {
+  return tesselate_and_process(frustum);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Group *group) {
+bool ProjectionRenderer::process(Extrusion *extrusion) {
+  return tesselate_and_process(extrusion);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+
+bool ProjectionRenderer::process(Group *group) {
   return group->getGeometryList()->apply(*this);
 }
 
@@ -288,7 +288,7 @@ bool ZBufferRenderer::process(Group *group) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(IFS *ifs) {
+bool ProjectionRenderer::process(IFS *ifs) {
   GEOM_ASSERT_OBJ(ifs);
 
   ITPtr transfos = dynamic_pointer_cast<IT>(ifs->getTransformation());
@@ -312,14 +312,14 @@ bool ZBufferRenderer::process(IFS *ifs) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Material *material) {
+bool ProjectionRenderer::process(Material *material) {
   __appearance = AppearancePtr(material);
   return true;
 }
 
 
 /* ----------------------------------------------------------------------- */
-bool ZBufferRenderer::process(ImageTexture *texture) {
+bool ProjectionRenderer::process(ImageTexture *texture) {
   GEOM_ASSERT_OBJ(texture);
   return true;
 }
@@ -327,7 +327,7 @@ bool ZBufferRenderer::process(ImageTexture *texture) {
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(Texture2D *texture) {
+bool ProjectionRenderer::process(Texture2D *texture) {
   GEOM_ASSERT_OBJ(texture);
   __appearance = AppearancePtr(texture);
   return true;
@@ -335,7 +335,7 @@ bool ZBufferRenderer::process(Texture2D *texture) {
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(Texture2DTransformation *texturetransfo) 
+bool ProjectionRenderer::process(Texture2DTransformation *texturetransfo) 
 {
   GEOM_ASSERT_OBJ(texturetransfo);
   return true;
@@ -344,7 +344,7 @@ bool ZBufferRenderer::process(Texture2DTransformation *texturetransfo)
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(MonoSpectral *monoSpectral) {
+bool ProjectionRenderer::process(MonoSpectral *monoSpectral) {
   GEOM_ASSERT_OBJ(monoSpectral);
   return true;
 }
@@ -353,7 +353,7 @@ bool ZBufferRenderer::process(MonoSpectral *monoSpectral) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(MultiSpectral *multiSpectral) {
+bool ProjectionRenderer::process(MultiSpectral *multiSpectral) {
   GEOM_ASSERT_OBJ(multiSpectral);
   return true;
 }
@@ -362,45 +362,45 @@ bool ZBufferRenderer::process(MultiSpectral *multiSpectral) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(NurbsCurve *nurbsCurve) {
-  return discretize_and_render(nurbsCurve);
+bool ProjectionRenderer::process(NurbsCurve *nurbsCurve) {
+  return discretize_and_process(nurbsCurve);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(NurbsPatch *nurbsPatch) {
-  return tesselate_and_render(nurbsPatch);
+bool ProjectionRenderer::process(NurbsPatch *nurbsPatch) {
+  return tesselate_and_process(nurbsPatch);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Oriented *oriented) {
-  return transform_and_render(oriented);
+bool ProjectionRenderer::process(Oriented *oriented) {
+  return transform_and_process(oriented);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Paraboloid *paraboloid) {
-  return tesselate_and_render(paraboloid);
+bool ProjectionRenderer::process(Paraboloid *paraboloid) {
+  return tesselate_and_process(paraboloid);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(PointSet *pointSet) {
+bool ProjectionRenderer::process(PointSet *pointSet) {
   GEOM_ASSERT_OBJ(pointSet);
   if (__appearance->isTexture()){
-    __engine.render(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL));    
+    __engine.process(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL),__id);    
   }
   else {
-    __engine.render(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(__appearance));    
+    __engine.process(PointSetPtr(pointSet), dynamic_pointer_cast<Material>(__appearance),__id);    
   }
   return true;
 }
@@ -408,13 +408,13 @@ bool ZBufferRenderer::process(PointSet *pointSet) {
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(Polyline *polyline) {
+bool ProjectionRenderer::process(Polyline *polyline) {
   GEOM_ASSERT_OBJ(polyline);
   if (__appearance->isTexture()){
-    __engine.render(PolylinePtr(polyline), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL));    
+    __engine.process(PolylinePtr(polyline), dynamic_pointer_cast<Material>(Material::DEFAULT_MATERIAL),__id);    
   }
   else {
-    __engine.render(PolylinePtr(polyline), dynamic_pointer_cast<Material>(__appearance));
+    __engine.process(PolylinePtr(polyline), dynamic_pointer_cast<Material>(__appearance), __id);
   }
   return true;
 }
@@ -425,39 +425,39 @@ bool ZBufferRenderer::process(Polyline *polyline) {
 
 
 
-bool ZBufferRenderer::process(QuadSet *quadSet) {
-  return tesselate_and_render(quadSet);
+bool ProjectionRenderer::process(QuadSet *quadSet) {
+  return tesselate_and_process(quadSet);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Revolution *revolution) {
-  return tesselate_and_render(revolution);
+bool ProjectionRenderer::process(Revolution *revolution) {
+  return tesselate_and_process(revolution);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Swung *swung) {
-  return tesselate_and_render(swung);
+bool ProjectionRenderer::process(Swung *swung) {
+  return tesselate_and_process(swung);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Scaled *scaled) {
-  return transform_and_render(scaled);
+bool ProjectionRenderer::process(Scaled *scaled) {
+  return transform_and_process(scaled);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(ScreenProjected *scp) {
+bool ProjectionRenderer::process(ScreenProjected *scp) {
   GEOM_ASSERT_OBJ(scp);
   return true;
 }
@@ -466,16 +466,16 @@ bool ZBufferRenderer::process(ScreenProjected *scp) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Sphere *sphere) {
-  return tesselate_and_render(sphere);
+bool ProjectionRenderer::process(Sphere *sphere) {
+  return tesselate_and_process(sphere);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Tapered *tapered) {
-  return discretize_and_render(tapered);
+bool ProjectionRenderer::process(Tapered *tapered) {
+  return discretize_and_process(tapered);
 
 }
 
@@ -483,17 +483,17 @@ bool ZBufferRenderer::process(Tapered *tapered) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Translated *translated) {
-  return transform_and_render(translated);
+bool ProjectionRenderer::process(Translated *translated) {
+  return transform_and_process(translated);
 
 }
 
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(TriangleSet *triangleSet) {
+bool ProjectionRenderer::process(TriangleSet *triangleSet) {
   GEOM_ASSERT_OBJ(triangleSet);
-  __engine.render(TriangleSetPtr(triangleSet), __appearance);    
+  __engine.process(TriangleSetPtr(triangleSet), __appearance, __id);    
   return true;
 }
 
@@ -501,52 +501,52 @@ bool ZBufferRenderer::process(TriangleSet *triangleSet) {
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(BezierCurve2D *bezierCurve) {
-  return discretize_and_render(bezierCurve);
+bool ProjectionRenderer::process(BezierCurve2D *bezierCurve) {
+  return discretize_and_process(bezierCurve);
 }
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Disc *disc) {
-  return tesselate_and_render(disc);
-}
-
-
-/* ----------------------------------------------------------------------- */
-
-
-bool ZBufferRenderer::process(NurbsCurve2D *nurbsCurve) {
-  return discretize_and_render(nurbsCurve);
+bool ProjectionRenderer::process(Disc *disc) {
+  return tesselate_and_process(disc);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(PointSet2D *pointSet) {
-  return discretize_and_render(pointSet);
+bool ProjectionRenderer::process(NurbsCurve2D *nurbsCurve) {
+  return discretize_and_process(nurbsCurve);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
 
-bool ZBufferRenderer::process(Polyline2D *polyline) {
-  return discretize_and_render(polyline);
+bool ProjectionRenderer::process(PointSet2D *pointSet) {
+  return discretize_and_process(pointSet);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process( Text * text ) {
+
+bool ProjectionRenderer::process(Polyline2D *polyline) {
+  return discretize_and_process(polyline);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+bool ProjectionRenderer::process( Text * text ) {
   GEOM_ASSERT_OBJ(text);
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
-bool ZBufferRenderer::process(Font *font) {
+bool ProjectionRenderer::process(Font *font) {
   GEOM_ASSERT_OBJ(font);
   return true;
 }

@@ -144,21 +144,6 @@ protected:
 };
 
 
-/*
-class PerspectiveProjection : public OrthographicProjection {
-public:
-    PerspectiveProjection(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
-
-    virtual ~PerspectiveProjection();
- 
-    virtual TOOLS(Vector3) projecttoNDC(const TOOLS(Vector3)& vertexCamera) const ;
-    virtual TOOLS(Vector3) unprojecttoCamera(const TOOLS(Vector3)& vertexCamera) const ;
-};
-*/
-
-// typedef RCPtr<OrthographicProjection> ProjectionPtr;
-
-
 inline TOOLS(Vector3) toRasterSpace(const TOOLS(Vector3)& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert to raster space

@@ -15,7 +15,7 @@ def test_teapot():
     z.lookAt(cam,(0,0,0),(0,0,1))
     print z.getBoundingBoxView()
     print 'render'
-    z.render(tr, Material((0,0,200)),2)
+    z.process(tr, Material((0,0,200)),2)
     print 'getImage'
     i = z.getImage()
 
@@ -33,7 +33,7 @@ def test_sphere():
     z.lookAt(cam,(0,0,0),(0,0,1))
     print z.getBoundingBoxView()
     print 'render'
-    z.render(tr, Material((100,50,200)),2)
+    z.process(tr, Material((100,50,200)),2)
     print 'getImage'
     i = z.getImage()
 
@@ -48,7 +48,7 @@ def test_cylinder():
     cam = (50,0,1)
     z = ZBufferEngine(800,600)
     z.setPerspectiveCamera(60,1,1,1000)
-    z.lookAt(cam,(0,0,-5),(0,0,1))
+    z.process(cam,(0,0,-5),(0,0,1))
     print z.getBoundingBoxView()
     print 'render'
     z.render(tr, Material((100,50,200)),2)
@@ -91,7 +91,7 @@ def test_tri():
         print z.worldToRaster(p)
 
     print 'render'
-    z.render(tr, Material((0,0,200)),2)
+    z.process(tr, Material((0,0,200)),2)
     print 'getImage'
     i = z.getImage()
 

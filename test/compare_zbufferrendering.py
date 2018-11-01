@@ -229,7 +229,7 @@ class PglViewer (QGLViewer):
         #if self.idBasedRendering:
         #    z.setIdRendering()
         #z.setLight((0,0,100),(255,255,255))
-        z.render(self.scene)
+        z.process(self.scene)
         if self.bufferDuplication:
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(self.bbx.getSize().x*2,0,0), False)
             z.periodizeBuffer(self.bbx.getCenter(), self.bbx.getCenter()+Vector3(0,self.bbx.getSize().y*2,0))

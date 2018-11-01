@@ -50,33 +50,16 @@ void export_ZBufferEngine()
       .export_values()
       ;
     
-  class_< ZBufferEngine, boost::noncopyable > 
+  class_< ZBufferEngine, bases<ProjectionEngine>, boost::noncopyable > 
       ("ZBufferEngine", init<uint16_t, uint16_t , const Color3&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("backGroundColor")=Color3(0,0,0), bp::arg("renderingStyle") = ZBufferEngine::eColorBased)) )
       .def(init<uint16_t, uint16_t , const Color4&, ZBufferEngine::eRenderingStyle>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultColor")=Color4::fromUint(Shape::NOID), bp::arg("renderingStyle") = ZBufferEngine::eIdBased)))
       .def(init<uint16_t, uint16_t , uint32_t, Color4::eColor4Format>("Construct a ZBufferEngine.",(bp::arg("imageWidth")=800, bp::arg("imageHeight")=600, bp::arg("defaultId")=Shape::NOID, bp::arg("conversionformat")=Color4::eARGB)))
-      .def("setPerspectiveCamera", &ZBufferEngine::setPerspectiveCamera)
-      .def("setFrustumCamera", &ZBufferEngine::setFrustumCamera)
-      .def("setOrthographicCamera", &ZBufferEngine::setOrthographicCamera)
-      .def("lookAt", &ZBufferEngine::lookAt)
-      .def("setId", &ZBufferEngine::setId)
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&))&ZBufferEngine::setLight)
       .def("setLight", (void(ZBufferEngine::*)(const Vector3&, const Color3&, const Color3&, const Color3&))&ZBufferEngine::setLight)
-      .def("render", (void(ZBufferEngine::*)(TriangleSetPtr, AppearancePtr))&ZBufferEngine::render)
-      .def("render", (void(ZBufferEngine::*)(PolylinePtr, MaterialPtr))&ZBufferEngine::render)
-      .def("render", (void(ZBufferEngine::*)(PointSetPtr, MaterialPtr))&ZBufferEngine::render)
-      .def("render", (void(ZBufferEngine::*)(ScenePtr))&ZBufferEngine::render)
       .def("getImage", &ZBufferEngine::getImage)
       .def("getDepthBuffer", &ZBufferEngine::getDepthBuffer)
 
-/*
-      .def("worldToCamera", &ZBufferEngine::worldToCamera)
-      .def("cameraToNDC", &ZBufferEngine::cameraToNDC)
-      .def("ndcToRaster", &ZBufferEngine::ndcToRaster)
-      .def("cameraToRaster", &ZBufferEngine::cameraToRaster)
-      .def("worldToRaster", &ZBufferEngine::worldToRaster)
-      .def("getBoundingBoxView", &ZBufferEngine::getBoundingBoxView)
-      .def("getWorldToCameraMatrix", &ZBufferEngine::getWorldToCameraMatrix)
-*/
+
       .def("duplicateBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("duplicateBuffer", (void(ZBufferEngine::*)(int32_t, int32_t, real_t, bool, const Color3&))&ZBufferEngine::duplicateBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
       .def("periodizeBuffer", (void(ZBufferEngine::*)(const Vector3&, const Vector3&, bool, const Color3&))&ZBufferEngine::periodizeBuffer,(bp::arg("from"), bp::arg("to")=600, bp::arg("useDefaultColor")=true, bp::arg("defaultcolor")=Color3(0,0,0)))
