@@ -60,6 +60,9 @@ void export_ProjectionCamera()
       .def("worldToRaster", &ProjectionCamera::worldToRaster)
       .def("getBoundingBoxView", &ProjectionCamera::getBoundingBoxView)
       .def("getWorldToCameraMatrix", &ProjectionCamera::getWorldToCameraMatrix)
+      .def("getCameraToWorldMatrix", &ProjectionCamera::getCameraToWorldMatrix)
+      .def("getModelTransformationMatrix", &ProjectionCamera::getModelTransformationMatrix)
+
 
       ;
 
@@ -78,6 +81,7 @@ void export_ProjectionEngine()
       .def("setOrthographicCamera", &ProjectionEngine::setOrthographicCamera)
       .def("lookAt", &ProjectionEngine::lookAt)
       .def("getBoundingBoxView", &ProjectionEngine::getBoundingBoxView)
+      .def("camera", &ProjectionEngine::camera)
       
       .def("process", (void(ProjectionEngine::*)(TriangleSetPtr, AppearancePtr, uint32_t))&ProjectionEngine::process)
       .def("process", (void(ProjectionEngine::*)(PolylinePtr, MaterialPtr, uint32_t))&ProjectionEngine::process)

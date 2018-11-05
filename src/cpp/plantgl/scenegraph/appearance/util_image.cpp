@@ -33,12 +33,12 @@
  */
 
 
+#define cimg_display 0
+#include "CImg.h"
 
 #include "util_image.h"
 #include <plantgl/math/util_math.h>
 
-#define cimg_display 0
-#include "CImg.h"
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE

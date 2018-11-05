@@ -248,9 +248,21 @@ Point3ArrayPtr project(const Polygon_2& proj, Point3ArrayPtr polygon)
     for (Polygon_2::Vertex_iterator it = proj.vertices_begin() ; it != proj.vertices_end(); ++it)
     {
             Vector2 vertex = toVector2(*it);
-            real_t w0 = edgeFunction(polygon->getAt(1), polygon->getAt(2), vertex) / area;
-            real_t w1 = edgeFunction(polygon->getAt(2), polygon->getAt(0), vertex) / area;
-            real_t w2 = edgeFunction(polygon->getAt(0), polygon->getAt(1), vertex) / area;
+            real_t w0 = edgeFunction(polygon->getAt(1), polygon->getAt(2), vertex);
+            real_t w1 = edgeFunction(polygon->getAt(2), polygon->getAt(0), vertex);
+            real_t w2 = edgeFunction(polygon->getAt(0), polygon->getAt(1), vertex);
+
+            if (fabs(area) <= GEOM_EPSILON) {
+                real_t sumw = w0 + w1 + w2;
+                w0 /= sumw;
+                w1 /= sumw;
+                w2 /= sumw;
+            }
+            else {
+                w0 /= area;
+                w1 /= area;
+                w2 /= area;                
+            }
 
             result->push_back(polygon->getAt(0)*w0 + polygon->getAt(1)*w1 + polygon->getAt(2)*w2);
     }
@@ -618,16 +630,17 @@ ScenePtr DepthSortEngine::getProjectionResult(Color4::eColor4Format format, bool
         Color4 col = Color4::fromUint(it->id, format);
         Material * mat = new Material(Color3(col));
         mat->getTransparency() = col.getAlphaClamped();
-        Point3ArrayPtr lpoints = it->points;
+        Point3ArrayPtr lpoints =  Point3ArrayPtr(new Point3Array(*it->points));
         if (!cameraCoordinates) {
-            lpoints = Point3ArrayPtr(new Point3Array(*lpoints));
             for(Point3Array::iterator itP = lpoints->begin(); itP != lpoints->end(); ++itP){
-                itP->z() *= -1;
+                itP->z() = 0;
                 *itP = __camera->cameraToWorld(*itP);
             }
         }
-        for(Point3Array::iterator itP = lpoints->begin(); itP != lpoints->end(); ++itP){
-            itP->z() = 0;
+        else {
+            for(Point3Array::iterator itP = lpoints->begin(); itP != lpoints->end(); ++itP){
+                itP->z() = 0;
+            }
         }
         scene->add(ShapePtr(new Shape(GeometryPtr(new TriangleSet(lpoints,Index3ArrayPtr(new Index3Array(1,Index3(0,1,2))))), AppearancePtr(mat), it->id)));
     }

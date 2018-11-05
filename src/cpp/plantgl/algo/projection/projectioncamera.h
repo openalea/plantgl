@@ -91,7 +91,9 @@ public:
    TOOLS(Vector3) ndcToCamera(const TOOLS(Vector3)& vertexCamera) const ;
 
    BoundingBoxPtr getBoundingBoxView() const;
+
    TOOLS(Matrix4) getWorldToCameraMatrix() const { return __worldToCamera; }
+   TOOLS(Matrix4) getCameraToWorldMatrix() const { return __cameraToWorld; }
 
    void transformModel(const TOOLS(Matrix4)& transform);
    void pushModelTransformation();
@@ -101,6 +103,7 @@ public:
    void translateModel(const TOOLS(Vector3)& v);
    void scaleModel(const TOOLS(Vector3)& v);
 
+   TOOLS(Matrix4) getModelTransformationMatrix() const { return __currentModelMatrix; }
 
    bool isInZRange(real_t z) const ;
    bool isInZRange(real_t zmin, real_t zmax) const;
