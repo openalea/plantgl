@@ -179,6 +179,12 @@ class PGLMATH_API Vector2 : public Tuple2<real_t>
   /// Returns the result of the substraction of \e this and \e v.
   Vector2 operator-( const Vector2& v ) const;
 
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector2 cwiseProduct( const Vector2& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector2 operator%( const Vector2& v ) const;
+
   /// Normalizes \e self and returns the norm before.
   real_t normalize( ) ;
 
@@ -485,6 +491,12 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
   /// Returns the result of the substraction of \e this and \e v.
   Vector3 operator-( const Vector3& v ) const;
 
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector3 cwiseProduct( const Vector3& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector3 operator%( const Vector3& v ) const;
+
   /** Returns the Vector2 corresponding to the projection of \e self.
       The \c x and \c y  coordinates are divided by the \c z coordinate. */
   Vector2 project( ) const ;
@@ -506,6 +518,12 @@ class PGLMATH_API Vector3 : public Tuple3<real_t>
 
   /// Return an orthogonal vector. Should be not null
   Vector3 anOrthogonalVector() const;
+
+  /// Return the reflection direction of v.
+  Vector3 reflect(const Vector3& v) const;
+
+  /// Return the refraction direction of v.
+  Vector3 refract(const Vector3& v, real_t eta) const;
 
   /// Returns the result of the multiplication of \e v by the scalar \e s.
   friend PGLMATH_API Vector3 operator*( const Vector3& v, const real_t& s );
@@ -733,6 +751,12 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
   /// Returns the result of the substraction of \e this and \e v.
   Vector4 operator-( const Vector4& v ) const;
 
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector4 cwiseProduct( const Vector4& v ) const;
+
+  /// Returns the result of component wise product (hadamard product) of \e this and \e v.
+  Vector4 operator%( const Vector4& v ) const;
+  
   /// Returns the abs value of \e v.
   friend PGLMATH_API Vector4 abs( const Vector4& v );
 

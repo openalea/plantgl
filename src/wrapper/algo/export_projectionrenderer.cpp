@@ -1,13 +1,11 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Modeling Plant Geometry
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2006 - Cirad/Inria/Inra - Virtual Plant Team
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
  *
- *       File author(s): F. Boudon (frederic.boudon@cirad.fr)
- *
- *       Development site : https://gforge.inria.fr/projects/openalea/
+ *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
  *
@@ -31,18 +29,23 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file version.h
-    \brief File for accessing to PGL version.
-*/
+#include <plantgl/algo/projection/projectionrenderer.h>
+#include <plantgl/python/export_refcountptr.h>
+#include <plantgl/python/boost_python.h>
+
+PGL_USING_NAMESPACE
+TOOLS_USING_NAMESPACE
+using namespace boost::python;
+using namespace std;
+#define bp boost::python
 
 
-#ifndef __plantgl_version_h__
-#define __plantgl_version_h__
+void export_ProjectionRenderer()
+{
+  class_< ProjectionRenderer, bases<Action>,  boost::noncopyable > 
+      ("ProjectionRenderer", init<ProjectionEngine&, Tesselator&, Discretizer&>("Construct a ProjectionRenderer.",(bp::arg("engine"), bp::arg("tesselator"), bp::arg("discretizer"))) )
+      ;
 
-/// PGL Version macro
-#define PGL_VERSION 0x021800
-#define PGL_SVNREVISION "$Revision$"
-
-#endif
+}
 
 

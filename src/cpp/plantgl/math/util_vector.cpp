@@ -191,12 +191,21 @@ Vector2::operator-( ) const {
   return Vector2(-__X, -__Y);
 }
 
+
 Vector2 Vector2::operator+( const Vector2& v) const {
   return Vector2(*this) += v;
 }
 
 Vector2 Vector2::operator-( const Vector2& v ) const {
   return Vector2(*this) -= v;
+}
+
+Vector2 Vector2::operator%( const Vector2& v ) const {
+  return Vector2(__X*v.__X, __Y*v.__Y);
+}
+
+Vector2 Vector2::cwiseProduct( const Vector2& v ) const {
+  return Vector2(__X*v.__X, __Y*v.__Y);
 }
 
 bool 
@@ -582,6 +591,14 @@ Vector3 Vector3::operator-( const Vector3& v ) const {
   return Vector3(*this) -= v;
 }
 
+Vector3 Vector3::operator%( const Vector3& v ) const {
+  return Vector3(__X*v.__X, __Y*v.__Y, __Z*v.__Z);
+}
+
+Vector3 Vector3::cwiseProduct( const Vector3& v ) const {
+  return Vector3(__X*v.__X, __Y*v.__Y, __Z*v.__Z);
+}
+
 bool 
 Vector3::isNormalized( ) const {
   return fabs(normSquared(*this) - 1) < GEOM_EPSILON;
@@ -641,6 +658,22 @@ Vector3 Vector3::anOrthogonalVector() const
       if (_norm < GEOM_TOLERANCE) return Vector3(0,0,0);;
       return TOOLS(Vector3)(-__Y/_norm,__X/_norm,0);
 }
+
+
+Vector3 Vector3::reflect(const Vector3& v) const
+{
+    return v - 2. * dot(normed(), v) * v;
+}
+
+Vector3 Vector3::refract(const Vector3& v, real_t eta) const
+{
+    Vector3 self = normed();
+
+    real_t k = 1.0 - eta * eta * (1.0 - dot(self, v) * dot(self, v));
+    if (k < 0.0) return Vector3(0.0,0.0,0.0);
+    else return eta * v - (eta * dot(self, v) + sqrt(k)) * self;
+}
+
 
 /*  --------------------------------------------------------------------- */
 
@@ -953,6 +986,15 @@ Vector4 Vector4::operator+( const Vector4& v) const {
 Vector4 Vector4::operator-( const Vector4& v ) const {
   return Vector4(*this) -= v;
 }
+
+Vector4 Vector4::operator%( const Vector4& v ) const {
+  return Vector4(__X*v.__X, __Y*v.__Y, __Z*v.__Z, __W*v.__W);
+}
+
+Vector4 Vector4::cwiseProduct( const Vector4& v ) const {
+  return Vector4(__X*v.__X, __Y*v.__Y, __Z*v.__Z, __W*v.__W);
+}
+
 
 bool Vector4::isNormalized( ) const {
   return fabs(normSquared(*this) - 1) < GEOM_EPSILON;

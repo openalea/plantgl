@@ -134,6 +134,8 @@ void export_Vector3()
     .def("radialAnisotropicNorm",&radialAnisotropicNorm)
     .def("anisotropicNorm",&anisotropicNorm)
     .def("anOrthogonalVector",&Vector3::anOrthogonalVector)
+    .def("reflect",&Vector3::reflect)
+    .def("refract",&Vector3::refract)
 	;
 
    pgltuple_from_tuple<Vector3,3>();

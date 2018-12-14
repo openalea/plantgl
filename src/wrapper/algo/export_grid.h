@@ -197,12 +197,34 @@ size_t  py_indexFromCoord2(SpatialArray * grid, real_t v, size_t dim){
 
  template<class PointGrid>
  object py_getVoxelPointIndices(PointGrid * grid, object c){
+    extract<typename PointGrid::CellId> cidextractor(c);
+    if (cidextractor.check()){
+         return make_list(grid->getVoxelPointIndices(cidextractor()));
+    }
+    else {
      return make_list(grid->getVoxelPointIndices(extract_tuple<typename PointGrid::Index>(c)));
+    }
  }
 
 template<class PointGrid>
  object py_getVoxelPointIndicesFromId(PointGrid * grid,  typename PointGrid::CellId vid){
      return make_list(grid->getVoxelPointIndices(vid));
+ }
+
+template<class PointGrid>
+size_t nbPointInVoxel(PointGrid * grid, object c){
+    extract<typename PointGrid::CellId> cidextractor(c);
+    if (cidextractor.check()){
+     return grid->getVoxelPointIndices(cidextractor()).size();
+    }
+    else {
+     return grid->getVoxelPointIndices(extract_tuple<typename PointGrid::Index>(c)).size();
+    }
+ }
+
+template<class PointGrid>
+size_t nbPointInVoxelFromId(PointGrid * grid, typename PointGrid::CellId vid){
+     return grid->getVoxelPointIndices(vid).size();
  }
 
 template<class SpatialArray>
@@ -283,6 +305,9 @@ class pointgrid_func : public boost::python::def_visitor<pointgrid_func<PointGri
      .def("filter_enabled",&py_filter_enabled<PointGrid>)
      .def("getVoxelPointIndices",&py_getVoxelPointIndices<PointGrid>,bp::args("cellindex"),"Return the enabled points contained in the voxel")
      .def("getVoxelPointIndicesFromId",&py_getVoxelPointIndicesFromId<PointGrid>,bp::args("cellid"),"Return the enabled points contained in the voxel")
+     .def("__getitem__",&py_getVoxelPointIndices<PointGrid>,bp::args("cellindex"),"Return the enabled points contained in the voxel")
+     .def("nbPointInVoxel",&nbPointInVoxel<PointGrid>,bp::args("cellindex"),"Return the number of enabled points contained in the voxel")
+     .def("nbPointInVoxelFromId",&nbPointInVoxelFromId<PointGrid>,bp::args("cellid"),"Return the number of enabled points contained in the voxel")
 	     ;
     }
 };

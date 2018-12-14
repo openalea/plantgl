@@ -15,6 +15,6 @@ lib_env=env.Clone()
 sources= lib_env.ALEAGlob( '*.cpp' )
 target= "_pglsg"
 
-lib_env.AppendUnique(LIBS= ['pglmath','pglsg','pglalgo','pgltool'])
+lib_env.AppendUnique(LIBS= ['pglmath','pglsg','pglalgo','pgltool','boost_numpy-mt'])
 lib_env.ALEAWrapper( py_dir, target, sources )
 

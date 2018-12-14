@@ -39,6 +39,7 @@
 #define __matl_color_h__
 
 #include <plantgl/tool/util_tuple.h>
+#include <plantgl/math/util_vector.h>
 #include <iostream>
 #include "../sg_config.h"
 
@@ -57,6 +58,16 @@ template class SG_API TOOLS(Tuple3)<uchar_t>;
    \brief A 3 component color expressed in \c red, \c green and \c blue.
 */
 
+#define PACKVALi(value,i) (value << (8 * i))
+#define UNPACKVALi(packedvalues,i) ((packedvalues & (0xff << 8*i)) >> (8*i))
+
+#define CHANNELORDER4(r,g,b,a) (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2) + PACKVALi(a,3))
+#define CHANNELORDER3(r,g,b)   (PACKVALi(r,0) + PACKVALi(g,1) + PACKVALi(b,2))
+#define CHANNELPOS3(colorcode, channel) UNPACKVALi(colorcode, (2-channel))
+#define CHANNELPOS4(colorcode, channel) UNPACKVALi(colorcode, (3-channel))
+
+
+
 
 class Color4;
 class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
@@ -65,6 +76,15 @@ class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
   friend class Color4;
 
 public:
+
+  enum eColor3Format {
+    eRGB = CHANNELORDER3(0,1,2),
+    eRBG = CHANNELORDER3(0,2,1),
+    eGRB = CHANNELORDER3(1,0,2),
+    eGBR = CHANNELORDER3(2,0,1),
+    eBGR = CHANNELORDER3(2,1,0),
+    eBRG = CHANNELORDER3(1,2,0)
+  };    
 
   /// The black color.
   static const Color3 BLACK;
@@ -145,25 +165,41 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the rgb value onto an uint
-  uint_t toUint() const;
+  uint_t toUint(eColor3Format format = eRGB) const;
 
   /// Decode the rgb value from an uint
-  static Color3 fromUint(uint_t);
+  static Color3 fromUint(uint_t value, eColor3Format format = eRGB);
 
   TOOLS(Tuple3)<uchar_t> toHSV8() const;
   TOOLS(Tuple3)<real_t> toHSV() const;
+
+  TOOLS(Vector3) toClampedValues() const;
 
   static Color3 fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv);
   static Color3 fromHSV(const TOOLS(Tuple3)<real_t>& hsv);
 
   static Color3 interpolate(const Color3& c1, const Color3& c2, real_t t = 0.5);
 
- 
+
+  Color3& operator*=(const Color3&);
+  Color3& operator*=(const real_t&);
+
+  Color3 operator*(const Color3&) const ;
+  Color3 operator*(const real_t&) const ;
+
+  Color3& operator+=(const Color3&);
+  Color3 operator+(const Color3&) const ;
+
+  friend SG_API Color3 operator*( const real_t& s, const Color3& v );
+
+
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color3& c );
 
 }; // Color3
 
+
+SG_API Color3 operator*( const real_t& s, const Color3& v );
 
 /* ----------------------------------------------------------------------- */
 
@@ -180,6 +216,23 @@ template class SG_API TOOLS(Tuple4)<uchar_t>;
 class SG_API Color4 : public TOOLS(Tuple4)<uchar_t>
 {
 public:
+
+  enum eColor4Format {
+    eARGB = CHANNELORDER4(1,2,3,0),
+    eARBG = CHANNELORDER4(1,3,2,0),
+    eAGRB = CHANNELORDER4(2,1,3,0),
+    eAGBR = CHANNELORDER4(3,1,2,0),
+    eABGR = CHANNELORDER4(3,2,1,0),
+    eABRG = CHANNELORDER4(2,3,1,0),
+
+    eRGBA = CHANNELORDER4(0,1,2,3),
+    eRBGA = CHANNELORDER4(0,2,1,3),
+    eGRBA = CHANNELORDER4(1,0,2,3),
+    eGBRA = CHANNELORDER4(2,0,1,3),
+    eBGRA = CHANNELORDER4(2,1,0,3),
+    eBRGA = CHANNELORDER4(1,2,0,3)
+  };
+
 
   /// The black color.
   static const Color4 BLACK;
@@ -275,24 +328,40 @@ public:
   real_t getAverageClamped() const ;
 
   /// Encode the argb value onto an uint
-  uint_t toUint() const;
+  uint_t toUint(eColor4Format format = eARGB) const;
 
   /// Decode the argb value from an uint
-  static Color4 fromUint(uint_t);
+  static Color4 fromUint(uint_t, eColor4Format format = eARGB);
 
   TOOLS(Tuple4)<uchar_t> toHSVA8() const;
   TOOLS(Tuple4)<real_t> toHSVA() const;
+
+  TOOLS(Vector4) toClampedValues() const;
 
   static Color4 fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsv);
   static Color4 fromHSVA(const TOOLS(Tuple4)<real_t>& hsv);
 
   static Color4 interpolate(const Color4& c1, const Color4& c2, real_t t = 0.5);
 
+
+  Color4& operator*=(const Color4&);
+  Color4& operator*=(const real_t&);
+
+  Color4 operator*(const Color4&) const ;
+  Color4 operator*(const real_t&) const ;
+
+  Color4& operator+=(const Color4&);
+  Color4 operator+(const Color4&) const ;
+
+  friend SG_API Color4 operator*( const real_t& s, const Color4& v );
+
   /// Prints \e v to the output stream \e stream.
 //  friend std::ostream& operator<<( std::ostream& stream, const Color4& c ) ;
 
 }; // Color4
 
+
+SG_API Color4 operator*( const real_t& s, const Color4& v );
 
 /* ----------------------------------------------------------------------- */
 

@@ -79,6 +79,12 @@ void module_algo()
     export_GLBBoxRenderer();
     export_GLCtrlPointRenderer();
 
+    export_ProjectionCamera();
+    export_ProjectionEngine();
+    export_ZBufferEngine();
+    export_DepthSortEngine();
+    export_ProjectionRenderer();
+
     // Turtle export
     export_TurtleParam();
     export_Turtle();

@@ -41,6 +41,7 @@
 
 #include <plantgl/math/util_vector.h>
 #include <plantgl/tool/rcobject.h>
+#include <plantgl/scenegraph/container/pointarray.h>
 #include "../sg_config.h"
 #include <iostream>
 
@@ -81,6 +82,9 @@ public:
       \pre
       - \e lowLeft must be, coordinate by coordinate, less than \e upRight. */
   BoundingBox( const TOOLS(Vector3)& lowLeft, const TOOLS(Vector3)& upRight );
+
+  /// Constructs a BoundingBox from the \e points.
+  BoundingBox(const Point3ArrayPtr points);
 
   /// Destructor
   virtual ~BoundingBox( ) ;

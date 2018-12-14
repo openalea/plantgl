@@ -42,7 +42,7 @@ TOOLS_USING_NAMESPACE
 
   /// Constructs a Plane3.
 Plane3::Plane3( const TOOLS(Vector3)& _normal, const TOOLS(Vector3)& _point):
-      __Normal(direction(_normal)), __D(dot(_normal,_point)) { GEOM_ASSERT(__Normal.isNormalized()); }
+      __Normal(direction(_normal)), __D() { __D = dot(__Normal,_point);  GEOM_ASSERT(__Normal.isNormalized()); }
 
   /// Constructs a Plane3.
 Plane3::Plane3( const TOOLS(Vector3)& _normal , real_t _d ):

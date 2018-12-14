@@ -75,6 +75,12 @@ void export_GLSkelRenderer();
 void export_GLBBoxRenderer();
 void export_GLCtrlPointRenderer();
 
+void export_ProjectionCamera();
+void export_ProjectionEngine();
+void export_ZBufferEngine();
+void export_DepthSortEngine();
+void export_ProjectionRenderer();
+
 /* ----------------------------------------------------------------------- */
 // Turtle export
 void export_TurtleParam();

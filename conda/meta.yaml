@@ -1,5 +1,5 @@
 # do not edit the following line. It will be updated automatically
-{% set version = "2.23.2" %}
+{% set version = "2.24.0" %}
 
 package:
   name: openalea.plantgl
