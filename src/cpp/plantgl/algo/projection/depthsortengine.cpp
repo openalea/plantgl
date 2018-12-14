@@ -392,6 +392,11 @@ DepthSortEngine::PolygonInfoIteratorList DepthSortEngine::getIntersectingPolygon
     return result;
 }
 
+void swap(Vector3& v1, Vector3& v2){
+    Vector3 vTemp = v1;
+    v1 = v2;
+    v2 = vTemp;    
+}
 
 void DepthSortEngine::processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, uint32_t id)
 {
@@ -406,6 +411,30 @@ void DepthSortEngine::processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vect
     v0Cam.z() *= -1;
     v1Cam.z() *= -1;
     v2Cam.z() *= -1;
+
+    if(v1Cam.x() < v0Cam.x())
+    {
+        if(v1Cam.x() < v2Cam.x() ){
+            swap(v0Cam,v1Cam);
+        }
+        else if (fabs(v1Cam.x() - v2Cam.x())< GEOM_EPSILON) {
+            if (v1Cam.y() < v2Cam.y()) swap(v0Cam,v1Cam);
+            else swap(v0Cam,v2Cam);
+        }
+        else {
+            swap(v0Cam,v2Cam);
+        }
+    }
+    else if(v2Cam.x() < v0Cam.x() ){
+        swap(v0Cam,v2Cam);
+    }
+    else if (fabs(v1Cam.x() - v0Cam.x())< GEOM_EPSILON) {
+        if (v1Cam.y() < v0Cam.y()) swap(v0Cam,v1Cam);
+    }
+    else if (fabs(v2Cam.x() - v0Cam.x())< GEOM_EPSILON) {
+        if (v2Cam.y() < v0Cam.y()) swap(v0Cam,v2Cam);
+    }
+
 
     real_t direction = cross(Vector2(v1Cam.x()-v0Cam.x(),v1Cam.y()-v0Cam.y()), Vector2(v2Cam.x()-v0Cam.x(),v2Cam.y()-v0Cam.y()));
     real_t direction2 = cross(Vector3(v1Cam.x()-v0Cam.x(),v1Cam.y()-v0Cam.y(),0), Vector3(v2Cam.x()-v0Cam.x(),v2Cam.y()-v0Cam.y(),0)).z();
