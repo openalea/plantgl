@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -37,13 +37,12 @@
 #include "../scenegraph/sg_config.h"
 #include "tools_config.h"
 
+#include <string>
 
 /* ----------------------------------------------------------------------- */
 
 template<class T>
 class PglClassInfo { public: static std::string name() { throw ; } };
-
-
 
 #define PGL_DECLARE_TYPE(mtype) \
     PGL_END_NAMESPACE \

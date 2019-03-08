@@ -6,11 +6,11 @@
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
  *       File author(s): F. Boudon
- *               
+ *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -27,7 +27,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 

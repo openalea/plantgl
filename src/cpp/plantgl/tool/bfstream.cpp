@@ -71,3 +71,4 @@ beofstream::~beofstream() { }
 beifstream::~beifstream() { }
 
 
+

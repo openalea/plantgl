@@ -93,35 +93,35 @@ TOOLS_API void pglErrorEx(PglErrorType errtype, const char* file, int line, cons
 */
 class TOOLS_API PglErrorStream {
 public:
-	/// A stream in which builder put their comment message.
-	static std::ostream * debug;
+  /// A stream in which builder put their comment message.
+  static std::ostream * debug;
 
-	/// A stream in which builder put their warning message.
-	static std::ostream * warning;
+  /// A stream in which builder put their warning message.
+  static std::ostream * warning;
 
-	/// A stream in which builder put their error message.
-	static std::ostream * error;
+  /// A stream in which builder put their error message.
+  static std::ostream * error;
 
-	/**
-		\class PglStreamBinder
-		During the lifetime of such object, the construction stream becomes the new PglErrorStreams.
-		At deletion previous streams are reintegrated
-	*/
-	class TOOLS_API Binder {
-	public:
+  /**
+    \class PglStreamBinder
+    During the lifetime of such object, the construction stream becomes the new PglErrorStreams.
+    At deletion previous streams are reintegrated
+  */
+  class TOOLS_API Binder {
+  public:
 
-		Binder(std::ostream& error, std::ostream& warning, std::ostream& debug);
-		Binder(std::ostream& stream);
-		~Binder();
+    Binder(std::ostream& error, std::ostream& warning, std::ostream& debug);
+    Binder(std::ostream& stream);
+    ~Binder();
 
-	protected:
-		std::ostream * previousDebug;
-		std::ostream * previoudWarning;
-		std::ostream * previousError;
-		error_msg_handler_func previousDebugPrinter;
-		error_msg_handler_func previousWarningPrinter;
-		error_msg_handler_func previousErrorPrinter;
-	};
+  protected:
+    std::ostream * previousDebug;
+    std::ostream * previoudWarning;
+    std::ostream * previousError;
+    error_msg_handler_func previousDebugPrinter;
+    error_msg_handler_func previousWarningPrinter;
+    error_msg_handler_func previousErrorPrinter;
+  };
 };
 
 /* ----------------------------------------------------------------------- */

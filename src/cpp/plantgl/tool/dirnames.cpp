@@ -87,7 +87,7 @@ std::string convert(LPCSTR psz, UINT cp) {
 #ifdef UNICODE
 std::wstring toWinString(const std::string& fname) {
     int slength = (int)fname.length() + 1;
-    int len = MultiByteToWideChar(CP_ACP, 0, fname.c_str(), slength, 0, 0); 
+    int len = MultiByteToWideChar(CP_ACP, 0, fname.c_str(), slength, 0, 0);
     wchar_t* buf = new wchar_t[len];
     MultiByteToWideChar(CP_ACP, 0, fname.c_str(), slength, buf, len);
     std::wstring r(buf);
@@ -106,10 +106,10 @@ std::string toWinString(const std::string& fname) {
 
 string get_dirname(const string & filename) {
 #ifndef PGL_CORE_WITHOUT_QT
-	return QString2StdString(QFileInfo(filename.c_str()).path()); 
+    return QString2StdString(QFileInfo(filename.c_str()).path());
 #else
-    size_t slashit = filename.rfind("/"); 
-    size_t backslashit = filename.rfind("\\"); 
+    size_t slashit = filename.rfind("/");
+    size_t backslashit = filename.rfind("\\");
     if (slashit == std::string::npos && backslashit == std::string::npos) return filename;
     size_t end = slashit;
     if (slashit == std::string::npos || slashit <   backslashit)
@@ -122,10 +122,10 @@ string get_dirname(const string & filename) {
 
 string get_filename(const string & filename) {
 #ifndef PGL_CORE_WITHOUT_QT
-	return QString2StdString(QFileInfo(filename.c_str()).fileName());
+    return QString2StdString(QFileInfo(filename.c_str()).fileName());
 #else
-    size_t slashit = filename.rfind("/"); 
-    size_t backslashit = filename.rfind("\\"); 
+    size_t slashit = filename.rfind("/");
+    size_t backslashit = filename.rfind("\\");
     if (slashit == std::string::npos && backslashit == std::string::npos) return filename;
     size_t begin = slashit;
     if (slashit == std::string::npos || slashit <   backslashit)
@@ -137,7 +137,7 @@ string get_filename(const string & filename) {
 
 string absolute_dirname(const string & filename) {
 #ifndef PGL_CORE_WITHOUT_QT
-    return QString2StdString(QFileInfo(filename.c_str()).absolutePath()); 
+    return QString2StdString(QFileInfo(filename.c_str()).absolutePath());
 
 #else
 #ifdef _WIN32
@@ -149,7 +149,7 @@ string absolute_dirname(const string & filename) {
     string result = convert(lpBuffer, nBufferLength);
     return result;
 #else
-    char resolved_path[PATH_MAX]; 
+    char resolved_path[PATH_MAX];
     realpath(filename.c_str(), resolved_path);
     return string(resolved_path);
 #endif
@@ -159,7 +159,7 @@ string absolute_dirname(const string & filename) {
 
 string absolute_filename(const string & filename) {
 #ifndef PGL_CORE_WITHOUT_QT
-    return QString2StdString(QFileInfo(filename.c_str()).absoluteFilePath()); 
+    return QString2StdString(QFileInfo(filename.c_str()).absoluteFilePath());
 
 #else
     return absolute_dirname(filename)+"/"+get_filename(filename);
@@ -171,22 +171,22 @@ string absolute_filename(const string & filename) {
 #ifdef UNICODE
 string short_dirnameU(const string& filename){
 #ifdef _WIN32
-	LPTSTR lpszShortPath = new TCHAR[MAXPATHLEN];
-	DWORD cchBuffer(MAXPATHLEN);
-	LPTSTR lpszLongPath  = new TCHAR[filename.length()+1];
-	for(uint_t i = 0; i < filename.length(); i++)
-		lpszLongPath[i] = filename[i];
-	lpszLongPath[filename.length()] = '\0';
+    LPTSTR lpszShortPath = new TCHAR[MAXPATHLEN];
+    DWORD cchBuffer(MAXPATHLEN);
+    LPTSTR lpszLongPath  = new TCHAR[filename.length()+1];
+    for(uint_t i = 0; i < filename.length(); i++)
+        lpszLongPath[i] = filename[i];
+    lpszLongPath[filename.length()] = '\0';
 
-	cchBuffer = GetShortPathName(lpszLongPath,lpszShortPath, cchBuffer);
-	string result;
-	for(DWORD j = 0 ; j < cchBuffer; j++){
-		char c = lpszShortPath[j];
-		result += c;
-	}
-	return result;
+    cchBuffer = GetShortPathName(lpszLongPath,lpszShortPath, cchBuffer);
+    string result;
+    for(DWORD j = 0 ; j < cchBuffer; j++){
+        char c = lpszShortPath[j];
+        result += c;
+    }
+    return result;
 #else
-	return filename;
+    return filename;
 #endif
 }
 #endif
@@ -208,7 +208,7 @@ string short_dirname(const string& filename){
 
 string get_cwd() {
 #ifndef PGL_CORE_WITHOUT_QT
-	return QString2StdString(QDir::currentPath());
+    return QString2StdString(QDir::currentPath());
 
 #else
 #ifdef _WIN32
@@ -221,7 +221,7 @@ string get_cwd() {
     return result;
 
 #else
-    char resolved_path[PATH_MAX]; 
+    char resolved_path[PATH_MAX];
     getcwd(resolved_path, PATH_MAX);
     return string(resolved_path);
 #endif
@@ -229,7 +229,7 @@ string get_cwd() {
 }
 
 bool chg_dir(const string & newdir) {
-	if(newdir == get_cwd()) return true;
+    if(newdir == get_cwd()) return true;
 #ifndef PGL_CORE_WITHOUT_QT
     return QDir::setCurrent(newdir.c_str());
 #else
@@ -258,12 +258,12 @@ string cat_dir_file(const string & filename, const string & name) {
 
 string get_suffix(const string & filename){
 #ifdef PGL_CORE_WITHOUT_QT
-	size_t pos = filename.find_last_of('.');
-	if (pos == std::string::npos) return string("");
-	else return std::string(filename.begin()+filename.find_last_of('.')+1,filename.end());
+    size_t pos = filename.find_last_of('.');
+    if (pos == std::string::npos) return string("");
+    else return std::string(filename.begin()+filename.find_last_of('.')+1,filename.end());
 #else
-	QFileInfo fi(filename.c_str());
-	return QString2StdString(fi.suffix()); 
+    QFileInfo fi(filename.c_str());
+    return QString2StdString(fi.suffix());
 #endif
 }
 
@@ -271,15 +271,15 @@ string set_suffix(const string & filename,const string & extension){
 #ifdef PGL_CORE_WITHOUT_QT
     return filename+'.'+extension;
 #else
-	QFileInfo fi(filename.c_str());
-	QString nname = fi.path()+'/'+fi.baseName()+'.'+QString(extension.c_str());
-	return QString2StdString(nname);
+    QFileInfo fi(filename.c_str());
+    QString nname = fi.path()+'/'+fi.baseName()+'.'+QString(extension.c_str());
+    return QString2StdString(nname);
 #endif
 }
 
 bool exists(const string & filename){
 #ifndef PGL_CORE_WITHOUT_QT
-	return QFileInfo(filename.c_str()).exists();
+    return QFileInfo(filename.c_str()).exists();
 #else
 #ifdef _WIN32
     return PathFileExists(toWinString(filename).c_str());
@@ -292,15 +292,15 @@ bool exists(const string & filename){
 bool similar_dir(const std::string& filename,const std::string& filename2){
         string f1 = short_dirname(absolute_filename(filename));
         string f2 = short_dirname(absolute_filename(filename2));
-		if(f1.size() != f2.size()) return false;
-		if(f1.size() == 0) return false;
+        if(f1.size() != f2.size()) return false;
+        if(f1.size() == 0) return false;
         for(size_t i = 0 ; i < f1.size(); i++)
            if(f1[i] != f2[i] && f1[i] != '\\' && f2[i] != '\\' && f1[i] != '/' && f2[i] != '/' ) return false;
         return true;
 
 }
 
-#if defined(__GNUC__) 
+#if defined(__GNUC__)
 #ifndef __MINGW32__
 #define LINKCOPY
 #endif
@@ -312,23 +312,23 @@ bool copy(const std::string& src,const std::string& dest){
 #ifndef PGL_CORE_WITHOUT_QT
 #if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
         QFile f( src.c_str() );
-		if(f.exists()) return f.copy(dest.c_str());
+        if(f.exists()) return f.copy(dest.c_str());
         else return false;
 #else
 
-#ifdef LINKCOPY 
+#ifdef LINKCOPY
         return link(src.c_str(),dest.c_str());
 #else
         QFile f( src.c_str() );
         if(f.exists()){
           QFile f2( dest.c_str() );
           if ( f.open( IO_ReadOnly ) &&  f2.open( IO_WriteOnly )) {
-			f2.writeBlock(f.readAll());
+            f2.writeBlock(f.readAll());
             f.close();
             f2.close();
             return true;
           }
-		}
+        }
         return false;
 #endif
 
@@ -336,7 +336,7 @@ bool copy(const std::string& src,const std::string& dest){
 
 #else
 
-#ifdef LINKCOPY 
+#ifdef LINKCOPY
     return link(src.c_str(),dest.c_str());
 #endif
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -49,7 +49,7 @@ protected:
   clock_t __timestep;
   clock_t __time ;
   void _sleep(clock_t) const;
-  
+
 public:
   // Initialize the sequencer
   Sequencer(double timestep = 0.01);
