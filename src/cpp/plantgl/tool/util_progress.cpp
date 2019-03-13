@@ -16,11 +16,11 @@ static void progressprint(const char *msg, float percent) { printf(msg, percent)
 
 static progressstatusfunction PSFUNC = progressprint;
 
-void TOOLS::register_progressstatus_func(TOOLS::progressstatusfunction func) {
+void TOOLS(register_progressstatus_func)(TOOLS(progressstatusfunction) func) {
   PSFUNC = func;
 }
 
-void TOOLS::unregister_progressstatus_func() {
+void TOOLS(unregister_progressstatus_func)() {
   PSFUNC = progressprint;
 }
 

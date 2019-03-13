@@ -39,12 +39,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-#include "rcobject.h"
 #include "tools_config.h"
+
+#include "rcobject.h"
+#include "classinfo.h"
+
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include "classinfo.h"
 /* ----------------------------------------------------------------------- */
 
 TOOLS_BEGIN_NAMESPACE
@@ -195,7 +197,7 @@ public:
 
   /// Returns a const iterator at the beginning of the row \e row of\e self.
   inline const_iterator beginRow(uint_t row ) const {
-      return (__A.begin()+(row*getRowSize())); 
+      return (__A.begin()+(row*getRowSize()));
   }
 
   /// Returns an iterator at the beginning of \e self.
@@ -246,7 +248,7 @@ public:
       GEOM_ASSERT((j == 0 && __rowSize == 0) || (nrsize == getRowSize()));
       iterator _pos;
       if(!__rowSize) { _pos = __A.begin(); __rowSize = nrsize; }
-      else _pos = beginRow(j); 
+      else _pos = beginRow(j);
       __A.insert(_pos, begin,end);
   }
 
@@ -726,4 +728,3 @@ TOOLS_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
-

@@ -5,12 +5,12 @@
  *
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier 
- *               
+ *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
+ *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -27,11 +27,11 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
-/*! 
-	\file util_tuple.h
+/*!
+    \file util_tuple.h
     \brief File that contains some utility about tuple.
 */
 
@@ -87,58 +87,58 @@ public:
 
   static const size_t SIZE = N;
 
-  inline Tuple( ) { } 
+  inline Tuple( ) { }
 
   /// Constructs an Tuple with each values initialized to \e v .
   inline explicit Tuple( const T& v ) {
-	  for (iterator it = begin(); it != end(); ++it)
-			*it = v; 
+      for (iterator it = begin(); it != end(); ++it)
+            *it = v;
   }
 
   /// Constructs an Tuple from the elements in \e t
   inline Tuple( const T * t ) {
-	  for (iterator it = begin(); it != end(); ++it,++t)
-			*it = *t; 
+      for (iterator it = begin(); it != end(); ++it,++t)
+            *it = *t;
   }
 
   /// Constructs an Tuple from value between beg and end
   template<class Iterator>
   inline Tuple( Iterator beg_source, Iterator end_source ) {
-	  assert(std::distance(beg_source, end_source) == N);
+      assert(std::distance(beg_source, end_source) == N);
           Iterator itsrc = beg_source;
-	  for (iterator it = begin(); it != end(); ++it,++itsrc)
-			*it = *itsrc; 
+      for (iterator it = begin(); it != end(); ++it,++itsrc)
+            *it = *itsrc;
   }
 
   /// Constructs an Tuple with each values initialized to \e v .
   inline explicit Tuple( const T& v0, const T& v1 ) {
-	  assert(N >= 2);
-	  __data[0] = v0; __data[1] = v1; 
-	  for (iterator it = begin()+2; it != end(); ++it) *it = T(); 
+      assert(N >= 2);
+      __data[0] = v0; __data[1] = v1;
+      for (iterator it = begin()+2; it != end(); ++it) *it = T();
   }
 
   /// Constructs an Tuple with each values initialized to \e v .
   inline explicit Tuple( const T& v0, const T& v1, const T& v2  ) {
-	  assert(N >= 3);
-	  __data[0] = v0; __data[1] = v1; __data[2] = v2; 
-	  for (iterator it = begin()+3; it != end(); ++it) *it = T(); 
+      assert(N >= 3);
+      __data[0] = v0; __data[1] = v1; __data[2] = v2;
+      for (iterator it = begin()+3; it != end(); ++it) *it = T();
   }
 
   /// Constructs an Tuple with each values initialized to \e v .
   inline explicit Tuple( const T& v0, const T& v1, const T& v2, const T& v3  ) {
-	  assert(N >= 4);
-	  __data[0] = v0; __data[1] = v1; __data[2] = v2; ; __data[3] = v3; 
-	  for (iterator it = begin()+4; it != end(); ++it) *it = T(); 
+      assert(N >= 4);
+      __data[0] = v0; __data[1] = v1; __data[2] = v2; ; __data[3] = v3;
+      for (iterator it = begin()+4; it != end(); ++it) *it = T();
   }
 
-  /// Constructs a Tuple from the elements 
+  /// Constructs a Tuple from the elements
 /*  inline Tuple( const T& first, ... ) {
-	iterator it = begin();
-	va_list values;
-	*it = first; ++it;
-	va_start( values );     // Initialize variable arguments.
-	for (; it != end(); ++it)
-	{  *it = va_arg( values, T );  }
+    iterator it = begin();
+    va_list values;
+    *it = first; ++it;
+    va_start( values );     // Initialize variable arguments.
+    for (; it != end(); ++it)
+    {  *it = va_arg( values, T );  }
     va_end( values );              // Reset variable arguments.
   }*/
 
@@ -147,24 +147,24 @@ public:
 
   /// Returns whether \e self is equal to \e t.
   bool operator==( const Tuple& t ) const {
-	const_iterator it2 = t.begin();
-	for (const_iterator it = begin(); it != end() ; ++it, ++it2)
-		if( *it != *it2) return false; 
+    const_iterator it2 = t.begin();
+    for (const_iterator it = begin(); it != end() ; ++it, ++it2)
+        if( *it != *it2) return false;
     return true;
   }
 
   /// Returns whether \e self is equal to \e t.
   bool operator!=( const Tuple& t ) const {
     const_iterator it2 = t.begin();
-	for (const_iterator it = begin(); it != end() ; ++it, ++it2)
-		if( *it != *it2) return true; 
+    for (const_iterator it = begin(); it != end() ; ++it, ++it2)
+        if( *it != *it2) return true;
     return false;
   }
 
   /// Returns whether \e self contain \e t.
   inline bool contains( const T& t ) const {
-	for (const_iterator it = begin(); it != end() ; ++it)
-		if (*it == t) return true;
+    for (const_iterator it = begin(); it != end() ; ++it)
+        if (*it == t) return true;
     return false;
   }
 
@@ -202,7 +202,7 @@ public:
 
   /// Returns an iterator at the end of \e self.
   inline iterator end( ) { return __data + N; }
-  
+
   /// Returns a const iterator at the beginning of \e self.
   inline const_reverse_iterator rbegin( ) const { return __data+(N-1); }
 
@@ -214,39 +214,39 @@ public:
 
   /// Returns an iterator at the end of \e self.
   inline reverse_iterator rend( ) { return __data - 1; }
-  
+
   /// Returns an iterator at the maximum value of \e self.
   const_iterator getMax( ) const {
     const_iterator mvalue = __data;
-	for (const_iterator it = begin()+1; it != end() ; ++it)
-		if (*it > *mvalue) mvalue = it;
+    for (const_iterator it = begin()+1; it != end() ; ++it)
+        if (*it > *mvalue) mvalue = it;
     return mvalue;
   }
 
   /// Returns an iterator at the minimum value of \e self.
   const_iterator getMin( ) const {
     const_iterator mvalue = __data;
-	for (const_iterator it = begin()+1; it != end() ; ++it)
-		if (*it < *mvalue) mvalue = it;
+    for (const_iterator it = begin()+1; it != end() ; ++it)
+        if (*it < *mvalue) mvalue = it;
     return mvalue;
   }
 
   /// Returns whether \e self contain unique elements.
   inline bool isUnique( ) const {
-	for (const_iterator it = begin(); it != end() ; ++it)
-		for (const_iterator it2 = it+1; it2 != end() ; ++it2)
-			if (*it == *it2) return false;
-	return true;
+    for (const_iterator it = begin(); it != end() ; ++it)
+        for (const_iterator it2 = it+1; it2 != end() ; ++it2)
+            if (*it == *it2) return false;
+    return true;
   }
 
   /// Prints \e self to the output stream \e stream.
-  std::ostream& print( std::ostream& stream, 
-		  char delimiter = ',', 
-		  char beg_sign = '<', 
-		  char end_sign = '>' ) const {
+  std::ostream& print( std::ostream& stream,
+          char delimiter = ',',
+          char beg_sign = '<',
+          char end_sign = '>' ) const {
     stream << beg_sign << __data[0];
-	for (const_iterator it = begin()+1; it != end() ; ++it)
-		stream << delimiter << *it;
+    for (const_iterator it = begin()+1; it != end() ; ++it)
+        stream << delimiter << *it;
     return stream  << end_sign ;
   }
 
@@ -261,16 +261,16 @@ public:
   inline void setAt( uchar_t i, const T& t ) {
     GEOM_ASSERT(i < SIZE);
     __data[i] = t;
-  }  
+  }
 
  /** Sets the \e i-th element of \e self with \e t.
       \pre
       - \e i must belong to the range [0,N). */
   inline void setAll( const T& t ) {
     GEOM_ASSERT(i < SIZE);
-	for (iterator it = begin(); it != end() ; ++it)
+    for (iterator it = begin(); it != end() ; ++it)
        *it = t;
-  }  
+  }
 
 #ifndef PGL_NO_DEPRECATED
   /// Returns a const iterator at the beginning of \e self.
@@ -375,7 +375,7 @@ public:
   void set( const T& t1, const T& t2  ) {
     Base::getAt(0) = t1;
     Base::getAt(1) = t2;
-  }  
+  }
 
 }; // Tuple2
 
@@ -429,8 +429,8 @@ public:
 
   /// Constructs an Tuple3 with \e to, \e t1 and \e t2.
   inline explicit Tuple3( const T& t0 = T(),
-			  const T& t1 = T(),
-	 		  const T& t2 = T() ) {
+               const T& t1 = T(),
+               const T& t2 = T() ) {
     Base::getAt(0) = t0; Base::getAt(1) = t1; Base::getAt(2) = t2;
   }
 
@@ -456,15 +456,15 @@ public:
 
   /// Returns an iterator at the maximum value of \e self.
   const_iterator getMax( ) const {
-    return Base::getAt(0) < Base::getAt(1) ? 
-      (Base::getAt(1) < Base::getAt(2) ? Base::__data + 2 : Base::__data + 1) : 
+    return Base::getAt(0) < Base::getAt(1) ?
+      (Base::getAt(1) < Base::getAt(2) ? Base::__data + 2 : Base::__data + 1) :
       (Base::getAt(0) < Base::getAt(2) ? Base::__data + 2 : Base::__data);
   }
 
   /// Returns an iterator at the minimum value of \e self.
   const_iterator getMin( ) const {
-    return Base::getAt(0) < Base::getAt(1) ? 
-      (Base::getAt(0) < Base::getAt(2) ? Base::__data : Base::__data + 2) : 
+    return Base::getAt(0) < Base::getAt(1) ?
+      (Base::getAt(0) < Base::getAt(2) ? Base::__data : Base::__data + 2) :
       (Base::getAt(1) < Base::getAt(2) ? Base::__data + 1 : Base::__data + 2);
   }
 
@@ -478,7 +478,7 @@ public:
     Base::getAt(0) = t1;
     Base::getAt(1) = t2;
     Base::getAt(2) = t3;
-  }  
+  }
 
 }; // Tuple3
 
@@ -530,32 +530,32 @@ public:
   typedef typename Base::reverse_iterator reverse_iterator;
 
   /// Constructs a Tuple4 with \e to, \e t1, \e t2 and \e t3.
-  inline explicit Tuple4( const T& t0 = T(), 
-			  const T& t1 = T(),
-			  const T& t2 = T(),
-			  const T& t3 = T() ) {
+  inline explicit Tuple4( const T& t0 = T(),
+              const T& t1 = T(),
+              const T& t2 = T(),
+              const T& t3 = T() ) {
     Base::getAt(0) = t0; Base::getAt(1) = t1; Base::getAt(2) = t2; Base::getAt(3) = t3;
   }
 
   /// Constructs an Tuple4 from the 4 elements tuple \e a4
   inline Tuple4( const T * a4 ) {
-    Base::getAt(0) = a4[0]; 
-    Base::getAt(1) = a4[1]; 
-    Base::getAt(2) = a4[2]; 
+    Base::getAt(0) = a4[0];
+    Base::getAt(1) = a4[1];
+    Base::getAt(2) = a4[2];
     Base::getAt(2) = a4[2];
   }
 
   /// Returns whether \e self is equal to \e t.
   bool operator==( const Tuple4& t ) const {
-    return 
-      (Base::getAt(0) == t[0]) && (Base::getAt(1) == t[1]) && 
+    return
+      (Base::getAt(0) == t[0]) && (Base::getAt(1) == t[1]) &&
       (Base::getAt(2) == t[2]) && (Base::getAt(3) == t[3]);
   }
 
   /// Returns whether \e self is equal to \e t.
   bool operator!=( const Tuple4& t ) const {
-    return 
-      (Base::getAt(0) != t[0]) || (Base::getAt(1) != t[1]) || 
+    return
+      (Base::getAt(0) != t[0]) || (Base::getAt(1) != t[1]) ||
       (Base::getAt(2) != t[2]) || (Base::getAt(3) != t[3]);
   }
 
@@ -568,10 +568,10 @@ public:
   const_iterator getMax( ) const {
     return Base::getAt(0) < Base::getAt(1) ?
       (Base::getAt(1) < Base::getAt(2) ?
-       (Base::getAt(2) < Base::getAt(3) ? Base::__data + 3 : Base::__data + 2) : 
+       (Base::getAt(2) < Base::getAt(3) ? Base::__data + 3 : Base::__data + 2) :
        (Base::getAt(1) < Base::getAt(3) ? Base::__data + 3 : Base::__data + 1)) :
       (Base::getAt(0) < Base::getAt(2) ?
-       (Base::getAt(2) < Base::getAt(3) ? Base::__data + 3 : Base::__data + 2) : 
+       (Base::getAt(2) < Base::getAt(3) ? Base::__data + 3 : Base::__data + 2) :
        (Base::getAt(0) < Base::getAt(3) ? Base::__data + 3 : Base::__data));
   }
 
@@ -579,17 +579,17 @@ public:
   const_iterator getMin( ) const {
     return Base::getAt(0) < Base::getAt(1) ?
       (Base::getAt(0) < Base::getAt(2) ?
-       (Base::getAt(0) < Base::getAt(3) ? Base::__data : Base::__data + 3) : 
+       (Base::getAt(0) < Base::getAt(3) ? Base::__data : Base::__data + 3) :
        (Base::getAt(2) < Base::getAt(3) ? Base::__data + 2 : Base::__data + 3)) :
       (Base::getAt(1) < Base::getAt(2) ?
-       (Base::getAt(1) < Base::getAt(3) ? Base::__data + 1 : Base::__data + 3) : 
+       (Base::getAt(1) < Base::getAt(3) ? Base::__data + 1 : Base::__data + 3) :
        (Base::getAt(2) < Base::getAt(3) ? Base::__data + 2 : Base::__data + 3));
   }
 
   /// Returns whether \e self contain unique elements.
   bool isUnique( ) const {
     return ! ((Base::getAt(0) == Base::getAt(1)) || (Base::getAt(0) == Base::getAt(2)) || (Base::getAt(0) == Base::getAt(3)) ||
-	      (Base::getAt(1) == Base::getAt(2)) || (Base::getAt(1) == Base::getAt(3)) || (Base::getAt(2) == Base::getAt(3)));
+          (Base::getAt(1) == Base::getAt(2)) || (Base::getAt(1) == Base::getAt(3)) || (Base::getAt(2) == Base::getAt(3)));
   }
 
  /** Sets the elements of \e self. */
@@ -598,7 +598,7 @@ public:
     Base::getAt(1) = t2;
     Base::getAt(2) = t3;
     Base::getAt(3) = t4;
-  }  
+  }
 
 }; // Tuple4
 
@@ -618,12 +618,12 @@ typedef Tuple4<uint_t> UintTuple4;
 /*  ---------------------------------------------------------------------- */
 
 template<class T, int I>
-inline T reduce(const Tuple<T,I>& t, T (* functor )(const T&, const T&)) 
-{ 
-	T res = t[0];
-	for (typename Tuple<T,I>::const_iterator it = t.begin()+1; it != t.end(); ++it)
-		res = (*functor)(res,*it);
-	return res;
+inline T reduce(const Tuple<T,I>& t, T (* functor )(const T&, const T&))
+{
+    T res = t[0];
+    for (typename Tuple<T,I>::const_iterator it = t.begin()+1; it != t.end(); ++it)
+        res = (*functor)(res,*it);
+    return res;
 }
 
 namespace internal {
@@ -632,34 +632,34 @@ namespace internal {
 }
 
 template<class T, int I>
-inline T product(const Tuple<T,I>& t) { 
-	return reduce<T,I>(t,&internal::mult<T>);
+inline T product(const Tuple<T,I>& t) {
+    return reduce<T,I>(t,&internal::mult<T>);
 }
 
 template<class T, int I>
-inline T sum(const Tuple<T,I>& t) { 
-	
-	return reduce<T,I>(t,&internal::add<T>);
+inline T sum(const Tuple<T,I>& t) {
+
+    return reduce<T,I>(t,&internal::add<T>);
 }
 
 /*  ---------------------------------------------------------------------- */
 
 template<class Tuple>
-inline Tuple add(const Tuple& t1, const Tuple& t2) { 
-	Tuple res(t1);
-	typename Tuple::const_iterator it2 = t2.begin();
-	for (typename Tuple::iterator it = res.begin(); it != res.end(); ++it,++it2 )
-		*it += *it2;
-	return res;
+inline Tuple add(const Tuple& t1, const Tuple& t2) {
+    Tuple res(t1);
+    typename Tuple::const_iterator it2 = t2.begin();
+    for (typename Tuple::iterator it = res.begin(); it != res.end(); ++it,++it2 )
+        *it += *it2;
+    return res;
 }
 
 template<class Tuple>
-inline Tuple sub(const Tuple& t1, const Tuple& t2) { 
-	Tuple res(t1);
-	typename Tuple::const_iterator it2 = t2.begin();
-	for (typename Tuple::iterator it = res.begin(); it != res.end(); ++it,++it2 )
-		*it -= *it2;
-	return res;
+inline Tuple sub(const Tuple& t1, const Tuple& t2) {
+    Tuple res(t1);
+    typename Tuple::const_iterator it2 = t2.begin();
+    for (typename Tuple::iterator it = res.begin(); it != res.end(); ++it,++it2 )
+        *it -= *it2;
+    return res;
 }
 
 /*  ---------------------------------------------------------------------- */

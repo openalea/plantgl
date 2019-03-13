@@ -112,10 +112,10 @@ public:
   inline Iterator insert( size_t id, const T& t ) {
     return __cache.insert(std::pair<size_t,T>(id,t)).first;
   }
-    
+
   inline void remove( size_t id ) {
-	Iterator _it = find(id);
-	if(_it != end()) __cache.erase(_it);
+    Iterator _it = find(id);
+    if(_it != end()) __cache.erase(_it);
   }
 
   /// Returns whether \e self is empty.
@@ -138,5 +138,3 @@ TOOLS_END_NAMESPACE
 /* ----------------------------------------------------------------------- */
 // __util_cache_h__
 #endif
-
-

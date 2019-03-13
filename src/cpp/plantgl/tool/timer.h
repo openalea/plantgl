@@ -1,16 +1,16 @@
-/* -*-c++-*- 
+/* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
  *       PlantGL: Plant Graphic Library
  *
  *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
  *
- *       File author(s): Ch. Nouguier (christophe.nouguier@cirad.fr) 
- *               
+ *       File author(s): Ch. Nouguier (christophe.nouguier@cirad.fr)
+ *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -27,7 +27,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -70,18 +70,18 @@ class TOOLS_API Timer
     Construcs and starts a Timer.
   */
   Timer( ) :
-	 _on(true), 
-	 _start((clock_t)0), 
+	 _on(true),
+	 _start((clock_t)0),
 	 _stop((clock_t)0),
      _elapsed((clock_t)0)
   {
   }
 
   // Destructor
-	 ~Timer() ; 
+	 ~Timer() ;
 
   /*!
-    Returns the number of seconds elpased since \e this timer is 
+    Returns the number of seconds elpased since \e this timer is
     in the running state.
   */
   inline double elapsedTime( ) const {
@@ -144,7 +144,7 @@ class TOOLS_API Timer
 
  private:
   /*!
-    Returns the number of seconds elpased since \e this timer is 
+    Returns the number of seconds elpased since \e this timer is
     in the running state.
   */
   inline double _elapsedTime( ) const {
