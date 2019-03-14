@@ -67,7 +67,7 @@ class ProjectionCamera;
 typedef RCPtr<ProjectionCamera> ProjectionCameraPtr;
 
 
-class ProjectionCamera : public TOOLS(RefCountObject){
+class ProjectionCamera : public RefCountObject{
 public:
     enum eProjectionType {
         eOrthographic,
@@ -78,37 +78,37 @@ public:
 
    virtual ~ProjectionCamera();
 
-   TOOLS(Vector3) worldToRaster(const TOOLS(Vector3)& vertexWorld, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 worldToRaster(const Vector3& vertexWorld, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
-   TOOLS(Vector3) worldToCamera(const TOOLS(Vector3)& vertexWorld) const;
-   TOOLS(Vector3) cameraToNDC(const TOOLS(Vector3)& vertexCamera) const;
-   TOOLS(Vector3) ndcToRaster(const TOOLS(Vector3)& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const;
-   TOOLS(Vector3) cameraToRaster(const TOOLS(Vector3)& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 worldToCamera(const Vector3& vertexWorld) const;
+   Vector3 cameraToNDC(const Vector3& vertexCamera) const;
+   Vector3 ndcToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 cameraToRaster(const Vector3& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const;
 
-   TOOLS(Vector3) rasterToWorld(const TOOLS(Vector3)& raster, const uint16_t imageWidth, const uint16_t imageHeight) const;
-   TOOLS(Vector3) cameraToWorld(const TOOLS(Vector3)& vertexCamera) const;
+   Vector3 rasterToWorld(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight) const;
+   Vector3 cameraToWorld(const Vector3& vertexCamera) const;
 
-   TOOLS(Vector3) ndcToCamera(const TOOLS(Vector3)& vertexCamera) const ;
+   Vector3 ndcToCamera(const Vector3& vertexCamera) const ;
 
    BoundingBoxPtr getBoundingBoxView() const;
 
-   TOOLS(Matrix4) getWorldToCameraMatrix() const { return __worldToCamera; }
-   TOOLS(Matrix4) getCameraToWorldMatrix() const { return __cameraToWorld; }
+   Matrix4 getWorldToCameraMatrix() const { return __worldToCamera; }
+   Matrix4 getCameraToWorldMatrix() const { return __cameraToWorld; }
 
-   void transformModel(const TOOLS(Matrix4)& transform);
+   void transformModel(const Matrix4& transform);
    void pushModelTransformation();
    void popModelTransformation();
    void transformModelIdentity();
 
-   void translateModel(const TOOLS(Vector3)& v);
-   void scaleModel(const TOOLS(Vector3)& v);
+   void translateModel(const Vector3& v);
+   void scaleModel(const Vector3& v);
 
-   TOOLS(Matrix4) getModelTransformationMatrix() const { return __currentModelMatrix; }
+   Matrix4 getModelTransformationMatrix() const { return __currentModelMatrix; }
 
    bool isInZRange(real_t z) const ;
    bool isInZRange(real_t zmin, real_t zmax) const;
 
-   void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D);
+   void lookAt(const Vector3& eyePosition3D, const Vector3& center3D, const Vector3& upVector3D);
 
 
    real_t left;
@@ -123,44 +123,44 @@ public:
    static ProjectionCameraPtr frustumCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
    static ProjectionCameraPtr orthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far);
 
-   const TOOLS(Vector3)& position() const { return __position; }
+   const Vector3& position() const { return __position; }
 
 
 protected:
-   TOOLS(Vector3) screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
-   TOOLS(Vector3) NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;
+   Vector3 screen2NDC(const real_t& xScreen, const real_t& yScreen, const real_t z) const ;
+   Vector3 NDC2screen(const real_t& xNDC, const real_t& yNDC, const real_t z) const;
 
    real_t __xscale;
    real_t __xconstant;
    real_t __yscale;
    real_t __yconstant;
 
-   TOOLS(Vector3) __position;
+   Vector3 __position;
 
-   TOOLS(Matrix4) __cameraToWorld;
-   TOOLS(Matrix4) __worldToCamera;
-   std::stack<TOOLS(Matrix4)> __modelMatrixStack;
-   TOOLS(Matrix4) __currentModelMatrix;
-   TOOLS(Matrix4) __currentWorldToCamera;
+   Matrix4 __cameraToWorld;
+   Matrix4 __worldToCamera;
+   std::stack<Matrix4> __modelMatrixStack;
+   Matrix4 __currentModelMatrix;
+   Matrix4 __currentWorldToCamera;
 
 
 };
 
 
-inline TOOLS(Vector3) toRasterSpace(const TOOLS(Vector3)& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
+inline Vector3 toRasterSpace(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert to raster space
-    TOOLS(Vector3) vertexRaster( 
+    Vector3 vertexRaster( 
                           ((vertexNDC.x() + 1) / 2.) * imageWidth, 
                           ((1 - vertexNDC.y()) / 2.) * imageHeight,
                           vertexNDC.z());
     return vertexRaster;
 }
 
-inline TOOLS(Vector3) rasterToNDC(const TOOLS(Vector3)& raster, const uint16_t imageWidth, const uint16_t imageHeight)
+inline Vector3 rasterToNDC(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight)
 {
     // convert raster to NDC space
-    TOOLS(Vector3) vertexNDC(  (raster.x()*2/imageWidth) - 1,
+    Vector3 vertexNDC(  (raster.x()*2/imageWidth) - 1,
                         1 - (raster.y()*2/imageWidth),
                         raster.z());
     return vertexNDC;

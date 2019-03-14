@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -34,14 +34,14 @@
 #ifndef __geom_matrix_h__
 #define __geom_matrix_h__
 
-/*! 
+/*!
 	\file util_matrix.h
     \brief Definition of Matrix2, Matrix3, Matrix4.
 */
 
 #include "util_vector.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -189,12 +189,12 @@ public:
   /// Prints \e m to the output stream \e stream.
   friend PGLMATH_API std::ostream& operator<<( std::ostream& stream, const Matrix2& m );
 
-  /** Returns the rotation matrix corresponding to angle \e angle. 
+  /** Returns the rotation matrix corresponding to angle \e angle.
       \warning angle must be in radians.
   */
   static Matrix2 diagonal(const real_t val1, const real_t val2);
 
-  /** Returns the rotation matrix corresponding to angle \e angle. 
+  /** Returns the rotation matrix corresponding to angle \e angle.
       \warning angle must be in radians.
   */
   static Matrix2 rotation(const real_t angle);
@@ -429,7 +429,7 @@ public:
       Rz(a)Ry(b)Rx(c) in this order,
       where each matrix Ru(i) is a rotation about an axis u by angle i.
       \warning the decomposition is not unique.
-      \warning angles are in radians. 
+      \warning angles are in radians.
       \return a vector made of the 3 euler angles a, b, c in this order. */
   Vector3 eulerAnglesZYX() const;
 
@@ -473,7 +473,7 @@ public:
   static Matrix3 eulerRotationXYZ( const Vector3& angle );
 
   /** Returns the rotation matrix corresponding to a axis rotation with axis \e v.
-      and angle \e angle. 
+      and angle \e angle.
       \warning angle must be in radians.
   */
   static Matrix3 axisRotation( const Vector3& axis, const real_t& angle );
@@ -725,7 +725,7 @@ public:
 
   /** Computes a decomposition of the matrix into
       R(rotate) * S(scale) + T(translate) where
-      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax). 
+      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
       \warning angles are in radians.
   */
   void getTransformation( Vector3& scale,
@@ -744,7 +744,7 @@ public:
 
   /** Computes a decomposition of the matrix into
       S(scale) * R(rotate) + T(translate) where
-      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax). 
+      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
       \warning angles are in radians.
   */
   void getTransformation2( Vector3& scale,
@@ -753,7 +753,7 @@ public:
 
   /** Computes a decomposition of the matrix into
       R(rotate) * S(scale) + T(translate) where
-      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax). 
+      R( rotate=(az,ay,ax) ) is the product of 3 matrices Rz(az)Ry(ay)Rx(ax).
       \warning angles are in radians.
   */
   void getTransformationB( Vector3& scale,
@@ -797,7 +797,7 @@ PGLMATH_API Matrix4 transpose( const Matrix4& m );
 
 /*  --------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 // __geom_matrix_h__
 #endif

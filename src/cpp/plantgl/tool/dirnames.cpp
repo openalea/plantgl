@@ -50,7 +50,7 @@
 #endif
 
 using namespace std;
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 #ifndef PGL_CORE_WITHOUT_QT
 
@@ -345,4 +345,4 @@ bool copy(const std::string& src,const std::string& dest){
 #endif
 }
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE

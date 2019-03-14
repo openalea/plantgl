@@ -67,7 +67,7 @@ public:
   virtual ~Matrix4Transformation( );
 
   /// Returns the homogeneous matrix \e self represents.
-  virtual TOOLS(Matrix4) getMatrix( ) const = 0;
+  virtual Matrix4 getMatrix( ) const = 0;
 
 };
 
@@ -97,10 +97,10 @@ public:
     {
 
     /// A pointer to the \b Translation field.
-    TOOLS(Vector3) * Translation;
+    Vector3 * Translation;
 
     /// A pointer to the \b Scale field.
-    TOOLS(Vector3) * Scale;
+    Vector3 * Scale;
 
     /// A pointer to the \b OrthonormalBasis3D field.
     OrthonormalBasis3DPtr * Rotation;
@@ -122,16 +122,16 @@ public:
   Transform4();
 
   /// Constructs a Transform4.
-  Transform4( const TOOLS(Matrix4)& mat );
+  Transform4( const Matrix4& mat );
 
   /// Destructor.
   virtual ~Transform4( );
 
   virtual bool isValid() const;
 
-  virtual TOOLS(Matrix4) getMatrix( ) const;
+  virtual Matrix4 getMatrix( ) const;
 
-  virtual TOOLS(Matrix4)& getMatrix( );
+  virtual Matrix4& getMatrix( );
 
   virtual Point3ArrayPtr transform( const Point3ArrayPtr& points ) const;
   virtual Point4ArrayPtr transform( const Point4ArrayPtr& points ) const;
@@ -139,22 +139,22 @@ public:
   virtual Point4MatrixPtr transform( const Point4MatrixPtr& points ) const;
 
   /// Add a translation at the transformation
-  Transform4& translate( const TOOLS(Vector3)& t );
+  Transform4& translate( const Vector3& t );
   /// Add a scaling at the transformation
-  Transform4& scale( const TOOLS(Vector3)& s );
+  Transform4& scale( const Vector3& s );
   /// Add a rotation at the transformation
-  Transform4& rotate( const TOOLS(Matrix3)& m );
+  Transform4& rotate( const Matrix3& m );
 
-  void getTransformation( TOOLS(Vector3)& scale,
-                          TOOLS(Vector3)& rotate, // euler rotation
-                          TOOLS(Vector3)& translate );
+  void getTransformation( Vector3& scale,
+                          Vector3& rotate, // euler rotation
+                          Vector3& translate );
 
   /// compute the Matrix3 determinant of the transformation
   real_t getVolume() const;
 
   private:
 
-  TOOLS(Matrix4) __matrix;
+  Matrix4 __matrix;
 
 };
 
@@ -251,7 +251,7 @@ public:
   virtual ~Matrix3Transformation( );
 
   /// Returns the homogeneous matrix \e self represents.
-  virtual TOOLS(Matrix3) getMatrix( ) const = 0;
+  virtual Matrix3 getMatrix( ) const = 0;
 
 };
 
@@ -272,14 +272,14 @@ class SG_API GeneralMatrix3Transformation : public Matrix3Transformation
 public:
 
   /// Constructs a GeneralMatrixTransformation.
-  GeneralMatrix3Transformation( const TOOLS(Matrix3)& mat );
+  GeneralMatrix3Transformation( const Matrix3& mat );
 
   /// Destructor.
   virtual ~GeneralMatrix3Transformation( );
 
   virtual bool isValid() const;
 
-  virtual TOOLS(Matrix3) getMatrix( ) const;
+  virtual Matrix3 getMatrix( ) const;
 
   virtual Point2ArrayPtr transform( const Point2ArrayPtr& points ) const;
 
@@ -291,7 +291,7 @@ public:
 
 private:
 
-  TOOLS(Matrix3) __matrix;
+  Matrix3 __matrix;
 
 };
 

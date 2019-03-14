@@ -63,7 +63,7 @@ public:
     {
 
     /// A pointer to the \b Axis field.
-    TOOLS(Vector3) * Axis;
+    Vector3 * Axis;
 
      /// A pointer to the \b Angle field.
     real_t * Angle;
@@ -86,7 +86,7 @@ public:
       - \e axis have to be normalized
       \post
       - \e self is valid. */
-  AxisRotation( const TOOLS(Vector3)& axis,
+  AxisRotation( const Vector3& axis,
                 const real_t& angle ) ;
 
   /// Destructor.
@@ -95,7 +95,7 @@ public:
 protected:
 
   /// The Axis field.
-  TOOLS(Vector3) __axis;
+  Vector3 __axis;
 
   /// The Angle field.
   real_t __angle;
@@ -118,7 +118,7 @@ class SG_API AxisRotated : public OrthoTransformed
 public:
 
   /// The default Axis field value.
-  static const TOOLS(Vector3) DEFAULT_AXIS;
+  static const Vector3 DEFAULT_AXIS;
 
   /// The default Angle field value.
   static const real_t DEFAULT_ANGLE;
@@ -127,7 +127,7 @@ public:
   struct SG_API Builder : public OrthoTransformed::Builder {
 
     /// A pointer to the \b Axis field.
-    TOOLS(Vector3) * Axis;
+    Vector3 * Axis;
 
      /// A pointer to the \b Angle field.
     real_t * Angle;
@@ -150,7 +150,7 @@ public:
   AxisRotated();
 
   /// Constructor
-  AxisRotated( const TOOLS(Vector3)& axis,
+  AxisRotated( const Vector3& axis,
                const real_t& angle,
                const GeometryPtr& geometry );
 
@@ -166,10 +166,10 @@ public:
   real_t& getAngle( );
 
   /// Returns Axis value.
-  const TOOLS(Vector3)& getAxis( ) const ;
+  const Vector3& getAxis( ) const ;
 
   /// Returns Axis field.
-  TOOLS(Vector3)& getAxis( );
+  Vector3& getAxis( );
 
   virtual Transformation3DPtr getTransformation( ) const;
 
@@ -186,7 +186,7 @@ public:
 protected:
 
   /// The Axis field.
-  TOOLS(Vector3) __axis;
+  Vector3 __axis;
 
   /// The Angle field.
   real_t __angle;

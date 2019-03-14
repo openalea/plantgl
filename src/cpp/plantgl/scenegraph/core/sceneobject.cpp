@@ -34,7 +34,6 @@
 #include <plantgl/tool/util_string.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

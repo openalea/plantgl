@@ -62,13 +62,13 @@ class SG_API Texture2DTransformation : public SceneObject {
 public:
 
   /// The default scaling value
-  static const TOOLS(Vector2) DEFAULT_SCALE;
+  static const Vector2 DEFAULT_SCALE;
 
   /// The default translation value
-  static const TOOLS(Vector2) DEFAULT_TRANSLATION;
+  static const Vector2 DEFAULT_TRANSLATION;
 
   /// The default center value
-  static const TOOLS(Vector2) DEFAULT_ROTATIONCENTER;
+  static const Vector2 DEFAULT_ROTATIONCENTER;
 
   /// The default center value
   static const real_t DEFAULT_ROTATIONANGLE;
@@ -77,13 +77,13 @@ public:
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b Scaling field.
-	TOOLS(Vector2) * Scale;
+	Vector2 * Scale;
 
     /// A pointer to the \b Translation field.
-	TOOLS(Vector2) * Translation;
+	Vector2 * Translation;
 
     /// A pointer to the \b RotationCenter field.
-	TOOLS(Vector2) * RotationCenter;
+	Vector2 * RotationCenter;
 
     /// A pointer to the \b RotationAngle field.
     real_t * RotationAngle;
@@ -102,15 +102,15 @@ public:
 
   };
 
-  Texture2DTransformation(const TOOLS(Vector2)& scaling = DEFAULT_SCALE, 
-						const TOOLS(Vector2)& translation = DEFAULT_TRANSLATION, 
-						const TOOLS(Vector2)& rotationCenter = DEFAULT_ROTATIONCENTER, 
+  Texture2DTransformation(const Vector2& scaling = DEFAULT_SCALE, 
+						const Vector2& translation = DEFAULT_TRANSLATION, 
+						const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER, 
 						real_t rotationAngle = DEFAULT_ROTATIONANGLE);
 
   Texture2DTransformation(const std::string& name,
-						const TOOLS(Vector2)& scale = DEFAULT_SCALE, 
-						const TOOLS(Vector2)& translation = DEFAULT_TRANSLATION, 
-						const TOOLS(Vector2)& rotationCenter = DEFAULT_ROTATIONCENTER, 
+						const Vector2& scale = DEFAULT_SCALE, 
+						const Vector2& translation = DEFAULT_TRANSLATION, 
+						const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER, 
 						real_t rotationAngle = DEFAULT_ROTATIONANGLE);
   /// Destructor.
   virtual ~Texture2DTransformation( ) ;
@@ -121,13 +121,13 @@ public:
   virtual bool isValid( ) const;
 
   // The scaling property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Scale,TOOLS(Vector2),DEFAULT_SCALE);
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Scale,Vector2,DEFAULT_SCALE);
 
   // The translation property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Translation,TOOLS(Vector2),DEFAULT_TRANSLATION);
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(Translation,Vector2,DEFAULT_TRANSLATION);
 
   // The rotationCenter property
-  PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationCenter,TOOLS(Vector2),DEFAULT_ROTATIONCENTER);
+  PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationCenter,Vector2,DEFAULT_ROTATIONCENTER);
 
   // The rotationAngle property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(RotationAngle,real_t,DEFAULT_ROTATIONANGLE);
@@ -136,7 +136,7 @@ public:
 
   virtual Point2ArrayPtr transform( const Point2ArrayPtr& points ) const;
 
-  TOOLS(Vector2) transform( const TOOLS(Vector2)& point ) const;
+  Vector2 transform( const Vector2& point ) const;
 
 
 };

@@ -50,7 +50,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class SG_API TOOLS(Tuple3)<uchar_t>;
+template class SG_API Tuple3<uchar_t>;
 #endif
 
 /**
@@ -70,7 +70,7 @@ template class SG_API TOOLS(Tuple3)<uchar_t>;
 
 
 class Color4;
-class SG_API Color3 : public TOOLS(Tuple3)<uchar_t>
+class SG_API Color3 : public Tuple3<uchar_t>
 {
 
   friend class Color4;
@@ -170,13 +170,13 @@ public:
   /// Decode the rgb value from an uint
   static Color3 fromUint(uint_t value, eColor3Format format = eRGB);
 
-  TOOLS(Tuple3)<uchar_t> toHSV8() const;
-  TOOLS(Tuple3)<real_t> toHSV() const;
+  Tuple3<uchar_t> toHSV8() const;
+  Tuple3<real_t> toHSV() const;
 
-  TOOLS(Vector3) toClampedValues() const;
+  Vector3 toClampedValues() const;
 
-  static Color3 fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv);
-  static Color3 fromHSV(const TOOLS(Tuple3)<real_t>& hsv);
+  static Color3 fromHSV(const Tuple3<uchar_t>& hsv);
+  static Color3 fromHSV(const Tuple3<real_t>& hsv);
 
   static Color3 interpolate(const Color3& c1, const Color3& c2, real_t t = 0.5);
 
@@ -204,7 +204,7 @@ SG_API Color3 operator*( const real_t& s, const Color3& v );
 /* ----------------------------------------------------------------------- */
 
 #ifdef GEOM_DLL
-template class SG_API TOOLS(Tuple4)<uchar_t>;
+template class SG_API Tuple4<uchar_t>;
 #endif
 
 /**
@@ -213,7 +213,7 @@ template class SG_API TOOLS(Tuple4)<uchar_t>;
    and \c alpha.
 */
 
-class SG_API Color4 : public TOOLS(Tuple4)<uchar_t>
+class SG_API Color4 : public Tuple4<uchar_t>
 {
 public:
 
@@ -333,13 +333,13 @@ public:
   /// Decode the argb value from an uint
   static Color4 fromUint(uint_t, eColor4Format format = eARGB);
 
-  TOOLS(Tuple4)<uchar_t> toHSVA8() const;
-  TOOLS(Tuple4)<real_t> toHSVA() const;
+  Tuple4<uchar_t> toHSVA8() const;
+  Tuple4<real_t> toHSVA() const;
 
-  TOOLS(Vector4) toClampedValues() const;
+  Vector4 toClampedValues() const;
 
-  static Color4 fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsv);
-  static Color4 fromHSVA(const TOOLS(Tuple4)<real_t>& hsv);
+  static Color4 fromHSVA(const Tuple4<uchar_t>& hsv);
+  static Color4 fromHSVA(const Tuple4<real_t>& hsv);
 
   static Color4 interpolate(const Color4& c1, const Color4& c2, real_t t = 0.5);
 

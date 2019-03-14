@@ -289,10 +289,10 @@ public:
 protected:
 
   /// A cache used to store display list.
-  TOOLS(Cache)<GLuint> __cache;
+  Cache<GLuint> __cache;
 
   /// A cache used to store texture.
-  TOOLS(Cache)<GLuint> __cachetexture;
+  Cache<GLuint> __cachetexture;
 
   /// A cache used to store display list of all scene.
   GLuint __scenecache;

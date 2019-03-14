@@ -80,12 +80,12 @@ public :
       inline void setOrthographicCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far)
       {  __camera = ProjectionCamera::orthographicCamera(left, right, bottom, top, near, far); }
 
-      inline void lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D)
+      inline void lookAt(const Vector3& eyePosition3D, const Vector3& center3D, const Vector3& upVector3D)
       { __camera->lookAt(eyePosition3D, center3D, upVector3D); }
 
       ProjectionCameraPtr camera() const { return __camera; }
 
-      inline void transformModel(const TOOLS(Matrix4)& transform)
+      inline void transformModel(const Matrix4& transform)
       {  __camera->transformModel(transform); }
 
       inline void pushModelTransformation()
@@ -97,10 +97,10 @@ public :
       inline void transformModelIdentity()
       {  __camera->transformModelIdentity();  }
 
-      inline void translateModel(const TOOLS(Vector3)& v)
+      inline void translateModel(const Vector3& v)
       {  __camera->translateModel(v);  }
 
-      inline void scaleModel(const TOOLS(Vector3)& v)
+      inline void scaleModel(const Vector3& v)
       {  __camera->scaleModel(v);  }
 
 

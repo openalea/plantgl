@@ -53,7 +53,6 @@
 #include "util_qstring.h"
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

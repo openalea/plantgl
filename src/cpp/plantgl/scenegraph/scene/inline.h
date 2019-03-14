@@ -74,10 +74,10 @@ class SG_API Inline : public Shape3D {
 public:
 
 	// The default translation value
-	static const TOOLS(Vector3) DEFAULT_TRANSLATION;
+	static const Vector3 DEFAULT_TRANSLATION;
 
 	// The default scaling value
-	static const TOOLS(Vector3) DEFAULT_SCALE;
+	static const Vector3 DEFAULT_SCALE;
 
   /** A structure which helps to build a Inline when parsing.
       Fields are normally allocated while parsing and are free when the
@@ -108,16 +108,16 @@ public:
 	    ScenePtr * Scene;
 	    
 	    /// A pointer to the \b Translation field.
-	    TOOLS(Vector3) * Translation;
+	    Vector3 * Translation;
 	    
 	    /// A pointer to the \b Scale field.
-	    TOOLS(Vector3) * Scale;
+	    Vector3 * Scale;
     };
 
   /// Constructor.
   Inline(const std::string& filename, 
-		 const TOOLS(Vector3)& translation = DEFAULT_TRANSLATION, 
-		 const TOOLS(Vector3)& size = DEFAULT_SCALE);
+		 const Vector3& translation = DEFAULT_TRANSLATION, 
+		 const Vector3& size = DEFAULT_SCALE);
 
   /// Destructor.
   virtual ~Inline();
@@ -142,16 +142,16 @@ public:
   inline const ScenePtr& getScene() const { return __scene; }
 
   /// Return the translation value.
-  inline const TOOLS(Vector3)& getTranslation() const { return __translation; }
+  inline const Vector3& getTranslation() const { return __translation; }
 
   /// Return the Scale value.
-  inline const TOOLS(Vector3)& getScale() const { return __scale; }
+  inline const Vector3& getScale() const { return __scale; }
     
   /// Return the translation value.
-  inline TOOLS(Vector3)& getTranslation() { return __translation; }
+  inline Vector3& getTranslation() { return __translation; }
 
   /// Return the Scale value.
-  inline TOOLS(Vector3)& getScale() { return __scale; }
+  inline Vector3& getScale() { return __scale; }
     
   /// Tell whether Translation value is to default
   inline bool isTranslationToDefault() const { return __translation == DEFAULT_TRANSLATION; }
@@ -171,10 +171,10 @@ protected :
   std::string __filename;
 
   /// The translation
-  TOOLS(Vector3) __translation;
+  Vector3 __translation;
 
   /// The scale
-  TOOLS(Vector3) __scale;
+  Vector3 __scale;
 
   /// The subscene.
   ScenePtr __scene;

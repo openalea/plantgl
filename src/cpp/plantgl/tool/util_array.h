@@ -52,7 +52,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -263,7 +263,7 @@ inline bool empty( ) const {
 
 /// Returns whether \e self contain unique elements.
 bool isUnique( ) const {
-        return TOOLS(isUnique)(__A.begin(),__A.end());
+        return PGL(isUnique)(__A.begin(),__A.end());
 }
 
 /// Prints \e self to the output stream \e stream.
@@ -411,11 +411,11 @@ Array1& operator+=( const Array1& t ) {
 }
 };
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #include <math.h>
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 template <class T>
 class NumericArray1 : public Array1<T>
@@ -830,7 +830,7 @@ Uint32Array1Ptr histogram(RCPtr<NumericArray> values, uint32_t nbbins,
 // __util_array_h__
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write Array \b a in \b stream.
 template <class T>

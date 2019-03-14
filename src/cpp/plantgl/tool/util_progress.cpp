@@ -10,17 +10,17 @@
 
 #include "util_progress.h"
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 static void progressprint(const char *msg, float percent) { printf(msg, percent); }
 
 static progressstatusfunction PSFUNC = progressprint;
 
-void TOOLS(register_progressstatus_func)(TOOLS(progressstatusfunction) func) {
+void register_progressstatus_func(progressstatusfunction func) {
   PSFUNC = func;
 }
 
-void TOOLS(unregister_progressstatus_func)() {
+void unregister_progressstatus_func() {
   PSFUNC = progressprint;
 }
 

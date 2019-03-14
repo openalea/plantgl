@@ -38,14 +38,13 @@
 #include <plantgl/math/util_math.h>
 using namespace std;
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
   /// Constructs a Plane3.
-Plane3::Plane3( const TOOLS(Vector3)& _normal, const TOOLS(Vector3)& _point):
+Plane3::Plane3( const Vector3& _normal, const Vector3& _point):
       __Normal(direction(_normal)), __D() { __D = dot(__Normal,_point);  GEOM_ASSERT(__Normal.isNormalized()); }
 
   /// Constructs a Plane3.
-Plane3::Plane3( const TOOLS(Vector3)& _normal , real_t _d ):
+Plane3::Plane3( const Vector3& _normal , real_t _d ):
       __Normal(direction(_normal)), __D(_d) { GEOM_ASSERT(__Normal.isNormalized()); }
 
 Plane3::Plane3( real_t alpha, real_t beta, real_t _d ):
@@ -55,6 +54,6 @@ Plane3::Plane3( real_t alpha, real_t beta, real_t _d ):
 Plane3::Plane3( real_t a, real_t b, real_t c, real_t d ):
       __Normal(Vector3(a,b,c)),__D(d) { }
 
-real_t Plane3::getDistance(const TOOLS(Vector3)& point) const {
+real_t Plane3::getDistance(const Vector3& point) const {
     return dot(__Normal,point) - __D;
 }

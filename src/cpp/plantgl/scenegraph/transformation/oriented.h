@@ -66,10 +66,10 @@ public:
     {
 
     /// A pointer to the \b Primary field.
-    TOOLS(Vector3) * Primary;
+    Vector3 * Primary;
 
      /// A pointer to the \b Secondary field.
-    TOOLS(Vector3) * Secondary;
+    Vector3 * Secondary;
 
     /// Constructor.
     Builder( );
@@ -90,8 +90,8 @@ public:
       - \e primary must be normalized;
       - \e secondary must be normalized and orthogonal to \e primary;
   */
-  BaseOrientation( const TOOLS(Vector3)& primary,
-                   const TOOLS(Vector3)& secondary ) ;
+  BaseOrientation( const Vector3& primary,
+                   const Vector3& secondary ) ;
 
   /// Destructor.
   virtual ~BaseOrientation( );
@@ -99,10 +99,10 @@ public:
 protected:
 
   /// The \b Primary field.
-  TOOLS(Vector3) __primary;
+  Vector3 __primary;
 
   /// The \b Secondary field.
-  TOOLS(Vector3) __secondary;
+  Vector3 __secondary;
 };
 
 /// BaseOrientation Pointer
@@ -124,20 +124,20 @@ class SG_API Oriented : public OrthoTransformed
 public:
 
   /// The \b Primary value.
-  static const TOOLS(Vector3) DEFAULT_PRIMARY;
+  static const Vector3 DEFAULT_PRIMARY;
 
   /// The \b Secondary value.
-  static const TOOLS(Vector3) DEFAULT_SECONDARY;
+  static const Vector3 DEFAULT_SECONDARY;
 
 
   /// A structure which helps to build a Oriented when parsing.
   struct SG_API Builder : public OrthoTransformed::Builder {
 
     /// A pointer to the \b Primary field.
-    TOOLS(Vector3) * Primary;
+    Vector3 * Primary;
 
      /// A pointer to the \b Secondary field.
-    TOOLS(Vector3) * Secondary;
+    Vector3 * Secondary;
 
     /// Constructor.
     Builder( );
@@ -162,8 +162,8 @@ public:
       - \e primary must be normalized;
       - \e secondary must be normalized and orthogonal to \e primary;
       - \e geometry must be non null. */
-  Oriented( const TOOLS(Vector3)& primary,
-            const TOOLS(Vector3)& secondary,
+  Oriented( const Vector3& primary,
+            const Vector3& secondary,
             const GeometryPtr& geometry );
 
   /// Destructor
@@ -172,16 +172,16 @@ public:
   PGL_OBJECT(Oriented)
 
   /// Returns \b Primary value.
-  const TOOLS(Vector3)& getPrimary( ) const;
+  const Vector3& getPrimary( ) const;
 
   /// Returns \b Primary field.
-  TOOLS(Vector3)& getPrimary( );
+  Vector3& getPrimary( );
 
   /// Returns \b Secondary value.
-  const TOOLS(Vector3)& getSecondary( ) const ;
+  const Vector3& getSecondary( ) const ;
 
   /// Returns \b Secondary field.
-  TOOLS(Vector3)& getSecondary( ) ;
+  Vector3& getSecondary( ) ;
 
   virtual Transformation3DPtr getTransformation( ) const;
 
@@ -201,10 +201,10 @@ public:
 protected:
 
   /// The \b Primary field.
-  TOOLS(Vector3) __primary;
+  Vector3 __primary;
 
   /// The \b Secondary field.
-  TOOLS(Vector3) __secondary;
+  Vector3 __secondary;
 
 };
 

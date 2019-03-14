@@ -66,18 +66,18 @@ public:
       - \e v must be valid.
       \post
       - \e self is valid. */
-  Translation( const TOOLS(Vector3)& v );
+  Translation( const Vector3& v );
 
   /// Destructor.
   virtual ~Translation( );
 
   /// Return Matrix4(1,0,0,__vector.x(),  0,1,0,__vector.y(),  0,0,1,__vector.z(),  0,0,0,1);
-  virtual TOOLS(Matrix4) getMatrix( ) const;
+  virtual Matrix4 getMatrix( ) const;
 
   virtual bool isValid( ) const;
 
   /// Returns the displacement \e self represents.
-  const TOOLS(Vector3)& getVector( ) const;
+  const Vector3& getVector( ) const;
 
   virtual Point3ArrayPtr transform( const Point3ArrayPtr& points ) const;
 
@@ -90,7 +90,7 @@ public:
 protected:
 
   /// The translation vector.
-  TOOLS(Vector3) __vector;
+  Vector3 __vector;
 };
 
 /// Translation Pointer
@@ -111,14 +111,14 @@ class SG_API Translated : public MatrixTransformed
 public:
 
   /// The Translation field default value
-  static const TOOLS(Vector3) DEFAULT_TRANSLATION;
+  static const Vector3 DEFAULT_TRANSLATION;
 
 
   /// A structure which helps to build a Translated when parsing.
   struct SG_API Builder : public MatrixTransformed::Builder {
 
     /// A pointer to the \b Translation field.
-    TOOLS(Vector3) * Translation;
+    Vector3 * Translation;
 
     /// Constructor.
     Builder( );
@@ -142,7 +142,7 @@ public:
       \pre
       - \e translation must be valid,
       - \e geometry must be non null and valid. */
-  explicit Translated( const TOOLS(Vector3)& translation,
+  explicit Translated( const Vector3& translation,
                        const GeometryPtr& geometry );
 
   /// Destructor
@@ -153,10 +153,10 @@ public:
   virtual Transformation3DPtr getTransformation( ) const ;
 
   /// Returns Translation value.
-  const TOOLS(Vector3)& getTranslation( ) const ;
+  const Vector3& getTranslation( ) const ;
 
   /// Returns Translation field.
-  TOOLS(Vector3)& getTranslation( ) ;
+  Vector3& getTranslation( ) ;
 
   /// Returns whether Translation is set to its default value.
   bool isTranslationToDefault( ) const ;
@@ -166,7 +166,7 @@ public:
 protected:
 
   /// The Translation field.
-  TOOLS(Vector3) __translation;
+  Vector3 __translation;
 
 };
 
@@ -191,18 +191,18 @@ public:
       - \e v must be valid.
       \post
       - \e self is valid. */
-  Translation2D( const TOOLS(Vector2)& v );
+  Translation2D( const Vector2& v );
 
   /// Destructor.
   virtual ~Translation2D( );
 
   /// Return Matrix3(1,0,__vector.x(), 0,1,__vector.y(),  0,0,1);
-  virtual TOOLS(Matrix3) getMatrix( ) const;
+  virtual Matrix3 getMatrix( ) const;
 
   virtual bool isValid( ) const;
 
   /// Returns the displacement \e self represents.
-  const TOOLS(Vector2)& getVector( ) const ;
+  const Vector2& getVector( ) const ;
 
   virtual Point2ArrayPtr transform( const Point2ArrayPtr& points ) const;
 
@@ -215,7 +215,7 @@ public:
 protected:
 
   /// The translation vector.
-  TOOLS(Vector2) __vector;
+  Vector2 __vector;
 };
 
 /// Translation2D Pointer

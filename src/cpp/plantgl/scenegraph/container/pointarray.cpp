@@ -33,7 +33,6 @@
 
 #include "pointarray.h"
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -444,7 +443,7 @@ Point4Array::Point4Array( uint_t size ) :
   GEOM_ASSERT(isValid());
 }
 
-Point4Array::Point4Array( uint_t size, const TOOLS(Vector4)& value):
+Point4Array::Point4Array( uint_t size, const Vector4& value):
   Array1<Vector4>(size, value) {
   // __A.reserve(size);
   GEOM_ASSERT(isValid());

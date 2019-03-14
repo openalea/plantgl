@@ -90,10 +90,10 @@ public :
 					     const std::string& format = "PNG",
 						 bool  withAlpha = false );
 
-  static ViewRayBuffer * castRays(const TOOLS(Vector3)& pos, 
-	                               const TOOLS(Vector3)& dir,
-								   const TOOLS(Vector3)& dx, 
-								   const TOOLS(Vector3)& dy,
+  static ViewRayBuffer * castRays(const PGL(Vector3)& pos, 
+	                               const PGL(Vector3)& dir,
+								   const PGL(Vector3)& dx, 
+								   const PGL(Vector3)& dy,
 								   int sx, int sy);
 
   static ViewZBuffer * grabZBuffer();
@@ -165,12 +165,12 @@ public :
   static void start();
   static void exit();
 
-  static void setCamera(const TOOLS(Vector3)& pos);
-  static void setCamera(const TOOLS(Vector3)& pos, real_t azimuth, real_t elevation);
-  static void lookAt(const TOOLS(Vector3)& pos, const TOOLS(Vector3)& target);
-  static void lookAt(const TOOLS(Vector3)& target);
+  static void setCamera(const PGL(Vector3)& pos);
+  static void setCamera(const PGL(Vector3)& pos, real_t azimuth, real_t elevation);
+  static void lookAt(const PGL(Vector3)& pos, const PGL(Vector3)& target);
+  static void lookAt(const PGL(Vector3)& target);
 
-  static void getCamera(TOOLS(Vector3)& pos, TOOLS(Vector3)& heading, TOOLS(Vector3)& up);
+  static void getCamera(PGL(Vector3)& pos, PGL(Vector3)& heading, PGL(Vector3)& up);
 
   static void setViewAngle(real_t angle);
   static real_t getViewAngle();
@@ -178,8 +178,8 @@ public :
   static void setLightEnabled(bool);
   static bool isLightEnabled();
 
-  static void setLightPosition(const TOOLS(Vector3)& position);
-  static TOOLS(Vector3) getLightPosition();
+  static void setLightPosition(const PGL(Vector3)& position);
+  static PGL(Vector3) getLightPosition();
 
   static void setLightAmbient(int red, int green, int blue);
   static void getLightAmbient(int& red, int& green, int& blue);

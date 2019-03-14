@@ -50,7 +50,7 @@
 #include <plantgl/scenegraph/geometry/boundingbox.h>
 #include "object.h"
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

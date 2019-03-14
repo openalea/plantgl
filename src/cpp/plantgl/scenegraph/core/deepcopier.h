@@ -66,9 +66,9 @@ class SG_API DeepCopier
 {
 
 public:
-  // typedef const TOOLS(RefCountObject) * KeyType;
+  // typedef const RefCountObject * KeyType;
   typedef size_t KeyType;
-  typedef TOOLS(RefCountObjectPtr) ValueType;
+  typedef RefCountObjectPtr ValueType;
   typedef pgl_hash_map<KeyType,ValueType> RCObjectMap;
 
   /** Default constructor.  */
@@ -79,25 +79,25 @@ public:
 
   inline void clear() { __map.clear(); }
 
-  inline KeyType to_key(const TOOLS(RefCountObject) * ptr) { return (size_t)ptr; }
+  inline KeyType to_key(const RefCountObject * ptr) { return (size_t)ptr; }
 
   template<class T>
-  inline void set(const TOOLS(RefCountObject) * source, 
+  inline void set(const RefCountObject * source, 
 	              const RCPtr<T> target) 
-  { __map[to_key(source)] = TOOLS(RefCountObjectPtr)(target);  }
+  { __map[to_key(source)] = RefCountObjectPtr(target);  }
 
-  inline void set(const TOOLS(RefCountObject) * source,
-	              TOOLS(RefCountObject) * target) 
-  { __map[to_key(source)] = TOOLS(RefCountObjectPtr)(target);  }
+  inline void set(const RefCountObject * source,
+	              RefCountObject * target) 
+  { __map[to_key(source)] = RefCountObjectPtr(target);  }
 
-  inline TOOLS(RefCountObjectPtr) get(const TOOLS(RefCountObject) * source) 
+  inline RefCountObjectPtr get(const RefCountObject * source) 
   { 
 	  RCObjectMap::const_iterator it = __map.find(to_key(source));
 	  if(it != __map.end()) return it->second;
-	  else return TOOLS(RefCountObjectPtr)(0);
+	  else return RefCountObjectPtr(0);
   }
 
-  inline bool remove(const TOOLS(RefCountObject) * source) 
+  inline bool remove(const RefCountObject * source) 
   { 
 	  RCObjectMap::iterator it = __map.find(to_key(source));
 	  if(it != __map.end()) { __map.erase(it); return true; }

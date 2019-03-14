@@ -52,14 +52,14 @@ class Tesselator;
 /* ----------------------------------------------------------------------- */
 
 ALGO_API Point3ArrayPtr plane_segment_clip(const Plane3& plane, 
-                                            const TOOLS(Vector3)& p1, 
-                                            const TOOLS(Vector3)& p2);
+                                            const Vector3& p1, 
+                                            const Vector3& p2);
 
 
 ALGO_API Point3ArrayPtr plane_triangle_clip(const Plane3& plane, 
-                                            const TOOLS(Vector3)& p1, 
-                                            const TOOLS(Vector3)& p2, 
-                                            const TOOLS(Vector3)& p3);
+                                            const Vector3& p1, 
+                                            const Vector3& p2, 
+                                            const Vector3& p3);
 
 // find the closest point from a group
 ALGO_API Index plane_pointset_clip(const Plane3& plane, 
@@ -342,7 +342,7 @@ public :
 protected : 
 
 	/// The cache storing the already computed bounding sphere.
-    TOOLS(Cache)<FaceSetPtr> __cache;
+    Cache<FaceSetPtr> __cache;
 
     /// The resulting bounding box.
 	FaceSetPtr __result;

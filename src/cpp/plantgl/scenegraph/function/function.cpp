@@ -35,7 +35,6 @@
 #include <plantgl/scenegraph/geometry/polyline.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 uint_t QuantisedFunction::DEFAULT_SAMPLING(100);

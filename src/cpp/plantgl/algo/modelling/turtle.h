@@ -76,25 +76,25 @@ public:
     inline bool emptyStack() const
 	{ return __paramstack.empty(); }
     
-    inline const TOOLS(Vector3)& getPosition() const
+    inline const Vector3& getPosition() const
 	{ return __params->position; }
         
-    const TOOLS(Vector3)& getHeading() const
+    const Vector3& getHeading() const
 	{ return __params->heading; }
     
-    inline const TOOLS(Vector3)& getUp() const
+    inline const Vector3& getUp() const
 	{ return __params->up; }
     
-    inline const TOOLS(Vector3)& getLeft() const
+    inline const Vector3& getLeft() const
 	{ return __params->left; }
     
-    inline const TOOLS(Vector3)& getScale() const
+    inline const Vector3& getScale() const
 	{ return __params->scale; }
 
-    inline const TOOLS(Matrix4) getTransformationMatrix() const
+    inline const Matrix4 getTransformationMatrix() const
 	{ return __params->getTransformationMatrix(); }
 
-    inline const TOOLS(Matrix3) getOrientationMatrix() const
+    inline const Matrix3 getOrientationMatrix() const
 	{ return __params->getOrientationMatrix(); }
 
     inline real_t getWidth() const
@@ -106,14 +106,14 @@ public:
     inline uint_t getId() const
 	{ return id; }
     
-    inline const TOOLS(Vector3)& getTropism() const
+    inline const Vector3& getTropism() const
 	{ return __params->tropism; }
 
-	inline void setTropism(const TOOLS(Vector3)& val)
+	inline void setTropism(const Vector3& val)
 	{ __params->tropism= val.normed(); }
 
 	inline void setTropism(real_t x = 0, real_t y = 0, real_t z = 1)
-	{ __params->tropism= TOOLS(Vector3)(x,y,z).normed(); }
+	{ __params->tropism= Vector3(x,y,z).normed(); }
 
     inline const real_t& getElasticity() const
 	{ return __params->elasticity; }
@@ -199,111 +199,111 @@ public:
 	inline void turnAround() { left(180); }
 
     /// Roll such as up vector comes in the top direction
-    virtual void rollToVert(real_t alpha = 1.0, const TOOLS(Vector3)& top = TOOLS(Vector3::OZ));
+    virtual void rollToVert(real_t alpha = 1.0, const Vector3& top = TOOLS(Vector3::OZ));
     
     /// Roll such as head vector comes in the horizontal plane
-    virtual void rollToHorizontal(real_t alpha = 1.0, const TOOLS(Vector3)& top = TOOLS(Vector3::OZ)) ;
+    virtual void rollToHorizontal(real_t alpha = 1.0, const Vector3& top = TOOLS(Vector3::OZ)) ;
     
 	/// set Heading and Up vectors
-    virtual void setHead(const TOOLS(Vector3)& h, const TOOLS(Vector3)& u = TOOLS(Vector3::OX));
+    virtual void setHead(const Vector3& h, const Vector3& u = TOOLS(Vector3::OX));
 
 	/// set Heading and Up vectors
     inline void setHead(real_t hx = 0, real_t hy = 0, real_t hz = 1, 
 						  real_t ux = 1, real_t uy = 0, real_t uz = 0)
-	{ setHead(TOOLS(Vector3)(hx,hy,hz),TOOLS(Vector3)(ux,uy,uz)); }	
+	{ setHead(Vector3(hx,hy,hz),Vector3(ux,uy,uz)); }	
     
     /// Orient the turtle according to the absolute euler angles given
     virtual void eulerAngles(real_t azimuth = 180, real_t elevation = 90, real_t roll = 0);
 
 	/// Change position to pos
-    virtual void move(const TOOLS(Vector3)& pos);
+    virtual void move(const Vector3& pos);
     
     /// Change position to (x,y,z)
     inline void move(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ move(TOOLS(Vector3)(x,y,z)); }
+	{ move(Vector3(x,y,z)); }
     
 	/// Shift the position of pos
-    virtual void shift(const TOOLS(Vector3) & pos);
+    virtual void shift(const Vector3 & pos);
     
     inline void shift(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ shift(TOOLS(Vector3)(x,y,z)); }
+	{ shift(Vector3(x,y,z)); }
 
 	/// Trace line to v without changing the orientation
-    virtual void lineTo(const TOOLS(Vector3) & v, real_t topradius = -1.0);
+    virtual void lineTo(const Vector3 & v, real_t topradius = -1.0);
 
 	/// Trace line to pos+v without changing the orientation
-    virtual void lineRel(const TOOLS(Vector3) & v, real_t topradius = -1.0);
+    virtual void lineRel(const Vector3 & v, real_t topradius = -1.0);
 
 	/// Change the orientation to pinpoint v
-    void pinpoint(const TOOLS(Vector3) & v);
+    void pinpoint(const Vector3 & v);
 
 	/// Change the orientation to pinpoint pos+v
-    virtual void pinpointRel(const TOOLS(Vector3) & v);
+    virtual void pinpointRel(const Vector3 & v);
 
 	/// Trace line toward v and change the orientation
-    void oLineTo(const TOOLS(Vector3)& v, real_t topradius = -1.0);
+    void oLineTo(const Vector3& v, real_t topradius = -1.0);
 
 	/// Trace line toward pos+v and change the orientation
-    virtual void oLineRel(const TOOLS(Vector3)& v, real_t topradius = -1.0);
+    virtual void oLineRel(const Vector3& v, real_t topradius = -1.0);
 
 	inline void lineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
-	{ lineTo(TOOLS(Vector3)(x,y,z),topradius); }
+	{ lineTo(Vector3(x,y,z),topradius); }
 
 	inline void pinpoint(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ pinpoint(TOOLS(Vector3)(x,y,z)); }
+	{ pinpoint(Vector3(x,y,z)); }
 
 	inline void oLineTo(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
-	{ oLineTo(TOOLS(Vector3)(x,y,z),topradius); }
+	{ oLineTo(Vector3(x,y,z),topradius); }
 
 	inline void lineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
-	{ lineRel(TOOLS(Vector3)(x,y,z),topradius); }
+	{ lineRel(Vector3(x,y,z),topradius); }
 
 	inline void pinpointRel(real_t x = 0, real_t y = 0, real_t z = 0)
-	{ pinpointRel(TOOLS(Vector3)(x,y,z)); }
+	{ pinpointRel(Vector3(x,y,z)); }
 
 	inline void oLineRel(real_t x = 0, real_t y = 0, real_t z = 0, real_t topradius = -1.0)
-	{ oLineRel(TOOLS(Vector3)(x,y,z),topradius); }
+	{ oLineRel(Vector3(x,y,z),topradius); }
 
-    virtual void transform(const TOOLS(Matrix3)& matrix);
+    virtual void transform(const Matrix3& matrix);
 
-	virtual void scale(const TOOLS(Vector3)&);
+	virtual void scale(const Vector3&);
 
    	inline void scale(real_t sx, real_t sy, real_t sz)
-	{  scale(TOOLS(Vector3)(sx,sy,sz)); }
+	{  scale(Vector3(sx,sy,sz)); }
 
    	inline void scale(real_t s )
-	{ scale(TOOLS(Vector3)(s,s,s)); }
+	{ scale(Vector3(s,s,s)); }
 
    	inline void scale()
-	{ scale(TOOLS(Vector3)(1,1,1)); }
+	{ scale(Vector3(1,1,1)); }
 
-   	inline void multScale(const TOOLS(Vector3)& s)
-	{ const TOOLS(Vector3)& cur_scale = getScale();
-	  scale(TOOLS(Vector3)(cur_scale.x() * s.x(),cur_scale.y() * s.y(),cur_scale.z() * s.z())); }
+   	inline void multScale(const Vector3& s)
+	{ const Vector3& cur_scale = getScale();
+	  scale(Vector3(cur_scale.x() * s.x(),cur_scale.y() * s.y(),cur_scale.z() * s.z())); }
 
    	inline void multScale(real_t sx, real_t sy, real_t sz)
-	{ const TOOLS(Vector3)& cur_scale = getScale();
-	  scale(TOOLS(Vector3)(cur_scale.x() * sx,cur_scale.y() * sy,cur_scale.z() * sz)); }
+	{ const Vector3& cur_scale = getScale();
+	  scale(Vector3(cur_scale.x() * sx,cur_scale.y() * sy,cur_scale.z() * sz)); }
 
    	inline void multScale(real_t s)
-	{ multScale(TOOLS(Vector3)(s,s,s)); }
+	{ multScale(Vector3(s,s,s)); }
 
    	inline void multScale()
-    {  multScale(TOOLS(Vector3)(scale_multiplier,scale_multiplier,scale_multiplier)); }
+    {  multScale(Vector3(scale_multiplier,scale_multiplier,scale_multiplier)); }
 
-   	inline void divScale(const TOOLS(Vector3)& s)
-	{ const TOOLS(Vector3)& cur_scale = getScale();
-	  scale(TOOLS(Vector3)(cur_scale.x() / s.x(),cur_scale.y() / s.y(),cur_scale.z() / s.z())); }
+   	inline void divScale(const Vector3& s)
+	{ const Vector3& cur_scale = getScale();
+	  scale(Vector3(cur_scale.x() / s.x(),cur_scale.y() / s.y(),cur_scale.z() / s.z())); }
 
    	inline void divScale(real_t sx, real_t sy, real_t sz)
-	{ const TOOLS(Vector3)& cur_scale = getScale();
-	  scale(TOOLS(Vector3)(cur_scale.x() / sx,cur_scale.y() / sy,cur_scale.z() / sz)); }
+	{ const Vector3& cur_scale = getScale();
+	  scale(Vector3(cur_scale.x() / sx,cur_scale.y() / sy,cur_scale.z() / sz)); }
 
    	inline void divScale(real_t s)
-	{ divScale(TOOLS(Vector3)(s,s,s)); }
+	{ divScale(Vector3(s,s,s)); }
 
    	inline void divScale()
-	{ divScale(TOOLS(Vector3)(scale_multiplier,scale_multiplier,scale_multiplier)); }
+	{ divScale(Vector3(scale_multiplier,scale_multiplier,scale_multiplier)); }
 
     virtual void setColor(int val);
 
@@ -367,29 +367,29 @@ public:
 	inline void frame() { frame(default_step); }
     virtual void frame(real_t heigth, real_t cap_heigth_ratio = 0.2, real_t cap_radius_ratio = 2, real_t color = 1.0, real_t transparency = 0.0);
 
-    inline void setTextureScale(real_t u, real_t v) { setTextureScale(TOOLS(Vector2)(u,v)); }
-    virtual void setTextureScale(const TOOLS(Vector2)& s);
+    inline void setTextureScale(real_t u, real_t v) { setTextureScale(Vector2(u,v)); }
+    virtual void setTextureScale(const Vector2& s);
 
     virtual void setTextureVScale(real_t v);
     virtual void setTextureUScale(real_t u);
 
     inline void setTextureRotation(real_t angle, real_t ucenter = 0.5, real_t vcenter = 0.5) 
-    { setTextureRotation(angle, TOOLS(Vector2)(ucenter,vcenter)); }
-    virtual void setTextureRotation(real_t angle, const TOOLS(Vector2)& center);
+    { setTextureRotation(angle, Vector2(ucenter,vcenter)); }
+    virtual void setTextureRotation(real_t angle, const Vector2& center);
 
     inline void setTextureTranslation(real_t u = 0.5, real_t v = 0.5)
-    { setTextureTranslation(TOOLS(Vector2)(u,v)); }
+    { setTextureTranslation(Vector2(u,v)); }
 
-    virtual void setTextureTranslation(const TOOLS(Vector2)& t);
+    virtual void setTextureTranslation(const Vector2& t);
 
-    virtual void setTextureTransformation(const  TOOLS(Vector2)& scaling, 
-									      const TOOLS(Vector2)&  translation, 
-										  real_t angle, const TOOLS(Vector2)& rotcenter);
+    virtual void setTextureTransformation(const  Vector2& scaling, 
+									      const Vector2&  translation, 
+										  real_t angle, const Vector2& rotcenter);
 
     inline void setTextureTransformation(real_t uscaling, real_t vscaling, 
 								  real_t utranslation, real_t vtranslation, 
 								  real_t angle, real_t urotcenter, real_t vrotcenter)
-    { setTextureTransformation(TOOLS(Vector2)(uscaling,vscaling),TOOLS(Vector2)(utranslation,vtranslation), angle, TOOLS(Vector2)(urotcenter, vrotcenter)); }
+    { setTextureTransformation(Vector2(uscaling,vscaling),Vector2(utranslation,vtranslation), angle, Vector2(urotcenter, vrotcenter)); }
 
     virtual void setTextureBaseColor(const Color4& v);
     virtual void setTextureBaseColor(int v);
@@ -476,7 +476,7 @@ protected:
     virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false){}
     
     virtual void _generalizedCylinder(const Point3ArrayPtr& points,
-									  const std::vector<TOOLS(Vector3)>& left,
+									  const std::vector<Vector3>& left,
 									  const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection,
 									  bool crossSectionCCW,
@@ -504,7 +504,7 @@ protected:
 	void _applyGuide(real_t& l);
 	void _ajustToGuide();
 
-	void _tendTo(const TOOLS(Vector3)& t, real_t strength = 1.0);
+	void _tendTo(const Vector3& t, real_t strength = 1.0);
 
     uint_t popId();
 

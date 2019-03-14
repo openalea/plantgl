@@ -38,7 +38,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -162,8 +161,8 @@ Color3 Color3::fromUint(uint_t value, eColor3Format format) {
   return res;
 }
 
-TOOLS(Tuple3)<uchar_t> Color3::toHSV8() const {
-    TOOLS(Tuple3)<uchar_t> hsv(0,0,0);
+Tuple3<uchar_t> Color3::toHSV8() const {
+    Tuple3<uchar_t> hsv(0,0,0);
     Color3::const_iterator itmax = getMax();
     uchar_t rgb_max = *itmax;
     uchar_t rgb_min = *getMin();
@@ -189,7 +188,7 @@ TOOLS(Tuple3)<uchar_t> Color3::toHSV8() const {
     return hsv;
 }
 
-Color3 Color3::fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv) {
+Color3 Color3::fromHSV(const Tuple3<uchar_t>& hsv) {
     uchar_t h = hsv[0];
     uchar_t s = hsv[1];
     uchar_t v = hsv[2];
@@ -236,8 +235,8 @@ Color3 Color3::fromHSV(const TOOLS(Tuple3)<uchar_t>& hsv) {
 
 }
 
-TOOLS(Tuple3)<real_t> Color3::toHSV() const {
-    TOOLS(Tuple3)<real_t> hsv(0,0,0);
+Tuple3<real_t> Color3::toHSV() const {
+    Tuple3<real_t> hsv(0,0,0);
     Color3::const_iterator itmax = getMax();
     real_t rgb_max = real_t(*itmax);
 
@@ -270,7 +269,7 @@ TOOLS(Tuple3)<real_t> Color3::toHSV() const {
     return hsv;
 }
 
-Color3 Color3::fromHSV(const TOOLS(Tuple3)<real_t>& hsv) {
+Color3 Color3::fromHSV(const Tuple3<real_t>& hsv) {
     real_t h = hsv[0];
     real_t s = hsv[1];
     real_t v = hsv[2];
@@ -322,8 +321,8 @@ Color3 Color3::interpolate(const Color3& c1, const Color3& c2, real_t t)
     else if(t >= 1) t = 1.;
     real_t oneminust = 1- t;
 
-    TOOLS(Tuple3)<real_t> hsv1 = c1.toHSV();
-    TOOLS(Tuple3)<real_t> hsv2 = c2.toHSV();
+    Tuple3<real_t> hsv1 = c1.toHSV();
+    Tuple3<real_t> hsv2 = c2.toHSV();
     real_t h1 = hsv1[0];
     real_t h2 = hsv2[0];
     real_t minhue = std::min(h1,h2);
@@ -337,7 +336,7 @@ Color3 Color3::interpolate(const Color3& c1, const Color3& c2, real_t t)
         if (interpolhue >= 360) interpolhue -= 360;
     }
 
-    TOOLS(Tuple3)<real_t> hsvi(interpolhue,
+    Tuple3<real_t> hsvi(interpolhue,
                                hsv1[1]*oneminust+hsv2[1]*t,
                                hsv1[2]*oneminust+hsv2[2]*t);
     return Color3::fromHSV(hsvi);
@@ -535,28 +534,28 @@ Color4 Color4::fromUint(uint_t value, eColor4Format format) {
 }
 
 
-TOOLS(Tuple4)<uchar_t> Color4::toHSVA8() const
+Tuple4<uchar_t> Color4::toHSVA8() const
 {
-    TOOLS(Tuple3)<uchar_t> hsv = Color3(__RED,__GREEN,__BLUE).toHSV8();
-    return TOOLS(Tuple4)<uchar_t>(hsv[0],hsv[1],hsv[2],__ALPHA);
+    Tuple3<uchar_t> hsv = Color3(__RED,__GREEN,__BLUE).toHSV8();
+    return Tuple4<uchar_t>(hsv[0],hsv[1],hsv[2],__ALPHA);
 }
 
-TOOLS(Tuple4)<real_t> Color4::toHSVA() const
+Tuple4<real_t> Color4::toHSVA() const
 {
-    TOOLS(Tuple3)<uchar_t> hsv = Color3(__RED,__GREEN,__BLUE).toHSV8();
-    return TOOLS(Tuple4)<real_t>(hsv[0],hsv[1],hsv[2],__ALPHA/255);
+    Tuple3<uchar_t> hsv = Color3(__RED,__GREEN,__BLUE).toHSV8();
+    return Tuple4<real_t>(hsv[0],hsv[1],hsv[2],__ALPHA/255);
 }
 
-Color4 Color4::fromHSVA(const TOOLS(Tuple4)<uchar_t>& hsva)
+Color4 Color4::fromHSVA(const Tuple4<uchar_t>& hsva)
 {
-    Color3 c = Color3::fromHSV(TOOLS(Tuple3)<uchar_t>(hsva[0],hsva[1],hsva[2]));
+    Color3 c = Color3::fromHSV(Tuple3<uchar_t>(hsva[0],hsva[1],hsva[2]));
     return Color4(c.getRed(),c.getGreen(),c.getBlue(),hsva[3]);
 
 }
 
-Color4 Color4::fromHSVA(const TOOLS(Tuple4)<real_t>& hsva)
+Color4 Color4::fromHSVA(const Tuple4<real_t>& hsva)
 {
-    Color3 c = Color3::fromHSV(TOOLS(Tuple3)<real_t>(hsva[0],hsva[1],hsva[2]));
+    Color3 c = Color3::fromHSV(Tuple3<real_t>(hsva[0],hsva[1],hsva[2]));
     return Color4(c.getRed(),c.getGreen(),c.getBlue(),hsva[3]*255.);
 }
 
@@ -566,9 +565,9 @@ Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
     else if(t >= 1) t = 1.;
     real_t oneminust = 1- t;
 
-    TOOLS(Tuple4)<real_t> hsva1 = c1.toHSVA();
-    TOOLS(Tuple4)<real_t> hsva2 = c2.toHSVA();
-    TOOLS(Tuple4)<real_t> hsvai(hsva1[0]*oneminust+hsva2[0]*t,hsva1[1]*oneminust+hsva2[1]*t,hsva1[2]*oneminust+hsva2[2]*t,hsva1[3]*oneminust+hsva2[3]*t);
+    Tuple4<real_t> hsva1 = c1.toHSVA();
+    Tuple4<real_t> hsva2 = c2.toHSVA();
+    Tuple4<real_t> hsvai(hsva1[0]*oneminust+hsva2[0]*t,hsva1[1]*oneminust+hsva2[1]*t,hsva1[2]*oneminust+hsva2[2]*t,hsva1[3]*oneminust+hsva2[3]*t);
     return Color4::fromHSVA(hsvai);
 
 }

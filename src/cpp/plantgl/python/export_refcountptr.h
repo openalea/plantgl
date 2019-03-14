@@ -36,16 +36,16 @@
 #include <boost/python.hpp>
 // #include <boost/pointee.hpp>
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 
 #ifdef NO_BOOST_REFCOUNTPTR
 
 // For compatibility with Boost.Python.
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 template<class T>
 T* get_pointer(const RCPtr<T>& p){ return p.get(); }
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 # define DEF_POINTEE(CLASS) 
 #else

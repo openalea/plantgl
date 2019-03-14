@@ -148,18 +148,18 @@ public:
   /*! Returns the \e Point for u = \e u.
      \pre 
       - \e u must be in [FirstKnot,LastKnot];*/
-  virtual TOOLS(Vector2) getPointAt(real_t u) const = 0;
+  virtual Vector2 getPointAt(real_t u) const = 0;
 
   /*! Returns the \e Tangent for u = \e u.
     \pre 
     - \e u must be in [FirstKnot,LastKnot];*/
-  virtual TOOLS(Vector2) getTangentAt(real_t u) const = 0;
+  virtual Vector2 getTangentAt(real_t u) const = 0;
   
   
   /*! Returns the principal \e Normal for u = \e u.
     \pre 
     - \e u must be in [FirstKnot,LastKnot];*/
-  virtual TOOLS(Vector2) getNormalAt(real_t u) const = 0;
+  virtual Vector2 getNormalAt(real_t u) const = 0;
 
   virtual bool isACurve( ) const;
 
@@ -176,7 +176,7 @@ public:
   /// Return the length of the lineic model from u = begin to u = end.
   virtual real_t getLength(real_t begin, real_t end) const ;
 
-  virtual TOOLS(Vector2) findClosest(const TOOLS(Vector2)& pt, real_t* u = NULL) const;
+  virtual Vector2 findClosest(const Vector2& pt, real_t* u = NULL) const;
 
   QuantisedFunctionPtr getArcLengthToUMapping() const;
   QuantisedFunctionPtr getUToArcLengthMapping() const;
@@ -197,9 +197,9 @@ typedef RCPtr<Curve2D> Curve2DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-SG_API real_t closestPointToSegment(TOOLS(Vector2)& p, 
-						   const TOOLS(Vector2)& segA,
-						   const TOOLS(Vector2)& segB,
+SG_API real_t closestPointToSegment(Vector2& p, 
+						   const Vector2& segA,
+						   const Vector2& segB,
                            real_t* u = NULL);
 
 // __geom_curve_h__

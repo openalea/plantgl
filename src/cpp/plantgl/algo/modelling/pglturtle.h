@@ -153,7 +153,7 @@ protected:
     virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false);
     
     virtual void _generalizedCylinder(const Point3ArrayPtr& points,
-									  const std::vector<TOOLS(Vector3)>& left,
+									  const std::vector<Vector3>& left,
                                       const std::vector<real_t>& radius,
 									  const Curve2DPtr& crossSection,
 									  bool crossSectionCCW,

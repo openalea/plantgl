@@ -42,7 +42,7 @@
 #include <string>
 #include "tools_config.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*! get the directory part of a filename (the filename might be not expanded).
     the filename stored  "../../fruit.drf" or fruit.drf for example.
@@ -108,6 +108,6 @@ bool TOOLS_API similar_dir(const std::string& filename,const std::string& filena
 
 bool TOOLS_API copy(const std::string& src,const std::string& dest);
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif

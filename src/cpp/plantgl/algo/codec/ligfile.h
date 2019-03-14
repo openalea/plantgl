@@ -50,10 +50,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class bifstream;
 class bofstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -91,12 +91,12 @@ class CODEC_API LigRecord {
 
     /// Set values to \e this.
     void setValues(const long symbol , const long val1 , const long val2,
-				   const long range  , const TOOLS(Vector3) dirp , const TOOLS(Vector3) dirs,
-				   const TOOLS(Vector3) dirt, const TOOLS(Vector3) origin ,
+				   const long range  , const Vector3 dirp , const Vector3 dirs,
+				   const Vector3 dirt, const Vector3 origin ,
 				   const float base_dia, const float sommit_dia , const long entity_number);
     
-    void setValues(const TOOLS(Vector3) dirp , const TOOLS(Vector3) dirs,
-				   const TOOLS(Vector3) dirt, const TOOLS(Vector3) origin ,
+    void setValues(const Vector3 dirp , const Vector3 dirs,
+				   const Vector3 dirt, const Vector3 origin ,
 				   const float base_dia, const float sommit_dia );
 
     /// Compute the transformation represented by its values.
@@ -112,13 +112,13 @@ class CODEC_API LigRecord {
     const long& getEntityNumber() const;
 
     /// read values on \e stream.
-    bool read( TOOLS(bifstream)& stream);
+    bool read( bifstream& stream);
 
     /// Read \e l in the input stream \e stream.
-    friend CODEC_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
+    friend CODEC_API bifstream& operator>>( bifstream& stream, LigRecord& l);
 
     /// Prints \e l to the output stream \e stream.
-    friend CODEC_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
+    friend CODEC_API bofstream& operator<<( bofstream& stream, const LigRecord& l );
 
 //    protected :
 
@@ -132,8 +132,8 @@ class CODEC_API LigRecord {
   long  __entity_number;
 };
 
-CODEC_API TOOLS(bifstream)& operator>>( TOOLS(bifstream)& stream, LigRecord& l);
-CODEC_API TOOLS(bofstream)& operator<<( TOOLS(bofstream)& stream, const LigRecord& l );
+CODEC_API bifstream& operator>>( bifstream& stream, LigRecord& l);
+CODEC_API bofstream& operator<<( bofstream& stream, const LigRecord& l );
 
 /* ----------------------------------------------------------------------- */
 

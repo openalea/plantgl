@@ -52,7 +52,7 @@ PGL_BEGIN_NAMESPACE
 
       template<typename T>
       void operator()(T &x) const {
-        this->value = TOOLS(toNumber)<T>(this->str);
+        this->value = toNumber<T>(this->str);
       }
 
       propertyType get_value() const {

@@ -44,14 +44,14 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 class RealArray2;
 typedef RCPtr<RealArray2> RealArray2Ptr;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -76,10 +76,10 @@ public:
   struct SG_API Builder : public BezierPatch::Builder { 
 
     /// A pointer to the \b UKnotList field.
-    TOOLS(RealArrayPtr) * UKnotList;
+    RealArrayPtr * UKnotList;
 
     /// A pointer to the \b VKnotList field.
-    TOOLS(RealArrayPtr) * VKnotList;
+    RealArrayPtr * VKnotList;
 
 
     /// Constructor.
@@ -108,8 +108,8 @@ public:
       \post
       - \e self is valid. */
   NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
-	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
+	      const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()), 
+	      const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()), 
 	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
 	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
 	      uint_t ustride = DEFAULT_STRIDE, 
@@ -119,8 +119,8 @@ public:
   NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
 	      uint_t uDegree, 
 	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
-	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
+	      const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()), 
+	      const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()), 
 	      uint_t ustride = DEFAULT_STRIDE, 
 	      uint_t vstride = DEFAULT_STRIDE, 
 	      bool ccw = DEFAULT_CCW );
@@ -128,8 +128,8 @@ public:
   NurbsPatch( const Point3MatrixPtr& ctrlPoints, 
 	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
 	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      const TOOLS(RealArrayPtr)& uKnotList = TOOLS(RealArrayPtr()), 
-	      const TOOLS(RealArrayPtr)& vKnotList = TOOLS(RealArrayPtr()), 
+	      const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()), 
+	      const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()), 
 	      uint_t ustride = DEFAULT_STRIDE, 
 	      uint_t vstride = DEFAULT_STRIDE, 
 	      bool ccw = DEFAULT_CCW );
@@ -158,10 +158,10 @@ public:
   virtual uint_t isVDegreeToDefault( ) const ;
 
   /// Returns \e uknotsList value.
-  virtual const TOOLS(RealArrayPtr)& getUKnotList( ) const;
+  virtual const RealArrayPtr& getUKnotList( ) const;
 
   /// Returns \e uknotsList field.
-  TOOLS(RealArrayPtr)& getUKnotList( );
+  RealArrayPtr& getUKnotList( );
 
   /// Returns the \e fist uknots value.
   virtual const real_t getFirstUKnot( ) const ;
@@ -181,10 +181,10 @@ public:
   bool isUKnotListToDefault( ) const;
 
   /// Returns \e knotsList value.
-  virtual const TOOLS(RealArrayPtr)& getVKnotList( ) const ;
+  virtual const RealArrayPtr& getVKnotList( ) const ;
 
   /// Returns \e knotsList field.
-  TOOLS(RealArrayPtr)& getVKnotList( );
+  RealArrayPtr& getVKnotList( );
 
   /// Returns the \e fist knots value.
   virtual real_t getFirstVKnot( ) const ;
@@ -208,7 +208,7 @@ public:
      \pre 
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getPointAt(real_t u,real_t v) const;
+  virtual Vector3 getPointAt(real_t u,real_t v) const;
 
   /* Returns the \e Metric for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 82)
@@ -246,18 +246,18 @@ public:
       (see the Nurbs book p.12) 
      \pre 
       - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getUTangentAt(real_t u,real_t v) const;
+  virtual Vector3 getUTangentAt(real_t u,real_t v) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
       (see the Nurbs book p.12) 
      \pre 
       - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getVTangentAt(real_t u,real_t v) const;
+  virtual Vector3 getVTangentAt(real_t u,real_t v) const;
 
   /* Returns the principal \e Normal for u,v = \e u, \e v.
      \pre 
       - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getNormalAt(real_t u,real_t v) const;
+  virtual Vector3 getNormalAt(real_t u,real_t v) const;
 
   /*!
     \brief Computes the derivative of degree \a d of the 
@@ -276,7 +276,7 @@ public:
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
      \pre 
      - \e u, \e v must be in [0,1];*/
-  virtual TOOLS(Vector4) getDerivativeAt(real_t u, real_t v, int du, int dv) const;
+  virtual Vector4 getDerivativeAt(real_t u, real_t v, int du, int dv) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
      \pre 
@@ -301,10 +301,10 @@ public:
 protected:
 
   /// The \b uKnotList field.
-  TOOLS(RealArrayPtr) __uKnotList;
+  RealArrayPtr __uKnotList;
 
   /// The \b vKnotList field.
-  TOOLS(RealArrayPtr) __vKnotList;
+  RealArrayPtr __vKnotList;
 
   /// The \b udegree field.
   uint_t __udegree;

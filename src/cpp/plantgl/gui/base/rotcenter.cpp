@@ -64,7 +64,6 @@
 #include <QtOpenGL/qgl.h>
 #include <plantgl/algo/opengl/util_glut.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */

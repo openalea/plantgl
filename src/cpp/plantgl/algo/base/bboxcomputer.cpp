@@ -49,7 +49,6 @@
 
 #include <plantgl/math/util_math.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 using namespace std;

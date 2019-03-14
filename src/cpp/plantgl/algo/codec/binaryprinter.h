@@ -49,10 +49,10 @@
 #include <plantgl/pgl_container.h>
 #include <vector>
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class leifstream;
 class leofstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -89,19 +89,19 @@ public:
   bool setStatistic(const StatisticComputer& a);
 
   /// print the token \e token  on \e stream. ex :  printToken(stream,Token(Reference));.
-  TOOLS(leofstream)& printCurrentToken(TOOLS(leofstream)& stream,std::string token);
+  leofstream& printCurrentToken(leofstream& stream,std::string token);
 
   /// read \e stream and return current token.
-  std::string readCurrentToken(TOOLS(leifstream)& stream);
+  std::string readCurrentToken(leifstream& stream);
 
   /// print all the token on \e stream.
-  TOOLS(leofstream)& printAll(TOOLS(leofstream)& stream);
+  leofstream& printAll(leofstream& stream);
 
   /// read token on \e stream. return if it works.
-  bool initTokens(TOOLS(leifstream)& stream,std::ostream & output);
+  bool initTokens(leifstream& stream,std::ostream & output);
 
   /// print the local Token.
-  friend CODEC_API TOOLS(leofstream)& operator<<( TOOLS(leofstream)& stream, TokenCode& c );
+  friend CODEC_API leofstream& operator<<( leofstream& stream, TokenCode& c );
 
   /// get the number of element of each class.
   std::vector<uint_t> getCounts();
@@ -118,7 +118,7 @@ public:
 
 };
 
-CODEC_API TOOLS(leofstream)& operator<<( TOOLS(leofstream)& stream, TokenCode& c );
+CODEC_API leofstream& operator<<( leofstream& stream, TokenCode& c );
 
 
 
@@ -140,7 +140,7 @@ public:
   static const float BINARY_FORMAT_VERSION;
 
   /** Constructs a Printer with the output streams \e outputStream. */
-  BinaryPrinter( TOOLS(leofstream)& outputStream );
+  BinaryPrinter( leofstream& outputStream );
 
   /// Destructor
   virtual ~BinaryPrinter( );
@@ -318,12 +318,12 @@ public:
   void write(const Index3& var);
   void write(const Index4& var);
   void write(const Index& var);
-  void write(const TOOLS(Vector2)& var);
-  void write(const TOOLS(Vector3)& var);
-  void write(const TOOLS(Vector4)& var);
-  void write(const TOOLS(Matrix2)& var);
-  void write(const TOOLS(Matrix3)& var);
-  void write(const TOOLS(Matrix4)& var);
+  void write(const Vector2& var);
+  void write(const Vector3& var);
+  void write(const Vector4& var);
+  void write(const Matrix2& var);
+  void write(const Matrix3& var);
+  void write(const Matrix4& var);
 
   template<class Array>
   void writeArray(const Array& array){
@@ -363,7 +363,7 @@ protected:
   void printType(const std::string& _string);
 
   /// Binary output stream.
-  TOOLS(leofstream)& __outputStream;
+  leofstream& __outputStream;
 
   /// The tokens codes.
   TokenCode __tokens;

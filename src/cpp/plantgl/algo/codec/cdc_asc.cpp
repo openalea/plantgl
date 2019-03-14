@@ -49,7 +49,6 @@
 #include <algorithm>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 AscCodec::AscCodec() : SceneCodec("ASC", ReadWrite) {
 }
@@ -107,7 +106,7 @@ ScenePtr AscCodec::read(const std::string &fname) {
     if (sep != ",")
       std::replace(line->begin(), line->end(), ',', '.');
 
-    std::vector<std::string> values = TOOLS(split)(*line, sep);
+    std::vector<std::string> values = split(*line, sep);
     try {
       float x, y, z;
       std::stringstream(values.at(0)) >> x;

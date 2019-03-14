@@ -48,7 +48,6 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -296,7 +295,7 @@ void PovPrinter::endHeader(){
 	__geomStream << "#end // __camera_definition__" << endl;
 }
 
-bool PovPrinter::setLight(const TOOLS(Vector3)& position, const Color3& color){
+bool PovPrinter::setLight(const Vector3& position, const Color3& color){
         __geomStream << endl << "light_source {" << endl << "     ";
     GEOM_POVPRINT_VECTOR3(__geomStream,position);
         __matStream << endl << "    color rgb ";

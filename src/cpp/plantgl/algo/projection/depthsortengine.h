@@ -74,7 +74,7 @@ public :
 
     virtual ~DepthSortEngine();
 
-    void processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, uint32_t id);
+    void processTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, uint32_t id);
 
     ScenePtr getResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
     ScenePtr getProjectionResult(Color4::eColor4Format format = Color4::eARGB, bool cameraCoordinates = true) const;
@@ -85,7 +85,7 @@ public :
 
     struct PolygonInfo {
         Point3ArrayPtr points;
-        TOOLS(Vector3) pmin, pmax;
+        Vector3 pmin, pmax;
         uint32_t id;
     };
 

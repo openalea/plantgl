@@ -67,16 +67,16 @@ public:
       from 0.
       \post
       - \e self is valid. */
-  Scaling( const TOOLS(Vector3)& factors );
+  Scaling( const Vector3& factors );
 
   /// Destructor.
   virtual ~Scaling( );
 
   /// Return Matrix4(__factors.x(),0,0,0, 0,__factors.y(),0,0, 0,0,__factors.z(),0, 0,0,0,1);
-  virtual TOOLS(Matrix4) getMatrix( ) const ;
+  virtual Matrix4 getMatrix( ) const ;
 
   /// Returns the scaling factors of \e self.
-  const TOOLS(Vector3)& getFactors( ) const ;
+  const Vector3& getFactors( ) const ;
 
   virtual bool isValid( ) const;
 
@@ -91,7 +91,7 @@ public:
 protected:
 
   /// The scaling factors.
-  TOOLS(Vector3) __factors;
+  Vector3 __factors;
 
 };
 
@@ -115,14 +115,14 @@ class SG_API Scaled : public MatrixTransformed
 public:
 
   /// The Scale field default value
-  static const TOOLS(Vector3) DEFAULT_SCALE;
+  static const Vector3 DEFAULT_SCALE;
 
 
   /// A structure which helps to build a Translated when parsing.
   struct SG_API Builder : public MatrixTransformed::Builder {
 
     /// A pointer to the \b Scale field.
-    TOOLS(Vector3) * Scale;
+    Vector3 * Scale;
 
     /// Constructor.
     Builder( );
@@ -147,7 +147,7 @@ public:
       \warning
       - \e scale must be valid and each components different from 0,
       - \e geometry must be non null and valid. */
-  explicit Scaled( const TOOLS(Vector3)& scale,
+  explicit Scaled( const Vector3& scale,
                    const GeometryPtr& geometry );
 
   /// Destructor
@@ -156,10 +156,10 @@ public:
   PGL_OBJECT(Scaled)
 
   /// Returns Scale value.
-  const TOOLS(Vector3)& getScale( ) const ;
+  const Vector3& getScale( ) const ;
 
   /// Returns Scale field.
-  TOOLS(Vector3)& getScale( );
+  Vector3& getScale( );
 
   virtual Transformation3DPtr getTransformation( ) const;
 
@@ -171,7 +171,7 @@ public:
 protected:
 
   /// The Scale field.
-  TOOLS(Vector3) __scale;
+  Vector3 __scale;
 
 };
 
@@ -200,16 +200,16 @@ public:
       from 0.
       \post
       - \e self is valid. */
-  Scaling2D( const TOOLS(Vector2)& factors );
+  Scaling2D( const Vector2& factors );
 
   /// Destructor.
   virtual ~Scaling2D( );
 
   /// Return Matrix3(__factors.x(),0,0, 0,__factors.y(),0, 0,0,1);
-  virtual TOOLS(Matrix3) getMatrix( ) const ;
+  virtual Matrix3 getMatrix( ) const ;
 
   /// Returns the scaling factors of \e self.
-  const TOOLS(Vector2)& getFactors( ) const;
+  const Vector2& getFactors( ) const;
 
   virtual bool isValid( ) const;
 
@@ -224,7 +224,7 @@ public:
 protected:
 
   /// The scaling factors.
-  TOOLS(Vector2) __factors;
+  Vector2 __factors;
 
 };
 

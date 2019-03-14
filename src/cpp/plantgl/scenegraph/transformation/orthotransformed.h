@@ -88,17 +88,17 @@ public:
       - \e matrix must non null and orthogonal.
       \post
       - \e self is valid. */
-  OrthonormalBasis3D( const TOOLS(Matrix3)& matrix );
+  OrthonormalBasis3D( const Matrix3& matrix );
 
   /// Destructor.
   virtual ~OrthonormalBasis3D( );
 
-  virtual TOOLS(Matrix3) getMatrix3( ) const ;
+  virtual Matrix3 getMatrix3( ) const ;
 
-  virtual TOOLS(Matrix4) getMatrix( ) const ;
+  virtual Matrix4 getMatrix( ) const ;
 
   /// extract Euler Angles from \e this
-  virtual TOOLS(Vector3) extractEulerAngles() const;
+  virtual Vector3 extractEulerAngles() const;
 
   virtual bool isValid( ) const;
 
@@ -113,7 +113,7 @@ public:
 protected:
 
   /// The orthonormal basis.
-  TOOLS(Matrix3) __matrix;
+  Matrix3 __matrix;
 
 };
 
@@ -181,12 +181,12 @@ public:
       - \e matrix must non null and orthogonal.
       \post
       - \e self is valid. */
-  OrthonormalBasis2D( const TOOLS(Matrix2)& matrix );
+  OrthonormalBasis2D( const Matrix2& matrix );
 
   /// Destructor.
   virtual ~OrthonormalBasis2D( );
 
-  virtual TOOLS(Matrix3) getMatrix( ) const;
+  virtual Matrix3 getMatrix( ) const;
 
   virtual bool isValid( ) const;
 
@@ -201,7 +201,7 @@ public:
 protected:
 
   /// The orthonormal basis.
-  TOOLS(Matrix2) __matrix;
+  Matrix2 __matrix;
 
 };
 

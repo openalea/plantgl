@@ -40,7 +40,6 @@
 #include <plantgl/algo/base/tesselator.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 
 using namespace std;
@@ -48,7 +47,6 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

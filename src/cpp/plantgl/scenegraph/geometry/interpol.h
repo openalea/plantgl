@@ -44,12 +44,12 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -84,7 +84,7 @@ public:
   // With 2D points, 3rd coordinate must be constant
 
   Interpol( const Point3ArrayPtr& _points,
-            const TOOLS(RealArrayPtr)&   _params,
+            const RealArrayPtr&   _params,
             uint_t _degree,
             bool _closed );
 
@@ -98,10 +98,10 @@ public:
   virtual Point3ArrayPtr& getPoints( );
 
   /// Return the Parameter List value
-  virtual const TOOLS(RealArrayPtr)& getParameters( ) const;
+  virtual const RealArrayPtr& getParameters( ) const;
 
   /// Return the Parameter List field
-  virtual TOOLS(RealArrayPtr)& getParameters( );
+  virtual RealArrayPtr& getParameters( );
 
   /// Return the Interpolate Degree value
   virtual uint_t getDegree( ) const;
@@ -126,8 +126,8 @@ public:
   /// L2(u): Q + u * T2
   /// R= L1(a)= L2(b) the two intersect themselves
   /// else return false
-  static bool intersectLine( TOOLS(Vector3) P, TOOLS(Vector3) T1,
-                             TOOLS(Vector3) Q, TOOLS(Vector3) T2,
+  static bool intersectLine( Vector3 P, Vector3 T1,
+                             Vector3 Q, Vector3 T2,
                              real_t& a, real_t& b  );
 
 protected:
@@ -136,7 +136,7 @@ protected:
   Point3ArrayPtr points;
 
   /// Parameter at the points
-  TOOLS(RealArrayPtr) knots;
+  RealArrayPtr knots;
 
   /// Interpolation degree
   uint_t degree;
@@ -150,7 +150,7 @@ private:
   Point3ArrayPtr CP;
 
   /// List of limit arcs parameters
-  TOOLS(RealArrayPtr) params;
+  RealArrayPtr params;
 
   /// Tangents
   Point3ArrayPtr T;
@@ -161,7 +161,7 @@ private:
   virtual bool initTangent();
 
   /// Compute a trivial knot vector
-  virtual TOOLS(RealArrayPtr) bezierKV( const TOOLS(RealArrayPtr)& _knots ) const;
+  virtual RealArrayPtr bezierKV( const RealArrayPtr& _knots ) const;
 
   /// check the continuity of the result curve
   virtual uint_t checkContinuity() const;

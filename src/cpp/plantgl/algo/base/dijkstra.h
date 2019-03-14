@@ -76,9 +76,9 @@ typedef std::vector<Node> NodeList;
 
 
 struct nodecompare {
-       const TOOLS(RealArrayPtr)& __distances;
+       const RealArrayPtr& __distances;
 
-       nodecompare(const TOOLS(RealArrayPtr)& distances) : __distances(distances) {}
+       nodecompare(const RealArrayPtr& distances) : __distances(distances) {}
        bool operator()(const uint32_t& a,const uint32_t& b) const { return __distances->getAt(a) > __distances->getAt(b); }
 };
 
@@ -98,8 +98,8 @@ enum color { black, grey, white };
 typedef std::vector<std::pair<uint32_t, real_t> > NodeDistancePairList;
 
 struct DijkstraAllocator {
-    void allocate(size_t nbnodes, TOOLS(RealArrayPtr)& distances,  uint32_t *& parents, color *& colored) const {
-        distances = TOOLS(RealArrayPtr)(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+    void allocate(size_t nbnodes, RealArrayPtr& distances,  uint32_t *& parents, color *& colored) const {
+        distances = RealArrayPtr(new RealArray(nbnodes,REAL_MAX));
         parents = new uint32_t[nbnodes];
         colored = new color[nbnodes];
 
@@ -108,7 +108,7 @@ struct DijkstraAllocator {
     }
 
     
-    void desallocate(TOOLS(RealArrayPtr) distances, uint32_t * parents, color * colored)  const {
+    void desallocate(RealArrayPtr distances, uint32_t * parents, color * colored)  const {
         delete [] parents;        
         delete [] colored;
     }
@@ -128,7 +128,7 @@ struct DijkstraAllocator {
 class DijkstraReusingAllocator {
     class Cache {
     public:
-        TOOLS(RealArrayPtr) distances;  
+        RealArrayPtr distances;  
         uint32_t * parents;
         color * colored;
 #ifdef PGL_USE_FIBONACCI_HEAP
@@ -157,9 +157,9 @@ public:
         if (__cache) delete __cache;
     }
 
-    void allocate(size_t nbnodes, TOOLS(RealArrayPtr)& distances,  uint32_t *& parents, color *& colored) const {
+    void allocate(size_t nbnodes, RealArrayPtr& distances,  uint32_t *& parents, color *& colored) const {
         if (__cache->parents == NULL){
-            __cache->distances = TOOLS(RealArrayPtr)(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+            __cache->distances = RealArrayPtr(new RealArray(nbnodes,REAL_MAX));
             __cache->parents = new uint32_t[nbnodes];
             __cache->colored = new color[nbnodes];
         }
@@ -168,13 +168,13 @@ public:
         parents = __cache->parents;
         colored = __cache->colored;
 
-        for (TOOLS(RealArray)::iterator itdist = distances->begin() ; itdist != distances->end() ; ++itdist) *itdist = REAL_MAX;
+        for (RealArray::iterator itdist = distances->begin() ; itdist != distances->end() ; ++itdist) *itdist = REAL_MAX;
         for (color * itcol = colored ; itcol != colored+nbnodes ; ++itcol) *itcol = black;
         for (uint32_t * itpar = parents ; itpar != parents+nbnodes ; ++itpar) *itpar = 0;
     }
 
     
-    void desallocate(TOOLS(RealArrayPtr) distances, uint32_t * parents, color * colored)  const {
+    void desallocate(RealArrayPtr distances, uint32_t * parents, color * colored)  const {
     }
 
 #ifdef PGL_USE_FIBONACCI_HEAP
@@ -208,7 +208,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
      size_t nbnodes = connections->size();
      size_t nbprocessednodes = 0;
 
-     TOOLS(RealArrayPtr) distances = NULL;
+     RealArrayPtr distances = NULL;
      uint32_t * parents = NULL;
      color * colored = NULL;
 
@@ -305,17 +305,17 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
  { return dijkstra_shortest_paths_in_a_range(connections,root,distevaluator,maxdist,maxnbelements,DijkstraAllocator());  }
  
 template<class EdgeWeigthEvaluation>
-std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
+std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
                                    uint32_t root, 
                                    EdgeWeigthEvaluation& distevaluator)
  {
 
 
      size_t nbnodes = connections->size();
-     TOOLS(RealArrayPtr) distances(new TOOLS(RealArray)(nbnodes,REAL_MAX));
+     RealArrayPtr distances(new RealArray(nbnodes,REAL_MAX));
      distances->setAt(root,0);
 
-     TOOLS(Uint32Array1Ptr) parents(new TOOLS(Uint32Array1)(nbnodes,UINT32_MAX));
+     Uint32Array1Ptr parents(new Uint32Array1(nbnodes,UINT32_MAX));
      parents->setAt(root,root);
 
      std::vector<color> colored(nbnodes,black);
@@ -367,7 +367,7 @@ std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>  dijkstra_shortest_paths(c
              }
          }
      }
-     return std::pair<TOOLS(Uint32Array1Ptr),TOOLS(RealArrayPtr)>(parents,distances);
+     return std::pair<Uint32Array1Ptr,RealArrayPtr>(parents,distances);
  }
 
  /*

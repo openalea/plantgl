@@ -213,7 +213,7 @@ protected :
   bool __visible;
 
   /// Coordinates.
-  TOOLS(Vector3) __position;
+  PGL(Vector3) __position;
 
   /// display list.
   GLuint __displayList;

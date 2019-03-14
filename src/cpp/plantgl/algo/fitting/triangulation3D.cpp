@@ -33,7 +33,6 @@
 #include "triangulation3D.h"
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #ifdef WITH_CGAL
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>

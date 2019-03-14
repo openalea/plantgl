@@ -84,7 +84,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Transformation : public TOOLS(RefCountObject)
+class SG_API Transformation : public RefCountObject
 {
 
 public:

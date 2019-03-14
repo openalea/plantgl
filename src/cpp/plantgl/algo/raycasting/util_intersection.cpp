@@ -35,7 +35,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
 		      const Vector3& pt1){

@@ -82,7 +82,7 @@
 
 using namespace std;
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 static string PLANTGL_DIR;
 static string OPENALEA_DIR;
@@ -336,4 +336,4 @@ string getLanguage(){
 void setLanguage(const string& lang){
 }
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE

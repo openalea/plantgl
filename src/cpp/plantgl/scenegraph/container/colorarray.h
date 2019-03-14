@@ -41,7 +41,7 @@
 
 PGL_BEGIN_NAMESPACE
 
-class Color3Array : public TOOLS(Array1)<Color3>
+class Color3Array : public Array1<Color3>
 {
 
 public:
@@ -49,18 +49,18 @@ public:
 
   /// Constructs an Array1 of size \e size
   Color3Array( uint_t size = 0 ) :
-    TOOLS(Array1)<Color3>(size) {
+    Array1<Color3>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
   Color3Array( uint_t size, const Color3& t ) :
-    TOOLS(Array1)<Color3>(size,t) {
+    Array1<Color3>(size,t) {
   }
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
   Color3Array( InIterator begin, InIterator end ) :
-    TOOLS(Array1)<Color3>(begin,end) {
+    Array1<Color3>(begin,end) {
   }
 
   /// Destructor
@@ -84,25 +84,25 @@ public:
 typedef RCPtr<Color3Array> Color3ArrayPtr;
 PGL_DECLARE_TYPE(Color3Array)
 
-class Color4Array : public TOOLS(Array1)<Color4>
+class Color4Array : public Array1<Color4>
 {
 
 public:
 
   /// Constructs an Array1 of size \e size
   Color4Array( uint_t size = 0 ) :
-    TOOLS(Array1)<Color4>(size) {
+    Array1<Color4>(size) {
  }
 
   /// Constructs an Array1 with \e size copies of \e t.
   Color4Array( uint_t size, const Color4& t ) :
-    TOOLS(Array1)<Color4>(size,t) {
+    Array1<Color4>(size,t) {
   }
 
   /// Constructs an Array1 with the range [\e begin, \e end).
   template <class InIterator>
   Color4Array( InIterator begin, InIterator end ) :
-    TOOLS(Array1)<Color4>(begin,end) {
+    Array1<Color4>(begin,end) {
   }
 
   /// Destructor
@@ -129,22 +129,22 @@ PGL_DECLARE_TYPE(Color4Array)
 
 template <class ColorArray>
 RCPtr<ColorArray>
-apply_colormap(const RCPtr<ColorArray> colormap, const TOOLS(RealArrayPtr) values)
+apply_colormap(const RCPtr<ColorArray> colormap, const RealArrayPtr values)
 {  
-    std::pair<TOOLS(RealArray)::const_iterator,TOOLS(RealArray)::const_iterator> minmax = values->getMinAndMax(true);
+    std::pair<RealArray::const_iterator,RealArray::const_iterator> minmax = values->getMinAndMax(true);
     return apply_colormap(colormap, values, *minmax.first, *minmax.second);
 }
 
 template <class ColorArray>
 RCPtr<ColorArray>
-apply_colormap(const RCPtr<ColorArray> colormap, const TOOLS(RealArrayPtr) values, real_t minvalue, real_t maxvalue)
+apply_colormap(const RCPtr<ColorArray> colormap, const RealArrayPtr values, real_t minvalue, real_t maxvalue)
 {
     size_t nbcolor = colormap->size();
     real_t valuerange = maxvalue - minvalue;
     real_t valuestep = valuerange / nbcolor;
     RCPtr<ColorArray> result = new ColorArray(values->size());
     typename ColorArray::iterator itresult = result->begin();
-    for(TOOLS(RealArray)::const_iterator itv = values->begin(); itv != values->end(); ++itv, ++itresult){
+    for(RealArray::const_iterator itv = values->begin(); itv != values->end(); ++itv, ++itresult){
         int colorid = int((*itv - minvalue) / valuestep);
         if (colorid < 0) colorid = 0;
         else if (colorid >= nbcolor) colorid = nbcolor -1;

@@ -71,7 +71,7 @@ inline QString toQString(const PGL(Color4)& a){
 }
 
 /// Transform a Vector4 to QString
-inline QString toQString(const TOOLS(Vector4)& a){
+inline QString toQString(const PGL(Vector4)& a){
   return'<'+QString::number(a.x())+
     ','+QString::number(a.y())+
     ','+QString::number(a.z())+
@@ -79,14 +79,14 @@ inline QString toQString(const TOOLS(Vector4)& a){
 }
 
 /// Transform a Vector3 to QString
-inline QString toQString(const TOOLS(Vector3)& a){
+inline QString toQString(const PGL(Vector3)& a){
   return'<'+QString::number(a.x())+
     ','+QString::number(a.y())+
     ','+QString::number(a.z())+'>';
 }
 
 /// Transform a Vector2 to QString
-inline QString toQString(const TOOLS(Vector2)& a){
+inline QString toQString(const PGL(Vector2)& a){
   return'<'+QString::number(a.x())+
     ','+QString::number(a.y())+'>';
 }

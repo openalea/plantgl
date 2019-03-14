@@ -54,7 +54,7 @@
 */
 
 /// gluLookAt for GEOM
-ALGO_API void glGeomLookAt(const TOOLS(Vector3)& eye, const TOOLS(Vector3)& center, const TOOLS(Vector3)& up );
+ALGO_API void glGeomLookAt(const PGL(Vector3)& eye, const PGL(Vector3)& center, const PGL(Vector3)& up );
 
 /// gluPerspective for GEOM
 ALGO_API void  geomPerspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);

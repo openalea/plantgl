@@ -47,7 +47,7 @@
 #include "util_serializedobj.h"
 
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 using namespace std;
 
 
@@ -198,10 +198,10 @@ std::string ViewerApplication::getDirectory(const std::string& caption,
 }
 
 ViewRayBuffer * 
-ViewerApplication::castRays(const TOOLS(Vector3)& pos, 
-	                               const TOOLS(Vector3)& dir,
-								   const TOOLS(Vector3)& dx, 
-								   const TOOLS(Vector3)& dy,
+ViewerApplication::castRays(const Vector3& pos, 
+	                               const Vector3& dir,
+								   const Vector3& dx, 
+								   const Vector3& dy,
 								   int sx, int sy){
   
   initViewerAppli();

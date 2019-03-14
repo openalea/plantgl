@@ -39,7 +39,6 @@
 #include <plantgl/scenegraph/container/geometryarray2.h>
 #include "polyline.h"
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

@@ -192,10 +192,10 @@ ViewerAppliInternal::getFile(const std::string& caption,
   }
 
 ViewRayBuffer * 
-ViewerAppliInternal::castRays(const TOOLS(Vector3)& pos, 
-	                     const TOOLS(Vector3)& dir,
-						 const TOOLS(Vector3)& dx, 
-						 const TOOLS(Vector3)& dy,
+ViewerAppliInternal::castRays(const Vector3& pos, 
+	                     const Vector3& dir,
+						 const Vector3& dx, 
+						 const Vector3& dy,
 						 int sx, int sy){
 	ViewRayBuffer * res = NULL ;
 	ViewRayBuffEvent * event = new ViewRayBuffEvent(&res,pos,dir,dx,dy,sx,sy);

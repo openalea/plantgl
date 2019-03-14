@@ -47,9 +47,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class Matrix3;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,16 +68,16 @@ typedef RCPtr<Plane3> Plane3Ptr;
 */
 
 
-class SG_API Plane3 : public TOOLS(RefCountObject)
+class SG_API Plane3 : public RefCountObject
 {
 
 public:
 
   /// Constructs a Plane3.
-  Plane3( const TOOLS(Vector3)& normal = TOOLS(Vector3::OZ), real_t d = 0 );
+  Plane3( const Vector3& normal = TOOLS(Vector3::OZ), real_t d = 0 );
 
   /// Constructs a Plane3.
-  Plane3( const TOOLS(Vector3)& normal, const TOOLS(Vector3)& point );
+  Plane3( const Vector3& normal, const Vector3& point );
 
   /// Constructs a Plane3.
   Plane3( real_t alpha, real_t beta, real_t d = 0 );
@@ -85,25 +85,25 @@ public:
   /// Constructs a Plane3.
   Plane3( real_t a, real_t b, real_t c, real_t d );
 
-  PGL_OBJECT_PROPERTY(Normal,TOOLS(Vector3));
+  PGL_OBJECT_PROPERTY(Normal,Vector3);
   PGL_OBJECT_PROPERTY(D,real_t);
 
-  real_t getDistance(const TOOLS(Vector3)& point) const ;
+  real_t getDistance(const Vector3& point) const ;
 
   inline real_t a() const { return __Normal.x(); }
   inline real_t b() const { return __Normal.y(); }
   inline real_t c() const { return __Normal.z(); }
   inline real_t d() const { return __D; }
 
-  inline TOOLS(Vector3) base1() {
-      if (fabs(a()) < GEOM_EPSILON) return TOOLS(Vector3)(1,0,0);
-      else if (fabs(b()) < GEOM_EPSILON) return TOOLS(Vector3)(0,1,0);
-      else if (fabs(c()) < GEOM_EPSILON) return TOOLS(Vector3)(0,0,1);
-      return TOOLS(Vector3)(-b(),a(),0);
+  inline Vector3 base1() {
+      if (fabs(a()) < GEOM_EPSILON) return Vector3(1,0,0);
+      else if (fabs(b()) < GEOM_EPSILON) return Vector3(0,1,0);
+      else if (fabs(c()) < GEOM_EPSILON) return Vector3(0,0,1);
+      return Vector3(-b(),a(),0);
   }
 
-  inline TOOLS(Vector3) base2() {
-      return TOOLS(cross)(__Normal, base1());
+  inline Vector3 base2() {
+      return cross(__Normal, base1());
   }
 };
 

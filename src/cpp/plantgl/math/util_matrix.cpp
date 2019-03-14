@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -38,12 +38,12 @@
 #include <iostream>
 using namespace std;
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 
 /*  --------------------------------------------------------------------- */
 
-inline real_t GEOM_DET2(real_t m0, real_t m1,real_t m2,real_t m3) 
+inline real_t GEOM_DET2(real_t m0, real_t m1,real_t m2,real_t m3)
 { return m0 * m3 - m1 * m2; }
 
 /*#define GEOM_DET3(m0,m1,m2,m3,m4,m5,m6,m7,m8) \
@@ -115,7 +115,7 @@ bool Matrix2::operator==( const Matrix2& m ) const {
 }
 
 bool Matrix2::operator!=( const Matrix2& m ) const {
-	return !(operator==(m));
+    return !(operator==(m));
 }
 
 Matrix2& Matrix2::operator+=( const Matrix2& m ) {
@@ -130,8 +130,8 @@ Matrix2& Matrix2::operator-=( const Matrix2& m ) {
   return *this;
 }
 
-Matrix2& Matrix2::operator*=( const Matrix2& m ) {	
-	*this = operator*(m);
+Matrix2& Matrix2::operator*=( const Matrix2& m ) {
+    *this = operator*(m);
     return *this ;
 }
 Matrix2& Matrix2::operator*=( const real_t& s ) {
@@ -244,10 +244,10 @@ std::ostream& operator<<( std::ostream& stream, const Matrix2& m ) {
 
 /*  --------------------------------------------------------------------- */
 Matrix2 Matrix2::diagonal(const real_t val1, const real_t val2) {
-       return Matrix2(val1,0,0,val2);	
+       return Matrix2(val1,0,0,val2);
 }
 
-Matrix2 Matrix2::rotation(const real_t angle) { 
+Matrix2 Matrix2::rotation(const real_t angle) {
     real_t c = cos(angle);
     real_t s = sin(angle);
     return Matrix2(c,-s,s,c);
@@ -259,12 +259,12 @@ Matrix2 Matrix2::linearTransformation(const Vector2& i1,
                                       const Vector2& i2,
                                       const Vector2& j2)
 {
-	real_t denom = cross(i1,j1); // non colinear vectors
-	real_t alpha=(i2.x()*j1.y()-j2.x()*i1.y())/denom;
-	real_t beta =(j2.x()*i1.x()-i2.x()*j1.x())/denom;
-	real_t gamma=(i2.y()*j1.y()-j2.y()*i1.y())/denom;
-	real_t delta=(j2.y()*i1.x()-i2.y()*j1.x())/denom;
-	return Matrix2(alpha,beta,gamma,delta);
+    real_t denom = cross(i1,j1); // non colinear vectors
+    real_t alpha=(i2.x()*j1.y()-j2.x()*i1.y())/denom;
+    real_t beta =(j2.x()*i1.x()-i2.x()*j1.x())/denom;
+    real_t gamma=(i2.y()*j1.y()-j2.y()*i1.y())/denom;
+    real_t delta=(j2.y()*i1.x()-i2.y()*j1.x())/denom;
+    return Matrix2(alpha,beta,gamma,delta);
 }
 
 /*  --------------------------------------------------------------------- */
@@ -361,7 +361,7 @@ bool Matrix3::operator==( const Matrix3& m ) const {
 }
 
 bool Matrix3::operator!=( const Matrix3& m ) const {
-	return !(operator==(m));
+    return !(operator==(m));
 }
 
 Matrix3& Matrix3::operator+=( const Matrix3& m ) {
@@ -378,8 +378,8 @@ Matrix3& Matrix3::operator-=( const Matrix3& m ) {
     return *this;
 }
 
-Matrix3& Matrix3::operator*=( const Matrix3& m ) {	
-	*this = operator*(m);
+Matrix3& Matrix3::operator*=( const Matrix3& m ) {
+    *this = operator*(m);
     return *this ;
 }
 
@@ -527,7 +527,7 @@ Matrix3 inverse( const Matrix3& m ) {
   return m.inverse();
 }
 
-Matrix3 
+Matrix3
 Matrix3::inverse() const {
   Matrix3 _adjoint = adjoint();
   real_t _det= ( __M[0] * _adjoint.__M[0] +
@@ -540,7 +540,7 @@ Matrix3 transpose( const Matrix3& m ) {
   return m.transpose();
 }
 
-Matrix3 
+Matrix3
 Matrix3::transpose() const {
   return Matrix3(__M[0],__M[3],__M[6],
                  __M[1],__M[4],__M[7],
@@ -641,8 +641,8 @@ Vector3 Matrix3::eulerAnglesXYZ() const {
   return Vector3(a,b,c);
 }
 
-/*inline*/ 
-Matrix3 Matrix3::eulerRotationZYX( const Vector3& angle ) 
+/*inline*/
+Matrix3 Matrix3::eulerRotationZYX( const Vector3& angle )
 {
   GEOM_ASSERT(angle.isValid());
   real_t _CZ = cos(angle.z());
@@ -902,7 +902,7 @@ bool Matrix4::operator==( const Matrix4& m ) const {
 }
 
 bool Matrix4::operator!=( const Matrix4& m ) const {
-	return !(operator==(m));
+    return !(operator==(m));
 }
 
 Matrix4& Matrix4::operator+=( const Matrix4& m ) {
@@ -1254,7 +1254,7 @@ void Matrix4::getTransformationB( Vector3& scale,
 
     if( fabs(c3) > fabs(s3) ){
       a2= atan2( -m(2,0) * c3, m(0,0) );
-	}
+    }
     else
       a2= atan2( -m(2,0) * s3, m(1,0) );
     c2= cos(a2), s2= sin(a2);
@@ -1384,7 +1384,7 @@ void Matrix4::getTransformation2( Vector3& scale,
       a3= atan2(-m(0,1), m(0,2));
     c3= cos(a3), s3= sin(a3);
     }
-  else 
+  else
     {
     // be careful, angle are choose with a potential error.
     // Sign is not representative
@@ -1479,20 +1479,20 @@ void Matrix4::getTransformation( Vector3& scale,
   real_t thetaX,thetaY,thetaZ;
   thetaY = asin(-a.z());
   if(thetaY < GEOM_HALF_PI-GEOM_EPSILON){
-	if(thetaY > -GEOM_HALF_PI+GEOM_EPSILON){
-		thetaZ = atan2(a.y(),a.x());
-		thetaX = atan2(b.z(),c.z());
-	}
-	else {
-		// Not a unique solution
-		thetaZ = -atan2(-b.x(),c.x());
-		thetaX = 0;
-	}
+    if(thetaY > -GEOM_HALF_PI+GEOM_EPSILON){
+        thetaZ = atan2(a.y(),a.x());
+        thetaX = atan2(b.z(),c.z());
+    }
+    else {
+        // Not a unique solution
+        thetaZ = -atan2(-b.x(),c.x());
+        thetaX = 0;
+    }
   }
   else {
-	  // Not a unique solution
-	  thetaZ = atan2(-b.x(),c.x());
-	  thetaX = 0;
+      // Not a unique solution
+      thetaZ = atan2(-b.x(),c.x());
+      thetaX = 0;
   }
   rotate.x() = thetaZ;
   rotate.y() = thetaY;
@@ -1501,5 +1501,4 @@ void Matrix4::getTransformation( Vector3& scale,
 
 /*  --------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
-
+PGL_END_NAMESPACE

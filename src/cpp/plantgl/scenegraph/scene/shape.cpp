@@ -36,7 +36,6 @@
 #include <plantgl/tool/util_types.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 

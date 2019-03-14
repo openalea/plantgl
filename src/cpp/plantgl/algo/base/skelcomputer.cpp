@@ -42,7 +42,6 @@
 #include <plantgl/scenegraph/container/geometryarray2.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 

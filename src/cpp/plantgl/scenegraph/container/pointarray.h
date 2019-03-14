@@ -60,7 +60,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Point2Array : public TOOLS(Array1)<TOOLS(Vector2)>
+class SG_API Point2Array : public Array1<Vector2>
 {
 
 public:
@@ -73,24 +73,24 @@ public:
   /** Constructs a Point2Array of size of \e size.
       \post
       - \e self is valid. */
-  Point2Array( uint_t size, const TOOLS(Vector2)& t);
+  Point2Array( uint_t size, const Vector2& t);
 
   /** Constructs a Point2Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
       - \e self is valid. */
-  Point2Array( size_t size, const TOOLS(Vector2)& firstval, const TOOLS(Vector2)& increment);
+  Point2Array( size_t size, const Vector2& firstval, const Vector2& increment);
 
   /** Constructs a Point2Array of size 2 with \e a and \e b.
       \post
       - \e self is valid. */
-  Point2Array( TOOLS(Vector2) a, TOOLS(Vector2) b );
+  Point2Array( Vector2 a, Vector2 b );
 
   /** Constructs a PointArray with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point2Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<TOOLS(Vector2)>(first,last) {
+    Array1<Vector2>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -98,13 +98,13 @@ public:
   virtual ~Point2Array( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector2),TOOLS(Vector2)> getBounds( ) const;
+  std::pair<Vector2,Vector2> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector2) getCenter( ) const;
+  Vector2 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector2) getExtent( ) const;
+  Vector2 getExtent( ) const;
 
   /** Returns the total length of the segments formed by adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -138,7 +138,7 @@ public:
   void normalize();
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix2)&);
+  void transform(const Matrix2&);
 
   real_t * data() const;
 
@@ -158,7 +158,7 @@ PGL_DECLARE_TYPE(Point2Array)
 */
 
 
-class SG_API Point3Array : public TOOLS(Array1)<TOOLS(Vector3)>
+class SG_API Point3Array : public Array1<Vector3>
 {
 
 public:
@@ -171,17 +171,17 @@ public:
   /** Constructs a Point3Array of size of \e size.
       \post
       - \e self is valid. */
-  Point3Array( uint_t size, const TOOLS(Vector3)& t);
+  Point3Array( uint_t size, const Vector3& t);
 
   /** Constructs a Point3Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
       - \e self is valid. */
-  Point3Array( size_t size, const TOOLS(Vector3)& firstval, const TOOLS(Vector3)& increment);
+  Point3Array( size_t size, const Vector3& firstval, const Vector3& increment);
 
   /** Constructs a Point3Array of size 2 with \e a and \e b.
       \post
       - \e self is valid. */
-  Point3Array( const TOOLS(Vector3)& a, const TOOLS(Vector3)& b );
+  Point3Array( const Vector3& a, const Vector3& b );
 
   /** Constructs a Point3Array from the Point2Array \e a and with z value \e z.
       \post
@@ -194,7 +194,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Point3Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<TOOLS(Vector3)>(first,last) {
+    Array1<Vector3>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -202,13 +202,13 @@ public:
   virtual ~Point3Array( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector3),TOOLS(Vector3)> getBounds( ) const;
+  std::pair<Vector3,Vector3> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector3) getCenter( ) const;
+  Vector3 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector3) getExtent( ) const;
+  Vector3 getExtent( ) const;
 
  /** Returns the total length of the segments formed by adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -260,10 +260,10 @@ public:
   real_t * data() const;
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix3)&);
+  void transform(const Matrix3&);
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix4)&);
+  void transform(const Matrix4&);
 
 };
 
@@ -280,7 +280,7 @@ PGL_DECLARE_TYPE(Point3Array)
 */
 
 
-class SG_API Point4Array : public TOOLS(Array1)<TOOLS(Vector4)>
+class SG_API Point4Array : public Array1<Vector4>
 {
 
 public:
@@ -293,14 +293,14 @@ public:
   /** Constructs a Point4Array of size of \e size.
       \post
       - \e self is valid. */
-  Point4Array( uint_t size, const TOOLS(Vector4)& value);
+  Point4Array( uint_t size, const Vector4& value);
 
   /** Constructs a Point4Array with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point4Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<TOOLS(Vector4)>(first,last) {
+    Array1<Vector4>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -325,19 +325,19 @@ public:
   /** Constructs a Point4Array of size of \e size starting from \e firstval and incermenting each time of \e increment.
       \post
       - \e self is valid. */
-  Point4Array( size_t size, const TOOLS(Vector4)& firstval, const TOOLS(Vector4)& increment);
+  Point4Array( size_t size, const Vector4& firstval, const Vector4& increment);
 
   /// Destructor
   virtual ~Point4Array( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector4),TOOLS(Vector4)> getBounds( ) const;
+  std::pair<Vector4,Vector4> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector4) getCenter( ) const;
+  Vector4 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis  of \e self.
-  TOOLS(Vector4) getExtent( ) const;
+  Vector4 getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -400,7 +400,7 @@ public:
   real_t * data() const;
 
   /// Transform all the points of the array with a matrix
-  void transform(const TOOLS(Matrix4)&);
+  void transform(const Matrix4&);
 };
 
 /// Point4Array Pointer

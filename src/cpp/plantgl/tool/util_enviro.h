@@ -40,7 +40,7 @@
 #include <string>
 #include "tools_config.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /// Get the Home directory.
 TOOLS_API std::string getHome();
@@ -86,6 +86,6 @@ TOOLS_API std::string getOSLanguage();
 TOOLS_API std::string getLanguage();
 TOOLS_API void setLanguage(const std::string&);
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif

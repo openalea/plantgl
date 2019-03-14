@@ -56,7 +56,6 @@
  
 #include <stack>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 using namespace std;
 STDEXT_USING_NAMESPACE

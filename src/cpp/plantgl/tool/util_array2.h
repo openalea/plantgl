@@ -49,7 +49,7 @@
 #include <iostream>
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -718,7 +718,7 @@ typedef RCPtr<RealArray2> RealArray2Ptr;
 // __util_array2_h__
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Write Array2 \b a on \b stream
   template< class T >

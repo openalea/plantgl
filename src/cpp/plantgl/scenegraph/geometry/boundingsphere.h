@@ -46,9 +46,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class Matrix4;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -66,28 +66,28 @@ typedef RCPtr<BoundingSphere> BoundingSpherePtr;
     \brief A sphere used to give the bound of GEOM object.
 */
 
-class SG_API BoundingSphere : public TOOLS(RefCountObject)
+class SG_API BoundingSphere : public RefCountObject
 {
 
 public:
 
   /// Constructs a degenerate BoundingSphere reduced to the point \e point.
-  BoundingSphere( const TOOLS(Vector3)& point );
+  BoundingSphere( const Vector3& point );
 
   /// Constructs a degenerate BoundingSphere reduced to the point \e point.
-  BoundingSphere( const TOOLS(Vector2)& point );
+  BoundingSphere( const Vector2& point );
 
   /** Constructs a BoundingSphere with the 2 opposing corners \e lowLeft and
       \e upRight.
       \pre
       - \e lowLeft must be, coordinate by coordinate, less than \e upRight. */
-  BoundingSphere( const TOOLS(Vector3)& center, const real_t& radius );
+  BoundingSphere( const Vector3& center, const real_t& radius );
 
   /** Constructs a BoundingSphere with the 2 opposing corners \e lowLeft and
       \e upRight.
       \pre
       - \e lowLeft must be, coordinate by coordinate, less than \e upRight. */
-  BoundingSphere( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 );
+  BoundingSphere( const Vector3& point1, const Vector3& point2 );
 
   /// Destructor
   virtual ~BoundingSphere( ) ;
@@ -108,13 +108,13 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& extend( const TOOLS(Vector3)& point );
+   BoundingSphere& extend( const Vector3& point );
 
   /** Extends \e self in order to bound \e point.
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& extend( const TOOLS(Vector2)& point );
+   BoundingSphere& extend( const Vector2& point );
 
   /** Extends \e self in order to bound \e bsphere.
       \pre
@@ -132,13 +132,13 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& operator+=( const TOOLS(Vector3)& point );
+   BoundingSphere& operator+=( const Vector3& point );
 
    /** Extends \e self in order to bound \e point.
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingSphere& operator+=( const TOOLS(Vector2)& point );
+   BoundingSphere& operator+=( const Vector2& point );
 
    /** Intersection between \e self and \e bsphere.
       \pre
@@ -157,26 +157,26 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   bool intersect( const TOOLS(Vector3)& point ) const;
+   bool intersect( const Vector3& point ) const;
 
   /** Intersection between \e self and a segment defined by [ \e point1 , \e point2 ].
       \pre
       - \e self must be valid;
       - \e point1 and point2 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2 ) const;
 
    /// Change values.
-  void change( const TOOLS(Vector3)& center, const real_t& size );
+  void change( const Vector3& center, const real_t& size );
 
    /** Returns the center of \e self.
        \pre
       - \e self must be valid. */
-  const TOOLS(Vector3)& getCenter( ) const ;
+  const Vector3& getCenter( ) const ;
 
    /** Returns the center of \e self.
        \pre
       - \e self must be valid. */
-  TOOLS(Vector3)& getCenter( );
+  Vector3& getCenter( );
 
   /** Returns the radius of \e self.
       \pre
@@ -193,26 +193,26 @@ public:
 
   /** Transform a bounding sphere by an affine transformation.
   */
-  void transform(const TOOLS(Matrix4)& matrix);
+  void transform(const Matrix4& matrix);
 
   /// Returns the result of the addition of \e b1 and \e b2.
   friend SG_API BoundingSphere operator+( const BoundingSphere& b1, const BoundingSphere& b2);
 
   /// Returns the result of the addition of \e b1 and \e v2.
-  friend SG_API BoundingSphere operator+( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+  friend SG_API BoundingSphere operator+( const BoundingSphere& b1, const Vector3& v2);
 
   /// Returns whether \e b1 intersect \e b2.
   friend SG_API bool intersection( const BoundingSphere& b1, const BoundingSphere& b2) ;
 
   /// Returns whether \e b1 intersect \e v2.
-  friend SG_API bool intersection( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+  friend SG_API bool intersection( const BoundingSphere& b1, const Vector3& v2);
 
 //  friend std::ostream& operator<<( std::ostream& stream, BoundingSphere& b );
 
 protected:
 
   /// The center.
-  TOOLS(Vector3) __center;
+  Vector3 __center;
 
   /// The radius.
   real_t __radius;
@@ -223,9 +223,9 @@ protected:
 typedef RCPtr<BoundingSphere> BoundingSpherePtr;
 
 SG_API BoundingSphere operator+( const BoundingSphere& b1, const BoundingSphere& b2);
-SG_API BoundingSphere operator+( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+SG_API BoundingSphere operator+( const BoundingSphere& b1, const Vector3& v2);
 SG_API bool intersection( const BoundingSphere& b1, const BoundingSphere& b2) ;
-SG_API bool intersection( const BoundingSphere& b1, const TOOLS(Vector3)& v2);
+SG_API bool intersection( const BoundingSphere& b1, const Vector3& v2);
 
 /* ----------------------------------------------------------------------- */
 

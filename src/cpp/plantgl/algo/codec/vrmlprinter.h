@@ -147,13 +147,13 @@ public:
   virtual bool setBackGround(const Color3& sky);
 
   /// Set a camera to the scene. All vector must be given in the GEOM basis and will be transformed in VRML basis.
-  virtual bool setCamera(const TOOLS(Vector3)& position,
+  virtual bool setCamera(const Vector3& position,
                                                  const real_t& az,
                                                  const real_t& el,
                                                  const std::string& name);
 
   /// Set a light to the scene.
-  virtual bool setLight(const TOOLS(Vector3)& location,
+  virtual bool setLight(const Vector3& location,
                                                 const Color3& ambient,
                                                 const Color3& diffuse,
                                                 const real_t& radius = REAL_MAX);

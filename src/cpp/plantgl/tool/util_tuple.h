@@ -50,7 +50,7 @@
 #include <iostream>
 #endif
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -664,7 +664,7 @@ inline Tuple sub(const Tuple& t1, const Tuple& t2) {
 
 /*  ---------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 // __util_tuple_h__
 #endif

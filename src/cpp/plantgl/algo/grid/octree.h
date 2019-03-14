@@ -81,7 +81,7 @@ public:
 
   /// Constructor. Use center and size to define the space the decomposed space.
   Octree( const ScenePtr& Scene,
-          const TOOLS(Vector3)& center, const TOOLS(Vector3)& size,
+          const Vector3& center, const Vector3& size,
           uint_t maxscale = 10,
           uint_t maxelements = 10,
           ConstructionMethod method = TriangleBased);
@@ -90,12 +90,12 @@ public:
   virtual ~Octree( );
 
   ///  Get the size from \e self.
-  virtual const TOOLS(Vector3)& getSize() const{
+  virtual const Vector3& getSize() const{
     return __size;
   }
 
   ///  Get the center from \e self.
-  virtual const TOOLS(Vector3)& getCenter() const{
+  virtual const Vector3& getCenter() const{
     return __center;
   }
 
@@ -128,15 +128,15 @@ public:
   std::vector<std::vector<uint_t> > getDetails() const;
 
   /// Return the size of the entity at the different scale.
-  std::vector<TOOLS(Vector3) > getSizes() const;
+  std::vector<Vector3 > getSizes() const;
 
   //
 
-  bool intersect( const Ray& ray, TOOLS(Vector3)& intersection ) const;
+  bool intersect( const Ray& ray, Vector3& intersection ) const;
 
-  bool contains(const TOOLS(Vector3)& v) const;
+  bool contains(const Vector3& v) const;
 
-  bool findFirstPoint(const Ray& ray, TOOLS(Vector3)& pt ) const;
+  bool findFirstPoint(const Ray& ray, Vector3& pt ) const;
 
 protected:
 
@@ -159,10 +159,10 @@ protected:
   OctreeNode __root;
 
   /// Size of the scene.
-  TOOLS(Vector3) __size;
+  Vector3 __size;
 
   /// Center of the scene.
-  TOOLS(Vector3) __center;
+  Vector3 __center;
 
   /// Scene contained in the octree.
   ScenePtr __scene;
@@ -184,8 +184,8 @@ private:
                             const OctreeNode* voxel ) const;
 
   /// get the deepest node where point is suituated
-  const OctreeNode * getLeafNode( const TOOLS(Vector3)& point,
-                                 const TOOLS(Vector3)& dir,
+  const OctreeNode * getLeafNode( const Vector3& point,
+                                 const Vector3& dir,
                                  const OctreeNode* iComplex ) const;
 
   bool topDown( const OctreeNode* voxel,

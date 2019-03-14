@@ -50,28 +50,28 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 /// Return whether segment [seg1, seg2] intersect [segb1, segb2]
-bool ALGO_API intersectSegment(const TOOLS(Vector2)& seg1, const TOOLS(Vector2)& seg2 , 
-		      const TOOLS(Vector2)& segb1,const TOOLS(Vector2)& segb2);
+bool ALGO_API intersectSegment(const Vector2& seg1, const Vector2& seg2 , 
+		      const Vector2& segb1,const Vector2& segb2);
 
 /// Return whether segment [seg1, seg2] intersect [segb1, segb2]
-bool ALGO_API intersectSegment(const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2 , 
-		      const TOOLS(Vector3)& segb1,const TOOLS(Vector3)& segb2);
+bool ALGO_API intersectSegment(const Vector3& seg1, const Vector3& seg2 , 
+		      const Vector3& segb1,const Vector3& segb2);
  
 /// Return whether segment [seg1, seg2] intersect the point pt1
-bool ALGO_API intersectSegment(const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2 , 
-		      const TOOLS(Vector3)& pt1);
+bool ALGO_API intersectSegment(const Vector3& seg1, const Vector3& seg2 , 
+		      const Vector3& pt1);
  
 /// Return whether segment define by [seg1,seg2] intersect triangle made by [triangle1,triangle2,triangle3].
-bool ALGO_API intersectSegment(const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2 , 
-	       const TOOLS(Vector3)& triangle1,const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3 );
+bool ALGO_API intersectSegment(const Vector3& seg1, const Vector3& seg2 , 
+	       const Vector3& triangle1,const Vector3& triangle2, const Vector3& triangle3 );
 
 
 /* \fn intersectSegment
   Return whether segment define by [seg1,seg2] intersect quad facet made by [quad1,quad2,quad3,quad4]. 
   \pre quad must be planar.
 */
-bool ALGO_API intersectSegment(const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2 , 
-	       const TOOLS(Vector3)& quad1,const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3 , const TOOLS(Vector3)& quad4 );
+bool ALGO_API intersectSegment(const Vector3& seg1, const Vector3& seg2 , 
+	       const Vector3& quad1,const Vector3& quad2, const Vector3& quad3 , const Vector3& quad4 );
 
 /* ----------------------------------------------------------------------- */
 

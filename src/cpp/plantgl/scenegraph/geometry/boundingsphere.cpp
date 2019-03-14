@@ -37,7 +37,6 @@
 #include <plantgl/math/util_polymath.h>
 using namespace std;
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -125,12 +124,12 @@ BoundingSphere::operator+=( const BoundingSphere& bsphere ){
 }
 
 BoundingSphere& 
-BoundingSphere::operator+=( const TOOLS(Vector3)& point ){
+BoundingSphere::operator+=( const Vector3& point ){
   return extend(point);
 }
 
 BoundingSphere& 
-BoundingSphere::operator+=( const TOOLS(Vector2)& point ){
+BoundingSphere::operator+=( const Vector2& point ){
   return extend(point);
 }
 

@@ -45,7 +45,6 @@
 #endif
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -280,7 +279,7 @@ bool NurbsCurve::setKnotListToDefault( ){
     return true;
 }
 
-TOOLS(RealArrayPtr) NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
+RealArrayPtr NurbsCurve::defaultKnotList( uint_t nbCtrlPoints, uint_t degree)
 {
     uint_t _size = nbCtrlPoints + degree + 1;
     RealArrayPtr knotList = RealArrayPtr(new RealArray(_size));
@@ -299,7 +298,7 @@ bool NurbsCurve::isKnotListToDefault( ) const {
     return defaultKnotListTest(getKnotList(),__ctrlPointList->size(),__degree);
 }
 
-bool NurbsCurve::defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree )
+bool NurbsCurve::defaultKnotListTest(const RealArrayPtr& knots, uint_t nbCtrlPoints, uint_t degree )
 {
     if( !knots ) return true;
     uint_t _size=knots->size();

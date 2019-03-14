@@ -164,7 +164,7 @@ public:
      \pre 
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
-  virtual TOOLS(Vector3) getPointAt(real_t u,real_t v) const;
+  virtual Vector3 getPointAt(real_t u,real_t v) const;
 
   /* Returns the \e Point for u = \e u.
       using classical algorithm (see the Nurbs book p.22) 

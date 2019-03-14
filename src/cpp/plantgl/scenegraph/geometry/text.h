@@ -157,7 +157,7 @@ public:
 
   static bool DEFAULT_SCREEN_COORDINATES;
 
-  static TOOLS(Vector3) DEFAULT_POSITION;
+  static Vector3 DEFAULT_POSITION;
 
   /// A structure which helps to build a Text when parsing. 
   struct SG_API Builder : public Geometry::Builder {
@@ -166,7 +166,7 @@ public:
 	std::string * String;
 
     /// A pointer to the \b Position field.
-	TOOLS(Vector3) * Position;	
+	Vector3 * Position;	
 
     /// A pointer to the \b ScreenCoordinates field.
 	bool * ScreenCoordinates;	
@@ -193,7 +193,7 @@ public:
 
   /// Constructs a Box with \e size.
   Text( const std::string& s = "",
-	    const TOOLS(Vector3)& position = DEFAULT_POSITION,
+	    const Vector3& position = DEFAULT_POSITION,
 		const bool screenCoordinates = DEFAULT_SCREEN_COORDINATES,
 		const FontPtr& font = DEFAULT_FONT);
 
@@ -237,8 +237,8 @@ public:
   inline bool& getScreenCoordinates() { return __screenCoordinates; }
   inline bool isScreenCoordinatesToDefault() { return __screenCoordinates == DEFAULT_SCREEN_COORDINATES; }
 
-  inline const TOOLS(Vector3)& getPosition() const { return __position; }
-  inline TOOLS(Vector3)& getPosition() { return __position; }
+  inline const Vector3& getPosition() const { return __position; }
+  inline Vector3& getPosition() { return __position; }
   inline bool isPositionToDefault() { return __position == DEFAULT_POSITION; }
 
 protected:
@@ -248,7 +248,7 @@ protected:
 
   bool __screenCoordinates;
 
-  TOOLS(Vector3) __position;
+  Vector3 __position;
 
   FontPtr __fontStyle;
   

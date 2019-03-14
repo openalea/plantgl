@@ -72,7 +72,7 @@ class DeepCopier;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API SceneObject : public virtual TOOLS(RefCountObject)
+class SG_API SceneObject : public virtual RefCountObject
 {
 
 public:

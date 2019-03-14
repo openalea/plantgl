@@ -34,7 +34,6 @@
 #include <plantgl/scenegraph/container/indexarray_iterator.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 
 #ifdef WITH_CGAL
@@ -230,7 +229,7 @@ Vector3 PGL::pointset_orientation(const Point3ArrayPtr points, const Index &grou
 #endif
 }
 
-ALGO_API TOOLS(Vector3)
+ALGO_API Vector3
 PGL::triangleset_orientation(const Point3ArrayPtr points, const Index3ArrayPtr triangles) {
 #ifdef WITH_CGAL
   typedef CGAL::Cartesian<real_t> CK;
@@ -393,7 +392,7 @@ real_t mean_over(const Point3ArrayPtr points, const Index &section, int i, int j
 
 #endif
 
-TOOLS(Vector3) PGL::section_normal(const Point3ArrayPtr pointnormals, const Index &section) {
+Vector3 PGL::section_normal(const Point3ArrayPtr pointnormals, const Index &section) {
 #ifdef WITH_CGAL
 
 

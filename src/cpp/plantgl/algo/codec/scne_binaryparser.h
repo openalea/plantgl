@@ -57,9 +57,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class leifstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -333,22 +333,22 @@ public:
   PGL(Color4) readColor4();
 
   /// read a Vector2 value from stream
-  TOOLS(Vector2) readVector2();
+  Vector2 readVector2();
 
   /// read a Vector3 value from stream
-  TOOLS(Vector3) readVector3();
+  Vector3 readVector3();
 
   /// read a Vector4 value from stream
-  TOOLS(Vector4) readVector4();
+  Vector4 readVector4();
 
   /// read a Matrix2 value from stream
-  TOOLS(Matrix2) readMatrix2();
+  Matrix2 readMatrix2();
 
   /// read a Matrix3 value from stream
-  TOOLS(Matrix3) readMatrix3();
+  Matrix3 readMatrix3();
 
   /// read a Matrix4 value from stream
-  TOOLS(Matrix4) readMatrix4();
+  Matrix4 readMatrix4();
 
   /// read a Index3 value from stream
   PGL(Index3) readIndex3();
@@ -406,13 +406,13 @@ public:
   uint_t __roots;
 
   /// The reference table
-  TOOLS(Cache)<SceneObjectPtr > __referencetable;
+  Cache<SceneObjectPtr > __referencetable;
 
   /// Output stream.
   std::ostream& __outputStream;
 
   /// Input binary stream.
-  TOOLS(leifstream) * stream;
+  leifstream * stream;
 
   /// The tokens codes.
   TokenCode * __tokens;
@@ -472,22 +472,22 @@ template<>
 inline std::string BinaryParser::read<std::string>() { return readString(); }
 
 template<>
-inline TOOLS(Vector2) BinaryParser::read<TOOLS(Vector2)>() { return readVector2(); }
+inline Vector2 BinaryParser::read<Vector2>() { return readVector2(); }
 
 template<>
-inline TOOLS(Vector3) BinaryParser::read<TOOLS(Vector3)>() { return readVector3(); }
+inline Vector3 BinaryParser::read<Vector3>() { return readVector3(); }
 
 template<>
-inline TOOLS(Vector4) BinaryParser::read<TOOLS(Vector4)>() { return readVector4(); }
+inline Vector4 BinaryParser::read<Vector4>() { return readVector4(); }
 
 template<>
-inline TOOLS(Matrix2) BinaryParser::read<TOOLS(Matrix2)>() { return readMatrix2(); }
+inline Matrix2 BinaryParser::read<Matrix2>() { return readMatrix2(); }
 
 template<>
-inline TOOLS(Matrix3) BinaryParser::read<TOOLS(Matrix3)>() { return readMatrix3(); }
+inline Matrix3 BinaryParser::read<Matrix3>() { return readMatrix3(); }
 
 template<>
-inline TOOLS(Matrix4) BinaryParser::read<TOOLS(Matrix4)>() { return readMatrix4(); }
+inline Matrix4 BinaryParser::read<Matrix4>() { return readMatrix4(); }
 
 template<>
 inline PGL(Color3) BinaryParser::read<PGL(Color3)>() { return readColor3(); }

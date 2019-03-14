@@ -17,7 +17,7 @@
 #include <cstdio>
 #include <string>
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
   typedef void (*progressstatusfunction)(const char *, float);
 
@@ -44,6 +44,6 @@ TOOLS_BEGIN_NAMESPACE
     std::string message;
   };
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif /* !__util_progress_h__ */

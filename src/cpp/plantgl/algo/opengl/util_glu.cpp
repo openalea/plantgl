@@ -32,6 +32,8 @@
 #include "util_glu.h"
 #include <plantgl/math/util_math.h>
 
+PGL_USING_NAMESPACE
+
 #ifndef PGL_MIN_MAX
 #define PGL_MIN_MAX
 
@@ -50,7 +52,7 @@ inline const T &pglMax(const T &a, const T &b) { return (a < b) ? b : a; }
 #endif
 
 /// gluLookAt for GEOM
-void glGeomLookAt(const TOOLS(Vector3)& eye, const TOOLS(Vector3)& center, const TOOLS(Vector3)& up )
+void glGeomLookAt(const Vector3& eye, const Vector3& center, const Vector3& up )
 { gluLookAt(eye.x(),    eye.y(),    eye.z(),
             center.x(), center.y(), center.z(),
             up.x(),     up.y(),     up.z()); }

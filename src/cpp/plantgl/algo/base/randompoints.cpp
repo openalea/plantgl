@@ -36,7 +36,6 @@
 #include <stdlib.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 Vector3 PGL(random_point_in_box)(const Vector3& minpt, const Vector3& maxpt)
 {

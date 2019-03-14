@@ -99,7 +99,7 @@ public:
   /// Destructor.
   virtual ~EulerRotation( );
 
-  virtual TOOLS(Vector3) extractEulerAngles() const;
+  virtual Vector3 extractEulerAngles() const;
 protected:
 
   /// The Azimuth field.

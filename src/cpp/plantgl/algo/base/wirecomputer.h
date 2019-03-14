@@ -209,7 +209,7 @@ public:
 protected:
 
   /// The cache storing the already discretized geometries.
-  TOOLS(Cache)<GeometryPtr> __cache;
+  Cache<GeometryPtr> __cache;
 
   /// The last computed discretized geometry.
   GeometryPtr __wire;

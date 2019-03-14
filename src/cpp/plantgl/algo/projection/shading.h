@@ -66,22 +66,22 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-Color4 phong(const TOOLS(Vector3)& v, const TOOLS(Vector3)& n, 
-             const TOOLS(Vector3)& cameraPosition, 
-             const TOOLS(Vector3)& lightPosition, 
+Color4 phong(const Vector3& v, const Vector3& n, 
+             const Vector3& cameraPosition, 
+             const Vector3& lightPosition, 
              const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular,
              MaterialPtr material);
 
 class ZBufferEngine;
 
-class Shader : public TOOLS(RefCountObject) {
+class Shader : public RefCountObject {
 public:
     Shader(ZBufferEngine * engine);
     virtual ~Shader();
     ZBufferEngine * __engine;
 
-    const TOOLS(Vector3)& cameraPosition() const ;
-    const TOOLS(Vector3)& lightPosition() const ;
+    const Vector3& cameraPosition() const ;
+    const Vector3& lightPosition() const ;
     const Color3& lightAmbient() const ;
     const Color3& lightDiffuse() const ;
     const Color3& lightSpecular() const ;
@@ -132,9 +132,9 @@ public:
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
 
     ImagePtr image;
-    TOOLS(Vector2) uv0;
-    TOOLS(Vector2) uv1;
-    TOOLS(Vector2) uv2;
+    Vector2 uv0;
+    Vector2 uv1;
+    Vector2 uv2;
     bool repeatu;
     bool repeatv;
 };
@@ -177,9 +177,9 @@ public:
     virtual void init(AppearancePtr appearance, TriangleSetPtr triangles, uint32_t trid, uint32_t shapeid);
     virtual void process(int32_t x, int32_t y, int32_t z, float w0, float w1, float w2) ;
 
-    TOOLS(Vector3) n0;
-    TOOLS(Vector3) n1;
-    TOOLS(Vector3) n2;
+    Vector3 n0;
+    Vector3 n1;
+    Vector3 n2;
 
     MaterialPtr material;
 

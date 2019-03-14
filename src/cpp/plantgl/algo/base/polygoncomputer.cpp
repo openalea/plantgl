@@ -159,7 +159,7 @@ bool PolygonComputer::process( ExtrudedHull * extrudedHull ){
   Point2Array::const_iterator _begin = _vertical->begin();
   uint_t _ndxBot = distance(_begin,_minAndMax.first);
   uint_t _ndxTop = distance(_begin,_minAndMax.second);
-  uint_t stack1 = (uint_t)abs((int)_ndxTop - (int)_ndxBot);
+  uint_t stack1 = (uint_t)fabs((int)_ndxTop - (int)_ndxBot);
   uint_t stack2 =  size - stack1;
   __polygon = ((max(stack1,stack2)-1) *
     (extrudedHull->getHorizontal()->getStride()+1));

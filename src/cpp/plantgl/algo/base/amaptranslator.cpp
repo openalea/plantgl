@@ -50,7 +50,6 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #define GEOM_TRANSLATE(geom) \

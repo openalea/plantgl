@@ -139,9 +139,9 @@ bool Texture2DTransformation::Builder::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-Texture2DTransformation::Texture2DTransformation(const TOOLS(Vector2)& scaling, 
-											 const TOOLS(Vector2)& translation, 
-											 const TOOLS(Vector2)& rotationCenter, 
+Texture2DTransformation::Texture2DTransformation(const Vector2& scaling, 
+											 const Vector2& translation, 
+											 const Vector2& rotationCenter, 
 											 real_t rotationAngle):
 	SceneObject(),
 	__Scale(scaling), 
@@ -151,9 +151,9 @@ Texture2DTransformation::Texture2DTransformation(const TOOLS(Vector2)& scaling,
 }
   
 Texture2DTransformation::Texture2DTransformation(const std::string& name,
-										     const TOOLS(Vector2)& scaling, 
-											 const TOOLS(Vector2)& translation, 
-											 const TOOLS(Vector2)& rotationCenter, 
+										     const Vector2& scaling, 
+											 const Vector2& translation, 
+											 const Vector2& rotationCenter, 
 											 real_t rotationAngle):
 	SceneObject(name),
 	__Scale(scaling), 
@@ -218,7 +218,7 @@ Point2ArrayPtr Texture2DTransformation::transform( const Point2ArrayPtr& points 
   return _tPoints;
 }
 
-TOOLS(Vector2) Texture2DTransformation::transform( const TOOLS(Vector2)& point ) const
+Vector2 Texture2DTransformation::transform( const Vector2& point ) const
 {
 	Vector2 res(point.x() * __Scale.x(), point.y() * __Scale.y()) ;
 	res -= __RotationCenter;

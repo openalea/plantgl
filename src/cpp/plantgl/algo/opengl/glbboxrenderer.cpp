@@ -42,7 +42,6 @@
 #include "util_glut.h"
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

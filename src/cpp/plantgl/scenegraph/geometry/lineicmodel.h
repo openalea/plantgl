@@ -91,18 +91,18 @@ public:
   /*! Returns the \e Point for u = \e u.
     \pre 
     - \e u must be in [FirstKnot,LastKnot];*/
-  virtual TOOLS(Vector3) getPointAt(real_t u) const = 0;
+  virtual Vector3 getPointAt(real_t u) const = 0;
   
   /*! Returns the \e Tangent for u = \e u.
     \pre 
     - \e u must be in [FirstKnot,LastKnot];*/
-  virtual TOOLS(Vector3) getTangentAt(real_t u) const = 0;
+  virtual Vector3 getTangentAt(real_t u) const = 0;
   
   
   /*! Returns the principal \e Normal for u = \e u.
     \pre 
     - \e u must be in [FirstKnot,LastKnot];*/
-    virtual TOOLS(Vector3) getNormalAt(real_t u) const = 0;
+    virtual Vector3 getNormalAt(real_t u) const = 0;
   
   /// Return the length of the lineic model.
   inline real_t getLength() const { return getLength(getFirstKnot(),getLastKnot()); }
@@ -113,7 +113,7 @@ public:
   /// Return the length of the lineic model from u = begin to u = end.
   virtual real_t getLength(real_t begin, real_t end) const ;
 
-  virtual TOOLS(Vector3) findClosest(const TOOLS(Vector3)& pt, real_t* u = NULL) const;
+  virtual Vector3 findClosest(const Vector3& pt, real_t* u = NULL) const;
   
   QuantisedFunctionPtr getArcLengthToUMapping() const;
   QuantisedFunctionPtr getUToArcLengthMapping() const;
@@ -136,9 +136,9 @@ typedef RCPtr<LineicModel> LineicModelPtr;
  
 /* ----------------------------------------------------------------------- */
 
-SG_API real_t closestPointToSegment(TOOLS(Vector3)& p, 
-						   const TOOLS(Vector3)& segA,
-						   const TOOLS(Vector3)& segB,
+SG_API real_t closestPointToSegment(Vector3& p, 
+						   const Vector3& segA,
+						   const Vector3& segB,
                            real_t* u = NULL);
 
 /* ----------------------------------------------------------------------- */

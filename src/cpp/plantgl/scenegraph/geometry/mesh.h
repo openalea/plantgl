@@ -43,9 +43,9 @@
 #include "polyline.h"
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class bofstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -80,7 +80,7 @@ public:
   static const PolylinePtr DEFAULT_SKELETON;
 
   /// The default normal value
-  static const TOOLS(Vector3) DEFAULT_NORMAL_VALUE;
+  static const Vector3 DEFAULT_NORMAL_VALUE;
 
   /// A structure which helps to build an object of type of Mesh.
   struct SG_API Builder : public ExplicitModel::Builder {
@@ -220,7 +220,7 @@ public:
   /** Writes \e self to the output binary stream \e stream.
       \pre
       - \e stream must be valid. */
-  // virtual TOOLS(bofstream)& write( TOOLS(bofstream)& stream ) const = 0;
+  // virtual bofstream& write( bofstream& stream ) const = 0;
 
   /// Returns the size of \b IndexList i.e. the number of polygon.
   virtual uint_t getIndexListSize( ) const =0;
@@ -229,7 +229,7 @@ public:
       \warning
 	  - \e PointList should be set
       - \e i must be belong to the range [0,size of \b PointList[. */
-  inline const TOOLS(Vector3)& getPointAt( uint_t i ) const {
+  inline const Vector3& getPointAt( uint_t i ) const {
 	GEOM_ASSERT(__pointList.isValid());
 	GEOM_ASSERT(i < __pointList->size());
 	return __pointList->getAt(i);
@@ -268,7 +268,7 @@ public:
 	  - \e PointList should be set
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,getFaceSize(i)]. */
-  inline const TOOLS(Vector3)& getFacePointAt( uint_t i, uint_t j ) const  {
+  inline const Vector3& getFacePointAt( uint_t i, uint_t j ) const  {
 	GEOM_ASSERT(__pointList.isValid());
 	GEOM_ASSERT(i < getIndexListSize());
 	GEOM_ASSERT(j < getFaceSize(i));
@@ -276,13 +276,13 @@ public:
   }
 
   /// Returns the center of the \b i-th face.
-  TOOLS(Vector3) getFaceCenter( uint_t i ) const ;
+  Vector3 getFaceCenter( uint_t i ) const ;
 
   /** Returns the \e i-th normal to (normally correxponding to the \e i-th face).
       \pre
 	  - \e NormalList should be set
       - \e i must be belong to the range [0,size of \b NormalList]. */
-  inline const TOOLS(Vector3)& getNormalAt( uint_t i )  const  {
+  inline const Vector3& getNormalAt( uint_t i )  const  {
 	GEOM_ASSERT(is_valid_ptr(__normalList));
 	GEOM_ASSERT(i < __normalList->size());
 	return __normalList->getAt(i);
@@ -292,7 +292,7 @@ public:
       \pre
       - \e i must be belong to the range [0,size of \b IndexList[. 
       - \e j must belong to the range [0,2]. */
-  inline const TOOLS(Vector3)& getFaceNormalAt( uint_t i, uint_t j ) const {
+  inline const Vector3& getFaceNormalAt( uint_t i, uint_t j ) const {
 	GEOM_ASSERT(is_valid_ptr(__normalList));
 	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
@@ -303,7 +303,7 @@ public:
       \warning
 	  - \e TexCoordList should be set
       - \e i must be belong to the range [0,size of \b TexCoordList[. */
-  const TOOLS(Vector2)& getTexCoordAt( uint_t i ) const  {
+  const Vector2& getTexCoordAt( uint_t i ) const  {
 	GEOM_ASSERT(is_valid_ptr(__texCoordList));
 	GEOM_ASSERT(i < __texCoordList->size());
 	return __texCoordList->getAt(i);
@@ -314,7 +314,7 @@ public:
 	  - \e TexCoordList should be set
       - \e i must belong to the range [0,size of \b IndexList[;
       - \e j must belong to the range [0,2]. */
-  const TOOLS(Vector2)& getFaceTexCoordAt( uint_t i, uint_t j ) const {
+  const Vector2& getFaceTexCoordAt( uint_t i, uint_t j ) const {
 	GEOM_ASSERT(is_valid_ptr(__texCoordList));
 	GEOM_ASSERT(i < __indexList->size());
 	GEOM_ASSERT(j < getFaceSize(i));
@@ -342,10 +342,10 @@ public:
   }
 
 #ifndef PGL_NO_DEPRECATED
-  inline attribute_deprecated const TOOLS(Vector3)& getNormalAt( uint_t i, uint_t j ) const 
+  inline attribute_deprecated const Vector3& getNormalAt( uint_t i, uint_t j ) const 
   { return getFaceNormalAt(i,j); }
 
-  inline attribute_deprecated const TOOLS(Vector2)& getTexCoordAt( uint_t i, uint_t j ) const 
+  inline attribute_deprecated const Vector2& getTexCoordAt( uint_t i, uint_t j ) const 
   { return getFaceTexCoordAt(i,j); }
 
   inline attribute_deprecated const Color4& getColorAt( uint_t i, uint_t j ) const 

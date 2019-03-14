@@ -215,7 +215,7 @@ public:
 protected:
 
   /// The cache storing the already computed bounding boxes.
-  TOOLS(Cache)<BoundingBoxPtr> __cache;
+  Cache<BoundingBoxPtr> __cache;
 
   /// The resulting bounding box.
   BoundingBoxPtr __bbox;

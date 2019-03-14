@@ -59,12 +59,12 @@ class ObjectArray : public TOOLS(Array1<T>)
 
 public:
 
-  typedef typename TOOLS(Array1)<T>::const_iterator const_iterator;
+  typedef typename Array1<T>::const_iterator const_iterator;
   /** Constructs an ObjectArray of size of \e size.
       \post
       - \e self is valid. */
   ObjectArray( uint_t size = 0 ) :
-    TOOLS(Array1)<T>( size)
+    Array1<T>( size)
      { }
 
 
@@ -73,7 +73,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   ObjectArray( InIterator first, InIterator last ) :
-    TOOLS(Array1)<T>(first,last) {
+    Array1<T>(first,last) {
     GEOM_ASSERT(isValid());
   }
 

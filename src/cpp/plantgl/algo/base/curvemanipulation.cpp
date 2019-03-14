@@ -37,7 +37,6 @@
 #include <plantgl/scenegraph/geometry/pointset.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #ifdef WITH_CGAL
 #include <CGAL/basic.h>

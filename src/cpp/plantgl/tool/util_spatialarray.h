@@ -40,7 +40,7 @@
 #include "errormsg.h"
 
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 
 
@@ -382,5 +382,5 @@ protected:
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 #endif

@@ -44,7 +44,6 @@
 #include <plantgl/scenegraph/container/pointarray.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -373,19 +372,19 @@ Point2ArrayPtr& Extrusion::getScale()
 { return __profile->getScale(); }
 
 /// Return the Orientation Factor List value.
-const TOOLS(RealArrayPtr)& Extrusion::getOrientation() const
+const RealArrayPtr& Extrusion::getOrientation() const
 { return __profile->getOrientation(); }
 
 /// Return the Orientation Factor List field.
-TOOLS(RealArrayPtr)& Extrusion::getOrientation()
+RealArrayPtr& Extrusion::getOrientation()
 { return __profile->getOrientation(); }
 
 /// Return the KnotList Factor List value.
-const TOOLS(RealArrayPtr) Extrusion::getKnotList() const
+const RealArrayPtr Extrusion::getKnotList() const
 { return __profile->getKnotList(); }
 
 /// Return the KnotList Factor List field.
-TOOLS(RealArrayPtr)& Extrusion::getKnotList()
+RealArrayPtr& Extrusion::getKnotList()
 { return __profile->getKnotList(); }
 
 /* ----------------------------------------------------------------------- */
@@ -446,7 +445,7 @@ Extrusion::copy(DeepCopier& copier) const {
 /* ----------------------------------------------------------------------- */
 
 // Get the value of initial normal
-TOOLS(Vector3) Extrusion::getInitialNormalValue() const {
+Vector3 Extrusion::getInitialNormalValue() const {
     Vector3 _normal( __initialNormal );
     if( normSquared(_normal) > GEOM_EPSILON )
     { return _normal; }

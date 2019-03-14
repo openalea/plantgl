@@ -53,7 +53,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -738,8 +737,8 @@ bool Octree::intersect( const Ray& ray,
 }
 
 /////////////////////////////////////////////////////////////////////////////
-const OctreeNode* Octree::getLeafNode( const TOOLS(Vector3)& point,
-                                       const TOOLS(Vector3)& dir,
+const OctreeNode* Octree::getLeafNode( const Vector3& point,
+                                       const Vector3& dir,
                                        const OctreeNode* iComplex ) const
 /////////////////////////////////////////////////////////////////////////////
 {
@@ -766,7 +765,7 @@ bool Octree::contains(const Vector3& v) const
   return __root.intersect(v);
 }
 
-bool Octree::findFirstPoint(const Ray& ray, TOOLS(Vector3)& pt ) const
+bool Octree::findFirstPoint(const Ray& ray, Vector3& pt ) const
 {
     real_t tnear,tfar;
     if(!ray.intersect(BoundingBox(__root.getMinCoord(),__root.getMaxCoord()),tnear,tfar))return false;

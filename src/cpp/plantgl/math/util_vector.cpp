@@ -3,14 +3,14 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -27,7 +27,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -38,7 +38,7 @@
 #include <iostream>
 using namespace std;
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -122,28 +122,28 @@ Vector2::x( ) const {
   return __X;
 }
 
-real_t& 
+real_t&
 Vector2::x( ) {
   return __X;
 }
 
-const real_t& 
+const real_t&
 Vector2::y( ) const {
   return __Y;
 }
 
-real_t& 
+real_t&
 Vector2::y( ) {
   return __Y;
 }
 
-int 
+int
 Vector2::getMaxAbsCoord() const
 {
     return ( fabs(__X) > fabs(__Y) )  ? 0 : 1;
 }
 
-int 
+int
 Vector2::getMinAbsCoord() const
 {
     return ( fabs(__X) < fabs(__Y) )  ? 0 : 1;
@@ -151,42 +151,42 @@ Vector2::getMinAbsCoord() const
 
 /*  --------------------------------------------------------------------- */
 
-bool 
+bool
 Vector2::operator==( const Vector2& v ) const {
   return normLinf(*this - v) < GEOM_TOLERANCE;
 }
 
-bool  
+bool
 Vector2::operator!=( const Vector2& v ) const {
   return normLinf(*this - v) >= GEOM_TOLERANCE;
 }
 
-Vector2& 
+Vector2&
 Vector2::operator+=( const Vector2& v ) {
   __X += v.__X; __Y += v.__Y;
   return *this;
 }
 
-Vector2& 
+Vector2&
 Vector2::operator-=( const Vector2& v ) {
   __X -= v.__X; __Y -= v.__Y;
   return *this;
 }
 
-Vector2& 
+Vector2&
 Vector2::operator*=( const real_t& s ) {
   __X *= s; __Y *= s;
   return *this;
 }
 
-Vector2& 
+Vector2&
 Vector2::operator/=( const real_t& s ) {
   GEOM_ASSERT(fabs(s) > GEOM_TOLERANCE);
   __X /= s; __Y /= s;
   return *this;
 }
 
-Vector2 
+Vector2
 Vector2::operator-( ) const {
   return Vector2(-__X, -__Y);
 }
@@ -208,12 +208,12 @@ Vector2 Vector2::cwiseProduct( const Vector2& v ) const {
   return Vector2(__X*v.__X, __Y*v.__Y);
 }
 
-bool 
+bool
 Vector2::isNormalized( ) const {
   return fabs(normSquared(*this) - 1) < GEOM_EPSILON;
 }
 
-bool 
+bool
 Vector2::isOrthogonalTo( const Vector2& v ) const {
   return fabs(dot(*this,v)) < GEOM_EPSILON;
 }
@@ -281,7 +281,7 @@ Vector2 direction( const Vector2& v ) {
   return v / n;
 }
 
-real_t cross( const Vector2& v1,const Vector2& v2) 
+real_t cross( const Vector2& v1,const Vector2& v2)
 {
   return v1.__X*v2.__Y - v1.__Y*v2.__X;
 }
@@ -329,9 +329,9 @@ real_t sum( const Vector2& v ) {
 
 /*
 real_t angle( const Vector2& v1 , const Vector2& v2 ) {
-	real_t n = norm(v1)*norm(v2);
-	if(n < GEOM_EPSILON)return 0;
-	return acos(dot(v1,v2)/n);
+    real_t n = norm(v1)*norm(v2);
+    if(n < GEOM_EPSILON)return 0;
+    return acos(dot(v1,v2)/n);
 */
 real_t angle( const Vector2& v1 , const Vector2& v2 ) {
   real_t cosinus = v1*v2; //dot(v1,v2)
@@ -419,13 +419,13 @@ Vector3::Spherical::isValid( ) const {
 }
 
 real_t Vector3::Spherical::spherical_distance(real_t theta2, real_t phi2) const {
-    return TOOLS(spherical_distance)(theta,phi, theta2,phi2, radius);
+    return PGL(spherical_distance)(theta,phi, theta2,phi2, radius);
 }
 /*  --------------------------------------------------------------------- */
 
 Vector3::Vector3( const real_t& x,
-		  const real_t& y,
-		  const real_t& z ) :
+          const real_t& y,
+          const real_t& z ) :
   Tuple3<real_t>(x,y,z) {
   GEOM_ASSERT(isValid());
 }
@@ -439,16 +439,16 @@ Vector3::Vector3( const Vector2& v, const real_t& z ) :
 
 Vector3::Vector3( const Cylindrical& c ) :
   Tuple3<real_t>(c.radius * cos(c.theta),
-	       c.radius * sin(c.theta),
-	       c.z) {
+           c.radius * sin(c.theta),
+           c.z) {
   GEOM_ASSERT(c.isValid());
   GEOM_ASSERT(isValid());
 }
 
 Vector3::Vector3( const Spherical& s ) :
   Tuple3<real_t>(cos(s.theta),
-	       sin(s.theta),
-	       s.radius * cos(s.phi)) {
+           sin(s.theta),
+           s.radius * cos(s.phi)) {
   real_t _tmp = s.radius * sin(s.phi);
   __X *= _tmp;
   __Y *= _tmp;
@@ -458,37 +458,37 @@ Vector3::Vector3( const Spherical& s ) :
 
 void
 Vector3::set( const real_t& x,
-		  const real_t& y,
-		  const real_t& z )  {
-	__X = x;
-	__Y = y;
-	__Z = z;
+          const real_t& y,
+          const real_t& z )  {
+    __X = x;
+    __Y = y;
+    __Z = z;
   GEOM_ASSERT(isValid());
 }
 
 void
 Vector3::set( const real_t * v3 ) {
-	__X = v3[0];
-	__Y = v3[1];
-	__Z = v3[2];
+    __X = v3[0];
+    __Y = v3[1];
+    __Z = v3[2];
   GEOM_ASSERT(isValid());
 }
 
 void
 Vector3::set( const Vector2& v, const real_t& z ) {
   GEOM_ASSERT(v.isValid());
-	__X = v.x();
-	__Y = v.y();
-	__Z = z;
+    __X = v.x();
+    __Y = v.y();
+    __Z = z;
   GEOM_ASSERT(isValid());
 }
 
 void
 Vector3::set( const Cylindrical& c ) {
   GEOM_ASSERT(c.isValid());
-	__X = c.radius * cos(c.theta);
-	__Y = c.radius * sin(c.theta);
-	__Z = c.z;
+    __X = c.radius * cos(c.theta);
+    __Y = c.radius * sin(c.theta);
+    __Z = c.z;
   GEOM_ASSERT(isValid());
 }
 
@@ -504,16 +504,16 @@ Vector3::set( const Spherical& s ) {
 
 void
 Vector3::set( const Vector3& v )  {
-	__X = v.__X;
-	__Y = v.__Y;
-	__Z = v.__Z;
+    __X = v.__X;
+    __Y = v.__Y;
+    __Z = v.__Z;
   GEOM_ASSERT(isValid());
 }
 
 Vector3::~Vector3( ) {
 }
 
-const real_t& 
+const real_t&
 Vector3::x( ) const {
   return __X;
 }
@@ -533,7 +533,7 @@ Vector3::y( ) {
   return __Y;
 }
 
-const real_t& 
+const real_t&
 Vector3::z( ) const {
   return __Z;
 }
@@ -545,40 +545,40 @@ Vector3::z( ) {
 
 /*  --------------------------------------------------------------------- */
 
-bool 
+bool
 Vector3::operator==( const Vector3& v ) const {
   return normLinf(*this - v) < GEOM_TOLERANCE;
 }
 
-bool 
+bool
 Vector3::operator!=( const Vector3& v ) const {
   return normLinf(*this - v) >= GEOM_TOLERANCE;
 }
 
-Vector3& 
+Vector3&
 Vector3::operator+=( const Vector3& v ) {
   __X += v.__X; __Y += v.__Y; __Z += v.__Z;
   return *this;
 }
-Vector3& 
+Vector3&
 Vector3::operator-=( const Vector3& v ) {
   __X -= v.__X; __Y -= v.__Y; __Z -= v.__Z;
   return *this;
 }
-Vector3& 
+Vector3&
 Vector3::operator*=( const real_t& s ) {
   __X *= s; __Y *= s; __Z *= s;
   return *this;
 }
 
-Vector3& 
+Vector3&
 Vector3::operator/=( const real_t& s ) {
   GEOM_ASSERT(fabs(s) > GEOM_TOLERANCE);
   __X /= s; __Y /= s; __Z /= s;
   return *this;
 }
 
-Vector3 
+Vector3
 Vector3::operator-( ) const {
   return Vector3(-__X, -__Y, -__Z);
 }
@@ -599,22 +599,22 @@ Vector3 Vector3::cwiseProduct( const Vector3& v ) const {
   return Vector3(__X*v.__X, __Y*v.__Y, __Z*v.__Z);
 }
 
-bool 
+bool
 Vector3::isNormalized( ) const {
   return fabs(normSquared(*this) - 1) < GEOM_EPSILON;
 }
 
-bool 
+bool
 Vector3::isOrthogonalTo( const Vector3& v ) const {
   return fabs(dot(*this,v)) < GEOM_EPSILON;
 }
 
-bool 
+bool
 Vector3::isValid( ) const {
   return pglfinite(__X) && pglfinite(__Y) && pglfinite(__Z);
 }
 
-real_t 
+real_t
 Vector3::normalize( )  {
   real_t _norm = norm(*this);
   if (_norm > GEOM_TOLERANCE) *this /= _norm;
@@ -625,12 +625,12 @@ Vector3 Vector3::normed( ) const {
   return direction(*this);
 }
 
-Vector2 
+Vector2
 Vector3::project( ) const {
   return Vector2(__X / __Z,__Y / __Z);
 }
 
-int 
+int
 Vector3::getMaxAbsCoord() const
 {
   if( fabs(__X) > fabs(__Y) )
@@ -639,7 +639,7 @@ Vector3::getMaxAbsCoord() const
     return ( fabs(__Y) > fabs(__Z) ) ? 1 : 2;
 }
 
-int 
+int
 Vector3::getMinAbsCoord() const
 {
   if( fabs(__X) < fabs(__Y) )
@@ -656,7 +656,7 @@ Vector3 Vector3::anOrthogonalVector() const
       else if (fabs(__Z) < GEOM_EPSILON) return Vector3(0,0,1);
       real_t _norm = norm(*this);
       if (_norm < GEOM_TOLERANCE) return Vector3(0,0,0);;
-      return TOOLS(Vector3)(-__Y/_norm,__X/_norm,0);
+      return Vector3(-__Y/_norm,__X/_norm,0);
 }
 
 
@@ -723,14 +723,14 @@ Vector3 abs( const Vector3& v ) {
 
 Vector3 cross( const Vector3& v1, const Vector3& v2 ) {
   return Vector3(v1.__Y * v2.__Z - v1.__Z * v2.__Y,
-		 v1.__Z * v2.__X - v1.__X * v2.__Z,
-		 v1.__X * v2.__Y - v1.__Y * v2.__X);
+         v1.__Z * v2.__X - v1.__X * v2.__Z,
+         v1.__X * v2.__Y - v1.__Y * v2.__X);
 }
 
 Vector3 operator^( const Vector3& v1, const Vector3& v2 ) {
   return Vector3(v1.__Y * v2.__Z - v1.__Z * v2.__Y,
-		 v1.__Z * v2.__X - v1.__X * v2.__Z,
-		 v1.__X * v2.__Y - v1.__Y * v2.__X);
+         v1.__Z * v2.__X - v1.__X * v2.__Z,
+         v1.__X * v2.__Y - v1.__Y * v2.__X);
 }
 
 Vector3 direction( const Vector3& v ) {
@@ -749,14 +749,14 @@ real_t operator*( const Vector3& v1, const Vector3& v2 ) {
 
 Vector3 Max( const Vector3& v1, const Vector3& v2 ) {
   return Vector3(max(v1.__X,v2.__X),
-		 max(v1.__Y,v2.__Y),
-		 max(v1.__Z,v2.__Z));
+         max(v1.__Y,v2.__Y),
+         max(v1.__Z,v2.__Z));
 }
 
 Vector3 Min( const Vector3& v1, const Vector3& v2 ) {
   return Vector3(min(v1.__X,v2.__X),
-		 min(v1.__Y,v2.__Y),
-		 min(v1.__Z,v2.__Z));
+         min(v1.__Y,v2.__Y),
+         min(v1.__Z,v2.__Z));
 }
 
 real_t norm( const Vector3& v ) {
@@ -779,7 +779,7 @@ real_t sum( const Vector3& v ) {
   return v.__X + v.__Y + v.__Z;
 }
 
-real_t radialAnisotropicNorm( const Vector3& v, const Vector3& t, real_t alpha, real_t beta ){ 
+real_t radialAnisotropicNorm( const Vector3& v, const Vector3& t, real_t alpha, real_t beta ){
     real_t a = dot(v,t);
     Vector3 b = v - a*t;
     return sqrt(a*a*alpha+beta*normSquared(b));
@@ -819,7 +819,7 @@ const Vector4 Vector4::OW(0,0,0,1);
 /*  --------------------------------------------------------------------- */
 
 Vector4::Vector4( const real_t& x , const real_t& y ,
-		  const real_t& z , const real_t& w ) :
+          const real_t& z , const real_t& w ) :
     Tuple4<real_t>(x,y,z,w) {
   GEOM_ASSERT(isValid());
 }
@@ -841,40 +841,40 @@ Vector4::~Vector4( ) {
 
 void
 Vector4::set( const real_t& x , const real_t& y ,
-			  const real_t& z , const real_t& w ) {
-	  __X = x;
-	  __Y = y;
-	  __Z = z;
-	  __W = w;
+              const real_t& z , const real_t& w ) {
+      __X = x;
+      __Y = y;
+      __Z = z;
+      __W = w;
   GEOM_ASSERT(isValid());
 }
 
 void
 Vector4::set( const real_t * v4 ) {
-	  __X = v4[0];
-	  __Y = v4[1];
-	  __Z = v4[2];
-	  __W = v4[3];
+      __X = v4[0];
+      __Y = v4[1];
+      __Z = v4[2];
+      __W = v4[3];
   GEOM_ASSERT(isValid());
 }
 
 void
 Vector4::set( const Vector3& v, const real_t& w ) {
   GEOM_ASSERT(v.isValid());
-	  __X = v.x();
-	  __Y = v.y();
-	  __Z = v.z();
-	  __W = w;
+      __X = v.x();
+      __Y = v.y();
+      __Z = v.z();
+      __W = w;
   GEOM_ASSERT(isValid());
 }
 
 void
 Vector4::set( const Vector4& v) {
   GEOM_ASSERT(v.isValid());
-	  __X = v.__X;
-	  __Y = v.__Y;
-	  __Z = v.__Z;
-	  __W = v.__W;
+      __X = v.__X;
+      __Y = v.__Y;
+      __Z = v.__Z;
+      __W = v.__W;
   GEOM_ASSERT(isValid());
 }
 
@@ -910,7 +910,7 @@ real_t& Vector4::w( ) {
   return __W;
 }
 
-int 
+int
 Vector4::getMaxAbsCoord() const
 {
     if ( fabs(__X) > fabs(__Y) ){
@@ -927,7 +927,7 @@ Vector4::getMaxAbsCoord() const
     }
 }
 
-int 
+int
 Vector4::getMinAbsCoord() const
 {
     if ( fabs(__X) < fabs(__Y) ){
@@ -1072,7 +1072,7 @@ bool strictly_inf(const Vector4& v1, const Vector4& v2)
 
 Vector4 abs( const Vector4& v ) {
   return Vector4(fabs(v.__X),fabs(v.__Y),
-		 fabs(v.__Z),fabs(v.__W));
+         fabs(v.__Z),fabs(v.__W));
 }
 
 Vector4 direction( const Vector4& v ) {
@@ -1095,12 +1095,12 @@ real_t operator*( const Vector4& v1, const Vector4& v2 ) {
 
 Vector4 Max( const Vector4& v1, const Vector4& v2 ) {
   return Vector4(max(v1.__X,v2.__X),max(v1.__Y,v2.__Y),
-		 max(v1.__Z,v2.__Z),max(v1.__W,v2.__W));
+         max(v1.__Z,v2.__Z),max(v1.__W,v2.__W));
 }
 
 Vector4 Min( const Vector4& v1, const Vector4& v2 ) {
   return Vector4(min(v1.__X,v2.__X),min(v1.__Y,v2.__Y),
-		 min(v1.__Z,v2.__Z),min(v1.__W,v2.__W));
+         min(v1.__Z,v2.__Z),min(v1.__W,v2.__W));
 }
 
 real_t norm( const Vector4& v ) {
@@ -1125,7 +1125,6 @@ real_t sum( const Vector4& v ) {
 
 /*  --------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
-

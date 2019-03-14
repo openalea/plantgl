@@ -37,7 +37,7 @@
 #endif
 
     #include <plantgl/scenegraph/container/pointarray.h>
-	TOOLS_USING_NAMESPACE
+	PGL_USING_NAMESPACE
 	PGL_USING_NAMESPACE
 
 

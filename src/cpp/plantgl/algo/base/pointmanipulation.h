@@ -86,8 +86,8 @@ PGL_BEGIN_NAMESPACE
   ALGO_API std::pair<uint_t, uint_t> find_min_max(const Point3ArrayPtr &point, const uint_t &boundMaxPourcent);
 
   ALGO_API std::pair<uint_t, uint_t>
-  find_min_max(const Point3ArrayPtr &point, const uint_t &boundPourcent, const TOOLS(Vector3) &center,
-               const TOOLS(Vector3) &direction);
+  find_min_max(const Point3ArrayPtr &point, const uint_t &boundPourcent, const Vector3 &center,
+               const Vector3 &direction);
 
   ALGO_API Index get_shortest_path(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const uint_t &point_begin,
                                    const uint_t &point_end);
@@ -96,7 +96,7 @@ PGL_BEGIN_NAMESPACE
   add_baricenter_points_of_path(const Point3ArrayPtr &point, IndexArrayPtr &kclosest, const Index &path,
                                 const real_t &radius);
 
-  ALGO_API TOOLS(RealArrayPtr) get_radii_of_path(const Point3ArrayPtr &point,
+  ALGO_API RealArrayPtr get_radii_of_path(const Point3ArrayPtr &point,
                                                  const IndexArrayPtr &kclosest,
                                                  const Index &path,
                                                  const real_t &around_radius);
@@ -105,11 +105,11 @@ PGL_BEGIN_NAMESPACE
   get_average_radius_of_path(const Point3ArrayPtr &point, const IndexArrayPtr &kclosest, const Index &path);
 
   ALGO_API Index
-  select_point_around_line(const Point3ArrayPtr &point, const TOOLS(Vector3) &center, const TOOLS(Vector3) &direction,
+  select_point_around_line(const Point3ArrayPtr &point, const Vector3 &center, const Vector3 &direction,
                            const real_t &radius);
 
   ALGO_API Index
-  select_wire_from_path(const Point3ArrayPtr &point, const Index &path, const real_t &radius, const TOOLS(RealArrayPtr) &radii);
+  select_wire_from_path(const Point3ArrayPtr &point, const Index &path, const real_t &radius, const RealArrayPtr &radii);
 
   ALGO_API Index
   select_r_isolate_points(const IndexArrayPtr &rneighborhoods, const real_t &radius, const real_t &mindensity);
@@ -117,8 +117,8 @@ PGL_BEGIN_NAMESPACE
   ALGO_API Index select_k_isolate_points(const Point3ArrayPtr &point, const IndexArrayPtr &kclosest, const uint32_t &k,
                                          const real_t &mindensity);
 
-  ALGO_API Index filter_min_densities(const TOOLS(RealArrayPtr) densities, const real_t &densityratio);
-  ALGO_API Index filter_max_densities(const TOOLS(RealArrayPtr) densities, const real_t &densityratio);
+  ALGO_API Index filter_min_densities(const RealArrayPtr densities, const real_t &densityratio);
+  ALGO_API Index filter_max_densities(const RealArrayPtr densities, const real_t &densityratio);
 
   ALGO_API std::pair<Index, real_t>
   select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance = -1.0);
@@ -159,7 +159,7 @@ PGL_BEGIN_NAMESPACE
   r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius);
 
   ALGO_API IndexArrayPtr
-  r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const TOOLS(RealArrayPtr) radii);
+  r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii);
 
   ALGO_API IndexArrayPtr
   r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose = false);
@@ -171,13 +171,13 @@ PGL_BEGIN_NAMESPACE
   r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points,
                              const IndexArrayPtr adjacencies,
                              const real_t radius,
-                             const TOOLS(Vector3) &direction,
+                             const Vector3 &direction,
                              const real_t alpha, const real_t beta);
 
   ALGO_API IndexArrayPtr
   r_anisotropic_neighborhoods(const Point3ArrayPtr points,
                               const IndexArrayPtr adjacencies,
-                              const TOOLS(RealArrayPtr) radii,
+                              const RealArrayPtr radii,
                               const Point3ArrayPtr directions,
                               const real_t alpha,
                               const real_t beta);
@@ -211,7 +211,7 @@ PGL_BEGIN_NAMESPACE
                         const Index &group);
 
   ALGO_API real_t
-  pointset_max_distance(const TOOLS(Vector3) &origin,
+  pointset_max_distance(const Vector3 &origin,
                         const Point3ArrayPtr points,
                         const Index &group);
 
@@ -221,13 +221,13 @@ PGL_BEGIN_NAMESPACE
                         const Index &group);
 
   ALGO_API real_t
-  pointset_min_distance(const TOOLS(Vector3) &origin,
+  pointset_min_distance(const Vector3 &origin,
                         const Point3ArrayPtr points,
                         const Index &group);
 
 // ALGO_API
   template<class IndexGroup>
-  real_t pointset_mean_distance(const TOOLS(Vector3) &origin,
+  real_t pointset_mean_distance(const Vector3 &origin,
                                 const Point3ArrayPtr points,
                                 const IndexGroup &group) {
     if (group.empty()) return 0;
@@ -238,12 +238,12 @@ PGL_BEGIN_NAMESPACE
   }
 
   template<class IndexGroupArray>
-  TOOLS(RealArrayPtr) pointset_mean_distances(const Point3ArrayPtr origins,
+  RealArrayPtr pointset_mean_distances(const Point3ArrayPtr origins,
                                               const Point3ArrayPtr points,
                                               const RCPtr<IndexGroupArray> groups) {
     typedef typename IndexGroupArray::element_type IndexGroup;
-    TOOLS(RealArrayPtr) result(new TOOLS(RealArray)(groups->size()));
-    TOOLS(RealArray)::iterator itres = result->begin();
+    RealArrayPtr result(new RealArray(groups->size()));
+    RealArray::iterator itres = result->begin();
     Point3Array::const_iterator itorigin = origins->begin();
     for (typename IndexGroupArray::const_iterator it = groups->begin(); it != groups->end(); ++it, ++itorigin, ++itres)
       *itres = pointset_mean_distance<IndexGroup>(*itorigin, points, *it);
@@ -251,23 +251,23 @@ PGL_BEGIN_NAMESPACE
   }
 
   ALGO_API real_t
-  pointset_mean_radial_distance(const TOOLS(Vector3) &origin,
-                                const TOOLS(Vector3) &direction,
+  pointset_mean_radial_distance(const Vector3 &origin,
+                                const Vector3 &direction,
                                 const Point3ArrayPtr points,
                                 const Index &group);
 
   ALGO_API real_t
-  pointset_max_radial_distance(const TOOLS(Vector3) &origin,
-                               const TOOLS(Vector3) &direction,
+  pointset_max_radial_distance(const Vector3 &origin,
+                               const Vector3 &direction,
                                const Point3ArrayPtr points,
                                const Index &group);
 
 
-  ALGO_API TOOLS(Matrix3) pointset_covariance(const Point3ArrayPtr points, const Index &group = Index());
+  ALGO_API Matrix3 pointset_covariance(const Point3ArrayPtr points, const Index &group = Index());
 
 
   ALGO_API Index
-  get_sorted_element_order(const TOOLS(RealArrayPtr) distances);
+  get_sorted_element_order(const RealArrayPtr distances);
 
 
 /// Density computation
@@ -277,12 +277,12 @@ PGL_BEGIN_NAMESPACE
                               const IndexArrayPtr adjacencies,
                               const real_t radius);
 
-  ALGO_API TOOLS(RealArrayPtr)
+  ALGO_API RealArrayPtr
   densities_from_r_neighborhood(const Point3ArrayPtr points,
                                 const IndexArrayPtr adjacencies,
                                 const real_t radius);
 
-  ALGO_API TOOLS(RealArrayPtr)
+  ALGO_API RealArrayPtr
   densities_from_r_neighborhood(const IndexArrayPtr neighborhood,
                                 const real_t radius);
 
@@ -294,7 +294,7 @@ PGL_BEGIN_NAMESPACE
                               const IndexArrayPtr adjacencies,
                               const uint32_t k = 0);
 
-  ALGO_API TOOLS(RealArrayPtr)
+  ALGO_API RealArrayPtr
   densities_from_k_neighborhood(const Point3ArrayPtr points,
                                 const IndexArrayPtr adjacencies,
                                 const uint32_t k = 0);
@@ -303,16 +303,16 @@ PGL_BEGIN_NAMESPACE
 
 /// Orientation estimations
 
-  ALGO_API std::pair<TOOLS(Vector3), TOOLS(Vector3)>
+  ALGO_API std::pair<Vector3, Vector3>
   pointset_plane(const Point3ArrayPtr points, const Index &group);
 
-  ALGO_API TOOLS(Vector3)
+  ALGO_API Vector3
   pointset_orientation(const Point3ArrayPtr points, const Index &group);
 
   ALGO_API Point3ArrayPtr
   pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups);
 
-  ALGO_API TOOLS(Vector3)
+  ALGO_API Vector3
   pointset_normal(const Point3ArrayPtr points, const Index &group);
 
   ALGO_API Point3ArrayPtr
@@ -327,17 +327,17 @@ PGL_BEGIN_NAMESPACE
   pointsets_orient_normals(const Point3ArrayPtr normals, uint32_t source, const IndexArrayPtr riemanian);
 
 /// Orientation estimations
-  ALGO_API TOOLS(Vector3)
+  ALGO_API Vector3
   triangleset_orientation(const Point3ArrayPtr points, const Index3ArrayPtr triangles);
 
 
   struct CurvatureInfo {
-    TOOLS(Vector3) origin;
-    TOOLS(Vector3) maximal_principal_direction;
+    Vector3 origin;
+    Vector3 maximal_principal_direction;
     real_t maximal_curvature;
-    TOOLS(Vector3) minimal_principal_direction;
+    Vector3 minimal_principal_direction;
     real_t minimal_curvature;
-    TOOLS(Vector3) normal;
+    Vector3 normal;
   };
 
   ALGO_API CurvatureInfo
@@ -357,14 +357,14 @@ PGL_BEGIN_NAMESPACE
   point_section(uint32_t pid,
                 const Point3ArrayPtr points,
                 const IndexArrayPtr adjacencies,
-                const TOOLS(Vector3) &direction,
+                const Vector3 &direction,
                 real_t width);
 
   ALGO_API Index
   point_section(uint32_t pid,
                 const Point3ArrayPtr points,
                 const IndexArrayPtr adjacencies,
-                const TOOLS(Vector3) &direction,
+                const Vector3 &direction,
                 real_t width,
                 real_t maxradius);
 
@@ -375,24 +375,24 @@ PGL_BEGIN_NAMESPACE
                   real_t width);
 
 /// Compute a circle from a point set
-  ALGO_API std::pair<TOOLS(Vector3), real_t>
+  ALGO_API std::pair<Vector3, real_t>
   pointset_circle(const Point3ArrayPtr points,
                   const Index &group,
                   bool bounding = false);
 
-  ALGO_API std::pair<TOOLS(Vector3), real_t>
+  ALGO_API std::pair<Vector3, real_t>
   pointset_circle(const Point3ArrayPtr points,
                   const Index &group,
-                  const TOOLS(Vector3) &direction,
+                  const Vector3 &direction,
                   bool bounding = false);
 
-  ALGO_API std::pair<Point3ArrayPtr, TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<Point3ArrayPtr, RealArrayPtr>
   pointsets_circles(const Point3ArrayPtr points,
                     const IndexArrayPtr groups,
                     const Point3ArrayPtr directions = Point3ArrayPtr(0),
                     bool bounding = false);
 
-  ALGO_API std::pair<Point3ArrayPtr, TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<Point3ArrayPtr, RealArrayPtr>
   pointsets_section_circles(const Point3ArrayPtr points,
                             const IndexArrayPtr adjacencies,
                             const Point3ArrayPtr directions,
@@ -401,24 +401,24 @@ PGL_BEGIN_NAMESPACE
 
 
 // Adaptive contraction
-  ALGO_API std::pair<Point3ArrayPtr, TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<Point3ArrayPtr, RealArrayPtr>
   adaptive_section_circles(const Point3ArrayPtr points,
                            const IndexArrayPtr adjacencies,
                            const Point3ArrayPtr orientations,
-                           const TOOLS(RealArrayPtr) widths,
-                           const TOOLS(RealArrayPtr) maxradii);
+                           const RealArrayPtr widths,
+                           const RealArrayPtr maxradii);
 
 // Adaptive contraction
-  ALGO_API std::pair<Point3ArrayPtr, TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<Point3ArrayPtr, RealArrayPtr>
   adaptive_section_circles(const Point3ArrayPtr points,
                            const IndexArrayPtr adjacencies,
                            const Point3ArrayPtr orientations,
                            const real_t width,
-                           const TOOLS(RealArrayPtr) maxradii);
+                           const RealArrayPtr maxradii);
 
 // adaptive contraction
-  ALGO_API TOOLS(RealArrayPtr)
-  adaptive_radii(const TOOLS(RealArrayPtr) density,
+  ALGO_API RealArrayPtr
+  adaptive_radii(const RealArrayPtr density,
                  real_t minradius, real_t maxradius,
                  QuantisedFunctionPtr densityradiusmap = NULL);
 
@@ -427,25 +427,25 @@ PGL_BEGIN_NAMESPACE
   adaptive_contration(const Point3ArrayPtr points,
                       const Point3ArrayPtr orientations,
                       const IndexArrayPtr adjacencies,
-                      const TOOLS(RealArrayPtr) densities,
+                      const RealArrayPtr densities,
                       real_t minradius, real_t maxradius,
                       QuantisedFunctionPtr densityradiusmap = NULL,
                       const real_t alpha = 1,
                       const real_t beta = 1);
 
 // Adaptive contraction
-  ALGO_API std::pair<Point3ArrayPtr, TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<Point3ArrayPtr, RealArrayPtr>
   adaptive_section_contration(const Point3ArrayPtr points,
                               const Point3ArrayPtr orientations,
                               const IndexArrayPtr adjacencies,
-                              const TOOLS(RealArrayPtr) densities,
+                              const RealArrayPtr densities,
                               real_t minradius, real_t maxradius,
                               QuantisedFunctionPtr densityradiusmap = NULL,
                               const real_t alpha = 1,
                               const real_t beta = 1);
 
 /// Shortest path
-  ALGO_API std::pair<TOOLS(Uint32Array1Ptr), TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<Uint32Array1Ptr, RealArrayPtr>
   points_dijkstra_shortest_path(const Point3ArrayPtr points,
                                 const IndexArrayPtr adjacencies,
                                 uint32_t root,
@@ -457,14 +457,14 @@ PGL_BEGIN_NAMESPACE
   quotient_points_from_adjacency_graph(const real_t binsize,
                                        const Point3ArrayPtr points,
                                        const IndexArrayPtr adjacencies,
-                                       const TOOLS(RealArrayPtr) distances_to_root);
+                                       const RealArrayPtr distances_to_root);
 
 // Return adjacencies between groups
   ALGO_API IndexArrayPtr
   quotient_adjacency_graph(const IndexArrayPtr adjacencies,
                            const IndexArrayPtr groups);
 
-  ALGO_API TOOLS(Vector3)
+  ALGO_API Vector3
   centroid_of_group(const Point3ArrayPtr points,
                     const Index &group);
 
@@ -474,9 +474,9 @@ PGL_BEGIN_NAMESPACE
 
 
   template<class IndexGroup>
-  TOOLS(Vector3) centroid_of_group(const Point3ArrayPtr points,
+  Vector3 centroid_of_group(const Point3ArrayPtr points,
                                    const IndexGroup &group) {
-    TOOLS(Vector3) gcentroid;
+    Vector3 gcentroid;
     real_t nbpoints = 0;
     for (typename IndexGroup::const_iterator itn = group.begin(); itn != group.end(); ++itn, ++nbpoints) {
       gcentroid += points->getAt(*itn);
@@ -498,155 +498,155 @@ PGL_BEGIN_NAMESPACE
 
   ALGO_API IndexArrayPtr cluster_points(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
 
-  ALGO_API TOOLS(Uint32Array1Ptr) points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
+  ALGO_API Uint32Array1Ptr points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid);
 
 // Xu 07 method for main branching system
   ALGO_API Point3ArrayPtr
   skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,
-                                          TOOLS(Uint32Array1Ptr) &group_parents, IndexArrayPtr &group_components,
+                                          Uint32Array1Ptr &group_parents, IndexArrayPtr &group_components,
                                           bool connect_all_points = false, bool verbose = false);
 
   ALGO_API Index
   points_in_range_from_root(const real_t initialdist, const real_t binsize,
-                            const TOOLS(RealArrayPtr) distances_to_root);
+                            const RealArrayPtr distances_to_root);
 
-  ALGO_API std::pair<IndexArrayPtr, TOOLS(RealArrayPtr)>
+  ALGO_API std::pair<IndexArrayPtr, RealArrayPtr>
   next_quotient_points_from_adjacency_graph(const real_t initiallevel,
                                             const real_t binsize,
                                             const Index &currents,
                                             const IndexArrayPtr adjacencies,
-                                            const TOOLS(RealArrayPtr) distances_to_root);
+                                            const RealArrayPtr distances_to_root);
 
 
 
 // Livny method procedures
 // compute parent-children relation from child-parent relation
-  ALGO_API IndexArrayPtr determine_children(const TOOLS(Uint32Array1Ptr) parents, uint32_t &root);
+  ALGO_API IndexArrayPtr determine_children(const Uint32Array1Ptr parents, uint32_t &root);
 
 // compute a weight to each points as sum of length of carried segments
-  ALGO_API TOOLS(RealArrayPtr) carried_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
+  ALGO_API RealArrayPtr carried_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents);
 
 // compute a weight to each points as number of node in their 
-  ALGO_API TOOLS(Uint32Array1Ptr) subtrees_size(const TOOLS(Uint32Array1Ptr) parents);
+  ALGO_API Uint32Array1Ptr subtrees_size(const Uint32Array1Ptr parents);
 
-  ALGO_API TOOLS(Uint32Array1Ptr) subtrees_size(const IndexArrayPtr children, uint32_t root);
+  ALGO_API Uint32Array1Ptr subtrees_size(const IndexArrayPtr children, uint32_t root);
 
 // optimize orientation
   ALGO_API Point3ArrayPtr optimize_orientations(const Point3ArrayPtr points,
-                                                const TOOLS(Uint32Array1Ptr) parents,
-                                                const TOOLS(RealArrayPtr) weights);
+                                                const Uint32Array1Ptr parents,
+                                                const RealArrayPtr weights);
 
 // optimize orientation
   ALGO_API Point3ArrayPtr optimize_positions(const Point3ArrayPtr points,
                                              const Point3ArrayPtr orientations,
-                                             const TOOLS(Uint32Array1Ptr) parents,
-                                             const TOOLS(RealArrayPtr) weights);
+                                             const Uint32Array1Ptr parents,
+                                             const RealArrayPtr weights);
 
 // estimate average radius around edges
   ALGO_API real_t average_radius(const Point3ArrayPtr points,
                                  const Point3ArrayPtr nodes,
-                                 const TOOLS(Uint32Array1Ptr) parents,
+                                 const Uint32Array1Ptr parents,
                                  uint32_t maxclosestnodes = 10);
 
-  ALGO_API TOOLS(RealArrayPtr) distance_to_shape(const Point3ArrayPtr points,
+  ALGO_API RealArrayPtr distance_to_shape(const Point3ArrayPtr points,
                                                  const Point3ArrayPtr nodes,
-                                                 const TOOLS(Uint32Array1Ptr) parents,
-                                                 const TOOLS(RealArrayPtr) radii,
+                                                 const Uint32Array1Ptr parents,
+                                                 const RealArrayPtr radii,
                                                  uint32_t maxclosestnodes = 10);
 
   ALGO_API real_t average_distance_to_shape(const Point3ArrayPtr points,
                                             const Point3ArrayPtr nodes,
-                                            const TOOLS(Uint32Array1Ptr) parents,
-                                            const TOOLS(RealArrayPtr) radii,
+                                            const Uint32Array1Ptr parents,
+                                            const RealArrayPtr radii,
                                             uint32_t maxclosestnodes = 10);
 
   ALGO_API Index points_at_distance_from_skeleton(const Point3ArrayPtr points,
                                                   const Point3ArrayPtr nodes,
-                                                  const TOOLS(Uint32Array1Ptr) parents,
+                                                  const Uint32Array1Ptr parents,
                                                   real_t distance,
                                                   uint32_t maxclosestnodes = 10);
 
-  ALGO_API TOOLS(RealArrayPtr) estimate_radii_from_points(const Point3ArrayPtr points,
+  ALGO_API RealArrayPtr estimate_radii_from_points(const Point3ArrayPtr points,
                                                           const Point3ArrayPtr nodes,
-                                                          const TOOLS(Uint32Array1Ptr) parents,
+                                                          const Uint32Array1Ptr parents,
                                                           bool maxmethod = false,
                                                           uint32_t maxclosestnodes = 10);
 // estimate radius for each node
-  ALGO_API TOOLS(RealArrayPtr) estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
-                                                             const TOOLS(Uint32Array1Ptr) parents,
-                                                             const TOOLS(RealArrayPtr) weights,
+  ALGO_API RealArrayPtr estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
+                                                             const Uint32Array1Ptr parents,
+                                                             const RealArrayPtr weights,
                                                              real_t averageradius,
                                                              real_t pipeexponent = 2.5);
 
-  ALGO_API bool node_continuity_test(const TOOLS(Vector3) &node, real_t noderadius,
-                                     const TOOLS(Vector3) &parent, real_t parentradius,
-                                     const TOOLS(Vector3) &child, real_t childradius,
+  ALGO_API bool node_continuity_test(const Vector3 &node, real_t noderadius,
+                                     const Vector3 &parent, real_t parentradius,
+                                     const Vector3 &child, real_t childradius,
                                      real_t overlapfilter = 0.5,
                                      bool verbose = false, ScenePtr *visu = NULL);
 
-  ALGO_API bool node_intersection_test(const TOOLS(Vector3) &root, real_t rootradius,
-                                       const TOOLS(Vector3) &p1, real_t radius1,
-                                       const TOOLS(Vector3) &p2, real_t radius2,
+  ALGO_API bool node_intersection_test(const Vector3 &root, real_t rootradius,
+                                       const Vector3 &p1, real_t radius1,
+                                       const Vector3 &p2, real_t radius2,
                                        real_t overlapfilter,
                                        bool verbose = false, ScenePtr *visu = NULL);
 // compute the minimum maximum and  mean edge length
-  ALGO_API TOOLS(Vector3) min_max_mean_edge_length(const Point3ArrayPtr points, const TOOLS(Uint32Array1Ptr) parents);
+  ALGO_API Vector3 min_max_mean_edge_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents);
 
-  ALGO_API TOOLS(Vector3) min_max_mean_edge_length(const Point3ArrayPtr points, const IndexArrayPtr graph);
+  ALGO_API Vector3 min_max_mean_edge_length(const Point3ArrayPtr points, const IndexArrayPtr graph);
 
 // determine nodes to filter
   ALGO_API Index detect_short_nodes(const Point3ArrayPtr nodes,
-                                    const TOOLS(Uint32Array1Ptr) parents,
+                                    const Uint32Array1Ptr parents,
                                     real_t edgelengthfilter = 0.001);
 
   ALGO_API void remove_nodes(const Index &toremove,
                              Point3ArrayPtr &nodes,
-                             TOOLS(Uint32Array1Ptr) &parents,
-                             TOOLS(RealArrayPtr) &radii);
+                             Uint32Array1Ptr &parents,
+                             RealArrayPtr &radii);
 
   ALGO_API inline void remove_nodes(const Index &toremove,
                                     Point3ArrayPtr &nodes,
-                                    TOOLS(Uint32Array1Ptr) &parents) {
-    TOOLS(RealArrayPtr) radii(0);
+                                    Uint32Array1Ptr &parents) {
+    RealArrayPtr radii(0);
     remove_nodes(toremove, nodes, parents, radii);
   }
 
 // determine nodes to filter
   ALGO_API IndexArrayPtr detect_similar_nodes(const Point3ArrayPtr nodes,
-                                              const TOOLS(Uint32Array1Ptr) parents,
-                                              const TOOLS(RealArrayPtr) radii,
-                                              const TOOLS(RealArrayPtr) weights,
+                                              const Uint32Array1Ptr parents,
+                                              const RealArrayPtr radii,
+                                              const RealArrayPtr weights,
                                               real_t overlapfilter = 0.5);
 
   ALGO_API void merge_nodes(const IndexArrayPtr tomerge,
                             Point3ArrayPtr &nodes,
-                            TOOLS(Uint32Array1Ptr) &parents,
-                            TOOLS(RealArrayPtr) &radii,
-                            TOOLS(RealArrayPtr) weights);
+                            Uint32Array1Ptr &parents,
+                            RealArrayPtr &radii,
+                            RealArrayPtr weights);
 
 
 // determine mean direction of a set of points
-  ALGO_API TOOLS(Vector3) pointset_mean_direction(const TOOLS(Vector3) &origin, const Point3ArrayPtr points,
+  ALGO_API Vector3 pointset_mean_direction(const Vector3 &origin, const Point3ArrayPtr points,
                                                   const Index &group = Index());
 
 // determine all directions of a set of points
   ALGO_API Point3ArrayPtr
-  pointset_directions(const TOOLS(Vector3) &origin, const Point3ArrayPtr points, const Index &group = Index());
+  pointset_directions(const Vector3 &origin, const Point3ArrayPtr points, const Index &group = Index());
 
 // determine all directions of a set of points
   ALGO_API Point2ArrayPtr
-  pointset_angulardirections(const Point3ArrayPtr points, const TOOLS(Vector3) &origin = TOOLS(Vector3::ORIGIN),
+  pointset_angulardirections(const Point3ArrayPtr points, const Vector3 &origin = TOOLS(Vector3::ORIGIN),
                              const Index &group = Index());
 
 // find the closest point from a group
   ALGO_API std::pair<uint32_t, real_t>
-  findClosestFromSubset(const TOOLS(Vector3) &origin, const Point3ArrayPtr points, const Index &group = Index());
+  findClosestFromSubset(const Vector3 &origin, const Point3ArrayPtr points, const Index &group = Index());
 
 // compute the pair wise distance between orientation (in angular domain)
-  ALGO_API TOOLS(RealArray2Ptr) orientations_distances(const Point3ArrayPtr orientations, const Index &group = Index());
+  ALGO_API RealArray2Ptr orientations_distances(const Point3ArrayPtr orientations, const Index &group = Index());
 
 // compute the pair wise similarity between orientation (in angular domain) 
-  ALGO_API TOOLS(RealArray2Ptr) orientations_similarities(const Point3ArrayPtr orientations,
+  ALGO_API RealArray2Ptr orientations_similarities(const Point3ArrayPtr orientations,
                                                           const Index &group = Index());
 
 // compute the points that make the junction of the two group
@@ -655,7 +655,7 @@ PGL_BEGIN_NAMESPACE
 
 
 // from Tagliasacchi 2009
-  ALGO_API TOOLS(Vector3) section_normal(const Point3ArrayPtr pointnormals, const Index &section);
+  ALGO_API Vector3 section_normal(const Point3ArrayPtr pointnormals, const Index &section);
 
   ALGO_API Point3ArrayPtr sections_normals(const Point3ArrayPtr pointnormals, const IndexArrayPtr &sections);
 

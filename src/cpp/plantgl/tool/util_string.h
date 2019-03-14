@@ -45,7 +45,7 @@
 #include <vector>
 #include "tools_config.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 #define NUMBER(i) \
   std::stringstream s; \
@@ -169,6 +169,6 @@ TOOLS_BEGIN_NAMESPACE
     return vec;
   }
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #endif

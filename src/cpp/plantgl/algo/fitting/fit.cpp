@@ -76,7 +76,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace std;
 using namespace STDEXT;
 
@@ -221,7 +220,7 @@ bool Fit::inertiaAxis(const Point3ArrayPtr& points,
 }
 
 bool Fit::inertiaAxis(const Point2ArrayPtr& points,
-						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s)
+						    Vector2& u, Vector2& v, Vector2& s)
 {
   if(points->size()>2){
 	float vpvec[3][3];
@@ -386,7 +385,8 @@ bool Fit::boundingCircle(const Point2ArrayPtr& _points, Vector2& center, real_t&
 /*
       Fit the 3D points \e points with a plane.
 */
-bool Fit::plane(const Point3ArrayPtr& _points, TOOLS::Vector3& center, Plane3& plane, const Index& subset)
+bool Fit::plane(const Point3ArrayPtr& _points, 
+Vector3& center, Plane3& plane, const Index& subset)
 {
 #ifdef WITH_CGAL
     typedef real_t               FT;

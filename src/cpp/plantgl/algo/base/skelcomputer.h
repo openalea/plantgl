@@ -195,7 +195,7 @@ protected:
 
   /** The cache storing computed skeletons. It is designed to store
       only skeletons for named objects. */
-  TOOLS(Cache)<PolylinePtr> __cache;
+  Cache<PolylinePtr> __cache;
 
   /// The resulting skeleton.
   PolylinePtr __skeleton;

@@ -50,15 +50,14 @@
 
 #include <plantgl/math/util_math.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
 Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane, 
-                                  const TOOLS(Vector3)& p1, 
-                                  const TOOLS(Vector3)& p2)
+                                  const Vector3& p1, 
+                                  const Vector3& p2)
 {
     real_t d1 = dot(plane.getNormal(),p1);
     real_t d2 = dot(plane.getNormal(),p2);
@@ -80,9 +79,9 @@ Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane,
 }
 
 Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane, 
-                                   const TOOLS(Vector3)& p1, 
-                                   const TOOLS(Vector3)& p2, 
-                                   const TOOLS(Vector3)& p3)
+                                   const Vector3& p1, 
+                                   const Vector3& p2, 
+                                   const Vector3& p3)
 {
     real_t d1 = dot(plane.getNormal(),p1);
     real_t d2 = dot(plane.getNormal(),p2);

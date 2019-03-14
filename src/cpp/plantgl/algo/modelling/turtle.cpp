@@ -64,7 +64,6 @@
 
 using namespace std;
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #define FABS(a) (a < 0 ? -(a) : a)
 
@@ -786,10 +785,10 @@ void Turtle::setWidth(real_t v){
     }
 }
 
-  void Turtle::lineTo(const TOOLS(Vector3) & v, real_t topradius){
-      TOOLS(Vector3) heading = __params->heading;
-      TOOLS(Vector3) left = __params->left;
-      TOOLS(Vector3) up = __params->up;
+  void Turtle::lineTo(const Vector3 & v, real_t topradius){
+      Vector3 heading = __params->heading;
+      Vector3 left = __params->left;
+      Vector3 up = __params->up;
 
       oLineTo(v,topradius);
 
@@ -798,10 +797,10 @@ void Turtle::setWidth(real_t v){
       __params->up = up;
 }
 
-  void Turtle::lineRel(const TOOLS(Vector3) & v, real_t topradius){
-      TOOLS(Vector3) heading = __params->heading;
-      TOOLS(Vector3) left = __params->left;
-      TOOLS(Vector3) up = __params->up;
+  void Turtle::lineRel(const Vector3 & v, real_t topradius){
+      Vector3 heading = __params->heading;
+      Vector3 left = __params->left;
+      Vector3 up = __params->up;
 
       oLineRel(v,topradius);
 
@@ -811,7 +810,7 @@ void Turtle::setWidth(real_t v){
   }
 
 /// Trace line toward v and change the orientation
-void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
+void Turtle::oLineTo(const Vector3& v, real_t topradius )
 {
     Vector3 h = v - getPosition();
     real_t l = h.normalize();
@@ -834,7 +833,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
       }
   }
 
-  void  Turtle::pinpoint(const TOOLS(Vector3) & v){
+  void  Turtle::pinpoint(const Vector3 & v){
       Vector3 h = (__params->screenCoordinates ? Vector3(v.z(),v.x(),v.y()):v) - getPosition();
       real_t l = h.normalize();
       if (l > GEOM_EPSILON){
@@ -842,7 +841,7 @@ void Turtle::oLineTo(const TOOLS(Vector3)& v, real_t topradius )
       }
   }
 
-  void Turtle::pinpointRel(const TOOLS(Vector3) & v){
+  void Turtle::pinpointRel(const Vector3 & v){
       // Vector3 h = v.x()*getUp()-v.y()*getLeft()+v.z()*getHeading();
     Vector3 h = (__params->screenCoordinates ? Vector3(v.z(),v.x(),v.y()):v);
     real_t l = h.normalize();
@@ -1140,7 +1139,7 @@ void Turtle::_ajustToGuide()
 }
 
 
-void Turtle::_tendTo(const TOOLS(Vector3)& t, real_t strength)
+void Turtle::_tendTo(const Vector3& t, real_t strength)
 {
     Vector3 h = getHeading();
 	Vector3 cp = cross(h,t);
@@ -1267,7 +1266,7 @@ void Turtle::_sweep(real_t length, real_t topradius)
 {
 	// default sweep
 	Point3ArrayPtr points(new Point3Array(getPosition(),getPosition()+getHeading()*length));
-	std::vector<TOOLS(Vector3)> left;
+	std::vector<Vector3> left;
 	left.push_back(getLeft());
 	left.push_back(getLeft());
 	std::vector<real_t> radius;

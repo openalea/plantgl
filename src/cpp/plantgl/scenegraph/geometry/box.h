@@ -65,7 +65,7 @@ public:
   struct SG_API Builder : public ParametricModel::Builder {
 
     /// A pointer to the \b Size field.
-    TOOLS(Vector3) * Size;
+    Vector3 * Size;
 
     /// Constructor.
     Builder( );
@@ -83,11 +83,11 @@ public:
 
 
   /// The default value fot the Size field.
-  static const TOOLS(Vector3) DEFAULT_SIZE;
+  static const Vector3 DEFAULT_SIZE;
 
 
   /// Constructs a Box with \e size.
-  Box( const TOOLS(Vector3)& size = DEFAULT_SIZE );
+  Box( const Vector3& size = DEFAULT_SIZE );
 
   /// Destructor
   virtual ~Box( );
@@ -95,52 +95,52 @@ public:
   PGL_OBJECT(Box)
 
   /// Returns the back lower left corner.
-  TOOLS(Vector3) getBackLowerLeftCorner( ) const;
+  Vector3 getBackLowerLeftCorner( ) const;
 
   /// Returns the back upper left corner.
-  TOOLS(Vector3) getBackLowerRightCorner( ) const;
+  Vector3 getBackLowerRightCorner( ) const;
 
   /// Returns the normal to the back side of \e self.
-  TOOLS(Vector3) getBackNormal( ) const;
+  Vector3 getBackNormal( ) const;
 
   /// Returns the back upper left corner.
-  TOOLS(Vector3) getBackUpperLeftCorner( ) const;
+  Vector3 getBackUpperLeftCorner( ) const;
 
   /// Returns the back upper left corner.
-  TOOLS(Vector3) getBackUpperRightCorner( ) const;
+  Vector3 getBackUpperRightCorner( ) const;
 
   /// Returns the front lower left corner.
-  TOOLS(Vector3) getFrontLowerLeftCorner( ) const;
+  Vector3 getFrontLowerLeftCorner( ) const;
 
   /// Returns the front lower left corner.
-  TOOLS(Vector3) getFrontLowerRightCorner( ) const;
+  Vector3 getFrontLowerRightCorner( ) const;
  
   /// Returns the back upper left corner.
-  TOOLS(Vector3) getFrontUpperLeftCorner( ) const ;
+  Vector3 getFrontUpperLeftCorner( ) const ;
 
   /// Returns the back upper left corner.
-  TOOLS(Vector3) getFrontUpperRightCorner( ) const;
+  Vector3 getFrontUpperRightCorner( ) const;
 
   /// Returns the normal to the front side of \e self.
-  TOOLS(Vector3) getFrontNormal( ) const;
+  Vector3 getFrontNormal( ) const;
 
   /// Returns the normal to the left side of \e self.
-  TOOLS(Vector3) getLeftNormal( ) const ;
+  Vector3 getLeftNormal( ) const ;
 
   /// Returns the normal to the lower side of \e self.
-  TOOLS(Vector3) getLowerNormal( ) const;
+  Vector3 getLowerNormal( ) const;
 
   /// Returns the normal to the right side of \e self.
-  TOOLS(Vector3) getRightNormal( ) const;
+  Vector3 getRightNormal( ) const;
 
   /// Returns the normal to the upper side of \e self.
-  TOOLS(Vector3) getUpperNormal( ) const;
+  Vector3 getUpperNormal( ) const;
 
   /// Returns Size value.
-  const TOOLS(Vector3)& getSize( ) const;
+  const Vector3& getSize( ) const;
 
   /// Returns Size field.
-  TOOLS(Vector3)& getSize( );
+  Vector3& getSize( );
 
   virtual bool isACurve( ) const;
 
@@ -156,7 +156,7 @@ public:
 protected:
 
   /// The Size field.
-  TOOLS(Vector3) __size;
+  Vector3 __size;
   
 };
 

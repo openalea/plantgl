@@ -43,7 +43,6 @@
 #include <plantgl/scenegraph/container/pointmatrix.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #include <list>
 #include <fstream>

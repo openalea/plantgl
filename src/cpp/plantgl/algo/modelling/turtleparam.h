@@ -50,7 +50,7 @@ class TurtlePath;
 typedef RCPtr<TurtlePath> TurtlePathPtr;
 
 /// Class that contains a path parameter that should be followed by the turtle
-class ALGO_API TurtlePath : public TOOLS(RefCountObject){
+class ALGO_API TurtlePath : public RefCountObject{
 public:
 	TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
 	virtual ~TurtlePath();
@@ -84,9 +84,9 @@ public:
 	bool __ccw;
 
 	// Position on the curve
-	TOOLS(Vector2) __lastPosition;
+	Vector2 __lastPosition;
 	// Last direction on the curve
-	TOOLS(Vector2) __lastHeading;
+	Vector2 __lastHeading;
 };
 
 /// Class that contains a 2D path parameter that should be followed by the turtle
@@ -103,12 +103,12 @@ public:
 	LineicModelPtr __path;
 
 	// Position on the curve
-	TOOLS(Vector3) __lastPosition;
+	Vector3 __lastPosition;
 
 	// Reference frame on the curve
-	TOOLS(Vector3) __lastHeading;
-	TOOLS(Vector3) __lastUp;
-	TOOLS(Vector3) __lastLeft;
+	Vector3 __lastHeading;
+	Vector3 __lastUp;
+	Vector3 __lastLeft;
 
 };
 
@@ -131,9 +131,9 @@ public:
   bool crossSectionCCW;
   bool defaultSection;
 
-  TOOLS(Vector2) texCoordScale;
-  TOOLS(Vector2) texCoordTranslation;
-  TOOLS(Vector2) texCoordRotCenter;
+  Vector2 texCoordScale;
+  Vector2 texCoordTranslation;
+  Vector2 texCoordRotCenter;
   real_t texCoordRotAngle;
   Color4 texBaseColor;
 
@@ -165,13 +165,13 @@ public:
     void dump();
     
 	/// transform this according to a Matrix3
-    void transform(const TOOLS(Matrix3)&);
+    void transform(const Matrix3&);
     
     /// get Current Orientation on the form of a matrix """
-    TOOLS(Matrix3) getOrientationMatrix() const;
+    Matrix3 getOrientationMatrix() const;
     
     /// get transformtation on the form of a matrix """
-    TOOLS(Matrix4) getTransformationMatrix() const;
+    Matrix4 getTransformationMatrix() const;
     
     /// test validity of . Should be orthonormal and normalized """
     bool isValid() const;
@@ -211,28 +211,28 @@ public:
 	/// push the current position in the polygon points list
     void pushRadius();
     
-    void setPosition(const TOOLS(Vector3)& pos){
+    void setPosition(const Vector3& pos){
 	  position = pos;
 	}
 
-    const TOOLS(Vector3)& getPosition() const {
+    const Vector3& getPosition() const {
 	  return position ;
 	}
 
 public:
   
-  TOOLS(Vector3) position;
-  TOOLS(Vector3) heading;
-  TOOLS(Vector3) left;
-  TOOLS(Vector3) up;
-  TOOLS(Vector3) scale;
-  TOOLS(Vector3) reflection;
+  Vector3 position;
+  Vector3 heading;
+  Vector3 left;
+  Vector3 up;
+  Vector3 scale;
+  Vector3 reflection;
 
   uint_t lastId;
   real_t width;
 
   Point3ArrayPtr pointList;
-  std::vector<TOOLS(Vector3)> leftList;
+  std::vector<Vector3> leftList;
   std::vector<real_t> radiusList;
 
   uint_t customId;
@@ -242,7 +242,7 @@ public:
 
   TurtleDrawParameter initial;
 
-  TOOLS(Vector3) tropism;
+  Vector3 tropism;
   real_t elasticity;
 
   TurtlePathPtr guide;

@@ -69,7 +69,7 @@ typedef std::vector<SceneFormat> SceneFormatList;
 
 class SceneFactory;
 
-class SG_API SceneCodec : public TOOLS(RefCountObject){
+class SG_API SceneCodec : public RefCountObject{
 public :
 	friend class SceneFactory;
 
@@ -105,7 +105,7 @@ typedef RCPtr<SceneCodec> SceneCodecPtr;
 
 typedef RCPtr<SceneFactory> SceneFactoryPtr;
 
-class SG_API SceneFactory : public TOOLS(RefCountObject)
+class SG_API SceneFactory : public RefCountObject
 {
 
 public:

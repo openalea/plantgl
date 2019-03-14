@@ -68,7 +68,7 @@ typedef RCPtr<Scene> ScenePtr;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Scene : public TOOLS(RefCountObject)
+class SG_API Scene : public RefCountObject
 {
 
 public:

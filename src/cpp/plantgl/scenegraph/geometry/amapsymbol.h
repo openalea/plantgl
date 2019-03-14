@@ -44,9 +44,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class beifstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -120,21 +120,21 @@ public:
       - \e fileName must exist and must be readable. */
   bool readFile(const std::string& filename);
 
-  virtual TOOLS(bofstream)& write( TOOLS(bofstream)& stream ) const;
+  virtual bofstream& write( bofstream& stream ) const;
 
   /** Read the datas stored in the file specified
       in stream. */
-  virtual TOOLS(beifstream)& read( TOOLS(beifstream)& stream );
+  virtual beifstream& read( beifstream& stream );
 
 #ifndef PGL_NO_DEPRECATED
-  attribute_deprecated inline const TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j ) const
+  attribute_deprecated inline const Vector3& getTexCoord3At( uint_t i, uint_t j ) const
   { return getFaceTexCoord3At(i,j); }
-  attribute_deprecated inline TOOLS(Vector3)& getTexCoord3At( uint_t i, uint_t j )
+  attribute_deprecated inline Vector3& getTexCoord3At( uint_t i, uint_t j )
   { return getFaceTexCoord3At(i,j); }
 #endif
 
-  const TOOLS(Vector3)& getFaceTexCoord3At( uint_t i, uint_t j ) const;  
-  TOOLS(Vector3)& getFaceTexCoord3At( uint_t i, uint_t j );
+  const Vector3& getFaceTexCoord3At( uint_t i, uint_t j ) const;  
+  Vector3& getFaceTexCoord3At( uint_t i, uint_t j );
 
   const Point3ArrayPtr& getTexCoord3List() const{
 	return __texCoord3List; }

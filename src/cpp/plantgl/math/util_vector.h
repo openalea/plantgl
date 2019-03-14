@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -32,7 +32,7 @@
 #ifndef __geom_vector_h__
 #define __geom_vector_h__
 
-/*! 
+/*!
 	\file util_vector.h
     \brief Definition of Vector2, Vector3, Vector4.
 */
@@ -40,7 +40,7 @@
 #include "math_config.h"
 #include "plantgl/tool/util_tuple.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /*  --------------------------------------------------------------------- */
 
@@ -756,7 +756,7 @@ class PGLMATH_API Vector4 : public Tuple4<real_t>
 
   /// Returns the result of component wise product (hadamard product) of \e this and \e v.
   Vector4 operator%( const Vector4& v ) const;
-  
+
   /// Returns the abs value of \e v.
   friend PGLMATH_API Vector4 abs( const Vector4& v );
 
@@ -853,17 +853,17 @@ PGLMATH_API bool strictly_inf(const Vector4& v1, const Vector4& v2);
 
 template<class T> class Dimension  {};
 
-template<> class Dimension<TOOLS::Vector2> 
+template<> class Dimension<Vector2>
 { public: static const int Nb = 2; };
 
-template<> class Dimension<TOOLS::Vector3> 
+template<> class Dimension<Vector3>
 { public: static const int Nb = 3; };
 
-template<> class Dimension<TOOLS::Vector4> 
+template<> class Dimension<Vector4>
 { public: static const int Nb = 4; };
 
 /*  --------------------------------------------------------------------- */
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 // __geom_vector_h__
 #endif

@@ -73,11 +73,11 @@ public :
 	float readFloat();
 	int readInt();
 
-	TOOLS(Vector2) readVector2();
-	TOOLS(Vector3) readVector3();
-	TOOLS(Vector4) readVector4();
-	TOOLS(Vector3) readVector3(int n);
-	TOOLS(Vector4) readVector4(int n);
+	Vector2 readVector2();
+	Vector3 readVector3();
+	Vector4 readVector4();
+	Vector3 readVector3(int n);
+	Vector4 readVector4(int n);
 	Color4  readUColor4();
 	Color3  readUColor3();
 	Color4  readColor4();

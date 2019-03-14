@@ -75,8 +75,8 @@ public:
 };
 
 ALGO_API real_t raySegmentDistance(const Ray& ray, 
-						  const TOOLS(Vector3)& segA,
-						  const TOOLS(Vector3)& segB);
+						  const Vector3& segA,
+						  const Vector3& segB);
 
 
 ALGO_API IndexArrayPtr determine_faces_from_edges(const Point2ArrayPtr&, const std::vector<std::pair<uint32_t, uint32_t> >& edges);

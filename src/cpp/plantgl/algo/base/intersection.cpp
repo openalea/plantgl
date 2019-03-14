@@ -37,7 +37,6 @@
 #include <plantgl/scenegraph/geometry/pointset.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #ifdef WITH_CGAL
 
@@ -226,8 +225,8 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
 
 Vector3 PGL(_plane_segment_intersection)(const Plane3& plane, 
                                     real_t d1,
-                                    const TOOLS(Vector3)& p1, 
-                                    const TOOLS(Vector3)& p2)
+                                    const Vector3& p1, 
+                                    const Vector3& p2)
 {
     Vector3 segdir = p2-p1;
     real_t r = (plane.getD()-d1)/ dot(plane.getNormal(), segdir);
@@ -235,8 +234,8 @@ Vector3 PGL(_plane_segment_intersection)(const Plane3& plane,
 }
 
 bool PGL(plane_segment_intersection)(const Plane3& plane, 
-                                     const TOOLS(Vector3)& p1, 
-                                     const TOOLS(Vector3)& p2,
+                                     const Vector3& p1, 
+                                     const Vector3& p2,
                                      Vector3& result)
 {
     real_t d1 = dot(plane.getNormal(),p1);
@@ -259,9 +258,9 @@ int tri_tri_intersect_with_isectline(real_t V0[3],real_t V1[3],real_t V2[3],
      vname##a[1] = vname.y(); \
      vname##a[2] = vname.z();
 
-IntersectionType  PGL(triangle_triangle_intersection)(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
-                                          const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23, 
-                                          TOOLS(Vector3)& intersectionstart, TOOLS(Vector3)& intersectionend)
+IntersectionType  PGL(triangle_triangle_intersection)(const Vector3& t11, const Vector3& t12, const Vector3& t13, 
+                                          const Vector3& t21, const Vector3& t22, const Vector3& t23, 
+                                          Vector3& intersectionstart, Vector3& intersectionend)
 {
     int coplanar;
     real_t isectpt1[3];

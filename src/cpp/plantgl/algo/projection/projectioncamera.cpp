@@ -40,7 +40,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 
 
@@ -61,7 +60,7 @@ ProjectionCamera::ProjectionCamera(real_t _left, real_t _right, real_t _bottom, 
 
 ProjectionCamera::~ProjectionCamera() {}
 
-void ProjectionCamera::lookAt(const TOOLS(Vector3)& eyePosition3D, const TOOLS(Vector3)& center3D, const TOOLS(Vector3)& upVector3D)
+void ProjectionCamera::lookAt(const Vector3& eyePosition3D, const Vector3& center3D, const Vector3& upVector3D)
 {
         Vector3 forward = eyePosition3D - center3D;
         forward.normalize();
@@ -119,27 +118,27 @@ Vector3 ProjectionCamera::worldToRaster(const Vector3& vertexWorld, const uint16
 
 }
 
-TOOLS(Vector3) ProjectionCamera::worldToCamera(const TOOLS(Vector3)& vertexWorld) const
+Vector3 ProjectionCamera::worldToCamera(const Vector3& vertexWorld) const
 {
     return __currentWorldToCamera * vertexWorld;    
 }
 
-TOOLS(Vector3) ProjectionCamera::ndcToRaster(const TOOLS(Vector3)& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const
+Vector3 ProjectionCamera::ndcToRaster(const Vector3& vertexNDC, const uint16_t imageWidth, const uint16_t imageHeight) const
 {
     return toRasterSpace(vertexNDC, imageWidth, imageHeight);
 }
 
-TOOLS(Vector3) ProjectionCamera::cameraToRaster(const TOOLS(Vector3)& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const
+Vector3 ProjectionCamera::cameraToRaster(const Vector3& vertexCamera, const uint16_t imageWidth, const uint16_t imageHeight) const
 {
     return toRasterSpace(cameraToNDC(vertexCamera), imageWidth, imageHeight);
 }
 
-TOOLS(Vector3) ProjectionCamera::cameraToWorld(const TOOLS(Vector3)& vertexCamera) const
+Vector3 ProjectionCamera::cameraToWorld(const Vector3& vertexCamera) const
 {
     return __cameraToWorld * vertexCamera;    
 }
 
-TOOLS(Vector3) ProjectionCamera::rasterToWorld(const TOOLS(Vector3)& raster, const uint16_t imageWidth, const uint16_t imageHeight) const
+Vector3 ProjectionCamera::rasterToWorld(const Vector3& raster, const uint16_t imageWidth, const uint16_t imageHeight) const
 {
     Vector3 vertexNDC = rasterToNDC(raster, imageWidth, imageHeight);
     return cameraToWorld(NDC2screen(vertexNDC.x(), vertexNDC.y(), vertexNDC.z()));
@@ -160,7 +159,7 @@ bool ProjectionCamera::isInZRange(real_t zmin, real_t zmax) const{
     return !(zmax < near || zmin > far);
 }
 
-void ProjectionCamera::transformModel(const TOOLS(Matrix4)& transform)
+void ProjectionCamera::transformModel(const Matrix4& transform)
 {
     __currentModelMatrix *= transform;
     __currentWorldToCamera = __worldToCamera * __currentModelMatrix;

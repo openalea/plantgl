@@ -64,9 +64,9 @@ GENERIC_LEXER::GENERIC_LEXER(std::istream* is ,
 
     // changes the current cwd so that new includes and file references can
     // be done from the place of this file. The old cwd is lost in this case.
-    std::string new_cwd = TOOLS(get_dirname)(filename);     // gets the new working dir name
+    std::string new_cwd = get_dirname(filename);     // gets the new working dir name
     if (new_cwd != "") {                       // defines the new cwd
-      if (!TOOLS(chg_dir)(new_cwd)){
+      if (!chg_dir(new_cwd)){
         *_lo << "\tchg_dir() returned an error.";
         *_lo << std::endl;
       }
@@ -112,9 +112,9 @@ bool GENERIC_LEXER::pushStream(std::istream& is, const char* f){
                 // (current work directory)
 
                 if (f) {
-                        std::string new_cwd = TOOLS(get_dirname)(f);     // gets the new working dir name
+                        std::string new_cwd = get_dirname(f);     // gets the new working dir name
                         if (new_cwd != "") {                // defines the new cwd
-                                if (!TOOLS(chg_dir)(new_cwd)) *_lo << "\tchg_dir() returned an error." << std::endl;
+                                if (!chg_dir(new_cwd)) *_lo << "\tchg_dir() returned an error." << std::endl;
                                 else _cwd = new_cwd;
                         }
                 }

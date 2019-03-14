@@ -82,11 +82,14 @@ bool is_point_in_cone(const VectorType& point,
 
 template <class PointContainer,
         class ContainerPolicy = LocalContainerPolicy<PointContainer>,
-        int NbDimension = TOOLS::Dimension<typename PointContainer::element_type>::Nb >
-class PointGrid : public ContainerPolicy, public TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension>
+        int NbDimension = 
+Dimension<typename PointContainer::element_type>::Nb >
+class PointGrid : public ContainerPolicy, public 
+SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension>
 {
 public:
-    typedef TOOLS::SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
+    typedef 
+SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
     typedef typename SpatialBase::Base Base;
 
     typedef PointContainer ContainerType;
@@ -422,7 +425,8 @@ protected:
 
 };
 
-template <class PointContainer, int NbDimension = TOOLS::Dimension<typename PointContainer::element_type>::Nb >
+template <class PointContainer, int NbDimension = 
+Dimension<typename PointContainer::element_type>::Nb >
 class PointRefGrid : public PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>,  NbDimension>
 {
 public:

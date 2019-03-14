@@ -47,10 +47,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class Matrix4;
 class Matrix3;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -68,20 +68,20 @@ typedef RCPtr<BoundingBox> BoundingBoxPtr;
     \brief An axis aligned box represented by 2 opposing corners.
 */
 
-class SG_API BoundingBox : public TOOLS(RefCountObject)
+class SG_API BoundingBox : public RefCountObject
 {
 
 public:
 
   /// Constructs a degenerate BoundingBox reduced to the point \e point.
-    BoundingBox( const TOOLS(Vector3)& point = TOOLS(Vector3::ORIGIN) );
+    BoundingBox( const Vector3& point = TOOLS(Vector3::ORIGIN) );
 
   /** \brief Constructs a BoundingBox with the 2 opposing corners \e lowLeft and
       \e upRight.
 
       \pre
       - \e lowLeft must be, coordinate by coordinate, less than \e upRight. */
-  BoundingBox( const TOOLS(Vector3)& lowLeft, const TOOLS(Vector3)& upRight );
+  BoundingBox( const Vector3& lowLeft, const Vector3& upRight );
 
   /// Constructs a BoundingBox from the \e points.
   BoundingBox(const Point3ArrayPtr points);
@@ -108,7 +108,7 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingBox& extend( const TOOLS(Vector3)& point );
+   BoundingBox& extend( const Vector3& point );
 
   /** \brief Extends \e self in order to bound \e bbox.
 
@@ -122,7 +122,7 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingBox& operator +=( const TOOLS(Vector3)& point );
+   BoundingBox& operator +=( const Vector3& point );
 
   /** \brief Extends \e self in order to bound \e bbox.
 
@@ -136,7 +136,7 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   BoundingBox& operator |=( const TOOLS(Vector3)& point );
+   BoundingBox& operator |=( const Vector3& point );
 
 
   /** \brief Intersection of \e self with \e bbox.
@@ -168,7 +168,7 @@ public:
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-   bool intersect( const TOOLS(Vector3)& point ) const;
+   bool intersect( const Vector3& point ) const;
 
    /** \brief Inclusion of \e bbox in \e self.
 
@@ -182,7 +182,7 @@ public:
       \pre
       - \e self must be valid;
       - \e point1 and point2 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2 ) const;
 
    /** \brief Compute distance between \e self and another bbox.
 
@@ -196,49 +196,49 @@ public:
       \pre
       - \e self must be valid;
       - \e point  must be valid. */
-   real_t distance(const TOOLS(Vector3)& point) const;
+   real_t distance(const Vector3& point) const;
 
    /// Set new values.
-  void set( const TOOLS(Vector3)& lowLeft, const TOOLS(Vector3)& upRight );
+  void set( const Vector3& lowLeft, const Vector3& upRight );
 
    /// Change values.
-  void change( const TOOLS(Vector3)& center, const TOOLS(Vector3)& size );
+  void change( const Vector3& center, const Vector3& size );
 
    /** Returns the center of \e self.
        \pre
       - \e self must be valid. */
-  TOOLS(Vector3) getCenter( ) const ;
+  Vector3 getCenter( ) const ;
 
   /** \brief Returns the lower left corner of \e self.
 
       \pre
       - \e self must be valid. */
-  const TOOLS(Vector3)& getLowerLeftCorner( ) const ;
+  const Vector3& getLowerLeftCorner( ) const ;
 
   /** \brief Returns the lower left corner of \e self.
 
       \pre
       - \e self must be valid. */
-  TOOLS(Vector3)& getLowerLeftCorner( );
+  Vector3& getLowerLeftCorner( );
 
   /** \brief Returns the upper right corner of \e self.
 
       \pre
       - \e self must be valid. */
-  const TOOLS(Vector3)& getUpperRightCorner( ) const;
+  const Vector3& getUpperRightCorner( ) const;
 
   /** \brief Returns the upper right corner of \e self.
 
       \pre
       - \e self must be valid. */
-  TOOLS(Vector3)& getUpperRightCorner( );
+  Vector3& getUpperRightCorner( );
 
   /** \brief Returns the size of the half diagonal of \e self along the \c x-axis,
       \c y-axis and \c z-axis.
 
       \pre
       - \e self must be valid. */
-  TOOLS(Vector3) getSize( ) const ;
+  Vector3 getSize( ) const ;
 
   /// Get X range
   real_t getXRange() const;
@@ -272,7 +272,7 @@ public:
 	  of the algorithm is set to the center of the bounding box
       to be transformed.
   */
-  void transform(const TOOLS(Matrix4)& matrix);
+  void transform(const Matrix4& matrix);
 
   /** \brief Transform a bounding box by an affine transformation.
 
@@ -283,13 +283,13 @@ public:
       initialization of the algorithm is set to the center of the bounding box
       to be transformed.
   */
-  void transform(const TOOLS(Matrix3)& m);
+  void transform(const Matrix3& m);
 
   /// translation of self 
-  void translate(const TOOLS(Vector3)& t);
+  void translate(const Vector3& t);
 
   /// scaling of self.
-  void scale(const TOOLS(Vector3)& t);
+  void scale(const Vector3& t);
 
   bool operator==(const BoundingBox& other) const;
 
@@ -299,13 +299,13 @@ public:
   friend SG_API BoundingBox operator+( const BoundingBox& b1, const BoundingBox& b2);
 
   /// Returns the addition of \e b1 and \e v2.
-  friend SG_API BoundingBox operator+( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+  friend SG_API BoundingBox operator+( const BoundingBox& b1, const Vector3& v2);
 
   /// Returns the addition of \e b1 and \e b2.
   friend SG_API BoundingBox operator|( const BoundingBox& b1, const BoundingBox& b2);
 
   /// Returns the addition of \e b1 and \e v2.
-  friend SG_API BoundingBox operator|( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+  friend SG_API BoundingBox operator|( const BoundingBox& b1, const Vector3& v2);
 
   /// Returns the intersection of \e b1 and \e b2.
   friend SG_API BoundingBox operator&( const BoundingBox& b1, const BoundingBox& b2);
@@ -314,15 +314,15 @@ public:
   friend SG_API bool intersection( const BoundingBox& b1, const BoundingBox& b2) ;
 
   /// Returns whether \e b1 intersect \e v2.
-  friend SG_API bool intersection( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+  friend SG_API bool intersection( const BoundingBox& b1, const Vector3& v2);
 
 protected:
 
   /// The lower left corner.
-  TOOLS(Vector3) __ll;
+  Vector3 __ll;
 
   /// The upper right corner.
-  TOOLS(Vector3) __ur;
+  Vector3 __ur;
 
 };
 
@@ -330,12 +330,12 @@ protected:
 typedef RCPtr<BoundingBox> BoundingBoxPtr;
 
 SG_API BoundingBox operator+( const BoundingBox& b1, const BoundingBox& b2);
-SG_API BoundingBox operator+( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+SG_API BoundingBox operator+( const BoundingBox& b1, const Vector3& v2);
 SG_API BoundingBox operator|( const BoundingBox& b1, const BoundingBox& b2);
-SG_API BoundingBox operator|( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+SG_API BoundingBox operator|( const BoundingBox& b1, const Vector3& v2);
 SG_API BoundingBox operator&( const BoundingBox& b1, const BoundingBox& b2);
 SG_API bool intersection( const BoundingBox& b1, const BoundingBox& b2) ;
-SG_API bool intersection( const BoundingBox& b1, const TOOLS(Vector3)& v2);
+SG_API bool intersection( const BoundingBox& b1, const Vector3& v2);
 
 /* ----------------------------------------------------------------------- */
 

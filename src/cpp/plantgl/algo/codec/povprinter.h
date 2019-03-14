@@ -49,9 +49,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class Vector3;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -104,14 +104,14 @@ public:
 
   /// Set a camera to the scene. All vector must be given in the GEOM basis and will be transformed in PovRay basis.
   /** Dont work */
-  virtual bool setCamera(const TOOLS(Vector3)& location,
-                                                 const TOOLS(Vector3)& direction,
-                                                 const TOOLS(Vector3)& up,
-                                                 const TOOLS(Vector3)& right);
+  virtual bool setCamera(const Vector3& location,
+                                                 const Vector3& direction,
+                                                 const Vector3& up,
+                                                 const Vector3& right);
 
   /// Set a camera to the scene. All vector must be given in the GEOM basis and will be transformed in PovRay basis.
-  virtual bool setCamera(const TOOLS(Vector3)& eye, 
-						 const TOOLS(Vector3)& distance, 
+  virtual bool setCamera(const Vector3& eye, 
+						 const Vector3& distance, 
 					     const double&  ang, 
 						 const double& az, 
 						 const double& el);
@@ -120,7 +120,7 @@ public:
   void endHeader(); 
 
   /// Set a light to the scene.
-  virtual bool setLight(const TOOLS(Vector3)& position, const Color3& color = Color3::WHITE);
+  virtual bool setLight(const Vector3& position, const Color3& color = Color3::WHITE);
 
   /// Set the background.
   virtual bool setBackGround(const Color3& color);

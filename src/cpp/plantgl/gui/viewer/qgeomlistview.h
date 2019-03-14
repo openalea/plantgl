@@ -57,13 +57,13 @@ class QTreeWidget;
 class QString;
 
 /* ----------------------------------------------------------------------- */
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class Vector2;
 class Vector3;
 class Vector4;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 PGL_BEGIN_NAMESPACE
 
@@ -233,9 +233,9 @@ class VIEW_API GeomListViewBuilder : public Action
   void addAttr(const QString& name, uint_t value);
   void addAttr(const QString& name, uint16_t value);
   void addAttr(const QString& name, uchar_t value);
-  void addAttr(const QString& name, const TOOLS(Vector2)& value);
-  void addAttr(const QString& name, const TOOLS(Vector3)& value);
-  void addAttr(const QString& name, const TOOLS(Vector4)& value);
+  void addAttr(const QString& name, const Vector2& value);
+  void addAttr(const QString& name, const Vector3& value);
+  void addAttr(const QString& name, const Vector4& value);
   void addAttr(const QString& name, const Color3& value);
   void addAttr(const QString& name, const Color4& value);
   void addAttr(const QString& name, const Index& value);
@@ -245,7 +245,7 @@ class VIEW_API GeomListViewBuilder : public Action
   void addAttr(const QString& name, const Transform4Ptr& value);
   void addAttrNode(const QString& name,const SceneObjectPtr& object,const QString& type );
   void addAttrPtr(const QString& name, const QString& value,const QString& type );
-  void addArrayAngle(const QString& name, const TOOLS(RealArrayPtr)& _array);
+  void addArrayAngle(const QString& name, const RealArrayPtr& _array);
   template <class T>
   void addArray(const QString& name, const T& _array, const QString& type);
   template <class T>

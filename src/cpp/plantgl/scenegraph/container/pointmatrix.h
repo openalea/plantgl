@@ -55,7 +55,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Point2Matrix : public TOOLS(Array2)<TOOLS(Vector2)>
+class SG_API Point2Matrix : public Array2<Vector2>
 {
 
 public:
@@ -68,14 +68,14 @@ public:
   /** Constructs a Point2Matrix of size of \e size.
       \post
       - \e self is valid. */
-  Point2Matrix( uint_t rows, uint_t cols, const TOOLS(Vector2)& value);
+  Point2Matrix( uint_t rows, uint_t cols, const Vector2& value);
 
   /** Constructs a PointMatrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
       Point2Matrix( InIterator first, InIterator last, uint_t rows ) :
-    TOOLS(Array2)<TOOLS(Vector2)>(first,last,rows) {
+    Array2<Vector2>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -83,13 +83,13 @@ public:
   virtual ~Point2Matrix( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector2),TOOLS(Vector2)> getBounds( ) const;
+  std::pair<Vector2,Vector2> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector2) getCenter( ) const;
+  Vector2 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector2) getExtent( ) const;
+  Vector2 getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.
       It takes sense in the case that \e self denotes a polyline. */
@@ -138,7 +138,7 @@ PGL_DECLARE_TYPE(Point2Matrix)
 */
 
 
-class SG_API Point3Matrix : public TOOLS(Array2)<TOOLS(Vector3)>
+class SG_API Point3Matrix : public Array2<Vector3>
 {
 
 public:
@@ -151,14 +151,14 @@ public:
   /** Constructs a Point3Matrix of rows \e rows and columns \e cols.
       \post
       - \e self is valid. */
-  Point3Matrix( uint_t rows, uint_t cols, const  TOOLS(Vector3)& value);
+  Point3Matrix( uint_t rows, uint_t cols, const  Vector3& value);
 
   /** Constructs a Point3Matrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point3Matrix( InIterator first, InIterator last, uint_t rows ) :
-    TOOLS(Array2)<TOOLS(Vector3)>(first,last,rows) {
+    Array2<Vector3>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -175,13 +175,13 @@ public:
   virtual ~Point3Matrix( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector3),TOOLS(Vector3)> getBounds( ) const;
+  std::pair<Vector3,Vector3> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector3) getCenter( ) const;
+  Vector3 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector3) getExtent( ) const;
+  Vector3 getExtent( ) const;
 
   /// Returns an iterator at the point with the maximum \c x coordinate.
   const_iterator getXMax( ) const;
@@ -242,7 +242,7 @@ PGL_DECLARE_TYPE(Point3Matrix)
 */
 
 
-class SG_API Point4Matrix : public TOOLS(Array2)<TOOLS(Vector4)>
+class SG_API Point4Matrix : public Array2<Vector4>
 {
 
 public:
@@ -255,14 +255,14 @@ public:
   /** Constructs a Point4Matrix with \e rows rows and \e cols columns.
       \post
       - \e self is valid. */
-  Point4Matrix( uint_t rows, uint_t cols, const TOOLS(Vector4)& value);
+  Point4Matrix( uint_t rows, uint_t cols, const Vector4& value);
 
   /** Constructs a Point4Matrix with the range of points [\e first, \e last).
       \post
       - \e self is valid. */
   template <class InIterator>
   Point4Matrix( InIterator first, InIterator last ,uint_t rows) :
-    TOOLS(Array2)<TOOLS(Vector4)>(first,last,rows) {
+    Array2<Vector4>(first,last,rows) {
     GEOM_ASSERT(isValid());
   }
 
@@ -280,13 +280,13 @@ public:
   virtual ~Point4Matrix( );
 
   /// Returns the mimimum and maximum points bounding \e self.
-  std::pair<TOOLS(Vector4),TOOLS(Vector4)> getBounds( ) const;
+  std::pair<Vector4,Vector4> getBounds( ) const;
 
   /// Returns the center of \e self.
-  TOOLS(Vector4) getCenter( ) const;
+  Vector4 getCenter( ) const;
 
   /// Returns the extent along the \c axis and \c y axis of \e self.
-  TOOLS(Vector4) getExtent( ) const;
+  Vector4 getExtent( ) const;
 
   /** Returns the total length of the segments formed adjacent points.
       It takes sense in the case that \e self denotes a polyline. */

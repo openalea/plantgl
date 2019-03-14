@@ -68,8 +68,8 @@ class ALGO_API Ray  {
     \pre
     - \e Direction must not be = Vector3(0,0,0); 
   */
-  Ray(const TOOLS(Vector3)& Origin = TOOLS(Vector3)::ORIGIN,
-	  const TOOLS(Vector3)& Direction = TOOLS(Vector3)::OX);
+  Ray(const Vector3& Origin = Vector3::ORIGIN,
+	  const Vector3& Direction = Vector3::OX);
     
     
   /// Destructor
@@ -80,27 +80,27 @@ class ALGO_API Ray  {
   virtual bool isValid() const ;
   
   /// Return origin of \e self.
-  inline const TOOLS(Vector3)& getOrigin() const {
+  inline const Vector3& getOrigin() const {
     return __origin ;
   }
     
   /// Return origin of \e self.
-  inline TOOLS(Vector3)& getOrigin() {
+  inline Vector3& getOrigin() {
     return __origin ;
   }
     
   /// Return direction of \e self.
-  inline const TOOLS(Vector3)& getDirection() const {
+  inline const Vector3& getDirection() const {
     return __direction ;
   }
     
   /// Return direction of \e self.
-  inline TOOLS(Vector3)& getDirection() {
+  inline Vector3& getDirection() {
     return __direction ;
   }
     
   /// Return point \e t on the ray.
-  inline TOOLS(Vector3) getAt(const real_t t) const {
+  inline Vector3 getAt(const real_t t) const {
     return __origin + __direction * t ;
   }
         
@@ -108,13 +108,13 @@ class ALGO_API Ray  {
     \pre
     - \e self must be valid;
     - \e point must be valid. */
-  bool intersect( const TOOLS(Vector3)& point ) const;
+  bool intersect( const Vector3& point ) const;
 
   /*! Intersection between projection of \e self on z=0 and \e point.
     \pre
     - \e self must be valid;
     - \e point must be valid. */
-  bool intersect( const TOOLS(Vector2)& point ) const;
+  bool intersect( const Vector2& point ) const;
 
   /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
     \pre
@@ -128,7 +128,7 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection.
     \retval 2 are equivalent
   */
-  int intersect( const Ray& ray, TOOLS(Vector3)& intersection, real_t& t ) const;
+  int intersect( const Ray& ray, Vector3& intersection, real_t& t ) const;
 
   /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
     \pre
@@ -142,7 +142,7 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection.
     \retval 2 segment is in the ray
   */
-  int intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, TOOLS(Vector3)& intersection ) const;
+  int intersect( const Vector3& point1, const Vector3& point2, Vector3& intersection ) const;
   
   /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ]. 
     \pre
@@ -156,7 +156,7 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in the same plane
   */
-  int intersect( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2, TOOLS(Vector2)& intersection ) const;
+  int intersect( const Vector2& point1, const Vector2& point2, Vector2& intersection ) const;
   
   /*! Intersection between \e self and a triangle defined by [ \e triangle1 , \e triangle2 , \e triangle3 ].
     \pre
@@ -170,7 +170,7 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in the same plane
   */
-  int intersect( const TOOLS(Vector3)& triangle1, const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3, TOOLS(Vector3)& intersection   ) const;
+  int intersect( const Vector3& triangle1, const Vector3& triangle2, const Vector3& triangle3, Vector3& intersection   ) const;
 
   /*! Intersection between \e self and a quad facet defined by [ \e quad1 , \e quad2 , \e quad3 , \e quad4 ].
     \pre
@@ -185,7 +185,7 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in the same plane
   */
-  int intersect( const TOOLS(Vector3)& quad1, const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3, const TOOLS(Vector3)& quad4, TOOLS(Vector3)& intersection   ) const;
+  int intersect( const Vector3& quad1, const Vector3& quad2, const Vector3& quad3, const Vector3& quad4, Vector3& intersection   ) const;
 
 
 
@@ -201,8 +201,8 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in 2 points.
   */
-  int intersect( const TOOLS(Vector3)& center,const real_t& r, 
-		 TOOLS(Vector3)& intersection1, TOOLS(Vector3)& intersection2   ) const;
+  int intersect( const Vector3& center,const real_t& r, 
+		 Vector3& intersection1, Vector3& intersection2   ) const;
 
 
   /*! Intersection between \e self and a ellipsoid defined by \e center and [ \e a , \e b , \e c ].
@@ -217,8 +217,8 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in 2 points.
   */
-  int intersect( const TOOLS(Vector3)& center,const real_t& a, const real_t& b, const real_t& c, 
-		 TOOLS(Vector3)& intersection1, TOOLS(Vector3)& intersection2   ) const;
+  int intersect( const Vector3& center,const real_t& a, const real_t& b, const real_t& c, 
+		 Vector3& intersection1, Vector3& intersection2   ) const;
 
 
   /// Intersection with a bounding box
@@ -248,10 +248,10 @@ class ALGO_API Ray  {
 protected :
   
   /// origin of \e self.
-  TOOLS(Vector3) __origin;
+  Vector3 __origin;
   
   /// direction of \e self.
-  TOOLS(Vector3) __direction;
+  Vector3 __direction;
   
 };
 

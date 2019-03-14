@@ -44,7 +44,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 DepthSortEngine::DepthSortEngine() :
     ProjectionEngine()
@@ -398,7 +397,7 @@ void swap(Vector3& v1, Vector3& v2){
     v2 = vTemp;    
 }
 
-void DepthSortEngine::processTriangle(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, uint32_t id)
+void DepthSortEngine::processTriangle(const Vector3& v0, const Vector3& v1, const Vector3& v2, uint32_t id)
 {
     setlocale(LC_ALL, "en_GB");
 

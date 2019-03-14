@@ -51,7 +51,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 
@@ -475,7 +474,7 @@ bool VrmlPrinter::setCamera(const Vector3& position,
 
 #define MIN3(a,b,c) min(a,min(b,c))
 
-bool VrmlPrinter::setLight(const TOOLS(Vector3)& location,
+bool VrmlPrinter::setLight(const Vector3& location,
                                                    const Color3& ambient,
                                                    const Color3& diffuse,
                                                    const real_t& radius){

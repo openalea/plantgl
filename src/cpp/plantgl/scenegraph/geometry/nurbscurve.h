@@ -44,14 +44,14 @@
 /* ----------------------------------------------------------------------- */
 
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 class RealArray2;
 typedef RCPtr<RealArray2> RealArray2Ptr;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -80,7 +80,7 @@ public:
   struct SG_API Builder : public BezierCurve::Builder { 
 
     /// A pointer to the \b KnotsList field.
-    TOOLS(RealArrayPtr) * KnotList;
+    RealArrayPtr * KnotList;
 
 
     /// Constructor.
@@ -108,20 +108,20 @@ public:
       \post
       - \e self is valid. */
   NurbsCurve(  const Point4ArrayPtr& ctrlPoints, 
-	       const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
+	       const RealArrayPtr knots = TOOLS(RealArrayPtr()), 
 	       uint_t degree = DEFAULT_NURBS_DEGREE, 
 	       uint_t stride = DEFAULT_STRIDE, 
 		   uchar_t width = DEFAULT_WIDTH );
 
   NurbsCurve(  const Point4ArrayPtr& ctrlPoints, 
 			   uint_t degree, 
-	           const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
+	           const RealArrayPtr knots = TOOLS(RealArrayPtr()), 
 	           uint_t stride = DEFAULT_STRIDE, 
 		       uchar_t width = DEFAULT_WIDTH  );
 
   NurbsCurve(  const Point3ArrayPtr& ctrlPoints, 
 			   uint_t degree = DEFAULT_NURBS_DEGREE, 
-	           const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
+	           const RealArrayPtr knots = TOOLS(RealArrayPtr()), 
 	           uint_t stride = DEFAULT_STRIDE, 
 		       uchar_t width = DEFAULT_WIDTH  );
 
@@ -140,10 +140,10 @@ public:
   bool isDegreeToDefault( ) const;
 
   /// Returns \e knotsList value.
-  const TOOLS(RealArrayPtr)& getKnotList( ) const ;
+  const RealArrayPtr& getKnotList( ) const ;
 
   /// Returns \e knotsList field.
-  TOOLS(RealArrayPtr)& getKnotList( );
+  RealArrayPtr& getKnotList( );
 
   virtual const real_t getFirstKnot( ) const ;
 
@@ -156,11 +156,11 @@ public:
       \post
       - \e self is valid. */
    virtual bool setKnotListToDefault( );
-   static TOOLS(RealArrayPtr) defaultKnotList( uint_t nbCtrlPoints, uint_t degree );
+   static RealArrayPtr defaultKnotList( uint_t nbCtrlPoints, uint_t degree );
 
   /// Returns whether \b KnotList is set to its default value.
   bool isKnotListToDefault( ) const;
-  static bool defaultKnotListTest(const TOOLS(RealArrayPtr)& knots, uint_t nbCtrlPoints, uint_t degree );
+  static bool defaultKnotListTest(const RealArrayPtr& knots, uint_t nbCtrlPoints, uint_t degree );
 
   virtual bool isValid( ) const;
 
@@ -168,18 +168,18 @@ public:
      Compute point on the NURBS for u = \b u
      From the NURBS Book A4.1 p 124.
   */
-  virtual TOOLS(Vector3) getPointAt(real_t u) const;
+  virtual Vector3 getPointAt(real_t u) const;
 
   /* Returns the \e Tangent for u = \e u.
       (see the Nurbs book p.12) 
      \pre 
       - \e u must be in [0,1];*/
-  virtual TOOLS(Vector3) getTangentAt(real_t u) const;
+  virtual Vector3 getTangentAt(real_t u) const;
 
   /* Returns the principal \e Normal for u = \e u.
      \pre 
       - \e u must be in [0,1];*/
-  virtual TOOLS(Vector3) getNormalAt(real_t u) const;
+  virtual Vector3 getNormalAt(real_t u) const;
 
   /*!
     \brief Computes the derivative of degree \a d of the 
@@ -197,7 +197,7 @@ public:
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre 
      - \e u must be in [0,1];*/
-  virtual TOOLS(Vector4) getDerivativeAt(real_t u, int d) const;
+  virtual Vector4 getDerivativeAt(real_t u, int d) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre 
@@ -205,7 +205,7 @@ public:
   virtual Point4ArrayPtr getDerivativesAt(real_t u) const;
 
 
-  TOOLS(Vector3) projectTo(const TOOLS(Vector3)& p, 
+  Vector3 projectTo(const Vector3& p, 
 					real_t guess, real_t& u,
 					real_t e1=0.001, real_t e2=0.001,int maxTry=100) const;
 
@@ -222,14 +222,14 @@ public:
   /*! \brief Compute the Basis Functions Values 
     Algo 2.2 From The Nurbs Book p70
   */
-  TOOLS(RealArrayPtr) computeBasisFunctions(uint_t span, real_t u) const ;
+  RealArrayPtr computeBasisFunctions(uint_t span, real_t u) const ;
 
   /*!
     \brief Compute the Derivates Basis Functions Values 
     Algo A2.3 p72 Nurbs Book 
     \author Philippe Lavoie     
   */
-  TOOLS(RealArray2Ptr) computeDerivatesBasisFunctions(int n, real_t u, int span) const ;
+  RealArray2Ptr computeDerivatesBasisFunctions(int n, real_t u, int span) const ;
 
 
   //@}
@@ -240,7 +240,7 @@ protected:
   uint_t __degree;
 
   /// The \b knotsList field.
-  TOOLS(RealArrayPtr) __knotList;
+  RealArrayPtr __knotList;
 
 
 }; // NurbsCurve
@@ -268,7 +268,7 @@ public:
   struct SG_API Builder : public BezierCurve2D::Builder { 
 
     /// A pointer to the \b KnotsList field.
-    TOOLS(RealArrayPtr) * KnotList;
+    RealArrayPtr * KnotList;
 
 
     /// Constructor.
@@ -296,20 +296,20 @@ public:
       \post
       - \e self is valid. */
   NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, 
-		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
+		 const RealArrayPtr knots = TOOLS(RealArrayPtr()), 
 		 uint_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
 		 uint_t stride = BezierCurve::DEFAULT_STRIDE, 
 		 uchar_t width = DEFAULT_WIDTH );
 
   NurbsCurve2D(  const Point3ArrayPtr& ctrlPoints, 
 		 uint_t degree, 
-		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
+		 const RealArrayPtr knots = TOOLS(RealArrayPtr()), 
 		 uint_t stride = BezierCurve::DEFAULT_STRIDE, 
 		 uchar_t width = DEFAULT_WIDTH );
 
   NurbsCurve2D(  const Point2ArrayPtr& ctrlPoints, 
 		 uint_t degree = NurbsCurve::DEFAULT_NURBS_DEGREE, 
-		 const TOOLS(RealArrayPtr) knots = TOOLS(RealArrayPtr()), 
+		 const RealArrayPtr knots = TOOLS(RealArrayPtr()), 
 		 uint_t stride = BezierCurve::DEFAULT_STRIDE, 
 		 uchar_t width = DEFAULT_WIDTH );
 
@@ -328,10 +328,10 @@ public:
   bool isDegreeToDefault( ) const;
 
   /// Returns \e knotsList value.
-  virtual const TOOLS(RealArrayPtr)& getKnotList( ) const;
+  virtual const RealArrayPtr& getKnotList( ) const;
 
   /// Returns \e knotsList field.
-  TOOLS(RealArrayPtr)& getKnotList( );
+  RealArrayPtr& getKnotList( );
 
 
   virtual const real_t getFirstKnot( ) const;
@@ -359,14 +359,14 @@ public:
   /*! \brief Compute the Basis Functions Values 
     Algo 2.2 From The Nurbs Book p70
   */
-  TOOLS(RealArrayPtr) computeBasisFunctions(uint_t span, real_t u) const ;
+  RealArrayPtr computeBasisFunctions(uint_t span, real_t u) const ;
 
   /*!
     \brief Compute the Derivates Basis Functions Values 
     Algo A2.3 p72 Nurbs Book 
     \author Philippe Lavoie     
   */
-  TOOLS(RealArray2Ptr) computeDerivatesBasisFunctions(int n, real_t u, int span) const ;
+  RealArray2Ptr computeDerivatesBasisFunctions(int n, real_t u, int span) const ;
 
   /*!
     \brief Computes the derivative of degree \a d of the 
@@ -384,7 +384,7 @@ public:
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre 
      - \e u must be in [0,1];*/
-  virtual TOOLS(Vector3) getDerivativeAt(real_t u, int d) const;
+  virtual Vector3 getDerivativeAt(real_t u, int d) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u.
      \pre 
@@ -395,18 +395,18 @@ public:
      Compute point on the NURBS for u = \b u
      From the NURBS Book A4.1 p 124.
   */
-  virtual TOOLS(Vector2) getPointAt(real_t u) const;
+  virtual Vector2 getPointAt(real_t u) const;
 
   /* Returns the \e Tangent for u = \e u.
       (see the Nurbs book p.12) 
      \pre 
       - \e u must be in [0,1];*/
-  virtual TOOLS(Vector2) getTangentAt(real_t u) const;
+  virtual Vector2 getTangentAt(real_t u) const;
 
   /* Returns the principal \e Normal for u = \e u.
      \pre 
       - \e u must be in [0,1];*/
-  virtual TOOLS(Vector2) getNormalAt(real_t u) const;
+  virtual Vector2 getNormalAt(real_t u) const;
 
 protected:
 
@@ -414,7 +414,7 @@ protected:
   uint_t __degree;
 
   /// The \b knotsList field.
-  TOOLS(RealArrayPtr) __knotList;
+  RealArrayPtr __knotList;
 
 
 }; // NurbsCurve
@@ -426,24 +426,24 @@ typedef RCPtr<NurbsCurve2D> NurbsCurve2DPtr;
     From the Nurbs Book : A2.1 p68
   */
 uint_t SG_API findSpan(real_t u,  uint_t _degree, 
-		const TOOLS(RealArrayPtr)& _knotList);  
+		const RealArrayPtr& _knotList);  
 
 /*! \brief Compute the Basis Functions Values 
   Algo 2.2 From The Nurbs Book p70
 */
-TOOLS(RealArrayPtr) SG_API basisFunctions(uint_t span, real_t u,  
+RealArrayPtr SG_API basisFunctions(uint_t span, real_t u,  
 				   uint_t _degree, 
-				   const TOOLS(RealArrayPtr)& _knotList );
+				   const RealArrayPtr& _knotList );
 
 /*!
   \brief Compute the Derivates Basis Functions Values 
   Algo A2.3 p72 Nurbs Book 
   \author Philippe Lavoie     
 */
-TOOLS(RealArray2Ptr) SG_API derivatesBasisFunctions(int n, real_t u, 
+RealArray2Ptr SG_API derivatesBasisFunctions(int n, real_t u, 
 				      int span, 
 				      uint_t _degree, 
-				      const TOOLS(RealArrayPtr)& _knotList );
+				      const RealArrayPtr& _knotList );
 
 /* ----------------------------------------------------------------------- */
 

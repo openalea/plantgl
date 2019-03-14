@@ -115,10 +115,10 @@ public:
 					            bool existing,
 								bool dir);
 
-	virtual ViewRayBuffer * castRays(const TOOLS(Vector3)& pos, 
-									  const TOOLS(Vector3)& dir,
-									  const TOOLS(Vector3)& dx, 
-									  const TOOLS(Vector3)& dy,
+	virtual ViewRayBuffer * castRays(const PGL(Vector3)& pos, 
+									  const PGL(Vector3)& dir,
+									  const PGL(Vector3)& dx, 
+									  const PGL(Vector3)& dy,
 									  int sx, int sy);
     virtual ViewZBuffer * grabZBuffer();
     

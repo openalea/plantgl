@@ -59,7 +59,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-class ALGO_API Mvs : public TOOLS(RefCountObject)
+class ALGO_API Mvs : public RefCountObject
 {
 
 public:

@@ -37,7 +37,6 @@
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -463,7 +462,7 @@ void GraphColonization::process_bud(const Bud& bud)
 
 }
 
-size_t GraphColonization::add_node(const TOOLS(Vector3)& position, 
+size_t GraphColonization::add_node(const Vector3& position, 
                       real_t level,
                       const Index& components,
                       size_t parent, bool active)

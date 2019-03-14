@@ -99,7 +99,7 @@ public:
      \e point2.
      \post
      - \e self is valid. */
-  Polyline( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, uchar_t width = DEFAULT_WIDTH);
+  Polyline( const Vector3& point1, const Vector3& point2, uchar_t width = DEFAULT_WIDTH);
 
   /** Constructs a Polyline with the points \e points.
       \pre
@@ -123,12 +123,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector3)& getPointListAt( uint_t i ) const;
+  const Vector3& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector3)& getPointListAt( uint_t i );
+  Vector3& getPointListAt( uint_t i );
 
   virtual const real_t getFirstKnot() const;
 
@@ -136,11 +136,11 @@ public:
 
   virtual const uint_t getStride() const;
 
-  virtual TOOLS(Vector3) getPointAt(real_t u) const;
+  virtual Vector3 getPointAt(real_t u) const;
 
-  virtual TOOLS(Vector3) getTangentAt(real_t u) const;
+  virtual Vector3 getTangentAt(real_t u) const;
 
-  virtual TOOLS(Vector3) getNormalAt(real_t u) const;
+  virtual Vector3 getNormalAt(real_t u) const;
 
   virtual bool isValid( ) const;
 
@@ -211,7 +211,7 @@ public:
      \e point2.
      \post
      - \e self is valid. */
-  Polyline2D( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2, uchar_t width = DEFAULT_WIDTH );
+  Polyline2D( const Vector2& point1, const Vector2& point2, uchar_t width = DEFAULT_WIDTH );
 
   /** Constructs a Polyline2D with the points \e points.
       \pre
@@ -228,12 +228,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector2)& getPointListAt( uint_t i ) const;
+  const Vector2& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector2)& getPointListAt( uint_t i );
+  Vector2& getPointListAt( uint_t i );
 
   /// Returns \b PointList value.
   const Point2ArrayPtr& getPointList( ) const ;
@@ -250,11 +250,11 @@ public:
 
   virtual const uint_t getStride() const;
 
-  virtual TOOLS(Vector2) getPointAt(real_t u) const;
+  virtual Vector2 getPointAt(real_t u) const;
 
-  virtual TOOLS(Vector2) getTangentAt(real_t u) const;
+  virtual Vector2 getTangentAt(real_t u) const;
 
-  virtual TOOLS(Vector2) getNormalAt(real_t u) const;
+  virtual Vector2 getNormalAt(real_t u) const;
 
   virtual bool isACurve( ) const {
     return true;

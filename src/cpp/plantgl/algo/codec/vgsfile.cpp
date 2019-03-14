@@ -46,7 +46,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 using namespace std;
 
 PGL_BEGIN_NAMESPACE
@@ -221,7 +221,7 @@ size_t find_next(const std::string s, size_t pos) {
     return next;
 
 }
-std::vector<std::string> split(const std::string& s)
+std::vector<std::string> vgs_split(const std::string& s)
 {
     std::vector<std::string> output;
     std::string::size_type prev_pos = 0, pos = 0;
@@ -242,7 +242,7 @@ VegeStarFile::parseHeader(std::istream& stream)
 	char line[MAXLINELENGTH]; 
 	stream.getline(line,MAXLINELENGTH);
 	
-	std::vector<std::string> tokens = split(line);
+	std::vector<std::string> tokens = vgs_split(line);
 	for(int it = 0; it < tokens.size(); ++it){
 		std::string token = tokens[it];
 		if(token == "Obj")attlist.push_back(obj);
@@ -293,7 +293,7 @@ VegeStarFile::parseLine(std::istream& stream)
 	stream.getline(line,MAXLINELENGTH);
 
 	std::string t(line);
-	std::vector<std::string> tokens = split(t);
+	std::vector<std::string> tokens = vgs_split(t);
 
 	for(size_t i = 0; i < attlist.size() && i < tokens.size(); i++){
 		val = atof(tokens[i].c_str());

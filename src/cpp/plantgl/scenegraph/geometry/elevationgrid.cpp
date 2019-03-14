@@ -39,7 +39,6 @@
 #include <plantgl/scenegraph/container/pointmatrix.h>
 #include <plantgl/tool/util_array2.h>
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
@@ -93,7 +92,7 @@ bool ElevationGrid::Builder::isValid( ) const {
  for (uint_t _i = 0 ; _i< (*HeightList)->getRowNb() ; _i++)
      for (uint_t _j = 0 ; _j< (*HeightList)->getColumnNb() ; _j++)
          if (! pglfinite((*HeightList)->getAt(_i,_j))) {
-             string _ith = '(' + TOOLS(number)(_i + 1) + '-' + TOOLS(number)(_j + 1) + ')';
+             string _ith = '(' + number(_i + 1) + '-' + number(_j + 1) + ')';
              pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),
                         "Elevation Grid","HeightList",_ith.c_str(),"Must be pglfinite.");
              return false;
@@ -248,7 +247,7 @@ ElevationGrid::isValid( ) const {
 }
 
 
-real_t ElevationGrid::getHeightAt(const TOOLS(Vector2) pos) const
+real_t ElevationGrid::getHeightAt(const Vector2 pos) const
 {
     int xind = int(pos.x() / __xSpacing);
     float xres = pos.x() -  (xind * __xSpacing);

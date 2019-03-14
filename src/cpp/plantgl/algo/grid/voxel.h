@@ -73,8 +73,8 @@ class ALGO_API Voxel : public Tile {
 	      const unsigned char Scale = 0, 
 	      const TileType Type = Empty, 
 	      const unsigned char Num = 0, 
-	      const TOOLS(Vector3)& PMin = TOOLS(Vector3)::ORIGIN,
-	      const TOOLS(Vector3)& PMax = TOOLS(Vector3)::ORIGIN);
+	      const Vector3& PMin = Vector3::ORIGIN,
+	      const Vector3& PMax = Vector3::ORIGIN);
     
     
 
@@ -86,52 +86,52 @@ class ALGO_API Voxel : public Tile {
     virtual bool isValid() const ;
 
     /// Return center of \e self.
-    inline TOOLS(Vector3) getCenter() const {
+    inline Vector3 getCenter() const {
 	return (__ur + __ll) / 2 ;
     }
     
     /// Return size of \e self.
-    inline TOOLS(Vector3) getSize() const {
+    inline Vector3 getSize() const {
 	return (__ur - __ll) / 2 ;
     }
     
     /// Return coordinates min of \e self.
-    inline const TOOLS(Vector3)& getMinCoord() const {
+    inline const Vector3& getMinCoord() const {
 	return __ll;
     }
     
     /// Return coordinates min of \e self.
-    inline TOOLS(Vector3)& getMinCoord(){
+    inline Vector3& getMinCoord(){
 	return __ll;
     }
     
     /// Return Lower Left Corner of \e self.
-    inline const TOOLS(Vector3)& getLowerLeftCorner() const {
+    inline const Vector3& getLowerLeftCorner() const {
 	return __ll;
     }
     
     /// Return Lower Left Corner of \e self.
-    inline TOOLS(Vector3)& getLowerLeftCorner(){
+    inline Vector3& getLowerLeftCorner(){
 	return __ll;
     }
     
     /// Return coordinates max of \e self.
-    inline const TOOLS(Vector3)& getMaxCoord() const {
+    inline const Vector3& getMaxCoord() const {
 	return __ur;
     }
     
     /// Return coordinates max of \e self.
-    inline TOOLS(Vector3)& getMaxCoord(){
+    inline Vector3& getMaxCoord(){
 	return __ur;
     }
     
     /// Return Upper Right Corner of \e self.
-    inline const TOOLS(Vector3)& getUpperRightCorner() const {
+    inline const Vector3& getUpperRightCorner() const {
 	return __ur;
     }
     
     /// Return Upper Right Corner  of \e self.
-    inline TOOLS(Vector3)& getUpperRightCorner(){
+    inline Vector3& getUpperRightCorner(){
 	return __ur;
     }
     
@@ -158,32 +158,32 @@ class ALGO_API Voxel : public Tile {
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-    bool intersect( const TOOLS(Vector3)& point ) const;
+    bool intersect( const Vector3& point ) const;
 
   /*! Intersection between projection of \e self on z=0 and \e point.
       \pre
       - \e self must be valid;
       - \e point must be valid. */
-    bool intersect( const TOOLS(Vector2)& point ) const;
+    bool intersect( const Vector2& point ) const;
 
   /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
       \pre
       - \e self must be valid;
       - \e point1 and \e point2 must be valid. */
-    bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2 ) const;
+    bool intersect( const Vector3& point1, const Vector3& point2 ) const;
 
   /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ]. 
       \pre
       - \e self must be valid;
       - \e point1 and \e point2 must be valid. */
-    bool intersect( const TOOLS(Vector2)& point1, const TOOLS(Vector2)& point2 ) const;
+    bool intersect( const Vector2& point1, const Vector2& point2 ) const;
 
   /*! Intersection between \e self and a triangle defined by [ \e point1 , \e point2 , \e point3 ].
       Test if an edge of the voxel cross the triangle.
       \pre
       - \e self must be valid;
       - \e point1, \e point2  and \e point3 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, const TOOLS(Vector3)& point3 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2, const Vector3& point3 ) const;
 
   /*! Intersection between \e self and a quad facet defined by [ \e point1 , \e point2 , \e point3 , \e point4 ].
       Test if an edge of the voxel cross the facet.
@@ -191,7 +191,7 @@ class ALGO_API Voxel : public Tile {
       - \e self must be valid;
       - \e facet must be planar and convex;
       - \e point1, \e point2, \e point3 and \e point4 must be valid. */
-   bool intersect( const TOOLS(Vector3)& point1, const TOOLS(Vector3)& point2, const TOOLS(Vector3)& point3, const TOOLS(Vector3)& point4 ) const;
+   bool intersect( const Vector3& point1, const Vector3& point2, const Vector3& point3, const Vector3& point4 ) const;
 
 
    /// Return a representation of self with GEOM object.
@@ -211,20 +211,20 @@ class ALGO_API Voxel : public Tile {
    friend ALGO_API bool intersection( const Voxel& v1, const BoundingBoxPtr& b2);
    
    /// Returns whether \e v1 intersect \e v2.
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& v2);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& v2);
 
    /** Returns whether \e v1 intersect segment define by [ \e seg1, \e seg2 ].
        This is a progressive test.
        Test first if a vertex of the segment lies in the voxel,
        then if a point of the edge of the segment lies in the voxel. */
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& seg1, const Vector3& seg2);
 
    /** Returns whether \e v1 intersect triangle define by [ \e triangle1, \e triangle2 , \e triangle3 ].
        This is a progressive test.
        Test first if a vertex of the triangle lies in the voxel,
        then if an edge of the triangle lies in the voxel,
        and finally if an edge of the voxel lies in the triangle. */
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& triangle1, const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& triangle1, const Vector3& triangle2, const Vector3& triangle3);
 
    /** Returns whether \e v1 intersect quad facet define by [ \e quad1, \e quad2 , \e quad3 , \e quad4 ].
        This is a progressive test.
@@ -234,25 +234,25 @@ class ALGO_API Voxel : public Tile {
        \pre
        - the facet must be planar and convex.
    */
-   friend ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& quad1, const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3, const TOOLS(Vector3)& quad4);
+   friend ALGO_API bool intersection( const Voxel& v1, const Vector3& quad1, const Vector3& quad2, const Vector3& quad3, const Vector3& quad4);
 
    protected :
 	
    /// coordinates min of \e self.
-   TOOLS(Vector3) __ll;
+   Vector3 __ll;
    
    /// coordinates max of \e self.
-   TOOLS(Vector3) __ur;
+   Vector3 __ur;
    
 };
 
 ALGO_API bool intersection( const Voxel& v1, const Voxel& v2);
 ALGO_API bool intersection( const Voxel& v1, const BoundingBox& b2);
 ALGO_API bool intersection( const Voxel& v1, const BoundingBoxPtr& b2);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& v2);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& seg1, const TOOLS(Vector3)& seg2);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& triangle1, const TOOLS(Vector3)& triangle2, const TOOLS(Vector3)& triangle3);
-ALGO_API bool intersection( const Voxel& v1, const TOOLS(Vector3)& quad1, const TOOLS(Vector3)& quad2, const TOOLS(Vector3)& quad3, const TOOLS(Vector3)& quad4);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& v2);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& seg1, const Vector3& seg2);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& triangle1, const Vector3& triangle2, const Vector3& triangle3);
+ALGO_API bool intersection( const Voxel& v1, const Vector3& quad1, const Vector3& quad2, const Vector3& quad3, const Vector3& quad4);
 
 /* ----------------------------------------------------------------------- */
 

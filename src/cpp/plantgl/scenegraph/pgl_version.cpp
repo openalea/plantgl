@@ -39,7 +39,7 @@
 
 using namespace std;
 
-TOOLS_USING_NAMESPACE;
+PGL_USING_NAMESPACE;
 
 
 float getPGLVersion(){

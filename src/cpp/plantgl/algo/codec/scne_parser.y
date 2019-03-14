@@ -70,7 +70,6 @@
 #include <plantgl/tool/dirnames.h>
 #include <plantgl/tool/readline.h>
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 #include <list>
@@ -384,20 +383,20 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   RealArrayPtr *               real_a;
   Array2<real_t> *             real_m;
   RealArray2Ptr *              real_mp;
-  TOOLS(Vector2) *             vector2_t;
-  std::list<TOOLS(Vector2)> *  vector2_l;
+  Vector2 *             vector2_t;
+  std::list<Vector2> *  vector2_l;
   Point2ArrayPtr *             vector2_a;
-  Array2<TOOLS(Vector2)> *     vector2_m;
+  Array2<Vector2> *     vector2_m;
   Point2MatrixPtr *            vector2_mp;
-  TOOLS(Vector3) *             vector3_t;
-  std::list<TOOLS(Vector3)> *  vector3_l;
+  Vector3 *             vector3_t;
+  std::list<Vector3> *  vector3_l;
   Point3ArrayPtr *             vector3_a;
-  Array2<TOOLS(Vector3)> *     vector3_m;
+  Array2<Vector3> *     vector3_m;
   Point3MatrixPtr *            vector3_mp;
-  TOOLS(Vector4) *             vector4_t;
-  std::list<TOOLS(Vector4)> *  vector4_l;
+  Vector4 *             vector4_t;
+  std::list<Vector4> *  vector4_l;
   Point4ArrayPtr *             vector4_a;
-  Array2<TOOLS(Vector4)> *     vector4_m;
+  Array2<Vector4> *     vector4_m;
   Point4MatrixPtr *            vector4_mp;
 
   // Transformation object
@@ -2313,7 +2312,7 @@ Texture2DFieldList:
 
 ImageTextureFieldList:
    ImageTextureFieldList TokFileName Filename {
-     if($3)*$3 = TOOLS(absolute_filename)(*$3);
+     if($3)*$3 = absolute_filename(*$3);
      GEOM_PARSER_SET_FIELD($1,FileName,$3); $$=$1;
    }   
  | ImageTextureFieldList TokMipmaping TokBool {
@@ -2981,7 +2980,7 @@ Vector2:
 Vector2Atom:
    '<' Real ',' Real '>' {
      if (($2) && ($4)) {
-       $$ = new TOOLS(Vector2)(*$2,*$4);
+       $$ = new Vector2(*$2,*$4);
        delete $2;
        delete $4;
      }
@@ -2997,7 +2996,7 @@ Vector2List:
      GEOM_PARSER_ADD_LIST($1,$3,$$);
    }
  | Vector2 {
-     GEOM_PARSER_INIT_LIST(TOOLS(Vector2),$1,$$);
+     GEOM_PARSER_INIT_LIST(Vector2,$1,$$);
    };
 
 Vector3:
@@ -3069,7 +3068,7 @@ Vector3Atom:
    '<' Real ',' Real ',' Real '>' {
      if (($2) && ($4) && ($6)) {
        // printf("%f %f %f\n",*$2,*$4,*$6);
-       $$ = new TOOLS(Vector3)(*$2,*$4,*$6);
+       $$ = new Vector3(*$2,*$4,*$6);
        delete $2;
        delete $4;
        delete $6;
@@ -3090,7 +3089,7 @@ Vector3List:
      GEOM_PARSER_ADD_LIST($1,$3,$$);
    }
  | Vector3 {
-     GEOM_PARSER_INIT_LIST(TOOLS(Vector3),$1,$$);
+     GEOM_PARSER_INIT_LIST(Vector3,$1,$$);
    };
 
 Vector4:
@@ -3148,7 +3147,7 @@ Vector4:
 Vector4Atom:
    '<' Real ',' Real ',' Real ',' Real '>' {
      if (($2) && ($4) && ($6) && ($8)) {
-       $$ = new TOOLS(Vector4)(*$2,*$4,*$6,*$8);
+       $$ = new Vector4(*$2,*$4,*$6,*$8);
        delete $2;
        delete $4;
        delete $6;
@@ -3169,7 +3168,7 @@ Vector4List:
      GEOM_PARSER_ADD_LIST($1,$3,$$);
    }
  | Vector4 {
-     GEOM_PARSER_INIT_LIST(TOOLS(Vector4),$1,$$);
+     GEOM_PARSER_INIT_LIST(Vector4,$1,$$);
    };
 
 %%

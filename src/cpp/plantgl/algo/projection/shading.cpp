@@ -39,7 +39,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 
 
@@ -74,8 +73,8 @@ Color4 PGL(phong)(const Vector3& v, const Vector3& n,
 Shader::Shader(ZBufferEngine * engine) : RefCountObject(), __engine(engine) {}
 Shader::~Shader() {}
 
-const TOOLS(Vector3)& Shader::cameraPosition() const { return __engine->camera()->position(); }  
-const TOOLS(Vector3)& Shader::lightPosition() const { return __engine->__lightPosition; }  
+const Vector3& Shader::cameraPosition() const { return __engine->camera()->position(); }  
+const Vector3& Shader::lightPosition() const { return __engine->__lightPosition; }  
 const Color3& Shader::lightAmbient() const { return __engine->__lightAmbient; }  
 const Color3& Shader::lightDiffuse() const { return __engine->__lightDiffuse; }  
 const Color3& Shader::lightSpecular() const { return __engine->__lightSpecular; }  

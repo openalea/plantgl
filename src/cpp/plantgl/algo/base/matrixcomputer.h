@@ -211,49 +211,49 @@ public:
   }
 
   /// Returns the resulting matrix when applying \e self for the last time.
-  const TOOLS(Matrix4)& getMatrix() const {
+  const Matrix4& getMatrix() const {
 	  return __matrix;
   }
 
   /// Returns the resulting matrix when applying \e self for the last time.
-  TOOLS(Matrix4)& getMatrix() {
+  Matrix4& getMatrix() {
 	  return __matrix;
   }
 
-  inline void translate(const TOOLS(Vector3)& t){
-	  transform(TOOLS(Matrix4)::translation(t));
+  inline void translate(const Vector3& t){
+	  transform(Matrix4::translation(t));
   }
 
-  inline void scale(const TOOLS(Vector3)& s){
-	  transform(TOOLS(Matrix3)::scaling(s));
+  inline void scale(const Vector3& s){
+	  transform(Matrix3::scaling(s));
   }
 
-  inline void axisRotate(const TOOLS(Vector3)& axe,const real_t angle){
-	  transform(TOOLS(Matrix3)::axisRotation(axe,angle));
+  inline void axisRotate(const Vector3& axe,const real_t angle){
+	  transform(Matrix3::axisRotation(axe,angle));
   }
 
-  inline void transform(const TOOLS(Matrix4)& m){
+  inline void transform(const Matrix4& m){
 	  __matrix *= m;
   }
 
-  inline void transform(const TOOLS(Matrix3)& m){
-	  __matrix *= TOOLS(Matrix4)(m);
+  inline void transform(const Matrix3& m){
+	  __matrix *= Matrix4(m);
   }
 
   inline void identity(){
-	  __matrix = TOOLS(Matrix4)();
+	  __matrix = Matrix4();
   }
 
 
-  void getTransformation(TOOLS(Vector3)& scale,
-                         TOOLS(Vector3)& angle,
-                         TOOLS(Vector3)& translate) const;
+  void getTransformation(Vector3& scale,
+                         Vector3& angle,
+                         Vector3& translate) const;
 protected:
 
   /// The resulting matrix.
-  TOOLS(Matrix4) __matrix;
+  Matrix4 __matrix;
 
-  std::stack<TOOLS(Matrix4)> __stack;
+  std::stack<Matrix4> __stack;
 
 private:
 

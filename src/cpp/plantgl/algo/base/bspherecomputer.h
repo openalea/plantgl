@@ -325,7 +325,7 @@ public :
 protected : 
 
 	/// The cache storing the already computed bounding sphere.
-    TOOLS(Cache)<BoundingSpherePtr> __cache;
+    Cache<BoundingSpherePtr> __cache;
 
     /// The resulting bounding box.
 	BoundingSpherePtr __result;

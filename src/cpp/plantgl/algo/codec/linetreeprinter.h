@@ -87,7 +87,7 @@ public:
 
  /** Constructs a VgstarPrinter with the output streams \e vgstarStream and
       the Tesselator \e tesselator. */
-  LinetreePrinter( TOOLS(bofstream)& ligstream,
+  LinetreePrinter( bofstream& ligstream,
           std::ostream& dtastream,
           const std::string& smbpath,
       AmapTranslator& translator);
@@ -105,8 +105,8 @@ public:
   void printMaterial(const MaterialPtr& mat);
 
   void printInf( std::ostream& stream,
-                             const TOOLS(Vector3)& _max = TOOLS(Vector3)(1,1,1),
-                                 const TOOLS(Vector3)& _min = TOOLS(Vector3)(-1,-1,-1)) const;
+                             const Vector3& _max = Vector3(1,1,1),
+                                 const Vector3& _min = Vector3(-1,-1,-1)) const;
 
   bool printCfg( const std::string& path,
                              const std::string& ligne ,
@@ -208,7 +208,7 @@ public:
 
 protected:
 
-  TOOLS(bofstream)& __ligstream;
+  bofstream& __ligstream;
   std::ostream& __dtastream;
   std::string __smbpath;
 
@@ -222,7 +222,7 @@ protected:
   /// The name of the current texture is cached using a string.
   MaterialPtr __mat;
 
-  typedef pgl_hash_map<uint_t, std::pair<AmapSymbolPtr,std::pair<TOOLS(Vector3),TOOLS(Vector3)> > > SmbMap;
+  typedef pgl_hash_map<uint_t, std::pair<AmapSymbolPtr,std::pair<Vector3,Vector3> > > SmbMap;
   typedef pgl_hash_map<uint_t, std::string > SmbFileMap;
   typedef pgl_hash_map<uint_t,long> CacheUnit;
   typedef pgl_hash_map<uint_t, CacheUnit > Cache;

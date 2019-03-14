@@ -37,7 +37,6 @@
 #include <plantgl/tool/util_array.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
@@ -95,7 +94,7 @@ bool MultiSpectral::Builder::isValid( ) const {
   for (uint_t _i = 0; _i < _size; _i++) {
     const real_t& _value = (*Reflectance)->getAt(_i);
     if (_value < 0 || _value > 1) {
-        string _ith = TOOLS(number)(_i + 1);
+        string _ith = number(_i + 1);
         pglErrorEx
             (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"MultiSpectral","Reflectance",_ith.c_str(),"Must be in [0,1].");
         return false;

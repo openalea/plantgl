@@ -66,8 +66,8 @@ public :
 protected:
         GeometryPtr transform(GeometryPtr geom) const;
         int shapeid;
-        TOOLS(Vector3) scaling,translation,rotation;
-        TOOLS(Vector3) point1,point2,point3;
+        Vector3 scaling,translation,rotation;
+        Vector3 point1,point2,point3;
         Color3 color;
 };
 

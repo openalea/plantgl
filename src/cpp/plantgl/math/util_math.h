@@ -163,7 +163,7 @@ inline bool isPowerOfTwo(int val){
 
 /// On win32, redefine cubic root.
 inline double cbrt(double x){
-	return pow(x,1/3);
+    return pow(x,1/3);
 }
 
 #if (_MSC_VER > 1500)
@@ -175,9 +175,9 @@ inline double cbrt(double x){
 
 /// On win32, redefine round double to int.
 inline int rint(double x){
-	int res = (int)x;
-	if(x-res>0.5)res++;
-	return res;
+    int res = (int)x;
+    if(x-res>0.5)res++;
+    return res;
 }
 
 /// On win32, redefine round double to int.
@@ -190,9 +190,9 @@ inline int rint(double x){
 #define HAVE_TRUNC
 /// On win32, redefine truncate double to int.
 inline int trunc(double x){
-	int res = (int)x;
-	if(x-res>0.5)res++;
-	return res;
+    int res = (int)x;
+    if(x-res>0.5)res++;
+    return res;
 }
 #endif
 

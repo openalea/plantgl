@@ -50,10 +50,8 @@ class PglClassInfo { public: static std::string name() { throw ; } };
     PGL_BEGIN_NAMESPACE
 
 
-#define TOOLS_DECLARE_TYPE(mtype) \
-    TOOLS_END_NAMESPACE \
-    template<> class PglClassInfo<TOOLS(mtype)> { public:  static std::string name() { return #mtype; } }; \
-    TOOLS_BEGIN_NAMESPACE
+#define TOOLS_DECLARE_TYPE(mtype) PGL_DECLARE_TYPE(mtype)
+
 
 /* ----------------------------------------------------------------------- */
 

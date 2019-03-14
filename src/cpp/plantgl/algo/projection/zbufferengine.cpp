@@ -39,7 +39,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 
 ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight, const Color3& backGroundColor, eRenderingStyle style):
@@ -144,7 +143,7 @@ bool ZBufferEngine::isVisible(int32_t x, int32_t y, real_t z) const
     return (z < cz && (cz-z) > GEOM_EPSILON); 
 }
 
-bool ZBufferEngine::isVisible(const TOOLS(Vector3)& pos) const
+bool ZBufferEngine::isVisible(const Vector3& pos) const
 {
     Vector3 raster = worldToRaster(pos);
     return isVisible(raster.x(), raster.y(), raster.z());
@@ -163,7 +162,7 @@ bool ZBufferEngine::renderRaster(uint32_t x, uint32_t y, real_t z, const Color4&
 
 }
 
-void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightColor)
+void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightColor)
 {
     // printf("Set Light Color : %u %u %u\n", lightColor.getRed(), lightColor.getGreen(), lightColor.getBlue());
     __lightPosition = lightPosition;
@@ -172,7 +171,7 @@ void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& 
     __lightSpecular = lightColor;
 }
 
-void ZBufferEngine::setLight(const TOOLS(Vector3)& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular)
+void ZBufferEngine::setLight(const Vector3& lightPosition, const Color3& lightAmbient, const Color3& lightDiffuse, const Color3& lightSpecular)
 {
     // printf("Set Light Ambient : %u %u %u\n", lightAmbient.getRed(), lightAmbient.getGreen(), lightAmbient.getBlue());
     __lightPosition = lightPosition;
@@ -209,7 +208,7 @@ void ZBufferEngine::process(TriangleSetPtr triangles, AppearancePtr appearance, 
 }
 
 
-void ZBufferEngine::renderShadedTriangle(TriangleShaderPtr shader, const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const TOOLS(Vector3)& v2, bool ccw)
+void ZBufferEngine::renderShadedTriangle(TriangleShaderPtr shader, const Vector3& v0, const Vector3& v1, const Vector3& v2, bool ccw)
 {
     // Projection in camera space
     Vector3 v0Cam = __camera->worldToCamera(v0);
@@ -319,7 +318,7 @@ void ZBufferEngine::renderTriangle(const Vector3& v0, const Vector3& v1, const V
 }
 
 
-void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const uint32_t width)
+void ZBufferEngine::renderPoint(const Vector3& v, const Color4& c, const uint32_t width)
 {
     Vector3 vCam = __camera->worldToCamera(v);
 
@@ -348,7 +347,7 @@ void ZBufferEngine::renderPoint(const TOOLS(Vector3)& v, const Color4& c, const 
     }
 }
 
-void ZBufferEngine::renderSegment(const TOOLS(Vector3)& v0, const TOOLS(Vector3)& v1, const Color4& c0, const Color4& c1, const uint32_t width)
+void ZBufferEngine::renderSegment(const Vector3& v0, const Vector3& v1, const Color4& c0, const Color4& c1, const uint32_t width)
 {
 
 }
@@ -387,7 +386,7 @@ ImagePtr ZBufferEngine::getTexture(const ImageTexturePtr imgdef)
     }
 }
 
-void ZBufferEngine::duplicateBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
+void ZBufferEngine::duplicateBuffer(const Vector3& from, const Vector3& to, bool useDefaultColor, const Color3& defaultcolor)
 {
     Vector3 vRasterFrom = __camera->worldToRaster(from,__imageWidth, __imageHeight);
     Vector3 vRasterTo = __camera->worldToRaster(to,__imageWidth, __imageHeight);
@@ -439,7 +438,7 @@ void ZBufferEngine::duplicateBuffer(int32_t xDiff, int32_t yDiff, real_t zDiff, 
 
 }
 
-void ZBufferEngine::periodizeBuffer(const TOOLS(Vector3)& from, const TOOLS(Vector3)& to, bool useDefaultColor, const Color3& defaultcolor)
+void ZBufferEngine::periodizeBuffer(const Vector3& from, const Vector3& to, bool useDefaultColor, const Color3& defaultcolor)
 {
     Vector3 vRasterFrom = __camera->worldToRaster(from,__imageWidth, __imageHeight);
     Vector3 vRasterTo = __camera->worldToRaster(to,__imageWidth, __imageHeight);

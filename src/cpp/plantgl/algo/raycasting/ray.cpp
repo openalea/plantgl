@@ -37,7 +37,6 @@
 #include <plantgl/math/util_matrix.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 
 /* ----------------------------------------------------------------------- */
@@ -85,7 +84,7 @@ Ray::intersect( const Vector2& point ) const
 }
 
 
-int Ray::intersect( const Ray& ray, TOOLS(Vector3)& intersection, real_t& t ) const
+int Ray::intersect( const Ray& ray, Vector3& intersection, real_t& t ) const
 {
     Vector3 _deltaOrig(ray.getOrigin()-__origin);
     Vector3 _crossDirs = cross(__direction,ray.getDirection());

@@ -90,7 +90,7 @@
 #include "util_qwidget.h"
 #include "configuration.h"
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /*------------------------------------------------------------------------------------*/
 
@@ -592,7 +592,7 @@ void ViewFileManager::saveImage(bool withAlpha)
             extension = ext;
         }
         extension= extension.toUpper();
-        /*if(TOOLS(exists)(_filename.toStdString())){
+        /*if(exists(_filename.toStdString())){
           if(QMessageBox::warning(this,tr("File Exists"),_filename + tr(" already exist. Overwrite ?"),
                       tr("Yes"),tr("No"))!=0)
             return;

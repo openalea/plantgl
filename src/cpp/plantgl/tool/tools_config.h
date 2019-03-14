@@ -36,6 +36,7 @@
 #define __tools_config_h__
 
 #include "../pgl_config.h"
+#include "../pgl_namespace.h"
 
 /* ----------------------------------------------------------------------- */
 
@@ -94,77 +95,27 @@
 
 #ifndef TOOLS_API
 #define TOOLS_API
-#define TOOLS_TEMPLATE_API(T) 
+#define TOOLS_TEMPLATE_API(T)
 #endif
 
 
 /* ----------------------------------------------------------------------- */
 
-#ifdef NO_NAMESPACE
-
-#ifdef TOOLS_NAMESPACE
-#undef TOOLS_NAMESPACE
-#endif
-
-#ifdef TOOLS_NAMESPACE_NAME
-#undef TOOLS_NAMESPACE_NAME
-#endif
-
-#else
-
-/// Macro that enable the tools namespace
-#define TOOLS_NAMESPACE
-
-#endif
-
-#ifdef TOOLS_NAMESPACE
-
-
-#ifndef TOOLS_NAMESPACE_NAME
-
-/// Macro that contains the tools namespace name
-#define TOOLS_NAMESPACE_NAME TOOLS
-#endif
-
 /// Macro for beginning the tools namespace.
-#define TOOLS_BEGIN_NAMESPACE namespace TOOLS_NAMESPACE_NAME {
+#define TOOLS_BEGIN_NAMESPACE  PGL_BEGIN_NAMESPACE
 
 /// Macro for ending the tools namespace.
-#define TOOLS_END_NAMESPACE };
+#define TOOLS_END_NAMESPACE  PGL_END_NAMESPACE
 
 /// Macro for using the tools namespace.
-#define TOOLS_USING_NAMESPACE using namespace TOOLS_NAMESPACE_NAME;
+#define TOOLS_USING_NAMESPACE  PGL_USING_NAMESPACE
 
 /// Macro for using an object of the tools namespace.
-#define TOOLS_USING(obj) using TOOLS_NAMESPACE_NAME::obj;
+#define TOOLS_USING(obj) PGL_USING(obj)
 
 /// Macro to use an object from the tools namespace.
-#define TOOLS(obj) TOOLS_NAMESPACE_NAME::obj
+#define TOOLS(obj) PGL(obj)
 
-#else
-
-#ifdef _MSC_VER 
-#  pragma message "namespace TOOLS not used"
-#else
-#  warning namespace TOOLS not used
-#endif
-
-/// Macro for beginning the tools namespace.
-#define TOOLS_BEGIN_NAMESPACE  
-
-/// Macro for ending the tools namespace.
-#define TOOLS_END_NAMESPACE  
-
-/// Macro for using the tools namespace.
-#define TOOLS_USING_NAMESPACE  
-
-/// Macro for using an object of the tools namespace.
-#define TOOLS_USING(obj)
-
-/// Macro to use an object from the tools namespace.
-#define TOOLS(obj) obj
-
-#endif
 
 /* ----------------------------------------------------------------------- */
 

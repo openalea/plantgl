@@ -50,7 +50,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 /// Index of size 3
-typedef TOOLS(UintTuple3) Index3;
+typedef UintTuple3 Index3;
 
 /* ----------------------------------------------------------------------- */
 
@@ -61,7 +61,7 @@ typedef TOOLS(UintTuple3) Index3;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Index3Array : public TOOLS(Array1)<Index3>
+class SG_API Index3Array : public Array1<Index3>
 {
 
 public:
@@ -76,7 +76,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Index3Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<Index3>(first,last) {
+    Array1<Index3>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -101,7 +101,7 @@ PGL_DECLARE_TYPE(Index3Array)
 /* ----------------------------------------------------------------------- */
 
 /// Index of size 4
-typedef TOOLS(UintTuple4) Index4;
+typedef UintTuple4 Index4;
 
 /* ----------------------------------------------------------------------- */
 
@@ -112,7 +112,7 @@ typedef TOOLS(UintTuple4) Index4;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API Index4Array : public TOOLS(Array1)<Index4>
+class SG_API Index4Array : public Array1<Index4>
 {
 
 public:
@@ -126,7 +126,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   Index4Array( InIterator first, InIterator last ) :
-    TOOLS(Array1)<Index4>(first,last) {
+    Array1<Index4>(first,last) {
     GEOM_ASSERT(isValid());
   }
 
@@ -154,7 +154,7 @@ PGL_DECLARE_TYPE(Index4Array)
 /* ----------------------------------------------------------------------- */
 
 /// Index of non fixed size
-// typedef TOOLS(UintArray1) Index;
+// typedef UintArray1 Index;
 typedef TOOLS(PglVector<uint_t>) Index;
 
 /* ----------------------------------------------------------------------- */
@@ -166,7 +166,7 @@ typedef TOOLS(PglVector<uint_t>) Index;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API IndexArray : public TOOLS(Array1)<Index>
+class SG_API IndexArray : public Array1<Index>
 {
 
 public:  
@@ -191,7 +191,7 @@ public:
       - \e self is valid. */
   template <class InIterator>
   IndexArray( InIterator first, InIterator last ) :
-    TOOLS(Array1)<Index>(first,last) {
+    Array1<Index>(first,last) {
     GEOM_ASSERT(isValid());
   }
 

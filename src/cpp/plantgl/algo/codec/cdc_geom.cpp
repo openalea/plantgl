@@ -63,7 +63,6 @@
 #endif
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #ifdef WITH_BISONFLEX
 /// structure de donnees pour parser les sceneobjects.
@@ -89,7 +88,6 @@ using namespace std;
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

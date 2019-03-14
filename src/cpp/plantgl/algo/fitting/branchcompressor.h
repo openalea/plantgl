@@ -93,20 +93,20 @@ private :
 
   void interConnection(ScenePtr& scene);
 
-  TOOLS(Vector3) connectionTo(const TOOLS(Vector3)& p, 
+  Vector3 connectionTo(const Vector3& p, 
 					   const ScenePtr& scene,
 					   int fid);
-  TOOLS(Vector4) connectionTo(const TOOLS(Vector4)& p, 
+  Vector4 connectionTo(const Vector4& p, 
 					   const ScenePtr& scene,
 					   int fid);
 
   void addScene(ScenePtr scene, int c_branch,LineicModelPtr axis) const;
   void addScene(ScenePtr scene, int c_branch,GeometryPtr geom) const;
   void addScene(ScenePtr scene, int c_branch,
-				const TOOLS(Vector3)& p1,const TOOLS(Vector3)& p2) const;
+				const Vector3& p1,const Vector3& p2) const;
 
-  void removeDouble(Point2ArrayPtr&,TOOLS(RealArrayPtr)&) const;
-  bool isDefault(TOOLS(RealArrayPtr)&) const;
+  void removeDouble(Point2ArrayPtr&,RealArrayPtr&) const;
+  bool isDefault(RealArrayPtr&) const;
 };
 
 /* ----------------------------------------------------------------------- */

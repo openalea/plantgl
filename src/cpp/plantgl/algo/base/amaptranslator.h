@@ -83,11 +83,11 @@ class ALGO_API AmapTranslator : public Action {
   const bool isNormalized();
 
 
-  const TOOLS(Vector3)& getNormalizationFactors() const {
+  const Vector3& getNormalizationFactors() const {
           return __normfactor;
   }
 
-  const TOOLS(Vector3)& getTranslation() const {
+  const Vector3& getTranslation() const {
           return __translation;
   }
 
@@ -209,10 +209,10 @@ class ALGO_API AmapTranslator : public Action {
     AmapSymbolPtr __symbol;
 
     /// The resulting normalisation factor.
-    TOOLS(Vector3) __normfactor;
+    Vector3 __normfactor;
 
     /// The resulting translation factor.
-    TOOLS(Vector3) __translation;
+    Vector3 __translation;
 
     /// If Symbol must be normalized.
     bool __normalized;

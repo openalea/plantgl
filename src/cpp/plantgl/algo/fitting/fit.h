@@ -216,12 +216,14 @@ class ALGO_API Fit
     /*!
       Fit the 2D points \e points with a bounding circle.
     */
-	static bool boundingCircle(const Point2ArrayPtr& _points, TOOLS::Vector2& center, real_t& radius);
+	static bool boundingCircle(const Point2ArrayPtr& _points, 
+Vector2& center, real_t& radius);
 
     /*
       Fit the 3D points \e points with a bounding circle.
     */
-	static bool plane(const Point3ArrayPtr& _points, TOOLS::Vector3& center, Plane3& plane, const Index& subset = Index(0));
+	static bool plane(const Point3ArrayPtr& _points, 
+Vector3& center, Plane3& plane, const Index& subset = Index(0));
 
 /* ----------------------------------------------------------------------- */
     /*!
@@ -306,7 +308,7 @@ class ALGO_API Fit
       \author    Philippe Lavoie
       \date 24 January, 1997
     */
-    static TOOLS(RealArrayPtr) chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength);
+    static RealArrayPtr chordLengthParam(const Point3ArrayPtr &Q,real_t& totalLength);
 
     /*!
       \brief  A least squares curve approximation
@@ -344,7 +346,7 @@ class ALGO_API Fit
       \date 24 January 1997
     */
     static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const TOOLS(RealArrayPtr)& ub);
+			       int degC, int n, const RealArrayPtr& ub);
 
     /*!
       \brief  A least squares curve approximation
@@ -386,8 +388,8 @@ class ALGO_API Fit
       \date 24 January 1997
     */
     static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const TOOLS(RealArrayPtr)& ub,
-			       const TOOLS(RealArrayPtr)& knot);
+			       int degC, int n, const RealArrayPtr& ub,
+			       const RealArrayPtr& knot);
 
 /* ----------------------------------------------------------------------- */
 
@@ -404,11 +406,11 @@ class ALGO_API Fit
 
 	/// compute inertia axis
 	static bool inertiaAxis(const Point3ArrayPtr& points, 
-						    TOOLS(Vector3)& u, TOOLS(Vector3)& v, 
-							TOOLS(Vector3)& w, TOOLS(Vector3)& s);
+						    Vector3& u, Vector3& v, 
+							Vector3& w, Vector3& s);
 
 	static bool inertiaAxis(const Point2ArrayPtr& points, 
-						    TOOLS(Vector2)& u, TOOLS(Vector2)& v, TOOLS(Vector2)& s);
+						    Vector2& u, Vector2& v, Vector2& s);
 
 	/*!
 		Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.

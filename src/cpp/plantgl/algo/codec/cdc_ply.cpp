@@ -21,7 +21,6 @@
 #include <boost/function.hpp>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 PlyCodec::PlyCodec() : SceneCodec("PLY", ReadWrite) {
   this->fcodingTypes.push_back("binary_little_endian");
@@ -69,22 +68,22 @@ ScenePtr PlyCodec::read(const std::string &fname) {
     return ScenePtr();
 
   std::string header = this->nextline(file);
-  assert(TOOLS(strip)(header) == "ply");
+  assert(strip(header) == "ply");
 
   std::string format = this->nextline(file);
   std::string fkeyword, fcoding;
   float fversion;
   {
-    std::vector<std::string> sformat = TOOLS(split)(format);
+    std::vector<std::string> sformat = split(format);
     fkeyword = sformat[0];
     fcoding = sformat[1];
-    fversion = TOOLS(toNumber)<float>(sformat[2]);
+    fversion = toNumber<float>(sformat[2]);
   }
 
   assert(std::find(this->fcodingTypes, fcoding) != this->fcodingTypes.end());
   bool reversebytes = false;
   if (fcoding != "ascii") {
-    std::string byteorder = TOOLS(split)(fcoding, "_")[1];
+    std::string byteorder = split(fcoding, "_")[1];
     if (byteorder == "little" && __BYTE_ORDER == __BIG_ENDIAN)
       reversebytes = true;
     else if (byteorder == "big" && __BYTE_ORDER == __LITTLE_ENDIAN)
@@ -157,7 +156,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
           std::vector<propertyType> values;
           propertyType type = this->propertiesTypes[p->type];
           if (p->isList) {
-            size_t nbpropv = TOOLS(toNumber)<size_t>(linevalues[itv]); itv++;
+            size_t nbpropv = toNumber<size_t>(linevalues[itv]); itv++;
 
             for (size_t j = 0; j < nbpropv; j++) {
               ReadVisitor v(linevalues[itv]); itv++;
@@ -197,7 +196,7 @@ ScenePtr PlyCodec::read(const std::string &fname) {
         float y = visitor.get_value();
         ielement["z"][0].apply_visitor(visitor);
         float z = visitor.get_value();
-        points->setAt(i, TOOLS(Vector3)(x, y, z));
+        points->setAt(i, Vector3(x, y, z));
         if (!colorprops.empty()) {
           uchar_t rgba[4];
           int index = 0;
@@ -246,7 +245,7 @@ std::string PlyCodec::nextline(std::ifstream &file) {
   do {
     std::getline(file, line);
   } while (line.find("comment") == 0);
-  return TOOLS(strip)(line);
+  return strip(line);
 }
 
 PlyCodec::propertyType PlyCodec::readnextval(std::ifstream &file, const PGL::PlyCodec::propertyType &type, const bool &reversebytes) {
@@ -256,7 +255,7 @@ PlyCodec::propertyType PlyCodec::readnextval(std::ifstream &file, const PGL::Ply
   char *tmp = new char[size];
   char *value = new char[size];
   file.read(tmp, size);
-  if (reversebytes) TOOLS(flipBytes)(tmp, value, size);
+  if (reversebytes) flipBytes(tmp, value, size);
   else memcpy(value, tmp, size);
 
   ReinterpretVisitor visitor(value);

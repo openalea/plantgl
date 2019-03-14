@@ -62,15 +62,15 @@ ALGO_API std::pair<Point2ArrayPtr, IndexArrayPtr> polygon2ds_intersection(Point2
 
 // Check if a plane and segment intersect. result contains intersection if true.
 ALGO_API bool plane_segment_intersection(const Plane3& plane, 
-                                         const TOOLS(Vector3)& p1, 
-                                         const TOOLS(Vector3)& p2,
-                                         TOOLS(Vector3)& result);
+                                         const Vector3& p1, 
+                                         const Vector3& p2,
+                                         Vector3& result);
 
 // Compute the actual intersection
-TOOLS(Vector3) _plane_segment_intersection(const Plane3& plane, 
+Vector3 _plane_segment_intersection(const Plane3& plane, 
                                     real_t d1,
-                                    const TOOLS(Vector3)& p1, 
-                                    const TOOLS(Vector3)& p2);
+                                    const Vector3& p1, 
+                                    const Vector3& p2);
 
 
 enum IntersectionType {
@@ -80,9 +80,9 @@ enum IntersectionType {
 } ;
 
 // Check if a plane and segment intersect. result contains intersection if true.
-ALGO_API IntersectionType triangle_triangle_intersection(const TOOLS(Vector3)& t11, const TOOLS(Vector3)& t12, const TOOLS(Vector3)& t13, 
-                                                 const TOOLS(Vector3)& t21, const TOOLS(Vector3)& t22, const TOOLS(Vector3)& t23, 
-                                                 TOOLS(Vector3)& intersectionstart, TOOLS(Vector3)& intersectionend);
+ALGO_API IntersectionType triangle_triangle_intersection(const Vector3& t11, const Vector3& t12, const Vector3& t13, 
+                                                 const Vector3& t21, const Vector3& t22, const Vector3& t23, 
+                                                 Vector3& intersectionstart, Vector3& intersectionend);
 
 
 

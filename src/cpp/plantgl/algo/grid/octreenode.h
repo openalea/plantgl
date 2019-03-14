@@ -68,8 +68,8 @@ class ALGO_API OctreeNode : public Voxel {
                    const unsigned char Scale = 0,
                    const TileType Type = Empty,
                    const unsigned char Num = 0,
-                   const TOOLS(Vector3)& PMin = TOOLS(Vector3::ORIGIN),
-                   const TOOLS(Vector3)& PMax = TOOLS(Vector3::ORIGIN) );
+                   const Vector3& PMin = TOOLS(Vector3::ORIGIN),
+                   const Vector3& PMax = TOOLS(Vector3::ORIGIN) );
 
      /// Destructor
      virtual ~OctreeNode();

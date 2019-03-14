@@ -1,18 +1,13 @@
 /* -*-c++-*-
- * ----------------------------------------------------------------------------
+ *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
+ *       Copyright  UMR CIRAD/INRIA/INRA DAP
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) boudon
+ *       File author(s): F. Boudon et al.
  *
- *       $Source: /usr/cvsmaster/AMAPmod/src/GEOM/geom_namespace.h,v $
- *       $Id: geom_namespace.h,v 1.5 2002/11/26 18:51:51 fboudon Exp $
- *
- *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *
- * ----------------------------------------------------------------------------
+ *  ----------------------------------------------------------------------------
  *
  *                      GNU General Public Licence
  *
@@ -31,7 +26,7 @@
  *       write to the Free Software Foundation, Inc., 59
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
- * ----------------------------------------------------------------------------
+ *  ----------------------------------------------------------------------------
  */
 
 
@@ -71,7 +66,7 @@
 
 #ifndef PGL_NAMESPACE_NAME
 /// Macro that contains the GEOM namespace name
-#define PGL_NAMESPACE_NAME PGL
+#define PGL_NAMESPACE_NAME pgl
 #endif
 
 /// Macro for beginning the GEOM namespace.
@@ -96,13 +91,13 @@
 #endif
 
 /// Macro for beginning the GEOM namespace.
-#define PGL_BEGIN_NAMESPACE  
+#define PGL_BEGIN_NAMESPACE
 
 /// Macro for ending the GEOM namespace.
-#define PGL_END_NAMESPACE  
+#define PGL_END_NAMESPACE
 
 /// Macro for using the GEOM namespace.
-#define PGL_USING_NAMESPACE  
+#define PGL_USING_NAMESPACE
 
 /// Macro for using an object of the GEOM namespace.
 #define PGL_USING(obj)

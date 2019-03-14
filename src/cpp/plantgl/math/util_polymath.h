@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -41,7 +41,7 @@
 #include "math_config.h"
 #include "plantgl/tool/util_types.h"
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 
 /*! \fn std::vector<real_t> all_bernstein( uint_t n, const real_t& u );
@@ -61,22 +61,22 @@ PGLMATH_API extern real_t bernstein( uint_t i, uint_t n, const real_t& u );
 
 
 
-/*! \fn bool solve( const real_t& a, const real_t& b, const real_t& c, real_t& x1, real_t& x2 ); 
-   Solves the equation ax2 + bx + c = 0 and returns whether the equation 
+/*! \fn bool solve( const real_t& a, const real_t& b, const real_t& c, real_t& x1, real_t& x2 );
+   Solves the equation ax2 + bx + c = 0 and returns whether the equation
    has some solutions \e x1 and \e x2.
-   
+
    \pre
    - \e a must be different from 0.
 */
-PGLMATH_API extern bool solve( const real_t& a, 
-		   const real_t& b, 
-		   const real_t& c, 
-		   real_t& x1, 
-		   real_t& x2 );
+PGLMATH_API extern bool solve( const real_t& a,
+           const real_t& b,
+           const real_t& c,
+           real_t& x1,
+           real_t& x2 );
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 //__util_polymath_h__
-#endif 
+#endif

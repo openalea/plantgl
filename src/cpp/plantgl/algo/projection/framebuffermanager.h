@@ -63,7 +63,7 @@ PGL_BEGIN_NAMESPACE
 class FrameBufferManager;
 typedef RCPtr<FrameBufferManager> FrameBufferManagerPtr;
 
-class FrameBufferManager : public TOOLS(RefCountObject) {
+class FrameBufferManager : public RefCountObject {
 public:
     FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color3& backGroundColor) {}
     FrameBufferManager(uint16_t imageWidth, uint16_t imageHeight, uint8_t nbChannel, const Color4& backGroundColor) {}

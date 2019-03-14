@@ -51,14 +51,14 @@
 #endif
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 #ifdef GEOM_FWDEF
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
 #endif
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -88,7 +88,7 @@ typedef RCPtr<ProfileTransformation> ProfileTransformationPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
+class SG_API ProfileTransformation : public RefCountObject {
 
     public :
 
@@ -96,12 +96,12 @@ class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
   static const Point2ArrayPtr DEFAULT_SCALE_LIST;
 
   /// The Default OrientationList Field Value.
-  static const TOOLS(RealArrayPtr) DEFAULT_ORIENTATION_LIST;
+  static const RealArrayPtr DEFAULT_ORIENTATION_LIST;
 
     /// Constructs a ProfileScaling.
     ProfileTransformation(Point2ArrayPtr _scalingList = DEFAULT_SCALE_LIST,
-                          TOOLS(RealArrayPtr) _orientationList = DEFAULT_ORIENTATION_LIST,
-                          TOOLS(RealArrayPtr) _knotList =  TOOLS(RealArrayPtr(0)));
+                          RealArrayPtr _orientationList = DEFAULT_ORIENTATION_LIST,
+                          RealArrayPtr _knotList =  TOOLS(RealArrayPtr(0)));
 
     /// Destructor
     virtual ~ProfileTransformation( ) ;
@@ -119,19 +119,19 @@ class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
     const Point2ArrayPtr& getScale() const;
 
     /// Return the Orientation Factor List value.
-    const TOOLS(RealArrayPtr)& getOrientation() const;
+    const RealArrayPtr& getOrientation() const;
 
     /// Return the Scaling Factor List field.
     Point2ArrayPtr& getScale();
 
     /// Return the Orientation Factor List field.
-    TOOLS(RealArrayPtr)& getOrientation();
+    RealArrayPtr& getOrientation();
 
     /// Return the KnotList Factor List value.
-    const TOOLS(RealArrayPtr) getKnotList() const;
+    const RealArrayPtr getKnotList() const;
 
     /// Return the KnotList Factor List field.
-    TOOLS(RealArrayPtr)& getKnotList();
+    RealArrayPtr& getKnotList();
 
     /// return whether KnotList is set to its default value.
     const bool isKnotListToDefault() const;
@@ -147,10 +147,10 @@ class SG_API ProfileTransformation : public TOOLS(RefCountObject) {
     Point2ArrayPtr __scalingList;
 
     /// A pointee to the \b Orientation \b List field.
-    TOOLS(RealArrayPtr)  __orientationList;
+    RealArrayPtr  __orientationList;
 
     /// The \b knotsList field.
-    TOOLS(RealArrayPtr) __knotList;
+    RealArrayPtr __knotList;
 
 };
 
@@ -172,7 +172,7 @@ typedef RCPtr<ProfileInterpolation> ProfileInterpolationPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
+class SG_API ProfileInterpolation : public RefCountObject
 {
   public :
 
@@ -190,7 +190,7 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
     Curve2DArrayPtr* ProfileList;
 
     /// The \b knotsList field.
-    TOOLS(RealArrayPtr)* KnotList;
+    RealArrayPtr* KnotList;
 
     /// The \b degree field
     uint_t* Degree;
@@ -217,7 +217,7 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
 
   /// Constructs Profiles Interpolant.
   ProfileInterpolation( Curve2DArrayPtr _profileList,
-                        TOOLS(RealArrayPtr) _knotList,
+                        RealArrayPtr _knotList,
                         uint_t _degree= DEFAULT_DEGREE,
                         uint_t _stride= DEFAULT_STRIDE );
 
@@ -241,10 +241,10 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   virtual Curve2DArrayPtr& getProfileList( );
 
   /// Return the Knot List value.
-  virtual const TOOLS(RealArrayPtr)& getKnotList() const;
+  virtual const RealArrayPtr& getKnotList() const;
 
   /// Return the KnotList field.
-  TOOLS(RealArrayPtr)& getKnotList();
+  RealArrayPtr& getKnotList();
 
   /// Return whether KnotList is set to its default value.
   virtual bool isKnotListToDefault() const;
@@ -289,7 +289,7 @@ class SG_API ProfileInterpolation : public TOOLS(RefCountObject)
   Curve2DArrayPtr __profileList;
 
   /// The \b knotsList field.
-  TOOLS(RealArrayPtr) __knotList;
+  RealArrayPtr __knotList;
 
   /// The stride field
   uint_t __stride;

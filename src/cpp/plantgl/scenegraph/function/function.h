@@ -55,7 +55,7 @@ typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr;
     \brief A 2D quantised injective function (homomorphism) defined on [firstx,lastx].
 */
 
-class SG_API QuantisedFunction : public TOOLS(RefCountObject) {
+class SG_API QuantisedFunction : public RefCountObject {
 public:
     static uint_t DEFAULT_SAMPLING;
     static bool DEFAULT_CLAMPED;

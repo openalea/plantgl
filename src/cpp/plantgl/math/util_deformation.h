@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2000-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): J. Chopard et al.
  *
@@ -41,7 +41,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -64,16 +64,16 @@ inline Matrix2 strain(const Vector2& i1,
     \brief compute the stress associated to a strain using Hook's law
 */
 Matrix2 stress (const Matrix2& strain, const Matrix3& material) {
-	Vector3 strain_vec(strain(0,0),strain(1,1),strain(0,1));
-	Vector3 stress_vec = material * strain_vec;
-	return Matrix2(stress_vec.x(),stress_vec.z(),stress_vec.z(),stress_vec.y());
+    Vector3 strain_vec(strain(0,0),strain(1,1),strain(0,1));
+    Vector3 stress_vec = material * strain_vec;
+    return Matrix2(stress_vec.x(),stress_vec.z(),stress_vec.z(),stress_vec.y());
 }
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
 //__util_deformation_h__
-#endif 
+#endif

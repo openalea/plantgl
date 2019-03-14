@@ -49,7 +49,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 #define GEOM_NOT_CACHE
 

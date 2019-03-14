@@ -44,7 +44,7 @@
 #include "event.h"
 #include <plantgl/tool/dirnames.h>
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 ViewerThreadedAppli::ViewerThreadedAppli() : 
 			 ViewerAppliInternal(), QThread()

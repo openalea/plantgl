@@ -111,12 +111,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector3)& getPointListAt( uint_t i ) const;
+  const Vector3& getPointListAt( uint_t i ) const;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector3)& getPointListAt( uint_t i );
+  Vector3& getPointListAt( uint_t i );
 
   virtual bool isACurve( ) const ;
 
@@ -134,7 +134,7 @@ public:
   inline uchar_t& getWidth() { return __width; }
   inline bool isWidthToDefault( ) const { return __width == DEFAULT_WIDTH; }
 
-  TOOLS(Vector3) findClosest(const TOOLS(Vector3)& point, uint_t * index = 0) const;
+  Vector3 findClosest(const Vector3& point, uint_t * index = 0) const;
 
 protected:
   /// The \b width field
@@ -202,12 +202,12 @@ public:
   /** Returns the value of the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  const TOOLS(Vector2)& getPointListAt( uint_t i ) const ;
+  const Vector2& getPointListAt( uint_t i ) const ;
 
   /** Returns the \e i-th point of \b PointList.
       \pre
       - \e i must belong to the range [0,size of \b PointList). */
-  TOOLS(Vector2)& getPointListAt( uint_t i ) ;
+  Vector2& getPointListAt( uint_t i ) ;
 
   /// Returns an iterator at the beginning of \b PointList.
 /*  Point2Array::const_iterator getPointListBegin( ) const {
@@ -245,7 +245,7 @@ public:
   inline uchar_t& getWidth() { return __width; }
   inline bool isWidthToDefault( ) const { return __width == PointSet::DEFAULT_WIDTH; }
 
-  TOOLS(Vector2) findClosest(const TOOLS(Vector2)& point, uint_t * index = 0) const;
+  Vector2 findClosest(const Vector2& point, uint_t * index = 0) const;
 
 protected:
   

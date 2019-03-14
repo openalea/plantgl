@@ -60,7 +60,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 template<class ContainerType>
-class ALGO_API AbstractKDTree : public TOOLS(RefCountObject)
+class ALGO_API AbstractKDTree : public RefCountObject
 {
 public:   
     typedef ContainerType PointContainer;

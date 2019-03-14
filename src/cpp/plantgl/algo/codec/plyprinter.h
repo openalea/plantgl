@@ -46,9 +46,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class bofstream;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -416,7 +416,7 @@ class CODEC_API PlyBinaryPrinter : public PlyPrinter
 public :
 
   /// Constructor.
-  PlyBinaryPrinter( TOOLS(bofstream)& stream ,
+  PlyBinaryPrinter( bofstream& stream ,
                     Discretizer& discretizer ,
                     ply_format format = ply_binary_little_endian );
 
@@ -481,7 +481,7 @@ public :
 protected :
 
   /// Output stream.
-  TOOLS(bofstream)& stream;
+  bofstream& stream;
 
   /// Format of the output.
   ply_format __format;

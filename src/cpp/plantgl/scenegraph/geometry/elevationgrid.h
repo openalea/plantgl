@@ -44,10 +44,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class RealArray2;
 typedef RCPtr<RealArray2> RealArray2Ptr;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
@@ -78,7 +78,7 @@ public:
 
 
     /// A pointer to the HeightList field.
-    TOOLS(RealArray2Ptr) * HeightList;
+    RealArray2Ptr * HeightList;
 
     /// A pointer to the XSpacing field.
     real_t * XSpacing;
@@ -104,7 +104,7 @@ public:
   ElevationGrid();
 
   /// Complete constructor.
-  ElevationGrid( const TOOLS(RealArray2Ptr)& heights,
+  ElevationGrid( const RealArray2Ptr& heights,
 		 real_t xSpacing = DEFAULT_X_SPACING,
 		 real_t ySpacing = DEFAULT_Y_SPACING,
 		 bool ccw = DEFAULT_CCW);
@@ -127,10 +127,10 @@ public:
   real_t& getHeightAt( const uint_t i, const uint_t j );
 
   /// Returns \b HeightList values.
-  const TOOLS(RealArray2Ptr)& getHeightList( ) const;
+  const RealArray2Ptr& getHeightList( ) const;
 
   /// Returns \b HeightList field.
-  TOOLS(RealArray2Ptr)& getHeightList( );
+  RealArray2Ptr& getHeightList( );
 
   /// Returns \e CrtlPoints value.
   virtual Point4MatrixPtr getCtrlPoints( ) const;
@@ -161,10 +161,10 @@ public:
   real_t& getYSpacing( );
 
   /// Returns the (i,j)th point of the grid
-  TOOLS(Vector3) getPointAt(uint_t i, uint_t j) const;
+  Vector3 getPointAt(uint_t i, uint_t j) const;
 
   ///  Returns the field of \b HeightList at the position pos. If pos is outside grid, return 0
-  real_t getHeightAt(const TOOLS(Vector2) pos) const;
+  real_t getHeightAt(const Vector2 pos) const;
 
   /// Returns whether \b XSpacing is set to its default value.
   bool isXSpacingToDefault( ) const;
@@ -177,7 +177,7 @@ public:
 protected:
 
   /// The HeightList field.
-  TOOLS(RealArray2Ptr) __heightList;
+  RealArray2Ptr __heightList;
 
   /// The XSpacing field.
   real_t __xSpacing; 

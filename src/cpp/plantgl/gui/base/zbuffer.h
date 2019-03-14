@@ -66,35 +66,35 @@ public:
 
 typedef std::vector<RayHit > RayHitList;
 
-class VIEW_API ViewRayBuffer : public TOOLS(Array2)<RayHitList>
+class VIEW_API ViewRayBuffer : public PGL(Array2)<RayHitList>
 {
 public:
-	ViewRayBuffer(size_t w, size_t h): TOOLS(Array2)<RayHitList>(w,h){}
+	ViewRayBuffer(size_t w, size_t h): PGL(Array2)<RayHitList>(w,h){}
 
-	void setAt(size_t i, size_t j, void * buffer, size_t size,const TOOLS(Vector3)& position) ;
+	void setAt(size_t i, size_t j, void * buffer, size_t size,const PGL(Vector3)& position) ;
 };
 
 struct VIEW_API RayPointHit {
 public:
 	RayPointHit (size_t _id,
-				 const TOOLS(Vector3)& _zmin,
-				 const TOOLS(Vector3)& _zmax):
+				 const PGL(Vector3)& _zmin,
+				 const PGL(Vector3)& _zmax):
 		id(_id),zmin(_zmin),zmax(_zmax){}
 
 	inline bool operator==(const RayPointHit& phit) const
 	{  return phit.id == id &&  phit.zmin == zmin && phit.zmax == zmax; }
 
 	size_t id;
-	TOOLS(Vector3) zmin;
-	TOOLS(Vector3) zmax;
+	PGL(Vector3) zmin;
+	PGL(Vector3) zmax;
 };
 
 typedef std::vector<RayPointHit > RayPointHitList;
 
-class VIEW_API ViewRayPointHitBuffer : public TOOLS(Array2)<RayPointHitList>
+class VIEW_API ViewRayPointHitBuffer : public PGL(Array2)<RayPointHitList>
 {
 public:
-	ViewRayPointHitBuffer(size_t w, size_t h): TOOLS(Array2)<RayPointHitList>(w,h){}
+	ViewRayPointHitBuffer(size_t w, size_t h): PGL(Array2)<RayPointHitList>(w,h){}
 
 	/** \brief Add pBuff to \e self.
       \pre
@@ -109,22 +109,22 @@ public:
 
 struct VIEW_API ZBufferUnit {
 public:
-	ZBufferUnit(TOOLS(Vector3) _pos = TOOLS(Vector3::ORIGIN), 
+	ZBufferUnit(PGL(Vector3) _pos = PGL(Vector3::ORIGIN), 
 			    PGL(Color4) _color = PGL(Color4::BLACK),
 				float _depth = 1.0):pos(_pos),color(_color),depth(_depth){}
 
 	inline bool operator==(const ZBufferUnit & pValue) const
 	{ return pValue.pos == pos && pValue.color == color && pValue.depth == depth; }
 
-	TOOLS(Vector3) pos;
+	PGL(Vector3) pos;
 	PGL(Color4) color;
 	float depth;
 };
 
-class VIEW_API ViewZBuffer : public TOOLS(Array2)<ZBufferUnit>
+class VIEW_API ViewZBuffer : public PGL(Array2)<ZBufferUnit>
 {
 public:
-	ViewZBuffer(size_t w, size_t h): TOOLS(Array2)<ZBufferUnit>(w,h){}
+	ViewZBuffer(size_t w, size_t h): PGL(Array2)<ZBufferUnit>(w,h){}
 
 	/// import depth and color buffer
 	static ViewZBuffer* importglZBuffer(bool alldepth = true, bool invertalpha = true);

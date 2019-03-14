@@ -31,7 +31,7 @@
 
 #include "sequencer.h"
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 Sequencer::Sequencer(double timestep ):
   __timestep(timestep*CLOCKS_PER_SEC),

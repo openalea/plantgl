@@ -203,7 +203,7 @@ public:
 protected:
 
   /// The cache storing the already computed bounding boxes.
-  TOOLS(Cache)<real_t> __cache;
+  Cache<real_t> __cache;
 
   /// The resulting surface.
   real_t __result;
@@ -216,11 +216,11 @@ protected:
 };
 
 /// Compute the surface of a triangle
-static inline real_t surface(const TOOLS(Vector3)& i, const TOOLS(Vector3)& j, const TOOLS(Vector3)& k)
-{ return TOOLS(norm)( TOOLS(cross)(j-i,k-i)) / 2; }
+static inline real_t surface(const Vector3& i, const Vector3& j, const Vector3& k)
+{ return norm( cross(j-i,k-i)) / 2; }
 
 /// Compute the surface of a triangle
-static inline real_t surface(const TOOLS(Vector2)& i, const TOOLS(Vector2)& j, const TOOLS(Vector2)& k)
+static inline real_t surface(const Vector2& i, const Vector2& j, const Vector2& k)
 { return fabs((j.x()-i.x()) * (k.y()-i.y()) - (k.x()-i.x()) * (j.y() - i.y())) / 2; }
 
 /// Compute the surface of the objects in the scene \e _scene

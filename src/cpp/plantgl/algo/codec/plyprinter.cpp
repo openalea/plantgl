@@ -47,7 +47,6 @@
 #include <plantgl/scenegraph/container/indexarray.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 
 using namespace std;
 

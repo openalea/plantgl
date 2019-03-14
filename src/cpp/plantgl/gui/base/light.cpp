@@ -47,7 +47,7 @@
     #include <QtGui/QToolBar>
 #endif
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 

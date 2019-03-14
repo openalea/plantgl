@@ -61,7 +61,7 @@ typedef RCPtr<SkelTriangle> SkelTrianglePtr;
 typedef SkelTriangle* SkelTriangleWeakPtr;
 
 //! A class that associate a vector2 and an index, to get the position of a point within a polyline
-class ALGO_API ShapePoint : public TOOLS::RefCountObject
+class ALGO_API ShapePoint : public RefCountObject
 {
 public:
   Vector2 m_vec;
@@ -106,12 +106,12 @@ class SkelEdgeSet;
  *  and faces.
  *  The pair of points used to define the edge are sorted within the class.
  */
-class ALGO_API SkelEdge : public TOOLS::RefCountObject
+class ALGO_API SkelEdge : public RefCountObject
 {
 public:
-  friend class PGL::SkelTriangle;
-  friend class PGL::Skeleton;
-  friend class PGL::SkelEdgeSet;
+  friend class PGL(SkelTriangle);
+  friend class PGL(Skeleton);
+  friend class PGL(SkelEdgeSet);
 
   enum TypeEdge{UNDEFINED, BOUNDARY, INTERIOR};
 
@@ -212,12 +212,12 @@ typedef RCPtr<SkelEdge> SkelEdgePtr;
  *  are on a CGAL triangulation those who are adjacent to the infinite vertex and therefore
  *  describe the space unoccupied by our shapes) 
  */
-class ALGO_API SkelTriangle : public TOOLS::RefCountObject
+class ALGO_API SkelTriangle : public RefCountObject
 {
 public:
-  friend class PGL::SkelEdge;
-  friend class PGL::Skeleton;
-  friend class PGL::SkelTriangleSet;
+  friend class PGL(SkelEdge);
+  friend class PGL(Skeleton);
+  friend class PGL(SkelTriangleSet);
 
   //! enum for giving a type to the triangle
   /*!
@@ -352,7 +352,7 @@ class SkelBranch;
 typedef RCPtr<SkelBranch> SkelBranchPtr;
 class ShapePointSet;
 
-class ALGO_API SkelBranch : public TOOLS::RefCountObject
+class ALGO_API SkelBranch : public RefCountObject
 {
   friend class Skeleton;
 public:
@@ -385,7 +385,7 @@ public:
   double area();
 };
 
-class ALGO_API SkelJonction : public Vector2, public TOOLS::RefCountObject
+class ALGO_API SkelJonction : public Vector2, public RefCountObject
 {
   friend class Skeleton;
 protected:

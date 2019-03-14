@@ -129,7 +129,7 @@
 #else // PGL_SMARTPTR
 /// Using home made smart_ptr
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 template <class T>
 class RefCountPtr
@@ -345,17 +345,17 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 /// Tools Reference Counting Pointer
-#define RCPtr TOOLS(RefCountPtr)
+#define RCPtr PGL(RefCountPtr)
 
 /* ----------------------------------------------------------------------- */
 
 #endif
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 
 /**
    \class RefCountObject
@@ -523,14 +523,14 @@ private:
 
 typedef RefCountPtr<RefCountObject> RefCountObjectPtr;
 
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 #ifdef BOOST_REFCOUNTPTR
     // Use of intrusive_ptr or shared_ptr
   namespace boost
   {
-    inline void intrusive_ptr_add_ref(TOOLS(RefCountObject) * obj) { obj->addReference(); }
-    inline void intrusive_ptr_release(TOOLS(RefCountObject) * obj) { obj->removeReference(); }
+    inline void intrusive_ptr_add_ref(RefCountObject * obj) { obj->addReference(); }
+    inline void intrusive_ptr_release(RefCountObject * obj) { obj->removeReference(); }
   };
 #endif
 

@@ -225,7 +225,7 @@ protected:
   template <class T> bool transformed(T * geom);
 
   /// The cache storing the already discretized geometries.
-  TOOLS(Cache)<ExplicitModelPtr> __cache;
+  Cache<ExplicitModelPtr> __cache;
 
   /// The last computed discretized geometry.
   ExplicitModelPtr __discretization;

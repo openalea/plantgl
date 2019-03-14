@@ -60,7 +60,7 @@
 /* ----------------------------------------------------------------------- */
 
 using namespace std;
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 PGL_BEGIN_NAMESPACE
 
 #define COMMENT_OUTPUT
@@ -71,7 +71,7 @@ PGL_BEGIN_NAMESPACE
 ScenePtr GeomViewBuilder::Parse(const string& filename, ostream& output)
 {
 	string p = get_cwd();
-	string new_cwd = TOOLS(get_dirname)(filename);     // gets the new working dir name
+	string new_cwd = get_dirname(filename);     // gets the new working dir name
 	if (new_cwd != "") {                       // defines the new cwd
 		if (!chg_dir(new_cwd)){ 
 			output << "\tchg_dir() returned an error."; 
@@ -314,9 +314,9 @@ GeomViewBuilder::GeomViewBuilder(istream& input,ostream& output) :
 }
 
 bool GeomViewBuilder::pushFile(const std::string& filename){
-	string new_cwd = TOOLS(get_dirname)(filename);     // gets the new working dir name
+	string new_cwd = get_dirname(filename);     // gets the new working dir name
 	if (new_cwd != "") {                       // defines the new cwd
-		if (!TOOLS(chg_dir)(new_cwd)){ 
+		if (!chg_dir(new_cwd)){ 
 			__output << "\tchg_dir() returned an error."; 
 			__output << std::endl;
 		}

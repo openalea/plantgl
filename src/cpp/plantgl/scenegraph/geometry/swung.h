@@ -44,10 +44,10 @@
 
 /* ----------------------------------------------------------------------- */
 
-TOOLS_BEGIN_NAMESPACE
+PGL_BEGIN_NAMESPACE
 class RealArray;
 typedef RCPtr<RealArray> RealArrayPtr;
-TOOLS_END_NAMESPACE
+PGL_END_NAMESPACE
 
 PGL_BEGIN_NAMESPACE
 
@@ -91,7 +91,7 @@ public:
     Curve2DArrayPtr * ProfileList;
 
     /// A pointer to the \b Angle List field. An angle is associated to each Profile.
-    TOOLS(RealArrayPtr) * AngleList;
+    RealArrayPtr * AngleList;
 
     /// A pointer to the \b Degree field.
     uint_t * Degree;
@@ -135,7 +135,7 @@ public:
       \post
       - \e self is valid. */
   Swung( const Curve2DArrayPtr& profileList,
-         const TOOLS(RealArrayPtr)& angleList,
+         const RealArrayPtr& angleList,
          uchar_t slices = DEFAULT_SLICES,
          bool ccw = DEFAULT_CCW,
          uint_t degree = DEFAULT_DEGREE,
@@ -165,10 +165,10 @@ public:
   Curve2DArrayPtr& getProfileList( );
 
   /// Returns \b Angle List value.
-  const TOOLS(RealArrayPtr)& getAngleList( ) const;
+  const RealArrayPtr& getAngleList( ) const;
 
   /// Returns \b Angle List field.
-  TOOLS(RealArrayPtr)& getAngleList( );
+  RealArrayPtr& getAngleList( );
 
   /// Returns \b Degree value.
   const uint_t& getDegree() const;

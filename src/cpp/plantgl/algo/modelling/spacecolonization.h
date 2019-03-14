@@ -45,22 +45,22 @@
 PGL_BEGIN_NAMESPACE
 
 
-class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
+class ALGO_API SpaceColonization : public RefCountObject {
     public:
         typedef Point3Grid::PointIndexList AttractorList;
-        typedef TOOLS(Uint32Array1Ptr) Uint32ArrayPtr;
+        typedef Uint32Array1Ptr Uint32ArrayPtr;
 
     protected:
 
-      void register_attractors(const TOOLS(Vector3)& pos, Uint32ArrayPtr attlist);
+      void register_attractors(const Vector3& pos, Uint32ArrayPtr attlist);
 
         struct Bud {
             size_t pid;
-            TOOLS(Vector3) direction;
+            Vector3 direction;
             Uint32ArrayPtr attractors;
             real_t level;
 
-            Bud(size_t _pid, const TOOLS(Vector3)& _direction, Uint32ArrayPtr _attractors):
+            Bud(size_t _pid, const Vector3& _direction, Uint32ArrayPtr _attractors):
                 pid(_pid), direction(_direction), attractors(_attractors) {}
 
             Bud(size_t _pid, Uint32ArrayPtr _attractors, real_t _level):
@@ -101,21 +101,21 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
                           real_t nodelength,
                           real_t kill_radius,
                           real_t perception_radius,
-                          const TOOLS(Vector3)& rootnode, 
+                          const Vector3& rootnode, 
                           size_t spacetilingratio = 100);
 
     virtual ~SpaceColonization();
 
-    size_t add_node(const TOOLS(Vector3)& position, size_t parent = NOID, const Index& attractors = Index(), bool active = true);
+    size_t add_node(const Vector3& position, size_t parent = NOID, const Index& attractors = Index(), bool active = true);
 
-    inline TOOLS(Vector3) node_direction(size_t pid) const {
+    inline Vector3 node_direction(size_t pid) const {
         size_t parent = skeletonparents->getAt(pid);
-        if (parent == NOID || parent == pid) return TOOLS(Vector3)::OZ;
-        return TOOLS(direction)(skeletonnodes->getAt(pid) - skeletonnodes->getAt(parent));
+        if (parent == NOID || parent == pid) return Vector3::OZ;
+        return direction(skeletonnodes->getAt(pid) - skeletonnodes->getAt(parent));
 
     }
 
-    inline const TOOLS(Vector3)& node_position(size_t pid) const {
+    inline const Vector3& node_position(size_t pid) const {
         return skeletonnodes->getAt(pid);
     }
 
@@ -123,9 +123,9 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
         return nodeattractors->getAt(pid);
     }
 
-    bool try_to_set_bud(size_t pid, const TOOLS(Vector3)& direction);
+    bool try_to_set_bud(size_t pid, const Vector3& direction);
 
-    void add_bud(size_t pid, const TOOLS(Vector3)& direction, const AttractorList& attractors);
+    void add_bud(size_t pid, const Vector3& direction, const AttractorList& attractors);
     void add_bud(size_t pid, const AttractorList& attractors, real_t level);
 
     void add_latent_bud(size_t pid, const AttractorList& attractors, real_t level, uint32_t latency);
@@ -152,7 +152,7 @@ class ALGO_API SpaceColonization : public TOOLS(RefCountObject) {
     }
 
     /// compute a whorl of 'nb' buds at branching angles.
-    std::vector<TOOLS(Vector3)> lateral_directions(const TOOLS(Vector3)& dir, real_t angle, int nb);
+    std::vector<Vector3> lateral_directions(const Vector3& dir, real_t angle, int nb);
 
     virtual void generate_buds(size_t pid) ;
     virtual void process_bud(const Bud& bud);
@@ -224,14 +224,14 @@ class ALGO_API GraphColonization : public SpaceColonization {
 
 
       IndexArrayPtr graph;
-      TOOLS(RealArrayPtr)  distances_from_root;
+      RealArrayPtr  distances_from_root;
       uint32_t root;
       bool use_jonction_points;
 
       real_t powerdistance;
 
       IndexArrayPtr nodecomponents;
-      TOOLS(RealArrayPtr) nodelevels;
+      RealArrayPtr nodelevels;
 
       inline IndexArrayPtr get_nodecomponents() const { return nodecomponents; }
 
@@ -243,13 +243,13 @@ class ALGO_API GraphColonization : public SpaceColonization {
         return nodecomponents->getAt(pid);
       }
 
-      size_t add_node(const TOOLS(Vector3)& position, 
+      size_t add_node(const Vector3& position, 
                       real_t level,
                       const Index& components,
                       size_t parent = SpaceColonization::NOID, bool active = true);
 
       Index junction_components(size_t nid1, size_t nid2) const;
-      TOOLS(Vector3) junction_point(size_t nid1, size_t nid2) const;
+      Vector3 junction_point(size_t nid1, size_t nid2) const;
 
     protected:
         void init();

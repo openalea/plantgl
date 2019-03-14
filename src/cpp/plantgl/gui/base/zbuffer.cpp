@@ -36,7 +36,6 @@
 #include <plantgl/tool/util_assert.h>
 #include "zbuffer.h"
 
-TOOLS_USING_NAMESPACE
 PGL_USING_NAMESPACE
 
 void ViewRayBuffer::setAt(size_t i, size_t j, void * buffer, size_t size,const Vector3& position) { 

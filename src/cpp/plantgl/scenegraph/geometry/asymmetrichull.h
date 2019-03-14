@@ -84,10 +84,10 @@ public:
   static const real_t DEFAULT_POS_Y_RADIUS;
 
   /// The \b Bottom field default value.
-  static const TOOLS(Vector3) DEFAULT_BOTTOM;
+  static const Vector3 DEFAULT_BOTTOM;
 
   /// The \b Top field default value.
-  static const TOOLS(Vector3) DEFAULT_TOP;
+  static const Vector3 DEFAULT_TOP;
 
   /// The \b TopShape field default value.
   static const real_t DEFAULT_TOP_SHAPE;
@@ -130,10 +130,10 @@ public:
     real_t * PosYRadius;
 
     /// A pointer to the \b Bottom field.
-    TOOLS(Vector3) * Bottom;
+    Vector3 * Bottom;
 
     /// A pointer to the \b Top field.
-    TOOLS(Vector3) * Top;
+    Vector3 * Top;
 
     /// A pointer to the \b BottomShape field.
     real_t * BottomShape;
@@ -175,8 +175,8 @@ public:
 		  const real_t& posXHeight = DEFAULT_POS_X_HEIGHT,
 		  const real_t& negYHeight = DEFAULT_NEG_Y_HEIGHT,
 		  const real_t& posYHeight = DEFAULT_POS_Y_HEIGHT,
-		  const TOOLS(Vector3)& bottom  = DEFAULT_BOTTOM,
-		  const TOOLS(Vector3)& top     = DEFAULT_TOP,
+		  const Vector3& bottom  = DEFAULT_BOTTOM,
+		  const Vector3& top     = DEFAULT_TOP,
 		  const real_t& bottomShape= DEFAULT_BOTTOM_SHAPE,
 		  const real_t& topShape   = DEFAULT_TOP_SHAPE,
 		  uchar_t slices           = DEFAULT_SLICES,
@@ -188,10 +188,10 @@ public:
   PGL_OBJECT(AsymmetricHull)
 
   /// Returns \b Bottom value.
-  const TOOLS(Vector3)& getBottom( ) const;
+  const Vector3& getBottom( ) const;
 
   /// Returns \b Bottom field.
-  TOOLS(Vector3)& getBottom( );
+  Vector3& getBottom( );
 
   /// Returns \b BottomShape value.
   const real_t& getBottomShape( ) const;
@@ -212,7 +212,7 @@ public:
   real_t& getNegXRadius( );
 
   /// Return \b NegX point.
-  TOOLS(Vector3) getNegXPoint( ) const ;
+  Vector3 getNegXPoint( ) const ;
   
   /// Returns \b NegYHeight value.
   const real_t& getNegYHeight( ) const;
@@ -227,7 +227,7 @@ public:
   real_t& getNegYRadius( );
 
   /// Return \b NegY point.
-  TOOLS(Vector3) getNegYPoint( ) const ;
+  Vector3 getNegYPoint( ) const ;
 
   /// Returns \b PosXHeight value.
   const real_t& getPosXHeight( ) const;
@@ -242,7 +242,7 @@ public:
   real_t& getPosXRadius( ) ;
 
   /// Return \b PosX point.
-  TOOLS(Vector3) getPosXPoint( ) const ;
+  Vector3 getPosXPoint( ) const ;
 
   /// Returns \b PosYHeight value.
   const real_t& getPosYHeight( ) const;
@@ -257,13 +257,13 @@ public:
   real_t& getPosYRadius( );
 
   /// Return \b PosY point.
-  TOOLS(Vector3) getPosYPoint( ) const ;
+  Vector3 getPosYPoint( ) const ;
 
   /// Returns \b Top value.
-  const TOOLS(Vector3)& getTop( ) const;
+  const Vector3& getTop( ) const;
 
   /// Returns \b Top field.
-  TOOLS(Vector3)& getTop( ) ;
+  Vector3& getTop( ) ;
 
   /// Returns \b TopShape value.
   const real_t& getTopShape( ) const;
@@ -336,7 +336,7 @@ protected:
   real_t __negXRadius;
 
   /// The \b NegXShape field.
-  TOOLS(Vector2) __negXShape;
+  Vector2 __negXShape;
 
   /// The \b NegYHeight field.
   real_t __negYHeight;
@@ -345,7 +345,7 @@ protected:
   real_t __negYRadius;
 
   /// The \b NegYShape field.
-  TOOLS(Vector2) __negYShape;
+  Vector2 __negYShape;
 
   /// The \b PosXHeight field.
   real_t __posXHeight;
@@ -354,7 +354,7 @@ protected:
   real_t __posXRadius;
 
   /// The \b PosXShape field.
-  TOOLS(Vector2) __posXShape;
+  Vector2 __posXShape;
 
   /// The \b PosYHeight field.
   real_t __posYHeight;
@@ -363,13 +363,13 @@ protected:
   real_t __posYRadius;
 
   /// The \b PosYShape field.
-  TOOLS(Vector2) __posYShape;
+  Vector2 __posYShape;
 
   /// The \b Top field.
-  TOOLS(Vector3) __top;
+  Vector3 __top;
 
   /// The \b Bottom field.
-  TOOLS(Vector3) __bottom;
+  Vector3 __bottom;
 
   /// The \b BottomShape field.
   real_t __topShape;
