@@ -55,8 +55,8 @@ PGL_USING_NAMESPACE
 using namespace std;
 
 /* ----------------------------------------------------------------------- */
-Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane, 
-                                  const Vector3& p1, 
+Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane,
+                                  const Vector3& p1,
                                   const Vector3& p2)
 {
     real_t d1 = dot(plane.getNormal(),p1);
@@ -78,9 +78,9 @@ Point3ArrayPtr PGL(plane_segment_clip)(const Plane3& plane,
     }
 }
 
-Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane, 
-                                   const Vector3& p1, 
-                                   const Vector3& p2, 
+Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
+                                   const Vector3& p1,
+                                   const Vector3& p2,
                                    const Vector3& p3)
 {
     real_t d1 = dot(plane.getNormal(),p1);
@@ -91,7 +91,7 @@ Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
     bool side3 = (d3 > plane.getD());
     if ( side1 == side2 && side1 == side3) {
         printf("all in the same side\n");
-        if (side1) { 
+        if (side1) {
             Point3ArrayPtr result(new Point3Array(3));
             result->setAt(0,p1); result->setAt(1,p2); result->setAt(2,p3);
             return result;
@@ -144,17 +144,17 @@ Point3ArrayPtr PGL(plane_triangle_clip)(const Plane3& plane,
 
 }
 
-Index PGL::plane_pointset_clip(const Plane3& plane, 
-                                   const Point3ArrayPtr points, 
+Index PGL::plane_pointset_clip(const Plane3& plane,
+                                   const Point3ArrayPtr points,
                                    const Index& group)
 {
    size_t nbpoints = group.size();
    Index result;
-   if(nbpoints != 0) {        
+   if(nbpoints != 0) {
         for(Index::const_iterator itg = group.begin(); itg != group.end(); ++itg){
             if (plane.getDistance(points->getAt(*itg)) >= 0) result.push_back(*itg);
         }
-        
+
     }
     else {
         size_t pid = 0;

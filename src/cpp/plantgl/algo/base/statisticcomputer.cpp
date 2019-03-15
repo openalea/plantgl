@@ -823,4 +823,3 @@ const uint_t StatisticComputer::getTexture2D() const {
 const uint_t StatisticComputer::getTexture2DTransformation() const {
   return __shape[43];
 }
-

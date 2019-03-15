@@ -136,9 +136,9 @@ bool SkelComputer::process( AxisRotated * axisRotated ) {
 
 bool SkelComputer::process( BezierCurve * bezierCurve ) {
     GEOM_ASSERT(bezierCurve);
-	if(bezierCurve->apply(__discretizer))
-	  __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
-	else
+    if(bezierCurve->apply(__discretizer))
+      __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
+    else
     __skeleton = PolylinePtr(new Polyline(
         bezierCurve->getPointAt(0),
         bezierCurve->getPointAt(1)));
@@ -288,14 +288,14 @@ bool SkelComputer::process( Group * group ) {
 
 bool SkelComputer::process( NurbsCurve * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
-  
+
   if(nurbsCurve->apply(__discretizer))
-	__skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
+    __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
   else
-	__skeleton = PolylinePtr(new Polyline(
-	nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),
-	nurbsCurve->getPointAt(nurbsCurve->getLastKnot())));
-  
+    __skeleton = PolylinePtr(new Polyline(
+    nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),
+    nurbsCurve->getPointAt(nurbsCurve->getLastKnot())));
+
   return true;
 }
 
@@ -539,9 +539,9 @@ bool SkelComputer::process( IFS * ifs ) {
 bool SkelComputer::process( BezierCurve2D * bezierCurve ) {
   GEOM_ASSERT(bezierCurve);
 
-	if(bezierCurve->apply(__discretizer))
-	  __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
-	else
+    if(bezierCurve->apply(__discretizer))
+      __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
+    else
     __skeleton = PolylinePtr(new Polyline(
       Vector3(bezierCurve->getPointAt(0),0),
       Vector3(bezierCurve->getPointAt(1),0)));
@@ -563,10 +563,10 @@ bool SkelComputer::process( Disc * disc ) {
 bool SkelComputer::process( NurbsCurve2D * nurbsCurve ) {
   GEOM_ASSERT(nurbsCurve);
 
-	if(nurbsCurve->apply(__discretizer))
-	  __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
-	else
-	  __skeleton = PolylinePtr(new Polyline(
+    if(nurbsCurve->apply(__discretizer))
+      __skeleton = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
+    else
+      __skeleton = PolylinePtr(new Polyline(
       Vector3(nurbsCurve->getPointAt(nurbsCurve->getFirstKnot()),0),
       Vector3(nurbsCurve->getPointAt(nurbsCurve->getLastKnot()),0)));
 

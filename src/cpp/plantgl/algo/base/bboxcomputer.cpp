@@ -74,9 +74,9 @@ using namespace std;
 #define GEOM_BBOXCOMPUTER_TRANSFORM_BBOX(matrix) \
   if( __bbox->unique() ) __bbox->transform(matrix); \
   else { \
-	BoundingBox bbox(*__bbox); \
-	bbox.transform(matrix); \
-	__bbox = BoundingBoxPtr(new BoundingBox(bbox)); \
+    BoundingBox bbox(*__bbox); \
+    bbox.transform(matrix); \
+    __bbox = BoundingBoxPtr(new BoundingBox(bbox)); \
   } \
 
 #define GEOM_BBOXCOMPUTER_DISCRETIZE(geom) \
@@ -152,17 +152,17 @@ bool BBoxComputer::process(Shape * Shape){
 bool BBoxComputer::process(Inline * geomInline){
     GEOM_ASSERT(geomInline);
     GEOM_BBOXCOMPUTER_CHECK_CACHE(geomInline);
-	geomInline->getScene()->apply(*this);
-	if(!__bbox) return false;
+    geomInline->getScene()->apply(*this);
+    if(!__bbox) return false;
 
-	Matrix3 _matrix = Matrix3::scaling(geomInline->getScale());
+    Matrix3 _matrix = Matrix3::scaling(geomInline->getScale());
     GEOM_BBOXCOMPUTER_TRANSFORM_BBOX(_matrix);
 
-	const Vector3& _ll = __bbox->getLowerLeftCorner();
-	const Vector3& _ur = __bbox->getUpperRightCorner();
-	const Vector3& _t = geomInline->getTranslation();
+    const Vector3& _ll = __bbox->getLowerLeftCorner();
+    const Vector3& _ur = __bbox->getUpperRightCorner();
+    const Vector3& _t = geomInline->getTranslation();
 
-	__bbox = BoundingBoxPtr(new BoundingBox(_ll + _t, _ur + _t));
+    __bbox = BoundingBoxPtr(new BoundingBox(_ll + _t, _ur + _t));
 
 
     GEOM_BBOXCOMPUTER_UPDATE_CACHE(geomInline);
@@ -446,7 +446,7 @@ bool BBoxComputer::process( Group * group ) {
   uint_t _size = _group->size();
   uint_t _first = 0;
   do {
-	_group->getAt(_first)->apply(*this);
+    _group->getAt(_first)->apply(*this);
     ++_first;
   } while(!__bbox && _first <_size);
   if(!__bbox)return false;
@@ -482,32 +482,32 @@ bool BBoxComputer::process( IFS * ifs ) {
   // We compute the bounding box of the children Geometry
   ifs->getGeometry()->apply(*this);
   if(__bbox){
-	
-	Vector3 _ll = __bbox->getLowerLeftCorner();
-	Vector3 _ur = __bbox->getUpperRightCorner();
-	Matrix4Array::const_iterator matrix= matrixList->begin();
-	BoundingBox UnionBox( _ll, _ur);
-	UnionBox.transform(*matrix);
-	matrix++;
-	
-	while( matrix != matrixList->end() )
+
+    Vector3 _ll = __bbox->getLowerLeftCorner();
+    Vector3 _ur = __bbox->getUpperRightCorner();
+    Matrix4Array::const_iterator matrix= matrixList->begin();
+    BoundingBox UnionBox( _ll, _ur);
+    UnionBox.transform(*matrix);
+    matrix++;
+
+    while( matrix != matrixList->end() )
     {
-	  BoundingBox bbox( _ll, _ur);
-	  bbox.transform(*matrix);
-	  UnionBox.extend(bbox);
-	  matrix++;
+      BoundingBox bbox( _ll, _ur);
+      bbox.transform(*matrix);
+      UnionBox.extend(bbox);
+      matrix++;
     }
-	
-	_ll= UnionBox.getLowerLeftCorner();
-	_ur= UnionBox.getUpperRightCorner();
-	
-	__bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
-	
-	GEOM_ASSERT(__bbox);
-	
-	GEOM_BBOXCOMPUTER_UPDATE_CACHE(ifs);
-	
-	return true;
+
+    _ll= UnionBox.getLowerLeftCorner();
+    _ur= UnionBox.getUpperRightCorner();
+
+    __bbox = BoundingBoxPtr(new BoundingBox(_ll,_ur));
+
+    GEOM_ASSERT(__bbox);
+
+    GEOM_BBOXCOMPUTER_UPDATE_CACHE(ifs);
+
+    return true;
   }
   return false;
 }
@@ -540,7 +540,7 @@ bool BBoxComputer::process( Oriented * oriented ) {
   // We compute the bounding box of the children Geometry
   oriented->getGeometry()->apply(*this);
   if(!__bbox) return false;
-	
+
   // We retrieve the matrix transformation attached to axisRotated
   Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(oriented->getTransformation());
   GEOM_ASSERT(_transformation);
@@ -631,7 +631,7 @@ bool BBoxComputer::process( Revolution * revolution ) {
   real_t _yMin = it->y();
   real_t _yMax = it->y();
   real_t _xMax = it->x();
-  
+
   for (++it; it < _pointList->end(); ++it) {
     const real_t& _x = it->x();
     const real_t& _y = it->y();
@@ -726,7 +726,7 @@ bool BBoxComputer::process( Scaled * scaled ) {
   // We compute the bounding box of the children Geometry
   scaled->getGeometry()->apply(*this);
   if(!__bbox) return false;
-	
+
   // We retrieve the matrix transformation attached to axisRotated
   Matrix4TransformationPtr _transformation = dynamic_pointer_cast<Matrix4Transformation>(scaled->getTransformation());
   GEOM_ASSERT(_transformation);
@@ -809,7 +809,7 @@ bool BBoxComputer::process( Translated * translated ) {
 
   translated->getGeometry()->apply(*this);
   if(!__bbox) return false;
-	
+
   const Vector3& _ll = __bbox->getLowerLeftCorner();
   const Vector3& _ur = __bbox->getUpperRightCorner();
   const Vector3& _t = translated->getTranslation();

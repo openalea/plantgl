@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file actn_tesselator.h
     \brief Definition of the action class Tesselator.
@@ -57,7 +57,7 @@ typedef RCPtr<TriangleSet> TriangleSetPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class Tesselator
    \brief An action which computes the discretization of \e Geometry objects.
 */
@@ -94,7 +94,7 @@ public:
 
   virtual bool process( Frustum * frustum );
 
-  
+
   /** Applies \e self to an object of type Extrusion.
       Using Double-Cross Method To calculate Reference Frame along the Axis.
       See Bloomenthal Thesis, chap 5, for more Details.
@@ -144,7 +144,7 @@ ALGO_API IndexArrayPtr polygonization(Point2ArrayPtr contour, TriangulationMetho
 ALGO_API Index3ArrayPtr triangulation(Point2ArrayPtr contour, TriangulationMethod method = eStarTriangulation);
 
 /* ------------------------------------------------------------------------*/
-  
+
 // __actn_tesselator_h__
 /* ----------------------------------------------------------------------- */
 
@@ -152,5 +152,3 @@ PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
-                                             
-

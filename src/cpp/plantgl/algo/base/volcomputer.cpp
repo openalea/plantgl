@@ -131,9 +131,9 @@ bool VolComputer::process( AmapSymbol * amapSymbol ) {
       const Vector3& _origfacet = amapSymbol->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       for (uint_t _j = 1; _j < _jSize - 1; _j++) {
-	Vector3 _vi = amapSymbol->getFacePointAt(_i,_j) - _origfacet;
-	Vector3 _vj = amapSymbol->getFacePointAt(_i,_j + 1) - _origfacet;
-	__result += fabs(dot(_center,cross(_vi,_vj)))/6;
+    Vector3 _vi = amapSymbol->getFacePointAt(_i,_j) - _origfacet;
+    Vector3 _vj = amapSymbol->getFacePointAt(_i,_j + 1) - _origfacet;
+    __result += fabs(dot(_center,cross(_vi,_vj)))/6;
        };
     };
   }
@@ -199,7 +199,7 @@ bool VolComputer::process( Cone * cone ) {
   real_t _radius = cone->getRadius();
   real_t _height = cone->getHeight();
   if(cone->getSolid()) {
-    /// V = 1/3 * PI * r²  * h
+    /// V = 1/3 * PI * r2  * h
     __result = (GEOM_PI * sq(_radius) * _height) / 3;
   }
   else {
@@ -221,7 +221,7 @@ bool VolComputer::process( Cylinder * cylinder ) {
   real_t _radius = cylinder->getRadius();
   real_t _height = cylinder->getHeight();
   if(cylinder->getSolid()) {
-      //  V = PI * r²  * h
+      //  V = PI * r2  * h
       __result = GEOM_PI * sq(_radius) * _height;
   }
   else {
@@ -275,9 +275,9 @@ bool VolComputer::process( FaceSet * faceSet ) {
       const Vector3& _origfacet = faceSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;
       for (uint_t _j = 1; _j < _jSize - 1; _j++) {
-	Vector3 _vi = faceSet->getFacePointAt(_i,_j) - _origfacet;
-	Vector3 _vj = faceSet->getFacePointAt(_i,_j + 1) - _origfacet;
-	__result += fabs(dot(_center,cross(_vi,_vj)))/6;
+    Vector3 _vi = faceSet->getFacePointAt(_i,_j) - _origfacet;
+    Vector3 _vj = faceSet->getFacePointAt(_i,_j + 1) - _origfacet;
+    __result += fabs(dot(_center,cross(_vi,_vj)))/6;
        };
     };
   }
@@ -303,7 +303,7 @@ bool VolComputer::process( Frustum * frustum ) {
   real_t _top_radius = _radius * _taper;
 
   if(frustum->getSolid()) {
-    // V = 1/3 * Pi * h [ r1 ² + r1*r2 + r2 ² ].
+    // V = 1/3 * Pi * h [ r1 2 + r1*r2 + r2 2 ].
     __result = (GEOM_PI * _height* ( sq(_radius) + _radius*_top_radius + sq(_top_radius)))/3;
   }
   else {
@@ -404,7 +404,7 @@ bool VolComputer::process( Paraboloid * paraboloid ) {
   __result = 0;
   GEOM_ASSERT(paraboloid);
   if(paraboloid->getSolid()){
-    /// V =  Pi * h * r² * s / ( s + 2 )
+    /// V =  Pi * h * r2 * s / ( s + 2 )
 
     const real_t& radius = paraboloid->getRadius();
     const real_t& height = paraboloid->getHeight();
@@ -453,7 +453,7 @@ bool VolComputer::process( QuadSet * quadSet ) {
 
   if(quadSet->getSolid()){
     uint_t _size = quadSet->getIndexListSize();
-    Vector3 center = quadSet->getPointList()->getCenter();    
+    Vector3 center = quadSet->getPointList()->getCenter();
     for (uint_t _i = 0; _i < _size; _i++) {
       const Vector3& _origfacet = quadSet->getFacePointAt(_i,0);
       Vector3 _center = center - _origfacet;

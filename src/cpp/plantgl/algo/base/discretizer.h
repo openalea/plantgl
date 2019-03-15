@@ -43,10 +43,10 @@
 
 
 #include "../algo_config.h"
-#include <plantgl/scenegraph/core/action.h>
-#include <plantgl/scenegraph/geometry/explicitmodel.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/tool/util_cache.h>
+#include <plantgl/scenegraph/core/action.h>
+#include <plantgl/scenegraph/geometry/explicitmodel.h>
 
 #ifndef GEOM_FWDEF
 #include <plantgl/scenegraph/container/pointarray.h>
@@ -212,7 +212,7 @@ public:
   virtual bool process( Font * font );
 
   bool texCoordComputed() const {
-	return __computeTexCoord; }
+    return __computeTexCoord; }
 
   void computeTexCoord(bool b) { __computeTexCoord = b; }
 
@@ -243,5 +243,3 @@ PGL_END_NAMESPACE
 
 // __actn_discretizer_h__
 #endif
-
-

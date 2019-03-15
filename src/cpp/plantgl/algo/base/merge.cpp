@@ -72,27 +72,27 @@ bool Merge::init()
     return false;
 
   if (!__model->unique()){
-	  // duplication of index List fields to avoid
-	  // modification of others objects
-	  if( __type == TRIANGLE_SET )
-	  {
-		  TriangleSetPtr m = dynamic_pointer_cast<TriangleSet>(__model);
-		  Index3ArrayPtr index(new Index3Array(*(m->getIndexList())));
-		  m->getIndexList()= index;
-	  }
-	  else
-		  if( __type == QUAD_SET )
-		  {
-			  QuadSetPtr m = dynamic_pointer_cast<QuadSet>(__model);
-			  Index4ArrayPtr index(new Index4Array(*(m->getIndexList())));
-			  m->getIndexList()= index;
-		  }
-		  else
-		  {
-			  FaceSetPtr m = dynamic_pointer_cast<FaceSet>(__model);
-			  IndexArrayPtr index(new IndexArray(*(m->getIndexList())));
-			  m->getIndexList()= index;
-		  }
+      // duplication of index List fields to avoid
+      // modification of others objects
+      if( __type == TRIANGLE_SET )
+      {
+          TriangleSetPtr m = dynamic_pointer_cast<TriangleSet>(__model);
+          Index3ArrayPtr index(new Index3Array(*(m->getIndexList())));
+          m->getIndexList()= index;
+      }
+      else
+          if( __type == QUAD_SET )
+          {
+              QuadSetPtr m = dynamic_pointer_cast<QuadSet>(__model);
+              Index4ArrayPtr index(new Index4Array(*(m->getIndexList())));
+              m->getIndexList()= index;
+          }
+          else
+          {
+              FaceSetPtr m = dynamic_pointer_cast<FaceSet>(__model);
+              IndexArrayPtr index(new IndexArray(*(m->getIndexList())));
+              m->getIndexList()= index;
+          }
   }
   return true;
 }
@@ -269,12 +269,12 @@ bool Merge::apply( QuadSet& geom )
 {
 GEOM_TRACE("apply QuadSet");
 if( __type != QUAD_SET ){
-	FaceSet fs( geom );
-	if(__type == FACE_SET) return apply(fs);
-	else if(__type == TRIANGLE_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<TriangleSet>(__model))));
-		return apply(fs);
-	}
+    FaceSet fs( geom );
+    if(__type == FACE_SET) return apply(fs);
+    else if(__type == TRIANGLE_SET) {
+        setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<TriangleSet>(__model))));
+        return apply(fs);
+    }
     else return false;
 }
 
@@ -326,12 +326,12 @@ bool Merge::apply( TriangleSet& geom )
 {
 GEOM_TRACE("apply TriangleSet");
   if( __type != TRIANGLE_SET ){
-	FaceSet fs( geom );
-	if(__type == FACE_SET) return apply(fs);
-	else if(__type == QUAD_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<QuadSet>(__model))));
-		return apply(fs);
-	}
+    FaceSet fs( geom );
+    if(__type == FACE_SET) return apply(fs);
+    else if(__type == QUAD_SET) {
+        setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<QuadSet>(__model))));
+        return apply(fs);
+    }
     else return false;
   }
 
@@ -376,12 +376,12 @@ bool Merge::apply( FaceSet& geom )
 {
   GEOM_TRACE("apply FaceSet");
   if( __type != FACE_SET ){
-	if(__type == QUAD_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<QuadSet>(__model))));
-	}
-	else if(__type == TRIANGLE_SET) {
-		setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<TriangleSet>(__model))));
-	}
+    if(__type == QUAD_SET) {
+        setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<QuadSet>(__model))));
+    }
+    else if(__type == TRIANGLE_SET) {
+        setModel(ExplicitModelPtr(new FaceSet(*dynamic_pointer_cast<TriangleSet>(__model))));
+    }
     else return false;
   }
 
@@ -429,19 +429,19 @@ void Merge::checkNormals(Mesh& geom)
 {
   MeshPtr model = dynamic_pointer_cast<Mesh>(__model);
   if(model->hasNormalList() && geom.hasNormalList()){
-	if(model->getNormalPerVertex() != geom.getNormalPerVertex()){
-		if(!model->getNormalPerVertex()){
-			model->computeNormalList(true);
-		}
-		if(!geom.getNormalPerVertex()){
-			geom.computeNormalList(true);
-		}
-	}
+    if(model->getNormalPerVertex() != geom.getNormalPerVertex()){
+        if(!model->getNormalPerVertex()){
+            model->computeNormalList(true);
+        }
+        if(!geom.getNormalPerVertex()){
+            geom.computeNormalList(true);
+        }
+    }
   }
   else if(model->hasNormalList()){
-	geom.computeNormalList(model->getNormalPerVertex());
+    geom.computeNormalList(model->getNormalPerVertex());
   }
   else if(geom.hasNormalList()){
- 	  model->computeNormalList(geom.getNormalPerVertex());
+       model->computeNormalList(geom.getNormalPerVertex());
   }
 }

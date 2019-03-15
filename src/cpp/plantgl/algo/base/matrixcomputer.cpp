@@ -1,4 +1,3 @@
-#define CPL
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
@@ -200,13 +199,13 @@ bool MatrixComputer::process( IFS * ifs ) {
 
   while( matrix != matrixList->end() )
     {
-	  pushMatrix();
-	  transform(*matrix);
-	  ifs->getGeometry()->apply(*this);
-	  popMatrix();
-	  matrix++;
+      pushMatrix();
+      transform(*matrix);
+      ifs->getGeometry()->apply(*this);
+      popMatrix();
+      matrix++;
     }
-	return true;
+    return true;
 }
 
 
@@ -409,11 +408,11 @@ bool MatrixComputer::transfo_process( MatrixTransformed* object )
 
 /* ----------------------------------------------------------------------- */
 
-void 
+void
 MatrixComputer::getTransformation(Vector3& scale,
                          Vector3& angle,
                          Vector3& translate) const{
-//	__matrix.getTransformation(scale,angle,translate);
+// __matrix.getTransformation(scale,angle,translate);
   translate.x()= __matrix(0,3);
   translate.y()= __matrix(1,3);
   translate.z()= __matrix(2,3);
@@ -428,20 +427,20 @@ MatrixComputer::getTransformation(Vector3& scale,
   real_t thetaX,thetaY,thetaZ;
   thetaY = asin(-a.z());
   if(thetaY < GEOM_HALF_PI-GEOM_EPSILON){
-	if(thetaY > -GEOM_HALF_PI+GEOM_EPSILON){
-		thetaZ = atan2(a.y(),a.x());
-		thetaX = atan2(b.z(),c.z());
-	}
-	else {
-		// Not a unique solution
-		thetaZ = -atan2(-b.x(),c.x());
-		thetaX = 0;
-	}
+    if(thetaY > -GEOM_HALF_PI+GEOM_EPSILON){
+        thetaZ = atan2(a.y(),a.x());
+        thetaX = atan2(b.z(),c.z());
+    }
+    else {
+        // Not a unique solution
+        thetaZ = -atan2(-b.x(),c.x());
+        thetaX = 0;
+    }
   }
   else {
-	  // Not a unique solution
-	  thetaZ = atan2(-b.x(),c.x());
-	  thetaX = 0;
+      // Not a unique solution
+      thetaZ = atan2(-b.x(),c.x());
+      thetaX = 0;
   }
   angle.x() = thetaZ;
   angle.y() = thetaY;

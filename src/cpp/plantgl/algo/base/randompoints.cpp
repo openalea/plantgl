@@ -44,7 +44,7 @@ Vector3 PGL(random_point_in_box)(const Vector3& minpt, const Vector3& maxpt)
 
 Vector3 PGL(random_point_in_tetrahedron)(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3)
 {
-    // from http://vcg.isti.cnr.it/activities/geometryegraphics/pointintetraedro.html    
+    // from http://vcg.isti.cnr.it/activities/geometryegraphics/pointintetraedro.html
     float s = rand()/RAND_MAX;
     float t = rand()/RAND_MAX;
     float u = rand()/RAND_MAX;
@@ -66,7 +66,7 @@ Vector3 PGL(random_point_in_tetrahedron)(const Vector3& p0, const Vector3& p1, c
       s = 1 - t - tmp;
     }
     float a = 1 - s - t - u;
-    
+
     return (p0 * a + p1 * s + p2 * t + p3 * u);
 }
 
@@ -84,7 +84,7 @@ Point3ArrayPtr PGL(random_points_in_tetrahedra)(size_t nb_per_tetra, const Point
     Point3Array::iterator it = res->begin();
     for (Index4Array::iterator ittetra = tetraindices->begin(); ittetra != tetraindices->end(); ++it, ++ittetra){
         const Vector3& p0 = points->getAt(ittetra->getAt(0));
-        const Vector3& p1 = points->getAt(ittetra->getAt(1)); 
+        const Vector3& p1 = points->getAt(ittetra->getAt(1));
         const Vector3& p2 = points->getAt(ittetra->getAt(2));
         const Vector3& p3 = points->getAt(ittetra->getAt(3));
         for (int i = 0; i < nb_per_tetra; ++i)
@@ -93,7 +93,3 @@ Point3ArrayPtr PGL(random_points_in_tetrahedra)(size_t nb_per_tetra, const Point
     return res;
 
 }
-
-
-
-

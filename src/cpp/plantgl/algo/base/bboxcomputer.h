@@ -42,9 +42,9 @@
 #define __actn_bboxcomputer_h__
 
 #include "../algo_config.h"
-#include <plantgl/scenegraph/core/action.h>
 #include <plantgl/tool/rcobject.h>
 #include <plantgl/tool/util_cache.h>
+#include <plantgl/scenegraph/core/action.h>
 #ifndef GEOM_FWDEF
 #include <plantgl/scenegraph/scene/scene.h>
 #include <plantgl/scenegraph/geometry/boundingbox.h>
@@ -236,4 +236,3 @@ PGL_END_NAMESPACE
 
 // __actn_bboxcomputer_h__
 #endif
-

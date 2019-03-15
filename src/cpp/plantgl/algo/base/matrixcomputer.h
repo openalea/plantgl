@@ -59,7 +59,7 @@ class MatrixTransformed;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class MatrixComputer
    \brief An action to compute the matrix4 representing the affine transformations in a branch of the scene.
 */
@@ -97,7 +97,7 @@ public:
   virtual bool process( ImageTexture * texture ){
       return false;
   }
- 
+
   virtual bool process( Texture2D * texture ){
       return false;
   }
@@ -197,51 +197,51 @@ public:
 
 
   void pushMatrix() {
-		__stack.push(__matrix);
+        __stack.push(__matrix);
   }
 
   void popMatrix() {
-	  if(__stack.empty()){
-		  __matrix = TOOLS(Matrix4::IDENTITY);
-	  }
-	  else {
-	    __matrix = __stack.top();
-		__stack.pop();
-	  }
+      if(__stack.empty()){
+          __matrix = TOOLS(Matrix4::IDENTITY);
+      }
+      else {
+        __matrix = __stack.top();
+        __stack.pop();
+      }
   }
 
   /// Returns the resulting matrix when applying \e self for the last time.
   const Matrix4& getMatrix() const {
-	  return __matrix;
+      return __matrix;
   }
 
   /// Returns the resulting matrix when applying \e self for the last time.
   Matrix4& getMatrix() {
-	  return __matrix;
+      return __matrix;
   }
 
   inline void translate(const Vector3& t){
-	  transform(Matrix4::translation(t));
+      transform(Matrix4::translation(t));
   }
 
   inline void scale(const Vector3& s){
-	  transform(Matrix3::scaling(s));
+      transform(Matrix3::scaling(s));
   }
 
   inline void axisRotate(const Vector3& axe,const real_t angle){
-	  transform(Matrix3::axisRotation(axe,angle));
+      transform(Matrix3::axisRotation(axe,angle));
   }
 
   inline void transform(const Matrix4& m){
-	  __matrix *= m;
+      __matrix *= m;
   }
 
   inline void transform(const Matrix3& m){
-	  __matrix *= Matrix4(m);
+      __matrix *= Matrix4(m);
   }
 
   inline void identity(){
-	  __matrix = Matrix4();
+      __matrix = Matrix4();
   }
 
 
@@ -278,4 +278,3 @@ PGL_END_NAMESPACE
 
 // __actn_matrixcomputer_h__
 #endif
-

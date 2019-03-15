@@ -75,24 +75,24 @@ inline Point_2 toPoint2(const Vector2& p) { return Point_2(p.x(),p.y()); }
 inline Segment_2 toSegment(const Vector2& p1,const Vector2& p2) { return Segment_2(toPoint2(p1),toPoint2(p2)); }
 #endif
 
-GeometryPtr 
+GeometryPtr
 Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 {
-	if (!p1 || !p2 || p1->getPointListSize() < 2 || p2->getPointListSize() < 2) return GeometryPtr();
+    if (!p1 || !p2 || p1->getPointListSize() < 2 || p2->getPointListSize() < 2) return GeometryPtr();
 #ifdef WITH_CGAL
 
   // Construct the first arrangement, containing a polyline 1.
   Arrangement_2          arr1;
 
   for (Point2Array::const_iterator it1 = p1->getPointList()->begin()+1; it1 != p1->getPointList()->end(); ++it1)
-	insert_non_intersecting_curve(arr1,toSegment(*(it1-1),*it1));
+    insert_non_intersecting_curve(arr1,toSegment(*(it1-1),*it1));
 
   // to be a closed face, first and last point should be exactly the same.
   // However we should not duplicate the same point twice at the end.
   Vector2& fp1 = p1->getPointList()->getAt(0);
   Vector2& lp1 = *(p1->getPointList()->end()-1);
   if (fp1.x() != lp1.x() || fp1.y() != lp1.y())
-	insert_non_intersecting_curve(arr1,toSegment(lp1,fp1));
+    insert_non_intersecting_curve(arr1,toSegment(lp1,fp1));
 
   // std::cerr << arr1.number_of_vertices() << " " << arr1.number_of_edges() << " " << arr1.number_of_faces() << std::endl;
 
@@ -107,14 +107,14 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
   Arrangement_2          arr2;
 
   for (Point2Array::const_iterator it2 = p2->getPointList()->begin()+1; it2 != p2->getPointList()->end(); ++it2)
-	 	insert(arr2,toSegment(*(it2-1),*it2));
+         insert(arr2,toSegment(*(it2-1),*it2));
 
   // to be a closed face, first and last point should be exactly the same.
   // However we should not duplicate the same point twice at the end.
   Vector2& fp2 = p2->getPointList()->getAt(0);
   Vector2& lp2 = *(p2->getPointList()->end()-1);
   if (fp2.x() != lp2.x() || fp2.y() != lp2.y())
-	insert(arr2,toSegment(lp2,fp2)); 
+    insert(arr2,toSegment(lp2,fp2));
 
   // std::cerr << arr2.number_of_vertices() << " " << arr2.number_of_edges() << " " << arr2.number_of_faces() << std::endl;
 
@@ -135,23 +135,23 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
   for (Arrangement_2::Face_iterator face = overlay_arr.faces_begin(); face != overlay_arr.faces_end(); ++face)
   {
     if (face->is_fictitious () || face->is_unbounded())
-		continue;
+        continue;
     if (! face->data())
       continue;
-   
+
     Arrangement_2::Ccb_halfedge_circulator curr = face->outer_ccb();
-	Point2ArrayPtr pointSet( new Point2Array(1,toVec2(curr->source()->point())));
+    Point2ArrayPtr pointSet( new Point2Array(1,toVec2(curr->source()->point())));
     do
     {
-	  pointSet->push_back(toVec2(curr->target()->point()));
+      pointSet->push_back(toVec2(curr->target()->point()));
       ++curr;
     } while (curr != face->outer_ccb());
-	if (pointSet->size() == 1){
-		geomarray->push_back(GeometryPtr(new PointSet2D(pointSet)));
-	}
-	else if(pointSet->size() > 1){
-		geomarray->push_back(GeometryPtr(new Polyline2D(pointSet)));
-	}
+    if (pointSet->size() == 1){
+        geomarray->push_back(GeometryPtr(new PointSet2D(pointSet)));
+    }
+    else if(pointSet->size() > 1){
+        geomarray->push_back(GeometryPtr(new Polyline2D(pointSet)));
+    }
   }
   if (geomarray->empty())return GeometryPtr();
   else if (geomarray->size() == 1) return geomarray->getAt(0);
@@ -163,8 +163,8 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 #else
 #warning "CGAL not included. Overlay routine will not work."
 #endif
-	pglError("CGAL not included. Overlay routine will not work.");
-	return GeometryPtr();
+    pglError("CGAL not included. Overlay routine will not work.");
+    return GeometryPtr();
 #endif
 
 }
@@ -173,27 +173,27 @@ Overlay::process(const Polyline2DPtr& p1, const Polyline2DPtr& p2)
 #include <CGAL/Sweep_line_2_algorithms.h>
 #endif
 
-Point2ArrayPtr 
+Point2ArrayPtr
 CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
 {
 #ifdef WITH_CGAL
    // Construct the first arrangement, containing a polyline 1.
-	std::list<Segment_2>   arrs;
+    std::list<Segment_2>   arrs;
    // std::vector<Segment_2> segments;
-	for(std::vector<Polyline2DPtr>::const_iterator itLines = lines.begin(); itLines != lines.end(); ++itLines){
-	  // Arrangement_2   arr;
+    for(std::vector<Polyline2DPtr>::const_iterator itLines = lines.begin(); itLines != lines.end(); ++itLines){
+      // Arrangement_2   arr;
       for (Point2Array::const_iterator it1 = (*itLines)->getPointList()->begin()+1; it1 != (*itLines)->getPointList()->end(); ++it1)
-	     // insert_non_intersecting_curve(arrs,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
-		 if (norm(*(it1-1)-*it1) > GEOM_EPSILON)
-			arrs.push_back(toSegment(*(it1-1),*it1));
-	}
-	
+         // insert_non_intersecting_curve(arrs,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
+         if (norm(*(it1-1)-*it1) > GEOM_EPSILON)
+            arrs.push_back(toSegment(*(it1-1),*it1));
+    }
+
    std::list<Point_2>     pts;
    // note the endpoints bool value, whether we include the segment points in the count or not
    CGAL::compute_intersection_points (arrs.begin(), arrs.end(), std::back_inserter (pts), false);
    Point2ArrayPtr     respts(new Point2Array());
    for(std::list<Point_2>::const_iterator itPoints = pts.begin(); itPoints != pts.end(); ++itPoints)
-	   respts->push_back(toVec2(*itPoints));
+       respts->push_back(toVec2(*itPoints));
    return respts;
 #else
 #ifdef _MSC_VER
@@ -201,26 +201,26 @@ CurveIntersection::compute(const std::vector<Polyline2DPtr>& lines)
 #else
 #warning "CGAL not included. CurveIntersection routine will not work."
 #endif
-	pglError("CGAL not included. CurveIntersection routine will not work.");
-	return Point2ArrayPtr();
+    pglError("CGAL not included. CurveIntersection routine will not work.");
+    return Point2ArrayPtr();
 #endif
 }
 
-bool 
+bool
 CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 {
 #ifdef WITH_CGAL
    // Construct the first arrangement, containing a polyline 1.
-	std::list<Segment_2>   arrs;
+    std::list<Segment_2>   arrs;
    // std::vector<Segment_2> segments;
-	for(std::vector<Polyline2DPtr>::const_iterator itLines = lines.begin(); itLines != lines.end(); ++itLines){
-	  // Arrangement_2   arr;
+    for(std::vector<Polyline2DPtr>::const_iterator itLines = lines.begin(); itLines != lines.end(); ++itLines){
+      // Arrangement_2   arr;
       for (Point2Array::const_iterator it1 = (*itLines)->getPointList()->begin()+1; it1 != (*itLines)->getPointList()->end(); ++it1)
-	     // insert_non_intersecting_curve(arrs,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
-		 if (norm(*(it1-1)-*it1) > GEOM_EPSILON)
-			arrs.push_back(toSegment(*(it1-1),*it1));
-	}
-	
+         // insert_non_intersecting_curve(arrs,Segment_2(Point_2((it1-1)->x(),(it1-1)->y()),Point_2(it1->x(),it1->y())));
+         if (norm(*(it1-1)-*it1) > GEOM_EPSILON)
+            arrs.push_back(toSegment(*(it1-1),*it1));
+    }
+
    std::list<Point_2>     pts;
    // check whether an intersection exists
    return CGAL::do_curves_intersect (arrs.begin(), arrs.end());
@@ -230,8 +230,8 @@ CurveIntersection::check(const std::vector<Polyline2DPtr>& lines)
 #else
 #warning "CGAL not included. CurveIntersection routine will not work."
 #endif
-	pglError("CGAL not included. CurveIntersection routine will not work.");
-	return false;
+    pglError("CGAL not included. CurveIntersection routine will not work.");
+    return false;
 #endif
 
 }
@@ -251,8 +251,8 @@ inline CGALSegment_3 toSegment3(const Vector3& u, const Vector3& v) { return CGA
 real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& segB)
 {
 #ifdef WITH_CGAL
-	Kernel::Compute_squared_distance_3 distcomputer;
-	return to_double(distcomputer(CGALRay3(toPoint3(ray.getOrigin()),toDirection3(ray.getDirection())),toSegment3(segA,segB)));
+    Kernel::Compute_squared_distance_3 distcomputer;
+    return to_double(distcomputer(CGALRay3(toPoint3(ray.getOrigin()),toDirection3(ray.getDirection())),toSegment3(segA,segB)));
 
 #else
 #ifdef _MSC_VER
@@ -260,8 +260,8 @@ real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& seg
 #else
 #warning "CGAL not included. CurveIntersection routine will not work."
 #endif
-	pglError("CGAL not included. CurveIntersection routine will not work.");
-	return false;
+    pglError("CGAL not included. CurveIntersection routine will not work.");
+    return false;
 #endif
 
 }
@@ -273,47 +273,47 @@ real_t raySegmentDistance(const Ray& ray, const Vector3& segA,const Vector3& seg
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
 #endif
 
-IndexArrayPtr 
+IndexArrayPtr
 determine_faces(const Point2ArrayPtr& points, std::vector<std::pair<uint32_t, uint32_t> > edges)
 {
 #ifdef WITH_CGAL
-	typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
-	typedef CGAL::Triangulation_vertex_base_2<K> Vb;
-	typedef CGAL::Constrained_triangulation_face_base_2<K> Fb;
-	typedef CGAL::Triangulation_data_structure_2<Vb,Fb> TDS;
-	typedef CGAL::Exact_predicates_tag Itag;
-	typedef CGAL::Constrained_Delaunay_triangulation_2<K, TDS, Itag> CDT;
-	typedef CDT::Point Point;
+    typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
+    typedef CGAL::Triangulation_vertex_base_2<K> Vb;
+    typedef CGAL::Constrained_triangulation_face_base_2<K> Fb;
+    typedef CGAL::Triangulation_data_structure_2<Vb,Fb> TDS;
+    typedef CGAL::Exact_predicates_tag Itag;
+    typedef CGAL::Constrained_Delaunay_triangulation_2<K, TDS, Itag> CDT;
+    typedef CDT::Point Point;
 
-	 CDT cdt;
-	 for(std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedges = edges.begin(); itedges != edges.end(); ++itedges)
-		 cdt.insert_constraint( toPoint<Point>(points->getAt(itedges->first),toPoint<Point>(points->getAt(itedges->second));
+     CDT cdt;
+     for(std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedges = edges.begin(); itedges != edges.end(); ++itedges)
+         cdt.insert_constraint( toPoint<Point>(points->getAt(itedges->first),toPoint<Point>(points->getAt(itedges->second));
 
-	assert(cdt.is_valid());
-	int count = 0;
-	std::vector<pgl_hash_set<uint32_t> > trgroups;
-	typedef pgl_hash_map<uint32_t,uint32_t> Tr2Map;
-	Tr2Map tr2group;
+    assert(cdt.is_valid());
+    int count = 0;
+    std::vector<pgl_hash_set<uint32_t> > trgroups;
+    typedef pgl_hash_map<uint32_t,uint32_t> Tr2Map;
+    Tr2Map tr2group;
 
 
-	for (CDT::Finite_edges_iterator eit = cdt.finite_edges_begin(); eit != cdt.finite_edges_end(); ++eit){
-		TDS::Face_handle face = eit->first;
-		int vertex = eit->second;
-		TDS::Face_handle nbg face->neighbor(vertex);
-		Tr2Map::const_iterator ittrmap =  tr2group.find((uint32_t)face);
-		int groupf1 = (ittrmap == tr2group.end()?-1:*ittrmap);
-		Tr2Map::const_iterator ittrmap =  tr2group.find((uint32_t)nbg);
-		int groupf2 = (ittrmap == tr2group.end()?-1:*ittrmap);
+    for (CDT::Finite_edges_iterator eit = cdt.finite_edges_begin(); eit != cdt.finite_edges_end(); ++eit){
+        TDS::Face_handle face = eit->first;
+        int vertex = eit->second;
+        TDS::Face_handle nbg face->neighbor(vertex);
+        Tr2Map::const_iterator ittrmap =  tr2group.find((uint32_t)face);
+        int groupf1 = (ittrmap == tr2group.end()?-1:*ittrmap);
+        Tr2Map::const_iterator ittrmap =  tr2group.find((uint32_t)nbg);
+        int groupf2 = (ittrmap == tr2group.end()?-1:*ittrmap);
 
-		if (cdt.is_constrained(*eit)){
+        if (cdt.is_constrained(*eit)){
 
-		}
+        }
 
-	}
-	
+    }
+
 
 #else
-	return IndexArrayPtr();
+    return IndexArrayPtr();
 #endif
 }
 
@@ -321,63 +321,63 @@ determine_faces(const Point2ArrayPtr& points, std::vector<std::pair<uint32_t, ui
 
 #include "../fitting/planargraph.h"
 
-IndexArrayPtr PGL::determine_faces_from_edges(const Point2ArrayPtr& points, const std::vector<std::pair<uint32_t, uint32_t> >& edges)
+IndexArrayPtr PGL(determine_faces_from_edges)(const Point2ArrayPtr& points, const std::vector<std::pair<uint32_t, uint32_t> >& edges)
 {
-	typedef Wm5::PlanarGraph<Vector2> Graph;
-	Graph graph;
-	int i = 0;
-	for (Point2Array::const_iterator it = points->begin(); it != points->end(); ++it)
-		graph.InsertVertex(*it,i++);
-	for (std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedge = edges.begin(); itedge != edges.end(); ++itedge)
-		graph.InsertEdge(itedge->first,itedge->second);
+    typedef Wm5::PlanarGraph<Vector2> Graph;
+    Graph graph;
+    int i = 0;
+    for (Point2Array::const_iterator it = points->begin(); it != points->end(); ++it)
+        graph.InsertVertex(*it,i++);
+    for (std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedge = edges.begin(); itedge != edges.end(); ++itedge)
+        graph.InsertEdge(itedge->first,itedge->second);
 
-	std::vector<Graph::Primitive*> mPrimitives;
-	graph.ExtractPrimitives(mPrimitives);
+    std::vector<Graph::Primitive*> mPrimitives;
+    graph.ExtractPrimitives(mPrimitives);
 
 
-	IndexArrayPtr result(new IndexArray());
-	for (std::vector<Graph::Primitive*>::const_iterator itPrim = mPrimitives.begin(); itPrim != mPrimitives.end(); ++itPrim){
-		if ((*itPrim)->Type == Graph::PT_MINIMAL_CYCLE){
-			Index lresult;
-			for (std::vector<std::pair<Vector2,int> >::const_iterator itSequence = (*itPrim)->Sequence.begin(); itSequence != (*itPrim)->Sequence.end(); ++itSequence)
-				lresult.push_back(itSequence->second);
-			result->push_back(lresult);
-		}
-	}
+    IndexArrayPtr result(new IndexArray());
+    for (std::vector<Graph::Primitive*>::const_iterator itPrim = mPrimitives.begin(); itPrim != mPrimitives.end(); ++itPrim){
+        if ((*itPrim)->Type == Graph::PT_MINIMAL_CYCLE){
+            Index lresult;
+            for (std::vector<std::pair<Vector2,int> >::const_iterator itSequence = (*itPrim)->Sequence.begin(); itSequence != (*itPrim)->Sequence.end(); ++itSequence)
+                lresult.push_back(itSequence->second);
+            result->push_back(lresult);
+        }
+    }
 
-	return result;
+    return result;
 }
 
-IndexArrayPtr PGL::determine_faceedges_from_edges(const Point2ArrayPtr& points, const std::vector<std::pair<uint32_t, uint32_t> >& edges)
+IndexArrayPtr PGL(determine_faceedges_from_edges)(const Point2ArrayPtr& points, const std::vector<std::pair<uint32_t, uint32_t> >& edges)
 {
-	IndexArrayPtr presult = determine_faces_from_edges(points, edges);
-	pgl_hash_map<uint32_t, pgl_hash_map<uint32_t,uint32_t> > pidedgemap;
-	uint32_t eid = 0;
-	for (std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedge = edges.begin(); itedge != edges.end(); ++itedge, ++eid)
-	{
-		pgl_hash_map<uint32_t, pgl_hash_map<uint32_t,uint32_t> >::const_iterator fpid = pidedgemap.find(std::min(itedge->first,itedge->second));
-		pgl_hash_map<uint32_t,uint32_t> l;
-		if  (fpid != pidedgemap.end()) l = fpid->second;
-		l[std::max(itedge->first,itedge->second)] = eid;
-		pidedgemap[std::min(itedge->first,itedge->second)] = l;
+    IndexArrayPtr presult = determine_faces_from_edges(points, edges);
+    pgl_hash_map<uint32_t, pgl_hash_map<uint32_t,uint32_t> > pidedgemap;
+    uint32_t eid = 0;
+    for (std::vector<std::pair<uint32_t, uint32_t> >::const_iterator itedge = edges.begin(); itedge != edges.end(); ++itedge, ++eid)
+    {
+        pgl_hash_map<uint32_t, pgl_hash_map<uint32_t,uint32_t> >::const_iterator fpid = pidedgemap.find(std::min(itedge->first,itedge->second));
+        pgl_hash_map<uint32_t,uint32_t> l;
+        if  (fpid != pidedgemap.end()) l = fpid->second;
+        l[std::max(itedge->first,itedge->second)] = eid;
+        pidedgemap[std::min(itedge->first,itedge->second)] = l;
 
-		/*fpid = pidedgemap.find(itedge->second);
-		l = (fpid == pidedgemap.end()?pgl_hash_map<uint32_t,uint32_t>():fpid->second);
-		l[itedge->first] = eid;
-		pidedgemap[itedge->second] = l;*/
-	}
+        /*fpid = pidedgemap.find(itedge->second);
+        l = (fpid == pidedgemap.end()?pgl_hash_map<uint32_t,uint32_t>():fpid->second);
+        l[itedge->first] = eid;
+        pidedgemap[itedge->second] = l;*/
+    }
 
-	IndexArrayPtr eresult(new IndexArray());
-	for(IndexArray::const_iterator itpid = presult->begin(); itpid != presult->end(); ++itpid){
-		Index leres;
-		uint32_t pidsetsize = itpid->size();
-		for (uint32_t i = 0; i < pidsetsize; ++i){
-			uint32_t p1 = itpid->getAt(i);
-			uint32_t p2 = itpid->getAt((i!=pidsetsize-1?i+1:0));
-			leres.push_back(pidedgemap[std::min(p1,p2)][std::max(p1,p2)]);
+    IndexArrayPtr eresult(new IndexArray());
+    for(IndexArray::const_iterator itpid = presult->begin(); itpid != presult->end(); ++itpid){
+        Index leres;
+        uint32_t pidsetsize = itpid->size();
+        for (uint32_t i = 0; i < pidsetsize; ++i){
+            uint32_t p1 = itpid->getAt(i);
+            uint32_t p2 = itpid->getAt((i!=pidsetsize-1?i+1:0));
+            leres.push_back(pidedgemap[std::min(p1,p2)][std::max(p1,p2)]);
 
-		}
-		eresult->push_back(leres);
-	}
-	return eresult;
+        }
+        eresult->push_back(leres);
+    }
+    return eresult;
 }

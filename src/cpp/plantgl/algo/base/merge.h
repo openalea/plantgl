@@ -38,12 +38,12 @@
 #ifndef __algo_merge_h__
 #define __algo_merge_h__
 
+#include "discretizer.h"
 #include <plantgl/scenegraph/geometry/triangleset.h>
 #include <plantgl/scenegraph/geometry/faceset.h>
 #include <plantgl/scenegraph/geometry/quadset.h>
 #include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/geometry/pointset.h>
-#include "discretizer.h"
 
 
 /* ----------------------------------------------------------------------- */
@@ -64,12 +64,12 @@ class ALGO_API Merge
 
 public:
 
-  /*! \enum MODEL_TYPE    
+  /*! \enum MODEL_TYPE
   Type of the model to be merge.
   */
   /*!
   \var MODEL_TYPE POINT_SET
-	PointSet type
+    PointSet type
   */
   /*!
   \var MODEL_TYPE POLYLINE
@@ -143,7 +143,7 @@ public:
     /// Method use for optimization purpose when all objects are similar.
     virtual void setIsoModel( uint_t nbObjects );
 
-	virtual void checkNormals(Mesh& geom);
+    virtual void checkNormals(Mesh& geom);
 
 protected:
 
@@ -173,5 +173,3 @@ PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
-
-

@@ -141,7 +141,7 @@ PGL_BEGIN_NAMESPACE
   ALGO_API IndexArrayPtr
   k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symmetric = false);
 
-// ALGO_API IndexArrayPtr 
+// ALGO_API IndexArrayPtr
 // k_closest_points_from_cgal(const Point3ArrayPtr points, size_t k);
 
   ALGO_API IndexArrayPtr
@@ -526,7 +526,7 @@ PGL_BEGIN_NAMESPACE
 // compute a weight to each points as sum of length of carried segments
   ALGO_API RealArrayPtr carried_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents);
 
-// compute a weight to each points as number of node in their 
+// compute a weight to each points as number of node in their
   ALGO_API Uint32Array1Ptr subtrees_size(const Uint32Array1Ptr parents);
 
   ALGO_API Uint32Array1Ptr subtrees_size(const IndexArrayPtr children, uint32_t root);
@@ -645,7 +645,7 @@ PGL_BEGIN_NAMESPACE
 // compute the pair wise distance between orientation (in angular domain)
   ALGO_API RealArray2Ptr orientations_distances(const Point3ArrayPtr orientations, const Index &group = Index());
 
-// compute the pair wise similarity between orientation (in angular domain) 
+// compute the pair wise similarity between orientation (in angular domain)
   ALGO_API RealArray2Ptr orientations_similarities(const Point3ArrayPtr orientations,
                                                           const Index &group = Index());
 
@@ -662,7 +662,7 @@ PGL_BEGIN_NAMESPACE
 /*
     Compute the geometric median of a point sample.
     The geometric median coordinates will be expressed in the Spatial Image reference system (not in real world metrics).
-    We use the Weiszfeld's algorithm (http://en.wikipedia.org/wiki/Geometric_median) 
+    We use the Weiszfeld's algorithm (http://en.wikipedia.org/wiki/Geometric_median)
 */
   ALGO_API uint32_t approx_pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax = 200);
 
@@ -672,4 +672,3 @@ PGL_BEGIN_NAMESPACE
 PGL_END_NAMESPACE
 
 #endif
-

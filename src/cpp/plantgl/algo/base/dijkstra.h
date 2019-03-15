@@ -60,7 +60,7 @@
         #define PGL_USE_PRIORITY_QUEUE
     #endif
 #endif
-    
+
 
 PGL_BEGIN_NAMESPACE
 
@@ -68,7 +68,7 @@ struct Node {
     uint32_t id;
     uint32_t parent;
     real_t distance;
-    Node(uint32_t _id, uint32_t _parent, real_t _distance) 
+    Node(uint32_t _id, uint32_t _parent, real_t _distance)
         : id(_id), parent(_parent), distance(_distance) {}
 } ;
 
@@ -107,9 +107,9 @@ struct DijkstraAllocator {
         for (color * itcol = colored ; itcol != colored+nbnodes ; ++itcol) *itcol = black;
     }
 
-    
+
     void desallocate(RealArrayPtr distances, uint32_t * parents, color * colored)  const {
-        delete [] parents;        
+        delete [] parents;
         delete [] colored;
     }
 
@@ -128,7 +128,7 @@ struct DijkstraAllocator {
 class DijkstraReusingAllocator {
     class Cache {
     public:
-        RealArrayPtr distances;  
+        RealArrayPtr distances;
         uint32_t * parents;
         color * colored;
 #ifdef PGL_USE_FIBONACCI_HEAP
@@ -173,7 +173,7 @@ public:
         for (uint32_t * itpar = parents ; itpar != parents+nbnodes ; ++itpar) *itpar = 0;
     }
 
-    
+
     void desallocate(RealArrayPtr distances, uint32_t * parents, color * colored)  const {
     }
 
@@ -195,8 +195,8 @@ protected:
 };
 
 template<class EdgeWeigthEvaluation, class Allocator>
-NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
-                                             uint32_t root, 
+NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
+                                             uint32_t root,
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist,
                                              uint32_t maxnbelements,
@@ -220,7 +220,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
      distances->setAt(root,0);
      parents[root] = root;
- 
+
 
      struct nodecompare comp(distances);
      dijkstraheap Q(comp);
@@ -261,7 +261,7 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
          {
              uint32_t v = *itchildren;
 
-             real_t weigthuv = distevaluator(current,v); 
+             real_t weigthuv = distevaluator(current,v);
              real_t distance = weigthuv + distances->getAt(current);
 
              if (distance <= maxdist && distance < distances->getAt(v)) {
@@ -296,17 +296,17 @@ NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
 
 
 template<class EdgeWeigthEvaluation>
-NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections, 
-                                             uint32_t root, 
+NodeList  dijkstra_shortest_paths_in_a_range(const IndexArrayPtr& connections,
+                                             uint32_t root,
                                              EdgeWeigthEvaluation& distevaluator,
                                              real_t maxdist = REAL_MAX,
                                              uint32_t maxnbelements = UINT32_MAX)
-                                             
+
  { return dijkstra_shortest_paths_in_a_range(connections,root,distevaluator,maxdist,maxnbelements,DijkstraAllocator());  }
- 
+
 template<class EdgeWeigthEvaluation>
-std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArrayPtr& connections, 
-                                   uint32_t root, 
+std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArrayPtr& connections,
+                                   uint32_t root,
                                    EdgeWeigthEvaluation& distevaluator)
  {
 
@@ -333,7 +333,7 @@ std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArra
 #endif
 
      while(!Q.empty()){
-         uint32_t current = Q.top(); Q.pop(); 
+         uint32_t current = Q.top(); Q.pop();
 #ifdef PGL_USE_PRIORITY_QUEUE
          if(colored[current] == white) continue;
 #endif
@@ -343,7 +343,7 @@ std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArra
              itchildren != nextchildren.end(); ++itchildren)
          {
              uint32_t v = *itchildren;
-             real_t weigthuv = distevaluator(current,v); 
+             real_t weigthuv = distevaluator(current,v);
              real_t distance = weigthuv+distances->getAt(current);
              if (distance < distances->getAt(v)){
                  // printf("consider child %i %f %f %i\n", v, distance, (distances->getAt(v)!=REAL_MAX?distances->getAt(v):-1), int(colored[v]));
@@ -373,23 +373,23 @@ std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArra
  /*
  DIJKSTRA(G, s, w)
   for each vertex u in V
-    d[u] := infinity 
-    p[u] := u 
+    d[u] := infinity
+    p[u] := u
     color[u] := WHITE
   end for
-  color[s] := GRAY 
-  d[s] := 0 
+  color[s] := GRAY
+  d[s] := 0
   INSERT(Q, s)
-  while (Q != Ø)
+  while (Q != ï¿½)
     u := EXTRACT-MIN(Q)
     S := S U { u }
     for each vertex v in Adj[u]
       if (w(u,v) + d[u] < d[v])
         d[v] := w(u,v) + d[u]
-        p[v] := u 
-        if (color[v] = WHITE) 
+        p[v] := u
+        if (color[v] = WHITE)
           color[v] := GRAY
-          INSERT(Q, v) 
+          INSERT(Q, v)
         else if (color[v] = GRAY)
           DECREASE-KEY(Q, v)
       else

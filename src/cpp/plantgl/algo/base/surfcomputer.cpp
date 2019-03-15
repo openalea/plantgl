@@ -152,11 +152,11 @@ bool SurfComputer::process( AmapSymbol * amapSymbol ) {
       /* Vector3 _vi = amapSymbol->getPointAt(_i,_j) -
                     amapSymbol->getPointAt(_i,0);
       Vector3 _vj = amapSymbol->getPointAt(_i,_j + 1) -
-                    amapSymbol->getPointAt(_i,0); 
+                    amapSymbol->getPointAt(_i,0);
       __result += 0.5 * norm(cross(_vi,_vj)); */
-	  __result += surface(amapSymbol->getFacePointAt(_i,0),
-						  amapSymbol->getFacePointAt(_i,_j),
-						  amapSymbol->getFacePointAt(_i,_j + 1));
+      __result += surface(amapSymbol->getFacePointAt(_i,0),
+                          amapSymbol->getFacePointAt(_i,_j),
+                          amapSymbol->getFacePointAt(_i,_j + 1));
     };
   };
 
@@ -227,11 +227,11 @@ bool SurfComputer::process( Cone * cone ) {
   real_t _radius = cone->getRadius();
   real_t _height = cone->getHeight();
   if(!cone->getSolid()) {
-      // Side Area : Pi * r * racine²(r² + h²).
+      // Side Area : Pi * r * racine2(r2 + h2).
       __result = GEOM_TWO_PI * _radius * sqrt(sq(_radius) + sq(_height))/2;
   }
   else {
-      // Side and Base Area : Pi * r * ( r *  racine²(r² + h²)).
+      // Side and Base Area : Pi * r * ( r *  racine2(r2 + h2)).
       __result =  GEOM_TWO_PI  * _radius * ( _radius + sqrt(sq(_radius) + sq(_height)) )/2;
   }
 
@@ -253,7 +253,7 @@ bool SurfComputer::process( Cylinder * cylinder ) {
       __result = GEOM_TWO_PI * _radius * _height;
   }
   else {
-      // Side and Base Area :  2 Pi r h + 2 Pi r²
+      // Side and Base Area :  2 Pi r h + 2 Pi r2
       __result = GEOM_TWO_PI  * _radius * ( _radius + _height );
   }
 
@@ -310,7 +310,7 @@ bool SurfComputer::process( FaceSet * faceSet ) {
     const Index& _index = faceSet->getIndexList()->getAt(_i);
     uint_t _jSize = _index.size();
     for (uint_t _j = 1; _j < _jSize - 1; _j++) {
-	  __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
+      __result += surface(faceSet->getFacePointAt(_i,0),faceSet->getFacePointAt(_i,_j),faceSet->getFacePointAt(_i,_j+1));
     };
   };
 
@@ -340,11 +340,11 @@ bool SurfComputer::process( Frustum * frustum ) {
 
       if(!frustum->getSolid()) {
           // q : top radius. h : height of the cone containing the frustrum. a : height of the frustrum.
-          // Side Area : Pi * [ r * racine²(r² + h²) - q * racine²(q² + (h -a)²) ].
+          // Side Area : Pi * [ r * racine2(r2 + h2) - q * racine2(q2 + (h -a)2) ].
           __result = GEOM_TWO_PI * ( _radius * sqrt(sq(_radius) + sq(h)) - _top_radius * sqrt( sq(_top_radius) + sq(_hdif)))/2;
       }
       else {
-          // Side and Base Area : Pi * [ r + q + r * racine²(r² + h²) - q * racine²(q² + (h -a)²) ].
+          // Side and Base Area : Pi * [ r + q + r * racine2(r2 + h2) - q * racine2(q2 + (h -a)2) ].
           __result = GEOM_TWO_PI  * ( _radius + _top_radius + _radius * sqrt(sq(_radius) + sq(h)) - _top_radius * sqrt( sq(_top_radius) + sq(_hdif)))/2;
       }
   }
@@ -354,7 +354,7 @@ bool SurfComputer::process( Frustum * frustum ) {
           __result = GEOM_TWO_PI * _radius * _height;
       }
       else {
-          // Side and Base Area :  2 Pi r h + 2 Pi r²
+          // Side and Base Area :  2 Pi r h + 2 Pi r2
           __result = GEOM_TWO_PI  * _radius * ( _radius + _height );
       }
   }
@@ -518,7 +518,7 @@ bool SurfComputer::process( ScreenProjected * scp) {
 bool SurfComputer::process( Sphere * sphere ) {
   GEOM_ASSERT(sphere);
 
-  // 4 PI r²
+  // 4 PI r2
   const real_t& _radius = sphere->getRadius();
   __result = GEOM_TWO_PI * 2 * sq(_radius);
 
@@ -560,8 +560,8 @@ bool SurfComputer::process( TriangleSet * triangleSet ) {
   uint_t _size = triangleSet->getIndexListSize();
   for (uint_t _i = 0; _i < _size; _i++) {
     __result += surface(triangleSet->getFacePointAt(_i,0),
-						triangleSet->getFacePointAt(_i,1),
-						triangleSet->getFacePointAt(_i,2));
+                        triangleSet->getFacePointAt(_i,1),
+                        triangleSet->getFacePointAt(_i,2));
   };
 
   GEOM_SURFCOMPUTER_UPDATE_CACHE(triangleSet);
@@ -758,4 +758,3 @@ bool SurfComputer::process( Font * font ){
   __result = 0;
   return true;
 };
-

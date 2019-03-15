@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
-/*! \file overlay.h
+/*! \file intersection.h
     \brief Some algorithms to compute intersection between polygons.
 */
 
@@ -61,15 +61,15 @@ ALGO_API std::pair<Point2ArrayPtr, IndexArrayPtr> polygon2ds_intersection(Point2
 
 
 // Check if a plane and segment intersect. result contains intersection if true.
-ALGO_API bool plane_segment_intersection(const Plane3& plane, 
-                                         const Vector3& p1, 
+ALGO_API bool plane_segment_intersection(const Plane3& plane,
+                                         const Vector3& p1,
                                          const Vector3& p2,
                                          Vector3& result);
 
 // Compute the actual intersection
-Vector3 _plane_segment_intersection(const Plane3& plane, 
+Vector3 _plane_segment_intersection(const Plane3& plane,
                                     real_t d1,
-                                    const Vector3& p1, 
+                                    const Vector3& p1,
                                     const Vector3& p2);
 
 
@@ -80,13 +80,13 @@ enum IntersectionType {
 } ;
 
 // Check if a plane and segment intersect. result contains intersection if true.
-ALGO_API IntersectionType triangle_triangle_intersection(const Vector3& t11, const Vector3& t12, const Vector3& t13, 
-                                                 const Vector3& t21, const Vector3& t22, const Vector3& t23, 
+ALGO_API IntersectionType triangle_triangle_intersection(const Vector3& t11, const Vector3& t12, const Vector3& t13,
+                                                 const Vector3& t21, const Vector3& t22, const Vector3& t23,
                                                  Vector3& intersectionstart, Vector3& intersectionend);
 
 
 
-std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
+std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr>
 auto_intersection(Point3ArrayPtr points, Index3ArrayPtr triangles);
 
 /* ----------------------------------------------------------------------- */
@@ -97,4 +97,3 @@ PGL_END_NAMESPACE
 
 // __intersection_h__
 #endif
-

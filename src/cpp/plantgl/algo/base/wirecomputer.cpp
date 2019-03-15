@@ -81,11 +81,11 @@ PGL_USING_NAMESPACE
 
 #define GEOM_DISCRETIZE(geom) \
     GEOM_ASSERT(geom); \
-	if(!(geom->apply(__discretizer))) { \
-	  __wire = GeometryPtr(); \
-	  return false; \
-	} \
-	else return __discretizer.getDiscretization()->apply(*this); \
+    if(!(geom->apply(__discretizer))) { \
+      __wire = GeometryPtr(); \
+      return false; \
+    } \
+    else return __discretizer.getDiscretization()->apply(*this); \
 
 
 /* ----------------------------------------------------------------------- */
@@ -94,7 +94,7 @@ PGL_USING_NAMESPACE
 WireComputer::WireComputer(Discretizer& dis) :
     __cache(),
     __wire(),
-	__discretizer(dis){
+    __discretizer(dis){
 }
 
 WireComputer::~WireComputer( ) {
@@ -168,12 +168,12 @@ bool WireComputer::process( AmapSymbol * amapSymbol ) {
   GeometryArrayPtr polys(new GeometryArray);
   for(IndexArray::const_iterator _it = amapSymbol->getIndexList()->begin();
   _it != amapSymbol->getIndexList()->end(); _it++){
-	Point3ArrayPtr points(new Point3Array);
-	for(Index::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
-	  points->push_back(amapSymbol->getPointList()->getAt(*_i));
-	}
-	points->push_back(amapSymbol->getPointList()->getAt(*(_it->begin())));
-	polys->push_back(GeometryPtr(new Polyline(points)));
+    Point3ArrayPtr points(new Point3Array);
+    for(Index::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+      points->push_back(amapSymbol->getPointList()->getAt(*_i));
+    }
+    points->push_back(amapSymbol->getPointList()->getAt(*(_it->begin())));
+    polys->push_back(GeometryPtr(new Polyline(points)));
   }
   if(polys->empty())__wire = GeometryPtr();
   else if(polys->size() == 1)__wire = polys->getAt(0);
@@ -187,12 +187,12 @@ bool WireComputer::process( FaceSet * faceSet ) {
   GeometryArrayPtr polys(new GeometryArray);
   for(IndexArray::const_iterator _it = faceSet->getIndexList()->begin();
   _it != faceSet->getIndexList()->end(); _it++){
-	Point3ArrayPtr points(new Point3Array);
-	for(Index::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
-	  points->push_back(faceSet->getPointList()->getAt(*_i));
-	}
-	points->push_back(faceSet->getPointList()->getAt(*(_it->begin())));
-	polys->push_back(GeometryPtr(new Polyline(points)));
+    Point3ArrayPtr points(new Point3Array);
+    for(Index::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+      points->push_back(faceSet->getPointList()->getAt(*_i));
+    }
+    points->push_back(faceSet->getPointList()->getAt(*(_it->begin())));
+    polys->push_back(GeometryPtr(new Polyline(points)));
   }
   if(polys->empty())__wire = GeometryPtr();
   else if(polys->size() == 1)__wire = polys->getAt(0);
@@ -220,12 +220,12 @@ bool WireComputer::process( QuadSet * quadSet ) {
   GeometryArrayPtr polys(new GeometryArray);
   for(Index4Array::const_iterator _it = quadSet->getIndexList()->begin();
   _it != quadSet->getIndexList()->end(); _it++){
-	Point3ArrayPtr points(new Point3Array);
-	for(Index4::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
-	  points->push_back(quadSet->getPointList()->getAt(*_i));
-	}
-	points->push_back(quadSet->getPointList()->getAt(*(_it->begin())));
-	polys->push_back(GeometryPtr(new Polyline(points)));
+    Point3ArrayPtr points(new Point3Array);
+    for(Index4::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+      points->push_back(quadSet->getPointList()->getAt(*_i));
+    }
+    points->push_back(quadSet->getPointList()->getAt(*(_it->begin())));
+    polys->push_back(GeometryPtr(new Polyline(points)));
   }
   if(polys->empty())__wire = GeometryPtr();
   else if(polys->size() == 1)__wire = polys->getAt(0);
@@ -238,12 +238,12 @@ bool WireComputer::process( TriangleSet * triangleSet ) {
   GeometryArrayPtr polys(new GeometryArray);
   for(Index3Array::const_iterator _it = triangleSet->getIndexList()->begin();
   _it != triangleSet->getIndexList()->end(); _it++){
-	Point3ArrayPtr points(new Point3Array);
-	for(Index3::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
-	  points->push_back(triangleSet->getPointList()->getAt(*_i));
-	}
-	points->push_back(triangleSet->getPointList()->getAt(*(_it->begin())));
-	polys->push_back(GeometryPtr(new Polyline(points)));
+    Point3ArrayPtr points(new Point3Array);
+    for(Index3::const_iterator _i = _it->begin(); _i != _it->end(); _i++){
+      points->push_back(triangleSet->getPointList()->getAt(*_i));
+    }
+    points->push_back(triangleSet->getPointList()->getAt(*(_it->begin())));
+    polys->push_back(GeometryPtr(new Polyline(points)));
   }
   if(polys->empty())__wire = GeometryPtr();
   else if(polys->size() == 1)__wire = polys->getAt(0);

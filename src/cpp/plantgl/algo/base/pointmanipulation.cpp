@@ -66,7 +66,7 @@ struct PowerPointDistance {
   PowerPointDistance(const Point3ArrayPtr _points, real_t _power) : points(_points), power(_power) {}
 };
 
-Color4ArrayPtr PGL::generate_point_color(PointSet &point) {
+Color4ArrayPtr PGL(generate_point_color)(PointSet &point) {
   const Point3ArrayPtr &points = point.getPointList();
   Color4ArrayPtr colorList(new Color4Array(points->size()));
   Discretizer d;
@@ -86,7 +86,7 @@ Color4ArrayPtr PGL::generate_point_color(PointSet &point) {
   return colorList;
 }
 
-Index PGL::select_soil(const Point3ArrayPtr &point,
+Index PGL(select_soil)(const Point3ArrayPtr &point,
                        IndexArrayPtr &kclosest,
                        const uint_t &topHeightPourcent,
                        const real_t &bottomThreshold) {
@@ -136,7 +136,7 @@ Index PGL::select_soil(const Point3ArrayPtr &point,
   return ground;
 }
 
-Index PGL::get_shortest_path(const Point3ArrayPtr &point,
+Index PGL(get_shortest_path)(const Point3ArrayPtr &point,
                              IndexArrayPtr &kclosest,
                              const uint_t &point_begin,
                              const uint_t &point_end) {
@@ -160,7 +160,7 @@ Index PGL::get_shortest_path(const Point3ArrayPtr &point,
   return wire;
 }
 
-std::pair<Point3ArrayPtr, Index> PGL::add_baricenter_points_of_path(const Point3ArrayPtr &point,
+std::pair<Point3ArrayPtr, Index> PGL(add_baricenter_points_of_path)(const Point3ArrayPtr &point,
                                                                     IndexArrayPtr &kclosest,
                                                                     const Index &path,
                                                                     const real_t &radius) {
@@ -185,7 +185,7 @@ std::pair<Point3ArrayPtr, Index> PGL::add_baricenter_points_of_path(const Point3
   return std::pair<Point3ArrayPtr, Index>(newPoints, baricenter_indexs);
 }
 
-RealArrayPtr PGL::get_radii_of_path(const Point3ArrayPtr &point,
+RealArrayPtr PGL(get_radii_of_path)(const Point3ArrayPtr &point,
                                            const IndexArrayPtr &kclosest,
                                            const Index &path,
                                            const real_t &around_radius) {
@@ -217,7 +217,7 @@ RealArrayPtr PGL::get_radii_of_path(const Point3ArrayPtr &point,
   return radii;
 }
 
-Index PGL::select_wire_from_path(const Point3ArrayPtr &point,
+Index PGL(select_wire_from_path)(const Point3ArrayPtr &point,
                                  const Index &path,
                                  const real_t &radius,
                                  const RealArrayPtr &radii) {
@@ -256,7 +256,7 @@ Index PGL::select_wire_from_path(const Point3ArrayPtr &point,
   return wire;
 }
 
-Index PGL::filter_min_densities(const RealArrayPtr densities, const real_t &densityratio) {
+Index PGL(filter_min_densities)(const RealArrayPtr densities, const real_t &densityratio) {
   std::pair<RealArray::const_iterator, RealArray::const_iterator> res = densities->getMinAndMax(true);
   real_t mind = *res.first;
   real_t maxd = *res.second;
@@ -272,7 +272,7 @@ Index PGL::filter_min_densities(const RealArrayPtr densities, const real_t &dens
   return subset;
 }
 
-Index PGL::filter_max_densities(const RealArrayPtr densities, const real_t &densityratio) {
+Index PGL(filter_max_densities)(const RealArrayPtr densities, const real_t &densityratio) {
   std::pair<RealArray::const_iterator, RealArray::const_iterator> res = densities->getMinAndMax(true);
   real_t mind = *res.first;
   real_t maxd = *res.second;
@@ -404,7 +404,7 @@ public:
 };
 
 std::pair<Index, real_t>
-PGL::select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance) {
+PGL(select_pole_points)(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance) {
   srand(time(0));
   const uint_t pointsize = point->size();
 
@@ -429,7 +429,7 @@ PGL::select_pole_points(const Point3ArrayPtr &point, const real_t &radius, const
 }
 
 std::pair<Index, real_t>
-PGL::select_pole_points_mt(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance) {
+PGL(select_pole_points_mt)(const Point3ArrayPtr &point, const real_t &radius, const uint_t &iterations, const real_t &tolerance) {
   srand(time(0));
   const uint_t pointsize = point->size();
 
@@ -478,7 +478,7 @@ struct PointSorter {
 };
 
 IndexArrayPtr
-PGL::k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k) {
+PGL(k_closest_points_from_delaunay)(const Point3ArrayPtr points, size_t k) {
   IndexArrayPtr res = delaunay_point_connection(points);
   IndexArrayPtr filteredres(new IndexArray(res->size()));
   IndexArray::iterator ittarget = filteredres->begin();
@@ -498,7 +498,7 @@ PGL::k_closest_points_from_delaunay(const Point3ArrayPtr points, size_t k) {
 #include <plantgl/algo/grid/kdtree.h>
 
 IndexArrayPtr
-PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symmetric) {
+PGL(k_closest_points_from_ann)(const Point3ArrayPtr points, size_t k, bool symmetric) {
 #ifdef WITH_ANN
   ANNKDTree3 kdtree(points);
   IndexArrayPtr result = kdtree.k_nearest_neighbors(k);
@@ -517,7 +517,7 @@ PGL::k_closest_points_from_ann(const Point3ArrayPtr points, size_t k, bool symme
 
 
 IndexArrayPtr
-PGL::symmetrize_connections(const IndexArrayPtr adjacencies) {
+PGL(symmetrize_connections)(const IndexArrayPtr adjacencies) {
   IndexArrayPtr newadjacencies(new IndexArray(*adjacencies));
   size_t pid = 0;
   for (IndexArray::const_iterator itpc = newadjacencies->begin(); itpc != newadjacencies->end(); ++itpc, ++pid) {
@@ -540,7 +540,7 @@ struct OneDistance {
 };
 
 IndexArrayPtr
-PGL::get_all_connex_components(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose) {
+PGL(get_all_connex_components)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose) {
   const uint32_t &pointsize = points->size();
   IndexArrayPtr result(new IndexArray());
   std::vector<bool> computedids(pointsize, false);
@@ -566,7 +566,7 @@ PGL::get_all_connex_components(const Point3ArrayPtr points, const IndexArrayPtr 
 }
 
 IndexArrayPtr
-PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose) {
+PGL(connect_all_connex_components)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, bool verbose) {
 #ifdef WITH_ANN
   // ids of points not accessible from the root connex component
   pgl_hash_set_uint32 nonconnected;
@@ -673,7 +673,7 @@ PGL::connect_all_connex_components(const Point3ArrayPtr points, const IndexArray
 }
 
 Index
-PGL::r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius) {
+PGL(r_neighborhood)(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const real_t radius) {
   GEOM_ASSERT(points->size() == adjacencies->size());
 
   struct PointDistance pdevaluator(points);
@@ -686,7 +686,7 @@ PGL::r_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayP
 }
 
 IndexArrayPtr
-PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii) {
+PGL(r_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii) {
   uint32_t nbPoints = points->size();
   GEOM_ASSERT(nbPoints == adjacencies->size());
   GEOM_ASSERT(nbPoints == radii->size());
@@ -747,7 +747,7 @@ public:
 };
 
 IndexArrayPtr
-PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose) {
+PGL(r_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose) {
   uint32_t nbPoints = points->size();
   GEOM_ASSERT(nbPoints == adjacencies->size());
   GEOM_ASSERT(nbPoints == radii->size());
@@ -761,7 +761,7 @@ PGL::r_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 }
 
 IndexArrayPtr
-PGL::r_neighborhoods_mt(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose) {
+PGL(r_neighborhoods_mt)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius, bool verbose) {
   uint32_t nbPoints = points->size();
   GEOM_ASSERT(nbPoints == adjacencies->size());
   GEOM_ASSERT(nbPoints == radii->size());
@@ -792,7 +792,7 @@ struct PointAnisotropicDistance {
 
 
 Index
-PGL::r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies,
+PGL(r_anisotropic_neighborhood)(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies,
                                 const real_t radius,
                                 const Vector3 &direction,
                                 const real_t alpha, const real_t beta) {
@@ -810,7 +810,7 @@ PGL::r_anisotropic_neighborhood(uint32_t pid, const Point3ArrayPtr points, const
 }
 
 IndexArrayPtr
-PGL::r_anisotropic_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii,
+PGL(r_anisotropic_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const RealArrayPtr radii,
                                  const Point3ArrayPtr directions,
                                  const real_t alpha, const real_t beta) {
   uint32_t nbPoints = points->size();
@@ -835,7 +835,7 @@ PGL::r_anisotropic_neighborhoods(const Point3ArrayPtr points, const IndexArrayPt
 
 
 IndexArrayPtr
-PGL::r_anisotropic_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius,
+PGL(r_anisotropic_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, real_t radius,
                                  const Point3ArrayPtr directions,
                                  const real_t alpha, const real_t beta) {
   uint32_t nbPoints = points->size();
@@ -858,7 +858,7 @@ PGL::r_anisotropic_neighborhoods(const Point3ArrayPtr points, const IndexArrayPt
 
 
 real_t
-PGL::density_from_r_neighborhood(uint32_t pid,
+PGL(density_from_r_neighborhood)(uint32_t pid,
                                  const Point3ArrayPtr points,
                                  const IndexArrayPtr adjacencies,
                                  const real_t radius) {
@@ -868,7 +868,7 @@ PGL::density_from_r_neighborhood(uint32_t pid,
 
 
 RealArrayPtr
-PGL::densities_from_r_neighborhood(const Point3ArrayPtr points,
+PGL(densities_from_r_neighborhood)(const Point3ArrayPtr points,
                                    const IndexArrayPtr adjacencies,
                                    const real_t radius) {
   uint32_t nbPoints = points->size();
@@ -885,7 +885,7 @@ PGL::densities_from_r_neighborhood(const Point3ArrayPtr points,
 
 
 RealArrayPtr
-PGL::densities_from_r_neighborhood(const IndexArrayPtr neighborhood,
+PGL(densities_from_r_neighborhood)(const IndexArrayPtr neighborhood,
                                    const real_t radius) {
   uint32_t nbPoints = neighborhood->size();
   RealArrayPtr result(new RealArray(nbPoints));
@@ -898,7 +898,7 @@ PGL::densities_from_r_neighborhood(const IndexArrayPtr neighborhood,
   return result;
 }
 
-Index PGL::get_k_closest_from_n(const Index &adjacencies, const uint32_t k, uint32_t pid, const Point3ArrayPtr points) {
+Index PGL(get_k_closest_from_n)(const Index &adjacencies, const uint32_t k, uint32_t pid, const Point3ArrayPtr points) {
   uint32_t nbnbg = adjacencies.size();
   if (nbnbg <= k) return adjacencies;
   RealArrayPtr distances(new RealArray(nbnbg));
@@ -913,7 +913,7 @@ Index PGL::get_k_closest_from_n(const Index &adjacencies, const uint32_t k, uint
 }
 
 Index
-PGL::k_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k) {
+PGL(k_neighborhood)(uint32_t pid, const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k) {
   GEOM_ASSERT(points->size() == adjacencies->size());
 
   Index result;
@@ -931,7 +931,7 @@ PGL::k_neighborhood(uint32_t pid, const Point3ArrayPtr points, const IndexArrayP
 }
 
 IndexArrayPtr
-PGL::k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k) {
+PGL(k_neighborhoods)(const Point3ArrayPtr points, const IndexArrayPtr adjacencies, const uint32_t k) {
   uint32_t nbPoints = points->size();
   GEOM_ASSERT(nbPoints == adjacencies->size());
   GEOM_ASSERT(nbPoints == radii->size());
@@ -956,7 +956,7 @@ PGL::k_neighborhoods(const Point3ArrayPtr points, const IndexArrayPtr adjacencie
 
 
 real_t
-PGL::pointset_max_distance(const Vector3 &origin,
+PGL(pointset_max_distance)(const Vector3 &origin,
                            const Point3ArrayPtr points,
                            const Index &group) {
   real_t max_distance = 0;
@@ -966,14 +966,14 @@ PGL::pointset_max_distance(const Vector3 &origin,
 }
 
 real_t
-PGL::pointset_max_distance(uint32_t pid,
+PGL(pointset_max_distance)(uint32_t pid,
                            const Point3ArrayPtr points,
                            const Index &group) {
   return pointset_max_distance(points->getAt(pid), points, group);
 }
 
 real_t
-PGL::pointset_min_distance(const Vector3 &origin,
+PGL(pointset_min_distance)(const Vector3 &origin,
                            const Point3ArrayPtr points,
                            const Index &group) {
   real_t min_distance = 0;
@@ -983,7 +983,7 @@ PGL::pointset_min_distance(const Vector3 &origin,
 }
 
 real_t
-PGL::pointset_min_distance(uint32_t pid,
+PGL(pointset_min_distance)(uint32_t pid,
                            const Point3ArrayPtr points,
                            const Index &group) {
   return pointset_min_distance(points->getAt(pid), points, group);
@@ -991,9 +991,9 @@ PGL::pointset_min_distance(uint32_t pid,
 
 /*
 ALGO_API real_t
-PGL::pointset_mean_distance(  const Vector3& origin,
+PGL(pointset_mean_distance)(  const Vector3& origin,
                 const Point3ArrayPtr points,
-			    const Index& group)
+                const Index& group)
 {
     if (group.empty()) return 0;
     real_t sum_distance = 0;
@@ -1005,7 +1005,7 @@ PGL::pointset_mean_distance(  const Vector3& origin,
 
 
 real_t
-PGL::pointset_mean_radial_distance(const Vector3 &origin,
+PGL(pointset_mean_radial_distance)(const Vector3 &origin,
                                    const Vector3 &direction,
                                    const Point3ArrayPtr points,
                                    const Index &group) {
@@ -1017,7 +1017,7 @@ PGL::pointset_mean_radial_distance(const Vector3 &origin,
 }
 
 real_t
-PGL::pointset_max_radial_distance(const Vector3 &origin,
+PGL(pointset_max_radial_distance)(const Vector3 &origin,
                                   const Vector3 &direction,
                                   const Point3ArrayPtr points,
                                   const Index &group) {
@@ -1029,7 +1029,7 @@ PGL::pointset_max_radial_distance(const Vector3 &origin,
 }
 
 Matrix3
-PGL::pointset_covariance(const Point3ArrayPtr points, const Index &group) {
+PGL(pointset_covariance)(const Point3ArrayPtr points, const Index &group) {
   Matrix3 result(0, 0, 0, 0, 0, 0, 0, 0, 0);
   if (group.empty()) {
     for (Point3Array::const_iterator it = points->begin(); it != points->end(); ++it) {
@@ -1065,7 +1065,7 @@ PGL::pointset_covariance(const Point3ArrayPtr points, const Index &group) {
 
 
 real_t
-PGL::density_from_k_neighborhood(uint32_t pid,
+PGL(density_from_k_neighborhood)(uint32_t pid,
                                  const Point3ArrayPtr points,
                                  const IndexArrayPtr adjacencies,
                                  const uint32_t k) {
@@ -1076,7 +1076,7 @@ PGL::density_from_k_neighborhood(uint32_t pid,
 
 
 RealArrayPtr
-PGL::densities_from_k_neighborhood(const Point3ArrayPtr points,
+PGL(densities_from_k_neighborhood)(const Point3ArrayPtr points,
                                    const IndexArrayPtr adjacencies,
                                    const uint32_t k) {
   uint32_t nbPoints = points->size();
@@ -1105,7 +1105,7 @@ struct PointNormalDistance {
 };
 
 Point3ArrayPtr
-PGL::pointsets_orient_normals(const Point3ArrayPtr normals, const Point3ArrayPtr points,
+PGL(pointsets_orient_normals)(const Point3ArrayPtr normals, const Point3ArrayPtr points,
                               const IndexArrayPtr adjacencies) {
 
   /// find first point
@@ -1118,7 +1118,7 @@ PGL::pointsets_orient_normals(const Point3ArrayPtr normals, const Point3ArrayPtr
 }
 
 Point3ArrayPtr
-PGL::pointsets_orient_normals(const Point3ArrayPtr initialnormals, uint32_t source, const IndexArrayPtr adjacencies) {
+PGL(pointsets_orient_normals)(const Point3ArrayPtr initialnormals, uint32_t source, const IndexArrayPtr adjacencies) {
   const Point3ArrayPtr normals(new Point3Array(*initialnormals));
 
   /// compute shortest pathes using normal difference
@@ -1146,7 +1146,7 @@ PGL::pointsets_orient_normals(const Point3ArrayPtr initialnormals, uint32_t sour
 
 
 Index
-PGL::point_section(uint32_t pid,
+PGL(point_section)(uint32_t pid,
                    const Point3ArrayPtr points,
                    const IndexArrayPtr adjacencies,
                    const Vector3 &direction,
@@ -1178,7 +1178,7 @@ PGL::point_section(uint32_t pid,
 }
 
 Index
-PGL::point_section(uint32_t pid,
+PGL(point_section)(uint32_t pid,
                    const Point3ArrayPtr points,
                    const IndexArrayPtr adjacencies,
                    const Vector3 &direction,
@@ -1214,7 +1214,7 @@ PGL::point_section(uint32_t pid,
 }
 
 ALGO_API IndexArrayPtr
-PGL::points_sections(const Point3ArrayPtr points,
+PGL(points_sections)(const Point3ArrayPtr points,
                      const IndexArrayPtr adjacencies,
                      const Point3ArrayPtr directions,
                      real_t width) {
@@ -1233,7 +1233,7 @@ PGL::points_sections(const Point3ArrayPtr points,
 #include <plantgl/algo/fitting/fit.h>
 
 std::pair<Vector3, real_t>
-PGL::pointset_circle(const Point3ArrayPtr points,
+PGL(pointset_circle)(const Point3ArrayPtr points,
                      const Index &group,
                      bool bounding) {
   size_t gsize = group.size();
@@ -1276,7 +1276,7 @@ PGL::pointset_circle(const Point3ArrayPtr points,
 }
 
 std::pair<Vector3, real_t>
-PGL::pointset_circle(const Point3ArrayPtr points,
+PGL(pointset_circle)(const Point3ArrayPtr points,
                      const Index &group,
                      const Vector3 &direction,
                      bool bounding) {
@@ -1311,7 +1311,7 @@ PGL::pointset_circle(const Point3ArrayPtr points,
 }
 
 std::pair<Point3ArrayPtr, RealArrayPtr>
-PGL::pointsets_circles(const Point3ArrayPtr points,
+PGL(pointsets_circles)(const Point3ArrayPtr points,
                        const IndexArrayPtr groups,
                        const Point3ArrayPtr directions,
                        bool bounding) {
@@ -1337,7 +1337,7 @@ PGL::pointsets_circles(const Point3ArrayPtr points,
 
 
 std::pair<Point3ArrayPtr, RealArrayPtr>
-PGL::pointsets_section_circles(const Point3ArrayPtr points,
+PGL(pointsets_section_circles)(const Point3ArrayPtr points,
                                const IndexArrayPtr adjacencies,
                                const Point3ArrayPtr directions,
                                real_t width,
@@ -1365,7 +1365,7 @@ PGL::pointsets_section_circles(const Point3ArrayPtr points,
 }
 
 std::pair<Point3ArrayPtr, RealArrayPtr>
-PGL::adaptive_section_circles(const Point3ArrayPtr points,
+PGL(adaptive_section_circles)(const Point3ArrayPtr points,
                               const IndexArrayPtr adjacencies,
                               const Point3ArrayPtr orientations,
                               const RealArrayPtr widths,
@@ -1391,7 +1391,7 @@ PGL::adaptive_section_circles(const Point3ArrayPtr points,
 }
 
 std::pair<Point3ArrayPtr, RealArrayPtr>
-PGL::adaptive_section_circles(const Point3ArrayPtr points,
+PGL(adaptive_section_circles)(const Point3ArrayPtr points,
                               const IndexArrayPtr adjacencies,
                               const Point3ArrayPtr orientations,
                               const real_t width,
@@ -1467,7 +1467,7 @@ protected:
 };
 
 RealArrayPtr
-PGL::adaptive_radii(const RealArrayPtr density,
+PGL(adaptive_radii)(const RealArrayPtr density,
                     real_t minradius, real_t maxradius,
                     QuantisedFunctionPtr densityradiusmap) {
   AdaptiveRadiiIterator itC(density, minradius, maxradius, densityradiusmap);
@@ -1481,7 +1481,7 @@ PGL::adaptive_radii(const RealArrayPtr density,
 }
 
 Point3ArrayPtr
-PGL::adaptive_contration(const Point3ArrayPtr points,
+PGL(adaptive_contration)(const Point3ArrayPtr points,
                          const Point3ArrayPtr orientations,
                          const IndexArrayPtr adjacencies,
                          const RealArrayPtr density,
@@ -1496,7 +1496,7 @@ PGL::adaptive_contration(const Point3ArrayPtr points,
 }
 
 std::pair<Point3ArrayPtr, RealArrayPtr>
-PGL::adaptive_section_contration(const Point3ArrayPtr points,
+PGL(adaptive_section_contration)(const Point3ArrayPtr points,
                                  const Point3ArrayPtr orientations,
                                  const IndexArrayPtr adjacencies,
                                  const RealArrayPtr density,
@@ -1527,7 +1527,7 @@ PGL::adaptive_section_contration(const Point3ArrayPtr points,
 }
 
 std::pair<Uint32Array1Ptr, RealArrayPtr>
-PGL::points_dijkstra_shortest_path(const Point3ArrayPtr points,
+PGL(points_dijkstra_shortest_path)(const Point3ArrayPtr points,
                                    const IndexArrayPtr adjacencies,
                                    uint32_t root,
                                    real_t powerdist) {
@@ -1550,14 +1550,14 @@ struct DistanceCmp {
 
 
 Index
-PGL::get_sorted_element_order(const RealArrayPtr distances) {
+PGL(get_sorted_element_order)(const RealArrayPtr distances) {
   Index result(range<Index>(distances->size(), 0, 1));
   std::sort(result.begin(), result.end(), DistanceCmp(distances));
   return result;
 }
 
 IndexArrayPtr
-PGL::quotient_points_from_adjacency_graph(const real_t binsize,
+PGL(quotient_points_from_adjacency_graph)(const real_t binsize,
                                           const Point3ArrayPtr points,
                                           const IndexArrayPtr adjacencies,
                                           const RealArrayPtr distance_to_root) {
@@ -1618,7 +1618,7 @@ PGL::quotient_points_from_adjacency_graph(const real_t binsize,
   return groups;
 }
 
-Index PGL::points_in_range_from_root(const real_t initialdist, const real_t binsize,
+Index PGL(points_in_range_from_root)(const real_t initialdist, const real_t binsize,
                                      const RealArrayPtr distances_to_root) {
   Index group;
   real_t maxdist = initialdist + binsize;
@@ -1631,7 +1631,7 @@ Index PGL::points_in_range_from_root(const real_t initialdist, const real_t bins
 
 
 std::pair<IndexArrayPtr, RealArrayPtr>
-PGL::next_quotient_points_from_adjacency_graph(const real_t initiallevel,
+PGL(next_quotient_points_from_adjacency_graph)(const real_t initiallevel,
                                                const real_t binsize,
                                                const Index &currents,
                                                const IndexArrayPtr adjacencies,
@@ -1728,7 +1728,7 @@ PGL::next_quotient_points_from_adjacency_graph(const real_t initiallevel,
 }
 
 IndexArrayPtr
-PGL::quotient_adjacency_graph(const IndexArrayPtr adjacencies,
+PGL(quotient_adjacency_graph)(const IndexArrayPtr adjacencies,
                               const IndexArrayPtr groups) {
   uint32_t nbpoints = adjacencies->size();
   uint32_t *group = new uint32_t[nbpoints];
@@ -1761,7 +1761,7 @@ PGL::quotient_adjacency_graph(const IndexArrayPtr adjacencies,
 }
 
 ALGO_API Vector3
-PGL::centroid_of_group(const Point3ArrayPtr points,
+PGL(centroid_of_group)(const Point3ArrayPtr points,
                        const Index &group) {
   Vector3 gcentroid;
   real_t nbpoints = 0;
@@ -1772,7 +1772,7 @@ PGL::centroid_of_group(const Point3ArrayPtr points,
 }
 
 Point3ArrayPtr
-PGL::centroids_of_groups(const Point3ArrayPtr points,
+PGL(centroids_of_groups)(const Point3ArrayPtr points,
                          const IndexArrayPtr groups) {
   Point3ArrayPtr result(new Point3Array(groups->size()));
   uint32_t cgroup = 0;
@@ -1783,7 +1783,7 @@ PGL::centroids_of_groups(const Point3ArrayPtr points,
 }
 
 Point3ArrayPtr
-PGL::skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,
+PGL(skeleton_from_distance_to_root_clusters)(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k,
                                              Uint32Array1Ptr &group_parents, IndexArrayPtr &group_components,
                                              bool connect_all_points, bool verbose) {
   if (verbose)std::cout << "Compute Remanian graph." << std::endl;
@@ -1818,7 +1818,7 @@ PGL::skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32
 // Livny stuff
 
 // compute parent-children relation from child-parent relation
-IndexArrayPtr PGL::determine_children(const Uint32Array1Ptr parents, uint32_t &root) {
+IndexArrayPtr PGL(determine_children)(const Uint32Array1Ptr parents, uint32_t &root) {
   IndexArrayPtr result(new IndexArray(parents->size(), Index()));
   uint32_t pid = 0;
   for (Uint32Array1::const_iterator it = parents->begin(); it != parents->end(); ++it, ++pid) {
@@ -1829,7 +1829,7 @@ IndexArrayPtr PGL::determine_children(const Uint32Array1Ptr parents, uint32_t &r
 }
 
 
-RealArrayPtr PGL::carried_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents) {
+RealArrayPtr PGL(carried_length)(const Point3ArrayPtr points, const Uint32Array1Ptr parents) {
   RealArrayPtr result(new RealArray(points->size()));
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
@@ -1850,13 +1850,13 @@ RealArrayPtr PGL::carried_length(const Point3ArrayPtr points, const Uint32Array1
   return result;
 }
 
-Uint32Array1Ptr PGL::subtrees_size(const Uint32Array1Ptr parents) {
+Uint32Array1Ptr PGL(subtrees_size)(const Uint32Array1Ptr parents) {
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
   return subtrees_size(children, root);
 }
 
-Uint32Array1Ptr PGL::subtrees_size(const IndexArrayPtr children, uint32_t root) {
+Uint32Array1Ptr PGL(subtrees_size)(const IndexArrayPtr children, uint32_t root) {
 
   Uint32Array1Ptr result(new Uint32Array1(children->size()));
   IndexArrayPostOrderConstIterator piterator(children, root);
@@ -1874,7 +1874,7 @@ Uint32Array1Ptr PGL::subtrees_size(const IndexArrayPtr children, uint32_t root) 
 }
 
 
-Point3ArrayPtr PGL::optimize_orientations(const Point3ArrayPtr points,
+Point3ArrayPtr PGL(optimize_orientations)(const Point3ArrayPtr points,
                                           const Uint32Array1Ptr parents,
                                           const RealArrayPtr weights) {
   uint32_t nbPoints = points->size();
@@ -1913,7 +1913,7 @@ Point3ArrayPtr PGL::optimize_orientations(const Point3ArrayPtr points,
 
 }
 
-Point3ArrayPtr PGL::optimize_positions(const Point3ArrayPtr points,
+Point3ArrayPtr PGL(optimize_positions)(const Point3ArrayPtr points,
                                        const Point3ArrayPtr orientations,
                                        const Uint32Array1Ptr parents,
                                        const RealArrayPtr weights) {
@@ -1956,7 +1956,7 @@ Point3ArrayPtr PGL::optimize_positions(const Point3ArrayPtr points,
 
 
 real_t
-PGL::average_radius(const Point3ArrayPtr points,
+PGL(average_radius)(const Point3ArrayPtr points,
                     const Point3ArrayPtr nodes,
                     const Uint32Array1Ptr parents,
                     uint32_t maxclosestnode) {
@@ -2002,7 +2002,7 @@ PGL::average_radius(const Point3ArrayPtr points,
 #endif
 }
 
-real_t PGL::average_distance_to_shape(const Point3ArrayPtr points,
+real_t PGL(average_distance_to_shape)(const Point3ArrayPtr points,
                                       const Point3ArrayPtr nodes,
                                       const Uint32Array1Ptr parents,
                                       const RealArrayPtr radii,
@@ -2057,7 +2057,7 @@ real_t PGL::average_distance_to_shape(const Point3ArrayPtr points,
 #endif
 }
 
-RealArrayPtr PGL::distance_to_shape(const Point3ArrayPtr points,
+RealArrayPtr PGL(distance_to_shape)(const Point3ArrayPtr points,
                                            const Point3ArrayPtr nodes,
                                            const Uint32Array1Ptr parents,
                                            const RealArrayPtr radii,
@@ -2110,7 +2110,7 @@ RealArrayPtr PGL::distance_to_shape(const Point3ArrayPtr points,
 #endif
 }
 
-RealArrayPtr PGL::estimate_radii_from_points(const Point3ArrayPtr points,
+RealArrayPtr PGL(estimate_radii_from_points)(const Point3ArrayPtr points,
                                                     const Point3ArrayPtr nodes,
                                                     const Uint32Array1Ptr parents,
                                                     bool maxmethod,
@@ -2191,7 +2191,7 @@ inline bool distance_test(real_t d, real_t distance, bool reversed) {
   else return d < distance;
 }
 
-Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points,
+Index PGL(points_at_distance_from_skeleton)(const Point3ArrayPtr points,
                                             const Point3ArrayPtr nodes,
                                             const Uint32Array1Ptr parents,
                                             real_t distance,
@@ -2255,7 +2255,7 @@ Index PGL::points_at_distance_from_skeleton(const Point3ArrayPtr points,
 #endif
 }
 
-IndexArrayPtr PGL::cluster_points(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid) {
+IndexArrayPtr PGL(cluster_points)(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid) {
   IndexArrayPtr result(new IndexArray(clustercentroid->size()));
 
 #ifdef WITH_ANN
@@ -2281,7 +2281,7 @@ IndexArrayPtr PGL::cluster_points(const Point3ArrayPtr points, const Point3Array
   return result;
 }
 
-Uint32Array1Ptr PGL::points_clusters(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid) {
+Uint32Array1Ptr PGL(points_clusters)(const Point3ArrayPtr points, const Point3ArrayPtr clustercentroid) {
   Uint32Array1Ptr result(new Uint32Array1(points->size()));
 
 #ifdef WITH_ANN
@@ -2308,7 +2308,7 @@ Uint32Array1Ptr PGL::points_clusters(const Point3ArrayPtr points, const Point3Ar
 }
 
 RealArrayPtr
-PGL::estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
+PGL(estimate_radii_from_pipemodel)(const Point3ArrayPtr nodes,
                                    const Uint32Array1Ptr parents,
                                    const RealArrayPtr weights,
                                    real_t averageradius,
@@ -2342,7 +2342,7 @@ PGL::estimate_radii_from_pipemodel(const Point3ArrayPtr nodes,
 }
 
 
-Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const Uint32Array1Ptr parents) {
+Vector3 PGL(min_max_mean_edge_length)(const Point3ArrayPtr points, const Uint32Array1Ptr parents) {
   real_t minl = REAL_MAX;
   real_t maxl = 0;
   real_t suml = 0;
@@ -2361,7 +2361,7 @@ Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const Uint32A
   return Vector3(minl, maxl, suml / nbp);
 }
 
-Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const IndexArrayPtr graph) {
+Vector3 PGL(min_max_mean_edge_length)(const Point3ArrayPtr points, const IndexArrayPtr graph) {
   real_t minl = REAL_MAX;
   real_t maxl = 0;
   real_t suml = 0;
@@ -2382,7 +2382,7 @@ Vector3 PGL::min_max_mean_edge_length(const Point3ArrayPtr points, const IndexAr
   return Vector3(minl, maxl, suml / nbp);
 }
 
-Index PGL::detect_short_nodes(const Point3ArrayPtr nodes,
+Index PGL(detect_short_nodes)(const Point3ArrayPtr nodes,
                               const Uint32Array1Ptr parents,
                               real_t edgelengthfilter) {
   Index toremove;
@@ -2444,7 +2444,7 @@ std::pair<Point2ArrayPtr, IndexArrayPtr> my_polygon2ds_intersection(Point2ArrayP
     return polygon2ds_intersection(P, Q);
 } */
 
-bool PGL::node_continuity_test(const Vector3 &node, real_t noderadius,
+bool PGL(node_continuity_test)(const Vector3 &node, real_t noderadius,
                                const Vector3 &parent, real_t parentradius,
                                const Vector3 &child, real_t childradius,
                                real_t overlapfilter,
@@ -2534,7 +2534,7 @@ bool PGL::node_continuity_test(const Vector3 &node, real_t noderadius,
   }
 }
 
-bool PGL::node_intersection_test(const Vector3 &root, real_t rootradius,
+bool PGL(node_intersection_test)(const Vector3 &root, real_t rootradius,
                                  const Vector3 &p1, real_t radius1,
                                  const Vector3 &p2, real_t radius2,
                                  real_t overlapfilter,
@@ -2665,7 +2665,7 @@ bool PGL::node_intersection_test(const Vector3 &root, real_t rootradius,
 
 
 IndexArrayPtr
-PGL::detect_similar_nodes(const Point3ArrayPtr nodes,
+PGL(detect_similar_nodes)(const Point3ArrayPtr nodes,
                           const Uint32Array1Ptr parents,
                           const RealArrayPtr radii,
                           const RealArrayPtr weights,
@@ -2748,7 +2748,7 @@ PGL::detect_similar_nodes(const Point3ArrayPtr nodes,
   return tomerge;
 }
 
-void PGL::remove_nodes(const Index &toremove,
+void PGL(remove_nodes)(const Index &toremove,
                        Point3ArrayPtr &nodes,
                        Uint32Array1Ptr &parents,
                        RealArrayPtr &radii) {
@@ -2808,7 +2808,7 @@ void PGL::remove_nodes(const Index &toremove,
 
 }
 
-void PGL::merge_nodes(const IndexArrayPtr tomerge,
+void PGL(merge_nodes)(const IndexArrayPtr tomerge,
                       Point3ArrayPtr &nodes,
                       Uint32Array1Ptr &parents,
                       RealArrayPtr &radii,
@@ -2911,7 +2911,7 @@ void PGL::merge_nodes(const IndexArrayPtr tomerge,
 }
 
 Vector3
-PGL::pointset_mean_direction(const Vector3 &origin, const Point3ArrayPtr points, const Index &group) {
+PGL(pointset_mean_direction)(const Vector3 &origin, const Point3ArrayPtr points, const Index &group) {
   Vector3 result(0, 0, 0);
   size_t nbpoints = group.size();
   if (nbpoints != 0) {
@@ -2929,7 +2929,7 @@ PGL::pointset_mean_direction(const Vector3 &origin, const Point3ArrayPtr points,
 
 // determine all directions of a set of points
 Point3ArrayPtr
-PGL::pointset_directions(const Vector3 &origin, const Point3ArrayPtr points, const Index &group) {
+PGL(pointset_directions)(const Vector3 &origin, const Point3ArrayPtr points, const Index &group) {
   Point3ArrayPtr result;
   size_t nbpoints = group.size();
   if (nbpoints != 0) {
@@ -2947,7 +2947,7 @@ PGL::pointset_directions(const Vector3 &origin, const Point3ArrayPtr points, con
 }
 
 Point2ArrayPtr
-PGL::pointset_angulardirections(const Point3ArrayPtr points, const Vector3 &origin, const Index &group) {
+PGL(pointset_angulardirections)(const Point3ArrayPtr points, const Vector3 &origin, const Index &group) {
   Point2ArrayPtr result;
   size_t nbpoints = group.size();
   if (nbpoints != 0) {
@@ -2969,7 +2969,7 @@ PGL::pointset_angulardirections(const Point3ArrayPtr points, const Vector3 &orig
   return result;
 }
 
-Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const IndexArrayPtr groups) {
+Point3ArrayPtr PGL(pointsets_orientations)(const Point3ArrayPtr points, const IndexArrayPtr groups) {
   size_t nbPoints = points->size();
   Point3ArrayPtr result(new Point3Array(nbPoints));
 
@@ -2982,7 +2982,7 @@ Point3ArrayPtr PGL::pointsets_orientations(const Point3ArrayPtr points, const In
 }
 
 std::pair<uint32_t, real_t>
-PGL::findClosestFromSubset(const Vector3 &origin, const Point3ArrayPtr points, const Index &group) {
+PGL(findClosestFromSubset)(const Vector3 &origin, const Point3ArrayPtr points, const Index &group) {
   size_t nbpoints = group.size();
   if (nbpoints != 0) {
     Index::const_iterator itg = group.begin();
@@ -3004,7 +3004,7 @@ PGL::findClosestFromSubset(const Vector3 &origin, const Point3ArrayPtr points, c
 }
 
 
-RealArray2Ptr PGL::orientations_distances(const Point3ArrayPtr orientations, const Index &group) {
+RealArray2Ptr PGL(orientations_distances)(const Point3ArrayPtr orientations, const Index &group) {
   RealArray2Ptr result;
   size_t nbpoints = group.size();
   if (nbpoints != 0) {
@@ -3034,7 +3034,7 @@ RealArray2Ptr PGL::orientations_distances(const Point3ArrayPtr orientations, con
   return result;
 }
 
-RealArray2Ptr PGL::orientations_similarities(const Point3ArrayPtr orientations, const Index &group) {
+RealArray2Ptr PGL(orientations_similarities)(const Point3ArrayPtr orientations, const Index &group) {
   RealArray2Ptr result;
   size_t nbpoints = group.size();
   if (nbpoints != 0) {
@@ -3065,7 +3065,7 @@ RealArray2Ptr PGL::orientations_similarities(const Point3ArrayPtr orientations, 
 }
 
 std::pair<Index, Index>
-PGL::cluster_junction_points(const IndexArrayPtr pointtoppology, const Index &_group1, const Index &_group2) {
+PGL(cluster_junction_points)(const IndexArrayPtr pointtoppology, const Index &_group1, const Index &_group2) {
   bool sizetest = (_group1.size() >= _group2.size());
   const Index &group1(sizetest ? _group1 : _group2);
   const Index &group2(sizetest ? _group2 : _group1);
@@ -3095,7 +3095,7 @@ PGL::cluster_junction_points(const IndexArrayPtr pointtoppology, const Index &_g
 }
 
 
-uint32_t PGL::pointset_median(const Point3ArrayPtr points) {
+uint32_t PGL(pointset_median)(const Point3ArrayPtr points) {
   real_t minsumdist = 0;
   Point3Array::const_iterator median = points->begin();
   for (Point3Array::const_iterator itp = points->begin() + 1; itp != points->end(); ++itp) {
@@ -3116,7 +3116,7 @@ uint32_t PGL::pointset_median(const Point3ArrayPtr points) {
 
 }
 
-uint32_t PGL::approx_pointset_median(const Point3ArrayPtr points, uint32_t nbIterMax) {
+uint32_t PGL(approx_pointset_median)(const Point3ArrayPtr points, uint32_t nbIterMax) {
   Vector3 center = points->getCenter();
   std::pair<Point3Array::const_iterator, real_t> closest = findClosest<Point3Array>(*points, center);
   Point3Array::const_iterator cpoint = closest.first;

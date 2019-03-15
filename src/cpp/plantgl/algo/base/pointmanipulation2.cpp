@@ -181,7 +181,7 @@ std::pair<Vector3, Vector3> PGL::pointset_plane(const Point3ArrayPtr points, con
   if (!group.empty())
     pointdata = toPoint3List<CPoint>(points, group);
   else
-    
+
     pointdata = toPoint3List<CPoint>(points);
 
   CPlane plane;

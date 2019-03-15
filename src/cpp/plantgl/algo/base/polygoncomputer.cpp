@@ -380,4 +380,3 @@ bool PolygonComputer::process( Font * font ){
   __polygon = 0;
   return false;
 }
-

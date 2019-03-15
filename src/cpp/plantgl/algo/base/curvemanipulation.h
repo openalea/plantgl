@@ -41,8 +41,8 @@
 /* ----------------------------------------------------------------------- */
 
 #include "../algo_config.h"
-#include <plantgl/scenegraph/geometry/polyline.h>
 #include "../raycasting/ray.h"
+#include <plantgl/scenegraph/geometry/polyline.h>
 #include <plantgl/scenegraph/container/indexarray.h>
 
 /* ----------------------------------------------------------------------- */
@@ -61,22 +61,22 @@ PGL_BEGIN_NAMESPACE
 
 class ALGO_API Overlay {
 public:
-	/// Compute the overlay between 2 closed planar polylines.
-	static GeometryPtr process(const Polyline2DPtr&, const Polyline2DPtr&);
+    /// Compute the overlay between 2 closed planar polylines.
+    static GeometryPtr process(const Polyline2DPtr&, const Polyline2DPtr&);
 
 };
 
 
 class ALGO_API CurveIntersection {
 public:
-	/// Compute intersection between polylines.
-	static Point2ArrayPtr compute(const std::vector<Polyline2DPtr>& polylines);
-	static bool check(const std::vector<Polyline2DPtr>& polylines);
+    /// Compute intersection between polylines.
+    static Point2ArrayPtr compute(const std::vector<Polyline2DPtr>& polylines);
+    static bool check(const std::vector<Polyline2DPtr>& polylines);
 };
 
-ALGO_API real_t raySegmentDistance(const Ray& ray, 
-						  const Vector3& segA,
-						  const Vector3& segB);
+ALGO_API real_t raySegmentDistance(const Ray& ray,
+                          const Vector3& segA,
+                          const Vector3& segB);
 
 
 ALGO_API IndexArrayPtr determine_faces_from_edges(const Point2ArrayPtr&, const std::vector<std::pair<uint32_t, uint32_t> >& edges);
@@ -91,4 +91,3 @@ PGL_END_NAMESPACE
 
 // __actn_overlay_h__
 #endif
-

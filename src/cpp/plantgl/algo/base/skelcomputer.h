@@ -181,9 +181,9 @@ public:
   virtual bool process( NurbsCurve2D * nurbsCurve );
 
   virtual bool process( PointSet2D * pointSet );
-  
+
   virtual bool process( Polyline2D * polyline );
-  
+
 
   //@}
 
@@ -215,5 +215,3 @@ PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
-
-

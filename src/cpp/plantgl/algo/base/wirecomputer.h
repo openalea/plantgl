@@ -226,5 +226,3 @@ PGL_END_NAMESPACE
 
 // __actn_discretizer_h__
 #endif
-
-

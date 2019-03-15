@@ -86,7 +86,7 @@ public :
 
   //@}
 
-  /// @name Shape  
+  /// @name Shape
   //@{
 
   /** Applies \e self to an object of type of Shape.
@@ -322,18 +322,18 @@ public :
   virtual bool process( Font * font );
 
 
-protected : 
+protected :
 
-	/// The cache storing the already computed bounding sphere.
+    /// The cache storing the already computed bounding sphere.
     Cache<BoundingSpherePtr> __cache;
 
     /// The resulting bounding box.
-	BoundingSpherePtr __result;
+    BoundingSpherePtr __result;
 
   /** A Discretizer is used to compute the bounding sphere of objects we de not
       know how to compute the surface. It comes to compute the bounding sphere
       of the discretized representation. */
-	Discretizer& __discretizer;
+    Discretizer& __discretizer;
 
 
 };

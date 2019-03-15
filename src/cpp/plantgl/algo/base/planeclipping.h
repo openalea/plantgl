@@ -51,19 +51,19 @@ class Tesselator;
 
 /* ----------------------------------------------------------------------- */
 
-ALGO_API Point3ArrayPtr plane_segment_clip(const Plane3& plane, 
-                                            const Vector3& p1, 
+ALGO_API Point3ArrayPtr plane_segment_clip(const Plane3& plane,
+                                            const Vector3& p1,
                                             const Vector3& p2);
 
 
-ALGO_API Point3ArrayPtr plane_triangle_clip(const Plane3& plane, 
-                                            const Vector3& p1, 
-                                            const Vector3& p2, 
+ALGO_API Point3ArrayPtr plane_triangle_clip(const Plane3& plane,
+                                            const Vector3& p1,
+                                            const Vector3& p2,
                                             const Vector3& p3);
 
 // find the closest point from a group
-ALGO_API Index plane_pointset_clip(const Plane3& plane, 
-                                   const Point3ArrayPtr points, 
+ALGO_API Index plane_pointset_clip(const Plane3& plane,
+                                   const Point3ArrayPtr points,
                                    const Index& group = Index());
 
 /* ----------------------------------------------------------------------- */
@@ -91,10 +91,10 @@ public :
   FaceSetPtr getResult() const;
 
 
-  const Plane3 & getPlane() const 
+  const Plane3 & getPlane() const
   { return __plane; }
 
-  void setPlane(const Plane3 & plane) 
+  void setPlane(const Plane3 & plane)
   { __cache.clear(); __plane = plane; }
 
   /// @name Pre and Post Processing
@@ -108,7 +108,7 @@ public :
 
   //@}
 
-  /// @name Shape  
+  /// @name Shape
   //@{
 
   /** Applies \e self to an object of type of Shape.
@@ -339,18 +339,18 @@ public :
   virtual bool process( Font * font );
 
 
-protected : 
+protected :
 
-	/// The cache storing the already computed bounding sphere.
+    /// The cache storing the already computed bounding sphere.
     Cache<FaceSetPtr> __cache;
 
     /// The resulting bounding box.
-	FaceSetPtr __result;
+    FaceSetPtr __result;
 
   /** A Discretizer is used to compute the bounding sphere of objects we de not
       know how to compute the surface. It comes to compute the bounding sphere
       of the discretized representation. */
-	Tesselator& __discretizer;
+    Tesselator& __discretizer;
 
     Plane3 __plane;
 };

@@ -196,9 +196,9 @@ class ALGO_API AmapTranslator : public Action {
 
     //@}
 
-	virtual bool process( Text * text );
+    virtual bool process( Text * text );
 
-	virtual bool process( Font * font );
+    virtual bool process( Font * font );
 
   protected:
 
@@ -227,4 +227,3 @@ PGL_END_NAMESPACE
 
 // __actn_amaptranslator_h__
 #endif
-

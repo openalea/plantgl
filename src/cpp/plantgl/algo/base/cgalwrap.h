@@ -53,7 +53,7 @@ template<class CgalDirection3>
 inline Vector3 dir2Vector3(const CgalDirection3& v) { return Vector3(CGAL::to_double(v.dx()),CGAL::to_double(v.dy()),CGAL::to_double(v.dz())); }
 
 template<class CgalPoint3>
-inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v) { 
+inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v) {
     std::list<CgalPoint3> res;
     for(Point3Array::const_iterator it = v->begin(); it != v->end(); ++it)
         res.push_back(toPoint3<CgalPoint3>(*it));
@@ -61,7 +61,7 @@ inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v) {
 }
 
 template<class CgalPoint3>
-inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v, const Index& subset) { 
+inline std::list<CgalPoint3> toPoint3List(const Point3ArrayPtr v, const Index& subset) {
     std::list<CgalPoint3> res;
     for(Index::const_iterator it = subset.begin(); it != subset.end(); ++it)
         res.push_back(toPoint3<CgalPoint3>(v->getAt(*it)));

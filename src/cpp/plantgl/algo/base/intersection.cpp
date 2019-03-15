@@ -179,7 +179,7 @@ Nef_polyhedron make_nef_cube_3(const Vector3& bbmin, const Vector3& bbmax) {
 
 #endif
 
-std::pair<Point3ArrayPtr, IndexArrayPtr> 
+std::pair<Point3ArrayPtr, IndexArrayPtr>
 PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, const Vector3& p1, const Vector3& p2, const Vector3& p3)
 {
 #ifdef WITH_CGAL
@@ -194,7 +194,7 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
 
     Nef_polyhedron Nresult = N1 * N2;
 
-    
+
     Polyhedron result;
     Nresult.convert_to_polyhedron(result);
 
@@ -209,7 +209,7 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
     // CGAL_forall_facets(f,result){
     for(Polyhedron::Facet_iterator f = result.facets_begin(); f != result.facets_end(); ++f){
         Index face;
-        Polyhedron::Halfedge_around_facet_circulator j = f->facet_begin(); 
+        Polyhedron::Halfedge_around_facet_circulator j = f->facet_begin();
         do{
             face.push_back(std::distance(result.vertices_begin(),j->vertex()));
         } while (++j != f->facet_begin());
@@ -223,9 +223,9 @@ PGL(box_triangle_intersection)(const Vector3& bbxmin, const Vector3& bbxmax, con
 #endif
 }*/
 
-Vector3 PGL(_plane_segment_intersection)(const Plane3& plane, 
+Vector3 PGL(_plane_segment_intersection)(const Plane3& plane,
                                     real_t d1,
-                                    const Vector3& p1, 
+                                    const Vector3& p1,
                                     const Vector3& p2)
 {
     Vector3 segdir = p2-p1;
@@ -233,8 +233,8 @@ Vector3 PGL(_plane_segment_intersection)(const Plane3& plane,
     return p1+segdir*r;
 }
 
-bool PGL(plane_segment_intersection)(const Plane3& plane, 
-                                     const Vector3& p1, 
+bool PGL(plane_segment_intersection)(const Plane3& plane,
+                                     const Vector3& p1,
                                      const Vector3& p2,
                                      Vector3& result)
 {
@@ -258,18 +258,18 @@ int tri_tri_intersect_with_isectline(real_t V0[3],real_t V1[3],real_t V2[3],
      vname##a[1] = vname.y(); \
      vname##a[2] = vname.z();
 
-IntersectionType  PGL(triangle_triangle_intersection)(const Vector3& t11, const Vector3& t12, const Vector3& t13, 
-                                          const Vector3& t21, const Vector3& t22, const Vector3& t23, 
+IntersectionType  PGL(triangle_triangle_intersection)(const Vector3& t11, const Vector3& t12, const Vector3& t13,
+                                          const Vector3& t21, const Vector3& t22, const Vector3& t23,
                                           Vector3& intersectionstart, Vector3& intersectionend)
 {
     int coplanar;
     real_t isectpt1[3];
     real_t isectpt2[3];
 
-    CONVERT(t11); CONVERT(t12); CONVERT(t13); 
-    CONVERT(t21); CONVERT(t22); CONVERT(t23); 
-    
-    int res = tri_tri_intersect_with_isectline(t11a,t12a,t13a,t21a,t22a,t23a, &coplanar,isectpt1, isectpt2);  
+    CONVERT(t11); CONVERT(t12); CONVERT(t13);
+    CONVERT(t21); CONVERT(t22); CONVERT(t23);
+
+    int res = tri_tri_intersect_with_isectline(t11a,t12a,t13a,t21a,t22a,t23a, &coplanar,isectpt1, isectpt2);
     if (res) {
         if (coplanar) return CoPlanar;
         intersectionstart = Vector3(isectpt1[0],isectpt1[1],isectpt1[2]);
@@ -280,7 +280,7 @@ IntersectionType  PGL(triangle_triangle_intersection)(const Vector3& t11, const 
     return NoIntersection;
 }
 
-std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr> 
+std::pair<std::vector<std::pair<uint32_t,uint32_t> >,GeometryArrayPtr>
 PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
 {
 #ifdef WITH_ANN
@@ -289,7 +289,7 @@ PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
     Point3ArrayPtr centroids = centroids_of_groups(points, triangles);
     real_t maxsize = 0;
     Point3Array::const_iterator itorigin = centroids->begin();
-    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itorigin ) 
+    for(Index3Array::const_iterator it = triangles->begin(); it != triangles->end(); ++it, ++itorigin )
     {
         real_t size = norm(*itorigin-points->getAt(it->getAt(0)));
         if (maxsize < size) maxsize = size;
@@ -325,7 +325,7 @@ PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
                         }
 
                         /// We check here if it is not an edge or a vertex which is in common.
-                        /// We should not  care about such intersection in case of auto intersection 
+                        /// We should not  care about such intersection in case of auto intersection
                         if (common_points.size() == 1 && nbintersection == 1){
                             // We test if it is a common point
                             if (norm(points->getAt(common_points[0]) - intersectionstart) < GEOM_EPSILON)
@@ -340,20 +340,20 @@ PGL(auto_intersection)(Point3ArrayPtr points, Index3ArrayPtr triangles)
                             // We test if it is a common edge
                             if (nbintersection == 2){
                                 if ( norm(intersectionstart-points->getAt(common_points[0])) < GEOM_EPSILON ) {
-                                    if ( norm(intersectionend-points->getAt(common_points[1])) < GEOM_EPSILON ) 
+                                    if ( norm(intersectionend-points->getAt(common_points[1])) < GEOM_EPSILON )
                                         continue;
                                 }
                                 else if ( norm(intersectionstart-points->getAt(common_points[1])) < GEOM_EPSILON ) {
-                                     if ( norm(intersectionend-points->getAt(common_points[0])) < GEOM_EPSILON ) 
+                                     if ( norm(intersectionend-points->getAt(common_points[0])) < GEOM_EPSILON )
                                         continue;
-                                } 
+                                }
                             }
                             // This case should not occur. We test if it is a common point
                             else if (nbintersection == 1){
                                 if ( norm(intersectionstart-points->getAt(common_points[0])) < GEOM_EPSILON ||
                                      norm(intersectionstart-points->getAt(common_points[1])) < GEOM_EPSILON )
                                     continue;
-                            }                             
+                            }
                         }
 
                         intersectionpair.push_back(std::pair<uint32_t,uint32_t>(idtr, *itnbg));
