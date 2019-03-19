@@ -37,57 +37,56 @@
 #endif
 
     #include <plantgl/scenegraph/container/pointarray.h>
-	PGL_USING_NAMESPACE
-	PGL_USING_NAMESPACE
+    PGL_USING_NAMESPACE
 
 
     // Basis
     // -----
-    
+
 #define BSIZE 4
 
     class Basis {
         private:
             // types
-    
+
             // data members
             int                 m, s;   // size and number of support points
             Vector3             q0;
-    
+
             double              z[BSIZE];
             double              f[BSIZE];
             Vector3             v[BSIZE];
             Vector3             a[BSIZE];
-    
+
             Vector3              c[BSIZE];
             double               sqr_r[BSIZE];
-    
+
             Vector3*            current_c;      // points to some c[j]
             double              current_sqr_r;
-    
+
   //          double              sqr (double r) const {return r*r;}
-    
+
         public:
             Basis();
-    
+
             // access
             const Vector3&       center() const;
             double              squared_radius() const;
             int                 size() const;
             int                 support_size() const;
             double              excess (const Vector3& p) const;
-    
+
             // modification
             void                reset(); // generates empty sphere with m=s=0
             bool                push (const Vector3& p);
             void                pop ();
-    
+
             // checking
             double              slack() const;
     };
-	
-	
-	// Miniball
+
+
+    // Miniball
     // --------
 
     class Miniball {
@@ -95,13 +94,13 @@
             // types
             typedef std::list<Vector3>::iterator         It;
             typedef std::list<Vector3>::const_iterator   Cit;
-    
+
         private:
             // data members
             std::list<Vector3> L;         // STL list keeping the points
             Basis    B;              // basis keeping the current ball
             It          support_end;    // past-the-end iterator of support set
-    
+
             // private methods
             void        mtf_mb (It k);
             void        pivot_mb (It k);
@@ -109,14 +108,14 @@
             double      max_excess (It t, It i, It& pivot) const;
             double      abs (double r) const {return (r>0)? r: (-r);}
             double      sqr (double r) const {return r*r;}
-    
+
         public:
             // construction
             Miniball() {}
             void        check_in (const Vector3& p);
             void        check_in (const Point3ArrayPtr& p);
             void        build (bool pivoting = true);
-    
+
             // access
             Vector3       center() const;
             double      squared_radius () const;
@@ -126,14 +125,13 @@
             int         nr_support_points () const;
             Cit         support_points_begin () const;
             Cit         support_points_end () const;
-    
+
             // checking
             double      accuracy (double& slack) const;
             bool        is_valid (double tolerance = 1e-15) const;
      };
-    
-    
-    
+
+
+
 
    //  #include "miniball.C"
-

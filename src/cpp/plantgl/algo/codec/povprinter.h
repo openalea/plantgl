@@ -111,10 +111,10 @@ public:
 
   /// Set a camera to the scene. All vector must be given in the GEOM basis and will be transformed in PovRay basis.
   virtual bool setCamera(const Vector3& eye, 
-						 const Vector3& distance, 
-					     const double&  ang, 
-						 const double& az, 
-						 const double& el);
+                         const Vector3& distance, 
+                         const double&  ang, 
+                         const double& az, 
+                         const double& el);
 
   void beginHeader(); 
   void endHeader(); 

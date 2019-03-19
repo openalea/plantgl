@@ -62,13 +62,13 @@ CODEC_API bool geom_read(std::istream& stream, SceneObjectSymbolTable& table, Sc
 class CODEC_API GeomCodec : public SceneCodec {
 public :
 
-	GeomCodec();
+    GeomCodec();
 
-	virtual SceneFormatList formats() const;
+    virtual SceneFormatList formats() const;
 
-	virtual ScenePtr read(const std::string& fname);
+    virtual ScenePtr read(const std::string& fname);
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
+    virtual bool write(const std::string& fname,const ScenePtr& scene);
 
 };
 
@@ -76,13 +76,13 @@ public :
 class CODEC_API BGeomCodec : public SceneCodec {
 public :
 
-	BGeomCodec();
+    BGeomCodec();
 
-	virtual SceneFormatList formats() const;
+    virtual SceneFormatList formats() const;
 
-	virtual ScenePtr read(const std::string& fname);
+    virtual ScenePtr read(const std::string& fname);
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
+    virtual bool write(const std::string& fname,const ScenePtr& scene);
 
 };
 

@@ -102,106 +102,106 @@ bool PGL(geom_read)(std::istream& stream, SceneObjectSymbolTable& table, ScenePt
     bool b =_parser.parse(&_sceneLexer,*PglErrorStream::error,scene.get());
     t.stop();
     if(isParserVerbose())printf("Parse file %s in %.2f sec.\n", fname.c_str(),t.elapsedTime());
-	return b;
+    return b;
 }
 
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-GeomCodec::GeomCodec() : 
-	SceneCodec("GEOM", ReadWrite ) 
-	{}
+GeomCodec::GeomCodec() :
+    SceneCodec("GEOM", ReadWrite )
+    {}
 
 SceneFormatList GeomCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "GEOM";
+    SceneFormat _format;
+    _format.name = "GEOM";
 #ifdef WITH_BISONFLEX
-	_format.suffixes.push_back("geom");
+    _format.suffixes.push_back("geom");
 #endif
-	_format.suffixes.push_back("bgeom");
-	_format.comment = "The Standart PlantGL format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    _format.suffixes.push_back("bgeom");
+    _format.comment = "The Standart PlantGL format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 ScenePtr GeomCodec::read(const std::string& fname)
 {
   if(BinaryParser::isAGeomBinaryFile(fname)){
-	  BinaryParser _parser(*PglErrorStream::error);
-	  _parser.parse(fname);
-	  return _parser.getScene();
+      BinaryParser _parser(*PglErrorStream::error);
+      _parser.parse(fname);
+      return _parser.getScene();
   }
 /*  else  if(get_suffix(fname)=="smb"){
     GeometryPtr a(new AmapSymbol(fname));
-	ScenePtr sc = new Scene();
-	sc->add(Shape(a,Material::DEFAULT_MATERIAL));
+    ScenePtr sc = new Scene();
+    sc->add(Shape(a,Material::DEFAULT_MATERIAL));
     return sc;
   } */
 #ifdef WITH_BISONFLEX
   else {
     ifstream _file(fname.c_str());
-	SceneObjectSymbolTable table;
-	ScenePtr scene(new Scene());
-	bool b = geom_read(_file,table,scene,fname);
+    SceneObjectSymbolTable table;
+    ScenePtr scene(new Scene());
+    bool b = geom_read(_file,table,scene,fname);
     if(!b) return ScenePtr();
-	else {
-		if(scene && !scene->empty()) return scene;
-		else return ScenePtr(new Scene(table));
-	}
+    else {
+        if(scene && !scene->empty()) return scene;
+        else return ScenePtr(new Scene(table));
+    }
   }
-#endif  
+#endif
 }
 
-bool GeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+bool GeomCodec::write(const std::string& fname,const ScenePtr&  scene)
 {
-	std::string ext = get_suffix(fname);
-	ext = toUpper(ext);
-	if(ext == "BGEOM"){
-		BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
+    std::string ext = get_suffix(fname);
+    ext = toUpper(ext);
+    if(ext == "BGEOM"){
+        BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
         return true;
-	}
-	else{
-		std::ofstream stream(fname.c_str());
-		if(stream){
-			Printer p(stream,stream,stream);
-			scene->apply(p);
+    }
+    else{
+        std::ofstream stream(fname.c_str());
+        if(stream){
+            Printer p(stream,stream,stream);
+            scene->apply(p);
             return true;
-		}
+        }
         else return false;
-	}
+    }
 }
 
 /* ----------------------------------------------------------------------- */
 
-BGeomCodec::BGeomCodec() : 
-	SceneCodec("BGEOM", ReadWrite ) 
-	{}
+BGeomCodec::BGeomCodec() :
+    SceneCodec("BGEOM", ReadWrite )
+    {}
 
 SceneFormatList BGeomCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "BGEOM";
-	_format.suffixes.push_back("bgeom");
-	_format.comment = "The Standart PlantGL binary format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    SceneFormat _format;
+    _format.name = "BGEOM";
+    _format.suffixes.push_back("bgeom");
+    _format.comment = "The Standart PlantGL binary format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 ScenePtr BGeomCodec::read(const std::string& fname)
 {
   if(BinaryParser::isAGeomBinaryFile(fname)){
-	  BinaryParser _parser(*PglErrorStream::error);
-	  _parser.parse(fname);
-	  return _parser.getScene();
+      BinaryParser _parser(*PglErrorStream::error);
+      _parser.parse(fname);
+      return _parser.getScene();
   }
   else return ScenePtr();
 }
 
-bool BGeomCodec::write(const std::string& fname,const ScenePtr&	scene)
+bool BGeomCodec::write(const std::string& fname,const ScenePtr& scene)
 {
     BinaryPrinter::print(scene,fname,"File Generated with PlantGL.");
     return true;

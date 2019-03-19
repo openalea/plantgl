@@ -134,21 +134,21 @@ protected:
 public:
   //! basic constructor from 2 points
   SkelEdge(Vector2 p1,
-	   Vector2 p2);
+       Vector2 p2);
 
   //! constructor from two ShapePoints
   SkelEdge(ShapePointPtr p1 ,
-	   ShapePointPtr p2 , 
-	   TypeEdge type = UNDEFINED, 
-	   bool infinite = false, 
-	   bool visited = false);
+       ShapePointPtr p2 ,
+       TypeEdge type = UNDEFINED,
+       bool infinite = false,
+       bool visited = false);
 
   //! constructor from two ShapePoints, with a boolean indicating if edge is boundary or interior
   SkelEdge(ShapePointPtr p1 ,
-	   ShapePointPtr p2 , 
-	   bool boundary , 
-	   bool infinite = false,
-	   bool visited = false);
+       ShapePointPtr p2 ,
+       bool boundary ,
+       bool infinite = false,
+       bool visited = false);
 
   //! copy constructor
   SkelEdge(const SkelEdge& e);
@@ -176,7 +176,7 @@ public:
 
   //! removes triangle t from adjacent triangles
   /*!
-   * \param t the triangle that is to be removed 
+   * \param t the triangle that is to be removed
    */
   void rmAdjTri(SkelTriangle& t);
 
@@ -204,13 +204,13 @@ typedef RCPtr<SkelEdge> SkelEdgePtr;
  *  describing with 3 edges allows to cover the triangulation getting through the edges
  *  more easily, but as we do have redundant information, we have some constraints on the
  *  edges used to make the triangle. Only 3 points can form the 3 edges, and each point must
- *  be used twice. In the creation of the type Triangle, we sort the 3 edges, and we can get 
+ *  be used twice. In the creation of the type Triangle, we sort the 3 edges, and we can get
  *  the 3 points of the triangle by getting p1 and p2 on the first edge, and p2 on the second
  *  edge. (the points are also sorted such as p1 < p2 in an edge) (e1 < e2 < e3 in the triangle)
  *  We also give some information on the type of the triangle (depending on how much edges are
  *  on the borders of the shape) and on the infinite type of the triangle (infinite triangles
  *  are on a CGAL triangulation those who are adjacent to the infinite vertex and therefore
- *  describe the space unoccupied by our shapes) 
+ *  describe the space unoccupied by our shapes)
  */
 class ALGO_API SkelTriangle : public RefCountObject
 {
@@ -257,7 +257,7 @@ public:
    *  \param ShapePointPtr p1 one point to define the triangle
    *  \param ShapePointPtr p2 another point to define the triangle
    *  \param ShapePointPtr p3 another point to define the triangle
-   *  \return a SkelTriangle finite, of UNDEFINED type, with three edges defined 
+   *  \return a SkelTriangle finite, of UNDEFINED type, with three edges defined
    *          by the three given points to get a triangle
    */
   SkelTriangle(ShapePointPtr p1, ShapePointPtr p2, ShapePointPtr p3);
@@ -281,7 +281,7 @@ public:
   Vector2 getCircumCenter() const;
   //! check if the triangle is acute (i.e. hes 3 acute angles)
   bool isAcuteAngleTriangle() const;
-  //! calculate pseudo-circumcenter 
+  //! calculate pseudo-circumcenter
   /*!
    *  The pseudo circumcenter is the circumcenter itself if the triangle is acute
    *  Otherwise it is the middle of the biggest side
@@ -362,7 +362,7 @@ protected:
   EndType m_firstEnd;
   EndType m_secondEnd;
   ShapePointSet* m_pointSet;
- 
+
   int m_beginBumpIndice;
   int m_endBumpIndice;
   int m_middleBumpIndice;
@@ -372,14 +372,14 @@ protected:
 public:
   SkelBranch();
   SkelBranch(std::list<Vector2> points,
-	     ShapePointSet* ptr = 0, 
-	     EndType firstEnd = UNDEFINED, 
-	     EndType secondEnd = UNDEFINED, 
-	     int begin = -1, 
-	     int end = -1, 
-	     int middle = -1,
-	     int jjbeg2 = -1,
-	     int jjend2 = -1);
+         ShapePointSet* ptr = 0,
+         EndType firstEnd = UNDEFINED,
+         EndType secondEnd = UNDEFINED,
+         int begin = -1,
+         int end = -1,
+         int middle = -1,
+         int jjbeg2 = -1,
+         int jjend2 = -1);
   static std::list<Polyline2DPtr> getListPolylines(std::list<SkelBranchPtr> lb);
   Polyline2DPtr getPolylineForAssociatedBump();
   double area();
@@ -470,17 +470,17 @@ class ALGO_API Skeleton
 
   static Polyline2DPtr removeLoopsInShape(Polyline2DPtr shape);
 
-  static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape, 
-							  const double areaMaxFilter);
+  static std::list<Polyline2DPtr> getChordalAxisTransform(const Polyline2DPtr discretizedShape,
+                              const double areaMaxFilter);
 
-  static std::list<Polyline2DPtr> getSkeletonInformation(const Polyline2DPtr discretizedShape, 
-							 const double areaMaxFilter,
-							 std::list<Vector2> * ends,
-							 std::list<Vector2> * end_tgts,
-							 std::list<Vector2> * bump_ends,
-							 std::list<Vector2> * bump_tgts,
-							 std::list<Polyline2DPtr> * bumps);
- 
+  static std::list<Polyline2DPtr> getSkeletonInformation(const Polyline2DPtr discretizedShape,
+                             const double areaMaxFilter,
+                             std::list<Vector2> * ends,
+                             std::list<Vector2> * end_tgts,
+                             std::list<Vector2> * bump_ends,
+                             std::list<Vector2> * bump_tgts,
+                             std::list<Polyline2DPtr> * bumps);
+
   static TriangleSetPtr getDelaunayConstrained2DTriangulation(const Polyline2DPtr discretizedShape);
 
 };

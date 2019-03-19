@@ -427,19 +427,19 @@ bool VgstarPrinter::process( PointSet * pointSet ) {
   const Point3ArrayPtr& points = pointSet->getPointList();
   for (uint_t _i = 0; _i < points->size(); ++_i)
   {
-	  GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"40");
-	  printNullTransformation();
-	  if(hasColor){
-		  const Color4& col = pointSet->getColorList()->getAt(_i);
-		  __color = Color3(col.getRed(),col.getGreen(),col.getBlue());
-	  }
-	  printColor();
-	  Vector3 _vertex1 = points->getAt(_i);
-	  _vertex1 = getMatrix() * _vertex1 ;
-	  GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-	  GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-	  GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
-	  GEOM_VGSTARPRINT_END(__vgstarStream);
+      GEOM_VGSTARPRINT_BEGIN(__vgstarStream,"40");
+      printNullTransformation();
+      if(hasColor){
+          const Color4& col = pointSet->getColorList()->getAt(_i);
+          __color = Color3(col.getRed(),col.getGreen(),col.getBlue());
+      }
+      printColor();
+      Vector3 _vertex1 = points->getAt(_i);
+      _vertex1 = getMatrix() * _vertex1 ;
+      GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
+      GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
+      GEOM_VGSTARPRINT_VECTOR3(__vgstarStream,_vertex1);
+      GEOM_VGSTARPRINT_END(__vgstarStream);
   }
   __color = oldcolor;
   return true;

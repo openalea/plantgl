@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -67,13 +67,13 @@ void PGL(Laxi_VectNorm) (double valprop,double vectprop[3])
 
 /*
 polynome caracteristique :
-	P(t) = determinant(I*t-mat3x3)
-	P(t) = pc[3]*t3 + pc[2]*t2 + pc[1]*t + pc[0]
+    P(t) = determinant(I*t-mat3x3)
+    P(t) = pc[3]*t3 + pc[2]*t2 + pc[1]*t + pc[0]
 */
 
 void PGL(Laxi_Polynom) (const double mat3x3[3][3],double pc[4])
    {
-   double	a,b,c,d,e,f,g,h,i ;
+   double   a,b,c,d,e,f,g,h,i ;
 //   double  pc[4];
    /* coefficients operateur lineaire */
    a = mat3x3[0][0] ;
@@ -91,7 +91,7 @@ void PGL(Laxi_Polynom) (const double mat3x3[3][3],double pc[4])
    pc[1] = a*e + a*i + e*i - b*d -c*g - f*h ;
    pc[2] = - a - e - i ;
    pc[3] = 1. ;
-   
+
 //   return pc;
    }
 
@@ -102,8 +102,8 @@ estimation P(x) = pc[3]*x3 + pc[2]*x2 + pc[1]*x + pc[0]
 */
 double PGL(Laxi_PolyValue)(double pc[4],double x)
    {
-   double	y ;
-   int	i ;
+   double   y ;
+   int  i ;
 
    y = 0. ;
    for (i = 0; i < 4; i++)
@@ -184,8 +184,8 @@ reduction de l'intervalle de recherche des racines du polynome
 */
 void PGL(Laxi_FindInterval) (double pc[4],double a_int,double b_int,double *a,double *b)
    {
-   double	aa,bb,cc,poly_aa,poly_bb,poly_cc ;
-   int	non_stop ;
+   double   aa,bb,cc,poly_aa,poly_bb,poly_cc ;
+   int  non_stop ;
 
    aa = a_int ;
    bb = b_int ;
@@ -235,8 +235,8 @@ calcul racine
 */
 void PGL(Laxi_FindRoots) (double pc[4],double a_int,double b_int,double *t)
    {
-   double	a,b,c,poly_a,poly_b,poly_c ;
-   int	non_stop ;
+   double   a,b,c,poly_a,poly_b,poly_c ;
+   int  non_stop ;
 
    /* reduction intervalle d'etude */
    Laxi_FindInterval (pc,a_int,b_int,&a,&b) ;
@@ -320,8 +320,8 @@ recherche vecteur propre associe a une valeur propre SIMPLE
 void PGL(Laxi_FindSingleVP) (double MemGauche[3][3],double MemDroit[3],double Solution[3])
    {
    double a[3][4],b[3][4],pivot,quot,tempo,s,solution[3] ;
-   int	 i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
-   int	 pivnul[3],coef[3] ;
+   int   i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
+   int   pivnul[3],coef[3] ;
 
    /* initialisation */
    ni = 3 ;
@@ -514,8 +514,8 @@ printf("\n\n") ;
 /*-------------------------------------------------------------------*/
 void PGL(Laxi_VecteurPropre_1) (double mat3x3[3][3],double valprop,double vectprop[3])
    {
-   double 	MemGauche[3][3],MemDroit[3] ;
-   int	i,j ;
+   double   MemGauche[3][3],MemDroit[3] ;
+   int  i,j ;
 
    /* initialisation */
    for (i=0;i<3;i++)
@@ -540,11 +540,11 @@ recherche vecteur propre associe a une valeur propre DOUBLE
 --------------------------------------------------------------------
 */
 void PGL(Laxi_FindDoubleVP) (double MemGauche[3][3],double MemDroit[3],
-								double Solution1[3],double Solution2[3])
+                                double Solution1[3],double Solution2[3])
    {
    double a[3][4],b[3][4],pivot,quot,tempo,s1,s2,solution1[3],solution2[3] ;
-   int	 i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
-   int	 pivnul[3],coef[3] ;
+   int   i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
+   int   pivnul[3],coef[3] ;
 
    /* initialisation */
    ni = 3 ;
@@ -772,10 +772,10 @@ printf("\n\n") ;
 /*-------------------------------------------------------------------*/
 
 void PGL(Laxi_VecteurPropre_2)(double mat3x3[3][3],double valprop,
-								  double vectprop1[3],double vectprop2[3])
+                                  double vectprop1[3],double vectprop2[3])
    {
    double MemGauche[3][3],MemDroit[3] ;
-   int	i,j ;
+   int  i,j ;
 
    /* initialisation */
    for (i = 0; i < 3; i++)
@@ -802,11 +802,11 @@ recherche vecteur propre associe a une valeur propre TRIPLE
 */
 
 void PGL(Laxi_FindTripleVP) (double MemGauche[3][3],double MemDroit[3],double Solution1[3],
-								double Solution2[3],double Solution3[3])
+                                double Solution2[3],double Solution3[3])
    {
    double a[3][4],b[3][4],pivot,quot,tempo,s1,s2,s3,solution1[3],solution2[3],solution3[3] ;
-   int	 i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
-   int	 pivnul[3],coef[3] ;
+   int   i,j,jp,ni,nj,njmoins1,njmoins2,J,Jplus1,i_pivot,li,rang ;
+   int   pivnul[3],coef[3] ;
 
    /* initialisation */
    ni = 3 ;
@@ -1070,10 +1070,10 @@ printf("\n\n") ;
 /*-------------------------------------------------------------------*/
 
 void PGL(Laxi_VecteurPropre_3) (double mat3x3[3][3],double valprop,double vectprop1[3],
-									double vectprop2[3],double vectprop3[3])
+                                    double vectprop2[3],double vectprop3[3])
    {
-   double 	MemGauche[3][3], MemDroit[3] ;
-   int	i,j ;
+   double   MemGauche[3][3], MemDroit[3] ;
+   int  i,j ;
 
    /* initialisation */
    for (i = 0; i < 3; i++)
@@ -1100,8 +1100,8 @@ calcul vecteurs propres
 
 void PGL(Laxi_VecteursPropres) (double mat3x3[3][3],double pc[4],double val[3],double vect[3][3])
    {
-   double	z1,z2,a_int,b_int,t0,t1,t2 ;
-   int	n ;
+   double   z1,z2,a_int,b_int,t0,t1,t2 ;
+   int  n ;
 
    Laxi_CurveStudy (pc,&z1,&z2,&n) ;
 
@@ -1252,16 +1252,16 @@ void PGL(Laxi_VecteursPropres) (double mat3x3[3][3],double pc[4],double val[3],d
 /*
 --------------------------------------------------------------------
 vecteurs propres :
-	mat3x3	: matrice de l'operateur lineaire ( donnee )
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees )
+    mat3x3  : matrice de l'operateur lineaire ( donnee )
+    val : valeurs propres associees a l'operateur lineaire ( cherchees )
                   si pas de solution, val = VInfini
-	vect	: vecteurs propres associes aux valeurs propres ( cherchees )
+    vect    : vecteurs propres associes aux valeurs propres ( cherchees )
                   si pas de solution, vect = (VInfini,VInfini,VInfini)
 --------------------------------------------------------------------
 */
 void PGL(Laxi_ValproVecpro) (double mat3x3[3][3],double val[3],double vect[3][3])
    {
-   double	pc[4] ;
+   double   pc[4] ;
 
    /* initialisation */
    val[0] = val[1] = val[2] = VInfini ;
@@ -1279,16 +1279,16 @@ void PGL(Laxi_ValproVecpro) (double mat3x3[3][3],double val[3],double vect[3][3]
 /*
 --------------------------------------------------------------------
 vecteurs propres distincts :
-	mat3x3	: matrice de l'operateur lineaire ( donnee )
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees )
+    mat3x3  : matrice de l'operateur lineaire ( donnee )
+    val : valeurs propres associees a l'operateur lineaire ( cherchees )
                   si pas de solution, val = VInfini
-	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees )
+    vect    : vecteurs propres distincts associes aux valeurs propres ( cherchees )
                   si pas de solution, vect = (VInfini,VInfini,VInfini)
 --------------------------------------------------------------------
 */
 void PGL(Laxi_Vecpro) (double mat3x3[3][3],double vect[3][3],short *marqueur)
    {
-   double	pc[4], val[3];
+   double   pc[4], val[3];
 
    /* initialisation */
    val[0] = val[1] = val[2] = VInfini ;
@@ -1339,15 +1339,15 @@ void PGL(Laxi_Vecpro) (double mat3x3[3][3],double vect[3][3],short *marqueur)
 /*
 --------------------------------------------------------------------
 vecteurs propres distincts :
-	mat3x3	: matrice de l'operateur lineaire ( donnee )
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees )
+    mat3x3  : matrice de l'operateur lineaire ( donnee )
+    val : valeurs propres associees a l'operateur lineaire ( cherchees )
                   si pas de solution, val = VInfini
-	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees )
+    vect    : vecteurs propres distincts associes aux valeurs propres ( cherchees )
                   si pas de solution, vect = (VInfini,VInfini,VInfini)
 --------------------------------------------------------------------
 */
 void PGL(Laxi_ComputeVecpro) (double vpmat[3][3],float vpvec[3][3],float vpint[3],
-								 float vpang[3][3],short vpok[3])
+                                 float vpang[3][3],short vpok[3])
    {
    double vect[3][3], vint;
    short j;
@@ -1374,8 +1374,8 @@ void PGL(Laxi_ComputeVecpro) (double vpmat[3][3],float vpvec[3][3],float vpint[3
             vpvec[j][0] = vect[j][0];
             vpvec[j][1] = vect[j][1];
             vpvec[j][2] = vect[j][2];
-   
-	    vect[j][0] /= vint;
+
+        vect[j][0] /= vint;
             vect[j][1] /= vint;
             vect[j][2] /= vint;
             vpang[j][0] = 180.0/3.14159265*acos(vect[j][0]);
@@ -1399,7 +1399,7 @@ void PGL(Laxi_ComputeVecpro) (double vpmat[3][3],float vpvec[3][3],float vpint[3
 
 
 real_t PGL(Laxi_ComputeInertiaM) (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
-								  float vpang[3][3],short vpok[3],float fvpmat[3][3])
+                                  float vpang[3][3],short vpok[3],float fvpmat[3][3])
    {
    double vpmat[3][3];
    double rnb;
@@ -1430,19 +1430,19 @@ real_t PGL(Laxi_ComputeInertiaM) (float *pts, float * ponderation, int nbp,float
       mx = my = mz = mx2 = my2 = mz2 = mxy = mxz = myz = 0.0;
       for (j = 0; j < nbp; j++)
          {
-	   if (ponderation)
-	     {
-	       x = pts[3*j]*ponderation[3*j];
-	       y = pts[3*j+1]*ponderation[3*j];
-	       z = pts[3*j+2]*ponderation[3*j];
-	       nbreeldepoints += ponderation[3*j];
-	     }
-	   else
-	     {
-	       x = pts[3*j];
-	       y = pts[3*j+1];
-	       z = pts[3*j+2];
-	     }
+       if (ponderation)
+         {
+           x = pts[3*j]*ponderation[3*j];
+           y = pts[3*j+1]*ponderation[3*j];
+           z = pts[3*j+2]*ponderation[3*j];
+           nbreeldepoints += ponderation[3*j];
+         }
+       else
+         {
+           x = pts[3*j];
+           y = pts[3*j+1];
+           z = pts[3*j+2];
+         }
 
          mx += x;
          my += y;
@@ -1518,9 +1518,9 @@ void PGL(Laxi_ComputeInertia) (Point3ArrayPtr pts,float vpvec[3][3],float vpint[
 /*         x = pts[3*j];
          y = pts[3*j+1];
          z = pts[3*j+2];*/
-	 x =  pts->getAt(j).x();
-	 y =  pts->getAt(j).y();
-	 z =  pts->getAt(j).z();
+     x =  pts->getAt(j).x();
+     y =  pts->getAt(j).y();
+     z =  pts->getAt(j).z();
          mx += x;
          my += y;
          mz += z;

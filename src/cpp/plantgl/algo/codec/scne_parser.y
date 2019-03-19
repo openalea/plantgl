@@ -44,14 +44,14 @@
 #undef yyFlexLexer
 #define yyFlexLexer scne_yyFlexLexer
 
-#define scne_yyerror(parser,_msg) {			\
+#define scne_yyerror(parser,_msg) {         \
         yyerrok; \
         yyclearin; \
         GenericParser<SMB_TABLE_TYPE> p = *(GenericParser<SMB_TABLE_TYPE> *)parser; \
         if (!(p.handleError(std::string(_msg), \
                       yychar, \
-			    ""))) YYABORT;\
-	postream(p)<<std::endl;}
+                ""))) YYABORT;\
+    postream(p)<<std::endl;}
 //                      yytname[YYTRANSLATE((yychar >= 0 ? yychar : -yychar))]))) YYABORT;
 
 
@@ -125,7 +125,7 @@ static const char * sh_keyword[] = {
     "Swung",
     "Shape",
     "Scaled",
-	"ScreenProjected",
+    "ScreenProjected",
     "Sphere",
     "Tapered",
     "Translated",
@@ -160,7 +160,7 @@ static std::vector<SymbolTable<SMB_TABLE_TYPE> *> symbolstack((unsigned int)0);
 /*  ---------------------------------------------------------------------- */
 
 #define GEOM_PARSER_BUILD_OBJECT(_type, shape,name,builder) \
-	parser_build_object(shape,name,builder)
+    parser_build_object(shape,name,builder)
 
 template<class GeomType,class GeomBuilderType>
 void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuilderType * builder){
@@ -438,7 +438,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   Curve2DPtr *                 curve2D_o;
   Curve2DArrayPtr *            curve2D_a;
   std::list<Curve2DPtr> *      curve2D_l;
-  FontPtr *					   font_o;
+  FontPtr *                    font_o;
 
   // Geometry builders
   AmapSymbol::Builder *        amapSymbol_b;
@@ -477,8 +477,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
   Tapered::Builder *           tapered_b;
   Translated::Builder *        translated_b;
   TriangleSet::Builder *       triangleSet_b;
-  Text::Builder *			   text_b;
-  Font::Builder *			   font_b;
+  Text::Builder *              text_b;
+  Font::Builder *              font_b;
 }
 
 
@@ -760,7 +760,7 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 
 /* Text */
 %type <geometry_o>          TextObj
-%type <font_o>				FontObj
+%type <font_o>              FontObj
 
 /* Shape builder */
 %type <Shape_b>         ShapeFieldList
@@ -812,8 +812,8 @@ void parser_build_object(RCPtr<GeomType> *& shape, std::string * name, GeomBuild
 %type <tapered_b>           TaperedFieldList
 %type <translated_b>        TranslatedFieldList
 %type <triangleSet_b>       TriangleSetFieldList
-%type <text_b>				TextFieldList
-%type <font_b>				FontFieldList
+%type <text_b>              TextFieldList
+%type <font_b>              FontFieldList
 
 //%type <profilescaling_b>    ProfileScalingFieldList
 
@@ -1021,14 +1021,14 @@ ShapeObj:
     GEOM_PARSER_BUILD_SHAPE($$,$2,$4);shape_nb++;
     if(isParserVerbose())
       if(shape_nb%10==0)
-      	printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
+        printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
       // std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
   }
 | TokShape  Name '{' ShapeShortFieldList '}'{
   GEOM_PARSER_BUILD_SHAPE($$,$2,$4);shape_nb++;
   if(isParserVerbose())
     if(shape_nb%10==0)
-		printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
+        printf("\x0dAlready parsed : %i%% shapes.",shape_nb);
     // std::cerr << "\x0d" << "Already parsed : " << shape_nb << " shapes." << std::flush;
 };
 
@@ -2458,7 +2458,7 @@ CtrlPointMatrix:
 Normal3Array:
    Point3Array {
      if ($1) {
-	   (*$1)->normalize();
+       (*$1)->normalize();
        $$ = $1;
      }
      else
@@ -2750,25 +2750,25 @@ Filename :
 | TokName { if(*$1 == "AMAPMOD_DIR" || *$1 == "OPENALEA_DIR")$$ = new std::string(TOOLS(getOpenAleaDir()));
             else if(*$1 == "PLANTGL_DIR")$$ = new std::string(TOOLS(getPlantGLDir()));
             else if($1 &&!$1->empty()&&(*$1)[0]=='%'){
-				 std::string env($1->begin()+1,$1->end());
-				 if(!env.empty()){
-					char * d = getenv(env.c_str());
-					if(d!=NULL) $$ = new std::string(d);
-					else $$ = NULL;
-				 }
-				 else $$ = NULL;
+                 std::string env($1->begin()+1,$1->end());
+                 if(!env.empty()){
+                    char * d = getenv(env.c_str());
+                    if(d!=NULL) $$ = new std::string(d);
+                    else $$ = NULL;
+                 }
+                 else $$ = NULL;
             }
             else $$ = $1; 
-		  }
+          }
 | Filename TokPLUS Filename { 
-		if($1 && $3){
-			$1->append(*$3);
-			$$ = $1;
-			delete $3;
-		}
-		else if($1)$$ = $1;
-		else if($3)$$ = $3;
-		else $$ = NULL;
+        if($1 && $3){
+            $1->append(*$3);
+            $$ = $1;
+            delete $3;
+        }
+        else if($1)$$ = $1;
+        else if($3)$$ = $3;
+        else $$ = NULL;
   };
 
 Point2Array:

@@ -53,11 +53,11 @@ PGL_BEGIN_NAMESPACE
 class CODEC_API PovCodec : public SceneCodec {
 public :
 
-	PovCodec();
+    PovCodec();
 
-	virtual SceneFormatList formats() const;
+    virtual SceneFormatList formats() const;
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
+    virtual bool write(const std::string& fname,const ScenePtr& scene);
 
 };
 

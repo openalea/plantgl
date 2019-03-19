@@ -91,13 +91,13 @@ class CODEC_API LigRecord {
 
     /// Set values to \e this.
     void setValues(const long symbol , const long val1 , const long val2,
-				   const long range  , const Vector3 dirp , const Vector3 dirs,
-				   const Vector3 dirt, const Vector3 origin ,
-				   const float base_dia, const float sommit_dia , const long entity_number);
+                   const long range  , const Vector3 dirp , const Vector3 dirs,
+                   const Vector3 dirt, const Vector3 origin ,
+                   const float base_dia, const float sommit_dia , const long entity_number);
     
     void setValues(const Vector3 dirp , const Vector3 dirs,
-				   const Vector3 dirt, const Vector3 origin ,
-				   const float base_dia, const float sommit_dia );
+                   const Vector3 dirt, const Vector3 origin ,
+                   const float base_dia, const float sommit_dia );
 
     /// Compute the transformation represented by its values.
     GeometryPtr getTransformed(GeometryPtr primitive) const;

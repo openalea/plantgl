@@ -53,19 +53,19 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 VgStarCodec::VgStarCodec() : 
-	SceneCodec("VGS", ReadWrite ) 
-	{}
+    SceneCodec("VGS", ReadWrite ) 
+    {}
 
 SceneFormatList VgStarCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "VGS";
-	_format.suffixes.push_back("vgs");
-	_format.suffixes.push_back("vgx");
-	_format.comment = "The VegeStar format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    SceneFormat _format;
+    _format.name = "VGS";
+    _format.suffixes.push_back("vgs");
+    _format.suffixes.push_back("vgx");
+    _format.comment = "The VegeStar format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 ScenePtr VgStarCodec::read(const std::string& fname)
@@ -75,13 +75,13 @@ ScenePtr VgStarCodec::read(const std::string& fname)
 
 bool VgStarCodec::write(const std::string& fname,const ScenePtr& scene)
 {
-	std::ofstream stream(fname.c_str());
-	if(stream){
-		Tesselator t;
-		VgstarPrinter p(stream,t);
-		p.header();
-		scene->apply(p);
+    std::ofstream stream(fname.c_str());
+    if(stream){
+        Tesselator t;
+        VgstarPrinter p(stream,t);
+        p.header();
+        scene->apply(p);
         return true;
-	}
+    }
     return false;
 }

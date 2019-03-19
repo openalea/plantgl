@@ -49,16 +49,14 @@
 #include <plantgl/pgl_container.h>
 #include <vector>
 
+/* ----------------------------------------------------------------------- */
+
 PGL_BEGIN_NAMESPACE
+
+/* ----------------------------------------------------------------------- */
 class leifstream;
 class leofstream;
-PGL_END_NAMESPACE
 
-/* ----------------------------------------------------------------------- */
-
-PGL_BEGIN_NAMESPACE
-
-/* ----------------------------------------------------------------------- */
 
 class StatisticComputer;
 class Scene;
@@ -329,7 +327,7 @@ public:
   void writeArray(const Array& array){
     uint_t _sizei = array.size();
     writeUint32(_sizei);
-    for (typename Array::const_iterator it = array.begin(); it != array.end(); ++it) { 
+    for (typename Array::const_iterator it = array.begin(); it != array.end(); ++it) {
       write(*it);
     };
   }
@@ -343,11 +341,11 @@ public:
 
   template<class Array2>
   void writeMatrix(const Array2& array){
-    uint_t _rows = array.getRowNb(); 
-    uint_t _cols = array.getColumnNb(); 
-    writeUint32( _rows ); 
-    writeUint32( _cols ); 
-    for (typename Array2::const_iterator it = array.begin(); it != array.end(); ++it) { 
+    uint_t _rows = array.getRowNb();
+    uint_t _cols = array.getColumnNb();
+    writeUint32( _rows );
+    writeUint32( _cols );
+    for (typename Array2::const_iterator it = array.begin(); it != array.end(); ++it) {
         write(*it);
     };
   }

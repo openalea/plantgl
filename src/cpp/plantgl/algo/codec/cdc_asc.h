@@ -48,13 +48,13 @@ PGL_BEGIN_NAMESPACE
 
 class CODEC_API AscCodec : public SceneCodec {
 public:
-	AscCodec();
+    AscCodec();
 
-	virtual SceneFormatList formats() const;
+    virtual SceneFormatList formats() const;
 
-	virtual ScenePtr read(const std::string& fname);
+    virtual ScenePtr read(const std::string& fname);
 
-	virtual bool write(const std::string& fname,const ScenePtr& scene);
+    virtual bool write(const std::string& fname,const ScenePtr& scene);
 };
 
 PGL_END_NAMESPACE

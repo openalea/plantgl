@@ -112,7 +112,7 @@ class ALGO_API Fit
     virtual GeometryPtr use(const std::string& classname);
 
  /* ----------------------------------------------------------------------- */
-   
+
     /// Fit the points with a sphere using a Gaussian distribution.
     virtual GeometryPtr sphere();
 
@@ -157,7 +157,7 @@ class ALGO_API Fit
     */
     virtual GeometryPtr ellipsoid2();
 
-  
+
     /*!
       Fit the points with an average aligned box.
     */
@@ -203,7 +203,7 @@ class ALGO_API Fit
     /*!
       Fit the points with a convex hull.
       Use the Quick Hull Algorithm.
-      See The Quick Hull Algorithm for Convex Hulls 
+      See The Quick Hull Algorithm for Convex Hulls
       from C. B. Barber, D. P. Dobkin, H. Huhdanpaa.
       */
     virtual GeometryPtr convexHull();
@@ -216,13 +216,13 @@ class ALGO_API Fit
     /*!
       Fit the 2D points \e points with a bounding circle.
     */
-	static bool boundingCircle(const Point2ArrayPtr& _points, 
+    static bool boundingCircle(const Point2ArrayPtr& _points,
 Vector2& center, real_t& radius);
 
     /*
       Fit the 3D points \e points with a bounding circle.
     */
-	static bool plane(const Point3ArrayPtr& _points, 
+    static bool plane(const Point3ArrayPtr& _points,
 Vector3& center, Plane3& plane, const Index& subset = Index(0));
 
 /* ----------------------------------------------------------------------- */
@@ -278,8 +278,8 @@ Vector3& center, Plane3& plane, const Index& subset = Index(0));
       \date 24 January, 1997
     */
     static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, int degC, int n);
-    
-    
+
+
     /*!
       \brief chord length parameterization
 
@@ -345,8 +345,8 @@ Vector3& center, Plane3& plane, const Index& subset = Index(0));
       \author Philippe Lavoie
       \date 24 January 1997
     */
-    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const RealArrayPtr& ub);
+    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q,
+                   int degC, int n, const RealArrayPtr& ub);
 
     /*!
       \brief  A least squares curve approximation
@@ -387,9 +387,9 @@ Vector3& center, Plane3& plane, const Index& subset = Index(0));
       \author Philippe Lavoie
       \date 24 January 1997
     */
-    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q, 
-			       int degC, int n, const RealArrayPtr& ub,
-			       const RealArrayPtr& knot);
+    static LineicModelPtr leastSquares(const Point3ArrayPtr & Q,
+                   int degC, int n, const RealArrayPtr& ub,
+                   const RealArrayPtr& knot);
 
 /* ----------------------------------------------------------------------- */
 
@@ -399,25 +399,25 @@ Vector3& center, Plane3& plane, const Index& subset = Index(0));
     /// get the class name available.
     static  std::vector<std::string> getVolumeClassNames();
 
-	static bool available(const std::string&);
+    static bool available(const std::string&);
 
     /// Return whether the radius are needed
     static bool areRadiusNeeded(std::string classname);
 
-	/// compute inertia axis
-	static bool inertiaAxis(const Point3ArrayPtr& points, 
-						    Vector3& u, Vector3& v, 
-							Vector3& w, Vector3& s);
+    /// compute inertia axis
+    static bool inertiaAxis(const Point3ArrayPtr& points,
+                            Vector3& u, Vector3& v,
+                            Vector3& w, Vector3& s);
 
-	static bool inertiaAxis(const Point2ArrayPtr& points, 
-						    Vector2& u, Vector2& v, Vector2& s);
+    static bool inertiaAxis(const Point2ArrayPtr& points,
+                            Vector2& u, Vector2& v, Vector2& s);
 
-	/*!
-		Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.
-		Use a second order polynomium approximation of this equation :
-		- a = x / r, b = y / h, e = - ln(a.b) / ( ln²a + ln²b ).
-	*/
-	static double fitShapeFactor(double x, double r, double y, double h);
+    /*!
+        Find \e e value for equation x^e / r^e + y^e / h^e +1 = 0.
+        Use a second order polynomium approximation of this equation :
+        - a = x / r, b = y / h, e = - ln(a.b) / ( ln a + ln b ).
+    */
+    static double fitShapeFactor(double x, double r, double y, double h);
 
 protected:
 
@@ -444,4 +444,3 @@ PGL_END_NAMESPACE
 
 // __actn_fit_h__
 #endif
-

@@ -48,23 +48,23 @@ PGL_USING_NAMESPACE
 
 class CodecInstaller {
 public:
-	CodecInstaller() { installCodecs(); }
+    CodecInstaller() { installCodecs(); }
 };
 
 static CodecInstaller MyCodecInstaller;
 
 void installCodecs(){
-	static bool installed = false;
-	if(!installed){
-		installed = true;
-		SceneFactory::get().registerCodec(SceneCodecPtr(new GeomCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new AscCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new BGeomCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new PovCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new VrmlCodec()));
-		SceneFactory::get().registerCodec(SceneCodecPtr(new PlyCodec()));
-	}
+    static bool installed = false;
+    if(!installed){
+        installed = true;
+        SceneFactory::get().registerCodec(SceneCodecPtr(new GeomCodec()));
+        SceneFactory::get().registerCodec(SceneCodecPtr(new AscCodec()));
+        SceneFactory::get().registerCodec(SceneCodecPtr(new BGeomCodec()));
+        SceneFactory::get().registerCodec(SceneCodecPtr(new VgStarCodec()));
+        SceneFactory::get().registerCodec(SceneCodecPtr(new PovCodec()));
+        SceneFactory::get().registerCodec(SceneCodecPtr(new VrmlCodec()));
+        SceneFactory::get().registerCodec(SceneCodecPtr(new PlyCodec()));
+    }
 }
 
 

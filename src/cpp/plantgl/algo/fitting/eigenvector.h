@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file util_eigenvector.h
     \brief Algorithm to compute eigen vector from points.
@@ -135,37 +135,37 @@ extern void ALGO_API Laxi_VecteursPropres (double mat3x3[3][3],double pc[4],doub
 
 
 /*! vecteurs propres : \n
-	mat3x3	: matrice de l'operateur lineaire ( donnee ) \n
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees ) \n
+    mat3x3  : matrice de l'operateur lineaire ( donnee ) \n
+    val : valeurs propres associees a l'operateur lineaire ( cherchees ) \n
                   si pas de solution, val = Infini \n
-	vect	: vecteurs propres associes aux valeurs propres ( cherchees ) \n
+    vect    : vecteurs propres associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
 extern void ALGO_API Laxi_ValproVecpro (double mat3x3[3][3],double val[3],double vect[3][3]);
 
 
 /*! vecteurs propres distincts : \n
-	mat3x3	: matrice de l'operateur lineaire ( donnee ) \n
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees ) \n
+    mat3x3  : matrice de l'operateur lineaire ( donnee ) \n
+    val : valeurs propres associees a l'operateur lineaire ( cherchees ) \n
                   si pas de solution, val = Infini \n
-	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
+    vect    : vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
 extern void ALGO_API Laxi_Vecpro (double mat3x3[3][3],double vect[3][3],short *marqueur);
 
 
 /*! vecteurs propres distincts : \n
-	mat3x3	: matrice de l'operateur lineaire ( donnee ) \n
-	val	: valeurs propres associees a l'operateur lineaire ( cherchees ) \n
+    mat3x3  : matrice de l'operateur lineaire ( donnee ) \n
+    val : valeurs propres associees a l'operateur lineaire ( cherchees ) \n
                   si pas de solution, val = Infini \n
-	vect	: vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
+    vect    : vecteurs propres distincts associes aux valeurs propres ( cherchees ) \n
                   si pas de solution, vect = (Infini,Infini,Infini) \n
 */
 extern void ALGO_API Laxi_ComputeVecpro (double vpmat[3][3],float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);
 
 /*! Calcul de la matrice d'inertie */
 extern real_t ALGO_API Laxi_ComputeInertiaM (float *pts, float * ponderation, int nbp,float vpvec[3][3],float vpint[3],
-			    float vpang[3][3],short vpok[3],float fvpmat[3][3]);
+                float vpang[3][3],short vpok[3],float fvpmat[3][3]);
 
 
 extern void ALGO_API Laxi_ComputeInertia (Point3ArrayPtr pts,float vpvec[3][3],float vpint[3],float vpang[3][3],short vpok[3]);

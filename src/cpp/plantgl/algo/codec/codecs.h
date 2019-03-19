@@ -41,7 +41,7 @@
 /* ----------------------------------------------------------------------- */
 
 extern "C" {
-	CODEC_API void installCodecs();
+    CODEC_API void installCodecs();
 }
 
 

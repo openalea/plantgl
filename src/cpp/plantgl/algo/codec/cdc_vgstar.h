@@ -53,13 +53,13 @@ PGL_BEGIN_NAMESPACE
 class CODEC_API VgStarCodec : public SceneCodec {
 public :
 
-	VgStarCodec();
+    VgStarCodec();
 
-	virtual SceneFormatList formats() const;
+    virtual SceneFormatList formats() const;
 
-	virtual ScenePtr read(const std::string& fname);
+    virtual ScenePtr read(const std::string& fname);
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
+    virtual bool write(const std::string& fname,const ScenePtr& scene);
 
 };
 

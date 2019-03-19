@@ -48,9 +48,9 @@ PGL_USING_NAMESPACE
 #include <fstream>
 #include "codec_config.h"
 #ifdef STL_EXTENSION
-	#include <sstream>
+    #include <sstream>
 #else
-	#include <strstream>
+    #include <strstream>
 #endif
 
 #include "scne_parser.h"
@@ -343,8 +343,8 @@ Tapered           {TRACE; return TokTapered;}
 Translated        {TRACE; return TokTranslated;}
 TriangleSet       {TRACE; return TokTriangleSet;}
 
-Text			  {TRACE; return TokText;}
-Font			  {TRACE; return TokFont;}
+Text              {TRACE; return TokText;}
+Font              {TRACE; return TokFont;}
 
 Material          {TRACE; return TokMaterial;}
 MonoSpectral      {TRACE; return TokMonoSpectral;}
@@ -365,7 +365,7 @@ BaseRadius        {TRACE; return TokBaseRadius;}
 BaseColor         {TRACE; return TokBaseColor;}
 BBoxCenter        {TRACE; return TokBBoxCenter;}
 BBoxSize          {TRACE; return TokBBoxSize;}
-Bold			  {TRACE; return TokBold;}
+Bold              {TRACE; return TokBold;}
 Bottom            {TRACE; return TokBottom;}
 BottomShape       {TRACE; return TokBottomShape;}
 CCW               {TRACE; return TokCCW;}
@@ -379,7 +379,7 @@ Degree            {TRACE; return TokDegree;}
 Depth             {TRACE; return TokDepth;}
 GeometryList      {TRACE; return TokGeometryList;}
 Elevation         {TRACE; return TokElevation;}
-Family	          {TRACE; return TokFamily;}
+Family            {TRACE; return TokFamily;}
 File[Nn]ame       {TRACE; return TokFileName;}
 FontStyle         {TRACE; return TokFontStyle;}
 Height            {TRACE; return TokHeight;}
@@ -389,7 +389,7 @@ Id                {TRACE; return TokId;}
 Image             {TRACE; return TokImage;}
 IndexList         {TRACE; return TokIndexList;}
 InitialNormal     {TRACE; return TokInitialNormal;}
-Italic			  {TRACE; return TokItalic;}
+Italic            {TRACE; return TokItalic;}
 KnotList          {TRACE; return TokKnotList;}
 KeepAspectRatio   {TRACE; return TokKeepAspectRatio;}
 Mipmaping         {TRACE; return TokMipmaping;}
@@ -403,14 +403,14 @@ NormalPerVertex   {TRACE; return TokNormalPerVertex;}
 Orientation       {TRACE; return TokOrientation;}
 ParentId          {TRACE; return TokParentId;}
 PointList         {TRACE; return TokPointList;}
-Position		  {TRACE; return TokPosition;}
+Position          {TRACE; return TokPosition;}
 PosXHeight        {TRACE; return TokPosXHeight;}
 PosXRadius        {TRACE; return TokPosXRadius;}
 PosYHeight        {TRACE; return TokPosYHeight;}
 PosYRadius        {TRACE; return TokPosYRadius;}
 Primary           {TRACE; return TokPrimary;}
 Primitive         {TRACE; return TokPrimitive;}
-Profile			  {TRACE; return TokProfile;}
+Profile           {TRACE; return TokProfile;}
 ProfileList       {TRACE; return TokProfileList;}
 Radius            {TRACE; return TokRadius;}
 RepeatS           {TRACE; return TokRepeatS;}

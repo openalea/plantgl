@@ -46,7 +46,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-ALGO_API Index3ArrayPtr 
+ALGO_API Index3ArrayPtr
 delaunay_triangulation3D(const Point3ArrayPtr points);
 
 

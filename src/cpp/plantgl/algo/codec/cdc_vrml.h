@@ -53,11 +53,11 @@ PGL_BEGIN_NAMESPACE
 class CODEC_API VrmlCodec : public SceneCodec {
 public :
 
-	VrmlCodec();
+    VrmlCodec();
 
-	virtual SceneFormatList formats() const;
+    virtual SceneFormatList formats() const;
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene);
+    virtual bool write(const std::string& fname,const ScenePtr& scene);
 
 };
 

@@ -488,8 +488,8 @@ bool VrmlPrinter::setLight(const Vector3& location,
   diff = 1.0 / diff;
   GEOM_VRMLPRINT_FIELD("color",col,COLOR3);
   GEOM_VRMLPRINT_FIELD("intensity",diff,REAL);
-  real_t amb =(( (real_t)ambient.getRed()   / (real_t)diffuse.getRed()   ) +
-                         ( (real_t)ambient.getGreen() / (real_t)diffuse.getGreen() ) +
+  real_t amb =(( (real_t)ambient.getRed()   / (real_t)diffuse.getRed()   )
+                         ( (real_t)ambient.getGreen() / (real_t)diffuse.getGreen() )
                          ( (real_t)ambient.getBlue()  / (real_t)diffuse.getBlue()  ) );
   amb /= 3;
   amb *= diff;
@@ -557,7 +557,7 @@ bool VrmlPrinter::process( Texture2D * texture ) {
 
   GEOM_VRMLPRINT_FIELD("texture",texture->getImage(),SUBNODE);
   if(!texture->isTransformationToDefault()){
-	GEOM_VRMLPRINT_FIELD("textureTransform",texture->getTransformation(),SUBNODE);
+    GEOM_VRMLPRINT_FIELD("textureTransform",texture->getTransformation(),SUBNODE);
   }
   
   
@@ -640,7 +640,7 @@ bool VrmlPrinter::process( AmapSymbol * amapSymbol ) {
   GEOM_VRMLPRINT_FIELD("coord",amapSymbol->getPointList(),POINT3ARRAY);
   GEOM_VRMLPRINT_FIELD("coordIndex",amapSymbol->getIndexList(),INDEXARRAY);
   if(amapSymbol->getNormalList())
-	GEOM_VRMLPRINT_FIELD("normal",amapSymbol->getNormalList(),NORMAL3ARRAY);
+    GEOM_VRMLPRINT_FIELD("normal",amapSymbol->getNormalList(),NORMAL3ARRAY);
   GEOM_VRMLPRINT_FIELD("normalPerVertex",true,BOOLEAN);
   GEOM_VRMLPRINT_FIELD("solid",amapSymbol->getSolid(),BOOLEAN);
   GEOM_VRMLPRINT_ENDOBJ;
@@ -1021,7 +1021,7 @@ bool VrmlPrinter::process( QuadSet * quadSet ) {
   GEOM_VRMLPRINT_FIELD("coord",quadSet->getPointList(),POINT3ARRAY);
   GEOM_VRMLPRINT_FIELD("coordIndex",quadSet->getIndexList(),INDEXARRAY4);
   if(quadSet->getNormalList())
-	GEOM_VRMLPRINT_FIELD("normal",quadSet->getNormalList(),NORMAL3ARRAY);
+    GEOM_VRMLPRINT_FIELD("normal",quadSet->getNormalList(),NORMAL3ARRAY);
   GEOM_VRMLPRINT_FIELD("normalPerVertex",quadSet->getNormalPerVertex(),BOOLEAN);
   GEOM_VRMLPRINT_FIELD("solid",quadSet->getSolid(),BOOLEAN);
   GEOM_VRMLPRINT_ENDOBJ;
@@ -1093,7 +1093,7 @@ bool VrmlPrinter::process( TriangleSet * triangleSet ) {
   GEOM_VRMLPRINT_FIELD("coord",triangleSet->getPointList(),POINT3ARRAY);
   GEOM_VRMLPRINT_FIELD("coordIndex",triangleSet->getIndexList(),INDEXARRAY3);
   if(triangleSet->getNormalList())
-	GEOM_VRMLPRINT_FIELD("normal",triangleSet->getNormalList(),NORMAL3ARRAY);
+    GEOM_VRMLPRINT_FIELD("normal",triangleSet->getNormalList(),NORMAL3ARRAY);
   GEOM_VRMLPRINT_FIELD("normalPerVertex",triangleSet->getNormalPerVertex(),BOOLEAN);
   GEOM_VRMLPRINT_FIELD("solid",triangleSet->getSolid(),BOOLEAN);
   GEOM_VRMLPRINT_ENDOBJ;

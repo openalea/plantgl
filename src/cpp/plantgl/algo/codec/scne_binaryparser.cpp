@@ -650,7 +650,7 @@ bool BinaryParser::parse(const string& filename){
     if(!open(filename)) return false;
     if(!readHeader())return false;
     if(!readSceneHeader())return false;
-	PglErrorStream::Binder psb(__outputStream);
+    PglErrorStream::Binder psb(__outputStream);
     string p = get_cwd();
     chg_dir(get_dirname(filename));
     Timer t;
@@ -716,7 +716,7 @@ bool BinaryParser::readNext(){
   else if(_classname == "Revolution")         return readRevolution();
   else if(_classname == "Swung")              return readSwung();
   else if(_classname == "Scaled")             return readScaled();
-  else if(_classname == "ScreenProjected")    return readScreenProjected();	  
+  else if(_classname == "ScreenProjected")    return readScreenProjected();   
   else if(_classname == "Sphere")             return readSphere();
   else if(_classname == "Tapered")            return readTapered();
   else if(_classname == "Translated")         return readTranslated();
@@ -782,15 +782,15 @@ bool BinaryParser::readShape(){
 
     if(readNext())
        a->getGeometry() = dynamic_pointer_cast<Geometry>(__result);
-	if(readNext()){
+    if(readNext()){
         a->getAppearance() = dynamic_pointer_cast<Appearance>(__result);
-		if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() <= 2.3f && is_valid_ptr(__result)){
-			ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
-			if(imgtex) {
-				a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
-			}
-		}
-	}
+        if (is_null_ptr(a->getAppearance()) && __tokens->getVersion() <= 2.3f && is_valid_ptr(__result)){
+            ImageTexturePtr imgtex = dynamic_pointer_cast<ImageTexture>(__result);
+            if(imgtex) {
+                a->getAppearance() = AppearancePtr(new Texture2D(imgtex));
+            }
+        }
+    }
 
     if((a->getGeometry()) && (a->getAppearance())){
         if(!_name.empty())a->setName(_name);
@@ -806,7 +806,7 @@ bool BinaryParser::readShape(){
         }
         if(isParserVerbose())
           if(__roots % 50 == 0 || __roots == __scene->size())
-			 printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->size());
+             printf("\x0d Already parsed : %i %% shapes.", 100*__roots / __scene->size());
         return true;
     }
     else{
@@ -873,15 +873,15 @@ bool BinaryParser::readTexture2D() {
     }
 
     IF_GEOM_NOTDEFAULT(_default,0)
-	{
-		if(readNext())
-			texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
-		if(!texture->getTransformation()){
-			__outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
-			GEOM_DEL_OBJ(texture,42) ;
-			return false;
-		}
-	}
+    {
+        if(readNext())
+            texture->getTransformation() = dynamic_pointer_cast<Texture2DTransformation>(__result);
+        if(!texture->getTransformation()){
+            __outputStream << "*** PARSER: <Texture2D : " << (_name.empty() ? "(unamed)" : _name ) << "> Transformation not valid." << endl;
+            GEOM_DEL_OBJ(texture,42) ;
+            return false;
+        }
+    }
 
     if( __tokens->getVersion() >= 2.3f){
         IF_GEOM_NOTDEFAULT(_default,1)
@@ -911,37 +911,37 @@ bool BinaryParser::readImageTexture() {
     float version =  __tokens->getVersion();
 
     if( version >= 2.3f){
-		IF_GEOM_NOTDEFAULT(_default,0)
-			GEOM_READ_FIELD(mat,RepeatS,Bool) ;
+        IF_GEOM_NOTDEFAULT(_default,0)
+            GEOM_READ_FIELD(mat,RepeatS,Bool) ;
 
-		IF_GEOM_NOTDEFAULT(_default,1)
-			GEOM_READ_FIELD(mat,RepeatT,Real);
+        IF_GEOM_NOTDEFAULT(_default,1)
+            GEOM_READ_FIELD(mat,RepeatT,Real);
 
         if( version < 2.4f){
             IF_GEOM_NOTDEFAULT(_default,2)
                 real_t transparency = readReal();
         }
-	}
-	else {
-		MaterialPtr oldmat(new Material());
-		IF_GEOM_NOTDEFAULT(_default,0)
-			GEOM_READ_FIELD(oldmat,Ambient,Color3) ;
+    }
+    else {
+        MaterialPtr oldmat(new Material());
+        IF_GEOM_NOTDEFAULT(_default,0)
+            GEOM_READ_FIELD(oldmat,Ambient,Color3) ;
 
-		IF_GEOM_NOTDEFAULT(_default,1)
-			GEOM_READ_FIELD(oldmat,Diffuse,Real);
+        IF_GEOM_NOTDEFAULT(_default,1)
+            GEOM_READ_FIELD(oldmat,Diffuse,Real);
 
-		IF_GEOM_NOTDEFAULT(_default,2)
-			GEOM_READ_FIELD(oldmat,Specular,Color3);
+        IF_GEOM_NOTDEFAULT(_default,2)
+            GEOM_READ_FIELD(oldmat,Specular,Color3);
 
-		IF_GEOM_NOTDEFAULT(_default,3)
-			GEOM_READ_FIELD(oldmat,Emission,Color3);
+        IF_GEOM_NOTDEFAULT(_default,3)
+            GEOM_READ_FIELD(oldmat,Emission,Color3);
 
-		IF_GEOM_NOTDEFAULT(_default,4)
-			GEOM_READ_FIELD(oldmat,Shininess,Real);
+        IF_GEOM_NOTDEFAULT(_default,4)
+            GEOM_READ_FIELD(oldmat,Shininess,Real);
 
-		IF_GEOM_NOTDEFAULT(_default,5)
-			GEOM_READ_FIELD(oldmat,Transparency,Real);
-	}
+        IF_GEOM_NOTDEFAULT(_default,5)
+            GEOM_READ_FIELD(oldmat,Transparency,Real);
+    }
 
     if( version >= 1.8f){
         IF_GEOM_NOTDEFAULT(_default,6)
@@ -971,17 +971,17 @@ bool BinaryParser::readTexture2DTransformation() {
 
     GEOM_INIT_OBJ(obj, 43, Texture2DTransformation);
 
-	IF_GEOM_NOTDEFAULT(_default,0)
-		GEOM_READ_FIELD(obj,Scale,Vector2) ;
+    IF_GEOM_NOTDEFAULT(_default,0)
+        GEOM_READ_FIELD(obj,Scale,Vector2) ;
 
-	IF_GEOM_NOTDEFAULT(_default,1)
-		GEOM_READ_FIELD(obj,Translation,Vector2);
+    IF_GEOM_NOTDEFAULT(_default,1)
+        GEOM_READ_FIELD(obj,Translation,Vector2);
 
-	IF_GEOM_NOTDEFAULT(_default,2)
-		GEOM_READ_FIELD(obj,RotationCenter,Vector2);
+    IF_GEOM_NOTDEFAULT(_default,2)
+        GEOM_READ_FIELD(obj,RotationCenter,Vector2);
 
-	IF_GEOM_NOTDEFAULT(_default,3)
-		GEOM_READ_FIELD(obj,RotationAngle,Real);
+    IF_GEOM_NOTDEFAULT(_default,3)
+        GEOM_READ_FIELD(obj,RotationAngle,Real);
 
     GEOM_PARSER_SETNAME(_name,_ident,obj,ImageTexture);
 
@@ -1416,10 +1416,10 @@ bool BinaryParser::readExtrusion() {
       }
 
     }
-	if( __tokens->getVersion() >= 2.2f){
-		IF_GEOM_NOTDEFAULT(_default,5){
-			GEOM_READ_FIELD(obj,InitialNormal,Vector3);
-		}
+    if( __tokens->getVersion() >= 2.2f){
+        IF_GEOM_NOTDEFAULT(_default,5){
+            GEOM_READ_FIELD(obj,InitialNormal,Vector3);
+        }
     }
 
     if(readNext()){

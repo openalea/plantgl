@@ -51,29 +51,29 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 PovCodec::PovCodec() : 
-	SceneCodec("POV", Write ) 
-	{}
+    SceneCodec("POV", Write ) 
+    {}
 
 SceneFormatList PovCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "POV";
-	_format.suffixes.push_back("pov");
-	_format.comment = "The PovRay format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    SceneFormat _format;
+    _format.name = "POV";
+    _format.suffixes.push_back("pov");
+    _format.comment = "The PovRay format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 bool PovCodec::write(const std::string& fname,const ScenePtr& scene)
 {
-	std::ofstream stream(fname.c_str());
-	if(stream){
-		Tesselator t;
-		PovPrinter p(stream,t);
-		p.header();
-		scene->apply(p);
+    std::ofstream stream(fname.c_str());
+    if(stream){
+        Tesselator t;
+        PovPrinter p(stream,t);
+        p.header();
+        scene->apply(p);
         return true;
-	}
+    }
     else return false;
 }

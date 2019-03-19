@@ -51,29 +51,29 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 VrmlCodec::VrmlCodec() : 
-	SceneCodec("VRML", Write ) 
-	{}
+    SceneCodec("VRML", Write ) 
+    {}
 
 SceneFormatList VrmlCodec::formats() const
 {
-	SceneFormat _format;
-	_format.name = "VRML";
-	_format.suffixes.push_back("wrl");
-	_format.comment = "The VRML format.";
-	SceneFormatList _formats;
-	_formats.push_back(_format);
-	return _formats;
+    SceneFormat _format;
+    _format.name = "VRML";
+    _format.suffixes.push_back("wrl");
+    _format.comment = "The VRML format.";
+    SceneFormatList _formats;
+    _formats.push_back(_format);
+    return _formats;
 }
 
 bool VrmlCodec::write(const std::string& fname,const ScenePtr& scene)
 {
-	std::ofstream stream(fname.c_str());
-	if(stream){
-		Discretizer t;
-		VrmlPrinter p(stream,t);
-		p.header();
-		scene->apply(p);
+    std::ofstream stream(fname.c_str());
+    if(stream){
+        Discretizer t;
+        VrmlPrinter p(stream,t);
+        p.header();
+        scene->apply(p);
         return true;
-	}
+    }
     return false;
 }

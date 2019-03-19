@@ -61,8 +61,8 @@ inline Vector3 toVector3(const Point& v) { return Vector3(v.x(),v.y(),v.z()); }
 
 #endif
 
-Index3ArrayPtr 
-PGL::delaunay_triangulation3D(const Point3ArrayPtr points)
+Index3ArrayPtr
+PGL(delaunay_triangulation3D)(const Point3ArrayPtr points)
 {
 #ifdef WITH_CGAL
     Triangulation triangulation;
@@ -75,11 +75,11 @@ PGL::delaunay_triangulation3D(const Point3ArrayPtr points)
         it != triangulation.finite_facets_end(); ++it){
             const Cell_handle cell = it->first;
             const int& index = it->second;
-	        const int index1 = cell->vertex(triangulation.vertex_triple_index(index, 0))->info();
-	        const int index2 = cell->vertex(triangulation.vertex_triple_index(index, 1))->info();
-	        const int index3 = cell->vertex(triangulation.vertex_triple_index(index, 2))->info();
+            const int index1 = cell->vertex(triangulation.vertex_triple_index(index, 0))->info();
+            const int index2 = cell->vertex(triangulation.vertex_triple_index(index, 1))->info();
+            const int index3 = cell->vertex(triangulation.vertex_triple_index(index, 2))->info();
             result->push_back(Index3(index1,index2,index3));
-    } 
+    }
 #else
     #ifdef _MSC_VER
     #pragma message("function 'delaunay_triangulation3D' disabled. CGAL needed.")

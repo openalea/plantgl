@@ -184,11 +184,11 @@ bool AscCodec::write(const std::string &fname, const ScenePtr &scene) {
         for (Point3Array::iterator pt = pointList->getPointList()->begin(); pt != pointList->getPointList()->end(); ++pt, ++st) {
           file << pt->x() << " " << pt->y() << " " << pt->z() << " ";
           if (!isxyzfile && !ispwnfile) {
-/*						if hasColor:
-							col = p.colorList[i]
-						if isptsfile or istxtfile:
-							f.write(str(rgb2intensity(col)))
-						f.write(str(col.red)+' '+str(col.green)+' '+str(col.blue)+'\n')
+/*                      if hasColor:
+                            col = p.colorList[i]
+                        if isptsfile or istxtfile:
+                            f.write(str(rgb2intensity(col)))
+                        f.write(str(col.red)+' '+str(col.green)+' '+str(col.blue)+'\n')
 */
           }
           file << std::endl;
