@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -47,7 +47,7 @@ using namespace std;
 
 ExplicitModel::Builder::Builder( ) :
   Primitive::Builder(),
-  PointList(0) , 
+  PointList(0) ,
   ColorList(0) {
 }
 
@@ -132,12 +132,12 @@ ExplicitModel::getPointListSize( ) const {
   return __pointList->size();
 }
 
-Color4ArrayPtr& 
+Color4ArrayPtr&
 ExplicitModel::getColorList( ) {
   return __colorList;
 }
 
-const Color4ArrayPtr& 
+const Color4ArrayPtr&
 ExplicitModel::getColorList( ) const {
   return __colorList;
 }

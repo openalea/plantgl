@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -63,9 +63,9 @@ OrthonormalBasis3DPtr EulerRotation::Builder::build( ) const
 
 void EulerRotation::Builder::destroy( )
 {
-	if (Azimuth) { delete Azimuth; Azimuth= 0;}
-	if (Elevation) {delete Elevation; Elevation= 0;}
-	if (Roll)  {delete Roll; Roll= 0;}
+    if (Azimuth) { delete Azimuth; Azimuth= 0;}
+    if (Elevation) {delete Elevation; Elevation= 0;}
+    if (Roll)  {delete Roll; Roll= 0;}
 }
 
 

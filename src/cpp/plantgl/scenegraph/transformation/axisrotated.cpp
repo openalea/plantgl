@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -62,8 +62,8 @@ OrthonormalBasis3DPtr AxisRotation::Builder::build( ) const
 
 void AxisRotation::Builder::destroy( )
 {
-	if (Axis) { delete Axis; Axis= 0; }
-	if (Angle){ delete Angle; Angle= 0;}
+    if (Axis) { delete Axis; Axis= 0; }
+    if (Angle){ delete Angle; Angle= 0;}
 }
 
 
@@ -87,7 +87,7 @@ bool AxisRotation::Builder::isValid( ) const
 /* ----------------------------------------------------------------------- */
 
 AxisRotation::AxisRotation( const Vector3& axis,
-			    const real_t& angle ) :
+                const real_t& angle ) :
   OrthonormalBasis3D(Matrix3::axisRotation(axis,angle)),
   __axis(axis),
   __angle(angle){
@@ -185,18 +185,18 @@ const real_t
 AxisRotated::getAngle( ) const {
   return __angle;
 }
-  
+
 real_t&
 AxisRotated::getAngle( ){
   return __angle;
 }
-  
+
 const Vector3&
 AxisRotated::getAxis( ) const {
   return __axis;
 }
 
-Vector3& 
+Vector3&
 AxisRotated::getAxis( ){
   return __axis;
 }
@@ -213,8 +213,8 @@ AxisRotated::getOrthonormalBasis( ) const {
     (new AxisRotation(__axis,__angle));
 }
 
-  
-bool 
+
+bool
 AxisRotated::isAngleToDefault( ) const {
   return fabs(__angle - DEFAULT_ANGLE) < GEOM_TOLERANCE;
 }

@@ -1,21 +1,21 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       AMAPmod: Exploring and Modeling Plant Architecture 
+ *       AMAPmod: Exploring and Modeling Plant Architecture
  *
  *       Copyright 1995-2000 UMR Cirad/Inra Modelisation des Plantes
  *
- *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier 
+ *       File author(s): C. Nouguier & F. Boudon (frederic.boudon@cirad.fr) nouguier
  *
  *       $Source$
  *       $Id$
  *
  *       Forum for AMAPmod developers    : amldevlp@cirad.fr
- *               
+ *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -32,7 +32,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 /*! \file geom_primitive.h
@@ -53,21 +53,21 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Primitive
-    \brief Abstract base class for all predefined primitives. 
+    \brief Abstract base class for all predefined primitives.
 */
 
 /* ----------------------------------------------------------------------- */
 
 class SG_API Primitive : public virtual Geometry
 {
- 
+
 public:
 
-  /// A structure which helps to build a Primitive when parsing. 
+  /// A structure which helps to build a Primitive when parsing.
   struct SG_API Builder : public Geometry::Builder {
-    
+
     /// Constructor.
     Builder( );
 

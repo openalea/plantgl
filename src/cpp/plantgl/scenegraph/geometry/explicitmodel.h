@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -104,7 +104,7 @@ public:
 
   /// Constructs a ExplicitModel.
   ExplicitModel( const Point3ArrayPtr& points,
-				 const Color4ArrayPtr& colors  = Color4ArrayPtr() );
+                 const Color4ArrayPtr& colors  = Color4ArrayPtr() );
 
   /// Destructor
   virtual ~ExplicitModel( );

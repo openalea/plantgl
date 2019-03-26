@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -59,10 +59,10 @@ Disc::Builder::~Builder() {
 
 
 SceneObjectPtr Disc::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Disc(Radius ? *Radius : DEFAULT_RADIUS,
-		Slices ? *Slices : SOR::DEFAULT_SLICES));
+        Slices ? *Slices : SOR::DEFAULT_SLICES));
   return SceneObjectPtr();
 }
 
@@ -81,7 +81,7 @@ bool Disc::Builder::isValid( ) const {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Disc","Radius","Must be not null.");
     return false;
   };
-  
+
   return true;
 }
 
@@ -90,7 +90,7 @@ bool Disc::Builder::isValid( ) const {
 
 
 Disc::Disc( const real_t& radius,
-	        uchar_t slices ) :
+            uchar_t slices ) :
   SOR2D(slices),
   __radius(radius) {
   GEOM_ASSERT(isValid());
@@ -104,7 +104,7 @@ Disc::getRadius( ) const {
   return __radius;
 }
 
-real_t&  
+real_t&
 Disc::getRadius( ) {
   return __radius;
 }

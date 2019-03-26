@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -97,41 +97,41 @@ bool Texture2DTransformation::Builder::isValid( ) const {
   if (Scale){
     if (!Scale->isValid()){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),
-				  "Texture2DTransformation","Scale","Must be valid.");
+                  "Texture2DTransformation","Scale","Must be valid.");
       return false;
-	}
+    }
     if (!(fabs(Scale->x()) > GEOM_EPSILON) || !(fabs(Scale->y()) > GEOM_EPSILON)){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),
-				 "Texture2DTransformation","Scale","Must be positive.");
+                 "Texture2DTransformation","Scale","Must be positive.");
       return false;
-	}
+    }
   }
 
   /// Translation
   if (Translation){
     if (!Translation->isValid()){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),
-				 "Texture2DTransformation","Translation","Must be valid.");
+                 "Texture2DTransformation","Translation","Must be valid.");
       return false;
-	}
+    }
   }
 
   /// RotationCenter
   if (RotationCenter){
     if (!RotationCenter->isValid()){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),
-				 "Texture2DTransformation","RotationCenter","Must be valid.");
+                 "Texture2DTransformation","RotationCenter","Must be valid.");
       return false;
-	}
+    }
   }
 
   /// RotationAngle
   if (RotationAngle){
     if (!pglfinite(*RotationAngle) ){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),
-				 "Texture2DTransformation","RotationAngle","Must be valid.");
+                 "Texture2DTransformation","RotationAngle","Must be valid.");
       return false;
-	}
+    }
   }
   return true;
 
@@ -139,27 +139,27 @@ bool Texture2DTransformation::Builder::isValid( ) const {
 
 /* ----------------------------------------------------------------------- */
 
-Texture2DTransformation::Texture2DTransformation(const Vector2& scaling, 
-											 const Vector2& translation, 
-											 const Vector2& rotationCenter, 
-											 real_t rotationAngle):
-	SceneObject(),
-	__Scale(scaling), 
-	__Translation(translation),
-	__RotationCenter(rotationCenter),
-	__RotationAngle(rotationAngle)  {
+Texture2DTransformation::Texture2DTransformation(const Vector2& scaling,
+                                             const Vector2& translation,
+                                             const Vector2& rotationCenter,
+                                             real_t rotationAngle):
+    SceneObject(),
+    __Scale(scaling),
+    __Translation(translation),
+    __RotationCenter(rotationCenter),
+    __RotationAngle(rotationAngle)  {
 }
-  
+
 Texture2DTransformation::Texture2DTransformation(const std::string& name,
-										     const Vector2& scaling, 
-											 const Vector2& translation, 
-											 const Vector2& rotationCenter, 
-											 real_t rotationAngle):
-	SceneObject(name),
-	__Scale(scaling), 
-	__Translation(translation),
-	__RotationCenter(rotationCenter),
-	__RotationAngle(rotationAngle)  {
+                                             const Vector2& scaling,
+                                             const Vector2& translation,
+                                             const Vector2& rotationCenter,
+                                             real_t rotationAngle):
+    SceneObject(name),
+    __Scale(scaling),
+    __Translation(translation),
+    __RotationCenter(rotationCenter),
+    __RotationAngle(rotationAngle)  {
 }
 
 
@@ -189,11 +189,11 @@ Point3ArrayPtr Texture2DTransformation::transform( const Point3ArrayPtr& points 
   for (Point3Array::const_iterator _i = points->begin();
        _i != points->end();
        _i++){
-	Vector2 res(_i->x() * __Scale.x(), _i->y() * __Scale.y()) ;
-	res -= __RotationCenter;
-	res = rotationOp * res;
-	res += __RotationCenter;
-	res += __Translation;
+    Vector2 res(_i->x() * __Scale.x(), _i->y() * __Scale.y()) ;
+    res -= __RotationCenter;
+    res = rotationOp * res;
+    res += __RotationCenter;
+    res += __Translation;
     *_ti++ = Vector3(res.x() , res.y() , _i->z());
   }
   return _tPoints;
@@ -208,11 +208,11 @@ Point2ArrayPtr Texture2DTransformation::transform( const Point2ArrayPtr& points 
   for (Point2Array::const_iterator _i = points->begin();
        _i != points->end();
          _i++){
-	Vector2 res(_i->x() * __Scale.x(), _i->y() * __Scale.y()) ;
-	res -= __RotationCenter;
-	res = rotationOp * res;
-	res += __RotationCenter;
-	res += __Translation;
+    Vector2 res(_i->x() * __Scale.x(), _i->y() * __Scale.y()) ;
+    res -= __RotationCenter;
+    res = rotationOp * res;
+    res += __RotationCenter;
+    res += __Translation;
     *_ti++ = res;
   }
   return _tPoints;
@@ -220,12 +220,12 @@ Point2ArrayPtr Texture2DTransformation::transform( const Point2ArrayPtr& points 
 
 Vector2 Texture2DTransformation::transform( const Vector2& point ) const
 {
-	Vector2 res(point.x() * __Scale.x(), point.y() * __Scale.y()) ;
-	res -= __RotationCenter;
-	res =  Matrix2::rotation(__RotationAngle) * res;
-	res += __RotationCenter;
-	res += __Translation;
-	return res;
+    Vector2 res(point.x() * __Scale.x(), point.y() * __Scale.y()) ;
+    res -= __RotationCenter;
+    res =  Matrix2::rotation(__RotationAngle) * res;
+    res += __RotationCenter;
+    res += __Translation;
+    return res;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -280,7 +280,7 @@ bool ImageTexture::Builder::isValid( ) const {
 
   ifstream _file(FileName->c_str());
   if (_file) return true;
-  
+
   string _mess;
   _mess = "Cannot open " + *FileName + ".";
   pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"ImageTexture","FileName",_mess.c_str());
@@ -292,35 +292,35 @@ bool ImageTexture::Builder::isValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 ImageTexture::ImageTexture():
-	SceneObject(),
-	__Filename(), 
-	__Mipmaping(DEFAULT_MIPMAPING), 
-	__RepeatS(DEFAULT_REPEATS),
-	__RepeatT(DEFAULT_REPEATT)  {
+    SceneObject(),
+    __Filename(),
+    __Mipmaping(DEFAULT_MIPMAPING),
+    __RepeatS(DEFAULT_REPEATS),
+    __RepeatT(DEFAULT_REPEATT)  {
 }
-  
+
 ImageTexture::ImageTexture(   const std::string& filename,
-							  bool repeatS,
-							  bool repeatT,
-							  bool mipmaping) :
-	SceneObject(),
-	__Filename(filename), 
-	__Mipmaping(mipmaping), 
-	__RepeatS(repeatS),
-	__RepeatT(repeatT) {
+                              bool repeatS,
+                              bool repeatT,
+                              bool mipmaping) :
+    SceneObject(),
+    __Filename(filename),
+    __Mipmaping(mipmaping),
+    __RepeatS(repeatS),
+    __RepeatT(repeatT) {
   GEOM_ASSERT(isValid());
 }
 
   ImageTexture::ImageTexture( const std::string& name,
-							  const std::string& filename,
-							  bool repeatS,
-							  bool repeatT,
-							  bool mipmaping ) :
-	SceneObject(name),
-	__Filename(filename), 
-	__Mipmaping(mipmaping), 
-	__RepeatS(repeatS),
-	__RepeatT(repeatT) {
+                              const std::string& filename,
+                              bool repeatS,
+                              bool repeatT,
+                              bool mipmaping ) :
+    SceneObject(name),
+    __Filename(filename),
+    __Mipmaping(mipmaping),
+    __RepeatS(repeatS),
+    __RepeatT(repeatT) {
   GEOM_ASSERT(isValid());
 }
 
@@ -343,12 +343,12 @@ SceneObjectPtr ImageTexture::copy(DeepCopier& copier) const
 /*
 bool ImageTexture::isSimilar(const Material& other) const
 {
-	if (!other.isTexture()) return false;
-	if (!Material::isSimilar(other)) return false;
-	ImageTexture * texture = (ImageTexture *)&other;
-	if (__filename != texture->__filename) return false;
-	if (__mipmaping != texture->__mipmaping) return false;
-	return true;
+    if (!other.isTexture()) return false;
+    if (!Material::isSimilar(other)) return false;
+    ImageTexture * texture = (ImageTexture *)&other;
+    if (__filename != texture->__filename) return false;
+    if (__mipmaping != texture->__mipmaping) return false;
+    return true;
 }
 */
 
@@ -393,11 +393,11 @@ void Texture2D::Builder::destroy() {
 
 bool Texture2D::Builder::isValid( ) const {
   /// Image
-	if (Image && (*Image)){
+    if (Image && (*Image)){
     if (!(*Image)->isValid()) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Texture2D","Image","Must be valid.");
       return false;
-	}
+    }
   }
   else {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Texture2D","Image","Must be defined.");
@@ -418,29 +418,29 @@ bool Texture2D::Builder::isValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 Texture2D::Texture2D():
-	Appearance(),
-	__Image(), 
-	__Transformation(DEFAULT_TRANSFORMATION),
+    Appearance(),
+    __Image(),
+    __Transformation(DEFAULT_TRANSFORMATION),
     __BaseColor(DEFAULT_BASECOLOR) {
 }
 
-Texture2D::Texture2D(const ImageTexturePtr& image, 
-					 const Texture2DTransformationPtr& transformation,
+Texture2D::Texture2D(const ImageTexturePtr& image,
+                     const Texture2DTransformationPtr& transformation,
                      const Color4& basecolor):
-	Appearance(),
-	__Image(image), 
-	__Transformation(transformation),
+    Appearance(),
+    __Image(image),
+    __Transformation(transformation),
     __BaseColor(basecolor) {
 }
 
 
 Texture2D::Texture2D(const std::string& name,
-					 const ImageTexturePtr& image, 
-					 const Texture2DTransformationPtr& transformation,
+                     const ImageTexturePtr& image,
+                     const Texture2DTransformationPtr& transformation,
                      const Color4& basecolor):
-	Appearance(name),
-	__Image(image), 
-	__Transformation(transformation),
+    Appearance(name),
+    __Image(image),
+    __Transformation(transformation),
     __BaseColor(basecolor) {
 }
 

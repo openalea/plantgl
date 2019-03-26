@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -49,12 +49,12 @@ Cylinder::Builder::~Builder( ) {
 
 
 SceneObjectPtr Cylinder::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Cylinder(Radius ? *Radius : DEFAULT_RADIUS,
-		    Height ? *Height : DEFAULT_HEIGHT,
-		    Solid ? *Solid : DEFAULT_SOLID,
-		    Slices ? *Slices : DEFAULT_SLICES));
+            Height ? *Height : DEFAULT_HEIGHT,
+            Solid ? *Solid : DEFAULT_SOLID,
+            Slices ? *Slices : DEFAULT_SLICES));
   return SceneObjectPtr();
 }
 
@@ -63,16 +63,16 @@ SceneObjectPtr Cylinder::Builder::build( ) const {
 
 
 Cylinder::Cylinder( const real_t& radius,
-		    const real_t& height,
-		    bool solid,
-		    uchar_t slices ) :
+            const real_t& height,
+            bool solid,
+            uchar_t slices ) :
   Cone(radius,height,solid,slices) {
   GEOM_ASSERT(isValid());
 }
 
 Cylinder::~Cylinder( ) {
 #ifdef GEOM_DEBUG
-    cerr <<"Cylinder " <<  __name << " destroyed" << endl;    
+    cerr <<"Cylinder " <<  __name << " destroyed" << endl;
 #endif
 }
 

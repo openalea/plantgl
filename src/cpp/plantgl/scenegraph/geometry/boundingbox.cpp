@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -432,31 +432,31 @@ bool BoundingBox::isValid( ) const {
     (__ll.z() <= __ur.z());
 }
 
-real_t 
+real_t
 BoundingBox::getXRange() const { return __ur.x()- __ll.x(); }
 
-real_t 
+real_t
 BoundingBox::getYRange() const { return __ur.y()- __ll.y(); }
 
-real_t 
+real_t
 BoundingBox::getZRange() const { return __ur.z()- __ll.z(); }
 
-real_t 
+real_t
 BoundingBox::getXMin() const { return __ll.x(); }
 
-real_t 
+real_t
 BoundingBox::getYMin() const { return __ll.y(); }
 
-real_t 
+real_t
 BoundingBox::getZMin() const { return __ll.z(); }
 
-real_t 
+real_t
 BoundingBox::getXMax() const { return __ur.x(); }
 
-real_t 
+real_t
 BoundingBox::getYMax() const { return __ur.y(); }
 
-real_t 
+real_t
 BoundingBox::getZMax() const { return __ur.z(); }
 
 /* ----------------------------------------------------------------------- */

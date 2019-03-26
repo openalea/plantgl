@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -175,7 +175,7 @@ BezierPatch::BezierPatch( const Point3MatrixPtr& ctrlPoints,
     __ctrlPointMatrix(),
     __ustride(ustride),
     __vstride(vstride){
-	if(ctrlPoints) __ctrlPointMatrix = Point4MatrixPtr(new Point4Matrix(*ctrlPoints,1));
+    if(ctrlPoints) __ctrlPointMatrix = Point4MatrixPtr(new Point4Matrix(*ctrlPoints,1));
     GEOM_ASSERT(isValid());
 }
 
@@ -324,7 +324,7 @@ LineicModelPtr BezierPatch::getIsoUSectionAt(real_t u) const
                   T[i] = (T[i] * u1) + (T[i+1] * u);
           Q[j]=T[0];
     }
-	return LineicModelPtr(new BezierCurve(Point4ArrayPtr(new Point4Array(Q.begin(),Q.end())),_vdeg));
+    return LineicModelPtr(new BezierCurve(Point4ArrayPtr(new Point4Array(Q.begin(),Q.end())),_vdeg));
 }
 
 
@@ -347,7 +347,7 @@ LineicModelPtr BezierPatch::getIsoVSectionAt(real_t v) const
                     T[j] = (T[j] * v1) + (T[j+1] * v);
         Q[i]=T[0];
     }
-	return LineicModelPtr(new BezierCurve(Point4ArrayPtr(new Point4Array(Q.begin(),Q.end())),_udeg));
+    return LineicModelPtr(new BezierCurve(Point4ArrayPtr(new Point4Array(Q.begin(),Q.end())),_udeg));
 }
 
 

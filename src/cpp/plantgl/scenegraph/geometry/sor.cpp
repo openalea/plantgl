@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -131,7 +131,7 @@ SOR2D::Builder::~Builder() {
 
 
 void SOR2D::Builder::destroy( ) {
-	SOR2DDestroy( );
+    SOR2DDestroy( );
 }
 
 void SOR2D::Builder::SOR2DDestroy( ) {
@@ -140,7 +140,7 @@ void SOR2D::Builder::SOR2DDestroy( ) {
 
 
 bool SOR2D::Builder::isValid( ) const {
-	return SOR2DValid( );
+    return SOR2DValid( );
 }
 
 bool SOR2D::Builder::SOR2DValid( ) const {

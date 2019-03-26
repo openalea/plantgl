@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -54,7 +54,7 @@ PGL_BEGIN_NAMESPACE
 
 /**
     \class Shape3D
-    \brief Abstract base class for shape that can be stored into a scene. 
+    \brief Abstract base class for shape that can be stored into a scene.
 */
 
 /* ------------------------------------------------------------------------- */
@@ -184,8 +184,8 @@ public:
   /** Constructs a Shape with the Geometry \e geom, the Appearance
       \e app and the id \e id. */
   Shape( const std::string&   name,
-		 const GeometryPtr&   geom,
-	     const AppearancePtr& app = Material::DEFAULT_MATERIAL,
+         const GeometryPtr&   geom,
+         const AppearancePtr& app = Material::DEFAULT_MATERIAL,
          uint_t id = NOID,
          uint_t parent_id = NOID );
 
@@ -199,8 +199,8 @@ public:
   /** Constructs a Shape with the Geometry \e geom, the Appearance
       \e app and the id \e id. */
   Shape( const std::string&   name,
-		 const GeometryPtr&   geom,
-	     const ImageTexturePtr& app,
+         const GeometryPtr&   geom,
+         const ImageTexturePtr& app,
          uint_t id = NOID,
          uint_t parent_id = NOID );
 
@@ -254,7 +254,7 @@ public:
   bool isParentIdToDefault() { return parentId == NOID; }
 
   /// Return whether self should be rendered dynamically
-  bool hasDynamicRendering() const  
+  bool hasDynamicRendering() const
   { return (is_null_ptr(geometry)?false:geometry->hasDynamicRendering()); }
 
   /// The appearance of \e self.

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -29,17 +29,12 @@
  *  ----------------------------------------------------------------------------
  */
 
-
 /*! \file actn_glrenderer.h
     \brief Definition of the action class GLRenderer.
 */
 
-
-
 #ifndef __actn_glrenderer_h__
 #define __actn_glrenderer_h__
-
-
 
 #include "util_gl.h"
 
@@ -78,21 +73,21 @@ public:
   /** Constructs a GLRenderer with the Discretizer \e discretizer. */
   GLRenderer( Discretizer& discretizer
 #ifndef PGL_WITHOUT_QT
-    , QGLWidget * glframe = NULL 
+    , QGLWidget * glframe = NULL
 #endif
     );
 
 
   /*! \enum RenderingMode
     This enum specifies the Rendering mode.
-	*/
+    */
   /*!
-  \var RenderingMode Normal 
-	Normal rendering
+  \var RenderingMode Normal
+    Normal rendering
   */
   /*!
   \var RenderingMode Selection
-	Selection rendering.
+    Selection rendering.
   */
   /*!
   \var RenderingMode Dynamic
@@ -102,7 +97,7 @@ public:
     Normal = 0x0001,
     Selection = 0x0002,
     DynamicScene = 0x0004,
-  	DynamicPrimitive = 0x0008,
+    DynamicPrimitive = 0x0008,
     Dynamic = DynamicPrimitive | DynamicScene,
   };
 
@@ -313,9 +308,9 @@ protected:
 #ifndef PGL_WITHOUT_QT
   QGLWidget * __glframe;
 #endif
-  
+
 private:
-  template<class T> 
+  template<class T>
   bool discretize_and_render(T * geom);
 
   bool __currentdisplaylist;

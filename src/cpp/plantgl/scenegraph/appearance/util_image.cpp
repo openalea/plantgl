@@ -81,7 +81,7 @@ void Image::setPixelAt(uint_t x, uint_t y, const Color4 & pixel)
     if (__nbchannels>1){++itCol; *itCol = pixel.getGreen();}
     if (__nbchannels>2){++itCol; *itCol = pixel.getBlue();}
     if (__nbchannels>3){++itCol; *itCol = pixel.getAlpha();}
-    
+
 }
 
 void Image::setPixelAt(uint_t x, uint_t y, const Color3 & pixel, uchar_t alpha ){
@@ -112,7 +112,7 @@ Color4 Image::getPixelAtUV(real_t u, real_t v, bool repeatu, bool repeatv) const
             u = fmod(u, 1.0);
             if (u < 0) u += 1.0;
         }
-        else if (u < 0) u = 0; 
+        else if (u < 0) u = 0;
         else u = 1;
     }
     if (v < 0 || v > 1) {
@@ -120,7 +120,7 @@ Color4 Image::getPixelAtUV(real_t u, real_t v, bool repeatu, bool repeatv) const
             v = fmod(v, 1.0);
             if (v < 0) v += 1.0;
         }
-        else if (v < 0) v = 0; 
+        else if (v < 0) v = 0;
         else v = 1;
     }
     uint_t x = (__width - 1) * u;
@@ -137,11 +137,11 @@ const uchar_t * Image::getPixelDataAt(uint_t x, uint_t y) const {
     return &(*itCol);
 }
 
-void Image::fill(const Color4 & color) 
+void Image::fill(const Color4 & color)
 {
     uint8_t i = 0;
     for (std::vector<uchar_t>::iterator itCol = __data.begin(); itCol != __data.end(); ++itCol, i = (i+1)%__nbchannels){
-        *itCol = color[i];        
+        *itCol = color[i];
     }
 
 }
@@ -179,9 +179,9 @@ bool Image::read(const std::string& fname)
 
         for (uint_t i = 0 ; i < cimg.width() ; ++i){
             for (uint_t j = 0 ; j < cimg.height() ;  ++j){
-                setPixelAt(i,j, Color4((uchar_t)*cimg.data(i,j,0), 
-                                       (uchar_t)(__nbchannels>1?*cimg.data(i,j,1):0), 
-                                       (uchar_t)(__nbchannels>2?*cimg.data(i,j,2):0), 
+                setPixelAt(i,j, Color4((uchar_t)*cimg.data(i,j,0),
+                                       (uchar_t)(__nbchannels>1?*cimg.data(i,j,1):0),
+                                       (uchar_t)(__nbchannels>2?*cimg.data(i,j,2):0),
                                        (uchar_t)(__nbchannels>3?*cimg.data(i,j,3):0)));
             }
         }
@@ -219,7 +219,7 @@ const uchar_t * Image::toNonInterlacedData() const
 
 }
 
-void Image::fromNonInterlacedData(const uchar_t * input, uint_t width, uint_t height, uchar_t nbChannels) 
+void Image::fromNonInterlacedData(const uchar_t * input, uint_t width, uint_t height, uchar_t nbChannels)
 {
         __width = width;
         __height = height;
@@ -240,7 +240,7 @@ void Image::fromNonInterlacedData(const uchar_t * input, uint_t width, uint_t he
 const uchar_t * Image::toInterlacedData() const
 { return __data.data(); }
 
-void Image::fromInterlacedData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels) 
+void Image::fromInterlacedData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels)
 {
     __width = width;
     __height = height;
@@ -261,7 +261,7 @@ ImagePtr Image::transpose() const
     return result;
 }
 
-void Image::fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels) 
+void Image::fromData(const uchar_t * data, uint_t width, uint_t height, uchar_t nbChannels, uint_t stridewidth, uint_t strideheight, uchar_t stridechannels)
 {
     __width = width;
     __height = height;

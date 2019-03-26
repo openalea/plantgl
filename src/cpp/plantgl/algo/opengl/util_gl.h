@@ -49,7 +49,7 @@
 #endif
 
 #else
-#if defined(__APPLE__) 
+#if defined(__APPLE__)
 # include <OpenGL/gl.h>
 #else
 # include <GL/gl.h>
@@ -57,7 +57,7 @@
 
 #endif
 
-#if defined(__APPLE__) 
+#if defined(__APPLE__)
 # include <OpenGL/glu.h>
 #else
 # include <GL/glu.h>
@@ -83,26 +83,26 @@
 
 /// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy)
+                         const real_t& vy)
 { glVertex2d(vx,vy);       }
 /// glVertex for GEOM
 
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz)
+                         const real_t& vy,
+                         const real_t& vz)
 { glVertex3d(vx,vy,vz);    }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz,
-						 const real_t& vw)
+                         const real_t& vy,
+                         const real_t& vz,
+                         const real_t& vw)
 { glVertex4d(vx,vy,vz,vw); }
 
 /// glNormal for GEOM
 inline void glGeomNormal(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz)
+                         const real_t& vy,
+                         const real_t& vz)
 { glNormal3d(vx,vy,vz);    }
 
 /// glTexCoord for GEOM
@@ -111,28 +111,28 @@ inline void glGeomTexCoord(const real_t& vx )
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						   const real_t& vy)
+                           const real_t& vy)
 { glTexCoord2d(vx,vy);    }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						   const real_t& vy,
-						   const real_t& vz)
+                           const real_t& vy,
+                           const real_t& vz)
 { glTexCoord3d(vx,vy,vz);    }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						   const real_t& vy,
-						   const real_t& vz,
-						   const real_t& vw)
+                           const real_t& vy,
+                           const real_t& vz,
+                           const real_t& vw)
 { glTexCoord4d(vx,vy,vz,vw);    }
 
 /* ----------------------------------------------------------------------- */
 
 /// glTranslate for GEOM
 inline void glGeomTranslate(const real_t& vx,
-							const real_t& vy,
-							const real_t& vz)
+                            const real_t& vy,
+                            const real_t& vz)
 { glTranslated(vx,vy,vz); }
 
 /// glScale for GEOM
@@ -141,52 +141,52 @@ inline void glGeomScale(const real_t& v)
 
 /// glScale for GEOM
 inline void glGeomScale(const real_t& vx,
-						const real_t& vy,
-						const real_t& vz)
+                        const real_t& vy,
+                        const real_t& vz)
 { glScaled(vx,vy,vz); }
 
 /// glRotate for GEOM
 inline void glGeomRotate(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz,
-						 const real_t& angle)
+                         const real_t& vy,
+                         const real_t& vz,
+                         const real_t& angle)
 { glRotated(angle,vx,vy,vz); }
 
 /// glRotate for GEOM with angle in radians
 inline void glGeomRadRotate(const real_t& vx,
-							const real_t& vy,
-							const real_t& vz,
-							const real_t& angle)
+                            const real_t& vy,
+                            const real_t& vz,
+                            const real_t& angle)
 { glRotated(angle*GEOM_DEG,vx,vy,vz); }
 
 /// gl command for EulerRotate around Z-axis(azimuth), then Y-axis(elevation), and X-axis(roll) with angles in degree for GEOM
 inline void glGeomEulerRotateZYX(const real_t& azimuth,
-							     const real_t& elevation,
-								 const real_t& roll)
+                                 const real_t& elevation,
+                                 const real_t& roll)
 { glRotated(azimuth,   0.0,0.0,1.0);
   glRotated(elevation, 0.0,1.0,0.0);
   glRotated(roll,      1.0,0.0,0.0); }
 
 /// gl command for EulerRotate around Z-axis(azimuth), then Y-axis(elevation), and X-axis(roll)  with angles in radians for GEOM
 inline void glGeomRadEulerRotateZYX(const real_t& azimuth,
-									const real_t& elevation,
-									const real_t& roll)
+                                    const real_t& elevation,
+                                    const real_t& roll)
 { glRotated(azimuth  *GEOM_DEG, 0.0,0.0,1.0);
   glRotated(elevation*GEOM_DEG, 0.0,1.0,0.0);
   glRotated(roll     *GEOM_DEG, 1.0,0.0,0.0); }
 
 /// gl command for EulerRotate around X-axis(azimuth), then Y-axis(elevation), and Z-axis(roll) with angles in degree for GEOM
 inline void glGeomEulerRotateXYZ(const real_t& azimuth,
-							     const real_t& elevation,
-								 const real_t& roll)
+                                 const real_t& elevation,
+                                 const real_t& roll)
 { glRotated(azimuth,   1.0,0.0,0.0);
   glRotated(elevation, 0.0,1.0,0.0);
   glRotated(roll,      0.0,0.0,1.0); }
 
 /// gl command for EulerRotate around X-axis(azimuth), then Y-axis(elevation), and Z-axis(roll)  with angles in radians for GEOM
 inline void glGeomRadEulerRotateXYZ(const real_t& azimuth,
-									const real_t& elevation,
-									const real_t& roll)
+                                    const real_t& elevation,
+                                    const real_t& roll)
 { glRotated(azimuth  *GEOM_DEG, 1.0,0.0,0.0);
   glRotated(elevation*GEOM_DEG, 0.0,1.0,0.0);
   glRotated(roll     *GEOM_DEG, 0.0,0.0,1.0); }
@@ -233,12 +233,12 @@ inline void glGeomScale(const PGL(Vector3)& v)
 
 /// glRotate with angle in degree for GEOM
 inline void glGeomRotate(const PGL(Vector3)& v,
-						 const real_t& angle)
+                         const real_t& angle)
 { glRotated(angle,v.x(),v.y(),v.z()); }
 
 /// glRotate with angle in radians for GEOM
 inline void glGeomRadRotate(const PGL(Vector3)& v,
-							const real_t& angle)
+                            const real_t& angle)
 { glRotated(angle*GEOM_DEG,v.x(),v.y(),v.z()); }
 
 
@@ -332,26 +332,26 @@ inline void glGeomGetLightDirection(GLenum light, PGL(Vector3)& v )
 
 /// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy)
+                         const real_t& vy)
 { glVertex2f(vx,vy);       }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz)
+                         const real_t& vy,
+                         const real_t& vz)
 { glVertex3f(vx,vy,vz);    }
 
 /// glVertex for GEOM
 inline void glGeomVertex(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz,
-						 const real_t& vw)
+                         const real_t& vy,
+                         const real_t& vz,
+                         const real_t& vw)
 { glVertex4f(vx,vy,vz,vw); }
 
 /// glNormal for GEOM
 inline void glGeomNormal(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz)
+                         const real_t& vy,
+                         const real_t& vz)
 { glNormal3f(vx,vy,vz);    }
 
 /// glTexCoord for GEOM
@@ -360,20 +360,20 @@ inline void glGeomTexCoord(const real_t& vx)
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						 const real_t& vy)
+                         const real_t& vy)
 { glTexCoord2f(vx,vy);       }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz)
+                         const real_t& vy,
+                         const real_t& vz)
 { glTexCoord3f(vx,vy,vz);    }
 
 /// glTexCoord for GEOM
 inline void glGeomTexCoord(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz,
-						 const real_t& vw)
+                         const real_t& vy,
+                         const real_t& vz,
+                         const real_t& vw)
 { glTexCoord4f(vx,vy,vz,vw); }
 
 
@@ -381,8 +381,8 @@ inline void glGeomTexCoord(const real_t& vx,
 
 /// glTranslate for GEOM
 inline void glGeomTranslate(const real_t& vx,
-							const real_t& vy,
-							const real_t& vz)
+                            const real_t& vy,
+                            const real_t& vz)
 { glTranslatef(vx,vy,vz); }
 
 /// glScale for GEOM
@@ -391,52 +391,52 @@ inline void glGeomScale(const real_t& v)
 
 /// glScale for GEOM
 inline void glGeomScale(const real_t& vx,
-						const real_t& vy,
-						const real_t& vz)
+                        const real_t& vy,
+                        const real_t& vz)
 { glScalef(vx,vy,vz); }
 
 /// glRotate for GEOM
 inline void glGeomRotate(const real_t& vx,
-						 const real_t& vy,
-						 const real_t& vz,
-						 const real_t& angle)
+                         const real_t& vy,
+                         const real_t& vz,
+                         const real_t& angle)
 { glRotatef(angle,vx,vy,vz); }
 
 /// glRotate for GEOM with angle in radians
 inline void glGeomRadRotate(const real_t& vx,
-							const real_t& vy,
-							const real_t& vz,
-							const real_t& angle)
+                            const real_t& vy,
+                            const real_t& vz,
+                            const real_t& angle)
 { glRotatef(angle*GEOM_DEG,vx,vy,vz); }
 
 /// gl command for EulerRotate around Z-axis(azimuth), then Y-axis(elevation), and X-axis(roll) with angles in degree for GEOM
 inline void glGeomEulerRotateZYX(const real_t& azimuth,
-							     const real_t& elevation,
-								 const real_t& roll)
+                                 const real_t& elevation,
+                                 const real_t& roll)
 { glRotatef(azimuth,   0.0,0.0,1.0);
   glRotatef(elevation, 0.0,1.0,0.0);
   glRotatef(roll,      1.0,0.0,0.0); }
 
 /// gl command for EulerRotate around Z-axis(azimuth), then Y-axis(elevation), and X-axis(roll) with angles in radians for GEOM
 inline void glGeomRadEulerRotateZYX(const real_t& azimuth,
-									const real_t& elevation,
-									const real_t& roll)
+                                    const real_t& elevation,
+                                    const real_t& roll)
 { glRotatef(azimuth  *GEOM_DEG, 0.0,0.0,1.0);
   glRotatef(elevation*GEOM_DEG, 0.0,1.0,0.0);
   glRotatef(roll     *GEOM_DEG, 1.0,0.0,0.0); }
 
 /// gl command for EulerRotate around X-axis(azimuth), then Y-axis(elevation), and Z-axis(roll) with angles in degree for GEOM
 inline void glGeomEulerRotateXYZ(const real_t& azimuth,
-							     const real_t& elevation,
-								 const real_t& roll)
+                                 const real_t& elevation,
+                                 const real_t& roll)
 { glRotatef(azimuth,   1.0,0.0,0.0);
   glRotatef(elevation, 0.0,1.0,0.0);
   glRotatef(roll,      0.0,0.0,1.0); }
 
 /// gl command for EulerRotate around X-axis(azimuth), then Y-axis(elevation), and Z-axis(roll) with angles in radians for GEOM
 inline void glGeomRadEulerRotateXYZ(const real_t& azimuth,
-									const real_t& elevation,
-									const real_t& roll)
+                                    const real_t& elevation,
+                                    const real_t& roll)
 { glRotatef(azimuth  *GEOM_DEG, 1.0,0.0,0.0);
   glRotatef(elevation*GEOM_DEG, 0.0,1.0,0.0);
   glRotatef(roll     *GEOM_DEG, 0.0,0.0,1.0); }
@@ -483,12 +483,12 @@ inline void glGeomScale(const PGL(Vector3)& v)
 
 /// glRotate with angle in degree for GEOM
 inline void glGeomRotate(const PGL(Vector3)& v,
-						 const real_t& angle)
+                         const real_t& angle)
 { glRotatef(angle,v.x(),v.y(),v.z()); }
 
 /// glRotate with angle in radians for GEOM
 inline void glGeomRadRotate(const PGL(Vector3)& v,
-							const real_t& angle)
+                            const real_t& angle)
 { glRotatef(angle*GEOM_DEG,v.x(),v.y(),v.z()); }
 
 
@@ -575,22 +575,22 @@ inline void glGeomFrustum(const PGL(Vector3)& LowerLeft,const PGL(Vector3)& Uppe
 
 /// Transformation of a Vector3 in GL coordinates into a Vector3 in GEOM coordinates.
 inline PGL(Vector3) gl2geom(const PGL(Vector3)& v){
-	return PGL(Vector3)(v.z(),v.x(),v.y());
+    return PGL(Vector3)(v.z(),v.x(),v.y());
 }
 
 /// Transformation of a Vector3 in GEOM coordinates into a Vector3 in GL coordinates.
 inline PGL(Vector3) geom2gl(const PGL(Vector3)& v){
-	return PGL(Vector3)(v.y(),v.z(),v.x());
+    return PGL(Vector3)(v.y(),v.z(),v.x());
 }
 
 /// Transformation of a Vector4 in GL coordinates into a Vector4 in GEOM coordinates.
 inline PGL(Vector4) gl2geom(const PGL(Vector4)& v){
-	return PGL(Vector4)(v.z(),v.x(),v.y(),v.w());
+    return PGL(Vector4)(v.z(),v.x(),v.y(),v.w());
 }
 
 /// Transformation of a Vector4 in GEOM coordinates into a Vector4 in GL coordinates.
 inline PGL(Vector4) geom2gl(const PGL(Vector4)& v){
-	return PGL(Vector4)(v.y(),v.z(),v.x(),v.w());
+    return PGL(Vector4)(v.y(),v.z(),v.x(),v.w());
 }
 
 #ifndef PGL_WITHOUT_QT

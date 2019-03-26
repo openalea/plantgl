@@ -4,7 +4,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -242,7 +242,7 @@ const bool
 ProfileTransformation::isKnotListToDefault() const{
     if(!__knotList)return true;
     uint_t _size = max((__scalingList == NULL || __scalingList->empty()?0:__scalingList->size()),
-					   (__orientationList == NULL ||__orientationList->empty()?0:__orientationList->size()));
+                       (__orientationList == NULL ||__orientationList->empty()?0:__orientationList->size()));
     if(__knotList->getAt(0) > GEOM_EPSILON )return false;
     for(uint_t _i = 1; _i < _size; _i++)
         if(fabs(__knotList->getAt(_i) - ((real_t)_i /(real_t)(_size - 1))) > GEOM_EPSILON ) return false;
@@ -292,14 +292,14 @@ bool ProfileTransformation::isValid( ) const{
     return true;
 }
 
-ProfileTransformationPtr 
+ProfileTransformationPtr
 ProfileTransformation::deepcopy(DeepCopier& copier) const
 {
-	ProfileTransformationPtr ptr = new ProfileTransformation(*this);
-	copier.copy_attribute(ptr->getScale());
-	copier.copy_attribute(ptr->getOrientation());
-	copier.copy_attribute(ptr->getKnotList());
-	return ptr;
+    ProfileTransformationPtr ptr = new ProfileTransformation(*this);
+    copier.copy_attribute(ptr->getScale());
+    copier.copy_attribute(ptr->getOrientation());
+    copier.copy_attribute(ptr->getKnotList());
+    return ptr;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -726,9 +726,9 @@ cout<<"-> interpol"<<endl;
            __evalPt2D->setAt( i, point );
            u+= step;
         }
-	    
+
         // __evalPt2D->setAt( __stride, p->getPointAt(u_end) );
-	}
+    }
 
     __fctList2D= Curve2DArrayPtr();
     __evalPt3D= Point3ArrayPtr();
@@ -811,23 +811,23 @@ cout<<"get2DCurve "<<i<<endl;
     }
   else
   {
-	  __fctList3D= CurveArrayPtr( new CurveArray(__stride+1) );
-	  Point3ArrayPtr pts;
-	  Point3Array::iterator itpBegin= allPts3D->begin();
-	  Point3Array::iterator itpEnd= itpBegin + n;
-	  for(uint_t i= 0; i <= __stride; i++ )
-	  {
-		  pts= Point3ArrayPtr(new Point3Array(itpBegin, itpEnd));
-		  Interpol local(pts, __knotList, __degree, 1 );
+      __fctList3D= CurveArrayPtr( new CurveArray(__stride+1) );
+      Point3ArrayPtr pts;
+      Point3Array::iterator itpBegin= allPts3D->begin();
+      Point3Array::iterator itpEnd= itpBegin + n;
+      for(uint_t i= 0; i <= __stride; i++ )
+      {
+          pts= Point3ArrayPtr(new Point3Array(itpBegin, itpEnd));
+          Interpol local(pts, __knotList, __degree, 1 );
 #ifdef DEBUG
-		  cout<<"get3DCurve "<<i<<endl;
+          cout<<"get3DCurve "<<i<<endl;
 #endif
-		  __fctList3D->getAt(i)= local.get3DCurve();
-		  if(itpEnd != allPts3D->end()){ itpBegin+= n; itpEnd+= n; }
-	  }
-	  __evalPt3D= Point3ArrayPtr(new Point3Array( __stride+1 ));
-	  __fctList2D= Curve2DArrayPtr();
-	  __evalPt2D= Point2ArrayPtr();
+          __fctList3D->getAt(i)= local.get3DCurve();
+          if(itpEnd != allPts3D->end()){ itpBegin+= n; itpEnd+= n; }
+      }
+      __evalPt3D= Point3ArrayPtr(new Point3Array( __stride+1 ));
+      __fctList2D= Curve2DArrayPtr();
+      __evalPt2D= Point2ArrayPtr();
   }
 
 #ifdef DEBUG
@@ -837,13 +837,13 @@ cout<<"<-"<<endl;
   return true;
 }
 
-ProfileInterpolationPtr 
+ProfileInterpolationPtr
 ProfileInterpolation::deepcopy(DeepCopier& copier) const
 {
-	ProfileInterpolationPtr ptr = new ProfileInterpolation(*this);
-	copier.copy_recursive_object_attribute(ptr->getProfileList());
-	copier.copy_attribute(ptr->getKnotList());
-	return ptr;
+    ProfileInterpolationPtr ptr = new ProfileInterpolation(*this);
+    copier.copy_recursive_object_attribute(ptr->getProfileList());
+    copier.copy_attribute(ptr->getKnotList());
+    return ptr;
 }
 
 

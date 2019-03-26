@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -62,7 +62,7 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 
 /* ----------------------------------------------------------------------- */
 
-class SG_API DeepCopier 
+class SG_API DeepCopier
 {
 
 public:
@@ -82,103 +82,103 @@ public:
   inline KeyType to_key(const RefCountObject * ptr) { return (size_t)ptr; }
 
   template<class T>
-  inline void set(const RefCountObject * source, 
-	              const RCPtr<T> target) 
+  inline void set(const RefCountObject * source,
+                  const RCPtr<T> target)
   { __map[to_key(source)] = RefCountObjectPtr(target);  }
 
   inline void set(const RefCountObject * source,
-	              RefCountObject * target) 
+                  RefCountObject * target)
   { __map[to_key(source)] = RefCountObjectPtr(target);  }
 
-  inline RefCountObjectPtr get(const RefCountObject * source) 
-  { 
-	  RCObjectMap::const_iterator it = __map.find(to_key(source));
-	  if(it != __map.end()) return it->second;
-	  else return RefCountObjectPtr(0);
+  inline RefCountObjectPtr get(const RefCountObject * source)
+  {
+      RCObjectMap::const_iterator it = __map.find(to_key(source));
+      if(it != __map.end()) return it->second;
+      else return RefCountObjectPtr(0);
   }
 
-  inline bool remove(const RefCountObject * source) 
-  { 
-	  RCObjectMap::iterator it = __map.find(to_key(source));
-	  if(it != __map.end()) { __map.erase(it); return true; }
-	  else return false;
+  inline bool remove(const RefCountObject * source)
+  {
+      RCObjectMap::iterator it = __map.find(to_key(source));
+      if(it != __map.end()) { __map.erase(it); return true; }
+      else return false;
   }
 
   template<class T>
   SceneObjectPtr copy(const T * obj){
-	  if(obj == NULL)return SceneObjectPtr();
-	  RCObjectMap::const_iterator it = __map.find(to_key(obj));
-	  if(it != __map.end()) return dynamic_pointer_cast<SceneObject>(it->second);
-	  else{
-		  SceneObjectPtr newobj = obj->copy(*this);
-	      if(!obj->unique())set(obj,newobj);
-		  return newobj;
-	  }
+      if(obj == NULL)return SceneObjectPtr();
+      RCObjectMap::const_iterator it = __map.find(to_key(obj));
+      if(it != __map.end()) return dynamic_pointer_cast<SceneObject>(it->second);
+      else{
+          SceneObjectPtr newobj = obj->copy(*this);
+          if(!obj->unique())set(obj,newobj);
+          return newobj;
+      }
   }
 
   template<class T>
   void copy_attribute(RCPtr<T>& att) {
-	  att = get_attribute_copy(att);
+      att = get_attribute_copy(att);
   }
 
   template<class T>
   void copy_recursive_attribute(RCPtr<T>& att) {
-	  att = get_recursive_copy(att);
+      att = get_recursive_copy(att);
   }
 
   template<class T>
   void copy_object_attribute(RCPtr<T>& att) {
-	  if(!is_null_ptr(att)){
-		att = dynamic_pointer_cast<T>(att->deepcopy(*this));
-	  }
+      if(!is_null_ptr(att)){
+        att = dynamic_pointer_cast<T>(att->deepcopy(*this));
+      }
   }
 
   template<class T>
   void copy_recursive_object_attribute(RCPtr<T>& att) {
-	  att = get_recursive_object_copy(att);
+      att = get_recursive_object_copy(att);
   }
 
   template<class T>
   RCPtr<T> get_attribute_copy(const RCPtr<T>& att) {
-	  if(is_null_ptr(att))return att;
-	  if(att->unique()) return RCPtr<T>(new T(*att));
-	  RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
-	  if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
-	  else {
-		T * ptr = new T(*att);
-		set(att.get(),ptr);
-		return RCPtr<T>(ptr);
-	  }
+      if(is_null_ptr(att))return att;
+      if(att->unique()) return RCPtr<T>(new T(*att));
+      RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
+      if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
+      else {
+        T * ptr = new T(*att);
+        set(att.get(),ptr);
+        return RCPtr<T>(ptr);
+      }
   }
 
   template<class T>
-  RCPtr<T> get_recursive_copy(const RCPtr<T>& att) {	  
-	  typedef typename T::iterator TIterator;
-	  if(is_null_ptr(att))return att;
-	  if(!att->unique()) {
-		RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
-		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
-	  }
-	  T * ptr = new T(*att);
-	  for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
-		   { copy_attribute(*itGeom); }
-	  if(!att->unique())set(att.get(),ptr);
-	  return RCPtr<T>(ptr);
+  RCPtr<T> get_recursive_copy(const RCPtr<T>& att) {
+      typedef typename T::iterator TIterator;
+      if(is_null_ptr(att))return att;
+      if(!att->unique()) {
+        RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
+        if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
+      }
+      T * ptr = new T(*att);
+      for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
+           { copy_attribute(*itGeom); }
+      if(!att->unique())set(att.get(),ptr);
+      return RCPtr<T>(ptr);
   }
 
   template<class T>
-  RCPtr<T> get_recursive_object_copy(const RCPtr<T>& att) {	  
-	  typedef typename T::iterator TIterator;
-	  if(is_null_ptr(att))return att;
-	  if(!att->unique()){
-		RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
-		if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
-	  }
-	  T * ptr = new T(*att);
-	  for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
-		   { copy_object_attribute(*itGeom); }
-	  if(!att->unique())set(att.get(),ptr);
-	  return RCPtr<T>(ptr);
+  RCPtr<T> get_recursive_object_copy(const RCPtr<T>& att) {
+      typedef typename T::iterator TIterator;
+      if(is_null_ptr(att))return att;
+      if(!att->unique()){
+        RCObjectMap::const_iterator it = __map.find(to_key(att.get()));
+        if(it != __map.end()) return dynamic_pointer_cast<T>(it->second);
+      }
+      T * ptr = new T(*att);
+      for(TIterator itGeom = att->begin();itGeom != att->end(); ++itGeom)
+           { copy_object_attribute(*itGeom); }
+      if(!att->unique())set(att.get(),ptr);
+      return RCPtr<T>(ptr);
   }
 
 protected:

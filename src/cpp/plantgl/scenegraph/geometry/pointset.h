@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -70,11 +70,11 @@ public:
 
   static const uchar_t DEFAULT_WIDTH;
 
-  /// A structure which helps to build a PointSet when parsing. 
-  struct SG_API Builder : public ExplicitModel::Builder { 
+  /// A structure which helps to build a PointSet when parsing.
+  struct SG_API Builder : public ExplicitModel::Builder {
 
     /// A pointer to the \b Width field.
- 	uchar_t * Width;
+    uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -96,12 +96,12 @@ public:
   /** Constructs a PointSet bounding the set of points \e points.
       \pre
       - \e points must contain at leat 3 points.
-    
+
       \postt
       - \e self is valid. */
-  PointSet( const Point3ArrayPtr& points, 
-	        const Color4ArrayPtr& colors = Color4ArrayPtr(),
-			uchar_t width = DEFAULT_WIDTH);
+  PointSet( const Point3ArrayPtr& points,
+            const Color4ArrayPtr& colors = Color4ArrayPtr(),
+            uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
   virtual ~PointSet( );
@@ -161,14 +161,14 @@ class SG_API PointSet2D : public PlanarModel
 public:
 
 
-  /// A structure which helps to build a PointSet when parsing. 
-  struct SG_API Builder : public PlanarModel::Builder { 
+  /// A structure which helps to build a PointSet when parsing.
+  struct SG_API Builder : public PlanarModel::Builder {
 
     /// A pointer to the \b PointList field.
     Point2ArrayPtr * PointList;
 
     /// A pointer to the \b Width field.
- 	uchar_t * Width;
+    uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -189,7 +189,7 @@ public:
 
   /** Constructs a PointSet2D bounding the set of points \e points.
       \pre
-      - \e points must contain at leat 3 points.    
+      - \e points must contain at leat 3 points.
       \post
       - \e self is valid. */
   PointSet2D( const Point2ArrayPtr& points, uchar_t width = PointSet::DEFAULT_WIDTH );
@@ -211,12 +211,12 @@ public:
 
   /// Returns an iterator at the beginning of \b PointList.
 /*  Point2Array::const_iterator getPointListBegin( ) const {
-     return __pointList->begin();   
+     return __pointList->begin();
   }
 
   /// Returns an iterator at the end of \b PointList.
   Point2Array::const_iterator getPointListEnd( ) const {
-     return __pointList->end();   
+     return __pointList->end();
   }
 */
   /// Returns \b PointList value.
@@ -248,7 +248,7 @@ public:
   Vector2 findClosest(const Vector2& point, uint_t * index = 0) const;
 
 protected:
-  
+
   /// The \b PointList field.
   Point2ArrayPtr __pointList;
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -30,7 +30,7 @@
  */
 
 
- 
+
 
 #include "mesh.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
@@ -74,12 +74,12 @@ Mesh::Builder::~Builder( ) {
 }
 
 
-void 
+void
 Mesh::Builder::destroy( ) {
   MeshDestroy( );
 }
 
-void 
+void
 Mesh::Builder::MeshDestroy( ) {
   EMDestroy();
   if (CCW) delete CCW;
@@ -91,32 +91,32 @@ Mesh::Builder::MeshDestroy( ) {
   if (Skeleton) delete Skeleton;
 }
 
-bool 
+bool
 Mesh::Builder::isValid( ) const{
   return MeshValid( );
 }
 
-bool 
+bool
 Mesh::Builder::MeshValid( ) const{
   if(!EMValid())return false;
-  
+
   if(NormalList){
     uint_t _normalListSize = (*NormalList)->size();
-	if(NormalPerVertex && *NormalPerVertex &&_normalListSize != (*PointList)->size()){
+    if(NormalPerVertex && *NormalPerVertex &&_normalListSize != (*PointList)->size()){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Mesh","Normals","Number of normals must be compatible to PointList.");
-	return false;
-	}
+    return false;
+    }
 
     for (uint_t _i = 0; _i < _normalListSize; _i++){
       if (!(*NormalList)->getAt(_i).isValid()) {
-	pglErrorEx
-	  (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a valid normal.");
-	return false;
+    pglErrorEx
+      (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a valid normal.");
+    return false;
       }
       else if (!(*NormalList)->getAt(_i).isNormalized() ){
-	pglErrorEx
-	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a normalized normal.");
-	return false;
+    pglErrorEx
+      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","NormalList",number(_i+1).c_str(),"Must be a normalized normal.");
+    return false;
       }
     }
   }
@@ -124,9 +124,9 @@ Mesh::Builder::MeshValid( ) const{
     uint_t _texCoordListSize = (*TexCoordList)->size();
     for (uint_t _i = 0; _i < _texCoordListSize; _i++){
       if (!(*TexCoordList)->getAt(_i).isValid()) {
-	pglErrorEx
-	  (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","TexCoordList",number(_i+1).c_str(),"Must be a valid texture coordinates.");
-	return false;
+    pglErrorEx
+      (PGLERRORMSG(INVALID_FIELD_ITH_VALUE_ssss),"Mesh","TexCoordList",number(_i+1).c_str(),"Must be a valid texture coordinates.");
+    return false;
       }
 
     }
@@ -156,11 +156,11 @@ Mesh::Mesh() :
 {
 }
 
-Mesh::Mesh( const Point3ArrayPtr& points, 
-		   bool normalPerVertex,
-		   bool ccw,
-		   bool solid,
-		   const PolylinePtr& skeleton ) :
+Mesh::Mesh( const Point3ArrayPtr& points,
+           bool normalPerVertex,
+           bool ccw,
+           bool solid,
+           const PolylinePtr& skeleton ) :
   ExplicitModel(points),
   __ccw(ccw),
   __solid(solid),
@@ -173,19 +173,19 @@ Mesh::Mesh( const Point3ArrayPtr& points,
 }
 
 Mesh::Mesh( const Point3ArrayPtr& points,
-		    const Point3ArrayPtr& normals ,
-			const Color4ArrayPtr& colors ,
-			const Point2ArrayPtr& texCoord ,
-			bool normalPerVertex,
-			bool colorPerVertex,
-			bool ccw,
-			bool solid ,
-			const PolylinePtr& skeleton ) :
+            const Point3ArrayPtr& normals ,
+            const Color4ArrayPtr& colors ,
+            const Point2ArrayPtr& texCoord ,
+            bool normalPerVertex,
+            bool colorPerVertex,
+            bool ccw,
+            bool solid ,
+            const PolylinePtr& skeleton ) :
     ExplicitModel(points, colors),
     __ccw(ccw),
     __solid(solid),
     __normalPerVertex(normalPerVertex),
-	__colorPerVertex(colorPerVertex),
+    __colorPerVertex(colorPerVertex),
     __normalList(normals),
     __texCoordList(texCoord),
     __skeleton(skeleton)
@@ -195,68 +195,68 @@ Mesh::Mesh( const Point3ArrayPtr& points,
 Mesh::~Mesh( ) {
 }
 
-const bool 
+const bool
 Mesh::getCCW( ) const {
   return __ccw;
 }
 
-bool& 
+bool&
 Mesh::getCCW( ) {
   return __ccw;
 }
 
-Point3ArrayPtr& 
+Point3ArrayPtr&
 Mesh::getNormalList( ) {
   return __normalList;
 }
 
-const Point3ArrayPtr& 
+const Point3ArrayPtr&
 Mesh::getNormalList( ) const {
   return __normalList;
 }
 
-Point2ArrayPtr& 
+Point2ArrayPtr&
 Mesh::getTexCoordList( ) {
   return __texCoordList;
 }
 
-const Point2ArrayPtr& 
+const Point2ArrayPtr&
 Mesh::getTexCoordList( ) const {
   return __texCoordList;
 }
 
 
-const PolylinePtr& 
+const PolylinePtr&
 Mesh::getSkeleton( ) const {
   return __skeleton;
 }
 
-PolylinePtr& 
+PolylinePtr&
 Mesh::getSkeleton( ) {
   return __skeleton;
 }
 
-const bool 
+const bool
 Mesh::getSolid( ) const {
   return __solid;
 }
 
-bool& 
+bool&
 Mesh::getSolid( ) {
   return __solid;
 }
 
-bool 
+bool
 Mesh::isACurve( ) const {
   return false;
 }
 
-bool 
+bool
 Mesh::isASurface( ) const {
   return true;
 }
 
-bool 
+bool
 Mesh::isAVolume( ) const {
   return __solid;
 }
@@ -266,7 +266,7 @@ Mesh::isCCWToDefault( ) const {
   return __ccw == DEFAULT_CCW;
 }
 
-bool 
+bool
 Mesh::isSkeletonToDefault( ) const {
   return __skeleton == DEFAULT_SKELETON;
 }
@@ -283,34 +283,34 @@ Mesh::isTexCoordListToDefault() const {
 
 /// Returns whether \b ColorPerVertex is set to its default value.
 bool Mesh::isColorPerVertexToDefault() const{
-	return __colorPerVertex == DEFAULT_COLORPERVERTEX;
+    return __colorPerVertex == DEFAULT_COLORPERVERTEX;
 }
 
 /// Returns whether \b NormalPerVertex is set to its default value.
 bool Mesh::isNormalPerVertexToDefault() const{
-	return __normalPerVertex == DEFAULT_NORMALPERVERTEX;
+    return __normalPerVertex == DEFAULT_NORMALPERVERTEX;
 }
 
 bool
 Mesh::isNormalListToDefault() const {
   if(!__normalList)return true;
   else if(getNormalPerVertex()){
-	Point3ArrayPtr nmls = computeNormalPerVertex();
-	return (*nmls == *__normalList);
+    Point3ArrayPtr nmls = computeNormalPerVertex();
+    return (*nmls == *__normalList);
   }
   else {
-	Point3ArrayPtr nmls = computeNormalPerFace();
-	return (*nmls == *__normalList);
+    Point3ArrayPtr nmls = computeNormalPerFace();
+    return (*nmls == *__normalList);
   }
 }
 
 void
 Mesh::computeNormalList(bool pervertex){
-	__normalPerVertex = pervertex;
+    __normalPerVertex = pervertex;
   if(pervertex)
-	__normalList = computeNormalPerVertex();
+    __normalList = computeNormalPerVertex();
   else
-	__normalList = computeNormalPerFace();
+    __normalList = computeNormalPerFace();
 }
 
 bool
@@ -319,9 +319,9 @@ Mesh::hasTexCoordList( ) const {
 }
 
 /// Returns the center of the \b i-th face.
-Vector3 
-Mesh::getFaceCenter( uint_t i ) const 
-{ 
+Vector3
+Mesh::getFaceCenter( uint_t i ) const
+{
     uint_t nbpoints = getFaceSize(i);
     Vector3 center;
     for(uint_t j = 0; j < nbpoints; ++j)
@@ -330,7 +330,7 @@ Mesh::getFaceCenter( uint_t i ) const
 }
 
 
-Point3ArrayPtr 
+Point3ArrayPtr
 Mesh::computeNormalPerVertex() const {
     std::vector<bool> hasNormal(__pointList->size(),false);
     Point3ArrayPtr normalList(new Point3Array(__pointList->size()));
@@ -351,28 +351,28 @@ Mesh::computeNormalPerVertex() const {
     }
     for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
     {
-	    _it->normalize();
+        _it->normalize();
         if (fabs(norm(*_it) - 1.0) > GEOM_EPSILON) *_it = DEFAULT_NORMAL_VALUE;
     }
 
     return normalList;
 }
 
-Point3ArrayPtr 
+Point3ArrayPtr
 Mesh::computeNormalPerFace() const {
-    Point3ArrayPtr normalList(new Point3Array(getIndexListSize())); 
-    for(uint_t j=0; j < getIndexListSize(); j++){ 
-	    normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0), 
-			      getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0))); 
+    Point3ArrayPtr normalList(new Point3Array(getIndexListSize()));
+    for(uint_t j=0; j < getIndexListSize(); j++){
+        normalList->setAt(j,cross(getFacePointAt(j,__ccw ? 1 : 2) - getFacePointAt(j,0),
+                  getFacePointAt(j,__ccw ? 2 : 1) - getFacePointAt(j,0)));
     }
     bool hasinvalid = false;
     for(Point3Array::iterator _it=normalList->begin();_it!=normalList->end();_it++)
     {
-	    _it->normalize();
+        _it->normalize();
         if (fabs(norm(*_it) - 1.0) > GEOM_EPSILON) *_it = DEFAULT_NORMAL_VALUE;
     }
 
-	return normalList;
+    return normalList;
 }
 
 

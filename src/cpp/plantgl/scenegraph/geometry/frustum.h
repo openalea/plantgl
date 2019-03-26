@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -79,7 +79,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -87,16 +87,16 @@ public:
 
   /// Defautl constructor.
   Frustum( const real_t& radius = DEFAULT_RADIUS,
-	   const real_t& height = DEFAULT_HEIGHT,
-	   const real_t& taper = DEFAULT_TAPER,
-	   bool solid = DEFAULT_SOLID,
-	   uchar_t Slices = DEFAULT_SLICES );
-  
+       const real_t& height = DEFAULT_HEIGHT,
+       const real_t& taper = DEFAULT_TAPER,
+       bool solid = DEFAULT_SOLID,
+       uchar_t Slices = DEFAULT_SLICES );
+
   /// Destructor
   virtual ~Frustum( ) ;
 
   PGL_OBJECT(Frustum)
-  
+
   /// Returns \b Taper value.
   const real_t& getTaper( ) const ;
 

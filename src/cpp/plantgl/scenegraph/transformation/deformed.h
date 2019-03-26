@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -52,7 +52,7 @@ typedef RCPtr<Primitive> PrimitivePtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Deformation
     \brief Abstract base class for axial deformations.
 */
@@ -67,7 +67,7 @@ public:
 
   /// Destructor.
   virtual ~Deformation( );
-  
+
 };
 
 /// Deformation Pointer
@@ -77,7 +77,7 @@ typedef RCPtr<Deformation> DeformationPtr;
 /* ----------------------------------------------------------------------- */
 
 
-/** 
+/**
     \class Deformed
     \brief A deformed
 */
@@ -86,7 +86,7 @@ typedef RCPtr<Deformation> DeformationPtr;
 class SG_API Deformed : public Transformed
 {
 
-public: 
+public:
 
    /// A structure which helps to build an object of type of Transformed.
   struct SG_API Builder : public Transformed::Builder {
@@ -141,7 +141,7 @@ protected:
 
 /// Deformed Pointer
 typedef RCPtr<Deformed> DeformedPtr;
- 
+
 
 /* ----------------------------------------------------------------------- */
 

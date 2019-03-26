@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -83,18 +83,18 @@ bool BaseOrientation::Builder::isValid( ) const
     if(*Primary != Vector3::ORIGIN)Primary->normalize();
     else {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Primary","Must be normalized.");
-	  return false;
-	  }
-	}
+      return false;
+      }
+    }
 
   // Secondary field
   if( Secondary && (! Secondary->isNormalized()) )
     {
     if(*Secondary != Vector3::ORIGIN)Secondary->normalize();
     else {
-	  pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be normalized.");
-	  return false;
-	  }
+      pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Oriented","Secondary","Must be normalized.");
+      return false;
+      }
     }
 
   Vector3 s= Secondary ? *Secondary : Oriented::DEFAULT_SECONDARY;
@@ -134,9 +134,9 @@ bool BaseOrientation::Builder::isValid( ) const
 /* ----------------------------------------------------------------------- */
 
 BaseOrientation::BaseOrientation( const Vector3& primary,
-		 const Vector3& secondary ) :
+         const Vector3& secondary ) :
   OrthonormalBasis3D(Matrix3( primary, secondary,
-			      direction(cross(primary,secondary)))),
+                  direction(cross(primary,secondary)))),
   __primary(primary),
   __secondary(secondary){
 }

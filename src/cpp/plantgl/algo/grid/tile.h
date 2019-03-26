@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -52,7 +52,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Tile
     \brief Base class for Multiscale Space Tile like Octree.\n
     - This class contains basic information about type of node in the hierarchy.\n
@@ -73,7 +73,7 @@ PGL_BEGIN_NAMESPACE
 /*! \var Tile::TileType Tile::Undetermined
    Value for Undetermined Tile
 */
-    
+
 
 /* ----------------------------------------------------------------------- */
 
@@ -81,78 +81,78 @@ class ALGO_API Tile {
 
     public :
 
-	
+
   enum TileType { Empty , Filled, Undetermined };
-   
+
 
     /// Default constructor.
-    Tile(Tile * Complex = NULL, 
-	 const unsigned char Scale = 0, 
-	 const TileType Type = Empty,
-	 const unsigned char Num = 0);
-	
+    Tile(Tile * Complex = NULL,
+     const unsigned char Scale = 0,
+     const TileType Type = Empty,
+     const unsigned char Num = 0);
+
     /// Destructor
     virtual ~Tile();
-    
+
     /// Validity check.
     virtual bool isValid() const = 0;
 
     /// Return type of \e self.
     const TileType& getType() const{
-	return __type;
+    return __type;
     }
 
     /// Return type of \e self.
     TileType& getType() {
-	return __type;
+    return __type;
     }
 
     /// Return Name of \e self.
-	std::string getName() const;
+    std::string getName() const;
 
     /// Return id of \e self.
     const size_t getId() const {
-	return (size_t)this;
+    return (size_t)this;
     }
 
     /// Return num of \e self.
     const unsigned char& getNum() const {
-	return __num;
+    return __num;
     }
 
     /// Return num of \e self.
     unsigned char& getNum(){
-	return __num;
+    return __num;
     }
 
     /// Return scale of \e self.
     const unsigned char& getScale() const {
-	return __scale;
+    return __scale;
     }
 
     /// Return scale of \e self.
     unsigned char& getScale(){
-	return __scale;
+    return __scale;
     }
 
     /// Return pointee to self's \e father.
     inline const Tile * getComplex() const {
-	return __Complex;
+    return __Complex;
     }
 
     /// Return pointee to self's \e father.
     inline Tile * getComplex() {
-	return __Complex;
+    return __Complex;
     }
 
     /// Return whether \e self is decomposed.
     virtual bool isDecomposed() const = 0;
-    
+
     /// Return the number of components of \e self.
     virtual uchar_t getComponentsSize() const = 0;
-    
+
     protected :
-    
+
     /// Identifiant of \e self.
     unsigned char __num;
 

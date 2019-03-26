@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -76,10 +76,10 @@ public:
 
   /// Defautl constructor.
   Cylinder( const real_t& radius = DEFAULT_RADIUS,
-	    const real_t& height = DEFAULT_HEIGHT,
-	    bool solid = DEFAULT_SOLID,
-	    uchar_t slices = DEFAULT_SLICES );
-  
+        const real_t& height = DEFAULT_HEIGHT,
+        bool solid = DEFAULT_SOLID,
+        uchar_t slices = DEFAULT_SLICES );
+
   /// Destructor
   virtual ~Cylinder( ) ;
 

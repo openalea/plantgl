@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -55,7 +55,7 @@ BezierCurve::Builder::Builder( ) :
     CtrlPointList(0),
     Degree(0),
     Stride(0),
-	Width(0){
+    Width(0){
 }
 
 
@@ -70,8 +70,8 @@ SceneObjectPtr BezierCurve::Builder::build( ) const {
         if(!Degree)cout << "Degree value assign to " << ((*CtrlPointList)->size() - 1) << endl;
 #endif
         return SceneObjectPtr(new BezierCurve(*CtrlPointList,
-			                                  (Stride ? *Stride : DEFAULT_STRIDE),
-											  (Width ? *Width : DEFAULT_WIDTH)));
+                                              (Stride ? *Stride : DEFAULT_STRIDE),
+                                              (Width ? *Width : DEFAULT_WIDTH)));
     }
     return SceneObjectPtr();
 }
@@ -153,7 +153,7 @@ BezierCurve::BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride, uchar
     ParametricModel(), LineicModel(width),
     __ctrlPointList(),
     __stride(stride){
-	if (ctrlPoints) __ctrlPointList = Point4ArrayPtr(new Point4Array(*ctrlPoints,1));
+    if (ctrlPoints) __ctrlPointList = Point4ArrayPtr(new Point4Array(*ctrlPoints,1));
     GEOM_ASSERT(isValid());
 }
 
@@ -327,8 +327,8 @@ BezierCurve2D::Builder::~Builder( ) {
 SceneObjectPtr BezierCurve2D::Builder::build( ) const {
     if (isValid()){
         return SceneObjectPtr(new BezierCurve2D(*CtrlPointList,
-												(Stride ? *Stride : BezierCurve::DEFAULT_STRIDE),
-												(Width ? *Width : DEFAULT_WIDTH)));
+                                                (Stride ? *Stride : BezierCurve::DEFAULT_STRIDE),
+                                                (Width ? *Width : DEFAULT_WIDTH)));
     }
     return SceneObjectPtr();
 }
@@ -399,7 +399,7 @@ BezierCurve2D::BezierCurve2D( const Point2ArrayPtr& ctrlPoints, uint_t stride, u
     Curve2D(width),
     __ctrlPointList(),
     __stride(stride){
-	if (ctrlPoints) __ctrlPointList = Point3ArrayPtr(new Point3Array(*ctrlPoints,1));
+    if (ctrlPoints) __ctrlPointList = Point3ArrayPtr(new Point3Array(*ctrlPoints,1));
     GEOM_ASSERT(isValid());
 }
 
@@ -532,7 +532,7 @@ Vector2 BezierCurve2D::getNormalAt(real_t u) const{
     else _normal2 = _normal.project();
 
     Vector3 nml = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
-	return Vector2(nml[0],nml[1]);
+    return Vector2(nml[0],nml[1]);
 }
 
 /* ----------------------------------------------------------------------- */

@@ -55,17 +55,17 @@ int getPGLRevision(){
 int getPGLSvnRevision(){
   std::string svnrev = PGL_SVNREVISION;
   if (svnrev.size() > 13){
-	  svnrev = svnrev.substr(11,svnrev.size()-13);
-	  return atoi(svnrev.c_str());
+      svnrev = svnrev.substr(11,svnrev.size()-13);
+      return atoi(svnrev.c_str());
   }
   return 0;
 }
 
-std::string getPGLVersionString(){ 
+std::string getPGLVersionString(){
   std::string version = number((PGL_VERSION & 0xff0000) >> 16)+'.'+number((PGL_VERSION & 0x00ff00) >> 8)+'.'+number(PGL_VERSION & 0x0000ff);
   std::string svnrev = PGL_SVNREVISION;
   if (svnrev.size() > 13)
-	  version += "-r"+svnrev.substr(11,svnrev.size()-13);
+      version += "-r"+svnrev.substr(11,svnrev.size()-13);
   return version;
 }
 
@@ -76,30 +76,30 @@ std::string getPGLRevisionString() { return PGL_SVNREVISION; }
 #define ADD_EXTENSION(EXT) res.push_back(std::string(#EXT));
 
 std::vector<std::string> __getPGLSupportedExtensions() {
-	std::vector<std::string> res;
+    std::vector<std::string> res;
 #ifdef PGL_USE_DOUBLE
-	ADD_EXTENSION(DOUBLE)
+    ADD_EXTENSION(DOUBLE)
 #endif
 #ifdef USE_GLUT
-	ADD_EXTENSION(GLUT)
+    ADD_EXTENSION(GLUT)
 #endif
 #ifdef QT_THREAD_SUPPORT
-	ADD_EXTENSION(THREAD)
+    ADD_EXTENSION(THREAD)
 #endif
 #ifndef NO_NAMESPACE
-	ADD_EXTENSION(NAMESPACE)
+    ADD_EXTENSION(NAMESPACE)
 #endif
 #ifdef USING_UNORDERED_MAP
-	ADD_EXTENSION(USING_UNORDERED_MAP)
+    ADD_EXTENSION(USING_UNORDERED_MAP)
 #endif
 #ifdef WITH_CGAL
-	ADD_EXTENSION(CGAL)
+    ADD_EXTENSION(CGAL)
 #endif
 #ifdef MAINTAIN_PYTHON_OBJECT_ID
-	ADD_EXTENSION(MAINTAIN_PYTHON_OBJECT_ID)
+    ADD_EXTENSION(MAINTAIN_PYTHON_OBJECT_ID)
 #endif
 #ifdef WITH_ANN
-	ADD_EXTENSION(ANN)
+    ADD_EXTENSION(ANN)
 #endif
 #ifdef WITH_LAPACK
     ADD_EXTENSION(LAPACK)
@@ -121,10 +121,10 @@ std::vector<std::string> PGL_EXTENSIONS = __getPGLSupportedExtensions();
 const std::vector<std::string>& get_pgl_supported_extensions() { return PGL_EXTENSIONS; }
 
 bool pgl_support_extension(const std::string& ext) {
-	for(std::vector<std::string>::const_iterator it = PGL_EXTENSIONS.begin();
-		it != PGL_EXTENSIONS.end(); ++it)
-		if (*it == ext) return true;
-	return false;
+    for(std::vector<std::string>::const_iterator it = PGL_EXTENSIONS.begin();
+        it != PGL_EXTENSIONS.end(); ++it)
+        if (*it == ext) return true;
+    return false;
 }
 
 #ifndef PGL_CORE_WITHOUT_QT

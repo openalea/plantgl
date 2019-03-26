@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -85,7 +85,7 @@ public:
   bool apply( Action& action ) {
       typedef typename ObjectArray< T >::const_iterator const_iterator;
       for (const_iterator _i = this->begin(); _i != this->end(); _i++)
-	  (*_i)->apply(action);
+           (*_i)->apply(action);
       return true;
   }
 
@@ -101,4 +101,3 @@ PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 #endif
-

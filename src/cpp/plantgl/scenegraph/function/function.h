@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon
  *
@@ -47,7 +47,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 class QuantisedFunction;
-typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr; 
+typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr;
 
 
 /**

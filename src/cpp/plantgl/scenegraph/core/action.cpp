@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -69,7 +69,7 @@ bool Action::process(Shape * Shape){
 bool Action::process(Inline * Inline){
     GEOM_ASSERT(Inline);
     if(Inline->getScene())
-	return Inline->getScene()->applyGeometryFirst(*this);
+    return Inline->getScene()->applyGeometryFirst(*this);
     return false;
 }
 

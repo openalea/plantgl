@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -60,7 +60,7 @@ typedef RCPtr<GeometryArray> GeometryArrayPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Group
     \brief A object group
 */
@@ -92,7 +92,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -151,20 +151,20 @@ public:
   virtual bool isValid( ) const;
 
   virtual bool hasDynamicRendering() const;
-  
+
 protected:
 
   /// The \b GeometryList field.
   GeometryArrayPtr __geometryList;
 
   /// The \b Skeleton field.
-  PolylinePtr __skeleton; 
+  PolylinePtr __skeleton;
 
 };
 
 /// Group Pointer
 typedef RCPtr<Group> GroupPtr;
- 
+
 
 /* ----------------------------------------------------------------------- */
 

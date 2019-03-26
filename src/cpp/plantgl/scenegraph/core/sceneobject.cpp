@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -90,11 +90,11 @@ SceneObject::isNamed( ) const {
 
 /// Deep copy of \e this.
 SceneObjectPtr SceneObject::deepcopy() const {
-	DeepCopier map;
-	return deepcopy(map);
+    DeepCopier map;
+    return deepcopy(map);
 }
 
-SceneObjectPtr SceneObject::deepcopy(DeepCopier& objmap) const 
+SceneObjectPtr SceneObject::deepcopy(DeepCopier& objmap) const
 {
   return objmap.copy(this);
 }

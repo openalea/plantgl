@@ -37,7 +37,6 @@
 #include "../base/discretizer.h"
 
 
-// #define OCTREE_FACE
 // #define CPL_DEBUG
 
 #include "../base/tesselator.h"
@@ -143,7 +142,7 @@ void Octree::build1()
 
     OctreeNode * node;
 
-    OctreeNode * Complex;
+    OctreeNode * _complex;
     queue<OctreeNode *> _myQueue;
     _myQueue.push(&__root);
     __root.getGeometry() = __scene;
@@ -155,16 +154,16 @@ void Octree::build1()
     t.start();
 
     while(!_myQueue.empty()){
-        Complex = _myQueue.front();
+        _complex = _myQueue.front();
 
-        if(Complex->getType() == Tile::Undetermined && Complex->getScale() < __maxscale){
-          if(Complex->decompose() !=NULL){
+        if(_complex->getType() == Tile::Undetermined && _complex->getScale() < __maxscale){
+          if(_complex->decompose() !=NULL){
             count+=800.0;
 
-            ScenePtr s(Complex->getGeometry());
+            ScenePtr s(_complex->getGeometry());
 
             for(unsigned char i = 0 ; i <  8 ; i++){
-                node = Complex->getComponent(i);
+                node = _complex->getComponent(i);
                 node->setComponents(0);
                 ScenePtr n(new Scene());
                 intersection.setVoxel(node);
@@ -215,7 +214,7 @@ void Octree::build1()
 void Octree::build3()
 /////////////////////////////////////////////////////////////////////////////
 {
-    /** A first implementation of the triangle based octree sorting */      
+    /** A first implementation of the triangle based octree sorting */
     Tesselator discretizer;
     BBoxComputer bboxcomputer(discretizer);
     VoxelIntersection intersection(bboxcomputer);
@@ -235,7 +234,7 @@ void Octree::build3()
 
     OctreeNode * node;
 
-    OctreeNode * Complex;
+    OctreeNode * _complex;
     queue<OctreeNode *> _myQueue;
     _myQueue.push(&__root);
     __root.getGeometry() = __scene;
@@ -247,16 +246,16 @@ void Octree::build3()
     t.start();
 
     while(!_myQueue.empty()){
-        Complex = _myQueue.front();
+        _complex = _myQueue.front();
 
-        if(Complex->getType() == Tile::Undetermined && Complex->getScale() < __maxscale){
-          if(Complex->decompose() !=NULL){
+        if(_complex->getType() == Tile::Undetermined && _complex->getScale() < __maxscale){
+          if(_complex->decompose() !=NULL){
             count+=800.0;
 
-            ScenePtr s(Complex->getGeometry());
+            ScenePtr s(_complex->getGeometry());
 
             for(unsigned char i = 0 ; i <  8 ; i++){
-                node = Complex->getComponent(i);
+                node = _complex->getComponent(i);
                 node->setComponents(0);
                 ScenePtr n(new Scene());
                 Scene::iterator _it;
@@ -272,7 +271,7 @@ void Octree::build3()
                       nb_triangles+= triangles->size();
                       TriangleSetPtr tri(new TriangleSet( ts->getPointList(),
                                                           triangles,
-														  ts->getNormalPerVertex(),
+                                                          ts->getNormalPerVertex(),
                                                           ts->getCCW(),
                                                           ts->getSolid(),
                                                           ts->getSkeleton()));
@@ -330,10 +329,10 @@ void Octree::build3()
 void Octree::build2()
 /////////////////////////////////////////////////////////////////////////////
 {
-    /** Implementation of the triangle based octree sorting 
+    /** Implementation of the triangle based octree sorting
         with max number of triangles per voxel condition used
-        and fast overestimating marking of intercepted voxel 
-        based on triangle bounding box */      
+        and fast overestimating marking of intercepted voxel
+        based on triangle bounding box */
     Tesselator discretizer;
 
     BBoxComputer bboxcomputer(discretizer);
@@ -356,7 +355,7 @@ void Octree::build2()
     __scene->applyGeometryOnly(discretizer);
 
     OctreeNode * node;
-    OctreeNode * Complex;
+    OctreeNode * _complex;
 
     queue<OctreeNode *> _myQueue;
 
@@ -369,15 +368,15 @@ void Octree::build2()
     while(!_myQueue.empty())
       {
       max_count2+= 8;
-      Complex = _myQueue.front();
+      _complex = _myQueue.front();
       _myQueue.pop();
 
-      if( Complex->getType() == Tile::Undetermined &&
-          Complex->getScale() < __maxscale )
+      if( _complex->getType() == Tile::Undetermined &&
+          _complex->getScale() < __maxscale )
         {
-        if( Complex->decompose() )
+        if( _complex->decompose() )
           {
-          ScenePtr s(Complex->getGeometry());
+          ScenePtr s(_complex->getGeometry());
           ScenePtr n[8];
           uint_t nb_triangles[8];
           double xm[8], ym[8], zm[8];
@@ -388,7 +387,7 @@ void Octree::build2()
             xm[i]= 0.; ym[i]= 0.; zm[i]= 0.;
             }
 
-          // on parcourt tous les triangles du noeud complex (pere)
+          // on parcourt tous les triangles du noeud _complex (pere)
           // on les repartit dans le fils adequat
           Scene::iterator _it;
           for( _it = s->begin(); _it!=s->end(); _it++ )
@@ -399,7 +398,7 @@ void Octree::build2()
 
               Index3ArrayPtr triangles[8];
               real_t _xm[8], _ym[8], _zm[8];
-              topDown(Complex, ts, triangles, _xm, _ym, _zm);
+              topDown(_complex, ts, triangles, _xm, _ym, _zm);
               for( i = 0 ; i <  8 ; i++ )
                 {
                 if( ! triangles[i]->empty() )
@@ -408,7 +407,7 @@ void Octree::build2()
                   xm[i]+= _xm[i]; ym[i]+= _ym[i]; zm[i]+= _zm[i];
                   TriangleSetPtr tri(new TriangleSet( ts->getPointList(),
                                                       triangles[i],
-													  ts->getNormalPerVertex(),
+                                                      ts->getNormalPerVertex(),
                                                       ts->getCCW(),
                                                       ts->getSolid(),
                                                       ts->getSkeleton()));
@@ -421,7 +420,7 @@ void Octree::build2()
 
           for( i = 0 ; i <  8 ; i++ )
             {
-            node = Complex->getComponent(i);
+            node = _complex->getComponent(i);
             if( ! nb_triangles[i] )
               node->getType() = Tile::Empty;
             else

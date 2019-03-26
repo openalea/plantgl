@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -129,21 +129,22 @@ public:
 #ifndef PGL_NO_DEPRECATED
   attribute_deprecated inline const Vector3& getTexCoord3At( uint_t i, uint_t j ) const
   { return getFaceTexCoord3At(i,j); }
+  
   attribute_deprecated inline Vector3& getTexCoord3At( uint_t i, uint_t j )
   { return getFaceTexCoord3At(i,j); }
 #endif
 
-  const Vector3& getFaceTexCoord3At( uint_t i, uint_t j ) const;  
+  const Vector3& getFaceTexCoord3At( uint_t i, uint_t j ) const;
   Vector3& getFaceTexCoord3At( uint_t i, uint_t j );
 
-  const Point3ArrayPtr& getTexCoord3List() const{
-	return __texCoord3List; }
+  const Point3ArrayPtr& getTexCoord3List() const 
+  { return __texCoord3List; }
 
-  Point3ArrayPtr& getTexCoord3List() {
-	return __texCoord3List; }
+  Point3ArrayPtr& getTexCoord3List() 
+  { return __texCoord3List; }
 
-  bool hasTexCoord3List() const {
-	return is_valid_ptr(__texCoord3List); }
+  bool hasTexCoord3List() const 
+  { return is_valid_ptr(__texCoord3List); }
 
   protected:
 

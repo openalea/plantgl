@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -68,9 +68,9 @@ public:
   }
 
   inline uchar_t * toUcharArray() const {
-	  size_t len = size();
-	  uchar_t * data = new uchar_t[3*len];
-	  for( size_t i = 0 ; i < len; ++i )
+      size_t len = size();
+      uchar_t * data = new uchar_t[3*len];
+      for( size_t i = 0 ; i < len; ++i )
       {
         const Color3& color = getAt( i );
         data[ 3*i ] = color.getRed();
@@ -110,9 +110,9 @@ public:
   }
 
   inline uchar_t * toUcharArray() const {
-	  size_t len = size();
-	  uchar_t * data = new uchar_t[4*len];
-	  for( size_t i = 0 ; i < len; ++i )
+      size_t len = size();
+      uchar_t * data = new uchar_t[4*len];
+      for( size_t i = 0 ; i < len; ++i )
       {
         const Color4& color = getAt( i );
         data[ 4*i ] = color.getRed();
@@ -130,7 +130,7 @@ PGL_DECLARE_TYPE(Color4Array)
 template <class ColorArray>
 RCPtr<ColorArray>
 apply_colormap(const RCPtr<ColorArray> colormap, const RealArrayPtr values)
-{  
+{
     std::pair<RealArray::const_iterator,RealArray::const_iterator> minmax = values->getMinAndMax(true);
     return apply_colormap(colormap, values, *minmax.first, *minmax.second);
 }

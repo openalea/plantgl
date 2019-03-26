@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -47,7 +47,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ------------------------------------------------------------------------- */
 
-/** 
+/**
     \class ParametricModel
     \brief Abstract base class for all  parametric primitives.
 */

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -112,23 +112,23 @@ BoundingSphere& BoundingSphere::extend( const Vector2& point ) {
   return *this;
 }
 
-BoundingSphere& 
+BoundingSphere&
 BoundingSphere::operator+=( const BoundingSpherePtr& bsphere ){
   GEOM_ASSERT(bsphere);
   return extend(*bsphere);
 }
 
-BoundingSphere& 
+BoundingSphere&
 BoundingSphere::operator+=( const BoundingSphere& bsphere ){
   return extend(bsphere);
 }
 
-BoundingSphere& 
+BoundingSphere&
 BoundingSphere::operator+=( const Vector3& point ){
   return extend(point);
 }
 
-BoundingSphere& 
+BoundingSphere&
 BoundingSphere::operator+=( const Vector2& point ){
   return extend(point);
 }

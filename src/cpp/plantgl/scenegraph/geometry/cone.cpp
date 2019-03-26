@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -64,12 +64,12 @@ Cone::Builder::~Builder() {
 
 
 SceneObjectPtr Cone::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Cone(Radius ? *Radius : Disc::DEFAULT_RADIUS,
-		Height ? *Height : DEFAULT_HEIGHT,
-		Solid ? *Solid : DEFAULT_SOLID,
-		Slices ? *Slices : DEFAULT_SLICES));
+        Height ? *Height : DEFAULT_HEIGHT,
+        Solid ? *Solid : DEFAULT_SOLID,
+        Slices ? *Slices : DEFAULT_SLICES));
   return SceneObjectPtr();
 }
 
@@ -113,9 +113,9 @@ bool Cone::Builder::ConeValid( ) const {
 /* ----------------------------------------------------------------------- */
 
 Cone::Cone( const real_t& radius,
-	    const real_t& height,
-	    bool solid,
-	    uchar_t slices ) :
+        const real_t& height,
+        bool solid,
+        uchar_t slices ) :
     SOR(slices),
     __height(height),
     __solid(solid),
@@ -134,7 +134,7 @@ Cone::isValid( ) const {
   _builder.Slices = const_cast<uchar_t *>(&__slices);
   return _builder.isValid();
 }
-  
+
 SceneObjectPtr Cone::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Cone(*this));
 }
@@ -153,12 +153,12 @@ Cone::getSolid( ) {
 const real_t&
 Cone::getHeight( ) const {
   return __height;
-} 
-	
-real_t& 
+}
+
+real_t&
 Cone::getHeight( ) {
   return __height;
-} 
+}
 
 const real_t&
 Cone::getRadius( ) const {

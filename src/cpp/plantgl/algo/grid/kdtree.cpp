@@ -45,28 +45,28 @@ PGL_USING_NAMESPACE
 // for instanciation
 #define ANNKDTREEDECLARATIONCORE(basename,pointarraytype) \
     PGL_BEGIN_NAMESPACE \
-    class ANN##basename##Internal : public PGL::ANNKDTreeInternal<pointarraytype> \
+    class ANN##basename##Internal : public PGL(ANNKDTreeInternal)<pointarraytype> \
     { public: \
         ANN##basename##Internal(const RCPtr<pointarraytype>& points) : \
-            PGL::ANNKDTreeInternal<pointarraytype>(points) {} \
+            PGL(ANNKDTreeInternal)<pointarraytype>(points) {} \
     }; \
     PGL_END_NAMESPACE \
     \
-    PGL::ANN##basename::ANN##basename(RCPtr<pointarraytype> const & points) : \
+    PGL(ANN##basename)::ANN##basename(RCPtr<pointarraytype> const & points) : \
             Abstract##basename(points), __internal(new ANN##basename##Internal(points)) { ; } \
     \
-    PGL::ANN##basename::~ANN##basename() { delete __internal; } \
+    PGL(ANN##basename)::~ANN##basename() { delete __internal; } \
     \
-    Index PGL::ANN##basename::k_closest_points(const VectorType& pointclass, size_t k, real_t maxdist )  \
+    Index PGL(ANN##basename)::k_closest_points(const VectorType& pointclass, size_t k, real_t maxdist )  \
     { return __internal->k_closest_points(pointclass, k, maxdist) ; } \
     \
-    IndexArrayPtr PGL::ANN##basename::k_nearest_neighbors(size_t k)  \
+    IndexArrayPtr PGL(ANN##basename)::k_nearest_neighbors(size_t k)  \
     { return __internal->k_nearest_neighbors(k); } \
     \
-    IndexArrayPtr PGL::ANN##basename::r_nearest_neighbors(real_t radius)  \
+    IndexArrayPtr PGL(ANN##basename)::r_nearest_neighbors(real_t radius)  \
     { return __internal->r_nearest_neighbors(radius); } \
     \
-    size_t PGL::ANN##basename::size()  const \
+    size_t PGL(ANN##basename)::size()  const \
     { return __internal->size(); } \
 
         // virtual ~ANN##basename##Internal() {printf("delete internal 0\n"); } \

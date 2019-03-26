@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -63,7 +63,7 @@ SceneObjectPtr MonoSpectral::Builder::build( ) const {
     return SceneObjectPtr
       (new MonoSpectral
        (Reflectance ? *Reflectance : DEFAULT_REFLECTANCE,
-	Transmittance ? *Transmittance : DEFAULT_TRANSMITTANCE));
+    Transmittance ? *Transmittance : DEFAULT_TRANSMITTANCE));
   return SceneObjectPtr();
 }
 
@@ -101,7 +101,7 @@ bool MonoSpectral::Builder::isValid( ) const {
 
 
 MonoSpectral::MonoSpectral( const real_t& reflectance,
-			    const real_t& transmittance ) :
+                const real_t& transmittance ) :
   Spectrum(),
   __reflectance(reflectance),
   __transmittance(transmittance) {
@@ -119,7 +119,7 @@ bool MonoSpectral::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr MonoSpectral::copy(DeepCopier& copier) const 
+SceneObjectPtr MonoSpectral::copy(DeepCopier& copier) const
 {
   return SceneObjectPtr(new MonoSpectral(*this));
 }

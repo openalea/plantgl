@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -48,11 +48,11 @@ const FontPtr Text::DEFAULT_FONT;
 
 /// Constructor.
 Font::Builder::Builder( ):
-	  SceneObject::Builder( ),
-	  Family(0),
-	  Size(0),
-	  Bold(0),
-	  Italic(0){
+      SceneObject::Builder( ),
+      Family(0),
+      Size(0),
+      Bold(0),
+      Italic(0){
 }
 
     /// Destructor.
@@ -60,12 +60,12 @@ Font::Builder::~Builder( ){
 }
 
 SceneObjectPtr Font::Builder::build( ) const{
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
-	(new Font((Family ? *Family : ""),
-			  (Size ? *Size : Font::DEFAULT_SIZE),
-			  (Bold ? *Bold : Font::DEFAULT_BOLD),
-			  (Italic ? *Italic : Font::DEFAULT_ITALIC)));
+    (new Font((Family ? *Family : ""),
+              (Size ? *Size : Font::DEFAULT_SIZE),
+              (Bold ? *Bold : Font::DEFAULT_BOLD),
+              (Italic ? *Italic : Font::DEFAULT_ITALIC)));
   return SceneObjectPtr();
 }
 
@@ -75,22 +75,22 @@ void Font::Builder::destroy( ){
   if(Bold)      delete Bold;
   if(Italic)    delete Italic;
 }
-    
+
 bool Font::Builder::isValid( ) const
 {
   if(Size && *Size < 6){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","Size","Font Size should be greater than 6. ");
-	return false;
+    return false;
   }
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
-Font::Font(const std::string& family, 
-	 uint_t size,
-	 bool bold,
-	 bool italic):
+Font::Font(const std::string& family,
+     uint_t size,
+     bool bold,
+     bool italic):
   SceneObject(),
 __family(family),
 __size(size),
@@ -133,23 +133,23 @@ Text::Builder::Builder( ):
     /// Destructor.
 Text::Builder::~Builder( ){}
 
-SceneObjectPtr 
+SceneObjectPtr
 Text::Builder::build( ) const {
-  if(isValid()) 
+  if(isValid())
     return SceneObjectPtr
-	(new Text((String ? *String : ""),
-			  (Position ? *Position : DEFAULT_POSITION),
-			  (ScreenCoordinates ? *ScreenCoordinates : DEFAULT_SCREEN_COORDINATES),
-			  (FontStyle ? *FontStyle : Text::DEFAULT_FONT)));
+    (new Text((String ? *String : ""),
+              (Position ? *Position : DEFAULT_POSITION),
+              (ScreenCoordinates ? *ScreenCoordinates : DEFAULT_SCREEN_COORDINATES),
+              (FontStyle ? *FontStyle : Text::DEFAULT_FONT)));
   return SceneObjectPtr();
 }
 
-void 
+void
 Text::Builder::destroy( ){
   if(String) delete String;
   if(FontStyle) delete FontStyle;
 }
-    
+
 bool Text::Builder::isValid( ) const{
     if (!String) {
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
@@ -159,20 +159,20 @@ bool Text::Builder::isValid( ) const{
         pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Text","String");
         return false;
     };
-	if(FontStyle && *FontStyle && !(*FontStyle)->isValid()){
+    if(FontStyle && *FontStyle && !(*FontStyle)->isValid()){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Text","FontStyle","");
-	  return false;
-	}
-	return true;
+      return false;
+    }
+    return true;
 }
 
 
 
   /// Constructs a Box with \e size.
 Text::Text( const std::string& s,
-			const Vector3& position,
-			const bool screenCoordinates,
-		    const FontPtr& font):
+            const Vector3& position,
+            const bool screenCoordinates,
+            const FontPtr& font):
   Geometry(),
 __String(s),
 __screenCoordinates(screenCoordinates),

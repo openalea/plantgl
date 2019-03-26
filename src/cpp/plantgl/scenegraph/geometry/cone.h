@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -64,10 +64,10 @@ public:
   static const real_t DEFAULT_HEIGHT;
 
   /// The \b Solid field default value.
-  static const bool DEFAULT_SOLID;  
+  static const bool DEFAULT_SOLID;
 
 
-  /// A structure which helps to build a Cone when parsing. 
+  /// A structure which helps to build a Cone when parsing.
   struct SG_API Builder : public SOR::Builder {
 
     /// A pointer to the \b Height field.
@@ -88,21 +88,21 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
     void ConeDestroy( );
-    
+
     bool ConeValid( ) const;
-    
+
   };
 
 
   /// Defautl constructor.
   Cone( const real_t& radius = DEFAULT_RADIUS,
-	const real_t& height = DEFAULT_HEIGHT,
-	bool solid = DEFAULT_SOLID,
-	uchar_t slices = DEFAULT_SLICES );
+    const real_t& height = DEFAULT_HEIGHT,
+    bool solid = DEFAULT_SOLID,
+    uchar_t slices = DEFAULT_SLICES );
 
   /// Destructor
   virtual ~Cone( ) ;
@@ -117,10 +117,10 @@ public:
 
   /// Returns \b Height value.
   const real_t& getHeight( ) const;
-	
+
   /// Returns \b Height field.
   real_t& getHeight( );
-	
+
   /// Returns \b Radius value.
   const real_t& getRadius( ) const ;
 
@@ -139,7 +139,7 @@ public:
   bool isRadiusToDefault( ) const ;
 
   virtual bool isValid( ) const;
-  
+
 protected:
 
   /// The \b Height field.

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -71,51 +71,51 @@ public:
   FaceSet();
 
 
-  /** Constructs a FaceSet with the points \e points, the faces indices 
-      \e indices, the face ordering \e ccw, the solid flag \e solid and the 
+  /** Constructs a FaceSet with the points \e points, the faces indices
+      \e indices, the face ordering \e ccw, the solid flag \e solid and the
       skeleton \e skeleton.
       \pre
       - \e points must contain a minimum of 3 points;
-      - \e indices must contain a minimum of 1 index. Each index within \e 
-      indices 
+      - \e indices must contain a minimum of 1 index. Each index within \e
+      indices
       must contain a minimum of 3 elements and each element must be unique.
       - \e skeleton must be valid in the case it is non null.
       \post
       - \e self is valid. */
   FaceSet( const Point3ArrayPtr& points,
-	       const IndexArrayPtr& indices,
-		   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-		   bool ccw = DEFAULT_CCW,
-		   bool solid = DEFAULT_SOLID,
-		   const PolylinePtr& skeleton = DEFAULT_SKELETON);
-  
-  
-  /** Constructs a FaceSet with the points \e points, the faces indices 
-      \e indices, the face ordering \e ccw, the solid flag \e solid and the 
+           const IndexArrayPtr& indices,
+           bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+           bool ccw = DEFAULT_CCW,
+           bool solid = DEFAULT_SOLID,
+           const PolylinePtr& skeleton = DEFAULT_SKELETON);
+
+
+  /** Constructs a FaceSet with the points \e points, the faces indices
+      \e indices, the face ordering \e ccw, the solid flag \e solid and the
       the skeleton \e skeleton and the normals \e normals.
       normals don't have to be normalized.
       \pre
       - \e points must contain a minimum of 3 points;
-      - \e indices must contain a minimum of 1 index. Each index within \e 
-      indices 
+      - \e indices must contain a minimum of 1 index. Each index within \e
+      indices
       must contain a minimum of 3 elements and each element must be unique.
       - \e skeleton must be valid in the case it is non null.
       - \e normals must be as big as points;
       \post
       - \e self is valid. */
   FaceSet( const Point3ArrayPtr& points,
-	       const IndexArrayPtr& indices,
-		   const Point3ArrayPtr& normals ,
-		   const IndexArrayPtr& nomalIndices = IndexArrayPtr(),
-		   const Color4ArrayPtr& colors  = Color4ArrayPtr(),
-		   const IndexArrayPtr& colorIndices = IndexArrayPtr(),
-		   const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
-		   const IndexArrayPtr& texCoordIndices = IndexArrayPtr(),
-		   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-		   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
-		   bool CCW = DEFAULT_CCW,
-		   bool solid = DEFAULT_SOLID,
-		   const PolylinePtr& skeleton = DEFAULT_SKELETON);
+           const IndexArrayPtr& indices,
+           const Point3ArrayPtr& normals ,
+           const IndexArrayPtr& nomalIndices = IndexArrayPtr(),
+           const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+           const IndexArrayPtr& colorIndices = IndexArrayPtr(),
+           const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
+           const IndexArrayPtr& texCoordIndices = IndexArrayPtr(),
+           bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+           bool colorPerVertex = DEFAULT_COLORPERVERTEX,
+           bool CCW = DEFAULT_CCW,
+           bool solid = DEFAULT_SOLID,
+           const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
   /** Constructs a FaceSet from a TriangleSet.  */
   FaceSet(const TriangleSet&);

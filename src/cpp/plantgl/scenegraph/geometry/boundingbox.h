@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -143,10 +143,10 @@ public:
 
       \pre
       - \e self must be valid;
-      - \e bbox must be valid. 
-	  \post
-	  - If self and bbox do not intersect, self will not be valid
-	  */
+      - \e bbox must be valid.
+      \post
+      - If self and bbox do not intersect, self will not be valid
+      */
    BoundingBox& operator &=( const BoundingBox& bbox );
 
    /** \brief Intersection between \e self and \e bbox.
@@ -253,14 +253,14 @@ public:
   real_t getYMin() const;
   /// Get Z min value
   real_t getZMin() const;
-  
+
   /// Get X max value
   real_t getXMax() const;
   /// Get Y max value
   real_t getYMax() const;
   /// Get Z max value
   real_t getZMax() const;
-  
+
   /// Returns whether \e self is valid.
   bool isValid( ) const;
 
@@ -268,8 +268,8 @@ public:
 
       The algorithm is taken from : Tranforming Axis-Aligned Bounding Boxes
       by James Arvo. Graphics Gems I - p 548-550.
-      Meanwhile the degenerate interval used at the initialization 
-	  of the algorithm is set to the center of the bounding box
+      Meanwhile the degenerate interval used at the initialization
+      of the algorithm is set to the center of the bounding box
       to be transformed.
   */
   void transform(const Matrix4& matrix);
@@ -285,7 +285,7 @@ public:
   */
   void transform(const Matrix3& m);
 
-  /// translation of self 
+  /// translation of self
   void translate(const Vector3& t);
 
   /// scaling of self.

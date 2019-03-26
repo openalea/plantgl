@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -64,30 +64,30 @@ public:
   static const real_t DEFAULT_RADIUS;
 
 
-  /// A structure which helps to build a Disc when parsing. 
+  /// A structure which helps to build a Disc when parsing.
   struct SG_API Builder : public SOR2D::Builder {
 
     /// A pointer to the \b Radius field.
     real_t * Radius;
 
     /// Constructor.
-    Builder( );    
+    Builder( );
 
     /// Destructor.
-    ~Builder( );    
+    ~Builder( );
 
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
 
 
   /// Defautl constructor.
-  Disc( const real_t& radius = DEFAULT_RADIUS, 
-	uchar_t Slices = SOR::DEFAULT_SLICES);
+  Disc( const real_t& radius = DEFAULT_RADIUS,
+    uchar_t Slices = SOR::DEFAULT_SLICES);
 
   /// Destructor
   virtual ~Disc( );

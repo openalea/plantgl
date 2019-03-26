@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -44,34 +44,34 @@ PGL_USING_NAMESPACE
 QuadSet::QuadSet() : IndexedMesh<Index4Array>(){ }
 
 QuadSet::QuadSet( const Point3ArrayPtr& points,
-				  const Index4ArrayPtr& indices,
-				  bool normalPerVertex,
-				  bool ccw,
-				  bool solid,
-				  const PolylinePtr& skeleton ) :
+                  const Index4ArrayPtr& indices,
+                  bool normalPerVertex,
+                  bool ccw,
+                  bool solid,
+                  const PolylinePtr& skeleton ) :
   IndexedMesh<Index4Array>(points,indices,normalPerVertex,ccw,solid,skeleton){}
 
 QuadSet::QuadSet( const Point3ArrayPtr& points,
-				  const Index4ArrayPtr& indices,
-				  const Point3ArrayPtr& normals ,
-				  const Index4ArrayPtr& nomalIndices,
-				  const Color4ArrayPtr& colors,
-				  const Index4ArrayPtr& colorIndices,
-				  const Point2ArrayPtr& texCoord,
-				  const Index4ArrayPtr& texCoordIndices,
-				  bool normalPerVertex,
-				  bool colorPerVertex,
-				  bool ccw,
-				  bool solid,
-				  const PolylinePtr& skeleton) :
+                  const Index4ArrayPtr& indices,
+                  const Point3ArrayPtr& normals ,
+                  const Index4ArrayPtr& nomalIndices,
+                  const Color4ArrayPtr& colors,
+                  const Index4ArrayPtr& colorIndices,
+                  const Point2ArrayPtr& texCoord,
+                  const Index4ArrayPtr& texCoordIndices,
+                  bool normalPerVertex,
+                  bool colorPerVertex,
+                  bool ccw,
+                  bool solid,
+                  const PolylinePtr& skeleton) :
     IndexedMesh<Index4Array>(points,indices,normals,nomalIndices,colors,colorIndices,
-		 texCoord,texCoordIndices,normalPerVertex,colorPerVertex,ccw,solid,skeleton){ }
+         texCoord,texCoordIndices,normalPerVertex,colorPerVertex,ccw,solid,skeleton){ }
 
 
 QuadSet::~QuadSet( ) {
 }
 
-SceneObjectPtr 
+SceneObjectPtr
 QuadSet::copy(DeepCopier& copier) const{
   return SceneObjectPtr(mesh_copy<QuadSet>(*this,copier));
 }
@@ -82,7 +82,7 @@ bool QuadSet::isValid( ) const {
 
 
 ExplicitModelPtr
-QuadSet::transform( const Transformation3DPtr& transformation ) const 
+QuadSet::transform( const Transformation3DPtr& transformation ) const
 { return mesh_transform<QuadSet>(*this,transformation); }
 
 /* ----------------------------------------------------------------------- */

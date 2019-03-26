@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -73,8 +73,8 @@ public:
   /// The \b Stride field default value.
   static const uint_t DEFAULT_STRIDE;
 
-  /// A structure which helps to build a BezierCurve when parsing. 
-  struct SG_API Builder : public ParametricModel::Builder { 
+  /// A structure which helps to build a BezierCurve when parsing.
+  struct SG_API Builder : public ParametricModel::Builder {
 
     /// A pointer to the \b CtrlPointList field.
     Point4ArrayPtr * CtrlPointList;
@@ -117,7 +117,7 @@ public:
   BezierCurve( const Point3ArrayPtr& ctrlPoints, uint_t stride = DEFAULT_STRIDE, uchar_t width = DEFAULT_WIDTH);
 
   /// Destructor
-  virtual ~BezierCurve( ); 
+  virtual ~BezierCurve( );
 
   PGL_OBJECT(BezierCurve)
 
@@ -138,7 +138,7 @@ public:
 
   /// Returns \e Stride field.
   uint_t& getStride( );
-  
+
   /// Returns whether \b Stride is set to its default value.
   virtual bool isStrideToDefault( ) const;
 
@@ -146,25 +146,25 @@ public:
   virtual const uint_t getDegree( ) const ;
 
   /** Returns the \e Point for u = \e u.
-      using deCasteljau algorithm (see the Nurbs book p.24) 
-     \pre 
+      using deCasteljau algorithm (see the Nurbs book p.24)
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector3 getPointAt(real_t u) const;
 
   /** Returns the \e Point for u = \e u.
-      using classical algorithm (see the Nurbs book p.22) 
-     \pre 
+      using classical algorithm (see the Nurbs book p.22)
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector3 getPointAt2(real_t u) const;
 
   /** Returns the \e Tangent for u = \e u.
-      (see the Nurbs book p.22) 
-     \pre 
+      (see the Nurbs book p.22)
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector3 getTangentAt(real_t u) const;
 
   /** Returns the principal \e Normal for u = \e u.
-     \pre 
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector3 getNormalAt(real_t u) const;
 
@@ -181,7 +181,7 @@ protected:
 }; // BezierCurve
 
 /// BezierCurve Pointer
-SG_API typedef RCPtr<BezierCurve> BezierCurvePtr;
+typedef RCPtr<BezierCurve> BezierCurvePtr;
 
 
 /* ----------------------------------------------------------------------- */
@@ -199,8 +199,8 @@ class SG_API BezierCurve2D : public Curve2D
 public:
 
 
-  /// A structure which helps to build a BezierCurve when parsing. 
-  struct SG_API Builder : public Curve2D::Builder { 
+  /// A structure which helps to build a BezierCurve when parsing.
+  struct SG_API Builder : public Curve2D::Builder {
 
     /// A pointer to the \b CtrlPointList field.
     Point3ArrayPtr * CtrlPointList;
@@ -257,10 +257,10 @@ public:
   virtual const real_t getLastKnot() const ;
 
   virtual const uint_t getStride( ) const ;
-  
+
   /// Return Stride field.
   uint_t& getStride( ) ;
-  
+
   /// Returns whether \b Stride is set to its default value.
   bool isStrideToDefault( ) const;
 
@@ -268,25 +268,25 @@ public:
   virtual const uint_t getDegree( ) const;
 
   /*! Returns the \e Point for u = \e u.
-      using deCasteljau algorithm (see the Nurbs book p.24) 
-     \pre 
+      using deCasteljau algorithm (see the Nurbs book p.24)
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector2 getPointAt(real_t u) const;
 
   /* Returns the \e Point for u = \e u.
-      using classical algorithm (see the Nurbs book p.22) 
-     \pre 
+      using classical algorithm (see the Nurbs book p.22)
+     \pre
       - \e u must be in [0,1];*/
   //virtual Vector3 getPointAt2(real_t u) const;
 
   /* Returns the \e Tangent for u = \e u.
-      (see the Nurbs book p.22) 
-     \pre 
+      (see the Nurbs book p.22)
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector2 getTangentAt(real_t u) const;
 
   /** Returns the principal \e Normal for u = \e u.
-     \pre 
+     \pre
       - \e u must be in [0,1];*/
   virtual Vector2 getNormalAt(real_t u) const;
 

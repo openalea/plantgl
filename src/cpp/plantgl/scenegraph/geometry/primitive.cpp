@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -47,15 +47,15 @@ Primitive::Builder::Builder( ) :
 Primitive::Builder::~Builder( ) {
   // nothing to do
 }
-    
+
 
 /* ------------------------------------------------------------------------- */
-  
+
 
 Primitive::Primitive( ) :
   Geometry() {
-} 
- 
+}
+
 Primitive::~Primitive( ) {
 }
 

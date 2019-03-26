@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -29,12 +29,9 @@
  *  ----------------------------------------------------------------------------
  */
 
-
-
 /*! \file actn_gltransitionrenderer.h
     \brief Definition of the action class GLTransitionRenderer.
 */
-
 
 #ifndef __actn_gltransitionrenderer_h__
 #define __actn_gltransitionrenderer_h__
@@ -53,7 +50,7 @@ typedef RCPtr<Scene> ScenePtr;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class GLTransitionRenderer
    \brief An action which draws a visual transition between 2 scenes
    using blending.
@@ -67,11 +64,11 @@ public:
 
   /** Constructs a GLRenderer with the Discretizer \e discretizer and
       the normal display type \t. */
-  GLTransitionRenderer( Discretizer& discretizer, 
+  GLTransitionRenderer( Discretizer& discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-						QGLWidget * widget = NULL, 
+                        QGLWidget * widget = NULL,
 #endif
-						uint_t step = 10);
+                        uint_t step = 10);
 
   /// Destructor
   virtual ~GLTransitionRenderer( );
@@ -87,14 +84,14 @@ public:
 
   /// Set the 2 scene \e scene1 and \e scene2 to display.
   void setScene(ScenePtr scene1, ScenePtr scene2);
-  
+
 
   /// @name Pre and Post Processing
   //@{
   virtual bool endProcess();
 
   //@}
-     
+
   /// @name Material
   //@{
 
@@ -105,13 +102,13 @@ public:
   virtual bool process( MultiSpectral * multiSpectral );
 
   //@}
-  
+
   /// make a render of the 2 scene at the step \e step.
   virtual bool rend(uint_t step);
 
 protected:
 
-  
+
 
   /// Number of total step
   uint_t __totalstep;
@@ -129,8 +126,8 @@ protected:
   ScenePtr __scene2;
 
 };
- 
-typedef RCPtr<GLTransitionRenderer> GLTransitionRendererPtr; 
+
+typedef RCPtr<GLTransitionRenderer> GLTransitionRendererPtr;
 
 
 /* ----------------------------------------------------------------------- */
@@ -138,7 +135,7 @@ typedef RCPtr<GLTransitionRenderer> GLTransitionRendererPtr;
 PGL_END_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
-  
+
 // __actn_glsimplerenderer_h__
-#endif                                             
+#endif
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -66,7 +66,7 @@ bool Hull::isACurve( ) const {
 
 bool Hull::isASurface( ) const {
   return false;
-} 
+}
 
 bool Hull::isAVolume( ) const {
   return true;

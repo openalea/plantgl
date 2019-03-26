@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -33,7 +33,7 @@
 
 /*! \file geom_transformed.h
     \brief Definition of the transformation class Transformation, Transformation3D, Transformation2D
-	and the transformed class Transformed.
+    and the transformed class Transformed.
 */
 
 #ifndef __geom_transformed_h__
@@ -77,7 +77,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Transformation
     \brief Abstract base class for affine transformations.
 */
@@ -106,7 +106,7 @@ typedef RCPtr<Transformation> TransformationPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Transformation3D
     \brief Abstract base class for 3D affine transformations.
 */
@@ -142,9 +142,9 @@ typedef RCPtr<Transformation3D> Transformation3DPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Transformed
-    \brief A transformed 
+    \brief A transformed
 */
 
 
@@ -179,13 +179,13 @@ public:
   virtual bool hasDynamicRendering() const { return getGeometry()->hasDynamicRendering(); }
 
 };
- 
+
 /// Transformed Pointer
 typedef RCPtr<Transformed> TransformedPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Transformation2D
     \brief Abstract base class for 2D affine transformations.
 */

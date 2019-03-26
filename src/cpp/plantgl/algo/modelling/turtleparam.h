@@ -45,77 +45,76 @@
 
 PGL_BEGIN_NAMESPACE
 
-
 class TurtlePath;
 typedef RCPtr<TurtlePath> TurtlePathPtr;
 
 /// Class that contains a path parameter that should be followed by the turtle
 class ALGO_API TurtlePath : public RefCountObject{
 public:
-	TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
-	virtual ~TurtlePath();
+    TurtlePath(real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr()) : __totalLength(totalLength), __actualLength(actualLength), __scale(totalLength/actualLength), __arclengthParam(arclengthParam), __actualT(0)  { }
+    virtual ~TurtlePath();
 
-	virtual bool is2D() const { return true; }
+    virtual bool is2D() const { return true; }
 
-	virtual TurtlePathPtr copy() const = 0;
+    virtual TurtlePathPtr copy() const = 0;
 
-	virtual void setPosition(real_t t)  = 0;
+    virtual void setPosition(real_t t)  = 0;
 
-	real_t __totalLength;
-	real_t __actualLength;
-	real_t __scale;
-	QuantisedFunctionPtr __arclengthParam;
-	real_t __actualT;
+    real_t __totalLength;
+    real_t __actualLength;
+    real_t __scale;
+    QuantisedFunctionPtr __arclengthParam;
+    real_t __actualT;
 };
 
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle2DPath : public TurtlePath {
 public:
-	Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation = false, bool ccw = false, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
+    Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation = false, bool ccw = false, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
 
-	virtual TurtlePathPtr copy() const;
-	virtual void setPosition(real_t t) ;
-	
-	// Path to follow
-	Curve2DPtr __path;
-	// Tell whether path is oriented with Y as first heading or X
-	bool __orientation;
-	// Tell whether the resulting structure is in CCW
-	bool __ccw;
+    virtual TurtlePathPtr copy() const;
+    virtual void setPosition(real_t t) ;
 
-	// Position on the curve
-	Vector2 __lastPosition;
-	// Last direction on the curve
-	Vector2 __lastHeading;
+    // Path to follow
+    Curve2DPtr __path;
+    // Tell whether path is oriented with Y as first heading or X
+    bool __orientation;
+    // Tell whether the resulting structure is in CCW
+    bool __ccw;
+
+    // Position on the curve
+    Vector2 __lastPosition;
+    // Last direction on the curve
+    Vector2 __lastHeading;
 };
 
 /// Class that contains a 2D path parameter that should be followed by the turtle
 class ALGO_API Turtle3DPath : public TurtlePath {
 public:
-	Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
+    Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam = QuantisedFunctionPtr());
 
-	virtual TurtlePathPtr copy() const;
-	virtual void setPosition(real_t t) ;
-	
-	virtual bool is2D() const { return false; }
+    virtual TurtlePathPtr copy() const;
+    virtual void setPosition(real_t t) ;
 
-	// 3D Path to follow
-	LineicModelPtr __path;
+    virtual bool is2D() const { return false; }
 
-	// Position on the curve
-	Vector3 __lastPosition;
+    // 3D Path to follow
+    LineicModelPtr __path;
 
-	// Reference frame on the curve
-	Vector3 __lastHeading;
-	Vector3 __lastUp;
-	Vector3 __lastLeft;
+    // Position on the curve
+    Vector3 __lastPosition;
+
+    // Reference frame on the curve
+    Vector3 __lastHeading;
+    Vector3 __lastUp;
+    Vector3 __lastLeft;
 
 };
 
 struct PathInfo {
     real_t length;
     QuantisedFunctionPtr arclengthParam;
-}; 
+};
 
 typedef pgl_hash_map<size_t,PathInfo> PathInfoMap;
 
@@ -143,84 +142,84 @@ public:
 };
 
 /**! Class that contains all the parameters needed by the turtle :
-	 position, orientation [heading,left,up] vectors
+     position, orientation [heading,left,up] vectors
      color id, width, polygon and generalized cylinder flag */
 
 class ALGO_API TurtleParam  : public TurtleDrawParameter {
 
 public:
-	/// Constructor
-	TurtleParam();
+    /// Constructor
+    TurtleParam();
 
     /// Constructor
-	virtual ~TurtleParam();
-    
-	/// reset parameter to initial value
+    virtual ~TurtleParam();
+
+    /// reset parameter to initial value
     void reset();
-    
-	/// make a deep copy of this. usefull for putting a copy of this on a stack 
+
+    /// make a deep copy of this. usefull for putting a copy of this on a stack
     virtual TurtleParam * copy();
-    
-	/// write main parameters values 
+
+    /// write main parameters values
     void dump();
-    
-	/// transform this according to a Matrix3
+
+    /// transform this according to a Matrix3
     void transform(const Matrix3&);
-    
+
     /// get Current Orientation on the form of a matrix """
     Matrix3 getOrientationMatrix() const;
-    
+
     /// get transformtation on the form of a matrix """
     Matrix4 getTransformationMatrix() const;
-    
+
     /// test validity of . Should be orthonormal and normalized """
     bool isValid() const;
-    
-    /// keep last point for drawing generalized cylinder. usefull for lateral axis 
-    void keepLastPoint();
-    
-	/// clear the points stacks
-    void removePoints();
-    
-	/// test if polygon flag is on
-    bool isPolygonOn() const
-	{  return __polygon; }
 
-    
-	/// test if generalized cylinder flag is on
+    /// keep last point for drawing generalized cylinder. usefull for lateral axis
+    void keepLastPoint();
+
+    /// clear the points stacks
+    void removePoints();
+
+    /// test if polygon flag is on
+    bool isPolygonOn() const
+    {  return __polygon; }
+
+
+    /// test if generalized cylinder flag is on
     bool isGeneralizedCylinderOn() const
-	{ return __generalizedCylinder; }
-    
-	/// test if generalized cylinder flag is on but no drawing has been made
+    { return __generalizedCylinder; }
+
+    /// test if generalized cylinder flag is on but no drawing has been made
     bool isGeneralizedCylinderOnInit() const
-	{ return __generalizedCylinder && pointList->size() <= 1; }
-    
-	/// test if generalized cylinder flag is on but no drawing has been made
+    { return __generalizedCylinder && pointList->size() <= 1; }
+
+    /// test if generalized cylinder flag is on but no drawing has been made
     bool isGCorPolygonOnInit() const
-	{ return (__generalizedCylinder||__polygon) && pointList->size() <= 1; }
-    
-	/// set polygon flag
+    { return (__generalizedCylinder||__polygon) && pointList->size() <= 1; }
+
+    /// set polygon flag
     void polygon(bool);
-    
-	/// set generalized cylinder flag
+
+    /// set generalized cylinder flag
     void generalizedCylinder(bool);
 
-	/// push the current position in the polygon points list
+    /// push the current position in the polygon points list
     void pushPosition();
 
-	/// push the current position in the polygon points list
+    /// push the current position in the polygon points list
     void pushRadius();
-    
+
     void setPosition(const Vector3& pos){
-	  position = pos;
-	}
+      position = pos;
+    }
 
     const Vector3& getPosition() const {
-	  return position ;
-	}
+      return position ;
+    }
 
 public:
-  
+
   Vector3 position;
   Vector3 heading;
   Vector3 left;

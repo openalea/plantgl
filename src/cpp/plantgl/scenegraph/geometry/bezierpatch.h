@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -70,8 +70,8 @@ public:
   /// The \b Stride field default value.
   static const uint_t DEFAULT_STRIDE;
 
-  /// A structure which helps to build a BezierPatch when parsing. 
-  struct SG_API Builder : public Patch::Builder { 
+  /// A structure which helps to build a BezierPatch when parsing.
+  struct SG_API Builder : public Patch::Builder {
 
     /// A pointer to the \b CtrlPointList field.
     Point4MatrixPtr * CtrlPointMatrix;
@@ -111,15 +111,15 @@ public:
       - \e ustride and \e vstride must be superior to 2
       \post
       - \e self is valid. */
-  BezierPatch( const Point4MatrixPtr& ctrlPoints, 
-	       uint_t ustride = DEFAULT_STRIDE,
-	       uint_t vstride = DEFAULT_STRIDE,
-	       bool ccw = DEFAULT_CCW );
+  BezierPatch( const Point4MatrixPtr& ctrlPoints,
+           uint_t ustride = DEFAULT_STRIDE,
+           uint_t vstride = DEFAULT_STRIDE,
+           bool ccw = DEFAULT_CCW );
 
-  BezierPatch( const Point3MatrixPtr& ctrlPoints, 
-	       uint_t ustride = DEFAULT_STRIDE,
-	       uint_t vstride = DEFAULT_STRIDE,
-	       bool ccw = DEFAULT_CCW );
+  BezierPatch( const Point3MatrixPtr& ctrlPoints,
+           uint_t ustride = DEFAULT_STRIDE,
+           uint_t vstride = DEFAULT_STRIDE,
+           bool ccw = DEFAULT_CCW );
 
   /// Destructor
   virtual ~BezierPatch( );
@@ -146,7 +146,7 @@ public:
 
   /// Returns \e VStride field.
   uint_t& getVStride( ) ;
-  
+
   /// Returns whether \b UStride is set to its default value.
   bool isUStrideToDefault( ) const;
 
@@ -160,21 +160,21 @@ public:
   virtual const uint_t getVDegree( ) const;
 
   /*! Returns the \e Point for u = \e u and  v = \e v.
-      using deCasteljau algorithm (see the Nurbs book A1.7 p.39) 
-     \pre 
+      using deCasteljau algorithm (see the Nurbs book A1.7 p.39)
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   virtual Vector3 getPointAt(real_t u,real_t v) const;
 
   /* Returns the \e Point for u = \e u.
-      using classical algorithm (see the Nurbs book p.22) 
-     \pre 
+      using classical algorithm (see the Nurbs book p.22)
+     \pre
       - \e u must be in [0,1];*/
   //virtual Vector3 getPointAt2(real_t u) const;
 
   /* Returns the \e Tangent for u = \e u.
-      (see the Nurbs book p.22) 
-     \pre 
+      (see the Nurbs book p.22)
+     \pre
       - \e u must be in [0,1];*/
   //virtual Vector3 getTangentAt(real_t u) const;
 

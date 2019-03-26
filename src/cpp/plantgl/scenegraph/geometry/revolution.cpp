@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -31,7 +31,7 @@
 
 
 
- 
+
 
 #include "revolution.h"
 #include "curve.h"
@@ -57,10 +57,10 @@ Revolution::Builder::~Builder() {
 
 
 SceneObjectPtr Revolution::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Revolution(*Profile,
-		      Slices ? *Slices : DEFAULT_SLICES));
+              Slices ? *Slices : DEFAULT_SLICES));
   return SceneObjectPtr();
 }
 
@@ -78,7 +78,7 @@ bool Revolution::Builder::isValid( ) const {
     Profile field
   */
   // Initialization check
-  if (! Profile) { 
+  if (! Profile) {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Revolution","Profile");
     return false;
   };
@@ -101,7 +101,7 @@ Revolution::Revolution() :
 }
 
 Revolution::Revolution( const Curve2DPtr& profile,
-			uchar_t slices ) :
+            uchar_t slices ) :
   SOR(slices),
   __profile(profile) {
   GEOM_ASSERT(isValid());
@@ -126,12 +126,12 @@ SceneObjectPtr Revolution::copy(DeepCopier& copier) const {
 
 /* ----------------------------------------------------------------------- */
 
-const Curve2DPtr& 
+const Curve2DPtr&
 Revolution::getProfile( ) const {
   return __profile;
 }
 
-Curve2DPtr& 
+Curve2DPtr&
 Revolution::getProfile( ) {
   return __profile;
 }

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -419,7 +419,7 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
     RealArray2Ptr UderF = derivatesBasisFunctions(du,u,uspan,__udegree,__uKnotList);
     RealArray2Ptr VderF = derivatesBasisFunctions(dv,v,vspan,__vdegree,__vKnotList);
 
-/*    
+/*
     printf("very slow initialization\n");
     for(int k=__udegree;k<=d;++k){
         for(int j=0;j<=d-k;++j){
@@ -432,21 +432,21 @@ Point4MatrixPtr  NurbsPatch::deriveAtH(real_t u, real_t v, int d, int uspan, int
             //cout<<"set patchders"<<k<<j<<endl;
             patchders->setAt(k,j, Vector4::ORIGIN) ;
         }
-    } 
+    }
     printf("end of very slow initialization\n");
     */
 
     for(int k=0;k<=du;++k){
         for(int s=0;s<=__vdegree;++s){
             for(int r=0;r<=__udegree;++r){
- 	            temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ;
+                temp[s] +=  UderF->getAt(k,r)*__ctrlPointMatrix->getAt(uspan-__udegree+r,vspan-__vdegree+s) ;
             }
         }
         int dd = ( (d-k) < dv ? (d-k) : dv); //min(d-k,dv) ;
         for(int r=0;r<=dd;++r){
             // patchders->setAt(k,r, Vector4::ORIGIN) ;
             for(int s=0;s<=__vdegree;++s){
- 	            patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;	//
+                patchders->getAt(k,r) += VderF->getAt(r,s)*temp[s] ;    //
             }
         }
     }
@@ -527,7 +527,7 @@ Vector3 NurbsPatch::getPointAt(real_t u, real_t v) const{
 
   uint_t uind = uspan - __udegree;
   for (uint_t l = 0 ; l <= __vdegree ; l++ ){
-	  Vector4 temp( 0 , 0 , 0 ,0 );
+      Vector4 temp( 0 , 0 , 0 ,0 );
       uint_t vind = vspan - __vdegree +l;
       for (uint_t k = 0 ; k <= __udegree ; k++ ) {
            /*
@@ -604,7 +604,7 @@ Point4MatrixPtr NurbsPatch::getConnectCoeffs(real_t  u, real_t  v, int d, int us
       for (uint_t k = 0 ; k <= 1 ; k++ ){
         _chvec = _drve_coord->getAt(l,k);
         for (uint_t j = 0 ; j <= 1 ; j++ ){
-          //_connect_coeffs[(l,k,j)] = _coord_contra[j] * 
+          //_connect_coeffs[(l,k,j)] = _coord_contra[j] *
                 pass
     return _connect_coeffs
 */
@@ -667,10 +667,10 @@ LineicModelPtr NurbsPatch::getIsoVSectionAt(real_t v) const
   uint_t udim = __ctrlPointMatrix->getRowNb();
   Point4ArrayPtr temp(new Point4Array(udim));
   for (uint_t l = 0 ; l < udim ; l++ ){
-	  Vector4 vec;
+      Vector4 vec;
       for (uint_t k = 0 ; k <= __vdegree ; k++ )
           vec += (__ctrlPointMatrix->getAt(l,vspan - __vdegree +k) *  (Nv->getAt(k))) ;
-	  temp->setAt(l,vec);
+      temp->setAt(l,vec);
   }
   return LineicModelPtr(new NurbsCurve(temp,__uKnotList,__udegree,__ustride));
 }

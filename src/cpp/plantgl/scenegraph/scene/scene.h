@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -87,9 +87,9 @@ public:
 
   /// Constructs a Scene with object describe in \e filename. Write error on \e _errlog.
   Scene(const std::string& filename,
-	    const std::string& format = "",
-	    std::ostream& errlog=std::cerr, 
-		int max_error = -1);
+        const std::string& format = "",
+        std::ostream& errlog=std::cerr,
+        int max_error = -1);
 
   /// Constructs a Scene with objects describe in \e table.
   Scene(const SceneObjectSymbolTable& table);
@@ -102,10 +102,10 @@ public:
   bool save( const std::string& fname , const std::string& format = "" );
 
   bool read( const std::string& fname,
-			 const std::string& format = "",
-			 std::ostream& errlog=std::cerr, 
-			 int max_error = -1 );
-  
+             const std::string& format = "",
+             std::ostream& errlog=std::cerr,
+             int max_error = -1 );
+
   /** Adds objects describe in table  */
   void convert( const SceneObjectSymbolTable& table );
 
@@ -201,7 +201,7 @@ public:
   bool isValid( std::ostream& error,std::ostream& warning, std::ostream& info) const;
 
   bool hasDynamicRendering() const;
-  
+
   /** Merges the Scene \e subScene to \e self.
       \pre
       - \e subScene must be valid. */
@@ -247,7 +247,7 @@ public:
         typedef pgl_hash_map<size_t,Scene *> PoolList;
         friend class Scene;
         ~Pool();
- 
+
         // get scene id
         ScenePtr get(size_t id) const;
         // get all scene

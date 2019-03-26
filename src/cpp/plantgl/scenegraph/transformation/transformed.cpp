@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -40,11 +40,11 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 Transformation::Transformation( ) :
-  RefCountObject() 
+  RefCountObject()
 {
 }
 
-Transformation::~Transformation( ) 
+Transformation::~Transformation( )
 {
 }
 
@@ -71,7 +71,7 @@ Transformation2D::~Transformation2D( ) {
 Transformed::Builder::Builder() :
   Geometry::Builder() {
 }
- 
+
 
 Transformed::Builder::~Builder() {
 }

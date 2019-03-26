@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -81,7 +81,7 @@ public :
 };
 
 /**
-   \class CurveArray 
+   \class CurveArray
    \brief An array of curve object
 */
 class SG_API CurveArray : public GeomArray<LineicModelPtr> {

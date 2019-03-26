@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -32,7 +32,7 @@
 
 /*! \file geom_scaled.h
     \brief Definition of the transformation class Scaling, Scaling2D
-	and the transformed class Scaled.
+    and the transformed class Scaled.
 */
 
 

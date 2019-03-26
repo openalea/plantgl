@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -84,7 +84,7 @@ public:
     eGBR = CHANNELORDER3(2,0,1),
     eBGR = CHANNELORDER3(2,1,0),
     eBRG = CHANNELORDER3(1,2,0)
-  };    
+  };
 
   /// The black color.
   static const Color3 BLACK;

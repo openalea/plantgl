@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -55,7 +55,7 @@ Box::Builder::~Builder() {
 
 
 SceneObjectPtr Box::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Box(Size ? *Size : Box::DEFAULT_SIZE));
   return SceneObjectPtr();
@@ -70,8 +70,8 @@ void Box::Builder::destroy( ) {
 bool Box::Builder::isValid( ) const {
   if (Size) {
     if ((Size->x() < GEOM_EPSILON) ||
-	(Size->y() < GEOM_EPSILON) ||
-	(Size->z() < GEOM_EPSILON)) {
+    (Size->y() < GEOM_EPSILON) ||
+    (Size->z() < GEOM_EPSILON)) {
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Box","Size","The three values of size must not be null");
       return false;
     };
@@ -99,112 +99,112 @@ bool Box::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr Box::copy(DeepCopier& copier) const 
+SceneObjectPtr Box::copy(DeepCopier& copier) const
 {
   return SceneObjectPtr(new Box(*this));
 }
 
 /* ----------------------------------------------------------------------- */
 
-Vector3 
+Vector3
 Box::getBackLowerLeftCorner( ) const {
   return Vector3(-__size);
 }
 
-Vector3 
+Vector3
 Box::getBackLowerRightCorner( ) const {
   return Vector3(-__size.x(),__size.y(),-__size.z());
 }
 
-Vector3 
+Vector3
 Box::getBackNormal( ) const {
   return Vector3(-1,0,0);
 }
 
-Vector3 
+Vector3
 Box::getBackUpperLeftCorner( ) const {
   GEOM_ASSERT(isValid());
   return Vector3(-__size.x(),-__size.y(),__size.z());
 }
 
-Vector3 
+Vector3
 Box::getBackUpperRightCorner( ) const {
   return Vector3(-__size.x(),__size.y(),__size.z());
-} 
+}
 
-Vector3 
+Vector3
 Box::getFrontLowerLeftCorner( ) const {
   return Vector3(__size.x(),-__size.y(),-__size.z());
 }
 
-Vector3 
+Vector3
 Box::getFrontLowerRightCorner( ) const {
   return Vector3(__size.x(),__size.y(),-__size.z());
-} 
+}
 
-Vector3 
+Vector3
 Box::getFrontUpperLeftCorner( ) const {
   return Vector3(__size.x(),-__size.y(),__size.z());
 }
 
-Vector3 
+Vector3
 Box::getFrontUpperRightCorner( ) const {
   return Vector3(__size);
 }
 
-Vector3 
+Vector3
 Box::getFrontNormal( ) const {
   return Vector3(1,0,0);
-} 
+}
 
-Vector3 
+Vector3
 Box::getLeftNormal( ) const {
   return Vector3(0,-1,0);
-} 
+}
 
-Vector3 
+Vector3
 Box::getLowerNormal( ) const {
   return Vector3(0,0,-1);
-} 
+}
 
-Vector3 
+Vector3
 Box::getRightNormal( ) const {
   return Vector3(0,1,0);
 }
 
-Vector3 
+Vector3
 Box::getUpperNormal( ) const {
   return Vector3(0,0,1);
-} 
+}
 
-const Vector3& 
+const Vector3&
 Box::getSize( ) const {
   return __size;
 }
 
-Vector3& 
+Vector3&
 Box::getSize( ){
   return __size;
-} 
+}
 
-bool 
+bool
 Box::isSizeToDefault( ) const {
   return __size == DEFAULT_SIZE;
 }
 
 /* ----------------------------------------------------------------------- */
 
-bool 
+bool
 Box::isACurve( ) const {
   return false;
 }
 
-bool 
+bool
 Box::isASurface( ) const {
   return true;
 }
 
-bool 
+bool
 Box::isAVolume( ) const {
   return true;
 }

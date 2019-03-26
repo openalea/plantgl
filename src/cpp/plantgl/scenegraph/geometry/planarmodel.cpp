@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -66,11 +66,11 @@ bool PlanarModel::isACurve( ) const {
 
 bool PlanarModel::isASurface( ) const {
   return true;
-} 
+}
 
 bool PlanarModel::isAVolume( ) const {
   return false;
-} 
+}
 
 /* ----------------------------------------------------------------------- */
 

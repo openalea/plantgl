@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -64,7 +64,7 @@ Group::Builder::~Builder( ) {
 SceneObjectPtr Group::Builder::build( ) const {
   if (isValid())
     return SceneObjectPtr(new Group(*GeometryList,
-				 Skeleton ? *Skeleton : DEFAULT_SKELETON));
+                 Skeleton ? *Skeleton : DEFAULT_SKELETON));
   return SceneObjectPtr();
 }
 
@@ -91,16 +91,16 @@ bool Group::Builder::isValid( ) const {
     const GeometryPtr& _geometry = (*GeometryList)->getAt(_i);
     if (! (_geometry) ) {
       pglErrorEx
-	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
+      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must not be a null Geometry Object.");
       return false;
-    };	
+    };
     if (!_geometry->isValid() ) {
       pglErrorEx
-	  (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
+      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
       return false;
-    };	
+    };
  };
-  
+
   return true;
 }
 
@@ -133,39 +133,39 @@ Group::getGeometryListAt( uint_t i ) const {
   return __geometryList->getAt(i);
 }
 
-GeometryPtr& 
+GeometryPtr&
 Group::getGeometryListAt( uint_t i ) {
   GEOM_ASSERT(i < __geometryList->size());
   return __geometryList->getAt(i);
 }
 
-const GeometryArrayPtr& 
+const GeometryArrayPtr&
 Group::getGeometryList( ) const {
   return __geometryList;
 }
-GeometryArrayPtr& 
+GeometryArrayPtr&
 Group::getGeometryList( ) {
   return __geometryList;
 }
 
-uint_t 
+uint_t
 Group::getGeometryListSize( ) const {
   return __geometryList->size();
 }
 
 /* ----------------------------------------------------------------------- */
 
-const PolylinePtr& 
+const PolylinePtr&
 Group::getSkeleton( ) const {
   return __skeleton;
 }
 
-PolylinePtr& 
+PolylinePtr&
 Group::getSkeleton( ){
   return __skeleton;
 }
 
-bool 
+bool
 Group::isSkeletonToDefault( ) const {
   return __skeleton == DEFAULT_SKELETON;
 }
@@ -228,17 +228,17 @@ bool Group::isValid( ) const {
   for (uint_t _i = 0; _i < _size ; _i++) {
       const GeometryPtr& _geometry = __geometryList->getAt(_i);
       if (! (_geometry) && (_geometry->isValid())) {
-	  pglErrorEx
-	      (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
-	  return false;
-      };	
+      pglErrorEx
+          (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Group","GeometryList",number(_i + 1).c_str(),"Must be a valid Geometry Object.");
+      return false;
+      };
   };
   return true;
 }
 
 /* ----------------------------------------------------------------------- */
 
-SceneObjectPtr Group::copy(DeepCopier& copier) const 
+SceneObjectPtr Group::copy(DeepCopier& copier) const
 {
   Group * ptr = new Group(*this);
   copier.copy_recursive_object_attribute(ptr->getGeometryList());

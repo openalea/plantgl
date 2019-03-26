@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -102,8 +102,8 @@ public:
   static const uchar_t DEFAULT_STACKS;
 
 
-  /// A structure which helps to build a AsymmetricHull when parsing. 
-  struct SG_API Builder : public Hull::Builder { 
+  /// A structure which helps to build a AsymmetricHull when parsing.
+  struct SG_API Builder : public Hull::Builder {
 
     /// A pointer to the \b NegXHeight field.
     real_t * NegXHeight;
@@ -164,23 +164,23 @@ public:
 
   /** Constructs a AsymmetricHull
       \pre
-    
+
       \post
       - \e self is valid. */
   AsymmetricHull( const real_t& negXRadius = DEFAULT_NEG_X_RADIUS,
-		  const real_t& posXRadius = DEFAULT_POS_X_RADIUS,
-		  const real_t& negYRadius = DEFAULT_NEG_Y_RADIUS,
-		  const real_t& posYRadius = DEFAULT_POS_Y_RADIUS,
-		  const real_t& negXHeight = DEFAULT_NEG_X_HEIGHT,
-		  const real_t& posXHeight = DEFAULT_POS_X_HEIGHT,
-		  const real_t& negYHeight = DEFAULT_NEG_Y_HEIGHT,
-		  const real_t& posYHeight = DEFAULT_POS_Y_HEIGHT,
-		  const Vector3& bottom  = DEFAULT_BOTTOM,
-		  const Vector3& top     = DEFAULT_TOP,
-		  const real_t& bottomShape= DEFAULT_BOTTOM_SHAPE,
-		  const real_t& topShape   = DEFAULT_TOP_SHAPE,
-		  uchar_t slices           = DEFAULT_SLICES,
-		  uchar_t stacks           = DEFAULT_STACKS);
+          const real_t& posXRadius = DEFAULT_POS_X_RADIUS,
+          const real_t& negYRadius = DEFAULT_NEG_Y_RADIUS,
+          const real_t& posYRadius = DEFAULT_POS_Y_RADIUS,
+          const real_t& negXHeight = DEFAULT_NEG_X_HEIGHT,
+          const real_t& posXHeight = DEFAULT_POS_X_HEIGHT,
+          const real_t& negYHeight = DEFAULT_NEG_Y_HEIGHT,
+          const real_t& posYHeight = DEFAULT_POS_Y_HEIGHT,
+          const Vector3& bottom  = DEFAULT_BOTTOM,
+          const Vector3& top     = DEFAULT_TOP,
+          const real_t& bottomShape= DEFAULT_BOTTOM_SHAPE,
+          const real_t& topShape   = DEFAULT_TOP_SHAPE,
+          uchar_t slices           = DEFAULT_SLICES,
+          uchar_t stacks           = DEFAULT_STACKS);
 
   /// Destructor
   virtual ~AsymmetricHull( );
@@ -213,7 +213,7 @@ public:
 
   /// Return \b NegX point.
   Vector3 getNegXPoint( ) const ;
-  
+
   /// Returns \b NegYHeight value.
   const real_t& getNegYHeight( ) const;
 
@@ -328,7 +328,7 @@ public:
   virtual bool isValid( ) const;
 
 protected:
-  
+
   /// The \b NegXHeight field.
   real_t __negXHeight;
 

@@ -70,14 +70,14 @@ class ALGO_API SpaceColonization : public RefCountObject {
         typedef std::vector<Bud> BudList;
         typedef std::vector<std::pair<Bud,uint32_t> > LatentBudList;
 
-        Point3ArrayPtr attractors; 
-        Point3GridPtr attractor_grid; 
-        Point3ArrayPtr skeletonnodes; 
+        Point3ArrayPtr attractors;
+        Point3GridPtr attractor_grid;
+        Point3ArrayPtr skeletonnodes;
         Uint32ArrayPtr skeletonparents;
         IndexArrayPtr nodeattractors;
         Index active_nodes;
 
-        
+
         BudList budlist;
         LatentBudList latentbudlist;
 
@@ -88,20 +88,20 @@ class ALGO_API SpaceColonization : public RefCountObject {
 
         static const size_t NOID;
 
-        SpaceColonization(const Point3ArrayPtr _attractors,                           
+        SpaceColonization(const Point3ArrayPtr _attractors,
                           real_t nodelength,
                           real_t kill_radius,
                           real_t perception_radius,
-                          const Point3ArrayPtr initialskeletonnodes = Point3ArrayPtr(0), 
+                          const Point3ArrayPtr initialskeletonnodes = Point3ArrayPtr(0),
                           const Uint32ArrayPtr  initialskeletonparent = Uint32ArrayPtr(0),
                           const Index& _active_nodes = Index(0),
                           size_t spacetilingratio = 100);
 
-        SpaceColonization(const Point3ArrayPtr _attractors,                           
+        SpaceColonization(const Point3ArrayPtr _attractors,
                           real_t nodelength,
                           real_t kill_radius,
                           real_t perception_radius,
-                          const Vector3& rootnode, 
+                          const Vector3& rootnode,
                           size_t spacetilingratio = 100);
 
     virtual ~SpaceColonization();
@@ -182,7 +182,7 @@ class ALGO_API SpaceColonization : public RefCountObject {
     real_t kill_radius;
     real_t perception_radius;
     real_t coneangle;
-    
+
     real_t insertion_angle;
     size_t nb_buds_per_whorl;
 
@@ -198,7 +198,7 @@ class ALGO_API SpaceColonization : public RefCountObject {
     virtual void StartEach() { }
     virtual void EndEach()   { }
 
-}; 
+};
 
 
 typedef RCPtr<SpaceColonization> SpaceColonizationPtr;
@@ -208,10 +208,10 @@ class ALGO_API GraphColonization : public SpaceColonization {
 
     public:
 
-        GraphColonization(const Point3ArrayPtr _attractors,                           
+        GraphColonization(const Point3ArrayPtr _attractors,
                                real_t perception_radius,
                                const IndexArrayPtr graph,
-                               uint32_t root, 
+                               uint32_t root,
                                real_t powerdistance = 1,
                                size_t spacetilingratio = 100);
 
@@ -243,7 +243,7 @@ class ALGO_API GraphColonization : public SpaceColonization {
         return nodecomponents->getAt(pid);
       }
 
-      size_t add_node(const Vector3& position, 
+      size_t add_node(const Vector3& position,
                       real_t level,
                       const Index& components,
                       size_t parent = SpaceColonization::NOID, bool active = true);

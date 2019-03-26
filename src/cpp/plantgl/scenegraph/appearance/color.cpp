@@ -74,7 +74,7 @@ Color3::Color3( const uchar_t * rgb ) :
 }
 
 Color3::Color3( const Color4& c4) :
-	Tuple3<uchar_t>(c4.getRed(),c4.getGreen(),c4.getBlue()) {
+    Tuple3<uchar_t>(c4.getRed(),c4.getGreen(),c4.getBlue()) {
 }
 
 Color3::Color3( uint32_t rgb ) :
@@ -145,8 +145,8 @@ Vector3 Color3::toClampedValues() const {
 }
 
 uint_t Color3::toUint(eColor3Format format) const {
-    return PACKVALi(uint_t(__RED),  CHANNELPOS3(format,0)) + 
-           PACKVALi(uint_t(__GREEN),CHANNELPOS3(format,1)) + 
+    return PACKVALi(uint_t(__RED),  CHANNELPOS3(format,0)) +
+           PACKVALi(uint_t(__GREEN),CHANNELPOS3(format,1)) +
            PACKVALi(uint_t(__BLUE), CHANNELPOS3(format,2));
 }
 
@@ -154,7 +154,7 @@ Color3 Color3::fromUint(uint_t value, eColor3Format format) {
   Color3 res;
   for (int i = 0; i < 3; ++i)
     res[i]   = UNPACKVALi(value, CHANNELPOS3(format,i));
-  
+
   /*res.__RED = uchar_t((value & 0xff0000) >> 16);
   res.__GREEN = uchar_t((value & 0x00ff00) >> 8);
   res.__BLUE = uchar_t(value & 0x0000ff);*/
@@ -366,17 +366,17 @@ Color3& Color3::operator*=(const real_t& v){
     return *this;
 }
 
-Color3 Color3::operator*(const Color3& c) const 
+Color3 Color3::operator*(const Color3& c) const
 {
-    Color3 nc(*this); 
+    Color3 nc(*this);
     nc *= c;
     return nc;
 
 }
 
-Color3 Color3::operator*(const real_t& c) const 
+Color3 Color3::operator*(const real_t& c) const
 {
-    Color3 nc(*this); 
+    Color3 nc(*this);
     nc *= c;
     return nc;
 
@@ -394,9 +394,9 @@ Color3& Color3::operator+=(const Color3& c)
 
 }
 
-Color3 Color3::operator+(const Color3& c) const 
+Color3 Color3::operator+(const Color3& c) const
 {
-    Color3 nc(*this); 
+    Color3 nc(*this);
     nc += c;
     return nc;
 
@@ -444,7 +444,7 @@ Color4::Color4( const Color3& c, uchar_t alpha ) :
 
 Color4::Color4( uint32_t argb ):
   Tuple4<uchar_t>(uchar_t((argb & 0xff0000) >> 16),uchar_t((argb & 0x00ff00) >> 8),
-	              uchar_t(argb & 0x0000ff),uchar_t((argb & 0xff000000) >> 24))
+                  uchar_t(argb & 0x0000ff),uchar_t((argb & 0xff000000) >> 24))
 {}
 
 
@@ -510,14 +510,14 @@ Vector4 Color4::toClampedValues() const {
 
 uint_t Color4::toUint(eColor4Format format) const {
 
-    return PACKVALi(uint_t(__RED),  CHANNELPOS4(format,0)) + 
-           PACKVALi(uint_t(__GREEN),CHANNELPOS4(format,1)) + 
-           PACKVALi(uint_t(__BLUE), CHANNELPOS4(format,2)) + 
+    return PACKVALi(uint_t(__RED),  CHANNELPOS4(format,0)) +
+           PACKVALi(uint_t(__GREEN),CHANNELPOS4(format,1)) +
+           PACKVALi(uint_t(__BLUE), CHANNELPOS4(format,2)) +
            PACKVALi(uint_t(__ALPHA),CHANNELPOS4(format,3));
 
     /*if (format == eARGB)
-	   return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
-    else 
+       return (uint_t(__ALPHA) << 24) + (uint_t(__RED) << 16) + (uint_t(__GREEN) << 8) + uint_t(__BLUE);
+    else
        return (uint_t(__RED) << 24) + (uint_t(__GREEN) << 16) + (uint_t(__BLUE) << 8) + uint_t(__ALPHA);*/
 }
 
@@ -575,7 +575,7 @@ Color4 Color4::interpolate(const Color4& c1, const Color4& c2, real_t t)
 
 std::ostream& PGL(operator<<( std::ostream& stream, const Color4& c )) {
   return stream << "<" << (uint16_t)c.getRed() << "," << (uint16_t)c.getGreen() << ","
-		<< (uint16_t)c.getBlue() << "," << (uint16_t)c.getAlpha() << ">";
+        << (uint16_t)c.getBlue() << "," << (uint16_t)c.getAlpha() << ">";
 }
 
 
@@ -606,17 +606,17 @@ Color4& Color4::operator*=(const real_t& v){
     return *this;
 }
 
-Color4 Color4::operator*(const Color4& c) const 
+Color4 Color4::operator*(const Color4& c) const
 {
-    Color4 nc(*this); 
+    Color4 nc(*this);
     nc *= c;
     return nc;
 
 }
 
-Color4 Color4::operator*(const real_t& c) const 
+Color4 Color4::operator*(const real_t& c) const
 {
-    Color4 nc(*this); 
+    Color4 nc(*this);
     nc *= c;
     return nc;
 
@@ -636,9 +636,9 @@ Color4& Color4::operator+=(const Color4& c)
 
 }
 
-Color4 Color4::operator+(const Color4& c) const 
+Color4 Color4::operator+(const Color4& c) const
 {
-    Color4 nc(*this); 
+    Color4 nc(*this);
     nc += c;
     return nc;
 

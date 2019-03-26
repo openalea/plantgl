@@ -148,12 +148,12 @@ Material::Material( const Color3& ambient,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
-	if(__diffuse*real_t(ambient.getRed())>255)
-		__diffuse = min(__diffuse,255./real_t(ambient.getRed()));
-	if(__diffuse*real_t(ambient.getGreen())>255)
-		__diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
-	if(__diffuse*real_t(ambient.getBlue())>255)
-		__diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
+    if(__diffuse*real_t(ambient.getRed())>255)
+        __diffuse = min(__diffuse,255./real_t(ambient.getRed()));
+    if(__diffuse*real_t(ambient.getGreen())>255)
+        __diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
+    if(__diffuse*real_t(ambient.getBlue())>255)
+        __diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
   GEOM_ASSERT(isValid());
 }
 
@@ -171,9 +171,9 @@ Material::Material( const string& name,
   __emission(emission),
   __shininess(shininess),
   __transparency(transparency) {
-	if(__diffuse*real_t(ambient.getRed())>255) __diffuse = min(__diffuse, 255./real_t(ambient.getRed()));
-	if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
-	if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
+    if(__diffuse*real_t(ambient.getRed())>255) __diffuse = min(__diffuse, 255./real_t(ambient.getRed()));
+    if(__diffuse*real_t(ambient.getGreen())>255) __diffuse = min(__diffuse, 255./real_t(ambient.getGreen()));
+    if(__diffuse*real_t(ambient.getBlue())>255) __diffuse = min(__diffuse,255./real_t(ambient.getBlue()));
   setName(name);
   GEOM_ASSERT(isValid());
 }
@@ -294,7 +294,7 @@ bool Material::isTransparencyToDefault( ) const {
 bool Material::isSimilar(const Material& other) const
 {
     return isTexture() == other.isTexture() &&
-		   __ambient == other.__ambient     &&
+           __ambient == other.__ambient     &&
            __diffuse == other.__diffuse     &&
            __specular == other.__specular   &&
            __emission == other.__emission   &&
@@ -302,7 +302,7 @@ bool Material::isSimilar(const Material& other) const
            __transparency == other.__transparency;
 }
 
-MaterialPtr PGL::interpolate(const MaterialPtr m1, const MaterialPtr m2, real_t t) {
+MaterialPtr PGL(interpolate)(const MaterialPtr m1, const MaterialPtr m2, real_t t) {
     GEOM_ASSERT(is_valid_prt(m1) && is_valid_ptr(m2));
     if (t < 0) t = 0.;
     else if(t >= 1) t = 1.;

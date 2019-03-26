@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -50,7 +50,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-/** 
+/**
     \class ScreenProjected
     \brief A transformation that project in screen coordinates
 */
@@ -61,7 +61,7 @@ class SG_API ScreenProjected : public Transformed
 
 public:
 
-	static bool DEFAULT_KEEPASPECTRATIO;
+  static bool DEFAULT_KEEPASPECTRATIO;
 
    /// A structure which helps to build an object of type of Transformed.
   struct SG_API Builder : public Transformed::Builder {
@@ -69,7 +69,7 @@ public:
     /// A pointer to the \b Geometry field.
     GeometryPtr * Geometry;
 
-	bool * KeepAspectRatio;
+    bool * KeepAspectRatio;
 
     /// Constructor.
     Builder( );
@@ -112,10 +112,10 @@ public:
   virtual bool isASurface( ) const
   { return __geometry->isASurface(); }
 
-  virtual bool isAVolume( ) const 
+  virtual bool isAVolume( ) const
   { return __geometry->isAVolume(); }
 
-  virtual bool isExplicit( ) const 
+  virtual bool isExplicit( ) const
   { return __geometry->isExplicit(); }
 
   /// Returns the transformation attached to \e self.
@@ -137,7 +137,7 @@ protected:
 
   bool __keepAspectRatio;
 };
- 
+
 /// Transformed Pointer
 typedef RCPtr<ScreenProjected> ScreenProjectedPtr;
 

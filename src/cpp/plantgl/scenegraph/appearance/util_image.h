@@ -61,7 +61,7 @@ typedef RCPtr<Image> ImagePtr;
 class Image : public RefCountObject{
 protected:
     std::vector<uchar_t> __data;
-    uint_t __width;    
+    uint_t __width;
     uint_t __height;
     uint_t __nbchannels;
 
@@ -73,7 +73,7 @@ public:
 
     ~Image();
 
-    void setPixelAt(uint_t x, uint_t y, const Color4 & pixel);    
+    void setPixelAt(uint_t x, uint_t y, const Color4 & pixel);
     void setPixelAt(uint_t x, uint_t y, const Color3 & pixel, uchar_t alpha = 0);
     void setPixelAt(uint_t x, uint_t y, const uchar_t * alpha );
 

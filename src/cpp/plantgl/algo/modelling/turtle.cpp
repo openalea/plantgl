@@ -104,9 +104,9 @@ bool curve_orientation(Curve2DPtr curve) {
   real_t _step =  (_lastK-_firstK) / (real_t) _size;
   Vector2 deltaPosition1, deltaPosition2;
   if (norm(firstPosition - lastPosition) < GEOM_EPSILON) {
-	  // closed contour
-	  lastPosition   = curve->getPointAt(_lastK - _step);
-	  _size -= 1;
+      // closed contour
+      lastPosition   = curve->getPointAt(_lastK - _step);
+      _size -= 1;
 
   }
   Vector2 midPosition   = firstPosition+lastPosition;
@@ -129,19 +129,19 @@ bool curve_orientation(Curve2DPtr curve) {
 
 TurtlePath::~TurtlePath() { }
 
-Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation, bool ccw, QuantisedFunctionPtr arclengthParam) : 
-	TurtlePath(totalLength,actualLength?actualLength:curve->getLength(),arclengthParam), 
+Turtle2DPath::Turtle2DPath(Curve2DPtr curve, real_t totalLength, real_t actualLength, bool orientation, bool ccw, QuantisedFunctionPtr arclengthParam) :
+    TurtlePath(totalLength,actualLength?actualLength:curve->getLength(),arclengthParam),
     __path(curve),
-	__orientation(orientation),
-	__lastHeading(orientation?0:1,orientation?1:0) 
-{ 
+    __orientation(orientation),
+    __lastHeading(orientation?0:1,orientation?1:0)
+{
 
-	  if(is_null_ptr(arclengthParam))__arclengthParam = curve->getArcLengthToUMapping(); 
-	  __lastPosition = curve->getPointAt(curve->getFirstKnot());
-	  __ccw = ccw;
-	  if (__ccw) {
-		  if(orientation) { __lastHeading = Vector2(0,-1); }
-	      else { __lastHeading = Vector2(-1,0); }
+      if(is_null_ptr(arclengthParam))__arclengthParam = curve->getArcLengthToUMapping();
+      __lastPosition = curve->getPointAt(curve->getFirstKnot());
+      __ccw = ccw;
+      if (__ccw) {
+          if(orientation) { __lastHeading = Vector2(0,-1); }
+          else { __lastHeading = Vector2(-1,0); }
       }
 }
 
@@ -150,36 +150,36 @@ TurtlePathPtr Turtle2DPath::copy() const
 
 void Turtle2DPath::setPosition(real_t t)
 {
-	__actualT = t / __totalLength;
-	if  (__actualT <= 0) {__actualT = 0;}
-	else if (__actualT >= 1.0) {__actualT = 1.0;}
-	real_t actualU = __arclengthParam->getValue(__actualT);
-	__lastPosition = __path->getPointAt(actualU);
-	__lastHeading = __path->getTangentAt(actualU);
-	__lastHeading.normalize();
+    __actualT = t / __totalLength;
+    if  (__actualT <= 0) {__actualT = 0;}
+    else if (__actualT >= 1.0) {__actualT = 1.0;}
+    real_t actualU = __arclengthParam->getValue(__actualT);
+    __lastPosition = __path->getPointAt(actualU);
+    __lastHeading = __path->getTangentAt(actualU);
+    __lastHeading.normalize();
 }
 
 
-Turtle3DPath::Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam) : 
-	TurtlePath(totalLength,actualLength?actualLength:curve->getLength(),arclengthParam), __path(curve), __lastHeading(0,0,1), __lastUp(1,0,0), __lastLeft(0,-1,0) 
-{ 
-	if(is_null_ptr(arclengthParam))__arclengthParam = curve->getArcLengthToUMapping(); 
-	__lastPosition = curve->getPointAt(curve->getFirstKnot());
+Turtle3DPath::Turtle3DPath(LineicModelPtr curve, real_t totalLength, real_t actualLength, QuantisedFunctionPtr arclengthParam) :
+    TurtlePath(totalLength,actualLength?actualLength:curve->getLength(),arclengthParam), __path(curve), __lastHeading(0,0,1), __lastUp(1,0,0), __lastLeft(0,-1,0)
+{
+    if(is_null_ptr(arclengthParam))__arclengthParam = curve->getArcLengthToUMapping();
+    __lastPosition = curve->getPointAt(curve->getFirstKnot());
 }
 
 void Turtle3DPath::setPosition(real_t t)
 {
-	__actualT = t / __totalLength;
-	if  (__actualT <= 0) {__actualT = 0;}
-	else if (__actualT >= 1.0){ __actualT = 1.0;}
-	real_t actualU = __arclengthParam->getValue(__actualT);
-	__lastPosition = __path->getPointAt(actualU);
-	__lastHeading = __path->getTangentAt(actualU);
-	__lastHeading.normalize();
-	__lastUp = __path->getNormalAt(actualU);
-	__lastUp.normalize();
-	__lastLeft = cross(__lastUp,__lastHeading);
-	__lastLeft.normalize();
+    __actualT = t / __totalLength;
+    if  (__actualT <= 0) {__actualT = 0;}
+    else if (__actualT >= 1.0){ __actualT = 1.0;}
+    real_t actualU = __arclengthParam->getValue(__actualT);
+    __lastPosition = __path->getPointAt(actualU);
+    __lastHeading = __path->getTangentAt(actualU);
+    __lastHeading.normalize();
+    __lastUp = __path->getNormalAt(actualU);
+    __lastUp.normalize();
+    __lastLeft = cross(__lastUp,__lastHeading);
+    __lastLeft.normalize();
 }
 
 TurtlePathPtr Turtle3DPath::copy() const
@@ -236,12 +236,12 @@ TurtleParam::TurtleParam() :
   customParentId(Shape::NOID),
   sectionResolution(Cylinder::DEFAULT_SLICES),
   initial()
-{        
+{
 }
 
 TurtleParam::~TurtleParam() {}
 
-void 
+void
 TurtleParam::reset(){
   TurtleDrawParameter::reset();
   position = Vector3(0,0,0);
@@ -266,14 +266,14 @@ TurtleParam::reset(){
   initial.reset();
   guide = TurtlePathPtr();
 }
-    
+
 TurtleParam * TurtleParam::copy(){
   TurtleParam * t = new TurtleParam(*this);
   if(t->guide)t->guide = t->guide->copy();
   if(!__polygon)t->pointList = new Point3Array(*t->pointList);
   return t;
 }
-    
+
 void TurtleParam::dump(){
    std::cerr << "Position : " << position << std::endl;
    std::cerr << "Heading  : " << heading  << std::endl;
@@ -282,13 +282,13 @@ void TurtleParam::dump(){
    std::cerr << "Color    : " << color << std::endl;
    std::cerr << "Width    : " << width << std::endl;
 }
-		
+
 void TurtleParam::transform(const Matrix3& m){
    heading = m * heading;
    left = m * left;
    up = m * up;
 }
-    
+
 Matrix3 TurtleParam::getOrientationMatrix() const{
    return Matrix3(heading,left,up);
 }
@@ -299,45 +299,45 @@ Matrix4 TurtleParam::getTransformationMatrix() const{
 
 bool TurtleParam::isValid() const{
    return heading.isNormalized() &&
-		  left.isNormalized() &&
-		  up.isNormalized() && 
-		  heading.isOrthogonalTo(left) &&
-		  heading.isOrthogonalTo(up) &&
-		  left.isOrthogonalTo(up);
+          left.isNormalized() &&
+          up.isNormalized() &&
+          heading.isOrthogonalTo(left) &&
+          heading.isOrthogonalTo(up) &&
+          left.isOrthogonalTo(up);
 }
-    
+
 void TurtleParam::keepLastPoint(){
   if(!pointList->empty()){
-	Vector3 lastp = *(pointList->end()-1);
-	pointList->clear();
-	pointList->push_back(lastp);
+    Vector3 lastp = *(pointList->end()-1);
+    pointList->clear();
+    pointList->push_back(lastp);
     // pointList = vector<Vector3>(1,*(pointList.end()-1));
-	// pointList = vector<Vector3>(1,*(pointList.end()-1));
+    // pointList = vector<Vector3>(1,*(pointList.end()-1));
   }
   if(!leftList.empty())
-	leftList = vector<Vector3>(1,*(leftList.end()-1));
+    leftList = vector<Vector3>(1,*(leftList.end()-1));
   if(!radiusList.empty())
     radiusList = vector<real_t>(1,*(radiusList.end()-1));
 }
-    
+
 void TurtleParam::removePoints(){
   pointList->clear();
   leftList.clear();
   radiusList.clear();
 }
-    
+
 void TurtleParam::polygon(bool t){
   __polygon = t;
   removePoints();
   if (t){
-	initial.color = color;
+    initial.color = color;
     initial.customMaterial = customMaterial;
   }
   else {
-	initial.reset();
+    initial.reset();
   }
 }
-    
+
 void TurtleParam::generalizedCylinder(bool t){
   __generalizedCylinder = t;
   removePoints();
@@ -345,21 +345,21 @@ void TurtleParam::generalizedCylinder(bool t){
     initial = TurtleDrawParameter(*this);
   }
   else {
-	initial.reset();
+    initial.reset();
   }
 
 }
-    
+
 void TurtleParam::pushPosition(){
   pointList->push_back(position);
   if(__generalizedCylinder) {
-	leftList.push_back(left);
-	radiusList.push_back(width);
+    leftList.push_back(left);
+    radiusList.push_back(width);
   }
 }
 
 void TurtleParam::pushRadius(){
-	*(radiusList.end()-1) = width;
+    *(radiusList.end()-1) = width;
 }
 
 /*----------------------------------------------------------*/
@@ -376,56 +376,56 @@ Turtle::Turtle(TurtleParam * params):
   warn_on_error(true),
   path_info_cache_enabled(true)
 {
-	if (!__params->crossSection) setDefaultCrossSection();
-	assert (__params->crossSection && "Failed to initialize cross section");
+    if (!__params->crossSection) setDefaultCrossSection();
+    assert (__params->crossSection && "Failed to initialize cross section");
 }
 
 Turtle::~Turtle() { }
 
-string 
+string
 Turtle::str() const {
-	stringstream ss;
-	ss << "Turtle : " 
-	  << getPosition() << "," 
-	  << getHeading() << "," 
-	  << getLeft() << "," 
-	  << getUp() << std::ends;
-	return ss.str();
+    stringstream ss;
+    ss << "Turtle : "
+      << getPosition() << ","
+      << getHeading() << ","
+      << getLeft() << ","
+      << getUp() << std::ends;
+    return ss.str();
 }
-  
+
 void Turtle::reset(){
   resetValues();
 }
 
 void Turtle::resetValues(){
-	__params->reset();
-	if (!__params->crossSection) setDefaultCrossSection();
-	__paramstack = stack<TurtleParam *>();
+    __params->reset();
+    if (!__params->crossSection) setDefaultCrossSection();
+    __paramstack = stack<TurtleParam *>();
     __pathinfos.clear();
 }
-  
+
 void Turtle::dump() const{
-	__params->dump();
+    __params->dump();
 }
 
 bool Turtle::isValid() const{
-	return __params->isValid();
+    return __params->isValid();
 }
-  
+
 void Turtle::start(){
-	reset();
+    reset();
 }
 
-void Turtle::incId(uint_t i) 
-{ 
-    if (getId() <= UINT32_MAX-i) setId(getId()+i); 
-    else error("Id should be a valid positive value."); 
+void Turtle::incId(uint_t i)
+{
+    if (getId() <= UINT32_MAX-i) setId(getId()+i);
+    else error("Id should be a valid positive value.");
 }
 
-void Turtle::decId(uint_t i) 
-{ 
-    if (getId() >= i) setId(getId()-i); 
-    else error("Id should be a valid positive value."); 
+void Turtle::decId(uint_t i)
+{
+    if (getId() >= i) setId(getId()-i);
+    else error("Id should be a valid positive value.");
 }
 
 void Turtle::setNoId(){
@@ -441,93 +441,93 @@ uint_t Turtle::popId()
 
 void Turtle::stop(){
   if(__params->isGeneralizedCylinderOn()){
-	  if(__params->pointList->size() > 1){
-		_generalizedCylinder(__params->pointList,
-						   __params->leftList,
-						   __params->radiusList,
-						   __params->initial.crossSection,
-						   __params->initial.crossSectionCCW);
-	  }
+      if(__params->pointList->size() > 1){
+        _generalizedCylinder(__params->pointList,
+                           __params->leftList,
+                           __params->radiusList,
+                           __params->initial.crossSection,
+                           __params->initial.crossSectionCCW);
+      }
     __params->removePoints();
   }
 }
-  
+
   void Turtle::push(){
     __params->lastId = parentId;
-	__paramstack.push(__params->copy());
+    __paramstack.push(__params->copy());
     if(__params->isGeneralizedCylinderOn()){
-	    __params->keepLastPoint();
+        __params->keepLastPoint();
         __params->customParentId = __params->customId;
         __params->customId = getId();
         parentId = getId();
     }
   }
-  
+
   void Turtle::pop(){
-	if (__params->isGeneralizedCylinderOn()){
-		if(__params->pointList->size() > 1){
-			_generalizedCylinder(__params->pointList,
-							     __params->leftList,
-							     __params->radiusList,
-							     __params->initial.crossSection,
-							     __params->initial.crossSectionCCW);
-		}
-	}
-	if(!__paramstack.empty()){
-	  delete __params;
-	  __params = __paramstack.top();
-	  __paramstack.pop();
+    if (__params->isGeneralizedCylinderOn()){
+        if(__params->pointList->size() > 1){
+            _generalizedCylinder(__params->pointList,
+                                 __params->leftList,
+                                 __params->radiusList,
+                                 __params->initial.crossSection,
+                                 __params->initial.crossSectionCCW);
+        }
+    }
+    if(!__paramstack.empty()){
+      delete __params;
+      __params = __paramstack.top();
+      __paramstack.pop();
       parentId = __params->lastId;
-	}
-	else {
-	  error("Empty Turtle Stack: Cannot pop");
-	}
+    }
+    else {
+      error("Empty Turtle Stack: Cannot pop");
+    }
   }
-  
+
   void Turtle::f(real_t length){
       // if(length > 0){
-		  if (length > 0 && __params->guide) _applyGuide(length);
-		  if (__params->elasticity > GEOM_EPSILON){
-			  _applyTropism();
-		  }
+          if (length > 0 && __params->guide) _applyGuide(length);
+          if (__params->elasticity > GEOM_EPSILON){
+              _applyTropism();
+          }
           __params->position += __params->heading*length*getScale().z();
-		  // __params->axialLength += length;
-		  if (length > 0 && __params->guide) _ajustToGuide();
+          // __params->axialLength += length;
+          if (length > 0 && __params->guide) _ajustToGuide();
       // }
       // else if(fabs(length) < GEOM_EPSILON) warning("f length should be non null.");
-	  // else error("f length should be positive.");
+      // else error("f length should be positive.");
   }
-  
+
   void Turtle::F(real_t length,real_t topradius){
       if(length > 0){
-		  if (__params->guide) _applyGuide(length);
-		  if (__params->elasticity > GEOM_EPSILON){
-			  _applyTropism();
-		  }
+          if (__params->guide) _applyGuide(length);
+          if (__params->elasticity > GEOM_EPSILON){
+              _applyTropism();
+          }
           if (length > GEOM_EPSILON){
               if (!__params->isGeneralizedCylinderOn()){
                       if(__params->defaultSection && __params->width > -GEOM_EPSILON){
-    					if (topradius < -GEOM_EPSILON)  _cylinder(length);
-    					else _frustum(length,topradius);
-    				  }
-    				  else { _sweep(length,topradius < -GEOM_EPSILON?getWidth():topradius); }
-              }          
+                        if (topradius < -GEOM_EPSILON)  _cylinder(length);
+                        else _frustum(length,topradius);
+                      }
+                      else { _sweep(length,topradius < -GEOM_EPSILON?getWidth():topradius); }
+              }
               __params->position += __params->heading*length*getScale().z();
-		      __params->axialLength += length;
+              __params->axialLength += length;
           }
-		  if (__params->guide) _ajustToGuide();
+          if (__params->guide) _ajustToGuide();
           if (length > GEOM_EPSILON && (__params->isGeneralizedCylinderOn() || __params->isPolygonOn()))
               __params->pushPosition();
           if (topradius > -GEOM_EPSILON ) {
-			  setWidth(topradius);
-		  }
+              setWidth(topradius);
+          }
       }
       // else if(fabs(length) < GEOM_EPSILON) warning("F length should be non null.");
       // else error("F length should be positive.");
-	  else if(length < -GEOM_EPSILON) {
-		  turnAround(); F(-length,topradius); turnAround();
+      else if(length < -GEOM_EPSILON) {
+          turnAround(); F(-length,topradius); turnAround();
 
-	  }
+      }
   }
 
 void Turtle::nF(real_t length, real_t dl)
@@ -568,45 +568,45 @@ void Turtle::left(real_t angle){
   __params->heading = m*__params->heading;
   __params->left = m*__params->left;
 }
-  
+
 void Turtle::down(real_t angle){
-	real_t ra = angle * GEOM_RAD;
-	Matrix3 m = Matrix3::axisRotation(__params->left,ra) *__params->reflection.z();
-	__params->heading = m*__params->heading;
-	__params->up = m*__params->up;
+    real_t ra = angle * GEOM_RAD;
+    Matrix3 m = Matrix3::axisRotation(__params->left,ra) *__params->reflection.z();
+    __params->heading = m*__params->heading;
+    __params->up = m*__params->up;
   }
-  
+
 void Turtle::rollL(real_t angle){
-	real_t ra = angle * GEOM_RAD;
-	Matrix3 m = Matrix3::axisRotation(__params->heading,ra) *__params->reflection.x();
-	__params->up = m*__params->up;
-	__params->left = m*__params->left;
+    real_t ra = angle * GEOM_RAD;
+    Matrix3 m = Matrix3::axisRotation(__params->heading,ra) *__params->reflection.x();
+    __params->up = m*__params->up;
+    __params->left = m*__params->left;
   }
 
 void Turtle::iRollL(real_t angle){
-	real_t ra = angle * GEOM_RAD *__params->reflection.x();
-	Matrix3 m = Matrix3::axisRotation(__params->heading,ra);
-	__params->up = m*__params->up;
-	__params->left = m*__params->left;
-	if (__params->guide && !__params->guide->is2D()){
-		Turtle3DPath * guide = (Turtle3DPath *)__params->guide.get();
-		Matrix3 m2 = Matrix3::axisRotation(guide->__lastHeading,ra);
-		guide->__lastUp   = m2*guide->__lastUp;
-		guide->__lastLeft = m2*guide->__lastLeft;
-	}
-	else warning("No appropriate turtle embedding (Guide) specified for intrinsic roll.");
+    real_t ra = angle * GEOM_RAD *__params->reflection.x();
+    Matrix3 m = Matrix3::axisRotation(__params->heading,ra);
+    __params->up = m*__params->up;
+    __params->left = m*__params->left;
+    if (__params->guide && !__params->guide->is2D()){
+        Turtle3DPath * guide = (Turtle3DPath *)__params->guide.get();
+        Matrix3 m2 = Matrix3::axisRotation(guide->__lastHeading,ra);
+        guide->__lastUp   = m2*guide->__lastUp;
+        guide->__lastLeft = m2*guide->__lastLeft;
+    }
+    else warning("No appropriate turtle embedding (Guide) specified for intrinsic roll.");
 }
 
 void Turtle::rollToVert(real_t alpha, const Vector3& top){
     if (alpha <= 0.0) return;
     if (alpha >= 1.0) {
-    	__params->left = cross(top,__params->heading);
-    	if (norm(__params->left) < GEOM_EPSILON )
-    	  __params->left = Vector3(0,-1,0);
-    	else{
-    	  __params->left.normalize();
-    	}
-    	__params->up = cross(__params->heading,__params->left);
+        __params->left = cross(top,__params->heading);
+        if (norm(__params->left) < GEOM_EPSILON )
+          __params->left = Vector3(0,-1,0);
+        else{
+          __params->left.normalize();
+        }
+        __params->up = cross(__params->heading,__params->left);
     }
     else {
         Vector3 nleft = cross(top,__params->heading);
@@ -641,31 +641,31 @@ void Turtle::transform(const Matrix3& matrix)
 }
 
 void Turtle::setHead(const Vector3& head, const Vector3& up){
-	Vector3 h = head;
-	real_t lh = h.normalize();
-	Vector3 u = up;
-	real_t lu = u.normalize();
-	if (lh < GEOM_EPSILON){
- 	  error("Heading Vector in setHead is NULL");
-	  return;
-	}
-	if (lu < GEOM_EPSILON){
- 	  error("Up Vector in setHead is NULL");
- 	}
-	Vector3 l = cross(u,h);
-	if (norm(l) < GEOM_EPSILON){
- 	  error("Heading and Up Vector in setHead are colinear.");
-	}
+    Vector3 h = head;
+    real_t lh = h.normalize();
+    Vector3 u = up;
+    real_t lu = u.normalize();
+    if (lh < GEOM_EPSILON){
+      error("Heading Vector in setHead is NULL");
+      return;
+    }
+    if (lu < GEOM_EPSILON){
+      error("Up Vector in setHead is NULL");
+    }
+    Vector3 l = cross(u,h);
+    if (norm(l) < GEOM_EPSILON){
+      error("Heading and Up Vector in setHead are colinear.");
+    }
 
     if(!h.isOrthogonalTo(u)) {
         u = cross(h,l);
         warning("Re-Orthogonalizing Up vector in setHead");
     }
-	__params->heading = h;
-	__params->up = u;
-	__params->left = l;
+    __params->heading = h;
+    __params->up = u;
+    __params->left = l;
   }
-  
+
   void Turtle::eulerAngles(real_t azimuth, real_t elevation, real_t roll)
   {
     Matrix3 m = Matrix3::eulerRotationZYX(Vector3(azimuth * GEOM_RAD, - elevation * GEOM_RAD, roll * GEOM_RAD));
@@ -676,32 +676,32 @@ void Turtle::setHead(const Vector3& head, const Vector3& up){
 
   void Turtle::move(const Vector3& pos){
     if (__params->screenCoordinates)  __params->position = Vector3(pos.z(),pos.x(),pos.y());
-  	else  __params->position = pos;
+    else  __params->position = pos;
   }
-  
+
   void Turtle::shift(const Vector3& pos){
     if (__params->screenCoordinates)  __params->position += Vector3(pos.z(),pos.x(),pos.y());
-  	else __params->position += pos;
+    else __params->position += pos;
   }
-  
+
   void Turtle::scale(const Vector3& s){
-	__params->scale = s;
+    __params->scale = s;
   }
-  
+
   void Turtle::setColor(int v){
-	  if (0 <= v && v < getColorListSize()){
-		__params->color = v;
+      if (0 <= v && v < getColorListSize()){
+        __params->color = v;
         __params->customMaterial = AppearancePtr();
-		__params->axialLength = 0;
-		if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
-	  }
-	else {
+        __params->axialLength = 0;
+        if(__params->isGCorPolygonOnInit()) __params->initial.color = v;
+      }
+    else {
       stringstream st;
       int maxcolor = getColorListSize();
       st << "Invalid Color value " << v << " in setColor (maximum is " <<  maxcolor - 1 << ')' <<  std::flush;
       warning(st.str());
-	  return;
-	}
+      return;
+    }
   }
 
 void Turtle::interpolateColors(int val1, int val2, real_t alpha){
@@ -711,53 +711,53 @@ void Turtle::interpolateColors(int val1, int val2, real_t alpha){
 void Turtle::setCustomAppearance(const AppearancePtr app)
 {
     __params->customMaterial = app;
-	__params->axialLength = 0;
-	if(__params->isGCorPolygonOnInit()) {        
+    __params->axialLength = 0;
+    if(__params->isGCorPolygonOnInit()) {
         if (is_valid_ptr(app)) __params->initial.customMaterial = app;
         else __params->initial.color = __params->color;
     }
 }
 
 void Turtle::setTextureScale(const Vector2& t)
-{ 
-  __params->texCoordScale = t; 
+{
+  __params->texCoordScale = t;
   if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale = t;
 }
 
 void Turtle::setTextureUScale(real_t u)
-{ 
-  __params->texCoordScale.x() = u; 
-  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.x() = u; 
+{
+  __params->texCoordScale.x() = u;
+  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.x() = u;
 }
 
 void Turtle::setTextureVScale(real_t v)
-{ 
-  __params->texCoordScale.y() = v; 
-  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.y() = v; 
+{
+  __params->texCoordScale.y() = v;
+  if(__params->isGCorPolygonOnInit()) __params->initial.texCoordScale.y() = v;
 }
 
-void Turtle::setTextureRotation(real_t angle, 
+void Turtle::setTextureRotation(real_t angle,
                                 const Vector2& center)
-{ 
-  __params->texCoordRotAngle = angle; 
+{
+  __params->texCoordRotAngle = angle;
   __params->texCoordRotCenter = center;
   if(__params->isGCorPolygonOnInit()){
-      __params->initial.texCoordRotAngle = angle; 
+      __params->initial.texCoordRotAngle = angle;
       __params->initial.texCoordRotCenter = center;
   }
 }
 
 void Turtle::setTextureTranslation(const Vector2& t)
-{ 	
-  __params->texCoordTranslation = t; 
+{
+  __params->texCoordTranslation = t;
   if(__params->isGCorPolygonOnInit()){
-      __params->initial.texCoordTranslation = t; 
+      __params->initial.texCoordTranslation = t;
   }
 }
 
-void Turtle::setTextureTransformation(const Vector2& scaling, const Vector2& translation, 
+void Turtle::setTextureTransformation(const Vector2& scaling, const Vector2& translation,
                                       real_t angle, const Vector2& rotcenter)
-{ 
+{
   setTextureScale(scaling);
   setTextureTranslation(translation);
   setTextureRotation(angle,rotcenter);
@@ -863,7 +863,7 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
       __params->customId = Shape::NOID;
       __params->customParentId = Shape::NOID;
   }
-  
+
   void Turtle::polygonPoint(){
       __params->pushPosition();
   }
@@ -875,48 +875,48 @@ void Turtle::oLineTo(const Vector3& v, real_t topradius )
       __params->customParentId = parentId;
       __params->pushPosition();
   }
-  
+
 void Turtle::stopGC(){
-	if(__params->pointList->size() > 1){
-		_generalizedCylinder(__params->pointList,
-							 __params->leftList,
-							 __params->radiusList,
-							 __params->initial.crossSection,
-							 __params->initial.crossSectionCCW);
-	}
+    if(__params->pointList->size() > 1){
+        _generalizedCylinder(__params->pointList,
+                             __params->leftList,
+                             __params->radiusList,
+                             __params->initial.crossSection,
+                             __params->initial.crossSectionCCW);
+    }
     __params->generalizedCylinder(false);
     __params->customId = Shape::NOID;
     __params->customParentId = Shape::NOID;
   }
-  
+
 void Turtle::setCrossSection(const Curve2DPtr& curve, bool ccw)
 {
-	_setCrossSection(curve, ccw, false);
+    _setCrossSection(curve, ccw, false);
 }
 
 void Turtle::setDefaultCrossSection(size_t slices)
 {
-	_setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true,true);
+    _setCrossSection(Curve2DPtr(Polyline2D::Circle(1,slices)),true,true);
 }
 
 void Turtle::_setCrossSection(const Curve2DPtr& curve, bool ccw, bool defaultSection)
 {
-	__params->crossSection = curve;
-	__params->crossSectionCCW = ccw;
-	__params->defaultSection = defaultSection;
-	if(__params->isGeneralizedCylinderOnInit())
-	{
-		__params->initial.crossSection = curve;
-		__params->initial.crossSectionCCW = ccw;
-		__params->initial.defaultSection = defaultSection;
-	}
+    __params->crossSection = curve;
+    __params->crossSectionCCW = ccw;
+    __params->defaultSection = defaultSection;
+    if(__params->isGeneralizedCylinderOnInit())
+    {
+        __params->initial.crossSection = curve;
+        __params->initial.crossSectionCCW = ccw;
+        __params->initial.defaultSection = defaultSection;
+    }
 }
 
-void  Turtle::setSectionResolution(uint_t resolution) 
-{ 
-	getParameters().sectionResolution = resolution; 
-	if ((__params->crossSection) && __params->defaultSection)
-		setDefaultCrossSection(resolution);
+void  Turtle::setSectionResolution(uint_t resolution)
+{
+    getParameters().sectionResolution = resolution;
+    if ((__params->crossSection) && __params->defaultSection)
+        setDefaultCrossSection(resolution);
 
 }
 
@@ -945,234 +945,234 @@ void  Turtle::setSectionResolution(uint_t resolution)
     } \
 
 void Turtle::setGuide(const Curve2DPtr& path, real_t length, bool yorientation, bool ccw)
-{ 
+{
     GET_PATH_INFO(path)
-    getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,actuallength,yorientation,ccw,arclengthParam)); 
+    getParameters().guide = TurtlePathPtr(new Turtle2DPath(path,length,actuallength,yorientation,ccw,arclengthParam));
 }
 
 void Turtle::setGuide(const LineicModelPtr& path, real_t length)
-{ 
+{
     GET_PATH_INFO(path)
-    getParameters().guide = TurtlePathPtr(new Turtle3DPath(path,length,actuallength,arclengthParam)); 
+    getParameters().guide = TurtlePathPtr(new Turtle3DPath(path,length,actuallength,arclengthParam));
 }
 
 
 void Turtle::setPositionOnGuide(real_t t)
-{ 
-	if(__params->guide) getParameters().guide->setPosition(t); 
-	else warning("Guide not set. Cannot set position on it.");
+{
+    if(__params->guide) getParameters().guide->setPosition(t);
+    else warning("Guide not set. Cannot set position on it.");
 }
 
 
 void Turtle::leftReflection()
 {
-	__params->reflection.y() = -__params->reflection.y();
+    __params->reflection.y() = -__params->reflection.y();
 }
 
 void Turtle::upReflection()
 {
-	__params->reflection.z() = -__params->reflection.z();
+    __params->reflection.z() = -__params->reflection.z();
 }
 
 void Turtle::headingReflection()
 {
-	__params->reflection.x() = -__params->reflection.x();
-	// __params->heading = - __params->heading;
+    __params->reflection.x() = -__params->reflection.x();
+    // __params->heading = - __params->heading;
 }
 
 
 void Turtle::_applyTropism() {
-	_tendTo(getTropism(),getElasticity());
+    _tendTo(getTropism(),getElasticity());
 }
 
 void Turtle::_applyGuide(real_t& l) {
-		bool local_ajustement = (fabs(l) < GEOM_EPSILON);
-		real_t current = __params->guide->__actualT;
-		if( current >= 1.0 && !local_ajustement) { 
-			__params->guide = TurtlePathPtr();
-			return;
-		}
-		if(__params->guide->is2D()){ 
-			Turtle2DPath * guide = (Turtle2DPath *)__params->guide.get();
-			// compute position parameter
-			Vector2 tangent;
-			if (local_ajustement) {
-				// In case of length 0, local tangent is used for redirection.
-				// assert(current < (1.0+GEOM_EPSILON));
-				tangent = guide->__path->getTangentAt(guide->__arclengthParam->getValue(current));
-			}
-			else {
-				// In case of displacement with significant length, direction to next point is used as new direction
-				real_t dt = (l/guide->__totalLength);
-				real_t next = current + dt;
-				real_t reminder = next - 1.0;
-				if (reminder > GEOM_EPSILON) { next = 1.0 ; }
-				real_t nextU = guide->__arclengthParam->getValue(next);
-				Vector2 lastpos = guide->__lastPosition;			
-				Vector2 nextpos = guide->__path->getPointAt(nextU);
-				// look if an offset is required to take into account the extra length out of the guide
-				real_t offset_length = 0;
-				Vector2 offset;
-				if (reminder > GEOM_EPSILON) {
-					// we work here in the space of the curve. so we use actualLength
-					offset_length = reminder * guide->__actualLength;
-					Vector2 endTangent = guide->__path->getTangentAt(nextU) ;
-					endTangent.normalize();
-					offset = endTangent * offset_length; 
-				}
-				tangent = (nextpos + offset) - lastpos ;
+        bool local_ajustement = (fabs(l) < GEOM_EPSILON);
+        real_t current = __params->guide->__actualT;
+        if( current >= 1.0 && !local_ajustement) {
+            __params->guide = TurtlePathPtr();
+            return;
+        }
+        if(__params->guide->is2D()){
+            Turtle2DPath * guide = (Turtle2DPath *)__params->guide.get();
+            // compute position parameter
+            Vector2 tangent;
+            if (local_ajustement) {
+                // In case of length 0, local tangent is used for redirection.
+                // assert(current < (1.0+GEOM_EPSILON));
+                tangent = guide->__path->getTangentAt(guide->__arclengthParam->getValue(current));
+            }
+            else {
+                // In case of displacement with significant length, direction to next point is used as new direction
+                real_t dt = (l/guide->__totalLength);
+                real_t next = current + dt;
+                real_t reminder = next - 1.0;
+                if (reminder > GEOM_EPSILON) { next = 1.0 ; }
+                real_t nextU = guide->__arclengthParam->getValue(next);
+                Vector2 lastpos = guide->__lastPosition;
+                Vector2 nextpos = guide->__path->getPointAt(nextU);
+                // look if an offset is required to take into account the extra length out of the guide
+                real_t offset_length = 0;
+                Vector2 offset;
+                if (reminder > GEOM_EPSILON) {
+                    // we work here in the space of the curve. so we use actualLength
+                    offset_length = reminder * guide->__actualLength;
+                    Vector2 endTangent = guide->__path->getTangentAt(nextU) ;
+                    endTangent.normalize();
+                    offset = endTangent * offset_length;
+                }
+                tangent = (nextpos + offset) - lastpos ;
 
-				// resize the length to be the equal to euclidian distance between the 2 points on the curve
-				l = (tangent.normalize() * guide->__scale);  // we translate this length in space of turtle by multiplying by scale
+                // resize the length to be the equal to euclidian distance between the 2 points on the curve
+                l = (tangent.normalize() * guide->__scale);  // we translate this length in space of turtle by multiplying by scale
 
-				current = next;
-				// save position parameter
-				guide->__lastPosition = nextpos;
-				guide->__actualT = current;
+                current = next;
+                // save position parameter
+                guide->__lastPosition = nextpos;
+                guide->__actualT = current;
 
-			}
-			// Estimate deviation and turn left accordingly
-			real_t deviation = angle(guide->__lastHeading,tangent);
-			if (guide->__ccw) deviation *= -1;
-			if (guide->__orientation == false){
-				Matrix3 m = Matrix3::axisRotation(__params->left,-deviation);
-				__params->heading = m*__params->heading;
-				__params->up = m*__params->up;
-			}
-			else {
-				Matrix3 m = Matrix3::axisRotation(__params->up,deviation);
-				__params->heading = m*__params->heading;
-				__params->left = m*__params->left;
-			}
-			// save position parameter
-			guide->__lastHeading = tangent;
-		}
-		else {
-			Turtle3DPath * guide = (Turtle3DPath *)__params->guide.get();
-			// compute position parameter
-			real_t current = guide->__actualT;
-			Vector3 tangent;
-			if (local_ajustement) {
-				// In case of length 0, local tangent is used for redirection.
-				tangent = guide->__path->getTangentAt(guide->__arclengthParam->getValue(current));
-				tangent.normalize();
-			}
-			else {
-				// In case of displacement with significant length, direction to next point is used as new direction
-				real_t dt = (l/guide->__totalLength);
-				real_t next = current + dt;
-				real_t reminder = next - 1.0;
-				if (reminder > GEOM_EPSILON) { next = 1.0 ; }
-				Vector3 lastpos = guide->__lastPosition;
-				real_t nextU = guide->__arclengthParam->getValue(next);
-				Vector3 nextpos = guide->__path->getPointAt(nextU);
-				// look if an offset is required to take into account the extra length out of the guide
-				real_t offset_length = 0;
-				Vector3 offset;
-				if (reminder > GEOM_EPSILON) {
-					// we work here in the space of the curve. so we use actualLength
-					offset_length = reminder * guide->__actualLength ;
-					Vector3 endTangent = guide->__path->getTangentAt(nextU) ;
-					endTangent.normalize();
-					offset = endTangent * offset_length; 
-				}
+            }
+            // Estimate deviation and turn left accordingly
+            real_t deviation = angle(guide->__lastHeading,tangent);
+            if (guide->__ccw) deviation *= -1;
+            if (guide->__orientation == false){
+                Matrix3 m = Matrix3::axisRotation(__params->left,-deviation);
+                __params->heading = m*__params->heading;
+                __params->up = m*__params->up;
+            }
+            else {
+                Matrix3 m = Matrix3::axisRotation(__params->up,deviation);
+                __params->heading = m*__params->heading;
+                __params->left = m*__params->left;
+            }
+            // save position parameter
+            guide->__lastHeading = tangent;
+        }
+        else {
+            Turtle3DPath * guide = (Turtle3DPath *)__params->guide.get();
+            // compute position parameter
+            real_t current = guide->__actualT;
+            Vector3 tangent;
+            if (local_ajustement) {
+                // In case of length 0, local tangent is used for redirection.
+                tangent = guide->__path->getTangentAt(guide->__arclengthParam->getValue(current));
+                tangent.normalize();
+            }
+            else {
+                // In case of displacement with significant length, direction to next point is used as new direction
+                real_t dt = (l/guide->__totalLength);
+                real_t next = current + dt;
+                real_t reminder = next - 1.0;
+                if (reminder > GEOM_EPSILON) { next = 1.0 ; }
+                Vector3 lastpos = guide->__lastPosition;
+                real_t nextU = guide->__arclengthParam->getValue(next);
+                Vector3 nextpos = guide->__path->getPointAt(nextU);
+                // look if an offset is required to take into account the extra length out of the guide
+                real_t offset_length = 0;
+                Vector3 offset;
+                if (reminder > GEOM_EPSILON) {
+                    // we work here in the space of the curve. so we use actualLength
+                    offset_length = reminder * guide->__actualLength ;
+                    Vector3 endTangent = guide->__path->getTangentAt(nextU) ;
+                    endTangent.normalize();
+                    offset = endTangent * offset_length;
+                }
 
-				tangent =  (nextpos + offset) - lastpos; 
+                tangent =  (nextpos + offset) - lastpos;
 
-				// resize the length to be the equal to euclidian distance between the 2 points on the curve
-				l = (tangent.normalize() * guide->__scale);  // we translate this length in space of turtle by multiplying by scale
+                // resize the length to be the equal to euclidian distance between the 2 points on the curve
+                l = (tangent.normalize() * guide->__scale);  // we translate this length in space of turtle by multiplying by scale
 
-				current = next;
-				// save position parameter
-				guide->__lastPosition = nextpos;
-			}
+                current = next;
+                // save position parameter
+                guide->__lastPosition = nextpos;
+            }
 
-			// Previous reference frame on the curve
-			const Vector3& prevH = guide->__lastHeading;
-			const Vector3& prevL = guide->__lastLeft;
-			const Vector3& prevU = guide->__lastUp;
+            // Previous reference frame on the curve
+            const Vector3& prevH = guide->__lastHeading;
+            const Vector3& prevL = guide->__lastLeft;
+            const Vector3& prevU = guide->__lastUp;
 
-			// Estimate new direction in Turtle Frame
-			Vector3 projected_tangent = Vector3(dot(tangent,prevH),
-												  dot(tangent,prevL),
-												  dot(tangent,prevU));
-			projected_tangent = __params->getOrientationMatrix() * projected_tangent;
-			projected_tangent.normalize();
+            // Estimate new direction in Turtle Frame
+            Vector3 projected_tangent = Vector3(dot(tangent,prevH),
+                                                  dot(tangent,prevL),
+                                                  dot(tangent,prevU));
+            projected_tangent = __params->getOrientationMatrix() * projected_tangent;
+            projected_tangent.normalize();
 
-			// Estimate deviation and turn accordingly
+            // Estimate deviation and turn accordingly
 
-			const Vector3 turtleHeading = getHeading();
-			// Estimate axis of rotation for turtle and frame on curve
-			Vector3 cp  = cross(turtleHeading,projected_tangent);
-			Vector3 cp2 = cross(prevH,tangent);
+            const Vector3 turtleHeading = getHeading();
+            // Estimate axis of rotation for turtle and frame on curve
+            Vector3 cp  = cross(turtleHeading,projected_tangent);
+            Vector3 cp2 = cross(prevH,tangent);
 
-			// Estimate angle of rotation (is similar in both case)
-			real_t sinus = norm( cp );
-			if (sinus > GEOM_EPSILON){
-				cp /= sinus;
-				real_t cosinus = dot( turtleHeading,projected_tangent);
-				real_t ang = atan2( sinus, cosinus );
-				// Transform turtle frame
-				transform(Matrix3::axisRotation(cp,ang));
-				// Compute curve frame transformation
-				cp2.normalize();
-				Matrix3 m = Matrix3::axisRotation(cp2,ang);
-				// compute new reference frame on the curve and save them in the guide
-				guide->__lastLeft = m * prevL;
-				guide->__lastLeft.normalize();
-				guide->__lastUp = m * prevU;
-				guide->__lastUp.normalize();
-			}
-			
-			// save curve parameter
-			guide->__lastHeading = tangent;
-			guide->__actualT = current;
-		}
+            // Estimate angle of rotation (is similar in both case)
+            real_t sinus = norm( cp );
+            if (sinus > GEOM_EPSILON){
+                cp /= sinus;
+                real_t cosinus = dot( turtleHeading,projected_tangent);
+                real_t ang = atan2( sinus, cosinus );
+                // Transform turtle frame
+                transform(Matrix3::axisRotation(cp,ang));
+                // Compute curve frame transformation
+                cp2.normalize();
+                Matrix3 m = Matrix3::axisRotation(cp2,ang);
+                // compute new reference frame on the curve and save them in the guide
+                guide->__lastLeft = m * prevL;
+                guide->__lastLeft.normalize();
+                guide->__lastUp = m * prevU;
+                guide->__lastUp.normalize();
+            }
+
+            // save curve parameter
+            guide->__lastHeading = tangent;
+            guide->__actualT = current;
+        }
 }
 
 void Turtle::_ajustToGuide()
 {
-	// Do a applyGuide of length 0.
-	// In this case local tangent will be used.
-	static real_t l = 0;
-	_applyGuide(l);
+    // Do a applyGuide of length 0.
+    // In this case local tangent will be used.
+    static real_t l = 0;
+    _applyGuide(l);
 }
 
 
 void Turtle::_tendTo(const Vector3& t, real_t strength)
 {
     Vector3 h = getHeading();
-	Vector3 cp = cross(h,t);
-	real_t sinus = norm( cp );
-	if (sinus > GEOM_EPSILON){
-		cp /= sinus;
-		real_t cosinus = dot( h,t );
-		real_t ang = atan2( sinus, cosinus );
-		transform(Matrix3::axisRotation(cp,ang*strength));
-	}
+    Vector3 cp = cross(h,t);
+    real_t sinus = norm( cp );
+    if (sinus > GEOM_EPSILON){
+        cp /= sinus;
+        real_t cosinus = dot( h,t );
+        real_t ang = atan2( sinus, cosinus );
+        transform(Matrix3::axisRotation(cp,ang*strength));
+    }
     else {
         real_t cosinus = dot( h,t );
         if (cosinus < GEOM_EPSILON){
-		    real_t ang = GEOM_PI;
-		    transform(Matrix3::axisRotation(getUp(),ang*strength));
+            real_t ang = GEOM_PI;
+            transform(Matrix3::axisRotation(getUp(),ang*strength));
         }
     }
 }
 
 
 void Turtle::sphere(real_t radius )
-{ 
+{
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for sphere"); }
-  else if (radius > GEOM_EPSILON) _sphere(radius); 
+  else if (radius > GEOM_EPSILON) _sphere(radius);
 }
 
 
 void Turtle::circle(real_t radius )
-{ 
+{
   if (radius < -GEOM_EPSILON)
   { warning("Invalid radius for circle"); }
-  else if (radius > GEOM_EPSILON) _circle(radius); 
+  else if (radius > GEOM_EPSILON) _circle(radius);
 }
 
 void Turtle::box(real_t length,real_t topradius){
@@ -1225,30 +1225,30 @@ void Turtle::quad(real_t length,real_t topradius){
   }
 
 void Turtle::label(const std::string& text, int size )
-{ 
-	if(!text.empty())_label(text, size); 
-	else warning("Invalid text for label");
+{
+    if(!text.empty())_label(text, size);
+    else warning("Invalid text for label");
 }
 
 void Turtle::surface(const std::string& name, real_t scale)
-{ 
-	if (!name.empty() && scale > GEOM_EPSILON) _surface(name,scale); 
-	else {
-		if(name.empty()) warning("Invalid name for surface");
-		if(scale < -GEOM_EPSILON) warning("Invalid scale for surface");
-	}
+{
+    if (!name.empty() && scale > GEOM_EPSILON) _surface(name,scale);
+    else {
+        if(name.empty()) warning("Invalid name for surface");
+        if(scale < -GEOM_EPSILON) warning("Invalid scale for surface");
+    }
 }
 
 void Turtle::frame(real_t scale, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency )
 {
-	color = max<real_t>(0,min<real_t>(1,color));
-	transparency = max<real_t>(0,min<real_t>(1,transparency));
-	if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _frame(scale,cap_heigth_ratio,cap_radius_ratio,color, transparency); 
-	else {
-		if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
-		if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
-		if(cap_radius_ratio < GEOM_EPSILON) warning("Invalid cap_radius_ratio for frame. Should be positive.");
-	}
+    color = max<real_t>(0,min<real_t>(1,color));
+    transparency = max<real_t>(0,min<real_t>(1,transparency));
+    if (scale > GEOM_EPSILON && cap_heigth_ratio < 1 && cap_heigth_ratio > 0) _frame(scale,cap_heigth_ratio,cap_radius_ratio,color, transparency);
+    else {
+        if(scale < GEOM_EPSILON) warning("Invalid scale for frame. Should be positive");
+        if(cap_heigth_ratio > 1 || cap_heigth_ratio < 0) warning("Invalid cap_heigth_ratio for frame. Should be in [0,1].");
+        if(cap_radius_ratio < GEOM_EPSILON) warning("Invalid cap_radius_ratio for frame. Should be positive.");
+    }
 }
 
 void Turtle::sweep(const Curve2DPtr& path, const Curve2DPtr& section, real_t length, real_t dl, real_t radius, const QuantisedFunctionPtr radiusvariation)
@@ -1264,17 +1264,17 @@ void Turtle::sweep(const LineicModelPtr& path, const Curve2DPtr& section, real_t
 
 void Turtle::_sweep(real_t length, real_t topradius)
 {
-	// default sweep
-	Point3ArrayPtr points(new Point3Array(getPosition(),getPosition()+getHeading()*length));
-	std::vector<Vector3> left;
-	left.push_back(getLeft());
-	left.push_back(getLeft());
-	std::vector<real_t> radius;
-	radius.push_back(getWidth());
-	radius.push_back(topradius);
-	_generalizedCylinder(points, left, radius,
-						 __params->crossSection,
-						 __params->crossSectionCCW, true);
+    // default sweep
+    Point3ArrayPtr points(new Point3Array(getPosition(),getPosition()+getHeading()*length));
+    std::vector<Vector3> left;
+    left.push_back(getLeft());
+    left.push_back(getLeft());
+    std::vector<real_t> radius;
+    radius.push_back(getWidth());
+    radius.push_back(topradius);
+    _generalizedCylinder(points, left, radius,
+                         __params->crossSection,
+                         __params->crossSectionCCW, true);
 }
 /*----------------------------------------------------------*/
 
@@ -1289,7 +1289,7 @@ PglTurtle::PglTurtle(TurtleParam * param):
 }
 
 PglTurtle::~PglTurtle() { }
- 
+
 void PglTurtle::reset(){
   resetValues();
   __scene = ScenePtr(new Scene());
@@ -1345,11 +1345,11 @@ PglTurtle::getColorList() const{
    return __appList;
 }
 
-void 
+void
 PglTurtle::setColorList(const std::vector<AppearancePtr>& applist){
     __appList = applist;
 }
-    
+
 void PglTurtle::clearSurfaceList(){
    __surfList.clear();
 }
@@ -1358,7 +1358,7 @@ const PglTurtle::SurfaceMap&
 PglTurtle::getSurfaceList() const {
    return __surfList;
 }
-    
+
 void PglTurtle::defaultValue(){
   __appList.clear();
   __surfList.clear();
@@ -1408,9 +1408,9 @@ void PglTurtle::setMaterial(size_t pos, const AppearancePtr& mat){
 
 AppearancePtr PglTurtle::getMaterial(size_t pos){
     if (pos >= __appList.size()) {
-		size_t i = __appList.size();
-		while (i <= pos)
-			__appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
+        size_t i = __appList.size();
+        while (i <= pos)
+            __appList.push_back(AppearancePtr(new Material("Color_"+TOOLS(number(i++)))));
     }
     return __appList[pos];
 }
@@ -1424,30 +1424,30 @@ void PglTurtle::setColorAt(size_t pos, const Color3& mat){
   else __appList[pos] = AppearancePtr(new Material("Color_"+TOOLS(number(pos)),mat));
 }
 
-void 
+void
 PglTurtle::appendColor(uint_t red, uint_t green, uint_t blue)
 { appendColor(Color3(red,green,blue)); }
 
-void 
+void
 PglTurtle::appendColor(float red, float green, float blue)
 { appendColor(Color3((uchar_t)red*255,(uchar_t)green*255,(uchar_t)blue*255)); }
 
-void 
+void
 PglTurtle::appendColor(const Color3& mat)
 { __appList.push_back(AppearancePtr(new Material(mat))); }
-    
-void 
+
+void
 PglTurtle::setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue )
 { setColorAt(pos,Color3(red,green,blue)); }
 
-void 
+void
 PglTurtle::setColorAt(size_t pos, float red, float green, float blue )
 { setColorAt(pos,Color3((uchar_t)red*255,(uchar_t)green*255,(uchar_t)blue*255)); }
 
 
 void PglTurtle::removeColor(size_t pos){
   if (__appList.size() > pos){
-	__appList.erase(__appList.begin()+pos);
+    __appList.erase(__appList.begin()+pos);
   }
 }
 
@@ -1455,84 +1455,84 @@ void PglTurtle::removeSurface(const string& name){
   SurfaceMap::iterator it = __surfList.find(name);
   if(it != __surfList.end())__surfList.erase(it);
 }
-    
+
 GeometryPtr PglTurtle::getSurface(const string& name){
   SurfaceMap::iterator it = __surfList.find(name);
   if(it != __surfList.end())return it->second;
   else return GeometryPtr();
 }
-    
+
 AppearancePtr PglTurtle::getCurrentMaterial() const{
     if (__params->customMaterial) return __params->customMaterial;
-	if (getColor() < __appList.size()){
-		AppearancePtr res = __appList[getColor()];
-		if (res->isTexture()){
-			real_t texshiftY = __params->axialLength;
-			Vector2 texshift(0,texshiftY*__params->texCoordScale.y());
-			if ( norm(texshift) > GEOM_EPSILON || __params->texCoordScale != Vector2(1,1) || 
-				 __params->texCoordTranslation != Vector2(0,0) ||
-				 __params->texCoordRotAngle != 0){
+    if (getColor() < __appList.size()){
+        AppearancePtr res = __appList[getColor()];
+        if (res->isTexture()){
+            real_t texshiftY = __params->axialLength;
+            Vector2 texshift(0,texshiftY*__params->texCoordScale.y());
+            if ( norm(texshift) > GEOM_EPSILON || __params->texCoordScale != Vector2(1,1) ||
+                 __params->texCoordTranslation != Vector2(0,0) ||
+                 __params->texCoordRotAngle != 0){
 
-			    Texture2DPtr tex = new Texture2D(
-				    dynamic_pointer_cast<Texture2D>(res)->getImage(),
-				    new Texture2DTransformation(__params->texCoordScale,
-											__params->texCoordTranslation + texshift, 
-											__params->texCoordRotCenter,
-											__params->texCoordRotAngle*GEOM_RAD),
+                Texture2DPtr tex = new Texture2D(
+                    dynamic_pointer_cast<Texture2D>(res)->getImage(),
+                    new Texture2DTransformation(__params->texCoordScale,
+                                            __params->texCoordTranslation + texshift,
+                                            __params->texCoordRotCenter,
+                                            __params->texCoordRotAngle*GEOM_RAD),
                     __params->texBaseColor);
-			   return AppearancePtr(tex);
-			}
+               return AppearancePtr(tex);
+            }
             else if(__params->texBaseColor != Texture2D::DEFAULT_BASECOLOR){
                 Texture2DPtr tex = new Texture2D(
                     dynamic_pointer_cast<Texture2D>(res)->getImage(),
-                    Texture2DTransformationPtr(0), 
+                    Texture2DTransformationPtr(0),
                     __params->texBaseColor);
                return AppearancePtr(tex);
 
             }
-		}
+        }
         return res;
-	}
+    }
    else return AppearancePtr(new Material("Color_"+TOOLS(number(getColor()))));
 }
 
 AppearancePtr PglTurtle::getCurrentInitialMaterial() const{
     if (__params->initial.customMaterial) return __params->initial.customMaterial;
-	if (__params->initial.color < __appList.size()){
-		AppearancePtr res = __appList[__params->initial.color];
-		if (res->isTexture() ){
+    if (__params->initial.color < __appList.size()){
+        AppearancePtr res = __appList[__params->initial.color];
+        if (res->isTexture() ){
 
-            if (__params->initial.texCoordScale != Vector2(1,1) || 
-				__params->initial.texCoordTranslation != Vector2(0,0) ||
-				__params->initial.texCoordRotAngle != 0){
-        			Texture2DPtr tex = new Texture2D(
-        				dynamic_pointer_cast<Texture2D>(res)->getImage(),
-        				new Texture2DTransformation(__params->initial.texCoordScale,
-        											__params->initial.texCoordTranslation,
-        											__params->initial.texCoordRotCenter,
-        											__params->initial.texCoordRotAngle*GEOM_RAD),
+            if (__params->initial.texCoordScale != Vector2(1,1) ||
+                __params->initial.texCoordTranslation != Vector2(0,0) ||
+                __params->initial.texCoordRotAngle != 0){
+                    Texture2DPtr tex = new Texture2D(
+                        dynamic_pointer_cast<Texture2D>(res)->getImage(),
+                        new Texture2DTransformation(__params->initial.texCoordScale,
+                                                    __params->initial.texCoordTranslation,
+                                                    __params->initial.texCoordRotCenter,
+                                                    __params->initial.texCoordRotAngle*GEOM_RAD),
                         __params->initial.texBaseColor);
-        			return AppearancePtr(tex);
+                    return AppearancePtr(tex);
             }
             else if(__params->initial.texBaseColor != Texture2D::DEFAULT_BASECOLOR){
                 Texture2DPtr tex = new Texture2D(
                     dynamic_pointer_cast<Texture2D>(res)->getImage(),
-                    Texture2DTransformationPtr(0), 
+                    Texture2DTransformationPtr(0),
                     __params->initial.texBaseColor);
                 return AppearancePtr(tex);
 
             }
-		}
+        }
         return res;
-	}
+    }
    else return AppearancePtr(new Material("Color_"+TOOLS(number(__params->initial.color))));
 }
 
 void PglTurtle::customGeometry(const GeometryPtr smb, real_t scale)
 {
-	if( FABS(scale) > GEOM_EPSILON){
+    if( FABS(scale) > GEOM_EPSILON){
     PlanarModelPtr _2Dtest = dynamic_pointer_cast<PlanarModel>(smb);
-    if (is_valid_ptr(_2Dtest) && __params->screenCoordinates) 
+    if (is_valid_ptr(_2Dtest) && __params->screenCoordinates)
       _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,GeometryPtr(new Oriented(Vector3(0,1,0),Vector3(0,0,1),smb)))),false));
     else _addToScene(transform(GeometryPtr(new Scaled(getScale()*scale,smb)),false));
   }
@@ -1555,7 +1555,7 @@ void PglTurtle::pglShape(const ScenePtr scene, real_t scale)
 {
     AppearancePtr prevapp  = __params->customMaterial;
     for(Scene::const_iterator it = scene->begin(); it != scene->end(); ++it){
-        PGL::ShapePtr sh = dynamic_pointer_cast<PGL::Shape>(*it);
+        ShapePtr sh = dynamic_pointer_cast<Shape>(*it);
         if (sh) {
             setCustomAppearance(sh->getAppearance());
             customGeometry(sh->getGeometry());
@@ -1565,15 +1565,15 @@ void PglTurtle::pglShape(const ScenePtr scene, real_t scale)
 }
 
 
-GeometryPtr 
+GeometryPtr
 PglTurtle::transform(const GeometryPtr& o, bool scaled) const{
   GeometryPtr obj = o;
   if ( scaled && getScale() !=  Vector3(1,1,1) &&
-	  (getScale().x() != getScale().y() || 
-	   getScale().y() != getScale().z() ))
+      (getScale().x() != getScale().y() ||
+       getScale().y() != getScale().z() ))
        obj = GeometryPtr(new Scaled(getScale(),obj));
-  if ( getUp() != Vector3::OX || 
-	   getLeft()   != -Vector3::OY )
+  if ( getUp() != Vector3::OX ||
+       getLeft()   != -Vector3::OY )
        obj = GeometryPtr(new Oriented(getUp(),-getLeft(),obj));
   if ( getPosition() != Vector3::ORIGIN )
        obj = GeometryPtr(new Translated(getPosition(),obj));
@@ -1589,7 +1589,7 @@ void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePt
       mgeom = GeometryPtr(new ScreenProjected(GeometryPtr(new Oriented(Vector3(0,0,1),Vector3(1,0,0),mgeom)),false));
 
    if (custompid)
-	   __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
+       __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentInitialMaterial(),__params->customId,__params->customParentId)));
    else{
      uint_t pid = parentId;
      __scene->add(Shape3DPtr(new Shape(mgeom,app?app:getCurrentMaterial(),popId(),pid)));
@@ -1598,43 +1598,43 @@ void PglTurtle::_addToScene(const GeometryPtr geom, bool custompid, AppearancePt
 
 void PglTurtle::_frustum(real_t length, real_t topradius){
   if (fabs(length) > GEOM_EPSILON) {
-	GeometryPtr a;
+    GeometryPtr a;
 
-	real_t width = getWidth();
-	if(FABS(width) > GEOM_EPSILON){
-		real_t taper = topradius/width;
-		if ( getScale() !=  Vector3(1,1,1) &&
-			(getScale().x() == getScale().y() ))
-			width *= getScale().x();
-		if (FABS(taper) < GEOM_EPSILON)
-			a = GeometryPtr(new Cone(width,length*getScale().z(),false,getParameters().sectionResolution));
-		else if (FABS(taper-1.0) < GEOM_EPSILON)
-			a = GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution));
-		else
-			a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false,getParameters().sectionResolution));
-		_addToScene(transform(a));
-	}
-	else {
-		if (FABS(topradius) < GEOM_EPSILON){
-			Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-			pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
-			a = GeometryPtr(new Polyline(pts));
+    real_t width = getWidth();
+    if(FABS(width) > GEOM_EPSILON){
+        real_t taper = topradius/width;
+        if ( getScale() !=  Vector3(1,1,1) &&
+            (getScale().x() == getScale().y() ))
+            width *= getScale().x();
+        if (FABS(taper) < GEOM_EPSILON)
+            a = GeometryPtr(new Cone(width,length*getScale().z(),false,getParameters().sectionResolution));
+        else if (FABS(taper-1.0) < GEOM_EPSILON)
+            a = GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution));
+        else
+            a = GeometryPtr(new Frustum(width,length*getScale().z(),taper,false,getParameters().sectionResolution));
+        _addToScene(transform(a));
+    }
+    else {
+        if (FABS(topradius) < GEOM_EPSILON){
+            Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
+            pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
+            a = GeometryPtr(new Polyline(pts));
 
-		}
-		else {
-			real_t _topradius = topradius;
-			if ( getScale() !=  Vector3(1,1,1) &&
-				(getScale().x() == getScale().y() && 
-				getScale().y() == getScale().z() ))
-				_topradius *= getScale().x();
-			a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
-			if (getLeft() != Vector3::OX || 
-				getUp() != -Vector3::OY)
-				a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
-			a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
-		}
-		_addToScene(a);
-	}
+        }
+        else {
+            real_t _topradius = topradius;
+            if ( getScale() !=  Vector3(1,1,1) &&
+                (getScale().x() == getScale().y() &&
+                getScale().y() == getScale().z() ))
+                _topradius *= getScale().x();
+            a = GeometryPtr(new Cone(_topradius,length*getScale().z(),false,getParameters().sectionResolution));
+            if (getLeft() != Vector3::OX ||
+                getUp() != -Vector3::OY)
+                a = GeometryPtr(new Oriented(getLeft(),-getUp(),a));
+            a = GeometryPtr(new Translated(getPosition()+getHeading()*length*getScale().z(),a));
+        }
+        _addToScene(a);
+    }
   }
 }
 
@@ -1642,15 +1642,15 @@ void PglTurtle::_cylinder(real_t length){
   if (fabs(length) > GEOM_EPSILON) {
       real_t width = getWidth();
       if(FABS(width) < GEOM_EPSILON){
-    	  Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
-    	  pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
+          Point3ArrayPtr pts = Point3ArrayPtr(new Point3Array(2,getPosition()));
+          pts->setAt(1,getPosition()+getHeading()*length*getScale().z());
           _addToScene(GeometryPtr(new Polyline(pts)));
       }
       else {
-    	if ( getScale() !=  Vector3(1,1,1) &&
-    		(getScale().x() == getScale().y() ))
-    		width *= getScale().x();
-    	_addToScene(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution))));
+        if ( getScale() !=  Vector3(1,1,1) &&
+            (getScale().x() == getScale().y() ))
+            width *= getScale().x();
+        _addToScene(transform(GeometryPtr(new Cylinder(width,length*getScale().z(),false,getParameters().sectionResolution))));
       }
   }
 }
@@ -1706,7 +1706,7 @@ void PglTurtle::_quad(real_t length, real_t botradius,  real_t topradius){
         points->push_back(toppos-getLeft()*topradius);
         points->push_back(toppos+getLeft()*topradius);
     }
-    
+
     switch (points->size()){
         case 2:
             a = GeometryPtr(new Polyline(points));
@@ -1736,22 +1736,22 @@ GeometryPtr PglTurtle::DEFAULT_SPHERE;
 
 void PglTurtle::_sphere(real_t radius){
   if (getParameters().sectionResolution == Cylinder::DEFAULT_SLICES){
-	  if (is_null_ptr(DEFAULT_SPHERE))DEFAULT_SPHERE = GeometryPtr(new Sphere(1));
-	  _addToScene(transform(GeometryPtr(new Scaled(getScale() * radius,DEFAULT_SPHERE)),false));
-	  
+      if (is_null_ptr(DEFAULT_SPHERE))DEFAULT_SPHERE = GeometryPtr(new Sphere(1));
+      _addToScene(transform(GeometryPtr(new Scaled(getScale() * radius,DEFAULT_SPHERE)),false));
+
   }
   else {
-	  bool anisotropicscaling = true;
-	  if ( getScale() !=  Vector3(1,1,1) &&
-			(getScale().x() == getScale().y() && 
-			 getScale().y() == getScale().z() ))
-	  {
-			anisotropicscaling = false;
-	  }
-	  if (anisotropicscaling)
-			_addToScene(transform(GeometryPtr(new Sphere(radius * getScale().x(),getParameters().sectionResolution,getParameters().sectionResolution)),false));
-	  else
-		  _addToScene(transform(GeometryPtr(new Sphere(radius,getParameters().sectionResolution,getParameters().sectionResolution))));
+      bool anisotropicscaling = true;
+      if ( getScale() !=  Vector3(1,1,1) &&
+            (getScale().x() == getScale().y() &&
+             getScale().y() == getScale().z() ))
+      {
+            anisotropicscaling = false;
+      }
+      if (anisotropicscaling)
+            _addToScene(transform(GeometryPtr(new Sphere(radius * getScale().x(),getParameters().sectionResolution,getParameters().sectionResolution)),false));
+      else
+          _addToScene(transform(GeometryPtr(new Sphere(radius,getParameters().sectionResolution,getParameters().sectionResolution))));
   }
 }
 
@@ -1761,31 +1761,31 @@ GeometryPtr PglTurtle::getCircle(real_t radius) const{
    real_t angdelta = (2*GEOM_PI)/res;
    real_t angle = 0;
    for (int i = 1; i < res; i++){
-	 angle += angdelta;
+     angle += angdelta;
      pts->setAt(i,Vector3(0,cos(angle),sin(angle)));
    }
    pts->setAt(res,Vector3(0,1,0));
    Vector3 scale = getScale()* radius;
    return GeometryPtr(new Scaled(scale,GeometryPtr(new Polyline(pts))));
 }
- 
-void 
+
+void
 PglTurtle::_circle(real_t radius){
   if (radius < GEOM_EPSILON)
   { warning("Invalid radius for circle"); return; }
   real_t rad = radius;
   if ( getScale() !=  Vector3(1,1,1) &&
-		(getScale().x() == getScale().y() && 
-		 getScale().y() == getScale().z() ))
-		rad *= getScale().x();
+        (getScale().x() == getScale().y() &&
+         getScale().y() == getScale().z() ))
+        rad *= getScale().x();
   _addToScene(transform(GeometryPtr(new AxisRotated(Vector3::OY,GEOM_HALF_PI,GeometryPtr(new Disc(rad,getParameters().sectionResolution)) )) ));
 //   __scene->add(Shape(transform(getCircle(radius),false),getCurrentMaterial()));
 }
-    
+
 void PglTurtle::_surface(const string& name,real_t scale){
   SurfaceMap::const_iterator it = __surfList.find(name);
   if (it == __surfList.end()){
- 	error("Unknown surface '" + name + '\'');
+    error("Unknown surface '" + name + '\'');
   }
   GeometryPtr obj(new Scaled(getScale()*scale,it->second));
   _addToScene(transform(obj,false));
@@ -1793,15 +1793,15 @@ void PglTurtle::_surface(const string& name,real_t scale){
 
 #include "plantgl/algo/base/tesselator.h"
 
-void 
+void
 PglTurtle::_polygon(const Point3ArrayPtr& pointList, bool concavetest){
   size_t s = pointList->size();
   Point3ArrayPtr points ;
   if (norm(pointList->getAt(0) - pointList->getAt(s-1)) < GEOM_EPSILON){
-	  points = Point3ArrayPtr(new Point3Array(pointList->begin(),pointList->end()-1));
-	  s -= 1;
+      points = Point3ArrayPtr(new Point3Array(pointList->begin(),pointList->end()-1));
+      s -= 1;
   }
-  else 	points = Point3ArrayPtr(new Point3Array(*pointList));
+  else  points = Point3ArrayPtr(new Point3Array(*pointList));
 
   if (s > 2 && concavetest){
       Vector3 v0 = points->getAt(0), v1 = points->getAt(1), v2 = points->getAt(2);
@@ -1819,7 +1819,7 @@ PglTurtle::_polygon(const Point3ArrayPtr& pointList, bool concavetest){
       for(Point3Array::const_iterator itP = points->begin()+1; itP != points->end(); ++itP, ++itP2){
             Vector3 res = *itP - v0;
             *itP2 = Vector2(dot(res,i),dot(res,j));
-            if( itP2 != points2->begin()) 
+            if( itP2 != points2->begin())
                 assert(norm(*itP2-*(itP2-1)) > GEOM_EPSILON);
       }
       IndexArrayPtr iarray = polygonization(points2,eConvexTriangulation);
@@ -1827,35 +1827,35 @@ PglTurtle::_polygon(const Point3ArrayPtr& pointList, bool concavetest){
       _addToScene(t,true);
   }
   else {
-	Index3ArrayPtr ind(new Index3Array(s-2));
-	for (int i=0; i < s-2; i++) 
-	    ind->setAt(i,Index3(0,i+1,i+2));
-	GeometryPtr t = GeometryPtr(new TriangleSet(points,ind));
+    Index3ArrayPtr ind(new Index3Array(s-2));
+    for (int i=0; i < s-2; i++)
+        ind->setAt(i,Index3(0,i+1,i+2));
+    GeometryPtr t = GeometryPtr(new TriangleSet(points,ind));
     _addToScene(t,true);
   }
 }
 
-void 
+void
 PglTurtle::_generalizedCylinder(const Point3ArrayPtr& points,
-								const vector<Vector3>& leftList,
-								const vector<real_t>& radiusList,
-								const Curve2DPtr& crossSection,
-								bool crossSectionCCW,
-								bool currentcolor){
+                                const vector<Vector3>& leftList,
+                                const vector<real_t>& radiusList,
+                                const Curve2DPtr& crossSection,
+                                bool crossSectionCCW,
+                                bool currentcolor){
   if (points->size() == 2 && norm(points->getAt(0) - points->getAt(1)) < GEOM_EPSILON) return;
   LineicModelPtr axis = LineicModelPtr(new Polyline(Point3ArrayPtr(
-						  new Point3Array(*points))));
+                          new Point3Array(*points))));
   Point2ArrayPtr radius(new Point2Array(radiusList.size()));
   Point2Array::iterator it2 = radius->begin();
   for (std::vector<real_t>::const_iterator it = radiusList.begin();
-		it != radiusList.end(); it++){
-		  *it2 = Vector2(*it,*it); it2++;
+        it != radiusList.end(); it++){
+          *it2 = Vector2(*it,*it); it2++;
   }
   Curve2DPtr mcrossSection = crossSection;
   if (!mcrossSection) {
-	  mcrossSection = Curve2DPtr(Polyline2D::Circle(1,__params->sectionResolution));
-	  crossSectionCCW = true;
-	  // error("Invalid cross section");
+      mcrossSection = Curve2DPtr(Polyline2D::Circle(1,__params->sectionResolution));
+      crossSectionCCW = true;
+      // error("Invalid cross section");
   }
   assert (mcrossSection);
   Extrusion * extrusion = new Extrusion(axis,mcrossSection,radius);
@@ -1865,13 +1865,13 @@ PglTurtle::_generalizedCylinder(const Point3ArrayPtr& points,
 }
 
 void
-PglTurtle::_label(const string& text, int size ){ 
+PglTurtle::_label(const string& text, int size ){
   FontPtr font;
   if (size > 0) font = FontPtr(new Font("",size));
   if (__params->screenCoordinates){
     Vector3 p = (getPosition() + Vector3(1,1,1))*50;
      _addToScene(GeometryPtr(new Text(text, Vector3(p.y(),p.z(),p.x()) , true, font)), false, NULL, false);
-    
+
   }
   else {
     GeometryPtr obj(new Text(text, Vector3(0,0,0), false, font));
@@ -1890,27 +1890,27 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
   GroupPtr group;
   real_t lengthstick = heigth*(1-cap_heigth_ratio);
   if ( cap_heigth_ratio > 0 && cap_radius_ratio > 0) {
-	 GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
-	 if ( cap_heigth_ratio < 1) {
-		 group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
-		 group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
-		 arrow = group;
-	 }
-	 else arrow = cap;
+     GeometryPtr cap(new Cone(getWidth()*cap_radius_ratio,heigth*cap_heigth_ratio,true,getParameters().sectionResolution));
+     if ( cap_heigth_ratio < 1) {
+         group = GroupPtr(new Group(GeometryArrayPtr(new GeometryArray(2))));
+         group->getGeometryList()->setAt(0,GeometryPtr(new Translated(Vector3(0,0,lengthstick),cap)));
+         arrow = group;
+     }
+     else arrow = cap;
   }
   if ( lengthstick > GEOM_EPSILON) {
-	 GeometryPtr stick(new Cylinder(getWidth(),lengthstick,true,getParameters().sectionResolution));
-	 if (group) group->getGeometryList()->setAt(1,stick);
-	 else arrow = stick;
+     GeometryPtr stick(new Cylinder(getWidth(),lengthstick,true,getParameters().sectionResolution));
+     if (group) group->getGeometryList()->setAt(1,stick);
+     else arrow = stick;
   }
   arrow->setName("Frame_"+number(arrow->getId()));
   AppearancePtr hmat(HEADING_FRAME_MATERIAL);
   AppearancePtr umat(UP_FRAME_MATERIAL);
   AppearancePtr lmat(LEFT_FRAME_MATERIAL);
   if( color < (1.0- GEOM_EPSILON) || transparency > GEOM_EPSILON){
-	  hmat = new Material(Color3(int(250 * color),int(50*color),int(50*color)),transparency);
-	  umat = new Material(Color3(int(50*color),int(50*color),int(250 * color)),transparency);
-	  lmat = new Material(Color3(int(50*color),int(250 * color),int(50*color)),transparency);
+      hmat = new Material(Color3(int(250 * color),int(50*color),int(50*color)),transparency);
+      umat = new Material(Color3(int(50*color),int(50*color),int(250 * color)),transparency);
+      lmat = new Material(Color3(int(50*color),int(250 * color),int(50*color)),transparency);
   }
   _addToScene(transform(arrow,false),false,hmat);
   _addToScene(transform(GeometryPtr(new Oriented(Vector3(1,0,0),Vector3(0,0,1),arrow)),false),false,lmat);
@@ -1919,18 +1919,18 @@ void PglTurtle::_frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius
 
 
 ScenePtr PglTurtle::partialView(){
-	ScenePtr currentscene = new Scene(*__scene);
+    ScenePtr currentscene = new Scene(*__scene);
     if(__params->isGeneralizedCylinderOn()){
-	  if(__params->pointList->size() > 1){
-		_generalizedCylinder(__params->pointList,
-						   __params->leftList,
-						   __params->radiusList,
-						   __params->initial.crossSection,
-						   __params->initial.crossSectionCCW);
-	  }
+      if(__params->pointList->size() > 1){
+        _generalizedCylinder(__params->pointList,
+                           __params->leftList,
+                           __params->radiusList,
+                           __params->initial.crossSection,
+                           __params->initial.crossSectionCCW);
+      }
     }
-	frame();
-	ScenePtr result = __scene;
-	__scene = currentscene;
-	return result;
+    frame();
+    ScenePtr result = __scene;
+    __scene = currentscene;
+    return result;
 }

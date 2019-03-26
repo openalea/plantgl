@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon
  *
@@ -78,57 +78,57 @@ protected:
         IteratorStack __stack;
 
         // Pop pointers value from the stack
-        inline void pop() 
-        {  
-            NodeIteratorPair p = __stack.top(); 
-            __current = p.first;  __current_end = p.second; 
+        inline void pop()
+        {
+            NodeIteratorPair p = __stack.top();
+            __current = p.first;  __current_end = p.second;
             __stack.pop();
         }
 
         // Push pointers value into the stack
-        inline void push() 
-        { 
-            __stack.push( NodeIteratorPair(__current, __current_end)); 
+        inline void push()
+        {
+            __stack.push( NodeIteratorPair(__current, __current_end));
         }
 
         // advance in the traversal
         virtual void increment() {}
 
-        void multi_increment(int i) { 
+        void multi_increment(int i) {
             for (int j = 0 ; j < i; ++j) increment();
         }
 
 public:
 
         NodeListConstIterator(ListOfNodeListPtr children, value_t root):
-            __children(children), 
+            __children(children),
             __root(root),
             __root_given(false),
-            __current((*children)[root].begin()), 
-            __current_end((*children)[root].end()), 
+            __current((*children)[root].begin()),
+            __current_end((*children)[root].end()),
             __stack()
             {
             }
 
-        virtual ~NodeListConstIterator() { 
+        virtual ~NodeListConstIterator() {
         }
 
         // Check if we are at the end of the iteration
-        inline bool atEnd() const 
-        { 
-            return __root_given &&  __atEnd(); 
+        inline bool atEnd() const
+        {
+            return __root_given &&  __atEnd();
         }
 
         // value access operator for iterator
-        inline value_t operator*() const 
-        { 
-            return *__current; 
+        inline value_t operator*() const
+        {
+            return *__current;
         }
 
         // return pointer to node
         inline pointer_t operator->() const
-		{	
-            return __current.operator->(); 
+        {
+            return __current.operator->();
         }
 
                 // compare two iterators
@@ -143,9 +143,9 @@ public:
 
 protected:
         // Check if we are at the end of the recursion
-        inline bool __atEnd() const 
-        { 
-            return __current == __current_end && __stack.empty(); 
+        inline bool __atEnd() const
+        {
+            return __current == __current_end && __stack.empty();
         }
 
 
@@ -153,7 +153,7 @@ protected:
 
 template<class ListOfNodeList, class ListOfNodeListPtr = const ListOfNodeList*>
 class PreOrderConstIterator  : public NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr> {
-public: 
+public:
         typedef NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr>  BaseType;
         typedef typename BaseType::value_t value_t;
         typedef typename BaseType::pointer_t pointer_t;
@@ -161,12 +161,12 @@ protected:
         typedef typename BaseType::NodeList NodeList;
 
 protected:
-	using BaseType::__root_given;
-	using BaseType::__root;
-	using BaseType::__current;
-	using BaseType::__current_end;
-	using BaseType::__children;
-	using BaseType::__stack;
+    using BaseType::__root_given;
+    using BaseType::__root;
+    using BaseType::__current;
+    using BaseType::__current_end;
+    using BaseType::__children;
+    using BaseType::__stack;
 
         // advance in the traversal
         virtual void increment() {
@@ -184,7 +184,7 @@ protected:
                 else {
                     if (__current != __current_end) ++__current;
                     while (__current == __current_end && !__stack.empty()) {
-                        BaseType::pop(); 
+                        BaseType::pop();
                         if (__current != __current_end) ++__current;
                     }
                 }
@@ -198,47 +198,47 @@ public:
             {
             }
 
-        virtual ~PreOrderConstIterator() { 
+        virtual ~PreOrderConstIterator() {
         }
 
         // value access operator for iterator
-        inline value_t operator*() const 
-        { 
+        inline value_t operator*() const
+        {
             if (!__root_given) return __root;
-            else return *__current; 
+            else return *__current;
         }
 
         // return pointer to node
         inline pointer_t operator->() const
-		{	
+        {
             if (!__root_given) return &__root;
-            else return __current.operator->(); 
+            else return __current.operator->();
         }
 
         // pre increment operator for iterator
-        inline PreOrderConstIterator& operator++() 
-        { 
-            increment(); 
-            return *this; 
+        inline PreOrderConstIterator& operator++()
+        {
+            increment();
+            return *this;
         }
 
         // post incremental operator for iterator
-        inline PreOrderConstIterator operator++(int i) 
-        { 
-            PreOrderConstIterator original = *this; 
-            BaseType::multi_increment(i); 
-            return original; 
+        inline PreOrderConstIterator operator++(int i)
+        {
+            PreOrderConstIterator original = *this;
+            BaseType::multi_increment(i);
+            return original;
         }
 
 
         inline PreOrderConstIterator& operator+=(int i)
-		{	// increment by an integer
+        {   // increment by an integer
             BaseType::multi_increment(i);
             return *this;
         }
 
         inline PreOrderConstIterator operator+(int i) const
-		{	// increment by an integer
+        {   // increment by an integer
             PreOrderConstIterator newiter = *this;
             newiter.multi_increment(i);
             return newiter;
@@ -250,19 +250,19 @@ typedef PreOrderConstIterator<IndexArray,IndexArrayPtr> IndexArrayPreOrderConstI
 
 template<class ListOfNodeList, class ListOfNodeListPtr = const ListOfNodeList*>
 class PostOrderConstIterator  : public NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr> {
-public: 
+public:
         typedef NodeListConstIterator<ListOfNodeList,ListOfNodeListPtr>  BaseType;
         typedef typename BaseType::value_t value_t;
         typedef typename BaseType::pointer_t pointer_t;
 protected:
         typedef typename BaseType::NodeList NodeList;
 protected:
-	using BaseType::__root_given;
-	using BaseType::__root;
-	using BaseType::__current;
-	using BaseType::__current_end;
-	using BaseType::__children;
-	using BaseType::__stack;
+    using BaseType::__root_given;
+    using BaseType::__root;
+    using BaseType::__current;
+    using BaseType::__current_end;
+    using BaseType::__children;
+    using BaseType::__stack;
 
         // find first ascendant
         void first_ascendant() {
@@ -302,47 +302,47 @@ public:
                 first_ascendant();
             }
 
-        virtual ~PostOrderConstIterator() { 
+        virtual ~PostOrderConstIterator() {
         }
 
         // value access operator for iterator
-        inline value_t operator*() const 
-        { 
+        inline value_t operator*() const
+        {
             if (BaseType::__atEnd()) return __root;
-            else return *__current; 
+            else return *__current;
         }
 
         // return pointer to node
         inline pointer_t operator->() const
-		{	
+        {
             if (BaseType::__atEnd()) return &__root;
-            else return __current.operator->(); 
+            else return __current.operator->();
         }
 
          // pre increment operator for iterator
-        inline PostOrderConstIterator& operator++() 
-        { 
-            increment(); 
-            return *this; 
+        inline PostOrderConstIterator& operator++()
+        {
+            increment();
+            return *this;
         }
 
         // post incremental operator for iterator
-        inline PostOrderConstIterator operator++(int i) 
-        { 
-            PostOrderConstIterator original = *this; 
-            BaseType::multi_increment(i); 
-            return original; 
+        inline PostOrderConstIterator operator++(int i)
+        {
+            PostOrderConstIterator original = *this;
+            BaseType::multi_increment(i);
+            return original;
         }
 
 
         inline PostOrderConstIterator& operator+=(int i)
-		{	// increment by an integer
+        {   // increment by an integer
             BaseType::multi_increment(i);
             return *this;
         }
 
         inline PostOrderConstIterator operator+(int i) const
-		{	// increment by an integer
+        {   // increment by an integer
             PostOrderConstIterator newiter = *this;
             newiter.multi_increment(i);
             return newiter;

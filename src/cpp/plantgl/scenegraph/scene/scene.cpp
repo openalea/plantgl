@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -109,8 +109,8 @@ Scene::Scene(const string& filename, const std::string& format, ostream& errlog,
 #ifdef WITH_POOL
       POOL.registerScene(this);
 #endif
-	read(filename,format,errlog,max_error);
-	GEOM_ASSERT(isValid());
+    read(filename,format,errlog,max_error);
+    GEOM_ASSERT(isValid());
 }
 
 Scene::Scene(const SceneObjectSymbolTable& table) :
@@ -128,21 +128,21 @@ Scene::Scene(const SceneObjectSymbolTable& table) :
 }
 
 bool Scene::read( const std::string& filename,
-				  const std::string& format,
-				  std::ostream& errlog, 
-				  int max_error ){
-	PglErrorStream::Binder psb(errlog);
-	ScenePtr scne;
-	if(format.empty())scne = SceneFactory::get().read(filename);
-	else scne = SceneFactory::get().read(filename,format);
+                  const std::string& format,
+                  std::ostream& errlog,
+                  int max_error ){
+    PglErrorStream::Binder psb(errlog);
+    ScenePtr scne;
+    if(format.empty())scne = SceneFactory::get().read(filename);
+    else scne = SceneFactory::get().read(filename,format);
     if(scne) { merge(scne); return true; }
     else return false;
 }
 
 
 bool Scene::save( const std::string& fname, const std::string& format)  {
-	if(format.empty()) return SceneFactory::get().write(fname,ScenePtr(this));
-	else return SceneFactory::get().write(fname,ScenePtr(this),format);
+    if(format.empty()) return SceneFactory::get().write(fname,ScenePtr(this));
+    else return SceneFactory::get().write(fname,ScenePtr(this),format);
 }
 
 void Scene::convert( const SceneObjectSymbolTable& table ){
@@ -152,8 +152,8 @@ void Scene::convert( const SceneObjectSymbolTable& table ){
   for (SceneObjectSymbolTable::const_iterator _it = table.begin();
        _it != table.end();
        _it++){
-	  if((shape = dynamic_pointer_cast<Shape3D>(_it->second))){
-	  added = true;
+      if((shape = dynamic_pointer_cast<Shape3D>(_it->second))){
+      added = true;
       if((_shape = dynamic_pointer_cast<Shape>(_it->second))){
         if(!_shape->appearance)
           _shape->appearance = Material::DEFAULT_MATERIAL;
@@ -179,7 +179,7 @@ Scene::~Scene( ){
       POOL.unregisterScene(this);
 #endif
 #ifdef PGL_THREAD_SUPPORT
-	if (__mutex)delete __mutex;
+    if (__mutex)delete __mutex;
 #endif
 #ifdef GEOM_DEBUG
     cerr << "Delete Scene" << endl;
@@ -198,7 +198,7 @@ void Scene::unlock( ) const{
   __mutex->unlock();
 #endif
 }
-  
+
 /* ----------------------------------------------------------------------- */
 void Scene::clear( ){
   lock();
@@ -234,10 +234,10 @@ void Scene::add( const Shape3DPtr& shape ) {
       - shape must be non null and valid. */
 void Scene::remove( const Shape3DPtr& shape )
 {
-	Scene::iterator it = begin();
+    Scene::iterator it = begin();
     lock();
-	while(it != end() && *it != shape)++it;
-	if(it != end())remove(it);
+    while(it != end() && *it != shape)++it;
+    if(it != end())remove(it);
     unlock();
 }
 
@@ -351,35 +351,35 @@ void Scene::setAt(uint_t i, const Shape3DPtr& ptr) {
   unlock();
 }
 
-const ShapePtr 
+const ShapePtr
 Scene::getShapeId(uint_t id ) const {
   lock();
-  for(Scene::const_iterator _it = __shapeList.begin() ; 
-					  _it != __shapeList.end(); 
-					  _it++)
-	{
-	  ShapePtr ptr = dynamic_pointer_cast<Shape>(*_it);
-	  if(ptr && ptr->getId() == id){
-		  unlock();
-		  return ptr;
-	  }
-	}
+  for(Scene::const_iterator _it = __shapeList.begin() ;
+                      _it != __shapeList.end();
+                      _it++)
+    {
+      ShapePtr ptr = dynamic_pointer_cast<Shape>(*_it);
+      if(ptr && ptr->getId() == id){
+          unlock();
+          return ptr;
+      }
+    }
   unlock();
   return ShapePtr();
 }
 
-const Shape3DPtr 
+const Shape3DPtr
 Scene::getSceneObjectId(uint_t id ) const {
   lock();
-  for(Scene::const_iterator _it = __shapeList.begin() ; 
-					  _it != __shapeList.end(); 
-					  _it++)
-	{
+  for(Scene::const_iterator _it = __shapeList.begin() ;
+                      _it != __shapeList.end();
+                      _it++)
+    {
         if(*_it && (*_it)->SceneObject::getId() == id){
-		  unlock();
-		  return *_it;
-	  }
-	}
+          unlock();
+          return *_it;
+      }
+    }
   unlock();
   return Shape3DPtr();
 }
@@ -390,7 +390,7 @@ ScenePtr Scene::deepcopy(DeepCopier& copier) const {
   ScenePtr ptr(new Scene(*this));
   lock();
   for(Scene::iterator _it = ptr->begin() ; _it != ptr->end(); _it++)
-	  copier.copy_object_attribute(*_it);
+      copier.copy_object_attribute(*_it);
   unlock();
   return ptr;
 }
@@ -402,16 +402,16 @@ bool Scene::isValid( ) const {
   _i++){
     if (! (*_i) ) {
       pglErrorEx
-		(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must not be a null Shape.");
-	  unlock();
+        (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must not be a null Shape.");
+      unlock();
       return false;
-    };	
+    };
     if (!(*_i)->isValid() ) {
       pglErrorEx
-		(PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must be a valid Shape.");
-	  unlock();
+        (PGLWARNINGMSG(INVALID_FIELD_ITH_VALUE_ssss),"Scene","ShapeList",number(distance(__shapeList.begin(),_i) + 1).c_str(),"Must be a valid Shape.");
+      unlock();
       return false;
-    };	
+    };
   }
   unlock();
   return true;
@@ -482,17 +482,17 @@ Scene::Pool& Scene::pool() { return POOL; }
 void Scene::Pool::lock() const {
 #ifdef PGL_THREAD_SUPPORT
     __mutex->lock();
-#endif    
+#endif
 }
 
 void Scene::Pool::unlock() const {
 #ifdef PGL_THREAD_SUPPORT
     __mutex->unlock();
-#endif    
+#endif
 }
 
 ScenePtr Scene::Pool::get(size_t id) const
-{ 
+{
     lock();
     ScenePtr res;
     PoolList::const_iterator it = __pool.find(id);
@@ -504,7 +504,7 @@ ScenePtr Scene::Pool::get(size_t id) const
 
 
 std::vector<ScenePtr> Scene::Pool::getScenes() const
-{ 
+{
     std::vector<ScenePtr> result;
     lock();
     for (PoolList::const_iterator it = __pool.begin();it != __pool.end(); ++it)
@@ -527,13 +527,13 @@ void Scene::Pool::unregisterScene(const Scene * s)
   unlock();
 }
 
-Scene::Pool::Pool() { 
+Scene::Pool::Pool() {
 #ifdef PGL_THREAD_SUPPORT
    __mutex = new PglMutex();
 #endif
 }
 
-Scene::Pool::~Pool() { 
+Scene::Pool::~Pool() {
 #ifdef PGL_THREAD_SUPPORT
    delete __mutex;
 #endif

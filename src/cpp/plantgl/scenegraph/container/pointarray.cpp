@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -190,8 +190,8 @@ real_t * Point2Array::data() const {
   real_t * res = new real_t[__A.size()*2];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++){
-	res[_j] = _i->x(); _j++;
-	res[_j] = _i->y(); _j++;
+    res[_j] = _i->x(); _j++;
+    res[_j] = _i->y(); _j++;
   }
   return res;
 }
@@ -416,9 +416,9 @@ real_t * Point3Array::data() const{
   real_t * res = new real_t[__A.size()*3];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++){
-	res[_j] = _i->x(); _j++;
-	res[_j] = _i->y(); _j++;
-	res[_j] = _i->z(); _j++;
+    res[_j] = _i->x(); _j++;
+    res[_j] = _i->y(); _j++;
+    res[_j] = _i->z(); _j++;
   }
   return res;
 }
@@ -460,9 +460,9 @@ Point4Array::Point4Array( const Point2Array& a, real_t z, real_t w  ) :
 
 Point4Array::Point4Array( const Point2ArrayPtr& a, real_t z, real_t w  ) :
     Array1<Vector4>(){
-	if (!a) return;
-	__A.reserve(size());
-	__A.resize(size());
+    if (!a) return;
+    __A.reserve(size());
+    __A.resize(size());
     Point4Array::iterator it4 = begin();
     for(Point2Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it4)
         *it4 = Vector4(*it2,z,w);
@@ -479,9 +479,9 @@ Point4Array::Point4Array( const Point3Array& a, real_t w  ) :
 
 Point4Array::Point4Array( const Point3ArrayPtr& a, real_t w  ) :
     Array1<Vector4>(){
-	if (!a) return;
-	__A.reserve(size());
-	__A.resize(size());
+    if (!a) return;
+    __A.reserve(size());
+    __A.resize(size());
     Point4Array::iterator it4 = begin();
     for(Point3Array::const_iterator it2 = a->begin();it2 != a->end();++it2,++it4)
         *it4 = Vector4(*it2,w);
@@ -692,10 +692,10 @@ real_t * Point4Array::data() const {
   real_t * res = new real_t[__A.size()*4];
   size_t _j = 0;
   for (const_iterator _i = __A.begin(); _i != __A.end(); _i++){
-	res[_j] = _i->x(); _j++;
-	res[_j] = _i->y(); _j++;
-	res[_j] = _i->z(); _j++;
-	res[_j] = _i->w(); _j++;
+    res[_j] = _i->x(); _j++;
+    res[_j] = _i->y(); _j++;
+    res[_j] = _i->z(); _j++;
+    res[_j] = _i->w(); _j++;
   }
   return res;
 }

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -51,36 +51,36 @@ AppearancePtr Voxel::UNDETERMINED_APPEARANCE;
 #else
 
 AppearancePtr Voxel::EMPTY_APPEARANCE(new Material("VXL_EMPTY_APPEARANCE",
-												Color3::WHITE,
-							  Material::DEFAULT_DIFFUSE,
-							  Material::DEFAULT_SPECULAR,
-							  Material::DEFAULT_EMISSION,
-							  Material::DEFAULT_SHININESS,
-							  0.2));
+                                                Color3::WHITE,
+                              Material::DEFAULT_DIFFUSE,
+                              Material::DEFAULT_SPECULAR,
+                              Material::DEFAULT_EMISSION,
+                              Material::DEFAULT_SHININESS,
+                              0.2));
 AppearancePtr Voxel::FILLED_APPEARANCE(new Material("VXL_FILLED_APPEARANCE",
-												 Color3::BLUE,
-							   Material::DEFAULT_DIFFUSE,
-							   Material::DEFAULT_SPECULAR,
-							   Material::DEFAULT_EMISSION,
-							   Material::DEFAULT_SHININESS,
-							   0.2));
+                                                 Color3::BLUE,
+                               Material::DEFAULT_DIFFUSE,
+                               Material::DEFAULT_SPECULAR,
+                               Material::DEFAULT_EMISSION,
+                               Material::DEFAULT_SHININESS,
+                               0.2));
 AppearancePtr Voxel::UNDETERMINED_APPEARANCE(new Material("VXL_UNDETERMINED_APPEARANCE",
-													   Color3::GREEN,
-								 Material::DEFAULT_DIFFUSE,
-								 Material::DEFAULT_SPECULAR,
-								 Material::DEFAULT_EMISSION,
-								 Material::DEFAULT_SHININESS,
-								 0.2));
+                                                       Color3::GREEN,
+                                 Material::DEFAULT_DIFFUSE,
+                                 Material::DEFAULT_SPECULAR,
+                                 Material::DEFAULT_EMISSION,
+                                 Material::DEFAULT_SHININESS,
+                                 0.2));
 #endif
 
 /* ----------------------------------------------------------------------- */
 
-Voxel::Voxel( Tile * Complex, 
-	      const unsigned char Scale, 
-	      const TileType Type, 
-	      const unsigned char Num, 
-	      const Vector3& PMin,
-	      const Vector3& PMax) :
+Voxel::Voxel( Tile * Complex,
+          const unsigned char Scale,
+          const TileType Type,
+          const unsigned char Num,
+          const Vector3& PMin,
+          const Vector3& PMax) :
     Tile(Complex, Scale,Type,Num),
     __ll(PMin),
     __ur(PMax){
@@ -92,9 +92,9 @@ Voxel::~Voxel(){
 }
 
 bool Voxel::isValid() const {
-  return 
-    (__ll.x() <= __ur.x()) && 
-    (__ll.y() <= __ur.y()) && 
+  return
+    (__ll.x() <= __ur.x()) &&
+    (__ll.y() <= __ur.y()) &&
     (__ll.z() <= __ur.z());
 }
 
@@ -115,33 +115,33 @@ void Voxel::setBBox(const BoundingBoxPtr& bbox){
 Shape3DPtr Voxel::representation() const{
 
 #ifdef _WIN32
-	if(!EMPTY_APPEARANCE)
-	EMPTY_APPEARANCE = AppearancePtr (new Material("VXL_EMPTY_APPEARANCE",
-							  Color3::WHITE,
-							  Material::DEFAULT_DIFFUSE,
-							  Material::DEFAULT_SPECULAR,
-							  Material::DEFAULT_EMISSION,
-							  Material::DEFAULT_SHININESS,
-							  0.2));
-	if(!FILLED_APPEARANCE)
-	FILLED_APPEARANCE = AppearancePtr (new Material("VXL_FILLED_APPEARANCE",
-								Color3::BLUE,
-							   Material::DEFAULT_DIFFUSE,
-							   Material::DEFAULT_SPECULAR,
-							   Material::DEFAULT_EMISSION,
-							   Material::DEFAULT_SHININESS,
-							   0.2));
+    if(!EMPTY_APPEARANCE)
+    EMPTY_APPEARANCE = AppearancePtr (new Material("VXL_EMPTY_APPEARANCE",
+                              Color3::WHITE,
+                              Material::DEFAULT_DIFFUSE,
+                              Material::DEFAULT_SPECULAR,
+                              Material::DEFAULT_EMISSION,
+                              Material::DEFAULT_SHININESS,
+                              0.2));
+    if(!FILLED_APPEARANCE)
+    FILLED_APPEARANCE = AppearancePtr (new Material("VXL_FILLED_APPEARANCE",
+                                Color3::BLUE,
+                               Material::DEFAULT_DIFFUSE,
+                               Material::DEFAULT_SPECULAR,
+                               Material::DEFAULT_EMISSION,
+                               Material::DEFAULT_SHININESS,
+                               0.2));
     if(!UNDETERMINED_APPEARANCE )
-	UNDETERMINED_APPEARANCE = AppearancePtr (new Material("VXL_UNDETERMINED_APPEARANCE",
-								 Color3::GREEN,
-								 Material::DEFAULT_DIFFUSE,
-								 Material::DEFAULT_SPECULAR,
-								 Material::DEFAULT_EMISSION,
-								 Material::DEFAULT_SHININESS,
-								 0.2));
+    UNDETERMINED_APPEARANCE = AppearancePtr (new Material("VXL_UNDETERMINED_APPEARANCE",
+                                 Color3::GREEN,
+                                 Material::DEFAULT_DIFFUSE,
+                                 Material::DEFAULT_SPECULAR,
+                                 Material::DEFAULT_EMISSION,
+                                 Material::DEFAULT_SHININESS,
+                                 0.2));
 #endif
     AppearancePtr mat;
-    if(__type == Empty){      
+    if(__type == Empty){
       mat = EMPTY_APPEARANCE;
     }
     else if(__type == Filled /*|| !isDecomposed() */ ){
@@ -157,9 +157,9 @@ Shape3DPtr Voxel::representation() const{
       uint_t base = 1;
       const Tile * comp = getComplex();
       while(comp != NULL){
-	base *=  comp->getComponentsSize();
-	id += base *  (uint_t)comp->getNum();
-	comp = comp->getComplex();
+    base *=  comp->getComponentsSize();
+    id += base *  (uint_t)comp->getNum();
+    comp = comp->getComplex();
       }
       res->getId() = id;
     }
@@ -207,43 +207,43 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2 ) const {
   GEOM_ASSERT(isValid());
   GEOM_ASSERT(point1.isValid());
   GEOM_ASSERT(point2.isValid());
-  
+
   Vector3 deltaP = point2 - point1;
 
   if ( fabs(deltaP.z())< GEOM_EPSILON ){
       if ( (point1.z() > __ur.z() )|| (point1.z() < __ll.z()) ) return false;
   }
   else {
-    
-    
+
+
       /// First facet.
       real_t m = ( __ll.z() - point1.z() ) / (deltaP.z());
       if(m > 0 && m <1.0){
-	real_t x0 = point1.x() + m * (deltaP.x());
-	real_t y0 = point1.y() + m * (deltaP.y());
-	if( x0 >= __ll.x() && x0 <= __ur.x() && y0 >= __ll.y() && y0 <= __ur.y()){
+    real_t x0 = point1.x() + m * (deltaP.x());
+    real_t y0 = point1.y() + m * (deltaP.y());
+    if( x0 >= __ll.x() && x0 <= __ur.x() && y0 >= __ll.y() && y0 <= __ur.y()){
 #ifdef GEOM_DEBUG
-	  cerr << "Voxel :" << __ur << " , " << __ll << endl;
-	  cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
-	  cerr << "Intersect First facet on <" << x0 << ',' << y0 << ',' << __ll.z() << ">. (m=" << m << ')' << endl;
+      cerr << "Voxel :" << __ur << " , " << __ll << endl;
+      cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
+      cerr << "Intersect First facet on <" << x0 << ',' << y0 << ',' << __ll.z() << ">. (m=" << m << ')' << endl;
 #endif
-	  return true;
-	}
+      return true;
+    }
       }
 
       /// Second facet.
       m = ( __ur.z() - point1.z() ) / (deltaP.z());
       if(m > 0 && m <1.0){
-	real_t x0 = point1.x() + m * (deltaP.x());
-	real_t y0 = point1.y() + m * (deltaP.y());
-	if( x0 >= __ll.x() && x0 <= __ur.x() && y0 >= __ll.y() && y0 <= __ur.y()){
+    real_t x0 = point1.x() + m * (deltaP.x());
+    real_t y0 = point1.y() + m * (deltaP.y());
+    if( x0 >= __ll.x() && x0 <= __ur.x() && y0 >= __ll.y() && y0 <= __ur.y()){
 #ifdef GEOM_DEBUG
-	  cerr << "Voxel :" << __ur << " , " << __ll << endl;
-	  cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
-	  cerr << "Intersect Second facet on <" << x0 << ',' << y0 << ',' << __ur.z() << ">. (m=" << m << ')' << endl;
+      cerr << "Voxel :" << __ur << " , " << __ll << endl;
+      cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
+      cerr << "Intersect Second facet on <" << x0 << ',' << y0 << ',' << __ur.z() << ">. (m=" << m << ')' << endl;
 #endif
-	  return true;
-	}
+      return true;
+    }
       }
   }
 
@@ -251,38 +251,38 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2 ) const {
       if ( (point1.y() > __ur.y() )|| (point1.y() < __ll.y()) ) return false;
   }
   else {
-      
+
       /// Third facet.
       real_t m = ( __ll.y() - point1.y() ) / (deltaP.y());
       if(m > 0 && m <1.0){
-	real_t x0 = point1.x() + m * (deltaP.x());
-	real_t z0 = point1.z() + m * (deltaP.z());
-	if( x0 >= __ll.x() && x0 <= __ur.x() && z0 >= __ll.z() && z0 <= __ur.z()){
+    real_t x0 = point1.x() + m * (deltaP.x());
+    real_t z0 = point1.z() + m * (deltaP.z());
+    if( x0 >= __ll.x() && x0 <= __ur.x() && z0 >= __ll.z() && z0 <= __ur.z()){
 #ifdef GEOM_DEBUG
-	  cerr << "Voxel :" << __ur << " , " << __ll << endl;
-	  cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
-	  cerr << "Intersect Third facet on <" << x0 << ',' << __ll.y() << ',' << z0 << ">. (m=" << m << ')' << endl;
+      cerr << "Voxel :" << __ur << " , " << __ll << endl;
+      cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
+      cerr << "Intersect Third facet on <" << x0 << ',' << __ll.y() << ',' << z0 << ">. (m=" << m << ')' << endl;
 #endif
-	  return true;
-	}
+      return true;
+    }
       }
 
       /// Forth facet.
       m = ( __ur.y() - point1.y() ) / (deltaP.y());
-      if(m > 0 && m <1.0){      
-	real_t x0 = point1.x() + m * (deltaP.x());
-	real_t z0 = point1.z() + m * (deltaP.z());
-	if( x0 >= __ll.x() && x0 <= __ur.x() && z0 >= __ll.z() && z0 <= __ur.z()){
+      if(m > 0 && m <1.0){
+    real_t x0 = point1.x() + m * (deltaP.x());
+    real_t z0 = point1.z() + m * (deltaP.z());
+    if( x0 >= __ll.x() && x0 <= __ur.x() && z0 >= __ll.z() && z0 <= __ur.z()){
 #ifdef GEOM_DEBUG
-	  cerr << "Voxel :" << __ur << " , " << __ll << endl;
-	  cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
-	  cerr << "Intersect Forth facet on <" << x0 << ',' << __ur.y() << ',' << z0 << ">. (m=" << m << ')' << endl;
+      cerr << "Voxel :" << __ur << " , " << __ll << endl;
+      cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
+      cerr << "Intersect Forth facet on <" << x0 << ',' << __ur.y() << ',' << z0 << ">. (m=" << m << ')' << endl;
 #endif
-	  return true;
-	}
+      return true;
+    }
       }
   }
-  
+
   if ( fabs(deltaP.x())< GEOM_EPSILON ){
       if ( (point1.x() > __ur.x() )|| (point1.x() < __ll.x()) ) return false;
   }
@@ -290,32 +290,32 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2 ) const {
 
       /// Fifth facet.
       real_t m = ( __ll.x() - point1.x() ) / (deltaP.x());
-      if(m > 0 && m <1.0){      
-	real_t y0 = point1.y() + m * (deltaP.y());
-	real_t z0 = point1.z() + m * (deltaP.z());
-	if( y0 >= __ll.y() && y0 <= __ur.y() && z0 >= __ll.z() && z0 <= __ur.z()){
+      if(m > 0 && m <1.0){
+    real_t y0 = point1.y() + m * (deltaP.y());
+    real_t z0 = point1.z() + m * (deltaP.z());
+    if( y0 >= __ll.y() && y0 <= __ur.y() && z0 >= __ll.z() && z0 <= __ur.z()){
 #ifdef GEOM_DEBUG
-	  cerr << "Voxel :" << __ur << " , " << __ll << endl;
-	  cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
-	  cerr << "Intersect Fifth facet on <" << __ll.x() << ',' << y0 << ',' << z0 << ">. (m=" << m << ')' << endl;
+      cerr << "Voxel :" << __ur << " , " << __ll << endl;
+      cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
+      cerr << "Intersect Fifth facet on <" << __ll.x() << ',' << y0 << ',' << z0 << ">. (m=" << m << ')' << endl;
 #endif
-	  return true;
-	} 
+      return true;
+    }
       }
-      
+
       /// Sixth facet.
       m = ( __ur.x() - point1.x() ) / (deltaP.x());
-      if(m > 0 && m <1.0){      
-	real_t y0 = point1.y() + m * (deltaP.y());
-	real_t z0 = point1.z() + m * (deltaP.z());
-	if( y0 >= __ll.y() && y0 <= __ur.y() && z0 >= __ll.z() && z0 <= __ur.z()){
+      if(m > 0 && m <1.0){
+    real_t y0 = point1.y() + m * (deltaP.y());
+    real_t z0 = point1.z() + m * (deltaP.z());
+    if( y0 >= __ll.y() && y0 <= __ur.y() && z0 >= __ll.z() && z0 <= __ur.z()){
 #ifdef GEOM_DEBUG
-	  cerr << "Voxel :" << __ur << " , " << __ll << endl;
-	  cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
-	  cerr << "Intersect Sixth facet on <" << __ur.x() << ',' << y0 << ',' << z0 << ">. (m=" << m << ')' << endl;
+      cerr << "Voxel :" << __ur << " , " << __ll << endl;
+      cerr << "Point1 : " << point1 << " , Point2 : " << point2 << " , deltaP : " << deltaP << endl;
+      cerr << "Intersect Sixth facet on <" << __ur.x() << ',' << y0 << ',' << z0 << ">. (m=" << m << ')' << endl;
 #endif
-	  return true;
-	}
+      return true;
+    }
       }
   }
   return false;
@@ -326,7 +326,7 @@ bool Voxel::intersect( const Vector2& point1, const Vector2& point2 ) const {
   GEOM_ASSERT(isValid());
   GEOM_ASSERT(point1.isValid());
   GEOM_ASSERT(point2.isValid());
-  
+
   Vector2 deltaP = point2 - point1;
 
   if ( fabs(point1.x()-point2.x())< GEOM_EPSILON ){
@@ -336,16 +336,16 @@ bool Voxel::intersect( const Vector2& point1, const Vector2& point2 ) const {
 
       /// First facet.
       real_t m = ( __ll.x() - point1.x() ) / (deltaP.x());
-      if(m > 0 && m <1.0){      
-	real_t y0 = point1.y() + m * (deltaP.y());
-	if( y0 >= __ll.y() && y0 <= __ur.y()) return true;
+      if(m > 0 && m <1.0){
+    real_t y0 = point1.y() + m * (deltaP.y());
+    if( y0 >= __ll.y() && y0 <= __ur.y()) return true;
       }
-      
+
       /// Second facet.
       m = ( __ur.x() - point1.x() ) / (deltaP.x());
-      if(m > 0 && m <1.0){      
-	real_t y0 = point1.y() + m * (deltaP.y());
-	if( y0 >= __ll.y() && y0 <= __ur.y()) return true;
+      if(m > 0 && m <1.0){
+    real_t y0 = point1.y() + m * (deltaP.y());
+    if( y0 >= __ll.y() && y0 <= __ur.y()) return true;
       }
 
   }
@@ -354,21 +354,21 @@ bool Voxel::intersect( const Vector2& point1, const Vector2& point2 ) const {
       if ( (point1.y() > __ur.y() )|| (point1.y() < __ll.y()) ) return false;
   }
   else {
-      
+
       /// Third facet.
       real_t m = ( __ll.y() - point1.y() ) / (deltaP.y());
-      if(m > 0 && m <1.0){      
-	real_t x0 = point1.x() + m * (deltaP.x());
-	if( x0 >= __ll.x() && x0 <= __ur.x()) return true;
+      if(m > 0 && m <1.0){
+    real_t x0 = point1.x() + m * (deltaP.x());
+    if( x0 >= __ll.x() && x0 <= __ur.x()) return true;
       }
 
       /// Forth facet.
       m = ( __ur.y() - point1.y() ) / (deltaP.y());
-      if(m > 0 && m <1.0){      
-	real_t x0 = point1.x() + m * (deltaP.x());
-	if( x0 >= __ll.x() && x0 <= __ur.x()) return true;
+      if(m > 0 && m <1.0){
+    real_t x0 = point1.x() + m * (deltaP.x());
+    if( x0 >= __ll.x() && x0 <= __ur.x()) return true;
       }
-      
+
   }
   return false;
 }
@@ -377,19 +377,19 @@ bool Voxel::intersect( const Vector2& point1, const Vector2& point2 ) const {
 
 #define TRIANGLE_INTERSECTION_TEST \
           mu = dot((point1 - Pline),n)/dn; \
-	  if(mu > -GEOM_EPSILON && (mu - 1) < GEOM_EPSILON){ \
-	      Vector3 w = d * mu + Pline - point1; \
-	       \
-	      real_t alpha = dot(w,u)*vv - dot(w,v)* uv; \
-	      alpha /= denominator; \
-	       \
-	      real_t beta = dot(w,v)*uu - dot(w,u)* uv; \
-	      beta /= denominator; \
-	       \
-	      if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON); \
-	      else if( (alpha + beta - 1) > GEOM_EPSILON ); \
-	      else return true; \
-	  } \
+      if(mu > -GEOM_EPSILON && (mu - 1) < GEOM_EPSILON){ \
+          Vector3 w = d * mu + Pline - point1; \
+           \
+          real_t alpha = dot(w,u)*vv - dot(w,v)* uv; \
+          alpha /= denominator; \
+           \
+          real_t beta = dot(w,v)*uu - dot(w,u)* uv; \
+          beta /= denominator; \
+           \
+          if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON); \
+          else if( (alpha + beta - 1) > GEOM_EPSILON ); \
+          else return true; \
+      } \
 
 
 
@@ -405,7 +405,7 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2 , const Vect
   if(point1 == point2) return false;
   if(point1 == point3) return false;
   if(point2 == point3) return false;
-  
+
   Vector3 u(point2 - point1);
   Vector3 v(point3 - point1);
   Vector3 n(cross(u,v));
@@ -421,69 +421,69 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2 , const Vect
       Vector3 d(0,0,__ur.z()-__ll.z());
       Vector3 Pline(__ll);
       real_t dn = dot(d,n);
-      
+
       if( fabs(dn) > GEOM_EPSILON ){
-	
-	/// Edge align on z-axis 0-2
-	TRIANGLE_INTERSECTION_TEST;
-	
-	/// Edge align on z-axis 1-3
-	Pline.x() = __ur.x();
-	TRIANGLE_INTERSECTION_TEST;
-	  
-	/// Edge align on z-axis 5-7
-	Pline.y() = __ur.y();
-	TRIANGLE_INTERSECTION_TEST;
-	    
-	/// Edge align on z-axis 4-6
-	Pline.x() = __ll.x();
-	TRIANGLE_INTERSECTION_TEST;
+
+    /// Edge align on z-axis 0-2
+    TRIANGLE_INTERSECTION_TEST;
+
+    /// Edge align on z-axis 1-3
+    Pline.x() = __ur.x();
+    TRIANGLE_INTERSECTION_TEST;
+
+    /// Edge align on z-axis 5-7
+    Pline.y() = __ur.y();
+    TRIANGLE_INTERSECTION_TEST;
+
+    /// Edge align on z-axis 4-6
+    Pline.x() = __ll.x();
+    TRIANGLE_INTERSECTION_TEST;
       }
-      
+
       /// Test on edge align on y-axis.
       d = Vector3(0,__ur.y()-__ll.y(),0);
       Pline.y() = __ll.y(); /// Reinit P_line at __ll.
       dn = dot(d,n);
-  
+
       if( fabs(dn) > GEOM_EPSILON ){
 
-	  /// Edge align on y-axis 0-4
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on y-axis 0-4
+      TRIANGLE_INTERSECTION_TEST;
 
-	  /// Edge align on y-axis 1-5
-	  Pline.x() = __ur.x();
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on y-axis 1-5
+      Pline.x() = __ur.x();
+      TRIANGLE_INTERSECTION_TEST;
 
-	  /// Edge align on y-axis 3-7
-	  Pline.z() = __ur.z();
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on y-axis 3-7
+      Pline.z() = __ur.z();
+      TRIANGLE_INTERSECTION_TEST;
 
-	  /// Edge align on y-axis 2-6
-	  Pline.x() = __ll.x();
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on y-axis 2-6
+      Pline.x() = __ll.x();
+      TRIANGLE_INTERSECTION_TEST;
       }
 
       /// Test on edge align on x-axis.
       d = Vector3(__ur.x()-__ll.x(),0,0);
       Pline.z() = __ll.z(); /// Reinit P_line at __ll.
       dn = dot(d,n);
- 
+
       if( fabs(dn) > GEOM_EPSILON ){
 
-	  /// Edge align on x-axis 0-1
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on x-axis 0-1
+      TRIANGLE_INTERSECTION_TEST;
 
-	  /// Edge align on x-axis 4-5
-	  Pline.y() = __ur.y();
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on x-axis 4-5
+      Pline.y() = __ur.y();
+      TRIANGLE_INTERSECTION_TEST;
 
-	  /// Edge align on x-axis 6-7
-	  Pline.z() = __ur.z();
-	  TRIANGLE_INTERSECTION_TEST;
-	  
-	  /// Edge align on x-axis 2-3
-	  Pline.y() = __ll.y();
-	  TRIANGLE_INTERSECTION_TEST;
+      /// Edge align on x-axis 6-7
+      Pline.z() = __ur.z();
+      TRIANGLE_INTERSECTION_TEST;
+
+      /// Edge align on x-axis 2-3
+      Pline.y() = __ll.y();
+      TRIANGLE_INTERSECTION_TEST;
 
       }
   }
@@ -491,30 +491,30 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2 , const Vect
 }
 
 #define QUAD_INTERSECTION_TEST \
-	  mu = dot(( point1 - Pline),n)/dn; \
-	  if(!(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON)){ \
-	      Vector3 w = d * mu + Pline - point1; \
-	      \
-	      real_t alpha = dot(w,u)*vv - dot(w,v)* uv; \
-	      alpha /= denominator; \
-	      \
-	      real_t beta = dot(w,v)*uu - dot(w,u)* uv; \
-	      beta /= denominator; \
-	      \
-	      if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON); \
-	      else if( (alpha + beta - 1) > GEOM_EPSILON ); \
-	      else return true; \
-	      \
-	      alpha = dot(w,u_)*vv_ - dot(w,v_)* uv_; \
-	      alpha /= denominator_; \
-	      \
-	      beta = dot(w,v_)*uu_ - dot(w,u_)* uv_; \
-	      beta /= denominator_; \
-	      \
-	      if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON); \
-	      else if( (alpha + beta - 1) > GEOM_EPSILON ); \
-	      else return true; \
-	  } \
+      mu = dot(( point1 - Pline),n)/dn; \
+      if(!(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON)){ \
+          Vector3 w = d * mu + Pline - point1; \
+          \
+          real_t alpha = dot(w,u)*vv - dot(w,v)* uv; \
+          alpha /= denominator; \
+          \
+          real_t beta = dot(w,v)*uu - dot(w,u)* uv; \
+          beta /= denominator; \
+          \
+          if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON); \
+          else if( (alpha + beta - 1) > GEOM_EPSILON ); \
+          else return true; \
+          \
+          alpha = dot(w,u_)*vv_ - dot(w,v_)* uv_; \
+          alpha /= denominator_; \
+          \
+          beta = dot(w,v_)*uu_ - dot(w,u_)* uv_; \
+          beta /= denominator_; \
+          \
+          if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON); \
+          else if( (alpha + beta - 1) > GEOM_EPSILON ); \
+          else return true; \
+      } \
 
 
 
@@ -533,7 +533,7 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2, const Vecto
     if(point3 == point4) return false;
     return intersect(point1,point3,point4);
   }
-  else { 
+  else {
     // point1 != point2
     if(point1 == point3){
       if(point1 == point4) return false;
@@ -542,7 +542,7 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2, const Vecto
     }
     // point1 != point3
     if(point1 == point4){
-      if(point2 == point3) return false;      
+      if(point2 == point3) return false;
       return intersect(point1,point2,point3);
     }
     // point1 != point4
@@ -559,7 +559,7 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2, const Vecto
       return intersect(point1,point2,point3);
     }
   }
-  
+
   Vector3 u(point2 - point1);
   Vector3 v(point3 - point1);
   Vector3 u_(point3 - point1);
@@ -584,23 +584,23 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2, const Vecto
       Vector3 d(0,0,__ur.z()-__ll.z());
       Vector3 Pline(__ll);
       real_t dn = dot(d,n);
- 
+
       if(!( fabs(dn) < GEOM_EPSILON) ){
-  	  
-	  /// Edge align on z-axis 0-2
-	  QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on z-axis 1-3
-	  Pline.x() = __ur.x();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on z-axis 0-2
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on z-axis 5-7
-	  Pline.y() = __ur.y();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on z-axis 1-3
+      Pline.x() = __ur.x();
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on z-axis 4-6
-	  Pline.x() = __ll.x();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on z-axis 5-7
+      Pline.y() = __ur.y();
+      QUAD_INTERSECTION_TEST;
+
+      /// Edge align on z-axis 4-6
+      Pline.x() = __ll.x();
+      QUAD_INTERSECTION_TEST;
 
       }
 
@@ -608,23 +608,23 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2, const Vecto
       d = Vector3(0,__ur.y()-__ll.y(),0);
       Pline.y() = __ll.y(); /// Reinit P_line at __ll.
       dn = dot(d,n);
-  
+
       if(!( fabs(dn) < GEOM_EPSILON) ){
 
-	  /// Edge align on y-axis 0-4
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on y-axis 0-4
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on y-axis 1-5
-	  Pline.x() = __ur.x();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on y-axis 1-5
+      Pline.x() = __ur.x();
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on y-axis 3-7
-	  Pline.z() = __ur.z();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on y-axis 3-7
+      Pline.z() = __ur.z();
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on y-axis 2-6
-	  Pline.x() = __ll.x();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on y-axis 2-6
+      Pline.x() = __ll.x();
+      QUAD_INTERSECTION_TEST;
 
       }
 
@@ -632,23 +632,23 @@ bool Voxel::intersect( const Vector3& point1, const Vector3& point2, const Vecto
       d = Vector3(__ur.x()-__ll.x(),0,0);
       Pline.z() = __ll.z(); /// Reinit P_line at __ll.
       dn = dot(d,n);
- 
+
       if(!( fabs(dn) < GEOM_EPSILON) ){
 
-	  /// Edge align on x-axis 0-1
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on x-axis 0-1
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on x-axis 4-5
-	  Pline.y() = __ur.y();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on x-axis 4-5
+      Pline.y() = __ur.y();
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on x-axis 6-7
-	  Pline.z() = __ur.z();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on x-axis 6-7
+      Pline.z() = __ur.z();
+      QUAD_INTERSECTION_TEST;
 
-	  /// Edge align on x-axis 2-3
-	  Pline.y() = __ll.y();
-	  QUAD_INTERSECTION_TEST;
+      /// Edge align on x-axis 2-3
+      Pline.y() = __ll.y();
+      QUAD_INTERSECTION_TEST;
 
       }
   }

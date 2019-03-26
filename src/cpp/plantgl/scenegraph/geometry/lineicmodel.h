@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -73,37 +73,37 @@ public:
   virtual ~LineicModel();
 
   virtual bool isACurve( ) const ;
-  
+
   virtual bool isASurface( ) const ;
-  
+
   virtual bool isAVolume( ) const ;
-  
+
   /// Returns the \e fist knots value.
   virtual const real_t getFirstKnot() const = 0;
-  
+
   /// Returns the \e last  knots value.
   virtual const real_t getLastKnot() const = 0;
-  
+
   /// Returns \e Stride value.
   virtual const uint_t getStride( ) const = 0;
-  
-  
+
+
   /*! Returns the \e Point for u = \e u.
-    \pre 
+    \pre
     - \e u must be in [FirstKnot,LastKnot];*/
   virtual Vector3 getPointAt(real_t u) const = 0;
-  
+
   /*! Returns the \e Tangent for u = \e u.
-    \pre 
+    \pre
     - \e u must be in [FirstKnot,LastKnot];*/
   virtual Vector3 getTangentAt(real_t u) const = 0;
-  
-  
+
+
   /*! Returns the principal \e Normal for u = \e u.
-    \pre 
+    \pre
     - \e u must be in [FirstKnot,LastKnot];*/
     virtual Vector3 getNormalAt(real_t u) const = 0;
-  
+
   /// Return the length of the lineic model.
   inline real_t getLength() const { return getLength(getFirstKnot(),getLastKnot()); }
 
@@ -114,7 +114,7 @@ public:
   virtual real_t getLength(real_t begin, real_t end) const ;
 
   virtual Vector3 findClosest(const Vector3& pt, real_t* u = NULL) const;
-  
+
   QuantisedFunctionPtr getArcLengthToUMapping() const;
   QuantisedFunctionPtr getUToArcLengthMapping() const;
 
@@ -133,12 +133,12 @@ protected:
 
 /// LineicModel Pointer
 typedef RCPtr<LineicModel> LineicModelPtr;
- 
+
 /* ----------------------------------------------------------------------- */
 
-SG_API real_t closestPointToSegment(Vector3& p, 
-						   const Vector3& segA,
-						   const Vector3& segB,
+SG_API real_t closestPointToSegment(Vector3& p,
+                           const Vector3& segA,
+                           const Vector3& segB,
                            real_t* u = NULL);
 
 /* ----------------------------------------------------------------------- */

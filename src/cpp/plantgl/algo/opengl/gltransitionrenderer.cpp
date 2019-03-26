@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -29,9 +29,6 @@
  *  ----------------------------------------------------------------------------
  */
 
-
-
-
 #include "gltransitionrenderer.h"
 #include <plantgl/pgl_appearance.h>
 #include <plantgl/scenegraph/scene/scene.h>
@@ -47,7 +44,7 @@ PGL_USING_NAMESPACE
 
 
 #define GEOM_GLRENDERER_UPDATE_APPEARANCE(app) \
-  __appearance = AppearancePtr(app); 
+  __appearance = AppearancePtr(app);
 
 
 #define GEOM_GLRENDERER_COLOR3(color) \
@@ -60,14 +57,14 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer, 
+GLTransitionRenderer::GLTransitionRenderer( Discretizer& discretizer,
 #ifndef PGL_CORE_WITHOUT_QT
-											QGLWidget * widget, 
+                                            QGLWidget * widget,
 #endif
-											uint_t step ) :
+                                            uint_t step ) :
   GLRenderer( discretizer
 #ifndef PGL_CORE_WITHOUT_QT
-    , widget 
+    , widget
 #endif
     ),
   __totalstep(step),
@@ -82,14 +79,14 @@ GLTransitionRenderer::~GLTransitionRenderer( ) {
 }
 
 
-void 
+void
 GLTransitionRenderer::clear( ) {
   GLRenderer::clear();
   __scene1 = ScenePtr();
   __scene2 = ScenePtr();
 }
 
-const uint_t 
+const uint_t
 GLTransitionRenderer::getTotalStep() const {
   return __totalstep;
 }
@@ -109,7 +106,7 @@ void GLTransitionRenderer::setScene(ScenePtr scene1, ScenePtr scene2){
 
 /* ----------------------------------------------------------------------- */
 
-bool 
+bool
 GLTransitionRenderer::endProcess(){
   return true;
 }
@@ -128,7 +125,7 @@ bool GLTransitionRenderer::process( Material * material ) {
   _rgba[2] = (GLfloat)_ambient.getBlueClamped();
   _rgba[3] = __transparency;
   glMaterialfv(GL_FRONT,GL_AMBIENT,_rgba);
-  
+
   const real_t& _diffuse = material->getDiffuse();
   _rgba[0] *= _diffuse;
   _rgba[1] *= _diffuse;
@@ -155,7 +152,7 @@ bool GLTransitionRenderer::process( Material * material ) {
   GEOM_GLRENDERER_UPDATE_APPEARANCE(material);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true; 
+  return true;
 }
 
 
@@ -180,7 +177,7 @@ bool GLTransitionRenderer::process( MonoSpectral * monoSpectral ) {
   GEOM_GLRENDERER_UPDATE_APPEARANCE(monoSpectral);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true; 
+  return true;
 }
 
 
@@ -207,7 +204,7 @@ bool GLTransitionRenderer::process( MultiSpectral * multiSpectral ) {
   GEOM_GLRENDERER_UPDATE_APPEARANCE(multiSpectral);
 
   GEOM_ASSERT(glGetError() == GL_NO_ERROR);
-  return true; 
+  return true;
 }
 
 
@@ -215,7 +212,7 @@ bool GLTransitionRenderer::process( MultiSpectral * multiSpectral ) {
 
 bool GLTransitionRenderer::rend(uint_t step){
   if(step >= __totalstep)step = __totalstep - 1;
-  
+
   if(__laststep != step){
     clearSceneList();
     __laststep = step;
@@ -223,40 +220,40 @@ bool GLTransitionRenderer::rend(uint_t step){
   if(beginSceneList()){
     if(step <= 0){
       if(__scene1){
-	__transparency = (GLfloat)1;
-	__scene1->apply(*this);
+    __transparency = (GLfloat)1;
+    __scene1->apply(*this);
       }
     }
     else if(step >= __totalstep){
       if(__scene2){
-	__transparency = (GLfloat)1;
-	__scene2->apply(*this);
-      }	
+    __transparency = (GLfloat)1;
+    __scene2->apply(*this);
+      }
     }
     else {
       if(step < __totalstep/2){
-	if(__scene1){
-	  __transparency = (GLfloat)((float)(__totalstep - step -1) 
-				     / (float)(__totalstep - 1));
-	  __scene1->apply(*this);
-	}
-	if(__scene2){
-	__transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
-	__scene2->apply(*this);
-	}
+    if(__scene1){
+      __transparency = (GLfloat)((float)(__totalstep - step -1)
+                     / (float)(__totalstep - 1));
+      __scene1->apply(*this);
+    }
+    if(__scene2){
+    __transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
+    __scene2->apply(*this);
+    }
       }
       else {
-	if(__scene2){
-	  __transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
-	  __scene2->apply(*this);
-	}
-	if(__scene1){
-	  __transparency = (GLfloat)((float)(__totalstep - step -1) 
-				     / (float)(__totalstep - 1));
-	  __scene1->apply(*this);
-	}
+    if(__scene2){
+      __transparency = (GLfloat)((float)step /(float) (__totalstep - 1));
+      __scene2->apply(*this);
+    }
+    if(__scene1){
+      __transparency = (GLfloat)((float)(__totalstep - step -1)
+                     / (float)(__totalstep - 1));
+      __scene1->apply(*this);
+    }
       }
-    }    
+    }
     __appearance = AppearancePtr();
     endSceneList();
   }

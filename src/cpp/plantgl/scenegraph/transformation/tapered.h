@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -33,7 +33,7 @@
 
 /*! \file geom_tapered.h
     \brief Definition of the transformation class Taper
-	and the transformed class Tapered.
+    and the transformed class Tapered.
 */
 
 
@@ -50,7 +50,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Taper
     \brief A Taper axial deformation.
     It scale the radius cylindrical coordinate of a point according its
@@ -70,8 +70,8 @@ public:
       - \e topRadius must be greate ror equal to 0;
       \post
       - \e self is valid. */
-  Taper( const real_t& baseRadius, 
-	 const real_t& topRadius );
+  Taper( const real_t& baseRadius,
+     const real_t& topRadius );
 
   /// Destructor.
   virtual ~Taper( );
@@ -105,12 +105,12 @@ protected:
 /// Taper Pointer
 typedef RCPtr<Taper> TaperPtr;
 
- 
+
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Tapered
-    \brief A geometry object transformed by an arbitrary taper 
+    \brief A geometry object transformed by an arbitrary taper
     transformation.
 */
 
@@ -124,20 +124,20 @@ public:
   static const real_t DEFAULT_BASE_RADIUS;
 
   /// The default TopRadius field value.
-  static const real_t DEFAULT_TOP_RADIUS;  
+  static const real_t DEFAULT_TOP_RADIUS;
 
 
-  /// A structure which helps to build a Translated when parsing. 
-  struct SG_API Builder : public Deformed::Builder {  
+  /// A structure which helps to build a Translated when parsing.
+  struct SG_API Builder : public Deformed::Builder {
 
     /// A pointer to the \b BaseRadius field.
     real_t * BaseRadius;
 
     /// A pointer to the \b TopRadius field.
-    real_t * TopRadius; 
-    
+    real_t * TopRadius;
+
     /// Constructor.
-    Builder( );  
+    Builder( );
 
     /// Destructor.
     virtual ~Builder( );
@@ -145,18 +145,18 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
-    
+
   /// Default Constructor. Build object is invalid.
   Tapered();
 
   /// Default constructor
   explicit Tapered( const real_t& baseRadius,
-		    const real_t& topRadius,
-		    const PrimitivePtr& primitive );
+            const real_t& topRadius,
+            const PrimitivePtr& primitive );
 
   /// Destructor
   virtual ~Tapered( );
@@ -165,10 +165,10 @@ public:
 
   /// Returns BaseRadius value.
   const real_t& getBaseRadius( ) const;
-    
+
   /// Returns BaseRadius field.
   real_t& getBaseRadius( );
-    
+
   virtual Transformation3DPtr getTransformation( ) const;
 
   /// Returns TopRadius value.
@@ -182,7 +182,7 @@ public:
 
   /// Returns whether TopRadius is set to its default value.
   bool isTopRadiusToDefault( ) const ;
- 
+
   virtual bool isValid( ) const;
 
 protected:
@@ -197,7 +197,7 @@ protected:
 
 /// Tapered Pointer
 typedef RCPtr<Tapered> TaperedPtr;
- 
+
 
 /* ----------------------------------------------------------------------- */
 

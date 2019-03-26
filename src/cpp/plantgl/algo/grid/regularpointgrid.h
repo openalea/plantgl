@@ -65,11 +65,11 @@ protected:
 
 
 template<class VectorType>
-bool is_point_in_cone(const VectorType& point, 
+bool is_point_in_cone(const VectorType& point,
                       const VectorType& coneorigin, const VectorType& conedirection,
-                      real_t coneradius,  real_t coneangle = GEOM_HALF_PI) 
+                      real_t coneradius,  real_t coneangle = GEOM_HALF_PI)
 {
-    VectorType mconedirection = conedirection.normed(); 
+    VectorType mconedirection = conedirection.normed();
     real_t cosconeangle = cos(coneangle / 2);
     VectorType pointtoconeorigin = point-coneorigin;
     real_t dist = pointtoconeorigin.normalize();
@@ -82,13 +82,13 @@ bool is_point_in_cone(const VectorType& point,
 
 template <class PointContainer,
         class ContainerPolicy = LocalContainerPolicy<PointContainer>,
-        int NbDimension = 
+        int NbDimension =
 Dimension<typename PointContainer::element_type>::Nb >
-class PointGrid : public ContainerPolicy, public 
+class PointGrid : public ContainerPolicy, public
 SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension>
 {
 public:
-    typedef 
+    typedef
 SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimension> SpatialBase;
     typedef typename SpatialBase::Base Base;
 
@@ -205,7 +205,7 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
 
     PointIndexList query_points_in_cone(const VectorType& coneorigin, const VectorType& conedirection,
                                        real_t coneradius,  real_t coneangle = GEOM_HALF_PI) const{
-        VectorType mdirection = conedirection.normed(); 
+        VectorType mdirection = conedirection.normed();
         VoxelIdList voxels = this->query_voxels_in_cone(coneorigin,mdirection,coneradius,coneangle);
         PointIndexList res;
         real_t cosconeangle = cos(coneangle / 2);
@@ -241,11 +241,11 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
         while (radius == maxdist && iter < maxiter){
             // iter throught box layers of voxels
             VoxelIdList voxelids = this->query_voxels_in_box(centervxl,Index(iter),Index(iter));
-            for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin(); 
+            for(typename VoxelIdList::const_iterator itVoxel = voxelids.begin();
                 itVoxel != voxelids.end(); ++itVoxel){
                 // iter throught points
                 const PointIndexList& voxelpointlist = getVoxelPointIndices(*itVoxel);
-                for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin(); 
+                for(typename PointIndexList::const_iterator itPointIndex = voxelpointlist.begin();
                     itPointIndex != voxelpointlist.end(); ++itPointIndex){
                     // Find closest point in voxel
                     real_t dist = norm(points().getAt(*itPointIndex)-point);
@@ -263,12 +263,12 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
                 if (radius > enclosedballradius){
                     // other points not in the box but in the sphere can be closer
                     VoxelIdList voxels = this->query_voxels_around_point(point,radius,enclosedballradius);
-                    for(typename VoxelIdList::const_iterator itvoxel = voxels.begin(); 
+                    for(typename VoxelIdList::const_iterator itvoxel = voxels.begin();
                         itvoxel != voxels.end(); ++itvoxel){
                         const PointIndexList& voxelpointlist = Base::getAt(*itvoxel);
                         if(!voxelpointlist.empty()){
-                            for(typename PointIndexList::const_iterator itPointIndex = 
-                                voxelpointlist.begin(); itPointIndex != voxelpointlist.end(); 
+                            for(typename PointIndexList::const_iterator itPointIndex =
+                                voxelpointlist.begin(); itPointIndex != voxelpointlist.end();
                                 ++itPointIndex){
                                 // Find closest point in voxel
                                 real_t dist = norm(points().getAt(*itPointIndex)-point);
@@ -311,7 +311,7 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
         return true;
     }
 
-    inline void disable_points(const PointIndexList& pids) 
+    inline void disable_points(const PointIndexList& pids)
     { disable_points(pids.begin(), pids.end()); }
 
     template<class ConstIterator>
@@ -321,7 +321,7 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
             }
     }
 
-    inline void enable_points(const PointIndexList& pids) 
+    inline void enable_points(const PointIndexList& pids)
     {  enable_points(pids.begin(), pids.end()); }
 
     template<class ConstIterator>
@@ -332,44 +332,44 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
     }
 
     PointContainerPtr get_enabled_points() const {
-		PointContainerPtr result(new PointContainer());
+        PointContainerPtr result(new PointContainer());
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(is_point_enabled(itPointIndex)){
-					result->push_back(points()[itPointIndex]);
-				}
+                if(is_point_enabled(itPointIndex)){
+                    result->push_back(points()[itPointIndex]);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
     PointContainerPtr get_disabled_points() const {
-		PointContainerPtr result(new PointContainer());
+        PointContainerPtr result(new PointContainer());
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(!is_point_enabled(itPointIndex)){
-					result->push_back(points()[itPointIndex]);
-				}
+                if(!is_point_enabled(itPointIndex)){
+                    result->push_back(points()[itPointIndex]);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
     PointIndexList get_enabled_point_indices() const {
-		PointIndexList result;
+        PointIndexList result;
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(is_point_enabled(itPointIndex)){
-					result.push_back(itPointIndex);
-				}
+                if(is_point_enabled(itPointIndex)){
+                    result.push_back(itPointIndex);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
     PointIndexList get_disabled_point_indices() const {
-		PointIndexList result;
+        PointIndexList result;
         for(PointIndex itPointIndex = 0; itPointIndex < points().size(); ++itPointIndex){
-				if(!is_point_enabled(itPointIndex)){
-					result.push_back(itPointIndex);
-				}
+                if(!is_point_enabled(itPointIndex)){
+                    result.push_back(itPointIndex);
+                }
         }
-		return result; 
-	}
+        return result;
+    }
 
 
     template<class Array>
@@ -378,7 +378,7 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
         for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
             if(is_point_enabled(*itp)) result.push_back(*itp);
         }
-        return result; 
+        return result;
     }
 
     template<class Array>
@@ -387,7 +387,7 @@ SpatialArrayN<std::vector<size_t>,typename PointContainer::element_type,NbDimens
         for(typename Array::const_iterator itp = pointlist.begin(); itp != pointlist.end(); ++itp){
             if(!is_point_enabled(*itp)) result.push_back(*itp);
         }
-        return result; 
+        return result;
     }
 
     size_t nbFilledVoxels() const {
@@ -411,21 +411,21 @@ protected:
         registerData(data->begin(),data->end(),startingindex);
     }
 
-	/*
-	inline void print_index(const std::string& before, 
-					   const Index& index,
-					   const std::string& after = "\n") const{
-		printf("%s (",before.c_str());
-		for (size_t i = 0; i < NbDimension-1; ++i){
-			printf("%i,",index[i]);
-		}
-		printf("%i) %s",index[NbDimension-1],after.c_str());
-	}*/
-		
+    /*
+    inline void print_index(const std::string& before,
+                       const Index& index,
+                       const std::string& after = "\n") const{
+        printf("%s (",before.c_str());
+        for (size_t i = 0; i < NbDimension-1; ++i){
+            printf("%i,",index[i]);
+        }
+        printf("%i) %s",index[NbDimension-1],after.c_str());
+    }*/
+
 
 };
 
-template <class PointContainer, int NbDimension = 
+template <class PointContainer, int NbDimension =
 Dimension<typename PointContainer::element_type>::Nb >
 class PointRefGrid : public PointGrid<PointContainer,ContainerReferencePolicy<PointContainer>,  NbDimension>
 {

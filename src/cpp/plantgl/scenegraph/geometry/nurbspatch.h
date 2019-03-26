@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -72,8 +72,8 @@ public:
   /// The \b Degree field default value.
   static const uint_t DEFAULT_NURBS_DEGREE;
 
-  /// A structure which helps to build a NurbsPatch when parsing. 
-  struct SG_API Builder : public BezierPatch::Builder { 
+  /// A structure which helps to build a NurbsPatch when parsing.
+  struct SG_API Builder : public BezierPatch::Builder {
 
     /// A pointer to the \b UKnotList field.
     RealArrayPtr * UKnotList;
@@ -98,7 +98,7 @@ public:
 
   /// Default Constructor. Build object is invalid.
   NurbsPatch();
-  
+
   /** Constructs a NurbsPatch of degrees \e udegree and \e vdegree with the control points matrix \e ctrlPoints and the knots lists \e uKnotList and \e vKnotList.
       \pre
       - \e degrees must be strictly positive;
@@ -107,32 +107,32 @@ public:
       - the number of \e vknot must be equal to \e vdegree + 1 +  number of \e control points in a colum.
       \post
       - \e self is valid. */
-  NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()), 
-	      const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()), 
-	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
-	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      uint_t ustride = DEFAULT_STRIDE, 
-	      uint_t vstride = DEFAULT_STRIDE, 
-	      bool ccw = DEFAULT_CCW );
+  NurbsPatch( const Point4MatrixPtr& ctrlPoints,
+          const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()),
+          const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()),
+          uint_t uDegree = DEFAULT_NURBS_DEGREE,
+          uint_t vDegree = DEFAULT_NURBS_DEGREE,
+          uint_t ustride = DEFAULT_STRIDE,
+          uint_t vstride = DEFAULT_STRIDE,
+          bool ccw = DEFAULT_CCW );
 
-  NurbsPatch( const Point4MatrixPtr& ctrlPoints, 
-	      uint_t uDegree, 
-	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()), 
-	      const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()), 
-	      uint_t ustride = DEFAULT_STRIDE, 
-	      uint_t vstride = DEFAULT_STRIDE, 
-	      bool ccw = DEFAULT_CCW );
+  NurbsPatch( const Point4MatrixPtr& ctrlPoints,
+          uint_t uDegree,
+          uint_t vDegree = DEFAULT_NURBS_DEGREE,
+          const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()),
+          const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()),
+          uint_t ustride = DEFAULT_STRIDE,
+          uint_t vstride = DEFAULT_STRIDE,
+          bool ccw = DEFAULT_CCW );
 
-  NurbsPatch( const Point3MatrixPtr& ctrlPoints, 
-	      uint_t uDegree = DEFAULT_NURBS_DEGREE, 
-	      uint_t vDegree = DEFAULT_NURBS_DEGREE, 
-	      const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()), 
-	      const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()), 
-	      uint_t ustride = DEFAULT_STRIDE, 
-	      uint_t vstride = DEFAULT_STRIDE, 
-	      bool ccw = DEFAULT_CCW );
+  NurbsPatch( const Point3MatrixPtr& ctrlPoints,
+          uint_t uDegree = DEFAULT_NURBS_DEGREE,
+          uint_t vDegree = DEFAULT_NURBS_DEGREE,
+          const RealArrayPtr& uKnotList = TOOLS(RealArrayPtr()),
+          const RealArrayPtr& vKnotList = TOOLS(RealArrayPtr()),
+          uint_t ustride = DEFAULT_STRIDE,
+          uint_t vstride = DEFAULT_STRIDE,
+          bool ccw = DEFAULT_CCW );
 
   /// Destructor
   virtual ~NurbsPatch( ) ;
@@ -204,8 +204,8 @@ public:
   bool isVKnotListToDefault( ) const;
 
   /*! Returns the \e Point for u = \e u and v= \e v.
-      using the Nurbs book algorithm A4.3 p.134. 
-     \pre 
+      using the Nurbs book algorithm A4.3 p.134.
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   virtual Vector3 getPointAt(real_t u,real_t v) const;
@@ -213,7 +213,7 @@ public:
   /* Returns the \e Metric for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 82)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   // Point4MatrixPtr getMetric(real_t u, real_t v) const;
@@ -221,7 +221,7 @@ public:
   /* Returns the determinant of the metric for u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 82)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   // real_t getDetMetric(real_t u, real_t v) const;
@@ -229,7 +229,7 @@ public:
   /* Returns the \e Inverse \e Metric for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 104)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   //Point4MatrixPtr getInvMetric(real_t u, real_t v) const;
@@ -237,55 +237,55 @@ public:
   /* Returns the \e Connection \e Coefficients for  u = \e u and v = \e v.
       (see Differential Geometry, Kreyszig p. 140)
      \author Michael Walker
-     \pre 
+     \pre
       - \e u must be in [0,1];
       - \e v must be in [0,1];*/
   //Point4MatrixPtr getConnectCoeffs(real_t  u, real_t  v, int d, int uspan, int vspan ) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
-      (see the Nurbs book p.12) 
-     \pre 
+      (see the Nurbs book p.12)
+     \pre
       - \e u, \e v must be in [0,1];*/
   virtual Vector3 getUTangentAt(real_t u,real_t v) const;
 
   /* Returns the \e Tangent for u = \e u and v = \e v.
-      (see the Nurbs book p.12) 
-     \pre 
+      (see the Nurbs book p.12)
+     \pre
       - \e u, \e v must be in [0,1];*/
   virtual Vector3 getVTangentAt(real_t u,real_t v) const;
 
   /* Returns the principal \e Normal for u,v = \e u, \e v.
-     \pre 
+     \pre
       - \e u, \e v must be in [0,1];*/
   virtual Vector3 getNormalAt(real_t u,real_t v) const;
 
   /*!
-    \brief Computes the derivative of degree \a d of the 
+    \brief Computes the derivative of degree \a d of the
     curve at parameters \a u and \a v in the homogeneous domain
     \author Michael Walker
   */
   Point4MatrixPtr deriveAtH(real_t u, real_t v, int d, int uspan, int vspan) const;
-  
+
   /*!
     \brief Computes the derivatives of the curve at the parameter \a u, \a v
     \author Michael Walker
-  */  
+  */
   Point4MatrixPtr deriveAt(real_t  u, real_t v, int d, int uspan , int vspan  ) const;
-  
-  
+
+
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
-     \pre 
+     \pre
      - \e u, \e v must be in [0,1];*/
   virtual Vector4 getDerivativeAt(real_t u, real_t v, int du, int dv) const;
 
   /*! Returns the \e derivative of degree \e d for u = \e u, v = \e v.
-     \pre 
+     \pre
      - \e u, \e v must be in [0,1];*/
   virtual Point4MatrixPtr getDerivativesAt(real_t u, real_t v) const;
 
 
 
-  
+
   /*!
     Compute a section line of the patch corresponding to a constant u value
    */

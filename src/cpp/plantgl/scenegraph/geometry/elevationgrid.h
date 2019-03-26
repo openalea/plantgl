@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -73,7 +73,7 @@ public:
   static const real_t DEFAULT_Y_SPACING;
 
 
-  /// A structure which helps to build a ElevationGrid when parsing. 
+  /// A structure which helps to build a ElevationGrid when parsing.
   struct SG_API Builder : public Patch::Builder {
 
 
@@ -105,10 +105,10 @@ public:
 
   /// Complete constructor.
   ElevationGrid( const RealArray2Ptr& heights,
-		 real_t xSpacing = DEFAULT_X_SPACING,
-		 real_t ySpacing = DEFAULT_Y_SPACING,
-		 bool ccw = DEFAULT_CCW);
-  
+         real_t xSpacing = DEFAULT_X_SPACING,
+         real_t ySpacing = DEFAULT_Y_SPACING,
+         bool ccw = DEFAULT_CCW);
+
   /// Destructor
   virtual ~ElevationGrid( );
 
@@ -141,7 +141,7 @@ public:
 
   /// Returns the extent of \e self along the \c x-axis.
   const real_t getXSize( ) const;
-  
+
   /// Returns \b XSpacing value.
   const real_t& getXSpacing( ) const;
 
@@ -180,11 +180,11 @@ protected:
   RealArray2Ptr __heightList;
 
   /// The XSpacing field.
-  real_t __xSpacing; 
+  real_t __xSpacing;
 
   /// The YSpacing field.
-  real_t __ySpacing; 
-   
+  real_t __ySpacing;
+
 }; // ElevationGrid
 
 /// ElevationGrid Pointer

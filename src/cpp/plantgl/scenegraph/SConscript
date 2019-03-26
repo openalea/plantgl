@@ -10,7 +10,7 @@ if not qt_version is None:
 includes= lib_env.ALEAGlob('*.h')
 lib_env.ALEAIncludes( "plantgl/scenegraph", includes )
 
-dirs=lib_env.ALEAGlob('SConscript','*') 
+dirs=lib_env.ALEAGlob('SConscript','*')
 
 # Install headers
 SConscript( dirs, exports = { "env" : lib_env } )
@@ -30,6 +30,6 @@ lib_env.AppendUnique( CPPDEFINES = [ 'SG_MAKEDLL' ] )
 lib_env.AppendUnique( LIBS = [ 'pgltool', 'pglmath'] )
 
 lib_env.ALEALibrary( "pglsg",
-                     sources 
+                     sources
                      )
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -49,9 +49,9 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Box
-    \brief A box 
+    \brief A box
 */
 
 /* ----------------------------------------------------------------------- */
@@ -61,7 +61,7 @@ class SG_API Box : public ParametricModel
 
 public:
 
-  /// A structure which helps to build a Box when parsing. 
+  /// A structure which helps to build a Box when parsing.
   struct SG_API Builder : public ParametricModel::Builder {
 
     /// A pointer to the \b Size field.
@@ -76,7 +76,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -114,7 +114,7 @@ public:
 
   /// Returns the front lower left corner.
   Vector3 getFrontLowerRightCorner( ) const;
- 
+
   /// Returns the back upper left corner.
   Vector3 getFrontUpperLeftCorner( ) const ;
 
@@ -151,19 +151,19 @@ public:
   /// Returns whether Size is set to its default value.
   bool isSizeToDefault( ) const ;
 
-  virtual bool isValid( ) const; 
+  virtual bool isValid( ) const;
 
 protected:
 
   /// The Size field.
   Vector3 __size;
-  
+
 };
 
 /// Box Pointer
 typedef RCPtr<Box> BoxPtr;
 
- 
+
 /* ----------------------------------------------------------------------- */
 
 // __geom_box_h__

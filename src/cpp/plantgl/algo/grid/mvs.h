@@ -89,7 +89,7 @@ public:
   virtual bool isValid( ) const  = 0;
 
    /// Sets the name of \e self.
-  void setName( const std::string& name ) 
+  void setName( const std::string& name )
   { __name = name; }
 
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -174,7 +174,7 @@ Swung::Swung( const ProfileInterpolationPtr& profiles,
   __ccw(ccw),
   __degree(degree),
   __stride(stride)
-{ 
+{
   GEOM_ASSERT(isValid());
 }
 
@@ -271,13 +271,13 @@ bool& Swung::getCCW( )
   return __ccw;
 }
 
-const ProfileInterpolationPtr& 
+const ProfileInterpolationPtr&
 Swung::getProfileInterpolation( ) const
 {
   return __profiles;
 }
 
-ProfileInterpolationPtr& 
+ProfileInterpolationPtr&
 Swung::getProfileInterpolation( )
 {
   return __profiles;

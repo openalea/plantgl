@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -58,7 +58,7 @@ PointSet::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet::Builder::build( ) const {
   if (isValid())
-	  return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr(),Width?*Width:DEFAULT_WIDTH));
+      return SceneObjectPtr(new PointSet(*PointList,ColorList?*ColorList:Color4ArrayPtr(),Width?*Width:DEFAULT_WIDTH));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -71,16 +71,16 @@ void PointSet::Builder::destroy( ) {
 
 
 bool PointSet::Builder::isValid( ) const {
-	if(!EMValid()) return false;
+    if(!EMValid()) return false;
 
-	if (ColorList && *ColorList) {
-		uint_t _colorListSize = (*ColorList)->size();
-		if(_colorListSize != (*PointList)->size()){
-			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
-			return false;
-		}
-	}
-	return true;
+    if (ColorList && *ColorList) {
+        uint_t _colorListSize = (*ColorList)->size();
+        if(_colorListSize != (*PointList)->size()){
+            pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"PointSet","ColorList","Number of colors must be compatible to PointList size.");
+            return false;
+        }
+    }
+    return true;
 
 }
 
@@ -120,27 +120,27 @@ bool  PointSet::isAVolume( ) const {
 }
 
 
-const Vector3& 
+const Vector3&
 PointSet::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
-Vector3& 
+Vector3&
 PointSet::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
 
-ExplicitModelPtr 
+ExplicitModelPtr
 PointSet::transform( const Transformation3DPtr& transformation ) const {
   GEOM_ASSERT(transformation);
   return ExplicitModelPtr(new PointSet(transformation->transform(__pointList),__colorList));
 }
 
-SceneObjectPtr 
-PointSet::copy(DeepCopier& copier) const 
+SceneObjectPtr
+PointSet::copy(DeepCopier& copier) const
 {
   PointSet * ptr = new PointSet(*this);
   copier.copy_attribute(ptr->getPointList());
@@ -149,13 +149,13 @@ PointSet::copy(DeepCopier& copier) const
 }
 
 
-Vector3 
+Vector3
 PointSet::findClosest(const Vector3& point, uint_t * index) const
 {
 
-	std::pair<Point3Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
-	if(index) *index = std::distance<Point3Array::const_iterator>(__pointList->begin(),res.first);
-	return *res.first;
+    std::pair<Point3Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
+    if(index) *index = std::distance<Point3Array::const_iterator>(__pointList->begin(),res.first);
+    return *res.first;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -176,7 +176,7 @@ PointSet2D::Builder::~Builder( ) {
 
 SceneObjectPtr PointSet2D::Builder::build( ) const {
   if (isValid())
-	  return SceneObjectPtr(new PointSet2D(*PointList,Width?*Width:PointSet::DEFAULT_WIDTH));
+      return SceneObjectPtr(new PointSet2D(*PointList,Width?*Width:PointSet::DEFAULT_WIDTH));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -191,7 +191,7 @@ void PointSet2D::Builder::destroy( ) {
 bool PointSet2D::Builder::isValid( ) const {
 
   // PointList
-  if (! PointList) { 
+  if (! PointList) {
     pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"PointSet2D","PointList");
     return false;
   };
@@ -240,55 +240,55 @@ bool PointSet2D::isAVolume( ) const {
   return false;
 }
 
-SceneObjectPtr 
-PointSet2D::copy(DeepCopier& copier) const 
+SceneObjectPtr
+PointSet2D::copy(DeepCopier& copier) const
 {
   PointSet2D * ptr = new PointSet2D(*this);
   copier.copy_attribute(ptr->getPointList());
   return SceneObjectPtr(ptr);
 }
 
-const Vector2& 
+const Vector2&
 PointSet2D::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
-Vector2& 
+Vector2&
 PointSet2D::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->size());
-  return __pointList->getAt(i);   
+  return __pointList->getAt(i);
 }
 
-const Point2ArrayPtr& 
+const Point2ArrayPtr&
 PointSet2D::getPointList( ) const {
   return __pointList;
 }
 
-Point2ArrayPtr& 
+Point2ArrayPtr&
 PointSet2D::getPointList( ) {
   return __pointList;
 }
 
-uint_t 
+uint_t
 PointSet2D::getPointListSize( ) const {
   return __pointList->size();
 }
 
 /*
-ExplicitModel2DPtr 
+ExplicitModel2DPtr
 PointSet2D::transform( const Transformation2DPtr& transformation ) const {
   GEOM_ASSERT(transformation);
   return ExplicitModel2DPtr(new Point2DSet(transformation->transform(__pointList)));
 }
 */
 
-Vector2 
+Vector2
 PointSet2D::findClosest(const Vector2& point, uint_t * index) const
 {
-	std::pair<Point2Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
-	if(index) *index = std::distance<Point2Array::const_iterator>(__pointList->begin(),res.first);
-	return *res.first;
+    std::pair<Point2Array::const_iterator,real_t> res = PGL::findClosest(*__pointList,point);
+    if(index) *index = std::distance<Point2Array::const_iterator>(__pointList->begin(),res.first);
+    return *res.first;
 }
 
 /* ----------------------------------------------------------------------- */

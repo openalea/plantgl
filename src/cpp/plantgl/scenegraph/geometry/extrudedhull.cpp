@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -61,9 +61,9 @@ SceneObjectPtr ExtrudedHull::Builder::build( ) const {
   if (isValid())
     return SceneObjectPtr
       (new ExtrudedHull(*Vertical,
-			*Horizontal,
-//			Orientation ? *Orientation : DEFAULT_ORIENTATION,
-			CCW ? *CCW : DEFAULT_CCW));
+            *Horizontal,
+//          Orientation ? *Orientation : DEFAULT_ORIENTATION,
+            CCW ? *CCW : DEFAULT_CCW));
   // Returns null as self is not valid.
   return SceneObjectPtr();
 }
@@ -118,8 +118,8 @@ ExtrudedHull::ExtrudedHull() :
 }
 
 ExtrudedHull::ExtrudedHull( const Curve2DPtr& vertical,
-			    const Curve2DPtr& horizontal,
-			    bool ccw ) :
+                const Curve2DPtr& horizontal,
+                bool ccw ) :
   Hull(),
   __vertical(vertical),
   __horizontal(horizontal),
@@ -137,7 +137,7 @@ bool ExtrudedHull::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr ExtrudedHull::copy(DeepCopier& copier) const 
+SceneObjectPtr ExtrudedHull::copy(DeepCopier& copier) const
 {
   ExtrudedHull * ptr = new ExtrudedHull(*this);
   copier.copy_object_attribute(ptr->getHorizontal());
@@ -162,12 +162,12 @@ ExtrudedHull::getHorizontal( ) const {
   return __horizontal;
 }
 
-Curve2DPtr& 
+Curve2DPtr&
 ExtrudedHull::getHorizontal( ) {
   return __horizontal;
 }
 
-const Curve2DPtr& 
+const Curve2DPtr&
 ExtrudedHull::getVertical( ) const {
   return __vertical;
 }

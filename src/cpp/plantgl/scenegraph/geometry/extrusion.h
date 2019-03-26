@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -92,7 +92,7 @@ class SG_API Extrusion : public ParametricModel
 {
 
   public:
-  
+
   static const RealArrayPtr DEFAULT_ORIENTATION_LIST;
 
   static const Point2ArrayPtr DEFAULT_SCALE_LIST;
@@ -104,92 +104,92 @@ class SG_API Extrusion : public ParametricModel
   static const Vector3 DEFAULT_INITIAL_NORMAL;
 
     /// A structure which helps to build a Extrusion when parsing.
-    struct SG_API Builder : public ParametricModel::Builder { 
+    struct SG_API Builder : public ParametricModel::Builder {
 
-	    /// A pointee to a curve.
-	    LineicModelPtr *  Axis;
-	    
-	    /// A pointee to a diameter function.
-	    Curve2DPtr * CrossSection;
-	    
-	    /// A pointee to the \b Scaling \b List field.
-	    Point2ArrayPtr * Scale;
-	    
-	    /// A pointee to the \b Orientation \b List field.
-	    RealArrayPtr * Orientation;
-	    
-	    /// A pointee to the \b KnotsList field.
-	    RealArrayPtr * KnotList;
-	    
-	    /// A pointee to the \b Solid field.
-	    bool * Solid;
-	    
-	    /// A pointee to the \b CCW field.
-	    bool * CCW;
+        /// A pointee to a curve.
+        LineicModelPtr *  Axis;
 
-	    /// A pointee to the \b InitialNormal field.
-	    Vector3 * InitialNormal;
+        /// A pointee to a diameter function.
+        Curve2DPtr * CrossSection;
 
-	    /// Constructor.
-	    Builder( );
+        /// A pointee to the \b Scaling \b List field.
+        Point2ArrayPtr * Scale;
 
-	    /// Destructor.
-	    ~Builder( );
-	    
-	    virtual SceneObjectPtr build( ) const;
-	    
-	    virtual void destroy( );
-	    
-	    virtual bool isValid( ) const;
-	    
+        /// A pointee to the \b Orientation \b List field.
+        RealArrayPtr * Orientation;
+
+        /// A pointee to the \b KnotsList field.
+        RealArrayPtr * KnotList;
+
+        /// A pointee to the \b Solid field.
+        bool * Solid;
+
+        /// A pointee to the \b CCW field.
+        bool * CCW;
+
+        /// A pointee to the \b InitialNormal field.
+        Vector3 * InitialNormal;
+
+        /// Constructor.
+        Builder( );
+
+        /// Destructor.
+        ~Builder( );
+
+        virtual SceneObjectPtr build( ) const;
+
+        virtual void destroy( );
+
+        virtual bool isValid( ) const;
+
     };
 
   /// Default Constructor. Build object is invalid.
   Extrusion();
-    
+
     /// Constructor
   Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
-    
-  /// Constructor
-  Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const ProfileTransformationPtr _profile, 
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+        const Curve2DPtr& _crossSection,
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
 
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const Point2ArrayPtr& _scale,
-	    const RealArrayPtr& _orientation = DEFAULT_ORIENTATION_LIST,
-	    const RealArrayPtr& _knot = TOOLS(RealArrayPtr(0)),
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
-    
-   /// Constructor
-  Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const RealArrayPtr& _knot,
-	    const Point2ArrayPtr& _scale,
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
-    
+        const Curve2DPtr& _crossSection,
+        const ProfileTransformationPtr _profile,
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
   /// Constructor
   Extrusion(const LineicModelPtr& _axis,
-	    const Curve2DPtr& _crossSection, 
-	    const RealArrayPtr& _orientation,
-	    const RealArrayPtr& _knot = TOOLS(RealArrayPtr(0)),
-	    const bool _solid = DEFAULT_SOLID,
-	    const bool _ccw = DEFAULT_CCW,
-		const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL); 
-    
+        const Curve2DPtr& _crossSection,
+        const Point2ArrayPtr& _scale,
+        const RealArrayPtr& _orientation = DEFAULT_ORIENTATION_LIST,
+        const RealArrayPtr& _knot = TOOLS(RealArrayPtr(0)),
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
+   /// Constructor
+  Extrusion(const LineicModelPtr& _axis,
+        const Curve2DPtr& _crossSection,
+        const RealArrayPtr& _knot,
+        const Point2ArrayPtr& _scale,
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
+  /// Constructor
+  Extrusion(const LineicModelPtr& _axis,
+        const Curve2DPtr& _crossSection,
+        const RealArrayPtr& _orientation,
+        const RealArrayPtr& _knot = TOOLS(RealArrayPtr(0)),
+        const bool _solid = DEFAULT_SOLID,
+        const bool _ccw = DEFAULT_CCW,
+        const Vector3& initialNormal = DEFAULT_INITIAL_NORMAL);
+
   /// Destructor
   virtual ~Extrusion();
 
@@ -209,10 +209,10 @@ class SG_API Extrusion : public ParametricModel
 
   /// Return the profile transformation value of \e self.
   virtual const ProfileTransformationPtr& getProfileTransformation() const ;
-    
+
   /// Return the profile transformation field of \e self.
   ProfileTransformationPtr& getProfileTransformation();
-    
+
   /// Return the Scaling Factor List value.
   const Point2ArrayPtr& getScale() const;
 
@@ -232,40 +232,40 @@ class SG_API Extrusion : public ParametricModel
   RealArrayPtr& getKnotList();
 
   virtual bool isACurve( ) const;
-    
+
   virtual bool isASurface( ) const;
-    
+
   virtual bool isAVolume( ) const;
-    
+
   virtual bool isValid( ) const;
-  
+
   /// return whether Solid is set to its default value.
   virtual bool isSolidToDefault() const;
 
   /// return whether \e self is solid or not.
   virtual const bool getSolid() const ;
-    
+
   /// return solid field.
   virtual bool& getSolid();
-  
+
   /// return whether CCW is set to its default value.
   virtual bool isCCWToDefault() const ;
-  
+
   /// return whether the vertices of the cross-section are listed in CCW order or not.
   virtual const bool getCCW() const;
-  
+
   /// return CCW field.
   virtual bool& getCCW();
-    
+
   /// return whether Scaling Factor List is set to its default value.
   virtual bool isScaleToDefault() const;
-  
+
   /// return whether Orientation Factor List is  set to its default value.
   virtual bool isOrientationToDefault() const;
-  
+
   /// return whether KnotList is set to its default value.
   virtual bool isKnotListToDefault() const;
-  
+
   /// return the initial normal
   inline const Vector3& getInitialNormal() const
   { return __initialNormal; }
@@ -282,7 +282,7 @@ class SG_API Extrusion : public ParametricModel
   Vector3 getInitialNormalValue() const ;
 
 protected:
-    
+
     /// The axis of the extrusion.
     LineicModelPtr __axis;
 
@@ -298,8 +298,8 @@ protected:
     /// The CCW Field.
     bool __ccw;
 
-	/// The initial normal
-	Vector3 __initialNormal;
+    /// The initial normal
+    Vector3 __initialNormal;
 
 }; // Extrusion
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -58,7 +58,7 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 
 /**
    \class SceneObjectSymbolTable
-   \brief Class used for parsing a stream containing SceneObject.  
+   \brief Class used for parsing a stream containing SceneObject.
 */
 
 /* ----------------------------------------------------------------------- */

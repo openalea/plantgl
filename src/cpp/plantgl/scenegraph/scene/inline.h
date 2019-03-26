@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -73,11 +73,11 @@ class SG_API Inline : public Shape3D {
 
 public:
 
-	// The default translation value
-	static const Vector3 DEFAULT_TRANSLATION;
+    // The default translation value
+    static const Vector3 DEFAULT_TRANSLATION;
 
-	// The default scaling value
-	static const Vector3 DEFAULT_SCALE;
+    // The default scaling value
+    static const Vector3 DEFAULT_SCALE;
 
   /** A structure which helps to build a Inline when parsing.
       Fields are normally allocated while parsing and are free when the
@@ -99,25 +99,25 @@ public:
             virtual void destroy( );
 
             /// Returns whether self is valid.
-	    virtual bool isValid( ) const;
-	    
-	    /// A pointer to the \b FileName field.
-		std::string * FileName;
-	    
-	    /// A pointer to the \b Scene field.
-	    ScenePtr * Scene;
-	    
-	    /// A pointer to the \b Translation field.
-	    Vector3 * Translation;
-	    
-	    /// A pointer to the \b Scale field.
-	    Vector3 * Scale;
+        virtual bool isValid( ) const;
+
+        /// A pointer to the \b FileName field.
+        std::string * FileName;
+
+        /// A pointer to the \b Scene field.
+        ScenePtr * Scene;
+
+        /// A pointer to the \b Translation field.
+        Vector3 * Translation;
+
+        /// A pointer to the \b Scale field.
+        Vector3 * Scale;
     };
 
   /// Constructor.
-  Inline(const std::string& filename, 
-		 const Vector3& translation = DEFAULT_TRANSLATION, 
-		 const Vector3& size = DEFAULT_SCALE);
+  Inline(const std::string& filename,
+         const Vector3& translation = DEFAULT_TRANSLATION,
+         const Vector3& size = DEFAULT_SCALE);
 
   /// Destructor.
   virtual ~Inline();
@@ -146,13 +146,13 @@ public:
 
   /// Return the Scale value.
   inline const Vector3& getScale() const { return __scale; }
-    
+
   /// Return the translation value.
   inline Vector3& getTranslation() { return __translation; }
 
   /// Return the Scale value.
   inline Vector3& getScale() { return __scale; }
-    
+
   /// Tell whether Translation value is to default
   inline bool isTranslationToDefault() const { return __translation == DEFAULT_TRANSLATION; }
 

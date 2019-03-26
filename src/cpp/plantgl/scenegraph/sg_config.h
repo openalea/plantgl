@@ -95,7 +95,7 @@
 
 #ifndef SG_API
 #define SG_API
-#define SG_TEMPLATE_API(T) 
+#define SG_TEMPLATE_API(T)
 #endif
 
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -77,13 +77,13 @@ public:
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b Scaling field.
-	Vector2 * Scale;
+    Vector2 * Scale;
 
     /// A pointer to the \b Translation field.
-	Vector2 * Translation;
+    Vector2 * Translation;
 
     /// A pointer to the \b RotationCenter field.
-	Vector2 * RotationCenter;
+    Vector2 * RotationCenter;
 
     /// A pointer to the \b RotationAngle field.
     real_t * RotationAngle;
@@ -102,16 +102,16 @@ public:
 
   };
 
-  Texture2DTransformation(const Vector2& scaling = DEFAULT_SCALE, 
-						const Vector2& translation = DEFAULT_TRANSLATION, 
-						const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER, 
-						real_t rotationAngle = DEFAULT_ROTATIONANGLE);
+  Texture2DTransformation(const Vector2& scaling = DEFAULT_SCALE,
+                        const Vector2& translation = DEFAULT_TRANSLATION,
+                        const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER,
+                        real_t rotationAngle = DEFAULT_ROTATIONANGLE);
 
   Texture2DTransformation(const std::string& name,
-						const Vector2& scale = DEFAULT_SCALE, 
-						const Vector2& translation = DEFAULT_TRANSLATION, 
-						const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER, 
-						real_t rotationAngle = DEFAULT_ROTATIONANGLE);
+                        const Vector2& scale = DEFAULT_SCALE,
+                        const Vector2& translation = DEFAULT_TRANSLATION,
+                        const Vector2& rotationCenter = DEFAULT_ROTATIONCENTER,
+                        real_t rotationAngle = DEFAULT_ROTATIONANGLE);
   /// Destructor.
   virtual ~Texture2DTransformation( ) ;
 
@@ -168,10 +168,10 @@ public:
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b FileName field.
-	std::string * FileName;
+    std::string * FileName;
 
     /// A pointer to the \b Mipmaping field.
-	bool * Mipmaping;
+    bool * Mipmaping;
 
     /// A pointer to the \b RepeatS field.
     bool * RepeatS;
@@ -198,16 +198,16 @@ public:
 
   /// constructor.
   ImageTexture(  const std::string& filename,
-				 bool repeatS = DEFAULT_REPEATS,
-				 bool repeatT = DEFAULT_REPEATT,
-				 bool mipmaping = DEFAULT_MIPMAPING);
+                 bool repeatS = DEFAULT_REPEATS,
+                 bool repeatT = DEFAULT_REPEATT,
+                 bool mipmaping = DEFAULT_MIPMAPING);
 
   /// constructor.
   ImageTexture(  const std::string& name,
-				 const std::string& filename,
-				 bool repeatS = DEFAULT_REPEATS,
-				 bool repeatT = DEFAULT_REPEATT,
-				 bool mipmaping = DEFAULT_MIPMAPING);
+                 const std::string& filename,
+                 bool repeatS = DEFAULT_REPEATS,
+                 bool repeatT = DEFAULT_REPEATT,
+                 bool mipmaping = DEFAULT_MIPMAPING);
 
   /// Destructor.
   virtual ~ImageTexture( ) ;
@@ -244,7 +244,7 @@ typedef RCPtr<ImageTexture> ImageTexturePtr;
 class SG_API Texture2D : public Appearance
 {
 public:
-  
+
   /// The default transformation value
   static const Texture2DTransformationPtr DEFAULT_TRANSFORMATION;
 
@@ -255,10 +255,10 @@ public:
   struct SG_API Builder : public Appearance::Builder {
 
     /// A pointer to the \b Image field.
-	ImageTexturePtr * Image;
+    ImageTexturePtr * Image;
 
     /// A pointer to the \b Transformation field.
-	Texture2DTransformationPtr * Transformation;
+    Texture2DTransformationPtr * Transformation;
 
     /// A pointer to the \b Transparency field.
     Color4 * BaseColor;
@@ -279,13 +279,13 @@ public:
 
   Texture2D();
 
-  Texture2D(const ImageTexturePtr& image, 
-		    const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
+  Texture2D(const ImageTexturePtr& image,
+            const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
             const Color4& basecolor = DEFAULT_BASECOLOR);
 
   Texture2D(const std::string& name,
-			const ImageTexturePtr& image, 
-			const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
+            const ImageTexturePtr& image,
+            const Texture2DTransformationPtr& transformation = DEFAULT_TRANSFORMATION,
             const Color4& basecolor = DEFAULT_BASECOLOR);
 
   ~Texture2D();
@@ -302,7 +302,7 @@ public:
 
   // The BaseColor property
   PGL_OBJECT_PROPERTY_WITH_DEFAULT(BaseColor,Color4,DEFAULT_BASECOLOR);
-  
+
   /// Returns whether \e self id valid.
   virtual bool isValid( ) const;
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -54,15 +54,15 @@ bool LineicModel::isACurve( ) const {
 
 bool LineicModel::isASurface( ) const {
   return false;
-} 
+}
 
 bool LineicModel::isAVolume( ) const {
   return false;
-} 
+}
 
 /* ----------------------------------------------------------------------- */
 
-real_t 
+real_t
 LineicModel::getLength(real_t begin, real_t end) const
 {
   real_t fk = getFirstKnot();
@@ -80,9 +80,9 @@ LineicModel::getLength(real_t begin, real_t end) const
   Vector3 p1 = getPointAt(beginI);
   Vector3 p2;
 
-  real_t length = 0; 
+  real_t length = 0;
 
-  // Eventually we do some adjustement according to the real begin and end values 
+  // Eventually we do some adjustement according to the real begin and end values
   // here and just after the loop
   if (begin-beginI > GEOM_EPSILON){
     p2 = getPointAt(begin);
@@ -118,7 +118,7 @@ QuantisedFunctionPtr LineicModel::getArcLengthToUMapping() const
   Vector3 p1 = getPointAt(fk);
   Vector3 p2;
 
-  real_t length = 0; 
+  real_t length = 0;
   real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
@@ -155,7 +155,7 @@ QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
   Vector3 p1 = getPointAt(fk);
   Vector3 p2;
 
-  real_t length = 0; 
+  real_t length = 0;
   real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
@@ -174,38 +174,38 @@ QuantisedFunctionPtr LineicModel::getUToArcLengthMapping() const
 
 /* ----------------------------------------------------------------------- */
 
-real_t 
-__closestPointToSegment(Vector3& p, 
-					       const Vector3& segA,
-					       const Vector3& segB,
+real_t
+__closestPointToSegment(Vector3& p,
+                           const Vector3& segA,
+                           const Vector3& segB,
                            real_t* u)
 {
   Vector3 diff = p - segA;
   Vector3 M = segB - segA;
   real_t t = dot(M,diff);
   if(t > 0){
-	real_t dotMM = dot(M,M);
-	if(t < dotMM){
-	  t = t / dotMM;
-	  diff -= M*t;
-	  p = segA + M*t;
-	}
-	else {
-	  t = 1;
-	  diff -= M;
-	  p = segB;
-	}
+    real_t dotMM = dot(M,M);
+    if(t < dotMM){
+      t = t / dotMM;
+      diff -= M*t;
+      p = segA + M*t;
+    }
+    else {
+      t = 1;
+      diff -= M;
+      p = segB;
+    }
   }
   else {
-	t = 0;
-	p = segA;
+    t = 0;
+    p = segA;
   }
   if (u != NULL) *u = t;
   return dot(diff,diff);
 }
 
 
-Vector3 
+Vector3
 LineicModel::findClosest(const Vector3& p, real_t* ui) const{
   real_t u0 = getFirstKnot();
   real_t u1 = getLastKnot();
@@ -217,22 +217,22 @@ LineicModel::findClosest(const Vector3& p, real_t* ui) const{
   real_t lu;
   for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
     p2 = getPointAt(u);
-	pt = p;
-	real_t d = __closestPointToSegment(pt,p1,p2,&lu);
-	if(d < dist){
-	  dist = d;
-	  res = pt;
+    pt = p;
+    real_t d = __closestPointToSegment(pt,p1,p2,&lu);
+    if(d < dist){
+      dist = d;
+      res = pt;
       if (ui != NULL) *ui = u + deltau * (lu -1);
-	}
+    }
     p1 = p2;
   }
   return res;
 }
 
-real_t 
-PGL(closestPointToSegment)(Vector3& p, 
-					       const Vector3& segA,
-					       const Vector3& segB,
+real_t
+PGL(closestPointToSegment)(Vector3& p,
+                           const Vector3& segA,
+                           const Vector3& segB,
                            real_t* u)
 {
     return sqrt(__closestPointToSegment(p,segA, segB,u));

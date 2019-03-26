@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -169,7 +169,7 @@ typedef TOOLS(PglVector<uint_t>) Index;
 class SG_API IndexArray : public Array1<Index>
 {
 
-public:  
+public:
 
   /** Constructs an IndexArray of size of \e size.
       \post
@@ -207,13 +207,13 @@ public:
   */
   Index3ArrayPtr triangulate( ) const;
 
-  /// Sets the \b i-th element of self to \e t. 
+  /// Sets the \b i-th element of self to \e t.
   void setAt(uint_t i, const Index3& t );
-  
-  /// Sets the \b i-th element of self to \e t. 
+
+  /// Sets the \b i-th element of self to \e t.
   void setAt(uint_t i, const Index4& t );
 
-  /// Sets the \b i-th element of self to \e t. 
+  /// Sets the \b i-th element of self to \e t.
   void setAt(uint_t i, const Index& t ) ;
 
   uint_t * data() const;

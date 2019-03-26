@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -271,7 +271,7 @@ bool GLCtrlPointRenderer::process( Tapered * tapered ) {
         ExtrudedHullPtr extrudedHull = dynamic_pointer_cast<ExtrudedHull>(tapered->getPrimitive());
         if(extrudedHull){
           if(extrudedHull->getHorizontal()->apply(__discretizer)){
-	        PolylinePtr p  = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
+            PolylinePtr p  = dynamic_pointer_cast<Polyline>(__discretizer.getDiscretization());
             if(p){
               GEOM_GLCTRLPOINTRENDERER_DRAW_HORLINE2D(p->getPointList());
             }

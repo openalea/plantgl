@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -68,16 +68,16 @@ void Polyline::Builder::destroy( ) {
 
 
 bool Polyline::Builder::isValid( ) const {
-	if(!EMValid()) return false;
+    if(!EMValid()) return false;
 
-	if (ColorList && *ColorList) {
-		uint_t _colorListSize = (*ColorList)->size();
-		if(_colorListSize != (*PointList)->size()){
-			pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Polyline","ColorList","Number of colors must be compatible to PointList size.");
-			return false;
-		}
-	}
-	return true;
+    if (ColorList && *ColorList) {
+        uint_t _colorListSize = (*ColorList)->size();
+        if(_colorListSize != (*PointList)->size()){
+            pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Polyline","ColorList","Number of colors must be compatible to PointList size.");
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -113,24 +113,24 @@ Polyline::Polyline( const Point3ArrayPtr& points, const Color4ArrayPtr& colors, 
 Polyline::~Polyline( ){
 }
 
-const Vector3& 
+const Vector3&
 Polyline::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
 }
 
-Vector3& 
+Vector3&
 Polyline::getPointListAt( uint_t i ) {
   GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
 }
 
-const real_t 
+const real_t
 Polyline::getFirstKnot() const{
   return 0;
 }
 
-const real_t 
+const real_t
 Polyline::getLastKnot() const{
   return (real_t)(__pointList->size()-1);
 }
@@ -142,8 +142,8 @@ Polyline::getStride() const{
 
 Vector3 Polyline::getPointAt(real_t u) const{
     GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
-	if (fabs(u - getFirstKnot()) < GEOM_EPSILON) u = getFirstKnot();
-	else if (fabs(u - getLastKnot()) < GEOM_EPSILON) u = getLastKnot();
+    if (fabs(u - getFirstKnot()) < GEOM_EPSILON) u = getFirstKnot();
+    else if (fabs(u - getLastKnot()) < GEOM_EPSILON) u = getLastKnot();
     real_t u1 = (int)u;
     if(u1 == u)return __pointList->getAt((uint_t)u1);
     else return ((__pointList->getAt((uint_t)u1) * ((u1+1)-u)))+(__pointList->getAt((uint_t)(u1+1)) * (u-u1));
@@ -185,9 +185,9 @@ Polyline::transform( const Transformation3DPtr& transformation ) const {
   return ExplicitModelPtr(new Polyline(transformation->transform(__pointList),__colorList));
 }
 
-SceneObjectPtr 
-Polyline::copy(DeepCopier& copier) const 
-{  
+SceneObjectPtr
+Polyline::copy(DeepCopier& copier) const
+{
   Polyline * ptr = new Polyline(*this);
   copier.copy_attribute(ptr->getPointList());
   copier.copy_attribute(ptr->getColorList());
@@ -212,7 +212,7 @@ std::pair<PolylinePtr,PolylinePtr> Polyline::split(real_t u) const {
 
 const real_t Polyline2D::DEFAULT_ANGLE(GEOM_PI);
 
-Polyline2DPtr Polyline2D::Circle(real_t radius, 
+Polyline2DPtr Polyline2D::Circle(real_t radius,
                                  uchar_t slices)
 {
    Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices + 1));
@@ -220,7 +220,7 @@ Polyline2DPtr Polyline2D::Circle(real_t radius,
    real_t angle = 0;
    pts->setAt(0,Vector2(radius,0));
    for (int i = 1; i < slices; ++i){
-	 angle += angle_delta;
+     angle += angle_delta;
      pts->setAt(i,Vector2(radius*cos(angle),radius*sin(angle)));
    }
    pts->setAt(slices,Vector2(radius,0));
@@ -234,28 +234,28 @@ Polyline2DPtr Polyline2D::ArcOfCircle(real_t radius, real_t starting_angle, real
    real_t angle = starting_angle;
    for (int i = 0; i <= slices; ++i){
      pts->setAt(i,Vector2(radius*cos(angle),radius*sin(angle)));
-	 angle += angle_delta;
+     angle += angle_delta;
    }
    return Polyline2DPtr(new Polyline2D(pts));
 }
 
 Polyline2DPtr Polyline2D::SuperEllipsis(real_t radius,
-									   real_t heigth,
-									   real_t degree,
-									   real_t starting_angle, 
-									   real_t angle_range,
-									   uchar_t slices)
+                                       real_t heigth,
+                                       real_t degree,
+                                       real_t starting_angle,
+                                       real_t angle_range,
+                                       uchar_t slices)
 {
    Point2ArrayPtr pts = Point2ArrayPtr(new Point2Array(slices + 1));
    real_t angle_delta = angle_range / slices;
    real_t angle = starting_angle;
    for (int i = 0; i <= slices; ++i){
-	 real_t cosa = cos(angle);
-	 real_t sina = sin(angle);
-	 int sign_cosa = cosa >= 0 ? 1 : -1;
-	 int sign_sina = sina >= 0 ? 1 : -1;
+     real_t cosa = cos(angle);
+     real_t sina = sin(angle);
+     int sign_cosa = cosa >= 0 ? 1 : -1;
+     int sign_sina = sina >= 0 ? 1 : -1;
      pts->setAt(i,Vector2(radius*pow(fabs(cosa),2/degree)*sign_cosa,heigth*pow(fabs(sina),2/degree)*sign_sina));
-	 angle += angle_delta;
+     angle += angle_delta;
    }
    return Polyline2DPtr(new Polyline2D(pts));
 
@@ -276,7 +276,7 @@ Polyline2D::Builder::~Builder( ) {
 
 SceneObjectPtr Polyline2D::Builder::build( ) const {
   if (isValid())
-	  return SceneObjectPtr(new Polyline2D(*PointList,Width?*Width:DEFAULT_WIDTH));
+      return SceneObjectPtr(new Polyline2D(*PointList,Width?*Width:DEFAULT_WIDTH));
   return SceneObjectPtr();
 }
 
@@ -335,15 +335,15 @@ bool Polyline2D::isValid( ) const {
   return _builder.isValid();
 }
 
-SceneObjectPtr 
-Polyline2D::copy(DeepCopier& copier) const 
+SceneObjectPtr
+Polyline2D::copy(DeepCopier& copier) const
 {
   Polyline2D *  ptr = new Polyline2D(*this);
   copier.copy_attribute(ptr->getPointList());
   return SceneObjectPtr(ptr);
 }
 
-const Vector2& 
+const Vector2&
 Polyline2D::getPointListAt( uint_t i ) const {
   GEOM_ASSERT(i < __pointList->size());
   return __pointList->getAt(i);
@@ -355,37 +355,37 @@ Polyline2D::getPointListAt( uint_t i ) {
   return __pointList->getAt(i);
 }
 
-const Point2ArrayPtr& 
+const Point2ArrayPtr&
 Polyline2D::getPointList( ) const {
   return __pointList;
 }
 
-Point2ArrayPtr& 
+Point2ArrayPtr&
 Polyline2D::getPointList( ){
   return __pointList;
 }
 
-uint_t 
+uint_t
 Polyline2D::getPointListSize( ) const {
   return __pointList->size();
 }
 
-const real_t 
+const real_t
 Polyline2D::getFirstKnot() const{
   return 0;
 }
 
-const real_t 
+const real_t
 Polyline2D::getLastKnot() const{
   return (real_t)(__pointList->size()-1);
 }
 
-const uint_t 
+const uint_t
 Polyline2D::getStride() const{
     return (__pointList->size()-1);
 }
 
-Vector2 
+Vector2
 Polyline2D::getPointAt(real_t u) const{
   GEOM_ASSERT( (getFirstKnot() -u ) < GEOM_EPSILON &&  !((u - getLastKnot()) > GEOM_EPSILON));
   if (fabs(u - getFirstKnot()) < GEOM_EPSILON) u = getFirstKnot();

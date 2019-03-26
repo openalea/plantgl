@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -58,9 +58,9 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 struct SG_API SceneFormat {
-	std::string name;
-	std::vector<std::string> suffixes;
-	std::string comment;
+    std::string name;
+    std::vector<std::string> suffixes;
+    std::string comment;
     bool operator==(const SceneFormat& sf) const
     { return name == sf.name && suffixes == sf.suffixes && comment == comment; }
 };
@@ -71,25 +71,25 @@ class SceneFactory;
 
 class SG_API SceneCodec : public RefCountObject{
 public :
-	friend class SceneFactory;
+    friend class SceneFactory;
 
-	enum Mode {
-		None      = 0,
-		Read  = 1,
-		Write = 2,
-		ReadWrite = 3,
-	};
+    enum Mode {
+        Nothing = 0,
+        Read  = 1,
+        Write = 2,
+        ReadWrite = 3,
+    };
 
-	SceneCodec(const std::string& name, Mode mode = None);
-	virtual ~SceneCodec();
+    SceneCodec(const std::string& name, Mode mode = Nothing);
+    virtual ~SceneCodec();
 
-	virtual SceneFormatList formats() const = 0;
+    virtual SceneFormatList formats() const = 0;
 
-	virtual bool test(const std::string& fname, Mode openingMode);
+    virtual bool test(const std::string& fname, Mode openingMode);
 
-	virtual ScenePtr read(const std::string& fname) { return ScenePtr(); }
+    virtual ScenePtr read(const std::string& fname) { return ScenePtr(); }
 
-	virtual bool write(const std::string& fname,const ScenePtr&	scene) { return false; }
+    virtual bool write(const std::string& fname,const ScenePtr& scene) { return false; }
 
     void setName(const std::string& name) { __name = name; }
     const std::string& getName() const { return __name; }
@@ -97,8 +97,8 @@ public :
     void setMode(Mode mode) { __mode = mode; }
     Mode getMode() const { return __mode; }
 protected:
-	std::string __name;
-	Mode __mode;
+    std::string __name;
+    Mode __mode;
 };
 
 typedef RCPtr<SceneCodec> SceneCodecPtr;
@@ -109,44 +109,44 @@ class SG_API SceneFactory : public RefCountObject
 {
 
 public:
-	typedef std::vector<SceneCodecPtr> CodecList;
+    typedef std::vector<SceneCodecPtr> CodecList;
 
-	~SceneFactory();
-	static SceneFactory& get();
-	static void finalize();
+    ~SceneFactory();
+    static SceneFactory& get();
+    static void finalize();
 
-	SceneFormatList formats( SceneCodec::Mode openingMode = SceneCodec::None ) const;
+    SceneFormatList formats( SceneCodec::Mode openingMode = SceneCodec::Mode::Nothing ) const;
 
     bool isReadable(const std::string& fname);
     bool isWritable(const std::string& fname);
 
     ScenePtr read(const std::string& fname);
-	bool write(const std::string& fname,const ScenePtr&	scene);
+    bool write(const std::string& fname,const ScenePtr& scene);
 
-	ScenePtr read(const std::string& fname, const std::string& codecname);
-	bool write(const std::string& fname,const ScenePtr&	scene, const std::string& codecname);
+    ScenePtr read(const std::string& fname, const std::string& codecname);
+    bool write(const std::string& fname,const ScenePtr& scene, const std::string& codecname);
 
-	void registerCodec(const SceneCodecPtr& codec);
-	void unregisterCodec(const SceneCodecPtr& codec);
+    void registerCodec(const SceneCodecPtr& codec);
+    void unregisterCodec(const SceneCodecPtr& codec);
 
-	bool installLib(const std::string& libname);
-	bool installDefaultLib();
-	void clear();
+    bool installLib(const std::string& libname);
+    bool installDefaultLib();
+    void clear();
 
     typedef CodecList::const_iterator const_iterator;
     const_iterator begin() const { return __codecs.begin(); }
     const_iterator end() const { return __codecs.end(); }
 protected:
 
-	SceneFactory();
-	SceneFactory& operator=(const SceneFactory&);
+    SceneFactory();
+    SceneFactory& operator=(const SceneFactory&);
 
-	SceneCodecPtr findCodec(const std::string& codecname);
+    SceneCodecPtr findCodec(const std::string& codecname);
 
-	CodecList __codecs;
+    CodecList __codecs;
 
 private:
-	static SceneFactoryPtr __factory;
+    static SceneFactoryPtr __factory;
 };
 
 

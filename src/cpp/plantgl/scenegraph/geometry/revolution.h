@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -65,9 +65,9 @@ class SG_API Revolution : public SOR
 
 public:
 
-  /// A structure which helps to build a Revolution when parsing. 
+  /// A structure which helps to build a Revolution when parsing.
   struct SG_API Builder : public SOR::Builder {
-    
+
     /// A pointer to the PointList field.
     Curve2DPtr * Profile;
 
@@ -90,7 +90,7 @@ public:
 
   /// Constructs a Revolution from the 2D polyline \e points.
   Revolution( const Curve2DPtr& profile,
-	      uchar_t slices = DEFAULT_SLICES  );
+          uchar_t slices = DEFAULT_SLICES  );
 
   /// Destructor
   virtual ~Revolution( );
@@ -111,7 +111,7 @@ protected:
 
   /// The PointList field.
   Curve2DPtr __profile;
-  
+
 }; // Revolution
 
 /// Revolution Pointer

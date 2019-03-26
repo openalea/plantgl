@@ -47,10 +47,10 @@ PGL_BEGIN_NAMESPACE
 class ALGO_API PglTurtle : public Turtle {
 public:
     // static Polyline2DPtr DEFAULT_CROSS_SECTION;
-	static AppearancePtr HEADING_FRAME_MATERIAL;
-	static AppearancePtr UP_FRAME_MATERIAL;
-	static AppearancePtr LEFT_FRAME_MATERIAL;
-	static GeometryPtr DEFAULT_SPHERE;
+    static AppearancePtr HEADING_FRAME_MATERIAL;
+    static AppearancePtr UP_FRAME_MATERIAL;
+    static AppearancePtr LEFT_FRAME_MATERIAL;
+    static GeometryPtr DEFAULT_SPHERE;
 
     typedef pgl_hash_map_string<GeometryPtr> SurfaceMap;
 
@@ -59,11 +59,11 @@ public:
     virtual ~PglTurtle();
 
     virtual void reset();
-    
+
     void clear();
 
-	ScenePtr partialView();
-    
+    ScenePtr partialView();
+
     virtual void interpolateColors(int val1, int val2, real_t alpha = 0.5);
 
     virtual void setTextureBaseColor(const Color4& v);
@@ -71,37 +71,37 @@ public:
     virtual void interpolateTextureBaseColors(int val1, int val2, real_t alpha = 0.5);
 
     void clearColorList();
-    
+
     const std::vector<AppearancePtr>& getColorList() const;
-    
+
     void setColorList(const std::vector<AppearancePtr>&);
-    
+
     void clearSurfaceList();
-    
+
     const SurfaceMap& getSurfaceList() const;
-    
+
     void defaultValue();
-        
+
     const ScenePtr& getScene() const
-	{ return __scene;  }
-    
+    { return __scene;  }
+
     size_t getColorListSize() const
-	{ return __appList.size(); }
+    { return __appList.size(); }
 
     void appendMaterial(const AppearancePtr& mat);
-    
+
     void setMaterial(size_t pos, const AppearancePtr& mat);
 
     void insertMaterial(size_t pos, const AppearancePtr& mat);
 
     inline void appendMaterial(const ImageTexturePtr& mat)
-	{ appendMaterial(AppearancePtr(new Texture2D(mat))); }
-    
+    { appendMaterial(AppearancePtr(new Texture2D(mat))); }
+
     void setMaterial(size_t pos, const ImageTexturePtr& mat)
-	{ setMaterial(pos,AppearancePtr(new Texture2D(mat))); }
+    { setMaterial(pos,AppearancePtr(new Texture2D(mat))); }
 
     void insertMaterial(size_t pos, const ImageTexturePtr& mat)
-	{ insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
+    { insertMaterial(pos,AppearancePtr(new Texture2D(mat))); }
 
     AppearancePtr getMaterial(size_t pos);
 
@@ -110,7 +110,7 @@ public:
     void appendColor(float red, float green, float blue);
 
     void appendColor(const Color3& mat);
-    
+
     void setColorAt(size_t pos, uint_t red, uint_t green, uint_t blue );
 
     void setColorAt(size_t pos, float red, float green, float blue );
@@ -118,10 +118,10 @@ public:
     void setColorAt(size_t pos, const Color3& mat);
 
     void removeColor(size_t pos);
-    
+
     void setSurface(const std::string& name, const GeometryPtr& surf)
-    {  __surfList[name] = surf; } 
-    
+    {  __surfList[name] = surf; }
+
     void removeSurface(const std::string& name);
 
     GeometryPtr getSurface(const std::string& name);
@@ -143,27 +143,27 @@ protected:
 
     virtual void _addToScene(const GeometryPtr geom, bool customid = false, AppearancePtr app = NULL, bool projection = true);
 
-	/// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
+    /// draw a frustum of length = length, bottom diameter = current width and top diameter = topdiam
     virtual void _frustum(real_t length,real_t topdiam);
-        
-	/// draw a cylinder of length = length, diameter = current width
+
+    /// draw a cylinder of length = length, diameter = current width
     virtual void _cylinder(real_t length);
 
-	/// draw the polygon with current polygon points
+    /// draw the polygon with current polygon points
     virtual void _polygon(const Point3ArrayPtr& points, bool concavetest = false);
-    
+
     virtual void _generalizedCylinder(const Point3ArrayPtr& points,
-									  const std::vector<Vector3>& left,
+                                      const std::vector<Vector3>& left,
                                       const std::vector<real_t>& radius,
-									  const Curve2DPtr& crossSection,
-									  bool crossSectionCCW,
-									  bool currentcolor = false);
+                                      const Curve2DPtr& crossSection,
+                                      bool crossSectionCCW,
+                                      bool currentcolor = false);
 
     virtual void _sphere(real_t radius);
-        
-    /// draw a circle in yz plane of radius = radius (default : current width) 
+
+    /// draw a circle in yz plane of radius = radius (default : current width)
     virtual void _circle(real_t radius);
-    
+
     virtual void _box(real_t radius, real_t botradius, real_t topradius);
 
     virtual void _quad(real_t radius, real_t botradius, real_t topradius);
@@ -172,13 +172,13 @@ protected:
     virtual void _surface(const std::string& name,real_t scale);
 
     virtual void _label(const std::string& text , int size = -1);
- 
-	virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);
 
-	SurfaceMap __surfList;
+    virtual void _frame(real_t heigth, real_t cap_heigth_ratio, real_t cap_radius_ratio, real_t color, real_t transparency);
+
+    SurfaceMap __surfList;
     std::vector<AppearancePtr> __appList;
 
-	ScenePtr __scene;
+    ScenePtr __scene;
 };
 
 /* ----------------------------------------------------------------------- */

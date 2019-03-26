@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -65,15 +65,15 @@ public:
   /// The \b CCW field default value.
   static const bool DEFAULT_CCW;
 
-  /// A structure which helps to build a ExtrudedHull when parsing. 
-  struct SG_API Builder : public Hull::Builder { 
+  /// A structure which helps to build a ExtrudedHull when parsing.
+  struct SG_API Builder : public Hull::Builder {
 
     /// A pointer to the \b CCW field.
     bool * CCW;
 
     /// A pointer to the \b Horizontal field.
     Curve2DPtr * Horizontal;
-    
+
     /// A pointer to the \b Orientation field.
     // real_t * Orientation;
 
@@ -97,7 +97,7 @@ public:
   /// Default Constructor. Build object is invalid.
   ExtrudedHull();
 
-  /** Constructs a ExtrudedHull with the profiles \e horizontal and 
+  /** Constructs a ExtrudedHull with the profiles \e horizontal and
       \e vertical.
       \pre
       - \e horizontal must contain at leat 2 points;
@@ -105,8 +105,8 @@ public:
       \post
       - \e self is valid. */
   ExtrudedHull(  const Curve2DPtr& vertical,
-		 const Curve2DPtr& horizontal,
-		 bool ccw = DEFAULT_CCW);
+         const Curve2DPtr& horizontal,
+         bool ccw = DEFAULT_CCW);
 
   /// Destructor
   virtual ~ExtrudedHull( );
@@ -137,12 +137,12 @@ public:
   virtual bool isValid( ) const;
 
 protected:
-  
+
   /// The \b Vertical field.
-  Curve2DPtr __vertical;  
+  Curve2DPtr __vertical;
 
   /// The \b Horizontal field.
-  Curve2DPtr __horizontal;  
+  Curve2DPtr __horizontal;
 
   /// The \b CCW field.
   bool __ccw;

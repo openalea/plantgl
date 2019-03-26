@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,24 +29,24 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "util_intersection.h"
 #include <plantgl/math/util_math.h>
 
 PGL_USING_NAMESPACE
 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-		      const Vector3& pt1){
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+              const Vector3& pt1){
   Vector3 AB( pt1 - seg1);
   Vector3 dir( seg2 - seg1);
   if (normLinf(AB ^ dir) < GEOM_EPSILON) return false;
   real_t u = norm(AB) / norm(dir);
-  return ( (u > - GEOM_EPSILON) && (u < 1 - GEOM_EPSILON)); 
+  return ( (u > - GEOM_EPSILON) && (u < 1 - GEOM_EPSILON));
 }
 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-	       const Vector3& segb1,const Vector3& segb2){
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+           const Vector3& segb1,const Vector3& segb2){
   Vector3 _deltaOrig(segb1-seg1);
   Vector3 d1 = seg2 - seg1;
   Vector3 d2 = segb2 - segb1;
@@ -61,9 +61,9 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
   if(fabs(alpha * d1.z() - beta * d2.z() - _deltaOrig.z()) > GEOM_EPSILON) return false;
   return true;
 }
- 
-bool PGL(intersectSegment)(const Vector2& seg1, const Vector2& seg2 , 
-	       const Vector2& segb1,const Vector2& segb2){
+
+bool PGL(intersectSegment)(const Vector2& seg1, const Vector2& seg2 ,
+           const Vector2& segb1,const Vector2& segb2){
   Vector2 _deltaOrig(segb1-seg1);
   Vector2 d1 = seg2 - seg1;
   Vector2 d2 = segb2 - segb1;
@@ -77,10 +77,10 @@ bool PGL(intersectSegment)(const Vector2& seg1, const Vector2& seg2 ,
   if(alpha < -GEOM_EPSILON || alpha  - 1 > GEOM_EPSILON)return false;
   return true;
 }
- 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-	       const Vector3& triangle1,const Vector3& triangle2, const Vector3& triangle3 ){
-    
+
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+           const Vector3& triangle1,const Vector3& triangle2, const Vector3& triangle3 ){
+
   Vector3 u(triangle2 - triangle1);
   Vector3 v(triangle3 - triangle1);
   Vector3 n(cross(u,v));
@@ -90,13 +90,13 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
   real_t dn = dot(d,n);
 
   if( fabs(dn) < GEOM_EPSILON ) return false;
-  
+
   real_t mu = dot(( triangle1 - Pline),n)/dn;
   if(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON) return false;
 
 //      Vector3 Pi = Pline + mu * d;
   Vector3 w = d * mu + Pline - triangle1;
- 
+
   real_t uu = dot(u,u);
   real_t vv = dot(v,v);
   real_t uv = dot(u,v);
@@ -136,9 +136,9 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
 
 }
 
-bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 , 
-	       const Vector3& quad1,const Vector3& quad2, const Vector3& quad3 , const Vector3& quad4 ){
-    
+bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
+           const Vector3& quad1,const Vector3& quad2, const Vector3& quad3 , const Vector3& quad4 ){
+
   Vector3 u(quad2 - quad1);
   Vector3 v(quad3 - quad1);
   Vector3 n(cross(u,v));
@@ -151,24 +151,24 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
 
       real_t mu = dot(( quad1 - Pline),n)/dn;
       if(!(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON)){
-	  Vector3 w = d * mu + Pline - quad1;
-      
-	  real_t uu = dot(u,u);
-	  real_t vv = dot(v,v);
-	  real_t uv = dot(u,v);
-	  real_t denominator = uu*vv-pow(uv,2);
-	  if( !(fabs(denominator)< GEOM_EPSILON) ) {
-	      
-	      real_t alpha = dot(w,u)*vv - dot(w,v)* uv;
-	      alpha /= denominator;
-	      
-	      real_t beta = dot(w,v)*uu - dot(w,u)* uv;
-	      beta /= denominator;
-	      
-	      if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON);
-	      else if( (alpha + beta - 1) > GEOM_EPSILON );
-	      else return true;
-	  }
+      Vector3 w = d * mu + Pline - quad1;
+
+      real_t uu = dot(u,u);
+      real_t vv = dot(v,v);
+      real_t uv = dot(u,v);
+      real_t denominator = uu*vv-pow(uv,2);
+      if( !(fabs(denominator)< GEOM_EPSILON) ) {
+
+          real_t alpha = dot(w,u)*vv - dot(w,v)* uv;
+          alpha /= denominator;
+
+          real_t beta = dot(w,v)*uu - dot(w,u)* uv;
+          beta /= denominator;
+
+          if( alpha < -GEOM_EPSILON || alpha-1 > GEOM_EPSILON || beta < -GEOM_EPSILON || beta-1 > GEOM_EPSILON);
+          else if( (alpha + beta - 1) > GEOM_EPSILON );
+          else return true;
+      }
       }
   }
 
@@ -182,7 +182,7 @@ bool PGL(intersectSegment)(const Vector3& seg1, const Vector3& seg2 ,
   real_t mu = dot(( quad1 - Pline),n)/dn;
   if(mu < -GEOM_EPSILON || mu - 1 > GEOM_EPSILON) return false;
   Vector3 w = d * mu + Pline - quad1;
- 
+
   real_t uu = dot(u,u);
   real_t vv = dot(v,v);
   real_t uv = dot(u,v);

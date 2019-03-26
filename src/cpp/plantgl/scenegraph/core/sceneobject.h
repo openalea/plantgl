@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -76,7 +76,7 @@ class SG_API SceneObject : public virtual RefCountObject
 {
 
 public:
-	 friend class DeepCopier;
+     friend class DeepCopier;
 
 
 /*     /// A stream in which builder put their comment message.
@@ -156,7 +156,7 @@ public:
   /// Applies the action \e action to \e self.
   virtual bool apply( Action& action ) = 0;
 
-  /// Returns a unique id to identify \e self. 
+  /// Returns a unique id to identify \e self.
   virtual size_t getId( ) const ;
 
   /// Returns the name of \e self.
@@ -207,23 +207,23 @@ typedef RCPtr<SceneObject> SceneObjectPtr;
 
 
 #define PGL_OBJECT(T) \
-	public: \
-	virtual bool apply( Action& action ) { return action.process(this); } \
-	protected: \
+    public: \
+    virtual bool apply( Action& action ) { return action.process(this); } \
+    protected: \
     virtual SceneObjectPtr copy(DeepCopier&) const; \
-	public: \
+    public: \
 
 #define PGL_OBJECT_PROPERTY(PROPNAME,PROPTYPE) \
-	inline const PROPTYPE& get##PROPNAME() const { return __##PROPNAME; } \
-	inline PROPTYPE& get##PROPNAME() { return __##PROPNAME; } \
-	inline void set##PROPNAME(const PROPTYPE& value) { __##PROPNAME = value; } \
-	protected: \
+    inline const PROPTYPE& get##PROPNAME() const { return __##PROPNAME; } \
+    inline PROPTYPE& get##PROPNAME() { return __##PROPNAME; } \
+    inline void set##PROPNAME(const PROPTYPE& value) { __##PROPNAME = value; } \
+    protected: \
     PROPTYPE __##PROPNAME; \
-	public:
+    public:
 
 #define PGL_OBJECT_PROPERTY_WITH_DEFAULT(PROPNAME,PROPTYPE,DEFAULTPROPVALUE) \
-	PGL_OBJECT_PROPERTY(PROPNAME,PROPTYPE) \
-	inline bool is##PROPNAME##ToDefault() const { return __##PROPNAME == DEFAULTPROPVALUE; }
+    PGL_OBJECT_PROPERTY(PROPNAME,PROPTYPE) \
+    inline bool is##PROPNAME##ToDefault() const { return __##PROPNAME == DEFAULTPROPVALUE; }
 
 /* ------------------------------------------------------------------------- */
 

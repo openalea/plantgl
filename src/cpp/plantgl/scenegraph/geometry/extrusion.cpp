@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -65,7 +65,7 @@ Extrusion::Builder::Builder() :
     KnotList(0),
     Solid(0),
     CCW(0),
-	InitialNormal(0){
+    InitialNormal(0){
 }
 
 Extrusion::Builder::~Builder(){
@@ -73,25 +73,25 @@ Extrusion::Builder::~Builder(){
 }
 
 SceneObjectPtr Extrusion::Builder::build( ) const {
-    
-    if (isValid()){
-	if((!Scale) && (!Orientation))
-	    return SceneObjectPtr(new Extrusion(*Axis,*CrossSection,
-						( Solid ? *Solid : Mesh::DEFAULT_SOLID ), 
-						( CCW ? *CCW : Mesh::DEFAULT_CCW ),
-						( InitialNormal ? *InitialNormal : DEFAULT_INITIAL_NORMAL )));
 
-	ProfileTransformationPtr _profile;
-	if(KnotList)_profile = ProfileTransformationPtr(new ProfileTransformation(( Scale ? *Scale : DEFAULT_SCALE_LIST),
-										  ( Orientation ? *Orientation : DEFAULT_ORIENTATION_LIST),*KnotList));
-	else{
-	    _profile = ProfileTransformationPtr(new ProfileTransformation(( Scale ? *Scale : DEFAULT_SCALE_LIST),
-									  ( Orientation ? *Orientation : DEFAULT_ORIENTATION_LIST)));
-	}
-	return SceneObjectPtr(new Extrusion(*Axis,*CrossSection,_profile,
-					    ( Solid ? *Solid : Mesh::DEFAULT_SOLID ), 
-					    ( CCW ? *CCW : Mesh::DEFAULT_CCW ),
-						( InitialNormal ? *InitialNormal : DEFAULT_INITIAL_NORMAL )));
+    if (isValid()){
+    if((!Scale) && (!Orientation))
+        return SceneObjectPtr(new Extrusion(*Axis,*CrossSection,
+                        ( Solid ? *Solid : Mesh::DEFAULT_SOLID ),
+                        ( CCW ? *CCW : Mesh::DEFAULT_CCW ),
+                        ( InitialNormal ? *InitialNormal : DEFAULT_INITIAL_NORMAL )));
+
+    ProfileTransformationPtr _profile;
+    if(KnotList)_profile = ProfileTransformationPtr(new ProfileTransformation(( Scale ? *Scale : DEFAULT_SCALE_LIST),
+                                          ( Orientation ? *Orientation : DEFAULT_ORIENTATION_LIST),*KnotList));
+    else{
+        _profile = ProfileTransformationPtr(new ProfileTransformation(( Scale ? *Scale : DEFAULT_SCALE_LIST),
+                                      ( Orientation ? *Orientation : DEFAULT_ORIENTATION_LIST)));
+    }
+    return SceneObjectPtr(new Extrusion(*Axis,*CrossSection,_profile,
+                        ( Solid ? *Solid : Mesh::DEFAULT_SOLID ),
+                        ( CCW ? *CCW : Mesh::DEFAULT_CCW ),
+                        ( InitialNormal ? *InitialNormal : DEFAULT_INITIAL_NORMAL )));
     }
     return SceneObjectPtr();
 }
@@ -110,81 +110,81 @@ void Extrusion::Builder::destroy() {
 bool Extrusion::Builder::isValid( ) const {
     // Axis field
     if(!Axis) {
-	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","Axis");
-	return false;
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","Axis");
+    return false;
     };
 
     if(!(*Axis)) {
-	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*Axis");
-	return false;
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*Axis");
+    return false;
     };
 
     if(!(*Axis)->isValid()) {
-	pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Axis","Must be a valid Geometry Object.");
-	return false;
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Axis","Must be a valid Geometry Object.");
+    return false;
     };
 
     if(!CrossSection) {
-	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","CrossSection");
-	return false;
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","CrossSection");
+    return false;
     };
 
     if(!(*CrossSection)) {
-	pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*CrossSection");
-	return false;
+    pglErrorEx(PGLWARNINGMSG(UNINITIALIZED_FIELD_ss),"Extrusion","*CrossSection");
+    return false;
     };
 
     if(!(*CrossSection)->isValid()) {
-	pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","CrossSection","Must be a valid Geometry Object.");
-	return false;
+    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","CrossSection","Must be a valid Geometry Object.");
+    return false;
     };
-    
+
     if(Scale){
-	if(!(*Scale)->isValid()) {
-	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
-	    return false;
-	};
-	if((*Scale)->size() == 0 ){
-	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
-	    return false;
-	}
+    if(!(*Scale)->isValid()) {
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Scale","Must be a valid Object.");
+        return false;
+    };
+    if((*Scale)->size() == 0 ){
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Scale","Must have more values.");
+        return false;
+    }
 
     }
 
     if(Orientation){
-	if((*Orientation)->size() == 0 ){
-	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
-	    return false;
-	}
+    if((*Orientation)->size() == 0 ){
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","Orientation","Must have more values.");
+        return false;
+    }
     }
 
     if( ((Scale)&&(*Scale)->size() !=1) &&
-	((Orientation)&&(*Orientation)->size() !=1) &&
-	((*Scale)->size()!=((*Orientation)->size())) ){
-	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
-		       "Must specifie Scale and Orientation with the same number of value."); 
-	    return false;
+    ((Orientation)&&(*Orientation)->size() !=1) &&
+    ((*Scale)->size()!=((*Orientation)->size())) ){
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","Orientation",
+               "Must specifie Scale and Orientation with the same number of value.");
+        return false;
     }
 
     if(KnotList){
-	if(((!Scale)||(*Scale)->size() ==1)&&((!Orientation)||(*Orientation)->size() ==1)){
-	    pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
-		       "Must specifie Scale or Orientation with more than one value."); 
-	}
-	else if(Scale){
-	    if(((*Scale)->size() > 1)&&((*Scale)->size() != (*KnotList)->size())){
-		pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
-			   "Must have the same number of value than Scale .");
-		return false;
-	    }
-	}
-	else {
-	    if(((*Orientation)->size() ==1)&&(((*Orientation)->size()) != (*KnotList)->size())){
-		pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
-			   "Must have the same number of value than Orientation .");
-		return false;
-	    }
-	}
+    if(((!Scale)||(*Scale)->size() ==1)&&((!Orientation)||(*Orientation)->size() ==1)){
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Extrusion","KnotList",
+               "Must specifie Scale or Orientation with more than one value.");
+    }
+    else if(Scale){
+        if(((*Scale)->size() > 1)&&((*Scale)->size() != (*KnotList)->size())){
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
+               "Must have the same number of value than Scale .");
+        return false;
+        }
+    }
+    else {
+        if(((*Orientation)->size() ==1)&&(((*Orientation)->size()) != (*KnotList)->size())){
+        pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_SIZE_sss),"Extrusion","KnotList",
+               "Must have the same number of value than Orientation .");
+        return false;
+        }
+    }
     }
 
     return true;
@@ -200,85 +200,85 @@ Extrusion::Extrusion( ) :
     __profile(new ProfileTransformation()),
     __solid(Mesh::DEFAULT_SOLID),
     __ccw(Mesh::DEFAULT_CCW),
-	__initialNormal(DEFAULT_INITIAL_NORMAL){
+    __initialNormal(DEFAULT_INITIAL_NORMAL){
 }
 
-Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection, 
-		     const ProfileTransformationPtr _profile, const bool _solid, const bool _ccw,
-		     const Vector3& initialNormal  ) :
+Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection,
+             const ProfileTransformationPtr _profile, const bool _solid, const bool _ccw,
+             const Vector3& initialNormal  ) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(_profile),
     __solid(_solid),
     __ccw(_ccw),
-	__initialNormal(initialNormal){
+    __initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,const Curve2DPtr& _crossSection,
-		     const bool _solid, const bool _ccw,
-		     const Vector3& initialNormal ) :
+             const bool _solid, const bool _ccw,
+             const Vector3& initialNormal ) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation()),
     __solid(_solid),
     __ccw(_ccw),
-	__initialNormal(initialNormal){
+    __initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,
-		       const Curve2DPtr& _crossSection, 
-		       const Point2ArrayPtr& _scale,
-		       const RealArrayPtr& _orientation,
-		       const RealArrayPtr& _knot,
-		       const bool _solid,
-		       const bool _ccw,
-		     const Vector3& initialNormal) :
+               const Curve2DPtr& _crossSection,
+               const Point2ArrayPtr& _scale,
+               const RealArrayPtr& _orientation,
+               const RealArrayPtr& _knot,
+               const bool _solid,
+               const bool _ccw,
+             const Vector3& initialNormal) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation(_scale,_orientation,_knot)),
     __solid(_solid),
     __ccw(_ccw),
-	__initialNormal(initialNormal){
+    __initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,
-		       const Curve2DPtr& _crossSection, 
-		       const RealArrayPtr& _knot,
-		       const Point2ArrayPtr& _scale,
-		       const bool _solid,
-		       const bool _ccw,
-		     const Vector3& initialNormal) :
+               const Curve2DPtr& _crossSection,
+               const RealArrayPtr& _knot,
+               const Point2ArrayPtr& _scale,
+               const bool _solid,
+               const bool _ccw,
+             const Vector3& initialNormal) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation(_scale,DEFAULT_ORIENTATION_LIST,_knot)),
     __solid(_solid),
     __ccw(_ccw),
-	__initialNormal(initialNormal){
+    __initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
 
 Extrusion::Extrusion(const LineicModelPtr& _axis,
-		       const Curve2DPtr& _crossSection, 
-		       const RealArrayPtr& _orientation,
-		       const RealArrayPtr& _knot,
-		       const bool _solid,
-		       const bool _ccw,
-		     const Vector3& initialNormal) :
+               const Curve2DPtr& _crossSection,
+               const RealArrayPtr& _orientation,
+               const RealArrayPtr& _knot,
+               const bool _solid,
+               const bool _ccw,
+             const Vector3& initialNormal) :
     ParametricModel(),
     __axis(_axis),
     __crossSection(_crossSection),
     __profile(new ProfileTransformation(DEFAULT_SCALE_LIST,_orientation,_knot)),
     __solid(_solid),
     __ccw(_ccw),
-	__initialNormal(initialNormal){
+    __initialNormal(initialNormal){
     GEOM_ASSERT(isValid());
 }
 
@@ -288,7 +288,7 @@ Extrusion::~Extrusion(){
 
 /* ----------------------------------------------------------------------- */
 
-const Curve2DPtr& 
+const Curve2DPtr&
 Extrusion::getCrossSection() const {
   return __crossSection;
 }
@@ -298,70 +298,70 @@ Extrusion::getCrossSection() {
   return __crossSection;
 }
 
-const LineicModelPtr& 
+const LineicModelPtr&
 Extrusion::getAxis() const {
   return __axis;
 }
 
-LineicModelPtr& 
+LineicModelPtr&
 Extrusion::getAxis() {
   return __axis;
 }
 
-const ProfileTransformationPtr& 
+const ProfileTransformationPtr&
 Extrusion::getProfileTransformation() const {
   return __profile;
 }
 
-ProfileTransformationPtr& 
+ProfileTransformationPtr&
 Extrusion::getProfileTransformation(){
   return __profile;
 }
 
-bool 
+bool
 Extrusion::isACurve( ) const {
   return false;
 }
 
-bool 
+bool
 Extrusion::isASurface( ) const {
   return !__solid;
-} 
+}
 
 bool
 Extrusion::isAVolume( ) const {
   return __solid;
-} 
+}
 
-bool 
+bool
 Extrusion::isSolidToDefault() const{
   return (__solid == Mesh::DEFAULT_SOLID);
 }
 
-const bool 
+const bool
 Extrusion::getSolid() const {
   return __solid;
 }
 
-bool& 
+bool&
 Extrusion::getSolid() {
   return __solid;
 }
 
-bool 
+bool
 Extrusion::isCCWToDefault() const {
   return (__ccw == Mesh::DEFAULT_CCW);
 }
 
-const bool 
+const bool
 Extrusion::getCCW() const {
   return __ccw;
 }
 
-bool& 
+bool&
 Extrusion::getCCW() {
   return __ccw;
-}    
+}
 
 /// Return the Scaling Factor List value.
 const Point2ArrayPtr& Extrusion::getScale() const
@@ -400,10 +400,10 @@ Extrusion::isValid( ) const {
     if(!isScaleToDefault())
       _builder.Scale = const_cast<Point2ArrayPtr *>(&(__profile->getScale()));
       if(!isOrientationToDefault())
-	_builder.Orientation = const_cast<RealArrayPtr *>(&(__profile->getOrientation()));
+    _builder.Orientation = const_cast<RealArrayPtr *>(&(__profile->getOrientation()));
       if(!__profile->isKnotListToDefault()){
-	_knot = __profile->getKnotList();
-	_builder.KnotList = const_cast<RealArrayPtr *>(&(_knot));
+    _knot = __profile->getKnotList();
+    _builder.KnotList = const_cast<RealArrayPtr *>(&(_knot));
       }
   }
   return _builder.isValid();
@@ -436,7 +436,7 @@ Extrusion::copy(DeepCopier& copier) const {
   if(__profile){
     Point2ArrayPtr scale((__profile->getScale()?new Point2Array(*(__profile->getScale())):0));
     RealArrayPtr orientation((__profile->getOrientation()?new RealArray(*(__profile->getOrientation())):0));
-    RealArrayPtr knot((__profile->getKnotList()?new RealArray(*(__profile->getKnotList())):0));										       
+    RealArrayPtr knot((__profile->getKnotList()?new RealArray(*(__profile->getKnotList())):0));
     ptr->getProfileTransformation() = ProfileTransformationPtr(new ProfileTransformation(scale,orientation,knot));
   }
   return SceneObjectPtr(ptr);
@@ -449,7 +449,7 @@ Vector3 Extrusion::getInitialNormalValue() const {
     Vector3 _normal( __initialNormal );
     if( normSquared(_normal) > GEOM_EPSILON )
     { return _normal; }
-	_normal = __axis->getNormalAt(__axis->getFirstKnot());
+    _normal = __axis->getNormalAt(__axis->getFirstKnot());
     if( normSquared(_normal) < GEOM_EPSILON )
     {
       // normal==0 : curve is locally like a line
@@ -462,7 +462,7 @@ Vector3 Extrusion::getInitialNormalValue() const {
 
       _normal= cross(tg,U);
       }
-	return _normal;
+    return _normal;
 }
 
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 2012-20015 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 2012-20015 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -66,9 +66,9 @@ public:
   /// The \b Radius field default value.
   static const real_t DEFAULT_RADIUS;
 
-  /// A structure which helps to build a Sphere when parsing. 
+  /// A structure which helps to build a Sphere when parsing.
   struct SG_API Builder : public SOR::Builder {
-    
+
     /// A pointer to the Stacks field.
     uchar_t * Stacks;
 
@@ -84,7 +84,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -92,8 +92,8 @@ public:
 
   /// Default constructor.
   Sphere( const real_t& radius = DEFAULT_RADIUS,
-	  uchar_t Slices = DEFAULT_SLICES,
-	  uchar_t Stacks = DEFAULT_STACKS);
+      uchar_t Slices = DEFAULT_SLICES,
+      uchar_t Stacks = DEFAULT_STACKS);
 
   /// Destructor
   virtual ~Sphere( );

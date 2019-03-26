@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file ray.h
     \brief Definition of Ray.
@@ -53,7 +53,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Ray
     \brief A Ray is a point 3D and a direction.
 */
@@ -64,46 +64,46 @@ class ALGO_API Ray  {
 
     public :
 
-  /*! Default constructor. 
+  /*! Default constructor.
     \pre
-    - \e Direction must not be = Vector3(0,0,0); 
+    - \e Direction must not be = Vector3(0,0,0);
   */
   Ray(const Vector3& Origin = Vector3::ORIGIN,
-	  const Vector3& Direction = Vector3::OX);
-    
-    
+      const Vector3& Direction = Vector3::OX);
+
+
   /// Destructor
   virtual ~Ray();
-  
-  
+
+
   /// Validity check.
   virtual bool isValid() const ;
-  
+
   /// Return origin of \e self.
   inline const Vector3& getOrigin() const {
     return __origin ;
   }
-    
+
   /// Return origin of \e self.
   inline Vector3& getOrigin() {
     return __origin ;
   }
-    
+
   /// Return direction of \e self.
   inline const Vector3& getDirection() const {
     return __direction ;
   }
-    
+
   /// Return direction of \e self.
   inline Vector3& getDirection() {
     return __direction ;
   }
-    
+
   /// Return point \e t on the ray.
   inline Vector3 getAt(const real_t t) const {
     return __origin + __direction * t ;
   }
-        
+
   /*! Intersection between \e self and \e point.
     \pre
     - \e self must be valid;
@@ -116,7 +116,7 @@ class ALGO_API Ray  {
     - \e point must be valid. */
   bool intersect( const Vector2& point ) const;
 
-  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
+  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ].
     \pre
     - \e self must be valid;
     - \e point1 and \e point2 must be valid.
@@ -130,7 +130,7 @@ class ALGO_API Ray  {
   */
   int intersect( const Ray& ray, Vector3& intersection, real_t& t ) const;
 
-  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
+  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ].
     \pre
     - \e self must be valid;
     - \e point1 and \e point2 must be valid.
@@ -143,11 +143,11 @@ class ALGO_API Ray  {
     \retval 2 segment is in the ray
   */
   int intersect( const Vector3& point1, const Vector3& point2, Vector3& intersection ) const;
-  
-  /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ]. 
+
+  /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ].
     \pre
     - \e self must be valid;
-    - \e point1 and \e point2 must be valid. 
+    - \e point1 and \e point2 must be valid.
     \post
     - \e intersection contains the intersection if returned value is 1
     \return  type of intersection.
@@ -157,7 +157,7 @@ class ALGO_API Ray  {
     \retval 2 are in the same plane
   */
   int intersect( const Vector2& point1, const Vector2& point2, Vector2& intersection ) const;
-  
+
   /*! Intersection between \e self and a triangle defined by [ \e triangle1 , \e triangle2 , \e triangle3 ].
     \pre
     - \e self must be valid;
@@ -176,7 +176,7 @@ class ALGO_API Ray  {
     \pre
     - \e self must be valid;
     - \e facet must be planar and convex;
-    - \e quad1, \e quad2, \e quad3 and \e quad4 must be valid. 
+    - \e quad1, \e quad2, \e quad3 and \e quad4 must be valid.
     \post
     - \e intersection contains the intersection if returned value is 1
     \return  type of intersection.
@@ -193,7 +193,7 @@ class ALGO_API Ray  {
     \pre
     - \e self must be valid;
     - \e facet must be planar and convex;
-    - \e center, \e r must be valid. 
+    - \e center, \e r must be valid.
     \post
     - \e intersection contains the intersection if returned value is > 0
     \return  type of intersection.
@@ -201,15 +201,15 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in 2 points.
   */
-  int intersect( const Vector3& center,const real_t& r, 
-		 Vector3& intersection1, Vector3& intersection2   ) const;
+  int intersect( const Vector3& center,const real_t& r,
+         Vector3& intersection1, Vector3& intersection2   ) const;
 
 
   /*! Intersection between \e self and a ellipsoid defined by \e center and [ \e a , \e b , \e c ].
     \pre
     - \e self must be valid;
     - \e facet must be planar and convex;
-    - \e center, \e a, \e b and \e c must be valid. 
+    - \e center, \e a, \e b and \e c must be valid.
     \post
     - \e intersection contains the intersection if returned value is > 0
     \return  type of intersection.
@@ -217,8 +217,8 @@ class ALGO_API Ray  {
     \retval 1 intersect in unique point \e intersection
     \retval 2 are in 2 points.
   */
-  int intersect( const Vector3& center,const real_t& a, const real_t& b, const real_t& c, 
-		 Vector3& intersection1, Vector3& intersection2   ) const;
+  int intersect( const Vector3& center,const real_t& a, const real_t& b, const real_t& c,
+         Vector3& intersection1, Vector3& intersection2   ) const;
 
 
   /// Intersection with a bounding box
@@ -246,13 +246,13 @@ class ALGO_API Ray  {
   friend ALGO_API bool intersection(const Ray& ray, const BoundingSpherePtr& bsphere);
 
 protected :
-  
+
   /// origin of \e self.
   Vector3 __origin;
-  
+
   /// direction of \e self.
   Vector3 __direction;
-  
+
 };
 
 ALGO_API bool intersection(const Ray& ray, const BoundingBox& bbox);

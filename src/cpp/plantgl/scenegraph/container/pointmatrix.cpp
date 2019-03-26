@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -174,7 +174,7 @@ Point3Matrix::Point3Matrix( uint_t rows, uint_t cols, const Vector3& value ) :
   GEOM_ASSERT(isValid());
 }
 
-  
+
 Point3Matrix::Point3Matrix( const Point2MatrixPtr& points2, const real_t& z ) :
   Array2<Vector3>() {
   if(!points2) return;

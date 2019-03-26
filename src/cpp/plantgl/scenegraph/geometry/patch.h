@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -53,7 +53,7 @@ typedef RCPtr<Point4Matrix> Point4MatrixPtr;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Patch
     \brief Abstract base class for objects of type of 3D parametric patch.
 */
@@ -116,7 +116,7 @@ protected:
 
 /// Patch Pointer
 typedef RCPtr<Patch> PatchPtr;
- 
+
 
 /* ----------------------------------------------------------------------- */
 

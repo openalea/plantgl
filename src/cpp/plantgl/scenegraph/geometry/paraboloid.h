@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -85,7 +85,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -93,12 +93,12 @@ public:
 
   /// Defautl constructor.
   Paraboloid( const real_t& radius = DEFAULT_RADIUS,
-	      const real_t& height = DEFAULT_HEIGHT,
-	      const real_t& shape =  DEFAULT_SHAPE,
-	      bool solid = DEFAULT_SOLID,
-	      uchar_t slices = DEFAULT_SLICES,
-	      uchar_t stacks = DEFAULT_STACKS );
-  
+          const real_t& height = DEFAULT_HEIGHT,
+          const real_t& shape =  DEFAULT_SHAPE,
+          bool solid = DEFAULT_SOLID,
+          uchar_t slices = DEFAULT_SLICES,
+          uchar_t stacks = DEFAULT_STACKS );
+
   /// Destructor
   virtual ~Paraboloid( ) ;
 

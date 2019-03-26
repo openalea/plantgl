@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -96,13 +96,13 @@ bool Curve2D::isACurve( ) const {
 
 bool Curve2D::isASurface( ) const {
   return false;
-} 
+}
 
 bool Curve2D::isAVolume( ) const {
   return false;
-} 
+}
 
-real_t 
+real_t
 Curve2D::getLength(real_t begin, real_t end) const
 {
   real_t fk = getFirstKnot();
@@ -120,9 +120,9 @@ Curve2D::getLength(real_t begin, real_t end) const
   Vector2 p1 = getPointAt(beginI);
   Vector2 p2;
 
-  real_t length = 0; 
+  real_t length = 0;
 
-  // Eventually we do some adjustement according to the real begin and end values 
+  // Eventually we do some adjustement according to the real begin and end values
   // here and just after the loop
   if (begin-beginI > GEOM_EPSILON){
     p2 = getPointAt(begin);
@@ -160,7 +160,7 @@ QuantisedFunctionPtr Curve2D::getArcLengthToUMapping() const
   Vector2 p1 = getPointAt(fk);
   Vector2 p2;
 
-  real_t length = 0; 
+  real_t length = 0;
   real_t n = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
@@ -197,7 +197,7 @@ QuantisedFunctionPtr Curve2D::getUToArcLengthMapping() const
   Vector2 p1 = getPointAt(fk);
   Vector2 p2;
 
-  real_t length = 0; 
+  real_t length = 0;
 
   Point2ArrayPtr points(new Point2Array(stride+1));
   points->setAt(0,Vector2(fk,0));
@@ -214,7 +214,7 @@ QuantisedFunctionPtr Curve2D::getUToArcLengthMapping() const
 
 /* ----------------------------------------------------------------------- */
 
-Vector2 
+Vector2
 Curve2D::findClosest(const Vector2& p, real_t* ui) const{
   real_t u0 = getFirstKnot();
   real_t u1 = getLastKnot();
@@ -226,43 +226,43 @@ Curve2D::findClosest(const Vector2& p, real_t* ui) const{
   real_t lu;
   for(real_t u = u0 + deltau ; u <= u1 ; u += deltau){
     p2 = getPointAt(u);
-	pt = p;
-	real_t d = closestPointToSegment(pt,p1,p2,&lu);
-	if(d < dist){
-	  dist = d;
-	  res = pt;
+    pt = p;
+    real_t d = closestPointToSegment(pt,p1,p2,&lu);
+    if(d < dist){
+      dist = d;
+      res = pt;
       if (ui != NULL) *ui = u + deltau * (lu -1);
-	}
+    }
     p1 = p2;
   }
   return res;
 }
 
-real_t 
-PGL(closestPointToSegment)(Vector2& p, 
-					       const Vector2& segA,
-					       const Vector2& segB,
+real_t
+PGL(closestPointToSegment)(Vector2& p,
+                           const Vector2& segA,
+                           const Vector2& segB,
                            real_t* u)
 {
   Vector2 diff = p - segA;
   Vector2 M = segB - segA;
   real_t t = dot(M,diff);
   if(t > 0){
-	real_t dotMM = dot(M,M);
-	if(t < dotMM){
-	  t = t / dotMM;
-	  diff -= M*t;
-	  p = segA + M*t;
-	}
-	else {
-	  t = 1;
-	  diff -= M;
-	  p = segB;
-	}
+    real_t dotMM = dot(M,M);
+    if(t < dotMM){
+      t = t / dotMM;
+      diff -= M*t;
+      p = segA + M*t;
+    }
+    else {
+      t = 1;
+      diff -= M;
+      p = segB;
+    }
   }
   else {
-	t = 0;
-	p = segA;
+    t = 0;
+    p = segA;
   }
   if (u != NULL) *u = t;
   return dot(diff,diff);

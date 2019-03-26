@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -49,7 +49,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class PlanarModel
     \brief Abstract base class for objects of type of planar model.
 */
@@ -90,7 +90,7 @@ public:
 
 /// PlanarModel Pointer
 typedef RCPtr<PlanarModel> PlanarModelPtr;
- 
+
 
 /* ----------------------------------------------------------------------- */
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -63,11 +63,11 @@ Sphere::Builder::~Builder() {
 
 
 SceneObjectPtr Sphere::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Sphere(Radius ? *Radius : DEFAULT_RADIUS,
-		  Slices ? *Slices : DEFAULT_SLICES,
-		  Stacks ? *Stacks : DEFAULT_STACKS));
+          Slices ? *Slices : DEFAULT_SLICES,
+          Stacks ? *Stacks : DEFAULT_STACKS));
   return SceneObjectPtr();
 }
 
@@ -87,7 +87,7 @@ bool Sphere::Builder::isValid( ) const {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Sphere","Stacks","Must be greater than 3.");
     return false;
   };
-  
+
   // Radius field.
   if (Radius && (*Radius < REAL_EPSILON)) {
     pglErrorEx(PGLERRORMSG(INVALID_FIELD_VALUE_sss),"Sphere","Radius","Must be positive non null.");
@@ -102,8 +102,8 @@ bool Sphere::Builder::isValid( ) const {
 
 
 Sphere::Sphere( const real_t& radius,
-		uchar_t slices,
-		uchar_t stacks ) :
+        uchar_t slices,
+        uchar_t stacks ) :
   SOR(slices),
     __stacks(stacks),
     __radius(radius) {

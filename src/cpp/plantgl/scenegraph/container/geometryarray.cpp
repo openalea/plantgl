@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -43,7 +43,7 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 GeometryArray::GeometryArray (uint_t size ) :
-  GeomArray<GeometryPtr>( size){ 
+  GeomArray<GeometryPtr>( size){
 }
 
 GeometryArray::~GeometryArray()
@@ -53,7 +53,7 @@ GeometryArray::~GeometryArray()
 
 /* ----------------------------------------------------------------------- */
 Curve2DArray::Curve2DArray (uint_t size ) :
-  GeomArray<Curve2DPtr>( size){ 
+  GeomArray<Curve2DPtr>( size){
 }
 
 Curve2DArray::~Curve2DArray (){
@@ -62,7 +62,7 @@ Curve2DArray::~Curve2DArray (){
 /* ----------------------------------------------------------------------- */
 
 CurveArray::CurveArray (uint_t size ) :
-  GeomArray<LineicModelPtr>( size){ 
+  GeomArray<LineicModelPtr>( size){
 }
 
 CurveArray::~CurveArray ()

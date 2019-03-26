@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -47,7 +47,7 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Spectrum
     \brief Abstract base class for all spectrum objects.
 */
@@ -59,7 +59,7 @@ class SG_API Spectrum : public Appearance
 
 public:
 
-  /// A structure which helps to build a Spectrum when parsing. 
+  /// A structure which helps to build a Spectrum when parsing.
   struct SG_API Builder : public Appearance::Builder {
 
     /// A constructor. It inits all the pointers to null.

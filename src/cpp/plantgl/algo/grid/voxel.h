@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -53,7 +53,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-/** 
+/**
     \class Voxel
     \brief A Voxel is a regular Tile whose geometry is a box.
 */
@@ -67,16 +67,16 @@ class ALGO_API Voxel : public Tile {
   static AppearancePtr EMPTY_APPEARANCE;
   static AppearancePtr FILLED_APPEARANCE;
   static AppearancePtr UNDETERMINED_APPEARANCE;
-	
+
     /** Default constructor. */
-	Voxel(Tile * Complex = NULL, 
-	      const unsigned char Scale = 0, 
-	      const TileType Type = Empty, 
-	      const unsigned char Num = 0, 
-	      const Vector3& PMin = Vector3::ORIGIN,
-	      const Vector3& PMax = Vector3::ORIGIN);
-    
-    
+    Voxel(Tile * Complex = NULL,
+          const unsigned char Scale = 0,
+          const TileType Type = Empty,
+          const unsigned char Num = 0,
+          const Vector3& PMin = Vector3::ORIGIN,
+          const Vector3& PMax = Vector3::ORIGIN);
+
+
 
     /// Destructor
     virtual ~Voxel();
@@ -87,61 +87,61 @@ class ALGO_API Voxel : public Tile {
 
     /// Return center of \e self.
     inline Vector3 getCenter() const {
-	return (__ur + __ll) / 2 ;
+    return (__ur + __ll) / 2 ;
     }
-    
+
     /// Return size of \e self.
     inline Vector3 getSize() const {
-	return (__ur - __ll) / 2 ;
+    return (__ur - __ll) / 2 ;
     }
-    
+
     /// Return coordinates min of \e self.
     inline const Vector3& getMinCoord() const {
-	return __ll;
+    return __ll;
     }
-    
+
     /// Return coordinates min of \e self.
     inline Vector3& getMinCoord(){
-	return __ll;
+    return __ll;
     }
-    
+
     /// Return Lower Left Corner of \e self.
     inline const Vector3& getLowerLeftCorner() const {
-	return __ll;
+    return __ll;
     }
-    
+
     /// Return Lower Left Corner of \e self.
     inline Vector3& getLowerLeftCorner(){
-	return __ll;
+    return __ll;
     }
-    
+
     /// Return coordinates max of \e self.
     inline const Vector3& getMaxCoord() const {
-	return __ur;
+    return __ur;
     }
-    
+
     /// Return coordinates max of \e self.
     inline Vector3& getMaxCoord(){
-	return __ur;
+    return __ur;
     }
-    
+
     /// Return Upper Right Corner of \e self.
     inline const Vector3& getUpperRightCorner() const {
-	return __ur;
+    return __ur;
     }
-    
+
     /// Return Upper Right Corner  of \e self.
     inline Vector3& getUpperRightCorner(){
-	return __ur;
+    return __ur;
     }
-    
+
     /// Set coordinates min and max of \e self from \e bbox.
     void setBBox(const BoundingBox& bbox);
 
     /// Set coordinates min and max of \e self from \e bbox.
     void setBBox(const BoundingBoxPtr& bbox);
 
-    
+
    /*! Intersection between \e self and \e voxel.
       \pre
       - \e self must be valid;
@@ -166,13 +166,13 @@ class ALGO_API Voxel : public Tile {
       - \e point must be valid. */
     bool intersect( const Vector2& point ) const;
 
-  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ]. 
+  /*! Intersection between  \e self and a segment defined by [ \e point1 , \e point2 ].
       \pre
       - \e self must be valid;
       - \e point1 and \e point2 must be valid. */
     bool intersect( const Vector3& point1, const Vector3& point2 ) const;
 
-  /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ]. 
+  /*! Intersection between projection of \e self on z=0 and a segment defined by [ \e point1 , \e point2 ].
       \pre
       - \e self must be valid;
       - \e point1 and \e point2 must be valid. */
@@ -200,16 +200,16 @@ class ALGO_API Voxel : public Tile {
 
    /// Returns whether \e v1 intersect \e v2.
    friend ALGO_API bool intersection( const Voxel& v1, const Voxel& v2);
-   
+
    /// Returns whether \e v1 intersect \e b2.
    friend ALGO_API bool intersection( const Voxel& v1, const BoundingBox& b2);
-   
+
    /** Returns whether \e v1 intersect \e b2.
        \pre
        - \e b2 must be non null and valid.
    */
    friend ALGO_API bool intersection( const Voxel& v1, const BoundingBoxPtr& b2);
-   
+
    /// Returns whether \e v1 intersect \e v2.
    friend ALGO_API bool intersection( const Voxel& v1, const Vector3& v2);
 
@@ -237,13 +237,13 @@ class ALGO_API Voxel : public Tile {
    friend ALGO_API bool intersection( const Voxel& v1, const Vector3& quad1, const Vector3& quad2, const Vector3& quad3, const Vector3& quad4);
 
    protected :
-	
+
    /// coordinates min of \e self.
    Vector3 __ll;
-   
+
    /// coordinates max of \e self.
    Vector3 __ur;
-   
+
 };
 
 ALGO_API bool intersection( const Voxel& v1, const Voxel& v2);

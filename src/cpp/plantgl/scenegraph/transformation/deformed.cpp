@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -29,7 +29,7 @@
  *  ----------------------------------------------------------------------------
  */
 
- 
+
 #include "deformed.h"
 #include <plantgl/scenegraph/geometry/primitive.h>
 #include <plantgl/scenegraph/core/pgl_messages.h>
@@ -59,7 +59,7 @@ Deformed::Builder::Builder() :
 
 
 void Deformed::Builder::destroy() {
-	DefDestroy();
+    DefDestroy();
 }
 
 void Deformed::Builder::DefDestroy() {
@@ -68,7 +68,7 @@ void Deformed::Builder::DefDestroy() {
 
 
 bool Deformed::Builder::isValid( ) const {
-	return DefValid( ) ;
+    return DefValid( ) ;
 }
 
 bool Deformed::Builder::DefValid( ) const {
@@ -100,37 +100,37 @@ Deformed::Deformed( const PrimitivePtr& primitive ) :
 Deformed::~Deformed( ) {
 }
 
-const GeometryPtr 
+const GeometryPtr
 Deformed::getGeometry( ) const {
   return GeometryPtr(__primitive);
 }
 
-const PrimitivePtr& 
+const PrimitivePtr&
 Deformed::getPrimitive( ) const {
   return __primitive;
 }
 
-PrimitivePtr& 
+PrimitivePtr&
 Deformed::getPrimitive( ){
   return __primitive;
 }
 
-bool 
+bool
 Deformed::isACurve( ) const {
   return __primitive->isACurve();
 }
 
-bool 
+bool
 Deformed::isASurface( ) const {
   return __primitive->isASurface();
 }
 
-bool 
+bool
 Deformed::isAVolume( ) const {
   return __primitive->isAVolume();
 }
 
-bool 
+bool
 Deformed::isExplicit( ) const {
   return __primitive->isExplicit();
 }

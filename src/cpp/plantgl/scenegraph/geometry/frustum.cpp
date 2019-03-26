@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -59,13 +59,13 @@ Frustum::Builder::~Builder() {
 
 
 SceneObjectPtr Frustum::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Frustum(Radius ? *Radius : DEFAULT_RADIUS,
-		   Height ? *Height : DEFAULT_HEIGHT,
-		   Taper ? *Taper : DEFAULT_TAPER,
-		   Solid ? *Solid : DEFAULT_SOLID,
-		   Slices ? *Slices : DEFAULT_SLICES));
+           Height ? *Height : DEFAULT_HEIGHT,
+           Taper ? *Taper : DEFAULT_TAPER,
+           Solid ? *Solid : DEFAULT_SOLID,
+           Slices ? *Slices : DEFAULT_SLICES));
   return SceneObjectPtr();
 }
 
@@ -93,10 +93,10 @@ bool Frustum::Builder::isValid( ) const {
 
 
 Frustum::Frustum( const real_t& radius,
-		  const real_t& height,
-		  const real_t& taper,
-		  bool solid,
-		  uchar_t slices ) :
+          const real_t& height,
+          const real_t& taper,
+          bool solid,
+          uchar_t slices ) :
   Cone(radius,height,solid,slices),
   __taper(taper) {
   GEOM_ASSERT(isValid());
@@ -115,7 +115,7 @@ bool Frustum::isValid( ) const {
   _builder.Slices = const_cast<uchar_t *>(&__slices);
   return _builder.isValid();
 }
-  
+
 SceneObjectPtr Frustum::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Frustum(*this));
 }

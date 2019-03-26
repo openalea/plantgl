@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -65,22 +65,22 @@ typedef Uint32Tuple3 Index3;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class MultiSpectral
-    \brief The multi spectral appereance property of an object. 
+    \brief The multi spectral appereance property of an object.
 */
 
 
 class SG_API MultiSpectral : public Spectrum
 {
- 
+
 public:
 
   /// The default \b Filter field value.
   static const Index3 DEFAULT_RGB_INDEX;
 
 
-  /// A structure which helps to build a MultiSpectral when parsing. 
+  /// A structure which helps to build a MultiSpectral when parsing.
   struct SG_API Builder : public Spectrum::Builder {
 
     /// A pointer to the \b Reflectance field.
@@ -111,8 +111,8 @@ public:
 
   /// Constructor.
   MultiSpectral( const RealArrayPtr& reflectance,
-		 const RealArrayPtr& transmittance,
-		 const Index3& rgbIndex = DEFAULT_RGB_INDEX );
+         const RealArrayPtr& transmittance,
+         const Index3& rgbIndex = DEFAULT_RGB_INDEX );
 
   /// Destructor.
   virtual ~MultiSpectral( ) ;
@@ -200,7 +200,7 @@ protected:
 
   /// The \b rgbIndex field.
   Index3 __filter;
-  
+
 };
 
 /// MultiSpectral Pointer

@@ -146,9 +146,9 @@ protected:
   /// Shape based octree sorting. It includes interception test based on implicit equation.
   void build1();
 
-  /*! Implementation of the triangle based octree sorting. 
+  /*! Implementation of the triangle based octree sorting.
       with max number of triangles per voxel condition used
-      and fast overestimating marking of intercepted voxel 
+      and fast overestimating marking of intercepted voxel
       based on triangle bounding box */
   void build2();
 
@@ -203,24 +203,23 @@ private:
 
 }; // class Octree
 
-  template<class condition>
-        ScenePtr getCondRepresentation(const Octree& o, condition a) {
+template<class condition>
+ScenePtr getCondRepresentation(const Octree& o, condition a) {
     ScenePtr _scene(new Scene());
-        std::queue<const OctreeNode *> _myQueue;
+    std::queue<const OctreeNode *> _myQueue;
     const OctreeNode * node = &o.getRoot();
     _myQueue.push(node);
     while(!_myQueue.empty()){
-      node = _myQueue.front();
-      if(node->isDecomposed()){
+        node = _myQueue.front();
+        if(node->isDecomposed()){
             for(unsigned char i = 0 ; i <  8 ; i++)
-          _myQueue.push(node->getComponent(i));
-      }
-      if(a(node))_scene->add(node->representation());
-      _myQueue.pop();
+                _myQueue.push(node->getComponent(i));
         }
+        if(a(node))_scene->add(node->representation());
+        _myQueue.pop();
+    }
     return _scene;
-  }
-
+}
 
 /// Octree Pointer
 typedef RCPtr<Octree> OctreePtr;

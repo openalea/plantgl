@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -46,16 +46,16 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class MonoSpectral
-    \brief Mono spectral material property of an object. 
+    \brief Mono spectral material property of an object.
 */
 
 
 
 class SG_API MonoSpectral : public Spectrum
 {
- 
+
 public:
 
   /// The default \b Reflectance field value.
@@ -65,9 +65,9 @@ public:
   static const real_t DEFAULT_TRANSMITTANCE;
 
 
-  /// A structure which helps to build a MonoSpectral when parsing. 
+  /// A structure which helps to build a MonoSpectral when parsing.
   struct SG_API Builder : public Spectrum::Builder {
-    
+
     /// A pointer to the \b Reflectance field.
     real_t * Reflectance;
 
@@ -91,7 +91,7 @@ public:
 
   /// Default constructor.
   MonoSpectral( const real_t& reflectance = DEFAULT_REFLECTANCE,
-		const real_t& transmittance = DEFAULT_TRANSMITTANCE);
+        const real_t& transmittance = DEFAULT_TRANSMITTANCE);
 
   /// Destructor.
   virtual ~MonoSpectral( ) ;

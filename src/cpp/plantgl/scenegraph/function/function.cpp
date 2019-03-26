@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -40,7 +40,7 @@ PGL_USING_NAMESPACE
 uint_t QuantisedFunction::DEFAULT_SAMPLING(100);
 bool QuantisedFunction::DEFAULT_CLAMPED(true);
 
-QuantisedFunction::QuantisedFunction(const Curve2DPtr& curve, uint_t sampling, bool clamped) : 
+QuantisedFunction::QuantisedFunction(const Curve2DPtr& curve, uint_t sampling, bool clamped) :
     RefCountObject(), __values(0), __sampling(sampling),__firstx(0.0),__lastx(1.0),__clamped(clamped)
 { build(curve);}
 
@@ -53,7 +53,7 @@ QuantisedFunction::QuantisedFunction(const std::vector<real_t>& values, real_t f
     RefCountObject(), __values(values), __sampling(values.size()), __firstx(firstx),__lastx(lastx),__clamped(clamped)
 { }
 
-QuantisedFunction::~QuantisedFunction() 
+QuantisedFunction::~QuantisedFunction()
 { }
 
 real_t QuantisedFunction::getIndex(real_t x) const
@@ -70,10 +70,10 @@ real_t QuantisedFunction::getValue(real_t x) const
     else if (x > __lastx) x = __lastx;
   }
   if (!(x > __firstx - GEOM_EPSILON)){
-	  pglError("QuantisedFunction : x=%f < firstX=%f.",x,__firstx);
+      pglError("QuantisedFunction : x=%f < firstX=%f.",x,__firstx);
   }
   if (!(x < __lastx + GEOM_EPSILON)){
-	  pglError("QuantisedFunction : x=%f > lastX=%f.",x,__lastx);
+      pglError("QuantisedFunction : x=%f > lastX=%f.",x,__lastx);
   }
 
 
@@ -89,7 +89,7 @@ real_t QuantisedFunction::getValue(real_t x) const
         return w1*__values[floorindex] + diff*__values[floorindex+1];
 }
 
-real_t QuantisedFunction::findX(real_t y, bool& found, real_t startingX) const 
+real_t QuantisedFunction::findX(real_t y, bool& found, real_t startingX) const
 {
   assert(isValid());
   pglError("QuantisedFunction : x=%f not in [%f, %f].",startingX,__firstx,__lastx);
@@ -119,7 +119,7 @@ bool QuantisedFunction::build(const Curve2DPtr& curve, uint_t sampling)
     return true;
 }
 
-bool QuantisedFunction::isMonotonous(bool strictly) const 
+bool QuantisedFunction::isMonotonous(bool strictly) const
 {
   return isIncreasing(strictly) || isDecreasing(strictly);
 }
@@ -171,7 +171,7 @@ void QuantisedFunction::computeCache(const Curve2DPtr& curve)
 
 real_t QuantisedFunction::computeValue(const Curve2DPtr& curve, real_t x, real_t maxerror)
 {
-	if (!check(curve)) pglError("QuantisedFunction : not a valid curve to quantized.");
+    if (!check(curve)) pglError("QuantisedFunction : not a valid curve to quantized.");
     return _computeValue(curve,x,maxerror);
 }
 

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "tile.h"
 
@@ -38,10 +38,10 @@ PGL_USING_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
 
-Tile::Tile(Tile * Complex, 
-	   const unsigned char Scale, 
-	   const TileType Type, 
-	   const unsigned char Num) :
+Tile::Tile(Tile * Complex,
+       const unsigned char Scale,
+       const TileType Type,
+       const unsigned char Num) :
     __num(Num),
     __scale(Scale),
     __type(Type),
@@ -54,12 +54,12 @@ Tile::~Tile(){
 
 
 std::string Tile::getName() const {
-	std::string name( (unsigned int)(__scale+1),'0');
+    std::string name( (unsigned int)(__scale+1),'0');
     const Tile * _pt = this;
     int _i = __scale;
     while( _i >= 0 && _pt != NULL){
-	name[_i--]= '0' +_pt->getNum();
-	_pt = _pt->getComplex();
+        name[_i--]= '0' +_pt->getNum();
+        _pt = _pt->getComplex();
     }
     return name;
 }

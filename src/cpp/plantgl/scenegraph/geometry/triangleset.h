@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -69,8 +69,8 @@ public:
   /// Default Constructor. Build object is invalid.
   TriangleSet();
 
-  /** Constructs a TriangleSet with the points \e points, the triangles 
-      indices \e indices, the face ordering \e ccw, the solid flag \e solid 
+  /** Constructs a TriangleSet with the points \e points, the triangles
+      indices \e indices, the face ordering \e ccw, the solid flag \e solid
       and the skeleton \e skeleton.
       \pre
       - \e points must contain a minimum of 3 points;
@@ -80,14 +80,14 @@ public:
       \post
       - \e self is valid. */
   TriangleSet( const Point3ArrayPtr& points,
-	       const Index3ArrayPtr& indices,
-	       bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-	       bool ccw = DEFAULT_CCW,
-	       bool solid = DEFAULT_SOLID,
-	       const PolylinePtr& skeleton = DEFAULT_SKELETON );
-  
+           const Index3ArrayPtr& indices,
+           bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+           bool ccw = DEFAULT_CCW,
+           bool solid = DEFAULT_SOLID,
+           const PolylinePtr& skeleton = DEFAULT_SKELETON );
 
-  /** Constructs a TriangleSet with the points \e points, the triangles 
+
+  /** Constructs a TriangleSet with the points \e points, the triangles
       indices \e indices, the face ordering \e ccw, the solid flag \e solid,
       the skeleton \e skeleton and the normals \e normals.
       normals don't have to be normalized.
@@ -101,19 +101,19 @@ public:
       \post
       - \e self is valid. */
   TriangleSet( const Point3ArrayPtr& points,
-	       const Index3ArrayPtr& indices,
-	       const Point3ArrayPtr& normals ,
-	       const Index3ArrayPtr& nomalIndices = Index3ArrayPtr(),
-	       const Color4ArrayPtr& colors  = Color4ArrayPtr(),
-	       const Index3ArrayPtr& colorIndices = Index3ArrayPtr(),
-	       const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
-	       const Index3ArrayPtr& texCoordIndices = Index3ArrayPtr(),
-	       bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-	       bool colorPerVertex = DEFAULT_COLORPERVERTEX,
-	       bool CCW = DEFAULT_CCW,
-	       bool solid = DEFAULT_SOLID,
-	       const PolylinePtr& skeleton = DEFAULT_SKELETON);
-  
+           const Index3ArrayPtr& indices,
+           const Point3ArrayPtr& normals ,
+           const Index3ArrayPtr& nomalIndices = Index3ArrayPtr(),
+           const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+           const Index3ArrayPtr& colorIndices = Index3ArrayPtr(),
+           const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
+           const Index3ArrayPtr& texCoordIndices = Index3ArrayPtr(),
+           bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+           bool colorPerVertex = DEFAULT_COLORPERVERTEX,
+           bool CCW = DEFAULT_CCW,
+           bool solid = DEFAULT_SOLID,
+           const PolylinePtr& skeleton = DEFAULT_SKELETON);
+
   /// Destructor
   virtual ~TriangleSet( );
 

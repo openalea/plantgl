@@ -103,7 +103,7 @@ inline IndexArrayPtr k_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, si
     for (size_t pointid = 0; pointid < nbPoints; ++pointid){
         kdtree.annkSearch(pointdata[pointid],kk,nn_idx,dists);
         Index& pointres = res->getAt(pointid);
-        for(uint32_t i = 0; i < kk; ++i) 
+        for(uint32_t i = 0; i < kk; ++i)
             if (nn_idx[i] != pointid)
                 pointres.push_back(nn_idx[i]);
     }
@@ -137,7 +137,7 @@ inline IndexArrayPtr r_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, re
     for (size_t pointid = 0; pointid < nbPoints; ++pointid){
         kdtree.annkFRSearch(pointdata[pointid],sqrRadius,kk,nn_idx,dists);
         Index& pointres = res->getAt(pointid);
-        for(uint32_t i = 0; i < kk; ++i) 
+        for(uint32_t i = 0; i < kk; ++i)
             if (nn_idx[i] != pointid)
                 pointres.push_back(nn_idx[i]);
     }
@@ -150,7 +150,7 @@ inline IndexArrayPtr r_nearest_neighbors_of_kdtree_points(ANNkd_tree& kdtree, re
 }
 
 template<class PointArray>
-IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k) 
+IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k)
 {
    typedef typename PointArray::element_type VectorType;
 
@@ -162,31 +162,31 @@ IndexArrayPtr k_nearest_neighbors(RCPtr<PointArray> points, size_t k)
 }
 
 template<class ContainerType>
-class ANNKDTreeInternal  
+class ANNKDTreeInternal
 {
 
     typedef ContainerType PointContainer;
     typedef typename PointContainer::element_type VectorType;
     typedef RCPtr<PointContainer> PointContainerPtr;
 
-    
+
     ANNpointArray __pointdata;
     ANNkd_tree __kdtree;
     size_t __nbpoints;
 
     public:
 
-        ANNKDTreeInternal(const PointContainerPtr points) : 
-            __pointdata(toANNPointArray(points)), 
+        ANNKDTreeInternal(const PointContainerPtr points) :
+            __pointdata(toANNPointArray(points)),
                         __kdtree(__pointdata,points->size(),VectorType::size()),
                         __nbpoints(points->size()){ }
 
-        virtual ~ANNKDTreeInternal() { 
+        virtual ~ANNKDTreeInternal() {
             if (__pointdata) annDeallocPts(__pointdata);
         }
 
 
-        Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX) 
+        Index k_closest_points(const VectorType& point, size_t k, real_t maxdist = REAL_MAX)
         {
             if (k > __nbpoints) k = __nbpoints;
 
@@ -199,7 +199,7 @@ class ANNKDTreeInternal
             size_t kres = k;
             if (maxdist != REAL_MAX)
                 kres = std::min<size_t>(k,__kdtree.annkFRSearch(queryPoint,maxdist*maxdist,k,nn_idx,dists));
-            else 
+            else
                 __kdtree.annkSearch(queryPoint,k,nn_idx,dists);
 
             Index res;
@@ -213,12 +213,12 @@ class ANNKDTreeInternal
             return res;
         }
 
-        inline IndexArrayPtr k_nearest_neighbors(size_t k) 
+        inline IndexArrayPtr k_nearest_neighbors(size_t k)
         {
             return k_nearest_neighbors_of_kdtree_points(__kdtree,k);
         }
 
-        inline IndexArrayPtr r_nearest_neighbors(real_t radius) 
+        inline IndexArrayPtr r_nearest_neighbors(real_t radius)
         {
             return r_nearest_neighbors_of_kdtree_points(__kdtree,radius);
         }

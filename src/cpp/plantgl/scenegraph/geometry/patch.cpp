@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -69,7 +69,7 @@ Patch::~Patch( ) {
 
 /* ----------------------------------------------------------------------- */
 
-bool 
+bool
 Patch::isACurve( ) const {
   return false;
 }
@@ -77,24 +77,24 @@ Patch::isACurve( ) const {
 bool
 Patch::isASurface( ) const {
   return true;
-} 
+}
 
 bool
 Patch::isAVolume( ) const {
   return false;
 }
 
-const bool 
+const bool
 Patch::getCCW( ) const {
   return __ccw;
 }
 
-bool& 
+bool&
 Patch::getCCW( ) {
   return __ccw;
 }
 
-bool 
+bool
 Patch::isCCWToDefault( ) const {
   return (__ccw==DEFAULT_CCW);
 }

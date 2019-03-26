@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -49,9 +49,9 @@ PGL_BEGIN_NAMESPACE
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class Text
-    \brief Some text with font 
+    \brief Some text with font
 */
 
 /* ----------------------------------------------------------------------- */
@@ -59,17 +59,17 @@ PGL_BEGIN_NAMESPACE
 class SG_API Font : public SceneObject
 {
   public:
-  /// A structure which helps to build a Text when parsing. 
+  /// A structure which helps to build a Text when parsing.
   struct SG_API Builder : public SceneObject::Builder {
 
     /// A pointer to the \b String field.
-	std::string * Family;
+    std::string * Family;
 
-	uint_t * Size;
+    uint_t * Size;
 
-	bool * Bold;
+    bool * Bold;
 
-	bool * Italic;
+    bool * Italic;
 
     /// Constructor.
     Builder( );
@@ -80,7 +80,7 @@ class SG_API Font : public SceneObject
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -89,10 +89,10 @@ class SG_API Font : public SceneObject
   static const bool   DEFAULT_BOLD;
   static const bool   DEFAULT_ITALIC;
 
-  Font(const std::string& family ="", 
-	   uint_t size = DEFAULT_SIZE,
-	   bool   bold = DEFAULT_BOLD,
-	   bool italic = DEFAULT_ITALIC);
+  Font(const std::string& family ="",
+       uint_t size = DEFAULT_SIZE,
+       bool   bold = DEFAULT_BOLD,
+       bool italic = DEFAULT_ITALIC);
 
   ~Font();
 
@@ -159,20 +159,20 @@ public:
 
   static Vector3 DEFAULT_POSITION;
 
-  /// A structure which helps to build a Text when parsing. 
+  /// A structure which helps to build a Text when parsing.
   struct SG_API Builder : public Geometry::Builder {
 
     /// A pointer to the \b String field.
-	std::string * String;
+    std::string * String;
 
     /// A pointer to the \b Position field.
-	Vector3 * Position;	
+    Vector3 * Position;
 
     /// A pointer to the \b ScreenCoordinates field.
-	bool * ScreenCoordinates;	
+    bool * ScreenCoordinates;
 
     /// A pointer to the \b FontStyle field.
-	FontPtr * FontStyle;
+    FontPtr * FontStyle;
 
     /// Constructor.
     Builder( );
@@ -183,7 +183,7 @@ public:
     virtual SceneObjectPtr build( ) const;
 
     virtual void destroy( );
-    
+
     virtual bool isValid( ) const;
 
   };
@@ -193,9 +193,9 @@ public:
 
   /// Constructs a Box with \e size.
   Text( const std::string& s = "",
-	    const Vector3& position = DEFAULT_POSITION,
-		const bool screenCoordinates = DEFAULT_SCREEN_COORDINATES,
-		const FontPtr& font = DEFAULT_FONT);
+        const Vector3& position = DEFAULT_POSITION,
+        const bool screenCoordinates = DEFAULT_SCREEN_COORDINATES,
+        const FontPtr& font = DEFAULT_FONT);
 
   /// Destructor
   virtual ~Text( );
@@ -210,7 +210,7 @@ public:
   std::string& getString()
   { return __String; }
 
-  const FontPtr& getFontStyle() const 
+  const FontPtr& getFontStyle() const
   { return __fontStyle; }
 
   FontPtr& getFontStyle()
@@ -219,16 +219,16 @@ public:
   bool isFontStyleToDefault() const
   { return __fontStyle == DEFAULT_FONT; }
 
-  bool isACurve() const 
+  bool isACurve() const
   { return false; }
 
-  bool isASurface() const 
+  bool isASurface() const
   { return false; }
 
-  bool isAVolume() const 
+  bool isAVolume() const
   { return false; }
 
-  bool isExplicit() const 
+  bool isExplicit() const
   { return false; }
 
   bool hasDynamicRendering() const { return true; }
@@ -251,7 +251,7 @@ protected:
   Vector3 __position;
 
   FontPtr __fontStyle;
-  
+
 };
 
 /// Text Pointer

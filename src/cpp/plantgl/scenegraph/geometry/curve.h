@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -85,16 +85,16 @@ public:
 
   virtual bool isASurface( ) const {
     return false;
-  } 
+  }
 
   virtual bool isAVolume( ) const {
     return false;
-  } 
+  }
 
 };
 
 typedef RCPtr<Curve> CurvePtr;
-*/ 
+*/
 
 /* ----------------------------------------------------------------------- */
 
@@ -102,7 +102,7 @@ class QuantisedFunction;
 typedef RCPtr<QuantisedFunction> QuantisedFunctionPtr;
 
 
-/** 
+/**
     \class Curve2D
     \brief Abstract base class for objects of type of 2D parametric curve.
 */
@@ -118,7 +118,7 @@ public:
   struct SG_API Builder : public PlanarModel::Builder {
 
     /// A pointer to the \b Width field.
- 	uchar_t * Width;
+    uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -138,26 +138,26 @@ public:
 
   /// Returns the \e fist knots value.
   virtual const real_t getFirstKnot() const = 0;
-  
+
   /// Returns the \e last  knots value.
   virtual const real_t getLastKnot() const = 0;
-  
+
   /// Returns \e Stride value.
   virtual const uint_t getStride() const = 0;
 
   /*! Returns the \e Point for u = \e u.
-     \pre 
+     \pre
       - \e u must be in [FirstKnot,LastKnot];*/
   virtual Vector2 getPointAt(real_t u) const = 0;
 
   /*! Returns the \e Tangent for u = \e u.
-    \pre 
+    \pre
     - \e u must be in [FirstKnot,LastKnot];*/
   virtual Vector2 getTangentAt(real_t u) const = 0;
-  
-  
+
+
   /*! Returns the principal \e Normal for u = \e u.
-    \pre 
+    \pre
     - \e u must be in [FirstKnot,LastKnot];*/
   virtual Vector2 getNormalAt(real_t u) const = 0;
 
@@ -193,13 +193,13 @@ protected:
 
 /// Curve2D Pointer
 typedef RCPtr<Curve2D> Curve2DPtr;
- 
+
 
 /* ----------------------------------------------------------------------- */
 
-SG_API real_t closestPointToSegment(Vector2& p, 
-						   const Vector2& segA,
-						   const Vector2& segB,
+SG_API real_t closestPointToSegment(Vector2& p,
+                           const Vector2& segA,
+                           const Vector2& segB,
                            real_t* u = NULL);
 
 // __geom_curve_h__

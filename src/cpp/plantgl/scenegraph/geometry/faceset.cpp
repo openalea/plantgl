@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -45,37 +45,37 @@ FaceSet::FaceSet() :  IndexedMesh<IndexArray>(){ }
 
 FaceSet::FaceSet( const Point3ArrayPtr& points,
                   const IndexArrayPtr& indices,
-				  bool normalPerVertex,
-				  bool ccw,
-				  bool solid,
-				  const PolylinePtr& skeleton  ) :
+                  bool normalPerVertex,
+                  bool ccw,
+                  bool solid,
+                  const PolylinePtr& skeleton  ) :
   IndexedMesh<IndexArray>(points,indices,normalPerVertex,ccw,solid,skeleton){ }
 
 FaceSet::FaceSet( const Point3ArrayPtr& points,
-				  const IndexArrayPtr& indices,
-				  const Point3ArrayPtr& normals ,
-				  const IndexArrayPtr& nomalIndices,
-				  const Color4ArrayPtr& colors,
-				  const IndexArrayPtr& colorIndices,
-				  const Point2ArrayPtr& texCoord,
-				  const IndexArrayPtr& texCoordIndices,
-				  bool normalPerVertex,
-				  bool colorPerVertex,
-				  bool ccw,
-				  bool solid,
-				  const PolylinePtr& skeleton) :
+                  const IndexArrayPtr& indices,
+                  const Point3ArrayPtr& normals ,
+                  const IndexArrayPtr& nomalIndices,
+                  const Color4ArrayPtr& colors,
+                  const IndexArrayPtr& colorIndices,
+                  const Point2ArrayPtr& texCoord,
+                  const IndexArrayPtr& texCoordIndices,
+                  bool normalPerVertex,
+                  bool colorPerVertex,
+                  bool ccw,
+                  bool solid,
+                  const PolylinePtr& skeleton) :
   IndexedMesh<IndexArray>(points,indices,normals,nomalIndices,colors,colorIndices,
-	        texCoord,texCoordIndices,normalPerVertex,colorPerVertex,ccw,solid,skeleton)
+            texCoord,texCoordIndices,normalPerVertex,colorPerVertex,ccw,solid,skeleton)
   { }
 
 /** Constructs a FaceSet from a TriangleSet.  */
 FaceSet::FaceSet(const TriangleSet& obj) :
   IndexedMesh<IndexArray>(obj.__pointList,IndexArrayPtr(),
-	                      obj.__normalList,IndexArrayPtr(),
-						  obj.__colorList,IndexArrayPtr(),
-						  obj.__texCoordList,IndexArrayPtr(),
-						  obj.__normalPerVertex,obj.__colorPerVertex,
-						  obj.__ccw,obj.__solid,obj.__skeleton) {
+                          obj.__normalList,IndexArrayPtr(),
+                          obj.__colorList,IndexArrayPtr(),
+                          obj.__texCoordList,IndexArrayPtr(),
+                          obj.__normalPerVertex,obj.__colorPerVertex,
+                          obj.__ccw,obj.__solid,obj.__skeleton) {
   if( obj.getIndexList()) __indexList = IndexArrayPtr(new IndexArray(*obj.getIndexList())) ;
   if( obj.getNormalIndexList()) __normalIndexList = IndexArrayPtr(new IndexArray(*obj.getNormalIndexList())) ;
   if( obj.getColorIndexList()) __colorIndexList = IndexArrayPtr(new IndexArray(*obj.getColorIndexList())) ;
@@ -86,11 +86,11 @@ FaceSet::FaceSet(const TriangleSet& obj) :
   /** Constructs a FaceSet from a TriangleSet.  */
 FaceSet::FaceSet(const QuadSet& obj)  :
   IndexedMesh<IndexArray>(obj.__pointList,IndexArrayPtr(),
-	                      obj.__normalList,IndexArrayPtr(),
-						  obj.__colorList,IndexArrayPtr(),
-						  obj.__texCoordList,IndexArrayPtr(),
-						  obj.__normalPerVertex,obj.__colorPerVertex,
-						  obj.__ccw,obj.__solid,obj.__skeleton) {
+                          obj.__normalList,IndexArrayPtr(),
+                          obj.__colorList,IndexArrayPtr(),
+                          obj.__texCoordList,IndexArrayPtr(),
+                          obj.__normalPerVertex,obj.__colorPerVertex,
+                          obj.__ccw,obj.__solid,obj.__skeleton) {
   if( obj.getIndexList()) __indexList = IndexArrayPtr(new IndexArray(*obj.getIndexList())) ;
   if( obj.getNormalIndexList()) __normalIndexList = IndexArrayPtr(new IndexArray(*obj.getNormalIndexList())) ;
   if( obj.getColorIndexList()) __colorIndexList = IndexArrayPtr(new IndexArray(*obj.getColorIndexList())) ;
@@ -106,13 +106,13 @@ bool FaceSet::isValid( ) const {
   return isAValidMesh<FaceSet>();
 }
 
-SceneObjectPtr 
+SceneObjectPtr
 FaceSet::copy(DeepCopier& copier) const{
   return SceneObjectPtr(mesh_copy<FaceSet>(*this,copier));
 }
 
-ExplicitModelPtr 
-FaceSet::transform( const Transformation3DPtr& transformation ) const 
+ExplicitModelPtr
+FaceSet::transform( const Transformation3DPtr& transformation ) const
 { return mesh_transform<FaceSet>(*this,transformation); }
 
 /* ----------------------------------------------------------------------- */

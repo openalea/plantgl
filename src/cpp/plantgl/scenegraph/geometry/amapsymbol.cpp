@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -96,10 +96,10 @@ AmapSymbol::AmapSymbol() :
 AmapSymbol::AmapSymbol( const string& fileName,
                         bool solid  ) :
   FaceSet(Point3ArrayPtr(),
-	  IndexArrayPtr(),
-	  true,
-	  false,
-	  solid),
+      IndexArrayPtr(),
+      true,
+      false,
+      solid),
   __fileName(fileName),
   __texCoord3List()
 {
@@ -225,12 +225,12 @@ AmapSymbol::AmapSymbol( const FaceSetPtr& faceSet ) :
   __fileName(),
   __texCoord3List((faceSet->getTexCoordList())? new Point3Array(faceSet->getTexCoordList()->size()):0)
   {
-	if(faceSet->getTexCoordList()){
-	Point2Array::const_iterator _it = faceSet->getTexCoordList()->begin();
-	for(Point3Array::iterator _it2 = __texCoord3List->begin();
-		_it2 != __texCoord3List->end(); _it2++)
-		  *_it2 = Vector3(0,_it->x(),_it->y());
-	}
+    if(faceSet->getTexCoordList()){
+    Point2Array::const_iterator _it = faceSet->getTexCoordList()->begin();
+    for(Point3Array::iterator _it2 = __texCoord3List->begin();
+        _it2 != __texCoord3List->end(); _it2++)
+          *_it2 = Vector3(0,_it->x(),_it->y());
+    }
 }
 
 
@@ -256,7 +256,7 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
   uint_t _pointColor = 1;
   uint_t _pointIndex;
 
-  /* The construction attribute is used for the connection between two 
+  /* The construction attribute is used for the connection between two
    internodes:
     - 1 means that the point is at the basis of the internode,
     - 2 means that the point is at the top of the internode,
@@ -281,7 +281,7 @@ bofstream& AmapSymbol::write( bofstream& stream ) const {
 
   for (uint_t _j = 0; _j < _pointsCount; _j++) {
     const Vector3& _point = __pointList->getAt(_j);
-	// Bug: __normalList is null for default cylinder...
+    // Bug: __normalList is null for default cylinder...
     const Vector3& _normal = (__normalList?__normalList->getAt(_j):Vector3::ORIGIN);
     const Vector3& _tex = (hasTexCoordList()?__texCoord3List->getAt(_j):Vector3::ORIGIN);
     stream << _normal.z() << _normal.x() << _normal.y();
@@ -307,7 +307,7 @@ Vector3& AmapSymbol::getFaceTexCoord3At( uint_t i, uint_t j ){
   return __texCoord3List->getAt(__indexList->getAt(i).getAt(j));
 }
 
- 
+
 SceneObjectPtr
 AmapSymbol::copy(DeepCopier& copier) const{
   AmapSymbolPtr res = mesh_copy<AmapSymbol>(*this,copier);

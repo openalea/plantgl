@@ -62,7 +62,7 @@ PGL_BEGIN_NAMESPACE
 template<class ContainerType>
 class ALGO_API AbstractKDTree : public RefCountObject
 {
-public:   
+public:
     typedef ContainerType PointContainer;
     typedef typename PointContainer::element_type VectorType;
     typedef RCPtr<PointContainer> PointContainerPtr;
@@ -119,7 +119,7 @@ class ANNKDTree4Internal;
         virtual size_t size() const; \
         protected: \
         ANN##basename##Internal * __internal; \
-    }; 
+    };
 
 ANNKDTREEDECLARATION(KDTree2)
 ANNKDTREEDECLARATION(KDTree3)

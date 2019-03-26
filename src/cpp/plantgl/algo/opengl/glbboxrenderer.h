@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -34,14 +34,10 @@
     \brief Definition of the action class GLBBoxRenderer.
 */
 
-
-
 #ifndef __actn_glbboxrenderer_h__
 #define __actn_glbboxrenderer_h__
 
-
 #include "glrenderer.h"
-
 
 /* ----------------------------------------------------------------------- */
 
@@ -51,14 +47,12 @@ PGL_BEGIN_NAMESPACE
 
 class BBoxComputer;
 
-
 /* ----------------------------------------------------------------------- */
 
 /**
    \class GLBBoxRenderer
    \brief An action which displays bounding boxes of shapes.
 */
-
 
 class ALGO_API GLBBoxRenderer : public GLRenderer
 {

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -67,14 +67,14 @@ Inline::Builder::~Builder( ){
 SceneObjectPtr
 Inline::Builder::build( ){
   if (isValid()){
-	if(FileName){
-		Inline * g = new Inline(absolute_filename(*FileName),
-								(Translation?*Translation:DEFAULT_TRANSLATION),
-								(Scale?*Scale:DEFAULT_SCALE));  
+    if(FileName){
+        Inline * g = new Inline(absolute_filename(*FileName),
+                                (Translation?*Translation:DEFAULT_TRANSLATION),
+                                (Scale?*Scale:DEFAULT_SCALE));
       return SceneObjectPtr(g);
     }
   }
-  return SceneObjectPtr();   
+  return SceneObjectPtr();
 }
 
 void
@@ -102,12 +102,12 @@ bool Inline::Builder::isValid( ) const {
 
   if(Scene && !(*Scene)->isValid()){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Scene","Not Valid");
-      return false;      
+      return false;
   }
 
   if(Translation && !Translation->isValid()){
       pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Inline","Translation","Not Valid");
-      return false;      
+      return false;
   }
 
   if(Scale && !Scale->isValid()){
@@ -137,7 +137,7 @@ Inline::~Inline()
 /// set a default name to \e this
 void Inline::setDefaultName()
 {
-	__name = "INLINE_"+number(getId());
+    __name = "INLINE_"+number(getId());
 }
 
 const string&
@@ -186,9 +186,9 @@ Inline::applyAppearanceOnly( Action& action )
 }
 
   /// Return whether self should be rendered dynamically
-bool Inline::hasDynamicRendering() const 
-{ 
-    if(__scene) return __scene->hasDynamicRendering(); 
+bool Inline::hasDynamicRendering() const
+{
+    if(__scene) return __scene->hasDynamicRendering();
     return false;
 }
 

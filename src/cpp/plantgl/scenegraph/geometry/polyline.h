@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -76,7 +76,7 @@ public:
   struct SG_API Builder : public ExplicitModel::Builder {
 
     /// A pointer to the \b Width field.
- 	uchar_t * Width;
+    uchar_t * Width;
 
     /// Constructor.
     Builder( );
@@ -173,16 +173,16 @@ public:
 
     static Polyline2DPtr Circle(real_t radius = Disc::DEFAULT_RADIUS, uchar_t slices = SOR::DEFAULT_SLICES);
     static Polyline2DPtr ArcOfCircle(real_t radius = Disc::DEFAULT_RADIUS,
-									 real_t starting_angle = 0,
-									 real_t angle_range = DEFAULT_ANGLE,
-									 uchar_t slices = SOR::DEFAULT_SLICES);
+                                     real_t starting_angle = 0,
+                                     real_t angle_range = DEFAULT_ANGLE,
+                                     uchar_t slices = SOR::DEFAULT_SLICES);
 
     static Polyline2DPtr SuperEllipsis(real_t radius = Disc::DEFAULT_RADIUS,
-									   real_t heigth = Disc::DEFAULT_RADIUS,
-									   real_t degree = 2,
-									   real_t starting_angle = 0,
-									   real_t angle_range = DEFAULT_ANGLE*2,
-									   uchar_t slices = SOR::DEFAULT_SLICES);
+                                       real_t heigth = Disc::DEFAULT_RADIUS,
+                                       real_t degree = 2,
+                                       real_t starting_angle = 0,
+                                       real_t angle_range = DEFAULT_ANGLE*2,
+                                       uchar_t slices = SOR::DEFAULT_SLICES);
 
   /// A structure which helps to build a Polyline when parsing.
   struct SG_API Builder : public Curve2D::Builder {

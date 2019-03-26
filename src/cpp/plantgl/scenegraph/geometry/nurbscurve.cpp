@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -30,7 +30,7 @@
  */
 
 
- 
+
 
 #include "nurbscurve.h"
 #include <plantgl/scenegraph/core/pgl_messages.h>
@@ -193,8 +193,8 @@ NurbsCurve::NurbsCurve(  ) :
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          const RealArrayPtr  knots,
                          uint_t degree,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -207,8 +207,8 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -221,8 +221,8 @@ NurbsCurve::NurbsCurve(  const Point4ArrayPtr& ctrlPoints,
 NurbsCurve::NurbsCurve(  const Point3ArrayPtr& ctrlPoints,
                          uint_t degree,
                          const RealArrayPtr  knots,
-                         uint_t stride, 
-		                 uchar_t width ) :
+                         uint_t stride,
+                         uchar_t width ) :
   BezierCurve(ctrlPoints, stride, width),
   __degree(degree),
   __knotList(knots)
@@ -472,7 +472,7 @@ Vector3 NurbsCurve::getNormalAt(real_t u) const{
   \brief project a point onto the curve
 
   It finds the closest point in the curve to a point $p$.
-  For more information, see A6.4 and A6.5 on p 231 of the 
+  For more information, see A6.4 and A6.5 on p 231 of the
   NURBS book
 
   \param p  the point \a p being projected
@@ -483,12 +483,12 @@ Vector3 NurbsCurve::getNormalAt(real_t u) const{
   \param e2  the maximal error
   \param maxTry  the maximum number of times to try before returning from the function
 
-  \author Philippe Lavoie 
+  \author Philippe Lavoie
   \date 24 January 1997
 */
-Vector3 NurbsCurve::projectTo(const Vector3& p, 
-								real_t guess, real_t& u,
-								real_t e1, real_t e2,int maxTry) const{
+Vector3 NurbsCurve::projectTo(const Vector3& p,
+                                real_t guess, real_t& u,
+                                real_t e1, real_t e2,int maxTry) const{
   Vector3 r;
   real_t un ;
   real_t c1, c2;
@@ -510,8 +510,8 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
  /*   getDerivativeAt(u,2,Cd) ;
     cd = Cd[1] ;
     cdd = Cd[2] ;*/
-	cd = getDerivativeAt(u,1).project();
-	cdd = getDerivativeAt(u,2).project();
+    cd = getDerivativeAt(u,1).project();
+    cdd = getDerivativeAt(u,2).project();
     c1 = normSquared(c-p) ;
     if(c1<e1*e1){
       r = c ;
@@ -526,9 +526,9 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
       r =c ;
       return r;
     }
-    
+
     un = u- cd*(c-p)/(cdd*(c-p)+normSquared(cd)) ;
-    
+
     if(un<getFirstKnot()) un = getFirstKnot() ;
     if(un>getLastKnot()) un = getLastKnot() ;
 
@@ -542,10 +542,10 @@ Vector3 NurbsCurve::projectTo(const Vector3& p,
 }
 
 
-uint_t 
-PGL(findSpan)(real_t u,  
-	 uint_t _degree, 
-	 const RealArrayPtr& _knotList ){
+uint_t
+PGL(findSpan)(real_t u,
+     uint_t _degree,
+     const RealArrayPtr& _knotList ){
     uint_t n = _knotList->size()-_degree -1;
 
   if( u >= _knotList->getAt( n ) )return ( n -1 );
@@ -1051,6 +1051,6 @@ Vector2 NurbsCurve2D::getNormalAt(real_t u) const{
         _normal2 = Vector2(_derivate.x(),_derivate.y());
     else _normal2 = _derivate.project();
     Vector3 nml3 = cross(cross(Vector3(_tangent,0),Vector3(_normal2,0)),Vector3(_tangent,0))/pow(norm(_tangent),real_t(4));
-	return Vector2(nml3[0],nml3[1]);
+    return Vector2(nml3[0],nml3[1]);
 }
 /* ----------------------------------------------------------------------- */

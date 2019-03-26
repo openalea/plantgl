@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -61,14 +61,14 @@ Paraboloid::Builder::~Builder() {
 
 
 SceneObjectPtr Paraboloid::Builder::build( ) const {
-  if (isValid()) 
+  if (isValid())
     return SceneObjectPtr
       (new Paraboloid(Radius ? *Radius : DEFAULT_RADIUS,
-		      Height ? *Height : DEFAULT_HEIGHT,
-		      Shape ? *Shape : DEFAULT_SHAPE,
-		      Solid ? *Solid : DEFAULT_SOLID,
-		      Slices ? *Slices : DEFAULT_SLICES,
-		      Stacks ? *Stacks : DEFAULT_STACKS));
+              Height ? *Height : DEFAULT_HEIGHT,
+              Shape ? *Shape : DEFAULT_SHAPE,
+              Solid ? *Solid : DEFAULT_SOLID,
+              Slices ? *Slices : DEFAULT_SLICES,
+              Stacks ? *Stacks : DEFAULT_STACKS));
   return SceneObjectPtr();
 }
 
@@ -103,11 +103,11 @@ bool Paraboloid::Builder::isValid( ) const {
 
 
 Paraboloid::Paraboloid( const real_t& radius,
-			const real_t& height,
-			const real_t& shape,
-			bool solid,
-			uchar_t slices,
-			uchar_t stacks ) :
+            const real_t& height,
+            const real_t& shape,
+            bool solid,
+            uchar_t slices,
+            uchar_t stacks ) :
   Cone(radius,height,solid,slices),
   __shape(shape),
   __stacks(stacks) {
@@ -130,11 +130,11 @@ bool Paraboloid::isValid( ) const {
 SceneObjectPtr Paraboloid::copy(DeepCopier& copier) const {
   return SceneObjectPtr(new Paraboloid(*this));
 }
-  
+
 
 /* ----------------------------------------------------------------------- */
 
-const real_t& 
+const real_t&
 Paraboloid::getShape( ) const {
   return __shape;
 }
@@ -147,12 +147,12 @@ Paraboloid::getShape( ){
 const uchar_t&
 Paraboloid::getStacks( ) const {
   return __stacks;
-}  
+}
 
 uchar_t&
 Paraboloid::getStacks( ) {
   return __stacks;
-}  
+}
 
 bool
 Paraboloid::isShapeToDefault( ) const {

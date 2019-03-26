@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -95,11 +95,11 @@ void Shape::Builder::destroy() {
 bool Shape::Builder::isValid( ) const{
   if (! (Geometry)){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
-	return false;
+    return false;
   }
   if (! (*Geometry)){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
-	return false;
+    return false;
   }
   return true;
 }
@@ -128,7 +128,7 @@ Shape::Shape( const GeometryPtr& _geom,
 }
 
 Shape::Shape( const string& name,
-					  const GeometryPtr& _geom,
+                      const GeometryPtr& _geom,
                       const AppearancePtr& _app,
                       uint_t _id,
                       uint_t _parentId) :
@@ -155,7 +155,7 @@ Shape::Shape( const GeometryPtr& _geom,
 }
 
 Shape::Shape( const string& name,
-					  const GeometryPtr& _geom,
+                      const GeometryPtr& _geom,
                       const ImageTexturePtr& _app,
                       uint_t _id,
                       uint_t _parentId) :
@@ -274,15 +274,15 @@ size_t Shape::getSceneObjectId() const
 bool Shape::isValid( ) const {
   if (! (geometry)){
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be not null.");
-	return false;
+    return false;
   }
   if (! (geometry->isValid())) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Geometry","Must be valid.");
-	return false;
+    return false;
   }
   if ((appearance) && (! appearance->isValid())) {
     pglErrorEx(PGLWARNINGMSG(INVALID_FIELD_VALUE_sss),"Shape","Appearance","Must be valid.");
-	return false;
+    return false;
   }
   return true;
 }

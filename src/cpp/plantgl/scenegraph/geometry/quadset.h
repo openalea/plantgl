@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -70,8 +70,8 @@ public:
   /// Default Constructor. Build object is invalid.
   QuadSet();
 
-  /** Constructs a QuadSet with the points \e points, the quadrilaterals 
-      indices \e indices, the face ordering \e ccw, the solid flag \e solid 
+  /** Constructs a QuadSet with the points \e points, the quadrilaterals
+      indices \e indices, the face ordering \e ccw, the solid flag \e solid
       and the skeleton \e skeleton.
       \pre
       - \e points must contain a minimum of 3 points;
@@ -81,15 +81,15 @@ public:
       \post
       - \e self is valid. */
   QuadSet( const Point3ArrayPtr& points,
-	   const Index4ArrayPtr& indices,
-	   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-	   bool ccw = DEFAULT_CCW,
-	   bool solid = DEFAULT_SOLID,
-	   const PolylinePtr& skeleton = DEFAULT_SKELETON);
+       const Index4ArrayPtr& indices,
+       bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+       bool ccw = DEFAULT_CCW,
+       bool solid = DEFAULT_SOLID,
+       const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
- 
-  /** Constructs a QuadSet with the points \e points, the quadrilaterals 
-      indices \e indices, the face ordering \e ccw, the solid flag \e solid 
+
+  /** Constructs a QuadSet with the points \e points, the quadrilaterals
+      indices \e indices, the face ordering \e ccw, the solid flag \e solid
       the skeleton \e skeleton and the normals \e normals.
       normals don't have to be normalized.
       \pre
@@ -101,18 +101,18 @@ public:
       \post
       - \e self is valid. */
   QuadSet( const Point3ArrayPtr& points,
-		   const Index4ArrayPtr& indices,
-		   const Point3ArrayPtr& normals,
+           const Index4ArrayPtr& indices,
+           const Point3ArrayPtr& normals,
            const Index4ArrayPtr& nomalIndices = Index4ArrayPtr(),
-		   const Color4ArrayPtr& colors  = Color4ArrayPtr(),
+           const Color4ArrayPtr& colors  = Color4ArrayPtr(),
            const Index4ArrayPtr& colorIndices = Index4ArrayPtr(),
-		   const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
+           const Point2ArrayPtr& texCoord = Point2ArrayPtr(),
            const Index4ArrayPtr& texCoordIndices = Index4ArrayPtr(),
-		   bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
-		   bool colorPerVertex = DEFAULT_COLORPERVERTEX,
-		   bool ccw = DEFAULT_CCW,
-		   bool solid = DEFAULT_SOLID,
-		   const PolylinePtr& skeleton = DEFAULT_SKELETON);
+           bool normalPerVertex = DEFAULT_NORMALPERVERTEX,
+           bool colorPerVertex = DEFAULT_COLORPERVERTEX,
+           bool ccw = DEFAULT_CCW,
+           bool solid = DEFAULT_SOLID,
+           const PolylinePtr& skeleton = DEFAULT_SKELETON);
 
   /// Destructor
   virtual ~QuadSet( );
