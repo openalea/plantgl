@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_scenegl.h
     \brief Definition of the viewer classes ViewRendererGL and ViewSceneRendererGL.
@@ -73,7 +73,7 @@ class ViewSceneChangeEvent;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewRendererGL
    \brief An abstract class for Display Manager.
 
@@ -87,10 +87,10 @@ class VIEW_API ViewRendererGL  : public ViewObjectGL
   Q_PROPERTY( QString Filename READ getFilename WRITE openFile )
 
 public :
-  
+
   /// Constructor
   ViewRendererGL(QGLWidget * parent=0, const char * name=0);
-  
+
   /// Destructor.
   virtual ~ViewRendererGL();
 
@@ -120,7 +120,7 @@ public :
 
   /// Add Open Entries
   virtual bool addOpenEntries(QMenu * menu);
-  
+
   /// Add Import Entries
   virtual bool addImportEntries(QMenu * menu);
 
@@ -129,10 +129,10 @@ public :
 
   /// Add Export Entries
   virtual bool addExportEntries(QMenu * menu);
-  
+
   /// Add Edit Entries
   virtual bool addEditEntries(QMenu * menu);
-  
+
   /// Add properties info in the \e tab
   virtual bool addProperties(QTabWidget * tab);
 
@@ -174,7 +174,7 @@ public :
   virtual uint_t translateId(uint_t) const;
 
   /// Get the global Bounding Box.
-  virtual const PGL::BoundingBoxPtr getGlobalBoundingBox() const;
+  virtual const PGL(BoundingBoxPtr) getGlobalBoundingBox() const;
 
   virtual bool isEmpty() const;
 
@@ -187,7 +187,7 @@ public slots:
 
   /// Save.
   virtual void save();
-  
+
   /// Save As
   virtual void saveAs();
 
@@ -213,7 +213,7 @@ signals:
 
   /// Signal emit when filename has changed.
   void filenameChanged(const QString&);
-  
+
   /// Signal emit when the scene change.
   void sceneChanged();
 
@@ -236,22 +236,22 @@ private:
 
 };
 
-/**   
+/**
       \class ViewSceneRendererGL
       \brief An abstract class for Display Manager of GL Scene.
-      
+
 */
 class VIEW_API ViewSceneRendererGL  : public ViewRendererGL
 {
   Q_OBJECT
 
 public :
-  
+
   /// Constructor.
   ViewSceneRendererGL(ViewCameraGL * camera=0,
-		      ViewLightGL * light=0,
-		      QGLWidget * parent=0, 
-		      const char * name=0);
+              ViewLightGL * light=0,
+              QGLWidget * parent=0,
+              const char * name=0);
 
   /// Destructor.
   virtual ~ViewSceneRendererGL();
@@ -260,13 +260,13 @@ public :
   ViewCameraGL *getCamera() const;
 
   /// Get the light.
-  ViewLightGL *getLight() const; 
+  ViewLightGL *getLight() const;
 
   /// Set the camera.
   void setCamera(ViewCameraGL *);
 
   /// Set the light.
-  void setLight(ViewLightGL *); 
+  void setLight(ViewLightGL *);
 
   inline eAnimationFlag isAnimated() const { return __animated; }
 

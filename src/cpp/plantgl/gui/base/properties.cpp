@@ -48,7 +48,7 @@
 #include <QtCore/qfileinfo.h>
 #include <QtCore/qdir.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qframe.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -104,7 +104,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
 {
 
     if ( !name ) setObjectName( "Geom Properties" );
-	setModal(modal);
+    setModal(modal);
 
     resize( 424, 515 );
     setFixedSize(QSize(424, 515 ));
@@ -138,7 +138,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
     Line->setFrameShape( QFrame::HLine );
     Line->setFrameShadow( QFrame::Sunken );
 
-	Line = new QFrame( tab );
+    Line = new QFrame( tab );
     Line->setGeometry( QRect( XBEG_1, 80, 351, 20 ) );
     Line->setFrameShape( QFrame::HLine );
     Line->setFrameShadow( QFrame::Sunken );
@@ -209,7 +209,7 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
     LangGroup->setGeometry( QRect( 30, 30, 320, 70 ) );
     LangGroup->setProperty( "title", tr( "Language") + ": " + langname);
 
-    lang = new QComboBox( LangGroup );	
+    lang = new QComboBox( LangGroup );
     lang->setGeometry( QRect( 10, 20, 270, 20 ) );
     int id  = -1;
     lang->addItem("English",0);
@@ -223,16 +223,16 @@ ViewProperties::ViewProperties(  ViewGLFrame *g,
     lbl->setGeometry( QRect( 10, 40, 300, 20 ) );
     LangGroup->setEnabled(false);
 
-	Viewer * viewer = dynamic_cast<Viewer *>(g->parent());
+    Viewer * viewer = dynamic_cast<Viewer *>(g->parent());
 
-	if (viewer) {
-		QCheckBox * focus = new QCheckBox( "Focus on display", tab );
-		focus->setChecked(viewer->hasFocusAtRefresh());
-		focus->setGeometry( QRect( 30, 120, 320, 31 ) );
-		QObject::connect( focus,SIGNAL(toggled(bool)),viewer,SLOT(setFocusAtRefresh(bool)));
-	}
+    if (viewer) {
+        QCheckBox * focus = new QCheckBox( "Focus on display", tab );
+        focus->setChecked(viewer->hasFocusAtRefresh());
+        focus->setGeometry( QRect( 30, 120, 320, 31 ) );
+        QObject::connect( focus,SIGNAL(toggled(bool)),viewer,SLOT(setFocusAtRefresh(bool)));
+    }
 
-	lang->setEnabled(false);
+    lang->setEnabled(false);
 
 
 }

@@ -17,7 +17,7 @@ lib_env.ALEAIncludes( "plantgl/gui", includes )
 
 # install headers
 
-SConscript( 'base/SConscript', exports = { "env" : lib_env, 
+SConscript( 'base/SConscript', exports = { "env" : lib_env,
                                            "platform" : platform } )
 SConscript( 'viewer/SConscript', exports = { "env" : lib_env } )
 
@@ -49,8 +49,8 @@ LIBRARIES = list( lib_env['LIBS'] )
 LIBRARIES.extend( ['pgltool','pglmath','pglsg','pglalgo'] )
 
 lib_env.ALEALibrary( "pglgui",
-                     sources, 
-                     CPPDEFINES = DEFINES, 
+                     sources,
+                     CPPDEFINES = DEFINES,
                      LIBS = LIBRARIES )
 
 # Build the viewer program

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_browser.h
     \brief Definition of the viewer class ViewBrowser.
@@ -42,7 +42,7 @@
 
 #include "../gui_config.h"
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QDockWidget>
 #else
     #include <QtGui/QDockWidget>
@@ -58,7 +58,7 @@ class QStandardItemModel;
 /* ----------------------------------------------------------------------- */
 
 
-/**   
+/**
    \class ViewBrowser
    \brief The Browser of the viewer
 */
@@ -66,8 +66,8 @@ class QStandardItemModel;
 class VIEW_API ViewBrowser : public QDockWidget
 {
     Q_OBJECT
-	public:
-    
+    public:
+
     /// Constructor
     ViewBrowser(  QWidget * parent=0, const QString& title = "");
 
@@ -81,33 +81,33 @@ class VIEW_API ViewBrowser : public QDockWidget
 
   /// Clear.
   void clear();
-  
+
   /// Refresh.
   void refresh(bool b = true);
-    
+
   void setSelection(const QString&);
 
 protected:
-  
+
   /// Function called when the widget is shown.
   virtual void showEvent ( QShowEvent * event );
-  
-  /// This event handler is called when a key is pressed for this widget. 
+
+  /// This event handler is called when a key is pressed for this widget.
   virtual void keyPressEvent (QKeyEvent * e);
-  
+
 private:
-  
+
 
   /// The GeomListViewBuilder Object
   Ui::QBrowser * __browser;
-  
+
   /// A Pointee to the Scene.
   ViewRendererGL  * __scene;
-  
+
   /// Scene empty.
   bool __empty;
 
-  
+
 };
 
 

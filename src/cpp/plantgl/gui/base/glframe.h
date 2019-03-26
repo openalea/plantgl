@@ -43,7 +43,7 @@
 
 /* ----------------------------------------------------------------------- */
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QToolButton>
 #else
     #include <QtGui/QToolButton>
@@ -106,7 +106,7 @@ class VIEW_API ViewGLFrame : public QGLWidget
 
     public:
 
-	  enum Mode { Rotation, Selection, MultipleSelection };
+      enum Mode { Rotation, Selection, MultipleSelection };
 
   /// Last GL Frame created.
   static ViewGLFrame * LAST_GL_FRAME;
@@ -177,20 +177,20 @@ class VIEW_API ViewGLFrame : public QGLWidget
   std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> grabZBufferPoints( ) ;
 
 
-  ViewRayBuffer * castRays( const Vector3& position, 
-						     const Vector3& direction, 
-						     const Vector3& dx, 
-							 const Vector3& dy,
-						     int sx, int sy) ;
+  ViewRayBuffer * castRays( const Vector3& position,
+                             const Vector3& direction,
+                             const Vector3& dx,
+                             const Vector3& dy,
+                             int sx, int sy) ;
 
 
   int getProjectionPixel();
   double getPixelWidth();
   double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL);
 
-  std::vector<std::pair<uint_t,uint_t> > 
+  std::vector<std::pair<uint_t,uint_t> >
   getProjectionPixelPerColor(double* pixelwidth = NULL);
-  
+
   virtual void connectTo(ViewStatusBar *);
 
   virtual void connectTo(ViewErrorDialog *);
@@ -220,10 +220,10 @@ class VIEW_API ViewGLFrame : public QGLWidget
   bool isPixelBufferUsed()  { return __usePBuffer; }
 
   void makeItCurrent();
-  
+
   void activateRedraw(bool b);
   bool isRedrawEnabled() { return __redrawEnabled; }
- 
+
 public slots:
 
   void redrawGL();
@@ -271,7 +271,7 @@ public slots:
   void glSmoothShadeModel(bool b);
 
   void glFlatShadeModel(bool b);
-  
+
   void glTwoSideShadeModel(bool b);
 
   void glDithering(bool b);
@@ -285,7 +285,7 @@ public slots:
   void useOcclusionQuery(bool b);
 
   void usePixelBuffer(bool b);
-  
+
   void setFPSDisplay(bool b);
 
   void showMessage(const QString message, int timeout = 0);
@@ -449,12 +449,12 @@ class VIEW_API ViewDoubleToolButton : public QToolButton {
 public :
 
   ViewDoubleToolButton
-			( const QPixmap & pm,
-			  const QPixmap & pm2,
-			  const QString & textLabel, 
-			  QObject * receiver, 
-			  const char * slot, 
-			  QToolBar * parent);
+            ( const QPixmap & pm,
+              const QPixmap & pm2,
+              const QString & textLabel,
+              QObject * receiver,
+              const char * slot,
+              QToolBar * parent);
 
 public slots:
 

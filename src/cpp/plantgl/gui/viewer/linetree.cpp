@@ -42,7 +42,7 @@
 #include <QtCore/qregexp.h>
 #include <QtGui/qevent.h>
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qfiledialog.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -83,20 +83,20 @@ static QString SMB_PATH;
 
  class DblClickEater : public QObject
     {
-	public:
-	 DblClickEater(QLineEdit * target):
-		QObject(target),_target(target){}
+    public:
+     DblClickEater(QLineEdit * target):
+        QObject(target),_target(target){}
 
     protected:
         bool eventFilter( QObject *o, QEvent *e ){
-			if ( e->type() == QEvent::MouseButtonDblClick ) {
-				if(_target-> echoMode() != QLineEdit::Password)_target->setEchoMode(QLineEdit::Password);
-				else _target->setEchoMode(QLineEdit::Normal);
-				return true; // eat event
-			} else return false;
-		}
+            if ( e->type() == QEvent::MouseButtonDblClick ) {
+                if(_target-> echoMode() != QLineEdit::Password)_target->setEchoMode(QLineEdit::Password);
+                else _target->setEchoMode(QLineEdit::Normal);
+                return true; // eat event
+            } else return false;
+        }
 
-		QLineEdit * _target;
+        QLineEdit * _target;
     };
 
 
@@ -104,7 +104,7 @@ ViewReadLinetree::ViewReadLinetree( bool open, QWidget* parent, const char* name
     : QDialog( parent, fl ),
         __open(open)
 {
-	setModal(modal);
+    setModal(modal);
     if ( !name ) setObjectName( "ViewReadLinetree" );
     resize( 500, 250 );
     if(open)setWindowTitle( tr( "Read Linetree" ) );
@@ -146,9 +146,9 @@ ViewReadLinetree::ViewReadLinetree( bool open, QWidget* parent, const char* name
 
     editSmb = new QLineEdit( this );
     editSmb->setGeometry( QRect( 100, 110, 350, 22 ) );
-	if(SMB_PATH.isEmpty())    {
-	  SMB_PATH = (TOOLS(getPlantGLDir())+"share/plantgl/SMBFiles").c_str() ;
-	}
+    if(SMB_PATH.isEmpty())    {
+      SMB_PATH = (TOOLS(getPlantGLDir())+"share/plantgl/SMBFiles").c_str() ;
+    }
     if(!SMB_PATH.isEmpty())editSmb->setText( SMB_PATH  );
 
     labelKey = new QLabel( this );
@@ -164,7 +164,7 @@ ViewReadLinetree::ViewReadLinetree( bool open, QWidget* parent, const char* name
     editKey->setEchoMode(QLineEdit::Password);
     if(!open)editKey->setText(PGL(LinetreePrinter)::PROTECTION.c_str());
     QObject::connect( editKey,SIGNAL(textChanged(const QString&)),this,SLOT(checkKey(const QString&)));
-	DblClickEater * dblCkEater = new DblClickEater(editKey);
+    DblClickEater * dblCkEater = new DblClickEater(editKey);
     labelKey->installEventFilter( dblCkEater );
 
         if(!open){
@@ -187,20 +187,20 @@ ViewReadLinetree::ViewReadLinetree( bool open, QWidget* parent, const char* name
 
     endianBox = new QCheckBox( this );
     endianBox->setGeometry( QRect( 10, 205, 90, 20 ) );
-	endianBox->setText( tr( "Big Endian" ) );
-	endianBox->setChecked(true);
+    endianBox->setText( tr( "Big Endian" ) );
+    endianBox->setChecked(true);
 
     if(open){
     QPushButton * buttonTestEndianess = new QPushButton( this );
     buttonTestEndianess->setGeometry( QRect( 100, 200, 54, 28 ) );
     buttonTestEndianess->setText( tr( "Test" ) );
     QObject::connect( buttonTestEndianess,SIGNAL(clicked()),this,SLOT(testEndianess()));
-	}
+    }
 
-	if(!LIG_FILENAME.isEmpty()){
+    if(!LIG_FILENAME.isEmpty()){
        editLig->setText( LIG_FILENAME );
        checkKey();
-	}
+    }
 
 }
 
@@ -255,38 +255,38 @@ void ViewReadLinetree::checkKey(const QString&){
 
 void ViewReadLinetree::checkKey(){
   if(__open){
-	if(!getLigFile().isEmpty() && QFile::exists(getLigFile())){
-	  QFile f (getLigFile());
-	  if(f.open(QIODevice::ReadOnly) ) {
-		QDataStream stream(&f);
-		if(bigEndian())stream.setByteOrder(QDataStream::BigEndian);
-		else stream.setByteOrder(QDataStream::LittleEndian);
-		char t[81];
-		stream.readRawData(t,80);
-		t[80] = '\0';
-		QString key = t;
-		editKey->setText( key );
-		if(key == PGL(LinetreePrinter)::PROTECTION.c_str()){
-		  labelKey->setText("Key : [AMAPmod]");
-		}
-		else {
-		  labelKey->setText("Key : ");
-		}
-		f.close();
-	  }
-	}
-	else {
-	  editKey->setText("");
-	  labelKey->setText("Key : ");
-	}
+    if(!getLigFile().isEmpty() && QFile::exists(getLigFile())){
+      QFile f (getLigFile());
+      if(f.open(QIODevice::ReadOnly) ) {
+        QDataStream stream(&f);
+        if(bigEndian())stream.setByteOrder(QDataStream::BigEndian);
+        else stream.setByteOrder(QDataStream::LittleEndian);
+        char t[81];
+        stream.readRawData(t,80);
+        t[80] = '\0';
+        QString key = t;
+        editKey->setText( key );
+        if(key == PGL(LinetreePrinter)::PROTECTION.c_str()){
+          labelKey->setText("Key : [AMAPmod]");
+        }
+        else {
+          labelKey->setText("Key : ");
+        }
+        f.close();
+      }
+    }
+    else {
+      editKey->setText("");
+      labelKey->setText("Key : ");
+    }
   }
   else {
-	if(editKey->text() == PGL(LinetreePrinter)::PROTECTION.c_str()){
-	  labelKey->setText("Key : [AMAPmod]");
-	}
-	else {
-	  labelKey->setText("Key : ");
-	}
+    if(editKey->text() == PGL(LinetreePrinter)::PROTECTION.c_str()){
+      labelKey->setText("Key : [AMAPmod]");
+    }
+    else {
+      labelKey->setText("Key : ");
+    }
   }
 }
 
@@ -296,31 +296,31 @@ void ViewReadLinetree::checkCfg(const QString& path){
   if(cfg[-1] != '/' && cfg[-1] != '\\' )cfg += '/';
   cfg += ".cfg";
   if(QFileInfo(cfg).exists()){
-	QFile c(cfg);
-	if(c.open(QIODevice::ReadOnly)){
-	  QTextStream s(&c);
-	  QString l,p;
-	  while(!s.atEnd()&&p.isEmpty()){
-		l = s.readLine();
-		if(l.contains("SYMBOLES =") == 1){
-		  p = l.mid(l.indexOf('=')+1);
-		  p = p.simplified();
-		  int i = 0;
-		  while(p[i] == ' ')i++;
-		  if(i!=0) p = p.mid(i);
-		}
-	  }
-	  if(!p.isEmpty()){
-		if(QDir::isRelativePath(p)){
-		  if(path[-1] != '/' && path[-1] != '\\' )p = '/' + p;
-		  p = path + p;
-		  p = QDir::cleanPath(p);
-		}
-		if(QDir(p).exists()){
-		  setSMBPath(p);
-		}
-	  }
-	}
+    QFile c(cfg);
+    if(c.open(QIODevice::ReadOnly)){
+      QTextStream s(&c);
+      QString l,p;
+      while(!s.atEnd()&&p.isEmpty()){
+        l = s.readLine();
+        if(l.contains("SYMBOLES =") == 1){
+          p = l.mid(l.indexOf('=')+1);
+          p = p.simplified();
+          int i = 0;
+          while(p[i] == ' ')i++;
+          if(i!=0) p = p.mid(i);
+        }
+      }
+      if(!p.isEmpty()){
+        if(QDir::isRelativePath(p)){
+          if(path[-1] != '/' && path[-1] != '\\' )p = '/' + p;
+          p = path + p;
+          p = QDir::cleanPath(p);
+        }
+        if(QDir(p).exists()){
+          setSMBPath(p);
+        }
+      }
+    }
   }
 }
 
@@ -328,21 +328,21 @@ void ViewReadLinetree::setLigFile( const QString& f ){
   editLig->setText(f);
   if(__open){
     QString dta = f;
-	dta = dta.replace(QRegExp("\\.lig"),".dta");
-	if(QFileInfo(dta).exists()){
-		setDtaFile(dta);
-	}
-	else {
-	  dta = f;
-	  dta = dta.replace(QRegExp("[0-9]*\\.lig"),".dta");
-	  if(QFileInfo(dta).exists())
-		setDtaFile(dta);
-	}
+    dta = dta.replace(QRegExp("\\.lig"),".dta");
+    if(QFileInfo(dta).exists()){
+        setDtaFile(dta);
+    }
+    else {
+      dta = f;
+      dta = dta.replace(QRegExp("[0-9]*\\.lig"),".dta");
+      if(QFileInfo(dta).exists())
+        setDtaFile(dta);
+    }
   }
   else {
     QString dta = f;
-	dta = dta.replace(QRegExp("[0-9]*\\.lig"),".dta");
-	setDtaFile(dta);
+    dta = dta.replace(QRegExp("[0-9]*\\.lig"),".dta");
+    setDtaFile(dta);
   }
   testEndianess();
   checkCfg(QFileInfo(f).dir().path());
@@ -363,17 +363,17 @@ void ViewReadLinetree::setEndianess( bool bigEndian ){
 }
 
 void ViewReadLinetree::SelectLigFile(){
-  
+
   QString initial;
   if(!editLig->text().isEmpty())initial = editLig->text();
   else if(!editDta->text().isEmpty())initial = editDta->text();
   else if(!editSmb->text().isEmpty())initial = editSmb->text();
-  
+
   QString _filename;
   if(__open)_filename =  QFileDialog::getOpenFileName ( this, "Open Lig File", initial,"Lig Files (*.lig)"  );
   else _filename =  QFileDialog::getSaveFileName ( this, "Save Lig File", initial,"Lig Files (*.lig)" );
   if(!_filename.isEmpty())
-	setLigFile(_filename);
+    setLigFile(_filename);
 }
 
 void ViewReadLinetree::SelectDtaFile(){
@@ -381,12 +381,12 @@ void ViewReadLinetree::SelectDtaFile(){
   if(!editDta->text().isEmpty())initial = editDta->text();
   else if(!editLig->text().isEmpty())initial = editLig->text();
   else if(!editSmb->text().isEmpty())initial = editSmb->text();
-  
+
   QString _filename;
   if(__open)_filename =  QFileDialog::getOpenFileName ( this, "Open Dta File",initial, "Dta Files (*.dta)"  );
   else _filename =  QFileDialog::getSaveFileName ( this, "Save Dta File", initial,"Dta Files (*.dta)" );
   if(!_filename.isEmpty())
-	setDtaFile(_filename);
+    setDtaFile(_filename);
 }
 
 void ViewReadLinetree::SelectSMBPath(){
@@ -394,19 +394,19 @@ void ViewReadLinetree::SelectSMBPath(){
   if(!editSmb->text().isEmpty())dir = editSmb->text();
   else if(!editLig->text().isEmpty())dir = (editLig->text().left(editDta->text().lastIndexOf('/')));
   else if(!editDta->text().isEmpty())dir = (editDta->text().left(editDta->text().lastIndexOf('/')));
-  
+
   QString path;
   path = QFileDialog::getExistingDirectory(this,QString("Select SMB Path"),dir);
   if(!path.isEmpty())
-	setSMBPath(path);
+    setSMBPath(path);
 }
 
 void ViewReadLinetree::testEndianess(){
-	bool bigendian = true;
-	if(!editLig->text().isEmpty()){
-		if(!PGL(Ligfile::isBigEndian(qPrintable(editLig->text()))))
-			bigendian = false;
-	}
-	setEndianess(bigendian);
+    bool bigendian = true;
+    if(!editLig->text().isEmpty()){
+        if(!PGL(Ligfile::isBigEndian(qPrintable(editLig->text()))))
+            bigendian = false;
+    }
+    setEndianess(bigendian);
 }
 

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,12 +29,12 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 #include "configuration.h"
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QApplication>
 #else
     #include <QtGui/QApplication>
@@ -51,49 +51,49 @@ QString ViewerSettings::applidir;
 
 void ViewerSettings::setArgs(int argc, char** argv)
 {
-	for(int i = 0; i < argc; ++i)
-		args.append(QString(argv[i]));
-	if(argc > 0) {
-		QFileInfo f(args[0]);
-		QString basename = f.baseName();
-		if(!basename.isEmpty()){
-			if(basename.right(2) == "-d") // Remove '-d' flag name for debug compilation
-				basename.remove(basename.length(),2);
-			setAppliName(basename);
+    for(int i = 0; i < argc; ++i)
+        args.append(QString(argv[i]));
+    if(argc > 0) {
+        QFileInfo f(args[0]);
+        QString basename = f.baseName();
+        if(!basename.isEmpty()){
+            if(basename.right(2) == "-d") // Remove '-d' flag name for debug compilation
+                basename.remove(basename.length(),2);
+            setAppliName(basename);
 #if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
-			applidir = f.absolutePath();
+            applidir = f.absolutePath();
 #else
-			applidir = f.absFilePath();
+            applidir = f.absFilePath();
 #endif
-		}
-	}
-	if(appliname.isEmpty()){
-		setAppliName("PlantGLViewer");
-	}
+        }
+    }
+    if(appliname.isEmpty()){
+        setAppliName("PlantGLViewer");
+    }
 #if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
-	if(applidir.isEmpty())
-		applidir = QCoreApplication::applicationDirPath();
+    if(applidir.isEmpty())
+        applidir = QCoreApplication::applicationDirPath();
 #endif
 }
 
 void ViewerSettings::setAppliName(const QString& _appliname)
 {
-	appliname = _appliname;
+    appliname = _appliname;
 }
 
-const QString& ViewerSettings::getAppliName() 
-{ 
+const QString& ViewerSettings::getAppliName()
+{
     if(appliname.isEmpty()) setAppliName("PlantGLViewer");
-    return appliname; 
+    return appliname;
 }
 
 ViewerSettings::ViewerSettings():
 #if QT_VERSION >= QT_VERSION_CHECK(4,0,0)
-	QSettings(QSettings::IniFormat,QSettings::UserScope,"OpenAlea",getAppliName()) {}
+    QSettings(QSettings::IniFormat,QSettings::UserScope,"OpenAlea",getAppliName()) {}
 #else
-	QSettings(QSettings::Ini)
+    QSettings(QSettings::Ini)
 {
-	setPath("OpenAlea",getAppliName());
+    setPath("OpenAlea",getAppliName());
 }
 #endif
 

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 /*! \file view_clippingplane.h
@@ -43,7 +43,7 @@
 
 #include <QtCore/qstring.h>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
 #else
     #include <QtGui/qmenu.h>
@@ -54,7 +54,7 @@ class ViewEvent;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewClippingPlaneGL
    \brief Some Clipping Planes for GL Display
 
@@ -73,7 +73,7 @@ public:
 
   /// Destructor.
   virtual ~ViewClippingPlaneGL();
-  
+
   virtual QMenu * createToolsMenu(QWidget * parent);
 
   bool isPlaneEnable(int);
@@ -88,7 +88,7 @@ public:
   virtual void initializeGL();
 
   /// GL command.
-  virtual void paintGL(); 
+  virtual void paintGL();
 
   virtual void clippingPlaneEvent(ViewEvent * e);
 

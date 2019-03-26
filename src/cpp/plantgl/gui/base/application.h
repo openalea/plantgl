@@ -86,15 +86,15 @@ public :
 
   static void update();
 
-  static void saveImage( const std::string& filename, 
-					     const std::string& format = "PNG",
-						 bool  withAlpha = false );
+  static void saveImage( const std::string& filename,
+                         const std::string& format = "PNG",
+                         bool  withAlpha = false );
 
-  static ViewRayBuffer * castRays(const PGL(Vector3)& pos, 
-	                               const PGL(Vector3)& dir,
-								   const PGL(Vector3)& dx, 
-								   const PGL(Vector3)& dy,
-								   int sx, int sy);
+  static ViewRayBuffer * castRays(const PGL(Vector3)& pos,
+                                   const PGL(Vector3)& dir,
+                                   const PGL(Vector3)& dx,
+                                   const PGL(Vector3)& dy,
+                                   int sx, int sy);
 
   static ViewZBuffer * grabZBuffer();
 
@@ -103,36 +103,36 @@ public :
   static void showMessage(const std::string& caption, int timeout = 0);
 
   static int question(const std::string& caption,
-					   const std::string& text,
-					   const std::string& but0txt = "",
-					   const std::string& but1txt = "",
-					   const std::string& but2txt = "");
+                       const std::string& text,
+                       const std::string& but0txt = "",
+                       const std::string& but1txt = "",
+                       const std::string& but2txt = "");
   typedef bool(*AbortFunc)();
   static void setAborter(AbortFunc);
 
   static std::string itemSelection(const std::string& caption,
-					   const std::string& text,
-					   const std::vector<std::string> & values,
-					   bool& ok,
-					   bool editable = false);
+                       const std::string& text,
+                       const std::vector<std::string> & values,
+                       bool& ok,
+                       bool editable = false);
 
   static double doubleSelection(const std::string& caption,
-								   const std::string& text,
-								   double value,
+                                   const std::string& text,
+                                   double value,
                                    double minvalue,
                                    double maxvalue,
-								   bool& ok);
+                                   bool& ok);
 
   static std::string getOpenFile(const std::string& caption,
-								 const std::string& filter,
-								 const std::string& startPath);
+                                 const std::string& filter,
+                                 const std::string& startPath);
 
   static std::string getSaveFile(const std::string& caption,
-								 const std::string& filter,
-								 const std::string& startPath);
+                                 const std::string& filter,
+                                 const std::string& startPath);
 
   static std::string getDirectory(const std::string& caption,
-								  const std::string& startPath);
+                                  const std::string& startPath);
 
   static void fullScreen(bool b = true);
   static void glFrameOnly(bool b = true);
@@ -206,13 +206,13 @@ public :
   static void move(int,int);
   static void setGeometry(int,int,int,int);
 
-  static double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL); 
+  static double getProjectionSize(int* nbpixel = NULL, double* pixelwidth = NULL);
 
-  static void setPerspectiveCamera(); 
-  static void setOrthographicCamera(); 
+  static void setPerspectiveCamera();
+  static void setOrthographicCamera();
 
   template<class T>
-  static void registerThreadStateSaver() 
+  static void registerThreadStateSaver()
   { registerThreadStateSaverFatory(new ThreadStateSaverTFactory<T>()); }
 
   static void registerThreadStateSaverFatory(ThreadStateSaverFactory * tssf) ;
@@ -222,8 +222,8 @@ public :
 
 protected :
 
-	static void _sendAnEvent(QEvent *);
-	static void _setViewerBuilder(ViewerBuilder * builder);
+    static void _sendAnEvent(QEvent *);
+    static void _setViewerBuilder(ViewerBuilder * builder);
 
 };
 

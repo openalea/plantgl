@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_rotcenter.h
     \brief Definition of the viewer class ViewRotCenterGL.
@@ -46,7 +46,7 @@
 #include <plantgl/math/util_vector.h>
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
 #else
     #include <QtGui/qmenu.h>
@@ -63,7 +63,7 @@ class QDockWidget;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewRotCenterGL
    \brief A ViewRotCenterGL for GL Display
 
@@ -83,8 +83,8 @@ public:
 
   /// Constructor.
   ViewRotCenterGL(ViewCameraGL *camera,
-		  QGLWidget * parent=0, 
-		  const char * name=0);
+          QGLWidget * parent=0,
+          const char * name=0);
 
   /// Destructor.
   virtual ~ViewRotCenterGL();
@@ -94,7 +94,7 @@ public:
 
   /// Return whether self is active.
   bool isActive() const;
-  
+
   /// x coordinates
   int x() const;
 
@@ -118,12 +118,12 @@ public slots:
   /// reinitialize value.
   void init();
 
-  /// show 
+  /// show
   void show();
 
   /// hide
   void hide();
-  
+
   /// Change Visibility
   void changeVisibility();
 
@@ -167,7 +167,7 @@ public slots:
   virtual void initializeGL();
 
   /// GL command for rotating center.
-  virtual void paintGL(); 
+  virtual void paintGL();
 
   /// Change relative value.
   virtual void changeStepEvent(double newStep, double oldStep);
@@ -176,28 +176,28 @@ public slots:
 
   /// emit when visibility changed.
   void visibilityChanged(bool);
-  
+
   /// emit when activation changed
   void activationChanged(bool);
 
   /// emit when X Coordinates changed.
   void XvalueChanged(int);
-  
+
   /// emit when Y Coordinates changed.
   void YvalueChanged(int);
-  
+
   /// emit when Z Coordinates changed.
   void ZvalueChanged(int);
-  
+
   /// emit when X Coordinates changed.
   void XvalueChanged(double);
-  
+
   /// emit when Y Coordinates changed.
   void YvalueChanged(double);
-  
+
   /// emit when Z Coordinates changed.
   void ZvalueChanged(double);
-  
+
 protected :
 
   void setSliderStep(const int step);

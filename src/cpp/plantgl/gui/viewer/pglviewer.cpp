@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 /*! \file view_viewer.h
@@ -47,13 +47,13 @@
 
   /// Constructor.
 PGLViewer::PGLViewer(  QWidget * parent, Qt::WindowFlags f ):
-	Viewer(parent,"",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
+    Viewer(parent,"",new ViewMultiscaleEditGeomSceneGL(NULL,NULL), f)
 {
 }
 
   /// Constructor.
 PGLViewer::PGLViewer( int argc, char ** argv ):
-	Viewer(argc, argv,new ViewMultiscaleEditGeomSceneGL(NULL,NULL))
+    Viewer(argc, argv,new ViewMultiscaleEditGeomSceneGL(NULL,NULL))
 {
 }
 
@@ -61,7 +61,7 @@ PGLViewer::PGLViewer( int argc, char ** argv ):
 PGLViewer::~PGLViewer()
 {
 }
-  
+
 void PGLViewer::changeScene( const PGL(ScenePtr)& s )
 {
   GeomSceneChangeEvent k( s );

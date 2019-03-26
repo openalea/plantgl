@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -39,32 +39,32 @@
 template<class T>
 T * extract_pgllist_from_list_at(const boost::python::list& t, void * addr = NULL){
   int size = len(t);
-	T * result = new (addr)T();
-	for(int i = 0; i < size; ++i)
-		result->push_back(boost::python::extract<typename T::value_type>(t[i]));
-	return result;
+    T * result = new (addr)T();
+    for(int i = 0; i < size; ++i)
+        result->push_back(boost::python::extract<typename T::value_type>(t[i]));
+    return result;
 }
 
 template<class T>
 struct pgllist_from_list {
   pgllist_from_list() {
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>());
+    boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<T>());
   }
 
   static void* convertible(PyObject* py_obj){
     if( !PySequence_Check( py_obj ) ) return 0;
-	if( !PyObject_HasAttrString( py_obj, "__len__" ) ) return 0;
-	boost::python::object py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
-	return py_obj;
+    if( !PyObject_HasAttrString( py_obj, "__len__" ) ) return 0;
+    boost::python::object py_sequence( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+    return py_obj;
   }
 
   static void construct( PyObject* obj, boost::python::converter::rvalue_from_python_stage1_data* data){
     typedef boost::python::converter::rvalue_from_python_storage<T> vector_storage_t;
-	vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
-	void* memory_chunk = the_storage->storage.bytes;
-	boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) );
-	T * result = extract_pgllist_from_list_at<T>(py_sequence,memory_chunk);
-	data->convertible = memory_chunk;
+    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
+    void* memory_chunk = the_storage->storage.bytes;
+    boost::python::list py_sequence( boost::python::handle<>( boost::python::borrowed( obj ) ) );
+    T * result = extract_pgllist_from_list_at<T>(py_sequence,memory_chunk);
+    data->convertible = memory_chunk;
   }
 };
 

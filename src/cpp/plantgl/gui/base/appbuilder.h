@@ -45,19 +45,19 @@ class Viewer;
 
 class VIEW_API ViewerBuilder {
 public:
-	ViewerBuilder(){}
-	virtual ~ViewerBuilder(){}
-	virtual Viewer * build() = 0;
+    ViewerBuilder(){}
+    virtual ~ViewerBuilder(){}
+    virtual Viewer * build() = 0;
 };
 
 
 template<class T>
 struct ViewerTBuilder : public ViewerBuilder {
 public:
-	ViewerTBuilder() {}
-	virtual ~ViewerTBuilder() {}
-	typedef T ViewerType;
-	virtual Viewer * build() { return new T(); }
+    ViewerTBuilder() {}
+    virtual ~ViewerTBuilder() {}
+    typedef T ViewerType;
+    virtual Viewer * build() { return new T(); }
 };
 
 class VIEW_API ThreadStateSaver {
@@ -84,7 +84,7 @@ class ThreadStateSaverTFactory : public ThreadStateSaverFactory {
     TSSEncapsuler() : ThreadStateSaver(), _value() {}
     U _value;
     virtual void pushState() { _value.pushState(); }
-    virtual void popState()  { _value.popState();  }   
+    virtual void popState()  { _value.popState();  }
   };
 
 public:

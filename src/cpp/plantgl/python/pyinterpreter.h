@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -39,15 +39,15 @@
 class PythonInterpreterAcquirer {
 public:
 
-    PythonInterpreterAcquirer() 
-    { 
-        /** It seems mandatory to acquire the GIL to call python 
+    PythonInterpreterAcquirer()
+    {
+        /** It seems mandatory to acquire the GIL to call python
             from C++ internal (during GUI process for instance) */
-        gstate = PyGILState_Ensure(); 
+        gstate = PyGILState_Ensure();
     }
     ~PythonInterpreterAcquirer()
-    { 
-      if(gstate)PyGILState_Release(gstate); 
+    {
+      if(gstate)PyGILState_Release(gstate);
     }
 
 protected:
@@ -61,22 +61,22 @@ public:
   PyStateSaver() : _state(0) { }
     ~PyStateSaver() { if (_state) popState(); }
 
-    void pushState () { 
+    void pushState () {
       if(!_state) {
         _gstate = PyGILState_Ensure();
         if(PyEval_ThreadsInitialized())
-	      _state = PyEval_SaveThread(); 
+          _state = PyEval_SaveThread();
       }
     }
-    void popState () 
-    { 
+    void popState ()
+    {
         if(_state){
-            PyEval_RestoreThread(_state); 
-            _state = NULL; 
+            PyEval_RestoreThread(_state);
+            _state = NULL;
         }
-        if(_gstate)PyGILState_Release(_gstate); 
+        if(_gstate)PyGILState_Release(_gstate);
     }
- 
+
 protected:
     PyGILState_STATE _gstate;
     PyThreadState *_state;

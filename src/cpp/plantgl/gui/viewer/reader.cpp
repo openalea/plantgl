@@ -37,7 +37,7 @@
 #ifdef QT_THREAD_SUPPORT
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qapplication.h>
 #else
     #include <QtGui/qapplication.h>
@@ -94,7 +94,7 @@ void ViewGeomReader::run()
 {
 
     if(! _filename.isEmpty()) {
-	  stringstream _errlog(ios::out) ;
+      stringstream _errlog(ios::out) ;
       ScenePtr scene = ScenePtr(new Scene(qPrintable(_filename),"", _errlog,
                                           maxerror));
       _errlog << std::ends;
@@ -193,7 +193,7 @@ ViewLinetreeReader::ViewLinetreeReader(const QString& ligFile,
                                const QString& dtaFile,
                                const QString& smbPath,
                                ViewGeomSceneGL * g,
-							   bool bigendian,
+                               bool bigendian,
                                bool add) :
   ViewGeomReader(ligFile,g,-1,add) ,
   _dtaFile(dtaFile),
@@ -248,7 +248,7 @@ void ViewLinetreeReader::run(){
       ScenePtr scene = readLineTree(_filename.toStdString(),
                                     _dtaFile.toStdString(),
                                     _smbPath.toStdString(),
-									_bigendian,
+                                    _bigendian,
                                     _errlog);
       _errlog << ends;
       string _msg = _errlog.str();

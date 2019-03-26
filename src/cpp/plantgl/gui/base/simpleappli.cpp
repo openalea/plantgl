@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -33,73 +33,73 @@
 #include "viewer.h"
 #include "event.h"
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qapplication.h>
 #else
     #include <QtGui/qapplication.h>
 #endif
 #include <QtCore/qthread.h>
 
-ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppliInternal(), __ownappli(false) { 
-	// printf("Create Simple appli\n");
-	launch(); 
+ViewerSimpleAppli::ViewerSimpleAppli():ViewerAppliInternal(), __ownappli(false) {
+    // printf("Create Simple appli\n");
+    launch();
 }
 
 ViewerSimpleAppli::~ViewerSimpleAppli(){
-	if(running()) exit();
-	if(qApp && __ownappli)delete qApp;
-	// deleteViewer();
+    if(running()) exit();
+    if(qApp && __ownappli)delete qApp;
+    // deleteViewer();
 }
 
-void 
+void
 ViewerSimpleAppli::startSession()
 { if(!running()) getViewer()->show(); }
 
-bool 
+bool
 ViewerSimpleAppli::stopSession()
 { if(running()) { getViewer()->hide(); return true; } else return false; }
 
-bool 
+bool
 ViewerSimpleAppli::exit()
-{ 
-	if(qApp && __ownappli) { qApp->quit(); return true; }
-	else return false;
+{
+    if(qApp && __ownappli) { qApp->quit(); return true; }
+    else return false;
 }
 
 
-bool 
-ViewerSimpleAppli::running() 
+bool
+ViewerSimpleAppli::running()
 { return getViewer() != NULL && getViewer()->isVisible(); }
 
-bool 
+bool
 ViewerSimpleAppli::Wait ( unsigned long time  )
 { return false; }
 
 void
 ViewerSimpleAppli::launch(){
-	if(qApp != NULL){
-		__ownappli = false;
-		Viewer * v = build();
-		if (qApp->thread() != QThread::currentThread()){
-			v->moveToThread(qApp->thread());
-			if (v->thread() == QThread::currentThread()){
+    if(qApp != NULL){
+        __ownappli = false;
+        Viewer * v = build();
+        if (qApp->thread() != QThread::currentThread()){
+            v->moveToThread(qApp->thread());
+            if (v->thread() == QThread::currentThread()){
 
 #ifdef GEOM_DLDEBUG
-				printf("Viewer did not move to graphic thread. This will certainly lead to crash.\n");
+                printf("Viewer did not move to graphic thread. This will certainly lead to crash.\n");
 #endif
-				v->show();
-			}
-			else v->post(new ViewShowEvent());
-		}
-		else v->show();
-	}
-	else {
-		int argc = 0;
-		new QApplication(argc,NULL);
-		__ownappli = true;
-		Viewer * v = build();
-		v->show();
-		qApp->exec();
-	}
+                v->show();
+            }
+            else v->post(new ViewShowEvent());
+        }
+        else v->show();
+    }
+    else {
+        int argc = 0;
+        new QApplication(argc,NULL);
+        __ownappli = true;
+        Viewer * v = build();
+        v->show();
+        qApp->exec();
+    }
 }
 

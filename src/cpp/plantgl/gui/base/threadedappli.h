@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -51,47 +51,47 @@ class QApplication;
 class Viewer;
 
 class ViewerThreadedAppli : public ViewerAppliInternal, public QThread {
-	public:
-	ViewerThreadedAppli();
-	virtual ~ViewerThreadedAppli();
+    public:
+    ViewerThreadedAppli();
+    virtual ~ViewerThreadedAppli();
 
-	virtual void startSession();
-	virtual bool stopSession() ;
-	virtual bool exit() ;
+    virtual void startSession();
+    virtual bool stopSession() ;
+    virtual bool exit() ;
 
     virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
 
-	virtual std::vector<uint_t> getSelection();
+    virtual std::vector<uint_t> getSelection();
 
 protected:
 
-	void launch();
-	virtual void init();
-	virtual void cleanup();
-	virtual void exec();
-	virtual void run();
+    void launch();
+    virtual void init();
+    virtual void cleanup();
+    virtual void exec();
+    virtual void run();
 
 private :
 
-	void startSync() ;
-	void sync() ;
-	void join() ;
+    void startSync() ;
+    void sync() ;
+    void join() ;
 
-	QMutex         syncmutex;
-	QWaitCondition synccond;
+    QMutex         syncmutex;
+    QWaitCondition synccond;
 
-	/// Wait Condition for initialisation.
-	QWaitCondition contcond;
+    /// Wait Condition for initialisation.
+    QWaitCondition contcond;
 
-	/// Wait Condition for end viewer session.
-	QMutex         sessionmutex;
-	QWaitCondition session;
+    /// Wait Condition for end viewer session.
+    QMutex         sessionmutex;
+    QWaitCondition session;
 
-	QMutex         __continue;
-	QMutex         __running;
+    QMutex         __continue;
+    QMutex         __running;
 
-	std::vector<uint_t> __selection;
+    std::vector<uint_t> __selection;
 
 };
 

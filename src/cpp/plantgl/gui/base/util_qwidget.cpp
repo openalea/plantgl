@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "util_qwidget.h"
 
@@ -40,7 +40,7 @@
 #include <QtGui/qbrush.h>
 #include <QtGui/qpainter.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qtoolbutton.h>
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qprogressbar.h>
@@ -60,7 +60,7 @@
 ViewToolBar::ViewToolBar ( const QString & label, QWidget * mw, const char* name ):
   QToolBar(label,mw)
 {
-	if(name)setObjectName(name);
+    if(name)setObjectName(name);
 }
 
 
@@ -68,21 +68,21 @@ ViewToolBar::~ViewToolBar()
 {
 }
 
-void 
+void
 ViewToolBar::showEvent ( QShowEvent * e)
 {
   emit __visibilityChanged(true);
   QToolBar::showEvent(e);
 }
 
-void 
+void
 ViewToolBar::hideEvent ( QHideEvent * e)
 {
   emit __visibilityChanged(false);
   QToolBar::hideEvent(e);
 }
 
-void 
+void
 ViewToolBar::changeVisibility()
 {
   if(isVisible())hide();
@@ -94,15 +94,15 @@ ViewToolBar::changeVisibility()
 ViewDialog::ViewDialog( QWidget * parent, const char * name, bool modal, Qt::WindowFlags f ):
   QDialog(parent,f)
 {
-	if(name)setObjectName(name);
-	setModal(modal);
+    if(name)setObjectName(name);
+    setModal(modal);
 }
 
 ViewDialog::~ViewDialog()
 {
 }
 
-void 
+void
 ViewDialog::show()
 {
   if(!isVisible()){
@@ -110,7 +110,7 @@ ViewDialog::show()
   }
   else {
     if(!isActiveWindow()){
-		activateWindow();
+        activateWindow();
     }
     else{
       QDialog::hide();
@@ -118,20 +118,20 @@ ViewDialog::show()
   }
 }
 
-void 
+void
 ViewDialog::keyPressEvent (QKeyEvent * e)
 {
   if(e->key() == Qt::Key_Escape) hide();
 }
 
-void 
+void
 ViewDialog::hideEvent (QHideEvent * event)
 {
   emit visibilityChanged(false);
   QDialog::hideEvent(event);
 }
 
-void 
+void
 ViewDialog::showEvent (QShowEvent * event)
 {
   emit visibilityChanged(true);
@@ -142,18 +142,18 @@ ViewDialog::showEvent (QShowEvent * event)
 
 ViewMainDialog::ViewMainDialog( QWidget * parent, const char * name, bool modal, Qt::WindowFlags f ):
   ViewDialog(parent,name,modal,f),
-	__mainwidget(0){
+    __mainwidget(0){
 }
-  
+
   /// Destructor.
 ViewMainDialog::~ViewMainDialog(){
 }
 
-void 
+void
 ViewMainDialog::setMainWidget(QWidget * mainwidget){
   __mainwidget = mainwidget;
 }
-  
+
 void ViewMainDialog::resizeEvent(QResizeEvent * e){
   if(__mainwidget)__mainwidget->resize(e->size());
 }
@@ -162,11 +162,11 @@ void ViewMainDialog::resizeEvent(QResizeEvent * e){
 
 ViewStatusBar::ViewStatusBar(QWidget * parent, const char * name ):
 QStatusBar(parent),__progress(new QProgressBar(this)){
-	setObjectName(name);
-	__progress->setMaximumWidth( 100 );
-	// __progress->setCenterIndicator(true);
-	__progress->setTextVisible ( false );
-	addPermanentWidget( __progress,0 );
+    setObjectName(name);
+    __progress->setMaximumWidth( 100 );
+    // __progress->setCenterIndicator(true);
+    __progress->setTextVisible ( false );
+    addPermanentWidget( __progress,0 );
 
 }
 
@@ -174,46 +174,46 @@ ViewStatusBar::~ViewStatusBar(){}
 
 QProgressBar * ViewStatusBar::progressBar(){ return __progress; }
 
-void 
+void
 ViewStatusBar::setProgress(int progress,int total) {
-	__progress->setMaximum(total);
-	__progress->setValue(progress);
-	if(progress == total)__progress->reset();
+    __progress->setMaximum(total);
+    __progress->setValue(progress);
+    if(progress == total)__progress->reset();
 }
 
-void 
+void
 ViewStatusBar::setProgress(int progress){
-	__progress->setValue(progress);
+    __progress->setValue(progress);
 }
 
-void 
+void
 ViewStatusBar::setTotalSteps(int total){
-	__progress->setMaximum(total);
+    __progress->setMaximum(total);
 }
 
 
 /* ----------------------------------------------------------------------- */
 
-void PGL::drawArrow(QPixmap * pm,int s){
+void PGL(drawArrow)(QPixmap * pm,int s){
   QPainter p;
   if(p.begin(pm)){
-	int x = p.window().width() - 4 -4*s;
-	int y = p.window().height() - 4*s;
-	p.setPen( QPen(Qt::black,1 ) );
-	{
-	  for(int j = 0; j < 4*s; j++)
-		for(int i = 0; i < 3+4*s-2*j; i++){
-		  p.drawPoint(QPoint(x+j+i,y+j));
-		}
-	}
-	p.end();
+    int x = p.window().width() - 4 -4*s;
+    int y = p.window().height() - 4*s;
+    p.setPen( QPen(Qt::black,1 ) );
+    {
+      for(int j = 0; j < 4*s; j++)
+        for(int i = 0; i < 3+4*s-2*j; i++){
+          p.drawPoint(QPoint(x+j+i,y+j));
+        }
+    }
+    p.end();
   }
   else qWarning("%s:%d: Cannot draw on pixmap.", __FILE__,__LINE__);
 }
 
 /* ----------------------------------------------------------------------- */
 
-void PGL::fillButton(QPushButton* button, const QColor& color,const QSize& defaultsize)
+void PGL(fillButton)(QPushButton* button, const QColor& color,const QSize& defaultsize)
 {
   if(color.isValid()){
     QPalette palette = button->palette();

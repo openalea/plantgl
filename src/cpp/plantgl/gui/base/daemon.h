@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 /*! \file view_daemon.h
@@ -46,7 +46,7 @@ class QTextView;
 class QPushButton;
 class QSocket;
 #include <QtNetwork/qtcpserver.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qdialog.h>
 #else
     #include <QtGui/qdialog.h>
@@ -82,7 +82,7 @@ private slots:
     void processNextConnection();
 
 protected:
-	QTcpSocket * currentSocket;
+    QTcpSocket * currentSocket;
 
 };
 
@@ -90,14 +90,14 @@ protected:
 
 #ifdef VIEW_NETWORK_SUPPORT
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtNetwork/qhttp.h>
 #else
     #include <QtNetwork/QNetworkAccessManager>
 #endif
 
-class VIEW_API ViewClient : public 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+class VIEW_API ViewClient : public
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     QHttp
 #else
     QNetworkAccessManager
@@ -139,16 +139,16 @@ class VIEW_API ViewClientObj : public QObject
 public:
 
     ViewClientObj(bool dialog = false,
-					QObject * parent=0, 
-				    const char * name=0);
+                    QObject * parent=0,
+                    const char * name=0);
 
     virtual ~ViewClientObj();
-	bool requestReadFile(const QString&);
-	bool requestAddFile(const QString&);
-	bool requestShow();
-	bool request(int argc, char ** argv);
+    bool requestReadFile(const QString&);
+    bool requestAddFile(const QString&);
+    bool requestShow();
+    bool request(int argc, char ** argv);
 
-	int exec();
+    int exec();
 
 protected slots:
   void finished( QNetworkOperation * );

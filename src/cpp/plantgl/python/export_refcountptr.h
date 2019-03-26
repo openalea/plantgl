@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -47,7 +47,7 @@ template<class T>
 T* get_pointer(const RCPtr<T>& p){ return p.get(); }
 PGL_END_NAMESPACE
 
-# define DEF_POINTEE(CLASS) 
+# define DEF_POINTEE(CLASS)
 #else
 # define DEF_POINTEE(CLASS)
 #endif

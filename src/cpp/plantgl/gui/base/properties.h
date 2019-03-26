@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,8 +29,8 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */	
-			
+ */
+
 /*! \file view_properties.h
     \brief Definition of the viewer class ViewProperties.
 */
@@ -43,7 +43,7 @@
 #include "glframe.h"
 #include <QtCore/qvariant.h>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qdialog.h>
 #else
     #include <QtGui/qdialog.h>
@@ -51,9 +51,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QFrame;
 class QLabel;
 class QLineEdit;
@@ -72,17 +72,17 @@ class ViewControlPanel;
 
 /// Dialog to display properties of the file, the scene, the camera, ...
 class VIEW_API ViewProperties : public QDialog
-{ 
+{
     Q_OBJECT
 
 public:
-    ViewProperties( ViewGLFrame *g, 
-		ViewFileManager* parent = 0,
-		ViewControlPanel * controlpanel=0,
-		bool config = false,
-		const char* name = 0,
-		bool modal = false, 
-		Qt::WindowFlags fl = 0 );
+    ViewProperties( ViewGLFrame *g,
+        ViewFileManager* parent = 0,
+        ViewControlPanel * controlpanel=0,
+        bool config = false,
+        const char* name = 0,
+        bool modal = false,
+        Qt::WindowFlags fl = 0 );
 
   ~ViewProperties();
 
@@ -91,7 +91,7 @@ protected slots:
 //  void setLanguage(const QString&);
   virtual void apply();
 private :
-  
+
   void initialize();
   QComboBox * lang;
 };

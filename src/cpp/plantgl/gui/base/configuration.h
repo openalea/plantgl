@@ -42,20 +42,20 @@
 /*--------------------------------------------------------------*/
 
 class VIEW_API ViewerSettings : public QSettings {
-	static QStringList args;
-	static QString appliname;
-	static QString applidir;
+    static QStringList args;
+    static QString appliname;
+    static QString applidir;
 
 public:
-	static void setArgs(int argc, char** argv);
-	static const QStringList& getArgs() { return args; }
+    static void setArgs(int argc, char** argv);
+    static const QStringList& getArgs() { return args; }
 
-	static void setAppliName(const QString& appliname);
-	static const QString& getAppliName() ;
-	static const QString& getAppliDir() { return applidir; }
+    static void setAppliName(const QString& appliname);
+    static const QString& getAppliName() ;
+    static const QString& getAppliDir() { return applidir; }
 
-	ViewerSettings();
-	
+    ViewerSettings();
+
 
 };
 

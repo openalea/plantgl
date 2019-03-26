@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,13 +29,13 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "object.h"
 
 
 #include <QtCore/qpoint.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmessagebox.h>
 #else
     #include <QtGui/qmessagebox.h>
@@ -56,7 +56,7 @@ ViewObjectGL::ViewObjectGL(QObject * parent, const char * name) :
   QObject(parent),
   __frame(NULL)
 {
-	if(name) setObjectName(name);
+    if(name) setObjectName(name);
 }
 
 ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
@@ -65,7 +65,7 @@ ViewObjectGL::ViewObjectGL(QGLWidget * parent, const char * name) :
 {
   if(parent)
     QObject::connect (this,SIGNAL(valueChanged()),
-		      parent,SLOT(redrawGL()) ); 	
+              parent,SLOT(redrawGL()) );
   if(name) setObjectName(name);
 }
 
@@ -73,50 +73,50 @@ ViewObjectGL::~ViewObjectGL()
 {
 }
 
-void 
+void
 ViewObjectGL::move(QPoint p)
 {
   moving(p.x(),p.y());
 }
 
-void 
+void
 ViewObjectGL::moving(int dx, int dy)
 {
 }
 
-void 
+void
 ViewObjectGL::zoom(QPoint p)
 {
   zooming(p.x(),p.y());
 }
 
-void 
+void
 ViewObjectGL::zooming(int dx, int dy)
 {
 }
 
-void 
+void
 ViewObjectGL::rotate(QPoint p)
 {
   rotating(p.x(),p.y());
 }
 
-void 
+void
 ViewObjectGL::rotating(int dx, int dy)
 {
 }
 
-void 
+void
 ViewObjectGL::initializeGL()
 {
 }
 
-void 
+void
 ViewObjectGL::resizeGL(int w, int h)
 {
 }
 
-QMenu * 
+QMenu *
 ViewObjectGL::createToolsMenu(QWidget * parent)
 {
   return NULL;
@@ -126,71 +126,71 @@ void ViewObjectGL::fillToolBar(QToolBar * toolBar)
 {
 }
 
-void 
+void
 ViewObjectGL::connectTo(ViewStatusBar * s)
 {
   if(s){
-    QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),s,SLOT(showMessage(const QString&,int)) );  
-    QObject::connect(this,SIGNAL(statusMessage(const QString&)), s,SLOT(showMessage(const QString&)) );  
-	QObject::connect(this,SIGNAL(progressMessage(int,int)), s,SLOT(setProgress(int,int)) );  
+    QObject::connect(this,SIGNAL(statusMessage(const QString&,int)),s,SLOT(showMessage(const QString&,int)) );
+    QObject::connect(this,SIGNAL(statusMessage(const QString&)), s,SLOT(showMessage(const QString&)) );
+    QObject::connect(this,SIGNAL(progressMessage(int,int)), s,SLOT(setProgress(int,int)) );
   }
 }
 
-void 
+void
 ViewObjectGL::connectTo(QGLWidget *g)
 {
   if(g){
     QObject::connect (this,SIGNAL(valueChanged()),
-		      g,SLOT(redrawGL()) );
+              g,SLOT(redrawGL()) );
     __frame = g;
   }
 }
 
-void 
+void
 ViewObjectGL::connectTo(ViewErrorDialog *e)
 {
   if(e){
     QObject::connect(this,SIGNAL(errorMessage(const QString&)),
-		     e,SLOT(setError(const QString&)) );
+             e,SLOT(setError(const QString&)) );
     QObject::connect(this,SIGNAL(warningMessage(const QString&)),
-		     e,SLOT(appendWarning(const QString&)) );
+             e,SLOT(appendWarning(const QString&)) );
     QObject::connect(this,SIGNAL(infoMessage(const QString&)),
-		     e,SLOT(appendInfo(const QString&)) );
+             e,SLOT(appendInfo(const QString&)) );
   }
 }
 
 
-void 
+void
 ViewObjectGL::error(const QString& s)
 {
   emit errorMessage(s);
 }
 
-void 
+void
 ViewObjectGL::warning(const QString& s)
 {
   emit warningMessage(s);
 }
 
-void 
+void
 ViewObjectGL::info(const QString& s)
 {
   emit infoMessage(s);
 }
 
-void 
+void
 ViewObjectGL::status(const QString& s)
 {
   emit statusMessage(s);
 }
 
-void 
+void
 ViewObjectGL::status(const QString& s,int t)
 {
   emit statusMessage(s,t);
 }
 
-void 
+void
 ViewObjectGL::progress(int p,int t)
 {
   emit progressMessage(p,t);
@@ -209,34 +209,34 @@ bool
 ViewObjectGL::glError(QWidget * widget, const char * file, int line)
 {
   GLenum _glerror;
-  
+
   if((_glerror = glGetError()) != GL_NO_ERROR){
-	  QString _mess = "<b>[ObjectGL] GL Error ["+QString::number(_glerror)+"] !!</b><br>";
-	  int i = 0;
-	  while(_glerror != GL_NO_ERROR && i < 10){
-		  _mess += gluGeomErrorString(_glerror);
-		  _mess += "<br>\n";
-		  _glerror = glGetError();
-		  i++;
-	  }
-	  if(file != NULL){
-		  _mess += "<br><b>File :</b>";
-		  _mess += file;
-		  _mess += "<br><b>Line :</b>";
-		  _mess += QString::number(line);
-	  }
-	  if(false) { // !BATCHMODE){
-		  if(!lock){
-			  lock = true;
-			  int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));
-			  if(res == 0 || res == -1){
-				  abort();
-			  }
-			  lock = false;
-		  }
-	  }
-	  else qWarning("%s",qPrintable(_mess));
-	  return true;
+      QString _mess = "<b>[ObjectGL] GL Error ["+QString::number(_glerror)+"] !!</b><br>";
+      int i = 0;
+      while(_glerror != GL_NO_ERROR && i < 10){
+          _mess += gluGeomErrorString(_glerror);
+          _mess += "<br>\n";
+          _glerror = glGetError();
+          i++;
+      }
+      if(file != NULL){
+          _mess += "<br><b>File :</b>";
+          _mess += file;
+          _mess += "<br><b>Line :</b>";
+          _mess += QString::number(line);
+      }
+      if(false) { // !BATCHMODE){
+          if(!lock){
+              lock = true;
+              int res = QMessageBox::critical(widget,tr("GL Error"),_mess,tr("Abort"),tr("Continue"));
+              if(res == 0 || res == -1){
+                  abort();
+              }
+              lock = false;
+          }
+      }
+      else qWarning("%s",qPrintable(_mess));
+      return true;
   }
   return false;
 }
@@ -256,31 +256,31 @@ ViewRelativeObjectGL::ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * par
   ViewObjectGL(parent,name),
   __step(1){
   if(camera){
-    QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));  
+    QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));
     QObject::connect(camera,SIGNAL(coordSysChanged(int)),this,SLOT(coordSys(int)));
   }
 }
 
-void 
+void
 ViewRelativeObjectGL::connectTo(ViewCameraGL *camera)
 {
   if(camera)
-	QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));  
+    QObject::connect(camera,SIGNAL(stepMoveChanged(double)),this,SLOT(setStep(double)));
 }
 
-void 
+void
 ViewRelativeObjectGL::connectTo(ViewStatusBar * s)
 {
   ViewObjectGL::connectTo(s);
 }
 
-void 
+void
 ViewRelativeObjectGL::connectTo(QGLWidget *g)
 {
   ViewObjectGL::connectTo(g);
 }
 
-void 
+void
 ViewRelativeObjectGL::connectTo(ViewErrorDialog *e)
 {
   ViewObjectGL::connectTo(e);
@@ -303,25 +303,25 @@ ViewRelativeObjectGL::changeStepEvent(double newStep, double oldStep)
 {
 }
 
-const int 
+const int
 ViewRelativeObjectGL::getStep() const
 {
   return __step;
 }
 
-void 
+void
 ViewRelativeObjectGL::coordSys(int i)
 {
   if(i == 1)geomCoordSys();
   else if(i == 0)glCoordSys();
 }
 
-void 
+void
 ViewRelativeObjectGL::geomCoordSys()
 {
 }
 
-void 
+void
 ViewRelativeObjectGL::glCoordSys()
 {
 }

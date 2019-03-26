@@ -108,8 +108,8 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
 
   virtual bool addImportEntries(QMenu * menu);
 
-  virtual bool addExportEntries(QMenu * menu);  
-  
+  virtual bool addExportEntries(QMenu * menu);
+
   /// Add Edit Entries
   virtual bool addEditEntries(QMenu * menu);
 
@@ -133,10 +133,10 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   /// Get the scene.
   PGL(ScenePtr) getScene( ) const;
 
-  /// Get the scene. 
+  /// Get the scene.
   PGL(ScenePtr) getSelection( ) const;
 
-  /// Get the scene. 
+  /// Get the scene.
   PGL(ScenePtr) getNotSelection( ) const;
 
   virtual std::vector<uint_t> getSelectionIds() const;
@@ -150,7 +150,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   std::vector<std::pair<uint_t,double> > getProjectionSizes(const PGL(ScenePtr)&);
   ViewRayPointHitBuffer * castRays(const PGL(ScenePtr)& sc, bool back_test);
 
-  std::vector<std::pair<uint_t,uint_t> > 
+  std::vector<std::pair<uint_t,uint_t> >
   getPixelPerShape(double* pixelwidth = NULL);
 
   /// Get the surface of the scene.
@@ -158,13 +158,13 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
 
   /// Get the volume of the scene.
   real_t getSceneVolume();
- 
+
   /// Get the surface of the selected element.
   real_t getSelectionSurface();
-  
+
   /// Get the volume of the selected element.
   real_t getSelectionVolume();
- 
+
   bool getDisplayListUse() const;
 
   static bool useThread();
@@ -172,8 +172,8 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   /// Save current scene in GEOM format in the file \b filename.
   bool saveAsGeom(const QString& filename);
   bool saveAsGeom(const QString& shape,
-				  const QString& geom,
-				  const QString& mat);
+                  const QString& geom,
+                  const QString& mat);
 
   /// Print the current Scene in the povray format in the file \b filename.
   bool saveAsPovRay(const QString& filename);
@@ -192,7 +192,7 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
                       const QString& dta,
                       const QString& smb,
                       const QString& key,
-					  bool bigendian = true);
+                      bool bigendian = true);
 
   /// Try to open file. Return true if ok.
   virtual bool open(const QString& filename);
@@ -222,14 +222,14 @@ class VIEW_API ViewGeomSceneGL  : public ViewModalRendererGL
   bool hasSameMaterial() const;
 
   bool getGeomFilenames(QString& shape,
-						QString& geom,
-						QString& mat);
+                        QString& geom,
+                        QString& mat);
 
   /// Save the scene \bscene in GEOM format in the file \b filename.
   bool saveScene(const QString& shape,
-				 const QString& geom,
-				 const QString& mat,
-				 PGL(ScenePtr) scene);
+                 const QString& geom,
+                 const QString& mat,
+                 PGL(ScenePtr) scene);
 
   /// Connect this to a GL Widget.
   virtual void connectTo(QGLWidget *);
@@ -322,12 +322,12 @@ public slots:
   void enableBlending(bool);
 
 signals:
-  
+
   void displayList(bool);
 
 protected :
 
-  virtual void customEvent(QEvent *); 
+  virtual void customEvent(QEvent *);
 
   virtual void animationChangedEvent(eAnimationFlag);
 
@@ -362,7 +362,7 @@ protected :
   PGL(BoundingBoxPtr) __bbox;
 
   /// Selected shapes.
-  typedef QHash<uint_t,PGL(Shape3DPtr)> SelectionCache; 
+  typedef QHash<uint_t,PGL(Shape3DPtr)> SelectionCache;
   // typedef pgl_hash_map<uint_t,PGL(Shape3DPtr)> SelectionCache;
   SelectionCache __selectedShapes;
 

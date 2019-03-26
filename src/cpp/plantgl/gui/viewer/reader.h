@@ -42,8 +42,7 @@
 
 #include "../gui_config.h"
 
-#include "../gui_config.h"
-
+#include <QtGlobal>
 #ifndef QT_THREAD_SUPPORT
 #ifdef __GNUC__
 #warning "Qt compiled without openGL support"
@@ -181,7 +180,7 @@ class VIEW_API ViewLinetreeReader : public  ViewGeomReader {
                      const QString& dtaFile,
                      const QString& smbPath,
                      ViewGeomSceneGL * g,
-					 bool bigendian = true,
+                     bool bigendian = true,
                      bool add = false);
 
     ~ViewLinetreeReader();
@@ -207,7 +206,7 @@ class VIEW_API ViewLinetreeReader : public  ViewGeomReader {
 
     QString _smbPath;
 
-	bool _bigendian;
+    bool _bigendian;
 };
 
 /* ----------------------------------------------------------------------- */

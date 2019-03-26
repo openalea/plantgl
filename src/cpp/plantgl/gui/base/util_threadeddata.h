@@ -39,6 +39,9 @@
 #ifndef __threaded_data_h__
 #define __threaded_data_h__
 
+#include "../gui_config.h"
+#include <QtGlobal>
+
 #ifdef QT_THREAD_SUPPORT
 
 #include <QtCore/qmutex.h>
@@ -55,43 +58,43 @@ public:
   typedef QMutexLocker WriteLocker;
 
   ThreadedData(data_type * val):
-	  __val(val){
-	}
+      __val(val){
+    }
 
   inline void deleteData()
   {
-	WriteLocker l(&lock);
-	if (__val != NULL) delete __val;
-	__val = NULL;
+    WriteLocker l(&lock);
+    if (__val != NULL) delete __val;
+    __val = NULL;
   }
 
   inline ThreadedData operator = (data_type * val) {
-	set(val);
-	return *this;
+    set(val);
+    return *this;
   }
 
   inline void set(data_type * val) {
-	ReadLocker l(&lock);
-	__val = val;
+    ReadLocker l(&lock);
+    __val = val;
   }
 
-  inline operator const data_type * () { return getConst(); } 
+  inline operator const data_type * () { return getConst(); }
 
-  inline data_type * get( ) { 
-	ReadLocker l(&lock);
-	data_type * val = __val;
-	return val; 
+  inline data_type * get( ) {
+    ReadLocker l(&lock);
+    data_type * val = __val;
+    return val;
   }
 
-  inline const data_type * getConst( ) { 
-	ReadLocker l(&lock);
-	data_type * val = __val;
-	return val; 
+  inline const data_type * getConst( ) {
+    ReadLocker l(&lock);
+    data_type * val = __val;
+    return val;
   }
 
 private:
-	ThreadedData(ThreadedData<T>& copy): __val(copy.get()){};
-	ThreadedData<T>& operator=(ThreadedData<T>& copy){ WriteLocker l(&lock); __val = copy.get(); }
+    ThreadedData(ThreadedData<T>& copy): __val(copy.get()){};
+    ThreadedData<T>& operator=(ThreadedData<T>& copy){ WriteLocker l(&lock); __val = copy.get(); }
 
   data_type * __val;
   Lock lock;

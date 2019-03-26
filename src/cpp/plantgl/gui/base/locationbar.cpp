@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,14 +29,14 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 #include "locationbar.h"
 #include "icons.h"
 
 #include <QtGlobal>
 #include <QtGui/qpixmap.h>
 #include <QtGui/qcursor.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qcombobox.h>
     #include <QtWidgets/qtoolbutton.h>
     #include <QtWidgets/qlabel.h>
@@ -50,12 +50,12 @@
 
 /*----------------------------------------------------------------------------*/
 
-/* 
- *  Constructs a ViewLocationBar which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+/*
+ *  Constructs a ViewLocationBar which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  */
-ViewLocationBar::ViewLocationBar(const QString &label, 
-				                 QWidget *mw,const char *name)
+ViewLocationBar::ViewLocationBar(const QString &label,
+                                 QWidget *mw,const char *name)
   : ViewToolBar( label, mw ,name )
 {
 
@@ -64,32 +64,32 @@ ViewLocationBar::ViewLocationBar(const QString &label,
     QPixmap erase(ViewerIcon::getPixmap(ViewerIcon::locerase));
     bt =  new QToolButton(this);
     bt->setIcon(QIcon(erase));
-	bt->setFixedSize(QSize(25,25));
-	bt->setWhatsThis("<b>"+tr("Erase Location")+"</b><br><br>"
-	"Erase the current filename to specify a new one.");
+    bt->setFixedSize(QSize(25,25));
+    bt->setWhatsThis("<b>"+tr("Erase Location")+"</b><br><br>"
+    "Erase the current filename to specify a new one.");
     addWidget(bt);
 
     // QLabel * LocationLabel = new QLabel(this );
     // LocationLabel->setText( tr( " Location " ) );
-	// LocationLabel->setFixedSize(QSize(50,25));
+    // LocationLabel->setFixedSize(QSize(50,25));
     // addWidget(LocationLabel);
 
     __Location = new QComboBox( this );
-	__Location->setProperty("minimumHeight",25);
-	__Location->setProperty("minimumWidth",50);
-	__Location->setEditable( true );
-	__Location->setAutoCompletion ( true );
-	__Location->setCursor( QCursor( Qt::IBeamCursor ) );
-	__Location->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
+    __Location->setProperty("minimumHeight",25);
+    __Location->setProperty("minimumWidth",50);
+    __Location->setEditable( true );
+    __Location->setAutoCompletion ( true );
+    __Location->setCursor( QCursor( Qt::IBeamCursor ) );
+    __Location->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Fixed);
 
-	addWidget(__Location);
+    addWidget(__Location);
 
-	__Location->setWhatsThis("<b>"+tr("The Filename")+"</b><br><br>"
-	"The name of the file of the current scene.");
+    __Location->setWhatsThis("<b>"+tr("The Filename")+"</b><br><br>"
+    "The name of the file of the current scene.");
     if(bt)QObject::connect(bt,SIGNAL(clicked()),__Location,SLOT(clearEditText()));
  }
 
-/*  
+/*
  *  Destroys the object and frees any allocated resources
  */
 ViewLocationBar::~ViewLocationBar()
@@ -131,11 +131,11 @@ void ViewComboBox::clearfocus()
   clearFocus();
 //  setEditable( FALSE );
 }
- 
+
 void ViewComboBox::clearedit()
 {
   clearEdit();
 //  setEditable( true );
 }
- 
+
 */

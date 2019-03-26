@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,15 +29,15 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */	
-			
+ */
+
 #include "translator.h"
 
 #ifndef SYSTEM_IS__CYGWIN
 
 #include <QtGlobal>
 #include <QtCore/qtranslator.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qapplication.h>
 #else
     #include <QtGui/qapplication.h>
@@ -46,7 +46,7 @@
 
 static QTranslator * fr = NULL;
 
-void 
+void
 removeTranslator(){
   if(fr)qApp->removeTranslator(fr);
 }
@@ -57,10 +57,10 @@ void setFrenchTranslator()
 # warning Translation message not set because of excessive computation time
 #else
   if(!fr){
-	  // load french translator
-	  fr = new QTranslator(NULL);
-	  fr->load("pglviewer.fr",(TOOLS(getPlantGLDir())+"share/plantgl/lang/").c_str());
- 
+      // load french translator
+      fr = new QTranslator(NULL);
+      fr->load("pglviewer.fr",(TOOLS(getPlantGLDir())+"share/plantgl/lang/").c_str());
+
   }
 
   qApp->installTranslator( fr );
@@ -68,7 +68,7 @@ void setFrenchTranslator()
 #endif
 }
 
-QStringList 
+QStringList
 getAvailableLanguage(){
   QStringList l("English");
   l.append("French");

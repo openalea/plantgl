@@ -47,7 +47,7 @@
 #include <QtGui/QDragEnterEvent>
 #include <QtGui/qclipboard.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtCore/QMimeData>
     #include <QtWidgets/qapplication.h>
     #include <QtWidgets/qstatusbar.h>
@@ -120,7 +120,7 @@ Viewer::Viewer( QWidget * parent, const char * name, ViewRendererGL * r , Qt::Wi
       __service(0),
       __toolbarsvisibility(0),
       __trayIcon(0),
-	  __aborter(0)
+      __aborter(0)
 {
     setObjectName(name);
   if(TOOLS(getLanguage()) == "French")
@@ -142,7 +142,7 @@ Viewer::Viewer( int argc, char ** argv, ViewRendererGL * r)
       __service(0),
       __toolbarsvisibility(0),
       __trayIcon(0),
-	  __aborter(0)
+      __aborter(0)
 {
   // if(QMessageBox::information(this,"Language","Select Language","English","French")==1)
   if(TOOLS(getLanguage()) == "French")
@@ -678,10 +678,10 @@ void  Viewer::customEvent(QEvent *e){
     // QApplication::postEvent(__GLFrame->getSceneRenderer(),k->copy());
     __GLFrame->getSceneRenderer()->sceneChangeEvent(k);
     if(!isHidden()&&__GLFrame->isRedrawEnabled()){
-		if(__focusAtRefresh) {
-			activateWindow();
-			raise();
-		}
+        if(__focusAtRefresh) {
+            activateWindow();
+            raise();
+        }
     }
   }
   else if(etype == ViewEvent::eEnd){
@@ -699,27 +699,27 @@ void  Viewer::customEvent(QEvent *e){
     __GLFrame->getSceneRenderer()->selectionIdEvent(k->arg1);
   }
   else if(etype == ViewEvent::eWaitSelection){
-	  ViewWaitSelection * k = (ViewWaitSelection *)e;
-	  if( !__GLFrame->getSceneRenderer()->isEmpty() ) {
-		  if(!k->arg1.isEmpty()){
-			  __GLFrame->showMessage(k->arg1,0);
-			  statusBar()->showMessage(k->arg1);
-		  }
-		  SelectionListener s;
-		  QObject::connect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
-		  QObject::connect(this,SIGNAL(closing()),&s,SLOT(finalize()));
-		  bool aborted = false;
-		  while(!s.done && !(aborted = shouldAbortDialog())){
-			  if(!isVisible())show();
-			  qApp->processEvents();
-		  }
-		  QObject::disconnect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
-		  QObject::disconnect(this,SIGNAL(closing()),&s,SLOT(finalize()));
-		  __GLFrame->showMessage(k->arg1,600);
-		  if (!aborted) *k->result = s.selection;
-		  else *k->result = UINT32_MAX;
-	  }
-	  else *k->result = UINT32_MAX;
+      ViewWaitSelection * k = (ViewWaitSelection *)e;
+      if( !__GLFrame->getSceneRenderer()->isEmpty() ) {
+          if(!k->arg1.isEmpty()){
+              __GLFrame->showMessage(k->arg1,0);
+              statusBar()->showMessage(k->arg1);
+          }
+          SelectionListener s;
+          QObject::connect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
+          QObject::connect(this,SIGNAL(closing()),&s,SLOT(finalize()));
+          bool aborted = false;
+          while(!s.done && !(aborted = shouldAbortDialog())){
+              if(!isVisible())show();
+              qApp->processEvents();
+          }
+          QObject::disconnect(__GLFrame,SIGNAL(selectedShape(uint_t)),&s,SLOT(selectionMade(uint_t)));
+          QObject::disconnect(this,SIGNAL(closing()),&s,SLOT(finalize()));
+          __GLFrame->showMessage(k->arg1,600);
+          if (!aborted) *k->result = s.selection;
+          else *k->result = UINT32_MAX;
+      }
+      else *k->result = UINT32_MAX;
   }
   else if(etype == ViewEvent::eGetRedrawPolicy){
     ViewGetRedrawEvent * k = ( ViewGetRedrawEvent * )e;
@@ -735,7 +735,7 @@ void  Viewer::customEvent(QEvent *e){
   }
   else if(etype == ViewEvent::eShowMessage){
     ViewShowMessageEvent * k = ( ViewShowMessageEvent * )e;
-	__GLFrame->showMessage(k->arg1,k->arg2);
+    __GLFrame->showMessage(k->arg1,k->arg2);
   }
   else if(etype == ViewEvent::eQuestion){
     ViewQuestionEvent * k = ( ViewQuestionEvent * )e;
@@ -1180,18 +1180,18 @@ Viewer::question(const QString& caption, const QString& text,
   ViewerMessageBox->show();
   bool aborting = false;
   while(!ViewerMessageBox.isNull() && ViewerMessageBox->isVisible()) {
-	  assert(qApp != NULL);
-	  qApp->processEvents();
-	  if (!aborting){
-		  aborting = shouldAbortDialog();
-		  if(aborting) {
-			  ViewerMessageBox->reject();
-			  qApp->processEvents();
-		  }
-	  }
+      assert(qApp != NULL);
+      qApp->processEvents();
+      if (!aborting){
+          aborting = shouldAbortDialog();
+          if(aborting) {
+              ViewerMessageBox->reject();
+              qApp->processEvents();
+          }
+      }
   }
   if(!ViewerMessageBox.isNull()){
-	  delete ViewerMessageBox;
+      delete ViewerMessageBox;
   }
 }
 

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -39,12 +39,12 @@ class QApplication;
 
 class ViewerSimpleAppli : public ViewerAppliInternal {
 public:
-	ViewerSimpleAppli();
-	virtual ~ViewerSimpleAppli();
+    ViewerSimpleAppli();
+    virtual ~ViewerSimpleAppli();
 
-	virtual void startSession();
-	virtual bool stopSession();
-	virtual bool exit();
+    virtual void startSession();
+    virtual bool stopSession();
+    virtual bool exit();
 
     virtual bool running() ;
     virtual bool Wait ( unsigned long time = ULONG_MAX ) ;
@@ -52,8 +52,8 @@ public:
 
 protected:
 
-	void launch();
-	bool __ownappli;
+    void launch();
+    bool __ownappli;
 };
 
 #endif

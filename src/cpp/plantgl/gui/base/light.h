@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_light.h
     \brief Definition of the viewer class ViewLightGL.
@@ -42,7 +42,7 @@
 
 #include <QtGui/qcolor.h>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
 #else
     #include <QtGui/qmenu.h>
@@ -60,7 +60,7 @@ class ViewEvent;
 /* ----------------------------------------------------------------------- */
 
 
-/**   
+/**
    \class ViewLightGL
    \brief A ViewLightGL for GL Display
 
@@ -82,7 +82,7 @@ public:
 
   /// Destructor.
   virtual ~ViewLightGL();
-  
+
   /// Get Azimuth value.
   double getAzimuth() const {
     return __azimuth;
@@ -146,14 +146,14 @@ public slots:
   void hide();
   /// change the visibility of a representation of the Light
   void changeVisibility();
-  
+
   /// Set Azimuth value.
   void setAzimuth(double azimuth);
   /// Set Elevation value.
   void setElevation(double elevation);
   /// Set Distance value
   void setDistance(double distance);
-    
+
   /// Set Azimuth value.
   void setAzimuth(int azimuth);
   /// Set Elevation value.
@@ -166,7 +166,7 @@ public slots:
   void setDiffuse(const QColor& color);
   /// Set Specular Color
   void setSpecular(const QColor& color);
-  
+
   /// Move light
   virtual void moving(int dx, int dy);
   /// Zoom
@@ -177,11 +177,11 @@ public slots:
   /// Initialize the light
   virtual void initializeGL();
   /// GL command for Light.
-  virtual void paintGL(); 
+  virtual void paintGL();
   /// GL command for enabling Light.
-  void switchOn(); 
+  void switchOn();
   /// GL command for disabling Light.
-  void switchOff(); 
+  void switchOff();
 
   void setEnabled(bool);
   void toggleEnabled();

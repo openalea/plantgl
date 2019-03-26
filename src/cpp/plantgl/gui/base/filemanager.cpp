@@ -52,7 +52,7 @@
 #include <QtGui/qpixmap.h>
 #include <QtGui/qimagewriter.h>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qfiledialog.h>
     #include <QtWidgets/qmessagebox.h>
     #include <QtWidgets/qtoolbutton.h>
@@ -575,7 +575,7 @@ void ViewFileManager::saveImage(bool withAlpha)
     if(ind_ext!=-1)
         filename.replace(ind_ext+1,(filename.length()-ind_ext-1),first_format);
        // _fileDialog.setSelection(filename);
-    }    
+    }
     _fileDialog.setWindowTitle(tr("Save Image"));
     if(_fileDialog.exec()){
     QStringList _filenames=_fileDialog.selectedFiles();

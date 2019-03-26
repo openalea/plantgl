@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,12 +29,12 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
- 
+ */
+
 
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qapplication.h>
 #else
     #include <QtGui/qapplication.h>
@@ -50,22 +50,22 @@ int main( int argc, char **argv )
 
   QApplication a( argc, argv );
   if ( !QGLFormat::hasOpenGL() ) {
-	qWarning( "This system has no OpenGL support. Exiting." );
-	return -1;
+    qWarning( "This system has no OpenGL support. Exiting." );
+    return -1;
   }
-   
+
   // if(!ViewClientObj().request(argc, argv)){
-	PGLViewer m_viewer(argc, argv) ;
-	// m_viewer.startDaemon();
+    PGLViewer m_viewer(argc, argv) ;
+    // m_viewer.startDaemon();
 #ifndef __GNUC__
     m_viewer.displayTrayIcon(true);
 #endif
-	m_viewer.show();
-	return a.exec();
+    m_viewer.show();
+    return a.exec();
 #ifndef __GNUC__
-	m_viewer.displayTrayIcon(false);
+    m_viewer.displayTrayIcon(false);
 #endif
-	// m_viewer.stopDaemon();
+    // m_viewer.stopDaemon();
   // }
 
   return 0;
@@ -77,10 +77,10 @@ int main( int argc, char **argv )
 int main( int argc, char **argv )
 {
 
-	PGLViewerApplication::init();
-	PGLViewerApplication::start();
-	// PGLViewerApplication::wait(10000);
-	PGLViewerApplication::exit();
+    PGLViewerApplication::init();
+    PGLViewerApplication::start();
+    // PGLViewerApplication::wait(10000);
+    PGLViewerApplication::exit();
 
   return 0;
 }

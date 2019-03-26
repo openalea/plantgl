@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_fog.h
     \brief Definition of the viewer class ViewFogGL.
@@ -53,7 +53,7 @@ class ViewDialog;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewFogGL
    \brief A ViewFogGL for GL Display
 
@@ -78,7 +78,7 @@ public:
 
   /// Destructor.
   virtual ~ViewFogGL();
-  
+
   virtual QMenu * createToolsMenu(QWidget * parent);
 
   bool enable() const;
@@ -98,7 +98,7 @@ public:
 public slots:
 
   void setEnable(bool);
- 
+
   void setEnable();
 
   void setMode(int);
@@ -123,8 +123,8 @@ public slots:
   /// Initialize the grid
   virtual void initializeGL();
   /// GL command for Grid.
-  virtual void paintGL(); 
-  
+  virtual void paintGL();
+
   virtual void changeStepEvent(double newStep,double oldStep);
 
  signals:

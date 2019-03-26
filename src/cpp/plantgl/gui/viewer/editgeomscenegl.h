@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_editgeomscenegl.h
     \brief Definition of the viewer class ViewEditGeomSceneGL and ViewMultiGeomSceneGL.
@@ -52,10 +52,10 @@ class VIEW_API  ViewEditMatDialog : public ViewDialog {
   Q_OBJECT
 
 public :
-  ViewEditMatDialog(QWidget * parent=0, 
-					const char * name=0, 
-					bool modal=false, 
-					Qt::WindowFlags f=0);
+  ViewEditMatDialog(QWidget * parent=0,
+                    const char * name=0,
+                    bool modal=false,
+                    Qt::WindowFlags f=0);
   ~ViewEditMatDialog(){};
 
   void setMaterial(PGL(MaterialPtr) appe);
@@ -83,17 +83,17 @@ protected:
   QPushButton * __clipboardButton;
 };
 
-PGL(MaterialPtr) VIEW_API getMaterialFromDialog(QWidget * parent = NULL, 
-                                                const char * caption = "", 
+PGL(MaterialPtr) VIEW_API getMaterialFromDialog(QWidget * parent = NULL,
+                                                const char * caption = "",
                                                 PGL(MaterialPtr) initial = PGL(MaterialPtr()));
 
 int VIEW_API editMaterialInDialog(PGL(MaterialPtr) initial,
-                                   QWidget * parent = NULL, 
+                                   QWidget * parent = NULL,
                                    const char * caption = "");
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewMultiGeomSceneGL
    \brief A GL Display Manager for Geom Scene that can edit material.
 
@@ -106,12 +106,12 @@ class VIEW_API  ViewEditGeomSceneGL : public ViewMultiGeomSceneGL
 
   public :
 
-  
+
   /// Constructor.
   ViewEditGeomSceneGL(ViewCameraGL * camera=0,
-		       ViewLightGL * light=0,
-		       QGLWidget * parent=0, 
-		       const char * name=0);
+               ViewLightGL * light=0,
+               QGLWidget * parent=0,
+               const char * name=0);
 
   /// Destructor.
   virtual ~ViewEditGeomSceneGL();
@@ -153,12 +153,12 @@ class VIEW_API  ViewMultiscaleEditGeomSceneGL : public ViewEditGeomSceneGL
 
     public :
 
-  
+
   /// Constructor.
   ViewMultiscaleEditGeomSceneGL(ViewCameraGL * camera=0,
-		       ViewLightGL * light=0,
-		       QGLWidget * parent=0, 
-		       const char * name=0);
+               ViewLightGL * light=0,
+               QGLWidget * parent=0,
+               const char * name=0);
 
   /// Destructor.
   virtual ~ViewMultiscaleEditGeomSceneGL();

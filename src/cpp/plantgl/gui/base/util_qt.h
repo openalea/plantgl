@@ -41,7 +41,7 @@
 /* ----------------------------------------------------------------------- */
 
 inline QByteArray toLatin1(const QString& str) {
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     return str.toLatin1();
 #else
     return str.toAscii();

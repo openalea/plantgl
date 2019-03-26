@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_modalscenegl.h
     \brief Definition of the viewer class ViewModalRendererGL.
@@ -46,10 +46,10 @@ class ViewRenderingModeActions;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
       \class ViewModalRendererGL
       \brief A GL Display Manager for Scene with 3 Rendering mode : Normal, Wire, Skeleton
-      and 2 options : Bounding Box and Control Points.      
+      and 2 options : Bounding Box and Control Points.
 */
 
 /* ----------------------------------------------------------------------- */
@@ -62,13 +62,13 @@ class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
   Q_PROPERTY( bool CtrlPointRendering READ isCtrlPointRenderingEnable)
 
     public :
-  
+
   /// Constructor.
     ViewModalRendererGL(ViewCameraGL * camera=0,
-			ViewLightGL * light=0,
-			QGLWidget * parent=0, 
-			const char * name=0);
-  
+            ViewLightGL * light=0,
+            QGLWidget * parent=0,
+            const char * name=0);
+
   /// Destructor.
   virtual ~ViewModalRendererGL();
 
@@ -87,7 +87,7 @@ class VIEW_API ViewModalRendererGL  : public ViewSceneRendererGL
   /// Fill the tool Bar.
   void fillToolBar(QToolBar * toolBar);
 
-  
+
 
 public slots:
 
@@ -103,7 +103,7 @@ public slots:
   void setRenderCtrlPoint();
   /// Set the  Rendering Mode.
   void setRenderBBox();
-  
+
  signals:
 
   /// Emit when bbox rendering mode change.
@@ -116,7 +116,7 @@ public slots:
 protected :
 
   /// Current Render mode : 1->volume, 2->wire, 3->Skeleton, 4-> volume n wire
-  int __renderingMode; 
+  int __renderingMode;
 
   /// Rendering Option : [0] : BoundingBox  -  [1] : Control Point.
   bool __renderingOption[2];

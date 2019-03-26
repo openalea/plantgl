@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 
@@ -45,7 +45,7 @@
 
 #include <QtCore/qstring.h>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
 #else
     #include <QtGui/qmenu.h>
@@ -57,7 +57,7 @@ class ViewEvent;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewGridGL
    \brief A ViewGridGL for GL Display
 
@@ -83,7 +83,7 @@ public:
 
   /// Destructor.
   virtual ~ViewGridGL();
-  
+
   /// Get Axis Display.
   const bool getAxis() const{
     return __Axis;
@@ -143,17 +143,17 @@ public slots:
   void changeXYGridDisplayMode();
   /// show the XY Plane Grid
   void showXYGrid(bool);
-  
+
   /// change the XZ Plane Grid Display Mode
   void changeXZGridDisplayMode();
   /// show the XZ Plane Grid
   void showXZGrid(bool);
-  
+
   /// change the YZ Plane Grid Display Mode
   void changeYZGridDisplayMode();
   /// show the YZ Plane Grid
   void showYZGrid(bool);
-  
+
   /// Set Grid Unit value to \e unit.
   void setGridUnit(double unit);
 
@@ -169,7 +169,7 @@ public slots:
   /// Initialize the grid
   virtual void initializeGL();
   /// GL command for Grid.
-  virtual void paintGL(); 
+  virtual void paintGL();
 
 signals:
 
@@ -202,23 +202,23 @@ protected :
   int __gridSize;
 
   /// The id of the Display List of the Grid.
-  GLuint __gridList; 
+  GLuint __gridList;
 
   /// The id of the Display List of the .
-  GLuint __axisList; 
+  GLuint __axisList;
 
   /// Axis display
   bool __Axis;
-  
+
   /// XYGrid display
   bool __XYGrid;
-  
+
   /// XZGrid display
   bool __XZGrid;
-  
+
   /// YZGrid display
   bool __YZGrid;
-  
+
 };
 
 /* ----------------------------------------------------------------------- */

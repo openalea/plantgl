@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -39,8 +39,8 @@
 
 /* ----------------------------------------------------------------------- */
 
-template<class T, 
-    template < typename > class extractor_t = boost::python::extract, 
+template<class T,
+    template < typename > class extractor_t = boost::python::extract,
     class result_type = std::vector<T> >
 struct extract_vec {
 
@@ -53,15 +53,34 @@ struct extract_vec {
     result_type extract() const {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
+
+#ifdef PYTHON_EXTRACT_WITH_EXCEPTION
         boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
         while( true )
           {
-            boost::python::object obj; 
+            boost::python::object obj;
             try {  obj = iter_obj.attr( "next" )(); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             element_type val = extractor_type( obj )();
             result.push_back( val );
           }
+
+#else
+        PyObject *seq = PyObject_GetIter(pylist.ptr());
+
+        if(!seq)
+            return result;
+
+        PyObject *item;
+        while( (item=PyIter_Next(seq))) {
+            element_type val = extractor_type( item )();
+            result.push_back( val );
+
+            Py_DECREF(item);
+        }
+        Py_DECREF(seq);        
+#endif
+
         return result;
     }
 
@@ -72,8 +91,8 @@ struct extract_vec {
 /* ----------------------------------------------------------------------- */
 
 template<class T, class U = T,
-    template < typename > class extractor_t0 = boost::python::extract, 
-    template < typename > class extractor_t1 = boost::python::extract, 
+    template < typename > class extractor_t0 = boost::python::extract,
+    template < typename > class extractor_t1 = boost::python::extract,
     class result_type = std::vector<std::pair<T,U> > >
 struct extract_vec_pair {
 
@@ -88,16 +107,35 @@ struct extract_vec_pair {
     result_type extract() const {
         result_type result;
         if (pylist.ptr() == Py_None) return result;
+
+#ifdef PYTHON_EXTRACT_WITH_EXCEPTION
         boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
         while( true )
           {
-            boost::python::object obj; 
+            boost::python::object obj;
             try {  obj = iter_obj.attr( "next" )(); }
             catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
             element_type0 val0 = extractor_type0( obj[0] )();
             element_type1 val1 = extractor_type1( obj[1] )();
             result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
           }
+#else
+       PyObject *seq = PyObject_GetIter(pylist.ptr());
+
+        if(!seq)
+            return result;
+
+        PyObject *item;
+        while( (item=PyIter_Next(seq)) )  {
+            if ( PyTuple_Check(item) ) {
+                element_type0 val0 = extractor_type0( PyTuple_GetItem(item, 0) )();
+                element_type1 val1 = extractor_type1( PyTuple_GetItem(item, 1) )();
+                result.push_back( std::pair<element_type0,element_type1>(val0,val1) );
+            }
+            Py_DECREF(item);
+        }
+        Py_DECREF(seq);
+#endif
         return result;
     }
 
@@ -108,8 +146,8 @@ struct extract_vec_pair {
 /* ----------------------------------------------------------------------- */
 
 template<class T, class U = T,
-    template < typename > class extractor_t0 = boost::python::extract, 
-    template < typename > class extractor_t1 = boost::python::extract, 
+    template < typename > class extractor_t0 = boost::python::extract,
+    template < typename > class extractor_t1 = boost::python::extract,
     class result_type = std::pair<T,U> >
 struct extract_pair {
 
@@ -134,41 +172,41 @@ struct extract_pair {
 
 /* ----------------------------------------------------------------------- */
 
-template<class key,  class value, 
-	 template < typename> class key_extractor_t = boost::python::extract, 
-	 template < typename> class value_extractor_t = boost::python::extract,
-	 class result_type = std::map<key,value> >
+template<class key,  class value,
+     template < typename> class key_extractor_t = boost::python::extract,
+     template < typename> class value_extractor_t = boost::python::extract,
+     class result_type = std::map<key,value> >
 struct extract_dict {
 
-	typedef key key_type;
-	typedef value value_type;
-	typedef key_extractor_t<key>  key_extractor_type;
-	typedef value_extractor_t<value>  value_extractor_type;
+    typedef key key_type;
+    typedef value value_type;
+    typedef key_extractor_t<key>  key_extractor_type;
+    typedef value_extractor_t<value>  value_extractor_type;
 
         extract_dict(boost::python::object _pydict):
-	  pydict(boost::python::extract<boost::python::dict>(_pydict)) {}
+      pydict(boost::python::extract<boost::python::dict>(_pydict)) {}
 
-	extract_dict(boost::python::dict _pydict):
-	  pydict(_pydict) {}
+    extract_dict(boost::python::dict _pydict):
+      pydict(_pydict) {}
 
-	boost::python::dict pydict;
+    boost::python::dict pydict;
 
-	result_type extract() const {
-		result_type result;
-		boost::python::object iter_obj =  pydict.iteritems();
-		while( true )
-		{
-			boost::python::object obj; 
-			try {  obj = iter_obj.attr( "next" )(); }
-			catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
-			key_type k = key_extractor_type( obj[0] );
-			value_type v = value_extractor_type( obj[1] );
-			result[k] = v ;
-		}
-		return result;
-	}
-	inline result_type operator()() const { return extract(); }
-	inline operator result_type () const { return extract(); }
+    result_type extract() const {
+        result_type result;
+        boost::python::object iter_obj =  pydict.iteritems();
+        while( true )
+        {
+            boost::python::object obj;
+            try {  obj = iter_obj.attr( "next" )(); }
+            catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
+            key_type k = key_extractor_type( obj[0] );
+            value_type v = value_extractor_type( obj[1] );
+            result[k] = v ;
+        }
+        return result;
+    }
+    inline result_type operator()() const { return extract(); }
+    inline operator result_type () const { return extract(); }
 };
 
 

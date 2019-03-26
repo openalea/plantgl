@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "light.h"
 #include "event.h"
@@ -41,7 +41,7 @@
 
 #include <QtCore/qfile.h>
 #include <QtCore/qstring.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QToolBar>
 #else
     #include <QtGui/QToolBar>
@@ -71,7 +71,7 @@ ViewLightGL::~ViewLightGL()
 
 /* ----------------------------------------------------------------------- */
 
-void 
+void
 ViewLightGL::home()
 {
   __azimuth = 0;
@@ -81,7 +81,7 @@ ViewLightGL::home()
   emit valueChanged();
 }
 
-void 
+void
 ViewLightGL::XAxis()
 {
   __azimuth = 0;
@@ -91,7 +91,7 @@ ViewLightGL::XAxis()
   emit valueChanged();
 }
 
-void 
+void
 ViewLightGL::YAxis()
 {
   __azimuth = 90;
@@ -101,7 +101,7 @@ ViewLightGL::YAxis()
   emit valueChanged();
 }
 
-void 
+void
 ViewLightGL::ZAxis()
 {
   __azimuth = 0;
@@ -111,17 +111,17 @@ ViewLightGL::ZAxis()
   emit valueChanged();
 }
 
-void 
+void
 ViewLightGL::changeVisibility()
 {
-  __show = ! __show;  
+  __show = ! __show;
   emit visibilityChanged(__show);
   emit valueChanged();
   if(__show)status(tr("Light Source Visible"),5000);
   else status(tr("Light Source Invisible"),5000);
 }
 
-void 
+void
 ViewLightGL::show()
 {
   __show = true;
@@ -130,7 +130,7 @@ ViewLightGL::show()
   status(tr("Light Source Visible"),5000);
 }
 
-void 
+void
 ViewLightGL::show(bool b)
 {
   if(__show != b){
@@ -142,7 +142,7 @@ ViewLightGL::show(bool b)
   }
 }
 
-void 
+void
 ViewLightGL::hide()
 {
   __show = false;
@@ -152,55 +152,55 @@ ViewLightGL::hide()
 }
 
 
-void 
+void
 ViewLightGL::setAzimuth(double azimuth)
 {
   if(__azimuth != azimuth){
-	__azimuth = azimuth;
-	emit azimuthChanged(__azimuth);
-	emit valueChanged();
+    __azimuth = azimuth;
+    emit azimuthChanged(__azimuth);
+    emit valueChanged();
   }
 }
 
-void 
+void
 ViewLightGL::setElevation(double elevation)
 {
   if(__elevation != elevation){
-	__elevation = elevation;
-	emit elevationChanged(__elevation);
-	emit valueChanged();
+    __elevation = elevation;
+    emit elevationChanged(__elevation);
+    emit valueChanged();
   }
 }
 
-void 
+void
 ViewLightGL::setDistance(double distance)
 {
   if(__distance != distance){
-	__distance = distance;
-	emit distanceChanged(__distance);
-	emit valueChanged();
+    __distance = distance;
+    emit distanceChanged(__distance);
+    emit valueChanged();
   }
 }
 
-void 
+void
 ViewLightGL::setAzimuth(int azimuth)
 {
   setAzimuth(double(azimuth));
 }
 
-void 
+void
 ViewLightGL::setElevation(int elevation)
 {
   setElevation(double(elevation));
 }
 
-void 
+void
 ViewLightGL::setDistance(int distance)
 {
   setDistance(double(distance));
 }
 
-void 
+void
 ViewLightGL::setAmbient(const QColor& color)
 {
     if( __ambient != color){
@@ -211,7 +211,7 @@ ViewLightGL::setAmbient(const QColor& color)
     }
 }
 
-void 
+void
 ViewLightGL::setDiffuse(const QColor& color)
 {
     if( __diffuse != color){
@@ -222,18 +222,18 @@ ViewLightGL::setDiffuse(const QColor& color)
     }
 }
 
-void 
+void
 ViewLightGL::setSpecular(const QColor& color)
 {
   if( __specular != color){
      __specular = color;
     gllightMaterial();
     emit specularChanged(__specular);
-    emit valueChanged();  
+    emit valueChanged();
   }
 }
 
-void 
+void
 ViewLightGL::moving(int dx, int dy)
 {
   int r = __ambient.red()+dy;
@@ -244,14 +244,14 @@ ViewLightGL::moving(int dx, int dy)
   emit ambientChanged(__ambient);
 }
 
-void 
+void
 ViewLightGL::zooming(int dx, int dy)
 {
   __distance += dy*getStep();
   emit distanceChanged(__distance);
 }
 
-void 
+void
 ViewLightGL::rotating(int dx, int dy)
 {
   __azimuth -=dx;
@@ -268,7 +268,7 @@ ViewLightGL::rotating(int dx, int dy)
   emit elevationChanged(__elevation);
 }
 
-void 
+void
 ViewLightGL::initializeGL()
 {
   gllightMaterial();
@@ -279,11 +279,11 @@ ViewLightGL::initializeGL()
   pos.normalize();
   glGeomLightDirection(GL_LIGHT0,pos);
 */
-  
+
 }
 
 
-void 
+void
 ViewLightGL::changeStepEvent(double newStep, double oldStep)
 {
   __distance *= float(newStep)/float(oldStep);
@@ -291,7 +291,7 @@ ViewLightGL::changeStepEvent(double newStep, double oldStep)
 }
 
 
-void 
+void
 ViewLightGL::paintGL()
 {
 
@@ -308,16 +308,16 @@ ViewLightGL::paintGL()
   switchOn();
   if(__show){
     glPushMatrix();
-	glGeomTranslate(pos);
-	glGeomMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, __ambient);
+    glGeomTranslate(pos);
+    glGeomMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, __ambient);
     glutSolidSphere(getStep()*0.1,8,8);
-    glPopMatrix();  
+    glPopMatrix();
   }
 
   GEOM_GL_ERROR;
 }
 
-Vector3 
+Vector3
 ViewLightGL::getPosition() const{
   return Vector3(Vector3::Spherical(__distance,__azimuth*GEOM_RAD,(__elevation)*GEOM_RAD));
 }
@@ -331,37 +331,37 @@ void ViewLightGL::setPosition(const Vector3& pos)
 
 }
 
-void 
+void
 ViewLightGL::switchOn()
 {
     if (__enable){
         glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);  
+        glEnable(GL_LIGHT0);
     }
     else {
         glDisable(GL_LIGHTING);
     }
 }
 
-void 
+void
 ViewLightGL::switchOff()
 {
   glDisable(GL_LIGHTING);
 }
 
-bool 
+bool
 ViewLightGL::isEnabled() const
 {
   return __enable;
 }
 
-void 
+void
 ViewLightGL::toggleEnabled()
 {
   setEnabled(!__enable);
 }
 
-void 
+void
 ViewLightGL::setEnabled(bool b)
 {
    __enable = b;
@@ -372,7 +372,7 @@ ViewLightGL::setEnabled(bool b)
 }
 
 
-void 
+void
 ViewLightGL::gllightMaterial()
 {
   glGeomLightMaterial(GL_LIGHT0, GL_AMBIENT,  __ambient);
@@ -383,10 +383,10 @@ ViewLightGL::gllightMaterial()
 QMenu *
 ViewLightGL::createToolsMenu(QWidget * parent)
 {
-	QMenu * menu = new QMenu(parent);
+    QMenu * menu = new QMenu(parent);
     QPixmap home(ViewerIcon::getPixmap(ViewerIcon::home));
     QPixmap _light(ViewerIcon::getPixmap(ViewerIcon::light));
-	menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL+Qt::SHIFT+Qt::Key_H);
+    menu->addAction(home,tr("&Home"),this,SLOT(home()),Qt::CTRL+Qt::SHIFT+Qt::Key_H);
     menu->addAction(tr("on X axis"),this,SLOT(XAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_X);
     menu->addAction(tr("on Y axis"),this,SLOT(YAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Y);
     menu->addAction(tr("on Z axis"),this,SLOT(ZAxis()),Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
@@ -397,72 +397,72 @@ ViewLightGL::createToolsMenu(QWidget * parent)
     QObject::connect(this,SIGNAL(visibilityChanged( bool)),idVisibility,SLOT(setChecked(bool)));
     menu->addSeparator();
     QAction * idLight = menu->addAction(_light,     tr("&Enabled"),     this, SLOT(toggleEnabled()));
-	idLight->setCheckable(true);
-	idLight->setChecked(isEnabled());
+    idLight->setCheckable(true);
+    idLight->setChecked(isEnabled());
     idLight->setWhatsThis(tr("<b>Light Rendering</b><br><br>"
-	"Set <b>Light Rendering</b> enable/disable.<br><br>"
-	"The Rendering will (not) take into account ligth source.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
-	return menu;
+    "Set <b>Light Rendering</b> enable/disable.<br><br>"
+    "The Rendering will (not) take into account ligth source.<br><br>"
+    "You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
+    return menu;
 }
 
-void 
+void
 ViewLightGL::fillToolBar(QToolBar * toolBar)
 {
     QPixmap _light(ViewerIcon::getPixmap(ViewerIcon::light));
     QAction * idLight = toolBar->addAction(_light,     tr("&Light"),     this, SLOT(toggleEnabled()));
-	idLight->setCheckable(true);
-	idLight->setChecked(isEnabled());
+    idLight->setCheckable(true);
+    idLight->setChecked(isEnabled());
     idLight->setWhatsThis(tr("<b>Light Rendering</b><br><br>"
-	"Set <b>Light Rendering</b> enable/disable.<br><br>"
-	"The Rendering will (not) take into account ligth source.<br><br>"
-	"You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
+    "Set <b>Light Rendering</b> enable/disable.<br><br>"
+    "The Rendering will (not) take into account ligth source.<br><br>"
+    "You can also use Menu <br><b>Tools > Renderer > Light</b><br>"));
 }
 
 
 void ViewLightGL::lightEvent(ViewEvent * event)
 {
     int etype = event->type();
-	if (etype == ViewEvent::eLightSet) {
-		ViewLightSetEvent * e = (ViewLightSetEvent *)event;
-		switch(e->def){
+    if (etype == ViewEvent::eLightSet) {
+        ViewLightSetEvent * e = (ViewLightSetEvent *)event;
+        switch(e->def){
             case ViewLightSetEvent::ePosition:
-				setPosition(e->position);
-			break;
-			case ViewLightSetEvent::eActivation:
-				setEnabled(e->activation);
-			break;
-			case ViewLightSetEvent::eAmbient:
-				setAmbient(e->ambient);
-			break;
-			case ViewLightSetEvent::eDiffuse:
-				setDiffuse(e->diffuse);
-			break;
-			case ViewLightSetEvent::eSpecular:
-				setSpecular(e->specular);
-			break;
-		}
-	}
-	else if (etype == ViewEvent::eLightGet){
-		ViewLightGetEvent * e = (ViewLightGetEvent *)event;
-		switch(e->def){
-            case ViewLightSetEvent::ePosition:
-        		*e->position = getPosition();
-			break;
-			case ViewLightSetEvent::eActivation:
-				*e->activation = isEnabled();
-			break;
-			case ViewLightSetEvent::eAmbient:
-				*e->ambient = __ambient;
-			break;
-			case ViewLightSetEvent::eDiffuse:
-				*e->diffuse = __diffuse;
-			break;
-			case ViewLightSetEvent::eSpecular:
-				*e->specular = __specular;
-			break;
+                setPosition(e->position);
+            break;
+            case ViewLightSetEvent::eActivation:
+                setEnabled(e->activation);
+            break;
+            case ViewLightSetEvent::eAmbient:
+                setAmbient(e->ambient);
+            break;
+            case ViewLightSetEvent::eDiffuse:
+                setDiffuse(e->diffuse);
+            break;
+            case ViewLightSetEvent::eSpecular:
+                setSpecular(e->specular);
+            break;
         }
-	}
+    }
+    else if (etype == ViewEvent::eLightGet){
+        ViewLightGetEvent * e = (ViewLightGetEvent *)event;
+        switch(e->def){
+            case ViewLightSetEvent::ePosition:
+                *e->position = getPosition();
+            break;
+            case ViewLightSetEvent::eActivation:
+                *e->activation = isEnabled();
+            break;
+            case ViewLightSetEvent::eAmbient:
+                *e->ambient = __ambient;
+            break;
+            case ViewLightSetEvent::eDiffuse:
+                *e->diffuse = __diffuse;
+            break;
+            case ViewLightSetEvent::eSpecular:
+                *e->specular = __specular;
+            break;
+        }
+    }
 
 }
 

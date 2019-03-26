@@ -40,7 +40,7 @@
 
 #include <QtGui/qfont.h>
 #include <QtGui/qevent.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qlineedit.h>
@@ -73,7 +73,7 @@ ViewColorGL::ViewColorGL( QWidget * parent, const char * name, const QGLWidget *
  QGLWidget(parent,shareWidget,f),
  __sphereobject(NULL),
  __r(__d){
-	if(name) setObjectName(name);
+    if(name) setObjectName(name);
 
   __range=1000;
   __Near=-3000;
@@ -230,7 +230,7 @@ ColorButton::~ColorButton(){
 
 void
 ColorButton::setColor(const QColor& c){
-	PGL::fillButton(this,c,QSize(60,40));
+    PGL(fillButton)(this,c,QSize(60,40));
     __color = c;
 }
 

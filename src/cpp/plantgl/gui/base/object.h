@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_object.h
     \brief Definition of the viewer class ViewObjectGL.
@@ -58,7 +58,7 @@ class ViewStatusBar;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewObjectGL
    \brief Abstact class of object for GL Display
 
@@ -71,7 +71,7 @@ class VIEW_API ViewObjectGL  : public QObject
   Q_OBJECT
 
 public:
-  
+
   /// Constructor.
   ViewObjectGL(QObject * parent=0, const char * name=0);
 
@@ -83,7 +83,7 @@ public:
 
   /// Create a Popup menu that reflect the functionality of this.
   virtual QMenu * createToolsMenu(QWidget * parent);
-  
+
   /// Fill a toolBar that reflect the functionality of this.
   virtual void fillToolBar(QToolBar * toolBar);
 
@@ -181,7 +181,7 @@ protected:
 
 class ViewCameraGL;
 
-/**   
+/**
    \class ViewRelativeObjectGL
    \brief Abstact class of object for GL Display connected to the step of the camera.
    This object have a relative representation.
@@ -192,14 +192,14 @@ class VIEW_API ViewRelativeObjectGL  : public ViewObjectGL
   Q_OBJECT
 
 public:
-  
-  /// Constructor. 
+
+  /// Constructor.
   ViewRelativeObjectGL(ViewCameraGL *camera, QObject * parent=0, const char * name=0);
 
   /// Constructor.
   ViewRelativeObjectGL(ViewCameraGL *camera, QGLWidget * parent, const char * name=0);
 
-  
+
 
   /// Destructor.
   virtual ~ViewRelativeObjectGL();

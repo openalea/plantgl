@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file util_qstring.h
     \brief File that convert GEOM Basic type in QString .
@@ -114,14 +114,14 @@ inline QString toQString(const PGL(Index4)& a){
 
 /// Transform an Index3 to QString
 inline QString toQString(const PGL(Index)& a){
-	QString res = "<";
-	for(uint_t i = 0 ; i < a.size()-1 ; i++)
-		res += QString::number(a.getAt(i))+',';
-	return res+QString::number(a.getAt(a.size()-1))+'>';
+    QString res = "<";
+    for(uint_t i = 0 ; i < a.size()-1 ; i++)
+        res += QString::number(a.getAt(i))+',';
+    return res+QString::number(a.getAt(a.size()-1))+'>';
 }
 
 /// Transform a real to QString
 inline QString toQString(real_t a){
-	return QString::number(a);
+    return QString::number(a);
 }
 

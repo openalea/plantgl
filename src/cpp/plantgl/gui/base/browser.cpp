@@ -35,7 +35,7 @@
 #include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QPainter>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QScrollArea>
     #include <QtWidgets/QPushButton>
     #include <QtWidgets/QCheckBox>
@@ -115,7 +115,7 @@ ViewBrowser::setSelection(const QString& name){
             if(isVisible()) __browser->__list->scrollToItem(item);
       }
       else qDebug("Selection not Found.");
-    } 
+    }
     else qDebug("First child of root node not found.");
    }
 }
@@ -145,13 +145,13 @@ ViewBrowser::refresh(bool b)
 void
 ViewBrowser::showEvent( QShowEvent * myevent)
 {
-	refresh(true);
+    refresh(true);
 }
 
 void
 ViewBrowser::keyPressEvent ( QKeyEvent * e)
 {
-	if( e->key() == Qt::Key_F2 ||
+    if( e->key() == Qt::Key_F2 ||
       e->key() == Qt::Key_Escape ||
       e->key() == Qt::Key_Home) hide();
 }

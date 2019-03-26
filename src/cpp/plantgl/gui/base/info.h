@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 /*! \file view_info.h
     \brief Definition of the viewer class ViewSysInfo.
 */
@@ -43,7 +43,7 @@
 
 #include <QtGlobal>
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QDialog>
 #else
     #include <QtGui/QDialog>
@@ -51,9 +51,9 @@
 
 /* ----------------------------------------------------------------------- */
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QLabel;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -62,7 +62,7 @@ class QGLWidget;
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class ViewSysInfo
     \brief A Dialog to display information of the system such as driver use by openGL.
     Must be build with a QGLWidget to obtain all the information.
@@ -71,23 +71,23 @@ class QGLWidget;
 /* ----------------------------------------------------------------------- */
 
 class VIEW_API ViewSysInfo : public QDialog
-{ 
+{
   Q_OBJECT
 
 public:
 
-  /*! Constructor 
-   *  Constructs a ViewSysInfo which is a child of 'parent', with the 
-   *  name 'name' and widget flags set to 'f' 
+  /*! Constructor
+   *  Constructs a ViewSysInfo which is a child of 'parent', with the
+   *  name 'name' and widget flags set to 'f'
    *
    *  The dialog will by default be modeless, unless you set 'modal' to
    *  TRUE to construct a modal dialog.
    */
   ViewSysInfo( QWidget* parent = 0,
-		     QGLWidget * FrameGL = 0,
-		     const char* name = 0,	      
-		     bool modal = false, 
-		     Qt::WindowFlags fl = 0 );
+             QGLWidget * FrameGL = 0,
+             const char* name = 0,
+             bool modal = false,
+             Qt::WindowFlags fl = 0 );
 
   /*!  Destructor.
    *  Destroys the object and frees any allocated resources
@@ -106,13 +106,13 @@ public:
 
 protected slots:
 
-	void saveAsFile() ;
+    void saveAsFile() ;
 
 protected:
 
-	void saveAsFile(const QString&) const;
+    void saveAsFile(const QString&) const;
 
-	/// Cancel Button.
+    /// Cancel Button.
   QPushButton* CancelButton;
 
   /// Ok Button.
@@ -138,7 +138,7 @@ protected:
    */
   bool event( QEvent* );
 
-    
+
   /*! Resize event handler.
    *  Reimplemented to move objects of the dialog when resizing.
    */

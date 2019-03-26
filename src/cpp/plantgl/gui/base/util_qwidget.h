@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file util_qwidget.h
     \brief Some basic specialisations of Qt classes.
@@ -39,7 +39,7 @@
 #define _util_qwidget_h__
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QToolBar>
     #include <QtWidgets/QDialog>
     #include <QtWidgets/QStatusBar>
@@ -60,7 +60,7 @@ class QPushButton;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewToolBar
    \brief A QToolBar that emit a signal when its visibility changed.
 */
@@ -70,38 +70,38 @@ class QPushButton;
 
 class VIEW_API ViewToolBar : public QToolBar {
   Q_OBJECT
-  
+
   public :
-    
+
   /// Constructor
-  ViewToolBar( const QString & title, 
-			   QWidget * mw, 
-			   const char* name = NULL );
-  
+  ViewToolBar( const QString & title,
+               QWidget * mw,
+               const char* name = NULL );
+
 
   virtual ~ViewToolBar();
 
- signals: 
+ signals:
   /// Signal emit when visibility changed.
   void __visibilityChanged(bool);
-  
+
  public slots:
-  
+
   /// Change the visibilty of \e this.
   void changeVisibility();
-  
-  
+
+
  protected:
-  
+
   virtual void showEvent ( QShowEvent *);
-  
+
   virtual void hideEvent ( QHideEvent *);
 };
 
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewExclusiveButtonSet
    \brief A Set of Exclusive QToolButton.
 
@@ -111,7 +111,7 @@ class VIEW_API ViewToolBar : public QToolBar {
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewDialog
    \brief A QDialog that emit a signal when its visibility changed.
 */
@@ -121,11 +121,11 @@ class VIEW_API ViewDialog : public QDialog {
 public:
 
   /// Constructor.
-  ViewDialog( QWidget * parent=0, 
-	      const char * name=0, 
-	      bool modal=false, 
-	      Qt::WindowFlags f=0 );
-  
+  ViewDialog( QWidget * parent=0,
+          const char * name=0,
+          bool modal=false,
+          Qt::WindowFlags f=0 );
+
   /// Destructor.
   ~ViewDialog();
 
@@ -133,21 +133,21 @@ public slots:
 
   /// Show dialog.
   virtual void show();
-  
+
   signals:
 
   /// Emit when visibility of this changed.
   void visibilityChanged(bool);
 
 protected:
-  
+
   /// By default when Key Escape is pressed this is hidden.
   virtual void keyPressEvent (QKeyEvent * e);
-  
+
   virtual void hideEvent (QHideEvent * event);
 
   virtual void showEvent (QShowEvent * event);
-  
+
 };
 
 class ViewMainDialog : public ViewDialog {
@@ -155,16 +155,16 @@ class ViewMainDialog : public ViewDialog {
 public:
 
   /// Constructor.
-  ViewMainDialog( QWidget * parent=0,			  
-				  const char * name=0, 
-				  bool modal=false, 
-				  Qt::WindowFlags f=0 );
-  
+  ViewMainDialog( QWidget * parent=0,
+                  const char * name=0,
+                  bool modal=false,
+                  Qt::WindowFlags f=0 );
+
   /// Destructor.
   ~ViewMainDialog();
 
   void setMainWidget(QWidget * mainwidget);
-  
+
 protected :
 
   virtual void resizeEvent(QResizeEvent * e);
@@ -173,7 +173,7 @@ protected :
 };
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewPopupButton
    \brief A PopupButton that can be checked using slots check.
    ViewPopupButton --> See QAction
@@ -182,17 +182,17 @@ protected :
 /* ----------------------------------------------------------------------- */
 
 class ViewStatusBar : public QStatusBar {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ViewStatusBar(QWidget * parent = 0, const char * name = 0 );
-	virtual ~ViewStatusBar();
-	QProgressBar * progressBar();
+    ViewStatusBar(QWidget * parent = 0, const char * name = 0 );
+    virtual ~ViewStatusBar();
+    QProgressBar * progressBar();
 public slots:
-	void setProgress(int progress,int total);
-	void setProgress(int progress);
-	void setTotalSteps(int total);
+    void setProgress(int progress,int total);
+    void setProgress(int progress);
+    void setTotalSteps(int total);
 protected:
-	QProgressBar * __progress;
+    QProgressBar * __progress;
 };
 
 

@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -30,7 +30,7 @@
  *
  *  ----------------------------------------------------------------------------
  */
-		
+
 /*! \file view_qobjectbrowser.h
     \brief Definition of the viewer class ViewQObjectBrowser.
 */
@@ -47,7 +47,7 @@
 
 
 
-/**   
+/**
    \class ViewQObjectBrowser
    \brief The Browser of the QObject of the viewer
 */
@@ -55,12 +55,12 @@
 class VIEW_API ViewQObjectBrowser : public ViewDialog
 {
     Q_OBJECT
-	public:
-    
+    public:
+
     /// Constructor
-    ViewQObjectBrowser(  QWidget * parent=0, 
-		  const char * name=0, 
-		  bool modal=false);
+    ViewQObjectBrowser(  QWidget * parent=0,
+          const char * name=0,
+          bool modal=false);
 
     /// Destructor
     ~ViewQObjectBrowser();
@@ -68,11 +68,11 @@ class VIEW_API ViewQObjectBrowser : public ViewDialog
 
 
 protected:
-    
-  /// This event handler is called when a key is pressed for this widget. 
+
+  /// This event handler is called when a key is pressed for this widget.
   virtual void keyPressEvent (QKeyEvent * e);
-   
-   
+
+
 };
 
 

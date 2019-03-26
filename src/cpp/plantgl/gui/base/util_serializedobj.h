@@ -44,29 +44,29 @@ class SerializedObject {
 
 public:
   SerializedObject(T val):
-	  __val(val){
-	}
+      __val(val){
+    }
 
   SerializedObject operator = (T val) {
-	set(val);
-	return *this;
+    set(val);
+    return *this;
   }
 
   operator const T () {
-	QMutexLocker l(&__mutex);
-	const T val = __val;
-	return val;
+    QMutexLocker l(&__mutex);
+    const T val = __val;
+    return val;
   }
 
   const T get() {
-	QMutexLocker l(&__mutex);
-	const T val = __val;
-	return val;
+    QMutexLocker l(&__mutex);
+    const T val = __val;
+    return val;
   }
 
   void set(T val) {
-	QMutexLocker l(&__mutex);
-	__val = val;
+    QMutexLocker l(&__mutex);
+    __val = val;
   }
 
 

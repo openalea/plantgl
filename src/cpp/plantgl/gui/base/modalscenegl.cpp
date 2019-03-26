@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "modalscenegl.h"
 #include "modalwidget.h"
@@ -37,7 +37,7 @@
 #include "icons.h"
 
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qtoolbutton.h>
     #include <QtWidgets/qwhatsthis.h>
@@ -50,9 +50,9 @@
 /* ----------------------------------------------------------------------- */
 
 ViewModalRendererGL::ViewModalRendererGL(ViewCameraGL * camera,
-					 ViewLightGL * light,
-					 QGLWidget * parent, 
-					 const char * name) :
+                     ViewLightGL * light,
+                     QGLWidget * parent,
+                     const char * name) :
   ViewSceneRendererGL(camera,light,parent,name),
   __renderingMode(1),
   __actions(0)
@@ -68,19 +68,19 @@ ViewModalRendererGL::~ViewModalRendererGL()
 
 /* ----------------------------------------------------------------------- */
 
-int 
-ViewModalRendererGL::getRenderingMode() const 
+int
+ViewModalRendererGL::getRenderingMode() const
 {
   return __renderingMode;
 }
 
-bool 
-ViewModalRendererGL::isBBoxRenderingEnable() const 
+bool
+ViewModalRendererGL::isBBoxRenderingEnable() const
 {
   return __renderingOption[0];
 }
 
-bool 
+bool
 ViewModalRendererGL::isCtrlPointRenderingEnable() const
 {
   return __renderingOption[1];
@@ -88,7 +88,7 @@ ViewModalRendererGL::isCtrlPointRenderingEnable() const
 
 /* ----------------------------------------------------------------------- */
 
-void 
+void
 ViewModalRendererGL::setRenderVolume()
 {
   __renderingMode=1;
@@ -97,7 +97,7 @@ ViewModalRendererGL::setRenderVolume()
   status(tr("Volume Rendering"),5000);
 }
 
-void 
+void
 ViewModalRendererGL::setRenderVolumenWire()
 {
   __renderingMode=4;
@@ -106,7 +106,7 @@ ViewModalRendererGL::setRenderVolumenWire()
   status(tr("Volume and Wire Rendering"),5000);
 }
 
-void 
+void
 ViewModalRendererGL::setRenderWire()
 {
   __renderingMode=2;
@@ -115,7 +115,7 @@ ViewModalRendererGL::setRenderWire()
   status(tr("Wire Rendering"),5000);
 }
 
-void 
+void
 ViewModalRendererGL::setRenderSkeleton()
 {
   __renderingMode=3;
@@ -124,7 +124,7 @@ ViewModalRendererGL::setRenderSkeleton()
   status(tr("Skeleton Rendering"),5000);
 }
 
-void 
+void
 ViewModalRendererGL::setRenderCtrlPoint()
 {
   __renderingOption[1]=!__renderingOption[1];
@@ -134,7 +134,7 @@ ViewModalRendererGL::setRenderCtrlPoint()
   else status(tr("Control Points Rendering Disable"),5000);
 }
 
-void 
+void
 ViewModalRendererGL::setRenderBBox()
 {
   __renderingOption[0]=!__renderingOption[0];
@@ -146,7 +146,7 @@ ViewModalRendererGL::setRenderBBox()
 
 /* ----------------------------------------------------------------------- */
 
-QMenu * 
+QMenu *
 ViewModalRendererGL::createToolsMenu(QWidget * parent)
 {
   if(!__actions) __actions = new ViewRenderingModeActions(this);
@@ -155,9 +155,9 @@ ViewModalRendererGL::createToolsMenu(QWidget * parent)
   return menu;
 }
 
-void 
+void
 ViewModalRendererGL::fillToolBar(QToolBar * toolBar)
 {
   if(!__actions) __actions = new ViewRenderingModeActions(this);
-  __actions->fill(toolBar);  
+  __actions->fill(toolBar);
 }

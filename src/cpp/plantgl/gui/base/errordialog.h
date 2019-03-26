@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -44,7 +44,7 @@
 #include <QtGlobal>
 #include <QtCore/qstringlist.h>
 #include <QtCore/qmutex.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qdockwidget.h>
 #else
     #include <QtGui/qdockwidget.h>
@@ -56,7 +56,7 @@ namespace Ui { class MessageDisplayer; }
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewErrorDialog
    \brief The Error Dialog of the Viewer.
 */
@@ -65,7 +65,7 @@ namespace Ui { class MessageDisplayer; }
 
 class VIEW_API ViewErrorDialog : public QDockWidget
 {
-  Q_OBJECT 
+  Q_OBJECT
 
 public:
 
@@ -121,7 +121,7 @@ public slots:
 
 protected:
 
-  /// This event handler is called when a key is pressed for this widget. 
+  /// This event handler is called when a key is pressed for this widget.
   virtual void keyPressEvent (QKeyEvent * e);
 
 

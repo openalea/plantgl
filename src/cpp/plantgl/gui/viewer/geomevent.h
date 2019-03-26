@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_geomevent.h
     \brief Definition of the viewer class events about geom.
@@ -46,7 +46,7 @@
 
 /* ----------------------------------------------------------------------- */
 
-/** 
+/**
     \class GeomSceneChangeEvent
     \brief Event for GEOM Scene Change.
 */
@@ -55,32 +55,32 @@
 
 
 class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
-  
+
 
   public :
-	  enum GeomSceneEventType { 
-			 eFirstGeomSceneEvent = 0,
-			 eGeomSceneEvent = eFirstGeomSceneEvent,
-			 eMultiSceneEvent,
-			 eLastGeomSceneEvent
-	  };
+      enum GeomSceneEventType {
+             eFirstGeomSceneEvent = 0,
+             eGeomSceneEvent = eFirstGeomSceneEvent,
+             eMultiSceneEvent,
+             eLastGeomSceneEvent
+      };
 
 
   /// Constructor.
-  GeomSceneChangeEvent(PGL(ScenePtr) scene, 
-		       const QString& = QString::null, 
-		       const QString& _file = QString::null,
-			   bool add = false);
-  
+  GeomSceneChangeEvent(PGL(ScenePtr) scene,
+               const QString& = QString::null,
+               const QString& _file = QString::null,
+               bool add = false);
+
   /// Destructor.
   ~GeomSceneChangeEvent();
-    
+
   /// copy object.
   virtual ViewSceneChangeEvent * copy();
 
   /// The scene to display.
   PGL(ScenePtr) scene;
-      
+
   /// The error message to display.
   QString error;
 
@@ -91,30 +91,30 @@ class VIEW_API GeomSceneChangeEvent : public ViewSceneChangeEvent {
 
 };
 
-/** 
+/**
     \class GeomMultiSceneChangeEvent
     \brief Event for GEOM Scene Change using multiple scene.
 */
 class VIEW_API GeomMultiSceneChangeEvent : public GeomSceneChangeEvent {
-  
+
   public :
-    
+
   /// Constructor.
-  GeomMultiSceneChangeEvent(PGL(ScenePtr) scene1, 
-			    PGL(ScenePtr) scene2,
-			    const QString& errlog = QString::null, 
-			    const QString& file1 = QString::null,
-			    const QString& file2 = QString::null);
-  
+  GeomMultiSceneChangeEvent(PGL(ScenePtr) scene1,
+                PGL(ScenePtr) scene2,
+                const QString& errlog = QString::null,
+                const QString& file1 = QString::null,
+                const QString& file2 = QString::null);
+
   /// Destructor.
   ~GeomMultiSceneChangeEvent();
-    
+
   /// copy object.
   virtual ViewSceneChangeEvent * copy();
 
   /// The scene to display.
   PGL(ScenePtr) scene2;
-      
+
   /// File.
   QString file2;
 

@@ -9,9 +9,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -104,9 +104,9 @@ class VIEW_API GeomListViewBuilder : public Action
   inline QTreeWidget * getListView() { return __qListView; }
 
   void setFullMode(bool b){
-	__fullmode = b;
+    __fullmode = b;
   }
-  
+
   /// @name Shape
   //@{
  virtual bool process(Shape * geomShape);

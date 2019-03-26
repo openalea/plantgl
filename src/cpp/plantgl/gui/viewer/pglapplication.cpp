@@ -77,36 +77,36 @@ PGLViewerApplication::add(const ScenePtr& s){
 
 ScenePtr PGLViewerApplication::getCurrentScene()
 {
-	ScenePtr sc;
-	ViewerApplication::_sendAnEvent(new GeomGetSceneEvent(&sc));
-	return sc;
+    ScenePtr sc;
+    ViewerApplication::_sendAnEvent(new GeomGetSceneEvent(&sc));
+    return sc;
 }
 
-std::vector<std::pair<uint_t,double> > 
+std::vector<std::pair<uint_t,double> >
 PGLViewerApplication::getProjectionSizes(const PGL(ScenePtr)& sc){
   std::vector<std::pair<uint_t,double> > res;
   ViewerApplication::_sendAnEvent(new GeomProjListEvent(&res,sc));
   return res;
 }
 
-std::vector<std::pair<uint_t,uint_t> > 
+std::vector<std::pair<uint_t,uint_t> >
 PGLViewerApplication::getProjectionPerShape(double& pixelsize){
   std::vector<std::pair<uint_t,uint_t> > res;
   ViewerApplication::_sendAnEvent(new ViewIntegratedProjListEvent(&res,&pixelsize));
   return res;
 }
 
-ViewRayPointHitBuffer * 
+ViewRayPointHitBuffer *
 PGLViewerApplication::castRays2(const PGL(ScenePtr)& sc, bool back_test )
 {
-	ViewRayPointHitBuffer * res = NULL ;
-	ViewRayBuff2Event * myevent = new ViewRayBuff2Event(&res,sc,back_test);
-	ViewerApplication::_sendAnEvent(myevent);
-	return res;
+    ViewRayPointHitBuffer * res = NULL ;
+    ViewRayBuff2Event * myevent = new ViewRayBuff2Event(&res,sc,back_test);
+    ViewerApplication::_sendAnEvent(myevent);
+    return res;
 }
 
 void
 PGLViewerApplication::init()
-{ 
-	_setViewerBuilder(new ViewerTBuilder<PGLViewer>()); 
+{
+    _setViewerBuilder(new ViewerTBuilder<PGLViewer>());
 }

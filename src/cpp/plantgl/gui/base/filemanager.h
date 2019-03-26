@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_filemanager.h
     \brief Definition of the viewer class ViewFileManager.
@@ -40,7 +40,7 @@
 
 /* ----------------------------------------------------------------------- */
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmainwindow.h>
     #include <QtWidgets/qmenu.h>
     #include <QtWidgets/qtoolbar.h>
@@ -70,7 +70,7 @@ class ViewControlPanel;
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewFileManager
    \brief A Class who control Popup Menu and Tool Bar relative to file.
    Allow other class to choose file.
@@ -78,7 +78,7 @@ class ViewControlPanel;
 
 /* ----------------------------------------------------------------------- */
 
-class VIEW_API ViewFileManager : public QMenu 
+class VIEW_API ViewFileManager : public QMenu
 {
   Q_OBJECT
   Q_PROPERTY(QStringList RecentFiles READ getRecentFiles WRITE setRecentFiles );
@@ -90,27 +90,27 @@ class VIEW_API ViewFileManager : public QMenu
   static const uint REVIEW_SIZE;
 
   /// Constructor
-  ViewFileManager( QMainWindow * parent=0, 
-	       const char * name=0, 
-	       ViewGLFrame * frame=0,
-		   ViewHelpMenu * helpmenu=0,
-		   ViewControlPanel * controlpanel=0);
-    
+  ViewFileManager( QMainWindow * parent=0,
+           const char * name=0,
+           ViewGLFrame * frame=0,
+           ViewHelpMenu * helpmenu=0,
+           ViewControlPanel * controlpanel=0);
+
   /// Destructor
   ~ViewFileManager();
-  
-  static QString getSaveFileName ( const QString& initial, 
-				   const QString& ext, 
-				   const QString& filter, 
-				   QWidget* parent,
-				   const QString& caption = "Save");
+
+  static QString getSaveFileName ( const QString& initial,
+                   const QString& ext,
+                   const QString& filter,
+                   QWidget* parent,
+                   const QString& caption = "Save");
 
   /// return the review of open file.
   const QString& getLastOpenFiles(int i) const;
 
   /// return the name of the last open file.
   const QString getLastOpenFile() const;
-  
+
   /// return whether a file has been open or not in this session.
   const bool hasOpenFile() const;
 
@@ -131,7 +131,7 @@ class VIEW_API ViewFileManager : public QMenu
 public slots:
 
   void initialize();
-      
+
 
   /// add file in the review.
   void addOpenFile(const QString&);
@@ -211,25 +211,25 @@ signals:
 
   /// Open File Sub Menu.
   QMenu * __OpenFileMenu;
-  
+
   /// Import File Sub Menu.
   QMenu * __ImportFileMenu;
-  
+
   /// Save File Sub Menu.
   QMenu * __SaveFileMenu;
-  
+
   /// Export File Sub Menu.
   QMenu * __ExportFileMenu;
-  
+
   /// Recent File Sub Menu.
   QMenu * __RecentFilesMenu;
-  
+
   /// last open files Review.
   QStringList __lastOpenFiles;
 
   /// is a file as been open in this session.
   bool __hasOpenFile;
-    
+
   /// A pointer to the ViewGLFrame.
   ViewGLFrame * __GLFrame;
   ViewControlPanel * __controlPanel;

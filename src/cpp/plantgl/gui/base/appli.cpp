@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -44,25 +44,25 @@ ThreadStateSaverFactory * ViewerAppliInternal::THREADSTATESAVERFACTORY(0);
 bool ViewerAppliInternal::THREADSTATESAVERENABLED(true);
 
 Viewer * ViewerAppliInternal::build() {
-	if(VIEWERBUILDER) { VIEWER = VIEWERBUILDER->build(); }
-	else VIEWER.set(new PGLViewer());
-	return VIEWER.get(); 
+    if(VIEWERBUILDER) { VIEWER = VIEWERBUILDER->build(); }
+    else VIEWER.set(new PGLViewer());
+    return VIEWER.get();
 }
 
 Viewer * ViewerAppliInternal::getViewer() {
-	if(VIEWER) return VIEWER.get();
-	else return build();
+    if(VIEWER) return VIEWER.get();
+    else return build();
 }
 
 void ViewerAppliInternal::deleteViewer() {
-	if (VIEWER.get()->thread() != QThread::currentThread() && VIEWER.get()->thread()->isRunning())
+    if (VIEWER.get()->thread() != QThread::currentThread() && VIEWER.get()->thread()->isRunning())
 
 #ifdef GEOM_DLDEBUG
-		printf("Cannot delete Viewer from other thread ...\n");
+        printf("Cannot delete Viewer from other thread ...\n");
 #endif
 
-	VIEWER.deleteData();
-	VIEWER = NULL; 
+    VIEWER.deleteData();
+    VIEWER = NULL;
 }
 
 
@@ -71,22 +71,22 @@ void ViewerAppliInternal::registerThreadStateSaverFatory(ThreadStateSaverFactory
 void ViewerAppliInternal::cleanThreadStateSaverFatory() { delete THREADSTATESAVERFACTORY; THREADSTATESAVERFACTORY = NULL; }
 void ViewerAppliInternal::activateStateSaver(bool enabling) { THREADSTATESAVERENABLED =  enabling; }
 
-void 
+void
 ViewerAppliInternal::sendAnEvent(QEvent *e)
-{ 
+{
     ThreadStateSaver * tss = NULL;
     if (THREADSTATESAVERENABLED && THREADSTATESAVERFACTORY) {
         tss = THREADSTATESAVERFACTORY->produceStateSaver();
         if(tss) tss->pushState();
     }
-    startSession(); getViewer()->send(e); 
+    startSession(); getViewer()->send(e);
     if (tss) {
         tss->popState();
         delete tss;
     }
 }
 
-void 
+void
 ViewerAppliInternal::postAnEvent(QEvent *e)
 { startSession(); getViewer()->post(e); }
 
@@ -97,7 +97,7 @@ ViewerAppliInternal::~ViewerAppliInternal(){  }
 
 std::vector<uint_t>
 ViewerAppliInternal::getSelection() {
-	std::vector<uint_t> res;
+    std::vector<uint_t> res;
     if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
       sendAnEvent(event);
@@ -107,103 +107,103 @@ ViewerAppliInternal::getSelection() {
 
 bool ViewerAppliInternal::getRedrawPolicy()
 {
-	if(running()){
-		bool res;
-		sendAnEvent(new ViewGetRedrawEvent(&res));
-		return res;
-	}
-	else return getViewer()->getFrameGL()->isRedrawEnabled();
+    if(running()){
+        bool res;
+        sendAnEvent(new ViewGetRedrawEvent(&res));
+        return res;
+    }
+    else return getViewer()->getFrameGL()->isRedrawEnabled();
 }
 
 void ViewerAppliInternal::setRedrawPolicy(bool policy)
 {
-	if(running()){
-		sendAnEvent(new ViewSetRedrawEvent(policy));
-	}
-	else return getViewer()->getFrameGL()->activateRedraw(policy);
+    if(running()){
+        sendAnEvent(new ViewSetRedrawEvent(policy));
+    }
+    else return getViewer()->getFrameGL()->activateRedraw(policy);
 }
 
 
-int 
+int
 ViewerAppliInternal::question(const std::string& caption,
-			   const std::string& text,
-			   const std::string& but0txt,
-			   const std::string& but1txt,
-			   const std::string& but2txt) {
-	int res = -1;
+               const std::string& text,
+               const std::string& but0txt,
+               const std::string& but1txt,
+               const std::string& but2txt) {
+    int res = -1;
     ViewQuestionEvent * event = new ViewQuestionEvent(&res,
-	  QString(caption.c_str()),
-	  QString(text.c_str()),
-	  (but0txt.empty()?QString::null:QString( but0txt.c_str() )),
-	  (but1txt.empty()?QString::null:QString( but1txt.c_str() )),
-	  (but2txt.empty()?QString::null:QString( but2txt.c_str() )));
-	sendAnEvent(event);
-	return res;
+      QString(caption.c_str()),
+      QString(text.c_str()),
+      (but0txt.empty()?QString::null:QString( but0txt.c_str() )),
+      (but1txt.empty()?QString::null:QString( but1txt.c_str() )),
+      (but2txt.empty()?QString::null:QString( but2txt.c_str() )));
+    sendAnEvent(event);
+    return res;
 }
 
-std::string 
+std::string
 ViewerAppliInternal::itemSelection(const std::string& caption,
-					   const std::string& text,
-					   const std::vector<std::string> & values,
-					   bool& ok,
-					   bool editable){
-	QString res ;
-	QStringList l;
-	for(std::vector<std::string>::const_iterator _it = values.begin();
-		_it != values.end(); _it++)
-		  if(!_it->empty())l.append(QString(_it->c_str()));
+                       const std::string& text,
+                       const std::vector<std::string> & values,
+                       bool& ok,
+                       bool editable){
+    QString res ;
+    QStringList l;
+    for(std::vector<std::string>::const_iterator _it = values.begin();
+        _it != values.end(); _it++)
+          if(!_it->empty())l.append(QString(_it->c_str()));
     ViewItemSelectionEvent * event = new ViewItemSelectionEvent(&res,
-	  caption.c_str(), text.c_str(), l, editable,&ok);
-	sendAnEvent(event);
-	return res.toStdString();
+      caption.c_str(), text.c_str(), l, editable,&ok);
+    sendAnEvent(event);
+    return res.toStdString();
 }
 
-double 
+double
 ViewerAppliInternal::doubleSelection(const std::string& caption,
-								   const std::string& text,
-								   double value,
+                                   const std::string& text,
+                                   double value,
                                    double minvalue,
                                    double maxvalue,
-								   bool& ok)
+                                   bool& ok)
 {
     double res ;
     ViewDoubleSelectionEvent * event = new ViewDoubleSelectionEvent (&res,
-	  caption.c_str(), text.c_str(), value, minvalue, maxvalue,&ok);
-	sendAnEvent(event);
-	return res;
+      caption.c_str(), text.c_str(), value, minvalue, maxvalue,&ok);
+    sendAnEvent(event);
+    return res;
 }
 
 
-std::string 
+std::string
 ViewerAppliInternal::getFile(const std::string& caption,
-					  const std::string& startPath,
-				      const std::string& filter,
-					  bool existing,bool dir){
+                      const std::string& startPath,
+                      const std::string& filter,
+                      bool existing,bool dir){
 
-	QString res;
+    QString res;
     ViewFileSelEvent * event = new ViewFileSelEvent(&res,
-	  (caption.empty()?"Choose File":caption.c_str()),
-	  (startPath.empty()?QString::null:QString( startPath.c_str() )),
-	  (filter.empty()?QString::null:QString( filter.c_str() )),
-	  existing,
-	  dir);
-	sendAnEvent(event);
-	return (res.isEmpty()?std::string():res.toStdString());
+      (caption.empty()?"Choose File":caption.c_str()),
+      (startPath.empty()?QString::null:QString( startPath.c_str() )),
+      (filter.empty()?QString::null:QString( filter.c_str() )),
+      existing,
+      dir);
+    sendAnEvent(event);
+    return (res.isEmpty()?std::string():res.toStdString());
   }
 
-ViewRayBuffer * 
-ViewerAppliInternal::castRays(const Vector3& pos, 
-	                     const Vector3& dir,
-						 const Vector3& dx, 
-						 const Vector3& dy,
-						 int sx, int sy){
-	ViewRayBuffer * res = NULL ;
-	ViewRayBuffEvent * event = new ViewRayBuffEvent(&res,pos,dir,dx,dy,sx,sy);
-	sendAnEvent(event);
-	return res;
+ViewRayBuffer *
+ViewerAppliInternal::castRays(const Vector3& pos,
+                         const Vector3& dir,
+                         const Vector3& dx,
+                         const Vector3& dy,
+                         int sx, int sy){
+    ViewRayBuffer * res = NULL ;
+    ViewRayBuffEvent * event = new ViewRayBuffEvent(&res,pos,dir,dx,dy,sx,sy);
+    sendAnEvent(event);
+    return res;
 }
 
-ViewZBuffer * 
+ViewZBuffer *
 ViewerAppliInternal::grabZBuffer(){
     ViewZBuffer * res = NULL ;
     ViewZBuffEvent * event = new ViewZBuffEvent(&res);

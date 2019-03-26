@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,12 +29,12 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */	
+ */
 
  /*! \file view_modalwidget.h
     \brief Definition of the viewer class ViewRenderingModeMenu .
 */
-			
+
 #ifndef __view_modalwidget_h__
 #define __view_modalwidget_h__
 
@@ -42,7 +42,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qaction.h>
 #else
     #include <QtGui/qaction.h>
@@ -58,11 +58,11 @@ class ViewModalRendererGL;
 /// Menu to control ViewModalRendererGL
 class VIEW_API ViewRenderingModeActions : public QObject {
    Q_OBJECT
- 
+
 public :
-  
+
    ViewRenderingModeActions(ViewModalRendererGL * renderer, const char * name=0);
-   
+
    ~ViewRenderingModeActions();
 
    void fill(QMenu * menu) const;

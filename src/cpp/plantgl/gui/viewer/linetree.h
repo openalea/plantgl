@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_linetree.h
     \brief Definition of the viewer class ViewReadLinetree.
@@ -42,16 +42,16 @@
 
 #include <QtCore/qvariant.h>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qdialog.h>
 #else
     #include <QtGui/qdialog.h>
 #endif
 #include "../gui_config.h"
 
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -62,12 +62,12 @@ class QCheckBox;
 
 /// A dialog widget to choose the files of a Linetree.
 class VIEW_API ViewReadLinetree : public QDialog
-{ 
+{
     Q_OBJECT
-	Q_PROPERTY(QString LigFile READ getLigFile WRITE setLigFile );
-	Q_PROPERTY(QString DtaFile READ getDtaFile WRITE setDtaFile );
-	Q_PROPERTY(QString SMBPath READ getSMBPath WRITE setSMBPath );
-	Q_PROPERTY(bool bigEndian  READ bigEndian  WRITE setEndianess );
+    Q_PROPERTY(QString LigFile READ getLigFile WRITE setLigFile );
+    Q_PROPERTY(QString DtaFile READ getDtaFile WRITE setDtaFile );
+    Q_PROPERTY(QString SMBPath READ getSMBPath WRITE setSMBPath );
+    Q_PROPERTY(bool bigEndian  READ bigEndian  WRITE setEndianess );
 
 public:
     ViewReadLinetree( bool open = true, QWidget* parent = 0, const char* name = 0, bool modal = true, Qt::WindowFlags fl = 0 );
@@ -82,7 +82,7 @@ public:
     /// Get the SMB Path
     QString getSMBPath() const ;
 
-	/// Get Big Endianness
+    /// Get Big Endianness
     bool bigEndian() const ;
 
     /// Get the SMB Path
@@ -99,27 +99,27 @@ public:
 
     void setEndianess( bool bigendian );
 
-	void checkKey();
-	void checkCfg(const QString& path);
+    void checkKey();
+    void checkCfg(const QString& path);
 
     public slots:
 
-	void checkKey(const QString&);
-	
-	/// Select Lig File with file selection dialog.
+    void checkKey(const QString&);
+
+    /// Select Lig File with file selection dialog.
     void SelectLigFile();
 
     /// Select Dta File with file selection dialog.
     void SelectDtaFile();
 
     /// Select SMB Path with path selection dialog.
-    void SelectSMBPath(); 
+    void SelectSMBPath();
 
-	void resetKey();
+    void resetKey();
 
-	void ok();
+    void ok();
 
-	void testEndianess();
+    void testEndianess();
 
     protected :
 
@@ -130,11 +130,11 @@ public:
     QLineEdit* editLig;
     QLineEdit* editDta;
     QLineEdit* editSmb;
-	QLineEdit * editKey;
+    QLineEdit * editKey;
     QPushButton* buttonCancel;
     QPushButton* buttonOk;
-	QCheckBox * endianBox;
-	bool __open;
+    QCheckBox * endianBox;
+    bool __open;
 
 };
 

@@ -95,7 +95,7 @@
 
 #ifndef VIEW_API
 #define VIEW_API
-#define VIEW_TEMPLATE_API(T) 
+#define VIEW_TEMPLATE_API(T)
 #endif
 
 // #define QT_NO_DEPRECATED

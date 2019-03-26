@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 /*! \file view_camera.h
     \brief Definition of the viewer class ViewCameraGL.
@@ -40,7 +40,7 @@
 
 /* ----------------------------------------------------------------------- */
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qmenu.h>
 #else
     #include <QtGui/qmenu.h>
@@ -63,22 +63,22 @@ class ViewEvent;
 /// Menu to control a ViewCameraGL
 class VIEW_API ViewCameraMenu : public QMenu {
    Q_OBJECT
- 
+
 public :
-  
+
   ViewCameraMenu(ViewCameraGL * camera, QWidget * parent=0, const char * name=0);
-  
+
   ~ViewCameraMenu();
-  
+
 public slots :
   /// Set Camera Mode to Perspective Projection.
   void setProjectionMode(bool);
-  
+
   /// Set GEOM Coordinates Sytem.
   void setCoordSys(int);
-  
-protected :    
-  
+
+protected :
+
   QAction * idGLcoord;
   QAction * idGEOMcoord;
   QAction * idPerspective;
@@ -87,7 +87,7 @@ protected :
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewCameraGL
    \brief A ViewCameraGL for GL Display
 
@@ -120,7 +120,7 @@ public:
 
   /// Destructor.
   virtual ~ViewCameraGL();
-  
+
   /// Get View Angle value.
   const double& getViewAngle() const {
     return __view_angle;
@@ -192,7 +192,7 @@ public:
 
   void addProperties(QTabWidget * tab);
 
-  /// Get The Camera position 
+  /// Get The Camera position
   Vector3 getPosition();
 
   /// Get The Camera direction
@@ -201,7 +201,7 @@ public:
   /// Get The Camera Up vector
   Vector3 getUp();
 
-  /// Get The Camera Right vector 
+  /// Get The Camera Right vector
   Vector3 getRight();
 
   /// Get The Camera matrix
@@ -220,11 +220,11 @@ public slots:
   void home();
   /// Set Camera to XY View Position
   void XYView();
-  /// Set Camera to XZ View Position 
+  /// Set Camera to XZ View Position
   void XZView();
   /// Set Camera to YZ View Position
   void YZView();
-  
+
   /// Set Azimuth value.
   void setAzimuth(int);
   /// Set Elevation value.
@@ -245,7 +245,7 @@ public slots:
 
   /// Set Center
   void setCenter(const Vector3&);
-  
+
   /// Set View Angle.
   void setViewAngle(double angle);
 
@@ -278,7 +278,7 @@ public slots:
   void setStepMove(const QString& step);
   /// Set Step Move
   void setStepMove(double step);
-  
+
   /// Move camera
   virtual void moving(int dx, int dy);
   /// Zoom
@@ -291,7 +291,7 @@ public slots:
   /// Resize
   virtual void resizeGL(int w, int h);
   /// GL command for Camera.
-  virtual void paintGL(); 
+  virtual void paintGL();
 
 
   /// GL command for Selection Camera.
@@ -321,7 +321,7 @@ public slots:
   void setGEOMCoordSys();
   /// Set GL Coordinates Sytem.
   void setGLCoordSys();
-  
+
   void lockDim(int);
   void lockDim(bool);
   void lockDim();
@@ -368,7 +368,7 @@ protected :
 
   void save(const QString& file) const;
   void read(const QString& file);
-  
+
   /// Initialise and Push Projection Matrix
   void glInitProjectionMatrix();
   /// Push Projection Matrix
@@ -382,8 +382,8 @@ protected :
 
   double __azimuth;
   double __elevation;
-  
-  /*double __zoom; 
+
+  /*double __zoom;
   double __dist_x;
   double __dist_y*/;
 

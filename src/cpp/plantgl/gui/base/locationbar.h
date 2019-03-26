@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -41,7 +41,7 @@
 /* ----------------------------------------------------------------------- */
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qcombobox.h>
 #else
     #include <QtGui/qcombobox.h>
@@ -52,7 +52,7 @@
 
 /// Viewer Location Bar
 class ViewLocationBar : public ViewToolBar
-{ 
+{
     Q_OBJECT
 
 public:

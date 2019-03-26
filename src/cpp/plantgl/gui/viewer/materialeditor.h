@@ -45,7 +45,7 @@
 #include "moduleeditor.h"
 
 #include <QtCore/qvariant.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qwidget.h>
     #include <QtWidgets/qpushbutton.h>
     #include <QtWidgets/qslider.h>
@@ -55,16 +55,16 @@
     #include <QtGui/qslider.h>
 #endif
 #include <QtOpenGL/qgl.h>
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
+class QVBoxLayout;
+class QHBoxLayout;
+class QGridLayout;
 class QLabel;
 class QLineEdit;
 
 /*----------------------------------------------------------------------------*/
 
 class VIEW_API ViewColorGL : public QGLWidget
-{ 
+{
     Q_OBJECT
 
 public:
@@ -72,8 +72,8 @@ public:
   ViewColorGL( QWidget * parent=0, const char * name=0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f=0 );
   virtual ~ViewColorGL();
   void setAppearance(const PGL(AppearancePtr)& mat);
-  
-  
+
+
 protected:
 
   virtual void initializeGL();
@@ -82,13 +82,13 @@ protected:
   virtual void paintAppearance();
 
   GLuint __spheredrawlist;
-  GLfloat __smoothness; 
+  GLfloat __smoothness;
   GLfloat __range;
 
   GLfloat __Near;
   GLfloat __Far;
-  
-  GLfloat __radius; 
+
+  GLfloat __radius;
   GLfloat __lightpos[4];
   GLfloat __lightmodel[4];
   GLfloat __xmin,__xmax,__ymin,__ymax;
@@ -102,7 +102,7 @@ protected:
 /*----------------------------------------------------------------------------*/
 
 class VIEW_API ColorButton : public QPushButton
-{ 
+{
     Q_OBJECT
 
 public:
@@ -112,14 +112,14 @@ public:
 
 public slots :
     void setColor(const QColor&);
-  
+
 
  protected:
   QColor __color;
 };
 
 class VIEW_API ColorEditButton : public ColorButton
-{ 
+{
     Q_OBJECT
 
 public:
@@ -131,39 +131,39 @@ public slots :
 
 signals:
   void colorChanged(const QColor&);
-  
+
 };
 
 /*----------------------------------------------------------------------------*/
 
 class VIEW_API ColorEditSlider : public QSlider
-{ 
+{
     Q_OBJECT
 
 public:
     ColorEditSlider ( QWidget * parent, const char * name = 0 );
   ~ColorEditSlider();
-  
+
   QColor getColor() const;
-  
+
 public slots :
   void setColor(const QColor&);
-  
+
 protected slots:
   void valueChangedEvent(int);
 
 signals:
   void colorChanged();
-  
+
 protected:
   QColor __color;
-  real_t __ratio; 
+  real_t __ratio;
 };
 
 /*----------------------------------------------------------------------------*/
 
 class VIEW_API MaterialEditor : public GeomModuleEditor
-{ 
+{
     Q_OBJECT
 
 public:
@@ -176,13 +176,13 @@ public:
   /// remove menu to the main menu bar when hide.
   virtual void removeMenu(QMenuBar * menubar) ;
 
-  /// Get the name of the class of objets that the module manage. 
+  /// Get the name of the class of objets that the module manage.
   virtual QString geomClassName() const ;
 
   /// Get Optimal size of display.
   virtual const QSize getSize() const ;
 
-  /* 
+  /*
      Must return true if \e this can manage the edition, else false.
      Must recopy the object.
   */
@@ -198,10 +198,10 @@ public:
     const PGL(MaterialPtr) & getMaterial() const{
       return __material;
     }
-    
+
     /// Set the Material
     void setMaterial(const PGL(MaterialPtr)& );
-      
+
     QLabel* LabelAmbient;
     QLabel* LabelDiffuse;
     QLabel* LabelSpecular;
@@ -225,10 +225,10 @@ public:
     ViewColorGL* FrameGL;
 
 public slots:
-	virtual void clear();
+    virtual void clear();
 
  protected slots:
- 
+
   void setAmbient(const QColor&);
   void setSpecular(const QColor&);
   void setEmission(const QColor&);
@@ -245,7 +245,7 @@ public slots:
 
 protected:
   bool event( QEvent* );
-  
+
   PGL(MaterialPtr) __material;
   int __diffuse;
 };

@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -38,37 +38,37 @@
 
 /* ----------------------------------------------------------------------- */
 
-template<class result_type, 
-	    template < typename > class extractor_t = boost::python::extract>
+template<class result_type,
+        template < typename > class extractor_t = boost::python::extract>
 struct extract_tuple {
 
-	typedef typename result_type::value_type element_type;
-	typedef extractor_t<element_type> extractor_type;
+    typedef typename result_type::value_type element_type;
+    typedef extractor_t<element_type> extractor_type;
 
-	extract_tuple(boost::python::object _pytuple):pylist(_pytuple) {}
-	boost::python::object pylist;
+    extract_tuple(boost::python::object _pytuple):pylist(_pytuple) {}
+    boost::python::object pylist;
 
-	bool check() {
-		if (pylist.ptr() == Py_None) return false;
-		if (!PyIter_Check(pylist.ptr())) return false;
-		if (len(pylist) != result_type::SIZE) return false;
-		return true;
-	}
+    bool check() {
+        if (pylist.ptr() == Py_None) return false;
+        if (!PyIter_Check(pylist.ptr())) return false;
+        if (len(pylist) != result_type::SIZE) return false;
+        return true;
+    }
 
-	result_type extract() const {
-		result_type result;
+    result_type extract() const {
+        result_type result;
         if (pylist.ptr() == Py_None) return result;
-		boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
-		for(size_t i = 0 ; i < result_type::SIZE ; ++i)
-		{
-			boost::python::object obj = iter_obj.attr( "next" )();
-			result[i] = extractor_type( obj )();
-		}
-		return result;
-	}
+        boost::python::object iter_obj = boost::python::object( boost::python::handle<>( PyObject_GetIter( pylist.ptr() ) ) );
+        for(size_t i = 0 ; i < result_type::SIZE ; ++i)
+        {
+            boost::python::object obj = iter_obj.attr( "next" )();
+            result[i] = extractor_type( obj )();
+        }
+        return result;
+    }
 
-	inline result_type operator()() const { return extract(); }
-	inline operator result_type () const { return extract(); }
+    inline result_type operator()() const { return extract(); }
+    inline operator result_type () const { return extract(); }
 };
 
 /* ----------------------------------------------------------------------- */

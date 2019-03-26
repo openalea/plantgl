@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,7 +29,7 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 /*! \file view_controlpanel.h
@@ -44,7 +44,7 @@
 
 #include "../gui_config.h"
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qdockwidget.h>
 #else
     #include <QtGui/qdockwidget.h>
@@ -66,7 +66,7 @@ namespace Ui { class ViewControlPanelWidget; }
 
 /* ----------------------------------------------------------------------- */
 
-/**   
+/**
    \class ViewControlPanel
    \brief The Control Panel of the viewer
 */
@@ -77,13 +77,13 @@ class VIEW_API ViewControlPanel : public QDockWidget
 {
   Q_OBJECT
 public:
-    
+
   /// Constructor.
   ViewControlPanel( ViewGLFrame * _glframe, const QString & label, QMainWindow * mw );
 
   /// Destructor.
   ~ViewControlPanel();
-    
+
 public slots:
 
  /// Change the Light Mode.
@@ -110,7 +110,7 @@ public slots:
   void setLinked(bool);
 
  signals:
-  
+
   /// Emit when user has select a new color for light.
   void lightAmbientChanged(const QColor&);
   /// Emit when user has select a new color for light.

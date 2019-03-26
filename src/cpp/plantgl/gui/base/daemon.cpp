@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,14 +29,14 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 
 /* ----------------------------------------------------------------------- */
 
 #include "daemon.h"
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qlabel.h>
     #include <QtWidgets/qpushbutton.h>
     #include <QtWidgets/qapplication.h>
@@ -62,15 +62,15 @@ ViewerDaemon::ViewerDaemon( QObject* parent ) :
 QTcpServer(parent),
 currentSocket(NULL)
 {
-	QObject::connect(this,SIGNAL(newConnection()),this,SLOT(processNextConnection()));
-	listen(QHostAddress::LocalHost,7777);
-	setMaxPendingConnections(1);
-	if ( !isListening() ) {
-		qWarning("Failed to bind to port 7777");
-	}
+    QObject::connect(this,SIGNAL(newConnection()),this,SLOT(processNextConnection()));
+    listen(QHostAddress::LocalHost,7777);
+    setMaxPendingConnections(1);
+    if ( !isListening() ) {
+        qWarning("Failed to bind to port 7777");
+    }
 }
 
-void 
+void
 ViewerDaemon::processNextConnection( )
 {
   // When a new client connects, the server constructs a QSocket and all
@@ -88,45 +88,45 @@ void ViewerDaemon::readClient()
   if(currentSocket == NULL) return;
   QTcpSocket* socket = currentSocket;
   if ( socket->canReadLine() ) {
-	QString line = socket->readLine();
-	emit receiveRequest(line);
-	QStringList tokens = line.split( QRegExp("[ \r\n][ \r\n]*") );
-	if ( tokens[0] == "GET" ) {
-		QTextStream os( socket );
-		os.setAutoDetectUnicode (true);
-		os << "Accepted\r\n";
-		socket->close();
-		emit wroteToClient();
+    QString line = socket->readLine();
+    emit receiveRequest(line);
+    QStringList tokens = line.split( QRegExp("[ \r\n][ \r\n]*") );
+    if ( tokens[0] == "GET" ) {
+        QTextStream os( socket );
+        os.setAutoDetectUnicode (true);
+        os << "Accepted\r\n";
+        socket->close();
+        emit wroteToClient();
 
 
-		tokens.erase(tokens.begin());
-		QString file = tokens.join(" ");
+        tokens.erase(tokens.begin());
+        QString file = tokens.join(" ");
 
-		if(file[0]=='/')file = file.right(file.length()-1);
-		file = QUrl::fromPercentEncoding(file.toLatin1());
-		QStringList tokens = file.split( QRegExp(" ") );
-		QString code = tokens[0];
-		if(code == "SHOW")emit requestShow();
-		else {
-			tokens.erase(tokens.begin());
-			file = tokens.join(" ");
-			if(code == "READ")
-				emit requestReadFile(file);
-			else if(code == "ADD")
-				emit requestAddFile(file);
-			else {
-				emit receiveRequest("Unvalid request command : '"+code+"'");
-				emit requestShow();
-			}
-		}
-	}
-	else {
-		QTextStream os( socket );
-		os.setAutoDetectUnicode( true );
-		os << "Rejected\r\n";
-		socket->close();
-		emit wroteToClient();
-	}
+        if(file[0]=='/')file = file.right(file.length()-1);
+        file = QUrl::fromPercentEncoding(file.toLatin1());
+        QStringList tokens = file.split( QRegExp(" ") );
+        QString code = tokens[0];
+        if(code == "SHOW")emit requestShow();
+        else {
+            tokens.erase(tokens.begin());
+            file = tokens.join(" ");
+            if(code == "READ")
+                emit requestReadFile(file);
+            else if(code == "ADD")
+                emit requestAddFile(file);
+            else {
+                emit receiveRequest("Unvalid request command : '"+code+"'");
+                emit requestShow();
+            }
+        }
+    }
+    else {
+        QTextStream os( socket );
+        os.setAutoDetectUnicode( true );
+        os << "Rejected\r\n";
+        socket->close();
+        emit wroteToClient();
+    }
   }
 }
 
@@ -146,17 +146,17 @@ ViewClient::ViewClient()
     commandSocket = new QSocket( this );
 
     connect( commandSocket, SIGNAL( hostFound() ),
-	     this, SLOT( hostFound() ) );
+         this, SLOT( hostFound() ) );
     connect( commandSocket, SIGNAL( connected() ),
-	     this, SLOT( connected() ) );
+         this, SLOT( connected() ) );
     connect( commandSocket, SIGNAL( connectionClosed() ),
-	     this, SLOT( closed() ) );
+         this, SLOT( closed() ) );
     connect( commandSocket, SIGNAL( readyRead() ),
-	     this, SLOT( readyRead() ) );
+         this, SLOT( readyRead() ) );
     connect( commandSocket, SIGNAL( error( int ) ),
-	    this, SLOT( slotError( int ) ) );
+        this, SLOT( slotError( int ) ) );
 /*    connect( commandSocket, SIGNAL( bytesWritten( int ) ),
-	    this, SLOT( slotBytesWritten( int ) ) );*/
+        this, SLOT( slotBytesWritten( int ) ) );*/
 }
 
 ViewClient::~ViewClient()
@@ -168,9 +168,9 @@ ViewClient::~ViewClient()
 void ViewClient::operationPut( QNetworkOperation * n)
 {
     QString cmd = "POST ";
-	cmd += QString(n->rawArg(0));
+    cmd += QString(n->rawArg(0));
 //    cmd += url()->encodedPathAndQuery();
-	// cmd.replace(cmd.find("/",1," "));
+    // cmd.replace(cmd.find("/",1," "));
     cmd += "\r\n";
     commandSocket->writeBlock( cmd.toAscii().constData(), cmd.length() );
 }
@@ -186,17 +186,17 @@ void ViewClient::operationGet( QNetworkOperation * )
 bool ViewClient::checkConnection( QNetworkOperation * )
 {
     if ( !commandSocket->peerName().isEmpty() && connectionReady )
-	return TRUE;
+    return TRUE;
 
     if ( !commandSocket->peerName().isEmpty() )
-	return FALSE;
+    return FALSE;
 
     if ( commandSocket->state() == QSocket::Connecting )
-	return FALSE;
+    return FALSE;
 
     connectionReady = FALSE;
     commandSocket->connectToHost( url()->host(),
-				  url()->port() != -1 ? url()->port() : 7777 );
+                  url()->port() != -1 ? url()->port() : 7777 );
 
     return FALSE;
 }
@@ -204,8 +204,8 @@ bool ViewClient::checkConnection( QNetworkOperation * )
 void ViewClient::close()
 {
     if ( !commandSocket->peerName().isEmpty() ) {
- 	commandSocket->writeBlock( "quit\r\n", strlen( "quit\r\n" ) );
- 	commandSocket->close();
+    commandSocket->writeBlock( "quit\r\n", strlen( "quit\r\n" ) );
+    commandSocket->close();
     }
 }
 
@@ -217,26 +217,26 @@ int ViewClient::supportedOperations() const
 void ViewClient::hostFound()
 {
     if ( url() )
-	emit connectionStateChanged( ConHostFound, tr( "Host %1 found" ).arg( url()->host() ) );
+    emit connectionStateChanged( ConHostFound, tr( "Host %1 found" ).arg( url()->host() ) );
     else
-	emit connectionStateChanged( ConHostFound, tr( "Host found" ) );
+    emit connectionStateChanged( ConHostFound, tr( "Host found" ) );
 }
 
 void ViewClient::connected()
 {
     if ( url() )
-	emit connectionStateChanged( ConConnected, tr( "Connected to host %1" ).arg( url()->host() ) );
+    emit connectionStateChanged( ConConnected, tr( "Connected to host %1" ).arg( url()->host() ) );
     else
-	emit connectionStateChanged( ConConnected, tr( "Connected to host" ) );
+    emit connectionStateChanged( ConConnected, tr( "Connected to host" ) );
     connectionReady = TRUE;
 }
 
 void ViewClient::closed()
 {
     if ( url() )
-	emit connectionStateChanged( ConClosed, tr( "Connection to %1 closed" ).arg( url()->host() ) );
+    emit connectionStateChanged( ConClosed, tr( "Connection to %1 closed" ).arg( url()->host() ) );
     else
-	emit connectionStateChanged( ConClosed, tr( "Connection closed" ) );
+    emit connectionStateChanged( ConClosed, tr( "Connection closed" ) );
 
     connectionReady = FALSE;
     emit finished( operationInProgress() );
@@ -255,9 +255,9 @@ void ViewClient::slotError( int err )
 {
   QNetworkOperation* op = operationInProgress();
   if(op){
-	op->setState(QNetworkProtocol::StFailed);
-	op->setErrorCode(err);
-	emit finished(op);
+    op->setState(QNetworkProtocol::StFailed);
+    op->setErrorCode(err);
+    emit finished(op);
   }
   else finished(NULL);
   close();
@@ -270,16 +270,16 @@ void ViewClient::slotError( int err )
 
 
 ViewClientObj::ViewClientObj(bool dialog,
-							 QObject * parent, 
-							 const char * name):
+                             QObject * parent,
+                             const char * name):
   QObject(parent,name),
   __label(0),
   __dialog(0),
   __urloperator(0),
   res(0){
   qInitNetworkProtocols();
-  QNetworkProtocol::registerNetworkProtocol( "pgl", 
-	new QNetworkProtocolFactory<ViewClient> );
+  QNetworkProtocol::registerNetworkProtocol( "pgl",
+    new QNetworkProtocolFactory<ViewClient> );
 
   __urloperator = new QUrlOperator;
   connect( __urloperator, SIGNAL( finished( QNetworkOperation * ) ),
@@ -302,7 +302,7 @@ ViewClientObj::ViewClientObj(bool dialog,
   connect( __urloperator, SIGNAL( connectionStateChanged( int , const QString &  ) ),
      this, SLOT( connectionStatus ( int , const QString &  ) ) );
   connect( __urloperator, SIGNAL( dataTransferProgress ( int, int, QNetworkOperation * ) ),
-	  this, SLOT( transferProgress ( int, int, QNetworkOperation * ) ) );
+      this, SLOT( transferProgress ( int, int, QNetworkOperation * ) ) );
   }
 
 }
@@ -312,107 +312,107 @@ ViewClientObj::~ViewClientObj(){
   delete __dialog;
 }
 
-bool 
+bool
 ViewClientObj::request(int argc, char ** argv)
 {
   switch(argc){
   case 1:
-	return requestShow();
+    return requestShow();
   case 2:{
-	QString option = argv[1];
-	if(option[0] != '-')
-	  return requestReadFile(option);
-	else return false;
-		 }
-	break;
+    QString option = argv[1];
+    if(option[0] != '-')
+      return requestReadFile(option);
+    else return false;
+         }
+    break;
   case 3:{
-	QString option = argv[1];
-	if(option == "-a" || option == "--add" )
-	  return requestAddFile(argv[2]);
-	else return false;
-		 }
+    QString option = argv[1];
+    if(option == "-a" || option == "--add" )
+      return requestAddFile(argv[2]);
+    else return false;
+         }
   default:
-	return false;
+    return false;
   }
 }
 
-bool 
+bool
 ViewClientObj::requestReadFile(const QString& file){
    *__urloperator = QUrlOperator("pgl://localhost/READ "+QFileInfo(file).absFilePath());
    if(__urloperator->get()==NULL){
-	 return false;
+     return false;
    }
    if(exec() == 1)return true;
    else return false;
 }
 
-bool 
+bool
 ViewClientObj::requestAddFile(const QString& file){
-   *__urloperator = QUrlOperator("pgl://localhost/ADD "+QFileInfo(file).absFilePath()); 
+   *__urloperator = QUrlOperator("pgl://localhost/ADD "+QFileInfo(file).absFilePath());
   if(__urloperator->get()==NULL)return false;
   if(exec()==1)return true;
   else return false;
 }
 
-bool 
+bool
 ViewClientObj::requestShow(){
-   *__urloperator = QUrlOperator("pgl://localhost/SHOW"); 
+   *__urloperator = QUrlOperator("pgl://localhost/SHOW");
   if(__urloperator->get()==NULL)return false;
   if(exec()==1)return true;
   else return false;
 }
 
-void 
+void
 ViewClientObj::finished( QNetworkOperation * op )
 {
   if(op){
-	QString details = op->protocolDetail();
-	if(op->state() == QNetworkProtocol::StFailed){
-	  status(tr("Network Error :")+details);
-	  reject();
-	}
-	else if(op->state() == QNetworkProtocol::StStopped){
-	  status("Transfert Stopped :"+details);
-	  reject();
-	}
-	else if(op->state() == QNetworkProtocol::StDone || 
-	  op->state() == QNetworkProtocol::StWaiting){
-	  status("Transfert Done :"+details);
-	  accept();
-	}
+    QString details = op->protocolDetail();
+    if(op->state() == QNetworkProtocol::StFailed){
+      status(tr("Network Error :")+details);
+      reject();
+    }
+    else if(op->state() == QNetworkProtocol::StStopped){
+      status("Transfert Stopped :"+details);
+      reject();
+    }
+    else if(op->state() == QNetworkProtocol::StDone ||
+      op->state() == QNetworkProtocol::StWaiting){
+      status("Transfert Done :"+details);
+      accept();
+    }
   }
   else reject();
 }
 
 void
 ViewClientObj::downloaded( const QByteArray & ba,
-								  QNetworkOperation * op ){
+                                  QNetworkOperation * op ){
   QString msg(ba);
   if(msg != "Accepted\r\n"){
-	status("Rejection");
-	res = -1;
+    status("Rejection");
+    res = -1;
   }
   status("Msg :'"+msg+"'");
 }
 
-void 
+void
 ViewClientObj::connectionStatus ( int i, const QString & msg )
 {
   status(msg);
 }
 
 void
-ViewClientObj::transferProgress ( int i, int j, QNetworkOperation * ) 
+ViewClientObj::transferProgress ( int i, int j, QNetworkOperation * )
 {
   status(tr("Transfert progress")+" :"+QString::number((100*i)/j)+"%.");
 }
 
-void 
+void
 ViewClientObj::status( const QString& t){
   if(__label)__label->append(t);
 }
 
-int 
+int
 ViewClientObj::exec(){
   QTimer::singleShot(3000,this,SLOT(timeout()));
   if(__dialog) __dialog->exec();
@@ -422,43 +422,43 @@ ViewClientObj::exec(){
 
 void ViewClientObj::accept(){
   if(!__dialog){
-	qApp->quit();
-	if(res==0)res = 1;
+    qApp->quit();
+    if(res==0)res = 1;
   }
   else {
-	if(res==0){
-	  res = 1;
-	  __bt->setText("Ok");
-	  status("Accepted.");
-	  disconnect( __bt, SIGNAL( clicked() ), __dialog, SLOT( reject() ) );
-	  connect( __bt, SIGNAL( clicked() ), __dialog, SLOT( reject() ) );
-//	emit accepted();
-	}
-	else {
-	__bt->setText("Dismiss");
-	  status("Rejected.");
-//	emit rejected();
-	}
+    if(res==0){
+      res = 1;
+      __bt->setText("Ok");
+      status("Accepted.");
+      disconnect( __bt, SIGNAL( clicked() ), __dialog, SLOT( reject() ) );
+      connect( __bt, SIGNAL( clicked() ), __dialog, SLOT( reject() ) );
+//  emit accepted();
+    }
+    else {
+    __bt->setText("Dismiss");
+      status("Rejected.");
+//  emit rejected();
+    }
   }
 }
 
 void ViewClientObj::reject(){
   if(!__dialog){
-	qApp->quit();
-	res = -1;
+    qApp->quit();
+    res = -1;
   }
   else {
-	res = -1;
-	status("Rejected.");
-	__bt->setText("Dismiss");
-//	emit rejected();
+    res = -1;
+    status("Rejected.");
+    __bt->setText("Dismiss");
+//  emit rejected();
   }
 }
 
 void ViewClientObj::timeout(){
   if(res==0){
-	status("Timeout!");
-	reject();
+    status("Timeout!");
+    reject();
   }
 }
 
@@ -468,12 +468,12 @@ bool request(int argc, char ** argv)
 {
 
   if(argc == 2){
-	QString option = argv[1];
-	if(option[0] != '-'){
-	  QUrlOperator url = "pgl://localhost/"+QFileInfo(option).absFilePath();
-	  url.get();
-	  return true;
-	}
+    QString option = argv[1];
+    if(option[0] != '-'){
+      QUrlOperator url = "pgl://localhost/"+QFileInfo(option).absFilePath();
+      url.get();
+      return true;
+    }
   }
   return false;
 }*/

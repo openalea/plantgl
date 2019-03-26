@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -35,7 +35,7 @@
 
 #ifdef QT_THREAD_SUPPORT
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/qapplication.h>
 #else
     #include <QtGui/qapplication.h>
@@ -46,61 +46,61 @@
 
 PGL_USING_NAMESPACE
 
-ViewerThreadedAppli::ViewerThreadedAppli() : 
-			 ViewerAppliInternal(), QThread()
-{ 
-	// printf("Threaded Appli\n");
-	launch();
+ViewerThreadedAppli::ViewerThreadedAppli() :
+             ViewerAppliInternal(), QThread()
+{
+    // printf("Threaded Appli\n");
+    launch();
 }
 
 
-ViewerThreadedAppli::~ViewerThreadedAppli(){ 
+ViewerThreadedAppli::~ViewerThreadedAppli(){
 };
 
-void 
+void
 ViewerThreadedAppli::startSession(){
     if(!isRunning())   launch();
-	else if(!running()) contcond.wakeAll();
+    else if(!running()) contcond.wakeAll();
 }
 
-bool 
+bool
 ViewerThreadedAppli::stopSession(){
     if(running()){
-	   activateStateSaver(false);
-	   sendAnEvent(new ViewEndEvent());
-	   activateStateSaver(true);
+       activateStateSaver(false);
+       sendAnEvent(new ViewEndEvent());
+       activateStateSaver(true);
        return true;
     }
     else return false;
 }
 
-bool 
+bool
 ViewerThreadedAppli::exit() {
-	if(isRunning()){
-	  startSync();
-	  __continue.unlock();
-	  if(running()){ 
-		  activateStateSaver(false);
-		  sendAnEvent(new ViewEndEvent());
-		  activateStateSaver(true);
-	  }
-	  else  contcond.wakeAll();
-	  sync();
-	  terminate();
+    if(isRunning()){
+      startSync();
+      __continue.unlock();
+      if(running()){
+          activateStateSaver(false);
+          sendAnEvent(new ViewEndEvent());
+          activateStateSaver(true);
+      }
+      else  contcond.wakeAll();
+      sync();
+      terminate();
       return true;
     }
-	else return false;
+    else return false;
 }
 
 
-bool 
+bool
 ViewerThreadedAppli::running() {
    if (!isRunning()) return false;
    else if (__running.tryLock()) { __running.unlock(); return false; }
    else return true;
 }
 
-bool 
+bool
 ViewerThreadedAppli::Wait ( unsigned long time ) {
    sessionmutex.lock();
    bool b = session.wait(&sessionmutex,time);
@@ -108,23 +108,23 @@ ViewerThreadedAppli::Wait ( unsigned long time ) {
    return b;
 }
 
-void 
-ViewerThreadedAppli::launch(){ 	
-	__continue.tryLock(); 
-	startSync(); start(); sync(); 
+void
+ViewerThreadedAppli::launch(){
+    __continue.tryLock();
+    startSync(); start(); sync();
 }
 
-void 
+void
 ViewerThreadedAppli::startSync() { syncmutex.lock(); }
 
-void 
+void
 ViewerThreadedAppli::sync() { synccond.wait(&syncmutex); syncmutex.unlock(); }
 
-void 
+void
 ViewerThreadedAppli::join() { while(!syncmutex.tryLock()){;} syncmutex.unlock(); synccond.wakeAll(); }
 
 
-void 
+void
 ViewerThreadedAppli::init(){
     int argc = 0;
     char ** argv = NULL;
@@ -132,46 +132,46 @@ ViewerThreadedAppli::init(){
     if(!getViewer()) build();
 }
 
-void 
+void
 ViewerThreadedAppli::cleanup(){
-	deleteViewer();
-	if(qApp)delete qApp;
+    deleteViewer();
+    if(qApp)delete qApp;
 }
 
-void 
+void
 ViewerThreadedAppli::exec(){
   if(getViewer() == NULL){
     std::cerr << "Null Viewer !!" << std::endl;
     return;
   }
       getViewer()->setVisible(true);
-	  getViewer()->displayTrayIcon(false);
-	  qApp->exec();
-	  getViewer()->saveConfig();
-	  __selection = getViewer()->getSelection();
+      getViewer()->displayTrayIcon(false);
+      qApp->exec();
+      getViewer()->saveConfig();
+      __selection = getViewer()->getSelection();
 }
 
-void 
+void
 ViewerThreadedAppli::run(){
-	init();
-	std::string p = get_cwd();
+    init();
+    std::string p = get_cwd();
     __running.lock();
-	join();
-	while(!__continue.tryLock()){
-	  exec();
-	  session.wakeAll();
-	  if(__continue.tryLock()) __continue.unlock();
-	  else { contcond.wait(&__running); }
-	}
-	__continue.unlock();
-	chg_dir(p);
-	cleanup();
-	join();
+    join();
+    while(!__continue.tryLock()){
+      exec();
+      session.wakeAll();
+      if(__continue.tryLock()) __continue.unlock();
+      else { contcond.wait(&__running); }
+    }
+    __continue.unlock();
+    chg_dir(p);
+    cleanup();
+    join();
 }
 
 std::vector<uint_t>
 ViewerThreadedAppli::getSelection() {
-	std::vector<uint_t> res;
+    std::vector<uint_t> res;
     if(running()){
       ViewSelectRecoverEvent * event = new ViewSelectRecoverEvent(&res) ;
       sendAnEvent(event);

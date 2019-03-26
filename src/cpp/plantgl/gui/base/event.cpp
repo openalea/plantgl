@@ -10,9 +10,9 @@
  *       Development site : https://gforge.inria.fr/projects/openalea/
  *
  *  ----------------------------------------------------------------------------
- * 
+ *
  *                      GNU General Public Licence
- *           
+ *
  *       This program is free software; you can redistribute it and/or
  *       modify it under the terms of the GNU General Public License as
  *       published by the Free Software Foundation; either version 2 of
@@ -29,13 +29,13 @@
  *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  *
  *  ----------------------------------------------------------------------------
- */				
+ */
 
 #include "event.h"
 
 ViewEvent::ViewEvent(int type):
-	QEvent(QEvent::Type(type)),
-	sent_event(false)
+    QEvent(QEvent::Type(type)),
+    sent_event(false)
 {
 #ifdef PGL_DEBUG
     printf("Create event %i of type %i\n",size_t(this),type);
@@ -73,7 +73,7 @@ ViewSceneChangeEvent::getSceneType() const
   return scene_type;
 }
 
-void 
+void
 ViewSceneChangeEvent::setSceneType(const int& i)
 {
   scene_type =i;

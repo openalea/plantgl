@@ -3,7 +3,7 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP
  *
  *       File author(s): F. Boudon et al.
  *
@@ -34,7 +34,7 @@
 
 #include <boost/python.hpp>
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0) 
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     #include <QtWidgets/QWidget>
 #else
     #include <QtGui/QWidget>
@@ -55,9 +55,9 @@ struct extract_widget {
         Widget * widgetptr = NULL;
         boost::python::object pyid = pyobj.attr("winId")();
 #if defined(Q_WS_WIN)
-		int iwid = boost::python::extract<int>(pyid.attr("__int__")())();
+        int iwid = boost::python::extract<int>(pyid.attr("__int__")())();
         if(iwid != 0){
-			WId wid = WId(iwid);
+            WId wid = WId(iwid);
 #else
         WId wid = boost::python::extract<WId>(pyid)();
         if(wid != 0){
@@ -70,7 +70,7 @@ struct extract_widget {
                 widgetptr = static_cast<Widget *>(widget);
 #else
                 widgetptr = dynamic_cast<Widget *>(widget);
-#endif    
+#endif
             }
             else { throw PythonExc_ValueError("Cannot extract widget."); }
         }
@@ -78,7 +78,7 @@ struct extract_widget {
         return widgetptr;
     }
     inline result_type operator()() const { return extract(); }
-	inline operator result_type () const { return extract(); }
+    inline operator result_type () const { return extract(); }
 
 };
 
