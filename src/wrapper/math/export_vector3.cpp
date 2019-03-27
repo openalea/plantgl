@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2003 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 
 #include "export_vector.h"
@@ -37,16 +48,16 @@
 #include <string>
 #include <sstream>
 
-TOOLS_USING_NAMESPACE
+PGL_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
-std::string v3_repr( Vector3* v ) 
-{ 
-  stringstream ss; 
+std::string v3_repr( Vector3* v )
+{
+  stringstream ss;
   ss << "Vector3(" << v->x() << ',' << v->y() << ',' << v->z() << ')';
-  return ss.str(); 
-} 
+  return ss.str();
+}
 
 
 
@@ -65,43 +76,43 @@ std::string cyl_repr(Vector3::Cylindrical * v){
 
 struct v3_pickle_suite : boost::python::pickle_suite
 {
-	static boost::python::tuple getinitargs(Vector3 const& v)
-	{
-		return boost::python::make_tuple(v.x(),v.y(),v.z());
-	}
+    static boost::python::tuple getinitargs(Vector3 const& v)
+    {
+        return boost::python::make_tuple(v.x(),v.y(),v.z());
+    }
 };
 
 struct v3cyl_pickle_suite : boost::python::pickle_suite
 {
-	static boost::python::tuple getinitargs(Vector3::Cylindrical const& v)
-	{
-		return boost::python::make_tuple(v.radius,v.theta,v.z);
-	}
+    static boost::python::tuple getinitargs(Vector3::Cylindrical const& v)
+    {
+        return boost::python::make_tuple(v.radius,v.theta,v.z);
+    }
 };
 
 struct v3sph_pickle_suite : boost::python::pickle_suite
 {
-	static boost::python::tuple getinitargs(Vector3::Spherical const& v)
-	{
-		return boost::python::make_tuple(v.radius,v.theta,v.phi);
-	}
+    static boost::python::tuple getinitargs(Vector3::Spherical const& v)
+    {
+        return boost::python::make_tuple(v.radius,v.theta,v.phi);
+    }
 };
 
 
 struct pglvec3_from_vec3 {
   pglvec3_from_vec3() {
-	boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<Vector3>());
+    boost::python::converter::registry::push_back( &convertible, &construct, boost::python::type_id<Vector3>());
   }
 
   static void* convertible(PyObject* py_obj){
-	boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+    boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
     if(boost::python::extract<Vector3::Cylindrical>(bpy_obj).check()||boost::python::extract<Vector3::Spherical>(bpy_obj).check())
-    	return py_obj;
+        return py_obj;
     else return 0;
   }
 
   static void construct( PyObject* py_obj, boost::python::converter::rvalue_from_python_stage1_data* data){
-	  boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
+      boost::python::object bpy_obj( boost::python::handle<>( boost::python::borrowed( py_obj ) ) );
       boost::python::extract<Vector3::Cylindrical> cyl(bpy_obj);
       Vector3 res;
       if(cyl.check())
@@ -110,10 +121,10 @@ struct pglvec3_from_vec3 {
           res = Vector3(boost::python::extract<Vector3::Spherical>(bpy_obj)());
       }
     typedef boost::python::converter::rvalue_from_python_storage<Vector3> vector_storage_t;
-	vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
-	void* memory_chunk = the_storage->storage.bytes;
-	Vector3 * result = new (memory_chunk)Vector3(res);
-	data->convertible = memory_chunk;
+    vector_storage_t* the_storage = reinterpret_cast<vector_storage_t*>( data );
+    void* memory_chunk = the_storage->storage.bytes;
+    Vector3 * result = new (memory_chunk)Vector3(res);
+    data->convertible = memory_chunk;
   }
 };
 
@@ -130,13 +141,13 @@ void export_Vector3()
     .def( "__repr__", v3_repr )
     .def(vector_dim3_func<Vector3>())
     .def(vector_crossdot<Vector3>())
-	.def_pickle(v3_pickle_suite())
+    .def_pickle(v3_pickle_suite())
     .def("radialAnisotropicNorm",&radialAnisotropicNorm)
     .def("anisotropicNorm",&anisotropicNorm)
     .def("anOrthogonalVector",&Vector3::anOrthogonalVector)
     .def("reflect",&Vector3::reflect)
     .def("refract",&Vector3::refract)
-	;
+    ;
 
    pgltuple_from_tuple<Vector3,3>();
    pglvec3_from_vec3();
@@ -149,7 +160,7 @@ void export_Vector3()
     .def_readwrite("radius",&Vector3::Cylindrical::radius)
     .def_readwrite("theta",&Vector3::Cylindrical::theta)
     .def_readwrite("z",&Vector3::Cylindrical::z)
-	.def_pickle(v3cyl_pickle_suite());
+    .def_pickle(v3cyl_pickle_suite());
     ;
 
   class_<Vector3::Spherical>("Spherical", init<const Vector3&>("Spherical(Vector3 v)",args("v")))
@@ -161,7 +172,7 @@ void export_Vector3()
     .def_readwrite("radius",&Vector3::Spherical::radius)
     .def_readwrite("theta",&Vector3::Spherical::theta)
     .def_readwrite("phi",&Vector3::Spherical::phi)
-	.def_pickle(v3sph_pickle_suite());
+    .def_pickle(v3sph_pickle_suite());
     ;
 
   }

@@ -3,31 +3,42 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include "export_viewer.h"
 #include <plantgl/python/extract_list.h>
@@ -42,7 +53,6 @@
 #include <plantgl/gui/base/appbuilder.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 #define bp boost::python
@@ -52,12 +62,12 @@ boost::python::list selection(){
   std::vector<uint_t> sel = ViewerApplication::getSelection();
   if(sel.empty()) return boost::python::list();
   else {
-	boost::python::list res;
-	for(vector<uint_t>::const_iterator _it = sel.begin();
-	_it != sel.end(); _it++){
-	  res.append(object((int)*_it));
-	}
-	return res;
+    boost::python::list res;
+    for(vector<uint_t>::const_iterator _it = sel.begin();
+    _it != sel.end(); _it++){
+      res.append(object((int)*_it));
+    }
+    return res;
   }
 }
 
@@ -77,28 +87,28 @@ int question00(std::string text){
 }
 
 int question0(std::string caption,
-			  std::string text){
+              std::string text){
   return ViewerApplication::question(caption,text);
 }
 
 int question1(std::string caption,
-			  std::string text,
-			  std::string but0txt){
+              std::string text,
+              std::string but0txt){
   return ViewerApplication::question(caption,text,but0txt);
 }
 
 int question2(std::string caption,
-			  std::string text,
-			  std::string but0txt,
-			  std::string but1txt){
+              std::string text,
+              std::string but0txt,
+              std::string but1txt){
   return ViewerApplication::question(caption,text,but0txt,but1txt);
 }
 
 int question3(std::string caption,
-			  std::string text,
-			  std::string but0txt,
-			  std::string but1txt,
-			  std::string but2txt){
+              std::string text,
+              std::string but0txt,
+              std::string but1txt,
+              std::string but2txt){
   return ViewerApplication::question(caption,text,but0txt,but1txt,but2txt);
 }
 
@@ -112,17 +122,17 @@ public:
 };
 
 object itemSelection(boost::python::str _caption,
-					 boost::python::str _text,
-					 boost::python::list values,
-					 bool editable){
+                     boost::python::str _text,
+                     boost::python::list values,
+                     bool editable){
   std::string caption = boost::python::extract<const char *>(_caption);
   std::string text = boost::python::extract<const char *>(_text);
   std::vector<std::string> vals = extract_vec<std::string,MyExtractor >(values)();
 #else
 object itemSelection(std::string caption,
-					 std::string text,
-					 boost::python::list values,
-					 bool editable){
+                     std::string text,
+                     boost::python::list values,
+                     bool editable){
   std::vector<std::string> vals = extract_vec<std::string >(values)();
 #endif
   bool ok = false;
@@ -135,7 +145,7 @@ object itemSelection(std::string caption,
 }
 
 object itemSelection2(std::string text,
-					 boost::python::list values){
+                     boost::python::list values){
   std::vector<std::string> vals = extract_vec<std::string >(values)();
   bool ok = false;
   std::string res;
@@ -154,14 +164,14 @@ object itemSelection1(boost::python::list values){
 }
 
 object itemSelectionNE(std::string caption,
-					   std::string text,
-					   boost::python::list values){
+                       std::string text,
+                       boost::python::list values){
   return itemSelection(caption,text,values,false);
 }
 
 
 object doubleSelection(std::string caption,
-					   std::string text,
+                       std::string text,
                        double value,
                        double minvalue,
                        double maxvalue){
@@ -176,14 +186,14 @@ object doubleSelection(std::string caption,
 
 
 object doubleSelection3(std::string caption,
-					   std::string text,
+                       std::string text,
                        double value)
 {
   return doubleSelection(caption,text,value,DBL_MIN,DBL_MAX);
 }
 
 object doubleSelection2(std::string caption,
-					   std::string text)
+                       std::string text)
 {
    return doubleSelection(caption,text,0,DBL_MIN,DBL_MAX);
 }
@@ -220,7 +230,7 @@ void setAnimation1(eAnimationFlag b){
 }
 
 void animation1(bool b){
-	ViewerApplication::setAnimation(b?eAnimatedScene:eStatic);
+    ViewerApplication::setAnimation(b?eAnimatedScene:eStatic);
 }
 
 
@@ -264,70 +274,70 @@ std::string getDirectory1(const std::string& caption){
 }
 
 boost::python::object raybuf_to_python(ViewRayBuffer * buf) {
-	boost::python::list res;
-	for(size_t i = 0; i < buf->getColumnSize();i++){
-		boost::python::list row;
-		for(size_t j = 0; j < buf->getRowSize();j++){
-			boost::python::list zlist;
-			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
-				const RayHit& inter = buf->getAt(i,j)[k];
-				zlist.append(boost::python::make_tuple(inter.id,inter.zmax,inter.zmin));
-			}
-			row.append(zlist);
-		}
-		res.append(row);
-	}
-	return res;
+    boost::python::list res;
+    for(size_t i = 0; i < buf->getColumnSize();i++){
+        boost::python::list row;
+        for(size_t j = 0; j < buf->getRowSize();j++){
+            boost::python::list zlist;
+            for(size_t k = 0; k < buf->getAt(i,j).size();k++){
+                const RayHit& inter = buf->getAt(i,j)[k];
+                zlist.append(boost::python::make_tuple(inter.id,inter.zmax,inter.zmin));
+            }
+            row.append(zlist);
+        }
+        res.append(row);
+    }
+    return res;
 }
 
-boost::python::object castRays(const TOOLS(Vector3)& pos, 
-								  const TOOLS(Vector3)& dir,
-							      const TOOLS(Vector3)& dx, 
-							      const TOOLS(Vector3)& dy,
-								  int sx, int sy){
-	ViewRayBuffer * buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
-	boost::python::object res = raybuf_to_python(buf);
-	delete buf;
-	return res;
+boost::python::object castRays(const Vector3& pos,
+                                  const Vector3& dir,
+                                  const Vector3& dx,
+                                  const Vector3& dy,
+                                  int sx, int sy){
+    ViewRayBuffer * buf = ViewerApplication::castRays(pos,dir,dx,dy,sx,sy);
+    boost::python::object res = raybuf_to_python(buf);
+    delete buf;
+    return res;
 }
 
 boost::python::object zbuf_to_python(ViewZBuffer * buf, bool allvalues) {
-	boost::python::list res;
-	for(size_t i = 0; i < buf->getColumnSize();i++){
-		boost::python::list row;
-		for(size_t j = 0; j < buf->getRowSize();j++){
-			const ZBufferUnit& unit = buf->getAt(i,j);
-			if (allvalues || (0.0 < unit.depth && unit.depth < 1.0))
-				row.append(boost::python::make_tuple(unit.pos,unit.color,unit.depth));
-			else row.append(object());
-		}
-		res.append(row);
-	}
-	return res;
+    boost::python::list res;
+    for(size_t i = 0; i < buf->getColumnSize();i++){
+        boost::python::list row;
+        for(size_t j = 0; j < buf->getRowSize();j++){
+            const ZBufferUnit& unit = buf->getAt(i,j);
+            if (allvalues || (0.0 < unit.depth && unit.depth < 1.0))
+                row.append(boost::python::make_tuple(unit.pos,unit.color,unit.depth));
+            else row.append(object());
+        }
+        res.append(row);
+    }
+    return res;
 }
 
 boost::python::object grabZBuffer(bool allvalues){
-	ViewZBuffer * buf = ViewerApplication::grabZBuffer();
-	boost::python::object res = zbuf_to_python(buf,allvalues);
-	delete buf;
-	return res;
+    ViewZBuffer * buf = ViewerApplication::grabZBuffer();
+    boost::python::object res = zbuf_to_python(buf,allvalues);
+    delete buf;
+    return res;
 }
 
 boost::python::object grabZBuffer0(){
-	return grabZBuffer(false);
+    return grabZBuffer(false);
 }
 
 boost::python::object grabZBufferPoints(){
-    std::pair<PGL(Point3ArrayPtr),PGL(Color4ArrayPtr)> bufpoints = ViewerApplication::grabZBufferPoints();
+    std::pair<Point3ArrayPtr,Color4ArrayPtr> bufpoints = ViewerApplication::grabZBufferPoints();
     return boost::python::make_tuple(bufpoints.first,bufpoints.second);
 }
 
 boost::python::object getProjectionSize(){
-	int nbpix;
-	double pixwidth;
-	double size;
+    int nbpix;
+    double pixwidth;
+    double size;
     size = ViewerApplication::getProjectionSize(&nbpix,&pixwidth);
-	return boost::python::make_tuple(size,nbpix,pixwidth);
+    return boost::python::make_tuple(size,nbpix,pixwidth);
 }
 
 boost::python::object getProjectionSizes(const ScenePtr& sc){
@@ -335,12 +345,12 @@ boost::python::object getProjectionSizes(const ScenePtr& sc){
   res = PGLViewerApplication::getProjectionSizes(sc);
   if(res.empty()) return object();
   else {
-	boost::python::list bres;
-	for(vector<std::pair<uint_t,double> >::const_iterator _it = res.begin();
-	_it != res.end(); _it++){
-	  bres.append(boost::python::make_tuple(_it->first,_it->second));
-	}
-	return bres;
+    boost::python::list bres;
+    for(vector<std::pair<uint_t,double> >::const_iterator _it = res.begin();
+    _it != res.end(); _it++){
+      bres.append(boost::python::make_tuple(_it->first,_it->second));
+    }
+    return bres;
   }
 }
 
@@ -350,46 +360,46 @@ boost::python::object getProjectionPerShape(){
   res = PGLViewerApplication::getProjectionPerShape(pixelsize);
   if(res.empty()) return object();
   else {
-	boost::python::list bres;
-	for(vector<std::pair<uint_t,uint_t> >::const_iterator _it = res.begin();
-	_it != res.end(); _it++){
-	  bres.append(boost::python::make_tuple(_it->first,_it->second));
-	}
-	return boost::python::make_tuple(bres,pixelsize);
+    boost::python::list bres;
+    for(vector<std::pair<uint_t,uint_t> >::const_iterator _it = res.begin();
+    _it != res.end(); _it++){
+      bres.append(boost::python::make_tuple(_it->first,_it->second));
+    }
+    return boost::python::make_tuple(bres,pixelsize);
   }
 }
 
 boost::python::object raypointhitbuf_to_python(ViewRayPointHitBuffer * buf) {
-	boost::python::list res;
-	for(size_t i = 0; i < buf->getColumnSize();i++){
-		boost::python::list row;
-		for(size_t j = 0; j < buf->getRowSize();j++){
-			boost::python::list zlist;
-			for(size_t k = 0; k < buf->getAt(i,j).size();k++){
-				const RayPointHit& inter = buf->getAt(i,j)[k];
-				zlist.append(boost::python::make_tuple(inter.id,inter.zmax,inter.zmin));
-			}
-			row.append(zlist);
-		}
-		res.append(row);
-	}
-	return res;
+    boost::python::list res;
+    for(size_t i = 0; i < buf->getColumnSize();i++){
+        boost::python::list row;
+        for(size_t j = 0; j < buf->getRowSize();j++){
+            boost::python::list zlist;
+            for(size_t k = 0; k < buf->getAt(i,j).size();k++){
+                const RayPointHit& inter = buf->getAt(i,j)[k];
+                zlist.append(boost::python::make_tuple(inter.id,inter.zmax,inter.zmin));
+            }
+            row.append(zlist);
+        }
+        res.append(row);
+    }
+    return res;
 }
 
 boost::python::object castRays2(const ScenePtr& sc, bool back_test){
-	ViewRayPointHitBuffer * buf;
+    ViewRayPointHitBuffer * buf;
     buf = PGLViewerApplication::castRays2(sc,back_test);
-	boost::python::object res = raypointhitbuf_to_python(buf);
-	delete buf;
-	return res;
+    boost::python::object res = raypointhitbuf_to_python(buf);
+    delete buf;
+    return res;
 }
 
 boost::python::object castRays2_1(const ScenePtr& sc){
     ViewRayPointHitBuffer * buf ;
     buf = PGLViewerApplication::castRays2(sc,true);
- 	boost::python::object res = raypointhitbuf_to_python(buf);
-	delete buf;
-	return res;
+    boost::python::object res = raypointhitbuf_to_python(buf);
+    delete buf;
+    return res;
 }
 
 
@@ -407,23 +417,23 @@ void addSh(ShapePtr sh){
 
 void saveImage1(const std::string& fname)
 {
-	// ext = get_extension(fname);
-	// if (ext.empty()) ext = "PNG";
-	// else ext = toUpper(ext);
-	ViewerApplication::saveImage(fname,"PNG");
+    // ext = get_extension(fname);
+    // if (ext.empty()) ext = "PNG";
+    // else ext = toUpper(ext);
+    ViewerApplication::saveImage(fname,"PNG");
 }
 void saveImage2(const std::string& fname, const std::string& type)
 {
-	ViewerApplication::saveImage(fname,type);
+    ViewerApplication::saveImage(fname,type);
 }
 
 bool viewer_wait(){
-	return ViewerApplication::wait();
+    return ViewerApplication::wait();
 }
 
 
-PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost::python::object(),
-                                       const char * caption = "", 
+MaterialPtr pyGetMaterialFromDialog(boost::python::object pyparent = boost::python::object(),
+                                       const char * caption = "",
                                        MaterialPtr initial = MaterialPtr() )
 {
     QWidget * parent  = NULL;
@@ -435,7 +445,7 @@ PGL(MaterialPtr) pyGetMaterialFromDialog(boost::python::object pyparent = boost:
 BOOST_PYTHON_FUNCTION_OVERLOADS(pyGetMaterialFromDialog_overloads, pyGetMaterialFromDialog, 0, 3)
 
 int pyEditMaterialInDialog(Material * initial,
-                            boost::python::object pyparent = boost::python::object(), 
+                            boost::python::object pyparent = boost::python::object(),
                             const char * caption = "")
 {
     QWidget * parent  = NULL;
@@ -449,33 +459,33 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(pyEditMaterialInDialog_overloads, pyEditMaterial
 static boost::python::object * __PYABORTFUNC = NULL;
 
 bool pyDialogAbortFunc() {
-	if(!__PYABORTFUNC)return false;
-	else {
+    if(!__PYABORTFUNC)return false;
+    else {
         PythonInterpreterAcquirer py;
         try{
-			return extract<bool>((*__PYABORTFUNC)());
+            return extract<bool>((*__PYABORTFUNC)());
         }
         catch(bp::error_already_set) { PyErr_Print(); PyErr_Clear(); }
-		return false;
-	}
+        return false;
+    }
 }
 
 void pySetDialogAbortFunc(boost::python::object func) {
-	if(__PYABORTFUNC) delete __PYABORTFUNC;
-	if (func == boost::python::object()) {
-		__PYABORTFUNC = NULL;
-		ViewerApplication::setAborter(NULL);
-	}
-	else {
-		__PYABORTFUNC = new boost::python::object(func);
-		ViewerApplication::setAborter(&pyDialogAbortFunc);
-	}
+    if(__PYABORTFUNC) delete __PYABORTFUNC;
+    if (func == boost::python::object()) {
+        __PYABORTFUNC = NULL;
+        ViewerApplication::setAborter(NULL);
+    }
+    else {
+        __PYABORTFUNC = new boost::python::object(func);
+        ViewerApplication::setAborter(&pyDialogAbortFunc);
+    }
 }
 
 boost::python::object PyWaitSelection(const std::string& message) {
-	uint_t res = ViewerApplication::waitSelection(message);
-	if (res == UINT32_MAX) return boost::python::object();
-	else return boost::python::object(res);
+    uint_t res = ViewerApplication::waitSelection(message);
+    if (res == UINT32_MAX) return boost::python::object();
+    else return boost::python::object(res);
 
 }
 
@@ -501,64 +511,64 @@ LIGHTFUNCWRAP(Specular)
 
 class PyViewCamera {
 public :
-	PyViewCamera();
+    PyViewCamera();
 };
 
 class PyViewGrids {
 public :
-	PyViewGrids();
+    PyViewGrids();
 };
 
 class PyViewDialog {
 public :
-	PyViewDialog();
+    PyViewDialog();
 };
 
 class PyViewFrameGL {
 public :
-	PyViewFrameGL();
+    PyViewFrameGL();
 };
 
 class PyViewWidgetGeometry {
 public :
-	PyViewWidgetGeometry();
+    PyViewWidgetGeometry();
 };
 
 class PyViewClippingPlanes {
 public :
-	PyViewClippingPlanes();
+    PyViewClippingPlanes();
 };
 
 class PyViewLight {
 public :
-	PyViewLight();
+    PyViewLight();
 };
 
 void export_viewer()
 {
   enum_<eAnimationFlag>("eAnimationFlag")
-	  .value("eStatic",eStatic)
-	  .value("eAnimatedPrimitives",eAnimatedPrimitives)
-	  .value("eAnimatedScene",eAnimatedScene)
-	  .export_values()
-	  ;
- 
+      .value("eStatic",eStatic)
+      .value("eAnimatedPrimitives",eAnimatedPrimitives)
+      .value("eAnimatedScene",eAnimatedScene)
+      .export_values()
+      ;
+
   ViewerApplication::registerThreadStateSaver<PyStateSaver>();
 
   def("getMaterialFromDialog", pyGetMaterialFromDialog, pyGetMaterialFromDialog_overloads());
   def("editMaterialInDialog", pyEditMaterialInDialog, pyEditMaterialInDialog_overloads());
 
   scope viewer = class_< PGLViewerApplication >("Viewer", no_init )
-	.add_static_property("selection",&selection,&setMSelection)
-	.add_static_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
-	.add_static_property("redrawPolicy",&ViewerApplication::getRedrawPolicy,&ViewerApplication::setRedrawPolicy)
+    .add_static_property("selection",&selection,&setMSelection)
+    .add_static_property("threaded",&ViewerApplication::isThreadUsed,&ViewerApplication::useThread)
+    .add_static_property("redrawPolicy",&ViewerApplication::getRedrawPolicy,&ViewerApplication::setRedrawPolicy)
 
-	.def("setBatchMode", &ViewerApplication::setBatchMode,"setBatchMode(bool enable) : No blocking message from the Viewer.",args("enable"))
+    .def("setBatchMode", &ViewerApplication::setBatchMode,"setBatchMode(bool enable) : No blocking message from the Viewer.",args("enable"))
     .staticmethod("setBatchMode")
-	.def("wait", &ViewerApplication::wait, "wait(long timeout = MAXLONG) : wait for the viewer ending.", args("timeout"))
+    .def("wait", &ViewerApplication::wait, "wait(long timeout = MAXLONG) : wait for the viewer ending.", args("timeout"))
     .def("wait", &viewer_wait)
     .staticmethod("wait")
-	.def("waitSelection", &PyWaitSelection,(bp::arg("caption")=std::string("")),"Wait for a selection in the viewer. Return selected id.")
+    .def("waitSelection", &PyWaitSelection,(bp::arg("caption")=std::string("")),"Wait for a selection in the viewer. Return selected id.")
     .staticmethod("waitSelection")
     .def("isRunning", &ViewerApplication::running,"Tell if viewer is curently running.")
     .staticmethod("isRunning")
@@ -570,11 +580,11 @@ void export_viewer()
     .staticmethod("start")
     .def("show", &ViewerApplication::start,"Show the Viewer")
     .staticmethod("show")
-	.def("showMessage", &ViewerApplication::showMessage,(bp::arg("message"),bp::arg("timeout")=0),"Show a message in the viewer. args: message and timeout")
+    .def("showMessage", &ViewerApplication::showMessage,(bp::arg("message"),bp::arg("timeout")=0),"Show a message in the viewer. args: message and timeout")
     .staticmethod("showMessage")
     .def("exit", &ViewerApplication::exit,"Exit from Viewer Application. Cannot be restarted after.")
     .staticmethod("exit")
-	.def("display",(void (*)(const ScenePtr&))&PGLViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
+    .def("display",(void (*)(const ScenePtr&))&PGLViewerApplication::display,"display(Scene scene) : display a scene.",args("scene"))
     .def("display",(void (*)(const GeometryPtr&))&PGLViewerApplication::display,"display(Geometry geom) : display a particular geometry.",args("geom"))
     .def("display",&displaySh,"display(Shape sh) : display a particular shape.",args("sh"))
     .staticmethod("display")
@@ -584,16 +594,16 @@ void export_viewer()
     .staticmethod("add")
     .def("getCurrentScene",&PGLViewerApplication::getCurrentScene,"getCurrentScene() : get the current displayed scene")
     .staticmethod("getCurrentScene")
-	.def("update",&ViewerApplication::update,"update() : update the current visualization.")
+    .def("update",&ViewerApplication::update,"update() : update the current visualization.")
     .staticmethod("update")
-	.def("setAnimation",&setAnimation1,"setAnimation(flag = eStatic[|eAnimatedScene|eAnimatedPrimitives]) : Set viewer in animation mode [Minimal/No display list, No camera adjutement]. eAnimatedScene supposed that the number of element changes but previous primitives stay the same. eAnimatedPrimitives supposed that even individual primitives can changed and thus cache/display list are not reused.",(bp::arg("flag")=eStatic))
-    .staticmethod("setAnimation") 
+    .def("setAnimation",&setAnimation1,"setAnimation(flag = eStatic[|eAnimatedScene|eAnimatedPrimitives]) : Set viewer in animation mode [Minimal/No display list, No camera adjutement]. eAnimatedScene supposed that the number of element changes but previous primitives stay the same. eAnimatedPrimitives supposed that even individual primitives can changed and thus cache/display list are not reused.",(bp::arg("flag")=eStatic))
+    .staticmethod("setAnimation")
     .def("animation",&animation1,"deprecated",(bp::arg("enabled")=true))
-    .staticmethod("animation") 
-	.def("winId",&ViewerApplication::viewerId)
-    .staticmethod("winId") 
-	.def("setDialogAbortFunc",&pySetDialogAbortFunc,args("func"),"Set a function that return true if dialog should abort")
-    .staticmethod("setDialogAbortFunc") 
+    .staticmethod("animation")
+    .def("winId",&ViewerApplication::viewerId)
+    .staticmethod("winId")
+    .def("setDialogAbortFunc",&pySetDialogAbortFunc,args("func"),"Set a function that return true if dialog should abort")
+    .staticmethod("setDialogAbortFunc")
     .def("saveSnapshot",&saveImage1)
     .def("saveSnapshot",&saveImage2)
     .def("saveSnapshot",&ViewerApplication::saveImage,"saveImage(str filename, str type='PNG', bool withAlpha = False). Compatibility with PyQGLViewer.", args("filename","type","withAlpha"))
@@ -611,49 +621,49 @@ void export_viewer()
 }
 
 Vector3 getCameraPosition(){
-	Vector3 pos, h, up;
-	ViewerApplication::getCamera(pos,h,up);
-	return pos;
+    Vector3 pos, h, up;
+    ViewerApplication::getCamera(pos,h,up);
+    return pos;
 }
 
-void setCameraPosition(const TOOLS(Vector3)& pos){
-	ViewerApplication::setCamera(pos);
+void setCameraPosition(const Vector3& pos){
+    ViewerApplication::setCamera(pos);
 }
 
 object getCameraPositionInfo(){
-	Vector3 pos, h, up;
-	ViewerApplication::getCamera(pos,h,up);
-	return boost::python::make_tuple(pos,h,up);
+    Vector3 pos, h, up;
+    ViewerApplication::getCamera(pos,h,up);
+    return boost::python::make_tuple(pos,h,up);
 }
 
-void lookAt1 (const TOOLS(Vector3)& pos) { ViewerApplication::lookAt(pos); }
-void lookAt3 (const TOOLS(Vector3)& pos,const TOOLS(Vector3)& target) { ViewerApplication::lookAt(pos,target); }
- 
+void lookAt1 (const Vector3& pos) { ViewerApplication::lookAt(pos); }
+void lookAt3 (const Vector3& pos,const Vector3& target) { ViewerApplication::lookAt(pos,target); }
+
 void export_camera(){
-	class_<PyViewCamera >("camera", no_init )
-		.def("setPerspective",&ViewerApplication::setPerspectiveCamera,"setPerspective() : Set Camera in Perspective mode.")
+    class_<PyViewCamera >("camera", no_init )
+        .def("setPerspective",&ViewerApplication::setPerspectiveCamera,"setPerspective() : Set Camera in Perspective mode.")
     .staticmethod("setPerspective")
     .def("setOrthographic",&ViewerApplication::setOrthographicCamera,"setOrthographic() : Set Camera in Orthographic mode.")
     .staticmethod("setOrthographic")
     .def("getPosition",&getCameraPositionInfo)
     .staticmethod("getPosition")
-    .def("setPosition",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::setCamera)
+    .def("setPosition",(void(*)(const Vector3&))&ViewerApplication::setCamera)
     .staticmethod("setPosition")
-	.add_static_property("position",&getCameraPosition,&setCameraPosition)
-    .def("set",(void(*)(const TOOLS(Vector3)&,real_t,real_t))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
+    .add_static_property("position",&getCameraPosition,&setCameraPosition)
+    .def("set",(void(*)(const Vector3&,real_t,real_t))&ViewerApplication::setCamera,"set(Vector3 pos, float elevation, float azimut)", args("pos","elevation","azimut"))
     .staticmethod("set")
-    .def("lookAt",(void(*)(const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 target)",args("target"))
-    .def("lookAt",(void(*)(const TOOLS(Vector3)&,const TOOLS(Vector3)&))&ViewerApplication::lookAt,"lookAt(Vector3 pos, Vector3 target)",args("pos","target"))
+    .def("lookAt",(void(*)(const Vector3&))&ViewerApplication::lookAt,"lookAt(Vector3 target)",args("target"))
+    .def("lookAt",(void(*)(const Vector3&,const Vector3&))&ViewerApplication::lookAt,"lookAt(Vector3 pos, Vector3 target)",args("pos","target"))
     .staticmethod("lookAt")
     .def("getViewAngle",&ViewerApplication::getViewAngle)
     .staticmethod("getViewAngle")
     .def("setViewAngle",&ViewerApplication::setViewAngle)
     .staticmethod("setViewAngle")
-	;
+    ;
 }
 
 void export_grids(){
-	class_<PyViewGrids >("grids", no_init )
+    class_<PyViewGrids >("grids", no_init )
     .def("setXYPlane",&ViewerApplication::setXYGrid,"setXYPlane(bool enable)",args("enable") )
     .staticmethod("setXYPlane")
     .def("setXZPlane",&ViewerApplication::setXZGrid,"setXYPlane(bool enable)",args("enable"))
@@ -668,20 +678,20 @@ void export_grids(){
     .staticmethod("setSize")
     .def("set",&ViewerApplication::setGrid,"set(bool xy, bool xz, bool yz, bool axis)",args("xy","xz","yz","axis"))
     .staticmethod("set")
-	;
+    ;
 }
 
 void export_clippingplanes(){
-	class_<PyViewClippingPlanes >("clippingPlanes", no_init )
+    class_<PyViewClippingPlanes >("clippingPlanes", no_init )
     .def("activate",&ViewerApplication::activateCP,"activate(int planeid, bool enable)",args("planeid","enable") )
     .staticmethod("activate")
-	.def("set",&ViewerApplication::setCP,"set(int planeid, double a, double b, double c, double d)",args("planeid","a","b","c","d") )
+    .def("set",&ViewerApplication::setCP,"set(int planeid, double a, double b, double c, double d)",args("planeid","a","b","c","d") )
     .staticmethod("set")
-	;
+    ;
 }
 
 void export_dialog(){
-	class_<PyViewDialog> ("dialog", no_init )
+    class_<PyViewDialog> ("dialog", no_init )
     .def("question",&question00,"question(str text)",args("text"))
     .def("question",&question0,"question(str caption, str text)",args("caption","text"))
     .def("question",&question1,"question(str caption, str text, str button1)",args("caption","text","button1"))
@@ -713,10 +723,10 @@ void export_dialog(){
     .def("getDirectory",&getDirectory1,args("caption"))
     .def("getDirectory",&ViewerApplication::getDirectory,"getDirectory(str caption = \"\", str startPath = \"\")",args("caption","startPath"))
     .staticmethod("getDirectory")
-	;
+    ;
 }
 void export_framegl(){
-	class_<PyViewFrameGL> ("frameGL", no_init )
+    class_<PyViewFrameGL> ("frameGL", no_init )
     .def("saveImage",&saveImage1)
     .def("saveImage",&saveImage2)
     .def("saveImage",&ViewerApplication::saveImage,"saveImage(str filename, str type='PNG', bool withAlpha = False)", args("filename","type","withAlpha"))
@@ -726,7 +736,7 @@ void export_framegl(){
     .staticmethod("setBgColor")
     .def("setSize",&ViewerApplication::glFrameSize,"setSize(int width, int height)",args("width","height"))
     .staticmethod("setSize")
-	.def("maximize",&glFrameOnly1,"maximize(bool enable = True) : maximize FrameGL size into the Viewer.",args("enable"))
+    .def("maximize",&glFrameOnly1,"maximize(bool enable = True) : maximize FrameGL size into the Viewer.",args("enable"))
     .def("maximize",&glFrameOnly0)
     .staticmethod("maximize")
     .def("castRays",&castRays,"castRays(Vector3 pos, Vector3 dir, Vector3 dx, Vector3 dy, float sx, float sy)",args("pos","dir","dx","dy","sx","sy") /*,return_value_policy<manage_new_object>()*/)
@@ -739,17 +749,17 @@ void export_framegl(){
     .staticmethod("grabZBuffer")
     .def("grabZBufferPoints",&grabZBufferPoints )
     .staticmethod("grabZBufferPoints")
-	.def("getProjectionSize",&getProjectionSize,"return projected_size,pixel_nb,pixel_size : compute the projected size of the displayed scene onto the current camera." )
+    .def("getProjectionSize",&getProjectionSize,"return projected_size,pixel_nb,pixel_size : compute the projected size of the displayed scene onto the current camera." )
     .staticmethod("getProjectionSize")
-	.def("getProjectionSizes",&getProjectionSizes,"getProjectionSizes(Scene objects) : individual projected sizes of a set of elements.",args("objects"))
+    .def("getProjectionSizes",&getProjectionSizes,"getProjectionSizes(Scene objects) : individual projected sizes of a set of elements.",args("objects"))
     .staticmethod("getProjectionSizes")
-	.def("getProjectionPerShape",&getProjectionPerShape,"getProjectionPerShape() : projected sizes of a set of elements per elements.")
+    .def("getProjectionPerShape",&getProjectionPerShape,"getProjectionPerShape() : projected sizes of a set of elements per elements.")
     .staticmethod("getProjectionPerShape")
-	;
+    ;
 }
 
 void export_widgetgeometry(){
-	class_<PyViewWidgetGeometry> ("widgetGeometry", no_init )
+    class_<PyViewWidgetGeometry> ("widgetGeometry", no_init )
     .def("setFullScreen",&fullScreen0)
     .def("setFullScreen",&fullScreen1,"setFullScreen(bool enable)",args("enable"))
     .staticmethod("setFullScreen")
@@ -759,21 +769,21 @@ void export_widgetgeometry(){
     .staticmethod("setPosition")
     .def("set",&ViewerApplication::setGeometry,"set(int x, int y, int width, int height)",args("x","y","width","height"))
     .staticmethod("set")
-	;
+    ;
 }
 
 void export_light(){
-	class_<PyViewLight >("light", no_init )
+    class_<PyViewLight >("light", no_init )
     .add_static_property("enabled",&ViewerApplication::isLightEnabled,&ViewerApplication::setLightEnabled )
     .add_static_property("position",&ViewerApplication::getLightPosition,&ViewerApplication::setLightPosition )
     .add_static_property("ambient",&getLightAmbient,&setLightAmbient)
     .add_static_property("diffuse",&getLightDiffuse,&setLightDiffuse)
     .add_static_property("specular",&getLightSpecular,&setLightSpecular)
-	;
+    ;
 }
 void initViewer()
 {
-	PGLViewerApplication::init();
+    PGLViewerApplication::init();
 }
 
 
@@ -783,13 +793,13 @@ void ShutDownViewer()
     ViewerApplication::exit();
 }
 
-void cleanViewer() 
+void cleanViewer()
 {
   static bool RegisterCleanViewer = false;
   if (! RegisterCleanViewer)
   {
-	  Py_AtExit( &ShutDownViewer );
-	  RegisterCleanViewer = true;
+      Py_AtExit( &ShutDownViewer );
+      RegisterCleanViewer = true;
   }
 }
 

@@ -1,13 +1,13 @@
 # -*-python-*-
 
 Import( "env" )
-import os 
+import os
 pj = os.path.join
 
 
 subdirs = ['math','scenegraph','algo']
 if not eval(env['QT_VERSION']) is None:
-	subdirs += ['gui']
+    subdirs += ['gui']
 
 subdirs = [ pj(i,'SConscript') for i in subdirs]
 

@@ -3,31 +3,42 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/algo/grid/octree.h>
 #include <plantgl/algo/raycasting/ray.h>
@@ -37,7 +48,6 @@
 #include <plantgl/python/export_property.h>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
@@ -46,9 +56,9 @@ using namespace std;
 DEF_POINTEE(Octree)
 DEF_POINTEE(Mvs)
 
-std::string get_mvs_name(Mvs * obj){ return obj->getName(); } 
-ScenePtr get_mvs_scene(Mvs * obj){ return obj->getScene(); } 
-void set_mvs_scene(Mvs * obj, ScenePtr sc){ obj->setScene(sc); } 
+std::string get_mvs_name(Mvs * obj){ return obj->getName(); }
+ScenePtr get_mvs_scene(Mvs * obj){ return obj->getScene(); }
+void set_mvs_scene(Mvs * obj, ScenePtr sc){ obj->setScene(sc); }
 
 void export_Mvs()
 {
@@ -78,12 +88,12 @@ Vector3* intersect( Octree* self, Vector3* point, Vector3* direction )
 Vector3 get_oct_center(Octree * oc) { return oc->getCenter(); }
 Vector3 get_oct_size(Octree * oc) { return oc->getSize(); }
 
-object get_oct_details(Octree * oc) 
+object get_oct_details(Octree * oc)
 { return make_list<std::vector<std::vector<uint_t> > ,
                    list_converter<std::vector<uint_t> > >
                    (oc->getDetails())(); }
 
-object get_oct_sizes(Octree * oc) 
+object get_oct_sizes(Octree * oc)
 { return make_list(oc->getSizes())(); }
 
 
@@ -103,10 +113,10 @@ object oct_findfirstpoint(Octree * oct, const Ray& ray) {
 
 void export_Octree()
 {
-  scope octree = class_< Octree, OctreePtr, boost::noncopyable >("Octree", 
+  scope octree = class_< Octree, OctreePtr, boost::noncopyable >("Octree",
           init<const ScenePtr&,optional< uint_t,uint_t, Octree::ConstructionMethod> >
               ("Octree(scene,maxscale,maxelements,method)",args("scene","maxscale","maxelements","method")))
-     .def(init<const ScenePtr&,const Vector3&, const Vector3&, 
+     .def(init<const ScenePtr&,const Vector3&, const Vector3&,
               optional<uint_t,uint_t,Octree::ConstructionMethod> >
               ("Octree(scene,center,size,maxscale,maxelements,method)",args("scene","center","size","maxscale","maxelements","method")))
      .add_property("center",&get_oct_center)
@@ -124,7 +134,7 @@ void export_Octree()
   enum_<Octree::ConstructionMethod>("ConstructionMethod")
       .value("TriangleBased",Octree::TriangleBased)
       .value("ShapeBased",Octree::ShapeBased)
-	  .export_values()
+      .export_values()
       ;
 }
 

@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/scenegraph/appearance/color.h>
 #include <plantgl/scenegraph/container/colorarray.h>
@@ -35,7 +46,6 @@
 #include <boost/python.hpp>
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 #define bp boost::python
@@ -49,7 +59,7 @@ int PREFIX##_get##CHANNEL( TYPE* v ) \
 void PREFIX##_set##CHANNEL( TYPE* v, int val ) \
 { \
   if (val >= 0 && val < 256) \
-	v->get##CHANNEL() = (uchar_t)val; \
+    v->get##CHANNEL() = (uchar_t)val; \
   else throw PythonExc_ValueError(); \
 } \
 \
@@ -61,30 +71,30 @@ real_t PREFIX##_get##CHANNEL##Clamped( TYPE* v ) \
 void PREFIX##_set##CHANNEL##Clamped( TYPE* v, real_t val ) \
 { \
   if (val >= 0.0 && val <= 1.0) \
-	v->get##CHANNEL() = (uchar_t)(val*255); \
+    v->get##CHANNEL() = (uchar_t)(val*255); \
   else throw PythonExc_ValueError(); \
 } \
 
-std::string col3_str( Color3* v ) 
-{ 
-  stringstream ss; 
-  ss << "Color3(" 
-	 <<(int)v->getRed() << ',' 
-	 <<(int)v->getGreen() << ','  
-	 <<(int)v->getBlue() << ')' ; 
-  return ss.str(); 
-} 
+std::string col3_str( Color3* v )
+{
+  stringstream ss;
+  ss << "Color3("
+     <<(int)v->getRed() << ','
+     <<(int)v->getGreen() << ','
+     <<(int)v->getBlue() << ')' ;
+  return ss.str();
+}
 
-std::string col4_str( Color4* v ) 
-{ 
-  stringstream ss; 
-  ss << "Color4(" 
-	 <<(int)v->getRed() << ',' 
-	 <<(int)v->getGreen() << ','  
-	 <<(int)v->getBlue() << ','  
-	 <<(int)v->getAlpha() << ')' ; 
-  return ss.str(); 
-} 
+std::string col4_str( Color4* v )
+{
+  stringstream ss;
+  ss << "Color4("
+     <<(int)v->getRed() << ','
+     <<(int)v->getGreen() << ','
+     <<(int)v->getBlue() << ','
+     <<(int)v->getAlpha() << ')' ;
+  return ss.str();
+}
 
 EXPORT(col3,Color3,Red)
 EXPORT(col3,Color3,Green)
@@ -112,12 +122,12 @@ struct col4_pickle_suite : boost::python::pickle_suite
 };
 
 bp::object py_to_hsv8(Color3 * c){
-    TOOLS(Tuple3)<uchar_t> hsv = c->toHSV8();
+    Tuple3<uchar_t> hsv = c->toHSV8();
     return boost::python::make_tuple(hsv[0],hsv[1],hsv[2]);
 }
 
 bp::object py_to_hsv(Color3 * c){
-    TOOLS(Tuple3)<real_t> hsv = c->toHSV();
+    Tuple3<real_t> hsv = c->toHSV();
     return boost::python::make_tuple(hsv[0],hsv[1],hsv[2]);
 }
 
@@ -126,10 +136,10 @@ Color3 py_from_hsv( bp::object hsv){
     extract<uchar_t> ec1(hsv[1]);
     extract<uchar_t> ec2(hsv[2]);
     if (ec0.check() && ec1.check() && ec2.check()){
-        return Color3::fromHSV(TOOLS(Tuple3)<uchar_t>(ec0(),ec1(),ec2()));
+        return Color3::fromHSV(Tuple3<uchar_t>(ec0(),ec1(),ec2()));
     }
     else {
-        return Color3::fromHSV(TOOLS(Tuple3)<real_t>(extract<real_t>(hsv[0])(),
+        return Color3::fromHSV(Tuple3<real_t>(extract<real_t>(hsv[0])(),
                                                      extract<real_t>(hsv[1])(),
                                                      extract<real_t>(hsv[2])()));
 
@@ -138,12 +148,12 @@ Color3 py_from_hsv( bp::object hsv){
 
 
 bp::object py_to_hsva8(Color4 * c){
-    TOOLS(Tuple4)<uchar_t> hsv = c->toHSVA8();
+    Tuple4<uchar_t> hsv = c->toHSVA8();
     return boost::python::make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
 }
 
 bp::object py_to_hsva(Color4 * c){
-    TOOLS(Tuple4)<real_t> hsv = c->toHSVA();
+    Tuple4<real_t> hsv = c->toHSVA();
     return boost::python::make_tuple(hsv[0],hsv[1],hsv[2],hsv[3]);
 }
 
@@ -153,10 +163,10 @@ Color4 py_from_hsva( bp::object hsv){
     extract<uchar_t> ec2(hsv[2]);
     extract<uchar_t> ec3(hsv[3]);
     if (ec0.check() && ec1.check() && ec2.check() && ec3.check()){
-        return Color4::fromHSVA(TOOLS(Tuple4)<uchar_t>(ec0(),ec1(),ec2(),ec3()));
+        return Color4::fromHSVA(Tuple4<uchar_t>(ec0(),ec1(),ec2(),ec3()));
     }
     else {
-        return Color4::fromHSVA(TOOLS(Tuple4)<real_t>(extract<real_t>(hsv[0])(),
+        return Color4::fromHSVA(Tuple4<real_t>(extract<real_t>(hsv[0])(),
                                          extract<real_t>(hsv[1])(),
                                          extract<real_t>(hsv[2])(),
                                          extract<real_t>(hsv[3])()));

@@ -1,33 +1,44 @@
 /* -*-c++-*-
  *  ----------------------------------------------------------------------------
  *
- *       PlantGL: Plant Graphic Library
+ *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR Cirad/Inria/Inra Dap - Virtual Plant Team
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/math/util_vector.h>
 #include <plantgl/scenegraph/geometry/sor.h>
@@ -47,7 +58,6 @@
 
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 using namespace std;
 
@@ -65,21 +75,21 @@ object pi_getSectionAt(ProfileInterpolation * pi, real_t u){
 
 void export_ProfileInterpolation()
 {
-  
+
   class_< ProfileInterpolation, ProfileInterpolationPtr,boost::noncopyable >
-    ("ProfileInterpolation",init<Curve2DArrayPtr,TOOLS(RealArrayPtr),optional<uint_t,uint_t> >
+    ("ProfileInterpolation",init<Curve2DArrayPtr,RealArrayPtr,optional<uint_t,uint_t> >
         ("ProfileInterpolation([Curve2D] profiles,[float] knotList,int degree,int stride",
-		(bp::arg("profiles"),
-		 bp::arg("knotList"),
-		 bp::arg("degree")=ProfileInterpolation::DEFAULT_DEGREE,
-		 bp::arg("stride")=ProfileInterpolation::DEFAULT_STRIDE)))
+        (bp::arg("profiles"),
+         bp::arg("knotList"),
+         bp::arg("degree")=ProfileInterpolation::DEFAULT_DEGREE,
+         bp::arg("stride")=ProfileInterpolation::DEFAULT_STRIDE)))
     .def("getSectionAt",&pi_getSectionAt)
     .add_property("umin",&ProfileInterpolation::getUMin)
     .add_property("umax",&ProfileInterpolation::getUMax)
-	.DEC_BT_PROPERTY_WDV(degree,   ProfileInterpolation,Degree,          uint_t ,DEFAULT_DEGREE)
-	.DEC_BT_PROPERTY_WDV(stride,   ProfileInterpolation,Stride,          uint_t ,DEFAULT_STRIDE)
-	.DEC_PTR_PROPERTY(knotList,   ProfileInterpolation,KnotList,         RealArrayPtr)
-	.DEC_PTR_PROPERTY(profileList, ProfileInterpolation,ProfileList,     Curve2DArrayPtr)
+    .DEC_BT_PROPERTY_WDV(degree,   ProfileInterpolation,Degree,          uint_t ,DEFAULT_DEGREE)
+    .DEC_BT_PROPERTY_WDV(stride,   ProfileInterpolation,Stride,          uint_t ,DEFAULT_STRIDE)
+    .DEC_PTR_PROPERTY(knotList,   ProfileInterpolation,KnotList,         RealArrayPtr)
+    .DEC_PTR_PROPERTY(profileList, ProfileInterpolation,ProfileList,     Curve2DArrayPtr)
     .def("interpol",&ProfileInterpolation::interpol)
   ;
 }
@@ -87,37 +97,37 @@ void export_ProfileInterpolation()
 DEF_POINTEE(Swung)
 
 /*
-SwungPtr make_swung( boost::python::list profiles, boost::python::list angles, 
-		     uchar_t slices, bool ccw, uint_t degree, uint_t stride ) 
-{ 
+SwungPtr make_swung( boost::python::list profiles, boost::python::list angles,
+             uchar_t slices, bool ccw, uint_t degree, uint_t stride )
+{
   Curve2DArrayPtr profilearray= Curve2DArrayPtr(extract_pgllist<Curve2DArray>(profiles)());
   RealArrayPtr anglesarray= RealArrayPtr(extract_pgllist<RealArray>(angles)());
   return SwungPtr(new Swung(profilearray, anglesarray, slices, ccw, degree, stride));
 }
 
-SwungPtr make_swung5( boost::python::list profiles, boost::python::list angles, 
-		     uchar_t slices, bool ccw, uint_t degree) 
-{ 
-	return make_swung(profiles,angles,slices,ccw,degree,Swung::DEFAULT_STRIDE);
-}
- 
-SwungPtr make_swung4( boost::python::list profiles, boost::python::list angles, 
-		     uchar_t slices, bool ccw) 
-{ 
-	return make_swung(profiles,angles,slices,ccw,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
+SwungPtr make_swung5( boost::python::list profiles, boost::python::list angles,
+             uchar_t slices, bool ccw, uint_t degree)
+{
+    return make_swung(profiles,angles,slices,ccw,degree,Swung::DEFAULT_STRIDE);
 }
 
-SwungPtr make_swung3( boost::python::list profiles, 
-					  boost::python::list angles, 
-					  uchar_t slices) 
-{ 
-	return make_swung(profiles,angles,slices,Swung::DEFAULT_CCW,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
+SwungPtr make_swung4( boost::python::list profiles, boost::python::list angles,
+             uchar_t slices, bool ccw)
+{
+    return make_swung(profiles,angles,slices,ccw,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
 }
 
-SwungPtr make_swung2( boost::python::list profiles, 
-					  boost::python::list angles) 
-{ 
-	return make_swung(profiles,angles,Swung::DEFAULT_SLICES,Swung::DEFAULT_CCW,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
+SwungPtr make_swung3( boost::python::list profiles,
+                      boost::python::list angles,
+                      uchar_t slices)
+{
+    return make_swung(profiles,angles,slices,Swung::DEFAULT_CCW,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
+}
+
+SwungPtr make_swung2( boost::python::list profiles,
+                      boost::python::list angles)
+{
+    return make_swung(profiles,angles,Swung::DEFAULT_SLICES,Swung::DEFAULT_CCW,Swung::DEFAULT_DEGREE,Swung::DEFAULT_STRIDE);
 }
 */
 
@@ -126,34 +136,34 @@ ProfileInterpolationPtr sw_pi(Swung * sw){ return sw->getProfileInterpolation();
 void export_Swung()
 {
     export_ProfileInterpolation();
-  
+
   class_< Swung, SwungPtr, bases< SOR >,boost::noncopyable >
-    ("Swung","A surface defined by the revolution and interpolation of several 2D profiles along Z axis.", 
-	init<Curve2DArrayPtr,RealArrayPtr,optional<uchar_t,bool,uint_t,uint_t> >
-	  ("Swung(profileList,angleList,slices,ccw,degree,stride)",
-	  (bp::arg("profileList"),
-	   bp::arg("angleList"),
-	   bp::arg("slices") = SOR::DEFAULT_SLICES,
-	   bp::arg("ccw")    = Swung::DEFAULT_CCW,
-	   bp::arg("degree") = Swung::DEFAULT_DEGREE,
-	   bp::arg("stride") = Swung::DEFAULT_STRIDE)))
-/*    .def( "__init__", make_constructor( make_swung , default_call_policies(), 
+    ("Swung","A surface defined by the revolution and interpolation of several 2D profiles along Z axis.",
+    init<Curve2DArrayPtr,RealArrayPtr,optional<uchar_t,bool,uint_t,uint_t> >
+      ("Swung(profileList,angleList,slices,ccw,degree,stride)",
+      (bp::arg("profileList"),
+       bp::arg("angleList"),
+       bp::arg("slices") = SOR::DEFAULT_SLICES,
+       bp::arg("ccw")    = Swung::DEFAULT_CCW,
+       bp::arg("degree") = Swung::DEFAULT_DEGREE,
+       bp::arg("stride") = Swung::DEFAULT_STRIDE)))
+/*    .def( "__init__", make_constructor( make_swung , default_call_policies(),
                                         args("profiles","angles","slices","ccw","degree","stride")),
-                     (const char *)"Swung([Curve2D] profiles,list angles [,slices,ccw,degree,stride])" ) 
-    .def( "__init__", make_constructor( make_swung5, default_call_policies(), 
-                                        args("profiles","angles","slices","ccw","degree") )) 
-    .def( "__init__", make_constructor( make_swung4, default_call_policies(), 
-                                        args("profiles","angles","slices","ccw") ) ) 
-    .def( "__init__", make_constructor( make_swung3, default_call_policies(), 
-                                        args("profiles","angles","slices") ) ) 
-    .def( "__init__", make_constructor( make_swung2, default_call_policies(), 
+                     (const char *)"Swung([Curve2D] profiles,list angles [,slices,ccw,degree,stride])" )
+    .def( "__init__", make_constructor( make_swung5, default_call_policies(),
+                                        args("profiles","angles","slices","ccw","degree") ))
+    .def( "__init__", make_constructor( make_swung4, default_call_policies(),
+                                        args("profiles","angles","slices","ccw") ) )
+    .def( "__init__", make_constructor( make_swung3, default_call_policies(),
+                                        args("profiles","angles","slices") ) )
+    .def( "__init__", make_constructor( make_swung2, default_call_policies(),
                                         args("profiles","angles") )) */
     .DEF_PGLBASE(Swung)
-	.DEC_BT_NR_PROPERTY_WDV(ccw,      Swung,CCW,             bool  ,DEFAULT_CCW )
-	.DEC_BT_PROPERTY_WDV(degree,   Swung,Degree,          uint_t ,DEFAULT_DEGREE)
-	.DEC_BT_PROPERTY_WDV(stride,   Swung,Stride,          uint_t ,DEFAULT_STRIDE)
-	.DEC_PTR_PROPERTY(angleList,   Swung,AngleList,       RealArrayPtr)
-	.DEC_PTR_PROPERTY(profileList, Swung,ProfileList,     Curve2DArrayPtr)
+    .DEC_BT_NR_PROPERTY_WDV(ccw,      Swung,CCW,             bool  ,DEFAULT_CCW )
+    .DEC_BT_PROPERTY_WDV(degree,   Swung,Degree,          uint_t ,DEFAULT_DEGREE)
+    .DEC_BT_PROPERTY_WDV(stride,   Swung,Stride,          uint_t ,DEFAULT_STRIDE)
+    .DEC_PTR_PROPERTY(angleList,   Swung,AngleList,       RealArrayPtr)
+    .DEC_PTR_PROPERTY(profileList, Swung,ProfileList,     Curve2DArrayPtr)
     .add_property( "interpolator",&sw_pi);
     ;
 

@@ -3,31 +3,42 @@
  *
  *       PlantGL: The Plant Graphic Library
  *
- *       Copyright 1995-2007 UMR CIRAD/INRIA/INRA DAP 
+ *       Copyright CIRAD/INRIA/INRA
  *
- *       File author(s): F. Boudon et al.
+ *       File author(s): F. Boudon (frederic.boudon@cirad.fr) et al. 
  *
  *  ----------------------------------------------------------------------------
  *
- *                      GNU General Public Licence
+ *   This software is governed by the CeCILL-C license under French law and
+ *   abiding by the rules of distribution of free software.  You can  use, 
+ *   modify and/ or redistribute the software under the terms of the CeCILL-C
+ *   license as circulated by CEA, CNRS and INRIA at the following URL
+ *   "http://www.cecill.info". 
  *
- *       This program is free software; you can redistribute it and/or
- *       modify it under the terms of the GNU General Public License as
- *       published by the Free Software Foundation; either version 2 of
- *       the License, or (at your option) any later version.
+ *   As a counterpart to the access to the source code and  rights to copy,
+ *   modify and redistribute granted by the license, users are provided only
+ *   with a limited warranty  and the software's author,  the holder of the
+ *   economic rights,  and the successive licensors  have only  limited
+ *   liability. 
+ *       
+ *   In this respect, the user's attention is drawn to the risks associated
+ *   with loading,  using,  modifying and/or developing or reproducing the
+ *   software by the user in light of its specific status of free software,
+ *   that may mean  that it is complicated to manipulate,  and  that  also
+ *   therefore means  that it is reserved for developers  and  experienced
+ *   professionals having in-depth computer knowledge. Users are therefore
+ *   encouraged to load and test the software's suitability as regards their
+ *   requirements in conditions enabling the security of their systems and/or 
+ *   data to be ensured and,  more generally, to use and operate it in the 
+ *   same conditions as regards security. 
  *
- *       This program is distributed in the hope that it will be useful,
- *       but WITHOUT ANY WARRANTY; without even the implied warranty of
- *       MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE. See the
- *       GNU General Public License for more details.
- *
- *       You should have received a copy of the GNU General Public
- *       License along with this program; see the file COPYING. If not,
- *       write to the Free Software Foundation, Inc., 59
- *       Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *   The fact that you are presently reading this means that you have had
+ *   knowledge of the CeCILL-C license and that you accept its terms.
  *
  *  ----------------------------------------------------------------------------
  */
+
+
 
 #include <plantgl/algo/base/pointmanipulation.h>
 #include <boost/python.hpp>
@@ -37,7 +48,6 @@
 /* ----------------------------------------------------------------------- */
 
 PGL_USING_NAMESPACE
-TOOLS_USING_NAMESPACE
 using namespace boost::python;
 #define bp boost::python
 
@@ -61,7 +71,7 @@ object py_points_dijkstra_shortest_path(const Point3ArrayPtr points,
 
 object
 py_skeleton_from_distance_to_root_clusters(const Point3ArrayPtr points, uint32_t root, real_t binsize, uint32_t k, bool connect_all_points = false, bool verbose = false) {
-  TOOLS(Uint32Array1Ptr) group_parents;
+  Uint32Array1Ptr group_parents;
   IndexArrayPtr group_components;
   Point3ArrayPtr group_centroids = skeleton_from_distance_to_root_clusters(points, root, binsize, k, group_parents, group_components, connect_all_points, verbose);
   return make_tuple(group_centroids, group_parents, group_components);
@@ -89,7 +99,7 @@ py_merge_nodes(IndexArrayPtr tomerge,
 
 
 object
-py_determine_children(const TOOLS(Uint32Array1Ptr) parents) {
+py_determine_children(const Uint32Array1Ptr parents) {
   uint32_t root;
   IndexArrayPtr children = determine_children(parents, root);
   return make_tuple(children, root);
@@ -136,9 +146,9 @@ py_principal_curvatures_2(const Point3ArrayPtr points, const IndexArrayPtr adjac
 #endif
 
 object
-py_node_intersection_test(const TOOLS(Vector3) &root, real_t rootradius,
-                          const TOOLS(Vector3) &p1, real_t radius1,
-                          const TOOLS(Vector3) &p2, real_t radius2,
+py_node_intersection_test(const Vector3 &root, real_t rootradius,
+                          const Vector3 &p1, real_t radius1,
+                          const Vector3 &p2, real_t radius2,
                           real_t overlapfilter,
                           bool verbose = false) {
   ScenePtr *visu = NULL;
@@ -148,9 +158,9 @@ py_node_intersection_test(const TOOLS(Vector3) &root, real_t rootradius,
 }
 
 object
-py_node_continuity_test(const TOOLS(Vector3) &node, real_t radius,
-                        const TOOLS(Vector3) &parent, real_t parentradius,
-                        const TOOLS(Vector3) &child, real_t childradius,
+py_node_continuity_test(const Vector3 &node, real_t radius,
+                        const Vector3 &parent, real_t parentradius,
+                        const Vector3 &child, real_t childradius,
                         real_t overlapfilter, bool verbose = false) {
   ScenePtr *visu = NULL;
   if (verbose) visu = new ScenePtr();
@@ -159,7 +169,7 @@ py_node_continuity_test(const TOOLS(Vector3) &node, real_t radius,
 }
 
 object py_estimate_pointset_circle(const Point3ArrayPtr points, const Index &group, bp::object direction, bool bounding = false) {
-  std::pair<TOOLS(Vector3), real_t> res;
+  std::pair<Vector3, real_t> res;
   if (direction == bp::object()) res = pointset_circle(points, group, bounding);
   else res = pointset_circle(points, group, extract<Vector3>(direction)(), bounding);
   return make_pair_tuple(res);
@@ -202,7 +212,7 @@ object py_next_quotient_points_from_adjacency_graph(const real_t initiallevel,
                                                     const real_t binsize,
                                                     const Index &currents,
                                                     const IndexArrayPtr adjacencies,
-                                                    const TOOLS(RealArrayPtr) distances_to_root) {
+                                                    const RealArrayPtr distances_to_root) {
   return make_pair_tuple(next_quotient_points_from_adjacency_graph(initiallevel, binsize, currents, adjacencies, distances_to_root));
 }
 
@@ -304,8 +314,8 @@ void export_PointManip() {
   def("pointsets_orient_normals", (Point3ArrayPtr (*)(const Point3ArrayPtr, const Point3ArrayPtr, const IndexArrayPtr)) &pointsets_orient_normals, (bp::arg("normals"), bp::arg("points"), bp::arg("adjacencies")));
   def("pointsets_orient_normals", (Point3ArrayPtr (*)(const Point3ArrayPtr, uint32_t, const IndexArrayPtr)) &pointsets_orient_normals, (bp::arg("normals"), bp::arg("source"), bp::arg("adjacencies")));
 
-  def("point_section", (Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const TOOLS(Vector3) &, real_t)) &point_section, args("pid", "points", "adjacencies", "direction", "width"));
-  def("point_section", (Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const TOOLS(Vector3) &, real_t, real_t)) &point_section, args("pid", "points", "adjacencies", "direction", "width", "maxradius"));
+  def("point_section", (Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const Vector3 &, real_t)) &point_section, args("pid", "points", "adjacencies", "direction", "width"));
+  def("point_section", (Index (*)(uint32_t, const Point3ArrayPtr, const IndexArrayPtr, const Vector3 &, real_t, real_t)) &point_section, args("pid", "points", "adjacencies", "direction", "width", "maxradius"));
   def("points_sections", &points_sections, args("points", "adjacencies", "directions", "width"));
   def("section_normal", &section_normal, args("pointnormals", "section"));
   def("sections_normals", &sections_normals, args("pointnormals", "sections"));
