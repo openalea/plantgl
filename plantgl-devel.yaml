@@ -1,0 +1,29 @@
+name: plantgl-devel
+channels:
+    - defaults
+    - conda-forge
+    - openalea
+dependencies:
+    - python
+    - setuptools
+    - openalea.deploy
+    - scons =2
+    - openalea.sconsx
+    - boost
+    - qt
+    - pyqt
+    - openalea.vpltk
+    - ipython
+    - qtconsole
+    - pyopengl
+    - pyqglviewer
+    - nose
+    - bison [unix]
+    - flex 2.5.39 [unix]
+    #- m2-bison [win]
+    #- m2-flex  [win]
+    - cgal [unix]
+    - gmp [unix]
+    - qhull
+    - eigen
+    - ann
