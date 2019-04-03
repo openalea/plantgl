@@ -80,7 +80,7 @@ PlyCodec::PlyCodec() : SceneCodec("PLY", ReadWrite) {
   propertiesTypes["uchar"] = uchar_t();
   propertiesTypes["char"] = char();
   propertiesTypes["short"] = short();
-  propertiesTypes["ushort"] = u_short();
+  propertiesTypes["ushort"] = uint16_t();
   propertiesTypes["double"] = double();
 
   knowncolortypes.push_back("red");

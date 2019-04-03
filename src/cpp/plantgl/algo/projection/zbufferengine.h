@@ -87,21 +87,21 @@ public :
 
   /*! Default constructor. 
   */
-  ZBufferEngine(uint16_t imageWidth = 800, 
-                uint16_t imageHeight = 600, 
-                const Color3& backGroundColor = Color3(0,0,0),
-                eRenderingStyle style = eColorBased);
+  ZBufferEngine(uint16_t imageWidth, 
+                uint16_t imageHeight, 
+                const Color3& backGroundColor,
+                eRenderingStyle style);
     
     
-  ZBufferEngine(uint16_t imageWidth = 800, 
-                uint16_t imageHeight = 600, 
-                const Color4& backGroundColor = Color4::fromUint(Shape::NOID),
-                eRenderingStyle style = eIdBased);
+  ZBufferEngine(uint16_t imageWidth, 
+                uint16_t imageHeight, 
+                const Color4& backGroundColor,
+                eRenderingStyle style);
     
-  ZBufferEngine(uint16_t imageWidth = 800, 
-                uint16_t imageHeight = 600, 
-                uint32_t defaultid = Shape::NOID,
-                Color4::eColor4Format conversionformat = Color4::eARGB);
+  ZBufferEngine(uint16_t imageWidth, 
+                uint16_t imageHeight, 
+                uint32_t defaultid,
+                Color4::eColor4Format conversionformat);
 
   ZBufferEngine(uint16_t imageWidth = 800, 
                 uint16_t imageHeight = 600);    

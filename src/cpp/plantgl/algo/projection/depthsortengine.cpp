@@ -100,6 +100,8 @@ void DepthSortEngine::process(PointSetPtr pointset, MaterialPtr material, uint32
 }
 
 
+#ifdef WITH_CGAL
+
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Boolean_set_operations_2.h>
 #include <CGAL/Constrained_Delaunay_triangulation_2.h>
@@ -683,3 +685,4 @@ ScenePtr DepthSortEngine::getProjectionResult(Color4::eColor4Format format, bool
     return scene;
 }
 
+#endif

@@ -65,7 +65,7 @@ PGL_BEGIN_NAMESPACE
 /* ----------------------------------------------------------------------- */
 
   class CODEC_API PlyCodec : public SceneCodec {
-    typedef boost::variant<float, int, uint_t, char, uchar_t, short, u_short, double> propertyType;
+    typedef boost::variant<float, int, uint_t, char, uchar_t, short, uint16_t, double> propertyType;
 
     struct SizeVisitor : public boost::static_visitor<> {
       SizeVisitor()
