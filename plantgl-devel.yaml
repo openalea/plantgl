@@ -1,18 +1,15 @@
 name: plantgl-devel
 channels:
+    - local
     - defaults
     - conda-forge
     - openalea
 dependencies:
-    - python
+    - python =3
     - setuptools
-    - openalea.deploy
-    - scons =2
-    - openalea.sconsx
     - boost
     - qt
     - pyqt
-    - openalea.vpltk
     - ipython
     - qtconsole
     - pyopengl
@@ -20,10 +17,10 @@ dependencies:
     - nose
     - bison [unix]
     - flex 2.5.39 [unix]
-    #- m2-bison [win]
-    #- m2-flex  [win]
-    - cgal [unix]
     - gmp [unix]
+    - m2-bison [win]
+    - m2-flex [win]
+    - cgal
     - qhull
     - eigen
     - ann
