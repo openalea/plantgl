@@ -1,0 +1,25 @@
+# Compiler Check
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # Clang (Min 4.0)
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.0)
+        message(FATAL_ERROR "Clang 4.0 or greater is required.")
+    endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # GCC (Min 7.1)
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.1)
+        message(FATAL_ERROR "GCC 7.1 or greater is required.")
+    endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    # Visual C++ (Min 14.0)
+    if (MSVC_VERSION LESS 1900)
+        message(FATAL_ERROR "Microsoft Visual C++ 14.0 (Visual Studio 2015) or greater is required.")
+    endif()
+else()
+    # Other Compilers
+    message(WARNING "You are using an unknown compiler. It may not be supported.")
+endif()
+
+# C++17 Standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
