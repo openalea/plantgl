@@ -22,7 +22,7 @@ test_env = Environment(options=options, tools=[])
 qt_version = eval(test_env['QT_VERSION'])
 
 
-tools = ['bison', 'flex', 'opengl', 'qhull','boost_python','boost_thread','eigen','ann']
+tools = ['bison', 'flex', 'opengl', 'qhull', 'eigen', 'ann']
 
 if not qt_version is None:
     tools += ['qt'+str(qt_version)]
@@ -42,7 +42,7 @@ if not qt_version:
 try:
     # Test the whether SconsX provides FLEX and BISON flags
     env['WITH_FLEX'] and env['WITH_BISON']
-except KeyError, ke:
+except KeyError as ke:
     env['WITH_FLEX']  = not env['LEX'] is None and os.path.exists(env['LEX'])
     if env['WITH_FLEX']: env.Append(CPPDEFINES =["WITH_FLEX"])
 
@@ -52,6 +52,7 @@ except KeyError, ke:
 if 'linux' in sys.platform:
     env.AppendUnique( LIBS = ['z'] )
 
+env.Append( ENV = {'PATH' : os.environ['PATH']} )
 
 prefix = env['build_prefix']
 
