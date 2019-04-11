@@ -71,10 +71,9 @@ find_package(Qhull)
 
 if (BISON_FOUND AND FLEX_FOUND)
     # Build with Bison and Flex
-    define_macro(WITH_BISONFLEX 1)
-    define_macro(BISON_HPP 1)
-    define_macro(WITH_BISON 1)
     define_macro(WITH_FLEX 1)
+    define_macro(WITH_BISON 1)
+    define_macro(BISON_HPP 1)
 else()
     message(STATUS "Building without Bison/Flex - Not found.")
 endif()
