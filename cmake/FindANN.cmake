@@ -22,7 +22,7 @@ endif()
 
 if (ANN_FOUND)
     # Build with ANN
-    add_compile_definitions(WITH_ANN=1)
+    define_macro(WITH_ANN 1)
     
     include_directories(${ANN_INCLUDE_DIRS})
     

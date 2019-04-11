@@ -12,7 +12,7 @@ if (Qt5Core_FOUND AND Qt5OpenGL_FOUND AND Qt5Network_FOUND AND Qt5Widgets_FOUND 
     set(QT5_FOUND ON)
     message(STATUS "Found Qt5: Version ${Qt5Core_VERSION}")
 
-    add_compile_definitions(PGL_QT_VERSION=5)
+    define_macro(PGL_QT_VERSION 5)
 
     include_directories(${Qt5Core_INCLUDE_DIRS})
     include_directories(${Qt5Widgets_INCLUDE_DIRS})
@@ -24,5 +24,5 @@ else()
     set(QT5_FOUND OFF)
     message(STATUS "Building without Qt - Library not found.")
     
-    add_compile_definitions(PGL_WITHOUT_QT=1)
+    define_macro(PGL_WITHOUT_QT 1)
 endif()

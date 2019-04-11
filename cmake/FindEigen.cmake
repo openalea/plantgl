@@ -18,7 +18,7 @@ endif()
 
 if (EIGEN_FOUND)
     # Build with Eigen
-    add_compile_definitions(WITH_EIGEN=1)
+    define_macro(WITH_EIGEN 1)
     
     include_directories(${EIGEN_INCLUDE_DIRS})
     

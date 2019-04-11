@@ -22,7 +22,8 @@ endif()
 
 if (QHULL_FOUND)
     # Build with Qhull
-    add_compile_definitions(WITH_QHULL=1 WITH_QHULL_2011=1)
+    define_macro(WITH_QHULL 1)
+    define_macro(WITH_QHULL_2011 1)
     
     include_directories(${QHULL_INCLUDE_DIRS})
     

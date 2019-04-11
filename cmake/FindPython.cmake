@@ -7,7 +7,7 @@ if (Python3_FOUND)
         include_directories(${Python3_INCLUDE_DIRS})
     endif()
 
-    add_compile_definitions(WITH_PYTHON=1)
+    define_macro(WITH_PYTHON 1)
 
     set(BOOST_PYTHON_LIB "python3${Python3_VERSION_MINOR}")
 else()
