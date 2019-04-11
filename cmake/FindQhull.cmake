@@ -27,5 +27,5 @@ if (QHULL_FOUND)
     include_directories(${QHULL_INCLUDE_DIRS})
     
 elseif (NOT Qhull_FIND_REQUIRED)
-    message(WARNING "Building without Qhull - library not found.")
+    message(STATUS "Building without Qhull - Library not found.")
 endif()

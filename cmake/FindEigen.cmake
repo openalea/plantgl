@@ -6,7 +6,7 @@ if (EIGEN_INCLUDE_DIR)
     set(EIGEN_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR})
     
     # EIGEN found
-    message(STATUS "Found Eigen: ${EIGEN_INCLUDE_DIR}")
+    message(STATUS "Found Eigen: ${EIGEN_INCLUDE_DIR}/Eigen")
 else()
     set(EIGEN_FOUND OFF)
     
@@ -23,5 +23,5 @@ if (EIGEN_FOUND)
     include_directories(${EIGEN_INCLUDE_DIRS})
     
 elseif (NOT Eigen_FIND_REQUIRED)
-    message(WARNING "Building without Eigen - library not found.")
+    message(STATUS "Building without Eigen - Library not found.")
 endif()

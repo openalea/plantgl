@@ -11,5 +11,5 @@ if (Python3_FOUND)
 
     set(BOOST_PYTHON_LIB "python3${Python3_VERSION_MINOR}")
 else()
-    message("Building without Python - library not found.")
+    message(STATUS "Building without Python - Library not found.")
 endif()

@@ -27,5 +27,5 @@ if (ANN_FOUND)
     include_directories(${ANN_INCLUDE_DIRS})
     
 elseif (NOT ANN_FIND_REQUIRED)
-    message(WARNING "Building without ANN - library not found.")
+    message(STATUS "Building without ANN - Library not found.")
 endif()
