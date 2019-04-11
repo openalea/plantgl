@@ -12,8 +12,6 @@ include("CXX17")
 
 # --- Libraries
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-
 find_package(Threads REQUIRED)
 find_package(Python)
 find_package(Qt)
@@ -24,7 +22,7 @@ set(Boost_NO_SYSTEM_PATHS ON)
 set(Boost_USE_MULTITHREAD ON)
 set(Boost_USE_STATIC_LIBS OFF)
 
-find_package(Boost 1.67 COMPONENTS system thread ${BOOST_PY_LIB})
+find_package(Boost 1.67 COMPONENTS system thread ${BOOST_PYTHON_LIB})
 
 if (Boost_FOUND)
     # Build with Boost
@@ -34,11 +32,6 @@ else()
 endif()
 
 # Other Libraries
-set(ANN_ROOT ${CONDA_ENV})
-set(CGAL_ROOT ${CONDA_ENV})
-set(GMP_ROOT ${CONDA_ENV})
-set(QHULL_ROOT ${CONDA_ENV})
-
 find_package(OpenGL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(ZLIB REQUIRED)

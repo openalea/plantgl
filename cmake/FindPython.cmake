@@ -9,7 +9,7 @@ if (Python3_FOUND)
 
     add_compile_definitions(WITH_PYTHON=1)
 
-    set(BOOST_PY_LIB "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
+    set(BOOST_PYTHON_LIB "python3${Python3_VERSION_MINOR}")
 else()
     message("Building without Python - library not found.")
 endif()

@@ -1,8 +1,8 @@
 # Include Directory
-find_path(ANN_INCLUDE_DIR "ANN/ANN.h" PATHS "${ANN_ROOT}/include")
+find_path(ANN_INCLUDE_DIR "ANN/ANN.h" PATHS $ENV{PATH})
 
 # Library Directory
-find_library(ANN_LIBRARY NAMES "ann" "libann" PATHS "${ANN_ROOT}/lib")
+find_library(ANN_LIBRARY NAMES "ann" "libann" PATHS $ENV{PATH})
 
 if (ANN_INCLUDE_DIR AND ANN_LIBRARY)
     set(ANN_FOUND ON)

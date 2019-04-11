@@ -1,8 +1,8 @@
 # Include Directory
-find_path(QHULL_INCLUDE_DIR "qhull/qhull_a.h" "libqhull/qhull_a.h" PATHS "${QHULL_ROOT}/include")
+find_path(QHULL_INCLUDE_DIR "qhull/qhull_a.h" "libqhull/qhull_a.h" PATHS $ENV{PATH})
 
 # Library Directory
-find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" PATHS "${QHULL_ROOT}/lib")
+find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" PATHS $ENV{PATH})
 
 if (QHULL_INCLUDE_DIR AND QHULL_LIBRARY)
     set(QHULL_FOUND ON)
