@@ -22,4 +22,4 @@ add_dependencies(_pglgui pglmath pglgui pglsg pgltool)
 
 # --- Output Library
 
-install(TARGETS _pglgui LIBRARY DESTINATION "openalea/plantgl/gui")
+install(TARGETS _pglgui LIBRARY DESTINATION "lib")

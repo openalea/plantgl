@@ -18,4 +18,4 @@ add_dependencies(_pglmath pglmath)
 
 # --- Output Library
 
-install(TARGETS _pglmath LIBRARY DESTINATION "openalea/plantgl/math")
+install(TARGETS _pglmath LIBRARY DESTINATION "lib")

@@ -22,4 +22,4 @@ add_dependencies(_pglalgo pglmath pgltool pglsg pglalgo)
 
 # --- Output Library
 
-install(TARGETS _pglalgo LIBRARY DESTINATION "openalea/plantgl/algo")
+install(TARGETS _pglalgo LIBRARY DESTINATION "lib")

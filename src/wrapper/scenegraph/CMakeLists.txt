@@ -18,4 +18,4 @@ add_dependencies(_pglsg pglmath pglsg pglalgo pgltool)
 
 # --- Output Library
 
-install(TARGETS _pglsg LIBRARY DESTINATION "openalea/plantgl/scenegraph")
+install(TARGETS _pglsg LIBRARY DESTINATION "lib")
