@@ -65,7 +65,7 @@ class Image;
 typedef RCPtr<Image> ImagePtr;
 
 
-class Image : public RefCountObject{
+class SG_API Image : public RefCountObject{
 protected:
     std::vector<uchar_t> __data;
     uint_t __width;
