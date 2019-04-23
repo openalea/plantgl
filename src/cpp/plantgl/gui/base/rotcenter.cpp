@@ -40,7 +40,7 @@
 
 
 #include "rotcenter.h"
-#include "interface/rotcenteredit.h"
+#include "interface/ui_rotcenteredit.h"
 #include "icons.h"
 #include "glframe.h"
 #include "scenegl.h"

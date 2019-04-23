@@ -113,8 +113,8 @@
 #include "errordialog.h"
 #include "util_qwidget.h"
 #include "configuration.h"
-#include "interface/gloptions.h"
-#include "interface/linewidthcontrol.h"
+#include "interface/ui_gloptions.h"
+#include "interface/ui_linewidthcontrol.h"
 
 #include "event.h"
 // #include "editgeomscenegl.h"

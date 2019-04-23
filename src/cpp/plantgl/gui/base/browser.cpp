@@ -59,7 +59,7 @@
 
 #include "browser.h"
 #include "scenegl.h"
-#include "interface/qbrowser.h"
+#include "interface/ui_qbrowser.h"
 
 /* ----------------------------------------------------------------------- */
 

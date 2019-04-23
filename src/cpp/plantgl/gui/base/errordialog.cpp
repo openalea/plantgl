@@ -41,7 +41,7 @@
 
 #include "errordialog.h"
 #include "configuration.h"
-#include "interface/messagedisplayer.h"
+#include "interface/ui_messagedisplayer.h"
 #include <QtGui/qevent.h>
 #include <QtGui/qclipboard.h>
 #include <QtCore/qstringlist.h>

@@ -57,7 +57,7 @@
 /// Viewer
 #include "util_qstring.h"
 #include "../base/util_qwidget.h"
-#include "interface/codecview.h"
+#include "interface/ui_codecview.h"
 
 #include <plantgl/tool/util_string.h>
 
@@ -461,7 +461,7 @@ ViewGeomSceneGL::addProperties(QTabWidget * tab)
     QTreeWidgetItem * itemCodec = NULL;
     QTreeWidgetItem * itemFormat = NULL;
     QMap<SceneCodec::Mode,QString> modeMap;
-    modeMap[SceneCodec::None] = "None";
+    modeMap[SceneCodec::Nothing] = "None";
     modeMap[SceneCodec::Read] = "Read";
     modeMap[SceneCodec::Write] = "Write";
     modeMap[SceneCodec::ReadWrite] = "Read/Write";
