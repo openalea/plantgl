@@ -25,7 +25,7 @@ endmacro()
 # --- (Win32) Multithreaded Compilation
 
 if (MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /W0")
 endif()
 
 # --- Config Header File
@@ -114,4 +114,4 @@ link_directories("${CONDA_ENV}/lib")
 # --- Source Directories
 
 add_subdirectory("src/cpp")
-#add_subdirectory("src/wrapper")
+add_subdirectory("src/wrapper")
