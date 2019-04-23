@@ -8,7 +8,7 @@ add_library(pglmath SHARED ${SRC_FILES})
 
 if (WIN32)
     # Export DLL on Windows
-    target_compile_definitions(pglmath PUBLIC PGLMATH_MAKEDLL)
+    target_compile_definitions(pglmath PRIVATE PGLMATH_MAKEDLL)
 endif()
 
 # --- Output Library

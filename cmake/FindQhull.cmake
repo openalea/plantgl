@@ -2,7 +2,11 @@
 find_path(QHULL_INCLUDE_DIR "qhull/qhull_a.h" "libqhull/qhull_a.h" PATHS $ENV{PATH})
 
 # Library Directory
-find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" PATHS $ENV{PATH})
+if (WIN32)
+    find_library(QHULL_LIBRARY NAMES "qhullstatic" "libqhullstatic" PATHS $ENV{PATH})
+else()
+    find_library(QHULL_LIBRARY NAMES "qhull" "libqhull" PATHS $ENV{PATH})
+endif()
 
 if (QHULL_INCLUDE_DIR AND QHULL_LIBRARY)
     set(QHULL_FOUND ON)

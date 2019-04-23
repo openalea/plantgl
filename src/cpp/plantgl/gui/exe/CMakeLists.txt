@@ -2,7 +2,7 @@
 
 file(GLOB_RECURSE SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_library(pglviewer SHARED ${SRC_FILES})
+add_executable(pglviewer ${SRC_FILES})
 
 # --- Linked Libraries
 

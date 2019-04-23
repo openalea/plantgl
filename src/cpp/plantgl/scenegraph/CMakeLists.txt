@@ -20,7 +20,7 @@ add_dependencies(pglsg pgltool pglmath)
 
 if (WIN32)
     # Export DLL on Windows
-    target_compile_definitions(pglsg PUBLIC SG_MAKEDLL)
+    target_compile_definitions(pglsg PRIVATE SG_MAKEDLL)
 endif()
 
 # --- Output Library

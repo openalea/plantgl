@@ -1,6 +1,3 @@
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-
 find_package(Qt5Core CONFIG)
 find_package(Qt5OpenGL CONFIG)
 find_package(Qt5Network CONFIG)

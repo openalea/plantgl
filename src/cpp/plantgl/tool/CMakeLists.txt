@@ -14,7 +14,7 @@ endif()
 
 if (WIN32)
     # Export DLL on Windows
-    target_compile_definitions(pgltool PUBLIC TOOLS_MAKEDLL)
+    target_compile_definitions(pgltool PRIVATE TOOLS_MAKEDLL)
 endif()
 
 # --- Output Library
