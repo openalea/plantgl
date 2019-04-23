@@ -97,7 +97,7 @@ void export_Material()
         ("Material",
          "The material of an object. It determine the way light reflect off an object to create color.",
          init< const Material & >())
-    .def(init< optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
+    .def(init< boost::python::optional<const Color3&, const real_t&, const Color3&,const Color3&,const real_t&,const real_t&> >
          ("Material( ambient=(160,160,160),diffuse=1,specular=(40,40,40),emission=(0,0,0),shininess=1,transparency=0)",
           (bp::arg("ambient")=Material::DEFAULT_AMBIENT,
            bp::arg("diffuse")=Material::DEFAULT_DIFFUSE,
@@ -107,7 +107,7 @@ void export_Material()
            bp::arg("transparency")=Material::DEFAULT_TRANSPARENCY)
          ))
     .def(init< const string&,
-         optional< const Color3&, const real_t&,
+         boost::python::optional< const Color3&, const real_t&,
          const Color3&, const Color3&, const real_t&, const real_t&> >
          ("Material( name, ambient=(160,160,160), diffuse=1, specular=(40,40,40), emission=(0,0,0), shininess=1, transparency=0)",
           (bp::arg("name"),

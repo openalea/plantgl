@@ -236,7 +236,7 @@ struct IdValueSorter {
 
 IndexArrayPtr py_cut(RealArray * a, RealArrayPtr bins, bool filteremptygroups = true)
 {
-    Index ids = range<Index>(a->size(),0,1);
+    Index ids = PGL::range<Index>(a->size(),0,1);
     std::stable_sort(ids.begin(),ids.end(),IdValueSorter(a));
     IndexArrayPtr result(new IndexArray());
     RealArray::const_iterator itbins = bins->begin();

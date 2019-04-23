@@ -82,7 +82,7 @@ void export_Spectrum()
 void export_MonoSpectral()
 {
   class_< MonoSpectral, MonoSpectralPtr, bases< Spectrum >,  boost::noncopyable >
-    ("MonoSpectral", "Mono spectral appearance property of an object.", init< optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
+    ("MonoSpectral", "Mono spectral appearance property of an object.", init< boost::python::optional< real_t, real_t > >("MonoSpectral([ reflectance, transmittance ])"))
     .DEC_BT_PROPERTY(transmittance,MonoSpectral, Transmittance, real_t)
     .DEC_BT_PROPERTY(reflectance,MonoSpectral, Reflectance, real_t)
     .DEF_PGLBASE(MonoSpectral)
@@ -93,7 +93,7 @@ void export_MonoSpectral()
 void export_MultiSpectral()
 {
   class_< MultiSpectral, MultiSpectralPtr, bases< Spectrum >,  boost::noncopyable >
-    ("MultiSpectral", "Multi spectral appearance property of an object.", init< RealArrayPtr, RealArrayPtr, optional < const Index3& > >
+    ("MultiSpectral", "Multi spectral appearance property of an object.", init< RealArrayPtr, RealArrayPtr, boost::python::optional < const Index3& > >
      ("MultiSpectral(reflectance= RealArray, transmittance= RealArray [, filter= index3])"))
     .DEF_PGLBASE(MultiSpectral)
      ;

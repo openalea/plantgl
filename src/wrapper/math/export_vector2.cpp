@@ -273,7 +273,7 @@ void export_Vector2()
 {
   {
   scope v2 = class_< Vector2 >("Vector2", init< const Vector2 & >("Vector2(Vector2 v)",args("v")))
-    .def(init< optional< real_t, real_t > >("Vector2(real_t x , real_t y)",args("x","y")))
+    .def(init< boost::python::optional< real_t, real_t > >("Vector2(real_t x , real_t y)",args("x","y")))
     .def(init< const Vector2::Polar & >("Vector2(Polar p)",args("p")))
     .def(self_ns::str(self))
     .def( "__str__", v2_repr )

@@ -58,7 +58,7 @@ DEF_POINTEE(Hull)
 void export_ExtrudedHull()
 {
   class_< ExtrudedHull, ExtrudedHullPtr,  bases< Hull >,boost::noncopyable >
-    ("ExtrudedHull","A hull extruded by a vertical and an horizontal profiles.", init <Curve2DPtr, Curve2DPtr, optional< bool > >
+    ("ExtrudedHull","A hull extruded by a vertical and an horizontal profiles.", init <Curve2DPtr, Curve2DPtr, boost::python::optional< bool > >
     ("ExtrudedHull(vertical,horizontal) : Constructs a ExtrudedHull with the profiles 'vertical' and 'horizontal'. ",
     (bp::arg("vertical"),bp::arg("horizontal"),bp::arg("ccw")=ExtrudedHull::DEFAULT_CCW)))
     .DEF_PGLBASE(ExtrudedHull)

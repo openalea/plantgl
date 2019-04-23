@@ -128,7 +128,7 @@ object ray_intersect_bbx(Ray * ray, const BoundingBox& bbox)
 
 void export_Ray()
 {
-  class_< Ray > ("Ray", init<optional<const Vector3&, const Vector3&> >("Ray(Vector3 origin, Vector3 direction)", args("origin","direction") ))
+  class_< Ray > ("Ray", init<boost::python::optional<const Vector3&, const Vector3&> >("Ray(Vector3 origin, Vector3 direction)", args("origin","direction") ))
       .def("isValid",&Ray::isValid)
       .DEC_CT_PROPERTY(origin,Ray,Origin,Vector3)
       .DEC_CT_PROPERTY(direction,Ray,Direction,Vector3)

@@ -200,7 +200,7 @@ void export_SpaceColonization()
 
 
       class_< PyGraphColonization, PyGraphColonizationPtr, boost::noncopyable >
-        ("GraphColonization", init<Point3ArrayPtr, real_t , const IndexArrayPtr, uint32_t, optional<real_t, size_t> >("Construct a GraphColonization.",
+        ("GraphColonization", init<Point3ArrayPtr, real_t , const IndexArrayPtr, uint32_t, boost::python::optional<real_t, size_t> >("Construct a GraphColonization.",
                              bp::args("attractors","perception_radius","graph","root","powerdistance","spacetilingratio") ))
         BASESCA(GraphColonization)
         .def_readwrite("graph",&GraphColonization::graph)

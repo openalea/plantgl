@@ -84,13 +84,13 @@ void export_Shape()
   class_< Shape, ShapePtr, bases< Shape3D > , boost::noncopyable >("Shape",
       "A Shape is composed of a Geometry object and an Appearance object.\n"
       "There is an optional id to identy the shape and parent id to store shape relationship.",
-      init< optional<const GeometryPtr&, const AppearancePtr &, uint_t, uint_t > >
+      init< boost::python::optional<const GeometryPtr&, const AppearancePtr &, uint_t, uint_t > >
             ("Shape( geometry, appearance, id, parentId )",
                 (bp::arg("geometry")   = GeometryPtr(),
                  bp::arg("appearance") = Material::DEFAULT_MATERIAL,
                  bp::arg("id")         = Shape::NOID,
                  bp::arg("parentId")   = Shape::NOID )))
-    .def(init< optional<const GeometryPtr&, const ImageTexturePtr &, uint_t, uint_t > >
+    .def(init< boost::python::optional<const GeometryPtr&, const ImageTexturePtr &, uint_t, uint_t > >
             ("Shape( geometry, appearance, id, parentId )",
                 (bp::arg("geometry"),
                  bp::arg("appearance"),

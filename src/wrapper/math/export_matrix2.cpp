@@ -76,7 +76,7 @@ object py_svd (const Matrix2& m){
 
 void export_Matrix2()
 {
-  class_< Matrix2 >( "Matrix2", init< optional<real_t,real_t,real_t,real_t> >("Matrix2(f,f,f,f)") )
+  class_< Matrix2 >( "Matrix2", init< boost::python::optional<real_t,real_t,real_t,real_t> >("Matrix2(f,f,f,f)") )
   .def(init<const Vector2&, const Vector2&>())
   .def(vector_matrix_func<Matrix2,Vector2>())
   .def( "data", &matrix_data<Matrix2,4> )

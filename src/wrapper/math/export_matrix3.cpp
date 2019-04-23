@@ -75,7 +75,7 @@ object pyToAxisAngle(const Matrix3 *m)
 
 void export_Matrix3()
 {
-  class_< Matrix3 >( "Matrix3", init< optional< real_t,real_t,real_t,
+  class_< Matrix3 >( "Matrix3", init< boost::python::optional< real_t,real_t,real_t,
                                     real_t,real_t, real_t,
                                         real_t,real_t, real_t > >
              ("Matrix3(f,f,f,f,f,f,f,f,f)") )

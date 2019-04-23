@@ -61,7 +61,7 @@ void export_Cone()
 {
   class_< Cone, ConePtr, bases< SOR > , boost::noncopyable >
     ("Cone", "A cone structure defined by a radius and a height. Its base is centered at origin.",
-    init< optional<const real_t&,const real_t&, bool,uchar_t > >
+    init< boost::python::optional<const real_t&,const real_t&, bool,uchar_t > >
                ("Cone(radius, height [, solid, slices])",
                (bp::arg("radius")=Cone::DEFAULT_RADIUS,
                 bp::arg("height")=Cone::DEFAULT_HEIGHT,

@@ -80,13 +80,13 @@ void export_ImageTexture()
 {
   class_< ImageTexture, ImageTexturePtr, bases<  SceneObject >, boost::noncopyable >
     ( "ImageTexture", "The image of a textured object.",
-      init< string, optional< bool, bool, bool> >(
+      init< string, boost::python::optional< bool, bool, bool> >(
         (bp::arg("filename"),
          bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
          bp::arg("repeatT") = ImageTexture::DEFAULT_REPEATT,
          bp::arg("mipmaping") = ImageTexture::DEFAULT_MIPMAPING),
           "ImageTexture(filename [, transparency, repeatS, repeatT, mipmaping])"))
-    .def(init< string,string, optional< bool, bool, bool> >(
+    .def(init< string,string, boost::python::optional< bool, bool, bool> >(
         (bp::arg("name"),
          bp::arg("filename"),
          bp::arg("repeatS") = ImageTexture::DEFAULT_REPEATS,
@@ -124,7 +124,7 @@ void export_Texture2DTransformation()
 {
   class_< Texture2DTransformation, Texture2DTransformationPtr, bases<  SceneObject >, boost::noncopyable >
     ( "Texture2DTransformation", "The transformation of a texture 2D.",
-    init< optional<std::string,Vector2,Vector2,Vector2,real_t> >
+    init< boost::python::optional<std::string,Vector2,Vector2,Vector2,real_t> >
         ((bp::arg("name"),
           bp::arg("scale")=Texture2DTransformation::DEFAULT_SCALE,
           bp::arg("translation")=Texture2DTransformation::DEFAULT_TRANSLATION,
@@ -167,10 +167,10 @@ void export_Texture2D()
 {
   class_< Texture2D, Texture2DPtr, bases<  Appearance >, boost::noncopyable >
     ( "Texture2D", "The material of a textured object.",
-       init< ImageTexturePtr, optional<Texture2DTransformationPtr, Color4> >
+       init< ImageTexturePtr, boost::python::optional<Texture2DTransformationPtr, Color4> >
          (args("image","transformation","baseColor"),
           "Texture2D(image [,transformation, baseColor])"))
-       .def(init< string, ImageTexturePtr, optional<Texture2DTransformationPtr, Color4> >
+       .def(init< string, ImageTexturePtr, boost::python::optional<Texture2DTransformationPtr, Color4> >
          (args("name","image","transformation","baseColor"),
           "Texture2D(name, image [,transformation, baseColor])"))
     .DEC_PTR_PROPERTY(image,Texture2D,Image,ImageTexturePtr )

@@ -121,7 +121,7 @@ BoundingBox *  bbx_fromobj( boost::python::object o )
 void export_BoundingBox()
 {
   class_< BoundingBox, BoundingBoxPtr, bases<RefCountObject> , boost::noncopyable >
-    ("BoundingBox", "An axis aligned box represented by 2 opposite corners.", init< optional < const Vector3&, const Vector3& > >
+    ("BoundingBox", "An axis aligned box represented by 2 opposite corners.", init< boost::python::optional < const Vector3&, const Vector3& > >
      ( "BoundingBox(Vector3 lowerLeft, Vector3 upperRight) "
        "Constructs a BoundingBox with the 2 opposing corners lowerLeft and upperRight.",
        (bp::arg("lowerLeft")= TOOLS(Vector3::ORIGIN),bp::arg("upperRight")=TOOLS(Vector3::ORIGIN))
