@@ -66,6 +66,8 @@ DepthSortEngine::~DepthSortEngine()
 
 void DepthSortEngine::process(TriangleSetPtr triangles, AppearancePtr appearance, uint32_t id)
 {
+	#ifdef WITH_CGAL
+
     /*
     const Point3ArrayPtr points(triangles->getPointList());
     const Index3ArrayPtr indices(triangles->getIndexList());
@@ -86,7 +88,9 @@ void DepthSortEngine::process(TriangleSetPtr triangles, AppearancePtr appearance
 
         processTriangle(v0, v1, v2, id);
 
-    }    
+    }  
+
+	#endif
 }
 
 void DepthSortEngine::process(PolylinePtr polyline, MaterialPtr material, uint32_t id)
