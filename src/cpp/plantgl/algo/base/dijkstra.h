@@ -140,12 +140,12 @@ class DijkstraReusingAllocator {
         uint32_t * parents;
         color * colored;
 #ifdef PGL_USE_FIBONACCI_HEAP
-        dijkstrahandle * handles
+		dijkstrahandle * handles;
 #endif
 
         Cache() : distances(), parents(NULL), colored(NULL)
 #ifdef PGL_USE_FIBONACCI_HEAP
-        handles(NULL)
+        , handles(NULL)
 #endif
         {}
 
@@ -334,7 +334,7 @@ std::pair<Uint32Array1Ptr,RealArrayPtr>  dijkstra_shortest_paths(const IndexArra
      dijkstraheap Q(comp);
 
 #ifdef PGL_USE_FIBONACCI_HEAP
-     handle * handles = new handle[nbnodes];
+     dijkstrahandle * handles = new dijkstrahandle[nbnodes];
      handles[root] = Q.push(root);
 #else
      Q.push(root);

@@ -102,7 +102,20 @@ ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight,uint32_t 
     __triangleshader(new IdBasedShader(this, defaultid, conversionformat))
 {
 }    
-    
+
+ZBufferEngine::ZBufferEngine(uint16_t imageWidth, uint16_t imageHeight) :
+	ProjectionEngine(),
+	__imageWidth(imageWidth),
+	__imageHeight(imageHeight),
+	__lightPosition(0, 0, 1),
+	__lightAmbient(255, 255, 255),
+	__lightDiffuse(255, 255, 255),
+	__lightSpecular(255, 255, 255),
+	__alphathreshold(0.99),
+	__depthBuffer(new RealArray2(uint_t(imageWidth), uint_t(imageHeight), REAL_MAX)),
+	__frameBuffer(),
+	__triangleshader(NULL)
+{}  
     
 ZBufferEngine::~ZBufferEngine()
 {
