@@ -22,6 +22,12 @@ macro(define_macro DEF_NAME DEF_VALUE)
     file(APPEND ${CONFIG_HEADER} "\n#define ${DEF_NAME} ${DEF_VALUE}\n")
 endmacro()
 
+# --- (Win32) Multithreaded Compilation
+
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
 # --- Config Header File
 
 file(WRITE ${CONFIG_HEADER} "// User configuration of the PlantGL project.\n")
@@ -100,6 +106,10 @@ include_directories("src/cpp")
 include_directories(${PNG_INCLUDE_DIRS})
 include_directories(${ZLIB_INCLUDE_DIRS})
 include_directories(${OPENGL_INCLUDE_DIR})
+
+# --- Library Directory
+
+link_directories("${CONDA_ENV}/lib")
 
 # --- Source Directories
 
