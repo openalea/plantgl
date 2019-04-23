@@ -75,14 +75,14 @@ class ProjectionCamera;
 typedef RCPtr<ProjectionCamera> ProjectionCameraPtr;
 
 
-class ProjectionCamera : public RefCountObject{
+class ALGO_API ProjectionCamera : public RefCountObject{
 public:
     enum eProjectionType {
         eOrthographic,
         ePerspective
     };
 
-    ProjectionCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far, eProjectionType projection = eOrthographic);
+   ProjectionCamera(real_t left, real_t right, real_t bottom, real_t top, real_t near, real_t far, eProjectionType projection = eOrthographic);
 
    virtual ~ProjectionCamera();
 
