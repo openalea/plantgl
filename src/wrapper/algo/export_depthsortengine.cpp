@@ -52,7 +52,7 @@ using namespace std;
 
 void export_DepthSortEngine()
 {
-
+#ifdef WITH_CGAL
 
   class_< DepthSortEngine, bases<ProjectionEngine>, boost::noncopyable >
       ("DepthSortEngine", init<>("Construct a DepthSortEngine.") )
@@ -61,7 +61,7 @@ void export_DepthSortEngine()
       .def("getProjectionResult", &DepthSortEngine::getProjectionResult, (bp::arg("format")=Color4::eARGB, bp::arg("cameraCoordinates")=true))
       ;
 
-
+#endif
 }
 
 
