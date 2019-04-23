@@ -15,10 +15,8 @@ dependencies:
     - pyopengl
     - pyqglviewer
     - nose
-    - bison [unix]
-    - flex [unix]
-    - gmp [unix]
-    - cgal [unix]
+    - m2-bison [win]
+    - m2-flex [win]
     - qhull
     - eigen
     - ann
