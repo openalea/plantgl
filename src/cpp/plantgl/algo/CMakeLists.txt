@@ -74,7 +74,11 @@ target_link_libraries(pglalgo OpenGL::GL OpenGL::GLU)
 
 # --- Dependencies
 
-add_dependencies(pglalgo pgltool pglmath pglsg pglparser)
+add_dependencies(pglalgo pgltool pglmath pglsg)
+
+if (GENERATE_PARSER)
+    add_dependencies(pglalgo pglparser)
+endif()
 
 # --- Preprocessor
 
