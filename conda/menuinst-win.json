@@ -1,0 +1,16 @@
+{
+    "menu_name": "PlantGL",
+    "menu_items":
+    [
+        {
+            "name": "PlantGL Viewer",
+            "script": "${PREFIX}/bin/pglviewer.exe",
+            "workdir": "${PREFIX}",
+            "desktop": true 
+        },
+        {
+            "name": "GitHub Repository",
+            "webbrowser": "https://github.com/openalea/plantgl"
+        }
+    ]
+}

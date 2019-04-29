@@ -1,4 +1,4 @@
-name: plantgl-dev
+name: plantgl-devel
 channels:
     - local
     - defaults
@@ -19,3 +19,5 @@ dependencies:
     - qhull
     - eigen
     - ann
+    - menuinst
+    - patch
