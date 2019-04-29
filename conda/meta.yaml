@@ -33,13 +33,18 @@ requirements:
    - ann
    - pyqglviewer
    - menuinst
+   - cmake
   run:
    - python =3
-   - pyqt
    - qt
    - boost
    - gmp [unix]
    - cgal [unix]
    - qhull
    - ann
+   - pyqt
+   - ipython
+   - qtconsole
+   - pyopengl
    - pyqglviewer
+   - vs2015_runtime [win]
