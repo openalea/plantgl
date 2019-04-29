@@ -6,7 +6,6 @@ channels:
     - openalea
 dependencies:
     - python =3
-    - setuptools
     - boost
     - qt
     - pyqt

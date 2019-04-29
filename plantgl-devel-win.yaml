@@ -1,4 +1,4 @@
-name: plantgl-devel
+name: plantgl-dev
 channels:
     - local
     - defaults
@@ -6,7 +6,6 @@ channels:
     - openalea
 dependencies:
     - python =3
-    - setuptools
     - boost
     - qt
     - pyqt
