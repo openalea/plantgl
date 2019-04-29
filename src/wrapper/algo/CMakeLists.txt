@@ -16,6 +16,11 @@ if (QT5_FOUND)
     target_link_libraries(_pglalgo Qt5::Core Qt5::Widgets Qt5::OpenGL)
 endif()
 
+# Disable Boost Auto-Link
+target_compile_definitions(_pglalgo PRIVATE BOOST_ALL_NO_LIB)
+
+target_link_libraries(_pglalgo Boost::system Boost::thread Boost::${BOOST_PYTHON_LIB} Boost::${BOOST_NUMPY_LIB})
+
 # --- Dependencies
 
 add_dependencies(_pglalgo pglmath pgltool pglsg pglalgo)
