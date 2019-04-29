@@ -28,9 +28,12 @@ if (QHULL_FOUND)
     # Build with Qhull
     define_macro(WITH_QHULL 1)
     define_macro(WITH_QHULL_2011 1)
+    define_py_macro(PGL_WITH_QHULL "True")
     
     include_directories(${QHULL_INCLUDE_DIRS})
     
 elseif (NOT Qhull_FIND_REQUIRED)
     message(STATUS "Building without Qhull - Library not found.")
+    
+    define_py_macro(PGL_WITH_QHULL "False")
 endif()

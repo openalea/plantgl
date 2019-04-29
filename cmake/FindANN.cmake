@@ -23,9 +23,12 @@ endif()
 if (ANN_FOUND)
     # Build with ANN
     define_macro(WITH_ANN 1)
+    define_py_macro(PGL_WITH_ANN "True")
     
     include_directories(${ANN_INCLUDE_DIRS})
     
 elseif (NOT ANN_FIND_REQUIRED)
     message(STATUS "Building without ANN - Library not found.")
+    
+    define_py_macro(PGL_WITH_ANN "False")
 endif()

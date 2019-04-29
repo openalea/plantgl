@@ -10,6 +10,7 @@ if (Python3_FOUND)
     define_macro(WITH_PYTHON 1)
 
     set(BOOST_PYTHON_LIB "python3${Python3_VERSION_MINOR}")
+    set(BOOST_NUMPY_LIB "numpy3${Python3_VERSION_MINOR}")
 else()
     message(STATUS "Building without Python - Library not found.")
 endif()

@@ -10,6 +10,9 @@ if (Qt5Core_FOUND AND Qt5OpenGL_FOUND AND Qt5Network_FOUND AND Qt5Widgets_FOUND 
     message(STATUS "Found Qt5: Version ${Qt5Core_VERSION}")
 
     define_macro(PGL_QT_VERSION 5)
+    
+    define_py_macro(PGL_WITHOUT_QT "False")
+    define_py_macro(PGL_QT_VERSION 5)
 
     include_directories(${Qt5Core_INCLUDE_DIRS})
     include_directories(${Qt5Widgets_INCLUDE_DIRS})
@@ -22,4 +25,7 @@ else()
     message(STATUS "Building without Qt - Library not found.")
     
     define_macro(PGL_WITHOUT_QT 1)
+    
+    define_py_macro(PGL_WITHOUT_QT "True")
+    define_py_macro(PGL_QT_VERSION 5)
 endif()
