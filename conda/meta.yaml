@@ -8,7 +8,6 @@ package:
 source:
   path: ..
 
-
 about:
   home: https://github.com/openalea/plantgl
   license: Cecill-C
@@ -20,44 +19,26 @@ build:
 
 requirements:
   build:
-   - python
-   - setuptools
-   - openalea.deploy
-   - scons
-   - openalea.sconsx
-   - qt <5
+   - python =3
+   - qt
    - boost
    - bison [unix]
-   - flex 2.5.39 [unix]
-   - m2-bison [win]
-   - m2-flex  [win]
-   - cgal [unix]
+   - flex [unix]
    - gmp [unix]
+   - cgal [unix]
+   - m2-bison [win]
+   - m2-flex [win]
+   - qhull
    - eigen
    - ann
-   - qhull
-   - patchelf [linux]
+   - pyqglviewer
   run:
-   - python
-   - openalea.deploy
-   - openalea.core
-   - {{ pin_compatible('qt', exact=True) }}
+   - python =3
    - pyqt
+   - qt
+   - boost
    - gmp [unix]
    - cgal [unix]
    - qhull
    - ann
-   - {{ pin_compatible('boost', exact=True) }}
-   - path.py
-
-test:
-  requires:
-    - nose
-  imports:
-    - openalea.plantgl
-  source_files:
-    - test/test_*.py
-    - test/data
-    - share/
-  commands:
-   - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py # -I test_bbox.py -I test_codec.py
+   - pyqglviewer
