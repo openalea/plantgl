@@ -27,4 +27,6 @@ add_dependencies(_pglgui pglmath pglgui pglsg pgltool)
 
 # --- Output Library
 
+set_target_properties(_pglgui PROPERTIES SUFFIX ".pyd")
+
 install(TARGETS _pglgui LIBRARY DESTINATION "lib")

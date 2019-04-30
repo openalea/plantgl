@@ -23,4 +23,6 @@ add_dependencies(_pglsg pglmath pglsg pglalgo pgltool)
 
 # --- Output Library
 
+set_target_properties(_pglsg PROPERTIES SUFFIX ".pyd")
+
 install(TARGETS _pglsg LIBRARY DESTINATION "lib")
