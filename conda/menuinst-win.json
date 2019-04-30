@@ -1,5 +1,5 @@
 {
-    "menu_name": "PlantGL",
+    "menu_name": "OpenAlea",
     "menu_items":
     [
         {
@@ -7,10 +7,6 @@
             "script": "${PREFIX}/bin/pglviewer.exe",
             "workdir": "${PREFIX}",
             "desktop": true 
-        },
-        {
-            "name": "GitHub Repository",
-            "webbrowser": "https://github.com/openalea/plantgl"
         }
     ]
 }
