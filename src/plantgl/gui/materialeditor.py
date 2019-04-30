@@ -402,9 +402,9 @@ class MaterialPanelView (QGLWidget):
                     res = editMaterialInDialog(color) # Warning Here! QLayout problem.
                     if res is None or res == QDialog.Accepted:
                         self.valueChanged.emit()
-                except Exception, e:
-                    print e
-                    print 'editMaterialInDialog not supported by your version of PlantGL'
+                except Exception as e:
+                    print(e)
+                    print('editMaterialInDialog not supported by your version of PlantGL')
             else:
                 self.edittexture(color.image.filename)     
     def contextMenuEvent(self,event):
@@ -468,7 +468,7 @@ class MaterialPanelView (QGLWidget):
                         self.delMaterial(i)
                         if i < sel:
                             sel -= 1
-                print 'Copy ',self.clipboard[0][0],'to',sel
+                print('Copy ',self.clipboard[0][0],'to',sel)
                 self.setMaterial(sel,self.clipboard[0][1].deepcopy())
                 for i,color in reversed(self.clipboard[1:]):
                     self.insertMaterial(sel+1,color.deepcopy())

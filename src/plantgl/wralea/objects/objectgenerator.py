@@ -134,7 +134,7 @@ def getSceneGraphNodes(baseclass):
             try:
                 i = c()
                 cl.append(c)
-            except RuntimeError,e:
+            except RuntimeError as e:
                 # Cannot instanciate this class. Boost return runtime error.
                 pass
             except:

@@ -128,7 +128,7 @@ def test():
     polygons = polygon_in_grid(FakeGrid(),pts)
     s = Scene()
     for idx,pol in polygons:
-        if len(pol) <= 2: print 'Wrong polygon :',pol
+        if len(pol) <= 2: print('Wrong polygon :', pol)
         else : s.add(Shape(Oriented((0,0,1),(0,1,0),FaceSet(pol,[range(len(pol))])),Material((255,0,0))))
     Viewer.display(s)
     Viewer.add(Shape(Oriented((0,0,1),(0,1,0),Translated((0,0,1),FaceSet(pts,[range(len(pts))]))),Material((0,255,0))))

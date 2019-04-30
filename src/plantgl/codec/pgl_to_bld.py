@@ -40,7 +40,7 @@ from vplants.plantgl.codec.blender import sc_to_blender
 def load_scene (filename) :
     sc = PGLScene()
     sc.read(filename)
-    print "loaded",len(sc)
+    print("loaded",len(sc))
     
     return sc_to_blender(sc)
 

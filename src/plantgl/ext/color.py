@@ -544,11 +544,11 @@ class ColorRange (ColorMap) :
         using this color range
         invert function of get_color
         """
-        print list(color)
+        print(list(color))
         for i in xrange(1,len(self._color_list)) :
             c_inf=self._color_list[i-1]
             c_sup=self._color_list[i]
-            print list(c_inf),"sup",list(c_sup)
+            print(list(c_inf),"sup",list(c_sup))
             val=[]
             for ind in xrange(3) :
                 if c_sup[ind]==c_inf[ind] :

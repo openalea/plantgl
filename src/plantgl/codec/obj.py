@@ -246,9 +246,9 @@ class ObjCodec (sg.SceneCodec):
         scene = sg.Scene()
         for g in self.groups:
             if g:
-                print 'NAME: ', g.name
+                print('NAME: ', g.name)
                 s = g.shape(self.vertices, self.normals, self.textures)
-                print 'Shape ', s
+                print('Shape ', s)
                 if s and s.geometry: 
                     scene.add(s)
 

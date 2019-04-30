@@ -97,7 +97,7 @@ def asymetric_swung( obj , **kwds ):
   az_kz = [ k for k in obj.__dict__.keys() if azimuthHoup_prefix in k]
   az_kz.sort()
   if len(rd_kz) != len(az_kz):
-    print  obj.__dict__[X_attr], obj.__dict__[Y_attr]
+    print(obj.__dict__[X_attr], obj.__dict__[Y_attr])
   assert( len(rd_kz) == len(az_kz) and "directional canopy length and azimuth are not the same size" )
 
   houppier=[ ( obj.__dict__[rd_kz[i]], houppier2geomAZ(obj.__dict__[az_kz[i]]) ) for i in range( len(rd_kz) ) ]

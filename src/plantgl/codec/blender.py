@@ -217,17 +217,16 @@ def sc_to_blender (sc) :
 	d = Discretizer()
 	for ind,shp in enumerate(sc) :
 		if ind % 10 == 0 :
-			print ind,
-			sys.stdout.flush()
+			print(ind, flush=True)
 		ob = shp_to_blender(shp,d)
 		bldsc.link(ob)
 		ob.sel = True
 	
-	print
-	print 'Time :', time.time() - t
+	print()
+	print('Time :', time.time() - t)
 	
 	#return
-	print "created"
+	print("created")
 	bldsc.update(1)
 	Blender.Redraw()
 	
