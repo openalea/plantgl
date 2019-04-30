@@ -9,3 +9,8 @@ nmake
 if errorlevel 1 exit 1
 nmake install
 if errorlevel 1 exit 1
+
+:: Install Python Files
+cd ..
+%PYTHON% setup.py install
+if errorlevel 1 exit 1
