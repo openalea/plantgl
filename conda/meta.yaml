@@ -34,6 +34,7 @@ requirements:
    - pyqglviewer
    - menuinst
    - cmake
+   - openalea.deploy
   run:
    - python =3
    - qt
