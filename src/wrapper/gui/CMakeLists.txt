@@ -29,4 +29,4 @@ add_dependencies(_pglgui pglmath pglgui pglsg pgltool)
 
 set_target_properties(_pglgui PROPERTIES SUFFIX ".pyd")
 
-install(TARGETS _pglgui LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/gui")
+install(TARGETS _pglgui DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/gui")

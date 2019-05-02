@@ -29,4 +29,4 @@ add_dependencies(_pglalgo pglmath pgltool pglsg pglalgo)
 
 set_target_properties(_pglalgo PROPERTIES SUFFIX ".pyd")
 
-install(TARGETS _pglalgo LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/algo")
+install(TARGETS _pglalgo DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/algo")
