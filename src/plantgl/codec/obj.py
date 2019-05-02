@@ -268,16 +268,16 @@ class ObjCodec (sg.SceneCodec):
         pass
 
     def _vertex(self, args):
-        x, y, z = map(float, args)[:3]
+        x, y, z = list(map(float, args))[:3]
         self.vertices.append((x,y,z))
 
     def _vertex_texture(self, args):
-        l = map(float,args)
+        l = list(map(float,args))
         self.textures.append(l[:2])
 
     def _vertex_normal(self, args):
         """ Parse a vertex normal."""
-        x, y, z = map(float, args)
+        x, y, z = list(map(float, args))
         self.normals.append((x,y,z))
 
     def _face(self, args):

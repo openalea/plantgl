@@ -1,4 +1,5 @@
 from . import _pglsg
+import importlib
 
 class EditableQuantisedFunction (object):
     def __init__(self, curve, sampling = _pglsg.QuantisedFunction.DEFAULT_SAMPLING, clamped = _pglsg.QuantisedFunction.DEFAULT_CLAMPED):
@@ -48,7 +49,7 @@ class EditableQuantisedFunction (object):
 
 def test():
     import openalea.plantgl.scenegraph.editablequantisedfunction as eqf
-    reload(eqf)
+    importlib.reload(eqf)
     f = eqf.EditableQuantisedFunction([(0,0),(1,1)])
     print(f(0.5))
     assert f(0.5) == 0.5

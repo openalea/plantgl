@@ -23,7 +23,7 @@ class CurveConstraint:
         else:
             return nbPoints,newpoint
     def defaultCurve(self,nbP=4):
-        return NurbsCurve2D(Point3Array([(-0.5+float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
+        return NurbsCurve2D(Point3Array([(-0.5+float(i)/(nbP-1),0) for i in range(nbP)],1) )
 
 class FuncConstraint:
     def __init__(self,bounds=(0,1)):
@@ -57,7 +57,7 @@ class FuncConstraint:
         else:
             return None
     def defaultCurve(self,nbP=4):
-        return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in xrange(nbP)],1) )
+        return NurbsCurve2D(Point3Array([(float(i)/(nbP-1),0) for i in range(nbP)],1) )
         
 class CurveAccessor:
     def __init__(self):
@@ -233,21 +233,21 @@ class CurveEditor (QGLViewer):
         glColor4f(0.2,0.2,0.2,0.0)
         glLineWidth(1)
         glBegin(GL_LINES)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             glVertex3f(cxval,self.start[1],0)
             glVertex3f(cxval,self.end[1],0)
             cxval += xdelta
         glEnd()
         cxval = fxval*xdelta
         glColor4f(1.0,1.0,1.0,1.0)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             self.renderText(cxval,self.start[1],0,'%.1f' % cxval)
             cxval += xdelta
         glLineWidth(2)
         glColor4f(0.4,0.4,0.4,0.0)
         cxval = round(self.start[0]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
-        for i in xrange((nbiter/10)+1):
+        for i in range((nbiter/10)+1):
             glVertex3f(cxval,self.start[1],0)
             glVertex3f(cxval,self.end[1],0)
             cxval += (10*xdelta)
@@ -260,14 +260,14 @@ class CurveEditor (QGLViewer):
         glColor4f(0.2,0.2,0.2,0.0)
         glLineWidth(1)
         glBegin(GL_LINES)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             glVertex3f(self.start[0],cyval,0)
             glVertex3f(self.end[0],cyval,0)
             cyval += xdelta
         glEnd()
         cyval = firstcyval
         glColor4f(1.0,1.0,1.0,1.0)
-        for i in xrange(nbiter+1):
+        for i in range(nbiter+1):
             glVertex3f(self.end[0],cyval,0)
             self.renderText(self.start[0],cyval,0,'%.1f' % cyval)
             cyval += xdelta
@@ -275,7 +275,7 @@ class CurveEditor (QGLViewer):
         glColor4f(0.4,0.4,0.4,0.0)
         cyval = round(self.start[1]/(10*xdelta))*(10*xdelta)
         glBegin(GL_LINES)
-        for i in xrange((nbiter/10)+1):
+        for i in range((nbiter/10)+1):
             glVertex3f(self.start[0],cyval,0)
             glVertex3f(self.end[0],cyval,0)
             cyval += (10*xdelta)

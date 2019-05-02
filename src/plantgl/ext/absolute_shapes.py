@@ -287,7 +287,7 @@ class ACylinder( AShape3D ):
     def _common_init( self, **keys ):
         """
         """
-        if keys.has_key("height"):
+        if "height" in keys:
             self._height = keys[ "height" ]
         else:
             self._height = pgl.norm( keys[ "axis" ] )
@@ -361,7 +361,7 @@ class AArrow( ACylinder ):
     def _common_init( self, **keys ):
         """
         """
-        if keys.has_key("height"):
+        if "height" in keys:
             self._height = keys[ "height" ]
         else:
             self._height = pgl.norm( keys[ "axis" ] )
@@ -432,7 +432,7 @@ class ACenterPolygon( AShape3D ):
        
         self._indexes = []
         self._points = pgl.Point3Array( [pgl.Vector3()]+keys[ "points" ] )
-        for i in xrange( 1, len(keys[ "points" ] ) ):
+        for i in range( 1, len(keys[ "points" ] ) ):
             self._points[ 0 ] += self._points[ i ]
             self._indexes.append( pgl.Index( [0,i, i+1] ) )
         self._points[ 0 ] += self._points[ len( keys[ "points" ] )  ]   
@@ -493,7 +493,7 @@ class ATriangle( AShape3D ):
        
         self._indexes = []
         self._points = pgl.Point3Array( keys[ "points" ] )
-        for i in xrange( 1, len(keys[ "points" ] ) ):
+        for i in range( 1, len(keys[ "points" ] ) ):
             self._indexes.append( pgl.Index3( 0,1,2 ) )
         self._indexes = pgl.Index3Array( self._indexes )
             

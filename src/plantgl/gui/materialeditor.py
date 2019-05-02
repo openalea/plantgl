@@ -208,8 +208,8 @@ class MaterialPanelView (QGLWidget):
         glr = GLRenderer(d)
         selectionbegin = self.selectionbegin
         selectionend = self.selectionend
-        for i in xrange(0,nbcitem):
-            for j in xrange(0,nbritem):
+        for i in range(0,nbcitem):
+            for j in range(0,nbritem):
                 if colindex < self.nbMaterial():
                     curmat = self.getMaterial(colindex)
                 else:
@@ -275,7 +275,7 @@ class MaterialPanelView (QGLWidget):
         else:
             self.selectionend = end
     def getSelection(self):
-        return xrange(self.selectionbegin,self.selectionend+1)
+        return range(self.selectionbegin,self.selectionend+1)
     def selectedColor(self,x,y):
         w = self.width()
         h = self.height()
@@ -522,7 +522,7 @@ class MaterialPanelView (QGLWidget):
             fmat = self.getMaterial(beg)
             lmat = self.getMaterial(end)
             iratio = 0
-            for i in xrange(beg+1,end):
+            for i in range(beg+1,end):
                 iratio += ratio
                 self.setMaterial(i,fmat.interpolate(lmat,iratio))
             self.selectionbegin,self.selectionend = None,None

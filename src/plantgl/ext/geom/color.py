@@ -41,7 +41,7 @@ class Color (object):
 		fill RGB value from "#RRGGBB" hexa string
 		"""
 		assert txt[0]=="#"
-		for i in xrange(3) :
+		for i in range(3) :
 			self.set_int_channel(i,int(txt[1+i*2]+txt[2+i*2],16))
 	# ##########################################################
 	#
@@ -191,10 +191,10 @@ class Color (object):
 		:type color: float|iter of float
 		:rtype: self"""
 		try :
-			for i in xrange(3) : self[i]+=color[i]
+			for i in range(3) : self[i]+=color[i]
 			self[3]=(self[3]+color[3])/2.
 		except TypeError :
-			for i in xrange(3) : self[i]+=color
+			for i in range(3) : self[i]+=color
 		
 		return self
 	
@@ -217,10 +217,10 @@ class Color (object):
 		:type color: float|iter of float
 		:rtype: self"""
 		try :
-			for i in xrange(3) : self[i]-=color[i]
+			for i in range(3) : self[i]-=color[i]
 			self[3]=(self[3]+color[3])/2.
 		except TypeError :
-			for i in xrange(3) : self[i]-=color
+			for i in range(3) : self[i]-=color
 		
 		return self
 	
@@ -245,9 +245,9 @@ class Color (object):
 		:type val: float|iter of float
 		:rtype: self"""
 		try :
-			for i in xrange(3) : self[i]*=val[i]
+			for i in range(3) : self[i]*=val[i]
 		except TypeError :
-			for i in xrange(3) : self[i]*=val
+			for i in range(3) : self[i]*=val
 		
 		return self
 	
@@ -270,9 +270,9 @@ class Color (object):
 		:type val: float|iter of float
 		:rtype: self"""
 		try :
-			for i in xrange(3) : self[i]/=val[i]
+			for i in range(3) : self[i]/=val[i]
 		except TypeError :
-			for i in xrange(3) : self[i]/=val
+			for i in range(3) : self[i]/=val
 		
 		return self
 	
@@ -303,7 +303,7 @@ class Color (object):
 		self_alpha=self._alpha
 		color_alpha=color[3]
 		self[3]=self_alpha+color_alpha-self_alpha*color_alpha
-		for i in xrange(3) : self[i]=(self[i]*self_alpha+color[i]*color_alpha*(1-self_alpha))/self[3]
+		for i in range(3) : self[i]=(self[i]*self_alpha+color[i]*color_alpha*(1-self_alpha))/self[3]
 		return self
 	
 	def __mod__ (self, color) :
@@ -460,7 +460,7 @@ class ColorRange (object) :
 		
 		if position_list is None :
 			l=len(color_list)-1
-			self._position_list=[float(i)/l for i in xrange(l)]
+			self._position_list=[float(i)/l for i in range(l)]
 			self._position_list.append(1.)
 		else :
 			if len(position_list)!=len(color_list) :
@@ -507,13 +507,13 @@ class ColorRange (object) :
 		using this color range
 		invert function of get_color
 		"""
-		print list(color)
-		for i in xrange(1,len(self._color_list)) :
+		print(list(color))
+		for i in range(1,len(self._color_list)) :
 			c_inf=self._color_list[i-1]
 			c_sup=self._color_list[i]
-			print list(c_inf),"sup",list(c_sup)
+			print(list(c_inf),"sup",list(c_sup))
 			val=[]
-			for ind in xrange(3) :
+			for ind in range(3) :
 				if c_sup[ind]==c_inf[ind] :
 					if color[ind]!=c_sup[ind] :
 						val.append(-1)

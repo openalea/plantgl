@@ -94,8 +94,8 @@ class ZBufferRenderer:
 
     def _renderRaster(self, x,y,z, color = (255,255,255), pointsize = 1):
             print(x,y,z,color,pointsize)
-            for xv in xrange(max(0,x-pointsize+1), min(self.width,x+pointsize)):
-                for yv in xrange(max(0,y-pointsize+1), min(self.height,y+pointsize)):
+            for xv in range(max(0,x-pointsize+1), min(self.width,x+pointsize)):
+                for yv in range(max(0,y-pointsize+1), min(self.height,y+pointsize)):
                     if z < self.depths[yv,xv]:
                         self.image[yv,xv,:] = color
                         self.depths[yv,xv] = z

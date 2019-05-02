@@ -26,7 +26,7 @@ class PglColorMap:
         colorlist = []
         nbcolors = self.pltcolormap.N
         dl = length / float(nbcolors)
-        for colid in xrange(nbcolors):
+        for colid in range(nbcolors):
             dy = -(colid+1)*dl
             ptlist.append((position[0],position[1]+dy))
             ptlist.append((position[0]+width,position[1]+dy))
@@ -41,7 +41,7 @@ class PglColorMap:
 
 def tocolorlist(values, name = 'jet'):
     cm = PglColorMap(min(values), max(values), name)
-    return map(cm, values)
+    return list(map(cm, values))
 
 class PglMaterialMap (PglColorMap):
     def __init__(self, minvalue = 0, maxvalue = 1, name = 'jet', ambientlevel = 0.5):
@@ -57,7 +57,7 @@ class PglMaterialMap (PglColorMap):
 
 def tomateriallist(values, name = 'jet', ambientlevel = 0.5):
     cm = PglMaterialMap(min(values), max(values), name, ambientlevel)
-    return map(cm, values)
+    return list(map(cm, values))
 
 
 def applymaterialmap(scene, values, name = 'jet', ambientlevel = 0.5):

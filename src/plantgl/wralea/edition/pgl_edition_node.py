@@ -1,6 +1,6 @@
 from openalea.core import *
 from copy import deepcopy
-from cPickle import loads, dumps
+from pickle import loads, dumps
 from openalea.plantgl.all import NurbsCurve2D
 
 class curve2D(Node):

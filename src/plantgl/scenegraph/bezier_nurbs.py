@@ -56,7 +56,7 @@ def cubic_bezier2D (ctrl_points, uniform = False, stride = 60) :
 	nb_knots = degree + nb_pts
 	p = 0.
 	param = [p]
-	for i in xrange(nb_arc) :
+	for i in range(nb_arc) :
 		if uniform :
 			p += 1
 		else :
@@ -65,7 +65,7 @@ def cubic_bezier2D (ctrl_points, uniform = False, stride = 60) :
 		param.append(p)
 	kv = [param[0]]
 	for p in param :
-		for j in xrange(degree) :
+		for j in range(degree) :
 			kv.append(p)
 	kv.append(param[-1])
 	
@@ -105,7 +105,7 @@ def cubic_bezier3D (ctrl_points, uniform = False, stride = 60) :
 	nb_knots = degree + nb_pts
 	p = 0.
 	param = [p]
-	for i in xrange(nb_arc) :
+	for i in range(nb_arc) :
 		if uniform :
 			p += 1
 		else :
@@ -114,7 +114,7 @@ def cubic_bezier3D (ctrl_points, uniform = False, stride = 60) :
 		param.append(p)
 	kv = [param[0]]
 	for p in param :
-		for j in xrange(degree) :
+		for j in range(degree) :
 			kv.append(p)
 	kv.append(param[-1])
 	

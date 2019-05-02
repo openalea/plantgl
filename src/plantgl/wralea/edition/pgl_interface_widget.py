@@ -28,7 +28,7 @@ from openalea.plantgl.gui.curve2deditor import Curve2DEditor, Curve2DConstraint,
 from openalea.plantgl.gui.nurbspatcheditor import NurbsPatchEditor
 from openalea.plantgl.scenegraph import NurbsCurve2D
 from .pgl_interface import ICurve2D, INurbsPatch
-from cPickle import loads
+from pickle import loads
 
 '''
 class ICurve2DWidget(IInterfaceWidget, Curve2DEditor):

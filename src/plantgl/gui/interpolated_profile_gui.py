@@ -138,7 +138,7 @@ class ProfileViewer (QGLViewer):
             self.userSectionHighlighted.emit(position, self.__profile[position])
 
     def round_within_increment(self, pos):
-        keys = map(self.unnormalised_parameter, self.__profile.iterkeys())
+        keys = list(map(self.unnormalised_parameter, iter(self.__profile.keys())))
         for k in keys:
             if abs(k-pos) <= self.increment:
                 return k
@@ -384,7 +384,7 @@ class AddOnControlWidget(QtGui.QScrollArea):
             subLayout = QtGui.QGridLayout()
 
             varDict  = addon.variable_dict()
-            varNames = sorted(varDict.iterkeys(), lambda x, y: -1 if x=="enabled" else cmp(x,y))
+            varNames = sorted(iter(varDict.keys()), lambda x, y: -1 if x=="enabled" else cmp(x,y))
             for key in varNames:
                 t, v = varDict[key]
                 w = self.make_widget(t, v, self)
@@ -406,7 +406,7 @@ class AddOnControlWidget(QtGui.QScrollArea):
         for addon in self.__exp._addons:
             name = addon.name()
             varDict  = addon.variable_dict()
-            for key, (t, v) in varDict.iteritems():
+            for key, (t, v) in varDict.items():
                 path = name+"."+key
                 widget = self.__widmap[path]
                 widget.setValue(widget, v)

@@ -200,7 +200,7 @@ def leaf(**kwds):
   return pgl.Shape( tr, color )
 
 def genericLeaf(allo_length, allo_surf, **kwds):
-  if kwds.has_key('surface'):
+  if 'surface' in kwds:
     surface = kwds['surface']
     length = math.sqrt(surface / (allo_length*allo_surf) )
   else:  
@@ -348,7 +348,7 @@ def pointsByShape(scene): #aka ptdiscretize
 def centerByShape(pointsbyshape):#aka centers
   """dictionnaire id:centre"""
   cbs = {}
-  for id, points in pointsbyshape.iteritems():
+  for id, points in pointsbyshape.items():
     cbs[id] = center(points)
   return cbs
 
@@ -356,7 +356,7 @@ def ptUnion(pointsbyshape,idList=None):#aka ptsum
   """union des points de la liste ids"""
   union = pgl.Point3Array()
   if idList is None:
-    idList = pointsbyshape.keys()
+    idList = list(pointsbyshape.keys())
   for id in idList:
     union += pointsbyshape[id]
   return union

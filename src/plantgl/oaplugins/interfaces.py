@@ -125,7 +125,7 @@ class IQuantisedFunction(IInterface):
         """
         from openalea.plantgl.all import EditableQuantisedFunction, NurbsCurve2D
         nbP = 4
-        value = EditableQuantisedFunction(NurbsCurve2D([(float(i)/(nbP-1),0,1) for i in xrange(nbP)]) )
+        value = EditableQuantisedFunction(NurbsCurve2D([(float(i)/(nbP-1),0,1) for i in range(nbP)]) )
         return value
 
     def module_dependence(self):

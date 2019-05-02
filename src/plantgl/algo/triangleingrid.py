@@ -12,13 +12,13 @@ def polygon_in_grid(grid,pts, maxdim = None):
     voxelsize = grid.getVoxelSize()
     
     cdim = 0
-    partialindex = [0 for i in xrange(nbdim)]
+    partialindex = [0 for i in range(nbdim)]
 
     def process_unigrid(unigrid, cdim):
         result = []
         
         
-        for j in xrange(1,len(unigrid)):
+        for j in range(1,len(unigrid)):
             ci = unigrid[j-1]
             cj = unigrid[j]
             pia = list(ci[1])
@@ -50,7 +50,7 @@ def polygon_in_grid(grid,pts, maxdim = None):
         cindex = lambda pt : int(floor(pt[cdim] / vsize)) 
         ptList = list(pts)
         ptList.reverse()
-        indices = map(cindex,ptList)
+        indices = list(map(cindex,ptList))
         minindex = min(indices)
         maxindex = max(indices)
         # order list of point to start from the one with minimum coord in cdim
@@ -67,8 +67,8 @@ def polygon_in_grid(grid,pts, maxdim = None):
             unigrid = [(update_gindex(partialindex,cdim,minindex),[],pts,[])]
         if maxindex > minindex:
             nbIntervals = maxindex-minindex+1
-            unigrid = [(update_gindex(partialindex,cdim,minindex+i),[],[],[]) for i in xrange(nbIntervals)]
-            edges =[(ptList[i],ptList[i+1]) for i in xrange(len(ptList)-1)]+[(ptList[-1],ptList[0])]
+            unigrid = [(update_gindex(partialindex,cdim,minindex+i),[],[],[]) for i in range(nbIntervals)]
+            edges =[(ptList[i],ptList[i+1]) for i in range(len(ptList)-1)]+[(ptList[-1],ptList[0])]
             eid = 0
             forward = True
             for pi, pj in edges:
@@ -79,7 +79,7 @@ def polygon_in_grid(grid,pts, maxdim = None):
                 # We add intersection points
                 if iindex < jindex:
                     delta = pjj - pii
-                    for idx in xrange(iindex+1,jindex+1):            
+                    for idx in range(iindex+1,jindex+1):            
                         alpha = (idx*vsize - pii[cdim])/(pjj[cdim] - pii[cdim])
                         if 0 < alpha < 1:
                             pni = pii + alpha * delta
@@ -112,7 +112,7 @@ def scene_in_grid(sc, grid):
             for idx in tr.indexList:
                 polygons = polygon_in_grid(grid,[tr.pointList[i] for i in idx])
                 for gidx,pol in polygons:
-                    groups[tuple(gidx)] = groups.get(tuple(gidx),[])+[(sh.id,FaceSet(pol,[range(len(pol))]))]
+                    groups[tuple(gidx)] = groups.get(tuple(gidx),[])+[(sh.id,FaceSet(pol,[list(range(len(pol)))]))]
     return groups
     
 def test():
@@ -128,10 +128,10 @@ def test():
     polygons = polygon_in_grid(FakeGrid(),pts)
     s = Scene()
     for idx,pol in polygons:
-        if len(pol) <= 2: print('Wrong polygon :', pol)
-        else : s.add(Shape(Oriented((0,0,1),(0,1,0),FaceSet(pol,[range(len(pol))])),Material((255,0,0))))
+        if len(pol) <= 2: print(('Wrong polygon :', pol))
+        else : s.add(Shape(Oriented((0,0,1),(0,1,0),FaceSet(pol,[list(range(len(pol)))])),Material((255,0,0))))
     Viewer.display(s)
-    Viewer.add(Shape(Oriented((0,0,1),(0,1,0),Translated((0,0,1),FaceSet(pts,[range(len(pts))]))),Material((0,255,0))))
+    Viewer.add(Shape(Oriented((0,0,1),(0,1,0),Translated((0,0,1),FaceSet(pts,[list(range(len(pts)))]))),Material((0,255,0))))
 
 if __name__ == '__main__':
     test()

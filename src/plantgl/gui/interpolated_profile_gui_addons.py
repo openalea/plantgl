@@ -77,10 +77,10 @@ class EditorAddOn(object):
         return self.__class__.__name__[:-5]
 
     def variable_dict(self):
-        return dict( (k, (type(v), v)) for k, v, in self.__dict__.iteritems() if \
+        return dict( (k, (type(v), v)) for k, v, in self.__dict__.items() if \
                      not k.startswith("_") )
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.enabled
 
     def add_callback(self, key, call):
@@ -166,7 +166,7 @@ class UserSlicesAddOn(EditorAddOn):
         glLineWidth(2)
         cursor = self._editor.position()
         pos = self._editor.normalised_parameter(cursor)
-        for k, s in self.__userSlices.iteritems():
+        for k, s in self.__userSlices.items():
             if abs(k - pos) < self.highlightEps:
                 glColor4f(1., 0.0, 0.0, 1.0)
             else:
@@ -176,7 +176,7 @@ class UserSlicesAddOn(EditorAddOn):
     def compute(self):
         # -- recompute the user slices --
         profile = self._profile
-        for k, v in profile.iteritems():
+        for k, v in profile.items():
             self.__userSlices[k] = profile.Method.make_section(v)
 
     def clear_caches(self):
@@ -224,7 +224,7 @@ class VisualCrossSectionsAddOn(EditorAddOn):
             return
         alphaRange = 1.0-self.baseAlpha
 
-        for p, s in self._sections.iteritems():
+        for p, s in self._sections.items():
             delta = self._editor.normalised_parameter(p-position, is_distance=True)
             alpha = self.baseAlpha
             if abs(delta) < self.width:

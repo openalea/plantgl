@@ -75,7 +75,7 @@ class PlyCodec (sg.SceneCodec):
         faces = []
         for element in spec:
             elemname, elementnb, elemspec = element
-            for ielem in xrange(elementnb):
+            for ielem in range(elementnb):
                 ielement = {}
                 if fcoding == 'ascii':
                     linevalues = nextline().split()
@@ -88,7 +88,7 @@ class PlyCodec (sg.SceneCodec):
                             nbpropv = tr(linevalues[itv]) ; itv += 1
                             value = []
                             tr = asciitypes[proptype]
-                            for ival in xrange(nbpropv):
+                            for ival in range(nbpropv):
                                 value.append(tr(linevalues[itv])); itv += 1
                         else:
                             tr = asciitypes[proptype]
@@ -109,7 +109,7 @@ class PlyCodec (sg.SceneCodec):
                             propsizetype, proptype = proptype
                             nbpropv = readnextval(stream, propsizetype)
                             value = []
-                            for ival in xrange(nbpropv):
+                            for ival in range(nbpropv):
                                 value.append(readnextval(stream, proptype))
                         else:
                             value = readnextval(stream, proptype)
