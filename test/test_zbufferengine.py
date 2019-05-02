@@ -65,12 +65,7 @@ def test_point():
     cam = (300,0,0)
     z.lookAt(cam,(0,0,0),(0,0,1))
     print(z.getBoundingBoxView())
-    if hasattr(z, 'getWorldToCameraMatrix'):
-        print(z.getWorldToCameraMatrix())
-    else:
-        # CGAL was missing during the build of the libraries.
-        # We abort this test
-        return
+    print(z.getWorldToCameraMatrix())
     print()
     print('World : \t', Vector3(a))
     b = z.worldToCamera(a)    
@@ -87,12 +82,7 @@ def test_tri():
     z.setPerspectiveCamera(60,1,1,1000)
     cam = (300,0,0)
     z.lookAt(cam,(0,0,0),(0,0,1))
-    if hasattr(z, 'getWorldToCameraMatrix'):
-        print(z.getWorldToCameraMatrix())
-    else:
-        # CGAL was missing during the build of the libraries.
-        # We abort this test
-        return
+    print(z.getWorldToCameraMatrix())
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     tr = TriangleSet(pts, [list(range(3))])
     for p in pts:
