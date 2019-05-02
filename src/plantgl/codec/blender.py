@@ -24,7 +24,7 @@ import sys, time
 from numpy import array
 import Blender
 from Blender import Scene,Mesh,Material,Object
-from vplants.plantgl.algo import Discretizer
+from openalea.plantgl.algo import Discretizer
 
 def material_to_blender (pglmat) :
 	"""Create a blender material

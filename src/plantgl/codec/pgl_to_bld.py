@@ -34,8 +34,8 @@ __revision__ = " $Id: $ "
 
 import Blender
 from Blender import Window
-from vplants.plantgl.scenegraph import Scene as PGLScene
-from vplants.plantgl.codec.blender import sc_to_blender
+from openalea.plantgl.scenegraph import Scene as PGLScene
+from openalea.plantgl.codec.blender import sc_to_blender
 
 def load_scene (filename) :
     sc = PGLScene()

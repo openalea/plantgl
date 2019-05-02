@@ -12,14 +12,14 @@ class PglColorMap:
         return self.__topglcolor__(self.normalizer(value))
     
     def __topglcolor__(self, normalizedindex):
-        import _pglsg as sg
+        from . import _pglsg as sg
         color = self.pltcolormap(normalizedindex)
         color = list(color)
         color[3] = 1. - color[3]
         return sg.Color4([int(255 * c) for c in color])
 
     def pglrepr(self, length = 0.5, width = 0.1, position = (-0.8, 0.8)):
-        import _pglsg as sg
+        from . import _pglsg as sg
         
         ptlist = [position,(position[0]+width,position[1])]
         indexlist = []
@@ -50,7 +50,7 @@ class PglMaterialMap (PglColorMap):
         self.ambientlevel = ambientlevel
 
     def __call__(self, value):
-        import _pglsg as sg
+        from . import _pglsg as sg
 
         color = self.pltcolormap(self.normalizer(value))
         return sg.Material([int(255 * c * self.ambientlevel) for c in color[:3]], diffuse = 1. / self.ambientlevel, transparency=  1. - color[3])

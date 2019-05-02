@@ -13,7 +13,7 @@ which allow to express the most important object transformations.
 """
 
 import openalea.plantgl.all as pgl
-import material
+from . import material
 
 __docformat__="restructuredtext en"
 

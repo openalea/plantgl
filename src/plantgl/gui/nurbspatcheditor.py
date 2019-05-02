@@ -2,7 +2,7 @@ from openalea.vpltk.qt import QtCore, QtGui
 from openalea.plantgl.all import *
 from PyQGLViewer import *
 import OpenGL.GL as ogl
-from editablectrlpoint import * 
+from .editablectrlpoint import * 
 from math import cos,sin,sqrt,fabs,pi
 
 

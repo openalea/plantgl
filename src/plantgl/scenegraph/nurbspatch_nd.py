@@ -1,4 +1,4 @@
-import _pglsg as sg
+from . import _pglsg as sg
 from openalea.plantgl.math import Vector4, Vector3
 
 class NurbsPatch3D:

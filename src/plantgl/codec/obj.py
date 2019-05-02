@@ -29,7 +29,7 @@ __revision__ = " $Id: obj.py 2242 2010-02-08 17:03:26Z cokelaer $ "
 import os
 import warnings
 from random import randint
-from itertools import izip_longest
+from itertools import zip_longest
 
 import openalea.plantgl.math as mt
 import openalea.plantgl.scenegraph as sg
@@ -145,7 +145,7 @@ class Faces(object):
 
     def obj(self, output):
         """ Write the faces in an obj format. """
-        gen = izip_longest(self.vindex, self.tindex,self.nindex, fillvalue=None)
+        gen = zip_longest(self.vindex, self.tindex,self.nindex, fillvalue=None)
         offset = self.offset
         output.write('g %s \n'%self.name)
         output.write('usemtl %s \n' % self.appearancename)

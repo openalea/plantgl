@@ -12,7 +12,7 @@ A cardinal spline is a spline passing through a set of points.
 """
 
 import os, math
-import _pglsg as pgl
+from . import _pglsg as pgl
 from openalea.plantgl.math import norm
 
 __metaclass__ = type

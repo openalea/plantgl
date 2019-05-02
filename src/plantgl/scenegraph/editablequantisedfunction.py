@@ -1,4 +1,4 @@
-import _pglsg
+from . import _pglsg
 
 class EditableQuantisedFunction (object):
     def __init__(self, curve, sampling = _pglsg.QuantisedFunction.DEFAULT_SAMPLING, clamped = _pglsg.QuantisedFunction.DEFAULT_CLAMPED):
