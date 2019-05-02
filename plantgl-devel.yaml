@@ -24,3 +24,5 @@ dependencies:
     - menuinst
     - patch
     - openalea.deploy
+    - scipy
+    - mathplotlib
