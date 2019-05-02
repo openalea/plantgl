@@ -25,4 +25,4 @@ add_dependencies(_pglmath pglmath)
 
 set_target_properties(_pglmath PROPERTIES SUFFIX ".pyd")
 
-install(TARGETS _pglmath LIBRARY DESTINATION "lib")
+install(TARGETS _pglmath LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/src/plantgl/math")
