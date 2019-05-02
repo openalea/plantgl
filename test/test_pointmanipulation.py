@@ -10,7 +10,7 @@ def test_contract_point3():
   seed(1)
   nbpoint = 500
   radius = 10
-  p3list = [random_point() for i in xrange(nbpoint)]
+  p3list = [random_point() for i in range(nbpoint)]
 
   p3compress = contract_point3(p3list, radius)
   assert len(p3list) == len(p3compress)
@@ -27,7 +27,7 @@ def brute_force_pointset_median(plist):
 def test_median_point():
    seed(1)
    nbpoint = 100
-   p3list = Point3Array([random_point() for i in xrange(nbpoint)])
+   p3list = Point3Array([random_point() for i in range(nbpoint)])
    i = pointset_median(p3list)
    j = brute_force_pointset_median(p3list)
    k = approx_pointset_median(p3list,100000)
@@ -39,7 +39,7 @@ def test_median_point():
 
 
 if __name__ == '__main__':
-    for i in xrange(50):
+    for i in range(50):
         test_median_point()
 
 

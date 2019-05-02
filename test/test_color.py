@@ -6,7 +6,7 @@ def test_color3_to_uint():
     c = Color3(randint(0,255),randint(0,255),randint(0,255))
     i = int(c)
     c2 = Color3.fromUint(i)
-    print c,i,c2
+    print(c,i,c2)
     assert c == c2 and "conversion of Color3 to/from uint failed"
 
 
@@ -15,5 +15,5 @@ def test_color4_to_uint():
     c = Color4(randint(0,255),randint(0,255),randint(0,255),randint(0,255))
     i = int(c)
     c2 = Color4.fromUint(i)
-    print c,i,c2
+    print(c,i,c2)
     assert c == c2 and "conversion of Color4 to/from uint failed"
