@@ -89,11 +89,5 @@ setup(
         'oalab.interface': [
             'PlantGLOAInterfacePlugin = openalea.plantgl.oaplugins.interfaces:PlantGLOAInterfacePlugin'
         ]
-    },
-
-    # Dependencies
-    setup_requires = setup_requires + ['openalea.deploy'],
-    install_requires = install_requires,
-    dependency_links = ['http://openalea.gforge.inria.fr/pi'],
-    pylint_packages = [pylint_dir + os.sep + x.replace('.', os.sep) for x in find_packages(pylint_dir) if x not in ['gui']]
+    }
 )
