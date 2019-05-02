@@ -1,4 +1,4 @@
-import .sunDome as sd
+from . import sunDome as sd
 import openalea.plantgl.all as pgl
 
 from math import radians, sin, pi, ceil

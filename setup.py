@@ -38,6 +38,8 @@ setup(
         pkg_name + '.algo',
         pkg_name + '.oaplugins', 
         pkg_name + '.gui', 
+        pkg_name + '.gui.qt', 
+        pkg_name + '.light', 
         pkg_name + '.wralea',
         pkg_name + '.wralea.demos', 
         pkg_name + '.wralea.edition', 
