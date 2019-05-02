@@ -16,11 +16,6 @@ globals().update(getMetaInfo())
 version = '2.4.0'
 print(pkg_name + ' : version = ' + version)
 
-install_requires = []
-setup_requires = []
-
-pylint_dir = pj('src', 'plantgl')
-
 # Main setup
 setup(
     name = name,
@@ -35,7 +30,6 @@ setup(
     namespace_packages = ["openalea"],
     create_namespaces = True,
 
-    py_modules = ["pgl_postinstall"],
     # pure python packages
     packages = [ 
         pkg_name, 
@@ -60,14 +54,6 @@ setup(
         pkg_name: pj('src', 'plantgl'),
         '' : 'src'
     },
-
-    # Add package platform libraries if any
-    include_package_data = True,
-    package_data = { '': ['*.pyd', '*.so', '*.dylib'] },
-    zip_safe = False,
-
-    # Specific option of openalea.deploy
-    postinstall_scripts = ['pgl_postinstall'],
 
     # Scripts
     entry_points = {
