@@ -63,4 +63,4 @@ test:
     - test/data
     - share/
   commands:
-    - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py -I test_depthsortengine.py
+    - nosetests -v -I test_viewer.py -I test_projpershape.py -I thread.py -I test_geomprinter.py -I test_coneofperception.py -I test_pointgrid.py -I test_depthsortengine.py -I test_zbufferengine.py -I test_object_creation.py -I test_bbox.py -I test_color.py -I test_pointmanipulation.py -I test_pyprinter.py -I test_light.py -I test_shared_data.py -I test_codec.py -I test_image.py
