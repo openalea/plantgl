@@ -25,4 +25,4 @@ dependencies:
     - patch
     - openalea.deploy
     - scipy
-    - mathplotlib
+    - matplotlib

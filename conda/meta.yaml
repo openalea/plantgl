@@ -50,7 +50,7 @@ requirements:
    - pyopengl
    - pyqglviewer
    - scipy
-   - mathplotlib
+   - matplotlib
    - vs2015_runtime [win]
 
 test:
