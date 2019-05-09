@@ -3,11 +3,11 @@ from openalea.plantgl.algo import *
 from openalea.plantgl.math import *
 from math import pow,log
 
-from openalea.vpltk.qt import QtCore, QtGui, QtOpenGL
-from openalea.vpltk.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
-from openalea.vpltk.qt.QtGui import QColor, QImage
-from openalea.vpltk.qt.QtOpenGL import QGLWidget
-from openalea.vpltk.qt.QtWidgets import QFileDialog, QApplication
+from openalea.plantgl.gui.qt import QtCore, QtGui, QtOpenGL
+from openalea.plantgl.gui.qt.QtCore import QEvent, QObject, QPoint, Qt, pyqtSignal, qWarning
+from openalea.plantgl.gui.qt.QtGui import QColor, QImage
+from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget
+from openalea.plantgl.gui.qt.QtWidgets import QFileDialog, QApplication
 
 class Curve2DConstraint:
     def __init__(self):

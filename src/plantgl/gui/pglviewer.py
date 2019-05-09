@@ -1,5 +1,5 @@
 from openalea.plantgl.all import *
-from openalea.vpltk.qt import qt
+from openalea.plantgl.gui.qt import qt
 from PyQGLViewer import QGLViewer, Vec
 from openalea.plantgl.gui.pglnqgl import *
 

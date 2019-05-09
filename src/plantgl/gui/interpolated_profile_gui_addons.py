@@ -49,7 +49,7 @@
 from OpenGL.GL import *
 from math import pow,log, exp, e
 import weakref
-from openalea.vpltk.qt import QtCore
+from openalea.plantgl.gui.qt import QtCore
 
 
 

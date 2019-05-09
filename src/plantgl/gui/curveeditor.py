@@ -3,7 +3,7 @@ from openalea.plantgl.scenegraph import *
 from openalea.plantgl.algo import *
 from openalea.plantgl.math import *
 from OpenGL.GL import *
-from openalea.vpltk.qt import QtCore, QtGui
+from openalea.plantgl.gui.qt import QtCore, QtGui
 from math import pow,log
 
 

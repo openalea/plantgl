@@ -1,13 +1,13 @@
 from openalea.plantgl.all import *
-from openalea.vpltk.qt import qt    
+from openalea.plantgl.gui.qt import qt    
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import os
 
-from openalea.vpltk.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
-from openalea.vpltk.qt.QtGui import QCursor, QImageReader, QPixmap
-from openalea.vpltk.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
-from openalea.vpltk.qt.QtOpenGL import QGLWidget 
+from openalea.plantgl.gui.qt.QtCore import QObject, QPoint, QTimer, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtGui import QCursor, QImageReader, QPixmap
+from openalea.plantgl.gui.qt.QtWidgets import QApplication, QDialog, QDockWidget, QFileDialog, QMenu, QMessageBox, QScrollArea, QSplashScreen, QVBoxLayout, QWidget
+from openalea.plantgl.gui.qt.QtOpenGL import QGLWidget 
 
 class MaterialPanelView (QGLWidget):
     valueChanged = pyqtSignal()

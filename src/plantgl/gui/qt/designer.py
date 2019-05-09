@@ -32,7 +32,7 @@ import sys
 import os
 
 from openalea.core.path import path as Path
-from openalea.vpltk.qt import QT_MODULE_NAME
+from openalea.plantgl.gui.qt import QT_MODULE_NAME
 
 
 FORCE_UI_GENERATION = False
@@ -91,7 +91,7 @@ def replaceext(self, ext, old_ext=None):
             return self.__class__(self[:-len(old_ext)] + ext)
 
 
-from openalea.vpltk.qt.uic import compileUi, compile_args
+from openalea.plantgl.gui.qt.uic import compileUi, compile_args
 
 
 def generate_pyfile_from_uifile(name, src=None, dest=None, uibasename=None, force=None):
@@ -197,7 +197,7 @@ def compile_ui_files(module, import_instructions=None):
     import_instructions : python code containing required imports.
     example :
 
-    >>> import_instructions = 'from openalea.vpltk.qt.designer import generate_pyfile_from_uifile\n'
+    >>> import_instructions = 'from openalea.plantgl.gui.qt.designer import generate_pyfile_from_uifile\n'
 
     if None, uses default imports : generate_pyfile_from_uifile, Path, hardbook and get_data
     """
@@ -205,7 +205,7 @@ def compile_ui_files(module, import_instructions=None):
     from openalea.core import codegen
 
     if import_instructions is None:
-        import_instructions = "from openalea.vpltk.qt.designer import generate_pyfile_from_uifile\n"
+        import_instructions = "from openalea.plantgl.gui.qt.designer import generate_pyfile_from_uifile\n"
 
     module = __import__(module)
     paths = []
@@ -258,11 +258,11 @@ def compile_ui_files(module, import_instructions=None):
                                     print()
 
 # try:
-#     from openalea.vpltk.qt import QtCore
-#     from openalea.vpltk.qt._test import QtCore as previous_QtCore
+#     from openalea.plantgl.gui.qt import QtCore
+#     from openalea.plantgl.gui.qt._test import QtCore as previous_QtCore
 #     if QtCore.QObject != previous_QtCore.QObject:
 #         raise ImportError
 # except ImportError:
 #     # First call, ui files are not generated or wrong implementation
 #     FORCE_UI_GENERATION = True
-#     generate_pyfile_from_uifile('openalea.vpltk.qt', uibasename='test')
+#     generate_pyfile_from_uifile('openalea.plantgl.gui.qt', uibasename='test')

@@ -548,7 +548,7 @@ if __name__ == "__main__":
     #0.5, crsSect2,
                           1.0, crsSect2)
 
-    from openalea.vpltk.qt import QtGui
+    from openalea.plantgl.gui.qt import QtGui
     app=QtGui.QApplication([])
 
     scene = Scene()

@@ -1,4 +1,4 @@
-from openalea.vpltk.qt import QtCore, QtGui
+from openalea.plantgl.gui.qt import QtCore, QtGui
 from openalea.plantgl.all import *
 from PyQGLViewer import *
 import OpenGL.GL as ogl
@@ -6,8 +6,8 @@ from .editablectrlpoint import *
 from math import cos,sin,sqrt,fabs,pi
 
 
-from openalea.vpltk.qt.QtCore import QObject, QRect, Qt, pyqtSignal
-from openalea.vpltk.qt.QtWidgets import QApplication
+from openalea.plantgl.gui.qt.QtCore import QObject, QRect, Qt, pyqtSignal
+from openalea.plantgl.gui.qt.QtWidgets import QApplication
 
 helpstr = """<h2>N u r b s P a t c h E d i t o r</h2>
 This application allows the user to edit a nurbsPatch dynamically.

@@ -49,7 +49,7 @@ from openalea.plantgl.math import Vector4, Vector3
 from openalea.plantgl.algo import GLRenderer, Discretizer
 from OpenGL.GL import *
 from math import cos, sin, sqrt, pi, atan, atan2
-from openalea.vpltk.qt import QtCore, QtGui
+from openalea.plantgl.gui.qt import QtCore, QtGui
 from .interpolated_profile_gui_addons import UserSlicesAddOn, VisualCrossSectionsAddOn, GridAddOn
 
 
