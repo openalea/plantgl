@@ -71,7 +71,7 @@ ScenePtr sc_fromlist( boost::python::list l )
   {
         object obj;
         try {
-          obj = iter_obj.attr( "next" )();
+          obj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr())));
         } catch( error_already_set ) { PyErr_Clear(); break; }
         boost::python::extract<GeometryPtr> geom( obj );
         if(geom.check()){

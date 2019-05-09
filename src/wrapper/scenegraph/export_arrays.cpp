@@ -177,7 +177,7 @@ bool pgl_save_data(const boost::python::object& a, const std::string& fname)
             while( true )
             {
                 boost::python::object obj;
-                try  {  obj = iter_obj.attr( "next" )(); }
+                try  {  obj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
                 catch( boost::python::error_already_set ){ PyErr_Clear(); break; }
                 pgl_save_one_data(obj,_bp);
             }
@@ -315,12 +315,14 @@ void export_arrays()
 
   class_<IndexArrayPreOrderConstIterator>("IndexArrayPreOrderConstIterator",init<IndexArrayPtr,uint32_t>())
     .def("next",&py_next_iter<IndexArrayPreOrderConstIterator>)
+    .def("__next__",&py_next_iter<IndexArrayPreOrderConstIterator>)
     .def("atEnd",&IndexArrayPreOrderConstIterator::atEnd)
     .def("__iter__",&nullfunc<IndexArrayPreOrderConstIterator>, return_self<>())
     ;
 
    class_<IndexArrayPostOrderConstIterator>("IndexArrayPostOrderConstIterator",init<IndexArrayPtr,uint32_t>())
     .def("next",&py_next_iter<IndexArrayPostOrderConstIterator>)
+    .def("__next__",&py_next_iter<IndexArrayPostOrderConstIterator>)
     .def("atEnd",&IndexArrayPostOrderConstIterator::atEnd)
     .def("__iter__",&nullfunc<IndexArrayPostOrderConstIterator>, return_self<>())
     ;
