@@ -20,7 +20,7 @@ def dist_to_points(p, plist):
 
 def brute_force_pointset_median(plist):
     dist_list = [(i,dist_to_points(pi,plist)) for i,pi in enumerate(plist)]
-    dist_list.sort(lambda x,y: cmp(x[1],y[1]))
+    dist_list.sort(key=lambda x: x[1])
     return dist_list[0][0]
 
 
