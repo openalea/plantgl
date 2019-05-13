@@ -5,9 +5,9 @@ channels:
     - conda-forge
     - openalea
 dependencies:
-    - python =3
+    - python
     - boost
-    - qt
+    - qt =5
     - pyqt
     - ipython
     - qtconsole
