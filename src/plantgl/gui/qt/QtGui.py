@@ -14,7 +14,7 @@ from openalea.plantgl.gui.qt import PYSIDE_API
 
 if os.environ[QT_API] in PYQT5_API:
     from PyQt5.QtGui import *
-    from PyQt5.QtWidgets import QTabWidget
+    from PyQt5.QtWidgets import *
     _tab_position = {
         0: QTabWidget.North,
         1: QTabWidget.South,
