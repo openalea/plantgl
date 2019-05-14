@@ -10,6 +10,8 @@ target_link_libraries(_pglgui pglmath pglgui pglsg pgltool)
 
 if (Python3_FOUND)
 	target_link_libraries(_pglgui Python3::Python)
+elseif (Python2_FOUND)
+    target_link_libraries(_pglgui Python2::Python)
 endif()
 
 if (QT5_FOUND)

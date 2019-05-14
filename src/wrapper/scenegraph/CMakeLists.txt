@@ -10,6 +10,8 @@ target_link_libraries(_pglsg pglmath pglsg pglalgo pgltool)
 
 if (Python3_FOUND)
 	target_link_libraries(_pglsg Python3::Python)
+elseif (Python2_FOUND)
+    target_link_libraries(_pglsg Python2::Python)
 endif()
 
 # Disable Boost Auto-Link

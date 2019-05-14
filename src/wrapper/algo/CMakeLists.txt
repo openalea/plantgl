@@ -10,6 +10,8 @@ target_link_libraries(_pglalgo pglmath pgltool pglsg pglalgo)
 
 if (Python3_FOUND)
 	target_link_libraries(_pglalgo Python3::Python)
+elseif (Python2_FOUND)
+    target_link_libraries(_pglalgo Python2::Python)
 endif()
 
 if (QT5_FOUND)

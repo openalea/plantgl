@@ -39,7 +39,6 @@ requirements:
    - ann
    - pyqglviewer
    - menuinst [win]
-   - cmake
    - setuptools
    - openalea.deploy
   run:
