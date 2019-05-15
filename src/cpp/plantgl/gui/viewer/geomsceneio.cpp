@@ -72,7 +72,7 @@
 
 #include "linetree.h"
 #include "reader.h"
-#include "interface/importselection.h"
+#include "interface/ui_importselection.h"
 
 /// Qt
 #include <QtGlobal>

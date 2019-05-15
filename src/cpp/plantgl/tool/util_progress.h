@@ -65,7 +65,7 @@ PGL_BEGIN_NAMESPACE
 
   TOOLS_API void unregister_progressstatus_func();
 
-  class ProgressStatus {
+  class TOOLS_API ProgressStatus {
   public:
     ProgressStatus(uint32_t _nbsteps, const std::string &_message = " %.2f processed.", float _percenttoprint = 1);
 

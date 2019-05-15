@@ -73,8 +73,8 @@
 
 #include "filemanager.h"
 #include "camera.h"
-#include "interface/cameraqt.h"
-#include "interface/cameraqt2.h"
+#include "interface/ui_cameraqt.h"
+#include "interface/ui_cameraqt2.h"
 #include "icons.h"
 #include "glframe.h"
 #include "event.h"

@@ -60,7 +60,7 @@
 #include "fog.h"
 #include "icons.h"
 #include "util_qwidget.h"
-#include "interface/fogwidget.h"
+#include "interface/ui_fogwidget.h"
 #include <assert.h>
 #include <iostream>
 

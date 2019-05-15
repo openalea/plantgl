@@ -76,7 +76,7 @@ object pgl_py_normSquared(object obj){
     while( 1 )
        {
         object lobj;
-        try {  lobj = iter_obj.attr( "next" )();        }
+        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
         val += lval * lval;
@@ -134,7 +134,7 @@ object pgl_py_normL1(object obj){
     while( 1 )
        {
         object lobj;
-        try {  lobj = iter_obj.attr( "next" )();        }
+        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = boost::python::extract<real_t>( lobj );
         val += abs(lval);
@@ -175,7 +175,7 @@ object pgl_py_normLinf(object obj){
     while( 1 )
        {
         object lobj;
-        try {  lobj = iter_obj.attr( "next" )();        }
+        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         real_t lval = abs(boost::python::extract<real_t>( lobj ));
         if(val < lval) val = lval;
@@ -220,7 +220,7 @@ object pgl_py_dir(object obj){
     while( 1 )
        {
         object lobj;
-        try {  lobj = iter_obj.attr( "next" )();        }
+        try {  lobj = boost::python::object(handle<>(PyIter_Next(iter_obj.ptr()))); }
         catch( error_already_set ){ PyErr_Clear(); break; }
         lobj = lobj / f;
         l.append(lobj);
@@ -250,7 +250,7 @@ real_t pgl_py_dot(object p1, object p2){
         while( 1 )
          {
             object lobj1,lobj2;
-            try {  lobj1 = iter_obj1.attr( "next" )(); lobj2 = iter_obj2.attr( "next" )(); }
+            try {  lobj1 = boost::python::object(handle<>(PyIter_Next(iter_obj1.ptr()))); lobj2 = boost::python::object(handle<>(PyIter_Next(iter_obj2.ptr()))); }
             catch( error_already_set ){ PyErr_Clear(); break; }
             real_t lval1 = extract<real_t>( lobj1 )();
             real_t lval2 = extract<real_t>( lobj2 )();
@@ -273,7 +273,7 @@ void export_Vector2()
 {
   {
   scope v2 = class_< Vector2 >("Vector2", init< const Vector2 & >("Vector2(Vector2 v)",args("v")))
-    .def(init< optional< real_t, real_t > >("Vector2(real_t x , real_t y)",args("x","y")))
+    .def(init< boost::python::optional< real_t, real_t > >("Vector2(real_t x , real_t y)",args("x","y")))
     .def(init< const Vector2::Polar & >("Vector2(Polar p)",args("p")))
     .def(self_ns::str(self))
     .def( "__str__", v2_repr )

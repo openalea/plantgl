@@ -11,27 +11,27 @@ def vid(id,dim):
 #print vid((1,2,3),(5,5,5))
 def test_point3grid_construct1():
     nbpoint = 100
-    p3list = [random_point() for i in xrange(nbpoint)]
+    p3list = [random_point() for i in range(nbpoint)]
     p3grid = Point3Grid((0.5,0.5,0.5),p3list)
 
 def test_point3grid_construct2():
     nbpoint = 100
-    p3list = [random_point() for i in xrange(nbpoint)]
+    p3list = [random_point() for i in range(nbpoint)]
     p3grid = Point3Grid(0.5,p3list)
 
 def test_point3grid_construct3():
     nbpoint = 100
-    p3list = [random_point() for i in xrange(nbpoint)]
+    p3list = [random_point() for i in range(nbpoint)]
     p3grid = Point3Grid((0.5,0.5,0.5),(0,0,0),(10,10,10),p3list)
 
 def test_point3grid_ball():
     nbpoint = 6000
-    p3list = [random_point() for i in xrange(nbpoint)]
+    p3list = [random_point() for i in range(nbpoint)]
     p3grid = Point3Grid((0.5,0.5,0.5),p3list)
     center = Vector3(5.5,5.5,5.5)
     radius = 2
     pball = p3grid.query_ball_point(center,radius)
-    print pball
+    print(pball)
     assert len(pball) == len(set(pball))
     for i,p in enumerate(p3list):
         if i in pball:
@@ -40,7 +40,7 @@ def test_point3grid_ball():
             assert(norm(p-center) > radius)
     vcoord = (randint(0,19),randint(0,19),randint(0,19))
     vid = p3grid.cellId(vcoord)
-    print vid, vcoord, p3grid.index(vid)
+    print(vid, vcoord, p3grid.index(vid))
     assert p3grid.index(vid) == vcoord
     assert p3grid.getVoxelCenter(vcoord) == p3grid.getVoxelCenterFromId(vid)
 
@@ -48,12 +48,12 @@ def test_pointgrid_access():
     p3list = [(1,1,1),(6,6,6),(10,10,10),(20,20,20)]
     r = 0
     p3grid = Point3Grid(r+1,p3list)
-    print [p3grid.query_ball_point(i,r) for i in p3list]
-    print [[i] for i in xrange(len(p3list))]
-    assert [p3grid.query_ball_point(i,r) for i in p3list] == [[i] for i in xrange(len(p3list))]
+    print([p3grid.query_ball_point(i,r) for i in p3list])
+    print([[i] for i in range(len(p3list))])
+    assert [p3grid.query_ball_point(i,r) for i in p3list] == [[i] for i in range(len(p3list))]
     
 def test_pointgrid_corners(nbpoint = 10):
-    p3list = [(0,0,0),(10,10,10)]+[random_point() for i in xrange(nbpoint)]
+    p3list = [(0,0,0),(10,10,10)]+[random_point() for i in range(nbpoint)]
     p3grid = Point3Grid(1,p3list)
     corners = p3grid.getCorners()
     #print corners
@@ -70,11 +70,11 @@ def manual_closest(pt,plist):
         return res
     
 def test_pointgrid_closest(nbtest = 10, nbpoint = 10):
-    p3list = [(0,0,0),(10,10,10)]+[random_point() for i in xrange(nbpoint)]
+    p3list = [(0,0,0),(10,10,10)]+[random_point() for i in range(nbpoint)]
     p3grid = Point3Grid(2,p3list)
     #print p3list
     #print p3grid.size(),p3grid.nbFilledVoxels()
-    for i in xrange(nbtest):
+    for i in range(nbtest):
         randompoint = random_point()
         mc = manual_closest(randompoint,p3list)
         ac = p3grid.closest_point(randompoint)

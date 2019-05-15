@@ -19,7 +19,7 @@ def create_default_objects():
     circle = Polyline2D.Circle(1,20)
     yield ExtrudedHull(circle,circle)
     yield Extrusion(bc,circle)
-    yield FaceSet([(0,0,0),(1,0,0),(1,1,0),(0,1,0)],[range(4)])
+    yield FaceSet([(0,0,0),(1,0,0),(1,1,0),(0,1,0)],[list(range(4))])
     yield Frustum()
     yield NurbsCurve([(0,0,0,1),(.5,1,0,1),(1.,1,0,1),(1.5,0,0,1)])
     yield NurbsCurve2D([(0,0,1),(.5,1,1),(1.,1,1),(1.5,0,1)])
@@ -29,12 +29,12 @@ def create_default_objects():
     yield PointSet2D([(0,0)])
     yield Polyline([(0,0,0),(1,0,0)])
     yield Polyline2D([(0,0),(1,0)])
-    yield QuadSet([(0,0,0),(1,0,0),(1,1,0),(0,1,0)],[range(4)])
+    yield QuadSet([(0,0,0),(1,0,0),(1,1,0),(0,1,0)],[list(range(4))])
     yield Revolution(bc2)
     yield Sphere()
 #`    yield Swung([bc2],[0])
     yield Text('test')
-    yield TriangleSet([(0,0,0),(1,0,0),(0,1,0)],[range(3)])
+    yield TriangleSet([(0,0,0),(1,0,0),(0,1,0)],[list(range(3))])
     fname = join(dirname(__file__),'../share/plantgl/database/amapsymbols/nentn105.smb')
     if exists(fname):
         am = AmapSymbol(fname)
@@ -104,10 +104,10 @@ maxshape = 100
 maxelem = 20
 
 def randtuple(nbvalues = 3,minvalue = 0,maxvalue = maxdim):
-    return tuple([uniform(minvalue,maxvalue) for i in xrange(nbvalues)])
+    return tuple([uniform(minvalue,maxvalue) for i in range(nbvalues)])
 
 def randinttuple(nbvalues = 3,minvalue = 0,maxvalue = maxdim):
-    return tuple([randint(minvalue,maxvalue) for i in xrange(nbvalues)])
+    return tuple([randint(minvalue,maxvalue) for i in range(nbvalues)])
 
 def randuninttuple(nbvalues = 3,minvalue = 0,maxvalue = maxdim):
     assert nbvalues < (maxvalue - minvalue)
@@ -128,7 +128,7 @@ def randbool(): return bool(randint(0,1))
 from math import pi
 
 def randcircle(nbpoints, minradius = 0.1, maxradius = maxdim, minangle = -pi/2, maxangle = 3*pi/2):
-    return Polyline2D([Vector2(Vector2.Polar(uniform(minradius,maxradius),minangle+k*(maxangle-minangle)/(nbpoints-1))) for k in xrange(nbpoints)])
+    return Polyline2D([Vector2(Vector2.Polar(uniform(minradius,maxradius),minangle+k*(maxangle-minangle)/(nbpoints-1))) for k in range(nbpoints)])
 
 def randhalfcircle(nbpoints, minradius = 0.1, maxradius = maxdim):
     return randcircle(nbpoints, minradius, maxradius, maxangle = pi/2)
@@ -140,89 +140,89 @@ def create_random_objects():
                          negYHeight = uniform(0,maxdim), posYHeight = uniform(0,maxdim),
                          bottom = randtuple(), top = randtuple(), bottomShape = uniform(0.1,maxshape), topShape = uniform(0.1,maxshape),
                          slices = randint(1,255), stacks = randint(4,255))
-    bc = BezierCurve([randtuple(4) for i in xrange(randint(3,maxelem))])
+    bc = BezierCurve([randtuple(4) for i in range(randint(3,maxelem))])
     yield bc
-    bc2 = BezierCurve2D([randtuple(3) for i in xrange(randint(3,maxelem))],width = randint(0,16))
+    bc2 = BezierCurve2D([randtuple(3) for i in range(randint(3,maxelem))],width = randint(0,16))
     yield bc2
-    nbrow = xrange(randint(2,maxelem))
-    yield BezierPatch([[randtuple(4) for i in nbrow] for j in xrange(randint(2,maxelem))])
+    nbrow = range(randint(2,maxelem))
+    yield BezierPatch([[randtuple(4) for i in nbrow] for j in range(randint(2,maxelem))])
     yield Box(size = randtuple())
     yield Cone(radius = uniform(0.1,maxdim), height = uniform(0.1,maxdim), solid = randbool(), slices = randint(4,255))
     yield Cylinder(radius = uniform(0.1,maxdim), height = uniform(0.1,maxdim), solid = randbool(), slices = randint(4,255))
     yield Disc(radius = uniform(0.1,maxdim),slices = randint(4,255))
-    nbrow = xrange(randint(2,maxelem))
-    yield ElevationGrid([[uniform(-maxdim,maxdim) for i in nbrow] for j in xrange(randint(2,maxelem))])
+    nbrow = range(randint(2,maxelem))
+    yield ElevationGrid([[uniform(-maxdim,maxdim) for i in nbrow] for j in range(randint(2,maxelem))])
     yield ExtrudedHull(randcircle(randint(10,maxelem)),randcircle(randint(10,maxelem)))
-    yield Extrusion(BezierCurve([randtuple(4) for i in xrange(randint(3,maxelem))]),randcircle(randint(10,maxelem)))
+    yield Extrusion(BezierCurve([randtuple(4) for i in range(randint(3,maxelem))]),randcircle(randint(10,maxelem)))
     dim = randint(10,maxelem)
-    yield FaceSet([randtuple() for i in xrange(dim)],[randuninttuple(randint(3,8),0,dim-1) for i in xrange(10,maxelem)])
+    yield FaceSet([randtuple() for i in range(dim)],[randuninttuple(randint(3,8),0,dim-1) for i in range(10,maxelem)])
     yield Frustum(radius = uniform(0.1,1), height = uniform(0.1,maxdim), taper = uniform(0,maxdim), solid = randbool(), slices = randint(4,255))
     nbp = randint(3,maxelem)
-    yield NurbsCurve([randtuple(4) for i in xrange(nbp)], randint(2,min(5,nbp-1)),width = randint(0,16))
+    yield NurbsCurve([randtuple(4) for i in range(nbp)], randint(2,min(5,nbp-1)),width = randint(0,16))
     nbp = randint(3,maxelem)
-    yield NurbsCurve2D([randtuple() for i in xrange(nbp)], randint(2,min(5,nbp-1)),width = randint(0,16))
+    yield NurbsCurve2D([randtuple() for i in range(nbp)], randint(2,min(5,nbp-1)),width = randint(0,16))
     nbrow = randint(3,maxelem)
     nbcol = randint(3,maxelem)
-    yield NurbsPatch([[randtuple(4) for i in xrange(nbrow)] for j in xrange(nbcol)], randint(2,min(5,nbcol-1)), randint(2,min(5,nbrow-1)))
+    yield NurbsPatch([[randtuple(4) for i in range(nbrow)] for j in range(nbcol)], randint(2,min(5,nbcol-1)), randint(2,min(5,nbrow-1)))
     yield Paraboloid(radius = uniform(0.1,maxdim), height = uniform(0.1,maxdim), shape = uniform(0.1,maxshape), solid = randbool(), slices = randint(4,255), stacks = randint(4,255))
-    yield PointSet([randtuple() for i in xrange(randint(1,maxelem))],width = randint(0,16))
-    yield PointSet2D([randtuple(2) for i in xrange(randint(2,maxelem))],width = randint(0,16))
-    yield Polyline([randtuple() for i in xrange(randint(2,maxelem))],width = randint(0,16))
-    yield Polyline2D([randtuple(2) for i in xrange(randint(2,maxelem))],width = randint(0,16))
-    yield QuadSet([randtuple() for i in xrange(dim)],[randuninttuple(4,0,dim-1) for i in xrange(10,maxelem)])
+    yield PointSet([randtuple() for i in range(randint(1,maxelem))],width = randint(0,16))
+    yield PointSet2D([randtuple(2) for i in range(randint(2,maxelem))],width = randint(0,16))
+    yield Polyline([randtuple() for i in range(randint(2,maxelem))],width = randint(0,16))
+    yield Polyline2D([randtuple(2) for i in range(randint(2,maxelem))],width = randint(0,16))
+    yield QuadSet([randtuple() for i in range(dim)],[randuninttuple(4,0,dim-1) for i in range(10,maxelem)])
     yield Revolution(randhalfcircle(randint(4,20)),slices = randint(4,255))
     yield Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255))
     dim = randint(10,maxelem)
-    ang = [uniform(0,1) for i in xrange(dim)]
+    ang = [uniform(0,1) for i in range(dim)]
     sa = sum(ang)
-    anglist = [2*pi*sum(ang[0:i+1])/sa for i in xrange(dim)]
+    anglist = [2*pi*sum(ang[0:i+1])/sa for i in range(dim)]
     nbpts = randint(5,10)
-    pflist = [randhalfcircle(nbpts) for i in xrange(dim)]
+    pflist = [randhalfcircle(nbpts) for i in range(dim)]
 #    yield Swung(pflist,anglist)
     yield Text('test2',position=randtuple(),screencoordinates=randbool(),fontstyle=Font(family="courrier new",size=randint(6,20),bold=randbool(),italic=randbool()))
     dim = randint(10,maxelem)
-    yield TriangleSet([randtuple() for i in xrange(dim)],
-                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    yield TriangleSet([randtuple() for i in range(dim)],
+                      [randuninttuple(3,0,dim-1) for i in range(0,maxelem)])
     dim = randint(10,maxelem)
     colorPerVertex = randbool()                       
-    yield TriangleSet([randtuple() for i in xrange(dim)],
-                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                       colorList=[randinttuple(4,0,255) for i in xrange(dim if colorPerVertex else maxelem)],
+    yield TriangleSet([randtuple() for i in range(dim)],
+                      [randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                       colorList=[randinttuple(4,0,255) for i in range(dim if colorPerVertex else maxelem)],
                        colorPerVertex=colorPerVertex)
     dim = randint(10,maxelem)
-    yield TriangleSet([randtuple() for i in xrange(dim)],
-                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      colorList=[randinttuple(4,0,255) for i in xrange(dim)],
-                      colorIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    yield TriangleSet([randtuple() for i in range(dim)],
+                      [randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      colorList=[randinttuple(4,0,255) for i in range(dim)],
+                      colorIndexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)])
     dim = randint(10,maxelem)
     normalPerVertex = randbool()                       
-    yield TriangleSet([randtuple() for i in xrange(dim)],
-                      [randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      normalList=[randnormal() for i in xrange(dim if normalPerVertex else maxelem)],
+    yield TriangleSet([randtuple() for i in range(dim)],
+                      [randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      normalList=[randnormal() for i in range(dim if normalPerVertex else maxelem)],
                       normalPerVertex=normalPerVertex)
     dim = randint(10,maxelem)
-    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
-                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      normalList=[randnormal() for i in xrange(dim)],
-                      normalIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
+    yield TriangleSet(pointList=[randtuple() for i in range(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      normalList=[randnormal() for i in range(dim)],
+                      normalIndexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)])
     dim = randint(10,maxelem)
-    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
-                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      texCoordList=[randtuple(2) for i in xrange(dim)])
+    yield TriangleSet(pointList=[randtuple() for i in range(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      texCoordList=[randtuple(2) for i in range(dim)])
     dim = randint(10,maxelem)
-    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
-                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      texCoordList=[randtuple(2) for i in xrange(dim)],
-                      texCoordIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)])
-    yield TriangleSet(pointList=[randtuple() for i in xrange(dim)],
-                      indexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      normalList=[randnormal() for i in xrange(dim)],
-                      normalIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      colorList=[randinttuple(4,0,255) for i in xrange(dim)],
-                      colorIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      texCoordList=[randtuple(2) for i in xrange(dim)],
-                      texCoordIndexList=[randuninttuple(3,0,dim-1) for i in xrange(0,maxelem)],
-                      ccw = randbool(),skeleton=Polyline([randtuple() for i in xrange(randint(2,maxelem))]))
+    yield TriangleSet(pointList=[randtuple() for i in range(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      texCoordList=[randtuple(2) for i in range(dim)],
+                      texCoordIndexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)])
+    yield TriangleSet(pointList=[randtuple() for i in range(dim)],
+                      indexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      normalList=[randnormal() for i in range(dim)],
+                      normalIndexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      colorList=[randinttuple(4,0,255) for i in range(dim)],
+                      colorIndexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      texCoordList=[randtuple(2) for i in range(dim)],
+                      texCoordIndexList=[randuninttuple(3,0,dim-1) for i in range(0,maxelem)],
+                      ccw = randbool(),skeleton=Polyline([randtuple() for i in range(randint(2,maxelem))]))
 
 
 rdtransgen = {0 : (lambda : Matrix4.translation(randtuple(maxvalue=1))),
@@ -236,7 +236,7 @@ def randtransform():
 def create_random_transforms():
     yield AxisRotated(randtuple(),uniform(0,2*pi),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255)))
     yield EulerRotated(uniform(0,2*pi),uniform(0,2*pi),uniform(0,2*pi),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255)))
-    yield IFS(randint(0,3),[Transform4(randtransform()) for i in xrange(1,4)],Sphere(radius = uniform(0.1,1),slices = randint(4,255), stacks = randint(4,255)))
+    yield IFS(randint(0,3),[Transform4(randtransform()) for i in range(1,4)],Sphere(radius = uniform(0.1,1),slices = randint(4,255), stacks = randint(4,255)))
     prim = Vector3(randtuple())
     prim.normalize()
     sec = Vector3(randtuple())
@@ -246,7 +246,7 @@ def create_random_transforms():
     yield Scaled(randtuple(),Sphere(radius = uniform(0.1,1),slices = randint(4,255), stacks = randint(4,255)))
     yield Tapered(uniform(0.1,maxdim),uniform(0.1,maxdim),Sphere(radius = uniform(0.1,1),slices = randint(4,255), stacks = randint(4,255)))
     yield Translated(randtuple(),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255)))
-    yield Group([Translated(randtuple(),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255))) for i in xrange(2,maxelem)])
+    yield Group([Translated(randtuple(),Sphere(radius = uniform(0.1,maxdim),slices = randint(4,255), stacks = randint(4,255))) for i in range(2,maxelem)])
 
 
 def randmaterial():
@@ -283,7 +283,7 @@ def test_create_random_objects():
     
 def view_create_random_objects(nb = 5):
     Viewer.start()
-    for i in xrange(nb):
+    for i in range(nb):
         Viewer.display(create_random_scene())
     Viewer.stop()
     

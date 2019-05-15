@@ -68,7 +68,7 @@ void export_BezierPatch()
     "It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
     "and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Bi,n(u)Bj,m(v)Pi,j) with u and v in [0,1]\n"
     "where Bi,n(u) and Bi,m(v) are the classical n and m-th degree Bernstein polynomials.",
-     init<const Point4MatrixPtr&, optional<uint_t,uint_t,bool> >
+     init<const Point4MatrixPtr&, boost::python::optional<uint_t,uint_t,bool> >
      ("BezierPatch(Point4Matrix ctrlPointList [,ustride,vstride,ccw])",
      (bp::arg("ctrlPointList"),
       bp::arg("ustride")=BezierPatch::DEFAULT_STRIDE,

@@ -58,7 +58,7 @@
 
 /// Viewer
 #include "../base/util_qwidget.h"
-#include "interface/approximation.h"
+#include "interface/ui_approximation.h"
 #include "util_qstring.h"
 #include "geomevent.h"
 #include "materialeditor.h"

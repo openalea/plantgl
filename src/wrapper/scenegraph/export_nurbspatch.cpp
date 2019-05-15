@@ -90,9 +90,9 @@ void export_NurbsPatch()
     "It is defined by two degrees n and m and a matrix of control Points Pi,j\n"
     "and using the parametric equation S(u,v) = Sum(i=0,n)Sum(j=0,m)(Ri,n(u)Rj,m(v)Pi,j) with u and v in [0,1]\n"
     "where Ri,n(u) and Ri,m(v) are classical n and m-th degree rational basis function.",
-     init<const Point4MatrixPtr&, optional< RealArrayPtr, RealArrayPtr, uint_t,uint_t,uint_t,uint_t,bool> >
+     init<const Point4MatrixPtr&, boost::python::optional< RealArrayPtr, RealArrayPtr, uint_t,uint_t,uint_t,uint_t,bool> >
      ("NurbsPatch(Point4Matrix ctrlPointList, RealArray uKnotList,RealArray vKnotList [,uDeg, vDeg,ustride,vstride,ccw])"))
-     .def(init<const Point4MatrixPtr&, uint_t, optional< uint_t,RealArrayPtr, RealArrayPtr, uint_t,uint_t,bool> >
+     .def(init<const Point4MatrixPtr&, uint_t, boost::python::optional< uint_t,RealArrayPtr, RealArrayPtr, uint_t,uint_t,bool> >
          ("NurbsPatch(Point4Matrix ctrlPointList, udegree, vdegree,"
           "uknotList, vknotList [,ustride,vstride,ccw])",
           (bp::arg("ctrlPointList"),

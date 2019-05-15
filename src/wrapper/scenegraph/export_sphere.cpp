@@ -57,7 +57,7 @@ DEF_POINTEE(Sphere)
 void export_Sphere()
 {
   class_< Sphere, SpherePtr, bases< SOR > , boost::noncopyable >
-    ("Sphere", init< optional<const real_t&, uchar_t, uchar_t > >
+    ("Sphere", init< boost::python::optional<const real_t&, uchar_t, uchar_t > >
     ("Sphere(radius [,slices, stacks])",
     (bp::arg("radius")=Sphere::DEFAULT_RADIUS,
      bp::arg("slices")=Sphere::DEFAULT_SLICES,

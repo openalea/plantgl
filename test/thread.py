@@ -40,7 +40,7 @@ class MyThread(QtCore.QThread):
         self.waitcondition.wakeAll()
         pgl.Viewer.threaded = False
         pgl.Viewer.start()
-        print "execute"
+        print("execute")
         QtCore.QThread.exec_(self)
         self.endwaitcondition.wakeAll()
 
@@ -61,7 +61,7 @@ class MyWidget(QtGui.QWidget):
         self.mutex = QtCore.QMutex()
         self.waitcondition = QtCore.QWaitCondition()
     def customEvent(self,event):
-        print "Receive Event"
+        print("Receive Event")
         while not self.mutex.tryLock():
             pass
         self.mutex.unlock()
@@ -104,7 +104,7 @@ class MyThread3(QtCore.QThread):
             pass
         self.mutex.unlock()
         self.waitcondition.wakeAll()
-        print 'app.exec()'
+        print('app.exec()')
         app.exec_()
     def start(self):
         self.mutex.lock()

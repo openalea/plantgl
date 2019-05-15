@@ -2151,7 +2151,7 @@ LineicModelPtr Fit::leastSquares(const Point3ArrayPtr & Q,
             i = (int)(k*d) ;
             a = real_t(k*d)-real_t(i) ;
             int i2 = (int)((k-1)*d) ;
-            U->setAt(degC+j, U->getAt(degC+j)
+            U->setAt(degC+j, U->getAt(degC+j)+
                      a*ub->getAt(i2)+(1-a)*ub->getAt(i)) ;
         }
         U->setAt(degC+j, U->getAt(degC+j) / degC) ;

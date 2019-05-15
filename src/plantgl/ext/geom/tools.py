@@ -22,6 +22,7 @@ __license__= "Cecill-C"
 __revision__=" $Id$ "
 
 from operator import add
+from functools import reduce
 
 def Vsum (vectors) :
 	"""
@@ -36,7 +37,7 @@ def Vmean (vectors) :
 	return Vsum(vectors)/len(vectors)
 
 def barycenter (point_weights, positions) :
-	return Vsum([positions[pid]*weight for pid,weight in point_weights.iteritems()])/sum(point_weights.values())
+	return Vsum([positions[pid]*weight for pid,weight in point_weights.items()])/sum(point_weights.values())
 
 def shape_expand (shape, positions, expand_factor) :
 	"""

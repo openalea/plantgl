@@ -70,9 +70,9 @@ struct v4_pickle_suite : boost::python::pickle_suite
 void export_Vector4()
 {
   class_< Vector4 >("Vector4", init< const Vector4 & >("Vector4(Vector4 v)",args("v")))
-    .def(init< optional< real_t, real_t, real_t, real_t > >("Vector4(real_t x, real_t y, real_t z, real_t w)",args("x","y","z","w")))
-    .def(init< const Vector2&,  optional<real_t,real_t> >("Vector4(Vector2 v, real_t z, real_t w)",args("v","z","w")))
-    .def(init< const Vector3&,  optional<real_t> >("Vector4(Vector3 v, real_t w)",args("v","w")))
+    .def(init< boost::python::optional< real_t, real_t, real_t, real_t > >("Vector4(real_t x, real_t y, real_t z, real_t w)",args("x","y","z","w")))
+    .def(init< const Vector2&,  boost::python::optional<real_t,real_t> >("Vector4(Vector2 v, real_t z, real_t w)",args("v","z","w")))
+    .def(init< const Vector3&,  boost::python::optional<real_t> >("Vector4(Vector3 v, real_t w)",args("v","w")))
     .def( "__str__", v4_repr )
     .def( "__repr__", v4_repr )
     .def(vector_dim4_func<Vector4>())

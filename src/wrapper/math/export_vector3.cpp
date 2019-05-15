@@ -133,10 +133,10 @@ void export_Vector3()
 {
   {
   scope v3 = class_< Vector3 >("Vector3", init< const Vector3 & >("Vector3(Vector3 v)",args("v")))
-    .def(init< optional< real_t, real_t, real_t > >("Vector3(real_t x, real_t y, real_t z)",args("x","y","z")))
+    .def(init< boost::python::optional< real_t, real_t, real_t > >("Vector3(real_t x, real_t y, real_t z)",args("x","y","z")))
     .def(init< const Vector3::Cylindrical& >("Vector3(Vector3.Cylindrical c)",args("c")))
     .def(init< const Vector3::Spherical& >("Vector3(Vector3.Spherical s)",args("s")))
-    .def(init< const Vector2&, optional<real_t> >("Vector3(Vector2 v, real_t z)",args("v","z")))
+    .def(init< const Vector2&, boost::python::optional<real_t> >("Vector3(Vector2 v, real_t z)",args("v","z")))
     .def( "__str__", v3_repr )
     .def( "__repr__", v3_repr )
     .def(vector_dim3_func<Vector3>())

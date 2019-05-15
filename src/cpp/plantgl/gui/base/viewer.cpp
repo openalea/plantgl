@@ -106,7 +106,7 @@
 #include "configuration.h"
 #include "util_qwidget.h"
 
-#include "interface/frameglsizedialog.h"
+#include "interface/ui_frameglsizedialog.h"
 
 #include <plantgl/tool/util_enviro.h>
 

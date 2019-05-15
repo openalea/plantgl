@@ -1,5 +1,5 @@
 from openalea.core import *
-import objectgenerator
+from . import objectgenerator
 
 __name__  = "vplants.plantgl.objects"
 __alias__ = ["PlantGL.Objects"]

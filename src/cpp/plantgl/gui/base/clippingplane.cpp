@@ -54,7 +54,7 @@
 
 #include "clippingplane.h"
 #include "event.h"
-#include "interface/clippingplanewidget.h"
+#include "interface/ui_clippingplanewidget.h"
 #include "icons.h"
 #include "util_qwidget.h"
 //#include "GL/gl.h"

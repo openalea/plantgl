@@ -14,9 +14,9 @@ def process_tris_basic(pts, pts2, visual = False, translation = 2):
     if visual : 
         Viewer.display(Shape(Translated(cam,Sphere(0.1)), Material((0,0,0))))
 
-        tr = TriangleSet(pts, [range(3)])
+        tr = TriangleSet(pts, [list(range(3))])
         Viewer.add(Shape(Translated(0,0,translation,tr), Material((0,200,0))))
-        tr2 = TriangleSet(pts2, [range(3)])
+        tr2 = TriangleSet(pts2, [list(range(3))])
         Viewer.add(Shape(Translated(0,0,translation,tr2), Material((0,0,200))))
     
     e = DepthSortEngine()
@@ -26,24 +26,24 @@ def process_tris_basic(pts, pts2, visual = False, translation = 2):
     e.processTriangle(*(pts2+[20000]))
     s = e.getResult(eABGR, False)
     for sh in s:
-        print sh.geometry.pointList
+        print(sh.geometry.pointList)
     if visual : Viewer.add(s)
 
 
 def process_tris_full(pts, pts2, visual = False, translation = 2):
     if visual : 
-        tr = TriangleSet(pts, [range(3)])
+        tr = TriangleSet(pts, [list(range(3))])
         Viewer.display(Shape(tr, Material((0,200,0))))
-        tr2 = TriangleSet(pts2, [range(3)])
+        tr2 = TriangleSet(pts2, [list(range(3))])
         Viewer.add(Shape(tr2, Material((0,0,200))))
-    for alpha in xrange(0,360, 30):
+    for alpha in range(0,360, 30):
         dir = Vector3(Vector3.Spherical(1,radians(alpha),pi/2))
         cam = 5*dir
         e = DepthSortEngine()
         e.setPerspectiveCamera(60,1,1,1000)
         e.lookAt(cam,(0,0,0),(0,0,1))
         cammatrix = e.camera().getCameraToWorldMatrix()
-        print cam
+        print(cam)
         if visual : 
             vi = cammatrix.getColumn(0)
             assert vi.w == 0
@@ -64,7 +64,7 @@ def process_tris_full(pts, pts2, visual = False, translation = 2):
         e.processTriangle(*(pts2+[20000]))
         s = e.getProjectionResult(eABGR)
         for sh in s:
-            print [tuple(v) for v in sh.geometry.pointList]
+            print([tuple(v) for v in sh.geometry.pointList])
         if visual : 
             Viewer.add(Scene([Shape(Translated(cam,Oriented(vi,vj,sh.geometry)), sh.appearance, sh.id) for sh in s]))
 
@@ -82,7 +82,7 @@ def process_scene_basic(sc, visual = False, translation = 1):
     e.process(sc)
     s = e.getResult(eABGR, False)
     for sh in s:
-        print sh.geometry.pointList
+        print(sh.geometry.pointList)
     if visual : Viewer.add(s)
 
     cam2 = (2,0,0)
@@ -94,7 +94,7 @@ def process_scene_basic(sc, visual = False, translation = 1):
     e.process(sc)
     s = e.getResult(eABGR, False)
     for sh in s:
-        print sh.geometry.pointList
+        print(sh.geometry.pointList)
     if visual : Viewer.add(Scene([Shape(Translated(0,translation,0,sh.geometry), sh.appearance, sh.id) for sh in s]))
 
 def process_scene_full(sc, visual = False, nbView = 1):
@@ -104,14 +104,14 @@ def process_scene_full(sc, visual = False, nbView = 1):
     if visual : 
         Viewer.display(sc)
 
-    for alpha in xrange(0,360, int(360/nbView)):
+    for alpha in range(0,360, int(360/nbView)):
         dir = Vector3(Vector3.Spherical(1,radians(alpha),pi/2))
         cam = 5*dir
         e = DepthSortEngine()
         e.setPerspectiveCamera(60,1,1,1000)
         e.lookAt(cam,(0,0,0),(0,0,1))
         cammatrix = e.camera().getCameraToWorldMatrix()
-        print cam
+        print(cam)
         if visual : 
             vi = cammatrix.getColumn(0)
             assert vi.w == 0
@@ -132,7 +132,7 @@ def process_scene_full(sc, visual = False, nbView = 1):
 
         s = e.getResult(eABGR, False)
         for sh in s:
-            print sh.geometry.pointList
+            print(sh.geometry.pointList)
 
         if visual : Viewer.add(Scene([Shape(Translated(cam,sh.geometry), sh.appearance, sh.id) for sh in s]))
 
@@ -151,7 +151,7 @@ def test_tri1(visual = False):
 def test_tri2(visual = False):
     pts = [[0,0,0.],[0,0,0.5],[0,1,0]]
     pts2 = [[0.1,0.1,0.0],[0.1,0.3,0.3],[0.1,0.3,0.1]]
-    print normal(pts), normal(pts2)
+    print(normal(pts), normal(pts2))
     assert checkorientation(pts,pts2)
     process_tris(pts, pts2, visual)
 

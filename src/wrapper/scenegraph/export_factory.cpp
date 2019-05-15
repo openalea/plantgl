@@ -84,7 +84,7 @@ std::string get_scodec_name(SceneCodec * codec) {
 class PySceneCodec : public SceneCodec, public bp::wrapper<SceneCodec>
 {
 public:
-    PySceneCodec(const std::string& name = "", Mode mode = None) :
+    PySceneCodec(const std::string& name = "", Mode mode = Mode::Nothing) :
      SceneCodec(name,mode), bp::wrapper<SceneCodec>()
       {  }
 
@@ -234,7 +234,7 @@ void export_SceneCodec()
       ,"Enum representing coding and decoding capabilities of a codec."
 #endif
       )
-      .value("No",SceneCodec::None)
+      .value("No",SceneCodec::Nothing)
       .value("Read",SceneCodec::Read)
       .value("Write",SceneCodec::Write)
       .value("ReadWrite",SceneCodec::ReadWrite)

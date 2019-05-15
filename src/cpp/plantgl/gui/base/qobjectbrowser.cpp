@@ -42,7 +42,7 @@
 
 
 #include "qobjectbrowser.h"
-#include "interface/qbrowser.h"
+#include "interface/ui_qbrowser.h"
 #include "icons.h"
 
 #include <QtCore/qmetaobject.h>

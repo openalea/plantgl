@@ -66,7 +66,7 @@ void export_AsymmetricHull()
     "The two first points are located along the x -axis (P1,P2) and the two other along the y-axis (P3,P4)."
     "As such Pi points are described with only two dimensions, i.e. a radius and a height using corresponding parameters"
     "Finally, the shape coefficients are versatile indices which describe the curvature of the hull above and below the peripheral line.",
-     init< optional < const real_t&, const real_t&, const real_t&,
+     init< boost::python::optional < const real_t&, const real_t&, const real_t&,
      const real_t&, const real_t&, const real_t&,
      const real_t&, const real_t&, const Vector3&, const Vector3&, const real_t&, const real_t&,
      uchar_t, uchar_t > >

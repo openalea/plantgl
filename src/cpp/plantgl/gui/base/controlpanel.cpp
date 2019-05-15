@@ -77,7 +77,7 @@
 #include "scenegl.h"
 #include "icons.h"
 #include "util_qwidget.h"
-#include "interface/controlpanelwidget.h"
+#include "interface/ui_controlpanelwidget.h"
 
 PGL_USING_NAMESPACE
 

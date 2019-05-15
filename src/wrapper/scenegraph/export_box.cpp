@@ -73,7 +73,7 @@ void export_Box()
     ("Box",
     "The Box describes a rectangular axis-aligned box centered at origin and whose extension "
     "along the x, y and z-axis is specified with the size vector.",
-    init< optional<const Vector3&> >("Box(Vector3(x,y,z))",(boost::python::arg("size")=Box::DEFAULT_SIZE)) )
+    init< boost::python::optional<const Vector3&> >("Box(Vector3(x,y,z))",(boost::python::arg("size")=Box::DEFAULT_SIZE)) )
     .def( "__init__", make_constructor( box_from_val ) )
     .def( "__init__", make_constructor( box_from_val1 ) )
     .DEF_PGLBASE(Box)

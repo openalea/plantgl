@@ -1,1 +1,1 @@
-from light import *
+from .light import *

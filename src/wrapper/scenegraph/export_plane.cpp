@@ -60,7 +60,7 @@ void export_Plane()
 {
   class_< Plane3, Plane3Ptr, bases<RefCountObject> >
     ("Plane3", "A 3D plane",
-    init<optional<const Vector3&,real_t> > ("Plane3(normal, d)",(bp::arg("normal")=Vector3::OZ, bp::arg("d")=0)))
+    init<boost::python::optional<const Vector3&,real_t> > ("Plane3(normal, d)",(bp::arg("normal")=Vector3::OZ, bp::arg("d")=0)))
   .def(init<const Vector3&, const Vector3& > ("Plane3(normal, origin)",(bp::arg("normal")=Vector3::OZ, bp::arg("origin")=Vector3::ORIGIN)))
   .def(init<real_t, real_t, real_t>  ("Plane3(alpha, beta, d)",(bp::arg("alpha")=0, bp::arg("beta")=0,bp::arg("d")=0)))
   .def(init<real_t, real_t, real_t, real_t> ("Plane3(a, b, c, d)",(bp::arg("a")=0, bp::arg("b")=0, bp::arg("c")=1,bp::arg("d")=0)))

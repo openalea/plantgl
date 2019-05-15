@@ -496,8 +496,8 @@ bool VrmlPrinter::setLight(const Vector3& location,
   diff = 1.0 / diff;
   GEOM_VRMLPRINT_FIELD("color",col,COLOR3);
   GEOM_VRMLPRINT_FIELD("intensity",diff,REAL);
-  real_t amb =(( (real_t)ambient.getRed()   / (real_t)diffuse.getRed()   )
-                         ( (real_t)ambient.getGreen() / (real_t)diffuse.getGreen() )
+  real_t amb =(( (real_t)ambient.getRed()   / (real_t)diffuse.getRed()   ) +
+                         ( (real_t)ambient.getGreen() / (real_t)diffuse.getGreen() ) +
                          ( (real_t)ambient.getBlue()  / (real_t)diffuse.getBlue()  ) );
   amb /= 3;
   amb *= diff;
