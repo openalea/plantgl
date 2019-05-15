@@ -21,6 +21,9 @@ dependencies:
     - ann
     - menuinst
     - patch
+    - setuptools
     - openalea.deploy
+    - cmake >=3.12.0
+    - menuinst [win]
     - scipy
     - matplotlib
