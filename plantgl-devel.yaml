@@ -17,7 +17,7 @@ dependencies:
     - bison [unix]
     - flex [unix]
     - gmp [unix]
-    - cgal [unix]
+    # - cgal [unix]
     - qhull
     - eigen
     - ann
